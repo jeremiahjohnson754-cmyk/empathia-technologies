@@ -46,11 +46,16 @@ run('design tokens', process.execPath, [path.join(root, 'packages/design-tokens/
 for (const p of ['packages/domain-types', 'packages/commissioning-engine', 'packages/event-contracts', 'packages/relationship-engine', 'packages/assurance-engine',
   'integrations/contracts', 'integrations/mocks', 'services/enterprise-api', 'packages/api-client', 'packages/schemas']) run(`tsc -b ${p}`, process.execPath, [tsc, '-b', path.join(root, p)]);
 run('JSON Schemas (events, API bodies, entities)', process.execPath, [path.join(root, 'packages/schemas/scripts/generate.mjs')]);
-for (const p of ['packages/ui', 'apps/enterprise-web', 'apps/founder-studio']) run(`type-check ${p}`, process.execPath, [tsc, '-p', path.join(root, p, 'tsconfig.json'), '--noEmit']);
+for (const p of ['packages/ui', 'apps/enterprise-web']) run(`type-check ${p}`, process.execPath, [tsc, '-p', path.join(root, p, 'tsconfig.json'), '--noEmit']);
+// the Founder Studio type-checks against data it generates from the Founder Edition and the films (apps/founder-studio/src/generated,
+// not committed), so it is checked as part of --studio; a clean checkout without --studio reports it NOT_RUN instead of failing
+const studioData = fs.existsSync(path.join(root, 'apps/founder-studio/src/generated/docs.json'));
 run('OpenAPI and typed client match the route table', process.execPath, [path.join(root, 'scripts/api/export-openapi.mjs'), '--check']);
 run('enterprise web bundle', process.execPath, [path.join(root, 'apps/enterprise-web/build.mjs')]);
 if (process.argv.includes('--studio')) {
   const fe = (process.argv.find((a) => a.startsWith('--founder-edition=')) || '').split('=')[1];
-  run('Founder Studio', process.execPath, [path.join(root, 'apps/founder-studio/build.mjs'), ...(fe ? [`--founder-edition=${fe}`] : [])]);
-} else steps.push({ step: 'Founder Studio', result: 'NOT_RUN', ms: 0, why: 'pass --studio (needs the Founder Edition HTML)' });
+  run('Founder Studio (data + bundle)', process.execPath, [path.join(root, 'apps/founder-studio/build.mjs'), ...(fe ? [`--founder-edition=${fe}`] : [])]);
+  run('type-check apps/founder-studio', process.execPath, [tsc, '-p', path.join(root, 'apps/founder-studio/tsconfig.json'), '--noEmit']);
+} else if (studioData) run('type-check apps/founder-studio (existing generated data)', process.execPath, [tsc, '-p', path.join(root, 'apps/founder-studio/tsconfig.json'), '--noEmit']);
+else steps.push({ step: 'Founder Studio', result: 'NOT_RUN', ms: 0, why: 'pass --studio (needs the Founder Edition HTML and the film files to generate its data)' });
 finish(0);

@@ -18,7 +18,12 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const has = (f) => process.argv.includes(f);
 const suites = [];
 const tap = (out) => ({ tests: Number(/^# tests (\d+)/m.exec(out)?.[1] ?? NaN), pass: Number(/^# pass (\d+)/m.exec(out)?.[1] ?? NaN), fail: Number(/^# fail (\d+)/m.exec(out)?.[1] ?? NaN) });
-const custom = (out) => { const m = /(\d+)\/(\d+) PASS/.exec(out); return m ? { tests: Number(m[2]), pass: Number(m[1]), fail: Number(m[2]) - Number(m[1]) } : { tests: NaN, pass: NaN, fail: NaN }; };
+const custom = (out) => {
+  let m = /(\d+)\/(\d+) PASS/.exec(out); if (m) return { tests: Number(m[2]), pass: Number(m[1]), fail: Number(m[2]) - Number(m[1]) };
+  m = /(\d+) passed, (\d+) failed(?:, (\d+) not run)?/.exec(out); if (m) return { tests: Number(m[1]) + Number(m[2]), pass: Number(m[1]), fail: Number(m[2]), notRun: Number(m[3] || 0) };
+  m = /(\d+) of (\d+) passed/.exec(out); if (m) return { tests: Number(m[2]), pass: Number(m[1]), fail: Number(m[2]) - Number(m[1]) };
+  return { tests: NaN, pass: NaN, fail: NaN };
+};
 const unittest = (out) => { const n = Number(/^Ran (\d+) test/m.exec(out)?.[1] ?? NaN); const f = /FAILED \((?:failures=(\d+))?(?:, )?(?:errors=(\d+))?/.exec(out); const fail = f ? Number(f[1] || 0) + Number(f[2] || 0) : 0; return { tests: n, pass: n - fail, fail }; };
 
 function suite(name, kind, cmd, args, parse, opts = {}) {

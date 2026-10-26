@@ -1,0 +1,57 @@
+{
+  "film": "Empathia — architecture visualization",
+  "status": "RENDERED_AND_VERIFIED",
+  "renderedAt": "2026-10-26T13:29:41.714Z",
+  "script": "scripts/media/render-architecture-film.mjs",
+  "sources": [
+    "title card: How Empathia is built",
+    "docs/architecture/diagrams/01-system-context.mmd",
+    "docs/architecture/diagrams/02-containers.mmd",
+    "docs/architecture/diagrams/03-vertical-slice.mmd",
+    "docs/architecture/diagrams/04-data-model.mmd",
+    "docs/architecture/diagrams/05-events.mmd",
+    "docs/architecture/diagrams/09-integration-flow.mmd",
+    "docs/architecture/diagrams/07-editions-separation.mmd",
+    "title card: Synthetic data · production starter"
+  ],
+  "components": {
+    "footage": "none (diagrams rendered from repository sources)",
+    "narration": "none",
+    "music": "none",
+    "fonts": "system UI fonts of the rendering machine; no font file embedded or shipped"
+  },
+  "rights": {
+    "status": "UNVERIFIED",
+    "note": "AI-generated in this program from repository diagrams under the founder’s direction; not in the media-rights ledger; not authorized for any external channel until the founder enters and approves it"
+  },
+  "files": [
+    {
+      "file": "media/renders/architecture-visualization/Empathia_Architecture_Visualization_3840x2160.mp4",
+      "bytes": 17722905,
+      "sha256": "6911f43da966e30682436c5a0b4b9e95b7810bff26e8ee67075a80b44e22eebb",
+      "width": 3840,
+      "height": 2160,
+      "codec": "h264",
+      "profile": "High",
+      "pixFmt": "yuv420p",
+      "fps": "30/1",
+      "durationS": 64,
+      "audio": false,
+      "fullDecode": "PASS"
+    },
+    {
+      "file": "media/renders/architecture-visualization/Empathia_Architecture_Visualization_1920x1080.mp4",
+      "bytes": 7207530,
+      "sha256": "da21bb006e174c35a9846400663b079e484cce4f30b234c56ced3055d7dc06f7",
+      "width": 1920,
+      "height": 1080,
+      "codec": "h264",
+      "profile": "High",
+      "pixFmt": "yuv420p",
+      "fps": "30/1",
+      "durationS": 64,
+      "audio": false,
+      "fullDecode": "PASS"
+    }
+  ]
+}

@@ -22,7 +22,8 @@ const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const base = path.join(repo, '.local/pg');
 const data = path.join(base, 'data');
 const credsFile = path.join(base, 'credentials.json');
-const PORT = Number(process.env.EMPATHIA_PG_PORT || 55432);
+// the port chosen when the cluster was created wins (so a second checkout on another port keeps it), then EMPATHIA_PG_PORT, then 55432
+const PORT = Number((fs.existsSync(credsFile) && JSON.parse(fs.readFileSync(credsFile, 'utf8')).port) || process.env.EMPATHIA_PG_PORT || 55432);
 const BIN = ['/usr/lib/postgresql/16/bin', '/usr/local/opt/postgresql@16/bin', '/opt/homebrew/opt/postgresql@16/bin', '/usr/pgsql-16/bin']
   .find((d) => fs.existsSync(path.join(d, 'initdb'))) || '';
 const bin = (n) => (BIN ? path.join(BIN, n) : n);

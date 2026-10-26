@@ -137,7 +137,19 @@ write('diagrams.json', diagrams);
 
 // ------------------------------------------------------------------ vault index
 const vIdx = path.join(repo, 'provenance/VAULT_INDEX.json');
-write('vault.json', fs.existsSync(vIdx) ? JSON.parse(fs.readFileSync(vIdx, 'utf8')) : []);
+// VAULT_INDEX.json is { sections: { "<path or folder/>": about }, files: [{ path, sha256 }], classification } → one record per section
+const vaultRecords = (() => {
+  if (!fs.existsSync(vIdx)) return [];
+  const v = JSON.parse(fs.readFileSync(vIdx, 'utf8'));
+  if (Array.isArray(v)) return v;
+  return Object.entries(v.sections || {}).map(([k, about]) => {
+    const first = k.split(' ')[0];
+    const files = (v.files || []).filter((f) => (first.endsWith('/') ? f.path.startsWith(first) : f.path === first));
+    const md = files.find((f) => f.path.endsWith('.md'));
+    return { id: k.replace(/[^a-zA-Z0-9]+/g, '-').toLowerCase(), title: k, about: String(about), classification: /licen[cs]es/.test(k) ? 'THIRD_PARTY_LICENSED' : 'RESTRICTED_IP', path: `provenance/${md ? md.path : first}`, status: `${files.length} file${files.length === 1 ? '' : 's'} hashed` };
+  });
+})();
+write('vault.json', vaultRecords);
 
 // ------------------------------------------------------------------ engine lab rooms
 const golden = JSON.parse(fs.readFileSync(require.resolve('@empathia/domain-data/golden/room-engine-golden.json'), 'utf8'));

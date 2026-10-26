@@ -1,0 +1,99 @@
+{
+  "at": "2026-10-26T13:22:01.016Z",
+  "node": "v22.22.0",
+  "result": "PASS",
+  "steps": [
+    {
+      "step": "link workspace",
+      "result": "PASS",
+      "ms": 133
+    },
+    {
+      "step": "design tokens",
+      "result": "PASS",
+      "ms": 50
+    },
+    {
+      "step": "tsc -b packages/domain-types",
+      "result": "PASS",
+      "ms": 167
+    },
+    {
+      "step": "tsc -b packages/commissioning-engine",
+      "result": "PASS",
+      "ms": 146
+    },
+    {
+      "step": "tsc -b packages/event-contracts",
+      "result": "PASS",
+      "ms": 126
+    },
+    {
+      "step": "tsc -b packages/relationship-engine",
+      "result": "PASS",
+      "ms": 138
+    },
+    {
+      "step": "tsc -b packages/assurance-engine",
+      "result": "PASS",
+      "ms": 138
+    },
+    {
+      "step": "tsc -b integrations/contracts",
+      "result": "PASS",
+      "ms": 116
+    },
+    {
+      "step": "tsc -b integrations/mocks",
+      "result": "PASS",
+      "ms": 129
+    },
+    {
+      "step": "tsc -b services/enterprise-api",
+      "result": "PASS",
+      "ms": 209
+    },
+    {
+      "step": "tsc -b packages/api-client",
+      "result": "PASS",
+      "ms": 248
+    },
+    {
+      "step": "tsc -b packages/schemas",
+      "result": "PASS",
+      "ms": 135
+    },
+    {
+      "step": "JSON Schemas (events, API bodies, entities)",
+      "result": "PASS",
+      "ms": 122
+    },
+    {
+      "step": "type-check packages/ui",
+      "result": "PASS",
+      "ms": 1642
+    },
+    {
+      "step": "type-check apps/enterprise-web",
+      "result": "PASS",
+      "ms": 3361
+    },
+    {
+      "step": "OpenAPI and typed client match the route table",
+      "result": "PASS",
+      "ms": 187
+    },
+    {
+      "step": "enterprise web bundle",
+      "result": "PASS",
+      "ms": 360
+    },
+    {
+      "step": "Founder Studio",
+      "result": "NOT_RUN",
+      "ms": 0,
+      "why": "pass --studio (needs the Founder Edition HTML and the film files to generate its data)"
+    }
+  ],
+  "log": ".local/logs/build-2026-10-26T13-21-53-599Z.log"
+}
