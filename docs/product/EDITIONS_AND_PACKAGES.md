@@ -25,7 +25,7 @@ build-time flag (`window.__EMPATHIA_EDITION__.kind`) that decides which capabili
 
 | capability | Founder (development) | Investor | Private Engineer |
 |---|---|---|---|
-| every product surface and persona | yes | yes, with investor framing and the investor landing | yes |
+| product surfaces | every surface, every persona | the surfaces its page offers, opened from the investor landing | every surface |
 | fault injection (`room.fault`) | Product Architect persona only | refused for every persona | engineering personas only (room.design, room.classify.approve or plan.compile) |
 | Build a Room "Inspect" tab | Product Architect persona only | never shown | every persona in that edition |
 | guided tour and investor landing | yes | yes | yes |
