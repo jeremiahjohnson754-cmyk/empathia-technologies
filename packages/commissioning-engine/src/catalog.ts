@@ -37,6 +37,10 @@ export interface EquipmentCategory {
   sig: string;
   furniture?: boolean;
   props?: Record<string, unknown>;
+  /** default mounting height, m */
+  z?: number;
+  /** footprint [w, d], m */
+  size?: [number, number];
 }
 
 /** One base test definition (33 in the 2.5.x library). */

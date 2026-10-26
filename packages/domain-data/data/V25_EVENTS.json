@@ -1,0 +1,445 @@
+{
+ "request.submitted": [
+  "requestId",
+  "siteId",
+  "roomId",
+  "photoPolicy"
+ ],
+ "vendor.request_acknowledged": [
+  "requestId",
+  "vendorId"
+ ],
+ "project.pitch_deck_submitted": [
+  "projectId",
+  "pitchRev"
+ ],
+ "project.approval_requested": [
+  "projectId",
+  "approverId",
+  "pitchRev"
+ ],
+ "project.approval_decided": [
+  "projectId",
+  "decision",
+  "approverId",
+  "scopeRev",
+  "reason"
+ ],
+ "project.approval_reopened": [
+  "projectId",
+  "scopeRev"
+ ],
+ "project.funding_authorized": [
+  "projectId",
+  "amount",
+  "currency",
+  "scopeRev",
+  "authorityId"
+ ],
+ "project.funding_withdrawn": [
+  "projectId",
+  "reason"
+ ],
+ "intake.engineering_approved": [
+  "projectId",
+  "opsApprover",
+  "engineerApprover"
+ ],
+ "project.design_assigned": [
+  "projectId",
+  "designerIds"
+ ],
+ "design.artifact_uploaded": [
+  "projectId",
+  "documentId",
+  "hash"
+ ],
+ "drawing.properties_extracted": [
+  "documentId",
+  "count"
+ ],
+ "drawing.assertion_conflicted": [
+  "documentId",
+  "field",
+  "rfiId"
+ ],
+ "design.revision_proposed": [
+  "projectId",
+  "revision",
+  "reason"
+ ],
+ "design.approved_for_install": [
+  "projectId",
+  "revision",
+  "divrId"
+ ],
+ "device.selected": [
+  "projectId",
+  "sku"
+ ],
+ "standardization.profile_proposed": [
+  "proposalId",
+  "family"
+ ],
+ "standardization.profile_reviewed": [
+  "proposalId",
+  "family",
+  "decision"
+ ],
+ "standardization.profile_published": [
+  "proposalId"
+ ],
+ "lite.model_generated": [
+  "liteId",
+  "roomId",
+  "confidence"
+ ],
+ "lite.geometry_verified": [
+  "liteId",
+  "roomId"
+ ],
+ "commission.plan_compiled": [
+  "planId",
+  "projectId",
+  "ruleVersion",
+  "testCount"
+ ],
+ "commission.plan_released": [
+  "planId"
+ ],
+ "commission.plan_recompiled": [
+  "planId",
+  "reason"
+ ],
+ "commission.test_result_submitted": [
+  "planId",
+  "testId",
+  "state",
+  "evidence"
+ ],
+ "commission.test_failed": [
+  "planId",
+  "testId"
+ ],
+ "commission.deficiency_opened": [
+  "planId",
+  "testId"
+ ],
+ "commission.deficiency_resolved": [
+  "planId",
+  "testId"
+ ],
+ "document.review_decided": [
+  "artifactId",
+  "decision",
+  "reviewerId"
+ ],
+ "document.approval_revoked": [
+  "artifactId",
+  "reason"
+ ],
+ "final_photos.submitted": [
+  "photoSetId",
+  "projectId"
+ ],
+ "final_photos.approved": [
+  "photoSetId",
+  "projectId",
+  "reviewerId"
+ ],
+ "documentation.packet_approved": [
+  "projectId"
+ ],
+ "handoff.accepted": [
+  "projectId",
+  "roomId",
+  "baselineId"
+ ],
+ "assurance.baseline_superseded": [
+  "roomId",
+  "oldBaselineId",
+  "newBaselineId"
+ ],
+ "assurance.drift_detected": [
+  "roomId",
+  "baselineId",
+  "severity"
+ ],
+ "assurance.recommission_run_recorded": [
+  "roomId",
+  "kind"
+ ],
+ "work_order.created": [
+  "workOrderId",
+  "roomId",
+  "kind"
+ ],
+ "work_order.assigned": [
+  "workOrderId",
+  "techId",
+  "siteScope"
+ ],
+ "work_order.accepted": [
+  "workOrderId",
+  "techId"
+ ],
+ "work_order.authorization_revoked": [
+  "workOrderId",
+  "reason"
+ ],
+ "field.asset_scanned": [
+  "workOrderId",
+  "assetId"
+ ],
+ "field.deviation_raised": [
+  "projectId",
+  "assetId",
+  "rfiId"
+ ],
+ "field.scan_completed": [
+  "planId",
+  "status"
+ ],
+ "field.measurement_verified": [
+  "measurementId",
+  "reviewerId"
+ ],
+ "service.field_completed": [
+  "workOrderId"
+ ],
+ "service.repair_verified": [
+  "workOrderId",
+  "verifierId"
+ ],
+ "incident.reopened": [
+  "incidentId",
+  "reason"
+ ],
+ "apex.diagnosis_reviewed": [
+  "incidentId",
+  "hypothesisId",
+  "tier"
+ ],
+ "coverage.assignment_changed": [
+  "siteId",
+  "role",
+  "personId"
+ ],
+ "search_party.contact_actioned": [
+  "personId",
+  "channel"
+ ],
+ "security.access_denied": [
+  "route",
+  "role",
+  "reason"
+ ],
+ "policy.exception_decided": [
+  "exceptionId",
+  "decision"
+ ],
+ "standard.changed": [
+  "standardId",
+  "version"
+ ],
+ "sop.approved": [
+  "sopId"
+ ],
+ "sow.approved": [
+  "sowId"
+ ],
+ "training.case_approved": [
+  "caseId"
+ ],
+ "usage.session_observed": [
+  "roomId",
+  "features"
+ ],
+ "integration.connector_stale": [
+  "connector"
+ ],
+ "integration.adapter_health_changed": [
+  "adapter",
+  "state"
+ ],
+ "metric.source_stale": [
+  "metricId"
+ ],
+ "workflow.compensation_requested": [
+  "aggregateId",
+  "reason"
+ ],
+ "fipv.session_transitioned": [
+  "sessionId",
+  "from",
+  "to"
+ ],
+ "fipv.evidence_submitted": [
+  "sessionId",
+  "measurementId",
+  "state"
+ ],
+ "request.cancelled": [
+  "requestId",
+  "reason"
+ ],
+ "room.design_created": [
+  "designId",
+  "roomId"
+ ],
+ "room.classification_proposed": [
+  "designId",
+  "archetype"
+ ],
+ "room.classification_approved": [
+  "designId",
+  "archetype",
+  "approvedBy"
+ ],
+ "room.geometry_updated": [
+  "designId"
+ ],
+ "room.device_added": [
+  "designId",
+  "assetId"
+ ],
+ "room.device_moved": [
+  "designId",
+  "assetId"
+ ],
+ "room.device_swapped": [
+  "designId",
+  "assetId",
+  "from",
+  "to"
+ ],
+ "room.device_removed": [
+  "designId",
+  "assetId"
+ ],
+ "room.connection_changed": [
+  "designId",
+  "connectionId",
+  "change"
+ ],
+ "room.design_revision_saved": [
+  "designId",
+  "revision"
+ ],
+ "drawing.revision_generated": [
+  "designId",
+  "drawing"
+ ],
+ "commission.applicability_compiled": [
+  "designId",
+  "applicable"
+ ],
+ "commission.workbook_generated": [
+  "designId"
+ ],
+ "deficiency.identified": [
+  "issueId",
+  "key"
+ ],
+ "issue.created_or_updated": [
+  "issueId",
+  "status"
+ ],
+ "issue.assigned": [
+  "issueId",
+  "owner"
+ ],
+ "room.design_approved": [
+  "designId"
+ ],
+ "room.lifecycle_changed": [
+  "designId",
+  "from",
+  "to"
+ ],
+ "room.test_verified": [
+  "designId",
+  "testId",
+  "resultLabel"
+ ],
+ "room.work_order_created": [
+  "workOrderId",
+  "issueId"
+ ],
+ "room.work_order_closed": [
+  "workOrderId",
+  "issueId"
+ ],
+ "room.hypothesis_recorded": [
+  "issueId"
+ ],
+ "request.desk_updated": [
+  "requestId",
+  "updateId"
+ ],
+ "executive.metric_materialized": [
+  "metricId"
+ ],
+ "photos.location_verified": [
+  "requestId",
+  "photoCount",
+  "verifierId"
+ ],
+ "purchase.approved": [
+  "workOrderId",
+  "amount",
+  "currency",
+  "approverId"
+ ],
+ "part.received": [
+  "workOrderId",
+  "partId"
+ ],
+ "commission.plan_extended": [
+  "planId",
+  "frameworkVersion",
+  "testCount",
+  "complexity"
+ ],
+ "commission.asset_registered": [
+  "planId",
+  "assetId",
+  "status"
+ ],
+ "commission.asset_replaced": [
+  "planId",
+  "assetId",
+  "affected"
+ ],
+ "control.design_published": [
+  "designId",
+  "versionId",
+  "hash"
+ ],
+ "control.design_deployed": [
+  "roomId",
+  "versionId"
+ ],
+ "control.design_rolled_back": [
+  "roomId",
+  "fromVersionId",
+  "toVersionId"
+ ],
+ "control.path_simulated": [
+  "designId",
+  "reportId",
+  "coverage"
+ ],
+ "control.path_verified": [
+  "versionId",
+  "pathId",
+  "evidenceRef",
+  "verifierId"
+ ],
+ "control.command_refused": [
+  "roomId",
+  "deviceId",
+  "command",
+  "reason"
+ ]
+}

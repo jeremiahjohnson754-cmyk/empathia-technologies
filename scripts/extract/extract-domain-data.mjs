@@ -6,7 +6,7 @@ const { chromium } = await import('/opt/npm-tools/node_modules/playwright/index.
 import fs from 'node:fs'; import path from 'node:path'; import crypto from 'node:crypto';
 const [file, out] = process.argv.slice(2); fs.mkdirSync(out, { recursive: true });
 const NAMES = ['V25_TESTS', 'V25_TEST_LABEL', 'V25_CX_CATALOGUE', 'V25_CX_PACKS', 'V25_ROOM_TYPE', 'V25_DOMAIN_PERSONA', 'V25_VERIFIER_PERSONAS', 'V25_ROOM_CATS', 'V25_ROOM_TEMPLATES',
-  'V25_ROOM_REQUIRED', 'V25_ROOM_ROLEOK', 'V25_ROOM_INFO', 'V25_ROOM_LIFECYCLE', 'V25_ROOM_RESULTS', 'ARCHETYPES', 'V25_PERSONAS', 'V25_EV', 'V25_PHASES', 'V25_GUARDS', 'TYPES', 'RELS'];
+  'V25_ROOM_REQUIRED', 'V25_ROOM_ROLEOK', 'V25_ROOM_INFO', 'V25_ROOM_LIFECYCLE', 'V25_ROOM_RESULTS', 'ARCHETYPES', 'V25_PERSONAS', 'V25_EV', 'V25_PHASES', 'V25_GUARDS', 'TYPES', 'RELS', 'V25_EVENTS'];
 const b = await chromium.launch(); const page = await b.newPage(); const errs = []; page.on('pageerror', (e) => errs.push(e.message));
 // the demonstrator's script is one strict IIFE; a temporary copy (never shipped) gets one line inside it that lets this extractor read a table by name
 const html = fs.readFileSync(file, 'utf8'); const at = html.indexOf("'use strict';"); const end = html.indexOf('\n})();\n</script>', at); if (at < 0 || end < 0) throw new Error('unexpected page structure');

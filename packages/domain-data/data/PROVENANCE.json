@@ -5,7 +5,7 @@
  "sourceBranch": "founder/2.5.4",
  "sourceCommit": "b8986d1",
  "buildCommand": "python3 build.py 2.5.4 --no-media (deterministic: two builds give the same sha256)",
- "at": "2026-10-26T11:41:58.464Z",
+ "at": "2026-10-26T12:05:34.682Z",
  "tables": {
   "V25_TESTS": {
    "sha256": "dfab468f659b79457d0a431ab0479953abbf79ec65869000037c44437cad7dc2",
@@ -90,6 +90,10 @@
   "RELS": {
    "sha256": "68f174dc5f4bb4a1f9299289e1e123bc83b09e93632beeb76bbac8e96970dd5a",
    "entries": 130
+  },
+  "V25_EVENTS": {
+   "sha256": "ea83fd3c6238f1e7aa7aa7f695acb9c39269f7eb2f7506ce113b760cc9bf83e1",
+   "entries": 101
   },
   "V25_DESIGN_rulePack": {
    "sha256": "994df0a3d7ec74cd72df119aa049ca034ba46e7ff2d3a577f492ab36bab4d1c4",

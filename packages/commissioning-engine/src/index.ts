@@ -21,6 +21,7 @@ export * from './applicability.js';
 export * from './results.js';
 export * from './recording.js';
 export * from './lifecycle.js';
+export * from './design.js';
 
 export const ENGINE_VERSION = '2.5.4-port.1';
 
