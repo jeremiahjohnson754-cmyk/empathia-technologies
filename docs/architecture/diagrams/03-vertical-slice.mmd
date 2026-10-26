@@ -14,7 +14,7 @@ sequenceDiagram
   D->>API: POST /v1/rooms (template)
   API->>DB: room + template devices + revision 1 + classification, checks, applicability (engines) + plan rows + LOCATED_IN / PLANS_DEVICE edges
   D->>API: POST /v1/rooms/{room}/devices
-  API->>DB: asset PA-nnnn (tenant-unique) + edge; checks re-run; plan recompiled only if its signature changed
+  API->>DB: asset PA-nnnn (tenant-unique) + edge, checks re-run, plan recompiled only if its signature changed
   D->>API: POST /v1/rooms/{room}/revisions
   API->>DB: immutable revision (snapshot + SHA-256)
   S->>API: drawings/generate · drawings/{kind}/approve · classification/approve
@@ -29,6 +29,6 @@ sequenceDiagram
   C->>API: POST /v1/rooms/{room}/results (PASS)
   API-->>C: PASS_UNVERIFIED
   Q->>API: POST /v1/rooms/{room}/results/{test}/verify (a different person)
-  API->>DB: PASS_VERIFIED; the deficiency resolves
+  API->>DB: PASS_VERIFIED, the deficiency resolves
   W->>DB: outbox → room_read_model (live health NOT_MONITORED) + notifications
   Q->>API: GET /v1/read/rooms/{room}

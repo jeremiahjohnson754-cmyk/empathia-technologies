@@ -421,7 +421,7 @@ Each engine below has the thirteen items the directive requires, then at most th
 
 **8 Error handling.** Per-event savepoint: a failing handler rolls back only that event, records last_error and schedules a retry; dead letters are visible at /v1/admin/outbox and can be retried.
 
-**9 Security requirements.** Read-only connectors by default; credentials referenced, never held, in configuration (9998-v14-itsm.js:3-4); worker policies only under app.worker = on; integration probe never makes a network call; catalogued integrations are CONTRACT_ONLY with no partnership implied.
+**9 Security requirements.** Read-only connectors by default; credentials referenced, never held, in configuration (9998-v14-itsm.js:3-4); worker policies admit only the empathia_worker role (migration 0008); integration probe never makes a network call; catalogued integrations are CONTRACT_ONLY with no partnership implied.
 
 **10 Test cases.** tests/integration/api.test.mjs "outbox" (injected failures → DEAD_LETTER after 8 → admin retry → delivered) — part of 16/16 PASS. Demonstrator tests/v14-itsm.mjs, v14-schedule.test.mjs, v25-cs.test.mjs — NOT_RUN in this pass.
 

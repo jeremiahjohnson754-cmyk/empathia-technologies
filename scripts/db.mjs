@@ -35,8 +35,13 @@ const run = (cmd, args, opts = {}) => {
 const running = () => run(bin('pg_ctl'), ['-D', data, 'status']).status === 0;
 
 function creds() {
-  if (fs.existsSync(credsFile)) return JSON.parse(fs.readFileSync(credsFile, 'utf8'));
-  const c = { superuser: 'empathia_admin', superPassword: crypto.randomBytes(18).toString('base64url'), owner: 'empathia_owner', ownerPassword: crypto.randomBytes(18).toString('base64url'), app: 'empathia_app', appPassword: crypto.randomBytes(18).toString('base64url'), database: 'empathia', port: PORT };
+  if (fs.existsSync(credsFile)) {
+    const c = JSON.parse(fs.readFileSync(credsFile, 'utf8'));
+    // clusters created before the worker role existed get one now (KV-08)
+    if (!c.worker) { c.worker = 'empathia_worker'; c.workerPassword = crypto.randomBytes(18).toString('base64url'); fs.writeFileSync(credsFile, JSON.stringify(c, null, 1), { mode: 0o600 }); }
+    return c;
+  }
+  const c = { superuser: 'empathia_admin', superPassword: crypto.randomBytes(18).toString('base64url'), owner: 'empathia_owner', ownerPassword: crypto.randomBytes(18).toString('base64url'), app: 'empathia_app', appPassword: crypto.randomBytes(18).toString('base64url'), worker: 'empathia_worker', workerPassword: crypto.randomBytes(18).toString('base64url'), database: 'empathia', port: PORT };
   fs.mkdirSync(base, { recursive: true });
   fs.writeFileSync(credsFile, JSON.stringify(c, null, 1), { mode: 0o600 });
   return c;
@@ -67,16 +72,19 @@ function start() {
   const steps = [
     `DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '${c.owner}') THEN CREATE ROLE ${c.owner} LOGIN PASSWORD '${q(c.ownerPassword)}'; END IF; END $$;`,
     `DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '${c.app}') THEN CREATE ROLE ${c.app} LOGIN PASSWORD '${q(c.appPassword)}' NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE; END IF; END $$;`,
+    // the outbox worker's own role: the only role the cross-tenant worker policies admit (migration 0008)
+    `DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '${c.worker}') THEN CREATE ROLE ${c.worker} LOGIN PASSWORD '${q(c.workerPassword)}' NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE; END IF; END $$;`,
   ];
   for (const s of steps) { const r = psql(s); if (r.status !== 0) throw new Error(r.stderr); }
   if (psql(`SELECT 1 FROM pg_database WHERE datname = '${c.database}'`).stdout.trim() !== '1') { const r = psql(`CREATE DATABASE ${c.database} OWNER ${c.owner}`); if (r.status !== 0) throw new Error(r.stderr); }
-  psql(`REVOKE ALL ON DATABASE ${c.database} FROM PUBLIC; GRANT CONNECT ON DATABASE ${c.database} TO ${c.app};`);
+  psql(`REVOKE ALL ON DATABASE ${c.database} FROM PUBLIC; GRANT CONNECT ON DATABASE ${c.database} TO ${c.app}, ${c.worker};`);
   return c;
 }
 
 const urls = (c) => ({
   DATABASE_URL: `postgres://${c.owner}:${encodeURIComponent(c.ownerPassword)}@127.0.0.1:${c.port}/${c.database}`,
   APP_DATABASE_URL: `postgres://${c.app}:${encodeURIComponent(c.appPassword)}@127.0.0.1:${c.port}/${c.database}`,
+  WORKER_DATABASE_URL: `postgres://${c.worker}:${encodeURIComponent(c.workerPassword)}@127.0.0.1:${c.port}/${c.database}`,
 });
 
 const cmd = process.argv[2] || 'status';

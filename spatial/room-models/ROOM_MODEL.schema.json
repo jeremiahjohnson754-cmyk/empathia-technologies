@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://empathia.invalid/schemas/spatial/room-model.v1.json",
+  "title": "RoomDesignInput",
+  "description": "The room design every Empathia room engine consumes (classification, design checks, commissioning applicability). Mirrors the TypeScript interface RoomDesignInput in packages/domain-types/src/room.ts, which keeps the 2.5.4 demonstrator's field names (src/v25-60-room.js). Units: metres and degrees. Synthetic data only in this repository.",
+  "type": "object",
+  "required": ["template", "intendedUse", "occupancy", "lifecycle", "coreRoomId", "geometry", "devices", "connections", "classification"],
+  "properties": {
+    "template": { "type": "string", "description": "huddle | small_conf | medium_conf | boardroom | executive | training | townhall | auditorium | studio | collab | open_office | private_office | lobby | idf | custom (V25_ROOM_TEMPLATES)" },
+    "intendedUse": { "type": "string", "maxLength": 200 },
+    "occupancy": { "type": "integer", "minimum": 0, "maximum": 5000, "description": "people; the engine accepts 0 (demonstrator golden cases include 0-occupancy rooms); the API requires 1–5000 when a room is created or edited" },
+    "lifecycle": { "type": "string", "description": "PLANNED | DESIGN_APPROVED | INSTALLATION_PENDING | INSTALLED_UNVERIFIED | COMMISSIONING | ACCEPTED | OPERATIONAL (ROOM_LIFECYCLE); other strings are tolerated by the type for demonstrator imports" },
+    "coreRoomId": { "type": "string", "description": "canonical room code, e.g. R-PLN-0001" },
+    "geometry": { "$ref": "#/$defs/RoomGeometry" },
+    "devices": { "type": "array", "items": { "$ref": "#/$defs/PlannedDevice" } },
+    "connections": { "type": "array", "items": { "$ref": "#/$defs/Connection" } },
+    "classification": {
+      "type": "object", "required": ["approved"],
+      "properties": { "approved": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/ApprovedClassification" }] } }
+    },
+    "results": { "type": "object", "additionalProperties": { "$ref": "#/$defs/RecordedResult" }, "description": "by test id; only on an installed room in COMMISSIONING or later" }
+  },
+  "$defs": {
+    "Point": { "type": "array", "prefixItems": [{ "type": "number" }, { "type": "number" }], "minItems": 2, "maxItems": 2, "description": "[x, y] in metres" },
+    "Provenance": { "type": "string", "description": "DECLARED | MODELED | PHOTO_INFERRED | SCALED_PLAN (PHOTO_INFERRED is never a known fact for applicability); the API also records UNREADABLE for a refused input" },
+    "RoomGeometry": {
+      "type": "object", "required": ["shape", "points", "ceiling", "lengthM", "widthM", "provenance", "confidence"],
+      "properties": {
+        "shape": { "type": "string", "description": "rect | lshape | polygon | custom" },
+        "points": { "type": "array", "items": { "$ref": "#/$defs/Point" }, "minItems": 3, "maxItems": 40, "description": "outline, first point not repeated; accepted by polygonCheck: extent 0.5–200 m per axis, no self-intersection, area ≥ 2 m²" },
+        "ceiling": { "type": "number", "exclusiveMinimum": 0, "description": "metres; the API accepts more than 1.8 and less than 30 at creation" },
+        "lengthM": { "type": "number", "exclusiveMinimum": 0 },
+        "widthM": { "type": "number", "exclusiveMinimum": 0 },
+        "provenance": { "type": "object", "additionalProperties": { "$ref": "#/$defs/Provenance" }, "description": "per dimension: length, width, ceiling (and outline when drawn)" },
+        "confidence": { "type": "string", "description": "declared | modeled | low" }
+      }
+    },
+    "PlannedDevice": {
+      "type": "object", "required": ["id", "cat", "label", "role", "model", "generic", "brand", "modelName", "x", "y", "mount", "props"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[A-Za-z0-9-]{1,40}$", "description": "canonical planned-asset id (PA-0001 in the API); never changes on substitution" },
+        "cat": { "type": "string", "description": "equipment category (V25_ROOM_CATS): display, ledwall, projector, camera, bar, micceil, mictable, micwireless, speaker, dsp, amp, compute, switch, control, touch, scheduler, switcher, encoder, rack, pdu, lighting, occsensor, seccam, iot, hvac, table, chairs, lectern" },
+        "label": { "type": "string" },
+        "role": { "type": "string" },
+        "model": { "type": "string", "description": "'generic' for a generic sample object, else a synthetic catalogue key" },
+        "generic": { "type": "boolean" },
+        "brand": { "type": ["string", "null"], "description": "always null for generic objects; the repository's catalogue is synthetic" },
+        "modelName": { "type": ["string", "null"] },
+        "x": { "type": "number", "description": "metres, room frame" },
+        "y": { "type": "number", "description": "metres, room frame" },
+        "z": { "type": "number", "description": "metres above the floor (category default when absent)" },
+        "rot": { "type": "number", "description": "degrees, clockwise in plan" },
+        "mount": { "type": "string", "description": "floor | wall | ceiling | table | rack" },
+        "props": { "type": "object", "description": "category properties, e.g. diagonal_in, pickup_m" },
+        "furniture": { "type": "boolean", "description": "furniture is drawn but excluded from the relationship graph and the device count" },
+        "removed": { "type": "boolean" },
+        "lifecycle": { "type": "string" },
+        "modelHistory": { "type": "array" },
+        "provenance": { "type": "string" }
+      }
+    },
+    "Connection": {
+      "type": "object", "required": ["id", "from", "to", "kind"],
+      "properties": {
+        "id": { "type": "string" }, "from": { "type": "string" }, "to": { "type": "string" },
+        "kind": { "type": "string", "description": "signal | network | power | control" },
+        "state": { "type": "string" }, "why": { "type": ["string", "null"] }, "removed": { "type": "boolean" }
+      }
+    },
+    "ApprovedClassification": {
+      "type": "object", "required": ["archetype", "override"],
+      "properties": { "archetype": { "type": ["string", "null"] }, "override": { "type": "boolean" }, "stale": { "type": "boolean" }, "reason": { "type": "string" }, "by": { "type": "string" } }
+    },
+    "RecordedResult": {
+      "type": "object", "required": ["state", "evidence", "by", "verified"],
+      "properties": {
+        "state": { "enum": ["PASS", "FAIL", "NOT_SUPPORTED", "INCONCLUSIVE"], "description": "what was recorded; the displayed label is derived: PASS → PASS_UNVERIFIED until verified by a different person → PASS_VERIFIED" },
+        "evidence": { "type": "object", "required": ["kind", "ref"], "properties": { "kind": { "type": "string" }, "ref": { "type": "string" }, "instrument": { "type": ["string", "null"] } } },
+        "by": { "type": "string" }, "at": { "type": "string" },
+        "verified": { "oneOf": [{ "type": "null" }, { "type": "object", "required": ["by"], "properties": { "by": { "type": "string" }, "at": { "type": "string" } } }] },
+        "history": { "type": "array" }
+      }
+    }
+  }
+}

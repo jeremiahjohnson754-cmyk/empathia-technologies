@@ -1,0 +1,151 @@
+{
+ "template": "open_office",
+ "intendedUse": "Desk work; occasional calls at the desk",
+ "occupancy": 40,
+ "lifecycle": "PLANNED",
+ "coreRoomId": "R-SYN-OPEN_OFFICE",
+ "geometry": {
+  "shape": "rect",
+  "points": [
+   [
+    0,
+    0
+   ],
+   [
+    12,
+    0
+   ],
+   [
+    12,
+    20
+   ],
+   [
+    0,
+    20
+   ]
+  ],
+  "ceiling": 2.8,
+  "lengthM": 20,
+  "widthM": 12,
+  "provenance": {
+   "length": "MODELED",
+   "width": "MODELED",
+   "ceiling": "MODELED"
+  },
+  "confidence": "modeled"
+ },
+ "devices": [
+  {
+   "id": "PA-0001",
+   "cat": "occsensor",
+   "label": "Occupancy sensor 1",
+   "role": "Occupancy sensor 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 3.6,
+   "y": 10,
+   "z": 2.7,
+   "rot": 0,
+   "mount": "ceiling",
+   "props": {},
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  },
+  {
+   "id": "PA-0002",
+   "cat": "occsensor",
+   "label": "Occupancy sensor 2",
+   "role": "Occupancy sensor 2",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 8.4,
+   "y": 10,
+   "z": 2.7,
+   "rot": 0,
+   "mount": "ceiling",
+   "props": {},
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  },
+  {
+   "id": "PA-0003",
+   "cat": "lighting",
+   "label": "Lighting control 1",
+   "role": "Lighting control 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 0.24,
+   "y": 10,
+   "z": 1.2,
+   "rot": 90,
+   "mount": "wall",
+   "props": {},
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  },
+  {
+   "id": "PA-0004",
+   "cat": "iot",
+   "label": "IoT device 1",
+   "role": "IoT device 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 6,
+   "y": 0.4,
+   "z": 1.2,
+   "rot": 0,
+   "mount": "wall",
+   "props": {},
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  },
+  {
+   "id": "PA-0005",
+   "cat": "switch",
+   "label": "Network switch 1",
+   "role": "Network switch 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 11.76,
+   "y": 2,
+   "z": 1.5,
+   "rot": 0,
+   "mount": "rack",
+   "props": {
+    "ports": 24,
+    "poe_budget_w": 370
+   },
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  }
+ ],
+ "connections": [],
+ "classification": {
+  "approved": null
+ }
+}

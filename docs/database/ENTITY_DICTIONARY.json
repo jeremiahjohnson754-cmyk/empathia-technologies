@@ -2376,9 +2376,9 @@
           "rel": "notification",
           "name": "notification_worker",
           "cmd": "ALL",
-          "roles": "{public}",
-          "qual": "(current_setting('app.worker'::text, true) = 'on'::text)",
-          "with_check": "(current_setting('app.worker'::text, true) = 'on'::text)"
+          "roles": "{empathia_worker}",
+          "qual": "true",
+          "with_check": "true"
         },
         {
           "rel": "notification",
@@ -2566,9 +2566,9 @@
           "rel": "outbox_event",
           "name": "outbox_worker",
           "cmd": "ALL",
-          "roles": "{public}",
-          "qual": "(current_setting('app.worker'::text, true) = 'on'::text)",
-          "with_check": "(current_setting('app.worker'::text, true) = 'on'::text)"
+          "roles": "{empathia_worker}",
+          "qual": "true",
+          "with_check": "true"
         },
         {
           "rel": "outbox_event",
@@ -4038,9 +4038,9 @@
           "rel": "room_read_model",
           "name": "read_model_worker",
           "cmd": "ALL",
-          "roles": "{public}",
-          "qual": "(current_setting('app.worker'::text, true) = 'on'::text)",
-          "with_check": "(current_setting('app.worker'::text, true) = 'on'::text)"
+          "roles": "{empathia_worker}",
+          "qual": "true",
+          "with_check": "true"
         },
         {
           "rel": "room_read_model",

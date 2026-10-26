@@ -118,7 +118,8 @@ export async function seed(opts: { reset?: boolean } = {}) {
       const h = (await createRoom(ctx, { name: 'Horizon Huddle 2.129 (synthetic)', template: 'huddle', buildingCode: 'HZN', floor: 2 })).code; made.push(h);
       await addDevice(ctx, h, { category: 'micceil' });
     }
-    await new OutboxWorker(app).drain();
+    const wp = new PgPool(configFromUrl(cfg.workerDatabaseUrl), 1);
+    try { await new OutboxWorker(wp).drain(); } finally { await wp.end(); }
     return { tenants: TENANTS.map((x) => x.slug), people: Object.keys(people).length, rooms: made, devPassword: '(see DEV_PASSWORD in src/db/seed.ts)' };
   } finally { await app.end(); }
 }

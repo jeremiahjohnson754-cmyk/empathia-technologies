@@ -1,0 +1,155 @@
+{
+ "template": "collab",
+ "intendedUse": "Drop-in collaboration",
+ "occupancy": 8,
+ "lifecycle": "PLANNED",
+ "coreRoomId": "R-SYN-COLLAB",
+ "geometry": {
+  "shape": "rect",
+  "points": [
+   [
+    0,
+    0
+   ],
+   [
+    5,
+    0
+   ],
+   [
+    5,
+    6
+   ],
+   [
+    0,
+    6
+   ]
+  ],
+  "ceiling": 2.8,
+  "lengthM": 6,
+  "widthM": 5,
+  "provenance": {
+   "length": "MODELED",
+   "width": "MODELED",
+   "ceiling": "MODELED"
+  },
+  "confidence": "modeled"
+ },
+ "devices": [
+  {
+   "id": "PA-0001",
+   "cat": "table",
+   "label": "Table 1",
+   "role": "Table 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 2.5,
+   "y": 3.6,
+   "z": 0,
+   "rot": 0,
+   "mount": "floor",
+   "props": {},
+   "furniture": true,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  },
+  {
+   "id": "PA-0002",
+   "cat": "display",
+   "label": "Display 1",
+   "role": "Display 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 2.5,
+   "y": 0.12,
+   "z": 1.2,
+   "rot": 0,
+   "mount": "wall",
+   "props": {
+    "diagonal_in": 75
+   },
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  },
+  {
+   "id": "PA-0003",
+   "cat": "bar",
+   "label": "Video bar 1",
+   "role": "Video bar 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 2.5,
+   "y": 0.24,
+   "z": 1,
+   "rot": 0,
+   "mount": "wall",
+   "props": {
+    "fov_deg": 110,
+    "pickup_m": 4.5
+   },
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  },
+  {
+   "id": "PA-0004",
+   "cat": "compute",
+   "label": "UC room compute 1",
+   "role": "UC room compute 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 4.5,
+   "y": 0.6,
+   "z": 0.6,
+   "rot": 0,
+   "mount": "rack",
+   "props": {
+    "usb_ports": 4
+   },
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  },
+  {
+   "id": "PA-0005",
+   "cat": "touch",
+   "label": "Touch panel 1",
+   "role": "Touch panel 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 2.5,
+   "y": 3.3,
+   "z": 0.75,
+   "rot": 0,
+   "mount": "table",
+   "props": {},
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  }
+ ],
+ "connections": [],
+ "classification": {
+  "approved": null
+ }
+}

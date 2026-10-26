@@ -1,8 +1,8 @@
 /**
  * The outbox worker: delivers events at least once, in order of occurrence, to idempotent handlers.
  * Claims a batch with FOR UPDATE SKIP LOCKED (several workers can run), retries with exponential backoff, and moves an event to
- * DEAD_LETTER after MAX_ATTEMPTS, where an admin can see it and retry it (/v1/admin/outbox). Runs with app.worker = on, the only
- * setting under which the cross-tenant outbox, notification and read-model policies apply.
+ * DEAD_LETTER after MAX_ATTEMPTS, where an admin can see it and retry it (/v1/admin/outbox). Runs as the database role empathia_worker,
+ * the only role the cross-tenant outbox, notification and read-model policies admit (migration 0008).
  */
 import type { PgPool, Queryable } from '../db/pg.js';
 import { log } from '../log.js';
@@ -54,18 +54,15 @@ export class OutboxWorker {
     if (this.busy) return 0; this.busy = true;
     try {
       return await this.pool.tx({}, async (q) => {
-        await q.query("SELECT set_config('app.worker', 'on', true)");
         const evs = (await q.query<OutboxEvent>(`SELECT id, tenant_id, type, aggregate_type, aggregate_id, aggregate_rev, payload, attempts, correlation_id FROM app.outbox_event WHERE status = 'PENDING' AND next_attempt_at <= now() ORDER BY occurred_at, id LIMIT $1 FOR UPDATE SKIP LOCKED`, [batch])).rows;
         for (const e of evs) {
           await q.query('SAVEPOINT ev');
           try {
             for (const h of this.handlers) await h(q, e);
-            await q.query("SELECT set_config('app.worker', 'on', true)");
             await q.query(`UPDATE app.outbox_event SET status = 'DELIVERED', delivered_at = now(), attempts = attempts + 1 WHERE id = $1`, [e.id]);
             await q.query('RELEASE SAVEPOINT ev'); this.delivered += 1;
           } catch (err) {
             await q.query('ROLLBACK TO SAVEPOINT ev');
-            await q.query("SELECT set_config('app.worker', 'on', true)");
             const attempts = e.attempts + 1; const dead = attempts >= MAX_ATTEMPTS;
             await q.query(`UPDATE app.outbox_event SET attempts = $2, status = $3, next_attempt_at = now() + make_interval(secs => $4), last_error = $5 WHERE id = $1`, [e.id, attempts, dead ? 'DEAD_LETTER' : 'PENDING', Math.min(2 ** attempts, 600), String((err as Error).message).slice(0, 500)]);
             this.failed += 1; if (dead) this.dead += 1;

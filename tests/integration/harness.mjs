@@ -21,10 +21,11 @@ export async function setup({ db = 'empathia_test', port = 4199, env = {} } = {}
   };
   sql(`DROP DATABASE IF EXISTS ${db} WITH (FORCE)`);
   sql(`CREATE DATABASE ${db} OWNER ${c.owner}`);
-  sql(`REVOKE ALL ON DATABASE ${db} FROM PUBLIC; GRANT CONNECT ON DATABASE ${db} TO ${c.app};`);
+  sql(`REVOKE ALL ON DATABASE ${db} FROM PUBLIC; GRANT CONNECT ON DATABASE ${db} TO ${c.app}, ${c.worker};`);
   const urls = {
     DATABASE_URL: `postgres://${c.owner}:${encodeURIComponent(c.ownerPassword)}@127.0.0.1:${c.port}/${db}`,
     APP_DATABASE_URL: `postgres://${c.app}:${encodeURIComponent(c.appPassword)}@127.0.0.1:${c.port}/${db}`,
+    WORKER_DATABASE_URL: `postgres://${c.worker}:${encodeURIComponent(c.workerPassword)}@127.0.0.1:${c.port}/${db}`,
   };
   Object.assign(process.env, urls, { NODE_ENV: 'test', PORT: String(port), WORKER: 'off', LOG_LEVEL: 'warn', OBJECT_STORE_DIR: path.join(repo, `.local/objects-${db}`) }, env);
   const { seed } = await import(path.join(api, 'db/seed.js'));
@@ -38,7 +39,7 @@ export async function setup({ db = 'empathia_test', port = 4199, env = {} } = {}
   // runtime-role SQL (RLS applies): a raw connection as empathia_app
   const { PgConnection, configFromUrl } = await import(path.join(api, 'db/pg.js'));
   const appConn = async () => { const k = new PgConnection(configFromUrl(urls.APP_DATABASE_URL)); await k.connect(); return k; };
-  return { base, app, seeded, urls, asSuper, appConn, drain: () => new OutboxWorker(app.pool).drain(), OutboxWorker, creds: c };
+  return { base, app, seeded, urls, asSuper, appConn, drain: () => new OutboxWorker(app.workerPool).drain(), OutboxWorker, creds: c };
 }
 
 export const DEV_PASSWORD = 'empathia-dev-only';

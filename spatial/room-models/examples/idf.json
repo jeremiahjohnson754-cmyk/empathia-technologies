@@ -1,0 +1,134 @@
+{
+ "template": "idf",
+ "intendedUse": "Network and AV equipment",
+ "occupancy": 1,
+ "lifecycle": "PLANNED",
+ "coreRoomId": "R-SYN-IDF",
+ "geometry": {
+  "shape": "rect",
+  "points": [
+   [
+    0,
+    0
+   ],
+   [
+    2.5,
+    0
+   ],
+   [
+    2.5,
+    3
+   ],
+   [
+    0,
+    3
+   ]
+  ],
+  "ceiling": 2.7,
+  "lengthM": 3,
+  "widthM": 2.5,
+  "provenance": {
+   "length": "MODELED",
+   "width": "MODELED",
+   "ceiling": "MODELED"
+  },
+  "confidence": "modeled"
+ },
+ "devices": [
+  {
+   "id": "PA-0001",
+   "cat": "rack",
+   "label": "Equipment rack 1",
+   "role": "Equipment rack 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 1.25,
+   "y": 0.9,
+   "z": 0,
+   "rot": 0,
+   "mount": "floor",
+   "props": {
+    "units": 24
+   },
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  },
+  {
+   "id": "PA-0002",
+   "cat": "switch",
+   "label": "Network switch 1",
+   "role": "Network switch 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 1.25,
+   "y": 0.9,
+   "z": 1.5,
+   "rot": 0,
+   "mount": "rack",
+   "props": {
+    "ports": 24,
+    "poe_budget_w": 370
+   },
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  },
+  {
+   "id": "PA-0003",
+   "cat": "pdu",
+   "label": "Power distribution unit 1",
+   "role": "Power distribution unit 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 1.25,
+   "y": 1.05,
+   "z": 0.2,
+   "rot": 0,
+   "mount": "rack",
+   "props": {
+    "outlets": 8
+   },
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  },
+  {
+   "id": "PA-0004",
+   "cat": "hvac",
+   "label": "HVAC element (diffuser / thermostat) 1",
+   "role": "HVAC element (diffuser / thermostat) 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 1.25,
+   "y": 2.1,
+   "z": 2.7,
+   "rot": 0,
+   "mount": "ceiling",
+   "props": {},
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  }
+ ],
+ "connections": [],
+ "classification": {
+  "approved": null
+ }
+}

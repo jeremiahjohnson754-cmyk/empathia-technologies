@@ -20,7 +20,8 @@ export async function start(over: Partial<Record<string, string>> = {}) {
   const pool = new PgPool({ ...configFromUrl(cfg.databaseUrl), applicationName: 'empathia-enterprise-api' }, 10);
   const tokens = new Hs256Tokens(cfg.jwtSecret, cfg.jwtIssuer, cfg.jwtAudience, cfg.tokenTtlSeconds);
   const store = new LocalObjectStore(cfg.objectStoreDir);
-  const worker = new OutboxWorker(pool, undefined, cfg.workerIntervalMs);
+  const workerPool = new PgPool({ ...configFromUrl(cfg.workerDatabaseUrl), applicationName: 'empathia-outbox-worker' }, 2);
+  const worker = new OutboxWorker(workerPool, undefined, cfg.workerIntervalMs);
   const health = async () => {
     const t0 = Date.now();
     try {
@@ -33,8 +34,8 @@ export async function start(over: Partial<Record<string, string>> = {}) {
   await new Promise<void>((ok) => server.listen(cfg.port, cfg.host, ok));
   if (process.env['WORKER'] !== 'off') worker.start();
   log('info', 'enterprise-api listening', { url: `http://${cfg.host}:${cfg.port}`, authMode: cfg.authMode, env: cfg.env });
-  const stop = async () => { worker.stop(); await new Promise((ok) => server.close(() => ok(null))); await pool.end(); };
-  return { server, pool, worker, tokens, router, cfg, stop };
+  const stop = async () => { worker.stop(); await new Promise((ok) => server.close(() => ok(null))); await pool.end(); await workerPool.end(); };
+  return { server, pool, workerPool, worker, tokens, router, cfg, stop };
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {

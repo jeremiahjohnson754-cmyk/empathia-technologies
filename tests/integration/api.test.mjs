@@ -219,7 +219,7 @@ test('outbox: a failing handler retries with backoff and dead-letters after 8 at
   await c.call('PATCH', '/v1/rooms/R-PLN-0002', { token: T.designer, body: { intendedUse: 'Board meetings (synthetic, dead-letter test)' } });
   const pending = Number(h.asSuper(`SELECT count(*) FROM app.outbox_event WHERE status = 'PENDING'`));
   assert.ok(pending > 0);
-  const bad = new h.OutboxWorker(h.app.pool, [async () => { throw new Error('injected handler failure (test)'); }]);
+  const bad = new h.OutboxWorker(h.app.workerPool, [async () => { throw new Error('injected handler failure (test)'); }]);
   for (let i = 0; i < 8; i += 1) { await bad.tick(); h.asSuper(`UPDATE app.outbox_event SET next_attempt_at = now() WHERE status = 'PENDING'`); }
   assert.equal(h.asSuper(`SELECT count(*) FROM app.outbox_event WHERE status = 'PENDING'`), '0');
   assert.equal(Number(h.asSuper(`SELECT count(*) FROM app.outbox_event WHERE status = 'DEAD_LETTER' AND attempts = 8`)), pending);

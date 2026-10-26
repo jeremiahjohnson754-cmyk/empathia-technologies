@@ -9,6 +9,7 @@ export interface Config {
   host: string;
   databaseUrl: string;          // runtime role (empathia_app): RLS applies
   ownerDatabaseUrl: string;     // schema owner: migrations and seed only
+  workerDatabaseUrl: string;    // outbox worker role (empathia_worker): the only role the cross-tenant worker policies admit
   authMode: 'dev' | 'oidc';
   jwtSecret: Buffer;
   jwtIssuer: string;
@@ -45,7 +46,7 @@ export function loadConfig(repo: string, over: Partial<Record<string, string>> =
   return {
     env, authMode,
     port: Number(e['PORT'] || 4100), host: e['HOST'] || '127.0.0.1',
-    databaseUrl: need('APP_DATABASE_URL'), ownerDatabaseUrl: need('DATABASE_URL'),
+    databaseUrl: need('APP_DATABASE_URL'), ownerDatabaseUrl: need('DATABASE_URL'), workerDatabaseUrl: need('WORKER_DATABASE_URL'),
     jwtSecret: Buffer.from(secret), jwtIssuer: e['JWT_ISSUER'] || 'empathia-dev-idp', jwtAudience: e['JWT_AUDIENCE'] || 'empathia-enterprise-api',
     tokenTtlSeconds: Number(e['TOKEN_TTL_SECONDS'] || 900),
     objectStoreDir: e['OBJECT_STORE_DIR'] || path.join(repo, '.local/objects'),

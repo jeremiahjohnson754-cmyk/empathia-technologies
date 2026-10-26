@@ -692,7 +692,7 @@ Table · created in `database/migrations/0004_platform.sql` · RLS ENABLE + FORC
 
 | Policy | Command | Roles | USING | WITH CHECK |
 |---|---|---|---|---|
-| notification_worker | ALL | {public} | `(current_setting('app.worker'::text, true) = 'on'::text)` | `(current_setting('app.worker'::text, true) = 'on'::text)` |
+| notification_worker | ALL | {empathia_worker} | `true` | `true` |
 | tenant_isolation | ALL | {public} | `(tenant_id = app.current_tenant())` | `(tenant_id = app.current_tenant())` |
 
 **Indexes**
@@ -737,7 +737,7 @@ Table · created in `database/migrations/0004_platform.sql` · RLS ENABLE + FORC
 
 | Policy | Command | Roles | USING | WITH CHECK |
 |---|---|---|---|---|
-| outbox_worker | ALL | {public} | `(current_setting('app.worker'::text, true) = 'on'::text)` | `(current_setting('app.worker'::text, true) = 'on'::text)` |
+| outbox_worker | ALL | {empathia_worker} | `true` | `true` |
 | tenant_isolation | ALL | {public} | `(tenant_id = app.current_tenant())` | `(tenant_id = app.current_tenant())` |
 
 **Indexes**
@@ -1103,7 +1103,7 @@ Table · created in `database/migrations/0004_platform.sql` · RLS ENABLE + FORC
 
 | Policy | Command | Roles | USING | WITH CHECK |
 |---|---|---|---|---|
-| read_model_worker | ALL | {public} | `(current_setting('app.worker'::text, true) = 'on'::text)` | `(current_setting('app.worker'::text, true) = 'on'::text)` |
+| read_model_worker | ALL | {empathia_worker} | `true` | `true` |
 | tenant_isolation | ALL | {public} | `(tenant_id = app.current_tenant())` | `(tenant_id = app.current_tenant())` |
 
 **Indexes**

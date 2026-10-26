@@ -1,0 +1,5 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": { "paths": { "@empathia/ui": ["../src/index.ts"] }, "typeRoots": ["../../../tooling/types", "../../../node_modules/@types"] },
+  "include": ["gallery.tsx"]
+}

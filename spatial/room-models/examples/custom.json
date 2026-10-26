@@ -1,0 +1,42 @@
+{
+ "template": "custom",
+ "intendedUse": "",
+ "occupancy": 6,
+ "lifecycle": "PLANNED",
+ "coreRoomId": "R-SYN-CUSTOM",
+ "geometry": {
+  "shape": "rect",
+  "points": [
+   [
+    0,
+    0
+   ],
+   [
+    4,
+    0
+   ],
+   [
+    4,
+    6
+   ],
+   [
+    0,
+    6
+   ]
+  ],
+  "ceiling": 2.7,
+  "lengthM": 6,
+  "widthM": 4,
+  "provenance": {
+   "length": "MODELED",
+   "width": "MODELED",
+   "ceiling": "MODELED"
+  },
+  "confidence": "modeled"
+ },
+ "devices": [],
+ "connections": [],
+ "classification": {
+  "approved": null
+ }
+}

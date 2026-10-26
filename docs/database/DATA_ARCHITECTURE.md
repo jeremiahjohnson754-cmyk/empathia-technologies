@@ -118,7 +118,7 @@ Isolation is enforced by the database, not only by the application:
    `app.auth_memberships` and `app.auth_person` (SECURITY DEFINER, fixed `search_path`), which return exactly what sign-in and
    per-request principal resolution need. `app.migrations_applied()` gives the health check the migration count the same way.
 5. **The worker policies.** The outbox worker must read events of every tenant. `outbox_event`, `notification` and `room_read_model`
-   carry an extra policy that applies only when the transaction sets `app.worker = on` — a setting no request handler ever sets.
+   carry an extra policy that admits only the database role `empathia_worker` (migration 0008, fixing KV-08; before 0008 the policy keyed on a session setting `app.worker = on` that the runtime role could set).
 6. **Site scope on top of tenancy.** A membership may carry `site_scope uuid[]`; the domain modules add a building/site filter to every
    room-scoped query (`findRoom`, `createRoom`, listings, graph visibility, reports). This is application-enforced, not RLS.
 

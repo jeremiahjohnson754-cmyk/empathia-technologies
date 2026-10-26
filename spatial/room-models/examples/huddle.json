@@ -1,0 +1,199 @@
+{
+ "template": "huddle",
+ "intendedUse": "Small-team hybrid meetings",
+ "occupancy": 4,
+ "lifecycle": "PLANNED",
+ "coreRoomId": "R-SYN-HUDDLE",
+ "geometry": {
+  "shape": "rect",
+  "points": [
+   [
+    0,
+    0
+   ],
+   [
+    3,
+    0
+   ],
+   [
+    3,
+    3.6
+   ],
+   [
+    0,
+    3.6
+   ]
+  ],
+  "ceiling": 2.7,
+  "lengthM": 3.6,
+  "widthM": 3,
+  "provenance": {
+   "length": "MODELED",
+   "width": "MODELED",
+   "ceiling": "MODELED"
+  },
+  "confidence": "modeled"
+ },
+ "devices": [
+  {
+   "id": "PA-0001",
+   "cat": "table",
+   "label": "Table 1",
+   "role": "Table 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 1.5,
+   "y": 1.98,
+   "z": 0,
+   "rot": 0,
+   "mount": "floor",
+   "props": {},
+   "furniture": true,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  },
+  {
+   "id": "PA-0002",
+   "cat": "chairs",
+   "label": "Seating block 1",
+   "role": "Seating block 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 1.5,
+   "y": 2.81,
+   "z": 0,
+   "rot": 0,
+   "mount": "floor",
+   "props": {
+    "seats": 6
+   },
+   "furniture": true,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  },
+  {
+   "id": "PA-0003",
+   "cat": "display",
+   "label": "Display 1",
+   "role": "Display 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 1.5,
+   "y": 0.07,
+   "z": 1.2,
+   "rot": 0,
+   "mount": "wall",
+   "props": {
+    "diagonal_in": 75
+   },
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  },
+  {
+   "id": "PA-0004",
+   "cat": "bar",
+   "label": "Video bar 1",
+   "role": "Video bar 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 1.5,
+   "y": 0.14,
+   "z": 1,
+   "rot": 0,
+   "mount": "wall",
+   "props": {
+    "fov_deg": 110,
+    "pickup_m": 4.5
+   },
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  },
+  {
+   "id": "PA-0005",
+   "cat": "compute",
+   "label": "UC room compute 1",
+   "role": "UC room compute 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 2.7,
+   "y": 0.36,
+   "z": 0.6,
+   "rot": 0,
+   "mount": "rack",
+   "props": {
+    "usb_ports": 4
+   },
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  },
+  {
+   "id": "PA-0006",
+   "cat": "touch",
+   "label": "Touch panel 1",
+   "role": "Touch panel 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 1.5,
+   "y": 1.8,
+   "z": 0.75,
+   "rot": 0,
+   "mount": "table",
+   "props": {},
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  },
+  {
+   "id": "PA-0007",
+   "cat": "scheduler",
+   "label": "Scheduling panel 1",
+   "role": "Scheduling panel 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 2.94,
+   "y": 3.24,
+   "z": 1.4,
+   "rot": 90,
+   "mount": "wall",
+   "props": {},
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  }
+ ],
+ "connections": [],
+ "classification": {
+  "approved": null
+ }
+}

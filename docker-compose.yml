@@ -10,6 +10,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
       EMPATHIA_OWNER_PASSWORD: ${EMPATHIA_OWNER_PASSWORD:?set EMPATHIA_OWNER_PASSWORD in .env}
       EMPATHIA_APP_PASSWORD: ${EMPATHIA_APP_PASSWORD:?set EMPATHIA_APP_PASSWORD in .env}
+      EMPATHIA_WORKER_PASSWORD: ${EMPATHIA_WORKER_PASSWORD:?set EMPATHIA_WORKER_PASSWORD in .env}
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./database/docker/init-roles.sh:/docker-entrypoint-initdb.d/10-roles.sh:ro
@@ -26,6 +27,7 @@ services:
       PORT: "4100"
       DATABASE_URL: postgres://empathia_owner:${EMPATHIA_OWNER_PASSWORD}@postgres:5432/empathia
       APP_DATABASE_URL: postgres://empathia_app:${EMPATHIA_APP_PASSWORD}@postgres:5432/empathia
+      WORKER_DATABASE_URL: postgres://empathia_worker:${EMPATHIA_WORKER_PASSWORD}@postgres:5432/empathia
       JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET (32+ bytes) in .env}
       CORS_ORIGINS: http://127.0.0.1:4200,http://localhost:4200
       OBJECT_STORE_DIR: /data/objects

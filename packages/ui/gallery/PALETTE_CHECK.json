@@ -1,0 +1,22 @@
+{
+  "check": "Composition tone palette (dataviz skill validate_palette.js, categorical mode, adjacent pairs)",
+  "at": "2026-10-26",
+  "validator": "/tmp/claude-0/bundled-skills/2.1.294/…/dataviz/scripts/validate_palette.js (bundled skill tooling; not part of this repository)",
+  "order": "Composition segment order as used in apps/enterprise-web (Reports, Room > Commissioning): ok, info, bad, warn, muted",
+  "runs": [
+    { "mode": "dark", "surface": "#0f1a30 (--panel)", "colours": ["#3ddc97", "#7aa7ff", "#ff6b6b", "#f5b942", "#313c53 (muted = --line2 over --panel)"],
+      "checks": { "lightness_band": "FAIL (all four status tones are lighter than the band; muted darker)", "chroma_floor": "FAIL (muted reads grey: intended, it is the 'not tested' remainder)", "cvd_separation": "PASS (worst adjacent warn↔bad ΔE 12.4 deutan)", "normal_vision_floor": "PASS (ΔE 19.5)", "contrast_vs_surface": "WARN (muted 1.59:1)" }, "result": "FAIL" },
+    { "mode": "light", "surface": "#ffffff (--panel)", "colours": ["#137a4f", "#2f5bb7", "#b42318", "#8a5a00", "#cfd2d9 (muted = --line2 over --panel)"],
+      "checks": { "lightness_band": "FAIL (muted only)", "chroma_floor": "FAIL (muted only)", "cvd_separation": "FAIL (warn #8a5a00 ↔ bad #b42318: ΔE 0.3 under deuteranopia)", "normal_vision_floor": "FAIL (ΔE 12.8 < 15)", "contrast_vs_surface": "WARN (muted 1.51:1)" }, "result": "FAIL" },
+    { "mode": "dark", "surface": "#0f1a30 and #070d1a", "colours": ["ok", "info", "bad", "warn"], "note": "four status tones without muted", "result": "FAIL (lightness band only; CVD, normal-vision and contrast PASS)" },
+    { "mode": "light", "surface": "#ffffff and #f3f6fb", "colours": ["ok", "info", "bad", "warn"], "note": "four status tones without muted", "result": "FAIL (warn↔bad CVD ΔE 0.3 and normal-vision ΔE 12.8)" }
+  ],
+  "result": "FAIL",
+  "mitigation_in_place": "Composition never relies on colour: every segment's label and count is in the text legend, segments are separated by 2 px gaps, and the same counts appear in tables. That satisfies 'colour never alone' but does not make the palette pass.",
+  "not_changed": "Tokens were not changed by this check (instruction: record, do not alter).",
+  "recommended_fixes_for_the_design_owner": [
+    "Light theme: re-step --warn (e.g. a lighter, yellower amber) or --bad so that warn↔bad clears ΔE 8 under deuteranopia and 15 normal; re-run the validator.",
+    "Composition order: put a non-warm tone between bad and warn (e.g. ok, bad, info, warn, muted) so the closest pair is not adjacent.",
+    "Dark theme: the status tones sit above the categorical lightness band by design (bright on near-black); either accept and document, or add a data-viz step of each tone inside the band for charts only."
+  ]
+}

@@ -1,0 +1,153 @@
+{
+ "template": "lobby",
+ "intendedUse": "Arrival, wayfinding and signage",
+ "occupancy": 20,
+ "lifecycle": "PLANNED",
+ "coreRoomId": "R-SYN-LOBBY",
+ "geometry": {
+  "shape": "rect",
+  "points": [
+   [
+    0,
+    0
+   ],
+   [
+    9,
+    0
+   ],
+   [
+    9,
+    12
+   ],
+   [
+    0,
+    12
+   ]
+  ],
+  "ceiling": 4,
+  "lengthM": 12,
+  "widthM": 9,
+  "provenance": {
+   "length": "MODELED",
+   "width": "MODELED",
+   "ceiling": "MODELED"
+  },
+  "confidence": "modeled"
+ },
+ "devices": [
+  {
+   "id": "PA-0001",
+   "cat": "display",
+   "label": "Display 1",
+   "role": "Display 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 4.5,
+   "y": 0.24,
+   "z": 1.2,
+   "rot": 0,
+   "mount": "wall",
+   "props": {
+    "diagonal_in": 75
+   },
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  },
+  {
+   "id": "PA-0002",
+   "cat": "seccam",
+   "label": "Security camera 1",
+   "role": "Security camera 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 0.9,
+   "y": 1.2,
+   "z": 2.7,
+   "rot": 45,
+   "mount": "ceiling",
+   "props": {},
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  },
+  {
+   "id": "PA-0003",
+   "cat": "seccam",
+   "label": "Security camera 2",
+   "role": "Security camera 2",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 8.1,
+   "y": 10.8,
+   "z": 2.7,
+   "rot": 225,
+   "mount": "ceiling",
+   "props": {},
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  },
+  {
+   "id": "PA-0004",
+   "cat": "occsensor",
+   "label": "Occupancy sensor 1",
+   "role": "Occupancy sensor 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 4.5,
+   "y": 6,
+   "z": 2.7,
+   "rot": 0,
+   "mount": "ceiling",
+   "props": {},
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  },
+  {
+   "id": "PA-0005",
+   "cat": "switch",
+   "label": "Network switch 1",
+   "role": "Network switch 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 8.82,
+   "y": 1.2,
+   "z": 1.5,
+   "rot": 0,
+   "mount": "rack",
+   "props": {
+    "ports": 24,
+    "poe_budget_w": 370
+   },
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  }
+ ],
+ "connections": [],
+ "classification": {
+  "approved": null
+ }
+}

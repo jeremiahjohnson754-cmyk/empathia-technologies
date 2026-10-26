@@ -1,0 +1,83 @@
+{
+  "check": "ui-gallery",
+  "at": "2026-10-26T13:12:49.352Z",
+  "chromium": "playwright 1.56.0 bundled build",
+  "passed": 10,
+  "failed": 0,
+  "results": [
+    {
+      "id": "G-theme-light",
+      "name": "theme light sets data-theme on <html>",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "G-390-light",
+      "name": "no horizontal page scroll at 390 px (light)",
+      "result": "PASS",
+      "detail": "{\"sw\":390,\"w\":390}"
+    },
+    {
+      "id": "G-theme-dark",
+      "name": "theme dark sets data-theme on <html>",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "G-390-dark",
+      "name": "no horizontal page scroll at 390 px (dark)",
+      "result": "PASS",
+      "detail": "{\"sw\":390,\"w\":390}"
+    },
+    {
+      "id": "G-tab",
+      "name": "every focusable element is reachable with Tab (42 elements)",
+      "result": "PASS",
+      "detail": "reached 42 of 42"
+    },
+    {
+      "id": "G-roving",
+      "name": "tabs: → moves selection and focus to the next tab",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "G-drawer",
+      "name": "drawer: focus moves in, Tab and Shift+Tab stay inside, Esc closes, focus returns to the opener",
+      "result": "PASS",
+      "detail": "{\"inside\":true,\"trapped\":true,\"closed\":true,\"back\":true}"
+    },
+    {
+      "id": "G-nobarepass",
+      "name": "no status badge reads a bare PASS",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "G-sort",
+      "name": "sortable header sets aria-sort",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "G-console",
+      "name": "no page errors or console errors in either theme",
+      "result": "PASS",
+      "detail": ""
+    }
+  ],
+  "notRun": [
+    {
+      "id": "G-a11y-audit",
+      "name": "automated WCAG audit (axe or equivalent)",
+      "result": "NOT_RUN",
+      "why": "no accessibility audit engine is installed offline"
+    },
+    {
+      "id": "G-sr",
+      "name": "screen-reader walkthrough",
+      "result": "NOT_RUN",
+      "why": "needs a person with assistive technology"
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+{
+ "template": "private_office",
+ "intendedUse": "One person, calls at the desk",
+ "occupancy": 1,
+ "lifecycle": "PLANNED",
+ "coreRoomId": "R-SYN-PRIVATE_OFFICE",
+ "geometry": {
+  "shape": "rect",
+  "points": [
+   [
+    0,
+    0
+   ],
+   [
+    3,
+    0
+   ],
+   [
+    3,
+    3.5
+   ],
+   [
+    0,
+    3.5
+   ]
+  ],
+  "ceiling": 2.7,
+  "lengthM": 3.5,
+  "widthM": 3,
+  "provenance": {
+   "length": "MODELED",
+   "width": "MODELED",
+   "ceiling": "MODELED"
+  },
+  "confidence": "modeled"
+ },
+ "devices": [
+  {
+   "id": "PA-0001",
+   "cat": "table",
+   "label": "Table 1",
+   "role": "Table 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 1.5,
+   "y": 2.1,
+   "z": 0,
+   "rot": 0,
+   "mount": "floor",
+   "props": {},
+   "furniture": true,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  },
+  {
+   "id": "PA-0002",
+   "cat": "display",
+   "label": "Display 1",
+   "role": "Display 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 1.5,
+   "y": 0.07,
+   "z": 1.2,
+   "rot": 0,
+   "mount": "wall",
+   "props": {
+    "diagonal_in": 75
+   },
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  },
+  {
+   "id": "PA-0003",
+   "cat": "bar",
+   "label": "Video bar 1",
+   "role": "Video bar 1",
+   "model": "generic",
+   "generic": true,
+   "brand": null,
+   "modelName": null,
+   "x": 1.5,
+   "y": 0.14,
+   "z": 1,
+   "rot": 0,
+   "mount": "wall",
+   "props": {
+    "fov_deg": 110,
+    "pickup_m": 4.5
+   },
+   "furniture": false,
+   "lifecycle": "PLANNED",
+   "modelHistory": [],
+   "provenance": "DECLARED",
+   "note": "template"
+  }
+ ],
+ "connections": [],
+ "classification": {
+  "approved": null
+ }
+}

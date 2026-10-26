@@ -326,3 +326,22 @@ test('people listing is security-admin only and never returns password hashes', 
   const p = await c.call('GET', '/v1/people', { token: T.secadmin });
   assert.ok(!/scrypt|\$s\d|password/i.test(JSON.stringify(p.body)));
 });
+
+test('KV-08 fixed: the runtime role cannot unlock the cross-tenant worker policies by setting app.worker; only empathia_worker can', async () => {
+  const other = tid('second-tenant');
+  const demoEvents = Number(h.asSuper("SELECT count(*) FROM app.outbox_event WHERE tenant_id = (SELECT id FROM app.tenant WHERE slug = 'empathia-demo')"));
+  assert.ok(demoEvents > 0);
+  await appSql(async (k) => {
+    await k.query("SELECT set_config('app.tenant_id', $1, false)", [other]);
+    await k.query("SELECT set_config('app.worker', 'on', false)");
+    assert.equal((await k.query("SELECT count(*)::int AS n FROM app.outbox_event WHERE tenant_id <> $1", [other])).rows[0].n, 0, 'the setting no longer opens other tenants');
+  });
+  const { PgConnection, configFromUrl } = await import('../../services/enterprise-api/dist/src/db/pg.js');
+  const w = new PgConnection(configFromUrl(h.urls.WORKER_DATABASE_URL)); await w.connect();
+  try {
+    assert.ok((await w.query('SELECT count(*)::int AS n FROM app.outbox_event')).rows[0].n >= demoEvents, 'the worker role reads the outbox across tenants');
+    await assert.rejects(w.query('SELECT count(*) FROM app.evidence_object'), (e) => e.code === '42501', 'but not evidence');
+    await assert.rejects(w.query('SELECT count(*) FROM app.person'), (e) => e.code === '42501', 'nor identities');
+    await assert.rejects(w.query("UPDATE app.outbox_event SET payload = '{}'::jsonb"), (e) => e.code === '42501', 'nor rewrite an event payload');
+  } finally { await w.end(); }
+});

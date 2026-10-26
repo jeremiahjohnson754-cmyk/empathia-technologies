@@ -1,0 +1,108 @@
+{
+  "drill": "backup-restore",
+  "at": "2026-10-26T13:10:43.872Z",
+  "postgres": "16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)",
+  "database": "empathia_ops_g",
+  "restoredInto": "empathia_ops_g_restore",
+  "steps": [
+    "migrated and seeded empathia_ops_g: 3 rooms, 20 people",
+    "uploaded 3 evidence files through POST /v1/evidence as the commissioning engineer; drained the outbox",
+    "pg_dump -Fc: 166715 bytes in 160 ms (sha256 28b831de244e3fa1…); pg_restore into empathia_ops_g_restore in 1596 ms",
+    "dropped empathia_ops_g and empathia_ops_g_restore",
+    "removed the scratch dump and object directories"
+  ],
+  "checks": [
+    {
+      "check": "row count of every table in app and app_meta",
+      "result": "PASS",
+      "tables": 33,
+      "rows": 815,
+      "mismatched": [],
+      "counts": {
+        "app.ai_request": 0,
+        "app.audit_event": 10,
+        "app.building": 4,
+        "app.code_counter": 4,
+        "app.connection": 59,
+        "app.cx_plan": 4,
+        "app.cx_plan_row": 376,
+        "app.drawing_revision": 0,
+        "app.evidence_object": 3,
+        "app.idempotency_key": 0,
+        "app.integration": 86,
+        "app.integration_observation": 0,
+        "app.integration_sync": 0,
+        "app.issue_event": 1,
+        "app.knowledge_document": 4,
+        "app.membership": 20,
+        "app.notification": 0,
+        "app.outbox_event": 13,
+        "app.person": 20,
+        "app.planned_asset": 57,
+        "app.project": 1,
+        "app.relationship": 109,
+        "app.role": 22,
+        "app.room": 3,
+        "app.room_issue": 1,
+        "app.room_read_model": 3,
+        "app.room_revision": 3,
+        "app.site": 3,
+        "app.tenant": 2,
+        "app.test_result": 0,
+        "app.verification": 0,
+        "app.work_order": 0,
+        "app_meta.schema_migration": 7
+      }
+    },
+    {
+      "check": "evidence rows: identical (id, sha256, bytes)",
+      "result": "PASS",
+      "evidenceRows": 3,
+      "digest": "67a1dffd762f1bfdbec153617da907d2d1bdffb51b79d334caa952fbf324b93d"
+    },
+    {
+      "check": "row-level security ENABLED and FORCED flags identical after restore",
+      "result": "PASS",
+      "tablesForced": 27,
+      "tablesEnabledOnly": [
+        "membership",
+        "person",
+        "tenant"
+      ]
+    },
+    {
+      "check": "append-only and rule triggers identical after restore",
+      "result": "PASS",
+      "triggers": 11
+    },
+    {
+      "check": "runtime role sees no rows without a tenant in the restored database (RLS functional)",
+      "result": "PASS",
+      "roomsVisibleWithoutTenant": 0
+    },
+    {
+      "check": "evidence stays append-only in the restored database (DELETE refused, EM001)",
+      "result": "PASS"
+    },
+    {
+      "check": "migration ledger (versions and sha256) identical",
+      "result": "PASS",
+      "migrations": 7
+    },
+    {
+      "check": "object store copy: every object re-hashes to its name, and every restored evidence row finds its object",
+      "result": "PASS",
+      "objects": 3,
+      "badHash": 0,
+      "evidenceRowsWithoutObject": 0
+    }
+  ],
+  "result": "PASS",
+  "dump": {
+    "format": "custom (-Fc)",
+    "bytes": 166715,
+    "sha256": "28b831de244e3fa1c1ec3d8a0cb471f7c604e8d62e7059c778bd0cd05488db6d",
+    "dumpMs": 160,
+    "restoreMs": 1596
+  }
+}
