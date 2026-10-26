@@ -1,7 +1,8 @@
 /**
  * OFFLINE TYPE SHIM — used only because this build environment cannot download @types/react.
- * It types the React APIs the studio uses, loosely for JSX (intrinsic elements accept any props). On a connected machine,
- * `pnpm install` brings @types/react and this folder can be deleted (tsconfig typeRoots then falls back to node_modules/@types).
+ * It types the React APIs the Founder Studio, packages/ui and apps/enterprise-web use, loosely for JSX (intrinsic elements accept
+ * any props). On a connected machine, `pnpm install` brings @types/react and this folder can be deleted (each tsconfig's typeRoots
+ * then falls back to node_modules/@types). Shared from tooling/types so there is one shim, not one per app.
  */
 declare module 'react' {
   export type ReactNode = string | number | boolean | null | undefined | ReactElement | ReactNode[];
@@ -15,6 +16,12 @@ declare module 'react' {
   export function useRef<T>(initial: T): RefObject<T>;
   export function useRef<T>(initial: T | null): RefObject<T | null>;
   export function useSyncExternalStore<T>(subscribe: (cb: () => void) => () => void, get: () => T, getServer?: () => T): T;
+  export function useCallback<T extends (...args: never[]) => unknown>(fn: T, deps: readonly unknown[]): T;
+  export function useId(): string;
+  export interface Context<T> { Provider: (props: { value: T; children?: ReactNode }) => ReactElement; _t?: T }
+  export function createContext<T>(initial: T): Context<T>;
+  export function useContext<T>(c: Context<T>): T;
+  export const Fragment: (props: { children?: ReactNode }) => ReactElement;
   export const StrictMode: (props: { children?: ReactNode }) => ReactElement;
   export type FC<P = {}> = (props: P) => ReactElement | null;
 }
@@ -28,8 +35,8 @@ declare module '*.css';
 declare namespace JSX {
   type Element = import('react').ReactElement;
   /** Event handlers get a contextual type so callbacks are checked; other props are open in the shim. */
-  interface ShimEvent { target: any; currentTarget: any; key: string; metaKey: boolean; ctrlKey: boolean; preventDefault(): void }
-  interface ShimProps { onChange?: (e: ShimEvent) => void; onClick?: (e: ShimEvent) => void; onKeyDown?: (e: ShimEvent) => void; onMouseDown?: (e: ShimEvent) => void; onMouseEnter?: (e: ShimEvent) => void; onError?: (e: ShimEvent) => void; [prop: string]: any }
+  interface ShimEvent { target: any; currentTarget: any; key: string; metaKey: boolean; ctrlKey: boolean; shiftKey: boolean; preventDefault(): void; stopPropagation(): void }
+  interface ShimProps { onChange?: (e: ShimEvent) => void; onClick?: (e: ShimEvent) => void; onKeyDown?: (e: ShimEvent) => void; onMouseDown?: (e: ShimEvent) => void; onMouseEnter?: (e: ShimEvent) => void; onError?: (e: ShimEvent) => void; onSubmit?: (e: ShimEvent) => void; [prop: string]: any }
   interface IntrinsicElements { [tag: string]: ShimProps }
   interface IntrinsicAttributes { key?: string | number | null }
   interface ElementChildrenAttribute { children: {} }

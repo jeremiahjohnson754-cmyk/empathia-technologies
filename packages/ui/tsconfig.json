@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": false, "declaration": false, "declarationMap": false, "noEmit": true,
+    "module": "ESNext", "moduleResolution": "Bundler", "jsx": "react-jsx",
+    "typeRoots": ["../../tooling/types", "../../node_modules/@types"], "types": ["react-offline"]
+  },
+  "include": ["src"]
+}

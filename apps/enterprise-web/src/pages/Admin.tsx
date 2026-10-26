@@ -1,0 +1,62 @@
+/** Administration: integrations (honest states), outbox dead letters, people, audit. Each tab's data is refused by the API to other roles. */
+import { Button, DataTable, Empty, ErrorState, Loading, Notice, StatusBadge, Tabs, Tag, INTEGRATION } from '@empathia/ui';
+import { api, useMutation, useQuery } from '../api.js';
+import { go } from '../router.js';
+import { useMe } from '../me.js';
+
+export function Admin({ tab }: { tab: string }) {
+  const { can } = useMe();
+  const tabs = [{ key: 'integrations', label: 'Integrations' }, ...(can('policy.configure') ? [{ key: 'outbox', label: 'Outbox' }, { key: 'people', label: 'People' }] : []), ...(can(['provenance.review', 'policy.configure']) ? [{ key: 'audit', label: 'Audit' }] : [])];
+  return (
+    <section className="page">
+      <header className="page__head"><div><h1>Administration</h1></div></header>
+      <Tabs label="Administration" tabs={tabs} active={tab} onChange={(k) => go('admin', k)} />
+      <div className="panel" role="tabpanel">
+        {tab === 'integrations' ? <Integrations /> : null}{tab === 'outbox' ? <Outbox /> : null}{tab === 'people' ? <People /> : null}{tab === 'audit' ? <Audit /> : null}
+      </div>
+    </section>
+  );
+}
+
+function Integrations() {
+  const { can } = useMe();
+  const q = useQuery<{ items: Array<Record<string, string>> }>('integrations', () => api.call('getV1Integrations') as never);
+  const probe = useMutation((key: string) => api.call('postV1IntegrationsKeyProbe', { params: { key } }), []);
+  return (
+    <div className="stack">
+      <Notice tone="muted">Catalogue entries name target platforms for interface planning only. Contract-only means no adapter, no connection and no partnership. Nothing here contacts a real system.</Notice>
+      {probe.error ? <ErrorState error={probe.error} /> : probe.busy ? <Loading label="Probing" /> : null}
+      {q.error ? <ErrorState error={q.error} /> : !q.data ? <Loading /> : <DataTable rows={q.data.items} rowKey={(x) => x['key']!} dense caption="Integrations" columns={[
+        { key: 'k', header: 'Key', render: (x) => <span className="mono">{x['key']}</span>, sort: (x) => x['key']! }, { key: 'n', header: 'Target platform', render: (x) => `${x['vendor'] || ''} ${x['product'] || ''}`.trim(), sort: (x) => `${x['vendor']}${x['product']}` },
+        { key: 'm', header: 'Mode', render: (x) => <span className="ui-meta">{x['mode']}</span> },
+        { key: 'c', header: 'Category', render: (x) => <span className="ui-meta">{x['category']}</span>, sort: (x) => x['category'] || '' },
+        { key: 's', header: 'State', render: (x) => <StatusBadge table={INTEGRATION} value={x['state']} />, sort: (x) => x['state']! },
+        { key: 'a', header: '', render: (x) => x['state'] === 'MOCK' && can(['adapter.allowlist', 'policy.configure']) ? <Button small kind="quiet" onClick={() => void probe.run(x['key']!)}>Probe mock</Button> : null }]} />}
+    </div>
+  );
+}
+
+function Outbox() {
+  const q = useQuery<{ items: Array<Record<string, string>> }>('outbox', () => api.call('getV1AdminOutbox', { query: { status: 'DEAD_LETTER' } }) as never);
+  const retry = useMutation((event: string) => api.call('postV1AdminOutboxEventRetry', { params: { event } }), ['outbox']);
+  return q.error ? <ErrorState error={q.error} /> : !q.data ? <Loading /> : <DataTable rows={q.data.items} rowKey={(x) => x['id']!} dense caption="Dead-lettered events" empty={<Empty title="No dead-lettered events">Every event was delivered.</Empty>} columns={[
+    { key: 't', header: 'Event', render: (x) => <span className="mono">{x['type']}</span> }, { key: 'a', header: 'Aggregate', render: (x) => `${x['aggregate_type']} ${x['aggregate_id']}` },
+    { key: 'n', header: 'Attempts', render: (x) => x['attempts'], align: 'right' }, { key: 'e', header: 'Last error', render: (x) => <span className="ui-meta">{x['last_error']}</span> },
+    { key: 'r', header: '', render: (x) => <Button small kind="quiet" busy={retry.busy} onClick={() => void retry.run(x['id']!)}>Retry</Button> }]} />;
+}
+
+function People() {
+  const q = useQuery<{ items: Array<{ id: string; name: string; email: string; role: string; disabled: boolean; siteScope: string[] }> }>('people', () => api.call('getV1People') as never);
+  return q.error ? <ErrorState error={q.error} /> : !q.data ? <Loading /> : <DataTable rows={q.data.items} rowKey={(x) => `${x.id}/${x.role}`} dense caption="People" columns={[
+    { key: 'n', header: 'Person', render: (x) => x.name, sort: (x) => x.name }, { key: 'e', header: 'Email', render: (x) => <span className="mono ui-meta">{x.email}</span> },
+    { key: 'r', header: 'Role', render: (x) => <Tag>{x.role}</Tag>, sort: (x) => x.role }, { key: 's', header: 'Sites', render: (x) => x.siteScope.length ? x.siteScope.join(', ') : <span className="ui-muted">all</span> },
+    { key: 'd', header: 'Status', render: (x) => x.disabled ? <Tag tone="bad">disabled</Tag> : <Tag tone="ok">active</Tag> }]} />;
+}
+
+function Audit() {
+  const q = useQuery<{ items: Array<Record<string, string>> }>('audit', () => api.call('getV1Audit', { query: { limit: '200' } }) as never);
+  return q.error ? <ErrorState error={q.error} /> : !q.data ? <Loading /> : <DataTable rows={q.data.items} rowKey={(x) => String(x['id'])} dense caption="Audit events" columns={[
+    { key: 'at', header: 'When', render: (x) => new Date(x['at']!).toLocaleString() }, { key: 'w', header: 'Role', render: (x) => x['actor_role'] },
+    { key: 'a', header: 'Action', render: (x) => <span className="mono">{x['action']}</span> }, { key: 'o', header: 'Outcome', render: (x) => <Tag tone={x['outcome'] === 'DENIED' ? 'bad' : 'ok'}>{x['outcome']}</Tag> },
+    { key: 'g', header: 'On', render: (x) => <span className="ui-meta">{x['aggregate_type']} {x['aggregate_id']}</span> }]} />;
+}

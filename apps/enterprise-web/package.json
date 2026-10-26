@@ -1,0 +1,11 @@
+{
+  "name": "@empathia/enterprise-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "description": "Empathia enterprise web app (production starter): React over the enterprise API. The server decides every permission; the UI only reflects it.",
+  "scripts": { "build": "node build.mjs", "typecheck": "tsc -p tsconfig.json --noEmit", "start": "node server/serve.mjs" },
+  "dependencies": { "@empathia/api-client": "workspace:*", "@empathia/ui": "workspace:*", "@empathia/design-tokens": "workspace:*", "react": "19.2.8", "react-dom": "19.2.8" },
+  "devDependencies": { "esbuild": "0.28.2", "@types/react": "^19.2.0", "@types/react-dom": "^19.2.0" }
+}

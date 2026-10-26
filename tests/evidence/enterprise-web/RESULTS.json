@@ -1,0 +1,134 @@
+{
+  "test": "enterprise-web",
+  "at": "2026-10-26T12:48:33.871Z",
+  "passed": 21,
+  "failed": 0,
+  "results": [
+    {
+      "id": "W-01",
+      "name": "the sign-in page loads with the development identity provider notice",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-02",
+      "name": "a wrong password is refused by the server and shown",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-03",
+      "name": "the designer signs in; the role shown comes from /v1/me",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-04",
+      "name": "the rooms list shows the seeded rooms from the database",
+      "result": "PASS",
+      "detail": "3"
+    },
+    {
+      "id": "W-05",
+      "name": "a new room is created through the API and opens with its plan view",
+      "result": "PASS",
+      "detail": "R-PLN-0004"
+    },
+    {
+      "id": "W-06",
+      "name": "the new room is PLANNED and its live health is NOT monitored",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-07",
+      "name": "the designer sees no design-approval or classification-approval control",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-08",
+      "name": "adding a device persists it: the table and the database agree",
+      "result": "PASS",
+      "detail": "5 → 6"
+    },
+    {
+      "id": "W-09",
+      "name": "a designer who bypasses the UI and calls the approval endpoint directly is refused 403 by the server",
+      "result": "PASS",
+      "detail": "{\"status\":403,\"body\":{\"type\":\"https://errors.empathia.invalid/forbidden\",\"title\":\"Not allowed for your role\",\"status\":403,\"detail\":\"designer may not move a room to DESIGN_APPROVED (needs room.design.approve)\",\"code\":\"forbidden\",\"correlationId\":\"f3dcaeb4-42f9-4f0a-8ed9-44bff1278979\"}}"
+    },
+    {
+      "id": "W-10",
+      "name": "the systems engineer approves the classification",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-11",
+      "name": "the systems engineer moves the room to DESIGN_APPROVED; the database agrees",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-12",
+      "name": "the commissioning plan lists applicable tests, none passed from a design, with no bare PASS label",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-13",
+      "name": "the systems engineer has no button for the operations lead’s step",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-14",
+      "name": "reports show definitions and operational performance “Not monitored”",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-15",
+      "name": "the systems engineer’s navigation has no Administration (no admin authority)",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-16",
+      "name": "the integration catalogue shows honest states only (Mock / Contract only), never connected",
+      "result": "PASS",
+      "detail": "▭Contract only,◌Mock"
+    },
+    {
+      "id": "W-17",
+      "name": "room tabs are keyboard operable (arrow keys move between tabs)",
+      "result": "PASS",
+      "detail": "http://127.0.0.1:4291/?api=http%3A%2F%2F127.0.0.1%3A4195#/rooms/R-PLN-0001/devices"
+    },
+    {
+      "id": "W-18",
+      "name": "no page errors or unexpected console errors",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-19",
+      "name": "no request left 127.0.0.1 (web app and API only)",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-20",
+      "name": "the web server sends a CSP that allows only itself and the API",
+      "result": "PASS",
+      "detail": "default-src 'self'; connect-src 'self' http://127.0.0.1:4195; img-src 'self' data:; style-src 'self'; script-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"
+    },
+    {
+      "id": "W-21",
+      "name": "the sign-in page has no horizontal scroll at phone width",
+      "result": "PASS",
+      "detail": ""
+    }
+  ]
+}
