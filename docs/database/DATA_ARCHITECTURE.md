@@ -10,7 +10,7 @@ that the schema is production-ready.
 | [ENTITY_DICTIONARY.md](ENTITY_DICTIONARY.md) (+ `.json`) | every table and view: purpose, columns, checks, keys, RLS, policies, triggers, indexes | `node scripts/docs/entity-dictionary.mjs` (live catalog of a freshly migrated database) |
 | [DATA_OWNERSHIP.md](DATA_OWNERSHIP.md) | which source module writes which table | `node scripts/docs/data-ownership.mjs` |
 | [`database/schema/schema.sql`](../../database/schema/schema.sql) | the full schema as pg_dump prints it (reading copy) | `node scripts/docs/dump-schema.mjs` (`--check` fails when stale) |
-| [`database/migrations/`](../../database/migrations/) | **the source of truth**: 0001–0007, forward-only | applied by `services/enterprise-api/src/db/migrate.ts` |
+| [`database/migrations/`](../../database/migrations/) | **the source of truth**: 0001–0008, forward-only | applied by `services/enterprise-api/src/db/migrate.ts` |
 | [`packages/schemas/schemas/`](../../packages/schemas/) | JSON Schema 2020-12 for 101 events, 16 API request bodies, 4 entity shapes | `packages/schemas/scripts/generate.mjs` |
 | [API guide](../api/API_GUIDE.md) | how the data is read and written over HTTP | — |
 

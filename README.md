@@ -38,7 +38,7 @@ missing (`docs/operations/PRODUCTION_READINESS_CHECKLIST.md`).
 | `packages/domain-types`, `packages/domain-data` | shared types; rule tables extracted from the demonstrator build | TypeScript, JSON |
 | `packages/schemas` | JSON Schemas for events, API bodies and core entities | JSON |
 | `integrations/` | adapter contract + Harmony rules, three MOCK adapters, the integration catalogue (CONTRACT_ONLY) | TypeScript |
-| `database/migrations` | the schema (0001–0007), row-level security, append-only evidence | SQL |
+| `database/migrations` | the schema (0001–0008), row-level security, append-only evidence | SQL |
 | `ml/` | one research prototype on synthetic data, with model card | Python |
 | `spatial/` | room model schema, geometry rules; 3D and UE5 contracts (specified only) | JSON, Markdown |
 | `docs/` | blueprint: product, architecture, data, API, algorithms, frontend, design system, QA, security, operations, handoff | Markdown, Mermaid |

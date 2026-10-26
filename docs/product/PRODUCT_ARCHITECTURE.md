@@ -23,7 +23,7 @@ intelligent operational platform for the entire built environment."*
 What that means technically, as this repository implements it so far:
 
 * **One canonical record per thing.** A room, a planned device, a revision, a test result, an issue and a work order each exist once,
-  in one tenant-scoped PostgreSQL schema (`database/migrations/0001–0007`). Products are views and workflows over those records, never
+  in one tenant-scoped PostgreSQL schema (`database/migrations/0001–0008`). Products are views and workflows over those records, never
   copies of them (directive 3.3: *"Do not create separate copies of canonical records merely to make different product screens appear
   operational"*).
 * **Evidence before claims.** A result is never a bare PASS: it is `PASS_UNVERIFIED` until a different person verifies it
@@ -276,7 +276,7 @@ Feature requirements with acceptance criteria. Each criterion is tagged:
 **MET IN STARTER** (with the automated test that proves it, on the real API and PostgreSQL), **MET IN DEMONSTRATOR ONLY** (browser
 demonstrator on synthetic in-page state), or **NOT MET**.
 
-Test references: `api` = `tests/integration/api.test.mjs` (20/20), `sec` = `tests/security/authz.test.mjs` (44/44), `web` =
+Test references: `api` = `tests/integration/api.test.mjs` (20/20), `sec` = `tests/security/authz.test.mjs` (45/45), `web` =
 `tests/browser/enterprise-web.test.mjs` (21/21), `cx` = `packages/commissioning-engine` (128/128), `th` = `tests/e2e/founder-townhall.e2e.mjs`
 (25/25, Founder Edition).
 

@@ -12,7 +12,7 @@ criteria. All data is synthetic. Nothing here is production-ready.
 | Frozen releases | `releases/immutable-references/`, verified by `scripts/verify/verify-frozen.py` | 2.5.1.1, 2.5.2 rc1, 2.5.3 rc1/rc2/rc3 — must never change. Distribution is not authorized. |
 | Founder Studio | `apps/founder-studio` | Local hub (27 destinations) over the demonstrators, films, documents and engine. React + esbuild. |
 | Production starter — API | `services/enterprise-api` | TypeScript modular monolith on Node 22: framework-free HTTP, vendored PostgreSQL client, dev identity provider (HS256), server-side authority, outbox worker. ~48 operations (`docs/api/openapi.json`). |
-| Production starter — database | `database/migrations/0001–0007` | PostgreSQL 16: tenant RLS FORCE, composite FKs, append-only evidence/results/revisions/audit, lifecycle triggers EM001–EM004, outbox, idempotency keys. |
+| Production starter — database | `database/migrations/0001–0008` | PostgreSQL 16: tenant RLS FORCE, composite FKs, append-only evidence/results/revisions/audit, lifecycle triggers EM001–EM004, outbox, idempotency keys. |
 | Production starter — web app | `apps/enterprise-web` + `packages/ui` + `packages/design-tokens` | React app over the API: rooms, room workspace (devices, issues, commissioning, drawings, service), projects, reports, admin. |
 | Engines (pure TypeScript) | `packages/commissioning-engine`, `packages/relationship-engine`, `packages/assurance-engine`, `packages/event-contracts`, `integrations/contracts` | Classification, applicability, results, lifecycle gates; relationship graph; assurance; 101 event contracts; Harmony integration rules. |
 | Integrations | `integrations/` | 83-entry catalogue (all CONTRACT_ONLY), 3 local MOCK adapters, conformance suite. **No VERIFIED adapter.** |
@@ -28,7 +28,7 @@ Automated suites as last run in this program (re-run them: `node scripts/test.mj
 |---|---|---|
 | `packages/commissioning-engine` | 128/128 | engine rules, incl. **92 golden parity cases** against the demonstrator build |
 | `tests/integration/api.test.mjs` | 20/20 | the full vertical slice over HTTP + PostgreSQL: room → device → graph → revision/drawings → lifecycle → evidence → FAIL/deficiency → work order → verified PASS → read model → audit; idempotency; outbox dead letter; OpenAPI contract; org/projects/reports; assurance; integrations; knowledge/AI governance |
-| `tests/security/authz.test.mjs` | 44/44 | authentication failures, tenant isolation, site scope, 13 role refusals, business rules no role can bypass, RLS and append-only enforcement in the database |
+| `tests/security/authz.test.mjs` | 45/45 | authentication failures, tenant isolation, site scope, 13 role refusals, business rules no role can bypass, RLS and append-only enforcement in the database |
 | `tests/browser/enterprise-web.test.mjs` | 21/21 | the React app over the real API; the server refuses what the UI hides |
 | `tests/e2e/founder-townhall.e2e.mjs` | 25/25 | the founder's town-hall scenario in the demonstrator |
 | `tests/browser/founder-studio.test.mjs` | 19 PASS, 1 NOT_RUN | the studio; H.264 playback in the test browser NOT_RUN (no decoder) |
@@ -61,7 +61,7 @@ services/        enterprise-api (TS modular monolith), integration-worker (sched
 packages/        domain-types, domain-data (rule tables extracted from the demonstrator), commissioning-engine, relationship-engine,
                  assurance-engine, event-contracts, api-client (generated), ui, design-tokens
 integrations/    contracts (adapter interface + Harmony), mocks (3 MOCK adapters + conformance), verified-adapters (empty)
-database/        migrations 0001–0007 (forward-only, sha256-guarded)
+database/        migrations 0001–0008 (forward-only, sha256-guarded)
 ml/              synthetic research prototype (dataset generator, training, evaluation, inference, model card)
 tests/           integration, security, browser, e2e, media (film decode), evidence
 scripts/         bootstrap, db, build, test, dev, verify-all, discovery, extract, verify, api

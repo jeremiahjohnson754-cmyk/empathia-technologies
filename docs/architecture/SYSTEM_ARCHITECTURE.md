@@ -43,7 +43,7 @@ workflows run on real services.
 | Enterprise web app | React 19, TypeScript, esbuild | `apps/enterprise-web` | 4200 |
 | Founder Studio | React 19, local launcher | `apps/founder-studio` | 4310 (launcher default) |
 | Intelligence service (research prototype) | Python 3.13, Starlette, scikit-learn | `services/intelligence-python` | 4300 |
-| Database | PostgreSQL 16 | `database/migrations/0001–0007` | 55432 (local cluster) |
+| Database | PostgreSQL 16 | `database/migrations/0001–0008` | 55432 (local cluster) |
 | Evidence object store | content-addressed files | `services/enterprise-api/src/storage/objectStore.ts` | — |
 
 Why a modular monolith: one deployable keeps transactions, authorization and auditing in one place while the team is small. Module
@@ -85,7 +85,7 @@ NOT_MONITORED, mock evidence only from mocks). See `docs/database/DATA_ARCHITECT
 ## 5. Event architecture
 
 Transactional outbox (`database/migrations/0004_platform.sql`, `src/worker/outbox.ts`): an event is inserted in the same transaction as
-the change it describes, so it exists if and only if the change committed. The worker claims batches with `FOR UPDATE SKIP LOCKED`
+the change it describes, so it exists if and only if the change committed. The worker connects as its own database role `empathia_worker` — the only role the cross-tenant worker policies admit (migration 0008) — and claims batches with `FOR UPDATE SKIP LOCKED`
 (several workers are safe), runs idempotent handlers (read-model rebuild, notifications), retries with exponential backoff and moves an
 event to `DEAD_LETTER` after 8 attempts, where a security administrator can see and retry it (`/v1/admin/outbox`). Delivery is
 at-least-once; handlers are written to be idempotent (full recompute; notifications unique per event, kind and role). No Redis or

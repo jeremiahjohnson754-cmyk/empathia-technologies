@@ -17,7 +17,7 @@ release packages is INDEPENDENTLY_AUDITED.
 1. A commit hash of this repository and the release archive with its SHA-256 (`provenance/release-history/`).
 2. `docs/security/THREAT_MODEL.md`, `KNOWN_VULNERABILITIES_AND_REMEDIATION.md`, `SECURE_DEVELOPMENT.md`.
 3. `docs/api/openapi.json` and the role/authority table (`packages/domain-data/data/V25_PERSONAS.json`, route `x-authority` in the OpenAPI document).
-4. The database schema (`database/migrations/0001…0007`), with RLS and trigger design.
+4. The database schema (`database/migrations/0001…0008`), with RLS and trigger design.
 5. Test evidence: `tests/evidence/TEST_RESULTS.md`, `tests/security/authz.test.mjs`, `docs/operations/BACKUP_RESTORE_DRILL.json`.
 6. A running environment: `node scripts/dev.mjs` on an isolated machine with synthetic data only, plus development credentials
    delivered out of band (never by e-mail in the clear).

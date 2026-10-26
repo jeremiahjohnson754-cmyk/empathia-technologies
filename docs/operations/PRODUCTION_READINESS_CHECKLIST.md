@@ -27,7 +27,7 @@ evidence. Last reviewed 2026-10-26.
 |---|---|---|
 | Reliable event delivery with retries and dead letters | MET | `worker/outbox.ts`; dead-letter test |
 | Idempotent writes | MET | idempotency keys (`http/server.ts:78-89`); test |
-| Schema migrations, forward-only with tamper guard | MET | `db/migrate.ts` sha256 guard; 7 migrations |
+| Schema migrations, forward-only with tamper guard | MET | `db/migrate.ts` sha256 guard; 8 migrations |
 | Backup and restore | PARTIAL | drill PASS locally (`BACKUP_AND_RESTORE.md`); no automation, PITR, off-site copies or agreed RPO/RTO |
 | Durable evidence storage (versioned, locked, replicated) | NOT MET | `S3ObjectStore` CONTRACT_ONLY (KV-06) |
 | Query timeouts, pool sizing under load | NOT MET | KV-09 |

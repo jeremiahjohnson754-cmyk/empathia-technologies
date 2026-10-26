@@ -661,7 +661,7 @@ Each engine below has the thirteen items the directive requires, then at most th
 | packages/relationship-engine | 5/5 PASS | 2026-10-26, this pass |
 | packages/event-contracts | 3/3 PASS | 2026-10-26, this pass |
 | tests/integration/api.test.mjs | 16/16 PASS | 2026-10-26, program run (not re-run for this document) |
-| tests/security/authz.test.mjs | 44/44 PASS | 2026-10-26, program run (not re-run for this document) |
+| tests/security/authz.test.mjs | 45/45 PASS | 2026-10-26, program run (KV-08 regression test added after this document was first written) |
 | tests/integration/api-client.test.mjs | 3/3 PASS | 2026-10-26, program run |
 | Demonstrator engine tests (source-254/tests/*.test.mjs) | NOT_RUN | not executed for this document; the 2.5.3 rc3 gate record reports 85 of 85 (commit cf86866), which is the release gate, not these engine suites individually |
 

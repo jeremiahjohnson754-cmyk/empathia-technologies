@@ -23,3 +23,4 @@ ml/models/*.joblib
 media/renders/**/*.mp4
 media/renders/**/slides/
 media/renders/**/mermaid-config.json
+releases/handoff/out/

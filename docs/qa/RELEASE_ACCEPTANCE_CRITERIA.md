@@ -11,7 +11,7 @@ building system touches it. Today the starter bar can be met; **the production b
 | S1 | Everything builds from a clean checkout | `node scripts/build.mjs` → `.local/logs/BUILD_SUMMARY.json` all PASS | met in the main session's runs |
 | S2 | Every unit, integration and security suite passes; nothing NOT_RUN is counted as passed | `node scripts/test.mjs` → `tests/evidence/TEST_RESULTS.md` | see that file |
 | S3 | The API contract matches the code | `scripts/api/export-openapi.mjs --check`; OpenAPI test in `tests/integration/api.test.mjs` | met |
-| S4 | Server-side authorization negative tests pass | `tests/security/authz.test.mjs` 44/44 | met |
+| S4 | Server-side authorization negative tests pass | `tests/security/authz.test.mjs` 45/45 | met |
 | S5 | The vertical slice persists in PostgreSQL and the read model is rebuilt by the outbox | `tests/integration/api.test.mjs` slice 1–9 | met |
 | S6 | No secrets in tracked files | `scripts/verify/scan-secrets.py` (allow-list only for the documented development password) | met |
 | S7 | Documentation links resolve | `scripts/verify/check-links.mjs` | met at writing |
