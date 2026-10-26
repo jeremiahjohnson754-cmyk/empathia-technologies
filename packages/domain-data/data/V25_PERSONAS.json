@@ -1,0 +1,261 @@
+{
+ "requestor": {
+  "label": "Requestor / Employee",
+  "ava": "RQ",
+  "base": "employee",
+  "authority": [
+   "request.submit",
+   "request.withdraw"
+  ],
+  "home": "My requests"
+ },
+ "vendor": {
+  "label": "Supplier / Partner contact",
+  "ava": "SP",
+  "base": "employee",
+  "authority": [
+   "vendor.acknowledge",
+   "vendor.quote"
+  ],
+  "home": "Vendor inbox",
+  "scope": "vendor"
+ },
+ "opslead": {
+  "label": "Operations Lead",
+  "ava": "OL",
+  "base": "ops",
+  "authority": [
+   "pitch.submit",
+   "approver.select",
+   "route.internal",
+   "brief.approve",
+   "handoff.accept",
+   "window.approve",
+   "request.desk_update",
+   "issue.assign"
+  ],
+  "home": "Operational decision desk"
+ },
+ "syseng": {
+  "label": "Systems Engineer",
+  "ava": "SE",
+  "base": "syseng",
+  "authority": [
+   "brief.approve",
+   "design.release",
+   "extraction.review",
+   "protocol.approve",
+   "plan.compile",
+   "baseline.approve",
+   "rfi.resolve",
+   "room.design",
+   "room.classify.approve",
+   "room.design.approve"
+  ],
+  "home": "Engineering approval desk"
+ },
+ "exec": {
+  "label": "Executive / Sponsor",
+  "ava": "EX",
+  "base": "exec",
+  "authority": [
+   "project.decide"
+  ],
+  "home": "Executive Mission Control"
+ },
+ "finance": {
+  "label": "Finance / Budget Authority",
+  "ava": "FN",
+  "base": "exec",
+  "authority": [
+   "funding.authorize",
+   "funding.withdraw"
+  ],
+  "home": "Investment decisions"
+ },
+ "bpm": {
+  "label": "Business Project Manager",
+  "ava": "BP",
+  "base": "bpm",
+  "authority": [
+   "scope.revise"
+  ],
+  "home": "My portfolio"
+ },
+ "ipm": {
+  "label": "Integrator Project Manager",
+  "ava": "IP",
+  "base": "ipm",
+  "authority": [
+   "parts.receive"
+  ],
+  "home": "Delivery portfolio"
+ },
+ "designer": {
+  "label": "Designer / CAD / Revit",
+  "ava": "DE",
+  "base": "designer",
+  "authority": [
+   "design.revise",
+   "design.submit",
+   "divr.record",
+   "lite.edit",
+   "scouter.propose",
+   "room.design"
+  ],
+  "home": "Design studio"
+ },
+ "dsp_eng": {
+  "label": "DSP / Audio Engineer",
+  "ava": "AU",
+  "base": "syseng",
+  "authority": [
+   "review.dsp",
+   "test.verify.audio"
+  ],
+  "home": "Audio template review",
+  "domain": "dsp"
+ },
+ "video_eng": {
+  "label": "Video / Camera Engineer",
+  "ava": "VC",
+  "base": "syseng",
+  "authority": [
+   "review.camera",
+   "test.verify.video"
+  ],
+  "home": "Camera template review",
+  "domain": "camera"
+ },
+ "control_eng": {
+  "label": "Control / UI Engineer",
+  "ava": "CU",
+  "base": "syseng",
+  "authority": [
+   "review.touch",
+   "test.verify.control"
+  ],
+  "home": "Touch UI template review",
+  "domain": "touch"
+ },
+ "svcmgr": {
+  "label": "Service Manager",
+  "ava": "SM",
+  "base": "svcmgr",
+  "authority": [
+   "service.triage",
+   "service.assign",
+   "service.close",
+   "service.reopen",
+   "field.authorize",
+   "issue.assign"
+  ],
+  "home": "Service delivery command center"
+ },
+ "service": {
+  "label": "Service Technician",
+  "ava": "ST",
+  "base": "service",
+  "authority": [
+   "work.accept",
+   "work.start",
+   "work.evidence",
+   "field.scan",
+   "photo.submit"
+  ],
+  "home": "My work + my sites",
+  "scope": "assignment"
+ },
+ "installer": {
+  "label": "Installer",
+  "ava": "IN",
+  "base": "installer",
+  "authority": [
+   "work.evidence",
+   "deviation.raise",
+   "photo.submit"
+  ],
+  "home": "Field package"
+ },
+ "cxeng": {
+  "label": "Commissioning Engineer",
+  "ava": "CE",
+  "base": "cxeng",
+  "authority": [
+   "test.verify",
+   "deficiency.open",
+   "tests.verify.all",
+   "fipv.review",
+   "service.verify"
+  ],
+  "home": "My commissioning"
+ },
+ "qa_reviewer": {
+  "label": "Document Reviewer / QA",
+  "ava": "QA",
+  "base": "cxeng",
+  "authority": [
+   "document.review",
+   "photos.approve",
+   "documents.approve",
+   "customer.accept"
+  ],
+  "home": "Evidence review desk",
+  "independent": true
+ },
+ "sitechamp": {
+  "label": "Site Champion",
+  "ava": "SC",
+  "base": "employee",
+  "authority": [
+   "location.verify",
+   "access.coordinate",
+   "occupancy.confirm"
+  ],
+  "home": "My sites",
+  "scope": "site"
+ },
+ "facilities": {
+  "label": "Facilities Manager",
+  "ava": "FM",
+  "base": "employee",
+  "authority": [
+   "access.approve",
+   "room.conditions"
+  ],
+  "home": "Facilities coverage",
+  "scope": "site"
+ },
+ "steward": {
+  "label": "Data Steward",
+  "ava": "DS",
+  "base": "steward",
+  "authority": [
+   "provenance.review",
+   "profile.publish",
+   "standard.change",
+   "case.approve"
+  ],
+  "home": "Governance ledger"
+ },
+ "secadmin": {
+  "label": "Security / Platform Admin",
+  "ava": "SA",
+  "base": "steward",
+  "authority": [
+   "policy.configure",
+   "license.grant",
+   "adapter.allowlist"
+  ],
+  "home": "Policy & integrations"
+ },
+ "architect": {
+  "label": "Product Architect",
+  "ava": "PA",
+  "base": "architect",
+  "authority": [
+   "*"
+  ],
+  "home": "Everything, for the demonstration"
+ }
+}

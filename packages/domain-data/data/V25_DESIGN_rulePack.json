@@ -1,0 +1,238 @@
+{
+ "version": "2.5.0",
+ "logic": "union of matching required tests/docs; dedupe by id; high-risk additions; any mandatory constraints never suppressible; approved rule version pinned",
+ "base_tests": [
+  {
+   "id": "identity_asset",
+   "domain": "Physical",
+   "evidence": "FIELD_OBSERVED",
+   "required_roles": [
+    "field_technician"
+   ]
+  },
+  {
+   "id": "network_reachability",
+   "domain": "Network",
+   "evidence": "FIELD_OBSERVED",
+   "required_roles": [
+    "field_technician"
+   ]
+  },
+  {
+   "id": "user_function",
+   "domain": "Experience",
+   "evidence": "FIELD_OBSERVED",
+   "required_roles": [
+    "commissioning_engineer",
+    "field_technician"
+   ]
+  }
+ ],
+ "project_types": {
+  "new_install": {
+   "tests": [
+    "design_conformance",
+    "safety_install",
+    "network_vlan",
+    "power_budget"
+   ],
+   "docs": [
+    "asbuilt",
+    "final_photos",
+    "test_report",
+    "design_intent",
+    "warranty",
+    "support_path",
+    "signoff"
+   ]
+  },
+  "camera_replacement": {
+   "tests": [
+    "camera_fov",
+    "camera_preset",
+    "uc_media"
+   ],
+   "docs": [
+    "replacement_asset",
+    "test_report",
+    "service_photos"
+   ]
+  },
+  "break_fix": {
+   "tests": [
+    "post_repair_function"
+   ],
+   "docs": [
+    "service_record",
+    "test_report"
+   ]
+  },
+  "dsp_upgrade": {
+   "tests": [
+    "audio_aec",
+    "audio_gain",
+    "audio_intelligibility",
+    "dsp_config_backup"
+   ],
+   "docs": [
+    "dsp_project",
+    "signal_flow",
+    "test_report"
+   ]
+  },
+  "network_change": {
+   "tests": [
+    "network_vlan",
+    "network_qos",
+    "network_multicast",
+    "dependency_check"
+   ],
+   "docs": [
+    "port_map",
+    "network_plan",
+    "test_report"
+   ]
+  }
+ },
+ "room_types": {
+  "townhall": {
+   "tests": [
+    "audio_intelligibility",
+    "camera_fov",
+    "camera_preset",
+    "control_ui",
+    "uc_media",
+    "recording_streaming",
+    "acoustic_coverage"
+   ],
+   "docs": [
+    "seating_map",
+    "acoustic_report",
+    "camera_coverage",
+    "control_screenshots"
+   ]
+  },
+  "boardroom": {
+   "tests": [
+    "uc_media",
+    "camera_preset",
+    "control_ui"
+   ],
+   "docs": [
+    "uc_configuration"
+   ]
+  },
+  "huddle": {
+   "tests": [
+    "uc_media"
+   ],
+   "docs": []
+  },
+  "network_closet": {
+   "tests": [
+    "network_vlan",
+    "network_qos"
+   ],
+   "docs": [
+    "rack_elevation",
+    "port_map"
+   ]
+  }
+ },
+ "devices": {
+  "camera": {
+   "tests": [
+    "camera_fov",
+    "camera_preset"
+   ],
+   "docs": [
+    "camera_presets"
+   ]
+  },
+  "dsp": {
+   "tests": [
+    "audio_aec",
+    "audio_gain"
+   ],
+   "docs": [
+    "dsp_project"
+   ]
+  },
+  "touch_panel": {
+   "tests": [
+    "control_ui",
+    "control_latency"
+   ],
+   "docs": [
+    "ui_version"
+   ]
+  },
+  "network_switch": {
+   "tests": [
+    "network_vlan",
+    "network_qos",
+    "poe_budget"
+   ],
+   "docs": [
+    "port_map"
+   ]
+  },
+  "display": {
+   "tests": [
+    "video_signal",
+    "display_controls"
+   ],
+   "docs": [
+    "device_list"
+   ]
+  },
+  "signage": {
+   "tests": [
+    "signage_priority",
+    "content_schedule"
+   ],
+   "docs": [
+    "signage_channel_map"
+   ]
+  },
+  "lighting": {
+   "tests": [
+    "lighting_scenes",
+    "occupancy_safety"
+   ],
+   "docs": [
+    "lighting_scene_schedule"
+   ]
+  }
+ },
+ "risk": {
+  "high": {
+   "tests": [
+    "rollback_drill",
+    "network_multicast",
+    "dependency_check",
+    "safety_review"
+   ],
+   "docs": [
+    "risk_acceptance",
+    "maintenance_window",
+    "recovery_plan"
+   ]
+  },
+  "critical": {
+   "tests": [
+    "rollback_drill",
+    "network_multicast",
+    "dependency_check",
+    "safety_review",
+    "independent_validation"
+   ],
+   "docs": [
+    "risk_acceptance",
+    "maintenance_window",
+    "recovery_plan",
+    "independent_signoff"
+   ]
+  }
+ }
+}

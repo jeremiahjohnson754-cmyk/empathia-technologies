@@ -1,0 +1,21 @@
+{
+ "Acoustic": [
+  "ceiling height",
+  "room dimensions",
+  "seating"
+ ],
+ "Audio": [
+  "microphone placement",
+  "seating"
+ ],
+ "Video": [
+  "camera placement",
+  "seating"
+ ],
+ "Network": [
+  "network connections"
+ ],
+ "Display": [
+  "display placement"
+ ]
+}

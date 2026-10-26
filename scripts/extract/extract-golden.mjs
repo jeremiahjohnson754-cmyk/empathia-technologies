@@ -1,0 +1,36 @@
+// Golden cases for the production engines: room designs built through the demonstrator's own services, and the demonstrator's own
+// engine outputs for each (classification, design checks, the 94-definition applicability, result labels and counts). The production
+// TypeScript engines must reproduce these outputs exactly (packages/*/test/parity.test.ts).
+//   node scripts/extract/extract-golden.mjs <demonstrator.html> <out.json>
+const { chromium } = await import('/opt/npm-tools/node_modules/playwright/index.mjs');
+import fs from 'node:fs'; import path from 'node:path'; import crypto from 'node:crypto';
+const [file, outFile] = process.argv.slice(2);
+const html = fs.readFileSync(file, 'utf8'); const at = html.indexOf("'use strict';"); const end = html.indexOf('\n})();\n</script>', at); if (at < 0 || end < 0) throw new Error('unexpected page structure');
+const tmp = path.join(path.dirname(outFile), '.golden-tmp.html'); fs.writeFileSync(tmp, html.slice(0, end) + '\n;window.__EMPATHIA_EXTRACT__ = (n) => eval(n);\n' + html.slice(end));
+const b = await chromium.launch(); const page = await b.newPage(); const errs = []; page.on('pageerror', (e) => errs.push(e.message));
+await page.goto('file://' + path.resolve(tmp) + '#/home'); await page.waitForFunction('window.__V25__ && window.__V25__.room'); await page.waitForTimeout(300);
+const cases = await page.evaluate(() => {
+  const X = window.__EMPATHIA_EXTRACT__; const V = window.__V25__; const R = V.room; const get = X('v25Get');
+  const engine = (id) => { const d = get(id); const J = (v) => JSON.parse(JSON.stringify(v));
+    const input = J({ template: d.template, intendedUse: d.intendedUse, occupancy: d.occupancy, lifecycle: d.lifecycle, coreRoomId: d.coreRoomId, geometry: d.geometry, devices: d.devices, connections: d.connections, classification: { approved: d.classification.approved || null, suggested: { complexity: (d.classification.suggested || {}).complexity, archetype: (d.classification.suggested || {}).archetype } }, results: d.results || {} });
+    const cls = X('v25RoomClassifyCompute')(d); const checks = X('v25RoomChecks')(d); const A = X('v25RoomApplicabilityCompute')(d); const C = X('v25RoomResultCounts')(d, A);
+    return { input, output: J({ classification: { archetype: cls.archetype, subtype: cls.subtype, capacityEstimate: cls.capacityEstimate, people: cls.people, sizeCategory: cls.sizeCategory, complexity: cls.complexity, families: cls.families, cxRoomType: cls.cxRoomType, confidence: cls.confidence },
+      checks: checks.map((f) => ({ key: f.key, check: f.check, severity: f.severity, assets: f.assets })), applicability: { library: A.library, applicable: A.applicable, notApplicable: A.notApplicable, byStatus: A.byStatus, packs: A.packs, ctx: A.ctx, rows: A.rows.map((r) => ({ id: r.id, applicable: r.applicable, status: r.status, result: r.result || null, devices: r.devices || [], missing: r.missing || [] })) }, counts: C }) }; };
+  const out = []; const add = (name, id) => out.push(Object.assign({ name }, engine(id)));
+  V.t.persona('designer'); const T = Object.keys(R.templates);
+  for (const t of T) { const id = R.create({ template: t, name: `golden ${t}` }).design.id; add(`template:${t}`, id); }
+  for (const t of T) { const id = R.create({ template: t, name: `golden ${t} big`, occupancy: 140, use: 'town hall all-hands' }).design.id; add(`template:${t}:occupancy140`, id); }
+  for (const t of T) { const id = R.create({ template: t, name: `golden ${t} training`, use: 'training classes' }).design.id; add(`template:${t}:training`, id); }
+  for (const t of T) { const id = R.create({ template: t, name: `golden ${t} cut` }).design.id; const d = V.get(id); const cam = d.devices.find((x) => ['camera', 'bar'].includes(x.cat) && !x.removed); if (cam) for (const c of d.connections.filter((c) => !c.removed && (c.from === cam.id || c.to === cam.id))) R.connection(id, 'remove', { id: c.id }); add(`template:${t}:camera-cut`, id); }
+  for (const t of T) { const id = R.create({ template: t, name: `golden ${t} removed` }).design.id; const d = V.get(id); const x = d.devices.find((y) => ['dsp', 'display', 'camera'].includes(y.cat) && !y.removed); if (x) R.remove(id, x.id); add(`template:${t}:remove-${x ? x.cat : 'none'}`, id); }
+  for (const t of ['townhall', 'boardroom', 'huddle', 'small_conf']) { const id = R.create({ template: t, name: `golden ${t} swap` }).design.id; const d = V.get(id); const touch = d.devices.find((x) => x.cat === 'touch'); if (touch) R.swap(id, touch.id, { cat: 'scheduler' }); const cam = d.devices.find((x) => x.cat === 'camera'); if (cam) R.swap(id, cam.id, { cat: 'bar' }); add(`template:${t}:swaps`, id); }
+  for (const t of ['huddle', 'boardroom']) { const id = R.create({ template: t, name: `golden ${t} lshape`, shape: 'lshape', length: '9', width: '7', ceiling: '3' }).design.id; add(`template:${t}:lshape`, id); }
+  { const id = R.create({ template: 'custom', name: 'golden photo', items: [], import: { name: 'room.jpg', size: 1000, kind: 'photo', sanitized: true, authorized: true } }).design.id; add('import:photo', id); }
+  for (const t of ['small_conf', 'townhall']) { const id = R.create({ template: t, name: `golden ${t} lifecycle` }).design.id; R.save(id, 'ready'); V.t.persona('syseng'); R.approveClassification(id, {}); add(`lifecycle:${t}:classified`, id); const ap = R.lifecycle(id, 'DESIGN_APPROVED'); add(`lifecycle:${t}:approved:${ap.ok}`, id); V.t.persona('opslead'); R.lifecycle(id, 'INSTALLATION_PENDING'); V.t.persona('installer'); R.lifecycle(id, 'INSTALLED_UNVERIFIED'); V.t.persona('syseng'); R.lifecycle(id, 'COMMISSIONING'); add(`lifecycle:${t}:commissioning`, id);
+    const rows = V.get(id).applicability.rows.filter((x) => x.applicable); const persOf = (row) => (row.personas || []).find((p) => p && V.personas[p]) || 'cxeng'; const ev = (row, ref) => ({ kind: row.evidence[0], ref, instrument: row.instrument ? 'calibrated (synthetic)' : null });
+    const [a, bb, c, e1, e2] = rows; V.t.persona(persOf(a)); R.record(id, a.id, { state: 'PASS', evidence: ev(a, 'golden-ev-a-001') }); V.t.persona(persOf(a) === 'cxeng' ? 'qa_reviewer' : 'cxeng'); R.verify(id, a.id); V.t.persona(persOf(bb)); R.record(id, bb.id, { state: 'PASS', evidence: ev(bb, 'golden-ev-b-002') }); V.t.persona(persOf(c)); R.record(id, c.id, { state: 'FAIL', evidence: ev(c, 'golden-log-c-003') }); V.t.persona(persOf(e1)); R.record(id, e1.id, { state: 'NOT_SUPPORTED', evidence: ev(e1, 'golden-note-d-004') }); V.t.persona(persOf(e2)); R.record(id, e2.id, { state: 'INCONCLUSIVE', evidence: ev(e2, 'golden-log-e-005') });
+    add(`lifecycle:${t}:results`, id); V.t.persona('syseng'); R.approveClassification(id, { archetype: t === 'townhall' ? 'BRD' : 'TRN', reason: 'golden override for the parity cases' }); add(`lifecycle:${t}:override`, id); V.t.persona('designer'); }
+  return out; });
+await b.close(); fs.unlinkSync(tmp);
+const doc = { generatedFrom: path.basename(file), sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex'), cases: cases.length, errors: errs, data: cases };
+fs.writeFileSync(outFile, JSON.stringify(doc)); console.log(JSON.stringify({ cases: cases.length, errors: errs.slice(0, 3), bytes: fs.statSync(outFile).size }));

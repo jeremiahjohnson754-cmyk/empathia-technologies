@@ -1,0 +1,241 @@
+{
+ "DESIGNED": {
+  "label": "Designed",
+  "tone": "modeled",
+  "rank": 2,
+  "proves": false,
+  "family": "target"
+ },
+ "DESIGN_SPECIFIED": {
+  "label": "Design specified",
+  "tone": "modeled",
+  "rank": 2,
+  "proves": false,
+  "family": "target"
+ },
+ "ENGINEER_APPROVED_DESIGN_TARGET": {
+  "label": "Approved design target",
+  "tone": "modeled",
+  "rank": 3,
+  "proves": false,
+  "family": "target"
+ },
+ "VENDOR_PUBLISHED": {
+  "label": "Vendor published",
+  "tone": "unverified",
+  "rank": 2,
+  "proves": false,
+  "family": "claim"
+ },
+ "MODELED": {
+  "label": "Modeled",
+  "tone": "modeled",
+  "rank": 2,
+  "proves": false,
+  "family": "model"
+ },
+ "SIMULATED": {
+  "label": "Simulated",
+  "tone": "simulated",
+  "rank": 1,
+  "proves": false,
+  "family": "model"
+ },
+ "INFERRED": {
+  "label": "Inferred",
+  "tone": "modeled",
+  "rank": 1,
+  "proves": false,
+  "family": "model"
+ },
+ "PHOTO_INFERRED": {
+  "label": "Photo inferred · unverified",
+  "tone": "modeled",
+  "rank": 1,
+  "proves": false,
+  "family": "model"
+ },
+ "MODEL_EXTRACTED": {
+  "label": "Extracted from model",
+  "tone": "unverified",
+  "rank": 2,
+  "proves": false,
+  "family": "claim"
+ },
+ "EXTRACTED_UNREVIEWED": {
+  "label": "Extracted · unreviewed",
+  "tone": "unverified",
+  "rank": 2,
+  "proves": false,
+  "family": "claim"
+ },
+ "MANUALLY_PROPOSED": {
+  "label": "Manually proposed",
+  "tone": "proposed",
+  "rank": 1,
+  "proves": false,
+  "family": "claim"
+ },
+ "DECLARED": {
+  "label": "Declared",
+  "tone": "unverified",
+  "rank": 2,
+  "proves": false,
+  "family": "claim"
+ },
+ "OBSERVED_LOCAL": {
+  "label": "Observed · local",
+  "tone": "live",
+  "rank": 4,
+  "proves": false,
+  "family": "observation"
+ },
+ "OBSERVED_NETWORK": {
+  "label": "Observed · network",
+  "tone": "live",
+  "rank": 4,
+  "proves": false,
+  "family": "observation"
+ },
+ "OBSERVED_UNVERIFIED": {
+  "label": "Observed · unverified",
+  "tone": "unverified",
+  "rank": 3,
+  "proves": false,
+  "family": "observation"
+ },
+ "ADAPTER_REPORTED": {
+  "label": "Adapter reported",
+  "tone": "unverified",
+  "rank": 3,
+  "proves": false,
+  "family": "observation"
+ },
+ "FIELD_OBSERVED": {
+  "label": "Field observed",
+  "tone": "live",
+  "rank": 4,
+  "proves": false,
+  "family": "observation"
+ },
+ "PHYSICALLY_MEASURED": {
+  "label": "Physically measured",
+  "tone": "measured",
+  "rank": 5,
+  "proves": false,
+  "family": "measurement"
+ },
+ "INSTRUMENT_MEASURED": {
+  "label": "Instrument measured",
+  "tone": "measured",
+  "rank": 5,
+  "proves": false,
+  "family": "measurement"
+ },
+ "MEASURED_PENDING_REVIEW": {
+  "label": "Measured · pending independent review",
+  "tone": "proposed",
+  "rank": 5,
+  "proves": false,
+  "family": "measurement"
+ },
+ "QA_VERIFIED": {
+  "label": "QA verified",
+  "tone": "measured",
+  "rank": 7,
+  "proves": true,
+  "family": "verified"
+ },
+ "VERIFIED": {
+  "label": "Verified",
+  "tone": "measured",
+  "rank": 7,
+  "proves": true,
+  "family": "verified"
+ },
+ "ENGINEER_APPROVED": {
+  "label": "Engineer approved",
+  "tone": "measured",
+  "rank": 7,
+  "proves": true,
+  "family": "verified"
+ },
+ "ACCEPTED": {
+  "label": "Accepted",
+  "tone": "measured",
+  "rank": 8,
+  "proves": true,
+  "family": "verified"
+ },
+ "EXCEPTION_APPROVED": {
+  "label": "Exception approved",
+  "tone": "proposed",
+  "rank": 6,
+  "proves": true,
+  "family": "verified",
+  "exception": true
+ },
+ "UNVERIFIED": {
+  "label": "Unverified",
+  "tone": "unverified",
+  "rank": 0,
+  "proves": false,
+  "family": "gap"
+ },
+ "INCONCLUSIVE": {
+  "label": "Inconclusive",
+  "tone": "unverified",
+  "rank": 0,
+  "proves": false,
+  "family": "gap"
+ },
+ "UNAVAILABLE": {
+  "label": "Unavailable",
+  "tone": "blocked",
+  "rank": 0,
+  "proves": false,
+  "family": "gap"
+ },
+ "NOT_TESTED": {
+  "label": "Not tested",
+  "tone": "notmeasured",
+  "rank": 0,
+  "proves": false,
+  "family": "gap"
+ },
+ "NOT_SUPPORTED": {
+  "label": "Not supported",
+  "tone": "blocked",
+  "rank": 0,
+  "proves": false,
+  "family": "gap"
+ },
+ "NOT_CONFIGURED": {
+  "label": "Not configured",
+  "tone": "notauthorized",
+  "rank": 0,
+  "proves": false,
+  "family": "gap"
+ },
+ "STALE": {
+  "label": "Stale",
+  "tone": "unverified",
+  "rank": 0,
+  "proves": false,
+  "family": "gap"
+ },
+ "SUPERSEDED": {
+  "label": "Superseded",
+  "tone": "demo",
+  "rank": 0,
+  "proves": false,
+  "family": "gap"
+ },
+ "UNKNOWN": {
+  "label": "Unknown",
+  "tone": "unknown",
+  "rank": 0,
+  "proves": false,
+  "family": "gap"
+ }
+}

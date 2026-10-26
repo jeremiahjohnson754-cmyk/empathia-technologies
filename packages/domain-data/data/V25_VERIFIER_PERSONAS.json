@@ -1,0 +1,20 @@
+{
+ "field_technician": [
+  "service",
+  "installer"
+ ],
+ "commissioning_engineer": [
+  "cxeng"
+ ],
+ "systems_engineer": [
+  "syseng"
+ ],
+ "domain_engineer": [
+  "dsp_eng",
+  "video_eng",
+  "control_eng"
+ ],
+ "qa_reviewer": [
+  "qa_reviewer"
+ ]
+}

@@ -1,0 +1,455 @@
+{
+ "display": {
+  "label": "Display",
+  "group": "Display",
+  "cat": "display",
+  "mount": "wall",
+  "size": [
+   1.65,
+   0.12
+  ],
+  "z": 1.2,
+  "net": true,
+  "poe": 0,
+  "sig": "sink",
+  "props": {
+   "diagonal_in": 75
+  }
+ },
+ "ledwall": {
+  "label": "LED wall",
+  "group": "Display",
+  "cat": "ledwall",
+  "mount": "wall",
+  "size": [
+   4.8,
+   0.2
+  ],
+  "z": 2.2,
+  "net": true,
+  "poe": 0,
+  "sig": "sink",
+  "props": {
+   "width_m": 4.8
+  }
+ },
+ "projector": {
+  "label": "Projector",
+  "group": "Display",
+  "mount": "ceiling",
+  "size": [
+   0.5,
+   0.4
+  ],
+  "z": 2.7,
+  "net": true,
+  "poe": 0,
+  "sig": "sink",
+  "props": {
+   "lumens": 7000
+  }
+ },
+ "camera": {
+  "label": "Camera",
+  "group": "Video",
+  "cat": "camera",
+  "mount": "wall",
+  "size": [
+   0.2,
+   0.2
+  ],
+  "z": 1.8,
+  "net": true,
+  "poe": 25.5,
+  "sig": "source",
+  "props": {
+   "fov_deg": 70,
+   "zoom_x": 12
+  }
+ },
+ "bar": {
+  "label": "Video bar",
+  "group": "Video",
+  "cat": "bar",
+  "mount": "wall",
+  "size": [
+   0.9,
+   0.1
+  ],
+  "z": 1,
+  "net": true,
+  "poe": 0,
+  "sig": "source",
+  "props": {
+   "fov_deg": 110,
+   "pickup_m": 4.5
+  }
+ },
+ "micceil": {
+  "label": "Ceiling microphone",
+  "group": "Audio",
+  "cat": "micceil",
+  "mount": "ceiling",
+  "size": [
+   0.6,
+   0.6
+  ],
+  "z": 2.7,
+  "net": true,
+  "poe": 12.9,
+  "sig": "source",
+  "props": {
+   "pickup_m": 3.5,
+   "protocol": "network audio"
+  }
+ },
+ "mictable": {
+  "label": "Table microphone",
+  "group": "Audio",
+  "mount": "table",
+  "size": [
+   0.15,
+   0.15
+  ],
+  "z": 0.75,
+  "net": true,
+  "poe": 4,
+  "sig": "source",
+  "props": {
+   "pickup_m": 1.5,
+   "protocol": "network audio"
+  }
+ },
+ "micwireless": {
+  "label": "Wireless microphone system",
+  "group": "Audio",
+  "cat": "micwireless",
+  "mount": "rack",
+  "size": [
+   0.45,
+   0.3
+  ],
+  "z": 1,
+  "net": true,
+  "poe": 0,
+  "sig": "source",
+  "props": {
+   "channels": 4,
+   "protocol": "network audio"
+  }
+ },
+ "speaker": {
+  "label": "Loudspeaker",
+  "group": "Audio",
+  "cat": "speaker",
+  "mount": "ceiling",
+  "size": [
+   0.3,
+   0.3
+  ],
+  "z": 2.7,
+  "net": false,
+  "poe": 0,
+  "sig": "sink",
+  "props": {
+   "coverage_m": 4
+  }
+ },
+ "dsp": {
+  "label": "Audio processor (DSP)",
+  "group": "Audio",
+  "cat": "dsp",
+  "mount": "rack",
+  "size": [
+   0.45,
+   0.3
+  ],
+  "z": 1.2,
+  "net": true,
+  "poe": 0,
+  "sig": "processor",
+  "props": {
+   "inputs": 12,
+   "protocol": "network audio"
+  }
+ },
+ "amp": {
+  "label": "Amplifier",
+  "group": "Audio",
+  "cat": "amp",
+  "mount": "rack",
+  "size": [
+   0.45,
+   0.3
+  ],
+  "z": 0.9,
+  "net": true,
+  "poe": 0,
+  "sig": "processor",
+  "props": {
+   "channels": 4
+  }
+ },
+ "compute": {
+  "label": "UC room compute",
+  "group": "Compute",
+  "cat": "compute",
+  "mount": "rack",
+  "size": [
+   0.3,
+   0.2
+  ],
+  "z": 0.6,
+  "net": true,
+  "poe": 0,
+  "sig": "processor",
+  "props": {
+   "usb_ports": 4
+  }
+ },
+ "switch": {
+  "label": "Network switch",
+  "group": "Network",
+  "mount": "rack",
+  "size": [
+   0.45,
+   0.3
+  ],
+  "z": 1.5,
+  "net": true,
+  "poe": 0,
+  "sig": "none",
+  "props": {
+   "ports": 24,
+   "poe_budget_w": 370
+  }
+ },
+ "control": {
+  "label": "Control processor",
+  "group": "Control",
+  "cat": "control",
+  "mount": "rack",
+  "size": [
+   0.45,
+   0.3
+  ],
+  "z": 1.4,
+  "net": true,
+  "poe": 0,
+  "sig": "none",
+  "props": {}
+ },
+ "touch": {
+  "label": "Touch panel",
+  "group": "Control",
+  "cat": "touch",
+  "mount": "table",
+  "size": [
+   0.25,
+   0.18
+  ],
+  "z": 0.75,
+  "net": true,
+  "poe": 12.9,
+  "sig": "none",
+  "props": {}
+ },
+ "scheduler": {
+  "label": "Scheduling panel",
+  "group": "Control",
+  "cat": "scheduler",
+  "mount": "wall",
+  "size": [
+   0.22,
+   0.05
+  ],
+  "z": 1.4,
+  "net": true,
+  "poe": 12.9,
+  "sig": "none",
+  "props": {}
+ },
+ "switcher": {
+  "label": "Video switcher",
+  "group": "Video",
+  "cat": "switcher",
+  "mount": "rack",
+  "size": [
+   0.45,
+   0.3
+  ],
+  "z": 1.1,
+  "net": true,
+  "poe": 0,
+  "sig": "processor",
+  "props": {
+   "inputs": 8
+  }
+ },
+ "encoder": {
+  "label": "Stream encoder",
+  "group": "Video",
+  "cat": "encoder",
+  "mount": "rack",
+  "size": [
+   0.45,
+   0.3
+  ],
+  "z": 1,
+  "net": true,
+  "poe": 0,
+  "sig": "processor",
+  "props": {}
+ },
+ "rack": {
+  "label": "Equipment rack",
+  "group": "Infrastructure",
+  "mount": "floor",
+  "size": [
+   0.6,
+   0.8
+  ],
+  "z": 0,
+  "net": false,
+  "poe": 0,
+  "sig": "none",
+  "props": {
+   "units": 24
+  }
+ },
+ "pdu": {
+  "label": "Power distribution unit",
+  "group": "Infrastructure",
+  "cat": "pdu",
+  "mount": "rack",
+  "size": [
+   0.45,
+   0.1
+  ],
+  "z": 0.2,
+  "net": true,
+  "poe": 0,
+  "sig": "none",
+  "props": {
+   "outlets": 8
+  }
+ },
+ "lighting": {
+  "label": "Lighting control",
+  "group": "Building",
+  "mount": "wall",
+  "size": [
+   0.12,
+   0.05
+  ],
+  "z": 1.2,
+  "net": true,
+  "poe": 0,
+  "sig": "none",
+  "props": {}
+ },
+ "occsensor": {
+  "label": "Occupancy sensor",
+  "group": "Building",
+  "cat": "sensor",
+  "mount": "ceiling",
+  "size": [
+   0.12,
+   0.12
+  ],
+  "z": 2.7,
+  "net": true,
+  "poe": 4,
+  "sig": "none",
+  "props": {}
+ },
+ "seccam": {
+  "label": "Security camera",
+  "group": "Security",
+  "mount": "ceiling",
+  "size": [
+   0.15,
+   0.15
+  ],
+  "z": 2.7,
+  "net": true,
+  "poe": 12.9,
+  "sig": "none",
+  "props": {}
+ },
+ "iot": {
+  "label": "IoT device",
+  "group": "Building",
+  "mount": "wall",
+  "size": [
+   0.1,
+   0.1
+  ],
+  "z": 1.2,
+  "net": true,
+  "poe": 4,
+  "sig": "none",
+  "props": {}
+ },
+ "hvac": {
+  "label": "HVAC element (diffuser / thermostat)",
+  "group": "Building",
+  "mount": "ceiling",
+  "size": [
+   0.6,
+   0.6
+  ],
+  "z": 2.7,
+  "net": false,
+  "poe": 0,
+  "sig": "none",
+  "props": {}
+ },
+ "table": {
+  "label": "Table",
+  "group": "Furniture",
+  "mount": "floor",
+  "size": [
+   3.6,
+   1.2
+  ],
+  "z": 0,
+  "net": false,
+  "poe": 0,
+  "sig": "none",
+  "furniture": true,
+  "props": {}
+ },
+ "chairs": {
+  "label": "Seating block",
+  "group": "Furniture",
+  "mount": "floor",
+  "size": [
+   2.4,
+   1
+  ],
+  "z": 0,
+  "net": false,
+  "poe": 0,
+  "sig": "none",
+  "furniture": true,
+  "props": {
+   "seats": 6
+  }
+ },
+ "lectern": {
+  "label": "Lectern",
+  "group": "Furniture",
+  "mount": "floor",
+  "size": [
+   0.6,
+   0.5
+  ],
+  "z": 0,
+  "net": false,
+  "poe": 0,
+  "sig": "none",
+  "furniture": true,
+  "props": {}
+ }
+}

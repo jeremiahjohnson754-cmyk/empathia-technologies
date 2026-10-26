@@ -1,0 +1,40 @@
+{
+  "name": "empathia-technologies",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "description": "Empathia Technologies monorepo: Founder Studio, production starter (API, database, engines), engineering blueprint and provenance records.",
+  "packageManager": "pnpm@10.18.3",
+  "engines": {
+    "node": ">=22"
+  },
+  "workspaces": [
+    "apps/*",
+    "services/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "bootstrap": "node scripts/bootstrap.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "node scripts/test.mjs",
+    "studio": "node apps/founder-studio/server/serve.mjs",
+    "db:up": "node scripts/db.mjs up",
+    "db:down": "node scripts/db.mjs down",
+    "db:migrate": "node services/enterprise-api/dist/src/db/migrate.js",
+    "db:seed": "node services/enterprise-api/dist/src/db/seed.js",
+    "api": "node services/enterprise-api/dist/src/main.js",
+    "verify": "node scripts/verify-all.mjs"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3",
+    "@types/node": "26.2.0",
+    "esbuild": "0.28.2",
+    "playwright": "1.56.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "marked": "18.0.10",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0"
+  }
+}

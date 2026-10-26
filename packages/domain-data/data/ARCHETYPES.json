@@ -1,0 +1,309 @@
+{
+ "FOC": {
+  "name": "Focus Room",
+  "cap": [
+   2,
+   4
+  ],
+  "intent": "Give one or two people a quiet place to join a call without booking a larger room.",
+  "recipe": {
+   "display": 1,
+   "bar": 1,
+   "scheduler": 1
+  },
+  "profile": "Essentials"
+ },
+ "HUD": {
+  "name": "Huddle Room",
+  "cap": [
+   4,
+   6
+  ],
+  "intent": "Let a small team start a hybrid conversation in under a minute.",
+  "recipe": {
+   "display": 1,
+   "bar": 1,
+   "compute": 1,
+   "touch": 1,
+   "scheduler": 1
+  },
+  "profile": "Essentials"
+ },
+ "COL": {
+  "name": "Collaboration Room",
+  "cap": [
+   8,
+   12
+  ],
+  "intent": "Support everyday team meetings where remote colleagues take part as equals.",
+  "recipe": {
+   "display": 1,
+   "camera": 1,
+   "micceil": 1,
+   "dsp": 1,
+   "speaker": 1,
+   "compute": 1,
+   "touch": 1,
+   "scheduler": 1
+  },
+  "profile": "Collaborate"
+ },
+ "EXE": {
+  "name": "Executive Collaboration",
+  "cap": [
+   10,
+   14
+  ],
+  "intent": "",
+  "recipe": {
+   "display": 2,
+   "camera": 2,
+   "micceil": 2,
+   "dsp": 1,
+   "speaker": 2,
+   "amp": 1,
+   "compute": 1,
+   "touch": 1,
+   "scheduler": 1,
+   "control": 1,
+   "switcher": 1,
+   "sensor": 1,
+   "pdu": 1
+  },
+  "profile": "Present"
+ },
+ "BRD": {
+  "name": "Boardroom",
+  "cap": [
+   16,
+   22
+  ],
+  "intent": "Host leadership and customer meetings where every seat is seen and heard.",
+  "recipe": {
+   "display": 2,
+   "camera": 2,
+   "micceil": 2,
+   "dsp": 1,
+   "speaker": 2,
+   "amp": 1,
+   "compute": 1,
+   "touch": 1,
+   "scheduler": 1,
+   "control": 1,
+   "switcher": 1,
+   "pdu": 1
+  },
+  "profile": "Present"
+ },
+ "TRN": {
+  "name": "Training Room",
+  "cap": [
+   20,
+   36
+  ],
+  "intent": "Teach in-room and remote learners together, with questions from the room audible to everyone.",
+  "recipe": {
+   "display": 2,
+   "camera": 2,
+   "micceil": 2,
+   "micwireless": 1,
+   "dsp": 1,
+   "speaker": 2,
+   "amp": 1,
+   "compute": 1,
+   "touch": 1,
+   "scheduler": 1,
+   "control": 1
+  },
+  "profile": "Present"
+ },
+ "TWN": {
+  "name": "Townhall",
+  "cap": [
+   180,
+   260
+  ],
+  "intent": "",
+  "recipe": {
+   "ledwall": 1,
+   "display": 2,
+   "camera": 3,
+   "micwireless": 2,
+   "micceil": 2,
+   "dsp": 1,
+   "speaker": 4,
+   "amp": 2,
+   "compute": 1,
+   "touch": 1,
+   "control": 1,
+   "switcher": 1,
+   "encoder": 2,
+   "pdu": 1,
+   "sensor": 1
+  },
+  "profile": "Event"
+ },
+ "CTL": {
+  "name": "Control Room",
+  "cap": [
+   6,
+   10
+  ],
+  "intent": "",
+  "recipe": {
+   "display": 4,
+   "compute": 2,
+   "switcher": 1,
+   "control": 1,
+   "touch": 1,
+   "encoder": 2,
+   "dsp": 1,
+   "speaker": 1,
+   "pdu": 1
+  },
+  "profile": "Operate"
+ },
+ "LAB": {
+  "name": "Engineering Lab",
+  "cap": [
+   8,
+   16
+  ],
+  "intent": "Let engineers review prototypes and instrument feeds with remote test sites.",
+  "recipe": {
+   "display": 2,
+   "camera": 1,
+   "micceil": 1,
+   "dsp": 1,
+   "speaker": 1,
+   "compute": 1,
+   "touch": 1,
+   "switcher": 1,
+   "sensor": 1
+  },
+  "profile": "Collaborate"
+ },
+ "PLT": {
+  "name": "Plant Collaboration",
+  "cap": [
+   10,
+   16
+  ],
+  "intent": "Give production shifts a place to hand over and reach engineering without leaving the floor.",
+  "recipe": {
+   "display": 1,
+   "camera": 1,
+   "micceil": 1,
+   "dsp": 1,
+   "speaker": 1,
+   "compute": 1,
+   "touch": 1,
+   "scheduler": 1,
+   "sensor": 1,
+   "pdu": 1
+  },
+  "profile": "Collaborate"
+ },
+ "WAR": {
+  "name": "Operations War Room",
+  "cap": [
+   12,
+   18
+  ],
+  "intent": "",
+  "recipe": {
+   "display": 3,
+   "camera": 1,
+   "micceil": 2,
+   "dsp": 1,
+   "speaker": 2,
+   "amp": 1,
+   "compute": 1,
+   "touch": 1,
+   "control": 1,
+   "switcher": 1,
+   "pdu": 1
+  },
+  "profile": "Operate"
+ },
+ "STU": {
+  "name": "Studio",
+  "cap": [
+   6,
+   12
+  ],
+  "intent": "Record and stream presentations with broadcast-quality sound and picture.",
+  "recipe": {
+   "display": 2,
+   "camera": 3,
+   "micwireless": 1,
+   "dsp": 1,
+   "speaker": 1,
+   "compute": 1,
+   "switcher": 1,
+   "encoder": 1,
+   "control": 1,
+   "touch": 1
+  },
+  "profile": "Event"
+ },
+ "WHB": {
+  "name": "Whiteboarding Collaboration",
+  "cap": [
+   6,
+   12
+  ],
+  "intent": "Think on a wall together, in the room and remotely, from one surface that carries the camera, the microphones, the loudspeakers and the compute.",
+  "recipe": {
+   "board": 1,
+   "compute": 1,
+   "touch": 1,
+   "scheduler": 1,
+   "sensor": 1
+  },
+  "profile": "Collaborate"
+ },
+ "TWR": {
+  "name": "Video Tower",
+  "cap": [
+   4,
+   8
+  ],
+  "intent": "Watch many sources at once: a monitoring wall and one interactive touchscreen for the duty engineer.",
+  "recipe": {
+   "display": 6,
+   "board": 1,
+   "compute": 2,
+   "switcher": 1,
+   "control": 1,
+   "touch": 1,
+   "scheduler": 1,
+   "pdu": 1
+  },
+  "profile": "Operate"
+ },
+ "AVP": {
+  "name": "AV-over-IP Presentation",
+  "cap": [
+   10,
+   18
+  ],
+  "intent": "Route any source to any display over the network, with the audio on the same network.",
+  "recipe": {
+   "matrix": 1,
+   "encoder": 2,
+   "decoder": 2,
+   "netaudio": 1,
+   "dsp": 1,
+   "display": 3,
+   "camera": 1,
+   "micceil": 1,
+   "speaker": 2,
+   "amp": 1,
+   "compute": 1,
+   "touch": 1,
+   "control": 1
+  },
+  "profile": "Present"
+ }
+}

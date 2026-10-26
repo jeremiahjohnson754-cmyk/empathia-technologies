@@ -1,0 +1,56 @@
+{
+ "TWN": [
+  "camera",
+  "dsp",
+  "mic",
+  "speaker",
+  "display",
+  "switch",
+  "compute"
+ ],
+ "BRD": [
+  "camera",
+  "dsp",
+  "mic",
+  "speaker",
+  "display",
+  "compute"
+ ],
+ "EXE": [
+  "camera",
+  "dsp",
+  "mic",
+  "speaker",
+  "display",
+  "compute"
+ ],
+ "TRN": [
+  "camera",
+  "dsp",
+  "mic",
+  "speaker",
+  "display",
+  "compute"
+ ],
+ "COL": [
+  "camera",
+  "display",
+  "compute"
+ ],
+ "HUD": [
+  "display",
+  "camera"
+ ],
+ "FOC": [
+  "display"
+ ],
+ "STU": [
+  "camera",
+  "dsp",
+  "mic",
+  "encoder"
+ ],
+ "CTL": [
+  "switch"
+ ]
+}

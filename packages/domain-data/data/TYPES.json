@@ -1,0 +1,422 @@
+{
+ "Enterprise": [
+  "Enterprise",
+  "Enterprises",
+  "place"
+ ],
+ "Region": [
+  "Region",
+  "Regions",
+  "place"
+ ],
+ "Campus": [
+  "Campus",
+  "Campuses",
+  "place"
+ ],
+ "Site": [
+  "Site",
+  "Sites",
+  "place"
+ ],
+ "Building": [
+  "Building",
+  "Buildings",
+  "place"
+ ],
+ "Floor": [
+  "Floor",
+  "Floors",
+  "place"
+ ],
+ "Space": [
+  "Space",
+  "Spaces",
+  "place"
+ ],
+ "Room": [
+  "Room",
+  "Rooms",
+  "room"
+ ],
+ "Zone": [
+  "Zone",
+  "Zones",
+  "room"
+ ],
+ "Furniture": [
+  "Furniture",
+  "Furniture",
+  "room"
+ ],
+ "RoomArchetype": [
+  "Room archetype",
+  "Room archetypes",
+  "standard"
+ ],
+ "PersonRole": [
+  "Role",
+  "Roles",
+  "people"
+ ],
+ "Organization": [
+  "Organization",
+  "Organizations",
+  "people"
+ ],
+ "Vendor": [
+  "Vendor",
+  "Vendors",
+  "vendor"
+ ],
+ "Contact": [
+  "Contact",
+  "Contacts",
+  "people"
+ ],
+ "SupportPath": [
+  "Support path",
+  "Support paths",
+  "support"
+ ],
+ "Project": [
+  "Project",
+  "Projects",
+  "project"
+ ],
+ "Request": [
+  "Request",
+  "Requests",
+  "project"
+ ],
+ "Requirement": [
+  "Requirement",
+  "Requirements",
+  "project"
+ ],
+ "Design": [
+  "Design",
+  "Designs",
+  "project"
+ ],
+ "Standard": [
+  "Standard",
+  "Standards",
+  "standard"
+ ],
+ "ControlProfile": [
+  "Control profile",
+  "Control profiles",
+  "standard"
+ ],
+ "Device": [
+  "Device",
+  "Devices",
+  "device"
+ ],
+ "Asset": [
+  "Asset",
+  "Assets",
+  "device"
+ ],
+ "NetworkNode": [
+  "Network node",
+  "Network nodes",
+  "network"
+ ],
+ "PowerNode": [
+  "Power node",
+  "Power nodes",
+  "power"
+ ],
+ "EnvironmentalSensor": [
+  "Environmental sensor",
+  "Environmental sensors",
+  "device"
+ ],
+ "ScouterCandidate": [
+  "Scouter candidate",
+  "Scouter candidates",
+  "device"
+ ],
+ "Document": [
+  "Document",
+  "Documents",
+  "doc"
+ ],
+ "BudgetScenario": [
+  "Budget scenario",
+  "Budget scenarios",
+  "budget"
+ ],
+ "PurchaseDecision": [
+  "Purchase decision",
+  "Purchase decisions",
+  "budget"
+ ],
+ "CommissioningCheck": [
+  "Commissioning check",
+  "Commissioning checks",
+  "commission"
+ ],
+ "CommissioningBaseline": [
+  "Commissioning baseline",
+  "Commissioning baselines",
+  "commission"
+ ],
+ "Deficiency": [
+  "Deficiency",
+  "Deficiencies",
+  "commission"
+ ],
+ "Issue": [
+  "Issue",
+  "Issues",
+  "issue"
+ ],
+ "RootCause": [
+  "Root cause",
+  "Root causes",
+  "issue"
+ ],
+ "KnownFix": [
+  "Known fix",
+  "Known fixes",
+  "issue"
+ ],
+ "OperationalRecord": [
+  "Operational record",
+  "Operational records",
+  "ops"
+ ],
+ "IssuePattern": [
+  "Issue pattern",
+  "Issue patterns",
+  "issue"
+ ],
+ "SystemicProblem": [
+  "Systemic problem",
+  "Systemic problems",
+  "issue"
+ ],
+ "AssuranceCheck": [
+  "Assurance check",
+  "Assurance checks",
+  "ops"
+ ],
+ "Measurement": [
+  "Measurement",
+  "Measurements",
+  "evidence"
+ ],
+ "Evidence": [
+  "Evidence",
+  "Evidence",
+  "evidence"
+ ],
+ "Recommendation": [
+  "Recommendation",
+  "Recommendations",
+  "rec"
+ ],
+ "LifecycleEvent": [
+  "Lifecycle event",
+  "Lifecycle events",
+  "time"
+ ],
+ "ChangeEvent": [
+  "Change",
+  "Changes",
+  "time"
+ ],
+ "Approval": [
+  "Approval",
+  "Approvals",
+  "time"
+ ],
+ "GovernanceAction": [
+  "Governance action",
+  "Governance actions",
+  "time"
+ ],
+ "TrainingCase": [
+  "Training case",
+  "Training cases",
+  "learn"
+ ],
+ "Competency": [
+  "Competency",
+  "Competencies",
+  "learn"
+ ],
+ "IntegrationConnector": [
+  "Integration connector",
+  "Integration connectors",
+  "network"
+ ],
+ "GuideChapter": [
+  "Guide chapter",
+  "Guide chapters",
+  "doc"
+ ],
+ "ScouterEvaluation": [
+  "Scouter evaluation",
+  "Scouter evaluations",
+  "device"
+ ],
+ "MarketEvent": [
+  "Market watch event",
+  "Market watch events",
+  "time"
+ ],
+ "BudgetSnapshot": [
+  "Budget record",
+  "Budget records",
+  "budget"
+ ],
+ "AssuranceRun": [
+  "Assurance run",
+  "Assurance runs",
+  "ops"
+ ],
+ "PlannedChange": [
+  "Planned change",
+  "Planned changes",
+  "time"
+ ],
+ "MaintenanceSignal": [
+  "Maintenance signal",
+  "Maintenance signals",
+  "ops"
+ ],
+ "ExperienceSignal": [
+  "Experience signal",
+  "Experience signals",
+  "evidence"
+ ],
+ "CommissioningTest": [
+  "Commissioning test",
+  "Commissioning tests",
+  "commission"
+ ],
+ "KnowledgeAsset": [
+  "Knowledge asset",
+  "Knowledge assets",
+  "learn"
+ ],
+ "Milestone": [
+  "Milestone",
+  "Milestones",
+  "time"
+ ],
+ "Team": [
+  "Team",
+  "Teams",
+  "people"
+ ],
+ "Skill": [
+  "Skill",
+  "Skills",
+  "learn"
+ ],
+ "SupportAgreement": [
+  "Support agreement",
+  "Support agreements",
+  "support"
+ ],
+ "ServiceRequest": [
+  "ServiceHands request",
+  "ServiceHands requests",
+  "ops"
+ ],
+ "WorkOrder": [
+  "Work order",
+  "Work orders",
+  "ops"
+ ],
+ "Artifact": [
+  "Artifact",
+  "Artifacts",
+  "evidence"
+ ],
+ "Decision": [
+  "Decision",
+  "Decisions",
+  "time"
+ ],
+ "Risk": [
+  "Risk",
+  "Risks",
+  "project"
+ ],
+ "Deviation": [
+  "Deviation",
+  "Deviations",
+  "commission"
+ ],
+ "Handoff": [
+  "Handoff",
+  "Handoffs",
+  "time"
+ ],
+ "SignageZone": [
+  "Signage zone",
+  "Signage zones",
+  "place"
+ ],
+ "ContentChannel": [
+  "Content channel",
+  "Content channels",
+  "doc"
+ ],
+ "LightingZone": [
+  "Lighting zone",
+  "Lighting zones",
+  "room"
+ ],
+ "LightingScene": [
+  "Lighting scene",
+  "Lighting scenes",
+  "room"
+ ],
+ "Architecture": [
+  "Architecture",
+  "Architectures",
+  "standard"
+ ],
+ "ArchCompetition": [
+  "Architectural competition",
+  "Architectural competitions",
+  "graph"
+ ],
+ "PlannedRoom": [
+  "Planned room",
+  "Planned rooms",
+  "room"
+ ],
+ "PlannedAsset": [
+  "Planned device",
+  "Planned devices",
+  "device"
+ ],
+ "RoomDesignRevision": [
+  "Room design revision",
+  "Room design revisions",
+  "project"
+ ],
+ "PlannedDrawing": [
+  "Drawing (room design)",
+  "Drawings (room design)",
+  "doc"
+ ],
+ "PlannedCxPlan": [
+  "Commissioning plan (planned room)",
+  "Commissioning plans (planned rooms)",
+  "commission"
+ ],
+ "RoomIssue": [
+  "Room issue",
+  "Room issues",
+  "issue"
+ ]
+}

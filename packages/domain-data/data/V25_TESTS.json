@@ -1,0 +1,457 @@
+{
+ "identity_asset": {
+  "domain": "Physical",
+  "tier": 1,
+  "phase": 2,
+  "verifier": "field_technician",
+  "method": "scan the asset label/serial on site and match the register",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": true,
+  "dict": "asset_ids"
+ },
+ "network_reachability": {
+  "domain": "Network",
+  "tier": 1,
+  "phase": 3,
+  "verifier": "field_technician",
+  "method": "ICMP/TCP reachability from the room host (FI v1.3 collector output or hand check)",
+  "accepts": [
+   "FIELD_OBSERVED",
+   "OBSERVED_NETWORK"
+  ],
+  "na": false,
+  "nonwaivable": true,
+  "dict": "reachability_result"
+ },
+ "user_function": {
+  "domain": "Experience",
+  "tier": 1,
+  "phase": 3,
+  "verifier": "commissioning_engineer",
+  "method": "start, share, call, mute, end — as the room is meant to be used",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": true,
+  "dict": "user_function_result"
+ },
+ "design_conformance": {
+  "domain": "Design",
+  "tier": 2,
+  "phase": 2,
+  "verifier": "commissioning_engineer",
+  "method": "installed devices and positions against the released revision (DIVR)",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": true,
+  "dict": "as_built_match_state"
+ },
+ "safety_install": {
+  "domain": "Safety",
+  "tier": 1,
+  "phase": 2,
+  "verifier": "field_technician",
+  "method": "mounting loads, cable management, electrical safety, fire/life-safety clearances",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": true,
+  "dict": "safety_check_result"
+ },
+ "network_vlan": {
+  "domain": "Network",
+  "tier": 2,
+  "phase": 3,
+  "verifier": "field_technician",
+  "method": "switch port profile and VLAN id per device against the network plan",
+  "accepts": [
+   "FIELD_OBSERVED",
+   "OBSERVED_NETWORK"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "vlan_id",
+  "window": true
+ },
+ "power_budget": {
+  "domain": "Power",
+  "tier": 2,
+  "phase": 1,
+  "verifier": "systems_engineer",
+  "method": "PoE and circuit budget against the schedule",
+  "accepts": [
+   "FIELD_OBSERVED",
+   "ENGINEER_APPROVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "poe_draw"
+ },
+ "camera_fov": {
+  "domain": "Video",
+  "tier": 3,
+  "phase": 3,
+  "verifier": "domain_engineer",
+  "family": "camera",
+  "method": "calibration target at known distance; compare measured HFOV/VFOV with the design FOV",
+  "accepts": [
+   "INSTRUMENT_MEASURED",
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "measured_hfov",
+  "capability": "camera_scan"
+ },
+ "camera_preset": {
+  "domain": "Video",
+  "tier": 2,
+  "phase": 3,
+  "verifier": "field_technician",
+  "method": "recall every preset; framing matches the preset family",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "preset_recall"
+ },
+ "uc_media": {
+  "domain": "UC",
+  "tier": 2,
+  "phase": 3,
+  "verifier": "commissioning_engineer",
+  "method": "far-end call: audio both ways, video, content; UC engine signed in",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "uc_engine_signin"
+ },
+ "post_repair_function": {
+  "domain": "Experience",
+  "tier": 1,
+  "phase": 3,
+  "verifier": "field_technician",
+  "method": "the repaired function, end to end",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": true,
+  "dict": "user_function_result"
+ },
+ "audio_aec": {
+  "domain": "Audio",
+  "tier": 3,
+  "phase": 3,
+  "verifier": "domain_engineer",
+  "family": "dsp",
+  "method": "double-talk and echo return under the approved protocol; AEC reference verified",
+  "accepts": [
+   "FIELD_OBSERVED",
+   "INSTRUMENT_MEASURED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "aec_functionality"
+ },
+ "audio_gain": {
+  "domain": "Audio",
+  "tier": 3,
+  "phase": 3,
+  "verifier": "domain_engineer",
+  "family": "dsp",
+  "method": "gain staging per input/output, headroom and limiter, from the DSP project",
+  "accepts": [
+   "INSTRUMENT_MEASURED",
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "gain_staging_result"
+ },
+ "audio_intelligibility": {
+  "domain": "Audio",
+  "tier": 3,
+  "phase": 3,
+  "verifier": "domain_engineer",
+  "family": "dsp",
+  "method": "STIPA at the proposed points with a validated instrument and protocol (IEC 60268-16)",
+  "accepts": [
+   "INSTRUMENT_MEASURED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "stipa_intelligibility",
+  "instrument": true
+ },
+ "acoustic_coverage": {
+  "domain": "Audio",
+  "tier": 3,
+  "phase": 3,
+  "verifier": "domain_engineer",
+  "family": "dsp",
+  "method": "LAeq at every coverage point against the site-approved reference; no universal threshold",
+  "accepts": [
+   "INSTRUMENT_MEASURED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "spl_measured_min",
+  "instrument": true
+ },
+ "reverberation_rt60": {
+  "domain": "Audio",
+  "tier": 3,
+  "phase": 3,
+  "verifier": "domain_engineer",
+  "family": "dsp",
+  "method": "T20/T30 with a validated impulse/interrupted-noise protocol (ISO 3382-2)",
+  "accepts": [
+   "INSTRUMENT_MEASURED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "reverberation_rt60",
+  "instrument": true
+ },
+ "dsp_config_backup": {
+  "domain": "Audio",
+  "tier": 1,
+  "phase": 4,
+  "verifier": "field_technician",
+  "method": "DSP project exported, hashed, stored; restore verified",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": true,
+  "dict": "dsp_project_hash"
+ },
+ "network_qos": {
+  "domain": "Network",
+  "tier": 2,
+  "phase": 3,
+  "verifier": "field_technician",
+  "method": "DSCP marking observed on media flows",
+  "accepts": [
+   "OBSERVED_NETWORK",
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "dscp",
+  "window": true
+ },
+ "network_multicast": {
+  "domain": "Network",
+  "tier": 2,
+  "phase": 3,
+  "verifier": "systems_engineer",
+  "method": "multicast path for media/clock per the network plan",
+  "accepts": [
+   "OBSERVED_NETWORK",
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "multicast_path",
+  "window": true
+ },
+ "dependency_check": {
+  "domain": "Change",
+  "tier": 2,
+  "phase": 1,
+  "verifier": "systems_engineer",
+  "method": "every dependent room/system named with its owner before the change",
+  "accepts": [
+   "ENGINEER_APPROVED",
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": true,
+  "dict": "dependency_list"
+ },
+ "control_ui": {
+  "domain": "Control",
+  "tier": 2,
+  "phase": 3,
+  "verifier": "commissioning_engineer",
+  "method": "every page and action of the touch UI; accessibility; offline/error states",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "ui_navigation"
+ },
+ "control_latency": {
+  "domain": "Control",
+  "tier": 3,
+  "phase": 3,
+  "verifier": "domain_engineer",
+  "family": "touch",
+  "method": "control action latency measured against the design target",
+  "accepts": [
+   "INSTRUMENT_MEASURED",
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "control_action_latency"
+ },
+ "recording_streaming": {
+  "domain": "UC",
+  "tier": 2,
+  "phase": 3,
+  "verifier": "commissioning_engineer",
+  "method": "programme feed recorded and streamed end to end",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "recording_result"
+ },
+ "poe_budget": {
+  "domain": "Power",
+  "tier": 2,
+  "phase": 1,
+  "verifier": "systems_engineer",
+  "method": "PoE draw per port vs switch budget",
+  "accepts": [
+   "FIELD_OBSERVED",
+   "ENGINEER_APPROVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "poe_draw"
+ },
+ "video_signal": {
+  "domain": "Video",
+  "tier": 1,
+  "phase": 3,
+  "verifier": "field_technician",
+  "method": "signal present at resolution and frame rate",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "video_resolution"
+ },
+ "display_controls": {
+  "domain": "Video",
+  "tier": 1,
+  "phase": 3,
+  "verifier": "field_technician",
+  "method": "power, input, volume from the control system",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "display_control_result"
+ },
+ "signage_priority": {
+  "domain": "Signage",
+  "tier": 2,
+  "phase": 3,
+  "verifier": "commissioning_engineer",
+  "method": "priority and override of signage content",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "signage_priority"
+ },
+ "content_schedule": {
+  "domain": "Signage",
+  "tier": 2,
+  "phase": 3,
+  "verifier": "commissioning_engineer",
+  "method": "schedule plays as configured",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "content_schedule"
+ },
+ "lighting_scenes": {
+  "domain": "Lighting",
+  "tier": 2,
+  "phase": 3,
+  "verifier": "commissioning_engineer",
+  "method": "every scene recalls from the UI",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "lighting_scene"
+ },
+ "occupancy_safety": {
+  "domain": "Safety",
+  "tier": 1,
+  "phase": 3,
+  "verifier": "field_technician",
+  "method": "occupancy and emergency lighting behaviour",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": true,
+  "dict": "occupancy_safety"
+ },
+ "rollback_drill": {
+  "domain": "Change",
+  "tier": 2,
+  "phase": 4,
+  "verifier": "systems_engineer",
+  "method": "restore from the pre-change backup and verify",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": true,
+  "dict": "rollback_result"
+ },
+ "safety_review": {
+  "domain": "Safety",
+  "tier": 2,
+  "phase": 1,
+  "verifier": "systems_engineer",
+  "method": "risk review signed before field work",
+  "accepts": [
+   "ENGINEER_APPROVED"
+  ],
+  "na": false,
+  "nonwaivable": true,
+  "dict": "risk_review"
+ },
+ "independent_validation": {
+  "domain": "Assurance",
+  "tier": 3,
+  "phase": 4,
+  "verifier": "qa_reviewer",
+  "method": "an independent engineer repeats the critical tests",
+  "accepts": [
+   "QA_VERIFIED",
+   "INSTRUMENT_MEASURED"
+  ],
+  "na": false,
+  "nonwaivable": true,
+  "dict": "independent_validation"
+ }
+}

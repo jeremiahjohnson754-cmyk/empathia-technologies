@@ -1,0 +1,522 @@
+{
+ "BELONGS_TO": [
+  "belongs to",
+  "contains"
+ ],
+ "HAS_DEVICE": [
+  "has device",
+  "installed in"
+ ],
+ "HAS_ZONE": [
+  "has zone",
+  "zone of"
+ ],
+ "HAS_FURNITURE": [
+  "has furniture",
+  "placed in"
+ ],
+ "IS_ARCHETYPE": [
+  "follows archetype",
+  "archetype of"
+ ],
+ "CONNECTS_TO": [
+  "connects to",
+  "serves"
+ ],
+ "UPLINKS_TO": [
+  "uplinks to",
+  "feeds"
+ ],
+ "POWERED_BY": [
+  "powered by",
+  "powers"
+ ],
+ "HOSTED_IN": [
+  "hosted in",
+  "hosts"
+ ],
+ "GOVERNED_BY": [
+  "governed by",
+  "governs"
+ ],
+ "SUPPORTED_BY": [
+  "supported by",
+  "supports"
+ ],
+ "COVERS": [
+  "covers",
+  "covered by"
+ ],
+ "PRIMARY_CONTACT": [
+  "primary contact",
+  "primary contact for"
+ ],
+ "BACKUP_CONTACT": [
+  "backup contact",
+  "backup contact for"
+ ],
+ "ESCALATES_TO": [
+  "escalates to",
+  "escalation for"
+ ],
+ "HAS_ROLE": [
+  "holds role",
+  "held by"
+ ],
+ "MEMBER_OF": [
+  "member of",
+  "has member"
+ ],
+ "WORKS_FOR": [
+  "works for",
+  "employs"
+ ],
+ "SUPPLIED_BY": [
+  "supplied by",
+  "supplies"
+ ],
+ "INTEGRATED_BY": [
+  "integrated by",
+  "integrated"
+ ],
+ "TRACKED_AS": [
+  "tracked as",
+  "tracks"
+ ],
+ "AFFECTS": [
+  "affects",
+  "affected by"
+ ],
+ "INVOLVES": [
+  "involves",
+  "involved in"
+ ],
+ "CAUSED_BY": [
+  "caused by",
+  "cause of"
+ ],
+ "RESOLVED_BY": [
+  "resolved by",
+  "resolves"
+ ],
+ "ASSIGNED_TO": [
+  "assigned to",
+  "assigned"
+ ],
+ "BUILDS": [
+  "builds",
+  "built by"
+ ],
+ "OWNED_BY": [
+  "owned by",
+  "owns"
+ ],
+ "CREATES": [
+  "creates",
+  "created by"
+ ],
+ "DRIVES": [
+  "drives",
+  "driven by"
+ ],
+ "SELECTS": [
+  "selects",
+  "selected by"
+ ],
+ "REQUESTED_FOR": [
+  "requested for",
+  "has request"
+ ],
+ "DESIGNED_FOR": [
+  "designed for",
+  "has design"
+ ],
+ "EVALUATED_BY": [
+  "evaluated by",
+  "evaluates"
+ ],
+ "VERIFIED_BY": [
+  "verified by",
+  "verifies"
+ ],
+ "CHECKED_IN": [
+  "part of",
+  "includes check"
+ ],
+ "FOUND_IN": [
+  "found in",
+  "has deficiency"
+ ],
+ "COMPARES_TO": [
+  "compares to",
+  "compared by"
+ ],
+ "CHECKS": [
+  "checks",
+  "checked by"
+ ],
+ "MEASURED_IN": [
+  "measured in",
+  "has measurement"
+ ],
+ "SUPPORTS_CLAIM": [
+  "is evidence for",
+  "evidenced by"
+ ],
+ "PROPOSES": [
+  "proposes",
+  "proposed by"
+ ],
+ "TARGETS": [
+  "targets",
+  "has recommendation"
+ ],
+ "FUNDS": [
+  "funds",
+  "funded by"
+ ],
+ "DECIDES": [
+  "decides",
+  "decided by"
+ ],
+ "RECORDS": [
+  "records",
+  "recorded in"
+ ],
+ "HAPPENED_TO": [
+  "happened to",
+  "history"
+ ],
+ "APPROVES": [
+  "approves",
+  "approved by"
+ ],
+ "CONCERNS": [
+  "concerns",
+  "has governance item"
+ ],
+ "DOCUMENTS": [
+  "documents",
+  "documented by"
+ ],
+ "DERIVED_FROM": [
+  "derived from",
+  "source pattern for"
+ ],
+ "TEACHES": [
+  "teaches",
+  "taught by"
+ ],
+ "USES_PROFILE": [
+  "uses control profile",
+  "used by"
+ ],
+ "FEEDS": [
+  "feeds data to",
+  "receives data from"
+ ],
+ "REPLACES": [
+  "could replace",
+  "could be replaced by"
+ ],
+ "MATCHES": [
+  "matches pattern",
+  "seen in"
+ ],
+ "INDICATES": [
+  "points to",
+  "shown by"
+ ],
+ "RESTORES": [
+  "restores compliance with",
+  "restored by"
+ ],
+ "RELATES_TO": [
+  "relates to",
+  "related to"
+ ],
+ "FIRST_LINE": [
+  "first line",
+  "first line for"
+ ],
+ "ENGINEERING_CONTACT": [
+  "engineering contact",
+  "engineering contact for"
+ ],
+ "FINAL_ESCALATION": [
+  "final escalation",
+  "final escalation for"
+ ],
+ "EXPLAINED_IN": [
+  "explained in",
+  "explains"
+ ],
+ "EVALUATES_FOR": [
+  "evaluated for",
+  "has evaluation"
+ ],
+ "SHORTLISTS": [
+  "shortlists",
+  "shortlisted in"
+ ],
+ "IMPACTS": [
+  "affects",
+  "affected by market event"
+ ],
+ "RECORDS_COST_OF": [
+  "records the cost of",
+  "cost history"
+ ],
+ "SUCCEEDS": [
+  "succeeds",
+  "succeeded by"
+ ],
+ "RAISED_FROM": [
+  "raised from",
+  "led to request"
+ ],
+ "ASSESSES": [
+  "assesses",
+  "assessed by"
+ ],
+ "VALIDATES": [
+  "validates",
+  "validated by"
+ ],
+ "SUPERSEDES": [
+  "supersedes",
+  "superseded by"
+ ],
+ "WAS_VERIFIED_BY": [
+  "was verified by",
+  "earlier baseline of"
+ ],
+ "OBSERVED_IN": [
+  "observed in",
+  "has experience signal"
+ ],
+ "SIGNALS": [
+  "signals a risk to",
+  "has maintenance signal"
+ ],
+ "CHANGES": [
+  "changes",
+  "changed by"
+ ],
+ "REACHES": [
+  "reaches",
+  "reached by change"
+ ],
+ "PROVES": [
+  "proves",
+  "proven by"
+ ],
+ "TESTED_IN": [
+  "recorded in",
+  "holds test"
+ ],
+ "TESTS": [
+  "tests",
+  "tested by"
+ ],
+ "RAISED_BY": [
+  "raised by",
+  "raised"
+ ],
+ "SITS_ON": [
+  "sits on",
+  "carries deficiency"
+ ],
+ "LEAVES_UNMET": [
+  "leaves unmet",
+  "not met because of"
+ ],
+ "REMEDIED_BY": [
+  "remedied by",
+  "remedy for"
+ ],
+ "ILLUSTRATES": [
+  "illustrates",
+  "illustrated by"
+ ],
+ "GUIDED_BY": [
+  "worked through with",
+  "used to work through"
+ ],
+ "SET_IN": [
+  "set in",
+  "is the setting of"
+ ],
+ "DRAWS_ON": [
+  "draws on",
+  "used as evidence in"
+ ],
+ "TRIGGERED_BY": [
+  "triggered by",
+  "triggered"
+ ],
+ "MARKS": [
+  "marks a stage of",
+  "has milestone"
+ ],
+ "COMPARES": [
+  "compares",
+  "compared in"
+ ],
+ "ON_TEAM": [
+  "on team",
+  "team member"
+ ],
+ "REPORTS_TO": [
+  "reports to",
+  "manages"
+ ],
+ "BACKS_UP": [
+  "backs up",
+  "backed up by"
+ ],
+ "HAS_SKILL": [
+  "has skill",
+  "skill held by"
+ ],
+ "WORKS_AT": [
+  "works at",
+  "workplace of"
+ ],
+ "AGREEMENT_WITH": [
+  "agreement with",
+  "holds agreement"
+ ],
+ "UNDER_AGREEMENT": [
+  "under agreement",
+  "agreement for"
+ ],
+ "IN_ZONE": [
+  "in zone",
+  "zone contains"
+ ],
+ "PUBLISHES_TO": [
+  "publishes to",
+  "shows channel"
+ ],
+ "LOCATED_IN": [
+  "located in",
+  "location of"
+ ],
+ "LIGHTS": [
+  "lights",
+  "lit by"
+ ],
+ "SCENE_OF": [
+  "scene of",
+  "has scene"
+ ],
+ "CONTROLS": [
+  "controls",
+  "controlled by"
+ ],
+ "CONVERTED_TO": [
+  "converted to",
+  "converted from"
+ ],
+ "ORDERED_FOR": [
+  "work order for",
+  "has work order"
+ ],
+ "ATTACHED_TO": [
+  "attached to",
+  "has artifact"
+ ],
+ "DECISION_ON": [
+  "decision on",
+  "decided in"
+ ],
+ "DECIDED_BY": [
+  "decided by",
+  "decided"
+ ],
+ "APPROVED_BY": [
+  "approved by",
+  "approved"
+ ],
+ "BASED_ON": [
+  "based on",
+  "basis for"
+ ],
+ "RISK_TO": [
+  "risk to",
+  "has risk"
+ ],
+ "DEPENDS_ON": [
+  "depends on",
+  "needed by"
+ ],
+ "DEVIATES_FROM": [
+  "deviates from",
+  "has deviation"
+ ],
+ "HANDS_OFF": [
+  "hands off",
+  "handed off in"
+ ],
+ "HANDED_BY": [
+  "handed off by",
+  "handed off"
+ ],
+ "HANDED_TO": [
+  "handed to",
+  "received"
+ ],
+ "USES_ARCHITECTURE": [
+  "uses architecture",
+  "architecture of"
+ ],
+ "REVIEWED_BY": [
+  "reviewed by",
+  "reviewed"
+ ],
+ "CANDIDATE_FOR": [
+  "candidate for",
+  "has candidate"
+ ],
+ "CONTRACTS_WITH": [
+  "contracts with",
+  "contracted on"
+ ],
+ "COMPETES_WITH": [
+  "competes with",
+  "competed by"
+ ],
+ "PLANS_DEVICE": [
+  "plans device",
+  "planned in"
+ ],
+ "PROPOSED_LINK": [
+  "has a proposed connection to",
+  "has a proposed connection from"
+ ],
+ "DESIGN_OF": [
+  "is a design of",
+  "is designed by"
+ ],
+ "DRAWING_OF": [
+  "is a drawing of",
+  "is drawn by"
+ ],
+ "CX_PLAN_OF": [
+  "is the commissioning plan of",
+  "is commissioned by"
+ ],
+ "ISSUE_ON": [
+  "is an issue on",
+  "has issue"
+ ],
+ "REFERENCES_ASSET": [
+  "references",
+  "is referenced by"
+ ],
+ "CONJOINED_WITH": [
+  "conjoined with",
+  "conjoined with"
+ ]
+}

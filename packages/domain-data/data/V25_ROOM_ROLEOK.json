@@ -1,0 +1,34 @@
+{
+ "camera": [
+  "camera",
+  "bar"
+ ],
+ "mic": [
+  "micceil",
+  "mictable",
+  "micwireless",
+  "bar"
+ ],
+ "speaker": [
+  "speaker",
+  "bar"
+ ],
+ "display": [
+  "display",
+  "ledwall",
+  "projector"
+ ],
+ "dsp": [
+  "dsp"
+ ],
+ "switch": [
+  "switch"
+ ],
+ "compute": [
+  "compute",
+  "bar"
+ ],
+ "encoder": [
+  "encoder"
+ ]
+}

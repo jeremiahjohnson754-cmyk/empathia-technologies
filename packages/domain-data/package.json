@@ -1,0 +1,9 @@
+{
+  "name": "@empathia/domain-data",
+  "version": "2.5.4-extract.1",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "description": "Rule tables and golden cases extracted unchanged from the Empathia demonstrator build named in data/PROVENANCE.json.",
+  "exports": { "./data/*": "./data/*", "./golden/*": "./golden/*" }
+}

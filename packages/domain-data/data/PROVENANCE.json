@@ -1,0 +1,99 @@
+{
+ "extractedFrom": "Empathia-Living-Campus-v2.5.4-nomedia.html",
+ "sha256": "5192ae0b5daa785e3285426af400e39ee9125bd69b8750b135d8ba5e94025997",
+ "at": "2026-10-26T10:50:32.625Z",
+ "tables": {
+  "V25_TESTS": {
+   "sha256": "dfab468f659b79457d0a431ab0479953abbf79ec65869000037c44437cad7dc2",
+   "entries": 33
+  },
+  "V25_TEST_LABEL": {
+   "sha256": "8c0b3cd77633473d0645d2560c191611bf1397c387cf05be27465ff9c6d6f019",
+   "entries": 32
+  },
+  "V25_CX_CATALOGUE": {
+   "sha256": "ed3e4223d61a4bf994679fee5c4dfd32ec2bb117f53b173aab422d1b9a06f7e6",
+   "entries": 61
+  },
+  "V25_CX_PACKS": {
+   "sha256": "80a8fd2bfa39eb7e8f8bea541fe5d3cd927266e786e6e6e9aba611055c5bfeca",
+   "entries": 11
+  },
+  "V25_ROOM_TYPE": {
+   "sha256": "148d8a8e87a7ab4ee122bb4a4b1b8238dd8d9bb82b1119823249e0f650ca34aa",
+   "entries": 5
+  },
+  "V25_DOMAIN_PERSONA": {
+   "sha256": "f9e20294c7ab02120abebfb251e57d460c4ece95336bc55330ef4c788f160f75",
+   "entries": 3
+  },
+  "V25_VERIFIER_PERSONAS": {
+   "sha256": "913b43a034a46e0cd2999f7c1ebd6029590518e069f5d914deb90bd2fac5d1d6",
+   "entries": 5
+  },
+  "V25_ROOM_CATS": {
+   "sha256": "22dbc6d176cafbc54b019fb056f44be800392f0f2b5aa4ca99c39330ae22f1f5",
+   "entries": 28
+  },
+  "V25_ROOM_TEMPLATES": {
+   "sha256": "22e056d2a90fc9caf65f6bac400c1a71bba3656d6ab768671deba5b46b1d24bb",
+   "entries": 15
+  },
+  "V25_ROOM_REQUIRED": {
+   "sha256": "425bd8df05f27de69ac787736390fb4a10ca90b2a633741a35e3c387bb234c3a",
+   "entries": 9
+  },
+  "V25_ROOM_ROLEOK": {
+   "sha256": "86f3214098c7b3094c288c84901414b2730441508e3713241ff67c07cc46c272",
+   "entries": 8
+  },
+  "V25_ROOM_INFO": {
+   "sha256": "c68f322eaaf51a6c60c329a13b8eef6fbb0983b3bace4870b57df770962560f8",
+   "entries": 5
+  },
+  "V25_ROOM_LIFECYCLE": {
+   "sha256": "532c23a17940677912ac77bacd81b7f81d2f093975b810676ac6a72d8f251253",
+   "entries": 7
+  },
+  "V25_ROOM_RESULTS": {
+   "sha256": "e7d6d0d5cdc25fe189aae7e25663b3c841a1f907dd2c8346783087282707bb89",
+   "entries": 4
+  },
+  "ARCHETYPES": {
+   "sha256": "c671389cd28f7f5810408747e1579ae796493a0e8948f3dc1e1cf4699b1b5833",
+   "entries": 15
+  },
+  "V25_PERSONAS": {
+   "sha256": "77b724155a7672b64994c26a27fd3de4b5920c073f78ea54ca7249ffefaa417e",
+   "entries": 22
+  },
+  "V25_EV": {
+   "sha256": "76dcfb7394758c0fdf074417ec2039137f9bd5486a4621f17191d3c5b1ec4844",
+   "entries": 34
+  },
+  "V25_PHASES": {
+   "sha256": "7d1620e11b89a66ce1c9d539928656863739f2d8903a24ed1ccaeccf1fd5e0f8",
+   "entries": 5
+  },
+  "V25_GUARDS": {
+   "sha256": "a11541a603cc8e59fd6918a4e8d42533d73899af73931060f1d201bdd81d2656",
+   "entries": 40
+  },
+  "TYPES": {
+   "sha256": "41fc2248b71e62f5015a4bfe9b91276b606f32b9ff75690c44ba3ef48fcbff79",
+   "entries": 84
+  },
+  "RELS": {
+   "sha256": "68f174dc5f4bb4a1f9299289e1e123bc83b09e93632beeb76bbac8e96970dd5a",
+   "entries": 130
+  },
+  "V25_DESIGN_rulePack": {
+   "sha256": "994df0a3d7ec74cd72df119aa049ca034ba46e7ff2d3a577f492ab36bab4d1c4",
+   "entries": 7
+  },
+  "V25_ROOM_FAMILY": {
+   "sha256": "e63dcd04e36e44881f11b15093c4a81586ca14f680c8bb1336381087c3305010",
+   "entries": 28
+  }
+ }
+}

@@ -1,0 +1,27 @@
+[
+ [
+  1,
+  "Pre-install / survey readiness",
+  "site survey, access, dimensions verified, power and network present, delivered assets registered"
+ ],
+ [
+  2,
+  "Installation and documentary trace",
+  "devices placed as designed, cable and port maps, labels, firmware recorded, progress photos"
+ ],
+ [
+  3,
+  "Integrated validation (Tier 1 / 2 / 3)",
+  "identity and reachability, functional paths, instrument-measured performance"
+ ],
+ [
+  4,
+  "Post-commission, deficiencies, acceptance readiness",
+  "deficiencies resolved or excepted, retests, report, customer scope match"
+ ],
+ [
+  5,
+  "Final room photography, document reconciliation, handoff release",
+  "finished-room photo views approved, as-builts reconciled, support owner, QA release"
+ ]
+]

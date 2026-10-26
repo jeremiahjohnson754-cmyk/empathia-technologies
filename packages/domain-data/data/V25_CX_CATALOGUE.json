@@ -1,0 +1,1305 @@
+{
+ "audio_noise_floor": {
+  "pack": "audio",
+  "label": "Background noise floor (LAeq, unoccupied)",
+  "domain": "Audio",
+  "phase": 3,
+  "tier": 3,
+  "verifier": "domain_engineer",
+  "family": "dsp",
+  "method": "LAeq over 60 s at the seating reference, HVAC on, unoccupied, class 1 meter",
+  "accepts": [
+   "INSTRUMENT_MEASURED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "instrument": true,
+  "dict": "noise_floor_laeq",
+  "applies": {
+   "families": [
+    "dsp"
+   ],
+   "tiers": [
+    "standard",
+    "advanced",
+    "critical"
+   ]
+  },
+  "deps": [
+   "identity_asset"
+  ]
+ },
+ "audio_mic_pickup": {
+  "pack": "audio",
+  "label": "Microphone pickup coverage at every seat",
+  "domain": "Audio",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "commissioning_engineer",
+  "method": "talker at each seat into a far-end monitor; level and clarity logged per seat",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "mic_pickup_result",
+  "applies": {
+   "families": [
+    "dsp"
+   ]
+  },
+  "deps": [
+   "audio_gain"
+  ]
+ },
+ "audio_zone_routing": {
+  "pack": "audio",
+  "label": "Zone routing and mute/volume mapping",
+  "domain": "Audio",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "field_technician",
+  "method": "every DSP output zone driven in turn; UI mute/volume acts on the right zone",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "zone_routing_result",
+  "applies": {
+   "families": [
+    "dsp"
+   ],
+   "tiers": [
+    "advanced",
+    "critical"
+   ]
+  }
+ },
+ "audio_limiter_levels": {
+  "pack": "audio",
+  "label": "Limiter and safe listening level",
+  "domain": "Audio",
+  "phase": 3,
+  "tier": 3,
+  "verifier": "domain_engineer",
+  "family": "dsp",
+  "method": "limiter threshold verified; programme peak at the nearest seat below the site safe-level reference",
+  "accepts": [
+   "INSTRUMENT_MEASURED"
+  ],
+  "na": false,
+  "nonwaivable": true,
+  "instrument": true,
+  "dict": "spl_measured_max",
+  "applies": {
+   "families": [
+    "dsp"
+   ]
+  }
+ },
+ "audio_assisted_listening": {
+  "pack": "audio",
+  "label": "Assistive listening path",
+  "domain": "Audio",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "commissioning_engineer",
+  "method": "programme audio reaches the assistive system receiver with the same mute state",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "assistive_listening_result",
+  "applies": {
+   "rooms": [
+    "townhall",
+    "boardroom"
+   ]
+  }
+ },
+ "audio_dsp_firmware": {
+  "pack": "audio",
+  "label": "DSP firmware against the baseline",
+  "domain": "Audio",
+  "phase": 2,
+  "tier": 1,
+  "verifier": "field_technician",
+  "method": "firmware read from the device; compared with the campus baseline and the vendor support horizon",
+  "accepts": [
+   "FIELD_OBSERVED",
+   "OBSERVED_NETWORK"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "firmware_version",
+  "applies": {
+   "families": [
+    "dsp"
+   ]
+  }
+ },
+ "video_display_calibration": {
+  "pack": "video",
+  "label": "Display picture settings and calibration",
+  "domain": "Video",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "field_technician",
+  "method": "picture mode, brightness and colour against the room standard; test pattern photographed",
+  "accepts": [
+   "FIELD_OBSERVED",
+   "INSTRUMENT_MEASURED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "display_calibration",
+  "applies": {
+   "families": [
+    "display"
+   ]
+  }
+ },
+ "video_edid_handshake": {
+  "pack": "video",
+  "label": "EDID / HDCP handshake on every input",
+  "domain": "Video",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "field_technician",
+  "method": "every source to every sink; resolution and HDCP state recorded",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "edid_result",
+  "applies": {
+   "families": [
+    "display"
+   ]
+  },
+  "deps": [
+   "video_signal"
+  ]
+ },
+ "video_content_share": {
+  "pack": "video",
+  "label": "Wireless and wired content sharing",
+  "domain": "Video",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "commissioning_engineer",
+  "method": "laptop share by cable and wirelessly; audio follows video",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "content_share_result",
+  "applies": {
+   "families": [
+    "display",
+    "uc"
+   ]
+  }
+ },
+ "video_camera_exposure": {
+  "pack": "video",
+  "label": "Camera exposure and white balance",
+  "domain": "Video",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "field_technician",
+  "method": "exposure and white balance set for the lighting scenes; reference capture per scene",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "camera_exposure",
+  "applies": {
+   "families": [
+    "camera"
+   ]
+  }
+ },
+ "video_camera_tracking": {
+  "pack": "video",
+  "label": "Camera tracking behaviour",
+  "domain": "Video",
+  "phase": 3,
+  "tier": 3,
+  "verifier": "domain_engineer",
+  "family": "camera",
+  "method": "tracking mode exercised with two talkers; framing transitions observed and rated against the design intent",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "tracking_performance",
+  "applies": {
+   "families": [
+    "camera"
+   ],
+   "tiers": [
+    "advanced",
+    "critical"
+   ]
+  },
+  "deps": [
+   "camera_preset"
+  ]
+ },
+ "video_switching": {
+  "pack": "video",
+  "label": "Video switching and routing matrix",
+  "domain": "Video",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "field_technician",
+  "method": "every route in the switching plan; switching time noted",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "switching_result",
+  "applies": {
+   "tiers": [
+    "advanced",
+    "critical"
+   ],
+   "families": [
+    "display"
+   ]
+  }
+ },
+ "video_av_sync": {
+  "pack": "video",
+  "label": "Audio/video synchronisation",
+  "domain": "Video",
+  "phase": 3,
+  "tier": 3,
+  "verifier": "domain_engineer",
+  "family": "dsp",
+  "method": "lip-sync test clip at the display and loudspeakers; offset measured",
+  "accepts": [
+   "INSTRUMENT_MEASURED",
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "av_sync_offset",
+  "applies": {
+   "tiers": [
+    "advanced",
+    "critical"
+   ]
+  }
+ },
+ "uc_calendar": {
+  "pack": "uc_compute",
+  "label": "Calendar / scheduling integration",
+  "domain": "UC",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "commissioning_engineer",
+  "method": "a booked meeting appears on the room panel and joins in one touch",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "calendar_result",
+  "applies": {
+   "families": [
+    "uc",
+    "touch_panel"
+   ]
+  }
+ },
+ "uc_peripherals": {
+  "pack": "uc_compute",
+  "label": "UC peripheral enumeration",
+  "domain": "UC",
+  "phase": 3,
+  "tier": 1,
+  "verifier": "field_technician",
+  "method": "camera, microphone and loudspeaker enumerated by the UC engine as designed",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "uc_peripheral_result",
+  "applies": {
+   "families": [
+    "uc"
+   ]
+  }
+ },
+ "compute_display_capability": {
+  "pack": "uc_compute",
+  "label": "Display count within the compute model's capability record",
+  "domain": "Compute",
+  "phase": 1,
+  "tier": 2,
+  "verifier": "systems_engineer",
+  "method": "displays in the design against the per-model capability record (GPU, platform, certified configuration) — no universal maximum",
+  "accepts": [
+   "ENGINEER_APPROVED"
+  ],
+  "na": false,
+  "nonwaivable": true,
+  "dict": "display_capability",
+  "applies": {
+   "families": [
+    "uc"
+   ]
+  }
+ },
+ "compute_patch_baseline": {
+  "pack": "uc_compute",
+  "label": "Compute OS and application patch baseline",
+  "domain": "Compute",
+  "phase": 2,
+  "tier": 1,
+  "verifier": "field_technician",
+  "method": "OS build and UC application version read from the device against the baseline",
+  "accepts": [
+   "FIELD_OBSERVED",
+   "OBSERVED_NETWORK"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "patch_baseline",
+  "applies": {
+   "families": [
+    "uc"
+   ]
+  }
+ },
+ "compute_certified_config": {
+  "pack": "uc_compute",
+  "label": "Certified configuration match",
+  "domain": "Compute",
+  "phase": 2,
+  "tier": 2,
+  "verifier": "systems_engineer",
+  "method": "compute + peripherals as a certified bundle per the vendor record on file",
+  "accepts": [
+   "ENGINEER_APPROVED",
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "certified_config",
+  "applies": {
+   "families": [
+    "uc"
+   ],
+   "tiers": [
+    "advanced",
+    "critical"
+   ]
+  }
+ },
+ "control_source_switching": {
+  "pack": "control",
+  "label": "Source switching from the UI",
+  "domain": "Control",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "field_technician",
+  "method": "every source button routes the right signal",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "control_switching",
+  "applies": {
+   "families": [
+    "touch_panel"
+   ]
+  },
+  "deps": [
+   "control_ui"
+  ]
+ },
+ "control_audio": {
+  "pack": "control",
+  "label": "Audio control (mute, volume, zones)",
+  "domain": "Control",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "field_technician",
+  "method": "mute states and volume limits from the UI act on the DSP",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "control_audio",
+  "applies": {
+   "families": [
+    "touch_panel",
+    "dsp"
+   ]
+  }
+ },
+ "control_camera": {
+  "pack": "control",
+  "label": "Camera control (PTZ, presets) from the UI",
+  "domain": "Control",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "field_technician",
+  "method": "presets and manual PTZ from the UI",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "control_camera",
+  "applies": {
+   "families": [
+    "touch_panel",
+    "camera"
+   ]
+  }
+ },
+ "control_macros": {
+  "pack": "control",
+  "label": "Room automation macros (start / end meeting)",
+  "domain": "Control",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "commissioning_engineer",
+  "method": "start and end macros leave every device in the designed state",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "control_macros",
+  "applies": {
+   "families": [
+    "touch_panel"
+   ]
+  }
+ },
+ "control_ups": {
+  "pack": "control",
+  "label": "UPS graceful power-failure behaviour",
+  "domain": "Control",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "commissioning_engineer",
+  "method": "mains removed under supervision; devices shut down and recover in order",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "ups_result",
+  "applies": {
+   "tiers": [
+    "advanced",
+    "critical"
+   ]
+  },
+  "deps": [
+   "safety_install"
+  ]
+ },
+ "control_error_states": {
+  "pack": "control",
+  "label": "Error handling and offline states",
+  "domain": "Control",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "commissioning_engineer",
+  "method": "a device unplugged: the UI says so and recovers",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "control_error_states",
+  "applies": {
+   "families": [
+    "touch_panel"
+   ]
+  }
+ },
+ "control_time_sync": {
+  "pack": "control",
+  "label": "Time synchronisation (NTP)",
+  "domain": "Control",
+  "phase": 2,
+  "tier": 1,
+  "verifier": "field_technician",
+  "method": "processor and panels synchronised to the site time source",
+  "accepts": [
+   "FIELD_OBSERVED",
+   "OBSERVED_NETWORK"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "ntp_result",
+  "applies": {
+   "families": [
+    "touch_panel"
+   ]
+  }
+ },
+ "control_program_version": {
+  "pack": "control",
+  "label": "Control program and UI build recorded",
+  "domain": "Control",
+  "phase": 2,
+  "tier": 1,
+  "verifier": "field_technician",
+  "method": "program and UI build versions read from the processor and archived with their hashes",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": true,
+  "dict": "control_program_version",
+  "applies": {
+   "families": [
+    "touch_panel"
+   ]
+  }
+ },
+ "control_third_party": {
+  "pack": "control",
+  "label": "Third-party integrations from the UI (DSP / UC / shades)",
+  "domain": "Control",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "commissioning_engineer",
+  "method": "each integrated system responds to the UI and reports state back",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "control_integrations",
+  "applies": {
+   "families": [
+    "touch_panel"
+   ],
+   "tiers": [
+    "standard",
+    "advanced",
+    "critical"
+   ]
+  }
+ },
+ "network_port_profile": {
+  "pack": "network",
+  "label": "Switch port profile per device",
+  "domain": "Network",
+  "phase": 2,
+  "tier": 2,
+  "verifier": "field_technician",
+  "method": "port description, speed/duplex and PoE class against the port map",
+  "accepts": [
+   "FIELD_OBSERVED",
+   "OBSERVED_NETWORK"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "port_profile",
+  "applies": {
+   "families": [
+    "network_switch"
+   ]
+  },
+  "window": true
+ },
+ "network_firmware_baseline": {
+  "pack": "network",
+  "label": "Network device firmware baseline",
+  "domain": "Network",
+  "phase": 2,
+  "tier": 1,
+  "verifier": "field_technician",
+  "method": "switch firmware read and compared with the baseline",
+  "accepts": [
+   "FIELD_OBSERVED",
+   "OBSERVED_NETWORK"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "firmware_version",
+  "applies": {
+   "families": [
+    "network_switch"
+   ]
+  }
+ },
+ "network_addressing": {
+  "pack": "network",
+  "label": "Addressing, DHCP reservations and DNS",
+  "domain": "Network",
+  "phase": 2,
+  "tier": 1,
+  "verifier": "field_technician",
+  "method": "every device at its planned address and hostname; DNS resolves",
+  "accepts": [
+   "FIELD_OBSERVED",
+   "OBSERVED_NETWORK"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "addressing_result",
+  "applies": {}
+ },
+ "network_management_reach": {
+  "pack": "network",
+  "label": "Management reachability from the monitoring host",
+  "domain": "Network",
+  "phase": 3,
+  "tier": 1,
+  "verifier": "field_technician",
+  "method": "the FI v1.3 collector host reaches the device management interface (reachability only — never performance)",
+  "accepts": [
+   "OBSERVED_NETWORK",
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "reachability_result",
+  "applies": {},
+  "deps": [
+   "network_reachability"
+  ]
+ },
+ "network_media_clock": {
+  "pack": "network",
+  "label": "AVoIP / networked-audio clocking",
+  "domain": "Network",
+  "phase": 3,
+  "tier": 3,
+  "verifier": "systems_engineer",
+  "method": "clock leader elected as designed; no clock flapping over the observation window",
+  "accepts": [
+   "OBSERVED_NETWORK",
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "media_clock",
+  "applies": {
+   "tiers": [
+    "advanced",
+    "critical"
+   ],
+   "families": [
+    "dsp"
+   ]
+  },
+  "window": true
+ },
+ "network_config_backup": {
+  "pack": "network",
+  "label": "Network configuration backed up",
+  "domain": "Network",
+  "phase": 4,
+  "tier": 1,
+  "verifier": "field_technician",
+  "method": "switch configuration exported, hashed and stored",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": true,
+  "dict": "config_backup",
+  "applies": {
+   "families": [
+    "network_switch"
+   ]
+  }
+ },
+ "infra_cable_certification": {
+  "pack": "infrastructure",
+  "label": "Structured cabling certification",
+  "domain": "Infrastructure",
+  "phase": 2,
+  "tier": 2,
+  "verifier": "field_technician",
+  "method": "certification report per link from the installer's tester",
+  "accepts": [
+   "INSTRUMENT_MEASURED",
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "cable_certification",
+  "applies": {
+   "types": [
+    "new_install",
+    "network_change"
+   ]
+  }
+ },
+ "infra_labeling": {
+  "pack": "infrastructure",
+  "label": "Device, cable and port labelling",
+  "domain": "Infrastructure",
+  "phase": 2,
+  "tier": 1,
+  "verifier": "field_technician",
+  "method": "labels match the register and the port map; photographed",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "labeling_result",
+  "applies": {}
+ },
+ "infra_rack_match": {
+  "pack": "infrastructure",
+  "label": "Rack elevation matches the drawing",
+  "domain": "Infrastructure",
+  "phase": 2,
+  "tier": 1,
+  "verifier": "field_technician",
+  "method": "rack photographed and compared with the elevation",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "rack_match",
+  "applies": {
+   "types": [
+    "new_install"
+   ],
+   "tiers": [
+    "standard",
+    "advanced",
+    "critical"
+   ]
+  }
+ },
+ "power_circuit_load": {
+  "pack": "infrastructure",
+  "label": "Circuit load and dedicated supply",
+  "domain": "Power",
+  "phase": 1,
+  "tier": 2,
+  "verifier": "systems_engineer",
+  "method": "nameplate load per circuit against capacity; dedicated circuits where the design requires",
+  "accepts": [
+   "ENGINEER_APPROVED",
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "circuit_load",
+  "applies": {
+   "types": [
+    "new_install"
+   ]
+  }
+ },
+ "power_ups_runtime": {
+  "pack": "infrastructure",
+  "label": "UPS runtime under load",
+  "domain": "Power",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "field_technician",
+  "method": "runtime estimate read from the UPS under the connected load",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "ups_runtime",
+  "applies": {
+   "tiers": [
+    "advanced",
+    "critical"
+   ]
+  }
+ },
+ "env_lighting_levels": {
+  "pack": "infrastructure",
+  "label": "Lighting levels at the camera and the displays",
+  "domain": "Environment",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "commissioning_engineer",
+  "method": "lux at the talker position and glare on displays per scene",
+  "accepts": [
+   "INSTRUMENT_MEASURED",
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "lighting_levels",
+  "applies": {
+   "families": [
+    "camera",
+    "lighting"
+   ]
+  }
+ },
+ "access_hearing": {
+  "pack": "accessibility",
+  "label": "Hearing accessibility provision",
+  "domain": "Accessibility",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "commissioning_engineer",
+  "method": "assistive listening or captioning path available and signed",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "access_hearing",
+  "applies": {
+   "rooms": [
+    "townhall",
+    "boardroom"
+   ]
+  }
+ },
+ "access_captions": {
+  "pack": "accessibility",
+  "label": "Live captions path in the UC platform",
+  "domain": "Accessibility",
+  "phase": 3,
+  "tier": 1,
+  "verifier": "commissioning_engineer",
+  "method": "captions enabled in a test call and visible on the room display",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "access_captions",
+  "applies": {
+   "families": [
+    "uc"
+   ]
+  }
+ },
+ "access_reach": {
+  "pack": "accessibility",
+  "label": "Control reach and operable parts",
+  "domain": "Accessibility",
+  "phase": 2,
+  "tier": 1,
+  "verifier": "field_technician",
+  "method": "panel height and reach range within the accessibility standard on file",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": true,
+  "dict": "access_reach",
+  "applies": {
+   "families": [
+    "touch_panel"
+   ]
+  }
+ },
+ "access_contrast": {
+  "pack": "accessibility",
+  "label": "UI contrast and text size",
+  "domain": "Accessibility",
+  "phase": 3,
+  "tier": 1,
+  "verifier": "commissioning_engineer",
+  "method": "UI theme contrast and minimum text size checked on the panel",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "access_contrast",
+  "applies": {
+   "families": [
+    "touch_panel"
+   ]
+  }
+ },
+ "cyber_default_credentials": {
+  "pack": "cybersecurity",
+  "label": "Default credentials changed on every device",
+  "domain": "Cybersecurity",
+  "phase": 2,
+  "tier": 1,
+  "verifier": "field_technician",
+  "method": "login with vendor defaults refused on each device; credentials in the vault",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": true,
+  "dict": "default_credentials",
+  "applies": {}
+ },
+ "cyber_management_isolation": {
+  "pack": "cybersecurity",
+  "label": "Management interfaces isolated to the AV management VLAN",
+  "domain": "Cybersecurity",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "systems_engineer",
+  "method": "management ports unreachable from the user VLAN",
+  "accepts": [
+   "OBSERVED_NETWORK",
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": true,
+  "dict": "management_isolation",
+  "applies": {},
+  "window": true,
+  "deps": [
+   "network_vlan"
+  ]
+ },
+ "cyber_firmware_signed": {
+  "pack": "cybersecurity",
+  "label": "Firmware from the vendor's signed channel",
+  "domain": "Cybersecurity",
+  "phase": 2,
+  "tier": 1,
+  "verifier": "field_technician",
+  "method": "firmware source and hash recorded from the vendor release",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "firmware_source",
+  "applies": {
+   "tiers": [
+    "standard",
+    "advanced",
+    "critical"
+   ]
+  }
+ },
+ "cyber_tls": {
+  "pack": "cybersecurity",
+  "label": "Certificates and encrypted management",
+  "domain": "Cybersecurity",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "systems_engineer",
+  "method": "management over TLS with a trusted certificate; plaintext management disabled",
+  "accepts": [
+   "FIELD_OBSERVED",
+   "OBSERVED_NETWORK"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "tls_result",
+  "applies": {
+   "tiers": [
+    "advanced",
+    "critical"
+   ]
+  }
+ },
+ "cyber_accounts": {
+  "pack": "cybersecurity",
+  "label": "Service accounts reviewed and least-privilege",
+  "domain": "Cybersecurity",
+  "phase": 4,
+  "tier": 2,
+  "verifier": "systems_engineer",
+  "method": "accounts on each device listed; installer accounts removed",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": true,
+  "dict": "account_review",
+  "applies": {}
+ },
+ "cyber_logging": {
+  "pack": "cybersecurity",
+  "label": "Device logging to the monitoring host",
+  "domain": "Cybersecurity",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "systems_engineer",
+  "method": "syslog / audit events reach the collector host",
+  "accepts": [
+   "OBSERVED_NETWORK",
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "logging_result",
+  "applies": {
+   "tiers": [
+    "advanced",
+    "critical"
+   ]
+  }
+ },
+ "integ_monitoring_enrol": {
+  "pack": "integrations",
+  "label": "Enrolled in Field Intelligence monitoring (v1.3, read-only)",
+  "domain": "Integration",
+  "phase": 4,
+  "tier": 1,
+  "verifier": "systems_engineer",
+  "method": "devices in the collector inventory; first scheduled observation on record",
+  "accepts": [
+   "OBSERVED_NETWORK",
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "monitoring_enrolment",
+  "applies": {},
+  "deps": [
+   "network_management_reach"
+  ]
+ },
+ "integ_itsm": {
+  "pack": "integrations",
+  "label": "ITSM configuration items created and linked",
+  "domain": "Integration",
+  "phase": 4,
+  "tier": 1,
+  "verifier": "systems_engineer",
+  "method": "CI per device with the room relationship; ticket routing tested",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "itsm_result",
+  "applies": {
+   "tiers": [
+    "standard",
+    "advanced",
+    "critical"
+   ]
+  }
+ },
+ "integ_signage_cms": {
+  "pack": "integrations",
+  "label": "Signage CMS enrolment",
+  "domain": "Integration",
+  "phase": 3,
+  "tier": 1,
+  "verifier": "commissioning_engineer",
+  "method": "player enrolled; a test playlist published and received",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "signage_cms",
+  "applies": {
+   "families": [
+    "signage"
+   ]
+  }
+ },
+ "integ_lighting_shades": {
+  "pack": "integrations",
+  "label": "Lighting and shade scene integration",
+  "domain": "Integration",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "commissioning_engineer",
+  "method": "scenes mapped from the AV UI to the lighting controller",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "lighting_integration",
+  "applies": {
+   "families": [
+    "lighting"
+   ]
+  }
+ },
+ "integ_bms": {
+  "pack": "integrations",
+  "label": "Building management hand-off (occupancy, HVAC)",
+  "domain": "Integration",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "systems_engineer",
+  "method": "occupancy signal and after-hours state agreed with the BMS owner",
+  "accepts": [
+   "ENGINEER_APPROVED",
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "bms_result",
+  "applies": {
+   "tiers": [
+    "advanced",
+    "critical"
+   ]
+  }
+ },
+ "interop_mixed_vendor": {
+  "pack": "interoperability",
+  "label": "Mixed-vendor interoperability matrix",
+  "domain": "Interoperability",
+  "phase": 3,
+  "tier": 2,
+  "verifier": "commissioning_engineer",
+  "method": "every vendor pairing in the signal path exercised; the matrix filled per pairing",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "interop_matrix",
+  "applies": {
+   "tiers": [
+    "standard",
+    "advanced",
+    "critical"
+   ]
+  }
+ },
+ "interop_firmware_matrix": {
+  "pack": "interoperability",
+  "label": "Firmware compatibility matrix",
+  "domain": "Interoperability",
+  "phase": 2,
+  "tier": 2,
+  "verifier": "systems_engineer",
+  "method": "installed firmware pairings against the vendors' published compatibility",
+  "accepts": [
+   "ENGINEER_APPROVED",
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "firmware_matrix",
+  "applies": {
+   "tiers": [
+    "standard",
+    "advanced",
+    "critical"
+   ]
+  }
+ },
+ "handover_training": {
+  "pack": "handover",
+  "label": "User and operator training delivered",
+  "domain": "Handover",
+  "phase": 5,
+  "tier": 1,
+  "verifier": "commissioning_engineer",
+  "method": "attendance recorded; quick-start guide left in the room",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "training_result",
+  "applies": {
+   "types": [
+    "new_install",
+    "dsp_upgrade"
+   ]
+  }
+ },
+ "handover_support_path": {
+  "pack": "handover",
+  "label": "Support path and owners confirmed",
+  "domain": "Handover",
+  "phase": 5,
+  "tier": 1,
+  "verifier": "systems_engineer",
+  "method": "primary and backup owner per domain; escalation tested with a dry run",
+  "accepts": [
+   "ENGINEER_APPROVED"
+  ],
+  "na": false,
+  "nonwaivable": true,
+  "dict": "support_path",
+  "applies": {}
+ },
+ "handover_spares": {
+  "pack": "handover",
+  "label": "Spares and consumables stocked",
+  "domain": "Handover",
+  "phase": 5,
+  "tier": 1,
+  "verifier": "field_technician",
+  "method": "spares per the design list received into stock",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": true,
+  "nonwaivable": false,
+  "dict": "spares_result",
+  "applies": {
+   "types": [
+    "new_install"
+   ]
+  }
+ },
+ "handover_warranty": {
+  "pack": "handover",
+  "label": "Warranty and licence register",
+  "domain": "Handover",
+  "phase": 5,
+  "tier": 1,
+  "verifier": "systems_engineer",
+  "method": "serials, warranty end and licences registered per asset",
+  "accepts": [
+   "FIELD_OBSERVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "warranty_register",
+  "applies": {},
+  "deps": [
+   "identity_asset"
+  ]
+ },
+ "handover_runbook": {
+  "pack": "handover",
+  "label": "Operations runbook accepted",
+  "domain": "Handover",
+  "phase": 5,
+  "tier": 1,
+  "verifier": "systems_engineer",
+  "method": "runbook reviewed by the operations owner",
+  "accepts": [
+   "ENGINEER_APPROVED"
+  ],
+  "na": false,
+  "nonwaivable": false,
+  "dict": "runbook_result",
+  "applies": {
+   "tiers": [
+    "standard",
+    "advanced",
+    "critical"
+   ]
+  }
+ }
+}

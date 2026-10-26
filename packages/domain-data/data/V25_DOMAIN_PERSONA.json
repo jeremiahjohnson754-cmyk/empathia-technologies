@@ -1,0 +1,5 @@
+{
+ "dsp": "dsp_eng",
+ "camera": "video_eng",
+ "touch": "control_eng"
+}
