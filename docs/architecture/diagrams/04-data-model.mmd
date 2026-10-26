@@ -1,0 +1,23 @@
+%% Core relational model (database/migrations). Every table carries tenant_id; foreign keys are composite (tenant_id, id).
+erDiagram
+  TENANT ||--o{ MEMBERSHIP : has
+  APP_USER ||--o{ MEMBERSHIP : holds
+  ROLE ||--o{ MEMBERSHIP : grants
+  TENANT ||--o{ SITE : owns
+  SITE ||--o{ BUILDING : contains
+  BUILDING ||--o{ ROOM : contains
+  ROOM ||--o{ ROOM_REVISION : "versioned by"
+  ROOM ||--o{ PLANNED_ASSET : contains
+  ROOM ||--o{ CONNECTION : wires
+  ROOM ||--o{ DRAWING_REVISION : drawn
+  ROOM ||--o{ CX_PLAN : "commissioned by"
+  CX_PLAN ||--o{ CX_PLAN_ROW : judges
+  ROOM ||--o{ TEST_RESULT : records
+  TEST_RESULT }o--|| EVIDENCE_OBJECT : cites
+  TEST_RESULT ||--o| VERIFICATION : "verified by"
+  ROOM ||--o{ ROOM_ISSUE : raises
+  ROOM_ISSUE ||--o{ WORK_ORDER : remediated_by
+  TENANT ||--o{ RELATIONSHIP : graphs
+  TENANT ||--o{ AUDIT_EVENT : logs
+  TENANT ||--o{ OUTBOX_EVENT : publishes
+  ROOM ||--o| ROOM_READ_MODEL : "projected to"

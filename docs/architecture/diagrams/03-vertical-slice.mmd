@@ -1,0 +1,28 @@
+%% The production vertical slice. Every arrow into the API is authenticated; every write is one transaction with an audit row and an outbox event.
+sequenceDiagram
+  autonumber
+  actor D as Designer
+  actor S as Systems engineer
+  actor C as Commissioning engineer
+  actor Q as QA reviewer
+  participant API as enterprise-api
+  participant DB as PostgreSQL
+  participant OS as Object storage
+  participant W as Outbox worker
+  D->>API: POST /v1/rooms (template, dimensions)
+  API->>DB: room + revision 1 + classification (server-side engine) + audit + outbox
+  D->>API: POST /v1/rooms/{id}/devices
+  API->>DB: planned asset (unique per tenant) + CONTAINS / CONNECTS edges
+  D->>API: POST /v1/rooms/{id}/revisions
+  API->>DB: immutable revision snapshot + drawing revisions (input hash)
+  S->>API: POST /v1/rooms/{id}/commissioning-plan
+  API->>DB: 94 definitions judged, rows persisted (never PASS)
+  API->>DB: design checks → issues (correlation key, unique)
+  S->>API: lifecycle transitions (authority checked server-side)
+  C->>API: POST /v1/evidence (bytes)
+  API->>OS: put (content-addressed, sha256)
+  C->>API: POST /v1/rooms/{id}/results (FAIL → deficiency → work order)
+  C->>API: POST /v1/rooms/{id}/results (PASS → PASS_UNVERIFIED)
+  Q->>API: POST /v1/rooms/{id}/results/{test}/verify (a different person)
+  W->>DB: outbox → operational read model, notifications
+  Q->>API: GET /v1/read/rooms/{id}

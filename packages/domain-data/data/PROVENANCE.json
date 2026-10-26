@@ -1,7 +1,11 @@
 {
  "extractedFrom": "Empathia-Living-Campus-v2.5.4-nomedia.html",
- "sha256": "5192ae0b5daa785e3285426af400e39ee9125bd69b8750b135d8ba5e94025997",
- "at": "2026-10-26T10:50:32.625Z",
+ "sha256": "ecdf64be4de7cda5096c8dd7902814e26a7b1fe5d693799f9d489fbbddcbe1ee",
+ "sourceRepository": "Empathia_V25/work/source (worktree source-254)",
+ "sourceBranch": "founder/2.5.4",
+ "sourceCommit": "b8986d1",
+ "buildCommand": "python3 build.py 2.5.4 --no-media (deterministic: two builds give the same sha256)",
+ "at": "2026-10-26T11:41:58.464Z",
  "tables": {
   "V25_TESTS": {
    "sha256": "dfab468f659b79457d0a431ab0479953abbf79ec65869000037c44437cad7dc2",

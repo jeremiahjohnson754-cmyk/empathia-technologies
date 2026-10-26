@@ -1,0 +1,10 @@
+%% Event delivery: transactional outbox, at-least-once delivery, idempotent consumers, dead letter after the retry budget.
+flowchart LR
+  TX[API transaction<br/>state change + audit row + outbox row] --> OB[(outbox_event<br/>status PENDING)]
+  OB --> W{worker<br/>FOR UPDATE SKIP LOCKED}
+  W -->|handler ok| DONE[(DELIVERED)]
+  W -->|error, attempts < 8| RETRY[(PENDING, next_attempt_at = backoff)]
+  RETRY --> W
+  W -->|attempts exhausted| DLQ[(DEAD_LETTER<br/>visible to admins)]
+  W --> RM[room_read_model]
+  W --> NT[notification]

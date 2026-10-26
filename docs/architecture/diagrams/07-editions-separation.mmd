@@ -1,0 +1,8 @@
+%% Separation of what goes to whom. The source vault never enters an investor package.
+flowchart LR
+  VAULT[(Founder source vault<br/>RESTRICTED_IP)] --> PROD[Production Engineering Workspace<br/>editable source, DB, API, tests]
+  VAULT --> FOUNDER[Founder Studio<br/>founder only, local]
+  PROD -- build + gates + verify --> INVPKG[Investor Edition package<br/>no source, no engineering controls]
+  PROD -- build + gates --> ENGPKG[Private Engineer Edition<br/>authorized reviewers only]
+  INVPKG -. distribution needs owner written approval .-> INVESTORS((Investors))
+  ENGPKG -. under NDA .-> REVIEWERS((Technical reviewers))

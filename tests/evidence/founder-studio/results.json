@@ -1,0 +1,130 @@
+{
+ "suite": "founder-studio",
+ "dist": "/home/claude/empathia-technologies/apps/founder-studio/dist",
+ "at": "2026-10-26T11:54:56.441Z",
+ "passed": 19,
+ "failed": 0,
+ "notRun": 1,
+ "results": [
+  {
+   "id": "S-01",
+   "name": "the launcher serves the studio after the access key; the rail lists 27 destinations",
+   "result": "PASS",
+   "detail": "27"
+  },
+  {
+   "id": "S-02",
+   "name": "all 27 destinations render a page heading",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "S-03",
+   "name": "a product page opens the Founder Edition on its route, switched to the product persona by the page’s own control",
+   "result": "PASS",
+   "detail": "Opened #/v25/cstudio as architect."
+  },
+  {
+   "id": "S-04",
+   "name": "the embedded demonstrator shows the product (Control Studio) and its SIMULATED label",
+   "result": "PASS",
+   "detail": "Empathia\n›\nV2.5 lifecycle\n›\nControl Studio\n\nEMPATHIA V2.5 · CONNECTED LIFECYCLE\n\nControl Studio\n\nDesign, simulate and publish a room's control. A simulated proof of concept: virtual devices on synthet"
+  },
+  {
+   "id": "S-05",
+   "name": "switching to the Requestor persona keeps the page’s own authorization (Control Studio is not shown to a requestor)",
+   "result": "PASS",
+   "detail": "requestor: Nothing here for Employee.\n\nReturn to Product Architect\n\nAUTHORIZATION DEMO · NOT SECURITY"
+  },
+  {
+   "id": "S-06",
+   "name": "the data inspector reads record types through the sealed read-only facade",
+   "result": "PASS",
+   "detail": "23"
+  },
+  {
+   "id": "S-07",
+   "name": "Engine Lab: removing a connection re-runs the engine and raises a design deficiency",
+   "result": "PASS",
+   "detail": "0 → findings 1"
+  },
+  {
+   "id": "S-08",
+   "name": "Engine Lab: a recorded PASS is PASS_UNVERIFIED, stays so when the recorder verifies it, and is PASS_VERIFIED only after a different person",
+   "result": "PASS",
+   "detail": "compute_display_capability: PASS_UNVERIFIED | compute_display_capability: PASS_UNVERIFIED | compute_display_capability: PASS_VERIFIED"
+  },
+  {
+   "id": "S-09",
+   "name": "Media Library: the film file is served from this computer with byte ranges, and in a browser without H.264 the player says so (not \"missing\")",
+   "result": "PASS",
+   "detail": "206,1024 canPlayType=\"\" The file is here, but this browser cannot decode H.264 video (some Chromium builds ship without it). Open the studio in Chrome, Edge or Safari, or open the file directly from media/films/."
+  },
+  {
+   "id": "S-09b",
+   "name": "H.264 playback inside the test browser",
+   "result": "NOT_RUN",
+   "detail": "the test Chromium build has no H.264 decoder; verified instead by a full ffmpeg decode of every film (tests/media/decode-films.mjs)"
+  },
+  {
+   "id": "S-10",
+   "name": "the studio’s film route plays video end to end (a VP9 excerpt of Film A, served through the same launcher path; time advances)",
+   "result": "PASS",
+   "detail": "1.502456"
+  },
+  {
+   "id": "S-11",
+   "name": "the flagship film record shows 3840 × 2160 from ffprobe and a rights status that is not VERIFIED",
+   "result": "PASS",
+   "detail": "Series\nFlagship\nResolution\n3840 × 2160\nDuration\n4:18\nCodecs\nh264 / aac\nSize\n204 MB\nSHA-256\nd2bbe353a68aad92770f89537bf37af256651dda70db1cccbd7e774fb13bab8f\nSource\nEmpathia_Cinematic_Video_4m18/11_Mast"
+  },
+  {
+   "id": "S-12",
+   "name": "search (Ctrl K) finds the town-hall scenario and opens it with the keyboard",
+   "result": "PASS",
+   "detail": "http://127.0.0.1:4391/index.html#/scenarios/townhall"
+  },
+  {
+   "id": "S-13",
+   "name": "Settings: the demonstrator state is saved to this computer as a named snapshot",
+   "result": "PASS",
+   "detail": "state true, listed 1"
+  },
+  {
+   "id": "S-14",
+   "name": "Settings: a snapshot reopens and can be deleted",
+   "result": "PASS",
+   "detail": "Restored. Reopen any product page to see it."
+  },
+  {
+   "id": "S-15",
+   "name": "appearance: the light theme applies (data-theme=\"light\", pale ground)",
+   "result": "PASS",
+   "detail": "light rgb(243, 246, 251)"
+  },
+  {
+   "id": "S-16",
+   "name": "no page errors and no request leaves this computer",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "S-17",
+   "name": "tablet (820 px): no horizontal scroll; the rail is a drawer opened by the menu button",
+   "result": "PASS",
+   "detail": "overflow 0, hidden true, shown true"
+  },
+  {
+   "id": "S-18",
+   "name": "keyboard: the first Tab reaches “Skip to content”",
+   "result": "PASS",
+   "detail": "Skip to content"
+  },
+  {
+   "id": "S-19",
+   "name": "opened straight from disk, the studio works and says which features need the launcher",
+   "result": "PASS",
+   "detail": "Opened from disk "
+  }
+ ]
+}

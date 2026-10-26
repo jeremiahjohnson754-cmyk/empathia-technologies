@@ -1,0 +1,11 @@
+{
+  "name": "@empathia/founder-studio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "description": "Empathia Founder Studio: the founder's local hub over the demonstrators, films, documents and engineering records.",
+  "scripts": { "build": "node build.mjs", "typecheck": "tsc -p tsconfig.json --noEmit", "start": "node dist/server/serve.mjs" },
+  "dependencies": { "@empathia/commissioning-engine": "workspace:*", "@empathia/domain-types": "workspace:*", "@empathia/design-tokens": "workspace:*", "react": "19.2.8", "react-dom": "19.2.8" },
+  "devDependencies": { "@types/react": "^19.2.0", "@types/react-dom": "^19.2.0", "esbuild": "0.28.2", "marked": "18.0.10" }
+}

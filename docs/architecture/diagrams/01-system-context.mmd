@@ -1,0 +1,29 @@
+%% System context: who uses Empathia and what it connects to. Planned integrations are CONTRACT_ONLY or MOCK today.
+flowchart LR
+  subgraph People
+    REQ[Requestors and employees]
+    ENG[Designers, systems and commissioning engineers]
+    OPS[Operations, service managers and technicians]
+    EXE[Executives and finance]
+    ADM[Security and platform admins]
+  end
+  EMP[[Empathia platform<br/>web app + enterprise API]]
+  REQ --> EMP
+  ENG --> EMP
+  OPS --> EMP
+  EXE --> EMP
+  ADM --> EMP
+  subgraph External["External systems (all CONTRACT_ONLY / MOCK today)"]
+    IDP[(Identity provider<br/>OIDC)]
+    ITSM[(ITSM / service desk)]
+    AV[(AV, DSP and control platforms)]
+    NET[(Network and device management)]
+    BMS[(Building management)]
+    M365[(Collaboration suite)]
+  end
+  EMP -. authenticate .-> IDP
+  EMP -. read-only ingest .-> ITSM
+  EMP -. read-only telemetry .-> AV
+  EMP -. read-only inventory .-> NET
+  EMP -. read-only .-> BMS
+  EMP -. links only .-> M365

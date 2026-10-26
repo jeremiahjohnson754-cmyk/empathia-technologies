@@ -1,0 +1,10 @@
+%% What exists today: one offline HTML demonstrator. Rules and authorization run in the page; nothing is server-side.
+flowchart TB
+  SRC[src/*.js + *.css<br/>230 JS files · 26 CSS files] --> BUILD[build.py<br/>concatenates into one strict IIFE]
+  BUILD --> HTML[[Single HTML file<br/>offline · synthetic data]]
+  HTML --> STORE[(Browser localStorage<br/>empathia.living-campus.v1)]
+  HTML --> FACADE[Sealed page API window.__V25__<br/>copy-in / copy-out]
+  HTML --> ED{Editions}
+  ED --> INV[Investor offline + live]
+  ED --> PRI[Private Engineer Edition]
+  ED --> FND[Founder Edition<br/>development build]
