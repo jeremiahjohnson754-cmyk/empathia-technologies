@@ -1,0 +1,12 @@
+{
+  "name": "@empathia/assurance-engine",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "description": "Assurance / APEX engine: baseline-versus-current comparison across seventeen dimensions, drift typing, gap-versus-drift, evidence classes and remedy precedence. Ported from the 2.5.4 demonstrator (src/57-derive-assure.js, src/28-static-assure.js). Pure functions.",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": { ".": { "types": "./dist/src/index.d.ts", "default": "./dist/src/index.js" } },
+  "scripts": { "build": "tsc -b", "test": "node --test \"dist/test/**/*.test.js\"" }
+}

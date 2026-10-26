@@ -300,3 +300,24 @@ test('reporting: KPI summary counts match the database, states its definitions, 
   assert.equal(s.body.scope, 'site-scoped');
   assert.equal(s.body.rooms.total, Number(h.asSuper("SELECT count(*) FROM app.room r JOIN app.building b ON b.id = r.building_id WHERE b.code = 'HZN'")));
 });
+
+// ------------------------------------------------------------------------------------------------ assurance
+test('assurance: a room without an accepted baseline reports NO_BASELINE; with one, dimensions without evidence are not assessed', async () => {
+  const none = await c.call('GET', '/v1/rooms/R-PLN-0002/assurance', { token: T.opslead });
+  assert.equal(none.status, 200);
+  assert.equal(none.body.state, 'NO_BASELINE');
+  // Fixture: an accepted baseline written directly (reaching ACCEPTED through the API needs every applicable test verified — covered
+  // by the acceptance rules elsewhere). The baseline references revision 1; the current design has one more device than revision 1.
+  h.asSuper(`UPDATE app.room SET lifecycle = 'ACCEPTED', baseline = jsonb_build_object('at', '2026-10-01T00:00:00Z', 'signedBy', 'fixture', 'revision', 1, 'state', 'ACCEPTED_BASELINE') WHERE code = '${code}'`);
+  const a = await c.call('GET', `/v1/rooms/${code}/assurance`, { token: T.opslead });
+  assert.equal(a.status, 200, JSON.stringify(a.body));
+  assert.equal(a.body.state, 'ASSESSED');
+  assert.equal(a.body.rows.length, 17);
+  const presence = a.body.rows.find((r) => r.k === 'presence');
+  assert.equal(presence.status, 'drift', 'the device added after revision 1 is not in the baseline');
+  assert.equal(presence.fix.approverAuthority, 'baseline.approve');
+  assert.ok(a.body.rows.filter((r) => !['presence'].includes(r.k) && r.status !== 'na').every((r) => r.status === 'unknown'), 'no evidence → not assessed');
+  assert.ok(a.body.coverage.assessed <= 1);
+  assert.equal(a.body.liveHealth, 'NOT_MONITORED');
+  h.asSuper(`UPDATE app.room SET lifecycle = 'COMMISSIONING', baseline = NULL WHERE code = '${code}'`);
+});

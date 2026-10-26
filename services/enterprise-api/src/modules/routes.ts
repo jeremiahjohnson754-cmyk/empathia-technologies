@@ -10,6 +10,7 @@ import * as read from '../domain/read.js';
 import * as platform from '../domain/platform.js';
 import * as org from '../domain/org.js';
 import * as analytics from '../domain/analytics.js';
+import * as assurance from '../domain/assurance.js';
 import type { PgPool } from '../db/pg.js';
 import type { Hs256Tokens } from '../auth/jwt.js';
 import type { ObjectStore } from '../storage/objectStore.js';
@@ -74,6 +75,7 @@ export function buildRoutes(deps: { pool: PgPool; tokens: Hs256Tokens; store: Ob
   add({ method: 'POST', path: '/v1/rooms/:room/drawings/:kind/approve', tag: 'drawings', summary: 'Approve a current generated drawing (it turns REVIEW_REQUIRED when its input changes)', auth: true, authority: 'room.classify.approve', responses: ok('approved drawing'), handler: async (c, q) => ({ status: 200, body: await rooms.approveDrawing(c, q.params['room']!, q.params['kind']!) }) });
   add({ method: 'POST', path: '/v1/rooms/:room/lifecycle', tag: 'rooms', summary: 'Move the room one governed lifecycle step', auth: true, authority: Object.entries(LIFECYCLE_AUTHORITY).map(([k, v]) => `${k}: ${v}`),
     body: obj({ to: str({ enum: ROOM_LIFECYCLE }) }, ['to']), responses: ok('transition'), handler: async (c, q) => ({ status: 200, body: await rooms.transition(c, q.params['room']!, (q.body as { to: never }).to) }) });
+  add({ method: 'GET', path: '/v1/rooms/:room/assurance', tag: 'assurance', summary: 'Assurance: the accepted baseline against current evidence across 17 dimensions (unknown where there is no evidence)', auth: true, responses: ok('assessment, or NO_BASELINE'), handler: async (c, q) => ({ status: 200, body: await assurance.roomAssurance(c, q.params['room']!) }) });
   add({ method: 'GET', path: '/v1/rooms/:room/service-history', tag: 'service', summary: 'Work orders and issue history of the room', auth: true, responses: ok('history'), handler: async (c, q) => ({ status: 200, body: await read.serviceHistory(c, q.params['room']!) }) });
 
   // ---------------------------------------------------------------------------------------- commissioning and evidence
