@@ -172,6 +172,20 @@
   "status": "FOUND"
  },
  {
+  "component": "jsonschema",
+  "version": "4.26.0",
+  "declaredLicense": "MIT",
+  "scope": "optional",
+  "texts": [
+   {
+    "file": "licenses/texts/jsonschema@4.26.0/COPYING",
+    "from": "/usr/local/lib/python3.13/dist-packages/jsonschema-4.26.0.dist-info/licenses/COPYING",
+    "sha256": "4f92a015a13c4d1a040bef018aa13430b4f1bc73b41b16bb846c346766de7439"
+   }
+  ],
+  "status": "FOUND"
+ },
+ {
   "component": "numpy",
   "version": "2.5.3",
   "declaredLicense": "BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0",
@@ -466,6 +480,62 @@
     "file": "licenses/texts/typing-inspection@0.4.4/LICENSE",
     "from": "/usr/local/lib/python3.13/dist-packages/typing_inspection-0.4.4.dist-info/licenses/LICENSE",
     "sha256": "804b59b25f2c31bd278f9202a19ae49a3945aa2664387e2d0a128c7cacc61ec3"
+   }
+  ],
+  "status": "FOUND"
+ },
+ {
+  "component": "attrs",
+  "version": "26.1.0",
+  "declaredLicense": "MIT",
+  "scope": "optional",
+  "texts": [
+   {
+    "file": "licenses/texts/attrs@26.1.0/LICENSE",
+    "from": "/usr/local/lib/python3.13/dist-packages/attrs-26.1.0.dist-info/licenses/LICENSE",
+    "sha256": "882115c95dfc2af1eeb6714f8ec6d5cbcabf667caff8729f42420da63f714e9f"
+   }
+  ],
+  "status": "FOUND"
+ },
+ {
+  "component": "jsonschema-specifications",
+  "version": "2025.9.1",
+  "declaredLicense": "MIT",
+  "scope": "optional",
+  "texts": [
+   {
+    "file": "licenses/texts/jsonschema-specifications@2025.9.1/COPYING",
+    "from": "/usr/local/lib/python3.13/dist-packages/jsonschema_specifications-2025.9.1.dist-info/licenses/COPYING",
+    "sha256": "42dcd63495f87b4eb7c7757afa379bb55a53f94afd7a5f657d9adf57236e515c"
+   }
+  ],
+  "status": "FOUND"
+ },
+ {
+  "component": "referencing",
+  "version": "0.37.0",
+  "declaredLicense": "MIT",
+  "scope": "optional",
+  "texts": [
+   {
+    "file": "licenses/texts/referencing@0.37.0/COPYING",
+    "from": "/usr/local/lib/python3.13/dist-packages/referencing-0.37.0.dist-info/licenses/COPYING",
+    "sha256": "42dcd63495f87b4eb7c7757afa379bb55a53f94afd7a5f657d9adf57236e515c"
+   }
+  ],
+  "status": "FOUND"
+ },
+ {
+  "component": "rpds-py",
+  "version": "2026.6.3",
+  "declaredLicense": "MIT",
+  "scope": "optional",
+  "texts": [
+   {
+    "file": "licenses/texts/rpds-py@2026.6.3/LICENSE",
+    "from": "/usr/local/lib/python3.13/dist-packages/rpds_py-2026.6.3.dist-info/licenses/LICENSE",
+    "sha256": "314e4e91be3baa93c0fb4bccc9e4e97cd643eb839b065af921782c2175fe9909"
    }
   ],
   "status": "FOUND"

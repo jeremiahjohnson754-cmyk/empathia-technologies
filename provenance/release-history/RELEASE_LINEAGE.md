@@ -1,6 +1,6 @@
 # Release lineage
 
-Frozen-release integrity re-checked 2026-10-26T12:53:50+00:00 with `scripts/verify/verify-frozen.py`: **PASS** (every file listed in each package's SHA256SUMS re-hashed; immutable attribute present; every archive matches its recorded sha256). Raw result: `FROZEN_CHECK_VAULT.json`.
+Frozen-release integrity re-checked 2026-10-26T13:45:47+00:00 with `scripts/verify/verify-frozen.py`: **PASS** (every file listed in each package's SHA256SUMS re-hashed; immutable attribute present; every archive matches its recorded sha256). Raw result: `FROZEN_CHECK_VAULT.json`.
 
 **Distribution:** no package below is authorized for external distribution. The independent page-API security assessment remains NOT VERIFIED — EXTERNAL TEST REQUIRED, and owner conditions are open. The 2.5.x "independent audits" referenced in tag messages were performed by a separate AI reviewer, not an independent human or third-party auditor.
 

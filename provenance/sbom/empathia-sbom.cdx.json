@@ -1,10 +1,10 @@
 {
  "bomFormat": "CycloneDX",
  "specVersion": "1.5",
- "serialNumber": "urn:uuid:2889f4a7-0000-4000-8000-271a109627fa",
+ "serialNumber": "urn:uuid:0e759eb3-0000-4000-8000-55ed076578a1",
  "version": 1,
  "metadata": {
-  "timestamp": "2026-10-26T13:00:21+00:00",
+  "timestamp": "2026-10-26T13:45:35+00:00",
   "tools": [
    {
     "name": "provenance/scripts/build_vault.py"
@@ -420,6 +420,29 @@
   },
   {
    "type": "library",
+   "bom-ref": "pkg:pypi/jsonschema@4.26.0",
+   "name": "jsonschema",
+   "version": "4.26.0",
+   "scope": "optional",
+   "purl": "pkg:pypi/jsonschema@4.26.0",
+   "licenses": [
+    {
+     "expression": "MIT"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "python, imported by spatial/room-models/check_schema.py"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "COPYING"
+    }
+   ]
+  },
+  {
+   "type": "library",
    "bom-ref": "pkg:pypi/numpy@2.5.3",
    "name": "numpy",
    "version": "2.5.3",
@@ -779,6 +802,98 @@
     {
      "name": "empathia:usage",
      "value": "python, required by pydantic"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:pypi/attrs@26.1.0",
+   "name": "attrs",
+   "version": "26.1.0",
+   "scope": "optional",
+   "purl": "pkg:pypi/attrs@26.1.0",
+   "licenses": [
+    {
+     "expression": "MIT"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "python, required by jsonschema"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:pypi/jsonschema-specifications@2025.9.1",
+   "name": "jsonschema-specifications",
+   "version": "2025.9.1",
+   "scope": "optional",
+   "purl": "pkg:pypi/jsonschema-specifications@2025.9.1",
+   "licenses": [
+    {
+     "expression": "MIT"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "python, required by jsonschema"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "COPYING"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:pypi/referencing@0.37.0",
+   "name": "referencing",
+   "version": "0.37.0",
+   "scope": "optional",
+   "purl": "pkg:pypi/referencing@0.37.0",
+   "licenses": [
+    {
+     "expression": "MIT"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "python, required by jsonschema"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "COPYING"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:pypi/rpds-py@2026.6.3",
+   "name": "rpds-py",
+   "version": "2026.6.3",
+   "scope": "optional",
+   "purl": "pkg:pypi/rpds-py@2026.6.3",
+   "licenses": [
+    {
+     "expression": "MIT"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "python, required by jsonschema"
     },
     {
      "name": "empathia:licenseFiles",

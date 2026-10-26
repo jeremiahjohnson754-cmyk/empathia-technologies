@@ -2,7 +2,7 @@
  "vault": "Empathia IP and software provenance vault",
  "classification": "RESTRICTED_IP (licence texts: THIRD_PARTY_LICENSED)",
  "disclaimer": "This dossier organizes evidence for review by qualified counsel. It does not establish ownership, copyright registration, patentability or freedom to operate.",
- "generatedAt": "2026-10-26T13:00:25+00:00",
+ "generatedAt": "2026-10-26T13:45:49+00:00",
  "sections": {
   "README.md": "what the vault is and how to regenerate it",
   "AI_ASSISTANCE_RECORD.md": "AI-assisted development record",
@@ -73,8 +73,8 @@
   },
   {
    "path": "licenses/LICENSE_TEXT_INDEX.json",
-   "bytes": 17465,
-   "sha256": "a1512de9155744eb144f2f747c4c22886c4a3c785d1dbb6ff3ba89b8d6cf3d04"
+   "bytes": 19476,
+   "sha256": "3fe92803d442b66e76c321a769bf374425ba155306a1a052b96f188fe01baee6"
   },
   {
    "path": "licenses/REDISTRIBUTION_RESTRICTIONS.md",
@@ -127,6 +127,11 @@
    "sha256": "5361ac9dc58f2ef5fd2e9b09c68297c17f04950909bbc8023bdb82eacf22c2b0"
   },
   {
+   "path": "licenses/texts/attrs@26.1.0/LICENSE",
+   "bytes": 1109,
+   "sha256": "882115c95dfc2af1eeb6714f8ec6d5cbcabf667caff8729f42420da63f714e9f"
+  },
+  {
    "path": "licenses/texts/click@8.5.0/LICENSE.txt",
    "bytes": 1475,
    "sha256": "9a8ad106a394e853bfe21f42f4e72d592819a22805d991b5f3275029292b658d"
@@ -155,6 +160,16 @@
    "path": "licenses/texts/joblib@1.6.0/LICENSE.txt",
    "bytes": 1527,
    "sha256": "42612911c1872c5e4b43f6ae0e8ee59467cd350332241cf72ce90640264fae6a"
+  },
+  {
+   "path": "licenses/texts/jsonschema-specifications@2025.9.1/COPYING",
+   "bytes": 1057,
+   "sha256": "42dcd63495f87b4eb7c7757afa379bb55a53f94afd7a5f657d9adf57236e515c"
+  },
+  {
+   "path": "licenses/texts/jsonschema@4.26.0/COPYING",
+   "bytes": 1057,
+   "sha256": "4f92a015a13c4d1a040bef018aa13430b4f1bc73b41b16bb846c346766de7439"
   },
   {
    "path": "licenses/texts/marked@18.0.10/LICENSE",
@@ -227,6 +242,16 @@
    "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
   },
   {
+   "path": "licenses/texts/referencing@0.37.0/COPYING",
+   "bytes": 1057,
+   "sha256": "42dcd63495f87b4eb7c7757afa379bb55a53f94afd7a5f657d9adf57236e515c"
+  },
+  {
+   "path": "licenses/texts/rpds-py@2026.6.3/LICENSE",
+   "bytes": 1057,
+   "sha256": "314e4e91be3baa93c0fb4bccc9e4e97cd643eb839b065af921782c2175fe9909"
+  },
+  {
    "path": "licenses/texts/scheduler@0.27.0/LICENSE",
    "bytes": 1088,
    "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
@@ -279,27 +304,27 @@
   {
    "path": "release-history/FROZEN_CHECK_VAULT.json",
    "bytes": 5491,
-   "sha256": "23d02cba6f8ca41647baa80eed80a3b850e3bdc41861d52ba4e380a3687bfb45"
+   "sha256": "6c008db3d5567e10dfbed58016435c54641c7ac1e46ccf9229fb55f8d5aa8e1c"
   },
   {
    "path": "release-history/RELEASE_LINEAGE.json",
    "bytes": 24176,
-   "sha256": "ce2142bc1884df87df60c4c0079a8e2a076c2667c6da7214eead9ff127e4e74d"
+   "sha256": "dc974445fbdbcc83480a6f11505def1f52bceef2e4ce53ac7ac07aef3855ff85"
   },
   {
    "path": "release-history/RELEASE_LINEAGE.md",
    "bytes": 4645,
-   "sha256": "71489a88423c79241ea26b655a3cf9f3aeaf752b86a0aa92a2aa457c99df9cbb"
+   "sha256": "599cf358d8de032e9992174bd7ee4437bab83a2e5445eb8e74c65cca0e7a4d91"
   },
   {
    "path": "sbom/PYTHON_IMPORTS.json",
-   "bytes": 4504,
-   "sha256": "eb97cfcf25f098a6a135df73a8b4db97b2c04e002fab6e44a9835d3978a4e7a9"
+   "bytes": 4868,
+   "sha256": "102548f5ff2254898ebdc4446bc0b39d5963f0f79b92f0788b9abc5bcba2e472"
   },
   {
    "path": "sbom/empathia-sbom.cdx.json",
-   "bytes": 19763,
-   "sha256": "788d3aac553104bf2c5820cf0b20c8091be5c22c1da4fa65d2ba764f643db1fd"
+   "bytes": 22014,
+   "sha256": "1782b8fe67357d11606df0e104efb30844cf044b70c9bb5f70eca33fbf494e2e"
   },
   {
    "path": "scripts/build_vault.py",
@@ -323,19 +348,19 @@
   },
   {
    "path": "source-manifest/GIT_HISTORY.json",
-   "bytes": 127288,
-   "sha256": "4e2faae09c77b2ea9b62d476fcabb0f927cd5ed8fff9098ebbb237ce7d24ce59"
+   "bytes": 157065,
+   "sha256": "b5386fc68818a006b20dfca2cc40304e595be098159aee496929a8b81647f8b5"
   },
   {
    "path": "source-manifest/SOURCE_MANIFEST.json",
-   "bytes": 100542,
-   "sha256": "0bd0d45040d15f657d0b824dd1bdd8e21de0b0e77cc1d0746e54f9a903c06129"
+   "bytes": 248747,
+   "sha256": "eafbe348f6fd46c9c8f355f52f11afc29af353c6726256d32bb389e952b7c557"
   },
   {
    "path": "source-manifest/SOURCE_MANIFEST_SUMMARY.md",
-   "bytes": 2620,
-   "sha256": "01a8f8e5167f13dc304c0413c5988457a55f9dd500368ec297bc9cf717b451a1"
+   "bytes": 4647,
+   "sha256": "b55c0e8af6e2507b022bc69389d6ec39861757c49ecafeaec4b5d0c0589a4f9a"
   }
  ],
- "treeSha256": "686d354857b995149ea285af898e0371cad8a4558dbeac1596ba81d6cf834386"
+ "treeSha256": "e2c77d8047f38d4e0d28949d978639b81aad636890d888ba4fd6ef05ee8cad4b"
 }

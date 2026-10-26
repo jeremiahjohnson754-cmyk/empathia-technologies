@@ -6,7 +6,7 @@
   "/home/claude/Empathia_V25/legal/historical-releases/HISTORICAL_PACKAGES.csv"
  ],
  "frozenCheck": {
-  "checkedAt": "2026-10-26T12:53:50+00:00",
+  "checkedAt": "2026-10-26T13:45:47+00:00",
   "result": "PASS",
   "script": "scripts/verify/verify-frozen.py"
  },

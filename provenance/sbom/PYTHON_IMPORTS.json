@@ -61,8 +61,13 @@
   "scripts/discovery/inventory.py",
   "scripts/discovery/secret-scan.py",
   "scripts/media/build-media-manifest.py",
+  "scripts/verify/scan-secrets.py",
   "scripts/verify/verify-frozen.py",
-  "services/intelligence-python/tests/test_service.py"
+  "services/intelligence-python/tests/test_service.py",
+  "spatial/room-models/check_schema.py"
+ ],
+ "jsonschema": [
+  "spatial/room-models/check_schema.py"
  ],
  "math": [
   "ml/features.py",
@@ -93,9 +98,11 @@
   "scripts/discovery/secret-scan.py",
   "scripts/discovery/source-register.py",
   "scripts/media/build-media-manifest.py",
+  "scripts/verify/scan-secrets.py",
   "scripts/verify/verify-frozen.py",
   "services/intelligence-python/app/main.py",
-  "services/intelligence-python/tests/test_service.py"
+  "services/intelligence-python/tests/test_service.py",
+  "spatial/room-models/check_schema.py"
  ],
  "predict": [
   "ml/evaluation/evaluate.py",
@@ -108,7 +115,8 @@
  "re": [
   "provenance/scripts/build_vault.py",
   "scripts/discovery/secret-scan.py",
-  "scripts/media/build-media-manifest.py"
+  "scripts/media/build-media-manifest.py",
+  "scripts/verify/scan-secrets.py"
  ],
  "shutil": [
   "provenance/scripts/build_vault.py"
@@ -126,6 +134,7 @@
   "provenance/scripts/build_vault.py",
   "scripts/discovery/source-register.py",
   "scripts/media/build-media-manifest.py",
+  "scripts/verify/scan-secrets.py",
   "scripts/verify/verify-frozen.py",
   "services/intelligence-python/tests/test_service.py"
  ],
@@ -139,9 +148,11 @@
   "scripts/discovery/secret-scan.py",
   "scripts/discovery/source-register.py",
   "scripts/media/build-media-manifest.py",
+  "scripts/verify/scan-secrets.py",
   "scripts/verify/verify-frozen.py",
   "services/intelligence-python/app/main.py",
-  "services/intelligence-python/tests/test_service.py"
+  "services/intelligence-python/tests/test_service.py",
+  "spatial/room-models/check_schema.py"
  ],
  "time": [
   "ml/training/train.py",
