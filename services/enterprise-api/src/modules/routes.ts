@@ -8,6 +8,8 @@ import * as rooms from '../domain/rooms.js';
 import * as cx from '../domain/commissioning.js';
 import * as read from '../domain/read.js';
 import * as platform from '../domain/platform.js';
+import * as org from '../domain/org.js';
+import * as analytics from '../domain/analytics.js';
 import type { PgPool } from '../db/pg.js';
 import type { Hs256Tokens } from '../auth/jwt.js';
 import type { ObjectStore } from '../storage/objectStore.js';
@@ -33,12 +35,23 @@ export function buildRoutes(deps: { pool: PgPool; tokens: Hs256Tokens; store: Ob
     handler: async (_c, q) => ({ status: 200, body: await platform.signIn(deps.pool, deps.tokens, q.body as never) }) });
   add({ method: 'GET', path: '/v1/me', tag: 'auth', summary: 'The signed-in person, tenant, role and authorities (resolved server-side)', auth: true, responses: ok('principal'), handler: async (c) => ({ status: 200, body: await platform.me(c) }) });
 
+  // ---------------------------------------------------------------------------------------- organization
+  add({ method: 'GET', path: '/v1/sites', tag: 'organization', summary: 'Sites and their buildings (within your site scope)', auth: true, responses: ok('sites'), handler: async (c) => ({ status: 200, body: await org.sites(c) }) });
+  add({ method: 'GET', path: '/v1/roles', tag: 'organization', summary: 'The role catalogue and each role’s authorities', auth: true, responses: ok('roles'), handler: async (c) => ({ status: 200, body: await org.roles(c) }) });
+  add({ method: 'GET', path: '/v1/people', tag: 'organization', summary: 'People and memberships of the tenant (security admin; audited)', auth: true, authority: 'policy.configure', responses: ok('people'), handler: async (c) => ({ status: 200, body: await org.people(c) }) });
+  add({ method: 'GET', path: '/v1/projects', tag: 'organization', summary: 'Projects and their rooms (rooms within your site scope)', auth: true, responses: ok('projects'), handler: async (c) => ({ status: 200, body: await org.projects(c) }) });
+  add({ method: 'POST', path: '/v1/projects', tag: 'organization', summary: 'Create a project', auth: true, authority: 'project.decide', idempotent: true,
+    body: obj({ code: str({ pattern: '^PRJ-[A-Z0-9-]{2,32}$' }), name: str({ minLength: 1, maxLength: 120 }) }, ['code', 'name']), responses: created('project'), handler: async (c, q) => ({ status: 201, body: await org.createProject(c, q.body as never) }) });
+  add({ method: 'POST', path: '/v1/rooms/:room/project', tag: 'organization', summary: 'Put a room into a project, or take it out (projectCode null)', auth: true, authority: 'project.decide',
+    body: obj({ projectCode: str({ pattern: '^PRJ-[A-Z0-9-]{2,32}$', nullable: true }) }, ['projectCode']), responses: ok('assignment'), handler: async (c, q) => ({ status: 200, body: await org.assignRoomToProject(c, q.params['room']!, (q.body as { projectCode: string | null }).projectCode) }) });
+  add({ method: 'GET', path: '/v1/reports/summary', tag: 'reporting', summary: 'KPI summary: lifecycle, commissioning coverage and verification, issues, work orders, assets, evidence (operational performance NOT_MONITORED)', auth: true, responses: ok('summary'), handler: async (c) => ({ status: 200, body: await analytics.summary(c) }) });
+
   // ---------------------------------------------------------------------------------------- rooms
   add({ method: 'GET', path: '/v1/rooms', tag: 'rooms', summary: 'List rooms (cursor pagination by code; filter by lifecycle)', auth: true,
     query: { lifecycle: str({ enum: ROOM_LIFECYCLE }), after: str({ maxLength: 40 }), limit: str({ pattern: '^[0-9]{1,3}$' }) }, responses: ok('rooms'),
     handler: async (c, q) => ({ status: 200, body: await read.listRooms(c, { lifecycle: q.query.get('lifecycle'), after: q.query.get('after'), limit: Number(q.query.get('limit') || 50) }) }) });
   add({ method: 'POST', path: '/v1/rooms', tag: 'rooms', summary: 'Create a planned room from a template (server-side classification, checks and applicability)', auth: true, authority: 'room.design', idempotent: true,
-    body: obj({ name: str({ minLength: 1, maxLength: 80 }), template: str({ maxLength: 40 }), buildingCode: str({ maxLength: 24 }), floor: int({ minimum: -5, maximum: 200 }), unit: str({ enum: ['m', 'ft'] }), length: str({ maxLength: 20 }), width: str({ maxLength: 20 }), ceiling: str({ maxLength: 20 }), intendedUse: str({ maxLength: 200 }), occupancy: int({ minimum: 1, maximum: 5000 }), shape: str({ enum: ['rect', 'lshape'] }), points: arr(arr(num(), { minItems: 2, maxItems: 2 }), { minItems: 3, maxItems: 40 }) }, ['name', 'template']),
+    body: obj({ name: str({ minLength: 1, maxLength: 80 }), template: str({ maxLength: 40 }), buildingCode: str({ maxLength: 24 }), floor: int({ minimum: -5, maximum: 200 }), unit: str({ enum: ['m', 'ft'] }), length: str({ maxLength: 20 }), width: str({ maxLength: 20 }), ceiling: str({ maxLength: 20 }), intendedUse: str({ maxLength: 200 }), occupancy: int({ minimum: 1, maximum: 5000 }), shape: str({ enum: ['rect', 'lshape'] }), points: arr(arr(num(), { minItems: 2, maxItems: 2 }), { minItems: 3, maxItems: 40 }), projectCode: str({ pattern: '^PRJ-[A-Z0-9-]{2,32}$' }) }, ['name', 'template']),
     responses: created('the room code and id'), handler: async (c, q) => ({ status: 201, body: await rooms.createRoom(c, q.body as never) }) });
   add({ method: 'GET', path: '/v1/rooms/:room', tag: 'rooms', summary: 'A room with its devices, connections, drawings, revisions, issues and commissioning plan (result labels, never a bare PASS)', auth: true, responses: ok('room detail'), handler: async (c, q) => ({ status: 200, body: await read.getRoom(c, q.params['room']!) }) });
   add({ method: 'PATCH', path: '/v1/rooms/:room', tag: 'rooms', summary: 'Change the room’s name, intended use or occupancy (PLANNED only)', auth: true, authority: 'room.design',

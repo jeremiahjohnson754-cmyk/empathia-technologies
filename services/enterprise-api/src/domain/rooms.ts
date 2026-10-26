@@ -179,7 +179,7 @@ async function proposeFor(ctx: RequestContext, q: Queryable, room: RoomRow, only
 }
 
 // ------------------------------------------------------------------------------------------------ create
-export interface CreateRoom { name: string; template: string; buildingCode?: string; floor?: number; unit?: 'm' | 'ft'; length?: string | number; width?: string | number; ceiling?: string | number; intendedUse?: string; occupancy?: number; shape?: string; points?: Array<[number, number]> }
+export interface CreateRoom { name: string; template: string; buildingCode?: string; floor?: number; unit?: 'm' | 'ft'; length?: string | number; width?: string | number; ceiling?: string | number; intendedUse?: string; occupancy?: number; shape?: string; points?: Array<[number, number]>; projectCode?: string }
 
 export async function createRoom(ctx: RequestContext, input: CreateRoom): Promise<{ code: string; id: string }> {
   await ctx.require('room.design', 'create a room');
@@ -200,11 +200,15 @@ export async function createRoom(ctx: RequestContext, input: CreateRoom): Promis
   if (input.points) { const o = polygonCheck(input.points); if ('why' in o) throw refused([`outline refused: ${o.why}`]); points = o.points; lengthM = o.l; widthM = o.w; shape = 'polygon'; Object.assign(prov, { length: 'DECLARED', width: 'DECLARED', outline: 'DECLARED' }); }
   const geometry = { shape, points, ceiling: H!, lengthM, widthM, provenance: prov, confidence: Object.values(prov).every((p) => p === 'DECLARED') ? 'declared' : 'modeled' };
   return ctx.tx(async (q) => {
-    const b = (await q.query<{ id: string; code: string }>(input.buildingCode ? 'SELECT id, code FROM app.building WHERE code = $1' : 'SELECT id, code FROM app.building ORDER BY code LIMIT 1', input.buildingCode ? [input.buildingCode] : [])).rows[0];
+    // a site-scoped person can create rooms only in buildings of their own sites (the same 404 as any other unseen record)
+    const sc = scopeClause(ctx, 'b');
+    const b = (await q.query<{ id: string; code: string }>(`SELECT b.id, b.code FROM app.building b WHERE ${input.buildingCode ? 'b.code = $1' : 'true'}${sc.sql.replace('$SCOPE', input.buildingCode ? '$2' : '$1')} ORDER BY b.code LIMIT 1`, [...(input.buildingCode ? [input.buildingCode] : []), ...sc.args])).rows[0];
     if (!b) throw notFound(`building ${input.buildingCode || '(any)'}`);
     const code = await nextCode(q, 'room', 'R-PLN-');
-    const room = (await q.query<RoomRow>(`INSERT INTO app.room (tenant_id, building_id, code, name, floor, template, intended_use, occupancy, unit, geometry, created_by) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *`,
-      [ctx.p.tenantId, b.id, code, String(input.name).slice(0, 80), input.floor ?? 1, input.template, String(input.intendedUse ?? T.use ?? ''), input.occupancy && input.occupancy > 0 ? input.occupancy : T.occ ?? 1, unit, geometry, ctx.p.personId])).rows[0]!;
+    let projectId: string | null = null;
+    if (input.projectCode) { projectId = (await q.query<{ id: string }>(`SELECT id FROM app.project WHERE code = $1 AND state = 'OPEN'`, [input.projectCode])).rows[0]?.id ?? null; if (!projectId) throw notFound(`open project ${input.projectCode}`); }
+    const room = (await q.query<RoomRow>(`INSERT INTO app.room (tenant_id, building_id, code, name, floor, template, intended_use, occupancy, unit, geometry, created_by, project_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING *`,
+      [ctx.p.tenantId, b.id, code, String(input.name).slice(0, 80), input.floor ?? 1, input.template, String(input.intendedUse ?? T.use ?? ''), input.occupancy && input.occupancy > 0 ? input.occupancy : T.occ ?? 1, unit, geometry, ctx.p.personId, projectId])).rows[0]!;
     await relate(ctx, q, { type: 'Room', id: code }, 'LOCATED_IN', { type: 'Building', id: b.code });
     const ids: string[] = []; for (let i = 0; i < (T.items || []).length; i += 1) ids.push(await nextCode(q, 'asset', 'PA-'));
     let n = 0; const devs = templateDevices(input.template, points, () => ids[n++]!, C);

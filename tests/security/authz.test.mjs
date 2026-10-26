@@ -298,3 +298,31 @@ test('rate limiting: a caller over budget gets 429 (budget lowered for this test
     assert.ok(codes.includes(429), codes.join(','));
   } finally { await app2.stop(); }
 });
+
+test('a site-scoped person cannot create a room in a building outside their sites (404), but can inside them', async () => {
+  // a South-scoped designer membership, added for this test only (the seed has no scoped designer)
+  const demo = tid('empathia-demo');
+  const south = h.asSuper("SELECT id FROM app.site WHERE code = 'SITE-SOUTH'");
+  const pid = h.asSuper("SELECT id FROM app.person WHERE email = 'service-south@empathia-demo.empathia.invalid'");
+  h.asSuper(`INSERT INTO app.membership (tenant_id, person_id, role_key, site_scope) VALUES ('${demo}', '${pid}', 'designer', ARRAY['${south}']::uuid[])`);
+  const tok = (await c.call('POST', '/v1/auth/token', { body: { email: 'service-south@empathia-demo.empathia.invalid', password: 'empathia-dev-only', tenant: 'empathia-demo', role: 'designer' } })).body.accessToken;
+  const north = await c.call('POST', '/v1/rooms', { token: tok, body: { name: 'Out of scope (synthetic)', template: 'huddle', buildingCode: 'ATL' } });
+  assert.equal(north.status, 404);
+  const ok = await c.call('POST', '/v1/rooms', { token: tok, body: { name: 'In scope (synthetic)', template: 'huddle', buildingCode: 'HZN' } });
+  assert.equal(ok.status, 201);
+  assert.equal(h.asSuper("SELECT count(*) FROM app.room WHERE name = 'Out of scope (synthetic)'"), '0');
+});
+
+test('a person outside the executive role cannot create projects or move rooms between projects', async () => {
+  assert.equal((await c.call('POST', '/v1/projects', { token: T.opslead, body: { code: 'PRJ-EVIL', name: 'x' } })).status, 403);
+  assert.equal((await c.call('POST', '/v1/rooms/R-PLN-0001/project', { token: T.syseng, body: { projectCode: null } })).status, 403);
+  assert.equal((await c.call('POST', '/v1/rooms/R-PLN-0001/project', { token: T.exec, body: { projectCode: null } })).status, 200, 'the executive can');
+  const other = await c.login('designer', 'second-tenant');
+  assert.equal((await c.call('GET', '/v1/projects', { token: other })).body.items.length, 0, 'projects are tenant-scoped');
+});
+
+test('people listing is security-admin only and never returns password hashes', async () => {
+  assert.equal((await c.call('GET', '/v1/people', { token: T.steward })).status, 403);
+  const p = await c.call('GET', '/v1/people', { token: T.secadmin });
+  assert.ok(!/scrypt|\$s\d|password/i.test(JSON.stringify(p.body)));
+});

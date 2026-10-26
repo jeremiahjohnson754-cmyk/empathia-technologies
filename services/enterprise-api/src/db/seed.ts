@@ -110,8 +110,11 @@ export async function seed(opts: { reset?: boolean } = {}) {
     const have = (await ctx.tx((q) => q.query<{ n: number }>('SELECT count(*)::int AS n FROM app.room'))).rows[0]!.n;
     const made: string[] = [];
     if (!have) {
-      made.push((await createRoom(ctx, { name: 'Atlas Town Hall (synthetic)', template: 'townhall', buildingCode: 'ATL', length: '26', width: '18', ceiling: '6' })).code);
-      made.push((await createRoom(ctx, { name: 'Atlas Boardroom 7.112 (synthetic)', template: 'boardroom', buildingCode: 'ATL', floor: 7 })).code);
+      // one synthetic project for the Atlas rooms (projects are decided by the executive role; the seed writes it as the owner)
+      const tid = t.tenant_id;
+      await ctx.tx((q) => q.query("INSERT INTO app.project (tenant_id, code, name) VALUES ($1, 'PRJ-ATLAS-AV', 'Atlas Tower AV refresh (synthetic)') ON CONFLICT DO NOTHING", [tid]));
+      made.push((await createRoom(ctx, { name: 'Atlas Town Hall (synthetic)', template: 'townhall', buildingCode: 'ATL', length: '26', width: '18', ceiling: '6', projectCode: 'PRJ-ATLAS-AV' })).code);
+      made.push((await createRoom(ctx, { name: 'Atlas Boardroom 7.112 (synthetic)', template: 'boardroom', buildingCode: 'ATL', floor: 7, projectCode: 'PRJ-ATLAS-AV' })).code);
       const h = (await createRoom(ctx, { name: 'Horizon Huddle 2.129 (synthetic)', template: 'huddle', buildingCode: 'HZN', floor: 2 })).code; made.push(h);
       await addDevice(ctx, h, { category: 'micceil' });
     }

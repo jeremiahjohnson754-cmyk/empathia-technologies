@@ -249,3 +249,54 @@ test('OpenAPI: every route is documented with its method, and every authenticate
   const documented = Object.values(doc.paths).reduce((k, ops) => k + Object.keys(ops).filter((m) => ['get', 'post', 'patch', 'put', 'delete'].includes(m)).length, 0);
   assert.equal(documented, n, 'no documented operation without a route');
 });
+
+// ------------------------------------------------------------------------------------------------ organization, projects, reporting
+test('organization: sites with buildings, the role catalogue, people (security admin only, audited)', async () => {
+  const s = await c.call('GET', '/v1/sites', { token: T.designer });
+  assert.equal(s.status, 200);
+  assert.deepEqual(s.body.items.map((x) => x.code), ['SITE-NORTH', 'SITE-SOUTH']);
+  assert.ok(s.body.items[0].buildings.some((b) => b.code === 'ATL' && b.rooms >= 2));
+  const r = await c.call('GET', '/v1/roles', { token: T.designer });
+  assert.ok(r.body.items.find((x) => x.key === 'syseng').authorities.includes('room.classify.approve'));
+  assert.equal((await c.call('GET', '/v1/people', { token: T.designer })).status, 403);
+  const p = await c.call('GET', '/v1/people', { token: T.secadmin });
+  assert.equal(p.status, 200);
+  assert.ok(p.body.items.length >= 17);
+  assert.ok(p.body.items.some((x) => x.email === 'service-south@empathia-demo.empathia.invalid' && x.siteScope.join() === 'SITE-SOUTH'));
+  assert.ok(p.body.items.every((x) => !('password_hash' in x) && !('passwordHash' in x)), 'no credential material in the response');
+});
+
+test('projects: the executive creates a project and scopes rooms into it; the designer cannot', async () => {
+  const exec = await c.login('exec');
+  const seeded = await c.call('GET', '/v1/projects', { token: T.designer });
+  assert.deepEqual(seeded.body.items.find((x) => x.code === 'PRJ-ATLAS-AV').rooms.map((r) => r.code), ['R-PLN-0001', 'R-PLN-0002']);
+  assert.equal((await c.call('POST', '/v1/projects', { token: T.designer, body: { code: 'PRJ-NST-HUDDLES', name: 'Northstar huddles (synthetic)' } })).status, 403);
+  assert.equal((await c.call('POST', '/v1/projects', { token: exec, body: { code: 'prj-lower', name: 'x' } })).status, 400);
+  const mk = await c.call('POST', '/v1/projects', { token: exec, body: { code: 'PRJ-NST-HUDDLES', name: 'Northstar huddles (synthetic)' } });
+  assert.equal(mk.status, 201);
+  assert.equal((await c.call('POST', `/v1/rooms/${code}/project`, { token: T.designer, body: { projectCode: 'PRJ-NST-HUDDLES' } })).status, 403);
+  assert.equal((await c.call('POST', `/v1/rooms/${code}/project`, { token: exec, body: { projectCode: 'PRJ-NST-HUDDLES' } })).status, 200);
+  const after = await c.call('GET', '/v1/projects', { token: T.designer });
+  assert.deepEqual(after.body.items.find((x) => x.code === 'PRJ-NST-HUDDLES').rooms.map((r) => r.code), [code]);
+  assert.equal((await c.call('POST', `/v1/rooms/${code}/project`, { token: exec, body: { projectCode: null } })).status, 200);
+});
+
+test('reporting: KPI summary counts match the database, states its definitions, and reports operational performance NOT_MONITORED', async () => {
+  const r = await c.call('GET', '/v1/reports/summary', { token: T.opslead });
+  assert.equal(r.status, 200, JSON.stringify(r.body));
+  const k = r.body;
+  assert.equal(k.rooms.total, Number(h.asSuper('SELECT count(*) FROM app.room WHERE tenant_id = (SELECT id FROM app.tenant WHERE slug = \'empathia-demo\')')));
+  assert.equal(k.commissioning.byLabel.PASS_VERIFIED, 2);
+  assert.equal(k.issues.deficienciesResolved, 1);
+  assert.equal(k.workOrders.CLOSED, 1);
+  assert.ok(k.commissioning.coverage.value > 0 && k.commissioning.coverage.value < 1);
+  assert.equal(k.commissioning.verifiedShare.value, 1);
+  assert.match(k.commissioning.coverage.definition, /applicable/);
+  assert.equal(k.operationalPerformance, 'NOT_MONITORED');
+  assert.ok(!('PASS' in k.commissioning.byLabel), 'no bare PASS label');
+  // the site-scoped technician sees only the South campus
+  const south = await c.login('service', 'empathia-demo', 'service-south');
+  const s = await c.call('GET', '/v1/reports/summary', { token: south });
+  assert.equal(s.body.scope, 'site-scoped');
+  assert.equal(s.body.rooms.total, Number(h.asSuper("SELECT count(*) FROM app.room r JOIN app.building b ON b.id = r.building_id WHERE b.code = 'HZN'")));
+});
