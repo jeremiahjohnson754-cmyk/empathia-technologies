@@ -1,0 +1,97 @@
+{
+ "root": "/home/claude",
+ "files": 36385,
+ "bytes": 18401449680,
+ "kinds": {
+  "archive": 47,
+  "html": 426,
+  "doc-md": 3143,
+  "data-csv": 469,
+  "data-json": 2200,
+  "captions": 347,
+  "video": 302,
+  "image": 4085,
+  "source-py": 895,
+  "source-js": 11906,
+  "audio": 1928,
+  "source-ps1": 28,
+  "text": 826,
+  "other": 405,
+  "font": 28,
+  "script": 160,
+  "log": 7902,
+  "source-css": 902,
+  "pdf": 114,
+  "hash-list": 91,
+  "workbook": 138,
+  "config": 13,
+  "presentation": 1,
+  "document": 4,
+  "source-ts": 25
+ },
+ "areas": {
+  "(top level)": {
+   "files": 19,
+   "bytes": 93095879
+  },
+  "Empathia_Cinematic_Video_4m18": {
+   "files": 71,
+   "bytes": 749331401
+  },
+  "Empathia_FI_Film": {
+   "files": 788,
+   "bytes": 2006360006
+  },
+  "Empathia_Film_Campaign": {
+   "files": 2133,
+   "bytes": 6187151981
+  },
+  "Empathia_Investor_Short_Films": {
+   "files": 44,
+   "bytes": 227784550
+  },
+  "Empathia_Products": {
+   "files": 1937,
+   "bytes": 88443570
+  },
+  "Empathia_V25": {
+   "files": 24535,
+   "bytes": 4430081226
+  },
+  "collabora-sing-synclab-3d": {
+   "files": 47,
+   "bytes": 20355807
+  },
+  "collabora-sing-synclab": {
+   "files": 88,
+   "bytes": 5229788
+  },
+  "empathia-campaign": {
+   "files": 1633,
+   "bytes": 1963845606
+  },
+  "empathia-campus": {
+   "files": 4587,
+   "bytes": 1273287368
+  },
+  "empathia-film": {
+   "files": 321,
+   "bytes": 1341888026
+  },
+  "empathia-technologies": {
+   "files": 108,
+   "bytes": 2223748
+  },
+  "kit133": {
+   "files": 14,
+   "bytes": 11916839
+  },
+  "kit14": {
+   "files": 60,
+   "bytes": 453885
+  }
+ },
+ "skippedDependencyFolders": 37,
+ "excluded": "top-level dot-folders of the machine (environment configuration), node_modules, .git internals, __pycache__, caches",
+ "generatedAt": "2026-10-26"
+}

@@ -16,7 +16,8 @@ rows = []; skipped = collections.Counter(); kinds = collections.Counter(); areas
 for dp, dns, fns in os.walk(ROOT):
     keep = []
     for d in dns:
-        if d in SKIP: skipped[os.path.join(dp, d)] += 1
+        # dependency caches, and the machine's own dot-folders at the top level (shell, ssh, tool config: environment, not founder material)
+        if d in SKIP or (pathlib.Path(dp) == ROOT and d.startswith('.')): skipped[os.path.join(dp, d)] += 1
         else: keep.append(d)
     dns[:] = keep
     for fn in fns:

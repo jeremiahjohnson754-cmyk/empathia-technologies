@@ -1,0 +1,10 @@
+{
+  "name": "@empathia/design-tokens",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "description": "Empathia design tokens (Aurora dark, from the demonstrator; Aurora Daylight light). Source: tokens.json.",
+  "exports": { ".": { "types": "./dist/tokens.d.ts", "default": "./dist/tokens.js" }, "./tokens.css": "./dist/tokens.css", "./tokens.json": "./tokens.json" },
+  "scripts": { "build": "node build-tokens.mjs" }
+}
