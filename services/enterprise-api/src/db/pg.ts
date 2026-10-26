@@ -95,7 +95,10 @@ export class PgConnection {
     if (this.closed) return Promise.reject(new Error('connection closed'));
     return new Promise((r) => this.waiters.push(r));
   }
-  private write(type: string, body: Buffer) { const h = Buffer.alloc(5); h.write(type, 0); h.writeInt32BE(body.length + 4, 1); this.sock.write(Buffer.concat([h, body])); }
+  private static frame(type: string, body: Buffer): Buffer { const h = Buffer.alloc(5); h.write(type, 0); h.writeInt32BE(body.length + 4, 1); return Buffer.concat([h, body]); }
+  private write(type: string, body: Buffer) { this.sock.write(PgConnection.frame(type, body)); }
+  /** Several protocol messages in one socket write (Parse/Bind/Describe/Execute/Sync go out as one packet). */
+  private writeAll(msgs: Array<[string, Buffer]>) { this.sock.write(Buffer.concat(msgs.map(([t, b]) => PgConnection.frame(t, b)))); }
   private static cstr = (s: string) => Buffer.from(`${s}\0`, 'utf8');
   private static i32 = (n: number) => { const b = Buffer.alloc(4); b.writeInt32BE(n); return b; };
   private static i16 = (n: number) => { const b = Buffer.alloc(2); b.writeInt16BE(n); return b; };
@@ -104,6 +107,7 @@ export class PgConnection {
   async connect(): Promise<void> {
     const raw = net.connect({ host: this.cfg.host, port: this.cfg.port });
     await new Promise<void>((ok, bad) => { raw.once('connect', ok); raw.once('error', bad); });
+    raw.setNoDelay(true);                                                             // no Nagle delay on small protocol messages
     let sock: net.Socket | tls.TLSSocket = raw;
     if (this.cfg.ssl) {
       raw.write(Buffer.concat([PgConnection.i32(8), PgConnection.i32(80877103)]));
@@ -178,11 +182,13 @@ export class PgConnection {
       const c = PgConnection;
       const vals = params.map(toParam);
       const bind = Buffer.concat([c.cstr(''), c.cstr(''), c.i16(0), c.i16(vals.length), ...vals.flatMap((v) => (v === null ? [c.i32(-1)] : [c.i32(Buffer.byteLength(v)), Buffer.from(v, 'utf8')])), c.i16(0)]);
-      this.write('P', Buffer.concat([c.cstr(''), c.cstr(text), c.i16(0)]));
-      this.write('B', bind);
-      this.write('D', Buffer.concat([Buffer.from('P'), c.cstr('')]));
-      this.write('E', Buffer.concat([c.cstr(''), c.i32(0)]));
-      this.write('S', Buffer.alloc(0));
+      this.writeAll([
+        ['P', Buffer.concat([c.cstr(''), c.cstr(text), c.i16(0)])],
+        ['B', bind],
+        ['D', Buffer.concat([Buffer.from('P'), c.cstr('')])],
+        ['E', Buffer.concat([c.cstr(''), c.i32(0)])],
+        ['S', Buffer.alloc(0)],
+      ]);
       return this.collect<R>();
     };
     const p = this.chain.then(run, run);

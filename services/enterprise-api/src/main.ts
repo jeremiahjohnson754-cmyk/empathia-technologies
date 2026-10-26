@@ -24,7 +24,7 @@ export async function start(over: Partial<Record<string, string>> = {}) {
   const health = async () => {
     const t0 = Date.now();
     try {
-      const db = (await pool.query<{ v: string; m: number }>("SELECT current_setting('server_version') AS v, (SELECT count(*)::int FROM app_meta.schema_migration) AS m")).rows[0]!;
+      const db = (await pool.query<{ v: string; m: number }>("SELECT current_setting('server_version') AS v, app.migrations_applied() AS m")).rows[0]!;
       return { status: 'ok', service: 'empathia-enterprise-api', version: '0.1.0', database: { reachable: true, serverVersion: db.v, migrationsApplied: db.m, ms: Date.now() - t0 }, authMode: cfg.authMode, objectStore: store.kind, worker: { delivered: worker.delivered, failed: worker.failed, deadLettered: worker.dead }, liveHealth: 'NOT_MONITORED', note: 'production starter on synthetic data — not production-ready' };
     } catch (e) { return { status: 'degraded', database: { reachable: false, error: (e as Error).message } }; }
   };
