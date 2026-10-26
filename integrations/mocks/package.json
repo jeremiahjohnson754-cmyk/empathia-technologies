@@ -1,0 +1,13 @@
+{
+  "name": "@empathia/integration-mocks",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "description": "Local mock adapters (MOCK maturity) implementing the common integration interface, with fault injection and a conformance suite every adapter must pass. Synthetic data; no network.",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": { ".": { "types": "./dist/src/index.d.ts", "default": "./dist/src/index.js" } },
+  "scripts": { "build": "tsc -b", "test": "node --test \"dist/test/**/*.test.js\"" },
+  "dependencies": { "@empathia/integration-contracts": "workspace:*" }
+}

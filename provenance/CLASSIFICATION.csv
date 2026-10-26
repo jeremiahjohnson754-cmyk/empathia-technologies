@@ -1,0 +1,67 @@
+item,kind,classification,reason
+.gitignore,monorepo path,CONFIDENTIAL_TECHNICAL,repository configuration; part of the source vault
+package.json,monorepo path,CONFIDENTIAL_TECHNICAL,workspace configuration; part of the source vault
+pnpm-workspace.yaml,monorepo path,CONFIDENTIAL_TECHNICAL,workspace configuration
+tsconfig.base.json,monorepo path,CONFIDENTIAL_TECHNICAL,build configuration
+README.md,monorepo path,CONFIDENTIAL_TECHNICAL,describes the private source tree
+GETTING_STARTED.md,monorepo path,CONFIDENTIAL_TECHNICAL,describes the private source tree
+docker-compose.yml,monorepo path,CONFIDENTIAL_TECHNICAL,deployment configuration of the starter
+.env.example,monorepo path,CONFIDENTIAL_TECHNICAL,configuration template (no secrets)
+packages/commissioning-engine,monorepo path,RESTRICTED_IP,"core rule engine: classification, applicability, result labels, lifecycle gates (candidate trade secret / invention material)"
+packages/domain-data,monorepo path,RESTRICTED_IP,"extracted rule tables, test library, personas and golden cases of the demonstrator"
+packages/relationship-engine,monorepo path,RESTRICTED_IP,"relationship graph, traversal and impact analysis"
+packages/assurance-engine,monorepo path,RESTRICTED_IP,baseline and drift analysis engine
+packages/event-contracts,monorepo path,CONFIDENTIAL_TECHNICAL,event catalogue and validation (101 types); internal interface design
+packages/domain-types,monorepo path,CONFIDENTIAL_TECHNICAL,shared domain types
+packages/schemas,monorepo path,CONFIDENTIAL_TECHNICAL,JSON schemas of the internal contracts
+packages/api-client,monorepo path,CONFIDENTIAL_TECHNICAL,generated client of the private API
+packages/ui,monorepo path,CONFIDENTIAL_TECHNICAL,component library source
+packages/design-tokens,monorepo path,CONFIDENTIAL_TECHNICAL,design system source (the rendered look is visible in any shown build; the source is not)
+packages/shared-utils,monorepo path,CONFIDENTIAL_TECHNICAL,shared source
+services/enterprise-api,monorepo path,CONFIDENTIAL_TECHNICAL,"server-side authorization, persistence and workflow implementation"
+services/intelligence-python,monorepo path,CONFIDENTIAL_TECHNICAL,computational service source
+services/integration-worker,monorepo path,CONFIDENTIAL_TECHNICAL,integration worker source
+database,monorepo path,CONFIDENTIAL_TECHNICAL,"schema, row-level security and evidence-ledger constraints"
+apps/founder-studio,monorepo path,INTERNAL_ONLY,founder-only playground; bundles the Founder Edition and engineering views
+apps/enterprise-web,monorepo path,CONFIDENTIAL_TECHNICAL,production-starter frontend source
+apps/investor-demo,monorepo path,CONFIDENTIAL_TECHNICAL,"source/packaging of the investor experience (the built, approved edition is classified separately)"
+apps/engineer-demo,monorepo path,CONFIDENTIAL_TECHNICAL,source/packaging of the private engineer edition
+integrations,monorepo path,CONFIDENTIAL_TECHNICAL,"integration contracts name target platforms for planning only (CONTRACT_ONLY, no partnership); never in investor packages"
+ml,monorepo path,CONFIDENTIAL_TECHNICAL,synthetic-data research prototype source
+spatial,monorepo path,CONFIDENTIAL_TECHNICAL,spatial contracts and geometry source
+docs/architecture,monorepo path,CONFIDENTIAL_TECHNICAL,engineering blueprint
+docs/api,monorepo path,CONFIDENTIAL_TECHNICAL,OpenAPI of the private API
+docs/database,monorepo path,CONFIDENTIAL_TECHNICAL,database architecture
+docs/algorithms,monorepo path,RESTRICTED_IP,rulebooks and algorithm descriptions
+docs/qa,monorepo path,CONFIDENTIAL_TECHNICAL,test evidence and known defects
+docs/security,monorepo path,CONFIDENTIAL_TECHNICAL,threat model and security status
+docs/operations,monorepo path,CONFIDENTIAL_TECHNICAL,operations runbooks
+docs/integrations,monorepo path,CONFIDENTIAL_TECHNICAL,integration architecture; names target platforms
+docs/engineering-handoff,monorepo path,CONFIDENTIAL_TECHNICAL,CTO handoff material
+docs/product,monorepo path,INTERNAL_ONLY,edition/package policy and demonstrator index of the founder's workspace
+docs/discovery,monorepo path,INTERNAL_ONLY,"inventory of the founder's whole workspace (paths, hashes, secret-scan results)"
+media/manifests,monorepo path,INTERNAL_ONLY,inventory of all media including assets whose rights are UNVERIFIED or EXCLUDED
+media/rights-ledger,monorepo path,INTERNAL_ONLY,rights status records
+media/storyboards,monorepo path,INTERNAL_ONLY,unreleased production material
+media/authorized-masters,monorepo path,INTERNAL_ONLY,reserved for VERIFIED masters; empty — no asset is VERIFIED for any external channel
+media/screenshots/demonstrators,monorepo path,INTERNAL_ONLY,screenshots include engineer and founder views
+media/screenshots/enterprise-web,monorepo path,CONFIDENTIAL_TECHNICAL,screens of the private starter
+releases/immutable-references,monorepo path,INTERNAL_ONLY,integrity records of frozen packages
+releases,monorepo path,INTERNAL_ONLY,package staging; distribution is not authorized
+scripts,monorepo path,CONFIDENTIAL_TECHNICAL,"build, extraction and verification tooling"
+tests,monorepo path,CONFIDENTIAL_TECHNICAL,test suites and evidence
+tooling,monorepo path,CONFIDENTIAL_TECHNICAL,build tooling (offline type shim)
+provenance,monorepo path,RESTRICTED_IP,"the IP and provenance vault: invention disclosures, chain of title, AI-assistance record"
+provenance/licenses/texts,monorepo path,THIRD_PARTY_LICENSED,verbatim third-party licence texts
+Empathia_V25/work/source-254 (demonstrator source repository),repository,RESTRICTED_IP,complete demonstrator source and history; never part of an investor package
+Empathia_Investor_Release_2511 (V2.5.1.1),frozen release package,INVESTOR_DISCLOSABLE,"built for investors, carries no media; external distribution NOT authorized (security assessment NOT VERIFIED)"
+Empathia_Investor_Release_252 (V2.5.2 rc1),frozen release package,INVESTOR_DISCLOSABLE,"built for investors, no media; distribution NOT authorized"
+Empathia_Investor_Release_253 / _rc2 / _rc3 (V2.5.3 rc1–rc3),frozen release packages,INVESTOR_DISCLOSABLE,built for investors; distribution NOT authorized pending the external page-API assessment and owner conditions
+Empathia_Engineer_Edition_253 / _rc2 / _rc3,frozen release packages,CONFIDENTIAL_TECHNICAL,"private engineer edition: inspection views, API contracts, evidence; authorized technical reviewers only"
+Founder Edition 2.5.4 development build (sha256 ecdf64be4de7cda5096c8dd7902814e26a7b1fe5d693799f9d489fbbddcbe1ee),development build,INTERNAL_ONLY,unreleased; all founder-level surfaces
+Investor film set (five films incl. the 2:00 founder's vision master),media set,THIRD_PARTY_LICENSED,contains third-party hosted synthetic narration and generated footage whose rights are UNVERIFIED (see legal/media-rights); not distributable
+Campus voice-over (172 local-model narration lines),media set,THIRD_PARTY_LICENSED,model licence documented; output rights and upstream data UNVERIFIED
+30 test-pattern clips,media set,INTERNAL_ONLY,EXCLUDED by owner decision 2026-10-23; quarantined
+First-party UI screenshots of the demonstrators,media set,INVESTOR_DISCLOSABLE,"captures of first-party software screens, subject to removing engineer-only views; channel authorization still required"
+"Empathia_V25/legal (media-rights, distribution registers)",legal records,INTERNAL_ONLY,"access-controlled records; referenced by path, never copied into packages"
+Public items,note,PUBLIC,none designated: nothing in this workspace has been approved for public release

@@ -90,7 +90,7 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
       }
       send(await route.handler(ctx, { params, query: url.searchParams, body, raw, headers: req.headers }));
     } catch (e) {
-      const err = e instanceof ApiError ? e : (e as { code?: string }).code === '23505' ? new ApiError('conflict', 'that record already exists') : /^EM00[1-3]$/.test(String((e as { code?: string }).code)) ? new ApiError('rule_refused', (e as Error).message) : (e as { code?: string }).code === '23514' ? new ApiError('rule_refused', `a database constraint refused the change: ${(e as { constraint?: string }).constraint || (e as Error).message}`) : new ApiError('internal', 'internal error (see the server log for this correlation id)');
+      const err = e instanceof ApiError ? e : (e as { code?: string }).code === '23505' ? new ApiError('conflict', 'that record already exists') : /^EM00[1-4]$/.test(String((e as { code?: string }).code)) ? new ApiError('rule_refused', (e as Error).message) : (e as { code?: string }).code === '23514' ? new ApiError('rule_refused', `a database constraint refused the change: ${(e as { constraint?: string }).constraint || (e as Error).message}`) : new ApiError('internal', 'internal error (see the server log for this correlation id)');
       if (err.code === 'internal') log('error', 'request failed', { correlationId, error: (e as Error).message, stack: (e as Error).stack?.split('\n').slice(0, 4).join(' | ') });
       send({ status: err.status, body: err.problem(correlationId) });
     } finally {

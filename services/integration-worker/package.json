@@ -1,0 +1,11 @@
+{
+  "name": "@empathia/integration-worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "description": "Standalone process that runs integration syncs on a schedule (same modular monolith as the enterprise API; extractable later).",
+  "main": "./main.mjs",
+  "scripts": { "start": "node main.mjs", "once": "node main.mjs --once" },
+  "dependencies": { "@empathia/enterprise-api": "workspace:*" }
+}

@@ -6,7 +6,7 @@
  * Offline machine:  node scripts/bootstrap.mjs [--offline-deps=/path/to/node_modules]
  *
  * The offline mode exists because the founder's build environment has no package-registry access. It links:
- *   - every workspace package (apps/*, services/*, packages/*) into node_modules/@empathia/<name>, exactly as pnpm would;
+ *   - every workspace package (apps/*, services/*, packages/*, integrations/*) into node_modules/@empathia/<name>, exactly as pnpm would;
  *   - the third-party dev tools listed in package.json from an existing node_modules folder (default /opt/npm-tools/node_modules).
  * It never downloads anything and never edits package.json. It reports any dependency it could not find (NOT_FOUND) and the version it
  * found, so a version drift is visible.
@@ -28,7 +28,7 @@ const link = (target, at) => {
 };
 
 const report = { workspace: [], thirdParty: [], notFound: [] };
-for (const group of ['apps', 'services', 'packages']) {
+for (const group of ['apps', 'services', 'packages', 'integrations']) {
   const dir = path.join(root, group);
   if (!fs.existsSync(dir)) continue;
   for (const name of fs.readdirSync(dir)) {

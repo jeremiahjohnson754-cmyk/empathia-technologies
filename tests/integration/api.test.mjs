@@ -321,3 +321,26 @@ test('assurance: a room without an accepted baseline reports NO_BASELINE; with o
   assert.equal(a.body.liveHealth, 'NOT_MONITORED');
   h.asSuper(`UPDATE app.room SET lifecycle = 'COMMISSIONING', baseline = NULL WHERE code = '${code}'`);
 });
+
+// ------------------------------------------------------------------------------------------------ integrations (Harmony starter)
+test('integrations: a MOCK adapter syncs through the contract; observations are SYNTHETIC_MOCK, idempotent and tenant-scoped', async () => {
+  assert.equal((await c.call('POST', '/v1/integrations/mock-device-inventory/sync', { token: T.designer })).status, 403);
+  const s1 = await c.call('POST', '/v1/integrations/mock-device-inventory/sync', { token: T.secadmin });
+  assert.equal(s1.status, 200, JSON.stringify(s1.body));
+  assert.equal(s1.body.state, 'OK'); assert.equal(s1.body.observations, 60); assert.equal(s1.body.evidence, 'SYNTHETIC_MOCK');
+  const s2 = await c.call('POST', '/v1/integrations/mock-device-inventory/sync', { token: T.secadmin });
+  assert.equal(s2.body.observations, 60);
+  assert.equal(h.asSuper("SELECT count(*) FROM app.integration_observation WHERE integration_key = 'mock-device-inventory'"), '60', 'a second sync updates, it does not duplicate');
+  assert.equal(h.asSuper("SELECT count(*) FROM app.integration_observation WHERE evidence <> 'SYNTHETIC_MOCK'"), '0');
+  const obs = await c.call('GET', '/v1/integrations/mock-device-inventory/observations?limit=5', { token: T.secadmin });
+  assert.equal(obs.body.items.length, 5); assert.equal(obs.body.sync.state, 'OK');
+  assert.equal(h.asSuper("SELECT count(*) FROM app.outbox_event WHERE type = 'integration.adapter_health_changed'"), '1', 'health changed once (none → OK)');
+  const other = await c.login('secadmin', 'second-tenant');
+  assert.equal((await c.call('GET', '/v1/integrations/mock-device-inventory/observations', { token: other })).body.items.length, 0);
+  // a catalogue entry has no adapter: nothing runs and nothing is called
+  const key = h.asSuper("SELECT key FROM app.integration WHERE state = 'CONTRACT_ONLY' ORDER BY key LIMIT 1");
+  const nc = await c.call('POST', `/v1/integrations/${key}/sync`, { token: T.secadmin });
+  assert.equal(nc.status, 501); assert.equal(nc.body.code, 'not_configured');
+  // the database refuses a measurement claim from a MOCK source
+  assert.throws(() => h.asSuper("UPDATE app.integration_observation SET evidence = 'MEASURED' WHERE id = (SELECT min(id) FROM app.integration_observation)"), /only SYNTHETIC_MOCK/);
+});

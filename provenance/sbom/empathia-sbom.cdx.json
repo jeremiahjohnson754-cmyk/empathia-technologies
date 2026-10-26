@@ -1,0 +1,945 @@
+{
+ "bomFormat": "CycloneDX",
+ "specVersion": "1.5",
+ "serialNumber": "urn:uuid:2889f4a7-0000-4000-8000-271a109627fa",
+ "version": 1,
+ "metadata": {
+  "timestamp": "2026-10-26T13:00:21+00:00",
+  "tools": [
+   {
+    "name": "provenance/scripts/build_vault.py"
+   }
+  ],
+  "component": {
+   "type": "application",
+   "name": "empathia-technologies",
+   "version": "0.1.0",
+   "bom-ref": "empathia-technologies"
+  },
+  "properties": [
+   {
+    "name": "empathia:scopeNote",
+    "value": "scope=required: shipped inside an app bundle or needed by the running service; scope=optional: development, build or test tooling. The enterprise API has no third-party npm runtime dependency (framework-free HTTP and a vendored PostgreSQL client)."
+   },
+   {
+    "name": "empathia:fontsShipped",
+    "value": "none: the design tokens use system font stacks only"
+   },
+   {
+    "name": "empathia:notFoundOffline",
+    "value": "csstype, @types/react-dom, @types/react, @types/react, @types/react-dom (asked for by package.json, not present in the offline registry; a local type shim is used \u2014 tooling/types/react-offline)"
+   }
+  ]
+ },
+ "components": [
+  {
+   "type": "library",
+   "bom-ref": "pkg:npm/playwright-core@1.56.0",
+   "name": "playwright-core",
+   "version": "1.56.0",
+   "scope": "optional",
+   "purl": "pkg:npm/playwright-core@1.56.0",
+   "licenses": [
+    {
+     "license": {
+      "id": "Apache-2.0"
+     }
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "development tooling"
+    },
+    {
+     "name": "empathia:resolvedPath",
+     "value": "/opt/npm-tools/node_modules/playwright-core"
+    },
+    {
+     "name": "empathia:introducedBy",
+     "value": "package.json / scripts/bootstrap.mjs"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE, NOTICE"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:npm/scheduler@0.27.0",
+   "name": "scheduler",
+   "version": "0.27.0",
+   "scope": "required",
+   "purl": "pkg:npm/scheduler@0.27.0",
+   "licenses": [
+    {
+     "license": {
+      "id": "MIT"
+     }
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "runtime (bundled into the apps)"
+    },
+    {
+     "name": "empathia:resolvedPath",
+     "value": "/opt/npm-tools/node_modules/scheduler"
+    },
+    {
+     "name": "empathia:introducedBy",
+     "value": "package.json / scripts/bootstrap.mjs"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:npm/undici-types@8.3.0",
+   "name": "undici-types",
+   "version": "8.3.0",
+   "scope": "optional",
+   "purl": "pkg:npm/undici-types@8.3.0",
+   "licenses": [
+    {
+     "license": {
+      "id": "MIT"
+     }
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "development tooling"
+    },
+    {
+     "name": "empathia:resolvedPath",
+     "value": "/opt/npm-tools/node_modules/undici-types"
+    },
+    {
+     "name": "empathia:introducedBy",
+     "value": "package.json / scripts/bootstrap.mjs"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:npm/marked@18.0.10",
+   "name": "marked",
+   "version": "18.0.10",
+   "scope": "optional",
+   "purl": "pkg:npm/marked@18.0.10",
+   "licenses": [
+    {
+     "license": {
+      "id": "MIT"
+     }
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "development tooling"
+    },
+    {
+     "name": "empathia:resolvedPath",
+     "value": "/opt/npm-tools/node_modules/marked"
+    },
+    {
+     "name": "empathia:introducedBy",
+     "value": "package.json / scripts/bootstrap.mjs"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:npm/react-dom@19.2.8",
+   "name": "react-dom",
+   "version": "19.2.8",
+   "scope": "required",
+   "purl": "pkg:npm/react-dom@19.2.8",
+   "licenses": [
+    {
+     "license": {
+      "id": "MIT"
+     }
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "runtime (bundled into the apps)"
+    },
+    {
+     "name": "empathia:resolvedPath",
+     "value": "/opt/npm-tools/node_modules/react-dom"
+    },
+    {
+     "name": "empathia:introducedBy",
+     "value": "package.json / scripts/bootstrap.mjs"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:npm/react@19.2.8",
+   "name": "react",
+   "version": "19.2.8",
+   "scope": "required",
+   "purl": "pkg:npm/react@19.2.8",
+   "licenses": [
+    {
+     "license": {
+      "id": "MIT"
+     }
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "runtime (bundled into the apps)"
+    },
+    {
+     "name": "empathia:resolvedPath",
+     "value": "/opt/npm-tools/node_modules/react"
+    },
+    {
+     "name": "empathia:introducedBy",
+     "value": "package.json / scripts/bootstrap.mjs"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:npm/playwright@1.56.0",
+   "name": "playwright",
+   "version": "1.56.0",
+   "scope": "optional",
+   "purl": "pkg:npm/playwright@1.56.0",
+   "licenses": [
+    {
+     "license": {
+      "id": "Apache-2.0"
+     }
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "development tooling"
+    },
+    {
+     "name": "empathia:resolvedPath",
+     "value": "/opt/npm-tools/node_modules/playwright"
+    },
+    {
+     "name": "empathia:introducedBy",
+     "value": "package.json / scripts/bootstrap.mjs"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE, NOTICE"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:npm/esbuild@0.28.2",
+   "name": "esbuild",
+   "version": "0.28.2",
+   "scope": "optional",
+   "purl": "pkg:npm/esbuild@0.28.2",
+   "licenses": [
+    {
+     "license": {
+      "id": "MIT"
+     }
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "development tooling"
+    },
+    {
+     "name": "empathia:resolvedPath",
+     "value": "/opt/npm-tools/node_modules/esbuild"
+    },
+    {
+     "name": "empathia:introducedBy",
+     "value": "package.json / scripts/bootstrap.mjs"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE.md"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:npm/@esbuild/linux-x64@0.28.2",
+   "name": "@esbuild/linux-x64",
+   "version": "0.28.2",
+   "scope": "optional",
+   "purl": "pkg:npm/%40esbuild/linux-x64@0.28.2",
+   "licenses": [
+    {
+     "license": {
+      "id": "MIT"
+     }
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "development tooling"
+    },
+    {
+     "name": "empathia:resolvedPath",
+     "value": "/opt/npm-tools/node_modules/@esbuild/linux-x64"
+    },
+    {
+     "name": "empathia:introducedBy",
+     "value": "esbuild"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "NOT_FOUND"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:npm/@types/node@26.2.0",
+   "name": "@types/node",
+   "version": "26.2.0",
+   "scope": "optional",
+   "purl": "pkg:npm/%40types/node@26.2.0",
+   "licenses": [
+    {
+     "license": {
+      "id": "MIT"
+     }
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "development tooling"
+    },
+    {
+     "name": "empathia:resolvedPath",
+     "value": "/opt/npm-tools/node_modules/@types/node"
+    },
+    {
+     "name": "empathia:introducedBy",
+     "value": "package.json / scripts/bootstrap.mjs"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:npm/typescript@6.0.3",
+   "name": "typescript",
+   "version": "6.0.3",
+   "scope": "optional",
+   "purl": "pkg:npm/typescript@6.0.3",
+   "licenses": [
+    {
+     "license": {
+      "id": "Apache-2.0"
+     }
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "development tooling"
+    },
+    {
+     "name": "empathia:resolvedPath",
+     "value": "/opt/npm-tools/node_modules/typescript"
+    },
+    {
+     "name": "empathia:introducedBy",
+     "value": "package.json / scripts/bootstrap.mjs"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE.txt"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:pypi/joblib@1.6.0",
+   "name": "joblib",
+   "version": "1.6.0",
+   "scope": "required",
+   "purl": "pkg:pypi/joblib@1.6.0",
+   "licenses": [
+    {
+     "expression": "BSD-3-Clause"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "python, imported by ml/evaluation/evaluate.py, ml/training/train.py"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE.txt"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:pypi/numpy@2.5.3",
+   "name": "numpy",
+   "version": "2.5.3",
+   "scope": "required",
+   "purl": "pkg:pypi/numpy@2.5.3",
+   "licenses": [
+    {
+     "expression": "BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "python, imported by ml/evaluation/evaluate.py, ml/features.py, ml/tests/test_prototype.py, ml/training/train.py"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE.txt, LICENSE.md, LICENSE, LICENSE.md, LICENSE.txt, LICENSE, LICENSE, LICENSE.md, COPYING, LICENSE.txt, LICENSE.md, LICENSE.md, LICENSE.md, LICENSE.md, LICENSE.md, LICENSE.md"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:pypi/pydantic@2.13.5",
+   "name": "pydantic",
+   "version": "2.13.5",
+   "scope": "required",
+   "purl": "pkg:pypi/pydantic@2.13.5",
+   "licenses": [
+    {
+     "expression": "MIT"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "python, imported by services/intelligence-python/app/main.py"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:pypi/scikit-learn@1.9.1",
+   "name": "scikit-learn",
+   "version": "1.9.1",
+   "scope": "required",
+   "purl": "pkg:pypi/scikit-learn@1.9.1",
+   "licenses": [
+    {
+     "expression": "BSD-3-Clause"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "python, imported by ml/evaluation/evaluate.py, ml/tests/test_prototype.py, ml/training/train.py"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "COPYING"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:pypi/starlette@1.6.0",
+   "name": "starlette",
+   "version": "1.6.0",
+   "scope": "required",
+   "purl": "pkg:pypi/starlette@1.6.0",
+   "licenses": [
+    {
+     "expression": "BSD-3-Clause"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "python, imported by services/intelligence-python/app/main.py"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE.md"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:pypi/uvicorn@0.53.0",
+   "name": "uvicorn",
+   "version": "0.53.0",
+   "scope": "required",
+   "purl": "pkg:pypi/uvicorn@0.53.0",
+   "licenses": [
+    {
+     "expression": "BSD-3-Clause"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "python, launches services/intelligence-python (python3 -I -m uvicorn app.main:app)"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE.md"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:pypi/click@8.5.0",
+   "name": "click",
+   "version": "8.5.0",
+   "scope": "required",
+   "purl": "pkg:pypi/click@8.5.0",
+   "licenses": [
+    {
+     "expression": "BSD-3-Clause"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "python, required by uvicorn"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE.txt"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:pypi/h11@0.16.0",
+   "name": "h11",
+   "version": "0.16.0",
+   "scope": "required",
+   "purl": "pkg:pypi/h11@0.16.0",
+   "licenses": [
+    {
+     "expression": "MIT"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "python, required by uvicorn"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE.txt"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:pypi/typing_extensions@4.16.0",
+   "name": "typing_extensions",
+   "version": "4.16.0",
+   "scope": "required",
+   "purl": "pkg:pypi/typing_extensions@4.16.0",
+   "licenses": [
+    {
+     "expression": "PSF-2.0"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "python, required by uvicorn"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:pypi/anyio@4.15.1",
+   "name": "anyio",
+   "version": "4.15.1",
+   "scope": "required",
+   "purl": "pkg:pypi/anyio@4.15.1",
+   "licenses": [
+    {
+     "expression": "MIT"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "python, required by starlette"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:pypi/idna@3.19",
+   "name": "idna",
+   "version": "3.19",
+   "scope": "required",
+   "purl": "pkg:pypi/idna@3.19",
+   "licenses": [
+    {
+     "expression": "BSD-3-Clause"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "python, required by anyio"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE.md"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:pypi/scipy@1.18.1",
+   "name": "scipy",
+   "version": "1.18.1",
+   "scope": "required",
+   "purl": "pkg:pypi/scipy@1.18.1",
+   "licenses": [
+    {
+     "expression": "BSD License"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "python, required by scikit-learn"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE.txt"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:pypi/narwhals@2.26.0",
+   "name": "narwhals",
+   "version": "2.26.0",
+   "scope": "required",
+   "purl": "pkg:pypi/narwhals@2.26.0",
+   "licenses": [
+    {
+     "expression": "MIT"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "python, required by scikit-learn"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE.md"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:pypi/threadpoolctl@3.7.0",
+   "name": "threadpoolctl",
+   "version": "3.7.0",
+   "scope": "required",
+   "purl": "pkg:pypi/threadpoolctl@3.7.0",
+   "licenses": [
+    {
+     "expression": "BSD-3-Clause"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "python, required by scikit-learn"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:pypi/annotated-types@0.8.0",
+   "name": "annotated-types",
+   "version": "0.8.0",
+   "scope": "required",
+   "purl": "pkg:pypi/annotated-types@0.8.0",
+   "licenses": [
+    {
+     "expression": "MIT"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "python, required by pydantic"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:pypi/pydantic_core@2.46.5",
+   "name": "pydantic_core",
+   "version": "2.46.5",
+   "scope": "required",
+   "purl": "pkg:pypi/pydantic_core@2.46.5",
+   "licenses": [
+    {
+     "expression": "MIT"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "python, required by pydantic"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:pypi/typing-inspection@0.4.4",
+   "name": "typing-inspection",
+   "version": "0.4.4",
+   "scope": "required",
+   "purl": "pkg:pypi/typing-inspection@0.4.4",
+   "licenses": [
+    {
+     "expression": "MIT"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "python, required by pydantic"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "pkg:pypi/cloudpickle@3.1.2",
+   "name": "cloudpickle",
+   "version": "3.1.2",
+   "scope": "required",
+   "purl": "pkg:pypi/cloudpickle@3.1.2",
+   "licenses": [
+    {
+     "expression": "BSD-3-Clause"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "python, required by joblib"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "LICENSE"
+    }
+   ]
+  },
+  {
+   "type": "application",
+   "bom-ref": "sys:PostgreSQL@16.15",
+   "name": "PostgreSQL",
+   "version": "16.15",
+   "scope": "required",
+   "licenses": [
+    {
+     "expression": "PostgreSQL"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "database server for the enterprise API (local development cluster via scripts/db.mjs; not shipped)"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "/usr/share/doc/postgresql-16/copyright"
+    }
+   ]
+  },
+  {
+   "type": "application",
+   "bom-ref": "sys:Node.js@22.22.0",
+   "name": "Node.js",
+   "version": "22.22.0",
+   "scope": "required",
+   "licenses": [
+    {
+     "expression": "MIT"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "runtime of the API, scripts and builds (not shipped)"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "/opt/node22/LICENSE"
+    }
+   ]
+  },
+  {
+   "type": "application",
+   "bom-ref": "sys:Python@3.13.16",
+   "name": "Python",
+   "version": "3.13.16",
+   "scope": "optional",
+   "licenses": [
+    {
+     "expression": "PSF-2.0"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "scripts (discovery, media manifest, verification, provenance)"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "/usr/lib/python3.13/LICENSE.txt"
+    }
+   ]
+  },
+  {
+   "type": "application",
+   "bom-ref": "sys:Chromium (Playwright build)@141.0.7390.37 (revision 1194)",
+   "name": "Chromium (Playwright build)",
+   "version": "141.0.7390.37 (revision 1194)",
+   "scope": "optional",
+   "licenses": [
+    {
+     "expression": "BSD-3-Clause AND others (NOT_FOUND on disk)"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "browser tests and screenshots only (/opt/pw-browsers)"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "NOT_FOUND"
+    }
+   ]
+  },
+  {
+   "type": "application",
+   "bom-ref": "sys:FFmpeg@6.1.1-3ubuntu5",
+   "name": "FFmpeg",
+   "version": "6.1.1-3ubuntu5",
+   "scope": "optional",
+   "licenses": [
+    {
+     "expression": "LGPL-2.1-or-later OR GPL-2.0-or-later (build-dependent)"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "media probing and test-fixture transcoding (tooling; not shipped)"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "/usr/share/doc/ffmpeg/copyright"
+    }
+   ]
+  },
+  {
+   "type": "application",
+   "bom-ref": "sys:@mermaid-js/mermaid-cli (mmdc)@11.16.0",
+   "name": "@mermaid-js/mermaid-cli (mmdc)",
+   "version": "11.16.0",
+   "scope": "optional",
+   "licenses": [
+    {
+     "expression": "MIT"
+    }
+   ],
+   "properties": [
+    {
+     "name": "empathia:usage",
+     "value": "renders the architecture diagrams at build time (tooling)"
+    },
+    {
+     "name": "empathia:licenseFiles",
+     "value": "/home/claude/.npm-global/lib/node_modules/@mermaid-js/mermaid-cli/LICENSE"
+    }
+   ]
+  }
+ ]
+}

@@ -12,7 +12,8 @@
   "workspaces": [
     "apps/*",
     "services/*",
-    "packages/*"
+    "packages/*",
+    "integrations/*"
   ],
   "scripts": {
     "bootstrap": "node scripts/bootstrap.mjs",

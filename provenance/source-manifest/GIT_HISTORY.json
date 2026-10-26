@@ -1,0 +1,3314 @@
+{
+ "generatedAt": "2026-10-26T13:00:21+00:00",
+ "repositories": [
+  {
+   "label": "monorepo (empathia-technologies)",
+   "path": "/home/claude/empathia-technologies",
+   "head": "0c7aaf944629e911623bd801f879cc7b896fb222",
+   "branch": "main",
+   "commits": 13,
+   "authors": {
+    "Claude <noreply@anthropic.com>": 13
+   },
+   "commitsWithCoAuthoredBy": 13,
+   "commitsWithClaudeSession": 13,
+   "firstCommit": "2026-10-26T06:06:44-05:00",
+   "lastCommit": "2026-10-26T07:58:21-05:00",
+   "tags": [
+    {
+     "tag": "stage-0-checkpoint",
+     "object": "77aab48d04c5650f18267b38b20e4b0784e354ab",
+     "commit": "77aab48d04c5650f18267b38b20e4b0784e354ab",
+     "date": "2026-10-26T06:29:31-05:00",
+     "subject": "Stage 0: repository discovery report, source register, file inventory (36,385 files hashed), secret scan, frozen-release check (PASS), media manifest (2,230 assets probed)"
+    },
+    {
+     "tag": "stage-1-checkpoint",
+     "object": "dc681233e17985dac2130ddc23ceefc79a9fb1d3",
+     "commit": "dc681233e17985dac2130ddc23ceefc79a9fb1d3",
+     "date": "2026-10-26T06:55:04-05:00",
+     "subject": "Do not track the studio's generated data (rebuilt from records by build-data.mjs)"
+    },
+    {
+     "tag": "stage-2-checkpoint",
+     "object": "8ff3dbeb1ccab23f5913b0d406bebd950b2eb3d7",
+     "commit": "8ff3dbeb1ccab23f5913b0d406bebd950b2eb3d7",
+     "date": "2026-10-26T07:05:05-05:00",
+     "subject": "Editions table: state only what the source shows"
+    }
+   ],
+   "log": [
+    {
+     "hash": "0c7aaf944629e911623bd801f879cc7b896fb222",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-26T07:58:21-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-26T07:58:21-05:00",
+     "subject": "ml/: synthetic research prototype (real engine features, declared synthetic labels; logistic regression vs baselines; model card; 5 tests); services/intelligence-python: Starlette service serving it with a typed contract and service token (4 tests). PyTorch and FastAPI BLOCKED offline.",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      ".gitignore",
+      "ml/README.md",
+      "ml/datasets/generate_synthetic.mjs",
+      "ml/datasets/synthetic_first_attempt_v1.meta.json",
+      "ml/evaluation/evaluate.py",
+      "ml/evaluation/results/REPORT_v1.md",
+      "ml/evaluation/results/metrics_v1.json",
+      "ml/features.py",
+      "ml/inference/predict.py",
+      "ml/model-cards/first-attempt-fail-risk.md",
+      "ml/models/first_attempt_logreg_v1.json",
+      "ml/models/split_v1.json",
+      "ml/tests/test_prototype.py",
+      "ml/training/train.py",
+      "services/intelligence-python/README.md",
+      "services/intelligence-python/app/__init__.py",
+      "services/intelligence-python/app/main.py",
+      "services/intelligence-python/tests/test_service.py"
+     ]
+    },
+    {
+     "hash": "41fb895f4dcaba9afb5074b16399a46e15a0a6b2",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-26T07:54:15-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-26T07:54:15-05:00",
+     "subject": "Assurance engine ported from the 2.5.4 demonstrator (17 dimensions, drift types, gap vs drift, remedy precedence; 13/13 tests) and GET /v1/rooms/:room/assurance (unknown where there is no evidence); API tests 17/17",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "docs/api/openapi.json",
+      "packages/api-client/src/generated.ts",
+      "packages/api-client/test/client.test.ts",
+      "packages/assurance-engine/package.json",
+      "packages/assurance-engine/src/assess.ts",
+      "packages/assurance-engine/src/index.ts",
+      "packages/assurance-engine/src/layout.ts",
+      "packages/assurance-engine/src/vocabulary.ts",
+      "packages/assurance-engine/test/assurance.test.ts",
+      "packages/assurance-engine/tsconfig.json",
+      "services/enterprise-api/package.json",
+      "services/enterprise-api/src/domain/assurance.ts",
+      "services/enterprise-api/src/modules/routes.ts",
+      "services/enterprise-api/tsconfig.json",
+      "tests/integration/api.test.mjs"
+     ]
+    },
+    {
+     "hash": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-26T07:49:00-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-26T07:49:00-05:00",
+     "subject": "Enterprise web app (React over the API) with @empathia/ui components; E2E 21/21 over a real API and database; shared React type shim; known-defects register (KD-01)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "apps/enterprise-web/build.mjs",
+      "apps/enterprise-web/package.json",
+      "apps/enterprise-web/server/serve.mjs",
+      "apps/enterprise-web/src/App.tsx",
+      "apps/enterprise-web/src/api.ts",
+      "apps/enterprise-web/src/components/FloorPlan.tsx",
+      "apps/enterprise-web/src/index.html",
+      "apps/enterprise-web/src/main.tsx",
+      "apps/enterprise-web/src/me.ts",
+      "apps/enterprise-web/src/pages/Admin.tsx",
+      "apps/enterprise-web/src/pages/Inbox.tsx",
+      "apps/enterprise-web/src/pages/Projects.tsx",
+      "apps/enterprise-web/src/pages/Reports.tsx",
+      "apps/enterprise-web/src/pages/Room.tsx",
+      "apps/enterprise-web/src/pages/Rooms.tsx",
+      "apps/enterprise-web/src/pages/SignIn.tsx",
+      "apps/enterprise-web/src/router.ts",
+      "apps/enterprise-web/src/styles/app.css",
+      "apps/enterprise-web/tsconfig.json",
+      "apps/founder-studio/tsconfig.json",
+      "docs/qa/KNOWN_DEFECTS.md",
+      "media/screenshots/enterprise-web/01-sign-in.jpg",
+      "media/screenshots/enterprise-web/02-rooms.jpg",
+      "media/screenshots/enterprise-web/03-room-overview.jpg",
+      "media/screenshots/enterprise-web/04-room-devices.jpg",
+      "media/screenshots/enterprise-web/05-room-commissioning.jpg",
+      "media/screenshots/enterprise-web/06-reports.jpg",
+      "media/screenshots/enterprise-web/07-admin-integrations.jpg",
+      "packages/ui/package.json",
+      "packages/ui/src/components.tsx",
+      "packages/ui/src/index.ts",
+      "packages/ui/src/status.ts",
+      "packages/ui/src/ui.css",
+      "packages/ui/tsconfig.json",
+      "tests/browser/enterprise-web.test.mjs",
+      "tests/evidence/enterprise-web/RESULTS.json",
+      "tooling/types/react-offline/index.d.ts"
+     ]
+    },
+    {
+     "hash": "b4ab1bc68c3668a8a6e2e96e1549320ef18b94af",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-26T07:41:01-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-26T07:41:01-05:00",
+     "subject": "Typed API client generated from the OpenAPI contract (45 operations), with unit tests (5/5) and a live-shape test (3/3); docs/api/openapi.json exported from the route table",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "docs/api/openapi.json",
+      "packages/api-client/package.json",
+      "packages/api-client/scripts/generate.mjs",
+      "packages/api-client/src/client.ts",
+      "packages/api-client/src/generated.ts",
+      "packages/api-client/src/index.ts",
+      "packages/api-client/src/types.ts",
+      "packages/api-client/test/client.test.ts",
+      "packages/api-client/tsconfig.json",
+      "scripts/api/export-openapi.mjs",
+      "tests/integration/api-client.test.mjs"
+     ]
+    },
+    {
+     "hash": "0a6750a6dbad29231db8b45f356d7a75986e8cc9",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-26T07:39:05-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-26T07:39:05-05:00",
+     "subject": "API: organization (sites, roles, people), projects, KPI summary (analytics); site scope enforced on room creation; tests 16/16 and 44/44",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "database/migrations/0006_projects.sql",
+      "services/enterprise-api/src/db/seed.ts",
+      "services/enterprise-api/src/domain/analytics.ts",
+      "services/enterprise-api/src/domain/org.ts",
+      "services/enterprise-api/src/domain/rooms.ts",
+      "services/enterprise-api/src/modules/routes.ts",
+      "tests/integration/api.test.mjs",
+      "tests/security/authz.test.mjs"
+     ]
+    },
+    {
+     "hash": "ad4ed25148cc8896ddead0d6dcdcb90bc68f537e",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-26T07:36:19-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-26T07:36:19-05:00",
+     "subject": "Enterprise API: vertical-slice integration tests (13/13) and negative security tests (41/41); readiness function for the runtime role; one write per extended-protocol query and TCP_NODELAY (112 s \u2192 4 s)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "database/migrations/0005_health.sql",
+      "services/enterprise-api/src/db/pg.ts",
+      "services/enterprise-api/src/main.ts",
+      "tests/integration/api.test.mjs",
+      "tests/security/authz.test.mjs"
+     ]
+    },
+    {
+     "hash": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-26T07:27:24-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-26T07:27:24-05:00",
+     "subject": "Stage 3/4 (in progress): PostgreSQL schema with RLS and append-only evidence, enterprise API (auth, rooms, commissioning, outbox), event contracts, relationship engine, design module port",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "database/migrations/0001_foundation.sql",
+      "database/migrations/0002_core.sql",
+      "database/migrations/0003_commissioning_evidence.sql",
+      "database/migrations/0004_platform.sql",
+      "integrations/contracts/INTEGRATION_REGISTRY.csv",
+      "packages/commissioning-engine/src/catalog.ts",
+      "packages/commissioning-engine/src/design.ts",
+      "packages/commissioning-engine/src/index.ts",
+      "packages/commissioning-engine/test/design.test.ts",
+      "packages/domain-data/data/PROVENANCE.json",
+      "packages/domain-data/data/V25_EVENTS.json",
+      "packages/event-contracts/package.json",
+      "packages/event-contracts/src/index.ts",
+      "packages/event-contracts/test/contracts.test.ts",
+      "packages/event-contracts/tsconfig.json",
+      "packages/relationship-engine/package.json",
+      "packages/relationship-engine/src/index.ts",
+      "packages/relationship-engine/test/graph.test.ts",
+      "packages/relationship-engine/tsconfig.json",
+      "releases/immutable-references/FROZEN_CHECK_STAGE2.json",
+      "scripts/db.mjs",
+      "scripts/extract/extract-domain-data.mjs",
+      "services/enterprise-api/package.json",
+      "services/enterprise-api/src/auth/context.ts",
+      "services/enterprise-api/src/auth/jwt.ts",
+      "services/enterprise-api/src/auth/password.ts",
+      "services/enterprise-api/src/config.ts",
+      "services/enterprise-api/src/db/migrate.ts",
+      "services/enterprise-api/src/db/pg.ts",
+      "services/enterprise-api/src/db/seed.ts",
+      "services/enterprise-api/src/domain/commissioning.ts",
+      "services/enterprise-api/src/domain/platform.ts",
+      "services/enterprise-api/src/domain/read.ts",
+      "services/enterprise-api/src/domain/rooms.ts",
+      "services/enterprise-api/src/http/errors.ts",
+      "services/enterprise-api/src/http/router.ts",
+      "services/enterprise-api/src/http/schema.ts",
+      "services/enterprise-api/src/http/server.ts",
+      "services/enterprise-api/src/log.ts",
+      "services/enterprise-api/src/main.ts",
+      "services/enterprise-api/src/modules/routes.ts",
+      "services/enterprise-api/src/openapi.ts",
+      "services/enterprise-api/src/storage/objectStore.ts",
+      "services/enterprise-api/src/worker/outbox.ts",
+      "services/enterprise-api/tsconfig.json",
+      "tests/integration/harness.mjs"
+     ]
+    },
+    {
+     "hash": "8ff3dbeb1ccab23f5913b0d406bebd950b2eb3d7",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-26T07:05:05-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-26T07:05:05-05:00",
+     "subject": "Editions table: state only what the source shows",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "docs/product/EDITIONS_AND_PACKAGES.md"
+     ]
+    },
+    {
+     "hash": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-26T07:04:56-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-26T07:04:56-05:00",
+     "subject": "Stage 2: demonstrator consolidation \u2014 founder town-hall E2E (25/25), demonstrator index (15 demonstrators, all load offline), editions and packages",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      ".gitignore",
+      "apps/founder-studio/src/data/scenarios.ts",
+      "docs/product/DEMONSTRATOR_INDEX.json",
+      "docs/product/DEMONSTRATOR_INDEX.md",
+      "docs/product/EDITIONS_AND_PACKAGES.md",
+      "media/screenshots/demonstrators/campus-history.jpg",
+      "media/screenshots/demonstrators/eng-2.5.3-rc3.jpg",
+      "media/screenshots/demonstrators/fi14-preview.jpg",
+      "media/screenshots/demonstrators/founder-2.5.4.jpg",
+      "media/screenshots/demonstrators/inv-2.5.1.1.jpg",
+      "media/screenshots/demonstrators/inv-2.5.2-rc1.jpg",
+      "media/screenshots/demonstrators/inv-2.5.3-rc3-live.jpg",
+      "media/screenshots/demonstrators/inv-2.5.3-rc3-offline.jpg",
+      "media/screenshots/demonstrators/synclab-3d.jpg",
+      "media/screenshots/demonstrators/synclab-analyzer.jpg",
+      "media/screenshots/demonstrators/synclab-app.jpg",
+      "media/screenshots/demonstrators/v1.4.1.jpg",
+      "media/screenshots/demonstrators/v2.3-slice.jpg",
+      "media/screenshots/demonstrators/v2.4.1-run.jpg",
+      "media/screenshots/demonstrators/v2.5-design-portal.jpg",
+      "scripts/demonstrators/capture.mjs",
+      "scripts/demonstrators/registry.json",
+      "tests/e2e/founder-townhall.e2e.mjs",
+      "tests/evidence/founder-townhall/results.json",
+      "tests/evidence/founder-townhall/workbook.json"
+     ]
+    },
+    {
+     "hash": "dc681233e17985dac2130ddc23ceefc79a9fb1d3",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-26T06:55:04-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-26T06:55:04-05:00",
+     "subject": "Do not track the studio's generated data (rebuilt from records by build-data.mjs)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "apps/founder-studio/src/generated/build.json",
+      "apps/founder-studio/src/generated/diagrams.json",
+      "apps/founder-studio/src/generated/docs.json",
+      "apps/founder-studio/src/generated/film-index.json",
+      "apps/founder-studio/src/generated/films.json",
+      "apps/founder-studio/src/generated/lab-rooms.json",
+      "apps/founder-studio/src/generated/media.json",
+      "apps/founder-studio/src/generated/releases.json",
+      "apps/founder-studio/src/generated/source.json",
+      "apps/founder-studio/src/generated/vault.json"
+     ]
+    },
+    {
+     "hash": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-26T06:54:56-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-26T06:54:56-05:00",
+     "subject": "Stage 1: Empathia Founder Studio (27 destinations) over the Founder Edition, films, documents and the ported engine",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      ".gitignore",
+      "apps/founder-studio/build.mjs",
+      "apps/founder-studio/launch/Start Founder Studio.command",
+      "apps/founder-studio/launch/Start-Founder-Studio.bat",
+      "apps/founder-studio/launch/start-founder-studio.sh",
+      "apps/founder-studio/package.json",
+      "apps/founder-studio/scripts/build-data.mjs",
+      "apps/founder-studio/server/serve.mjs",
+      "apps/founder-studio/src/components/DemoFrame.tsx",
+      "apps/founder-studio/src/components/Ladder.tsx",
+      "apps/founder-studio/src/components/Shell.tsx",
+      "apps/founder-studio/src/data/films.ts",
+      "apps/founder-studio/src/data/generated.ts",
+      "apps/founder-studio/src/data/products.ts",
+      "apps/founder-studio/src/data/scenarios.ts",
+      "apps/founder-studio/src/generated/build.json",
+      "apps/founder-studio/src/generated/diagrams.json",
+      "apps/founder-studio/src/generated/docs.json",
+      "apps/founder-studio/src/generated/film-index.json",
+      "apps/founder-studio/src/generated/films.json",
+      "apps/founder-studio/src/generated/lab-rooms.json",
+      "apps/founder-studio/src/generated/media.json",
+      "apps/founder-studio/src/generated/releases.json",
+      "apps/founder-studio/src/generated/source.json",
+      "apps/founder-studio/src/generated/vault.json",
+      "apps/founder-studio/src/index.html",
+      "apps/founder-studio/src/lib/demo.ts",
+      "apps/founder-studio/src/lib/router.ts",
+      "apps/founder-studio/src/lib/store.ts",
+      "apps/founder-studio/src/main.tsx",
+      "apps/founder-studio/src/nav.ts",
+      "apps/founder-studio/src/pages/Architecture.tsx",
+      "apps/founder-studio/src/pages/BuildARoom.tsx",
+      "apps/founder-studio/src/pages/Docs.tsx",
+      "apps/founder-studio/src/pages/EngineLab.tsx",
+      "apps/founder-studio/src/pages/EnterprisePlatform.tsx",
+      "apps/founder-studio/src/pages/Maturity.tsx",
+      "apps/founder-studio/src/pages/MediaLibrary.tsx",
+      "apps/founder-studio/src/pages/MissionControl.tsx",
+      "apps/founder-studio/src/pages/ProductPage.tsx",
+      "apps/founder-studio/src/pages/Scenarios.tsx",
+      "apps/founder-studio/src/pages/Settings.tsx",
+      "apps/founder-studio/src/pages/Vault.tsx",
+      "apps/founder-studio/src/styles/studio.css",
+      "apps/founder-studio/src/types/react-offline/index.d.ts",
+      "apps/founder-studio/tsconfig.json",
+      "docs/architecture/diagrams/01-system-context.mmd",
+      "docs/architecture/diagrams/02-containers.mmd",
+      "docs/architecture/diagrams/03-vertical-slice.mmd",
+      "docs/architecture/diagrams/04-data-model.mmd",
+      "docs/architecture/diagrams/05-events.mmd",
+      "docs/architecture/diagrams/06-today-demonstrator.mmd",
+      "docs/architecture/diagrams/07-editions-separation.mmd",
+      "packages/domain-data/data/PROVENANCE.json",
+      "packages/domain-data/golden/room-engine-golden.json",
+      "tests/browser/founder-studio.test.mjs",
+      "tests/evidence/founder-studio/results.json"
+     ]
+    },
+    {
+     "hash": "77aab48d04c5650f18267b38b20e4b0784e354ab",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-26T06:29:31-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-26T06:29:31-05:00",
+     "subject": "Stage 0: repository discovery report, source register, file inventory (36,385 files hashed), secret scan, frozen-release check (PASS), media manifest (2,230 assets probed)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "docs/discovery/FILE_INVENTORY.csv.gz",
+      "docs/discovery/FILE_INVENTORY_SUMMARY.json",
+      "docs/discovery/README.md",
+      "docs/discovery/REPOSITORY_DISCOVERY_REPORT.md",
+      "docs/discovery/SECRET_SCAN.json",
+      "docs/discovery/SOURCE_REGISTER.csv",
+      "media/manifests/MEDIA_MANIFEST.csv",
+      "media/manifests/MEDIA_MANIFEST.json",
+      "packages/design-tokens/build-tokens.mjs",
+      "packages/design-tokens/package.json",
+      "packages/design-tokens/tokens.json",
+      "releases/immutable-references/FROZEN_CHECK_STAGE0.json",
+      "scripts/discovery/inventory.py",
+      "scripts/discovery/secret-scan.py",
+      "scripts/discovery/source-register.py",
+      "scripts/media/build-media-manifest.py",
+      "scripts/verify/verify-frozen.py"
+     ]
+    },
+    {
+     "hash": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-26T06:06:44-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-26T06:06:44-05:00",
+     "subject": "Monorepo skeleton; domain data and golden cases extracted from the 2.5.4 demonstrator; commissioning engine ported to TypeScript with 92-case parity",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      ".gitignore",
+      "package.json",
+      "packages/commissioning-engine/package.json",
+      "packages/commissioning-engine/src/applicability.ts",
+      "packages/commissioning-engine/src/catalog.ts",
+      "packages/commissioning-engine/src/checks.ts",
+      "packages/commissioning-engine/src/classify.ts",
+      "packages/commissioning-engine/src/geometry.ts",
+      "packages/commissioning-engine/src/index.ts",
+      "packages/commissioning-engine/src/lifecycle.ts",
+      "packages/commissioning-engine/src/recording.ts",
+      "packages/commissioning-engine/src/results.ts",
+      "packages/commissioning-engine/test/parity.test.ts",
+      "packages/commissioning-engine/tsconfig.json",
+      "packages/domain-data/data/ARCHETYPES.json",
+      "packages/domain-data/data/PROVENANCE.json",
+      "packages/domain-data/data/RELS.json",
+      "packages/domain-data/data/TYPES.json",
+      "packages/domain-data/data/V25_CX_CATALOGUE.json",
+      "packages/domain-data/data/V25_CX_PACKS.json",
+      "packages/domain-data/data/V25_DESIGN_rulePack.json",
+      "packages/domain-data/data/V25_DOMAIN_PERSONA.json",
+      "packages/domain-data/data/V25_EV.json",
+      "packages/domain-data/data/V25_GUARDS.json",
+      "packages/domain-data/data/V25_PERSONAS.json",
+      "packages/domain-data/data/V25_PHASES.json",
+      "packages/domain-data/data/V25_ROOM_CATS.json",
+      "packages/domain-data/data/V25_ROOM_FAMILY.json",
+      "packages/domain-data/data/V25_ROOM_INFO.json",
+      "packages/domain-data/data/V25_ROOM_LIFECYCLE.json",
+      "packages/domain-data/data/V25_ROOM_REQUIRED.json",
+      "packages/domain-data/data/V25_ROOM_RESULTS.json",
+      "packages/domain-data/data/V25_ROOM_ROLEOK.json",
+      "packages/domain-data/data/V25_ROOM_TEMPLATES.json",
+      "packages/domain-data/data/V25_ROOM_TYPE.json",
+      "packages/domain-data/data/V25_TESTS.json",
+      "packages/domain-data/data/V25_TEST_LABEL.json",
+      "packages/domain-data/data/V25_VERIFIER_PERSONAS.json",
+      "packages/domain-data/golden/room-engine-golden.json",
+      "packages/domain-data/package.json",
+      "packages/domain-types/package.json",
+      "packages/domain-types/src/index.ts",
+      "packages/domain-types/src/room.ts",
+      "packages/domain-types/tsconfig.json",
+      "pnpm-workspace.yaml",
+      "releases/immutable-references/BASELINE_VERIFICATION_2026-10-26.json",
+      "scripts/bootstrap.mjs",
+      "scripts/discovery/inventory.py",
+      "scripts/extract/extract-domain-data.mjs",
+      "scripts/extract/extract-golden.mjs",
+      "tsconfig.base.json"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "demonstrator (Empathia V2.5 source, worktree source-254, read-only)",
+   "path": "/home/claude/Empathia_V25/work/source-254",
+   "head": "b8986d1c5ebc4f8335c2c93ed7e29283fdd5e5e4",
+   "branch": "founder/2.5.4",
+   "commits": 105,
+   "authors": {
+    "Claude <noreply@anthropic.com>": 99,
+    "Empathia Engineering <jeremiahjohnson754@gmail.com>": 4,
+    "Empathia Engineering (private master) <engineering@northstar.example.com>": 2
+   },
+   "commitsWithCoAuthoredBy": 105,
+   "commitsWithClaudeSession": 105,
+   "firstCommit": "2026-10-22T19:11:03-05:00",
+   "lastCommit": "2026-10-26T05:49:16-05:00",
+   "tags": [
+    {
+     "tag": "v2.5.2-rc1",
+     "object": "493136bffd9b70c84296c4b93caad6f7d746a99c",
+     "commit": "09db55093cf88bcfafbc9e47b1b6b6ae59cd7d32",
+     "date": "2026-10-25T01:17:54-05:00",
+     "subject": "2.5.2 release candidate 1 (frozen 2026-10-25). Offline 86bbf66a\u2026717b, live 473f34a7\u202612f8. Independent page-API security assessment: NOT VERIFIED \u2014 EXTERNAL TEST REQUIRED. Not authorized for distribution."
+    },
+    {
+     "tag": "v2.5.3-rc1",
+     "object": "9568db0c84c6fa242c124f0fa5f134da9b9ecdc4",
+     "commit": "7a8ca84d067a742116e9d8adb21988d45c2d5707",
+     "date": "2026-10-25T06:41:42-05:00",
+     "subject": "2.5.3 release candidate 1 (Build a Room with Lite), audited VERIFIED WITH CONDITIONS (work/audit-253). Offline b90871da\u2026, live bdf92437\u2026, engineer 92882a86\u2026. Page-API security NOT VERIFIED \u2014 EXTERNAL TEST REQUIRED. Not authorized for distribution."
+    },
+    {
+     "tag": "v2.5.3-rc2",
+     "object": "6783c9418528ddfeac51de55def44a6299dcf46b",
+     "commit": "0cb8a0f1d0ed2aef77aca7b43679708e65462c7d",
+     "date": "2026-10-25T11:24:52-05:00",
+     "subject": "2.5.3 release candidate 2: F-03 recorded results; audited VERIFIED WITH CONDITIONS (work/audit-253/INDEPENDENT_AUDIT_253_RC2.md), R2-1 open. Offline 96f539d9\u2026, live b88a3172\u2026, engineer 793865d2\u2026. Page-API security NOT VERIFIED \u2014 EXTERNAL TEST REQUIRED. Not authorized for distribution."
+    },
+    {
+     "tag": "v2.5.3-rc3",
+     "object": "58cfb3d525fe24430ba40814353e1ae87a9259dc",
+     "commit": "cf86866ac81bbf2f08b4b218b0532781a84f7a36",
+     "date": "2026-10-25T15:57:33-05:00",
+     "subject": "2.5.3 release candidate 3: audited VERIFIED WITH CONDITIONS (work/audit-253/INDEPENDENT_AUDIT_253_RC3.md), no Medium or High finding. Offline ecbde0bb\u2026, live 9d6e53ef\u2026, engineer 604cc748\u2026. Page-API security NOT VERIFIED \u2014 EXTERNAL TEST REQUIRED. Not authorized for distribution."
+    }
+   ],
+   "log": [
+    {
+     "hash": "b8986d1c5ebc4f8335c2c93ed7e29283fdd5e5e4",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-26T05:49:16-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-26T05:49:16-05:00",
+     "subject": "2.5.4 (founder program): machine-readable result labels and event labels (audit 253 rc3 R3-2); no BLOCKED in the workbook entry list and a complete results description (R3-3); test W-12",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-01-core.js",
+      "src/v25-60-room.js",
+      "src/v25-61-room-ui.js",
+      "src/v25-62-xlsx.js",
+      "tests/v25-room.mjs"
+     ]
+    },
+    {
+     "hash": "cf86866ac81bbf2f08b4b218b0532781a84f7a36",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-25T14:42:42-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-25T14:42:42-05:00",
+     "subject": "Validation data regenerated from the 2.5.3 rc3 gate on 31d4d17 (85 of 85)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-31-validation.js"
+     ]
+    },
+    {
+     "hash": "31d4d17abb14bb7381b838d4aeb981ba5fe858a9",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-25T11:28:00-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-25T11:28:00-05:00",
+     "subject": "2.5.3 rc3 source revision (independent audit 253 rc2 R2-1..R2-4): the commissioning tab never shows an unverified PASS as passed",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-60-room.js",
+      "src/v25-61-room-ui.js",
+      "src/v25-62-xlsx.js",
+      "tests/v25-room.mjs"
+     ]
+    },
+    {
+     "hash": "0cb8a0f1d0ed2aef77aca7b43679708e65462c7d",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-25T10:04:08-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-25T10:04:08-05:00",
+     "subject": "Validation data regenerated from the 2.5.3 rc2 gate on f195d16 (85 of 85)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-31-validation.js"
+     ]
+    },
+    {
+     "hash": "f195d16947033c99647393822d7b5bdb3287afef",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-25T06:48:00-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-25T06:48:00-05:00",
+     "subject": "Release verification: the XLSX namespace exception is limited to the writer's exact identifiers, and no Private Engineer Edition evidence may be in the investor package (owner decision 2026-10-25 06:41, audit 253 C3)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/verify_release.py"
+     ]
+    },
+    {
+     "hash": "df8949733c8e236942b53940137176bbcfb5093b",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-25T06:48:00-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-25T06:48:00-05:00",
+     "subject": "2.5.3 rc2 source revision (owner 2026-10-25 06:41): recorded results in the planning workbook and accurate acceptance counts (audit 253 F-03); event-mapping comment corrected (F-06 i)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-01-core.js",
+      "src/v25-60-room.js",
+      "src/v25-61-room-ui.js",
+      "src/v25-62-xlsx.js",
+      "tests/v25-room.mjs"
+     ]
+    },
+    {
+     "hash": "7a8ca84d067a742116e9d8adb21988d45c2d5707",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-25T06:28:27-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-25T06:28:27-05:00",
+     "subject": "Regression report: the release's own crawl run in the destructive-QA table (audit 253 F-06 residual)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/regression_report.py"
+     ]
+    },
+    {
+     "hash": "f686731d1136d45e707ad08d9c51c44a8af06cd9",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-25T06:21:08-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-25T06:21:08-05:00",
+     "subject": "Packager: the engineer-evidence filter names the engineer-edition runs only (v13-engineering logs stay)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/package_investor.py"
+     ]
+    },
+    {
+     "hash": "562907843526de8cd943f68c79239045d0bd9bf8",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-25T06:20:38-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-25T06:20:38-05:00",
+     "subject": "Independent audit 253 conditions (tooling and documents only; edition bytes unchanged)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/package_investor.py",
+      "tools/regression_report.py",
+      "tools/scan14.py",
+      "tools/verify_release.py"
+     ]
+    },
+    {
+     "hash": "2e9f0beeb2df701e9a1b4274f330489bef8182dd",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-25T05:58:38-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-25T05:58:38-05:00",
+     "subject": "Packager 2.5.3: the three-edition gate evidence in Technical_Evidence/three-edition-gate",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/package_investor.py"
+     ]
+    },
+    {
+     "hash": "f9c00ed3d27a727bd28de5f92d654d0ab483eef2",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-25T05:38:11-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-25T05:38:11-05:00",
+     "subject": "Town-hall end-to-end suite (owner 2026-10-25 05:29): one profile, reloads between stages, every change through the page's own controls; persistence, substitution, drawing states, applicability, Search Party and Pro sync, issue resolution, never operational (17 checks)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tests/v253-townhall-e2e.mjs"
+     ]
+    },
+    {
+     "hash": "3d0e4772d4d85e75f7c50c85f7888751216054ea",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-25T05:29:33-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-25T05:29:33-05:00",
+     "subject": "Packager: no machine paths in the Private Engineer Edition's media-gate record",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/package_investor.py"
+     ]
+    },
+    {
+     "hash": "aeea0aa38e42410015a9e8ff1bd3198068087fe0",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-25T05:28:33-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-25T05:28:33-05:00",
+     "subject": "Release checks: OOXML namespace identifiers (schemas.openxmlformats.org, purl.org) are names inside the .xlsx writer, never fetched; the disclosed Private Engineer Edition is not an internal marker from 2.5.3",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/package_investor.py",
+      "tools/verify_release.py"
+     ]
+    },
+    {
+     "hash": "5ba0b97f69319e0d3dd958e687999ac481bd508d",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-25T04:39:52-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-25T04:39:52-05:00",
+     "subject": "Validation data regenerated from the 2.5.3 gate on e47fef7 (85 of 85)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-31-validation.js"
+     ]
+    },
+    {
+     "hash": "be13d8bb15a662016f76c05c9d8a4bd8c7da16ed",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-25T04:39:40-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-25T04:39:40-05:00",
+     "subject": "Regression report: the 2.5.3 candidate gate in the regression table",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/regression_report.py"
+     ]
+    },
+    {
+     "hash": "3d6e4630c1fad483ca7e7a12cb0752d88833d2bc",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-25T02:21:25-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-25T02:21:25-05:00",
+     "subject": "Room suite: edition-aware fault and inspection checks (investor: refused and unreachable; engineer: available; development unchanged plus a non-engineering persona refused)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tests/v25-room.mjs"
+     ]
+    },
+    {
+     "hash": "27791ecff15366df15460fdc76b0277c1f15a753",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-25T02:11:53-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-25T02:11:53-05:00",
+     "subject": "Packager 2.5.3: Build a Room talk track in the guided-demo script",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/package_investor.py"
+     ]
+    },
+    {
+     "hash": "e47fef70a638bb76f75c4167900168501ce2b732",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-25T01:23:57-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-25T01:23:57-05:00",
+     "subject": "Core model page: a type with no records yet is listed without a dead-end link (the 2.5.3 planned types are empty until a room is designed); fixes accept1 on the 2.5.3 gate",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/82-ui-suite.js"
+     ]
+    },
+    {
+     "hash": "09db55093cf88bcfafbc9e47b1b6b6ae59cd7d32",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T22:27:33-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T22:27:33-05:00",
+     "subject": "Round-2 audit 252: R2-1 ledger label normalised in copied evidence and the verification record; R2-2 the validation report cites the packaged evidence folder",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/package_investor.py",
+      "tools/regression_report.py",
+      "tools/verify_release.py"
+     ]
+    },
+    {
+     "hash": "987d4ed8b92fb3b140ab8432906002f68411889e",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T22:27:33-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T22:27:33-05:00",
+     "subject": "Round-2 audit 252: R2-1 ledger label normalised in copied evidence and the verification record; R2-2 the validation report cites the packaged evidence folder",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "qa/control-studio/browser/01-design-canvas.png",
+      "qa/control-studio/browser/02-panel-builder.png",
+      "qa/control-studio/browser/09-simulation.png",
+      "qa/control-studio/browser/10-commissioning.png",
+      "tools/package_investor.py",
+      "tools/regression_report.py",
+      "tools/verify_release.py"
+     ]
+    },
+    {
+     "hash": "c285ec4de5fce1a6c4f2d215a15f7d1167e3e2ee",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T21:34:27-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T21:34:27-05:00",
+     "subject": "Validation data regenerated from the 2.5.2 gate on a9e8cbc (84 of 84; audit 252 A2 entry)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-31-validation.js"
+     ]
+    },
+    {
+     "hash": "63c04c816fc4535b195688d5d971eff512a8bb0a",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T18:24:19-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T18:24:19-05:00",
+     "subject": "Independent audit 252: narrow the hand-back rule, pattern-based internal-document exclusion, evidence wording",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-40-cs-engine.js",
+      "src/v25-995-seal.js",
+      "tests/v252-handback.mjs",
+      "tools/package_investor.py",
+      "tools/regression_report.py",
+      "tools/verify_release.py"
+     ]
+    },
+    {
+     "hash": "a9e8cbcfc9297fb6a159f1e327dfa8ca7d171bf8",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T18:24:19-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T18:24:19-05:00",
+     "subject": "Independent audit 252: narrow the hand-back rule, pattern-based internal-document exclusion, evidence wording",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-40-cs-engine.js",
+      "src/v25-995-seal.js",
+      "tests/v252-handback.mjs",
+      "tools/package_investor.py",
+      "tools/regression_report.py",
+      "tools/verify_release.py"
+     ]
+    },
+    {
+     "hash": "e0348471254a0e94bad48528b0391e33ae8e8acd",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T18:08:35-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T18:08:35-05:00",
+     "subject": "Build a Room: in-browser .xlsx planning workbook, outline drawing tool, ServiceHands dispatch hand-off; room suite 83 checks",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-60-room.js",
+      "src/v25-61-room-ui.js",
+      "src/v25-62-xlsx.js",
+      "tests/v25-room.mjs"
+     ]
+    },
+    {
+     "hash": "d3b79fe860ab8c24ff8a14150358f4425552f33f",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T17:55:07-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T17:55:07-05:00",
+     "subject": "Packager: 2.5.3 candidate gate selection, evidence block, room evidence, Build a Room limitations",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/package_investor.py"
+     ]
+    },
+    {
+     "hash": "f9170d8dd2f60fb5c1698fa6adc64fd93558c11b",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T17:50:52-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T17:50:52-05:00",
+     "subject": "release tooling: tour verifier from 2.5.1.1 (validation-page wording); the 2.5.1 shipped-edition gate is history for every later release",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/package_investor.py",
+      "tools/verify_tour.mjs"
+     ]
+    },
+    {
+     "hash": "53b45be5d47e00fd7f03e3502c366b464af5089f",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T17:50:51-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T17:50:51-05:00",
+     "subject": "release tooling: tour verifier from 2.5.1.1 (validation-page wording); the 2.5.1 shipped-edition gate is history for every later release",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/package_investor.py",
+      "tools/verify_tour.mjs"
+     ]
+    },
+    {
+     "hash": "6e255af240d1369071267fa2294d09f1ec6ad9aa",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T17:49:38-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T17:49:38-05:00",
+     "subject": "QA evidence written by the 2.5.2 shipped-edition gate run",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "qa/products/390-_v25_sing_tab_Rehearse.png",
+      "qa/products/j6-390-_v25_learn.png"
+     ]
+    },
+    {
+     "hash": "27759f2b1be3bdbb293532f6f6f5c31493ded378",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T17:39:59-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T17:39:59-05:00",
+     "subject": "2.5.3 Build a Room \u00a711\u201312: results recorded on an installed room by the responsible persona with accepted evidence; independent verification; a failed test opens one installation/commissioning deficiency correlated with design issues on the same assets; ServiceHands remediation work orders (closing one never passes the test); APEX hypotheses only; acceptance with a signed baseline; operational refused without live monitoring evidence. Suite 69/69",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-01-core.js",
+      "src/v25-60-room.js",
+      "src/v25-61-room-ui.js",
+      "tests/v25-room.mjs"
+     ]
+    },
+    {
+     "hash": "0cb7e1a0448891bda1d6b88d7dc087ef1dfc2274",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T17:35:00-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T17:35:00-05:00",
+     "subject": "2.5.3: Private Engineer Edition package mode (--edition=engineer, kind engineer-private, separate package); inspection panel and fault injection never in an investor edition",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-60-room.js",
+      "src/v25-61-room-ui.js",
+      "tools/package_investor.py"
+     ]
+    },
+    {
+     "hash": "5efacf8ce6dd9ae456317c9374e83886f2eb08f5",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T17:33:49-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T17:33:49-05:00",
+     "subject": "2.5.3 Build a Room: acceptance suite tests/v25-room.mjs (60 checks: section 16 scenario, shared identity, issue correlation, applicability re-evaluation, negatives, imports, faults, phone, 3D, reload); unreadable lengths refused instead of substituted; conflicting-id fault refuses",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-60-room.js",
+      "tests/v25-room.mjs"
+     ]
+    },
+    {
+     "hash": "f9ae2b4e951fe8e1593d9f9bf8a83f855932964d",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T17:28:56-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T17:28:56-05:00",
+     "subject": "2.5.3 Build a Room with Lite: engine (RoomDesign canonical record, PlannedRoom/PlannedAsset Core join, classification with engineer override, revisions and compare, undo/redo, design checks with correlated RoomIssues, 94-definition applicability with re-evaluation log, drawing set states, workbook, governed lifecycle, fault injection) and pages (#/v25/build wizard, 2D drag editor, browser 3D view, Engineer Mode, drawings, commissioning, issues, history, inspection; Pro planned rooms; investor landing card)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-01-core.js",
+      "src/v25-60-room.js",
+      "src/v25-61-room-ui.js",
+      "src/v52-room.css"
+     ]
+    },
+    {
+     "hash": "53486921e5f530f1244cb656bc9638bfb6881a49",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T17:07:28-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T17:07:28-05:00",
+     "subject": "test harness: EMP_START_HASH in _origin.mjs (ported from 2.5.1.1) so app-start suites can start at #/home on the shipped investor edition; assertions unchanged",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tests/_origin.mjs"
+     ]
+    },
+    {
+     "hash": "b646c6451b27dbbeccc7950aab5c479225c0c2d2",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T16:57:02-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T16:57:02-05:00",
+     "subject": "regression report: 2.5.2 gate selectable (EMP_RELEASE=2.5.2), its remaining-suite and crawl folders",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/regression_report.py"
+     ]
+    },
+    {
+     "hash": "bc394c24fc1acf9a5b7927803450657ed8d4056c",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T16:56:24-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T16:56:24-05:00",
+     "subject": "2.5.2 validation data from the 7c0f1fc gate (83/83, remaining V1.4.1 42/42) and the passing crawl",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-31-validation.js"
+     ]
+    },
+    {
+     "hash": "5c4c91489d2938ee62dcfd17dbbc500516939cff",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T16:56:17-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T16:56:17-05:00",
+     "subject": "QA evidence written by the 2.5.2 gate run on 7c0f1fc (screenshots and regression evidence)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "qa/control-studio/browser/05-room-panel.png",
+      "qa/control-studio/browser/06-coverage.png",
+      "qa/control-studio/browser/07-not-ready.png",
+      "qa/control-studio/browser/08-degraded.png",
+      "qa/control-studio/qa-rv-regression-evidence.json",
+      "qa/products/390-_v25_sing_tab_Rehearse.png",
+      "qa/products/j6-390-_tours.png",
+      "qa/products/j6-390-_v25_sing_tab_Practice.png",
+      "qa/v251-patch-authz-evidence.json",
+      "qa/v251-patch-gap-az-01-evidence.json"
+     ]
+    },
+    {
+     "hash": "4b303151ac500343b493d7a361c822c40ed6a87f",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T14:08:19-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T14:08:19-05:00",
+     "subject": "media gate: raster images and embedded raster data URIs must be VERIFIED for the channel (owner decision 2026-10-24: first-party UI captures ledgered individually); contamination suite 19/19 (MG-16..18 added)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tests/media_gate_contamination.py",
+      "tools/media_gate.py"
+     ]
+    },
+    {
+     "hash": "e2ff2bcdb235249ea8d14d15453ec43104b43744",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T14:08:19-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T14:08:19-05:00",
+     "subject": "media gate: raster images must be ledgered VERIFIED for the channel (ported); contamination suite 19 cases",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tests/media_gate_contamination.py",
+      "tools/media_gate.py"
+     ]
+    },
+    {
+     "hash": "7c0f1fc5600547b9b0f843410bd8f1b9edbaee03",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T13:45:52-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T13:45:52-05:00",
+     "subject": "V2.5.2 seal follow-ups: accessor properties on the facade (sing.tracks); an exact copy handed back reaches its source object (deployed and scratch Control Studio runtimes), a re-made copy does not; fixtures lower the projector lift by command, RV-08 tampers the stored state and reloads, CSG-AT-06 compares words by value (the API returns copies)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-995-seal.js",
+      "tests/v25-products.mjs",
+      "tests/v25-qa-cs2.mjs",
+      "tests/v25-qa-rv.mjs"
+     ]
+    },
+    {
+     "hash": "af70fdca62bdd2b343c1a7ce89a844bbd480c41c",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T12:33:01-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T12:33:01-05:00",
+     "subject": "2.5.1.1 validation data from the 6287a29 gate (74/74, remaining V1.4.1 42/42) and the passing crawl",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-31-validation.js"
+     ]
+    },
+    {
+     "hash": "67bfc655fd40b07fb04043f1baa29c7f4a4f60af",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T09:28:01-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T09:28:01-05:00",
+     "subject": "release tooling from 2.5.1.1 (second-audit N5\u2013N7) with the 2.5.2 gate and evidence folders",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/package_investor.py",
+      "tools/verify_release.py"
+     ]
+    },
+    {
+     "hash": "ddf2b0239ee4a5a6a44f1c4dc3a5f8073b61312d",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T09:27:49-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T09:27:49-05:00",
+     "subject": "V2.5.2: sealed page API ported from 2.5.1.1 (second audit N1\u2013N4, N8): internal service object V25API, frozen copy-in/copy-out facade on window.__V25__, transition refuses a caller persona, as()/id() off the facade, policy tables deep-frozen, t.core as the role sees Core; seal and audit-vector regression suites; EMP-09 tenant fixture gets its own id (records passed in are resolved by id)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-01-core.js",
+      "src/v25-02-policy.js",
+      "src/v25-03-governance.js",
+      "src/v25-04-seed.js",
+      "src/v25-05-design.js",
+      "src/v25-06-scouter.js",
+      "src/v25-07-lite.js",
+      "src/v25-08-fi.js",
+      "src/v25-09-commissioning.js",
+      "src/v25-091-tracker.js",
+      "src/v25-092-service.js",
+      "src/v25-093-assure.js",
+      "src/v25-094-exec.js",
+      "src/v25-096-cxuni.js",
+      "src/v25-10-shell.js",
+      "src/v25-20-s04-ui.js",
+      "src/v25-21-s05-ui.js",
+      "src/v25-22-s06-ui.js",
+      "src/v25-23-s07-ui.js",
+      "src/v25-24-s08-ui.js",
+      "src/v25-25-s09-ui.js",
+      "src/v25-27-cxw-ui.js",
+      "src/v25-30-investor.js",
+      "src/v25-40-cs-engine.js",
+      "src/v25-41-cs-ui.js",
+      "src/v25-42-emp.js",
+      "src/v25-43-sing.js",
+      "src/v25-44-frontline.js",
+      "src/v25-45-harden.js",
+      "src/v25-47-onboard.js",
+      "src/v25-48-desk.js",
+      "src/v25-99-boundary.js",
+      "src/v25-995-seal.js",
+      "tests/audit-r2/exploits.mjs",
+      "tests/audit-r2/lib.mjs",
+      "tests/v25-emp.mjs",
+      "tests/v251-patch-seal.mjs"
+     ]
+    },
+    {
+     "hash": "6287a2943a75bf155c9e6134337ebf0a4c400304",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T09:22:47-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T09:22:47-05:00",
+     "subject": "release tooling: security list wording, 2.5.2 notes excluded, SNAP.sha256 shipped, verifier output paths normalised (second audit N5\u2013N7)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/package_investor.py",
+      "tools/verify_release.py"
+     ]
+    },
+    {
+     "hash": "2917d8942a5025f70ae5ad204f023837ef40fdf0",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T09:22:47-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T09:22:47-05:00",
+     "subject": "2.5.1.1 second-audit remediation (N1\u2013N4, N8): sealed page API",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-01-core.js",
+      "src/v25-02-policy.js",
+      "src/v25-03-governance.js",
+      "src/v25-04-seed.js",
+      "src/v25-05-design.js",
+      "src/v25-06-scouter.js",
+      "src/v25-07-lite.js",
+      "src/v25-08-fi.js",
+      "src/v25-09-commissioning.js",
+      "src/v25-091-tracker.js",
+      "src/v25-092-service.js",
+      "src/v25-093-assure.js",
+      "src/v25-094-exec.js",
+      "src/v25-096-cxuni.js",
+      "src/v25-10-shell.js",
+      "src/v25-20-s04-ui.js",
+      "src/v25-21-s05-ui.js",
+      "src/v25-22-s06-ui.js",
+      "src/v25-23-s07-ui.js",
+      "src/v25-24-s08-ui.js",
+      "src/v25-25-s09-ui.js",
+      "src/v25-27-cxw-ui.js",
+      "src/v25-30-investor.js",
+      "src/v25-45-patch2511.js",
+      "src/v25-99-boundary.js",
+      "src/v25-995-seal.js",
+      "tests/audit-r2/exploits.mjs",
+      "tests/audit-r2/lib.mjs",
+      "tests/v251-patch-seal.mjs"
+     ]
+    },
+    {
+     "hash": "61ba128681e14e64defdfb474f6eefc12891e449",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T08:28:56-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T08:28:56-05:00",
+     "subject": "packager: 2.5.2 evidence folders (gate, remaining V1.4.1 suites, crawl, shipped-edition gate)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/package_investor.py"
+     ]
+    },
+    {
+     "hash": "1c775223193c039343583af52c44e09f9a1c9a2d",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T08:28:35-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T08:28:35-05:00",
+     "subject": "release tooling from 2.5.1.1: path normalisation in manifest files, app-source build stamp, verifier conditions from evidence",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/package_investor.py",
+      "tools/verify_release.py"
+     ]
+    },
+    {
+     "hash": "98c87073af744a50821401f50d97b758654756c8",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T08:27:05-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T08:27:05-05:00",
+     "subject": "verifier: v13-release condition from the gate evidence; authorization statement wording",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/verify_release.py"
+     ]
+    },
+    {
+     "hash": "9073b4f9ba82dc589ae0b5303e26ad516ff6474a",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T08:25:40-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T08:25:40-05:00",
+     "subject": "packager: editions stamped with the last app-source commit (tooling commits keep the tested bytes); verifier: SHA256SUMS also covers MEDIA_GATE.json",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/package_investor.py",
+      "tools/verify_release.py"
+     ]
+    },
+    {
+     "hash": "8ad7bc6c16bbc0ec344c474b345e7dec86cbab46",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T08:24:11-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T08:24:11-05:00",
+     "subject": "packager: normalise machine paths in manifest.json and MEDIA_GATE.json (release verification blocker); MEDIA_GATE.json covered by SHA256SUMS",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/package_investor.py"
+     ]
+    },
+    {
+     "hash": "fe32f0a9f21ce27784b0df484a4a7c985dedbbc7",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T07:42:17-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T07:42:17-05:00",
+     "subject": "2.5.1.1 validation data from the 59f321e gate (with the v25-boot re-run) and the passing crawl",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-31-validation.js"
+     ]
+    },
+    {
+     "hash": "b3bb7764f3bc7d4dfc3fc099ed91b2996fd4cafa",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T07:41:08-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T07:41:08-05:00",
+     "subject": "patch suites: optional evidence folder",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tests/v251-patch-authz.mjs",
+      "tests/v251-patch-gap-az-01.mjs"
+     ]
+    },
+    {
+     "hash": "cd95183bdea6084196b25b6f1f001e37d9070aec",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T07:41:08-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T07:41:08-05:00",
+     "subject": "patch suites: optional evidence folder (gate runs no longer modify the tree); evidence from the 59f321e gate run",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "qa/v251-patch-authz-evidence.json",
+      "qa/v251-patch-gap-az-01-evidence.json",
+      "tests/v251-patch-authz.mjs",
+      "tests/v251-patch-gap-az-01.mjs"
+     ]
+    },
+    {
+     "hash": "a5ab67f617d6ebe45b1e9d5da405f9004e4e9d4a",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T06:07:35-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T06:07:35-05:00",
+     "subject": "V2.5.2: service-desk updates on submitted requests (owner requirement 2026-10-24)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-01-core.js",
+      "src/v25-04-seed.js",
+      "src/v25-48-desk.js",
+      "tests/v25-desk.mjs",
+      "tests/v251-patch-gap-az-01.mjs"
+     ]
+    },
+    {
+     "hash": "775736acaa4d51c769a0cb645bba0d6477a3953a",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T06:01:16-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T06:01:16-05:00",
+     "subject": "packager: state the v25-boot re-run note",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/package_investor.py"
+     ]
+    },
+    {
+     "hash": "d2bdfe458ccf200f8b4b3e65df0082abee49a114",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T06:00:17-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T06:00:17-05:00",
+     "subject": "v25-boot: state persistence through a saving persona change and reload; public state reader cannot change the store (ported)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tests/v25-boot.mjs"
+     ]
+    },
+    {
+     "hash": "c63a76d702d9bf2ccda9045edee06a08ee260c38",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T06:00:17-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T06:00:17-05:00",
+     "subject": "v25-boot: check state persistence through a saving persona change and a reload, and that the public state reader cannot change the store (it wrote a marker through the reader, which audit F1 made read-only)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tests/v25-boot.mjs"
+     ]
+    },
+    {
+     "hash": "21432dd63fdb6a4b120589378304c51aa7d2c599",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T05:57:19-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T05:57:19-05:00",
+     "subject": "V2.5.2: seed looks up projects internally (features/roles-leak boot failures); port 2.5.1.1 audit fixes F1/F2 (no raw write path, no caller delegation, frozen readers, t.act role check, frozen t.core); employee notification fixture through the dispatcher; release tooling, entry-path and patch regression suites from 2.5.1.1",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      ".gitignore",
+      "src/v25-02-policy.js",
+      "src/v25-04-seed.js",
+      "src/v25-30-investor.js",
+      "src/v25-45-harden.js",
+      "tests/v133-exports.mjs",
+      "tests/v133-labs.mjs",
+      "tests/v25-emp.mjs",
+      "tests/v25-qa1.mjs",
+      "tests/v25-s05.mjs",
+      "tests/v251-patch-authz.mjs",
+      "tests/verify-entry.mjs",
+      "tools/package_investor.py",
+      "tools/regression_report.py",
+      "tools/verify_release.py"
+     ]
+    },
+    {
+     "hash": "59f321e533ff6e8cec43d000350d0b2446c21445",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T01:57:56-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T01:57:56-05:00",
+     "subject": "Untrack the Python cache; ignore __pycache__; refreshed patch evidence",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      ".gitignore",
+      "qa/v251-patch-authz-evidence.json",
+      "qa/v251-patch-gap-az-01-evidence.json",
+      "tools/__pycache__/package_investor.cpython-313.pyc"
+     ]
+    },
+    {
+     "hash": "0199d9f9c74508f70d38d70937d9dfbc7283964e",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T01:57:49-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T01:57:49-05:00",
+     "subject": "2.5.1.1 audit remediation: t.act goes through the dispatcher's role check and t.core hands out frozen copies (AUD-F1c); fixtures through services (s05 licence, protocol and window steps for the covered session); packaging refuses dirty trees and changed validation data, records the source commit and a clean tree, keeps internal release/legal documents out and normalises machine paths; verification blocks on those; landing shows the running release; validation page states the gate commit and lists the security fixes; entry suite follows the landing link and checks every Mission Control tab; known limitations corrected",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-30-investor.js",
+      "src/v25-31-validation.js",
+      "src/v25-45-patch2511.js",
+      "tests/v25-s05.mjs",
+      "tests/v251-patch-authz.mjs",
+      "tests/verify-entry.mjs",
+      "tools/__pycache__/package_investor.cpython-313.pyc",
+      "tools/package_investor.py",
+      "tools/verify_release.py"
+     ]
+    },
+    {
+     "hash": "e65ca9dc36a699e215f1d49903a8ae1a49231d1c",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T01:36:18-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T01:36:18-05:00",
+     "subject": "2.5.1.1 audit fixes F1/F2: no raw write path on the page (t.raw removed; fixtures now go through the request, Lite and FI services); public readers return frozen copies; no caller-supplied delegation is honoured by a V2.5 transition. Regression cases AUD-F1a/F1b/F2 fail on the audited bytes and on 2.5.1, pass on the fix (each in its own browser context)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-45-patch2511.js",
+      "tests/v25-qa1.mjs",
+      "tests/v25-s05.mjs",
+      "tests/v251-patch-authz.mjs"
+     ]
+    },
+    {
+     "hash": "55bb916b766ab7cf5af929b9ee9187bd67c79605",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-24T00:27:47-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-24T00:27:47-05:00",
+     "subject": "Gate evidence: patch regression suites as run in the 2.5.1.1 gate",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "qa/v251-patch-authz-evidence.json",
+      "qa/v251-patch-gap-az-01-evidence.json"
+     ]
+    },
+    {
+     "hash": "ee0a6b215820fc279c38d032d422fc023e822e6a",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T22:46:23-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T22:46:23-05:00",
+     "subject": "CS-AT-40: the address-refusal case uses an RFC 5737 documentation address (scan14 rejects private addresses in source)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tests/v25-cs.test.mjs"
+     ]
+    },
+    {
+     "hash": "c47f4f93ff1071e66394ed0208d581f00e57f927",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T22:44:24-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T22:44:24-05:00",
+     "subject": "Regression report: remaining V1.4.1 suites count a documented re-run and still state the first-run failures",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/regression_report.py"
+     ]
+    },
+    {
+     "hash": "e946ffaa4667421a9828fe102a532fac556f4c13",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T22:43:02-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T22:43:02-05:00",
+     "subject": "Gate tests: v133-labs grain check measured over 40 pixel pairs against the reference ISO (the single-pair check was flaky on 2.5.1 and 2.5.1.1 alike); v133-exports accepts a four-part patch version while still requiring an exact match to the running build",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tests/v133-exports.mjs",
+      "tests/v133-labs.mjs"
+     ]
+    },
+    {
+     "hash": "7706917c45bb2fc78150148316771d3ae46a4b76",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T22:15:23-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T22:15:23-05:00",
+     "subject": "Media gate also enforces the permanent distribution denylist (legal/distribution/DISTRIBUTION_DENYLIST.sha256; fails closed if missing); contamination suite 16/16 incl. a renamed superseded build",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tests/media_gate_contamination.py",
+      "tools/media_gate.py"
+     ]
+    },
+    {
+     "hash": "937375ebe0482e5e996370c0dc5faf989e7c2119",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T22:15:23-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T22:15:23-05:00",
+     "subject": "Media gate also enforces the permanent distribution denylist (legal/distribution/DISTRIBUTION_DENYLIST.sha256; fails closed if missing); contamination suite 16/16 incl. a renamed superseded build",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "qa/media-gate/media-gate-contamination.json",
+      "tests/media_gate_contamination.py",
+      "tools/media_gate.py"
+     ]
+    },
+    {
+     "hash": "8da786343ec155f61202293e894998de900ca1db",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T21:48:46-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T21:48:46-05:00",
+     "subject": "Media gate: empty files carry no media and never match by hash (the empty-file hash had entered the deny list through a self-listing manifest \u2014 false positive on empty logs)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/media_gate.py"
+     ]
+    },
+    {
+     "hash": "94263a84ecb3006a82d51836d25f84ffd3f3f10b",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T21:48:46-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T21:48:46-05:00",
+     "subject": "Media gate: empty files carry no media and never match by hash (the empty-file hash had entered the deny list through a self-listing manifest \u2014 false positive on empty logs)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/media_gate.py"
+     ]
+    },
+    {
+     "hash": "81906c1cb032394c394ada73677c4c5cc7137772",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T21:37:20-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T21:37:20-05:00",
+     "subject": "scan14: keep only the hash of the owner account e-mail in source (the plaintext address was found by the historical audit; behaviour unchanged)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/scan14.py"
+     ]
+    },
+    {
+     "hash": "d34c93ec2ff6399b61e50e8788f25188c686ae61",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T21:37:20-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T21:37:20-05:00",
+     "subject": "scan14: keep only the hash of the owner account e-mail in source (the plaintext address was found by the historical audit; behaviour unchanged)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/scan14.py"
+     ]
+    },
+    {
+     "hash": "2e79827b8169efcee9c9ba46033d9e065254cdd7",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T21:21:24-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T21:21:24-05:00",
+     "subject": "Media-rights gate and its contamination suite (same as patch/2.5.1.1)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tests/media_gate_contamination.py",
+      "tools/media_gate.py"
+     ]
+    },
+    {
+     "hash": "86c99607c96de414b6a83a6908bbde1ba0678509",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T21:21:24-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T21:21:24-05:00",
+     "subject": "Media-rights gate (owner decisions 2026-10-23): fails on excluded/unverified/unknown media by hash, derivatives, embedded data URIs and media blocks, zip/pptx/docx/epub containers, PDF attachments and named thumbnails; fails closed without the protected ledger; wired into packaging and release verification. Contamination suite: 15/15 cases behave as required (contaminated copies fail with exact reasons; a cleared synthetic asset passes for its channel and fails for others)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "qa/media-gate/media-gate-contamination.json",
+      "qa/media-gate/real-ledger-2.5.1-withheld.json",
+      "qa/media-gate/real-ledger-v141.json",
+      "tests/media_gate_contamination.py",
+      "tools/media_gate.py",
+      "tools/package_investor.py",
+      "tools/verify_release.py"
+     ]
+    },
+    {
+     "hash": "fffafdca1c2e7ca1ebc2ae755a397ae40a2e2db5",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T21:12:46-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T21:12:46-05:00",
+     "subject": "Packaging and verification: no unverified media in external packages (owner decision; no asset has VERIFIED rights, so no audio/video file or embedded payload may ship)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/package_investor.py",
+      "tools/verify_release.py"
+     ]
+    },
+    {
+     "hash": "1ad2e790b38d52a5b5a0f142a0890edd0fb9f955",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T21:08:24-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T21:08:24-05:00",
+     "subject": "Release tools: 2.5.1.1 packaging and regression report read the patch's own gate, crawl and shipped-edition gate; 2.5.1 evidence kept as history",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/package_investor.py",
+      "tools/regression_report.py"
+     ]
+    },
+    {
+     "hash": "a503ebf091bd16bae1ff964b91cc0bf5e11b8504",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T21:07:43-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T21:07:43-05:00",
+     "subject": "V2.5.2: Collaboro-Sing Journey 6 (CSG-AT-19) as agreed in directive B \u00a75 \u2014 Empathia Experiences \u2192 Collaboro-Sing \u2192 Learn, using independent creative data and permissions",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "qa/products/j6-390-_tours.png",
+      "qa/products/j6-390-_v25_learn.png",
+      "qa/products/j6-390-_v25_sing_tab_Practice.png",
+      "qa/products/sing-j6-evidence.json",
+      "src/v25-43-sing.js",
+      "src/v51-cs.css",
+      "tests/v25-sing-j6.mjs"
+     ]
+    },
+    {
+     "hash": "0b776d60f149a68bc2b015f5da78c67a4f46ca16",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T21:07:38-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T21:07:38-05:00",
+     "subject": "Release verification: entry-path suite (investor landing and Mission Control; tabs, deep links in fresh sessions, history, reload, reset, separate sessions; phone and desktop; records file SHA-256 and runtime environment)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tests/verify-entry.mjs"
+     ]
+    },
+    {
+     "hash": "629797fd203f5b8f7920a75e080e1c60f91547dc",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T21:03:44-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T21:03:44-05:00",
+     "subject": "2.5.1.1 security patch: port the six reproduced authorization fixes (CSQ1-01 delegation, CSQ1-04 pitch, CSQ1-07 approver contacts, RV3c-01/RV-05/RV-06 raw writes) from the reviewed 2.5.2 code; exploits kept as permanent regression tests (tests/v251-patch-authz.mjs: 1/8 on the vulnerable build, 8/8 patched); browser fixtures use __V25__.t.raw",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "qa/v251-patch-authz-evidence.json",
+      "src/v25-45-patch2511.js",
+      "tests/v25-qa1.mjs",
+      "tests/v25-s05.mjs",
+      "tests/v251-patch-authz.mjs"
+     ]
+    },
+    {
+     "hash": "5a9c769905ef90fe797e94e426959253ec2c15a8",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T21:00:45-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T21:00:45-05:00",
+     "subject": "2.5.1.1 security patch (GAP-AZ-01): every V2.5 action rule resolves to its area role list or fails closed; original exploit kept as a permanent regression test (fails on the vulnerable build: 21 rules without a role list); applicability report of the 2.5.2-line findings against 2.5.1",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "qa/v251-applicability.json",
+      "qa/v251-patch-gap-az-01-evidence.json",
+      "src/v25-02-policy.js",
+      "tests/v251-applicability.mjs",
+      "tests/v251-patch-gap-az-01.mjs"
+     ]
+    },
+    {
+     "hash": "63c21d4e59739a3a427d5158c05339e06168a0a3",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T20:45:13-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T20:45:13-05:00",
+     "subject": "Release verification: the validation-page check follows the summary's current wording (counts of passed / failed / cannot-run suites, generated from recorded results); validation data regenerated from the 2.5.1 gate evidence by the packager",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-31-validation.js",
+      "tools/verify_tour.mjs"
+     ]
+    },
+    {
+     "hash": "1ad46a710abfe63756cc238eb86ebe8a11db997c",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T20:43:13-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T20:43:13-05:00",
+     "subject": "Packaging: include the shipped-edition gate notes",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/package_investor.py"
+     ]
+    },
+    {
+     "hash": "aeed79f7d9009728d287f14b4ae0f9ba4c5aa567",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T20:26:54-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T20:26:54-05:00",
+     "subject": "Test harness: optional EMP_START_HASH so suites written for the app can start at #/home on the shipped investor edition (which opens on its landing); assertions unchanged",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tests/_origin.mjs"
+     ]
+    },
+    {
+     "hash": "7da38d459929e9caf59f74a8409e30368d25a105",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T20:06:40-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T20:06:40-05:00",
+     "subject": "V2.5.2: Onboard demonstrator objects re-exported at Onboard ccd2a95 (KO-ITO-1003 r2, KO-ITO-1004 r2)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-46-onboard-data.js"
+     ]
+    },
+    {
+     "hash": "01434151b5b3048ccb130b67d31778560739e9b7",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T20:05:29-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T20:05:29-05:00",
+     "subject": "Packaging: unreleased Field Intelligence v1.4 material (audit/fi14-run, the input-hash listing) is excluded from the investor release; it belongs only to the access-controlled diligence edition (caught by the every-file scan)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/package_investor.py"
+     ]
+    },
+    {
+     "hash": "fd2427278a2760705b0acd0431cecbb76faf6a2d",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T19:46:46-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T19:46:46-05:00",
+     "subject": "V2.5.2: room panel Get help files a real break-fix request (request service, signed-in persona, with what the panel saw) and is always available; GAP-CS-HELP regression test",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-41-cs-ui.js",
+      "tests/v25-qa-rv.mjs"
+     ]
+    },
+    {
+     "hash": "ef44b73129c304b9c88f59652f51a2b90eb8cd8a",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T19:41:05-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T19:41:05-05:00",
+     "subject": "V2.5.2: Onboard demonstrator objects re-exported at Onboard 86c6c30 (KO-ITO-1000/1004/1005/9100 r2, KO-EUG-0505 r2)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-46-onboard-data.js"
+     ]
+    },
+    {
+     "hash": "c633825a89c931aa1df66c8f008a5c8511ef3e2b",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T19:33:06-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T19:33:06-05:00",
+     "subject": "V2.5.2: RV3c-01/02 raw create/update/emit refused for every persona (records change only through services; fixtures via __V25__.t.raw, originals captured before guards); GAP-AZ-01 every V2.5 action rule resolves to its area roles or fails closed; RV3c-03 Frontline refuses prototype role names",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "qa/control-studio/qa-rv-regression-evidence.json",
+      "qa/employee/employee-role-action-matrix.json",
+      "src/v25-44-frontline.js",
+      "src/v25-45-harden.js",
+      "tests/v25-emp.mjs",
+      "tests/v25-qa-rv.mjs",
+      "tests/v25-s05.mjs"
+     ]
+    },
+    {
+     "hash": "e2c2864077b5097d9609ca550b01a9de9dd53261",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T19:13:49-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T19:13:49-05:00",
+     "subject": "Release inventories generator (static) and manifest guard for release/v2.5.1-completeness",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "tools/release_inventory/gen.mjs",
+      "tools/release_inventory/last-run.json",
+      "tools/release_inventory/manifest_guard.mjs"
+     ]
+    },
+    {
+     "hash": "7988b62ec5d220ffb1b8d6218e04e29b8c46f943",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T19:12:03-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T19:12:03-05:00",
+     "subject": "V2.5.2: RV3b-01 installation safety rules live in the room record (CS_SAFETY), enforced by the command guard and refused at publish/deploy when a design drops or contradicts them; RV3b-02 stopped room disables the room view; only the room's own runtime runs a deployed version",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "qa/control-studio/qa-rv-regression-evidence.json",
+      "src/v25-40-cs-engine.js",
+      "src/v25-41-cs-ui.js",
+      "tests/v25-qa-rv.mjs"
+     ]
+    },
+    {
+     "hash": "c2f3b41cc19edea06227c6673d77991ae24ef48e",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T19:00:34-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T19:00:34-05:00",
+     "subject": "V2.5.2: RV3-01 panel shows a stopped room (tampered version) with controls disabled; RV3-02 cs.design returns a deep-frozen copy",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "qa/control-studio/qa-rv-regression-evidence.json",
+      "src/v25-40-cs-engine.js",
+      "src/v25-41-cs-ui.js",
+      "src/v51-cs.css",
+      "tests/v25-qa-rv.mjs"
+     ]
+    },
+    {
+     "hash": "ae7f59bf3bb7860fd365db974ea32f27b0b60045",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T18:48:20-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T18:48:20-05:00",
+     "subject": "V2.5.2: fix re-verification findings RV-01\u202608 (trusted design execution, raw create/emit guard, frozen Sing catalogue)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "qa/control-studio/browser/01-design-canvas.png",
+      "qa/control-studio/browser/02-panel-builder.png",
+      "qa/control-studio/browser/03-panel-390.png",
+      "qa/control-studio/browser/04-engineer.png",
+      "qa/control-studio/browser/09-simulation.png",
+      "qa/control-studio/browser/10-commissioning.png",
+      "qa/control-studio/qa-rv-regression-evidence.json",
+      "src/v25-40-cs-engine.js",
+      "src/v25-43-sing.js",
+      "src/v25-44-frontline.js",
+      "src/v25-45-harden.js",
+      "tests/v25-qa-rv.mjs",
+      "tests/v25-qa1.mjs"
+     ]
+    },
+    {
+     "hash": "6669fda729d2ba663bf98148bdd1c28ba9af91b7",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T18:31:53-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T18:31:53-05:00",
+     "subject": "Onboard connected milestone in the browser room (#/v25/onboard) with competency evidence in Learn; QA evidence files",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "qa/control-studio/browser-evidence.json",
+      "qa/control-studio/browser/01-design-canvas.png",
+      "qa/control-studio/browser/02-panel-builder.png",
+      "qa/control-studio/browser/03-panel-390.png",
+      "qa/control-studio/browser/04-engineer.png",
+      "qa/control-studio/browser/05-room-panel.png",
+      "qa/control-studio/browser/06-coverage.png",
+      "qa/control-studio/browser/07-not-ready.png",
+      "qa/control-studio/browser/08-degraded.png",
+      "qa/control-studio/browser/09-simulation.png",
+      "qa/control-studio/browser/10-commissioning.png",
+      "qa/control-studio/engine-evidence.json",
+      "qa/control-studio/qa1-regression-evidence.json",
+      "qa/control-studio/qa2-regression-evidence.json",
+      "qa/employee/390-_v25_coverage_room_R_ATL_4_218.png",
+      "qa/employee/390-_v25_cspanel_room_R_ATL_4_218.png",
+      "qa/employee/390-_v25_home.png",
+      "qa/employee/390-_v25_intake.png",
+      "qa/employee/390-_v25_record_id_REQ_0001.png",
+      "qa/employee/employee-evidence.json",
+      "qa/employee/employee-role-action-matrix.json",
+      "qa/products/390-_v25_frontline.png",
+      "qa/products/390-_v25_frontline_tab_Incidents.png",
+      "qa/products/390-_v25_frontline_tab_Production.png",
+      "qa/products/390-_v25_frontline_tab_Schedule.png",
+      "qa/products/390-_v25_frontline_tab_Training.png",
+      "qa/products/390-_v25_sing.png",
+      "qa/products/390-_v25_sing_tab_Library.png",
+      "qa/products/390-_v25_sing_tab_Progress.png",
+      "qa/products/390-_v25_sing_tab_Rehearse.png",
+      "qa/products/products-evidence.json",
+      "src/v25-46-onboard-data.js",
+      "src/v25-47-onboard.js",
+      "src/v51-cs.css"
+     ]
+    },
+    {
+     "hash": "316d096e04272275c6ad61b55f5bc24169c74969",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T18:26:01-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T18:26:01-05:00",
+     "subject": "Reconciliation gaps: Collaboro-Sing tonality and user-licensed tracks (declared, not verified); Frontline work orders with equipment history, events with staffing, team leads and privacy, integrations NOT_CONFIGURED; Control Studio production-safety statement (ADR-006). v25-products 66/66.",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-41-cs-ui.js",
+      "src/v25-43-sing.js",
+      "src/v25-44-frontline.js",
+      "tests/v25-products.mjs"
+     ]
+    },
+    {
+     "hash": "87f80ee542385e2be8dc7f3bfde92f1daf49e994",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T18:21:35-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T18:21:35-05:00",
+     "subject": "Close CSQ2-16/17 and the import leftover: product APIs gated by their tenant area; panel-only engine functions (scene, press, combine, system off, tick) and console-only sequence on the public API",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-40-cs-engine.js",
+      "src/v25-43-sing.js",
+      "src/v25-44-frontline.js",
+      "tests/v25-products.mjs",
+      "tests/v25-qa-cs2.mjs"
+     ]
+    },
+    {
+     "hash": "1d2b1a9403b22387be82d2bb7ed2a3fe6f9b1e8d",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T18:15:06-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T18:15:06-05:00",
+     "subject": "Fixes for destructive QA round 2 (CSQ2-01\u202615) and Collaboro-Sing SyncLab lineage",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-40-cs-engine.js",
+      "src/v25-41-cs-ui.js",
+      "src/v25-42-emp.js",
+      "src/v25-43-sing.js",
+      "src/v25-44-frontline.js",
+      "tests/v25-cs.test.mjs",
+      "tests/v25-qa-cs2.mjs",
+      "tools/completeness_register.py"
+     ]
+    },
+    {
+     "hash": "4c362f54495e3ff38fd4bcdf909d8fbbd7a60785",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T17:48:39-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T17:48:39-05:00",
+     "subject": "Hardening after destructive QA round 1 (CSQ1-01\u202608, Control Studio leads A1\u2026A7)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-40-cs-engine.js",
+      "src/v25-45-harden.js",
+      "tests/v25-qa-cs1.mjs"
+     ]
+    },
+    {
+     "hash": "a24a3284cb977b595e2fa2b3d9f9583dfdd69203",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T17:43:31-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T17:43:31-05:00",
+     "subject": "Collaboro-Sing and Empathia Frontline: independent product demonstrators on their own tenants",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-43-sing.js",
+      "src/v25-44-frontline.js",
+      "src/v51-cs.css",
+      "tests/v25-products.mjs"
+     ]
+    },
+    {
+     "hash": "ddf9674f5d33ac6e3fae610f2d909e7095427710",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T17:36:33-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T17:36:33-05:00",
+     "subject": "Employee seed: the second employee's restricted request is a draft (no staff queue change; v25-shell exact queue counts hold)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-42-emp.js"
+     ]
+    },
+    {
+     "hash": "36e3ebed3bebe9d8182c8454d10d183ae58c5a8c",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T17:27:53-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T17:27:53-05:00",
+     "subject": "Employee capability model (owner decision, ADR-001 addendum): four capabilities, own requests only, polished requester pages",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-42-emp.js",
+      "src/v51-cs.css",
+      "tests/v25-emp.mjs"
+     ]
+    },
+    {
+     "hash": "2f8a9c8999825427d5b07a2d2219d0d3d9eb8b06",
+     "author": "Claude",
+     "authorEmail": "noreply@anthropic.com",
+     "authorDate": "2026-10-23T17:20:08-05:00",
+     "committer": "Claude",
+     "commitDate": "2026-10-23T17:20:08-05:00",
+     "subject": "Empathia Control Studio: simulated proof of concept (engine, workspace, running panel)",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-01-core.js",
+      "src/v25-40-cs-engine.js",
+      "src/v25-41-cs-ui.js",
+      "src/v51-cs.css",
+      "tests/v25-cs.mjs",
+      "tests/v25-cs.test.mjs"
+     ]
+    },
+    {
+     "hash": "1e9c2e9ba1870512c093251f95cd0ed4fbba90fe",
+     "author": "Empathia Engineering",
+     "authorEmail": "jeremiahjohnson754@gmail.com",
+     "authorDate": "2026-10-23T16:50:35-05:00",
+     "committer": "Empathia Engineering",
+     "commitDate": "2026-10-23T16:50:35-05:00",
+     "subject": "Independent-audit remediation, part 1: employee least privilege (ADR-001), recovered V1.4.1 notes, exact assertions, honest reporting",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "notes/PROVENANCE.md",
+      "notes/v1.3-feature-checklist.md",
+      "notes/v1.3-formula-provenance.md",
+      "notes/v1.3-test-corrections.md",
+      "src/v25-02-policy.js",
+      "src/v25-08-fi.js",
+      "src/v25-10-shell.js",
+      "src/v25-21-s05-ui.js",
+      "src/v25-30-investor.js",
+      "src/v25-31-validation.js",
+      "tests/accept8.mjs",
+      "tests/v133-exports.mjs",
+      "tools/cx_manifest.mjs",
+      "tools/package_investor.py",
+      "tools/regression_report.py",
+      "tools/verify_release.py"
+     ]
+    },
+    {
+     "hash": "3f556e69aeebd0095988fb79c485b722af2b07a4",
+     "author": "Empathia Engineering",
+     "authorEmail": "jeremiahjohnson754@gmail.com",
+     "authorDate": "2026-10-23T15:14:46-05:00",
+     "committer": "Empathia Engineering",
+     "commitDate": "2026-10-23T15:14:46-05:00",
+     "subject": "Commissioning test-library manifest and count check; v25-s05 assertion follows the 2.5.1 wording; reports record the 2.5.1 history",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-31-validation.js",
+      "tests/v25-s05.mjs",
+      "tools/cx_docs.py",
+      "tools/cx_manifest.mjs",
+      "tools/regression_report.py"
+     ]
+    },
+    {
+     "hash": "ddf6d1c32985d6e05052dadda8692c62c0e98487",
+     "author": "Empathia Engineering",
+     "authorEmail": "jeremiahjohnson754@gmail.com",
+     "authorDate": "2026-10-23T12:49:17-05:00",
+     "committer": "Empathia Engineering",
+     "commitDate": "2026-10-23T12:49:17-05:00",
+     "subject": "Fix two defects found by the 2.5.1 crawl audit; add the v25-links gate suite",
+     "coAuthoredBy": [
+      "Claude Opus 5.5 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-21-s05-ui.js",
+      "src/v25-24-s08-ui.js",
+      "tests/v25-links.mjs"
+     ]
+    },
+    {
+     "hash": "5036d12bc8d5097490454173538fca01b4224527",
+     "author": "Empathia Engineering",
+     "authorEmail": "jeremiahjohnson754@gmail.com",
+     "authorDate": "2026-10-23T11:08:43-05:00",
+     "committer": "Empathia Engineering",
+     "commitDate": "2026-10-23T11:08:43-05:00",
+     "subject": "Release 2.5.1 \u2014 Universal Intelligent Commissioning Framework: engine, workbook UI, workbook tooling, tests, two QA rounds; evidence-ref PASS rule; open investor landing with role-safe copy; packaging and verification updates",
+     "coAuthoredBy": [
+      "Claude Fable 5.1 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-01-core.js",
+      "src/v25-04-seed.js",
+      "src/v25-09-commissioning.js",
+      "src/v25-096-cxuni.js",
+      "src/v25-27-cxw-ui.js",
+      "src/v25-30-investor.js",
+      "src/v25-31-validation.js",
+      "src/v50-v25.css",
+      "tests/v25-cx.test.mjs",
+      "tests/v25-cxu-qa.mjs",
+      "tests/v25-cxu.test.mjs",
+      "tests/v25-qa2.mjs",
+      "tests/v25-s10.mjs",
+      "tests/v25-shell.mjs",
+      "tools/cx_docs.py",
+      "tools/cx_export.mjs",
+      "tools/cx_workbook.py",
+      "tools/cx_workbook_check.py",
+      "tools/package_investor.py",
+      "tools/regression_report.py",
+      "tools/verify_release.py",
+      "tools/verify_tour.mjs"
+     ]
+    },
+    {
+     "hash": "0b80e5490627990b743048e9cf1d70a7e1cbfaa5",
+     "author": "Empathia Engineering (private master)",
+     "authorEmail": "engineering@northstar.example.com",
+     "authorDate": "2026-10-22T19:57:46-05:00",
+     "committer": "Empathia Engineering (private master)",
+     "commitDate": "2026-10-22T19:57:46-05:00",
+     "subject": "QA rounds 1\u20132 repairs, fail-closed boundary, skip link, investor demonstration mode, packaging and verification tools",
+     "coAuthoredBy": [
+      "Claude Fable 5.1 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      "src/v25-30-investor.js",
+      "src/v25-31-validation.js",
+      "src/v25-99-boundary.js",
+      "tests/v25-qa1.mjs",
+      "tools/package_investor.py",
+      "tools/regression_report.py",
+      "tools/release_artifacts.mjs",
+      "tools/verify_release.py",
+      "tools/verify_tour.mjs"
+     ]
+    },
+    {
+     "hash": "1b16e4482eb9e0d52e9e4e9ce9750261a71d8ce3",
+     "author": "Empathia Engineering (private master)",
+     "authorEmail": "engineering@northstar.example.com",
+     "authorDate": "2026-10-22T19:11:03-05:00",
+     "committer": "Empathia Engineering (private master)",
+     "commitDate": "2026-10-22T19:11:03-05:00",
+     "subject": "Empathia Living Campus V2.5 \u2014 private master: V1.4.1 canvas (unchanged) + V2.5 modules, tests, tools",
+     "coAuthoredBy": [
+      "Claude Fable 5.1 <noreply@anthropic.com>"
+     ],
+     "claudeSession": [
+      "https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx"
+     ],
+     "filesChanged": [
+      ".gitignore",
+      "build.py",
+      "media/manifest.json",
+      "src/00-util.js",
+      "src/10-model.js",
+      "src/12-authz.js",
+      "src/20-static.js",
+      "src/22-static-ops.js",
+      "src/24-static-lite.js",
+      "src/241-static-gear.js",
+      "src/242-static-rooms13.js",
+      "src/243-static-rooms13b.js",
+      "src/26-static-eng.js",
+      "src/265-static-eng13.js",
+      "src/28-static-assure.js",
+      "src/29-static-com.js",
+      "src/295-static-v1.js",
+      "src/296-static-p8.js",
+      "src/2971-static-signal-lib.js",
+      "src/2972-static-voice.js",
+      "src/2973-static-film.js",
+      "src/2974-static-story2.js",
+      "src/2975-static-learn13.js",
+      "src/2976-static-history.js",
+      "src/2977-static-release13.js",
+      "src/2978-static-learn13b.js",
+      "src/2979-static-v14-catalog.js",
+      "src/30-generate.js",
+      "src/32-generate-ops.js",
+      "src/34-generate-lite.js",
+      "src/36-generate-eng.js",
+      "src/38-generate-assure.js",
+      "src/39-generate-com.js",
+      "src/395-generate-v1.js",
+      "src/396-generate-p8.js",
+      "src/398-generate-v13.js",
+      "src/399-generate-v13b.js",
+      "src/3995-generate-timeline.js",
+      "src/3997-generate-v14-rooms.js",
+      "src/3998-static-v14-transport.js",
+      "src/3999-v14-schedule.js",
+      "src/39991-v14-geometry.js",
+      "src/40-store.js",
+      "src/41-store-com.js",
+      "src/415-store-v1.js",
+      "src/416-store-p8.js",
+      "src/417-store-v13.js",
+      "src/4171-store-hall.js",
+      "src/50-derive.js",
+      "src/52-derive-ops.js",
+      "src/54-derive-lite.js",
+      "src/543-derive-eng13.js",
+      "src/545-derive-config.js",
+      "src/546-derive-divisible.js",
+      "src/547-derive-distaudio.js",
+      "src/548-derive-camauto.js",
+      "src/55-derive-com.js",
+      "src/56-derive-lite-spaces.js",
+      "src/57-derive-assure.js",
+      "src/58-derive-eng.js",
+      "src/59-derive-eng-cost.js",
+      "src/595-derive-v1.js",
+      "src/596-derive-learn.js",
+      "src/5965-derive-learn13.js",
+      "src/5966-derive-d2a.js",
+      "src/5967-derive-scout13.js",
+      "src/5968-derive-com13.js",
+      "src/5969-derive-integ13.js",
+      "src/597-derive-p8.js",
+      "src/5970-derive-learn13b.js",
+      "src/60-search.js",
+      "src/62-ask.js",
+      "src/63-qr.js",
+      "src/70-ui-core.js",
+      "src/71-ui-charts.js",
+      "src/72-ui-graph.js",
+      "src/74-ui-authz.js",
+      "src/74-ui-campus.js",
+      "src/76-ui-home.js",
+      "src/77-ui-home-quiet.js",
+      "src/775-ui-roles.js",
+      "src/776-ui-homes.js",
+      "src/78-ui-search.js",
+      "src/80-ui-passport.js",
+      "src/81-ui-passport-ops.js",
+      "src/82-ui-suite.js",
+      "src/83-ui-passport-lite.js",
+      "src/84-ui-pro.js",
+      "src/85-ui-issues.js",
+      "src/86-ui-ops-eng.js",
+      "src/87-ui-lite3d.js",
+      "src/88-ui-lite.js",
+      "src/89-ui-lite-room.js",
+      "src/892-ui-eng.js",
+      "src/894-ui-eng-builder.js",
+      "src/896-ui-eng-scouter.js",
+      "src/898-ui-eng-budget.js",
+      "src/899-ui-eng-wire.js",
+      "src/8992-ui-assure.js",
+      "src/8994-ui-assure-room.js",
+      "src/8996-ui-assure-change.js",
+      "src/8998-ui-assure-wire.js",
+      "src/89992-ui-com.js",
+      "src/89996-ui-control.js",
+      "src/89998-ui-com-wire.js",
+      "src/899991-ui-learn.js",
+      "src/899992-ui-replay.js",
+      "src/899993-ui-compare.js",
+      "src/899994-ui-fabric.js",
+      "src/899995-ui-ask.js",
+      "src/899996-ui-tour.js",
+      "src/899997-ui-v1-wire.js",
+      "src/8999970-ui-p8-kit.js",
+      "src/8999971-ui-servicehands.js",
+      "src/8999972-ui-service.js",
+      "src/8999973-ui-projects.js",
+      "src/8999974-ui-delivery.js",
+      "src/8999975-ui-party.js",
+      "src/8999976-ui-p8-homes.js",
+      "src/8999977-ui-signal.js",
+      "src/89999772-ui-story2.js",
+      "src/8999978-ui-p8-wire.js",
+      "src/8999979-ui-sg-learn.js",
+      "src/89999791-ui-sg-labs.js",
+      "src/89999792-ui-sg-phys.js",
+      "src/89999793-ui-sg-drills.js",
+      "src/89999794-ui-sg-service.js",
+      "src/89999795-ui-learn13.js",
+      "src/8999980-ui-scouter-arch.js",
+      "src/8999981-ui-quick.js",
+      "src/8999982-ui-bldgtech.js",
+      "src/8999983-ui-vocab.js",
+      "src/8999985-ui-cine.js",
+      "src/8999986-ui-cine-wire.js",
+      "src/8999987-ui-cine-dia.js",
+      "src/8999988-ui-academy.js",
+      "src/8999989-ui-agent.js",
+      "src/8999990-store-v12.js",
+      "src/8999991-ui-v13-lite.js",
+      "src/8999992-ui-v13-review.js",
+      "src/8999993-ui-v13-builder.js",
+      "src/8999994-ui-v13-wire.js",
+      "src/8999995-ui-jumps.js",
+      "src/8999996-ui-history.js",
+      "src/8999997-ui-scout13.js",
+      "src/8999998-ui-com13.js",
+      "src/8999999-ui-integ13.js",
+      "src/89999991-ui-sound13.js",
+      "src/89999992-ui-builder-sound.js",
+      "src/89999993-ui-radio-keys.js",
+      "src/89999994-ui-room-tabs.js",
+      "src/89999996-ui-declutter.js",
+      "src/90-boot.js",
+      "src/91-aurora-shell.js",
+      "src/92-search-registry.js",
+      "src/93-studio.js",
+      "src/94-labs.js",
+      "src/95-scouter-anatomy.js",
+      "src/96-mission.js",
+      "src/97-investigate.js",
+      "src/98-delivery-reach.js",
+      "src/985-exports.js",
+      "src/9851-exports-media.js",
+      "src/99-aurora-wire.js",
+      "src/994-v14-deploy.js",
+      "src/995-v14-core.js",
+      "src/996-v14-ui.js",
+      "src/997-v14-connect.js",
+      "src/998-v14-hub.js",
+      "src/999-v14-identity.js",
+      "src/9995-v14-telemetry.js",
+      "src/9996-v14-telemetry-ui.js",
+      "src/9997-v14-signage.js",
+      "src/9998-v14-itsm.js",
+      "src/9999-v14-transport-ui.js",
+      "src/99991-v14-schedule-ui.js",
+      "src/99992-v14-geometry-ui.js",
+      "src/99993-v14-diag.js",
+      "src/99994-v14-diag-ui.js",
+      "src/99995-v14-robot.js",
+      "src/99996-v14-robot-ui.js",
+      "src/99997-v14-camera.js",
+      "src/99998-v14-camera-ui.js",
+      "src/99999-v14-optimize.js",
+      "src/999991-v14-optimize-ui.js",
+      "src/999992-v14-redact.js",
+      "src/999993-v14-ops.js",
+      "src/999994-v14-ops-ui.js",
+      "src/999995-v14-deploy-wire.js",
+      "src/999996-v14-profiles.js",
+      "src/999997-v14-registry.js",
+      "src/999998-v14-registry-ui.js",
+      "src/999999-v14-explorer.js",
+      "src/app.css",
+      "src/lite.css",
+      "src/shell.html",
+      "src/v04-eng.css",
+      "src/v05-assure.css",
+      "src/v06-com.css",
+      "src/v10-core.css",
+      "src/v11-skins.css",
+      "src/v12-p8.css",
+      "src/v13-signal.css",
+      "src/v14-cine.css",
+      "src/v15-academy.css",
+      "src/v16-agent.css",
+      "src/v17-story.css",
+      "src/v18-v13.css",
+      "src/v19-learn13.css",
+      "src/v20-jumps.css",
+      "src/v21-history.css",
+      "src/v22-integ.css",
+      "src/v23-sound.css",
+      "src/v24-declutter.css",
+      "src/v25-00-design.js",
+      "src/v25-00-dict.js",
+      "src/v25-01-core.js",
+      "src/v25-02-policy.js",
+      "src/v25-03-governance.js",
+      "src/v25-04-seed.js",
+      "src/v25-05-design.js",
+      "src/v25-06-scouter.js",
+      "src/v25-07-lite.js",
+      "src/v25-08-fi.js",
+      "src/v25-09-commissioning.js",
+      "src/v25-091-tracker.js",
+      "src/v25-092-service.js",
+      "src/v25-093-assure.js",
+      "src/v25-094-exec.js",
+      "src/v25-10-shell.js",
+      "src/v25-20-s04-ui.js",
+      "src/v25-21-s05-ui.js",
+      "src/v25-22-s06-ui.js",
+      "src/v25-23-s07-ui.js",
+      "src/v25-24-s08-ui.js",
+      "src/v25-25-s09-ui.js",
+      "src/v25-30-investor.js",
+      "src/v25-99-boundary.js",
+      "src/v30-aurora.css",
+      "src/v40-v14.css",
+      "src/v41-explorer.css",
+      "src/v50-v25.css",
+      "tests/_origin.mjs",
+      "tests/accept.mjs",
+      "tests/accept13.mjs",
+      "tests/accept13b.mjs",
+      "tests/accept2.mjs",
+      "tests/accept3.mjs",
+      "tests/accept4.mjs",
+      "tests/accept5.mjs",
+      "tests/accept6.mjs",
+      "tests/accept7.mjs",
+      "tests/accept8.mjs",
+      "tests/accept9.mjs",
+      "tests/assure-engine.test.mjs",
+      "tests/assure-smoke.mjs",
+      "tests/audit.mjs",
+      "tests/authz.test.mjs",
+      "tests/breakit.mjs",
+      "tests/com-engine.test.mjs",
+      "tests/com-smoke.mjs",
+      "tests/contrast.mjs",
+      "tests/destroy13-1.mjs",
+      "tests/destroy13-2.mjs",
+      "tests/destroy13-3.mjs",
+      "tests/eng-engine.test.mjs",
+      "tests/eng-smoke.mjs",
+      "tests/features.mjs",
+      "tests/fuzz.mjs",
+      "tests/integrity.mjs",
+      "tests/lite-engine.test.mjs",
+      "tests/lite-smoke.mjs",
+      "tests/model.test.mjs",
+      "tests/roles-leak.mjs",
+      "tests/roles-smoke.mjs",
+      "tests/search.test.mjs",
+      "tests/sg-content.test.mjs",
+      "tests/sg-phys.test.mjs",
+      "tests/shots.mjs",
+      "tests/smoke-routes.txt",
+      "tests/smoke.mjs",
+      "tests/targets.mjs",
+      "tests/v1-engine.test.mjs",
+      "tests/v1-smoke.mjs",
+      "tests/v13-audio.test.mjs",
+      "tests/v13-authz-browser.mjs",
+      "tests/v13-authz.test.mjs",
+      "tests/v13-com.test.mjs",
+      "tests/v13-consistency.test.mjs",
+      "tests/v13-engineering.test.mjs",
+      "tests/v13-flow.test.mjs",
+      "tests/v13-hall.test.mjs",
+      "tests/v13-release.test.mjs",
+      "tests/v133-exports.mjs",
+      "tests/v133-journeys.mjs",
+      "tests/v133-labs.mjs",
+      "tests/v133-matrix.mjs",
+      "tests/v133-registry.test.mjs",
+      "tests/v133-shell.mjs",
+      "tests/v133-studio.mjs",
+      "tests/v14-camera.mjs",
+      "tests/v14-connect.mjs",
+      "tests/v14-deploy.mjs",
+      "tests/v14-destroy.mjs",
+      "tests/v14-diag.mjs",
+      "tests/v14-explorer-destroy.mjs",
+      "tests/v14-explorer.mjs",
+      "tests/v14-exports.mjs",
+      "tests/v14-foundation.test.mjs",
+      "tests/v14-geometry.mjs",
+      "tests/v14-geometry.test.mjs",
+      "tests/v14-hub.mjs",
+      "tests/v14-identity.mjs",
+      "tests/v14-itsm.mjs",
+      "tests/v14-links.mjs",
+      "tests/v14-ops.mjs",
+      "tests/v14-optimize.mjs",
+      "tests/v14-profiles.mjs",
+      "tests/v14-registry.mjs",
+      "tests/v14-robot.mjs",
+      "tests/v14-schedule.mjs",
+      "tests/v14-schedule.test.mjs",
+      "tests/v14-shell.mjs",
+      "tests/v14-signage.mjs",
+      "tests/v14-telemetry.mjs",
+      "tests/v14-telemetry.test.mjs",
+      "tests/v14-transport.mjs",
+      "tests/v14-widths.mjs",
+      "tests/v25-assure.test.mjs",
+      "tests/v25-boot.mjs",
+      "tests/v25-core.test.mjs",
+      "tests/v25-cx.test.mjs",
+      "tests/v25-design.test.mjs",
+      "tests/v25-exec.test.mjs",
+      "tests/v25-fi.test.mjs",
+      "tests/v25-governance.test.mjs",
+      "tests/v25-policy.test.mjs",
+      "tests/v25-qa1.mjs",
+      "tests/v25-qa1.test.mjs",
+      "tests/v25-qa2.mjs",
+      "tests/v25-qa2.test.mjs",
+      "tests/v25-s04.mjs",
+      "tests/v25-s05.mjs",
+      "tests/v25-s06.mjs",
+      "tests/v25-s07.mjs",
+      "tests/v25-s08.mjs",
+      "tests/v25-s09.mjs",
+      "tests/v25-shell.mjs",
+      "tests/v25-svc.test.mjs",
+      "tools/continuity.py",
+      "tools/density13.mjs",
+      "tools/docs14.mjs",
+      "tools/figdata13.mjs",
+      "tools/gates13.sh",
+      "tools/gates133.sh",
+      "tools/gates14.sh",
+      "tools/gen_voice.py",
+      "tools/gen_voice_local.py",
+      "tools/ingest.py",
+      "tools/manifest_doc.py",
+      "tools/package_investor.py",
+      "tools/pdf13.mjs",
+      "tools/pdf133.mjs",
+      "tools/qa133.py",
+      "tools/release.py",
+      "tools/release13.py",
+      "tools/release133.py",
+      "tools/release14.py",
+      "tools/review_media.py",
+      "tools/samples133.mjs",
+      "tools/scan14.py",
+      "tools/shots133.mjs",
+      "tools/tasks133.py",
+      "tools/trace14.py"
+     ]
+    }
+   ]
+  }
+ ],
+ "otherRepositories": [
+  {
+   "path": "/home/claude/Empathia_V25/work/source",
+   "head": "63c21d4e59739a3a427d5158c05339e06168a0a3",
+   "branch": "master",
+   "commits": 105,
+   "authors": {
+    "Claude <noreply@anthropic.com>": 99,
+    "Empathia Engineering <jeremiahjohnson754@gmail.com>": 4,
+    "Empathia Engineering (private master) <engineering@northstar.example.com>": 2
+   },
+   "commitsWithCoAuthoredBy": 105,
+   "commitsWithClaudeSession": 105,
+   "firstCommit": "2026-10-22T19:11:03-05:00",
+   "lastCommit": "2026-10-26T05:49:16-05:00",
+   "tags": [
+    {
+     "tag": "v2.5.2-rc1",
+     "object": "493136bffd9b70c84296c4b93caad6f7d746a99c",
+     "commit": "09db55093cf88bcfafbc9e47b1b6b6ae59cd7d32",
+     "date": "2026-10-25T01:17:54-05:00",
+     "subject": "2.5.2 release candidate 1 (frozen 2026-10-25). Offline 86bbf66a\u2026717b, live 473f34a7\u202612f8. Independent page-API security assessment: NOT VERIFIED \u2014 EXTERNAL TEST REQUIRED. Not authorized for distribution."
+    },
+    {
+     "tag": "v2.5.3-rc1",
+     "object": "9568db0c84c6fa242c124f0fa5f134da9b9ecdc4",
+     "commit": "7a8ca84d067a742116e9d8adb21988d45c2d5707",
+     "date": "2026-10-25T06:41:42-05:00",
+     "subject": "2.5.3 release candidate 1 (Build a Room with Lite), audited VERIFIED WITH CONDITIONS (work/audit-253). Offline b90871da\u2026, live bdf92437\u2026, engineer 92882a86\u2026. Page-API security NOT VERIFIED \u2014 EXTERNAL TEST REQUIRED. Not authorized for distribution."
+    },
+    {
+     "tag": "v2.5.3-rc2",
+     "object": "6783c9418528ddfeac51de55def44a6299dcf46b",
+     "commit": "0cb8a0f1d0ed2aef77aca7b43679708e65462c7d",
+     "date": "2026-10-25T11:24:52-05:00",
+     "subject": "2.5.3 release candidate 2: F-03 recorded results; audited VERIFIED WITH CONDITIONS (work/audit-253/INDEPENDENT_AUDIT_253_RC2.md), R2-1 open. Offline 96f539d9\u2026, live b88a3172\u2026, engineer 793865d2\u2026. Page-API security NOT VERIFIED \u2014 EXTERNAL TEST REQUIRED. Not authorized for distribution."
+    },
+    {
+     "tag": "v2.5.3-rc3",
+     "object": "58cfb3d525fe24430ba40814353e1ae87a9259dc",
+     "commit": "cf86866ac81bbf2f08b4b218b0532781a84f7a36",
+     "date": "2026-10-25T15:57:33-05:00",
+     "subject": "2.5.3 release candidate 3: audited VERIFIED WITH CONDITIONS (work/audit-253/INDEPENDENT_AUDIT_253_RC3.md), no Medium or High finding. Offline ecbde0bb\u2026, live 9d6e53ef\u2026, engineer 604cc748\u2026. Page-API security NOT VERIFIED \u2014 EXTERNAL TEST REQUIRED. Not authorized for distribution."
+    }
+   ]
+  },
+  {
+   "path": "/home/claude/empathia-campus",
+   "head": "1ddbd74db1ef76ed5438e04d5e1948c8fc66fe39",
+   "branch": "feature/relationships-explorer",
+   "commits": 4,
+   "authors": {
+    "Empathia build <build@example.com>": 4
+   },
+   "commitsWithCoAuthoredBy": 4,
+   "commitsWithClaudeSession": 4,
+   "firstCommit": "2026-10-14T04:25:11-05:00",
+   "lastCommit": "2026-10-14T06:45:44-05:00",
+   "tags": [
+    {
+     "tag": "v1.4.0",
+     "object": "b98afef68f5bee72ff275dea97ba82e723e3b922",
+     "commit": "b98afef68f5bee72ff275dea97ba82e723e3b922",
+     "date": "2026-10-14T04:25:14-05:00",
+     "subject": "Baseline: Empathia V1.4.0 source as released (gates14-release, 84/84)"
+    },
+    {
+     "tag": "v1.4.1",
+     "object": "1ddbd74db1ef76ed5438e04d5e1948c8fc66fe39",
+     "commit": "1ddbd74db1ef76ed5438e04d5e1948c8fc66fe39",
+     "date": "2026-10-14T06:45:44-05:00",
+     "subject": "Fix stale passport graph across role switch; explorer docs; versioned release builder"
+    }
+   ]
+  },
+  {
+   "path": "/home/claude/Empathia_Products/Onboard/repo",
+   "head": "2ef17e0fb02294fec0d1746ff7b5c3ce032db7e6",
+   "branch": "master",
+   "commits": 12,
+   "authors": {
+    "Claude <noreply@anthropic.com>": 10,
+    "Empathia Onboard <onboard@empathia.local>": 2
+   },
+   "commitsWithCoAuthoredBy": 12,
+   "commitsWithClaudeSession": 12,
+   "firstCommit": "2026-10-23T18:28:19-05:00",
+   "lastCommit": "2026-10-23T20:31:15-05:00",
+   "tags": []
+  },
+  {
+   "path": "/home/claude/Empathia_V25/legal/media-rights",
+   "head": "411bb5bd0b745d8a5ac2ddda2c014df5ae480429",
+   "branch": "master",
+   "commits": 6,
+   "authors": {
+    "Claude <noreply@anthropic.com>": 6
+   },
+   "commitsWithCoAuthoredBy": 6,
+   "commitsWithClaudeSession": 6,
+   "firstCommit": "2026-10-23T21:21:29-05:00",
+   "lastCommit": "2026-10-24T14:08:20-05:00",
+   "tags": []
+  }
+ ]
+}

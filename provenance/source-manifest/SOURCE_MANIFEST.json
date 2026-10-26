@@ -1,0 +1,2552 @@
+{
+ "generatedAt": "2026-10-26T13:00:21+00:00",
+ "repository": "/home/claude/empathia-technologies",
+ "head": "0c7aaf944629e911623bd801f879cc7b896fb222",
+ "branch": "main",
+ "note": "Hashes are of the committed content at HEAD (git cat-file), not of the working tree. Uncommitted working-tree changes at generation time are listed in workingTreeChanges and are NOT covered.",
+ "workingTreeChanges": [
+  "M package.json",
+  " M pnpm-workspace.yaml",
+  " M scripts/bootstrap.mjs",
+  "?? docs/algorithms/",
+  "?? integrations/contracts/package.json",
+  "?? integrations/contracts/src/",
+  "?? integrations/contracts/test/",
+  "?? integrations/contracts/tsconfig.json",
+  "?? provenance/"
+ ],
+ "files": 253,
+ "bytes": 10313084,
+ "entries": [
+  {
+   "path": ".gitignore",
+   "bytes": 550,
+   "sha256": "91f02b56a6a81133abeafeb36697a2e6df5488f5f31a015ef5cc4c1258df2efb",
+   "gitBlob": "f0e306fabe693ae074ca208050002626a4a8ae93",
+   "mode": "100644",
+   "lastCommit": "0c7aaf944629e911623bd801f879cc7b896fb222",
+   "lastCommitDate": "2026-10-26T07:58:21-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "apps/enterprise-web/build.mjs",
+   "bytes": 2257,
+   "sha256": "7ef6f7b65f76c846194dba5a3c2301b2717fa8d26fdc60e3d884a1d5cc84e5ed",
+   "gitBlob": "8c36a48fd8cb7613b7dc102af3abe5b89f399d91",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "apps/enterprise-web/package.json",
+   "bytes": 696,
+   "sha256": "011b106ee30e07f0cb32f3e53f753023520be21255bc7810cbe633b9e0e55bad",
+   "gitBlob": "99924ab8b156fcf5a082581ef01d9caff82d8a8d",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "apps/enterprise-web/server/serve.mjs",
+   "bytes": 2621,
+   "sha256": "448ea5cc2f892bad87c8baabed001363d7e5d0f4462d98939df9657958d8f001",
+   "gitBlob": "0c8a93c7af42b69c86d2de4f02ba3b617adf1e84",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "apps/enterprise-web/src/App.tsx",
+   "bytes": 3469,
+   "sha256": "c25705d56a4a1258f72a362a8196651d6d865f5e466e610f031be81ef3fe554d",
+   "gitBlob": "7a2fbbb7d62f48f87934349e961da81675c05bbb",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "apps/enterprise-web/src/api.ts",
+   "bytes": 4015,
+   "sha256": "1d9b8e1b906721d4342a6ef8425f14a1038b6ee7da658fbd13c91cedb04adb76",
+   "gitBlob": "559ce692841e98b612849e894743bee76741f6d7",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "apps/enterprise-web/src/components/FloorPlan.tsx",
+   "bytes": 2299,
+   "sha256": "2b677bed9f5e0a9af769a571a422885fe9cd7a587fb32a6a27d775d32bd07f80",
+   "gitBlob": "483f425b8cbbc07b7228ebef89f2a1cf18ddaa39",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "apps/enterprise-web/src/index.html",
+   "bytes": 381,
+   "sha256": "7854dd6eb3920d95f38eaa12decfcd589b4ece5f7d78b030096fdefb2e1c109a",
+   "gitBlob": "6e507ada01718b5bdbea8cdbadee47b6bc81e77b",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "apps/enterprise-web/src/main.tsx",
+   "bytes": 203,
+   "sha256": "b730bd7c844c2f500a6928c138cb6d97d33c73dbd9c4bce12e9705e3bff55807",
+   "gitBlob": "63113ece71f4ac6136d9b177bbbb4b3fc82edb1c",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "apps/enterprise-web/src/me.ts",
+   "bytes": 337,
+   "sha256": "0ed49d379d72033afc8ff1eeae65441cd5da08f29a64dc78d6c6d62fb9d26349",
+   "gitBlob": "01b875a4a894db5add908b8cfd9bd10729058050",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "apps/enterprise-web/src/pages/Admin.tsx",
+   "bytes": 5768,
+   "sha256": "9ad3e6f4cb3d60748b007e405fffd12d1d85586d20ce6a69a92d10199b9a856d",
+   "gitBlob": "95cf60511c5a3c70b5e96a4831f0c9374d8a505f",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "apps/enterprise-web/src/pages/Inbox.tsx",
+   "bytes": 1145,
+   "sha256": "302b2dc7814aa204f7dd890c6bc3ba0f8ab09359c7ed3e4487d3d392d3de2c8b",
+   "gitBlob": "8e9ae36dd364bbd847c5e70c9d4d9fb0970e6e53",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "apps/enterprise-web/src/pages/Projects.tsx",
+   "bytes": 2544,
+   "sha256": "7eafd1930bbb9df144e36d037d7745d4b28478e428bae2d13d54b2501b8f0e51",
+   "gitBlob": "3413199ca2380cf73b8f56a875ffde3639e14761",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "apps/enterprise-web/src/pages/Reports.tsx",
+   "bytes": 4335,
+   "sha256": "0eed20a552658c7400d9dcc57f41fcad521f5f43fdf652f047362337edbdbf1c",
+   "gitBlob": "3f9b37765314f18c3da82cdbb61998d22a2bcc41",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "apps/enterprise-web/src/pages/Room.tsx",
+   "bytes": 27817,
+   "sha256": "af26a072f3d13e8044a8afd377c79abdb8ffea6c5a99869577e14199b1239250",
+   "gitBlob": "20ff05f82ff1f94f6c872a3330cbb8db98a57ac7",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "apps/enterprise-web/src/pages/Rooms.tsx",
+   "bytes": 5995,
+   "sha256": "b42ffc3bcda3998ab7c43eab1445496cbdded31a407021e77ae478d0d798895c",
+   "gitBlob": "fa152461d52aed8b618002ba3b1ea583dc37ff95",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "apps/enterprise-web/src/pages/SignIn.tsx",
+   "bytes": 3083,
+   "sha256": "2bcdd329682e0c698a8fd1d936db1f95e0d91ebd6e3ed17d2228dac42e72968f",
+   "gitBlob": "4743e8c81d16ad592fe36b920c04d9b852e18371",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "apps/enterprise-web/src/router.ts",
+   "bytes": 680,
+   "sha256": "f0410ea74ea57759463907a156d707917e71a96ba67e3b9342264a5764c50e7c",
+   "gitBlob": "ab056019b07bdf41b1d29b862b87027f6c74c51d",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "apps/enterprise-web/src/styles/app.css",
+   "bytes": 5774,
+   "sha256": "c872d901b90089357f7ebb2f6d7e91dacd52e5ad517ba6b6e2d51051b873b025",
+   "gitBlob": "1335c501d6e5813ec97204135a9beac645b62c79",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "apps/enterprise-web/tsconfig.json",
+   "bytes": 491,
+   "sha256": "017396414e3525ef9b7affbb5576db73b4d2f5ce6dcfbb52b4d36e5a86eddbaf",
+   "gitBlob": "36a3b52e3744c0b9acb06e8b1a22039f1f5b3080",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "apps/founder-studio/build.mjs",
+   "bytes": 4570,
+   "sha256": "e90a07527919b3aa224a6fb1e41bcdf25e102df0ac0f128c59b5558ee12c3a26",
+   "gitBlob": "96a31bae7bae6ca101bd6d067f6370ca296a7c8f",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/launch/Start Founder Studio.command",
+   "bytes": 494,
+   "sha256": "186318376e7502444411f60169da0282dfe81a0b3427ca05491da6df0409f0c0",
+   "gitBlob": "3cc7671eb36b256d6223ca8b089d1452fbb098f4",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/launch/Start-Founder-Studio.bat",
+   "bytes": 417,
+   "sha256": "60bfe47f5e95adf748dfc2f11a1735d83f79b4a7820dd25d2d675cdb4fd1afcb",
+   "gitBlob": "caa702a4eb7ebfc36967fd582a114d78c6a52da4",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/launch/start-founder-studio.sh",
+   "bytes": 407,
+   "sha256": "770a7d25b9e1296990fe1978a75b818ef0b5a9e31c480fd29f3c64bfd84e143f",
+   "gitBlob": "821cf05c8cddce6365c16a5a876fa11f3158151e",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/package.json",
+   "bytes": 714,
+   "sha256": "17b5915cd0ae67f808db1f7e99027f7582acc422b99811e9b4c1fe03dd4f3d8e",
+   "gitBlob": "a7562060377f0bd6875b8a9b7d88a025953339fa",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/scripts/build-data.mjs",
+   "bytes": 16221,
+   "sha256": "d46c989cc2c0b57bd24e0ea282111c44d5900061840585bcf65345314f07e257",
+   "gitBlob": "4fae4f8e5574871621536fd64c4475f359c75a74",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/server/serve.mjs",
+   "bytes": 9377,
+   "sha256": "a7fa7dc670599d81fd48d7a4e7cbc8cb9a91a5c58d09ff3a1806ac3dc3b382a4",
+   "gitBlob": "e2958ab8967a74159f72ad5ba270f50c90186e03",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/components/DemoFrame.tsx",
+   "bytes": 4488,
+   "sha256": "24c8a52bcc6e4ae520c1bd96daf7b6936b878b0f61d28d5472ca20d7352619b8",
+   "gitBlob": "b5d6e4c00764822b7f6d272f24eee8e9d3a6da1a",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/components/Ladder.tsx",
+   "bytes": 1733,
+   "sha256": "b70aaae69f51dd081fd70019c56c8c4143197e0d9cc7d6561fc2b8ad918b5501",
+   "gitBlob": "5be36d5a2408c1d7b023374a2e6147db3c12303b",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/components/Shell.tsx",
+   "bytes": 8098,
+   "sha256": "e3c9169315f0f3111545767629127b9850757d4b8eccaa4222987f31d19083e3",
+   "gitBlob": "a05cbb5ae99281ca0f91d71c1775751b4e1478f5",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/data/films.ts",
+   "bytes": 5326,
+   "sha256": "b40c006543b53725eecc148023eac30bf15c8e097962859380dac3e3e1110fcc",
+   "gitBlob": "b385fe4ef964bdf935448b1aac15984a9043987c",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/data/generated.ts",
+   "bytes": 2667,
+   "sha256": "c92f3f2faf191982b0407ffc7e1094018dd67c33431b229a0e973352affd0a5b",
+   "gitBlob": "a8c4155f9ff8747688ffc707215fe6d5d32b1c88",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/data/products.ts",
+   "bytes": 20060,
+   "sha256": "f057fcbe3c9ba6f6f9ba75e1faeca77b7e2da8cd0a03a5f8f53cab5c86d40785",
+   "gitBlob": "a7060035559149a1d01d241011c99f4655929b45",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/data/scenarios.ts",
+   "bytes": 7505,
+   "sha256": "17ab8fb8d868e78a3f233f520751240683287b8cdb14b420449a1e5c584438bf",
+   "gitBlob": "9c774d50f9e2bc81698cdb7bd35e57f8ab02dc67",
+   "mode": "100644",
+   "lastCommit": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+   "lastCommitDate": "2026-10-26T07:04:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/index.html",
+   "bytes": 546,
+   "sha256": "ac47b08009e24fd1e0738f54da6e7637da97f35714bab962b223a0399fe32276",
+   "gitBlob": "5a16963518a4bbb5205e7208d694876c99a17174",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/lib/demo.ts",
+   "bytes": 4328,
+   "sha256": "c8440485e2e57804ae28eac04e849075b56569437d01113bce24efa81a92f778",
+   "gitBlob": "d5fc600bbdbb6c73d50fcf8cec4addf351c1e908",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/lib/router.ts",
+   "bytes": 1112,
+   "sha256": "1e8bc212e1b76f92502930acd009e3cbe668af9d304364a75eb9b0e18616b493",
+   "gitBlob": "83bb7121bfc0af7f0b29a967058d2e37a8e64d87",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/lib/store.ts",
+   "bytes": 3142,
+   "sha256": "fd5265d34ef1ccd4354c2c56082564766254854f3e6f17c00bf1fe5116b067f5",
+   "gitBlob": "20276beeb91990336dd4431fd7c89080171bd599",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/main.tsx",
+   "bytes": 2042,
+   "sha256": "82af65044d71e4d5250f61433fa135f44dce50e8e209de0007bec990913da333",
+   "gitBlob": "20acecd5c517b3ec5b0c6dface1038ae766cc08b",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/nav.ts",
+   "bytes": 4425,
+   "sha256": "a242775ad267125a5de570d8a66ed4472d2a7dc7fbb513c6e4d8233c18780d48",
+   "gitBlob": "d5ad8b5d9d93483d237e08271ccbba78c9ad24e0",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/pages/Architecture.tsx",
+   "bytes": 2804,
+   "sha256": "3364ac641ddffcfe2b2ceaa27503fe660d564426a15955b4afba557c3f3080b0",
+   "gitBlob": "f76c483088570d217a6bc03091e14bbafe39d015",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/pages/BuildARoom.tsx",
+   "bytes": 3984,
+   "sha256": "95b2b96e2634f8cb4a8d5a40454c6caca420ab1ea422832f6af2b7cb25703251",
+   "gitBlob": "585974c282ed33567ee1bb59edb14df41ef5b0d6",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/pages/Docs.tsx",
+   "bytes": 2261,
+   "sha256": "ebd8bb8b5b16e0553d50c243096df67802b4b19a4852aba8a1f983b0a9de616f",
+   "gitBlob": "ad191320d54279a7cb889565819a3f8a0ccb6921",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/pages/EngineLab.tsx",
+   "bytes": 9308,
+   "sha256": "512ac6c9076bad674e29ff3eb17d51668e46eec14bee693772e72c3d640dabc6",
+   "gitBlob": "5265154eed74624a3ccb37f28a3fef5960d1197b",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/pages/EnterprisePlatform.tsx",
+   "bytes": 3815,
+   "sha256": "94a678d1d38423f93c3df2a3a2d68d217f6f6ab2c0640ef45c6a83b655801f96",
+   "gitBlob": "c4485b2e249d0b9f530f0197a8d02b4e44b136c8",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/pages/Maturity.tsx",
+   "bytes": 2974,
+   "sha256": "313082776f816989e6114a8689eec9a0af2dfd389d1cf2ae48b2d4b4f7755729",
+   "gitBlob": "594fc78388c06f9c0364a94625da2bc5d586ccee",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/pages/MediaLibrary.tsx",
+   "bytes": 6758,
+   "sha256": "cfd5213d8b7b35e6f35c42412a6eb6e981995341f792704822a3d9ed8f28274f",
+   "gitBlob": "7bae6cd632dbf49d91605fa9b60cde107c79ea1b",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/pages/MissionControl.tsx",
+   "bytes": 5142,
+   "sha256": "98984209107d5c79bb7d2fb8be915bc5413ab2877112d238bf26f60a720caea9",
+   "gitBlob": "bc3052e246311ca15640f4e13935f5bd59b53bb7",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/pages/ProductPage.tsx",
+   "bytes": 2330,
+   "sha256": "72cd125797b581ed261a9a718acd8ee07786105084bccb3ce3863201056b48cf",
+   "gitBlob": "55b1ef3eddc747d46c90ae30fb0858eab2a80be0",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/pages/Scenarios.tsx",
+   "bytes": 4078,
+   "sha256": "607b7850d4f02d2f4a3ae8f26478f2212465d528da827b452b85f2a7c894def4",
+   "gitBlob": "265269ac660e4d126adc941a716847f63a6547b4",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/pages/Settings.tsx",
+   "bytes": 7666,
+   "sha256": "404ee07fa032f56f896959441973971aff2f71b71a3a1694c096b6082530acf3",
+   "gitBlob": "241ae58f727cdeced2cd785390e5da390d3622e6",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/pages/Vault.tsx",
+   "bytes": 2434,
+   "sha256": "f355ea8228294cefc912ced020741020af8eef6d3de17eeb3bbd351431c8de6a",
+   "gitBlob": "4c6154d1a9168592a31f54652296bef38502f99f",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/src/styles/studio.css",
+   "bytes": 19383,
+   "sha256": "11b2e8add58a00606f9b37933d2603a637188117075048435868d491b4307847",
+   "gitBlob": "78b31561cb8e53e5a73ac8c2b1accdf0bdef77f8",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "apps/founder-studio/tsconfig.json",
+   "bytes": 422,
+   "sha256": "a42159362e6479f0b8d78de71833172b69cd628b773844dd10f9d4dd72cc13f1",
+   "gitBlob": "d34cffa74ee6f950780fd6f7e075ae44e0115da2",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "database/migrations/0001_foundation.sql",
+   "bytes": 1886,
+   "sha256": "585ad348cc4064a54719f1a0356924504ba078c0979bb0486994c4772793dd00",
+   "gitBlob": "2dbc7a706f29a5d306edbda12660365a6a24731d",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "database/migrations/0002_core.sql",
+   "bytes": 12644,
+   "sha256": "5f3b8ff6b6a85743cbbb7f70ec964b8cec2a107644e4d6e8e1929e9a0776dcd3",
+   "gitBlob": "0d8e439a7bc1ab3e28a26192f9248cce6cda346a",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "database/migrations/0003_commissioning_evidence.sql",
+   "bytes": 11669,
+   "sha256": "883c1feb6ddc4134b455d8664289894c6d6739fe78648185b4e3cd551eeb79d0",
+   "gitBlob": "6b8f1f376494241971107221e0181a910c6215a4",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "database/migrations/0004_platform.sql",
+   "bytes": 7332,
+   "sha256": "5bae88b4e16465125381de1f8c767d2c27cac883897efd1632c116a569e08db5",
+   "gitBlob": "b7db8c4c8be25259a83b521db7535d6c15061cdc",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "database/migrations/0005_health.sql",
+   "bytes": 732,
+   "sha256": "73d1bfdd68842d487c34dcd3c37e9a072d4dd8d7d050b487e6f9570768c378d3",
+   "gitBlob": "542890587884d6e6d3a70374f94fa4e85cc305b7",
+   "mode": "100644",
+   "lastCommit": "ad4ed25148cc8896ddead0d6dcdcb90bc68f537e",
+   "lastCommitDate": "2026-10-26T07:36:19-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "database/migrations/0006_projects.sql",
+   "bytes": 559,
+   "sha256": "fc0ee8999bc2296f3ed0d713a194d41d10de6607633ffbeb8993c7db40404bfa",
+   "gitBlob": "84a0221307e9961844427f3f6c38bda5b7168950",
+   "mode": "100644",
+   "lastCommit": "0a6750a6dbad29231db8b45f356d7a75986e8cc9",
+   "lastCommitDate": "2026-10-26T07:39:05-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "docs/api/openapi.json",
+   "bytes": 112955,
+   "sha256": "3cf98068ec55ed404adfb45e1d7c53e99ea0407449ddf60cdc1408f13891ff04",
+   "gitBlob": "cd52ce20f3a3c0ca3154af6103e9c79fd739e63c",
+   "mode": "100644",
+   "lastCommit": "41fb895f4dcaba9afb5074b16399a46e15a0a6b2",
+   "lastCommitDate": "2026-10-26T07:54:15-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "docs/architecture/diagrams/01-system-context.mmd",
+   "bytes": 980,
+   "sha256": "bb6141044384c1a10a4fdf2273db9ddfb938b29472b47147ce52b0c10ea88a14",
+   "gitBlob": "4a136485deb1afd9b4907a9514565bb6c163b36b",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "docs/architecture/diagrams/02-containers.mmd",
+   "bytes": 1194,
+   "sha256": "e149d0a8e385c19ecb4e5bc577e14e1b25e38fbae098616b3cb24c513cbb4fa5",
+   "gitBlob": "bdb5932bd979f0c3d45db6136497b3a48c5c1c56",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "docs/architecture/diagrams/03-vertical-slice.mmd",
+   "bytes": 1417,
+   "sha256": "93ec5c46012c8167ef5d16032da0f7e65b716cab0aeb2a290f4bcdd180de053f",
+   "gitBlob": "2e297f65153bf62d45f48566ef920223cff6981a",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "docs/architecture/diagrams/04-data-model.mmd",
+   "bytes": 942,
+   "sha256": "c6364ad07380cb873ff06f09aa35ddfbbc1e6aa7da6fb25818f5a24b629541e9",
+   "gitBlob": "6bb77519061e3e78fe818b8087df6e3ba168eb93",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "docs/architecture/diagrams/05-events.mmd",
+   "bytes": 535,
+   "sha256": "26351f2956d50ba906f268960ea1ee1776cbff97fce508a45c83050d5afaf6cd",
+   "gitBlob": "fe0b083e0ba68a18d38f62a0a904ef36a495b8bb",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "docs/architecture/diagrams/06-today-demonstrator.mmd",
+   "bytes": 610,
+   "sha256": "57ca3f2b221f1a8cbde6635b07dee45138413b7f72f2c0a10f41f2e2bb8cdc24",
+   "gitBlob": "a94ae183ec03dd71f6b93d86d219f0da7152ae9c",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "docs/architecture/diagrams/07-editions-separation.mmd",
+   "bytes": 629,
+   "sha256": "22896b071b4a3f622c8e7c83111727d42a1b7354a9e1c31f68b7e220df53eeb2",
+   "gitBlob": "7878b79585bfb764c653d12583d511ab04d67c8e",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "docs/discovery/FILE_INVENTORY.csv.gz",
+   "bytes": 1684304,
+   "sha256": "9e076f3b5cc2c5d7b24f65902740f57b1194d03a7ab53133b797cf3cb1af3915",
+   "gitBlob": "2f4696af37e4e2b4d0d22d362eb1c96cf9752a10",
+   "mode": "100644",
+   "lastCommit": "77aab48d04c5650f18267b38b20e4b0784e354ab",
+   "lastCommitDate": "2026-10-26T06:29:31-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "docs/discovery/FILE_INVENTORY_SUMMARY.json",
+   "bytes": 1770,
+   "sha256": "7e27309ed158db74ca254f00f4f97f0a1d4c3c8255c66b27c12d94a94309f201",
+   "gitBlob": "09375627acd2fdbc55b431361ccb32428dc035b4",
+   "mode": "100644",
+   "lastCommit": "77aab48d04c5650f18267b38b20e4b0784e354ab",
+   "lastCommitDate": "2026-10-26T06:29:31-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "docs/discovery/README.md",
+   "bytes": 582,
+   "sha256": "5162bfd556cdb016a1787c83346a09fc5cdee86a10bfc0fec81074f9798b8eb8",
+   "gitBlob": "518beba2ad1546ab86cc3a315b6b98adfa9af058",
+   "mode": "100644",
+   "lastCommit": "77aab48d04c5650f18267b38b20e4b0784e354ab",
+   "lastCommitDate": "2026-10-26T06:29:31-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "docs/discovery/REPOSITORY_DISCOVERY_REPORT.md",
+   "bytes": 12262,
+   "sha256": "228ff04d8bbed14a723ce19adb7f651db5f2b74faed85bafd23395d34495c9c7",
+   "gitBlob": "d4b73976089d8ae1a3a19ae6bfdb69f717f9e07c",
+   "mode": "100644",
+   "lastCommit": "77aab48d04c5650f18267b38b20e4b0784e354ab",
+   "lastCommitDate": "2026-10-26T06:29:31-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "docs/discovery/SECRET_SCAN.json",
+   "bytes": 39,
+   "sha256": "b8a03ce3335767bf96c234f18a7c9ddf67e54d1a4e9965acc834ca0372b209d7",
+   "gitBlob": "583c63ddfefa348684ade769e2d4fa703c59689a",
+   "mode": "100644",
+   "lastCommit": "77aab48d04c5650f18267b38b20e4b0784e354ab",
+   "lastCommitDate": "2026-10-26T06:29:31-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "docs/discovery/SOURCE_REGISTER.csv",
+   "bytes": 15616,
+   "sha256": "6bc7a94c87e3ffcc2afac4a22a230cf6cf21cc8409885a7b3f20896d5dc7b81d",
+   "gitBlob": "e534d672b1838f13cdb71945ca350843f8b24988",
+   "mode": "100644",
+   "lastCommit": "77aab48d04c5650f18267b38b20e4b0784e354ab",
+   "lastCommitDate": "2026-10-26T06:29:31-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "docs/product/DEMONSTRATOR_INDEX.json",
+   "bytes": 13806,
+   "sha256": "e0fb28eb5ce9dc69622924f51c7f9cb0c5053e711d6e03b6bc66e53fae72d442",
+   "gitBlob": "feb3daa3432423dcada83227c604d3a14251aaeb",
+   "mode": "100644",
+   "lastCommit": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+   "lastCommitDate": "2026-10-26T07:04:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "docs/product/DEMONSTRATOR_INDEX.md",
+   "bytes": 18307,
+   "sha256": "001a01a00726d2421d6d96aabd78e2ebbed105251427e254bb97a5e79d29f5d5",
+   "gitBlob": "61ae120f1687b8314d69f82a1093731cbf653e3d",
+   "mode": "100644",
+   "lastCommit": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+   "lastCommitDate": "2026-10-26T07:04:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "docs/product/EDITIONS_AND_PACKAGES.md",
+   "bytes": 3790,
+   "sha256": "e275ef0ac39f27605bf3ccea8203348f7569e6cc733fb06d15956df16da438c8",
+   "gitBlob": "0e74e2ef16869268621e1d92221cf1b007aa9fc7",
+   "mode": "100644",
+   "lastCommit": "8ff3dbeb1ccab23f5913b0d406bebd950b2eb3d7",
+   "lastCommitDate": "2026-10-26T07:05:05-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "docs/qa/KNOWN_DEFECTS.md",
+   "bytes": 1077,
+   "sha256": "71d3c811f9dea4371b6cafe99f2ec32f1a64ee3cecc79c0315b7469f32f19c50",
+   "gitBlob": "dafe99009523fc3a26ab0eb7f4f560394ef809ab",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "integrations/contracts/INTEGRATION_REGISTRY.csv",
+   "bytes": 55766,
+   "sha256": "13e6d93392e61a170341728f6a558aad9aec2b11977d077e1138364ffc9b6329",
+   "gitBlob": "0bd92c93528379278c8006257936da9b57df2343",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "media/manifests/MEDIA_MANIFEST.csv",
+   "bytes": 1022525,
+   "sha256": "4416ae8b6e5b1ee964702d416f9d03ab8267145ed40ab68f4c909701c34489cd",
+   "gitBlob": "6e12d0440b4044d56eb7d929ec3a0e37a3e916db",
+   "mode": "100644",
+   "lastCommit": "77aab48d04c5650f18267b38b20e4b0784e354ab",
+   "lastCommitDate": "2026-10-26T06:29:31-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "media/manifests/MEDIA_MANIFEST.json",
+   "bytes": 2182135,
+   "sha256": "d8517bac1e0278f506c574dfe053a1668b92004f94894b049023fa9a7f1494a3",
+   "gitBlob": "8b7e000dd8314dd1cecccaec7187bf5a8b0e4b76",
+   "mode": "100644",
+   "lastCommit": "77aab48d04c5650f18267b38b20e4b0784e354ab",
+   "lastCommitDate": "2026-10-26T06:29:31-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "media/screenshots/demonstrators/campus-history.jpg",
+   "bytes": 130010,
+   "sha256": "ba75cdec664c4278e3f9746520e868d57b113ef6c3be2cffcae64feced06a1ad",
+   "gitBlob": "d88abb46d78165516abc293786eede84f094c05d",
+   "mode": "100644",
+   "lastCommit": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+   "lastCommitDate": "2026-10-26T07:04:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "media/screenshots/demonstrators/eng-2.5.3-rc3.jpg",
+   "bytes": 116904,
+   "sha256": "77888ec140689d792feadc7fa36993a414355b3b5221382bdafb55d4afed0fb9",
+   "gitBlob": "0090acd9707971ed81f0815e097026209874b9ba",
+   "mode": "100644",
+   "lastCommit": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+   "lastCommitDate": "2026-10-26T07:04:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "media/screenshots/demonstrators/fi14-preview.jpg",
+   "bytes": 108768,
+   "sha256": "af2f87f853e8234eb42ddb4aedc2937863f3aa0e246996510e0341ce49ddec37",
+   "gitBlob": "5a2460d0e014e68d4140ed6fd7831c02282fa6ba",
+   "mode": "100644",
+   "lastCommit": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+   "lastCommitDate": "2026-10-26T07:04:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "media/screenshots/demonstrators/founder-2.5.4.jpg",
+   "bytes": 116904,
+   "sha256": "77888ec140689d792feadc7fa36993a414355b3b5221382bdafb55d4afed0fb9",
+   "gitBlob": "0090acd9707971ed81f0815e097026209874b9ba",
+   "mode": "100644",
+   "lastCommit": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+   "lastCommitDate": "2026-10-26T07:04:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "media/screenshots/demonstrators/inv-2.5.1.1.jpg",
+   "bytes": 109424,
+   "sha256": "cb2054efb701981b1e15c96a1ec1ea062d088858ebc127141d573768f87f315a",
+   "gitBlob": "d65835d067cca83cf8b44daadc0474f48f0cf50d",
+   "mode": "100644",
+   "lastCommit": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+   "lastCommitDate": "2026-10-26T07:04:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "media/screenshots/demonstrators/inv-2.5.2-rc1.jpg",
+   "bytes": 109463,
+   "sha256": "a0f8ad72f5cccdd10a20268743a9bbf308302896478a7f21189a8fc50eb1b8a4",
+   "gitBlob": "f9d7e134916c0a0310b735f95dcd0cf4ebd7f55a",
+   "mode": "100644",
+   "lastCommit": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+   "lastCommitDate": "2026-10-26T07:04:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "media/screenshots/demonstrators/inv-2.5.3-rc3-live.jpg",
+   "bytes": 107038,
+   "sha256": "08bc14767584533177e58689f86c8f99b9b35235e49d23d091a2de212ceebc6c",
+   "gitBlob": "26bf73c522296e8c9b92056d2c6589ce178f6147",
+   "mode": "100644",
+   "lastCommit": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+   "lastCommitDate": "2026-10-26T07:04:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "media/screenshots/demonstrators/inv-2.5.3-rc3-offline.jpg",
+   "bytes": 106918,
+   "sha256": "aedd0b84fe2049174b1ca1de2cee219a43222fc260489dfa9318b7cbad6b16ac",
+   "gitBlob": "b0cae3e568fb5c90220a5b972a14cc693523eeb0",
+   "mode": "100644",
+   "lastCommit": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+   "lastCommitDate": "2026-10-26T07:04:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "media/screenshots/demonstrators/synclab-3d.jpg",
+   "bytes": 76277,
+   "sha256": "5811765f93d5d14b399c46cc107b5983490e50e518aa11992e7d5adf732b3410",
+   "gitBlob": "d01b6122e4b9b28de0de45e669094113c23d521b",
+   "mode": "100644",
+   "lastCommit": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+   "lastCommitDate": "2026-10-26T07:04:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "media/screenshots/demonstrators/synclab-analyzer.jpg",
+   "bytes": 110528,
+   "sha256": "461864b4ad8a8dd55dce290024eb5ee807b24aafcfea57c33c03b3873a3a35c7",
+   "gitBlob": "890df8f01911d0c87ecaabe124dcbe3b23d32577",
+   "mode": "100644",
+   "lastCommit": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+   "lastCommitDate": "2026-10-26T07:04:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "media/screenshots/demonstrators/synclab-app.jpg",
+   "bytes": 72666,
+   "sha256": "d61711b7ba3d1d3ec90acbd15699f900d84454a3c14cb2a1e85dd32b7efbfd01",
+   "gitBlob": "8f41d6dceb7f3e3970429ef6edb23ac4bf488230",
+   "mode": "100644",
+   "lastCommit": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+   "lastCommitDate": "2026-10-26T07:04:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "media/screenshots/demonstrators/v1.4.1.jpg",
+   "bytes": 95364,
+   "sha256": "7e372592c7dcd3c8f1545b6bc972bc1190f7cdab32468c07f89abc05221c0189",
+   "gitBlob": "76f57d4ad51aad1d3c197d569d629154ffc5d130",
+   "mode": "100644",
+   "lastCommit": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+   "lastCommitDate": "2026-10-26T07:04:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "media/screenshots/demonstrators/v2.3-slice.jpg",
+   "bytes": 111913,
+   "sha256": "2cd81086fb1188d362551e4375875083f1c0b3fccb85c6ba0e879f12a6560631",
+   "gitBlob": "71c3c31f74bc319c8e28183bdbe1a8fb02d30166",
+   "mode": "100644",
+   "lastCommit": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+   "lastCommitDate": "2026-10-26T07:04:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "media/screenshots/demonstrators/v2.4.1-run.jpg",
+   "bytes": 105677,
+   "sha256": "85c045275c5e6ef5c644fe2e2a6b3f3ff72c373cde97f39288c5f92290270dc8",
+   "gitBlob": "aec67ae77b498a566a66dc572fd309e7686589e9",
+   "mode": "100644",
+   "lastCommit": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+   "lastCommitDate": "2026-10-26T07:04:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "media/screenshots/demonstrators/v2.5-design-portal.jpg",
+   "bytes": 107622,
+   "sha256": "70ece215c7d2dedd7f2a575d337384916142f9eccb40d0dc1f1b38c5f7d307e6",
+   "gitBlob": "0ff919e8d761ff100f52333ce8f7bed600cf207e",
+   "mode": "100644",
+   "lastCommit": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+   "lastCommitDate": "2026-10-26T07:04:56-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "media/screenshots/enterprise-web/01-sign-in.jpg",
+   "bytes": 48693,
+   "sha256": "32962a3e417236e12b42be61129683da5849649ba664c6a81d6e0f93b1d227da",
+   "gitBlob": "d1ecbf5e0a5178120cfeb28e19e32900c602a134",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "media/screenshots/enterprise-web/02-rooms.jpg",
+   "bytes": 63938,
+   "sha256": "e91dd2ad73100075f7b748dc6e8a652d1f99061abd3e26f550a0a2f5534d5da3",
+   "gitBlob": "bb7ea8f37690586544aaa92a692f311af36619f7",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "media/screenshots/enterprise-web/03-room-overview.jpg",
+   "bytes": 67480,
+   "sha256": "36e44582af1ad2d9cb38662430bb090363e2ffe5f777e376ec945fbf4c3dc298",
+   "gitBlob": "020ec3942a60cbd0a55cbb9f9d82d9b901c1a1db",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "media/screenshots/enterprise-web/04-room-devices.jpg",
+   "bytes": 112151,
+   "sha256": "987ab747e30239e5ffc0e3fd0078bc5385d1aa89c2b7d0f438e4fabecf88e2c3",
+   "gitBlob": "96ea7c76cbf2476720842a0a3b84d4e93e10aadd",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "media/screenshots/enterprise-web/05-room-commissioning.jpg",
+   "bytes": 137339,
+   "sha256": "b7d5b7f3879a1d22919853fe27987cf0a96ab2d13d13cdbfbd1c06d44c6e105a",
+   "gitBlob": "6624b877eb5213ccc40c5854f2d844068ae427f2",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "media/screenshots/enterprise-web/06-reports.jpg",
+   "bytes": 103003,
+   "sha256": "35e3d48305542d4d114b0aef3c0a1f16caf1dd4e5dfc802f016fdf3c3b746dcc",
+   "gitBlob": "6bf14f22f3365d6b356cc974b4d1b405ec3ed456",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "media/screenshots/enterprise-web/07-admin-integrations.jpg",
+   "bytes": 155279,
+   "sha256": "78c9b4549ff50d30eae98098a479af903bf4bf2800157d9afe1244de5320536d",
+   "gitBlob": "a110a4e1c08bd0ae1bac63bfd4a1d622df86c3b9",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "ml/README.md",
+   "bytes": 1521,
+   "sha256": "96af944845169691347e7f77a6a9033cbd6b284145edbed13ce4780fbb7c61ae",
+   "gitBlob": "fd1eb1e4bbd9c69fa0312180a21995a8efcc1359",
+   "mode": "100644",
+   "lastCommit": "0c7aaf944629e911623bd801f879cc7b896fb222",
+   "lastCommitDate": "2026-10-26T07:58:21-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "ml/datasets/generate_synthetic.mjs",
+   "bytes": 5122,
+   "sha256": "2ec839b03ed11dabb0ac2fc5cc3bd7707e2b5ee15deb4babae389519e2d3707e",
+   "gitBlob": "5084ecd76be9081587009cea54cb5418aa1619ab",
+   "mode": "100644",
+   "lastCommit": "0c7aaf944629e911623bd801f879cc7b896fb222",
+   "lastCommitDate": "2026-10-26T07:58:21-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "ml/datasets/synthetic_first_attempt_v1.meta.json",
+   "bytes": 689,
+   "sha256": "275a824b1adc1fab61dab22f5a3a36d224226b7554b7864855a4f9e15d957788",
+   "gitBlob": "75ac18057c80ce72ef39ede5be9b3ab7b536c75b",
+   "mode": "100644",
+   "lastCommit": "0c7aaf944629e911623bd801f879cc7b896fb222",
+   "lastCommitDate": "2026-10-26T07:58:21-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "ml/evaluation/evaluate.py",
+   "bytes": 4790,
+   "sha256": "b73468b912f6da7da8b9b96b6a6d51c7f7ad9854b260b52786f3ab5a46737b25",
+   "gitBlob": "e59ceafd971fa67d0ab9b5caa246e92380b36319",
+   "mode": "100644",
+   "lastCommit": "0c7aaf944629e911623bd801f879cc7b896fb222",
+   "lastCommitDate": "2026-10-26T07:58:21-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "ml/evaluation/results/REPORT_v1.md",
+   "bytes": 1325,
+   "sha256": "de898fa224953ca19a45c95d1cd703d18e82e71f7ee0b954933adeefae3ccf1f",
+   "gitBlob": "03db64c25babf30f92339e1933768b592e2aa909",
+   "mode": "100644",
+   "lastCommit": "0c7aaf944629e911623bd801f879cc7b896fb222",
+   "lastCommitDate": "2026-10-26T07:58:21-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "ml/evaluation/results/metrics_v1.json",
+   "bytes": 1777,
+   "sha256": "34075c1917a7f7ac92f4fa13e40080d94ff880a97bb797bf58ff52b43b9b86e7",
+   "gitBlob": "b5f1132d3307273b5185df2be08f0ff8e4b462c5",
+   "mode": "100644",
+   "lastCommit": "0c7aaf944629e911623bd801f879cc7b896fb222",
+   "lastCommitDate": "2026-10-26T07:58:21-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "ml/features.py",
+   "bytes": 1393,
+   "sha256": "87049f613ee3e8ea2bc6c80812b2b16c5bc20551ddf1066aee1b3654c25b35c1",
+   "gitBlob": "11956e8b8c20c7e7dafc99e2796dfef781e562dc",
+   "mode": "100644",
+   "lastCommit": "0c7aaf944629e911623bd801f879cc7b896fb222",
+   "lastCommitDate": "2026-10-26T07:58:21-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "ml/inference/predict.py",
+   "bytes": 1918,
+   "sha256": "b49e25e6920ef08b9c56d87fb14651f031415dba898cc7663c23d946f35c416e",
+   "gitBlob": "efca125b6b42c8ce3dbf31838a673cdef4718541",
+   "mode": "100644",
+   "lastCommit": "0c7aaf944629e911623bd801f879cc7b896fb222",
+   "lastCommitDate": "2026-10-26T07:58:21-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "ml/model-cards/first-attempt-fail-risk.md",
+   "bytes": 4550,
+   "sha256": "f493b33cb910c043f0df9c22702bc78d92872a5312d920318ac3f094459061d0",
+   "gitBlob": "4803522144f4248a2b7db2e8e2349699b9c6e3cb",
+   "mode": "100644",
+   "lastCommit": "0c7aaf944629e911623bd801f879cc7b896fb222",
+   "lastCommitDate": "2026-10-26T07:58:21-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "ml/models/first_attempt_logreg_v1.json",
+   "bytes": 1574,
+   "sha256": "452e43d5452e6abefd98fa45aae6e26d794360b7badf72ad104f500988b73e9e",
+   "gitBlob": "7d493ac18bc812a4ac519a94085a2f83db6fa355",
+   "mode": "100644",
+   "lastCommit": "0c7aaf944629e911623bd801f879cc7b896fb222",
+   "lastCommitDate": "2026-10-26T07:58:21-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "ml/models/split_v1.json",
+   "bytes": 4267,
+   "sha256": "2f9a06279bbb1c3fb0839bcfe7d504f0da8cb09ab34d086ba5c60bc79a724cde",
+   "gitBlob": "8390537cf310d49e080840a0b4e4782996a0b4bb",
+   "mode": "100644",
+   "lastCommit": "0c7aaf944629e911623bd801f879cc7b896fb222",
+   "lastCommitDate": "2026-10-26T07:58:21-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "ml/tests/test_prototype.py",
+   "bytes": 3467,
+   "sha256": "e3c06592b27ec5ffcafdb557375cfd20b774ac7697509deeab2fe3436760a222",
+   "gitBlob": "fa9402821020a9b852e6888b6d8fd25a8b333e1c",
+   "mode": "100644",
+   "lastCommit": "0c7aaf944629e911623bd801f879cc7b896fb222",
+   "lastCommitDate": "2026-10-26T07:58:21-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "ml/training/train.py",
+   "bytes": 3503,
+   "sha256": "8cb5987b72c32693006c67733baf2659057750a41dd339273d4f69dc1464d26c",
+   "gitBlob": "b7e85b68ed5910f28a6aca1d85236e94945d85b6",
+   "mode": "100644",
+   "lastCommit": "0c7aaf944629e911623bd801f879cc7b896fb222",
+   "lastCommitDate": "2026-10-26T07:58:21-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "package.json",
+   "bytes": 1236,
+   "sha256": "903ea6d5d3e05164dba8e6ce91152b7252362f3ef799aff10f9ddfce36eb8185",
+   "gitBlob": "d1ec34b94e2ced62736cf899419455321cba4010",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/api-client/package.json",
+   "bytes": 567,
+   "sha256": "3116fc20aa760c7f6f5c8064abdbff95a7ff7c80d6a73dbac79eb88a07e98ae7",
+   "gitBlob": "72ad501cae38557fb7cfc48272042011c71f4421",
+   "mode": "100644",
+   "lastCommit": "b4ab1bc68c3668a8a6e2e96e1549320ef18b94af",
+   "lastCommitDate": "2026-10-26T07:41:01-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/api-client/scripts/generate.mjs",
+   "bytes": 3961,
+   "sha256": "fde3c5167572669f476ba58b058392cab666e18084df7c9f5ab8a21c5a040864",
+   "gitBlob": "a1750bf161df32ca6074f21402ddc38e3435ea53",
+   "mode": "100644",
+   "lastCommit": "b4ab1bc68c3668a8a6e2e96e1549320ef18b94af",
+   "lastCommitDate": "2026-10-26T07:41:01-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/api-client/src/client.ts",
+   "bytes": 4015,
+   "sha256": "1ce22e0106b8b4f17587f39c1dfc38b0463d1fe75967c41a320df4174b921953",
+   "gitBlob": "78afeaeb36007cae9d9c33e7ad141de1ffb5a2ef",
+   "mode": "100644",
+   "lastCommit": "b4ab1bc68c3668a8a6e2e96e1549320ef18b94af",
+   "lastCommitDate": "2026-10-26T07:41:01-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/api-client/src/generated.ts",
+   "bytes": 22571,
+   "sha256": "fb2a0d51c806c0bddc6821313c9d79c6efeb1fe1ee110914a97ef76482800a6a",
+   "gitBlob": "a37c488ae521ec3711ac837575371ab030fcf108",
+   "mode": "100644",
+   "lastCommit": "41fb895f4dcaba9afb5074b16399a46e15a0a6b2",
+   "lastCommitDate": "2026-10-26T07:54:15-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/api-client/src/index.ts",
+   "bytes": 74,
+   "sha256": "1f6a02565377cc3563065e378f3dfb66329359e692d87d518c9240d1fe545fd6",
+   "gitBlob": "68d1994c3822582a586d59233a6e277097689418",
+   "mode": "100644",
+   "lastCommit": "b4ab1bc68c3668a8a6e2e96e1549320ef18b94af",
+   "lastCommitDate": "2026-10-26T07:41:01-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/api-client/src/types.ts",
+   "bytes": 5943,
+   "sha256": "a05b23b178677e3f0bcc5445e58cd882d19bc93d1f61239241530336c7cb22ac",
+   "gitBlob": "ce9b4113b7829a7f2898d2a6a9dceadaa6161382",
+   "mode": "100644",
+   "lastCommit": "b4ab1bc68c3668a8a6e2e96e1549320ef18b94af",
+   "lastCommitDate": "2026-10-26T07:41:01-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/api-client/test/client.test.ts",
+   "bytes": 3768,
+   "sha256": "49704bacdb100f968eb6343187acb751a0a86da801a3bb1e8dfd58f22dcd8395",
+   "gitBlob": "83e0b60b284a550a255f81bb2e2d372460b654ff",
+   "mode": "100644",
+   "lastCommit": "41fb895f4dcaba9afb5074b16399a46e15a0a6b2",
+   "lastCommitDate": "2026-10-26T07:54:15-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/api-client/tsconfig.json",
+   "bytes": 127,
+   "sha256": "b6479fa77275db6a4a69b0121266d6926e92a005a0ae348606cde976860fb8d2",
+   "gitBlob": "345f15b56f9ad2edfa94553c21f21ad904a69130",
+   "mode": "100644",
+   "lastCommit": "b4ab1bc68c3668a8a6e2e96e1549320ef18b94af",
+   "lastCommitDate": "2026-10-26T07:41:01-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/assurance-engine/package.json",
+   "bytes": 664,
+   "sha256": "d65f6836f4b3bc8910543cf0a954686955207d6aa034efd201deca1b9492eb98",
+   "gitBlob": "a75c8479f3bd7f8f921c4625964ea1d76b07f535",
+   "mode": "100644",
+   "lastCommit": "41fb895f4dcaba9afb5074b16399a46e15a0a6b2",
+   "lastCommitDate": "2026-10-26T07:54:15-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/assurance-engine/src/assess.ts",
+   "bytes": 20754,
+   "sha256": "c29f096e2f855be572b8381e5f374bbd1b21e2b1a522d963da232d950026f976",
+   "gitBlob": "677126196e3c88ee451363f117a9e22a084c1df2",
+   "mode": "100644",
+   "lastCommit": "41fb895f4dcaba9afb5074b16399a46e15a0a6b2",
+   "lastCommitDate": "2026-10-26T07:54:15-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/assurance-engine/src/index.ts",
+   "bytes": 228,
+   "sha256": "c1da260dc6d9fe52fd0dc1e98e5af7aed04b6ba969c772feae867ea3bb0fd162",
+   "gitBlob": "9f14c18a1ce027d5fd89ed1edd2a19cafc981476",
+   "mode": "100644",
+   "lastCommit": "41fb895f4dcaba9afb5074b16399a46e15a0a6b2",
+   "lastCommitDate": "2026-10-26T07:54:15-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/assurance-engine/src/layout.ts",
+   "bytes": 2592,
+   "sha256": "ed10a5ce917c5e3d1032a50dd599b4ddad01681d482eea6a889ca0a21a1d59d0",
+   "gitBlob": "02a3a0777b282f5f21a228e8e61fca70e1f1c9c1",
+   "mode": "100644",
+   "lastCommit": "41fb895f4dcaba9afb5074b16399a46e15a0a6b2",
+   "lastCommitDate": "2026-10-26T07:54:15-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/assurance-engine/src/vocabulary.ts",
+   "bytes": 7282,
+   "sha256": "51028a83f6e6a4d8a0048d3fccfbe6a13dfafcd378885e46182e0236eba4da29",
+   "gitBlob": "f2b799eade7436e777a3d47fd07717444cef7bc8",
+   "mode": "100644",
+   "lastCommit": "41fb895f4dcaba9afb5074b16399a46e15a0a6b2",
+   "lastCommitDate": "2026-10-26T07:54:15-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/assurance-engine/test/assurance.test.ts",
+   "bytes": 8774,
+   "sha256": "d9bf351563f3d63276aef34b19cab89f1ec19135250a9039eb0e7702cc1d1db8",
+   "gitBlob": "6c947d2422b842fb65a3cac9b026aad5570f5442",
+   "mode": "100644",
+   "lastCommit": "41fb895f4dcaba9afb5074b16399a46e15a0a6b2",
+   "lastCommitDate": "2026-10-26T07:54:15-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/assurance-engine/tsconfig.json",
+   "bytes": 127,
+   "sha256": "b6479fa77275db6a4a69b0121266d6926e92a005a0ae348606cde976860fb8d2",
+   "gitBlob": "345f15b56f9ad2edfa94553c21f21ad904a69130",
+   "mode": "100644",
+   "lastCommit": "41fb895f4dcaba9afb5074b16399a46e15a0a6b2",
+   "lastCommitDate": "2026-10-26T07:54:15-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/commissioning-engine/package.json",
+   "bytes": 528,
+   "sha256": "d01544fd216fed7407487b57d49b9d0cb8bcf02f761caade6710a1bfa7a2b823",
+   "gitBlob": "b14eacab3bb03ef72cb73c9fcc88e3544222ef3c",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/commissioning-engine/src/applicability.ts",
+   "bytes": 8939,
+   "sha256": "bf2fb226ce5184564c036225a8cc8ec8cdaca81d18465d2e2c92668295c80506",
+   "gitBlob": "8a5b47ea470f923dc5bb22674978e345dce79463",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/commissioning-engine/src/catalog.ts",
+   "bytes": 5173,
+   "sha256": "7afd7acccdebc480bd9aaa1be8b14dedcf43355d99debdf327ed7e393ba25613",
+   "gitBlob": "b820b22558a5a4ac6a3c474c8776a571f513b2bf",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/commissioning-engine/src/checks.ts",
+   "bytes": 7623,
+   "sha256": "afcde87a3008f7b37aa1188966877c7a2f36c82a20e684714070a6bf453f827a",
+   "gitBlob": "72f3599795be3516c03d0dd736b3e7e1dfd61c16",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/commissioning-engine/src/classify.ts",
+   "bytes": 6563,
+   "sha256": "aed47f2758f8d15f39b4d2fbea001aeda3455920b8b8a60d410af076b1c8fa65",
+   "gitBlob": "752dcad04346db2f6dc12b8c1e052024f685e86e",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/commissioning-engine/src/design.ts",
+   "bytes": 9124,
+   "sha256": "f735776e2df5a1d20832f4fd5d869dc3cfd897f68cae1d57b46bf28589d51e0e",
+   "gitBlob": "a7fb2c499261292ac4babe2aec4964a50a778625",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/commissioning-engine/src/geometry.ts",
+   "bytes": 2661,
+   "sha256": "be87c279703661ec2b550d874969636c12d094fe6b68448acc7660d40da37b1c",
+   "gitBlob": "6e79acca15d03cb0e3ac341cefe89d961396a84b",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/commissioning-engine/src/index.ts",
+   "bytes": 2125,
+   "sha256": "52783245f4794fc2a545366600f1fcbbc702fe68dc81d6776ca269d59062371f",
+   "gitBlob": "9febaf3af933eaf470ce261203b0d56b391a3b05",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/commissioning-engine/src/lifecycle.ts",
+   "bytes": 3160,
+   "sha256": "0266edefa0dc098d687676c48b5ff84bcfa669c0a9c6f6302d7ae581411da013",
+   "gitBlob": "4f9a9f194fe273283f772096e63f2e21c7f1f24f",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/commissioning-engine/src/recording.ts",
+   "bytes": 2813,
+   "sha256": "6c07444c9ac85d0d52d0df49724b728530398383fdbf3db1ff23a9e8ad6aeb5f",
+   "gitBlob": "dc6331398b5c28455f5c14de5c1b9f466675bd27",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/commissioning-engine/src/results.ts",
+   "bytes": 2189,
+   "sha256": "32e08d67b67add441473fca37396d517c1b9996ad1115fa2a6dcf82b4237e587",
+   "gitBlob": "2768d920a425df6c09b6fe12850570bca6c0d69d",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/commissioning-engine/test/design.test.ts",
+   "bytes": 2015,
+   "sha256": "7534991c2f96adabfe4bf9129a459956422bbd6a87e5ca2cfc74f5df76a7b685",
+   "gitBlob": "fdb36705faec7f0ef0b7a216d4c3f1bc127b923e",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/commissioning-engine/test/parity.test.ts",
+   "bytes": 3623,
+   "sha256": "e9325d5bc36d35f40b37cb6946d41723c548b449b521780c8720d8de70ad08f0",
+   "gitBlob": "afb44d9922ccba62de132738e3590ff55d47cce6",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/commissioning-engine/tsconfig.json",
+   "bytes": 174,
+   "sha256": "64ff0689ac85ca306abb61bd049b7e15ba27b21f2421c718efd443f731b943c3",
+   "gitBlob": "4f3c968bd0880cf705209f61c408b793b59f5824",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/design-tokens/build-tokens.mjs",
+   "bytes": 2455,
+   "sha256": "d597d4c5030d038a8440314b34a8ce81d446181866eed5ab18cba00baf455739",
+   "gitBlob": "aa36cee71bb1321d9b625862f90a0d975ab29cf2",
+   "mode": "100644",
+   "lastCommit": "77aab48d04c5650f18267b38b20e4b0784e354ab",
+   "lastCommitDate": "2026-10-26T06:29:31-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/design-tokens/package.json",
+   "bytes": 463,
+   "sha256": "92e5cdda93fed04b5fa2651617c4f0006f7ccd056fe10356fafc40c76dc1e23f",
+   "gitBlob": "af042a6480e8b0854bd59fa40ae0e097ddae5a78",
+   "mode": "100644",
+   "lastCommit": "77aab48d04c5650f18267b38b20e4b0784e354ab",
+   "lastCommitDate": "2026-10-26T06:29:31-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/design-tokens/tokens.json",
+   "bytes": 4118,
+   "sha256": "87f1b56e633dbf83b8f92e73d43ed0631a9d63608d9afb80fb0041f7980c2d00",
+   "gitBlob": "111982474180414c2719de946f621699a93bdc07",
+   "mode": "100644",
+   "lastCommit": "77aab48d04c5650f18267b38b20e4b0784e354ab",
+   "lastCommitDate": "2026-10-26T06:29:31-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/domain-data/data/ARCHETYPES.json",
+   "bytes": 5203,
+   "sha256": "8aad8923176fb5d48b54d11aa4da3c1686cbb305a7a21e3a5e87f65c774f41e4",
+   "gitBlob": "5feba268c067c6478f817d1a9e1126e3699c3890",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/PROVENANCE.json",
+   "bytes": 3402,
+   "sha256": "1a9465447accbe19b401ca2d7e901791eb80c87cdd4fa627079ceb22f95de9bb",
+   "gitBlob": "cabdedcb6066277589ab84de2ba53c793a23a908",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/RELS.json",
+   "bytes": 7111,
+   "sha256": "3195fece17b0edd28480b4b42755a705b385cf636771393ba43f7c630dd0684d",
+   "gitBlob": "6a5cbe98d83030f6de0f66ba1af7da5975f1c8f8",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/TYPES.json",
+   "bytes": 5831,
+   "sha256": "56991d2d72b194ef8359165ecb7ce2caa8c806e36593cd9d4d2e84c8a4c36249",
+   "gitBlob": "927f991ff850518bf66bc218fb234efa9bab012a",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/V25_CX_CATALOGUE.json",
+   "bytes": 28105,
+   "sha256": "6b4594e599c6640e0fcddf53f3c93ccdc88de29507170de938620b44f61b8e2c",
+   "gitBlob": "304d5f8e61fd718fb36a9330d24692fc5f318355",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/V25_CX_PACKS.json",
+   "bytes": 28147,
+   "sha256": "d662e5fe085ce528ed7ca132abf4c9f7bef4d857336a71fdea7bc220e6a899fd",
+   "gitBlob": "256a59dd6ed93cb8cc1e5c338cc560fb3b14b006",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/V25_DESIGN_rulePack.json",
+   "bytes": 3753,
+   "sha256": "a5924e85966f2de90b51e2c95171681f21a9aa1a54af86863e197fead09ea99b",
+   "gitBlob": "2920f4c5a63787d225fbe19e56d69d444fec38d0",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/V25_DOMAIN_PERSONA.json",
+   "bytes": 71,
+   "sha256": "cc44d294ebc60922a95572645a04cd533be851768506585fcf286a682666ad4d",
+   "gitBlob": "98b890fde7f35a598dfba2a10e21a25d1c579315",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/V25_EV.json",
+   "bytes": 4432,
+   "sha256": "075451bfd4061102fda0137736ff7af59f579c31e923a135c6c059cfb6626b41",
+   "gitBlob": "4a8b8207a9acf7a924c5254a8cf7b009d580557c",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/V25_EVENTS.json",
+   "bytes": 6732,
+   "sha256": "203fe1e48c67a1e68123547b3b619b3438c261d5fd5429e6db7c1514a80cc3bf",
+   "gitBlob": "7ac9ccea43ccb8067a0b17e7b4c9fbca39185af6",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/V25_GUARDS.json",
+   "bytes": 1535,
+   "sha256": "6c7db544e3ce88e343d45f7b2684c5bacd30f005a6111e236085156f5cbc6a14",
+   "gitBlob": "8222039cbbbd99a0a0388978b1f65a08e1ef32ce",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/V25_PERSONAS.json",
+   "bytes": 4850,
+   "sha256": "ec91d63bc25cc37ba7deeabe4621d7cefa94063896cd55e2a20c40dbefc13b71",
+   "gitBlob": "8ec2335c00f6480c2e0515395487232d8360c24a",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/V25_PHASES.json",
+   "bytes": 753,
+   "sha256": "5e8fa60f5cc074fe187d73db0dd0087c1b220f1a0e2d8c71e70593f5c487157c",
+   "gitBlob": "15632c94e1d0a58e754e5fab4c9753a6ceae8abf",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/V25_ROOM_CATS.json",
+   "bytes": 6321,
+   "sha256": "6fe6b5934d3511f7aa515e2e94fa94eeaacf248702c5abccdc4a1c6a5d90c251",
+   "gitBlob": "dedc6085444fdc4ee467209a736520b29e421ce7",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/V25_ROOM_FAMILY.json",
+   "bytes": 556,
+   "sha256": "c5779bfcc1f413945260ec630295347e7a65fb9355b33ddf635b551a34e424b1",
+   "gitBlob": "e030e504ff82cb8741d22b9c2de1577dd89b1f12",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/V25_ROOM_INFO.json",
+   "bytes": 261,
+   "sha256": "6db6fce4c7c786b524910dc1f176b06f2ceca45ddb6ec1e21c89c613fb34f579",
+   "gitBlob": "d8847138a996c393a0af95aaeef25ec75a86fea0",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/V25_ROOM_LIFECYCLE.json",
+   "bytes": 132,
+   "sha256": "9bb77ee87f4aa23a6e0d3a70cdbc8f1729afc0678e95154175f7bc4e2ab13d7c",
+   "gitBlob": "10a6aa76c97bebe286c63acc2169bc62acbad60f",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/V25_ROOM_REQUIRED.json",
+   "bytes": 539,
+   "sha256": "4a84ee13d5cb174f2818cdb7b5723b279b0d9973797c9c2c5fd094cf29b687d6",
+   "gitBlob": "ce9e1bf4dc26be660bbcc145640ab3045895e53f",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/V25_ROOM_RESULTS.json",
+   "bytes": 56,
+   "sha256": "da469efb6eeb59812952747b597907024c06e114ced64e8e0b39e2ce770b87ed",
+   "gitBlob": "389618cacdd60bd76b2452df17155b43eea62beb",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/V25_ROOM_ROLEOK.json",
+   "bytes": 322,
+   "sha256": "582fb8986ca720a99fac19c2885652de5ae0d1fc39c89244f83fd504bdf0059d",
+   "gitBlob": "20556c18bb373eee21a7101ff9e928ee969bc70a",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/V25_ROOM_TEMPLATES.json",
+   "bytes": 12366,
+   "sha256": "dabf0a7a86112c83c9ec1c9965507bb6897e16f529e5d4219bea6830600cbd11",
+   "gitBlob": "ee53367ffb283a9d17b23c19390c0a1c3c92be1c",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/V25_ROOM_TYPE.json",
+   "bytes": 109,
+   "sha256": "ae26b67a3e0f10b092d1b96898321b30358a2ced959e5df8368b978c2149da9a",
+   "gitBlob": "32495c1b7df554d8c349ea9872e2b87adbd5040a",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/V25_TESTS.json",
+   "bytes": 10151,
+   "sha256": "9752f497bb9cefb16d7a34644a6a3a3db42aa4b32c78046a62e0fbc39ba5616b",
+   "gitBlob": "816c3cddedd5b608d817e964a0bc8e70e346c1da",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/V25_TEST_LABEL.json",
+   "bytes": 1319,
+   "sha256": "082cc147f494a1177d5367e30918f094a25251a0fcd22aa62e0c094e736e0395",
+   "gitBlob": "282c93969841e25b8ae2451e65ddfbbf8eae59f1",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/data/V25_VERIFIER_PERSONAS.json",
+   "bytes": 246,
+   "sha256": "13f41b90e90fc59ce3ca7780a06ff2d89054cc664a8897cd25da4608eb5be934",
+   "gitBlob": "b837a762aeb130cf225ce82848f9848b9827c317",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/golden/room-engine-golden.json",
+   "bytes": 1795242,
+   "sha256": "8603718ed6a96ebcaaeff50be61b221d82126a4e590b0abbae8676de36423a41",
+   "gitBlob": "9b5c537b3a334b48bd252c4e552ef8bcd54b1fda",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-data/package.json",
+   "bytes": 342,
+   "sha256": "130563d62e84cf67d494e5dc4b8b41e941c440f9a4bbacaec1c10d4f839633ee",
+   "gitBlob": "9fd2b316159b0a3f4a2f7ca8c0275577b335e72c",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/domain-types/package.json",
+   "bytes": 376,
+   "sha256": "2612d5d75348b3608b04e9c2f18210cec5a0377567109ae49b54637cacac7636",
+   "gitBlob": "b8aca66a4bd72739124d6a4b4eff191df25101cf",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/domain-types/src/index.ts",
+   "bytes": 27,
+   "sha256": "5b3f6df938e978d074af68ce7367d8e93ca22ef892e2f6043d657e6420d8427f",
+   "gitBlob": "b2dba5ea10557f97579eaebc4351cfc09201c67a",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/domain-types/src/room.ts",
+   "bytes": 5924,
+   "sha256": "8eaa4bc23888e74d409877291e0982c9b9a921af54a410c03e99428be15ab194",
+   "gitBlob": "bc1fa923c3255d24e4dbaecc85bfb2262ea528a4",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/domain-types/tsconfig.json",
+   "bytes": 119,
+   "sha256": "5d8c0d311fd16752b4b6e7ca36845d3a2a39537e9799fac9ed98add83d5c7da3",
+   "gitBlob": "6e4db12c285c028cf906360f4b654c4b654bc0a4",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/event-contracts/package.json",
+   "bytes": 441,
+   "sha256": "479f458877b5c62c3824cee99c08d62203d8cc52bc19aa90e360192432cff091",
+   "gitBlob": "eb41383fefe51e798aa63a76ed4be3a3b62f2b56",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/event-contracts/src/index.ts",
+   "bytes": 3776,
+   "sha256": "7aea855a275f77e13895a395fc89a5647caeb6d908a737ada5cabd571baaad61",
+   "gitBlob": "2d9d955f793a9019b15b01b02a99ce59ec2b0a46",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/event-contracts/test/contracts.test.ts",
+   "bytes": 1592,
+   "sha256": "acd400453f4e32e145883810ec33e3414b2fa02d6ce265ca1ae12ae0de82f7a0",
+   "gitBlob": "e53d3fd96947f4c1c688923f51b9bd715f0ce84e",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/event-contracts/tsconfig.json",
+   "bytes": 127,
+   "sha256": "b6479fa77275db6a4a69b0121266d6926e92a005a0ae348606cde976860fb8d2",
+   "gitBlob": "345f15b56f9ad2edfa94553c21f21ad904a69130",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/relationship-engine/package.json",
+   "bytes": 445,
+   "sha256": "3f21405f57c4c01faa4a4eb1dc4385e15ab6d1df99627ebc5ef03b4a378b63ed",
+   "gitBlob": "654f903244c68586d13339cf4f2f705b00ff542d",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/relationship-engine/src/index.ts",
+   "bytes": 4568,
+   "sha256": "4c964481affda319054742d0d8e6d30a6dc9dd8588ec96df5b98d3f8a5946bbf",
+   "gitBlob": "3f7f2eb3289e1def5d81d878e36679c23e10fbad",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/relationship-engine/test/graph.test.ts",
+   "bytes": 2165,
+   "sha256": "edaeeba0057e00b8f8d499f5e982effc08c207c91c8d9d4f2c68a5bb64153e2e",
+   "gitBlob": "e5e0ee7c0c0d42f6f13422bc3ca7471e1d1b239b",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/relationship-engine/tsconfig.json",
+   "bytes": 127,
+   "sha256": "b6479fa77275db6a4a69b0121266d6926e92a005a0ae348606cde976860fb8d2",
+   "gitBlob": "345f15b56f9ad2edfa94553c21f21ad904a69130",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "RESTRICTED_IP"
+  },
+  {
+   "path": "packages/ui/package.json",
+   "bytes": 535,
+   "sha256": "b212bc768c52c4d4943422577be6e96c750c419980c651a700f3bf31a0e64965",
+   "gitBlob": "275bda0cbb964583cf49ca2a353c131c3f044133",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/ui/src/components.tsx",
+   "bytes": 11827,
+   "sha256": "4f2b01f516161a4e77a69b09cb5f18459cbd050124a223bd88d282e0217e1e5b",
+   "gitBlob": "7745ef25ca30bfb7d42aaabd0dbcb2facaa63e28",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/ui/src/index.ts",
+   "bytes": 62,
+   "sha256": "19d4f8a372668958127cedfb8d0bc09747e1ae26ca2bbc8671962cdf3b0dd8c3",
+   "gitBlob": "479a203f7585db17bdfd49e678b75684590cc8f4",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/ui/src/status.ts",
+   "bytes": 4013,
+   "sha256": "ded165084b75bbf4c21a04b2297327cfdf393a5a47578fedf981d744892f334c",
+   "gitBlob": "80a6dd64c8ace15ac3cd34644871ceaa1673548a",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/ui/src/ui.css",
+   "bytes": 9619,
+   "sha256": "99729d22ce27cbb5550919730fabef54f304687098bc22e27f1a51b726eae530",
+   "gitBlob": "22fc1e071976c50b91b40f2a3cb5bb8af41d8b4c",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "packages/ui/tsconfig.json",
+   "bytes": 354,
+   "sha256": "0ade80f44a811b43793cedcf1e94cbe966c25485cbd03dda4014aa50dfba2943",
+   "gitBlob": "8374c1362a0b5bd4d38c1cef8a4552e245f1d9b4",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "pnpm-workspace.yaml",
+   "bytes": 51,
+   "sha256": "56f24eae929a59b707ff981d095ef1bbcff5215bc2979165375869271ebc0441",
+   "gitBlob": "246c56ceb3efb0db58ab42370ff2c84dc6293ba6",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "releases/immutable-references/BASELINE_VERIFICATION_2026-10-26.json",
+   "bytes": 5472,
+   "sha256": "186d3397e4eab4702515952a788cdadd0aed2488b1665205602ae8273e427f2e",
+   "gitBlob": "ef052a8a42427ccced6d5e0036c2dac919174bba",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "releases/immutable-references/FROZEN_CHECK_STAGE0.json",
+   "bytes": 5491,
+   "sha256": "9255a4cd917d97a729041b0dd3edca385ad515c3bba2baaa5b9b8d22528f9ad8",
+   "gitBlob": "ef5f455ecb2721f6594659fd79f1ae2a5acaf433",
+   "mode": "100644",
+   "lastCommit": "77aab48d04c5650f18267b38b20e4b0784e354ab",
+   "lastCommitDate": "2026-10-26T06:29:31-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "releases/immutable-references/FROZEN_CHECK_STAGE2.json",
+   "bytes": 5491,
+   "sha256": "9211a38715992c1ba0dbbeaca76a08c832c06e0507e2c5ffdc953b7f29aa3617",
+   "gitBlob": "ea0080f34de8dd3db474247a16d677ca2f6cada5",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "INTERNAL_ONLY"
+  },
+  {
+   "path": "scripts/api/export-openapi.mjs",
+   "bytes": 1940,
+   "sha256": "2ec126d94b24a863c864eef78febb93e52255df9756638b53a173fe5fa2b3e27",
+   "gitBlob": "1076cd11bd0202a976e8ae28b49289093695377b",
+   "mode": "100644",
+   "lastCommit": "b4ab1bc68c3668a8a6e2e96e1549320ef18b94af",
+   "lastCommitDate": "2026-10-26T07:41:01-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "scripts/bootstrap.mjs",
+   "bytes": 3666,
+   "sha256": "4bd3fece91f9dde981d1a9744bf6eeadde3fe56d502ffa63cc35d2628121c0c3",
+   "gitBlob": "464778657a19b9a47c2d7fbc6f9f201a48bb3a65",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "scripts/db.mjs",
+   "bytes": 6455,
+   "sha256": "f7cf604245be4b99173b72422a3f2383a8428167a4c3efb7109552718f9eaf6b",
+   "gitBlob": "c303cf5dde61bb81b560f50d5158f1e76021442e",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "scripts/demonstrators/capture.mjs",
+   "bytes": 4267,
+   "sha256": "5e132a33d8f79ac850bb3c147825f702836585ce1e2891f6bd14058653d1fd08",
+   "gitBlob": "2471ce63067f8740eb028483c20d2d6f9118d801",
+   "mode": "100644",
+   "lastCommit": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+   "lastCommitDate": "2026-10-26T07:04:56-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "scripts/demonstrators/registry.json",
+   "bytes": 9377,
+   "sha256": "a2e1b4487f5160d5b70c49c5bdf8a9b53da8ce102dde9d9d54b03ddd868e6c43",
+   "gitBlob": "1218c38ab3e3e44d43e86ac05b11d43c6d06d2e6",
+   "mode": "100644",
+   "lastCommit": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+   "lastCommitDate": "2026-10-26T07:04:56-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "scripts/discovery/inventory.py",
+   "bytes": 3667,
+   "sha256": "b3294fbfc4299eca7ab9fe176b9e8f4a1b7524677854fda045bf990ec02705f7",
+   "gitBlob": "2e8a0cd58d683da3fdca20300e09eb5e06c60e1c",
+   "mode": "100644",
+   "lastCommit": "77aab48d04c5650f18267b38b20e4b0784e354ab",
+   "lastCommitDate": "2026-10-26T06:29:31-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "scripts/discovery/secret-scan.py",
+   "bytes": 2108,
+   "sha256": "d87a46ed8afba518de50994a92ce1d61582046ef04045038fb23791865a3bc11",
+   "gitBlob": "77007b6c07a5e6c874cc8f2380e80a9090bb4d88",
+   "mode": "100644",
+   "lastCommit": "77aab48d04c5650f18267b38b20e4b0784e354ab",
+   "lastCommitDate": "2026-10-26T06:29:31-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "scripts/discovery/source-register.py",
+   "bytes": 14188,
+   "sha256": "fac348fdeab7f83bc4a4343ac688336e3ac4bced32320173d3c16700035c0b83",
+   "gitBlob": "c1bce395912a59c013c7f528a8f5bea05fe8cdea",
+   "mode": "100644",
+   "lastCommit": "77aab48d04c5650f18267b38b20e4b0784e354ab",
+   "lastCommitDate": "2026-10-26T06:29:31-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "scripts/extract/extract-domain-data.mjs",
+   "bytes": 3414,
+   "sha256": "a0ba761f2321588d99d89989dd3d4b0e7e70b4542ae1635f857c3352e817fd01",
+   "gitBlob": "0d98925c7254a54514a38622b5175fcb5bef7b34",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "scripts/extract/extract-golden.mjs",
+   "bytes": 7222,
+   "sha256": "5a68540932ef6064f1d241c97dbf57c2edfb115409abab2660f026bcc3d15145",
+   "gitBlob": "04d7e5843da07bd2183cce045dd964a5d438e85a",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "scripts/media/build-media-manifest.py",
+   "bytes": 6150,
+   "sha256": "fa3c26f3ef01c5af8bf4e6cdc85320585ecb1760b4bacecea0900ba565b287f4",
+   "gitBlob": "43f36fdb5aa9ad776bf53e2efa4e22a5da28834e",
+   "mode": "100644",
+   "lastCommit": "77aab48d04c5650f18267b38b20e4b0784e354ab",
+   "lastCommitDate": "2026-10-26T06:29:31-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "scripts/verify/verify-frozen.py",
+   "bytes": 3045,
+   "sha256": "198307aa94b56d687988a249c9716e4ce1326745830a1e5f9bf02665af49edac",
+   "gitBlob": "485b9a58ce5beed83d64af06b71b34f977b19eca",
+   "mode": "100644",
+   "lastCommit": "77aab48d04c5650f18267b38b20e4b0784e354ab",
+   "lastCommitDate": "2026-10-26T06:29:31-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/package.json",
+   "bytes": 790,
+   "sha256": "382550376860689aa6db60b1516b74d695f0787fb5f2d42083693d041871688c",
+   "gitBlob": "a899408a1aec7fa49372c7d6ca223ea0e26114eb",
+   "mode": "100644",
+   "lastCommit": "41fb895f4dcaba9afb5074b16399a46e15a0a6b2",
+   "lastCommitDate": "2026-10-26T07:54:15-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/auth/context.ts",
+   "bytes": 3517,
+   "sha256": "a9db6fb58939498fc4068ea7194da9fb9d8110a384f2cd8f24d8cc8591f823cc",
+   "gitBlob": "724777d60221b4a2fce1f0e54717c80a48984101",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/auth/jwt.ts",
+   "bytes": 2613,
+   "sha256": "b43dd503d289620954827838bb775afcd2bcedbdeee529e278eee936e9804be3",
+   "gitBlob": "57b1e756e3eeb65fcc4e0fedc4bfcaa13cc4f5e6",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/auth/password.ts",
+   "bytes": 1189,
+   "sha256": "29830f32a6753c89dd682909719762150a0edf5442431d90e03d9e000570477b",
+   "gitBlob": "b06e1cc72d3c7362d0627537986d3ef6569e7bba",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/config.ts",
+   "bytes": 3143,
+   "sha256": "bdcf665ae76863ead2df27bbcc3d32de349807e13f2766681167b47a15733a0c",
+   "gitBlob": "9197d9aeda19d181182fc93def2ee929ab5d1625",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/db/migrate.ts",
+   "bytes": 2665,
+   "sha256": "528757b5849e328de200fa7e9091506f8306018f4f974d010e6ac58414681467",
+   "gitBlob": "8d380c5069586d05bf33ed4e83682aede6ce1b37",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/db/pg.ts",
+   "bytes": 17731,
+   "sha256": "798aff48c9281e4a08aa7a8f6da3d21c741f62e327bf145b27701c5dd2e2f07c",
+   "gitBlob": "eb85819533050106ddbbeda4482df1d5e60e8dc4",
+   "mode": "100644",
+   "lastCommit": "ad4ed25148cc8896ddead0d6dcdcb90bc68f537e",
+   "lastCommitDate": "2026-10-26T07:36:19-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/db/seed.ts",
+   "bytes": 11852,
+   "sha256": "5947787dd10277e1471147fa068e63c370f1b34b6e7e06eb100487e379f7e05e",
+   "gitBlob": "e7b90f6f287cc8c10bcce52ad5ece46e2fcc792f",
+   "mode": "100644",
+   "lastCommit": "0a6750a6dbad29231db8b45f356d7a75986e8cc9",
+   "lastCommitDate": "2026-10-26T07:39:05-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/domain/analytics.ts",
+   "bytes": 5535,
+   "sha256": "5c859d5f17fea2a5666e9addd464b402142fe35370fa78fbf006d55308568adf",
+   "gitBlob": "5fb6d42b01df7da5659b6de8141b72c6f9de7f18",
+   "mode": "100644",
+   "lastCommit": "0a6750a6dbad29231db8b45f356d7a75986e8cc9",
+   "lastCommitDate": "2026-10-26T07:39:05-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/domain/assurance.ts",
+   "bytes": 2854,
+   "sha256": "2a31490b3f6250f8d99ede6c230d1656b26a9f573a300746bff56402b92f2492",
+   "gitBlob": "8450cfd54169492552f0a33131242f2ba7bc5aed",
+   "mode": "100644",
+   "lastCommit": "41fb895f4dcaba9afb5074b16399a46e15a0a6b2",
+   "lastCommitDate": "2026-10-26T07:54:15-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/domain/commissioning.ts",
+   "bytes": 17660,
+   "sha256": "fc98cd4ff03610fe407efd96dd4081653b4ef4ad3f0a810126526d9f20658918",
+   "gitBlob": "761786518b21fd423a46ba4c5d098280db9233da",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/domain/org.ts",
+   "bytes": 5490,
+   "sha256": "6b3f4148d416121f0da0022ee857a27920b1b6a22f67e76e56853aa4c3a8e58e",
+   "gitBlob": "f11617a90931ff461b54f0fb602a5266f27ed00a",
+   "mode": "100644",
+   "lastCommit": "0a6750a6dbad29231db8b45f356d7a75986e8cc9",
+   "lastCommitDate": "2026-10-26T07:39:05-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/domain/platform.ts",
+   "bytes": 8752,
+   "sha256": "b76b23f26a83848020c1f50dbc1e8b99e21a76b09206aa768e6d5f3d2a4dff43",
+   "gitBlob": "4da5da4663da794533beb1e8f716b63cdf61f327",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/domain/read.ts",
+   "bytes": 9626,
+   "sha256": "6ee5e20b1f75fe6be446ae54340e6e9b6f6065821e609daddc84afa93e4899d6",
+   "gitBlob": "94231537b8e828c5e3def58e255fd7d39468d8c4",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/domain/rooms.ts",
+   "bytes": 40626,
+   "sha256": "6e925c59b702838f498d441b7c458b92c6704814b99e47012cf0f33e84166983",
+   "gitBlob": "554a10ff3917e3d97c2b9a427182b83978399c29",
+   "mode": "100644",
+   "lastCommit": "0a6750a6dbad29231db8b45f356d7a75986e8cc9",
+   "lastCommitDate": "2026-10-26T07:39:05-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/http/errors.ts",
+   "bytes": 2145,
+   "sha256": "95653c891d88ef9818d12470f5db5ece1e8686a6b9daf2453c0cdc90e6de401a",
+   "gitBlob": "b69d74e4a00c2fafae90eab6acdd56183c48b9aa",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/http/router.ts",
+   "bytes": 2388,
+   "sha256": "cf131a1ef4924c542284462a6695dce6af673763efdd22ee8bd1e2d712870a54",
+   "gitBlob": "47bf492b4413e9327d5b009f12900045f10cb377",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/http/schema.ts",
+   "bytes": 4280,
+   "sha256": "8bf99182337e3214270499e79b5ffd6673cae900cc06945623ac3485fd03d79d",
+   "gitBlob": "3e72813b0588ee867260ef2fe2cbeb8f96d985ec",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/http/server.ts",
+   "bytes": 8359,
+   "sha256": "151aad8aa820c2d8be41d456d1c0be6ee1804201098185daa385e7fe548a728c",
+   "gitBlob": "e0d4062e476100a5201b204667cfc91de0ee6d83",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/log.ts",
+   "bytes": 673,
+   "sha256": "d82e4d475940902279f18153d6df93d3fcc11331f151f0d8c0c360bf5d6533f1",
+   "gitBlob": "17806ad8542b7dbdc804e0755281edf883adb9c6",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/main.ts",
+   "bytes": 2961,
+   "sha256": "70f785d5d483b92379bfdc7b1befcc51174604341b0f0ed0ceded1c345780544",
+   "gitBlob": "95fa4ad76a49304847a99751cc4c2c3fe5fa4d89",
+   "mode": "100644",
+   "lastCommit": "ad4ed25148cc8896ddead0d6dcdcb90bc68f537e",
+   "lastCommitDate": "2026-10-26T07:36:19-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/modules/routes.ts",
+   "bytes": 21814,
+   "sha256": "9a2b6bab0de751fb2f6b7dcf2f7fe9e78e5ca0328e84eae1845b8e4653613aa9",
+   "gitBlob": "3af32b65ffa3c29e73abd8dea86eeb3177aee837",
+   "mode": "100644",
+   "lastCommit": "41fb895f4dcaba9afb5074b16399a46e15a0a6b2",
+   "lastCommitDate": "2026-10-26T07:54:15-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/openapi.ts",
+   "bytes": 3260,
+   "sha256": "5a6c8acb13117143de5a28e5ccb37f0ddeb20033aecd8ca2a2bd4a4b3217b393",
+   "gitBlob": "1761a4a17ec5e8608eba989abe558b8150799583",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/storage/objectStore.ts",
+   "bytes": 2477,
+   "sha256": "6e8c68d6bdad4a93841f8ed9fdaae4a2e04ea593835a6eb71d556086ff29f53f",
+   "gitBlob": "976ee1cbb6f36605fa23be188ed86cca054222b9",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/src/worker/outbox.ts",
+   "bytes": 7969,
+   "sha256": "85dfa2dee184318134db62d4586f94b3bfed49b18277365df218e2033e17f785",
+   "gitBlob": "16a71aff94f6a8b3811e06c1db2d5a87986f390d",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/enterprise-api/tsconfig.json",
+   "bytes": 382,
+   "sha256": "d526592fde485ddf84f5db359b2c0741ca428b64a37c4c9b6a8c671414c5c29f",
+   "gitBlob": "1db2064fbe6a5dbe1b18f32a3b4b457977a33803",
+   "mode": "100644",
+   "lastCommit": "41fb895f4dcaba9afb5074b16399a46e15a0a6b2",
+   "lastCommitDate": "2026-10-26T07:54:15-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/intelligence-python/README.md",
+   "bytes": 1789,
+   "sha256": "cf87693c6fce4f48e1de4e9830ae7d930c25c61bde8f9b61c213fae4db9bd564",
+   "gitBlob": "fb0090edb4b19b3a11e33081182c3bb8129c4e47",
+   "mode": "100644",
+   "lastCommit": "0c7aaf944629e911623bd801f879cc7b896fb222",
+   "lastCommitDate": "2026-10-26T07:58:21-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/intelligence-python/app/__init__.py",
+   "bytes": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+   "mode": "100644",
+   "lastCommit": "0c7aaf944629e911623bd801f879cc7b896fb222",
+   "lastCommitDate": "2026-10-26T07:58:21-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/intelligence-python/app/main.py",
+   "bytes": 4951,
+   "sha256": "931f15e2cadb5b5e405c95a1b5fa6ffe62e20714d72f4edd469de11e0c3160b9",
+   "gitBlob": "6d3ce3ca9959ac1792ccac5a99486e8d4cda8290",
+   "mode": "100644",
+   "lastCommit": "0c7aaf944629e911623bd801f879cc7b896fb222",
+   "lastCommitDate": "2026-10-26T07:58:21-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "services/intelligence-python/tests/test_service.py",
+   "bytes": 3379,
+   "sha256": "a543fc4f9ee7ba3414c3b4a40efee47c82bdeb0452c22fb30410754bbde3965a",
+   "gitBlob": "d376512efef8c06e3e02c9beba2c16283549ce90",
+   "mode": "100644",
+   "lastCommit": "0c7aaf944629e911623bd801f879cc7b896fb222",
+   "lastCommitDate": "2026-10-26T07:58:21-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "tests/browser/enterprise-web.test.mjs",
+   "bytes": 11531,
+   "sha256": "9e8e4ac49d3f994dde8c3d2eb19bfebe17ff3c82a6d9fd6d103a2a998dd8d43b",
+   "gitBlob": "c379866dc970da5491d02bc2fdbed715585a6caa",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "tests/browser/founder-studio.test.mjs",
+   "bytes": 14888,
+   "sha256": "f487c9dd76686c93aefdbcd5a498f15c05375625dccb3fbd787787263046b25f",
+   "gitBlob": "a43507173014cab050946c53a35cc347cfab9050",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "tests/e2e/founder-townhall.e2e.mjs",
+   "bytes": 17576,
+   "sha256": "497fbef959d2e3988e1fcb3c717c355dd7fe637e564da838252a7b8f0cbb8ed6",
+   "gitBlob": "e9f89902773fec3d181ed8983345811abe3b0bae",
+   "mode": "100644",
+   "lastCommit": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+   "lastCommitDate": "2026-10-26T07:04:56-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "tests/evidence/enterprise-web/RESULTS.json",
+   "bytes": 4089,
+   "sha256": "5c582e89b94fa054df42fabe70b60b8b7e509208e6e472379694049a8c6fc20f",
+   "gitBlob": "d568a15ba3016567c9cdd431f0e0159220cd8521",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "tests/evidence/founder-studio/results.json",
+   "bytes": 4725,
+   "sha256": "6b16d3302abba91875e6be24899f2b71aa7b6a00076a8e9729729bb377f221e4",
+   "gitBlob": "97b3320823ba879d3448a20744d7ec498fca155b",
+   "mode": "100644",
+   "lastCommit": "8adbe6cb1a920b9bad9098063d419eccf370b349",
+   "lastCommitDate": "2026-10-26T06:54:56-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "tests/evidence/founder-townhall/results.json",
+   "bytes": 7369,
+   "sha256": "0f151b94bcbee57da00f06fa89b9777819c5c70f00a5aab6ae5c38741e90fd84",
+   "gitBlob": "6e27a1c69bba1a3c40f5dff9efcf9310e0fe49a5",
+   "mode": "100644",
+   "lastCommit": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+   "lastCommitDate": "2026-10-26T07:04:56-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "tests/evidence/founder-townhall/workbook.json",
+   "bytes": 71592,
+   "sha256": "330eb7624b10909539faf5bf4066484647da54f330488eb636d765963b8f716f",
+   "gitBlob": "945289ebbed059fd546f0fbcea7f77ec8e6b41b2",
+   "mode": "100644",
+   "lastCommit": "54eeeadeb30fe3a493970f1254ba09eaf0d5ad6d",
+   "lastCommitDate": "2026-10-26T07:04:56-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "tests/integration/api-client.test.mjs",
+   "bytes": 2653,
+   "sha256": "b3840078e11dbc0647b4b1faf42c9f0f7ff8928363e129cec80f0fc8d7ce4848",
+   "gitBlob": "809853ded0175b3fa9ebadc0516f82e1a449646e",
+   "mode": "100644",
+   "lastCommit": "b4ab1bc68c3668a8a6e2e96e1549320ef18b94af",
+   "lastCommitDate": "2026-10-26T07:41:01-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "tests/integration/api.test.mjs",
+   "bytes": 23364,
+   "sha256": "396aceddd7261e49831d806aa1b0255563dd16d9479c0222a8f4bed18b2059fe",
+   "gitBlob": "9f3ea606c70105631e6988e964d01d5ac569bf3d",
+   "mode": "100644",
+   "lastCommit": "41fb895f4dcaba9afb5074b16399a46e15a0a6b2",
+   "lastCommitDate": "2026-10-26T07:54:15-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "tests/integration/harness.mjs",
+   "bytes": 4171,
+   "sha256": "41ffb577f4d8036b44564b7231141bfa106235ae5f2dac425c693e849bcb9fb5",
+   "gitBlob": "2853c59254f5a7eb5081951c158e269673ae5889",
+   "mode": "100644",
+   "lastCommit": "03d94105bbd7bdb97fd3541bdabfdac1572c647a",
+   "lastCommitDate": "2026-10-26T07:27:24-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "tests/security/authz.test.mjs",
+   "bytes": 23496,
+   "sha256": "7ea017527189bfae77a76b171b5cbaf7879691eaf8090230f6aa92acd34164b6",
+   "gitBlob": "c4e2165e22e3286230a09c9ba9e045e474d578b8",
+   "mode": "100644",
+   "lastCommit": "0a6750a6dbad29231db8b45f356d7a75986e8cc9",
+   "lastCommitDate": "2026-10-26T07:39:05-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "tooling/types/react-offline/index.d.ts",
+   "bytes": 3029,
+   "sha256": "a538159cde7628ef7860733b6d1febc2f3ba16c90d48d1a9005b653c6b94e9b1",
+   "gitBlob": "4fa44a1ae11d6a4458c768ec6e3a4a2b37360144",
+   "mode": "100644",
+   "lastCommit": "10dffe2743a34c293cf7409d44200ea3f58b4a97",
+   "lastCommitDate": "2026-10-26T07:49:00-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  },
+  {
+   "path": "tsconfig.base.json",
+   "bytes": 505,
+   "sha256": "0ff207e917ff5f292e578612b49ef966f7c63978bcb4aa8158276cdde746beb5",
+   "gitBlob": "30061da0327f351d9262c9f79876db5646b84dfa",
+   "mode": "100644",
+   "lastCommit": "e946152a5e4de6791de57ccdc4a30b749cc2b2ac",
+   "lastCommitDate": "2026-10-26T06:06:44-05:00",
+   "classification": "CONFIDENTIAL_TECHNICAL"
+  }
+ ]
+}

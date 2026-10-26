@@ -1,0 +1,165 @@
+{
+ "__future__": [
+  "ml/evaluation/evaluate.py",
+  "ml/features.py",
+  "ml/inference/predict.py",
+  "ml/training/train.py",
+  "services/intelligence-python/app/main.py"
+ ],
+ "ast": [
+  "provenance/scripts/build_vault.py"
+ ],
+ "collections": [
+  "scripts/discovery/inventory.py",
+  "scripts/discovery/secret-scan.py",
+  "scripts/discovery/source-register.py",
+  "scripts/media/build-media-manifest.py"
+ ],
+ "csv": [
+  "ml/training/train.py",
+  "provenance/scripts/build_vault.py",
+  "provenance/scripts/release_lineage.py",
+  "scripts/discovery/inventory.py",
+  "scripts/discovery/secret-scan.py",
+  "scripts/discovery/source-register.py",
+  "scripts/media/build-media-manifest.py"
+ ],
+ "datetime": [
+  "provenance/scripts/build_vault.py",
+  "provenance/scripts/index_vault.py",
+  "scripts/verify/verify-frozen.py"
+ ],
+ "features": [
+  "ml/evaluation/evaluate.py",
+  "ml/inference/predict.py",
+  "ml/tests/test_prototype.py",
+  "ml/training/train.py"
+ ],
+ "hashlib": [
+  "ml/training/train.py",
+  "provenance/scripts/build_vault.py",
+  "provenance/scripts/index_vault.py",
+  "scripts/discovery/inventory.py",
+  "scripts/discovery/source-register.py",
+  "scripts/verify/verify-frozen.py"
+ ],
+ "importlib": [
+  "provenance/scripts/build_vault.py"
+ ],
+ "joblib": [
+  "ml/evaluation/evaluate.py",
+  "ml/training/train.py"
+ ],
+ "json": [
+  "ml/evaluation/evaluate.py",
+  "ml/inference/predict.py",
+  "ml/tests/test_prototype.py",
+  "ml/training/train.py",
+  "provenance/scripts/build_vault.py",
+  "provenance/scripts/index_vault.py",
+  "provenance/scripts/release_lineage.py",
+  "scripts/discovery/inventory.py",
+  "scripts/discovery/secret-scan.py",
+  "scripts/media/build-media-manifest.py",
+  "scripts/verify/verify-frozen.py",
+  "services/intelligence-python/tests/test_service.py"
+ ],
+ "math": [
+  "ml/features.py",
+  "ml/inference/predict.py"
+ ],
+ "numpy": [
+  "ml/evaluation/evaluate.py",
+  "ml/features.py",
+  "ml/tests/test_prototype.py",
+  "ml/training/train.py"
+ ],
+ "os": [
+  "provenance/scripts/build_vault.py",
+  "scripts/discovery/inventory.py",
+  "scripts/media/build-media-manifest.py",
+  "services/intelligence-python/app/main.py",
+  "services/intelligence-python/tests/test_service.py"
+ ],
+ "pathlib": [
+  "ml/evaluation/evaluate.py",
+  "ml/inference/predict.py",
+  "ml/tests/test_prototype.py",
+  "ml/training/train.py",
+  "provenance/scripts/build_vault.py",
+  "provenance/scripts/index_vault.py",
+  "provenance/scripts/release_lineage.py",
+  "scripts/discovery/inventory.py",
+  "scripts/discovery/secret-scan.py",
+  "scripts/discovery/source-register.py",
+  "scripts/media/build-media-manifest.py",
+  "scripts/verify/verify-frozen.py",
+  "services/intelligence-python/app/main.py",
+  "services/intelligence-python/tests/test_service.py"
+ ],
+ "predict": [
+  "ml/evaluation/evaluate.py",
+  "ml/tests/test_prototype.py",
+  "services/intelligence-python/app/main.py"
+ ],
+ "pydantic": [
+  "services/intelligence-python/app/main.py"
+ ],
+ "re": [
+  "provenance/scripts/build_vault.py",
+  "scripts/discovery/secret-scan.py",
+  "scripts/media/build-media-manifest.py"
+ ],
+ "shutil": [
+  "provenance/scripts/build_vault.py"
+ ],
+ "sklearn": [
+  "ml/evaluation/evaluate.py",
+  "ml/tests/test_prototype.py",
+  "ml/training/train.py"
+ ],
+ "starlette": [
+  "services/intelligence-python/app/main.py"
+ ],
+ "subprocess": [
+  "ml/tests/test_prototype.py",
+  "provenance/scripts/build_vault.py",
+  "scripts/discovery/source-register.py",
+  "scripts/media/build-media-manifest.py",
+  "scripts/verify/verify-frozen.py",
+  "services/intelligence-python/tests/test_service.py"
+ ],
+ "sys": [
+  "ml/evaluation/evaluate.py",
+  "ml/inference/predict.py",
+  "ml/tests/test_prototype.py",
+  "ml/training/train.py",
+  "provenance/scripts/build_vault.py",
+  "scripts/discovery/inventory.py",
+  "scripts/discovery/secret-scan.py",
+  "scripts/discovery/source-register.py",
+  "scripts/media/build-media-manifest.py",
+  "scripts/verify/verify-frozen.py",
+  "services/intelligence-python/app/main.py",
+  "services/intelligence-python/tests/test_service.py"
+ ],
+ "time": [
+  "ml/training/train.py",
+  "services/intelligence-python/app/main.py",
+  "services/intelligence-python/tests/test_service.py"
+ ],
+ "train": [
+  "ml/evaluation/evaluate.py",
+  "ml/tests/test_prototype.py"
+ ],
+ "typing": [
+  "services/intelligence-python/app/main.py"
+ ],
+ "unittest": [
+  "ml/tests/test_prototype.py",
+  "services/intelligence-python/tests/test_service.py"
+ ],
+ "urllib": [
+  "services/intelligence-python/tests/test_service.py"
+ ]
+}

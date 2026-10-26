@@ -1,0 +1,638 @@
+{
+ "generatedFrom": [
+  "provenance/release-history/FROZEN_CHECK_VAULT.json",
+  "provenance/source-manifest/GIT_HISTORY.json",
+  "packages/domain-data/data/PROVENANCE.json",
+  "/home/claude/Empathia_V25/legal/historical-releases/HISTORICAL_PACKAGES.csv"
+ ],
+ "frozenCheck": {
+  "checkedAt": "2026-10-26T12:53:50+00:00",
+  "result": "PASS",
+  "script": "scripts/verify/verify-frozen.py"
+ },
+ "releases": [
+  {
+   "version": "2.5.1.1",
+   "edition": "investor",
+   "package": "Empathia_V25/Empathia_Investor_Release_2511",
+   "frozen": true,
+   "state": "frozen; security patch line (branch patch/2.5.1.1, worktree source-251p)",
+   "gitTag": null,
+   "gitCommit": "4b30315",
+   "tagMessage": null,
+   "manifestEntries": 495,
+   "mismatchesAtCheck": 0,
+   "immutableAttribute": "----i---------e-------",
+   "editionHashes": {
+    "Live_Web_Edition/Empathia-Living-Campus-V2.5.1.1-live.html": "bf86fbb932e3dfbc4728aad839911352ba4efbabaeb781c74ee29f239e32ba1e",
+    "Live_Web_Edition/index.html": "bf86fbb932e3dfbc4728aad839911352ba4efbabaeb781c74ee29f239e32ba1e",
+    "Offline_Investor_Edition/Empathia-Living-Campus-V2.5.1.1-offline.html": "b2e82e79dbe977e5fbb2999e45db33159f9a547737936d27777d9809c29609a2"
+   },
+   "archives": [],
+   "distribution": "NOT AUTHORIZED \u2014 external page-API security assessment: NOT VERIFIED \u2014 EXTERNAL TEST REQUIRED; owner conditions open"
+  },
+  {
+   "version": "2.5.2 rc1",
+   "edition": "investor",
+   "package": "Empathia_V25/Empathia_Investor_Release_252",
+   "frozen": true,
+   "state": "frozen 2026-10-25",
+   "gitTag": "v2.5.2-rc1",
+   "gitCommit": "09db55093cf88bcfafbc9e47b1b6b6ae59cd7d32",
+   "tagMessage": "2.5.2 release candidate 1 (frozen 2026-10-25). Offline 86bbf66a\u2026717b, live 473f34a7\u202612f8. Independent page-API security assessment: NOT VERIFIED \u2014 EXTERNAL TEST REQUIRED. Not authorized for distribution.",
+   "manifestEntries": 519,
+   "mismatchesAtCheck": 0,
+   "immutableAttribute": "----i---------e-------",
+   "editionHashes": {
+    "Live_Web_Edition/Empathia-Living-Campus-V2.5.2-live.html": "473f34a7042f566f6a665fbbacef0c74552291ccf86b1bc080a8c7b96ae712f8",
+    "Live_Web_Edition/index.html": "473f34a7042f566f6a665fbbacef0c74552291ccf86b1bc080a8c7b96ae712f8",
+    "Offline_Investor_Edition/Empathia-Living-Campus-V2.5.2-offline.html": "86bbf66af2f2e166aa965224511cc8fc5582a6afd189886510a28a9be500717b"
+   },
+   "archives": [
+    {
+     "archive": "Empathia_Investor_Release_252-rc1-09db550.tar",
+     "sha256": "d2c80b3214ae7000b7d70fabb4d1dd5a3d604a5622825450c14d574181a28975",
+     "matchesRecordedSha256": true
+    }
+   ],
+   "distribution": "NOT AUTHORIZED \u2014 external page-API security assessment: NOT VERIFIED \u2014 EXTERNAL TEST REQUIRED; owner conditions open"
+  },
+  {
+   "version": "2.5.3 rc1",
+   "edition": "investor",
+   "package": "Empathia_V25/Empathia_Investor_Release_253",
+   "frozen": true,
+   "state": "frozen; superseded by rc2/rc3",
+   "gitTag": "v2.5.3-rc1",
+   "gitCommit": "7a8ca84d067a742116e9d8adb21988d45c2d5707",
+   "tagMessage": "2.5.3 release candidate 1 (Build a Room with Lite), audited VERIFIED WITH CONDITIONS (work/audit-253). Offline b90871da\u2026, live bdf92437\u2026, engineer 92882a86\u2026. Page-API security NOT VERIFIED \u2014 EXTERNAL TEST REQUIRED. Not authorized for distribution.",
+   "manifestEntries": 563,
+   "mismatchesAtCheck": 0,
+   "immutableAttribute": "----i---------e-------",
+   "editionHashes": {
+    "Live_Web_Edition/Empathia-Living-Campus-V2.5.3-live.html": "bdf924371082bcbbc4014e4cc005c07e6d4b04f80370ff3b85008861b865c643",
+    "Live_Web_Edition/index.html": "bdf924371082bcbbc4014e4cc005c07e6d4b04f80370ff3b85008861b865c643",
+    "Offline_Investor_Edition/Empathia-Living-Campus-V2.5.3-offline.html": "b90871da39cc25c5858eb7209d6a641719ddfc848c8ba921ec2702a33d4bb240"
+   },
+   "archives": [
+    {
+     "archive": "Empathia_Investor_Release_253-rc1-7a8ca84.tar",
+     "sha256": "35ed6ca7eeedf492746aefa093096712cc4f10bd10942fc872b4d2201a612634",
+     "matchesRecordedSha256": true
+    }
+   ],
+   "distribution": "NOT AUTHORIZED \u2014 external page-API security assessment: NOT VERIFIED \u2014 EXTERNAL TEST REQUIRED; owner conditions open"
+  },
+  {
+   "version": "2.5.3 rc1",
+   "edition": "engineer",
+   "package": "Empathia_V25/Empathia_Engineer_Edition_253",
+   "frozen": true,
+   "state": "frozen; superseded",
+   "gitTag": "v2.5.3-rc1",
+   "gitCommit": "7a8ca84d067a742116e9d8adb21988d45c2d5707",
+   "tagMessage": "2.5.3 release candidate 1 (Build a Room with Lite), audited VERIFIED WITH CONDITIONS (work/audit-253). Offline b90871da\u2026, live bdf92437\u2026, engineer 92882a86\u2026. Page-API security NOT VERIFIED \u2014 EXTERNAL TEST REQUIRED. Not authorized for distribution.",
+   "manifestEntries": 65,
+   "mismatchesAtCheck": 0,
+   "immutableAttribute": "----i---------e-------",
+   "editionHashes": {
+    "Private_Engineer_Edition/Empathia-Living-Campus-V2.5.3-engineer-private.html": "92882a86f7e86870625347cd859dd39fd2351ba3779314f57375e2882b07432b"
+   },
+   "archives": [
+    {
+     "archive": "Empathia_Engineer_Edition_253-rc1-7a8ca84.tar",
+     "sha256": "792aa890fffe37efe4ab6b346870edb1757edb84e38f92d445ab22138d036e10",
+     "matchesRecordedSha256": true
+    }
+   ],
+   "distribution": "NOT AUTHORIZED \u2014 external page-API security assessment: NOT VERIFIED \u2014 EXTERNAL TEST REQUIRED; owner conditions open"
+  },
+  {
+   "version": "2.5.3 rc2",
+   "edition": "investor",
+   "package": "Empathia_V25/Empathia_Investor_Release_253_rc2",
+   "frozen": true,
+   "state": "frozen; superseded by rc3",
+   "gitTag": "v2.5.3-rc2",
+   "gitCommit": "0cb8a0f1d0ed2aef77aca7b43679708e65462c7d",
+   "tagMessage": "2.5.3 release candidate 2: F-03 recorded results; audited VERIFIED WITH CONDITIONS (work/audit-253/INDEPENDENT_AUDIT_253_RC2.md), R2-1 open. Offline 96f539d9\u2026, live b88a3172\u2026, engineer 793865d2\u2026. Page-API security NOT VERIFIED \u2014 EXTERNAL TEST REQUIRED. Not authorized for distribution.",
+   "manifestEntries": 562,
+   "mismatchesAtCheck": 0,
+   "immutableAttribute": "----i---------e-------",
+   "editionHashes": {
+    "Live_Web_Edition/Empathia-Living-Campus-V2.5.3-live.html": "b88a31721be7b3e5863f4b3842d86aab11272e59701b0ac03243ba619fa5f064",
+    "Live_Web_Edition/index.html": "b88a31721be7b3e5863f4b3842d86aab11272e59701b0ac03243ba619fa5f064",
+    "Offline_Investor_Edition/Empathia-Living-Campus-V2.5.3-offline.html": "96f539d9061388bd3660639a71212199e01d1a6bf8c566555d4be374e7d88e7b"
+   },
+   "archives": [
+    {
+     "archive": "Empathia_Investor_Release_253_rc2-0cb8a0f.tar",
+     "sha256": "6c4f66737c19c4032f3491f5da06f0d5f891d0db6bcaaad0c44a42be726adaf0",
+     "matchesRecordedSha256": true
+    }
+   ],
+   "distribution": "NOT AUTHORIZED \u2014 external page-API security assessment: NOT VERIFIED \u2014 EXTERNAL TEST REQUIRED; owner conditions open"
+  },
+  {
+   "version": "2.5.3 rc2",
+   "edition": "engineer",
+   "package": "Empathia_V25/Empathia_Engineer_Edition_253_rc2",
+   "frozen": true,
+   "state": "frozen; superseded",
+   "gitTag": "v2.5.3-rc2",
+   "gitCommit": "0cb8a0f1d0ed2aef77aca7b43679708e65462c7d",
+   "tagMessage": "2.5.3 release candidate 2: F-03 recorded results; audited VERIFIED WITH CONDITIONS (work/audit-253/INDEPENDENT_AUDIT_253_RC2.md), R2-1 open. Offline 96f539d9\u2026, live b88a3172\u2026, engineer 793865d2\u2026. Page-API security NOT VERIFIED \u2014 EXTERNAL TEST REQUIRED. Not authorized for distribution.",
+   "manifestEntries": 65,
+   "mismatchesAtCheck": 0,
+   "immutableAttribute": "----i---------e-------",
+   "editionHashes": {
+    "Private_Engineer_Edition/Empathia-Living-Campus-V2.5.3-engineer-private.html": "793865d242f2b9ae8da9d94740455bfede7c7ee4e9916587c9f4e9a3dc0e12c8"
+   },
+   "archives": [
+    {
+     "archive": "Empathia_Engineer_Edition_253_rc2-0cb8a0f.tar",
+     "sha256": "4bc7ce575f38b3aae33e8804a789f9496c1c468226d7a91501c14b781e6c4193",
+     "matchesRecordedSha256": true
+    }
+   ],
+   "distribution": "NOT AUTHORIZED \u2014 external page-API security assessment: NOT VERIFIED \u2014 EXTERNAL TEST REQUIRED; owner conditions open"
+  },
+  {
+   "version": "2.5.3 rc3",
+   "edition": "investor",
+   "package": "Empathia_V25/Empathia_Investor_Release_253_rc3",
+   "frozen": true,
+   "state": "frozen; current candidate",
+   "gitTag": "v2.5.3-rc3",
+   "gitCommit": "cf86866ac81bbf2f08b4b218b0532781a84f7a36",
+   "tagMessage": "2.5.3 release candidate 3: audited VERIFIED WITH CONDITIONS (work/audit-253/INDEPENDENT_AUDIT_253_RC3.md), no Medium or High finding. Offline ecbde0bb\u2026, live 9d6e53ef\u2026, engineer 604cc748\u2026. Page-API security NOT VERIFIED \u2014 EXTERNAL TEST REQUIRED. Not authorized for distribution.",
+   "manifestEntries": 562,
+   "mismatchesAtCheck": 0,
+   "immutableAttribute": "----i---------e-------",
+   "editionHashes": {
+    "Live_Web_Edition/Empathia-Living-Campus-V2.5.3-live.html": "9d6e53ef9f5a4e797b3be16c08f041b7c0c0766abbadb5186296ac925a09f2f1",
+    "Live_Web_Edition/index.html": "9d6e53ef9f5a4e797b3be16c08f041b7c0c0766abbadb5186296ac925a09f2f1",
+    "Offline_Investor_Edition/Empathia-Living-Campus-V2.5.3-offline.html": "ecbde0bba17eafc9e5bcf98b57d15fbbb2378bac66d017c7a402194e78307756"
+   },
+   "archives": [
+    {
+     "archive": "Empathia_Investor_Release_253_rc3-cf86866.tar",
+     "sha256": "f332b436bf9b9190169130ec2d8df5b5e8afe805bed5a08086cfc0b8a4ddc4e2",
+     "matchesRecordedSha256": true
+    }
+   ],
+   "distribution": "NOT AUTHORIZED \u2014 external page-API security assessment: NOT VERIFIED \u2014 EXTERNAL TEST REQUIRED; owner conditions open"
+  },
+  {
+   "version": "2.5.3 rc3",
+   "edition": "engineer",
+   "package": "Empathia_V25/Empathia_Engineer_Edition_253_rc3",
+   "frozen": true,
+   "state": "frozen; current engineer candidate",
+   "gitTag": "v2.5.3-rc3",
+   "gitCommit": "cf86866ac81bbf2f08b4b218b0532781a84f7a36",
+   "tagMessage": "2.5.3 release candidate 3: audited VERIFIED WITH CONDITIONS (work/audit-253/INDEPENDENT_AUDIT_253_RC3.md), no Medium or High finding. Offline ecbde0bb\u2026, live 9d6e53ef\u2026, engineer 604cc748\u2026. Page-API security NOT VERIFIED \u2014 EXTERNAL TEST REQUIRED. Not authorized for distribution.",
+   "manifestEntries": 65,
+   "mismatchesAtCheck": 0,
+   "immutableAttribute": "----i---------e-------",
+   "editionHashes": {
+    "Private_Engineer_Edition/Empathia-Living-Campus-V2.5.3-engineer-private.html": "604cc7486e4a63a214c6ea471d8dc41fb826060483f24ee8dbd88df8aecb56f7"
+   },
+   "archives": [
+    {
+     "archive": "Empathia_Engineer_Edition_253_rc3-cf86866.tar",
+     "sha256": "1f88b962890308b74663046479da77698cebd8ea00f6de91e01bed17f9462b30",
+     "matchesRecordedSha256": true
+    }
+   ],
+   "distribution": "NOT AUTHORIZED \u2014 external page-API security assessment: NOT VERIFIED \u2014 EXTERNAL TEST REQUIRED; owner conditions open"
+  },
+  {
+   "version": "2.5.4-dev",
+   "edition": "founder (development build, not a release)",
+   "package": "apps/founder-studio/dist/demonstrators/founder/Empathia-Founder-Edition.html (built from source)",
+   "frozen": false,
+   "state": "development line for the founder program; not a release candidate",
+   "gitTag": null,
+   "gitCommit": "b8986d1",
+   "sourceBranch": "founder/2.5.4",
+   "buildCommand": "python3 build.py 2.5.4 --no-media (deterministic: two builds give the same sha256)",
+   "editionHashes": {
+    "Empathia-Living-Campus-v2.5.4-nomedia.html": "ecdf64be4de7cda5096c8dd7902814e26a7b1fe5d693799f9d489fbbddcbe1ee"
+   },
+   "distribution": "INTERNAL ONLY \u2014 not authorized for any external channel"
+  }
+ ],
+ "historicalPackages": {
+  "note": "V1.2\u2013V1.4.1 copies audited in Empathia_V25/legal/historical-releases (access-controlled). Subject to the historical release audit and recall/replacement plan there; not to be redistributed. Listed by id and hash only.",
+  "count": 58,
+  "items": [
+   {
+    "copyId": "H01",
+    "version": "V1.2",
+    "variant": "release folder",
+    "sha256": null,
+    "treeSha256": "5c0483d9b498c39aee6b4ec7d25e2c13b62b1f8c867c0c98321ec5ee96e97ef3"
+   },
+   {
+    "copyId": "H02",
+    "version": "V1.2",
+    "variant": "release zip",
+    "sha256": "fbe44e058ca7048d92e7136f811560ac108e2436749fb014ccda3675dae13592",
+    "treeSha256": "5c0483d9b498c39aee6b4ec7d25e2c13b62b1f8c867c0c98321ec5ee96e97ef3"
+   },
+   {
+    "copyId": "H03",
+    "version": "V1.2",
+    "variant": "embedded single file",
+    "sha256": "97466fcee894e519b67b0db2394185a2454e47d3477760d0b2db8a273a20184f",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H04",
+    "version": "V1.2",
+    "variant": "embedded single file",
+    "sha256": "97466fcee894e519b67b0db2394185a2454e47d3477760d0b2db8a273a20184f",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H05",
+    "version": "V1.2",
+    "variant": "linked (media beside page)",
+    "sha256": "3ee37be9449e3ac84b3cb8d0f9d260755b19598c900b8477973adbc670eab96f",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H06",
+    "version": "V1.2",
+    "variant": "nomedia",
+    "sha256": "ec646307dc29e6cfdfe55097823cc90161b324e22d8490bbd9e04f4fac602044",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H07",
+    "version": "V1.2",
+    "variant": "embedded single file",
+    "sha256": "97466fcee894e519b67b0db2394185a2454e47d3477760d0b2db8a273a20184f",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H08",
+    "version": "V1.2",
+    "variant": "capture variant (not identical)",
+    "sha256": "6c22c0d124d8496a170323111146e4835cd7e3e6fb6c3306972d1035da98c4ba",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H09",
+    "version": "V1.3.3",
+    "variant": "release folder",
+    "sha256": null,
+    "treeSha256": "528f21fa15a267de8277c026ac95c7adf1155e4d1d9858a54ba355866d497fd6"
+   },
+   {
+    "copyId": "H10",
+    "version": "V1.3.3",
+    "variant": "release zip",
+    "sha256": "80a741b5b67df0bb400ac1686842b45fdaea2b333f110cb906acf35e13c65aa9",
+    "treeSha256": "528f21fa15a267de8277c026ac95c7adf1155e4d1d9858a54ba355866d497fd6"
+   },
+   {
+    "copyId": "H11",
+    "version": "V1.3.3",
+    "variant": "embedded single file",
+    "sha256": "8ffd4b8e01ae7b9777bc4dc3effaa8b7d7a7b4e52a6e6bd10296031689fc74ed",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H12",
+    "version": "V1.3.3",
+    "variant": "nomedia",
+    "sha256": "30b311a88e96c4b2fbc2acddb9e2a92e57e5be0a39f26925226764b9546e9909",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H13",
+    "version": "V1.3.3",
+    "variant": "nomedia",
+    "sha256": "30b311a88e96c4b2fbc2acddb9e2a92e57e5be0a39f26925226764b9546e9909",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H14",
+    "version": "V1.3.3",
+    "variant": "nomedia",
+    "sha256": "30b311a88e96c4b2fbc2acddb9e2a92e57e5be0a39f26925226764b9546e9909",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H15",
+    "version": "V1.4",
+    "variant": "release folder",
+    "sha256": null,
+    "treeSha256": "7bedff9fde1a50f275eef45e4ec9ca21f58f41c15b756d0951057af72f3f7ad4"
+   },
+   {
+    "copyId": "H16",
+    "version": "V1.4",
+    "variant": "release zip",
+    "sha256": "c978475925d2f4d231368a6cbbff1540c99878ef39c57a248ccac6ec86cceeb6",
+    "treeSha256": "7bedff9fde1a50f275eef45e4ec9ca21f58f41c15b756d0951057af72f3f7ad4"
+   },
+   {
+    "copyId": "H17",
+    "version": "V1.4",
+    "variant": "release zip (nomedia)",
+    "sha256": "095432bb1f96177cd2371881cd4ea93f0e6e30e25a50a9426b6faf1247b7e11e",
+    "treeSha256": "46c74c755e11b017d9610ce78becfc0f62c132e8a9a85c8456dbd77f2851ae33"
+   },
+   {
+    "copyId": "H18",
+    "version": "V1.4",
+    "variant": "embedded single file",
+    "sha256": "21aabd64d9fa636d572904520503eb4fa32df9478d0f767ea49791f49bf8d3b7",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H19",
+    "version": "V1.4",
+    "variant": "nomedia",
+    "sha256": "7c9514277838fe8c52c171a311ac2ea02f2564b6b487a178f5495f421118d1df",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H20",
+    "version": "V1.4",
+    "variant": "nomedia LIVE",
+    "sha256": "c8a569847ebff5ca83b99906dbf036daaac8e0ee9dadc5c63daa473fa10ee323",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H21",
+    "version": "V1.4",
+    "variant": "dev nomedia",
+    "sha256": "5cedb046d52b9049660d84fb7689607bc16fedff96c7128e1a70e5b25fdac58f",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H22",
+    "version": "V1.4",
+    "variant": "dev nomedia LIVE",
+    "sha256": "9256f3367eead205c4af534b5db064d5165415ab8c79f6ded44a0331cd7555bd",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H23",
+    "version": "V1.4",
+    "variant": "nomedia",
+    "sha256": "7c9514277838fe8c52c171a311ac2ea02f2564b6b487a178f5495f421118d1df",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H24",
+    "version": "V1.4",
+    "variant": "nomedia LIVE",
+    "sha256": "c8a569847ebff5ca83b99906dbf036daaac8e0ee9dadc5c63daa473fa10ee323",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H25",
+    "version": "V1.4",
+    "variant": "dev nomedia LIVE",
+    "sha256": "9256f3367eead205c4af534b5db064d5165415ab8c79f6ded44a0331cd7555bd",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H26",
+    "version": "V1.4.1",
+    "variant": "release folder",
+    "sha256": null,
+    "treeSha256": "3d682856d81ab6518e806febe213eb2db63c8343a53d620fd556da2705ba7cae"
+   },
+   {
+    "copyId": "H27",
+    "version": "V1.4.1",
+    "variant": "release zip",
+    "sha256": "232fa8631c72418e0baab1b6f32a0f3545959ff81866b2a47210b206de53ba94",
+    "treeSha256": "3d682856d81ab6518e806febe213eb2db63c8343a53d620fd556da2705ba7cae"
+   },
+   {
+    "copyId": "H28",
+    "version": "V1.4.1",
+    "variant": "release zip (nomedia)",
+    "sha256": "4af5b6f0a67e1acd2d06da133d5fed6a85549d313d077f3ba9c30c0db06d3216",
+    "treeSha256": "835033a2241a85244593b50fbe269eff59970da08f96a526447263c6962fc445"
+   },
+   {
+    "copyId": "H29",
+    "version": "V1.4.1",
+    "variant": "embedded single file",
+    "sha256": "49dbd7b6db76b64467919aaf013558b818422a4018873ee74890d2d440a0d558",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H30",
+    "version": "V1.4.1",
+    "variant": "nomedia",
+    "sha256": "a9fd8eaa0a6f439366d4ab43665c5bf935b6b67a7fa3ffad13b042d9b2d40b33",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H31",
+    "version": "V1.4.1",
+    "variant": "nomedia LIVE",
+    "sha256": "aec004080284ccc6e32efb56ab7130f13c6d49e791aca30a7b8483c1f1a9e256",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H32",
+    "version": "V1.4.1",
+    "variant": "dev nomedia",
+    "sha256": "695c174c2df53ed95a4a258bb7a7fae08026c9d43bf6d41215598e6af4ccd190",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H33",
+    "version": "V1.4.1",
+    "variant": "dev nomedia LIVE",
+    "sha256": "61e71d8ee7ebdbfa530f742341c7da2bf3c4128fa14384aab9f4d15eef2d44ad",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H34",
+    "version": "V1.4.1",
+    "variant": "nomedia",
+    "sha256": "a9fd8eaa0a6f439366d4ab43665c5bf935b6b67a7fa3ffad13b042d9b2d40b33",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H35",
+    "version": "V1.4.1",
+    "variant": "nomedia LIVE",
+    "sha256": "aec004080284ccc6e32efb56ab7130f13c6d49e791aca30a7b8483c1f1a9e256",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H36",
+    "version": "V1.4.1",
+    "variant": "pre-release snapshot (not identical)",
+    "sha256": "e52c18bae61fbe6cb6324c693b7fe2136c66999629d038844f4f3075c75f0432",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H37",
+    "version": "V1.4.1",
+    "variant": "pre-release snapshot LIVE (not identical)",
+    "sha256": "654b7026b4130a7501b0bef7d645aacfa7e01827ae79ec0865d9cdc7af45efc4",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H38",
+    "version": "V1.4.1",
+    "variant": "release zip (nomedia)",
+    "sha256": "4af5b6f0a67e1acd2d06da133d5fed6a85549d313d077f3ba9c30c0db06d3216",
+    "treeSha256": "835033a2241a85244593b50fbe269eff59970da08f96a526447263c6962fc445"
+   },
+   {
+    "copyId": "H39",
+    "version": "V1.4.1",
+    "variant": "release zip (nomedia)",
+    "sha256": "4af5b6f0a67e1acd2d06da133d5fed6a85549d313d077f3ba9c30c0db06d3216",
+    "treeSha256": "835033a2241a85244593b50fbe269eff59970da08f96a526447263c6962fc445"
+   },
+   {
+    "copyId": "H40",
+    "version": "V1.4.1",
+    "variant": "nomedia",
+    "sha256": "a9fd8eaa0a6f439366d4ab43665c5bf935b6b67a7fa3ffad13b042d9b2d40b33",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H41",
+    "version": "V1.4.1",
+    "variant": "nomedia",
+    "sha256": "a9fd8eaa0a6f439366d4ab43665c5bf935b6b67a7fa3ffad13b042d9b2d40b33",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H42",
+    "version": "V1.4.1",
+    "variant": "release folder (nomedia, extracted)",
+    "sha256": null,
+    "treeSha256": "835033a2241a85244593b50fbe269eff59970da08f96a526447263c6962fc445"
+   },
+   {
+    "copyId": "H43",
+    "version": "V1.4.1",
+    "variant": "release folder (nomedia, read-only baseline)",
+    "sha256": null,
+    "treeSha256": "835033a2241a85244593b50fbe269eff59970da08f96a526447263c6962fc445"
+   },
+   {
+    "copyId": "H44",
+    "version": "V1.4.1",
+    "variant": "release zip (nomedia)",
+    "sha256": "4af5b6f0a67e1acd2d06da133d5fed6a85549d313d077f3ba9c30c0db06d3216",
+    "treeSha256": "835033a2241a85244593b50fbe269eff59970da08f96a526447263c6962fc445"
+   },
+   {
+    "copyId": "H45",
+    "version": "V1.4.1",
+    "variant": "nomedia",
+    "sha256": "a9fd8eaa0a6f439366d4ab43665c5bf935b6b67a7fa3ffad13b042d9b2d40b33",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H46",
+    "version": "V1.4.1",
+    "variant": "nomedia (renamed REFERENCE)",
+    "sha256": "a9fd8eaa0a6f439366d4ab43665c5bf935b6b67a7fa3ffad13b042d9b2d40b33",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H47",
+    "version": "V1.4.1",
+    "variant": "nomedia (renamed REFERENCE)",
+    "sha256": "a9fd8eaa0a6f439366d4ab43665c5bf935b6b67a7fa3ffad13b042d9b2d40b33",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H48",
+    "version": "V1.4.1",
+    "variant": "nomedia",
+    "sha256": "a9fd8eaa0a6f439366d4ab43665c5bf935b6b67a7fa3ffad13b042d9b2d40b33",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H49",
+    "version": "V1.4.1",
+    "variant": "nomedia",
+    "sha256": "a9fd8eaa0a6f439366d4ab43665c5bf935b6b67a7fa3ffad13b042d9b2d40b33",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H50",
+    "version": "V1.4.1",
+    "variant": "nomedia LIVE",
+    "sha256": "aec004080284ccc6e32efb56ab7130f13c6d49e791aca30a7b8483c1f1a9e256",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H51",
+    "version": "V1.4.1",
+    "variant": "nomedia",
+    "sha256": "a9fd8eaa0a6f439366d4ab43665c5bf935b6b67a7fa3ffad13b042d9b2d40b33",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H52",
+    "version": "V1.4.1",
+    "variant": "nomedia LIVE",
+    "sha256": "aec004080284ccc6e32efb56ab7130f13c6d49e791aca30a7b8483c1f1a9e256",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H53",
+    "version": "V1.4.1",
+    "variant": "derivative (not identical)",
+    "sha256": "0ce1819bc3486221329ece7d7d5c22e861906df6051c034244702c28b7c64bbc",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H54",
+    "version": "V1.4.1",
+    "variant": "derivative (not identical)",
+    "sha256": "d329e068a9af82fa528d74d9cfbb165fa50ef709f2ce2454ad6cfac15aec4e7e",
+    "treeSha256": null
+   },
+   {
+    "copyId": "H55",
+    "version": "V1.4.1",
+    "variant": "container: carries 1.4.1-nomedia html + 1.4.1-nomedia zip",
+    "sha256": "df34e6643d7b2d04693a80b4fdd9e6a59454ca8d207c3861da56aec101ccdfe5",
+    "treeSha256": "3cf05f38045bc9eed5379c98d426d514ed5b61378528fd87c8b8cd237861978e"
+   },
+   {
+    "copyId": "H56",
+    "version": "V1.4.1",
+    "variant": "container: carries 1.4.1 REFERENCE html",
+    "sha256": "18b0144208a4e2587c5607c3d605a433910ac49f3ba107e05e464b37dc8ed5a1",
+    "treeSha256": "8d54907cb27c5fb6282f17adc21fda519a1c1917de187464d5ac8e164fa169f2"
+   },
+   {
+    "copyId": "H57",
+    "version": "V1.4.1",
+    "variant": "container: carries 1.4.1 REFERENCE html",
+    "sha256": "18b0144208a4e2587c5607c3d605a433910ac49f3ba107e05e464b37dc8ed5a1",
+    "treeSha256": "8d54907cb27c5fb6282f17adc21fda519a1c1917de187464d5ac8e164fa169f2"
+   },
+   {
+    "copyId": "H58",
+    "version": "V1.4.1",
+    "variant": "container: carries 1.4.1-nomedia html",
+    "sha256": "795f4ded1040520d695009a2cf8059f630e638215f64b81082cba2013a62ea29",
+    "treeSha256": "55ac945031281bc9a24cad0e498e64e9a8f12314ef7d51ad1f840d709071d908"
+   }
+  ]
+ }
+}
