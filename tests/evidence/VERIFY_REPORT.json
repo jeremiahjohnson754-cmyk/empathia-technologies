@@ -1,0 +1,54 @@
+{
+  "at": "2026-10-26T13:45:01.766Z",
+  "commit": "b41e3e6f0992e50f6d629eee188e63c46c003d05",
+  "dirty": true,
+  "node": "v22.22.0",
+  "pass": 6,
+  "fail": 0,
+  "notRun": 0,
+  "checks": [
+    {
+      "check": "build (tsc, type-check, OpenAPI contract, web bundle)",
+      "result": "PASS",
+      "seconds": 7.4,
+      "evidence": ".local/logs/BUILD_SUMMARY.json",
+      "summary": "PASS  type-check apps/founder-studio (existing generated data)  (2.2 s) /  / build PASS \u2014 log .local/logs/build-2026-10-26T13-34-58-331Z.log"
+    },
+    {
+      "check": "test suites",
+      "result": "PASS",
+      "seconds": 578.3,
+      "evidence": "tests/evidence/TEST_RESULTS.md",
+      "summary": "PASS     media: full decode of every curated film  36/36  (455.2 s) /  / PASS 18 \u00b7 FAIL 0 \u00b7 NOT_RUN 0 \u2014 tests/evidence/TEST_RESULTS.md"
+    },
+    {
+      "check": "secret scan of tracked files",
+      "result": "PASS",
+      "seconds": 1.8,
+      "evidence": "tests/evidence/SECRET_SCAN.json",
+      "summary": "first run FAIL: 5 lines (.env.example CHANGE_ME placeholders; the documented dev password in two scratch-database scripts) \u2014 reviewed, allow-listed with reasons in scripts/verify/secret-allowlist.json, re-run PASS"
+    },
+    {
+      "check": "documentation links resolve",
+      "result": "PASS",
+      "seconds": 0.1,
+      "evidence": "tests/evidence/LINK_CHECK.json",
+      "summary": "PASS: 118 relative links in 99 Markdown files; 0 broken; 1 external links NOT_RUN"
+    },
+    {
+      "check": "frozen releases unchanged",
+      "result": "PASS",
+      "seconds": 15.9,
+      "evidence": "tests/evidence/FROZEN_CHECK.json",
+      "summary": "  ] /  ] / }"
+    },
+    {
+      "check": "working tree clean of untracked secrets (.local ignored)",
+      "result": "PASS",
+      "seconds": 0,
+      "evidence": null,
+      "summary": ""
+    }
+  ],
+  "note": "Local verification of a production starter on synthetic data. It is not a security assessment, a performance test or production acceptance."
+}

@@ -59,6 +59,17 @@ archive('H', 'EMPATHIA_QA_AND_RELEASE_EVIDENCE', 'Empathia QA and release eviden
 // I — engineering team handoff
 archive('I', 'EMPATHIA_ENGINEERING_TEAM_HANDOFF', 'Empathia engineering team handoff', 'CONFIDENTIAL_TECHNICAL', ['docs/engineering-handoff', 'docs/README.md', 'README.md', 'GETTING_STARTED.md', 'EMPATHIA_MASTER_COMPLETION_REPORT.md', 'docs/operations/PRODUCTION_READINESS_CHECKLIST.md', 'docs/qa/KNOWN_DEFECTS.md', 'docs/security/KNOWN_VULNERABILITIES_AND_REMEDIATION.md'], 'Start here for a CTO or development partner: roles, plan, estimates, debt, risks, definition of done.');
 
+// completeness of the source archive: its file list must equal the tracked files outside provenance/ (verification item 16)
+{
+  const d = items.find((i) => i.id === 'D');
+  const listed = execFileSync('python3', ['-I', '-c', 'import sys,zipfile;print("\\n".join(n for n in zipfile.ZipFile(sys.argv[1]).namelist() if not n.endswith("/")))', path.join(out, d.file)], { encoding: 'utf8', maxBuffer: 64 << 20 }).trim().split('\n').map((n) => n.replace(/^EMPATHIA_PRODUCTION_SOURCE\//, '')).sort();
+  const tracked = git('ls-files').split('\n').filter((f) => f && !f.startsWith('provenance/')).sort();
+  const missing = tracked.filter((f) => !listed.includes(f)); const extra = listed.filter((f) => !tracked.includes(f));
+  const check = { result: missing.length || extra.length ? 'FAIL' : 'PASS', detail: `${listed.length} files in the archive; ${tracked.length} tracked files outside provenance/; missing ${missing.length}, extra ${extra.length}`, missing: missing.slice(0, 50), extra: extra.slice(0, 50) };
+  fs.writeFileSync(path.join(out, 'PACKAGE_CHECK.json'), JSON.stringify(check, null, 2));
+  console.log(`source archive completeness: ${check.result} — ${check.detail}`);
+}
+
 // J — master index
 const index = { title: 'EMPATHIA MASTER ARCHIVE — index', generatedAt: new Date().toISOString(), sourceRevision: commit, notice: NOTICE, deliverables: items };
 fs.writeFileSync(path.join(out, 'MASTER_INDEX.json'), JSON.stringify(index, null, 2));

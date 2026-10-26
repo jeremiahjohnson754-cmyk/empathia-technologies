@@ -1,0 +1,11 @@
+{
+  "markdownFiles": 99,
+  "relativeLinksChecked": 118,
+  "broken": [],
+  "externalLinks": {
+    "count": 1,
+    "result": "NOT_RUN",
+    "why": "no general web access from this environment"
+  },
+  "result": "PASS"
+}

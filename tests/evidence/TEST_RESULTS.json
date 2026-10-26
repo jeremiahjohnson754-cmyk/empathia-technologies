@@ -1,0 +1,190 @@
+{
+  "at": "2026-10-26T13:44:43.990Z",
+  "node": "v22.22.0",
+  "pass": 18,
+  "fail": 0,
+  "notRun": 0,
+  "suites": [
+    {
+      "suite": "unit: packages/commissioning-engine",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 128,
+      "pass": 128,
+      "fail": 0,
+      "seconds": 0.7,
+      "command": "../../../opt/node22/bin/node --test packages/commissioning-engine/dist/test/**/*.test.js"
+    },
+    {
+      "suite": "unit: packages/event-contracts",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "seconds": 0.2,
+      "command": "../../../opt/node22/bin/node --test packages/event-contracts/dist/test/**/*.test.js"
+    },
+    {
+      "suite": "unit: packages/relationship-engine",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "seconds": 0.1,
+      "command": "../../../opt/node22/bin/node --test packages/relationship-engine/dist/test/**/*.test.js"
+    },
+    {
+      "suite": "unit: packages/assurance-engine",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 13,
+      "pass": 13,
+      "fail": 0,
+      "seconds": 0.2,
+      "command": "../../../opt/node22/bin/node --test packages/assurance-engine/dist/test/**/*.test.js"
+    },
+    {
+      "suite": "unit: packages/api-client",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "seconds": 0.2,
+      "command": "../../../opt/node22/bin/node --test packages/api-client/dist/test/**/*.test.js"
+    },
+    {
+      "suite": "unit: packages/schemas",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "seconds": 0.1,
+      "command": "../../../opt/node22/bin/node --test packages/schemas/dist/test/**/*.test.js"
+    },
+    {
+      "suite": "unit: integrations/contracts",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 7,
+      "pass": 7,
+      "fail": 0,
+      "seconds": 0.1,
+      "command": "../../../opt/node22/bin/node --test integrations/contracts/dist/test/**/*.test.js"
+    },
+    {
+      "suite": "unit: integrations/mocks",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "seconds": 0.2,
+      "command": "../../../opt/node22/bin/node --test integrations/mocks/dist/test/**/*.test.js"
+    },
+    {
+      "suite": "unit: ml research prototype (python)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "seconds": 6.6,
+      "command": "python3 -I -m unittest discover -s ml/tests"
+    },
+    {
+      "suite": "service: intelligence-python",
+      "kind": "integration",
+      "result": "PASS",
+      "tests": 4,
+      "pass": 4,
+      "fail": 0,
+      "seconds": 0.6,
+      "command": "python3 -I -m unittest discover -s services/intelligence-python/tests"
+    },
+    {
+      "suite": "integration: api.test.mjs",
+      "kind": "integration",
+      "result": "PASS",
+      "tests": 20,
+      "pass": 20,
+      "fail": 0,
+      "seconds": 5.5,
+      "command": "../../../opt/node22/bin/node --test tests/integration/api.test.mjs"
+    },
+    {
+      "suite": "integration: api-client.test.mjs",
+      "kind": "integration",
+      "result": "PASS",
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "seconds": 2,
+      "command": "../../../opt/node22/bin/node --test tests/integration/api-client.test.mjs"
+    },
+    {
+      "suite": "integration: integration-worker.test.mjs",
+      "kind": "integration",
+      "result": "PASS",
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "seconds": 2.1,
+      "command": "../../../opt/node22/bin/node --test tests/integration/integration-worker.test.mjs"
+    },
+    {
+      "suite": "security: authz.test.mjs",
+      "kind": "security",
+      "result": "PASS",
+      "tests": 45,
+      "pass": 45,
+      "fail": 0,
+      "seconds": 4.7,
+      "command": "../../../opt/node22/bin/node --test tests/security/authz.test.mjs"
+    },
+    {
+      "suite": "browser: enterprise web E2E",
+      "kind": "e2e",
+      "result": "PASS",
+      "tests": 21,
+      "pass": 21,
+      "fail": 0,
+      "seconds": 5.2,
+      "command": "../../../opt/node22/bin/node tests/browser/enterprise-web.test.mjs"
+    },
+    {
+      "suite": "browser: Founder Studio",
+      "kind": "browser",
+      "result": "PASS",
+      "tests": 19,
+      "pass": 19,
+      "fail": 0,
+      "notRun": 1,
+      "seconds": 42.7,
+      "command": "../../../opt/node22/bin/node tests/browser/founder-studio.test.mjs"
+    },
+    {
+      "suite": "e2e: founder town hall (Founder Edition)",
+      "kind": "e2e",
+      "result": "PASS",
+      "tests": 25,
+      "pass": 25,
+      "fail": 0,
+      "seconds": 51.8,
+      "command": "../../../opt/node22/bin/node tests/e2e/founder-townhall.e2e.mjs"
+    },
+    {
+      "suite": "media: full decode of every curated film",
+      "kind": "media",
+      "result": "PASS",
+      "tests": 36,
+      "pass": 36,
+      "fail": 0,
+      "seconds": 455.2,
+      "command": "../../../opt/node22/bin/node tests/media/decode-films.mjs"
+    }
+  ]
+}
