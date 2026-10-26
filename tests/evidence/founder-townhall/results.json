@@ -1,0 +1,159 @@
+{
+ "suite": "founder-townhall-e2e",
+ "edition": "Founder Edition (2.5.4 development build)",
+ "at": "2026-10-26T12:01:59.696Z",
+ "passed": 25,
+ "failed": 0,
+ "results": [
+  {
+   "id": "T-00",
+   "name": "the Founder Edition (development) is served by the studio launcher",
+   "result": "PASS",
+   "detail": "development"
+  },
+  {
+   "id": "T-01",
+   "name": "the Designer creates a town hall with DECLARED dimensions; it gets one canonical room id",
+   "result": "PASS",
+   "detail": "designer RDES-0381 R-PLN-0381"
+  },
+  {
+   "id": "T-02",
+   "name": "cameras, microphones, displays, DSP, speakers, a network switch and furniture are added through the palette",
+   "result": "PASS",
+   "detail": "30 → 38; lectern,chairs,ledwall,display,camera,micwireless,micceil,speaker,dsp,amp,compute,switcher,encoder,control,touch,switch,rack,table"
+  },
+  {
+   "id": "T-03",
+   "name": "every planned asset has its own canonical id (no duplicates)",
+   "result": "PASS",
+   "detail": "PA-0382,PA-0383,PA-0384,PA-0385,PA-0386,PA-0387,PA-0388,PA-0389,PA-0390,PA-0391,PA-0392,PA-0393,PA-0394,PA-0395,PA-0396,PA-0397,PA-0398,PA-0399,PA-0400,PA-0401,PA-0402,PA-0403,PA-0404,PA-0405,PA-0406,PA-0407,PA-0408,PA-0409,PA-0410,PA-0411,PA-0416,PA-0418,PA-0420,PA-0422,PA-0424,PA-0426,PA-0428,PA-0430"
+  },
+  {
+   "id": "T-04",
+   "name": "save and reload: the revision persists with every device id unchanged",
+   "result": "PASS",
+   "detail": "1 → 2"
+  },
+  {
+   "id": "T-05",
+   "name": "the drawing set is generated and the Systems Engineer approves the schedule and placement drawings",
+   "result": "PASS",
+   "detail": "[\"APPROVED\",\"APPROVED\"]"
+  },
+  {
+   "id": "T-06",
+   "name": "swap the camera: same asset id, the catalogue model, the generic kept in its model history (after a reload)",
+   "result": "PASS",
+   "detail": "{\"model\":\"Orvique Orbit 4K PTZ\",\"hist\":[{\"rev\":10,\"at\":\"2026-10-22T18:33:15.000Z\",\"by\":\"designer\",\"cat\":\"camera\",\"model\":\"generic\",\"label\":\"Camera 1\"}]}"
+  },
+  {
+   "id": "T-07",
+   "name": "the affected drawings are REVIEW_REQUIRED (shown on the Drawings tab) and a drawing-disagreement issue is open",
+   "result": "PASS",
+   "detail": "REVIEW_REQUIRED"
+  },
+  {
+   "id": "T-08",
+   "name": "applicability was re-judged on the swap (logged with its trigger): 94 definitions, applicable ones blocked by prerequisite, none passed",
+   "result": "PASS",
+   "detail": "13 → 14; 86 applicable"
+  },
+  {
+   "id": "T-09",
+   "name": "the Commissioning tab shows the judged library to a person (counts and statuses)",
+   "result": "PASS",
+   "detail": "Empathia\n›\nV2.5 lifecycle\n›\nBuild a Room\n›\nRDES-0381\n\nEMPATHIA V2.5 · CONNECTED LIFECYCLE\n\nFounder Town Hall (synthetic)\n\nOne room record: every view below reads the same design, assets and evidence.\n"
+  },
+  {
+   "id": "T-10",
+   "name": "the workbook downloads as JSON and CSV: 94 testing rows, the swapped camera under the same id, no result pre-filled or bare PASS",
+   "result": "PASS",
+   "detail": "94 rows; camera true; csv 0 bytes"
+  },
+  {
+   "id": "T-11",
+   "name": "Search Party finds the room by name, labelled planned (not commissioned)",
+   "result": "PASS",
+   "detail": "Read as\nTownhalls\n\n32 results in 3 groups\n\nAll\n32\nRooms\n2\nBest match · Room\nHorizon 1.400 — Townhall\nTownhall · seats 240 · Horizon Media Center\nAction required\nRecord: Verified\nBuilding\nHorizon Media Center\nSupport path\nHorizon AV support · Quentin Castellanos\nOwner\nJun Oyelaran\nRoom standard\nTownh"
+  },
+  {
+   "id": "T-12",
+   "name": "the shared graph has one PlannedRoom for the room and exactly one PlannedAsset per live (non-furniture) device, with the same ids (no duplicates)",
+   "result": "PASS",
+   "detail": "{\"planned\":{\"rooms\":1,\"assets\":29},\"missing\":[],\"extra\":[],\"pa\":29,\"live\":29}"
+  },
+  {
+   "id": "T-13",
+   "name": "Empathia Pro shows the planned room as PLANNED — NOT YET COMMISSIONED with no invented live health (no uptime figure, no online state)",
+   "result": "PASS",
+   "detail": " (synthetic) PLANNED — NOT YET COMMISSIONED Townhall\nR-PLN-0381 · ATL floor 1 · 29 planned devices · 2 open design issues\n\nLive health: not monitored (not installed) · uptime: none · alerts: none. Commissioning readiness: 86 of 94 tests apply; 86 blocked by prerequisite, 0 pending information; 0 exe"
+  },
+  {
+   "id": "T-14",
+   "name": "removing the camera → room compute video connection raises one High design deficiency on that camera (persisted)",
+   "result": "PASS",
+   "detail": "{\"removed\":[\"CN-0381-8\"],\"iss\":[[\"RISS-0445\",\"OPEN\",\"High\"]]}"
+  },
+  {
+   "id": "T-15",
+   "name": "design approval is not premature: the Designer lacks the authority, and the Systems Engineer is refused while the High deficiency is open",
+   "result": "PASS",
+   "detail": "[[\"Designer / CAD / Revit cannot sign room.design.approve\"],[\"the room classification is not approved by an engineer\",\"1 open High/Critical design deficiencies\"]]"
+  },
+  {
+   "id": "T-16",
+   "name": "the Designer may not assign the deficiency: no Assign control, and the service refuses",
+   "result": "PASS",
+   "detail": "[\"Designer / CAD / Revit cannot assign room issues\"]"
+  },
+  {
+   "id": "T-16b",
+   "name": "the Systems Engineer may not assign it either (assignment is an operations authority: issue.assign / route.internal)",
+   "result": "PASS",
+   "detail": "[\"Systems Engineer cannot assign room issues\"]"
+  },
+  {
+   "id": "T-17",
+   "name": "the Operations Lead assigns it to the Designer through the Issues tab; owner and history persist after a reload",
+   "result": "PASS",
+   "detail": "{\"owner\":\"designer\",\"hist\":[[\"opslead\",\"assigned to designer\"]]}"
+  },
+  {
+   "id": "T-18",
+   "name": "restoring the connection resolves the deficiency with a traceable resolution (who, revision, how), after a reload",
+   "result": "PASS",
+   "detail": "{\"at\":\"2026-10-22T18:47:32.000Z\",\"by\":\"designer\",\"revision\":2,\"designRev\":13,\"how\":\"the design check no longer fires after: connection added CN-0381-44\",\"evidence\":\"design re-analysis (the check is re-run on every change); verification: an engineer reviews the next saved revision\"}"
+  },
+  {
+   "id": "T-19",
+   "name": "the deficiency keeps its evidence and its full history (created → assigned → resolved)",
+   "result": "PASS",
+   "detail": "{\"ev\":1,\"hist\":[\"assigned to designer\",\"resolved by connection added CN-0381-44\"]}"
+  },
+  {
+   "id": "T-20",
+   "name": "the Issues tab shows the resolution to a person",
+   "result": "PASS",
+   "detail": "Empathia\n›\nV2.5 lifecycle\n›\nBuild a Room\n›\nRDES-0381\n\nEMPATHIA V2.5 · CONNECTED LIFECYCLE\n\nFounder Town Hall (synthetic)\n\nOne room record: every view below reads the same design, assets and evidence.\n"
+  },
+  {
+   "id": "T-21",
+   "name": "the canonical room id never changed, and the planned room never entered operations (Core Room and Device counts unchanged)",
+   "result": "PASS",
+   "detail": "[82,786] → [82,786]"
+  },
+  {
+   "id": "T-22",
+   "name": "no test was verified automatically: every result is NOT_TESTED and the room is still PLANNED",
+   "result": "PASS",
+   "detail": "PLANNED"
+  },
+  {
+   "id": "T-23",
+   "name": "no page errors during the whole scenario",
+   "result": "PASS",
+   "detail": ""
+  }
+ ]
+}
