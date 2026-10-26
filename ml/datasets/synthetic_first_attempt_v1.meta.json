@@ -1,0 +1,30 @@
+{
+  "dataset": "synthetic_first_attempt_v1",
+  "synthetic": true,
+  "rooms": 1500,
+  "rows": 116062,
+  "seed": 20261026,
+  "positives": 24298,
+  "engineVersion": "2.5.4-port.1",
+  "generator": "ml/datasets/generate_synthetic.mjs",
+  "groundTruth": "truth() in the generator (declared, synthetic)",
+  "columns": [
+    "room",
+    "template",
+    "archetype",
+    "occupancy",
+    "n_devices",
+    "n_families",
+    "large_room",
+    "new_install",
+    "test_id",
+    "domain",
+    "phase",
+    "tier",
+    "instrument",
+    "true_p",
+    "failed_first_attempt"
+  ],
+  "sha256": "c2e58fa304f003a1718c81f2c69f842a1af25911d8c9f2250975bef1128d5bbd",
+  "createdAt": "2026-10-26T12:56:43.800Z"
+}

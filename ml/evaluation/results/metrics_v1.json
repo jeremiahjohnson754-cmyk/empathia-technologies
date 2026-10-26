@@ -1,0 +1,60 @@
+{
+  "status": "RESEARCH_PROTOTYPE_SYNTHETIC_DATA",
+  "test_rows": 29062,
+  "test_rooms": 375,
+  "positive_rate_test": 0.212,
+  "base_rate_train": 0.2085,
+  "models": {
+    "constant_base_rate": {
+      "roc_auc": 0.5,
+      "brier": 0.167,
+      "log_loss": 0.5166,
+      "ece_10": 0.0035
+    },
+    "hand_rule": {
+      "roc_auc": 0.5594,
+      "brier": 0.1655,
+      "log_loss": 0.512,
+      "ece_10": 0.0046
+    },
+    "logistic_regression": {
+      "roc_auc": 0.6093,
+      "brier": 0.1625,
+      "log_loss": 0.5033,
+      "ece_10": 0.0051
+    },
+    "hist_gradient_boosting": {
+      "roc_auc": 0.606,
+      "brier": 0.1628,
+      "log_loss": 0.5042,
+      "ece_10": 0.0037
+    },
+    "oracle_true_p": {
+      "roc_auc": 0.6368,
+      "brier": 0.1601,
+      "log_loss": 0.4963,
+      "ece_10": 0.0046
+    }
+  },
+  "recovered_weights": {
+    "phase_ge3": 0.34319,
+    "tier1": 0.467185,
+    "instrument": 0.601247,
+    "n_devices": 0.03389,
+    "large_room": 0.263749,
+    "new_install": 0.187632,
+    "domain=Audio": 0.31379,
+    "domain=Video": 0.135572
+  },
+  "declared_truth": {
+    "tier1": 0.5,
+    "phase_ge3": 0.35,
+    "instrument": 0.6,
+    "n_devices": 0.03,
+    "large_room": 0.3,
+    "new_install": 0.2,
+    "domain=Audio": 0.45,
+    "domain=Video": 0.3
+  },
+  "interpretation": "On synthetic data generated from a declared logistic function, the logistic model approaches the oracle and roughly recovers the declared weights (with a noise term, recovered weights are attenuated; domain weights are identified only relative to one another, because the one-hot domains and the intercept are collinear). This validates the pipeline (data \u2192 features \u2192 training \u2192 serialization \u2192 inference \u2192 evaluation), not any real-world prediction."
+}
