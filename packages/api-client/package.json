@@ -1,0 +1,12 @@
+{
+  "name": "@empathia/api-client",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "description": "Typed client for the Empathia enterprise API, generated from its OpenAPI contract (scripts/api/export-openapi.mjs).",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": { ".": { "types": "./dist/src/index.d.ts", "default": "./dist/src/index.js" } },
+  "scripts": { "build": "tsc -b", "generate": "node ../../scripts/api/export-openapi.mjs", "test": "node --test \"dist/test/**/*.test.js\"" }
+}
