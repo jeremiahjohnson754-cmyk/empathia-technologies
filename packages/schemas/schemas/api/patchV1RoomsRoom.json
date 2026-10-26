@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/patchV1RoomsRoom/0.1.0.json",
+  "title": "PATCH /v1/rooms/{room} request body",
+  "description": "Change the room’s name, intended use or occupancy (PLANNED only)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "intendedUse": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "occupancy": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5000
+    }
+  }
+}

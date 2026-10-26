@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomRevisions/0.1.0.json",
+  "title": "POST /v1/rooms/{room}/revisions request body",
+  "description": "Save an immutable revision (refused when nothing changed)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [],
+  "properties": {
+    "reason": {
+      "type": "string",
+      "maxLength": 200
+    }
+  }
+}

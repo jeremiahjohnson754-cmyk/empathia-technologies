@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1IssuesIssueAssign/0.1.0.json",
+  "title": "POST /v1/issues/{issue}/assign request body",
+  "description": "Assign an open issue to a role",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "ownerRole"
+  ],
+  "properties": {
+    "ownerRole": {
+      "type": "string",
+      "pattern": "^[a-z_]{2,40}$"
+    }
+  }
+}

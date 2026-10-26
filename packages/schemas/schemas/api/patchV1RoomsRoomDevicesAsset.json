@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/patchV1RoomsRoomDevicesAsset/0.1.0.json",
+  "title": "PATCH /v1/rooms/{room}/devices/{asset} request body",
+  "description": "Move a device or substitute its model (the asset keeps its id; the model history is kept)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [],
+  "properties": {
+    "x": {
+      "type": "number"
+    },
+    "y": {
+      "type": "number"
+    },
+    "rot": {
+      "type": "number"
+    },
+    "mount": {
+      "type": "string",
+      "enum": [
+        "wall",
+        "ceiling",
+        "floor",
+        "table",
+        "rack"
+      ]
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    }
+  }
+}

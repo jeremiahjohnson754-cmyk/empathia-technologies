@@ -1,0 +1,617 @@
+{
+ "set": "investor-safe",
+ "rule": "rightsStatus VERIFIED AND an investor channel in authorizedChannels AND distributionEligibility ELIGIBLE",
+ "count": 0,
+ "assets": [],
+ "candidates": [
+  {
+   "key": "FL",
+   "title": "The flagship film (4:18)",
+   "series": "Flagship",
+   "width": 3840,
+   "height": 2160,
+   "durationS": 258,
+   "sha256": "d2bbe353a68aad92770f89537bf37af256651dda70db1cccbd7e774fb13bab8f",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "FT",
+   "title": "Flagship teaser (0:15)",
+   "series": "Flagship",
+   "width": 3840,
+   "height": 2160,
+   "durationS": 15,
+   "sha256": "61baf5cc670efc3a06d1c6321a8e844c318bc1fa6c0b73a213e67cb7be30c823",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "FA",
+   "title": "Film A — The Platform Vision (2:00)",
+   "series": "Investor films",
+   "width": 1920,
+   "height": 1080,
+   "durationS": 120,
+   "sha256": "a136a65cb919dcf1ecf6a01674ede82a8f06715e6462c9ceb9c5c73e89c53393",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "FB",
+   "title": "Film B — Intelligence Becomes Experience (1:30)",
+   "series": "Investor films",
+   "width": 1920,
+   "height": 1080,
+   "durationS": 90,
+   "sha256": "7b3ef4057d039f5b933056c98e8c31f2165a890c9b54891b65b2afbf1867fc74",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "F01",
+   "title": "F01 — The Living System",
+   "series": "V1.4.1 campaign",
+   "width": 1920,
+   "height": 1080,
+   "durationS": 280,
+   "sha256": "4d31db34fb218bed53c22b9991c253f6dfd0072efdd2bdeb81553905c8adcfc2",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "F02",
+   "title": "F02 — One System (executive)",
+   "series": "V1.4.1 campaign",
+   "width": 1920,
+   "height": 1080,
+   "durationS": 250,
+   "sha256": "756f77e885ace3d08676f5e973471d6c5862299366457735f6ee45a7cb83e2af",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "F03",
+   "title": "F03 — Empathia in Action",
+   "series": "V1.4.1 campaign",
+   "width": 1920,
+   "height": 1080,
+   "durationS": 360,
+   "sha256": "eac4663e8e3c202a24718ef0da2fbece6dbb5fd4f74388a1ea2cd953c1a0eb4d",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "IE",
+   "title": "Field Intelligence film (4K)",
+   "series": "Field Intelligence",
+   "width": 3840,
+   "height": 2160,
+   "durationS": 300,
+   "sha256": "6ee94d40ce8615f8584091cceb74adfab39f1a3faab925255b4e011dbff5fd55",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "IE-trailer",
+   "title": "Field Intelligence trailer (0:60)",
+   "series": "Field Intelligence",
+   "width": 3840,
+   "height": 2160,
+   "durationS": 58.94,
+   "sha256": "874a259d2ed5ee6f5a8b057e8ca1cb39eb4e90a27eb9d1ebbc2409befacb6afc",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "IE-teaser",
+   "title": "Field Intelligence teaser (0:30)",
+   "series": "Field Intelligence",
+   "width": 3840,
+   "height": 2160,
+   "durationS": 28.92,
+   "sha256": "ec78da07a9a066de6e4b063e88774b7daf6ce6caa0e88c75877231118b7bf5c6",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "M2",
+   "title": "Empathia — the 2:00 master",
+   "series": "Empathia 2:00",
+   "width": 1920,
+   "height": 1080,
+   "durationS": 120,
+   "sha256": "10ad123ad3fd4cfd45cfde4b92b7281f39c4645fb93b07e667985810b9b221f9",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "M60",
+   "title": "Empathia — executive cut (0:60)",
+   "series": "Empathia 2:00",
+   "width": 1920,
+   "height": 1080,
+   "durationS": 60,
+   "sha256": "90f83aab5409ac05138945ca325025c4ebcd89a0e1b6a17fc3c1b3f6ad1f79da",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "M30",
+   "title": "Empathia — social cut (0:30)",
+   "series": "Empathia 2:00",
+   "width": 1920,
+   "height": 1080,
+   "durationS": 30,
+   "sha256": "68c00e064e691f484dd8030035430cc323ca5febaa9b20694a401509e405b99c",
+   "rightsStatus": "UNVERIFIED",
+   "blockers": [
+    "ledger entry UNVERIFIED",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "M15",
+   "title": "Empathia — teaser (0:15)",
+   "series": "Empathia 2:00",
+   "width": 1920,
+   "height": 1080,
+   "durationS": 14.958,
+   "sha256": "7ab9b1e85476c1b26a47ddc2ab4b6aacc149d4b6f08f154d858fef9a1cd69655",
+   "rightsStatus": "UNVERIFIED",
+   "blockers": [
+    "ledger entry UNVERIFIED",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "F02P",
+   "title": "The Living System (3:00)",
+   "series": "Campaign 2026-10-10",
+   "width": 1920,
+   "height": 1080,
+   "durationS": 180,
+   "sha256": "46ee50741ad42d845f72c30bfec3ed2c3ba7122590e45220e9def1787a0e54f1",
+   "rightsStatus": "UNVERIFIED",
+   "blockers": [
+    "ledger entry UNVERIFIED",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "F04",
+   "title": "What If Your Environment Could Explain Itself? (2:00)",
+   "series": "Campaign 2026-10-10",
+   "width": 1920,
+   "height": 1080,
+   "durationS": 120,
+   "sha256": "3f9fba4055be8b2372e0e0175666f200cf56d44eb243a3de820709b020755c52",
+   "rightsStatus": "UNVERIFIED",
+   "blockers": [
+    "ledger entry UNVERIFIED",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "SyncLab",
+   "title": "SyncLab — From Hypothesis to Evidence",
+   "series": "Collaboro-Sing",
+   "width": 1920,
+   "height": 1080,
+   "durationS": 35,
+   "sha256": "853f3436b21a500c8cb41f82b44d91d5c6a88b6dc99f1df2ace7533e094f15ff",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "S01",
+   "title": "S01 · Start with a building. Find everything connected.",
+   "series": "Social shorts",
+   "width": 1080,
+   "height": 1920,
+   "durationS": 25,
+   "sha256": "918ebb96de4244c2086177f1d8a78e7a12f11427ea829e409f1cb925ef1cb289",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "S02",
+   "title": "S02 · Don’t browse blindly. Ask where to look.",
+   "series": "Social shorts",
+   "width": 1080,
+   "height": 1920,
+   "durationS": 27,
+   "sha256": "999b695c6297cf4e7cdae6468e42cebd74a734eb7f71ca66dce3d429d106fdfe",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "S03",
+   "title": "S03 · An inventory isn’t an operating model.",
+   "series": "Social shorts",
+   "width": 1080,
+   "height": 1920,
+   "durationS": 26,
+   "sha256": "8fe1e6cc02bbfabefc38ae7a675c7f391b03665921c0a9469dc0d96c42662508",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "S04",
+   "title": "S04 · Replace a device. Keep its history.",
+   "series": "Social shorts",
+   "width": 1080,
+   "height": 1920,
+   "durationS": 30,
+   "sha256": "794f3dee1273cb36908d2444c25fceb786b92610f0ce797cbb948c79aa3c79e1",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "S05",
+   "title": "S05 · A room isn’t ready because someone says so.",
+   "series": "Social shorts",
+   "width": 1080,
+   "height": 1920,
+   "durationS": 27,
+   "sha256": "29c7b9870ab05f5412c2770d8827fd5b82560a58cea7ec374e04d5fe3e500ea5",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "S06",
+   "title": "S06 · Reachable doesn’t mean working.",
+   "series": "Social shorts",
+   "width": 1080,
+   "height": 1920,
+   "durationS": 28,
+   "sha256": "48c0f9c4fcf8ac2bb1fc397b359a3d33be57894aa23e42251a9f9740996cd9b7",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "S07",
+   "title": "S07 · See the room before you change the room.",
+   "series": "Social shorts",
+   "width": 1080,
+   "height": 1920,
+   "durationS": 26,
+   "sha256": "d6572093f76a6d8772dbe2245f36fbcfc90f32038dd4d758237666af785f5c52",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "S08",
+   "title": "S08 · A projection should show its math.",
+   "series": "Social shorts",
+   "width": 1080,
+   "height": 1920,
+   "durationS": 28,
+   "sha256": "090be6f59395e11b4cc3508344530a1f7fffd9888e20132153bf7e806f61483f",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "S09",
+   "title": "S09 · When remote evidence ends, field work begins.",
+   "series": "Social shorts",
+   "width": 1080,
+   "height": 1920,
+   "durationS": 25,
+   "sha256": "9a6a2a158fb05a02e9aa6e6f0f474a055d9be05803bd328aed8a1732b5c19795",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "S10",
+   "title": "S10 · Not every critical space is a meeting room.",
+   "series": "Social shorts",
+   "width": 1080,
+   "height": 1920,
+   "durationS": 28,
+   "sha256": "64054a1e1153d379a885b67f6ee019a6cf8c2459489db03116b6bf99505f73a5",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "S11",
+   "title": "S11 · Engineering knowledge shouldn’t disappear.",
+   "series": "Social shorts",
+   "width": 1080,
+   "height": 1920,
+   "durationS": 25,
+   "sha256": "8346aa6b631bf180389ed73d54e7b9b78b6e3c8fae9e7fb6b3fe5b67594d4549",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "S12",
+   "title": "S12 · Six screens shouldn’t mean six versions of the truth.",
+   "series": "Social shorts",
+   "width": 1080,
+   "height": 1920,
+   "durationS": 30,
+   "sha256": "46389f0a98a755c336f5a785a3f891e7829691fe73e1fb12a7aa704ee124bd8b",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "S13",
+   "title": "S13 · Let the AI draft. You decide.",
+   "series": "Social shorts",
+   "width": 1080,
+   "height": 1920,
+   "durationS": 30,
+   "sha256": "7cde0a458d0b0a6e6e29c5350a86ecfb95d737199ef096335aa60ca6335a7074",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "S14",
+   "title": "S14 · A visitor shouldn’t need directions.",
+   "series": "Social shorts",
+   "width": 1080,
+   "height": 1920,
+   "durationS": 28,
+   "sha256": "273224e19f8ef7599c9df37e3aaa56565ca1a92478462cd8d554854ece174ff3",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "S15",
+   "title": "S15 · Follow one issue to the room it lives in.",
+   "series": "Social shorts",
+   "width": 1080,
+   "height": 1920,
+   "durationS": 30,
+   "sha256": "eb21ceefb3024c0ac25701f4478c84b7d407548746dd3f3b6ac19defe556218c",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "S16",
+   "title": "S16 · Watch a room’s whole life.",
+   "series": "Social shorts",
+   "width": 1080,
+   "height": 1920,
+   "durationS": 27,
+   "sha256": "c9a2f11dad644652fd8144060bb6679c6900cb8a619e451d94a5c0200f347d45",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "S17",
+   "title": "S17 · Who answers after hours?",
+   "series": "Social shorts",
+   "width": 1080,
+   "height": 1920,
+   "durationS": 27,
+   "sha256": "4306152535c9f3bb2463cd82bdadc31bb9940c90ae6bd78813e8f758864bf4b3",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "S18",
+   "title": "S18 · Who actually knows how?",
+   "series": "Social shorts",
+   "width": 1080,
+   "height": 1920,
+   "durationS": 26,
+   "sha256": "cdf27d0de15a5416fad3d355864e7df88f7df374b287ed69843906059f3d20d0",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  },
+  {
+   "key": "S19",
+   "title": "S19 · Hear what one EQ band does.",
+   "series": "Social shorts",
+   "width": 1080,
+   "height": 1920,
+   "durationS": 30,
+   "sha256": "7d66247e9a9385270117f8b6afc15074147f1b6656596cdbcfeecbd42bdf2d23",
+   "rightsStatus": "NOT_IN_LEDGER",
+   "blockers": [
+    "not entered in the media-rights ledger",
+    "no ledger asset id",
+    "rights owner not established for an external channel",
+    "licence evidence for every component (footage, voice, music, fonts) not on file",
+    "founder authorization for the channel not given"
+   ]
+  }
+ ],
+ "note": "Empty: no asset is VERIFIED for an external channel. Nothing may enter an investor package until the ledger verifies it and the founder authorizes the channel."
+}

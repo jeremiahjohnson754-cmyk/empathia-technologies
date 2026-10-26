@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1AuthToken/0.1.0.json",
+  "title": "POST /v1/auth/token request body",
+  "description": "Sign in with the development identity provider (AUTH_MODE=dev only)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "email",
+    "password"
+  ],
+  "properties": {
+    "email": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "password": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "tenant": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "role": {
+      "type": "string",
+      "maxLength": 40
+    }
+  }
+}

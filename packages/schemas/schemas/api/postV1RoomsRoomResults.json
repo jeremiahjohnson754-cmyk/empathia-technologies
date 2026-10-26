@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomResults/0.1.0.json",
+  "title": "POST /v1/rooms/{room}/results request body",
+  "description": "Record a field result (room in COMMISSIONING; responsible role; accepted evidence kind; stored evidence)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "testId",
+    "state",
+    "evidenceId",
+    "evidenceKind"
+  ],
+  "properties": {
+    "testId": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "PASS",
+        "FAIL",
+        "NOT_SUPPORTED",
+        "INCONCLUSIVE"
+      ]
+    },
+    "evidenceId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "evidenceKind": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "instrument": {
+      "type": "string",
+      "maxLength": 200
+    }
+  }
+}

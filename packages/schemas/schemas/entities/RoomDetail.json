@@ -1,0 +1,331 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/entities/RoomDetail/0.1.0.json",
+  "title": "RoomDetail",
+  "description": "GET /v1/rooms/{room}: the room with its devices, connections, drawings, revisions, issues and commissioning plan.",
+  "type": "object",
+  "required": [
+    "room",
+    "devices",
+    "connections",
+    "drawings",
+    "revisions",
+    "issues",
+    "commissioning"
+  ],
+  "properties": {
+    "room": {
+      "type": "object",
+      "required": [
+        "code",
+        "id",
+        "name",
+        "lifecycle",
+        "template",
+        "occupancy",
+        "geometry",
+        "rev"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^R-[A-Z0-9-]{3,32}$"
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "lifecycle": {
+          "enum": [
+            "PLANNED",
+            "DESIGN_APPROVED",
+            "INSTALLATION_PENDING",
+            "INSTALLED_UNVERIFIED",
+            "COMMISSIONING",
+            "ACCEPTED",
+            "OPERATIONAL"
+          ]
+        },
+        "template": {
+          "type": "string"
+        },
+        "intendedUse": {
+          "type": "string"
+        },
+        "occupancy": {
+          "type": "integer"
+        },
+        "unit": {
+          "enum": [
+            "m",
+            "ft"
+          ]
+        },
+        "geometry": {
+          "type": "object",
+          "required": [
+            "shape",
+            "points",
+            "ceiling"
+          ],
+          "properties": {
+            "shape": {
+              "type": "string"
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              }
+            },
+            "ceiling": {
+              "type": "number"
+            },
+            "lengthM": {
+              "type": "number"
+            },
+            "widthM": {
+              "type": "number"
+            }
+          }
+        },
+        "rev": {
+          "type": "integer"
+        },
+        "approvedRevision": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "classification": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "approvedClassification": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "liveHealth": {
+          "const": "NOT_MONITORED"
+        }
+      }
+    },
+    "devices": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "cat",
+          "label",
+          "x",
+          "y"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^PA-\\d{4,}$"
+          },
+          "cat": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "role": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "model": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "generic": {
+            "type": "boolean"
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "z": {
+            "type": "number"
+          },
+          "rot": {
+            "type": "number"
+          },
+          "mount": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "furniture": {
+            "type": "boolean"
+          },
+          "lifecycle": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "connections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "from",
+          "to",
+          "kind"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "signal",
+              "network",
+              "control",
+              "power"
+            ]
+          },
+          "why": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "drawings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "kind",
+          "state"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "DRAFT",
+              "GENERATED",
+              "APPROVED",
+              "REVIEW_REQUIRED"
+            ]
+          },
+          "revNo": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "revisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "rev_no",
+          "sha256"
+        ],
+        "properties": {
+          "rev_no": {
+            "type": "integer"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      }
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.empathia.invalid/entities/Issue/0.1.0.json"
+      }
+    },
+    "commissioning": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "required": [
+            "planId",
+            "engineVersion",
+            "ruleVersion",
+            "applicable",
+            "rows"
+          ],
+          "properties": {
+            "planId": {
+              "type": "string"
+            },
+            "engineVersion": {
+              "type": "string"
+            },
+            "ruleVersion": {
+              "type": "string"
+            },
+            "library": {
+              "type": "integer"
+            },
+            "applicable": {
+              "type": "integer"
+            },
+            "counts": {
+              "type": "object"
+            },
+            "rows": {
+              "type": "array",
+              "items": {
+                "$ref": "https://schemas.empathia.invalid/entities/PlanRow/0.1.0.json"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

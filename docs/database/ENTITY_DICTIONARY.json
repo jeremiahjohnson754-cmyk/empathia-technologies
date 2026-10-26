@@ -1,0 +1,5135 @@
+{
+  "generatedBy": "scripts/docs/entity-dictionary.mjs",
+  "tables": 32,
+  "views": 1,
+  "relations": [
+    {
+      "name": "ai_request",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0004_platform.sql",
+      "purpose": "Every AI request is logged with its outcome. No model is configured in the starter: requests are recorded as NOT_CONFIGURED.",
+      "columns": [
+        {
+          "rel": "ai_request",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "ai_request",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "ai_request",
+          "col": "person_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "ai_request",
+          "col": "purpose",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "ai_request",
+          "col": "prompt_sha256",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "ai_request",
+          "col": "outcome",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "ai_request",
+          "col": "sources",
+          "type": "jsonb",
+          "notnull": true,
+          "def": "'[]'::jsonb",
+          "comment": null
+        },
+        {
+          "rel": "ai_request",
+          "col": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "ai_request",
+          "name": "ai_request_outcome_check",
+          "type": "c",
+          "def": "CHECK ((outcome = ANY (ARRAY['NOT_CONFIGURED'::text, 'REFUSED'::text, 'ANSWERED'::text])))"
+        },
+        {
+          "rel": "ai_request",
+          "name": "ai_request_person_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (person_id) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "ai_request",
+          "name": "ai_request_tenant_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id) REFERENCES app.tenant(id)"
+        },
+        {
+          "rel": "ai_request",
+          "name": "ai_request_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "ai_request",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "ai_request",
+          "name": "ai_request_pkey",
+          "def": "CREATE UNIQUE INDEX ai_request_pkey ON app.ai_request USING btree (id)"
+        }
+      ]
+    },
+    {
+      "name": "audit_event",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0004_platform.sql",
+      "purpose": "Append-only audit log: every state change and every refusal, with the actor, the correlation id and the before/after summary.",
+      "columns": [
+        {
+          "rel": "audit_event",
+          "col": "id",
+          "type": "bigint",
+          "notnull": true,
+          "def": "nextval('app.audit_event_id_seq'::regclass)",
+          "comment": null
+        },
+        {
+          "rel": "audit_event",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "audit_event",
+          "col": "at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        },
+        {
+          "rel": "audit_event",
+          "col": "actor_id",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "audit_event",
+          "col": "actor_role",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "audit_event",
+          "col": "action",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "audit_event",
+          "col": "outcome",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "audit_event",
+          "col": "aggregate_type",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "audit_event",
+          "col": "aggregate_id",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "audit_event",
+          "col": "correlation_id",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "audit_event",
+          "col": "detail",
+          "type": "jsonb",
+          "notnull": true,
+          "def": "'{}'::jsonb",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "audit_event",
+          "name": "audit_event_outcome_check",
+          "type": "c",
+          "def": "CHECK ((outcome = ANY (ARRAY['ALLOWED'::text, 'DENIED'::text, 'FAILED'::text])))"
+        },
+        {
+          "rel": "audit_event",
+          "name": "audit_event_actor_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (actor_id) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "audit_event",
+          "name": "audit_event_tenant_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id) REFERENCES app.tenant(id)"
+        },
+        {
+          "rel": "audit_event",
+          "name": "audit_event_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "audit_event",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [
+        {
+          "rel": "audit_event",
+          "name": "audit_append_only",
+          "def": "CREATE TRIGGER audit_append_only BEFORE DELETE OR UPDATE ON app.audit_event FOR EACH ROW EXECUTE FUNCTION app.refuse_change()"
+        }
+      ],
+      "indexes": [
+        {
+          "rel": "audit_event",
+          "name": "audit_aggregate_idx",
+          "def": "CREATE INDEX audit_aggregate_idx ON app.audit_event USING btree (tenant_id, aggregate_type, aggregate_id, at DESC)"
+        },
+        {
+          "rel": "audit_event",
+          "name": "audit_event_pkey",
+          "def": "CREATE UNIQUE INDEX audit_event_pkey ON app.audit_event USING btree (id)"
+        }
+      ]
+    },
+    {
+      "name": "building",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0002_core.sql",
+      "purpose": null,
+      "columns": [
+        {
+          "rel": "building",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "building",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "building",
+          "col": "site_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "building",
+          "col": "code",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "building",
+          "col": "name",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "building",
+          "col": "floors",
+          "type": "integer",
+          "notnull": true,
+          "def": "1",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "building",
+          "name": "building_code_check",
+          "type": "c",
+          "def": "CHECK ((code ~ '^[A-Z0-9-]{2,24}$'::text))"
+        },
+        {
+          "rel": "building",
+          "name": "building_floors_check",
+          "type": "c",
+          "def": "CHECK (((floors >= 1) AND (floors <= 200)))"
+        },
+        {
+          "rel": "building",
+          "name": "building_tenant_id_site_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id, site_id) REFERENCES app.site(tenant_id, id)"
+        },
+        {
+          "rel": "building",
+          "name": "building_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "building",
+          "name": "building_tenant_id_code_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, code)"
+        },
+        {
+          "rel": "building",
+          "name": "building_tenant_id_id_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "building",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "building",
+          "name": "building_pkey",
+          "def": "CREATE UNIQUE INDEX building_pkey ON app.building USING btree (id)"
+        },
+        {
+          "rel": "building",
+          "name": "building_tenant_id_code_key",
+          "def": "CREATE UNIQUE INDEX building_tenant_id_code_key ON app.building USING btree (tenant_id, code)"
+        },
+        {
+          "rel": "building",
+          "name": "building_tenant_id_id_key",
+          "def": "CREATE UNIQUE INDEX building_tenant_id_id_key ON app.building USING btree (tenant_id, id)"
+        }
+      ]
+    },
+    {
+      "name": "code_counter",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0002_core.sql",
+      "purpose": "per-tenant counters for human-readable canonical codes (R-PLN-0001, PA-0001, CN-0001 ...)",
+      "columns": [
+        {
+          "rel": "code_counter",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "code_counter",
+          "col": "kind",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "code_counter",
+          "col": "value",
+          "type": "bigint",
+          "notnull": true,
+          "def": "0",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "code_counter",
+          "name": "code_counter_tenant_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id) REFERENCES app.tenant(id)"
+        },
+        {
+          "rel": "code_counter",
+          "name": "code_counter_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (tenant_id, kind)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "code_counter",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "code_counter",
+          "name": "code_counter_pkey",
+          "def": "CREATE UNIQUE INDEX code_counter_pkey ON app.code_counter USING btree (tenant_id, kind)"
+        }
+      ]
+    },
+    {
+      "name": "connection",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0002_core.sql",
+      "purpose": null,
+      "columns": [
+        {
+          "rel": "connection",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "connection",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "connection",
+          "col": "room_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "connection",
+          "col": "code",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "connection",
+          "col": "from_asset",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "connection",
+          "col": "to_asset",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "connection",
+          "col": "kind",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "connection",
+          "col": "why",
+          "type": "text",
+          "notnull": true,
+          "def": "''::text",
+          "comment": null
+        },
+        {
+          "rel": "connection",
+          "col": "removed_at",
+          "type": "timestamp with time zone",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "connection",
+          "col": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "connection",
+          "name": "connection_check",
+          "type": "c",
+          "def": "CHECK ((from_asset <> to_asset))"
+        },
+        {
+          "rel": "connection",
+          "name": "connection_kind_check",
+          "type": "c",
+          "def": "CHECK ((kind = ANY (ARRAY['signal'::text, 'network'::text, 'control'::text, 'power'::text])))"
+        },
+        {
+          "rel": "connection",
+          "name": "connection_tenant_id_from_asset_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id, from_asset) REFERENCES app.planned_asset(tenant_id, id)"
+        },
+        {
+          "rel": "connection",
+          "name": "connection_tenant_id_room_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id, room_id) REFERENCES app.room(tenant_id, id)"
+        },
+        {
+          "rel": "connection",
+          "name": "connection_tenant_id_to_asset_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id, to_asset) REFERENCES app.planned_asset(tenant_id, id)"
+        },
+        {
+          "rel": "connection",
+          "name": "connection_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "connection",
+          "name": "connection_tenant_id_code_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, code)"
+        },
+        {
+          "rel": "connection",
+          "name": "connection_tenant_id_id_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "connection",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "connection",
+          "name": "connection_live_unique",
+          "def": "CREATE UNIQUE INDEX connection_live_unique ON app.connection USING btree (tenant_id, from_asset, to_asset, kind) WHERE (removed_at IS NULL)"
+        },
+        {
+          "rel": "connection",
+          "name": "connection_pkey",
+          "def": "CREATE UNIQUE INDEX connection_pkey ON app.connection USING btree (id)"
+        },
+        {
+          "rel": "connection",
+          "name": "connection_tenant_id_code_key",
+          "def": "CREATE UNIQUE INDEX connection_tenant_id_code_key ON app.connection USING btree (tenant_id, code)"
+        },
+        {
+          "rel": "connection",
+          "name": "connection_tenant_id_id_key",
+          "def": "CREATE UNIQUE INDEX connection_tenant_id_id_key ON app.connection USING btree (tenant_id, id)"
+        }
+      ]
+    },
+    {
+      "name": "cx_plan",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0003_commissioning_evidence.sql",
+      "purpose": "A compiled commissioning plan: the whole library judged for one room revision by the server-side engine.",
+      "columns": [
+        {
+          "rel": "cx_plan",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "cx_plan",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "cx_plan",
+          "col": "room_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "cx_plan",
+          "col": "design_rev",
+          "type": "integer",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "cx_plan",
+          "col": "engine_version",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "cx_plan",
+          "col": "rule_version",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "cx_plan",
+          "col": "library_size",
+          "type": "integer",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "cx_plan",
+          "col": "applicable",
+          "type": "integer",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "cx_plan",
+          "col": "context",
+          "type": "jsonb",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "cx_plan",
+          "col": "trigger",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "cx_plan",
+          "col": "signature",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "cx_plan",
+          "col": "compiled_by",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "cx_plan",
+          "col": "compiled_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "cx_plan",
+          "name": "cx_plan_check",
+          "type": "c",
+          "def": "CHECK (((applicable >= 0) AND (applicable <= library_size)))"
+        },
+        {
+          "rel": "cx_plan",
+          "name": "cx_plan_library_size_check",
+          "type": "c",
+          "def": "CHECK ((library_size > 0))"
+        },
+        {
+          "rel": "cx_plan",
+          "name": "cx_plan_compiled_by_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (compiled_by) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "cx_plan",
+          "name": "cx_plan_tenant_id_room_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id, room_id) REFERENCES app.room(tenant_id, id)"
+        },
+        {
+          "rel": "cx_plan",
+          "name": "cx_plan_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "cx_plan",
+          "name": "cx_plan_tenant_id_id_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "cx_plan",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "cx_plan",
+          "name": "cx_plan_pkey",
+          "def": "CREATE UNIQUE INDEX cx_plan_pkey ON app.cx_plan USING btree (id)"
+        },
+        {
+          "rel": "cx_plan",
+          "name": "cx_plan_room_idx",
+          "def": "CREATE INDEX cx_plan_room_idx ON app.cx_plan USING btree (tenant_id, room_id, compiled_at DESC)"
+        },
+        {
+          "rel": "cx_plan",
+          "name": "cx_plan_tenant_id_id_key",
+          "def": "CREATE UNIQUE INDEX cx_plan_tenant_id_id_key ON app.cx_plan USING btree (tenant_id, id)"
+        }
+      ]
+    },
+    {
+      "name": "cx_plan_row",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0003_commissioning_evidence.sql",
+      "purpose": null,
+      "columns": [
+        {
+          "rel": "cx_plan_row",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "cx_plan_row",
+          "col": "plan_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "cx_plan_row",
+          "col": "test_id",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "cx_plan_row",
+          "col": "label",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "cx_plan_row",
+          "col": "pack",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "cx_plan_row",
+          "col": "domain",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "cx_plan_row",
+          "col": "phase",
+          "type": "integer",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "cx_plan_row",
+          "col": "tier",
+          "type": "integer",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "cx_plan_row",
+          "col": "applicable",
+          "type": "boolean",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "cx_plan_row",
+          "col": "status",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "cx_plan_row",
+          "col": "why",
+          "type": "jsonb",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "cx_plan_row",
+          "col": "personas",
+          "type": "text[]",
+          "notnull": true,
+          "def": "'{}'::text[]",
+          "comment": null
+        },
+        {
+          "rel": "cx_plan_row",
+          "col": "evidence",
+          "type": "text[]",
+          "notnull": true,
+          "def": "'{}'::text[]",
+          "comment": null
+        },
+        {
+          "rel": "cx_plan_row",
+          "col": "instrument",
+          "type": "boolean",
+          "notnull": true,
+          "def": "false",
+          "comment": null
+        },
+        {
+          "rel": "cx_plan_row",
+          "col": "devices",
+          "type": "text[]",
+          "notnull": true,
+          "def": "'{}'::text[]",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "cx_plan_row",
+          "name": "cx_plan_row_check",
+          "type": "c",
+          "def": "CHECK ((applicable = (status <> 'NOT_APPLICABLE'::text)))"
+        },
+        {
+          "rel": "cx_plan_row",
+          "name": "cx_plan_row_status_check",
+          "type": "c",
+          "def": "CHECK ((status = ANY (ARRAY['NOT_APPLICABLE'::text, 'PENDING_INFORMATION'::text, 'BLOCKED_BY_PREREQUISITE'::text, 'REQUIRES_PHYSICAL_EXECUTION'::text])))"
+        },
+        {
+          "rel": "cx_plan_row",
+          "name": "cx_plan_row_tenant_id_plan_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id, plan_id) REFERENCES app.cx_plan(tenant_id, id)"
+        },
+        {
+          "rel": "cx_plan_row",
+          "name": "cx_plan_row_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (plan_id, test_id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "cx_plan_row",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "cx_plan_row",
+          "name": "cx_plan_row_pkey",
+          "def": "CREATE UNIQUE INDEX cx_plan_row_pkey ON app.cx_plan_row USING btree (plan_id, test_id)"
+        }
+      ]
+    },
+    {
+      "name": "drawing_revision",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0003_commissioning_evidence.sql",
+      "purpose": null,
+      "columns": [
+        {
+          "rel": "drawing_revision",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "drawing_revision",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "drawing_revision",
+          "col": "room_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "drawing_revision",
+          "col": "kind",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "drawing_revision",
+          "col": "rev_no",
+          "type": "integer",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "drawing_revision",
+          "col": "design_rev",
+          "type": "integer",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "drawing_revision",
+          "col": "input_sha256",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "drawing_revision",
+          "col": "state",
+          "type": "text",
+          "notnull": true,
+          "def": "'GENERATED'::text",
+          "comment": null
+        },
+        {
+          "rel": "drawing_revision",
+          "col": "stamp",
+          "type": "text",
+          "notnull": true,
+          "def": "'GENERATED DIAGRAM — not an engineer-stamped construction drawing or approved shop drawing'::text",
+          "comment": null
+        },
+        {
+          "rel": "drawing_revision",
+          "col": "generated_by",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "drawing_revision",
+          "col": "approved_by",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "drawing_revision",
+          "col": "approved_at",
+          "type": "timestamp with time zone",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "drawing_revision",
+          "col": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "drawing_revision",
+          "name": "drawing_revision_check",
+          "type": "c",
+          "def": "CHECK ((((state = 'APPROVED'::text) = (approved_by IS NOT NULL)) OR (state = 'SUPERSEDED'::text)))"
+        },
+        {
+          "rel": "drawing_revision",
+          "name": "drawing_revision_input_sha256_check",
+          "type": "c",
+          "def": "CHECK ((input_sha256 ~ '^[0-9a-f]{64}$'::text))"
+        },
+        {
+          "rel": "drawing_revision",
+          "name": "drawing_revision_kind_check",
+          "type": "c",
+          "def": "CHECK ((kind = ANY (ARRAY['plan'::text, 'placement'::text, 'schedule'::text, 'relationships'::text, 'signal'::text, 'network'::text, 'summary'::text])))"
+        },
+        {
+          "rel": "drawing_revision",
+          "name": "drawing_revision_rev_no_check",
+          "type": "c",
+          "def": "CHECK ((rev_no >= 1))"
+        },
+        {
+          "rel": "drawing_revision",
+          "name": "drawing_revision_state_check",
+          "type": "c",
+          "def": "CHECK ((state = ANY (ARRAY['GENERATED'::text, 'APPROVED'::text, 'SUPERSEDED'::text])))"
+        },
+        {
+          "rel": "drawing_revision",
+          "name": "drawing_revision_approved_by_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (approved_by) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "drawing_revision",
+          "name": "drawing_revision_generated_by_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (generated_by) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "drawing_revision",
+          "name": "drawing_revision_tenant_id_room_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id, room_id) REFERENCES app.room(tenant_id, id)"
+        },
+        {
+          "rel": "drawing_revision",
+          "name": "drawing_revision_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "drawing_revision",
+          "name": "drawing_revision_room_id_kind_rev_no_key",
+          "type": "u",
+          "def": "UNIQUE (room_id, kind, rev_no)"
+        },
+        {
+          "rel": "drawing_revision",
+          "name": "drawing_revision_tenant_id_id_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "drawing_revision",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "drawing_revision",
+          "name": "drawing_revision_pkey",
+          "def": "CREATE UNIQUE INDEX drawing_revision_pkey ON app.drawing_revision USING btree (id)"
+        },
+        {
+          "rel": "drawing_revision",
+          "name": "drawing_revision_room_id_kind_rev_no_key",
+          "def": "CREATE UNIQUE INDEX drawing_revision_room_id_kind_rev_no_key ON app.drawing_revision USING btree (room_id, kind, rev_no)"
+        },
+        {
+          "rel": "drawing_revision",
+          "name": "drawing_revision_tenant_id_id_key",
+          "def": "CREATE UNIQUE INDEX drawing_revision_tenant_id_id_key ON app.drawing_revision USING btree (tenant_id, id)"
+        }
+      ]
+    },
+    {
+      "name": "evidence_object",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0003_commissioning_evidence.sql",
+      "purpose": "Evidence objects: the bytes live in object storage, addressed by their SHA-256; this row is the metadata, ownership and retention.",
+      "columns": [
+        {
+          "rel": "evidence_object",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "evidence_object",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "evidence_object",
+          "col": "sha256",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "evidence_object",
+          "col": "bytes",
+          "type": "bigint",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "evidence_object",
+          "col": "media_type",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "evidence_object",
+          "col": "file_name",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "evidence_object",
+          "col": "storage_key",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "evidence_object",
+          "col": "classification",
+          "type": "text",
+          "notnull": true,
+          "def": "'CONFIDENTIAL_TECHNICAL'::text",
+          "comment": null
+        },
+        {
+          "rel": "evidence_object",
+          "col": "uploaded_by",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "evidence_object",
+          "col": "uploaded_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        },
+        {
+          "rel": "evidence_object",
+          "col": "retention_until",
+          "type": "date",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "evidence_object",
+          "col": "legal_hold",
+          "type": "boolean",
+          "notnull": true,
+          "def": "false",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "evidence_object",
+          "name": "evidence_object_bytes_check",
+          "type": "c",
+          "def": "CHECK (((bytes > 0) AND (bytes <= 104857600)))"
+        },
+        {
+          "rel": "evidence_object",
+          "name": "evidence_object_file_name_check",
+          "type": "c",
+          "def": "CHECK ((length(file_name) <= 200))"
+        },
+        {
+          "rel": "evidence_object",
+          "name": "evidence_object_sha256_check",
+          "type": "c",
+          "def": "CHECK ((sha256 ~ '^[0-9a-f]{64}$'::text))"
+        },
+        {
+          "rel": "evidence_object",
+          "name": "evidence_object_tenant_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id) REFERENCES app.tenant(id)"
+        },
+        {
+          "rel": "evidence_object",
+          "name": "evidence_object_uploaded_by_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (uploaded_by) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "evidence_object",
+          "name": "evidence_object_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "evidence_object",
+          "name": "evidence_object_tenant_id_id_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "evidence_object",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [
+        {
+          "rel": "evidence_object",
+          "name": "evidence_append_only",
+          "def": "CREATE TRIGGER evidence_append_only BEFORE DELETE OR UPDATE ON app.evidence_object FOR EACH ROW EXECUTE FUNCTION app.refuse_change()"
+        }
+      ],
+      "indexes": [
+        {
+          "rel": "evidence_object",
+          "name": "evidence_object_pkey",
+          "def": "CREATE UNIQUE INDEX evidence_object_pkey ON app.evidence_object USING btree (id)"
+        },
+        {
+          "rel": "evidence_object",
+          "name": "evidence_object_tenant_id_id_key",
+          "def": "CREATE UNIQUE INDEX evidence_object_tenant_id_id_key ON app.evidence_object USING btree (tenant_id, id)"
+        },
+        {
+          "rel": "evidence_object",
+          "name": "evidence_sha_idx",
+          "def": "CREATE INDEX evidence_sha_idx ON app.evidence_object USING btree (tenant_id, sha256)"
+        }
+      ]
+    },
+    {
+      "name": "idempotency_key",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0004_platform.sql",
+      "purpose": "Idempotency keys: a retried POST with the same key returns the first response instead of doing the work twice.",
+      "columns": [
+        {
+          "rel": "idempotency_key",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "idempotency_key",
+          "col": "person_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "idempotency_key",
+          "col": "key",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "idempotency_key",
+          "col": "request_hash",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "idempotency_key",
+          "col": "status_code",
+          "type": "integer",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "idempotency_key",
+          "col": "response",
+          "type": "jsonb",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "idempotency_key",
+          "col": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "idempotency_key",
+          "name": "idempotency_key_key_check",
+          "type": "c",
+          "def": "CHECK (((length(key) >= 8) AND (length(key) <= 128)))"
+        },
+        {
+          "rel": "idempotency_key",
+          "name": "idempotency_key_person_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (person_id) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "idempotency_key",
+          "name": "idempotency_key_tenant_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id) REFERENCES app.tenant(id)"
+        },
+        {
+          "rel": "idempotency_key",
+          "name": "idempotency_key_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (tenant_id, person_id, key)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "idempotency_key",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "idempotency_key",
+          "name": "idempotency_key_pkey",
+          "def": "CREATE UNIQUE INDEX idempotency_key_pkey ON app.idempotency_key USING btree (tenant_id, person_id, key)"
+        }
+      ]
+    },
+    {
+      "name": "integration",
+      "kind": "r",
+      "rls": false,
+      "force": false,
+      "comment": "Catalogue only. No partnership, certification or connection is implied by a row.",
+      "migration": "0004_platform.sql",
+      "purpose": "Catalogue only. No partnership, certification or connection is implied by a row.",
+      "columns": [
+        {
+          "rel": "integration",
+          "col": "key",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "integration",
+          "col": "category",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "integration",
+          "col": "vendor",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "integration",
+          "col": "product",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "integration",
+          "col": "state",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "integration",
+          "col": "mode",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "integration",
+          "col": "evidence",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "integration",
+          "col": "note",
+          "type": "text",
+          "notnull": true,
+          "def": "''::text",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "integration",
+          "name": "integration_check",
+          "type": "c",
+          "def": "CHECK (((state <> 'VERIFIED'::text) OR (evidence IS NOT NULL)))"
+        },
+        {
+          "rel": "integration",
+          "name": "integration_mode_check",
+          "type": "c",
+          "def": "CHECK ((mode = ANY (ARRAY['READ_ONLY'::text, 'READ_WRITE'::text, 'NONE'::text])))"
+        },
+        {
+          "rel": "integration",
+          "name": "integration_state_check",
+          "type": "c",
+          "def": "CHECK ((state = ANY (ARRAY['MOCK'::text, 'CONTRACT_ONLY'::text, 'NOT_CONFIGURED'::text, 'VERIFIED'::text])))"
+        },
+        {
+          "rel": "integration",
+          "name": "integration_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (key)"
+        }
+      ],
+      "policies": [],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "integration",
+          "name": "integration_pkey",
+          "def": "CREATE UNIQUE INDEX integration_pkey ON app.integration USING btree (key)"
+        }
+      ]
+    },
+    {
+      "name": "integration_observation",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0007_integration_sync.sql",
+      "purpose": "0007 — integration observations and sync state (Harmony / Field Intelligence starter). Observations from external systems are stored per tenant with their source and evidence label. A MOCK integration can only ever store SYNTHETIC_MOCK evidence (trigger EM004), so a mock can never be mistaken for a measurement downstream.",
+      "columns": [
+        {
+          "rel": "integration_observation",
+          "col": "id",
+          "type": "bigint",
+          "notnull": true,
+          "def": "nextval('app.integration_observation_id_seq'::regclass)",
+          "comment": null
+        },
+        {
+          "rel": "integration_observation",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "integration_observation",
+          "col": "integration_key",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "integration_observation",
+          "col": "kind",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "integration_observation",
+          "col": "external_id",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "integration_observation",
+          "col": "canonical_id",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "integration_observation",
+          "col": "match_how",
+          "type": "text",
+          "notnull": true,
+          "def": "'none'::text",
+          "comment": null
+        },
+        {
+          "rel": "integration_observation",
+          "col": "value",
+          "type": "jsonb",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "integration_observation",
+          "col": "evidence",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "integration_observation",
+          "col": "observed_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "integration_observation",
+          "col": "received_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "integration_observation",
+          "name": "integration_observation_evidence_check",
+          "type": "c",
+          "def": "CHECK ((evidence = ANY (ARRAY['MEASURED'::text, 'REPORTED'::text, 'SYNTHETIC_MOCK'::text])))"
+        },
+        {
+          "rel": "integration_observation",
+          "name": "integration_observation_external_id_check",
+          "type": "c",
+          "def": "CHECK (((length(external_id) >= 1) AND (length(external_id) <= 200)))"
+        },
+        {
+          "rel": "integration_observation",
+          "name": "integration_observation_kind_check",
+          "type": "c",
+          "def": "CHECK ((kind = ANY (ARRAY['device.inventory'::text, 'device.state'::text, 'device.firmware'::text, 'dsp.parameter'::text, 'ticket'::text])))"
+        },
+        {
+          "rel": "integration_observation",
+          "name": "integration_observation_match_how_check",
+          "type": "c",
+          "def": "CHECK ((match_how = ANY (ARRAY['serial'::text, 'mac'::text, 'none'::text])))"
+        },
+        {
+          "rel": "integration_observation",
+          "name": "integration_observation_integration_key_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (integration_key) REFERENCES app.integration(key)"
+        },
+        {
+          "rel": "integration_observation",
+          "name": "integration_observation_tenant_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id) REFERENCES app.tenant(id)"
+        },
+        {
+          "rel": "integration_observation",
+          "name": "integration_observation_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "integration_observation",
+          "name": "integration_observation_tenant_id_integration_key_kind_exte_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, integration_key, kind, external_id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "integration_observation",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [
+        {
+          "rel": "integration_observation",
+          "name": "integration_observation_evidence",
+          "def": "CREATE TRIGGER integration_observation_evidence BEFORE INSERT OR UPDATE ON app.integration_observation FOR EACH ROW EXECUTE FUNCTION app.mock_evidence_only()"
+        }
+      ],
+      "indexes": [
+        {
+          "rel": "integration_observation",
+          "name": "integration_observation_canonical_idx",
+          "def": "CREATE INDEX integration_observation_canonical_idx ON app.integration_observation USING btree (tenant_id, canonical_id) WHERE (canonical_id IS NOT NULL)"
+        },
+        {
+          "rel": "integration_observation",
+          "name": "integration_observation_pkey",
+          "def": "CREATE UNIQUE INDEX integration_observation_pkey ON app.integration_observation USING btree (id)"
+        },
+        {
+          "rel": "integration_observation",
+          "name": "integration_observation_tenant_id_integration_key_kind_exte_key",
+          "def": "CREATE UNIQUE INDEX integration_observation_tenant_id_integration_key_kind_exte_key ON app.integration_observation USING btree (tenant_id, integration_key, kind, external_id)"
+        }
+      ]
+    },
+    {
+      "name": "integration_sync",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0007_integration_sync.sql",
+      "purpose": null,
+      "columns": [
+        {
+          "rel": "integration_sync",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "integration_sync",
+          "col": "integration_key",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "integration_sync",
+          "col": "state",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "integration_sync",
+          "col": "last_attempt_at",
+          "type": "timestamp with time zone",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "integration_sync",
+          "col": "last_success_at",
+          "type": "timestamp with time zone",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "integration_sync",
+          "col": "last_error",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "integration_sync",
+          "col": "observations",
+          "type": "integer",
+          "notnull": true,
+          "def": "0",
+          "comment": null
+        },
+        {
+          "rel": "integration_sync",
+          "col": "retries",
+          "type": "integer",
+          "notnull": true,
+          "def": "0",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "integration_sync",
+          "name": "integration_sync_state_check",
+          "type": "c",
+          "def": "CHECK ((state = ANY (ARRAY['OK'::text, 'DEGRADED'::text, 'DOWN'::text, 'NOT_CONFIGURED'::text])))"
+        },
+        {
+          "rel": "integration_sync",
+          "name": "integration_sync_integration_key_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (integration_key) REFERENCES app.integration(key)"
+        },
+        {
+          "rel": "integration_sync",
+          "name": "integration_sync_tenant_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id) REFERENCES app.tenant(id)"
+        },
+        {
+          "rel": "integration_sync",
+          "name": "integration_sync_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (tenant_id, integration_key)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "integration_sync",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "integration_sync",
+          "name": "integration_sync_pkey",
+          "def": "CREATE UNIQUE INDEX integration_sync_pkey ON app.integration_sync USING btree (tenant_id, integration_key)"
+        }
+      ]
+    },
+    {
+      "name": "issue_event",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0003_commissioning_evidence.sql",
+      "purpose": null,
+      "columns": [
+        {
+          "rel": "issue_event",
+          "col": "id",
+          "type": "bigint",
+          "notnull": true,
+          "def": "nextval('app.issue_event_id_seq'::regclass)",
+          "comment": null
+        },
+        {
+          "rel": "issue_event",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "issue_event",
+          "col": "issue_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "issue_event",
+          "col": "kind",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "issue_event",
+          "col": "detail",
+          "type": "jsonb",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "issue_event",
+          "col": "actor_id",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "issue_event",
+          "col": "at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "issue_event",
+          "name": "issue_event_kind_check",
+          "type": "c",
+          "def": "CHECK ((kind = ANY (ARRAY['created'::text, 'seen_again'::text, 'correlated'::text, 'assigned'::text, 'resolved'::text, 'reopened'::text, 'work_order'::text])))"
+        },
+        {
+          "rel": "issue_event",
+          "name": "issue_event_actor_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (actor_id) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "issue_event",
+          "name": "issue_event_tenant_id_issue_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id, issue_id) REFERENCES app.room_issue(tenant_id, id)"
+        },
+        {
+          "rel": "issue_event",
+          "name": "issue_event_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "issue_event",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [
+        {
+          "rel": "issue_event",
+          "name": "issue_event_append_only",
+          "def": "CREATE TRIGGER issue_event_append_only BEFORE DELETE OR UPDATE ON app.issue_event FOR EACH ROW EXECUTE FUNCTION app.refuse_change()"
+        }
+      ],
+      "indexes": [
+        {
+          "rel": "issue_event",
+          "name": "issue_event_pkey",
+          "def": "CREATE UNIQUE INDEX issue_event_pkey ON app.issue_event USING btree (id)"
+        }
+      ]
+    },
+    {
+      "name": "knowledge_document",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0004_platform.sql",
+      "purpose": null,
+      "columns": [
+        {
+          "rel": "knowledge_document",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "knowledge_document",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "knowledge_document",
+          "col": "title",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "knowledge_document",
+          "col": "source",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "knowledge_document",
+          "col": "version",
+          "type": "integer",
+          "notnull": true,
+          "def": "1",
+          "comment": null
+        },
+        {
+          "rel": "knowledge_document",
+          "col": "allowed_roles",
+          "type": "text[]",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "knowledge_document",
+          "col": "body",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "knowledge_document",
+          "col": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "knowledge_document",
+          "name": "knowledge_document_tenant_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id) REFERENCES app.tenant(id)"
+        },
+        {
+          "rel": "knowledge_document",
+          "name": "knowledge_document_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "knowledge_document",
+          "name": "knowledge_document_tenant_id_id_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "knowledge_document",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "knowledge_document",
+          "name": "knowledge_document_pkey",
+          "def": "CREATE UNIQUE INDEX knowledge_document_pkey ON app.knowledge_document USING btree (id)"
+        },
+        {
+          "rel": "knowledge_document",
+          "name": "knowledge_document_tenant_id_id_key",
+          "def": "CREATE UNIQUE INDEX knowledge_document_tenant_id_id_key ON app.knowledge_document USING btree (tenant_id, id)"
+        }
+      ]
+    },
+    {
+      "name": "membership",
+      "kind": "r",
+      "rls": true,
+      "force": false,
+      "comment": null,
+      "migration": "0002_core.sql",
+      "purpose": null,
+      "columns": [
+        {
+          "rel": "membership",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "membership",
+          "col": "person_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "membership",
+          "col": "role_key",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "membership",
+          "col": "site_scope",
+          "type": "uuid[]",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "membership",
+          "col": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        },
+        {
+          "rel": "membership",
+          "col": "revoked_at",
+          "type": "timestamp with time zone",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "membership",
+          "name": "membership_person_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (person_id) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "membership",
+          "name": "membership_role_key_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (role_key) REFERENCES app.role(key)"
+        },
+        {
+          "rel": "membership",
+          "name": "membership_tenant_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id) REFERENCES app.tenant(id)"
+        },
+        {
+          "rel": "membership",
+          "name": "membership_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (tenant_id, person_id, role_key)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "membership",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "membership",
+          "name": "membership_pkey",
+          "def": "CREATE UNIQUE INDEX membership_pkey ON app.membership USING btree (tenant_id, person_id, role_key)"
+        }
+      ]
+    },
+    {
+      "name": "notification",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0004_platform.sql",
+      "purpose": null,
+      "columns": [
+        {
+          "rel": "notification",
+          "col": "id",
+          "type": "bigint",
+          "notnull": true,
+          "def": "nextval('app.notification_id_seq'::regclass)",
+          "comment": null
+        },
+        {
+          "rel": "notification",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "notification",
+          "col": "to_role",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "notification",
+          "col": "to_person",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "notification",
+          "col": "kind",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "notification",
+          "col": "title",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "notification",
+          "col": "link",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "notification",
+          "col": "event_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "notification",
+          "col": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        },
+        {
+          "rel": "notification",
+          "col": "read_at",
+          "type": "timestamp with time zone",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "notification",
+          "name": "notification_tenant_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id) REFERENCES app.tenant(id)"
+        },
+        {
+          "rel": "notification",
+          "name": "notification_to_person_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (to_person) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "notification",
+          "name": "notification_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "notification",
+          "name": "notification_event_id_kind_to_role_key",
+          "type": "u",
+          "def": "UNIQUE (event_id, kind, to_role)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "notification",
+          "name": "notification_worker",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(current_setting('app.worker'::text, true) = 'on'::text)",
+          "with_check": "(current_setting('app.worker'::text, true) = 'on'::text)"
+        },
+        {
+          "rel": "notification",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "notification",
+          "name": "notification_event_id_kind_to_role_key",
+          "def": "CREATE UNIQUE INDEX notification_event_id_kind_to_role_key ON app.notification USING btree (event_id, kind, to_role)"
+        },
+        {
+          "rel": "notification",
+          "name": "notification_pkey",
+          "def": "CREATE UNIQUE INDEX notification_pkey ON app.notification USING btree (id)"
+        }
+      ]
+    },
+    {
+      "name": "outbox_event",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0004_platform.sql",
+      "purpose": "Transactional outbox: written in the same transaction as the change; delivered at least once by the worker.",
+      "columns": [
+        {
+          "rel": "outbox_event",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "outbox_event",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "outbox_event",
+          "col": "type",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "outbox_event",
+          "col": "schema_version",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "outbox_event",
+          "col": "aggregate_type",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "outbox_event",
+          "col": "aggregate_id",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "outbox_event",
+          "col": "aggregate_rev",
+          "type": "integer",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "outbox_event",
+          "col": "payload",
+          "type": "jsonb",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "outbox_event",
+          "col": "actor_id",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "outbox_event",
+          "col": "correlation_id",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "outbox_event",
+          "col": "occurred_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        },
+        {
+          "rel": "outbox_event",
+          "col": "status",
+          "type": "text",
+          "notnull": true,
+          "def": "'PENDING'::text",
+          "comment": null
+        },
+        {
+          "rel": "outbox_event",
+          "col": "attempts",
+          "type": "integer",
+          "notnull": true,
+          "def": "0",
+          "comment": null
+        },
+        {
+          "rel": "outbox_event",
+          "col": "next_attempt_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        },
+        {
+          "rel": "outbox_event",
+          "col": "last_error",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "outbox_event",
+          "col": "delivered_at",
+          "type": "timestamp with time zone",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "outbox_event",
+          "name": "outbox_event_status_check",
+          "type": "c",
+          "def": "CHECK ((status = ANY (ARRAY['PENDING'::text, 'DELIVERED'::text, 'DEAD_LETTER'::text])))"
+        },
+        {
+          "rel": "outbox_event",
+          "name": "outbox_event_tenant_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id) REFERENCES app.tenant(id)"
+        },
+        {
+          "rel": "outbox_event",
+          "name": "outbox_event_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "outbox_event",
+          "name": "outbox_worker",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(current_setting('app.worker'::text, true) = 'on'::text)",
+          "with_check": "(current_setting('app.worker'::text, true) = 'on'::text)"
+        },
+        {
+          "rel": "outbox_event",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "outbox_event",
+          "name": "outbox_event_pkey",
+          "def": "CREATE UNIQUE INDEX outbox_event_pkey ON app.outbox_event USING btree (id)"
+        },
+        {
+          "rel": "outbox_event",
+          "name": "outbox_pending_idx",
+          "def": "CREATE INDEX outbox_pending_idx ON app.outbox_event USING btree (next_attempt_at) WHERE (status = 'PENDING'::text)"
+        }
+      ]
+    },
+    {
+      "name": "person",
+      "kind": "r",
+      "rls": true,
+      "force": false,
+      "comment": null,
+      "migration": "0002_core.sql",
+      "purpose": "People are global identities (one person may belong to several tenants); credentials are for the development provider only.",
+      "columns": [
+        {
+          "rel": "person",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "person",
+          "col": "email",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "person",
+          "col": "display_name",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "person",
+          "col": "password_hash",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": "Development identity provider only (AUTH_MODE=dev). Production uses OIDC and leaves this null."
+        },
+        {
+          "rel": "person",
+          "col": "external_subject",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "person",
+          "col": "disabled",
+          "type": "boolean",
+          "notnull": true,
+          "def": "false",
+          "comment": null
+        },
+        {
+          "rel": "person",
+          "col": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "person",
+          "name": "person_display_name_check",
+          "type": "c",
+          "def": "CHECK (((length(display_name) >= 1) AND (length(display_name) <= 120)))"
+        },
+        {
+          "rel": "person",
+          "name": "person_email_check",
+          "type": "c",
+          "def": "CHECK ((email ~ '^[^@\\s]+@[^@\\s]+$'::text))"
+        },
+        {
+          "rel": "person",
+          "name": "person_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "person",
+          "name": "person_email_key",
+          "type": "u",
+          "def": "UNIQUE (email)"
+        },
+        {
+          "rel": "person",
+          "name": "person_external_subject_key",
+          "type": "u",
+          "def": "UNIQUE (external_subject)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "person",
+          "name": "person_member",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(EXISTS ( SELECT 1\n   FROM app.membership m\n  WHERE ((m.person_id = person.id) AND (m.tenant_id = app.current_tenant()))))",
+          "with_check": null
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "person",
+          "name": "person_email_key",
+          "def": "CREATE UNIQUE INDEX person_email_key ON app.person USING btree (email)"
+        },
+        {
+          "rel": "person",
+          "name": "person_external_subject_key",
+          "def": "CREATE UNIQUE INDEX person_external_subject_key ON app.person USING btree (external_subject)"
+        },
+        {
+          "rel": "person",
+          "name": "person_pkey",
+          "def": "CREATE UNIQUE INDEX person_pkey ON app.person USING btree (id)"
+        }
+      ]
+    },
+    {
+      "name": "planned_asset",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0002_core.sql",
+      "purpose": "Planned assets: the canonical device identity (PA-0001). The id survives substitution; the model history is kept.",
+      "columns": [
+        {
+          "rel": "planned_asset",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "planned_asset",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "planned_asset",
+          "col": "room_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "planned_asset",
+          "col": "code",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "planned_asset",
+          "col": "category",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "planned_asset",
+          "col": "label",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "planned_asset",
+          "col": "role",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "planned_asset",
+          "col": "model",
+          "type": "text",
+          "notnull": true,
+          "def": "'generic'::text",
+          "comment": null
+        },
+        {
+          "rel": "planned_asset",
+          "col": "generic",
+          "type": "boolean",
+          "notnull": true,
+          "def": "true",
+          "comment": null
+        },
+        {
+          "rel": "planned_asset",
+          "col": "furniture",
+          "type": "boolean",
+          "notnull": true,
+          "def": "false",
+          "comment": null
+        },
+        {
+          "rel": "planned_asset",
+          "col": "x",
+          "type": "numeric(9,2)",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "planned_asset",
+          "col": "y",
+          "type": "numeric(9,2)",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "planned_asset",
+          "col": "z",
+          "type": "numeric(6,2)",
+          "notnull": true,
+          "def": "0",
+          "comment": null
+        },
+        {
+          "rel": "planned_asset",
+          "col": "rot",
+          "type": "numeric(6,1)",
+          "notnull": true,
+          "def": "0",
+          "comment": null
+        },
+        {
+          "rel": "planned_asset",
+          "col": "mount",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "planned_asset",
+          "col": "props",
+          "type": "jsonb",
+          "notnull": true,
+          "def": "'{}'::jsonb",
+          "comment": null
+        },
+        {
+          "rel": "planned_asset",
+          "col": "model_history",
+          "type": "jsonb",
+          "notnull": true,
+          "def": "'[]'::jsonb",
+          "comment": null
+        },
+        {
+          "rel": "planned_asset",
+          "col": "lifecycle",
+          "type": "text",
+          "notnull": true,
+          "def": "'PLANNED'::text",
+          "comment": null
+        },
+        {
+          "rel": "planned_asset",
+          "col": "removed_at",
+          "type": "timestamp with time zone",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "planned_asset",
+          "col": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "planned_asset",
+          "name": "planned_asset_code_check",
+          "type": "c",
+          "def": "CHECK ((code ~ '^PA-[0-9]{4,10}$'::text))"
+        },
+        {
+          "rel": "planned_asset",
+          "name": "planned_asset_tenant_id_room_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id, room_id) REFERENCES app.room(tenant_id, id)"
+        },
+        {
+          "rel": "planned_asset",
+          "name": "planned_asset_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "planned_asset",
+          "name": "planned_asset_tenant_id_code_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, code)"
+        },
+        {
+          "rel": "planned_asset",
+          "name": "planned_asset_tenant_id_id_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "planned_asset",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "planned_asset",
+          "name": "planned_asset_pkey",
+          "def": "CREATE UNIQUE INDEX planned_asset_pkey ON app.planned_asset USING btree (id)"
+        },
+        {
+          "rel": "planned_asset",
+          "name": "planned_asset_room_idx",
+          "def": "CREATE INDEX planned_asset_room_idx ON app.planned_asset USING btree (tenant_id, room_id) WHERE (removed_at IS NULL)"
+        },
+        {
+          "rel": "planned_asset",
+          "name": "planned_asset_tenant_id_code_key",
+          "def": "CREATE UNIQUE INDEX planned_asset_tenant_id_code_key ON app.planned_asset USING btree (tenant_id, code)"
+        },
+        {
+          "rel": "planned_asset",
+          "name": "planned_asset_tenant_id_id_key",
+          "def": "CREATE UNIQUE INDEX planned_asset_tenant_id_id_key ON app.planned_asset USING btree (tenant_id, id)"
+        }
+      ]
+    },
+    {
+      "name": "project",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0002_core.sql",
+      "purpose": "Projects (minimal: the commercial wrapper a room design belongs to)",
+      "columns": [
+        {
+          "rel": "project",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "project",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "project",
+          "col": "code",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "project",
+          "col": "name",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "project",
+          "col": "state",
+          "type": "text",
+          "notnull": true,
+          "def": "'OPEN'::text",
+          "comment": null
+        },
+        {
+          "rel": "project",
+          "col": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        },
+        {
+          "rel": "project",
+          "col": "created_by",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "project",
+          "name": "project_code_format",
+          "type": "c",
+          "def": "CHECK ((code ~ '^PRJ-[A-Z0-9-]{2,32}$'::text))"
+        },
+        {
+          "rel": "project",
+          "name": "project_state_check",
+          "type": "c",
+          "def": "CHECK ((state = ANY (ARRAY['OPEN'::text, 'CLOSED'::text])))"
+        },
+        {
+          "rel": "project",
+          "name": "project_created_by_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (created_by) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "project",
+          "name": "project_tenant_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id) REFERENCES app.tenant(id)"
+        },
+        {
+          "rel": "project",
+          "name": "project_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "project",
+          "name": "project_tenant_id_code_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, code)"
+        },
+        {
+          "rel": "project",
+          "name": "project_tenant_id_id_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "project",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "project",
+          "name": "project_pkey",
+          "def": "CREATE UNIQUE INDEX project_pkey ON app.project USING btree (id)"
+        },
+        {
+          "rel": "project",
+          "name": "project_tenant_id_code_key",
+          "def": "CREATE UNIQUE INDEX project_tenant_id_code_key ON app.project USING btree (tenant_id, code)"
+        },
+        {
+          "rel": "project",
+          "name": "project_tenant_id_id_key",
+          "def": "CREATE UNIQUE INDEX project_tenant_id_id_key ON app.project USING btree (tenant_id, id)"
+        }
+      ]
+    },
+    {
+      "name": "relationship",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0002_core.sql",
+      "purpose": "The typed relationship graph (Search Party). Edges are facts with provenance; traversal is in packages/relationship-engine.",
+      "columns": [
+        {
+          "rel": "relationship",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "relationship",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "relationship",
+          "col": "from_type",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "relationship",
+          "col": "from_id",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "relationship",
+          "col": "rel",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "relationship",
+          "col": "to_type",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "relationship",
+          "col": "to_id",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "relationship",
+          "col": "provenance",
+          "type": "text",
+          "notnull": true,
+          "def": "'DECLARED'::text",
+          "comment": null
+        },
+        {
+          "rel": "relationship",
+          "col": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        },
+        {
+          "rel": "relationship",
+          "col": "removed_at",
+          "type": "timestamp with time zone",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "relationship",
+          "name": "relationship_rel_check",
+          "type": "c",
+          "def": "CHECK ((rel ~ '^[A-Z_]{2,40}$'::text))"
+        },
+        {
+          "rel": "relationship",
+          "name": "relationship_tenant_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id) REFERENCES app.tenant(id)"
+        },
+        {
+          "rel": "relationship",
+          "name": "relationship_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "relationship",
+          "name": "relationship_tenant_id_id_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "relationship",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "relationship",
+          "name": "relationship_live_unique",
+          "def": "CREATE UNIQUE INDEX relationship_live_unique ON app.relationship USING btree (tenant_id, from_type, from_id, rel, to_type, to_id) WHERE (removed_at IS NULL)"
+        },
+        {
+          "rel": "relationship",
+          "name": "relationship_pkey",
+          "def": "CREATE UNIQUE INDEX relationship_pkey ON app.relationship USING btree (id)"
+        },
+        {
+          "rel": "relationship",
+          "name": "relationship_tenant_id_id_key",
+          "def": "CREATE UNIQUE INDEX relationship_tenant_id_id_key ON app.relationship USING btree (tenant_id, id)"
+        },
+        {
+          "rel": "relationship",
+          "name": "relationship_to_idx",
+          "def": "CREATE INDEX relationship_to_idx ON app.relationship USING btree (tenant_id, to_type, to_id) WHERE (removed_at IS NULL)"
+        }
+      ]
+    },
+    {
+      "name": "role",
+      "kind": "r",
+      "rls": false,
+      "force": false,
+      "comment": "Global role catalogue. \"*\" (every authority) exists for the demonstration architect only and is never granted by the seed to a production tenant.",
+      "migration": "0002_core.sql",
+      "purpose": "Global role catalogue. \"*\" (every authority) exists for the demonstration architect only and is never granted by the seed to a production tenant.",
+      "columns": [
+        {
+          "rel": "role",
+          "col": "key",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "role",
+          "col": "label",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "role",
+          "col": "authorities",
+          "type": "text[]",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "role",
+          "col": "description",
+          "type": "text",
+          "notnull": true,
+          "def": "''::text",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "role",
+          "name": "role_key_check",
+          "type": "c",
+          "def": "CHECK ((key ~ '^[a-z_]{2,40}$'::text))"
+        },
+        {
+          "rel": "role",
+          "name": "role_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (key)"
+        }
+      ],
+      "policies": [],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "role",
+          "name": "role_pkey",
+          "def": "CREATE UNIQUE INDEX role_pkey ON app.role USING btree (key)"
+        }
+      ]
+    },
+    {
+      "name": "room",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0002_core.sql",
+      "purpose": "A room: the canonical record. `code` is the canonical room id people and other products use (R-PLN-0001 for planned rooms).",
+      "columns": [
+        {
+          "rel": "room",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "room",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room",
+          "col": "building_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room",
+          "col": "code",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room",
+          "col": "name",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room",
+          "col": "floor",
+          "type": "integer",
+          "notnull": true,
+          "def": "1",
+          "comment": null
+        },
+        {
+          "rel": "room",
+          "col": "template",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room",
+          "col": "intended_use",
+          "type": "text",
+          "notnull": true,
+          "def": "''::text",
+          "comment": null
+        },
+        {
+          "rel": "room",
+          "col": "occupancy",
+          "type": "integer",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room",
+          "col": "unit",
+          "type": "text",
+          "notnull": true,
+          "def": "'m'::text",
+          "comment": null
+        },
+        {
+          "rel": "room",
+          "col": "geometry",
+          "type": "jsonb",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room",
+          "col": "lifecycle",
+          "type": "text",
+          "notnull": true,
+          "def": "'PLANNED'::text",
+          "comment": null
+        },
+        {
+          "rel": "room",
+          "col": "classification",
+          "type": "jsonb",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room",
+          "col": "approved_class",
+          "type": "jsonb",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room",
+          "col": "rev",
+          "type": "integer",
+          "notnull": true,
+          "def": "1",
+          "comment": null
+        },
+        {
+          "rel": "room",
+          "col": "approved_revision",
+          "type": "integer",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room",
+          "col": "baseline",
+          "type": "jsonb",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room",
+          "col": "created_by",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room",
+          "col": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        },
+        {
+          "rel": "room",
+          "col": "updated_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        },
+        {
+          "rel": "room",
+          "col": "project_id",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "room",
+          "name": "room_code_check",
+          "type": "c",
+          "def": "CHECK ((code ~ '^R-[A-Z0-9-]{3,32}$'::text))"
+        },
+        {
+          "rel": "room",
+          "name": "room_geometry_check",
+          "type": "c",
+          "def": "CHECK ((jsonb_typeof((geometry -> 'points'::text)) = 'array'::text))"
+        },
+        {
+          "rel": "room",
+          "name": "room_lifecycle_check",
+          "type": "c",
+          "def": "CHECK ((lifecycle = ANY (ARRAY['PLANNED'::text, 'DESIGN_APPROVED'::text, 'INSTALLATION_PENDING'::text, 'INSTALLED_UNVERIFIED'::text, 'COMMISSIONING'::text, 'ACCEPTED'::text, 'OPERATIONAL'::text])))"
+        },
+        {
+          "rel": "room",
+          "name": "room_name_check",
+          "type": "c",
+          "def": "CHECK (((length(name) >= 1) AND (length(name) <= 80)))"
+        },
+        {
+          "rel": "room",
+          "name": "room_occupancy_check",
+          "type": "c",
+          "def": "CHECK (((occupancy >= 1) AND (occupancy <= 5000)))"
+        },
+        {
+          "rel": "room",
+          "name": "room_rev_check",
+          "type": "c",
+          "def": "CHECK ((rev >= 1))"
+        },
+        {
+          "rel": "room",
+          "name": "room_unit_check",
+          "type": "c",
+          "def": "CHECK ((unit = ANY (ARRAY['m'::text, 'ft'::text])))"
+        },
+        {
+          "rel": "room",
+          "name": "room_created_by_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (created_by) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "room",
+          "name": "room_project_fk",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id, project_id) REFERENCES app.project(tenant_id, id)"
+        },
+        {
+          "rel": "room",
+          "name": "room_tenant_id_building_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id, building_id) REFERENCES app.building(tenant_id, id)"
+        },
+        {
+          "rel": "room",
+          "name": "room_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "room",
+          "name": "room_tenant_id_code_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, code)"
+        },
+        {
+          "rel": "room",
+          "name": "room_tenant_id_id_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "room",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [
+        {
+          "rel": "room",
+          "name": "room_touch",
+          "def": "CREATE TRIGGER room_touch BEFORE UPDATE ON app.room FOR EACH ROW EXECUTE FUNCTION app.touch_updated_at()"
+        }
+      ],
+      "indexes": [
+        {
+          "rel": "room",
+          "name": "room_lifecycle_idx",
+          "def": "CREATE INDEX room_lifecycle_idx ON app.room USING btree (tenant_id, lifecycle)"
+        },
+        {
+          "rel": "room",
+          "name": "room_pkey",
+          "def": "CREATE UNIQUE INDEX room_pkey ON app.room USING btree (id)"
+        },
+        {
+          "rel": "room",
+          "name": "room_project_idx",
+          "def": "CREATE INDEX room_project_idx ON app.room USING btree (tenant_id, project_id) WHERE (project_id IS NOT NULL)"
+        },
+        {
+          "rel": "room",
+          "name": "room_tenant_id_code_key",
+          "def": "CREATE UNIQUE INDEX room_tenant_id_code_key ON app.room USING btree (tenant_id, code)"
+        },
+        {
+          "rel": "room",
+          "name": "room_tenant_id_id_key",
+          "def": "CREATE UNIQUE INDEX room_tenant_id_id_key ON app.room USING btree (tenant_id, id)"
+        }
+      ]
+    },
+    {
+      "name": "room_issue",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0003_commissioning_evidence.sql",
+      "purpose": "Issues: one per underlying deficiency (correlation key unique per room). Design deficiencies resolve when their check stops firing; installation / commissioning deficiencies resolve only by a verified retest.",
+      "columns": [
+        {
+          "rel": "room_issue",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "room_issue",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_issue",
+          "col": "room_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_issue",
+          "col": "code",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_issue",
+          "col": "key",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_issue",
+          "col": "category",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_issue",
+          "col": "check_name",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_issue",
+          "col": "severity",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_issue",
+          "col": "title",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_issue",
+          "col": "rationale",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_issue",
+          "col": "assets",
+          "type": "text[]",
+          "notnull": true,
+          "def": "'{}'::text[]",
+          "comment": null
+        },
+        {
+          "rel": "room_issue",
+          "col": "state",
+          "type": "text",
+          "notnull": true,
+          "def": "'OPEN'::text",
+          "comment": null
+        },
+        {
+          "rel": "room_issue",
+          "col": "owner_role",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_issue",
+          "col": "owner_id",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_issue",
+          "col": "resolution",
+          "type": "jsonb",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_issue",
+          "col": "first_seen_rev",
+          "type": "integer",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_issue",
+          "col": "last_seen_rev",
+          "type": "integer",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_issue",
+          "col": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        },
+        {
+          "rel": "room_issue",
+          "col": "updated_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "room_issue",
+          "name": "room_issue_category_check",
+          "type": "c",
+          "def": "CHECK ((category = ANY (ARRAY['DESIGN_DEFICIENCY'::text, 'INSTALLATION_COMMISSIONING_DEFICIENCY'::text])))"
+        },
+        {
+          "rel": "room_issue",
+          "name": "room_issue_check",
+          "type": "c",
+          "def": "CHECK (((state = 'RESOLVED'::text) = (resolution IS NOT NULL)))"
+        },
+        {
+          "rel": "room_issue",
+          "name": "room_issue_severity_check",
+          "type": "c",
+          "def": "CHECK ((severity = ANY (ARRAY['Critical'::text, 'High'::text, 'Medium'::text, 'Low'::text])))"
+        },
+        {
+          "rel": "room_issue",
+          "name": "room_issue_state_check",
+          "type": "c",
+          "def": "CHECK ((state = ANY (ARRAY['OPEN'::text, 'RESOLVED'::text])))"
+        },
+        {
+          "rel": "room_issue",
+          "name": "room_issue_owner_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (owner_id) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "room_issue",
+          "name": "room_issue_tenant_id_room_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id, room_id) REFERENCES app.room(tenant_id, id)"
+        },
+        {
+          "rel": "room_issue",
+          "name": "room_issue_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "room_issue",
+          "name": "room_issue_room_id_key_key",
+          "type": "u",
+          "def": "UNIQUE (room_id, key)"
+        },
+        {
+          "rel": "room_issue",
+          "name": "room_issue_tenant_id_code_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, code)"
+        },
+        {
+          "rel": "room_issue",
+          "name": "room_issue_tenant_id_id_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "room_issue",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [
+        {
+          "rel": "room_issue",
+          "name": "room_issue_touch",
+          "def": "CREATE TRIGGER room_issue_touch BEFORE UPDATE ON app.room_issue FOR EACH ROW EXECUTE FUNCTION app.touch_updated_at()"
+        }
+      ],
+      "indexes": [
+        {
+          "rel": "room_issue",
+          "name": "room_issue_open_idx",
+          "def": "CREATE INDEX room_issue_open_idx ON app.room_issue USING btree (tenant_id, room_id) WHERE (state = 'OPEN'::text)"
+        },
+        {
+          "rel": "room_issue",
+          "name": "room_issue_pkey",
+          "def": "CREATE UNIQUE INDEX room_issue_pkey ON app.room_issue USING btree (id)"
+        },
+        {
+          "rel": "room_issue",
+          "name": "room_issue_room_id_key_key",
+          "def": "CREATE UNIQUE INDEX room_issue_room_id_key_key ON app.room_issue USING btree (room_id, key)"
+        },
+        {
+          "rel": "room_issue",
+          "name": "room_issue_tenant_id_code_key",
+          "def": "CREATE UNIQUE INDEX room_issue_tenant_id_code_key ON app.room_issue USING btree (tenant_id, code)"
+        },
+        {
+          "rel": "room_issue",
+          "name": "room_issue_tenant_id_id_key",
+          "def": "CREATE UNIQUE INDEX room_issue_tenant_id_id_key ON app.room_issue USING btree (tenant_id, id)"
+        }
+      ]
+    },
+    {
+      "name": "room_read_model",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0004_platform.sql",
+      "purpose": "The operational read model (Pro): one denormalized row per room, rebuilt by the outbox worker from the canonical tables.",
+      "columns": [
+        {
+          "rel": "room_read_model",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_read_model",
+          "col": "room_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_read_model",
+          "col": "room_code",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_read_model",
+          "col": "name",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_read_model",
+          "col": "lifecycle",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_read_model",
+          "col": "lifecycle_label",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_read_model",
+          "col": "archetype",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_read_model",
+          "col": "devices",
+          "type": "integer",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_read_model",
+          "col": "open_issues",
+          "type": "integer",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_read_model",
+          "col": "open_high",
+          "type": "integer",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_read_model",
+          "col": "applicable_tests",
+          "type": "integer",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_read_model",
+          "col": "results",
+          "type": "jsonb",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_read_model",
+          "col": "live_health",
+          "type": "text",
+          "notnull": true,
+          "def": "'NOT_MONITORED'::text",
+          "comment": "Only NOT_MONITORED is allowed until a verified monitoring integration exists: no invented live health."
+        },
+        {
+          "rel": "room_read_model",
+          "col": "last_event_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_read_model",
+          "col": "rebuilt_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "room_read_model",
+          "name": "room_read_model_live_health_check",
+          "type": "c",
+          "def": "CHECK ((live_health = 'NOT_MONITORED'::text))"
+        },
+        {
+          "rel": "room_read_model",
+          "name": "room_read_model_tenant_id_room_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id, room_id) REFERENCES app.room(tenant_id, id)"
+        },
+        {
+          "rel": "room_read_model",
+          "name": "room_read_model_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (tenant_id, room_id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "room_read_model",
+          "name": "read_model_worker",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(current_setting('app.worker'::text, true) = 'on'::text)",
+          "with_check": "(current_setting('app.worker'::text, true) = 'on'::text)"
+        },
+        {
+          "rel": "room_read_model",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "room_read_model",
+          "name": "room_read_model_pkey",
+          "def": "CREATE UNIQUE INDEX room_read_model_pkey ON app.room_read_model USING btree (tenant_id, room_id)"
+        }
+      ]
+    },
+    {
+      "name": "room_revision",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0002_core.sql",
+      "purpose": "Revisions are immutable snapshots of the whole design (geometry, devices, connections, classification) with a content hash.",
+      "columns": [
+        {
+          "rel": "room_revision",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "room_revision",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_revision",
+          "col": "room_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_revision",
+          "col": "rev_no",
+          "type": "integer",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_revision",
+          "col": "reason",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_revision",
+          "col": "snapshot",
+          "type": "jsonb",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_revision",
+          "col": "sha256",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_revision",
+          "col": "created_by",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "room_revision",
+          "col": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "room_revision",
+          "name": "room_revision_reason_check",
+          "type": "c",
+          "def": "CHECK ((length(reason) <= 200))"
+        },
+        {
+          "rel": "room_revision",
+          "name": "room_revision_rev_no_check",
+          "type": "c",
+          "def": "CHECK ((rev_no >= 1))"
+        },
+        {
+          "rel": "room_revision",
+          "name": "room_revision_sha256_check",
+          "type": "c",
+          "def": "CHECK ((sha256 ~ '^[0-9a-f]{64}$'::text))"
+        },
+        {
+          "rel": "room_revision",
+          "name": "room_revision_created_by_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (created_by) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "room_revision",
+          "name": "room_revision_tenant_id_room_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id, room_id) REFERENCES app.room(tenant_id, id)"
+        },
+        {
+          "rel": "room_revision",
+          "name": "room_revision_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "room_revision",
+          "name": "room_revision_room_id_rev_no_key",
+          "type": "u",
+          "def": "UNIQUE (room_id, rev_no)"
+        },
+        {
+          "rel": "room_revision",
+          "name": "room_revision_tenant_id_id_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "room_revision",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [
+        {
+          "rel": "room_revision",
+          "name": "room_revision_immutable",
+          "def": "CREATE TRIGGER room_revision_immutable BEFORE DELETE OR UPDATE ON app.room_revision FOR EACH ROW EXECUTE FUNCTION app.refuse_change()"
+        }
+      ],
+      "indexes": [
+        {
+          "rel": "room_revision",
+          "name": "room_revision_pkey",
+          "def": "CREATE UNIQUE INDEX room_revision_pkey ON app.room_revision USING btree (id)"
+        },
+        {
+          "rel": "room_revision",
+          "name": "room_revision_room_id_rev_no_key",
+          "def": "CREATE UNIQUE INDEX room_revision_room_id_rev_no_key ON app.room_revision USING btree (room_id, rev_no)"
+        },
+        {
+          "rel": "room_revision",
+          "name": "room_revision_tenant_id_id_key",
+          "def": "CREATE UNIQUE INDEX room_revision_tenant_id_id_key ON app.room_revision USING btree (tenant_id, id)"
+        }
+      ]
+    },
+    {
+      "name": "site",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0002_core.sql",
+      "purpose": null,
+      "columns": [
+        {
+          "rel": "site",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "site",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "site",
+          "col": "code",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "site",
+          "col": "name",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "site",
+          "col": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "site",
+          "name": "site_code_check",
+          "type": "c",
+          "def": "CHECK ((code ~ '^[A-Z0-9-]{2,24}$'::text))"
+        },
+        {
+          "rel": "site",
+          "name": "site_tenant_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id) REFERENCES app.tenant(id)"
+        },
+        {
+          "rel": "site",
+          "name": "site_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "site",
+          "name": "site_tenant_id_code_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, code)"
+        },
+        {
+          "rel": "site",
+          "name": "site_tenant_id_id_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "site",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "site",
+          "name": "site_pkey",
+          "def": "CREATE UNIQUE INDEX site_pkey ON app.site USING btree (id)"
+        },
+        {
+          "rel": "site",
+          "name": "site_tenant_id_code_key",
+          "def": "CREATE UNIQUE INDEX site_tenant_id_code_key ON app.site USING btree (tenant_id, code)"
+        },
+        {
+          "rel": "site",
+          "name": "site_tenant_id_id_key",
+          "def": "CREATE UNIQUE INDEX site_tenant_id_id_key ON app.site USING btree (tenant_id, id)"
+        }
+      ]
+    },
+    {
+      "name": "tenant",
+      "kind": "r",
+      "rls": true,
+      "force": false,
+      "comment": null,
+      "migration": "0002_core.sql",
+      "purpose": null,
+      "columns": [
+        {
+          "rel": "tenant",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "tenant",
+          "col": "slug",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "tenant",
+          "col": "name",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "tenant",
+          "col": "synthetic",
+          "type": "boolean",
+          "notnull": true,
+          "def": "true",
+          "comment": "true for demonstration tenants: every record in them is synthetic."
+        },
+        {
+          "rel": "tenant",
+          "col": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "tenant",
+          "name": "tenant_name_check",
+          "type": "c",
+          "def": "CHECK (((length(name) >= 2) AND (length(name) <= 120)))"
+        },
+        {
+          "rel": "tenant",
+          "name": "tenant_slug_check",
+          "type": "c",
+          "def": "CHECK ((slug ~ '^[a-z0-9][a-z0-9-]{1,62}$'::text))"
+        },
+        {
+          "rel": "tenant",
+          "name": "tenant_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "tenant",
+          "name": "tenant_slug_key",
+          "type": "u",
+          "def": "UNIQUE (slug)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "tenant",
+          "name": "tenant_self",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(id = app.current_tenant())",
+          "with_check": null
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "tenant",
+          "name": "tenant_pkey",
+          "def": "CREATE UNIQUE INDEX tenant_pkey ON app.tenant USING btree (id)"
+        },
+        {
+          "rel": "tenant",
+          "name": "tenant_slug_key",
+          "def": "CREATE UNIQUE INDEX tenant_slug_key ON app.tenant USING btree (slug)"
+        }
+      ]
+    },
+    {
+      "name": "test_result",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0003_commissioning_evidence.sql",
+      "purpose": "Test results. A new recording for the same test supersedes the earlier one (both are kept: append-only).",
+      "columns": [
+        {
+          "rel": "test_result",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "test_result",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "test_result",
+          "col": "room_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "test_result",
+          "col": "test_id",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "test_result",
+          "col": "state",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "test_result",
+          "col": "evidence_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "test_result",
+          "col": "evidence_kind",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "test_result",
+          "col": "instrument",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "test_result",
+          "col": "recorded_by",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "test_result",
+          "col": "recorded_role",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "test_result",
+          "col": "recorded_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        },
+        {
+          "rel": "test_result",
+          "col": "supersedes",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "test_result",
+          "name": "test_result_state_check",
+          "type": "c",
+          "def": "CHECK ((state = ANY (ARRAY['PASS'::text, 'FAIL'::text, 'NOT_SUPPORTED'::text, 'INCONCLUSIVE'::text])))"
+        },
+        {
+          "rel": "test_result",
+          "name": "test_result_recorded_by_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (recorded_by) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "test_result",
+          "name": "test_result_tenant_id_evidence_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id, evidence_id) REFERENCES app.evidence_object(tenant_id, id)"
+        },
+        {
+          "rel": "test_result",
+          "name": "test_result_tenant_id_room_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id, room_id) REFERENCES app.room(tenant_id, id)"
+        },
+        {
+          "rel": "test_result",
+          "name": "test_result_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "test_result",
+          "name": "test_result_tenant_id_id_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "test_result",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [
+        {
+          "rel": "test_result",
+          "name": "test_result_append_only",
+          "def": "CREATE TRIGGER test_result_append_only BEFORE DELETE OR UPDATE ON app.test_result FOR EACH ROW EXECUTE FUNCTION app.refuse_change()"
+        },
+        {
+          "rel": "test_result",
+          "name": "test_result_lifecycle",
+          "def": "CREATE TRIGGER test_result_lifecycle BEFORE INSERT ON app.test_result FOR EACH ROW EXECUTE FUNCTION app.result_only_in_commissioning()"
+        }
+      ],
+      "indexes": [
+        {
+          "rel": "test_result",
+          "name": "test_result_pkey",
+          "def": "CREATE UNIQUE INDEX test_result_pkey ON app.test_result USING btree (id)"
+        },
+        {
+          "rel": "test_result",
+          "name": "test_result_room_idx",
+          "def": "CREATE INDEX test_result_room_idx ON app.test_result USING btree (tenant_id, room_id, test_id, recorded_at DESC)"
+        },
+        {
+          "rel": "test_result",
+          "name": "test_result_tenant_id_id_key",
+          "def": "CREATE UNIQUE INDEX test_result_tenant_id_id_key ON app.test_result USING btree (tenant_id, id)"
+        }
+      ]
+    },
+    {
+      "name": "verification",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0003_commissioning_evidence.sql",
+      "purpose": "Independent verification of a PASS. recorded_by is copied so the database itself can refuse self-verification.",
+      "columns": [
+        {
+          "rel": "verification",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "verification",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "verification",
+          "col": "result_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "verification",
+          "col": "recorded_by",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "verification",
+          "col": "verified_by",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "verification",
+          "col": "verified_role",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "verification",
+          "col": "verified_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "verification",
+          "name": "verification_is_independent",
+          "type": "c",
+          "def": "CHECK ((verified_by <> recorded_by))"
+        },
+        {
+          "rel": "verification",
+          "name": "verification_tenant_id_result_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id, result_id) REFERENCES app.test_result(tenant_id, id)"
+        },
+        {
+          "rel": "verification",
+          "name": "verification_verified_by_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (verified_by) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "verification",
+          "name": "verification_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "verification",
+          "name": "verification_result_id_key",
+          "type": "u",
+          "def": "UNIQUE (result_id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "verification",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [
+        {
+          "rel": "verification",
+          "name": "verification_append_only",
+          "def": "CREATE TRIGGER verification_append_only BEFORE DELETE OR UPDATE ON app.verification FOR EACH ROW EXECUTE FUNCTION app.refuse_change()"
+        },
+        {
+          "rel": "verification",
+          "name": "verification_pass_only",
+          "def": "CREATE TRIGGER verification_pass_only BEFORE INSERT ON app.verification FOR EACH ROW EXECUTE FUNCTION app.verify_only_pass()"
+        }
+      ],
+      "indexes": [
+        {
+          "rel": "verification",
+          "name": "verification_pkey",
+          "def": "CREATE UNIQUE INDEX verification_pkey ON app.verification USING btree (id)"
+        },
+        {
+          "rel": "verification",
+          "name": "verification_result_id_key",
+          "def": "CREATE UNIQUE INDEX verification_result_id_key ON app.verification USING btree (result_id)"
+        }
+      ]
+    },
+    {
+      "name": "work_order",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0003_commissioning_evidence.sql",
+      "purpose": "ServiceHands work orders for installation / commissioning deficiencies. Closing one records the field work; it never passes a test.",
+      "columns": [
+        {
+          "rel": "work_order",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "work_order",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "work_order",
+          "col": "issue_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "work_order",
+          "col": "code",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "work_order",
+          "col": "state",
+          "type": "text",
+          "notnull": true,
+          "def": "'OPEN'::text",
+          "comment": null
+        },
+        {
+          "rel": "work_order",
+          "col": "assigned_role",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "work_order",
+          "col": "note",
+          "type": "text",
+          "notnull": true,
+          "def": "''::text",
+          "comment": null
+        },
+        {
+          "rel": "work_order",
+          "col": "created_by",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "work_order",
+          "col": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        },
+        {
+          "rel": "work_order",
+          "col": "closed_by",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "work_order",
+          "col": "closed_at",
+          "type": "timestamp with time zone",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "work_order",
+          "col": "closing_note",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "work_order",
+          "name": "work_order_check",
+          "type": "c",
+          "def": "CHECK (((state = 'CLOSED'::text) = (closed_at IS NOT NULL)))"
+        },
+        {
+          "rel": "work_order",
+          "name": "work_order_state_check",
+          "type": "c",
+          "def": "CHECK ((state = ANY (ARRAY['OPEN'::text, 'CLOSED'::text])))"
+        },
+        {
+          "rel": "work_order",
+          "name": "work_order_closed_by_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (closed_by) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "work_order",
+          "name": "work_order_created_by_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (created_by) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "work_order",
+          "name": "work_order_tenant_id_issue_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id, issue_id) REFERENCES app.room_issue(tenant_id, id)"
+        },
+        {
+          "rel": "work_order",
+          "name": "work_order_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "work_order",
+          "name": "work_order_tenant_id_code_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, code)"
+        },
+        {
+          "rel": "work_order",
+          "name": "work_order_tenant_id_id_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "work_order",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "work_order",
+          "name": "work_order_pkey",
+          "def": "CREATE UNIQUE INDEX work_order_pkey ON app.work_order USING btree (id)"
+        },
+        {
+          "rel": "work_order",
+          "name": "work_order_tenant_id_code_key",
+          "def": "CREATE UNIQUE INDEX work_order_tenant_id_code_key ON app.work_order USING btree (tenant_id, code)"
+        },
+        {
+          "rel": "work_order",
+          "name": "work_order_tenant_id_id_key",
+          "def": "CREATE UNIQUE INDEX work_order_tenant_id_id_key ON app.work_order USING btree (tenant_id, id)"
+        }
+      ]
+    },
+    {
+      "name": "current_result",
+      "kind": "v",
+      "rls": false,
+      "force": false,
+      "comment": null,
+      "migration": "0003_commissioning_evidence.sql",
+      "purpose": "The one result label every reader uses (R3-2): never a bare PASS.",
+      "columns": [
+        {
+          "rel": "current_result",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "current_result",
+          "col": "room_id",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "current_result",
+          "col": "test_id",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "current_result",
+          "col": "result_id",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "current_result",
+          "col": "state",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "current_result",
+          "col": "evidence_id",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "current_result",
+          "col": "evidence_kind",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "current_result",
+          "col": "recorded_by",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "current_result",
+          "col": "recorded_at",
+          "type": "timestamp with time zone",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "current_result",
+          "col": "verified_by",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "current_result",
+          "col": "verified_at",
+          "type": "timestamp with time zone",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "current_result",
+          "col": "result_label",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        }
+      ],
+      "constraints": [],
+      "policies": [],
+      "triggers": [],
+      "indexes": []
+    }
+  ],
+  "functions": [
+    {
+      "name": "auth_memberships",
+      "args": "p_person uuid",
+      "definer": true,
+      "comment": null
+    },
+    {
+      "name": "auth_person",
+      "args": "p_person uuid",
+      "definer": true,
+      "comment": null
+    },
+    {
+      "name": "auth_person_by_email",
+      "args": "p_email text",
+      "definer": true,
+      "comment": null
+    },
+    {
+      "name": "current_tenant",
+      "args": "",
+      "definer": false,
+      "comment": null
+    },
+    {
+      "name": "current_user_id",
+      "args": "",
+      "definer": false,
+      "comment": null
+    },
+    {
+      "name": "migrations_applied",
+      "args": "",
+      "definer": true,
+      "comment": null
+    },
+    {
+      "name": "mock_evidence_only",
+      "args": "",
+      "definer": false,
+      "comment": null
+    },
+    {
+      "name": "next_code",
+      "args": "k text, prefix text, width integer",
+      "definer": false,
+      "comment": null
+    },
+    {
+      "name": "refuse_change",
+      "args": "",
+      "definer": false,
+      "comment": null
+    },
+    {
+      "name": "result_only_in_commissioning",
+      "args": "",
+      "definer": false,
+      "comment": null
+    },
+    {
+      "name": "tenant_rls",
+      "args": "tbl regclass",
+      "definer": false,
+      "comment": null
+    },
+    {
+      "name": "touch_updated_at",
+      "args": "",
+      "definer": false,
+      "comment": null
+    },
+    {
+      "name": "verify_only_pass",
+      "args": "",
+      "definer": false,
+      "comment": null
+    }
+  ]
+}

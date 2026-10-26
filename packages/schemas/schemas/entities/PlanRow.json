@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/entities/PlanRow/0.1.0.json",
+  "title": "PlanRow",
+  "description": "One test of the commissioning library judged for one room (cx_plan_row + its current result label).",
+  "type": "object",
+  "required": [
+    "test_id",
+    "label",
+    "domain",
+    "phase",
+    "tier",
+    "applicable",
+    "status",
+    "personas",
+    "evidence",
+    "instrument",
+    "devices",
+    "result"
+  ],
+  "properties": {
+    "test_id": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "pack": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "domain": {
+      "type": "string"
+    },
+    "phase": {
+      "type": "integer"
+    },
+    "tier": {
+      "type": "integer"
+    },
+    "applicable": {
+      "type": "boolean"
+    },
+    "status": {
+      "type": "string"
+    },
+    "why": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "personas": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "instrument": {
+      "type": "boolean"
+    },
+    "devices": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "result": {
+      "enum": [
+        "PASS_VERIFIED",
+        "PASS_UNVERIFIED",
+        "FAIL",
+        "NOT_SUPPORTED",
+        "INCONCLUSIVE",
+        "NOT_TESTED"
+      ]
+    }
+  }
+}

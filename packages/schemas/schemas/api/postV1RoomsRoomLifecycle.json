@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomLifecycle/0.1.0.json",
+  "title": "POST /v1/rooms/{room}/lifecycle request body",
+  "description": "Move the room one governed lifecycle step",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "to"
+  ],
+  "properties": {
+    "to": {
+      "type": "string",
+      "enum": [
+        "PLANNED",
+        "DESIGN_APPROVED",
+        "INSTALLATION_PENDING",
+        "INSTALLED_UNVERIFIED",
+        "COMMISSIONING",
+        "ACCEPTED",
+        "OPERATIONAL"
+      ]
+    }
+  }
+}

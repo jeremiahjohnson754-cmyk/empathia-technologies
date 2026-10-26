@@ -56,9 +56,9 @@ write('film-index.json', Object.fromEntries(films.filter((f) => f.found).map((f)
 
 // ------------------------------------------------------------------ documents
 const { marked } = await import('marked');
-const CLASS = (p) => (/^provenance\//.test(p) ? 'RESTRICTED_IP' : /^docs\/security|^docs\/qa/.test(p) ? 'CONFIDENTIAL_TECHNICAL' : /^docs\/discovery/.test(p) ? 'INTERNAL_ONLY' : 'CONFIDENTIAL_TECHNICAL');
+const CLASS = (p) => (/^provenance\//.test(p) ? 'RESTRICTED_IP' : /^docs\/security|^docs\/qa|^tests\/evidence/.test(p) ? 'CONFIDENTIAL_TECHNICAL' : /^docs\/discovery/.test(p) ? 'INTERNAL_ONLY' : 'CONFIDENTIAL_TECHNICAL');
 const GROUP = (p) => {
-  const m = { 'docs/product': 'A · Product and business', 'docs/architecture': 'B · System architecture', 'docs/database': 'C · Data architecture', 'docs/api': 'D · API engineering', 'docs/algorithms': 'E · Algorithms and intelligent systems', 'docs/frontend': 'F · Frontend and 3D', 'docs/qa': 'G · QA and security', 'docs/security': 'G · QA and security', 'docs/operations': 'H · Operations', 'docs/engineering-handoff': 'I · Engineering execution', 'docs/integrations': 'D · Integrations', 'docs/discovery': 'Stage 0 · Discovery', 'provenance': 'IP & provenance vault', 'media': 'Media library' };
+  const m = { 'docs/product': 'A · Product and business', 'docs/architecture': 'B · System architecture', 'docs/database': 'C · Data architecture', 'docs/api': 'D · API engineering', 'docs/algorithms': 'E · Algorithms and intelligent systems', 'docs/frontend': 'F · Frontend and 3D', 'docs/qa': 'G · QA and security', 'docs/security': 'G · QA and security', 'docs/operations': 'H · Operations', 'docs/engineering-handoff': 'I · Engineering execution', 'docs/integrations': 'D · Integrations', 'docs/discovery': 'Stage 0 · Discovery', 'docs/design-system': 'F · Design system', 'spatial': 'F · Frontend and 3D', 'ml': 'E · Algorithms and intelligent systems', 'integrations': 'D · Integrations', 'services': 'B · System architecture', 'packages': 'B · System architecture', 'tests/evidence': 'G · QA and security', 'releases': 'Releases and packages', 'provenance': 'IP & provenance vault', 'media': 'Media library' };
   for (const [k, v] of Object.entries(m)) if (p.startsWith(k)) return v;
   return 'Start here';
 };

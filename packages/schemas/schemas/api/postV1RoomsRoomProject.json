@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomProject/0.1.0.json",
+  "title": "POST /v1/rooms/{room}/project request body",
+  "description": "Put a room into a project, or take it out (projectCode null)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "projectCode"
+  ],
+  "properties": {
+    "projectCode": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^PRJ-[A-Z0-9-]{2,32}$"
+    }
+  }
+}

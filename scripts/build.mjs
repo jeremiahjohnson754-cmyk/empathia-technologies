@@ -44,7 +44,8 @@ log(`Empathia build ${new Date().toISOString()} on ${process.platform} ${process
 run('link workspace', process.execPath, [path.join(root, 'scripts/bootstrap.mjs')]);
 run('design tokens', process.execPath, [path.join(root, 'packages/design-tokens/build-tokens.mjs')]);
 for (const p of ['packages/domain-types', 'packages/commissioning-engine', 'packages/event-contracts', 'packages/relationship-engine', 'packages/assurance-engine',
-  'integrations/contracts', 'integrations/mocks', 'services/enterprise-api', 'packages/api-client']) run(`tsc -b ${p}`, process.execPath, [tsc, '-b', path.join(root, p)]);
+  'integrations/contracts', 'integrations/mocks', 'services/enterprise-api', 'packages/api-client', 'packages/schemas']) run(`tsc -b ${p}`, process.execPath, [tsc, '-b', path.join(root, p)]);
+run('JSON Schemas (events, API bodies, entities)', process.execPath, [path.join(root, 'packages/schemas/scripts/generate.mjs')]);
 for (const p of ['packages/ui', 'apps/enterprise-web', 'apps/founder-studio']) run(`type-check ${p}`, process.execPath, [tsc, '-p', path.join(root, p, 'tsconfig.json'), '--noEmit']);
 run('OpenAPI and typed client match the route table', process.execPath, [path.join(root, 'scripts/api/export-openapi.mjs'), '--check']);
 run('enterprise web bundle', process.execPath, [path.join(root, 'apps/enterprise-web/build.mjs')]);

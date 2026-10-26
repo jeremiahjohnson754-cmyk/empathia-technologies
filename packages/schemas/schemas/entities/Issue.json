@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/entities/Issue/0.1.0.json",
+  "title": "Issue",
+  "description": "A room issue: one per underlying deficiency (correlation key unique per room).",
+  "type": "object",
+  "required": [
+    "code",
+    "key",
+    "category",
+    "severity",
+    "title",
+    "state"
+  ],
+  "properties": {
+    "code": {
+      "type": "string",
+      "pattern": "^RISS-\\d{4,}$"
+    },
+    "key": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "check_name": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "severity": {
+      "enum": [
+        "Critical",
+        "High",
+        "Medium",
+        "Low"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "rationale": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "state": {
+      "enum": [
+        "OPEN",
+        "RESOLVED"
+      ]
+    },
+    "owner_role": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "resolution": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "first_seen_rev": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "last_seen_rev": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    }
+  }
+}

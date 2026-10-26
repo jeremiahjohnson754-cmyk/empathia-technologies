@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1AiRequests/0.1.0.json",
+  "title": "POST /v1/ai/requests request body",
+  "description": "Ask the governed assistant (logged; generation NOT_CONFIGURED in the starter)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "prompt"
+  ],
+  "properties": {
+    "purpose": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "prompt": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    }
+  }
+}

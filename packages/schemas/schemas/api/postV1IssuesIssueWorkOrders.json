@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1IssuesIssueWorkOrders/0.1.0.json",
+  "title": "POST /v1/issues/{issue}/work-orders request body",
+  "description": "Raise a ServiceHands work order for an installation/commissioning deficiency",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [],
+  "properties": {
+    "assignedRole": {
+      "type": "string",
+      "pattern": "^[a-z_]{2,40}$"
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 1000
+    }
+  }
+}

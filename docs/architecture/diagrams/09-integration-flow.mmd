@@ -1,0 +1,18 @@
+%% One integration sync (services/enterprise-api/src/integrations/sync.ts) through the common contract and the Harmony rules.
+sequenceDiagram
+  participant W as integration-worker (service identity)
+  participant S as sync.ts (API module)
+  participant H as Harmony (integration-contracts)
+  participant A as Adapter (MOCK today)
+  participant DB as PostgreSQL
+  W->>S: syncIntegration(key) — authority adapter.allowlist / policy.configure
+  S->>DB: integration row: MOCK? (else 501 NOT_CONFIGURED, nothing called)
+  loop pages
+    S->>H: TokenBucket.take()
+    S->>A: discover / poll (cursor)
+    A-->>S: Observations (evidence SYNTHETIC_MOCK) or AdapterError
+    Note over S,H: withRetry: full-jitter backoff, Retry-After, non-retryable stops
+  end
+  S->>H: dedupe · matchCanonical (serial/MAC only)
+  S->>DB: upsert integration_observation (trigger EM004: mock ⇒ SYNTHETIC_MOCK)
+  S->>DB: integration_sync health · audit · outbox integration.adapter_health_changed

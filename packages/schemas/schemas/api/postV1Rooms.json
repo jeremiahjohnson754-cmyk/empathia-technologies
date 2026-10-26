@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1Rooms/0.1.0.json",
+  "title": "POST /v1/rooms request body",
+  "description": "Create a planned room from a template (server-side classification, checks and applicability)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "template"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "template": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "buildingCode": {
+      "type": "string",
+      "maxLength": 24
+    },
+    "floor": {
+      "type": "integer",
+      "minimum": -5,
+      "maximum": 200
+    },
+    "unit": {
+      "type": "string",
+      "enum": [
+        "m",
+        "ft"
+      ]
+    },
+    "length": {
+      "type": "string",
+      "maxLength": 20
+    },
+    "width": {
+      "type": "string",
+      "maxLength": 20
+    },
+    "ceiling": {
+      "type": "string",
+      "maxLength": 20
+    },
+    "intendedUse": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "occupancy": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5000
+    },
+    "shape": {
+      "type": "string",
+      "enum": [
+        "rect",
+        "lshape"
+      ]
+    },
+    "points": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 40,
+      "items": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "type": "number"
+        }
+      }
+    },
+    "projectCode": {
+      "type": "string",
+      "pattern": "^PRJ-[A-Z0-9-]{2,32}$"
+    }
+  }
+}

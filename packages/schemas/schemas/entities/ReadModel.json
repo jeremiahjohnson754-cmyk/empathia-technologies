@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/entities/ReadModel/0.1.0.json",
+  "title": "ReadModel",
+  "description": "The operational read model of one room (app.room_read_model), rebuilt by the outbox worker. Live health is NOT_MONITORED in the starter.",
+  "type": "object",
+  "required": [
+    "room_code",
+    "name",
+    "lifecycle",
+    "lifecycle_label",
+    "devices",
+    "open_issues",
+    "open_high",
+    "applicable_tests",
+    "results",
+    "live_health"
+  ],
+  "properties": {
+    "room_code": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "lifecycle": {
+      "enum": [
+        "PLANNED",
+        "DESIGN_APPROVED",
+        "INSTALLATION_PENDING",
+        "INSTALLED_UNVERIFIED",
+        "COMMISSIONING",
+        "ACCEPTED",
+        "OPERATIONAL"
+      ]
+    },
+    "lifecycle_label": {
+      "type": "string"
+    },
+    "archetype": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "devices": {
+      "type": "integer"
+    },
+    "open_issues": {
+      "type": "integer"
+    },
+    "open_high": {
+      "type": "integer"
+    },
+    "applicable_tests": {
+      "type": "integer"
+    },
+    "results": {
+      "type": "object",
+      "required": [
+        "applicable",
+        "recorded",
+        "verified",
+        "awaiting",
+        "failed",
+        "notSupported",
+        "inconclusive",
+        "notTested"
+      ],
+      "properties": {
+        "applicable": {
+          "type": "integer"
+        },
+        "recorded": {
+          "type": "integer"
+        },
+        "verified": {
+          "type": "integer"
+        },
+        "awaiting": {
+          "type": "integer"
+        },
+        "failed": {
+          "type": "integer"
+        },
+        "notSupported": {
+          "type": "integer"
+        },
+        "inconclusive": {
+          "type": "integer"
+        },
+        "notTested": {
+          "type": "integer"
+        }
+      }
+    },
+    "live_health": {
+      "const": "NOT_MONITORED"
+    }
+  }
+}

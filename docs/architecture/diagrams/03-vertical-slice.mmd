@@ -1,28 +1,34 @@
-%% The production vertical slice. Every arrow into the API is authenticated; every write is one transaction with an audit row and an outbox event.
+%% The production vertical slice as implemented (services/enterprise-api/src/domain). Every call is authenticated; every write is one
+%% transaction with row-level security, an audit row and outbox events. Proven end to end by tests/integration/api.test.mjs (slices 1–9).
 sequenceDiagram
   autonumber
   actor D as Designer
   actor S as Systems engineer
   actor C as Commissioning engineer
+  actor M as Service manager
   actor Q as QA reviewer
   participant API as enterprise-api
   participant DB as PostgreSQL
   participant OS as Object storage
   participant W as Outbox worker
-  D->>API: POST /v1/rooms (template, dimensions)
-  API->>DB: room + revision 1 + classification (server-side engine) + audit + outbox
-  D->>API: POST /v1/rooms/{id}/devices
-  API->>DB: planned asset (unique per tenant) + CONTAINS / CONNECTS edges
-  D->>API: POST /v1/rooms/{id}/revisions
-  API->>DB: immutable revision snapshot + drawing revisions (input hash)
-  S->>API: POST /v1/rooms/{id}/commissioning-plan
-  API->>DB: 94 definitions judged, rows persisted (never PASS)
-  API->>DB: design checks → issues (correlation key, unique)
-  S->>API: lifecycle transitions (authority checked server-side)
-  C->>API: POST /v1/evidence (bytes)
-  API->>OS: put (content-addressed, sha256)
-  C->>API: POST /v1/rooms/{id}/results (FAIL → deficiency → work order)
-  C->>API: POST /v1/rooms/{id}/results (PASS → PASS_UNVERIFIED)
-  Q->>API: POST /v1/rooms/{id}/results/{test}/verify (a different person)
-  W->>DB: outbox → operational read model, notifications
-  Q->>API: GET /v1/read/rooms/{id}
+  D->>API: POST /v1/rooms (template)
+  API->>DB: room + template devices + revision 1 + classification, checks, applicability (engines) + plan rows + LOCATED_IN / PLANS_DEVICE edges
+  D->>API: POST /v1/rooms/{room}/devices
+  API->>DB: asset PA-nnnn (tenant-unique) + edge; checks re-run; plan recompiled only if its signature changed
+  D->>API: POST /v1/rooms/{room}/revisions
+  API->>DB: immutable revision (snapshot + SHA-256)
+  S->>API: drawings/generate · drawings/{kind}/approve · classification/approve
+  API->>DB: drawing revisions keyed by input hash (REVIEW_REQUIRED when the input changes)
+  S->>API: POST /v1/rooms/{room}/lifecycle — each step by its own authority, up to COMMISSIONING
+  C->>API: POST /v1/evidence (file)
+  API->>OS: put, content-addressed by SHA-256, retained 7 years
+  C->>API: POST /v1/rooms/{room}/results (FAIL)
+  API->>DB: result + one commissioning deficiency (issue) + AFFECTS edge
+  M->>API: POST /v1/issues/{issue}/work-orders, then /v1/work-orders/{wo}/close
+  Note over API,DB: closing a work order never passes the test
+  C->>API: POST /v1/rooms/{room}/results (PASS)
+  API-->>C: PASS_UNVERIFIED
+  Q->>API: POST /v1/rooms/{room}/results/{test}/verify (a different person)
+  API->>DB: PASS_VERIFIED; the deficiency resolves
+  W->>DB: outbox → room_read_model (live health NOT_MONITORED) + notifications
+  Q->>API: GET /v1/read/rooms/{room}

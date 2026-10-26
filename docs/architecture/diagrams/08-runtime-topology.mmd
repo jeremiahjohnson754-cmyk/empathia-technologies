@@ -1,0 +1,11 @@
+%% Local runtime topology as started by `node scripts/dev.mjs` (tested) or docker-compose.yml (static config validated; NOT_RUN).
+flowchart LR
+  subgraph Host["Developer machine — everything on 127.0.0.1"]
+    B[Browser] -->|4200 static, CSP connect-src = API| W[web server<br/>apps/enterprise-web/server/serve.mjs]
+    B -->|4100 Bearer JWT, CORS allow-list| A[API process<br/>main.js + outbox worker]
+    A -->|55432 SCRAM, role empathia_app, RLS| P[(PostgreSQL 16<br/>.local/pg)]
+    A --> O[(.local/objects<br/>content-addressed)]
+    I[integration worker<br/>main.mjs --once / every 5 min] --> P
+    Y[intelligence-python<br/>4300, service token] 
+    M[scripts/db.mjs] -. init, roles .-> P
+  end

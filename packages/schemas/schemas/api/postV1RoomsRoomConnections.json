@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomConnections/0.1.0.json",
+  "title": "POST /v1/rooms/{room}/connections request body",
+  "description": "Propose a connection between two devices",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "from",
+    "to",
+    "kind"
+  ],
+  "properties": {
+    "from": {
+      "type": "string",
+      "pattern": "^PA-[0-9]{4,10}$"
+    },
+    "to": {
+      "type": "string",
+      "pattern": "^PA-[0-9]{4,10}$"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "signal",
+        "network",
+        "control",
+        "power"
+      ]
+    }
+  }
+}

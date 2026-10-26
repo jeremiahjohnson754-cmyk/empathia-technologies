@@ -1,25 +1,31 @@
-%% Containers of the production starter (services/, apps/, packages/). One modular monolith; Python only for the ML research prototype.
+%% Containers of the production starter (services/, apps/, packages/, integrations/). One modular monolith plus two worker processes;
+%% Python only for the synthetic ML research prototype. Arrows are calls that exist in code today; dotted = not wired yet.
 flowchart TB
   subgraph Browser
-    WEB[enterprise-web<br/>React + TypeScript]
-    STUDIO[founder-studio<br/>local founder hub]
+    WEB[enterprise-web<br/>React + TypeScript · @empathia/ui · typed api-client]
+    STUDIO[founder-studio<br/>local founder hub over the demonstrators]
   end
   subgraph API["enterprise-api — TypeScript modular monolith (Node 22)"]
-    HTTP[HTTP layer<br/>auth, validation, idempotency, correlation IDs]
-    MODS[Modules: tenants · users/roles · sites · rooms · devices · relationships ·<br/>designs/revisions · drawings · commissioning · evidence · issues ·<br/>work orders · notifications · integrations · audit · read models]
-    ENGINE[[commissioning-engine<br/>server-side rules]]
+    HTTP[HTTP layer<br/>auth, validation, idempotency, rate limit, correlation IDs]
+    MODS[Modules: tenants · people/roles · sites/buildings · projects · rooms · devices · relationships ·<br/>revisions · drawings · commissioning · evidence · issues · work orders · notifications ·<br/>integrations · audit · read models · reports · knowledge · AI requests · assurance]
+    ENGINE[[commissioning-engine]]
     REL[[relationship-engine]]
-    WORKER[outbox worker<br/>retries · dead letter]
+    ASSURE[[assurance-engine]]
+    HARM[[integration-contracts<br/>Harmony rules]]
+    OUTBOX[outbox worker<br/>in process · retries · dead letter]
   end
-  PG[(PostgreSQL 16<br/>tenant-scoped schema, RLS,<br/>outbox, audit log)]
-  OBJ[(Object storage<br/>local adapter; S3/MinIO contract)]
-  PY[intelligence-python<br/>Starlette · synthetic ML prototype]
+  IW[integration-worker<br/>scheduled syncs · service identity]
+  MOCKS[[integration-mocks<br/>3 MOCK adapters]]
+  PG[(PostgreSQL 16<br/>RLS FORCE · append-only evidence ·<br/>outbox · audit · read models)]
+  OBJ[(Evidence object store<br/>LocalObjectStore · S3 CONTRACT_ONLY)]
+  PY[intelligence-python<br/>Starlette · synthetic research prototype]
   WEB --> HTTP
-  STUDIO -. health only .-> HTTP
+  STUDIO -. "/health probe only" .-> HTTP
   HTTP --> MODS
-  MODS --> ENGINE
-  MODS --> REL
+  MODS --> ENGINE & REL & ASSURE & HARM
   MODS --> PG
   MODS --> OBJ
-  WORKER --> PG
-  MODS -. optional, labelled synthetic .-> PY
+  OUTBOX --> PG
+  IW --> MODS
+  MODS --> MOCKS
+  MODS -. "not called by the API yet" .-> PY

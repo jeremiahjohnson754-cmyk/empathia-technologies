@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomClassificationApprove/0.1.0.json",
+  "title": "POST /v1/rooms/{room}/classification/approve request body",
+  "description": "Approve the suggested room type, or override it with a reason (≥ 10 characters)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [],
+  "properties": {
+    "archetype": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 8
+    },
+    "reason": {
+      "type": "string",
+      "maxLength": 400
+    }
+  }
+}
