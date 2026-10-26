@@ -20,7 +20,7 @@ const region = (name, body) => {
   else s = s.slice(0, s.indexOf(a)) + `${a}\n${body}\n${b}` + s.slice(s.indexOf(b) + b.length);
 };
 const suite = (re) => T.suites.find((x) => re.test(x.suite)) || { result: 'NOT_RUN' };
-const lab = (x) => (x.result === 'NOT_RUN' ? 'NOT_RUN' : `${x.result} ${x.pass}/${x.tests}`);
+const lab = (x) => (x.result === 'NOT_RUN' ? 'NOT_RUN' : `${x.result} ${x.pass}/${x.tests}${x.notRun ? ` + ${x.notRun} NOT_RUN` : ''}`);
 
 const tests = ['| Suite | Kind | Result | Passed / tests |', '|---|---|---|---|', ...T.suites.map((x) => `| ${x.suite} | ${x.kind} | **${x.result}** | ${x.result === 'NOT_RUN' ? x.why : `${x.pass}/${x.tests}${x.notRun ? ` (+${x.notRun} NOT_RUN)` : ''}`} |`)].join('\n');
 const verify = ['| Check | Result |', '|---|---|', ...V.checks.map((c) => `| ${c.check} | **${c.result}**${c.why ? ` — ${c.why}` : ''} |`)].join('\n');

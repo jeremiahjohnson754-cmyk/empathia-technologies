@@ -264,13 +264,13 @@ distribution remains unauthorized**; only the founder can authorize it.
 <!-- verification_table -->
 | # | Requirement | Result | Evidence |
 |---|---|---|---|
-| 1 | Founder Studio launches successfully | **PASS 19/19** | tests/browser/founder-studio.test.mjs (S-01) |
-| 2 | Product routes work | **PASS 19/19** | S-02 all 27 destinations; S-03 product pages open the Founder Edition as the right persona |
+| 1 | Founder Studio launches successfully | **PASS 19/19 + 1 NOT_RUN** | tests/browser/founder-studio.test.mjs (S-01) |
+| 2 | Product routes work | **PASS 19/19 + 1 NOT_RUN** | S-02 all 27 destinations; S-03 product pages open the Founder Edition as the right persona |
 | 3 | Existing demonstrations remain accessible | **PASS** | 15 demonstrators load offline (docs/product/DEMONSTRATOR_INDEX.md, Stage 2 run); frozen bytes unchanged (item 25) |
 | 4 | Available films play correctly | **PASS 36/36** | full ffmpeg decode + hash of every curated film; in-browser H.264 NOT_RUN (test Chromium lacks the codec), VP9 fixture plays in the studio test |
 | 5 | Media rights are classified | **PASS** | 2,230 assets carry a rights status; none is VERIFIED; investor-safe set empty (classification is not clearance) |
 | 6 | Synthetic data initializes correctly | **PASS 20/20** | seed through the domain service; clean-environment run |
-| 7 | State persists as documented | **PASS 20/20; studio PASS 19/19** | PostgreSQL persistence asserted in SQL by the API tests; studio snapshots S-13/S-14 |
+| 7 | State persists as documented | **PASS 20/20; studio PASS 19/19 + 1 NOT_RUN** | PostgreSQL persistence asserted in SQL by the API tests; studio snapshots S-13/S-14 |
 | 8 | The full room-building journey works | **town hall PASS 25/25; web PASS 21/21; API PASS 20/20** | design → COMMISSIONING → results → verification; ACCEPTED/OPERATIONAL end to end NOT_RUN |
 | 9 | Cross-product asset identities remain consistent | **PASS 25/25** | T-21 canonical room id unchanged; asset id kept on model swap (T-09, API changeDevice) |
 | 10 | Workbook results and evidence counts are correct | **PASS 25/25; PASS 20/20** | T-10 94 rows, no bare PASS; KPI counts equal SQL counts (reporting test) |
