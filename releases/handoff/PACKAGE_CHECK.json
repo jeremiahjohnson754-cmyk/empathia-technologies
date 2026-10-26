@@ -1,0 +1,6 @@
+{
+  "result": "PASS",
+  "detail": "555 files in the archive; 555 tracked files outside provenance/; missing 0, extra 0",
+  "missing": [],
+  "extra": []
+}

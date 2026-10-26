@@ -162,8 +162,8 @@ D API (6 + OpenAPI) and integrations · E algorithms (inventory + ML) · F front
 
 Deliverables are packaged from one committed revision by `scripts/release/package-deliverables.mjs` into
 `releases/handoff/out/` with `MASTER_INDEX.md`, `MASTER_INDEX.json` and `SHA256SUMS.txt`. The production source archive is a
-`git archive` of HEAD without `provenance/`; its file list is checked against `git ls-files` (<!-- package_results -->
-NOT_RUN — packaging runs after this revision is committed
+`git archive` of HEAD without `provenance/`; its file list is checked against `git ls-files`. The packages were built from revision `f51229b83e5a`; this report's final text (with the hashes below) is committed one revision later, and the index is also kept at `releases/handoff/MASTER_INDEX.md` (<!-- package_results -->
+PASS: 555 files in the archive; 555 tracked files outside provenance/; missing 0, extra 0
 <!-- /package_results -->).
 
 ## 12. IP provenance package status
@@ -213,7 +213,19 @@ conformance suite; (5) CI with SAST/dependency scanning and the container path; 
 ## 17. Complete deliverables index
 
 <!-- deliverables -->
-Packaging runs from the committed revision after this report is written: see releases/handoff/out/MASTER_INDEX.md.
+| ID | Deliverable | File | Classification | SHA-256 |
+|---|---|---|---|---|
+| A | Empathia Founder Studio | EMPATHIA_FOUNDER_STUDIO_f51229b83e5a.zip | INTERNAL_ONLY | `39f57fa80f00b4da…` |
+| B | Empathia Investor Experience (frozen 2.5.3 rc3) | apps/investor-demo/README.md | INVESTOR_DISCLOSABLE (when authorized) | `39a3b2a73c49dbe7…` |
+| C | Empathia Private Engineer Edition (frozen 2.5.3 rc3) | apps/engineer-demo/README.md | CONFIDENTIAL_TECHNICAL | `2fdf027c5e374ad8…` |
+| D | Empathia production source | EMPATHIA_PRODUCTION_SOURCE_f51229b83e5a.zip | CONFIDENTIAL_TECHNICAL | `10f201feb553b0aa…` |
+| E | Empathia engineering blueprint | EMPATHIA_ENGINEERING_BLUEPRINT_f51229b83e5a.zip | CONFIDENTIAL_TECHNICAL | `3fce7e958421e6ac…` |
+| F | Empathia media and film library (index) | EMPATHIA_MEDIA_AND_FILM_LIBRARY_INDEX_f51229b83e5a.zip | INTERNAL_ONLY | `b9df4ddcd86c3280…` |
+| G | Empathia IP and provenance vault | EMPATHIA_IP_PROVENANCE_VAULT_f51229b83e5a.zip | RESTRICTED_IP | `602018eded3fa9f9…` |
+| H | Empathia QA and release evidence | EMPATHIA_QA_AND_RELEASE_EVIDENCE_f51229b83e5a.zip | CONFIDENTIAL_TECHNICAL | `bd7b69d72ec266c3…` |
+| I | Empathia engineering team handoff | EMPATHIA_ENGINEERING_TEAM_HANDOFF_f51229b83e5a.zip | CONFIDENTIAL_TECHNICAL | `ec80336905f27129…` |
+
+J — the master archive index: `releases/handoff/out/MASTER_INDEX.md` (full hashes, source revision `f51229b83e5a`). B and C are references to the frozen packages, not copies.
 <!-- /deliverables -->
 
 ## 18. Reproducible commands
@@ -267,14 +279,14 @@ distribution remains unauthorized**; only the founder can authorize it.
 | 13 | Production starter APIs work | **PASS 20/20** | 48 operations; examples captured live |
 | 14 | Database migrations succeed | **PASS 20/20** | 8 migrations on fresh databases in every run and in the clean environment; backup/restore drill PASS |
 | 15 | Server-side authorization negative tests pass | **PASS 45/45** | tests/security/authz.test.mjs |
-| 16 | Source archives are complete | **NOT_RUN** | packaging not run |
+| 16 | Source archives are complete | **PASS** | 555 files in the archive; 555 tracked files outside provenance/; missing 0, extra 0 |
 | 17 | API contracts match implementations | **PASS** | OpenAPI and typed client regenerated and compared on every build; OpenAPI route test; live response shapes |
 | 18 | Algorithms have executable tests | **PASS (starter) · NOT_RUN (demonstrator-only engines)** | commissioning 128, assurance 13, relationship 5, contracts 7, mocks 5, ML 5; demonstrator suites not re-run in this program |
 | 19 | ML claims match actual model evidence | **PASS** | one synthetic research prototype with code, data generator, metrics and model card; no other model claimed; PyTorch BLOCKED |
 | 20 | Local setup works from a clean environment | **PASS (Linux, offline tool folder)** | tests/evidence/clean-environment; containers NOT_RUN; other OS NOT_RUN |
 | 21 | All supplied documentation links resolve | **PASS** | relative links; external links NOT_RUN |
-| 22 | Generated archives have verifiable hashes | **NOT_RUN** | releases/handoff/out/SHA256SUMS.txt |
-| 23 | Package manifests identify exact source revisions | **NOT_RUN** | MASTER_INDEX.json sourceRevision; packaging refuses uncommitted changes |
+| 22 | Generated archives have verifiable hashes | **PASS** | releases/handoff/out/SHA256SUMS.txt |
+| 23 | Package manifests identify exact source revisions | **PASS** | MASTER_INDEX.json sourceRevision; packaging refuses uncommitted changes |
 | 24 | No secrets or prohibited third-party materials ship | **PASS** | secret scan of tracked files; SBOM licences permissive (FFmpeg tooling only, not shipped); no media in source packages |
 | 25 | Existing frozen releases remain unchanged | **PASS** | scripts/verify/verify-frozen.py: all 8 packages and 7 archives |
 <!-- /verification_table -->

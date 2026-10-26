@@ -1,0 +1,144 @@
+{
+  "title": "EMPATHIA MASTER ARCHIVE — index",
+  "generatedAt": "2026-10-26T13:46:04.776Z",
+  "sourceRevision": "f51229b83e5a17b10dd778b824ea16ede09e5086",
+  "notice": "Source revision f51229b83e5a17b10dd778b824ea16ede09e5086. Synthetic data. Not production-ready. Distribution: NOT AUTHORIZED — only the founder may authorize external distribution.",
+  "deliverables": [
+    {
+      "id": "A",
+      "title": "Empathia Founder Studio",
+      "file": "EMPATHIA_FOUNDER_STUDIO_f51229b83e5a.zip",
+      "kind": "build",
+      "classification": "INTERNAL_ONLY",
+      "sourceRevision": "f51229b83e5a17b10dd778b824ea16ede09e5086",
+      "builtFrom": "apps/founder-studio/dist",
+      "bytes": 3646289,
+      "sha256": "39f57fa80f00b4da082517e8b3f9797cdd0d3700f7e389ac130849c0cd5f929f",
+      "description": "Runnable founder hub with launchers. Films are not inside: point the launcher at the film folder (--films)."
+    },
+    {
+      "id": "B",
+      "title": "Empathia Investor Experience (frozen 2.5.3 rc3)",
+      "kind": "reference",
+      "classification": "INVESTOR_DISCLOSABLE (when authorized)",
+      "file": "apps/investor-demo/README.md",
+      "sha256": "39a3b2a73c49dbe7b15d69daf9cff96eba4655063a72f0fd48bfa788107b1b7a",
+      "description": "Reference by hash to the frozen 2.5.3 rc3 package; the bytes are not copied. Distribution NOT AUTHORIZED."
+    },
+    {
+      "id": "C",
+      "title": "Empathia Private Engineer Edition (frozen 2.5.3 rc3)",
+      "kind": "reference",
+      "classification": "CONFIDENTIAL_TECHNICAL",
+      "file": "apps/engineer-demo/README.md",
+      "sha256": "2fdf027c5e374ad8196cc26cb488a34d774dc863f8feae911a521db82c6a239b",
+      "description": "Reference by hash to the frozen 2.5.3 rc3 package; the bytes are not copied. Distribution NOT AUTHORIZED."
+    },
+    {
+      "id": "D",
+      "title": "Empathia production source",
+      "file": "EMPATHIA_PRODUCTION_SOURCE_f51229b83e5a.zip",
+      "kind": "archive",
+      "classification": "CONFIDENTIAL_TECHNICAL",
+      "sourceRevision": "f51229b83e5a17b10dd778b824ea16ede09e5086",
+      "bytes": 8738972,
+      "sha256": "10f201feb553b0aa510021bcf15430983a468c06c8a4cffb5c120ef0156e9985",
+      "contents": [
+        ".",
+        ":!provenance"
+      ],
+      "description": "The editable codebase: apps, services, packages, integrations, database, ml, spatial, scripts, tests, docs. Excludes provenance/."
+    },
+    {
+      "id": "E",
+      "title": "Empathia engineering blueprint",
+      "file": "EMPATHIA_ENGINEERING_BLUEPRINT_f51229b83e5a.zip",
+      "kind": "archive",
+      "classification": "CONFIDENTIAL_TECHNICAL",
+      "sourceRevision": "f51229b83e5a17b10dd778b824ea16ede09e5086",
+      "bytes": 2098527,
+      "sha256": "3fce7e958421e6aca8172ab9ad914134e7319415ab09ecefafa5b4e4c04aa020",
+      "contents": [
+        "docs",
+        "database/schema",
+        "database/migrations",
+        "packages/schemas/schemas",
+        "spatial",
+        "README.md",
+        "GETTING_STARTED.md"
+      ],
+      "description": "Architecture, data, API, algorithms, frontend, design system, QA, security, operations, handoff; schema and JSON Schemas."
+    },
+    {
+      "id": "F",
+      "title": "Empathia media and film library (index)",
+      "file": "EMPATHIA_MEDIA_AND_FILM_LIBRARY_INDEX_f51229b83e5a.zip",
+      "kind": "archive",
+      "classification": "INTERNAL_ONLY",
+      "sourceRevision": "f51229b83e5a17b10dd778b824ea16ede09e5086",
+      "bytes": 6032672,
+      "sha256": "b9df4ddcd86c32806329c0821d83f0a00057cc5f8eedb8cfbe3ecdfdd7beb394",
+      "contents": [
+        "media",
+        "tests/evidence/films",
+        "scripts/media"
+      ],
+      "description": "Manifests of 2,230 assets, rights classification, internal and investor-safe sets (investor-safe: empty), film inventory and production packages, decode results. Film files are not copied."
+    },
+    {
+      "id": "G",
+      "title": "Empathia IP and provenance vault",
+      "file": "EMPATHIA_IP_PROVENANCE_VAULT_f51229b83e5a.zip",
+      "kind": "archive",
+      "classification": "RESTRICTED_IP",
+      "sourceRevision": "f51229b83e5a17b10dd778b824ea16ede09e5086",
+      "bytes": 282754,
+      "sha256": "602018eded3fa9f9ca332a1d5621cedf9295fd1cd81b64b8992f56443dfb9541",
+      "contents": [
+        "provenance"
+      ],
+      "description": "For the founder and qualified counsel only. Contains personal data (git author e-mail). Not legal advice; establishes no rights."
+    },
+    {
+      "id": "H",
+      "title": "Empathia QA and release evidence",
+      "file": "EMPATHIA_QA_AND_RELEASE_EVIDENCE_f51229b83e5a.zip",
+      "kind": "archive",
+      "classification": "CONFIDENTIAL_TECHNICAL",
+      "sourceRevision": "f51229b83e5a17b10dd778b824ea16ede09e5086",
+      "bytes": 69561,
+      "sha256": "bd7b69d72ec266c313885f1adfbb487bc20a6982c963abe0919aa8bc1a9731fd",
+      "contents": [
+        "tests/evidence",
+        "docs/qa",
+        "docs/security",
+        "releases/immutable-references",
+        "docs/operations/BACKUP_RESTORE_DRILL.json",
+        "EMPATHIA_MASTER_COMPLETION_REPORT.md",
+        "releases/handoff/AUDIT_INSTRUCTIONS.md"
+      ],
+      "description": "Test results, verification report, secret scan, link check, frozen-release checks, backup drill, threat model, known defects and vulnerabilities, audit instructions."
+    },
+    {
+      "id": "I",
+      "title": "Empathia engineering team handoff",
+      "file": "EMPATHIA_ENGINEERING_TEAM_HANDOFF_f51229b83e5a.zip",
+      "kind": "archive",
+      "classification": "CONFIDENTIAL_TECHNICAL",
+      "sourceRevision": "f51229b83e5a17b10dd778b824ea16ede09e5086",
+      "bytes": 53088,
+      "sha256": "ec80336905f27129fb10d0fa2baac060bbbccd82d7618509cd340302198f063e",
+      "contents": [
+        "docs/engineering-handoff",
+        "docs/README.md",
+        "README.md",
+        "GETTING_STARTED.md",
+        "EMPATHIA_MASTER_COMPLETION_REPORT.md",
+        "docs/operations/PRODUCTION_READINESS_CHECKLIST.md",
+        "docs/qa/KNOWN_DEFECTS.md",
+        "docs/security/KNOWN_VULNERABILITIES_AND_REMEDIATION.md"
+      ],
+      "description": "Start here for a CTO or development partner: roles, plan, estimates, debt, risks, definition of done."
+    }
+  ]
+}
