@@ -1,0 +1,62 @@
+# Empathia production starter — containerized local development.
+# Status: NOT_RUN in the founder's build environment (no container runtime). The non-container path (node scripts/dev.mjs) is the one
+# that has been run and tested. Every port is published on 127.0.0.1 only. Values come from .env (copy .env.example).
+name: empathia
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: empathia_admin
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      EMPATHIA_OWNER_PASSWORD: ${EMPATHIA_OWNER_PASSWORD:?set EMPATHIA_OWNER_PASSWORD in .env}
+      EMPATHIA_APP_PASSWORD: ${EMPATHIA_APP_PASSWORD:?set EMPATHIA_APP_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./database/docker/init-roles.sh:/docker-entrypoint-initdb.d/10-roles.sh:ro
+    ports: ["127.0.0.1:55432:5432"]
+    healthcheck: { test: ["CMD-SHELL", "pg_isready -U empathia_admin"], interval: 5s, retries: 20 }
+
+  api:
+    build: { context: ., target: runtime }
+    depends_on: { postgres: { condition: service_healthy } }
+    environment: &api-env
+      NODE_ENV: development
+      AUTH_MODE: dev
+      HOST: 0.0.0.0
+      PORT: "4100"
+      DATABASE_URL: postgres://empathia_owner:${EMPATHIA_OWNER_PASSWORD}@postgres:5432/empathia
+      APP_DATABASE_URL: postgres://empathia_app:${EMPATHIA_APP_PASSWORD}@postgres:5432/empathia
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET (32+ bytes) in .env}
+      CORS_ORIGINS: http://127.0.0.1:4200,http://localhost:4200
+      OBJECT_STORE_DIR: /data/objects
+    volumes: ["objects:/data/objects"]
+    command: ["sh", "-c", "node services/enterprise-api/dist/src/db/seed.js && node services/enterprise-api/dist/src/main.js"]
+    ports: ["127.0.0.1:4100:4100"]
+
+  worker:
+    build: { context: ., target: runtime }
+    depends_on: [api]
+    environment: *api-env
+    command: ["node", "services/integration-worker/main.mjs"]
+
+  web:
+    build: { context: ., target: runtime }
+    depends_on: [api]
+    environment: { WEB_HOST: 0.0.0.0, WEB_PORT: "4200", API_URL: http://127.0.0.1:4100 }
+    command: ["node", "apps/enterprise-web/server/serve.mjs"]
+    ports: ["127.0.0.1:4200:4200"]
+
+  intelligence:
+    build: { context: ., dockerfile: services/intelligence-python/Dockerfile }
+    environment: { INTELLIGENCE_TOKEN: "${INTELLIGENCE_TOKEN:?set INTELLIGENCE_TOKEN in .env}" }
+    ports: ["127.0.0.1:4300:4300"]
+
+  # S3-compatible object storage for when S3ObjectStore is implemented (today it is CONTRACT_ONLY; the API uses the local store).
+  minio:
+    profiles: ["s3"]
+    image: minio/minio:latest        # pin a dated RELEASE tag from the vendor before relying on it
+    command: ["server", "/data", "--console-address", ":9001"]
+    environment: { MINIO_ROOT_USER: "${MINIO_ROOT_USER:-empathia}", MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD in .env}" }
+    ports: ["127.0.0.1:9000:9000", "127.0.0.1:9001:9001"]
+
+volumes: { pgdata: {}, objects: {} }

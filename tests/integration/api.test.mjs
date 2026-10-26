@@ -344,3 +344,28 @@ test('integrations: a MOCK adapter syncs through the contract; observations are 
   // the database refuses a measurement claim from a MOCK source
   assert.throws(() => h.asSuper("UPDATE app.integration_observation SET evidence = 'MEASURED' WHERE id = (SELECT min(id) FROM app.integration_observation)"), /only SYNTHETIC_MOCK/);
 });
+
+// ------------------------------------------------------------------------------------------------ knowledge fabric and governed assistant
+test('knowledge: search is permission-aware — a restricted document never appears for another role, and citations name their source', async () => {
+  const sec = await c.call('GET', '/v1/knowledge?q=revoke%20membership', { token: T.secadmin });
+  assert.equal(sec.status, 200);
+  assert.ok(sec.body.items.some((d) => d.source === 'KB-0004'));
+  const des = await c.call('GET', '/v1/knowledge?q=revoke%20membership', { token: T.designer });
+  assert.ok(!des.body.items.some((d) => d.source === 'KB-0004'), 'the security runbook is invisible to a designer');
+  assert.equal(des.body.hiddenByPermission, 'some documents are not visible to your role');
+  const all = await c.call('GET', '/v1/knowledge?q=commissioning', { token: T.requestor });
+  assert.ok(all.body.items.every((d) => d.source === 'KB-0003'), 'a requestor sees only documents open to every role');
+});
+
+test('governed assistant: generation is NOT_CONFIGURED (501); the request is logged by hash, the permitted sources are returned, the refusal is audited', async () => {
+  const r = await c.call('POST', '/v1/ai/requests', { token: T.cxeng, body: { purpose: 'ask', prompt: 'What does the town hall commissioning protocol require?' } });
+  assert.equal(r.status, 501);
+  assert.equal(r.body.code, 'not_configured');
+  assert.ok(r.body.reasons.some((x) => /KB-0001/.test(x)), 'the permitted source is cited');
+  const row = h.asSuper("SELECT outcome || '|' || length(prompt_sha256) FROM app.ai_request ORDER BY created_at DESC LIMIT 1");
+  assert.equal(row, 'NOT_CONFIGURED|64', 'logged as a hash, not the prompt text');
+  const des = await c.call('POST', '/v1/ai/requests', { token: T.designer, body: { prompt: 'security incident runbook revoke' } });
+  assert.equal(des.status, 501);
+  assert.ok(!(des.body.reasons || []).some((x) => /KB-0004/.test(x)), 'retrieval for the assistant obeys the same permissions');
+  assert.equal(h.asSuper("SELECT count(*) FROM app.audit_event WHERE action = 'ai.request' AND outcome = 'FAILED'"), '2');
+});
