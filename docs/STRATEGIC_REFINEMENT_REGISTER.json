@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-30T17:15:34.367Z",
+ "generatedAt": "2026-10-30T18:22:59.961Z",
  "items": [
   {
    "id": "RT-01",
@@ -78,8 +78,8 @@
    "effort": "M",
    "validation": "Integration: accept room → baseline v1; open incident, recommission, re-accept → baseline v2 exists, v1 unchanged (same sha256), room.current_baseline_id = v2; UPDATE/DELETE on app.assurance_baseline raises EM001.",
    "class": "B",
-   "status": "DECISION NEEDED (ADR-0003 draft)",
-   "evidence": "versioned immutable baselines: data-model change (baseline table, supersedes chain); needed for mandate tests 26–27; proposed for P5. Website copy no longer claims it."
+   "status": "IMPLEMENTED",
+   "evidence": "ADR-0003; migration 0011; app.assurance_baseline versioned/immutable (EM005), published by acceptance, superseded by re-acceptance after recommissioning (ACCEPTED→COMMISSIONING governed step); exceptions decided by someone else. tests/security/governance.test.mjs BL-1..BL-4."
   },
   {
    "id": "RT-05",
@@ -284,8 +284,8 @@
    "effort": "L",
    "validation": "Integration: recording an instrument-measured test without a measurement row with provenance FIELD_MEASURED and a calibration reference → 422; a measurement with provenance SIMULATED can never produce PASS_VERIFIED (lifecycleBlockers refuses ACCEPTED while any applicable test's current result rests on SIMULATED/INFERRED evidence).",
    "class": "B",
-   "status": "OPEN",
-   "evidence": "database/migrations/0003_commissioning_evidence.sql:81-96 test_result columns; packages/commissioning-engine/src/recording.ts:25 `row.instrument && !ev.instrument` (string presence only); legacy/inventory/v253-inventory.json stateMachines.__design.measurementFields = 43, v25Types includes 'MeasurementEvidence', 'FISession'."
+   "status": "IMPLEMENTED",
+   "evidence": "ADR-0004; migration 0013; app.measurement with provenance/unit/method/instrument/calibration/uncertainty/approval; EM006; dBFS≠SPL; SIMULATED never VERIFIED; verifier≠recorder. governance.test.mjs MEAS-1."
   },
   {
    "id": "RT-15",
@@ -305,8 +305,8 @@
    "effort": "M",
    "validation": "Migration test: no row in app.relationship references a (type, id) absent from the registry; deleting/removing a device leaves zero live edges referencing it; GET /v1/graph on a 50k-edge synthetic tenant completes < 500 ms without loading all edges (query plan check).",
    "class": "B",
-   "status": "OPEN",
-   "evidence": "database/migrations/0002_core.sql:158-169 (`from_id text`, `to_id text`, no FK); services/enterprise-api/src/domain/rooms.ts:144-150 relate/unrelate by code, :275 `UPDATE app.relationship … from_id = $1` with assetCode; domain/read.ts:68 loads all edges."
+   "status": "IMPLEMENTED (keys on every new edge; legacy edges back-filled where resolvable)",
+   "evidence": "ADR-0004; migration 0014; app.relationship from_key/to_key/rev; rooms.relate resolves keys; GET /v1/graph reports keyed vs LEGACY_CODE_ONLY. Client-side addressing by key: later."
   },
   {
    "id": "RT-16",
@@ -326,8 +326,8 @@
    "effort": "M",
    "validation": "Integration: the syseng who saved revision N cannot move the room to DESIGN_APPROVED (422 with reason 'author cannot approve'); a second syseng can; a delegation with valid_until in the past does not grant project.decide (403).",
    "class": "B",
-   "status": "OPEN",
-   "evidence": "docs/api/RBAC_MATRIX.md:65 syseng authorities include both `room.design` and `room.design.approve`, `room.classify.approve`; services/enterprise-api/src/domain/rooms.ts:384-415 transition(), :337-352 approveClassification(), :369-381 approveDrawing() — none compares ctx.p.personId with created_by/generated_by; database has no delegation table (grep)."
+   "status": "IMPLEMENTED",
+   "evidence": "ADR-0005; migration 0012; ctx.separate on classification/design approval, acceptance, measurement verification, exception decision, own memberships; app.delegation (≤90 days, revocable, grantor must still hold; delegated use audited). governance.test.mjs SoD-1/2, DEL-1/2, BL-1."
   },
   {
    "id": "RT-17",
@@ -348,8 +348,8 @@
    "effort": "L",
    "validation": "Script test: every area in v253-inventory.json has an entitlement row for every one of the 22 roles (ALLOW/DENY) and every legacy UI role maps to exactly one API role or the public context; every V2.5 state machine state maps to exactly one column/state of one table in docs/database/ENTITY_DICTIONARY.md; the parity ledger has no row whose 'Backed by' names an undefined table.",
    "class": "B",
-   "status": "OPEN",
-   "evidence": "legacy/inventory/v253-inventory.json: uiRoles (14) vs personas (22, each with `base`); areas[].roles use the 14; stateMachines.project_governance / design_and_commissioning / service / document / scouter_profile vs database/migrations/0002_core.sql:88 room.lifecycle CHECK (7 states); v25Types (32) vs 32 tables of the starter; apps/demo/src/registry.ts SUB and suite aliases; apps/demo/src/App.tsx PERSPECTIVES lists the 14 UI roles while the API uses 22."
+   "status": "IMPLEMENTED",
+   "evidence": "ADR-0006; the 22 personas are the roles; 14 UI roles mapped to personas as a view preference (GET /v1/admin/policy); legacy #/ routes kept in apps/demo; display codes still accepted. administration.test.mjs ADM-4."
   },
   {
    "id": "RT-18",
@@ -453,8 +453,8 @@
    "effort": "L",
    "validation": "Integration: secadmin invites a person with role service and site S → the person signs in, sees only S; secadmin revokes → next request 401; a designer calling the same endpoints → 403 and audited.",
    "class": "C",
-   "status": "OPEN",
-   "evidence": "services/enterprise-api/src/modules/routes.ts (no POST/PATCH on people, memberships, sites, tenants); database/migrations/0004_platform.sql:141-143 REVOKE INSERT, UPDATE ON app.tenant, app.person FROM empathia_app; apps/enterprise-web/src/pages/Admin.tsx People() read-only."
+   "status": "IMPLEMENTED (invitations, memberships, policy read; OIDC binding awaiting external integration)",
+   "evidence": "ADR-0006; migration 0015; invitations hashed one-time tokens pinned to the tenant, EM008 founder boundary, atomic acceptance, scoped memberships, never own/architect. administration.test.mjs ADM-1..ADM-3."
   },
   {
    "id": "RT-23",

@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomMeasurements/0.1.0.json",
+  "title": "POST /v1/rooms/{room}/measurements request body",
+  "description": "Record a measurement (DESIGN_SPECIFIED / SIMULATED / INFERRED / OBSERVED / FIELD_MEASURED — never conflated; dBFS is never recorded as SPL)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "metric",
+    "value",
+    "unit",
+    "method",
+    "measuredAt",
+    "location",
+    "source",
+    "provenance"
+  ],
+  "properties": {
+    "metric": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60
+    },
+    "value": {
+      "type": "number"
+    },
+    "unit": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 20
+    },
+    "method": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "instrumentId": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "calibrationStatus": {
+      "type": "string",
+      "enum": [
+        "CALIBRATED",
+        "EXPIRED",
+        "UNKNOWN",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "calibrationDue": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "measuredAt": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "location": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "DESIGN_SPECIFIED",
+        "SIMULATED",
+        "INFERRED",
+        "OBSERVED",
+        "FIELD_MEASURED"
+      ]
+    },
+    "uncertainty": {
+      "type": "number"
+    },
+    "uncertaintyUnit": {
+      "type": "string",
+      "maxLength": 20
+    },
+    "testResultId": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F-]{36}$"
+    }
+  }
+}

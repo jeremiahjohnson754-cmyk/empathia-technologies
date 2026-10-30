@@ -104,6 +104,8 @@ try {
 
   // snapshots: save, list, restore, delete
   await page.evaluate(() => { location.hash = '#/settings'; }); await page.waitForSelector('#snapshots');
+  // an interrupted earlier run may have left its own "browser test" snapshot behind: remove those first so this run judges only its own
+  for (const btn of await page.locator('section:has(#snapshots) li:has-text("browser test") button:has-text("Delete")').all()) { await btn.click(); await page.waitForTimeout(250); }
   const hasDemoState = await page.evaluate(() => !!localStorage.getItem('empathia.living-campus.v1'));
   await page.fill('[aria-label="Snapshot name"]', 'browser test'); await page.click('button:has-text("Save state")'); await page.waitForTimeout(600);
   const listed = await page.locator('#snapshots ~ ul li, section:has(#snapshots) ul li').filter({ hasText: 'browser test' }).count();

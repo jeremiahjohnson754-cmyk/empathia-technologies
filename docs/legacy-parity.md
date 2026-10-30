@@ -1,6 +1,6 @@
 # Legacy parity ledger — Living Campus V2.5.3 and Founder Studio
 
-Generated 2026-10-30T17:16:02.063Z by `scripts/legacy/parity-ledger.mjs` from `legacy/inventory/*.json` (built from the committed source of each demonstrator) and the classification in that script. **Two applications, kept apart:** the Living Campus (investor-safe demo + authenticated enterprise application) and the Founder Studio (private founder application). Shared: identity, design tokens, API contracts, audit. Not shared: Founder Studio data, its administrative capabilities, or any route of it on a public or investor surface.
+Generated 2026-10-30T18:23:37.029Z by `scripts/legacy/parity-ledger.mjs` from `legacy/inventory/*.json` (built from the committed source of each demonstrator) and the classification in that script. **Two applications, kept apart:** the Living Campus (investor-safe demo + authenticated enterprise application) and the Founder Studio (private founder application). Shared: identity, design tokens, API contracts, audit. Not shared: Founder Studio data, its administrative capabilities, or any route of it on a public or investor surface.
 
 ## Baseline facts (verified on receipt)
 
@@ -19,7 +19,7 @@ Target classes (mandate §1): MIGRATED_REAL · MIGRATED_DEMO · DEFERRED_WITH_RE
 
 | Target | Rows |
 |---|---|
-| MIGRATED_REAL | 168 |
+| MIGRATED_REAL | 178 |
 | MIGRATED_DEMO | 35 |
 | DEFERRED_WITH_REASON | 1 |
 | BLOCKED_EXTERNAL_DEPENDENCY | 4 |
@@ -29,6 +29,8 @@ Target classes (mandate §1): MIGRATED_REAL · MIGRATED_DEMO · DEFERRED_WITH_RE
 | PARTIAL | 86 |
 | NOT_STARTED | 116 |
 | DONE (slice) | 6 |
+| DONE | 4 |
+| PARTIAL (API complete, UI pending) | 6 |
 
 ### Maturity levels (owner requirement 2026-10-30 11:47)
 
@@ -40,8 +42,8 @@ A feature is never "migrated" because its route exists. Each row carries the hig
 | 1 ROUTED | 59 |
 | 2 RENDERED | 2 |
 | 3 FUNCTIONAL | 3 |
-| 4 BACKEND_CONNECTED | 25 |
-| 5 REGRESSION_TESTED | 36 |
+| 4 BACKEND_CONNECTED | 33 |
+| 5 REGRESSION_TESTED | 38 |
 
 **Regressions at this commit: none** — no original route has been removed; the originals remain the served demonstrators until each route is migrated natively (an embedded original is interim, never counted as a migration).
 
@@ -256,4 +258,14 @@ A feature is never "migrated" because its route exists. Each row carries the hig
 | Founder Studio | destination | `vault` | IP & Provenance Vault — #/vault (Vault) | MIGRATED_REAL | /founder/vault | IP & provenance vault (private, founder-only, audited reads) | PARTIAL | 5 REGRESSION_TESTED (as the local studio; hosted form pending) (tests/browser/founder-studio.test.mjs 19/19 + founder-townhall 25/25) | tests/browser studio (19 PASS, 1 NOT_RUN) |
 | Founder Studio | destination | `decisions` | Founder Decisions — #/decisions (Vault) | MIGRATED_REAL | — | ? | NOT_STARTED | 5 REGRESSION_TESTED (as the local studio; hosted form pending) (tests/browser/founder-studio.test.mjs 19/19 + founder-townhall 25/25) | tests/browser studio (19 PASS, 1 NOT_RUN) |
 | Founder Studio | destination | `settings` | Settings and Demo Reset — #/settings (Vault) | MIGRATED_REAL | /founder/settings | appearance, export, reset (founder data only) | PARTIAL | 5 REGRESSION_TESTED (as the local studio; hosted form pending) (tests/browser/founder-studio.test.mjs 19/19 + founder-townhall 25/25) | tests/browser studio (19 PASS, 1 NOT_RUN) |
+| Living Campus | governance (2026-10-30 decision) | `assurance.baselines` | Versioned immutable baselines (lineage, exceptions) — room.baseline jsonb overwritten per acceptance | MIGRATED_REAL | /app/rooms/{id}/assurance (lineage pending in UI) | GET /v1/rooms/{room}/baselines, exceptions; migration 0011; ADR-0003 | DONE | 4 BACKEND_CONNECTED (API + DB + regression (governance.test.mjs); UI lineage view pending) | governance.test.mjs BL-1..BL-4 |
+| Living Campus | governance (2026-10-30 decision) | `lifecycle.recommission` | Recommissioning (ACCEPTED → COMMISSIONING governed step) — not in the 7-state machine | MIGRATED_REAL | service layer | commissioning-engine lifecycle.ts; re-acceptance publishes the next baseline version | DONE | 5 REGRESSION_TESTED (engine + API + regression; exercised through the lifecycle route) | governance.test.mjs BL-3 |
+| Living Campus | governance (2026-10-30 decision) | `measurements` | Measurements with provenance, units, calibration, uncertainty, approval — free-text instrument/note on a result | MIGRATED_REAL | /app/rooms/{id}/measurements (UI pending) | GET/POST /v1/rooms/{room}/measurements, POST /v1/measurements/{id}/verify; migration 0013; ADR-0004 | PARTIAL (API complete, UI pending) | 4 BACKEND_CONNECTED (API + DB + regression; UI pending) | governance.test.mjs MEAS-1 |
+| Living Campus | governance (2026-10-30 decision) | `graph.identity` | Graph edges keyed by stable ids (rev) — edges keyed by display code | MIGRATED_REAL | /app/graph | app.relationship from_key/to_key/rev; migration 0014; GET /v1/graph identity block | DONE | 4 BACKEND_CONNECTED (DB + writers + graph read; client addressing by key later) | relationship.test.mjs; api.test.mjs graph |
+| Living Campus | governance (2026-10-30 decision) | `authz.separation` | Separation of duties per artifact (author ≠ approver) — role check only | MIGRATED_REAL | service layer | RequestContext.separate; ADR-0005 | DONE | 5 REGRESSION_TESTED (service layer, exercised through every protected route; regression-tested) | governance.test.mjs SoD-1/2, BL-4, MEAS-1; administration ADM-3 |
+| Living Campus | governance (2026-10-30 decision) | `authz.delegation` | Scoped, expiring delegations (≤ 90 d, revocable, audited use) — none | MIGRATED_REAL | /app/admin (UI pending) | GET/POST /v1/delegations, revoke; migration 0012; app.auth_delegations | PARTIAL (API complete, UI pending) | 4 BACKEND_CONNECTED (API + DB + regression; UI pending) | governance.test.mjs DEL-1/2, BL-1 |
+| Living Campus | governance (2026-10-30 decision) | `admin.invitations` | Invitations (hashed one-time token, tenant-pinned, founder boundary EM008) — none (demo role switch) | MIGRATED_REAL | /app/admin (UI pending) | GET/POST /v1/admin/invitations, revoke; POST /v1/public/invitations/accept; migration 0015; ADR-0006 | PARTIAL (API complete, UI pending) | 4 BACKEND_CONNECTED (API + DB + regression; UI pending) | administration.test.mjs ADM-1/2 |
+| Living Campus | governance (2026-10-30 decision) | `admin.memberships` | Scoped memberships grant/revoke (never own, never architect) — none | MIGRATED_REAL | /app/admin (UI pending) | POST /v1/admin/memberships, revoke | PARTIAL (API complete, UI pending) | 4 BACKEND_CONNECTED (API + DB + regression; UI pending) | administration.test.mjs ADM-3 |
+| Living Campus | governance (2026-10-30 decision) | `admin.policy` | Policy model read: 22 personas, 14 UI roles → personas, SoD rules — AZ_KEYS role switch (UI only) | MIGRATED_REAL | /app/admin (UI pending) | GET /v1/admin/policy; ADR-0006 | PARTIAL (API complete, UI pending) | 4 BACKEND_CONNECTED (API + regression; UI pending) | administration.test.mjs ADM-4 |
+| Founder Studio | governance (2026-10-30 decision) | `founder.platform-health` | Founder platform-health summary (governed integration) — none | MIGRATED_REAL | Founder Studio › Platform (UI pending) | GET /v1/founder/platform-health; ADR-0007 | PARTIAL (API complete, UI pending) | 4 BACKEND_CONNECTED (API + regression; Founder Studio view pending) | administration.test.mjs FH-1 |
 | Founder Studio | demonstrator | `founder-edition-2.5.4` | Founder Edition 2.5.4 (8.4 MB) — embedded demonstrator; 86 areas, 19 V2.5 pages, 22 personas | MIGRATED_REAL | /founder/demonstrator (private, legacy until each area is native) | served privately, authenticated; shares nothing with demo/www | PARTIAL | 0 INVENTORIED (inventoried only) | tests/browser town hall 25/25 |

@@ -1,9 +1,9 @@
 {
-  "at": "2026-10-30T17:14:12.124Z",
+  "at": "2026-10-30T18:32:19.797Z",
   "node": "v22.22.0",
-  "pass": 22,
+  "pass": 27,
   "fail": 0,
-  "notRun": 4,
+  "notRun": 1,
   "suites": [
     {
       "suite": "unit: packages/commissioning-engine",
@@ -12,7 +12,7 @@
       "tests": 128,
       "pass": 128,
       "fail": 0,
-      "seconds": 0.6,
+      "seconds": 0.5,
       "command": "../../../opt/node22/bin/node --test packages/commissioning-engine/dist/test/**/*.test.js"
     },
     {
@@ -92,7 +92,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 4.9,
+      "seconds": 4.7,
       "command": "python3 -I -m unittest discover -s ml/tests"
     },
     {
@@ -112,7 +112,7 @@
       "tests": 20,
       "pass": 20,
       "fail": 0,
-      "seconds": 3.9,
+      "seconds": 3.8,
       "command": "../../../opt/node22/bin/node --test tests/integration/api.test.mjs"
     },
     {
@@ -132,7 +132,7 @@
       "tests": 3,
       "pass": 3,
       "fail": 0,
-      "seconds": 1.6,
+      "seconds": 1.5,
       "command": "../../../opt/node22/bin/node --test tests/integration/api-client.test.mjs"
     },
     {
@@ -142,7 +142,7 @@
       "tests": 1,
       "pass": 1,
       "fail": 0,
-      "seconds": 2,
+      "seconds": 1.6,
       "command": "../../../opt/node22/bin/node --test tests/integration/integration-worker.test.mjs"
     },
     {
@@ -152,7 +152,7 @@
       "tests": 45,
       "pass": 45,
       "fail": 0,
-      "seconds": 3.7,
+      "seconds": 3.2,
       "command": "../../../opt/node22/bin/node --test tests/security/authz.test.mjs"
     },
     {
@@ -162,7 +162,7 @@
       "tests": 6,
       "pass": 6,
       "fail": 0,
-      "seconds": 1.8,
+      "seconds": 1.7,
       "command": "../../../opt/node22/bin/node --test tests/security/founder-boundary.test.mjs"
     },
     {
@@ -172,7 +172,7 @@
       "tests": 3,
       "pass": 3,
       "fail": 0,
-      "seconds": 2.2,
+      "seconds": 2.1,
       "command": "../../../opt/node22/bin/node --test tests/security/site-scope.test.mjs"
     },
     {
@@ -182,8 +182,28 @@
       "tests": 2,
       "pass": 2,
       "fail": 0,
-      "seconds": 4.4,
+      "seconds": 4.9,
       "command": "../../../opt/node22/bin/node --test tests/security/authority-matrix.test.mjs"
+    },
+    {
+      "suite": "security: governance.test.mjs",
+      "kind": "security",
+      "result": "PASS",
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "seconds": 4.6,
+      "command": "../../../opt/node22/bin/node --test tests/security/governance.test.mjs"
+    },
+    {
+      "suite": "security: administration.test.mjs",
+      "kind": "security",
+      "result": "PASS",
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "seconds": 2.2,
+      "command": "../../../opt/node22/bin/node --test tests/security/administration.test.mjs"
     },
     {
       "suite": "e2e: website lead form over the API",
@@ -193,7 +213,7 @@
       "pass": 6,
       "fail": 0,
       "notRun": 0,
-      "seconds": 3.9,
+      "seconds": 3.8,
       "command": "../../../opt/node22/bin/node tests/e2e/website-lead.e2e.mjs"
     },
     {
@@ -203,7 +223,7 @@
       "tests": 21,
       "pass": 21,
       "fail": 0,
-      "seconds": 4,
+      "seconds": 3.9,
       "command": "../../../opt/node22/bin/node tests/browser/enterprise-web.test.mjs"
     },
     {
@@ -225,26 +245,40 @@
       "pass": 11,
       "fail": 0,
       "notRun": 0,
-      "seconds": 13.2,
+      "seconds": 13.4,
       "command": "../../../opt/node22/bin/node tests/browser/demo.test.mjs"
     },
     {
       "suite": "browser: Founder Studio",
       "kind": "browser",
-      "result": "NOT_RUN",
-      "why": "pass --studio"
+      "result": "PASS",
+      "tests": 19,
+      "pass": 19,
+      "fail": 0,
+      "notRun": 1,
+      "seconds": 33.8,
+      "command": "../../../opt/node22/bin/node tests/browser/founder-studio.test.mjs"
     },
     {
       "suite": "e2e: founder town hall (Founder Edition)",
       "kind": "e2e",
-      "result": "NOT_RUN",
-      "why": "pass --studio"
+      "result": "PASS",
+      "tests": 25,
+      "pass": 25,
+      "fail": 0,
+      "seconds": 47,
+      "command": "../../../opt/node22/bin/node tests/e2e/founder-townhall.e2e.mjs"
     },
     {
       "suite": "e2e: founder decisions (hosted studio over the API)",
       "kind": "e2e",
-      "result": "NOT_RUN",
-      "why": "pass --studio"
+      "result": "PASS",
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "notRun": 0,
+      "seconds": 6.2,
+      "command": "../../../opt/node22/bin/node tests/e2e/founder-decisions.e2e.mjs"
     },
     {
       "suite": "media: full decode of every curated film",

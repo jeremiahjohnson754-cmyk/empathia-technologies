@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1AdminMemberships/0.1.0.json",
+  "title": "POST /v1/admin/memberships request body",
+  "description": "Grant a role to a person of your organization, optionally scoped to sites (never your own memberships; never architect)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "personId",
+    "roleKey"
+  ],
+  "properties": {
+    "personId": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F-]{36}$"
+    },
+    "roleKey": {
+      "type": "string",
+      "pattern": "^[a-z_]{2,40}$"
+    },
+    "siteCodes": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "maxItems": 50,
+      "items": {
+        "type": "string",
+        "maxLength": 24
+      }
+    }
+  }
+}

@@ -4,7 +4,7 @@
   "apiVersion": "0.1.0",
   "counts": {
     "events": 101,
-    "api": 21,
+    "api": 30,
     "entities": 4
   },
   "files": [
@@ -617,6 +617,51 @@
       "file": "api/postV1AiRequests.json",
       "$id": "https://schemas.empathia.invalid/api/postV1AiRequests/0.1.0.json",
       "sha256": "8a555d3bd5f068223aaa48181814974532b13e05a10a503681d3c061668f673b"
+    },
+    {
+      "file": "api/postV1RoomsRoomBaselinesExceptions.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomBaselinesExceptions/0.1.0.json",
+      "sha256": "cf8e5c8d21ef153ee56149d542caa911e72748ee7da3e719bbea4a414eafdfae"
+    },
+    {
+      "file": "api/postV1BaselineExceptionsIdDecide.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1BaselineExceptionsIdDecide/0.1.0.json",
+      "sha256": "826f8af547f8eb6a4e9eecdfb1a02bfbafc8c41799a374cd532a2d89b773a038"
+    },
+    {
+      "file": "api/postV1RoomsRoomMeasurements.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomMeasurements/0.1.0.json",
+      "sha256": "b9ff305d82e1e5851162ae13d1cce7c268e1bb521c50bb9190409dc9c05c3331"
+    },
+    {
+      "file": "api/postV1MeasurementsIdVerify.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1MeasurementsIdVerify/0.1.0.json",
+      "sha256": "53c1fb7801b831032f1dda7dcac77e202ac7d0afc30ad872eba715bcd3952494"
+    },
+    {
+      "file": "api/postV1AdminInvitations.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1AdminInvitations/0.1.0.json",
+      "sha256": "7affd0844feadd56154dab15ee526431478fadab85cd1dd5b509aeee7b2db594"
+    },
+    {
+      "file": "api/postV1PublicInvitationsAccept.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1PublicInvitationsAccept/0.1.0.json",
+      "sha256": "83dfacc261c4b2b115fec7aa86662add240850b5c608a47d0eed0779184ecff3"
+    },
+    {
+      "file": "api/postV1AdminMemberships.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1AdminMemberships/0.1.0.json",
+      "sha256": "8f93e9c680bf719f0f92acf634bd848ab6695e10e7a49ff50d7a146a6d0b7e3b"
+    },
+    {
+      "file": "api/postV1AdminMembershipsRevoke.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1AdminMembershipsRevoke/0.1.0.json",
+      "sha256": "47a11cc6eb60889cacf7df948593c0f2ec887ac10a03dab851c70b48f05798d5"
+    },
+    {
+      "file": "api/postV1Delegations.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1Delegations/0.1.0.json",
+      "sha256": "7475f9df50777d73290dd4238be5ade91171e4c08059dd5abcfc41f91cb7f2d5"
     },
     {
       "file": "entities/RoomDetail.json",

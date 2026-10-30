@@ -14,6 +14,7 @@ import type { Connection, PlannedDevice, RecordedResult, RoomDesignInput, RoomLi
 import { ROOM_LIFECYCLE } from '@empathia/domain-types';
 import { asJson, type Queryable } from '../db/pg.js';
 import type { RequestContext } from '../auth/context.js';
+import { publish as publishBaseline } from './baselines.js';
 import { ApiError, notFound, refused, invalid } from '../http/errors.js';
 
 const sha256 = (s: string) => crypto.createHash('sha256').update(s).digest('hex');
@@ -140,10 +141,17 @@ export async function analyze(ctx: RequestContext, q: Queryable, roomId: string,
   return { applicable: A.applicable, openIssues: findings.length, planChanged };
 }
 
-/** Add a typed graph edge (idempotent). */
+/** The stable identifier behind a display code (ADR-0004 graph identity); null when the type has no keyed table yet. */
+const KEYED: Record<string, string> = { Room: 'app.room', PlannedAsset: 'app.planned_asset', Building: 'app.building', RoomIssue: 'app.room_issue', Site: 'app.site', Project: 'app.project' };
+async function keyOf(q: Queryable, type: string, code: string): Promise<string | null> {
+  const t = KEYED[type]; if (!t) return null;
+  return (await q.query<{ id: string }>(`SELECT id FROM ${t} WHERE code = $1 LIMIT 1`, [code])).rows[0]?.id ?? null;
+}
+/** Add a typed graph edge (idempotent). Both ends carry their stable keys when the type is keyed; the display code stays for readers. */
 export async function relate(ctx: RequestContext, q: Queryable, from: { type: string; id: string }, rel: string, to: { type: string; id: string }, provenance = 'DECLARED'): Promise<void> {
-  await q.query(`INSERT INTO app.relationship (tenant_id, from_type, from_id, rel, to_type, to_id, provenance) VALUES ($1,$2,$3,$4,$5,$6,$7) ON CONFLICT (tenant_id, from_type, from_id, rel, to_type, to_id) WHERE removed_at IS NULL DO NOTHING`,
-    [ctx.p.tenantId, from.type, from.id, rel, to.type, to.id, provenance]);
+  const [fk, tk] = await Promise.all([keyOf(q, from.type, from.id), keyOf(q, to.type, to.id)]);
+  await q.query(`INSERT INTO app.relationship (tenant_id, from_type, from_id, rel, to_type, to_id, provenance, from_key, to_key) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) ON CONFLICT (tenant_id, from_type, from_id, rel, to_type, to_id) WHERE removed_at IS NULL DO NOTHING`,
+    [ctx.p.tenantId, from.type, from.id, rel, to.type, to.id, provenance, fk, tk]);
 }
 async function unrelate(q: Queryable, fromType: string, fromId: string, rel: string, toType: string, toId: string): Promise<void> {
   await q.query('UPDATE app.relationship SET removed_at = now() WHERE from_type = $1 AND from_id = $2 AND rel = $3 AND to_type = $4 AND to_id = $5 AND removed_at IS NULL', [fromType, fromId, rel, toType, toId]);
@@ -343,6 +351,7 @@ export async function approveClassification(ctx: RequestContext, ref: string, bo
     if (arch !== null && !C.archetypes[arch]) throw invalid(`unknown room type ${arch}`);
     const override = arch !== (s.archetype ?? null);
     if (override && !(body.reason && body.reason.trim().length >= 10)) throw refused(['an override of the suggested classification needs a reason (10 characters or more)']);
+    { const last = (await q.query<{ created_by: string }>('SELECT created_by FROM app.room_revision WHERE room_id = $1 ORDER BY rev_no DESC LIMIT 1', [room.id])).rows[0]; await ctx.separate('room.classify.approve', { type: 'Room', id: room.code }, [last?.created_by], 'the classification of a design'); }   // ADR-0005
     const approved = { archetype: arch, archetypeName: arch ? C.archetypes[arch]!.name : 'Not a meeting space', override, reason: body.reason || 'suggestion accepted', by: ctx.p.personId, byRole: ctx.p.role, at: new Date().toISOString(), suggestedWas: s.archetype ?? null };
     await q.query('UPDATE app.room SET approved_class = $2 WHERE id = $1', [room.id, approved]);
     const rev = await bump(q, room);
@@ -399,6 +408,9 @@ export async function transition(ctx: RequestContext, ref: string, to: RoomLifec
       results: L.results, hasBaseline: !!room.baseline, hasLiveMonitoringEvidence: false,
     });
     if (why.length) await ctx.refuse(`room.lifecycle:${to}`, { type: 'Room', id: room.code }, why);
+    // separation of duties (ADR-0005): the design is not approved by its author; a room is not accepted by whoever recorded or verified its results
+    if (to === 'DESIGN_APPROVED') { const last = (await q.query<{ created_by: string }>('SELECT created_by FROM app.room_revision WHERE room_id = $1 ORDER BY rev_no DESC LIMIT 1', [room.id])).rows[0]; await ctx.separate(`room.lifecycle:${to}`, { type: 'Room', id: room.code }, [last?.created_by], 'the design'); }
+    if (to === 'ACCEPTED') { const authors = (await q.query<{ recorded_by: string; verified_by: string | null }>('SELECT t.recorded_by, v.verified_by FROM app.current_result c JOIN app.test_result t ON t.id = c.result_id LEFT JOIN app.verification v ON v.result_id = c.result_id WHERE c.room_id = $1', [room.id])).rows.flatMap((x) => [x.recorded_by, x.verified_by]); await ctx.separate(`room.lifecycle:${to}`, { type: 'Room', id: room.code }, authors, 'the acceptance (its recorded and verified results)'); }
     const from = room.lifecycle;
     const extra: string[] = []; const args: unknown[] = [room.id, to];
     if (to === 'DESIGN_APPROVED') { args.push((await q.query<{ n: number }>('SELECT max(rev_no) AS n FROM app.room_revision WHERE room_id = $1', [room.id])).rows[0]!.n); extra.push(`approved_revision = $${args.length}`); }
@@ -407,6 +419,7 @@ export async function transition(ctx: RequestContext, ref: string, to: RoomLifec
     await q.query(`UPDATE app.room SET lifecycle = $2${extra.length ? `, ${extra.join(', ')}` : ''} WHERE id = $1`, args);
     if (to === 'INSTALLED_UNVERIFIED') await q.query(`UPDATE app.planned_asset SET lifecycle = 'INSTALLED_UNVERIFIED' WHERE room_id = $1 AND removed_at IS NULL`, [room.id]);
     room.lifecycle = to; const rev = await bump(q, room);
+    if (to === 'ACCEPTED') { const bl = await publishBaseline(ctx, q, room, 'accepted: first baseline (ADR-0003)'); await ctx.emit(q, 'handoff.accepted', { type: 'Room', id: room.code, rev }, { projectId: room.code, roomId: room.code, baselineId: bl.id, version: bl.version }); }
     if (to === 'DESIGN_APPROVED') await ctx.emit(q, 'room.design_approved', { type: 'Room', id: room.code, rev }, { designId: room.code, from, to });
     else await ctx.emit(q, 'room.lifecycle_changed', { type: 'Room', id: room.code, rev }, { designId: room.code, from, to });
     await ctx.audit(q, `room.lifecycle:${to}`, 'ALLOWED', { type: 'Room', id: room.code }, { from, to });

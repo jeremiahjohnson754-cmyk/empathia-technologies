@@ -110,7 +110,7 @@ export async function seed(opts: { reset?: boolean } = {}) {
     const t = (await app.query<{ tenant_id: string; role_key: string; authorities: string[] }>("SELECT * FROM app.auth_memberships((SELECT id FROM app.auth_person_by_email('designer@empathia-demo.empathia.invalid')))")).rows[0]!;
     const pid = (await app.query<{ id: string }>("SELECT id FROM app.auth_person_by_email('designer@empathia-demo.empathia.invalid')")).rows[0]!.id;
     const ctx = new RequestContext(app, 'seed');
-    ctx.principal = { personId: pid, name: 'Designer (synthetic)', tenantId: t.tenant_id, tenantSlug: 'empathia-demo', role: 'designer', authorities: t.authorities, siteScope: null } as Principal;
+    ctx.principal = { personId: pid, name: 'Designer (synthetic)', tenantId: t.tenant_id, tenantSlug: 'empathia-demo', role: 'designer', authorities: t.authorities, siteScope: null, delegated: [] } as Principal;
     const have = (await ctx.tx((q) => q.query<{ n: number }>('SELECT count(*)::int AS n FROM app.room'))).rows[0]!.n;
     const made: string[] = [];
     if (!have) {

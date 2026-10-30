@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1PublicInvitationsAccept/0.1.0.json",
+  "title": "POST /v1/public/invitations/accept request body",
+  "description": "Accept an invitation with its one-time token (unauthenticated; the token is the credential; atomic; rate-limited)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "token",
+    "displayName",
+    "password"
+  ],
+  "properties": {
+    "token": {
+      "type": "string",
+      "minLength": 16,
+      "maxLength": 80
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "password": {
+      "type": "string",
+      "minLength": 12,
+      "maxLength": 200
+    }
+  }
+}

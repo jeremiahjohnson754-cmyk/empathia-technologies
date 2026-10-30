@@ -7,25 +7,31 @@ Migrations (`database/migrations/`) and the synthetic seed (`src/db/seed.ts`) ar
 | Table | Written by (operations) | Writers |
 |---|---|---|
 | `app.ai_request` | `api/domain/platform.ts` (INSERT) | 1 |
+| `app.assurance_baseline` | `api/domain/baselines.ts` (UPDATE, INSERT) | 1 |
 | `app.audit_event` | `api/auth/context.ts` (INSERT) | 1 |
+| `app.baseline_exception` | `api/domain/baselines.ts` (INSERT, UPDATE) | 1 |
 | `app.building` | `api/db/seed.ts` (INSERT) | 1 |
 | `app.connection` | `api/domain/rooms.ts` (INSERT, UPDATE) | 1 |
 | `app.cx_plan` | `api/domain/rooms.ts` (INSERT) | 1 |
 | `app.cx_plan_row` | `api/domain/rooms.ts` (INSERT) | 1 |
+| `app.delegation` | `api/domain/admin.ts` (INSERT, UPDATE) | 1 |
 | `app.drawing_revision` | `api/domain/rooms.ts` (UPDATE, INSERT) | 1 |
 | `app.evidence_object` | `api/domain/commissioning.ts` (INSERT) | 1 |
 | `app.idempotency_key` | `api/http/server.ts` (INSERT) | 1 |
 | `app.integration` | `api/db/seed.ts` (INSERT) | 1 |
 | `app.integration_observation` | `api/integrations/sync.ts` (INSERT) | 1 |
 | `app.integration_sync` | `api/integrations/sync.ts` (INSERT) | 1 |
+| `app.invitation` | `api/domain/admin.ts` (INSERT, UPDATE) | 1 |
 | `app.issue_event` | `api/domain/commissioning.ts` (INSERT)<br>`api/domain/rooms.ts` (INSERT) | 2 |
 | `app.knowledge_document` | `api/db/seed.ts` (INSERT) | 1 |
-| `app.membership` | `api/db/seed.ts` (INSERT) | 1 |
+| `app.measurement` | `api/domain/measurements.ts` (INSERT, UPDATE) | 1 |
+| `app.membership` | `api/db/seed.ts` (INSERT)<br>`api/domain/admin.ts` (INSERT, UPDATE) | 2 |
 | `app.notification` | `api/worker/outbox.ts` (INSERT) | 1 |
 | `app.outbox_event` | `api/auth/context.ts` (INSERT)<br>`api/domain/platform.ts` (UPDATE)<br>`api/worker/outbox.ts` (UPDATE) | 3 ⚑ |
 | `app.person` | `api/db/seed.ts` (INSERT) | 1 |
 | `app.planned_asset` | `api/domain/rooms.ts` (INSERT, UPDATE) | 1 |
 | `app.project` | `api/db/seed.ts` (INSERT)<br>`api/domain/org.ts` (INSERT) | 2 |
+| `app.public_lead` | `api/domain/leads.ts` (INSERT, UPDATE) | 1 |
 | `app.relationship` | `api/domain/rooms.ts` (INSERT, UPDATE) | 1 |
 | `app.role` | `api/db/seed.ts` (INSERT) | 1 |
 | `app.room` | `api/domain/org.ts` (UPDATE)<br>`api/domain/rooms.ts` (UPDATE, INSERT) | 2 |

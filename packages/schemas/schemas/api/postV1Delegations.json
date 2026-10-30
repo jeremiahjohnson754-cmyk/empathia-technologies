@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1Delegations/0.1.0.json",
+  "title": "POST /v1/delegations request body",
+  "description": "Lend an authority you hold directly to another person, scoped and expiring (≤ 90 days); never lifts the self-approval rule",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "granteeId",
+    "authority",
+    "reason"
+  ],
+  "properties": {
+    "granteeId": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F-]{36}$"
+    },
+    "authority": {
+      "type": "string",
+      "maxLength": 60,
+      "pattern": "^[a-z_][a-z0-9_.]*$"
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 1000
+    },
+    "days": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 90
+    },
+    "scope": {
+      "type": "object",
+      "description": ""
+    }
+  }
+}

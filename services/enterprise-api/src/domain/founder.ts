@@ -8,7 +8,9 @@
  * reads run in the founder tenant, which holds no customer records. Both directions are tested in tests/security/founder-boundary.test.mjs.
  * Decisions are revisioned: a change appends a revision row (append-only) and bumps the decision's revision; nothing is edited in place.
  */
-import type { Queryable } from '../db/pg.js';
+import fs from 'node:fs';
+import path from 'node:path';
+import type { Queryable, PgPool } from '../db/pg.js';
 import type { RequestContext } from '../auth/context.js';
 import { ApiError, invalid, notFound } from '../http/errors.js';
 
@@ -74,4 +76,30 @@ export async function transitionDecision(ctx: RequestContext, id: string, body: 
 export async function decisionHistory(ctx: RequestContext, id: string) {
   await guard(ctx, 'read a founder decision', { type: 'FounderDecision', id });
   return founderTx(ctx, async (q) => { const r = await q.query('SELECT revision, status, rationale, options, decided_by, at FROM founder.decision_revision WHERE decision_id = $1 AND tenant_id = $2 ORDER BY revision', [id, ctx.p.tenantId]); if (!r.rowCount) throw notFound(`decision ${id}`); return { items: r.rows }; });
+}
+
+/**
+ * Platform-health summary for the Founder Studio (ADR-0007; owner decision 2026-10-30). Governed integration contract:
+ *   trigger: founder read · source of truth: tests/evidence (repository) + service health · destination: Founder Studio "Platform" view
+ *   fields: suite names/results/counts, build/evidence timestamps, migrations applied, outbox backlog, integration adapter states
+ *   authorization: founder.workspace in the founder organization (guard) · classification: CONFIDENTIAL_TECHNICAL
+ *   failure: evidence file missing → {available:false, reason} (never a fabricated pass) · audit: every read is audited
+ *   boundary: NO tenant, customer, financial or operational records — only aggregate counts of platform state. Enterprise principals: 403.
+ */
+export async function platformHealth(ctx: RequestContext, deps: { pool: PgPool; health: () => Promise<Record<string, unknown>> }, evidenceDir: string) {
+  await guard(ctx, 'read platform health');
+  const read = (name: string) => { try { return JSON.parse(fs.readFileSync(path.join(evidenceDir, name), 'utf8')) as Record<string, unknown>; } catch { return null; } };
+  const tests = read('TEST_RESULTS.json'); const verify = read('VERIFY_REPORT.json');
+  const health = await deps.health();
+  const integrations = (await deps.pool.query<{ state: string; n: number }>('SELECT state, count(*)::int AS n FROM app.integration GROUP BY state ORDER BY state')).rows;
+  await ctx.audit(null, 'founder.platform_health_read', 'ALLOWED', undefined, { classification: 'CONFIDENTIAL_TECHNICAL' });
+  const suites = tests ? ((tests['suites'] || tests['results'] || []) as Array<Record<string, unknown>>).map((s) => ({ name: s['name'] ?? s['suite'], status: s['status'], passed: s['passed'] ?? s['pass'], failed: s['failed'] ?? s['fail'] })) : [];
+  return {
+    classification: 'CONFIDENTIAL_TECHNICAL', contract: 'ADR-0007', generatedAt: new Date().toISOString(),
+    tests: tests ? { available: true, generatedAt: tests['generatedAt'] ?? tests['at'] ?? null, summary: tests['summary'] ?? null, suites } : { available: false, reason: 'tests/evidence/TEST_RESULTS.json is not present on this host: NOT RUN' },
+    verification: verify ? { available: true, generatedAt: verify['generatedAt'] ?? null, status: verify['status'] ?? verify['overall'] ?? null } : { available: false, reason: 'VERIFY_REPORT.json not present' },
+    service: { status: health['status'], version: health['version'], database: health['database'], worker: health['worker'] ?? null, liveHealth: health['liveHealth'] ?? 'NOT_MONITORED' },
+    integrations,
+    excluded: ['tenant records', 'customer records', 'financial data', 'operational room/issue/work-order data'],
+  };
 }

@@ -76,7 +76,9 @@ export async function graph(ctx: RequestContext, type: string, id: string, depth
   if (!/^[A-Za-z]{2,40}$/.test(type)) throw invalid('type must be a node type name');
   if (!Number.isInteger(depth) || depth < 1 || depth > 4) throw invalid('depth is 1 to 4');
   return ctx.tx(async (q) => {
-    const rows = (await q.query<{ from_type: string; from_id: string; rel: string; to_type: string; to_id: string; provenance: string }>('SELECT from_type, from_id, rel, to_type, to_id, provenance FROM app.relationship WHERE removed_at IS NULL')).rows;
+    const rows = (await q.query<{ from_type: string; from_id: string; rel: string; to_type: string; to_id: string; provenance: string; from_key: string | null; to_key: string | null; rev: number }>('SELECT from_type, from_id, rel, to_type, to_id, provenance, from_key, to_key, rev FROM app.relationship WHERE removed_at IS NULL')).rows;
+    // ADR-0004 graph identity: edges are keyed by stable ids; an edge whose end could not be resolved is reported, never silently assumed
+    const legacyOnly = rows.filter((r) => !r.from_key || !r.to_key).length;
     // visibility: rooms (and what hangs off them) outside the caller's site scope are not shown
     let visibleRooms: Set<string> | null = null;
     if (ctx.p.siteScope?.length) visibleRooms = new Set((await q.query<{ code: string }>('SELECT r.code FROM app.room r JOIN app.building b ON b.id = r.building_id WHERE b.site_id = ANY($1::uuid[])', [ctx.p.siteScope])).rows.map((r) => r.code));
@@ -87,6 +89,6 @@ export async function graph(ctx: RequestContext, type: string, id: string, depth
     const canSee = (n: { type: string; id: string }) => !visibleRooms || (n.type === 'Room' ? visibleRooms.has(n.id) : !owner.has(`${n.type}:${n.id}`) || visibleRooms.has(owner.get(`${n.type}:${n.id}`)!));
     const start = { type, id };
     if (!canSee(start) || (!g.outgoing(start).length && !g.incoming(start).length)) throw notFound(`${type} ${id} in the graph`);
-    return { start, depth, nodes: neighbourhood(g, start, depth, canSee), impact: impact(g, start, undefined, canSee) };
+    return { start, depth, nodes: neighbourhood(g, start, depth, canSee), impact: impact(g, start, undefined, canSee), identity: { keyed: rows.length - legacyOnly, legacyCodeOnly: legacyOnly, note: legacyOnly ? 'LEGACY_CODE_ONLY edges resolve by display code until re-stated' : 'every edge is keyed by stable identifiers' } };
   });
 }

@@ -13,8 +13,8 @@ something this environment does not have). Nothing here is production-ready, cer
 | P1 Foundation | monorepo tooling (exists), `apps/website` (pre-rendered public site, 12 pages) and `apps/demo` (investor shell over the legacy address space) on the shared tokens/ui, wired into build and test; `bootstrap/typecheck/test/build` proven | **DONE** | §P1 below; `node scripts/build.mjs` PASS; `node scripts/test.mjs --browser` 17 PASS / 0 FAIL / 3 NOT_RUN; `--studio` 19/19 + 25/25 |
 | P2 Public website | complete public site, lead forms persisted via the API, admin inbox, no invented claims | **DONE** (email notification adapter BLOCKED on SMTP credentials; the inbox states it) | website 32/32, leads 5/5, website-lead e2e 6/6 |
 | P3 Demo migration | V2.5.3 investor demo migrated into modular pages with the synthetic seed; A/B/C guided demos; reset | NOT_STARTED | — |
-| P4 Auth and data | tenant/org/site membership, RLS, private storage, audit — exists for the enterprise slice; founder boundary (P4F) and public lead store | PARTIAL → P4F DONE (founder schema, role, policy flag, boundary tests); OIDC BLOCKED on a provider | `tests/security` authz 45/45, founder-boundary 6/6, site-scope 3/3, authority-matrix 2/2 (561 checks) |
-| P5 Lifecycle vertical slice | request → acknowledgement → pitch → approval → funding → brief → design → plan → tests → deficiency → documentation → handoff → baseline | PARTIAL (design → commissioning → service exists; governance front half NOT_STARTED) | `tests/integration` 20/20, `tests/e2e` 21/21 (prior program) |
+| P4 Auth and data | tenant/org/site membership, RLS, private storage, audit — exists for the enterprise slice; founder boundary (P4F) and public lead store; **owner decisions 2026-10-30 12:59**: versioned baselines (ADR-0003), measurements + graph identity (ADR-0004), separation of duties + delegations (ADR-0005), personas/policy + administration (ADR-0006), founder platform-health contract (ADR-0007) | PARTIAL → P4F DONE; **decisions implemented at the API/DB layer with positive and negative tests; their UI is pending (P3/P6)**; OIDC BLOCKED on a provider | `tests/security` authz 45/45, founder-boundary 6/6, site-scope 3/3, authority-matrix 2/2, **governance 9/9, administration 5/5**; migrations 0011–0015 |
+| P5 Lifecycle vertical slice | request → acknowledgement → pitch → approval → funding → brief → design → plan → tests → deficiency → documentation → handoff → baseline | PARTIAL (design → commissioning → **acceptance → baseline v1 → recommissioning → baseline v2** proven end to end over the API; governance front half NOT_STARTED) | `tests/integration` 20/20, `tests/e2e` 21/21 (prior program) |
 | P6 Cross-product workspaces | Search Party, ServiceHands dispatch, Scouter proposals, 22 role journeys, Lite/FI, executive KPIs, Learn | NOT_STARTED (engines exist) | — |
 | P7 Connector / FI boundary | capability adapters (MOCK exist), FI v1.3 passive, v1.4 entitlement machine | PARTIAL (MOCK adapters + conformance 5/5) | `integrations/` |
 | P8 Security, reliability, quality | threat model, cross-tenant and cross-application negative tests, a11y, performance, backups | PARTIAL (backup/restore drill passed in prior program) | `docs/security` |
@@ -58,6 +58,34 @@ RT-07, RT-08, RT-20 — see the register for before/after and evidence. Open cla
 
 Full run at this commit: `node scripts/build.mjs` PASS (incl. dist hygiene); `node scripts/test.mjs --browser --studio`: 25 PASS, 0 FAIL,
 1 NOT_RUN (film decode, slow). Regression on the Founder Studio as a local studio: 19/19 and 25/25 unchanged.
+
+## Owner decisions of 2026-10-30 12:59 CT — what was actually done
+
+Each approved decision has an ADR, a migration, API contract entries (OpenAPI regenerated: 74 operations), positive and negative tests
+over real HTTP and PostgreSQL, and parity-ledger rows (10 new "governance" rows, maturity 4–5 at the API layer; their UI is pending and
+is said so in the ledger — a route existing is not a migrated feature).
+
+| Decision | ADR | Migration | Routes | Tests |
+|---|---|---|---|---|
+| RT-04 versioned immutable baselines | ADR-0003 | 0011 | `GET /v1/rooms/{room}/baselines`, exceptions request/decide; lifecycle gains the governed recommissioning step | governance BL-1…BL-4 |
+| RT-14/15 measurements with provenance; graph identity by key | ADR-0004 | 0013, 0014 | `GET/POST …/measurements`, `POST /v1/measurements/{id}/verify`; `GET /v1/graph` identity block | governance MEAS-1; relationship 5/5 |
+| RT-16 separation of duties; delegations | ADR-0005 | 0012 | `GET/POST /v1/delegations`, revoke; `/v1/me` shows `delegated` | governance SoD-1/2, DEL-1/2, BL-1 |
+| RT-17 personas canonical; administration | ADR-0006 | 0015 | `/v1/admin/policy`, invitations (+ public accept), memberships | administration ADM-1…ADM-4 |
+| Founder platform-health integration | ADR-0007 | — | `GET /v1/founder/platform-health` | administration FH-1 |
+
+Demonstrated end to end (governance.test.mjs): a room is designed, the design author is refused to approve it, another engineer
+approves; every applicable test is recorded by the commissioning engineer and verified by QA; QA (the verifier) is refused to accept;
+QA delegates `customer.accept` to the operations lead for three days; the operations lead accepts (audited as delegated); baseline v1 is
+published bound to the approved revision's hash, the plan, every result label and the evidence objects; the baseline cannot be changed
+or deleted (EM005); the room is recommissioned, one test is re-run and verified, the re-acceptance publishes v2 which supersedes v1
+with the lineage intact; an exception is requested by the technician and decided by the engineer, never by its requester.
+
+Limitations stated: no UI yet for baselines lineage, measurements, delegations, invitations or the policy view (API only);
+`WITHDRAWN` baselines have no route; invitation acceptance sets a development password (OIDC binding awaits a provider); the graph
+client still addresses nodes by display code (keys are stored and reported).
+
+One finding during this step: a first full regression run was accidentally started twice in parallel, and the two runs trampled each
+other's test databases and ports (5 FAIL, all interference). The run was repeated alone: `node scripts/build.mjs` PASS; `node scripts/test.mjs --browser --studio` **27 PASS · 0 FAIL · 1 NOT_RUN** (film decode). The Founder Studio snapshot test now removes a leftover snapshot from an interrupted run before judging its own.
 
 ## P1 — what was actually done (2026-10-30)
 

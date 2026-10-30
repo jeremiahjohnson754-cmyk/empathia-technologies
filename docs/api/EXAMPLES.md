@@ -44,11 +44,11 @@ Authorization: Bearer <access token>
 ```http
 HTTP/1.1 200
 content-type: application/json; charset=utf-8
-x-correlation-id: b0edf02d-b8b4-4ab6-861b-2b1c936bc0e9
+x-correlation-id: 543b3ed1-0f9f-4af5-84d8-e93bf5499cd0
 
 {
   "person": {
-    "id": "5197d0da-eb71-4d3f-a584-c976f77143ae",
+    "id": "99f8e3c4-6680-4f92-b3ef-610963452331",
     "name": "Designer / CAD / Revit (synthetic)"
   },
   "tenant": "empathia-demo",
@@ -61,7 +61,8 @@ x-correlation-id: b0edf02d-b8b4-4ab6-861b-2b1c936bc0e9
     "scouter.propose",
     "room.design"
   ],
-  "siteScope": null
+  "siteScope": null,
+  "delegated": []
 }
 ```
 
@@ -77,7 +78,7 @@ Authorization: Bearer <access token>
 ```http
 HTTP/1.1 200
 content-type: application/json; charset=utf-8
-x-correlation-id: 1f62a675-74d3-453b-a501-f0735f0608a9
+x-correlation-id: 7e131cbb-3a82-4e32-acd6-cf2a05354694
 
 {
   "items": [
@@ -90,7 +91,7 @@ x-correlation-id: 1f62a675-74d3-453b-a501-f0735f0608a9
       "building": "ATL",
       "archetype": "Townhall",
       "rev": 1,
-      "updated_at": "2026-10-26T13:11:42.094Z"
+      "updated_at": "2026-10-30T18:24:36.812Z"
     },
     {
       "code": "R-PLN-0002",
@@ -101,7 +102,7 @@ x-correlation-id: 1f62a675-74d3-453b-a501-f0735f0608a9
       "building": "ATL",
       "archetype": "Boardroom",
       "rev": 1,
-      "updated_at": "2026-10-26T13:11:42.338Z"
+      "updated_at": "2026-10-30T18:24:36.957Z"
     }
   ],
   "next": "R-PLN-0002"
@@ -120,12 +121,12 @@ Authorization: Bearer <access token>
 ```http
 HTTP/1.1 200
 content-type: application/json; charset=utf-8
-x-correlation-id: 7dc07f63-b5ed-46c6-97e3-5784a82aab49
+x-correlation-id: b6ed4e85-f05d-41ed-aa3f-d46b1d0f3638
 
 {
   "room": {
     "code": "R-PLN-0003",
-    "id": "43b5e177-b102-4f92-a8f0-e97dcdfd471c",
+    "id": "d839e8fb-4ca0-4dc2-9f1e-7aa4430b8947",
     "name": "Horizon Huddle 2.129 (synthetic)",
     "lifecycle": "PLANNED",
     "template": "huddle",
@@ -247,13 +248,13 @@ x-correlation-id: 7dc07f63-b5ed-46c6-97e3-5784a82aab49
       "rev_no": 1,
       "reason": "created",
       "sha256": "6467d18122a4c17ed239000fe4bbc13aa1be07e1f80bcf540c471bbe1820a32f",
-      "created_by": "5197d0da-eb71-4d3f-a584-c976f77143ae",
-      "created_at": "2026-10-26T13:11:42.477Z"
+      "created_by": "99f8e3c4-6680-4f92-b3ef-610963452331",
+      "created_at": "2026-10-30T18:24:37.036Z"
     }
   ],
   "issues": [],
   "commissioning": {
-    "planId": "8123d135-5976-48dd-a3be-47b94c52f6f9",
+    "planId": "b7f30fac-eed9-45bf-a14b-7122861b6ef8",
     "engineVersion": "2.5.4-port.1",
     "ruleVersion": "2.5.0",
     "library": 94,
@@ -272,7 +273,7 @@ x-correlation-id: 7dc07f63-b5ed-46c6-97e3-5784a82aab49
         "dsp"
       ]
     },
-    "compiledAt": "2026-10-26T13:11:42.543Z",
+    "compiledAt": "2026-10-30T18:24:37.063Z",
     "counts": {
       "applicable": 73,
       "recorded": 0,
@@ -352,7 +353,7 @@ Content-Type: application/json
 ```http
 HTTP/1.1 403
 content-type: application/problem+json
-x-correlation-id: 769c74f0-afd2-4af9-8ecd-9bdbb64f0ee3
+x-correlation-id: d2f838fa-b6b0-4063-8ec3-16b889f8cb2a
 
 {
   "type": "https://errors.empathia.invalid/forbidden",
@@ -360,7 +361,7 @@ x-correlation-id: 769c74f0-afd2-4af9-8ecd-9bdbb64f0ee3
   "status": 403,
   "detail": "designer may not move a room to DESIGN_APPROVED (needs room.design.approve)",
   "code": "forbidden",
-  "correlationId": "769c74f0-afd2-4af9-8ecd-9bdbb64f0ee3"
+  "correlationId": "d2f838fa-b6b0-4063-8ec3-16b889f8cb2a"
 }
 ```
 
@@ -381,7 +382,7 @@ Content-Type: application/json
 ```http
 HTTP/1.1 422
 content-type: application/problem+json
-x-correlation-id: 329be8fa-2f36-47f0-9160-c8684729a6d4
+x-correlation-id: d262f930-d671-49e5-b848-d9e4f12e3305
 
 {
   "type": "https://errors.empathia.invalid/rule_refused",
@@ -392,7 +393,7 @@ x-correlation-id: 329be8fa-2f36-47f0-9160-c8684729a6d4
   "reasons": [
     "the room classification is not approved by an engineer"
   ],
-  "correlationId": "329be8fa-2f36-47f0-9160-c8684729a6d4"
+  "correlationId": "d262f930-d671-49e5-b848-d9e4f12e3305"
 }
 ```
 
@@ -417,11 +418,11 @@ idempotency-key: docs-example-0001
 ```http
 HTTP/1.1 201
 content-type: application/json; charset=utf-8
-x-correlation-id: 2d9ca0e0-2861-453e-a509-d5e8fffbe918
+x-correlation-id: dddfcb87-aca7-4508-be05-9abc30036f96
 
 {
   "code": "R-PLN-0004",
-  "id": "987f5716-696c-402f-8405-b4e7711787b2"
+  "id": "47cd41bb-a5f4-41e7-9791-a408ba80cff9"
 }
 ```
 
@@ -446,11 +447,11 @@ idempotency-key: docs-example-0001
 ```http
 HTTP/1.1 201
 content-type: application/json; charset=utf-8
-x-correlation-id: 16cbfc51-4e32-4f21-beaa-b1750ceda472
+x-correlation-id: eab59015-a8d1-4d45-934c-c3ce87ac50a0
 idempotent-replay: true
 
 {
-  "id": "987f5716-696c-402f-8405-b4e7711787b2",
+  "id": "47cd41bb-a5f4-41e7-9791-a408ba80cff9",
   "code": "R-PLN-0004"
 }
 ```
@@ -476,7 +477,7 @@ idempotency-key: docs-example-0001
 ```http
 HTTP/1.1 422
 content-type: application/problem+json
-x-correlation-id: 8a45fb6f-3354-48e5-a3a1-8032644a6476
+x-correlation-id: 8bb507dd-59a0-4fbe-87af-2dd8ff6553be
 
 {
   "type": "https://errors.empathia.invalid/idempotency_mismatch",
@@ -484,7 +485,7 @@ x-correlation-id: 8a45fb6f-3354-48e5-a3a1-8032644a6476
   "status": 422,
   "detail": "this Idempotency-Key was used with a different request",
   "code": "idempotency_mismatch",
-  "correlationId": "8a45fb6f-3354-48e5-a3a1-8032644a6476"
+  "correlationId": "8bb507dd-59a0-4fbe-87af-2dd8ff6553be"
 }
 ```
 
@@ -500,7 +501,7 @@ Authorization: Bearer <access token>
 ```http
 HTTP/1.1 400
 content-type: application/problem+json
-x-correlation-id: 62e0b336-f0e0-475f-9a8b-6951ed2edb99
+x-correlation-id: 6de59efa-54b0-4fb8-be28-4ebc57ebe0cb
 
 {
   "type": "https://errors.empathia.invalid/validation",
@@ -508,7 +509,7 @@ x-correlation-id: 62e0b336-f0e0-475f-9a8b-6951ed2edb99
   "status": 400,
   "detail": "unknown query parameter drop",
   "code": "validation",
-  "correlationId": "62e0b336-f0e0-475f-9a8b-6951ed2edb99"
+  "correlationId": "6de59efa-54b0-4fb8-be28-4ebc57ebe0cb"
 }
 ```
 
@@ -523,7 +524,7 @@ GET /v1/rooms HTTP/1.1
 ```http
 HTTP/1.1 401
 content-type: application/problem+json
-x-correlation-id: 474ac924-f976-4c40-9839-9438761f18d6
+x-correlation-id: 5c21b4b9-e224-4fc8-8aca-fa71225143a7
 
 {
   "type": "https://errors.empathia.invalid/unauthenticated",
@@ -531,7 +532,7 @@ x-correlation-id: 474ac924-f976-4c40-9839-9438761f18d6
   "status": 401,
   "detail": "send Authorization: Bearer <token>",
   "code": "unauthenticated",
-  "correlationId": "474ac924-f976-4c40-9839-9438761f18d6"
+  "correlationId": "5c21b4b9-e224-4fc8-8aca-fa71225143a7"
 }
 ```
 
@@ -547,7 +548,7 @@ Authorization: Bearer <access token>
 ```http
 HTTP/1.1 404
 content-type: application/problem+json
-x-correlation-id: 7dc96402-3383-4cd4-ab8e-ac69bfff62e1
+x-correlation-id: 0f5e6872-f15f-4875-986e-79aaf1af01ad
 
 {
   "type": "https://errors.empathia.invalid/not_found",
@@ -555,6 +556,6 @@ x-correlation-id: 7dc96402-3383-4cd4-ab8e-ac69bfff62e1
   "status": 404,
   "detail": "room R-PLN-0001 was not found in this tenant",
   "code": "not_found",
-  "correlationId": "7dc96402-3383-4cd4-ab8e-ac69bfff62e1"
+  "correlationId": "0f5e6872-f15f-4875-986e-79aaf1af01ad"
 }
 ```

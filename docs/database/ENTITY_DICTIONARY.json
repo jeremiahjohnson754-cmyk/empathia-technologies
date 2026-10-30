@@ -1,6 +1,6 @@
 {
   "generatedBy": "scripts/docs/entity-dictionary.mjs",
-  "tables": 36,
+  "tables": 41,
   "views": 1,
   "relations": [
     {
@@ -119,6 +119,266 @@
           "rel": "ai_request",
           "name": "ai_request_pkey",
           "def": "CREATE UNIQUE INDEX ai_request_pkey ON app.ai_request USING btree (id)"
+        }
+      ]
+    },
+    {
+      "name": "assurance_baseline",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0011_assurance_baseline.sql",
+      "purpose": "0011 · Versioned, immutable Assurance baselines (ADR-0003; owner decision RT-04, 2026-10-30). A baseline is published when a room is accepted (and again after an authorized recommissioning). A version is never edited: a new version supersedes the current one and the lineage stays. It binds the exact design revision, commissioning plan, result labels and evidence objects it was accepted on. Exceptions (an accepted deviation from the baseline) are their own governed records.",
+      "columns": [
+        {
+          "rel": "assurance_baseline",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "assurance_baseline",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "assurance_baseline",
+          "col": "room_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "assurance_baseline",
+          "col": "version",
+          "type": "integer",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "assurance_baseline",
+          "col": "state",
+          "type": "text",
+          "notnull": true,
+          "def": "'CURRENT'::text",
+          "comment": null
+        },
+        {
+          "rel": "assurance_baseline",
+          "col": "design_revision",
+          "type": "integer",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "assurance_baseline",
+          "col": "design_sha256",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "assurance_baseline",
+          "col": "plan_id",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "assurance_baseline",
+          "col": "results",
+          "type": "jsonb",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "assurance_baseline",
+          "col": "evidence_ids",
+          "type": "uuid[]",
+          "notnull": true,
+          "def": "'{}'::uuid[]",
+          "comment": null
+        },
+        {
+          "rel": "assurance_baseline",
+          "col": "devices",
+          "type": "jsonb",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "assurance_baseline",
+          "col": "reason",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "assurance_baseline",
+          "col": "published_by",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "assurance_baseline",
+          "col": "published_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        },
+        {
+          "rel": "assurance_baseline",
+          "col": "supersedes",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "assurance_baseline",
+          "col": "superseded_at",
+          "type": "timestamp with time zone",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "assurance_baseline",
+          "col": "superseded_by",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "assurance_baseline",
+          "name": "assurance_baseline_check",
+          "type": "c",
+          "def": "CHECK (((state = 'CURRENT'::text) = (superseded_at IS NULL)))"
+        },
+        {
+          "rel": "assurance_baseline",
+          "name": "assurance_baseline_reason_check",
+          "type": "c",
+          "def": "CHECK (((length(reason) >= 1) AND (length(reason) <= 1000)))"
+        },
+        {
+          "rel": "assurance_baseline",
+          "name": "assurance_baseline_state_check",
+          "type": "c",
+          "def": "CHECK ((state = ANY (ARRAY['CURRENT'::text, 'SUPERSEDED'::text, 'WITHDRAWN'::text])))"
+        },
+        {
+          "rel": "assurance_baseline",
+          "name": "assurance_baseline_version_check",
+          "type": "c",
+          "def": "CHECK ((version >= 1))"
+        },
+        {
+          "rel": "assurance_baseline",
+          "name": "assurance_baseline_published_by_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (published_by) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "assurance_baseline",
+          "name": "assurance_baseline_superseded_by_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (superseded_by) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "assurance_baseline",
+          "name": "assurance_baseline_supersedes_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (supersedes) REFERENCES app.assurance_baseline(id)"
+        },
+        {
+          "rel": "assurance_baseline",
+          "name": "assurance_baseline_tenant_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id) REFERENCES app.tenant(id)"
+        },
+        {
+          "rel": "assurance_baseline",
+          "name": "assurance_baseline_tenant_id_room_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id, room_id) REFERENCES app.room(tenant_id, id)"
+        },
+        {
+          "rel": "assurance_baseline",
+          "name": "assurance_baseline_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "assurance_baseline",
+          "name": "assurance_baseline_tenant_id_id_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, id)"
+        },
+        {
+          "rel": "assurance_baseline",
+          "name": "assurance_baseline_tenant_id_room_id_version_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, room_id, version)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "assurance_baseline",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [
+        {
+          "rel": "assurance_baseline",
+          "name": "baseline_immutable",
+          "def": "CREATE TRIGGER baseline_immutable BEFORE DELETE OR UPDATE ON app.assurance_baseline FOR EACH ROW EXECUTE FUNCTION app.baseline_transition_only()"
+        }
+      ],
+      "indexes": [
+        {
+          "rel": "assurance_baseline",
+          "name": "assurance_baseline_current",
+          "def": "CREATE UNIQUE INDEX assurance_baseline_current ON app.assurance_baseline USING btree (tenant_id, room_id) WHERE (state = 'CURRENT'::text)"
+        },
+        {
+          "rel": "assurance_baseline",
+          "name": "assurance_baseline_pkey",
+          "def": "CREATE UNIQUE INDEX assurance_baseline_pkey ON app.assurance_baseline USING btree (id)"
+        },
+        {
+          "rel": "assurance_baseline",
+          "name": "assurance_baseline_tenant_id_id_key",
+          "def": "CREATE UNIQUE INDEX assurance_baseline_tenant_id_id_key ON app.assurance_baseline USING btree (tenant_id, id)"
+        },
+        {
+          "rel": "assurance_baseline",
+          "name": "assurance_baseline_tenant_id_room_id_version_key",
+          "def": "CREATE UNIQUE INDEX assurance_baseline_tenant_id_room_id_version_key ON app.assurance_baseline USING btree (tenant_id, room_id, version)"
         }
       ]
     },
@@ -273,6 +533,220 @@
           "rel": "audit_event",
           "name": "audit_event_pkey",
           "def": "CREATE UNIQUE INDEX audit_event_pkey ON app.audit_event USING btree (id)"
+        }
+      ]
+    },
+    {
+      "name": "baseline_exception",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0011_assurance_baseline.sql",
+      "purpose": null,
+      "columns": [
+        {
+          "rel": "baseline_exception",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "baseline_exception",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "baseline_exception",
+          "col": "room_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "baseline_exception",
+          "col": "baseline_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "baseline_exception",
+          "col": "kind",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "baseline_exception",
+          "col": "dimension",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "baseline_exception",
+          "col": "rationale",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "baseline_exception",
+          "col": "state",
+          "type": "text",
+          "notnull": true,
+          "def": "'REQUESTED'::text",
+          "comment": null
+        },
+        {
+          "rel": "baseline_exception",
+          "col": "requested_by",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "baseline_exception",
+          "col": "requested_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        },
+        {
+          "rel": "baseline_exception",
+          "col": "decided_by",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "baseline_exception",
+          "col": "decided_at",
+          "type": "timestamp with time zone",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "baseline_exception",
+          "col": "decision_note",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "baseline_exception",
+          "col": "expires_at",
+          "type": "timestamp with time zone",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "baseline_exception",
+          "name": "baseline_exception_check",
+          "type": "c",
+          "def": "CHECK (((decided_by IS NULL) OR (decided_by <> requested_by)))"
+        },
+        {
+          "rel": "baseline_exception",
+          "name": "baseline_exception_kind_check",
+          "type": "c",
+          "def": "CHECK ((kind = ANY (ARRAY['ACCEPTED_DEVIATION'::text, 'TEMPORARY_WAIVER'::text, 'KNOWN_GAP'::text])))"
+        },
+        {
+          "rel": "baseline_exception",
+          "name": "baseline_exception_rationale_check",
+          "type": "c",
+          "def": "CHECK (((length(rationale) >= 10) AND (length(rationale) <= 4000)))"
+        },
+        {
+          "rel": "baseline_exception",
+          "name": "baseline_exception_state_check",
+          "type": "c",
+          "def": "CHECK ((state = ANY (ARRAY['REQUESTED'::text, 'APPROVED'::text, 'REJECTED'::text, 'EXPIRED'::text])))"
+        },
+        {
+          "rel": "baseline_exception",
+          "name": "baseline_exception_decided_by_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (decided_by) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "baseline_exception",
+          "name": "baseline_exception_requested_by_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (requested_by) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "baseline_exception",
+          "name": "baseline_exception_tenant_id_baseline_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id, baseline_id) REFERENCES app.assurance_baseline(tenant_id, id)"
+        },
+        {
+          "rel": "baseline_exception",
+          "name": "baseline_exception_tenant_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id) REFERENCES app.tenant(id)"
+        },
+        {
+          "rel": "baseline_exception",
+          "name": "baseline_exception_tenant_id_room_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id, room_id) REFERENCES app.room(tenant_id, id)"
+        },
+        {
+          "rel": "baseline_exception",
+          "name": "baseline_exception_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "baseline_exception",
+          "name": "baseline_exception_tenant_id_id_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "baseline_exception",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "baseline_exception",
+          "name": "baseline_exception_pkey",
+          "def": "CREATE UNIQUE INDEX baseline_exception_pkey ON app.baseline_exception USING btree (id)"
+        },
+        {
+          "rel": "baseline_exception",
+          "name": "baseline_exception_tenant_id_id_key",
+          "def": "CREATE UNIQUE INDEX baseline_exception_tenant_id_id_key ON app.baseline_exception USING btree (tenant_id, id)"
         }
       ]
     },
@@ -1267,6 +1741,203 @@
       "indexes": []
     },
     {
+      "name": "delegation",
+      "kind": "r",
+      "rls": true,
+      "force": false,
+      "comment": null,
+      "migration": "0012_separation_of_duties.sql",
+      "purpose": "0012 · Separation of duties and scoped, expiring delegations (ADR-0005; owner decision RT-16, 2026-10-30). Protected actions (funding.authorize, room.design.approve, room.classify.approve, customer.accept, baseline.approve) are never performed by the author of the thing being approved; the API checks authorship per artifact (room revisions, classification proposals, recorded results) and refuses with an audited rule refusal. A delegation lends an authority a person holds to another person, within a scope and until an expiry; it never lifts the self-approval rule, and it can be revoked. Delegated authorities are resolved into the principal at request time (app.auth_delegations) and marked so the audit shows they were delegated.",
+      "columns": [
+        {
+          "rel": "delegation",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "delegation",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "delegation",
+          "col": "grantor_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "delegation",
+          "col": "grantee_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "delegation",
+          "col": "authority",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "delegation",
+          "col": "scope",
+          "type": "jsonb",
+          "notnull": true,
+          "def": "'{}'::jsonb",
+          "comment": null
+        },
+        {
+          "rel": "delegation",
+          "col": "reason",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "delegation",
+          "col": "starts_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        },
+        {
+          "rel": "delegation",
+          "col": "expires_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "delegation",
+          "col": "revoked_at",
+          "type": "timestamp with time zone",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "delegation",
+          "col": "revoked_by",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "delegation",
+          "col": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "delegation",
+          "name": "delegation_authority_check",
+          "type": "c",
+          "def": "CHECK (((authority ~ '^[a-z_][a-z0-9_.]*$'::text) AND (authority <> '*'::text)))"
+        },
+        {
+          "rel": "delegation",
+          "name": "delegation_check",
+          "type": "c",
+          "def": "CHECK ((grantee_id <> grantor_id))"
+        },
+        {
+          "rel": "delegation",
+          "name": "delegation_check1",
+          "type": "c",
+          "def": "CHECK (((expires_at > starts_at) AND (expires_at <= (starts_at + '90 days'::interval))))"
+        },
+        {
+          "rel": "delegation",
+          "name": "delegation_reason_check",
+          "type": "c",
+          "def": "CHECK (((length(reason) >= 5) AND (length(reason) <= 1000)))"
+        },
+        {
+          "rel": "delegation",
+          "name": "delegation_grantee_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (grantee_id) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "delegation",
+          "name": "delegation_grantor_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (grantor_id) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "delegation",
+          "name": "delegation_revoked_by_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (revoked_by) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "delegation",
+          "name": "delegation_tenant_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id) REFERENCES app.tenant(id)"
+        },
+        {
+          "rel": "delegation",
+          "name": "delegation_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "delegation",
+          "name": "delegation_tenant_id_id_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "delegation",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "delegation",
+          "name": "delegation_grantee_idx",
+          "def": "CREATE INDEX delegation_grantee_idx ON app.delegation USING btree (tenant_id, grantee_id) WHERE (revoked_at IS NULL)"
+        },
+        {
+          "rel": "delegation",
+          "name": "delegation_pkey",
+          "def": "CREATE UNIQUE INDEX delegation_pkey ON app.delegation USING btree (id)"
+        },
+        {
+          "rel": "delegation",
+          "name": "delegation_tenant_id_id_key",
+          "def": "CREATE UNIQUE INDEX delegation_tenant_id_id_key ON app.delegation USING btree (tenant_id, id)"
+        }
+      ]
+    },
+    {
       "name": "drawing_revision",
       "kind": "r",
       "rls": true,
@@ -2186,6 +2857,197 @@
       ]
     },
     {
+      "name": "invitation",
+      "kind": "r",
+      "rls": true,
+      "force": false,
+      "comment": null,
+      "migration": "0015_administration.sql",
+      "purpose": "0015 · Administration (ADR-0006; owner decision 2026-10-30): invitations, scoped memberships, policy reads — all audited.",
+      "columns": [
+        {
+          "rel": "invitation",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "invitation",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "invitation",
+          "col": "email",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "invitation",
+          "col": "role_key",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "invitation",
+          "col": "site_scope",
+          "type": "uuid[]",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "invitation",
+          "col": "token_hash",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "invitation",
+          "col": "invited_by",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "invitation",
+          "col": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        },
+        {
+          "rel": "invitation",
+          "col": "expires_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "invitation",
+          "col": "accepted_at",
+          "type": "timestamp with time zone",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "invitation",
+          "col": "accepted_by",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "invitation",
+          "col": "revoked_at",
+          "type": "timestamp with time zone",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "invitation",
+          "name": "invitation_email_check",
+          "type": "c",
+          "def": "CHECK ((email ~ '^[^@\\s]+@[^@\\s]+$'::text))"
+        },
+        {
+          "rel": "invitation",
+          "name": "invitation_accepted_by_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (accepted_by) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "invitation",
+          "name": "invitation_invited_by_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (invited_by) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "invitation",
+          "name": "invitation_role_key_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (role_key) REFERENCES app.role(key)"
+        },
+        {
+          "rel": "invitation",
+          "name": "invitation_tenant_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id) REFERENCES app.tenant(id)"
+        },
+        {
+          "rel": "invitation",
+          "name": "invitation_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "invitation",
+          "name": "invitation_tenant_id_id_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, id)"
+        },
+        {
+          "rel": "invitation",
+          "name": "invitation_token_hash_key",
+          "type": "u",
+          "def": "UNIQUE (token_hash)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "invitation",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [
+        {
+          "rel": "invitation",
+          "name": "invitation_founder_boundary",
+          "def": "CREATE TRIGGER invitation_founder_boundary BEFORE INSERT OR UPDATE ON app.invitation FOR EACH ROW EXECUTE FUNCTION app.founder_role_boundary()"
+        }
+      ],
+      "indexes": [
+        {
+          "rel": "invitation",
+          "name": "invitation_pkey",
+          "def": "CREATE UNIQUE INDEX invitation_pkey ON app.invitation USING btree (id)"
+        },
+        {
+          "rel": "invitation",
+          "name": "invitation_tenant_id_id_key",
+          "def": "CREATE UNIQUE INDEX invitation_tenant_id_id_key ON app.invitation USING btree (tenant_id, id)"
+        },
+        {
+          "rel": "invitation",
+          "name": "invitation_token_hash_key",
+          "def": "CREATE UNIQUE INDEX invitation_token_hash_key ON app.invitation USING btree (token_hash)"
+        }
+      ]
+    },
+    {
       "name": "issue_event",
       "kind": "r",
       "rls": true,
@@ -2421,6 +3283,359 @@
       ]
     },
     {
+      "name": "measurement",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0013_measurements.sql",
+      "purpose": "0013 · Measurements with provenance (ADR-0004; owner decision RT-14, 2026-10-30). A measurement is a value with its unit, method, instrument and calibration state, time, location, source, uncertainty and approval state. Its provenance is one of DESIGN_SPECIFIED, SIMULATED, INFERRED, OBSERVED, FIELD_MEASURED and never changes: a simulated or inferred value cannot be promoted to a field measurement, and only a FIELD_MEASURED value from a calibrated instrument can be verified as engineering evidence. Verification is by a different person from the recorder. Rows are append-only except the approval columns.",
+      "columns": [
+        {
+          "rel": "measurement",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "measurement",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "measurement",
+          "col": "room_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "measurement",
+          "col": "test_result_id",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "measurement",
+          "col": "metric",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "measurement",
+          "col": "value",
+          "type": "numeric",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "measurement",
+          "col": "unit",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "measurement",
+          "col": "method",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "measurement",
+          "col": "instrument_id",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "measurement",
+          "col": "calibration_status",
+          "type": "text",
+          "notnull": true,
+          "def": "'UNKNOWN'::text",
+          "comment": null
+        },
+        {
+          "rel": "measurement",
+          "col": "calibration_due",
+          "type": "date",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "measurement",
+          "col": "measured_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "measurement",
+          "col": "location",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "measurement",
+          "col": "source",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "measurement",
+          "col": "provenance",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "measurement",
+          "col": "uncertainty",
+          "type": "numeric",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "measurement",
+          "col": "uncertainty_unit",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "measurement",
+          "col": "approval_state",
+          "type": "text",
+          "notnull": true,
+          "def": "'UNREVIEWED'::text",
+          "comment": null
+        },
+        {
+          "rel": "measurement",
+          "col": "approved_by",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "measurement",
+          "col": "approved_at",
+          "type": "timestamp with time zone",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "measurement",
+          "col": "approval_note",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "measurement",
+          "col": "recorded_by",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "measurement",
+          "col": "recorded_role",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "measurement",
+          "col": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "measurement",
+          "name": "measurement_approval_state_check",
+          "type": "c",
+          "def": "CHECK ((approval_state = ANY (ARRAY['UNREVIEWED'::text, 'VERIFIED'::text, 'REJECTED'::text])))"
+        },
+        {
+          "rel": "measurement",
+          "name": "measurement_calibration_status_check",
+          "type": "c",
+          "def": "CHECK ((calibration_status = ANY (ARRAY['CALIBRATED'::text, 'EXPIRED'::text, 'UNKNOWN'::text, 'NOT_APPLICABLE'::text])))"
+        },
+        {
+          "rel": "measurement",
+          "name": "measurement_check",
+          "type": "c",
+          "def": "CHECK (((provenance <> 'FIELD_MEASURED'::text) OR (instrument_id IS NOT NULL)))"
+        },
+        {
+          "rel": "measurement",
+          "name": "measurement_check1",
+          "type": "c",
+          "def": "CHECK (((approval_state <> 'VERIFIED'::text) OR ((provenance = 'FIELD_MEASURED'::text) AND (calibration_status = 'CALIBRATED'::text))))"
+        },
+        {
+          "rel": "measurement",
+          "name": "measurement_check2",
+          "type": "c",
+          "def": "CHECK (((approved_by IS NULL) OR (approved_by <> recorded_by)))"
+        },
+        {
+          "rel": "measurement",
+          "name": "measurement_check3",
+          "type": "c",
+          "def": "CHECK (((approval_state = 'UNREVIEWED'::text) = (approved_by IS NULL)))"
+        },
+        {
+          "rel": "measurement",
+          "name": "measurement_location_check",
+          "type": "c",
+          "def": "CHECK (((length(location) >= 1) AND (length(location) <= 120)))"
+        },
+        {
+          "rel": "measurement",
+          "name": "measurement_method_check",
+          "type": "c",
+          "def": "CHECK (((length(method) >= 2) AND (length(method) <= 120)))"
+        },
+        {
+          "rel": "measurement",
+          "name": "measurement_metric_check",
+          "type": "c",
+          "def": "CHECK ((metric ~ '^[a-z][a-z0-9_]{1,60}$'::text))"
+        },
+        {
+          "rel": "measurement",
+          "name": "measurement_provenance_check",
+          "type": "c",
+          "def": "CHECK ((provenance = ANY (ARRAY['DESIGN_SPECIFIED'::text, 'SIMULATED'::text, 'INFERRED'::text, 'OBSERVED'::text, 'FIELD_MEASURED'::text])))"
+        },
+        {
+          "rel": "measurement",
+          "name": "measurement_source_check",
+          "type": "c",
+          "def": "CHECK (((length(source) >= 1) AND (length(source) <= 200)))"
+        },
+        {
+          "rel": "measurement",
+          "name": "measurement_unit_check",
+          "type": "c",
+          "def": "CHECK (((length(unit) >= 1) AND (length(unit) <= 20)))"
+        },
+        {
+          "rel": "measurement",
+          "name": "measurement_approved_by_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (approved_by) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "measurement",
+          "name": "measurement_recorded_by_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (recorded_by) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "measurement",
+          "name": "measurement_tenant_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id) REFERENCES app.tenant(id)"
+        },
+        {
+          "rel": "measurement",
+          "name": "measurement_tenant_id_room_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id, room_id) REFERENCES app.room(tenant_id, id)"
+        },
+        {
+          "rel": "measurement",
+          "name": "measurement_tenant_id_test_result_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id, test_result_id) REFERENCES app.test_result(tenant_id, id)"
+        },
+        {
+          "rel": "measurement",
+          "name": "measurement_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "measurement",
+          "name": "measurement_tenant_id_id_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "measurement",
+          "name": "tenant_isolation",
+          "cmd": "ALL",
+          "roles": "{public}",
+          "qual": "(tenant_id = app.current_tenant())",
+          "with_check": "(tenant_id = app.current_tenant())"
+        }
+      ],
+      "triggers": [
+        {
+          "rel": "measurement",
+          "name": "measurement_immutable",
+          "def": "CREATE TRIGGER measurement_immutable BEFORE DELETE OR UPDATE ON app.measurement FOR EACH ROW EXECUTE FUNCTION app.measurement_approval_only()"
+        }
+      ],
+      "indexes": [
+        {
+          "rel": "measurement",
+          "name": "measurement_pkey",
+          "def": "CREATE UNIQUE INDEX measurement_pkey ON app.measurement USING btree (id)"
+        },
+        {
+          "rel": "measurement",
+          "name": "measurement_room_idx",
+          "def": "CREATE INDEX measurement_room_idx ON app.measurement USING btree (tenant_id, room_id, metric, measured_at DESC)"
+        },
+        {
+          "rel": "measurement",
+          "name": "measurement_tenant_id_id_key",
+          "def": "CREATE UNIQUE INDEX measurement_tenant_id_id_key ON app.measurement USING btree (tenant_id, id)"
+        }
+      ]
+    },
+    {
       "name": "membership",
       "kind": "r",
       "rls": true,
@@ -2514,7 +3729,13 @@
           "with_check": "(tenant_id = app.current_tenant())"
         }
       ],
-      "triggers": [],
+      "triggers": [
+        {
+          "rel": "membership",
+          "name": "membership_founder_boundary",
+          "def": "CREATE TRIGGER membership_founder_boundary BEFORE INSERT OR UPDATE ON app.membership FOR EACH ROW EXECUTE FUNCTION app.founder_role_boundary()"
+        }
+      ],
       "indexes": [
         {
           "rel": "membership",
@@ -3735,6 +4956,30 @@
           "notnull": false,
           "def": null,
           "comment": null
+        },
+        {
+          "rel": "relationship",
+          "col": "from_key",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "relationship",
+          "col": "to_key",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "relationship",
+          "col": "rev",
+          "type": "integer",
+          "notnull": true,
+          "def": "1",
+          "comment": null
         }
       ],
       "constraints": [
@@ -3777,6 +5022,11 @@
       "indexes": [
         {
           "rel": "relationship",
+          "name": "relationship_from_key_idx",
+          "def": "CREATE INDEX relationship_from_key_idx ON app.relationship USING btree (tenant_id, from_key) WHERE (removed_at IS NULL)"
+        },
+        {
+          "rel": "relationship",
           "name": "relationship_live_unique",
           "def": "CREATE UNIQUE INDEX relationship_live_unique ON app.relationship USING btree (tenant_id, from_type, from_id, rel, to_type, to_id) WHERE (removed_at IS NULL)"
         },
@@ -3794,6 +5044,11 @@
           "rel": "relationship",
           "name": "relationship_to_idx",
           "def": "CREATE INDEX relationship_to_idx ON app.relationship USING btree (tenant_id, to_type, to_id) WHERE (removed_at IS NULL)"
+        },
+        {
+          "rel": "relationship",
+          "name": "relationship_to_key_idx",
+          "def": "CREATE INDEX relationship_to_key_idx ON app.relationship USING btree (tenant_id, to_key) WHERE (removed_at IS NULL)"
         }
       ]
     },
@@ -4039,6 +5294,14 @@
           "notnull": false,
           "def": null,
           "comment": null
+        },
+        {
+          "rel": "room",
+          "col": "classification_proposed_by",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
         }
       ],
       "constraints": [
@@ -4083,6 +5346,12 @@
           "name": "room_unit_check",
           "type": "c",
           "def": "CHECK ((unit = ANY (ARRAY['m'::text, 'ft'::text])))"
+        },
+        {
+          "rel": "room",
+          "name": "room_classification_proposed_by_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (classification_proposed_by) REFERENCES app.person(id)"
         },
         {
           "rel": "room",
@@ -5686,6 +6955,18 @@
   ],
   "functions": [
     {
+      "name": "accept_invitation",
+      "args": "p_token_hash text, p_display_name text, p_password_hash text",
+      "definer": true,
+      "comment": null
+    },
+    {
+      "name": "auth_delegations",
+      "args": "p_person uuid, p_tenant uuid",
+      "definer": true,
+      "comment": null
+    },
+    {
       "name": "auth_memberships",
       "args": "p_person uuid",
       "definer": true,
@@ -5704,6 +6985,12 @@
       "comment": null
     },
     {
+      "name": "baseline_transition_only",
+      "args": "",
+      "definer": false,
+      "comment": null
+    },
+    {
       "name": "current_tenant",
       "args": "",
       "definer": false,
@@ -5711,6 +6998,18 @@
     },
     {
       "name": "current_user_id",
+      "args": "",
+      "definer": false,
+      "comment": null
+    },
+    {
+      "name": "founder_role_boundary",
+      "args": "",
+      "definer": false,
+      "comment": null
+    },
+    {
+      "name": "measurement_approval_only",
       "args": "",
       "definer": false,
       "comment": null

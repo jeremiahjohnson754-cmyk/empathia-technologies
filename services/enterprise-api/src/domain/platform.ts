@@ -30,11 +30,13 @@ export async function resolvePrincipal(pool: PgPool, personId: string, tenantId:
   if (!m) return null;
   const p = (await pool.query<{ display_name: string; disabled: boolean }>('SELECT * FROM app.auth_person($1)', [personId])).rows[0];
   if (!p || p.disabled) return null;
-  return { personId, name: p?.display_name || '', tenantId, tenantSlug: m.tenant_slug, role: m.role_key, authorities: m.authorities, siteScope: m.site_scope && m.site_scope.length ? m.site_scope : null };
+  const d = (await pool.query<{ authority: string; grantor_id: string; scope: Record<string, string[]>; expires_at: string; delegation_id: string }>('SELECT * FROM app.auth_delegations($1, $2)', [personId, tenantId])).rows;
+  return { personId, name: p?.display_name || '', tenantId, tenantSlug: m.tenant_slug, role: m.role_key, authorities: m.authorities, siteScope: m.site_scope && m.site_scope.length ? m.site_scope : null,
+    delegated: d.map((x) => ({ authority: x.authority, grantorId: x.grantor_id, scope: x.scope || {}, expiresAt: x.expires_at, delegationId: x.delegation_id })) };
 }
 
 export async function me(ctx: RequestContext) {
-  return { person: { id: ctx.p.personId, name: ctx.p.name }, tenant: ctx.p.tenantSlug, role: ctx.p.role, authorities: ctx.p.authorities, siteScope: ctx.p.siteScope };
+  return { person: { id: ctx.p.personId, name: ctx.p.name }, tenant: ctx.p.tenantSlug, role: ctx.p.role, authorities: ctx.p.authorities, siteScope: ctx.p.siteScope, delegated: ctx.p.delegated };
 }
 
 export async function notifications(ctx: RequestContext) {

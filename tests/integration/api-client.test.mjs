@@ -17,7 +17,7 @@ test('sign in and read the principal', async () => {
   const t = await api.signIn({ email: 'designer@empathia-demo.empathia.invalid', password: 'empathia-dev-only', tenant: 'empathia-demo', role: 'designer' });
   assert.deepEqual(keys(t), ['accessToken', 'expiresIn', 'person', 'role', 'tenant', 'tokenType']);
   const me = await api.call('getV1Me');
-  assert.deepEqual(keys(me), ['authorities', 'person', 'role', 'siteScope', 'tenant']);
+  assert.deepEqual(keys(me), ['authorities', 'delegated', 'person', 'role', 'siteScope', 'tenant']);
 });
 
 test('room list, room detail and the KPI summary have the declared shapes', async () => {

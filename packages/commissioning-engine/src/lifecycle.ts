@@ -34,7 +34,10 @@ export interface LifecycleFacts {
 export function lifecycleBlockers(f: LifecycleFacts): string[] {
   const i = ROOM_LIFECYCLE.indexOf(f.from as RoomLifecycle);
   const j = ROOM_LIFECYCLE.indexOf(f.to);
-  if (j !== i + 1 && !(f.to === 'PLANNED' && f.from === 'DESIGN_APPROVED')) return [`no transition ${f.from} → ${f.to}: the room moves one governed step at a time`];
+  // two governed backward steps: a design is sent back to PLANNED, and an accepted room is RECOMMISSIONED (ADR-0003: the current baseline
+  // stays current until the re-acceptance publishes the next version; every other result stays bound to the version it was accepted in)
+  const backward = (f.to === 'PLANNED' && f.from === 'DESIGN_APPROVED') || (f.to === 'COMMISSIONING' && f.from === 'ACCEPTED');
+  if (j !== i + 1 && !backward) return [`no transition ${f.from} → ${f.to}: the room moves one governed step at a time`];
   const why: string[] = [];
   if (f.to === 'DESIGN_APPROVED') {
     if (!f.classificationApproved) why.push('the room classification is not approved by an engineer');

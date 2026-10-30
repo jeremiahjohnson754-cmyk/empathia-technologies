@@ -14,6 +14,11 @@ import * as assurance from '../domain/assurance.js';
 import * as integ from '../integrations/sync.js';
 import * as leads from '../domain/leads.js';
 import * as founder from '../domain/founder.js';
+import * as baselines from '../domain/baselines.js';
+import * as measurements from '../domain/measurements.js';
+import * as admin from '../domain/admin.js';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { PgPool } from '../db/pg.js';
 import type { Hs256Tokens } from '../auth/jwt.js';
 import type { ObjectStore } from '../storage/objectStore.js';
@@ -21,6 +26,8 @@ import { LIFECYCLE_AUTHORITY } from '@empathia/commissioning-engine';
 import { ROOM_LIFECYCLE } from '@empathia/domain-types';
 import { invalid } from '../http/errors.js';
 
+const EVIDENCE_DIR = process.env['EVIDENCE_DIR'] || path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../../tests/evidence');
+const UUID = str({ pattern: '^[0-9a-fA-F-]{36}$' });
 const ROOM = str({ pattern: '^(R-[A-Z0-9-]{3,32}|[0-9a-fA-F-]{36})$', description: 'canonical room code (R-PLN-0001) or room uuid' });
 const ok = (description: string, schema?: Schema) => ({ 200: { description, ...(schema ? { schema } : {}) } });
 const created = (description: string) => ({ 201: { description } });
@@ -138,6 +145,39 @@ export function buildRoutes(deps: { pool: PgPool; tokens: Hs256Tokens; store: Ob
   add({ method: 'POST', path: '/v1/ai/requests', tag: 'knowledge', summary: 'Ask the governed assistant (logged; generation NOT_CONFIGURED in the starter)', auth: true, body: obj({ purpose: str({ maxLength: 80 }), prompt: str({ minLength: 1, maxLength: 4000 }) }, ['prompt']), responses: { 501: { description: 'no model configured; the permitted sources are returned in reasons' } }, handler: async (c, q) => ({ status: 200, body: await platform.aiRequest(c, q.body as never) }) });
   add({ method: 'GET', path: '/v1/admin/outbox', tag: 'admin', summary: 'Outbox events by status (security admin)', auth: true, authority: 'policy.configure', query: { status: str({ enum: ['PENDING', 'DELIVERED', 'DEAD_LETTER'] }) }, responses: ok('events'), handler: async (c, q) => ({ status: 200, body: await platform.outboxAdmin(c, q.query.get('status') || 'DEAD_LETTER') }) });
   add({ method: 'POST', path: '/v1/admin/outbox/:event/retry', tag: 'admin', summary: 'Retry a dead-lettered event (security admin)', auth: true, authority: 'policy.configure', responses: ok('requeued'), handler: async (c, q) => ({ status: 200, body: await platform.outboxRetry(c, q.params['event']!) }) });
+
+  // ---------------------------------------------------------------------------------------- assurance baselines (ADR-0003: versioned, immutable, lineage; exceptions decided by someone else)
+  add({ method: 'GET', path: '/v1/rooms/:room/baselines', tag: 'assurance', summary: 'Baseline lineage of a room: every version (CURRENT / SUPERSEDED / WITHDRAWN) with the design revision, hash, plan, results and evidence it binds, and its exceptions', auth: true, responses: ok('lineage'), handler: async (c, q) => ({ status: 200, body: await baselines.lineage(c, q.params['room']!) }) });
+  add({ method: 'POST', path: '/v1/rooms/:room/baselines/exceptions', tag: 'assurance', summary: 'Request an exception against the current baseline (decided by a different person)', auth: true, authority: ['baseline.approve', 'test.verify', 'tests.verify.all', 'work.evidence'],
+    body: obj({ kind: str({ enum: ['ACCEPTED_DEVIATION', 'TEMPORARY_WAIVER', 'KNOWN_GAP'] }), dimension: str({ minLength: 1, maxLength: 40 }), rationale: str({ minLength: 5, maxLength: 4000 }), expiresAt: str({ maxLength: 40 }) }, ['kind', 'dimension', 'rationale']), responses: created('id, state'), handler: async (c, q) => ({ status: 201, body: await baselines.requestException(c, q.params['room']!, q.body as never) }) });
+  add({ method: 'POST', path: '/v1/baseline-exceptions/:id/decide', tag: 'assurance', summary: 'Approve or reject a baseline exception (never the requester)', auth: true, authority: 'baseline.approve',
+    body: obj({ decision: str({ enum: ['APPROVED', 'REJECTED'] }), note: str({ maxLength: 2000 }) }, ['decision']), responses: { ...ok('id, state'), 422: { description: 'already decided, or decided by its requester' } }, handler: async (c, q) => ({ status: 200, body: await baselines.decideException(c, q.params['id']!, q.body as never) }) });
+
+  // ---------------------------------------------------------------------------------------- measurements with provenance (ADR-0004)
+  add({ method: 'GET', path: '/v1/rooms/:room/measurements', tag: 'commissioning', summary: 'Measurements of a room with provenance, unit, method, instrument, calibration, uncertainty and approval state', auth: true, responses: ok('measurements'), handler: async (c, q) => ({ status: 200, body: await measurements.list(c, q.params['room']!) }) });
+  add({ method: 'POST', path: '/v1/rooms/:room/measurements', tag: 'commissioning', summary: 'Record a measurement (DESIGN_SPECIFIED / SIMULATED / INFERRED / OBSERVED / FIELD_MEASURED — never conflated; dBFS is never recorded as SPL)', auth: true, authority: measurements.RECORD_AUTHORITIES, idempotent: true,
+    body: obj({ metric: str({ minLength: 1, maxLength: 60 }), value: num(), unit: str({ minLength: 1, maxLength: 20 }), method: str({ minLength: 1, maxLength: 200 }), instrumentId: str({ maxLength: 80 }), calibrationStatus: str({ enum: ['CALIBRATED', 'EXPIRED', 'UNKNOWN', 'NOT_APPLICABLE'] }), calibrationDue: str({ maxLength: 40 }), measuredAt: str({ maxLength: 40 }), location: str({ minLength: 1, maxLength: 200 }), source: str({ minLength: 1, maxLength: 200 }), provenance: str({ enum: [...measurements.PROVENANCE] }), uncertainty: num(), uncertaintyUnit: str({ maxLength: 20 }), testResultId: UUID }, ['metric', 'value', 'unit', 'method', 'measuredAt', 'location', 'source', 'provenance']),
+    responses: { ...created('id, provenance, approvalState'), 422: { description: 'refused by a provenance rule' } }, handler: async (c, q) => ({ status: 201, body: await measurements.record(c, q.params['room']!, q.body as never) }) });
+  add({ method: 'POST', path: '/v1/measurements/:id/verify', tag: 'commissioning', summary: 'Verify or reject a measurement (verifier ≠ recorder; only a FIELD_MEASURED value from a CALIBRATED instrument is ever VERIFIED)', auth: true, authority: measurements.VERIFY_AUTHORITIES,
+    body: obj({ decision: str({ enum: ['VERIFIED', 'REJECTED'] }), note: str({ maxLength: 2000 }) }, ['decision']), responses: { ...ok('id, approvalState'), 422: { description: 'refused: self-verification, non-field provenance, uncalibrated instrument or already decided' } }, handler: async (c, q) => ({ status: 200, body: await measurements.verify(c, q.params['id']!, q.body as never) }) });
+
+  // ---------------------------------------------------------------------------------------- administration (ADR-0006/0007) and delegations (ADR-0005)
+  add({ method: 'GET', path: '/v1/admin/policy', tag: 'admin', summary: 'The policy model: personas with their authorities, the 14 legacy UI roles mapped to personas (a view preference, never authentication), separation-of-duties rules', auth: true, authority: 'policy.configure', responses: ok('policy model'), handler: async (c) => ({ status: 200, body: await admin.policy(c) }) });
+  add({ method: 'GET', path: '/v1/admin/invitations', tag: 'admin', summary: 'Invitations of the organization (security admin; audited)', auth: true, authority: 'policy.configure', responses: ok('invitations'), handler: async (c) => ({ status: 200, body: await admin.listInvitations(c) }) });
+  add({ method: 'POST', path: '/v1/admin/invitations', tag: 'admin', summary: 'Invite a person into your organization with a role and optional site scope; the one-time token is returned once (founder role only in the founder organization; never architect)', auth: true, authority: 'policy.configure', idempotent: true,
+    body: obj({ email: str({ pattern: '^[^@\\s]+@[^@\\s]+$', maxLength: 200 }), roleKey: str({ pattern: '^[a-z_]{2,40}$' }), siteCodes: arr(str({ maxLength: 24 }), { maxItems: 50 }), days: int({ minimum: 1, maximum: 30 }) }, ['email', 'roleKey']), responses: { ...created('id, token (once)'), 422: { description: 'refused by a boundary rule' } }, handler: async (c, q) => ({ status: 201, body: await admin.createInvitation(c, q.body as never) }) });
+  add({ method: 'POST', path: '/v1/admin/invitations/:id/revoke', tag: 'admin', summary: 'Revoke an open invitation', auth: true, authority: 'policy.configure', responses: ok('revoked'), handler: async (c, q) => ({ status: 200, body: await admin.revokeInvitation(c, q.params['id']!) }) });
+  add({ method: 'POST', path: '/v1/public/invitations/accept', tag: 'public', summary: 'Accept an invitation with its one-time token (unauthenticated; the token is the credential; atomic; rate-limited)', auth: false,
+    body: obj({ token: str({ minLength: 16, maxLength: 80 }), displayName: str({ minLength: 1, maxLength: 120 }), password: str({ minLength: 12, maxLength: 200 }) }, ['token', 'displayName', 'password']), responses: { ...ok('tenant, role, personId'), 422: { description: 'unknown, used, revoked or expired' } }, handler: async (_c, q) => ({ status: 200, body: await admin.acceptInvitation(deps.pool, q.body as never) }) });
+  add({ method: 'POST', path: '/v1/admin/memberships', tag: 'admin', summary: 'Grant a role to a person of your organization, optionally scoped to sites (never your own memberships; never architect)', auth: true, authority: 'policy.configure',
+    body: obj({ personId: UUID, roleKey: str({ pattern: '^[a-z_]{2,40}$' }), siteCodes: arr(str({ maxLength: 24 }), { maxItems: 50, nullable: true }) }, ['personId', 'roleKey']), responses: { ...ok('membership'), 422: { description: 'refused by a boundary rule' } }, handler: async (c, q) => ({ status: 200, body: await admin.grantMembership(c, q.body as never) }) });
+  add({ method: 'POST', path: '/v1/admin/memberships/revoke', tag: 'admin', summary: 'Revoke a membership (never your own)', auth: true, authority: 'policy.configure',
+    body: obj({ personId: UUID, roleKey: str({ pattern: '^[a-z_]{2,40}$' }) }, ['personId', 'roleKey']), responses: ok('revoked'), handler: async (c, q) => ({ status: 200, body: await admin.revokeMembership(c, q.body as never) }) });
+  add({ method: 'GET', path: '/v1/delegations', tag: 'admin', summary: 'Delegations I gave or received (a security admin sees the organization’s)', auth: true, responses: ok('delegations'), handler: async (c) => ({ status: 200, body: await admin.listDelegations(c) }) });
+  add({ method: 'POST', path: '/v1/delegations', tag: 'admin', summary: 'Lend an authority you hold directly to another person, scoped and expiring (≤ 90 days); never lifts the self-approval rule', auth: true, idempotent: true,
+    body: obj({ granteeId: UUID, authority: str({ pattern: '^[a-z_][a-z0-9_.]*$', maxLength: 60 }), reason: str({ minLength: 5, maxLength: 1000 }), days: int({ minimum: 1, maximum: 90 }), scope: anyObj() }, ['granteeId', 'authority', 'reason']), responses: { ...created('id, expiresAt'), 422: { description: 'you do not hold the authority directly' } }, handler: async (c, q) => ({ status: 201, body: await admin.createDelegation(c, q.body as never) }) });
+  add({ method: 'POST', path: '/v1/delegations/:id/revoke', tag: 'admin', summary: 'Revoke a delegation (grantor or security admin)', auth: true, responses: ok('revoked'), handler: async (c, q) => ({ status: 200, body: await admin.revokeDelegation(c, q.params['id']!) }) });
+  add({ method: 'GET', path: '/v1/founder/platform-health', tag: 'founder', summary: 'Platform-health summary for the Founder Studio (ADR-0007; CONFIDENTIAL_TECHNICAL; aggregate test/build/migration/outbox/adapter state only — no tenant data; audited)', auth: true, authority: founder.FOUNDER_AUTHORITY, responses: ok('platform health'), handler: async (c) => ({ status: 200, body: await founder.platformHealth(c, deps, EVIDENCE_DIR) }) });
   void bool; void anyObj;
   return r;
 }
