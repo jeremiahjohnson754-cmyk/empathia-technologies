@@ -99,7 +99,7 @@ const T = {
   operations: ['Operations Ready', 'app', 'MIGRATED_REAL', '/app/operations/ready', 'P6', 'NOT_STARTED', 'P6'],
   registry: ['Registers', 'app', 'MIGRATED_REAL', '/admin/registers', 'P6/P8', 'NOT_STARTED', 'P8'],
   investor: ['Investor demonstration landing', 'demo', 'MIGRATED_DEMO', '/demo', 'apps/demo landing with guided scenarios (2.5.5 investor start actions carried over)', 'NOT_STARTED', 'P3'],
-  'v25.build': ['Build a Room with Lite (V2.5.3)', 'demo+app', 'MIGRATED_REAL', '/app/rooms/{id}/design · /demo/build-a-room', 'Build a Room engine ported (92 golden cases) + rooms API', 'DONE (slice)', 'tests/e2e, golden parity'],
+  'v25.build': ['Build a Room with Lite (V2.5.3)', 'demo+app', 'MIGRATED_REAL', '/app/rooms/{id}/design · demo #/v25/build (native, client-side on the engine)', 'Build a Room engine ported (92 golden cases) + rooms API; demo: describe → design → classification → drawings → lifecycle → recording/verification → acceptance → baseline → recommission, with SoD refusals', 'DONE (demo native; app slice)', 'tests/browser/demo.test.mjs B-01..B-18; tests/e2e; golden parity'],
 };
 const V25 = {
   intake: ['/app/requests', 'P5', 'NOT_STARTED'], vendor: ['/app/vendor-inbox', 'P5 (scoped vendor acknowledgement, test 15)', 'NOT_STARTED'], decisions: ['/app/decisions', 'P5 (approve/hold/reject, author ≠ approver)', 'NOT_STARTED'],
@@ -128,7 +128,7 @@ const LEVELS = ['INVENTORIED', 'ROUTED', 'RENDERED', 'FUNCTIONAL', 'BACKEND_CONN
 // (the shell resolves every Living Campus area to a page that states its status: tests/browser/demo.test.mjs D-04).
 const MATURITY = {   // key → [level, evidence]
   room: [5, 'tests/e2e + tests/integration/api.test.mjs (room → devices → revisions → read model over the API)'], builder: [5, 'tests/browser/enterprise-web.test.mjs (Build a Room over the API) + commissioning-engine golden 92'],
-  'v25.build': [5, 'tests/browser/enterprise-web.test.mjs; commissioning-engine golden parity'], 'commissioning.room': [5, 'tests/integration/api.test.mjs results + verify'], commissioning: [4, 'engine + API; no native UI of the command center yet'],
+  'v25.build': [5, 'demo: tests/browser/demo.test.mjs B-01..B-18 (visually rendered, functional on the engine, regression-tested); app: enterprise-web.test.mjs; golden parity'], 'commissioning.room': [5, 'tests/integration/api.test.mjs results + verify'], commissioning: [4, 'engine + API; no native UI of the command center yet'],
   ledger: [5, 'tests/security/authz.test.mjs (audit read authority) + api.test.mjs'], 'search.vault': [4, 'POST /v1/evidence, GET content: api.test.mjs; UI pending'], 'search.graph': [4, 'GET /v1/graph: api.test.mjs'],
   'pro.issues': [4, 'issues → work orders → close: api.test.mjs'], servicehands: [4, 'api.test.mjs service chain'], assurance: [4, 'assurance-engine 13/13 + GET /v1/rooms/{room}/assurance'], 'assurance.room': [4, 'same'],
   projects: [4, 'tests/e2e projects'], 'search.projects': [4, 'GET/POST /v1/projects'], 'search.people': [4, 'GET /v1/people (secadmin, audited): authz.test.mjs'], campus: [4, 'GET /v1/sites'], home: [4, 'notifications + reports/summary; role home UI partial'],

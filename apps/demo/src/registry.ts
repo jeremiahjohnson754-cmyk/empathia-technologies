@@ -3,6 +3,8 @@
 // (generated into ./generated/parity.json at build time; never edited by hand). areaOf mirrors the original router's azArea.
 import parity from './generated/parity.json';
 export interface AreaStatus { key: string; label: string; target: string; status: string; newRoute: string; }
+/** Areas with a native page in this shell (everything else resolves to a boundary page that states its migration status). */
+export const NATIVE = new Set(['investor', 'v25.build']);
 export const AREAS: AreaStatus[] = parity as AreaStatus[];
 const SUB: Record<string, string[]> = { search: ['quality', 'ownership', 'support', 'graph', 'people', 'projects', 'orgs', 'activity', 'vault'], pro: ['assets', 'issues', 'ops', 'eng', 'exec'], service: ['coverage', 'fixes'], lite: ['services', 'guides'], intake: ['new'], servicehands: ['new'], commissioning: ['room'], agent: ['arch'], scouter: ['anatomy'] };
 export function areaKey(hash: string): string {

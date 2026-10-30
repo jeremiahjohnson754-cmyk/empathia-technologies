@@ -23,3 +23,21 @@ h1 { margin: 0; font-size: clamp(26px, 3.6vw, 34px); line-height: 1.15; letter-s
 .status { margin-top: var(--sp-7); color: var(--tx2); } .boundary code { font: 600 var(--fs-xs) var(--font-mono); color: var(--tx2); }
 .foot { padding: var(--sp-5) 16px; color: var(--tx3); font-size: var(--fs-sm); border-top: 1px solid var(--line); text-align: center; }
 @media (max-width: 760px) { .start { grid-template-columns: 1fr; } .go.launch { min-height: 76px; font-size: var(--fs-md); } .wrap { padding-block: var(--sp-5); } .synthetic { margin-left: 0; } }
+
+/* Build a Room */
+.build__head { display: flex; justify-content: space-between; gap: var(--sp-4); align-items: flex-start; flex-wrap: wrap; margin-bottom: var(--sp-4); }
+.build__state { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.build__why { margin: 6px 0 0; padding-left: 18px; } .build__why li { margin: 2px 0; }
+.build__form { margin-top: var(--sp-4); } .build__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--sp-3); }
+.build__form input, .build__form select, .build__row input, .build__row select, .build__grid input, .build__grid select { width: 100%; min-height: 36px; padding: 0 10px; background: var(--bg2); color: var(--tx); border: 1px solid var(--line2); border-radius: var(--r-sm); font: inherit; }
+.build__two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sp-5); margin-top: var(--sp-4); }
+.build__h2 { font-size: var(--fs-md); margin: var(--sp-4) 0 var(--sp-2); }
+.build__row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: var(--sp-2) 0; } .build__row input, .build__row select { width: auto; flex: 1 1 200px; }
+.build__list { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; font-size: var(--fs-sm); } .build__list li { padding: 6px 8px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--panel); min-width: 0; overflow-wrap: anywhere; }
+.build__list code { font: 600 var(--fs-xs) var(--font-mono); color: var(--tx2); } .build__x { background: none; border: 0; color: var(--accent); cursor: pointer; font: inherit; font-size: var(--fs-xs); }
+.build__table { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); } .build__table th, .build__table td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; } .build__table th { color: var(--tx2); font-weight: 600; }
+.build details { margin: var(--sp-2) 0; } .build summary { cursor: pointer; font-weight: 600; } .build details > table, .build details > ul { overflow-x: auto; display: block; }
+.build__steps { list-style: none; padding: 0; margin: var(--sp-3) 0; display: flex; gap: 6px; flex-wrap: wrap; font-size: var(--fs-xs); } .build__steps li { padding: 4px 8px; border: 1px solid var(--line); border-radius: var(--r-sm); color: var(--tx3); } .build__steps li.done { color: var(--tx2); border-color: var(--ok, var(--accent)); } .build__steps li.now { color: var(--bg); background: var(--accent); border-color: var(--accent); font-weight: 700; } .build__steps li.now .ui-muted { color: color-mix(in srgb, var(--bg) 70%, transparent); }
+.plan { margin: 0; } .plan svg { width: 100%; height: auto; max-height: 420px; background: var(--bg2); border: 1px solid var(--line); border-radius: var(--r-md); } .plan--place { cursor: crosshair; }
+.plan__room { fill: color-mix(in srgb, var(--accent) 8%, transparent); stroke: var(--tx2); } .plan__dev { fill: var(--accent); stroke: var(--bg); } .plan__dev--ceiling { fill: var(--indigo, var(--accent)); } .plan__furn { fill: var(--line2); } .plan__scale { stroke: var(--tx2); } .plan__text { fill: var(--tx2); font-family: var(--font-sans); }
+@media (max-width: 860px) { .build__two { grid-template-columns: 1fr; } }

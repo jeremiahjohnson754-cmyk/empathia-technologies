@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-30T18:32:19.797Z",
+  "at": "2026-10-30T18:43:37.404Z",
   "node": "v22.22.0",
   "pass": 27,
   "fail": 0,
@@ -12,7 +12,7 @@
       "tests": 128,
       "pass": 128,
       "fail": 0,
-      "seconds": 0.5,
+      "seconds": 0.4,
       "command": "../../../opt/node22/bin/node --test packages/commissioning-engine/dist/test/**/*.test.js"
     },
     {
@@ -92,7 +92,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 4.7,
+      "seconds": 4.4,
       "command": "python3 -I -m unittest discover -s ml/tests"
     },
     {
@@ -102,7 +102,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 0.5,
+      "seconds": 0.6,
       "command": "python3 -I -m unittest discover -s services/intelligence-python/tests"
     },
     {
@@ -112,7 +112,7 @@
       "tests": 20,
       "pass": 20,
       "fail": 0,
-      "seconds": 3.8,
+      "seconds": 3.3,
       "command": "../../../opt/node22/bin/node --test tests/integration/api.test.mjs"
     },
     {
@@ -122,7 +122,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 1.5,
+      "seconds": 1.4,
       "command": "../../../opt/node22/bin/node --test tests/integration/leads.test.mjs"
     },
     {
@@ -132,7 +132,7 @@
       "tests": 3,
       "pass": 3,
       "fail": 0,
-      "seconds": 1.5,
+      "seconds": 1.4,
       "command": "../../../opt/node22/bin/node --test tests/integration/api-client.test.mjs"
     },
     {
@@ -142,7 +142,7 @@
       "tests": 1,
       "pass": 1,
       "fail": 0,
-      "seconds": 1.6,
+      "seconds": 1.5,
       "command": "../../../opt/node22/bin/node --test tests/integration/integration-worker.test.mjs"
     },
     {
@@ -152,7 +152,7 @@
       "tests": 45,
       "pass": 45,
       "fail": 0,
-      "seconds": 3.2,
+      "seconds": 3.3,
       "command": "../../../opt/node22/bin/node --test tests/security/authz.test.mjs"
     },
     {
@@ -162,7 +162,7 @@
       "tests": 6,
       "pass": 6,
       "fail": 0,
-      "seconds": 1.7,
+      "seconds": 1.5,
       "command": "../../../opt/node22/bin/node --test tests/security/founder-boundary.test.mjs"
     },
     {
@@ -172,7 +172,7 @@
       "tests": 3,
       "pass": 3,
       "fail": 0,
-      "seconds": 2.1,
+      "seconds": 2.2,
       "command": "../../../opt/node22/bin/node --test tests/security/site-scope.test.mjs"
     },
     {
@@ -182,7 +182,7 @@
       "tests": 2,
       "pass": 2,
       "fail": 0,
-      "seconds": 4.9,
+      "seconds": 4.6,
       "command": "../../../opt/node22/bin/node --test tests/security/authority-matrix.test.mjs"
     },
     {
@@ -192,7 +192,7 @@
       "tests": 9,
       "pass": 9,
       "fail": 0,
-      "seconds": 4.6,
+      "seconds": 4.7,
       "command": "../../../opt/node22/bin/node --test tests/security/governance.test.mjs"
     },
     {
@@ -202,7 +202,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 2.2,
+      "seconds": 2.3,
       "command": "../../../opt/node22/bin/node --test tests/security/administration.test.mjs"
     },
     {
@@ -213,7 +213,7 @@
       "pass": 6,
       "fail": 0,
       "notRun": 0,
-      "seconds": 3.8,
+      "seconds": 3.9,
       "command": "../../../opt/node22/bin/node tests/e2e/website-lead.e2e.mjs"
     },
     {
@@ -241,11 +241,11 @@
       "suite": "browser: investor demo shell",
       "kind": "browser",
       "result": "PASS",
-      "tests": 11,
-      "pass": 11,
+      "tests": 31,
+      "pass": 31,
       "fail": 0,
       "notRun": 0,
-      "seconds": 13.4,
+      "seconds": 24,
       "command": "../../../opt/node22/bin/node tests/browser/demo.test.mjs"
     },
     {
@@ -266,7 +266,7 @@
       "tests": 25,
       "pass": 25,
       "fail": 0,
-      "seconds": 47,
+      "seconds": 46.8,
       "command": "../../../opt/node22/bin/node tests/e2e/founder-townhall.e2e.mjs"
     },
     {

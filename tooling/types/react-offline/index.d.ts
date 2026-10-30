@@ -35,7 +35,7 @@ declare module '*.css';
 declare namespace JSX {
   type Element = import('react').ReactElement;
   /** Event handlers get a contextual type so callbacks are checked; other props are open in the shim. */
-  interface ShimEvent { target: any; currentTarget: any; key: string; metaKey: boolean; ctrlKey: boolean; shiftKey: boolean; preventDefault(): void; stopPropagation(): void }
+  interface ShimEvent { target: any; currentTarget: any; key: string; clientX: number; clientY: number; metaKey: boolean; ctrlKey: boolean; shiftKey: boolean; preventDefault(): void; stopPropagation(): void }
   interface ShimProps { onChange?: (e: ShimEvent) => void; onClick?: (e: ShimEvent) => void; onKeyDown?: (e: ShimEvent) => void; onMouseDown?: (e: ShimEvent) => void; onMouseEnter?: (e: ShimEvent) => void; onError?: (e: ShimEvent) => void; onSubmit?: (e: ShimEvent) => void; [prop: string]: any }
   interface IntrinsicElements { [tag: string]: ShimProps }
   interface IntrinsicAttributes { key?: string | number | null }

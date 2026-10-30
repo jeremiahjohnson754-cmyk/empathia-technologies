@@ -1,6 +1,6 @@
 # Legacy parity ledger — Living Campus V2.5.3 and Founder Studio
 
-Generated 2026-10-30T18:23:37.029Z by `scripts/legacy/parity-ledger.mjs` from `legacy/inventory/*.json` (built from the committed source of each demonstrator) and the classification in that script. **Two applications, kept apart:** the Living Campus (investor-safe demo + authenticated enterprise application) and the Founder Studio (private founder application). Shared: identity, design tokens, API contracts, audit. Not shared: Founder Studio data, its administrative capabilities, or any route of it on a public or investor surface.
+Generated 2026-10-30T18:40:24.245Z by `scripts/legacy/parity-ledger.mjs` from `legacy/inventory/*.json` (built from the committed source of each demonstrator) and the classification in that script. **Two applications, kept apart:** the Living Campus (investor-safe demo + authenticated enterprise application) and the Founder Studio (private founder application). Shared: identity, design tokens, API contracts, audit. Not shared: Founder Studio data, its administrative capabilities, or any route of it on a public or investor surface.
 
 ## Baseline facts (verified on receipt)
 
@@ -28,7 +28,8 @@ Target classes (mandate §1): MIGRATED_REAL · MIGRATED_DEMO · DEFERRED_WITH_RE
 |---|---|
 | PARTIAL | 86 |
 | NOT_STARTED | 116 |
-| DONE (slice) | 6 |
+| DONE (slice) | 5 |
+| DONE (demo native; app slice) | 1 |
 | DONE | 4 |
 | PARTIAL (API complete, UI pending) | 6 |
 
@@ -136,7 +137,7 @@ A feature is never "migrated" because its route exists. Each row carries the hig
 | Living Campus | area | `operations` | Operations Ready — area operations (999994-v14-ops-ui.js); roles: 12 | MIGRATED_REAL | /app/operations/ready | P6 | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P6 |
 | Living Campus | area | `registry` | the registers — area registry (999997-v14-registry.js); roles: 12 | MIGRATED_REAL | /admin/registers | P6/P8 | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P8 |
 | Living Campus | area | `investor` | the investor demonstration landing — area investor (v25-30-investor.js); roles: 14 | MIGRATED_DEMO | /demo | apps/demo landing with guided scenarios (2.5.5 investor start actions carried over) | NOT_STARTED | 5 REGRESSION_TESTED (tests/browser/demo.test.mjs (landing, three actions, seven scenarios)) | P3 |
-| Living Campus | area | `v25.build` | Build a Room with Lite — area v25.build (v25-61-room-ui.js); roles: 12 | MIGRATED_REAL | /app/rooms/{id}/design · /demo/build-a-room | Build a Room engine ported (92 golden cases) + rooms API | DONE (slice) | 5 REGRESSION_TESTED (tests/browser/enterprise-web.test.mjs; commissioning-engine golden parity) | tests/e2e, golden parity |
+| Living Campus | area | `v25.build` | Build a Room with Lite — area v25.build (v25-61-room-ui.js); roles: 12 | MIGRATED_REAL | /app/rooms/{id}/design · demo #/v25/build (native, client-side on the engine) | Build a Room engine ported (92 golden cases) + rooms API; demo: describe → design → classification → drawings → lifecycle → recording/verification → acceptance → baseline → recommission, with SoD refusals | DONE (demo native; app slice) | 5 REGRESSION_TESTED (demo: tests/browser/demo.test.mjs B-01..B-18 (visually rendered, functional on the engine, regression-tested); app: enterprise-web.test.mjs; golden parity) | tests/browser/demo.test.mjs B-01..B-18; tests/e2e; golden parity |
 | Living Campus | v25 page | `v25/intake` | Intake — #/v25/intake — Requests with photos, plans and dimensions; the engineering brief | MIGRATED_REAL | /app/requests | P5 | NOT_STARTED | 0 INVENTORIED (inventoried only) | P5/P6 named tests |
 | Living Campus | v25 page | `v25/vendor` | Supplier inbox — #/v25/vendor — Receipt and acknowledgement, nothing more | MIGRATED_REAL | /app/vendor-inbox | P5 (scoped vendor acknowledgement, test 15) | NOT_STARTED | 0 INVENTORIED (inventoried only) | P5/P6 named tests |
 | Living Campus | v25 page | `v25/decisions` | Decision desk — #/v25/decisions — Approvals and funding, each bound to a scope revision | MIGRATED_REAL | /app/decisions | P5 (approve/hold/reject, author ≠ approver) | NOT_STARTED | 0 INVENTORIED (inventoried only) | P5/P6 named tests |

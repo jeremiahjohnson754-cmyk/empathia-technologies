@@ -1,8 +1,8 @@
 {
- "at": "2026-10-30T18:30:52.827Z",
- "pass": 11,
+ "at": "2026-10-30T18:42:10.534Z",
+ "pass": 31,
  "fail": 0,
- "tests": 11,
+ "tests": 31,
  "results": [
   {
    "id": "D-desktop-01",
@@ -24,7 +24,7 @@
   },
   {
    "id": "D-04",
-   "name": "every one of the 86 legacy areas resolves to a page that states its migration status",
+   "name": "every one of the 86 legacy areas resolves to a native page or one that states its migration status",
    "result": "PASS",
    "detail": ""
   },
@@ -37,6 +37,126 @@
   {
    "id": "D-06",
    "name": "the seven scenarios each state the customer problem",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "B-01",
+   "name": "the builder opens from the launch address and says the visitor perspective cannot create a room",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "B-02",
+   "name": "an unreadable dimension is refused, never substituted",
+   "result": "PASS",
+   "detail": "Refused.\nlength: not readable — use metres, feet, or feet and inches like 24' 6\" (nothing is substituted for a value you typed)"
+  },
+  {
+   "id": "B-03",
+   "name": "the room is created from the template with declared and modeled dimensions labelled, devices placed and connections proposed",
+   "result": "PASS",
+   "detail": "Build a Room · interactive demonstration\n\nHarbour Huddle (synthetic)\n\nActing as Designer / CAD / Revit (perspective designer). The rules are the product's own engine; a refusal here is the refusal the"
+  },
+  {
+   "id": "B-04",
+   "name": "the designer cannot approve the classification (authority)",
+   "result": "PASS",
+   "detail": "Refused.\nDesigner / CAD / Revit does not hold room.classify.approve: a systems engineer approves the classification"
+  },
+  {
+   "id": "B-05",
+   "name": "the systems engineer approves the classification",
+   "result": "PASS",
+   "detail": "Build a Room · interactive demonstration\n\nHarbour Huddle (synthetic)\n\nActing as Systems Engineer (pe"
+  },
+  {
+   "id": "B-06",
+   "name": "the author of the latest revision cannot approve the design (separation of duties)",
+   "result": "PASS",
+   "detail": "Refused.\nSystems Engineer saved the design revision and does not approve it (separation of duties)"
+  },
+  {
+   "id": "B-07",
+   "name": "the systems engineer approves the design (DESIGN_APPROVED)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "B-08",
+   "name": "the systems engineer cannot approve the installation window (window.approve)",
+   "result": "PASS",
+   "detail": "Refused.\nSystems Engineer may not move a room to INSTALLATION_PENDING (needs window.approve)"
+  },
+  {
+   "id": "B-09",
+   "name": "nothing passes from a design: recording before COMMISSIONING is refused",
+   "result": "PASS",
+   "detail": "Refused.\nresults are recorded on an installed room in COMMISSIONING (this one is INSTALLED_UNVERIFIED): nothing passes from a design"
+  },
+  {
+   "id": "B-10",
+   "name": "every applicable test is recorded as PASS_UNVERIFIED by the commissioning engineer",
+   "result": "PASS",
+   "detail": "compute_display_capability PASS_UNVERIFIED recorded by Commissioning Engineer · ENGINEER_APPROVED: synthetic observation"
+  },
+  {
+   "id": "B-11",
+   "name": "the recorder cannot verify their own results",
+   "result": "PASS",
+   "detail": "Refused.\n0 verified; 73 refused — first: compute_display_capability: verification must be independent of the person who recorded the result"
+  },
+  {
+   "id": "B-12",
+   "name": "a different person verifies every PASS",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "B-13",
+   "name": "the verifier cannot accept the room (separation of duties)",
+   "result": "PASS",
+   "detail": "Refused.\nProduct Architect recorded or verified results of this room and does not accept it (separation of duties)"
+  },
+  {
+   "id": "B-14",
+   "name": "the recorder cannot accept the room either",
+   "result": "PASS",
+   "detail": "Refused.\nCommissioning Engineer may not move a room to ACCEPTED (needs customer.accept)"
+  },
+  {
+   "id": "B-15",
+   "name": "an executive does not hold customer.accept",
+   "result": "PASS",
+   "detail": "Refused.\nExecutive / Sponsor may not move a room to ACCEPTED (needs customer.accept)"
+  },
+  {
+   "id": "B-15b",
+   "name": "the QA reviewer, who neither recorded nor verified, accepts the room and baseline v1 is published",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "B-15c",
+   "name": "the room can be recommissioned (back to COMMISSIONING) while baseline v1 stays",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "B-16",
+   "name": "the ledger records every refusal with its actor (DENIED rows) alongside the allowed changes",
+   "result": "PASS",
+   "detail": "76 denied"
+  },
+  {
+   "id": "B-17",
+   "name": "the draft survives a reload on this computer and can be reset",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "B-18",
+   "name": "reset returns to the description form",
    "result": "PASS",
    "detail": ""
   },

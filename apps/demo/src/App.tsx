@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Tag, Notice } from '@empathia/ui';
-import { areaOf, AREAS } from './registry.js';
+import { areaOf, AREAS, NATIVE } from './registry.js';
+import { BuildRoom } from './build/BuildRoom.js';
 
 /** The seven investor scenarios of the 2.5.5 investor landing, with the customer problem each one solves (carried over verbatim in spirit). */
 const SCENARIOS = [
@@ -12,7 +13,8 @@ const SCENARIOS = [
   ['Learn', 'Lessons stay in people\'s heads. Reviewed cases are written from what actually happened, with permission and de-identification, and training never grants authority.'],
   ['The connected ecosystem', 'Every system has its own numbers. Mission Control, 27 KPI passports with numerator and denominator, and the ledger behind every state.'],
 ] as const;
-const PERSPECTIVES = ['visitor', 'employee', 'exec', 'service', 'svcmgr', 'syseng', 'designer', 'installer', 'cxeng', 'ipm', 'bpm', 'ops', 'steward', 'architect'];
+/** The 14 legacy perspectives, plus `qa` (the Document Reviewer / QA persona) so the demonstration can show an acceptance by someone who neither recorded nor verified (ADR-0005). */
+const PERSPECTIVES = ['visitor', 'employee', 'exec', 'service', 'svcmgr', 'syseng', 'designer', 'installer', 'cxeng', 'ipm', 'bpm', 'ops', 'steward', 'architect', 'qa'];
 
 export function App() {
   const [hash, setHash] = useState(location.hash || '#/investor'); const [as, setAs] = useState(() => { try { return localStorage.getItem('empathia.demo.perspective') || 'visitor'; } catch { return 'visitor'; } });
@@ -28,7 +30,7 @@ export function App() {
         <label className="persp">Perspective <select value={as} onChange={(e) => setAs(e.target.value)} aria-describedby="persp-note">{PERSPECTIVES.map((p) => <option key={p} value={p}>{p}</option>)}</select></label>
       </div><p id="persp-note" className="persp-note">A perspective changes what the demonstration shows; it grants nothing. Real access is decided by the authenticated application's server.</p></header>
       <main id="main" className="wrap">
-        {home ? <Landing /> : <Boundary hash={hash} area={area} />}
+        {home ? <Landing /> : area?.key === 'v25.build' ? <BuildRoom perspective={as} /> : <Boundary hash={hash} area={area} />}
       </main>
       <footer className="foot">Every person, organisation, room, device, figure and approval here is invented. Nothing is connected to a real system. <a href="#/investor">Back to the start</a></footer>
     </div>
@@ -53,7 +55,7 @@ function Landing() {
       </section>
       <section className="status">
         <h2>Migration status</h2>
-        <p>This demonstration is being rebuilt as modular pages from the Living Campus V2.5.3 source, one area at a time. {AREAS.filter((a) => a.status.startsWith('DONE')).length} of {AREAS.length} areas are native today; the rest state their status when opened (see the parity ledger in the repository).</p>
+        <p>This demonstration is being rebuilt as modular pages from the Living Campus V2.5.3 source, one area at a time. {AREAS.filter((a) => NATIVE.has(a.key)).length} of {AREAS.length} areas are native today; the rest state their status when opened (see the parity ledger in the repository).</p>
       </section>
     </>
   );
