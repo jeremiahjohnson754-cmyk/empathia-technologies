@@ -11,9 +11,9 @@ something this environment does not have). Nothing here is production-ready, cer
 |---|---|---|---|
 | P0 Source and parity | originals preserved and hashed; baseline browser runs; inventories from the committed source; parity ledger (both applications); risk table; ADR-0001 | **DONE** (this commit) | `legacy/source/SHA256SUMS.txt`, `legacy/baseline/*/baseline.json` + screenshots, `legacy/inventory/*.json`, `docs/legacy-parity.{md,csv}` (207 rows), §Risks below |
 | P1 Foundation | monorepo tooling (exists), `apps/website` (pre-rendered public site, 12 pages) and `apps/demo` (investor shell over the legacy address space) on the shared tokens/ui, wired into build and test; `bootstrap/typecheck/test/build` proven | **DONE** | §P1 below; `node scripts/build.mjs` PASS; `node scripts/test.mjs --browser` 17 PASS / 0 FAIL / 3 NOT_RUN; `--studio` 19/19 + 25/25 |
-| P2 Public website | complete public site, lead forms persisted via the API, admin inbox, no invented claims | NOT_STARTED | — |
+| P2 Public website | complete public site, lead forms persisted via the API, admin inbox, no invented claims | **DONE** (email notification adapter BLOCKED on SMTP credentials; the inbox states it) | website 32/32, leads 5/5, website-lead e2e 6/6 |
 | P3 Demo migration | V2.5.3 investor demo migrated into modular pages with the synthetic seed; A/B/C guided demos; reset | NOT_STARTED | — |
-| P4 Auth and data | tenant/org/site membership, RLS, private storage, audit — exists for the enterprise slice; founder boundary (P4F) and public lead store NOT_STARTED | PARTIAL | `tests/security` 45/45 (prior program) |
+| P4 Auth and data | tenant/org/site membership, RLS, private storage, audit — exists for the enterprise slice; founder boundary (P4F) and public lead store | PARTIAL → P4F DONE (founder schema, role, policy flag, boundary tests); OIDC BLOCKED on a provider | `tests/security` authz 45/45, founder-boundary 6/6, site-scope 3/3, authority-matrix 2/2 (561 checks) |
 | P5 Lifecycle vertical slice | request → acknowledgement → pitch → approval → funding → brief → design → plan → tests → deficiency → documentation → handoff → baseline | PARTIAL (design → commissioning → service exists; governance front half NOT_STARTED) | `tests/integration` 20/20, `tests/e2e` 21/21 (prior program) |
 | P6 Cross-product workspaces | Search Party, ServiceHands dispatch, Scouter proposals, 22 role journeys, Lite/FI, executive KPIs, Learn | NOT_STARTED (engines exist) | — |
 | P7 Connector / FI boundary | capability adapters (MOCK exist), FI v1.3 passive, v1.4 entitlement machine | PARTIAL (MOCK adapters + conformance 5/5) | `integrations/` |
@@ -38,6 +38,26 @@ Commands run and results:
 
 Known limitation of the inventory: it lists address *families* (areas) and registries, not the ~41,000 entity-scoped addresses the
 2.5.3 crawl audit visited; the crawl results remain in `Empathia_V25/work/v25-gates-253-audit/`.
+
+## Checkpoint 1 and the class-A refinements — what was actually done (2026-10-30, after P1)
+
+Two secure, persistent workflows now run end to end over the API and PostgreSQL, each behind its own authorization:
+
+| Workflow | Application | Evidence |
+|---|---|---|
+| Public lead → stored → audited admin inbox → handled | Living Campus (website → API → enterprise web) | `tests/integration/leads.test.mjs` 5/5; `tests/e2e/website-lead.e2e.mjs` 6/6 (real browser, real API, admin inbox) |
+| Build a Room → classification approval → drawings → commissioning results → independent verification → issue → work order → close (existing slice) | Living Campus enterprise app | `tests/integration/api.test.mjs` 20/20; `tests/browser/enterprise-web.test.mjs` 21/21 |
+| Founder decision: record → DECIDED/REVISITED/WITHDRAWN with rationale → immutable revisions; workspace state with optimistic concurrency | Founder Studio (hosted) | `tests/security/founder-boundary.test.mjs` 6/6; `tests/e2e/founder-decisions.e2e.mjs` 9/9 |
+
+**Neither application can read the other's restricted records** — tested: every enterprise principal (security admin, systems engineer,
+a second tenant's admin) gets 403 on every founder route and the refusal is audited; the founder principal gets 403 on people, audit
+and leads, empty rooms and sites, 404 on a demo room, 403 on creating one; a forged cross-organization sign-in is refused.
+
+Red-team class-A findings fixed with tests: RT-01, RT-02 (work orders, evidence), RT-03 (central authority + 561-check matrix), RT-05,
+RT-07, RT-08, RT-20 — see the register for before/after and evidence. Open class-B decisions are listed at the end of the register.
+
+Full run at this commit: `node scripts/build.mjs` PASS (incl. dist hygiene); `node scripts/test.mjs --browser --studio`: 25 PASS, 0 FAIL,
+1 NOT_RUN (film decode, slow). Regression on the Founder Studio as a local studio: 19/19 and 25/25 unchanged.
 
 ## P1 — what was actually done (2026-10-30)
 
@@ -88,8 +108,8 @@ installable in this environment (no registry access): ADR-0002 records the deplo
 
 | Checkpoint | Meaning | Status |
 |---|---|---|
-| 1 Verified architecture | both applications inventoried, parity documented, risks ranked, deployment architecture selected | PARTIAL: inventories, parity, risks, ADR-0001 done; ADR-0002 (deployment architecture) and the red-team gap analysis + refinement register next |
-| 2 Working web applications | public site and both app shells functioning, auth and persistence operational, core workflows running, important interactions tested | PARTIAL: public site and demo shell functioning and tested; enterprise app + API + DB operational (prior program); Founder Studio runs locally; founder boundary (P4F), lead persistence (P2), demo migration (P3) outstanding |
+| 1 Verified architecture | both applications inventoried, parity documented, risks ranked, deployment architecture selected | **DONE**: inventories and parity (207 rows with six evidence-based maturity levels), ADR-0001 (two applications), ADR-0002 (deployment architecture, runtime limits, Next.js question), separate red-team review (24 findings, `docs/review/redteam-findings.json`), `docs/STRATEGIC_REFINEMENT_REGISTER.md` (31 items: A 19 / B 9 / C 3; 11 implemented with tests) |
+| 2 Working web applications | public site and both app shells functioning, auth and persistence operational, core workflows running, important interactions tested | PARTIAL → mostly in place: public site with persisted leads and audited admin inbox (real-browser test); enterprise app + API + DB with the Build a Room → commissioning → service slice; **Founder Studio hosted workflow (decisions) with its own enforced boundary, both directions tested**; demo shell functioning. Outstanding: P3 migration of demonstrated areas; P5 governance front half |
 | 3 Release acceptance | regression, security denials, responsive/browser, integration-status verification, docs, deployment configuration, remaining work | NOT_STARTED |
 
 ## Blockers and external needs (unchanged)

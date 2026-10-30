@@ -1,6 +1,6 @@
 # Legacy parity ledger — Living Campus V2.5.3 and Founder Studio
 
-Generated 2026-10-30T16:48:33.034Z by `scripts/legacy/parity-ledger.mjs` from `legacy/inventory/*.json` (built from the committed source of each demonstrator) and the classification in that script. **Two applications, kept apart:** the Living Campus (investor-safe demo + authenticated enterprise application) and the Founder Studio (private founder application). Shared: identity, design tokens, API contracts, audit. Not shared: Founder Studio data, its administrative capabilities, or any route of it on a public or investor surface.
+Generated 2026-10-30T17:16:02.063Z by `scripts/legacy/parity-ledger.mjs` from `legacy/inventory/*.json` (built from the committed source of each demonstrator) and the classification in that script. **Two applications, kept apart:** the Living Campus (investor-safe demo + authenticated enterprise application) and the Founder Studio (private founder application). Shared: identity, design tokens, API contracts, audit. Not shared: Founder Studio data, its administrative capabilities, or any route of it on a public or investor surface.
 
 ## Baseline facts (verified on receipt)
 
@@ -9,7 +9,7 @@ Generated 2026-10-30T16:48:33.034Z by `scripts/legacy/parity-ledger.mjs` from `l
 | Living Campus V2.5.3 live (investor-live) | 6,957,191 | 9d6e53ef…a09f2f1 | cf86866 (2.5.3 rc3; frozen) | 230 modules, 86 address areas, 19 V2.5 pages, 14 UI roles, 22 personas, 32 record types, 101 events, 5 state machines, 78 search destinations, 6 tours, 661 action names, _origin.mjs,accept.mjs,accept13.mjs,accept13b.mjs,accept2.mjs,accept3.mjs,accept4.mjs,accept5.mjs,accept6.mjs,accept7.mjs,accept8.mjs,accept9.mjs,assure-engine.test.mjs,assure-smoke.mjs,audit.mjs,authz.test.mjs,breakit.mjs,com-engine.test.mjs,com-smoke.mjs,contrast.mjs,destroy13-1.mjs,destroy13-2.mjs,destroy13-3.mjs,eng-engine.test.mjs,eng-smoke.mjs,features.mjs,fuzz.mjs,integrity.mjs,lite-engine.test.mjs,lite-smoke.mjs,model.test.mjs,roles-leak.mjs,roles-smoke.mjs,search.test.mjs,sg-content.test.mjs,sg-phys.test.mjs,shots.mjs,smoke.mjs,targets.mjs,v1-engine.test.mjs,v1-smoke.mjs,v13-audio.test.mjs,v13-authz-browser.mjs,v13-authz.test.mjs,v13-com.test.mjs,v13-consistency.test.mjs,v13-engineering.test.mjs,v13-flow.test.mjs,v13-hall.test.mjs,v13-release.test.mjs,v133-exports.mjs,v133-journeys.mjs,v133-labs.mjs,v133-matrix.mjs,v133-registry.test.mjs,v133-shell.mjs,v133-studio.mjs,v14-camera.mjs,v14-connect.mjs,v14-deploy.mjs,v14-destroy.mjs,v14-diag.mjs,v14-explorer-destroy.mjs,v14-explorer.mjs,v14-exports.mjs,v14-foundation.test.mjs,v14-geometry.mjs,v14-geometry.test.mjs,v14-hub.mjs,v14-identity.mjs,v14-itsm.mjs,v14-links.mjs,v14-ops.mjs,v14-optimize.mjs,v14-profiles.mjs,v14-registry.mjs,v14-robot.mjs,v14-schedule.mjs,v14-schedule.test.mjs,v14-shell.mjs,v14-signage.mjs,v14-telemetry.mjs,v14-telemetry.test.mjs,v14-transport.mjs,v14-widths.mjs,v25-assure.test.mjs,v25-boot.mjs,v25-core.test.mjs,v25-cs.mjs,v25-cs.test.mjs,v25-cx.test.mjs,v25-cxu-qa.mjs,v25-cxu.test.mjs,v25-design.test.mjs,v25-desk.mjs,v25-emp.mjs,v25-exec.test.mjs,v25-fi.test.mjs,v25-governance.test.mjs,v25-links.mjs,v25-policy.test.mjs,v25-products.mjs,v25-qa-cs1.mjs,v25-qa-cs2.mjs,v25-qa-rv.mjs,v25-qa1.mjs,v25-qa1.test.mjs,v25-qa2.mjs,v25-qa2.test.mjs,v25-room.mjs,v25-s04.mjs,v25-s05.mjs,v25-s06.mjs,v25-s07.mjs,v25-s08.mjs,v25-s09.mjs,v25-s10.mjs,v25-shell.mjs,v25-sing-j6.mjs,v25-svc.test.mjs,v251-patch-authz.mjs,v251-patch-gap-az-01.mjs,v251-patch-seal.mjs,v252-handback.mjs,v253-townhall-e2e.mjs,verify-entry.mjs test suites |
 | Living Campus V2.5.3 offline (investor-offline) | 6,957,206 | ecbde0bb…8307756 | cf86866 | same program; edition label differs |
 | Founder Edition 2.5.4 (inside the Founder Studio package) | 8,371,566 | ecdf64be…bbe1ee | b8986d1 (2.5.4) | 86 areas, 19 V2.5 pages |
-| Founder Studio f51229b (React app + local server + film index) | studio.js 2,209,154 | see legacy/source/SHA256SUMS.txt | f51229b (this repo) | 27 destinations |
+| Founder Studio f51229b (React app + local server + film index) | studio.js 2,209,154 | see legacy/source/SHA256SUMS.txt | f51229b (this repo) | 28 destinations |
 
 Baseline browser runs (Chromium, file:// and the studio's own localhost server): `legacy/baseline/*/baseline.json` with screenshots. V2.5.3 loads in ~0.9–1.0 s from disk (6.6 MB single file), lands on `#/investor`, 0 page errors, 0 external requests at 1440 px and 390 px. Founder Edition 2.5.4: 8.0 MB, ~0.85 s, lands on `#/home`. Founder Studio: ~0.15 s, calls only its local API health endpoint.
 
@@ -19,7 +19,7 @@ Target classes (mandate §1): MIGRATED_REAL · MIGRATED_DEMO · DEFERRED_WITH_RE
 
 | Target | Rows |
 |---|---|
-| MIGRATED_REAL | 167 |
+| MIGRATED_REAL | 168 |
 | MIGRATED_DEMO | 35 |
 | DEFERRED_WITH_REASON | 1 |
 | BLOCKED_EXTERNAL_DEPENDENCY | 4 |
@@ -27,7 +27,7 @@ Target classes (mandate §1): MIGRATED_REAL · MIGRATED_DEMO · DEFERRED_WITH_RE
 | Status now | Rows |
 |---|---|
 | PARTIAL | 86 |
-| NOT_STARTED | 115 |
+| NOT_STARTED | 116 |
 | DONE (slice) | 6 |
 
 ### Maturity levels (owner requirement 2026-10-30 11:47)
@@ -41,7 +41,7 @@ A feature is never "migrated" because its route exists. Each row carries the hig
 | 2 RENDERED | 2 |
 | 3 FUNCTIONAL | 3 |
 | 4 BACKEND_CONNECTED | 25 |
-| 5 REGRESSION_TESTED | 35 |
+| 5 REGRESSION_TESTED | 36 |
 
 **Regressions at this commit: none** — no original route has been removed; the originals remain the served demonstrators until each route is migrated natively (an embedded original is interim, never counted as a migration).
 
@@ -254,5 +254,6 @@ A feature is never "migrated" because its route exists. Each row carries the hig
 | Founder Studio | destination | `docs` | Engineering Documentation — #/docs (Engineering) | MIGRATED_REAL | /founder/docs | blueprint documents (private) | PARTIAL | 5 REGRESSION_TESTED (as the local studio; hosted form pending) (tests/browser/founder-studio.test.mjs 19/19 + founder-townhall 25/25) | tests/browser studio (19 PASS, 1 NOT_RUN) |
 | Founder Studio | destination | `maturity` | Product Maturity — #/maturity (Engineering) | MIGRATED_REAL | /founder/maturity | evidence states from tests | PARTIAL | 5 REGRESSION_TESTED (as the local studio; hosted form pending) (tests/browser/founder-studio.test.mjs 19/19 + founder-townhall 25/25) | tests/browser studio (19 PASS, 1 NOT_RUN) |
 | Founder Studio | destination | `vault` | IP & Provenance Vault — #/vault (Vault) | MIGRATED_REAL | /founder/vault | IP & provenance vault (private, founder-only, audited reads) | PARTIAL | 5 REGRESSION_TESTED (as the local studio; hosted form pending) (tests/browser/founder-studio.test.mjs 19/19 + founder-townhall 25/25) | tests/browser studio (19 PASS, 1 NOT_RUN) |
+| Founder Studio | destination | `decisions` | Founder Decisions — #/decisions (Vault) | MIGRATED_REAL | — | ? | NOT_STARTED | 5 REGRESSION_TESTED (as the local studio; hosted form pending) (tests/browser/founder-studio.test.mjs 19/19 + founder-townhall 25/25) | tests/browser studio (19 PASS, 1 NOT_RUN) |
 | Founder Studio | destination | `settings` | Settings and Demo Reset — #/settings (Vault) | MIGRATED_REAL | /founder/settings | appearance, export, reset (founder data only) | PARTIAL | 5 REGRESSION_TESTED (as the local studio; hosted form pending) (tests/browser/founder-studio.test.mjs 19/19 + founder-townhall 25/25) | tests/browser studio (19 PASS, 1 NOT_RUN) |
 | Founder Studio | demonstrator | `founder-edition-2.5.4` | Founder Edition 2.5.4 (8.4 MB) — embedded demonstrator; 86 areas, 19 V2.5 pages, 22 personas | MIGRATED_REAL | /founder/demonstrator (private, legacy until each area is native) | served privately, authenticated; shares nothing with demo/www | PARTIAL | 0 INVENTORIED (inventoried only) | tests/browser town hall 25/25 |
