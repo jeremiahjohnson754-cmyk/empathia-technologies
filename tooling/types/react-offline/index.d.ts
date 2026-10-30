@@ -41,3 +41,8 @@ declare namespace JSX {
   interface IntrinsicAttributes { key?: string | number | null }
   interface ElementChildrenAttribute { children: {} }
 }
+declare module 'react-dom/server' {
+  import type { ReactNode } from 'react';
+  export function renderToStaticMarkup(node: ReactNode): string;
+  export function renderToString(node: ReactNode): string;
+}

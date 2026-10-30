@@ -10,7 +10,7 @@ something this environment does not have). Nothing here is production-ready, cer
 | Phase | Scope | Status | Evidence |
 |---|---|---|---|
 | P0 Source and parity | originals preserved and hashed; baseline browser runs; inventories from the committed source; parity ledger (both applications); risk table; ADR-0001 | **DONE** (this commit) | `legacy/source/SHA256SUMS.txt`, `legacy/baseline/*/baseline.json` + screenshots, `legacy/inventory/*.json`, `docs/legacy-parity.{md,csv}` (207 rows), §Risks below |
-| P1 Foundation | monorepo tooling (exists), `apps/website` and `apps/demo` skeletons on the shared tokens/ui, ADR, `install/typecheck/lint/test/build` proven | IN PROGRESS | see §P1 |
+| P1 Foundation | monorepo tooling (exists), `apps/website` (pre-rendered public site, 12 pages) and `apps/demo` (investor shell over the legacy address space) on the shared tokens/ui, wired into build and test; `bootstrap/typecheck/test/build` proven | **DONE** | §P1 below; `node scripts/build.mjs` PASS; `node scripts/test.mjs --browser` 17 PASS / 0 FAIL / 3 NOT_RUN; `--studio` 19/19 + 25/25 |
 | P2 Public website | complete public site, lead forms persisted via the API, admin inbox, no invented claims | NOT_STARTED | — |
 | P3 Demo migration | V2.5.3 investor demo migrated into modular pages with the synthetic seed; A/B/C guided demos; reset | NOT_STARTED | — |
 | P4 Auth and data | tenant/org/site membership, RLS, private storage, audit — exists for the enterprise slice; founder boundary (P4F) and public lead store NOT_STARTED | PARTIAL | `tests/security` 45/45 (prior program) |
@@ -39,6 +39,27 @@ Commands run and results:
 Known limitation of the inventory: it lists address *families* (areas) and registries, not the ~41,000 entity-scoped addresses the
 2.5.3 crawl audit visited; the crawl results remain in `Empathia_V25/work/v25-gates-253-audit/`.
 
+## P1 — what was actually done (2026-10-30)
+
+Files created: `apps/website/` (content.tsx, site.tsx, form.tsx, prerender.tsx, main.ts, styles/site.css, build.mjs, server/serve.mjs),
+`apps/demo/` (App.tsx, registry.ts, main.tsx, styles/demo.css, build.mjs, server/serve.mjs; `src/generated/parity.json` generated from the
+ledger at build), `tests/browser/website.test.mjs` (32 checks), `tests/browser/demo.test.mjs` (11 checks); `scripts/build.mjs` and
+`scripts/test.mjs` extended; `tooling/types/react-offline` gained `react-dom/server`.
+
+Decisions: no framework in the public site's browser bundle (site.js 1.6 KiB; pages pre-rendered with React at build time; budget enforced:
+home document ≤ 40 KiB, script ≤ 8 KiB); the demo keeps the legacy `#/` address space and resolves every one of the 86 areas to a native
+page or a boundary page that states the area's parity status — nothing is blank, nothing pretends. Lead forms post to `POST /v1/public/leads`
+(P2; the endpoint does not exist yet, and the form says so and disables itself until the deployment configures it). Next.js is not
+installable in this environment (no registry access): ADR-0002 records the deployment architecture actually used.
+
+| Command | Result |
+|---|---|
+| `node scripts/build.mjs` | PASS (type-check ui, enterprise-web, website, demo; bundles; OpenAPI/client match) |
+| `node scripts/test.mjs --browser` | 17 PASS · 0 FAIL · 3 NOT_RUN (studio and films need their flags) |
+| `node scripts/test.mjs --studio` | Founder Studio 19/19, founder town hall 25/25 (regression after P1: unchanged) |
+| `node tests/browser/website.test.mjs` | 32/32: every page (1440 px and 390 px) has title/description/h1, no sideways scroll, no console error, no outside request, internal links resolve, phone menu by keyboard, forms state "not configured", no forbidden claim |
+| `node tests/browser/demo.test.mjs` | 11/11: lands on `#/investor` with the synthetic banner, three start actions (launch largest on a phone), 85 legacy areas resolve with status, deep address → area, seven scenarios with problems |
+
 ## Risks — the ten regressions this program must not commit
 
 | # | Regression | Guard |
@@ -62,6 +83,14 @@ Known limitation of the inventory: it lists address *families* (areas) and regis
 - [x] `docs/legacy-parity.md` and `.csv` covering every area, V2.5 page, navigation item, tour, role, persona, state machine and Founder Studio destination, each with target class, status now, new route, backing and test
 - [x] ADR for the two-application architecture
 - [x] this status file with the phase ledger and the risk table
+
+## Owner checkpoints (2026-10-30 11:33 CT)
+
+| Checkpoint | Meaning | Status |
+|---|---|---|
+| 1 Verified architecture | both applications inventoried, parity documented, risks ranked, deployment architecture selected | PARTIAL: inventories, parity, risks, ADR-0001 done; ADR-0002 (deployment architecture) and the red-team gap analysis + refinement register next |
+| 2 Working web applications | public site and both app shells functioning, auth and persistence operational, core workflows running, important interactions tested | PARTIAL: public site and demo shell functioning and tested; enterprise app + API + DB operational (prior program); Founder Studio runs locally; founder boundary (P4F), lead persistence (P2), demo migration (P3) outstanding |
+| 3 Release acceptance | regression, security denials, responsive/browser, integration-status verification, docs, deployment configuration, remaining work | NOT_STARTED |
 
 ## Blockers and external needs (unchanged)
 

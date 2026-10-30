@@ -1,9 +1,9 @@
 {
-  "at": "2026-10-26T13:44:43.990Z",
+  "at": "2026-10-30T16:43:09.737Z",
   "node": "v22.22.0",
-  "pass": 18,
+  "pass": 16,
   "fail": 0,
-  "notRun": 0,
+  "notRun": 4,
   "suites": [
     {
       "suite": "unit: packages/commissioning-engine",
@@ -12,7 +12,7 @@
       "tests": 128,
       "pass": 128,
       "fail": 0,
-      "seconds": 0.7,
+      "seconds": 0.5,
       "command": "../../../opt/node22/bin/node --test packages/commissioning-engine/dist/test/**/*.test.js"
     },
     {
@@ -22,7 +22,7 @@
       "tests": 3,
       "pass": 3,
       "fail": 0,
-      "seconds": 0.2,
+      "seconds": 0.1,
       "command": "../../../opt/node22/bin/node --test packages/event-contracts/dist/test/**/*.test.js"
     },
     {
@@ -42,7 +42,7 @@
       "tests": 13,
       "pass": 13,
       "fail": 0,
-      "seconds": 0.2,
+      "seconds": 0.1,
       "command": "../../../opt/node22/bin/node --test packages/assurance-engine/dist/test/**/*.test.js"
     },
     {
@@ -52,7 +52,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 0.2,
+      "seconds": 0.1,
       "command": "../../../opt/node22/bin/node --test packages/api-client/dist/test/**/*.test.js"
     },
     {
@@ -82,7 +82,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 0.2,
+      "seconds": 0.1,
       "command": "../../../opt/node22/bin/node --test integrations/mocks/dist/test/**/*.test.js"
     },
     {
@@ -92,7 +92,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 6.6,
+      "seconds": 4.7,
       "command": "python3 -I -m unittest discover -s ml/tests"
     },
     {
@@ -102,7 +102,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 0.6,
+      "seconds": 0.5,
       "command": "python3 -I -m unittest discover -s services/intelligence-python/tests"
     },
     {
@@ -112,7 +112,7 @@
       "tests": 20,
       "pass": 20,
       "fail": 0,
-      "seconds": 5.5,
+      "seconds": 3.4,
       "command": "../../../opt/node22/bin/node --test tests/integration/api.test.mjs"
     },
     {
@@ -122,7 +122,7 @@
       "tests": 3,
       "pass": 3,
       "fail": 0,
-      "seconds": 2,
+      "seconds": 1.5,
       "command": "../../../opt/node22/bin/node --test tests/integration/api-client.test.mjs"
     },
     {
@@ -132,7 +132,7 @@
       "tests": 1,
       "pass": 1,
       "fail": 0,
-      "seconds": 2.1,
+      "seconds": 1.7,
       "command": "../../../opt/node22/bin/node --test tests/integration/integration-worker.test.mjs"
     },
     {
@@ -142,18 +142,26 @@
       "tests": 45,
       "pass": 45,
       "fail": 0,
-      "seconds": 4.7,
+      "seconds": 3.3,
       "command": "../../../opt/node22/bin/node --test tests/security/authz.test.mjs"
     },
     {
       "suite": "browser: enterprise web E2E",
       "kind": "e2e",
-      "result": "PASS",
-      "tests": 21,
-      "pass": 21,
-      "fail": 0,
-      "seconds": 5.2,
-      "command": "../../../opt/node22/bin/node tests/browser/enterprise-web.test.mjs"
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: public website",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: investor demo shell",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
     },
     {
       "suite": "browser: Founder Studio",
@@ -163,7 +171,7 @@
       "pass": 19,
       "fail": 0,
       "notRun": 1,
-      "seconds": 42.7,
+      "seconds": 36.2,
       "command": "../../../opt/node22/bin/node tests/browser/founder-studio.test.mjs"
     },
     {
@@ -173,18 +181,14 @@
       "tests": 25,
       "pass": 25,
       "fail": 0,
-      "seconds": 51.8,
+      "seconds": 47.3,
       "command": "../../../opt/node22/bin/node tests/e2e/founder-townhall.e2e.mjs"
     },
     {
       "suite": "media: full decode of every curated film",
       "kind": "media",
-      "result": "PASS",
-      "tests": 36,
-      "pass": 36,
-      "fail": 0,
-      "seconds": 455.2,
-      "command": "../../../opt/node22/bin/node tests/media/decode-films.mjs"
+      "result": "NOT_RUN",
+      "why": "pass --films (slow: decodes ~47 minutes of video)"
     }
   ]
 }

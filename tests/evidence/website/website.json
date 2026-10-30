@@ -1,0 +1,200 @@
+{
+ "at": "2026-10-30T16:41:13.857Z",
+ "pass": 32,
+ "fail": 0,
+ "tests": 32,
+ "results": [
+  {
+   "id": "W-00",
+   "name": "the sitemap lists the pages",
+   "result": "PASS",
+   "detail": "/ /platform /solutions /how-it-works /technology /trust /about /request-demo /pilot-partners /contact /privacy /legal"
+  },
+  {
+   "id": "W-desktop-/",
+   "name": "/ answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Every room, every device, every decision — with its evidence.\"}"
+  },
+  {
+   "id": "W-desktop-/platform",
+   "name": "/platform answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"The platform\"}"
+  },
+  {
+   "id": "W-desktop-/solutions",
+   "name": "/solutions answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Solutions\"}"
+  },
+  {
+   "id": "W-desktop-/how-it-works",
+   "name": "/how-it-works answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"How it works\"}"
+  },
+  {
+   "id": "W-desktop-/technology",
+   "name": "/technology answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Technology\"}"
+  },
+  {
+   "id": "W-desktop-/trust",
+   "name": "/trust answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Security and trust\"}"
+  },
+  {
+   "id": "W-desktop-/about",
+   "name": "/about answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"About Empathia\"}"
+  },
+  {
+   "id": "W-desktop-/request-demo",
+   "name": "/request-demo answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Request a demonstration\"}"
+  },
+  {
+   "id": "W-desktop-/pilot-partners",
+   "name": "/pilot-partners answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Pilot partnerships\"}"
+  },
+  {
+   "id": "W-desktop-/contact",
+   "name": "/contact answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Contact\"}"
+  },
+  {
+   "id": "W-desktop-/privacy",
+   "name": "/privacy answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Privacy notice\"}"
+  },
+  {
+   "id": "W-desktop-/legal",
+   "name": "/legal answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Legal\"}"
+  },
+  {
+   "id": "W-desktop-links",
+   "name": "every internal link on the site resolves to a listed page or a section of one",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "W-desktop-form",
+   "name": "without a configured lead endpoint the form says so and does not pretend to send",
+   "result": "PASS",
+   "detail": "{\"status\":\"The lead endpoint is not configured on this deployment, so this form cannot send yet. Use the address on the contact page instead.\",\"disabled\":true,\"required\":5}"
+  },
+  {
+   "id": "W-desktop-clean",
+   "name": "no page error, no console error, no request outside the site",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "W-phone-/",
+   "name": "/ answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Every room, every device, every decision — with its evidence.\"}"
+  },
+  {
+   "id": "W-phone-/platform",
+   "name": "/platform answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"The platform\"}"
+  },
+  {
+   "id": "W-phone-/solutions",
+   "name": "/solutions answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Solutions\"}"
+  },
+  {
+   "id": "W-phone-/how-it-works",
+   "name": "/how-it-works answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"How it works\"}"
+  },
+  {
+   "id": "W-phone-/technology",
+   "name": "/technology answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Technology\"}"
+  },
+  {
+   "id": "W-phone-/trust",
+   "name": "/trust answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Security and trust\"}"
+  },
+  {
+   "id": "W-phone-/about",
+   "name": "/about answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"About Empathia\"}"
+  },
+  {
+   "id": "W-phone-/request-demo",
+   "name": "/request-demo answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Request a demonstration\"}"
+  },
+  {
+   "id": "W-phone-/pilot-partners",
+   "name": "/pilot-partners answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Pilot partnerships\"}"
+  },
+  {
+   "id": "W-phone-/contact",
+   "name": "/contact answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Contact\"}"
+  },
+  {
+   "id": "W-phone-/privacy",
+   "name": "/privacy answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Privacy notice\"}"
+  },
+  {
+   "id": "W-phone-/legal",
+   "name": "/legal answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Legal\"}"
+  },
+  {
+   "id": "W-phone-links",
+   "name": "every internal link on the site resolves to a listed page or a section of one",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "W-phone-menu",
+   "name": "the phone menu opens by keyboard, reports aria-expanded, and closes on Escape",
+   "result": "PASS",
+   "detail": "{\"before\":\"none\",\"after\":{\"d\":\"flex\",\"exp\":\"true\"},\"closed\":\"none\"}"
+  },
+  {
+   "id": "W-phone-form",
+   "name": "without a configured lead endpoint the form says so and does not pretend to send",
+   "result": "PASS",
+   "detail": "{\"status\":\"The lead endpoint is not configured on this deployment, so this form cannot send yet. Use the address on the contact page instead.\",\"disabled\":true,\"required\":5}"
+  },
+  {
+   "id": "W-phone-clean",
+   "name": "no page error, no console error, no request outside the site",
+   "result": "PASS",
+   "detail": ""
+  }
+ ]
+}

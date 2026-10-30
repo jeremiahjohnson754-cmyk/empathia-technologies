@@ -1,0 +1,11 @@
+{
+  "name": "@empathia/website",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "description": "Empathia Technologies public website: pre-rendered static pages on the shared design tokens, with lead forms that post to the public lead endpoint of the API. Carries no demo data and no founder material.",
+  "scripts": { "build": "node build.mjs", "typecheck": "tsc -p tsconfig.json --noEmit", "start": "node server/serve.mjs" },
+  "dependencies": { "@empathia/design-tokens": "workspace:*", "react": "19.2.8", "react-dom": "19.2.8" },
+  "devDependencies": { "esbuild": "0.28.2", "@types/react": "^19.2.0", "@types/react-dom": "^19.2.0" }
+}

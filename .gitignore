@@ -30,3 +30,4 @@ legacy/source/**/*.map
 legacy/source/**/*.css
 !legacy/source/SHA256SUMS.txt
 legacy/baseline/**/*.png
+apps/demo/src/generated/

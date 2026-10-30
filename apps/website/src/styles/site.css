@@ -1,0 +1,64 @@
+/* Empathia public site. Colours, type and spacing come from @empathia/design-tokens (tokens.css, prepended at build). The site is the
+   charcoal / silver / teal identity of the product, set in an editorial layout: one column of readable width, generous vertical rhythm,
+   a single accent. No decorative motion; transitions only answer the reader's actions. */
+*, *::before, *::after { box-sizing: border-box; }
+html { color-scheme: dark; -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--tx); font: 400 var(--fs-base)/1.6 var(--font-sans); }
+a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: underline; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.skip { position: absolute; left: -999px; top: 8px; background: var(--accent); color: var(--bg); padding: 8px 12px; border-radius: var(--r-sm); z-index: 10; }
+.skip:focus { left: 8px; }
+.wrap { width: min(100% - 32px, 1120px); margin-inline: auto; }
+.top { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4); min-height: 60px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; color: var(--tx); font-weight: 700; letter-spacing: .01em; font-size: var(--fs-md); }
+.mark { width: 14px; height: 14px; border-radius: 4px; background: linear-gradient(135deg, var(--accent), var(--indigo)); }
+nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: var(--sp-4); flex-wrap: wrap; }
+nav a { color: var(--tx2); font-weight: 600; font-size: var(--fs-sm); padding: 6px 2px; border-bottom: 2px solid transparent; }
+nav a:hover, nav a[aria-current=page] { color: var(--tx); border-bottom-color: var(--accent); text-decoration: none; }
+.menu { display: none; }
+.hero { padding: var(--sp-8) 0 var(--sp-6); border-bottom: 1px solid var(--line); background: radial-gradient(ellipse at 18% 0%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 55%); }
+.kicker { margin: 0 0 var(--sp-3); color: var(--accent); font-weight: 700; font-size: var(--fs-sm); letter-spacing: .04em; }
+h1 { margin: 0; font-size: clamp(30px, 4.4vw, var(--fs-display)); line-height: 1.12; letter-spacing: -.015em; max-width: 22ch; text-wrap: balance; }
+.lead { margin: var(--sp-4) 0 0; color: var(--tx2); font-size: var(--fs-md); max-width: 62ch; }
+.lead-sm { margin: 0 0 var(--sp-5); color: var(--tx2); max-width: 70ch; }
+.cta { display: flex; gap: var(--sp-3); flex-wrap: wrap; margin-top: var(--sp-5); }
+.btn { display: inline-flex; align-items: center; min-height: 42px; padding: 0 var(--sp-5); border-radius: var(--r-sm); border: 1px solid var(--line2); color: var(--tx); font-weight: 600; background: var(--panel); }
+.btn:hover { border-color: var(--accent); text-decoration: none; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.section { padding: var(--sp-7) 0; border-bottom: 1px solid var(--line); }
+.section h2 { margin: 0 0 var(--sp-3); font-size: var(--fs-xl); letter-spacing: -.01em; text-wrap: balance; }
+.section h3 { margin: 0 0 var(--sp-2); font-size: var(--fs-md); }
+.section p { margin: 0; color: var(--tx2); max-width: 70ch; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--sp-4); margin-top: var(--sp-4); }
+.tile { padding: var(--sp-5); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); }
+.tile h3 a { color: var(--tx); }
+.steps { list-style: none; margin: var(--sp-4) 0 0; padding: 0; display: grid; gap: var(--sp-4); }
+.steps li { display: grid; grid-template-columns: 40px 1fr; gap: var(--sp-4); }
+.steps .n { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-bg); color: var(--accent); font-weight: 700; font-variant-numeric: tabular-nums; }
+.note { margin-top: var(--sp-4); padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--accent); background: var(--accent-bg); color: var(--tx2); font-size: var(--fs-sm); max-width: 70ch; border-radius: 0 var(--r-sm) var(--r-sm) 0; }
+.foot { padding: var(--sp-6) 0; color: var(--tx3); font-size: var(--fs-sm); }
+.foot p { margin: 0 0 var(--sp-2); }
+/* forms */
+.lead { display: grid; gap: var(--sp-4); max-width: 720px; margin-top: var(--sp-4); }
+.lead .row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); }
+.lead label { display: grid; gap: 6px; font-weight: 600; font-size: var(--fs-sm); color: var(--tx2); }
+.lead input, .lead select, .lead textarea { min-height: 42px; padding: 8px 12px; border-radius: var(--r-sm); border: 1px solid var(--line2); background: var(--bg2); color: var(--tx); font: inherit; }
+.lead textarea { min-height: 120px; resize: vertical; }
+.lead input:invalid:not(:placeholder-shown), .lead textarea:invalid:not(:placeholder-shown) { border-color: var(--warn); }
+.lead .consent { grid-template-columns: auto 1fr; display: grid; align-items: start; font-weight: 400; }
+.lead .consent input { min-height: 0; width: 18px; height: 18px; margin-top: 3px; }
+.lead .hp { position: absolute; left: -9999px; }
+.lead .warn { color: var(--warn); } .ok { color: var(--ok); font-weight: 600; }
+@media (max-width: 760px) {
+  .menu { display: inline-flex; min-height: 36px; padding: 0 var(--sp-3); border-radius: var(--r-sm); border: 1px solid var(--line2); background: var(--panel); color: var(--tx); font: 600 var(--fs-sm) var(--font-sans); }
+  nav ul { display: none; position: absolute; left: 0; right: 0; top: 60px; flex-direction: column; gap: 0; background: var(--bg2); border-bottom: 1px solid var(--line); padding: var(--sp-2) 16px; }
+  nav ul.open { display: flex; }
+  nav a { display: block; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .lead .row { grid-template-columns: 1fr; }
+  .hero { padding-top: var(--sp-6); }
+}
+@media (min-width: 1800px) { .wrap { width: min(100% - 64px, 1320px); } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

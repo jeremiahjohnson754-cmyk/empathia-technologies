@@ -1,0 +1,74 @@
+{
+ "at": "2026-10-30T16:41:27.061Z",
+ "pass": 11,
+ "fail": 0,
+ "tests": 11,
+ "results": [
+  {
+   "id": "D-desktop-01",
+   "name": "lands on the investor start with the synthetic banner and three start actions",
+   "result": "PASS",
+   "detail": "{\"hash\":\"#/investor\",\"banner\":true,\"actions\":[{\"text\":\"Launch interactive room builder\",\"h\":103.09375},{\"text\":\"Watch a guided scenario\",\"h\":103.09375},{\"text\":\"What each workflow solves\",\"h\":103.09375}],\"note\":\"A perspective changes what the demonstration shows; it grants nothing. Real access is decided by the authenticated application's server.\",\"over\":0}"
+  },
+  {
+   "id": "D-desktop-02",
+   "name": "the launch action comes first and, on a phone, is the tallest",
+   "result": "PASS",
+   "detail": "[{\"text\":\"Launch interactive room builder\",\"h\":103.09375},{\"text\":\"Watch a guided scenario\",\"h\":103.09375},{\"text\":\"What each workflow solves\",\"h\":103.09375}]"
+  },
+  {
+   "id": "D-desktop-03",
+   "name": "the perspective picker says it grants nothing",
+   "result": "PASS",
+   "detail": "A perspective changes what the demonstration shows; it grants nothing. Real access is decided by the authenticated application's server."
+  },
+  {
+   "id": "D-04",
+   "name": "every one of the 86 legacy areas resolves to a page that states its migration status",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "D-05",
+   "name": "a deep legacy address resolves to its area (assurance.history)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "D-06",
+   "name": "the seven scenarios each state the customer problem",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "D-desktop-07",
+   "name": "no page error, no console error, no request outside the page",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "D-phone-01",
+   "name": "lands on the investor start with the synthetic banner and three start actions",
+   "result": "PASS",
+   "detail": "{\"hash\":\"#/investor\",\"banner\":true,\"actions\":[{\"text\":\"Launch interactive room builder\",\"h\":107.734375},{\"text\":\"Watch a guided scenario\",\"h\":82.171875},{\"text\":\"What each workflow solves\",\"h\":82.171875}],\"note\":\"A perspective changes what the demonstration shows; it grants nothing. Real access is decided by the authenticated application's server.\",\"over\":0}"
+  },
+  {
+   "id": "D-phone-02",
+   "name": "the launch action comes first and, on a phone, is the tallest",
+   "result": "PASS",
+   "detail": "[{\"text\":\"Launch interactive room builder\",\"h\":107.734375},{\"text\":\"Watch a guided scenario\",\"h\":82.171875},{\"text\":\"What each workflow solves\",\"h\":82.171875}]"
+  },
+  {
+   "id": "D-phone-03",
+   "name": "the perspective picker says it grants nothing",
+   "result": "PASS",
+   "detail": "A perspective changes what the demonstration shows; it grants nothing. Real access is decided by the authenticated application's server."
+  },
+  {
+   "id": "D-phone-07",
+   "name": "no page error, no console error, no request outside the page",
+   "result": "PASS",
+   "detail": ""
+  }
+ ]
+}
