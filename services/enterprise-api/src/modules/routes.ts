@@ -12,6 +12,7 @@ import * as org from '../domain/org.js';
 import * as analytics from '../domain/analytics.js';
 import * as assurance from '../domain/assurance.js';
 import * as integ from '../integrations/sync.js';
+import * as leads from '../domain/leads.js';
 import type { PgPool } from '../db/pg.js';
 import type { Hs256Tokens } from '../auth/jwt.js';
 import type { ObjectStore } from '../storage/objectStore.js';
@@ -95,6 +96,16 @@ export function buildRoutes(deps: { pool: PgPool; tokens: Hs256Tokens; store: Ob
   add({ method: 'POST', path: '/v1/issues/:issue/work-orders', tag: 'service', summary: 'Raise a ServiceHands work order for an installation/commissioning deficiency', auth: true, authority: ['service.assign', 'service.triage'], idempotent: true,
     body: obj({ assignedRole: str({ pattern: '^[a-z_]{2,40}$' }), note: str({ maxLength: 1000 }) }), responses: created('work order'), handler: async (c, q) => ({ status: 201, body: await cx.createWorkOrder(c, q.params['issue']!, (q.body || {}) as never) }) });
   add({ method: 'POST', path: '/v1/work-orders/:workOrder/close', tag: 'service', summary: 'Close a work order (records field work; never passes a test)', auth: true, authority: 'service.close', body: obj({ note: str({ maxLength: 1000 }) }), responses: ok('closed'), handler: async (c, q) => ({ status: 200, body: await cx.closeWorkOrder(c, q.params['workOrder']!, String((q.body as { note?: string } | null)?.note || '')) }) });
+
+  // ---------------------------------------------------------------------------------------- public inbound (the website's forms) and its admin inbox
+  add({ method: 'POST', path: '/v1/public/leads', tag: 'public', summary: 'A message from the public website (demonstration request, pilot partnership, contact): stored for a person to answer; stricter per-address budget; honeypot; consent required', auth: false,
+    body: obj({ kind: str({ enum: ['demo', 'pilot', 'contact'] }), name: str({ minLength: 1, maxLength: 120 }), organization: str({ minLength: 1, maxLength: 160 }), email: str({ minLength: 3, maxLength: 200 }), audience: str({ maxLength: 80 }), scope: str({ maxLength: 80 }), message: str({ minLength: 1, maxLength: 4000 }), consent: bool(), website: str({ maxLength: 200 }) }, ['kind', 'name', 'organization', 'email', 'message', 'consent']),
+    responses: { ...created('receipt: id, receivedAt, notification status'), 400: { description: 'validation error, missing consent, or the form was not accepted' }, 429: { description: 'too many messages from this address' } },
+    handler: async (c, q) => ({ status: 201, body: await leads.createLead(deps.pool, q.body as never, { ip: String(q.headers['x-forwarded-for'] || '').split(',')[0]!.trim() || String(q.headers['x-empathia-remote'] || 'unknown'), userAgent: String(q.headers['user-agent'] || ''), correlationId: c.correlationId }) }) });
+  add({ method: 'GET', path: '/v1/admin/leads', tag: 'admin', summary: 'The lead inbox (security admin; audited): messages from the public website with their handling status and whether a notification went out', auth: true, authority: 'policy.configure',
+    query: { status: str({ enum: ['NEW', 'ANSWERED', 'SPAM'] }), limit: str({ pattern: '^[0-9]{1,3}$' }) }, responses: ok('leads and the email adapter status'), handler: async (c, q) => ({ status: 200, body: await leads.listLeads(c, q.query.get('status'), Number(q.query.get('limit') || 100)) }) });
+  add({ method: 'PATCH', path: '/v1/admin/leads/:id', tag: 'admin', summary: 'Mark a lead answered or spam, or add handling notes (security admin; audited)', auth: true, authority: 'policy.configure',
+    body: obj({ status: str({ enum: ['NEW', 'ANSWERED', 'SPAM'] }), notes: str({ maxLength: 4000 }) }), responses: ok('the lead’s handling state'), handler: async (c, q) => ({ status: 200, body: await leads.handleLead(c, q.params['id']!, q.body as never) }) });
 
   // ---------------------------------------------------------------------------------------- read models, graph, notifications
   add({ method: 'GET', path: '/v1/read/rooms', tag: 'read-models', summary: 'Operational read model of every room (built by the outbox worker; live health is NOT_MONITORED)', auth: true, responses: ok('read model'), handler: async (c) => ({ status: 200, body: await read.readModel(c) }) });

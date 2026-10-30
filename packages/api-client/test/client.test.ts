@@ -8,8 +8,8 @@ const fake = (status: number, body: unknown, seen: Seen[]) => (async (url: strin
   return new Response(typeof body === 'string' ? body : JSON.stringify(body), { status, headers: { 'content-type': status >= 400 ? 'application/problem+json' : 'application/json', 'x-correlation-id': 'corr-12345678' } });
 }) as typeof fetch;
 
-test('the generated operation table covers the contract (48 operations) and keeps paths and methods', () => {
-  assert.equal(Object.keys(OPERATIONS).length, 48);
+test('the generated operation table covers the contract (51 operations) and keeps paths and methods', () => {
+  assert.equal(Object.keys(OPERATIONS).length, 51);
   assert.deepEqual(OPERATIONS.getV1RoomsRoom, { method: 'GET', path: '/v1/rooms/{room}', auth: true });
   assert.equal(OPERATIONS.getHealth.auth, false);
 });

@@ -1,6 +1,6 @@
 {
   "test": "enterprise-web",
-  "at": "2026-10-30T16:41:07.329Z",
+  "at": "2026-10-30T16:49:21.713Z",
   "passed": 21,
   "failed": 0,
   "results": [
@@ -56,7 +56,7 @@
       "id": "W-09",
       "name": "a designer who bypasses the UI and calls the approval endpoint directly is refused 403 by the server",
       "result": "PASS",
-      "detail": "{\"status\":403,\"body\":{\"type\":\"https://errors.empathia.invalid/forbidden\",\"title\":\"Not allowed for your role\",\"status\":403,\"detail\":\"designer may not move a room to DESIGN_APPROVED (needs room.design.approve)\",\"code\":\"forbidden\",\"correlationId\":\"360480fb-2456-49be-9ecb-2d1163ba7b1a\"}}"
+      "detail": "{\"status\":403,\"body\":{\"type\":\"https://errors.empathia.invalid/forbidden\",\"title\":\"Not allowed for your role\",\"status\":403,\"detail\":\"designer may not move a room to DESIGN_APPROVED (needs room.design.approve)\",\"code\":\"forbidden\",\"correlationId\":\"9a32bea5-a8f9-4f20-a549-7f0256f01e7d\"}}"
     },
     {
       "id": "W-10",

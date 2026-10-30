@@ -46,6 +46,7 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
       const ctx = new RequestContext(pool, correlationId);
 
       // authentication
+      req.headers['x-empathia-remote'] = String(req.socket.remoteAddress || 'unknown');   // set by the server, never trusted from the client (overwritten here)
       let bucketKey = `ip:${req.socket.remoteAddress}`;
       if (route.auth) {
         const h = String(req.headers.authorization || '');

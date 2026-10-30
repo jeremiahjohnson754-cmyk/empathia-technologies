@@ -1,6 +1,6 @@
 {
   "generatedBy": "scripts/docs/entity-dictionary.mjs",
-  "tables": 32,
+  "tables": 33,
   "views": 1,
   "relations": [
     {
@@ -3092,6 +3092,290 @@
           "rel": "project",
           "name": "project_tenant_id_id_key",
           "def": "CREATE UNIQUE INDEX project_tenant_id_id_key ON app.project USING btree (tenant_id, id)"
+        }
+      ]
+    },
+    {
+      "name": "public_lead",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": "0009_public_leads.sql",
+      "purpose": "0009 · Public leads: what the public website's forms send (request a demonstration, pilot partnership, contact). Not tenant data: a lead belongs to Empathia as the operator of the site. The runtime role may INSERT one from an unauthenticated request only inside a transaction that set app.public_inbound = on; it may read or update leads only when app.lead_admin = on, which the API sets after a security administrator's authority check (policy.configure). Nothing here is ever deleted by the application roles: a lead marked SPAM or ANSWERED keeps its record for the retention policy to act on.",
+      "columns": [
+        {
+          "rel": "public_lead",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "public_lead",
+          "col": "kind",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "public_lead",
+          "col": "name",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "public_lead",
+          "col": "organization",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "public_lead",
+          "col": "email",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "public_lead",
+          "col": "audience",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "public_lead",
+          "col": "scope",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "public_lead",
+          "col": "message",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "public_lead",
+          "col": "consent",
+          "type": "boolean",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "public_lead",
+          "col": "consent_text",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "public_lead",
+          "col": "source_ip_hash",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "public_lead",
+          "col": "user_agent",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "public_lead",
+          "col": "correlation_id",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "public_lead",
+          "col": "status",
+          "type": "text",
+          "notnull": true,
+          "def": "'NEW'::text",
+          "comment": null
+        },
+        {
+          "rel": "public_lead",
+          "col": "notified",
+          "type": "boolean",
+          "notnull": true,
+          "def": "false",
+          "comment": null
+        },
+        {
+          "rel": "public_lead",
+          "col": "notify_note",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "public_lead",
+          "col": "handled_by",
+          "type": "uuid",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "public_lead",
+          "col": "handled_at",
+          "type": "timestamp with time zone",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "public_lead",
+          "col": "notes",
+          "type": "text",
+          "notnull": false,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "public_lead",
+          "col": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "public_lead",
+          "name": "public_lead_audience_check",
+          "type": "c",
+          "def": "CHECK (((audience IS NULL) OR (length(audience) <= 80)))"
+        },
+        {
+          "rel": "public_lead",
+          "name": "public_lead_consent_check",
+          "type": "c",
+          "def": "CHECK (consent)"
+        },
+        {
+          "rel": "public_lead",
+          "name": "public_lead_email_check",
+          "type": "c",
+          "def": "CHECK ((((length(email) >= 3) AND (length(email) <= 200)) AND (POSITION(('@'::text) IN (email)) > 1)))"
+        },
+        {
+          "rel": "public_lead",
+          "name": "public_lead_kind_check",
+          "type": "c",
+          "def": "CHECK ((kind = ANY (ARRAY['demo'::text, 'pilot'::text, 'contact'::text])))"
+        },
+        {
+          "rel": "public_lead",
+          "name": "public_lead_message_check",
+          "type": "c",
+          "def": "CHECK (((length(message) >= 1) AND (length(message) <= 4000)))"
+        },
+        {
+          "rel": "public_lead",
+          "name": "public_lead_name_check",
+          "type": "c",
+          "def": "CHECK (((length(name) >= 1) AND (length(name) <= 120)))"
+        },
+        {
+          "rel": "public_lead",
+          "name": "public_lead_notes_check",
+          "type": "c",
+          "def": "CHECK (((notes IS NULL) OR (length(notes) <= 4000)))"
+        },
+        {
+          "rel": "public_lead",
+          "name": "public_lead_organization_check",
+          "type": "c",
+          "def": "CHECK (((length(organization) >= 1) AND (length(organization) <= 160)))"
+        },
+        {
+          "rel": "public_lead",
+          "name": "public_lead_scope_check",
+          "type": "c",
+          "def": "CHECK (((scope IS NULL) OR (length(scope) <= 80)))"
+        },
+        {
+          "rel": "public_lead",
+          "name": "public_lead_status_check",
+          "type": "c",
+          "def": "CHECK ((status = ANY (ARRAY['NEW'::text, 'ANSWERED'::text, 'SPAM'::text])))"
+        },
+        {
+          "rel": "public_lead",
+          "name": "public_lead_user_agent_check",
+          "type": "c",
+          "def": "CHECK (((user_agent IS NULL) OR (length(user_agent) <= 300)))"
+        },
+        {
+          "rel": "public_lead",
+          "name": "public_lead_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        }
+      ],
+      "policies": [
+        {
+          "rel": "public_lead",
+          "name": "lead_admin_read",
+          "cmd": "SELECT",
+          "roles": "{public}",
+          "qual": "(current_setting('app.lead_admin'::text, true) = 'on'::text)",
+          "with_check": null
+        },
+        {
+          "rel": "public_lead",
+          "name": "lead_admin_update",
+          "cmd": "UPDATE",
+          "roles": "{public}",
+          "qual": "(current_setting('app.lead_admin'::text, true) = 'on'::text)",
+          "with_check": "(current_setting('app.lead_admin'::text, true) = 'on'::text)"
+        },
+        {
+          "rel": "public_lead",
+          "name": "lead_public_insert",
+          "cmd": "INSERT",
+          "roles": "{public}",
+          "qual": null,
+          "with_check": "(current_setting('app.public_inbound'::text, true) = 'on'::text)"
+        }
+      ],
+      "triggers": [],
+      "indexes": [
+        {
+          "rel": "public_lead",
+          "name": "public_lead_pkey",
+          "def": "CREATE UNIQUE INDEX public_lead_pkey ON app.public_lead USING btree (id)"
+        },
+        {
+          "rel": "public_lead",
+          "name": "public_lead_status_idx",
+          "def": "CREATE INDEX public_lead_status_idx ON app.public_lead USING btree (status, created_at DESC)"
         }
       ]
     },

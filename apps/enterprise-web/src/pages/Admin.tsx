@@ -6,13 +6,13 @@ import { useMe } from '../me.js';
 
 export function Admin({ tab }: { tab: string }) {
   const { can } = useMe();
-  const tabs = [{ key: 'integrations', label: 'Integrations' }, ...(can('policy.configure') ? [{ key: 'outbox', label: 'Outbox' }, { key: 'people', label: 'People' }] : []), ...(can(['provenance.review', 'policy.configure']) ? [{ key: 'audit', label: 'Audit' }] : [])];
+  const tabs = [{ key: 'integrations', label: 'Integrations' }, ...(can('policy.configure') ? [{ key: 'leads', label: 'Lead inbox' }, { key: 'outbox', label: 'Outbox' }, { key: 'people', label: 'People' }] : []), ...(can(['provenance.review', 'policy.configure']) ? [{ key: 'audit', label: 'Audit' }] : [])];
   return (
     <section className="page">
       <header className="page__head"><div><h1>Administration</h1></div></header>
       <Tabs label="Administration" tabs={tabs} active={tab} onChange={(k) => go('admin', k)} />
       <div className="panel" role="tabpanel">
-        {tab === 'integrations' ? <Integrations /> : null}{tab === 'outbox' ? <Outbox /> : null}{tab === 'people' ? <People /> : null}{tab === 'audit' ? <Audit /> : null}
+        {tab === 'integrations' ? <Integrations /> : null}{tab === 'leads' ? <Leads /> : null}{tab === 'outbox' ? <Outbox /> : null}{tab === 'people' ? <People /> : null}{tab === 'audit' ? <Audit /> : null}
       </div>
     </section>
   );
@@ -59,4 +59,25 @@ function Audit() {
     { key: 'at', header: 'When', render: (x) => new Date(x['at']!).toLocaleString() }, { key: 'w', header: 'Role', render: (x) => x['actor_role'] },
     { key: 'a', header: 'Action', render: (x) => <span className="mono">{x['action']}</span> }, { key: 'o', header: 'Outcome', render: (x) => <Tag tone={x['outcome'] === 'DENIED' ? 'bad' : 'ok'}>{x['outcome']}</Tag> },
     { key: 'g', header: 'On', render: (x) => <span className="ui-meta">{x['aggregate_type']} {x['aggregate_id']}</span> }]} />;
+}
+
+/** Messages from the public website (demonstration requests, pilot enquiries, contact). The API refuses this list to every role but the
+ *  security administrator and audits each read; the email adapter's status is shown as the API reports it — never assumed. */
+function Leads() {
+  const q = useQuery<{ items: Array<Record<string, string | boolean | null>>; emailAdapter: { configured: boolean; reason: string } }>('leads', () => api.call('getV1AdminLeads') as never);
+  const handle = useMutation((a: { id: string; status: 'ANSWERED' | 'SPAM' }) => api.call('patchV1AdminLeadsId', { params: { id: a.id }, body: { status: a.status } }), ['leads']);
+  return (
+    <div className="stack">
+      {q.data && !q.data.emailAdapter.configured ? <Notice tone="warn">Email notification is not configured: {q.data.emailAdapter.reason}. New messages appear here only.</Notice> : null}
+      {handle.error ? <ErrorState error={handle.error} /> : null}
+      {q.error ? <ErrorState error={q.error} /> : !q.data ? <Loading /> : !q.data.items.length ? <Empty title="No messages yet">Messages sent from the public website's forms appear here.</Empty> : <DataTable rows={q.data.items} rowKey={(x) => String(x['id'])} caption="Lead inbox" columns={[
+        { key: 'at', header: 'Received', render: (x) => <span className="ui-meta">{String(x['created_at']).slice(0, 16).replace('T', ' ')}</span>, sort: (x) => String(x['created_at']) },
+        { key: 'k', header: 'Kind', render: (x) => <Tag>{String(x['kind'])}</Tag> },
+        { key: 'who', header: 'From', render: (x) => <span>{String(x['name'])} · {String(x['organization'])}<br /><span className="ui-meta">{String(x['email'])}{x['audience'] ? ` · ${x['audience']}` : ''}{x['scope'] ? ` · ${x['scope']}` : ''}</span></span> },
+        { key: 'm', header: 'Message', render: (x) => <span style={{ whiteSpace: 'pre-wrap' }}>{String(x['message'])}</span> },
+        { key: 's', header: 'Status', render: (x) => <Tag tone={x['status'] === 'NEW' ? 'info' : x['status'] === 'ANSWERED' ? 'ok' : 'muted'}>{String(x['status'])}</Tag>, sort: (x) => String(x['status']) },
+        { key: 'a', header: '', render: (x) => x['status'] === 'NEW' ? <span className="row-acts"><Button small onClick={() => void handle.run({ id: String(x['id']), status: 'ANSWERED' })}>Mark answered</Button> <Button small kind="quiet" onClick={() => void handle.run({ id: String(x['id']), status: 'SPAM' })}>Spam</Button></span> : null },
+      ]} />}
+    </div>
+  );
 }
