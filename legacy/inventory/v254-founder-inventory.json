@@ -1,0 +1,4806 @@
+{
+ "label": "2.5.4-founder",
+ "source": "/home/claude/Empathia_V25/work/source-254/src",
+ "modules": 230,
+ "bytes": 7859374,
+ "uiRoles": [
+  "visitor",
+  "employee",
+  "exec",
+  "service",
+  "svcmgr",
+  "syseng",
+  "designer",
+  "installer",
+  "cxeng",
+  "ipm",
+  "bpm",
+  "ops",
+  "steward",
+  "architect"
+ ],
+ "areas": [
+  {
+   "area": "home",
+   "roles": [
+    "visitor",
+    "employee",
+    "exec",
+    "service",
+    "svcmgr",
+    "syseng",
+    "designer",
+    "installer",
+    "cxeng",
+    "ipm",
+    "bpm",
+    "ops",
+    "steward",
+    "architect"
+   ],
+   "label": "Mission Control",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "campus",
+   "roles": [
+    "exec",
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "designer",
+    "cxeng",
+    "ipm",
+    "bpm"
+   ],
+   "label": "the operational campus",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "search",
+   "roles": [
+    "visitor",
+    "employee",
+    "exec",
+    "service",
+    "svcmgr",
+    "syseng",
+    "designer",
+    "installer",
+    "cxeng",
+    "ipm",
+    "bpm",
+    "ops",
+    "steward",
+    "architect"
+   ],
+   "label": "Search Party",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "search.support",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "steward"
+   ],
+   "label": "the support directory",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "search.ownership",
+   "roles": [
+    "syseng",
+    "ops",
+    "architect",
+    "svcmgr",
+    "steward"
+   ],
+   "label": "ownership",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "search.quality",
+   "roles": [
+    "steward",
+    "architect"
+   ],
+   "label": "data quality and governance",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "search.graph",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "steward",
+    "designer",
+    "cxeng"
+   ],
+   "label": "relationship trails",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "search.people",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "designer",
+    "installer",
+    "cxeng",
+    "ipm",
+    "bpm",
+    "steward"
+   ],
+   "label": "people and expertise",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "search.projects",
+   "roles": [
+    "exec",
+    "syseng",
+    "ops",
+    "architect",
+    "svcmgr",
+    "designer",
+    "installer",
+    "cxeng",
+    "ipm",
+    "bpm",
+    "steward"
+   ],
+   "label": "the project map",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "search.orgs",
+   "roles": [
+    "exec",
+    "syseng",
+    "ops",
+    "architect",
+    "svcmgr",
+    "designer",
+    "ipm",
+    "bpm",
+    "steward"
+   ],
+   "label": "organizations",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "search.activity",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "designer",
+    "installer",
+    "cxeng",
+    "ipm",
+    "bpm",
+    "steward"
+   ],
+   "label": "the activity network",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "search.vault",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "designer",
+    "installer",
+    "cxeng",
+    "ipm",
+    "bpm",
+    "steward"
+   ],
+   "label": "evidence and artifacts",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "room",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "designer",
+    "installer",
+    "cxeng"
+   ],
+   "label": "the technical room page",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "pro",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect"
+   ],
+   "label": "the Pro Command Center",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "pro.assets",
+   "roles": [
+    "syseng",
+    "ops",
+    "architect",
+    "svcmgr"
+   ],
+   "label": "Asset Intelligence",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "set.devices",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "designer",
+    "installer",
+    "cxeng"
+   ],
+   "label": "devices behind a number",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "pro.issues",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect"
+   ],
+   "label": "Issue Intelligence",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "pro.ops",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "installer",
+    "cxeng"
+   ],
+   "label": "the Operations Hub",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "pro.eng",
+   "roles": [
+    "syseng",
+    "ops",
+    "architect",
+    "designer",
+    "cxeng"
+   ],
+   "label": "Standards and Engineering",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "pro.exec",
+   "roles": [
+    "exec",
+    "ops",
+    "architect"
+   ],
+   "label": "Executive Intelligence",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "set.rooms",
+   "roles": [
+    "exec",
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "designer",
+    "cxeng",
+    "bpm"
+   ],
+   "label": "rooms behind a number",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "set.issues",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect"
+   ],
+   "label": "issues behind a number",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "set.docs",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "steward",
+    "designer",
+    "installer",
+    "cxeng"
+   ],
+   "label": "documents behind a number",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "set.changes",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "steward",
+    "cxeng"
+   ],
+   "label": "changes behind a number",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "lite",
+   "roles": [
+    "visitor",
+    "employee",
+    "exec",
+    "service",
+    "svcmgr",
+    "syseng",
+    "designer",
+    "installer",
+    "cxeng",
+    "ipm",
+    "bpm",
+    "ops",
+    "steward",
+    "architect"
+   ],
+   "label": "the Workplace Explorer",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "lite.services",
+   "roles": [
+    "employee",
+    "exec",
+    "service",
+    "svcmgr",
+    "syseng",
+    "designer",
+    "installer",
+    "cxeng",
+    "ipm",
+    "bpm",
+    "ops",
+    "steward",
+    "architect"
+   ],
+   "label": "workplace services",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "lite.guides",
+   "roles": [
+    "visitor",
+    "employee",
+    "exec",
+    "service",
+    "svcmgr",
+    "syseng",
+    "designer",
+    "installer",
+    "cxeng",
+    "ipm",
+    "bpm",
+    "ops",
+    "steward",
+    "architect"
+   ],
+   "label": "the knowledge library",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "intake",
+   "roles": [
+    "exec",
+    "syseng",
+    "ops",
+    "architect",
+    "designer",
+    "bpm"
+   ],
+   "label": "Intake",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "intake.new",
+   "roles": [
+    "exec",
+    "syseng",
+    "ops",
+    "architect",
+    "designer",
+    "bpm"
+   ],
+   "label": "a new request",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "builder",
+   "roles": [
+    "syseng",
+    "designer",
+    "architect"
+   ],
+   "label": "Room Builder",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "scouter",
+   "roles": [
+    "syseng",
+    "ops",
+    "architect",
+    "designer"
+   ],
+   "label": "Scouter",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "budget",
+   "roles": [
+    "exec",
+    "syseng",
+    "ops",
+    "architect",
+    "bpm"
+   ],
+   "label": "Budgeting",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "assurance",
+   "roles": [
+    "exec",
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "cxeng"
+   ],
+   "label": "the Assurance Command Center",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "assurance.analysis",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "cxeng"
+   ],
+   "label": "the engineering analysis of drift",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "assurance.portfolio",
+   "roles": [
+    "exec",
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "cxeng"
+   ],
+   "label": "rooms grouped by assurance result",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "assurance.ready",
+   "roles": [
+    "exec",
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "cxeng",
+    "bpm"
+   ],
+   "label": "room ready checks",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "assurance.room",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "cxeng",
+    "designer"
+   ],
+   "label": "the technical comparison of a room with its baseline",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "assurance.recommission",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "cxeng"
+   ],
+   "label": "recommissioning",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "assurance.history",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "cxeng",
+    "steward"
+   ],
+   "label": "baseline history",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "assurance.change",
+   "roles": [
+    "syseng",
+    "ops",
+    "architect",
+    "cxeng"
+   ],
+   "label": "change impact",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "assurance.signals",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect"
+   ],
+   "label": "maintenance and experience signals",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "commissioning",
+   "roles": [
+    "service",
+    "syseng",
+    "cxeng",
+    "installer",
+    "ipm",
+    "ops",
+    "architect"
+   ],
+   "label": "the Commissioning Command Center",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "commissioning.room",
+   "roles": [
+    "service",
+    "syseng",
+    "cxeng",
+    "installer",
+    "ipm",
+    "ops",
+    "architect"
+   ],
+   "label": "the commissioning record of a room",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "control",
+   "roles": [
+    "employee",
+    "exec",
+    "service",
+    "svcmgr",
+    "syseng",
+    "designer",
+    "installer",
+    "cxeng",
+    "ipm",
+    "bpm",
+    "ops",
+    "steward",
+    "architect"
+   ],
+   "label": "room control",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "scheduler",
+   "roles": [
+    "employee",
+    "exec",
+    "service",
+    "svcmgr",
+    "syseng",
+    "designer",
+    "installer",
+    "cxeng",
+    "ipm",
+    "bpm",
+    "ops",
+    "steward",
+    "architect"
+   ],
+   "label": "the room scheduler",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "learn",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "designer",
+    "installer",
+    "cxeng"
+   ],
+   "label": "Empathia Learn and SIGNAL",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "agent",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "cxeng",
+    "steward"
+   ],
+   "label": "the Room Health Check",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "agent.arch",
+   "roles": [
+    "exec",
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "designer",
+    "installer",
+    "cxeng",
+    "ipm",
+    "bpm",
+    "steward"
+   ],
+   "label": "the discovery agent architecture",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "ask",
+   "roles": [
+    "employee",
+    "exec",
+    "service",
+    "svcmgr",
+    "syseng",
+    "designer",
+    "installer",
+    "cxeng",
+    "ipm",
+    "bpm",
+    "ops",
+    "steward",
+    "architect"
+   ],
+   "label": "Ask Empathia",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "replay",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "steward",
+    "designer",
+    "cxeng"
+   ],
+   "label": "Core Replay",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "compare",
+   "roles": [
+    "exec",
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "steward",
+    "designer",
+    "cxeng",
+    "ipm",
+    "bpm"
+   ],
+   "label": "Core Compare",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "ledger",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "steward",
+    "cxeng"
+   ],
+   "label": "the evidence ledger",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "fabric",
+   "roles": [
+    "syseng",
+    "ops",
+    "architect",
+    "steward"
+   ],
+   "label": "the integration and event fabrics",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "qr",
+   "roles": [
+    "syseng",
+    "ops",
+    "architect"
+   ],
+   "label": "the QR launch center",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "tours",
+   "roles": [
+    "ops",
+    "architect"
+   ],
+   "label": "guided experiences",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "core",
+   "roles": [
+    "syseng",
+    "ops",
+    "architect",
+    "steward"
+   ],
+   "label": "the Core model",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "list",
+   "roles": [
+    "exec",
+    "syseng",
+    "ops",
+    "architect",
+    "steward"
+   ],
+   "label": "records of one type",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "servicehands",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "designer",
+    "installer",
+    "cxeng"
+   ],
+   "label": "ServiceHands",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "servicehands.new",
+   "roles": [
+    "employee",
+    "exec",
+    "service",
+    "svcmgr",
+    "syseng",
+    "designer",
+    "installer",
+    "cxeng",
+    "ipm",
+    "bpm",
+    "ops",
+    "steward",
+    "architect"
+   ],
+   "label": "a request for a change",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "service",
+   "roles": [
+    "svcmgr",
+    "ops",
+    "architect"
+   ],
+   "label": "the Service Delivery Command Center",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "service.coverage",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "steward",
+    "architect"
+   ],
+   "label": "the service coverage map",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "service.fixes",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "steward"
+   ],
+   "label": "the Known Fix library",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "projects",
+   "roles": [
+    "exec",
+    "syseng",
+    "ops",
+    "architect",
+    "svcmgr",
+    "designer",
+    "installer",
+    "cxeng",
+    "ipm",
+    "bpm",
+    "steward"
+   ],
+   "label": "the project portfolio",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "install",
+   "roles": [
+    "installer",
+    "ipm",
+    "cxeng",
+    "designer",
+    "syseng",
+    "ops",
+    "architect"
+   ],
+   "label": "installation",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "handoff",
+   "roles": [
+    "designer",
+    "installer",
+    "cxeng",
+    "ipm",
+    "bpm",
+    "svcmgr",
+    "ops",
+    "steward",
+    "architect"
+   ],
+   "label": "the handoff chain",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "decisions",
+   "roles": [
+    "exec",
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "designer",
+    "installer",
+    "cxeng",
+    "ipm",
+    "bpm",
+    "steward"
+   ],
+   "label": "Decision Memory",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "lessons",
+   "roles": [
+    "exec",
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "designer",
+    "installer",
+    "cxeng",
+    "ipm",
+    "bpm",
+    "steward"
+   ],
+   "label": "lessons learned",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "none",
+   "roles": [
+    "architect"
+   ],
+   "label": "this address",
+   "addedBy": "12-authz.js"
+  },
+  {
+   "area": "studio",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "designer",
+    "cxeng",
+    "ipm",
+    "bpm",
+    "exec",
+    "installer"
+   ],
+   "label": "Design a Space",
+   "addedBy": "92-search-registry.js"
+  },
+  {
+   "area": "investigate",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "cxeng",
+    "steward",
+    "installer"
+   ],
+   "label": "Investigate",
+   "addedBy": "92-search-registry.js"
+  },
+  {
+   "area": "gate",
+   "roles": [
+    "visitor",
+    "employee",
+    "exec",
+    "service",
+    "svcmgr",
+    "syseng",
+    "designer",
+    "installer",
+    "cxeng",
+    "ipm",
+    "bpm",
+    "ops",
+    "steward",
+    "architect"
+   ],
+   "label": "the welcome page",
+   "addedBy": "92-search-registry.js"
+  },
+  {
+   "area": "scouter.anatomy",
+   "roles": [
+    "syseng",
+    "ops",
+    "architect",
+    "designer",
+    "service",
+    "svcmgr",
+    "installer",
+    "cxeng"
+   ],
+   "label": "Scouter Anatomy",
+   "addedBy": "95-scouter-anatomy.js"
+  },
+  {
+   "area": "exports",
+   "roles": [
+    "exec",
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "designer",
+    "installer",
+    "cxeng",
+    "ipm",
+    "bpm",
+    "steward"
+   ],
+   "label": "Reports and exports",
+   "addedBy": "985-exports.js"
+  },
+  {
+   "area": "v14",
+   "roles": [
+    "syseng",
+    "ops",
+    "architect",
+    "steward",
+    "exec",
+    "cxeng",
+    "designer"
+   ],
+   "label": "the V1.4 engineering foundation",
+   "addedBy": "996-v14-ui.js"
+  },
+  {
+   "area": "signage",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "cxeng",
+    "steward",
+    "exec",
+    "architect"
+   ],
+   "label": "the signage control plane",
+   "addedBy": "9997-v14-signage.js"
+  },
+  {
+   "area": "itsm",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "cxeng",
+    "steward",
+    "exec",
+    "architect"
+   ],
+   "label": "the service workspace",
+   "addedBy": "9998-v14-itsm.js"
+  },
+  {
+   "area": "schedule",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "cxeng",
+    "steward",
+    "exec",
+    "designer",
+    "architect"
+   ],
+   "label": "monitoring and schedules",
+   "addedBy": "99991-v14-schedule-ui.js"
+  },
+  {
+   "area": "geometry",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "designer",
+    "ops",
+    "cxeng",
+    "steward",
+    "exec",
+    "installer",
+    "ipm",
+    "architect"
+   ],
+   "label": "the spatial twin editor",
+   "addedBy": "99992-v14-geometry-ui.js"
+  },
+  {
+   "area": "diagnostics",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "cxeng",
+    "steward",
+    "exec",
+    "designer",
+    "architect"
+   ],
+   "label": "remote diagnostics",
+   "addedBy": "99994-v14-diag-ui.js"
+  },
+  {
+   "area": "robot",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "cxeng",
+    "designer",
+    "steward",
+    "exec",
+    "architect"
+   ],
+   "label": "the robotic audio simulator",
+   "addedBy": "99996-v14-robot-ui.js"
+  },
+  {
+   "area": "camera",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "cxeng",
+    "designer",
+    "installer",
+    "steward",
+    "exec",
+    "architect"
+   ],
+   "label": "the camera and optical lane",
+   "addedBy": "99998-v14-camera-ui.js"
+  },
+  {
+   "area": "optimize",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "cxeng",
+    "designer",
+    "ipm",
+    "bpm",
+    "exec",
+    "steward",
+    "architect"
+   ],
+   "label": "Optimize",
+   "addedBy": "999991-v14-optimize-ui.js"
+  },
+  {
+   "area": "operations",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "cxeng",
+    "designer",
+    "installer",
+    "ipm",
+    "bpm",
+    "exec",
+    "steward",
+    "architect"
+   ],
+   "label": "Operations Ready",
+   "addedBy": "999994-v14-ops-ui.js"
+  },
+  {
+   "area": "registry",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "cxeng",
+    "designer",
+    "installer",
+    "ipm",
+    "bpm",
+    "steward",
+    "exec",
+    "architect"
+   ],
+   "label": "the registers",
+   "addedBy": "999997-v14-registry.js"
+  },
+  {
+   "area": "investor",
+   "roles": [
+    "visitor",
+    "employee",
+    "exec",
+    "service",
+    "svcmgr",
+    "syseng",
+    "designer",
+    "installer",
+    "cxeng",
+    "ipm",
+    "bpm",
+    "ops",
+    "steward",
+    "architect"
+   ],
+   "label": "the investor demonstration landing",
+   "addedBy": "v25-30-investor.js"
+  },
+  {
+   "area": "v25.build",
+   "roles": [
+    "service",
+    "svcmgr",
+    "syseng",
+    "ops",
+    "architect",
+    "designer",
+    "installer",
+    "cxeng",
+    "ipm",
+    "bpm",
+    "steward",
+    "exec"
+   ],
+   "label": "Build a Room with Lite",
+   "addedBy": "v25-61-room-ui.js"
+  }
+ ],
+ "v25AreaOf": {
+  "home": "v25",
+  "persona": "v25",
+  "record": "v25",
+  "intake": "v25.intake",
+  "vendor": "v25.vendor",
+  "decisions": "v25.decisions",
+  "project": "v25.project",
+  "design": "v25.design",
+  "scouter": "v25.scouter",
+  "lite": "v25.lite",
+  "fi": "v25.fi",
+  "fipv": "v25.fipv",
+  "commissioning": "v25.commissioning",
+  "tracker": "v25.tracker",
+  "coverage": "v25.coverage",
+  "service": "v25.service",
+  "assurance": "v25.assurance",
+  "apex": "v25.apex",
+  "exec": "v25.exec",
+  "learn": "v25.learn",
+  "ledger": "v25.ledger",
+  "walkthrough": "v25.walkthrough",
+  "policy": "v25.policy",
+  "cxworkbook": "v25.commissioning (v25-27-cxw-ui.js)",
+  "cstudio": "v25.cstudio (v25-41-cs-ui.js)",
+  "cspanel": "control (v25-41-cs-ui.js)",
+  "sing": "v25.sing (v25-43-sing.js)",
+  "frontline": "v25.frontline (v25-43-sing.js)",
+  "onboard": "v25.onboard (v25-47-onboard.js)",
+  "build": "v25.build (v25-61-room-ui.js)"
+ },
+ "v25Pages": [
+  {
+   "key": "intake",
+   "label": "Intake",
+   "description": "Requests with photos, plans and dimensions; the engineering brief",
+   "icon": "project",
+   "stage": 4,
+   "module": "v25-10-shell.js"
+  },
+  {
+   "key": "vendor",
+   "label": "Supplier inbox",
+   "description": "Receipt and acknowledgement, nothing more",
+   "icon": "vendor",
+   "stage": 4,
+   "module": "v25-10-shell.js"
+  },
+  {
+   "key": "decisions",
+   "label": "Decision desk",
+   "description": "Approvals and funding, each bound to a scope revision",
+   "icon": "budget",
+   "stage": 4,
+   "module": "v25-10-shell.js"
+  },
+  {
+   "key": "design",
+   "label": "Design workspace",
+   "description": "Revisions, redlines, DIVR, drawing extraction, RFIs",
+   "icon": "doc",
+   "stage": 4,
+   "module": "v25-10-shell.js"
+  },
+  {
+   "key": "scouter",
+   "label": "Scouter",
+   "description": "Standardization proposals from eligible cohorts",
+   "icon": "device",
+   "stage": 4,
+   "module": "v25-10-shell.js"
+  },
+  {
+   "key": "lite",
+   "label": "Lite studio",
+   "description": "Conceptual geometry with a confidence it does not exceed",
+   "icon": "room",
+   "stage": 5,
+   "module": "v25-10-shell.js"
+  },
+  {
+   "key": "fi",
+   "label": "Field Intelligence",
+   "description": "v1.3 monitoring and plans — included by default",
+   "icon": "evidence",
+   "stage": 5,
+   "module": "v25-10-shell.js"
+  },
+  {
+   "key": "fipv",
+   "label": "Physical Validation",
+   "description": "FI v1.4 — optional, licensed, hardware-governed",
+   "icon": "evidence",
+   "stage": 5,
+   "module": "v25-10-shell.js"
+  },
+  {
+   "key": "commissioning",
+   "label": "Commissioning",
+   "description": "An adaptive plan compiled from the rule pack, with WHY",
+   "icon": "commission",
+   "stage": 6,
+   "module": "v25-10-shell.js"
+  },
+  {
+   "key": "tracker",
+   "label": "Documentation tracker",
+   "description": "36 columns, seven views, the final-photo gate",
+   "icon": "doc",
+   "stage": 6,
+   "module": "v25-10-shell.js"
+  },
+  {
+   "key": "service",
+   "label": "ServiceHands",
+   "description": "Hard-gated eligibility, preflight, field execution",
+   "icon": "ops",
+   "stage": 7,
+   "module": "v25-10-shell.js"
+  },
+  {
+   "key": "coverage",
+   "label": "Who covers this",
+   "description": "The people and support behind any room",
+   "icon": "people",
+   "stage": 3,
+   "module": "v25-10-shell.js"
+  },
+  {
+   "key": "assurance",
+   "label": "Assurance",
+   "description": "The golden baseline and drift against it",
+   "icon": "evidence",
+   "stage": 8,
+   "module": "v25-10-shell.js"
+  },
+  {
+   "key": "apex",
+   "label": "APEX",
+   "description": "Diagnosis tiers A0–A5 with their evidence",
+   "icon": "issue",
+   "stage": 8,
+   "module": "v25-10-shell.js"
+  },
+  {
+   "key": "exec",
+   "label": "Executive",
+   "description": "27 KPI passports with numerator, denominator and coverage",
+   "icon": "rec",
+   "stage": 9,
+   "module": "v25-10-shell.js"
+  },
+  {
+   "key": "learn",
+   "label": "Learn",
+   "description": "Cases written from what actually happened",
+   "icon": "learn",
+   "stage": 9,
+   "module": "v25-10-shell.js"
+  },
+  {
+   "key": "ledger",
+   "label": "Ledger",
+   "description": "Every event, with its time, actor and provenance",
+   "icon": "evidence",
+   "stage": 3,
+   "module": "v25-10-shell.js"
+  },
+  {
+   "key": "walkthrough",
+   "label": "Walkthrough",
+   "description": "The guided V2.5 story, role by role",
+   "icon": "star",
+   "stage": 11,
+   "module": "v25-10-shell.js"
+  },
+  {
+   "key": "policy",
+   "label": "Policy",
+   "description": "Role access, licenses, adapters — a demo of authorization",
+   "icon": "standard",
+   "stage": 3,
+   "module": "v25-10-shell.js"
+  }
+ ],
+ "personas": {
+  "requestor": {
+   "label": "Requestor / Employee",
+   "base": "employee",
+   "home": "My requests",
+   "authority": [
+    "request.submit",
+    "request.withdraw"
+   ]
+  },
+  "vendor": {
+   "label": "Supplier / Partner contact",
+   "base": "employee",
+   "home": "Vendor inbox",
+   "authority": [
+    "vendor.acknowledge",
+    "vendor.quote"
+   ]
+  },
+  "opslead": {
+   "label": "Operations Lead",
+   "base": "ops",
+   "home": "Operational decision desk",
+   "authority": [
+    "pitch.submit",
+    "approver.select",
+    "route.internal",
+    "brief.approve",
+    "handoff.accept",
+    "window.approve",
+    "request.desk_update",
+    "issue.assign"
+   ]
+  },
+  "syseng": {
+   "label": "Systems Engineer",
+   "base": "syseng",
+   "home": "Engineering approval desk",
+   "authority": [
+    "brief.approve",
+    "design.release",
+    "extraction.review",
+    "protocol.approve",
+    "plan.compile",
+    "baseline.approve",
+    "rfi.resolve",
+    "room.design",
+    "room.classify.approve",
+    "room.design.approve"
+   ]
+  },
+  "exec": {
+   "label": "Executive / Sponsor",
+   "base": "exec",
+   "home": "Executive Mission Control",
+   "authority": [
+    "project.decide"
+   ]
+  },
+  "finance": {
+   "label": "Finance / Budget Authority",
+   "base": "exec",
+   "home": "Investment decisions",
+   "authority": [
+    "funding.authorize",
+    "funding.withdraw"
+   ]
+  },
+  "bpm": {
+   "label": "Business Project Manager",
+   "base": "bpm",
+   "home": "My portfolio",
+   "authority": [
+    "scope.revise"
+   ]
+  },
+  "ipm": {
+   "label": "Integrator Project Manager",
+   "base": "ipm",
+   "home": "Delivery portfolio",
+   "authority": [
+    "parts.receive"
+   ]
+  },
+  "designer": {
+   "label": "Designer / CAD / Revit",
+   "base": "designer",
+   "home": "Design studio",
+   "authority": [
+    "design.revise",
+    "design.submit",
+    "divr.record",
+    "lite.edit",
+    "scouter.propose",
+    "room.design"
+   ]
+  },
+  "dsp_eng": {
+   "label": "DSP / Audio Engineer",
+   "base": "syseng",
+   "home": "Audio template review",
+   "authority": [
+    "review.dsp",
+    "test.verify.audio"
+   ]
+  },
+  "video_eng": {
+   "label": "Video / Camera Engineer",
+   "base": "syseng",
+   "home": "Camera template review",
+   "authority": [
+    "review.camera",
+    "test.verify.video"
+   ]
+  },
+  "control_eng": {
+   "label": "Control / UI Engineer",
+   "base": "syseng",
+   "home": "Touch UI template review",
+   "authority": [
+    "review.touch",
+    "test.verify.control"
+   ]
+  },
+  "svcmgr": {
+   "label": "Service Manager",
+   "base": "svcmgr",
+   "home": "Service delivery command center",
+   "authority": [
+    "service.triage",
+    "service.assign",
+    "service.close",
+    "service.reopen",
+    "field.authorize",
+    "issue.assign"
+   ]
+  },
+  "service": {
+   "label": "Service Technician",
+   "base": "service",
+   "home": "My work + my sites",
+   "authority": [
+    "work.accept",
+    "work.start",
+    "work.evidence",
+    "field.scan",
+    "photo.submit"
+   ]
+  },
+  "installer": {
+   "label": "Installer",
+   "base": "installer",
+   "home": "Field package",
+   "authority": [
+    "work.evidence",
+    "deviation.raise",
+    "photo.submit"
+   ]
+  },
+  "cxeng": {
+   "label": "Commissioning Engineer",
+   "base": "cxeng",
+   "home": "My commissioning",
+   "authority": [
+    "test.verify",
+    "deficiency.open",
+    "tests.verify.all",
+    "fipv.review",
+    "service.verify"
+   ]
+  },
+  "qa_reviewer": {
+   "label": "Document Reviewer / QA",
+   "base": "cxeng",
+   "home": "Evidence review desk",
+   "authority": [
+    "document.review",
+    "photos.approve",
+    "documents.approve",
+    "customer.accept"
+   ]
+  },
+  "sitechamp": {
+   "label": "Site Champion",
+   "base": "employee",
+   "home": "My sites",
+   "authority": [
+    "location.verify",
+    "access.coordinate",
+    "occupancy.confirm"
+   ]
+  },
+  "facilities": {
+   "label": "Facilities Manager",
+   "base": "employee",
+   "home": "Facilities coverage",
+   "authority": [
+    "access.approve",
+    "room.conditions"
+   ]
+  },
+  "steward": {
+   "label": "Data Steward",
+   "base": "steward",
+   "home": "Governance ledger",
+   "authority": [
+    "provenance.review",
+    "profile.publish",
+    "standard.change",
+    "case.approve"
+   ]
+  },
+  "secadmin": {
+   "label": "Security / Platform Admin",
+   "base": "steward",
+   "home": "Policy & integrations",
+   "authority": [
+    "policy.configure",
+    "license.grant",
+    "adapter.allowlist"
+   ]
+  },
+  "architect": {
+   "label": "Product Architect",
+   "base": "architect",
+   "home": "Everything, for the demonstration",
+   "authority": [
+    "*"
+   ]
+  }
+ },
+ "v25Types": [
+  "Delivery",
+  "Deficiency",
+  "Tracker",
+  "Project",
+  "Request",
+  "PitchDeck",
+  "Decision",
+  "Funding",
+  "DesignRevision",
+  "DIVR",
+  "Extraction",
+  "RFI",
+  "ScouterProposal",
+  "LiteModel",
+  "FIPlan",
+  "FISession",
+  "MeasurementEvidence",
+  "CommissioningPlan",
+  "TestResult",
+  "DocArtifact",
+  "PhotoSet",
+  "WorkOrder",
+  "Dispatch",
+  "Baseline",
+  "Incident",
+  "Hypothesis",
+  "LearnCase",
+  "Standard",
+  "SOP",
+  "SOW",
+  "Exception",
+  "Entitlement"
+ ],
+ "v25Events": [
+  "request.submitted",
+  "vendor.request_acknowledged",
+  "project.pitch_deck_submitted",
+  "project.approval_requested",
+  "project.approval_decided",
+  "project.approval_reopened",
+  "project.funding_authorized",
+  "project.funding_withdrawn",
+  "intake.engineering_approved",
+  "project.design_assigned",
+  "design.artifact_uploaded",
+  "drawing.properties_extracted",
+  "drawing.assertion_conflicted",
+  "design.revision_proposed",
+  "design.approved_for_install",
+  "device.selected",
+  "standardization.profile_proposed",
+  "standardization.profile_reviewed",
+  "standardization.profile_published",
+  "lite.model_generated",
+  "lite.geometry_verified",
+  "commission.plan_compiled",
+  "commission.plan_released",
+  "commission.plan_recompiled",
+  "commission.test_result_submitted",
+  "commission.test_failed",
+  "commission.deficiency_opened",
+  "commission.deficiency_resolved",
+  "document.review_decided",
+  "document.approval_revoked",
+  "final_photos.submitted",
+  "final_photos.approved",
+  "documentation.packet_approved",
+  "handoff.accepted",
+  "assurance.baseline_superseded",
+  "assurance.drift_detected",
+  "assurance.recommission_run_recorded",
+  "work_order.created",
+  "work_order.assigned",
+  "work_order.accepted",
+  "work_order.authorization_revoked",
+  "field.asset_scanned",
+  "field.deviation_raised",
+  "field.scan_completed",
+  "field.measurement_verified",
+  "service.field_completed",
+  "service.repair_verified",
+  "incident.reopened",
+  "apex.diagnosis_reviewed",
+  "coverage.assignment_changed",
+  "search_party.contact_actioned",
+  "security.access_denied",
+  "policy.exception_decided",
+  "standard.changed",
+  "sop.approved",
+  "sow.approved",
+  "training.case_approved",
+  "usage.session_observed",
+  "integration.connector_stale",
+  "integration.adapter_health_changed",
+  "metric.source_stale",
+  "workflow.compensation_requested",
+  "fipv.session_transitioned",
+  "fipv.evidence_submitted",
+  "request.cancelled",
+  "room.design_created",
+  "room.classification_proposed",
+  "room.classification_approved",
+  "room.geometry_updated",
+  "room.device_added",
+  "room.device_moved",
+  "room.device_swapped",
+  "room.device_removed",
+  "room.connection_changed",
+  "room.design_revision_saved",
+  "drawing.revision_generated",
+  "commission.applicability_compiled",
+  "commission.workbook_generated",
+  "deficiency.identified",
+  "issue.created_or_updated",
+  "issue.assigned",
+  "room.design_approved",
+  "room.lifecycle_changed",
+  "room.test_verified",
+  "room.work_order_created",
+  "room.work_order_closed",
+  "room.hypothesis_recorded",
+  "request.desk_updated",
+  "executive.metric_materialized",
+  "photos.location_verified",
+  "purchase.approved",
+  "part.received",
+  "commission.plan_extended",
+  "commission.asset_registered",
+  "commission.asset_replaced",
+  "control.design_published",
+  "control.design_deployed",
+  "control.design_rolled_back",
+  "control.path_simulated",
+  "control.path_verified",
+  "control.command_refused"
+ ],
+ "stateMachines": {
+  "project_governance": {
+   "states": [
+    "DRAFT",
+    "SUBMITTED",
+    "VENDOR_ACKNOWLEDGED",
+    "INTERNAL_ROUTE_RECORDED",
+    "PITCH_READY",
+    "DECISION_PENDING",
+    "APPROVED",
+    "HELD",
+    "REJECTED",
+    "FUNDED",
+    "SUSPENDED"
+   ],
+   "transitions": 11
+  },
+  "design_and_commissioning": {
+   "states": [
+    "ENGINEERING_REVIEW",
+    "DESIGN_DRAFT",
+    "DESIGN_REVIEW",
+    "DESIGN_RELEASED",
+    "PLAN_COMPILED",
+    "FIELD_AUTHORIZED",
+    "FIELD_ACTIVE",
+    "TESTS_VERIFIED",
+    "DOCUMENTS_APPROVED",
+    "CUSTOMER_ACCEPTED",
+    "HANDED_OFF",
+    "BASELINED"
+   ],
+   "transitions": 11
+  },
+  "service": {
+   "states": [
+    "OPEN",
+    "TRIAGED",
+    "ASSIGNED",
+    "ACCEPTED",
+    "IN_PROGRESS",
+    "VERIFYING",
+    "RESOLVED",
+    "CLOSED",
+    "REOPENED",
+    "CANCELLED"
+   ],
+   "transitions": 8
+  },
+  "document": {
+   "states": [
+    "REQUIRED",
+    "PENDING",
+    "SUBMITTED",
+    "IN_REVIEW",
+    "APPROVED",
+    "REJECTED",
+    "EXCEPTION_APPROVED",
+    "SUPERSEDED",
+    "REVOKED",
+    "NOT_APPLICABLE"
+   ],
+   "transitions": 7
+  },
+  "scouter_profile": {
+   "states": [
+    "PROPOSED",
+    "ENGINEERING_REVIEW",
+    "APPROVED",
+    "REJECTED",
+    "PUBLISHED",
+    "STALE"
+   ],
+   "transitions": 5
+  },
+  "__design": {
+   "stateMachineVersion": "2.5.0",
+   "rulePackVersion": "2.5.0",
+   "ontologyEdges": 39,
+   "registryEntities": 65,
+   "measurementFields": 43
+  }
+ },
+ "tabs": [
+  {
+   "key": "home",
+   "label": "Home",
+   "href": "#/home"
+  },
+  {
+   "key": "campus",
+   "label": "Campus",
+   "href": "#/campus"
+  },
+  {
+   "key": "search",
+   "label": "Search",
+   "href": "#/search"
+  },
+  {
+   "key": "room",
+   "label": "Room",
+   "href": "#/room"
+  },
+  {
+   "key": "more",
+   "label": "More",
+   "href": ""
+  }
+ ],
+ "navGroups": [
+  {
+   "group": "Operate",
+   "items": [
+    {
+     "key": "home",
+     "label": "Mission Control",
+     "description": "What changed, what matters, what needs a decision",
+     "href": "#/home"
+    },
+    {
+     "key": "campus",
+     "label": "Campus",
+     "description": "Campus, building, floor, room",
+     "href": "#/campus"
+    },
+    {
+     "key": "search",
+     "label": "Search Party",
+     "description": "Search, relationships, directory and data quality",
+     "href": "#/search"
+    },
+    {
+     "key": "lite",
+     "label": "Lite",
+     "description": "Workplace Explorer in 3D and 4D",
+     "href": "#/lite"
+    },
+    {
+     "key": "assurance",
+     "label": "Assurance",
+     "description": "Drift, ready checks, change impact, recommissioning",
+     "href": "#/assurance"
+    }
+   ]
+  },
+  {
+   "group": "Empathia Pro",
+   "items": [
+    {
+     "key": "pro",
+     "label": "Command Center",
+     "description": "What is open now, against its target",
+     "href": "#/pro"
+    },
+    {
+     "key": "pro/assets",
+     "label": "Asset Intelligence",
+     "description": "Population, firmware, lifecycle, refresh",
+     "href": "#/pro/assets"
+    },
+    {
+     "key": "pro/issues",
+     "label": "Issue Intelligence",
+     "description": "Incidents, patterns, systemic problems",
+     "href": "#/pro/issues"
+    },
+    {
+     "key": "pro/ops",
+     "label": "Operations Hub",
+     "description": "Procedures, fixes, playbooks, ownership",
+     "href": "#/pro/ops"
+    },
+    {
+     "key": "pro/eng",
+     "label": "Standards and Engineering",
+     "description": "Packages, diagrams, governance",
+     "href": "#/pro/eng"
+    },
+    {
+     "key": "pro/exec",
+     "label": "Executive Intelligence",
+     "description": "Six questions, answered simply",
+     "href": "#/pro/exec"
+    }
+   ]
+  },
+  {
+   "group": "Plan and build",
+   "items": [
+    {
+     "key": "intake",
+     "label": "Intake",
+     "description": "Requests, requirements and the engineering brief",
+     "href": "#/intake"
+    },
+    {
+     "key": "builder",
+     "label": "Room Builder",
+     "description": "A proposed design on the 3D model",
+     "href": "#/builder"
+    },
+    {
+     "key": "scouter",
+     "label": "Scouter",
+     "description": "Device evaluation and market watch",
+     "href": "#/scouter"
+    },
+    {
+     "key": "budget",
+     "label": "Budget",
+     "description": "ROM, capital, reuse and lifecycle",
+     "href": "#/budget"
+    },
+    {
+     "key": "commissioning",
+     "label": "Commission",
+     "description": "Five phases, traceability, sign-off",
+     "href": "#/commissioning"
+    }
+   ]
+  },
+  {
+   "group": "Rooms in use",
+   "items": [
+    {
+     "key": "control",
+     "label": "Control",
+     "description": "One room-control language, five modes",
+     "href": "#/control"
+    },
+    {
+     "key": "scheduler",
+     "label": "Scheduler",
+     "description": "The panel at each door",
+     "href": "#/scheduler"
+    }
+   ]
+  },
+  {
+   "group": "Understand",
+   "items": [
+    {
+     "key": "replay",
+     "label": "Core Replay",
+     "description": "A room’s whole life, in 3D and through time",
+     "href": "#/replay"
+    },
+    {
+     "key": "compare",
+     "label": "Compare",
+     "description": "Two things on the same measures",
+     "href": "#/compare"
+    },
+    {
+     "key": "ledger",
+     "label": "Evidence ledger",
+     "description": "Why this? for every conclusion",
+     "href": "#/ledger"
+    },
+    {
+     "key": "ask",
+     "label": "Ask Empathia",
+     "description": "Questions answered from Core, with sources",
+     "href": "#/ask"
+    },
+    {
+     "key": "learn",
+     "label": "Learn",
+     "description": "SIGNAL: Core becomes training",
+     "href": "#/learn"
+    }
+   ]
+  },
+  {
+   "group": "Foundation",
+   "items": [
+    {
+     "key": "core",
+     "label": "Core",
+     "description": "The canonical model",
+     "href": "#/suite/core"
+    },
+    {
+     "key": "fabric",
+     "label": "Integration Fabric",
+     "description": "Sixteen simulated connectors, one event rippling",
+     "href": "#/fabric"
+    },
+    {
+     "key": "qr",
+     "label": "QR Launch",
+     "description": "Six kinds of code, six ways in",
+     "href": "#/qr"
+    },
+    {
+     "key": "tours",
+     "label": "Guided experiences",
+     "description": "Three tours and presentation mode",
+     "href": "#/tours"
+    }
+   ]
+  }
+ ],
+ "searchDestinations": [
+  {
+   "href": "#/home",
+   "label": "Mission Control",
+   "description": "What changed, what matters, what needs action",
+   "icon": "home",
+   "keywords": "dashboard overview today",
+   "primary": true
+  },
+  {
+   "href": "#/campus",
+   "label": "Campus",
+   "description": "Buildings, floors and rooms with their status",
+   "icon": "campus",
+   "keywords": "map buildings floors estate",
+   "primary": true
+  },
+  {
+   "href": "#/search",
+   "label": "Search Party",
+   "description": "People, rooms, parts and what they connect to",
+   "icon": "search",
+   "keywords": "find relationships graph",
+   "primary": true
+  },
+  {
+   "href": "#/search/support",
+   "label": "Support paths",
+   "description": "Who to call, in what order, for each room",
+   "icon": "support",
+   "keywords": "escalation contact",
+   "primary": false
+  },
+  {
+   "href": "#/search/ownership",
+   "label": "Ownership",
+   "description": "Who owns each room, record and standard",
+   "icon": "people",
+   "keywords": "owner accountable",
+   "primary": false
+  },
+  {
+   "href": "#/search/quality",
+   "label": "Record quality",
+   "description": "Validation queue and open questions in Core",
+   "icon": "check",
+   "keywords": "data steward governance",
+   "primary": false
+  },
+  {
+   "href": "#/search/people",
+   "label": "People and expertise",
+   "description": "Who knows what",
+   "icon": "people",
+   "keywords": "expertise skills",
+   "primary": false
+  },
+  {
+   "href": "#/search/projects",
+   "label": "Project map",
+   "description": "Projects and the rooms they touch",
+   "icon": "project",
+   "keywords": "",
+   "primary": false
+  },
+  {
+   "href": "#/search/orgs",
+   "label": "Organizations",
+   "description": "Vendors, integrators and teams",
+   "icon": "vendor",
+   "keywords": "",
+   "primary": false
+  },
+  {
+   "href": "#/search/activity",
+   "label": "Activity",
+   "description": "What changed recently, by whom",
+   "icon": "time",
+   "keywords": "recent changes",
+   "primary": false
+  },
+  {
+   "href": "#/search/vault",
+   "label": "Evidence and artifacts",
+   "description": "Documents, drawings and captures",
+   "icon": "doc",
+   "keywords": "files drawings",
+   "primary": false
+  },
+  {
+   "href": "#/room",
+   "label": "My room",
+   "description": "The room in focus and its story",
+   "icon": "room",
+   "keywords": "focus room",
+   "primary": true
+  },
+  {
+   "href": "#/lite",
+   "label": "Empathia Lite",
+   "description": "The living campus: walk in, look around, understand the systems",
+   "icon": "place",
+   "keywords": "spatial 3d explore visitor",
+   "primary": true
+  },
+  {
+   "href": "#/lite/way",
+   "label": "Wayfinding",
+   "description": "From here to any room, step by step",
+   "icon": "place",
+   "keywords": "directions route navigate",
+   "primary": false
+  },
+  {
+   "href": "#/lite/services",
+   "label": "Workplace services",
+   "description": "Cafés, desks, help points and hours",
+   "icon": "place",
+   "keywords": "services amenities",
+   "primary": false
+  },
+  {
+   "href": "#/lite/guides",
+   "label": "Guides",
+   "description": "How to use the rooms and the tools",
+   "icon": "doc",
+   "keywords": "how to instructions onboarding",
+   "primary": false
+  },
+  {
+   "href": "#/studio",
+   "label": "Design a Space",
+   "description": "A furnished room you can change: place equipment, see coverage, save a concept",
+   "icon": "room",
+   "keywords": "studio room design sandbox layout plan perspective",
+   "primary": true
+  },
+  {
+   "href": "#/pro",
+   "label": "Empathia Pro",
+   "description": "Command center: issues, targets, devices and rooms",
+   "icon": "ops",
+   "keywords": "operations command center kpi",
+   "primary": true
+  },
+  {
+   "href": "#/pro/assets",
+   "label": "Assets",
+   "description": "Every device, its state, support and lifecycle",
+   "icon": "device",
+   "keywords": "inventory lifecycle",
+   "primary": false
+  },
+  {
+   "href": "#/pro/issues",
+   "label": "Issues",
+   "description": "Open issues, patterns and escalations",
+   "icon": "issue",
+   "keywords": "incidents problems",
+   "primary": false
+  },
+  {
+   "href": "#/pro/issues/patterns",
+   "label": "Incident patterns",
+   "description": "Issues that recur, and where",
+   "icon": "issue",
+   "keywords": "recurring",
+   "primary": false
+  },
+  {
+   "href": "#/pro/operations",
+   "label": "Operations hub",
+   "description": "Rooms, schedules, services and monitoring",
+   "icon": "ops",
+   "keywords": "hub",
+   "primary": false
+  },
+  {
+   "href": "#/pro/standards",
+   "label": "Standards and engineering",
+   "description": "The standards rooms are held to",
+   "icon": "standard",
+   "keywords": "engineering rules",
+   "primary": false
+  },
+  {
+   "href": "#/pro/exec",
+   "label": "Executive intelligence",
+   "description": "Risk, cost and the decisions waiting",
+   "icon": "rec",
+   "keywords": "executive briefing portfolio",
+   "primary": false
+  },
+  {
+   "href": "#/intake",
+   "label": "Intake",
+   "description": "A room or a device: what you need, as a brief",
+   "icon": "plus",
+   "keywords": "request new room device needs assessment",
+   "primary": true
+  },
+  {
+   "href": "#/intake/new",
+   "label": "New request",
+   "description": "Start a room or device intake",
+   "icon": "plus",
+   "keywords": "",
+   "primary": false
+  },
+  {
+   "href": "#/builder",
+   "label": "Room Builder",
+   "description": "Current room against the proposed design, on the same engine as Lite",
+   "icon": "room",
+   "keywords": "design proposal compare",
+   "primary": false
+  },
+  {
+   "href": "#/builder/sound",
+   "label": "Sound system calculator",
+   "description": "Loudspeaker lines, taps and impedance",
+   "icon": "ops",
+   "keywords": "audio calculation 70v",
+   "primary": false
+  },
+  {
+   "href": "#/builder/states",
+   "label": "Divisible room states",
+   "description": "A room that splits, designed as states",
+   "icon": "room",
+   "keywords": "divisible partition hall",
+   "primary": false
+  },
+  {
+   "href": "#/scouter",
+   "label": "Scouter",
+   "description": "Device evaluation: a ranked short-list and what each maker’s notice means",
+   "icon": "device",
+   "keywords": "catalog compare candidates market watch",
+   "primary": true
+  },
+  {
+   "href": "#/scouter/arch",
+   "label": "Architecture compare",
+   "description": "Two architectures across sixteen dimensions",
+   "icon": "graph",
+   "keywords": "architecture",
+   "primary": false
+  },
+  {
+   "href": "#/budget",
+   "label": "Budgeting",
+   "description": "Scenarios, exposure and the funding need",
+   "icon": "budget",
+   "keywords": "cost money finance",
+   "primary": false
+  },
+  {
+   "href": "#/assurance",
+   "label": "Room Assurance",
+   "description": "Is each room still what was commissioned?",
+   "icon": "evidence",
+   "keywords": "drift baseline verify",
+   "primary": true
+  },
+  {
+   "href": "#/assurance/ready",
+   "label": "Readiness",
+   "description": "Rooms ready for use, and why not",
+   "icon": "check",
+   "keywords": "",
+   "primary": false
+  },
+  {
+   "href": "#/assurance/signals",
+   "label": "Maintenance signals",
+   "description": "Early signs from the records",
+   "icon": "issue",
+   "keywords": "maintenance",
+   "primary": false
+  },
+  {
+   "href": "#/assurance/change",
+   "label": "Change impact",
+   "description": "What a planned change touches",
+   "icon": "graph",
+   "keywords": "impact planned change",
+   "primary": false
+  },
+  {
+   "href": "#/commissioning",
+   "label": "Commissioning",
+   "description": "Five phases, the evidence each needs, what blocks sign-off",
+   "icon": "commission",
+   "keywords": "cx acceptance sign-off deficiencies",
+   "primary": true
+  },
+  {
+   "href": "#/control",
+   "label": "Room control",
+   "description": "What the touch controller does, simulated",
+   "icon": "ops",
+   "keywords": "touch panel control",
+   "primary": false
+  },
+  {
+   "href": "#/scheduler",
+   "label": "Room scheduler",
+   "description": "Bookings and free rooms",
+   "icon": "time",
+   "keywords": "booking calendar free rooms",
+   "primary": false
+  },
+  {
+   "href": "#/learn",
+   "label": "Empathia Learn",
+   "description": "Mission cockpit: the next lesson, lab, drill and case",
+   "icon": "learn",
+   "keywords": "training academy",
+   "primary": true
+  },
+  {
+   "href": "#/learn/signal",
+   "label": "SIGNAL",
+   "description": "A story in twelve seasons: decide, enter the room, prove it",
+   "icon": "learn",
+   "keywords": "story episodes seasons maya",
+   "primary": false
+  },
+  {
+   "href": "#/learn/labs",
+   "label": "Labs",
+   "description": "Simulators with a fault to fix",
+   "icon": "ops",
+   "keywords": "simulators practice",
+   "primary": false
+  },
+  {
+   "href": "#/learn/labs/hear",
+   "label": "Audio Lab: hear the engineering",
+   "description": "Real processing in your browser: EQ, gain, high-pass, meters",
+   "icon": "ops",
+   "keywords": "audio lab web audio eq equalizer meter spectrum voice guitar hearing",
+   "primary": true
+  },
+  {
+   "href": "#/learn/labs/see",
+   "label": "Camera Lab: see the settings",
+   "description": "Focus, shutter, frame rate, gain, exposure, colour temperature",
+   "icon": "device",
+   "keywords": "camera lab video shutter motion blur focus exposure iso",
+   "primary": false
+  },
+  {
+   "href": "#/learn/labs/light",
+   "label": "Lighting Lab: shape the light",
+   "description": "Fixtures you move: beam, distance, colour temperature, DMX",
+   "icon": "power",
+   "keywords": "lighting lab dmx fixture beam inverse square colour temperature",
+   "primary": false
+  },
+  {
+   "href": "#/learn/library",
+   "label": "Lessons",
+   "description": "Short lessons by domain",
+   "icon": "doc",
+   "keywords": "library reading",
+   "primary": false
+  },
+  {
+   "href": "#/learn/practice",
+   "label": "Practice",
+   "description": "Drills and quizzes that score",
+   "icon": "check",
+   "keywords": "quiz drill",
+   "primary": false
+  },
+  {
+   "href": "#/learn/cases",
+   "label": "Case files",
+   "description": "Real campus cases to reason through",
+   "icon": "evidence",
+   "keywords": "case study",
+   "primary": false
+  },
+  {
+   "href": "#/learn/service",
+   "label": "Service Mode",
+   "description": "Live incidents, worked as a technician",
+   "icon": "support",
+   "keywords": "incidents",
+   "primary": false
+  },
+  {
+   "href": "#/learn/fieldbook",
+   "label": "Fieldbook",
+   "description": "The vocabulary and the rules of thumb",
+   "icon": "doc",
+   "keywords": "glossary reference",
+   "primary": false
+  },
+  {
+   "href": "#/learn/design",
+   "label": "Design clinic",
+   "description": "The design rules, applied to rooms",
+   "icon": "standard",
+   "keywords": "design rules",
+   "primary": false
+  },
+  {
+   "href": "#/learn/servicehands",
+   "label": "ServiceHands Academy",
+   "description": "How a request moves through service",
+   "icon": "support",
+   "keywords": "academy",
+   "primary": false
+  },
+  {
+   "href": "#/learn/story",
+   "label": "Room story",
+   "description": "Each room’s history as a story",
+   "icon": "room",
+   "keywords": "history narrative",
+   "primary": false
+  },
+  {
+   "href": "#/ask",
+   "label": "Ask Empathia",
+   "description": "A question in plain words, answered from Core",
+   "icon": "search",
+   "keywords": "question answer why",
+   "primary": false
+  },
+  {
+   "href": "#/replay",
+   "label": "Core Replay",
+   "description": "The campus at any earlier moment",
+   "icon": "time",
+   "keywords": "history time machine",
+   "primary": false
+  },
+  {
+   "href": "#/compare",
+   "label": "Core Compare",
+   "description": "Two rooms, standards or devices side by side",
+   "icon": "graph",
+   "keywords": "compare diff",
+   "primary": false
+  },
+  {
+   "href": "#/ledger",
+   "label": "Evidence ledger",
+   "description": "Every claim and what backs it",
+   "icon": "evidence",
+   "keywords": "claims provenance",
+   "primary": false
+  },
+  {
+   "href": "#/fabric",
+   "label": "Integration Fabric",
+   "description": "What Empathia would connect to, and how",
+   "icon": "network",
+   "keywords": "integrations connectors",
+   "primary": false
+  },
+  {
+   "href": "#/qr",
+   "label": "QR Launch Center",
+   "description": "Codes that open a room or a guide",
+   "icon": "place",
+   "keywords": "qr codes",
+   "primary": false
+  },
+  {
+   "href": "#/tours",
+   "label": "Guided experiences",
+   "description": "Narrated walks through the product",
+   "icon": "learn",
+   "keywords": "tour presentation demo",
+   "primary": false
+  },
+  {
+   "href": "#/servicehands",
+   "label": "ServiceHands",
+   "description": "Requests, routing and the board",
+   "icon": "support",
+   "keywords": "service requests tickets board",
+   "primary": true
+  },
+  {
+   "href": "#/servicehands/new",
+   "label": "New request",
+   "description": "Raise a change or a repair",
+   "icon": "plus",
+   "keywords": "ticket",
+   "primary": false
+  },
+  {
+   "href": "#/service",
+   "label": "Service command",
+   "description": "Queue, coverage and escalation",
+   "icon": "support",
+   "keywords": "service manager queue",
+   "primary": false
+  },
+  {
+   "href": "#/service/fixes",
+   "label": "Known fixes",
+   "description": "What fixed it last time",
+   "icon": "check",
+   "keywords": "fix library",
+   "primary": false
+  },
+  {
+   "href": "#/service/coverage",
+   "label": "Coverage",
+   "description": "Who covers which room and when",
+   "icon": "people",
+   "keywords": "coverage rota",
+   "primary": false
+  },
+  {
+   "href": "#/projects",
+   "label": "Project delivery",
+   "description": "Milestones, risks, vendors and the next decision",
+   "icon": "project",
+   "keywords": "projects pm delivery timeline",
+   "primary": true
+  },
+  {
+   "href": "#/decisions",
+   "label": "Decision memory",
+   "description": "Every decision, who made it and what happened after",
+   "icon": "rec",
+   "keywords": "decisions",
+   "primary": false
+  },
+  {
+   "href": "#/lessons",
+   "label": "Lessons learned",
+   "description": "What projects taught",
+   "icon": "learn",
+   "keywords": "",
+   "primary": false
+  },
+  {
+   "href": "#/install",
+   "label": "Installation",
+   "description": "Tasks, dependencies, redlines and evidence",
+   "icon": "commission",
+   "keywords": "installer field",
+   "primary": false
+  },
+  {
+   "href": "#/handoff",
+   "label": "Handoff chain",
+   "description": "Who handed what to whom",
+   "icon": "people",
+   "keywords": "handoff",
+   "primary": false
+  },
+  {
+   "href": "#/agent",
+   "label": "Room Health Check",
+   "description": "Reachability checks every 15 minutes, quiet during meetings",
+   "icon": "network",
+   "keywords": "reachability ping health check monitoring schedule automated",
+   "primary": false
+  },
+  {
+   "href": "#/investigate",
+   "label": "Investigate",
+   "description": "One case: symptom, hypotheses, tests, cause, fix, verification",
+   "icon": "issue",
+   "keywords": "investigate incident diagnosis hypothesis root cause",
+   "primary": false
+  },
+  {
+   "href": "#/list/Room",
+   "label": "All rooms",
+   "description": "Every room as a list",
+   "icon": "room",
+   "keywords": "",
+   "primary": false
+  },
+  {
+   "href": "#/list/Device",
+   "label": "All devices",
+   "description": "Every device as a list",
+   "icon": "device",
+   "keywords": "",
+   "primary": false
+  },
+  {
+   "href": "#/list/Issue",
+   "label": "All issues",
+   "description": "Every issue as a list",
+   "icon": "issue",
+   "keywords": "",
+   "primary": false
+  },
+  {
+   "href": "#/list/Project",
+   "label": "All projects",
+   "description": "",
+   "icon": "project",
+   "keywords": "",
+   "primary": false
+  },
+  {
+   "href": "#/list/Standard",
+   "label": "All standards",
+   "description": "",
+   "icon": "standard",
+   "keywords": "",
+   "primary": false
+  },
+  {
+   "href": "#/list/Vendor",
+   "label": "All vendors",
+   "description": "",
+   "icon": "vendor",
+   "keywords": "",
+   "primary": false
+  }
+ ],
+ "tours": {
+  "lifecycle": {
+   "title": "lifecycle",
+   "steps": 19
+  },
+  "workplace": {
+   "title": "workplace",
+   "steps": 7
+  },
+  "engineer": {
+   "title": "engineer",
+   "steps": 8
+  },
+  "founder": {
+   "title": "founder",
+   "steps": 15
+  },
+  "d2a": {
+   "title": "d2a",
+   "steps": null,
+   "module": "2975-static-learn13.js"
+  },
+  "investor": {
+   "title": "investor",
+   "steps": null,
+   "module": "v25-30-investor.js"
+  }
+ },
+ "views": [
+  "agent",
+  "decisions",
+  "exports",
+  "gate",
+  "handoff",
+  "install",
+  "investigate",
+  "investor",
+  "lessons",
+  "pro",
+  "projects",
+  "service",
+  "servicehands",
+  "studio",
+  "v14",
+  "v25"
+ ],
+ "actions": 661,
+ "actionNames": [
+  "a-asbuilt",
+  "a-chg-do",
+  "a-chg-new",
+  "a-chg-plan",
+  "a-chg-regress",
+  "a-chg-reset",
+  "a-compare",
+  "a-focus",
+  "a-implement",
+  "a-open",
+  "a-play",
+  "a-recom-accept",
+  "a-recom-approve",
+  "a-recom-cancel",
+  "a-recom-run",
+  "a-recom-start",
+  "a-restore",
+  "a-result",
+  "a-run",
+  "a-signal",
+  "a-state",
+  "a-unbuild",
+  "a-validate",
+  "ac-new",
+  "ac-record",
+  "ack",
+  "ag-scroll",
+  "agent-rules",
+  "ai-delete",
+  "ai-eval",
+  "ai-extract",
+  "ai-feedback",
+  "ai-hyp",
+  "ai-prompt-rollback",
+  "ai-retrieve",
+  "al-band",
+  "al-bypass",
+  "al-hpf",
+  "al-play",
+  "al-reset",
+  "al-stop",
+  "approve",
+  "au-search",
+  "back",
+  "bd-approve",
+  "bd-decline",
+  "bd-decline-save",
+  "bd-edit",
+  "bd-ov",
+  "bd-scratch",
+  "c-def-new",
+  "c-fix",
+  "c-line",
+  "c-phase",
+  "c-run",
+  "c-run-all",
+  "c-run-phase",
+  "c-run-rel",
+  "c-signoff",
+  "c-unfix",
+  "ca-play",
+  "ca-rules",
+  "ca-step",
+  "cc",
+  "cine",
+  "cine-close",
+  "cine-pause",
+  "cine-skip",
+  "cl-a",
+  "cl-ab",
+  "cl-reset",
+  "clear-recents",
+  "cm-compose",
+  "cm-distances",
+  "cm-run",
+  "cm-send",
+  "cm-upload",
+  "cm-wo",
+  "cov-cell",
+  "cs-baseline",
+  "cs-bind-open",
+  "cs-call",
+  "cs-combine",
+  "cs-comp-add-open",
+  "cs-comp-del",
+  "cs-comp-edit-open",
+  "cs-comp-sel",
+  "cs-console-open",
+  "cs-create",
+  "cs-deploy",
+  "cs-diff",
+  "cs-export",
+  "cs-fault",
+  "cs-help",
+  "cs-il-open",
+  "cs-import-open",
+  "cs-mx",
+  "cs-pick-display",
+  "cs-port",
+  "cs-press",
+  "cs-publish",
+  "cs-rec-open",
+  "cs-rollback",
+  "cs-room-console-open",
+  "cs-route-del",
+  "cs-route-form",
+  "cs-route-sel",
+  "cs-rt-call",
+  "cs-rt-reset",
+  "cs-rt-stale",
+  "cs-rt-up",
+  "cs-scene-add-open",
+  "cs-scene-try",
+  "cs-send",
+  "cs-seq-open",
+  "cs-seq-try",
+  "cs-sim",
+  "cs-sysoff",
+  "cs-sysoff-cancel",
+  "cs-sysoff-room",
+  "cs-tick",
+  "cs-verify",
+  "cx-accept",
+  "cx-revoke",
+  "cx-tech",
+  "d2a-run",
+  "de-apply",
+  "de-approve",
+  "de-forget",
+  "de-learn",
+  "de-op",
+  "de-preview",
+  "de-reject",
+  "de-reopen",
+  "de-withdraw",
+  "defer",
+  "dg-cancel",
+  "dg-run",
+  "dg-wo",
+  "dm-new",
+  "dm-record",
+  "dv-accept",
+  "dv-new",
+  "dv-reject",
+  "dv-save",
+  "e-basis",
+  "e-bcover",
+  "e-brief",
+  "e-budget",
+  "e-bview",
+  "e-choose",
+  "e-cmp",
+  "e-decide",
+  "e-design",
+  "e-pick",
+  "e-submit",
+  "e-to-budget",
+  "e-undo",
+  "e-withdraw",
+  "esc-go",
+  "ex-copy",
+  "ex-csv",
+  "ex-jpg",
+  "ex-json",
+  "ex-pdf",
+  "ex-png",
+  "fav",
+  "fb-fire",
+  "fb-undo",
+  "fl-check",
+  "fl-close",
+  "fl-ev-add",
+  "fl-incident",
+  "fl-plan-song",
+  "fl-send",
+  "fl-train",
+  "fl-unsched",
+  "fl-wo",
+  "fl-wo-close",
+  "focus",
+  "gate-q",
+  "gate-role",
+  "gate-tours",
+  "geo-ai-apply",
+  "geo-approve",
+  "geo-comment",
+  "geo-import",
+  "geo-preview",
+  "geo-redo",
+  "geo-reject",
+  "geo-remove",
+  "geo-reset",
+  "geo-resim",
+  "geo-rollback",
+  "geo-submit",
+  "geo-undo",
+  "gov-validate",
+  "gx-exit",
+  "gx-pause",
+  "gx-start",
+  "gx-step",
+  "hall-measure",
+  "hall-presets",
+  "hall-retap",
+  "hall-sensor",
+  "hall-state",
+  "hall-test",
+  "hall-view",
+  "hf-off",
+  "hf-on",
+  "hf-open",
+  "ho-accept",
+  "hub-clear",
+  "hub-sort",
+  "hub-test",
+  "ic-approve",
+  "ic-connect",
+  "ic-request",
+  "ic-revoke",
+  "id-bench",
+  "id-replace",
+  "id-resolve",
+  "in-gate",
+  "inv-rb-build",
+  "inv-rb-sample",
+  "inv-step",
+  "inv-tour",
+  "itsm-map",
+  "itsm-sync",
+  "itsm-sync-fault",
+  "ix-clear",
+  "ix-close",
+  "ix-fix",
+  "ix-record",
+  "ix-reset",
+  "ix-save",
+  "ix-sim",
+  "jump-copy",
+  "k-board",
+  "k-cam-next",
+  "k-commons",
+  "k-group",
+  "k-mode",
+  "k-mute",
+  "k-session",
+  "k-share",
+  "k-view",
+  "k-vol",
+  "l-assure",
+  "l-cam",
+  "l-card-close",
+  "l-check",
+  "l-cover",
+  "l-defs",
+  "l-drift",
+  "l-edits-reset",
+  "l-go",
+  "l-here",
+  "l-layers",
+  "l-leg",
+  "l-mode",
+  "l-motion",
+  "l-nudge",
+  "l-obj",
+  "l-preview",
+  "l-rot",
+  "l-scene",
+  "l-seats",
+  "l-split",
+  "l-state",
+  "l-tool",
+  "l-visit",
+  "l3",
+  "ll-mode",
+  "ll-reset",
+  "ll-screen",
+  "ll-sel",
+  "ln-answer",
+  "ln-choose",
+  "ln-clear",
+  "ln-drill-again",
+  "ln-sf",
+  "mi-drop",
+  "mi-prove",
+  "mi-start",
+  "more",
+  "onb-complete",
+  "onb-pick",
+  "onb-try",
+  "onb-view",
+  "ops-bulk",
+  "ops-case",
+  "ops-degrade",
+  "ops-packet",
+  "ops-publish-case",
+  "ops-quiz",
+  "ops-recover",
+  "ops-revoke",
+  "ops-sign",
+  "ops-sign-ai",
+  "opt-adopt",
+  "opt-colleague",
+  "opt-consent",
+  "opt-domain",
+  "opt-dsp",
+  "opt-evidence",
+  "opt-learn-demo",
+  "opt-math",
+  "opt-nudge",
+  "opt-project",
+  "opt-publish",
+  "opt-recom",
+  "opt-redo",
+  "opt-resolve",
+  "opt-sh",
+  "opt-undo",
+  "p-back",
+  "p-close",
+  "p8-cancel",
+  "panel-close",
+  "present-menu",
+  "present-off",
+  "ptab",
+  "rb-halt",
+  "rb-run",
+  "rb-signoff",
+  "rb-toggle",
+  "reach-probe",
+  "report",
+  "reset-ask",
+  "reset-do",
+  "roles",
+  "room-tab",
+  "rp-jump",
+  "rp-layer",
+  "rp-play",
+  "rp-step",
+  "rv-approve",
+  "rv-reject",
+  "rv-reopen",
+  "sb-reset",
+  "sc-verify",
+  "sca-break",
+  "sca-fix",
+  "sca-guess",
+  "sca-layer",
+  "sca-pick",
+  "sca-verify",
+  "sch-active-approve",
+  "sch-approve",
+  "sch-cancel",
+  "sch-fault",
+  "sch-pause",
+  "sch-restart",
+  "sch-revoke",
+  "sch-run-now",
+  "sch-tick",
+  "sch-wo",
+  "scroll",
+  "sd-kind",
+  "set-role",
+  "sg-add-open",
+  "sg-dr-again",
+  "sg-dr-check",
+  "sg-dr-chip",
+  "sg-dr-class",
+  "sg-dr-clue",
+  "sg-dr-fund",
+  "sg-dr-move",
+  "sg-dr-slot",
+  "sg-dr-stage",
+  "sg-dr-start",
+  "sg-ex-hot",
+  "sg-ex-layer",
+  "sg-ex-level",
+  "sg-finish",
+  "sg-inc-again",
+  "sg-inc-calc",
+  "sg-inc-calc-x",
+  "sg-inc-declare",
+  "sg-inc-do",
+  "sg-inc-start",
+  "sg-j6-share",
+  "sg-j6-start",
+  "sg-j6-withdraw",
+  "sg-key",
+  "sg-lab-do",
+  "sg-lab-give",
+  "sg-lab-reset",
+  "sg-lab-start",
+  "sg-lab-test",
+  "sg-les-again",
+  "sg-les-next",
+  "sg-les-prev",
+  "sg-math",
+  "sg-pace",
+  "sg-play",
+  "sg-q",
+  "sg-q-next",
+  "sg-q-reset",
+  "sg-rehearse",
+  "sg-rehearse-done",
+  "sg-stop",
+  "sg-tap",
+  "sg-tempo",
+  "sgs-back",
+  "sgs-check",
+  "sgs-choose",
+  "sgs-class",
+  "sgs-exam",
+  "sgs-inspect",
+  "sgs-next",
+  "sgs-reset",
+  "sh-convert",
+  "sh-submit",
+  "sha-another",
+  "sha-ans",
+  "sha-chk-again",
+  "sha-down",
+  "sha-drill",
+  "sha-file",
+  "sha-toggle",
+  "sha-up",
+  "sn-announce",
+  "sn-arm",
+  "sn-cancel",
+  "sn-clear",
+  "sn-confirm",
+  "sn-fallback-test",
+  "snd",
+  "so-comment",
+  "so-contrib",
+  "so-contrib-save",
+  "so-follow",
+  "st-add",
+  "st-brief",
+  "st-brief-copy",
+  "st-cmpv",
+  "st-desel",
+  "st-disp",
+  "st-dup",
+  "st-export",
+  "st-find",
+  "st-fit",
+  "st-fix",
+  "st-forget",
+  "st-forget-arm",
+  "st-forget-no",
+  "st-new",
+  "st-nudge",
+  "st-open",
+  "st-png",
+  "st-preview",
+  "st-redo",
+  "st-restore",
+  "st-rm",
+  "st-rot",
+  "st-save",
+  "st-show",
+  "st-undo",
+  "st-version",
+  "st-view",
+  "st-xray",
+  "sv-again",
+  "sv-close",
+  "sv-do",
+  "sv-start",
+  "tel-replay",
+  "trail",
+  "undo",
+  "v13-season",
+  "v14-validate",
+  "v25-ack-open",
+  "v25-apex-a4-open",
+  "v25-apex-act",
+  "v25-apex-open",
+  "v25-apex-review",
+  "v25-as-accept-open",
+  "v25-as-baseline-accept",
+  "v25-as-baseline-try",
+  "v25-as-drift",
+  "v25-as-handoff-open",
+  "v25-as-propose",
+  "v25-as-recommission-open",
+  "v25-branch-open",
+  "v25-compare",
+  "v25-compare-open",
+  "v25-contact",
+  "v25-cx-compile",
+  "v25-cx-exc-open",
+  "v25-cx-na-open",
+  "v25-cx-recompile-open",
+  "v25-cx-release",
+  "v25-cx-resolve-open",
+  "v25-cx-result-open",
+  "v25-cx-verified",
+  "v25-cx-verify",
+  "v25-cx-window-open",
+  "v25-cxw-asset-open",
+  "v25-cxw-attempt",
+  "v25-cxw-batch-na-open",
+  "v25-cxw-batch-verify",
+  "v25-cxw-conflict-open",
+  "v25-cxw-export",
+  "v25-cxw-lookup",
+  "v25-cxw-lookup-open",
+  "v25-cxw-offline-open",
+  "v25-cxw-proposal-open",
+  "v25-cxw-record-open",
+  "v25-cxw-replace-open",
+  "v25-cxw-site",
+  "v25-cxw-sub-decide-open",
+  "v25-cxw-sub-open",
+  "v25-cxw-sync-open",
+  "v25-cxw-zones-open",
+  "v25-decide-open",
+  "v25-design-open",
+  "v25-desk-open",
+  "v25-deviation-open",
+  "v25-device-open",
+  "v25-divr-open",
+  "v25-doc-appl-open",
+  "v25-doc-build",
+  "v25-doc-compare",
+  "v25-doc-packet",
+  "v25-doc-report-export",
+  "v25-doc-review-open",
+  "v25-doc-revoke-open",
+  "v25-doc-submit-open",
+  "v25-domain-approve",
+  "v25-emp-edit-open",
+  "v25-extract",
+  "v25-fi-evidence-open",
+  "v25-fi-export",
+  "v25-fi-plan",
+  "v25-fi-plan-form",
+  "v25-fi-review-open",
+  "v25-field-auth-open",
+  "v25-fund-open",
+  "v25-geometry-approve",
+  "v25-inc-dispatch",
+  "v25-inc-open-open",
+  "v25-intake-draft",
+  "v25-intake-submit",
+  "v25-kpi-export",
+  "v25-learn-approve",
+  "v25-learn-propose-open",
+  "v25-learn-sme",
+  "v25-lite-add-open",
+  "v25-lite-correct-open",
+  "v25-lite-create",
+  "v25-lite-packet",
+  "v25-lite-recon",
+  "v25-lite-variant-open",
+  "v25-offline-add-open",
+  "v25-offline-sync-open",
+  "v25-parts-recheck",
+  "v25-persona",
+  "v25-persona-open",
+  "v25-photos-open",
+  "v25-photos-review-open",
+  "v25-pick-fav",
+  "v25-pick-set",
+  "v25-policy-photo",
+  "v25-prop-review",
+  "v25-pv-arm-open",
+  "v25-pv-auth",
+  "v25-pv-branch",
+  "v25-pv-dry",
+  "v25-pv-elig",
+  "v25-pv-estop",
+  "v25-pv-estop-check",
+  "v25-pv-instrument-open",
+  "v25-pv-license",
+  "v25-pv-operator",
+  "v25-pv-propose",
+  "v25-pv-protocol-open",
+  "v25-pv-run",
+  "v25-pv-window",
+  "v25-quote-open",
+  "v25-rb-add",
+  "v25-rb-apex",
+  "v25-rb-assign",
+  "v25-rb-cls",
+  "v25-rb-cmp",
+  "v25-rb-cut",
+  "v25-rb-cxf",
+  "v25-rb-dapprove",
+  "v25-rb-dims",
+  "v25-rb-dshow",
+  "v25-rb-dup",
+  "v25-rb-eng",
+  "v25-rb-fault",
+  "v25-rb-generate",
+  "v25-rb-geo-open",
+  "v25-rb-goas",
+  "v25-rb-import",
+  "v25-rb-life",
+  "v25-rb-link",
+  "v25-rb-mount",
+  "v25-rb-new",
+  "v25-rb-outline-back",
+  "v25-rb-outline-cancel",
+  "v25-rb-outline-finish",
+  "v25-rb-outline-start",
+  "v25-rb-outline-typed",
+  "v25-rb-photo-create",
+  "v25-rb-plan-create",
+  "v25-rb-rec-open",
+  "v25-rb-redline",
+  "v25-rb-redo",
+  "v25-rb-ref-create",
+  "v25-rb-remove",
+  "v25-rb-rot",
+  "v25-rb-sample",
+  "v25-rb-sampleplan",
+  "v25-rb-save",
+  "v25-rb-scale-open",
+  "v25-rb-scene",
+  "v25-rb-swap",
+  "v25-rb-toggle",
+  "v25-rb-tour",
+  "v25-rb-tstep",
+  "v25-rb-undo",
+  "v25-rb-verify",
+  "v25-rb-view",
+  "v25-rb-wo",
+  "v25-rb-wo-close",
+  "v25-rb-workbook",
+  "v25-redline-open",
+  "v25-redline-resolve",
+  "v25-rev-open",
+  "v25-rev-release",
+  "v25-rev-submit",
+  "v25-rfi-open",
+  "v25-scout-adopt",
+  "v25-scout-propose",
+  "v25-scout-publish",
+  "v25-scout-review",
+  "v25-scout-review-open",
+  "v25-scout-send",
+  "v25-scout-stale-open",
+  "v25-sop-approve",
+  "v25-sop-open",
+  "v25-sow-approve",
+  "v25-sow-open",
+  "v25-staff-open",
+  "v25-std-change-open",
+  "v25-usage-seed",
+  "v25-verify-location",
+  "v25-wo-access",
+  "v25-wo-assign",
+  "v25-wo-confirm",
+  "v25-wo-new-open",
+  "validate",
+  "view-exit",
+  "view-return",
+  "vo",
+  "vo-stop",
+  "why",
+  "wo-step"
+ ],
+ "tests": [
+  "_origin.mjs",
+  "accept.mjs",
+  "accept13.mjs",
+  "accept13b.mjs",
+  "accept2.mjs",
+  "accept3.mjs",
+  "accept4.mjs",
+  "accept5.mjs",
+  "accept6.mjs",
+  "accept7.mjs",
+  "accept8.mjs",
+  "accept9.mjs",
+  "assure-engine.test.mjs",
+  "assure-smoke.mjs",
+  "audit.mjs",
+  "authz.test.mjs",
+  "breakit.mjs",
+  "com-engine.test.mjs",
+  "com-smoke.mjs",
+  "contrast.mjs",
+  "destroy13-1.mjs",
+  "destroy13-2.mjs",
+  "destroy13-3.mjs",
+  "eng-engine.test.mjs",
+  "eng-smoke.mjs",
+  "features.mjs",
+  "fuzz.mjs",
+  "integrity.mjs",
+  "lite-engine.test.mjs",
+  "lite-smoke.mjs",
+  "model.test.mjs",
+  "roles-leak.mjs",
+  "roles-smoke.mjs",
+  "search.test.mjs",
+  "sg-content.test.mjs",
+  "sg-phys.test.mjs",
+  "shots.mjs",
+  "smoke.mjs",
+  "targets.mjs",
+  "v1-engine.test.mjs",
+  "v1-smoke.mjs",
+  "v13-audio.test.mjs",
+  "v13-authz-browser.mjs",
+  "v13-authz.test.mjs",
+  "v13-com.test.mjs",
+  "v13-consistency.test.mjs",
+  "v13-engineering.test.mjs",
+  "v13-flow.test.mjs",
+  "v13-hall.test.mjs",
+  "v13-release.test.mjs",
+  "v133-exports.mjs",
+  "v133-journeys.mjs",
+  "v133-labs.mjs",
+  "v133-matrix.mjs",
+  "v133-registry.test.mjs",
+  "v133-shell.mjs",
+  "v133-studio.mjs",
+  "v14-camera.mjs",
+  "v14-connect.mjs",
+  "v14-deploy.mjs",
+  "v14-destroy.mjs",
+  "v14-diag.mjs",
+  "v14-explorer-destroy.mjs",
+  "v14-explorer.mjs",
+  "v14-exports.mjs",
+  "v14-foundation.test.mjs",
+  "v14-geometry.mjs",
+  "v14-geometry.test.mjs",
+  "v14-hub.mjs",
+  "v14-identity.mjs",
+  "v14-itsm.mjs",
+  "v14-links.mjs",
+  "v14-ops.mjs",
+  "v14-optimize.mjs",
+  "v14-profiles.mjs",
+  "v14-registry.mjs",
+  "v14-robot.mjs",
+  "v14-schedule.mjs",
+  "v14-schedule.test.mjs",
+  "v14-shell.mjs",
+  "v14-signage.mjs",
+  "v14-telemetry.mjs",
+  "v14-telemetry.test.mjs",
+  "v14-transport.mjs",
+  "v14-widths.mjs",
+  "v25-assure.test.mjs",
+  "v25-boot.mjs",
+  "v25-core.test.mjs",
+  "v25-cs.mjs",
+  "v25-cs.test.mjs",
+  "v25-cx.test.mjs",
+  "v25-cxu-qa.mjs",
+  "v25-cxu.test.mjs",
+  "v25-design.test.mjs",
+  "v25-desk.mjs",
+  "v25-emp.mjs",
+  "v25-exec.test.mjs",
+  "v25-fi.test.mjs",
+  "v25-governance.test.mjs",
+  "v25-links.mjs",
+  "v25-policy.test.mjs",
+  "v25-products.mjs",
+  "v25-qa-cs1.mjs",
+  "v25-qa-cs2.mjs",
+  "v25-qa-rv.mjs",
+  "v25-qa1.mjs",
+  "v25-qa1.test.mjs",
+  "v25-qa2.mjs",
+  "v25-qa2.test.mjs",
+  "v25-room.mjs",
+  "v25-s04.mjs",
+  "v25-s05.mjs",
+  "v25-s06.mjs",
+  "v25-s07.mjs",
+  "v25-s08.mjs",
+  "v25-s09.mjs",
+  "v25-s10.mjs",
+  "v25-shell.mjs",
+  "v25-sing-j6.mjs",
+  "v25-svc.test.mjs",
+  "v251-patch-authz.mjs",
+  "v251-patch-gap-az-01.mjs",
+  "v251-patch-seal.mjs",
+  "v252-handback.mjs",
+  "v253-townhall-e2e.mjs",
+  "verify-entry.mjs"
+ ],
+ "moduleList": [
+  {
+   "module": "00-util.js",
+   "bytes": 4285,
+   "description": "Small helpers shared by everything. No DOM here."
+  },
+  {
+   "module": "10-model.js",
+   "bytes": 12901,
+   "description": "EMPATHIA CORE — the one canonical model. Every screen reads from (and writes to) this graph:"
+  },
+  {
+   "module": "12-authz.js",
+   "bytes": 44933,
+   "description": "AUTHORIZATION (a demonstration). One place that says what each role may open, see and do."
+  },
+  {
+   "module": "20-static.js",
+   "bytes": 33350,
+   "description": "The vocabulary the synthetic campus is generated from. Everything here is invented for the demonstration:"
+  },
+  {
+   "module": "22-static-ops.js",
+   "bytes": 17099,
+   "description": "Version 0.2 vocabulary: issue intelligence, operations knowledge, engineering references and data stewardship."
+  },
+  {
+   "module": "24-static-lite.js",
+   "bytes": 50292,
+   "description": "Version 0.3 vocabulary: EMPATHIA LITE, the Northstar Workplace Explorer. The lenses, the four states of the"
+  },
+  {
+   "module": "241-static-gear.js",
+   "bytes": 15186,
+   "description": "VERSION 1.3 REFERENCE DATA: the equipment catalogue Lite, Room Builder and Scouter model from."
+  },
+  {
+   "module": "242-static-rooms13.js",
+   "bytes": 20709,
+   "description": "VERSION 1.3: FOURTEEN ROOMS REDESIGNED FOR VARIETY. Each existing room keeps its identity, history and relationships in Core;"
+  },
+  {
+   "module": "243-static-rooms13b.js",
+   "bytes": 27206,
+   "description": "VERSION 1.3, SECOND PASS: SIX MORE ROOMS, FOR VARIETY IN LOUDSPEAKER LINES, MICROPHONES, CAMERAS AND ROOM STATES."
+  },
+  {
+   "module": "26-static-eng.js",
+   "bytes": 40602,
+   "description": "Version 0.4 reference data: Intake, the engineering brief, Room Builder, Scouter and Budgeting."
+  },
+  {
+   "module": "265-static-eng13.js",
+   "bytes": 5909,
+   "description": "VERSION 1.3: the new equipment classes in Scouter. Engineering facts for the two new categories, and catalogue entries for"
+  },
+  {
+   "module": "28-static-assure.js",
+   "bytes": 12046,
+   "description": "EMPATHIA ASSURANCE — fixed vocabulary for version 0.5. Assurance asks one question, continuously:"
+  },
+  {
+   "module": "29-static-com.js",
+   "bytes": 24042,
+   "description": "Version 0.6 static definitions: commissioning (five phases, the checks in each, sign-off, what a baseline holds),"
+  },
+  {
+   "module": "295-static-v1.js",
+   "bytes": 33279,
+   "description": "Version 1.0 catalog: the words and the fixed lists behind Learn, Core Replay, the 4D time explorer, Core Compare,"
+  },
+  {
+   "module": "296-static-p8.js",
+   "bytes": 61709,
+   "description": "VERSION 1.1 (Master Prompt 8) CATALOG: organizations and people, service delivery, projects and handoff, signage and"
+  },
+  {
+   "module": "2971-static-signal-lib.js",
+   "bytes": 1682631,
+   "description": "SIGNAL learning library (version 1.1). Lessons and their checks, labs and simulations, drills, Service Mode"
+  },
+  {
+   "module": "2972-static-voice.js",
+   "bytes": 26692,
+   "description": "version 1.2: the voice catalogue (generated by tools/gen_voice.py)"
+  },
+  {
+   "module": "2973-static-film.js",
+   "bytes": 2245,
+   "description": "version 1.2: the two-minute film"
+  },
+  {
+   "module": "2974-static-story2.js",
+   "bytes": 20523,
+   "description": "version 1.2: SIGNAL becomes a drama with consequences and a casebook"
+  },
+  {
+   "module": "2975-static-learn13.js",
+   "bytes": 21419,
+   "description": "VERSION 1.3 in Empathia Learn: the Design clinic. Lessons that teach a room the way an experienced AV designer reads it, each"
+  },
+  {
+   "module": "2976-static-history.js",
+   "bytes": 7586,
+   "description": "VERSION 1.3: notes from the history of the trade. One at most on a page, beside the thing it explains, closed until"
+  },
+  {
+   "module": "2977-static-release13.js",
+   "bytes": 2259,
+   "description": "VERSION 1.3: what this version does not do yet, said in the app as plainly as in the release notes. The release test"
+  },
+  {
+   "module": "2978-static-learn13b.js",
+   "bytes": 11672,
+   "description": "VERSION 1.3 in Empathia Learn, second pass: three more Design clinic lessons, on the six rooms of 243-static-rooms13b.js."
+  },
+  {
+   "module": "2979-static-v14-catalog.js",
+   "bytes": 29612,
+   "description": "Version 1.4 Phase 03: the connector catalog (data)"
+  },
+  {
+   "module": "30-generate.js",
+   "bytes": 56132,
+   "description": "The deterministic synthetic-data generator. Same seed, same campus, on every load and every device."
+  },
+  {
+   "module": "32-generate-ops.js",
+   "bytes": 24846,
+   "description": "Version 0.2 generator pass. It runs after generate() on its own random stream, so the campus built in version 0.1"
+  },
+  {
+   "module": "34-generate-lite.js",
+   "bytes": 10201,
+   "description": "Version 0.3 generator pass (Empathia Lite). It runs after the first two passes on its own random stream, so nothing"
+  },
+  {
+   "module": "36-generate-eng.js",
+   "bytes": 8769,
+   "description": "Version 0.4 generator pass. Runs after the earlier passes on its own random stream, so nothing they produced changes."
+  },
+  {
+   "module": "38-generate-assure.js",
+   "bytes": 18122,
+   "description": "Version 0.5 generator pass. Runs after the earlier passes on its own random stream, so nothing they produced changes."
+  },
+  {
+   "module": "39-generate-com.js",
+   "bytes": 8795,
+   "description": "Version 0.6 generator pass. Nothing that already exists is removed or renamed. It adds to what Core already held:"
+  },
+  {
+   "module": "395-generate-v1.js",
+   "bytes": 10992,
+   "description": "Version 1.0 generator pass. Nothing that exists is removed, renamed or re-dated. It adds:"
+  },
+  {
+   "module": "396-generate-p8.js",
+   "bytes": 52143,
+   "description": "VERSION 1.1 (Master Prompt 8) GENERATOR PASS. Nothing that exists is removed, renamed or re-dated. It adds:"
+  },
+  {
+   "module": "398-generate-v13.js",
+   "bytes": 17383,
+   "description": "VERSION 1.3 generator pass. It runs last and takes no random draw, so every record the earlier passes made keeps its id,"
+  },
+  {
+   "module": "399-generate-v13b.js",
+   "bytes": 17776,
+   "description": "VERSION 1.3, SECOND GENERATOR PASS. It runs after the first 1.3 pass and takes no random draw, so every earlier record keeps its"
+  },
+  {
+   "module": "3995-generate-timeline.js",
+   "bytes": 5650,
+   "description": "============================================================================================================================"
+  },
+  {
+   "module": "3997-generate-v14-rooms.js",
+   "bytes": 23152,
+   "description": "Version 1.4 Phase 04: the room program (a pass after every other generator)"
+  },
+  {
+   "module": "3998-static-v14-transport.js",
+   "bytes": 15600,
+   "description": "Version 1.4: the transport taxonomy (owner rule, 2026-10-13)"
+  },
+  {
+   "module": "3999-v14-schedule.js",
+   "bytes": 13650,
+   "description": "Version 1.4 Phase 07: the scheduler engine (monitoring policy, recommissioning schedules, the job queue)"
+  },
+  {
+   "module": "39991-v14-geometry.js",
+   "bytes": 30268,
+   "description": "Version 1.4 Phase 08: versioned canonical geometry and the consent-based AI engine (engine)"
+  },
+  {
+   "module": "40-store.js",
+   "bytes": 53221,
+   "description": "What the person using the demo has changed. Only synthetic choices are kept (role, favourites, simulated"
+  },
+  {
+   "module": "41-store-com.js",
+   "bytes": 13797,
+   "description": "Version 0.6 in the store: commissioning done in this demo, and the simulated state of each room's control panel."
+  },
+  {
+   "module": "415-store-v1.js",
+   "bytes": 10338,
+   "description": "Version 1.0 in the store: what a person did in Learn, the event they let into Core, the questions they asked, and"
+  },
+  {
+   "module": "416-store-p8.js",
+   "bytes": 20829,
+   "description": "Version 1.1 (Master Prompt 8) in the store: ServiceHands steps, work-order checklists, installation deviations and"
+  },
+  {
+   "module": "417-store-v13.js",
+   "bytes": 15594,
+   "description": "Version 1.3 in the store, in this browser only (Reset demo clears all of it):"
+  },
+  {
+   "module": "4171-store-hall.js",
+   "bytes": 7807,
+   "description": "Version 1.3 in the store: corrections made to the divisible hall since its records were written, in this browser only (Reset demo"
+  },
+  {
+   "module": "50-derive.js",
+   "bytes": 12959,
+   "description": "Everything computed from the model: room health, building roll-ups, the Mission Control numbers and the queues."
+  },
+  {
+   "module": "52-derive-ops.js",
+   "bytes": 30216,
+   "description": "Version 0.2 analytics, all computed from the model: device health, documentation and standards alignment for each room,"
+  },
+  {
+   "module": "54-derive-lite.js",
+   "bytes": 99981,
+   "description": "EMPATHIA LITE — the spatial engine. Pure functions over the Core model, no drawing here:"
+  },
+  {
+   "module": "543-derive-eng13.js",
+   "bytes": 67187,
+   "description": "VERSION 1.3: THE ENGINEERING MODEL BEHIND LITE AND ROOM BUILDER. Pure functions; no drawing."
+  },
+  {
+   "module": "545-derive-config.js",
+   "bytes": 12129,
+   "description": "VERSION 1.3: LAYOUTS FOR THE FOURTEEN REDESIGNED ROOMS, built from their descriptions in 242-static-rooms13.js with the same"
+  },
+  {
+   "module": "546-derive-divisible.js",
+   "bytes": 27946,
+   "description": "VERSION 1.3: DIVISIBLE ROOMS. A hall that splits into three is not three small rooms: the state of its partitions decides the"
+  },
+  {
+   "module": "547-derive-distaudio.js",
+   "bytes": 34579,
+   "description": "VERSION 1.3: LOUDSPEAKER LINES AND LOUDSPEAKER COVERAGE, KEPT APART. A correct amplifier-load calculation says the line will"
+  },
+  {
+   "module": "548-derive-camauto.js",
+   "bytes": 9093,
+   "description": "VERSION 1.3: CAMERA AUTOMATION, SIMULATED. A presenter walks; tracking cameras follow inside their zones and hand the shot"
+  },
+  {
+   "module": "55-derive-com.js",
+   "bytes": 25952,
+   "description": "COMMISSIONING, CONTROL AND THE SCHEDULER (version 0.6), derived from Core."
+  },
+  {
+   "module": "56-derive-lite-spaces.js",
+   "bytes": 18789,
+   "description": "EMPATHIA LITE — the Atlas service spaces as geometry: the lobby, amenities, employee services and the Commons with"
+  },
+  {
+   "module": "57-derive-assure.js",
+   "bytes": 66933,
+   "description": "EMPATHIA ASSURANCE — what Core can say about whether a room still behaves as it was designed and commissioned (version 0.5)."
+  },
+  {
+   "module": "58-derive-eng.js",
+   "bytes": 58425,
+   "description": "Version 0.4: from a workplace observation to an engineering decision. This file works out what Intake pre-populates,"
+  },
+  {
+   "module": "59-derive-eng-cost.js",
+   "bytes": 56046,
+   "description": "Version 0.4: Scouter's ranking, market watch impact, the cost model behind Budgeting, reuse, the portfolio plan and the"
+  },
+  {
+   "module": "595-derive-v1.js",
+   "bytes": 60274,
+   "description": "Version 1.0, worked out from Core: the knowledge graph, Core Replay and the time layers, Core Compare, the"
+  },
+  {
+   "module": "596-derive-learn.js",
+   "bytes": 41946,
+   "description": "Empathia Learn, worked out from Core. A training case is not written by hand: it is the records of one room, read"
+  },
+  {
+   "module": "5965-derive-learn13.js",
+   "bytes": 27113,
+   "description": "VERSION 1.3 in Empathia Learn: the Design clinic's worked examples and drills, read from the same engineering model Lite and"
+  },
+  {
+   "module": "5966-derive-d2a.js",
+   "bytes": 8233,
+   "description": "VERSION 1.3: the design-to-assurance demonstration, end to end, with the same actions a person takes in the app:"
+  },
+  {
+   "module": "5967-derive-scout13.js",
+   "bytes": 5854,
+   "description": "VERSION 1.3: Scouter's product data is only as good as when it was last checked. Every catalogue entry carries where its"
+  },
+  {
+   "module": "5968-derive-com13.js",
+   "bytes": 11293,
+   "description": "VERSION 1.3: commissioning that can stand up to an audit."
+  },
+  {
+   "module": "5969-derive-integ13.js",
+   "bytes": 7580,
+   "description": "VERSION 1.3: how deep each integration goes in this demonstration, read from Core rather than claimed."
+  },
+  {
+   "module": "597-derive-p8.js",
+   "bytes": 41967,
+   "description": "VERSION 1.1 (Master Prompt 8) DERIVED VIEWS. Everything here is read from Core; nothing is stored. ServiceHands"
+  },
+  {
+   "module": "5970-derive-learn13b.js",
+   "bytes": 12723,
+   "description": "VERSION 1.3 in Empathia Learn, second pass: worked examples and drills for the three lessons of 2978-static-learn13b.js, read"
+  },
+  {
+   "module": "60-search.js",
+   "bytes": 25095,
+   "description": "SEARCH PARTY, foundation: one index over the model, grouped results, type-ahead, and a small"
+  },
+  {
+   "module": "62-ask.js",
+   "bytes": 25045,
+   "description": "Ask Empathia: questions answered from Core, with sources. There is no language model here and nothing is sent"
+  },
+  {
+   "module": "63-qr.js",
+   "bytes": 8136,
+   "description": "A small, complete QR Code encoder: byte mode, error correction level M, versions 1 to 6 (up to 106 bytes), with"
+  },
+  {
+   "module": "70-ui-core.js",
+   "bytes": 22311,
+   "description": "Interface foundation: icons, the shared building blocks, routing, the bottom sheet and the small panels."
+  },
+  {
+   "module": "71-ui-charts.js",
+   "bytes": 14971,
+   "description": "Small charts and diagrams for Empathia Pro. Each is drawn here in HTML or SVG: no chart library."
+  },
+  {
+   "module": "72-ui-graph.js",
+   "bytes": 8563,
+   "description": "The relationship graph: one reusable SVG view of any entity's place in the model."
+  },
+  {
+   "module": "74-ui-authz.js",
+   "bytes": 5263,
+   "description": "What a role sees at the edge of its view: a quiet screen. It does not say what is behind it, who is given it or"
+  },
+  {
+   "module": "74-ui-campus.js",
+   "bytes": 15502,
+   "description": "CAMPUS: a light 2.5D drawing of the Northstar Innovation Campus, drawn in SVG (no WebGL)."
+  },
+  {
+   "module": "76-ui-home.js",
+   "bytes": 18191,
+   "description": "MISSION CONTROL (home). It answers four questions in order: what changed, what matters, what needs attention,"
+  },
+  {
+   "module": "77-ui-home-quiet.js",
+   "bytes": 6494,
+   "description": "What a visitor and an employee are given, wherever a record of theirs is drawn, and how much of Core a role is given."
+  },
+  {
+   "module": "775-ui-roles.js",
+   "bytes": 19497,
+   "description": "Version 1.1: the role is the product. Each role is given its own canvas, its own tabs, its own home and its own"
+  },
+  {
+   "module": "776-ui-homes.js",
+   "bytes": 29420,
+   "description": "Version 1.1: a home for each role, each built differently from the same Core."
+  },
+  {
+   "module": "78-ui-search.js",
+   "bytes": 21026,
+   "description": "SEARCH PARTY: universal search, a relationship graph and an operating directory in one place."
+  },
+  {
+   "module": "80-ui-passport.js",
+   "bytes": 36744,
+   "description": "ENTITY PASSPORT: one reusable sheet for every kind of entity. Its tabs are the six primitives of the model —"
+  },
+  {
+   "module": "81-ui-passport-ops.js",
+   "bytes": 32603,
+   "description": "Version 0.2 passport content: the full issue record, known-fix knowledge, contact and vendor profiles, the support chain,"
+  },
+  {
+   "module": "82-ui-suite.js",
+   "bytes": 27169,
+   "description": "The Room tab, the suite pages behind MORE, plain lists of any entity type, and the small panels"
+  },
+  {
+   "module": "83-ui-passport-lite.js",
+   "bytes": 2647,
+   "description": "Version 0.3 passport content: workplace service spaces and guide chapters read the same in a passport as they do in Lite,"
+  },
+  {
+   "module": "84-ui-pro.js",
+   "bytes": 20044,
+   "description": "EMPATHIA PRO: Command Center, Asset Intelligence and Executive Intelligence, plus the evidence page every number links to."
+  },
+  {
+   "module": "85-ui-issues.js",
+   "bytes": 13705,
+   "description": "EMPATHIA PRO · ISSUE INTELLIGENCE. Incidents and engineering observations, read four ways: the overview and the"
+  },
+  {
+   "module": "86-ui-ops-eng.js",
+   "bytes": 18884,
+   "description": "EMPATHIA PRO · OPERATIONS HUB and STANDARDS & ENGINEERING."
+  },
+  {
+   "module": "87-ui-lite3d.js",
+   "bytes": 27575,
+   "description": "EMPATHIA LITE — the spatial renderer. A small 3D engine that draws to SVG: a turning, tilting camera with true"
+  },
+  {
+   "module": "88-ui-lite.js",
+   "bytes": 81208,
+   "description": "EMPATHIA LITE — Northstar Workplace Explorer. The human-facing spatial layer over the same Core model:"
+  },
+  {
+   "module": "89-ui-lite-room.js",
+   "bytes": 91327,
+   "description": "EMPATHIA LITE — the room workspace. One room, drawn in 3D, seen through six lenses and in four states."
+  },
+  {
+   "module": "892-ui-eng.js",
+   "bytes": 26600,
+   "description": "Version 0.4 screens, part 1: what the four engineering surfaces share, and Intake with the engineering brief."
+  },
+  {
+   "module": "894-ui-eng-builder.js",
+   "bytes": 13766,
+   "description": "Version 0.4 screens, part 2: Room Builder. A conceptual design surface on the SAME spatial engine as Lite: the stage is"
+  },
+  {
+   "module": "896-ui-eng-scouter.js",
+   "bytes": 19242,
+   "description": "Version 0.4 screens, part 3: Scouter, the device evaluation and recommender. It takes a requirement (from Room Builder,"
+  },
+  {
+   "module": "898-ui-eng-budget.js",
+   "bytes": 35326,
+   "description": "Version 0.4 screens, part 4: Budgeting, at four levels (portfolio, building, project, room), plus the three planning"
+  },
+  {
+   "module": "899-ui-eng-wire.js",
+   "bytes": 17227,
+   "description": "Version 0.4 screens, part 5: the wiring. Routes, actions, form handling, and what the new records say in a passport."
+  },
+  {
+   "module": "8992-ui-assure.js",
+   "bytes": 34320,
+   "description": "Version 0.5 screens, part 1: Room Assurance. The estate view, the ready-check list, the signals page, and the pieces"
+  },
+  {
+   "module": "8994-ui-assure-room.js",
+   "bytes": 43331,
+   "description": "Version 0.5 screens, part 2: one room in Assurance. The stage is Lite's room scene (the same layouts, the same"
+  },
+  {
+   "module": "8996-ui-assure-change.js",
+   "bytes": 12308,
+   "description": "Version 0.5 screens, part 3: change impact and post-change regression. Before a change is made, Core follows the"
+  },
+  {
+   "module": "8998-ui-assure-wire.js",
+   "bytes": 21181,
+   "description": "Version 0.5 screens, part 4: the wiring. Routes, actions, and what the new records say in a passport."
+  },
+  {
+   "module": "89992-ui-com.js",
+   "bytes": 37889,
+   "description": "Version 0.6 screens, part 1: Commissioning. The Commissioning Command Center, the estate's deficiencies, and one"
+  },
+  {
+   "module": "89996-ui-control.js",
+   "bytes": 42806,
+   "description": "Version 0.6 screens, part 2: the Empathia room-control language, the room scheduler, and the space modes."
+  },
+  {
+   "module": "89998-ui-com-wire.js",
+   "bytes": 20438,
+   "description": "Version 0.6 screens, part 3: the wiring. Routes for Commissioning, Control and the Scheduler; their actions; what"
+  },
+  {
+   "module": "899991-ui-learn.js",
+   "bytes": 39237,
+   "description": "Empathia Learn (SIGNAL): how Core becomes training. Seven places: Mission Control, Story, Learn, Practice,"
+  },
+  {
+   "module": "899992-ui-replay.js",
+   "bytes": 20375,
+   "description": "Core Replay and the 4D time explorer. One room, sixteen stages, played on the same 3D scene Lite draws: the"
+  },
+  {
+   "module": "899993-ui-compare.js",
+   "bytes": 16737,
+   "description": "Core Compare and the evidence ledger. Compare puts two things on the same measures; the ledger answers"
+  },
+  {
+   "module": "899994-ui-fabric.js",
+   "bytes": 12785,
+   "description": "The integration fabric, the event fabric and the QR launch center. Every connector is simulated: nothing here"
+  },
+  {
+   "module": "899995-ui-ask.js",
+   "bytes": 5389,
+   "description": "Ask Empathia. A question, an answer built from Core, and the records it stands on. Nothing is generated and"
+  },
+  {
+   "module": "899996-ui-tour.js",
+   "bytes": 10590,
+   "description": "Guided experiences, presentation mode and the presenter's sequence. A guided experience does not replace the"
+  },
+  {
+   "module": "899997-ui-v1-wire.js",
+   "bytes": 5729,
+   "description": "Version 1.0 wiring: the actions, the form and slider bindings, what happens after a view is drawn, the passports of"
+  },
+  {
+   "module": "8999970-ui-p8-kit.js",
+   "bytes": 25987,
+   "description": "Version 1.1 (Master Prompt 8) interface kit. The views added in this version register here, so the router finds them"
+  },
+  {
+   "module": "8999971-ui-servicehands.js",
+   "bytes": 28861,
+   "description": "ServiceHands (Master Prompt 8 §18 to §20): small physical and technical changes, routed in the open. A request moves"
+  },
+  {
+   "module": "8999972-ui-service.js",
+   "bytes": 12252,
+   "description": "The Service Manager's command center (Master Prompt 8 §21) and the service coverage map (§16). Service delivery as one"
+  },
+  {
+   "module": "8999973-ui-projects.js",
+   "bytes": 23647,
+   "description": "Relational project management (Master Prompt 8 §22), Decision Memory (§23) and Lessons Learned (§36). A project is"
+  },
+  {
+   "module": "8999974-ui-delivery.js",
+   "bytes": 23055,
+   "description": "Installation, the move to commissioning, and handoff (Master Prompt 8 §25 to §28). The field package an Installation"
+  },
+  {
+   "module": "8999975-ui-party.js",
+   "bytes": 21688,
+   "description": "Search Party (Master Prompt 8 §6 to §15): eight ways into one Core. Search, Relationships, People and Expertise,"
+  },
+  {
+   "module": "8999976-ui-p8-homes.js",
+   "bytes": 22076,
+   "description": "Version 1.1 (Master Prompt 8): a home for each of the six new roles, each built in its own way from the same Core."
+  },
+  {
+   "module": "8999977-ui-signal.js",
+   "bytes": 25795,
+   "description": "SIGNAL Story Mode: twelve seasons with Maya, from a first job to principal engineer. An episode is scenes, and some"
+  },
+  {
+   "module": "89999772-ui-story2.js",
+   "bytes": 39791,
+   "description": "version 1.2: the episode player, with branches, a casebook and people who remember"
+  },
+  {
+   "module": "8999978-ui-p8-wire.js",
+   "bytes": 32793,
+   "description": "Version 1.1 wiring: the Room Builder AI concept decision, Ask Empathia's response grammar and \"Ask about this\" on"
+  },
+  {
+   "module": "8999979-ui-sg-learn.js",
+   "bytes": 28808,
+   "description": "SIGNAL in Empathia Learn (version 1.1): the learning library brought over from SIGNAL by Empathia Learn, molded into"
+  },
+  {
+   "module": "89999791-ui-sg-labs.js",
+   "bytes": 46120,
+   "description": "SIGNAL Labs: hands-on simulations. A lab is a fault to fix on a simulator: change the system, watch the meters, work"
+  },
+  {
+   "module": "89999792-ui-sg-phys.js",
+   "bytes": 64042,
+   "description": "SIGNAL physics labs: the science under the rooms, one law at a time. Each lab is a small instrument on the bench:"
+  },
+  {
+   "module": "89999793-ui-sg-drills.js",
+   "bytes": 19620,
+   "description": "SIGNAL drills on Learn's Practice page: short, timed, failable. Six kinds: route a signal stage by stage, find the"
+  },
+  {
+   "module": "89999794-ui-sg-service.js",
+   "bytes": 18404,
+   "description": "SIGNAL incidents in Learn's Service Mode: a page, a clock, a room in trouble and the people who depend on it. Every"
+  },
+  {
+   "module": "89999795-ui-learn13.js",
+   "bytes": 16331,
+   "description": "VERSION 1.3 in Empathia Learn: the Design clinic. Lessons on reading a room the way an experienced AV designer does, each worked"
+  },
+  {
+   "module": "8999980-ui-scouter-arch.js",
+   "bytes": 24368,
+   "description": "Scouter, architectural competition (Prompt 8 §31–32): not \"which product has the best specification?\" but \"which"
+  },
+  {
+   "module": "8999981-ui-quick.js",
+   "bytes": 3664,
+   "description": "Quick knowledge (Prompt 8 §61): small Learn cards where the work is. Why this exists, field lessons, common"
+  },
+  {
+   "module": "8999982-ui-bldgtech.js",
+   "bytes": 5550,
+   "description": "Building technology where the room is (Prompt 8 §37–39): lighting control in Lite (zones, scenes, occupancy logic,"
+  },
+  {
+   "module": "8999983-ui-vocab.js",
+   "bytes": 2626,
+   "description": "Vocabulary follows the role. A person who cannot open Scouter still needs to know why their request is waiting, so"
+  },
+  {
+   "module": "8999985-ui-cine.js",
+   "bytes": 31168,
+   "description": "version 1.2: voices, films and cinematics"
+  },
+  {
+   "module": "8999986-ui-cine-wire.js",
+   "bytes": 8223,
+   "description": "version 1.2: voices and pictures in Story Mode and Learn"
+  },
+  {
+   "module": "8999987-ui-cine-dia.js",
+   "bytes": 7863,
+   "description": "version 1.2: diagrams drawn for films"
+  },
+  {
+   "module": "8999988-ui-academy.js",
+   "bytes": 35591,
+   "description": "version 1.2: ServiceHands Academy (Learn › ServiceHands)"
+  },
+  {
+   "module": "8999989-ui-agent.js",
+   "bytes": 47145,
+   "description": "version 1.2: Room Health Check, from a script to a discovery agent"
+  },
+  {
+   "module": "8999990-store-v12.js",
+   "bytes": 3487,
+   "description": "version 1.2 in the store: what the 1.1 sanitizer did not know about"
+  },
+  {
+   "module": "8999991-ui-v13-lite.js",
+   "bytes": 27370,
+   "description": "VERSION 1.3 in Lite. The redesigned rooms are drawn the way an AV designer would recognise them: all-in-one boards and"
+  },
+  {
+   "module": "8999992-ui-v13-review.js",
+   "bytes": 20667,
+   "description": "VERSION 1.3: Assurance's design review. A room is reviewed when its design score is under 70 (rule DR-70) or when any"
+  },
+  {
+   "module": "8999993-ui-v13-builder.js",
+   "bytes": 17924,
+   "description": "VERSION 1.3: Room Builder's designer edits and what it learns from them. A designer can move, re-select, remove or add a"
+  },
+  {
+   "module": "8999994-ui-v13-wire.js",
+   "bytes": 8827,
+   "description": "VERSION 1.3: the wiring. The season, engineers' decisions on design reviews, and designer edits in Room Builder."
+  },
+  {
+   "module": "8999995-ui-jumps.js",
+   "bytes": 13798,
+   "description": "VERSION 1.3: getting around. Three small, consistent ways to move:"
+  },
+  {
+   "module": "8999996-ui-history.js",
+   "bytes": 4920,
+   "description": "VERSION 1.3: a note from the history of the trade, beside the thing it explains: a small information icon that opens the"
+  },
+  {
+   "module": "8999997-ui-scout13.js",
+   "bytes": 5923,
+   "description": "VERSION 1.3 in Scouter: where every product figure came from, when it was last verified, and which devices it has been"
+  },
+  {
+   "module": "8999998-ui-com13.js",
+   "bytes": 13354,
+   "description": "VERSION 1.3 in Commissioning: the procedure behind every check and whether a second run agrees with the first; a"
+  },
+  {
+   "module": "8999999-ui-integ13.js",
+   "bytes": 5449,
+   "description": "VERSION 1.3 in the Integration Fabric: how deep each connector goes in this demonstration, level by level, with the"
+  },
+  {
+   "module": "89999991-ui-sound13.js",
+   "bytes": 54844,
+   "description": "VERSION 1.3 IN LITE: LOUDSPEAKER LINES AND COVERAGE, THE HALL'S STATES, AND CAMERA AUTOMATION."
+  },
+  {
+   "module": "89999992-ui-builder-sound.js",
+   "bytes": 21791,
+   "description": "VERSION 1.3 IN ROOM BUILDER: two design tools on the same engine Lite and Assurance use (547-derive-distaudio.js, 546-derive-divisible.js)."
+  },
+  {
+   "module": "89999993-ui-radio-keys.js",
+   "bytes": 1720,
+   "description": "Keyboard for every choice drawn as a radio group (a hall's state, a season, a layer, a basis…): the arrow keys move to the"
+  },
+  {
+   "module": "89999994-ui-room-tabs.js",
+   "bytes": 13918,
+   "description": "VERSION 1.3: a room's engineering page in tabs."
+  },
+  {
+   "module": "89999996-ui-declutter.js",
+   "bytes": 3407,
+   "description": "VERSION 1.3: long pages shown one part at a time (the owner's direction: never cram a screen; what a person can do"
+  },
+  {
+   "module": "90-boot.js",
+   "bytes": 20198,
+   "description": "Start-up, the view switch, and every interaction. One click handler for the whole app: elements say what they do"
+  },
+  {
+   "module": "91-aurora-shell.js",
+   "bytes": 27319,
+   "description": "============================================================================================================================"
+  },
+  {
+   "module": "92-search-registry.js",
+   "bytes": 22222,
+   "description": "============================================================================================================================"
+  },
+  {
+   "module": "93-studio.js",
+   "bytes": 89847,
+   "description": "============================================================================================================================"
+  },
+  {
+   "module": "94-labs.js",
+   "bytes": 55410,
+   "description": "============================================================================================================================"
+  },
+  {
+   "module": "95-scouter-anatomy.js",
+   "bytes": 22806,
+   "description": "============================================================================================================================"
+  },
+  {
+   "module": "96-mission.js",
+   "bytes": 9686,
+   "description": "============================================================================================================================"
+  },
+  {
+   "module": "97-investigate.js",
+   "bytes": 25545,
+   "description": "============================================================================================================================"
+  },
+  {
+   "module": "98-delivery-reach.js",
+   "bytes": 18687,
+   "description": "============================================================================================================================"
+  },
+  {
+   "module": "985-exports.js",
+   "bytes": 10807,
+   "description": "Reports and exports (V1.3.3): one hub at #/exports and an export row on every \"records behind a number\" page."
+  },
+  {
+   "module": "9851-exports-media.js",
+   "bytes": 7921,
+   "description": "============================================================================================================================"
+  },
+  {
+   "module": "99-aurora-wire.js",
+   "bytes": 11862,
+   "description": "============================================================================================================================"
+  },
+  {
+   "module": "994-v14-deploy.js",
+   "bytes": 4167,
+   "description": "============================================================================================================================"
+  },
+  {
+   "module": "995-v14-core.js",
+   "bytes": 28041,
+   "description": "Version 1.4 foundation (Phase 01)"
+  },
+  {
+   "module": "996-v14-ui.js",
+   "bytes": 11088,
+   "description": "Version 1.4 workspace: #/v14 (Phase 01)"
+  },
+  {
+   "module": "997-v14-connect.js",
+   "bytes": 27438,
+   "description": "Version 1.4 Phase 02: Instant Connect (demonstrator)"
+  },
+  {
+   "module": "998-v14-hub.js",
+   "bytes": 13649,
+   "description": "Version 1.4 Phase 03: Integrations Hub (demonstrator)"
+  },
+  {
+   "module": "999-v14-identity.js",
+   "bytes": 16593,
+   "description": "Version 1.4 Phase 04: asset identity (matcher, review, replacement)"
+  },
+  {
+   "module": "9995-v14-telemetry.js",
+   "bytes": 41461,
+   "description": "Version 1.4 Phase 05: telemetry decoding and the Assurance core"
+  },
+  {
+   "module": "9996-v14-telemetry-ui.js",
+   "bytes": 22204,
+   "description": "Version 1.4 Phase 05: telemetry and Assurance core pages, wired everywhere a room or a device appears"
+  },
+  {
+   "module": "9997-v14-signage.js",
+   "bytes": 26699,
+   "description": "Version 1.4 Phase 05b: the signage control plane and the emergency-announcement workflow"
+  },
+  {
+   "module": "9998-v14-itsm.js",
+   "bytes": 35265,
+   "description": "Version 1.4 Phase 06: ITSM read-only issue ingest, CMDB linkage, work orders (demonstrator)"
+  },
+  {
+   "module": "9999-v14-transport-ui.js",
+   "bytes": 18360,
+   "description": "Version 1.4: the transport taxonomy on every surface that shows a device or a signal path"
+  },
+  {
+   "module": "99991-v14-schedule-ui.js",
+   "bytes": 29977,
+   "description": "Version 1.4 Phase 07: monitoring policies, recommissioning schedules and the job queue, on the page"
+  },
+  {
+   "module": "99992-v14-geometry-ui.js",
+   "bytes": 33010,
+   "description": "Version 1.4 Phase 08: the geometry editor, revisions, imports and the AI engine, on the page"
+  },
+  {
+   "module": "99993-v14-diag.js",
+   "bytes": 30431,
+   "description": "Version 1.4 Phase 09: remote AV/UC diagnostics (engine)"
+  },
+  {
+   "module": "99994-v14-diag-ui.js",
+   "bytes": 14426,
+   "description": "Version 1.4 Phase 09: remote diagnostics on the page"
+  },
+  {
+   "module": "99995-v14-robot.js",
+   "bytes": 19084,
+   "description": "Version 1.4 Phase 10: robot-assisted audio recommissioning and multi-zone measurements (engine + simulator)"
+  },
+  {
+   "module": "99996-v14-robot-ui.js",
+   "bytes": 20602,
+   "description": "Version 1.4 Phase 10: the robotic audio simulator on the page"
+  },
+  {
+   "module": "99997-v14-camera.js",
+   "bytes": 17828,
+   "description": "Version 1.4 Phase 11: camera FOV, safe PTZ sweeps and room geometry validation (engine)"
+  },
+  {
+   "module": "99998-v14-camera-ui.js",
+   "bytes": 17142,
+   "description": "Version 1.4 Phase 11: the camera and optical lane on the page"
+  },
+  {
+   "module": "99999-v14-optimize.js",
+   "bytes": 51851,
+   "description": "============================================================================================================================"
+  },
+  {
+   "module": "999991-v14-optimize-ui.js",
+   "bytes": 29249,
+   "description": "============================================================================================================================"
+  },
+  {
+   "module": "999992-v14-redact.js",
+   "bytes": 1045,
+   "description": "============================================================================================================================"
+  },
+  {
+   "module": "999993-v14-ops.js",
+   "bytes": 31983,
+   "description": "============================================================================================================================"
+  },
+  {
+   "module": "999994-v14-ops-ui.js",
+   "bytes": 28841,
+   "description": "============================================================================================================================"
+  },
+  {
+   "module": "999995-v14-deploy-wire.js",
+   "bytes": 5978,
+   "description": "============================================================================================================================"
+  },
+  {
+   "module": "999996-v14-profiles.js",
+   "bytes": 12725,
+   "description": "============================================================================================================================"
+  },
+  {
+   "module": "999997-v14-registry.js",
+   "bytes": 31885,
+   "description": "============================================================================================================================"
+  },
+  {
+   "module": "999998-v14-registry-ui.js",
+   "bytes": 23293,
+   "description": "============================================================================================================================"
+  },
+  {
+   "module": "999999-v14-explorer.js",
+   "bytes": 70602,
+   "description": "============================================================================================================================"
+  },
+  {
+   "module": "v25-00-design.js",
+   "bytes": 32388,
+   "description": "Version 2.5 · design-package fixtures (verbatim from the V2.5 production-candidate design package)"
+  },
+  {
+   "module": "v25-00-dict.js",
+   "bytes": 156869,
+   "description": "Version 2.5 · the engineering data dictionary (generated from design/Full_Engineering_Data_Dictionary.csv, 591 fields)"
+  },
+  {
+   "module": "v25-01-core.js",
+   "bytes": 45314,
+   "description": "Version 2.5 · canonical core (Stage 02)"
+  },
+  {
+   "module": "v25-02-policy.js",
+   "bytes": 13492,
+   "description": "Version 2.5 · policy extension (Stage 02)"
+  },
+  {
+   "module": "v25-03-governance.js",
+   "bytes": 19138,
+   "description": "Version 2.5 · project governance services (Stage 02/04)"
+  },
+  {
+   "module": "v25-04-seed.js",
+   "bytes": 25112,
+   "description": "Version 2.5 · the demonstration seed (Stage 03+)"
+  },
+  {
+   "module": "v25-05-design.js",
+   "bytes": 41740,
+   "description": "Version 2.5 · intake extras, delivery and the design workspace (Stage 04)"
+  },
+  {
+   "module": "v25-06-scouter.js",
+   "bytes": 10706,
+   "description": "Version 2.5 · Scouter standardization (Stage 04)"
+  },
+  {
+   "module": "v25-07-lite.js",
+   "bytes": 24631,
+   "description": "Version 2.5 · the Lite conceptual studio (Stage 05)"
+  },
+  {
+   "module": "v25-08-fi.js",
+   "bytes": 37698,
+   "description": "Version 2.5 · Field Intelligence: v1.3 default bridge, v1.4 Physical Validation (Stage 05)"
+  },
+  {
+   "module": "v25-09-commissioning.js",
+   "bytes": 34429,
+   "description": "Version 2.5 · adaptive commissioning (Stage 06)"
+  },
+  {
+   "module": "v25-091-tracker.js",
+   "bytes": 29979,
+   "description": "Version 2.5 · the documentation tracker (Stage 06)"
+  },
+  {
+   "module": "v25-092-service.js",
+   "bytes": 51421,
+   "description": "Version 2.5 · Stage 07: Search Party coverage, ServiceHands staffing and field execution"
+  },
+  {
+   "module": "v25-093-assure.js",
+   "bytes": 40714,
+   "description": "Version 2.5 · Stage 08: the verified golden baseline, Assurance, APEX, the service loop, Learn case intake"
+  },
+  {
+   "module": "v25-094-exec.js",
+   "bytes": 36691,
+   "description": "Version 2.5 · Stage 09: the 27 KPI passports, executive intelligence, standards impact, SOP/SOW, usage with privacy, Learn"
+  },
+  {
+   "module": "v25-096-cxuni.js",
+   "bytes": 95496,
+   "description": "Version 2.5.1 · the Universal Intelligent Commissioning Framework (Stage 06b)"
+  },
+  {
+   "module": "v25-10-shell.js",
+   "bytes": 69837,
+   "description": "Version 2.5 · the lifecycle shell (Stage 03)"
+  },
+  {
+   "module": "v25-20-s04-ui.js",
+   "bytes": 56913,
+   "description": "Version 2.5 · Stage 04 pages: intake, vendor inbox, decision desk, design workspace, Scouter, project hub"
+  },
+  {
+   "module": "v25-21-s05-ui.js",
+   "bytes": 53904,
+   "description": "Version 2.5 · Stage 05 pages: Lite studio, Field Intelligence v1.3 (default), Physical Validation v1.4 (optional)"
+  },
+  {
+   "module": "v25-22-s06-ui.js",
+   "bytes": 33823,
+   "description": "Version 2.5 · Stage 06 pages: adaptive commissioning and the documentation tracker"
+  },
+  {
+   "module": "v25-23-s07-ui.js",
+   "bytes": 37349,
+   "description": "Version 2.5 · Stage 07 pages: ServiceHands (manager queue, technician work, verification desk, incidents), coverage map, contact deep links"
+  },
+  {
+   "module": "v25-24-s08-ui.js",
+   "bytes": 27425,
+   "description": "Version 2.5 · Stage 08 pages: Assurance (golden baseline, versions, compare, roll-ups, drift), APEX (layers, hypotheses, tiers, simulation log), Learn intake"
+  },
+  {
+   "module": "v25-25-s09-ui.js",
+   "bytes": 18410,
+   "description": "Version 2.5 · Stage 09 pages: Executive Mission Control (27 passports, queues, forecast, exposure, credibility), standards / SOP / SOW, Learn"
+  },
+  {
+   "module": "v25-27-cxw-ui.js",
+   "bytes": 41129,
+   "description": "Version 2.5.1 · the Commissioning Workbook page (Stage 06b)"
+  },
+  {
+   "module": "v25-30-investor.js",
+   "bytes": 26879,
+   "description": "Version 2.5 · Investor Demonstration Mode: landing, guided tour (seven scenarios), capability matrix, validation summary, disclosures"
+  },
+  {
+   "module": "v25-31-validation.js",
+   "bytes": 12880,
+   "description": "Generated by tools/package_investor.py from v25-gates-253, qa/round1, qa/round2 and qa/commissioning (evidence as of 2026-10-25T17:14:29+00:00). Do not edit."
+  },
+  {
+   "module": "v25-40-cs-engine.js",
+   "bytes": 82033,
+   "description": "Empathia Control Studio · simulated proof of concept (engine)"
+  },
+  {
+   "module": "v25-41-cs-ui.js",
+   "bytes": 66479,
+   "description": "Empathia Control Studio · simulated proof of concept (pages)"
+  },
+  {
+   "module": "v25-42-emp.js",
+   "bytes": 20511,
+   "description": "V2.5.2 · the ordinary employee (owner decision 2026-10-23, ADR-001 addendum)"
+  },
+  {
+   "module": "v25-43-sing.js",
+   "bytes": 38752,
+   "description": "Collaboro-Sing · an independent musical-practice demonstrator (V2.5.2)"
+  },
+  {
+   "module": "v25-44-frontline.js",
+   "bytes": 32588,
+   "description": "Empathia Frontline · church and ministry operations demonstrator (V2.5.2)"
+  },
+  {
+   "module": "v25-45-harden.js",
+   "bytes": 10574,
+   "description": "V2.5.2 · hardening after destructive QA round 1 (CSQ1-01…08 and the Control Studio leads)"
+  },
+  {
+   "module": "v25-46-onboard-data.js",
+   "bytes": 35250,
+   "description": "GENERATED by Empathia_Products/Onboard/repo/tools/export_demo.mjs — do not edit. Knowledge objects for the Onboard connected milestone,"
+  },
+  {
+   "module": "v25-47-onboard.js",
+   "bytes": 10439,
+   "description": "Empathia Onboard · the first connected milestone in the browser room (V2.5.2)"
+  },
+  {
+   "module": "v25-48-desk.js",
+   "bytes": 5095,
+   "description": "V2.5.2 · service-desk updates on submitted requests (owner requirement 2026-10-24)"
+  },
+  {
+   "module": "v25-60-room.js",
+   "bytes": 112630,
+   "description": "V2.5.3 · Build a Room with Empathia Lite — the engine (owner directive 2026-10-24)"
+  },
+  {
+   "module": "v25-61-room-ui.js",
+   "bytes": 89109,
+   "description": "V2.5.3 · Build a Room with Lite — the pages (route #/v25/build)"
+  },
+  {
+   "module": "v25-62-xlsx.js",
+   "bytes": 13336,
+   "description": "============================================================================"
+  },
+  {
+   "module": "v25-99-boundary.js",
+   "bytes": 2696,
+   "description": "Version 2.5 · the fail-closed boundary on every public service handle (QA ROUND 2 · X01)"
+  },
+  {
+   "module": "v25-995-seal.js",
+   "bytes": 8255,
+   "description": "2.5.1.1 / 2.5.2 · the sealed page API (second independent audit, 2026-10-24: N1–N4)"
+  }
+ ]
+}

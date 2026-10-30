@@ -1,0 +1,133 @@
+{
+ "generatedAt": "2026-10-30T16:26:44.296Z",
+ "targets": [
+  {
+   "label": "founder-edition-254",
+   "viewport": "desktop",
+   "url": "file://…/Empathia-Founder-Edition.html",
+   "bytes": 8371566,
+   "loadMs": 851,
+   "landing": {
+    "hash": "#/home",
+    "title": "Mission Control · Empathia Living Campus (synthetic data)",
+    "text": "Skip to content Empathia Operations Synthetic data 9+ AV AV Operations Lead AV OPERATIONS LEAD · MONDAY 12 OCTOBER 2026 Mission Control Health, issues, lifecycle and portfolio decisions across the campus PROTOTYPE · NOT PRODUCTION MONITORING Room Assurance Is each room still what was commissioned?"
+   },
+   "routes": [
+    {
+     "route": "#/v25/start",
+     "reached": "#/v25/start",
+     "sidewaysScroll": 0,
+     "shot": "founder-edition-254-desktop-_v25_start.png"
+    },
+    {
+     "route": "#/home",
+     "reached": "#/home",
+     "sidewaysScroll": 0,
+     "shot": "founder-edition-254-desktop-_home.png"
+    },
+    {
+     "route": "#/v25",
+     "reached": "#/v25",
+     "sidewaysScroll": 0,
+     "shot": "founder-edition-254-desktop-_v25.png"
+    },
+    {
+     "route": "#/v25/build",
+     "reached": "#/v25/build",
+     "sidewaysScroll": 0,
+     "shot": "founder-edition-254-desktop-_v25_build.png"
+    },
+    {
+     "route": "#/v25/cstudio",
+     "reached": "#/v25/cstudio",
+     "sidewaysScroll": 0,
+     "shot": "founder-edition-254-desktop-_v25_cstudio.png"
+    },
+    {
+     "route": "#/v25/sing",
+     "reached": "#/v25/sing",
+     "sidewaysScroll": 0,
+     "shot": "founder-edition-254-desktop-_v25_sing.png"
+    },
+    {
+     "route": "#/v25/frontline",
+     "reached": "#/v25/frontline",
+     "sidewaysScroll": 0,
+     "shot": "founder-edition-254-desktop-_v25_frontline.png"
+    },
+    {
+     "route": "#/v25/onboard",
+     "reached": "#/v25/onboard",
+     "sidewaysScroll": 0,
+     "shot": "founder-edition-254-desktop-_v25_onboard.png"
+    },
+    {
+     "route": "#/pro",
+     "reached": "#/pro",
+     "sidewaysScroll": 0,
+     "shot": "founder-edition-254-desktop-_pro.png"
+    },
+    {
+     "route": "#/assurance",
+     "reached": "#/assurance",
+     "sidewaysScroll": 0,
+     "shot": "founder-edition-254-desktop-_assurance.png"
+    },
+    {
+     "route": "#/learn",
+     "reached": "#/learn",
+     "sidewaysScroll": 0,
+     "shot": "founder-edition-254-desktop-_learn.png"
+    },
+    {
+     "route": "#/fabric",
+     "reached": "#/fabric",
+     "sidewaysScroll": 0,
+     "shot": "founder-edition-254-desktop-_fabric.png"
+    }
+   ],
+   "pageErrors": [],
+   "externalRequests": []
+  },
+  {
+   "label": "founder-edition-254",
+   "viewport": "phone",
+   "url": "file://…/Empathia-Founder-Edition.html",
+   "bytes": 8371566,
+   "loadMs": 833,
+   "landing": {
+    "hash": "#/home",
+    "title": "Mission Control · Empathia Living Campus (synthetic data)",
+    "text": "Skip to content Empathia Operations Synthetic data 9+ AV AV OPERATIONS LEAD · MONDAY 12 OCTOBER 2026 Mission Control Health, issues, lifecycle and portfolio decisions across the campus PROTOTYPE · NOT PRODUCTION MONITORING Room Assurance Is each room still what was commissioned? Open → Change impa"
+   },
+   "routes": [
+    {
+     "route": "#/v25/start",
+     "reached": "#/v25/start",
+     "sidewaysScroll": 0,
+     "shot": "founder-edition-254-phone-_v25_start.png"
+    },
+    {
+     "route": "#/home",
+     "reached": "#/home",
+     "sidewaysScroll": 0,
+     "shot": "founder-edition-254-phone-_home.png"
+    },
+    {
+     "route": "#/v25",
+     "reached": "#/v25",
+     "sidewaysScroll": 0,
+     "shot": "founder-edition-254-phone-_v25.png"
+    },
+    {
+     "route": "#/v25/build",
+     "reached": "#/v25/build",
+     "sidewaysScroll": 0,
+     "shot": "founder-edition-254-phone-_v25_build.png"
+    }
+   ],
+   "pageErrors": [],
+   "externalRequests": []
+  }
+ ]
+}

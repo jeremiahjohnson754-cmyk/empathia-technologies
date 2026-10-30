@@ -1,0 +1,84 @@
+{
+ "product": "Empathia Founder Studio",
+ "classification": "INTERNAL_ONLY — founder use; contains the Founder Edition and engineering records",
+ "sourceCommit": "f51229b",
+ "sourceTreeClean": true,
+ "builtAt": "2026-10-26T13:46:03.182Z",
+ "files": [
+  {
+   "path": "demonstrators/founder/Empathia-Founder-Edition.html",
+   "bytes": 8371566,
+   "sha256": "ecdf64be4de7cda5096c8dd7902814e26a7b1fe5d693799f9d489fbbddcbe1ee"
+  },
+  {
+   "path": "index.html",
+   "bytes": 546,
+   "sha256": "ac47b08009e24fd1e0738f54da6e7637da97f35714bab962b223a0399fe32276"
+  },
+  {
+   "path": "media/films/README.txt",
+   "bytes": 202,
+   "sha256": "0d74dd2283e8d644ab1a4471a253ca1f058a9d32b5e84df4ee03d1a62d42175e"
+  },
+  {
+   "path": "server/film-index.json",
+   "bytes": 4869,
+   "sha256": "f251afe313ab4709bf1d70b18d0c6e0504ad70d23fcc42cd15e99306547867dc"
+  },
+  {
+   "path": "server/serve.mjs",
+   "bytes": 9377,
+   "sha256": "a7fa7dc670599d81fd48d7a4e7cbc8cb9a91a5c58d09ff3a1806ac3dc3b382a4"
+  },
+  {
+   "path": "Start Founder Studio.command",
+   "bytes": 494,
+   "sha256": "186318376e7502444411f60169da0282dfe81a0b3427ca05491da6df0409f0c0"
+  },
+  {
+   "path": "Start-Founder-Studio.bat",
+   "bytes": 417,
+   "sha256": "60bfe47f5e95adf748dfc2f11a1735d83f79b4a7820dd25d2d675cdb4fd1afcb"
+  },
+  {
+   "path": "start-founder-studio.sh",
+   "bytes": 407,
+   "sha256": "770a7d25b9e1296990fe1978a75b818ef0b5a9e31c480fd29f3c64bfd84e143f"
+  },
+  {
+   "path": "studio/films.json",
+   "bytes": 22896,
+   "sha256": "c30e6f7566601c234cfd5da8eae6b205c56fe4e8734cfd7d9a839939f6a427f9"
+  },
+  {
+   "path": "studio/meta.json",
+   "bytes": 30110,
+   "sha256": "ddb8acff48e442cd1724375a4fc04e4a161639b60e035ea961dc3c55cf94982f"
+  },
+  {
+   "path": "studio/studio.css",
+   "bytes": 19193,
+   "sha256": "9eb5dd0cb22df0257fcd1c1c7d99b7f73b5e0a8172f73cb142467c3ac2adaeb8"
+  },
+  {
+   "path": "studio/studio.css.map",
+   "bytes": 41022,
+   "sha256": "2a1f1cd39ebb779e7a4e28c0771b14eb263bb19bf524d50a22111a6c98897138"
+  },
+  {
+   "path": "studio/studio.js",
+   "bytes": 2209154,
+   "sha256": "2b8c67e40f8488417911cd9dd2341a2c6fa3e69a87bc51140fcd43bf688e55b6"
+  },
+  {
+   "path": "studio/studio.js.LEGAL.txt",
+   "bytes": 1528,
+   "sha256": "7dff61d0cd5b7cff2403db6cf5c586b1218c9e663784caeda7fd06916c997d46"
+  },
+  {
+   "path": "studio/studio.js.map",
+   "bytes": 3509112,
+   "sha256": "b562b80e67c621b984587cbb706f266484f23f1ef8f0ccf945e9d5e1738c516a"
+  }
+ ]
+}

@@ -1,0 +1,309 @@
+{
+ "generatedAt": "2026-10-30T16:24:44.381Z",
+ "targets": [
+  {
+   "label": "v253-live",
+   "viewport": "desktop",
+   "url": "file://…/Empathia-Living-Campus-V2.5.3-live.html",
+   "bytes": 6957191,
+   "loadMs": 1021,
+   "landing": {
+    "hash": "#/investor",
+    "title": "Investor demonstration · Empathia Living Campus (synthetic data)",
+    "text": "Skip to content Empathia Operations Synthetic data 9+ AV AV Operations Lead EMPATHIA LIVING CAMPUS · V2.5 INVESTOR DEMONSTRATION The connected lifecycle for the technology inside buildings — with the evidence behind every state. Design, evaluate, procure, install, commission, verify, operate, dia"
+   },
+   "routes": [
+    {
+     "route": "#/investor",
+     "reached": "#/investor",
+     "sidewaysScroll": 0,
+     "shot": "v253-live-desktop-_investor.png"
+    },
+    {
+     "route": "#/home",
+     "reached": "#/home",
+     "sidewaysScroll": 0,
+     "shot": "v253-live-desktop-_home.png"
+    },
+    {
+     "route": "#/campus",
+     "reached": "#/campus",
+     "sidewaysScroll": 0,
+     "shot": "v253-live-desktop-_campus.png"
+    },
+    {
+     "route": "#/search",
+     "reached": "#/search",
+     "sidewaysScroll": 0,
+     "shot": "v253-live-desktop-_search.png"
+    },
+    {
+     "route": "#/room",
+     "reached": "#/room",
+     "sidewaysScroll": 0,
+     "shot": "v253-live-desktop-_room.png"
+    },
+    {
+     "route": "#/pro",
+     "reached": "#/pro",
+     "sidewaysScroll": 0,
+     "shot": "v253-live-desktop-_pro.png"
+    },
+    {
+     "route": "#/lite",
+     "reached": "#/lite",
+     "sidewaysScroll": 0,
+     "shot": "v253-live-desktop-_lite.png"
+    },
+    {
+     "route": "#/v25",
+     "reached": "#/v25",
+     "sidewaysScroll": 0,
+     "shot": "v253-live-desktop-_v25.png"
+    },
+    {
+     "route": "#/v25/build",
+     "reached": "#/v25/build",
+     "sidewaysScroll": 0,
+     "shot": "v253-live-desktop-_v25_build.png"
+    },
+    {
+     "route": "#/assurance",
+     "reached": "#/assurance",
+     "sidewaysScroll": 0,
+     "shot": "v253-live-desktop-_assurance.png"
+    },
+    {
+     "route": "#/commissioning",
+     "reached": "#/commissioning",
+     "sidewaysScroll": 0,
+     "shot": "v253-live-desktop-_commissioning.png"
+    },
+    {
+     "route": "#/servicehands",
+     "reached": "#/servicehands",
+     "sidewaysScroll": 0,
+     "shot": "v253-live-desktop-_servicehands.png"
+    },
+    {
+     "route": "#/v25/exec",
+     "reached": "#/v25/exec",
+     "sidewaysScroll": 0,
+     "shot": "v253-live-desktop-_v25_exec.png"
+    },
+    {
+     "route": "#/learn",
+     "reached": "#/learn",
+     "sidewaysScroll": 0,
+     "shot": "v253-live-desktop-_learn.png"
+    },
+    {
+     "route": "#/fabric",
+     "reached": "#/fabric",
+     "sidewaysScroll": 0,
+     "shot": "v253-live-desktop-_fabric.png"
+    },
+    {
+     "route": "#/suite/core",
+     "reached": "#/suite/core",
+     "sidewaysScroll": 0,
+     "shot": "v253-live-desktop-_suite_core.png"
+    }
+   ],
+   "pageErrors": [],
+   "externalRequests": []
+  },
+  {
+   "label": "v253-live",
+   "viewport": "phone",
+   "url": "file://…/Empathia-Living-Campus-V2.5.3-live.html",
+   "bytes": 6957191,
+   "loadMs": 867,
+   "landing": {
+    "hash": "#/investor",
+    "title": "Investor demonstration · Empathia Living Campus (synthetic data)",
+    "text": "Skip to content Empathia Operations Synthetic data 9+ AV EMPATHIA LIVING CAMPUS · V2.5 INVESTOR DEMONSTRATION The connected lifecycle for the technology inside buildings — with the evidence behind every state. Design, evaluate, procure, install, commission, verify, operate, diagnose, repair, reva"
+   },
+   "routes": [
+    {
+     "route": "#/investor",
+     "reached": "#/investor",
+     "sidewaysScroll": 0,
+     "shot": "v253-live-phone-_investor.png"
+    },
+    {
+     "route": "#/home",
+     "reached": "#/home",
+     "sidewaysScroll": 0,
+     "shot": "v253-live-phone-_home.png"
+    },
+    {
+     "route": "#/campus",
+     "reached": "#/campus",
+     "sidewaysScroll": 0,
+     "shot": "v253-live-phone-_campus.png"
+    },
+    {
+     "route": "#/search",
+     "reached": "#/search",
+     "sidewaysScroll": 0,
+     "shot": "v253-live-phone-_search.png"
+    }
+   ],
+   "pageErrors": [],
+   "externalRequests": []
+  },
+  {
+   "label": "v253-offline",
+   "viewport": "desktop",
+   "url": "file://…/Empathia-Living-Campus-V2.5.3-offline.html",
+   "bytes": 6957206,
+   "loadMs": 856,
+   "landing": {
+    "hash": "#/investor",
+    "title": "Investor demonstration · Empathia Living Campus (synthetic data)",
+    "text": "Skip to content Empathia Operations Synthetic data 9+ AV AV Operations Lead EMPATHIA LIVING CAMPUS · V2.5 INVESTOR DEMONSTRATION The connected lifecycle for the technology inside buildings — with the evidence behind every state. Design, evaluate, procure, install, commission, verify, operate, dia"
+   },
+   "routes": [
+    {
+     "route": "#/investor",
+     "reached": "#/investor",
+     "sidewaysScroll": 0,
+     "shot": "v253-offline-desktop-_investor.png"
+    },
+    {
+     "route": "#/home",
+     "reached": "#/home",
+     "sidewaysScroll": 0,
+     "shot": "v253-offline-desktop-_home.png"
+    },
+    {
+     "route": "#/campus",
+     "reached": "#/campus",
+     "sidewaysScroll": 0,
+     "shot": "v253-offline-desktop-_campus.png"
+    },
+    {
+     "route": "#/search",
+     "reached": "#/search",
+     "sidewaysScroll": 0,
+     "shot": "v253-offline-desktop-_search.png"
+    },
+    {
+     "route": "#/room",
+     "reached": "#/room",
+     "sidewaysScroll": 0,
+     "shot": "v253-offline-desktop-_room.png"
+    },
+    {
+     "route": "#/pro",
+     "reached": "#/pro",
+     "sidewaysScroll": 0,
+     "shot": "v253-offline-desktop-_pro.png"
+    },
+    {
+     "route": "#/lite",
+     "reached": "#/lite",
+     "sidewaysScroll": 0,
+     "shot": "v253-offline-desktop-_lite.png"
+    },
+    {
+     "route": "#/v25",
+     "reached": "#/v25",
+     "sidewaysScroll": 0,
+     "shot": "v253-offline-desktop-_v25.png"
+    },
+    {
+     "route": "#/v25/build",
+     "reached": "#/v25/build",
+     "sidewaysScroll": 0,
+     "shot": "v253-offline-desktop-_v25_build.png"
+    },
+    {
+     "route": "#/assurance",
+     "reached": "#/assurance",
+     "sidewaysScroll": 0,
+     "shot": "v253-offline-desktop-_assurance.png"
+    },
+    {
+     "route": "#/commissioning",
+     "reached": "#/commissioning",
+     "sidewaysScroll": 0,
+     "shot": "v253-offline-desktop-_commissioning.png"
+    },
+    {
+     "route": "#/servicehands",
+     "reached": "#/servicehands",
+     "sidewaysScroll": 0,
+     "shot": "v253-offline-desktop-_servicehands.png"
+    },
+    {
+     "route": "#/v25/exec",
+     "reached": "#/v25/exec",
+     "sidewaysScroll": 0,
+     "shot": "v253-offline-desktop-_v25_exec.png"
+    },
+    {
+     "route": "#/learn",
+     "reached": "#/learn",
+     "sidewaysScroll": 0,
+     "shot": "v253-offline-desktop-_learn.png"
+    },
+    {
+     "route": "#/fabric",
+     "reached": "#/fabric",
+     "sidewaysScroll": 0,
+     "shot": "v253-offline-desktop-_fabric.png"
+    },
+    {
+     "route": "#/suite/core",
+     "reached": "#/suite/core",
+     "sidewaysScroll": 0,
+     "shot": "v253-offline-desktop-_suite_core.png"
+    }
+   ],
+   "pageErrors": [],
+   "externalRequests": []
+  },
+  {
+   "label": "v253-offline",
+   "viewport": "phone",
+   "url": "file://…/Empathia-Living-Campus-V2.5.3-offline.html",
+   "bytes": 6957206,
+   "loadMs": 818,
+   "landing": {
+    "hash": "#/investor",
+    "title": "Investor demonstration · Empathia Living Campus (synthetic data)",
+    "text": "Skip to content Empathia Operations Synthetic data 9+ AV EMPATHIA LIVING CAMPUS · V2.5 INVESTOR DEMONSTRATION The connected lifecycle for the technology inside buildings — with the evidence behind every state. Design, evaluate, procure, install, commission, verify, operate, diagnose, repair, reva"
+   },
+   "routes": [
+    {
+     "route": "#/investor",
+     "reached": "#/investor",
+     "sidewaysScroll": 0,
+     "shot": "v253-offline-phone-_investor.png"
+    },
+    {
+     "route": "#/home",
+     "reached": "#/home",
+     "sidewaysScroll": 0,
+     "shot": "v253-offline-phone-_home.png"
+    },
+    {
+     "route": "#/campus",
+     "reached": "#/campus",
+     "sidewaysScroll": 0,
+     "shot": "v253-offline-phone-_campus.png"
+    },
+    {
+     "route": "#/search",
+     "reached": "#/search",
+     "sidewaysScroll": 0,
+     "shot": "v253-offline-phone-_search.png"
+    }
+   ],
+   "pageErrors": [],
+   "externalRequests": []
+  }
+ ]
+}

@@ -1,0 +1,18 @@
+{
+  "MASTER_PROMPT.md": {
+    "bytes": 39007,
+    "sha256": "f70037081a93c90aa8eb76b1311e4dc6c21a8cb1f03cffeebfe79dc1d85cf38a"
+  },
+  "PHASED_EXECUTION_PROMPTS.md": {
+    "bytes": 10361,
+    "sha256": "b3b1b4b72e608aae53debbfeed44d8eaf1ad7d9438fabcaf8be1cbba888d436f"
+  },
+  "START_HERE.md": {
+    "bytes": 2720,
+    "sha256": "d1269e84cb1e0d76faa71bdb32eba2b37922499ca674f2176f983041f0e72e88"
+  },
+  "SOURCE_AUDIT.json": {
+    "bytes": 7878,
+    "sha256": "03eacafa98b7414f248ec0c0fe6ed72a8426e2b086f1063e3befe99e96e2c000"
+  }
+}

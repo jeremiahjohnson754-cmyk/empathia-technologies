@@ -24,3 +24,9 @@ media/renders/**/*.mp4
 media/renders/**/slides/
 media/renders/**/mermaid-config.json
 releases/handoff/out/
+legacy/source/**/*.html
+legacy/source/**/*.js
+legacy/source/**/*.map
+legacy/source/**/*.css
+!legacy/source/SHA256SUMS.txt
+legacy/baseline/**/*.png

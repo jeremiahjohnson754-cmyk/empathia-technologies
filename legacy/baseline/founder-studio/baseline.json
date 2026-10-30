@@ -1,0 +1,159 @@
+{
+ "generatedAt": "2026-10-30T16:26:12.826Z",
+ "targets": [
+  {
+   "label": "founder-studio",
+   "viewport": "desktop",
+   "url": "http://127.0.0.1:4311/?k=EdtE1YR2sbl5XXdq-Q-prxCm",
+   "bytes": null,
+   "loadMs": 175,
+   "landing": {
+    "hash": "",
+    "title": "Mission Control · Empathia Founder Studio",
+    "text": "Skip to content Empathia Founder Studio synthetic data · founder only Start Mission Control The Enterprise Platform Build a Room with Lite Seven operational products Search Party Empathia Pro Universal Commissioning Assurance / APEX Field Intelligence ServiceHands Intake Portal Expansion products Dr"
+   },
+   "routes": [
+    {
+     "route": "#/mission-control",
+     "reached": "#/mission-control",
+     "sidewaysScroll": 0,
+     "shot": "founder-studio-desktop-_mission_control.png"
+    },
+    {
+     "route": "#/build-a-room",
+     "reached": "#/build-a-room",
+     "sidewaysScroll": 0,
+     "shot": "founder-studio-desktop-_build_a_room.png"
+    },
+    {
+     "route": "#/scenarios",
+     "reached": "#/scenarios",
+     "sidewaysScroll": 0,
+     "shot": "founder-studio-desktop-_scenarios.png"
+    },
+    {
+     "route": "#/architecture",
+     "reached": "#/architecture",
+     "sidewaysScroll": 0,
+     "shot": "founder-studio-desktop-_architecture.png"
+    },
+    {
+     "route": "#/enterprise-platform",
+     "reached": "#/enterprise-platform",
+     "sidewaysScroll": 0,
+     "shot": "founder-studio-desktop-_enterprise_platform.png"
+    },
+    {
+     "route": "#/maturity",
+     "reached": "#/maturity",
+     "sidewaysScroll": 0,
+     "shot": "founder-studio-desktop-_maturity.png"
+    },
+    {
+     "route": "#/media",
+     "reached": "#/media",
+     "sidewaysScroll": 0,
+     "shot": "founder-studio-desktop-_media.png"
+    },
+    {
+     "route": "#/vault",
+     "reached": "#/vault",
+     "sidewaysScroll": 0,
+     "shot": "founder-studio-desktop-_vault.png"
+    },
+    {
+     "route": "#/docs",
+     "reached": "#/docs",
+     "sidewaysScroll": 0,
+     "shot": "founder-studio-desktop-_docs.png"
+    },
+    {
+     "route": "#/search-party",
+     "reached": "#/search-party",
+     "sidewaysScroll": 0,
+     "shot": "founder-studio-desktop-_search_party.png"
+    },
+    {
+     "route": "#/assurance",
+     "reached": "#/assurance",
+     "sidewaysScroll": 0,
+     "shot": "founder-studio-desktop-_assurance.png"
+    },
+    {
+     "route": "#/commissioning",
+     "reached": "#/commissioning",
+     "sidewaysScroll": 0,
+     "shot": "founder-studio-desktop-_commissioning.png"
+    },
+    {
+     "route": "#/settings",
+     "reached": "#/settings",
+     "sidewaysScroll": 0,
+     "shot": "founder-studio-desktop-_settings.png"
+    },
+    {
+     "route": "#/field-intelligence",
+     "reached": "#/field-intelligence",
+     "sidewaysScroll": 0,
+     "shot": "founder-studio-desktop-_field_intelligence.png"
+    },
+    {
+     "route": "#/learn",
+     "reached": "#/learn",
+     "sidewaysScroll": 0,
+     "shot": "founder-studio-desktop-_learn.png"
+    },
+    {
+     "route": "#/pro",
+     "reached": "#/pro",
+     "sidewaysScroll": 0,
+     "shot": "founder-studio-desktop-_pro.png"
+    }
+   ],
+   "pageErrors": [],
+   "externalRequests": [
+    "http://127.0.0.1:4100/health"
+   ]
+  },
+  {
+   "label": "founder-studio",
+   "viewport": "phone",
+   "url": "http://127.0.0.1:4311/?k=EdtE1YR2sbl5XXdq-Q-prxCm",
+   "bytes": null,
+   "loadMs": 132,
+   "landing": {
+    "hash": "",
+    "title": "Mission Control · Empathia Founder Studio",
+    "text": "Skip to content Empathia Founder Studio synthetic data · founder only Start Mission Control The Enterprise Platform Build a Room with Lite Seven operational products Search Party Empathia Pro Universal Commissioning Assurance / APEX Field Intelligence ServiceHands Intake Portal Expansion products Dr"
+   },
+   "routes": [
+    {
+     "route": "#/mission-control",
+     "reached": "#/mission-control",
+     "sidewaysScroll": 0,
+     "shot": "founder-studio-phone-_mission_control.png"
+    },
+    {
+     "route": "#/build-a-room",
+     "reached": "#/build-a-room",
+     "sidewaysScroll": 1,
+     "shot": "founder-studio-phone-_build_a_room.png"
+    },
+    {
+     "route": "#/scenarios",
+     "reached": "#/scenarios",
+     "sidewaysScroll": 3,
+     "shot": "founder-studio-phone-_scenarios.png"
+    },
+    {
+     "route": "#/architecture",
+     "reached": "#/architecture",
+     "sidewaysScroll": 3,
+     "shot": "founder-studio-phone-_architecture.png"
+    }
+   ],
+   "pageErrors": [],
+   "externalRequests": []
+  }
+ ]
+}

@@ -1,0 +1,18 @@
+2d6114127e89ffb42a4500416c49d959f330f5be19963fe3593a8b3583878503  ./founder-studio-f51229b/BUILD_MANIFEST.json
+186318376e7502444411f60169da0282dfe81a0b3427ca05491da6df0409f0c0  ./founder-studio-f51229b/Start Founder Studio.command
+60bfe47f5e95adf748dfc2f11a1735d83f79b4a7820dd25d2d675cdb4fd1afcb  ./founder-studio-f51229b/Start-Founder-Studio.bat
+ecdf64be4de7cda5096c8dd7902814e26a7b1fe5d693799f9d489fbbddcbe1ee  ./founder-studio-f51229b/demonstrators/founder/Empathia-Founder-Edition.html
+ac47b08009e24fd1e0738f54da6e7637da97f35714bab962b223a0399fe32276  ./founder-studio-f51229b/index.html
+0d74dd2283e8d644ab1a4471a253ca1f058a9d32b5e84df4ee03d1a62d42175e  ./founder-studio-f51229b/media/films/README.txt
+f251afe313ab4709bf1d70b18d0c6e0504ad70d23fcc42cd15e99306547867dc  ./founder-studio-f51229b/server/film-index.json
+a7fa7dc670599d81fd48d7a4e7cbc8cb9a91a5c58d09ff3a1806ac3dc3b382a4  ./founder-studio-f51229b/server/serve.mjs
+770a7d25b9e1296990fe1978a75b818ef0b5a9e31c480fd29f3c64bfd84e143f  ./founder-studio-f51229b/start-founder-studio.sh
+c30e6f7566601c234cfd5da8eae6b205c56fe4e8734cfd7d9a839939f6a427f9  ./founder-studio-f51229b/studio/films.json
+ddb8acff48e442cd1724375a4fc04e4a161639b60e035ea961dc3c55cf94982f  ./founder-studio-f51229b/studio/meta.json
+9eb5dd0cb22df0257fcd1c1c7d99b7f73b5e0a8172f73cb142467c3ac2adaeb8  ./founder-studio-f51229b/studio/studio.css
+2a1f1cd39ebb779e7a4e28c0771b14eb263bb19bf524d50a22111a6c98897138  ./founder-studio-f51229b/studio/studio.css.map
+2b8c67e40f8488417911cd9dd2341a2c6fa3e69a87bc51140fcd43bf688e55b6  ./founder-studio-f51229b/studio/studio.js
+7dff61d0cd5b7cff2403db6cf5c586b1218c9e663784caeda7fd06916c997d46  ./founder-studio-f51229b/studio/studio.js.LEGAL.txt
+b562b80e67c621b984587cbb706f266484f23f1ef8f0ccf945e9d5e1738c516a  ./founder-studio-f51229b/studio/studio.js.map
+9d6e53ef9f5a4e797b3be16c08f041b7c0c0766abbadb5186296ac925a09f2f1  ./v253/Empathia-Living-Campus-V2.5.3-live.html
+ecbde0bba17eafc9e5bcf98b57d15fbbb2378bac66d017c7a402194e78307756  ./v253/Empathia-Living-Campus-V2.5.3-offline.html
