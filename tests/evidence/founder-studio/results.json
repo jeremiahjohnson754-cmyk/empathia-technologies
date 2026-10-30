@@ -1,20 +1,20 @@
 {
  "suite": "founder-studio",
  "dist": "/home/claude/empathia-technologies/apps/founder-studio/dist",
- "at": "2026-10-30T16:42:22.470Z",
+ "at": "2026-10-30T16:55:23.837Z",
  "passed": 19,
  "failed": 0,
  "notRun": 1,
  "results": [
   {
    "id": "S-01",
-   "name": "the launcher serves the studio after the access key; the rail lists 27 destinations",
+   "name": "the launcher serves the studio after the access key; the rail lists 28 destinations",
    "result": "PASS",
-   "detail": "27"
+   "detail": "28"
   },
   {
    "id": "S-02",
-   "name": "all 27 destinations render a page heading",
+   "name": "all 28 destinations render a page heading",
    "result": "PASS",
    "detail": ""
   },
@@ -70,7 +70,7 @@
    "id": "S-10",
    "name": "the studio’s film route plays video end to end (a VP9 excerpt of Film A, served through the same launcher path; time advances)",
    "result": "PASS",
-   "detail": "1.538687"
+   "detail": "1.502466"
   },
   {
    "id": "S-11",

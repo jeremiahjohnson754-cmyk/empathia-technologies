@@ -35,7 +35,7 @@ try {
   const errors = []; page.on('pageerror', (e) => errors.push(e.message)); page.on('console', (m) => { if (m.type() === 'error' && !/favicon/.test(m.text()) && !(/ERR_CONNECTION_REFUSED/.test(m.text()) && /4100/.test(m.location().url || ''))) errors.push(`console: ${m.text()}`); });   // the Enterprise Platform page probes the local API on :4100; refused = not running
   const external = []; page.on('request', (r) => { if (!/^http:\/\/(127\.0\.0\.1|localhost)[:/]/.test(r.url()) && !/^(data|blob|about):/.test(r.url())) external.push(r.url()); });
   await page.goto(`${base}/?k=${KEY}`); await page.waitForSelector('.rail');
-  ok('S-01', 'the launcher serves the studio after the access key; the rail lists 27 destinations', (await page.locator('.rail a').count()) === 27, await page.locator('.rail a').count());
+  ok('S-01', 'the launcher serves the studio after the access key; the rail lists 28 destinations', (await page.locator('.rail a').count()) === 28, await page.locator('.rail a').count());
 
   // every destination renders its heading without errors
   const dests = await page.$$eval('.rail a', (as) => as.map((a) => [a.getAttribute('href'), a.textContent]));
@@ -46,7 +46,7 @@ try {
     if (!h1 || /Nothing at/.test(h1)) bad.push(`${h}: ${h1}`);
     await page.screenshot({ path: path.join(out, `dest-${h.replace(/[^a-z0-9-]/gi, '')}.png`) });
   }
-  ok('S-02', 'all 27 destinations render a page heading', bad.length === 0, bad.join('; '));
+  ok('S-02', 'all 28 destinations render a page heading', bad.length === 0, bad.join('; '));
 
   // product page: the Founder Edition opens as the product's persona, through the page's own persona control
   await page.evaluate(() => { location.hash = '#/control-studio'; });

@@ -26,6 +26,7 @@ const P = PERSONAS as unknown as Record<string, { label: string; authority: stri
 export const TENANTS = [
   { slug: 'empathia-demo', name: 'Empathia Demo Estate (synthetic)' },
   { slug: 'second-tenant', name: 'Second Synthetic Tenant' },
+  { slug: 'empathia-founder', name: 'Empathia Technologies — founder organization (private)' },   // ADR-0001 §3: the Founder Studio's organization; no sites, no rooms
 ];
 const SITES: Record<string, Array<{ code: string; name: string; buildings: Array<{ code: string; name: string; floors: number }> }>> = {
   'empathia-demo': [
@@ -49,6 +50,7 @@ export async function seed(opts: { reset?: boolean } = {}) {
   try {
     if (opts.reset) await owner.simple(`TRUNCATE app.tenant, app.person, app.role, app.integration CASCADE`);
     // roles: the demonstrator's persona policy, unchanged
+    await owner.query("INSERT INTO app.role (key, label, authorities, description) VALUES ('founder', 'Founder', ARRAY['founder.workspace'], 'The founder’s private workspace (Founder Studio). Carries no enterprise authority: it reads no customer records.') ON CONFLICT (key) DO UPDATE SET label = EXCLUDED.label, authorities = EXCLUDED.authorities, description = EXCLUDED.description");
     for (const [key, v] of Object.entries(P)) await owner.query('INSERT INTO app.role (key, label, authorities, description) VALUES ($1,$2,$3,$4) ON CONFLICT (key) DO UPDATE SET label = EXCLUDED.label, authorities = EXCLUDED.authorities, description = EXCLUDED.description', [key, v.label, v.authority, v.home]);
     const pw = hashPassword(DEV_PASSWORD);
     const tenantIds: Record<string, string> = {};
@@ -57,7 +59,7 @@ export async function seed(opts: { reset?: boolean } = {}) {
     const siteIds: Record<string, string> = {};
     for (const t of TENANTS) {
       await ownerPool.tx({ tenantId: tenantIds[t.slug]! }, async (q) => {
-        for (const s of SITES[t.slug]!) {
+        for (const s of SITES[t.slug] || []) {
           const sid = (await q.query<{ id: string }>('INSERT INTO app.site (tenant_id, code, name) VALUES ($1,$2,$3) ON CONFLICT (tenant_id, code) DO UPDATE SET name = EXCLUDED.name RETURNING id', [tenantIds[t.slug], s.code, s.name])).rows[0]!.id;
           siteIds[`${t.slug}/${s.code}`] = sid;
           for (const b of s.buildings) await q.query('INSERT INTO app.building (tenant_id, site_id, code, name, floors) VALUES ($1,$2,$3,$4,$5) ON CONFLICT (tenant_id, code) DO UPDATE SET name = EXCLUDED.name', [tenantIds[t.slug], sid, b.code, b.name, b.floors]);
@@ -68,10 +70,12 @@ export async function seed(opts: { reset?: boolean } = {}) {
     // a technician scoped to the South campus only, and two people in the second tenant
     people['empathia-demo/service-south'] = await person('service-south@empathia-demo.empathia.invalid', 'Service Technician, South campus only (synthetic)');
     for (const role of ['designer', 'syseng', 'secadmin']) people[`second-tenant/${role}`] = await person(email(role, 'second-tenant'), `${P[role]!.label}, second tenant (synthetic)`);
+    people['empathia-founder/founder'] = await person(email('founder', 'empathia-founder'), 'Founder (synthetic identity for development)');
     const member = async (tenant: string, key: string, role: string, scope: string[] | null = null) => {
       await ownerPool.tx({ tenantId: tenantIds[tenant]! }, (q) => q.query('INSERT INTO app.membership (tenant_id, person_id, role_key, site_scope) VALUES ($1,$2,$3,$4) ON CONFLICT (tenant_id, person_id, role_key) DO UPDATE SET site_scope = EXCLUDED.site_scope, revoked_at = NULL', [tenantIds[tenant], people[`${tenant}/${key}`], role, scope]));
     };
     for (const role of DEMO_ROLES) await member('empathia-demo', role, role);
+    await member('empathia-founder', 'founder', 'founder');
     await member('empathia-demo', 'service-south', 'service', [siteIds['empathia-demo/SITE-SOUTH']!]);
     for (const role of ['designer', 'syseng', 'secadmin']) await member('second-tenant', role, role);
 

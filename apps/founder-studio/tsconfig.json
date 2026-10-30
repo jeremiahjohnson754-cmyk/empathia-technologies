@@ -1,10 +1,29 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "composite": false, "declaration": false, "declarationMap": false, "noEmit": true,
-    "module": "ESNext", "moduleResolution": "Bundler", "jsx": "react-jsx", "allowImportingTsExtensions": false,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "noEmit": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "allowImportingTsExtensions": false,
     "resolveJsonModule": true,
-    "typeRoots": ["../../tooling/types", "../../node_modules/@types"], "types": ["react-offline"]
+    "typeRoots": [
+      "../../tooling/types",
+      "../../node_modules/@types"
+    ],
+    "types": [
+      "react-offline"
+    ],
+    "paths": {
+      "@empathia/api-client": [
+        "../../packages/api-client/src/index.ts"
+      ]
+    }
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }

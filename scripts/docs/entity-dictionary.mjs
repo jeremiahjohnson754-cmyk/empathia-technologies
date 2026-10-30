@@ -25,18 +25,18 @@ const db = await freshDb('empathia_doc_dict');
 const J = (s) => JSON.parse(db.q(`SELECT coalesce(json_agg(x), '[]') FROM (${s}) x`));
 let md;
 try {
-  const rels = J(`SELECT c.relname AS name, c.relkind AS kind, c.relrowsecurity AS rls, c.relforcerowsecurity AS force, obj_description(c.oid) AS comment
-                  FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname = 'app' AND c.relkind IN ('r','v') ORDER BY c.relkind, c.relname`);
-  const cols = J(`SELECT c.relname AS rel, a.attname AS col, format_type(a.atttypid, a.atttypmod) AS type, a.attnotnull AS notnull, pg_get_expr(d.adbin, d.adrelid) AS def, col_description(c.oid, a.attnum) AS comment
+  const rels = J(`SELECT (CASE WHEN n.nspname = 'app' THEN c.relname ELSE n.nspname || '.' || c.relname END) AS name, c.relkind AS kind, c.relrowsecurity AS rls, c.relforcerowsecurity AS force, obj_description(c.oid) AS comment
+                  FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname IN ('app', 'founder') AND c.relkind IN ('r','v') ORDER BY c.relkind, c.relname`);
+  const cols = J(`SELECT (CASE WHEN n.nspname = 'app' THEN c.relname ELSE n.nspname || '.' || c.relname END) AS rel, a.attname AS col, format_type(a.atttypid, a.atttypmod) AS type, a.attnotnull AS notnull, pg_get_expr(d.adbin, d.adrelid) AS def, col_description(c.oid, a.attnum) AS comment
                   FROM pg_attribute a JOIN pg_class c ON c.oid = a.attrelid JOIN pg_namespace n ON n.oid = c.relnamespace LEFT JOIN pg_attrdef d ON d.adrelid = a.attrelid AND d.adnum = a.attnum
-                  WHERE n.nspname = 'app' AND c.relkind IN ('r','v') AND a.attnum > 0 AND NOT a.attisdropped ORDER BY c.relname, a.attnum`);
-  const cons = J(`SELECT c.relname AS rel, k.conname AS name, k.contype AS type, pg_get_constraintdef(k.oid) AS def
-                  FROM pg_constraint k JOIN pg_class c ON c.oid = k.conrelid JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname = 'app' ORDER BY c.relname, k.contype, k.conname`);
-  const pols = J(`SELECT tablename AS rel, policyname AS name, cmd, roles::text AS roles, qual, with_check FROM pg_policies WHERE schemaname = 'app' ORDER BY tablename, policyname`);
+                  WHERE n.nspname IN ('app', 'founder') AND c.relkind IN ('r','v') AND a.attnum > 0 AND NOT a.attisdropped ORDER BY c.relname, a.attnum`);
+  const cons = J(`SELECT (CASE WHEN n.nspname = 'app' THEN c.relname ELSE n.nspname || '.' || c.relname END) AS rel, k.conname AS name, k.contype AS type, pg_get_constraintdef(k.oid) AS def
+                  FROM pg_constraint k JOIN pg_class c ON c.oid = k.conrelid JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname IN ('app', 'founder') ORDER BY c.relname, k.contype, k.conname`);
+  const pols = J(`SELECT tablename AS rel, policyname AS name, cmd, roles::text AS roles, qual, with_check FROM pg_policies WHERE schemaname IN ('app', 'founder') ORDER BY tablename, policyname`);
   const trg = J(`SELECT c.relname AS rel, t.tgname AS name, pg_get_triggerdef(t.oid) AS def FROM pg_trigger t JOIN pg_class c ON c.oid = t.tgrelid JOIN pg_namespace n ON n.oid = c.relnamespace
-                 WHERE n.nspname = 'app' AND NOT t.tgisinternal ORDER BY c.relname, t.tgname`);
-  const idx = J(`SELECT tablename AS rel, indexname AS name, indexdef AS def FROM pg_indexes WHERE schemaname = 'app' ORDER BY tablename, indexname`);
-  const fns = J(`SELECT p.proname AS name, pg_get_function_identity_arguments(p.oid) AS args, p.prosecdef AS definer, obj_description(p.oid) AS comment FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace WHERE n.nspname = 'app' ORDER BY p.proname`);
+                 WHERE n.nspname IN ('app', 'founder') AND NOT t.tgisinternal ORDER BY c.relname, t.tgname`);
+  const idx = J(`SELECT tablename AS rel, indexname AS name, indexdef AS def FROM pg_indexes WHERE schemaname IN ('app', 'founder') ORDER BY tablename, indexname`);
+  const fns = J(`SELECT p.proname AS name, pg_get_function_identity_arguments(p.oid) AS args, p.prosecdef AS definer, obj_description(p.oid) AS comment FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace WHERE n.nspname IN ('app', 'founder') ORDER BY p.proname`);
   const by = (list, r) => list.filter((x) => x.rel === r);
   const esc = (s) => String(s ?? '').replace(/\|/g, '\\|').replace(/\n/g, ' ');
   const kindOf = { p: 'PRIMARY KEY', f: 'FOREIGN KEY', u: 'UNIQUE', c: 'CHECK', x: 'EXCLUDE', t: 'TRIGGER' };

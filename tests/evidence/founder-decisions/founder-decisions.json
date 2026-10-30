@@ -1,0 +1,61 @@
+{
+ "at": "2026-10-30T17:02:40.734Z",
+ "pass": 9,
+ "fail": 0,
+ "results": [
+  {
+   "id": "FD-01",
+   "name": "the Decisions destination asks the founder to sign in and names the platform API",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "FD-02",
+   "name": "a wrong password is refused and said so",
+   "result": "PASS",
+   "detail": "401 unauthenticated: the email or password is not right"
+  },
+  {
+   "id": "FD-03",
+   "name": "the founder signs in to the founder organization",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "FD-04",
+   "name": "a decision is recorded as a DRAFT with a code",
+   "result": "PASS",
+   "detail": "FD-0001\tPilot scope: one building first (synthetic)\tcommercial\tDRAFT\t1\tA bounded scope keeps the readiness report honest.\tDECIDEDWITHDRAWN History"
+  },
+  {
+   "id": "FD-05",
+   "name": "the decision moves to DECIDED with a rationale and its revision becomes 2",
+   "result": "PASS",
+   "detail": "FD-0001\tPilot scope: one building first (synthetic)\tcommercial\tDECIDED\t2\tDecided after the pilot-scope review (synthetic).\tREVISITEDWITHDRAWN History"
+  },
+  {
+   "id": "FD-06",
+   "name": "the history shows both revisions, oldest first",
+   "result": "PASS",
+   "detail": "1 · DRAFT 2026-10-30 17:02\nA bounded scope keeps the readiness report honest. | 2 · DECIDED 2026-10-30 17:02\nDecided after the pilot-scope review (synthetic)."
+  },
+  {
+   "id": "FD-07",
+   "name": "the decision is persisted on the platform (read back through the API with the same session)",
+   "result": "PASS",
+   "detail": "{\"items\":[{\"id\":\"8b903d15-2837-41ae-99de-5ae84c987e63\",\"code\":\"FD-0001\",\"title\":\"Pilot scope: one building first (synthetic)\",\"area\":\"commercial\",\"status\":\"DECIDED\",\"revision\":2,\"created_at\":\"2026-10-"
+  },
+  {
+   "id": "FD-08",
+   "name": "an enterprise account cannot sign in to the founder organization",
+   "result": "PASS",
+   "detail": "status 403"
+  },
+  {
+   "id": "FD-09",
+   "name": "no page error",
+   "result": "PASS",
+   "detail": ""
+  }
+ ]
+}

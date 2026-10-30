@@ -1,6 +1,6 @@
 {
   "generatedBy": "scripts/docs/entity-dictionary.mjs",
-  "tables": 33,
+  "tables": 36,
   "views": 1,
   "relations": [
     {
@@ -997,6 +997,274 @@
           "def": "CREATE UNIQUE INDEX cx_plan_row_pkey ON app.cx_plan_row USING btree (plan_id, test_id)"
         }
       ]
+    },
+    {
+      "name": "founder.decision",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": null,
+      "purpose": null,
+      "columns": [
+        {
+          "rel": "founder.decision",
+          "col": "id",
+          "type": "uuid",
+          "notnull": true,
+          "def": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "rel": "founder.decision",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "founder.decision",
+          "col": "code",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "founder.decision",
+          "col": "title",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "founder.decision",
+          "col": "area",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "founder.decision",
+          "col": "status",
+          "type": "text",
+          "notnull": true,
+          "def": "'DRAFT'::text",
+          "comment": null
+        },
+        {
+          "rel": "founder.decision",
+          "col": "revision",
+          "type": "integer",
+          "notnull": true,
+          "def": "1",
+          "comment": null
+        },
+        {
+          "rel": "founder.decision",
+          "col": "created_by",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "founder.decision",
+          "col": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        },
+        {
+          "rel": "founder.decision",
+          "col": "updated_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "founder.decision",
+          "name": "decision_area_check",
+          "type": "c",
+          "def": "CHECK ((area = ANY (ARRAY['product'::text, 'engineering'::text, 'commercial'::text, 'operations'::text, 'investor'::text, 'legal'::text])))"
+        },
+        {
+          "rel": "founder.decision",
+          "name": "decision_code_check",
+          "type": "c",
+          "def": "CHECK ((code ~ '^FD-[0-9]{4}$'::text))"
+        },
+        {
+          "rel": "founder.decision",
+          "name": "decision_status_check",
+          "type": "c",
+          "def": "CHECK ((status = ANY (ARRAY['DRAFT'::text, 'DECIDED'::text, 'REVISITED'::text, 'WITHDRAWN'::text])))"
+        },
+        {
+          "rel": "founder.decision",
+          "name": "decision_title_check",
+          "type": "c",
+          "def": "CHECK (((length(title) >= 1) AND (length(title) <= 160)))"
+        },
+        {
+          "rel": "founder.decision",
+          "name": "decision_created_by_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (created_by) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "founder.decision",
+          "name": "decision_tenant_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id) REFERENCES app.tenant(id)"
+        },
+        {
+          "rel": "founder.decision",
+          "name": "decision_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "founder.decision",
+          "name": "decision_tenant_id_code_key",
+          "type": "u",
+          "def": "UNIQUE (tenant_id, code)"
+        }
+      ],
+      "policies": [],
+      "triggers": [],
+      "indexes": []
+    },
+    {
+      "name": "founder.decision_revision",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": null,
+      "purpose": null,
+      "columns": [
+        {
+          "rel": "founder.decision_revision",
+          "col": "id",
+          "type": "bigint",
+          "notnull": true,
+          "def": "nextval('founder.decision_revision_id_seq'::regclass)",
+          "comment": null
+        },
+        {
+          "rel": "founder.decision_revision",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "founder.decision_revision",
+          "col": "decision_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "founder.decision_revision",
+          "col": "revision",
+          "type": "integer",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "founder.decision_revision",
+          "col": "status",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "founder.decision_revision",
+          "col": "rationale",
+          "type": "text",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "founder.decision_revision",
+          "col": "options",
+          "type": "jsonb",
+          "notnull": true,
+          "def": "'[]'::jsonb",
+          "comment": null
+        },
+        {
+          "rel": "founder.decision_revision",
+          "col": "decided_by",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "founder.decision_revision",
+          "col": "at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "founder.decision_revision",
+          "name": "decision_revision_rationale_check",
+          "type": "c",
+          "def": "CHECK (((length(rationale) >= 1) AND (length(rationale) <= 8000)))"
+        },
+        {
+          "rel": "founder.decision_revision",
+          "name": "decision_revision_decided_by_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (decided_by) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "founder.decision_revision",
+          "name": "decision_revision_decision_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (decision_id) REFERENCES founder.decision(id)"
+        },
+        {
+          "rel": "founder.decision_revision",
+          "name": "decision_revision_tenant_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id) REFERENCES app.tenant(id)"
+        },
+        {
+          "rel": "founder.decision_revision",
+          "name": "decision_revision_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (id)"
+        },
+        {
+          "rel": "founder.decision_revision",
+          "name": "decision_revision_decision_id_revision_key",
+          "type": "u",
+          "def": "UNIQUE (decision_id, revision)"
+        }
+      ],
+      "policies": [],
+      "triggers": [],
+      "indexes": []
     },
     {
       "name": "drawing_revision",
@@ -5225,6 +5493,86 @@
       ]
     },
     {
+      "name": "founder.workspace_state",
+      "kind": "r",
+      "rls": true,
+      "force": true,
+      "comment": null,
+      "migration": null,
+      "purpose": null,
+      "columns": [
+        {
+          "rel": "founder.workspace_state",
+          "col": "tenant_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "founder.workspace_state",
+          "col": "person_id",
+          "type": "uuid",
+          "notnull": true,
+          "def": null,
+          "comment": null
+        },
+        {
+          "rel": "founder.workspace_state",
+          "col": "state",
+          "type": "jsonb",
+          "notnull": true,
+          "def": "'{}'::jsonb",
+          "comment": null
+        },
+        {
+          "rel": "founder.workspace_state",
+          "col": "revision",
+          "type": "integer",
+          "notnull": true,
+          "def": "1",
+          "comment": null
+        },
+        {
+          "rel": "founder.workspace_state",
+          "col": "updated_at",
+          "type": "timestamp with time zone",
+          "notnull": true,
+          "def": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "rel": "founder.workspace_state",
+          "name": "workspace_state_state_check",
+          "type": "c",
+          "def": "CHECK ((pg_column_size(state) < 262144))"
+        },
+        {
+          "rel": "founder.workspace_state",
+          "name": "workspace_state_person_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (person_id) REFERENCES app.person(id)"
+        },
+        {
+          "rel": "founder.workspace_state",
+          "name": "workspace_state_tenant_id_fkey",
+          "type": "f",
+          "def": "FOREIGN KEY (tenant_id) REFERENCES app.tenant(id)"
+        },
+        {
+          "rel": "founder.workspace_state",
+          "name": "workspace_state_pkey",
+          "type": "p",
+          "def": "PRIMARY KEY (tenant_id, person_id)"
+        }
+      ],
+      "policies": [],
+      "triggers": [],
+      "indexes": []
+    },
+    {
       "name": "current_result",
       "kind": "v",
       "rls": false,
@@ -5394,6 +5742,12 @@
     {
       "name": "result_only_in_commissioning",
       "args": "",
+      "definer": false,
+      "comment": null
+    },
+    {
+      "name": "rls",
+      "args": "tbl regclass",
       "definer": false,
       "comment": null
     },

@@ -1,4 +1,4 @@
-/** The 27 destinations of the Founder Studio (directive section 5), in the order they appear in the rail. */
+/** The 28 destinations of the Founder Studio (directive section 5; Founder Decisions added for the hosted workspace, ADR-0001), in the order they appear in the rail. */
 export interface Destination {
   path: string;
   label: string;
@@ -35,6 +35,7 @@ export const DESTINATIONS: Destination[] = [
   { path: 'docs', label: 'Engineering Documentation', group: 'Engineering', blurb: 'The blueprint for a software team.' },
   { path: 'maturity', label: 'Product Maturity', group: 'Engineering', blurb: 'Eighteen products against eight evidence states.' },
   { path: 'vault', label: 'IP & Provenance Vault', group: 'Vault', blurb: 'Records for counsel: source, authorship, licences.' },
+  { path: 'decisions', label: 'Founder Decisions', group: 'Vault', blurb: 'Decisions with their rationale and every revision, kept on the platform behind the founder boundary.' },
   { path: 'settings', label: 'Settings and Demo Reset', group: 'Vault', blurb: 'Appearance, data inspection, export and reset.' },
 ];
 

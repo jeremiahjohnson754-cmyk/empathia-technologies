@@ -30,6 +30,7 @@ const r = await esbuild.build({
   bundle: true, minify: true, sourcemap: true, format: 'iife', target: ['es2022'], jsx: 'automatic',
   outfile: path.join(dist, 'studio/studio.js'),
   loader: { '.json': 'json' },
+  alias: { '@empathia/api-client': path.join(repo, 'packages/api-client/src/index.ts') },
   define: { 'process.env.NODE_ENV': '"production"' },
   legalComments: 'linked',
   metafile: true, logLevel: 'warning',

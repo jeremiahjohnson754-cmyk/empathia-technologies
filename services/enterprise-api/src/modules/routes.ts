@@ -13,6 +13,7 @@ import * as analytics from '../domain/analytics.js';
 import * as assurance from '../domain/assurance.js';
 import * as integ from '../integrations/sync.js';
 import * as leads from '../domain/leads.js';
+import * as founder from '../domain/founder.js';
 import type { PgPool } from '../db/pg.js';
 import type { Hs256Tokens } from '../auth/jwt.js';
 import type { ObjectStore } from '../storage/objectStore.js';
@@ -106,6 +107,19 @@ export function buildRoutes(deps: { pool: PgPool; tokens: Hs256Tokens; store: Ob
     query: { status: str({ enum: ['NEW', 'ANSWERED', 'SPAM'] }), limit: str({ pattern: '^[0-9]{1,3}$' }) }, responses: ok('leads and the email adapter status'), handler: async (c, q) => ({ status: 200, body: await leads.listLeads(c, q.query.get('status'), Number(q.query.get('limit') || 100)) }) });
   add({ method: 'PATCH', path: '/v1/admin/leads/:id', tag: 'admin', summary: 'Mark a lead answered or spam, or add handling notes (security admin; audited)', auth: true, authority: 'policy.configure',
     body: obj({ status: str({ enum: ['NEW', 'ANSWERED', 'SPAM'] }), notes: str({ maxLength: 4000 }) }), responses: ok('the lead’s handling state'), handler: async (c, q) => ({ status: 200, body: await leads.handleLead(c, q.params['id']!, q.body as never) }) });
+
+  // ---------------------------------------------------------------------------------------- the Founder Studio's private workspace (founder organization + founder role only; own schema and policy flag)
+  add({ method: 'GET', path: '/v1/founder/workspace', tag: 'founder', summary: 'The founder’s workspace state (founder organization only)', auth: true, authority: founder.FOUNDER_AUTHORITY, responses: ok('state, revision'), handler: async (c) => ({ status: 200, body: await founder.getWorkspace(c) }) });
+  add({ method: 'PUT', path: '/v1/founder/workspace', tag: 'founder', summary: 'Save the founder’s workspace state (optimistic concurrency on revision; audited)', auth: true, authority: founder.FOUNDER_AUTHORITY,
+    body: obj({ state: anyObj(), revision: int({ minimum: 0 }) }, ['state', 'revision']), responses: { ...ok('new revision'), 409: { description: 'the state changed elsewhere' } }, handler: async (c, q) => ({ status: 200, body: await founder.putWorkspace(c, q.body as never) }) });
+  add({ method: 'GET', path: '/v1/founder/decisions', tag: 'founder', summary: 'Founder decisions with their current revision', auth: true, authority: founder.FOUNDER_AUTHORITY, responses: ok('decisions'), handler: async (c) => ({ status: 200, body: await founder.listDecisions(c) }) });
+  add({ method: 'POST', path: '/v1/founder/decisions', tag: 'founder', summary: 'Record a founder decision (DRAFT, revision 1; audited)', auth: true, authority: founder.FOUNDER_AUTHORITY, idempotent: true,
+    body: obj({ title: str({ minLength: 1, maxLength: 160 }), area: str({ enum: ['product', 'engineering', 'commercial', 'operations', 'investor', 'legal'] }), rationale: str({ minLength: 1, maxLength: 8000 }), options: arr(anyObj()) }, ['title', 'area', 'rationale']),
+    responses: created('id, code, status, revision'), handler: async (c, q) => ({ status: 201, body: await founder.createDecision(c, q.body as never) }) });
+  add({ method: 'POST', path: '/v1/founder/decisions/:id/transition', tag: 'founder', summary: 'Move a decision (DRAFT→DECIDED|WITHDRAWN, DECIDED→REVISITED|WITHDRAWN, REVISITED→DECIDED|WITHDRAWN) with a rationale: appends an immutable revision', auth: true, authority: founder.FOUNDER_AUTHORITY,
+    body: obj({ to: str({ enum: ['DECIDED', 'REVISITED', 'WITHDRAWN'] }), rationale: str({ minLength: 1, maxLength: 8000 }), options: arr(anyObj()) }, ['to', 'rationale']), responses: { ...ok('new status and revision'), 422: { description: 'the transition is not allowed from the current status' } },
+    handler: async (c, q) => ({ status: 200, body: await founder.transitionDecision(c, q.params['id']!, q.body as never) }) });
+  add({ method: 'GET', path: '/v1/founder/decisions/:id/history', tag: 'founder', summary: 'Every revision of a decision (append-only)', auth: true, authority: founder.FOUNDER_AUTHORITY, responses: ok('revisions'), handler: async (c, q) => ({ status: 200, body: await founder.decisionHistory(c, q.params['id']!) }) });
 
   // ---------------------------------------------------------------------------------------- read models, graph, notifications
   add({ method: 'GET', path: '/v1/read/rooms', tag: 'read-models', summary: 'Operational read model of every room (built by the outbox worker; live health is NOT_MONITORED)', auth: true, responses: ok('read model'), handler: async (c) => ({ status: 200, body: await read.readModel(c) }) });

@@ -32,7 +32,8 @@ try { filmIndex = JSON.parse(fs.readFileSync(path.join(root, 'server/film-index.
 const WORKSPACE = process.env.EMPATHIA_WORKSPACE || '/home/claude';
 
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.map': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.mp4': 'video/mp4', '.webm': 'video/webm', '.txt': 'text/plain; charset=utf-8', '.vtt': 'text/vtt' };
-const STUDIO_CSP = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; frame-src 'self'; connect-src 'self' http://127.0.0.1:4100 http://localhost:4100; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'";
+const API_ORIGIN = new URL(arg('api', process.env.API_URL || 'http://127.0.0.1:4100')).origin;   // the platform API the studio may talk to (and nothing else)
+const STUDIO_CSP = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; frame-src 'self'; connect-src 'self' " + API_ORIGIN + " " + API_ORIGIN.replace('127.0.0.1', 'localhost') + "; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'";
 
 const send = (res, code, body, headers = {}) => { res.writeHead(code, { 'cache-control': 'no-store', 'x-content-type-options': 'nosniff', 'referrer-policy': 'no-referrer', ...headers }); res.end(body); };
 const json = (res, code, v) => send(res, code, JSON.stringify(v), { 'content-type': 'application/json' });

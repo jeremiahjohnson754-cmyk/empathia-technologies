@@ -15,6 +15,7 @@ import { Docs } from './pages/Docs';
 import { Maturity } from './pages/Maturity';
 import { Vault } from './pages/Vault';
 import { Settings } from './pages/Settings';
+import { Decisions } from './pages/Decisions';
 import '@empathia/design-tokens/tokens.css';
 import './styles/studio.css';
 
@@ -31,6 +32,7 @@ function Page() {
     case 'maturity': return <Maturity />;
     case 'vault': return <Vault />;
     case 'settings': return <Settings />;
+    case 'decisions': return <Decisions />;
     default: {
       const d = DESTINATIONS.find((x) => x.path === r.path);
       const p = d?.product ? productBySlug(d.product) : undefined;
