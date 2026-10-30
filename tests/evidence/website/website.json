@@ -1,5 +1,5 @@
 {
- "at": "2026-10-30T16:49:28.347Z",
+ "at": "2026-10-30T17:13:58.886Z",
  "pass": 32,
  "fail": 0,
  "tests": 32,
@@ -92,7 +92,7 @@
    "id": "W-desktop-form",
    "name": "without a configured lead endpoint the form says so and does not pretend to send",
    "result": "PASS",
-   "detail": "{\"status\":\"The lead endpoint is not configured on this deployment, so this form cannot send yet. Use the address on the contact page instead.\",\"disabled\":true,\"required\":5}"
+   "detail": "{\"status\":\"The lead endpoint is not configured on this deployment, so this form cannot send yet. The contact page explains how to reach us in the meantime.\",\"disabled\":true,\"required\":5}"
   },
   {
    "id": "W-desktop-clean",
@@ -188,7 +188,7 @@
    "id": "W-phone-form",
    "name": "without a configured lead endpoint the form says so and does not pretend to send",
    "result": "PASS",
-   "detail": "{\"status\":\"The lead endpoint is not configured on this deployment, so this form cannot send yet. Use the address on the contact page instead.\",\"disabled\":true,\"required\":5}"
+   "detail": "{\"status\":\"The lead endpoint is not configured on this deployment, so this form cannot send yet. The contact page explains how to reach us in the meantime.\",\"disabled\":true,\"required\":5}"
   },
   {
    "id": "W-phone-clean",

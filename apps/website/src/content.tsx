@@ -24,13 +24,13 @@ const Note = ({ children }: { children: React.ReactNode }) => <p className="note
 
 /** The seven operational products, described by what they do in the demonstrated lifecycle. */
 export const PRODUCTS = [
-  { title: 'Intake Portal', body: 'A room request with photos, plans, known dimensions and constraints becomes an engineering brief. Approval, funding and engineering authorization are separate decisions by separate people, each bound to a scope revision.', href: '/platform#intake' },
+  { title: 'Intake Portal', body: 'A room request with photos, plans, known dimensions and constraints becomes an engineering brief. In the demonstrated design, approval, funding and engineering authorization are separate decisions by separate people, each bound to a scope revision.', href: '/platform#intake' },
   { title: 'Build a Room with Lite', body: 'A conceptual room model from an archetype, dimensions, plans and photos. Geometry carries its provenance: extracted, inferred, simulated, field-measured or engineer-approved — never promoted silently.', href: '/platform#lite' },
   { title: 'Scouter', body: 'Equipment shortlists and standardization proposals from comparable rooms, with the limits stated. A proposal is reviewed by the discipline engineer before anything is deployed.', href: '/platform#scouter' },
   { title: 'Universal Commissioning', body: 'An adaptive test plan compiled from the project type, the room, the device inventory, the approved design and the standard versions — with the reason for every test. Failed tests open deficiencies; nothing is verified by the person who ran it.', href: '/platform#commissioning' },
   { title: 'Search Party', body: 'One search across people, rooms, devices, projects, standards and documents, with the relationships between them: who owns this, who covers it, what depends on it.', href: '/platform#search-party' },
-  { title: 'ServiceHands', body: 'Issues become work orders with hard-gated eligibility, dispatch preflight, field evidence and independent verification. A technician sees the sites and work assigned, nothing else.', href: '/platform#servicehands' },
-  { title: 'Assurance and APEX', body: 'An accepted commissioning result becomes a versioned baseline. Drift, incidents and repairs create new versions; the original acceptance is never overwritten. APEX diagnosis is advisory, with its evidence and its uncertainty.', href: '/platform#assurance' },
+  { title: 'ServiceHands', body: 'Issues become work orders, closed with field evidence and resolved only by a verified retest. A technician sees the sites assigned, nothing else; eligibility checks and dispatch preflight are part of the demonstrated design.', href: '/platform#servicehands' },
+  { title: 'Assurance and APEX', body: 'An accepted commissioning result becomes the room\'s baseline, and drift is read against it. The platform is designed to keep every baseline version (the original acceptance never overwritten); APEX diagnosis is advisory, with its evidence and its uncertainty.', href: '/platform#assurance' },
 ];
 
 export const PAGES: Page[] = [
@@ -76,7 +76,7 @@ export const PAGES: Page[] = [
   ) },
   { path: '/how-it-works', title: 'How it works — Empathia Technologies', description: 'The governed lifecycle from request to assurance baseline.', nav: 'How it works', body: (
     <>
-      <Hero title="How it works" lead="A reference lifecycle, every transition with an authorized persona, the required evidence, a guard, an event and an audit record." />
+      <Hero title="How it works" lead="The governed lifecycle the platform is built around, as the demonstration shows it: every transition with an authorized persona, the required evidence, a guard, an event and an audit record." />
       <Section title="From request to accepted baseline"><Steps steps={[
         { title: 'Request', body: 'A requestor describes the room, with photos, plans, known dimensions and constraints. Photos follow a stated privacy policy.' },
         { title: 'Acknowledgement and pitch', body: 'The assigned supplier acknowledges; the operations lead assembles a revisioned business case.' },
@@ -94,12 +94,12 @@ export const PAGES: Page[] = [
     <>
       <Hero title="Technology" lead="A modular monolith with clear boundaries, built for correctness first." />
       <Section title="Architecture"><Grid items={[
-        { title: 'One canonical data model', body: 'Globally unique identifiers, explicit relationships and versioned records; no name-based joins. Measurement fields carry unit, provenance, validation and reviewer.' },
+        { title: 'One canonical data model', body: 'One record for every room, device, person and project, with stable identifiers and revisioned room designs. The measurement model (unit, provenance, validation, reviewer on every field) is specified and on the build plan.' },
         { title: 'Authorization in the database', body: 'Tenant and site scope enforced with PostgreSQL row-level security as well as in the API; a role switch in the interface grants nothing.' },
-        { title: 'Append-only evidence and audit', body: 'Evidence and audit records cannot be edited or deleted by the application roles; the outbox delivers events transactionally and consumers are idempotent.' },
+        { title: 'Append-only evidence and audit', body: 'Evidence and audit records cannot be edited or deleted by the application roles; events are written in the same transaction as the change and delivered by a worker with retries.' },
         { title: 'Typed contracts', body: 'An OpenAPI document generated from the route table, a generated typed client, JSON Schemas for events and records.' },
         { title: 'Engines with golden tests', body: 'The commissioning and assurance engines are deterministic rule systems with published parity cases — not trained models.' },
-        { title: 'Connectors by capability', body: 'Adapters declare what they can observe or do; each is labelled simulated, proposed, configured, healthy, stale or failed. Field collectors are outbound-only and never execute remote commands from the web application.' },
+        { title: 'Connectors by capability', body: 'Adapters declare what they can observe or do and carry an honest state; today every adapter is a mock or a contract, and none is claimed to work with a manufacturer\'s system. The field-collector design is outbound-only: the web application never executes remote commands.' },
       ]} /></Section>
     </>
   ) },
@@ -108,9 +108,10 @@ export const PAGES: Page[] = [
       <Hero title="Security and trust" lead="What is in place, what is planned, and what we do not claim." />
       <Section title="In place in the product"><Grid items={[
         { title: 'Server-side authorization', body: 'Every API operation, search, file read and background job checks the actor, the tenant, the site and the role. Negative tests cover cross-tenant and cross-site access.' },
-        { title: 'Private evidence storage', body: 'Engineering documents and photos are stored privately with hashes and version records; downloads are authorized and short-lived.' },
+        { title: 'Private evidence storage', body: 'Evidence files are stored privately, hashed on upload and re-verified on every read; a download is authorized against the caller\'s tenant and site scope.' },
         { title: 'Audit', body: 'Administrative and workflow actions are recorded append-only with the actor and the time.' },
       ]} /></Section>
+      <Section title="Planned, not yet in place" lead="Signed, short-lived download links from object storage; an enterprise identity provider with MFA; versioned assurance baselines; the measurement model; verified manufacturer adapters. Each is on the build plan and will be described here only once it is tested." />
       <Section title="What we do not claim" lead="Empathia holds no SOC 2, ISO 27001 or HIPAA certification. No external security assessment of the platform has been completed. No manufacturer integration is claimed to work until verified with that manufacturer's system. The demonstrations use synthetic data only." />
       <Section title="Privacy" lead="Room photos and recordings are processed only under a tenant-approved policy with consent; nothing is sent to an external AI service without an agreement. See the privacy notice."><a className="btn" href="/privacy">Privacy notice</a></Section>
     </>
@@ -122,7 +123,7 @@ export const PAGES: Page[] = [
       <Section title="Principles"><Grid items={[
         { title: 'Say what the evidence supports', body: 'Every state in the product has a guard, an actor and an event behind it, and the product labels what is declared, modeled, measured or verified.' },
         { title: 'Authority is explicit', body: 'No one approves their own work; no simulated result becomes an engineering fact; no suggestion becomes an action by itself.' },
-        { title: 'Preserve the history', body: 'Baselines are versioned, evidence is append-only, decisions keep their rationale.' },
+        { title: 'Preserve the history', body: 'Evidence is append-only, room designs are revisioned, decisions keep their rationale — and a baseline, once accepted, is never to be overwritten.' },
       ]} /></Section>
     </>
   ) },
@@ -146,6 +147,7 @@ export const PAGES: Page[] = [
   { path: '/contact', title: 'Contact — Empathia Technologies', description: 'Contact Empathia Technologies.', nav: 'Contact', body: (
     <>
       <Hero title="Contact" lead="Questions about the platform, pilots or investor demonstrations." />
+      <Section title="How to reach us" lead="The form below stores your message with Empathia's own service when this site's deployment has its lead endpoint configured; when it has not, the form says so. Postal and email addresses are published here once the company's public contact details are approved for release." />
       <Section title="Write to us"><LeadForm kind="contact" /></Section>
     </>
   ) },

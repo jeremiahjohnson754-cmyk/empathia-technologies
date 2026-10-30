@@ -44,8 +44,12 @@ export async function uploadEvidence(ctx: RequestContext, store: ObjectStore, da
 
 export async function evidenceContent(ctx: RequestContext, store: ObjectStore, id: string): Promise<{ data: Buffer; mediaType: string; fileName: string }> {
   return ctx.tx(async (q) => {
-    const e = (await q.query<{ storage_key: string; sha256: string; media_type: string; file_name: string }>('SELECT storage_key, sha256, media_type, file_name FROM app.evidence_object WHERE id = $1', [id])).rows[0];
+    const e = (await q.query<{ storage_key: string; sha256: string; media_type: string; file_name: string; uploaded_by: string }>('SELECT storage_key, sha256, media_type, file_name, uploaded_by FROM app.evidence_object WHERE id = $1', [id])).rows[0];
     if (!e) throw notFound(`evidence ${id}`);
+    if (ctx.p.siteScope && ctx.p.siteScope.length && e.uploaded_by !== ctx.p.personId) {   // site scope (RT-02): evidence is readable through a room in scope that cites it, or by its uploader
+      const cited = await q.query('SELECT 1 FROM app.test_result t JOIN app.room r ON r.id = t.room_id AND r.tenant_id = t.tenant_id JOIN app.building b ON b.id = r.building_id AND b.tenant_id = r.tenant_id WHERE t.evidence_id = $1 AND b.site_id = ANY($2::uuid[]) LIMIT 1', [id, ctx.p.siteScope]);
+      if (!cited.rowCount) { await ctx.audit(null, 'evidence.read', 'DENIED', { type: 'Evidence', id }, { why: 'not cited by a room in the caller\'s site scope' }); throw notFound(`evidence ${id}`); }
+    }
     const data = await store.get(e.storage_key);
     if (!(await store.verify(e.storage_key, e.sha256))) throw new ApiError('internal', 'the stored evidence no longer matches its recorded hash');
     await ctx.audit(q, 'evidence.read', 'ALLOWED', { type: 'Evidence', id });
@@ -63,7 +67,7 @@ export async function recordResult(ctx: RequestContext, ref: string, body: { tes
     const why = recordBlockers(room.lifecycle, row, ctx.p.role, { state: body.state, evidence: { kind: body.evidenceKind, ref: body.evidenceId, instrument: body.instrument ?? null } });
     if (why.length) {
       const isRole = /is not the responsible role/.test(why[0]!);
-      await ctx.audit(q, 'commission.result.record', 'DENIED', { type: 'Room', id: room.code }, { testId: body.testId, why });
+      await ctx.audit(null, 'commission.result.record', 'DENIED', { type: 'Room', id: room.code }, { testId: body.testId, why });   // own transaction: survives the rollback (RT-01)
       throw isRole ? new ApiError('forbidden', why[0]!) : refused(why);
     }
     const prev = (await q.query<{ result_id: string }>('SELECT result_id FROM app.current_result WHERE room_id = $1 AND test_id = $2', [room.id, body.testId])).rows[0];
@@ -108,7 +112,7 @@ export async function verifyResult(ctx: RequestContext, ref: string, testId: str
     const cur = (await q.query<{ result_id: string; state: string; recorded_by: string; verified_by: string | null; evidence_kind: string; evidence_id: string }>('SELECT result_id, state, recorded_by, verified_by, evidence_kind, evidence_id FROM app.current_result WHERE room_id = $1 AND test_id = $2', [room.id, testId])).rows[0];
     const rr: RecordedResult | undefined = cur ? { state: cur.state as RecordedResult['state'], evidence: { kind: cur.evidence_kind, ref: cur.evidence_id }, by: cur.recorded_by, verified: cur.verified_by ? { by: cur.verified_by } : null } : undefined;
     const why = verifyBlockers(rr, ctx.p.personId);
-    if (why.length) { await ctx.audit(q, 'commission.result.verify', 'DENIED', { type: 'Room', id: room.code }, { testId, why }); throw refused(why); }
+    if (why.length) await ctx.refuse('commission.result.verify', { type: 'Room', id: room.code }, why, { testId });
     await q.query('INSERT INTO app.verification (tenant_id, result_id, recorded_by, verified_by, verified_role) VALUES ($1,$2,$3,$4,$5)', [ctx.p.tenantId, cur!.result_id, cur!.recorded_by, ctx.p.personId, ctx.p.role]);
     const label = resultLabel({ ...rr!, verified: { by: ctx.p.personId } });
     await ctx.emit(q, 'room.test_verified', { type: 'Room', id: room.code, rev: room.rev }, { designId: room.code, testId, resultLabel: label, verifiedBy: ctx.p.personId });
@@ -166,7 +170,8 @@ export async function createWorkOrder(ctx: RequestContext, issueCode: string, bo
 export async function closeWorkOrder(ctx: RequestContext, woCode: string, note: string) {
   await ctx.require('service.close', 'close a work order', { type: 'WorkOrder', id: woCode });
   return ctx.tx(async (q) => {
-    const w = (await q.query<{ id: string; state: string; issue_id: string }>('SELECT id, state, issue_id FROM app.work_order WHERE code = $1 FOR UPDATE', [woCode])).rows[0];
+    const sc = ctx.p.siteScope && ctx.p.siteScope.length ? ' AND b.site_id = ANY($2::uuid[])' : '';   // site scope: a work order is reachable only through a room in scope (RT-02)
+    const w = (await q.query<{ id: string; state: string; issue_id: string }>(`SELECT w.id, w.state, w.issue_id FROM app.work_order w JOIN app.room_issue i ON i.id = w.issue_id AND i.tenant_id = w.tenant_id JOIN app.room r ON r.id = i.room_id AND r.tenant_id = i.tenant_id JOIN app.building b ON b.id = r.building_id AND b.tenant_id = r.tenant_id WHERE w.code = $1${sc} FOR UPDATE OF w`, sc ? [woCode, ctx.p.siteScope] : [woCode])).rows[0];
     if (!w) throw notFound(`work order ${woCode}`);
     if (w.state !== 'OPEN') throw refused(['the work order is already closed']);
     await q.query(`UPDATE app.work_order SET state = 'CLOSED', closed_by = $2, closed_at = now(), closing_note = $3 WHERE id = $1`, [w.id, ctx.p.personId, String(note || '').slice(0, 1000)]);

@@ -380,6 +380,9 @@
         "summary": "People and memberships of the tenant (security admin; audited)",
         "operationId": "getV1People",
         "x-authority": "policy.configure",
+        "x-authority-enforced": [
+          "policy.configure"
+        ],
         "security": [
           {
             "bearer": []
@@ -519,6 +522,9 @@
         "summary": "Create a project",
         "operationId": "postV1Projects",
         "x-authority": "project.decide",
+        "x-authority-enforced": [
+          "project.decide"
+        ],
         "security": [
           {
             "bearer": []
@@ -627,6 +633,9 @@
         "summary": "Put a room into a project, or take it out (projectCode null)",
         "operationId": "postV1RoomsRoomProject",
         "x-authority": "project.decide",
+        "x-authority-enforced": [
+          "project.decide"
+        ],
         "security": [
           {
             "bearer": []
@@ -904,6 +913,9 @@
         "summary": "Create a planned room from a template (server-side classification, checks and applicability)",
         "operationId": "postV1Rooms",
         "x-authority": "room.design",
+        "x-authority-enforced": [
+          "room.design"
+        ],
         "security": [
           {
             "bearer": []
@@ -1150,6 +1162,9 @@
         "summary": "Change the room’s name, intended use or occupancy (PLANNED only)",
         "operationId": "patchV1RoomsRoom",
         "x-authority": "room.design",
+        "x-authority-enforced": [
+          "room.design"
+        ],
         "security": [
           {
             "bearer": []
@@ -1258,6 +1273,9 @@
         "summary": "Add a planned device (gets a tenant-unique canonical asset id)",
         "operationId": "postV1RoomsRoomDevices",
         "x-authority": "room.design",
+        "x-authority-enforced": [
+          "room.design"
+        ],
         "security": [
           {
             "bearer": []
@@ -1387,6 +1405,9 @@
         "summary": "Move a device or substitute its model (the asset keeps its id; the model history is kept)",
         "operationId": "patchV1RoomsRoomDevicesAsset",
         "x-authority": "room.design",
+        "x-authority-enforced": [
+          "room.design"
+        ],
         "security": [
           {
             "bearer": []
@@ -1511,6 +1532,9 @@
         "summary": "Remove a device from the design (kept in earlier revisions)",
         "operationId": "deleteV1RoomsRoomDevicesAsset",
         "x-authority": "room.design",
+        "x-authority-enforced": [
+          "room.design"
+        ],
         "security": [
           {
             "bearer": []
@@ -1599,6 +1623,9 @@
         "summary": "Propose a connection between two devices",
         "operationId": "postV1RoomsRoomConnections",
         "x-authority": "room.design",
+        "x-authority-enforced": [
+          "room.design"
+        ],
         "security": [
           {
             "bearer": []
@@ -1724,6 +1751,9 @@
         "summary": "Remove a proposed connection (the design checks re-run)",
         "operationId": "deleteV1RoomsRoomConnectionsConnection",
         "x-authority": "room.design",
+        "x-authority-enforced": [
+          "room.design"
+        ],
         "security": [
           {
             "bearer": []
@@ -1812,6 +1842,9 @@
         "summary": "Save an immutable revision (refused when nothing changed)",
         "operationId": "postV1RoomsRoomRevisions",
         "x-authority": "room.design",
+        "x-authority-enforced": [
+          "room.design"
+        ],
         "security": [
           {
             "bearer": []
@@ -2017,6 +2050,9 @@
         "summary": "Approve the suggested room type, or override it with a reason (≥ 10 characters)",
         "operationId": "postV1RoomsRoomClassificationApprove",
         "x-authority": "room.classify.approve",
+        "x-authority-enforced": [
+          "room.classify.approve"
+        ],
         "security": [
           {
             "bearer": []
@@ -2122,6 +2158,9 @@
         "summary": "Generate the drawing set from the design (diagrams, not stamped drawings)",
         "operationId": "postV1RoomsRoomDrawingsGenerate",
         "x-authority": "room.design",
+        "x-authority-enforced": [
+          "room.design"
+        ],
         "security": [
           {
             "bearer": []
@@ -2202,6 +2241,9 @@
         "summary": "Approve a current generated drawing (it turns REVIEW_REQUIRED when its input changes)",
         "operationId": "postV1RoomsRoomDrawingsKindApprove",
         "x-authority": "room.classify.approve",
+        "x-authority-enforced": [
+          "room.classify.approve"
+        ],
         "security": [
           {
             "bearer": []
@@ -2298,6 +2340,7 @@
           "ACCEPTED: customer.accept",
           "OPERATIONAL: handoff.accept"
         ],
+        "x-authority-enforced": [],
         "security": [
           {
             "bearer": []
@@ -2572,6 +2615,15 @@
           "test.verify.video",
           "test.verify.control"
         ],
+        "x-authority-enforced": [
+          "work.evidence",
+          "field.scan",
+          "test.verify",
+          "tests.verify.all",
+          "test.verify.audio",
+          "test.verify.video",
+          "test.verify.control"
+        ],
         "security": [
           {
             "bearer": []
@@ -2753,6 +2805,7 @@
         "summary": "Record a field result (room in COMMISSIONING; responsible role; accepted evidence kind; stored evidence)",
         "operationId": "postV1RoomsRoomResults",
         "x-authority": "the test’s responsible personas, or cxeng",
+        "x-authority-enforced": [],
         "security": [
           {
             "bearer": []
@@ -2891,6 +2944,11 @@
           "test.verify",
           "customer.accept"
         ],
+        "x-authority-enforced": [
+          "tests.verify.all",
+          "test.verify",
+          "customer.accept"
+        ],
         "security": [
           {
             "bearer": []
@@ -2979,6 +3037,10 @@
         "summary": "Assign an open issue to a role",
         "operationId": "postV1IssuesIssueAssign",
         "x-authority": [
+          "issue.assign",
+          "route.internal"
+        ],
+        "x-authority-enforced": [
           "issue.assign",
           "route.internal"
         ],
@@ -3082,6 +3144,10 @@
         "summary": "Raise a ServiceHands work order for an installation/commissioning deficiency",
         "operationId": "postV1IssuesIssueWorkOrders",
         "x-authority": [
+          "service.assign",
+          "service.triage"
+        ],
+        "x-authority-enforced": [
           "service.assign",
           "service.triage"
         ],
@@ -3197,6 +3263,9 @@
         "summary": "Close a work order (records field work; never passes a test)",
         "operationId": "postV1WorkOrdersWorkOrderClose",
         "x-authority": "service.close",
+        "x-authority-enforced": [
+          "service.close"
+        ],
         "security": [
           {
             "bearer": []
@@ -3395,6 +3464,9 @@
         "summary": "The lead inbox (security admin; audited): messages from the public website with their handling status and whether a notification went out",
         "operationId": "getV1AdminLeads",
         "x-authority": "policy.configure",
+        "x-authority-enforced": [
+          "policy.configure"
+        ],
         "security": [
           {
             "bearer": []
@@ -3489,6 +3561,9 @@
         "summary": "Mark a lead answered or spam, or add handling notes (security admin; audited)",
         "operationId": "patchV1AdminLeadsId",
         "x-authority": "policy.configure",
+        "x-authority-enforced": [
+          "policy.configure"
+        ],
         "security": [
           {
             "bearer": []
@@ -3595,6 +3670,9 @@
         "summary": "The founder’s workspace state (founder organization only)",
         "operationId": "getV1FounderWorkspace",
         "x-authority": "founder.workspace",
+        "x-authority-enforced": [
+          "founder.workspace"
+        ],
         "security": [
           {
             "bearer": []
@@ -3664,6 +3742,9 @@
         "summary": "Save the founder’s workspace state (optimistic concurrency on revision; audited)",
         "operationId": "putV1FounderWorkspace",
         "x-authority": "founder.workspace",
+        "x-authority-enforced": [
+          "founder.workspace"
+        ],
         "security": [
           {
             "bearer": []
@@ -3770,6 +3851,9 @@
         "summary": "Founder decisions with their current revision",
         "operationId": "getV1FounderDecisions",
         "x-authority": "founder.workspace",
+        "x-authority-enforced": [
+          "founder.workspace"
+        ],
         "security": [
           {
             "bearer": []
@@ -3839,6 +3923,9 @@
         "summary": "Record a founder decision (DRAFT, revision 1; audited)",
         "operationId": "postV1FounderDecisions",
         "x-authority": "founder.workspace",
+        "x-authority-enforced": [
+          "founder.workspace"
+        ],
         "security": [
           {
             "bearer": []
@@ -3967,6 +4054,9 @@
         "summary": "Move a decision (DRAFT→DECIDED|WITHDRAWN, DECIDED→REVISITED|WITHDRAWN, REVISITED→DECIDED|WITHDRAWN) with a rationale: appends an immutable revision",
         "operationId": "postV1FounderDecisionsIdTransition",
         "x-authority": "founder.workspace",
+        "x-authority-enforced": [
+          "founder.workspace"
+        ],
         "security": [
           {
             "bearer": []
@@ -4084,6 +4174,9 @@
         "summary": "Every revision of a decision (append-only)",
         "operationId": "getV1FounderDecisionsIdHistory",
         "x-authority": "founder.workspace",
+        "x-authority-enforced": [
+          "founder.workspace"
+        ],
         "security": [
           {
             "bearer": []
@@ -4482,6 +4575,10 @@
           "provenance.review",
           "policy.configure"
         ],
+        "x-authority-enforced": [
+          "provenance.review",
+          "policy.configure"
+        ],
         "security": [
           {
             "bearer": []
@@ -4654,6 +4751,10 @@
           "adapter.allowlist",
           "policy.configure"
         ],
+        "x-authority-enforced": [
+          "adapter.allowlist",
+          "policy.configure"
+        ],
         "security": [
           {
             "bearer": []
@@ -4747,6 +4848,10 @@
           "adapter.allowlist",
           "policy.configure"
         ],
+        "x-authority-enforced": [
+          "adapter.allowlist",
+          "policy.configure"
+        ],
         "security": [
           {
             "bearer": []
@@ -4837,6 +4942,10 @@
         "summary": "Stored observations and sync health of an integration (evidence labels included)",
         "operationId": "getV1IntegrationsKeyObservations",
         "x-authority": [
+          "adapter.allowlist",
+          "policy.configure"
+        ],
+        "x-authority-enforced": [
           "adapter.allowlist",
           "policy.configure"
         ],
@@ -5111,6 +5220,9 @@
         "summary": "Outbox events by status (security admin)",
         "operationId": "getV1AdminOutbox",
         "x-authority": "policy.configure",
+        "x-authority-enforced": [
+          "policy.configure"
+        ],
         "security": [
           {
             "bearer": []
@@ -5196,6 +5308,9 @@
         "summary": "Retry a dead-lettered event (security admin)",
         "operationId": "postV1AdminOutboxEventRetry",
         "x-authority": "policy.configure",
+        "x-authority-enforced": [
+          "policy.configure"
+        ],
         "security": [
           {
             "bearer": []

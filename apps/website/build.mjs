@@ -10,7 +10,12 @@ const app = path.dirname(fileURLToPath(import.meta.url)); const repo = path.reso
 const arg = (k, d) => (process.argv.find((a) => a.startsWith(`--${k}=`)) || '').split('=').slice(1).join('=') || d;
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
 fs.rmSync(dist, { recursive: true, force: true }); fs.mkdirSync(dist, { recursive: true });
-await esbuild.build({ entryPoints: [path.join(app, 'src/main.ts')], bundle: true, minify: true, sourcemap: true, format: 'iife', target: ['es2022'], jsx: 'automatic', outfile: path.join(dist, 'site.js'), define: { 'process.env.NODE_ENV': '"production"' }, legalComments: 'linked', logLevel: 'warning' });
+await esbuild.build({ entryPoints: [path.join(app, 'src/main.ts')], bundle: true, minify: true, sourcemap: 'external', format: 'iife', target: ['es2022'], jsx: 'automatic', outfile: path.join(dist, 'site.js'), define: { 'process.env.NODE_ENV': '"production"' }, legalComments: 'linked', logLevel: 'warning' });
+
+// source maps never ship (red-team RT-20): moved out of dist, kept for an error tracker under .local/sourcemaps/<app>/
+{ const maps = path.join(repo, '.local/sourcemaps', path.basename(app)); fs.mkdirSync(maps, { recursive: true });
+  const walk = (d) => fs.readdirSync(d).flatMap((f) => { const p = path.join(d, f); return fs.statSync(p).isDirectory() ? walk(p) : [p]; });
+  for (const f of walk(dist).filter((f) => f.endsWith('.map'))) fs.renameSync(f, path.join(maps, path.basename(f))); }
 // the pre-renderer runs in Node: bundle it to a temporary ESM file and import it
 const tmp = path.join(repo, '.local/website-prerender.mjs'); fs.mkdirSync(path.dirname(tmp), { recursive: true });
 await esbuild.build({ entryPoints: [path.join(app, 'src/prerender.tsx')], bundle: true, platform: 'node', format: 'esm', target: ['node22'], jsx: 'automatic', outfile: tmp, banner: { js: "import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);" }, define: { 'process.env.NODE_ENV': '"production"' }, logLevel: 'warning' });

@@ -1,0 +1,43 @@
+{
+ "at": "2026-10-30T17:13:48.255Z",
+ "pass": 6,
+ "fail": 0,
+ "results": [
+  {
+   "id": "L-01",
+   "name": "with the endpoint configured the form is enabled and shows no \"not configured\" notice",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "L-02",
+   "name": "without consent the browser refuses to submit (required checkbox)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "L-03",
+   "name": "with consent the message is sent and the page confirms receipt",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "L-04",
+   "name": "the message is stored and readable in the admin inbox with its fields and the notification status",
+   "result": "PASS",
+   "detail": "{\"id\":\"9b4d5c69-3d9d-4321-a269-13f21fb97032\",\"kind\":\"demo\",\"name\":\"Synthetic Visitor\",\"organization\":\"Example Org (synthetic)\",\"email\":\"visitor@example.com\",\"audience\":\"Systems integrator\",\"scope\":null,\"message\":\"Please show the commissioning scenario.\",\"status\":\"NEW\",\"notified\":false,\"notify_note\":"
+  },
+  {
+   "id": "L-05",
+   "name": "a submission with the honeypot filled is dropped by the browser script and never stored",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "L-06",
+   "name": "no page error",
+   "result": "PASS",
+   "detail": ""
+  }
+ ]
+}

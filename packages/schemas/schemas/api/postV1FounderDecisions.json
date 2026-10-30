@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1FounderDecisions/0.1.0.json",
+  "title": "POST /v1/founder/decisions request body",
+  "description": "Record a founder decision (DRAFT, revision 1; audited)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "title",
+    "area",
+    "rationale"
+  ],
+  "properties": {
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160
+    },
+    "area": {
+      "type": "string",
+      "enum": [
+        "product",
+        "engineering",
+        "commercial",
+        "operations",
+        "investor",
+        "legal"
+      ]
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 8000
+    },
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": ""
+      }
+    }
+  }
+}

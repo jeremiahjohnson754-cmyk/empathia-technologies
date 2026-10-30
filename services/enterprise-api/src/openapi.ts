@@ -1,4 +1,5 @@
 /** OpenAPI 3.1 generated from the route table: every endpoint documented, every documented endpoint real. */
+import { enforcedAuthorities } from './http/router.js';
 import type { Router } from './http/router.js';
 import type { Schema } from './http/schema.js';
 
@@ -20,7 +21,7 @@ export function openapi(r: Router): Record<string, unknown> {
       .concat(x.idempotent ? [{ name: 'Idempotency-Key', in: 'header', required: false, schema: { type: 'string', minLength: 8, maxLength: 128 } as never }] : []);
     (paths[p] ||= {})[x.method.toLowerCase()] = {
       tags: [x.tag], summary: x.summary, operationId: `${x.method.toLowerCase()}${x.path.replace(/[/:{}-]+(.)/g, (_m, c: string) => c.toUpperCase())}`,
-      ...(x.authority ? { 'x-authority': x.authority } : {}),
+      ...(x.authority ? { 'x-authority': x.authority, 'x-authority-enforced': enforcedAuthorities(x) } : {}),
       security: x.auth ? [{ bearer: [] }] : [],
       parameters: params,
       ...(x.body ? { requestBody: { required: true, content: { 'application/json': { schema: toOas(x.body) } } } } : x.bodyKind === 'binary' ? { requestBody: { required: true, content: { 'application/octet-stream': { schema: { type: 'string', format: 'binary' } } } } } : {}),

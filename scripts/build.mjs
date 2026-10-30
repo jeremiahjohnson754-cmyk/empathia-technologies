@@ -54,6 +54,7 @@ run('OpenAPI and typed client match the route table', process.execPath, [path.jo
 run('enterprise web bundle', process.execPath, [path.join(root, 'apps/enterprise-web/build.mjs')]);
 run('public website (pre-rendered)', process.execPath, [path.join(root, 'apps/website/build.mjs')]);
 run('investor demo shell', process.execPath, [path.join(root, 'apps/demo/build.mjs')]);
+run('dist hygiene (no source maps, no dev override)', process.execPath, [path.join(root, 'scripts/verify/dist-hygiene.mjs')]);
 if (process.argv.includes('--studio')) {
   const fe = (process.argv.find((a) => a.startsWith('--founder-edition=')) || '').split('=')[1];
   run('Founder Studio (data + bundle)', process.execPath, [path.join(root, 'apps/founder-studio/build.mjs'), ...(fe ? [`--founder-edition=${fe}`] : [])]);

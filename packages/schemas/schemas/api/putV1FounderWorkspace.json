@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/putV1FounderWorkspace/0.1.0.json",
+  "title": "PUT /v1/founder/workspace request body",
+  "description": "Save the founder’s workspace state (optimistic concurrency on revision; audited)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "state",
+    "revision"
+  ],
+  "properties": {
+    "state": {
+      "type": "object",
+      "description": ""
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}

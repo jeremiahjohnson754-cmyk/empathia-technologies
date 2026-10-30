@@ -6,8 +6,12 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { EmpathiaClient, ApiProblem } from '@empathia/api-client';
 
-const params = new URLSearchParams(location.search);
-export const API_BASE = params.get('api') || (window as unknown as { EMPATHIA_API?: string }).EMPATHIA_API || 'http://127.0.0.1:4100';
+// The API origin is fixed at build time (EMPATHIA_API_BASE) or by the deployment (window.EMPATHIA_API set by the server's index.html);
+// a ?api= override exists only in development builds (red-team RT-05: a phishing link must not be able to redirect sign-in and tokens).
+declare const EMPATHIA_DEV_BUILD: boolean;
+const devOverride = typeof EMPATHIA_DEV_BUILD !== 'undefined' && EMPATHIA_DEV_BUILD ? new URLSearchParams(location.search).get('api') : null;
+const metaApi = (document.querySelector('meta[name="empathia-api"]') as HTMLMetaElement | null)?.content || null;   // written by the serving process from its --api / API_URL
+export const API_BASE = devOverride || metaApi || (window as unknown as { EMPATHIA_API?: string }).EMPATHIA_API || 'http://127.0.0.1:4100';
 const STORE = 'empathia.enterprise-web.session';
 
 function saved(): string | null { try { return sessionStorage.getItem(STORE); } catch { return null; } }

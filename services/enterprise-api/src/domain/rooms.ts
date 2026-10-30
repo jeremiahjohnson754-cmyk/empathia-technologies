@@ -398,7 +398,7 @@ export async function transition(ctx: RequestContext, ref: string, to: RoomLifec
       rows: rows.map((r) => ({ id: r.test_id, applicable: r.applicable, result: (labels.get(r.test_id) || 'NOT_TESTED') as never } as never)),
       results: L.results, hasBaseline: !!room.baseline, hasLiveMonitoringEvidence: false,
     });
-    if (why.length) { await ctx.audit(q, `room.lifecycle:${to}`, 'DENIED', { type: 'Room', id: room.code }, { why }); throw refused(why); }
+    if (why.length) await ctx.refuse(`room.lifecycle:${to}`, { type: 'Room', id: room.code }, why);
     const from = room.lifecycle;
     const extra: string[] = []; const args: unknown[] = [room.id, to];
     if (to === 'DESIGN_APPROVED') { args.push((await q.query<{ n: number }>('SELECT max(rev_no) AS n FROM app.room_revision WHERE room_id = $1', [room.id])).rows[0]!.n); extra.push(`approved_revision = $${args.length}`); }

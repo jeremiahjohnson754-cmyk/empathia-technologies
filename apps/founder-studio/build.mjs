@@ -27,7 +27,7 @@ fs.mkdirSync(path.join(dist, 'studio'), { recursive: true });
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
 const r = await esbuild.build({
   entryPoints: [path.join(app, 'src/main.tsx')],
-  bundle: true, minify: true, sourcemap: true, format: 'iife', target: ['es2022'], jsx: 'automatic',
+  bundle: true, minify: true, sourcemap: 'external', format: 'iife', target: ['es2022'], jsx: 'automatic',
   outfile: path.join(dist, 'studio/studio.js'),
   loader: { '.json': 'json' },
   alias: { '@empathia/api-client': path.join(repo, 'packages/api-client/src/index.ts') },
@@ -35,6 +35,11 @@ const r = await esbuild.build({
   legalComments: 'linked',
   metafile: true, logLevel: 'warning',
 });
+
+// source maps never ship (red-team RT-20): moved out of dist, kept for an error tracker under .local/sourcemaps/<app>/
+{ const maps = path.join(repo, '.local/sourcemaps', path.basename(app)); fs.mkdirSync(maps, { recursive: true });
+  const walk = (d) => fs.readdirSync(d).flatMap((f) => { const p = path.join(d, f); return fs.statSync(p).isDirectory() ? walk(p) : [p]; });
+  for (const f of walk(dist).filter((f) => f.endsWith('.map'))) fs.renameSync(f, path.join(maps, path.basename(f))); }
 fs.writeFileSync(path.join(dist, 'studio/meta.json'), JSON.stringify(r.metafile));
 fs.copyFileSync(path.join(app, 'src/index.html'), path.join(dist, 'index.html'));
 

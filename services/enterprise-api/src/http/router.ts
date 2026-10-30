@@ -12,7 +12,7 @@ export interface Route {
   tag: string;
   summary: string;
   auth: boolean;                                  // false only for /health, /v1/auth/token and /v1/openapi.json
-  authority?: string | string[];                  // documented here; enforced inside the handler with ctx.require(...)
+  authority?: string | string[];                  // authority keys (a.b.c) are enforced centrally by the server before the body is read; prose describes a finer rule the handler enforces
   body?: Schema;
   bodyKind?: 'json' | 'binary';
   query?: Record<string, Schema>;
@@ -28,6 +28,8 @@ export interface Req {
   raw: Buffer | null;
   headers: IncomingMessage['headers'];
 }
+/** The authority keys of a route that the server enforces centrally (prose entries are documentation of a handler-enforced rule). */
+export const enforcedAuthorities = (r: Route): string[] => (Array.isArray(r.authority) ? r.authority : r.authority ? [r.authority] : []).filter((k) => /^[a-z_][a-z0-9_.]*$/.test(k));
 export interface Res { status: number; body?: unknown; headers?: Record<string, string>; raw?: Buffer }
 
 export class Router {

@@ -13,7 +13,7 @@ const arg = (k, d) => (process.argv.find((a) => a.startsWith(`--${k}=`)) || '').
 const port = Number(arg('port', process.env.WWW_PORT || 4300));
 const host = arg('host', process.env.WWW_HOST || '127.0.0.1');   // 0.0.0.0 only inside a container, published on 127.0.0.1 by compose
 const apiOrigin = new URL(arg('api', process.env.API_URL || 'http://127.0.0.1:4100')).origin;
-const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.map': 'application/json', '.txt': 'text/plain; charset=utf-8' };
+const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.txt': 'text/plain; charset=utf-8' };
 const CSP = `default-src 'self'; connect-src 'self' ${apiOrigin}; img-src 'self' data:; style-src 'self'; script-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'`;
 export function serve() {
   const s = http.createServer((req, res) => {

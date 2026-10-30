@@ -14,6 +14,8 @@ await new Promise((r) => { srv.stdout.on('data', () => r()); srv.stderr.on('data
 const base = `http://127.0.0.1:${PORT}`;
 const pages = (fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8').match(/<loc>[^<]*<\/loc>/g) || []).map((l) => l.replace(/<\/?loc>/g, '').replace(/^https?:\/\/[^/]+/, '') || '/');
 ok('W-00', 'the sitemap lists the pages', pages.length >= 10, pages.join(' '));
+// capabilities that are NOT implemented at this commit (docs/legacy-parity.md): they may appear only as planned or designed, never as present
+const NOT_YET = [/short-lived (download )?(url|link)s? (are|is)\b/i, /baseline[s]? (are|is) (immutable|versioned)/i, /no name-based joins/i, /collectors are outbound-only/i, /dispatch preflight (is|are) (in place|enforced)/i, /multi-factor .* (is|are) (in place|enabled)/i];
 const FORBIDDEN = [/\b(aon|kraft heinz|stefanini|khc)\b/i, /SOC ?2 (certified|compliant)/i, /ISO ?27001 (certified|compliant)/i, /\b(award|awards)\b/i, /\btestimonial/i, /\bcustomers? (include|such as|like)\b/i, /\b\d+% (reduction|increase|roi)\b/i, /guaranteed/i, /production[- ]ready/i, /\bpartnered with\b/i];
 const browser = await chromium.launch();
 for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
@@ -26,6 +28,8 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     info.links.forEach((l) => links.add(l.split('#')[0]));
     ok(`W-${tag}-${p}`, `${p} answers with a title, a description, one h1 and no sideways scroll`, r.status() === 200 && info.title.length > 8 && info.desc.length > 20 && info.h1.length > 3 && info.over <= 0, JSON.stringify({ status: r.status(), over: info.over, h1: info.h1 }));
     const bad = FORBIDDEN.filter((re) => re.test(info.text)); if (bad.length) ok(`W-claims-${p}`, `${p} makes no forbidden claim`, false, bad.map(String).join(' '));
+    const inPlace = await page.evaluate(() => Array.from(document.querySelectorAll('section')).filter((s) => /In place in the product/.test((s.querySelector('h2') || {}).textContent || '')).map((s) => s.innerText).join('\n'));
+    const early = NOT_YET.filter((re) => re.test(info.text.replace(/Planned, not yet in place[\s\S]*?(?=\n[A-Z][^\n]{3,}\n)/, ''))); if (early.length || NOT_YET.some((re) => re.test(inPlace))) ok(`W-notyet-${p}`, `${p} does not present an unbuilt capability as present`, false, early.map(String).join(' '));
     if (tag === 'desktop') await page.screenshot({ path: path.join(out, `${tag}-${p.replace(/[^a-z-]/g, '') || 'home'}.png`) });
   }
   ok(`W-${tag}-links`, 'every internal link on the site resolves to a listed page or a section of one', [...links].every((l) => pages.includes(l.replace(/\/$/, '') || '/')), [...links].filter((l) => !pages.includes(l.replace(/\/$/, '') || '/')).join(' '));

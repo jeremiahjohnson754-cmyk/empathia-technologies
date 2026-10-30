@@ -63,7 +63,7 @@ export async function transitionDecision(ctx: RequestContext, id: string, body: 
     const d = await q.query<{ status: string; revision: number; code: string }>('SELECT status, revision, code FROM founder.decision WHERE id = $1 AND tenant_id = $2 FOR UPDATE', [id, ctx.p.tenantId]);
     if (!d.rowCount) throw notFound(`decision ${id}`);
     const cur = d.rows[0]!;
-    if (!(NEXT[cur.status] || []).includes(body.to)) { await ctx.audit(q, 'founder.decision_transition', 'DENIED', { type: 'FounderDecision', id }, { from: cur.status, to: body.to }); throw new ApiError('rule_refused', `a ${cur.status} decision cannot become ${body.to} (allowed: ${(NEXT[cur.status] || []).join(', ') || 'none'})`); }
+    if (!(NEXT[cur.status] || []).includes(body.to)) await ctx.refuse('founder.decision_transition', { type: 'FounderDecision', id }, [`a ${cur.status} decision cannot become ${body.to} (allowed: ${(NEXT[cur.status] || []).join(', ') || 'none'})`], { from: cur.status, to: body.to });
     const rev = cur.revision + 1;
     await q.query('INSERT INTO founder.decision_revision (tenant_id, decision_id, revision, status, rationale, options, decided_by) VALUES ($1,$2,$3,$4,$5,$6,$7)', [ctx.p.tenantId, id, rev, body.to, body.rationale.trim(), JSON.stringify(body.options || []), ctx.p.personId]);
     await q.query('UPDATE founder.decision SET status = $3, revision = $4, updated_at = now() WHERE id = $1 AND tenant_id = $2', [id, ctx.p.tenantId, body.to, rev]);

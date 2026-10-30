@@ -24,7 +24,7 @@ const h = await setup({ db: 'empathia_test_web', port: API, env: { CORS_ORIGINS:
 process.env.API_URL = h.base; process.env.WEB_PORT = String(WEB);
 const { serve } = await import(path.join(repo, 'apps/enterprise-web/server/serve.mjs'));
 const web = await serve();
-const base = `http://127.0.0.1:${WEB}/?api=${encodeURIComponent(h.base)}`;
+const base = `http://127.0.0.1:${WEB}/`;   // the server tells the page its API origin (meta empathia-api); ?api= is a development-build override only
 const b = await chromium.launch();
 try {
   const ctx = await b.newContext({ viewport: { width: 1440, height: 950 } });

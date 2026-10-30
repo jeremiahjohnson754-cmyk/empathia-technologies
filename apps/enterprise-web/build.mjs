@@ -15,10 +15,15 @@ const dev = process.argv.includes('--dev');
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
 fs.rmSync(dist, { recursive: true, force: true }); fs.mkdirSync(dist, { recursive: true });
 await esbuild.build({
-  entryPoints: [path.join(app, 'src/main.tsx')], bundle: true, minify: !dev, sourcemap: true, format: 'iife', target: ['es2022'], jsx: 'automatic',
-  outfile: path.join(dist, 'app.js'), define: { 'process.env.NODE_ENV': dev ? '"development"' : '"production"' }, legalComments: 'linked', logLevel: 'warning',
+  entryPoints: [path.join(app, 'src/main.tsx')], bundle: true, minify: !dev, sourcemap: 'external', format: 'iife', target: ['es2022'], jsx: 'automatic',
+  outfile: path.join(dist, 'app.js'), define: { 'process.env.NODE_ENV': dev ? '"development"' : '"production"', EMPATHIA_DEV_BUILD: dev ? 'true' : 'false' }, legalComments: 'linked', logLevel: 'warning',
   alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts'), '@empathia/api-client': path.join(repo, 'packages/api-client/src/index.ts') },
 });
+
+// source maps never ship (red-team RT-20): moved out of dist, kept for an error tracker under .local/sourcemaps/<app>/
+{ const maps = path.join(repo, '.local/sourcemaps', path.basename(app)); fs.mkdirSync(maps, { recursive: true });
+  const walk = (d) => fs.readdirSync(d).flatMap((f) => { const p = path.join(d, f); return fs.statSync(p).isDirectory() ? walk(p) : [p]; });
+  for (const f of walk(dist).filter((f) => f.endsWith('.map'))) fs.renameSync(f, path.join(maps, path.basename(f))); }
 const css = [path.join(repo, 'packages/design-tokens/dist/tokens.css'), path.join(repo, 'packages/ui/src/ui.css'), path.join(app, 'src/styles/app.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`).join('\n');
 fs.writeFileSync(path.join(dist, 'app.css'), css);
 fs.copyFileSync(path.join(app, 'src/index.html'), path.join(dist, 'index.html'));

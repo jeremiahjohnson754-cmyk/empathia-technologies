@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/patchV1AdminLeadsId/0.1.0.json",
+  "title": "PATCH /v1/admin/leads/{id} request body",
+  "description": "Mark a lead answered or spam, or add handling notes (security admin; audited)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [],
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": [
+        "NEW",
+        "ANSWERED",
+        "SPAM"
+      ]
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 4000
+    }
+  }
+}

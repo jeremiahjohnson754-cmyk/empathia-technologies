@@ -4,7 +4,7 @@
   "apiVersion": "0.1.0",
   "counts": {
     "events": 101,
-    "api": 16,
+    "api": 21,
     "entities": 4
   },
   "files": [
@@ -587,6 +587,31 @@
       "file": "api/postV1WorkOrdersWorkOrderClose.json",
       "$id": "https://schemas.empathia.invalid/api/postV1WorkOrdersWorkOrderClose/0.1.0.json",
       "sha256": "b941e788c5a870a9ff7fb5acf22de09cbbd231fe365f0fcb4f507998d39a6d00"
+    },
+    {
+      "file": "api/postV1PublicLeads.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1PublicLeads/0.1.0.json",
+      "sha256": "fcde7f767817f3bf30b35a418a0ea9b899b798945f2d0d7eade8b44c4618f1a0"
+    },
+    {
+      "file": "api/patchV1AdminLeadsId.json",
+      "$id": "https://schemas.empathia.invalid/api/patchV1AdminLeadsId/0.1.0.json",
+      "sha256": "388a18042b0fe00a63d1ed1a88bdf5c1fb438583ab5c4834ee6ba983e71e9b29"
+    },
+    {
+      "file": "api/putV1FounderWorkspace.json",
+      "$id": "https://schemas.empathia.invalid/api/putV1FounderWorkspace/0.1.0.json",
+      "sha256": "e2375cc25548090b3e5b1472575197d40d15e6d596e3628572cc039840ecd193"
+    },
+    {
+      "file": "api/postV1FounderDecisions.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1FounderDecisions/0.1.0.json",
+      "sha256": "22371742c4b3bd766c1bb12276ef0d2d60c71adfdc95f2163f32d01d4dcd6205"
+    },
+    {
+      "file": "api/postV1FounderDecisionsIdTransition.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1FounderDecisionsIdTransition/0.1.0.json",
+      "sha256": "1f2d827882b57c6ac477a911bccfd866e563df9d8fec7d599c87feff8acb651c"
     },
     {
       "file": "api/postV1AiRequests.json",

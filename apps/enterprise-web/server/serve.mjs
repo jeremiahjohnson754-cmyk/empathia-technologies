@@ -13,7 +13,7 @@ const arg = (k, d) => (process.argv.find((a) => a.startsWith(`--${k}=`)) || '').
 const port = Number(arg('port', process.env.WEB_PORT || 4200));
 const host = arg('host', process.env.WEB_HOST || '127.0.0.1');   // 0.0.0.0 only inside a container, published on 127.0.0.1 by compose
 const apiOrigin = new URL(arg('api', process.env.API_URL || 'http://127.0.0.1:4100')).origin;
-const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.map': 'application/json', '.txt': 'text/plain; charset=utf-8' };
+const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.txt': 'text/plain; charset=utf-8' };
 const CSP = `default-src 'self'; connect-src 'self' ${apiOrigin}; img-src 'self' data:; style-src 'self'; script-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'`;
 export function serve() {
   const s = http.createServer((req, res) => {
@@ -25,6 +25,7 @@ export function serve() {
     if (!f.startsWith(root) || !fs.existsSync(f) || !fs.statSync(f).isFile()) { res.writeHead(404, { 'content-type': 'text/plain' }).end('not found'); return; }
     const head = { 'content-type': TYPES[path.extname(f)] || 'application/octet-stream', 'x-content-type-options': 'nosniff', 'referrer-policy': 'no-referrer', 'cache-control': 'no-cache' };
     if (f.endsWith('.html')) Object.assign(head, { 'content-security-policy': CSP, 'x-frame-options': 'DENY' });
+    if (f.endsWith('index.html')) { const html = fs.readFileSync(f, 'utf8').replace('<head>', `<head>\n  <meta name="empathia-api" content="${apiOrigin}">`); res.writeHead(200, { ...head, 'content-length': Buffer.byteLength(html) }); res.end(html); return; }   // the API origin the deployment configured
     res.writeHead(200, head); fs.createReadStream(f).pipe(res);
   });
   return new Promise((ok) => s.listen(port, host, () => ok(s)));

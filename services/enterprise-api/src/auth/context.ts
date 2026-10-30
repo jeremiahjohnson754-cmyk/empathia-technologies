@@ -35,6 +35,12 @@ export class RequestContext {
     const args = [this.p.tenantId, this.p.personId, this.p.role, action, outcome, aggregate?.type ?? null, aggregate?.id ?? null, this.correlationId, detail];
     if (q) await q.query(sql, args); else await this.tx((t) => t.query(sql, args));
   }
+  /** A rule refusal inside a transaction: the DENIED audit row is written in its own transaction first (the request's transaction is
+   *  about to roll back and would take the row with it — red-team RT-01), then the refusal is thrown. */
+  async refuse(action: string, aggregate: { type: string; id: string } | undefined, why: string[], detail: Record<string, unknown> = {}): Promise<never> {
+    await this.audit(null, action, 'DENIED', aggregate, { why, ...detail });
+    throw new ApiError('rule_refused', why[0] || 'refused', why);
+  }
   /** Append an event to the transactional outbox (validated against its contract first: a corrupt event aborts the transaction). */
   async emit(q: Queryable, type: string, aggregate: { type: string; id: string; rev: number }, payload: Record<string, unknown>): Promise<string> {
     const problems = validateEvent({ type, aggregateType: aggregate.type, aggregateId: aggregate.id, aggregateRevision: aggregate.rev, payload });
