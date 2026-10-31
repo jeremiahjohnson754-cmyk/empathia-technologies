@@ -158,6 +158,15 @@ Not built: SIGNAL labs (91 simulators); the enterprise app's service/APEX/execut
 | API: `POST /v1/issues/{issue}/apex` (open; idempotent per issue), `GET /v1/apex/cases`, `GET /v1/apex/cases/{case}` (layers citing the room's planned assets, ranked hypotheses, actions, review, the room's current baseline, the **real** adapter state from the integration catalogue — two local mocks DECLARED, nothing SUPPORTED_VERIFIED — tiers, runbooks, what the caller may do), `POST …/act` (A0–A5 on `@empathia/apex-engine`; A3 stages a real work order through `createWorkOrder` so only a role that may raise one succeeds — the refusal is the outcome and a DENIED audit; A4 blocked step by step, dry run then labelled simulation with branches, compensation audited, rate limit), `POST …/review` (verifiers; emits `apex.diagnosis_reviewed` with hypothesis and tier) | IMPLEMENTED · TESTED | `tests/security/apex.test.mjs` APX-1..APX-5; OpenAPI 117 operations |
 | Enterprise web `#/apex`: case list, case record (layers, hypotheses, selected hypothesis with caveat/evidence/negatives/next, runbook facts, tier buttons with the A4 declarations, action log with every outcome, review); "Open APEX case" on a room's deficiency | IMPLEMENTED · TESTED | browser W-64..W-67 (72/72) |
 
+### P7 — Field Intelligence in the enterprise application (2026-10-31)
+
+| Item | Status | Evidence |
+|---|---|---|
+| Migration 0021: `fi_licence` (site × archetype, granted by `license.grant`), `fi_session` (the engine's record is the row); RLS | DONE | every suite migrates through it |
+| API, 13 routes: the v1.3 plan from a room's planned assets (PLAN_ONLY), licences (read; grant/revoke by the security administrator), sessions (propose by systems engineering; eligibility against the real licence row; the five preflight steps each by its own authority; dry run; authorization by the commissioning lead; arming only by the consenting operator — a person id, not a role — with two confirmations, `real: true` answered NOT_CONFIGURED; the simulated run point by point with scripted abnormal branches; E-stop). The engine decides; every step audited with its reasons | IMPLEMENTED · TESTED | `tests/security/field-intelligence.test.mjs` FI-1..FI-5; OpenAPI 130 operations |
+| Enterprise web: `#/field` (sessions · licences · v1.3 plan), the session page (facts, what is still missing, the step for the caller's role only, arming with two confirmations, the run with branch injection and EMERGENCY STOP, results labelled simulated, the log and exits), the room's Field Intelligence tab (propose) | IMPLEMENTED · TESTED | browser W-36, W-68..W-71 (76/76) |
+| Not built | — | instrument export upload and QA/review states after ACQUIRED (the engine stops at ACQUIRED in this build); licence administration beyond grant/revoke |
+
 ### Connector expansion directive (2026-10-31 05:34 CT) — what was actually done
 
 | Item | Status | Evidence |

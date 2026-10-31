@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1FieldIntelligenceSessionsSessionRun/0.1.0.json",
+  "title": "POST /v1/field-intelligence/sessions/{session}/run request body",
+  "description": "Step the simulated run one point; an optional scripted abnormal branch (occupied, stale_calibration, excessive_level, failing_test, …) ends it the way the real thing would",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [],
+  "properties": {
+    "branch": {
+      "type": "string",
+      "enum": [
+        "occupied",
+        "stale_calibration",
+        "no_operator",
+        "unsupported_adapter",
+        "disconnected",
+        "excessive_level",
+        "failing_test",
+        "timed_out",
+        "lost_heartbeat",
+        "estop"
+      ]
+    }
+  }
+}

@@ -183,9 +183,9 @@ try {
   ok('W-34', 'the shared shell shows the platform’s products in one rail: Mission Control, Pro, Lite, Search Party, Commissioning & Assurance, Field Intelligence, Learn, Administration', ['Mission Control', 'Pro', 'Lite', 'Search Party', 'Commissioning & Assurance', 'Field Intelligence', 'Learn', 'Administration'].every((x) => rail.includes(x)), rail);
   await page.goto(`${base}#/commissioning`); await page.waitForSelector('.stage-grid');
   ok('W-35', 'Commissioning & Assurance lists every room by lifecycle stage from the API', (await page.locator('.stage').count()) === 7 && /Browser Huddle/.test(await page.locator('.stage-grid').innerText()));
-  await page.goto(`${base}#/field`); await page.waitForSelector('.ui-table');
+  await page.goto(`${base}#/field/licences`); await page.waitForSelector('[data-testid=fi-licences]');
   const fi = await page.locator('.page').innerText();
-  ok('W-36', 'Field Intelligence shows the honest adapter states and the fixed safety boundary; no live device is claimed', /No live device is connected/.test(fi) && /NOT_MONITORED/.test(fi) && !/VERIFIED\s*$/m.test(fi));
+  ok('W-36', 'Field Intelligence shows the honest adapter states (READ_ONLY / NOT_CONFIGURED, nothing SUPPORTED_VERIFIED) and that a licence opens requests, never proofs', /never proofs/.test(fi) && /NOT_CONFIGURED/.test(fi) && /READ_ONLY/.test(fi) && !/SUPPORTED_VERIFIED/.test(fi) && /only runs are labelled simulations/.test(fi), fi.slice(0, 200));
   await page.goto(`${base}#/learn`); await page.waitForSelector('#learn-q'); await page.fill('#learn-q', 'commissioning'); await page.keyboard.press('Enter'); await page.waitForTimeout(500);
   ok('W-37', 'Learn searches the permission-aware knowledge base', (await page.locator('.list .card, .ui-empty').count()) >= 1);
   await shot('10-platform-rail');
@@ -382,6 +382,41 @@ try {
     await page.waitForFunction(() => /reviewed in the browser/.test(document.querySelector('[data-testid=review]')?.textContent || ''));
     ok('W-67', 'the verdict is recorded on the case and the case list marks it reviewed', (await page.locator('[data-testid=review] [role=status]').count()) === 1);
     await shot('16-apex-case');
+  }
+
+  // ---------------------------------------------------------------- Field Intelligence (P7): licence, proposal, the preflight by three roles, authorization, arming by the consenting operator, the simulated run
+  {
+    const c = client(h.base); const tk = {}; for (const r of ['secadmin', 'syseng', 'opslead', 'service', 'cxeng']) tk[r] = await c.login(r);
+    await c.call('POST', '/v1/field-intelligence/licences', { token: tk.secadmin, body: { siteCode: 'SITE-NORTH', archetype: 'HUD', granted: true, note: 'browser test (synthetic)' } });
+    await signIn('syseng');
+    await page.goto(base + `#/rooms/${code}/field`); await page.waitForSelector('[data-testid=room-field]');
+    await page.click('[data-testid=room-field] button:has-text("Propose a Physical Validation session")'); await page.waitForSelector('[data-testid=fi-session]');
+    ok('W-68', 'the systems engineer proposes a v1.4 session from the room and lands on it as DRAFT', /#\/field\/sessions\/FIS-\d{4}$/.test(page.url()) && /DRAFT/.test(await page.locator('[data-testid=fi-state]').innerText()), page.url());
+    const fisCode = page.url().split('/').pop();
+    await page.click('[data-testid=fi-actions] button:has-text("Check eligibility")'); await page.waitForFunction(() => /SAFETY_PREFLIGHT/.test(document.querySelector('[data-testid=fi-state]')?.textContent || ''));
+    await page.click('[data-testid=fi-actions] button:has-text("Approve the protocol")'); await page.waitForFunction(() => /Still missing/.test(document.body.textContent || '') && !/Approve the protocol/.test(document.body.textContent || ''), null, { timeout: 10000 }).catch(() => {});
+    const missing = await page.locator('.page').innerText();
+    ok('W-69', 'licensed: eligibility passes, the protocol is approved and the page lists what is still missing (window, operator, instrument, E-stop)', /maintenance window/.test(missing) && /operator consent/.test(missing) && !/Approve the protocol/.test(missing), missing.replace(/\s+/g, ' ').slice(0, 600));
+    await signIn('opslead'); await page.goto(base + `#/field/sessions/${fisCode}`); await page.waitForSelector('[data-testid=fi-actions]');
+    await page.check('[data-testid=fi-actions] input[type=checkbox] >> nth=1'); await page.click('[data-testid=fi-actions] button:has-text("Reserve the window")'); await page.waitForFunction(() => !/Reserve the window/.test(document.querySelector('[data-testid=fi-actions]')?.textContent || ''));
+    await signIn('service'); await page.goto(base + `#/field/sessions/${fisCode}`); await page.waitForSelector('[data-testid=fi-actions]');
+    await page.check('[data-testid=fi-actions] input[type=checkbox] >> nth=0'); await page.check('[data-testid=fi-actions] input[type=checkbox] >> nth=1'); await page.click('[data-testid=fi-actions] button:has-text("Consent as local operator")');
+    await page.waitForFunction(() => !/Consent as local operator/.test(document.querySelector('[data-testid=fi-actions]')?.textContent || ''));
+    await page.fill('[data-testid=fi-actions] input >> nth=0', 'SLM class 1'); await page.fill('[data-testid=fi-actions] input >> nth=1', 'SLM-9'); await page.fill('[data-testid=fi-actions] input >> nth=2', 'CAL-1'); await page.fill('[data-testid=fi-actions] input[type=date]', '2027-01-01');
+    await page.click('[data-testid=fi-actions] button:has-text("Register the instrument")'); await page.waitForFunction(() => !/Register the instrument/.test(document.querySelector('[data-testid=fi-actions]')?.textContent || ''));
+    await page.check('[data-testid=fi-actions] input[type=checkbox]'); await page.click('[data-testid=fi-actions] button:has-text("Verify the E-stop")'); await page.waitForFunction(() => /DRY_RUN/.test(document.querySelector('[data-testid=fi-state]')?.textContent || ''));
+    await page.click('[data-testid=fi-actions] button:has-text("Dry run")'); await page.waitForFunction(() => /APPROVAL_PENDING/.test(document.querySelector('[data-testid=fi-state]')?.textContent || ''));
+    ok('W-70', 'window (operations), operator consent, instrument and E-stop (technician): the preflight completes and the dry run leaves the session awaiting authorization', /Awaiting the commissioning lead/.test(await page.locator('[data-testid=fi-actions]').innerText()));
+    await signIn('cxeng'); await page.goto(base + `#/field/sessions/${fisCode}`); await page.waitForSelector('[data-testid=fi-actions]');
+    await page.click('[data-testid=fi-actions] button:has-text("Authorize the session")'); await page.waitForFunction(() => /Only the consenting local operator can arm/.test(document.querySelector('[data-testid=fi-actions]')?.textContent || ''));
+    await signIn('service'); await page.goto(base + `#/field/sessions/${fisCode}`); await page.waitForSelector('[data-testid=fi-arm]');
+    await page.check('[data-testid=fi-arm] input[type=checkbox] >> nth=0'); await page.check('[data-testid=fi-arm] input[type=checkbox] >> nth=1'); await page.click('[data-testid=fi-arm] button:has-text("Arm")');
+    await page.waitForFunction(() => /ARMED/.test(document.querySelector('[data-testid=fi-state]')?.textContent || ''));
+    await page.click('[data-testid=fi-run] button:has-text("Start the simulated run")'); await page.waitForFunction(() => /RUNNING/.test(document.querySelector('[data-testid=fi-state]')?.textContent || ''));
+    const st = await page.locator('[data-testid=fi-state]').innerText(); const res = await page.locator('[data-testid=fi-results]').innerText();
+    ok('W-71', 'the commissioning lead authorizes; the consenting technician arms with two confirmations and the run is labelled SIMULATION, recording no values', /SIMULATION/.test(st) && /no value \(simulator\)/.test(res), `${st} | ${res.slice(0, 120)}`);
+    await page.click('[data-testid=fi-run] button:has-text("EMERGENCY STOP")'); await page.waitForFunction(() => /ABORTED/.test(document.querySelector('[data-testid=fi-state]')?.textContent || ''));
+    await shot('17-field-intelligence-session');
   }
 
   // ---------------------------------------------------------------- Executive passports (P6-C)

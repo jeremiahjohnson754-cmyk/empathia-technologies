@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1FieldIntelligenceSessionsSessionAuthorize/0.1.0.json",
+  "title": "POST /v1/field-intelligence/sessions/{session}/authorize request body",
+  "description": "The commissioning lead authorizes (or refuses) the session",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "yes"
+  ],
+  "properties": {
+    "yes": {
+      "type": "boolean"
+    }
+  }
+}

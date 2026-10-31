@@ -1,7 +1,7 @@
 {
   "test": "enterprise-web",
-  "at": "2026-10-31T11:36:07.817Z",
-  "passed": 72,
+  "at": "2026-10-31T11:49:31.895Z",
+  "passed": 76,
   "failed": 0,
   "results": [
     {
@@ -56,7 +56,7 @@
       "id": "W-09",
       "name": "a designer who bypasses the UI and calls the approval endpoint directly is refused 403 by the server",
       "result": "PASS",
-      "detail": "{\"status\":403,\"body\":{\"type\":\"https://errors.empathia.invalid/forbidden\",\"title\":\"Not allowed for your role\",\"status\":403,\"detail\":\"designer may not move a room to DESIGN_APPROVED (needs room.design.approve)\",\"code\":\"forbidden\",\"correlationId\":\"6800b589-83f0-4ad1-8563-e68640e4e782\"}}"
+      "detail": "{\"status\":403,\"body\":{\"type\":\"https://errors.empathia.invalid/forbidden\",\"title\":\"Not allowed for your role\",\"status\":403,\"detail\":\"designer may not move a room to DESIGN_APPROVED (needs room.design.approve)\",\"code\":\"forbidden\",\"correlationId\":\"f9c0d5fc-e75e-4062-8dfc-ac4b3f82914a\"}}"
     },
     {
       "id": "W-10",
@@ -116,7 +116,7 @@
       "id": "W-32",
       "name": "the measurement is listed with its provenance, instrument, calibration state and UNREVIEWED approval",
       "result": "PASS",
-      "detail": "Measurements\nMetric\tValue\tProvenance\tInstrument\tWhere / when\tApproval\t\n\nnoise_floor\nLAeq 60 s\n\t36.2 dB(A)\tFIELD_MEASURED\tSYN-METER-01 · CALIBRATED\tseat 3, 1.2 m · 2026-10-31 11:35 · SYN-METER-01\tUNREV"
+      "detail": "Measurements\nMetric\tValue\tProvenance\tInstrument\tWhere / when\tApproval\t\n\nnoise_floor\nLAeq 60 s\n\t36.2 dB(A)\tFIELD_MEASURED\tSYN-METER-01 · CALIBRATED\tseat 3, 1.2 m · 2026-10-31 11:49 · SYN-METER-01\tUNREV"
     },
     {
       "id": "W-33",
@@ -198,9 +198,9 @@
     },
     {
       "id": "W-36",
-      "name": "Field Intelligence shows the honest adapter states and the fixed safety boundary; no live device is claimed",
+      "name": "Field Intelligence shows the honest adapter states (READ_ONLY / NOT_CONFIGURED, nothing SUPPORTED_VERIFIED) and that a licence opens requests, never proofs",
       "result": "PASS",
-      "detail": ""
+      "detail": "Field Intelligence\n\nDeclared today, validated only when licensed, gated and witnessed\n\nv1.3 plans execute nothing. v1.4 Physical Validation needs a licence, five independent approvals, a dry run, the "
     },
     {
       "id": "W-37",
@@ -266,7 +266,7 @@
       "id": "W-45c",
       "name": "a CONCEPT revision with its feasibility finding and a labelled preliminary estimate is recorded before any money is authorized",
       "result": "PASS",
-      "detail": "Collaborative design\nRevision 1 CONCEPT DRAFT Designer / CAD / Revit (synthetic) · 2026-10-31 11:35 · feasibility and concept layout\nFeasibility. A four-seat huddle fits the 4.2 m bay with one display; a second display does not. FEASIBILITY STUDY — concept work, not a release\n\nPreliminary estimate 1"
+      "detail": "Collaborative design\nRevision 1 CONCEPT DRAFT Designer / CAD / Revit (synthetic) · 2026-10-31 11:49 · feasibility and concept layout\nFeasibility. A four-seat huddle fits the 4.2 m bay with one display; a second display does not. FEASIBILITY STUDY — concept work, not a release\n\nPreliminary estimate 1"
     },
     {
       "id": "W-45d",
@@ -302,13 +302,13 @@
       "id": "W-49",
       "name": "the browser reports under a release stamped with the build’s commit, to no transport unless the serving process configures one",
       "result": "PASS",
-      "detail": "{\"transport\":\"none\",\"release\":\"empathia-enterprise-web@0.1.0+12d760632083\",\"environment\":\"production\",\"tracesSampleRate\":0,\"captured\":0,\"sampledIn\":0,\"sampledOut\":0}"
+      "detail": "{\"transport\":\"none\",\"release\":\"empathia-enterprise-web@0.1.0+b75611dd4aa1\",\"environment\":\"production\",\"tracesSampleRate\":0,\"captured\":0,\"sampledIn\":0,\"sampledOut\":0}"
     },
     {
       "id": "W-50",
       "name": "an uncaught error is captured by the window handler (count, no key in the status)",
       "result": "PASS",
-      "detail": "{\"transport\":\"none\",\"release\":\"empathia-enterprise-web@0.1.0+12d760632083\",\"environment\":\"production\",\"tracesSampleRate\":0,\"captured\":1,\"sampledIn\":0,\"sampledOut\":0}"
+      "detail": "{\"transport\":\"none\",\"release\":\"empathia-enterprise-web@0.1.0+b75611dd4aa1\",\"environment\":\"production\",\"tracesSampleRate\":0,\"captured\":1,\"sampledIn\":0,\"sampledOut\":0}"
     },
     {
       "id": "W-51",
@@ -386,13 +386,37 @@
       "id": "W-66",
       "name": "A2 compares read-only (no baseline → NOT_VERIFIED) and A4 is BLOCKED with the reason; both are outcomes in the log",
       "result": "PASS",
-      "detail": "BLOCKED A4 H1 Commissioning Engineer (synthetic) · 2026-10-31 11:36\nno runbook for this action\nCOMPARED A2 H1 Commissioning Engineer (synthetic) · 2026-10-31 11:36\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
+      "detail": "BLOCKED A4 H1 Commissioning Engineer (synthetic) · 2026-10-31 11:49\nno runbook for this action\nCOMPARED A2 H1 Commissioning Engineer (synthetic) · 2026-10-31 11:49\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
     },
     {
       "id": "W-67",
       "name": "the verdict is recorded on the case and the case list marks it reviewed",
       "result": "PASS",
       "detail": ""
+    },
+    {
+      "id": "W-68",
+      "name": "the systems engineer proposes a v1.4 session from the room and lands on it as DRAFT",
+      "result": "PASS",
+      "detail": "http://127.0.0.1:4291/#/field/sessions/FIS-0001"
+    },
+    {
+      "id": "W-69",
+      "name": "licensed: eligibility passes, the protocol is approved and the page lists what is still missing (window, operator, instrument, E-stop)",
+      "result": "PASS",
+      "detail": "Sessions · Physical Validation v1.4 FIS-0001 · Browser Huddle (synthetic) HUD · LAeq at seats + STIPA (declared) · proposed by Systems Engineer (synthetic) 2026-10-31 11:49 SAFETY_PREFLIGHT SIMULATION Step Safety preflight Points seat row 1, seat row 3, far seat Tests LAEQ (ADP-SLM · ELIGIBLE), STIPA (ADP-STI · ELIGIBLE), CAM-FOV (ADP-CAM · NOT_CONFIGURED) Safety occupancy UNKNOWN · privacy notice no · E-stop NOT_VERIFIED · level limit 85 dB(A) · rollback presets + DSP backup before arming; rest"
+    },
+    {
+      "id": "W-70",
+      "name": "window (operations), operator consent, instrument and E-stop (technician): the preflight completes and the dry run leaves the session awaiting authorization",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-71",
+      "name": "the commissioning lead authorizes; the consenting technician arms with two confirmations and the run is labelled SIMULATION, recording no values",
+      "result": "PASS",
+      "detail": "RUNNING\nSIMULATION | Results simulated\n\nDry run: 3 points · none (dry run emits nothing)\n\nACQUIRED TP-1 · LAeq · no value (simulator) · the s"
     },
     {
       "id": "W-61",

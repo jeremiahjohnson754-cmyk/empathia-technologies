@@ -19,7 +19,8 @@ import { ApexCases, ApexCase } from './pages/Apex.js';
 import { Inbox } from './pages/Inbox.js';
 import { Admin } from './pages/Admin.js';
 import { SearchParty } from './pages/SearchParty.js';
-import { CommissioningHome, FieldIntelligence, Learn } from './pages/Products.js';
+import { CommissioningHome, Learn } from './pages/Products.js';
+import { FieldHome, FiSession } from './pages/Field.js';
 import { MeContext } from './me.js';
 
 export function App() {
@@ -66,7 +67,8 @@ export function App() {
         {page === 'apex' && route[1] ? <ApexCase code={route[1]} /> : null}
         {page === 'inbox' ? <Inbox /> : null}
         {page === 'commissioning' ? <CommissioningHome /> : null}
-        {page === 'field' ? <FieldIntelligence /> : null}
+        {page === 'field' && route[1] === 'sessions' && route[2] ? <FiSession code={route[2]} /> : null}
+        {page === 'field' && !(route[1] === 'sessions' && route[2]) ? <FieldHome tab={route[1] || 'sessions'} /> : null}
         {page === 'learn' ? <Learn /> : null}
         {page === 'admin' ? (admin ? <Admin tab={route[1] || 'integrations'} /> : <section className="page"><ErrorState error={{ status: 403, code: 'forbidden', detail: 'Administration needs policy.configure, provenance.review or adapter.allowlist. The server refuses these routes for your role as well.' }} /></section>) : null}
       </AppShell>

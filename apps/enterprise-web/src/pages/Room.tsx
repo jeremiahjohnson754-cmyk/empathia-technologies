@@ -11,6 +11,7 @@ import { go } from '../router.js';
 import { useMe } from '../me.js';
 import { FloorPlan } from '../components/FloorPlan.js';
 import { ReadinessStrip, AssuranceTab } from './Assurance.js';
+import { RoomField } from './Field.js';
 
 /** Display hint mirroring LIFECYCLE_AUTHORITY in packages/commissioning-engine/src/lifecycle.ts; the server enforces the real rule. */
 const APEX_OPEN = ['service.triage', 'tests.verify.all', 'service.verify', 'baseline.approve', 'review.dsp', 'review.camera', 'review.touch', 'provenance.review'];   // who may open an APEX case (services/enterprise-api/src/domain/apex.ts)
@@ -33,7 +34,7 @@ export function Room({ code, tab }: { code: string; tab: string }) {
   const tabs = [
     { key: 'overview', label: 'Overview' }, { key: 'devices', label: 'Devices', count: d.devices.filter((x) => !x.furniture).length },
     { key: 'issues', label: 'Issues', count: openIssues.length }, { key: 'commissioning', label: 'Commissioning', count: rows.filter((x) => x.applicable).length },
-    { key: 'drawings', label: 'Drawings & revisions', count: d.revisions.length }, { key: 'assurance', label: 'Acceptance & assurance' }, { key: 'service', label: 'Service & read model' },
+    { key: 'drawings', label: 'Drawings & revisions', count: d.revisions.length }, { key: 'assurance', label: 'Acceptance & assurance' }, { key: 'service', label: 'Service & read model' }, { key: 'field', label: 'Field Intelligence' },
   ];
   return (
     <section className="page">
@@ -56,6 +57,7 @@ export function Room({ code, tab }: { code: string; tab: string }) {
         {tab === 'drawings' ? <Drawings d={d} /> : null}
         {tab === 'assurance' ? <AssuranceTab code={code} lifecycle={r.lifecycle} /> : null}
         {tab === 'service' ? <Service code={code} /> : null}
+        {tab === 'field' ? <RoomField code={code} archetype={String(((d.room as { approvedClassification?: { archetype?: string } | null }).approvedClassification?.archetype) || d.room.classification?.archetype || 'HUD')} /> : null}
       </div>
     </section>
   );

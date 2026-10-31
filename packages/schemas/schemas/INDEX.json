@@ -4,7 +4,7 @@
   "apiVersion": "0.1.0",
   "counts": {
     "events": 101,
-    "api": 55,
+    "api": 61,
     "entities": 4
   },
   "files": [
@@ -582,6 +582,36 @@
       "file": "api/postV1IssuesIssueWorkOrders.json",
       "$id": "https://schemas.empathia.invalid/api/postV1IssuesIssueWorkOrders/0.1.0.json",
       "sha256": "cf1110f3972ec4629282d1ffa0dd461e317ab13029795770548e6f4ce3db2446"
+    },
+    {
+      "file": "api/postV1FieldIntelligenceLicences.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1FieldIntelligenceLicences/0.1.0.json",
+      "sha256": "5d2a9cd7af51eb37fd941f12b99cab31778b2c2265ea005dc591a1cd33a93d0b"
+    },
+    {
+      "file": "api/postV1RoomsRoomFieldIntelligenceSessions.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomFieldIntelligenceSessions/0.1.0.json",
+      "sha256": "d0d80b373e1455521cdc9d5a055e979693a919f8485497def95f014771d14365"
+    },
+    {
+      "file": "api/postV1FieldIntelligenceSessionsSessionPreflight.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1FieldIntelligenceSessionsSessionPreflight/0.1.0.json",
+      "sha256": "b0d3ecefc44c5a92f575980b52c2f2ac092b502ea04f2a7953a00ae657b4818b"
+    },
+    {
+      "file": "api/postV1FieldIntelligenceSessionsSessionAuthorize.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1FieldIntelligenceSessionsSessionAuthorize/0.1.0.json",
+      "sha256": "ef1f9573fe3a018d4fbe453e26d0bf40571aa17c7af75bd5107bab259829dfd4"
+    },
+    {
+      "file": "api/postV1FieldIntelligenceSessionsSessionArm.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1FieldIntelligenceSessionsSessionArm/0.1.0.json",
+      "sha256": "71f3146b538889fbea91f8c1b696c1bd4ca11e6706d2666cca77cceb800bb74f"
+    },
+    {
+      "file": "api/postV1FieldIntelligenceSessionsSessionRun.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1FieldIntelligenceSessionsSessionRun/0.1.0.json",
+      "sha256": "dc6803f0070cce938e169a6397756e5acafaf2f3367e8b8cf9b5be814bc103be"
     },
     {
       "file": "api/postV1ApexCasesCaseAct.json",

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1FieldIntelligenceLicences/0.1.0.json",
+  "title": "POST /v1/field-intelligence/licences request body",
+  "description": "Grant or revoke a licence (security / platform administrator): a licence opens requests, never proofs",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "siteCode",
+    "archetype",
+    "granted"
+  ],
+  "properties": {
+    "siteCode": {
+      "type": "string",
+      "pattern": "^[A-Z0-9-]{2,40}$"
+    },
+    "archetype": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "granted": {
+      "type": "boolean"
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 300
+    }
+  }
+}

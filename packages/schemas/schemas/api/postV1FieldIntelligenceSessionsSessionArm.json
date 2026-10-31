@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1FieldIntelligenceSessionsSessionArm/0.1.0.json",
+  "title": "POST /v1/field-intelligence/sessions/{session}/arm request body",
+  "description": "Arm: only the consenting local operator, two explicit confirmations; `real: true` asks for a real run, which this build cannot provide (NOT_CONFIGURED); otherwise a labelled SIMULATION",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "confirm1",
+    "confirm2"
+  ],
+  "properties": {
+    "confirm1": {
+      "type": "boolean"
+    },
+    "confirm2": {
+      "type": "boolean"
+    },
+    "real": {
+      "type": "boolean"
+    }
+  }
+}
