@@ -97,15 +97,17 @@ Johnson's team". It was built on 2026-10-31 with the connected Figma tools.
 | Accessibility notes | Focus order, 44 px targets, contrast pairs with ratios, reduced motion, captions |
 
 **Known differences between Figma and the shipped code** (code is the reference for layout until reconciled):
-- **Font.** The code moved to Poppins at the owner's request. The Figma file is being updated from Inter to Poppins (the same
-  family is available in Figma); check the text styles if that update has not landed.
+- **Font.** Figma now uses Poppins, like the code: 10 text styles and 445 text nodes were moved off Inter. The mono label style is
+  Roboto Mono in Figma and ui-monospace in code. The Figma file also has `radius/field` (14) and `radius/checkbox` (10), so the
+  pill radius does not turn checkboxes and status messages into stadiums.
 - **Portrait.** The Founder card shows a labelled placeholder. The upload to Figma was refused by this workspace's network policy. To
   finish it, drag `apps/website/media/founder/1200.jpg` onto the "Portrait" layer of both Founder card variants and switch off
   "Placeholder note".
 - **Home frames.** These are a first composition: the film panel sits below the hero, and the navigation has fewer items. The code
   puts the record card or film beside the headline and adds Products and Founder to the navigation.
 - **Form status reference.** Figma shows "LEAD-XXXXXX"; the code shows the first 8 characters of the receipt id.
-- **Text-3.** The Figma variable still holds `#7D8896`. Update it to `#8A95A3` to match the code and the token file.
+- **Colours.** Figma matches the code's warm text colours: text `#F6F2EC` (17.6:1 on obsidian), text-2 `#C3BCB2` (10.4:1), text-3
+  `#A29B92` (7.1:1).
 - **Code Connect and visual-regression baselines.** Neither is set up yet.
 
 Screenshots of the Figma pages are in the handoff (`figma/`).
