@@ -138,6 +138,17 @@ try {
   const selfV = await page.locator('.panel').innerText();
   ok('W-33', 'the recorder cannot verify their own measurement: the server’s refusal is shown verbatim', /separat|recorded|not .*verify|refused/i.test(selfV) && /UNREVIEWED/.test(selfV), selfV.slice(0, 200));
   await shot('09-assurance');
+  // instrument export import (ADR-0011): check, then import; every value linked to the file row and the calibration
+  await page.goto(`${base}#/rooms/${code}/assurance`); await page.waitForSelector('[data-testid=import-measurements]'); await page.click('[data-testid=import-measurements]');
+  await page.setInputFiles('[data-testid=import-file]', { name: 'slm-export.csv', mimeType: 'text/csv', buffer: Buffer.from('metric,value,unit,measured_at,location\nspl_laeq,41.5,dB(A),2026-10-12T10:00:00Z,seat 1\nspl_laeq,42.0,dB(A),2026-10-12T10:01:00Z,seat 2\n') });
+  for (const [label, v] of [['Instrument id', 'SYN-SLM-09'], ['Calibration certificate', 'SYN-CAL-2026-0901'], ['Calibration due', '2027-01-31']]) await page.getByLabel(label, { exact: true }).fill(v);
+  await page.click('[data-testid=import-check]'); await page.waitForSelector('[data-testid=import-report]');
+  const chk = await page.locator('[data-testid=import-report]').innerText();
+  await page.click('[data-testid=import-submit]'); await page.waitForFunction(() => /Imported 2 values/.test(document.querySelector('[data-testid=import-report]')?.textContent || ''));
+  ok('W-83', 'an instrument export is checked (2 valid rows within calibration) then imported; the database links each value to the file row and the calibration certificate', /2 rows are valid: 2 within the calibration/.test(chk)
+    && Number(h.asSuper("SELECT count(*) FROM app.measurement m JOIN app.measurement_import i ON i.id = m.import_id WHERE i.calibration_ref = 'SYN-CAL-2026-0901' AND m.calibration_status = 'CALIBRATED' AND m.import_row IN (2, 3)")) === 2, chk.slice(0, 160));
+  await shot('23-measurement-import');
+  await page.keyboard.press('Escape');
 
   // ---------------------------------------------------------------- reports, admin, keyboard
   await page.goto(`${base}#/reports`); await page.waitForSelector('.stats');

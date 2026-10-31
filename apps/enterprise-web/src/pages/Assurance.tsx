@@ -48,7 +48,7 @@ export function AssuranceTab({ code, lifecycle }: { code: string; lifecycle: str
   const recommission = useMutation(() => api.call('postV1RoomsRoomLifecycle', { params: { room: code }, body: { to: 'COMMISSIONING' as never } }), [`room:${code}`, `readiness:${code}`, `baselines:${code}`, 'rooms']);
   const decide = useMutation((a: { id: string; decision: 'APPROVED' | 'REJECTED' }) => api.call('postV1BaselineExceptionsIdDecide', { params: { id: a.id }, body: { decision: a.decision } } as never), [`baselines:${code}`, `readiness:${code}`]);
   const verifyM = useMutation((a: { id: string; decision: 'VERIFIED' | 'REJECTED' }) => api.call('postV1MeasurementsIdVerify', { params: { id: a.id }, body: { decision: a.decision } } as never), [`measurements:${code}`, `readiness:${code}`]);
-  const [req, setReq] = useState(false); const [rec, setRec] = useState(false);
+  const [req, setReq] = useState(false); const [rec, setRec] = useState(false); const [imp, setImp] = useState(false);
   if (lin.error) return <ErrorState error={lin.error} retry={lin.reload} />;
   if (!lin.data || !meas.data) return <Loading label="Loading baselines and measurements" />;
   const L = lin.data; const cur = L.current;
@@ -96,11 +96,12 @@ export function AssuranceTab({ code, lifecycle }: { code: string; lifecycle: str
         <p className="ui-meta">Each value keeps its provenance. Only a field measurement from a calibrated instrument can be verified; a simulated or inferred value is shown as what it is. A level read from a file (dBFS) is never recorded as a sound pressure level.</p>
         {meas.data.items.length ? <DataTable rows={meas.data.items} columns={mcols} rowKey={(m) => m.id} caption="Measurements" dense /> : <Empty title="No measurement recorded" />}
         {verifyM.error ? <ErrorState error={verifyM.error} /> : null}
-        {can(['work.evidence', 'field.scan', 'test.verify', 'tests.verify.all', 'fi.plan', 'fi.monitor', 'fipv.operate', 'lite.edit']) ? <div><Button onClick={() => setRec(true)} testId="record-measurement">Record a measurement</Button></div> : null}
+        {can(['work.evidence', 'field.scan', 'test.verify', 'tests.verify.all', 'fi.plan', 'fi.monitor', 'fipv.operate', 'lite.edit']) ? <div><Button onClick={() => setRec(true)} testId="record-measurement">Record a measurement</Button> <Button onClick={() => setImp(true)} testId="import-measurements">Import an instrument export</Button></div> : null}
         <p className="ui-meta">Signed in as {me.role}: the verifier must not be the recorder.</p>
       </div>
       {req ? <RequestException room={code} onClose={() => setReq(false)} /> : null}
       {rec ? <RecordMeasurement room={code} onClose={() => setRec(false)} /> : null}
+      {imp ? <ImportMeasurements room={code} onClose={() => setImp(false)} /> : null}
     </div>
   );
 }
@@ -156,6 +157,45 @@ function RecordMeasurement({ room, onClose }: { room: string; onClose: () => voi
         <Field label="Calibration due">{(id) => <input id={id} type="date" value={f.calibrationDue} onChange={set('calibrationDue')} />}</Field>
       </div>}
       {m.error ? <ErrorState error={m.error} /> : null}
+    </Drawer>
+  );
+}
+
+interface ImportReport { importId?: string; dryRun?: boolean; alreadyImported?: string | null; file: { name: string; rows: number }; accepted: number; rejected: number; errors: Array<{ row: number; reasons: string[] }>; calibrated: number; expiredCalibration: number; note: string }
+
+/** Instrument export import (ADR-0011): upload the CSV as evidence, check it (dry run), then import. All-or-nothing; each value keeps its file, row, instrument and calibration. */
+function ImportMeasurements({ room, onClose }: { room: string; onClose: () => void }) {
+  const [file, setFile] = useState<File | null>(null); const [evidenceId, setEvidenceId] = useState<string | null>(null);
+  const [f, setF] = useState({ instrumentId: '', instrumentModel: '', calibrationRef: '', calibrationDue: '', method: 'LAeq 60 s', uncertainty: '', uncertaintyUnit: 'dB' });
+  const [report, setReport] = useState<ImportReport | null>(null);
+  const set = (k: keyof typeof f) => (e: { target: { value: string } }) => { setF({ ...f, [k]: e.target.value }); setReport(null); };
+  const body = (id: string, dryRun: boolean) => ({ evidenceId: id, instrumentId: f.instrumentId, instrumentModel: f.instrumentModel || undefined, calibrationRef: f.calibrationRef, calibrationDue: f.calibrationDue, method: f.method, uncertainty: f.uncertainty === '' ? undefined : Number(f.uncertainty), uncertaintyUnit: f.uncertainty === '' ? undefined : f.uncertaintyUnit, dryRun });
+  const run = useMutation(async (dryRun: boolean) => {
+    let id = evidenceId;
+    if (!id) { const ev = await api.call('postV1Evidence', { body: new Uint8Array(await file!.arrayBuffer()), contentType: file!.type || 'text/csv', fileName: file!.name } as never) as { id: string }; id = ev.id; setEvidenceId(id); }
+    return api.call('postV1RoomsRoomMeasurementsImport' as never, { params: { room }, idempotencyKey: newKey(), body: body(id, dryRun) } as never) as Promise<ImportReport>;
+  }, [`measurements:${room}`]);
+  const ready = !!file && f.instrumentId.length >= 2 && f.calibrationRef.length >= 2 && /^\d{4}-\d{2}-\d{2}$/.test(f.calibrationDue) && f.method.length >= 2;
+  return (
+    <Drawer open title="Import an instrument export" onClose={onClose} footer={<><Button onClick={onClose}>{report && !report.dryRun ? 'Done' : 'Cancel'}</Button>
+      <Button busy={run.busy} disabled={!ready} onClick={async () => { const r = await run.run(true); if (r) setReport(r as ImportReport); }} testId="import-check">Check the file</Button>
+      <Button kind="primary" busy={run.busy} disabled={!ready || !report?.dryRun || report.rejected > 0 || !!report.alreadyImported} onClick={async () => { const r = await run.run(false); if (r) setReport(r as ImportReport); }} testId="import-submit">Import {report?.dryRun && !report.rejected ? `${report.accepted} values` : ''}</Button></>}>
+      <Notice tone="muted">A CSV with the columns metric, value, unit, measured_at, location (optional: uncertainty). Every row is checked; if any row is invalid nothing is imported. Each value is recorded as a field measurement linked to this file and row, the instrument and its calibration certificate. A value measured after the calibration due date is recorded as EXPIRED and can never be verified.</Notice>
+      <Field label="Instrument export (CSV)">{(id) => <input id={id} type="file" accept=".csv,text/csv" onChange={(e) => { setFile(e.target.files?.[0] || null); setEvidenceId(null); setReport(null); }} data-testid="import-file" />}</Field>
+      <div className="row2">
+        <Field label="Instrument id">{(id) => <input id={id} value={f.instrumentId} onChange={set('instrumentId')} maxLength={80} />}</Field>
+        <Field label="Instrument model">{(id) => <input id={id} value={f.instrumentModel} onChange={set('instrumentModel')} maxLength={120} />}</Field>
+        <Field label="Calibration certificate">{(id) => <input id={id} value={f.calibrationRef} onChange={set('calibrationRef')} maxLength={120} />}</Field>
+        <Field label="Calibration due">{(id) => <input id={id} type="date" value={f.calibrationDue} onChange={set('calibrationDue')} />}</Field>
+        <Field label="Method">{(id) => <input id={id} value={f.method} onChange={set('method')} maxLength={80} />}</Field>
+        <Field label="Instrument uncertainty">{(id) => <input id={id} inputMode="decimal" value={f.uncertainty} onChange={set('uncertainty')} placeholder="e.g. 0.7" />}</Field>
+      </div>
+      {run.error ? <ErrorState error={run.error} /> : null}
+      {report ? <section className="stack" data-testid="import-report">
+        {report.alreadyImported ? <Notice tone="warn">{report.note}</Notice> : report.rejected ? <Notice tone="bad">{report.rejected} of {report.file.rows} rows are invalid; nothing can be imported until the file is corrected.</Notice>
+          : <Notice tone={report.dryRun ? 'info' : 'ok'}>{report.dryRun ? `${report.accepted} rows are valid: ${report.calibrated} within the calibration, ${report.expiredCalibration} after its due date.` : `Imported ${report.accepted} values. ${report.note}`}</Notice>}
+        {report.errors.length ? <ul className="ui-meta">{report.errors.map((e) => <li key={e.row}>Row {e.row}: {e.reasons.join('; ')}</li>)}</ul> : null}
+      </section> : null}
     </Drawer>
   );
 }

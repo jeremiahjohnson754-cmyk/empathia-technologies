@@ -4,7 +4,7 @@
   "apiVersion": "0.1.0",
   "counts": {
     "events": 101,
-    "api": 68,
+    "api": 69,
     "entities": 4
   },
   "files": [
@@ -737,6 +737,11 @@
       "file": "api/postV1RoomsRoomMeasurements.json",
       "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomMeasurements/0.1.0.json",
       "sha256": "b9ff305d82e1e5851162ae13d1cce7c268e1bb521c50bb9190409dc9c05c3331"
+    },
+    {
+      "file": "api/postV1RoomsRoomMeasurementsImport.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomMeasurementsImport/0.1.0.json",
+      "sha256": "658445653dc6235b3f9faf46d822c6b9b96940d0002bfe5da94a735dfc75b901"
     },
     {
       "file": "api/postV1MeasurementsIdVerify.json",

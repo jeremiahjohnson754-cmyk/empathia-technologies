@@ -241,6 +241,16 @@ Not built: SIGNAL labs (91 simulators); the enterprise app's service/APEX/execut
 | Defect found during screenshot review | — | the first footer said every non-room KPI "has no single site". That was false for usage, lifecycle and document KPIs, which are simply not measurable in this build; they are now listed separately with that reason |
 | Not built | — | region/campus/enterprise levels (the starter has sites and buildings only); trend over time per unit |
 
+### P2 (Ascension) — instrument-data import (2026-10-31, ADR-0011)
+
+| Item | Status | Evidence |
+|---|---|---|
+| Migration 0025: `measurement_import` (append-only; file SHA-256, instrument, calibration certificate and due date, method, uncertainty, importer, rows within calibration; once per room and file) and `measurement.import_id` / `import_row`; the immutability trigger now also covers calibration due and the import link | DONE | every suite migrates through it |
+| `POST /v1/rooms/:room/measurements/import`: CSV evidence, every row validated, all-or-nothing, per-row reasons, audited refusal; dry run (reports an earlier import); each value FIELD_MEASURED, UNREVIEWED, with calibration **derived** per row from the due date (CALIBRATED / EXPIRED), source naming the file hash and row. OpenAPI 150 operations | IMPLEMENTED · TESTED | `tests/security/measurement-import.test.mjs` IMP-1..IMP-4 (scope, authority, media type, header; dry run and refusal list the same row reasons; traceability to hash and row; EXPIRED after the due date; once per file; independent verification; immutability) |
+| Enterprise web: room › Acceptance & assurance › "Import an instrument export" (choose file → check → import) | IMPLEMENTED · TESTED | browser W-83; screenshot `23-measurement-import` |
+| Defect found and fixed | — | invalidating a query deleted its cached data, so the page fell back to "loading" and unmounted any open form, losing what had been typed (found when the import drawer emptied itself). The web cache is now stale-while-revalidate: the last data stays on screen while it refetches; sign-in and sign-out still clear everything |
+| Not built | — | vendor-specific export formats; a calibration-certificate registry (the certificate is declared, not checked); linking imported values to a commissioning test result; Field Intelligence sessions never become measurements (they are simulations) |
+
 ### Connector expansion directive (2026-10-31 05:34 CT) — what was actually done
 
 | Item | Status | Evidence |

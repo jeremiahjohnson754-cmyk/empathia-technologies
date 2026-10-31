@@ -30,11 +30,13 @@ export const session = {
 export function useToken(): string | null { return useSyncExternalStore(session.subscribe, () => api.token); }
 
 // ------------------------------------------------------------------------------------------------ cache
-interface Entry { data?: unknown; error?: ApiProblem | Error; at: number; promise?: Promise<void> }
+interface Entry { data?: unknown; error?: ApiProblem | Error; at: number; promise?: Promise<void>; stale?: boolean }
 const cache = new Map<string, Entry>();
 const subs = new Map<string, Set<Listener>>();
 const notify = (k: string) => subs.get(k)?.forEach((l) => l());
-export function invalidate(prefix: string) { for (const k of [...cache.keys()]) if (k.startsWith(prefix)) { cache.delete(k); notify(k); } }
+/** Stale-while-revalidate: an invalidated entry keeps its last data on screen while it refetches, so a page never falls back to its
+ *  loading state (and never unmounts an open form) because something it shows changed. Sign-in/out still clears the whole cache. */
+export function invalidate(prefix: string) { for (const [k, e] of [...cache.entries()]) if (k.startsWith(prefix)) { if (e.data !== undefined) { e.stale = true; e.error = undefined; } else cache.delete(k); notify(k); } }
 
 export interface Query<T> { data: T | undefined; error: (ApiProblem | Error) | undefined; loading: boolean; reload: () => void }
 export function useQuery<T>(key: string | null, fn: () => Promise<T>): Query<T> {
@@ -47,9 +49,9 @@ export function useQuery<T>(key: string | null, fn: () => Promise<T>): Query<T> 
   }, [key]);
   const e = key ? cache.get(key) : undefined;
   useEffect(() => {
-    if (!key || (e && (e.data !== undefined || e.error || e.promise))) return;
-    const entry: Entry = { at: Date.now() };
-    entry.promise = fn().then((d) => { entry.data = d; }, (err: unknown) => { entry.error = err as Error; reportApiProblem(err, `query ${key}`); }).finally(() => { entry.promise = undefined; notify(key); });
+    if (!key || (e && (e.promise || (!e.stale && (e.data !== undefined || e.error))))) return;
+    const entry: Entry = e?.stale ? e : { at: Date.now() };
+    entry.promise = fn().then((d) => { entry.data = d; entry.at = Date.now(); }, (err: unknown) => { entry.error = err as Error; reportApiProblem(err, `query ${key}`); }).finally(() => { entry.promise = undefined; entry.stale = false; notify(key); });
     cache.set(key, entry);
   });
   return { data: e?.data as T | undefined, error: e?.error, loading: !!key && (!e || !!e.promise), reload: () => key && invalidate(key) };
