@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1ProjectsCodeRoute/0.1.0.json",
+  "title": "POST /v1/projects/{code}/route request body",
+  "description": "Review: record an internal route with a documented exception (operations lead), or acknowledge as the routed supplier",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "route"
+  ],
+  "properties": {
+    "route": {
+      "type": "string",
+      "enum": [
+        "internal",
+        "vendor"
+      ]
+    },
+    "exceptionReason": {
+      "type": "string",
+      "maxLength": 1000
+    }
+  }
+}

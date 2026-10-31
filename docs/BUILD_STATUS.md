@@ -73,7 +73,7 @@ Full run at this commit: `node scripts/build.mjs` PASS (incl. dist hygiene); `no
 | Deployment (CI workflow, production compose overlay, Caddyfile) | WRITTEN · NOT_RUN (no container runtime, no Git remote, no domain) | `docs/operations/DEPLOYMENT_GUIDE.md` |
 | GitHub remote, Render services | BLOCKED (GitHub not linked) · AWAITING AUTHORIZATION (Render costs) | connector matrix |
 
-Full run alone after each step: **30 PASS · 0 FAIL · 1 NOT_RUN** (film decode).
+Full run alone after each step: **32 PASS · 0 FAIL · 1 NOT_RUN** (film decode) as of P5; 30 suites before it.
 
 ### P4-C — the seven guided scenarios (2026-10-31)
 
@@ -93,6 +93,20 @@ here; the preservation package is regenerated from this commit. Guard added: `sc
 when any file under a `src/` directory is ignored.
 
 Demo browser suite: **46 checks**. Not done: scenario pages 2, 5 (service/APEX), 6 (Learn), 7 (Mission Control, Executive, Ledger) as native demo pages; tours A/B/C (lifecycle, workplace, engineer, founder, d2a) — ledger rows stay NOT_STARTED.
+
+### P5 — governed project lifecycle (2026-10-31, ADR-0008)
+
+| Item | Status | Evidence |
+|---|---|---|
+| `@empathia/project-governance`: the demonstrator's two state machines verbatim (11 + 12 states, 11 + 11 transitions with role, authority and guard), nine request types with their sources, every guard with the demonstrator's wording | IMPLEMENTED · TESTED | 9/9 unit tests (each guard positive and negative) |
+| Migration `0017_project_lifecycle.sql` (request, brief, decision, funding, design revision, review, RFI; project governance/delivery columns; tenant RLS) | IMPLEMENTED · applied by every test database | harness |
+| API: 17 operations (`/v1/requests…`, `/v1/projects/{code}/route|brief|approver|decision|funding|scope|design-revisions|rfis|delivery`, `/v1/projects/catalogue`, full project record) — OpenAPI 97 | IMPLEMENTED · TESTED | `tests/security/project-lifecycle.test.mjs` 12/12: one request carried intake → review → brief → approval (hold, scope revision, delegated approval) → funding → collaborative design (DIVR, domain reviews, RFI, release by a different person, geometry from the room) → execution (rule pack pinned, field attestation, technician accepts own work order, tests read from the room) → handoff (drawings + QA photo sign-off, customer acceptance via delegation, support owner, baseline) → project CLOSED; OPERATIONAL refused for want of monitoring evidence; tenant/site isolation; authority matrix 1003 checks over 59 keyed routes |
+| Events: the demonstrator's 12 project/request/design/handoff event types on the outbox, validated by contract | IMPLEMENTED · TESTED | outbox counts asserted in the suite |
+| Enterprise-web pages (intake form, request desk, project record with the seven stages), demonstration step pages | NOT BUILT (next) | — |
+| Field gates computed from a staff skills registry; vendor quotes; the 36-column documentation tracker | NOT BUILT — recorded as attestation / out of scope in ADR-0008 | — |
+
+Two reconciliations await the owner (ADR-0008 §Decisions): the nine request types as derived from the demonstrator's two catalogues, and
+approval before collaborative design (the demonstrator's order).
 
 ## Owner decisions of 2026-10-30 12:59 CT — what was actually done
 

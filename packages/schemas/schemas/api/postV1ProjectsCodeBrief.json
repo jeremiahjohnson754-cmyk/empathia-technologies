@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1ProjectsCodeBrief/0.1.0.json",
+  "title": "POST /v1/projects/{code}/brief request body",
+  "description": "Brief: submit a versioned engineering brief bound to the current scope revision (makes the project PITCH_READY)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "summary",
+    "requirements"
+  ],
+  "properties": {
+    "summary": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 4000
+    },
+    "requirements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 400
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 400
+      }
+    },
+    "romUsd": {
+      "type": "number",
+      "minimum": 0
+    },
+    "comparableRooms": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 40
+      }
+    },
+    "spatial": {
+      "type": "object",
+      "description": "spatial requirements with provenance per dimension"
+    }
+  }
+}

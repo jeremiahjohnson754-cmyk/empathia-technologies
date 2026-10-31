@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1ProjectsCodeScope/0.1.0.json",
+  "title": "POST /v1/projects/{code}/scope request body",
+  "description": "Reopen a HELD / REJECTED / SUSPENDED project with a new scope revision (a new brief and a new approval chain; history immutable)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "reason"
+  ],
+  "properties": {
+    "reason": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 1000
+    }
+  }
+}

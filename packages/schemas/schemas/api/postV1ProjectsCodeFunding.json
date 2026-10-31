@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1ProjectsCodeFunding/0.1.0.json",
+  "title": "POST /v1/projects/{code}/funding request body",
+  "description": "Funding: a signed budget (amount, currency, cost center) against the approved scope revision; a finance outage keeps it pending",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "amount",
+    "currency",
+    "costCenter",
+    "scopeRev"
+  ],
+  "properties": {
+    "amount": {
+      "type": "number",
+      "minimum": 0
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "costCenter": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 40
+    },
+    "scopeRev": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "financeOutage": {
+      "type": "boolean"
+    }
+  }
+}

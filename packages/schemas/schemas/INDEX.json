@@ -4,7 +4,7 @@
   "apiVersion": "0.1.0",
   "counts": {
     "events": 101,
-    "api": 31,
+    "api": 45,
     "entities": 4
   },
   "files": [
@@ -667,6 +667,76 @@
       "file": "api/postV1SearchIntent.json",
       "$id": "https://schemas.empathia.invalid/api/postV1SearchIntent/0.1.0.json",
       "sha256": "08f73b55b40607af77f85e3f0aeec5bb1146a1c9061dd8e7d2f208a140ce92b9"
+    },
+    {
+      "file": "api/postV1Requests.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1Requests/0.1.0.json",
+      "sha256": "f64abf5f834f66e67d319505cf03cd84394e9ec747c2af0dafdb60b4dc4a0b49"
+    },
+    {
+      "file": "api/postV1RequestsCodeWithdraw.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RequestsCodeWithdraw/0.1.0.json",
+      "sha256": "ef147fdf5ef7d64917f4454a12e85e6da55777dfac0c339b22f091d1cbc72c6e"
+    },
+    {
+      "file": "api/postV1ProjectsCodeRoute.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1ProjectsCodeRoute/0.1.0.json",
+      "sha256": "b046d7d91a4043ca5d5b807df93d337ba3dcad25fa1169a93ac9f0820ca6a684"
+    },
+    {
+      "file": "api/postV1ProjectsCodeBrief.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1ProjectsCodeBrief/0.1.0.json",
+      "sha256": "7186ec58394110069c557ffe9c17765441dde3fd2bea0615b75a8b47c46cb8e6"
+    },
+    {
+      "file": "api/postV1ProjectsCodeApprover.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1ProjectsCodeApprover/0.1.0.json",
+      "sha256": "53756376af962e127aa30c8baab3a102ce09e711acb7ebbca2077914234061fb"
+    },
+    {
+      "file": "api/postV1ProjectsCodeDecision.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1ProjectsCodeDecision/0.1.0.json",
+      "sha256": "656ea19208bcd05c15d26e3b3daa6c1d45757c1b6052576282260f1271521a77"
+    },
+    {
+      "file": "api/postV1ProjectsCodeFunding.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1ProjectsCodeFunding/0.1.0.json",
+      "sha256": "3e07f52d3ecb5f04586335da3233f7c32968a6eea192d53bdc1985f208fdacb2"
+    },
+    {
+      "file": "api/postV1ProjectsCodeFundingWithdraw.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1ProjectsCodeFundingWithdraw/0.1.0.json",
+      "sha256": "502be0273fe6dbf4b4bb2a5f09b697af2ca28c2c4a1bbd56758bc36a7e07844d"
+    },
+    {
+      "file": "api/postV1ProjectsCodeScope.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1ProjectsCodeScope/0.1.0.json",
+      "sha256": "682ea8a74a4d358ff1548cc06d87b7d24499ca651d9278a2f226899ae42529de"
+    },
+    {
+      "file": "api/postV1ProjectsCodeDesignRevisions.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1ProjectsCodeDesignRevisions/0.1.0.json",
+      "sha256": "93685fb50f8fe7c28e87df861cc030b20b2c22213494420f9e616823d92273cd"
+    },
+    {
+      "file": "api/postV1ProjectsCodeDesignRevisionsRevReview.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1ProjectsCodeDesignRevisionsRevReview/0.1.0.json",
+      "sha256": "3da02e93b8d89980c61376fb074ec510c4844eeed6c52ca46eaa687b10fae2d1"
+    },
+    {
+      "file": "api/postV1ProjectsCodeDesignRevisionsRevRfis.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1ProjectsCodeDesignRevisionsRevRfis/0.1.0.json",
+      "sha256": "35a9ef2e2ab38bf7594b22dad36235e37fe7aef4689ddba7328889ec4fe5e787"
+    },
+    {
+      "file": "api/postV1ProjectsCodeRfisRfiResolve.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1ProjectsCodeRfisRfiResolve/0.1.0.json",
+      "sha256": "bef480796823bdc52bf35dfb6302aef307bd6699ba073616c906e96f43e55726"
+    },
+    {
+      "file": "api/postV1ProjectsCodeDelivery.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1ProjectsCodeDelivery/0.1.0.json",
+      "sha256": "8a96239c40c2d5f4566570d79253208b48ecc55dc88c8b406207fac22e81beef"
     },
     {
       "file": "entities/RoomDetail.json",

@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1Requests/0.1.0.json",
+  "title": "POST /v1/requests request body",
+  "description": "Raise a request (one of nine types) with intent, constraints, photos, plans and dimensions that carry their provenance",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "title",
+    "intent",
+    "siteCode"
+  ],
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "new_room",
+        "room_refresh",
+        "camera_replacement",
+        "dsp_upgrade",
+        "network_change",
+        "lifecycle_replacement",
+        "signage",
+        "break_fix",
+        "room_verification"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160
+    },
+    "intent": {
+      "type": "string",
+      "maxLength": 4000
+    },
+    "constraints": {
+      "type": "string",
+      "maxLength": 4000
+    },
+    "siteCode": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 24
+    },
+    "buildingCode": {
+      "type": "string",
+      "maxLength": 24
+    },
+    "roomCode": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "provisionalRoom": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "archetype": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "capacity": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5000
+    },
+    "photoPolicy": {
+      "type": "string",
+      "enum": [
+        "DOCUMENTATION_REQUIRED",
+        "LOCATION_VERIFICATION_REQUIRED",
+        "NOT_REQUIRED"
+      ]
+    },
+    "photos": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        }
+      }
+    },
+    "plans": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        }
+      }
+    },
+    "dimensions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "value",
+          "unit",
+          "source",
+          "uncertainty"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40
+          },
+          "value": {
+            "type": "number",
+            "minimum": 0
+          },
+          "unit": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8
+          },
+          "source": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40
+          },
+          "uncertainty": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40
+          }
+        }
+      }
+    },
+    "programme": {
+      "type": "boolean"
+    },
+    "vendorEmail": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 200
+    }
+  }
+}

@@ -1,6 +1,6 @@
 # Legacy parity ledger — Living Campus V2.5.3 and Founder Studio
 
-Generated 2026-10-31T00:36:36.261Z by `scripts/legacy/parity-ledger.mjs` from `legacy/inventory/*.json` (built from the committed source of each demonstrator) and the classification in that script. **Two applications, kept apart:** the Living Campus (investor-safe demo + authenticated enterprise application) and the Founder Studio (private founder application). Shared: identity, design tokens, API contracts, audit. Not shared: Founder Studio data, its administrative capabilities, or any route of it on a public or investor surface.
+Generated 2026-10-31T01:21:17.678Z by `scripts/legacy/parity-ledger.mjs` from `legacy/inventory/*.json` (built from the committed source of each demonstrator) and the classification in that script. **Two applications, kept apart:** the Living Campus (investor-safe demo + authenticated enterprise application) and the Founder Studio (private founder application). Shared: identity, design tokens, API contracts, audit. Not shared: Founder Studio data, its administrative capabilities, or any route of it on a public or investor surface.
 
 ## Baseline facts (verified on receipt)
 
@@ -26,16 +26,17 @@ Target classes (mandate §1): MIGRATED_REAL · MIGRATED_DEMO · DEFERRED_WITH_RE
 
 | Status now | Rows |
 |---|---|
-| PARTIAL | 84 |
+| PARTIAL | 82 |
 | DONE (app + demo native) | 2 |
-| NOT_STARTED | 113 |
+| NOT_STARTED | 104 |
 | DONE (slice) | 5 |
+| PARTIAL (API complete, UI pending) | 15 |
 | PARTIAL (investor tour native) | 1 |
 | DONE (demo native) | 1 |
 | DONE (demo native; app slice) | 1 |
 | PARTIAL (runner native; 10/17 step pages pending) | 1 |
+| DONE (API; UI pending) | 2 |
 | DONE | 4 |
-| PARTIAL (API complete, UI pending) | 6 |
 
 ### Maturity levels (owner requirement 2026-10-30 11:47)
 
@@ -43,11 +44,11 @@ A feature is never "migrated" because its route exists. Each row carries the hig
 
 | Maturity | Rows |
 |---|---|
-| 0 INVENTORIED | 81 |
-| 1 ROUTED | 57 |
+| 0 INVENTORIED | 78 |
+| 1 ROUTED | 52 |
 | 2 RENDERED | 2 |
 | 3 FUNCTIONAL | 3 |
-| 4 BACKEND_CONNECTED | 34 |
+| 4 BACKEND_CONNECTED | 42 |
 | 5 REGRESSION_TESTED | 41 |
 
 **Regressions at this commit: none** — no original route has been removed; the originals remain the served demonstrators until each route is migrated natively (an embedded original is interim, never counted as a migration).
@@ -83,8 +84,8 @@ A feature is never "migrated" because its route exists. Each row carries the hig
 | Living Campus | area | `lite` | the Workplace Explorer — area lite (12-authz.js); roles: 14 | MIGRATED_DEMO | /demo/lite · /app/rooms/{id}/plan | 2D plan first (FloorPlan.tsx exists); 3D progressive (P6B) | PARTIAL | 2 RENDERED (FloorPlan.tsx renders 2D plan in enterprise-web) | P6B |
 | Living Campus | area | `lite.services` | workplace services — area lite.services (12-authz.js); roles: 13 | MIGRATED_DEMO | /demo/lite/services | P3 | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P3 |
 | Living Campus | area | `lite.guides` | the knowledge library — area lite.guides (12-authz.js); roles: 14 | MIGRATED_REAL | /app/knowledge | GET /v1/knowledge | PARTIAL | 4 BACKEND_CONNECTED (GET /v1/knowledge 20/20) | tests knowledge 20/20 |
-| Living Campus | area | `intake` | Intake — area intake (12-authz.js); roles: 6 | MIGRATED_REAL | /app/requests | P5 (request → acknowledgement → pitch → approval → funding) | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P5 |
-| Living Campus | area | `intake.new` | a new request — area intake.new (12-authz.js); roles: 6 | MIGRATED_REAL | /app/requests/new | P5 | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P5 |
+| Living Campus | area | `intake` | Intake — area intake (12-authz.js); roles: 6 | MIGRATED_REAL | /app/requests | ADR-0008: nine request types; POST /v1/requests, /submit, /withdraw; guard valid_request; dimensions carry provenance; UI pending | PARTIAL (API complete, UI pending) | 4 BACKEND_CONNECTED (API + DB + regression; UI pending) | tests/security/project-lifecycle.test.mjs INT-1, INT-2, REV-2 |
+| Living Campus | area | `intake.new` | a new request — area intake.new (12-authz.js); roles: 6 | MIGRATED_REAL | /app/requests/new | POST /v1/requests (ADR-0008); UI pending | PARTIAL (API complete, UI pending) | 4 BACKEND_CONNECTED (API + regression; UI pending) | project-lifecycle.test.mjs INT-2 |
 | Living Campus | area | `builder` | Room Builder — area builder (12-authz.js); roles: 3 | MIGRATED_REAL | /app/rooms/{id}/design | rooms/devices/connections/revisions/drawings API (Build a Room) | DONE (slice) | 5 REGRESSION_TESTED (tests/browser/enterprise-web.test.mjs (Build a Room over the API) + commissioning-engine golden 92) | tests/e2e 21/21 |
 | Living Campus | area | `scouter` | Scouter — area scouter (12-authz.js); roles: 4 | MIGRATED_REAL | /app/scouter | P6A (comparable rooms, reviewed proposals) | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P6A |
 | Living Campus | area | `budget` | Budgeting — area budget (12-authz.js); roles: 5 | MIGRATED_REAL | /app/funding | P5 (separate funding authority) | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P5 |
@@ -118,10 +119,10 @@ A feature is never "migrated" because its route exists. Each row carries the hig
 | Living Campus | area | `service` | the Service Delivery Command Center — area service (12-authz.js); roles: 3 | MIGRATED_REAL | /app/service/manager | P6A | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P6A |
 | Living Campus | area | `service.coverage` | the service coverage map — area service.coverage (12-authz.js); roles: 6 | MIGRATED_REAL | /app/coverage | P6A (who covers this) | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P6A |
 | Living Campus | area | `service.fixes` | the Known Fix library — area service.fixes (12-authz.js); roles: 6 | MIGRATED_REAL | /app/known-fixes | P6A | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P6A |
-| Living Campus | area | `projects` | the project portfolio — area projects (12-authz.js); roles: 11 | MIGRATED_REAL | /app/projects | GET/POST /v1/projects | PARTIAL | 4 BACKEND_CONNECTED (tests/e2e projects) | tests/e2e projects |
-| Living Campus | area | `install` | installation — area install (12-authz.js); roles: 7 | MIGRATED_REAL | /app/install | P5 lifecycle FIELD_ACTIVE | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P5 |
-| Living Campus | area | `handoff` | the handoff chain — area handoff (12-authz.js); roles: 9 | MIGRATED_REAL | /app/handoff | P5 (acceptance gates, immutable baseline) | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P5 (25–26) |
-| Living Campus | area | `decisions` | Decision Memory — area decisions (12-authz.js); roles: 12 | MIGRATED_REAL | /app/decisions | P5 approvals with rationale | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P5 |
+| Living Campus | area | `projects` | the project portfolio — area projects (12-authz.js); roles: 11 | MIGRATED_REAL | /app/projects | GET/POST /v1/projects; GET /v1/projects/{code} full record (request, briefs, decisions, funding, design revisions, reviews, RFIs, rooms, next steps with blockers, audit) — ADR-0008 | PARTIAL (API complete, UI pending) | 4 BACKEND_CONNECTED (API + DB + regression (project-lifecycle.test.mjs); UI pending) | project-lifecycle.test.mjs; tests/e2e projects |
+| Living Campus | area | `install` | installation — area install (12-authz.js); roles: 7 | MIGRATED_REAL | /app/install | delivery PLAN_COMPILED → FIELD_AUTHORIZED → FIELD_ACTIVE (rule pack pinned; service manager attestation; technician accepts own work order) — ADR-0008 | PARTIAL (API complete, UI pending) | 4 BACKEND_CONNECTED (API + regression; field gates are an attestation (no staff skills registry)) | project-lifecycle.test.mjs EXE-1 |
+| Living Campus | area | `handoff` | the handoff chain — area handoff (12-authz.js); roles: 9 | MIGRATED_REAL | /app/handoff | delivery TESTS_VERIFIED → DOCUMENTS_APPROVED → CUSTOMER_ACCEPTED → HANDED_OFF → BASELINED, read from the rooms (ADR-0008) | PARTIAL (API complete, UI pending) | 4 BACKEND_CONNECTED (API + regression, facts read from the rooms; UI pending) | project-lifecycle.test.mjs HND-1, OPS-1 |
+| Living Campus | area | `decisions` | Decision Memory — area decisions (12-authz.js); roles: 12 | MIGRATED_REAL | /app/decisions | approver selection, APPROVED/HELD/REJECTED with scope revision, reason, review date, delegation; funding against the scope; reopen by scope revision (ADR-0008) | PARTIAL (API complete, UI pending) | 4 BACKEND_CONNECTED (API + DB + regression incl. delegation; UI pending) | project-lifecycle.test.mjs BRF-1, APR-1, APR-2 |
 | Living Campus | area | `lessons` | lessons learned — area lessons (12-authz.js); roles: 12 | MIGRATED_REAL | /app/learn/lessons | P6C | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P6C |
 | Living Campus | area | `none` | this address — area none (12-authz.js); roles: 1 | MIGRATED_REAL | 404 / boundary page | router | PARTIAL | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | tests/e2e |
 | Living Campus | area | `studio` | Design a Space — area studio (92-search-registry.js); roles: 11 | MIGRATED_DEMO | /demo/design-studio | synthetic | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P3 |
@@ -142,9 +143,9 @@ A feature is never "migrated" because its route exists. Each row carries the hig
 | Living Campus | area | `registry` | the registers — area registry (999997-v14-registry.js); roles: 12 | MIGRATED_REAL | /admin/registers | P6/P8 | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P8 |
 | Living Campus | area | `investor` | the investor demonstration landing — area investor (v25-30-investor.js); roles: 14 | MIGRATED_DEMO | /demo | apps/demo landing with the three start actions and the seven scenarios, each starting its guided tour | DONE (demo native) | 5 REGRESSION_TESTED (tests/browser/demo.test.mjs (landing, three actions, seven scenarios)) | tests/browser/demo.test.mjs D-01..D-07, T-01..T-06 |
 | Living Campus | area | `v25.build` | Build a Room with Lite — area v25.build (v25-61-room-ui.js); roles: 12 | MIGRATED_REAL | /app/rooms/{id}/design · demo #/v25/build (native, client-side on the engine) | Build a Room engine ported (92 golden cases) + rooms API; demo: describe → design → classification → drawings → lifecycle → recording/verification → acceptance → baseline → recommission, with SoD refusals | DONE (demo native; app slice) | 5 REGRESSION_TESTED (demo: tests/browser/demo.test.mjs B-01..B-18 (visually rendered, functional on the engine, regression-tested); app: enterprise-web.test.mjs; golden parity) | tests/browser/demo.test.mjs B-01..B-18 (incl. the complete journey to baseline v2 and its comparison); tests/e2e; golden parity |
-| Living Campus | v25 page | `v25/intake` | Intake — #/v25/intake — Requests with photos, plans and dimensions; the engineering brief | MIGRATED_REAL | /app/requests | P5 | NOT_STARTED | 0 INVENTORIED (inventoried only) | P5/P6 named tests |
-| Living Campus | v25 page | `v25/vendor` | Supplier inbox — #/v25/vendor — Receipt and acknowledgement, nothing more | MIGRATED_REAL | /app/vendor-inbox | P5 (scoped vendor acknowledgement, test 15) | NOT_STARTED | 0 INVENTORIED (inventoried only) | P5/P6 named tests |
-| Living Campus | v25 page | `v25/decisions` | Decision desk — #/v25/decisions — Approvals and funding, each bound to a scope revision | MIGRATED_REAL | /app/decisions | P5 (approve/hold/reject, author ≠ approver) | NOT_STARTED | 0 INVENTORIED (inventoried only) | P5/P6 named tests |
+| Living Campus | v25 page | `v25/intake` | Intake — #/v25/intake — Requests with photos, plans and dimensions; the engineering brief | MIGRATED_REAL | /app/requests | API (ADR-0008); UI pending | PARTIAL (API complete, UI pending) | 0 INVENTORIED (inventoried only) | P5/P6 named tests |
+| Living Campus | v25 page | `v25/vendor` | Supplier inbox — #/v25/vendor — Receipt and acknowledgement, nothing more | MIGRATED_REAL | /app/vendor-inbox | POST /v1/projects/{code}/route (vendor): only the routed supplier acknowledges (REV-1, REV-2) | PARTIAL (API complete, UI pending) | 0 INVENTORIED (inventoried only) | P5/P6 named tests |
+| Living Campus | v25 page | `v25/decisions` | Decision desk — #/v25/decisions — Approvals and funding, each bound to a scope revision | MIGRATED_REAL | /app/decisions | API (ADR-0008): approve/hold/reject, author ≠ approver, delegation | PARTIAL (API complete, UI pending) | 0 INVENTORIED (inventoried only) | P5/P6 named tests |
 | Living Campus | v25 page | `v25/design` | Design workspace — #/v25/design — Revisions, redlines, DIVR, drawing extraction, RFIs | MIGRATED_REAL | /app/rooms/{id}/design | revisions, drawings, classification approval (API); DIVR/RFI/extraction P5 | PARTIAL | 0 INVENTORIED (inventoried only) | P5/P6 named tests |
 | Living Campus | v25 page | `v25/scouter` | Scouter — #/v25/scouter — Standardization proposals from eligible cohorts | MIGRATED_REAL | /app/scouter | P6A | NOT_STARTED | 0 INVENTORIED (inventoried only) | P5/P6 named tests |
 | Living Campus | v25 page | `v25/lite` | Lite studio — #/v25/lite — Conceptual geometry with a confidence it does not exceed | MIGRATED_REAL | /app/rooms/{id}/plan | P6B | PARTIAL | 0 INVENTORIED (inventoried only) | P5/P6 named tests |
@@ -172,7 +173,7 @@ A feature is never "migrated" because its route exists. Each row carries the hig
 | Living Campus | navigation | `pro/ops` | Operations Hub — More menu › Empathia Pro › #/pro/ops | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 0 INVENTORIED (inventoried only) | P3 navigation test |
 | Living Campus | navigation | `pro/eng` | Standards and Engineering — More menu › Empathia Pro › #/pro/eng | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 0 INVENTORIED (inventoried only) | P3 navigation test |
 | Living Campus | navigation | `pro/exec` | Executive Intelligence — More menu › Empathia Pro › #/pro/exec | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 0 INVENTORIED (inventoried only) | P3 navigation test |
-| Living Campus | navigation | `intake` | Intake — More menu › Plan and build › #/intake | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 0 INVENTORIED (inventoried only) | P3 navigation test |
+| Living Campus | navigation | `intake` | Intake — More menu › Plan and build › #/intake | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 4 BACKEND_CONNECTED (API + DB + regression; UI pending) | P3 navigation test |
 | Living Campus | navigation | `builder` | Room Builder — More menu › Plan and build › #/builder | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 5 REGRESSION_TESTED (tests/browser/enterprise-web.test.mjs (Build a Room over the API) + commissioning-engine golden 92) | P3 navigation test |
 | Living Campus | navigation | `scouter` | Scouter — More menu › Plan and build › #/scouter | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 0 INVENTORIED (inventoried only) | P3 navigation test |
 | Living Campus | navigation | `budget` | Budget — More menu › Plan and build › #/budget | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 0 INVENTORIED (inventoried only) | P3 navigation test |
@@ -230,11 +231,11 @@ A feature is never "migrated" because its route exists. Each row carries the hig
 | Living Campus | persona | `steward` | Data Steward — V25_PERSONAS; authority: provenance.review profile.publish standard.change case.approve | MIGRATED_REAL | /app (home by role) | roles in DB (GET /v1/roles); 22 journeys P6A | PARTIAL | 0 INVENTORIED (inventoried only) | P6A 22 role journeys |
 | Living Campus | persona | `secadmin` | Security / Platform Admin — V25_PERSONAS; authority: policy.configure license.grant adapter.allowlist | MIGRATED_REAL | /app (home by role) | roles in DB (GET /v1/roles); 22 journeys P6A | PARTIAL | 0 INVENTORIED (inventoried only) | P6A 22 role journeys |
 | Living Campus | persona | `architect` | Product Architect — V25_PERSONAS; authority: * | MIGRATED_REAL | /app (home by role) | roles in DB (GET /v1/roles); 22 journeys P6A | PARTIAL | 0 INVENTORIED (inventoried only) | P6A 22 role journeys |
-| Living Campus | state machine | `project_governance` | project_governance — 11 states, 11 transitions | MIGRATED_REAL | service layer | P5 | NOT_STARTED | 0 INVENTORIED (inventoried only) | P5 (18–27) |
-| Living Campus | state machine | `design_and_commissioning` | design_and_commissioning — 12 states, 11 transitions | MIGRATED_REAL | service layer | partly in enterprise-api (lifecycle, service) | PARTIAL | 0 INVENTORIED (inventoried only) | P5 (18–27) |
-| Living Campus | state machine | `service` | service — 10 states, 8 transitions | MIGRATED_REAL | service layer | partly in enterprise-api (lifecycle, service) | PARTIAL | 0 INVENTORIED (inventoried only) | P5 (18–27) |
-| Living Campus | state machine | `document` | document — 10 states, 7 transitions | MIGRATED_REAL | service layer | P5 | NOT_STARTED | 0 INVENTORIED (inventoried only) | P5 (18–27) |
-| Living Campus | state machine | `scouter_profile` | scouter_profile — 6 states, 5 transitions | MIGRATED_REAL | service layer | P5 | NOT_STARTED | 0 INVENTORIED (inventoried only) | P5 (18–27) |
+| Living Campus | state machine | `project_governance` | project_governance — 11 states, 11 transitions | MIGRATED_REAL | service layer | @empathia/project-governance (verbatim) + enterprise-api projects.ts (ADR-0008) | DONE (API; UI pending) | 4 BACKEND_CONNECTED (engine 9/9 + API 12/12; UI pending) | packages/project-governance 9/9; tests/security/project-lifecycle.test.mjs 12/12 |
+| Living Campus | state machine | `design_and_commissioning` | design_and_commissioning — 12 states, 11 transitions | MIGRATED_REAL | service layer | @empathia/project-governance delivery machine (verbatim) over the rooms’ commissioning engine (ADR-0008) | DONE (API; UI pending) | 4 BACKEND_CONNECTED (engine + API over the rooms; UI pending) | packages/project-governance 9/9; tests/security/project-lifecycle.test.mjs 12/12 |
+| Living Campus | state machine | `service` | service — 10 states, 8 transitions | MIGRATED_REAL | service layer | partly in enterprise-api (service) | PARTIAL | 0 INVENTORIED (inventoried only) | P5 (18–27) |
+| Living Campus | state machine | `document` | document — 10 states, 7 transitions | MIGRATED_REAL | service layer | P5/P6 | NOT_STARTED | 0 INVENTORIED (inventoried only) | P5 (18–27) |
+| Living Campus | state machine | `scouter_profile` | scouter_profile — 6 states, 5 transitions | MIGRATED_REAL | service layer | P5/P6 | NOT_STARTED | 0 INVENTORIED (inventoried only) | P5 (18–27) |
 | Founder Studio | destination | `mission-control` | Mission Control — #/mission-control (Start) | MIGRATED_REAL | /founder | studio page over founder-scoped API (P4F) | PARTIAL | 5 REGRESSION_TESTED (as the local studio; hosted form pending) (tests/browser/founder-studio.test.mjs 19/19 + founder-townhall 25/25) | tests/browser studio (19 PASS, 1 NOT_RUN) |
 | Founder Studio | destination | `enterprise-platform` | The Enterprise Platform — #/enterprise-platform (Start) | MIGRATED_REAL | /founder/platform | status matrix from the real repo/tests | PARTIAL | 5 REGRESSION_TESTED (as the local studio; hosted form pending) (tests/browser/founder-studio.test.mjs 19/19 + founder-townhall 25/25) | tests/browser studio (19 PASS, 1 NOT_RUN) |
 | Founder Studio | destination | `build-a-room` | Build a Room with Lite — #/build-a-room (Start) product lite | MIGRATED_REAL | /founder/build-a-room | embedded Founder Edition today (DemoFrame) → native pages over the rooms API | PARTIAL | 5 REGRESSION_TESTED (as the local studio; hosted form pending) (tests/browser/founder-studio.test.mjs 19/19 + founder-townhall 25/25) | tests/browser studio (19 PASS, 1 NOT_RUN) |

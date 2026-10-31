@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1ProjectsCodeDelivery/0.1.0.json",
+  "title": "POST /v1/projects/{code}/delivery request body",
+  "description": "One governed delivery step (ENGINEERING_REVIEW → … → BASELINED): the authority is the transition’s, the guard reads the rooms’ own lifecycle, every blocker is named in the refusal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "to"
+  ],
+  "properties": {
+    "to": {
+      "type": "string",
+      "enum": [
+        "DESIGN_DRAFT",
+        "DESIGN_REVIEW",
+        "DESIGN_RELEASED",
+        "PLAN_COMPILED",
+        "FIELD_AUTHORIZED",
+        "FIELD_ACTIVE",
+        "TESTS_VERIFIED",
+        "DOCUMENTS_APPROVED",
+        "CUSTOMER_ACCEPTED",
+        "HANDED_OFF",
+        "BASELINED"
+      ]
+    },
+    "technicianEmail": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "technicianQualified": {
+      "type": "boolean"
+    },
+    "siteAccess": {
+      "type": "boolean"
+    },
+    "photosApproved": {
+      "type": "boolean"
+    },
+    "supportOwnerEmail": {
+      "type": "string",
+      "maxLength": 200
+    }
+  }
+}

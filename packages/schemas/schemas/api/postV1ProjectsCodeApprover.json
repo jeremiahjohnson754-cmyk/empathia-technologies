@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1ProjectsCodeApprover/0.1.0.json",
+  "title": "POST /v1/projects/{code}/approver request body",
+  "description": "Approval: select an eligible approver (holds project.decide; not the brief’s author; not yourself)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "approverEmail"
+  ],
+  "properties": {
+    "approverEmail": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200
+    }
+  }
+}

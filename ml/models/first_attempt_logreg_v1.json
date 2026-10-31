@@ -68,7 +68,7 @@
     "seed": 7
   },
   "warning": "Trained on synthetic labels from a declared function. No real-world predictive validity. Do not use for decisions.",
-  "trainedAt": "2026-10-31T00:35:58Z",
+  "trainedAt": "2026-10-31T01:20:22Z",
   "library": {
     "scikit-learn": "1.9.1",
     "numpy": "2.5.3"

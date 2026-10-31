@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1ProjectsCodeDesignRevisionsRevReview/0.1.0.json",
+  "title": "POST /v1/projects/{code}/design-revisions/{rev}/review request body",
+  "description": "Domain review of a revision in review (review.dsp / review.camera / review.touch; never by its author)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "domain",
+    "decision"
+  ],
+  "properties": {
+    "domain": {
+      "type": "string",
+      "enum": [
+        "dsp",
+        "camera",
+        "touch"
+      ]
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "APPROVED",
+        "CHANGES_REQUESTED"
+      ]
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 2000
+    }
+  }
+}

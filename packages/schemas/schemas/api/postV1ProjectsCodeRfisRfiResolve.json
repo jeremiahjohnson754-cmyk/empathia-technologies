@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1ProjectsCodeRfisRfiResolve/0.1.0.json",
+  "title": "POST /v1/projects/{code}/rfis/{rfi}/resolve request body",
+  "description": "Resolve an RFI (rfi.resolve; never by whoever raised it)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "answer"
+  ],
+  "properties": {
+    "answer": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 4000
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1RequestsCodeWithdraw/0.1.0.json",
+  "title": "POST /v1/requests/{code}/withdraw request body",
+  "description": "Withdraw a request (the requester; never an approved or funded project)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "reason"
+  ],
+  "properties": {
+    "reason": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 1000
+    }
+  }
+}
