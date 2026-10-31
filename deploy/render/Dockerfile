@@ -1,5 +1,6 @@
 # Empathia — Render staging image (one image, two services: the API and the enterprise web app).
-# Build on your own machine (no GitHub needed), push to a PRIVATE registry, deploy by digest. See docs/operations/RENDER_STAGING.md.
+# Render builds it from the private GitHub repository (Language: Docker, Dockerfile Path: deploy/render/Dockerfile), or you build it
+# yourself and push to a private registry. See docs/operations/RENDER_DEPLOYMENT.md.
 #   docker build --platform=linux/amd64 -f deploy/render/Dockerfile --build-arg RELEASE_SHA=$(git rev-parse HEAD) -t <registry>/empathia:<sha> .
 # Status: NOT_RUN in the build sandbox (no container runtime there). The assembler step it relies on was verified locally.
 #
@@ -13,13 +14,14 @@ COPY . .
 # Reproducibility: commit a pnpm-lock.yaml (pnpm install --lockfile-only on a connected machine) and this uses it frozen.
 RUN if [ -f pnpm-lock.yaml ]; then pnpm install --frozen-lockfile; \
     else echo "WARNING: no pnpm-lock.yaml — direct dependencies are pinned in package.json, transitive ones are not locked"; pnpm install --no-frozen-lockfile; fi
-ARG RELEASE_SHA
-RUN test -n "$RELEASE_SHA" || (echo "build with --build-arg RELEASE_SHA=\$(git rev-parse HEAD)" && exit 1)
+# The commit: --build-arg RELEASE_SHA=… for a local build. On Render (Git-backed) the running service reads RENDER_GIT_COMMIT, which
+# Render sets at runtime, so the build does not depend on whether build arguments are passed.
+ARG RELEASE_SHA=
 ENV RELEASE_SHA=$RELEASE_SHA
 RUN node scripts/build.mjs && node deploy/render/assemble-runtime.mjs --out=/out
 
 FROM --platform=linux/amd64 node:22.22.0-bookworm-slim AS runtime
-ARG RELEASE_SHA
+ARG RELEASE_SHA=
 ENV NODE_ENV=production RELEASE_SHA=$RELEASE_SHA HOST=0.0.0.0 WEB_HOST=0.0.0.0 OBJECT_STORE_DIR=/data/objects
 WORKDIR /app
 COPY --from=build /out /app

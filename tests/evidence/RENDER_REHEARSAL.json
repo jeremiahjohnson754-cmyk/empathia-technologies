@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-31T17:38:42.988Z",
+  "at": "2026-10-31T18:24:15.812Z",
   "runtimeTree": "/tmp/out",
   "manifest": "248 files",
   "steps": [
@@ -9,14 +9,19 @@
       "detail": ""
     },
     {
-      "name": "V-1 gate refuses a default user that cannot create roles",
+      "name": "V-1 gate: the role step refuses (and would fail the deploy) when the default user cannot create roles",
       "result": "PASS",
-      "detail": "psql:/tmp/bootstrap-roles.sql:17: ERROR:  V-1 failed: empathia_owner cannot create roles; stop and see RENDER_STAGING.md"
+      "detail": "roles refused: V-1 failed: empathia_owner cannot create roles. Stop: do not run the API as the owner (docs/operations/RENDER_DEPLOYMENT.md §V-1)"
     },
     {
-      "name": "bootstrap-roles.sql passes for a role-creating user (idempotent: the roles already exist locally) and reports NOBYPASSRLS",
+      "name": "the role step refuses a runtime URL that names any user but empathia_app / empathia_worker (e.g. the owner)",
       "result": "PASS",
-      "detail": "empathia_app|t|f|f / empathia_worker|t|f|f"
+      "detail": "roles refused: the APP_DATABASE_URL user must be empathia_app (the migrations' policies name it); got empathia_owner"
+    },
+    {
+      "name": "the role step passes for a role-creating user: both roles NOBYPASSRLS NOSUPERUSER, CONNECT granted, PUBLIC revoked",
+      "result": "PASS",
+      "detail": "{\"defaultUser\":\"empathia_admin\",\"v1\":\"PASS\",\"roles\":[{\"role\":\"empathia_app\",\"action\":\"password set\"},{\"role\":\"empathia_worker\",\"action\":\"password set\"}],\"database\":\"empathia_render_rehearsal\"}"
     },
     {
       "name": "migrations apply from the runtime tree (25)",
@@ -27,6 +32,11 @@
       "name": "migrations are idempotent (a second run applies nothing)",
       "result": "PASS",
       "detail": "{\"applied\":[],\"already\":[\"0001_foundation.sql\",\"0002_core.sql\",\"0003_commissioning_evidence.sql\",\"0004_platform.sql\",\"0005_health.sql\",\"0006_projects.sql\",\"0007_integration_sync.sql\",\"0008_worker_role.sql\",\"0009_public_leads.sql\",\"0010_founder.sql\",\"0011_assurance_baseline.sql\",\"0012_separation_of_duties.sql\",\"0013_measurements.sql\",\"0014_graph_identity.sql\",\"0015_administration.sql\",\"0016_oidc_subjects.sql\",\"0017_project_lifecycle.sql\",\"0018_request_catalogue_and_concept_authorization.sql\",\"0019_service_lifecycle.sql\",\"0020_apex_cases.sql\",\"0021_field_intelligence.sql\",\"0022_learn.sql\",\"0023_competency.sql\",\"0024_audit_chain.sql\",\"0025_measurement_import.sql\"]}"
+    },
+    {
+      "name": "pre-deploy, last part: the role catalogue is loaded from the committed policy (every deploy)",
+      "result": "PASS",
+      "detail": "{\"policy\":\"loaded\",\"roles\":23}"
     },
     {
       "name": "operator bootstrap: policy + one non-synthetic tenant + its OIDC-only security administrator",
@@ -74,7 +84,7 @@
       "detail": "5 events"
     }
   ],
-  "pass": 14,
+  "pass": 16,
   "fail": 0,
   "limits": [
     "NODE_ENV=development: the local OIDC provider is http (production requires https JWKS)",

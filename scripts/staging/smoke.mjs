@@ -26,10 +26,11 @@ const get = (u, h = {}) => fetch(u, { headers: h, redirect: 'manual' });
 const https = api.startsWith('https://');
 
 let health = null;
-await check('D1', 'API /health is ok with the database reachable and every migration applied', async () => {
+await check('D1', 'API /health is ok: database reachable, every migration applied, evidence store writable', async () => {
   const r = await get(`${api}/health`); health = await r.json();
   if (r.status !== 200 || health.status !== 'ok') return `status ${r.status} ${health.status}`;
   if (!health.database?.reachable) return 'database unreachable';
+  if (health.evidenceStoreWritable === false) return 'the evidence store (persistent disk) is not writable by the service';
   return health.database.migrationsApplied === migrations || `migrations applied ${health.database.migrationsApplied}, repository has ${migrations}`;
 });
 await check('D2', 'the deployed release is the expected commit', async () => (!expectSha ? 'NOT_RUN no --expect-sha' : (health?.release?.sha || '').startsWith(expectSha.slice(0, 7)) || `deployed ${health?.release?.sha}`));

@@ -306,6 +306,23 @@ room's own lifecycle), instrument import (covered by IMP-1..4 on its own room), 
 | `scripts/staging/smoke.mjs`: deployment tests D1–D10 for the live environment | IMPLEMENTED · PASS in rehearsal; on Render NOT_RUN | — |
 | Open | — | V-1 (can Render's default user create roles?) is checked first on Render; B-2 the web app has no OIDC sign-in (decision A5); approvals A1–A5 |
 
+### P8b (Ascension) — GitHub-backed Render deployment: prepared, not deployed (2026-10-31, owner request 13:06 CT)
+
+| Item | Status | Evidence |
+|---|---|---|
+| Direct push to the owner's GitHub from this session | **NOT POSSIBLE** (no linked GitHub account; token invalid) | → verified Git bundle + restore/push commands |
+| Separation: Phase 1 = public synthetic website + investor demo as free static sites (`render.yaml`); Phase 2 = authenticated API + web app + Postgres (`deploy/render/enterprise.render.yaml`, custom Blueprint Path) | PREPARED | `docs/operations/RENDER_DEPLOYMENT.md` |
+| `build.mjs --public`: builds only shared UI, website, demo (+ hygiene); base URL from `RENDER_EXTERNAL_URL` | IMPLEMENTED · PASS in a clean copy | — |
+| `scripts/staging/verify-static.mjs`: both sites served with exactly the declared headers, every page in Chromium | PASS; broken-CSP negative case FAILs | registered as a `deploy` suite |
+| Role creation moved into the pre-deploy step (`bootstrap.js --roles`, V-1 gate) so the database needs no external access (`ipAllowList: []`); runtime URLs derived from `DATABASE_URL` + Render-generated passwords; `PGSSLMODE`; `bootstrap.js --policy` every deploy; `bootstrap-roles.sql` removed | IMPLEMENTED · TESTED | HRD-6; rehearsal **16 PASS · 0 FAIL** |
+| Web server allows its own Render host automatically (`RENDER_EXTERNAL_HOSTNAME`); `/health` reports `evidenceStoreWritable` (gate V-2), smoke D1 fails on `false`; release commit from `RENDER_GIT_COMMIT` | IMPLEMENTED · TESTED (rehearsal) | — |
+| `scripts/staging/validate-blueprints.py`: both Blueprints vs the spec and the code (plans, regions, private DB, entry points, pre-deploy order, health paths, disk, every variable read by the code, required variables, no literal secret) | **23 PASS · 0 FAIL**; three negative cases FAIL as intended | `tests/evidence/BLUEPRINT_VALIDATION.json` |
+| Bundle push instructions fixed (a bundle clone's `origin` is the bundle file; `git remote add origin` would fail) | FIXED | `scripts/release/preserve-source.mjs` |
+| Docker image build; pnpm install on Render/GitHub Actions; anything on GitHub or Render | **NOT_RUN** | no container runtime or registry access here; nothing created |
+| Open | — | V-1, V-2, V-3 on Render; B-2 web OIDC sign-in (A5); L-1 lockfile; approvals A0–A5 |
+
+Full regression after this milestone: **49 PASS · 0 FAIL · 1 NOT_RUN** (films not decoded) — including the two new `deploy` suites.
+
 ### Connector expansion directive (2026-10-31 05:34 CT) — what was actually done
 
 | Item | Status | Evidence |

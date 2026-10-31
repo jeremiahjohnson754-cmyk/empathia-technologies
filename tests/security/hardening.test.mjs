@@ -67,3 +67,21 @@ test('HRD-5 behind a trusted proxy the anonymous rate-limit key is the address t
   assert.equal(clientAddress(undefined, '10.0.0.2', true), '10.0.0.2', 'no header: the socket');
   assert.equal(clientAddress('6.6.6.6', '10.0.0.2', false), '10.0.0.2', 'not behind a trusted proxy: the header is ignored');
 });
+
+test('HRD-6 database connection settings: runtime URLs derived from the owner URL and generated passwords (any characters) keep host, port, database and options; PGSSLMODE applies when a URL names no sslmode; a URL’s own sslmode wins', async () => {
+  const { derivedUrl, runtimeUrls, configFromUrl } = await import(path.join(repo, 'services/enterprise-api/dist/src/db/pg.js'));
+  const owner = 'postgres://empathia_owner:o%2Bw@dpg-abc-a:5432/empathia';
+  const pw = 'aB+/c=d%e@f:g?h#i';   // the characters a generated base64 secret (and worse) can contain
+  const c = configFromUrl(derivedUrl(owner, 'empathia_app', pw));
+  assert.deepEqual([c.user, c.password, c.host, c.port, c.database], ['empathia_app', pw, 'dpg-abc-a', 5432, 'empathia']);
+  const r = runtimeUrls({ DATABASE_URL: owner, EMPATHIA_APP_PASSWORD: pw, EMPATHIA_WORKER_PASSWORD: 'w' });
+  assert.equal(configFromUrl(r.worker).user, 'empathia_worker');
+  assert.equal(runtimeUrls({ DATABASE_URL: owner, APP_DATABASE_URL: 'postgres://x:y@h/d', EMPATHIA_APP_PASSWORD: pw }).app, 'postgres://x:y@h/d', 'an explicit URL wins');
+  const before = process.env.PGSSLMODE;
+  try {
+    process.env.PGSSLMODE = 'require';
+    assert.deepEqual(configFromUrl(owner).ssl, { rejectUnauthorized: false }, 'PGSSLMODE=require → TLS');
+    assert.equal(configFromUrl(owner + '?sslmode=disable').ssl, false, 'the URL’s own sslmode wins');
+    delete process.env.PGSSLMODE; assert.equal(configFromUrl(owner).ssl, false, 'no sslmode anywhere → no TLS (local development)');
+  } finally { if (before === undefined) delete process.env.PGSSLMODE; else process.env.PGSSLMODE = before; }
+});

@@ -276,10 +276,24 @@ export class PgPool implements Queryable {
 export function configFromUrl(url: string): PgConfig {
   const u = new URL(url);
   if (!/^postgres(ql)?:$/.test(u.protocol)) throw new Error('DATABASE_URL must start with postgres://');
-  const ssl = u.searchParams.get('sslmode');
+  const ssl = u.searchParams.get('sslmode') || process.env['PGSSLMODE'] || null;   // the URL wins; else the standard libpq PGSSLMODE
   return {
     host: u.hostname || '127.0.0.1', port: Number(u.port || 5432), user: decodeURIComponent(u.username), password: decodeURIComponent(u.password),
     database: u.pathname.replace(/^\//, '') || 'postgres',
     ssl: ssl && ssl !== 'disable' ? { rejectUnauthorized: ssl === 'verify-full' } : false,
+  };
+}
+
+/** A runtime-role URL derived from the owner's URL (same host, port, database and query) with another user and password: lets a platform
+ *  generate the runtime-role passwords and the database URL separately, so nobody assembles a password-bearing URL by hand. */
+export function derivedUrl(ownerUrl: string, user: string, password: string): string {
+  const u = new URL(ownerUrl); u.username = encodeURIComponent(user); u.password = encodeURIComponent(password); return u.toString();
+}
+/** APP_DATABASE_URL / WORKER_DATABASE_URL, or — when unset — derived from DATABASE_URL and EMPATHIA_APP_PASSWORD / EMPATHIA_WORKER_PASSWORD. */
+export function runtimeUrls(e: Record<string, string | undefined>): { app?: string; worker?: string } {
+  const own = e['DATABASE_URL'];
+  return {
+    app: e['APP_DATABASE_URL'] || (own && e['EMPATHIA_APP_PASSWORD'] ? derivedUrl(own, 'empathia_app', e['EMPATHIA_APP_PASSWORD']) : undefined),
+    worker: e['WORKER_DATABASE_URL'] || (own && e['EMPATHIA_WORKER_PASSWORD'] ? derivedUrl(own, 'empathia_worker', e['EMPATHIA_WORKER_PASSWORD']) : undefined),
   };
 }

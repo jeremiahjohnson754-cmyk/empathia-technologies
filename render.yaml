@@ -1,0 +1,73 @@
+# Render Blueprint — PHASE 1 ONLY: the two public, synthetic, unauthenticated sites. Free static sites; no database, no API, no secrets.
+# The authenticated enterprise application is deliberately NOT in this file (it is Phase 2: deploy/render/enterprise.render.yaml,
+# applied only after its approvals and checks — docs/operations/RENDER_DEPLOYMENT.md).
+#
+#   empathia-website  — the public marketing site (pre-rendered pages). Lead forms say "not configured" and never pretend to send until
+#                       WEBSITE_API_URL names the enterprise API (Phase 2), at which point connect-src in its CSP must name that origin too.
+#   empathia-demo     — the shareable investor demonstration: synthetic data only, runs entirely in the browser (no API calls),
+#                       not indexed by search engines. Its external distribution is an owner decision (RELEASE_ACCEPTANCE_CRITERIA S11).
+#
+# Fields follow https://render.com/docs/blueprint-spec (static sites: type web + runtime static; region and plan do not apply).
+services:
+  - type: web
+    runtime: static
+    name: empathia-website
+    branch: main
+    autoDeployTrigger: commit
+    buildCommand: npx --yes pnpm@10.18.3 install --no-frozen-lockfile && node scripts/build.mjs --public
+    staticPublishPath: apps/website/dist
+    envVars:
+      - key: SKIP_INSTALL_DEPS          # Render's automatic npm install cannot resolve pnpm workspace:* links; the build command installs
+        value: "true"
+      - key: NODE_VERSION
+        value: "22.22.0"
+      # WEBSITE_BASE_URL defaults to RENDER_EXTERNAL_URL (sitemap, robots); set it when a custom domain is added.
+      # WEBSITE_API_URL stays unset until the enterprise API exists (Phase 2).
+    headers:
+      - path: /*
+        name: Content-Security-Policy
+        value: "default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: Referrer-Policy
+        value: no-referrer
+      - path: /*
+        name: Strict-Transport-Security
+        value: max-age=31536000
+
+  - type: web
+    runtime: static
+    name: empathia-demo
+    branch: main
+    autoDeployTrigger: commit
+    buildCommand: npx --yes pnpm@10.18.3 install --no-frozen-lockfile && node scripts/build.mjs --public
+    staticPublishPath: apps/demo/dist
+    envVars:
+      - key: SKIP_INSTALL_DEPS
+        value: "true"
+      - key: NODE_VERSION
+        value: "22.22.0"
+    headers:
+      - path: /*
+        name: Content-Security-Policy
+        value: "default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"
+      - path: /*
+        name: X-Robots-Tag
+        value: noindex, nofollow
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: Referrer-Policy
+        value: no-referrer
+      - path: /*
+        name: Strict-Transport-Security
+        value: max-age=31536000

@@ -20,7 +20,8 @@ await esbuild.build({ entryPoints: [path.join(app, 'src/main.ts')], bundle: true
 const tmp = path.join(repo, '.local/website-prerender.mjs'); fs.mkdirSync(path.dirname(tmp), { recursive: true });
 await esbuild.build({ entryPoints: [path.join(app, 'src/prerender.tsx')], bundle: true, platform: 'node', format: 'esm', target: ['node22'], jsx: 'automatic', outfile: tmp, banner: { js: "import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);" }, define: { 'process.env.NODE_ENV': '"production"' }, logLevel: 'warning' });
 const { renderPage, PATHS } = await import(tmp + '?t=' + Date.now());
-const base = arg('base', ''); const api = arg('api', '');
+// the public URL and the lead API: --base/--api, else the environment (a Render static site provides RENDER_EXTERNAL_URL at build time)
+const base = arg('base', process.env.WEBSITE_BASE_URL || process.env.RENDER_EXTERNAL_URL || '').replace(/\/$/, ''); const api = arg('api', process.env.WEBSITE_API_URL || '').replace(/\/$/, '');
 for (const p of PATHS) { const dir = path.join(dist, p === '/' ? '' : p); fs.mkdirSync(dir, { recursive: true }); fs.writeFileSync(path.join(dir, 'index.html'), renderPage(p, { api: api || null, base }).html); }
 const css = [path.join(repo, 'packages/design-tokens/dist/tokens.css'), path.join(app, 'src/styles/site.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`).join('\n');
 fs.writeFileSync(path.join(dist, 'site.css'), css);

@@ -3,7 +3,7 @@
  * Local rehearsal of the Render staging sequence, run from the ASSEMBLED runtime tree (what the image contains), against a throwaway
  * database in the local cluster and a throwaway local OIDC provider. Nothing leaves this machine; nothing is provisioned.
  *   node scripts/build.mjs && node deploy/render/assemble-runtime.mjs --out=/tmp/out && node deploy/render/rehearse.mjs --rt=/tmp/out
- * Steps (as on Render): V-1 role gate (refused as the plain owner, passes for a role-creating user) → bootstrap-roles.sql → migrations
+ * Steps (as on Render): V-1 role gate and runtime roles (bootstrap.js --roles; refused as the plain owner, passes for a role-creating user) → migrations
  * (owner) → operator bootstrap (one non-synthetic tenant + its OIDC-only security administrator) → API (AUTH_MODE=oidc, TRUSTED_PROXY=on)
  * and web server from the runtime tree → deployment tests (scripts/staging/smoke.mjs) with a provider-signed token → Host allow-list.
  * Writes tests/evidence/RENDER_REHEARSAL.json. Limits: NODE_ENV=development here because the local provider is http (production
@@ -31,22 +31,30 @@ const startProc = (args, env) => { const p = spawn(process.execPath, args, { cwd
 const waitFor = async (u, ms = 20000) => { const t = Date.now(); while (Date.now() - t < ms) { try { const r = await fetch(u); if (r.status < 500) return true; } catch { /* not yet */ } await new Promise((r) => setTimeout(r, 250)); } return false; };
 
 let jwks;
+// the local cluster (scripts/db.mjs) must be running; start it if it is not (idempotent)
+spawnSync(process.execPath, [path.join(repo, 'scripts/db.mjs'), 'up'], { cwd: repo, encoding: 'utf8' });
 try {
   // database
   psql(creds.superuser, creds.superPassword, 'postgres', ['-c', `DROP DATABASE IF EXISTS ${DB}`]);
   step('create the throwaway database (owner = the schema owner)', psql(creds.superuser, creds.superPassword, 'postgres', ['-c', `CREATE DATABASE ${DB} OWNER ${creds.owner}`]).status === 0);
-  const roleSql = path.join(rt, '..', 'bootstrap-roles.sql'); fs.copyFileSync(path.join(repo, 'deploy/render/bootstrap-roles.sql'), roleSql);
-  const asOwner = psql(creds.owner, creds.ownerPassword, DB, ['-v', 'app_password=x', '-v', 'worker_password=y', '-f', roleSql]);
-  step('V-1 gate refuses a default user that cannot create roles', asOwner.status !== 0 && /V-1 failed/.test(asOwner.stderr), asOwner.stderr.split('\n').find((l) => /V-1/.test(l)) || asOwner.stderr.slice(0, 120));
-  const asCreator = psql(creds.superuser, creds.superPassword, DB, ['-v', `app_password=${creds.appPassword}`, '-v', `worker_password=${creds.workerPassword}`, '-f', roleSql]);
-  step('bootstrap-roles.sql passes for a role-creating user (idempotent: the roles already exist locally) and reports NOBYPASSRLS', asCreator.status === 0 && /empathia_app\|t\|f\|f/.test(asCreator.stdout) && /empathia_worker\|t\|f\|f/.test(asCreator.stdout), asCreator.stdout.trim().split('\n').slice(-2).join(' / ') || asCreator.stderr.slice(0, 200));
+  // pre-deploy, first half: the runtime roles from the URLs (bootstrap.js --roles). Locally the schema owner lacks CREATEROLE, which is
+  // exactly the V-1 refusal; the passing case runs with a role-creating user standing in for Render's default user.
+  const SUPER = url(creds.superuser, creds.superPassword);
+  const asOwner = node(['services/enterprise-api/dist/src/db/bootstrap.js', '--roles'], { DATABASE_URL: OWNER, APP_DATABASE_URL: APP, WORKER_DATABASE_URL: WORKER });
+  step('V-1 gate: the role step refuses (and would fail the deploy) when the default user cannot create roles', asOwner.status !== 0 && /V-1 failed/.test(asOwner.stderr), asOwner.stderr.trim().slice(0, 160));
+  const badUser = node(['services/enterprise-api/dist/src/db/bootstrap.js', '--roles'], { DATABASE_URL: SUPER, APP_DATABASE_URL: OWNER, WORKER_DATABASE_URL: WORKER });
+  step('the role step refuses a runtime URL that names any user but empathia_app / empathia_worker (e.g. the owner)', badUser.status !== 0 && /must be empathia_app/.test(badUser.stderr), badUser.stderr.trim().slice(0, 160));
+  const asCreator = node(['services/enterprise-api/dist/src/db/bootstrap.js', '--roles'], { DATABASE_URL: SUPER, EMPATHIA_APP_PASSWORD: creds.appPassword, EMPATHIA_WORKER_PASSWORD: creds.workerPassword });
+  step('the role step passes for a role-creating user: both roles NOBYPASSRLS NOSUPERUSER, CONNECT granted, PUBLIC revoked', asCreator.status === 0 && /"v1":"PASS"/.test(asCreator.stdout), (asCreator.stdout || asCreator.stderr).trim().slice(0, 200));
   // migrations, from the runtime tree, as the owner (Render: the pre-deploy command)
-  const PRE = { DATABASE_URL: OWNER, APP_DATABASE_URL: APP, WORKER_DATABASE_URL: WORKER };   // Render: the pre-deploy command shares the service's environment
+  const PRE = { DATABASE_URL: OWNER, EMPATHIA_APP_PASSWORD: creds.appPassword, EMPATHIA_WORKER_PASSWORD: creds.workerPassword };   // as on Render: the runtime URLs are derived   // Render: the pre-deploy command shares the service's environment
   const mig = node(['services/enterprise-api/dist/src/db/migrate.js'], PRE);
   const nMig = fs.readdirSync(path.join(repo, 'database/migrations')).filter((f) => /^\d{4}_.*\.sql$/.test(f)).length;
   step(`migrations apply from the runtime tree (${nMig})`, mig.status === 0, (mig.stdout + mig.stderr).trim().split('\n').slice(-1)[0]);
   const mig2 = node(['services/enterprise-api/dist/src/db/migrate.js'], PRE);
   step('migrations are idempotent (a second run applies nothing)', mig2.status === 0, (mig2.stdout + mig2.stderr).trim().split('\n').slice(-1)[0]);
+  const pol = node(['services/enterprise-api/dist/src/db/bootstrap.js', '--policy'], PRE);
+  step('pre-deploy, last part: the role catalogue is loaded from the committed policy (every deploy)', pol.status === 0 && /"policy":"loaded"/.test(pol.stdout), (pol.stdout || pol.stderr).trim().slice(0, 120));
   // operator bootstrap
   const boot = node(['services/enterprise-api/dist/src/db/bootstrap.js', '--tenant=rehearsal-staging', '--tenant-name=Rehearsal (staging)', '--site=SITE-HQ:Headquarters', '--building=HQ1:Main building:6:SITE-HQ', '--admin-email=it-admin@rehearsal.example', '--admin-name=IT Admin (rehearsal)', '--operator=rehearsal'], { DATABASE_URL: OWNER });
   step('operator bootstrap: policy + one non-synthetic tenant + its OIDC-only security administrator', boot.status === 0, (boot.status === 0 ? JSON.parse(boot.stdout).rolesLoaded + ' roles' : boot.stderr).toString().slice(0, 160));
@@ -65,7 +73,7 @@ try {
   // API and web from the runtime tree
   const sha = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).stdout.trim();
   startProc(['services/enterprise-api/dist/src/main.js'], { NODE_ENV: 'development', AUTH_MODE: 'oidc', OIDC_ISSUER: ISS, OIDC_AUDIENCE: AUD, OIDC_JWKS_URL: 'http://127.0.0.1:4175/jwks', OIDC_LINK_BY_EMAIL: 'on', HOST: '127.0.0.1', PORT: '4174',
-    DATABASE_URL: OWNER, APP_DATABASE_URL: APP, WORKER_DATABASE_URL: WORKER, JWT_SECRET: crypto.randomBytes(48).toString('base64url'), CORS_ORIGINS: 'http://127.0.0.1:4173', TRUSTED_PROXY: 'on', OBJECT_STORE_DIR: '/tmp/empathia-rehearsal-objects', RELEASE_SHA: sha, LOG_LEVEL: 'warn' });
+    DATABASE_URL: OWNER, EMPATHIA_APP_PASSWORD: creds.appPassword, EMPATHIA_WORKER_PASSWORD: creds.workerPassword, JWT_SECRET: crypto.randomBytes(48).toString('base64url'), CORS_ORIGINS: 'http://127.0.0.1:4173', TRUSTED_PROXY: 'on', OBJECT_STORE_DIR: '/tmp/empathia-rehearsal-objects', RELEASE_SHA: sha, LOG_LEVEL: 'warn' });
   startProc(['apps/enterprise-web/server/serve.mjs'], { WEB_HOST: '127.0.0.1', PORT: '4173', API_URL: 'http://127.0.0.1:4174', WEB_ALLOWED_HOSTS: 'empathia-staging-web.onrender.com' });
   step('the API and the web server start from the runtime tree', (await waitFor('http://127.0.0.1:4174/health')) && (await waitFor('http://127.0.0.1:4173/')), procs.map((p) => p.logs().slice(-200)).join(' | '));
   // deployment tests

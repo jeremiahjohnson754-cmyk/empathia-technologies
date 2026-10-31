@@ -40,11 +40,14 @@ function finish(code) {
   process.exit(code);
 }
 
-log(`Empathia build ${new Date().toISOString()} on ${process.platform} ${process.version}`);
+// --public: only what the two public static sites need (the website and the synthetic investor demo): engines, their type checks,
+// the two bundles and the dist-hygiene gate. Used by the Render static sites (render.yaml); the full build stays the default.
+const pub = process.argv.includes('--public');
+log(`Empathia build${pub ? ' (public sites only)' : ''} ${new Date().toISOString()} on ${process.platform} ${process.version}`);
 run('link workspace', process.execPath, [path.join(root, 'scripts/bootstrap.mjs')]);
 run('design tokens', process.execPath, [path.join(root, 'packages/design-tokens/build-tokens.mjs')]);
 for (const p of ['packages/domain-types', 'packages/commissioning-engine', 'packages/event-contracts', 'packages/relationship-engine', 'packages/search-party', 'packages/project-governance', 'packages/service-engine', 'packages/apex-engine', 'packages/kpi-engine', 'packages/field-intelligence', 'packages/assurance-engine', 'packages/observability',
-  'integrations/contracts', 'integrations/mocks', 'services/enterprise-api', 'packages/api-client', 'packages/schemas']) run(`tsc -b ${p}`, process.execPath, [tsc, '-b', path.join(root, p)]);
+  'integrations/contracts', 'integrations/mocks', 'services/enterprise-api', 'packages/api-client', 'packages/schemas'].filter((p) => !pub || !['services/enterprise-api', 'packages/api-client', 'packages/schemas', 'integrations/contracts', 'integrations/mocks'].includes(p))) run(`tsc -b ${p}`, process.execPath, [tsc, '-b', path.join(root, p)]);
 // the release stamp: the commit the artifact was built from (RELEASE_SHA, else git), read by the API's config for telemetry release correlation
 {
   let sha = process.env.RELEASE_SHA || 'unknown';
@@ -53,6 +56,14 @@ for (const p of ['packages/domain-types', 'packages/commissioning-engine', 'pack
   const info = { sha, dirty: dirty.status === 0 ? dirty.stdout.trim().length > 0 : null, builtAt: new Date().toISOString(), node: process.version };
   for (const d of ['services/enterprise-api/dist', 'apps/enterprise-web/src/generated']) { fs.mkdirSync(path.join(root, d), { recursive: true }); fs.writeFileSync(path.join(root, d, 'build-info.json'), JSON.stringify(info)); }
   log(`release stamp ${sha.slice(0, 12)}${info.dirty ? ' (dirty)' : ''}`);
+}
+if (pub) {
+  run('generate apps/demo sources', process.execPath, [path.join(root, 'apps/demo/build.mjs'), '--generate-only']);
+  for (const p of ['packages/ui', 'apps/website', 'apps/demo']) run(`type-check ${p}`, process.execPath, [tsc, '-p', path.join(root, p, 'tsconfig.json'), '--noEmit']);
+  run('public website (pre-rendered)', process.execPath, [path.join(root, 'apps/website/build.mjs')]);
+  run('investor demo shell', process.execPath, [path.join(root, 'apps/demo/build.mjs')]);
+  run('dist hygiene (no source maps, no dev override)', process.execPath, [path.join(root, 'scripts/verify/dist-hygiene.mjs')]);
+  finish(0);
 }
 run('JSON Schemas (events, API bodies, entities)', process.execPath, [path.join(root, 'packages/schemas/scripts/generate.mjs')]);
 // generated sources first (git-ignored, derived from committed data): a fresh checkout has none until this runs (P7 finding)

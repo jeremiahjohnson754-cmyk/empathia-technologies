@@ -1,5 +1,6 @@
 /** Runtime configuration from the environment. Secrets never have production defaults; dev defaults are refused when NODE_ENV=production. */
 import fs from 'node:fs';
+import { runtimeUrls } from './db/pg.js';
 import path from 'node:path';
 import crypto from 'node:crypto';
 
@@ -67,7 +68,7 @@ export function loadConfig(repo: string, over: Partial<Record<string, string>> =
   return {
     env, authMode,
     port: Number(e['PORT'] || 4100), host: e['HOST'] || '127.0.0.1',
-    databaseUrl: need('APP_DATABASE_URL'), ownerDatabaseUrl: need('DATABASE_URL'), workerDatabaseUrl: need('WORKER_DATABASE_URL'),
+    databaseUrl: runtimeUrls(e).app || need('APP_DATABASE_URL'), ownerDatabaseUrl: need('DATABASE_URL'), workerDatabaseUrl: runtimeUrls(e).worker || need('WORKER_DATABASE_URL'),
     jwtSecret: Buffer.from(secret), jwtIssuer: e['JWT_ISSUER'] || 'empathia-dev-idp', jwtAudience: e['JWT_AUDIENCE'] || 'empathia-enterprise-api',
     tokenTtlSeconds: Number(e['TOKEN_TTL_SECONDS'] || 900),
     objectStoreDir: e['OBJECT_STORE_DIR'] || path.join(repo, '.local/objects'),
@@ -78,7 +79,7 @@ export function loadConfig(repo: string, over: Partial<Record<string, string>> =
     rateLimitPerMinute: Number(e['RATE_LIMIT_PER_MINUTE'] || 600),
     oidc,
     telemetry: { mode: tmode, dsn: e['SENTRY_DSN'] || null, file: e['TELEMETRY_FILE'] || null, tracesSampleRate: tRate },
-    release: { name: 'empathia-enterprise-api', version: '0.1.0', sha: e['RELEASE_SHA'] || buildInfo(repo).sha, environment: e['RELEASE_ENVIRONMENT'] || env },
+    release: { name: 'empathia-enterprise-api', version: '0.1.0', sha: e['RELEASE_SHA'] || e['RENDER_GIT_COMMIT'] || buildInfo(repo).sha, environment: e['RELEASE_ENVIRONMENT'] || env },
   };
 }
 

@@ -24,6 +24,9 @@ export function telemetryFor(cfg: Config): Telemetry {
   return new Telemetry({ release: cfg.release, transport, tracesSampleRate: t.tracesSampleRate, logger: 'enterprise-api' });
 }
 
+/** Whether the evidence directory can be written by this process (a platform disk mounted with the wrong owner shows up here, not at the first upload). */
+function storeWritable(dir: string): boolean { try { fs.mkdirSync(dir, { recursive: true }); fs.accessSync(dir, fs.constants.W_OK); return true; } catch { return false; } }
+
 export async function start(over: Partial<Record<string, string>> = {}) {
   const cfg: Config = loadConfig(repoRoot, over);
   const telemetry = telemetryFor(cfg);
@@ -36,7 +39,7 @@ export async function start(over: Partial<Record<string, string>> = {}) {
     const t0 = Date.now();
     try {
       const db = (await pool.query<{ v: string; m: number }>("SELECT current_setting('server_version') AS v, app.migrations_applied() AS m")).rows[0]!;
-      return { status: 'ok', service: 'empathia-enterprise-api', version: '0.1.0', database: { reachable: true, serverVersion: db.v, migrationsApplied: db.m, ms: Date.now() - t0 }, authMode: cfg.authMode, objectStore: store.kind, worker: { delivered: worker.delivered, failed: worker.failed, deadLettered: worker.dead }, telemetry: telemetry.status(), release: { sha: cfg.release.sha, environment: cfg.release.environment }, liveHealth: 'NOT_MONITORED', note: 'production starter on synthetic data — not production-ready' };
+      return { status: 'ok', service: 'empathia-enterprise-api', version: '0.1.0', database: { reachable: true, serverVersion: db.v, migrationsApplied: db.m, ms: Date.now() - t0 }, authMode: cfg.authMode, objectStore: store.kind, evidenceStoreWritable: storeWritable(cfg.objectStoreDir), worker: { delivered: worker.delivered, failed: worker.failed, deadLettered: worker.dead }, telemetry: telemetry.status(), release: { sha: cfg.release.sha, environment: cfg.release.environment }, liveHealth: 'NOT_MONITORED', note: 'production starter on synthetic data — not production-ready' };
     } catch (e) { return { status: 'degraded', database: { reachable: false, error: (e as Error).message }, worker: { lastError: worker.lastError } }; }
   };
   const router = buildRoutes({ pool, tokens, store, health, authMode: cfg.authMode });

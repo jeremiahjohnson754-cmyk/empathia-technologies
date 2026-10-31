@@ -1,5 +1,11 @@
 # Render staging — private, independently testable (plan, 2026-10-31)
 
+> **Superseded for the deployment method (2026-10-31, later the same day):** Render is now connected to GitHub. Deploy from the new
+> private `empathia-technologies` repository with the two Blueprints in [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md). The registry-image
+> method below (§5–§6, R2's `bootstrap-roles.sql`, replaced by `bootstrap.js --roles` in the pre-deploy step) is kept as the record of
+> that plan. §1–§3 and §8 still apply.
+
+
 Status: **PREPARED, NOT PROVISIONED.** Nothing has been created on Render. Every step that spends money or exposes a URL waits for the
 owner's explicit approval (§10). Repository state: everything here is committed alongside the commit named in `tests/evidence/
 RENDER_REHEARSAL.json`; the local rehearsal of the whole sequence passed 14/14 (§7).

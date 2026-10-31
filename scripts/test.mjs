@@ -60,6 +60,11 @@ suite('e2e: founder town hall (Founder Edition)', 'e2e', node, ['tests/e2e/found
 suite('e2e: founder decisions (hosted studio over the API)', 'e2e', node, ['tests/e2e/founder-decisions.e2e.mjs'], custom, has('--studio') ? (studio && db ? {} : { skip: 'studio not built or no local database' }) : { skip: 'pass --studio' });
 suite('media: full decode of every curated film', 'media', node, ['tests/media/decode-films.mjs'], custom, has('--films') ? { timeout: 7200000 } : { skip: 'pass --films (slow: decodes ~47 minutes of video)' });
 
+const counted = (out) => { const m = /PASS (\d+) · FAIL (\d+)/.exec(out); return m ? { tests: Number(m[1]) + Number(m[2]), pass: Number(m[1]), fail: Number(m[2]) } : { tests: NaN, pass: NaN, fail: NaN }; };
+const pyyaml = spawnSync('python3', ['-I', '-c', 'import yaml'], { encoding: 'utf8' }).status === 0;
+suite('deploy: Render Blueprints (static validation)', 'deploy', 'python3', ['-I', 'scripts/staging/validate-blueprints.py'], counted, pyyaml ? {} : { skip: 'PyYAML not installed (pip install pyyaml)' });
+suite('deploy: public static sites under the declared headers', 'deploy', node, ['scripts/staging/verify-static.mjs'], counted, has('--browser') ? (fs.existsSync(path.join(root, 'apps/website/dist/index.html')) && fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? {} : { skip: 'public sites not built (node scripts/build.mjs --public)' }) : { skip: 'pass --browser' });
+
 const out = path.join(root, 'tests/evidence'); fs.mkdirSync(out, { recursive: true });
 const sum = { at: new Date().toISOString(), node: process.version, pass: suites.filter((s) => s.result === 'PASS').length, fail: suites.filter((s) => s.result === 'FAIL').length, notRun: suites.filter((s) => s.result === 'NOT_RUN').length, suites };
 fs.writeFileSync(path.join(out, 'TEST_RESULTS.json'), JSON.stringify(sum, null, 2));

@@ -1,0 +1,147 @@
+{
+  "at": "2026-10-31T18:21:09+00:00",
+  "spec": "https://render.com/docs/blueprint-spec (2026-10-31)",
+  "results": [
+    {
+      "id": "P1-1",
+      "name": "Phase 1 has no database and only static sites",
+      "result": "PASS",
+      "detail": "empathia-website, empathia-demo"
+    },
+    {
+      "id": "P1-2",
+      "name": "each static site publishes a directory the public build produces",
+      "result": "PASS",
+      "detail": "empathia-website\u2192apps/website/dist, empathia-demo\u2192apps/demo/dist"
+    },
+    {
+      "id": "P1-3",
+      "name": "no secret or dashboard-entered variable in Phase 1",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "P1-4",
+      "name": "every static site sends CSP, nosniff, frame denial, HSTS, no-referrer on /*",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "P1-5",
+      "name": "the investor demo is not indexed (X-Robots-Tag noindex)",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "P1-6",
+      "name": "NODE_VERSION matches .node-version and the Docker base image",
+      "result": "PASS",
+      "detail": "{'22.22.0'}"
+    },
+    {
+      "id": "P2-1",
+      "name": "one database, paid plan from the spec, tested major version",
+      "result": "PASS",
+      "detail": "0.1c-256mb PG16"
+    },
+    {
+      "id": "P2-2",
+      "name": "the database accepts private-network connections only (ipAllowList: [])",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "P2-3",
+      "name": "database diskSizeGB is 1 or a multiple of 5",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "P2-4",
+      "name": "database and services share one valid region",
+      "result": "PASS",
+      "detail": "{'oregon'}"
+    },
+    {
+      "id": "P2-5",
+      "name": "services are paid Docker web services with deliberate deploys",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "P2-6",
+      "name": "dockerfilePath exists and both services build the same image",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "P2-7",
+      "name": "start commands name real entry points",
+      "result": "PASS",
+      "detail": "api: node services/enterprise-api/dist/src/main.js \u00b7 app: node apps/enterprise-web/server/serve.mjs"
+    },
+    {
+      "id": "P2-8",
+      "name": "pre-deploy: roles (V-1 gate) \u2192 migrations \u2192 policy, all real entry points",
+      "result": "PASS",
+      "detail": "bootstrap.js --roles \u2192 migrate.js \u2192 bootstrap.js --policy"
+    },
+    {
+      "id": "P2-9",
+      "name": "health check paths are served (/health by the API, /healthz by the web server)",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "P2-10",
+      "name": "the persistent disk is mounted at the image's evidence directory, API only",
+      "result": "PASS",
+      "detail": "{'name': 'evidence', 'mountPath': '/data/objects', 'sizeGB': 1} vs OBJECT_STORE_DIR=/data/objects"
+    },
+    {
+      "id": "P2-11",
+      "name": "every environment variable is one the code reads",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "P2-12",
+      "name": "every variable production requires is declared (API: database, secrets, OIDC, CORS; app: API_URL)",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "P2-13",
+      "name": "no secret has a literal value (generated, from the database, or entered in the dashboard)",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "P2-14",
+      "name": "production mode, OIDC, TLS to the database, proxy-aware client addresses",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "P2-15",
+      "name": "DATABASE_URL comes from the declared database's connection string (the owner)",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "P2-16",
+      "name": "no development switch: AUTH_MODE is not dev and the web app is in production mode",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "P2-17",
+      "name": "resource names are unique across both Blueprints",
+      "result": "PASS",
+      "detail": "empathia-website, empathia-demo, empathia-api, empathia-app, empathia-db"
+    }
+  ],
+  "pass": 23,
+  "fail": 0,
+  "limits": "Static check of files only. Not checked here: that Render accepts the files (it validates on Blueprint creation), V-1 (role creation on Render Postgres), V-2 (disk writable by uid 10001), the Docker build itself."
+}

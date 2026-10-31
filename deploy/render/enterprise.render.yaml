@@ -1,0 +1,102 @@
+# Render Blueprint — PHASE 2: the authenticated enterprise application (API + web app + PostgreSQL). PAID. Not applied.
+# Apply only after approvals A1 (spend), A2 (two public *.onrender.com URLs protected by authentication), A3 (identity provider) and
+# A5 (UI sign-in) — docs/operations/RENDER_DEPLOYMENT.md. In Render: New → Blueprint → repository empathia-technologies, branch main,
+# Blueprint Path: deploy/render/enterprise.render.yaml. The public sites are a separate Blueprint (render.yaml at the root, Phase 1).
+#
+# Every field below is from https://render.com/docs/blueprint-spec (checked 2026-10-31). Values marked sync: false are entered in the
+# dashboard when the Blueprint is created; no secret is in this file. Render generates the three random secrets (generateValue).
+# Region: all three resources must share one region (the private network and the internal database URL are per region).
+
+databases:
+  - name: empathia-db
+    plan: 0.1c-256mb                 # smallest paid instance ("Basic-256mb"); 0.5c-1g if memory alarms (cost table in the runbook)
+    diskSizeGB: 1
+    region: oregon
+    postgresMajorVersion: "16"       # the version every migration and test ran on; cannot be changed after creation
+    databaseName: empathia
+    user: empathia_owner             # the schema owner (migrations, role creation, operator bootstrap); never the API's runtime role
+    ipAllowList: []                  # private network only: no connection from the internet at all
+
+services:
+  - type: web
+    runtime: docker
+    name: empathia-api
+    plan: 0.5c-512mb
+    region: oregon
+    branch: main
+    autoDeployTrigger: "off"         # staging deploys are deliberate (Manual Deploy), not every push
+    dockerfilePath: ./deploy/render/Dockerfile
+    dockerContext: .
+    dockerCommand: node services/enterprise-api/dist/src/main.js
+    # 1) create/re-password the runtime roles (gate V-1: refuses, and fails the deploy, if the owner cannot create roles)
+    # 2) apply migrations in file order, each recorded with its SHA-256   3) load the committed role catalogue
+    preDeployCommand: node services/enterprise-api/dist/src/db/bootstrap.js --roles && node services/enterprise-api/dist/src/db/migrate.js && node services/enterprise-api/dist/src/db/bootstrap.js --policy
+    healthCheckPath: /health
+    disk:
+      name: evidence
+      mountPath: /data/objects       # = OBJECT_STORE_DIR in the image; /health reports evidenceStoreWritable (gate V-2)
+      sizeGB: 1
+    envVars:
+      - key: DATABASE_URL            # owner; used only by the pre-deploy steps and the operator bootstrap
+        fromDatabase:
+          name: empathia-db
+          property: connectionString
+      - key: EMPATHIA_APP_PASSWORD   # runtime role passwords; the API derives its two database URLs from DATABASE_URL + these
+        generateValue: true
+      - key: EMPATHIA_WORKER_PASSWORD
+        generateValue: true
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PGSSLMODE
+        value: require
+      - key: NODE_ENV
+        value: production
+      - key: RELEASE_ENVIRONMENT
+        value: staging
+      - key: AUTH_MODE
+        value: oidc
+      - key: OIDC_ISSUER             # A3: the identity provider's https issuer
+        sync: false
+      - key: OIDC_AUDIENCE           # A3: the API audience registered at the provider
+        sync: false
+      - key: OIDC_JWKS_URL           # A3: https JWKS URL
+        sync: false
+      - key: OIDC_LINK_BY_EMAIL
+        value: "on"
+      - key: CORS_ORIGINS            # https://empathia-app.onrender.com (the web app's URL as Render assigns it)
+        sync: false
+      - key: TRUSTED_PROXY
+        value: "on"
+      - key: WORKER
+        value: "on"
+      - key: RATE_LIMIT_PER_MINUTE
+        value: "600"
+      - key: DB_STATEMENT_TIMEOUT_MS
+        value: "15000"
+      - key: WORKER_STATEMENT_TIMEOUT_MS
+        value: "60000"
+      - key: NODE_OPTIONS
+        value: --max-old-space-size=384
+      - key: LOG_LEVEL
+        value: info
+      - key: TELEMETRY               # error telemetry stays off until the Sentry setup is authorized
+        value: none
+
+  - type: web
+    runtime: docker
+    name: empathia-app
+    plan: 0.5c-512mb
+    region: oregon
+    branch: main
+    autoDeployTrigger: "off"
+    dockerfilePath: ./deploy/render/Dockerfile
+    dockerContext: .
+    dockerCommand: node apps/enterprise-web/server/serve.mjs
+    healthCheckPath: /healthz
+    envVars:
+      - key: API_URL                 # https://empathia-api.onrender.com — the browser calls it directly; the CSP names only this origin
+        sync: false
+      - key: WEB_ALLOWED_HOSTS       # optional: a custom domain; the service's own onrender.com name is allowed automatically
+        sync: false
+      - key: NODE_ENV
+        value: production

@@ -9,12 +9,42 @@
  * the Evidence Ledger chain. Everything after this — people, roles, rooms — goes through the API (invitations, etc.).
  */
 import crypto from 'node:crypto';
-import { PgConnection, PgPool, configFromUrl } from './pg.js';
+import { PgConnection, PgPool, configFromUrl, runtimeUrls } from './pg.js';
 import { loadPolicy } from './policy.js';
 
 const SEEDED = ['empathia-demo', 'second-tenant', 'empathia-founder'];
 const arg = (k: string) => { const a = process.argv.find((x) => x.startsWith(`--${k}=`)); return a ? a.slice(k.length + 3) : undefined; };
 const all = (k: string) => process.argv.filter((x) => x.startsWith(`--${k}=`)).map((x) => x.slice(k.length + 3));
+
+/**
+ * --roles: create (or re-password) the two runtime roles from the URLs the services will use, as the schema owner. Runs as the first
+ * half of the API's pre-deploy command, inside the platform's private network, so the database needs no external access at all.
+ * GATE V-1: the owner must be able to create roles; otherwise this refuses (and the deploy fails) rather than letting the API run as
+ * the owner — the tenant boundary depends on a runtime role that is not the owner and has NOBYPASSRLS.
+ */
+export async function ensureRoles(ownerUrl: string, appUrl: string, workerUrl: string) {
+  const want = [{ url: appUrl, name: 'empathia_app' }, { url: workerUrl, name: 'empathia_worker' }].map((r) => { const c = configFromUrl(r.url); return { name: r.name, user: c.user, password: c.password || '' }; });
+  for (const r of want) {
+    if (r.user !== r.name) throw new Error(`the ${r.name === 'empathia_app' ? 'APP' : 'WORKER'}_DATABASE_URL user must be ${r.name} (the migrations' policies name it); got ${r.user}`);
+    if (r.password.length < 24) throw new Error(`the ${r.name} password must be at least 24 characters`);
+  }
+  const owner = new PgConnection(configFromUrl(ownerUrl)); await owner.connect();
+  try {
+    const me = (await owner.query<{ u: string; can: boolean }>('SELECT current_user AS u, (rolcreaterole OR rolsuper) AS can FROM pg_roles WHERE rolname = current_user')).rows[0]!;
+    if (!me.can) throw new Error(`V-1 failed: ${me.u} cannot create roles. Stop: do not run the API as the owner (docs/operations/RENDER_DEPLOYMENT.md §V-1)`);
+    const done: Array<{ role: string; action: string }> = [];
+    for (const r of want) {
+      const exists = (await owner.query('SELECT 1 FROM pg_roles WHERE rolname = $1', [r.name])).rowCount;
+      const sql = (await owner.query<{ s: string }>(exists ? "SELECT format('ALTER ROLE %I WITH LOGIN PASSWORD %L NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE', $1::text, $2::text) AS s" : "SELECT format('CREATE ROLE %I LOGIN PASSWORD %L NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE', $1::text, $2::text) AS s", [r.name, r.password])).rows[0]!.s;
+      await owner.simple(sql); done.push({ role: r.name, action: exists ? 'password set' : 'created' });
+    }
+    const db = (await owner.query<{ d: string }>('SELECT current_database() AS d')).rows[0]!.d;
+    await owner.simple((await owner.query<{ s: string }>("SELECT format('REVOKE ALL ON DATABASE %I FROM PUBLIC; GRANT CONNECT ON DATABASE %I TO empathia_app, empathia_worker', $1::text, $1::text) AS s", [db])).rows[0]!.s);
+    const check = (await owner.query<{ rolname: string; rolbypassrls: boolean; rolsuper: boolean }>("SELECT rolname, rolbypassrls, rolsuper FROM pg_roles WHERE rolname IN ('empathia_app','empathia_worker') ORDER BY 1")).rows;
+    if (check.length !== 2 || check.some((c) => c.rolbypassrls || c.rolsuper)) throw new Error('the runtime roles are not both present with NOBYPASSRLS NOSUPERUSER');
+    return { defaultUser: me.u, v1: 'PASS', roles: done, database: db };
+  } finally { await owner.end(); }
+}
 
 export async function bootstrap(ownerUrl: string, o: { tenant: string; tenantName: string; synthetic: boolean; sites: Array<{ code: string; name: string }>; buildings: Array<{ code: string; name: string; floors: number; site: string }>; adminEmail: string; adminName: string; operator: string }) {
   if (!/^[a-z0-9][a-z0-9-]{1,62}$/.test(o.tenant)) throw new Error('--tenant is a slug (lower-case letters, digits, hyphens)');
@@ -47,8 +77,18 @@ export async function bootstrap(ownerUrl: string, o: { tenant: string; tenantNam
 if (process.argv[1] && /bootstrap\.js$/.test(process.argv[1])) {
   const url = process.env['DATABASE_URL'];
   if (!url) { console.error('DATABASE_URL (the schema owner) is required'); process.exit(2); }
+  if (process.argv.includes('--policy')) {
+    // every deploy, after the migrations: the role catalogue from the committed policy (V25_PERSONAS), so a policy change reaches the database
+    (async () => { const o = new PgConnection(configFromUrl(url)); await o.connect(); try { return await loadPolicy(o); } finally { await o.end(); } })()
+      .then((n) => { console.log(JSON.stringify({ policy: 'loaded', roles: n })); process.exit(0); }, (e) => { console.error(`policy load refused: ${(e as Error).message}`); process.exit(1); });
+  } else if (process.argv.includes('--roles')) {
+    const { app, worker: wk } = runtimeUrls(process.env);
+    if (!app || !wk) { console.error('APP_DATABASE_URL and WORKER_DATABASE_URL (or EMPATHIA_APP_PASSWORD and EMPATHIA_WORKER_PASSWORD) are required for --roles'); process.exit(2); }
+    ensureRoles(url, app, wk).then((r) => { console.log(JSON.stringify(r)); process.exit(0); }, (e) => { console.error(`roles refused: ${(e as Error).message}`); process.exit(1); });
+  } else {
   const sites = all('site').map((s) => { const [code, ...n] = s.split(':'); return { code: code!, name: n.join(':') || code! }; });
   const buildings = all('building').map((b) => { const [code, name, floors, site] = b.split(':'); return { code: code!, name: name || code!, floors: Number(floors || 1), site: site! }; });
   bootstrap(url, { tenant: arg('tenant') || '', tenantName: arg('tenant-name') || '', synthetic: process.argv.includes('--synthetic'), sites, buildings, adminEmail: arg('admin-email') || '', adminName: arg('admin-name') || 'Security administrator', operator: arg('operator') || process.env['USER'] || 'operator' })
     .then((r) => { console.log(JSON.stringify(r, null, 1)); process.exit(0); }, (e) => { console.error(`bootstrap refused: ${(e as Error).message}`); process.exit(1); });
+}
 }

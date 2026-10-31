@@ -67,9 +67,14 @@ Or without git: \`tar xzf source-tree.tar.gz\` gives the committed tree only (no
 
 ## Push to GitHub (or any provider) without losing history
 \`\`\`bash
-git remote add origin git@github.com:<owner>/empathia-technologies.git
-git push --all origin && git push --tags origin
+# create an EMPTY private repository first (no README, .gitignore or licence): https://github.com/new or
+#   gh repo create <owner>/empathia-technologies --private
+git remote rename origin bundle        # a clone of a bundle has "origin" pointing at the bundle file
+git remote add origin https://github.com/<owner>/empathia-technologies.git
+git push -u origin main && git push origin --tags
+git ls-remote origin                   # main and every tag, at the same commits as \`git show-ref\`
 \`\`\`
+Full procedure and the Render settings: docs/operations/RENDER_DEPLOYMENT.md.
 \`.github/workflows/ci.yml\` runs the build and the full test matrix on push (NOT_RUN until a remote exists).
 
 ## Rebuild and run
