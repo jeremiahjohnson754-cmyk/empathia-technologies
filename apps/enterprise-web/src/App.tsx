@@ -15,11 +15,13 @@ import { Projects } from './pages/Projects.js';
 import { Requests, ProjectRecord } from './pages/Lifecycle.js';
 import { ServiceQueue, WorkOrderRecord } from './pages/Service.js';
 import { Executive } from './pages/Executive.js';
+import { MissionControl } from './pages/Mission.js';
 import { ApexCases, ApexCase } from './pages/Apex.js';
 import { Inbox } from './pages/Inbox.js';
 import { Admin } from './pages/Admin.js';
 import { SearchParty } from './pages/SearchParty.js';
-import { CommissioningHome, Learn } from './pages/Products.js';
+import { CommissioningHome } from './pages/Products.js';
+import { LearnHome } from './pages/Learn.js';
 import { FieldHome, FiSession } from './pages/Field.js';
 import { MeContext } from './me.js';
 
@@ -27,18 +29,18 @@ export function App() {
   const token = useToken();
   const me = useQuery<Me>(token ? 'me' : null, () => api.call('getV1Me'));
   const route = useRoute();
-  useEffect(() => { document.title = `Empathia Enterprise — ${route[0] || 'rooms'} (starter)`; }, [route[0]]);
+  useEffect(() => { document.title = `Empathia Enterprise — ${route[0] || 'mission control'} (starter)`; }, [route[0]]);
   if (!token) return <SignIn />;
   if (me.error) return <main className="app-center"><ErrorState error={me.error} retry={() => session.clear()} /></main>;
   if (!me.data) return <main className="app-center"><Loading label="Signing in" /></main>;
   const can = (a: string | string[]) => me.data!.authorities.includes('*') || ([] as string[]).concat(a).some((x) => me.data!.authorities.includes(x));
-  const page = route[0] || 'rooms';
+  const page = route[0] || 'home';   // Mission Control is where a signed-in person lands: what needs them, across products
   // the platform's products (ADR-0001: one platform, specialised applications). A product the role may not reach is shown locked with its reason —
   // the shape of the platform is not a secret; what is behind the door is decided by the API on every request.
   const admin = can(['policy.configure', 'provenance.review', 'adapter.allowlist']);
   const products = [
-    { key: 'reports', label: 'Mission Control', href: href('reports'), purpose: 'What changed, what matters, what needs action — KPIs with definitions', active: page === 'reports' },
-    { key: 'projects', label: 'Pro', href: href('projects'), purpose: 'Portfolio, projects, service performance and the notification inbox', active: page === 'projects' || page === 'inbox' || page === 'requests' || page === 'executive' },
+    { key: 'home', label: 'Mission Control', href: href('home'), purpose: 'What needs you now across every product; exceptions; reports and executive passports', active: page === 'home' || page === 'reports' || page === 'executive' },
+    { key: 'projects', label: 'Pro', href: href('projects'), purpose: 'Portfolio, projects, service performance and the notification inbox', active: page === 'projects' || page === 'inbox' || page === 'requests' },
     { key: 'apex', label: 'APEX', href: href('apex'), purpose: 'Diagnosis with its evidence: cited layers, ranked hypotheses, tiered bounded action', active: page === 'apex' },
     { key: 'service', label: 'ServiceHands', href: href('service'), purpose: 'Work orders: hard-gated assignment, preflight, evidence, separated verification', active: page === 'service' },
     { key: 'rooms', label: 'Lite', href: href('rooms'), purpose: 'Campus → building → floor → room: spatial design, devices, drawings', active: page === 'rooms' },
@@ -61,6 +63,7 @@ export function App() {
         {page === 'requests' ? <Requests /> : null}
         {page === 'service' && !route[1] ? <ServiceQueue /> : null}
         {page === 'service' && route[1] ? <WorkOrderRecord code={route[1]} /> : null}
+        {page === 'home' ? <MissionControl /> : null}
         {page === 'reports' ? <Reports /> : null}
         {page === 'executive' ? <Executive /> : null}
         {page === 'apex' && !route[1] ? <ApexCases /> : null}
@@ -69,7 +72,7 @@ export function App() {
         {page === 'commissioning' ? <CommissioningHome /> : null}
         {page === 'field' && route[1] === 'sessions' && route[2] ? <FiSession code={route[2]} /> : null}
         {page === 'field' && !(route[1] === 'sessions' && route[2]) ? <FieldHome tab={route[1] || 'sessions'} /> : null}
-        {page === 'learn' ? <Learn /> : null}
+        {page === 'learn' ? <LearnHome tab={route[1] || 'knowledge'} /> : null}
         {page === 'admin' ? (admin ? <Admin tab={route[1] || 'integrations'} /> : <section className="page"><ErrorState error={{ status: 403, code: 'forbidden', detail: 'Administration needs policy.configure, provenance.review or adapter.allowlist. The server refuses these routes for your role as well.' }} /></section>) : null}
       </AppShell>
     </MeContext.Provider>

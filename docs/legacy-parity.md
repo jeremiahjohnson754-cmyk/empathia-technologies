@@ -1,6 +1,6 @@
 # Legacy parity ledger — Living Campus V2.5.3 and Founder Studio
 
-Generated 2026-10-31T11:47:16.709Z by `scripts/legacy/parity-ledger.mjs` from `legacy/inventory/*.json` (built from the committed source of each demonstrator) and the classification in that script. **Two applications, kept apart:** the Living Campus (investor-safe demo + authenticated enterprise application) and the Founder Studio (private founder application). Shared: identity, design tokens, API contracts, audit. Not shared: Founder Studio data, its administrative capabilities, or any route of it on a public or investor surface.
+Generated 2026-10-31T15:33:28.646Z by `scripts/legacy/parity-ledger.mjs` from `legacy/inventory/*.json` (built from the committed source of each demonstrator) and the classification in that script. **Two applications, kept apart:** the Living Campus (investor-safe demo + authenticated enterprise application) and the Founder Studio (private founder application). Shared: identity, design tokens, API contracts, audit. Not shared: Founder Studio data, its administrative capabilities, or any route of it on a public or investor surface.
 
 ## Baseline facts (verified on receipt)
 
@@ -33,7 +33,7 @@ Target classes (mandate §1): MIGRATED_REAL · MIGRATED_DEMO · DEFERRED_WITH_RE
 | DONE (slice) | 3 |
 | DONE (demo native; app on the engine) | 9 |
 | DONE (app) | 6 |
-| PARTIAL (demo native; labs pending; app search only) | 1 |
+| PARTIAL (demo native; app on the API; labs not migrated) | 1 |
 | DONE (slice; demo native) | 2 |
 | PARTIAL (investor tour native; A/B/C pending) | 1 |
 | PARTIAL (API complete; record view; field gates attested) | 1 |
@@ -57,8 +57,8 @@ A feature is never "migrated" because its route exists. Each row carries the hig
 | 1 ROUTED | 50 |
 | 2 RENDERED | 2 |
 | 3 FUNCTIONAL | 3 |
-| 4 BACKEND_CONNECTED | 35 |
-| 5 REGRESSION_TESTED | 54 |
+| 4 BACKEND_CONNECTED | 33 |
+| 5 REGRESSION_TESTED | 56 |
 
 **Regressions at this commit: none** — no original route has been removed; the originals remain the served demonstrators until each route is migrated natively (an embedded original is interim, never counted as a migration).
 
@@ -111,7 +111,7 @@ A feature is never "migrated" because its route exists. Each row carries the hig
 | Living Campus | area | `commissioning.room` | the commissioning record of a room — area commissioning.room (12-authz.js); roles: 7 | MIGRATED_REAL | /app/rooms/{id}/commissioning | results + independent verification | DONE (slice) | 5 REGRESSION_TESTED (tests/integration/api.test.mjs results + verify) | tests/e2e |
 | Living Campus | area | `control` | room control — area control (12-authz.js); roles: 13 | MIGRATED_DEMO | /demo/control | simulated; no device control in the web app | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P3 |
 | Living Campus | area | `scheduler` | the room scheduler — area scheduler (12-authz.js); roles: 13 | MIGRATED_DEMO | /demo/scheduler | synthetic | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P3 |
-| Living Campus | area | `learn` | Empathia Learn and SIGNAL — area learn (12-authz.js); roles: 8 | MIGRATED_REAL | /app/learn (knowledge search) · demo #/v25/learn, #/learn (native) | demo: governed cases (permission, de-identification, SME review ≠ proposer, steward approval) + the SIGNAL library carried over unchanged (161 lessons with checks, 146 drills in six interactive kinds, 62 canon cases, 125 formulas, 522 terms); app: permission-aware knowledge search; SIGNAL labs (91 simulators) pending | PARTIAL (demo native; labs pending; app search only) | 4 BACKEND_CONNECTED (demo native with the SIGNAL library (L-01..L-09); app search) | demo L-01..L-09 |
+| Living Campus | area | `learn` | Empathia Learn and SIGNAL — area learn (12-authz.js); roles: 8 | MIGRATED_REAL | /app/learn (knowledge search) · demo #/v25/learn, #/learn (native) | demo: governed cases (permission, de-identification, SME review ≠ proposer, steward approval) + the SIGNAL library carried over unchanged (161 lessons with checks, 146 drills in six interactive kinds, 62 canon cases, 125 formulas, 522 terms); app #/learn: knowledge search, reviewed cases persisted (learn_case: from a resolved work order, permission, de-identification checked against the organization’s own names, SME ≠ proposer, steward ≠ both, training.case_approved event), the SIGNAL library served in sections over 11 routes, lessons/checks and the six drill kinds on runners shared with the demo (@empathia/ui), training_record append-only per person; SIGNAL labs (91 simulators) NOT migrated | PARTIAL (demo native; app on the API; labs not migrated) | 5 REGRESSION_TESTED (demo L-01..L-09; app LRN-1..4 + W-72..W-76 (cases persisted, training recorded); labs not migrated) | demo L-01..L-09; security LRN-1..LRN-4; browser W-72..W-76 |
 | Living Campus | area | `agent` | the Room Health Check — area agent (12-authz.js); roles: 7 | MIGRATED_DEMO | /demo/health-check | synthetic | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P3 |
 | Living Campus | area | `agent.arch` | the discovery agent architecture — area agent.arch (12-authz.js); roles: 12 | MIGRATED_DEMO | /demo/architecture | explanatory | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P3 |
 | Living Campus | area | `ask` | Ask Empathia — area ask (12-authz.js); roles: 13 | MIGRATED_REAL | /app/assistant | POST /v1/ai/requests (advisory; deterministic when no provider) | PARTIAL | 4 BACKEND_CONNECTED (POST /v1/ai/requests) | tests assistant |
@@ -193,7 +193,7 @@ A feature is never "migrated" because its route exists. Each row carries the hig
 | Living Campus | navigation | `compare` | Compare — More menu › Understand › #/compare | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 4 BACKEND_CONNECTED (revisions/compare: api.test.mjs) | P3 navigation test |
 | Living Campus | navigation | `ledger` | Evidence ledger — More menu › Understand › #/ledger | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 5 REGRESSION_TESTED (tests/security/authz.test.mjs (audit read authority) + api.test.mjs) | P3 navigation test |
 | Living Campus | navigation | `ask` | Ask Empathia — More menu › Understand › #/ask | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 4 BACKEND_CONNECTED (POST /v1/ai/requests) | P3 navigation test |
-| Living Campus | navigation | `learn` | Learn — More menu › Understand › #/learn | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 4 BACKEND_CONNECTED (demo native with the SIGNAL library (L-01..L-09); app search) | P3 navigation test |
+| Living Campus | navigation | `learn` | Learn — More menu › Understand › #/learn | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 5 REGRESSION_TESTED (demo L-01..L-09; app LRN-1..4 + W-72..W-76 (cases persisted, training recorded); labs not migrated) | P3 navigation test |
 | Living Campus | navigation | `core` | Core — More menu › Foundation › #/suite/core | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 3 FUNCTIONAL (schemas package tests; no UI) | P3 navigation test |
 | Living Campus | navigation | `fabric` | Integration Fabric — More menu › Foundation › #/fabric | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 4 BACKEND_CONNECTED (integrations probe/sync/observations: integration-worker.test.mjs + conformance 5/5) | P3 navigation test |
 | Living Campus | navigation | `qr` | QR Launch — More menu › Foundation › #/qr | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 0 INVENTORIED (inventoried only) | P3 navigation test |

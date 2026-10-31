@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1CompetenciesCompetencyVerify/0.1.0.json",
+  "title": "POST /v1/competencies/{competency}/verify request body",
+  "description": "Verify a pending credential’s provenance (never its recorder, never its holder)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "note"
+  ],
+  "properties": {
+    "note": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 1000
+    }
+  }
+}

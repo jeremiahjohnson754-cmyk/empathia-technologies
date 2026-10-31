@@ -9,6 +9,7 @@ import { SERVICE_TRANSITIONS, WORK_NEEDS, SLA, candidates as rankCandidates, pre
 import type { Queryable } from '../db/pg.js';
 import type { RequestContext } from '../auth/context.js';
 import { invalid, notFound } from '../http/errors.js';
+import { verifiedCerts } from './competency.js';
 
 export interface WorkOrderRow {
   id: string; tenant_id: string; issue_id: string; code: string; state: ServiceState; assigned_role: string; note: string; created_by: string; created_at: string;
@@ -63,12 +64,14 @@ async function step(ctx: RequestContext, q: Queryable, w: WorkOrderRow, to: Serv
 
 /** The staff pool the hard gates read: everyone in the tenant who may accept work, with a profile; without one they are ineligible for a stated reason. */
 async function pool(ctx: RequestContext, q: Queryable): Promise<Array<Staff & { profiled: boolean }>> {
-  const rows = (await q.query<{ person_id: string; display_name: string; internal: boolean | null; org_name: string | null; building_key: string | null; sites: string[] | null; skills: Staff['skills'] | null; certs: Staff['certs'] | null; leave_from: string | null; leave_to: string | null; capacity_hours: number | null; agreement: Staff['agreement'] | null; open_jobs: number }>(
-    `SELECT DISTINCT ON (m.person_id) m.person_id, p.display_name, s.internal, s.org_name, s.building_key, s.sites, s.skills, s.certs, s.leave_from::text, s.leave_to::text, s.capacity_hours, s.agreement,
+  const rows = (await q.query<{ person_id: string; display_name: string; internal: boolean | null; org_name: string | null; building_key: string | null; sites: string[] | null; skills: Staff['skills'] | null; leave_from: string | null; leave_to: string | null; capacity_hours: number | null; agreement: Staff['agreement'] | null; open_jobs: number }>(
+    `SELECT DISTINCT ON (m.person_id) m.person_id, p.display_name, s.internal, s.org_name, s.building_key, s.sites, s.skills, s.leave_from::text, s.leave_to::text, s.capacity_hours, s.agreement,
             (SELECT count(*) FROM app.work_order w WHERE w.assigned_to = m.person_id AND w.state IN ('ASSIGNED','ACCEPTED','IN_PROGRESS','VERIFYING')) AS open_jobs
        FROM app.membership m JOIN app.role r ON r.key = m.role_key JOIN app.person p ON p.id = m.person_id LEFT JOIN app.staff_profile s ON s.tenant_id = m.tenant_id AND s.person_id = m.person_id
       WHERE 'work.accept' = ANY(r.authorities) AND NOT p.disabled ORDER BY m.person_id`)).rows;
-  return rows.map((x) => ({ id: x.person_id, name: x.display_name, internal: x.internal ?? true, orgName: x.org_name || undefined, buildingKey: x.building_key, sites: x.sites || [], skills: x.skills || {}, certs: x.certs || {},
+  // ADR-0009: certifications come only from verified competency records (independent verifier, not revoked); staff_profile.certs is not read
+  const certs = await verifiedCerts(q, rows.map((x) => x.person_id));
+  return rows.map((x) => ({ id: x.person_id, name: x.display_name, internal: x.internal ?? true, orgName: x.org_name || undefined, buildingKey: x.building_key, sites: x.sites || [], skills: x.skills || {}, certs: certs.get(x.person_id) || {},
     leave: x.leave_from ? { from: x.leave_from, to: x.leave_to || x.leave_from } : null, capacity: { remaining: Math.max(0, (x.capacity_hours ?? 0) - Number(x.open_jobs) * 4) }, agreement: x.agreement || null, profiled: !!x.sites } as Staff & { profiled: boolean }));
 }
 

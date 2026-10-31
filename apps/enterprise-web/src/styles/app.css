@@ -120,3 +120,15 @@ h1 { font-size: var(--fs-xl); line-height: 1.2; margin: 0; text-wrap: balance; }
 .apex__hyps { margin: 0; padding-left: 20px; display: grid; gap: 6px; } .apex__hyps button { all: unset; cursor: pointer; display: block; padding: 6px 8px; border-radius: var(--r-sm); } .apex__hyps li.on button { background: color-mix(in srgb, var(--accent) 10%, transparent); box-shadow: inset 0 0 0 1px var(--accent); }
 .apex__tiers { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 6px; } .apex__tier { padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--r-sm); display: grid; gap: 4px; font-size: var(--fs-sm); } .apex__tier.on { border-color: var(--accent); }
 .apex__log { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; } .apex__log li { padding: 8px 10px; border-left: 3px solid var(--line); }
+
+/* Mission Control (action center) */
+.mission__filter { display: flex; flex-wrap: wrap; gap: 6px; margin: var(--sp-2) 0 var(--sp-4); }
+.mission__n { display: inline-block; min-width: 1.6em; padding: 0 6px; margin-left: 4px; border-radius: 999px; background: var(--bg2); color: var(--tx2); font-size: var(--fs-xs); text-align: center; font-variant-numeric: tabular-nums; }
+.mission__grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr); gap: var(--sp-5); align-items: start; }
+.mission__group { display: grid; gap: var(--sp-2); }
+.mission__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.mission__item { display: grid; gap: 2px; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel, var(--bg)); color: inherit; text-decoration: none; min-width: 0; }
+.mission__item:hover { border-color: var(--accent); } .mission__item:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.mission__title { font-weight: 600; line-height: 1.35; overflow-wrap: anywhere; }
+@media (max-width: 900px) { .mission__grid { grid-template-columns: 1fr; } }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--sp-3); } .form-grid > * { min-width: 0; }

@@ -55,7 +55,10 @@ try {
   await page.waitForSelector('.shell__meta');
   ok('W-03', 'the designer signs in; the role shown comes from /v1/me', (await page.textContent('.shell__meta')).startsWith('designer'));
 
-  // ---------------------------------------------------------------- rooms list
+  // ---------------------------------------------------------------- landing: Mission Control (what needs you), then the rooms list
+  await page.waitForSelector('[data-testid=mission]');
+  ok('W-77', 'a signed-in person lands on Mission Control: the steps that are theirs (the designer holds none yet) and the exceptions in scope', /Nothing needs you right now|need/.test(await page.locator('.page__head').innerText()) && (await page.locator('[data-testid=mission-exceptions]').count()) === 1);
+  await page.goto(base + '#/rooms');
   await page.waitForSelector('.ui-table');
   const listed = await page.locator('.ui-table tbody tr').count();
   ok('W-04', 'the rooms list shows the seeded rooms from the database', listed === 3, listed);
@@ -419,6 +422,61 @@ try {
     await shot('17-field-intelligence-session');
   }
 
+  // ---------------------------------------------------------------- Learn and SIGNAL (P8): lessons with a check, a drill, both recorded as training; a reviewed case through three roles
+  await signIn('service');
+  await page.goto(base + '#/learn/lessons'); await page.waitForSelector('[data-testid=lessons] .svc__list li');
+  await page.click('[data-testid=lessons] .svc__list li >> nth=0 >> a'); await page.waitForSelector('[data-testid=lesson]');
+  const lessonText = await page.locator('[data-testid=lesson]').innerText();
+  ok('W-72', 'a SIGNAL lesson opens from the library with its cards and its check', lessonText.length > 200 && (await page.locator('[data-testid=quiz]').count()) === 1, lessonText.slice(0, 120));
+  const nQ = await page.locator('[data-testid=quiz] .learn__opts').count();
+  for (let i = 0; i < nQ; i++) await page.click(`[data-testid=quiz] .learn__opts >> nth=${i} >> button >> nth=0`);
+  await page.waitForFunction(() => /a check of understanding, not a credential/.test(document.querySelector('[data-testid=quiz]')?.textContent || ''));
+  await page.goto(base + '#/learn/drills'); await page.waitForSelector('[data-testid=drills] .svc__list li');
+  await page.click('[data-testid=drills] .svc__list li >> nth=0 >> a'); await page.waitForSelector('[data-testid=drill]');
+  await page.click('[data-testid=drill] .learn__stages button >> nth=0'); await page.waitForSelector('[data-testid=drill] [role=status], [data-testid=drill] [role=alert]');
+  await page.waitForFunction(() => /done 1×/.test(document.querySelector('[data-testid=drills]')?.textContent || ''), null, { timeout: 10000 }).catch(() => {});
+  const trained = Number(h.asSuper("SELECT count(*) FROM app.training_record WHERE person_id = (SELECT id FROM app.person WHERE email = 'service@empathia-demo.empathia.invalid')"));
+  ok('W-73', 'the completed check and the first-failure drill are recorded as training for the person (never authority)', trained === 2 && /done 1×/.test(await page.locator('[data-testid=drills]').innerText()), String(trained));
+  await page.goto(base + '#/learn/reference'); await page.waitForSelector('[data-testid=glossary] li'); await page.fill('[data-testid=reference] input', 'headroom'); await page.waitForTimeout(200);
+  ok('W-74', 'the reference searches the glossary and the formulas', /Headroom/i.test(await page.locator('[data-testid=glossary]').innerText()));
+  {
+    // a case from the closed work order of the ServiceHands walkthrough: the commissioning lead proposes, the DSP engineer reviews, the steward approves
+    const c = client(h.base); const cx = await c.login('cxeng'); const woClosed = h.asSuper("SELECT code FROM app.work_order WHERE state = 'CLOSED' ORDER BY closed_at DESC LIMIT 1");
+    await signIn('cxeng'); await page.goto(base + `#/service/${woClosed}`); await page.waitForSelector('[data-testid=propose-case]');
+    await page.fill('[data-testid=propose-case] input >> nth=0', 'Camera dropped after a cable fault'); await page.fill('[data-testid=propose-case] textarea', 'A reseated cable needs a readback on the network before the room is returned.');
+    await page.check('[data-testid=propose-case] input[type=checkbox] >> nth=0'); await page.check('[data-testid=propose-case] input[type=checkbox] >> nth=1');
+    await page.click('[data-testid=propose-case] button:has-text("Propose")'); await page.waitForFunction(() => /proposed — it now needs a subject-matter review/.test(document.body.textContent || ''));
+    const lcCode = h.asSuper("SELECT code FROM app.learn_case ORDER BY proposed_at DESC LIMIT 1");
+    await page.goto(base + '#/learn/cases'); await page.waitForSelector('[data-testid=learn-cases] .ui-table'); await page.click(`a:has-text("${lcCode}")`); await page.waitForSelector('[data-testid=learn-case]');
+    ok('W-75', 'the proposer sees the case awaiting a reviewer other than themselves (no review button)', /Awaiting a subject-matter reviewer/.test(await page.locator('[data-testid=learn-case]').innerText()) && (await page.locator('[data-testid=learn-case] button').count()) === 0);
+    await signIn('dsp_eng'); await page.goto(base + '#/learn/cases'); await page.waitForSelector('[data-testid=learn-cases] .ui-table'); await page.click(`a:has-text("${lcCode}")`); await page.waitForSelector('[data-testid=learn-case] button:has-text("Approve as SME")');
+    await page.fill('[data-testid=learn-case] input', 'reviewed (synthetic)'); await page.click('[data-testid=learn-case] button:has-text("Approve as SME")'); await page.waitForFunction(() => /SME_REVIEWED/.test(document.querySelector('[data-testid=learn-case]')?.textContent || ''));
+    await signIn('steward'); await page.goto(base + '#/learn/cases'); await page.waitForSelector('[data-testid=learn-cases] .ui-table'); await page.click(`a:has-text("${lcCode}")`); await page.waitForSelector('[data-testid=learn-case] button:has-text("Approve as steward")');
+    await page.click('[data-testid=learn-case] button:has-text("Approve as steward")'); await page.waitForFunction(() => /APPROVED/.test(document.querySelector('[data-testid=learn-case]')?.textContent || ''));
+    ok('W-76', 'SME review (DSP engineer) then the steward’s approval: the case is APPROVED and the database agrees', h.asSuper(`SELECT state FROM app.learn_case WHERE code = '${lcCode}'`) === 'APPROVED');
+    void cx;
+    await shot('18-learn-case');
+  }
+
+  // ---------------------------------------------------------------- Competency records (ADR-0009): the manager records, the steward verifies
+  await signIn('svcmgr'); await page.goto(base + '#/learn/competencies'); await page.waitForSelector('[data-testid=record-competency]');
+  const southId = h.asSuper("SELECT id FROM app.person WHERE email = 'service-south@empathia-demo.empathia.invalid'");
+  const rc = '[data-testid=record-competency]';
+  await page.selectOption(`${rc} select >> nth=0`, southId); await page.selectOption(`${rc} select >> nth=1`, 'cert.control');
+  await page.fill(`${rc} input >> nth=0`, 'Synthetic Credentialing Body'); await page.fill(`${rc} input >> nth=1`, 'SYN-W79-CTL');
+  await page.fill(`${rc} input >> nth=2`, '2026-06-01'); await page.fill(`${rc} input >> nth=3`, '2028-06-01');
+  await page.click(`${rc} button:has-text("Record credential")`);
+  await page.waitForFunction(() => /PENDING VERIFICATION/.test(document.querySelector('[data-testid=learn-competencies] .ui-table')?.textContent || ''));
+  const compId = h.asSuper("SELECT id FROM app.competency_record WHERE reference = 'SYN-W79-CTL'");
+  ok('W-79', 'the service manager records a credential: it is pending and counts for nothing; the recorder is offered no Verify', h.asSuper(`SELECT state FROM app.competency_record WHERE id = '${compId}'`) === 'PENDING_VERIFICATION'
+    && await (async () => { await page.click(`[data-testid=learn-competencies] tr:has-text("Control programming") a`); await page.waitForSelector('[data-testid=competency]'); return (await page.locator('[data-testid=competency] button:has-text("Verify")').count()) === 0 && /Awaiting the data steward/.test(await page.locator('[data-testid=competency]').innerText()); })());
+  await signIn('steward'); await page.goto(base + '#/learn/competencies'); await page.waitForSelector('[data-testid=learn-competencies] .ui-table');
+  await page.click(`[data-testid=learn-competencies] tr:has-text("Control programming") a`); await page.waitForSelector('[data-testid=competency] button:has-text("Verify")');
+  await page.fill('[data-testid=competency] input', 'checked against the issuer register (synthetic)'); await page.click('[data-testid=competency] button:has-text("Verify")');
+  await page.waitForFunction(() => /verified by/.test(document.querySelector('[data-testid=competency]')?.textContent || ''));
+  ok('W-80', 'the data steward verifies it (not the recorder, not the holder); the record names both and it now counts for dispatch', h.asSuper(`SELECT state FROM app.competency_record WHERE id = '${compId}'`) === 'VERIFIED' && /Recorded by\s*Service Manager/i.test(await page.locator('[data-testid=competency]').innerText()));
+  await shot('20-learn-competencies');
+
   // ---------------------------------------------------------------- Executive passports (P6-C)
   await signIn('opslead');
   await page.goto(base + '#/reports'); await page.waitForSelector('[data-testid=to-executive]'); await page.click('[data-testid=to-executive]'); await page.waitForSelector('[data-testid=exec-grid]');
@@ -431,6 +489,14 @@ try {
   await page.click('[data-testid=exec-window] button:has-text("30 days")'); await page.waitForFunction(() => /last 30 days/.test(document.querySelector('.page__head')?.textContent || ''));
   ok('W-63', 'the window changes the board (30 days) and the selection resets', (await page.locator('[data-testid=passport]').count()) === 0);
   await shot('15-executive-passports');
+
+  // ---------------------------------------------------------------- Mission Control with the walkthroughs' records behind it
+  await signIn('svcmgr'); await page.goto(base + '#/home'); await page.waitForSelector('[data-testid=mission-actions]');
+  const mcText = await page.locator('[data-testid=mission]').innerText();
+  const mcHrefs = await page.locator('[data-testid=mission-actions] a.mission__item').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+  const mcHead = Number((/^(\d+) steps? needs? you/m.exec(mcText) || [])[1] || 0);
+  ok('W-78', 'the service manager’s Mission Control headline counts exactly the listed steps, each opens its record, and the scan line names what was read', mcHead > 0 && mcHead === mcHrefs.length && mcHrefs.every((h) => /^#\/(rooms|projects|service|apex|field|learn)\b/.test(h || '')) && /Scanned: .*work orders/.test(mcText), mcText.slice(0, 200));
+  await shot('19-mission-control');
 
   // ---------------------------------------------------------------- hygiene
   ok('W-18', 'no page errors or unexpected console errors', errors.length === 0, errors.join(' | '));

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1CompetenciesCompetencyRevoke/0.1.0.json",
+  "title": "POST /v1/competencies/{competency}/revoke request body",
+  "description": "Revoke a verified credential with a reason; it stops counting for dispatch at once",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "reason"
+  ],
+  "properties": {
+    "reason": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 1000
+    }
+  }
+}

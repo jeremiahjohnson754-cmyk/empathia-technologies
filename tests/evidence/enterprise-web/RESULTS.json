@@ -1,7 +1,7 @@
 {
   "test": "enterprise-web",
-  "at": "2026-10-31T11:49:31.895Z",
-  "passed": 76,
+  "at": "2026-10-31T15:52:56.235Z",
+  "passed": 85,
   "failed": 0,
   "results": [
     {
@@ -19,6 +19,12 @@
     {
       "id": "W-03",
       "name": "the designer signs in; the role shown comes from /v1/me",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-77",
+      "name": "a signed-in person lands on Mission Control: the steps that are theirs (the designer holds none yet) and the exceptions in scope",
       "result": "PASS",
       "detail": ""
     },
@@ -56,7 +62,7 @@
       "id": "W-09",
       "name": "a designer who bypasses the UI and calls the approval endpoint directly is refused 403 by the server",
       "result": "PASS",
-      "detail": "{\"status\":403,\"body\":{\"type\":\"https://errors.empathia.invalid/forbidden\",\"title\":\"Not allowed for your role\",\"status\":403,\"detail\":\"designer may not move a room to DESIGN_APPROVED (needs room.design.approve)\",\"code\":\"forbidden\",\"correlationId\":\"f9c0d5fc-e75e-4062-8dfc-ac4b3f82914a\"}}"
+      "detail": "{\"status\":403,\"body\":{\"type\":\"https://errors.empathia.invalid/forbidden\",\"title\":\"Not allowed for your role\",\"status\":403,\"detail\":\"designer may not move a room to DESIGN_APPROVED (needs room.design.approve)\",\"code\":\"forbidden\",\"correlationId\":\"46768ec1-66aa-4ac0-916c-f1293d2bfbd3\"}}"
     },
     {
       "id": "W-10",
@@ -116,7 +122,7 @@
       "id": "W-32",
       "name": "the measurement is listed with its provenance, instrument, calibration state and UNREVIEWED approval",
       "result": "PASS",
-      "detail": "Measurements\nMetric\tValue\tProvenance\tInstrument\tWhere / when\tApproval\t\n\nnoise_floor\nLAeq 60 s\n\t36.2 dB(A)\tFIELD_MEASURED\tSYN-METER-01 · CALIBRATED\tseat 3, 1.2 m · 2026-10-31 11:49 · SYN-METER-01\tUNREV"
+      "detail": "Measurements\nMetric\tValue\tProvenance\tInstrument\tWhere / when\tApproval\t\n\nnoise_floor\nLAeq 60 s\n\t36.2 dB(A)\tFIELD_MEASURED\tSYN-METER-01 · CALIBRATED\tseat 3, 1.2 m · 2026-10-31 15:52 · SYN-METER-01\tUNREV"
     },
     {
       "id": "W-33",
@@ -266,7 +272,7 @@
       "id": "W-45c",
       "name": "a CONCEPT revision with its feasibility finding and a labelled preliminary estimate is recorded before any money is authorized",
       "result": "PASS",
-      "detail": "Collaborative design\nRevision 1 CONCEPT DRAFT Designer / CAD / Revit (synthetic) · 2026-10-31 11:49 · feasibility and concept layout\nFeasibility. A four-seat huddle fits the 4.2 m bay with one display; a second display does not. FEASIBILITY STUDY — concept work, not a release\n\nPreliminary estimate 1"
+      "detail": "Collaborative design\nRevision 1 CONCEPT DRAFT Designer / CAD / Revit (synthetic) · 2026-10-31 15:52 · feasibility and concept layout\nFeasibility. A four-seat huddle fits the 4.2 m bay with one display; a second display does not. FEASIBILITY STUDY — concept work, not a release\n\nPreliminary estimate 1"
     },
     {
       "id": "W-45d",
@@ -302,13 +308,13 @@
       "id": "W-49",
       "name": "the browser reports under a release stamped with the build’s commit, to no transport unless the serving process configures one",
       "result": "PASS",
-      "detail": "{\"transport\":\"none\",\"release\":\"empathia-enterprise-web@0.1.0+b75611dd4aa1\",\"environment\":\"production\",\"tracesSampleRate\":0,\"captured\":0,\"sampledIn\":0,\"sampledOut\":0}"
+      "detail": "{\"transport\":\"none\",\"release\":\"empathia-enterprise-web@0.1.0+5436980f30d9\",\"environment\":\"production\",\"tracesSampleRate\":0,\"captured\":0,\"sampledIn\":0,\"sampledOut\":0}"
     },
     {
       "id": "W-50",
       "name": "an uncaught error is captured by the window handler (count, no key in the status)",
       "result": "PASS",
-      "detail": "{\"transport\":\"none\",\"release\":\"empathia-enterprise-web@0.1.0+b75611dd4aa1\",\"environment\":\"production\",\"tracesSampleRate\":0,\"captured\":1,\"sampledIn\":0,\"sampledOut\":0}"
+      "detail": "{\"transport\":\"none\",\"release\":\"empathia-enterprise-web@0.1.0+5436980f30d9\",\"environment\":\"production\",\"tracesSampleRate\":0,\"captured\":1,\"sampledIn\":0,\"sampledOut\":0}"
     },
     {
       "id": "W-51",
@@ -386,7 +392,7 @@
       "id": "W-66",
       "name": "A2 compares read-only (no baseline → NOT_VERIFIED) and A4 is BLOCKED with the reason; both are outcomes in the log",
       "result": "PASS",
-      "detail": "BLOCKED A4 H1 Commissioning Engineer (synthetic) · 2026-10-31 11:49\nno runbook for this action\nCOMPARED A2 H1 Commissioning Engineer (synthetic) · 2026-10-31 11:49\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
+      "detail": "BLOCKED A4 H1 Commissioning Engineer (synthetic) · 2026-10-31 15:52\nno runbook for this action\nCOMPARED A2 H1 Commissioning Engineer (synthetic) · 2026-10-31 15:52\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
     },
     {
       "id": "W-67",
@@ -404,7 +410,7 @@
       "id": "W-69",
       "name": "licensed: eligibility passes, the protocol is approved and the page lists what is still missing (window, operator, instrument, E-stop)",
       "result": "PASS",
-      "detail": "Sessions · Physical Validation v1.4 FIS-0001 · Browser Huddle (synthetic) HUD · LAeq at seats + STIPA (declared) · proposed by Systems Engineer (synthetic) 2026-10-31 11:49 SAFETY_PREFLIGHT SIMULATION Step Safety preflight Points seat row 1, seat row 3, far seat Tests LAEQ (ADP-SLM · ELIGIBLE), STIPA (ADP-STI · ELIGIBLE), CAM-FOV (ADP-CAM · NOT_CONFIGURED) Safety occupancy UNKNOWN · privacy notice no · E-stop NOT_VERIFIED · level limit 85 dB(A) · rollback presets + DSP backup before arming; rest"
+      "detail": "Sessions · Physical Validation v1.4 FIS-0001 · Browser Huddle (synthetic) HUD · LAeq at seats + STIPA (declared) · proposed by Systems Engineer (synthetic) 2026-10-31 15:52 SAFETY_PREFLIGHT SIMULATION Step Safety preflight Points seat row 1, seat row 3, far seat Tests LAEQ (ADP-SLM · ELIGIBLE), STIPA (ADP-STI · ELIGIBLE), CAM-FOV (ADP-CAM · NOT_CONFIGURED) Safety occupancy UNKNOWN · privacy notice no · E-stop NOT_VERIFIED · level limit 85 dB(A) · rollback presets + DSP backup before arming; rest"
     },
     {
       "id": "W-70",
@@ -417,6 +423,48 @@
       "name": "the commissioning lead authorizes; the consenting technician arms with two confirmations and the run is labelled SIMULATION, recording no values",
       "result": "PASS",
       "detail": "RUNNING\nSIMULATION | Results simulated\n\nDry run: 3 points · none (dry run emits nothing)\n\nACQUIRED TP-1 · LAeq · no value (simulator) · the s"
+    },
+    {
+      "id": "W-72",
+      "name": "a SIGNAL lesson opens from the library with its cards and its check",
+      "result": "PASS",
+      "detail": "One signal, four disciplines\n\nAn AV system is four crafts acting as one experience. Route every signal on purpose, and c"
+    },
+    {
+      "id": "W-73",
+      "name": "the completed check and the first-failure drill are recorded as training for the person (never authority)",
+      "result": "PASS",
+      "detail": "2"
+    },
+    {
+      "id": "W-74",
+      "name": "the reference searches the glossary and the formulas",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-75",
+      "name": "the proposer sees the case awaiting a reviewer other than themselves (no review button)",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-76",
+      "name": "SME review (DSP engineer) then the steward’s approval: the case is APPROVED and the database agrees",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-79",
+      "name": "the service manager records a credential: it is pending and counts for nothing; the recorder is offered no Verify",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-80",
+      "name": "the data steward verifies it (not the recorder, not the holder); the record names both and it now counts for dispatch",
+      "result": "PASS",
+      "detail": ""
     },
     {
       "id": "W-61",
@@ -435,6 +483,12 @@
       "name": "the window changes the board (30 days) and the selection resets",
       "result": "PASS",
       "detail": ""
+    },
+    {
+      "id": "W-78",
+      "name": "the service manager’s Mission Control headline counts exactly the listed steps, each opens its record, and the scan line names what was read",
+      "result": "PASS",
+      "detail": "Mission Control\n\n1 step needs you\n\nService Manager (synthetic) · svcmgr. Steps you hold the authority for, in your site scope. Each opens the record, where the server checks the guard again. Operation"
     },
     {
       "id": "W-18",

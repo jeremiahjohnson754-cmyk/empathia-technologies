@@ -4,7 +4,7 @@
   "apiVersion": "0.1.0",
   "counts": {
     "events": 101,
-    "api": 61,
+    "api": 68,
     "entities": 4
   },
   "files": [
@@ -582,6 +582,41 @@
       "file": "api/postV1IssuesIssueWorkOrders.json",
       "$id": "https://schemas.empathia.invalid/api/postV1IssuesIssueWorkOrders/0.1.0.json",
       "sha256": "cf1110f3972ec4629282d1ffa0dd461e317ab13029795770548e6f4ce3db2446"
+    },
+    {
+      "file": "api/postV1WorkOrdersWorkOrderLearnCase.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1WorkOrdersWorkOrderLearnCase/0.1.0.json",
+      "sha256": "fd78a68435b3e624b4d43cdb93bb7029ec364c7455a1bf122eb5e2299b86da81"
+    },
+    {
+      "file": "api/postV1LearnCasesCaseReview.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1LearnCasesCaseReview/0.1.0.json",
+      "sha256": "82f34450ec767bd0241ab0474547b828640346404cd5e7c0747f09c227ce4081"
+    },
+    {
+      "file": "api/postV1Competencies.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1Competencies/0.1.0.json",
+      "sha256": "75a05e717affbd6c7c1deb6568fdbdad1524a3cac9bb80e57165d42e1208f63c"
+    },
+    {
+      "file": "api/postV1CompetenciesCompetencyVerify.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1CompetenciesCompetencyVerify/0.1.0.json",
+      "sha256": "d02540e92114ffd0bc92e55df24676fa6c1ee53c6b5bc3025c5e9bf0db6f522e"
+    },
+    {
+      "file": "api/postV1CompetenciesCompetencyReject.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1CompetenciesCompetencyReject/0.1.0.json",
+      "sha256": "235d2307d57f357632201113da35908a6e1899920be0f1fb79b1e7c04bb65f59"
+    },
+    {
+      "file": "api/postV1CompetenciesCompetencyRevoke.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1CompetenciesCompetencyRevoke/0.1.0.json",
+      "sha256": "a26d3690fdd44d5bf3c210c6a8600d12ce85c88e776eff4ff3c29394a48e1c00"
+    },
+    {
+      "file": "api/postV1LearnTraining.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1LearnTraining/0.1.0.json",
+      "sha256": "7060b3381703f069d43ae0ea566021c5a6014db332d4a561c4ca221303c05bd6"
     },
     {
       "file": "api/postV1FieldIntelligenceLicences.json",

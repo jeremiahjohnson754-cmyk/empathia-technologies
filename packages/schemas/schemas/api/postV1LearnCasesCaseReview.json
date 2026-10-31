@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1LearnCasesCaseReview/0.1.0.json",
+  "title": "POST /v1/learn/cases/{case}/review request body",
+  "description": "Subject-matter review (never the proposer)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "decision"
+  ],
+  "properties": {
+    "decision": {
+      "type": "string",
+      "enum": [
+        "approve",
+        "reject"
+      ]
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 1000
+    }
+  }
+}

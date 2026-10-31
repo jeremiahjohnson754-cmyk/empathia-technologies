@@ -13,6 +13,7 @@ const PEOPLE: Array<[string, string, string]> = [
   ['installer', 'Installer', 'marks rooms installed, uploads evidence'],
   ['cxeng', 'Commissioning engineer', 'records results, uploads evidence'],
   ['qa_reviewer', 'QA reviewer', 'independently verifies passes, accepts rooms'],
+  ['dsp_eng', 'DSP engineer', 'reviews audio designs; subject-matter reviewer for Learn cases'],
   ['svcmgr', 'Service manager', 'raises and closes work orders'],
   ['service', 'Service technician', 'field work and evidence'],
   ['exec', 'Executive', 'decides projects'],

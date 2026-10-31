@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1LearnTraining/0.1.0.json",
+  "title": "POST /v1/learn/training request body",
+  "description": "Record a completed quiz or drill as training (append-only; never grants work authorization)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "itemId"
+  ],
+  "properties": {
+    "kind": {
+      "type": "string",
+      "enum": [
+        "quiz",
+        "drill"
+      ]
+    },
+    "itemId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,80}$"
+    },
+    "correct": {
+      "type": "boolean"
+    },
+    "score": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "total": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "elapsedS": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}

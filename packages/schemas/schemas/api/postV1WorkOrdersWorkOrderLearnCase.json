@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1WorkOrdersWorkOrderLearnCase/0.1.0.json",
+  "title": "POST /v1/work-orders/{workOrder}/learn-case request body",
+  "description": "Propose a case from a RESOLVED/CLOSED work order: customer permission, de-identified against this organization’s own names (checked), a lesson statement",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "title",
+    "lesson",
+    "permission",
+    "deidentified"
+  ],
+  "properties": {
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200
+    },
+    "lesson": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 4000
+    },
+    "permission": {
+      "type": "boolean"
+    },
+    "permissionNote": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "deidentified": {
+      "type": "boolean"
+    }
+  }
+}

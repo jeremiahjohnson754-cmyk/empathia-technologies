@@ -158,6 +158,17 @@ Not built: SIGNAL labs (91 simulators); the enterprise app's service/APEX/execut
 | API: `POST /v1/issues/{issue}/apex` (open; idempotent per issue), `GET /v1/apex/cases`, `GET /v1/apex/cases/{case}` (layers citing the room's planned assets, ranked hypotheses, actions, review, the room's current baseline, the **real** adapter state from the integration catalogue — two local mocks DECLARED, nothing SUPPORTED_VERIFIED — tiers, runbooks, what the caller may do), `POST …/act` (A0–A5 on `@empathia/apex-engine`; A3 stages a real work order through `createWorkOrder` so only a role that may raise one succeeds — the refusal is the outcome and a DENIED audit; A4 blocked step by step, dry run then labelled simulation with branches, compensation audited, rate limit), `POST …/review` (verifiers; emits `apex.diagnosis_reviewed` with hypothesis and tier) | IMPLEMENTED · TESTED | `tests/security/apex.test.mjs` APX-1..APX-5; OpenAPI 117 operations |
 | Enterprise web `#/apex`: case list, case record (layers, hypotheses, selected hypothesis with caveat/evidence/negatives/next, runbook facts, tier buttons with the A4 declarations, action log with every outcome, review); "Open APEX case" on a room's deficiency | IMPLEMENTED · TESTED | browser W-64..W-67 (72/72) |
 
+### P8 — Empathia Learn and SIGNAL in the enterprise application (2026-10-31)
+
+| Item | Status | Evidence |
+|---|---|---|
+| Migration 0022: `learn_case` (one per work order; PROPOSED → SME_REVIEWED / REJECTED → APPROVED; RLS) and `training_record` (append-only trigger, RLS, per person) | DONE | every suite migrates through it |
+| API, 11 routes: the SIGNAL library in sections (index, lesson with its check, drill, canon case, reference); cases — propose from a RESOLVED/CLOSED work order with customer permission and a de-identification check against **this organization's own** room/building/site names and codes and people's full names and surnames (role nouns excluded, so generic vocabulary is not flagged), SME review (never the proposer), steward approval (neither proposer nor reviewer) emitting `training.case_approved`; training records (own only; "never grants work authorization") | IMPLEMENTED · TESTED | `tests/security/learn.test.mjs` LRN-1..LRN-4; OpenAPI 141 operations |
+| The six SIGNAL drill kinds and the lesson check moved to `@empathia/ui` (`signal.tsx`): one implementation for the demo and the enterprise app | DONE | demo 101/101 unchanged; browser W-72, W-73 |
+| Enterprise web `#/learn` (knowledge · reviewed cases · lessons · drills · canon · reference), the propose form on a resolved/closed work order, the DSP engineer on the sign-in list | IMPLEMENTED · TESTED | browser W-72..W-76 (81/81) |
+| Defect found and fixed during validation | — | the first de-identification rule split every display name into words, so role-style names made generic words ("Camera") "identifying"; narrowed as above |
+| Not built | — | SIGNAL labs (91 simulators); competency records — since delivered, see "competency records" above |
+
 ### P7 — Field Intelligence in the enterprise application (2026-10-31)
 
 | Item | Status | Evidence |
@@ -166,6 +177,25 @@ Not built: SIGNAL labs (91 simulators); the enterprise app's service/APEX/execut
 | API, 13 routes: the v1.3 plan from a room's planned assets (PLAN_ONLY), licences (read; grant/revoke by the security administrator), sessions (propose by systems engineering; eligibility against the real licence row; the five preflight steps each by its own authority; dry run; authorization by the commissioning lead; arming only by the consenting operator — a person id, not a role — with two confirmations, `real: true` answered NOT_CONFIGURED; the simulated run point by point with scripted abnormal branches; E-stop). The engine decides; every step audited with its reasons | IMPLEMENTED · TESTED | `tests/security/field-intelligence.test.mjs` FI-1..FI-5; OpenAPI 130 operations |
 | Enterprise web: `#/field` (sessions · licences · v1.3 plan), the session page (facts, what is still missing, the step for the caller's role only, arming with two confirmations, the run with branch injection and EMERGENCY STOP, results labelled simulated, the log and exits), the room's Field Intelligence tab (propose) | IMPLEMENTED · TESTED | browser W-36, W-68..W-71 (76/76) |
 | Not built | — | instrument export upload and QA/review states after ACQUIRED (the engine stops at ACQUIRED in this build); licence administration beyond grant/revoke |
+
+### P1 (Ascension) — Mission Control, the action center (2026-10-31)
+
+| Item | Status | Evidence |
+|---|---|---|
+| `GET /v1/mission-control`: the governed steps that are the caller's to take now across projects, rooms, commissioning, ServiceHands, APEX, Field Intelligence, Learn and competency records. It computes them from the same transition tables, authorities, assignment and separation-of-duties rules each record uses (`VERIFY_AUTHORITIES`, `SERVICE_TRANSITIONS`, `LIFECYCLE_AUTHORITY`, `APEX_*`, `LEARN_SME`, `COMPETENCY_VERIFY`), inside the caller's site scope. It also lists the exceptions in scope (unassigned urgent work orders, open Critical/High issues, Field Intelligence sessions that ended abnormally in the last 7 days) and what it scanned. It only reads: it never acts and audits nothing | IMPLEMENTED · TESTED | `tests/security/mission-control.test.mjs` MC-1..MC-7; competency COMP-6 |
+| Enterprise web: Mission Control is the landing page (`#/home`): steps grouped by product with filters, every row opens its record (where the server checks again), exceptions panel, scan line | IMPLEMENTED · TESTED | browser W-77, W-78; screenshot `19-mission-control` |
+| Defect found and fixed during validation | — | the first W-78 assumed the service manager would have a ServiceHands step at that point in the browser run. The page was right (the walkthrough's work orders were closed: "0 work orders" scanned), so the test now checks that the headline count equals the listed rows and that every row links to a record. Full regression of 2026-10-31 10:43 CT: 42 PASS · 1 FAIL (that test) · 1 NOT RUN; the corrected suite then passed 83/83 alone |
+| Not built | — | role workspaces beyond this one list; notifications; approval queues as their own objects (approvals remain the record's own step); service obligations/SLA breach exceptions (SLA clocks are on the work order but not yet surfaced here) |
+
+### P1 (Ascension) — competency records: Learn ↔ ServiceHands (2026-10-31, ADR-0009)
+
+| Item | Status | Evidence |
+|---|---|---|
+| Migration 0023: `competency_record` (catalogue id, source, issuer, number, issue/expiry, optional evidence copy, supporting training refs; PENDING_VERIFICATION → VERIFIED / REJECTED, VERIFIED → REVOKED; DB CHECK: verifier ≠ recorder ≠ holder; RLS) | DONE | every suite migrates through it |
+| ServiceHands' hard gates read certifications **only** from verified competency records. `staff_profile.certs` is no longer read; the seed records each credential (recorded by the service manager, verified by the data steward) and leaves the column empty | IMPLEMENTED · TESTED | COMP-1, COMP-4, COMP-5; `service-lifecycle` SVC-3 unchanged and passing |
+| API, 5 routes: list (personal records: all for those who record or verify, own for everyone else; the service pool as the only people offered), record (`service.assign`), verify/reject (`provenance.review`; never the recorder or the holder), revoke (either; with a reason). An assessment must cite evidence; cited training must be the holder's own; training is never a credential by itself | IMPLEMENTED · TESTED | `tests/security/competency.test.mjs` COMP-1..COMP-6; OpenAPI 147 operations |
+| Enterprise web: Learn › Competencies (records with provenance, decision, revocation, "counts for dispatch"; record form for the manager; verify/reject/revoke for those who may) | IMPLEMENTED · TESTED | browser W-79, W-80; screenshot `20-learn-competencies` |
+| Not built | — | issuer-registry verification (verification is a recorded attestation, not an automated check); expiry notifications; provenance for skill levels (`staff_profile.skills` remain profile facts) |
 
 ### Connector expansion directive (2026-10-31 05:34 CT) — what was actually done
 

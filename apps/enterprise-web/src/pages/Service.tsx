@@ -9,6 +9,7 @@ import { Button, DataTable, Drawer, Empty, ErrorState, Facts, Field, Loading, No
 import { api, useMutation, useQuery } from '../api.js';
 import { useMe } from '../me.js';
 import { href } from '../router.js';
+import { ProposeCase } from './Learn.js';
 
 type Tone = 'ok' | 'warn' | 'bad' | 'muted' | 'info';
 interface Row { code: string; state: string; workType: string; severity: string | null; sla: { respond: string; restore: string } | null; issue: { code: string; title: string }; room: { code: string; name: string; building: string }; assignee: { id: string; name: string } | null; createdAt: string; reopenCount: number; evidenceCount: number }
@@ -119,6 +120,7 @@ export function WorkOrderRecord({ code }: { code: string }) {
         <ul className="plain">{w.events.map((e, i) => <li key={i}><span className="ui-meta mono">{when(e.at)}</span> <b>{e.kind.replace('work_order.', '')}</b> <span className="ui-meta">{e.actor || 'system'}{e.detail['to'] ? ` → ${String(e.detail['to'])}` : ''}{e.detail['outcome'] ? ` · ${String(e.detail['outcome'])}` : ''}{e.detail['reason'] ? ` · ${String(e.detail['reason'])}` : ''}</span></li>)}</ul>
       </section>
 
+      {['RESOLVED', 'CLOSED'].includes(w.state) && me && (me.authorities || []).some((a: string) => ['tests.verify.all', 'service.verify', 'baseline.approve', 'case.approve', 'service.close'].includes(a)) ? <ProposeCase workOrder={w.code} state={w.state} /> : null}
       <ServiceDrawer id={drawer} w={w} onClose={() => setDrawer(null)} run={run} busy={act.busy} error={act.error} />
     </section>
   );
