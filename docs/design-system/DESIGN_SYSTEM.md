@@ -206,3 +206,25 @@ section of the gallery.
 * **Engineering tools** (enterprise web app, Engineer Mode, Private Engineer Edition, Architecture Explorer): data-dense tables, mono
   identifiers, every rule's reasons shown verbatim, state history and contracts. Same tokens and status vocabulary in both, so a status
   means the same thing everywhere.
+
+## Typography (2026-10-30, Adobe Fonts)
+
+The platform typeface is **Acumin Pro** (Adobe Originals, Robert Slimbach), chosen with Adobe's font recommendation for a data-dense
+enterprise interface and published as a real Adobe Fonts kit under the owner's account: kit **`kis0uqz`** — *Empathia platform UI
+(Acumin Pro)* — weights 400, 400 italic, 500, 600, 700, domains `localhost`, `127.0.0.1:4200/4310/4300` (production host names must be
+added to the kit at fonts.adobe.com before go-live). The token `--font-sans` now reads `"acumin-pro", ui-sans-serif, system-ui, …`:
+the fallback stack renders when the kit is not loaded.
+
+Loading is a **deployment setting, never a build-time dependency**: each server (`apps/*/server/serve.mjs`) injects
+`<link rel="stylesheet" href="https://use.typekit.net/<kit>.css">` and allow-lists `use.typekit.net` / `p.typekit.net` in `style-src`,
+`font-src`, `img-src` and `connect-src` **only when `FONT_KIT_ID` is set** (`--font-kit=` on the command line). Tests run without it, so
+the "no request leaves 127.0.0.1" checks stay meaningful; `.env.example` and `docker-compose.prod.yml` set it for a deployment.
+Numerals: tables and KPIs use `font-variant-numeric: tabular-nums` (already in `ui.css`).
+
+## One platform shell (2026-10-30)
+
+`packages/ui/src/shell.tsx` — `AppShell` (brand, product rail, identity, status note) and `ProductHeader` (product name, one-line
+purpose, actions) — is now the frame of the enterprise application and the investor demonstration. The rail lists the platform's
+products in the same order everywhere: **Mission Control · Pro · Lite · Search Party · Commissioning & Assurance · Field Intelligence ·
+Learn · Administration**. A product a role may not reach is shown locked with its reason (the platform's shape is not a secret; the API
+decides what is behind the door). The Founder Studio keeps its own private shell on the same tokens (ADR-0001 §3).

@@ -39,7 +39,7 @@ try {
     await page.selectOption('[data-testid=role]', role);
     await page.fill('[data-testid=password]', 'empathia-dev-only');
     await page.click('[data-testid=signin]');
-    await page.waitForSelector('.who__role');
+    await page.waitForSelector('.shell__meta');
   };
   const shot = async (name) => { await page.screenshot({ path: path.join(shots, `${name}.jpg`), type: 'jpeg', quality: 80 }); };
 
@@ -52,8 +52,8 @@ try {
   await page.waitForSelector('.ui-state--error');
   ok('W-02', 'a wrong password is refused by the server and shown', /not right/.test(await page.textContent('.ui-state--error')));
   await page.fill('[data-testid=password]', 'empathia-dev-only'); await page.click('[data-testid=signin]');
-  await page.waitForSelector('.who__role');
-  ok('W-03', 'the designer signs in; the role shown comes from /v1/me', (await page.textContent('.who__role')).startsWith('designer'));
+  await page.waitForSelector('.shell__meta');
+  ok('W-03', 'the designer signs in; the role shown comes from /v1/me', (await page.textContent('.shell__meta')).startsWith('designer'));
 
   // ---------------------------------------------------------------- rooms list
   await page.waitForSelector('.ui-table');
@@ -140,8 +140,8 @@ try {
   await page.goto(`${base}#/reports`); await page.waitForSelector('.stats');
   ok('W-14', 'reports show definitions and operational performance “Not monitored”', (await page.textContent('.page')).includes('Not monitored') && (await page.textContent('.page')).includes('applicable tests'));
   await shot('06-reports');
-  const navHasAdmin = await page.locator('.nav a', { hasText: 'Administration' }).count();
-  ok('W-15', 'the systems engineer’s navigation has no Administration (no admin authority)', navHasAdmin === 0);
+  const navHasAdmin = await page.locator('a.shell__product', { hasText: 'Administration' }).count(); const lockedAdmin = await page.locator('.shell__product--locked', { hasText: 'Administration' }).count();
+  ok('W-15', 'the systems engineer sees Administration locked with its reason, not as a link (the API refuses it anyway)', navHasAdmin === 0 && lockedAdmin === 1);
   await signIn('secadmin');
   await page.goto(`${base}#/admin/integrations`); await page.waitForSelector('.ui-table');
   const states = await page.locator('.ui-table tbody .ui-badge').allTextContents();
@@ -172,11 +172,23 @@ try {
   await shot('08-search-party');
   await signIn('service'); // the seeded service technician is unscoped; the South-only one proves absence
   await page.click('text=Sign out'); await page.waitForSelector('[data-testid=role]');
-  await page.selectOption('[data-testid=role]', 'service'); await page.fill('[data-testid=email]', 'service-south@empathia-demo.empathia.invalid'); await page.fill('[data-testid=password]', 'empathia-dev-only'); await page.click('[data-testid=signin]'); await page.waitForSelector('.who__role');
+  await page.selectOption('[data-testid=role]', 'service'); await page.fill('[data-testid=email]', 'service-south@empathia-demo.empathia.invalid'); await page.fill('[data-testid=password]', 'empathia-dev-only'); await page.click('[data-testid=signin]'); await page.waitForSelector('.shell__meta');
   await page.goto(`${base}#/search`); await page.waitForSelector('#sp-q'); await page.fill('#sp-q', 'ATL'); await page.waitForTimeout(500);
   const southText = await page.locator('.sp__results').innerText();
   ok('W-27', 'a South-scoped technician searching the North building finds nothing: absent, not hidden (and the coverage note says site-scoped)', /Nothing in your view matches/.test(southText) && !/Atlas/.test(southText), southText.slice(0, 160));
   await signIn('syseng');
+
+  // ---------------------------------------------------------------- one platform: the product rail and the product landings
+  const rail = await page.locator('.shell__rail').innerText();
+  ok('W-34', 'the shared shell shows the platform’s products in one rail: Mission Control, Pro, Lite, Search Party, Commissioning & Assurance, Field Intelligence, Learn, Administration', ['Mission Control', 'Pro', 'Lite', 'Search Party', 'Commissioning & Assurance', 'Field Intelligence', 'Learn', 'Administration'].every((x) => rail.includes(x)), rail);
+  await page.goto(`${base}#/commissioning`); await page.waitForSelector('.stage-grid');
+  ok('W-35', 'Commissioning & Assurance lists every room by lifecycle stage from the API', (await page.locator('.stage').count()) === 7 && /Browser Huddle/.test(await page.locator('.stage-grid').innerText()));
+  await page.goto(`${base}#/field`); await page.waitForSelector('.ui-table');
+  const fi = await page.locator('.page').innerText();
+  ok('W-36', 'Field Intelligence shows the honest adapter states and the fixed safety boundary; no live device is claimed', /No live device is connected/.test(fi) && /NOT_MONITORED/.test(fi) && !/VERIFIED\s*$/m.test(fi));
+  await page.goto(`${base}#/learn`); await page.waitForSelector('#learn-q'); await page.fill('#learn-q', 'commissioning'); await page.keyboard.press('Enter'); await page.waitForTimeout(500);
+  ok('W-37', 'Learn searches the permission-aware knowledge base', (await page.locator('.list .card, .ui-empty').count()) >= 1);
+  await shot('10-platform-rail');
 
   // ---------------------------------------------------------------- hygiene
   ok('W-18', 'no page errors or unexpected console errors', errors.length === 0, errors.join(' | '));

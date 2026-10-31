@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Tag, Notice } from '@empathia/ui';
+import { Tag, Notice, AppShell } from '@empathia/ui';
 import { areaOf, AREAS, NATIVE } from './registry.js';
 import { BuildRoom } from './build/BuildRoom.js';
 
@@ -21,17 +21,25 @@ export function App() {
   useEffect(() => { if (!location.hash) history.replaceState(null, '', '#/investor'); const h = () => setHash(location.hash || '#/investor'); addEventListener('hashchange', h); return () => removeEventListener('hashchange', h); }, []);
   useEffect(() => { try { localStorage.setItem('empathia.demo.perspective', as); } catch { /* storage unavailable: the choice lasts the page */ } }, [as]);
   const area = areaOf(hash); const home = hash === '#/investor' || hash === '#/' || hash === '#' || !hash.startsWith('#/');   // an in-page anchor (#problems) stays on the landing
+  // the same product rail as the enterprise application, on the legacy address space (every product resolves to a native page or a boundary page)
+  const k = area?.key || '';
+  const products = [
+    { key: 'home', label: 'Mission Control', href: '#/home', purpose: 'What changed, what matters, what needs action', active: k === 'home' },
+    { key: 'pro', label: 'Pro', href: '#/suite/pro', purpose: 'Operational intelligence, portfolio, service performance', active: k.startsWith('pro') },
+    { key: 'lite', label: 'Lite', href: '#/v25/build', purpose: 'Build a Room: spatial design on the real engine', active: k === 'v25.build' || k.startsWith('lite') },
+    { key: 'search', label: 'Search Party', href: '#/search', purpose: 'Universal entity search and relationship intelligence', active: k.startsWith('search') },
+    { key: 'cx', label: 'Commissioning & Assurance', href: '#/suite/commission', purpose: 'Plans, evidence, verification, acceptance, baselines', active: k.startsWith('commissioning') || k.startsWith('assurance') },
+    { key: 'fi', label: 'Field Intelligence', href: '#/suite/integrations', purpose: 'What the collector declares, observes and verifies', active: k === 'fabric' },
+    { key: 'learn', label: 'Learn', href: '#/suite/learn', purpose: 'Evidence-backed cases and training', active: k === 'learn' },
+    { key: 'investor', label: 'Investor start', href: '#/investor', purpose: 'Three ways in: Build a Room, guided scenarios, the problems each workflow solves', active: home },
+  ];
   return (
     <div className="demo">
-      <a className="skip" href="#main">Skip to content</a>
-      <header className="top"><div className="bar">
-        <a className="brand" href="#/investor"><span className="mark" aria-hidden="true" /> Empathia Living Campus</a>
-        <span className="synthetic"><Tag tone="warn">DEMONSTRATION · SYNTHETIC DATA</Tag></span>
-        <label className="persp">Perspective <select value={as} onChange={(e) => setAs(e.target.value)} aria-describedby="persp-note">{PERSPECTIVES.map((p) => <option key={p} value={p}>{p}</option>)}</select></label>
-      </div><p id="persp-note" className="persp-note">A perspective changes what the demonstration shows; it grants nothing. Real access is decided by the authenticated application's server.</p></header>
-      <main id="main" className="wrap">
-        {home ? <Landing /> : area?.key === 'v25.build' ? <BuildRoom perspective={as} /> : <Boundary hash={hash} area={area} />}
-      </main>
+      <AppShell products={products} edition="Living Campus" identity={{ name: 'Demonstration', role: as, organization: 'synthetic estate', mode: 'demonstration' }}
+        actions={<label className="persp">Perspective <select value={as} onChange={(e) => setAs(e.target.value)} aria-describedby="persp-note">{PERSPECTIVES.map((p) => <option key={p} value={p}>{p}</option>)}</select></label>}
+        note={<><Tag tone="warn">DEMONSTRATION · SYNTHETIC DATA</Tag> <span id="persp-note">A perspective changes what the demonstration shows; it grants nothing. Real access is decided by the authenticated application's server.</span></>}>
+        <div className="wrap">{home ? <Landing /> : area?.key === 'v25.build' ? <BuildRoom perspective={as} /> : <Boundary hash={hash} area={area} />}</div>
+      </AppShell>
       <footer className="foot">Every person, organisation, room, device, figure and approval here is invented. Nothing is connected to a real system. <a href="#/investor">Back to the start</a></footer>
     </div>
   );

@@ -44,7 +44,7 @@ services:
 
   web:
     profiles: ["prod"]
-    environment: { WEB_HOST: 0.0.0.0, WEB_PORT: "4200", API_URL: "https://${API_HOST:?set API_HOST}" }
+    environment: { WEB_HOST: 0.0.0.0, WEB_PORT: "4200", API_URL: "https://${API_HOST:?set API_HOST}", FONT_KIT_ID: "${FONT_KIT_ID:-}" }
     ports: []
     read_only: true
     restart: unless-stopped
@@ -52,7 +52,7 @@ services:
   www:
     profiles: ["prod"]
     build: { context: ., target: runtime }
-    environment: { WWW_HOST: 0.0.0.0, WWW_PORT: "4300" }
+    environment: { WWW_HOST: 0.0.0.0, WWW_PORT: "4300", FONT_KIT_ID: "${FONT_KIT_ID:-}" }
     command: ["node", "apps/website/server/serve.mjs"]
     read_only: true
     restart: unless-stopped
@@ -60,7 +60,7 @@ services:
   demo:
     profiles: ["prod"]
     build: { context: ., target: runtime }
-    environment: { DEMO_HOST: 0.0.0.0, DEMO_PORT: "4310" }
+    environment: { DEMO_HOST: 0.0.0.0, DEMO_PORT: "4310", FONT_KIT_ID: "${FONT_KIT_ID:-}" }
     command: ["node", "apps/demo/server/serve.mjs"]
     read_only: true
     restart: unless-stopped

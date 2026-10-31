@@ -1,7 +1,7 @@
 {
   "test": "enterprise-web",
-  "at": "2026-10-31T00:03:35.452Z",
-  "passed": 34,
+  "at": "2026-10-31T00:17:43.255Z",
+  "passed": 38,
   "failed": 0,
   "results": [
     {
@@ -56,7 +56,7 @@
       "id": "W-09",
       "name": "a designer who bypasses the UI and calls the approval endpoint directly is refused 403 by the server",
       "result": "PASS",
-      "detail": "{\"status\":403,\"body\":{\"type\":\"https://errors.empathia.invalid/forbidden\",\"title\":\"Not allowed for your role\",\"status\":403,\"detail\":\"designer may not move a room to DESIGN_APPROVED (needs room.design.approve)\",\"code\":\"forbidden\",\"correlationId\":\"f720269c-dab9-4bea-acd9-ff861ef72fd0\"}}"
+      "detail": "{\"status\":403,\"body\":{\"type\":\"https://errors.empathia.invalid/forbidden\",\"title\":\"Not allowed for your role\",\"status\":403,\"detail\":\"designer may not move a room to DESIGN_APPROVED (needs room.design.approve)\",\"code\":\"forbidden\",\"correlationId\":\"8ce5cd42-bbfb-43c5-b479-4a79135f68f7\"}}"
     },
     {
       "id": "W-10",
@@ -116,7 +116,7 @@
       "id": "W-32",
       "name": "the measurement is listed with its provenance, instrument, calibration state and UNREVIEWED approval",
       "result": "PASS",
-      "detail": "Measurements\nMetric\tValue\tProvenance\tInstrument\tWhere / when\tApproval\t\n\nnoise_floor\nLAeq 60 s\n\t36.2 dB(A)\tFIELD_MEASURED\tSYN-METER-01 · CALIBRATED\tseat 3, 1.2 m · 2026-10-31 00:03 · SYN-METER-01\tUNREV"
+      "detail": "Measurements\nMetric\tValue\tProvenance\tInstrument\tWhere / when\tApproval\t\n\nnoise_floor\nLAeq 60 s\n\t36.2 dB(A)\tFIELD_MEASURED\tSYN-METER-01 · CALIBRATED\tseat 3, 1.2 m · 2026-10-31 00:17 · SYN-METER-01\tUNREV"
     },
     {
       "id": "W-33",
@@ -132,7 +132,7 @@
     },
     {
       "id": "W-15",
-      "name": "the systems engineer’s navigation has no Administration (no admin authority)",
+      "name": "the systems engineer sees Administration locked with its reason, not as a link (the API refuses it anyway)",
       "result": "PASS",
       "detail": ""
     },
@@ -185,6 +185,30 @@
       "detail": "0 records\n\nNothing in your view matches\n\nTry a room code (R-PLN-0001), a device (A-0001), an issue (ISS-…) or a building code. Records outside your site scope a"
     },
     {
+      "id": "W-34",
+      "name": "the shared shell shows the platform’s products in one rail: Mission Control, Pro, Lite, Search Party, Commissioning & Assurance, Field Intelligence, Learn, Administration",
+      "result": "PASS",
+      "detail": "Mission Control\nPro\nLite\nSearch Party\nCommissioning & Assurance\nField Intelligence\nLearn\nAdministration"
+    },
+    {
+      "id": "W-35",
+      "name": "Commissioning & Assurance lists every room by lifecycle stage from the API",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-36",
+      "name": "Field Intelligence shows the honest adapter states and the fixed safety boundary; no live device is claimed",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-37",
+      "name": "Learn searches the permission-aware knowledge base",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
       "id": "W-18",
       "name": "no page errors or unexpected console errors",
       "result": "PASS",
@@ -200,7 +224,7 @@
       "id": "W-20",
       "name": "the web server sends a CSP that allows only itself and the API",
       "result": "PASS",
-      "detail": "default-src 'self'; connect-src 'self' http://127.0.0.1:4195; img-src 'self' data:; style-src 'self'; script-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"
+      "detail": "default-src 'self'; connect-src 'self' http://127.0.0.1:4195; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"
     },
     {
       "id": "W-21",

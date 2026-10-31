@@ -59,6 +59,22 @@ RT-07, RT-08, RT-20 — see the register for before/after and evidence. Open cla
 Full run at this commit: `node scripts/build.mjs` PASS (incl. dist hygiene); `node scripts/test.mjs --browser --studio`: 25 PASS, 0 FAIL,
 1 NOT_RUN (film decode, slow). Regression on the Founder Studio as a local studio: 19/19 and 25/25 unchanged.
 
+## 2026-10-30/31 — P4-A, P4-B, OIDC, one platform, source preservation, connectors (commits fbff495 … this)
+
+| Item | Status | Evidence |
+|---|---|---|
+| Search Party (API + enterprise page) | IMPLEMENTED · TESTED | `packages/search-party` 5/5; `tests/security/search-party.test.mjs` 6/6 (site + tenant negatives); E2E W-22..W-27; demo Search Party page pending |
+| Commissioning readiness strip + Acceptance & assurance tab | IMPLEMENTED · TESTED | `GET /v1/rooms/{room}/readiness`; E2E W-28..W-33 |
+| OIDC production identity | IMPLEMENTED · TESTED against a local JWKS · NOT VERIFIED against a named provider | `tests/security/oidc.test.mjs` 4/4 |
+| One platform shell (rail: Mission Control · Pro · Lite · Search Party · Commissioning & Assurance · Field Intelligence · Learn · Administration) in the enterprise app and the demo; product landings for Commissioning, Field Intelligence, Learn | IMPLEMENTED · TESTED | E2E W-34..W-37 (38/38); demo 31/31 |
+| Typography via Adobe Fonts (Acumin Pro, kit `kis0uqz`, opt-in `FONT_KIT_ID`) | IMPLEMENTED (deployment setting) · NOT exercised in tests by design (offline) | `docs/design-system/DESIGN_SYSTEM.md` |
+| Postman contract (spec + generated collection + environment) | DONE (verified by listing) | `docs/operations/CONNECTOR_MATRIX.md` |
+| Source preservation package (bundle + archive + manifests, secret-scanned, restore verified) | DONE · delivered to the owner | `scripts/release/preserve-source.mjs`; `releases/source/` (ignored) |
+| Deployment (CI workflow, production compose overlay, Caddyfile) | WRITTEN · NOT_RUN (no container runtime, no Git remote, no domain) | `docs/operations/DEPLOYMENT_GUIDE.md` |
+| GitHub remote, Render services | BLOCKED (GitHub not linked) · AWAITING AUTHORIZATION (Render costs) | connector matrix |
+
+Full run alone after each step: **30 PASS · 0 FAIL · 1 NOT_RUN** (film decode).
+
 ## Owner decisions of 2026-10-30 12:59 CT — what was actually done
 
 Each approved decision has an ADR, a migration, API contract entries (OpenAPI regenerated: 74 operations), positive and negative tests
