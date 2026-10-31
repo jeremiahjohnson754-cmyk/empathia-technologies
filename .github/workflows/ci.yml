@@ -20,6 +20,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y postgresql-16 ffmpeg
           sudo systemctl stop postgresql || true
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.13" }
+      - name: Install Python service dependencies
+        run: python -m pip install -r services/intelligence-python/requirements.txt pyyaml
       - name: Install (pnpm) and Playwright Chromium
         run: |
           corepack enable
@@ -27,6 +31,8 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Build (tokens, packages, API, apps, OpenAPI contract check, dist hygiene)
         run: node scripts/build.mjs
+      - name: Start local PostgreSQL for test suites
+        run: node scripts/db.mjs up
       - name: Tests (unit, contract, database, HTTP, security, browser, studio) — serial, one cluster
         run: node scripts/test.mjs --browser --studio
       - name: Evidence
