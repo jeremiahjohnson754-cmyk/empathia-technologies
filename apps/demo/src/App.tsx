@@ -8,6 +8,7 @@ import { ServicePage } from './pages/Service.js';
 import { ApexPage } from './pages/Apex.js';
 import { LearnPage } from './pages/Learn.js';
 import { MissionControl, ExecPage, LedgerPage } from './pages/Control.js';
+import { FieldIntelligencePage } from './pages/FieldIntelligence.js';
 
 /** The seven investor scenarios of the 2.5.5 investor landing, with the customer problem each one solves (carried over verbatim in spirit). */
 const SCENARIOS = [
@@ -35,7 +36,7 @@ export function App() {
     { key: 'lite', label: 'Lite', href: '#/v25/build', purpose: 'Build a Room: spatial design on the real engine', active: k === 'v25.build' || k.startsWith('lite') },
     { key: 'search', label: 'Search Party', href: '#/search', purpose: 'Universal entity search and relationship intelligence', active: k.startsWith('search') },
     { key: 'cx', label: 'Commissioning & Assurance', href: '#/suite/commission', purpose: 'Plans, evidence, verification, acceptance, baselines', active: k.startsWith('commissioning') || k.startsWith('assurance') },
-    { key: 'fi', label: 'Field Intelligence', href: '#/suite/integrations', purpose: 'What the collector declares, observes and verifies', active: k === 'fabric' },
+    { key: 'fi', label: 'Field Intelligence', href: '#/v25/fi', purpose: 'What the collector declares, observes and verifies', active: k === 'fabric' || k === 'v25.fi' || k === 'v25.fipv' },
     { key: 'learn', label: 'Learn', href: '#/v25/learn', purpose: 'Evidence-backed cases and training', active: k === 'learn' || k === 'v25.learn' },
     { key: 'investor', label: 'Investor start', href: '#/investor', purpose: 'Three ways in: Build a Room, guided scenarios, the problems each workflow solves', active: home },
   ];
@@ -63,6 +64,8 @@ function page(key: string, hash: string, as: string): React.ReactNode {
     case 'v25.exec': case 'pro.exec': return <ExecPage perspective={as} />;
     case 'v25.ledger': case 'ledger': return <LedgerPage perspective={as} policy={false} />;
     case 'v25.policy': return <LedgerPage perspective={as} policy />;
+    case 'v25.fi': case 'fabric': return <FieldIntelligencePage perspective={as} pv={false} hash={hash} />;
+    case 'v25.fipv': return <FieldIntelligencePage perspective={as} pv hash={hash} />;
     default: return null;
   }
 }

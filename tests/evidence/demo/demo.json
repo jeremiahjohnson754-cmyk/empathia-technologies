@@ -1,8 +1,8 @@
 {
- "at": "2026-10-31T10:21:55.739Z",
- "pass": 87,
+ "at": "2026-10-31T10:44:03.899Z",
+ "pass": 101,
  "fail": 0,
- "tests": 87,
+ "tests": 101,
  "results": [
   {
    "id": "D-desktop-01",
@@ -230,7 +230,7 @@
    "id": "T-03",
    "name": "every one of the 17 steps opens a page with no page error; only the three Field Intelligence steps still say \"not migrated yet\"",
    "result": "PASS",
-   "detail": "16 visited, 3 honest, errors 0"
+   "detail": "16 visited, 0 honest, errors 0"
   },
   {
    "id": "T-04",
@@ -296,7 +296,7 @@
    "id": "V-07",
    "name": "dispatch preflight on the record: the room is booked in the proposed window, the processor stock check is stale, tools unconfirmed — each named",
    "result": "PASS",
-   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-01T08:21 → 2026-11-01T10:21\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
+   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-01T08:43 → 2026-11-01T10:43\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
   },
   {
    "id": "V-08",
@@ -362,7 +362,7 @@
    "id": "A-03",
    "name": "A2 is a read-only comparison, honest when there is no accepted baseline for the room",
    "result": "PASS",
-   "detail": "COMPARED A2 H1 2026-10-31 10:21 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
+   "detail": "COMPARED A2 H1 2026-10-31 10:43 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
   },
   {
    "id": "A-04",
@@ -374,7 +374,7 @@
    "id": "A-05",
    "name": "with approval and a window, the real adapter state blocks it: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)",
    "result": "PASS",
-   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-10-31 10:21 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
+   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-10-31 10:43 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
   },
   {
    "id": "A-06",
@@ -470,7 +470,7 @@
    "id": "M-03",
    "name": "a passport shows numerator, denominator, window, coverage, freshness, confidence with reasons, source, exclusions and drill-down",
    "result": "PASS",
-   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-02 10:21 → 2026-10-31 10:21\nCoverage\n4 of 4 eligible recor"
+   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-02 10:43 → 2026-10-31 10:43\nCoverage\n4 of 4 eligible recor"
   },
   {
    "id": "M-04",
@@ -482,11 +482,95 @@
    "id": "M-05",
    "name": "the ledger filters to the refusals, each with actor, UTC and local time and the reason",
    "result": "PASS",
-   "detail": "When (UTC)\tLocal\tWho\tEvent\tRecord\tOutcome\tDetail\n2026-10-31 10:21:47\t10/31/2026, 05:21:47\tCommissioning Engineer\tlearn.sme_review\tLC-001\tDENIED\trefused: the proposer is not the subject-matter reviewer of their own case (separation of duties)\n2026-10-31 10:21:46\t10/31/2026, 05:21:46\tCommissioning Eng"
+   "detail": "When (UTC)\tLocal\tWho\tEvent\tRecord\tOutcome\tDetail\n2026-10-31 10:43:43\t10/31/2026, 05:43:43\tCommissioning Engineer\tlearn.sme_review\tLC-001\tDENIED\trefused: the proposer is not the subject-matter reviewer of their own case (separation of duties)\n2026-10-31 10:43:43\t10/31/2026, 05:43:43\tCommissioning Eng"
   },
   {
    "id": "M-06",
    "name": "the policy page shows what each native page checks and the demonstrator’s role × area matrix verbatim (86 areas × 14 roles)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "F-01",
+   "name": "v1.3: the collector’s facts (version, ten modes, exit codes, 15-minute schedule, limitations); the plan is PLAN_ONLY with DECLARED capabilities, a downgraded OBSERVED claim, HardwareTested false, and monitoring NOT_RUN",
+   "result": "PASS",
+   "detail": "The released collector, as integrated\nScript\n1.3.0-universal-preview · plan schema empathia.universal-assurance.plan.v1 · config empathia.collector.config.v1.1\nModes\nInit · Monitor · Plan · Readiness · SelfTest · Install · Uninstall · Export · ExecuteApproved · UniversalPlan\nExit codes\n0 plan writte"
+  },
+  {
+   "id": "F-02",
+   "name": "v1.4: the boardroom archetype is licensed at this site; three adapters are NOT_CONFIGURED in this build",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "F-03",
+   "name": "eligibility: the two acoustic tests on READ_ONLY adapters are ELIGIBLE, the camera scan is NOT_CONFIGURED; the session reaches SAFETY_PREFLIGHT",
+   "result": "PASS",
+   "detail": "FIS-001 SAFETY_PREFLIGHTSIMULATION\nProposal\nEligibility\nSafety preflight\nDry run\nAuthorization\nArmed\nRunning\nAcquired\nQA\nIndependent review\nApproved\nRetest required\nRejected\nRoom · archetype\nR-ATL-4-218 · BRD\nProtocol\nLAeq at seats + STIPA (declared) · max 45 min · cooldown 5 min\nTests\nLAEQ (ADP-SLM"
+  },
+  {
+   "id": "F-04",
+   "name": "the systems engineer cannot reserve the window (Operations / Facilities)",
+   "result": "PASS",
+   "detail": "Refused.\nsyseng cannot reserve the window (Operations / Facilities)"
+  },
+  {
+   "id": "F-05",
+   "name": "a past calibration date ends the session OUT_OF_CALIBRATION (a blocked branch, not a warning)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "F-06",
+   "name": "five approvals by three different people complete the preflight: DRY_RUN",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "F-07",
+   "name": "the dry run emits nothing and the session awaits authorization",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "F-08",
+   "name": "the technician cannot authorize (Commissioning Lead)",
+   "result": "PASS",
+   "detail": "Refused.\nservice cannot authorize sessions (Commissioning Lead)"
+  },
+  {
+   "id": "F-09",
+   "name": "only the consenting local operator can arm — the commissioning lead is refused",
+   "result": "PASS",
+   "detail": "Refused.\nonly the consenting local operator can arm"
+  },
+  {
+   "id": "F-10",
+   "name": "arming needs two explicit confirmations",
+   "result": "PASS",
+   "detail": "Refused.\narming needs two explicit confirmations"
+  },
+  {
+   "id": "F-11",
+   "name": "armed as a labelled SIMULATION (no adapter, no hardware)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "F-12",
+   "name": "a simulated point records no level: the value is null, a value only exists in the instrument export",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "F-13",
+   "name": "the E-stop aborts: output terminated, restore requested, the session ended; nothing can be stepped afterwards",
+   "result": "PASS",
+   "detail": "FIS-002 ABORTEDendedSIMULATION\nProposal\nEligibility\nSafety preflight\nDry run\nAuthorization\nArmed\nRunning\nAcquired\nQA\nIndependent review\nApproved\nRetest required\nRejected\nRoom · archetype\nR-ATL-4-218 ·"
+  },
+  {
+   "id": "F-14",
+   "name": "the town hall is not licensed at this site, and a visitor cannot change that",
    "result": "PASS",
    "detail": ""
   },

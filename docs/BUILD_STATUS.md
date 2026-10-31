@@ -127,10 +127,12 @@ revision `phase`, engine guards `concept_authorized` / `…_and_funded`; APR-2, 
 | Mission Control `#/v25`: ten stations counting live records, needs-action by perspective, latest events | IMPLEMENTED · TESTED | M-01 |
 | Executive `#/v25/exec`: 27 passports with window selection, passport detail; non-executive perspectives refused | IMPLEMENTED · TESTED | M-02..M-04 |
 | Ledger `#/v25/ledger` and policy `#/v25/policy`: every event with actor/UTC/local, filters; the authorities each native page checks (from the code) + the demonstrator's role × area matrix (86 × 14) verbatim | IMPLEMENTED · TESTED | M-05, M-06 |
-| Tour: 14 of 17 steps now native (Field Intelligence's three remain status pages) | PARTIAL | T-03 |
+| `@empathia/field-intelligence` — v1.3 (declarations → PLAN_ONLY plan: capabilities DECLARED or UNKNOWN, a claimed OBSERVED downgraded, pairs NOT_TESTED with null measurements, monitoring NOT_RUN, exit codes) and v1.4 Physical Validation (licence → eligibility → five-step safety preflight by different authorities → dry run that emits nothing → commissioning-lead authorization → two-confirmation arming by the consenting operator only, labelled a simulation → point-by-point run with scripted abnormal branches → E-stop with restore). Read-only adapters ADP-SLM/ADP-STI; camera/DSP/loudspeaker adapters NOT_CONFIGURED | IMPLEMENTED · TESTED | 4/4 |
+| Field Intelligence `#/v25/fi`, `#/v25/fipv`, `#/fabric`: the plan for any room (archetypes and the room draft), licences per site (platform admin only), sessions proposed by systems engineering, the preflight as a form that lists what is missing, arming, run, abnormal branches, E-stop; a visitor cannot grant a licence | IMPLEMENTED · TESTED | F-01..F-14 |
+| Tour: 17 of 17 steps native | DONE | T-03 (`honest === 0`) |
 
-Not built: Field Intelligence pages (scenario 2); SIGNAL labs; the enterprise app's service/APEX/executive pages on the new engines
-(the engines are shared packages, ready for the API). Demo browser suite: **87 checks**.
+Not built: SIGNAL labs (91 simulators); the enterprise app's service/APEX/executive/field-intelligence pages on the new engines
+(the engines are shared packages, ready for the API). Demo browser suite: **101 checks**.
 
 ## Owner decisions of 2026-10-30 12:59 CT — what was actually done
 

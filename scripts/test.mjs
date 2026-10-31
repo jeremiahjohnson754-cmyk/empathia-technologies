@@ -39,7 +39,7 @@ function suite(name, kind, cmd, args, parse, opts = {}) {
 }
 
 const node = process.execPath;
-for (const p of ['packages/commissioning-engine', 'packages/event-contracts', 'packages/relationship-engine', 'packages/search-party', 'packages/project-governance', 'packages/service-engine', 'packages/apex-engine', 'packages/kpi-engine', 'packages/assurance-engine', 'packages/api-client', 'packages/schemas', 'integrations/contracts', 'integrations/mocks']) {
+for (const p of ['packages/commissioning-engine', 'packages/event-contracts', 'packages/relationship-engine', 'packages/search-party', 'packages/project-governance', 'packages/service-engine', 'packages/apex-engine', 'packages/kpi-engine', 'packages/field-intelligence', 'packages/assurance-engine', 'packages/api-client', 'packages/schemas', 'integrations/contracts', 'integrations/mocks']) {
   const dir = path.join(root, p, 'dist/test');
   suite(`unit: ${p}`, 'unit', node, ['--test', `${p}/dist/test/**/*.test.js`], tap, fs.existsSync(dir) ? {} : { skip: 'not built (node scripts/build.mjs)' });
 }

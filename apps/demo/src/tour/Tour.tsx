@@ -51,7 +51,7 @@ export function TourPanel({ hash, onPerspective }: { hash: string; onPerspective
       <div className="tour__head"><span className="tour__k">Scenario {s.n} of 7 · step {i + 1} of {STEPS.length}</span><Tag tone={EVIDENCE_TONE[s.evidence] || 'muted'}>{s.evidence}</Tag><span className="tour__persona">as <b>{s.persona}</b></span>{!s.native && <Tag tone="warn">not migrated yet · {area?.status || 'status page'}</Tag>}</div>
       <h2 className="tour__title">{s.title}</h2>
       <p className="tour__text">{s.text}</p>
-      {!s.native && <p className="ui-meta">This step's page is still the original V2.5.3 demonstration's; this shell shows its migration status instead of pretending. Native today: Build a Room, Search Party, ServiceHands, APEX, Learn, Mission Control, Executive intelligence and the ledger; Field Intelligence is next.</p>}
+      {!s.native && <p className="ui-meta">This step's page is still the original V2.5.3 demonstration's; this shell shows its migration status instead of pretending. Native today: every step of the seven scenarios.</p>}
       <div className="tour__acts">
         <Button small onClick={() => start(Math.max(0, i - 1))} disabled={i === 0}>Previous</Button>
         <Button small kind="primary" onClick={() => start(Math.min(STEPS.length - 1, i + 1))} disabled={i === STEPS.length - 1}>Next</Button>

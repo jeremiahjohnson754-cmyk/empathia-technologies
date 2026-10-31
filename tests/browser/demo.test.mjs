@@ -129,7 +129,7 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     let visited = 0, honest = 0, errorsBefore = errs.length;
     for (let i = 0; i < 16; i++) { await page.click('[data-testid=tour] button:has-text("Next")'); await page.waitForTimeout(250); const t = await page.locator('[data-testid=tour]').innerText(); visited += 1; if (/not migrated yet/.test(t)) { honest += 1; console.log('  not migrated:', await page.evaluate(() => location.hash)); } const main = await page.evaluate(() => document.querySelector('main').innerText); if (!main.trim()) { ok(`T-03.${i}`, 'step renders a page', false, t.slice(0, 80)); } }
     const last = await page.locator('[data-testid=tour]').innerText();
-    ok('T-03', 'every one of the 17 steps opens a page with no page error; only the three Field Intelligence steps still say "not migrated yet"', visited === 16 && /step 17 of 17/.test(last) && honest === 3 && errs.length === errorsBefore, `${visited} visited, ${honest} honest, errors ${errs.length - errorsBefore}`);
+    ok('T-03', 'every one of the 17 steps opens a page with no page error; only the three Field Intelligence steps still say "not migrated yet"', visited === 16 && /step 17 of 17/.test(last) && honest === 0 && errs.length === errorsBefore, `${visited} visited, ${honest} honest, errors ${errs.length - errorsBefore}`);
     ok('T-04', 'the last step is the steward on the ledger', /as steward/.test(last));
     await page.click('[data-testid=tour] button[aria-label="Scenario 4"]'); await page.waitForTimeout(400);
     ok('T-05', 'jumping to scenario 4 opens the commissioning plan step natively as the commissioning engineer', /Scenario 4 of 7/.test(await page.locator('[data-testid=tour]').innerText()) && /#\/v25\/build/.test(await page.evaluate(() => location.hash)));
@@ -246,6 +246,49 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     ok('M-05', 'the ledger filters to the refusals, each with actor, UTC and local time and the reason', /DENIED/.test(led) && /hard gate/.test(led) && /preflight has a failed check/.test(led) && /separation of duties/.test(led) && (led.match(/ALLOWED/g) || []).length === 0, led.slice(0, 300));
     await page.evaluate(() => { location.hash = '#/v25/policy'; }); await page.waitForTimeout(400);
     ok('M-06', 'the policy page shows what each native page checks and the demonstrator’s role × area matrix verbatim (86 areas × 14 roles)', (await page.locator('[data-testid=policy-gates] tbody tr').count()) === 6 && (await page.locator('[data-testid=policy-matrix] tbody tr').count()) === 86 && (await page.locator('[data-testid=policy-matrix] thead th').count()) === 15);
+    // ---------------------------------------------------------------- Field Intelligence v1.3 plan and v1.4 Physical Validation session
+    await page.evaluate(() => { location.hash = '#/v25/fi?room=R-ATL-4-218'; }); await page.waitForTimeout(500); await persp('syseng'); await page.waitForTimeout(200); await page.waitForSelector('[data-testid=fi-plan]');
+    const fp = await page.locator('[data-testid=fi-plan]').innerText();
+    ok('F-01', 'v1.3: the collector’s facts (version, ten modes, exit codes, 15-minute schedule, limitations); the plan is PLAN_ONLY with DECLARED capabilities, a downgraded OBSERVED claim, HardwareTested false, and monitoring NOT_RUN', /1\.3\.0-universal-preview/.test(fp) && /UniversalPlan/.test(fp) && /5 plan INCOMPLETE/.test(fp) && /PLAN_ONLY/.test(fp) && /downgraded/.test(fp) && /NOT_RUN/.test(fp) && /last check: NOT_RUN/.test(fp), fp.slice(0, 300));
+    await page.click('#tab-pv'); await page.waitForTimeout(400); await page.waitForSelector('[data-testid=fi-licence]');
+    ok('F-02', 'v1.4: the boardroom archetype is licensed at this site; three adapters are NOT_CONFIGURED in this build', /LICENSED/.test(await page.locator('[data-testid=fi-licence]').innerText()) && (await page.locator('main').innerText().then((t) => (t.match(/NOT_CONFIGURED/g) || []).length)) >= 3);
+    await page.click('button:has-text("Propose a session for R-ATL-4-218")'); await page.waitForTimeout(300); await page.waitForSelector('[data-testid=fi-session]');
+    await page.click('[data-testid=fi-actions] button:has-text("Check eligibility")'); await page.waitForTimeout(300);
+    const el = await page.locator('[data-testid=fi-session]').innerText();
+    ok('F-03', 'eligibility: the two acoustic tests on READ_ONLY adapters are ELIGIBLE, the camera scan is NOT_CONFIGURED; the session reaches SAFETY_PREFLIGHT', /SAFETY_PREFLIGHT/.test(el) && /LAEQ \(ADP-SLM · ELIGIBLE\)/.test(el) && /CAM-FOV \(ADP-CAM · NOT_CONFIGURED\)/.test(el), el.slice(0, 300));
+    await page.click('[data-testid=fi-actions] button:has-text("Reserve window")'); await page.waitForTimeout(250);
+    ok('F-04', 'the systems engineer cannot reserve the window (Operations / Facilities)', /cannot reserve the window/.test(await refusal()), await refusal());
+    await page.fill('#fi-lim', '85'); await page.click('[data-testid=fi-actions] button:has-text("Approve the protocol")'); await page.waitForTimeout(250);
+    await persp('ops'); await page.waitForTimeout(200); await page.click('[data-testid=fi-actions] button:has-text("Reserve window")'); await page.waitForTimeout(250);
+    await persp('service'); await page.waitForTimeout(200); await page.click('[data-testid=fi-actions] button:has-text("I am on site and consent")'); await page.waitForTimeout(250);
+    await page.fill('[data-testid=fi-actions] input[aria-label="Calibration due"]', '2026-01-01'); await page.click('[data-testid=fi-actions] button:has-text("Register the instrument")'); await page.waitForTimeout(300);
+    ok('F-05', 'a past calibration date ends the session OUT_OF_CALIBRATION (a blocked branch, not a warning)', /OUT_OF_CALIBRATION/.test(await page.locator('[data-testid=fi-session] h2').innerText()) && /ended/.test(await page.locator('[data-testid=fi-session] h2').innerText()));
+    // a second session, walked all the way to a simulated run and an emergency stop
+    await persp('syseng'); await page.waitForTimeout(200); await page.click('button:has-text("Propose a session for R-ATL-4-218")'); await page.waitForTimeout(300);
+    await page.click('[data-testid=fi-actions] button:has-text("Check eligibility")'); await page.waitForTimeout(250); await page.fill('#fi-lim', '85'); await page.click('[data-testid=fi-actions] button:has-text("Approve the protocol")'); await page.waitForTimeout(250);
+    await persp('ops'); await page.waitForTimeout(200); await page.click('[data-testid=fi-actions] button:has-text("Reserve window")'); await page.waitForTimeout(250);
+    await persp('service'); await page.waitForTimeout(200); await page.click('[data-testid=fi-actions] button:has-text("I am on site and consent")'); await page.waitForTimeout(250);
+    await page.fill('[data-testid=fi-actions] input[aria-label="Calibration due"]', '2027-07-01'); await page.click('[data-testid=fi-actions] button:has-text("Register the instrument")'); await page.waitForTimeout(250); await page.click('[data-testid=fi-actions] button:has-text("E-stop verified")'); await page.waitForTimeout(250);
+    ok('F-06', 'five approvals by three different people complete the preflight: DRY_RUN', /DRY_RUN/.test(await page.locator('[data-testid=fi-session] h2').innerText()), await refusal());
+    await page.click('[data-testid=fi-actions] button:has-text("Walk the dry run")'); await page.waitForTimeout(250);
+    ok('F-07', 'the dry run emits nothing and the session awaits authorization', /APPROVAL_PENDING/.test(await page.locator('[data-testid=fi-session] h2').innerText()) && /output: none \(dry run emits nothing\)/.test(await page.locator('[data-testid=fi-session]').innerText()));
+    await page.click('[data-testid=fi-actions] button:has-text("Authorize the session")'); await page.waitForTimeout(250);
+    ok('F-08', 'the technician cannot authorize (Commissioning Lead)', /cannot authorize sessions/.test(await refusal()), await refusal());
+    await persp('cxeng'); await page.waitForTimeout(200); await page.click('[data-testid=fi-actions] button:has-text("Authorize the session")'); await page.waitForTimeout(250);
+    await page.waitForSelector('[data-testid=fi-arm]'); await page.locator('[data-testid=fi-arm] input >> nth=0').check(); await page.locator('[data-testid=fi-arm] input >> nth=1').check(); await page.click('[data-testid=fi-arm] button:has-text("Arm")'); await page.waitForTimeout(250);
+    ok('F-09', 'only the consenting local operator can arm — the commissioning lead is refused', /only the consenting local operator can arm/.test(await refusal()), await refusal());
+    await persp('service'); await page.waitForTimeout(200); await page.waitForSelector('[data-testid=fi-arm]'); await page.locator('[data-testid=fi-arm] input >> nth=0').check(); await page.locator('[data-testid=fi-arm] input >> nth=1').uncheck(); await page.click('[data-testid=fi-arm] button:has-text("Arm")'); await page.waitForTimeout(250);
+    ok('F-10', 'arming needs two explicit confirmations', /two explicit confirmations/.test(await refusal()), await refusal());
+    await page.locator('[data-testid=fi-arm] input >> nth=1').check(); await page.click('[data-testid=fi-arm] button:has-text("Arm")'); await page.waitForTimeout(250);
+    ok('F-11', 'armed as a labelled SIMULATION (no adapter, no hardware)', /ARMED/.test(await page.locator('[data-testid=fi-session] h2').innerText()) && /SIMULATION/.test(await page.locator('[data-testid=fi-session] h2').innerText()));
+    await page.click('[data-testid=fi-run] button:has-text("Next point")'); await page.waitForTimeout(250);
+    ok('F-12', 'a simulated point records no level: the value is null, a value only exists in the instrument export', /null dB\(A\)/.test(await page.locator('[data-testid=fi-results]').innerText()) && /SIMULATED/.test(await page.locator('[data-testid=fi-results]').innerText()));
+    await page.click('[data-testid=fi-run] button:has-text("EMERGENCY STOP")'); await page.waitForTimeout(250);
+    const ab = await page.locator('[data-testid=fi-session]').innerText();
+    ok('F-13', 'the E-stop aborts: output terminated, restore requested, the session ended; nothing can be stepped afterwards', /ABORTED/.test(ab) && /restore requested/.test(ab) && !(await page.locator('[data-testid=fi-run]').count()), ab.slice(0, 200));
+    await persp('visitor'); await page.waitForTimeout(200); await page.evaluate(() => { location.hash = '#/v25/fipv?room=R-NST-2-101'; }); await page.waitForTimeout(400);
+    ok('F-14', 'the town hall is not licensed at this site, and a visitor cannot change that', /NOT LICENSED/.test(await page.locator('[data-testid=fi-licence]').innerText()) && /Security \/ Platform Admin/.test(await page.locator('[data-testid=fi-licence]').innerText()));
+
     await page.evaluate(() => { location.hash = '#/v25/service'; }); await page.waitForTimeout(400); await page.click('button:has-text("Reset workspace")'); await page.waitForTimeout(300);
     ok('M-07', 'Reset returns the workspace to its seed: ISS-0417 is OPEN again and the cases are gone', /OPEN[\s\S]*ISS-0417/.test(await page.locator('[data-testid=incidents]').innerText()) && !/APX-/.test(await page.locator('main').innerText()));
   }

@@ -7,6 +7,7 @@
  */
 import { SERVICE_TRANSITIONS, WORK_NEEDS, candidates, preflight, serviceBlockers, type Staff, type ServiceState, type Check } from '@empathia/service-engine';
 import { openCase, act, type Hypothesis, type Outcome, type Layer } from '@empathia/apex-engine';
+import * as FI from '@empathia/field-intelligence';
 import { holds, personaLabel } from '../build/store.js';
 
 export interface Evt { at: string; by: string; type: string; aggregate: string; detail: string; outcome: 'ALLOWED' | 'DENIED' }
@@ -15,7 +16,7 @@ export interface WorkOrder { id: string; incidentId: string; roomId: string; bui
 export interface ApexCase { id: string; incidentId: string; roomId: string; key: string; layers: Array<{ layer: Layer; label: string; observations: string[]; cites: string[] }>; hypotheses: Hypothesis[]; actions: Array<Outcome & { at: string; by: string; hypothesisId: string }>; reviewed: { by: string; at: string; verdict: string } | null; openedAt: string }
 export interface LearnCase { id: string; incidentId: string; apexId: string | null; title: string; lesson: string; permission: { by: string; at: string } | null; deidentified: boolean; proposedBy: string; proposedAt: string; smeReview: { decision: 'approve' | 'reject'; by: string; at: string; note: string } | null; state: 'PROPOSED' | 'SME_REVIEWED' | 'REJECTED' | 'APPROVED'; approvedBy: string | null }
 export interface Training { drillId: string; at: string; by: string; correct: boolean; elapsedS: number }
-export interface Workspace { v: 1; seededAt: string; incidents: Incident[]; workOrders: WorkOrder[]; staff: Staff[]; apexCases: ApexCase[]; learnCases: LearnCase[]; events: Evt[]; training: Training[]; adapters: Record<string, 'NOT_CONFIGURED' | 'DECLARED' | 'SUPPORTED_VERIFIED'>; stock: Record<string, { onHand: number; checkedAt: string; location: string }>; bookings: Record<string, Array<{ from: string; to: string; title: string }>>; seq: { wo: number; apex: number; learn: number; inc: number } }
+export interface Workspace { v: 1; seededAt: string; incidents: Incident[]; workOrders: WorkOrder[]; staff: Staff[]; apexCases: ApexCase[]; learnCases: LearnCase[]; events: Evt[]; training: Training[]; fiSessions: FI.Session[]; licenses: Record<string, boolean>; adapters: Record<string, 'NOT_CONFIGURED' | 'DECLARED' | 'SUPPORTED_VERIFIED'>; stock: Record<string, { onHand: number; checkedAt: string; location: string }>; bookings: Record<string, Array<{ from: string; to: string; title: string }>>; seq: { wo: number; apex: number; learn: number; inc: number; fi: number } }
 export type Refusal = { why: string[] };
 export const refused = (why: string[]): Refusal => ({ why });
 const KEY = 'empathia.demo.workspace.v1';
@@ -46,15 +47,15 @@ export function seed(): Workspace {
     { id: 'WO-0081', incidentId: 'ISS-0398', roomId: 'R-ATL-4-231', buildingKey: 'ATL', workType: 'break_fix', title: 'Projector input mapping · Atlas 4.231', state: 'DONE', techId: 'tech-ana', window: { from: ago(20, 10), to: ago(20, 7) }, access: { confirmedBy: 'site champion' }, safety: { briefed: true }, toolsConfirmed: ['service kit'], parts: [], evidence: [{ at: ago(20, 8), by: 'tech-ana', kind: 'photo', note: 'input mapping restored to the commissioned configuration (synthetic photo)' }], preflight: null, openedAt: ago(21) },
   ];
   incidents[0]!.workOrderId = 'WO-0088'; incidents[2]!.workOrderId = 'WO-0081';
-  return { v: 1, seededAt: t0, incidents, workOrders, staff, apexCases: [], learnCases: [], training: [],
+  return { v: 1, seededAt: t0, incidents, workOrders, staff, apexCases: [], learnCases: [], training: [], fiSessions: [], licenses: { 'SITE-NORTH:BRD': true, 'SITE-NORTH:TWN': false, 'SITE-NORTH:HUD': false },
     events: [{ at: t0, by: 'system', type: 'workspace.seeded', aggregate: 'Workspace', detail: '5 incidents, 2 work orders, 4 people, synthetic estate', outcome: 'ALLOWED' }],
     adapters: { 'ADP-DSP': 'NOT_CONFIGURED', 'ADP-CAM': 'NOT_CONFIGURED', 'ADP-NET': 'NOT_CONFIGURED' },
     stock: { 'camera unit': { onHand: 2, checkedAt: ago(10), location: 'ATL store' }, 'mounting plate': { onHand: 6, checkedAt: ago(10), location: 'ATL store' }, processor: { onHand: 1, checkedAt: ago(33), location: 'MER store' }, loudspeakers: { onHand: 0, checkedAt: ago(40), location: 'ATL store' } },
     bookings: { 'R-ATL-4-218': [{ from: ago(-1, 2).slice(0, 16), to: ago(-1, 0).slice(0, 16), title: 'Board review' }], 'R-ATL-4-220': [] },
-    seq: { wo: 88, apex: 0, learn: 0, inc: 421 } };
+    seq: { wo: 88, apex: 0, learn: 0, inc: 421, fi: 0 } };
 }
 
-export function load(): Workspace { try { const s = localStorage.getItem(KEY); if (s) { const w = JSON.parse(s) as Workspace; if (w.v === 1) return w; } } catch { /* storage unavailable */ } const w = seed(); save(w); return w; }
+export function load(): Workspace { try { const s = localStorage.getItem(KEY); if (s) { const w = JSON.parse(s) as Workspace; if (w.v === 1) { if (!w.fiSessions) { w.fiSessions = []; w.licenses = seed().licenses; w.seq.fi = 0; } return w; } } } catch { /* storage unavailable */ } const w = seed(); save(w); return w; }
 export function save(w: Workspace | null): void { try { if (w) localStorage.setItem(KEY, JSON.stringify(w)); else localStorage.removeItem(KEY); } catch { /* the workspace lasts the page */ } }
 export function reset(): Workspace { const w = seed(); save(w); return w; }
 
@@ -227,3 +228,34 @@ export function recordTraining(w: Workspace, persona: string, drillId: string, c
   w.training.unshift({ drillId, at: now(), by: persona, correct, elapsedS }); w.training = w.training.slice(0, 200);
   log(w, persona, 'training.drill_completed', drillId, `${correct ? 'correct' : 'incorrect'} in ${elapsedS}s — training performance never grants work authorization`);
 }
+
+// ------------------------------------------------------------------------------------------------------------ Field Intelligence v1.4 Physical Validation sessions
+const actor = (persona: string): FI.Actor => ({ persona, now: now(), can: (a) => ([] as string[]).concat(a).some((x) => holds(persona, x)) });
+export function fiSessionOf(w: Workspace, id: string) { return w.fiSessions.find((s) => s.id === id); }
+export function setLicense(w: Workspace, persona: string, key: string, on: boolean): Refusal | null {
+  const n = need(w, persona, 'license.grant', 'fipv.license', key); if (n) return n;
+  w.licenses[key] = on; log(w, persona, 'fipv.license', key, `${on ? 'granted' : 'revoked'} — a licence opens requests, never proofs`); return null;
+}
+export function fiPropose(w: Workspace, persona: string, roomId: string, archetype: string, points: FI.Session['points'], tests: FI.PvTest[]): Refusal | { id: string } {
+  const n = need(w, persona, ['protocol.approve', 'tests.verify.all', 'fipv.review', 'plan.compile', 'test.verify'], 'fipv.propose', roomId); if (n) return n;
+  const id = `FIS-${String(++w.seq.fi).padStart(3, '0')}`;
+  w.fiSessions.unshift(FI.createSession(id, roomId, archetype, points, tests, actor(persona)));
+  log(w, persona, 'fipv.session_transitioned', id, `none → DRAFT (${roomId}, ${tests.length} test(s), ${points.length} point(s))`); return { id };
+}
+function fiApply(w: Workspace, persona: string, id: string, type: string, fn: (s: FI.Session, a: FI.Actor) => FI.Session | FI.Refusal | { missing: string[]; session: FI.Session }): Refusal | FI.Session {
+  const s = fiSessionOf(w, id); if (!s) return refused(['no such session']);
+  const r = fn(s, actor(persona));
+  if (FI.isRefusal(r)) return deny(w, persona, type, id, r.why);
+  const next = 'session' in r && 'missing' in r ? r.session : (r as FI.Session);
+  const i = w.fiSessions.findIndex((x) => x.id === id); w.fiSessions[i] = next;
+  const last = next.log[next.log.length - 1];
+  log(w, persona, next.state !== s.state ? 'fipv.session_transitioned' : type, id, next.state !== s.state ? `${s.state} → ${next.state}: ${last?.text || ''}` : last?.text || type);
+  return next;
+}
+export const fiEligibility = (w: Workspace, persona: string, id: string) => fiApply(w, persona, id, 'fipv.eligibility', (s, a) => FI.eligibility(s, a, !!w.licenses[`SITE-NORTH:${s.archetype}`]));
+export const fiPreflight = (w: Workspace, persona: string, id: string, i: FI.PreflightInput) => fiApply(w, persona, id, `fipv.preflight.${i.step}`, (s, a) => FI.preflight(s, a, i));
+export const fiDryRun = (w: Workspace, persona: string, id: string) => fiApply(w, persona, id, 'fipv.dry_run', FI.dryRun);
+export const fiAuthorize = (w: Workspace, persona: string, id: string, yes: boolean) => fiApply(w, persona, id, 'fipv.authorize', (s, a) => FI.authorize(s, a, yes));
+export const fiArm = (w: Workspace, persona: string, id: string, c1: boolean, c2: boolean) => fiApply(w, persona, id, 'fipv.arm', (s, a) => FI.arm(s, a, c1, c2, true));
+export const fiRun = (w: Workspace, persona: string, id: string, branch: typeof FI.BRANCHES[number] | null) => fiApply(w, persona, id, 'fipv.run', (s, a) => FI.run(s, a, branch));
+export const fiEstop = (w: Workspace, persona: string, id: string) => fiApply(w, persona, id, 'fipv.estop', FI.estop);

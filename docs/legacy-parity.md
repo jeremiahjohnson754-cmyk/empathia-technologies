@@ -1,6 +1,6 @@
 # Legacy parity ledger — Living Campus V2.5.3 and Founder Studio
 
-Generated 2026-10-31T10:17:55.831Z by `scripts/legacy/parity-ledger.mjs` from `legacy/inventory/*.json` (built from the committed source of each demonstrator) and the classification in that script. **Two applications, kept apart:** the Living Campus (investor-safe demo + authenticated enterprise application) and the Founder Studio (private founder application). Shared: identity, design tokens, API contracts, audit. Not shared: Founder Studio data, its administrative capabilities, or any route of it on a public or investor surface.
+Generated 2026-10-31T10:41:23.954Z by `scripts/legacy/parity-ledger.mjs` from `legacy/inventory/*.json` (built from the committed source of each demonstrator) and the classification in that script. **Two applications, kept apart:** the Living Campus (investor-safe demo + authenticated enterprise application) and the Founder Studio (private founder application). Shared: identity, design tokens, API contracts, audit. Not shared: Founder Studio data, its administrative capabilities, or any route of it on a public or investor surface.
 
 ## Baseline facts (verified on receipt)
 
@@ -27,15 +27,16 @@ Target classes (mandate §1): MIGRATED_REAL · MIGRATED_DEMO · DEFERRED_WITH_RE
 | Status now | Rows |
 |---|---|
 | PARTIAL (demo native; app partial) | 1 |
-| PARTIAL | 77 |
+| PARTIAL | 76 |
 | DONE (app + demo native) | 2 |
-| NOT_STARTED | 100 |
+| NOT_STARTED | 98 |
 | DONE (slice) | 3 |
-| PARTIAL (demo native on the engine; app pending) | 2 |
+| PARTIAL (demo native on the engine; app pending) | 4 |
 | DONE (app) | 6 |
 | PARTIAL (demo native; labs pending; app search only) | 1 |
 | DONE (slice; demo native) | 2 |
-| PARTIAL (investor tour native; FI steps pending) | 1 |
+| PARTIAL (demo native) | 4 |
+| PARTIAL (investor tour native; A/B/C pending) | 1 |
 | PARTIAL (demo native on the engine; app API partial) | 1 |
 | PARTIAL (demo native; app pending) | 1 |
 | PARTIAL (API complete; record view; field gates attested) | 1 |
@@ -43,8 +44,7 @@ Target classes (mandate §1): MIGRATED_REAL · MIGRATED_DEMO · DEFERRED_WITH_RE
 | DONE (demo native) | 1 |
 | DONE (demo native; app slice) | 1 |
 | PARTIAL (API complete; no supplier inbox) | 1 |
-| PARTIAL (demo native) | 3 |
-| PARTIAL (runner native; 3/17 FI step pages pending) | 1 |
+| DONE (runner native; 17/17 steps native) | 1 |
 | DONE (API; UI pending) | 2 |
 | DONE | 4 |
 | PARTIAL (API complete, UI pending) | 6 |
@@ -59,8 +59,8 @@ A feature is never "migrated" because its route exists. Each row carries the hig
 | 1 ROUTED | 50 |
 | 2 RENDERED | 2 |
 | 3 FUNCTIONAL | 3 |
-| 4 BACKEND_CONNECTED | 43 |
-| 5 REGRESSION_TESTED | 46 |
+| 4 BACKEND_CONNECTED | 41 |
+| 5 REGRESSION_TESTED | 48 |
 
 **Regressions at this commit: none** — no original route has been removed; the originals remain the served demonstrators until each route is migrated natively (an embedded original is interim, never counted as a migration).
 
@@ -120,9 +120,9 @@ A feature is never "migrated" because its route exists. Each row carries the hig
 | Living Campus | area | `replay` | Core Replay — area replay (12-authz.js); roles: 8 | MIGRATED_DEMO | /demo/replay | synthetic time replay | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P3 |
 | Living Campus | area | `compare` | Core Compare — area compare (12-authz.js); roles: 11 | MIGRATED_REAL | /app/compare | GET /v1/rooms/{room}/revisions/compare (rooms); others P6 | PARTIAL | 4 BACKEND_CONNECTED (revisions/compare: api.test.mjs) | tests/e2e compare |
 | Living Campus | area | `ledger` | the evidence ledger — area ledger (12-authz.js); roles: 7 | MIGRATED_REAL | /app/audit · demo #/v25/ledger (native) | GET /v1/audit (append-only); demo: every event of the workspace and the room draft with actor, UTC and local time, filtered; policy page = authorities each native page checks + the demonstrator’s role × area matrix verbatim | DONE (slice; demo native) | 5 REGRESSION_TESTED (tests/security/authz.test.mjs (audit read authority) + api.test.mjs) | tests/security 45/45; demo M-05, M-06 |
-| Living Campus | area | `fabric` | the integration and event fabrics — area fabric (12-authz.js); roles: 4 | MIGRATED_REAL | /admin/integrations | GET /v1/integrations, probe/sync/observations (MOCK adapters only) | PARTIAL | 4 BACKEND_CONNECTED (integrations probe/sync/observations: integration-worker.test.mjs + conformance 5/5) | integrations conformance 5/5 |
+| Living Campus | area | `fabric` | the integration and event fabrics — area fabric (12-authz.js); roles: 4 | MIGRATED_REAL | /admin/integrations · demo #/fabric (Field Intelligence native) | GET /v1/integrations, probe/sync/observations (MOCK adapters only); demo: the Field Intelligence v1.3 plan and v1.4 session on @empathia/field-intelligence | PARTIAL (demo native) | 4 BACKEND_CONNECTED (integrations probe/sync/observations: integration-worker.test.mjs + conformance 5/5) | integrations conformance 5/5; demo F-01..F-14 |
 | Living Campus | area | `qr` | the QR launch center — area qr (12-authz.js); roles: 3 | DEFERRED_WITH_REASON | — | launch convenience for a single-file demo; replaced by shareable demo links (P3) | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P3 |
-| Living Campus | area | `tours` | guided experiences — area tours (12-authz.js); roles: 2 | MIGRATED_DEMO | /demo/tours (investor tour native: #/tours/investor?scenario=n) | investor tour: the 17 canonical steps as a persistent runner with persona switching, reset & replay; 14/17 steps on native pages, 3 (Field Intelligence) on status pages that say so; A/B/C tours pending | PARTIAL (investor tour native; FI steps pending) | 4 BACKEND_CONNECTED (investor tour runner regression-tested (T-01..T-06); 10 of 17 steps still land on status pages) | tests/browser/demo.test.mjs T-01..T-06 |
+| Living Campus | area | `tours` | guided experiences — area tours (12-authz.js); roles: 2 | MIGRATED_DEMO | /demo/tours (investor tour native: #/tours/investor?scenario=n) | investor tour: the 17 canonical steps as a persistent runner with persona switching, reset & replay; 17/17 steps on native pages; A/B/C tours pending | PARTIAL (investor tour native; A/B/C pending) | 5 REGRESSION_TESTED (investor tour runner regression-tested (T-01..T-06); 17 of 17 steps land on native pages) | tests/browser/demo.test.mjs T-01..T-06 |
 | Living Campus | area | `core` | the Core model — area core (12-authz.js); roles: 4 | MIGRATED_REAL | /admin/model | domain-types, schemas, entity dictionary (docs/database) | PARTIAL | 3 FUNCTIONAL (schemas package tests; no UI) | schemas tests |
 | Living Campus | area | `list` | records of one type — area list (12-authz.js); roles: 5 | MIGRATED_REAL | /app/records/{type} | read model P6 | PARTIAL | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P6 |
 | Living Campus | area | `servicehands` | ServiceHands — area servicehands (12-authz.js); roles: 8 | MIGRATED_REAL | /app/service · demo #/v25/service (native) | @empathia/service-engine (the service machine, hard gates, explained ranking, dispatch preflight); demo: queue, candidates, assignment, context packet from the estate graph, preflight on the record, evidence, independent verification, closure under the customer policy, reopening; app: issues → work orders → close (API; eligibility/preflight to move onto the engine) | PARTIAL (demo native on the engine; app API partial) | 4 BACKEND_CONNECTED (service-engine + demo V-01..V-15; app API partial) | service-engine 5/5; demo V-01..V-15 |
@@ -160,8 +160,8 @@ A feature is never "migrated" because its route exists. Each row carries the hig
 | Living Campus | v25 page | `v25/design` | Design workspace — #/v25/design — Revisions, redlines, DIVR, drawing extraction, RFIs | MIGRATED_REAL | /app/rooms/{id}/design | revisions, drawings, classification approval (API); DIVR/RFI/extraction P5 | PARTIAL | 0 INVENTORIED (inventoried only) | P5/P6 named tests |
 | Living Campus | v25 page | `v25/scouter` | Scouter — #/v25/scouter — Standardization proposals from eligible cohorts | MIGRATED_REAL | /app/scouter | P6A | NOT_STARTED | 0 INVENTORIED (inventoried only) | P5/P6 named tests |
 | Living Campus | v25 page | `v25/lite` | Lite studio — #/v25/lite — Conceptual geometry with a confidence it does not exceed | MIGRATED_REAL | /app/rooms/{id}/plan | P6B | PARTIAL | 0 INVENTORIED (inventoried only) | P5/P6 named tests |
-| Living Campus | v25 page | `v25/fi` | Field Intelligence — #/v25/fi — v1.3 monitoring and plans — included by default | MIGRATED_REAL | /app/field-intelligence | P7 (v1.3 passive) | NOT_STARTED | 0 INVENTORIED (inventoried only) | P5/P6 named tests |
-| Living Campus | v25 page | `v25/fipv` | Physical Validation — #/v25/fipv — FI v1.4 — optional, licensed, hardware-governed | MIGRATED_REAL | /app/field-intelligence/physical | P7 (v1.4 entitlement state machine; denial tests 29–31) | NOT_STARTED | 0 INVENTORIED (inventoried only) | P5/P6 named tests |
+| Living Campus | v25 page | `v25/fi` | Field Intelligence — #/v25/fi — v1.3 monitoring and plans — included by default | MIGRATED_REAL | /app/field-intelligence | @empathia/field-intelligence v1.3: declarations → PLAN_ONLY plan (capabilities DECLARED/UNKNOWN, claimed observations downgraded, pairs NOT_TESTED, monitoring NOT_RUN); demo native #/v25/fi; app P7 | PARTIAL (demo native on the engine; app pending) | 0 INVENTORIED (inventoried only) | P5/P6 named tests |
+| Living Campus | v25 page | `v25/fipv` | Physical Validation — #/v25/fipv — FI v1.4 — optional, licensed, hardware-governed | MIGRATED_REAL | /app/field-intelligence/physical | @empathia/field-intelligence v1.4: licence → eligibility → five-step safety preflight (protocol, window, operator, instrument, E-stop) → dry run → authorization → two-confirmation arming by the consenting operator → simulated run with abnormal branches and E-stop; demo native #/v25/fipv; app P7 | PARTIAL (demo native on the engine; app pending) | 0 INVENTORIED (inventoried only) | P5/P6 named tests |
 | Living Campus | v25 page | `v25/commissioning` | Commissioning — #/v25/commissioning — An adaptive plan compiled from the rule pack, with WHY | MIGRATED_REAL | /app/rooms/{id}/commissioning | engine + results + verify (API) | PARTIAL | 0 INVENTORIED (inventoried only) | P5/P6 named tests |
 | Living Campus | v25 page | `v25/tracker` | Documentation tracker — #/v25/tracker — 36 columns, seven views, the final-photo gate | MIGRATED_REAL | /app/rooms/{id}/documentation | P5 (36 columns, final-photo gate, test 25) | NOT_STARTED | 0 INVENTORIED (inventoried only) | P5/P6 named tests |
 | Living Campus | v25 page | `v25/service` | ServiceHands — #/v25/service — Hard-gated eligibility, preflight, field execution | MIGRATED_REAL | /app/service | demo native on @empathia/service-engine; app issues/work orders (API), eligibility/preflight to move onto the engine | PARTIAL (demo native) | 0 INVENTORIED (inventoried only) | P5/P6 named tests |
@@ -199,13 +199,13 @@ A feature is never "migrated" because its route exists. Each row carries the hig
 | Living Campus | navigation | `core` | Core — More menu › Foundation › #/suite/core | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 3 FUNCTIONAL (schemas package tests; no UI) | P3 navigation test |
 | Living Campus | navigation | `fabric` | Integration Fabric — More menu › Foundation › #/fabric | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 4 BACKEND_CONNECTED (integrations probe/sync/observations: integration-worker.test.mjs + conformance 5/5) | P3 navigation test |
 | Living Campus | navigation | `qr` | QR Launch — More menu › Foundation › #/qr | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 0 INVENTORIED (inventoried only) | P3 navigation test |
-| Living Campus | navigation | `tours` | Guided experiences — More menu › Foundation › #/tours | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 4 BACKEND_CONNECTED (investor tour runner regression-tested (T-01..T-06); 10 of 17 steps still land on status pages) | P3 navigation test |
+| Living Campus | navigation | `tours` | Guided experiences — More menu › Foundation › #/tours | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 5 REGRESSION_TESTED (investor tour runner regression-tested (T-01..T-06); 17 of 17 steps land on native pages) | P3 navigation test |
 | Living Campus | guided tour | `tour/lifecycle` | lifecycle — 19 steps | MIGRATED_DEMO | /demo/tours/lifecycle | A/B/C demos P3 | NOT_STARTED | 0 INVENTORIED (inventoried only) | P3 |
 | Living Campus | guided tour | `tour/workplace` | workplace — 7 steps | MIGRATED_DEMO | /demo/tours/workplace | A/B/C demos P3 | NOT_STARTED | 0 INVENTORIED (inventoried only) | P3 |
 | Living Campus | guided tour | `tour/engineer` | engineer — 8 steps | MIGRATED_DEMO | /demo/tours/engineer | A/B/C demos P3 | NOT_STARTED | 0 INVENTORIED (inventoried only) | P3 |
 | Living Campus | guided tour | `tour/founder` | founder — 15 steps | MIGRATED_DEMO | /demo/tours/founder | A/B/C demos P3 | NOT_STARTED | 0 INVENTORIED (inventoried only) | P3 |
 | Living Campus | guided tour | `tour/d2a` | d2a — ? steps | MIGRATED_DEMO | /demo/tours/d2a | A/B/C demos P3 | NOT_STARTED | 0 INVENTORIED (inventoried only) | P3 |
-| Living Campus | guided tour | `tour/investor` | investor — ? steps | MIGRATED_DEMO | /demo #/tours/investor?scenario=n (native runner) | apps/demo tour runner: 17 canonical steps verbatim, persona switching, reset & replay; 14 steps on native pages, 3 (Field Intelligence) on status pages | PARTIAL (runner native; 3/17 FI step pages pending) | 0 INVENTORIED (inventoried only) | tests/browser/demo.test.mjs T-01..T-06 |
+| Living Campus | guided tour | `tour/investor` | investor — ? steps | MIGRATED_DEMO | /demo #/tours/investor?scenario=n (native runner) | apps/demo tour runner: 17 canonical steps verbatim, persona switching, reset & replay; 17 steps on native pages | DONE (runner native; 17/17 steps native) | 0 INVENTORIED (inventoried only) | tests/browser/demo.test.mjs T-01..T-06 |
 | Living Campus | UI role | `visitor` | visitor — AZ_KEYS (14 demo roles) | MIGRATED_DEMO | /demo?as=visitor | perspective picker (never authorization) | NOT_STARTED | 0 INVENTORIED (inventoried only) | P3 role smoke |
 | Living Campus | UI role | `employee` | employee — AZ_KEYS (14 demo roles) | MIGRATED_DEMO | /demo?as=employee | perspective picker (never authorization) | NOT_STARTED | 0 INVENTORIED (inventoried only) | P3 role smoke |
 | Living Campus | UI role | `exec` | exec — AZ_KEYS (14 demo roles) | MIGRATED_DEMO | /demo?as=exec | perspective picker (never authorization) | NOT_STARTED | 0 INVENTORIED (inventoried only) | P3 role smoke |
