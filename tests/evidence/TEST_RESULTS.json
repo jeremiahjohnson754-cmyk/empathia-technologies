@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-31T01:23:25.561Z",
+  "at": "2026-10-31T01:33:32.828Z",
   "node": "v22.22.0",
   "pass": 32,
   "fail": 0,
@@ -112,7 +112,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 4.8,
+      "seconds": 4.7,
       "command": "python3 -I -m unittest discover -s ml/tests"
     },
     {
@@ -142,7 +142,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 1.5,
+      "seconds": 1.6,
       "command": "../../../opt/node22/bin/node --test tests/integration/leads.test.mjs"
     },
     {
@@ -152,7 +152,7 @@
       "tests": 3,
       "pass": 3,
       "fail": 0,
-      "seconds": 1.4,
+      "seconds": 1.3,
       "command": "../../../opt/node22/bin/node --test tests/integration/api-client.test.mjs"
     },
     {
@@ -172,7 +172,7 @@
       "tests": 45,
       "pass": 45,
       "fail": 0,
-      "seconds": 3.4,
+      "seconds": 3.3,
       "command": "../../../opt/node22/bin/node --test tests/security/authz.test.mjs"
     },
     {
@@ -202,7 +202,7 @@
       "tests": 2,
       "pass": 2,
       "fail": 0,
-      "seconds": 6.1,
+      "seconds": 5.6,
       "command": "../../../opt/node22/bin/node --test tests/security/authority-matrix.test.mjs"
     },
     {
@@ -212,7 +212,7 @@
       "tests": 9,
       "pass": 9,
       "fail": 0,
-      "seconds": 4.7,
+      "seconds": 4.6,
       "command": "../../../opt/node22/bin/node --test tests/security/governance.test.mjs"
     },
     {
@@ -222,7 +222,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 2.2,
+      "seconds": 2,
       "command": "../../../opt/node22/bin/node --test tests/security/administration.test.mjs"
     },
     {
@@ -232,7 +232,7 @@
       "tests": 6,
       "pass": 6,
       "fail": 0,
-      "seconds": 2.5,
+      "seconds": 2,
       "command": "../../../opt/node22/bin/node --test tests/security/search-party.test.mjs"
     },
     {
@@ -242,7 +242,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 2.5,
+      "seconds": 1.4,
       "command": "../../../opt/node22/bin/node --test tests/security/oidc.test.mjs"
     },
     {
@@ -252,7 +252,7 @@
       "tests": 12,
       "pass": 12,
       "fail": 0,
-      "seconds": 6.9,
+      "seconds": 5.4,
       "command": "../../../opt/node22/bin/node --test tests/security/project-lifecycle.test.mjs"
     },
     {
@@ -263,17 +263,17 @@
       "pass": 6,
       "fail": 0,
       "notRun": 0,
-      "seconds": 3.9,
+      "seconds": 3.8,
       "command": "../../../opt/node22/bin/node tests/e2e/website-lead.e2e.mjs"
     },
     {
       "suite": "browser: enterprise web E2E",
       "kind": "e2e",
       "result": "PASS",
-      "tests": 38,
-      "pass": 38,
+      "tests": 47,
+      "pass": 47,
       "fail": 0,
-      "seconds": 8.6,
+      "seconds": 13,
       "command": "../../../opt/node22/bin/node tests/browser/enterprise-web.test.mjs"
     },
     {
@@ -284,7 +284,7 @@
       "pass": 32,
       "fail": 0,
       "notRun": 0,
-      "seconds": 6.6,
+      "seconds": 6.8,
       "command": "../../../opt/node22/bin/node tests/browser/website.test.mjs"
     },
     {
@@ -295,7 +295,7 @@
       "pass": 46,
       "fail": 0,
       "notRun": 0,
-      "seconds": 35.6,
+      "seconds": 35.4,
       "command": "../../../opt/node22/bin/node tests/browser/demo.test.mjs"
     },
     {
@@ -306,7 +306,7 @@
       "pass": 19,
       "fail": 0,
       "notRun": 1,
-      "seconds": 35,
+      "seconds": 33.5,
       "command": "../../../opt/node22/bin/node tests/browser/founder-studio.test.mjs"
     },
     {
@@ -316,7 +316,7 @@
       "tests": 25,
       "pass": 25,
       "fail": 0,
-      "seconds": 46.7,
+      "seconds": 46.8,
       "command": "../../../opt/node22/bin/node tests/e2e/founder-townhall.e2e.mjs"
     },
     {
@@ -327,7 +327,7 @@
       "pass": 9,
       "fail": 0,
       "notRun": 0,
-      "seconds": 6.1,
+      "seconds": 6.2,
       "command": "../../../opt/node22/bin/node tests/e2e/founder-decisions.e2e.mjs"
     },
     {

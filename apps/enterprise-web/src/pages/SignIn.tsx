@@ -16,6 +16,7 @@ const PEOPLE: Array<[string, string, string]> = [
   ['svcmgr', 'Service manager', 'raises and closes work orders'],
   ['service', 'Service technician', 'field work and evidence'],
   ['exec', 'Executive', 'decides projects'],
+  ['finance', 'Finance', 'authorizes funding against the approved scope'],
   ['steward', 'Data steward', 'reads the audit trail'],
   ['secadmin', 'Security administrator', 'people, outbox, integrations'],
   ['requestor', 'Requestor', 'reads; submits requests'],

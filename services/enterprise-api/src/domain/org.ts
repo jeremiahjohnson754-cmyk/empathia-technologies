@@ -40,10 +40,10 @@ export async function people(ctx: RequestContext) {
 export async function projects(ctx: RequestContext) {
   return ctx.tx(async (q) => {
     const scope = ctx.p.siteScope;
-    const ps = (await q.query<{ id: string; code: string; name: string; state: string; created_at: string }>('SELECT id, code, name, state, created_at FROM app.project ORDER BY code')).rows;
+    const ps = (await q.query<{ id: string; code: string; name: string; state: string; governance: string; delivery: string | null; scope_rev: number; created_at: string }>('SELECT id, code, name, state, governance, delivery, scope_rev, created_at FROM app.project ORDER BY code')).rows;
     const rooms = (await q.query<{ project_id: string; code: string; name: string; lifecycle: string }>(
       `SELECT r.project_id, r.code, r.name, r.lifecycle FROM app.room r JOIN app.building b ON b.id = r.building_id WHERE r.project_id IS NOT NULL${scope?.length ? ' AND b.site_id = ANY($1::uuid[])' : ''} ORDER BY r.code`, scope?.length ? [scope] : [])).rows;
-    return { items: ps.map((p) => ({ code: p.code, name: p.name, state: p.state, createdAt: p.created_at, rooms: rooms.filter((r) => r.project_id === p.id).map(({ project_id: _, ...r }) => r) })) };
+    return { items: ps.map((p) => ({ code: p.code, name: p.name, state: p.state, governance: p.governance, delivery: p.delivery, scopeRev: p.scope_rev, createdAt: p.created_at, rooms: rooms.filter((r) => r.project_id === p.id).map(({ project_id: _, ...r }) => r) })) };
   });
 }
 

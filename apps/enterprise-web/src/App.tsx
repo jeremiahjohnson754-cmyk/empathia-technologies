@@ -12,6 +12,7 @@ import { Rooms } from './pages/Rooms.js';
 import { Room } from './pages/Room.js';
 import { Reports } from './pages/Reports.js';
 import { Projects } from './pages/Projects.js';
+import { Requests, ProjectRecord } from './pages/Lifecycle.js';
 import { Inbox } from './pages/Inbox.js';
 import { Admin } from './pages/Admin.js';
 import { SearchParty } from './pages/SearchParty.js';
@@ -33,7 +34,7 @@ export function App() {
   const admin = can(['policy.configure', 'provenance.review', 'adapter.allowlist']);
   const products = [
     { key: 'reports', label: 'Mission Control', href: href('reports'), purpose: 'What changed, what matters, what needs action — KPIs with definitions', active: page === 'reports' },
-    { key: 'projects', label: 'Pro', href: href('projects'), purpose: 'Portfolio, projects, service performance and the notification inbox', active: page === 'projects' || page === 'inbox' },
+    { key: 'projects', label: 'Pro', href: href('projects'), purpose: 'Portfolio, projects, service performance and the notification inbox', active: page === 'projects' || page === 'inbox' || page === 'requests' },
     { key: 'rooms', label: 'Lite', href: href('rooms'), purpose: 'Campus → building → floor → room: spatial design, devices, drawings', active: page === 'rooms' },
     { key: 'search', label: 'Search Party', href: href('search'), purpose: 'Universal entity search and relationship intelligence', active: page === 'search' },
     { key: 'commissioning', label: 'Commissioning & Assurance', href: href('commissioning'), purpose: 'Plans, evidence, verification, acceptance, baselines, drift', active: page === 'commissioning' },
@@ -49,7 +50,9 @@ export function App() {
         {page === 'rooms' && !route[1] ? <Rooms /> : null}
         {page === 'rooms' && route[1] ? <Room code={route[1]} tab={route[2] || 'overview'} /> : null}
         {page === 'search' ? <SearchParty type={route[1]} id={route[2]} /> : null}
-        {page === 'projects' ? <Projects /> : null}
+        {page === 'projects' && !route[1] ? <Projects /> : null}
+        {page === 'projects' && route[1] ? <ProjectRecord code={route[1]} /> : null}
+        {page === 'requests' ? <Requests /> : null}
         {page === 'reports' ? <Reports /> : null}
         {page === 'inbox' ? <Inbox /> : null}
         {page === 'commissioning' ? <CommissioningHome /> : null}
