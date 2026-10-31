@@ -272,6 +272,17 @@ where the contracts define one, an event. No product has its own workflow engine
 Not in the slice: Field Intelligence (its sessions are simulations and stay outside the measured record), Lite (geometry stays in the
 room's own lifecycle), instrument import (covered by IMP-1..4 on its own room), live operational monitoring (does not exist).
 
+### P5 (Ascension) — hardening scenarios with executable evidence (2026-10-31)
+
+| Item | Status | Evidence |
+|---|---|---|
+| Upload content sniffing: the bytes must match the declared evidence type (PNG/JPEG signature, PDF header, strict UTF-8 without NUL for text, JSON must parse); a mismatch is refused (415), audited, and nothing is stored | IMPLEMENTED · TESTED | `tests/security/hardening.test.mjs` HRD-1 |
+| KV-09: a server-side `statement_timeout` on every runtime connection (API 15 s, worker 60 s; configurable), sent as a connection startup parameter | IMPLEMENTED · TESTED | HRD-2 (shown on both pools; a 2 s statement under a 200 ms limit is cancelled with SQLSTATE 57014) |
+| Rate limiting under a burst (single process): 60 concurrent calls against a 40/min budget, only 200 or 429, per caller | TESTED | HRD-3 |
+| Audit-ledger tamper evidence | TESTED | LED-1..5 (ADR-0010) |
+| Register updated | — | `docs/security/KNOWN_VULNERABILITIES_AND_REMEDIATION.md` KV-07 (still OPEN: a signature check is not malware scanning), KV-09 (MITIGATED; pool metrics still OPEN), KV-17 (remaining: session fixation, backup restore under RLS, secret rotation, CSP reporting, cross-instance rate limiting, dependency audit) |
+| Status | — | **Not production-secure.** OPEN items remain (KV-02 no OIDC/MFA in the default path, KV-06 local object store only, KV-07 no malware scanning, KV-14 no dependency audit/SAST/DAST, KV-15 no external assessment). No item has been verified by an independent party |
+
 ### Connector expansion directive (2026-10-31 05:34 CT) — what was actually done
 
 | Item | Status | Evidence |

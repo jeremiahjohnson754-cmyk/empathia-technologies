@@ -15,6 +15,8 @@ export interface PgConfig {
   host: string; port: number; user: string; password?: string; database: string;
   ssl?: false | { rejectUnauthorized?: boolean; ca?: string };
   applicationName?: string;
+  /** server-side statement timeout for every statement on this connection (KV-09); sent as a startup parameter */
+  statementTimeoutMs?: number;
 }
 
 export class PgError extends Error {
@@ -120,7 +122,7 @@ export class PgConnection {
     sock.on('data', this.onData);
     sock.on('close', () => { this.closed = true; for (const w of this.waiters.splice(0)) w({ type: 'E', body: Buffer.from('SFATAL\0C08006\0Mconnection closed\0\0') }); });
     sock.on('error', () => { /* surfaced through 'close' */ });
-    const kv = [['user', this.cfg.user], ['database', this.cfg.database], ['application_name', this.cfg.applicationName || 'empathia-enterprise-api'], ['client_encoding', 'UTF8'], ['TimeZone', 'UTC']];
+    const kv = [['user', this.cfg.user], ['database', this.cfg.database], ['application_name', this.cfg.applicationName || 'empathia-enterprise-api'], ['client_encoding', 'UTF8'], ['TimeZone', 'UTC'], ...(this.cfg.statementTimeoutMs ? [['statement_timeout', String(this.cfg.statementTimeoutMs)]] : [])];
     const body = Buffer.concat([PgConnection.i32(196608), ...kv.flatMap(([k, v]) => [PgConnection.cstr(k!), PgConnection.cstr(v!)]), Buffer.from([0])]);
     sock.write(Buffer.concat([PgConnection.i32(body.length + 4), body]));
     await this.authenticate();

@@ -18,6 +18,7 @@ export interface Config {
   objectStoreDir: string;
   corsOrigins: string[];
   workerIntervalMs: number;
+  dbStatementTimeoutMs: number; workerStatementTimeoutMs: number;
   maxBodyBytes: number;
   rateLimitPerMinute: number;
   /** OIDC (AUTH_MODE=oidc): the provider's issuer, the audience this API accepts, the JWKS URL, and whether a verified email may bind a first sign-in to an existing person */
@@ -72,6 +73,7 @@ export function loadConfig(repo: string, over: Partial<Record<string, string>> =
     objectStoreDir: e['OBJECT_STORE_DIR'] || path.join(repo, '.local/objects'),
     corsOrigins: (e['CORS_ORIGINS'] || 'http://127.0.0.1:4310,http://localhost:4310,http://127.0.0.1:4200,http://localhost:4200').split(',').map((s) => s.trim()).filter(Boolean),
     workerIntervalMs: Number(e['WORKER_INTERVAL_MS'] || 500),
+    dbStatementTimeoutMs: Number(e['DB_STATEMENT_TIMEOUT_MS'] || 15000), workerStatementTimeoutMs: Number(e['WORKER_STATEMENT_TIMEOUT_MS'] || 60000),
     maxBodyBytes: Number(e['MAX_BODY_BYTES'] || 25 * 1024 * 1024),
     rateLimitPerMinute: Number(e['RATE_LIMIT_PER_MINUTE'] || 600),
     oidc,

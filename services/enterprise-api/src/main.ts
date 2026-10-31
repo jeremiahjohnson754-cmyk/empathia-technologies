@@ -27,10 +27,10 @@ export function telemetryFor(cfg: Config): Telemetry {
 export async function start(over: Partial<Record<string, string>> = {}) {
   const cfg: Config = loadConfig(repoRoot, over);
   const telemetry = telemetryFor(cfg);
-  const pool = new PgPool({ ...configFromUrl(cfg.databaseUrl), applicationName: 'empathia-enterprise-api' }, 10);
+  const pool = new PgPool({ ...configFromUrl(cfg.databaseUrl), applicationName: 'empathia-enterprise-api', statementTimeoutMs: cfg.dbStatementTimeoutMs }, 10);
   const tokens = new Hs256Tokens(cfg.jwtSecret, cfg.jwtIssuer, cfg.jwtAudience, cfg.tokenTtlSeconds);
   const store = new LocalObjectStore(cfg.objectStoreDir);
-  const workerPool = new PgPool({ ...configFromUrl(cfg.workerDatabaseUrl), applicationName: 'empathia-outbox-worker' }, 2);
+  const workerPool = new PgPool({ ...configFromUrl(cfg.workerDatabaseUrl), applicationName: 'empathia-outbox-worker', statementTimeoutMs: cfg.workerStatementTimeoutMs }, 2);
   const worker = new OutboxWorker(workerPool, undefined, cfg.workerIntervalMs);
   const health = async () => {
     const t0 = Date.now();

@@ -27,11 +27,28 @@ async function currentPlanRow(q: Queryable, roomId: string, testId: string): Pro
 const EVIDENCE_TYPES = ['image/jpeg', 'image/png', 'application/pdf', 'text/csv', 'application/json', 'text/plain'];
 export const EVIDENCE_AUTHORITIES = ['work.evidence', 'field.scan', 'test.verify', 'tests.verify.all', 'test.verify.audio', 'test.verify.video', 'test.verify.control'];
 
+/** The declared type must match the bytes (KV-17: content-type sniffing). Binary types by their signature; text types must be valid
+ *  UTF-8 without NUL bytes (JSON must also parse). Downloads are served with the recorded type and nosniff, so a mislabelled file
+ *  would otherwise reach another user under a type it is not. */
+export function contentMismatch(mt: string, data: Buffer): string | null {
+  const starts = (sig: number[]) => sig.every((b, i) => data[i] === b);
+  if (mt === 'image/png') return starts([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]) ? null : 'no PNG signature';
+  if (mt === 'image/jpeg') return starts([0xff, 0xd8, 0xff]) ? null : 'no JPEG signature';
+  if (mt === 'application/pdf') return data.subarray(0, 5).toString('latin1') === '%PDF-' ? null : 'no PDF header';
+  let text: string;
+  try { text = new TextDecoder('utf-8', { fatal: true }).decode(data); } catch { return 'not valid UTF-8 text'; }
+  if (text.includes('\u0000')) return 'contains NUL bytes (binary content)';
+  if (mt === 'application/json') { try { JSON.parse(text); } catch { return 'not valid JSON'; } }
+  return null;
+}
+
 export async function uploadEvidence(ctx: RequestContext, store: ObjectStore, data: Buffer, mediaType: string, fileName: string) {
   await ctx.require(EVIDENCE_AUTHORITIES, 'upload evidence');
   const mt = mediaType.split(';')[0]!.trim().toLowerCase();
   if (!EVIDENCE_TYPES.includes(mt)) throw new ApiError('unsupported_media_type', `evidence must be one of ${EVIDENCE_TYPES.join(', ')}`);
   if (!data.length) throw invalid('the evidence file is empty');
+  const mismatch = contentMismatch(mt, data);
+  if (mismatch) { await ctx.audit(null, 'evidence.upload', 'DENIED', undefined, { mediaType: mt, why: mismatch, bytes: data.length }); throw new ApiError('unsupported_media_type', `the file's content does not match ${mt}: ${mismatch}`); }
   const name = String(fileName || 'evidence').replace(/[^\w.\- ]+/g, '_').slice(0, 200);
   const obj = await store.put(data);
   return ctx.tx(async (q) => {
