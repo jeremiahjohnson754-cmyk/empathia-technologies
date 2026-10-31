@@ -13,7 +13,7 @@ const repo = path.resolve(app, '../..');
 const dist = path.join(app, 'dist');
 const dev = process.argv.includes('--dev');
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
-fs.rmSync(dist, { recursive: true, force: true }); fs.mkdirSync(dist, { recursive: true });
+if (!process.argv.includes('--generate-only')) { fs.rmSync(dist, { recursive: true, force: true }); fs.mkdirSync(dist, { recursive: true }); }
 // the legacy area registry from the parity ledger (docs/legacy-parity.csv): generated, never edited
 { const csv = fs.readFileSync(path.join(repo, 'docs/legacy-parity.csv'), 'utf8').split('\n').slice(1).filter(Boolean).map((l) => l.match(/("([^"]|"")*"|[^,]*)(,|$)/g).map((c) => c.replace(/,$/, '').replace(/^"|"$/g, '').replace(/""/g, '"')));
   const row = (r) => ({ key: r[2].replace(/^v25\//, 'v25.'), label: r[3].split(' — ')[0], target: r[7], status: r[10], newRoute: r[8] });
@@ -22,6 +22,8 @@ fs.rmSync(dist, { recursive: true, force: true }); fs.mkdirSync(dist, { recursiv
   // the demonstrator's role × area visibility matrix (AZ_KEYS × areas), verbatim from the inventory: the policy page shows it, never edits it
   const inv = JSON.parse(fs.readFileSync(path.join(repo, 'legacy/inventory/v253-inventory.json'), 'utf8'));
   fs.writeFileSync(path.join(app, 'src/generated/area-roles.json'), JSON.stringify({ roles: inv.uiRoles, areas: inv.areas.map((a) => ({ key: a.area, label: a.label, roles: a.roles })) }, null, 1)); }
+// --generate-only: write the generated sources and stop (scripts/build.mjs runs this before type-checking, so a fresh checkout builds)
+if (process.argv.includes('--generate-only')) process.exit(0);
 // the SIGNAL library ships beside the bundle and is fetched on demand by Learn (2 MB; never inlined)
 fs.mkdirSync(dist, { recursive: true }); fs.copyFileSync(path.join(repo, 'packages/domain-data/data/SIGNAL_LIB.json'), path.join(dist, 'signal-lib.json'));
 await esbuild.build({

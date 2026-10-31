@@ -55,6 +55,8 @@ for (const p of ['packages/domain-types', 'packages/commissioning-engine', 'pack
   log(`release stamp ${sha.slice(0, 12)}${info.dirty ? ' (dirty)' : ''}`);
 }
 run('JSON Schemas (events, API bodies, entities)', process.execPath, [path.join(root, 'packages/schemas/scripts/generate.mjs')]);
+// generated sources first (git-ignored, derived from committed data): a fresh checkout has none until this runs (P7 finding)
+run('generate apps/demo sources', process.execPath, [path.join(root, 'apps/demo/build.mjs'), '--generate-only']);
 for (const p of ['packages/ui', 'apps/enterprise-web', 'apps/website', 'apps/demo']) run(`type-check ${p}`, process.execPath, [tsc, '-p', path.join(root, p, 'tsconfig.json'), '--noEmit']);
 // the Founder Studio type-checks against data it generates from the Founder Edition and the films (apps/founder-studio/src/generated,
 // not committed), so it is checked as part of --studio; a clean checkout without --studio reports it NOT_RUN instead of failing
