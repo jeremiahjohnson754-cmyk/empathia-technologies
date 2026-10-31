@@ -1157,7 +1157,7 @@ export interface Operations {
     };
     response: R<'postV1PublicInvitationsAccept'>;
   };
-  /** POST /v1/public/leads — A message from the public website (demonstration request, pilot partnership, contact): stored for a person to answer; stricter per-address budget; honeypot; consent required */
+  /** POST /v1/public/leads — A message from the public website (demonstration request, pilot partnership, contact): stored for a person to answer; stricter per-address budget; honeypot; minimum fill time; consent required */
   postV1PublicLeads: {
     method: 'POST'; path: '/v1/public/leads'; auth: false; idempotent: false;
     params: { };
@@ -1172,6 +1172,7 @@ export interface Operations {
       message: string;
       consent: boolean;
       website?: string;
+      elapsedMs: number;
     };
     response: R<'postV1PublicLeads'>;
   };

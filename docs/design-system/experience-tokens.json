@@ -1,0 +1,27 @@
+{
+  "$schema": "Empathia Experience System v1 — tokens shared by Figma variables and apps/website (2026-10-31). Dark-first; one mode.",
+  "color": {
+    "obsidian": "#090C11", "graphite": "#11161D", "graphite-2": "#171D26", "graphite-warm": "#1D1B19",
+    "line": "#26303C", "line-strong": "#3A4656",
+    "text": "#ECF0F4", "text-2": "#AAB4C1", "text-3": "#8A95A3",
+    "signal": "#2ED6C5", "signal-ink": "#04211E", "ultramarine": "#4C63FF", "amber": "#F3B54A", "violet": "#A487FF",
+    "ok": "#4CC38A", "danger": "#FF6F6A"
+  },
+  "evidenceState": {
+    "verified": "#4CC38A", "observed": "#2ED6C5", "declared": "#AAB4C1", "modeled": "#A487FF", "simulated": "#F3B54A", "unknown": "#7D8896"
+  },
+  "type": {
+    "family-sans": "\"Helvetica Neue\", Helvetica, Arial, system-ui, sans-serif",
+    "family-mono": "ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+    "scale-px": { "micro": 12, "small": 14, "body": 17, "lead": 21, "h3": 24, "h2": 36, "h1": 60, "display": 88 },
+    "line-height": { "tight": 1.02, "heading": 1.12, "body": 1.6 },
+    "tracking": { "display": "-0.035em", "heading": "-0.02em", "label": "0.06em" }
+  },
+  "space-px": [4, 8, 12, 16, 24, 32, 48, 64, 96, 128],
+  "radius-px": { "control": 10, "card": 16, "media": 20, "pill": 999 },
+  "elevation": { "media": "0 30px 80px -30px rgba(0,0,0,.7)", "focus-ring": "0 0 0 2px #090C11, 0 0 0 4px #2ED6C5" },
+  "motion": { "fast-ms": 140, "base-ms": 220, "slow-ms": 350, "easing": "cubic-bezier(.2,.7,.2,1)", "reduced": "no transform animation; opacity only, or none" },
+  "breakpoints-px": { "phone-s": 320, "phone": 390, "tablet": 768, "laptop": 1024, "desktop": 1440, "ultrawide": 1920 },
+  "touch-target-min-px": 44,
+  "content-width-px": { "text": 680, "page": 1200 }
+}

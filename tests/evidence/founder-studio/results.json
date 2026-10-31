@@ -1,7 +1,7 @@
 {
  "suite": "founder-studio",
  "dist": "/home/claude/empathia-technologies/apps/founder-studio/dist",
- "at": "2026-10-31T18:29:01.939Z",
+ "at": "2026-10-31T21:30:50.896Z",
  "passed": 19,
  "failed": 0,
  "notRun": 1,
@@ -70,7 +70,7 @@
    "id": "S-10",
    "name": "the studio’s film route plays video end to end (a VP9 excerpt of Film A, served through the same launcher path; time advances)",
    "result": "PASS",
-   "detail": "1.556123"
+   "detail": "1.550361"
   },
   {
    "id": "S-11",

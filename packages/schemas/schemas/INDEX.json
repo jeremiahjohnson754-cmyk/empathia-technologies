@@ -696,7 +696,7 @@
     {
       "file": "api/postV1PublicLeads.json",
       "$id": "https://schemas.empathia.invalid/api/postV1PublicLeads/0.1.0.json",
-      "sha256": "fcde7f767817f3bf30b35a418a0ea9b899b798945f2d0d7eade8b44c4618f1a0"
+      "sha256": "abffe9cb11f536b9cf771e1f9de7f377aef86a78dccb81ddfc100447a11fba66"
     },
     {
       "file": "api/patchV1AdminLeadsId.json",

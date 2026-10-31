@@ -1,5 +1,5 @@
 {
- "at": "2026-10-31T18:26:04.233Z",
+ "at": "2026-10-31T21:27:50.322Z",
  "pass": 6,
  "fail": 0,
  "results": [
@@ -17,7 +17,7 @@
   },
   {
    "id": "L-03",
-   "name": "with consent the message is sent and the page confirms receipt",
+   "name": "with consent the message is sent and the page confirms receipt with a reference",
    "result": "PASS",
    "detail": ""
   },
@@ -25,7 +25,7 @@
    "id": "L-04",
    "name": "the message is stored and readable in the admin inbox with its fields and the notification status",
    "result": "PASS",
-   "detail": "{\"id\":\"fede73c0-7ece-43c5-9bdb-d64eae286f46\",\"kind\":\"demo\",\"name\":\"Synthetic Visitor\",\"organization\":\"Example Org (synthetic)\",\"email\":\"visitor@example.com\",\"audience\":\"Systems integrator\",\"scope\":null,\"message\":\"Please show the commissioning scenario.\",\"status\":\"NEW\",\"notified\":false,\"notify_note\":"
+   "detail": "{\"id\":\"e851f997-5104-4be9-bf36-543e25568fcf\",\"kind\":\"demo\",\"name\":\"Synthetic Visitor\",\"organization\":\"Example Org (synthetic)\",\"email\":\"visitor@example.com\",\"audience\":\"Systems integrator\",\"scope\":null,\"message\":\"Please show the commissioning scenario.\",\"status\":\"NEW\",\"notified\":false,\"notify_note\":"
   },
   {
    "id": "L-05",

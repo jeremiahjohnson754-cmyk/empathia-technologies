@@ -306,6 +306,18 @@ room's own lifecycle), instrument import (covered by IMP-1..4 on its own room), 
 | `scripts/staging/smoke.mjs`: deployment tests D1–D10 for the live environment | IMPLEMENTED · PASS in rehearsal; on Render NOT_RUN | — |
 | Open | — | V-1 (can Render's default user create roles?) is checked first on Render; B-2 the web app has no OIDC sign-in (decision A5); approvals A1–A5 |
 
+### Restoration sprint 0–1 (2026-10-31, post-launch directive and 35/10 brief) — branch `restoration/sprint-0-1`
+
+| Item | Status | Evidence |
+|---|---|---|
+| Live-site parity read (website matches `ea84222`); audit of both public sites, A1–A10 at 4 widths | DONE · baseline 99 P1 → **0 P0 / 0 P1** (74 demo target-size findings reclassified P2, not fixed) | `tests/evidence/SITE_AUDIT_BASELINE.json`, `SITE_AUDIT.json`, `docs/qa/DEFECT_REGISTER.md` |
+| Website rebuilt on Experience System v1; /products + 9 product pages with demo status; /founder (portrait, CTS · CAPM · Network+) | IMPLEMENTED · TESTED | website browser test, site audit |
+| Five owner films: placements, renditions, WebVTT captions, transcripts, rights gate, preview build | IMPLEMENTED · **not published** (rights UNVERIFIED) | `docs/media/WEBSITE_FILM_PLACEMENT.md` |
+| Lead capture: minimum fill time, receipt reference, consent target, client-address cleanup | IMPLEMENTED · TESTED (integration + e2e) | — |
+| Demo phone overflow (ledger, FI, search, policy) | FIXED | audit A1 0 |
+| CI: no FAIL or unexplained NOT_RUN; Blueprint validator runs (PyYAML); film gate in dist hygiene | IMPLEMENTED · CI NOT RUN until push | `.github/workflows/ci.yml` |
+| Open | — | D-01 lead endpoint (Phase 2), D-02 film rights, D-08 web OIDC, D-06 Scouter/Assurance history, D-07 SIGNAL narration |
+
 ### P8b (Ascension) — GitHub-backed Render deployment: prepared, not deployed (2026-10-31, owner request 13:06 CT)
 
 | Item | Status | Evidence |
