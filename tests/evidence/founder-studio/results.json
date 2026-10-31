@@ -1,11 +1,17 @@
 {
  "suite": "founder-studio",
  "dist": "/home/claude/empathia-technologies/apps/founder-studio/dist",
- "at": "2026-10-31T21:30:50.896Z",
+ "at": "2026-10-31T22:36:44.536Z",
  "passed": 19,
  "failed": 0,
  "notRun": 1,
  "results": [
+  {
+   "id": "S-00",
+   "name": "film fixtures used by S-09 and S-10",
+   "result": "INFO",
+   "detail": "cut from the Film A master on this computer"
+  },
   {
    "id": "S-01",
    "name": "the launcher serves the studio after the access key; the rail lists 28 destinations",
@@ -70,7 +76,7 @@
    "id": "S-10",
    "name": "the studio’s film route plays video end to end (a VP9 excerpt of Film A, served through the same launcher path; time advances)",
    "result": "PASS",
-   "detail": "1.550361"
+   "detail": "1.504719"
   },
   {
    "id": "S-11",

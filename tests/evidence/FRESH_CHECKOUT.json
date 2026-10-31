@@ -1,22 +1,22 @@
 {
-  "at": "2026-10-31T22:20:53.427Z",
+  "at": "2026-10-31T22:35:36.160Z",
   "mode": "ci (no inputs from outside the clone)",
-  "releaseGate": "NOT RELEASABLE",
-  "commit": "892023dd61a9d42b220b8fb17ec30a384e1f4547",
-  "directory": "/tmp/empathia-fresh-892023d",
+  "releaseGate": "RELEASABLE",
+  "commit": "3e7a0a9bb0c1f5c8cc6fc12f8674d53efd2dd2a7",
+  "directory": "/tmp/empathia-fresh-3e7a0a9",
   "node": "v22.22.0",
   "steps": [
     {
       "name": "clone",
-      "command": "git clone --quiet --no-hardlinks /home/claude/empathia-technologies /tmp/empathia-fresh-892023d",
+      "command": "git clone --quiet --no-hardlinks /home/claude/empathia-technologies /tmp/empathia-fresh-3e7a0a9",
       "exit": 0,
-      "seconds": 9.9
+      "seconds": 0.9
     },
     {
       "name": "bootstrap",
       "command": "/opt/node22/bin/node scripts/bootstrap.mjs",
       "exit": 0,
-      "seconds": 0
+      "seconds": 0.1
     },
     {
       "name": "database",
@@ -28,30 +28,30 @@
       "name": "build",
       "command": "/opt/node22/bin/node scripts/build.mjs --studio",
       "exit": 0,
-      "seconds": 41.9
+      "seconds": 41.6
     },
     {
       "name": "ml dataset",
       "command": "/opt/node22/bin/node ml/datasets/generate_synthetic.mjs",
       "exit": 0,
-      "seconds": 0.8
+      "seconds": 0.9
     },
     {
       "name": "ml training",
       "command": "python3 -I ml/training/train.py",
       "exit": 0,
-      "seconds": 3.4
+      "seconds": 3.1
     },
     {
       "name": "test",
       "command": "/opt/node22/bin/node scripts/test.mjs --browser --studio",
-      "exit": 1,
-      "seconds": 509.9
+      "exit": 0,
+      "seconds": 522.7
     },
     {
       "name": "release gate (platform)",
       "command": "/opt/node22/bin/node scripts/verify/no-unexpected-skips.mjs --profile=platform",
-      "exit": 1,
+      "exit": 0,
       "seconds": 0
     }
   ],
@@ -62,10 +62,10 @@
       "present": true
     }
   ],
-  "seconds": 569,
+  "seconds": 572,
   "fresh": {
-    "pass": 47,
-    "fail": 3,
+    "pass": 50,
+    "fail": 0,
     "notRun": 1,
     "suites": [
       {
@@ -316,8 +316,8 @@
       },
       {
         "suite": "browser: enterprise web E2E",
-        "result": "FAIL",
-        "pass": 87,
+        "result": "PASS",
+        "pass": 88,
         "tests": 88
       },
       {
@@ -334,8 +334,8 @@
       },
       {
         "suite": "browser: Founder Studio",
-        "result": "FAIL",
-        "pass": 18,
+        "result": "PASS",
+        "pass": 19,
         "tests": 19
       },
       {
@@ -363,9 +363,9 @@
       },
       {
         "suite": "deploy: public sites audit (functional, a11y, responsive; no P0/P1)",
-        "result": "FAIL",
-        "pass": null,
-        "tests": null
+        "result": "PASS",
+        "pass": 152,
+        "tests": 152
       },
       {
         "suite": "deploy: public static sites under the declared headers",
@@ -381,22 +381,6 @@
     "fail": 0,
     "notRun": 1
   },
-  "differences": [
-    {
-      "suite": "browser: enterprise web E2E",
-      "fresh": "FAIL 87/88",
-      "workspace": "PASS 88/88"
-    },
-    {
-      "suite": "browser: Founder Studio",
-      "fresh": "FAIL 18/19",
-      "workspace": "PASS 19/19"
-    },
-    {
-      "suite": "deploy: public sites audit (functional, a11y, responsive; no P0/P1)",
-      "fresh": "FAIL /",
-      "workspace": "PASS 152/152"
-    }
-  ],
-  "verdict": "FAIL: 3 suite(s) failed in the fresh copy"
+  "differences": [],
+  "verdict": "PASS: the fresh copy reproduces this workspace suite by suite"
 }
