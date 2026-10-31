@@ -29,9 +29,9 @@ const b = await chromium.launch();
 try {
   const ctx = await b.newContext({ viewport: { width: 1440, height: 950 } });
   const page = await ctx.newPage();
-  // 401/403/404/422 responses are the server refusing on purpose in this test (W-02 wrong password, W-09 forged call); Chromium logs them
+  // 400/401/403/404/422 responses are the server refusing on purpose in this test (W-02 wrong password, W-09 forged call, W-31 invalid measurement); Chromium logs them
   const errors = []; page.on('pageerror', (e) => errors.push(e.message));
-  page.on('console', (m) => { if (m.type() === 'error' && !/favicon|status of 40[134]|status of 422/.test(m.text())) errors.push(`console: ${m.text()}`); });
+  page.on('console', (m) => { if (m.type() === 'error' && !/favicon|status of 40[0134]|status of 422/.test(m.text())) errors.push(`console: ${m.text()}`); });
   const external = []; page.on('request', (r) => { if (!/^http:\/\/127\.0\.0\.1:(4291|4195)\//.test(r.url()) && !/^(data|blob|about):/.test(r.url())) external.push(r.url()); });
   const signIn = async (role) => {
     if (await page.locator('text=Sign out').count()) await page.click('text=Sign out');
@@ -112,6 +112,30 @@ try {
   // ---------------------------------------------------------------- refusal shown verbatim (the next step needs the operations lead)
   ok('W-13', 'the systems engineer has no button for the operations lead’s step', (await page.locator('[data-testid=lifecycle-next]').count()) === 0);
 
+  // ---------------------------------------------------------------- P4-B: readiness strip, blockers, acceptance & assurance tab, measurements with provenance
+  const ready = await page.locator('[data-testid=readiness]').innerText();
+  ok('W-28', 'the readiness strip states the stage, verified share (0% — design approval is not commissioning progress), evidence, baseline and live health from the API', /DESIGN_APPROVED/.test(ready) && /0%/.test(ready) && /none/.test(ready) && /Not monitored/.test(ready), ready.slice(0, 240));
+  ok('W-29', 'the next gate names its authority and the separation-of-duties rule where one applies', /next INSTALLATION_PENDING · window\.approve/.test(ready), ready.slice(0, 200));
+  await page.click('#tab-assurance'); await page.waitForSelector('.panel .card');
+  const atab = await page.locator('.panel').innerText();
+  ok('W-30', 'the assurance tab shows no baseline before acceptance and says a baseline is published only by an authorized acceptance', /No baseline yet/.test(atab) && /authorized acceptance/.test(atab), atab.slice(0, 160));
+  ok('W-30b', 'the systems engineer, who holds no recording authority, sees no measurement control (the server would refuse anyway)', (await page.locator('[data-testid=record-measurement]').count()) === 0);
+  await signIn('cxeng'); await page.goto(`${base}#/rooms/${code}/assurance`); await page.waitForSelector('[data-testid=record-measurement]');
+  await page.click('[data-testid=record-measurement]'); await page.waitForSelector('[data-testid=m-value]');
+  await page.fill('[data-testid=m-value]', '36.2'); await page.fill('input[placeholder="seat 3, 1.2 m"]', 'seat 3, 1.2 m'); await page.fill('input[placeholder="instrument, file or model"]', 'SYN-METER-01');
+  await page.click('[data-testid=measurement-submit]'); await page.waitForTimeout(400);
+  const noInst = await page.locator('.ui-drawer').innerText().catch(() => '');
+  ok('W-31', 'a field measurement without an instrument is refused by the server and the refusal is shown in the form', /instrument/i.test(noInst), noInst.slice(0, 160));
+  await page.fill('.ui-drawer input[maxlength="80"]', 'SYN-METER-01');
+  await page.selectOption('.ui-drawer select >> nth=1', 'CALIBRATED');
+  await page.click('[data-testid=measurement-submit]'); await page.waitForSelector('text=FIELD_MEASURED');
+  const mrow = await page.locator('.ui-table').last().innerText();
+  ok('W-32', 'the measurement is listed with its provenance, instrument, calibration state and UNREVIEWED approval', /FIELD_MEASURED/.test(mrow) && /SYN-METER-01/.test(mrow) && /UNREVIEWED/.test(mrow), mrow.slice(0, 200));
+  await page.click('button:has-text("Verify") >> nth=0'); await page.waitForTimeout(500);
+  const selfV = await page.locator('.panel').innerText();
+  ok('W-33', 'the recorder cannot verify their own measurement: the server’s refusal is shown verbatim', /separat|recorded|not .*verify|refused/i.test(selfV) && /UNREVIEWED/.test(selfV), selfV.slice(0, 200));
+  await shot('09-assurance');
+
   // ---------------------------------------------------------------- reports, admin, keyboard
   await page.goto(`${base}#/reports`); await page.waitForSelector('.stats');
   ok('W-14', 'reports show definitions and operational performance “Not monitored”', (await page.textContent('.page')).includes('Not monitored') && (await page.textContent('.page')).includes('applicable tests'));
@@ -126,6 +150,33 @@ try {
   await page.goto(`${base}#/rooms/R-PLN-0001`); await page.waitForSelector('#tab-overview');
   await page.focus('#tab-overview'); await page.keyboard.press('ArrowRight');
   ok('W-17', 'room tabs are keyboard operable (arrow keys move between tabs)', /#\/rooms\/R-PLN-0001\/devices$/.test(page.url()), page.url());
+
+  // ---------------------------------------------------------------- Search Party (P4-A): search, facets, graph, inspector, intents; site scope absent not hidden
+  await signIn('syseng');
+  await page.goto(`${base}#/search`); await page.waitForSelector('#sp-q');
+  await page.fill('#sp-q', 'R-PLN-0001'); await page.waitForTimeout(500); await page.waitForSelector('.sp__list li');
+  const first = await page.locator('.sp__list li').first().innerText();
+  ok('W-22', 'Search Party ranks the exact room code first and shows its type and record source', /ROOM/i.test(first) && /R-PLN-0001/.test(first), first);
+  await page.click('.sp__list li a'); await page.waitForSelector('.sp__graph svg');
+  const nodes = await page.locator('.sp__node').count(); const edgesN = await page.locator('.sp__edge').count();
+  ok('W-23', 'the neighbourhood graph renders nodes and edges from the API with the start at the centre', nodes >= 4 && edgesN >= 3, `${nodes} nodes, ${edgesN} edges`);
+  await page.locator('.sp__node').nth(1).focus(); await page.keyboard.press('Enter'); await page.waitForSelector('.sp__inspect');
+  const insp = await page.locator('.sp__inspect').innerText();
+  ok('W-24', 'a node is inspectable from the keyboard and every edge states its provenance', /source /.test(insp) && /(DECLARED|DERIVED|MODELED)/.test(insp), insp.slice(0, 200));
+  await page.click('.sp__chip:has-text("Who approved")'); await page.waitForSelector('.sp__answer');
+  const ans = await page.locator('.sp__answer').innerText();
+  ok('W-25', 'a relationship question is answered from records with its status and confidence shown', /(ANSWERED|UNKNOWN|PARTIAL)/.test(ans) && /approv/i.test(ans), ans.slice(0, 200));
+  await page.click('.sp__chip:has-text("vendor")'); await page.waitForTimeout(400);
+  const vend = await page.locator('.sp__answer').innerText();
+  ok('W-26', 'an unmodelled question is UNKNOWN with the reason, never a manufactured answer', /UNKNOWN/.test(vend) && /not yet captured|cannot claim/.test(vend), vend.slice(0, 200));
+  await shot('08-search-party');
+  await signIn('service'); // the seeded service technician is unscoped; the South-only one proves absence
+  await page.click('text=Sign out'); await page.waitForSelector('[data-testid=role]');
+  await page.selectOption('[data-testid=role]', 'service'); await page.fill('[data-testid=email]', 'service-south@empathia-demo.empathia.invalid'); await page.fill('[data-testid=password]', 'empathia-dev-only'); await page.click('[data-testid=signin]'); await page.waitForSelector('.who__role');
+  await page.goto(`${base}#/search`); await page.waitForSelector('#sp-q'); await page.fill('#sp-q', 'ATL'); await page.waitForTimeout(500);
+  const southText = await page.locator('.sp__results').innerText();
+  ok('W-27', 'a South-scoped technician searching the North building finds nothing: absent, not hidden (and the coverage note says site-scoped)', /Nothing in your view matches/.test(southText) && !/Atlas/.test(southText), southText.slice(0, 160));
+  await signIn('syseng');
 
   // ---------------------------------------------------------------- hygiene
   ok('W-18', 'no page errors or unexpected console errors', errors.length === 0, errors.join(' | '));

@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1SearchIntent/0.1.0.json",
+  "title": "POST /v1/search/intent request body",
+  "description": "Relationship intent: a question in words (\"who approved…\", \"what depends on…\", \"what changed between baseline v1 and v2\") answered from the visible graph and the records; states uncertainty instead of inventing an answer",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "question"
+  ],
+  "properties": {
+    "question": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    },
+    "target": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "id"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "pattern": "^[A-Za-z]{2,40}$"
+        },
+        "id": {
+          "type": "string",
+          "maxLength": 120
+        }
+      }
+    }
+  }
+}

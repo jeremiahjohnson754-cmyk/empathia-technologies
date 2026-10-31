@@ -1,6 +1,6 @@
 # Legacy parity ledger — Living Campus V2.5.3 and Founder Studio
 
-Generated 2026-10-30T18:40:24.245Z by `scripts/legacy/parity-ledger.mjs` from `legacy/inventory/*.json` (built from the committed source of each demonstrator) and the classification in that script. **Two applications, kept apart:** the Living Campus (investor-safe demo + authenticated enterprise application) and the Founder Studio (private founder application). Shared: identity, design tokens, API contracts, audit. Not shared: Founder Studio data, its administrative capabilities, or any route of it on a public or investor surface.
+Generated 2026-10-30T23:51:56.350Z by `scripts/legacy/parity-ledger.mjs` from `legacy/inventory/*.json` (built from the committed source of each demonstrator) and the classification in that script. **Two applications, kept apart:** the Living Campus (investor-safe demo + authenticated enterprise application) and the Founder Studio (private founder application). Shared: identity, design tokens, API contracts, audit. Not shared: Founder Studio data, its administrative capabilities, or any route of it on a public or investor surface.
 
 ## Baseline facts (verified on receipt)
 
@@ -26,7 +26,8 @@ Target classes (mandate §1): MIGRATED_REAL · MIGRATED_DEMO · DEFERRED_WITH_RE
 
 | Status now | Rows |
 |---|---|
-| PARTIAL | 86 |
+| PARTIAL | 85 |
+| DONE (app; demo pending) | 1 |
 | NOT_STARTED | 116 |
 | DONE (slice) | 5 |
 | DONE (demo native; app slice) | 1 |
@@ -39,12 +40,12 @@ A feature is never "migrated" because its route exists. Each row carries the hig
 
 | Maturity | Rows |
 |---|---|
-| 0 INVENTORIED | 83 |
-| 1 ROUTED | 59 |
+| 0 INVENTORIED | 82 |
+| 1 ROUTED | 58 |
 | 2 RENDERED | 2 |
 | 3 FUNCTIONAL | 3 |
-| 4 BACKEND_CONNECTED | 33 |
-| 5 REGRESSION_TESTED | 38 |
+| 4 BACKEND_CONNECTED | 32 |
+| 5 REGRESSION_TESTED | 41 |
 
 **Regressions at this commit: none** — no original route has been removed; the originals remain the served demonstrators until each route is migrated natively (an embedded original is interim, never counted as a migration).
 
@@ -54,11 +55,11 @@ A feature is never "migrated" because its route exists. Each row carries the hig
 |---|---|---|---|---|---|---|---|---|---|
 | Living Campus | area | `home` | Mission Control — area home (12-authz.js); roles: 14 | MIGRATED_REAL | /app (role home) · /demo | enterprise-web Inbox/Reports over GET /v1/notifications, /v1/reports/summary | PARTIAL | 4 BACKEND_CONNECTED (notifications + reports/summary; role home UI partial) | tests/e2e |
 | Living Campus | area | `campus` | the operational campus — area campus (12-authz.js); roles: 10 | MIGRATED_REAL | /app/sites · /demo/campus | GET /v1/sites, /v1/rooms | PARTIAL | 4 BACKEND_CONNECTED (GET /v1/sites) | tests/integration |
-| Living Campus | area | `search` | Search Party — area search (12-authz.js); roles: 14 | MIGRATED_REAL | /app/search · /demo/search | GET /v1/graph/{type}/{id}, relationship-engine; indexed search NOT_STARTED | PARTIAL | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | tests/integration graph |
+| Living Campus | area | `search` | Search Party — area search (12-authz.js); roles: 14 | MIGRATED_REAL | /app/search (native) · demo pending | GET /v1/search, /v1/search/graph, /v1/search/path, POST /v1/search/intent over @empathia/search-party; tenant + site scoped catalogue; 8 intents with explicit UNKNOWN | DONE (app; demo pending) | 5 REGRESSION_TESTED (apps/enterprise-web Search Party page over the search API; E2E W-22..W-27; search-party.test.mjs 6/6 (site/tenant negatives)) | tests/security/search-party.test.mjs 6/6; enterprise-web E2E W-22..W-27 |
 | Living Campus | area | `search.support` | the support directory — area search.support (12-authz.js); roles: 6 | MIGRATED_REAL | /app/search/support | org people/roles + coverage (P6) | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P6 |
 | Living Campus | area | `search.ownership` | ownership — area search.ownership (12-authz.js); roles: 5 | MIGRATED_REAL | /app/search/ownership | P6 | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P6 |
 | Living Campus | area | `search.quality` | data quality and governance — area search.quality (12-authz.js); roles: 2 | MIGRATED_REAL | /admin/data-quality | P6/P8 | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P8 |
-| Living Campus | area | `search.graph` | relationship trails — area search.graph (12-authz.js); roles: 8 | MIGRATED_REAL | /app/graph | GET /v1/graph (relationship-engine) | PARTIAL | 4 BACKEND_CONNECTED (GET /v1/graph: api.test.mjs) | tests/integration |
+| Living Campus | area | `search.graph` | relationship trails — area search.graph (12-authz.js); roles: 8 | MIGRATED_REAL | /app/graph | GET /v1/graph (relationship-engine) | PARTIAL | 5 REGRESSION_TESTED (Search Party graph page over GET /v1/search/graph; E2E W-23/W-24; security search-party.test.mjs; legacy GET /v1/graph: api.test.mjs) | tests/integration |
 | Living Campus | area | `search.people` | people and expertise — area search.people (12-authz.js); roles: 11 | MIGRATED_REAL | /app/people | GET /v1/people, /v1/roles | PARTIAL | 4 BACKEND_CONNECTED (GET /v1/people (secadmin, audited): authz.test.mjs) | tests/integration org |
 | Living Campus | area | `search.projects` | the project map — area search.projects (12-authz.js); roles: 11 | MIGRATED_REAL | /app/projects | GET/POST /v1/projects | PARTIAL | 4 BACKEND_CONNECTED (GET/POST /v1/projects) | tests/e2e projects |
 | Living Campus | area | `search.orgs` | organizations — area search.orgs (12-authz.js); roles: 9 | MIGRATED_REAL | /app/organizations | P6 | NOT_STARTED | 1 ROUTED (apps/demo resolves the address to a status page (demo.test.mjs D-04)) | P6 |
@@ -159,7 +160,7 @@ A feature is never "migrated" because its route exists. Each row carries the hig
 | Living Campus | v25 page | `v25/policy` | Policy — #/v25/policy — Role access, licenses, adapters — a demo of authorization | MIGRATED_REAL | /admin/policy | RBAC matrix (docs/api) + server policy; UI P4 | PARTIAL | 0 INVENTORIED (inventoried only) | P5/P6 named tests |
 | Living Campus | navigation | `home` | Mission Control — More menu › Operate › #/home | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 4 BACKEND_CONNECTED (notifications + reports/summary; role home UI partial) | P3 navigation test |
 | Living Campus | navigation | `campus` | Campus — More menu › Operate › #/campus | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 4 BACKEND_CONNECTED (GET /v1/sites) | P3 navigation test |
-| Living Campus | navigation | `search` | Search Party — More menu › Operate › #/search | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 0 INVENTORIED (inventoried only) | P3 navigation test |
+| Living Campus | navigation | `search` | Search Party — More menu › Operate › #/search | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 5 REGRESSION_TESTED (apps/enterprise-web Search Party page over the search API; E2E W-22..W-27; search-party.test.mjs 6/6 (site/tenant negatives)) | P3 navigation test |
 | Living Campus | navigation | `lite` | Lite — More menu › Operate › #/lite | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 2 RENDERED (FloorPlan.tsx renders 2D plan in enterprise-web) | P3 navigation test |
 | Living Campus | navigation | `assurance` | Assurance — More menu › Operate › #/assurance | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 4 BACKEND_CONNECTED (assurance-engine 13/13 + GET /v1/rooms/{room}/assurance) | P3 navigation test |
 | Living Campus | navigation | `pro` | Command Center — More menu › Empathia Pro › #/pro | MIGRATED_REAL | see area row | navigation registry (packages/ui) P3 | NOT_STARTED | 0 INVENTORIED (inventoried only) | P3 navigation test |

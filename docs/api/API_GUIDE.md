@@ -6,7 +6,7 @@ production-ready** (see `docs/operations/PRODUCTION_READINESS_CHECKLIST.md`).
 
 | Reference | Content | Source |
 |---|---|---|
-| [`openapi.json`](openapi.json) | OpenAPI 3.1, 74 operations | generated from the route table: `node scripts/api/export-openapi.mjs` (`--check` fails when stale); also served at `GET /v1/openapi.json` |
+| [`openapi.json`](openapi.json) | OpenAPI 3.1, 79 operations | generated from the route table: `node scripts/api/export-openapi.mjs` (`--check` fails when stale); also served at `GET /v1/openapi.json` |
 | [ENDPOINTS.md](ENDPOINTS.md) | endpoint inventory: method, path, summary, auth, authority, idempotency | `node scripts/docs/api-inventory.mjs` |
 | [RBAC_MATRIX.md](RBAC_MATRIX.md) | which role can call which endpoint, and the rules beyond authority | `node scripts/docs/api-inventory.mjs` |
 | [EXAMPLES.md](EXAMPLES.md) | real requests and responses (sign-in, list, detail, 400/401/403/404/422, idempotent replay) | `node scripts/docs/api-examples.mjs` |

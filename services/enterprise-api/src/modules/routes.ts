@@ -17,6 +17,7 @@ import * as founder from '../domain/founder.js';
 import * as baselines from '../domain/baselines.js';
 import * as measurements from '../domain/measurements.js';
 import * as admin from '../domain/admin.js';
+import * as sp from '../domain/search.js';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { PgPool } from '../db/pg.js';
@@ -24,7 +25,7 @@ import type { Hs256Tokens } from '../auth/jwt.js';
 import type { ObjectStore } from '../storage/objectStore.js';
 import { LIFECYCLE_AUTHORITY } from '@empathia/commissioning-engine';
 import { ROOM_LIFECYCLE } from '@empathia/domain-types';
-import { invalid } from '../http/errors.js';
+import { invalid, ApiError } from '../http/errors.js';
 
 const EVIDENCE_DIR = process.env['EVIDENCE_DIR'] || path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../../tests/evidence');
 const UUID = str({ pattern: '^[0-9a-fA-F-]{36}$' });
@@ -33,7 +34,7 @@ const ok = (description: string, schema?: Schema) => ({ 200: { description, ...(
 const created = (description: string) => ({ 201: { description } });
 const ERR = { 400: { description: 'validation error' }, 401: { description: 'not signed in' }, 403: { description: 'not allowed for your role' }, 404: { description: 'not found in your tenant or scope' }, 422: { description: 'refused by a business rule' } };
 
-export function buildRoutes(deps: { pool: PgPool; tokens: Hs256Tokens; store: ObjectStore; health: () => Promise<Record<string, unknown>> }): Router {
+export function buildRoutes(deps: { pool: PgPool; tokens: Hs256Tokens; store: ObjectStore; health: () => Promise<Record<string, unknown>>; authMode?: 'dev' | 'oidc' }): Router {
   const r = new Router();
   const add = (x: Route) => r.add({ ...x, responses: { ...x.responses, ...(x.auth ? ERR : {}) } as Route['responses'] });
 
@@ -43,7 +44,7 @@ export function buildRoutes(deps: { pool: PgPool; tokens: Hs256Tokens; store: Ob
   add({ method: 'POST', path: '/v1/auth/token', tag: 'auth', summary: 'Sign in with the development identity provider (AUTH_MODE=dev only)', auth: false,
     body: obj({ email: str({ maxLength: 200 }), password: str({ minLength: 1, maxLength: 200 }), tenant: str({ maxLength: 64 }), role: str({ maxLength: 40 }) }, ['email', 'password']),
     responses: { ...ok('access token'), 401: { description: 'wrong email or password' }, 409: { description: 'several memberships match' } },
-    handler: async (_c, q) => ({ status: 200, body: await platform.signIn(deps.pool, deps.tokens, q.body as never) }) });
+    handler: async (_c, q) => { if (deps.authMode === 'oidc') throw new ApiError('not_found', 'the development identity provider is disabled: this deployment authenticates with the configured OIDC provider'); return { status: 200, body: await platform.signIn(deps.pool, deps.tokens, q.body as never) }; } });
   add({ method: 'GET', path: '/v1/me', tag: 'auth', summary: 'The signed-in person, tenant, role and authorities (resolved server-side)', auth: true, responses: ok('principal'), handler: async (c) => ({ status: 200, body: await platform.me(c) }) });
 
   // ---------------------------------------------------------------------------------------- organization
@@ -147,6 +148,7 @@ export function buildRoutes(deps: { pool: PgPool; tokens: Hs256Tokens; store: Ob
   add({ method: 'POST', path: '/v1/admin/outbox/:event/retry', tag: 'admin', summary: 'Retry a dead-lettered event (security admin)', auth: true, authority: 'policy.configure', responses: ok('requeued'), handler: async (c, q) => ({ status: 200, body: await platform.outboxRetry(c, q.params['event']!) }) });
 
   // ---------------------------------------------------------------------------------------- assurance baselines (ADR-0003: versioned, immutable, lineage; exceptions decided by someone else)
+  add({ method: 'GET', path: '/v1/rooms/:room/readiness', tag: 'rooms', summary: 'Where the room stands: lifecycle stage, the next governed step with its authority and current blockers, completion (independently verified tests only), deficiencies, evidence and measurement counts, baseline lineage, pending exceptions, outstanding actions by responsibility, approval history and audited refusals', auth: true, responses: ok('readiness'), handler: async (c, q) => ({ status: 200, body: await rooms.readiness(c, q.params['room']!) }) });
   add({ method: 'GET', path: '/v1/rooms/:room/baselines', tag: 'assurance', summary: 'Baseline lineage of a room: every version (CURRENT / SUPERSEDED / WITHDRAWN) with the design revision, hash, plan, results and evidence it binds, and its exceptions', auth: true, responses: ok('lineage'), handler: async (c, q) => ({ status: 200, body: await baselines.lineage(c, q.params['room']!) }) });
   add({ method: 'POST', path: '/v1/rooms/:room/baselines/exceptions', tag: 'assurance', summary: 'Request an exception against the current baseline (decided by a different person)', auth: true, authority: ['baseline.approve', 'test.verify', 'tests.verify.all', 'work.evidence'],
     body: obj({ kind: str({ enum: ['ACCEPTED_DEVIATION', 'TEMPORARY_WAIVER', 'KNOWN_GAP'] }), dimension: str({ minLength: 1, maxLength: 40 }), rationale: str({ minLength: 5, maxLength: 4000 }), expiresAt: str({ maxLength: 40 }) }, ['kind', 'dimension', 'rationale']), responses: created('id, state'), handler: async (c, q) => ({ status: 201, body: await baselines.requestException(c, q.params['room']!, q.body as never) }) });
@@ -178,6 +180,15 @@ export function buildRoutes(deps: { pool: PgPool; tokens: Hs256Tokens; store: Ob
     body: obj({ granteeId: UUID, authority: str({ pattern: '^[a-z_][a-z0-9_.]*$', maxLength: 60 }), reason: str({ minLength: 5, maxLength: 1000 }), days: int({ minimum: 1, maximum: 90 }), scope: anyObj() }, ['granteeId', 'authority', 'reason']), responses: { ...created('id, expiresAt'), 422: { description: 'you do not hold the authority directly' } }, handler: async (c, q) => ({ status: 201, body: await admin.createDelegation(c, q.body as never) }) });
   add({ method: 'POST', path: '/v1/delegations/:id/revoke', tag: 'admin', summary: 'Revoke a delegation (grantor or security admin)', auth: true, responses: ok('revoked'), handler: async (c, q) => ({ status: 200, body: await admin.revokeDelegation(c, q.params['id']!) }) });
   add({ method: 'GET', path: '/v1/founder/platform-health', tag: 'founder', summary: 'Platform-health summary for the Founder Studio (ADR-0007; CONFIDENTIAL_TECHNICAL; aggregate test/build/migration/outbox/adapter state only — no tenant data; audited)', auth: true, authority: founder.FOUNDER_AUTHORITY, responses: ok('platform health'), handler: async (c) => ({ status: 200, body: await founder.platformHealth(c, deps, EVIDENCE_DIR) }) });
+
+  // ---------------------------------------------------------------------------------------- Search Party (P4-A): discovery and relationship intelligence on the visible catalogue only
+  add({ method: 'GET', path: '/v1/search', tag: 'graph', summary: 'Search Party: ranked entity search with type and facet counts over the records the caller may see (tenant + site scope); coverage states what is and is not modelled', auth: true,
+    query: { q: str({ maxLength: 200 }), type: str({ pattern: '^[A-Za-z]{2,40}$' }), limit: str({ pattern: '^[0-9]{1,3}$' }), site: str({ maxLength: 40 }), building: str({ maxLength: 40 }), lifecycle: str({ maxLength: 40 }), state: str({ maxLength: 40 }), severity: str({ maxLength: 20 }) }, responses: ok('items, total, facets, coverage, intents'),
+    handler: async (c, q) => ({ status: 200, body: await sp.searchEntities(c, { q: q.query.get('q') || '', type: q.query.get('type') || undefined, limit: Number(q.query.get('limit') || 50), site: q.query.get('site') || undefined, building: q.query.get('building') || undefined, lifecycle: q.query.get('lifecycle') || undefined, state: q.query.get('state') || undefined, severity: q.query.get('severity') || undefined }) }) });
+  add({ method: 'GET', path: '/v1/search/graph/:type/:id', tag: 'graph', summary: 'Search Party neighbourhood of one record: nodes with the relation they were reached through, edges with provenance, a deterministic radial layout, downstream impact (visible catalogue only; 404 outside it)', auth: true, query: { depth: str({ pattern: '^[1-4]$' }) }, responses: ok('neighbourhood'), handler: async (c, q) => ({ status: 200, body: await sp.neighbourhoodOf(c, q.params['type']!, q.params['id']!, Number(q.query.get('depth') || 2)) }) });
+  add({ method: 'GET', path: '/v1/search/path', tag: 'graph', summary: 'Shortest recorded path between two records (Type:id), or an honest "no recorded path"', auth: true, query: { from: str({ maxLength: 160 }), to: str({ maxLength: 160 }) }, responses: ok('path'), handler: async (c, q) => { const f = q.query.get('from'), t = q.query.get('to'); if (!f || !t) throw invalid('from and to are required (Type:id)'); return { status: 200, body: await sp.pathBetween(c, f, t) }; } });
+  add({ method: 'POST', path: '/v1/search/intent', tag: 'graph', summary: 'Relationship intent: a question in words ("who approved…", "what depends on…", "what changed between baseline v1 and v2") answered from the visible graph and the records; states uncertainty instead of inventing an answer', auth: true,
+    body: obj({ question: str({ minLength: 1, maxLength: 300 }), target: obj({ type: str({ pattern: '^[A-Za-z]{2,40}$' }), id: str({ maxLength: 120 }) }, ['type', 'id'], { nullable: true }) }, ['question']), responses: ok('intent answer'), handler: async (c, q) => ({ status: 200, body: await sp.intent(c, q.body as never) }) });
   void bool; void anyObj;
   return r;
 }

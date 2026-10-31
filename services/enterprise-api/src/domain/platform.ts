@@ -35,6 +35,20 @@ export async function resolvePrincipal(pool: PgPool, personId: string, tenantId:
     delegated: d.map((x) => ({ authority: x.authority, grantorId: x.grantor_id, scope: x.scope || {}, expiresAt: x.expires_at, delegationId: x.delegation_id })) };
 }
 
+/**
+ * OIDC: map the provider's subject to a person (binding a verified email on first sign-in when allowed), then pick the membership the
+ * request asks for (X-Empathia-Tenant / X-Empathia-Role headers); with exactly one membership the headers may be omitted.
+ */
+export async function resolveOidcPrincipal(pool: PgPool, claims: { sub: string; email?: string; email_verified?: boolean }, tenantSlug: string, role: string, linkByEmail: boolean): Promise<Principal | null> {
+  let p = (await pool.query<{ id: string; display_name: string; disabled: boolean }>('SELECT * FROM app.auth_person_by_subject($1)', [claims.sub])).rows[0];
+  if (!p && linkByEmail && claims.email && claims.email_verified === true) p = (await pool.query<{ id: string; display_name: string; disabled: boolean }>('SELECT * FROM app.auth_bind_subject($1, $2)', [claims.email, claims.sub])).rows[0];
+  if (!p || p.disabled) return null;
+  const ms = (await pool.query<Membership>('SELECT * FROM app.auth_memberships($1)', [p.id])).rows;
+  const m = tenantSlug || role ? ms.find((x) => (!tenantSlug || x.tenant_slug === tenantSlug) && (!role || x.role_key === role)) : (ms.length === 1 ? ms[0] : undefined);
+  if (!m) return null;
+  return resolvePrincipal(pool, p.id, m.tenant_id, m.role_key);
+}
+
 export async function me(ctx: RequestContext) {
   return { person: { id: ctx.p.personId, name: ctx.p.name }, tenant: ctx.p.tenantSlug, role: ctx.p.role, authorities: ctx.p.authorities, siteScope: ctx.p.siteScope, delegated: ctx.p.delegated };
 }

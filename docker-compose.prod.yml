@@ -1,0 +1,87 @@
+# Empathia — production overlay. `docker compose -f docker-compose.yml -f docker-compose.prod.yml --profile prod up -d`
+# Status: NOT_RUN in the founder's build environment (no container runtime there). What is different from the development file:
+#   - NODE_ENV=production: the API refuses AUTH_MODE=dev, the synthetic seed and any missing secret (services/enterprise-api/src/config.ts);
+#   - AUTH_MODE=oidc with OIDC_ISSUER / OIDC_AUDIENCE / OIDC_JWKS_URL (tested against a local JWKS in tests/security/oidc.test.mjs;
+#     NOT yet verified against a named identity provider — that needs the owner's tenant and client registration);
+#   - no port is published except the reverse proxy's 80/443; every service listens on the compose network only;
+#   - Caddy terminates TLS (automatic certificates need the DNS names below to resolve to this host);
+#   - migrations run once as a separate job (the owner role), the API and worker run as the runtime roles; no seed.
+name: empathia
+services:
+  migrate:
+    profiles: ["prod"]
+    build: { context: ., target: runtime }
+    environment: { NODE_ENV: production, DATABASE_URL: "postgres://empathia_owner:${EMPATHIA_OWNER_PASSWORD}@postgres:5432/empathia" }
+    command: ["node", "services/enterprise-api/dist/src/db/migrate.js"]
+    depends_on: { postgres: { condition: service_healthy } }
+    restart: "no"
+
+  api:
+    profiles: ["prod"]
+    environment:
+      NODE_ENV: production
+      AUTH_MODE: oidc
+      OIDC_ISSUER: ${OIDC_ISSUER:?set OIDC_ISSUER}
+      OIDC_AUDIENCE: ${OIDC_AUDIENCE:?set OIDC_AUDIENCE}
+      OIDC_JWKS_URL: ${OIDC_JWKS_URL:?set OIDC_JWKS_URL}
+      CORS_ORIGINS: https://${APP_HOST:?set APP_HOST}
+      LOG_LEVEL: info
+      TRUSTED_PROXY: "on"
+      EVIDENCE_DIR: /app/tests/evidence
+    command: ["node", "services/enterprise-api/dist/src/main.js"]
+    ports: []
+    read_only: true
+    tmpfs: ["/tmp"]
+    volumes: ["objects:/data/objects", "api-local:/app/.local"]
+    healthcheck: { test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4100/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"], interval: 15s, retries: 5 }
+    restart: unless-stopped
+    depends_on: { migrate: { condition: service_completed_successfully } }
+
+  worker:
+    profiles: ["prod"]
+    environment: { NODE_ENV: production }
+    restart: unless-stopped
+
+  web:
+    profiles: ["prod"]
+    environment: { WEB_HOST: 0.0.0.0, WEB_PORT: "4200", API_URL: "https://${API_HOST:?set API_HOST}" }
+    ports: []
+    read_only: true
+    restart: unless-stopped
+
+  www:
+    profiles: ["prod"]
+    build: { context: ., target: runtime }
+    environment: { WWW_HOST: 0.0.0.0, WWW_PORT: "4300" }
+    command: ["node", "apps/website/server/serve.mjs"]
+    read_only: true
+    restart: unless-stopped
+
+  demo:
+    profiles: ["prod"]
+    build: { context: ., target: runtime }
+    environment: { DEMO_HOST: 0.0.0.0, DEMO_PORT: "4310" }
+    command: ["node", "apps/demo/server/serve.mjs"]
+    read_only: true
+    restart: unless-stopped
+
+  proxy:
+    profiles: ["prod"]
+    image: caddy:2.9.1
+    ports: ["80:80", "443:443"]
+    environment: { WWW_HOST: "${WWW_HOST:?set WWW_HOST}", DEMO_HOST: "${DEMO_HOST:?set DEMO_HOST}", APP_HOST: "${APP_HOST}", API_HOST: "${API_HOST}", ACME_EMAIL: "${ACME_EMAIL:?set ACME_EMAIL}" }
+    volumes: ["./deploy/Caddyfile:/etc/caddy/Caddyfile:ro", "caddy-data:/data", "caddy-config:/config"]
+    depends_on: [www, demo, web, api]
+    restart: unless-stopped
+
+  intelligence:
+    profiles: ["prod"]
+    ports: []
+    restart: unless-stopped
+
+  postgres:
+    profiles: ["prod"]
+    ports: []
+    restart: unless-stopped
+
+volumes: { api-local: {}, caddy-data: {}, caddy-config: {} }

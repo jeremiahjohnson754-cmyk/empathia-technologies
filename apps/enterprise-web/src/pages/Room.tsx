@@ -10,6 +10,7 @@ import { api, newKey, useMutation, useQuery, invalidate } from '../api.js';
 import { go } from '../router.js';
 import { useMe } from '../me.js';
 import { FloorPlan } from '../components/FloorPlan.js';
+import { ReadinessStrip, AssuranceTab } from './Assurance.js';
 
 /** Display hint mirroring LIFECYCLE_AUTHORITY in packages/commissioning-engine/src/lifecycle.ts; the server enforces the real rule. */
 const NEXT: Record<string, [Lifecycle, string] | undefined> = {
@@ -21,7 +22,7 @@ const CATEGORIES = ['display', 'ledwall', 'projector', 'camera', 'bar', 'micceil
 export function Room({ code, tab }: { code: string; tab: string }) {
   const { can } = useMe();
   const q = useQuery<RoomDetail>(`room:${code}`, () => api.call('getV1RoomsRoom', { params: { room: code } }));
-  const step = useMutation((to: Lifecycle) => api.call('postV1RoomsRoomLifecycle', { params: { room: code }, body: { to } }), [`room:${code}`, 'rooms', 'read', 'report']);
+  const step = useMutation((to: Lifecycle) => api.call('postV1RoomsRoomLifecycle', { params: { room: code }, body: { to } }), [`room:${code}`, `readiness:${code}`, `baselines:${code}`, 'rooms', 'read', 'report']);
   if (q.error) return <section className="page"><ErrorState error={q.error} retry={q.reload} /></section>;
   if (!q.data) return <section className="page"><Loading label={`Loading ${code}`} /></section>;
   const d = q.data; const r = d.room;
@@ -31,7 +32,7 @@ export function Room({ code, tab }: { code: string; tab: string }) {
   const tabs = [
     { key: 'overview', label: 'Overview' }, { key: 'devices', label: 'Devices', count: d.devices.filter((x) => !x.furniture).length },
     { key: 'issues', label: 'Issues', count: openIssues.length }, { key: 'commissioning', label: 'Commissioning', count: rows.filter((x) => x.applicable).length },
-    { key: 'drawings', label: 'Drawings & revisions', count: d.revisions.length }, { key: 'service', label: 'Service & read model' },
+    { key: 'drawings', label: 'Drawings & revisions', count: d.revisions.length }, { key: 'assurance', label: 'Acceptance & assurance' }, { key: 'service', label: 'Service & read model' },
   ];
   return (
     <section className="page">
@@ -44,6 +45,7 @@ export function Room({ code, tab }: { code: string; tab: string }) {
         {next && can(next[1]) ? <Button kind="primary" busy={step.busy} onClick={() => void step.run(next[0])} testId="lifecycle-next">Move to {LIFECYCLE[next[0]]!.label.toLowerCase()}</Button> : null}
       </header>
       {step.error ? <ErrorState error={step.error} /> : null}
+      <ReadinessStrip code={code} />
       <Tabs label="Room sections" tabs={tabs} active={tab} onChange={(k) => go('rooms', code, k)} />
       <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`} className="panel">
         {tab === 'overview' ? <Overview d={d} /> : null}
@@ -51,6 +53,7 @@ export function Room({ code, tab }: { code: string; tab: string }) {
         {tab === 'issues' ? <Issues d={d} /> : null}
         {tab === 'commissioning' ? <Commissioning d={d} /> : null}
         {tab === 'drawings' ? <Drawings d={d} /> : null}
+        {tab === 'assurance' ? <AssuranceTab code={code} lifecycle={r.lifecycle} /> : null}
         {tab === 'service' ? <Service code={code} /> : null}
       </div>
     </section>

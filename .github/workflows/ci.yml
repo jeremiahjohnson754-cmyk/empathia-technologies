@@ -1,0 +1,41 @@
+# Empathia CI — build and the full test matrix on every push and pull request. One job, one database cluster, suites in series
+# (the test runner owns its ports and databases; running two copies at once is exactly the collision this avoids).
+# Status: NOT_RUN until the repository is pushed to GitHub; the steps mirror scripts/build.mjs and scripts/test.mjs, which have been run locally.
+name: ci
+on:
+  push: { branches: [main] }
+  pull_request:
+concurrency: { group: ci-${{ github.ref }}, cancel-in-progress: true }
+permissions: { contents: read }
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: PostgreSQL 16 server binaries (the test harness creates a private cluster under .local/pg)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-16 ffmpeg
+          sudo systemctl stop postgresql || true
+      - name: Install (pnpm) and Playwright Chromium
+        run: |
+          corepack enable
+          pnpm install --no-frozen-lockfile
+          npx playwright install --with-deps chromium
+      - name: Build (tokens, packages, API, apps, OpenAPI contract check, dist hygiene)
+        run: node scripts/build.mjs
+      - name: Tests (unit, contract, database, HTTP, security, browser, studio) — serial, one cluster
+        run: node scripts/test.mjs --browser --studio
+      - name: Evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-evidence
+          path: |
+            tests/evidence/TEST_RESULTS.md
+            tests/evidence/TEST_RESULTS.json
+            .local/logs/
+          retention-days: 30

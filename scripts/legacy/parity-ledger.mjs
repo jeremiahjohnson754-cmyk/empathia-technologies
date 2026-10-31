@@ -16,7 +16,7 @@ const destinations = [...studioNav.matchAll(/path: '([a-z-]+)', label: '([^']+)'
 const T = {
   home: ['Mission Control', 'demo+app', 'MIGRATED_REAL', '/app (role home) · /demo', 'enterprise-web Inbox/Reports over GET /v1/notifications, /v1/reports/summary', 'PARTIAL', 'tests/e2e'],
   campus: ['Campus', 'demo+app', 'MIGRATED_REAL', '/app/sites · /demo/campus', 'GET /v1/sites, /v1/rooms', 'PARTIAL', 'tests/integration'],
-  search: ['Search Party', 'demo+app', 'MIGRATED_REAL', '/app/search · /demo/search', 'GET /v1/graph/{type}/{id}, relationship-engine; indexed search NOT_STARTED', 'PARTIAL', 'tests/integration graph'],
+  search: ['Search Party', 'demo+app', 'MIGRATED_REAL', '/app/search (native) · demo pending', 'GET /v1/search, /v1/search/graph, /v1/search/path, POST /v1/search/intent over @empathia/search-party; tenant + site scoped catalogue; 8 intents with explicit UNKNOWN', 'DONE (app; demo pending)', 'tests/security/search-party.test.mjs 6/6; enterprise-web E2E W-22..W-27'],
   'search.support': ['Support paths', 'app', 'MIGRATED_REAL', '/app/search/support', 'org people/roles + coverage (P6)', 'NOT_STARTED', 'P6'],
   'search.ownership': ['Ownership', 'app', 'MIGRATED_REAL', '/app/search/ownership', 'P6', 'NOT_STARTED', 'P6'],
   'search.quality': ['Data quality and governance', 'app', 'MIGRATED_REAL', '/admin/data-quality', 'P6/P8', 'NOT_STARTED', 'P8'],
@@ -129,12 +129,13 @@ const LEVELS = ['INVENTORIED', 'ROUTED', 'RENDERED', 'FUNCTIONAL', 'BACKEND_CONN
 const MATURITY = {   // key → [level, evidence]
   room: [5, 'tests/e2e + tests/integration/api.test.mjs (room → devices → revisions → read model over the API)'], builder: [5, 'tests/browser/enterprise-web.test.mjs (Build a Room over the API) + commissioning-engine golden 92'],
   'v25.build': [5, 'demo: tests/browser/demo.test.mjs B-01..B-18 (visually rendered, functional on the engine, regression-tested); app: enterprise-web.test.mjs; golden parity'], 'commissioning.room': [5, 'tests/integration/api.test.mjs results + verify'], commissioning: [4, 'engine + API; no native UI of the command center yet'],
-  ledger: [5, 'tests/security/authz.test.mjs (audit read authority) + api.test.mjs'], 'search.vault': [4, 'POST /v1/evidence, GET content: api.test.mjs; UI pending'], 'search.graph': [4, 'GET /v1/graph: api.test.mjs'],
+  ledger: [5, 'tests/security/authz.test.mjs (audit read authority) + api.test.mjs'], 'search.vault': [4, 'POST /v1/evidence, GET content: api.test.mjs; UI pending'], 'search.graph': [5, 'Search Party graph page over GET /v1/search/graph; E2E W-23/W-24; security search-party.test.mjs; legacy GET /v1/graph: api.test.mjs'],
   'pro.issues': [4, 'issues → work orders → close: api.test.mjs'], servicehands: [4, 'api.test.mjs service chain'], assurance: [4, 'assurance-engine 13/13 + GET /v1/rooms/{room}/assurance'], 'assurance.room': [4, 'same'],
   projects: [4, 'tests/e2e projects'], 'search.projects': [4, 'GET/POST /v1/projects'], 'search.people': [4, 'GET /v1/people (secadmin, audited): authz.test.mjs'], campus: [4, 'GET /v1/sites'], home: [4, 'notifications + reports/summary; role home UI partial'],
   compare: [4, 'revisions/compare: api.test.mjs'], fabric: [4, 'integrations probe/sync/observations: integration-worker.test.mjs + conformance 5/5'], 'lite.guides': [4, 'GET /v1/knowledge 20/20'], ask: [4, 'POST /v1/ai/requests'], core: [3, 'schemas package tests; no UI'],
   'pro.exec': [4, 'GET /v1/reports/summary'], 'search.activity': [4, 'GET /v1/audit'], lite: [2, 'FloorPlan.tsx renders 2D plan in enterprise-web'], investor: [5, 'tests/browser/demo.test.mjs (landing, three actions, seven scenarios)'],
   itsm: [3, 'MOCK adapter conformance (SIMULATED only)'],
+  search: [5, 'apps/enterprise-web Search Party page over the search API; E2E W-22..W-27; search-party.test.mjs 6/6 (site/tenant negatives)'],
   'assurance.baselines': [4, 'API + DB + regression (governance.test.mjs); UI lineage view pending'], 'lifecycle.recommission': [5, 'engine + API + regression; exercised through the lifecycle route'], measurements: [4, 'API + DB + regression; UI pending'], 'graph.identity': [4, 'DB + writers + graph read; client addressing by key later'],
   'authz.separation': [5, 'service layer, exercised through every protected route; regression-tested'], 'authz.delegation': [4, 'API + DB + regression; UI pending'], 'admin.invitations': [4, 'API + DB + regression; UI pending'], 'admin.memberships': [4, 'API + DB + regression; UI pending'], 'admin.policy': [4, 'API + regression; UI pending'], 'founder.platform-health': [4, 'API + regression; Founder Studio view pending'],
 };

@@ -1,0 +1,34 @@
+# Empathia reverse proxy: one name per surface (ADR-0002). Automatic TLS via ACME; the Founder Studio is NOT published here on purpose
+# (it is a private, localhost-bound launcher; ADR-0001 §3). Security headers that the Node servers do not already set are added once.
+{
+  email {$ACME_EMAIL}
+}
+(hardening) {
+  header {
+    Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    X-Content-Type-Options nosniff
+    Referrer-Policy strict-origin-when-cross-origin
+    -Server
+  }
+  encode zstd gzip
+}
+{$WWW_HOST} {
+  import hardening
+  reverse_proxy www:4300
+}
+{$DEMO_HOST} {
+  import hardening
+  header X-Robots-Tag "noindex"
+  reverse_proxy demo:4310
+}
+{$APP_HOST} {
+  import hardening
+  header X-Robots-Tag "noindex"
+  reverse_proxy web:4200
+}
+{$API_HOST} {
+  import hardening
+  reverse_proxy api:4100 {
+    header_up X-Forwarded-For {remote_host}
+  }
+}

@@ -43,7 +43,7 @@ function finish(code) {
 log(`Empathia build ${new Date().toISOString()} on ${process.platform} ${process.version}`);
 run('link workspace', process.execPath, [path.join(root, 'scripts/bootstrap.mjs')]);
 run('design tokens', process.execPath, [path.join(root, 'packages/design-tokens/build-tokens.mjs')]);
-for (const p of ['packages/domain-types', 'packages/commissioning-engine', 'packages/event-contracts', 'packages/relationship-engine', 'packages/assurance-engine',
+for (const p of ['packages/domain-types', 'packages/commissioning-engine', 'packages/event-contracts', 'packages/relationship-engine', 'packages/search-party', 'packages/assurance-engine',
   'integrations/contracts', 'integrations/mocks', 'services/enterprise-api', 'packages/api-client', 'packages/schemas']) run(`tsc -b ${p}`, process.execPath, [tsc, '-b', path.join(root, p)]);
 run('JSON Schemas (events, API bodies, entities)', process.execPath, [path.join(root, 'packages/schemas/scripts/generate.mjs')]);
 for (const p of ['packages/ui', 'apps/enterprise-web', 'apps/website', 'apps/demo']) run(`type-check ${p}`, process.execPath, [tsc, '-p', path.join(root, p, 'tsconfig.json'), '--noEmit']);

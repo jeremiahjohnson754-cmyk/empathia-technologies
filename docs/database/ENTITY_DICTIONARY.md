@@ -1822,10 +1822,12 @@ View · created in `database/migrations/0003_commissioning_evidence.sql`
 | Function | SECURITY DEFINER | Note |
 |---|---|---|
 | `app.accept_invitation(p_token_hash text, p_display_name text, p_password_hash text)` | yes |  |
+| `app.auth_bind_subject(p_email text, p_subject text)` | yes |  |
 | `app.auth_delegations(p_person uuid, p_tenant uuid)` | yes |  |
 | `app.auth_memberships(p_person uuid)` | yes |  |
 | `app.auth_person(p_person uuid)` | yes |  |
 | `app.auth_person_by_email(p_email text)` | yes |  |
+| `app.auth_person_by_subject(p_subject text)` | yes |  |
 | `app.baseline_transition_only()` |  |  |
 | `app.current_tenant()` |  |  |
 | `app.current_user_id()` |  |  |

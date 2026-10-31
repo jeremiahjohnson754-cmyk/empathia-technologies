@@ -4,7 +4,7 @@
   "apiVersion": "0.1.0",
   "counts": {
     "events": 101,
-    "api": 30,
+    "api": 31,
     "entities": 4
   },
   "files": [
@@ -662,6 +662,11 @@
       "file": "api/postV1Delegations.json",
       "$id": "https://schemas.empathia.invalid/api/postV1Delegations/0.1.0.json",
       "sha256": "7475f9df50777d73290dd4238be5ade91171e4c08059dd5abcfc41f91cb7f2d5"
+    },
+    {
+      "file": "api/postV1SearchIntent.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1SearchIntent/0.1.0.json",
+      "sha256": "08f73b55b40607af77f85e3f0aeec5bb1146a1c9061dd8e7d2f208a140ce92b9"
     },
     {
       "file": "entities/RoomDetail.json",

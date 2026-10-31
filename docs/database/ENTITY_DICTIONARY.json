@@ -6961,6 +6961,12 @@
       "comment": null
     },
     {
+      "name": "auth_bind_subject",
+      "args": "p_email text, p_subject text",
+      "definer": true,
+      "comment": null
+    },
+    {
       "name": "auth_delegations",
       "args": "p_person uuid, p_tenant uuid",
       "definer": true,
@@ -6981,6 +6987,12 @@
     {
       "name": "auth_person_by_email",
       "args": "p_email text",
+      "definer": true,
+      "comment": null
+    },
+    {
+      "name": "auth_person_by_subject",
+      "args": "p_subject text",
       "definer": true,
       "comment": null
     },

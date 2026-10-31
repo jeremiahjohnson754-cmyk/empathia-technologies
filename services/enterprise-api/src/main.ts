@@ -29,7 +29,7 @@ export async function start(over: Partial<Record<string, string>> = {}) {
       return { status: 'ok', service: 'empathia-enterprise-api', version: '0.1.0', database: { reachable: true, serverVersion: db.v, migrationsApplied: db.m, ms: Date.now() - t0 }, authMode: cfg.authMode, objectStore: store.kind, worker: { delivered: worker.delivered, failed: worker.failed, deadLettered: worker.dead }, liveHealth: 'NOT_MONITORED', note: 'production starter on synthetic data — not production-ready' };
     } catch (e) { return { status: 'degraded', database: { reachable: false, error: (e as Error).message } }; }
   };
-  const router = buildRoutes({ pool, tokens, store, health });
+  const router = buildRoutes({ pool, tokens, store, health, authMode: cfg.authMode });
   const server = createServer(cfg, router, pool, tokens);
   await new Promise<void>((ok) => server.listen(cfg.port, cfg.host, ok));
   if (process.env['WORKER'] !== 'off') worker.start();

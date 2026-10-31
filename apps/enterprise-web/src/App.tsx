@@ -14,6 +14,7 @@ import { Reports } from './pages/Reports.js';
 import { Projects } from './pages/Projects.js';
 import { Inbox } from './pages/Inbox.js';
 import { Admin } from './pages/Admin.js';
+import { SearchParty } from './pages/SearchParty.js';
 import { MeContext } from './me.js';
 
 export function App() {
@@ -27,7 +28,7 @@ export function App() {
   const can = (a: string | string[]) => me.data!.authorities.includes('*') || ([] as string[]).concat(a).some((x) => me.data!.authorities.includes(x));
   const page = route[0] || 'rooms';
   const nav: Array<[string, string, boolean]> = [
-    ['rooms', 'Rooms', true], ['projects', 'Projects', true], ['reports', 'Reports', true], ['inbox', 'Inbox', true],
+    ['rooms', 'Rooms', true], ['search', 'Search Party', true], ['projects', 'Projects', true], ['reports', 'Reports', true], ['inbox', 'Inbox', true],
     ['admin', 'Administration', can(['policy.configure', 'provenance.review', 'adapter.allowlist'])],
   ];
   return (
@@ -47,6 +48,7 @@ export function App() {
         <main id="main" tabIndex={-1} className="main">
           {page === 'rooms' && !route[1] ? <Rooms /> : null}
           {page === 'rooms' && route[1] ? <Room code={route[1]} tab={route[2] || 'overview'} /> : null}
+          {page === 'search' ? <SearchParty type={route[1]} id={route[2]} /> : null}
           {page === 'projects' ? <Projects /> : null}
           {page === 'reports' ? <Reports /> : null}
           {page === 'inbox' ? <Inbox /> : null}

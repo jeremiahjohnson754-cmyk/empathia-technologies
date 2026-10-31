@@ -8,9 +8,10 @@ import crypto from 'node:crypto';
 import { enforcedAuthorities, type Router, type Res } from './router.js';
 import { validate } from './schema.js';
 import { ApiError } from './errors.js';
-import { RequestContext } from '../auth/context.js';
+import { RequestContext, type Principal } from '../auth/context.js';
+import { OidcVerifier, type OidcClaims } from '../auth/oidc.js';
 import type { TokenVerifier } from '../auth/jwt.js';
-import { resolvePrincipal } from '../domain/platform.js';
+import { resolvePrincipal, resolveOidcPrincipal } from '../domain/platform.js';
 import { asJson, type PgPool } from '../db/pg.js';
 import type { Config } from '../config.js';
 import { log } from '../log.js';
@@ -21,6 +22,7 @@ class Bucket { tokens: number; at = Date.now(); constructor(public cap: number) 
 
 export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: TokenVerifier): http.Server {
   const buckets = new Map<string, Bucket>();
+  const oidc = cfg.oidc ? new OidcVerifier({ issuer: cfg.oidc.issuer, audience: cfg.oidc.audience, jwksUrl: cfg.oidc.jwksUrl }) : null;
   return http.createServer(async (req, res) => {
     const t0 = process.hrtime.bigint();
     const incoming = String(req.headers['x-correlation-id'] || '');
@@ -51,10 +53,19 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
       if (route.auth) {
         const h = String(req.headers.authorization || '');
         if (!h.startsWith('Bearer ')) throw new ApiError('unauthenticated', 'send Authorization: Bearer <token>');
-        let claims;
-        try { claims = tokens.verify(h.slice(7)); } catch (e) { throw new ApiError('unauthenticated', (e as Error).message); }
-        const p = await resolvePrincipal(pool, claims.sub, claims.tid, claims.role);
-        if (!p) throw new ApiError('unauthenticated', 'the membership behind this token no longer exists or the person is disabled');
+        let p: Principal | null;
+        if (cfg.authMode === 'oidc') {
+          // production identity: the provider's token names a subject; the tenant and role for this request come from headers and are checked against memberships
+          let claims: OidcClaims;
+          try { claims = await oidc!.verify(h.slice(7)); } catch (e) { throw new ApiError('unauthenticated', (e as Error).message); }
+          p = await resolveOidcPrincipal(pool, claims, String(req.headers['x-empathia-tenant'] || ''), String(req.headers['x-empathia-role'] || ''), cfg.oidc!.linkByEmail);
+          if (!p) throw new ApiError('unauthenticated', 'no membership matches this identity (subject unknown, or the tenant/role headers name a membership the person does not hold)');
+        } else {
+          let claims;
+          try { claims = tokens.verify(h.slice(7)); } catch (e) { throw new ApiError('unauthenticated', (e as Error).message); }
+          p = await resolvePrincipal(pool, claims.sub, claims.tid, claims.role);
+          if (!p) throw new ApiError('unauthenticated', 'the membership behind this token no longer exists or the person is disabled');
+        }
         ctx.principal = p; ctxRole = p.role; bucketKey = `p:${p.personId}`;
       }
       const b = buckets.get(bucketKey) || buckets.set(bucketKey, new Bucket(cfg.rateLimitPerMinute)).get(bucketKey)!;

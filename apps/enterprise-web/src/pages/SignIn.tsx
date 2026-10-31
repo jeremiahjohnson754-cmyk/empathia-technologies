@@ -24,7 +24,8 @@ const PEOPLE: Array<[string, string, string]> = [
 export function SignIn() {
   const [role, setRole] = useState('designer');
   const [password, setPassword] = useState('');
-  const m = useMutation(async () => { const t = await api.signIn({ email: `${role.replace(/_/g, '-')}@empathia-demo.empathia.invalid`, password, tenant: 'empathia-demo', role }); session.set(t.accessToken); return t; });
+  const [email, setEmail] = useState('');   // blank → the seeded person of the role; a site-scoped or invited person types theirs
+  const m = useMutation(async () => { const t = await api.signIn({ email: email.trim() || `${role.replace(/_/g, '-')}@empathia-demo.empathia.invalid`, password, tenant: 'empathia-demo', role }); session.set(t.accessToken); return t; });
   return (
     <main className="signin">
       <form className="signin__card" onSubmit={(e) => { e.preventDefault(); void m.run(undefined); }}>
@@ -34,6 +35,9 @@ export function SignIn() {
           <select id={id} value={role} onChange={(e) => setRole(e.target.value)} data-testid="role">
             {PEOPLE.map(([k, label, what]) => <option key={k} value={k}>{label} — {what}</option>)}
           </select>)}
+        </Field>
+        <Field label="Email" hint="Leave blank for the seeded person of that role; an invited or site-scoped person signs in with their own address.">{(id, d) => (
+          <input id={id} aria-describedby={d} type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={`${role.replace(/_/g, '-')}@empathia-demo.empathia.invalid`} data-testid="email" />)}
         </Field>
         <Field label="Development password" hint="Seeded people share the development password documented in services/enterprise-api/src/db/seed.ts. The API refuses this sign-in in production.">{(id, d) => (
           <input id={id} aria-describedby={d} type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} data-testid="password" />)}

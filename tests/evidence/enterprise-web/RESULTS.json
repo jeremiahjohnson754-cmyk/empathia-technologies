@@ -1,7 +1,7 @@
 {
   "test": "enterprise-web",
-  "at": "2026-10-30T18:41:39.849Z",
-  "passed": 21,
+  "at": "2026-10-31T00:03:35.452Z",
+  "passed": 34,
   "failed": 0,
   "results": [
     {
@@ -56,7 +56,7 @@
       "id": "W-09",
       "name": "a designer who bypasses the UI and calls the approval endpoint directly is refused 403 by the server",
       "result": "PASS",
-      "detail": "{\"status\":403,\"body\":{\"type\":\"https://errors.empathia.invalid/forbidden\",\"title\":\"Not allowed for your role\",\"status\":403,\"detail\":\"designer may not move a room to DESIGN_APPROVED (needs room.design.approve)\",\"code\":\"forbidden\",\"correlationId\":\"09eb14d6-c17e-45fc-b469-f4f5d5cdabf5\"}}"
+      "detail": "{\"status\":403,\"body\":{\"type\":\"https://errors.empathia.invalid/forbidden\",\"title\":\"Not allowed for your role\",\"status\":403,\"detail\":\"designer may not move a room to DESIGN_APPROVED (needs room.design.approve)\",\"code\":\"forbidden\",\"correlationId\":\"f720269c-dab9-4bea-acd9-ff861ef72fd0\"}}"
     },
     {
       "id": "W-10",
@@ -83,6 +83,48 @@
       "detail": ""
     },
     {
+      "id": "W-28",
+      "name": "the readiness strip states the stage, verified share (0% — design approval is not commissioning progress), evidence, baseline and live health from the API",
+      "result": "PASS",
+      "detail": "STAGE\nDESIGN_APPROVED\nnext INSTALLATION_PENDING · window.approve\nVERIFIED\n0%\n0 of 65 applicable tests independently verified\nDEFICIENCIES\n0\n0 High/Critical open\nEVIDENCE\n0\nobjects · 0 measurements\nBASELINE\nnone\n0 versions\nLIVE HEALTH\nNot mo"
+    },
+    {
+      "id": "W-29",
+      "name": "the next gate names its authority and the separation-of-duties rule where one applies",
+      "result": "PASS",
+      "detail": "STAGE\nDESIGN_APPROVED\nnext INSTALLATION_PENDING · window.approve\nVERIFIED\n0%\n0 of 65 applicable tests independently verified\nDEFICIENCIES\n0\n0 High/Critical open\nEVIDENCE\n0\nobjects · 0 measurements\nBAS"
+    },
+    {
+      "id": "W-30",
+      "name": "the assurance tab shows no baseline before acceptance and says a baseline is published only by an authorized acceptance",
+      "result": "PASS",
+      "detail": "Baseline lineage\n\nNo baseline yet\n\nA baseline is published only by an authorized acceptance; nothing here is hand-written.\nMeasurements\n\nEach value keeps its pr"
+    },
+    {
+      "id": "W-30b",
+      "name": "the systems engineer, who holds no recording authority, sees no measurement control (the server would refuse anyway)",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-31",
+      "name": "a field measurement without an instrument is refused by the server and the refusal is shown in the form",
+      "result": "PASS",
+      "detail": "Record a measurement\n×\nProvenance never changes afterwards. Pick what the value really is: a field measurement names its instrument; a model output is SIMULATED"
+    },
+    {
+      "id": "W-32",
+      "name": "the measurement is listed with its provenance, instrument, calibration state and UNREVIEWED approval",
+      "result": "PASS",
+      "detail": "Measurements\nMetric\tValue\tProvenance\tInstrument\tWhere / when\tApproval\t\n\nnoise_floor\nLAeq 60 s\n\t36.2 dB(A)\tFIELD_MEASURED\tSYN-METER-01 · CALIBRATED\tseat 3, 1.2 m · 2026-10-31 00:03 · SYN-METER-01\tUNREV"
+    },
+    {
+      "id": "W-33",
+      "name": "the recorder cannot verify their own measurement: the server’s refusal is shown verbatim",
+      "result": "PASS",
+      "detail": "Baseline lineage\n\nNo baseline yet\n\nA baseline is published only by an authorized acceptance; nothing here is hand-written.\nMeasurements\n\nEach value keeps its provenance. Only a field measurement from "
+    },
+    {
       "id": "W-14",
       "name": "reports show definitions and operational performance “Not monitored”",
       "result": "PASS",
@@ -105,6 +147,42 @@
       "name": "room tabs are keyboard operable (arrow keys move between tabs)",
       "result": "PASS",
       "detail": "http://127.0.0.1:4291/#/rooms/R-PLN-0001/devices"
+    },
+    {
+      "id": "W-22",
+      "name": "Search Party ranks the exact room code first and shows its type and record source",
+      "result": "PASS",
+      "detail": "ROOM\nAtlas Town Hall (synthetic)\n· Atlas Tower (synthetic) · floor 1 · PLANNED\nR-PLN-0001"
+    },
+    {
+      "id": "W-23",
+      "name": "the neighbourhood graph renders nodes and edges from the API with the start at the centre",
+      "result": "PASS",
+      "detail": "31 nodes, 67 edges"
+    },
+    {
+      "id": "W-24",
+      "name": "a node is inspectable from the keyboard and every edge states its provenance",
+      "result": "PASS",
+      "detail": "PROJECT Atlas Tower AV refresh (synthetic)\n\nOPEN · source app.project · open · centre here\n\ncontains Atlas Town Hall (synthetic) Room DERIVED DERIVED app.room.project_id\ncontains Atlas Boardroom 7.112"
+    },
+    {
+      "id": "W-25",
+      "name": "a relationship question is answered from records with its status and confidence shown",
+      "result": "PASS",
+      "detail": "UNKNOWN UNKNOWN approved\n\nNo approval is recorded for Atlas Town Hall (synthetic): its design is not approved.\n\nEvidence (1)"
+    },
+    {
+      "id": "W-26",
+      "name": "an unmodelled question is UNKNOWN with the reason, never a manufactured answer",
+      "result": "PASS",
+      "detail": "UNKNOWN UNKNOWN vendor\n\nNo supplier, integrator or support agreement is recorded for Atlas Town Hall (synthetic).\n\nWhat this answer cannot claim.\nvendor and support-agreement records are not yet captu"
+    },
+    {
+      "id": "W-27",
+      "name": "a South-scoped technician searching the North building finds nothing: absent, not hidden (and the coverage note says site-scoped)",
+      "result": "PASS",
+      "detail": "0 records\n\nNothing in your view matches\n\nTry a room code (R-PLN-0001), a device (A-0001), an issue (ISS-…) or a building code. Records outside your site scope a"
     },
     {
       "id": "W-18",

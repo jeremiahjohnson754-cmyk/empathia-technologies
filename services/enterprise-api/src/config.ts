@@ -20,6 +20,8 @@ export interface Config {
   workerIntervalMs: number;
   maxBodyBytes: number;
   rateLimitPerMinute: number;
+  /** OIDC (AUTH_MODE=oidc): the provider's issuer, the audience this API accepts, the JWKS URL, and whether a verified email may bind a first sign-in to an existing person */
+  oidc: { issuer: string; audience: string; jwksUrl: string; linkByEmail: boolean } | null;
 }
 
 /** Reads .local/pg/env (written by scripts/db.mjs) when the variables are not already set. */
@@ -34,6 +36,13 @@ export function loadConfig(repo: string, over: Partial<Record<string, string>> =
   const env = (e['NODE_ENV'] === 'production' ? 'production' : e['NODE_ENV'] === 'test' ? 'test' : 'development') as Config['env'];
   const authMode = (e['AUTH_MODE'] || 'dev') as Config['authMode'];
   if (env === 'production' && authMode === 'dev') throw new Error('AUTH_MODE=dev is refused in production: configure OIDC');
+  if (authMode !== 'dev' && authMode !== 'oidc') throw new Error(`AUTH_MODE must be dev or oidc (got ${authMode})`);
+  let oidc: Config['oidc'] = null;
+  if (authMode === 'oidc') {
+    for (const k of ['OIDC_ISSUER', 'OIDC_AUDIENCE', 'OIDC_JWKS_URL']) if (!e[k]) throw new Error(`${k} is required when AUTH_MODE=oidc`);
+    if (env === 'production' && !/^https:\/\//.test(e['OIDC_JWKS_URL']!)) throw new Error('OIDC_JWKS_URL must be https in production');
+    oidc = { issuer: e['OIDC_ISSUER']!, audience: e['OIDC_AUDIENCE']!, jwksUrl: e['OIDC_JWKS_URL']!, linkByEmail: e['OIDC_LINK_BY_EMAIL'] === 'on' };
+  }
   let secret = e['JWT_SECRET'];
   if (!secret) {
     if (env === 'production') throw new Error('JWT_SECRET is required in production');
@@ -54,5 +63,6 @@ export function loadConfig(repo: string, over: Partial<Record<string, string>> =
     workerIntervalMs: Number(e['WORKER_INTERVAL_MS'] || 500),
     maxBodyBytes: Number(e['MAX_BODY_BYTES'] || 25 * 1024 * 1024),
     rateLimitPerMinute: Number(e['RATE_LIMIT_PER_MINUTE'] || 600),
+    oidc,
   };
 }
