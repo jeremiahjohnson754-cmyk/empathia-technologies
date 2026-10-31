@@ -103,5 +103,34 @@
    "sha256": "e63dcd04e36e44881f11b15093c4a81586ca14f680c8bb1336381087c3305010",
    "entries": 28
   }
+ },
+ "additional": {
+  "SIGNAL_LIB": {
+   "extractedFrom": "legacy/source/v253/Empathia-Living-Campus-V2.5.3-live.html (sha256 9d6e53ef\u2026, the frozen 2.5.3 rc3 investor-live build)",
+   "object": "SIGNAL_LIB (the Empathia Learn / SIGNAL library of V1.4.1, carried in the 2.5.3 demonstrator)",
+   "at": "2026-10-31T02:07:00Z",
+   "sha256": "0abe04476cf98155945a2b8f2cad4f1d9e91b984bb470fc6b59d5c26b290f843",
+   "entries": {
+    "lessons": 161,
+    "lessonOrder": 161,
+    "lessonDomains": 15,
+    "quizzes": 223,
+    "labs": 91,
+    "labOrder": 91,
+    "drills": 146,
+    "drillOrder": 146,
+    "incidents": 121,
+    "incidentOrder": 121,
+    "cases": 62,
+    "caseOrder": 62,
+    "explorers": 4,
+    "layerColors": 6,
+    "formulas": 125,
+    "glossary": 522,
+    "tierOf": 746,
+    "seasonOf": 707
+   },
+   "note": "First-party content (fictional sanctuary narrative, invented people); extracted unchanged. Scanned for the forbidden real-world names: none."
+  }
  }
 }

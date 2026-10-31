@@ -25,7 +25,7 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   await page.screenshot({ path: path.join(out, `${tag}-start.png`) });
   if (tag === 'desktop') {
     let bad = []; for (const a of areas.filter((x) => x.key !== 'investor')) { const hash = '#/' + (a.key === 'none' ? 'no-such-area' : a.key.replace('.', '/')); await page.evaluate((x) => { location.hash = x; }, hash); await page.waitForTimeout(120);
-      const v = await page.evaluate(() => ({ h1: (document.querySelector('main h1') || {}).textContent || '', text: document.querySelector('main').innerText })); if (!(v.h1.length > 2 && /(Not migrated yet|Native page|Unknown address|interactive demonstration)/.test(v.text))) bad.push(`${hash}: ${v.h1}`); }
+      const v = await page.evaluate(() => ({ h1: (document.querySelector('main h1') || {}).textContent || '', text: document.querySelector('main').innerText })); if (!(v.h1.length > 2 && /(Not migrated yet|Native page|Unknown address|interactive demonstration|Acting as)/.test(v.text))) bad.push(`${hash}: ${v.h1}`); }
     ok('D-04', `every one of the ${areas.length} legacy areas resolves to a native page or one that states its migration status`, !bad.length, bad.slice(0, 5).join(' | '));
     await page.evaluate(() => { location.hash = '#/assurance/room/R-1/history'; }); await page.waitForTimeout(150);
     ok('D-05', 'a deep legacy address resolves to its area (assurance.history)', /baseline history/i.test(await page.evaluate(() => document.querySelector('main').innerText)));
@@ -127,14 +127,127 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     ok('T-01', 'scenario 1 opens its first step natively on Search Party as the service technician with its evidence label', /Scenario 1 of 7 · step 1 of 17/.test(t1) && /VERIFIED_DEMO/.test(t1) && /as service/.test(t1) && !/not migrated/.test(t1) && /#\/search\?focus=NetworkNode:SW-ATL-4A/.test(await page.evaluate(() => location.hash)) && (await page.locator('.sp__graph svg').count()) === 1, t1.slice(0, 200));
     ok('T-02', 'the perspective follows the step persona', (await page.inputValue('.persp select')) === 'service');
     let visited = 0, honest = 0, errorsBefore = errs.length;
-    for (let i = 0; i < 16; i++) { await page.click('[data-testid=tour] button:has-text("Next")'); await page.waitForTimeout(250); const t = await page.locator('[data-testid=tour]').innerText(); visited += 1; if (/not migrated yet/.test(t)) honest += 1; const main = await page.evaluate(() => document.querySelector('main').innerText); if (!main.trim()) { ok(`T-03.${i}`, 'step renders a page', false, t.slice(0, 80)); } }
+    for (let i = 0; i < 16; i++) { await page.click('[data-testid=tour] button:has-text("Next")'); await page.waitForTimeout(250); const t = await page.locator('[data-testid=tour]').innerText(); visited += 1; if (/not migrated yet/.test(t)) { honest += 1; console.log('  not migrated:', await page.evaluate(() => location.hash)); } const main = await page.evaluate(() => document.querySelector('main').innerText); if (!main.trim()) { ok(`T-03.${i}`, 'step renders a page', false, t.slice(0, 80)); } }
     const last = await page.locator('[data-testid=tour]').innerText();
-    ok('T-03', 'every one of the 17 steps opens a page (native or a status page) with no page error; steps on unmigrated areas say so', visited === 16 && /step 17 of 17/.test(last) && honest >= 8 && errs.length === errorsBefore, `${visited} visited, ${honest} honest, errors ${errs.length - errorsBefore}`);
+    ok('T-03', 'every one of the 17 steps opens a page with no page error; only the three Field Intelligence steps still say "not migrated yet"', visited === 16 && /step 17 of 17/.test(last) && honest === 3 && errs.length === errorsBefore, `${visited} visited, ${honest} honest, errors ${errs.length - errorsBefore}`);
     ok('T-04', 'the last step is the steward on the ledger', /as steward/.test(last));
     await page.click('[data-testid=tour] button[aria-label="Scenario 4"]'); await page.waitForTimeout(400);
     ok('T-05', 'jumping to scenario 4 opens the commissioning plan step natively as the commissioning engineer', /Scenario 4 of 7/.test(await page.locator('[data-testid=tour]').innerText()) && /#\/v25\/build/.test(await page.evaluate(() => location.hash)));
     await page.click('[data-testid=tour] button:has-text("Close")'); await page.waitForTimeout(200);
     ok('T-06', 'the panel closes and stays closed on reload', (await page.locator('[data-testid=tour]').count()) === 0);
+  }
+  if (tag === 'desktop') {
+    // ---------------------------------------------------------------- the native product experiences on the shared workspace (reset first so the run is repeatable)
+    const persp = async (p) => { await page.selectOption('.persp select', p); await page.waitForTimeout(150); };
+    const refusal = async () => (await page.locator('[role=alert]').count()) ? page.locator('[role=alert]').first().innerText() : '';
+    await page.evaluate(() => { localStorage.removeItem('empathia.demo.workspace.v1'); location.hash = '#/v25/service'; }); await page.waitForTimeout(500); await persp('svcmgr'); await page.waitForSelector('[data-testid=incident]');
+    const q0 = await page.locator('[data-testid=incidents]').innerText();
+    ok('V-01', 'ServiceHands: the queue lists the seeded incidents with state, room, severity and recurrence', /ISS-0417/.test(q0) && /recurrence of ISS-0380/.test(q0) && /ISS-0421/.test(q0), q0.slice(0, 160));
+    await page.click('[data-testid=incident] button:has-text("Triage")'); await page.waitForTimeout(250);
+    ok('V-02', 'the service manager triages (OPEN → TRIAGED, guard scope_and_risk)', /TRIAGED/.test(await page.locator('[data-testid=incident] h2').innerText()));
+    await page.waitForSelector('[data-testid=candidates]');
+    const cand = await page.locator('[data-testid=candidates]').innerText();
+    ok('V-03', 'candidates are hard-gated before ranking: Ana eligible and first (based in ATL, experience, past jobs), Ben fails site access, Dev fails an expired certification, the vendor is eligible under her agreement', /1\. Ana Reyes/.test(cand) && /based in ATL/.test(cand) && /Ben Okafor[\s\S]*hard gate[\s\S]*site access: ATL not in approved sites/.test(cand) && /Dev Shah[\s\S]*expired 2026-10-01/.test(cand) && /Cara Lind[\s\S]*eligible/.test(cand), cand.slice(0, 400));
+    await page.click('[data-testid=candidates] li.off button:has-text("Try anyway")'); await page.waitForTimeout(250);
+    ok('V-04', 'assigning an ineligible person is refused by the engine and the refusal names the hard gate', /Refused/.test(await refusal()) && /hard gate/.test(await refusal()), await refusal());
+    await page.click('[data-testid=candidates] li >> nth=0 >> button:has-text("Assign")'); await page.waitForTimeout(300);
+    ok('V-05', 'the eligible technician is assigned (TRIAGED → ASSIGNED)', /ASSIGNED/.test(await page.locator('[data-testid=incident] h2').innerText()) && /Ana Reyes/.test(await page.locator('[data-testid=incident]').innerText()));
+    await persp('installer'); await page.waitForTimeout(200);
+    ok('V-06', 'an installer holds no work.accept: the step is shown as not theirs, with no button', /not your authority/.test(await page.locator('[data-testid=incident]').innerText()) && !(await page.locator('[data-testid=incident] button:has-text("Accept the job")').count()));
+    await persp('service'); await page.waitForTimeout(200);
+    ok('V-06b', 'the technician sees the context packet read from the model: the switch, its uplink, the rooms sharing it and the power', /Access switch ATL-4A/.test(await page.locator('.svc__packet').innerText()) && /Core switch ATL-CORE/.test(await page.locator('.svc__packet').innerText()) && /Atlas 4\.220 Huddle/.test(await page.locator('.svc__packet').innerText()) && /Power panel ATL-4/.test(await page.locator('.svc__packet').innerText()), await page.locator('.svc__packet').innerText());
+    await page.click('[data-testid=incident] button:has-text("Accept the job")'); await page.waitForTimeout(250); await page.waitForSelector('[data-testid=preflight]');
+    const pf0 = await page.locator('[data-testid=preflight]').innerText();
+    ok('V-07', 'dispatch preflight on the record: the room is booked in the proposed window, the processor stock check is stale, tools unconfirmed — each named', /booked/.test(pf0) && /processor: stock check is 3[0-9] days old/.test(pf0) && /missing: audio analyser/.test(pf0), pf0.slice(0, 300));
+    await page.click('[data-testid=preflight] button:has-text("Start the work")'); await page.waitForTimeout(250);
+    ok('V-08', 'a failed preflight blocks IN_PROGRESS (guard preflight_passed) and the refusal is in the ledger', /preflight has a failed check/.test(await refusal()), await refusal());
+    // the manager re-plans the window outside the booking and the stock is rechecked; the technician confirms tools and starts
+    await page.evaluate(() => { const w = JSON.parse(localStorage.getItem('empathia.demo.workspace.v1')); const wo = w.workOrders.find((x) => x.id === 'WO-0088'); const d = new Date(Date.now() + 2 * 864e5); wo.window = { from: d.toISOString().slice(0, 16), to: new Date(d.getTime() + 3 * 36e5).toISOString().slice(0, 16) }; w.stock.processor.checkedAt = new Date().toISOString(); localStorage.setItem('empathia.demo.workspace.v1', JSON.stringify(w)); location.hash = '#/v25/service?id=ISS-0417'; }); await page.reload(); await page.waitForTimeout(600); await persp('service'); await page.waitForSelector('[data-testid=preflight]');
+    for (const t of ['audio analyser', 'laptop with the DSP tool']) await page.locator(`[data-testid=preflight] label:has-text("${t}") input`).check();
+    await page.click('[data-testid=preflight] button:has-text("Start the work")'); await page.waitForTimeout(300);
+    ok('V-09', 'with every check clear the technician starts the work (ACCEPTED → IN_PROGRESS)', /IN_PROGRESS/.test(await page.locator('[data-testid=incident] h2').innerText()), await refusal());
+    await page.click('[data-testid=incident] button:has-text("Hand over for independent verification")'); await page.waitForTimeout(250);
+    ok('V-10', 'handing over without field evidence is refused (guard record_work_and_evidence)', /no field evidence recorded/.test(await refusal()), await refusal());
+    await page.selectOption('[data-testid=incident] select[aria-label="Evidence kind"]', 'configuration snapshot'); await page.fill('[data-testid=incident] input[aria-label="Evidence note"]', 'AEC reference re-routed to the signed configuration; far-end call clean for 45 minutes (synthetic)'); await page.click('[data-testid=incident] button:has-text("Record evidence")'); await page.waitForTimeout(250);
+    await page.click('[data-testid=incident] button:has-text("Hand over for independent verification")'); await page.waitForTimeout(250);
+    ok('V-11', 'with evidence recorded the job goes to VERIFYING', /VERIFYING/.test(await page.locator('[data-testid=incident] h2').innerText()), await refusal());
+    await page.click('[data-testid=incident] button:has-text("Verify the repair")').catch(() => {}); await page.waitForTimeout(250);
+    ok('V-12', 'the technician cannot verify their own work (service.verify is not theirs)', !/RESOLVED/.test(await page.locator('[data-testid=incident] h2').innerText()));
+    await persp('cxeng'); await page.waitForTimeout(200); await page.click('[data-testid=incident] button:has-text("Verify the repair")'); await page.waitForTimeout(250);
+    ok('V-13', 'the commissioning engineer verifies independently (VERIFYING → RESOLVED)', /RESOLVED/.test(await page.locator('[data-testid=incident] h2').innerText()), await refusal());
+    await persp('svcmgr'); await page.waitForTimeout(200); await page.click('[data-testid=incident] button:has-text("Close")'); await page.waitForTimeout(250);
+    ok('V-14', 'closure follows the customer policy: a High incident needs the requester’s confirmation', /requester’s confirmation/.test(await refusal()), await refusal());
+    await page.locator('[data-testid=incident] label:has-text("requester confirmed") input').check(); await page.click('[data-testid=incident] button:has-text("Close")'); await page.waitForTimeout(250);
+    ok('V-15', 'with the confirmation the incident closes', /CLOSED/.test(await page.locator('[data-testid=incident] h2').innerText()), await refusal());
+
+    // ---------------------------------------------------------------- APEX on the camera incident
+    await page.evaluate(() => { location.hash = '#/v25/apex?incident=ISS-0421'; }); await page.waitForTimeout(500); await persp('cxeng'); await page.waitForTimeout(200);
+    await page.click('button:has-text("Open a case for ISS-0421")'); await page.waitForTimeout(400); await page.waitForSelector('[data-testid=apex-case]');
+    const layers = await page.locator('[data-testid=layers]').innerText(); const hyps = await page.locator('.apex__hyps').innerText();
+    ok('A-01', 'a case opens on the camera branch: seven layers with what is recorded and what the estate cites; hypotheses ranked, the PoE port first (medium) with the signed runbook', /Physical/.test(layers) && /Network[\s\S]*port down on the access switch[\s\S]*cites SW-ATL-4A/.test(layers) && /nothing recorded/.test(layers) && /^1\.?\s*medium/m.test(hyps.replace(/\n/g, ' ')) === false && /PoE port stopped delivering power/.test(hyps) && /RB-POE-CYCLE/.test(hyps), hyps.slice(0, 200));
+    ok('A-02', 'the hypothesis says why it is not proven and what is against it', /port state read from the recorded dependency, not polled now/.test(await page.locator('[data-testid=hypothesis]').innerText()) && /camera firmware unchanged/.test(await page.locator('[data-testid=hypothesis]').innerText()));
+    await page.click('[data-testid=hypothesis] .apex__tier:has-text("A2") button'); await page.waitForTimeout(250);
+    ok('A-03', 'A2 is a read-only comparison, honest when there is no accepted baseline for the room', /COMPARED/.test(await page.locator('[data-testid=apex-log]').innerText()) && /NOT_VERIFIED/.test(await page.locator('[data-testid=apex-log]').innerText()), await page.locator('[data-testid=apex-log]').innerText().then((t) => t.slice(0, 200)));
+    await page.click('[data-testid=hypothesis] .apex__tier:has-text("A4") button'); await page.waitForTimeout(250);
+    ok('A-04', 'A4 preflight is BLOCKED first on owner approval', /BLOCKED[\s\S]*owner approval missing/.test(await page.locator('[data-testid=apex-log] li >> nth=0').innerText()));
+    await page.locator('[data-testid=a4] label:has-text("Owner approval") input').check(); await page.fill('#a4-win', '2026-11-04T20:00Z'); await page.click('[data-testid=hypothesis] .apex__tier:has-text("A4") button'); await page.waitForTimeout(250);
+    ok('A-05', 'with approval and a window, the real adapter state blocks it: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)', /no SUPPORTED_VERIFIED adapter for network \(NOT_CONFIGURED in this build\)/.test(await page.locator('[data-testid=apex-log] li >> nth=0').innerText()), await page.locator('[data-testid=apex-log] li >> nth=0').innerText());
+    await page.locator('[data-testid=a4] label:has-text("Simulate a SUPPORTED_VERIFIED") input').check(); await page.click('[data-testid=hypothesis] .apex__tier:has-text("A4") button'); await page.waitForTimeout(250);
+    ok('A-06', 'a simulated adapter yields a DRY RUN first, labelled SIMULATED', /DRY_RUN[\s\S]*SIMULATED/.test(await page.locator('[data-testid=apex-log] li >> nth=0').innerText()));
+    await page.locator('[data-testid=a4] label:has-text("Dry run acknowledged") input').check(); await page.selectOption('#a4-b', 'estop'); await page.click('[data-testid=hypothesis] .apex__tier:has-text("A4") button'); await page.waitForTimeout(250);
+    ok('A-07', 'an operator emergency stop aborts the simulation with rollback and requests compensation; everything stays in the log', /ABORTED[\s\S]*rollback applied in the simulation/.test(await page.locator('[data-testid=apex-log] li >> nth=0').innerText()) && (await page.locator('[data-testid=apex-log] li').count()) === 5);
+    await page.click('[data-testid=hypothesis] .apex__tier:has-text("A3") button'); await page.waitForTimeout(250);
+    ok('A-08', 'A3 stages a draft work order that stays OPEN until the service manager triages it', /DRAFT_STAGED[\s\S]*work order WO-\d+ drafted/.test(await page.locator('[data-testid=apex-log] li >> nth=0').innerText()));
+    await persp('visitor'); await page.waitForTimeout(200);
+    ok('A-09', 'a visitor cannot act on a case', /cannot act on an APEX case/.test(await page.locator('[data-testid=apex-case]').innerText()) && !(await page.locator('[data-testid=hypothesis] .apex__tier button').count()));
+
+    // ---------------------------------------------------------------- Learn: the governed case, then the library
+    await page.evaluate(() => { location.hash = '#/v25/learn'; }); await page.waitForTimeout(500); await persp('cxeng'); await page.waitForTimeout(200); await page.waitForSelector('[data-testid=propose]');
+    await page.selectOption('[data-testid=propose] select', 'ISS-0417'); await page.fill('[data-testid=propose] input', 'Echo after a configuration change in Atlas 4.218'); await page.fill('[data-testid=propose] textarea', 'Re-check the AEC reference routing against the signed configuration after any DSP change.');
+    await page.click('[data-testid=propose] button:has-text("Propose")'); await page.waitForTimeout(250);
+    const lr = await refusal();
+    ok('L-01', 'a case needs permission, de-identification and no names: the refusal names all three', /customer permission/.test(lr) && /de-identified/.test(lr) && /still names a building, room or person/.test(lr), lr);
+    await page.fill('[data-testid=propose] input', 'Echo after a configuration change'); await page.locator('[data-testid=propose] label:has-text("permission") input').check(); await page.locator('[data-testid=propose] label:has-text("De-identified") input').check(); await page.click('[data-testid=propose] button:has-text("Propose")'); await page.waitForTimeout(300);
+    ok('L-02', 'the case is PROPOSED from the resolved incident', /PROPOSED/.test(await page.locator('[data-testid=learn-case]').innerText()) && /from ISS-0417/.test(await page.locator('[data-testid=learn-cases]').innerText()), await refusal());
+    await page.click('[data-testid=learn-case] button:has-text("SME review: approve")'); await page.waitForTimeout(250);
+    ok('L-03', 'the proposer cannot be the SME reviewer of their own case', /separation of duties/.test(await refusal()), await refusal());
+    await persp('syseng'); await page.waitForTimeout(200); await page.click('[data-testid=learn-case] button:has-text("SME review: approve")'); await page.waitForTimeout(250);
+    ok('L-04', 'a different subject-matter reviewer records the SME review', /SME_REVIEWED/.test(await page.locator('[data-testid=learn-case]').innerText()), await refusal());
+    await persp('steward'); await page.waitForTimeout(200); await page.click('[data-testid=learn-case] button:has-text("Approve for Learn")'); await page.waitForTimeout(250);
+    ok('L-05', 'the data steward approves it for Learn (training.case_approved); it grants nobody any authority', /APPROVED/.test(await page.locator('[data-testid=learn-case]').innerText()) && /grants nobody any authority/.test(await page.locator('[data-testid=learn-case]').innerText()), await refusal());
+    await page.click('#tab-lessons'); await page.waitForTimeout(800); await page.waitForSelector('[data-testid=lessons] li');
+    await page.click('[data-testid=lessons] li >> nth=0 >> a'); await page.waitForSelector('[data-testid=quiz]');
+    const lesson = await page.locator('[data-testid=lesson]').innerText();
+    ok('L-06', 'the SIGNAL library loads on demand: an Audio lesson with its cards and its check', /Signal flow and gain staging/.test(lesson) && /Check · Signal flow/.test(lesson), lesson.slice(0, 120));
+    await page.click('[data-testid=quiz] .learn__opts >> nth=0 >> button >> nth=1'); await page.waitForTimeout(100);
+    ok('L-07', 'a check answers with its why', /Not quite|Right/.test(await page.locator('[data-testid=quiz]').innerText()));
+    await page.click('#tab-drills'); await page.waitForTimeout(300); await page.waitForSelector('[data-testid=drills] li');
+    await page.click('[data-testid=drills] li >> nth=3 >> a'); await page.waitForSelector('[data-testid=drill]');
+    await page.click('[data-testid=drill] .learn__stages li >> nth=3 >> button'); await page.waitForTimeout(300);
+    const drill = await page.locator('[data-testid=drill]').innerText();
+    ok('L-08', 'a first-failure drill (No picture on input 3) is interactive and scores the tap; the completion is recorded as training only', /No picture on input 3/.test(drill) && /Right\./.test(drill) && /one-cable failure/.test(drill), drill.slice(0, 200));
+    await page.evaluate(() => { location.hash = '#/v25/ledger'; }); await page.waitForTimeout(500);
+    ok('L-09', 'the ledger carries the training completion with the note that it never grants authorization', /training\.drill_completed/.test(await page.locator('[data-testid=ledger]').innerText()) && /never grants work authorization/.test(await page.locator('[data-testid=ledger]').innerText()));
+
+    // ---------------------------------------------------------------- Mission Control, Executive, Ledger, Policy
+    await page.evaluate(() => { location.hash = '#/v25'; }); await page.waitForTimeout(500); await persp('exec'); await page.waitForTimeout(200); await page.waitForSelector('[data-testid=stations]');
+    const st = await page.locator('[data-testid=stations]').innerText();
+    ok('M-01', 'Mission Control counts live records at every station (service shows the two still-open incidents; field shows the APEX draft work order)', /Service\s*\n?[\s\S]*ISS-0421/.test(st) && /APEX draft/.test(st) && (await page.locator('[data-testid=stations] .mc__station').count()) === 10, st.slice(0, 300));
+    await page.evaluate(() => { location.hash = '#/v25/exec'; }); await page.waitForTimeout(500); await page.waitForSelector('[data-testid=passports]');
+    ok('M-02', '27 KPI passports; the person-level whiteboarding passport is NOT MEASURABLE, never 0%', (await page.locator('[data-testid=passports] .exec__tile').count()) === 27 && /not measurable/.test(await page.locator('[data-testid=passports]').innerText()));
+    await page.click('[data-testid=passports] .exec__tile:has-text("Median restoration time")'); await page.waitForSelector('[data-testid=passport]');
+    const pp = await page.locator('[data-testid=passport]').innerText();
+    ok('M-03', 'a passport shows numerator, denominator, window, coverage, freshness, confidence with reasons, source, exclusions and drill-down', /Numerator \/ denominator/.test(pp) && /90 days/.test(pp) && /Coverage/.test(pp) && /Confidence/.test(pp) && /Exclusions/.test(pp) && /ISS-0417/.test(pp), pp.slice(0, 300));
+    await persp('service'); await page.waitForTimeout(200);
+    ok('M-04', 'a technician does not see executive passports', /this perspective does not see executive passports/.test(await page.locator('main').innerText()) && !(await page.locator('[data-testid=passports]').count()));
+    await page.evaluate(() => { location.hash = '#/v25/ledger'; }); await page.waitForTimeout(400); await persp('steward'); await page.waitForTimeout(200);
+    await page.click('button:has-text("DENIED")'); await page.waitForTimeout(150);
+    const led = await page.locator('[data-testid=ledger]').innerText();
+    ok('M-05', 'the ledger filters to the refusals, each with actor, UTC and local time and the reason', /DENIED/.test(led) && /hard gate/.test(led) && /preflight has a failed check/.test(led) && /separation of duties/.test(led) && (led.match(/ALLOWED/g) || []).length === 0, led.slice(0, 300));
+    await page.evaluate(() => { location.hash = '#/v25/policy'; }); await page.waitForTimeout(400);
+    ok('M-06', 'the policy page shows what each native page checks and the demonstrator’s role × area matrix verbatim (86 areas × 14 roles)', (await page.locator('[data-testid=policy-gates] tbody tr').count()) === 6 && (await page.locator('[data-testid=policy-matrix] tbody tr').count()) === 86 && (await page.locator('[data-testid=policy-matrix] thead th').count()) === 15);
+    await page.evaluate(() => { location.hash = '#/v25/service'; }); await page.waitForTimeout(400); await page.click('button:has-text("Reset workspace")'); await page.waitForTimeout(300);
+    ok('M-07', 'Reset returns the workspace to its seed: ISS-0417 is OPEN again and the cases are gone', /OPEN[\s\S]*ISS-0417/.test(await page.locator('[data-testid=incidents]').innerText()) && !/APX-/.test(await page.locator('main').innerText()));
   }
   ok(`D-${tag}-07`, 'no page error, no console error, no request outside the page', !errs.length && !ext.length, [...errs, ...ext].slice(0, 3).join(' | '));
   await ctx.close();

@@ -1,0 +1,19 @@
+/** React access to the demonstration workspace: one state, every page; a mutation returns the refusal to show, or null. */
+import { useCallback, useState } from 'react';
+import { load, save, reset, type Workspace, type Refusal } from './store.js';
+
+export function useWorkspace() {
+  const [w, setW] = useState<Workspace>(() => load());
+  const [refusal, setRefusal] = useState<Refusal | null>(null);
+  /** Run a mutation on a copy; persist and re-render; surface a refusal. Returns true when it was applied. */
+  const apply = useCallback(<T,>(fn: (w: Workspace) => T): T => {
+    const next = structuredClone(w); const r = fn(next);
+    const refused = r && typeof r === 'object' && 'why' in (r as object) && Array.isArray((r as { why?: unknown }).why);
+    setRefusal(refused ? (r as unknown as Refusal) : null);
+    save(next); setW(next);
+    return r;
+  }, [w]);
+  const doReset = useCallback(() => { const n = reset(); setRefusal(null); setW(n); }, []);
+  return { w, apply, refusal, clearRefusal: () => setRefusal(null), reset: doReset };
+}
+export const isRefusal = (r: unknown): r is Refusal => !!r && typeof r === 'object' && Array.isArray((r as { why?: unknown }).why);

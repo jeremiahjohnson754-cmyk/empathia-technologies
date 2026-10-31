@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Tag, Notice, AppShell } from '@empathia/ui';
-import { areaOf, AREAS, NATIVE } from './registry.js';
+import { areaOf, areaKey, AREAS, NATIVE } from './registry.js';
 import { BuildRoom } from './build/BuildRoom.js';
 import { SearchPartyDemo } from './search/SearchParty.js';
 import { TourPanel } from './tour/Tour.js';
+import { ServicePage } from './pages/Service.js';
+import { ApexPage } from './pages/Apex.js';
+import { LearnPage } from './pages/Learn.js';
+import { MissionControl, ExecPage, LedgerPage } from './pages/Control.js';
 
 /** The seven investor scenarios of the 2.5.5 investor landing, with the customer problem each one solves (carried over verbatim in spirit). */
 const SCENARIOS = [
@@ -26,13 +30,13 @@ export function App() {
   // the same product rail as the enterprise application, on the legacy address space (every product resolves to a native page or a boundary page)
   const k = area?.key || '';
   const products = [
-    { key: 'home', label: 'Mission Control', href: '#/home', purpose: 'What changed, what matters, what needs action', active: k === 'home' },
+    { key: 'home', label: 'Mission Control', href: '#/v25', purpose: 'What changed, what matters, what needs action', active: k === 'home' || k === 'v25.home' },
     { key: 'pro', label: 'Pro', href: '#/suite/pro', purpose: 'Operational intelligence, portfolio, service performance', active: k.startsWith('pro') },
     { key: 'lite', label: 'Lite', href: '#/v25/build', purpose: 'Build a Room: spatial design on the real engine', active: k === 'v25.build' || k.startsWith('lite') },
     { key: 'search', label: 'Search Party', href: '#/search', purpose: 'Universal entity search and relationship intelligence', active: k.startsWith('search') },
     { key: 'cx', label: 'Commissioning & Assurance', href: '#/suite/commission', purpose: 'Plans, evidence, verification, acceptance, baselines', active: k.startsWith('commissioning') || k.startsWith('assurance') },
     { key: 'fi', label: 'Field Intelligence', href: '#/suite/integrations', purpose: 'What the collector declares, observes and verifies', active: k === 'fabric' },
-    { key: 'learn', label: 'Learn', href: '#/suite/learn', purpose: 'Evidence-backed cases and training', active: k === 'learn' },
+    { key: 'learn', label: 'Learn', href: '#/v25/learn', purpose: 'Evidence-backed cases and training', active: k === 'learn' || k === 'v25.learn' },
     { key: 'investor', label: 'Investor start', href: '#/investor', purpose: 'Three ways in: Build a Room, guided scenarios, the problems each workflow solves', active: home },
   ];
   return (
@@ -41,11 +45,26 @@ export function App() {
         actions={<label className="persp">Perspective <select value={as} onChange={(e) => setAs(e.target.value)} aria-describedby="persp-note">{PERSPECTIVES.map((p) => <option key={p} value={p}>{p}</option>)}</select></label>}
         note={<><Tag tone="warn">DEMONSTRATION · SYNTHETIC DATA</Tag> <span id="persp-note">A perspective changes what the demonstration shows; it grants nothing. Real access is decided by the authenticated application's server.</span></>}>
         <TourPanel hash={hash} onPerspective={setAs} />
-        <div className="wrap">{home ? <Landing /> : area?.key === 'v25.build' ? <BuildRoom perspective={as} /> : area?.key === 'search' || area?.key === 'search.graph' ? <SearchPartyDemo hash={hash} /> : <Boundary hash={hash} area={area} />}</div>
+        <div className="wrap">{home ? <Landing /> : page(areaKey(hash), hash, as) || <Boundary hash={hash} area={area} />}</div>
       </AppShell>
       <footer className="foot">Every person, organisation, room, device, figure and approval here is invented. Nothing is connected to a real system. <a href="#/investor">Back to the start</a></footer>
     </div>
   );
+}
+/** The native pages of this demonstration, by legacy area key (everything else is a boundary page that states its migration status). */
+function page(key: string, hash: string, as: string): React.ReactNode {
+  switch (key) {
+    case 'v25.build': return <BuildRoom perspective={as} />;
+    case 'search': case 'search.graph': return <SearchPartyDemo hash={hash} />;
+    case 'v25.service': case 'service': case 'servicehands': return <ServicePage perspective={as} hash={hash} />;
+    case 'v25.apex': return <ApexPage perspective={as} hash={hash} />;
+    case 'v25.learn': case 'learn': return <LearnPage perspective={as} hash={hash} />;
+    case 'v25.home': case 'home': return <MissionControl perspective={as} />;
+    case 'v25.exec': case 'pro.exec': return <ExecPage perspective={as} />;
+    case 'v25.ledger': case 'ledger': return <LedgerPage perspective={as} policy={false} />;
+    case 'v25.policy': return <LedgerPage perspective={as} policy />;
+    default: return null;
+  }
 }
 function Landing() {
   return (

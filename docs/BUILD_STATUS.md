@@ -112,6 +112,26 @@ W-47/W-48); (2) concept authorization (an approved brief; preliminary design, fe
 from execution authorization (funding; DETAILED design, release for construction, field steps) — `POST /v1/projects/{code}/concept`,
 revision `phase`, engine guards `concept_authorized` / `…_and_funded`; APR-2, W-45a–d. OpenAPI 99 operations; lifecycle suite 13/13; E2E 53/53.
 
+### Native demonstration experiences (2026-10-31, owner directive 20:48 CT)
+
+| Item | Status | Evidence |
+|---|---|---|
+| `@empathia/service-engine` — the demonstrator's service machine (10 states, 9 transitions with authority and guard), `hardGates` / `candidates` (explained ranking) / `preflight` / `serviceBlockers`, CERTS, WORK_NEEDS, SLA, ported verbatim | IMPLEMENTED · TESTED | 5/5 |
+| `@empathia/apex-engine` — seven layers, tiers A0–A5 with bounds, four runbooks (one unsigned, one safety-critical), the symptom library, `openCase` (ranked hypotheses with caveats and cited evidence), `act` (A4 preflight blocked by the real adapter state; dry run; simulated branches with compensation) | IMPLEMENTED · TESTED | 4/4 |
+| `@empathia/kpi-engine` — the 27 KPI passports over a `Records` snapshot: numerator, denominator, window, coverage, freshness, confidence with reasons; NOT_MEASURABLE is never 0% | IMPLEMENTED · TESTED | 4/4 |
+| SIGNAL library extracted unchanged from the frozen 2.5.3 build into `packages/domain-data/data/SIGNAL_LIB.json` (161 lessons, 223 checks, 91 labs, 146 drills, 121 incidents, 62 cases, 125 formulas, 522 terms; provenance recorded; forbidden-name scan clean), shipped beside the demo bundle and fetched on demand | DONE | `PROVENANCE.json` |
+| Demo workspace (`apps/demo/src/workspace/store.ts`): one persisted, resettable state shared by ServiceHands, APEX, Learn, Mission Control, Executive and the ledger; every mutation authority-checked and engine-guarded; every outcome (refusals included) an event | IMPLEMENTED · TESTED | demo V/A/L/M checks |
+| ServiceHands `#/v25/service`: manager queue (triage, hard-gated candidates with reasons, assignment, closure under the customer policy, reopening), technician jobs (context packet from the estate graph, acceptance, preflight on the record, evidence, hand-over), independent verification | IMPLEMENTED · TESTED | V-01..V-15 |
+| APEX `#/v25/apex`: cases from incidents, seven layers with cites, ranked hypotheses, A0–A5 with bounds, runbook facts, A4 preflight (owner approval → window → occupancy → real adapter state → allowlist → rate limit → dry run → simulated branch), review | IMPLEMENTED · TESTED | A-01..A-09 |
+| Learn `#/v25/learn`, `#/learn`: governed cases (permission, de-identification, no names, SME ≠ proposer, steward ≠ both), lessons with checks, 146 drills in six interactive kinds, canon casebook, formulas and glossary; training recorded as training only | IMPLEMENTED · TESTED | L-01..L-09; SIGNAL labs (91 simulators) NOT migrated |
+| Mission Control `#/v25`: ten stations counting live records, needs-action by perspective, latest events | IMPLEMENTED · TESTED | M-01 |
+| Executive `#/v25/exec`: 27 passports with window selection, passport detail; non-executive perspectives refused | IMPLEMENTED · TESTED | M-02..M-04 |
+| Ledger `#/v25/ledger` and policy `#/v25/policy`: every event with actor/UTC/local, filters; the authorities each native page checks (from the code) + the demonstrator's role × area matrix (86 × 14) verbatim | IMPLEMENTED · TESTED | M-05, M-06 |
+| Tour: 14 of 17 steps now native (Field Intelligence's three remain status pages) | PARTIAL | T-03 |
+
+Not built: Field Intelligence pages (scenario 2); SIGNAL labs; the enterprise app's service/APEX/executive pages on the new engines
+(the engines are shared packages, ready for the API). Demo browser suite: **87 checks**.
+
 ## Owner decisions of 2026-10-30 12:59 CT — what was actually done
 
 Each approved decision has an ADR, a migration, API contract entries (OpenAPI regenerated: 74 operations), positive and negative tests

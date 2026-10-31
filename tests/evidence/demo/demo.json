@@ -1,8 +1,8 @@
 {
- "at": "2026-10-31T02:00:57.184Z",
- "pass": 46,
+ "at": "2026-10-31T10:21:55.739Z",
+ "pass": 87,
  "fail": 0,
- "tests": 46,
+ "tests": 87,
  "results": [
   {
    "id": "D-desktop-01",
@@ -228,9 +228,9 @@
   },
   {
    "id": "T-03",
-   "name": "every one of the 17 steps opens a page (native or a status page) with no page error; steps on unmigrated areas say so",
+   "name": "every one of the 17 steps opens a page with no page error; only the three Field Intelligence steps still say \"not migrated yet\"",
    "result": "PASS",
-   "detail": "16 visited, 10 honest, errors 0"
+   "detail": "16 visited, 3 honest, errors 0"
   },
   {
    "id": "T-04",
@@ -247,6 +247,252 @@
   {
    "id": "T-06",
    "name": "the panel closes and stays closed on reload",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "V-01",
+   "name": "ServiceHands: the queue lists the seeded incidents with state, room, severity and recurrence",
+   "result": "PASS",
+   "detail": "OPEN\nFar-end audio drops out during long calls\nISS-0417 · Atlas 4.218 Boardroom · High · recurrence of ISS-0380\nTRIAGED\nCamera shows no video in meetings\nISS-04"
+  },
+  {
+   "id": "V-02",
+   "name": "the service manager triages (OPEN → TRIAGED, guard scope_and_risk)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "V-03",
+   "name": "candidates are hard-gated before ranking: Ana eligible and first (based in ATL, experience, past jobs), Ben fails site access, Dev fails an expired certification, the vendor is eligible under her agreement",
+   "result": "PASS",
+   "detail": "Needs: cert.av_field, cert.audio; experience SK-AUD-2 Working; tools audio analyser, laptop with the DSP tool.\n\n1. Ana Reyes (synthetic)\neligible · 63\nbased in ATL · experience depth 13/30 · 2 resolved job(s) in this room · 22 h capacity this week · internal team\nAssign\n2. Cara Lind — Brightwater AV (synthetic)\neligible · 36\nworks at ATL · experience depth 24/30 · 12 h capacity this week\nAssign\nBe"
+  },
+  {
+   "id": "V-04",
+   "name": "assigning an ineligible person is refused by the engine and the refusal names the hard gate",
+   "result": "PASS",
+   "detail": "Refused.\nthe chosen technician fails a hard gate"
+  },
+  {
+   "id": "V-05",
+   "name": "the eligible technician is assigned (TRIAGED → ASSIGNED)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "V-06",
+   "name": "an installer holds no work.accept: the step is shown as not theirs, with no button",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "V-06b",
+   "name": "the technician sees the context packet read from the model: the switch, its uplink, the rooms sharing it and the power",
+   "result": "PASS",
+   "detail": "Context packet — read from the model, not polled\nDevices\nDisplay 1 (4.218), UC room compute (4.218), Audio processor (4.218), Ceiling microphone (4.218), Touch panel (4.218)\nAccess switch\nAccess switch ATL-4A\nUplink\nCore switch ATL-CORE\nRooms sharing the switch\nAtlas 4.220 Huddle, Atlas 4.231 Training\nPower\nPower panel ATL-4\nEvidence freshness\nedges carry their provenance and date (synthetic colle"
+  },
+  {
+   "id": "V-07",
+   "name": "dispatch preflight on the record: the room is booked in the proposed window, the processor stock check is stale, tools unconfirmed — each named",
+   "result": "PASS",
+   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-01T08:21 → 2026-11-01T10:21\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
+  },
+  {
+   "id": "V-08",
+   "name": "a failed preflight blocks IN_PROGRESS (guard preflight_passed) and the refusal is in the ledger",
+   "result": "PASS",
+   "detail": "Refused.\ndispatch preflight has a failed check"
+  },
+  {
+   "id": "V-09",
+   "name": "with every check clear the technician starts the work (ACCEPTED → IN_PROGRESS)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "V-10",
+   "name": "handing over without field evidence is refused (guard record_work_and_evidence)",
+   "result": "PASS",
+   "detail": "Refused.\nno field evidence recorded"
+  },
+  {
+   "id": "V-11",
+   "name": "with evidence recorded the job goes to VERIFYING",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "V-12",
+   "name": "the technician cannot verify their own work (service.verify is not theirs)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "V-13",
+   "name": "the commissioning engineer verifies independently (VERIFYING → RESOLVED)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "V-14",
+   "name": "closure follows the customer policy: a High incident needs the requester’s confirmation",
+   "result": "PASS",
+   "detail": "Refused.\nthe customer policy requires the requester’s confirmation before closure"
+  },
+  {
+   "id": "V-15",
+   "name": "with the confirmation the incident closes",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A-01",
+   "name": "a case opens on the camera branch: seven layers with what is recorded and what the estate cites; hypotheses ranked, the PoE port first (medium) with the signed runbook",
+   "result": "PASS",
+   "detail": "medium The PoE port stopped delivering power (port error-disabled) network · A4 · RB-POE-CYCLE\nlow The camera cable or injector failed physical · A3\nlow The camera needs a home preset recall after a b"
+  },
+  {
+   "id": "A-02",
+   "name": "the hypothesis says why it is not proven and what is against it",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A-03",
+   "name": "A2 is a read-only comparison, honest when there is no accepted baseline for the room",
+   "result": "PASS",
+   "detail": "COMPARED A2 H1 2026-10-31 10:21 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
+  },
+  {
+   "id": "A-04",
+   "name": "A4 preflight is BLOCKED first on owner approval",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A-05",
+   "name": "with approval and a window, the real adapter state blocks it: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)",
+   "result": "PASS",
+   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-10-31 10:21 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
+  },
+  {
+   "id": "A-06",
+   "name": "a simulated adapter yields a DRY RUN first, labelled SIMULATED",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A-07",
+   "name": "an operator emergency stop aborts the simulation with rollback and requests compensation; everything stays in the log",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A-08",
+   "name": "A3 stages a draft work order that stays OPEN until the service manager triages it",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A-09",
+   "name": "a visitor cannot act on a case",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "L-01",
+   "name": "a case needs permission, de-identification and no names: the refusal names all three",
+   "result": "PASS",
+   "detail": "Refused.\ncustomer permission to reuse the incident is required\nthe case must be de-identified (no room, person or tenant names)\nthe text still names a building, room or person"
+  },
+  {
+   "id": "L-02",
+   "name": "the case is PROPOSED from the resolved incident",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "L-03",
+   "name": "the proposer cannot be the SME reviewer of their own case",
+   "result": "PASS",
+   "detail": "Refused.\nthe proposer is not the subject-matter reviewer of their own case (separation of duties)"
+  },
+  {
+   "id": "L-04",
+   "name": "a different subject-matter reviewer records the SME review",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "L-05",
+   "name": "the data steward approves it for Learn (training.case_approved); it grants nobody any authority",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "L-06",
+   "name": "the SIGNAL library loads on demand: an Audio lesson with its cards and its check",
+   "result": "PASS",
+   "detail": "Signal flow and gain staging\n\nWhere sound travels, and why the first stage decides everything after it.\n\nEvery audio sys"
+  },
+  {
+   "id": "L-07",
+   "name": "a check answers with its why",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "L-08",
+   "name": "a first-failure drill (No picture on input 3) is interactive and scores the tap; the completion is recorded as training only",
+   "result": "PASS",
+   "detail": "No picture on input 3 Video · firstfail\n\nCamera 3 shows black on the switcher. You carry a small field monitor and check each point.\n\nRight. The fault sits between the last good reading and the first "
+  },
+  {
+   "id": "L-09",
+   "name": "the ledger carries the training completion with the note that it never grants authorization",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "M-01",
+   "name": "Mission Control counts live records at every station (service shows the two still-open incidents; field shows the APEX draft work order)",
+   "result": "PASS",
+   "detail": "2\nIntake\nREQ-0031 → PRJ-ATLAS-AV\nREQ-0034 → PRJ-NST-TH\n3\nDecision\nPRJ-ATLAS-AV APPROVED (scope 1)\nPRJ-NST-TH HELD (scope 1)\nPRJ-NST-TH APPROVED (scope 2)\n1\nFunding\nPRJ-ATLAS-AV 184,000 USD\n1\nDesign\nPRJ-NST-TH DESIGN_DRAFT\n1\nCommissioning\nR-NST-2-101 no accepted baseline yet\n1\nField\nWO-0089 OPEN · AP"
+  },
+  {
+   "id": "M-02",
+   "name": "27 KPI passports; the person-level whiteboarding passport is NOT MEASURABLE, never 0%",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "M-03",
+   "name": "a passport shows numerator, denominator, window, coverage, freshness, confidence with reasons, source, exclusions and drill-down",
+   "result": "PASS",
+   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-02 10:21 → 2026-10-31 10:21\nCoverage\n4 of 4 eligible recor"
+  },
+  {
+   "id": "M-04",
+   "name": "a technician does not see executive passports",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "M-05",
+   "name": "the ledger filters to the refusals, each with actor, UTC and local time and the reason",
+   "result": "PASS",
+   "detail": "When (UTC)\tLocal\tWho\tEvent\tRecord\tOutcome\tDetail\n2026-10-31 10:21:47\t10/31/2026, 05:21:47\tCommissioning Engineer\tlearn.sme_review\tLC-001\tDENIED\trefused: the proposer is not the subject-matter reviewer of their own case (separation of duties)\n2026-10-31 10:21:46\t10/31/2026, 05:21:46\tCommissioning Eng"
+  },
+  {
+   "id": "M-06",
+   "name": "the policy page shows what each native page checks and the demonstrator’s role × area matrix verbatim (86 areas × 14 roles)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "M-07",
+   "name": "Reset returns the workspace to its seed: ISS-0417 is OPEN again and the cases are gone",
    "result": "PASS",
    "detail": ""
   },

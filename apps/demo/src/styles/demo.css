@@ -46,3 +46,38 @@ h1 { margin: 0; font-size: clamp(26px, 3.6vw, 34px); line-height: 1.15; letter-s
 .tour__acts { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; } .tour__jump { display: inline-flex; gap: 4px; margin: 0 6px; }
 .tour__dot { width: 24px; height: 24px; border-radius: 999px; border: 1px solid var(--line2); background: var(--bg2); color: var(--tx2); font: 700 11px var(--font-sans); cursor: pointer; } .tour__dot.on { background: var(--accent); color: var(--bg); border-color: var(--accent); }
 @media (max-width: 760px) { .tour { top: 0; width: min(100% - 32px, 1120px); } }
+
+/* ---------------------------------------------------------------- native product pages: ServiceHands, APEX, Learn, Mission Control, Executive, Ledger */
+.svc__grid, .learn .svc__grid { display: grid; grid-template-columns: minmax(260px, 1fr) minmax(0, 2fr); gap: var(--sp-5); align-items: start; margin-top: var(--sp-3); }
+.svc__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.svc__list li a, .svc__list li > span { display: grid; gap: 2px; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); color: inherit; text-decoration: none; min-width: 0; }
+.svc__list li.on a { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.svc__list li a:hover { border-color: var(--tx3); }
+.svc__list li.off, .svc__cands li.off { opacity: .75; }
+.svc__detail { min-width: 0; }
+.svc__step { padding: 10px 0; border-top: 1px solid var(--line); display: grid; gap: 8px; } .svc__step:first-of-type { border-top: 0; }
+.svc__checks, .svc__cands, .plain { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.svc__cands li { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--r-sm); }
+.svc__links { font-size: var(--fs-sm); color: var(--tx2); }
+.svc__packet { padding: var(--sp-3); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); }
+.check { display: flex; gap: 8px; align-items: flex-start; font-size: var(--fs-sm); color: var(--tx2); } .check.inline { display: inline-flex; margin-right: 10px; }
+.card { padding: var(--sp-3) var(--sp-4); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); } .stack { display: grid; gap: var(--sp-3); } .row-actions { display: inline-flex; gap: 6px; }
+.apex__layers { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 6px; }
+.apex__layer { padding: 8px 10px; border: 1px dashed var(--line); border-radius: var(--r-sm); font-size: var(--fs-sm); display: grid; gap: 4px; min-width: 0; } .apex__layer.has { border-style: solid; background: var(--panel); } .apex__layer ul { margin: 0; padding-left: 16px; }
+.apex__hyps { margin: 0; padding-left: 20px; display: grid; gap: 6px; } .apex__hyps button { all: unset; cursor: pointer; display: block; padding: 6px 8px; border-radius: var(--r-sm); } .apex__hyps li.on button { background: color-mix(in srgb, var(--accent) 10%, transparent); box-shadow: inset 0 0 0 1px var(--accent); }
+.apex__tiers { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 6px; } .apex__tier { padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--r-sm); display: grid; gap: 4px; font-size: var(--fs-sm); } .apex__tier.on { border-color: var(--accent); }
+.apex__log { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; } .apex__log li { padding: 8px 10px; border-left: 3px solid var(--line); }
+.learn__doms { display: flex; flex-wrap: wrap; gap: 6px; } .learn__card { line-height: 1.55; } .learn__card .formula, .learn__eq { font-family: var(--font-mono, ui-monospace, monospace); font-size: .95em; }
+.learn__opts { display: flex; flex-wrap: wrap; gap: 6px; } .sp__chip.ok { border-color: var(--ok, var(--accent)); } .sp__chip.bad { border-color: var(--bad, #c33); }
+.learn__stages { margin: 0; padding-left: 20px; display: grid; gap: 6px; } .learn__stages button { all: unset; cursor: pointer; display: grid; gap: 2px; padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--r-sm); width: 100%; box-sizing: border-box; } .learn__stages button:hover { border-color: var(--accent); }
+.learn__order { margin: 0; padding-left: 20px; display: grid; gap: 4px; } .learn__order li { display: flex; justify-content: space-between; gap: 8px; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--line); }
+.mc__stations { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--sp-3); margin: var(--sp-3) 0; }
+.mc__station { display: grid; gap: 4px; padding: var(--sp-3); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); color: inherit; text-decoration: none; min-width: 0; } .mc__station:hover { border-color: var(--accent); }
+.mc__n { font-size: 28px; font-weight: 600; line-height: 1; } .mc__station ul { margin: 4px 0 0; padding-left: 16px; font-size: var(--fs-xs); color: var(--tx2); }
+.exec__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--sp-3); margin: var(--sp-3) 0; }
+.exec__tile { all: unset; cursor: pointer; display: grid; gap: 4px; padding: var(--sp-3); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); min-width: 0; box-sizing: border-box; } .exec__tile.on { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); } .exec__tile.nm .exec__value { color: var(--tx3); font-size: var(--fs-md); }
+.exec__label { font-size: var(--fs-sm); color: var(--tx2); } .exec__value { font-size: 24px; font-weight: 600; line-height: 1.1; }
+.ledger__matrix { overflow-x: auto; } .ledger__matrix td, .ledger__matrix th { text-align: center; white-space: nowrap; } .ledger__matrix td:first-child, .ledger__matrix th:first-child { text-align: left; white-space: normal; } .ledger__matrix .on { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+@media (max-width: 760px) { .svc__grid, .learn .svc__grid { grid-template-columns: 1fr; } }
+.svc__list .ui-tag, .exec__tile .ui-tag, .mc__station .ui-tag, .apex__layer .ui-tag, .stack > .ui-tag { justify-self: start; width: max-content; }
+.svc__list li a > b { line-height: 1.3; }

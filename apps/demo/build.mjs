@@ -18,7 +18,12 @@ fs.rmSync(dist, { recursive: true, force: true }); fs.mkdirSync(dist, { recursiv
 { const csv = fs.readFileSync(path.join(repo, 'docs/legacy-parity.csv'), 'utf8').split('\n').slice(1).filter(Boolean).map((l) => l.match(/("([^"]|"")*"|[^,]*)(,|$)/g).map((c) => c.replace(/,$/, '').replace(/^"|"$/g, '').replace(/""/g, '"')));
   const row = (r) => ({ key: r[2].replace(/^v25\//, 'v25.'), label: r[3].split(' — ')[0], target: r[7], status: r[10], newRoute: r[8] });
   const areas = csv.filter((r) => r[0] === 'Living Campus' && (r[1] === 'area' || r[1] === 'v25 page')).map(row);   // V2.5 pages resolve as v25.<page>
-  fs.mkdirSync(path.join(app, 'src/generated'), { recursive: true }); fs.writeFileSync(path.join(app, 'src/generated/parity.json'), JSON.stringify(areas, null, 1)); }
+  fs.mkdirSync(path.join(app, 'src/generated'), { recursive: true }); fs.writeFileSync(path.join(app, 'src/generated/parity.json'), JSON.stringify(areas, null, 1));
+  // the demonstrator's role × area visibility matrix (AZ_KEYS × areas), verbatim from the inventory: the policy page shows it, never edits it
+  const inv = JSON.parse(fs.readFileSync(path.join(repo, 'legacy/inventory/v253-inventory.json'), 'utf8'));
+  fs.writeFileSync(path.join(app, 'src/generated/area-roles.json'), JSON.stringify({ roles: inv.uiRoles, areas: inv.areas.map((a) => ({ key: a.area, label: a.label, roles: a.roles })) }, null, 1)); }
+// the SIGNAL library ships beside the bundle and is fetched on demand by Learn (2 MB; never inlined)
+fs.mkdirSync(dist, { recursive: true }); fs.copyFileSync(path.join(repo, 'packages/domain-data/data/SIGNAL_LIB.json'), path.join(dist, 'signal-lib.json'));
 await esbuild.build({
   entryPoints: [path.join(app, 'src/main.tsx')], bundle: true, minify: !dev, sourcemap: 'external', format: 'iife', target: ['es2022'], jsx: 'automatic',
   outfile: path.join(dist, 'demo.js'), define: { 'process.env.NODE_ENV': dev ? '"development"' : '"production"' }, legalComments: 'linked', logLevel: 'warning',
