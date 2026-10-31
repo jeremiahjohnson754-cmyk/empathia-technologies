@@ -128,8 +128,9 @@ defects.forEach((d, i) => { d.id = `AUD-${String(i + 1).padStart(3, '0')}`; d.re
 const count = (s) => defects.filter((d) => d.severity === s).length;
 const report = { label, at: new Date().toISOString(), widths: WIDTHS, pagesChecked: pages.length, method: 'in-house Playwright rules A1–A10 (not axe-core)', totals: { P0: count('P0'), P1: count('P1'), P2: count('P2'), P3: count('P3') }, defects };
 const out = arg('out'); if (out) { fs.mkdirSync(path.dirname(path.resolve(repo, out)), { recursive: true }); fs.writeFileSync(path.resolve(repo, out), JSON.stringify(report, null, 2) + '\n'); }
-for (const d of defects) console.log(`${d.severity} ${d.id} [${d.site}${d.page}] ${d.rule}: ${d.detail} @${d.widths.join(',')}`);
+// P0–P2 are listed one per line; P3 (the 44 px project target) is counted here and listed in the JSON report
+for (const d of defects.filter((x) => x.severity !== 'P3')) console.log(`${d.severity} ${d.id} [${d.site}${d.page}] ${d.rule}: ${d.detail} @${d.widths.join(',')}`);
 const blocking = count('P0') + count('P1');
 console.log(`\n${pages.length} page×width checks · P0 ${count('P0')} · P1 ${count('P1')} · P2 ${count('P2')} · P3 ${count('P3')}`);
 console.log(`PASS ${pages.length - new Set(defects.filter((d) => d.severity <= 'P1').flatMap((d) => d.widths.map((w) => `${d.site}${d.page}${w}`))).size} · FAIL ${new Set(defects.filter((d) => d.severity <= 'P1').flatMap((d) => d.widths.map((w) => `${d.site}${d.page}${w}`))).size}`);
-process.exit(strict && blocking ? 1 : 0);
+process.exitCode = strict && blocking ? 1 : 0;   // not process.exit(): that can truncate piped output, and the summary line above is what the test runner counts

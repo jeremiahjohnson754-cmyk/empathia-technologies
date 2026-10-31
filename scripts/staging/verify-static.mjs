@@ -61,4 +61,4 @@ try {
 const out = (process.argv.find((a) => a.startsWith('--out=')) || '').slice(6);
 const report = { at: new Date().toISOString(), sites: sites.map((s) => ({ name: s.name, dir: s.dir, headers: Object.keys(s.headers) })), results, pass: results.filter((r) => r.result === 'PASS').length, fail: results.filter((r) => r.result === 'FAIL').length };
 if (out) fs.writeFileSync(path.resolve(repo, out), JSON.stringify(report, null, 2) + '\n');
-console.log(`\nPASS ${report.pass} · FAIL ${report.fail}`); process.exit(report.fail ? 1 : 0);
+console.log(`\nPASS ${report.pass} · FAIL ${report.fail}`); process.exitCode = report.fail ? 1 : 0;

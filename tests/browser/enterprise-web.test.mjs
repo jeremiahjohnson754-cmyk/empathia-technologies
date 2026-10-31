@@ -163,6 +163,7 @@ try {
   await shot('07-admin-integrations');
   await page.goto(`${base}#/rooms/R-PLN-0001`); await page.waitForSelector('#tab-overview');
   await page.focus('#tab-overview'); await page.keyboard.press('ArrowRight');
+  await page.waitForURL(/#\/rooms\/R-PLN-0001\/devices$/, { timeout: 4000 }).catch(() => { /* asserted below */ });   // the hash changes after the key handler runs: wait for it rather than racing it
   ok('W-17', 'room tabs are keyboard operable (arrow keys move between tabs)', /#\/rooms\/R-PLN-0001\/devices$/.test(page.url()), page.url());
 
   // ---------------------------------------------------------------- Search Party (P4-A): search, facets, graph, inspector, intents; site scope absent not hidden

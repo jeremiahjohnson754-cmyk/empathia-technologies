@@ -68,6 +68,13 @@ function inside(base, urlPath) {
 const readBody = (req, limit) => new Promise((ok, bad) => { let n = 0; const chunks = []; req.on('data', (c) => { n += c.length; if (n > limit) { bad(new Error('too large')); req.destroy(); } else chunks.push(c); }); req.on('end', () => ok(Buffer.concat(chunks).toString('utf8'))); req.on('error', bad); });
 
 async function api(req, res, url) {
+  // which film files are on this computer: the films folder first, then the workspace path in the film index. The player asks before
+  // it loads, so a film that is absent is reported as absent instead of being requested and failing (a 404 in the browser console).
+  if (url.pathname === '/api/films' && req.method === 'GET') {
+    const names = new Set([...Object.keys(filmIndex), ...(fs.existsSync(filmsDir) ? fs.readdirSync(filmsDir).filter((f) => /\.(mp4|webm|mov)$/i.test(f)) : [])]);
+    const present = [...names].filter((n) => { if (fs.existsSync(path.join(filmsDir, n))) return true; const ws = filmIndex[n] && path.resolve(WORKSPACE, filmIndex[n]); return !!(ws && ws.startsWith(path.resolve(WORKSPACE) + path.sep) && fs.existsSync(ws)); });
+    return json(res, 200, { present, filmsDir: path.basename(filmsDir) });
+  }
   const m = url.pathname.match(/^\/api\/snapshots(?:\/([A-Za-z0-9_-]+))?$/);
   if (!m) return json(res, 404, { error: 'no such endpoint' });
   const id = m[1];

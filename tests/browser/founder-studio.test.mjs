@@ -42,6 +42,7 @@ try {
   const ctx = await b.newContext({ viewport: { width: 1440, height: 950 } });
   const page = await ctx.newPage();
   const errors = []; page.on('pageerror', (e) => errors.push(e.message)); page.on('console', (m) => { if (m.type() === 'error' && !/favicon/.test(m.text()) && !(/ERR_CONNECTION_REFUSED/.test(m.text()) && /4100/.test(m.location().url || ''))) errors.push(`console: ${m.text()}`); });   // the Enterprise Platform page probes the local API on :4100; refused = not running
+  page.on('response', (r) => { if (r.status() >= 400 && /^http:\/\/127\.0\.0\.1/.test(r.url())) errors.push(`${r.status()} ${new URL(r.url()).pathname}`); });   // name the resource, not only "Failed to load"
   const external = []; page.on('request', (r) => { if (!/^http:\/\/(127\.0\.0\.1|localhost)[:/]/.test(r.url()) && !/^(data|blob|about):/.test(r.url())) external.push(r.url()); });
   await page.goto(`${base}/?k=${KEY}`); await page.waitForSelector('.rail');
   ok('S-01', 'the launcher serves the studio after the access key; the rail lists 28 destinations', (await page.locator('.rail a').count()) === 28, await page.locator('.rail a').count());
