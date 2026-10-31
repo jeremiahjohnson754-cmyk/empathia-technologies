@@ -23,7 +23,16 @@ const ok = (id, name, cond, detail = '') => { results.push({ id, name, result: c
 
 const fixtures = path.join(out, 'fixtures'); fs.mkdirSync(fixtures, { recursive: true });
 const fixture = path.join(fixtures, 'fixture-FA-excerpt.webm');
-if (!fs.existsSync(fixture)) { const { execFileSync } = await import('node:child_process'); const films = JSON.parse(fs.readFileSync(path.join(dist, 'studio/films.json'), 'utf8')); const fa = films.find((f) => f.key === 'FA'); execFileSync('ffmpeg', ['-v', 'error', '-y', '-t', '6', '-i', path.join('/home/claude', fa.path), '-vf', 'scale=640:-2', '-c:v', 'libvpx-vp9', '-b:v', '600k', '-an', fixture]); }
+// Film fixtures. On the founder's computer the excerpt is cut from the Film A master. Where the masters are absent (CI: they are not in
+// the repository — large, and rights-restricted), synthetic fixtures exercise the same launcher and player path; the result says which.
+const WORKSPACE = process.env.EMPATHIA_WORKSPACE || '/home/claude';
+const { execFileSync } = await import('node:child_process');
+const films = JSON.parse(fs.readFileSync(path.join(dist, 'studio/films.json'), 'utf8')); const fa = films.find((f) => f.key === 'FA');
+const faMaster = path.join(WORKSPACE, fa.path); const faFile = path.basename(fa.path);
+const filmSource = fs.existsSync(faMaster) ? 'master' : 'synthetic';
+if (!fs.existsSync(fixture)) execFileSync('ffmpeg', ['-v', 'error', '-y', ...(filmSource === 'master' ? ['-t', '6', '-i', faMaster] : ['-f', 'lavfi', '-i', 'testsrc2=size=640x360:rate=24:duration=6']), '-vf', 'scale=640:-2', '-c:v', 'libvpx-vp9', '-b:v', '600k', '-an', fixture]);
+if (filmSource === 'synthetic' && !fs.existsSync(path.join(fixtures, faFile))) execFileSync('ffmpeg', ['-v', 'error', '-y', '-f', 'lavfi', '-i', 'testsrc2=size=1280x720:rate=24:duration=4', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', path.join(fixtures, faFile)]);
+results.push({ id: 'S-00', name: 'film fixtures used by S-09 and S-10', result: 'INFO', detail: filmSource === 'master' ? 'cut from the Film A master on this computer' : 'synthetic test-pattern files (the film masters are not on this machine); the launcher, byte ranges and player path are the same' });
 for (const f of fs.readdirSync(path.join(dist, 'media/films'))) if (f.endsWith('.mp4') && !fs.existsSync(path.join(fixtures, f))) fs.symlinkSync(path.join(dist, 'media/films', f), path.join(fixtures, f));
 const srv = spawn(process.execPath, [path.join(dist, 'server/serve.mjs'), '--no-open', `--port=${PORT}`, `--films=${fixtures}`], { env: { ...process.env, STUDIO_KEY: KEY }, stdio: ['ignore', 'pipe', 'pipe'] });
 await new Promise((r) => { srv.stdout.on('data', (d) => { if (/running/.test(String(d))) r(); }); setTimeout(r, 4000); });
@@ -93,7 +102,7 @@ try {
   ok('S-09', 'Media Library: the film file is served from this computer with byte ranges, and in a browser without H.264 the player says so (not "missing")', head[0] === 206 && head[1] === 1024 && (canH264 !== '' || /cannot decode H\.264/.test(note)), `${head} canPlayType="${canH264}" ${note}`);
   results.push({ id: 'S-09b', name: 'H.264 playback inside the test browser', result: canH264 ? 'RUN' : 'NOT_RUN', detail: canH264 ? '' : 'the test Chromium build has no H.264 decoder; verified instead by a full ffmpeg decode of every film (tests/media/decode-films.mjs)' });
   const played = await page.evaluate(() => new Promise((r) => { const v = document.createElement('video'); v.muted = true; v.src = 'media/films/fixture-FA-excerpt.webm'; document.body.appendChild(v); v.play().then(() => setTimeout(() => r(v.currentTime), 1500)).catch((e) => r(`error ${e.message}`)); }));
-  ok('S-10', 'the studio’s film route plays video end to end (a VP9 excerpt of Film A, served through the same launcher path; time advances)', typeof played === 'number' && played > 0.3, played);
+  ok('S-10', `the studio’s film route plays video end to end (${filmSource === 'master' ? 'a VP9 excerpt of Film A' : 'a synthetic VP9 fixture'}, served through the same launcher path; time advances)`, typeof played === 'number' && played > 0.3, played);
   await page.evaluate(() => { location.hash = '#/media/FL'; }); await page.waitForTimeout(500);
   const rec = await page.locator('.kv').first().innerText();
   ok('S-11', 'the flagship film record shows 3840 × 2160 from ffprobe and a rights status that is not VERIFIED', /3840 × 2160/.test(rec) && /NOT_IN_LEDGER|UNVERIFIED/.test(rec), rec.slice(0, 200));

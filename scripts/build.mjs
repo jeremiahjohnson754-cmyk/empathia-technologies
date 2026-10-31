@@ -80,6 +80,7 @@ run('investor demo shell', process.execPath, [path.join(root, 'apps/demo/build.m
 run('dist hygiene (no source maps, no dev override)', process.execPath, [path.join(root, 'scripts/verify/dist-hygiene.mjs')]);
 if (process.argv.includes('--studio')) {
   const fe = (process.argv.find((a) => a.startsWith('--founder-edition=')) || '').split('=')[1];
+  run('Founder Studio inputs match INPUTS.json', process.execPath, [path.join(root, 'scripts/verify/studio-inputs.mjs')]);
   run('Founder Studio (data + bundle)', process.execPath, [path.join(root, 'apps/founder-studio/build.mjs'), ...(fe ? [`--founder-edition=${fe}`] : [])]);
   run('type-check apps/founder-studio', process.execPath, [tsc, '-p', path.join(root, 'apps/founder-studio/tsconfig.json'), '--noEmit']);
 } else if (studioData) run('type-check apps/founder-studio (existing generated data)', process.execPath, [tsc, '-p', path.join(root, 'apps/founder-studio/tsconfig.json'), '--noEmit']);

@@ -1,0 +1,4 @@
+# Python packages the test matrix needs, pinned to the versions the suites were verified with (2026-10-31).
+# The intelligence service and the ML research prototype share these pins; PyYAML is for the Render Blueprint validator.
+-r services/intelligence-python/requirements.txt
+PyYAML==6.0.3

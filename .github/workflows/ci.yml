@@ -1,44 +1,71 @@
-# Empathia CI — build and the full test matrix on every push and pull request. One job, one database cluster, suites in series
-# (the test runner owns its ports and databases; running two copies at once is exactly the collision this avoids).
-# Status: NOT_RUN until the repository is pushed to GitHub; the steps mirror scripts/build.mjs and scripts/test.mjs, which have been run locally.
+# Empathia CI: the complete build and test matrix on every push and pull request, then the release-control gate.
+# One job and one database cluster; suites run in series, because the test runner owns its ports and databases and two copies would
+# collide. Every application is built before its tests run: the Founder Studio is built from committed, hash-pinned inputs
+# (apps/founder-studio/inputs), and the ML dataset and model are regenerated from committed scripts. A suite that cannot run is a
+# release blocker unless the release profile names it, with its reason (scripts/verify/no-unexpected-skips.mjs).
 name: ci
 on:
-  push: { branches: [main] }
+  push: { branches: [main, 'restoration/**'] }
   pull_request:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: 'Release profile: platform (no media release; the full film decode may be skipped) or media (nothing may be skipped)'
+        required: false
+        default: platform
 concurrency: { group: ci-${{ github.ref }}, cancel-in-progress: true }
 permissions: { contents: read }
 jobs:
   build-and-test:
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 75
+    env:
+      RELEASE_PROFILE: ${{ github.event.inputs.profile || 'platform' }}
+      EMPATHIA_WORKSPACE: ${{ github.workspace }}/.no-film-masters   # film masters are not in the repository; tests use synthetic fixtures and say so
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: '22' }
-      - name: PostgreSQL 16 server binaries (the test harness creates a private cluster under .local/pg)
+        with: { node-version: '22.22.0' }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.13' }
+      - name: System packages (PostgreSQL 16 server binaries for the private test cluster, ffmpeg for media fixtures)
         run: |
           sudo apt-get update
-          sudo apt-get install -y postgresql-16 ffmpeg python3-yaml
+          sudo apt-get install -y postgresql-16 ffmpeg
           sudo systemctl stop postgresql || true
-      - name: Install (pnpm) and Playwright Chromium
+      - name: Python packages (pinned; intelligence service, ML prototype, Blueprint validator)
+        run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - name: Node packages (pnpm) and Playwright Chromium
         run: |
           corepack enable
           pnpm install --no-frozen-lockfile
           npx playwright install --with-deps chromium
-      - name: Build (tokens, packages, API, apps, OpenAPI contract check, dist hygiene)
-        run: node scripts/build.mjs
-      - name: Tests (unit, contract, database, HTTP, security, browser, studio) — serial, one cluster
+      - name: Build everything, Founder Studio included (inputs checked against INPUTS.json)
+        run: node scripts/build.mjs --studio
+      - name: ML research prototype — synthetic dataset and model, regenerated from committed scripts
+        run: |
+          node ml/datasets/generate_synthetic.mjs
+          python3 -I ml/training/train.py
+      - name: Test database (private PostgreSQL 16 cluster under .local/pg)
+        run: node scripts/db.mjs up
+      - name: Full test matrix (unit, contract, database, HTTP, security, browser, studio, deploy) — serial
         run: node scripts/test.mjs --browser --studio
-      - name: No suite failed or was skipped without a stated reason (release control)
-        run: node scripts/verify/no-unexpected-skips.mjs
+      - name: Release-control gate (no FAIL; no skip the profile does not name)
+        run: node scripts/verify/no-unexpected-skips.mjs --profile=$RELEASE_PROFILE
+      - name: Stop the test database
+        if: always()
+        run: node scripts/db.mjs down || true
       - name: Evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-evidence
+          name: test-evidence-${{ github.sha }}
           path: |
-            tests/evidence/TEST_RESULTS.md
-            tests/evidence/TEST_RESULTS.json
-            tests/evidence/SITE_AUDIT.json
+            tests/evidence/**/*.json
+            tests/evidence/**/*.md
+            tests/evidence/**/*.png
             .local/logs/
-          retention-days: 30
+            apps/website/dist/BUILD_MANIFEST.json
+            apps/founder-studio/dist/BUILD_MANIFEST.json
+          if-no-files-found: warn
+          retention-days: 90

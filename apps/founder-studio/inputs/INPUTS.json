@@ -1,0 +1,31 @@
+{
+  "purpose": "Inputs the Founder Studio is generated from, committed so that CI builds the complete studio from the repository (previously named but not copied; changed 2026-10-31 to unblock the release gate).",
+  "source": {
+    "founderEdition": "Empathia_V25/work/source-254/dist/Empathia-Living-Campus-v2.5.4-nomedia.html (founder-supplied 2.5.4 build, no media)",
+    "source254": "Empathia_V25/work/source-254/src (original V2.5.4 demonstrator source; three files the studio shows a CTO)",
+    "sourceCommit": "b8986d1"
+  },
+  "scans": "no AON/Kraft Heinz/Stefanini/KHC; no data:audio/video; no key or token patterns (2026-10-31)",
+  "files": [
+    {
+      "path": "founder-edition/Empathia-Living-Campus-v2.5.4-nomedia.html",
+      "bytes": 8371566,
+      "sha256": "ecdf64be4de7cda5096c8dd7902814e26a7b1fe5d693799f9d489fbbddcbe1ee"
+    },
+    {
+      "path": "source-254/v25-60-room.js",
+      "bytes": 112630,
+      "sha256": "a816e3b6c9f223a37808e85c7674a18ee7df16ba6308e331191e722945e0c51e"
+    },
+    {
+      "path": "source-254/v30-aurora.css",
+      "bytes": 40346,
+      "sha256": "6ff1a20d17d6d3b1a97b1a594438e0a4402df30d96a2d742ccbff041835a0ea2"
+    },
+    {
+      "path": "source-254/v52-room.css",
+      "bytes": 1637,
+      "sha256": "a7850ef1b49246dc435616ffbe7a63fd80264b52516ad40e82fa2714b8bf5db0"
+    }
+  ]
+}

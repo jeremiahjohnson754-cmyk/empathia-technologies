@@ -5,56 +5,121 @@
       "key": "M2",
       "title": "From business need to room intelligence",
       "runtime": "2:00",
-      "placement": ["/"],
+      "placement": [
+        "/"
+      ],
       "summary": "A building becomes rooms, a request becomes a design, and the same record follows the room into commissioning, operation, support and learning.",
       "masterSha256": "4578aadab522076830c2ed72eccccd0b98f88cd4d0a480beeff8acae670e782e",
       "renditionSource": "empathia-film/out/Empathia_Master_2m00_1080p_voice_no-captions.mp4 (575d8381…), captions from audio/cuts/master.srt",
       "disclosure": "Illustrative 3D scenes; figures on screen are demonstration data.",
-      "rights": { "website": { "status": "UNVERIFIED", "blocking": ["narration: vidIQ \"Brian\" voice (ElevenLabs premade) — vidIQ plan/invoice for 2026-10-05 and vidIQ's written position on commercial use of ElevenLabs-voiced output not on file", "rights owner of record not established"], "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)" } }
+      "rights": {
+        "website": {
+          "status": "UNVERIFIED",
+          "blocking": [
+            "the billing record for the paid vidIQ plan on the narration dates is not yet on file (owner attests the subscription)",
+            "vidIQ's terms in force on those dates were not retrieved (current terms effective 2026-10-19)",
+            "vidIQ's written confirmation that its §14 grant covers ElevenLabs-voiced output (item 3 of the 2026-10-23 evidence file); a reply from vidIQ support by email is enough"
+          ],
+          "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)",
+          "ownerAttestation": "Owner stated on 2026-10-31 17:06 CT that he holds a paid vidIQ subscription (the service used for this narration).",
+          "evidenceRequested": "vidIQ billing history (screenshot or PDF) showing the paid plan active on the narration dates (M2: 2026-10-05; F02P: 2026-10-10/11). With it on file, vidIQ ToS §14 (commercial use of Content Artifacts created through the Services) supports VERIFIED for the website."
+        }
+      }
     },
     {
       "key": "FA",
       "title": "The platform vision",
       "runtime": "2:00",
-      "placement": ["/platform"],
+      "placement": [
+        "/platform"
+      ],
       "summary": "Mission Control, Search Party, Lite, Field Intelligence, Commissioning, ServiceHands and Learn, recorded from the synthetic demonstration.",
       "masterSha256": "a136a65cb919dcf1ecf6a01674ede82a8f06715e6462c9ceb9c5c73e89c53393",
       "renditionSource": "Empathia_Film_Campaign/10_Final_Masters/FA/Empathia_V25_FA_16x9_1920x1080_clean.mp4 (362d6deb…) + FA.vtt",
       "disclosure": "Screen recordings of the demonstration on synthetic data.",
-      "rights": { "website": { "status": "UNVERIFIED", "blocking": ["narration: Kokoro local voice (model licence Apache-2.0 documented; output rights and upstream training data not documented)", "not entered in the media-rights ledger", "rights owner of record not established"], "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)" } }
+      "rights": {
+        "website": {
+          "status": "UNVERIFIED",
+          "blocking": [
+            "narration: Kokoro local voice (model licence Apache-2.0 documented; output rights and upstream training data not documented)",
+            "not entered in the media-rights ledger",
+            "rights owner of record not established"
+          ],
+          "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)"
+        }
+      }
     },
     {
       "key": "F02P",
       "title": "The living system: a divisible hall, designed to proven",
       "runtime": "3:00",
-      "placement": ["/products/commissioning", "/films"],
+      "placement": [
+        "/products/commissioning",
+        "/films"
+      ],
       "summary": "A divisible hall designed as states, its loudspeaker loads calculated, every state and transition tested on a simulated processor, then proven.",
       "masterSha256": "46ee50741ad42d845f72c30bfec3ed2c3ba7122590e45220e9def1787a0e54f1",
       "renditionSource": "empathia-campaign/out/F02P/Empathia_F02_The-Living-System_3m00_1080p_clean.mp4 (80a4fbaa…) + .vtt",
       "disclosure": "Product demonstration on synthetic data; the processor is simulated.",
-      "rights": { "website": { "status": "UNVERIFIED", "blocking": ["narration: vidIQ \"Brian\" voice (campaign 2026-10-10) — same evidence gap as M2", "ledger entry X048 UNVERIFIED"], "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)" } }
+      "rights": {
+        "website": {
+          "status": "UNVERIFIED",
+          "blocking": [
+            "the billing record for the paid vidIQ plan on the narration dates is not yet on file (owner attests the subscription)",
+            "vidIQ's terms in force on those dates were not retrieved (current terms effective 2026-10-19)",
+            "vidIQ's written confirmation that its §14 grant covers ElevenLabs-voiced output (item 3 of the 2026-10-23 evidence file); a reply from vidIQ support by email is enough"
+          ],
+          "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)",
+          "ownerAttestation": "Owner stated on 2026-10-31 17:06 CT that he holds a paid vidIQ subscription (the service used for this narration).",
+          "evidenceRequested": "vidIQ billing history (screenshot or PDF) showing the paid plan active on the narration dates (M2: 2026-10-05; F02P: 2026-10-10/11). With it on file, vidIQ ToS §14 (commercial use of Content Artifacts created through the Services) supports VERIFIED for the website."
+        }
+      }
     },
     {
       "key": "IE",
       "title": "Field Intelligence: a technician's day",
       "runtime": "5:00",
-      "placement": ["/products/field-intelligence", "/films"],
+      "placement": [
+        "/products/field-intelligence",
+        "/films"
+      ],
       "summary": "What a collector declares, what a test observes, and what an engineer verifies — through one illustrative shift.",
       "masterSha256": "6ee94d40ce8615f8584091cceb74adfab39f1a3faab925255b4e011dbff5fd55",
       "renditionSource": "Empathia_FI_Film/out/IE-film-4k.mp4 (4387b1cb…, clean) + captions/IE-film.vtt, downscaled to 1080p/720p",
       "disclosure": "Illustrative scenario; AI-generated images of fictional people; simulated rooms and data.",
-      "rights": { "website": { "status": "UNVERIFIED", "blocking": ["narration provenance not ledgered", "AI-generated photographic images: generator, terms and plan at creation not on file", "not entered in the media-rights ledger"], "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)" } }
+      "rights": {
+        "website": {
+          "status": "UNVERIFIED",
+          "blocking": [
+            "narration provenance not ledgered",
+            "AI-generated photographic images: generator, terms and plan at creation not on file",
+            "not entered in the media-rights ledger"
+          ],
+          "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)"
+        }
+      }
     },
     {
       "key": "F01",
       "title": "The living system: one environment, one engineering language",
       "runtime": "4:40",
-      "placement": ["/films"],
+      "placement": [
+        "/films"
+      ],
       "summary": "The estate, Search Party relationships, a device replaced with its history kept, remote diagnostics, operations readiness and Learn, from the V1.4.1 demonstration.",
       "masterSha256": "4d31db34fb218bed53c22b9991c253f6dfd0072efdd2bdeb81553905c8adcfc2",
       "renditionSource": "Empathia_Film_Campaign/10_Final_Masters/F01/Empathia_V141_F01_16x9_1920x1080_clean.mp4 (e26d6b28…) + .vtt",
       "disclosure": "Screen recordings of the V1.4.1 demonstration on synthetic data.",
-      "rights": { "website": { "status": "UNVERIFIED", "blocking": ["narration: Kokoro local voice — output rights not documented", "not entered in the media-rights ledger"], "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)" } }
+      "rights": {
+        "website": {
+          "status": "UNVERIFIED",
+          "blocking": [
+            "narration: Kokoro local voice — output rights not documented",
+            "not entered in the media-rights ledger"
+          ],
+          "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)"
+        }
+      }
     }
   ]
 }

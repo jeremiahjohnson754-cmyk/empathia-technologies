@@ -1,0 +1,18 @@
+/* V2.5.3 · Build a Room with Lite */
+.rb-tpls{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.rb-tpl{text-align:left;display:flex;flex-direction:column;gap:4px;cursor:pointer}
+.rb-tpl small{opacity:.75}
+.rb-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:900px){.rb-grid{grid-template-columns:minmax(0,1fr)}}
+.rb-plan{width:100%;height:auto;touch-action:none;display:block}
+.rb-dev{cursor:grab}.rb-dev:focus{outline:none}.rb-dev:focus rect,.rb-dev.on rect{stroke:#fff;stroke-width:2.5}
+.rb-pal{display:flex;flex-direction:column;gap:8px}.rb-pal>div{display:flex;flex-wrap:wrap;gap:4px;align-items:center}.rb-pal small{width:100%;opacity:.7}
+.rb-dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:8px 0}.rb-dl dt{opacity:.7}
+.rb-life{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0}.rb-step{font-size:12px;padding:2px 8px;border-radius:10px;border:1px solid var(--line,#2a3348);opacity:.6}.rb-step.done{opacity:.85}.rb-step.now{opacity:1;border-color:var(--warn,#f5b942);font-weight:600}
+.rb-h1{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.rb-pre{white-space:pre-wrap;font-size:12px;max-height:340px;overflow:auto}
+.rb-imgwrap{position:relative;max-width:100%}.rb-imgwrap img{max-width:100%;display:block}.rb-img-svg{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair}
+.rb-tour{border-left:3px solid var(--teal,#45cfc1)}
+.rb-inv-card{border-left:3px solid var(--teal,#45cfc1)}
+.rb-conn{margin:4px 0;padding-left:18px}.rb-checks li,.rb-ev li{margin:3px 0}
+.v14-table .chip{white-space:nowrap}

@@ -18,7 +18,8 @@ const repo = path.resolve(app, '../..');
 const dist = path.join(app, 'dist');
 const arg = (k, d) => (process.argv.find((a) => a.startsWith(`--${k}=`)) || '').split('=').slice(1).join('=') || d;
 const sha = (b) => crypto.createHash('sha256').update(b).digest('hex');
-const fe = arg('founder-edition', '/home/claude/Empathia_V25/work/source-254/dist/Empathia-Living-Campus-v2.5.4-nomedia.html');
+const FE_IN = path.join(app, 'inputs/founder-edition/Empathia-Living-Campus-v2.5.4-nomedia.html');   // committed input (inputs/INPUTS.json)
+const fe = arg('founder-edition', fs.existsSync(FE_IN) ? FE_IN : '/home/claude/Empathia_V25/work/source-254/dist/Empathia-Living-Campus-v2.5.4-nomedia.html');
 
 if (!process.argv.includes('--no-data')) execFileSync(process.execPath, [path.join(app, 'scripts/build-data.mjs'), `--founder-edition=${fe}`], { stdio: 'inherit' });
 

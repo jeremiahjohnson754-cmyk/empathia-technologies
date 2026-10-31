@@ -72,7 +72,9 @@ const docs = docFiles.map((p) => {
 write('docs.json', docs);
 
 // ------------------------------------------------------------------ source files a CTO asks for first
-const V25 = '/home/claude/Empathia_V25/work/source-254';
+// the original V2.5.4 sources the studio shows: committed under apps/founder-studio/inputs/source-254 (checked by scripts/verify/studio-inputs.mjs)
+const V25_IN = path.join(app, 'inputs/source-254');
+const V25 = process.env.EMPATHIA_V25_SOURCE || '/home/claude/Empathia_V25/work/source-254';
 const SOURCE_LIST = [
   ['classify', 'The room classifier (TypeScript port)', 'packages/commissioning-engine/src/classify.ts', 'Rule-based classification of a room from geometry, intended use, occupancy and equipment. Deterministic — not a trained model.'],
   ['applicability', 'The commissioning applicability algorithm', 'packages/commissioning-engine/src/applicability.ts', 'Judges all 94 test definitions for a room: applicable with the rules that selected it, or not applicable with a justification; never a pass.'],
@@ -83,12 +85,12 @@ const SOURCE_LIST = [
   ['parity', 'The parity test', 'packages/commissioning-engine/test/parity.test.ts', 'Proves the port reproduces the demonstrator on 92 golden cases.'],
   ['schema', 'The evidence and commissioning database schema', 'database/migrations/0003_commissioning_evidence.sql', 'PostgreSQL tables for commissioning plans, results, verifications and evidence objects (tenant-scoped, constrained).'],
   ['schema-core', 'The core database schema', 'database/migrations/0002_core.sql', 'Tenants, users, roles, sites, rooms, revisions, planned assets, connections, relationships.'],
-  ['authz', 'Server-side authorization', 'services/enterprise-api/src/auth/authorize.ts', 'Authority checks on the server: the browser is never the authority.'],
+  ['authz', 'Server-side authorization', 'services/enterprise-api/src/auth/context.ts', 'Authority checks on the server: the browser is never the authority.'],
   ['tokens', 'The design tokens', 'packages/design-tokens/tokens.json', 'Aurora colours, type, spacing and evidence-state colours: the source of every CSS variable.'],
   ['studio-css', 'The studio stylesheet', 'apps/founder-studio/src/styles/studio.css', 'The CSS behind this interface, including the evidence ladder.'],
-  ['demo-room', 'The demonstrator’s room engine (original)', `${V25}/src/v25-60-room.js`, 'The original browser implementation of Build a Room (2.5.4 branch), which the TypeScript port mirrors.'],
-  ['demo-room-css', 'The demonstrator’s room-builder CSS (original)', `${V25}/src/v52-room.css`, 'Room builder styles in the demonstrator.'],
-  ['demo-aurora', 'The demonstrator’s Aurora skin (original)', `${V25}/src/v30-aurora.css`, 'The design language the tokens come from.'],
+  ['demo-room', 'The demonstrator’s room engine (original)', fs.existsSync(path.join(V25_IN, 'v25-60-room.js')) ? 'apps/founder-studio/inputs/source-254/v25-60-room.js' : `${V25}/src/v25-60-room.js`, 'The original browser implementation of Build a Room (2.5.4 branch), which the TypeScript port mirrors.'],
+  ['demo-room-css', 'The demonstrator’s room-builder CSS (original)', fs.existsSync(path.join(V25_IN, 'v52-room.css')) ? 'apps/founder-studio/inputs/source-254/v52-room.css' : `${V25}/src/v52-room.css`, 'Room builder styles in the demonstrator.'],
+  ['demo-aurora', 'The demonstrator’s Aurora skin (original)', fs.existsSync(path.join(V25_IN, 'v30-aurora.css')) ? 'apps/founder-studio/inputs/source-254/v30-aurora.css' : `${V25}/src/v30-aurora.css`, 'The design language the tokens come from.'],
 ];
 const LANG = { ts: 'TypeScript', tsx: 'TypeScript (React)', js: 'JavaScript', sql: 'SQL (PostgreSQL)', css: 'CSS', json: 'JSON', py: 'Python' };
 const sources = SOURCE_LIST.map(([id, title, p, why]) => {
@@ -117,13 +119,17 @@ const DIAG_META = {
   '06-today-demonstrator': ['today', 'The demonstrator today', 'What exists before this program: one offline HTML file with rules and authorization in the page.'],
   '07-editions-separation': ['editions', 'Who receives what', 'The source vault, the founder studio, the engineering workspace and the investor and engineer packages, kept apart.'],
 };
-const mmdc = ['/home/claude/.npm-global/bin/mmdc', path.join(repo, 'node_modules/.bin/mmdc')].find((p) => fs.existsSync(p));
+const mmdc = process.env.MMDC !== undefined ? (fs.existsSync(process.env.MMDC) ? process.env.MMDC : null) : ['/home/claude/.npm-global/bin/mmdc', path.join(repo, 'node_modules/.bin/mmdc')].find((p) => fs.existsSync(p));   // MMDC set (even to nothing) = use only that
+// committed renders (docs/architecture/diagrams/rendered/<sha256(source+theme)>.svg): a machine without the Mermaid CLI (CI) renders the
+// same diagrams; a changed .mmd has a new hash, so a stale render is never used — it is re-rendered, or shown as NOT_RENDERED
+const committed = path.join(dDir, 'rendered');
 const diagrams = [];
 for (const f of fs.existsSync(dDir) ? fs.readdirSync(dDir).filter((x) => x.endsWith('.mmd')).sort() : []) {
   const src = fs.readFileSync(path.join(dDir, f), 'utf8'); const base = f.replace(/\.mmd$/, ''); const [id, title, about] = DIAG_META[base] || [base, base, ''];
   const svgs = {};
   for (const theme of ['dark', 'default']) {
-    const key = path.join(cache, `${sha(src + theme)}.svg`);
+    const pinned = path.join(committed, `${sha(src + theme)}.svg`);
+    const key = fs.existsSync(pinned) ? pinned : path.join(cache, `${sha(src + theme)}.svg`);
     if (!fs.existsSync(key) && mmdc) {
       const tmp = path.join(cache, `${base}.mmd`); fs.writeFileSync(tmp, src);
       try { execFileSync(mmdc, ['-i', tmp, '-o', key, '-t', theme, '-b', 'transparent', '--svgId', `dia-${id}-${theme}`], { stdio: 'ignore', timeout: 120000 }); } catch { /* recorded below */ }
@@ -159,7 +165,8 @@ const lab = [['template:townhall', 'Town hall (template)'], ['template:boardroom
 write('lab-rooms.json', lab);
 
 // ------------------------------------------------------------------ build record
-const fe = arg('founder-edition', `${V25}/dist/Empathia-Living-Campus-v2.5.4-nomedia.html`);
+const FE_IN = path.join(app, 'inputs/founder-edition/Empathia-Living-Campus-v2.5.4-nomedia.html');
+const fe = arg('founder-edition', fs.existsSync(FE_IN) ? FE_IN : `${V25}/dist/Empathia-Living-Campus-v2.5.4-nomedia.html`);
 const feInfo = fs.existsSync(fe) ? { file: 'demonstrators/founder/Empathia-Founder-Edition.html', sha256: sha(fs.readFileSync(fe)), bytes: fs.statSync(fe).size, sourceCommit: (() => { try { return execFileSync('git', ['-C', V25, 'rev-parse', '--short', 'HEAD'], { encoding: 'utf8' }).trim(); } catch { return 'unknown'; } })(), branch: (() => { try { return execFileSync('git', ['-C', V25, 'branch', '--show-current'], { encoding: 'utf8' }).trim(); } catch { return 'unknown'; } })(), from: fe } : null;
 const enginePkg = JSON.parse(fs.readFileSync(path.join(repo, 'packages/commissioning-engine/package.json'), 'utf8'));
 write('build.json', { builtAt: new Date().toISOString(), commit: git('rev-parse', '--short', 'HEAD'), founderEdition: feInfo, engine: `${enginePkg.name}@${enginePkg.version}` });
