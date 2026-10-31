@@ -251,6 +251,27 @@ Not built: SIGNAL labs (91 simulators); the enterprise app's service/APEX/execut
 | Defect found and fixed | — | invalidating a query deleted its cached data, so the page fell back to "loading" and unmounted any open form, losing what had been typed (found when the import drawer emptied itself). The web cache is now stale-while-revalidate: the last data stays on screen while it refetches; sign-in and sign-out still clear everything |
 | Not built | — | vendor-specific export formats; a calibration-certificate registry (the certificate is declared, not checked); linking imported values to a commissioning test result; Field Intelligence sessions never become measurements (they are simulations) |
 
+### P3 (Ascension) — the full vertical slice on one record set (2026-10-31)
+
+One request is carried from intake to executive reporting in `tests/security/project-lifecycle.test.mjs` (16 tests, real HTTP and
+PostgreSQL). Every transition has its authorized actor, its guard tried the wrong way first, a persisted result, an audit record and,
+where the contracts define one, an event. No product has its own workflow engine: each step is a call to the shared engine's API.
+
+| Stage | How it is exercised | Test |
+|---|---|---|
+| Intake → review → brief → approval → funding | request types, guards, routed supplier, versioned brief, approver selection, hold and reopen, delegated decision, funding against the approved scope revision | INT-1/2, CAT-1, REV-1/2, BRF-1, APR-1/2 |
+| Design → release | room in the project, revisions with DIVR, domain review never by the author, RFI, geometry approval, release | DSN-1 |
+| Execution → commissioning **with a failure** | plan pinned to the rule pack; field authorization; the display test FAILS → deficiency → APEX case (commissioning lead) → A3 stages the real work order (service manager) → triage, eligible assignment (verified competency records), acceptance, preflight, start, evidence, submit, separated verification, closure → APEX review → every test recorded and independently verified; the verified retest resolves the deficiency | EXE-1 |
+| Acceptance → handoff → baseline | documents, customer acceptance by a delegate who neither recorded nor verified, support owner, current baseline | HND-1 |
+| Operations (honest) | OPERATIONAL refused without live monitoring evidence | OPS-1 |
+| Learning | Learn case from the closed repair; a room code in the lesson is refused as identifying; SME review, then steward approval | VS-1 |
+| Executive reporting · Search Party · Mission Control | passports count the completed task and resolved deficiency, MTTR measured; building rollup attributes the repair; a recorded path TrainingCase → WorkOrder → RoomIssue → Room → Project; nothing left waiting for five roles | VS-2 |
+| Evidence | each work-order step under its own actor; APEX open, A3 and review; Learn propose, review and approval; the ledger chain verifies (>100 events) | VS-3 |
+| Isolation | second tenant and an out-of-site technician see nothing | ISO-1 |
+
+Not in the slice: Field Intelligence (its sessions are simulations and stay outside the measured record), Lite (geometry stays in the
+room's own lifecycle), instrument import (covered by IMP-1..4 on its own room), live operational monitoring (does not exist).
+
 ### Connector expansion directive (2026-10-31 05:34 CT) — what was actually done
 
 | Item | Status | Evidence |

@@ -14,13 +14,17 @@
  *     customer acceptance; handoff needs a support owner; BASELINED needs every room’s current baseline
  *   - operational transition: the rooms stay ACCEPTED (OPERATIONAL needs live monitoring evidence that does not exist) — refused honestly
  *   - isolation: a second tenant cannot see the project; a site-scoped technician outside the site gets 404
+ *   - VERTICAL SLICE (P3): during execution the display test fails → deficiency → APEX diagnosis → A3 stages the ServiceHands work order →
+ *     triage, eligible assignment, acceptance, preflight, work, evidence, separated verification, closure → APEX review → the verified
+ *     retest resolves the deficiency → handoff and baseline → a reviewed Learn case → executive passports and the building rollup count
+ *     it → Search Party links the Learn case to the project → nothing left in Mission Control → audit trail per actor, ledger verified
  *   node --test tests/security/project-lifecycle.test.mjs
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { setup, client, DEV_PASSWORD } from '../integration/harness.mjs';
 
-let h, c, T = {}, ids = {}, req, prj, room, evidence;
+let h, c, T = {}, ids = {}, req, prj, room, evidence, failTest, issue, apx, wo, lc;
 const instrument = 'SYN-METER-01 (synthetic), calibration record SYN-CAL-2026-09';
 const get = (tok = T.opslead) => c.call('GET', `/v1/projects/${prj}`, { token: tok });
 const deliver = (to, tok, extra = {}) => c.call('POST', `/v1/projects/${prj}/delivery`, { token: tok, body: { to, ...extra } });
@@ -227,12 +231,27 @@ test('EXE-1 — execution: the plan is compiled with the rule pack version pinne
   assert.equal((await moveRoom('INSTALLED_UNVERIFIED', T.installer)).status, 200);
   assert.equal((await moveRoom('COMMISSIONING', T.syseng)).status, 200);
   const rows = (await c.call('GET', `/v1/rooms/${room}`, { token: T.designer })).body.commissioning.rows.filter((x) => x.applicable);
+  // VERTICAL SLICE (P3): the display test fails first. The deficiency goes to APEX (diagnosis), APEX's A3 stages the real ServiceHands
+  // work order, the repair is done, verified and closed, and the verified retest resolves the deficiency, all on this one project.
+  const ft = rows.find((x) => /display/i.test(x.label || x.test_id || '')) || rows[0]; failTest = ft.test_id;
+  assert.equal((await c.call('POST', `/v1/rooms/${room}/results`, { token: T.cxeng, body: { testId: ft.test_id, state: 'FAIL', evidenceId: evidence.id, evidenceKind: ft.evidence[0], instrument } })).status, 201);
+  issue = (await c.call('GET', `/v1/rooms/${room}`, { token: T.designer })).body.issues.find((i) => i.state === 'OPEN' && i.key === `test-failed:${ft.test_id}`).code;
+  const ap = await c.call('POST', `/v1/issues/${issue}/apex`, { token: T.cxeng, body: {} }); assert.equal(ap.status, 201, JSON.stringify(ap.body)); apx = ap.body.caseId;
+  const top = (await c.call('GET', `/v1/apex/cases/${apx}`, { token: T.cxeng })).body.hypotheses[0];
+  const staged = await c.call('POST', `/v1/apex/cases/${apx}/act`, { token: T.svcmgr, body: { hypothesisId: top.id, tier: 'A3' } });
+  assert.equal(staged.body.outcome, 'DRAFT_STAGED', JSON.stringify(staged.body)); wo = staged.body.workOrderId;
+  const W = (p, tok, body) => c.call('POST', `/v1/work-orders/${wo}${p}`, { token: tok, body: body ?? {} });
+  for (const [p, tok, body] of [['/triage', T.svcmgr, { severity: 'Standard', scope: 'display path', risk: 'room not yet in service', workType: 'break_fix', window: { from: '2026-11-04T08:00:00Z', to: '2026-11-04T12:00:00Z' } }], ['/assign', T.svcmgr, { personId: ids.service }],
+    ['/accept', T.service], ['/preflight', T.service, { safetyBriefed: true, toolsConfirmed: ['service kit'], accessConfirmedBy: 'site desk (synthetic)' }], ['/start', T.service], ['/evidence', T.service, { kind: 'note', note: 'reseated the display input; read back the signal (synthetic)' }], ['/submit', T.service],
+    ['/verify', T.cxeng, { outcome: 'pass', note: 'display shown in the call (synthetic)' }], ['/close', T.svcmgr, { note: 'repair verified (synthetic)' }]]) { const r = await W(p, tok, body); assert.equal(r.status, 200, `${p}: ${JSON.stringify(r.body)}`); }
+  assert.equal((await c.call('POST', `/v1/apex/cases/${apx}/review`, { token: T.cxeng, body: { verdict: 'input seating confirmed as the cause by the repair (synthetic)' } })).status, 200);
   for (const t of rows) {
     const rec = await c.call('POST', `/v1/rooms/${room}/results`, { token: T.cxeng, body: { testId: t.test_id, state: 'PASS', evidenceId: evidence.id, evidenceKind: t.evidence[0], instrument } }); assert.equal(rec.status, 201, JSON.stringify(rec.body));
     assert.equal((await c.call('POST', `/v1/rooms/${room}/results/${t.test_id}/verify`, { token: T.qa_reviewer })).status, 200);
   }
   const ok = await deliver('TESTS_VERIFIED', T.cxeng);
   assert.equal(ok.status, 200, JSON.stringify(ok.body));
+  assert.equal((await c.call('GET', `/v1/rooms/${room}`, { token: T.designer })).body.issues.find((i) => i.code === issue).state, 'RESOLVED', 'the verified retest resolved the deficiency');
 });
 
 test('HND-1 — handoff: documents need approved drawings and the QA photo sign-off; customer acceptance is the room’s own; handoff needs a support owner; BASELINED needs the current baseline; the project closes', async () => {
@@ -265,6 +284,45 @@ test('OPS-1 — operational transition stays honest: the room cannot become OPER
   assert.equal(op.status, 422); assert.match(JSON.stringify(op.body), /live monitoring evidence/);
   const readiness = await c.call('GET', `/v1/rooms/${room}/readiness`, { token: T.designer });
   assert.equal(readiness.body.liveHealth, 'NOT_MONITORED');
+});
+
+test('VS-1 — vertical slice, learning: the closed repair becomes a reviewed Learn case (proposer ≠ SME ≠ steward), de-identified against this organization’s names', async () => {
+  const named = await c.call('POST', `/v1/work-orders/${wo}/learn-case`, { token: T.cxeng, body: { title: 'Display input reseat', lesson: `In ${room} the display input needed reseating before the call showed it.`, permission: true, deidentified: true } });
+  assert.equal(named.status, 422, 'the room code is identifying');
+  const p = await c.call('POST', `/v1/work-orders/${wo}/learn-case`, { token: T.cxeng, body: { title: 'Display input reseat', lesson: 'A display that shows nothing in the call after installation: reseat the input and read the signal back before re-testing.', permission: true, permissionNote: 'requester agreed (synthetic)', deidentified: true } });
+  assert.equal(p.status, 201, JSON.stringify(p.body)); lc = p.body.caseId;
+  assert.equal((await c.call('POST', `/v1/learn/cases/${lc}/review`, { token: T.dsp_eng, body: { decision: 'approve', note: 'sound (synthetic)' } })).status, 200);
+  assert.equal((await c.call('POST', `/v1/learn/cases/${lc}/approve`, { token: T.steward })).status, 200);
+});
+
+test('VS-2 — vertical slice, reporting: the executive passports and the building rollup count the verified repair and the resolved deficiency; Search Party connects the Learn case back to the project; nothing is left waiting in Mission Control', async () => {
+  const ps = (await c.call('GET', '/v1/executive/passports?days=30', { token: T.exec })).body.passports;
+  const P = (id) => ps.find((x) => x.id === id);
+  assert.equal(P('tasks_completed').state, 'MEASURED'); assert.ok(P('tasks_completed').numerator >= 1, 'the closed, verified work order is a completed task');
+  assert.equal(P('issues_resolved').state, 'MEASURED'); assert.ok(P('issues_resolved').numerator >= 1, 'the deficiency resolved by the verified retest');
+  assert.equal(P('mttr').state, 'MEASURED', JSON.stringify(P('mttr')));
+  const bld = h.asSuper(`SELECT b.code FROM app.room r JOIN app.building b ON b.id = r.building_id WHERE r.code = '${room}'`);
+  const unit = (await c.call('GET', '/v1/executive/rollup?level=building&days=30', { token: T.exec })).body.units.find((u) => u.code === bld);
+  assert.ok(unit.passports.find((x) => x.id === 'tasks_completed').numerator >= 1, 'the rollup attributes the repair to the room’s building');
+  const path = await c.call('GET', `/v1/search/path?from=TrainingCase:${lc}&to=Project:${prj}`, { token: T.opslead });
+  assert.equal(path.status, 200, JSON.stringify(path.body)); assert.equal(path.body.found, true);
+  assert.ok(path.body.path.every((e) => e.provenance), 'every hop names its provenance');
+  const rels = path.body.path.map((e) => e.rel); for (const r of ['DERIVED_FROM', 'REMEDIED_BY', 'AFFECTS', 'BELONGS_TO']) assert.ok(rels.includes(r), `${r} in ${rels}`);
+  for (const role of ['svcmgr', 'cxeng', 'qa_reviewer', 'steward', 'dsp_eng']) {
+    const mc = (await c.call('GET', '/v1/mission-control', { token: T[role] })).body;
+    assert.ok(!mc.actions.some((a) => [wo, apx, lc, issue, room].includes(a.ref)), `${role}: nothing of this slice is waiting`);
+  }
+});
+
+test('VS-3 — vertical slice, evidence: every governed step of the slice is in the audit trail under its own actor, and the Evidence Ledger chain verifies end to end', async () => {
+  const want = { 'work_order.triage': 'svcmgr', 'work_order.assign': 'svcmgr', 'work_order.accept': 'service', 'work_order.start': 'service', 'work_order.submit': 'service', 'work_order.verify': 'cxeng', 'work_order.close': 'svcmgr' };
+  for (const [action, role] of Object.entries(want)) assert.equal(h.asSuper(`SELECT actor_role FROM app.audit_event WHERE action = '${action}' AND aggregate_id = '${wo}' AND outcome = 'ALLOWED' LIMIT 1`), role, `${action} by ${role}`);
+  const apexActions = h.asSuper(`SELECT string_agg(DISTINCT action, ',') FROM app.audit_event WHERE aggregate_id = '${apx}' AND outcome = 'ALLOWED' AND action LIKE 'apex.%'`).split(',');
+  for (const a of ['apex.open', 'apex.diagnosis_reviewed']) assert.ok(apexActions.includes(a), `${a} in ${apexActions}`);
+  assert.ok(apexActions.some((a) => /^apex\.a3/.test(a)), `the A3 staging is recorded: ${apexActions}`);
+  for (const action of ['learn.propose', 'learn.sme_review', 'training.case_approved']) assert.ok(Number(h.asSuper(`SELECT count(*) FROM app.audit_event WHERE action = '${action}' AND aggregate_id = '${lc}' AND outcome = 'ALLOWED'`)) >= 1, action);
+  const v = (await c.call('GET', '/v1/audit/integrity', { token: T.steward })).body;
+  assert.equal(v.verified, true, JSON.stringify(v.firstBreak)); assert.ok(v.checked > 100, `${v.checked} events verified`);
 });
 
 test('ISO-1 — a second tenant cannot see the project or the request; a site-scoped technician outside the site gets 404; the record carries the whole audit trail', async () => {
