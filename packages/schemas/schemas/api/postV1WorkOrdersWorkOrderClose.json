@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://schemas.empathia.invalid/api/postV1WorkOrdersWorkOrderClose/0.1.0.json",
   "title": "POST /v1/work-orders/{workOrder}/close request body",
-  "description": "Close a work order (records field work; never passes a test)",
+  "description": "Close (RESOLVED → CLOSED) under the customer policy (non-Standard severity needs the requester’s confirmation); never passes a test",
   "type": "object",
   "additionalProperties": false,
   "required": [],
@@ -10,6 +10,9 @@
     "note": {
       "type": "string",
       "maxLength": 1000
+    },
+    "customerConfirmed": {
+      "type": "boolean"
     }
   }
 }

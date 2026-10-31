@@ -167,19 +167,6 @@ export async function createWorkOrder(ctx: RequestContext, issueCode: string, bo
   });
 }
 
-export async function closeWorkOrder(ctx: RequestContext, woCode: string, note: string) {
-  await ctx.require('service.close', 'close a work order', { type: 'WorkOrder', id: woCode });
-  return ctx.tx(async (q) => {
-    const sc = ctx.p.siteScope && ctx.p.siteScope.length ? ' AND b.site_id = ANY($2::uuid[])' : '';   // site scope: a work order is reachable only through a room in scope (RT-02)
-    const w = (await q.query<{ id: string; state: string; issue_id: string }>(`SELECT w.id, w.state, w.issue_id FROM app.work_order w JOIN app.room_issue i ON i.id = w.issue_id AND i.tenant_id = w.tenant_id JOIN app.room r ON r.id = i.room_id AND r.tenant_id = i.tenant_id JOIN app.building b ON b.id = r.building_id AND b.tenant_id = r.tenant_id WHERE w.code = $1${sc} FOR UPDATE OF w`, sc ? [woCode, ctx.p.siteScope] : [woCode])).rows[0];
-    if (!w) throw notFound(`work order ${woCode}`);
-    if (w.state !== 'OPEN') throw refused(['the work order is already closed']);
-    await q.query(`UPDATE app.work_order SET state = 'CLOSED', closed_by = $2, closed_at = now(), closing_note = $3 WHERE id = $1`, [w.id, ctx.p.personId, String(note || '').slice(0, 1000)]);
-    await q.query('INSERT INTO app.issue_event (tenant_id, issue_id, kind, detail, actor_id) VALUES ($1,$2,$3,$4,$5)', [ctx.p.tenantId, w.issue_id, 'work_order', { workOrder: woCode, state: 'CLOSED', note: 'field work recorded; the test still needs a verified retest' }, ctx.p.personId]);
-    await ctx.emit(q, 'service.field_completed', { type: 'WorkOrder', id: woCode, rev: 2 }, { workOrderId: woCode });
-    await ctx.audit(q, 'work_order.close', 'ALLOWED', { type: 'WorkOrder', id: woCode });
-    return { workOrderId: woCode, state: 'CLOSED', note: 'Closing a work order never passes a test: the issue resolves only with a verified retest.' };
-  });
-}
+// closing moved to domain/service.ts (P6-A): a work order closes only from RESOLVED, under the customer policy
 
 export { load };

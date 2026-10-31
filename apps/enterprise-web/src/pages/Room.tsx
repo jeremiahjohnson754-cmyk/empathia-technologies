@@ -13,6 +13,7 @@ import { FloorPlan } from '../components/FloorPlan.js';
 import { ReadinessStrip, AssuranceTab } from './Assurance.js';
 
 /** Display hint mirroring LIFECYCLE_AUTHORITY in packages/commissioning-engine/src/lifecycle.ts; the server enforces the real rule. */
+const APEX_OPEN = ['service.triage', 'tests.verify.all', 'service.verify', 'baseline.approve', 'review.dsp', 'review.camera', 'review.touch', 'provenance.review'];   // who may open an APEX case (services/enterprise-api/src/domain/apex.ts)
 const NEXT: Record<string, [Lifecycle, string] | undefined> = {
   PLANNED: ['DESIGN_APPROVED', 'room.design.approve'], DESIGN_APPROVED: ['INSTALLATION_PENDING', 'window.approve'], INSTALLATION_PENDING: ['INSTALLED_UNVERIFIED', 'work.evidence'],
   INSTALLED_UNVERIFIED: ['COMMISSIONING', 'plan.compile'], COMMISSIONING: ['ACCEPTED', 'customer.accept'], ACCEPTED: ['OPERATIONAL', 'handoff.accept'],
@@ -140,6 +141,7 @@ function Issues({ d }: { d: RoomDetail }) {
   const [assign, setAssign] = useState<Issue | null>(null); const [owner, setOwner] = useState('service');
   const a = useMutation(() => api.call('postV1IssuesIssueAssign', { params: { issue: assign!.code }, body: { ownerRole: owner } }), [`room:${code}`]);
   const wo = useMutation((issue: string) => api.call('postV1IssuesIssueWorkOrders', { params: { issue }, idempotencyKey: newKey(), body: { assignedRole: 'service', note: 'raised from the enterprise web app' } }), [`room:${code}`, `history:${code}`]);
+  const ap = useMutation((issue: string) => api.call('postV1IssuesIssueApex' as never, { params: { issue }, idempotencyKey: newKey() } as never) as Promise<unknown>, [`room:${code}`, 'apex']);
   const cols: Column<Issue>[] = [
     { key: 'code', header: 'Issue', render: (x) => <span className="mono">{x.code}</span>, sort: (x) => x.code, width: '110px' },
     { key: 'sev', header: 'Severity', render: (x) => <StatusBadge table={SEVERITY} value={x.severity} />, sort: (x) => ['Critical', 'High', 'Medium', 'Low'].indexOf(x.severity) },
@@ -150,6 +152,7 @@ function Issues({ d }: { d: RoomDetail }) {
     { key: 'act', header: '', render: (x) => x.state !== 'OPEN' ? null : <span className="acts">
       {can(['issue.assign', 'route.internal']) ? <Button small kind="quiet" onClick={() => setAssign(x)}>Assign</Button> : null}
       {can(['service.assign', 'service.triage']) && x.category === 'INSTALLATION_COMMISSIONING_DEFICIENCY' ? <Button small kind="quiet" busy={wo.busy} onClick={() => void wo.run(x.code)}>Raise work order</Button> : null}
+      {can(APEX_OPEN) ? <Button small kind="quiet" busy={ap.busy} onClick={async () => { const r = await ap.run(x.code); if (r) location.hash = `#/apex/${(r as { caseId: string }).caseId}`; }}>Open APEX case</Button> : null}
     </span> },
   ];
   return (

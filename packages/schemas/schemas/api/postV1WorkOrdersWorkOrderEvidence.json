@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1WorkOrdersWorkOrderEvidence/0.1.0.json",
+  "title": "POST /v1/work-orders/{workOrder}/evidence request body",
+  "description": "Record field evidence (photo, measurement, note, part) while the work is in progress — the recorder is remembered for separation of duties",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "note"
+  ],
+  "properties": {
+    "kind": {
+      "type": "string",
+      "enum": [
+        "photo",
+        "measurement",
+        "note",
+        "part",
+        "readback"
+      ]
+    },
+    "note": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "ref": {
+      "type": "string",
+      "maxLength": 200
+    }
+  }
+}

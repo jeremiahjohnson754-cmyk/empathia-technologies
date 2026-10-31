@@ -1,7 +1,7 @@
 {
   "test": "enterprise-web",
-  "at": "2026-10-31T10:54:28.418Z",
-  "passed": 56,
+  "at": "2026-10-31T11:36:07.817Z",
+  "passed": 72,
   "failed": 0,
   "results": [
     {
@@ -56,7 +56,7 @@
       "id": "W-09",
       "name": "a designer who bypasses the UI and calls the approval endpoint directly is refused 403 by the server",
       "result": "PASS",
-      "detail": "{\"status\":403,\"body\":{\"type\":\"https://errors.empathia.invalid/forbidden\",\"title\":\"Not allowed for your role\",\"status\":403,\"detail\":\"designer may not move a room to DESIGN_APPROVED (needs room.design.approve)\",\"code\":\"forbidden\",\"correlationId\":\"012d5d93-20fe-4fd8-9d33-c4c81cdda463\"}}"
+      "detail": "{\"status\":403,\"body\":{\"type\":\"https://errors.empathia.invalid/forbidden\",\"title\":\"Not allowed for your role\",\"status\":403,\"detail\":\"designer may not move a room to DESIGN_APPROVED (needs room.design.approve)\",\"code\":\"forbidden\",\"correlationId\":\"6800b589-83f0-4ad1-8563-e68640e4e782\"}}"
     },
     {
       "id": "W-10",
@@ -116,7 +116,7 @@
       "id": "W-32",
       "name": "the measurement is listed with its provenance, instrument, calibration state and UNREVIEWED approval",
       "result": "PASS",
-      "detail": "Measurements\nMetric\tValue\tProvenance\tInstrument\tWhere / when\tApproval\t\n\nnoise_floor\nLAeq 60 s\n\t36.2 dB(A)\tFIELD_MEASURED\tSYN-METER-01 · CALIBRATED\tseat 3, 1.2 m · 2026-10-31 10:54 · SYN-METER-01\tUNREV"
+      "detail": "Measurements\nMetric\tValue\tProvenance\tInstrument\tWhere / when\tApproval\t\n\nnoise_floor\nLAeq 60 s\n\t36.2 dB(A)\tFIELD_MEASURED\tSYN-METER-01 · CALIBRATED\tseat 3, 1.2 m · 2026-10-31 11:35 · SYN-METER-01\tUNREV"
     },
     {
       "id": "W-33",
@@ -188,7 +188,7 @@
       "id": "W-34",
       "name": "the shared shell shows the platform’s products in one rail: Mission Control, Pro, Lite, Search Party, Commissioning & Assurance, Field Intelligence, Learn, Administration",
       "result": "PASS",
-      "detail": "Mission Control\nPro\nLite\nSearch Party\nCommissioning & Assurance\nField Intelligence\nLearn\nAdministration"
+      "detail": "Mission Control\nPro\nAPEX\nServiceHands\nLite\nSearch Party\nCommissioning & Assurance\nField Intelligence\nLearn\nAdministration"
     },
     {
       "id": "W-35",
@@ -266,7 +266,7 @@
       "id": "W-45c",
       "name": "a CONCEPT revision with its feasibility finding and a labelled preliminary estimate is recorded before any money is authorized",
       "result": "PASS",
-      "detail": "Collaborative design\nRevision 1 CONCEPT DRAFT Designer / CAD / Revit (synthetic) · 2026-10-31 10:54 · feasibility and concept layout\nFeasibility. A four-seat huddle fits the 4.2 m bay with one display; a second display does not. FEASIBILITY STUDY — concept work, not a release\n\nPreliminary estimate 1"
+      "detail": "Collaborative design\nRevision 1 CONCEPT DRAFT Designer / CAD / Revit (synthetic) · 2026-10-31 11:35 · feasibility and concept layout\nFeasibility. A four-seat huddle fits the 4.2 m bay with one display; a second display does not. FEASIBILITY STUDY — concept work, not a release\n\nPreliminary estimate 1"
     },
     {
       "id": "W-45d",
@@ -302,17 +302,113 @@
       "id": "W-49",
       "name": "the browser reports under a release stamped with the build’s commit, to no transport unless the serving process configures one",
       "result": "PASS",
-      "detail": "{\"transport\":\"none\",\"release\":\"empathia-enterprise-web@0.1.0+89ba25c0ec97\",\"environment\":\"production\",\"tracesSampleRate\":0,\"captured\":0,\"sampledIn\":0,\"sampledOut\":0}"
+      "detail": "{\"transport\":\"none\",\"release\":\"empathia-enterprise-web@0.1.0+12d760632083\",\"environment\":\"production\",\"tracesSampleRate\":0,\"captured\":0,\"sampledIn\":0,\"sampledOut\":0}"
     },
     {
       "id": "W-50",
       "name": "an uncaught error is captured by the window handler (count, no key in the status)",
       "result": "PASS",
-      "detail": "{\"transport\":\"none\",\"release\":\"empathia-enterprise-web@0.1.0+89ba25c0ec97\",\"environment\":\"production\",\"tracesSampleRate\":0,\"captured\":1,\"sampledIn\":0,\"sampledOut\":0}"
+      "detail": "{\"transport\":\"none\",\"release\":\"empathia-enterprise-web@0.1.0+12d760632083\",\"environment\":\"production\",\"tracesSampleRate\":0,\"captured\":1,\"sampledIn\":0,\"sampledOut\":0}"
     },
     {
       "id": "W-51",
       "name": "the shipped bundle carries the release sha, no DSN and no source map reference",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-52",
+      "name": "the service queue lists the new work order as OPEN, not triaged",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-53",
+      "name": "the record names the only next step (triage, the manager’s) with the guard’s blockers",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-54",
+      "name": "after triage the manager sees hard-gated candidates: one eligible with reasons, the South technician ineligible by site access",
+      "result": "PASS",
+      "detail": "Candidates · hard gates first, then an explained ranking\neligible\nService Technician (synthetic)\nscore 56 · based in ATL · experience depth 16/30 · 24 h capacity this week · internal team\nAssign\nineligible\nService Technician, South campus only (synthetic)\nCamera and framing: not held\nexperience came"
+    },
+    {
+      "id": "W-55",
+      "name": "the assignment is on the record with its score; the database agrees",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-56",
+      "name": "the technician accepted; the start is blocked until the preflight passes and the page says so",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-57",
+      "name": "every preflight check is shown with its reason and none is blocked",
+      "result": "PASS",
+      "detail": "Dispatch preflight\nok Room booking window free 2026-11-03T14:00:00.000Z → 2026-11-03T18:00:00.000Z\nok Parts on hand and stock fresh 2 part line(s) confirmed\nok Site access confirmed confirmed by facilities desk (synthetic)\nok Safety brief and permits acknowledged\nok Tools confirmed all listed tools "
+    },
+    {
+      "id": "W-58",
+      "name": "handed over: the technician sees the verification step as not theirs (separation of duties)",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-59",
+      "name": "closing a High-severity job without the requester’s confirmation is refused in the drawer with the policy’s reason",
+      "result": "PASS",
+      "detail": "Close the work order\n×\nClosing records the field work. It never passes a test: the deficiency on the room resolves only with a verified retest.\nThe requester confirmed the room is back in service (High severity policy)\nClosing note\n\nRefused by a rule\n\nthe customer policy requires the requester’s con"
+    },
+    {
+      "id": "W-60",
+      "name": "closed with confirmation; the deficiency stays OPEN and the record says closing never passes a test",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-64",
+      "name": "the commissioning lead opens an APEX case from the room’s deficiency and lands on it",
+      "result": "PASS",
+      "detail": "http://127.0.0.1:4291/#/apex/APX-0001"
+    },
+    {
+      "id": "W-65",
+      "name": "the seven layers are shown; the physical layer cites the room’s planned assets (PA-…)",
+      "result": "PASS",
+      "detail": "Physical\ndisplay power confirmed\ncites PA-0075 Display 1, PA-0076 Video bar 1, PA-0077 UC room compute 1\nNetwork\nnothing observed\nCompute\nroom compute reachable\ncites PA-0076 Video bar 1, PA-0077 UC r"
+    },
+    {
+      "id": "W-66",
+      "name": "A2 compares read-only (no baseline → NOT_VERIFIED) and A4 is BLOCKED with the reason; both are outcomes in the log",
+      "result": "PASS",
+      "detail": "BLOCKED A4 H1 Commissioning Engineer (synthetic) · 2026-10-31 11:36\nno runbook for this action\nCOMPARED A2 H1 Commissioning Engineer (synthetic) · 2026-10-31 11:36\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
+    },
+    {
+      "id": "W-67",
+      "name": "the verdict is recorded on the case and the case list marks it reviewed",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-61",
+      "name": "the executive board shows 27 passports; every unmeasurable one says so with a reason and shows no figure; committed funds are shown by currency",
+      "result": "PASS",
+      "detail": "Projects started\n0 projects\n0 / 1 · coverage 1/1\nconfidence high\nProjects approved\n1 scope revisions\n1 / 1 · coverage 1/1\nconfidence high\nProjects funded\n1 projects\n1 / 2 · coverage 2/2\nconfidence hig"
+    },
+    {
+      "id": "W-62",
+      "name": "a passport opens with its definition, arithmetic, window, coverage, freshness and confidence",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-63",
+      "name": "the window changes the board (30 days) and the selection resets",
       "result": "PASS",
       "detail": ""
     },

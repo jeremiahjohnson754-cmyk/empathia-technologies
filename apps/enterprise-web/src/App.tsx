@@ -13,6 +13,9 @@ import { Room } from './pages/Room.js';
 import { Reports } from './pages/Reports.js';
 import { Projects } from './pages/Projects.js';
 import { Requests, ProjectRecord } from './pages/Lifecycle.js';
+import { ServiceQueue, WorkOrderRecord } from './pages/Service.js';
+import { Executive } from './pages/Executive.js';
+import { ApexCases, ApexCase } from './pages/Apex.js';
 import { Inbox } from './pages/Inbox.js';
 import { Admin } from './pages/Admin.js';
 import { SearchParty } from './pages/SearchParty.js';
@@ -34,7 +37,9 @@ export function App() {
   const admin = can(['policy.configure', 'provenance.review', 'adapter.allowlist']);
   const products = [
     { key: 'reports', label: 'Mission Control', href: href('reports'), purpose: 'What changed, what matters, what needs action — KPIs with definitions', active: page === 'reports' },
-    { key: 'projects', label: 'Pro', href: href('projects'), purpose: 'Portfolio, projects, service performance and the notification inbox', active: page === 'projects' || page === 'inbox' || page === 'requests' },
+    { key: 'projects', label: 'Pro', href: href('projects'), purpose: 'Portfolio, projects, service performance and the notification inbox', active: page === 'projects' || page === 'inbox' || page === 'requests' || page === 'executive' },
+    { key: 'apex', label: 'APEX', href: href('apex'), purpose: 'Diagnosis with its evidence: cited layers, ranked hypotheses, tiered bounded action', active: page === 'apex' },
+    { key: 'service', label: 'ServiceHands', href: href('service'), purpose: 'Work orders: hard-gated assignment, preflight, evidence, separated verification', active: page === 'service' },
     { key: 'rooms', label: 'Lite', href: href('rooms'), purpose: 'Campus → building → floor → room: spatial design, devices, drawings', active: page === 'rooms' },
     { key: 'search', label: 'Search Party', href: href('search'), purpose: 'Universal entity search and relationship intelligence', active: page === 'search' },
     { key: 'commissioning', label: 'Commissioning & Assurance', href: href('commissioning'), purpose: 'Plans, evidence, verification, acceptance, baselines, drift', active: page === 'commissioning' },
@@ -53,7 +58,12 @@ export function App() {
         {page === 'projects' && !route[1] ? <Projects /> : null}
         {page === 'projects' && route[1] ? <ProjectRecord code={route[1]} /> : null}
         {page === 'requests' ? <Requests /> : null}
+        {page === 'service' && !route[1] ? <ServiceQueue /> : null}
+        {page === 'service' && route[1] ? <WorkOrderRecord code={route[1]} /> : null}
         {page === 'reports' ? <Reports /> : null}
+        {page === 'executive' ? <Executive /> : null}
+        {page === 'apex' && !route[1] ? <ApexCases /> : null}
+        {page === 'apex' && route[1] ? <ApexCase code={route[1]} /> : null}
         {page === 'inbox' ? <Inbox /> : null}
         {page === 'commissioning' ? <CommissioningHome /> : null}
         {page === 'field' ? <FieldIntelligence /> : null}

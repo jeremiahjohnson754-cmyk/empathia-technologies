@@ -40,12 +40,16 @@ before(async () => {
 });
 after(async () => { await h?.app.stop(); });
 
-test('a South-scoped service manager cannot close a North work order (404) but can close a South one', async () => {
-  assert.equal((await c.call('POST', `/v1/work-orders/${northWo.code}/close`, { token: southMgr, body: { note: 'x' } })).status, 404);
+test('a South-scoped service manager cannot triage or read a North work order (404) but can triage a South one; the unscoped manager reaches both', async () => {
+  const tri = { severity: 'Standard', scope: 'scope test', risk: 'low' };
+  assert.equal((await c.call('POST', `/v1/work-orders/${northWo.code}/triage`, { token: southMgr, body: tri })).status, 404);
+  assert.equal((await c.call('GET', `/v1/work-orders/${northWo.code}`, { token: southMgr })).status, 404);
   assert.equal(h.asSuper(`SELECT state FROM app.work_order WHERE code = '${northWo.code}'`), 'OPEN');
-  const r = await c.call('POST', `/v1/work-orders/${southWo.code}/close`, { token: southMgr, body: { note: 'South field work (synthetic)' } });
-  assert.equal(r.status, 200, JSON.stringify(r.body)); assert.equal(r.body.state, 'CLOSED');
-  assert.equal((await c.call('POST', `/v1/work-orders/${northWo.code}/close`, { token: svcmgr, body: { note: 'unscoped manager' } })).status, 200);
+  const r = await c.call('POST', `/v1/work-orders/${southWo.code}/triage`, { token: southMgr, body: tri });
+  assert.equal(r.status, 200, JSON.stringify(r.body)); assert.equal(r.body.state, 'TRIAGED');
+  assert.equal((await c.call('POST', `/v1/work-orders/${northWo.code}/triage`, { token: svcmgr, body: tri })).status, 200);
+  const list = (await c.call('GET', '/v1/work-orders', { token: southMgr })).body.items.map((x) => x.code);
+  assert.ok(list.includes(southWo.code) && !list.includes(northWo.code), 'the list is scoped through the room');
 });
 test('evidence cited only by a North result is not readable by a South-scoped member who did not upload it; the refusal is audited', async () => {
   assert.equal((await c.call('GET', `/v1/evidence/${northEvidence}/content`, { token: cxeng })).status, 200, 'the uploader reads it');

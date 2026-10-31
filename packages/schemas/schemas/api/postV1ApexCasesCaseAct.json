@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1ApexCasesCaseAct/0.1.0.json",
+  "title": "POST /v1/apex/cases/{case}/act request body",
+  "description": "Act on a hypothesis at a tier (A0 explain/abstain, A1 propose, A2 compare read-only, A3 stage a real work order, A4 execute bounded — simulation only, blocked by the real adapter state — A5 human-led); a blocked outcome is a result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "hypothesisId"
+  ],
+  "properties": {
+    "hypothesisId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,40}$"
+    },
+    "tier": {
+      "type": "string",
+      "enum": [
+        "A0",
+        "A1",
+        "A2",
+        "A3",
+        "A4",
+        "A5"
+      ]
+    },
+    "runbook": {
+      "type": "string",
+      "pattern": "^RB-[A-Z-]{2,30}$"
+    },
+    "ownerApproved": {
+      "type": "boolean"
+    },
+    "window": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "occupied": {
+      "type": "boolean"
+    },
+    "targets": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 60
+      }
+    },
+    "dryRunDone": {
+      "type": "boolean"
+    },
+    "branch": {
+      "type": "string",
+      "enum": [
+        "nominal",
+        "lost_signal",
+        "estop",
+        "incomplete"
+      ]
+    },
+    "acceptStale": {
+      "type": "boolean"
+    },
+    "simulate": {
+      "type": "boolean"
+    }
+  }
+}

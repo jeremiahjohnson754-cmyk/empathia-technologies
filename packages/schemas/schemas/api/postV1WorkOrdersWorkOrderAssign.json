@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1WorkOrdersWorkOrderAssign/0.1.0.json",
+  "title": "POST /v1/work-orders/{workOrder}/assign request body",
+  "description": "Assign (TRIAGED → ASSIGNED) one of the eligible candidates; an ineligible person is refused with the gates that fail",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "personId"
+  ],
+  "properties": {
+    "personId": {
+      "type": "string",
+      "format": "uuid"
+    }
+  }
+}

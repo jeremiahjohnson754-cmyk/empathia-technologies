@@ -79,6 +79,15 @@ export async function seed(opts: { reset?: boolean } = {}) {
     await member('empathia-demo', 'service-south', 'service', [siteIds['empathia-demo/SITE-SOUTH']!]);
     for (const role of ['designer', 'syseng', 'secadmin']) await member('second-tenant', role, role);
 
+    // staff profiles (synthetic): the facts the ServiceHands hard gates read — certifications with expiry, skills, sites, capacity
+    const profile = async (tenant: string, key: string, p: { internal?: boolean; orgName?: string | null; buildingKey?: string | null; sites: string[]; skills: Record<string, { level: string; n?: number }>; certs: Record<string, { expires: string }>; leave?: [string, string] | null; capacity: number; agreement?: unknown }) => {
+      await ownerPool.tx({ tenantId: tenantIds[tenant]! }, (q) => q.query('INSERT INTO app.staff_profile (tenant_id, person_id, internal, org_name, building_key, sites, skills, certs, leave_from, leave_to, capacity_hours, agreement) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) ON CONFLICT (tenant_id, person_id) DO UPDATE SET sites = EXCLUDED.sites, skills = EXCLUDED.skills, certs = EXCLUDED.certs, leave_from = EXCLUDED.leave_from, leave_to = EXCLUDED.leave_to, capacity_hours = EXCLUDED.capacity_hours, agreement = EXCLUDED.agreement',
+        [tenantIds[tenant], people[`${tenant}/${key}`], p.internal ?? true, p.orgName ?? null, p.buildingKey ?? null, p.sites, JSON.stringify(p.skills), JSON.stringify(p.certs), p.leave?.[0] ?? null, p.leave?.[1] ?? null, p.capacity, p.agreement ? JSON.stringify(p.agreement) : null]));
+    };
+    await profile('empathia-demo', 'service', { buildingKey: 'ATL', sites: ['*'], skills: { 'SK-SVC-1': { level: 'Advanced', n: 9 }, 'SK-AUD-1': { level: 'Working', n: 5 }, 'SK-AUD-2': { level: 'Working', n: 3 }, 'SK-VID-1': { level: 'Working', n: 6 } }, certs: { 'cert.av_field': { expires: '2027-09-30' }, 'cert.audio': { expires: '2027-03-31' }, 'cert.video': { expires: '2027-03-31' } }, capacity: 24 });
+    await profile('empathia-demo', 'installer', { buildingKey: 'NST', sites: ['ATL', 'NST'], skills: { 'SK-SVC-1': { level: 'Working', n: 4 }, 'SK-VID-1': { level: 'Working', n: 2 } }, certs: { 'cert.av_field': { expires: '2027-01-31' }, 'cert.video': { expires: '2026-10-01' }, 'lic.working_at_height': { expires: '2028-01-01' } }, capacity: 30 });   // the camera certification has lapsed
+    await profile('empathia-demo', 'service-south', { buildingKey: 'HZN', sites: ['HZN'], skills: { 'SK-SVC-1': { level: 'Working', n: 7 } }, certs: { 'cert.av_field': { expires: '2027-12-31' }, 'cert.audio': { expires: '2027-12-31' } }, capacity: 12 });   // site access: South only
+
     // integration catalogue: every entry CONTRACT_ONLY except the three local mocks in integrations/mocks
     const csv = fs.readFileSync(path.join(repo, 'integrations/contracts/INTEGRATION_REGISTRY.csv'), 'utf8').split('\n').filter(Boolean);
     const head = csv[0]!.split(','); const ix = (k: string) => head.indexOf(k);

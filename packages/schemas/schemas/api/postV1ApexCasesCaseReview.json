@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1ApexCasesCaseReview/0.1.0.json",
+  "title": "POST /v1/apex/cases/{case}/review request body",
+  "description": "Review the diagnosis (a verifier’s verdict); emits apex.diagnosis_reviewed",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "verdict"
+  ],
+  "properties": {
+    "verdict": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1WorkOrdersWorkOrderReopen/0.1.0.json",
+  "title": "POST /v1/work-orders/{workOrder}/reopen request body",
+  "description": "Reopen (RESOLVED → REOPENED) naming the reason — recurrence or failed verification; the job is triaged again",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "reason"
+  ],
+  "properties": {
+    "reason": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1WorkOrdersWorkOrderVerify/0.1.0.json",
+  "title": "POST /v1/work-orders/{workOrder}/verify request body",
+  "description": "Verify (VERIFYING → RESOLVED on pass): never the technician or an evidence recorder; a fail is recorded and the job stays VERIFYING",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "outcome",
+    "note"
+  ],
+  "properties": {
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "fail"
+      ]
+    },
+    "note": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    }
+  }
+}

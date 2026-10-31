@@ -9,7 +9,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { setup } from '../integration/harness.mjs';
+import { setup, client } from '../integration/harness.mjs';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const out = path.resolve(process.argv[2] || path.join(repo, 'tests/evidence/enterprise-web'));
@@ -286,6 +286,116 @@ try {
   ok('W-50', 'an uncaught error is captured by the window handler (count, no key in the status)', tel1.captured === 1 && !JSON.stringify(tel1).includes('dsn'), JSON.stringify(tel1));
   const bundle = await (await fetch(`http://127.0.0.1:${WEB}/app.js`)).text();
   ok('W-51', 'the shipped bundle carries the release sha, no DSN and no source map reference', /empathia-enterprise-web/.test(bundle) && !/sourceMappingURL/.test(bundle) && !/ingest\.sentry\.io/.test(bundle), '');
+
+  // ---------------------------------------------------------------- ServiceHands (P6-A): a work order through the governed machine in the browser
+  {
+    const c = client(h.base); const tk = {}; for (const r of ['designer', 'syseng', 'opslead', 'installer', 'cxeng', 'svcmgr']) tk[r] = await c.login(r);
+    const rm = (await c.call('POST', '/v1/rooms', { token: tk.designer, body: { name: 'Service Huddle (synthetic)', template: 'huddle', buildingCode: 'ATL', floor: 6 } })).body.code;
+    await c.call('POST', `/v1/rooms/${rm}/revisions`, { token: tk.designer, body: { reason: 'svc' } }); await c.call('POST', `/v1/rooms/${rm}/drawings/generate`, { token: tk.designer });
+    await c.call('POST', `/v1/rooms/${rm}/drawings/plan/approve`, { token: tk.syseng }); await c.call('POST', `/v1/rooms/${rm}/classification/approve`, { token: tk.syseng, body: {} });
+    for (const [to, t] of [['DESIGN_APPROVED', 'syseng'], ['INSTALLATION_PENDING', 'opslead'], ['INSTALLED_UNVERIFIED', 'installer'], ['COMMISSIONING', 'syseng']]) await c.call('POST', `/v1/rooms/${rm}/lifecycle`, { token: tk[t], body: { to } });
+    const rowT = (await c.call('GET', `/v1/rooms/${rm}`, { token: tk.designer })).body.commissioning.rows.find((x) => x.applicable);
+    const ev = (await c.call('POST', '/v1/evidence', { token: tk.cxeng, raw: Buffer.from('synthetic'), headers: { 'content-type': 'text/plain', 'x-file-name': 'o.txt' } })).body;
+    await c.call('POST', `/v1/rooms/${rm}/results`, { token: tk.cxeng, body: { testId: rowT.test_id, state: 'FAIL', evidenceId: ev.id, evidenceKind: rowT.evidence[0], instrument: 'SYN-METER-01 (synthetic)' } });
+    const iss = (await c.call('GET', `/v1/rooms/${rm}`, { token: tk.designer })).body.issues.find((i) => i.state === 'OPEN').code;
+    const woCode = (await c.call('POST', `/v1/issues/${iss}/work-orders`, { token: tk.svcmgr, body: { note: 'camera dropped (synthetic)' } })).body.workOrderId;
+    const svcId = h.asSuper("SELECT id FROM app.person WHERE email = 'service@empathia-demo.empathia.invalid'");
+
+    await signIn('svcmgr');
+    await page.goto(base + '#/service'); await page.waitForSelector('.ui-table');
+    ok('W-52', 'the service queue lists the new work order as OPEN, not triaged', (await page.locator('.ui-table').innerText()).includes(woCode) && (await page.locator('.ui-table').innerText()).includes('not triaged'));
+    await page.click(`a:has-text("${woCode}")`); await page.waitForSelector('[data-testid=work-order]');
+    let nx = await page.locator('[data-testid=wo-next]').innerText();
+    ok('W-53', 'the record names the only next step (triage, the manager’s) with the guard’s blockers', /OPEN → TRIAGED/.test(nx) && /severity is not set/.test(nx));
+    await page.click('[data-testid=wo-next] button:has-text("Triage")'); await page.waitForSelector('.ui-drawer');
+    await page.selectOption('.ui-drawer select >> nth=0', 'High'); await page.selectOption('.ui-drawer select >> nth=1', 'camera_replacement');
+    await page.fill('.ui-drawer textarea >> nth=0', 'camera and cabling'); await page.fill('.ui-drawer textarea >> nth=1', 'room in daily use');
+    await page.fill('.ui-drawer input[type=datetime-local] >> nth=0', '2026-11-03T08:00'); await page.fill('.ui-drawer input[type=datetime-local] >> nth=1', '2026-11-03T12:00');
+    await page.click('.ui-drawer button:has-text("Triage")'); await page.waitForFunction(() => /TRIAGED/.test(document.querySelector('[data-testid=wo-state]')?.textContent || ''));
+    await page.waitForSelector('[data-testid=wo-candidates]');
+    const cands = await page.locator('[data-testid=wo-candidates]').innerText();
+    ok('W-54', 'after triage the manager sees hard-gated candidates: one eligible with reasons, the South technician ineligible by site access', /eligible/.test(cands) && /site access: ATL not in approved sites/.test(cands) && /based in ATL/.test(cands), cands.slice(0, 300));
+    await page.click('[data-testid=wo-candidates] button:has-text("Assign")'); await page.waitForFunction(() => /ASSIGNED/.test(document.querySelector('[data-testid=wo-state]')?.textContent || ''));
+    ok('W-55', 'the assignment is on the record with its score; the database agrees', h.asSuper(`SELECT assigned_to FROM app.work_order WHERE code = '${woCode}'`) === svcId && /score \d+/.test(await page.locator('.page').innerText()));
+    await shot('13-work-order-assigned');
+
+    await signIn('service');
+    await page.goto(base + `#/service/${woCode}`); await page.waitForSelector('[data-testid=work-order]');
+    await page.click('[data-testid=wo-next] button:has-text("Accept the job")'); await page.waitForFunction(() => /ACCEPTED/.test(document.querySelector('[data-testid=wo-state]')?.textContent || ''));
+    nx = await page.locator('[data-testid=wo-next]').innerText();
+    ok('W-56', 'the technician accepted; the start is blocked until the preflight passes and the page says so', /dispatch preflight has a failed check/.test(nx) && (await page.locator('[data-testid=wo-next] button:has-text("Start the work")').isDisabled()));
+    await page.click('[data-testid=wo-preflight] button:has-text("Record the preflight")'); await page.waitForSelector('.ui-drawer');
+    await page.fill('.ui-drawer input >> nth=0', 'facilities desk (synthetic)'); await page.check('.ui-drawer input[type=checkbox] >> nth=0');
+    for (const cb of await page.locator('.ui-drawer fieldset input[type=checkbox]').all()) await cb.check();
+    for (const n of await page.locator('.ui-drawer input[type=number]').all()) await n.fill('2');
+    await page.click('.ui-drawer button:has-text("Record")'); await page.waitForFunction(() => !document.querySelector('.ui-drawer') && /Room booking window/.test(document.querySelector('[data-testid=wo-preflight]')?.textContent || ''));
+    const pf = await page.locator('[data-testid=wo-preflight]').innerText();
+    ok('W-57', 'every preflight check is shown with its reason and none is blocked', !/blocked/.test(pf) && /Parts on hand/.test(pf) && /Tools confirmed/.test(pf), pf.slice(0, 300));
+    await page.click('[data-testid=wo-next] button:has-text("Start the work")'); await page.waitForFunction(() => /IN_PROGRESS/.test(document.querySelector('[data-testid=wo-state]')?.textContent || ''));
+    await page.click('[data-testid=wo-evidence] button:has-text("Record evidence")'); await page.waitForSelector('.ui-drawer');
+    await page.selectOption('.ui-drawer select', 'photo'); await page.fill('.ui-drawer textarea', 'camera reseated and cable replaced (synthetic)'); await page.click('.ui-drawer button:has-text("Record")');
+    await page.waitForFunction(() => !document.querySelector('.ui-drawer') && /camera reseated/.test(document.querySelector('[data-testid=wo-evidence]')?.textContent || ''));
+    await page.click('[data-testid=wo-next] button:has-text("Hand over for verification")'); await page.waitForFunction(() => /VERIFYING/.test(document.querySelector('[data-testid=wo-state]')?.textContent || ''));
+    nx = await page.locator('[data-testid=wo-next]').innerText();
+    ok('W-58', 'handed over: the technician sees the verification step as not theirs (separation of duties)', /VERIFYING → RESOLVED/.test(nx) && /not your authority/.test(nx) && (await page.locator('[data-testid=wo-next] button').count()) === 0);
+
+    await signIn('cxeng');
+    await page.goto(base + `#/service/${woCode}`); await page.waitForSelector('[data-testid=work-order]');
+    await page.click('[data-testid=wo-next] button:has-text("Verify")'); await page.waitForSelector('.ui-drawer'); await page.fill('.ui-drawer textarea', 'retested in a call (synthetic)'); await page.click('.ui-drawer button:has-text("Record the verification")');
+    await page.waitForFunction(() => /RESOLVED/.test(document.querySelector('[data-testid=wo-state]')?.textContent || ''));
+    await signIn('svcmgr');
+    await page.goto(base + `#/service/${woCode}`); await page.waitForSelector('[data-testid=work-order]');
+    await page.click('[data-testid=wo-next] button:has-text("Close")'); await page.waitForSelector('.ui-drawer'); await page.fill('.ui-drawer textarea', 'done'); await page.click('.ui-drawer button:has-text("Close")');
+    await page.waitForSelector('.ui-drawer [role=alert], .ui-drawer .ui-error, .ui-drawer .ui-problem', { timeout: 5000 }).catch(() => {});
+    const refusal = await page.locator('.ui-drawer').innerText();
+    ok('W-59', 'closing a High-severity job without the requester’s confirmation is refused in the drawer with the policy’s reason', /requester’s confirmation/.test(refusal), refusal.slice(0, 300));
+    await page.check('.ui-drawer input[type=checkbox]'); await page.click('.ui-drawer button:has-text("Close")');
+    await page.waitForFunction(() => /CLOSED/.test(document.querySelector('[data-testid=wo-state]')?.textContent || ''));
+    const roomIssue = h.asSuper(`SELECT state FROM app.room_issue WHERE code = '${iss}'`);
+    ok('W-60', 'closed with confirmation; the deficiency stays OPEN and the record says closing never passes a test', roomIssue === 'OPEN' && /never passes a test/.test(await page.locator('[data-testid=wo-next]').innerText()));
+    await shot('14-work-order-closed');
+  }
+
+  // ---------------------------------------------------------------- APEX (P6-B): open a case from the room's deficiency, act, read the outcomes
+  {
+    const c = client(h.base); const tk = {}; for (const r of ['designer', 'syseng', 'opslead', 'installer', 'cxeng']) tk[r] = await c.login(r);
+    const rm = (await c.call('POST', '/v1/rooms', { token: tk.designer, body: { name: 'APEX Huddle (synthetic)', template: 'huddle', buildingCode: 'ATL', floor: 7 } })).body.code;
+    await c.call('POST', `/v1/rooms/${rm}/revisions`, { token: tk.designer, body: { reason: 'apex' } }); await c.call('POST', `/v1/rooms/${rm}/drawings/generate`, { token: tk.designer });
+    await c.call('POST', `/v1/rooms/${rm}/drawings/plan/approve`, { token: tk.syseng }); await c.call('POST', `/v1/rooms/${rm}/classification/approve`, { token: tk.syseng, body: {} });
+    for (const [to, t] of [['DESIGN_APPROVED', 'syseng'], ['INSTALLATION_PENDING', 'opslead'], ['INSTALLED_UNVERIFIED', 'installer'], ['COMMISSIONING', 'syseng']]) await c.call('POST', `/v1/rooms/${rm}/lifecycle`, { token: tk[t], body: { to } });
+    const rows = (await c.call('GET', `/v1/rooms/${rm}`, { token: tk.designer })).body.commissioning.rows;
+    const rowT = rows.find((x) => x.applicable && /display/i.test(x.label || '')) || rows.find((x) => x.applicable);
+    const ev = (await c.call('POST', '/v1/evidence', { token: tk.cxeng, raw: Buffer.from('synthetic'), headers: { 'content-type': 'text/plain', 'x-file-name': 'o.txt' } })).body;
+    await c.call('POST', `/v1/rooms/${rm}/results`, { token: tk.cxeng, body: { testId: rowT.test_id, state: 'FAIL', evidenceId: ev.id, evidenceKind: rowT.evidence[0], instrument: 'SYN-METER-01 (synthetic)' } });
+
+    await signIn('cxeng');
+    await page.goto(base + `#/rooms/${rm}/issues`); await page.waitForSelector('.ui-table');
+    await page.click('.ui-table button:has-text("Open APEX case")'); await page.waitForSelector('[data-testid=apex-case]');
+    ok('W-64', 'the commissioning lead opens an APEX case from the room’s deficiency and lands on it', /#\/apex\/APX-\d{4}$/.test(page.url()), page.url());
+    const layers = await page.locator('[data-testid=layers]').innerText();
+    ok('W-65', 'the seven layers are shown; the physical layer cites the room’s planned assets (PA-…)', (await page.locator('.apex__layer').count()) === 7 && /cites PA-\d{4}/.test(layers), layers.slice(0, 200));
+    await page.click('[data-testid=tiers] button:has-text("A2")'); await page.waitForFunction(() => /COMPARED/.test(document.querySelector('[data-testid=apex-log]')?.textContent || ''));
+    await page.click('[data-testid=tiers] button:has-text("A4")'); await page.waitForFunction(() => /BLOCKED/.test(document.querySelector('[data-testid=apex-log]')?.textContent || ''));
+    const log = await page.locator('[data-testid=apex-log]').innerText();
+    ok('W-66', 'A2 compares read-only (no baseline → NOT_VERIFIED) and A4 is BLOCKED with the reason; both are outcomes in the log', /COMPARED/.test(log) && /BLOCKED/.test(log) && /owner approval missing|unsigned|human-led|no runbook/i.test(log), log.slice(0, 300));
+    await page.fill('[data-testid=review] input', 'reviewed in the browser (synthetic)'); await page.click('[data-testid=review] button:has-text("Record the review")');
+    await page.waitForFunction(() => /reviewed in the browser/.test(document.querySelector('[data-testid=review]')?.textContent || ''));
+    ok('W-67', 'the verdict is recorded on the case and the case list marks it reviewed', (await page.locator('[data-testid=review] [role=status]').count()) === 1);
+    await shot('16-apex-case');
+  }
+
+  // ---------------------------------------------------------------- Executive passports (P6-C)
+  await signIn('opslead');
+  await page.goto(base + '#/reports'); await page.waitForSelector('[data-testid=to-executive]'); await page.click('[data-testid=to-executive]'); await page.waitForSelector('[data-testid=exec-grid]');
+  const tiles = await page.locator('.exec__tile').count(); const gridText = await page.locator('[data-testid=exec-grid]').innerText();
+  const nmTiles = await page.locator('.exec__tile.nm').allInnerTexts();
+  ok('W-61', 'the executive board shows 27 passports; every unmeasurable one says so with a reason and shows no figure; committed funds are shown by currency', tiles === 27 && nmTiles.length > 0 && nmTiles.every((t) => /not measurable/.test(t) && !/\d+%|\d+ \w+ · /.test(t)) && /USD 18,000/.test(gridText), gridText.slice(0, 200));
+  await page.click('.exec__tile >> nth=0'); await page.waitForSelector('[data-testid=passport]');
+  const pp = await page.locator('[data-testid=passport]').innerText();
+  ok('W-62', 'a passport opens with its definition, arithmetic, window, coverage, freshness and confidence', /Numerator \/ denominator/.test(pp) && /Window/.test(pp) && /Confidence/.test(pp) && /Source/.test(pp));
+  await page.click('[data-testid=exec-window] button:has-text("30 days")'); await page.waitForFunction(() => /last 30 days/.test(document.querySelector('.page__head')?.textContent || ''));
+  ok('W-63', 'the window changes the board (30 days) and the selection resets', (await page.locator('[data-testid=passport]').count()) === 0);
+  await shot('15-executive-passports');
 
   // ---------------------------------------------------------------- hygiene
   ok('W-18', 'no page errors or unexpected console errors', errors.length === 0, errors.join(' | '));

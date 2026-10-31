@@ -103,3 +103,20 @@ h1 { font-size: var(--fs-xl); line-height: 1.2; margin: 0; text-wrap: balance; }
 .app__crash { max-width: 40rem; margin: 10vh auto; padding: 0 1rem; }
 .app__crash .ui-notice p { margin: 0 0 .75rem; }
 .app__crash code { user-select: all; }
+
+/* ServiceHands (P6-A) */
+.cand { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); } .cand.off { opacity: .8; } .cand .why { flex-basis: 100%; margin-top: 0; }
+
+/* Executive passports (P6-C) */
+.exec__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--sp-3); }
+.exec__tile { all: unset; cursor: pointer; display: grid; gap: 4px; padding: var(--sp-3); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel, var(--bg2)); min-width: 0; box-sizing: border-box; }
+.exec__tile:hover { border-color: var(--accent); } .exec__tile:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; } .exec__tile.on { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.exec__tile.nm .exec__value { color: var(--tx3, var(--tx2)); font-size: var(--fs-md); } .exec__label { font-size: var(--fs-sm); color: var(--tx2); } .exec__value { font-size: 24px; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.exec__tile .ui-tag { justify-self: start; }
+
+/* APEX (P6-B) */
+.apex__layers { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 6px; }
+.apex__layer { padding: 8px 10px; border: 1px dashed var(--line); border-radius: var(--r-sm); font-size: var(--fs-sm); display: grid; gap: 4px; min-width: 0; } .apex__layer.has { border-style: solid; background: var(--panel, var(--bg2)); } .apex__layer ul { margin: 0; padding-left: 16px; }
+.apex__hyps { margin: 0; padding-left: 20px; display: grid; gap: 6px; } .apex__hyps button { all: unset; cursor: pointer; display: block; padding: 6px 8px; border-radius: var(--r-sm); } .apex__hyps li.on button { background: color-mix(in srgb, var(--accent) 10%, transparent); box-shadow: inset 0 0 0 1px var(--accent); }
+.apex__tiers { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 6px; } .apex__tier { padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--r-sm); display: grid; gap: 4px; font-size: var(--fs-sm); } .apex__tier.on { border-color: var(--accent); }
+.apex__log { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; } .apex__log li { padding: 8px 10px; border-left: 3px solid var(--line); }

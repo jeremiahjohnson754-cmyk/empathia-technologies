@@ -134,8 +134,10 @@ test('slice 6 — a FAIL opens one commissioning deficiency; ServiceHands work o
   const wo = await c.call('POST', `/v1/issues/${issueCode}/work-orders`, { token: T.svcmgr, body: { assignedRole: 'service', note: 'reseat and retest (synthetic)' } });
   assert.equal(wo.status, 201, JSON.stringify(wo.body));
   workOrder = wo.body.workOrderId;
+  // the governed machine (P6-A): a new work order cannot be closed from OPEN; it is triaged first (the full lifecycle: tests/security/service-lifecycle.test.mjs)
   const closed = await c.call('POST', `/v1/work-orders/${workOrder}/close`, { token: T.svcmgr, body: { note: 'field work done (synthetic)' } });
-  assert.equal(closed.status, 200);
+  assert.equal(closed.status, 422); assert.match(closed.body.detail, /no transition OPEN → CLOSED/);
+  assert.equal((await c.call('POST', `/v1/work-orders/${workOrder}/triage`, { token: T.svcmgr, body: { severity: 'Standard', scope: 'reseat and retest', risk: 'low' } })).status, 200);
   d = await room();
   assert.equal(d.body.issues.find((i) => i.code === issueCode).state, 'OPEN', 'closing a work order never resolves the deficiency');
   assert.equal(d.body.commissioning.rows.find((x) => x.test_id === failRow.test_id).result, 'FAIL', 'closing a work order never passes a test');
@@ -281,6 +283,23 @@ test('projects: the executive creates a project and scopes rooms into it; the de
   assert.equal((await c.call('POST', `/v1/rooms/${code}/project`, { token: exec, body: { projectCode: null } })).status, 200);
 });
 
+test('executive passports: 27 passports over the records, each with its arithmetic, window, coverage and confidence; absent sources are NOT_MEASURABLE, never 0; the window is validated', async () => {
+  const r = await c.call('GET', '/v1/executive/passports?days=90', { token: T.opslead });
+  assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300));
+  assert.equal(r.body.total, 27); assert.equal(r.body.passports.length, 27); assert.ok(r.body.measured >= 3 && r.body.measured < 27, `${r.body.measured} measured`);
+  for (const p of r.body.passports) {
+    assert.ok(p.definition && p.source && p.owner && p.window.days === 90 && p.confidence.level, p.id);
+    if (p.state === 'MEASURED') assert.ok(p.numerator !== null || p.value !== null, `${p.id} has arithmetic`); else { assert.ok(p.reason, `${p.id} says why`); assert.equal(p.value, null, `${p.id} is not a zero`); }
+  }
+  const ids = r.body.passports.map((p) => p.id);
+  assert.ok(['mttr', 'issues_resolved', 'projects_funded', 'rooms_commissioned', 'funding_to_outcome'].every((x) => ids.includes(x)), ids.join(','));
+  assert.equal(r.body.passports.find((p) => p.id === 'room_use').state, 'NOT_MEASURABLE', 'usage is not instrumented in the starter');
+  assert.equal(r.body.passports.find((p) => p.id === 'projects_funded').state, 'MEASURED');
+  assert.ok(r.body.sources.absent.includes('usage sessions'));
+  assert.equal((await c.call('GET', '/v1/executive/passports?days=7', { token: T.opslead })).status, 400);
+  assert.equal((await c.call('GET', '/v1/executive/passports', {})).status, 401);
+});
+
 test('reporting: KPI summary counts match the database, states its definitions, and reports operational performance NOT_MONITORED', async () => {
   const r = await c.call('GET', '/v1/reports/summary', { token: T.opslead });
   assert.equal(r.status, 200, JSON.stringify(r.body));
@@ -288,7 +307,7 @@ test('reporting: KPI summary counts match the database, states its definitions, 
   assert.equal(k.rooms.total, Number(h.asSuper('SELECT count(*) FROM app.room WHERE tenant_id = (SELECT id FROM app.tenant WHERE slug = \'empathia-demo\')')));
   assert.equal(k.commissioning.byLabel.PASS_VERIFIED, 2);
   assert.equal(k.issues.deficienciesResolved, 1);
-  assert.equal(k.workOrders.CLOSED, 1);
+  assert.equal(k.workOrders.TRIAGED, 1);
   assert.ok(k.commissioning.coverage.value > 0 && k.commissioning.coverage.value < 1);
   assert.equal(k.commissioning.verifiedShare.value, 1);
   assert.match(k.commissioning.coverage.definition, /applicable/);

@@ -134,6 +134,30 @@ revision `phase`, engine guards `concept_authorized` / `…_and_funded`; APR-2, 
 Not built: SIGNAL labs (91 simulators); the enterprise app's service/APEX/executive/field-intelligence pages on the new engines
 (the engines are shared packages, ready for the API). Demo browser suite: **101 checks**.
 
+### P6-A — ServiceHands in the enterprise application (2026-10-31)
+
+| Item | Status | Evidence |
+|---|---|---|
+| Migration 0019: the work order on the ten-state machine (`work_type`, severity → SLA, triage, window, assignment with its explained score, acceptance, recorded preflight, evidence with recorders, verification, reopen count, customer confirmation; assignee/window constraints), `app.work_order_event` (append-only, RLS), `app.staff_profile` (certifications with expiry, skills, sites, capacity, agreement; RLS); seeded profiles for the three technicians | DONE | migrate + seed through the real code in every suite |
+| API: 12 routes under `/v1/work-orders` (list, record with next steps + candidates, triage, candidates, assign, accept, preflight, start, evidence, submit, verify, close, reopen) on `@empathia/service-engine` — authority before the body, the engine's guard with its reasons, append-only event, audit, contract-validated domain events (`work_order.assigned/accepted`, `service.field_completed`, `service.repair_verified`, `incident.reopened`); site scope through the room; the old close-from-OPEN is gone (one governed step at a time) | IMPLEMENTED · TESTED | `tests/security/service-lifecycle.test.mjs` SVC-1..SVC-10; api.test slice 6 and site-scope updated to the machine; authority matrix 1207 checks / 71 keyed routes; OpenAPI 111 operations |
+| Enterprise web `#/service`: the queue (active / resolved and closed) and the work-order record — stages strip, next governed step with blockers and "not your authority", triage drawer (severity, work type, scope, risk, window), hard-gated candidates with reasons and one-click assignment, preflight drawer (access, safety, permits, tools, parts counted now), evidence drawer, verification drawer (separation stated), closure under the customer policy, reopening, the event list | IMPLEMENTED · TESTED | browser W-52..W-60 (65/65) |
+| Not built | — | technician/vendor profile administration in the UI (profiles are seeded; the table and RLS exist); cancellation (no transition in the ported table); SLA clocks and breach alerts |
+
+### P6-C — Executive passports in the enterprise application (2026-10-31)
+
+| Item | Status | Evidence |
+|---|---|---|
+| `GET /v1/executive/passports?days=30|90|180|365`: `@empathia/kpi-engine`'s 27 passports computed over the organization's projects, decisions, funding, requests, work orders (resolution from the verification event), deficiencies, rooms and current baselines, in the caller's site scope; sources absent from the starter (documents, standards, SOP/SOW, device support ends, usage sessions, standardization profiles, field scans, consented participation) are named and their passports NOT_MEASURABLE — never 0% | IMPLEMENTED · TESTED | api.test "executive passports" |
+| Enterprise web `#/executive` (linked from Reports): the board of 27 tiles with value, arithmetic, coverage and confidence; a passport opens with definition, window, freshness, confidence reasons, source, owner, privacy, version; window selector | IMPLEMENTED · TESTED | W-61..W-63 |
+
+### P6-B — APEX in the enterprise application (2026-10-31)
+
+| Item | Status | Evidence |
+|---|---|---|
+| Migration 0020 `app.apex_case` (one per deficiency; layers, hypotheses, actions, review; RLS) | DONE | every suite migrates through it |
+| API: `POST /v1/issues/{issue}/apex` (open; idempotent per issue), `GET /v1/apex/cases`, `GET /v1/apex/cases/{case}` (layers citing the room's planned assets, ranked hypotheses, actions, review, the room's current baseline, the **real** adapter state from the integration catalogue — two local mocks DECLARED, nothing SUPPORTED_VERIFIED — tiers, runbooks, what the caller may do), `POST …/act` (A0–A5 on `@empathia/apex-engine`; A3 stages a real work order through `createWorkOrder` so only a role that may raise one succeeds — the refusal is the outcome and a DENIED audit; A4 blocked step by step, dry run then labelled simulation with branches, compensation audited, rate limit), `POST …/review` (verifiers; emits `apex.diagnosis_reviewed` with hypothesis and tier) | IMPLEMENTED · TESTED | `tests/security/apex.test.mjs` APX-1..APX-5; OpenAPI 117 operations |
+| Enterprise web `#/apex`: case list, case record (layers, hypotheses, selected hypothesis with caveat/evidence/negatives/next, runbook facts, tier buttons with the A4 declarations, action log with every outcome, review); "Open APEX case" on a room's deficiency | IMPLEMENTED · TESTED | browser W-64..W-67 (72/72) |
+
 ### Connector expansion directive (2026-10-31 05:34 CT) — what was actually done
 
 | Item | Status | Evidence |

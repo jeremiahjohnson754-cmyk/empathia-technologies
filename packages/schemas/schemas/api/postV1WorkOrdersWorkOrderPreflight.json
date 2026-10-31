@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1WorkOrdersWorkOrderPreflight/0.1.0.json",
+  "title": "POST /v1/work-orders/{workOrder}/preflight request body",
+  "description": "Record the dispatch preflight (booking window, parts and stock freshness, site access, safety brief and permits, tools, authorization); a failed check blocks the start",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [],
+  "properties": {
+    "bookings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "from"
+        ],
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "to": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "stock": {
+      "type": "object",
+      "description": "part → {onHand, checkedAt}"
+    },
+    "accessConfirmedBy": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "safetyBriefed": {
+      "type": "boolean"
+    },
+    "heightPermit": {
+      "type": "boolean"
+    },
+    "toolsConfirmed": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 80
+      }
+    }
+  }
+}

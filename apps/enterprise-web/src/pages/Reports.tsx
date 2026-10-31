@@ -2,6 +2,7 @@
 import { Composition, DataTable, ErrorState, Loading, Notice, Stat, StatusBadge, SEVERITY, LIFECYCLE } from '@empathia/ui';
 import type { Summary } from '@empathia/api-client';
 import { api, useQuery } from '../api.js';
+import { href } from '../router.js';
 
 const pct = (v: number | null) => (v === null ? null : Math.round(v * 1000) / 10);
 
@@ -12,7 +13,7 @@ export function Reports() {
   const k = q.data; const L = k.commissioning.byLabel;
   return (
     <section className="page">
-      <header className="page__head"><div><h1>Reports</h1><p className="lede">Computed from the canonical records{k.scope === 'site-scoped' ? ' of your sites' : ''}. Synthetic data.</p></div></header>
+      <header className="page__head"><div><h1>Reports</h1><p className="lede">Computed from the canonical records{k.scope === 'site-scoped' ? ' of your sites' : ''}. Synthetic data. <a href={href('executive')} data-testid="to-executive">Executive KPI passports →</a></p></div></header>
       <div className="stats">
         <Stat label="Rooms" value={k.rooms.total} />
         <Stat label="Commissioning coverage" value={pct(k.commissioning.coverage.value)} unit="%" definition={k.commissioning.coverage.definition} />

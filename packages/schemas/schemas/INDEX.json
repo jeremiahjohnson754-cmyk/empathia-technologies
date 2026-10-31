@@ -4,7 +4,7 @@
   "apiVersion": "0.1.0",
   "counts": {
     "events": 101,
-    "api": 47,
+    "api": 55,
     "entities": 4
   },
   "files": [
@@ -584,9 +584,49 @@
       "sha256": "cf1110f3972ec4629282d1ffa0dd461e317ab13029795770548e6f4ce3db2446"
     },
     {
+      "file": "api/postV1ApexCasesCaseAct.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1ApexCasesCaseAct/0.1.0.json",
+      "sha256": "42190d3055f2b6484c38b89e8b9637b3a5d127b70b1579178cc5c5339a48a78a"
+    },
+    {
+      "file": "api/postV1ApexCasesCaseReview.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1ApexCasesCaseReview/0.1.0.json",
+      "sha256": "426f21cce83fc1c38d80539250ac5dae752f75724f3eb46b616cfb6ec82054ae"
+    },
+    {
+      "file": "api/postV1WorkOrdersWorkOrderTriage.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1WorkOrdersWorkOrderTriage/0.1.0.json",
+      "sha256": "c908b50ce04db94018c72f27f63bec1a7f97713c6660fb24d86ddee9ef690350"
+    },
+    {
+      "file": "api/postV1WorkOrdersWorkOrderAssign.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1WorkOrdersWorkOrderAssign/0.1.0.json",
+      "sha256": "0aa91e21729fbf26583677ad28c2409438ea30c73fb1d29f972301033728cff8"
+    },
+    {
+      "file": "api/postV1WorkOrdersWorkOrderPreflight.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1WorkOrdersWorkOrderPreflight/0.1.0.json",
+      "sha256": "c0002adb8f7692ddc2c8b8e96abdabbf2cf389cf268bd01ca7ffd7730b3c58e1"
+    },
+    {
+      "file": "api/postV1WorkOrdersWorkOrderEvidence.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1WorkOrdersWorkOrderEvidence/0.1.0.json",
+      "sha256": "1ee6c7232de2f3e45408a4d1f2a5917346242aab525df989618580c2c72eeee3"
+    },
+    {
+      "file": "api/postV1WorkOrdersWorkOrderVerify.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1WorkOrdersWorkOrderVerify/0.1.0.json",
+      "sha256": "445652e9e79b57de600c57cc28e9dcdf537aa11ab6993ae25a3883e7f7df18e9"
+    },
+    {
       "file": "api/postV1WorkOrdersWorkOrderClose.json",
       "$id": "https://schemas.empathia.invalid/api/postV1WorkOrdersWorkOrderClose/0.1.0.json",
-      "sha256": "b941e788c5a870a9ff7fb5acf22de09cbbd231fe365f0fcb4f507998d39a6d00"
+      "sha256": "73f741ed9a962ddcc1a765b0e06c5a7bb9b59a2ec75270bf0f244dd9d4277544"
+    },
+    {
+      "file": "api/postV1WorkOrdersWorkOrderReopen.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1WorkOrdersWorkOrderReopen/0.1.0.json",
+      "sha256": "99bc1e9f042dfc1d7e4b7c5711030a3eea7734d7f408304b9ec409ec56fca6a8"
     },
     {
       "file": "api/postV1PublicLeads.json",
