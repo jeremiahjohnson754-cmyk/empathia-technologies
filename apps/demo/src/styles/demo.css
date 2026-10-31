@@ -81,3 +81,14 @@ h1 { margin: 0; font-size: clamp(26px, 3.6vw, 34px); line-height: 1.15; letter-s
 @media (max-width: 760px) { .svc__grid, .learn .svc__grid { grid-template-columns: 1fr; } }
 .svc__list .ui-tag, .exec__tile .ui-tag, .mc__station .ui-tag, .apex__layer .ui-tag, .stack > .ui-tag { justify-self: start; width: max-content; }
 .svc__list li a > b { line-height: 1.3; }
+
+/* ---- refinement pass 2026-10-31 (design review of the native pages): consistent rhythm, empty states, in-row actions, themed controls */
+.build__h { font-size: var(--fs-lg, 1.125rem); line-height: 1.3; margin: var(--sp-4) 0 var(--sp-2); } .card > .build__h:first-child, .stack > .build__h:first-child { margin-top: 0; }
+.card.stack { gap: var(--sp-2); } .card .ui-meta, .card .ui-muted { line-height: 1.5; }
+.build__state select, .persp select, .svc__detail select, .fi__form select { min-height: 36px; padding: 0 32px 0 10px; background: var(--bg2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%238a93a6' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 10px center; color: var(--tx); border: 1px solid var(--line2); border-radius: var(--r-sm); font: inherit; appearance: none; -webkit-appearance: none; }
+.build__state select:focus-visible, .persp select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.mc__station { grid-template-rows: auto auto 1fr; align-content: start; } .mc__station > b { line-height: 1.3; }
+.svc__list li { display: flex; gap: 8px; align-items: center; min-width: 0; } .svc__list li > a, .svc__list li > span { flex: 1 1 auto; } .svc__list li > button { flex: 0 0 auto; }
+.empty { display: grid; gap: var(--sp-2); justify-items: start; padding: var(--sp-5) var(--sp-4); border: 1px dashed var(--line2); border-radius: var(--r-md); color: var(--tx2); }
+.empty > b { color: var(--tx); font-size: var(--fs-md); } .empty > p { margin: 0; max-width: 60ch; line-height: 1.5; }
+.svc__list li:has(> button) { padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); } .svc__list li:has(> button) > span { border: 0; padding: 0; background: transparent; }

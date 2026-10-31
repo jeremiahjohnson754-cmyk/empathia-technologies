@@ -48,7 +48,7 @@ export function ApexPage({ perspective, hash }: { perspective: string; hash: str
           <h2 className="build__h">Incidents without a case</h2>
           <ul className="svc__list">{open.map((i) => <li key={i.id}><span><b>{i.title}</b> <span className="ui-meta">{i.id} · {i.roomName} · {i.severity}</span></span> {holds(persona, S.APEX_ACT_AUTHORITIES[0]!) || S.APEX_ACT_AUTHORITIES.some((a) => holds(persona, a)) ? <Button small onClick={() => { const r = apply((x) => S.openApex(x, persona, i.id, cite(i.roomId))); if (!isRefusal(r)) setSel(r.id); }}>Open a case</Button> : <span className="ui-meta">not your authority</span>}</li>)}{!open.length && <li className="ui-meta">Every open incident has a case.</li>}</ul>
         </div>
-        <div className="svc__detail">{H ? <Case H={H} w={w} apply={apply} persona={persona} baseline={baselineOf(H.roomId)} /> : <Notice tone="info">Open a case from an incident, or pick one.</Notice>}</div>
+        <div className="svc__detail">{H ? <Case H={H} w={w} apply={apply} persona={persona} baseline={baselineOf(H.roomId)} /> : <div className="empty" data-testid="apex-empty"><b>No case open</b><p>Open a case from an incident on the left. A case gathers the seven layers of evidence for its room, ranks hypotheses with the reasons they are not proven, and bounds every action by tier — nothing runs without the preflight.</p></div>}</div>
       </div>
     </section>
   );

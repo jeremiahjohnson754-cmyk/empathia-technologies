@@ -78,9 +78,9 @@ function PvView({ w, apply, persona, roomId, archetype }: { w: S.Workspace; appl
         <div className="card stack"><h2 className="build__h">Adapters in this build</h2><ul className="plain">{FIPV.adapters.map((a) => <li key={a.id}><Tag tone={tone(a.tier)}>{a.tier}</Tag> <b>{a.label}</b> <span className="ui-meta">{a.id} · {a.note}</span></li>)}</ul></div>
         <h2 className="build__h">Sessions</h2>
         <ul className="svc__list" data-testid="fi-sessions">{w.fiSessions.map((x) => <li key={x.id} className={x.id === sel ? 'on' : ''}><a href="#" onClick={(e) => { e.preventDefault(); setSel(x.id); }}><Tag tone={tone(x.state)}>{x.state}</Tag> <b>{x.id}</b><span className="ui-meta">{x.roomId} · {x.tests.length} test(s) · {x.points.length} point(s)</span></a></li>)}{!w.fiSessions.length && <li className="ui-meta">No session proposed.</li>}</ul>
-        <Button kind="primary" onClick={propose}>Propose a session for {roomId}</Button>
+        {w.fiSessions.length > 0 && <Button kind="primary" onClick={propose}>Propose a session for {roomId}</Button>}
       </div>
-      <div className="svc__detail">{!s ? <Notice tone="info">Propose a session: points from the Lite model, the protocol, the adapters and the safety plan. Every step after that is gated.</Notice> : (
+      <div className="svc__detail">{!s ? <div className="empty" data-testid="fi-empty"><b>No session for {roomId}</b><p>A session proposes measurement points from the Lite model, the protocol, the adapters and the safety plan. Every step after the proposal is gated: eligibility, a five-step safety preflight, a dry run that emits nothing, authorization, two-confirmation arming — and the only runs here are labelled simulations with an E-stop.</p><Button kind="primary" onClick={propose}>Propose a session for {roomId}</Button></div> : (
         <div className="stack" data-testid="fi-session">
           <h2 className="build__h">{s.id} <Tag tone={tone(s.state)}>{s.state}</Tag>{s.terminal && <Tag tone="bad">ended</Tag>}{s.simulated && s.state !== 'DRAFT' && <Tag tone="warn">SIMULATION</Tag>}</h2>
           <ol className="build__steps">{FIPV.states.map((st) => <li key={st} className={st === s.state ? 'now' : FIPV.states.indexOf(st) < FIPV.states.indexOf(s.state as never) ? 'done' : ''}>{FIPV.stepLabel[st]}</li>)}</ol>
