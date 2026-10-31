@@ -476,6 +476,12 @@ try {
   await page.waitForFunction(() => /verified by/.test(document.querySelector('[data-testid=competency]')?.textContent || ''));
   ok('W-80', 'the data steward verifies it (not the recorder, not the holder); the record names both and it now counts for dispatch', h.asSuper(`SELECT state FROM app.competency_record WHERE id = '${compId}'`) === 'VERIFIED' && /Recorded by\s*Service Manager/i.test(await page.locator('[data-testid=competency]').innerText()));
   await shot('20-learn-competencies');
+  await page.goto(base + '#/admin/audit'); await page.waitForSelector('[data-testid=ledger-integrity] button:has-text("Verify the chain")');
+  await page.click('[data-testid=ledger-integrity] button:has-text("Verify the chain")'); await page.waitForFunction(() => /Chain intact|Chain broken/.test(document.querySelector('[data-testid=ledger-integrity]')?.textContent || ''));
+  await page.waitForFunction(() => /#\d+ [0-9a-f]{10}/.test(document.querySelector('.ui-table')?.textContent || ''));   // the audit list reloads after the check
+  const ledgerText = await page.locator('[data-testid=ledger-integrity]').innerText();
+  ok('W-81', 'the data steward verifies the Evidence Ledger: the chain is intact, the head hash is shown to record elsewhere, the limits are stated, and audit rows show their chain position', /Chain intact: \d+ events verified/.test(ledgerText) && /[0-9a-f]{64}/.test(ledgerText) && /proves nothing about changes made before/.test(ledgerText) && (await page.locator('.ui-table td:has-text("#")').count()) > 0, ledgerText.slice(0, 200));
+  await shot('21-ledger-integrity');
 
   // ---------------------------------------------------------------- Executive passports (P6-C)
   await signIn('opslead');

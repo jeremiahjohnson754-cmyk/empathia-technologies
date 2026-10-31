@@ -197,6 +197,17 @@ Not built: SIGNAL labs (91 simulators); the enterprise app's service/APEX/execut
 | Enterprise web: Learn › Competencies (records with provenance, decision, revocation, "counts for dispatch"; record form for the manager; verify/reject/revoke for those who may) | IMPLEMENTED · TESTED | browser W-79, W-80; screenshot `20-learn-competencies` |
 | Not built | — | issuer-registry verification (verification is a recorded attestation, not an automated check); expiry notifications; provenance for skill levels (`staff_profile.skills` remain profile facts) |
 
+### P1 (Ascension) — Evidence Ledger integrity (2026-10-31, ADR-0010)
+
+| Item | Status | Evidence |
+|---|---|---|
+| Migration 0024: per-tenant SHA-256 chain on `audit_event` (`seq`, `prev_hash`, `hash` over a canonical JSON of every column). Sealed after commit by `app.seal_audit` under a short per-tenant lock taken only by sealers, never inside a request (no new deadlock path). Write-once seal: the append-only trigger permits only NULL → value on the three integrity columns. Existing events sealed at migration time | DONE | every suite migrates through it |
+| Sealing: the background worker (worker role, all tenants) every 10th outbox tick; the verification endpoint seals its own tenant first; the runtime role cannot seal another tenant or run the all-tenant sealer | IMPLEMENTED · TESTED | LED-3, LED-4 |
+| `GET /v1/audit/integrity` (`provenance.review` or `policy.configure`): recomputes the whole chain in the API process with Node's crypto (not the database function that sealed it), reports the first break (gap, re-pointed link, changed content) at its sequence number and the head hash to record outside the database, and states its limits | IMPLEMENTED · TESTED | `tests/security/ledger.test.mjs` LED-1..LED-5: tampering by a superuser with the trigger disabled is found at the exact sequence number, restoring the exact content restores the chain, a deletion is reported as a gap, the other tenant's chain is unaffected; OpenAPI 148 operations |
+| Enterprise web: Administration › Audit has "Verify the chain" (result, head, limits) and each audit row shows its chain position | IMPLEMENTED · TESTED | browser W-81; screenshot `21-ledger-integrity` |
+| Defect found during validation | — | LED-4 first assumed the second tenant had audit events; it had none, and the endpoint correctly answered "not verified, 0 checked". The fixture now creates second-tenant activity |
+| Not built | — | external anchoring of the head hash (a timestamping service or write-once store: an external integration that needs owner authorization); site-level restriction of audit reads (audit reads are tenant-wide, for the steward and the security admin); retention policy for the trail |
+
 ### Connector expansion directive (2026-10-31 05:34 CT) — what was actually done
 
 | Item | Status | Evidence |

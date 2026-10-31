@@ -1,5 +1,5 @@
 {
- "at": "2026-10-31T15:54:41.528Z",
+ "at": "2026-10-31T16:04:23.214Z",
  "pass": 101,
  "fail": 0,
  "tests": 101,
@@ -296,7 +296,7 @@
    "id": "V-07",
    "name": "dispatch preflight on the record: the room is booked in the proposed window, the processor stock check is stale, tools unconfirmed — each named",
    "result": "PASS",
-   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-01T13:53 → 2026-11-01T15:53\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
+   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-01T14:03 → 2026-11-01T16:03\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
   },
   {
    "id": "V-08",
@@ -362,7 +362,7 @@
    "id": "A-03",
    "name": "A2 is a read-only comparison, honest when there is no accepted baseline for the room",
    "result": "PASS",
-   "detail": "COMPARED A2 H1 2026-10-31 15:54 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
+   "detail": "COMPARED A2 H1 2026-10-31 16:03 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
   },
   {
    "id": "A-04",
@@ -374,7 +374,7 @@
    "id": "A-05",
    "name": "with approval and a window, the real adapter state blocks it: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)",
    "result": "PASS",
-   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-10-31 15:54 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
+   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-10-31 16:04 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
   },
   {
    "id": "A-06",
@@ -470,7 +470,7 @@
    "id": "M-03",
    "name": "a passport shows numerator, denominator, window, coverage, freshness, confidence with reasons, source, exclusions and drill-down",
    "result": "PASS",
-   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-02 15:54 → 2026-10-31 15:54\nCoverage\n4 of 4 eligible recor"
+   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-02 16:04 → 2026-10-31 16:04\nCoverage\n4 of 4 eligible recor"
   },
   {
    "id": "M-04",
@@ -482,7 +482,7 @@
    "id": "M-05",
    "name": "the ledger filters to the refusals, each with actor, UTC and local time and the reason",
    "result": "PASS",
-   "detail": "When (UTC)\tLocal\tWho\tEvent\tRecord\tOutcome\tDetail\n2026-10-31 15:54:21\t10/31/2026, 10:54:21\tCommissioning Engineer\tlearn.sme_review\tLC-001\tDENIED\trefused: the proposer is not the subject-matter reviewer of their own case (separation of duties)\n2026-10-31 15:54:20\t10/31/2026, 10:54:20\tCommissioning Eng"
+   "detail": "When (UTC)\tLocal\tWho\tEvent\tRecord\tOutcome\tDetail\n2026-10-31 16:04:03\t10/31/2026, 11:04:03\tCommissioning Engineer\tlearn.sme_review\tLC-001\tDENIED\trefused: the proposer is not the subject-matter reviewer of their own case (separation of duties)\n2026-10-31 16:04:02\t10/31/2026, 11:04:02\tCommissioning Eng"
   },
   {
    "id": "M-06",

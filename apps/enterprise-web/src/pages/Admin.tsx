@@ -1,5 +1,6 @@
 /** Administration: integrations (honest states), outbox dead letters, people, audit. Each tab's data is refused by the API to other roles. */
-import { Button, DataTable, Empty, ErrorState, Loading, Notice, StatusBadge, Tabs, Tag, INTEGRATION } from '@empathia/ui';
+import { useState } from 'react';
+import { Button, DataTable, Empty, ErrorState, Facts, Loading, Notice, StatusBadge, Tabs, Tag, INTEGRATION } from '@empathia/ui';
 import { api, useMutation, useQuery } from '../api.js';
 import { go } from '../router.js';
 import { useMe } from '../me.js';
@@ -54,12 +55,33 @@ function People() {
     { key: 'd', header: 'Status', render: (x) => x.disabled ? <Tag tone="bad">disabled</Tag> : <Tag tone="ok">active</Tag> }]} />;
 }
 
+interface Integrity { verified: boolean; checked: number; unsealed: number; sealedNow: number; firstBreak: { seq: number; reason: string } | null; head: { seq: number; hash: string; at: string } | null; checkedAt: string; method: string; limits: string[] }
+
+/** Evidence Ledger integrity (ADR-0010): an explicit check — it seals committed events, then the API recomputes the whole chain. */
+function LedgerIntegrity() {
+  const v = useMutation(() => api.call('getV1AuditIntegrity' as never) as Promise<Integrity>, ['audit']);
+  const [r, setR] = useState<Integrity | null>(null);
+  return (
+    <section className="card stack" data-testid="ledger-integrity">
+      <div className="row-actions"><h2 className="h3">Evidence Ledger integrity</h2><Button small kind="primary" busy={v.busy} onClick={async () => { const x = await v.run(undefined); if (x) setR(x as Integrity); }}>Verify the chain</Button></div>
+      {v.error ? <ErrorState error={v.error} /> : null}
+      {!r ? <p className="ui-meta">Every audit event is sealed into this organization’s SHA-256 chain after it commits. Verifying seals what is pending, then recomputes every link in the API and names the first break.</p> : <>
+        {r.verified ? <Notice tone="ok">Chain intact: {r.checked} events verified{r.sealedNow ? `, ${r.sealedNow} sealed by this check` : ''}.</Notice>
+          : r.firstBreak ? <Notice tone="bad">Chain broken at event #{r.firstBreak.seq}: {r.firstBreak.reason}.</Notice> : <Notice tone="muted">No sealed events yet.</Notice>}
+        {r.head ? <Facts items={[['Head', `#${r.head.seq} · ${new Date(r.head.at).toLocaleString()}`], ['Head hash', r.head.hash], ['Unsealed now', String(r.unsealed)], ['Checked', new Date(r.checkedAt).toLocaleString()]]} /> : null}
+        <p className="ui-meta">Record the head hash outside this system to detect a rewrite of the whole chain. {r.method}.</p>
+        <ul className="ui-meta">{r.limits.map((l) => <li key={l}>{l}</li>)}</ul></>}
+    </section>
+  );
+}
+
 function Audit() {
   const q = useQuery<{ items: Array<Record<string, string>> }>('audit', () => api.call('getV1Audit', { query: { limit: '200' } }) as never);
-  return q.error ? <ErrorState error={q.error} /> : !q.data ? <Loading /> : <DataTable rows={q.data.items} rowKey={(x) => String(x['id'])} dense caption="Audit events" columns={[
+  return <div className="stack"><LedgerIntegrity />{q.error ? <ErrorState error={q.error} /> : !q.data ? <Loading /> : <DataTable rows={q.data.items} rowKey={(x) => String(x['id'])} dense caption="Audit events" columns={[
     { key: 'at', header: 'When', render: (x) => new Date(x['at']!).toLocaleString() }, { key: 'w', header: 'Role', render: (x) => x['actor_role'] },
     { key: 'a', header: 'Action', render: (x) => <span className="mono">{x['action']}</span> }, { key: 'o', header: 'Outcome', render: (x) => <Tag tone={x['outcome'] === 'DENIED' ? 'bad' : 'ok'}>{x['outcome']}</Tag> },
-    { key: 'g', header: 'On', render: (x) => <span className="ui-meta">{x['aggregate_type']} {x['aggregate_id']}</span> }]} />;
+    { key: 'g', header: 'On', render: (x) => <span className="ui-meta">{x['aggregate_type']} {x['aggregate_id']}</span> },
+    { key: 'c', header: 'Chain', render: (x) => x['seq'] ? <span className="mono ui-meta" title={x['hash']}>#{x['seq']} {String(x['hash']).slice(0, 10)}</span> : <span className="ui-muted">pending seal</span> }]} />}</div>;
 }
 
 /** Messages from the public website (demonstration requests, pilot enquiries, contact). The API refuses this list to every role but the

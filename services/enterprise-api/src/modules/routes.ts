@@ -26,6 +26,7 @@ import * as field from '../domain/field.js';
 import * as learn from '../domain/learn.js';
 import * as mission from '../domain/mission.js';
 import * as comp from '../domain/competency.js';
+import * as ledger from '../domain/ledger.js';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { PgPool } from '../db/pg.js';
@@ -208,6 +209,7 @@ export function buildRoutes(deps: { pool: PgPool; tokens: Hs256Tokens; store: Ob
   add({ method: 'GET', path: '/v1/read/rooms/:room', tag: 'read-models', summary: 'Operational read model of one room', auth: true, responses: ok('read model row'), handler: async (c, q) => ({ status: 200, body: await read.readModel(c, q.params['room']!) }) });
   add({ method: 'GET', path: '/v1/graph/:type/:id', tag: 'graph', summary: 'Relationship neighbourhood and downstream impact (Search Party)', auth: true, query: { depth: str({ pattern: '^[1-4]$' }) }, responses: ok('neighbourhood'), handler: async (c, q) => ({ status: 200, body: await read.graph(c, q.params['type']!, q.params['id']!, Number(q.query.get('depth') || 2)) }) });
   add({ method: 'GET', path: '/v1/notifications', tag: 'platform', summary: 'Notifications for my role or me', auth: true, responses: ok('notifications'), handler: async (c) => ({ status: 200, body: await platform.notifications(c) }) });
+  add({ method: 'GET', path: '/v1/audit/integrity', tag: 'platform', summary: 'Evidence Ledger integrity: seal committed events into this organization’s SHA-256 hash chain, then recompute the whole chain in the API process and report the first break (sequence gap, re-pointed link, or changed content) and the head hash to record outside the database (data steward or security admin)', auth: true, authority: ledger.LEDGER_READ, responses: ok('integrity report'), handler: async (c) => ({ status: 200, body: await ledger.integrity(c) }) });
   add({ method: 'GET', path: '/v1/audit', tag: 'platform', summary: 'Audit trail (data steward or security admin)', auth: true, authority: ['provenance.review', 'policy.configure'], query: { aggregateType: str({ maxLength: 40 }), aggregateId: str({ maxLength: 80 }), limit: str({ pattern: '^[0-9]{1,3}$' }) }, responses: ok('audit events'), handler: async (c, q) => ({ status: 200, body: await platform.auditTrail(c, q.query.get('aggregateType'), q.query.get('aggregateId'), Number(q.query.get('limit') || 100)) }) });
 
   // ---------------------------------------------------------------------------------------- integrations, knowledge, AI, admin

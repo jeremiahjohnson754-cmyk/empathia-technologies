@@ -63,7 +63,7 @@ export async function auditTrail(ctx: RequestContext, aggregateType: string | nu
     const args: unknown[] = [Math.min(Math.max(limit || 100, 1), 500)]; let where = 'true';
     if (aggregateType) { args.push(aggregateType); where += ` AND aggregate_type = $${args.length}`; }
     if (aggregateId) { args.push(aggregateId); where += ` AND aggregate_id = $${args.length}`; }
-    return { items: (await q.query(`SELECT id, at, actor_id, actor_role, action, outcome, aggregate_type, aggregate_id, correlation_id, detail FROM app.audit_event WHERE ${where} ORDER BY id DESC LIMIT $1`, args)).rows };
+    return { items: (await q.query(`SELECT id, at, actor_id, actor_role, action, outcome, aggregate_type, aggregate_id, correlation_id, detail, seq, encode(hash, 'hex') AS hash FROM app.audit_event WHERE ${where} ORDER BY id DESC LIMIT $1`, args)).rows };
   });
 }
 

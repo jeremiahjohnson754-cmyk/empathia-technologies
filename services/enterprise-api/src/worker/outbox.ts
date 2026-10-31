@@ -47,7 +47,13 @@ export class OutboxWorker {
   private timer: NodeJS.Timeout | null = null; private busy = false;
   delivered = 0; failed = 0; dead = 0;
   constructor(private pool: PgPool, private handlers: Handler[] = [readModelHandler, notificationHandler], private intervalMs = 500) {}
-  start(): void { if (!this.timer) this.timer = setInterval(() => { void this.tick(); }, this.intervalMs); }
+  sealed = 0; private ticks = 0;
+  /** Every 10th tick, seal committed audit events into each tenant's hash chain (ADR-0010; sealing never runs inside a request). */
+  start(): void { if (!this.timer) this.timer = setInterval(() => { void this.tick().then(() => { this.ticks += 1; return this.ticks % 10 === 0 ? this.seal() : 0; }); }, this.intervalMs); }
+  async seal(): Promise<number> {
+    try { const n = (await this.pool.tx({}, (q) => q.query<{ n: number }>('SELECT app.seal_audit_all() AS n'))).rows[0]!.n; this.sealed += n; return n; }
+    catch (err) { log('warn', 'audit chain seal failed', { error: (err as Error).message }); return 0; }
+  }
   stop(): void { if (this.timer) clearInterval(this.timer); this.timer = null; }
   /** Process one batch. Returns the number of events handled. */
   async tick(batch = 50): Promise<number> {

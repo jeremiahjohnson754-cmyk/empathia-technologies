@@ -9358,6 +9358,84 @@
         }
       }
     },
+    "/v1/audit/integrity": {
+      "get": {
+        "tags": [
+          "platform"
+        ],
+        "summary": "Evidence Ledger integrity: seal committed events into this organization’s SHA-256 hash chain, then recompute the whole chain in the API process and report the first break (sequence gap, re-pointed link, or changed content) and the head hash to record outside the database (data steward or security admin)",
+        "operationId": "getV1AuditIntegrity",
+        "x-authority": [
+          "provenance.review",
+          "policy.configure"
+        ],
+        "x-authority-enforced": [
+          "provenance.review",
+          "policy.configure"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "integrity report"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/audit": {
       "get": {
         "tags": [
