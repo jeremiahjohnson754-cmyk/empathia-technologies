@@ -1,36 +1,331 @@
 {
-  "at": "2026-10-31T16:59:19.063Z",
-  "commit": "3c78b991030ac221dbe6991cd15a861f534c56d3",
-  "directory": "/tmp/empathia-fresh-3c78b99",
+  "at": "2026-10-31T17:04:48.566Z",
+  "commit": "78344e1805a3ffa6f3bea74d70543fcb3a97e452",
+  "directory": "/tmp/empathia-fresh-78344e1",
   "node": "v22.22.0",
   "steps": [
     {
       "name": "clone",
-      "command": "git clone --quiet --no-hardlinks /home/claude/empathia-technologies /tmp/empathia-fresh-3c78b99",
+      "command": "git clone --quiet --no-hardlinks /home/claude/empathia-technologies /tmp/empathia-fresh-78344e1",
       "exit": 0,
-      "seconds": 13.5
+      "seconds": 0.7
     },
     {
       "name": "bootstrap",
       "command": "/opt/node22/bin/node scripts/bootstrap.mjs",
       "exit": 0,
-      "seconds": 0
+      "seconds": 0.1
     },
     {
       "name": "database",
       "command": "/opt/node22/bin/node scripts/db.mjs up",
       "exit": 0,
-      "seconds": 1.1
+      "seconds": 1.2
     },
     {
       "name": "build",
       "command": "/opt/node22/bin/node scripts/build.mjs",
-      "exit": 1,
-      "seconds": 37
+      "exit": 0,
+      "seconds": 42.7
+    },
+    {
+      "name": "test",
+      "command": "/opt/node22/bin/node scripts/test.mjs --browser --studio",
+      "exit": 0,
+      "seconds": 234.4
     }
   ],
-  "seconds": 52,
-  "fresh": null,
+  "seconds": 281,
+  "fresh": {
+    "pass": 43,
+    "fail": 0,
+    "notRun": 5,
+    "suites": [
+      {
+        "suite": "unit: packages/commissioning-engine",
+        "result": "PASS",
+        "pass": 128,
+        "tests": 128
+      },
+      {
+        "suite": "unit: packages/event-contracts",
+        "result": "PASS",
+        "pass": 3,
+        "tests": 3
+      },
+      {
+        "suite": "unit: packages/relationship-engine",
+        "result": "PASS",
+        "pass": 5,
+        "tests": 5
+      },
+      {
+        "suite": "unit: packages/search-party",
+        "result": "PASS",
+        "pass": 5,
+        "tests": 5
+      },
+      {
+        "suite": "unit: packages/project-governance",
+        "result": "PASS",
+        "pass": 9,
+        "tests": 9
+      },
+      {
+        "suite": "unit: packages/service-engine",
+        "result": "PASS",
+        "pass": 5,
+        "tests": 5
+      },
+      {
+        "suite": "unit: packages/apex-engine",
+        "result": "PASS",
+        "pass": 4,
+        "tests": 4
+      },
+      {
+        "suite": "unit: packages/kpi-engine",
+        "result": "PASS",
+        "pass": 4,
+        "tests": 4
+      },
+      {
+        "suite": "unit: packages/field-intelligence",
+        "result": "PASS",
+        "pass": 4,
+        "tests": 4
+      },
+      {
+        "suite": "unit: packages/assurance-engine",
+        "result": "PASS",
+        "pass": 13,
+        "tests": 13
+      },
+      {
+        "suite": "unit: packages/observability",
+        "result": "PASS",
+        "pass": 10,
+        "tests": 10
+      },
+      {
+        "suite": "unit: packages/api-client",
+        "result": "PASS",
+        "pass": 5,
+        "tests": 5
+      },
+      {
+        "suite": "unit: packages/schemas",
+        "result": "PASS",
+        "pass": 3,
+        "tests": 3
+      },
+      {
+        "suite": "unit: integrations/contracts",
+        "result": "PASS",
+        "pass": 7,
+        "tests": 7
+      },
+      {
+        "suite": "unit: integrations/mocks",
+        "result": "PASS",
+        "pass": 5,
+        "tests": 5
+      },
+      {
+        "suite": "unit: ml research prototype (python)",
+        "result": "NOT_RUN",
+        "why": "dataset not generated (node ml/datasets/generate_synthetic.mjs; python3 -I ml/training/train.py)"
+      },
+      {
+        "suite": "service: intelligence-python",
+        "result": "PASS",
+        "pass": 4,
+        "tests": 4
+      },
+      {
+        "suite": "integration: api.test.mjs",
+        "result": "PASS",
+        "pass": 22,
+        "tests": 22
+      },
+      {
+        "suite": "integration: leads.test.mjs",
+        "result": "PASS",
+        "pass": 5,
+        "tests": 5
+      },
+      {
+        "suite": "integration: api-client.test.mjs",
+        "result": "PASS",
+        "pass": 3,
+        "tests": 3
+      },
+      {
+        "suite": "integration: integration-worker.test.mjs",
+        "result": "PASS",
+        "pass": 1,
+        "tests": 1
+      },
+      {
+        "suite": "integration: observability.test.mjs",
+        "result": "PASS",
+        "pass": 5,
+        "tests": 5
+      },
+      {
+        "suite": "security: authz.test.mjs",
+        "result": "PASS",
+        "pass": 45,
+        "tests": 45
+      },
+      {
+        "suite": "security: founder-boundary.test.mjs",
+        "result": "PASS",
+        "pass": 6,
+        "tests": 6
+      },
+      {
+        "suite": "security: site-scope.test.mjs",
+        "result": "PASS",
+        "pass": 3,
+        "tests": 3
+      },
+      {
+        "suite": "security: authority-matrix.test.mjs",
+        "result": "PASS",
+        "pass": 2,
+        "tests": 2
+      },
+      {
+        "suite": "security: governance.test.mjs",
+        "result": "PASS",
+        "pass": 9,
+        "tests": 9
+      },
+      {
+        "suite": "security: administration.test.mjs",
+        "result": "PASS",
+        "pass": 5,
+        "tests": 5
+      },
+      {
+        "suite": "security: search-party.test.mjs",
+        "result": "PASS",
+        "pass": 7,
+        "tests": 7
+      },
+      {
+        "suite": "security: oidc.test.mjs",
+        "result": "PASS",
+        "pass": 4,
+        "tests": 4
+      },
+      {
+        "suite": "security: project-lifecycle.test.mjs",
+        "result": "PASS",
+        "pass": 16,
+        "tests": 16
+      },
+      {
+        "suite": "security: service-lifecycle.test.mjs",
+        "result": "PASS",
+        "pass": 11,
+        "tests": 11
+      },
+      {
+        "suite": "security: apex.test.mjs",
+        "result": "PASS",
+        "pass": 5,
+        "tests": 5
+      },
+      {
+        "suite": "security: field-intelligence.test.mjs",
+        "result": "PASS",
+        "pass": 6,
+        "tests": 6
+      },
+      {
+        "suite": "security: learn.test.mjs",
+        "result": "PASS",
+        "pass": 4,
+        "tests": 4
+      },
+      {
+        "suite": "security: mission-control.test.mjs",
+        "result": "PASS",
+        "pass": 8,
+        "tests": 8
+      },
+      {
+        "suite": "security: competency.test.mjs",
+        "result": "PASS",
+        "pass": 6,
+        "tests": 6
+      },
+      {
+        "suite": "security: ledger.test.mjs",
+        "result": "PASS",
+        "pass": 5,
+        "tests": 5
+      },
+      {
+        "suite": "security: measurement-import.test.mjs",
+        "result": "PASS",
+        "pass": 4,
+        "tests": 4
+      },
+      {
+        "suite": "security: hardening.test.mjs",
+        "result": "PASS",
+        "pass": 3,
+        "tests": 3
+      },
+      {
+        "suite": "e2e: website lead form over the API",
+        "result": "PASS",
+        "pass": 6,
+        "tests": 6
+      },
+      {
+        "suite": "browser: enterprise web E2E",
+        "result": "PASS",
+        "pass": 88,
+        "tests": 88
+      },
+      {
+        "suite": "browser: public website",
+        "result": "PASS",
+        "pass": 32,
+        "tests": 32
+      },
+      {
+        "suite": "browser: investor demo shell",
+        "result": "PASS",
+        "pass": 101,
+        "tests": 101
+      },
+      {
+        "suite": "browser: Founder Studio",
+        "result": "NOT_RUN",
+        "why": "studio not built (node scripts/build.mjs --studio)"
+      },
+      {
+        "suite": "e2e: founder town hall (Founder Edition)",
+        "result": "NOT_RUN",
+        "why": "studio not built"
+      },
+      {
+        "suite": "e2e: founder decisions (hosted studio over the API)",
+        "result": "NOT_RUN",
+        "why": "studio not built or no local database"
+      },
+      {
+        "suite": "media: full decode of every curated film",
+        "result": "NOT_RUN",
+        "why": "pass --films (slow: decodes ~47 minutes of video)"
+      }
+    ]
+  },
   "workspace": {
     "at": "2026-10-31T16:58:16.733Z",
     "pass": 47,
@@ -39,245 +334,25 @@
   },
   "differences": [
     {
-      "suite": "unit: packages/commissioning-engine",
-      "fresh": "absent",
-      "workspace": "PASS 128/128"
-    },
-    {
-      "suite": "unit: packages/event-contracts",
-      "fresh": "absent",
-      "workspace": "PASS 3/3"
-    },
-    {
-      "suite": "unit: packages/relationship-engine",
-      "fresh": "absent",
-      "workspace": "PASS 5/5"
-    },
-    {
-      "suite": "unit: packages/search-party",
-      "fresh": "absent",
-      "workspace": "PASS 5/5"
-    },
-    {
-      "suite": "unit: packages/project-governance",
-      "fresh": "absent",
-      "workspace": "PASS 9/9"
-    },
-    {
-      "suite": "unit: packages/service-engine",
-      "fresh": "absent",
-      "workspace": "PASS 5/5"
-    },
-    {
-      "suite": "unit: packages/apex-engine",
-      "fresh": "absent",
-      "workspace": "PASS 4/4"
-    },
-    {
-      "suite": "unit: packages/kpi-engine",
-      "fresh": "absent",
-      "workspace": "PASS 4/4"
-    },
-    {
-      "suite": "unit: packages/field-intelligence",
-      "fresh": "absent",
-      "workspace": "PASS 4/4"
-    },
-    {
-      "suite": "unit: packages/assurance-engine",
-      "fresh": "absent",
-      "workspace": "PASS 13/13"
-    },
-    {
-      "suite": "unit: packages/observability",
-      "fresh": "absent",
-      "workspace": "PASS 10/10"
-    },
-    {
-      "suite": "unit: packages/api-client",
-      "fresh": "absent",
-      "workspace": "PASS 5/5"
-    },
-    {
-      "suite": "unit: packages/schemas",
-      "fresh": "absent",
-      "workspace": "PASS 3/3"
-    },
-    {
-      "suite": "unit: integrations/contracts",
-      "fresh": "absent",
-      "workspace": "PASS 7/7"
-    },
-    {
-      "suite": "unit: integrations/mocks",
-      "fresh": "absent",
-      "workspace": "PASS 5/5"
-    },
-    {
       "suite": "unit: ml research prototype (python)",
-      "fresh": "absent",
+      "fresh": "NOT_RUN /",
       "workspace": "PASS 5/5"
-    },
-    {
-      "suite": "service: intelligence-python",
-      "fresh": "absent",
-      "workspace": "PASS 4/4"
-    },
-    {
-      "suite": "integration: api.test.mjs",
-      "fresh": "absent",
-      "workspace": "PASS 22/22"
-    },
-    {
-      "suite": "integration: leads.test.mjs",
-      "fresh": "absent",
-      "workspace": "PASS 5/5"
-    },
-    {
-      "suite": "integration: api-client.test.mjs",
-      "fresh": "absent",
-      "workspace": "PASS 3/3"
-    },
-    {
-      "suite": "integration: integration-worker.test.mjs",
-      "fresh": "absent",
-      "workspace": "PASS 1/1"
-    },
-    {
-      "suite": "integration: observability.test.mjs",
-      "fresh": "absent",
-      "workspace": "PASS 5/5"
-    },
-    {
-      "suite": "security: authz.test.mjs",
-      "fresh": "absent",
-      "workspace": "PASS 45/45"
-    },
-    {
-      "suite": "security: founder-boundary.test.mjs",
-      "fresh": "absent",
-      "workspace": "PASS 6/6"
-    },
-    {
-      "suite": "security: site-scope.test.mjs",
-      "fresh": "absent",
-      "workspace": "PASS 3/3"
-    },
-    {
-      "suite": "security: authority-matrix.test.mjs",
-      "fresh": "absent",
-      "workspace": "PASS 2/2"
-    },
-    {
-      "suite": "security: governance.test.mjs",
-      "fresh": "absent",
-      "workspace": "PASS 9/9"
-    },
-    {
-      "suite": "security: administration.test.mjs",
-      "fresh": "absent",
-      "workspace": "PASS 5/5"
-    },
-    {
-      "suite": "security: search-party.test.mjs",
-      "fresh": "absent",
-      "workspace": "PASS 7/7"
-    },
-    {
-      "suite": "security: oidc.test.mjs",
-      "fresh": "absent",
-      "workspace": "PASS 4/4"
-    },
-    {
-      "suite": "security: project-lifecycle.test.mjs",
-      "fresh": "absent",
-      "workspace": "PASS 16/16"
-    },
-    {
-      "suite": "security: service-lifecycle.test.mjs",
-      "fresh": "absent",
-      "workspace": "PASS 11/11"
-    },
-    {
-      "suite": "security: apex.test.mjs",
-      "fresh": "absent",
-      "workspace": "PASS 5/5"
-    },
-    {
-      "suite": "security: field-intelligence.test.mjs",
-      "fresh": "absent",
-      "workspace": "PASS 6/6"
-    },
-    {
-      "suite": "security: learn.test.mjs",
-      "fresh": "absent",
-      "workspace": "PASS 4/4"
-    },
-    {
-      "suite": "security: mission-control.test.mjs",
-      "fresh": "absent",
-      "workspace": "PASS 8/8"
-    },
-    {
-      "suite": "security: competency.test.mjs",
-      "fresh": "absent",
-      "workspace": "PASS 6/6"
-    },
-    {
-      "suite": "security: ledger.test.mjs",
-      "fresh": "absent",
-      "workspace": "PASS 5/5"
-    },
-    {
-      "suite": "security: measurement-import.test.mjs",
-      "fresh": "absent",
-      "workspace": "PASS 4/4"
-    },
-    {
-      "suite": "security: hardening.test.mjs",
-      "fresh": "absent",
-      "workspace": "PASS 3/3"
-    },
-    {
-      "suite": "e2e: website lead form over the API",
-      "fresh": "absent",
-      "workspace": "PASS 6/6"
-    },
-    {
-      "suite": "browser: enterprise web E2E",
-      "fresh": "absent",
-      "workspace": "PASS 88/88"
-    },
-    {
-      "suite": "browser: public website",
-      "fresh": "absent",
-      "workspace": "PASS 32/32"
-    },
-    {
-      "suite": "browser: investor demo shell",
-      "fresh": "absent",
-      "workspace": "PASS 101/101"
     },
     {
       "suite": "browser: Founder Studio",
-      "fresh": "absent",
+      "fresh": "NOT_RUN /",
       "workspace": "PASS 19/19"
     },
     {
       "suite": "e2e: founder town hall (Founder Edition)",
-      "fresh": "absent",
+      "fresh": "NOT_RUN /",
       "workspace": "PASS 25/25"
     },
     {
       "suite": "e2e: founder decisions (hosted studio over the API)",
-      "fresh": "absent",
+      "fresh": "NOT_RUN /",
       "workspace": "PASS 9/9"
-    },
-    {
-      "suite": "media: full decode of every curated film",
-      "fresh": "absent",
-      "workspace": "NOT_RUN /"
     }
   ],
-  "verdict": "NOT_RUN: the fresh build did not reach the test stage (see steps)"
+  "verdict": "PASS with differences (see the table)"
 }

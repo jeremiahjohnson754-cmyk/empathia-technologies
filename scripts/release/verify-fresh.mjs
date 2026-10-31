@@ -30,7 +30,9 @@ const env = { EMPATHIA_PG_PORT: '55433' };
 let ok = step('clone', 'git', ['clone', '--quiet', '--no-hardlinks', root, dir], { cwd: root });
 ok = ok && step('bootstrap', process.execPath, ['scripts/bootstrap.mjs']);
 ok = ok && step('database', process.execPath, ['scripts/db.mjs', 'up'], { env });
-ok = ok && step('build', process.execPath, ['scripts/build.mjs'], { env });
+ok = ok && step('build', process.execPath, ['scripts/build.mjs', '--studio'], { env });
+// derived inputs regenerated from committed scripts (git-ignored outputs), exactly as a new machine would
+ok = ok && step('ml dataset', process.execPath, ['ml/datasets/generate_synthetic.mjs']) && step('ml training', 'python3', ['-I', 'ml/training/train.py']);
 const ran = ok && (step('test', process.execPath, ['scripts/test.mjs', '--browser', '--studio'], { env }), true);
 spawnSync(process.execPath, ['scripts/db.mjs', 'down'], { cwd: dir, env: { ...process.env, ...env } });
 
@@ -41,7 +43,10 @@ const by = (r) => Object.fromEntries((r?.suites || []).map((s) => [s.suite, s]))
 const F = by(fresh), H = by(here);
 const differences = [...new Set([...Object.keys(F), ...Object.keys(H)])].filter((n) => F[n]?.result !== H[n]?.result || F[n]?.pass !== H[n]?.pass || F[n]?.tests !== H[n]?.tests)
   .map((n) => ({ suite: n, fresh: F[n] ? `${F[n].result} ${F[n].pass ?? ''}/${F[n].tests ?? ''}` : 'absent', workspace: H[n] ? `${H[n].result} ${H[n].pass ?? ''}/${H[n].tests ?? ''}` : 'absent' }));
-const report = { at: new Date().toISOString(), commit, directory: dir, node: process.version, steps, seconds: Math.round((Date.now() - t0) / 1000),
+// inputs from outside the repository (named, never copied into it): the Founder Studio is generated from the founder's own edition file
+const FE = '/home/claude/Empathia_V25/work/source-254/dist/Empathia-Living-Campus-v2.5.4-nomedia.html';
+const external = [{ input: 'Founder Edition HTML (founder-supplied, outside the repository)', path: FE, present: fs.existsSync(FE) }];
+const report = { at: new Date().toISOString(), commit, directory: dir, node: process.version, steps, externalInputs: external, seconds: Math.round((Date.now() - t0) / 1000),
   fresh: fresh ? { pass: fresh.pass, fail: fresh.fail, notRun: fresh.notRun, suites: fresh.suites.map((s) => ({ suite: s.suite, result: s.result, pass: s.pass, tests: s.tests, why: s.why })) } : null,
   workspace: here ? { at: here.at, pass: here.pass, fail: here.fail, notRun: here.notRun } : null, differences,
   verdict: !fresh ? 'NOT_RUN: the fresh build did not reach the test stage (see steps)' : fresh.fail ? `FAIL: ${fresh.fail} suite(s) failed in the fresh copy` : differences.length ? 'PASS with differences (see the table)' : 'PASS: the fresh copy reproduces this workspace suite by suite' };
