@@ -42,8 +42,8 @@ export function MissionControl() {
         </div>
         <aside className="stack" aria-label="Exceptions" data-testid="mission-exceptions">
           <h2 className="h3">Exceptions in your scope</h2>
-          {b.exceptions.length ? <ul className="mission__list">{b.exceptions.map((e, i) => <li key={i}><a href={e.href} className="mission__item"><span className="mission__title"><Tag tone={e.severity === 'high' ? 'bad' : 'warn'}>{e.severity}</Tag> {e.title}</span><span className="ui-meta">{e.detail}{e.at ? ` · ${age(e.at)}` : ''}</span></a></li>)}</ul> : <Notice tone="muted">No open high or critical issue, no unassigned urgent work order, no Field Intelligence session ended abnormally this week.</Notice>}
-          <p className="ui-meta">Scanned: {Object.entries(b.scanned).map(([k, v]) => `${v} ${k.replace(/([A-Z])/g, ' $1').toLowerCase()}`).join(' · ')}.</p>
+          {b.exceptions.length ? <ul className="mission__list">{b.exceptions.map((e, i) => <li key={i}><a href={e.href} className="mission__item"><span className="mission__title"><Tag tone={e.severity === 'high' ? 'bad' : 'warn'}>{e.severity}</Tag> {e.title}</span><span className="ui-meta">{e.detail}{e.at ? ` · ${age(e.at)}` : ''}</span></a></li>)}</ul> : <Notice tone="muted">No open high or critical issue, no unassigned urgent work order, no recurring fault, no Field Intelligence session ended abnormally this week.</Notice>}
+          <p className="ui-meta">Open records scanned: {Object.entries(b.scanned).map(([k, v]) => `${v} ${k.replace(/([A-Z])/g, ' $1').toLowerCase()}`).join(' · ')}.</p>
         </aside>
       </div>
     </section>

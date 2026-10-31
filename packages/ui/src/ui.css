@@ -137,6 +137,8 @@
 .product__head { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--sp-4); flex-wrap: wrap; margin-bottom: var(--sp-4); }
 .product__kicker { margin: 0 0 2px; color: var(--accent); font-weight: 700; font-size: var(--fs-sm); letter-spacing: .01em; }
 .product__purpose { margin: 4px 0 0; color: var(--tx2); max-width: 70ch; } .product__actions { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+/* Below 1560px the products no longer fit beside the identity: the rail takes its own full-width row, one line, instead of wrapping by accident */
+@media (max-width: 1560px) { .shell__bar { row-gap: 0; padding-top: 6px; } .shell__rail { order: 3; flex-basis: 100%; flex-wrap: nowrap; overflow-x: auto; padding: 2px 0 6px; margin-left: -9px; scrollbar-width: thin; } }
 @media (max-width: 820px) { .shell__bar { padding: 0 16px; gap: var(--sp-2); } .shell__rail { order: 3; flex-basis: 100%; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 6px; } .shell__who { margin-left: auto; } .shell__identity { display: none; } .shell__note { padding: 4px 16px; } }
 
 /* ---------------------------------------------------------------- Search Party (shared by the enterprise app and the demonstration) */

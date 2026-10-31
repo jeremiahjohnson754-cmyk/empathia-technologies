@@ -84,13 +84,25 @@ function rank(ctx: RequestContext, staff: Array<Staff & { profiled: boolean }>, 
   return { need: out.need, eligible: out.eligible.filter((c) => !noProfile.has(c.id)), ineligible: [...out.ineligible.map(mark), ...out.eligible.filter((c) => noProfile.has(c.id)).map(mark)], none: out.eligible.filter((c) => !noProfile.has(c.id)).length === 0, whyNone: out.whyNone, today };
 }
 
+export const RECURRENCE_WINDOW_DAYS = 90;
+/** Incident recurrence, derived from records only: earlier work orders on the same issue (an issue is unique per room and finding key,
+ *  and commissioning re-opens it when the finding returns) created within the window before this one, and this job's own reopenings. */
+export async function recurrenceOf(q: Queryable, w: WorkOrderRow) {
+  const prior = (await q.query<{ code: string; state: string; created_at: string; closed_at: string | null; reopen_count: number }>(
+    `SELECT code, state, created_at, closed_at, reopen_count FROM app.work_order WHERE issue_id = $1 AND id <> $2 AND created_at < $3 AND created_at >= $3::timestamptz - make_interval(days => $4) ORDER BY created_at DESC`,
+    [w.issue_id, w.id, w.created_at, RECURRENCE_WINDOW_DAYS])).rows;
+  return { recurring: prior.length > 0 || w.reopen_count > 0, priorWorkOrders: prior.map((x) => ({ code: x.code, state: x.state, createdAt: x.created_at, closedAt: x.closed_at, reopenCount: x.reopen_count })), reopenCount: w.reopen_count, windowDays: RECURRENCE_WINDOW_DAYS,
+    basis: `earlier work orders on the same issue (same room, same finding) within ${RECURRENCE_WINDOW_DAYS} days, and this job's reopenings` };
+}
+
 export async function getWorkOrder(ctx: RequestContext, code: string) {
   return ctx.tx(async (q) => {
     const w = await find(ctx, q, code);
     const events = (await q.query<{ kind: string; detail: Record<string, unknown>; actor_id: string | null; at: string; actor: string | null }>('SELECT e.kind, e.detail, e.actor_id, e.at, p.display_name AS actor FROM app.work_order_event e LEFT JOIN app.person p ON p.id = e.actor_id WHERE e.work_order_id = $1 ORDER BY e.id', [w.id])).rows;
     const cands = (w.state === 'TRIAGED' && ctx.can('service.assign')) ? rank(ctx, await pool(ctx, q), w) : null;
     const need = WORK_NEEDS[w.work_type] || WORK_NEEDS['break_fix']!;
-    return { ...summary(w), note: w.note, triage: w.triage, window: w.window_from ? { from: w.window_from, to: w.window_to } : null, assignment: w.assignment, acceptedAt: w.accepted_at, preflight: w.preflight, startedAt: w.started_at, evidence: w.evidence, verification: w.verification,
+    const recurrence = await recurrenceOf(q, w);
+    return { ...summary(w), recurrence, note: w.note, triage: w.triage, window: w.window_from ? { from: w.window_from, to: w.window_to } : null, assignment: w.assignment, acceptedAt: w.accepted_at, preflight: w.preflight, startedAt: w.started_at, evidence: w.evidence, verification: w.verification,
       customerPolicy: { needsCustomerConfirmation: w.severity !== 'Standard', confirmed: w.customer_confirmed }, closedAt: w.closed_at, closingNote: w.closing_note, need: { certs: need.certs, experience: need.experience, tools: need.tools, parts: need.parts },
       nextSteps: nextSteps(ctx, w), candidates: cands, events, workTypes: Object.keys(WORK_NEEDS), severities: Object.keys(SLA) };
   });

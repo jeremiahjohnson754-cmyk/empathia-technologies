@@ -7,7 +7,7 @@ import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { setup, client } from '../integration/harness.mjs';
 
-let h, c, room, issue, wo; const T = {};
+let h, c, room, issue, wo, wo2; const T = {};
 const instrument = 'SYN-METER-01 (synthetic), calibration record SYN-CAL-2026-09';
 const who = (mail) => h.asSuper(`SELECT id FROM app.person WHERE email = '${mail}@empathia-demo.empathia.invalid'`);
 
@@ -122,7 +122,7 @@ test('SVC-9 closure under the customer policy: High severity needs the requester
 
 test('SVC-10 reopening needs a reason and only from RESOLVED; the events and audit tell the whole story; events are append-only', async () => {
   assert.equal((await call('/reopen', T.svcmgr, { reason: 'recurred' })).status, 422, 'CLOSED is final; a recurrence is a new work order');
-  const wo2 = (await c.call('POST', `/v1/issues/${issue}/work-orders`, { token: T.svcmgr, body: { note: 'second (synthetic)' } })).body.workOrderId;
+  wo2 = (await c.call('POST', `/v1/issues/${issue}/work-orders`, { token: T.svcmgr, body: { note: 'second (synthetic)' } })).body.workOrderId;
   const c2 = (p, tok, body) => c.call(p === '' ? 'GET' : 'POST', `/v1/work-orders/${wo2}${p}`, { token: tok, ...(p === '' ? {} : { body: body ?? {} }) });
   const steps = [['/triage', T.svcmgr, { severity: 'Standard', scope: 's', risk: 'r', workType: 'break_fix', window: { from: '2026-11-04T08:00:00Z', to: '2026-11-04T10:00:00Z' } }], ['/assign', T.svcmgr, { personId: who('service') }], ['/accept', T.service], ['/preflight', T.service, { safetyBriefed: true, toolsConfirmed: ['service kit'], accessConfirmedBy: 'desk' }], ['/start', T.service], ['/evidence', T.service, { kind: 'note', note: 'n' }], ['/submit', T.service], ['/verify', T.cxeng, { outcome: 'pass', note: 'ok' }]];
   for (const [p, tok, body] of steps) { const r = await c2(p, tok, body); assert.equal(r.status, 200, `${p}: ${JSON.stringify(r.body)}`); }
@@ -134,4 +134,16 @@ test('SVC-10 reopening needs a reason and only from RESOLVED; the events and aud
   assert.deepEqual(ev, ['work_order.triage', 'work_order.assign', 'work_order.accept', 'work_order.preflight', 'work_order.start', 'work_order.evidence', 'work_order.submit', 'work_order.verify', 'work_order.reopen', 'work_order.triage']);
   assert.throws(() => h.asSuper(`DELETE FROM app.work_order_event WHERE work_order_id = (SELECT id FROM app.work_order WHERE code = '${wo2}')`), /EM001|append-only|refuse/i);
   const list = await c.call('GET', '/v1/work-orders?state=TRIAGED', { token: T.svcmgr }); assert.equal(list.status, 200); assert.ok(list.body.items.some((x) => x.code === wo2)); assert.equal(list.body.states.length, 9);
+});
+
+test('SVC-11 recurrence comes from records: the second job on the same issue names the closed first one and its own reopening; a third job while one is active is refused (audited); Mission Control lists the recurring fault', async () => {
+  const d = (await c.call('GET', `/v1/work-orders/${wo2}`, { token: T.svcmgr })).body;
+  assert.equal(d.recurrence.recurring, true); assert.deepEqual(d.recurrence.priorWorkOrders.map((x) => [x.code, x.state]), [[wo, 'CLOSED']]); assert.equal(d.recurrence.reopenCount, 1);
+  assert.match(d.recurrence.basis, /same issue/);
+  assert.equal((await c.call('GET', `/v1/work-orders/${wo}`, { token: T.svcmgr })).body.recurrence.recurring, false, 'the first job had no earlier job');
+  const third = await c.call('POST', `/v1/issues/${issue}/work-orders`, { token: T.svcmgr, body: { note: 'third (synthetic)' } });
+  assert.equal(third.status, 422); assert.match(third.body.detail, new RegExp(`${wo2} is already active`));
+  assert.equal(Number(h.asSuper(`SELECT count(*) FROM app.audit_event WHERE action = 'work_order.create' AND outcome = 'DENIED' AND aggregate_id = '${issue}'`)), 1);
+  const mc = (await c.call('GET', '/v1/mission-control', { token: T.svcmgr })).body;
+  const ex = mc.exceptions.find((e) => e.ref === wo2); assert.ok(ex, JSON.stringify(mc.exceptions).slice(0, 300)); assert.match(ex.title, /recurring fault/); assert.match(ex.detail, /1 earlier work order on this issue in 90 days; reopened 1×/);
 });

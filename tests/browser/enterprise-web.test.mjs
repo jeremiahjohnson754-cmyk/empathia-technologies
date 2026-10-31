@@ -501,7 +501,7 @@ try {
   const mcText = await page.locator('[data-testid=mission]').innerText();
   const mcHrefs = await page.locator('[data-testid=mission-actions] a.mission__item').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
   const mcHead = Number((/^(\d+) steps? needs? you/m.exec(mcText) || [])[1] || 0);
-  ok('W-78', 'the service manager’s Mission Control headline counts exactly the listed steps, each opens its record, and the scan line names what was read', mcHead > 0 && mcHead === mcHrefs.length && mcHrefs.every((h) => /^#\/(rooms|projects|service|apex|field|learn)\b/.test(h || '')) && /Scanned: .*work orders/.test(mcText), mcText.slice(0, 200));
+  ok('W-78', 'the service manager’s Mission Control headline counts exactly the listed steps, each opens its record, and the scan line names what was read', mcHead > 0 && mcHead === mcHrefs.length && mcHrefs.every((h) => /^#\/(rooms|projects|service|apex|field|learn)\b/.test(h || '')) && /Open records scanned: .*work orders/.test(mcText), mcText.slice(0, 200));
   await shot('19-mission-control');
 
   // ---------------------------------------------------------------- hygiene

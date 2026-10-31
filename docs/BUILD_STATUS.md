@@ -217,6 +217,21 @@ Not built: SIGNAL labs (91 simulators); the enterprise app's service/APEX/execut
 | Defect found during validation | — | MC-8 first expected an approval edge on a Learn case that was never approved (MC-6 stops before the steward acts). The graph was right, so the test now asserts that no approval edge is invented |
 | Not built | — | `TYPES.json` (carried over from V2.5.3) has no APEX or Field Intelligence session type, and it was not edited; these appear under the API's own type names (`ApexCase`, `FieldSession`). Search Party in the demo is unchanged |
 
+### P1 (Ascension) — ServiceHands incident recurrence (2026-10-31)
+
+| Item | Status | Evidence |
+|---|---|---|
+| Recurrence derived from records only. An issue is unique per room and finding, and commissioning re-opens it when the finding returns, so a recurrence is an earlier work order on the same issue within 90 days, plus the job's own reopenings. Shown on the work order ("Recurring fault", links to the earlier jobs) and as a Mission Control exception | IMPLEMENTED · TESTED | SVC-11 |
+| Defect found and fixed | — | a second work order could be raised while one was still active on the same issue, which would split evidence and verification. It is now refused with the active job named, and the refusal is audited (SVC-11) |
+| Not built (owner decision needed) | — | **SLA breach detection and escalation.** The SLA targets carried over from V2.5.3 are text ("next business day", "2 business days"), and no business calendar, escalation path, escalation authority or escalation event exists in the source data. Computing breaches needs a defined calendar (working days, hours, holidays per site). Escalating needs a defined path (who is told, who takes over). Neither was invented |
+
+### P4 (Ascension) — enterprise shell fixes from screenshot review (2026-10-31)
+
+| Item | Status | Evidence |
+|---|---|---|
+| The product rail wrapped "Administration" onto a second line at 1440px (visible in every enterprise screenshot). Below 1560px the rail now takes its own full-width row, on one line, scrolling sideways inside itself if needed; the phone layout is unchanged | DONE | screenshots `19-mission-control`, `21-ledger-integrity`; W-21 (no horizontal page scroll at phone width) |
+| Mission Control's "Scanned" line counted only open records but did not say so ("0 learn cases" while an approved case existed); it now reads "Open records scanned" | DONE | W-78 |
+
 ### Connector expansion directive (2026-10-31 05:34 CT) — what was actually done
 
 | Item | Status | Evidence |

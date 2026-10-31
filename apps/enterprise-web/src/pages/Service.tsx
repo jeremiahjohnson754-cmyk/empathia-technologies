@@ -16,7 +16,9 @@ interface Row { code: string; state: string; workType: string; severity: string 
 interface Step { to: string; authority: string; guard: string; yours: boolean; blockers: string[] }
 interface Candidate { id: string; name: string; internal: boolean; hardOk: boolean; hardFails: string[]; score: number; reasons: string[]; coversSite: boolean }
 interface Check { id: string; label: string; ok: boolean; why: string }
+interface Recurrence { recurring: boolean; priorWorkOrders: Array<{ code: string; state: string; createdAt: string; closedAt: string | null; reopenCount: number }>; reopenCount: number; windowDays: number; basis: string }
 interface Record_ extends Row {
+  recurrence: Recurrence;
   note: string; triage: { scope: string; risk: string; byRole: string; at: string } | null; window: { from: string; to: string | null } | null; assignment: { score: number; reasons: string[] } | null; acceptedAt: string | null;
   preflight: { ok: boolean; checks: Check[]; at: string } | null; startedAt: string | null; evidence: Array<{ kind: string; note: string; ref: string | null; recorderId: string; at: string }>; verification: { outcome: string; note: string; verifierId: string; at: string } | null;
   customerPolicy: { needsCustomerConfirmation: boolean; confirmed: boolean }; closedAt: string | null; closingNote: string | null; need: { certs: string[]; experience: Record<string, string>; tools: string[]; parts: string[] };
@@ -80,6 +82,7 @@ export function WorkOrderRecord({ code }: { code: string }) {
         <div className="stack" data-testid="wo-state"><Tag tone={tone(w.state)}>{w.state}</Tag>{w.severity ? <Tag tone={w.severity === 'Standard' ? 'muted' : 'warn'}>{w.severity}</Tag> : null}{w.assignee ? <Tag tone="info">{w.assignee.name}</Tag> : null}</div></header>
       <ol className="stages" aria-label="Service stage" data-testid="wo-stages">{STATES.filter((s) => s !== 'REOPENED').map((s, i) => { const n = STATES.indexOf(w.state === 'REOPENED' ? 'OPEN' : w.state); return <li key={s} className={i < n ? 'done' : i === n ? 'now' : ''}><span className="stages__n">{i + 1}</span>{s.toLowerCase().replace(/_/g, ' ')}</li>; })}</ol>
       {act.error ? <ErrorState error={act.error} /> : null}
+      {w.recurrence?.recurring ? <Notice tone="warn"><span data-testid="wo-recurrence">Recurring fault: {w.recurrence.priorWorkOrders.length ? <>{w.recurrence.priorWorkOrders.length} earlier work order{w.recurrence.priorWorkOrders.length === 1 ? '' : 's'} on this issue in {w.recurrence.windowDays} days ({w.recurrence.priorWorkOrders.map((p, i) => <span key={p.code}>{i ? ', ' : ''}<a href={href('service', p.code)} className="mono">{p.code}</a> {p.state.toLowerCase()}</span>)})</> : null}{w.recurrence.priorWorkOrders.length && w.recurrence.reopenCount ? '; ' : ''}{w.recurrence.reopenCount ? `this job reopened ${w.recurrence.reopenCount}×` : ''}. Consider an APEX diagnosis of the cause before another repair.</span></Notice> : null}
 
       <section className="card stack" data-testid="wo-next"><h2 className="h3">Next governed step</h2>
         {w.state === 'CLOSED' ? <Notice tone="ok">Closed {when(w.closedAt)} — {w.closingNote || 'no note'}. Closing a work order never passes a test: the deficiency resolves only with a verified retest on the room.</Notice> : null}

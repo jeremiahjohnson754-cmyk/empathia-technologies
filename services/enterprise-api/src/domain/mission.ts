@@ -13,6 +13,7 @@ import { APEX_OPEN, APEX_REVIEW } from './apex.js';
 import { LEARN_SME } from './learn.js';
 import { VERIFY_AUTHORITIES } from './commissioning.js';
 import { COMPETENCY_VERIFY } from './competency.js';
+import { RECURRENCE_WINDOW_DAYS } from './service.js';
 
 export interface Action { product: 'projects' | 'rooms' | 'commissioning' | 'service' | 'apex' | 'field' | 'learn'; kind: string; ref: string; title: string; detail: string; href: string; authority: string; at: string | null }
 export interface Exception { product: string; ref: string; title: string; detail: string; href: string; severity: 'high' | 'medium' | 'low'; at: string | null }
@@ -48,7 +49,7 @@ export async function missionControl(ctx: RequestContext) {
     }
 
     // service: the work-order steps that are the caller's (technician steps only for the assignee; verification never for the technician or a recorder)
-    const wos = (await q.query<{ code: string; state: string; severity: string | null; assigned_to: string | null; evidence: Array<{ recorderId: string }>; title: string; room_code: string; created_at: string }>(`SELECT w.code, w.state, w.severity, w.assigned_to, w.evidence, i.title, r.code AS room_code, w.created_at FROM app.work_order w JOIN app.room_issue i ON i.id = w.issue_id JOIN app.room r ON r.id = i.room_id JOIN ${S} s ON s.id = r.id WHERE w.state NOT IN ('CLOSED','CANCELLED') ORDER BY w.created_at DESC LIMIT 300`, args)).rows;
+    const wos = (await q.query<{ code: string; state: string; severity: string | null; assigned_to: string | null; evidence: Array<{ recorderId: string }>; title: string; room_code: string; created_at: string; reopen_count: number; prior: number }>(`SELECT w.code, w.state, w.severity, w.assigned_to, w.evidence, i.title, r.code AS room_code, w.created_at, w.reopen_count, (SELECT count(*)::int FROM app.work_order p WHERE p.issue_id = w.issue_id AND p.id <> w.id AND p.created_at < w.created_at AND p.created_at >= w.created_at - make_interval(days => ${RECURRENCE_WINDOW_DAYS})) AS prior FROM app.work_order w JOIN app.room_issue i ON i.id = w.issue_id JOIN app.room r ON r.id = i.room_id JOIN ${S} s ON s.id = r.id WHERE w.state NOT IN ('CLOSED','CANCELLED') ORDER BY w.created_at DESC LIMIT 300`, args)).rows;
     for (const w of wos) {
       for (const t of SERVICE_TRANSITIONS.filter((x) => x.from === w.state && can(x.authority))) {
         if (TECH_STEPS.has(w.state) && t.authority !== 'service.verify' && w.assigned_to !== me) continue;
@@ -56,6 +57,7 @@ export async function missionControl(ctx: RequestContext) {
         if (t.authority === 'service.verify' && (w.assigned_to === me || w.evidence.some((e) => e.recorderId === me))) continue;
         actions.push({ product: 'service', kind: t.to.toLowerCase(), ref: w.code, title: `${w.code} · ${w.title}: ${w.state} → ${t.to}`, detail: `${w.severity || 'not triaged'} · guard ${t.guard}`, href: `#/service/${w.code}`, authority: t.authority, at: w.created_at });
       }
+      if (w.prior > 0 || w.reopen_count > 0) exceptions.push({ product: 'service', ref: w.code, title: `${w.code}: recurring fault on ${w.room_code}`, detail: `${w.prior ? `${w.prior} earlier work order${w.prior === 1 ? '' : 's'} on this issue in ${RECURRENCE_WINDOW_DAYS} days` : ''}${w.prior && w.reopen_count ? '; ' : ''}${w.reopen_count ? `reopened ${w.reopen_count}×` : ''} · ${w.title}`, href: `#/service/${w.code}`, severity: 'medium', at: w.created_at });
       if (w.state === 'OPEN' && ['Mission critical', 'High'].includes(w.severity || '')) exceptions.push({ product: 'service', ref: w.code, title: `${w.code} is ${w.severity} and not assigned`, detail: w.title, href: `#/service/${w.code}`, severity: 'high', at: w.created_at });
     }
 

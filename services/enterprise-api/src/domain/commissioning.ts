@@ -157,6 +157,9 @@ export async function createWorkOrder(ctx: RequestContext, issueCode: string, bo
     const room = await findRoom(ctx, q, i.room_id);
     if (i.category !== 'INSTALLATION_COMMISSIONING_DEFICIENCY') throw refused(['a design deficiency on a planned room gets a design change, not a field work order']);
     if (i.state !== 'OPEN') throw refused(['the issue is not open']);
+    // one active job per issue: a second work order while one is still in progress would split the evidence and the verification
+    const active = (await q.query<{ code: string; state: string }>("SELECT code, state FROM app.work_order WHERE issue_id = $1 AND state NOT IN ('CLOSED','CANCELLED') ORDER BY created_at LIMIT 1", [i.id])).rows[0];
+    if (active) await ctx.refuse('work_order.create', { type: 'RoomIssue', id: issueCode }, [`work order ${active.code} is already active on this issue (${active.state}); reopen or continue it instead of raising another`]);
     const c = await code(q, 'workorder', 'WO-');
     const role = body.assignedRole || 'service';
     await q.query('INSERT INTO app.work_order (tenant_id, issue_id, code, assigned_role, note, created_by) VALUES ($1,$2,$3,$4,$5,$6)', [ctx.p.tenantId, i.id, c, role, String(body.note || '').slice(0, 1000), ctx.p.personId]);
