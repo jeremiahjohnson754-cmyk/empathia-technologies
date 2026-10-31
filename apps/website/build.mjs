@@ -39,6 +39,7 @@ const PATHS = rendered.map((r) => r.path);
 for (const r of rendered) { const dir = path.join(dist, r.path === '/' ? '' : r.path); fs.mkdirSync(dir, { recursive: true }); fs.writeFileSync(path.join(dir, 'index.html'), r.html); }
 // media: the founder portrait (owner-supplied for the website, metadata stripped) and the films built in
 const copy = (from, to) => { fs.mkdirSync(path.dirname(to), { recursive: true }); fs.copyFileSync(from, to); };
+for (const f of fs.readdirSync(path.join(app, 'fonts')).filter((x) => /\.(woff2?|txt)$/.test(x))) copy(path.join(app, 'fonts', f), path.join(dist, 'fonts', f));   // self-hosted Poppins (OFL)
 for (const f of fs.readdirSync(path.join(mediaSrc, 'founder'))) copy(path.join(mediaSrc, 'founder', f), path.join(dist, 'media/founder', f));
 for (const f of films) for (const x of ['720.mp4', 'poster.webp', 'poster.jpg', 'captions.vtt']) copy(path.join(mediaSrc, f.key, x), path.join(dist, 'media', f.key, x));
 const css = [path.join(repo, 'packages/design-tokens/dist/tokens.css'), path.join(app, 'src/styles/site.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`).join('\n');

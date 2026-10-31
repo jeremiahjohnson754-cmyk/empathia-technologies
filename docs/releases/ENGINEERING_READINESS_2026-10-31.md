@@ -11,6 +11,7 @@
 | Area | What changed | State | Evidence |
 |---|---|---|---|
 | Website, the whole experience | Rebuilt on Experience System v1. New home narrative: thesis, record card, evidence line, three doors, six evidence states, nine products, audiences, founder, closing call to action. New IA: `/products` plus nine product pages (each states its demo status from the parity ledger), `/founder`, `/films` (appears only when a film is built in). Sticky navigation, phone menu (Escape and click-outside close it), footer. | IMPLEMENTED · TESTED | `tests/browser/website.test.mjs`; site audit 0 P0 / 0 P1; desktop and phone screenshots in the handoff |
+| Typography (owner direction 16:34 CT) | Warm, inviting type: self-hosted Poppins (OFL; 400/500/700, about 10 KB each), warm white and grey text, pill controls, rounder cards. No third-party font request. Contrast is still at or above 4.5:1 everywhere (audit A5). | IMPLEMENTED · TESTED | site audit 0 P0/P1; website test 54/54 |
 | Founder | Portrait (owner-supplied; 4:5 crop; metadata stripped; 480/800/1200 px in WebP and JPEG). Name, "Founder, Empathia Technologies", exactly CTS (AVIXA) · CAPM (PMI) · CompTIA Network+, and the supplied statement. "[Founder name]" placeholder removed. | IMPLEMENTED · TESTED | `/founder`, home founder section |
 | Films | Five placements chosen (home, platform, commissioning, Field Intelligence, films). Web renditions from the clean masters, with WebVTT captions, transcripts and posters. The player has no autoplay and `preload=none`. A **rights gate** admits a film to the public build only when it is VERIFIED; `--films=preview` gives an owner-review build. The dist-hygiene gate refuses an unverified film in a publishable build. | IMPLEMENTED · TESTED (preview) · **none published**: rights UNVERIFIED | `docs/media/WEBSITE_FILM_PLACEMENT.md` |
 | Lead capture | Required minimum fill time (3 s) against instant bot posts. A receipt with reference and time; focus moves to the status. Consent target raised to 24 px. A spoofable client-address branch removed from the route. The backend was already complete (consent, honeypot, per-address budget, admin inbox, audit). | IMPLEMENTED · TESTED (integration + browser e2e over a real API and database) | `tests/integration/leads.test.mjs`, `tests/e2e/website-lead.e2e.mjs` |
@@ -32,7 +33,8 @@
 | 5 | SIGNAL and narration (D-07): 3 of 133 chapters playable; no cleared audio | Item 2, plus production | Voice the 172 campus lines and 3 episodes after rights; report the remaining count truthfully |
 | 6 | Demo target sizes (D-13, D-17) | Engineering time | A pass over `@empathia/ui` controls |
 | 7 | Real-device, screen-reader and performance (LCP/INP/CLS) testing | Devices; the live URL cannot be reached from this workspace | Run the acceptance guide on your phone, plus three role participants |
-| 8 | Render releases only after CI passes | **Your approval** (a deployment-policy change) | One line per site in `render.yaml`: `autoDeployTrigger: checksPass` |
+| 8 | Motion graphics across both sites (owner request 16:38 CT): a motion map, then website hero, evidence line, scroll reveals and interactions; demo state transitions, graph, tour and Build a Room; then motion QA (INP/CLS, reduced motion, phones) | Queued as tasks | Next sprint, after this branch is reviewed |
+| 9 | Render releases only after CI passes | **Your approval** (a deployment-policy change) | One line per site in `render.yaml`: `autoDeployTrigger: checksPass` |
 
 ## 3. Test evidence
 

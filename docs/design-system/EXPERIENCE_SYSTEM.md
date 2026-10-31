@@ -27,7 +27,7 @@ distinction physical rather than decorative.
 | Surface | graphite / graphite-2 | `#11161D` / `#171D26` | cards, deep sections / hover, record cards |
 | Warm surface | graphite-warm | `#1D1B19` | the founder section only (human, not system) |
 | Lines | line / line-strong | `#26303C` / `#3A4656` | dividers / control and card borders |
-| Text | text / text-2 / text-3 | `#ECF0F4` / `#AAB4C1` / `#8A95A3` | headings and body / secondary / meta |
+| Text | text / text-2 / text-3 | `#F6F2EC` / `#C3BCB2` / `#A29B92` (warm whites and greys) | headings and body / secondary / meta |
 | Intelligence accent | signal | `#2ED6C5` (ink on it: `#04211E`) | primary action, links, focus, "observed" |
 | Depth | ultramarine | `#4C63FF` | hero light, later stops of the evidence line |
 | Attention | amber | `#F3B54A` | "simulated", notes, synthetic-data labels, preview banner |
@@ -37,23 +37,27 @@ distinction physical rather than decorative.
 Contrast, measured by the audit's A5 rule: no text pair on the site falls below 4.5:1, or 3:1 for large text. Text-3 was raised from `#7D8896` to `#8A95A3`
 (token file updated) so that small meta text clears 4.5:1 on graphite surfaces as well.
 
-**Type.** The face is "Helvetica Neue", Helvetica, Arial, system-ui. No web font is loaded: zero font requests, and nothing to license
-or redistribute. Android renders it as Roboto. The mono face (ui-monospace) is used only for record identifiers such as `ATL-4.218` and
-step numbers.
+**Type: inviting, not severe** (owner direction, 2026-10-31 16:34 CT: "inviting and warm — Netflix, Adobe, Pixel style").
+- **Family:** Poppins 400/500/700, a warm geometric sans with round bowls and open shapes, in the same family of feeling as Netflix
+  Sans and Google's Pixel type. It is self-hosted from `apps/website/fonts/` under the SIL OFL 1.1, as Latin subsets of about 10 KB each
+  with the bold and regular weights preloaded, so no font is requested from a third party.
+- **Why not those brands' own fonts:** Netflix Sans and Adobe Clean are proprietary. Google Sans Flex is open, but its files could not
+  be fetched into this workspace; it can replace Poppins in one line once the WOFF files are added.
+- **Mono:** ui-monospace, used only for record identifiers.
 
 | Style | Size | Line height | Tracking |
 |---|---|---|---|
-| Display | clamp 40–76 px | 1.0 | −0.04em; the last line in text-2 at weight 500 |
-| H1 | clamp 38–60 px | — | −0.03em |
-| H2 | clamp 28–40 px | — | — |
-| H3 | 19–20 px | — | — |
-| Lead | 18–21 px | — | — |
-| Body | 17 px (16 px on phones) | 1.6 | — |
-| Meta | 13–15 px | — | — |
+| Display | clamp 38–72 px, Bold | 1.06 | −0.025em; the last line Medium in text-2 |
+| H1 | clamp 36–58 px, Bold | 1.1 | −0.02em |
+| H2 | clamp 27–38 px, Bold | 1.18 | −0.015em |
+| Card titles | 20 px, Bold | — | — |
+| Lead | 17–20 px, Regular | 1.65 | — |
+| Body | 17 px, Regular (16 px on phones) | 1.7 | — |
+| UI (buttons, nav, labels, tags) | — , Medium | — | no positive tracking |
 
 **Space and shape.**
 - Spacing steps: 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 96 / 128 px.
-- Radii: control 10, card 16, media 20.
+- Radii: controls are pills (999), fields 14, cards 22, media 26. Rounder shapes keep the friendlier type company.
 - Page width: 1200; text measure about 680 (about 64 characters).
 
 **Motion.**
@@ -93,8 +97,8 @@ Johnson's team". It was built on 2026-10-31 with the connected Figma tools.
 | Accessibility notes | Focus order, 44 px targets, contrast pairs with ratios, reduced motion, captions |
 
 **Known differences between Figma and the shipped code** (code is the reference for layout until reconciled):
-- **Font.** Figma uses Inter and Roboto Mono, because Helvetica Neue, Helvetica, Arial and SF Mono are not available in that
-  environment. The code uses the system Helvetica Neue stack.
+- **Font.** The code moved to Poppins at the owner's request. The Figma file is being updated from Inter to Poppins (the same
+  family is available in Figma); check the text styles if that update has not landed.
 - **Portrait.** The Founder card shows a labelled placeholder. The upload to Figma was refused by this workspace's network policy. To
   finish it, drag `apps/website/media/founder/1200.jpg` onto the "Portrait" layer of both Founder card variants and switch off
   "Placeholder note".
