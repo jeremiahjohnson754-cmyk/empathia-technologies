@@ -1,6 +1,6 @@
 # Test results
 
-Run 2026-10-31T01:33:32.828Z on Node v22.22.0. PASS 32 · FAIL 0 · NOT_RUN 1 suites.
+Run 2026-10-31T02:02:25.809Z on Node v22.22.0. PASS 32 · FAIL 0 · NOT_RUN 1 suites.
 
 | Suite | Kind | Result | Passed / tests | Seconds | Why not run |
 |---|---|---|---|---|---|
@@ -14,26 +14,26 @@ Run 2026-10-31T01:33:32.828Z on Node v22.22.0. PASS 32 · FAIL 0 · NOT_RUN 1 su
 | unit: packages/schemas | unit | PASS | 3/3 | 0.1 |  |
 | unit: integrations/contracts | unit | PASS | 7/7 | 0.1 |  |
 | unit: integrations/mocks | unit | PASS | 5/5 | 0.1 |  |
-| unit: ml research prototype (python) | unit | PASS | 5/5 | 4.7 |  |
+| unit: ml research prototype (python) | unit | PASS | 5/5 | 4.5 |  |
 | service: intelligence-python | integration | PASS | 4/4 | 0.6 |  |
-| integration: api.test.mjs | integration | PASS | 20/20 | 3.5 |  |
-| integration: leads.test.mjs | integration | PASS | 5/5 | 1.6 |  |
-| integration: api-client.test.mjs | integration | PASS | 3/3 | 1.3 |  |
-| integration: integration-worker.test.mjs | integration | PASS | 1/1 | 1.5 |  |
-| security: authz.test.mjs | security | PASS | 45/45 | 3.3 |  |
-| security: founder-boundary.test.mjs | security | PASS | 6/6 | 1.7 |  |
-| security: site-scope.test.mjs | security | PASS | 3/3 | 2 |  |
-| security: authority-matrix.test.mjs | security | PASS | 2/2 | 5.6 |  |
-| security: governance.test.mjs | security | PASS | 9/9 | 4.6 |  |
-| security: administration.test.mjs | security | PASS | 5/5 | 2 |  |
-| security: search-party.test.mjs | security | PASS | 6/6 | 2 |  |
-| security: oidc.test.mjs | security | PASS | 4/4 | 1.4 |  |
-| security: project-lifecycle.test.mjs | security | PASS | 12/12 | 5.4 |  |
-| e2e: website lead form over the API | e2e | PASS | 6/6 | 3.8 |  |
-| browser: enterprise web E2E | e2e | PASS | 47/47 | 13 |  |
-| browser: public website | browser | PASS | 32/32 | 6.8 |  |
-| browser: investor demo shell | browser | PASS | 46/46 | 35.4 |  |
-| browser: Founder Studio | browser | PASS | 19/19 | 33.5 |  |
-| e2e: founder town hall (Founder Edition) | e2e | PASS | 25/25 | 46.8 |  |
-| e2e: founder decisions (hosted studio over the API) | e2e | PASS | 9/9 | 6.2 |  |
+| integration: api.test.mjs | integration | PASS | 20/20 | 3.8 |  |
+| integration: leads.test.mjs | integration | PASS | 5/5 | 1.7 |  |
+| integration: api-client.test.mjs | integration | PASS | 3/3 | 1.6 |  |
+| integration: integration-worker.test.mjs | integration | PASS | 1/1 | 1.6 |  |
+| security: authz.test.mjs | security | PASS | 45/45 | 3.4 |  |
+| security: founder-boundary.test.mjs | security | PASS | 6/6 | 1.9 |  |
+| security: site-scope.test.mjs | security | PASS | 3/3 | 2.1 |  |
+| security: authority-matrix.test.mjs | security | PASS | 2/2 | 6.3 |  |
+| security: governance.test.mjs | security | PASS | 9/9 | 5.4 |  |
+| security: administration.test.mjs | security | PASS | 5/5 | 2.4 |  |
+| security: search-party.test.mjs | security | PASS | 6/6 | 2.2 |  |
+| security: oidc.test.mjs | security | PASS | 4/4 | 1.5 |  |
+| security: project-lifecycle.test.mjs | security | PASS | 13/13 | 5.8 |  |
+| e2e: website lead form over the API | e2e | PASS | 6/6 | 4.2 |  |
+| browser: enterprise web E2E | e2e | PASS | 53/53 | 16.5 |  |
+| browser: public website | browser | PASS | 32/32 | 6.6 |  |
+| browser: investor demo shell | browser | PASS | 46/46 | 35.7 |  |
+| browser: Founder Studio | browser | PASS | 19/19 | 35.1 |  |
+| e2e: founder town hall (Founder Edition) | e2e | PASS | 25/25 | 47.4 |  |
+| e2e: founder decisions (hosted studio over the API) | e2e | PASS | 9/9 | 6.1 |  |
 | media: full decode of every curated film | media | NOT_RUN | — | — | pass --films (slow: decodes ~47 minutes of video) |

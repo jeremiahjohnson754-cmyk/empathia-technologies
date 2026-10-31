@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1ProjectsCodeConcept/0.1.0.json",
+  "title": "POST /v1/projects/{code}/concept request body",
+  "description": "Concept authorization: approve the current brief for concept work — preliminary design, feasibility studies, concept layouts, preliminary budgets — before funding (brief.approve; not the brief’s author). Execution still needs funding.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [],
+  "properties": {
+    "note": {
+      "type": "string",
+      "maxLength": 1000
+    }
+  }
+}

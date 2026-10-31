@@ -3,16 +3,17 @@ import { Button, DataTable, Empty, ErrorState, Loading, Notice, StatusBadge, Tab
 import { api, useMutation, useQuery } from '../api.js';
 import { go } from '../router.js';
 import { useMe } from '../me.js';
+import { RequestCatalogue } from './Lifecycle.js';
 
 export function Admin({ tab }: { tab: string }) {
   const { can } = useMe();
-  const tabs = [{ key: 'integrations', label: 'Integrations' }, ...(can('policy.configure') ? [{ key: 'leads', label: 'Lead inbox' }, { key: 'outbox', label: 'Outbox' }, { key: 'people', label: 'People' }] : []), ...(can(['provenance.review', 'policy.configure']) ? [{ key: 'audit', label: 'Audit' }] : [])];
+  const tabs = [{ key: 'integrations', label: 'Integrations' }, ...(can('policy.configure') ? [{ key: 'leads', label: 'Lead inbox' }, { key: 'outbox', label: 'Outbox' }, { key: 'people', label: 'People' }, { key: 'catalogue', label: 'Request catalogue' }] : []), ...(can(['provenance.review', 'policy.configure']) ? [{ key: 'audit', label: 'Audit' }] : [])];
   return (
     <section className="page">
       <header className="page__head"><div><h1>Administration</h1></div></header>
       <Tabs label="Administration" tabs={tabs} active={tab} onChange={(k) => go('admin', k)} />
       <div className="panel" role="tabpanel">
-        {tab === 'integrations' ? <Integrations /> : null}{tab === 'leads' ? <Leads /> : null}{tab === 'outbox' ? <Outbox /> : null}{tab === 'people' ? <People /> : null}{tab === 'audit' ? <Audit /> : null}
+        {tab === 'integrations' ? <Integrations /> : null}{tab === 'leads' ? <Leads /> : null}{tab === 'outbox' ? <Outbox /> : null}{tab === 'people' ? <People /> : null}{tab === 'audit' ? <Audit /> : null}{tab === 'catalogue' ? <RequestCatalogue /> : null}
       </div>
     </section>
   );

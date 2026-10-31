@@ -1,6 +1,6 @@
 # ADR-0008 — The governed project lifecycle (P5)
 
-Status: implemented 2026-10-31 (continuation directive, P5) · awaiting owner confirmation on two reconciliations (§Decisions for the owner)
+Status: implemented 2026-10-31 (continuation directive, P5) · owner decisions received 2026-10-30 20:48 CT and implemented (§Owner decisions)
 
 ## Context
 
@@ -48,8 +48,23 @@ state was invented.
 | Tests | `packages/project-governance` 9 unit tests (every guard, positive and negative); `tests/security/project-lifecycle.test.mjs` 12 tests over HTTP + PostgreSQL (one request carried the whole way, every gate tried the wrong way first; delegation; tenant and site isolation; the honest OPERATIONAL refusal); the authority matrix covers the 16 keyed routes |
 | Not built | enterprise-web pages for intake/projects (next step); demonstration step pages; a staff skills registry for computed field gates; vendor quotes (`vendor.quote`); the documentation tracker's 36 columns (documents = approved drawings + QA photo sign-off today) |
 
-## Decisions for the owner
+## Owner decisions (2026-10-30 20:48 CT) and how they were implemented
 
-1. The nine request types as derived above (the directive's list was not recoverable verbatim in this workspace after context compaction;
-   the derivation is from the demonstrator's own two catalogues).
-2. Approval before collaborative design (the demonstrator's order), rather than the directive's listed order.
+1. **The nine request categories are approved provisionally; the catalogue is extensible and configurable.** Migration `0018`: table
+   `app.request_type` holds the nine as platform defaults (`tenant_id NULL`) plus tenant rows that add industry- or customer-specific
+   kinds or disable a default; the effective catalogue is defaults ∪ tenant rows (a tenant row with a default's key overrides it). RLS:
+   everyone reads defaults and their own tenant's rows; writes are tenant rows only. `POST /v1/admin/request-types` (policy.configure,
+   audited) adds, changes or disables; `GET /v1/projects/catalogue` returns the effective catalogue; a request's type is validated against
+   it (no fixed enum). Administration → Request catalogue tab; the intake form offers the enabled kinds with their industry. Tests:
+   CAT-1 (tenant adds `lab_bench_av`, disables `signage`; the second tenant sees neither), E2E W-47/W-48.
+2. **Concept authorization is separate from execution authorization.** An approved brief at the current scope revision
+   (`POST /v1/projects/{code}/concept`, brief.approve, not the brief's author) authorizes *concept work*: `ENGINEERING_REVIEW →
+   DESIGN_DRAFT → DESIGN_REVIEW`, design revisions of phase `CONCEPT` carrying a feasibility study (finding, risks, options) and a
+   labelled preliminary estimate ("concept work, not a quote"). *Execution* — a `DETAILED` design revision, `DESIGN_RELEASED` and every
+   state after it — needs `FUNDED`. The engine's guards changed accordingly: `ENGINEERING_REVIEW → DESIGN_DRAFT` now guards
+   `concept_authorized`; `DESIGN_REVIEW → DESIGN_RELEASED` guards `domain_approvals_and_geometry_validated_and_funded` (the demonstrator's
+   `project_funded_and_scope_approved` moved to the release, where execution begins). A scope revision supersedes the concept
+   authorization (it is bound to the scope revision). The project record shows both authorizations side by side. Tests: APR-2 (concept
+   before funding; DETAILED refused; release refused with the execution reason), engine tests, E2E W-45a–W-45d.
+3. Approval before collaborative design (the demonstrator's order) stands; with decision 2 the practical order is brief → concept
+   authorization → concept design in parallel with approval and funding → detailed design → release.

@@ -1,7 +1,7 @@
 {
   "test": "enterprise-web",
-  "at": "2026-10-31T01:31:24.141Z",
-  "passed": 47,
+  "at": "2026-10-31T02:00:14.859Z",
+  "passed": 53,
   "failed": 0,
   "results": [
     {
@@ -56,7 +56,7 @@
       "id": "W-09",
       "name": "a designer who bypasses the UI and calls the approval endpoint directly is refused 403 by the server",
       "result": "PASS",
-      "detail": "{\"status\":403,\"body\":{\"type\":\"https://errors.empathia.invalid/forbidden\",\"title\":\"Not allowed for your role\",\"status\":403,\"detail\":\"designer may not move a room to DESIGN_APPROVED (needs room.design.approve)\",\"code\":\"forbidden\",\"correlationId\":\"de155e83-4a4e-402a-84eb-9cb5e23bcf44\"}}"
+      "detail": "{\"status\":403,\"body\":{\"type\":\"https://errors.empathia.invalid/forbidden\",\"title\":\"Not allowed for your role\",\"status\":403,\"detail\":\"designer may not move a room to DESIGN_APPROVED (needs room.design.approve)\",\"code\":\"forbidden\",\"correlationId\":\"545434e2-7d4c-4685-87ca-581cdcec2d88\"}}"
     },
     {
       "id": "W-10",
@@ -116,7 +116,7 @@
       "id": "W-32",
       "name": "the measurement is listed with its provenance, instrument, calibration state and UNREVIEWED approval",
       "result": "PASS",
-      "detail": "Measurements\nMetric\tValue\tProvenance\tInstrument\tWhere / when\tApproval\t\n\nnoise_floor\nLAeq 60 s\n\t36.2 dB(A)\tFIELD_MEASURED\tSYN-METER-01 · CALIBRATED\tseat 3, 1.2 m · 2026-10-31 01:31 · SYN-METER-01\tUNREV"
+      "detail": "Measurements\nMetric\tValue\tProvenance\tInstrument\tWhere / when\tApproval\t\n\nnoise_floor\nLAeq 60 s\n\t36.2 dB(A)\tFIELD_MEASURED\tSYN-METER-01 · CALIBRATED\tseat 3, 1.2 m · 2026-10-31 02:00 · SYN-METER-01\tUNREV"
     },
     {
       "id": "W-33",
@@ -236,7 +236,7 @@
       "id": "W-42",
       "name": "the brief is recorded as rev 1 against scope revision 1 with its ROM labelled INITIAL_ROM; the project is PITCH_READY (brief stage)",
       "result": "PASS",
-      "detail": "Projects · new room\n\nNorthstar 2 huddle (browser, synthetic)\n\nPRJ-REQ-0001 · from REQ-0001 · scope revision 1 · internal route\n\nPITCH_READY\n1\nintake\n2\nreview\n3\nbrief\n4\napproval\n5\ncollaborative design\n"
+      "detail": "Projects · new room\n\nNorthstar 2 huddle (browser, synthetic)\n\nPRJ-REQ-0001 · from REQ-0001 · scope revision 1 · internal route\n\nPITCH_READY\nconcept not authorized\nexecution not authorized\n1\nintake\n2\nr"
     },
     {
       "id": "W-43",
@@ -251,16 +251,52 @@
       "detail": ""
     },
     {
-      "id": "W-45",
-      "name": "funding against the approved scope opens delivery at ENGINEERING_REVIEW; the stage is collaborative design and the next delivery step names brief.approve",
+      "id": "W-45a",
+      "name": "before concept authorization the record says so and the designer has nothing to propose",
       "result": "PASS",
-      "detail": "Projects · new room\n\nNorthstar 2 huddle (browser, synthetic)\n\nPRJ-REQ-0001 · from REQ-0001 · scope revision 1 · internal route\n\nFUNDED\nENGINEERING_REVIEW\n1\nintake\n2\nreview\n3\nbrief\n4\napproval\n5\ncollabo"
+      "detail": ""
+    },
+    {
+      "id": "W-45b",
+      "name": "the systems engineer (not the brief’s author) authorizes concept work: delivery opens at ENGINEERING_REVIEW while the project is only APPROVED",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-45c",
+      "name": "a CONCEPT revision with its feasibility finding and a labelled preliminary estimate is recorded before any money is authorized",
+      "result": "PASS",
+      "detail": "Collaborative design\nRevision 1 CONCEPT DRAFT Designer / CAD / Revit (synthetic) · 2026-10-31 02:00 · feasibility and concept layout\nFeasibility. A four-seat huddle fits the 4.2 m bay with one display; a second display does not. FEASIBILITY STUDY — concept work, not a release\n\nPreliminary estimate 1"
+    },
+    {
+      "id": "W-45d",
+      "name": "a DETAILED design before funding is refused with the execution-authorization reason",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "W-45",
+      "name": "funding against the approved scope is execution authorization: the stage is collaborative design, delivery stays where the concept work is (DESIGN_DRAFT), and the record says execution is authorized",
+      "result": "PASS",
+      "detail": "Projects · new room\n\nNorthstar 2 huddle (browser, synthetic)\n\nPRJ-REQ-0001 · from REQ-0001 · scope revision 1 · internal route\n\nFUNDED\nDESIGN_DRAFT\nconcept authorized\nexecution authorized\n1\nintake\n2\nr"
     },
     {
       "id": "W-46",
-      "name": "a designer sees the same record but no step they do not hold (ENGINEERING_REVIEW → DESIGN_DRAFT is not theirs)",
+      "name": "a designer sees the same record; the only step they hold is DESIGN_DRAFT → DESIGN_REVIEW (design.submit), blocked until the revision carries a DIVR",
       "result": "PASS",
       "detail": ""
+    },
+    {
+      "id": "W-47",
+      "name": "the security administrator adds an industry-specific request kind to the organization’s catalogue (platform defaults stay marked as such)",
+      "result": "PASS",
+      "detail": "Request catalogue\nKind\tSummary\tIndustry\tScope\tEnabled\n\nNew room\nnew_room\n\tA new room the business has asked for, with the capacity and purpose agreed with the sponsor.\tgeneral\tplatform default\t\nyes\nDi"
+    },
+    {
+      "id": "W-48",
+      "name": "the new kind is offered at intake, with its industry",
+      "result": "PASS",
+      "detail": "New room\nRoom refresh\nCamera replacement\nDSP / audio upgrade\nNetwork change\nLifecycle replacement\nSignage\nBreak / fix\nRoom verification\nClinical simulation suite · healthcare"
     },
     {
       "id": "W-18",

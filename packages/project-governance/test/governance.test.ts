@@ -58,16 +58,18 @@ test('funding is a signed budget against the approved scope revision; a finance 
   assert.deepEqual(governanceBlockers('SUSPENDED', { ...a, state: 'FUNDED' }), ['a withdrawal or expiry reason is required']);
 });
 
-const dbase = (over: Partial<DeliveryFacts> = {}): DeliveryFacts => ({ state: 'ENGINEERING_REVIEW', governance: 'FUNDED', revision: null, rooms: [], rulePackVersion: null, fieldAuthorization: null, workOrders: null, supportOwnerId: null, qaSignoff: false, actorId: 'SE', ...over });
+const dbase = (over: Partial<DeliveryFacts> = {}): DeliveryFacts => ({ state: 'ENGINEERING_REVIEW', governance: 'FUNDED', conceptAuthorized: true, revision: null, rooms: [], rulePackVersion: null, fieldAuthorization: null, workOrders: null, supportOwnerId: null, qaSignoff: false, actorId: 'SE', ...over });
 const room = (over: Partial<DeliveryFacts['rooms'][number]> = {}) => ({ code: 'R-1', lifecycle: 'DESIGN_APPROVED', hasPlan: false, applicable: 10, verified: 0, openIssues: 0, drawingsApproved: false, photosApproved: false, hasBaseline: false, ...over });
 
-test('delivery: design needs money; a revision needs files/model, a DIVR and a reason; release needs every domain review, no open RFI, a different person, and approved geometry', () => {
-  assert.deepEqual(deliveryBlockers('DESIGN_DRAFT', dbase({ governance: 'APPROVED' })), ['the project is APPROVED, not FUNDED: an approved project without money is not field-authorized']);
+test('delivery: concept work needs concept authorization, not money; a revision needs files/model, a DIVR and a reason; release needs every domain review, no open RFI, a different person, approved geometry, a DETAILED revision and FUNDING (execution authorization)', () => {
+  assert.deepEqual(deliveryBlockers('DESIGN_DRAFT', dbase({ governance: 'APPROVED', conceptAuthorized: false })), ['concept work needs concept authorization: an approved engineering brief at the current scope revision (brief.approve, not by its author)']);
+  assert.deepEqual(deliveryBlockers('DESIGN_DRAFT', dbase({ governance: 'PITCH_READY', conceptAuthorized: true })), [], 'concept work before any decision or funding');
+  assert.deepEqual(deliveryBlockers('DESIGN_DRAFT', dbase({ governance: 'HELD', conceptAuthorized: true })), ['the project is HELD']);
   assert.deepEqual(deliveryBlockers('DESIGN_DRAFT', dbase()), []);
-  const rev = { rev: 1, files: 0, liteModel: false, divr: false, reason: null, domainsNeeded: ['dsp', 'camera'], domainApprovals: {}, openRfis: 1, authorId: 'DES' };
+  const rev = { rev: 1, phase: 'CONCEPT' as const, files: 0, liteModel: false, divr: false, reason: null, domainsNeeded: ['dsp', 'camera'], domainApprovals: {}, openRfis: 1, authorId: 'DES' };
   assert.deepEqual(deliveryBlockers('DESIGN_REVIEW', dbase({ state: 'DESIGN_DRAFT', revision: rev })), ['no design files or Lite model in this revision', 'no Design Intent & Verification Record linked', 'a revision needs its reason']);
-  assert.deepEqual(deliveryBlockers('DESIGN_RELEASED', dbase({ state: 'DESIGN_REVIEW', revision: rev, rooms: [room({ lifecycle: 'PLANNED' })], actorId: 'DES' })), ['dsp review missing', 'camera review missing', '1 open RFI(s) on this revision', 'the author of the revision does not release it (segregation of duties)', 'geometry of R-1 is PLANNED, not approved for construction']);
-  assert.deepEqual(deliveryBlockers('DESIGN_RELEASED', dbase({ state: 'DESIGN_REVIEW', revision: { ...rev, domainApprovals: { dsp: 'APPROVED', camera: 'APPROVED' }, openRfis: 0 }, rooms: [room()] })), []);
+  assert.deepEqual(deliveryBlockers('DESIGN_RELEASED', dbase({ state: 'DESIGN_REVIEW', governance: 'APPROVED', revision: rev, rooms: [room({ lifecycle: 'PLANNED' })], actorId: 'DES' })), ['execution authorization missing: the project is APPROVED, not FUNDED — an approved project without money is not released for construction', 'the released revision must be a DETAILED design (revision 1 is CONCEPT)', 'dsp review missing', 'camera review missing', '1 open RFI(s) on this revision', 'the author of the revision does not release it (segregation of duties)', 'geometry of R-1 is PLANNED, not approved for construction']);
+  assert.deepEqual(deliveryBlockers('DESIGN_RELEASED', dbase({ state: 'DESIGN_REVIEW', revision: { ...rev, phase: 'DETAILED', domainApprovals: { dsp: 'APPROVED', camera: 'APPROVED' }, openRfis: 0 }, rooms: [room()] })), []);
 });
 
 test('execution and handoff are read from the rooms: tests verified, documents, acceptance, support owner, baselines', () => {

@@ -9,16 +9,41 @@ import type { Queryable } from '../db/pg.js';
 import type { RequestContext } from '../auth/context.js';
 import { ApiError, invalid, notFound } from '../http/errors.js';
 import { defaultCatalog } from '@empathia/commissioning-engine';
-import { REQUEST_TYPES, REQUEST_TYPE_KEYS, GOVERNANCE_TRANSITIONS, DELIVERY_TRANSITIONS, REOPEN_FROM, governanceBlockers, deliveryBlockers, stageOf, transition, type GovernanceState, type DeliveryState, type GovernanceFacts, type DeliveryFacts } from '@empathia/project-governance';
+import { EXECUTION_STATES, GOVERNANCE_TRANSITIONS, DELIVERY_TRANSITIONS, REOPEN_FROM, governanceBlockers, deliveryBlockers, stageOf, transition, type GovernanceState, type DeliveryState, type GovernanceFacts, type DeliveryFacts } from '@empathia/project-governance';
 
-interface ProjectRow { id: string; code: string; name: string; state: string; request_id: string | null; type: string | null; governance: GovernanceState; delivery: DeliveryState | null; scope_rev: number; vendor_id: string | null; internal_only: boolean; exception_reason: string | null; approver_id: string | null; support_owner_id: string | null; qa_signoff_by: string | null; rule_pack_version: string | null; field_authorization: Record<string, unknown> | null; created_by: string | null; created_at: string; updated_at: string }
+interface ProjectRow { id: string; code: string; name: string; state: string; concept_authorized_by: string | null; concept_authorized_at: string | null; concept_scope_rev: number | null; request_id: string | null; type: string | null; governance: GovernanceState; delivery: DeliveryState | null; scope_rev: number; vendor_id: string | null; internal_only: boolean; exception_reason: string | null; approver_id: string | null; support_owner_id: string | null; qa_signoff_by: string | null; rule_pack_version: string | null; field_authorization: Record<string, unknown> | null; created_by: string | null; created_at: string; updated_at: string }
 interface RequestRow { id: string; code: string; type: string; title: string; intent: string; constraints: string; site_id: string | null; building_id: string | null; room_id: string | null; provisional_room: string | null; archetype: string | null; capacity: number | null; photo_policy: string; photos: unknown[]; plans: unknown[]; dimensions: unknown[]; programme: boolean; state: string; requester_id: string; vendor_id: string | null; internal_only: boolean; submitted_at: string | null; withdrawn_at: string | null; withdrawn_reason: string | null; project_id: string | null; created_at: string }
 
 const PRJ = (code: string) => ({ type: 'Project', id: code });
 const REQ = (code: string) => ({ type: 'Request', id: code });
 const DOMAIN_AUTHORITY: Record<string, string> = { dsp: 'review.dsp', camera: 'review.camera', touch: 'review.touch' };
 
-export const catalogue = () => ({ requestTypes: REQUEST_TYPE_KEYS.map((k) => ({ key: k, ...REQUEST_TYPES[k] })), governance: GOVERNANCE_TRANSITIONS, delivery: DELIVERY_TRANSITIONS, note: 'The two state machines are carried over verbatim from the V2.5.3 demonstrator; a guard refuses with every reason named.' });
+interface RequestTypeRow { key: string; label: string; summary: string; industry: string; source: string; enabled: boolean; sort: number; tenant_id: string | null }
+/** The effective request catalogue: platform defaults ∪ the tenant's own rows (a tenant row with a default's key overrides it). */
+export async function requestTypes(q: Queryable): Promise<Array<RequestTypeRow & { scope: 'default' | 'tenant' }>> {
+  const rows = (await q.query<RequestTypeRow>('SELECT key, label, summary, industry, source, enabled, sort, tenant_id FROM app.request_type ORDER BY tenant_id NULLS FIRST, sort, key')).rows;
+  const by = new Map<string, RequestTypeRow & { scope: 'default' | 'tenant' }>();
+  for (const r of rows) by.set(r.key, { ...r, scope: r.tenant_id ? 'tenant' : 'default' });
+  return [...by.values()].sort((a, b) => a.sort - b.sort || a.key.localeCompare(b.key));
+}
+export async function catalogue(ctx: RequestContext) {
+  return ctx.tx(async (q) => ({ requestTypes: (await requestTypes(q)).map(({ tenant_id: _, ...t }) => t), governance: GOVERNANCE_TRANSITIONS, delivery: DELIVERY_TRANSITIONS, executionStates: EXECUTION_STATES,
+    note: 'The two state machines are carried over verbatim from the V2.5.3 demonstrator; a guard refuses with every reason named. The nine default request types are provisionally approved (owner, 2026-10-30); a tenant extends or disables them through POST /v1/admin/request-types. Concept work (preliminary design, feasibility, concept layouts, preliminary budgets) starts on concept authorization; release for construction and every field step need funding (execution authorization).' }));
+}
+/** Administration: add or change a tenant request type (an industry- or customer-specific kind), or disable a default for this tenant. */
+export async function upsertRequestType(ctx: RequestContext, body: { key: string; label?: string; summary?: string; industry?: string; enabled?: boolean; sort?: number }) {
+  await ctx.require('policy.configure', 'configure the request catalogue');
+  if (!/^[a-z][a-z0-9_]{1,39}$/.test(body.key)) throw invalid('a request type key is lower-case letters, digits and underscores (2–40 characters)');
+  return ctx.tx(async (q) => {
+    const cur = (await requestTypes(q)).find((t) => t.key === body.key);
+    const label = body.label ?? cur?.label; if (!label) throw invalid('a new request type needs a label');
+    await q.query(`INSERT INTO app.request_type (tenant_id, key, label, summary, industry, source, enabled, sort, created_by) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+      ON CONFLICT (tenant_id, key) WHERE tenant_id IS NOT NULL DO UPDATE SET label = EXCLUDED.label, summary = EXCLUDED.summary, industry = EXCLUDED.industry, enabled = EXCLUDED.enabled, sort = EXCLUDED.sort, updated_at = now()`,
+      [ctx.p.tenantId, body.key, label, body.summary ?? cur?.summary ?? '', body.industry ?? cur?.industry ?? 'general', cur?.scope === 'default' ? `tenant override of the default (${cur.source})` : 'tenant configuration', body.enabled ?? cur?.enabled ?? true, body.sort ?? cur?.sort ?? 100, ctx.p.personId]);
+    await ctx.audit(q, 'admin.request_type_upsert', 'ALLOWED', { type: 'RequestType', id: body.key }, { label, enabled: body.enabled ?? cur?.enabled ?? true, overridesDefault: cur?.scope === 'default' });
+    return { key: body.key, label, enabled: body.enabled ?? cur?.enabled ?? true, scope: 'tenant' };
+  });
+}
 
 async function findRequest(ctx: RequestContext, q: Queryable, code: string, lock = false): Promise<RequestRow> {
   const r = (await q.query<RequestRow>(`SELECT * FROM app.project_request WHERE code = $1${lock ? ' FOR UPDATE' : ''}`, [code])).rows[0];
@@ -41,8 +66,9 @@ const holds = async (q: Queryable, personId: string, authority: string): Promise
 export interface RequestInput { type: string; title: string; intent: string; constraints?: string; siteCode: string; buildingCode?: string; roomCode?: string; provisionalRoom?: string; archetype?: string; capacity?: number; photoPolicy?: string; photos?: Array<{ name: string }>; plans?: Array<{ name: string }>; dimensions?: Array<{ name: string; value: number; unit: string; source: string; uncertainty: string }>; programme?: boolean; vendorEmail?: string | null }
 export async function createRequest(ctx: RequestContext, body: RequestInput) {
   await ctx.require('request.submit', 'raise a request');
-  if (!REQUEST_TYPE_KEYS.includes(body.type as never)) throw invalid(`unknown request type ${body.type}; one of ${REQUEST_TYPE_KEYS.join(', ')}`);
   return ctx.tx(async (q) => {
+    const types = await requestTypes(q); const t = types.find((x) => x.key === body.type);
+    if (!t || !t.enabled) throw invalid(`unknown or disabled request type ${body.type}; one of ${types.filter((x) => x.enabled).map((x) => x.key).join(', ')}`);
     const site = (await q.query<{ id: string }>('SELECT id FROM app.site WHERE code = $1', [body.siteCode])).rows[0];
     if (!site) throw invalid(`unknown site ${body.siteCode}`);
     if (ctx.p.siteScope?.length && !ctx.p.siteScope.includes(site.id)) throw invalid(`site ${body.siteCode} is outside your site scope`);
@@ -235,22 +261,45 @@ export async function reviseScope(ctx: RequestContext, code: string, reason: str
   });
 }
 
+/** Concept authorization (owner decision, ADR-0008 §2): an approved brief at the current scope revision authorizes preliminary design,
+ *  feasibility studies, concept layouts and preliminary budgets before funding. Not by the brief's author. Execution still needs FUNDED. */
+export async function authorizeConcept(ctx: RequestContext, code: string, note?: string) {
+  await ctx.require('brief.approve', 'authorize concept work', PRJ(code));
+  return ctx.tx(async (q) => {
+    const p = await findProject(ctx, q, code, true);
+    const brief = (await q.query<{ rev: number; scope_rev: number; author_id: string }>('SELECT rev, scope_rev, author_id FROM app.project_brief WHERE project_id = $1 ORDER BY rev DESC LIMIT 1', [p.id])).rows[0];
+    const why: string[] = [];
+    if (!brief) why.push('no engineering brief to approve'); else if (brief.scope_rev !== p.scope_rev) why.push(`the brief is for scope revision ${brief.scope_rev}, the project is at ${p.scope_rev}`);
+    if (['DRAFT', 'SUBMITTED', 'HELD', 'REJECTED', 'SUSPENDED'].includes(p.governance)) why.push(`the project is ${p.governance}: concept work is authorized on a routed project with a current brief`);
+    if (p.concept_scope_rev === p.scope_rev) why.push('concept work is already authorized for this scope revision');
+    if (why.length) await ctx.refuse('project.concept_authorize', PRJ(code), why);
+    await ctx.separate('project.concept_authorize', PRJ(code), [brief!.author_id], 'the engineering brief');
+    await q.query("UPDATE app.project SET concept_authorized_by = $2, concept_authorized_at = now(), concept_scope_rev = scope_rev, delivery = coalesce(delivery, 'ENGINEERING_REVIEW'), updated_at = now() WHERE id = $1", [p.id, ctx.p.personId]);
+    await ctx.audit(q, 'project.concept_authorize', 'ALLOWED', PRJ(code), { briefRev: brief!.rev, scopeRev: p.scope_rev, note: note || null, meaning: 'CONCEPT authorization: preliminary design, feasibility, concept layouts, preliminary budgets; not execution' });
+    return { code, conceptAuthorized: true, scopeRev: p.scope_rev, delivery: p.delivery || 'ENGINEERING_REVIEW' };
+  });
+}
+
 // ------------------------------------------------------------------------------------------------------------ collaborative design
-export async function proposeDesignRevision(ctx: RequestContext, code: string, body: { reason: string; files?: Array<{ name: string; kind?: string; sha256?: string }>; liteModelRoom?: string; divr?: { intent: string; verificationPlan: string[] }; domainsNeeded?: string[] }) {
+export async function proposeDesignRevision(ctx: RequestContext, code: string, body: { reason: string; phase?: 'CONCEPT' | 'DETAILED'; estimateUsd?: number; feasibility?: { finding: string; risks?: string[]; options?: string[] }; files?: Array<{ name: string; kind?: string; sha256?: string }>; liteModelRoom?: string; divr?: { intent: string; verificationPlan: string[] }; domainsNeeded?: string[] }) {
   await ctx.require(['design.submit', 'design.revise'], 'propose a design revision', PRJ(code));
   const domains = body.domainsNeeded || []; for (const d of domains) if (!DOMAIN_AUTHORITY[d]) throw invalid(`unknown review domain ${d} (dsp, camera, touch)`);
   return ctx.tx(async (q) => {
     const p = await findProject(ctx, q, code, true);
+    const phase = body.phase || 'DETAILED';
     if (!p.delivery || !['DESIGN_DRAFT', 'DESIGN_REVIEW'].includes(p.delivery)) await ctx.refuse('design.revision_propose', PRJ(code), [`design revisions are proposed while the project is in DESIGN_DRAFT or DESIGN_REVIEW (this one is ${p.delivery || p.governance})`]);
+    // concept vs execution authorization (owner decision, ADR-0008 §2): a CONCEPT revision needs concept authorization; a DETAILED design needs funding
+    if (p.concept_scope_rev !== p.scope_rev) await ctx.refuse('design.revision_propose', PRJ(code), ['concept work needs concept authorization at the current scope revision (brief.approve)']);
+    if (phase === 'DETAILED' && p.governance !== 'FUNDED') await ctx.refuse('design.revision_propose', PRJ(code), [`a DETAILED design needs execution authorization: the project is ${p.governance}, not FUNDED — propose a CONCEPT revision (feasibility, concept layout, preliminary estimate) instead`]);
     const room = body.liteModelRoom ? (await q.query<{ id: string; project_id: string | null }>('SELECT id, project_id FROM app.room WHERE code = $1', [body.liteModelRoom])).rows[0] : null;
     if (body.liteModelRoom && (!room || room.project_id !== p.id)) throw invalid(`${body.liteModelRoom} is not a room of ${code}`);
     await q.query("UPDATE app.project_design_revision SET state = 'SUPERSEDED' WHERE project_id = $1 AND state IN ('DRAFT','IN_REVIEW')", [p.id]);
     const rev = ((await q.query<{ m: number | null }>('SELECT max(rev) AS m FROM app.project_design_revision WHERE project_id = $1', [p.id])).rows[0]!.m || 0) + 1;
-    const r = await q.query<{ id: string }>('INSERT INTO app.project_design_revision (tenant_id, project_id, rev, author_id, reason, files, lite_model_room, divr, domains_needed) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id', [ctx.p.tenantId, p.id, rev, ctx.p.personId, body.reason, JSON.stringify(body.files || []), room?.id || null, body.divr ? JSON.stringify({ ...body.divr, recordedBy: ctx.p.personId }) : null, domains]);
+    const r = await q.query<{ id: string }>('INSERT INTO app.project_design_revision (tenant_id, project_id, rev, author_id, reason, files, lite_model_room, divr, domains_needed, phase, estimate_usd, feasibility) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING id', [ctx.p.tenantId, p.id, rev, ctx.p.personId, body.reason, JSON.stringify(body.files || []), room?.id || null, body.divr ? JSON.stringify({ ...body.divr, recordedBy: ctx.p.personId }) : null, domains, phase, body.estimateUsd ?? null, body.feasibility ? JSON.stringify({ ...body.feasibility, recordedBy: ctx.p.personId, label: 'FEASIBILITY STUDY — concept work, not a release' }) : null]);
     if (p.delivery === 'DESIGN_REVIEW') await q.query("UPDATE app.project SET delivery = 'DESIGN_DRAFT', updated_at = now() WHERE id = $1", [p.id]);   // a new revision invalidates the review in progress (no historical deletion)
     await ctx.emit(q, 'design.revision_proposed', { type: 'Project', id: code, rev }, { projectId: code, revision: rev, reason: body.reason });
-    await ctx.audit(q, 'design.revision_propose', 'ALLOWED', PRJ(code), { revision: rev, domains });
-    return { code, revision: rev, id: r.rows[0]!.id, delivery: 'DESIGN_DRAFT' };
+    await ctx.audit(q, 'design.revision_propose', 'ALLOWED', PRJ(code), { revision: rev, phase, domains, estimateUsd: body.estimateUsd ?? null });
+    return { code, revision: rev, phase, id: r.rows[0]!.id, delivery: 'DESIGN_DRAFT' };
   });
 }
 export async function reviewDesign(ctx: RequestContext, code: string, rev: number, body: { domain: string; decision: 'APPROVED' | 'CHANGES_REQUESTED'; note?: string }) {
@@ -295,7 +344,7 @@ export async function resolveRfi(ctx: RequestContext, code: string, rfi: string,
 
 // ------------------------------------------------------------------------------------------------------------ delivery facts and steps
 async function deliveryFacts(ctx: RequestContext, q: Queryable, p: ProjectRow): Promise<DeliveryFacts> {
-  const rev = (await q.query<{ rev: number; files: unknown[]; lite_model_room: string | null; divr: unknown; reason: string; domains_needed: string[]; author_id: string; id: string; state: string }>('SELECT id, rev, files, lite_model_room, divr, reason, domains_needed, author_id, state FROM app.project_design_revision WHERE project_id = $1 ORDER BY rev DESC LIMIT 1', [p.id])).rows[0];
+  const rev = (await q.query<{ rev: number; phase: 'CONCEPT' | 'DETAILED'; files: unknown[]; lite_model_room: string | null; divr: unknown; reason: string; domains_needed: string[]; author_id: string; id: string; state: string }>('SELECT id, rev, phase, files, lite_model_room, divr, reason, domains_needed, author_id, state FROM app.project_design_revision WHERE project_id = $1 ORDER BY rev DESC LIMIT 1', [p.id])).rows[0];
   const approvals: Record<string, string> = {};
   if (rev) for (const a of (await q.query<{ domain: string; decision: string }>('SELECT DISTINCT ON (domain) domain, decision FROM app.project_design_review WHERE revision_id = $1 ORDER BY domain, reviewed_at DESC', [rev.id])).rows) approvals[a.domain] = a.decision;
   const openRfis = rev ? (await q.query<{ n: number }>('SELECT count(*)::int AS n FROM app.project_rfi WHERE revision_id = $1 AND resolved_at IS NULL', [rev.id])).rows[0]!.n : 0;
@@ -314,8 +363,8 @@ async function deliveryFacts(ctx: RequestContext, q: Queryable, p: ProjectRow): 
   const fa = p.field_authorization as { technicianId?: string | null; technicianQualified?: boolean; siteAccess?: boolean; workOrderAccepted?: boolean } | null;
   const wo = fa?.technicianId ? { assigned: 1, accepted: fa.workOrderAccepted ? 1 : 0 } : null;
   return {
-    state: p.delivery || 'ENGINEERING_REVIEW', governance: p.governance,
-    revision: rev ? { rev: rev.rev, files: rev.files.length, liteModel: !!rev.lite_model_room, divr: !!rev.divr, reason: rev.reason, domainsNeeded: rev.domains_needed, domainApprovals: approvals, openRfis, authorId: rev.author_id } : null,
+    state: p.delivery || 'ENGINEERING_REVIEW', governance: p.governance, conceptAuthorized: p.concept_scope_rev === p.scope_rev,
+    revision: rev ? { rev: rev.rev, phase: rev.phase, files: rev.files.length, liteModel: !!rev.lite_model_room, divr: !!rev.divr, reason: rev.reason, domainsNeeded: rev.domains_needed, domainApprovals: approvals, openRfis, authorId: rev.author_id } : null,
     rooms: roomFacts, rulePackVersion: p.rule_pack_version,
     fieldAuthorization: fa ? { technicianQualified: !!fa.technicianQualified, siteAccess: !!fa.siteAccess } : null,
     workOrders: wo,
@@ -329,7 +378,9 @@ export async function deliver(ctx: RequestContext, code: string, to: DeliverySta
   await ctx.require(row.authority, `move the project to ${to}`, PRJ(code));
   return ctx.tx(async (q) => {
     const p = await findProject(ctx, q, code, true);
-    if (p.governance !== 'FUNDED') await ctx.refuse(`project.delivery:${to}`, PRJ(code), [`the project is ${p.governance}, not FUNDED: delivery runs only on a funded project`]);
+    // concept work (ENGINEERING_REVIEW → DESIGN_DRAFT → DESIGN_REVIEW) runs on concept authorization; execution states need funding (owner decision, ADR-0008 §2)
+    if (EXECUTION_STATES.includes(to) && p.governance !== 'FUNDED') await ctx.refuse(`project.delivery:${to}`, PRJ(code), [`execution authorization missing: the project is ${p.governance}, not FUNDED — ${to} is execution, which needs funding`]);
+    if (!EXECUTION_STATES.includes(to) && p.concept_scope_rev !== p.scope_rev) await ctx.refuse(`project.delivery:${to}`, PRJ(code), ['concept work needs concept authorization at the current scope revision (brief.approve)']);
     // the step's own record, written before the guard reads the facts (so a refusal names exactly what is still missing)
     if (to === 'PLAN_COMPILED') await q.query('UPDATE app.project SET rule_pack_version = $2 WHERE id = $1', [p.id, defaultCatalog.rulePack.version]);   // pinned from the engine that compiled the plans, never typed in
     if (to === 'FIELD_AUTHORIZED') {
@@ -367,7 +418,7 @@ export async function project(ctx: RequestContext, code: string) {
     const briefs = (await q.query('SELECT b.rev, b.scope_rev AS "scopeRev", pe.display_name AS author, b.content, b.created_at AS "createdAt" FROM app.project_brief b JOIN app.person pe ON pe.id = b.author_id WHERE b.project_id = $1 ORDER BY b.rev', [p.id])).rows;
     const decisions = (await q.query('SELECT d.decision, d.scope_rev AS "scopeRev", pe.display_name AS "decidedBy", d.delegation_id IS NOT NULL AS delegated, d.reason, d.review_date AS "reviewDate", d.decided_at AS "decidedAt" FROM app.project_decision d JOIN app.person pe ON pe.id = d.decided_by WHERE d.project_id = $1 ORDER BY d.decided_at', [p.id])).rows;
     const funding = (await q.query('SELECT f.kind, f.amount, f.currency, f.cost_center AS "costCenter", f.scope_rev AS "scopeRev", f.reason, pe.display_name AS "recordedBy", f.recorded_at AS "recordedAt" FROM app.project_funding f JOIN app.person pe ON pe.id = f.recorded_by WHERE f.project_id = $1 ORDER BY f.recorded_at', [p.id])).rows;
-    const revisions = (await q.query<{ id: string; rev: number; author: string; reason: string; files: unknown[]; divr: unknown; domainsNeeded: string[]; state: string; createdAt: string; liteModelRoom: string | null }>('SELECT dr.id, dr.rev, pe.display_name AS author, dr.reason, dr.files, dr.divr, dr.domains_needed AS "domainsNeeded", dr.state, dr.created_at AS "createdAt", rm.code AS "liteModelRoom" FROM app.project_design_revision dr JOIN app.person pe ON pe.id = dr.author_id LEFT JOIN app.room rm ON rm.id = dr.lite_model_room WHERE dr.project_id = $1 ORDER BY dr.rev', [p.id])).rows;
+    const revisions = (await q.query<{ id: string; rev: number; phase: string; estimateUsd: string | null; feasibility: unknown; author: string; reason: string; files: unknown[]; divr: unknown; domainsNeeded: string[]; state: string; createdAt: string; liteModelRoom: string | null }>('SELECT dr.id, dr.rev, dr.phase, dr.estimate_usd AS "estimateUsd", dr.feasibility, pe.display_name AS author, dr.reason, dr.files, dr.divr, dr.domains_needed AS "domainsNeeded", dr.state, dr.created_at AS "createdAt", rm.code AS "liteModelRoom" FROM app.project_design_revision dr JOIN app.person pe ON pe.id = dr.author_id LEFT JOIN app.room rm ON rm.id = dr.lite_model_room WHERE dr.project_id = $1 ORDER BY dr.rev', [p.id])).rows;
     const reviews = (await q.query<{ revision_id: string; domain: string; decision: string; note: string; reviewedBy: string; reviewedAt: string }>('SELECT rv.revision_id, rv.domain, rv.decision, rv.note, pe.display_name AS "reviewedBy", rv.reviewed_at AS "reviewedAt" FROM app.project_design_review rv JOIN app.person pe ON pe.id = rv.reviewed_by JOIN app.project_design_revision dr ON dr.id = rv.revision_id WHERE dr.project_id = $1 ORDER BY rv.reviewed_at', [p.id])).rows;
     const rfis = (await q.query<{ revision_id: string; code: string; question: string; raisedBy: string; raisedAt: string; answer: string | null; resolvedBy: string | null; resolvedAt: string | null }>('SELECT f.revision_id, f.code, f.question, a.display_name AS "raisedBy", f.raised_at AS "raisedAt", f.answer, b.display_name AS "resolvedBy", f.resolved_at AS "resolvedAt" FROM app.project_rfi f JOIN app.person a ON a.id = f.raised_by LEFT JOIN app.person b ON b.id = f.resolved_by WHERE f.project_id = $1 ORDER BY f.raised_at', [p.id])).rows;
     const facts = await deliveryFacts(ctx, q, p);
@@ -377,6 +428,7 @@ export async function project(ctx: RequestContext, code: string) {
     const names = async (id: string | null) => (id ? (await q.query<{ n: string }>('SELECT display_name AS n FROM app.person WHERE id = $1', [id])).rows[0]?.n || null : null);
     return {
       code: p.code, name: p.name, type: p.type, state: p.state, governance: p.governance, delivery: p.delivery, scopeRev: p.scope_rev, stage: stageOf(p.governance, p.delivery), internalOnly: p.internal_only, exceptionReason: p.exception_reason,
+      concept: p.concept_authorized_at ? { by: await names(p.concept_authorized_by), at: p.concept_authorized_at, scopeRev: p.concept_scope_rev, current: p.concept_scope_rev === p.scope_rev } : null, executionAuthorized: p.governance === 'FUNDED',
       approver: await names(p.approver_id), supportOwner: await names(p.support_owner_id), qaSignoffBy: await names(p.qa_signoff_by), rulePackVersion: p.rule_pack_version, fieldAuthorization: p.field_authorization,
       request: r ? { code: r.code, type: r.type, title: r.title, intent: r.intent, constraints: r.constraints, site: r.site, building: r.building, room: r.room, provisionalRoom: r.provisional_room, archetype: r.archetype, capacity: r.capacity, photoPolicy: r.photo_policy, photos: r.photos, plans: r.plans, dimensions: r.dimensions, programme: r.programme, state: r.state, requester: r.requester, submittedAt: r.submitted_at } : null,
       briefs, decisions, funding,

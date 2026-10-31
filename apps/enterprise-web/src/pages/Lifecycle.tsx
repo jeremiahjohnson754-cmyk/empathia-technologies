@@ -13,17 +13,18 @@ import { href } from '../router.js';
 
 type Tone = 'ok' | 'warn' | 'bad' | 'muted' | 'info';
 interface RequestRow { code: string; type: string; title: string; state: string; site: string | null; project: string | null; photoPolicy: string; programme: boolean; createdAt: string; submittedAt: string | null }
-interface Catalogue { requestTypes: Array<{ key: string; label: string; summary: string; source: string }>; governance: Array<{ from: string; to: string; role: string; authority: string; guard: string }>; delivery: Array<{ from: string; to: string; role: string; authority: string; guard: string }> }
+interface Catalogue { requestTypes: Array<{ key: string; label: string; summary: string; source: string; industry: string; enabled: boolean; scope: 'default' | 'tenant'; sort: number }>; governance: Array<{ from: string; to: string; role: string; authority: string; guard: string }>; delivery: Array<{ from: string; to: string; role: string; authority: string; guard: string }> }
 interface Dim { name: string; value: string; unit: string; source: string; uncertainty: string }
 interface Step { to: string; authority: string; guard: string; blockers?: string[] }
 interface Project {
   code: string; name: string; type: string | null; state: string; governance: string; delivery: string | null; scopeRev: number; stage: { n: number; stage: string }; internalOnly: boolean; exceptionReason: string | null;
+  concept: { by: string | null; at: string; scopeRev: number | null; current: boolean } | null; executionAuthorized: boolean;
   approver: string | null; supportOwner: string | null; qaSignoffBy: string | null; rulePackVersion: string | null; fieldAuthorization: Record<string, unknown> | null;
   request: { code: string; type: string; title: string; intent: string; constraints: string; site: string | null; building: string | null; room: string | null; provisionalRoom: string | null; archetype: string | null; capacity: number | null; photoPolicy: string; photos: unknown[]; plans: unknown[]; dimensions: Array<{ name: string; value: number; unit: string; source: string; uncertainty: string }>; programme: boolean; state: string; requester: string; submittedAt: string | null } | null;
   briefs: Array<{ rev: number; scopeRev: number; author: string; content: { summary: string; requirements: string[]; assumptions: string[]; romUsd: number | null; romLabel: string | null; comparableRooms: string[] }; createdAt: string }>;
   decisions: Array<{ decision: string; scopeRev: number; decidedBy: string; delegated: boolean; reason: string; reviewDate: string | null; decidedAt: string }>;
   funding: Array<{ kind: string; amount: string; currency: string; costCenter: string; scopeRev: number; reason: string; recordedBy: string; recordedAt: string }>;
-  design: Array<{ rev: number; author: string; reason: string; files: Array<{ name: string; kind?: string }>; divr: { intent: string; verificationPlan: string[] } | null; domainsNeeded: string[]; state: string; createdAt: string; liteModelRoom: string | null; reviews: Array<{ domain: string; decision: string; note: string; reviewedBy: string; reviewedAt: string }>; rfis: Array<{ code: string; question: string; raisedBy: string; raisedAt: string; answer: string | null; resolvedBy: string | null; resolvedAt: string | null }> }>;
+  design: Array<{ rev: number; phase: 'CONCEPT' | 'DETAILED'; estimateUsd: string | null; feasibility: { finding: string; risks?: string[]; options?: string[]; label: string } | null; author: string; reason: string; files: Array<{ name: string; kind?: string }>; divr: { intent: string; verificationPlan: string[] } | null; domainsNeeded: string[]; state: string; createdAt: string; liteModelRoom: string | null; reviews: Array<{ domain: string; decision: string; note: string; reviewedBy: string; reviewedAt: string }>; rfis: Array<{ code: string; question: string; raisedBy: string; raisedAt: string; answer: string | null; resolvedBy: string | null; resolvedAt: string | null }> }>;
   rooms: Array<{ code: string; lifecycle: string; hasPlan: boolean; applicable: number; verified: number; openIssues: number; drawingsApproved: boolean; photosApproved: boolean; hasBaseline: boolean }>;
   next: { governance: Step[]; delivery: Step[] }; audit: Array<{ action: string; outcome: string; by: string | null; at: string; detail: Record<string, unknown> }>;
 }
@@ -73,7 +74,7 @@ function NewRequest({ open, onClose, catalogue }: { open: boolean; onClose: () =
   const t = catalogue?.requestTypes.find((x) => x.key === f.type);
   return (
     <Drawer open={open} title="New request" onClose={onClose} footer={<><Button onClick={onClose}>Cancel</Button><Button kind="primary" busy={mk.busy} onClick={async () => { if ((await mk.run(undefined)) !== undefined) onClose(); }}>Save as draft</Button></>}>
-      <Field label="Kind of request" hint={t ? `${t.summary} (source: ${t.source})` : undefined}>{(id) => <select id={id} value={f.type} onChange={set('type')}>{(catalogue?.requestTypes || []).map((x) => <option key={x.key} value={x.key}>{x.label}</option>)}</select>}</Field>
+      <Field label="Kind of request" hint={t ? `${t.summary} (source: ${t.source})` : undefined}>{(id) => <select id={id} value={f.type} onChange={set('type')}>{(catalogue?.requestTypes || []).filter((x) => x.enabled).map((x) => <option key={x.key} value={x.key}>{x.label}{x.scope === 'tenant' ? ` · ${x.industry}` : ''}</option>)}</select>}</Field>
       <Field label="Title">{(id) => <input id={id} value={f.title} onChange={set('title')} maxLength={160} />}</Field>
       <Field label="Usage intent" hint="What should the room do for the people in it? Required by the governance guard.">{(id) => <textarea id={id} rows={3} value={f.intent} onChange={set('intent')} />}</Field>
       <Field label="Constraints and operational needs">{(id) => <textarea id={id} rows={2} value={f.constraints} onChange={set('constraints')} />}</Field>
@@ -115,7 +116,7 @@ export function ProjectRecord({ code }: { code: string }) {
   return (
     <section className="page">
       <header className="page__head"><div><p className="kicker"><a href={href('projects')}>Projects</a> · {p.type ? p.type.replace(/_/g, ' ') : 'project'}</p><h1>{p.name}</h1><p className="ui-meta mono">{p.code}{r ? ` · from ${r.code}` : ''} · scope revision {p.scopeRev}{p.internalOnly ? ' · internal route' : ''}</p></div>
-        <div className="stack"><Tag tone={tone(p.governance)}>{p.governance}</Tag>{p.delivery ? <Tag tone={tone(p.delivery)}>{p.delivery}</Tag> : null}</div></header>
+        <div className="stack" data-testid="authorizations"><Tag tone={tone(p.governance)}>{p.governance}</Tag>{p.delivery ? <Tag tone={tone(p.delivery)}>{p.delivery}</Tag> : null}<Tag tone={p.concept?.current ? 'ok' : 'muted'}>{p.concept?.current ? 'concept authorized' : 'concept not authorized'}</Tag><Tag tone={p.executionAuthorized ? 'ok' : 'muted'}>{p.executionAuthorized ? 'execution authorized' : 'execution not authorized'}</Tag></div></header>
       <ol className="stages" aria-label="Lifecycle stage" data-testid="stages">{STAGES.map((s, i) => <li key={s} className={i + 1 < p.stage.n ? 'done' : i + 1 === p.stage.n ? 'now' : ''}><span className="stages__n">{i + 1}</span>{s}</li>)}</ol>
       {act.error ? <ErrorState error={act.error} /> : null}
 
@@ -125,6 +126,7 @@ export function ProjectRecord({ code }: { code: string }) {
           {p.next.governance.map((s) => <li key={s.to}><b>{p.governance} → {s.to}</b> <span className="ui-meta">{s.authority} · guard {s.guard}</span>{may(s) ? <span className="row-actions">{stepButton(s.to, setDrawer, run, P)}</span> : <span className="ui-meta"> · not your authority</span>}</li>)}
           {p.next.delivery.map((s) => <li key={s.to}><b>{p.delivery} → {s.to}</b> <span className="ui-meta">{s.authority} · guard {s.guard}</span>{s.blockers?.length ? <ul className="why">{s.blockers.map((b) => <li key={b}>{b}</li>)}</ul> : <span className="ui-meta ok"> · open</span>}{may(s) && !s.blockers?.length ? <span className="row-actions">{deliveryButton(s.to, setDrawer, run, P)}</span> : null}</li>)}
           {!p.next.governance.length && !p.next.delivery.length && p.state !== 'CLOSED' ? <li className="ui-meta">No governed step from {p.governance}{p.delivery ? ` / ${p.delivery}` : ''}{['HELD', 'REJECTED', 'SUSPENDED'].includes(p.governance) ? ' — a scope revision (scope.revise) reopens the project with a new brief and a new approval chain' : ''}.</li> : null}
+          {p.briefs.some((b) => b.scopeRev === p.scopeRev) && !p.concept?.current && !['HELD', 'REJECTED', 'SUSPENDED'].includes(p.governance) && can('brief.approve') ? <li><b>Concept authorization</b> <span className="ui-meta">brief.approve · not the brief's author · opens preliminary design, feasibility studies, concept layouts and preliminary budgets before funding</span><span className="row-actions"><Button small kind="primary" onClick={() => run('postV1ProjectsCodeConcept', P({}))}>Authorize concept work</Button></span></li> : null}
           {['HELD', 'REJECTED', 'SUSPENDED'].includes(p.governance) && can('scope.revise') ? <li><Button small onClick={() => setDrawer('scope')}>Revise the scope (reopen)</Button></li> : null}
           {p.delivery && ['DESIGN_DRAFT', 'DESIGN_REVIEW'].includes(p.delivery) && can(['design.submit', 'design.revise']) ? <li><Button small onClick={() => setDrawer('revision')}>Propose a design revision</Button></li> : null}
         </ul>
@@ -142,13 +144,15 @@ export function ProjectRecord({ code }: { code: string }) {
       </section>
 
       <section className="card stack"><h2 className="h3">Approval and funding</h2>
-        <Facts items={[['Selected approver', p.approver || '—'], ['Decisions', String(p.decisions.length)], ['Funding', p.funding.filter((f) => f.kind === 'AUTHORIZED').length ? `${p.funding.filter((f) => f.kind === 'AUTHORIZED').slice(-1)[0]!.amount} ${p.funding.filter((f) => f.kind === 'AUTHORIZED').slice(-1)[0]!.currency}` : 'none']]} />
+        <Facts items={[['Concept authorization', p.concept ? `${p.concept.by} · ${when(p.concept.at)} · scope revision ${p.concept.scopeRev}${p.concept.current ? '' : ' (superseded by a scope revision)'}` : 'not yet'], ['Execution authorization', p.executionAuthorized ? 'FUNDED' : 'needs funding'], ['Selected approver', p.approver || '—'], ['Decisions', String(p.decisions.length)], ['Funding', p.funding.filter((f) => f.kind === 'AUTHORIZED').length ? `${p.funding.filter((f) => f.kind === 'AUTHORIZED').slice(-1)[0]!.amount} ${p.funding.filter((f) => f.kind === 'AUTHORIZED').slice(-1)[0]!.currency}` : 'none']]} />
         {p.decisions.length ? <ul className="plain">{p.decisions.map((d, i) => <li key={i}><Tag tone={tone(d.decision)}>{d.decision}</Tag> scope revision {d.scopeRev} by {d.decidedBy}{d.delegated ? <Tag tone="info">delegated</Tag> : null} <span className="ui-meta">{when(d.decidedAt)}</span>{d.reason ? <div className="ui-meta">{d.reason}{d.reviewDate ? ` · review ${d.reviewDate}` : ''}</div> : null}</li>)}</ul> : null}
         {p.funding.length ? <ul className="plain">{p.funding.map((f, i) => <li key={i}><Tag tone={tone(f.kind)}>{f.kind}</Tag> {f.amount} {f.currency} · {f.costCenter} · scope revision {f.scopeRev} · {f.recordedBy} <span className="ui-meta">{when(f.recordedAt)}{f.reason ? ` · ${f.reason}` : ''}</span></li>)}</ul> : null}
       </section>
 
       <section className="card stack" data-testid="design"><h2 className="h3">Collaborative design</h2>
-        {!p.design.length ? <p className="ui-meta">No design revision yet{p.delivery ? '' : ' — design starts once the project is funded'}.</p> : p.design.map((d) => <article key={d.rev} className="rev"><header><b>Revision {d.rev}</b> <Tag tone={tone(d.state)}>{d.state}</Tag> <span className="ui-meta">{d.author} · {when(d.createdAt)} · {d.reason}</span></header>
+        {!p.design.length ? <p className="ui-meta">No design revision yet{p.concept?.current ? '' : ' — concept work starts on concept authorization (an approved brief); detailed design needs funding'}.</p> : p.design.map((d) => <article key={d.rev} className="rev"><header><b>Revision {d.rev}</b> <Tag tone={d.phase === 'CONCEPT' ? 'info' : 'ok'}>{d.phase}</Tag> <Tag tone={tone(d.state)}>{d.state}</Tag> <span className="ui-meta">{d.author} · {when(d.createdAt)} · {d.reason}</span></header>
+          {d.feasibility ? <Notice tone="info"><b>Feasibility.</b> {d.feasibility.finding}{d.feasibility.risks?.length ? <> · risks: {d.feasibility.risks.join('; ')}</> : null}{d.feasibility.options?.length ? <> · options: {d.feasibility.options.join('; ')}</> : null} <span className="ui-meta">{d.feasibility.label}</span></Notice> : null}
+          {d.estimateUsd != null ? <p className="ui-meta">Preliminary estimate {Number(d.estimateUsd).toLocaleString()} USD — concept work, not a quote</p> : null}
           <Facts items={[['Files', d.files.length ? d.files.map((f) => f.name).join(', ') : 'none'], ['Lite model', d.liteModelRoom ? <a className="mono" href={href('rooms', d.liteModelRoom)}>{d.liteModelRoom}</a> : 'none'], ['DIVR', d.divr ? `${d.divr.intent} · ${d.divr.verificationPlan.length} verification step(s)` : 'none'], ['Reviews needed', d.domainsNeeded.join(', ') || 'none']]} />
           {d.reviews.length ? <ul className="plain">{d.reviews.map((x, i) => <li key={i}><Tag tone={tone(x.decision)}>{x.decision}</Tag> {x.domain} by {x.reviewedBy} <span className="ui-meta">{when(x.reviewedAt)}{x.note ? ` · ${x.note}` : ''}</span></li>)}</ul> : null}
           {d.rfis.length ? <ul className="plain">{d.rfis.map((x) => <li key={x.code}><b className="mono">{x.code}</b> {x.question} <span className="ui-meta">— {x.raisedBy}</span>{x.answer ? <div><Tag tone="ok">RESOLVED</Tag> {x.answer} <span className="ui-meta">— {x.resolvedBy}</span></div> : <div><Tag tone="warn">OPEN</Tag>{can('rfi.resolve') ? <Button small kind="quiet" onClick={() => setDrawer(`rfi:${x.code}`)}>Resolve</Button> : null}</div>}</li>)}</ul> : null}
@@ -209,8 +213,11 @@ function ActionDrawer({ id, onClose, run, P, busy, error, scopeRev, rooms }: { i
       <div className="two"><Field label="Amount">{(i) => <input id={i} type="number" min={0} value={v('amount')} onChange={set('amount')} />}</Field><Field label="Currency">{(i) => <input id={i} value={v('currency', 'USD')} onChange={set('currency')} maxLength={3} />}</Field></div><Field label="Cost center">{(i) => <input id={i} value={v('cc')} onChange={set('cc')} />}</Field>{err}</Drawer>;
     case 'suspend': return <Drawer open title="Withdraw funding" onClose={close} footer={foot('Withdraw', () => run('postV1ProjectsCodeFundingWithdraw', P({ reason: v('reason') })))}><Field label="Reason">{(i) => <textarea id={i} rows={2} value={v('reason')} onChange={set('reason')} />}</Field>{err}</Drawer>;
     case 'scope': return <Drawer open title={`Revise the scope (to revision ${scopeRev + 1})`} onClose={close} footer={foot('Reopen with a new scope revision', () => run('postV1ProjectsCodeScope', P({ reason: v('reason') })))}><Notice tone="info">The project returns to its recorded route for a new brief and a new approval chain. Earlier briefs and decisions stay in the record.</Notice><Field label="Reason">{(i) => <textarea id={i} rows={2} value={v('reason')} onChange={set('reason')} />}</Field>{err}</Drawer>;
-    case 'revision': return <Drawer open title="Propose a design revision" onClose={close} footer={foot('Propose', () => run('postV1ProjectsCodeDesignRevisions', P({ reason: v('reason'), files: v('files').split(',').map((x) => x.trim()).filter(Boolean).map((name) => ({ name })), liteModelRoom: v('room') || undefined, divr: v('intent') ? { intent: v('intent'), verificationPlan: list(v('plan')) } : undefined, domainsNeeded: ['dsp', 'camera', 'touch'].filter((d) => v(`d:${d}`) === 'on') })))}>
-      <Field label="Reason for this revision">{(i) => <input id={i} value={v('reason')} onChange={set('reason')} />}</Field><Field label="Design files (names, comma-separated)">{(i) => <input id={i} value={v('files')} onChange={set('files')} />}</Field>
+    case 'revision': return <Drawer open title="Propose a design revision" onClose={close} footer={foot('Propose', () => run('postV1ProjectsCodeDesignRevisions', P({ reason: v('reason'), phase: v('phase', 'CONCEPT'), estimateUsd: v('est') ? Number(v('est')) : undefined, feasibility: v('finding') ? { finding: v('finding'), risks: list(v('risks')), options: list(v('options')) } : undefined, files: v('files').split(',').map((x) => x.trim()).filter(Boolean).map((name) => ({ name })), liteModelRoom: v('room') || undefined, divr: v('intent') ? { intent: v('intent'), verificationPlan: list(v('plan')) } : undefined, domainsNeeded: ['dsp', 'camera', 'touch'].filter((d) => v(`d:${d}`) === 'on') })))}>
+      <Field label="Phase" hint="CONCEPT: feasibility, concept layout, preliminary estimate (on concept authorization). DETAILED: the design released for construction (needs funding).">{(i) => <select id={i} value={v('phase', 'CONCEPT')} onChange={set('phase')}><option>CONCEPT</option><option>DETAILED</option></select>}</Field>
+      <Field label="Reason for this revision">{(i) => <input id={i} value={v('reason')} onChange={set('reason')} />}</Field>
+      {v('phase', 'CONCEPT') === 'CONCEPT' ? <><Field label="Feasibility finding">{(i) => <textarea id={i} rows={2} value={v('finding')} onChange={set('finding')} />}</Field><Field label="Risks (one per line)">{(i) => <textarea id={i} rows={2} value={v('risks')} onChange={set('risks')} />}</Field><Field label="Options (one per line)">{(i) => <textarea id={i} rows={2} value={v('options')} onChange={set('options')} />}</Field><Field label="Preliminary estimate (USD)" hint="Concept work — labelled as such, never a quote">{(i) => <input id={i} type="number" min={0} value={v('est')} onChange={set('est')} />}</Field></> : null}
+      <Field label="Design files (names, comma-separated)">{(i) => <input id={i} value={v('files')} onChange={set('files')} />}</Field>
       <Field label="Lite model (a room of this project)">{(i) => <select id={i} value={v('room')} onChange={set('room')}><option value="">none</option>{rooms.map((x) => <option key={x}>{x}</option>)}</select>}</Field>
       <Field label="Design intent (DIVR)">{(i) => <textarea id={i} rows={2} value={v('intent')} onChange={set('intent')} />}</Field><Field label="Verification plan (one per line)">{(i) => <textarea id={i} rows={2} value={v('plan')} onChange={set('plan')} />}</Field>
       <fieldset className="dims"><legend>Domain reviews needed</legend>{['dsp', 'camera', 'touch'].map((d) => <label key={d} className="check"><input type="checkbox" checked={v(`d:${d}`) === 'on'} onChange={(e) => setF((x) => ({ ...x, [`d:${d}`]: e.target.checked ? 'on' : '' }))} /> {d}</label>)}</fieldset>{err}</Drawer>;
@@ -222,4 +229,35 @@ function ActionDrawer({ id, onClose, run, P, busy, error, scopeRev, rooms }: { i
     case 'handoff': return <Drawer open title="Hand off to operations" onClose={close} footer={foot('Hand off', () => run('postV1ProjectsCodeDelivery', P({ to: 'HANDED_OFF', supportOwnerEmail: v('owner') })))}><Field label="Support owner's email">{(i) => <input id={i} value={v('owner')} onChange={set('owner')} />}</Field>{err}</Drawer>;
     default: return null;
   }
+}
+
+
+// ------------------------------------------------------------------------------------------------------------ administration: the request catalogue
+export function RequestCatalogue() {
+  const cat = useQuery<Catalogue>('projects:catalogue', () => call('getV1ProjectsCatalogue', {}) as Promise<Catalogue>);
+  const [f, setF] = useState({ key: '', label: '', summary: '', industry: 'general', sort: '100' });
+  const up = useMutation((a: { key: string; label?: string; summary?: string; industry?: string; enabled?: boolean; sort?: number }) => call('postV1AdminRequestTypes', { body: a }), ['projects:catalogue']);
+  if (cat.error) return <ErrorState error={cat.error} retry={cat.reload} />;
+  if (!cat.data) return <Loading />;
+  const rows = cat.data.requestTypes;
+  return (
+    <div className="stack" data-testid="request-catalogue">
+      <Notice tone="info">The nine platform defaults are provisionally approved (owner, 2026-10-30). Your organization extends the catalogue with industry- or customer-specific kinds, or disables a default here; every change is audited and takes effect at the next request.</Notice>
+      <DataTable rows={rows} rowKey={(r) => r.key} caption="Request catalogue" dense columns={[
+        { key: 'k', header: 'Kind', render: (r) => <div><b>{r.label}</b><div className="ui-meta mono">{r.key}</div></div>, sort: (r) => r.sort },
+        { key: 's', header: 'Summary', render: (r) => <span className="ui-meta">{r.summary}</span> },
+        { key: 'i', header: 'Industry', render: (r) => r.industry },
+        { key: 'o', header: 'Scope', render: (r) => <Tag tone={r.scope === 'tenant' ? 'info' : 'muted'}>{r.scope === 'tenant' ? 'this organization' : 'platform default'}</Tag> },
+        { key: 'e', header: 'Enabled', render: (r) => <span className="row-actions"><Tag tone={r.enabled ? 'ok' : 'bad'}>{r.enabled ? 'yes' : 'no'}</Tag><Button small kind="quiet" busy={up.busy} onClick={() => up.run({ key: r.key, enabled: !r.enabled })}>{r.enabled ? 'Disable' : 'Enable'}</Button></span> },
+      ]} />
+      <form className="card stack" onSubmit={(e) => { e.preventDefault(); up.run({ key: f.key, label: f.label, summary: f.summary, industry: f.industry, sort: Number(f.sort) || 100 }).then((r) => { if (r !== undefined) setF({ key: '', label: '', summary: '', industry: 'general', sort: '100' }); }); }}>
+        <h2 className="h3">Add a request kind</h2>
+        <div className="two"><Field label="Key" hint="lower-case letters, digits, underscores">{(i) => <input id={i} value={f.key} onChange={(e) => setF({ ...f, key: e.target.value })} pattern="^[a-z][a-z0-9_]{1,39}$" required />}</Field><Field label="Label">{(i) => <input id={i} value={f.label} onChange={(e) => setF({ ...f, label: e.target.value })} maxLength={80} required />}</Field></div>
+        <Field label="Summary">{(i) => <input id={i} value={f.summary} onChange={(e) => setF({ ...f, summary: e.target.value })} maxLength={400} />}</Field>
+        <div className="two"><Field label="Industry">{(i) => <input id={i} value={f.industry} onChange={(e) => setF({ ...f, industry: e.target.value })} maxLength={40} />}</Field><Field label="Sort">{(i) => <input id={i} type="number" value={f.sort} onChange={(e) => setF({ ...f, sort: e.target.value })} />}</Field></div>
+        <div><Button kind="primary" busy={up.busy} type="submit">Add to the catalogue</Button></div>
+        {up.error ? <ErrorState error={up.error} /> : null}
+      </form>
+    </div>
+  );
 }

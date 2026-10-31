@@ -231,17 +231,52 @@ try {
   await page.click('button:has-text("Decide")'); await page.waitForSelector('.ui-drawer');
   await page.click('.ui-drawer button:has-text("Record the decision")'); await page.waitForSelector('.ui-drawer', { state: 'detached' }); await page.waitForTimeout(300);
   ok('W-44', 'the selected executive approves scope revision 1; the decision is listed with its decider', /APPROVED/.test(await page.locator('main').innerText()) && /Executive \/ Sponsor \(synthetic\)/.test(await page.locator('main').innerText()));
+  // owner decision (ADR-0008 §2): concept work before funding; execution after
+  await signIn('syseng');
+  await page.goto(base + `#/projects/${prjCode}`); await page.waitForSelector('[data-testid=stages]');
+  ok('W-45a', 'before concept authorization the record says so and the designer has nothing to propose', /concept not authorized/.test(await page.locator('[data-testid=authorizations]').innerText()) && /execution not authorized/.test(await page.locator('[data-testid=authorizations]').innerText()));
+  await page.click('button:has-text("Authorize concept work")'); await page.waitForTimeout(400);
+  ok('W-45b', 'the systems engineer (not the brief’s author) authorizes concept work: delivery opens at ENGINEERING_REVIEW while the project is only APPROVED', /concept authorized/.test(await page.locator('[data-testid=authorizations]').innerText()) && /ENGINEERING_REVIEW/.test(await page.locator('main').innerText()) && /execution not authorized/.test(await page.locator('[data-testid=authorizations]').innerText()));
+  await page.click('button:has-text("Move to DESIGN_DRAFT")'); await page.waitForTimeout(400);
+  await signIn('designer');
+  await page.goto(base + `#/projects/${prjCode}`); await page.waitForSelector('[data-testid=stages]');
+  await page.click('button:has-text("Propose a design revision")'); await page.waitForSelector('.ui-drawer');
+  await page.fill('.ui-drawer input:not([type]) >> nth=0', 'feasibility and concept layout');
+  await page.fill('.ui-drawer textarea >> nth=0', 'A four-seat huddle fits the 4.2 m bay with one display; a second display does not.');
+  await page.fill('.ui-drawer input[type=number]', '16500');
+  await page.click('.ui-drawer button:has-text("Propose")'); await page.waitForSelector('.ui-drawer', { state: 'detached' }); await page.waitForTimeout(300);
+  const design = await page.locator('[data-testid=design]').innerText();
+  ok('W-45c', 'a CONCEPT revision with its feasibility finding and a labelled preliminary estimate is recorded before any money is authorized', /CONCEPT/.test(design) && /Feasibility\./.test(design) && /16,500 USD — concept work, not a quote/.test(design), design.slice(0, 300));
+  await page.click('button:has-text("Propose a design revision")'); await page.waitForSelector('.ui-drawer');
+  await page.selectOption('.ui-drawer select >> nth=0', 'DETAILED'); await page.fill('.ui-drawer input:not([type]) >> nth=0', 'detailed design too early');
+  await page.click('.ui-drawer button:has-text("Propose")'); await page.waitForSelector('.ui-drawer .ui-state--error');
+  ok('W-45d', 'a DETAILED design before funding is refused with the execution-authorization reason', /execution authorization/.test(await page.locator('.ui-drawer .ui-state--error').innerText()));
+  await page.click('.ui-drawer button:has-text("Cancel")'); await page.waitForTimeout(200);
   await signIn('finance');
   await page.goto(base + `#/projects/${prjCode}`); await page.waitForSelector('[data-testid=stages]');
   await page.click('button:has-text("Authorize funding")'); await page.waitForSelector('.ui-drawer');
   await page.fill('.ui-drawer input[type=number]', '18000'); await page.fill('.ui-drawer input:not([type=number]) >> nth=1', 'CC-AV-01');
   await page.click('.ui-drawer button:has-text("Authorize")'); await page.waitForSelector('.ui-drawer', { state: 'detached' }); await page.waitForTimeout(300);
   const funded = await page.locator('main').innerText();
-  ok('W-45', 'funding against the approved scope opens delivery at ENGINEERING_REVIEW; the stage is collaborative design and the next delivery step names brief.approve', /FUNDED/.test(funded) && /ENGINEERING_REVIEW/.test(funded) && /collaborative design/.test(await page.locator('[data-testid=stages] li.now').innerText()) && /brief\.approve/.test(await page.locator('[data-testid=next-steps]').innerText()), funded.slice(0, 200));
+  ok('W-45', 'funding against the approved scope is execution authorization: the stage is collaborative design, delivery stays where the concept work is (DESIGN_DRAFT), and the record says execution is authorized', /FUNDED/.test(funded) && /DESIGN_DRAFT/.test(funded) && /collaborative design/.test(await page.locator('[data-testid=stages] li.now').innerText()) && /execution authorized/.test(await page.locator('[data-testid=authorizations]').innerText()), funded.slice(0, 200));
   await shot('12-project-funded');
   await signIn('designer');
   await page.goto(base + `#/projects/${prjCode}`); await page.waitForSelector('[data-testid=stages]');
-  ok('W-46', 'a designer sees the same record but no step they do not hold (ENGINEERING_REVIEW → DESIGN_DRAFT is not theirs)', /not your authority/.test(await page.locator('[data-testid=next-steps]').innerText()) && !(await page.locator('[data-testid=next-steps] button').count()));
+  ok('W-46', 'a designer sees the same record; the only step they hold is DESIGN_DRAFT → DESIGN_REVIEW (design.submit), blocked until the revision carries a DIVR', /not your authority/.test(await page.locator('[data-testid=next-steps]').innerText()) && /Design Intent/.test(await page.locator('[data-testid=next-steps]').innerText()));
+  // the request catalogue is configurable by the security administrator and the new kind is offered at intake
+  await signIn('secadmin');
+  await page.goto(base + '#/admin/catalogue'); await page.waitForSelector('[data-testid=request-catalogue]');
+  await page.fill('[data-testid=request-catalogue] form input >> nth=0', 'clinical_sim'); await page.fill('[data-testid=request-catalogue] form input >> nth=1', 'Clinical simulation suite'); await page.fill('[data-testid=request-catalogue] form input >> nth=3', 'healthcare');
+  await page.click('[data-testid=request-catalogue] button:has-text("Add to the catalogue")'); await page.waitForTimeout(400);
+  const catText = await page.locator('[data-testid=request-catalogue] .ui-table').innerText();
+  ok('W-47', 'the security administrator adds an industry-specific request kind to the organization’s catalogue (platform defaults stay marked as such)', /Clinical simulation suite/.test(catText) && /this organization/.test(catText) && (catText.match(/platform default/g) || []).length === 9, catText.slice(0, 200));
+  await signIn('requestor');
+  await page.goto(base + '#/requests'); await page.waitForSelector('.page__head');
+  await page.click('button:has-text("New request")'); await page.waitForSelector('.ui-drawer');
+  const kinds = await page.locator('.ui-drawer select >> nth=0').innerText();
+  ok('W-48', 'the new kind is offered at intake, with its industry', /Clinical simulation suite · healthcare/.test(kinds), kinds);
+  await page.click('.ui-drawer button:has-text("Cancel")');
+
 
   // ---------------------------------------------------------------- hygiene
   ok('W-18', 'no page errors or unexpected console errors', errors.length === 0, errors.join(' | '));

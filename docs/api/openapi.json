@@ -7592,7 +7592,7 @@
         "tags": [
           "projects"
         ],
-        "summary": "The nine request types and the two governed state machines (states, transitions, authority and guard per step) carried over from the demonstrator",
+        "summary": "The effective request catalogue of your organization (platform defaults ∪ tenant types) and the two governed state machines (states, transitions, authority and guard per step); which delivery states are execution (need funding)",
         "operationId": "getV1ProjectsCatalogue",
         "security": [
           {
@@ -7603,6 +7603,222 @@
         "responses": {
           "200": {
             "description": "catalogue"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/request-types": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Configure the request catalogue for your organization: add an industry- or customer-specific request type, change one, or disable a platform default (policy.configure; audited)",
+        "operationId": "postV1AdminRequestTypes",
+        "x-authority": "policy.configure",
+        "x-authority-enforced": [
+          "policy.configure"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "key"
+                ],
+                "properties": {
+                  "key": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]{1,39}$"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  },
+                  "summary": {
+                    "type": "string",
+                    "maxLength": 400
+                  },
+                  "industry": {
+                    "type": "string",
+                    "maxLength": 40
+                  },
+                  "enabled": {
+                    "type": "boolean"
+                  },
+                  "sort": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "key, label, enabled, scope"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/projects/{code}/concept": {
+      "post": {
+        "tags": [
+          "projects"
+        ],
+        "summary": "Concept authorization: approve the current brief for concept work — preliminary design, feasibility studies, concept layouts, preliminary budgets — before funding (brief.approve; not the brief’s author). Execution still needs funding.",
+        "operationId": "postV1ProjectsCodeConcept",
+        "x-authority": "brief.approve",
+        "x-authority-enforced": [
+          "brief.approve"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [],
+                "properties": {
+                  "note": {
+                    "type": "string",
+                    "maxLength": 1000
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "code, conceptAuthorized, scopeRev, delivery"
           },
           "400": {
             "description": "validation error",
@@ -7730,7 +7946,7 @@
         "tags": [
           "projects"
         ],
-        "summary": "Raise a request (one of nine types) with intent, constraints, photos, plans and dimensions that carry their provenance",
+        "summary": "Raise a request (a type of the effective catalogue) with intent, constraints, photos, plans and dimensions that carry their provenance",
         "operationId": "postV1Requests",
         "x-authority": "request.submit",
         "x-authority-enforced": [
@@ -7769,17 +7985,8 @@
                 "properties": {
                   "type": {
                     "type": "string",
-                    "enum": [
-                      "new_room",
-                      "room_refresh",
-                      "camera_replacement",
-                      "dsp_upgrade",
-                      "network_change",
-                      "lifecycle_replacement",
-                      "signage",
-                      "break_fix",
-                      "room_verification"
-                    ]
+                    "pattern": "^[a-z][a-z0-9_]{1,39}$",
+                    "description": "a key of the effective request catalogue (GET /v1/projects/catalogue)"
                   },
                   "title": {
                     "type": "string",
@@ -9049,7 +9256,7 @@
         "tags": [
           "projects"
         ],
-        "summary": "Collaborative design: propose a design revision (files and/or the project room’s Lite model, DIVR, needed domain reviews); supersedes the one in review",
+        "summary": "Collaborative design: propose a design revision — CONCEPT (feasibility study, concept layout, preliminary estimate; on concept authorization) or DETAILED (needs funding) — with files and/or the project room’s Lite model, DIVR and needed domain reviews; supersedes the one in review",
         "operationId": "postV1ProjectsCodeDesignRevisions",
         "x-authority": [
           "design.submit",
@@ -9089,6 +9296,45 @@
                     "type": "string",
                     "minLength": 3,
                     "maxLength": 1000
+                  },
+                  "phase": {
+                    "type": "string",
+                    "enum": [
+                      "CONCEPT",
+                      "DETAILED"
+                    ]
+                  },
+                  "estimateUsd": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "feasibility": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "finding"
+                    ],
+                    "properties": {
+                      "finding": {
+                        "type": "string",
+                        "minLength": 5,
+                        "maxLength": 4000
+                      },
+                      "risks": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "maxLength": 400
+                        }
+                      },
+                      "options": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "maxLength": 400
+                        }
+                      }
+                    }
                   },
                   "files": {
                     "type": "array",

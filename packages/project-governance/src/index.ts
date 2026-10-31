@@ -53,9 +53,12 @@ export const GOVERNANCE_TRANSITIONS: readonly Transition<GovernanceState>[] = Ob
   { from: 'FUNDED', to: 'SUSPENDED', role: 'finance', authority: 'funding.withdraw', guard: 'withdrawal_or_expiry' },
 ]);
 export const DELIVERY_TRANSITIONS: readonly Transition<DeliveryState>[] = Object.freeze([
-  { from: 'ENGINEERING_REVIEW', to: 'DESIGN_DRAFT', role: 'systems_engineer', authority: 'brief.approve', guard: 'project_funded_and_scope_approved' },
+  // owner decision 2026-10-30 20:48 CT (ADR-0008 §Decision 2): concept work — preliminary design, feasibility, concept layouts, preliminary
+  // budgets — may start on CONCEPT AUTHORIZATION (an approved brief), before funding; the demonstrator's `project_funded_and_scope_approved`
+  // guard moves to the release for construction, which is EXECUTION AUTHORIZATION and still needs FUNDED
+  { from: 'ENGINEERING_REVIEW', to: 'DESIGN_DRAFT', role: 'systems_engineer', authority: 'brief.approve', guard: 'concept_authorized' },
   { from: 'DESIGN_DRAFT', to: 'DESIGN_REVIEW', role: 'designer', authority: 'design.submit', guard: 'versioned_files_and_divr' },
-  { from: 'DESIGN_REVIEW', to: 'DESIGN_RELEASED', role: 'systems_engineer', authority: 'design.release', guard: 'domain_approvals_and_geometry_validated' },
+  { from: 'DESIGN_REVIEW', to: 'DESIGN_RELEASED', role: 'systems_engineer', authority: 'design.release', guard: 'domain_approvals_and_geometry_validated_and_funded' },
   { from: 'DESIGN_RELEASED', to: 'PLAN_COMPILED', role: 'commissioning_lead', authority: 'plan.compile', guard: 'rules_compiled_version_pinned' },
   { from: 'PLAN_COMPILED', to: 'FIELD_AUTHORIZED', role: 'service_manager', authority: 'field.authorize', guard: 'qualified_staff_and_site_access' },
   { from: 'FIELD_AUTHORIZED', to: 'FIELD_ACTIVE', role: 'field_technician', authority: 'work.accept', guard: 'work_order_assigned_and_accepted' },
@@ -121,10 +124,14 @@ export function governanceBlockers(to: GovernanceState, f: GovernanceFacts): str
   return out;
 }
 
-export interface DesignRevisionFacts { rev: number; files: number; liteModel: boolean; divr: boolean; reason: string | null; domainsNeeded: string[]; domainApprovals: Record<string, string>; openRfis: number; authorId: string }
+export type DesignPhase = 'CONCEPT' | 'DETAILED';
+/** Delivery states that are EXECUTION (need funding); the ones before are CONCEPT work (need concept authorization). */
+export const EXECUTION_STATES: readonly DeliveryState[] = ['DESIGN_RELEASED', 'PLAN_COMPILED', 'FIELD_AUTHORIZED', 'FIELD_ACTIVE', 'TESTS_VERIFIED', 'DOCUMENTS_APPROVED', 'CUSTOMER_ACCEPTED', 'HANDED_OFF', 'BASELINED'];
+export interface DesignRevisionFacts { rev: number; phase: DesignPhase; files: number; liteModel: boolean; divr: boolean; reason: string | null; domainsNeeded: string[]; domainApprovals: Record<string, string>; openRfis: number; authorId: string }
 export interface RoomFacts { code: string; lifecycle: string; hasPlan: boolean; applicable: number; verified: number; openIssues: number; drawingsApproved: boolean; photosApproved: boolean; hasBaseline: boolean }
 export interface DeliveryFacts {
   state: DeliveryState; governance: GovernanceState;
+  conceptAuthorized: boolean;                  // an approved brief authorized concept work (preliminary design, feasibility, concept layouts, preliminary budget)
   revision: DesignRevisionFacts | null;        // the latest design revision
   rooms: RoomFacts[];
   rulePackVersion: string | null;
@@ -140,12 +147,16 @@ export function deliveryBlockers(to: DeliveryState, f: DeliveryFacts): string[] 
   if (!t) return [`no transition ${f.state} → ${to}: delivery moves one governed step at a time`];
   const out: string[] = []; const r = f.revision;
   switch (t.guard) {
-    case 'project_funded_and_scope_approved':
-      w(f.governance !== 'FUNDED', `the project is ${f.governance}, not FUNDED: an approved project without money is not field-authorized`, out); break;
+    case 'concept_authorized':
+      w(!f.conceptAuthorized, 'concept work needs concept authorization: an approved engineering brief at the current scope revision (brief.approve, not by its author)', out);
+      w(['HELD', 'REJECTED', 'SUSPENDED'].includes(f.governance), `the project is ${f.governance}`, out); break;
     case 'versioned_files_and_divr':
       if (!r) out.push('no design revision'); else { w(r.files === 0 && !r.liteModel, 'no design files or Lite model in this revision', out); w(!r.divr, 'no Design Intent & Verification Record linked', out); w(!r.reason, 'a revision needs its reason', out); } break;
-    case 'domain_approvals_and_geometry_validated':
+    case 'domain_approvals_and_geometry_validated_and_funded':
+      // execution authorization (owner decision, ADR-0008 §2): concept work may continue, release for construction may not, until FUNDED
+      w(f.governance !== 'FUNDED', `execution authorization missing: the project is ${f.governance}, not FUNDED — an approved project without money is not released for construction`, out);
       if (!r) out.push('no design revision'); else {
+        w(r.phase !== 'DETAILED', `the released revision must be a DETAILED design (revision ${r.rev} is ${r.phase})`, out);
         for (const d of r.domainsNeeded) w(r.domainApprovals[d] !== 'APPROVED', `${d} review missing`, out);
         w(r.openRfis > 0, `${r.openRfis} open RFI(s) on this revision`, out);
         w(r.authorId === f.actorId, 'the author of the revision does not release it (segregation of duties)', out);

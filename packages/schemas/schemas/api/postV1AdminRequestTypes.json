@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1AdminRequestTypes/0.1.0.json",
+  "title": "POST /v1/admin/request-types request body",
+  "description": "Configure the request catalogue for your organization: add an industry- or customer-specific request type, change one, or disable a platform default (policy.configure; audited)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "key"
+  ],
+  "properties": {
+    "key": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]{1,39}$"
+    },
+    "label": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 400
+    },
+    "industry": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "sort": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 10000
+    }
+  }
+}

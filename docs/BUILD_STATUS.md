@@ -106,8 +106,11 @@ Demo browser suite: **46 checks**. Not done: scenario pages 2, 5 (service/APEX),
 | Demonstration step pages for scenarios 2, 5, 6, 7 | NOT BUILT (next) | — |
 | Field gates computed from a staff skills registry; vendor quotes; the 36-column documentation tracker | NOT BUILT — recorded as attestation / out of scope in ADR-0008 | — |
 
-Two reconciliations await the owner (ADR-0008 §Decisions): the nine request types as derived from the demonstrator's two catalogues, and
-approval before collaborative design (the demonstrator's order).
+Owner decisions of 2026-10-30 20:48 CT, implemented (ADR-0008 §Owner decisions): (1) the nine request types are provisionally approved and
+the catalogue is tenant-configurable (`app.request_type`, `POST /v1/admin/request-types`, Administration → Request catalogue; CAT-1,
+W-47/W-48); (2) concept authorization (an approved brief; preliminary design, feasibility, concept layouts, preliminary budgets) is separate
+from execution authorization (funding; DETAILED design, release for construction, field steps) — `POST /v1/projects/{code}/concept`,
+revision `phase`, engine guards `concept_authorized` / `…_and_funded`; APR-2, W-45a–d. OpenAPI 99 operations; lifecycle suite 13/13; E2E 53/53.
 
 ## Owner decisions of 2026-10-30 12:59 CT — what was actually done
 

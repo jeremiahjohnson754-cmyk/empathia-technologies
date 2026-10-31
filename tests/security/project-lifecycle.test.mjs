@@ -58,6 +58,22 @@ test('INT-1 — the catalogue carries nine request types and the two demonstrato
   assert.equal(unknown.status, 400);
 });
 
+test('CAT-1 — the request catalogue is configurable per tenant: a security administrator adds an industry-specific type and disables a default; the requester can raise the new type and not the disabled one; the second tenant sees neither change', async () => {
+  const add = await c.call('POST', '/v1/admin/request-types', { token: T.secadmin, body: { key: 'lab_bench_av', label: 'Laboratory bench AV', summary: 'Audio-visual capture at a laboratory bench (synthetic industry example).', industry: 'life_sciences', sort: 15 } });
+  assert.equal(add.status, 200, JSON.stringify(add.body)); assert.equal(add.body.scope, 'tenant');
+  assert.equal((await c.call('POST', '/v1/admin/request-types', { token: T.requestor, body: { key: 'x_y', label: 'x' } })).status, 403);
+  assert.equal((await c.call('POST', '/v1/admin/request-types', { token: T.secadmin, body: { key: 'signage', enabled: false } })).status, 200);
+  const cat = (await c.call('GET', '/v1/projects/catalogue', { token: T.requestor })).body;
+  assert.equal(cat.requestTypes.length, 10); assert.equal(cat.requestTypes.find((t) => t.key === 'lab_bench_av').industry, 'life_sciences'); assert.equal(cat.requestTypes.find((t) => t.key === 'signage').enabled, false); assert.equal(cat.requestTypes.find((t) => t.key === 'signage').scope, 'tenant');
+  const lab = await c.call('POST', '/v1/requests', { token: T.requestor, body: { type: 'lab_bench_av', title: 'Bench 4 capture (synthetic)', intent: 'Record bench procedures for training.', siteCode: 'SITE-NORTH' }, headers: { 'idempotency-key': 'req-cat-1' } });
+  assert.equal(lab.status, 201, JSON.stringify(lab.body));
+  const off = await c.call('POST', '/v1/requests', { token: T.requestor, body: { type: 'signage', title: 'x', intent: 'y', siteCode: 'SITE-NORTH' } });
+  assert.equal(off.status, 400); assert.match(JSON.stringify(off.body), /disabled/);
+  const other = (await c.call('GET', '/v1/projects/catalogue', { token: T.second })).body;
+  assert.equal(other.requestTypes.length, 9); assert.equal(other.requestTypes.find((t) => t.key === 'signage').enabled, true); assert.ok(!other.requestTypes.find((t) => t.key === 'lab_bench_av'));
+  assert.ok(await audit((e) => e.action === 'admin.request_type_upsert' && e.outcome === 'ALLOWED'), 'catalogue changes are audited');
+});
+
 test('INT-2 — a valid request with dimensions that carry provenance is submitted by its requester only; submission creates the project in SUBMITTED and emits request.submitted', async () => {
   const r = await c.call('POST', '/v1/requests', { token: T.requestor, body: { type: 'new_room', title: 'Northstar 2 huddle (synthetic)', intent: 'Four people meet with two remote colleagues; the room must be bookable and simple.', constraints: 'No construction before the quarter closes.', siteCode: 'SITE-NORTH', buildingCode: 'NST', provisionalRoom: 'Northstar 2 · new huddle', archetype: 'HUD', capacity: 4, dimensions: [{ name: 'length', value: 4.2, unit: 'm', source: 'MANUALLY_PROPOSED', uncertainty: '±0.2 m' }], plans: [{ name: 'nst-2-plan.pdf' }] }, headers: { 'idempotency-key': 'req-0002' } });
   assert.equal(r.status, 201, JSON.stringify(r.body)); req = r.body.code; assert.match(req, /^REQ-\d{4}$/);
@@ -69,8 +85,8 @@ test('INT-2 — a valid request with dimensions that carry provenance is submitt
   assert.equal(sub.status, 200, JSON.stringify(sub.body)); prj = sub.body.project; assert.equal(prj, req.replace('REQ-', 'PRJ-REQ-'));
   const p = await get(); assert.equal(p.status, 200); assert.equal(p.body.governance, 'SUBMITTED'); assert.equal(p.body.stage.stage, 'review'); assert.equal(p.body.request.dimensions[0].uncertainty, '±0.2 m');
   const ev = h.asSuper(`SELECT count(*) FROM app.outbox_event WHERE type = 'request.submitted' AND aggregate_id = '${req}'`); assert.equal(Number(ev), 1);
-  assert.equal((await c.call('GET', '/v1/requests', { token: T.requestor })).body.items.length, 2, 'the requester sees their own two requests');
-  assert.equal((await c.call('GET', '/v1/requests', { token: T.exec })).body.items.length, 2);
+  assert.equal((await c.call('GET', '/v1/requests', { token: T.requestor })).body.items.length, 3, 'the requester sees their own three requests');
+  assert.equal((await c.call('GET', '/v1/requests', { token: T.exec })).body.items.length, 3);
 });
 
 test('REV-1 — review: an internal route needs a documented exception; a supplier who was not routed cannot acknowledge; the route is recorded by the operations lead', async () => {
@@ -141,10 +157,22 @@ test('APR-2 — funding names the approved scope revision; a finance outage keep
   assert.equal(outage.status, 422); assert.match(JSON.stringify(outage.body), /never auto-approved/);
   const wrong = await c.call('POST', `/v1/projects/${prj}/funding`, { token: T.finance, body: { amount: 15000, currency: 'USD', costCenter: 'CC-AV-01', scopeRev: 1 } });
   assert.equal(wrong.status, 422); assert.match(JSON.stringify(wrong.body), /scope revision 1, the approved scope is 2/);
-  const design = await deliver('DESIGN_DRAFT', T.syseng);
-  assert.equal(design.status, 422); assert.match(JSON.stringify(design.body), /not FUNDED/);
+  // owner decision (ADR-0008 §2): concept work runs on concept authorization before funding; execution needs funding
+  const noConcept = await deliver('DESIGN_DRAFT', T.syseng);
+  assert.equal(noConcept.status, 422); assert.match(JSON.stringify(noConcept.body), /concept work needs concept authorization/);
+  const byAuthor = await c.call('POST', `/v1/projects/${prj}/concept`, { token: T.opslead, body: {} });
+  assert.equal(byAuthor.status, 422, JSON.stringify(byAuthor.body)); assert.match(JSON.stringify(byAuthor.body), /separation of duties/);
+  const concept = await c.call('POST', `/v1/projects/${prj}/concept`, { token: T.syseng, body: { note: 'concept work may start while the quarter closes' } });
+  assert.equal(concept.status, 200, JSON.stringify(concept.body)); assert.equal(concept.body.conceptAuthorized, true); assert.equal(concept.body.scopeRev, 2);
+  assert.equal((await deliver('DESIGN_DRAFT', T.syseng)).status, 200, 'concept design starts before funding');
+  const feas = await c.call('POST', `/v1/projects/${prj}/design-revisions`, { token: T.designer, body: { reason: 'feasibility and concept layout', phase: 'CONCEPT', estimateUsd: 16500, feasibility: { finding: 'A four-seat huddle fits the 4.2 m bay with one display; a second display does not.', risks: ['ceiling height under 2.6 m'], options: ['single display', 'bar with integrated camera'] }, files: [{ name: 'nst-2-concept.pdf', kind: 'concept layout' }] } });
+  assert.equal(feas.status, 201, JSON.stringify(feas.body)); assert.equal(feas.body.phase, 'CONCEPT');
+  const detailedEarly = await c.call('POST', `/v1/projects/${prj}/design-revisions`, { token: T.designer, body: { reason: 'detailed design', phase: 'DETAILED' } });
+  assert.equal(detailedEarly.status, 422); assert.match(JSON.stringify(detailedEarly.body), /execution authorization/);
+  assert.equal((await deliver('DESIGN_REVIEW', T.designer)).status, 422, 'a concept revision without a DIVR is not submitted for review either');
+  const rec0 = (await get()).body; assert.equal(rec0.concept.current, true); assert.equal(rec0.executionAuthorized, false); assert.equal(rec0.design[0].phase, 'CONCEPT'); assert.equal(Number(rec0.design[0].estimateUsd), 16500);
   const ok = await c.call('POST', `/v1/projects/${prj}/funding`, { token: T.finance, body: { amount: 15000, currency: 'USD', costCenter: 'CC-AV-01', scopeRev: 2 } });
-  assert.equal(ok.status, 200, JSON.stringify(ok.body)); assert.equal(ok.body.governance, 'FUNDED'); assert.equal(ok.body.delivery, 'ENGINEERING_REVIEW');
+  assert.equal(ok.status, 200, JSON.stringify(ok.body)); assert.equal(ok.body.governance, 'FUNDED'); assert.equal(ok.body.delivery, 'DESIGN_DRAFT', 'funding does not move concept work back; delivery stays where the concept work is');
   const byRequester = await c.call('POST', `/v1/requests/${req}/withdraw`, { token: T.requestor, body: { reason: 'changed my mind (synthetic)' } });
   assert.equal(byRequester.status, 422, 'a funded project is suspended by finance, not withdrawn by its requester');
 });
@@ -153,19 +181,18 @@ test('DSN-1 — collaborative design: the room is created and put in the project
   const r = await c.call('POST', '/v1/rooms', { token: T.designer, body: { name: 'Northstar 2 huddle (synthetic)', template: 'huddle', buildingCode: 'NST', floor: 2 }, headers: { 'idempotency-key': 'prj-room-0001' } });
   assert.equal(r.status, 201, JSON.stringify(r.body)); room = r.body.code;
   assert.equal((await c.call('POST', `/v1/rooms/${room}/project`, { token: T.exec, body: { projectCode: prj } })).status, 200);
-  assert.equal((await deliver('DESIGN_DRAFT', T.syseng)).status, 200);
-  const thin = await c.call('POST', `/v1/projects/${prj}/design-revisions`, { token: T.designer, body: { reason: 'first layout' } });
-  assert.equal(thin.status, 201, JSON.stringify(thin.body));
+  const thin = await c.call('POST', `/v1/projects/${prj}/design-revisions`, { token: T.designer, body: { reason: 'first detailed layout' } });
+  assert.equal(thin.status, 201, JSON.stringify(thin.body)); assert.equal(thin.body.phase, 'DETAILED', 'funded: a DETAILED design may be proposed');
   const noDivr = await deliver('DESIGN_REVIEW', T.designer);
   assert.equal(noDivr.status, 422); assert.match(JSON.stringify(noDivr.body), /no design files or Lite model/); assert.match(JSON.stringify(noDivr.body), /Design Intent/);
   const rev = await c.call('POST', `/v1/projects/${prj}/design-revisions`, { token: T.designer, body: { reason: 'layout with the room model and the DIVR', liteModelRoom: room, files: [{ name: 'nst-2-huddle-layout.pdf', kind: 'layout' }], divr: { intent: 'Four seats facing one display; camera at eye height; speech intelligibility at every seat', verificationPlan: ['STI at each seat', 'camera framing at 4 seats'] }, domainsNeeded: ['dsp', 'camera'] } });
-  assert.equal(rev.status, 201, JSON.stringify(rev.body)); assert.equal(rev.body.revision, 2);
+  assert.equal(rev.status, 201, JSON.stringify(rev.body)); assert.equal(rev.body.revision, 3);
   assert.equal((await deliver('DESIGN_REVIEW', T.designer)).status, 200);
-  const selfReview = await c.call('POST', `/v1/projects/${prj}/design-revisions/2/review`, { token: T.designer, body: { domain: 'dsp', decision: 'APPROVED' } });
+  const selfReview = await c.call('POST', `/v1/projects/${prj}/design-revisions/3/review`, { token: T.designer, body: { domain: 'dsp', decision: 'APPROVED' } });
   assert.equal(selfReview.status, 403, 'review.dsp is the audio engineer’s');
-  const dsp = await c.call('POST', `/v1/projects/${prj}/design-revisions/2/review`, { token: T.dsp_eng, body: { domain: 'dsp', decision: 'APPROVED', note: 'single bar; acceptable for four seats' } });
+  const dsp = await c.call('POST', `/v1/projects/${prj}/design-revisions/3/review`, { token: T.dsp_eng, body: { domain: 'dsp', decision: 'APPROVED', note: 'single bar; acceptable for four seats' } });
   assert.equal(dsp.status, 200, JSON.stringify(dsp.body));
-  const rfi = await c.call('POST', `/v1/projects/${prj}/design-revisions/2/rfis`, { token: T.video_eng, body: { question: 'Is the display height compatible with the camera line of sight?' } });
+  const rfi = await c.call('POST', `/v1/projects/${prj}/design-revisions/3/rfis`, { token: T.video_eng, body: { question: 'Is the display height compatible with the camera line of sight?' } });
   assert.equal(rfi.status, 201, JSON.stringify(rfi.body));
   const early = await deliver('DESIGN_RELEASED', T.syseng);
   assert.equal(early.status, 422, JSON.stringify(early.body)); const why = JSON.stringify(early.body);
@@ -173,7 +200,7 @@ test('DSN-1 — collaborative design: the room is created and put in the project
   const selfResolve = await c.call('POST', `/v1/projects/${prj}/rfis/${rfi.body.rfi}/resolve`, { token: T.video_eng, body: { answer: 'yes' } });
   assert.equal(selfResolve.status, 403, 'rfi.resolve is the systems engineer’s');
   assert.equal((await c.call('POST', `/v1/projects/${prj}/rfis/${rfi.body.rfi}/resolve`, { token: T.syseng, body: { answer: 'Yes: display centre at 1.35 m, camera on top edge at 1.75 m, within the archetype limit.' } })).status, 200);
-  assert.equal((await c.call('POST', `/v1/projects/${prj}/design-revisions/2/review`, { token: T.video_eng, body: { domain: 'camera', decision: 'APPROVED' } })).status, 200);
+  assert.equal((await c.call('POST', `/v1/projects/${prj}/design-revisions/3/review`, { token: T.video_eng, body: { domain: 'camera', decision: 'APPROVED' } })).status, 200);
   // the room's own design approval (geometry approved for construction) through the room lifecycle
   assert.equal((await c.call('POST', `/v1/rooms/${room}/devices`, { token: T.designer, body: { category: 'display', x: 1, y: 1, mount: 'wall' } })).status, 201);
   assert.equal((await c.call('POST', `/v1/rooms/${room}/revisions`, { token: T.designer, body: { reason: 'synthetic: the designed layout' } })).status, 201);
@@ -181,7 +208,7 @@ test('DSN-1 — collaborative design: the room is created and put in the project
   assert.equal((await moveRoom('DESIGN_APPROVED', T.syseng)).status, 200);
   const released = await deliver('DESIGN_RELEASED', T.syseng);
   assert.equal(released.status, 200, JSON.stringify(released.body)); assert.equal(released.body.delivery, 'DESIGN_RELEASED');
-  const rec = (await get()).body; assert.equal(rec.design.length, 2); assert.equal(rec.design[0].state, 'SUPERSEDED'); assert.equal(rec.design[1].state, 'RELEASED'); assert.equal(rec.design[1].reviews.length, 2); assert.equal(rec.design[1].rfis[0].resolvedBy, 'Systems Engineer (synthetic)');
+  const rec = (await get()).body; assert.equal(rec.design.length, 3); assert.equal(rec.design[0].state, 'SUPERSEDED'); assert.equal(rec.design[1].state, 'SUPERSEDED'); assert.equal(rec.design[2].state, 'RELEASED'); assert.equal(rec.design[2].reviews.length, 2); assert.equal(rec.design[2].rfis[0].resolvedBy, 'Systems Engineer (synthetic)'); assert.equal(rec.executionAuthorized, true);
 });
 
 test('EXE-1 — execution: the plan is compiled with the rule pack version pinned from the engine; the field authorization is the service manager’s attestation; the work order is accepted by its technician only; TESTS_VERIFIED is refused until the room’s own results say so', async () => {

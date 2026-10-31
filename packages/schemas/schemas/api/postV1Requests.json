@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://schemas.empathia.invalid/api/postV1Requests/0.1.0.json",
   "title": "POST /v1/requests request body",
-  "description": "Raise a request (one of nine types) with intent, constraints, photos, plans and dimensions that carry their provenance",
+  "description": "Raise a request (a type of the effective catalogue) with intent, constraints, photos, plans and dimensions that carry their provenance",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -14,17 +14,8 @@
   "properties": {
     "type": {
       "type": "string",
-      "enum": [
-        "new_room",
-        "room_refresh",
-        "camera_replacement",
-        "dsp_upgrade",
-        "network_change",
-        "lifecycle_replacement",
-        "signage",
-        "break_fix",
-        "room_verification"
-      ]
+      "pattern": "^[a-z][a-z0-9_]{1,39}$",
+      "description": "a key of the effective request catalogue (GET /v1/projects/catalogue)"
     },
     "title": {
       "type": "string",
