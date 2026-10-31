@@ -1,0 +1,16 @@
+# Never send local state or secrets to an image build: .local holds database credentials, the development JWT secret and evidence.
+.local
+**/.env
+**/.env.*
+!.env.example
+.git
+# rebuilt inside the image
+node_modules
+**/node_modules
+**/dist
+# large, not needed to build the platform
+media
+releases
+tests/evidence
+ml/datasets/generated
+**/*.mp4

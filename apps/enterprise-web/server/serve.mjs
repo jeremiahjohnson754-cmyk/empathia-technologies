@@ -10,8 +10,12 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../dist');
 const arg = (k, d) => (process.argv.find((a) => a.startsWith(`--${k}=`)) || '').split('=').slice(1).join('=') || d;
-const port = Number(arg('port', process.env.WEB_PORT || 4200));
+const port = Number(arg('port', process.env.WEB_PORT || process.env.PORT || 4200));   // PORT: the platform's (Render sets it)
 const host = arg('host', process.env.WEB_HOST || '127.0.0.1');   // 0.0.0.0 only inside a container, published on 127.0.0.1 by compose
+// Host names this server answers for besides localhost (a reverse proxy or a platform passes the public Host through): exact names only,
+// comma-separated, e.g. WEB_ALLOWED_HOSTS=empathia-staging-web.onrender.com. Anything else is 421, as before.
+const allowedHosts = new Set(String(arg('allowed-hosts', process.env.WEB_ALLOWED_HOSTS || '')).split(',').map((h) => h.trim().toLowerCase()).filter(Boolean));
+const hostAllowed = (h) => /^(127\.0\.0\.1|localhost)(:\d+)?$/.test(h) || allowedHosts.has(h.toLowerCase().replace(/:\d+$/, ''));
 const apiOrigin = new URL(arg('api', process.env.API_URL || 'http://127.0.0.1:4100')).origin;
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.txt': 'text/plain; charset=utf-8' };
 // Typography: when FONT_KIT_ID names the Adobe Fonts kit (Empathia platform UI: Acumin Pro, kit kis0uqz), the stylesheet is linked and its hosts allow-listed; unset = system fonts, no external request
@@ -21,7 +25,9 @@ const CSP = `default-src 'self'; connect-src 'self' ${apiOrigin}${fontKit ? ' ht
 export function serve() {
   const s = http.createServer((req, res) => {
     const host = String(req.headers.host || '');
-    if (!/^(127\.0\.0\.1|localhost)(:\d+)?$/.test(host)) { res.writeHead(421).end('misdirected'); return; }
+    // platform health check (Render probes without the public Host): a bare 200, no content, any host
+    if (req.url === '/healthz') { res.writeHead(200, { 'content-type': 'text/plain', 'cache-control': 'no-store' }).end('ok'); return; }
+    if (!hostAllowed(host)) { res.writeHead(421).end('misdirected'); return; }
     let p = decodeURIComponent(new URL(req.url || '/', 'http://x').pathname);
     if (p === '/') p = '/index.html';
     const f = path.join(root, path.normalize(p).replace(/^(\.\.[/\\])+/, ''));

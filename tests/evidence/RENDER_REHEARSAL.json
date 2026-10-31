@@ -1,0 +1,84 @@
+{
+  "at": "2026-10-31T17:38:42.988Z",
+  "runtimeTree": "/tmp/out",
+  "manifest": "248 files",
+  "steps": [
+    {
+      "name": "create the throwaway database (owner = the schema owner)",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "V-1 gate refuses a default user that cannot create roles",
+      "result": "PASS",
+      "detail": "psql:/tmp/bootstrap-roles.sql:17: ERROR:  V-1 failed: empathia_owner cannot create roles; stop and see RENDER_STAGING.md"
+    },
+    {
+      "name": "bootstrap-roles.sql passes for a role-creating user (idempotent: the roles already exist locally) and reports NOBYPASSRLS",
+      "result": "PASS",
+      "detail": "empathia_app|t|f|f / empathia_worker|t|f|f"
+    },
+    {
+      "name": "migrations apply from the runtime tree (25)",
+      "result": "PASS",
+      "detail": "{\"applied\":[\"0001_foundation.sql\",\"0002_core.sql\",\"0003_commissioning_evidence.sql\",\"0004_platform.sql\",\"0005_health.sql\",\"0006_projects.sql\",\"0007_integration_sync.sql\",\"0008_worker_role.sql\",\"0009_public_leads.sql\",\"0010_founder.sql\",\"0011_assurance_baseline.sql\",\"0012_separation_of_duties.sql\",\"0013_measurements.sql\",\"0014_graph_identity.sql\",\"0015_administration.sql\",\"0016_oidc_subjects.sql\",\"0017_project_lifecycle.sql\",\"0018_request_catalogue_and_concept_authorization.sql\",\"0019_service_lifecycle.sql\",\"0020_apex_cases.sql\",\"0021_field_intelligence.sql\",\"0022_learn.sql\",\"0023_competency.sql\",\"0024_audit_chain.sql\",\"0025_measurement_import.sql\"],\"already\":[]}"
+    },
+    {
+      "name": "migrations are idempotent (a second run applies nothing)",
+      "result": "PASS",
+      "detail": "{\"applied\":[],\"already\":[\"0001_foundation.sql\",\"0002_core.sql\",\"0003_commissioning_evidence.sql\",\"0004_platform.sql\",\"0005_health.sql\",\"0006_projects.sql\",\"0007_integration_sync.sql\",\"0008_worker_role.sql\",\"0009_public_leads.sql\",\"0010_founder.sql\",\"0011_assurance_baseline.sql\",\"0012_separation_of_duties.sql\",\"0013_measurements.sql\",\"0014_graph_identity.sql\",\"0015_administration.sql\",\"0016_oidc_subjects.sql\",\"0017_project_lifecycle.sql\",\"0018_request_catalogue_and_concept_authorization.sql\",\"0019_service_lifecycle.sql\",\"0020_apex_cases.sql\",\"0021_field_intelligence.sql\",\"0022_learn.sql\",\"0023_competency.sql\",\"0024_audit_chain.sql\",\"0025_measurement_import.sql\"]}"
+    },
+    {
+      "name": "operator bootstrap: policy + one non-synthetic tenant + its OIDC-only security administrator",
+      "result": "PASS",
+      "detail": "23 roles"
+    },
+    {
+      "name": "the bootstrap refuses a synthetic seed tenant slug",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "no password exists in the environment (OIDC only, no seed)",
+      "result": "PASS",
+      "detail": "0 people with a password"
+    },
+    {
+      "name": "the API and the web server start from the runtime tree",
+      "result": "PASS",
+      "detail": " | Empathia enterprise web: http://127.0.0.1:4173/  (API http://127.0.0.1:4174; add ?api=… to point elsewhere)\n"
+    },
+    {
+      "name": "deployment tests (scripts/staging/smoke.mjs): PASS 10 · FAIL 0 · NOT_RUN 0",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "the first OIDC sign-in bound the verified email to the bootstrapped administrator",
+      "result": "PASS",
+      "detail": "rehearsal-admin-subject"
+    },
+    {
+      "name": "the administrator invites a tester through the API (the onboarding path after the bootstrap)",
+      "result": "PASS",
+      "detail": "status 201"
+    },
+    {
+      "name": "the web server answers its configured public host and refuses any other (421); /healthz answers any host with a bare ok",
+      "result": "PASS",
+      "detail": "allowed 200, other 421, healthz 200"
+    },
+    {
+      "name": "the bootstrap and every action since are in the tenant’s ledger chain, which verifies",
+      "result": "PASS",
+      "detail": "5 events"
+    }
+  ],
+  "pass": 14,
+  "fail": 0,
+  "limits": [
+    "NODE_ENV=development: the local OIDC provider is http (production requires https JWKS)",
+    "no container, no TLS, no Render proxy, no Render Postgres: checked only on Render (deployment tests D1–D10)",
+    "the web UI has no OIDC sign-in yet: the UI was not exercised as a signed-in user"
+  ]
+}

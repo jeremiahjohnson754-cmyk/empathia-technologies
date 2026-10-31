@@ -49,7 +49,15 @@ export class OutboxWorker {
   constructor(private pool: PgPool, private handlers: Handler[] = [readModelHandler, notificationHandler], private intervalMs = 500) {}
   sealed = 0; private ticks = 0;
   /** Every 10th tick, seal committed audit events into each tenant's hash chain (ADR-0010; sealing never runs inside a request). */
-  start(): void { if (!this.timer) this.timer = setInterval(() => { void this.tick().then(() => { this.ticks += 1; return this.ticks % 10 === 0 ? this.seal() : 0; }); }, this.intervalMs); }
+  /** The last tick's failure (database unreachable, …), or null. A failing tick never ends the process: it is logged once per outage. */
+  lastError: string | null = null;
+  start(): void {
+    if (this.timer) return;
+    this.timer = setInterval(() => {
+      void this.tick().then(() => { if (this.lastError) { log('info', 'outbox worker recovered', { after: this.lastError }); this.lastError = null; } this.ticks += 1; return this.ticks % 10 === 0 ? this.seal() : 0; })
+        .catch((err: unknown) => { const m = (err as Error).message; if (this.lastError !== m) log('error', 'outbox worker tick failed; retrying on the next tick', { error: m }); this.lastError = m; });
+    }, this.intervalMs);
+  }
   async seal(): Promise<number> {
     try { const n = (await this.pool.tx({}, (q) => q.query<{ n: number }>('SELECT app.seal_audit_all() AS n'))).rows[0]!.n; this.sealed += n; return n; }
     catch (err) { log('warn', 'audit chain seal failed', { error: (err as Error).message }); return 0; }

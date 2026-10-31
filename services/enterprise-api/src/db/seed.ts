@@ -18,6 +18,7 @@ import { RequestContext, type Principal } from '../auth/context.js';
 import { createRoom, addDevice } from '../domain/rooms.js';
 import { OutboxWorker } from '../worker/outbox.js';
 import { migrate } from './migrate.js';
+import { loadPolicy } from './policy.js';
 
 export const DEV_PASSWORD = 'empathia-dev-only';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../..');
@@ -49,9 +50,8 @@ export async function seed(opts: { reset?: boolean } = {}) {
   const ownerPool = new PgPool(configFromUrl(cfg.ownerDatabaseUrl), 2);
   try {
     if (opts.reset) await owner.simple(`TRUNCATE app.tenant, app.person, app.role, app.integration CASCADE`);
-    // roles: the demonstrator's persona policy, unchanged
-    await owner.query("INSERT INTO app.role (key, label, authorities, description) VALUES ('founder', 'Founder', ARRAY['founder.workspace'], 'The founder’s private workspace (Founder Studio). Carries no enterprise authority: it reads no customer records.') ON CONFLICT (key) DO UPDATE SET label = EXCLUDED.label, authorities = EXCLUDED.authorities, description = EXCLUDED.description");
-    for (const [key, v] of Object.entries(P)) await owner.query('INSERT INTO app.role (key, label, authorities, description) VALUES ($1,$2,$3,$4) ON CONFLICT (key) DO UPDATE SET label = EXCLUDED.label, authorities = EXCLUDED.authorities, description = EXCLUDED.description', [key, v.label, v.authority, v.home]);
+    // roles: the demonstrator's persona policy, unchanged (shared with the production bootstrap, db/policy.ts)
+    await loadPolicy(owner);
     const pw = hashPassword(DEV_PASSWORD);
     const tenantIds: Record<string, string> = {};
     for (const t of TENANTS) tenantIds[t.slug] = (await owner.query<{ id: string }>('INSERT INTO app.tenant (slug, name) VALUES ($1,$2) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name RETURNING id', [t.slug, t.name])).rows[0]!.id;

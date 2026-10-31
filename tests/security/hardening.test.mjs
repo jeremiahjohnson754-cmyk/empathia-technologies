@@ -7,6 +7,7 @@ import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { spawn } from 'node:child_process';
 import { setup, client } from '../integration/harness.mjs';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -44,4 +45,25 @@ test('HRD-3 rate limiting under a burst: a caller past the per-minute budget get
   assert.ok(ok >= 1 && ok <= 40, `${ok} served within the budget`); assert.equal(ok + limited, 60, `only 200 or 429: ${[...new Set(codes)]}`); assert.ok(limited >= 20, `${limited} limited`);
   const r = await c.call('GET', '/v1/me', { token: burst }); assert.equal(r.status, 429); assert.equal(r.body.code, 'rate_limited');
   assert.equal((await c.call('GET', '/v1/me', { token: other })).status, 200, 'the budget is per caller');
+});
+
+test('HRD-4 resilience: with the database unreachable the API stays up (no crash loop) and /health answers degraded with the reason', async () => {
+  const bad = 'postgres://nobody:x@127.0.0.1:1/none';
+  const p = spawn(process.execPath, [path.join(repo, 'services/enterprise-api/dist/src/main.js')], { env: { PATH: process.env.PATH, NODE_ENV: 'development', HOST: '127.0.0.1', PORT: '4172', DATABASE_URL: bad, APP_DATABASE_URL: bad, WORKER_DATABASE_URL: bad, JWT_SECRET: 'x'.repeat(48), WORKER_INTERVAL_MS: '100', LOG_LEVEL: 'error' }, stdio: ['ignore', 'pipe', 'pipe'] });
+  let exited = null; p.on('exit', (code) => { exited = code; });
+  try {
+    let h = null; for (let i = 0; i < 40 && !h; i++) { await new Promise((r) => setTimeout(r, 100)); try { h = await (await fetch('http://127.0.0.1:4172/health')).json(); } catch { /* starting */ } }
+    assert.ok(h, 'the API answered'); assert.equal(h.status, 'degraded'); assert.equal(h.database.reachable, false);
+    await new Promise((r) => setTimeout(r, 1500));   // ~15 failing worker ticks
+    assert.equal(exited, null, 'the process is still running after repeated failing worker ticks');
+    const again = await (await fetch('http://127.0.0.1:4172/health')).json(); assert.ok(again.worker.lastError, 'the worker’s failure is reported, not hidden');
+  } finally { p.kill(); }
+});
+
+test('HRD-5 behind a trusted proxy the anonymous rate-limit key is the address the proxy appended (rightmost X-Forwarded-For); client-supplied entries to its left are never believed; without TRUSTED_PROXY the header is ignored', async () => {
+  const { clientAddress } = await import(path.join(repo, 'services/enterprise-api/dist/src/http/server.js'));
+  assert.equal(clientAddress('6.6.6.6, 203.0.113.9', '10.0.0.2', true), '203.0.113.9', 'a forged leftmost entry is ignored');
+  assert.equal(clientAddress('203.0.113.9', '10.0.0.2', true), '203.0.113.9');
+  assert.equal(clientAddress(undefined, '10.0.0.2', true), '10.0.0.2', 'no header: the socket');
+  assert.equal(clientAddress('6.6.6.6', '10.0.0.2', false), '10.0.0.2', 'not behind a trusted proxy: the header is ignored');
 });

@@ -292,6 +292,20 @@ room's own lifecycle), instrument import (covered by IMP-1..4 on its own room), 
 | Second finding: four suites (ML prototype, Founder Studio, town hall, founder decisions) passed here but were NOT_RUN in a clean copy, because their inputs are derived (ML dataset) or generated with `--studio`. The fresh run now regenerates them the way a new machine would | FIXED | commit c06a240 |
 | Result at c06a240: **PASS: the fresh copy reproduces this workspace suite by suite (47 PASS · 0 FAIL · 1 NOT_RUN in both)**. The NOT_RUN is the full film decode, which needs `--films` and the founder's film files | PASS | `tests/evidence/FRESH_CHECKOUT.md` |
 
+### P8 (Ascension) — Render private staging: prepared, not provisioned (2026-10-31, owner request 12:24 CT)
+
+| Item | Status | Evidence |
+|---|---|---|
+| Render account audit (read-only API): one workspace, no services, no Postgres, no Key Value; plan tier not visible to the API | DONE | `docs/operations/RENDER_STAGING.md` §1 |
+| Plan decision: Hobby + paid compute suffices; Pro when a second dashboard member, workspace audit logs, isolated environments or 7-day PITR are needed; no plan below Scale can IP-restrict a web service | DONE | §2–3 (Render pricing and docs, 2026-10-31) |
+| Architecture: API (with the outbox worker in-process, 1 GB evidence disk) + web app as two image-backed web services from one image + Render Postgres 16; deploy without GitHub from a private registry by digest | PREPARED | §4, §6; `deploy/render/` |
+| `deploy/render/Dockerfile` (runtime tree only), `assemble-runtime.mjs` (248 files, no source, SHA-256 manifest), `bootstrap-roles.sql` (V-1 gate), env templates, `.dockerignore` | IMPLEMENTED · image build NOT_RUN (no container runtime here) | the clean-context build and assembly were run without Docker |
+| Operator bootstrap `db/bootstrap.ts` + shared `db/policy.ts` (B-1: the role catalogue was seed-only) | IMPLEMENTED · TESTED | rehearsal |
+| Defects fixed: web server refused every public host (B-3) → `WEB_ALLOWED_HOSTS` + `/healthz`; API exited when the database was unreachable (B-4) → worker retries, health degraded; anonymous rate limit pooled behind a proxy (B-5) → rightmost X-Forwarded-For under `TRUSTED_PROXY=on`, HSTS; no `.dockerignore` (B-6) | FIXED · TESTED | HRD-4, HRD-5, rehearsal |
+| `deploy/render/rehearse.mjs`: the full sequence from the assembled tree against a throwaway database and OIDC provider | **PASS 14/14** | `tests/evidence/RENDER_REHEARSAL.json` |
+| `scripts/staging/smoke.mjs`: deployment tests D1–D10 for the live environment | IMPLEMENTED · PASS in rehearsal; on Render NOT_RUN | — |
+| Open | — | V-1 (can Render's default user create roles?) is checked first on Render; B-2 the web app has no OIDC sign-in (decision A5); approvals A1–A5 |
+
 ### Connector expansion directive (2026-10-31 05:34 CT) — what was actually done
 
 | Item | Status | Evidence |

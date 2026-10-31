@@ -19,6 +19,16 @@ import type { Telemetry } from '@empathia/observability';
 
 const HEADERS = { 'x-content-type-options': 'nosniff', 'referrer-policy': 'no-referrer', 'cache-control': 'no-store', 'x-frame-options': 'DENY', 'content-security-policy': "default-src 'none'; frame-ancestors 'none'" };
 
+/** Behind a TLS-terminating proxy (TRUSTED_PROXY=on, e.g. Render): HSTS, and the client address for anonymous rate limiting is the
+ *  rightmost X-Forwarded-For entry — the one the proxy itself appended; anything to its left is client-supplied and never believed. */
+const behindProxy = process.env['TRUSTED_PROXY'] === 'on';
+const PROXY_HEADERS = behindProxy ? { 'strict-transport-security': 'max-age=31536000' } : {};
+export const clientAddress = (xff: string | string[] | undefined, socketAddr: string | undefined, trusted = behindProxy): string => {
+  if (!trusted) return String(socketAddr || 'unknown');
+  const last = String(Array.isArray(xff) ? xff.join(',') : xff || '').split(',').map((x) => x.trim()).filter(Boolean).pop();
+  return last || String(socketAddr || 'unknown');
+};
+
 class Bucket { tokens: number; at = Date.now(); constructor(public cap: number) { this.tokens = cap; } take(): boolean { const now = Date.now(); this.tokens = Math.min(this.cap, this.tokens + ((now - this.at) / 60000) * this.cap); this.at = now; if (this.tokens < 1) return false; this.tokens -= 1; return true; } }
 
 export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: TokenVerifier, telemetry: Telemetry): http.Server {
@@ -34,7 +44,7 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
     const send = (r: Res) => {
       status = r.status;
       const body = r.raw ?? (r.body === undefined ? undefined : Buffer.from(JSON.stringify(r.body)));
-      res.writeHead(r.status, { ...HEADERS, ...cors, 'x-correlation-id': correlationId, ...(r.raw ? {} : body ? { 'content-type': r.status >= 400 ? 'application/problem+json' : 'application/json; charset=utf-8' } : {}), ...(r.headers || {}) });
+      res.writeHead(r.status, { ...HEADERS, ...PROXY_HEADERS, ...cors, 'x-correlation-id': correlationId, ...(r.raw ? {} : body ? { 'content-type': r.status >= 400 ? 'application/problem+json' : 'application/json; charset=utf-8' } : {}), ...(r.headers || {}) });
       res.end(body);
     };
     try {
@@ -49,8 +59,9 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
       const ctx = new RequestContext(pool, correlationId);
 
       // authentication
-      req.headers['x-empathia-remote'] = String(req.socket.remoteAddress || 'unknown');   // set by the server, never trusted from the client (overwritten here)
-      let bucketKey = `ip:${req.socket.remoteAddress}`;
+      const remote = clientAddress(req.headers['x-forwarded-for'], req.socket.remoteAddress);
+      req.headers['x-empathia-remote'] = remote;   // set by the server, never trusted from the client (overwritten here)
+      let bucketKey = `ip:${remote}`;
       if (route.auth) {
         const h = String(req.headers.authorization || '');
         if (!h.startsWith('Bearer ')) throw new ApiError('unauthenticated', 'send Authorization: Bearer <token>');
