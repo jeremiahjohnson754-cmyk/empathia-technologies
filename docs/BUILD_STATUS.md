@@ -232,6 +232,15 @@ Not built: SIGNAL labs (91 simulators); the enterprise app's service/APEX/execut
 | The product rail wrapped "Administration" onto a second line at 1440px (visible in every enterprise screenshot). Below 1560px the rail now takes its own full-width row, on one line, scrolling sideways inside itself if needed; the phone layout is unchanged | DONE | screenshots `19-mission-control`, `21-ledger-integrity`; W-21 (no horizontal page scroll at phone width) |
 | Mission Control's "Scanned" line counted only open records but did not say so ("0 learn cases" while an approved case existed); it now reads "Open records scanned" | DONE | W-78 |
 
+### P1 (Ascension) — Executive rollups by site and building (2026-10-31)
+
+| Item | Status | Evidence |
+|---|---|---|
+| `GET /v1/executive/rollup?level=site\|building`: the eight room-bound passports (tasks done, issues resolved, rooms/devices commissioned, commissioning conformance, repeat incidents, restoration time, field scan coverage), each site or building computed separately by the same engine over its own rooms' records in the caller's scope (never averaged), plus the estate row. The six project, decision, funding and request KPIs are listed as organization-level; the thirteen whose sources do not exist in this build are listed as not measurable anywhere. OpenAPI 149 operations | IMPLEMENTED · TESTED | `tests/integration/api.test.mjs` (room counts and count numerators add up to the estate at both levels; organization KPIs never attributed; a South-scoped person sees only the South site; invalid level 400) |
+| Enterprise web: Executive › "By site / By building" table, hover for each figure's arithmetic or the reason it is not measurable | IMPLEMENTED · TESTED | browser W-82; screenshot `22-executive-rollup` |
+| Defect found during screenshot review | — | the first footer said every non-room KPI "has no single site". That was false for usage, lifecycle and document KPIs, which are simply not measurable in this build; they are now listed separately with that reason |
+| Not built | — | region/campus/enterprise levels (the starter has sites and buildings only); trend over time per unit |
+
 ### Connector expansion directive (2026-10-31 05:34 CT) — what was actually done
 
 | Item | Status | Evidence |

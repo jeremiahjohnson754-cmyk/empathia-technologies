@@ -300,6 +300,26 @@ test('executive passports: 27 passports over the records, each with its arithmet
   assert.equal((await c.call('GET', '/v1/executive/passports', {})).status, 401);
 });
 
+test('executive rollup: each site and building is computed from its own rooms; room counts and count numerators add up to the estate; organization KPIs are not attributed; scope and level are enforced', async () => {
+  for (const level of ['site', 'building']) {
+    const r = await c.call('GET', `/v1/executive/rollup?level=${level}&days=365`, { token: T.opslead }); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300));
+    const b = r.body; assert.ok(b.units.length > 0);
+    assert.equal(b.units.reduce((n, u) => n + u.rooms, 0), b.estate.rooms, `${level}: rooms add up`);
+    for (const id of ['tasks_completed', 'issues_resolved']) {
+      const est = b.estate.passports.find((p) => p.id === id);
+      const sum = b.units.reduce((n, u) => n + (u.passports.find((p) => p.id === id).numerator || 0), 0);
+      assert.equal(sum, est.numerator || 0, `${level}/${id}: unit numerators add up to the estate`);
+    }
+    assert.ok(b.units.every((u) => u.passports.every((p) => !['projects_funded', 'committed_budget'].includes(p.id))), 'organization KPIs are never attributed to a place');
+    assert.ok(b.organizationOnly.some((k) => k.id === 'projects_funded'));
+    assert.ok(b.units.every((u) => u.passports.every((p) => p.state === 'MEASURED' || (p.value === null && p.reason))), 'a unit without the source says why; never 0');
+  }
+  const south = await c.login('service', 'empathia-demo', 'service-south');
+  const s = (await c.call('GET', '/v1/executive/rollup?level=site', { token: south })).body;
+  assert.deepEqual(s.units.map((u) => u.code), [h.asSuper("SELECT s.code FROM app.site s JOIN app.building b ON b.site_id = s.id WHERE b.code = 'HZN'")], 'a site-scoped person sees only their site');
+  assert.equal((await c.call('GET', '/v1/executive/rollup?level=floor', { token: T.opslead })).status, 400);
+});
+
 test('reporting: KPI summary counts match the database, states its definitions, and reports operational performance NOT_MONITORED', async () => {
   const r = await c.call('GET', '/v1/reports/summary', { token: T.opslead });
   assert.equal(r.status, 200, JSON.stringify(r.body));

@@ -3255,6 +3255,103 @@
         }
       }
     },
+    "/v1/executive/rollup": {
+      "get": {
+        "tags": [
+          "reporting"
+        ],
+        "summary": "Site or building rollup of the room-bound KPI passports: each unit computed separately over its own rooms’ records in the caller’s site scope (never averaged), with the estate row; project/decision/funding/request KPIs have no single site and are listed as organization-only",
+        "operationId": "getV1ExecutiveRollup",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "level",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "site",
+                "building"
+              ]
+            }
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "30",
+                "90",
+                "180",
+                "365"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "rollup"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/executive/passports": {
       "get": {
         "tags": [

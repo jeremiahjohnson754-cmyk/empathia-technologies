@@ -37,10 +37,36 @@ export function Executive() {
         {p.exclusions.length ? <p className="ui-meta">Exclusions: {p.exclusions.join('; ')}</p> : null}
         {p.drill.length ? <p className="ui-meta">Drill-down: {p.drill.join(' · ')}</p> : null}
       </section> : <Notice tone="muted">Open a passport to read its definition, its arithmetic and why the confidence is what it is.</Notice>}
+      <Rollup days={days} />
       <section className="card stack"><h2 className="h3">Sources behind this board</h2>
         <p className="ui-meta">{Object.entries(b.sources).filter(([k]) => k !== 'absent').map(([k, v]) => `${k} ${String(v)}`).join(' · ')}</p>
         <p className="ui-meta">Not present in this starter (their passports are NOT_MEASURABLE): {b.sources.absent.join(', ')}.</p>
       </section>
+    </section>
+  );
+}
+
+interface Cell { id: string; label: string; unit: string; state: string; value: number | null; numerator: number | null; denominator: number | null; confidence: string; reason?: string }
+interface RollupData { level: 'site' | 'building'; days: number; kpis: Array<{ id: string; label: string }>; units: Array<{ code: string; name: string; parent: string | null; rooms: number; passports: Cell[] }>; estate: { rooms: number; passports: Cell[] }; organizationOnly: Array<{ id: string; label: string }>; notMeasurable: Array<{ id: string; label: string }>; note: string }
+const cellText = (c: Cell | undefined) => (!c || c.state !== 'MEASURED' || c.value === null ? '—' : c.unit === '%' ? `${Math.round(c.value * 10) / 10}%` : c.unit.startsWith('hours') ? `${Math.round(c.value * 10) / 10} h` : String(Math.round(c.value * 100) / 100));
+
+/** Site / building rollup: each unit computed by the API from its own rooms' records; the estate row is the same computation over all of them. */
+function Rollup({ days }: { days: number }) {
+  const [level, setLevel] = useState<'site' | 'building'>('site');
+  const q = useQuery<RollupData>(`exec:rollup:${level}:${days}`, () => api.call('getV1ExecutiveRollup' as never, { query: { level, days: String(days) } } as never) as Promise<RollupData>);
+  const row = (key: string, name: string, sub: string, cells: Cell[]) => (
+    <tr key={key}><th scope="row" className="exec__unit">{name}<span className="ui-meta"> {sub}</span></th>
+      {q.data!.kpis.map((k) => { const c = cells.find((x) => x.id === k.id); return <td key={k.id} className="mono exec__cell" title={c?.state === 'MEASURED' ? `${c.numerator ?? '—'} / ${c.denominator ?? '—'} · confidence ${c.confidence}` : c?.reason || ''}>{cellText(c)}</td>; })}</tr>);
+  return (
+    <section className="card stack" data-testid="exec-rollup">
+      <div className="row-actions"><h2 className="h3">By {level}</h2>{(['site', 'building'] as const).map((l) => <Button key={l} small kind={l === level ? 'primary' : 'secondary'} onClick={() => setLevel(l)}>By {l}</Button>)}</div>
+      {q.error ? <ErrorState error={q.error} retry={q.reload} /> : !q.data ? <Loading label="Computing each unit" /> : <>
+        <p className="ui-meta">{q.data.note} Hover a figure for its arithmetic; “—” means not measurable for that {level} (the reason is in the hover).</p>
+        <div className="ui-table-wrap"><table className="ui-table ui-table--dense"><caption className="ui-sr">KPI passports by {level}</caption>
+          <thead><tr><th scope="col">{level === 'site' ? 'Site' : 'Building'}</th>{q.data.kpis.map((k) => <th key={k.id} scope="col">{k.label}</th>)}</tr></thead>
+          <tbody>{q.data.units.map((u) => row(u.code, u.name, `${u.parent ? `${u.parent} · ` : ''}${u.rooms} room${u.rooms === 1 ? '' : 's'}`, u.passports))}{row('estate', 'All in your scope', `${q.data.estate.rooms} rooms`, q.data.estate.passports)}</tbody></table></div>
+        <p className="ui-meta">Reported for the organization only (projects, decisions, funding and requests have no single site): {q.data.organizationOnly.map((k) => k.label).join(', ')}.</p>
+        <p className="ui-meta">Not rolled up because their source does not exist in this build (not measurable anywhere): {q.data.notMeasurable.map((k) => k.label).join(', ')}.</p></>}
     </section>
   );
 }

@@ -132,3 +132,4 @@ h1 { font-size: var(--fs-xl); line-height: 1.2; margin: 0; text-wrap: balance; }
 .mission__title { font-weight: 600; line-height: 1.35; overflow-wrap: anywhere; }
 @media (max-width: 900px) { .mission__grid { grid-template-columns: 1fr; } }
 .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--sp-3); } .form-grid > * { min-width: 0; }
+.exec__unit { text-align: left; font-weight: 600; background: transparent; white-space: nowrap; } .exec__cell { white-space: nowrap; }

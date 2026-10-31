@@ -495,6 +495,12 @@ try {
   await page.click('[data-testid=exec-window] button:has-text("30 days")'); await page.waitForFunction(() => /last 30 days/.test(document.querySelector('.page__head')?.textContent || ''));
   ok('W-63', 'the window changes the board (30 days) and the selection resets', (await page.locator('[data-testid=passport]').count()) === 0);
   await shot('15-executive-passports');
+  await page.waitForSelector('[data-testid=exec-rollup] tbody tr');
+  const rollSite = await page.locator('[data-testid=exec-rollup] tbody tr').count();
+  await page.click('[data-testid=exec-rollup] button:has-text("By building")'); await page.waitForFunction(() => /Building/.test(document.querySelector('[data-testid=exec-rollup] thead')?.textContent || ''));
+  const rollText = await page.locator('[data-testid=exec-rollup]').innerText();
+  ok('W-82', 'the executive rollup shows each site, then each building, with an estate row; organization KPIs are listed as not attributable to a place', rollSite >= 2 && (await page.locator('[data-testid=exec-rollup] tbody tr').count()) > rollSite && /All in your scope/.test(rollText) && /Reported for the organization only/.test(rollText), rollText.slice(0, 200));
+  await page.locator('[data-testid=exec-rollup]').screenshot({ path: path.join(shots, '22-executive-rollup.jpg'), type: 'jpeg', quality: 80 });
 
   // ---------------------------------------------------------------- Mission Control with the walkthroughs' records behind it
   await signIn('svcmgr'); await page.goto(base + '#/home'); await page.waitForSelector('[data-testid=mission-actions]');
