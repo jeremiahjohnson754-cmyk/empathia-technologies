@@ -1,45 +1,64 @@
 {
-  "at": "2026-10-31T17:04:48.566Z",
-  "commit": "78344e1805a3ffa6f3bea74d70543fcb3a97e452",
-  "directory": "/tmp/empathia-fresh-78344e1",
+  "at": "2026-10-31T17:14:35.798Z",
+  "commit": "c06a240106244b6af5cebbc63c05b66b2717f194",
+  "directory": "/tmp/empathia-fresh-c06a240",
   "node": "v22.22.0",
   "steps": [
     {
       "name": "clone",
-      "command": "git clone --quiet --no-hardlinks /home/claude/empathia-technologies /tmp/empathia-fresh-78344e1",
+      "command": "git clone --quiet --no-hardlinks /home/claude/empathia-technologies /tmp/empathia-fresh-c06a240",
       "exit": 0,
-      "seconds": 0.7
+      "seconds": 0.3
     },
     {
       "name": "bootstrap",
       "command": "/opt/node22/bin/node scripts/bootstrap.mjs",
       "exit": 0,
-      "seconds": 0.1
+      "seconds": 0
     },
     {
       "name": "database",
       "command": "/opt/node22/bin/node scripts/db.mjs up",
       "exit": 0,
-      "seconds": 1.2
+      "seconds": 1
     },
     {
       "name": "build",
-      "command": "/opt/node22/bin/node scripts/build.mjs",
+      "command": "/opt/node22/bin/node scripts/build.mjs --studio",
       "exit": 0,
-      "seconds": 42.7
+      "seconds": 209.4
+    },
+    {
+      "name": "ml dataset",
+      "command": "/opt/node22/bin/node ml/datasets/generate_synthetic.mjs",
+      "exit": 0,
+      "seconds": 0.9
+    },
+    {
+      "name": "ml training",
+      "command": "python3 -I ml/training/train.py",
+      "exit": 0,
+      "seconds": 3.1
     },
     {
       "name": "test",
       "command": "/opt/node22/bin/node scripts/test.mjs --browser --studio",
       "exit": 0,
-      "seconds": 234.4
+      "seconds": 336.6
     }
   ],
-  "seconds": 281,
+  "externalInputs": [
+    {
+      "input": "Founder Edition HTML (founder-supplied, outside the repository)",
+      "path": "/home/claude/Empathia_V25/work/source-254/dist/Empathia-Living-Campus-v2.5.4-nomedia.html",
+      "present": true
+    }
+  ],
+  "seconds": 553,
   "fresh": {
-    "pass": 43,
+    "pass": 47,
     "fail": 0,
-    "notRun": 5,
+    "notRun": 1,
     "suites": [
       {
         "suite": "unit: packages/commissioning-engine",
@@ -133,8 +152,9 @@
       },
       {
         "suite": "unit: ml research prototype (python)",
-        "result": "NOT_RUN",
-        "why": "dataset not generated (node ml/datasets/generate_synthetic.mjs; python3 -I ml/training/train.py)"
+        "result": "PASS",
+        "pass": 5,
+        "tests": 5
       },
       {
         "suite": "service: intelligence-python",
@@ -306,18 +326,21 @@
       },
       {
         "suite": "browser: Founder Studio",
-        "result": "NOT_RUN",
-        "why": "studio not built (node scripts/build.mjs --studio)"
+        "result": "PASS",
+        "pass": 19,
+        "tests": 19
       },
       {
         "suite": "e2e: founder town hall (Founder Edition)",
-        "result": "NOT_RUN",
-        "why": "studio not built"
+        "result": "PASS",
+        "pass": 25,
+        "tests": 25
       },
       {
         "suite": "e2e: founder decisions (hosted studio over the API)",
-        "result": "NOT_RUN",
-        "why": "studio not built or no local database"
+        "result": "PASS",
+        "pass": 9,
+        "tests": 9
       },
       {
         "suite": "media: full decode of every curated film",
@@ -332,27 +355,6 @@
     "fail": 0,
     "notRun": 1
   },
-  "differences": [
-    {
-      "suite": "unit: ml research prototype (python)",
-      "fresh": "NOT_RUN /",
-      "workspace": "PASS 5/5"
-    },
-    {
-      "suite": "browser: Founder Studio",
-      "fresh": "NOT_RUN /",
-      "workspace": "PASS 19/19"
-    },
-    {
-      "suite": "e2e: founder town hall (Founder Edition)",
-      "fresh": "NOT_RUN /",
-      "workspace": "PASS 25/25"
-    },
-    {
-      "suite": "e2e: founder decisions (hosted studio over the API)",
-      "fresh": "NOT_RUN /",
-      "workspace": "PASS 9/9"
-    }
-  ],
-  "verdict": "PASS with differences (see the table)"
+  "differences": [],
+  "verdict": "PASS: the fresh copy reproduces this workspace suite by suite"
 }

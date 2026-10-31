@@ -283,6 +283,15 @@ room's own lifecycle), instrument import (covered by IMP-1..4 on its own room), 
 | Register updated | — | `docs/security/KNOWN_VULNERABILITIES_AND_REMEDIATION.md` KV-07 (still OPEN: a signature check is not malware scanning), KV-09 (MITIGATED; pool metrics still OPEN), KV-17 (remaining: session fixation, backup restore under RLS, secret rotation, CSP reporting, cross-instance rate limiting, dependency audit) |
 | Status | — | **Not production-secure.** OPEN items remain (KV-02 no OIDC/MFA in the default path, KV-06 local object store only, KV-07 no malware scanning, KV-14 no dependency audit/SAST/DAST, KV-15 no external assessment). No item has been verified by an independent party |
 
+### P7 (Ascension) — reproducible build and QA from the committed source (2026-10-31)
+
+| Item | Status | Evidence |
+|---|---|---|
+| `scripts/release/verify-fresh.mjs`: clone HEAD into an empty directory outside the workspace, link the toolchain (`scripts/bootstrap.mjs`), its own database cluster, `build --studio`, regenerate the ML dataset and model from committed scripts, full suite, then compare with this workspace suite by suite. The external input is named in the report, not copied: the founder-supplied Founder Edition HTML, used to generate the Studio's data | DONE | `tests/evidence/FRESH_CHECKOUT.{json,md}` |
+| **Defect found by the first fresh run:** the build type-checked the demo before generating its git-ignored sources, so a clean checkout could not build. This workspace built only because the generated files survived from earlier runs. Fixed (demo `--generate-only` before type-check); verified by deleting the generated directory and rebuilding | FIXED | commit 78344e1 |
+| Second finding: four suites (ML prototype, Founder Studio, town hall, founder decisions) passed here but were NOT_RUN in a clean copy, because their inputs are derived (ML dataset) or generated with `--studio`. The fresh run now regenerates them the way a new machine would | FIXED | commit c06a240 |
+| Result at c06a240: **PASS: the fresh copy reproduces this workspace suite by suite (47 PASS · 0 FAIL · 1 NOT_RUN in both)**. The NOT_RUN is the full film decode, which needs `--films` and the founder's film files | PASS | `tests/evidence/FRESH_CHECKOUT.md` |
+
 ### Connector expansion directive (2026-10-31 05:34 CT) — what was actually done
 
 | Item | Status | Evidence |
