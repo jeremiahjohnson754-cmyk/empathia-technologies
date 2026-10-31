@@ -79,3 +79,15 @@ test('MC-7 rooms and projects: the next lifecycle step appears only for the auth
   for (const a of [...qa.actions, ...des.actions]) assert.match(a.href, /^#\/(rooms|projects|service|apex|field|learn)\b/);
   assert.equal(Number(h.asSuper("SELECT count(*) FROM app.audit_event WHERE action LIKE 'mission%'")), 0, 'reading the action center changes nothing and audits nothing');
 });
+
+test('MC-8 Search Party covers the records Mission Control acts on: the APEX case concerns its issue, the Learn case derives from its work order; a technician scoped to another site finds neither', async () => {
+  const find = async (tok, type) => (await c.call('GET', `/v1/search?q=&type=${type}&limit=200`, { token: tok })).body.items;
+  const apx = (await find(T.syseng, 'ApexCase'))[0]; assert.ok(apx, 'an APEX case is searchable');
+  const nb = (await c.call('GET', `/v1/search/graph/ApexCase/${apx.id}?depth=1`, { token: T.syseng })).body;
+  assert.ok(nb.edges.some((e) => e.rel === 'CONCERNS' && e.to.type === 'RoomIssue'), JSON.stringify(nb.edges).slice(0, 300));
+  const lc = (await find(T.syseng, 'TrainingCase'))[0]; assert.ok(lc, 'a Learn case is searchable');
+  const ln = (await c.call('GET', `/v1/search/graph/TrainingCase/${lc.id}?depth=1`, { token: T.syseng })).body;
+  assert.ok(ln.edges.some((e) => e.rel === 'DERIVED_FROM' && e.to.type === 'WorkOrder' && e.to.id === wo), JSON.stringify(ln.edges).slice(0, 600));
+  assert.ok(ln.edges.some((e) => e.rel === 'REVIEWED_BY'), 'the SME review is on the graph'); assert.ok(!ln.edges.some((e) => e.rel === 'APPROVED_BY'), 'not approved yet (MC-6 stops before the steward acts): no approval edge is invented');
+  assert.equal((await find(T.south, 'ApexCase')).length, 0); assert.equal((await find(T.south, 'TrainingCase')).length, 0);
+});

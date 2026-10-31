@@ -105,3 +105,20 @@ test('SP-6 — people are not a search surface: only persons named by visible re
   const au = (await c.call('GET', '/v1/audit?limit=30', { token: T.secadmin })).body.items;
   assert.ok(au.some((e) => e.action === 'search.query') && au.some((e) => e.action === 'search.intent'));
 });
+
+test('SP-7 — qualification answers from ServiceHands’ own hard gates over verified competency records (service manager only); competency records are a search surface only for those who record or verify them', async () => {
+  const t = await c.call('POST', '/v1/work-orders/WO-SP-1/triage', { token: T.svcmgr, body: { severity: 'High', scope: 'camera', risk: 'r', workType: 'camera_replacement', window: { from: '2026-11-06T08:00:00Z', to: '2026-11-06T12:00:00Z' } } });
+  assert.equal(t.status, 200, JSON.stringify(t.body));
+  const q = 'Which technician is qualified and available to investigate this issue?';
+  const m = await c.call('POST', '/v1/search/intent', { token: T.svcmgr, body: { question: q, target: { type: 'RoomIssue', id: northIssue } } });
+  assert.equal(m.status, 200, JSON.stringify(m.body)); assert.equal(m.body.intent, 'qualified'); assert.equal(m.body.status, 'ANSWERED');
+  assert.ok(m.body.items.some((i) => /Service Technician \(synthetic\)/.test(i.label)), JSON.stringify(m.body.items));
+  assert.ok(m.body.evidence.some((e) => /South campus only.*(site access|Camera and framing: not held)/.test(e)), 'the ineligible are listed with the gates they fail');
+  assert.match(m.body.items[0].provenance, /verified competency records/);
+  const s = await c.call('POST', '/v1/search/intent', { token: T.syseng, body: { question: q, target: { type: 'RoomIssue', id: northIssue } } });
+  assert.notEqual(s.body.status, 'ANSWERED', 'the ranking is the service manager’s: others get the recorded assignments only');
+  const mine = (await c.call('GET', '/v1/search?q=&type=Competency&limit=200', { token: T.svcmgr })).body;
+  assert.ok(mine.items.length >= 6 && mine.items.every((i) => i.type === 'Competency'));
+  assert.equal((await c.call('GET', '/v1/search?q=&type=Competency', { token: T.requestor })).body.items.length, 0, 'a requestor holds no credentials and sees nobody else’s');
+  assert.ok((await c.call('GET', '/v1/search?q=&type=Competency', { token: T.south })).body.items.every((i) => /South campus only/.test(i.label)), 'a technician sees only their own');
+});

@@ -90,6 +90,9 @@ export interface Facts {
   holders?: (authority: string, target: NodeRef | null) => { people: Array<{ id: string; name: string; role: string }>; excluded: Array<{ name: string; why: string }>; provenance: string } | null;
   /** the baseline lineage of a room: versions with their result labels and design revision */
   baselines?: (room: NodeRef) => Array<{ id: string; version: number; state: string; designRevision: number; results: Record<string, string>; publishedBy: string; publishedAt: string }> | null;
+  /** the host's hard-gated candidates for the work order remedying an issue (qualification from verified records, availability from the
+   *  work window and leave on record), or null when there is none or the caller may not see the ranking */
+  qualified?: (issue: NodeRef) => { workOrder: string; eligible: Array<{ id: string; name: string; reasons: string[] }>; ineligible: Array<{ id: string; name: string; fails: string[] }>; provenance: string } | null;
   /** contact actions the host can offer for a person (never fabricated: available=false when no channel is configured) */
   contact?: (personId: string) => IntentAction[];
 }
@@ -161,6 +164,15 @@ export const INTENTS: IntentDef[] = [
   { id: 'qualified', label: 'Which technician is qualified and available?', examples: ['Which technician is qualified and available to investigate this issue?'], match: (q) => /\b(qualified|available|technician|skill|competen)\b/.test(q), needs: ['RoomIssue'],
     answer(ctx, target, question) {
       const a = base('qualified', question, target);
+      const qf = target && ctx.facts.qualified ? ctx.facts.qualified(target) : null;
+      if (qf) {
+        a.items = qf.eligible.map((e) => ({ node: { type: 'Person', id: e.id }, label: e.name, via: `passes every hard gate for ${qf.workOrder}${e.reasons.length ? `: ${e.reasons.join('; ')}` : ''}`, provenance: qf.provenance }));
+        a.status = 'ANSWERED'; a.confidence = 'OBSERVED';
+        a.summary = qf.eligible.length ? `${qf.eligible.length} of ${qf.eligible.length + qf.ineligible.length} people in the service pool pass the hard gates for ${qf.workOrder}.` : `Nobody in the service pool passes the hard gates for ${qf.workOrder}.`;
+        for (const x of qf.ineligible) a.evidence.push(`${x.name}: ${x.fails.join('; ')}`);
+        a.uncertainty.push('availability is the work window, leave and open-job capacity on record; calendars are not connected');
+        return a;
+      }
       const hits = target ? edgesOf(ctx, target, ['ASSIGNED_TO', 'RESOLVED_BY', 'HAS_SKILL']) : [];
       a.items = hits.map((h) => ({ node: h.other, label: lbl(ctx, h.other), via: h.label, provenance: h.provenance }));
       a.status = a.items.length ? 'PARTIAL' : 'UNKNOWN'; a.confidence = a.items.length ? 'OBSERVED' : 'UNKNOWN';

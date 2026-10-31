@@ -113,6 +113,16 @@ export async function candidatesFor(ctx: RequestContext, code: string) {
   return ctx.tx(async (q) => { const w = await find(ctx, q, code); return { workOrderId: code, state: w.state, ...rank(ctx, await pool(ctx, q), w) }; });
 }
 
+/** For Search Party's "who is qualified" question: the hard-gated candidates of the triaged work order remedying an issue — the same
+ *  gates and the same pool as assignment; null when there is no triaged work order or the caller may not see rankings. */
+export async function qualifiedForIssue(ctx: RequestContext, q: Queryable, issueCode: string) {
+  if (!ctx.can('service.assign')) return null;
+  const wo = (await q.query<{ code: string }>("SELECT w.code FROM app.work_order w JOIN app.room_issue i ON i.id = w.issue_id WHERE i.code = $1 AND w.state = 'TRIAGED' ORDER BY w.created_at DESC LIMIT 1", [issueCode])).rows[0];
+  if (!wo) return null;
+  const r = rank(ctx, await pool(ctx, q), await find(ctx, q, wo.code));
+  return { workOrder: wo.code, eligible: r.eligible.map((c) => ({ id: c.id, name: c.name, reasons: c.reasons })), ineligible: r.ineligible.map((c) => ({ id: c.id, name: c.name, fails: c.hardFails })), provenance: 'ServiceHands hard gates over verified competency records (app.competency_record), sites, leave and capacity' };
+}
+
 export async function assign(ctx: RequestContext, code: string, personId: string) {
   await ctx.require('service.assign', 'assign a work order', { type: 'WorkOrder', id: code });
   return ctx.tx(async (q) => {

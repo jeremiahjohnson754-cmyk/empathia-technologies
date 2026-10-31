@@ -1,6 +1,6 @@
 {
   "test": "enterprise-web",
-  "at": "2026-10-31T16:02:38.126Z",
+  "at": "2026-10-31T16:10:13.802Z",
   "passed": 86,
   "failed": 0,
   "results": [
@@ -62,7 +62,7 @@
       "id": "W-09",
       "name": "a designer who bypasses the UI and calls the approval endpoint directly is refused 403 by the server",
       "result": "PASS",
-      "detail": "{\"status\":403,\"body\":{\"type\":\"https://errors.empathia.invalid/forbidden\",\"title\":\"Not allowed for your role\",\"status\":403,\"detail\":\"designer may not move a room to DESIGN_APPROVED (needs room.design.approve)\",\"code\":\"forbidden\",\"correlationId\":\"f1c4a284-0076-4180-8dd0-3bc3e45e681d\"}}"
+      "detail": "{\"status\":403,\"body\":{\"type\":\"https://errors.empathia.invalid/forbidden\",\"title\":\"Not allowed for your role\",\"status\":403,\"detail\":\"designer may not move a room to DESIGN_APPROVED (needs room.design.approve)\",\"code\":\"forbidden\",\"correlationId\":\"8c4faf53-fd43-494e-afe8-69d1e7456869\"}}"
     },
     {
       "id": "W-10",
@@ -122,7 +122,7 @@
       "id": "W-32",
       "name": "the measurement is listed with its provenance, instrument, calibration state and UNREVIEWED approval",
       "result": "PASS",
-      "detail": "Measurements\nMetric\tValue\tProvenance\tInstrument\tWhere / when\tApproval\t\n\nnoise_floor\nLAeq 60 s\n\t36.2 dB(A)\tFIELD_MEASURED\tSYN-METER-01 · CALIBRATED\tseat 3, 1.2 m · 2026-10-31 16:02 · SYN-METER-01\tUNREV"
+      "detail": "Measurements\nMetric\tValue\tProvenance\tInstrument\tWhere / when\tApproval\t\n\nnoise_floor\nLAeq 60 s\n\t36.2 dB(A)\tFIELD_MEASURED\tSYN-METER-01 · CALIBRATED\tseat 3, 1.2 m · 2026-10-31 16:09 · SYN-METER-01\tUNREV"
     },
     {
       "id": "W-33",
@@ -272,7 +272,7 @@
       "id": "W-45c",
       "name": "a CONCEPT revision with its feasibility finding and a labelled preliminary estimate is recorded before any money is authorized",
       "result": "PASS",
-      "detail": "Collaborative design\nRevision 1 CONCEPT DRAFT Designer / CAD / Revit (synthetic) · 2026-10-31 16:02 · feasibility and concept layout\nFeasibility. A four-seat huddle fits the 4.2 m bay with one display; a second display does not. FEASIBILITY STUDY — concept work, not a release\n\nPreliminary estimate 1"
+      "detail": "Collaborative design\nRevision 1 CONCEPT DRAFT Designer / CAD / Revit (synthetic) · 2026-10-31 16:09 · feasibility and concept layout\nFeasibility. A four-seat huddle fits the 4.2 m bay with one display; a second display does not. FEASIBILITY STUDY — concept work, not a release\n\nPreliminary estimate 1"
     },
     {
       "id": "W-45d",
@@ -308,13 +308,13 @@
       "id": "W-49",
       "name": "the browser reports under a release stamped with the build’s commit, to no transport unless the serving process configures one",
       "result": "PASS",
-      "detail": "{\"transport\":\"none\",\"release\":\"empathia-enterprise-web@0.1.0+34d4ab8e9ee1\",\"environment\":\"production\",\"tracesSampleRate\":0,\"captured\":0,\"sampledIn\":0,\"sampledOut\":0}"
+      "detail": "{\"transport\":\"none\",\"release\":\"empathia-enterprise-web@0.1.0+54035e571736\",\"environment\":\"production\",\"tracesSampleRate\":0,\"captured\":0,\"sampledIn\":0,\"sampledOut\":0}"
     },
     {
       "id": "W-50",
       "name": "an uncaught error is captured by the window handler (count, no key in the status)",
       "result": "PASS",
-      "detail": "{\"transport\":\"none\",\"release\":\"empathia-enterprise-web@0.1.0+34d4ab8e9ee1\",\"environment\":\"production\",\"tracesSampleRate\":0,\"captured\":1,\"sampledIn\":0,\"sampledOut\":0}"
+      "detail": "{\"transport\":\"none\",\"release\":\"empathia-enterprise-web@0.1.0+54035e571736\",\"environment\":\"production\",\"tracesSampleRate\":0,\"captured\":1,\"sampledIn\":0,\"sampledOut\":0}"
     },
     {
       "id": "W-51",
@@ -392,7 +392,7 @@
       "id": "W-66",
       "name": "A2 compares read-only (no baseline → NOT_VERIFIED) and A4 is BLOCKED with the reason; both are outcomes in the log",
       "result": "PASS",
-      "detail": "BLOCKED A4 H1 Commissioning Engineer (synthetic) · 2026-10-31 16:02\nno runbook for this action\nCOMPARED A2 H1 Commissioning Engineer (synthetic) · 2026-10-31 16:02\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
+      "detail": "BLOCKED A4 H1 Commissioning Engineer (synthetic) · 2026-10-31 16:10\nno runbook for this action\nCOMPARED A2 H1 Commissioning Engineer (synthetic) · 2026-10-31 16:10\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
     },
     {
       "id": "W-67",
@@ -410,7 +410,7 @@
       "id": "W-69",
       "name": "licensed: eligibility passes, the protocol is approved and the page lists what is still missing (window, operator, instrument, E-stop)",
       "result": "PASS",
-      "detail": "Sessions · Physical Validation v1.4 FIS-0001 · Browser Huddle (synthetic) HUD · LAeq at seats + STIPA (declared) · proposed by Systems Engineer (synthetic) 2026-10-31 16:02 SAFETY_PREFLIGHT SIMULATION Step Safety preflight Points seat row 1, seat row 3, far seat Tests LAEQ (ADP-SLM · ELIGIBLE), STIPA (ADP-STI · ELIGIBLE), CAM-FOV (ADP-CAM · NOT_CONFIGURED) Safety occupancy UNKNOWN · privacy notice no · E-stop NOT_VERIFIED · level limit 85 dB(A) · rollback presets + DSP backup before arming; rest"
+      "detail": "Sessions · Physical Validation v1.4 FIS-0001 · Browser Huddle (synthetic) HUD · LAeq at seats + STIPA (declared) · proposed by Systems Engineer (synthetic) 2026-10-31 16:10 SAFETY_PREFLIGHT SIMULATION Step Safety preflight Points seat row 1, seat row 3, far seat Tests LAEQ (ADP-SLM · ELIGIBLE), STIPA (ADP-STI · ELIGIBLE), CAM-FOV (ADP-CAM · NOT_CONFIGURED) Safety occupancy UNKNOWN · privacy notice no · E-stop NOT_VERIFIED · level limit 85 dB(A) · rollback presets + DSP backup before arming; rest"
     },
     {
       "id": "W-70",
@@ -470,7 +470,7 @@
       "id": "W-81",
       "name": "the data steward verifies the Evidence Ledger: the chain is intact, the head hash is shown to record elsewhere, the limits are stated, and audit rows show their chain position",
       "result": "PASS",
-      "detail": "Evidence Ledger integrity\nVerify the chain\nChain intact: 105 events verified, 105 sealed by this check.\nHead\n#105 · 10/31/2026, 11:02:36 AM\nHead hash\n40e4a524a651f19720177de3d9968c73d5bc0842bcd4d61900"
+      "detail": "Evidence Ledger integrity\nVerify the chain\nChain intact: 105 events verified, 105 sealed by this check.\nHead\n#105 · 10/31/2026, 11:10:11 AM\nHead hash\n0afdf9c12fb56f8802bf2bfdf5f203d9d0fe808f4dabbf0e9f"
     },
     {
       "id": "W-61",

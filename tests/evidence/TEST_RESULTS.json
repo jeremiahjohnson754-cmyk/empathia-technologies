@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-31T16:06:02.337Z",
+  "at": "2026-10-31T16:13:38.103Z",
   "node": "v22.22.0",
   "pass": 45,
   "fail": 0,
@@ -22,7 +22,7 @@
       "tests": 3,
       "pass": 3,
       "fail": 0,
-      "seconds": 0.1,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test packages/event-contracts/dist/test/**/*.test.js"
     },
     {
@@ -42,7 +42,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 0.1,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test packages/search-party/dist/test/**/*.test.js"
     },
     {
@@ -52,7 +52,7 @@
       "tests": 9,
       "pass": 9,
       "fail": 0,
-      "seconds": 0.1,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test packages/project-governance/dist/test/**/*.test.js"
     },
     {
@@ -72,7 +72,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 0.1,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test packages/apex-engine/dist/test/**/*.test.js"
     },
     {
@@ -92,7 +92,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 0.1,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test packages/field-intelligence/dist/test/**/*.test.js"
     },
     {
@@ -122,7 +122,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 0.1,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test packages/api-client/dist/test/**/*.test.js"
     },
     {
@@ -132,7 +132,7 @@
       "tests": 3,
       "pass": 3,
       "fail": 0,
-      "seconds": 0.1,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test packages/schemas/dist/test/**/*.test.js"
     },
     {
@@ -162,7 +162,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 6.1,
+      "seconds": 6,
       "command": "python3 -I -m unittest discover -s ml/tests"
     },
     {
@@ -182,7 +182,7 @@
       "tests": 21,
       "pass": 21,
       "fail": 0,
-      "seconds": 5.3,
+      "seconds": 5.2,
       "command": "../../../opt/node22/bin/node --test tests/integration/api.test.mjs"
     },
     {
@@ -192,7 +192,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 2.5,
+      "seconds": 2.3,
       "command": "../../../opt/node22/bin/node --test tests/integration/leads.test.mjs"
     },
     {
@@ -202,7 +202,7 @@
       "tests": 3,
       "pass": 3,
       "fail": 0,
-      "seconds": 2.2,
+      "seconds": 2,
       "command": "../../../opt/node22/bin/node --test tests/integration/api-client.test.mjs"
     },
     {
@@ -212,7 +212,7 @@
       "tests": 1,
       "pass": 1,
       "fail": 0,
-      "seconds": 2.4,
+      "seconds": 2.1,
       "command": "../../../opt/node22/bin/node --test tests/integration/integration-worker.test.mjs"
     },
     {
@@ -222,7 +222,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 2.2,
+      "seconds": 2.3,
       "command": "../../../opt/node22/bin/node --test tests/integration/observability.test.mjs"
     },
     {
@@ -232,7 +232,7 @@
       "tests": 45,
       "pass": 45,
       "fail": 0,
-      "seconds": 5.1,
+      "seconds": 4.9,
       "command": "../../../opt/node22/bin/node --test tests/security/authz.test.mjs"
     },
     {
@@ -252,7 +252,7 @@
       "tests": 3,
       "pass": 3,
       "fail": 0,
-      "seconds": 3,
+      "seconds": 3.1,
       "command": "../../../opt/node22/bin/node --test tests/security/site-scope.test.mjs"
     },
     {
@@ -262,7 +262,7 @@
       "tests": 2,
       "pass": 2,
       "fail": 0,
-      "seconds": 12.8,
+      "seconds": 12,
       "command": "../../../opt/node22/bin/node --test tests/security/authority-matrix.test.mjs"
     },
     {
@@ -282,17 +282,17 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 3.4,
+      "seconds": 3.3,
       "command": "../../../opt/node22/bin/node --test tests/security/administration.test.mjs"
     },
     {
       "suite": "security: search-party.test.mjs",
       "kind": "security",
       "result": "PASS",
-      "tests": 6,
-      "pass": 6,
+      "tests": 7,
+      "pass": 7,
       "fail": 0,
-      "seconds": 3.6,
+      "seconds": 3.5,
       "command": "../../../opt/node22/bin/node --test tests/security/search-party.test.mjs"
     },
     {
@@ -302,7 +302,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 2.5,
+      "seconds": 2.3,
       "command": "../../../opt/node22/bin/node --test tests/security/oidc.test.mjs"
     },
     {
@@ -312,7 +312,7 @@
       "tests": 13,
       "pass": 13,
       "fail": 0,
-      "seconds": 7.5,
+      "seconds": 7.6,
       "command": "../../../opt/node22/bin/node --test tests/security/project-lifecycle.test.mjs"
     },
     {
@@ -322,7 +322,7 @@
       "tests": 10,
       "pass": 10,
       "fail": 0,
-      "seconds": 3.9,
+      "seconds": 3.7,
       "command": "../../../opt/node22/bin/node --test tests/security/service-lifecycle.test.mjs"
     },
     {
@@ -332,17 +332,17 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 3.7,
+      "seconds": 3.3,
       "command": "../../../opt/node22/bin/node --test tests/security/apex.test.mjs"
     },
     {
       "suite": "security: field-intelligence.test.mjs",
       "kind": "security",
       "result": "PASS",
-      "tests": 5,
-      "pass": 5,
+      "tests": 6,
+      "pass": 6,
       "fail": 0,
-      "seconds": 3.6,
+      "seconds": 3.4,
       "command": "../../../opt/node22/bin/node --test tests/security/field-intelligence.test.mjs"
     },
     {
@@ -352,17 +352,17 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 3.4,
+      "seconds": 3.3,
       "command": "../../../opt/node22/bin/node --test tests/security/learn.test.mjs"
     },
     {
       "suite": "security: mission-control.test.mjs",
       "kind": "security",
       "result": "PASS",
-      "tests": 7,
-      "pass": 7,
+      "tests": 8,
+      "pass": 8,
       "fail": 0,
-      "seconds": 3.9,
+      "seconds": 3.4,
       "command": "../../../opt/node22/bin/node --test tests/security/mission-control.test.mjs"
     },
     {
@@ -372,7 +372,7 @@
       "tests": 6,
       "pass": 6,
       "fail": 0,
-      "seconds": 5,
+      "seconds": 4.7,
       "command": "../../../opt/node22/bin/node --test tests/security/competency.test.mjs"
     },
     {
@@ -382,7 +382,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 3.3,
+      "seconds": 3.2,
       "command": "../../../opt/node22/bin/node --test tests/security/ledger.test.mjs"
     },
     {
@@ -393,7 +393,7 @@
       "pass": 6,
       "fail": 0,
       "notRun": 0,
-      "seconds": 4.7,
+      "seconds": 4.5,
       "command": "../../../opt/node22/bin/node tests/e2e/website-lead.e2e.mjs"
     },
     {
@@ -403,7 +403,7 @@
       "tests": 86,
       "pass": 86,
       "fail": 0,
-      "seconds": 31,
+      "seconds": 31.1,
       "command": "../../../opt/node22/bin/node tests/browser/enterprise-web.test.mjs"
     },
     {
@@ -414,7 +414,7 @@
       "pass": 32,
       "fail": 0,
       "notRun": 0,
-      "seconds": 7.2,
+      "seconds": 7.6,
       "command": "../../../opt/node22/bin/node tests/browser/website.test.mjs"
     },
     {
@@ -425,7 +425,7 @@
       "pass": 101,
       "fail": 0,
       "notRun": 0,
-      "seconds": 97.9,
+      "seconds": 98.8,
       "command": "../../../opt/node22/bin/node tests/browser/demo.test.mjs"
     },
     {
@@ -436,7 +436,7 @@
       "pass": 19,
       "fail": 0,
       "notRun": 1,
-      "seconds": 42.2,
+      "seconds": 40.9,
       "command": "../../../opt/node22/bin/node tests/browser/founder-studio.test.mjs"
     },
     {
@@ -446,7 +446,7 @@
       "tests": 25,
       "pass": 25,
       "fail": 0,
-      "seconds": 50.1,
+      "seconds": 49.9,
       "command": "../../../opt/node22/bin/node tests/e2e/founder-townhall.e2e.mjs"
     },
     {
@@ -457,7 +457,7 @@
       "pass": 9,
       "fail": 0,
       "notRun": 0,
-      "seconds": 6.8,
+      "seconds": 7.1,
       "command": "../../../opt/node22/bin/node tests/e2e/founder-decisions.e2e.mjs"
     },
     {

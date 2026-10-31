@@ -96,3 +96,12 @@ test('FI-5 dry run emits nothing; only the commissioning lead authorizes; only t
   assert.ok(Number(h.asSuper("SELECT count(*) FROM app.audit_event WHERE action LIKE 'fipv.%' AND outcome = 'DENIED'")) >= 5);
   const list = await c.call('GET', '/v1/field-intelligence/sessions', { token: T.requestor }); assert.equal(list.status, 200); assert.ok(list.body.items.length >= 8, `${list.body.items.length} sessions: ${list.body.items.map((x) => x.code + ' ' + x.state).join(', ')}`); assert.ok(list.body.items.some((x) => x.simulated));
 });
+
+test('FI-6 Search Party finds the session as a simulated software session concerning its room, never as a measurement', async () => {
+  const items = (await c.call('GET', '/v1/search?q=&type=FieldSession&limit=50', { token: T.syseng })).body.items;
+  const s = items.find((i) => i.id === fis); assert.ok(s, JSON.stringify(items).slice(0, 300));
+  assert.match(s.subtitle, /simulated/); assert.match(s.provenance, /software simulation; not a physical measurement/);
+  const nb = (await c.call('GET', `/v1/search/graph/FieldSession/${fis}?depth=1`, { token: T.syseng })).body;
+  assert.ok(nb.edges.some((e) => e.rel === 'CONCERNS' && e.to.type === 'Room' && e.to.id === room));
+  assert.ok(!nb.nodes.some((n) => n.type === 'Measurement'), 'no measurement node is created from a simulation');
+});

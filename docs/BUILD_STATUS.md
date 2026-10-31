@@ -208,6 +208,15 @@ Not built: SIGNAL labs (91 simulators); the enterprise app's service/APEX/execut
 | Defect found during validation | — | LED-4 first assumed the second tenant had audit events; it had none, and the endpoint correctly answered "not verified, 0 checked". The fixture now creates second-tenant activity |
 | Not built | — | external anchoring of the head hash (a timestamping service or write-once store: an external integration that needs owner authorization); site-level restriction of audit reads (audit reads are tenant-wide, for the steward and the security admin); retention policy for the trail |
 
+### P1 (Ascension) — Search Party covers APEX, Field Intelligence, Learn and competencies (2026-10-31)
+
+| Item | Status | Evidence |
+|---|---|---|
+| New searchable records with their relationships (catalogue relation names only): APEX case `CONCERNS` its issue, `RAISED_BY` its opener; Field Intelligence session (`FieldSession`, labelled "simulated", provenance "software simulation; not a physical measurement") `CONCERNS` its room; Learn case (`TrainingCase`) `DERIVED_FROM` its work order, `PROPOSES`/`REVIEWED_BY`/`APPROVED_BY` people; competency (`Competency`) `HAS_SKILL` (verified, unexpired only) and `VERIFIED_BY`. APEX and FI follow their room's site scope, Learn cases their work order's; competencies follow ADR-0009 privacy (everyone's only for recorders/verifiers, otherwise one's own) | IMPLEMENTED · TESTED | MC-8, FI-6, SP-7 |
+| "Which technician is qualified and available?" on an issue: answered from ServiceHands' own hard gates for the issue's triaged work order (verified competency records, sites, leave, capacity), with every ineligible person's failed gates as evidence. Only for the service manager (the ranking is theirs); everyone else, and the demo (no host hook), still get the recorded assignments and "not modelled" | IMPLEMENTED · TESTED | SP-7; SP-4 unchanged |
+| Defect found during validation | — | MC-8 first expected an approval edge on a Learn case that was never approved (MC-6 stops before the steward acts). The graph was right, so the test now asserts that no approval edge is invented |
+| Not built | — | `TYPES.json` (carried over from V2.5.3) has no APEX or Field Intelligence session type, and it was not edited; these appear under the API's own type names (`ApexCase`, `FieldSession`). Search Party in the demo is unchanged |
+
 ### Connector expansion directive (2026-10-31 05:34 CT) — what was actually done
 
 | Item | Status | Evidence |
