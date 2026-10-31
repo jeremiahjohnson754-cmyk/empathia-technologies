@@ -15,12 +15,13 @@ import { resolvePrincipal, resolveOidcPrincipal } from '../domain/platform.js';
 import { asJson, type PgPool } from '../db/pg.js';
 import type { Config } from '../config.js';
 import { log } from '../log.js';
+import type { Telemetry } from '@empathia/observability';
 
 const HEADERS = { 'x-content-type-options': 'nosniff', 'referrer-policy': 'no-referrer', 'cache-control': 'no-store', 'x-frame-options': 'DENY', 'content-security-policy': "default-src 'none'; frame-ancestors 'none'" };
 
 class Bucket { tokens: number; at = Date.now(); constructor(public cap: number) { this.tokens = cap; } take(): boolean { const now = Date.now(); this.tokens = Math.min(this.cap, this.tokens + ((now - this.at) / 60000) * this.cap); this.at = now; if (this.tokens < 1) return false; this.tokens -= 1; return true; } }
 
-export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: TokenVerifier): http.Server {
+export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: TokenVerifier, telemetry: Telemetry): http.Server {
   const buckets = new Map<string, Bucket>();
   const oidc = cfg.oidc ? new OidcVerifier({ issuer: cfg.oidc.issuer, audience: cfg.oidc.audience, jwksUrl: cfg.oidc.jwksUrl }) : null;
   return http.createServer(async (req, res) => {
@@ -29,7 +30,7 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
     const correlationId = /^[A-Za-z0-9._-]{8,80}$/.test(incoming) ? incoming : crypto.randomUUID();
     const origin = String(req.headers.origin || '');
     const cors: Record<string, string> = cfg.corsOrigins.includes(origin) ? { 'access-control-allow-origin': origin, vary: 'Origin', 'access-control-allow-headers': 'authorization, content-type, idempotency-key, x-correlation-id, x-file-name', 'access-control-allow-methods': 'GET, POST, PATCH, DELETE', 'access-control-expose-headers': 'x-correlation-id' } : {};
-    let status = 500; let ctxRole = '-';
+    let status = 500; let ctxRole = '-'; let routePath = '(unmatched)'; let tenantId: string | undefined; const startedAt = Date.now();
     const send = (r: Res) => {
       status = r.status;
       const body = r.raw ?? (r.body === undefined ? undefined : Buffer.from(JSON.stringify(r.body)));
@@ -44,7 +45,7 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
       const m = router.match(req.method || 'GET', url.pathname);
       if (!m) throw new ApiError('not_found', `no endpoint ${url.pathname}`);
       if ('allowed' in m) { send({ status: 405, body: { ...new ApiError('validation', `method not allowed; use ${m.allowed.join(', ')}`).problem(correlationId), status: 405 }, headers: { allow: m.allowed.join(', ') } }); return; }
-      const { route, params } = m;
+      const { route, params } = m; routePath = route.path;
       const ctx = new RequestContext(pool, correlationId);
 
       // authentication
@@ -66,7 +67,7 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
           p = await resolvePrincipal(pool, claims.sub, claims.tid, claims.role);
           if (!p) throw new ApiError('unauthenticated', 'the membership behind this token no longer exists or the person is disabled');
         }
-        ctx.principal = p; ctxRole = p.role; bucketKey = `p:${p.personId}`;
+        ctx.principal = p; ctxRole = p.role; tenantId = p.tenantId; bucketKey = `p:${p.personId}`;
       }
       const b = buckets.get(bucketKey) || buckets.set(bucketKey, new Bucket(cfg.rateLimitPerMinute)).get(bucketKey)!;
       if (!b.take()) throw new ApiError('rate_limited', 'slow down: the per-caller request budget is spent for this minute');
@@ -106,10 +107,15 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
       send(await route.handler(ctx, { params, query: url.searchParams, body, raw, headers: req.headers }));
     } catch (e) {
       const err = e instanceof ApiError ? e : (e as { code?: string }).code === '23505' ? new ApiError('conflict', 'that record already exists') : /^EM00[1-4]$/.test(String((e as { code?: string }).code)) ? new ApiError('rule_refused', (e as Error).message) : (e as { code?: string }).code === '23514' ? new ApiError('rule_refused', `a database constraint refused the change: ${(e as { constraint?: string }).constraint || (e as Error).message}`) : new ApiError('internal', 'internal error (see the server log for this correlation id)');
-      if (err.code === 'internal') log('error', 'request failed', { correlationId, error: (e as Error).message, stack: (e as Error).stack?.split('\n').slice(0, 4).join(' | ') });
+      if (err.code === 'internal') {
+        log('error', 'request failed', { correlationId, error: (e as Error).message, stack: (e as Error).stack?.split('\n').slice(0, 4).join(' | ') });
+        // the same correlation id is in the problem document, the log line and the telemetry event; nothing from the request body goes with it
+        void telemetry.captureException(e, { correlationId, route: routePath, method: req.method || 'GET', status: 500, role: ctxRole, tenantId });
+      }
       send({ status: err.status, body: err.problem(correlationId) });
     } finally {
       log('info', 'request', { correlationId, method: req.method, path: (req.url || '').split('?')[0], status, role: ctxRole, ms: Number(process.hrtime.bigint() - t0) / 1e6 });
+      void telemetry.transaction({ route: routePath, method: req.method || 'GET', status, startedAt, endedAt: Date.now(), correlationId, role: ctxRole, tenantId });
     }
   });
 }

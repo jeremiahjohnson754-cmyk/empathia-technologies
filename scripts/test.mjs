@@ -39,14 +39,14 @@ function suite(name, kind, cmd, args, parse, opts = {}) {
 }
 
 const node = process.execPath;
-for (const p of ['packages/commissioning-engine', 'packages/event-contracts', 'packages/relationship-engine', 'packages/search-party', 'packages/project-governance', 'packages/service-engine', 'packages/apex-engine', 'packages/kpi-engine', 'packages/field-intelligence', 'packages/assurance-engine', 'packages/api-client', 'packages/schemas', 'integrations/contracts', 'integrations/mocks']) {
+for (const p of ['packages/commissioning-engine', 'packages/event-contracts', 'packages/relationship-engine', 'packages/search-party', 'packages/project-governance', 'packages/service-engine', 'packages/apex-engine', 'packages/kpi-engine', 'packages/field-intelligence', 'packages/assurance-engine', 'packages/observability', 'packages/api-client', 'packages/schemas', 'integrations/contracts', 'integrations/mocks']) {
   const dir = path.join(root, p, 'dist/test');
   suite(`unit: ${p}`, 'unit', node, ['--test', `${p}/dist/test/**/*.test.js`], tap, fs.existsSync(dir) ? {} : { skip: 'not built (node scripts/build.mjs)' });
 }
 suite('unit: ml research prototype (python)', 'unit', 'python3', ['-I', '-m', 'unittest', 'discover', '-s', 'ml/tests'], unittest, fs.existsSync(path.join(root, 'ml/datasets/synthetic_first_attempt_v1.csv')) ? {} : { skip: 'dataset not generated (node ml/datasets/generate_synthetic.mjs; python3 -I ml/training/train.py)' });
 suite('service: intelligence-python', 'integration', 'python3', ['-I', '-m', 'unittest', 'discover', '-s', 'services/intelligence-python/tests'], unittest);
 const db = fs.existsSync(path.join(root, '.local/pg/credentials.json'));
-for (const f of ['tests/integration/api.test.mjs', 'tests/integration/leads.test.mjs', 'tests/integration/api-client.test.mjs', 'tests/integration/integration-worker.test.mjs']) suite(`integration: ${path.basename(f)}`, 'integration', node, ['--test', f], tap, db ? {} : { skip: 'no local database (node scripts/db.mjs up)' });
+for (const f of ['tests/integration/api.test.mjs', 'tests/integration/leads.test.mjs', 'tests/integration/api-client.test.mjs', 'tests/integration/integration-worker.test.mjs', 'tests/integration/observability.test.mjs']) suite(`integration: ${path.basename(f)}`, 'integration', node, ['--test', f], tap, db ? {} : { skip: 'no local database (node scripts/db.mjs up)' });
 suite('security: authz.test.mjs', 'security', node, ['--test', 'tests/security/authz.test.mjs'], tap, db ? {} : { skip: 'no local database (node scripts/db.mjs up)' });
 suite('security: founder-boundary.test.mjs', 'security', node, ['--test', 'tests/security/founder-boundary.test.mjs'], tap, db ? {} : { skip: 'no local database (node scripts/db.mjs up)' });
 for (const f of ['tests/security/site-scope.test.mjs', 'tests/security/authority-matrix.test.mjs', 'tests/security/governance.test.mjs', 'tests/security/administration.test.mjs', 'tests/security/search-party.test.mjs', 'tests/security/oidc.test.mjs', 'tests/security/project-lifecycle.test.mjs']) suite(`security: ${path.basename(f)}`, 'security', node, ['--test', f], tap, db ? {} : { skip: 'no local database (node scripts/db.mjs up)' });

@@ -1,5 +1,8 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App.js';
+import { ErrorBoundary } from './components/ErrorBoundary.js';
+import { installTelemetry } from './telemetry.js';
 
-createRoot(document.getElementById('root')!).render(<StrictMode><App /></StrictMode>);
+installTelemetry();
+createRoot(document.getElementById('root')!).render(<StrictMode><ErrorBoundary><App /></ErrorBoundary></StrictMode>);

@@ -278,6 +278,15 @@ try {
   await page.click('.ui-drawer button:has-text("Cancel")');
 
 
+  // ---------------------------------------------------------------- observability (browser side)
+  const tel0 = await page.evaluate(() => window.empathiaTelemetry());
+  ok('W-49', 'the browser reports under a release stamped with the build’s commit, to no transport unless the serving process configures one', /^empathia-enterprise-web@0\.1\.0\+([0-9a-f]{12}|unknown)$/.test(tel0.release) && tel0.transport === 'none' && tel0.captured === 0, JSON.stringify(tel0));
+  // a synthetic window error (dispatched, not thrown: W-18 keeps watching real page errors) is captured by the window handler
+  const tel1 = await page.evaluate(() => { window.dispatchEvent(new ErrorEvent('error', { error: new Error('synthetic window error'), message: 'synthetic window error' })); return window.empathiaTelemetry(); });
+  ok('W-50', 'an uncaught error is captured by the window handler (count, no key in the status)', tel1.captured === 1 && !JSON.stringify(tel1).includes('dsn'), JSON.stringify(tel1));
+  const bundle = await (await fetch(`http://127.0.0.1:${WEB}/app.js`)).text();
+  ok('W-51', 'the shipped bundle carries the release sha, no DSN and no source map reference', /empathia-enterprise-web/.test(bundle) && !/sourceMappingURL/.test(bundle) && !/ingest\.sentry\.io/.test(bundle), '');
+
   // ---------------------------------------------------------------- hygiene
   ok('W-18', 'no page errors or unexpected console errors', errors.length === 0, errors.join(' | '));
   ok('W-19', 'no request left 127.0.0.1 (web app and API only)', external.length === 0, external.join(' '));

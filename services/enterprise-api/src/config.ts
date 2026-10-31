@@ -22,6 +22,10 @@ export interface Config {
   rateLimitPerMinute: number;
   /** OIDC (AUTH_MODE=oidc): the provider's issuer, the audience this API accepts, the JWKS URL, and whether a verified email may bind a first sign-in to an existing person */
   oidc: { issuer: string; audience: string; jwksUrl: string; linkByEmail: boolean } | null;
+  /** Telemetry (packages/observability): TELEMETRY=none|file|sentry (sentry is implied by SENTRY_DSN), the DSN, the NDJSON file for TELEMETRY=file, the request sampling rate */
+  telemetry: { mode: 'none' | 'file' | 'sentry'; dsn: string | null; file: string | null; tracesSampleRate: number };
+  /** The release this process reports under: service name, package version, the commit it was built from (dist/build-info.json, RELEASE_SHA, or unknown) */
+  release: { name: string; version: string; sha: string; environment: string };
 }
 
 /** Reads .local/pg/env (written by scripts/db.mjs) when the variables are not already set. */
@@ -51,6 +55,13 @@ export function loadConfig(repo: string, over: Partial<Record<string, string>> =
     secret = fs.readFileSync(f, 'utf8').trim();
   }
   if (Buffer.byteLength(secret) < 32) throw new Error('JWT_SECRET must be at least 32 bytes');
+  const tmode = (e['TELEMETRY'] || (e['SENTRY_DSN'] ? 'sentry' : 'none')) as Config['telemetry']['mode'];
+  if (!['none', 'file', 'sentry'].includes(tmode)) throw new Error(`TELEMETRY must be none, file or sentry (got ${tmode})`);
+  if (tmode === 'sentry' && !e['SENTRY_DSN']) throw new Error('TELEMETRY=sentry requires SENTRY_DSN');
+  if (tmode === 'sentry' && env === 'production' && !/^https:\/\//.test(e['SENTRY_DSN']!)) throw new Error('SENTRY_DSN must be https in production');
+  if (tmode === 'file' && !e['TELEMETRY_FILE']) throw new Error('TELEMETRY=file requires TELEMETRY_FILE');
+  const tRate = e['TELEMETRY_TRACES_SAMPLE_RATE'] != null ? Number(e['TELEMETRY_TRACES_SAMPLE_RATE']) : 0.1;
+  if (!(tRate >= 0 && tRate <= 1)) throw new Error('TELEMETRY_TRACES_SAMPLE_RATE must be between 0 and 1');
   const need = (k: string) => { const v = e[k]; if (!v) throw new Error(`${k} is required (run: node scripts/db.mjs up)`); return v; };
   return {
     env, authMode,
@@ -64,5 +75,12 @@ export function loadConfig(repo: string, over: Partial<Record<string, string>> =
     maxBodyBytes: Number(e['MAX_BODY_BYTES'] || 25 * 1024 * 1024),
     rateLimitPerMinute: Number(e['RATE_LIMIT_PER_MINUTE'] || 600),
     oidc,
+    telemetry: { mode: tmode, dsn: e['SENTRY_DSN'] || null, file: e['TELEMETRY_FILE'] || null, tracesSampleRate: tRate },
+    release: { name: 'empathia-enterprise-api', version: '0.1.0', sha: e['RELEASE_SHA'] || buildInfo(repo).sha, environment: e['RELEASE_ENVIRONMENT'] || env },
   };
+}
+
+/** services/enterprise-api/dist/build-info.json, written by scripts/build.mjs from the commit the artifact was built at. */
+function buildInfo(repo: string): { sha: string } {
+  try { return JSON.parse(fs.readFileSync(path.join(repo, 'services/enterprise-api/dist/build-info.json'), 'utf8')) as { sha: string }; } catch { return { sha: 'unknown' }; }
 }

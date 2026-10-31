@@ -98,3 +98,8 @@ h1 { font-size: var(--fs-xl); line-height: 1.2; margin: 0; text-wrap: balance; }
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); } .check { display: flex; gap: 8px; align-items: flex-start; font-size: var(--fs-sm); color: var(--tx2); margin: var(--sp-2) 0; }
 .ui-meta.ok { color: var(--ok, var(--accent)); }
 @media (max-width: 520px) { .dims__row { grid-template-columns: 1fr 1fr; } .two { grid-template-columns: 1fr; } }
+
+/* render failure (ErrorBoundary): a calm panel, never a blank page */
+.app__crash { max-width: 40rem; margin: 10vh auto; padding: 0 1rem; }
+.app__crash .ui-notice p { margin: 0 0 .75rem; }
+.app__crash code { user-select: all; }

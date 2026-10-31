@@ -24,6 +24,14 @@ declare module 'react' {
   export const Fragment: (props: { children?: ReactNode }) => ReactElement;
   export const StrictMode: (props: { children?: ReactNode }) => ReactElement;
   export type FC<P = {}> = (props: P) => ReactElement | null;
+  /** Class components exist only for error boundaries (apps/enterprise-web/src/components/ErrorBoundary.tsx); hooks cannot catch render errors. */
+  export class Component<P = {}, S = {}> {
+    constructor(props: P);
+    props: Readonly<P>; state: Readonly<S>;
+    setState(s: Partial<S> | ((prev: Readonly<S>) => Partial<S>)): void;
+    render(): ReactNode;
+    componentDidCatch?(error: Error, info: { componentStack?: string | null }): void;
+  }
 }
 declare module 'react/jsx-runtime' {
   export const jsx: unknown; export const jsxs: unknown; export const Fragment: unknown;

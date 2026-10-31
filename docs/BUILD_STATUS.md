@@ -134,6 +134,21 @@ revision `phase`, engine guards `concept_authorized` / `…_and_funded`; APR-2, 
 Not built: SIGNAL labs (91 simulators); the enterprise app's service/APEX/executive/field-intelligence pages on the new engines
 (the engines are shared packages, ready for the API). Demo browser suite: **101 checks**.
 
+### Connector expansion directive (2026-10-31 05:34 CT) — what was actually done
+
+| Item | Status | Evidence |
+|---|---|---|
+| Discovery, read-only, of every listed connector (Sentry, Firecrawl, Netlify, Mermaid Chart, Mobbin, Superhuman Docs, Lovable, Hive, tldraw, Tally, Supabase) | DONE | `docs/operations/CONNECTOR_MATRIX.md` (auth state, operations seen, what was used) |
+| `@empathia/observability`: one telemetry port, three transports (none / NDJSON file / Sentry envelope endpoint), scrubbing, sampling, release naming, 429 handling, no retries; wired into the API (500 → exception event with the problem's correlation id; every request a sampled transaction; fatal process handlers; `/health` telemetry status) and the browser (window errors, unhandled rejections, ErrorBoundary with a quotable reference, API ≥ 500 with the API's correlation id); release stamped from the commit by the build | IMPLEMENTED · TESTED | unit 10/10 · OBS-1..OBS-5 · W-49..W-51; `docs/operations/OBSERVABILITY.md` |
+| Delivery to a live Sentry project | **NOT RUN** | no project exists; creating one is an external action awaiting owner authorization (runbook in OBSERVABILITY.md) |
+| Sentry ingest contract read from Sentry's developer documentation via Firecrawl, with provenance | DONE | `docs/research/sentry-ingest-contract.md` |
+| Generated architecture diagrams 10–15 (governance, delivery, service, Field Intelligence session — edges produced by driving the engine —, event flow, package graph), drift-checked by the build, rendered locally, two validated by Mermaid Chart | DONE | `scripts/docs/diagrams.mjs --check`; `docs/architecture/SYSTEM_ARCHITECTURE.md` |
+| Netlify vs Render | DONE (recommendation: Render; nothing provisioned) | `docs/operations/HOSTING_COMPARISON.md` |
+| Mobbin UI standards | NOT POSSIBLE (paid plan required) | matrix |
+| Superhuman Docs, Lovable, tldraw, Tally, Hive, Supabase | inventoried; not used (no workspace, spends credits, or duplicates the repository) | matrix |
+
+Full regression after this milestone: **38 PASS · 0 FAIL · 1 NOT_RUN** (films not decoded).
+
 ## Owner decisions of 2026-10-30 12:59 CT — what was actually done
 
 Each approved decision has an ADR, a migration, API contract entries (OpenAPI regenerated: 74 operations), positive and negative tests

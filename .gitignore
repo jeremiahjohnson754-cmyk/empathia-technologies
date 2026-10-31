@@ -34,3 +34,6 @@ legacy/source/**/*.css
 legacy/baseline/**/*.png
 apps/demo/src/generated/
 releases/source/
+
+# derived release stamp (scripts/build.mjs)
+apps/enterprise-web/src/generated/

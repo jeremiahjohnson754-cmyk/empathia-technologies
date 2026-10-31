@@ -43,14 +43,24 @@ function finish(code) {
 log(`Empathia build ${new Date().toISOString()} on ${process.platform} ${process.version}`);
 run('link workspace', process.execPath, [path.join(root, 'scripts/bootstrap.mjs')]);
 run('design tokens', process.execPath, [path.join(root, 'packages/design-tokens/build-tokens.mjs')]);
-for (const p of ['packages/domain-types', 'packages/commissioning-engine', 'packages/event-contracts', 'packages/relationship-engine', 'packages/search-party', 'packages/project-governance', 'packages/service-engine', 'packages/apex-engine', 'packages/kpi-engine', 'packages/field-intelligence', 'packages/assurance-engine',
+for (const p of ['packages/domain-types', 'packages/commissioning-engine', 'packages/event-contracts', 'packages/relationship-engine', 'packages/search-party', 'packages/project-governance', 'packages/service-engine', 'packages/apex-engine', 'packages/kpi-engine', 'packages/field-intelligence', 'packages/assurance-engine', 'packages/observability',
   'integrations/contracts', 'integrations/mocks', 'services/enterprise-api', 'packages/api-client', 'packages/schemas']) run(`tsc -b ${p}`, process.execPath, [tsc, '-b', path.join(root, p)]);
+// the release stamp: the commit the artifact was built from (RELEASE_SHA, else git), read by the API's config for telemetry release correlation
+{
+  let sha = process.env.RELEASE_SHA || 'unknown';
+  if (sha === 'unknown') { const r = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }); if (r.status === 0) sha = r.stdout.trim(); }
+  const dirty = spawnSync('git', ['status', '--porcelain', '--untracked-files=no'], { cwd: root, encoding: 'utf8' });
+  const info = { sha, dirty: dirty.status === 0 ? dirty.stdout.trim().length > 0 : null, builtAt: new Date().toISOString(), node: process.version };
+  for (const d of ['services/enterprise-api/dist', 'apps/enterprise-web/src/generated']) { fs.mkdirSync(path.join(root, d), { recursive: true }); fs.writeFileSync(path.join(root, d, 'build-info.json'), JSON.stringify(info)); }
+  log(`release stamp ${sha.slice(0, 12)}${info.dirty ? ' (dirty)' : ''}`);
+}
 run('JSON Schemas (events, API bodies, entities)', process.execPath, [path.join(root, 'packages/schemas/scripts/generate.mjs')]);
 for (const p of ['packages/ui', 'apps/enterprise-web', 'apps/website', 'apps/demo']) run(`type-check ${p}`, process.execPath, [tsc, '-p', path.join(root, p, 'tsconfig.json'), '--noEmit']);
 // the Founder Studio type-checks against data it generates from the Founder Edition and the films (apps/founder-studio/src/generated,
 // not committed), so it is checked as part of --studio; a clean checkout without --studio reports it NOT_RUN instead of failing
 const studioData = fs.existsSync(path.join(root, 'apps/founder-studio/src/generated/docs.json'));
 run('OpenAPI and typed client match the route table', process.execPath, [path.join(root, 'scripts/api/export-openapi.mjs'), '--check']);
+run('generated architecture diagrams match the source', process.execPath, [path.join(root, 'scripts/docs/diagrams.mjs'), '--check']);
 run('enterprise web bundle', process.execPath, [path.join(root, 'apps/enterprise-web/build.mjs')]);
 run('public website (pre-rendered)', process.execPath, [path.join(root, 'apps/website/build.mjs')]);
 run('investor demo shell', process.execPath, [path.join(root, 'apps/demo/build.mjs')]);

@@ -13,11 +13,13 @@ const repo = path.resolve(app, '../..');
 const dist = path.join(app, 'dist');
 const dev = process.argv.includes('--dev');
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
+// the release stamp written by scripts/build.mjs (or RELEASE_SHA): browser errors carry the same commit as the API's
+const releaseSha = process.env.RELEASE_SHA || (() => { try { return JSON.parse(fs.readFileSync(path.join(app, 'src/generated/build-info.json'), 'utf8')).sha; } catch { return 'unknown'; } })();
 fs.rmSync(dist, { recursive: true, force: true }); fs.mkdirSync(dist, { recursive: true });
 await esbuild.build({
   entryPoints: [path.join(app, 'src/main.tsx')], bundle: true, minify: !dev, sourcemap: 'external', format: 'iife', target: ['es2022'], jsx: 'automatic',
-  outfile: path.join(dist, 'app.js'), define: { 'process.env.NODE_ENV': dev ? '"development"' : '"production"', EMPATHIA_DEV_BUILD: dev ? 'true' : 'false' }, legalComments: 'linked', logLevel: 'warning',
-  alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts'), '@empathia/api-client': path.join(repo, 'packages/api-client/src/index.ts') },
+  outfile: path.join(dist, 'app.js'), define: { 'process.env.NODE_ENV': dev ? '"development"' : '"production"', EMPATHIA_DEV_BUILD: dev ? 'true' : 'false', EMPATHIA_RELEASE_SHA: JSON.stringify(releaseSha) }, legalComments: 'linked', logLevel: 'warning',
+  alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts'), '@empathia/api-client': path.join(repo, 'packages/api-client/src/index.ts'), '@empathia/observability': path.join(repo, 'packages/observability/src/index.ts') },
 });
 
 // source maps never ship (red-team RT-20): moved out of dist, kept for an error tracker under .local/sourcemaps/<app>/

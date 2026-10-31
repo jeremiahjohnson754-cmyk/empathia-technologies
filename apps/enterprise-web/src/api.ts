@@ -5,6 +5,7 @@
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { EmpathiaClient, ApiProblem } from '@empathia/api-client';
+import { reportApiProblem } from './telemetry.js';
 
 // The API origin is fixed at build time (EMPATHIA_API_BASE) or by the deployment (window.EMPATHIA_API set by the server's index.html);
 // a ?api= override exists only in development builds (red-team RT-05: a phishing link must not be able to redirect sign-in and tokens).
@@ -48,7 +49,7 @@ export function useQuery<T>(key: string | null, fn: () => Promise<T>): Query<T> 
   useEffect(() => {
     if (!key || (e && (e.data !== undefined || e.error || e.promise))) return;
     const entry: Entry = { at: Date.now() };
-    entry.promise = fn().then((d) => { entry.data = d; }, (err: unknown) => { entry.error = err as Error; }).finally(() => { entry.promise = undefined; notify(key); });
+    entry.promise = fn().then((d) => { entry.data = d; }, (err: unknown) => { entry.error = err as Error; reportApiProblem(err, `query ${key}`); }).finally(() => { entry.promise = undefined; notify(key); });
     cache.set(key, entry);
   });
   return { data: e?.data as T | undefined, error: e?.error, loading: !!key && (!e || !!e.promise), reload: () => key && invalidate(key) };
@@ -63,7 +64,7 @@ export function useMutation<A, R>(fn: (a: A) => Promise<R>, affects: string[] = 
     run: async (a: A) => {
       setBusy(true); setError(undefined);
       try { const r = await fn(a); affects.forEach(invalidate); return r; }
-      catch (e) { setError(e as Error); return undefined; }
+      catch (e) { setError(e as Error); reportApiProblem(e, 'mutation'); return undefined; }
       finally { setBusy(false); }
     },
   };

@@ -12,11 +12,21 @@ import { buildRoutes } from './modules/routes.js';
 import { createServer } from './http/server.js';
 import { OutboxWorker } from './worker/outbox.js';
 import { log } from './log.js';
+import fs from 'node:fs';
+import { Telemetry, NullTransport, FileTransport, SentryTransport } from '@empathia/observability';
 
 export const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
 
+/** The telemetry port from the configuration: none (default), an NDJSON file, or Sentry's ingest endpoint. Never a network call unless a DSN is configured. */
+export function telemetryFor(cfg: Config): Telemetry {
+  const t = cfg.telemetry;
+  const transport = t.mode === 'sentry' ? new SentryTransport(t.dsn!) : t.mode === 'file' ? new FileTransport(t.file!, (f, text) => fs.promises.appendFile(f, text)) : new NullTransport();
+  return new Telemetry({ release: cfg.release, transport, tracesSampleRate: t.tracesSampleRate, logger: 'enterprise-api' });
+}
+
 export async function start(over: Partial<Record<string, string>> = {}) {
   const cfg: Config = loadConfig(repoRoot, over);
+  const telemetry = telemetryFor(cfg);
   const pool = new PgPool({ ...configFromUrl(cfg.databaseUrl), applicationName: 'empathia-enterprise-api' }, 10);
   const tokens = new Hs256Tokens(cfg.jwtSecret, cfg.jwtIssuer, cfg.jwtAudience, cfg.tokenTtlSeconds);
   const store = new LocalObjectStore(cfg.objectStoreDir);
@@ -26,21 +36,24 @@ export async function start(over: Partial<Record<string, string>> = {}) {
     const t0 = Date.now();
     try {
       const db = (await pool.query<{ v: string; m: number }>("SELECT current_setting('server_version') AS v, app.migrations_applied() AS m")).rows[0]!;
-      return { status: 'ok', service: 'empathia-enterprise-api', version: '0.1.0', database: { reachable: true, serverVersion: db.v, migrationsApplied: db.m, ms: Date.now() - t0 }, authMode: cfg.authMode, objectStore: store.kind, worker: { delivered: worker.delivered, failed: worker.failed, deadLettered: worker.dead }, liveHealth: 'NOT_MONITORED', note: 'production starter on synthetic data — not production-ready' };
+      return { status: 'ok', service: 'empathia-enterprise-api', version: '0.1.0', database: { reachable: true, serverVersion: db.v, migrationsApplied: db.m, ms: Date.now() - t0 }, authMode: cfg.authMode, objectStore: store.kind, worker: { delivered: worker.delivered, failed: worker.failed, deadLettered: worker.dead }, telemetry: telemetry.status(), liveHealth: 'NOT_MONITORED', note: 'production starter on synthetic data — not production-ready' };
     } catch (e) { return { status: 'degraded', database: { reachable: false, error: (e as Error).message } }; }
   };
   const router = buildRoutes({ pool, tokens, store, health, authMode: cfg.authMode });
-  const server = createServer(cfg, router, pool, tokens);
+  const server = createServer(cfg, router, pool, tokens, telemetry);
   await new Promise<void>((ok) => server.listen(cfg.port, cfg.host, ok));
   if (process.env['WORKER'] !== 'off') worker.start();
-  log('info', 'enterprise-api listening', { url: `http://${cfg.host}:${cfg.port}`, authMode: cfg.authMode, env: cfg.env });
-  const stop = async () => { worker.stop(); await new Promise((ok) => server.close(() => ok(null))); await pool.end(); await workerPool.end(); };
-  return { server, pool, workerPool, worker, tokens, router, cfg, stop };
+  log('info', 'enterprise-api listening', { url: `http://${cfg.host}:${cfg.port}`, authMode: cfg.authMode, env: cfg.env, release: telemetry.release, telemetry: telemetry.transport.kind });
+  const stop = async () => { worker.stop(); await new Promise((ok) => server.close(() => ok(null))); await pool.end(); await workerPool.end(); await telemetry.flush(); };
+  return { server, pool, workerPool, worker, tokens, router, cfg, telemetry, stop };
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
-  start().then(({ stop }) => {
+  start().then(({ stop, telemetry }) => {
     const bye = () => { log('info', 'shutting down'); void stop().then(() => process.exit(0)); };
     process.on('SIGINT', bye); process.on('SIGTERM', bye);
+    // a crash outside a request is reported, flushed and then fatal — the process never continues in an unknown state
+    const fatal = (kind: string) => (e: unknown) => { log('error', kind, { error: (e as Error)?.message }); void telemetry.captureException(e, { level: 'fatal', tags: { kind } }).then(() => telemetry.flush()).finally(() => process.exit(1)); };
+    process.on('uncaughtException', fatal('uncaughtException')); process.on('unhandledRejection', fatal('unhandledRejection'));
   }).catch((e) => { log('error', 'failed to start', { error: (e as Error).message }); process.exit(1); });
 }
