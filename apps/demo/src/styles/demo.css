@@ -88,3 +88,10 @@ h1 { margin: 0; font-size: clamp(26px, 3.6vw, 34px); line-height: 1.15; letter-s
 .empty { display: grid; gap: var(--sp-2); justify-items: start; padding: var(--sp-5) var(--sp-4); border: 1px dashed var(--line2); border-radius: var(--r-md); color: var(--tx2); }
 .empty > b { color: var(--tx); font-size: var(--fs-md); } .empty > p { margin: 0; max-width: 60ch; line-height: 1.5; }
 .svc__list li:has(> button) { padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); } .svc__list li:has(> button) > span { border: 0; padding: 0; background: transparent; }
+/* phones (site audit AUD, 2026-10-31): wide tables and cards scroll inside themselves instead of widening the page */
+@media (max-width: 760px) {
+  .build__table, .card table { display: block; overflow-x: auto; max-width: 100%; -webkit-overflow-scrolling: touch; }
+  .stack > *, .card, .sp__grid > *, .sp__results, .sp__detail { min-width: 0; }
+  .card pre, .stack pre { overflow-x: auto; max-width: 100%; }
+  .stack { min-width: 0; max-width: 100%; }
+}

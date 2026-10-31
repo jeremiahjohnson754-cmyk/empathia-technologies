@@ -1,50 +1,116 @@
 {
- "at": "2026-10-31T18:26:41.788Z",
- "pass": 32,
+ "at": "2026-10-31T21:43:43.559Z",
+ "pass": 54,
  "fail": 0,
- "tests": 32,
+ "tests": 54,
  "results": [
   {
    "id": "W-00",
    "name": "the sitemap lists the pages",
    "result": "PASS",
-   "detail": "/ /platform /solutions /how-it-works /technology /trust /about /request-demo /pilot-partners /contact /privacy /legal"
+   "detail": "/ /platform /products /products/lite /products/scouter /products/commissioning /products/assurance-apex /products/search-party /products/servicehands /products/field-intelligence /products/learn /products/pro /solutions /how-it-works /technology /trust /founder /about /request-demo /pilot-partners /contact /privacy /legal"
   },
   {
    "id": "W-desktop-/",
    "name": "/ answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Every room, every device, every decision — with its evidence.\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Every room. Every device. Every decision. With its evidence.\"}"
   },
   {
    "id": "W-desktop-/platform",
    "name": "/platform answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"The platform\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"One record. One governed lifecycle.\"}"
+  },
+  {
+   "id": "W-desktop-/products",
+   "name": "/products answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Nine products, one record\"}"
+  },
+  {
+   "id": "W-desktop-/products/lite",
+   "name": "/products/lite answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Lite — Build a Room\"}"
+  },
+  {
+   "id": "W-desktop-/products/scouter",
+   "name": "/products/scouter answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Scouter\"}"
+  },
+  {
+   "id": "W-desktop-/products/commissioning",
+   "name": "/products/commissioning answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Universal Commissioning\"}"
+  },
+  {
+   "id": "W-desktop-/products/assurance-apex",
+   "name": "/products/assurance-apex answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Assurance and APEX\"}"
+  },
+  {
+   "id": "W-desktop-/products/search-party",
+   "name": "/products/search-party answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Search Party\"}"
+  },
+  {
+   "id": "W-desktop-/products/servicehands",
+   "name": "/products/servicehands answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"ServiceHands\"}"
+  },
+  {
+   "id": "W-desktop-/products/field-intelligence",
+   "name": "/products/field-intelligence answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Field Intelligence\"}"
+  },
+  {
+   "id": "W-desktop-/products/learn",
+   "name": "/products/learn answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Learn and SIGNAL\"}"
+  },
+  {
+   "id": "W-desktop-/products/pro",
+   "name": "/products/pro answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Pro and Mission Control\"}"
   },
   {
    "id": "W-desktop-/solutions",
    "name": "/solutions answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Solutions\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"The same record, read by each team\"}"
   },
   {
    "id": "W-desktop-/how-it-works",
    "name": "/how-it-works answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"How it works\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"From request to accepted baseline\"}"
   },
   {
    "id": "W-desktop-/technology",
    "name": "/technology answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Technology\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Built for correctness first\"}"
   },
   {
    "id": "W-desktop-/trust",
    "name": "/trust answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
    "detail": "{\"status\":200,\"over\":0,\"h1\":\"Security and trust\"}"
+  },
+  {
+   "id": "W-desktop-/founder",
+   "name": "/founder answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Jeremiah Johnson\"}"
   },
   {
    "id": "W-desktop-/about",
@@ -56,19 +122,19 @@
    "id": "W-desktop-/request-demo",
    "name": "/request-demo answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Request a demonstration\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"See it with your questions\"}"
   },
   {
    "id": "W-desktop-/pilot-partners",
    "name": "/pilot-partners answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Pilot partnerships\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"A bounded pilot, with a factual report\"}"
   },
   {
    "id": "W-desktop-/contact",
    "name": "/contact answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Contact\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Write to us\"}"
   },
   {
    "id": "W-desktop-/privacy",
@@ -104,37 +170,103 @@
    "id": "W-phone-/",
    "name": "/ answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Every room, every device, every decision — with its evidence.\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Every room. Every device. Every decision. With its evidence.\"}"
   },
   {
    "id": "W-phone-/platform",
    "name": "/platform answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"The platform\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"One record. One governed lifecycle.\"}"
+  },
+  {
+   "id": "W-phone-/products",
+   "name": "/products answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Nine products, one record\"}"
+  },
+  {
+   "id": "W-phone-/products/lite",
+   "name": "/products/lite answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Lite — Build a Room\"}"
+  },
+  {
+   "id": "W-phone-/products/scouter",
+   "name": "/products/scouter answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Scouter\"}"
+  },
+  {
+   "id": "W-phone-/products/commissioning",
+   "name": "/products/commissioning answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Universal Commissioning\"}"
+  },
+  {
+   "id": "W-phone-/products/assurance-apex",
+   "name": "/products/assurance-apex answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Assurance and APEX\"}"
+  },
+  {
+   "id": "W-phone-/products/search-party",
+   "name": "/products/search-party answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Search Party\"}"
+  },
+  {
+   "id": "W-phone-/products/servicehands",
+   "name": "/products/servicehands answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"ServiceHands\"}"
+  },
+  {
+   "id": "W-phone-/products/field-intelligence",
+   "name": "/products/field-intelligence answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Field Intelligence\"}"
+  },
+  {
+   "id": "W-phone-/products/learn",
+   "name": "/products/learn answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Learn and SIGNAL\"}"
+  },
+  {
+   "id": "W-phone-/products/pro",
+   "name": "/products/pro answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Pro and Mission Control\"}"
   },
   {
    "id": "W-phone-/solutions",
    "name": "/solutions answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Solutions\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"The same record, read by each team\"}"
   },
   {
    "id": "W-phone-/how-it-works",
    "name": "/how-it-works answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"How it works\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"From request to accepted baseline\"}"
   },
   {
    "id": "W-phone-/technology",
    "name": "/technology answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Technology\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Built for correctness first\"}"
   },
   {
    "id": "W-phone-/trust",
    "name": "/trust answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
    "detail": "{\"status\":200,\"over\":0,\"h1\":\"Security and trust\"}"
+  },
+  {
+   "id": "W-phone-/founder",
+   "name": "/founder answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Jeremiah Johnson\"}"
   },
   {
    "id": "W-phone-/about",
@@ -146,19 +278,19 @@
    "id": "W-phone-/request-demo",
    "name": "/request-demo answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Request a demonstration\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"See it with your questions\"}"
   },
   {
    "id": "W-phone-/pilot-partners",
    "name": "/pilot-partners answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Pilot partnerships\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"A bounded pilot, with a factual report\"}"
   },
   {
    "id": "W-phone-/contact",
    "name": "/contact answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Contact\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Write to us\"}"
   },
   {
    "id": "W-phone-/privacy",

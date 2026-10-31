@@ -1,0 +1,108 @@
+{
+  "at": "2026-10-31T21:23:59+00:00",
+  "method": "text scan of the inline scripts (not executed); counts are pattern counts and say so",
+  "editions": [
+    {
+      "file": "2e552f2b-Empathia-Living-Campus-V2.5.3-live.html",
+      "bytes": 6957191,
+      "sha256": "9d6e53ef9f5a4e797b3be16c08f041b7c0c0766abbadb5186296ac925a09f2f1",
+      "signalSeasons": 0,
+      "signalEpisodeIds": [
+        "S1E1",
+        "S1E2",
+        "S1E6"
+      ],
+      "voLinesEntries": 0,
+      "voDurEntries": 172,
+      "cineFilmKeys": [
+        "academy",
+        "agent",
+        "empathia",
+        "learn",
+        "lite-emp",
+        "lite-eng",
+        "signal"
+      ],
+      "mediaIdsReferenced": [
+        "cine-bars",
+        "cine-cap",
+        "cine-close",
+        "cine-ctl",
+        "cine-dia",
+        "cine-hud",
+        "cine-intro",
+        "cine-note",
+        "cine-pause",
+        "cine-pic",
+        "cine-prog",
+        "cine-skip",
+        "cine-stage",
+        "cine-ttl",
+        "film-empathia",
+        "media-files",
+        "media-migration",
+        "vo-cap",
+        "vo-cast",
+        "vo-stop"
+      ],
+      "videoTagsInMarkup": 0,
+      "audioTagsInMarkup": 0,
+      "embeddedMediaDataUris": 0,
+      "hasVoPlay": true,
+      "hasMediaUrl": true,
+      "hasMediaHas": true,
+      "mediaIdsReferencedCount": 20
+    },
+    {
+      "file": "7e05b920-Empathia-Living-Campus-V2.5.3-offline.html",
+      "bytes": 6957206,
+      "sha256": "ecbde0bba17eafc9e5bcf98b57d15fbbb2378bac66d017c7a402194e78307756",
+      "signalSeasons": 0,
+      "signalEpisodeIds": [
+        "S1E1",
+        "S1E2",
+        "S1E6"
+      ],
+      "voLinesEntries": 0,
+      "voDurEntries": 172,
+      "cineFilmKeys": [
+        "academy",
+        "agent",
+        "empathia",
+        "learn",
+        "lite-emp",
+        "lite-eng",
+        "signal"
+      ],
+      "mediaIdsReferenced": [
+        "cine-bars",
+        "cine-cap",
+        "cine-close",
+        "cine-ctl",
+        "cine-dia",
+        "cine-hud",
+        "cine-intro",
+        "cine-note",
+        "cine-pause",
+        "cine-pic",
+        "cine-prog",
+        "cine-skip",
+        "cine-stage",
+        "cine-ttl",
+        "film-empathia",
+        "media-files",
+        "media-migration",
+        "vo-cap",
+        "vo-cast",
+        "vo-stop"
+      ],
+      "videoTagsInMarkup": 0,
+      "audioTagsInMarkup": 0,
+      "embeddedMediaDataUris": 0,
+      "hasVoPlay": true,
+      "hasMediaUrl": true,
+      "hasMediaHas": true,
+      "mediaIdsReferencedCount": 20
+    }
+  ]
+}

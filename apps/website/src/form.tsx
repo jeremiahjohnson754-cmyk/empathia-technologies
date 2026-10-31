@@ -10,16 +10,16 @@ const FIELDS: Record<LeadKind, { intro: string; extra?: { name: string; label: s
 export function LeadForm({ kind }: { kind: LeadKind }) {
   const f = FIELDS[kind];
   return (
-    <form className="lead" data-lead={kind} method="post" action="/v1/public/leads">
+    <form className="leadform" data-lead={kind} method="post" action="/v1/public/leads">
       <p className="note">{f.intro} Fields marked * are required.</p>
       <div className="row"><label>Name *<input name="name" required autoComplete="name" maxLength={120} /></label><label>Organization *<input name="organization" required autoComplete="organization" maxLength={160} /></label></div>
       <div className="row"><label>Email *<input name="email" type="email" required autoComplete="email" maxLength={200} /></label>
         {f.extra ? <label>{f.extra.label}<select name={f.extra.name} defaultValue="">{['', ...f.extra.options].map((o) => <option key={o} value={o}>{o || 'Choose…'}</option>)}</select></label> : <span />}</div>
       <label>Message *<textarea name="message" required rows={5} maxLength={4000} /></label>
       <label className="hp" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
-      <label className="consent"><input name="consent" type="checkbox" required /> I agree that Empathia stores this message to answer it (see the <a href="/privacy">privacy notice</a>). *</label>
-      <p className="status" role="status" aria-live="polite" data-status />
-      <button className="btn primary" type="submit">Send</button>
+      <label className="consent"><input name="consent" type="checkbox" required /> <span>I agree that Empathia stores this message to answer it (see the <a href="/privacy">privacy notice</a>). *</span></label>
+      <p className="status" role="status" aria-live="polite" tabIndex={-1} data-status />
+      <button className="btn btn--primary" type="submit">Send</button>
     </form>
   );
 }

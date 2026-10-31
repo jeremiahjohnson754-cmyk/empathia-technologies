@@ -8252,7 +8252,7 @@
         "tags": [
           "public"
         ],
-        "summary": "A message from the public website (demonstration request, pilot partnership, contact): stored for a person to answer; stricter per-address budget; honeypot; consent required",
+        "summary": "A message from the public website (demonstration request, pilot partnership, contact): stored for a person to answer; stricter per-address budget; honeypot; minimum fill time; consent required",
         "operationId": "postV1PublicLeads",
         "security": [],
         "parameters": [],
@@ -8269,7 +8269,8 @@
                   "organization",
                   "email",
                   "message",
-                  "consent"
+                  "consent",
+                  "elapsedMs"
                 ],
                 "properties": {
                   "kind": {
@@ -8314,6 +8315,11 @@
                   "website": {
                     "type": "string",
                     "maxLength": 200
+                  },
+                  "elapsedMs": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 86400000
                   }
                 }
               }

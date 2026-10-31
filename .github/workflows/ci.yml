@@ -18,7 +18,7 @@ jobs:
       - name: PostgreSQL 16 server binaries (the test harness creates a private cluster under .local/pg)
         run: |
           sudo apt-get update
-          sudo apt-get install -y postgresql-16 ffmpeg
+          sudo apt-get install -y postgresql-16 ffmpeg python3-yaml
           sudo systemctl stop postgresql || true
       - uses: actions/setup-python@v5
         with: { python-version: "3.13" }
@@ -35,6 +35,8 @@ jobs:
         run: node scripts/db.mjs up
       - name: Tests (unit, contract, database, HTTP, security, browser, studio) — serial, one cluster
         run: node scripts/test.mjs --browser --studio
+      - name: No suite failed or was skipped without a stated reason (release control)
+        run: node scripts/verify/no-unexpected-skips.mjs
       - name: Evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -43,5 +45,6 @@ jobs:
           path: |
             tests/evidence/TEST_RESULTS.md
             tests/evidence/TEST_RESULTS.json
+            tests/evidence/SITE_AUDIT.json
             .local/logs/
           retention-days: 30
