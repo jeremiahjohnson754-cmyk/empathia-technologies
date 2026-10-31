@@ -19,6 +19,9 @@ const sha = (p) => crypto.createHash('sha256').update(fs.readFileSync(p)).digest
 
 const dirty = git('status', '--porcelain');
 if (dirty) { console.error('the working tree has uncommitted changes; commit or stash first:\n' + dirty); process.exit(2); }
+// PD-01 guard: no source file may be hidden by an ignore rule (a bare "build/" rule once hid apps/demo/src/build from every commit)
+const hidden = git('ls-files', '--others', '--ignored', '--exclude-standard').split('\n').filter((f) => /(^|\/)src\/.*\.(ts|tsx|mjs|js|css|html|json|sql|py)$/.test(f) && !/\/generated\//.test(f) && !/node_modules\//.test(f) && !/\/dist\//.test(f));
+if (hidden.length) { console.error('source files are hidden by .gitignore; fix the rule and commit them first:\n' + hidden.join('\n')); process.exit(2); }
 const commit = git('rev-parse', 'HEAD'); const short = commit.slice(0, 7); const branch = git('branch', '--show-current');
 const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
 const name = `empathia-source-${stamp}-${short}`;

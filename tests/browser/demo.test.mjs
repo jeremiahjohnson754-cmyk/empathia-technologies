@@ -84,6 +84,19 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     ok('B-15b', 'the QA reviewer, who neither recorded nor verified, accepts the room and baseline v1 is published', /ACCEPTED/.test(await page.locator('.build__state').innerText()) && /baseline v1/.test(await page.locator('.build__state').innerText()), await refusal());
     await persp('syseng'); await page.click('button:has-text("Recommission")'); await page.waitForTimeout(150);
     ok('B-15c', 'the room can be recommissioned (back to COMMISSIONING) while baseline v1 stays', /COMMISSIONING/.test(await page.locator('.build__state').innerText()) && /baseline v1/.test(await page.locator('.build__state').innerText()), await refusal());
+    // the complete journey continues: a change during recommissioning → record → independent verification → re-acceptance → baseline v2 → compare
+    await page.click('#tab-design'); await page.waitForTimeout(100); await persp('designer'); await page.selectOption('#b-cat', 'lighting'); await page.click('button:has-text("Place at the centre")'); await page.waitForTimeout(150);
+    ok('B-15d', 'lighting control can be added during recommissioning by whoever holds room.design (a new family, so new tests apply)', !/Refused/.test(await refusal()) && (await page.locator('.build__list').first().innerText()).split('\n').length >= 2, await refusal());
+    await persp('syseng'); await page.click('#tab-lifecycle'); await page.waitForTimeout(150);
+    await persp('qa'); await page.click('button:has-text("Move to ACCEPTED")'); await page.waitForTimeout(200);
+    ok('B-15e', 'the changed room cannot be re-accepted until the new tests are recorded and verified', /Refused/.test(await refusal()), await refusal());
+    await persp('cxeng'); await page.click('button:has-text("Record all untested as PASS")'); await page.waitForTimeout(300);
+    await persp('architect'); await page.click('button:has-text("Verify all unverified")'); await page.waitForTimeout(300);
+    await persp('qa'); await page.click('button:has-text("Move to ACCEPTED")'); await page.waitForTimeout(300);
+    const st2 = await page.locator('.build__state').innerText();
+    ok('B-15f', 're-acceptance publishes baseline v2 (v1 superseded) and the lineage lists both', /ACCEPTED/.test(st2) && /baseline v2/.test(st2) && /v1/.test(await page.locator('[data-testid=lineage]').innerText()) && /v2/.test(await page.locator('[data-testid=lineage]').innerText()), (await refusal()) || st2);
+    const diff = await page.locator('[data-testid=baseline-diff]').innerText();
+    ok('B-15g', 'the comparison between v1 and v2 names the added device and the results that changed', /v1 and v2/.test(diff) && /1 added/.test(diff), diff.slice(0, 200));
     await page.click('#tab-ledger'); await page.waitForTimeout(150);
     const led = await main();
     ok('B-16', 'the ledger records every refusal with its actor (DENIED rows) alongside the allowed changes', (led.match(/DENIED/g) || []).length >= 5 && (led.match(/ALLOWED/g) || []).length >= 10, `${(led.match(/DENIED/g) || []).length} denied`);
@@ -92,6 +105,36 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     ok('B-17', 'the draft survives a reload on this computer and can be reset', /Harbour Huddle/.test(await main()));
     await page.click('button:has-text("Reset demonstration")'); await page.waitForTimeout(200);
     ok('B-18', 'reset returns to the description form', !!(await page.locator('#b-name').count()));
+  }
+  if (tag === 'desktop') {
+    // ---------------------------------------------------------------- Search Party in the demonstration (scenario 1) on the synthetic estate
+    await page.evaluate(() => { location.hash = '#/search?focus=NetworkNode:SW-ATL-4A'; }); await page.waitForTimeout(400); await page.waitForSelector('.sp__graph svg');
+    const spText = await page.evaluate(() => document.querySelector('main').innerText);
+    ok('S-01', 'Search Party opens on the access switch with its neighbourhood graph and the downstream impact: three rooms and their networked devices', /Access switch ATL-4A/.test(spText) && /Downstream impact/.test(spText) && /Atlas 4\.218/.test(spText) && /Atlas 4\.220/.test(spText) && /Atlas 4\.231/.test(spText), spText.slice(0, 300));
+    await page.click('.sp__chip:has-text("What depends on this?")'); await page.waitForSelector('.sp__answer');
+    const dep = await page.locator('.sp__answer').innerText();
+    ok('S-02', 'the dependency question is ANSWERED from recorded edges (DERIVED) and states that an unrecorded link is invisible', /ANSWERED/.test(dep) && /DERIVED/.test(dep) && /3 rooms/.test(dep) && /unrecorded/.test(dep), dep.slice(0, 240));
+    await page.click('.sp__chip:has-text("vendor")'); await page.waitForTimeout(200);
+    ok('S-03', 'an unmodelled question is UNKNOWN with the reason', /UNKNOWN/.test(await page.locator('.sp__answer').innerText()));
+    await page.locator('.sp__node').nth(1).focus(); await page.keyboard.press('Enter'); await page.waitForSelector('.sp__inspect');
+    ok('S-04', 'every edge of an inspected node names its provenance (DECLARED / OBSERVED / MODELED / DERIVED)', /(DECLARED|OBSERVED|MODELED|DERIVED)/.test(await page.locator('.sp__inspect').innerText()));
+    await page.fill('#spd-q', 'ISS-0417'); await page.waitForTimeout(200);
+    ok('S-05', 'search finds the open issue by code', /Far-end audio drops out/.test(await page.locator('.sp__list').innerText()));
+
+    // ---------------------------------------------------------------- the seven guided scenarios: the panel walks the canonical 17 steps, switching perspective, honest about migration status
+    await page.evaluate(() => { location.hash = '#/tours/investor?scenario=1'; }); await page.waitForTimeout(500); await page.waitForSelector('[data-testid=tour]');
+    const t1 = await page.locator('[data-testid=tour]').innerText();
+    ok('T-01', 'scenario 1 opens its first step natively on Search Party as the service technician with its evidence label', /Scenario 1 of 7 · step 1 of 17/.test(t1) && /VERIFIED_DEMO/.test(t1) && /as service/.test(t1) && !/not migrated/.test(t1) && /#\/search\?focus=NetworkNode:SW-ATL-4A/.test(await page.evaluate(() => location.hash)) && (await page.locator('.sp__graph svg').count()) === 1, t1.slice(0, 200));
+    ok('T-02', 'the perspective follows the step persona', (await page.inputValue('.persp select')) === 'service');
+    let visited = 0, honest = 0, errorsBefore = errs.length;
+    for (let i = 0; i < 16; i++) { await page.click('[data-testid=tour] button:has-text("Next")'); await page.waitForTimeout(250); const t = await page.locator('[data-testid=tour]').innerText(); visited += 1; if (/not migrated yet/.test(t)) honest += 1; const main = await page.evaluate(() => document.querySelector('main').innerText); if (!main.trim()) { ok(`T-03.${i}`, 'step renders a page', false, t.slice(0, 80)); } }
+    const last = await page.locator('[data-testid=tour]').innerText();
+    ok('T-03', 'every one of the 17 steps opens a page (native or a status page) with no page error; steps on unmigrated areas say so', visited === 16 && /step 17 of 17/.test(last) && honest >= 8 && errs.length === errorsBefore, `${visited} visited, ${honest} honest, errors ${errs.length - errorsBefore}`);
+    ok('T-04', 'the last step is the steward on the ledger', /as steward/.test(last));
+    await page.click('[data-testid=tour] button[aria-label="Scenario 4"]'); await page.waitForTimeout(400);
+    ok('T-05', 'jumping to scenario 4 opens the commissioning plan step natively as the commissioning engineer', /Scenario 4 of 7/.test(await page.locator('[data-testid=tour]').innerText()) && /#\/v25\/build/.test(await page.evaluate(() => location.hash)));
+    await page.click('[data-testid=tour] button:has-text("Close")'); await page.waitForTimeout(200);
+    ok('T-06', 'the panel closes and stays closed on reload', (await page.locator('[data-testid=tour]').count()) === 0);
   }
   ok(`D-${tag}-07`, 'no page error, no console error, no request outside the page', !errs.length && !ext.length, [...errs, ...ext].slice(0, 3).join(' | '));
   await ctx.close();

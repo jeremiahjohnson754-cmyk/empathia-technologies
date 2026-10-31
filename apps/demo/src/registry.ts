@@ -4,15 +4,17 @@
 import parity from './generated/parity.json';
 export interface AreaStatus { key: string; label: string; target: string; status: string; newRoute: string; }
 /** Areas with a native page in this shell (everything else resolves to a boundary page that states its migration status). */
-export const NATIVE = new Set(['investor', 'v25.build']);
+export const NATIVE = new Set(['investor', 'v25.build', 'search', 'search.graph']);
 export const AREAS: AreaStatus[] = parity as AreaStatus[];
+/** The 86 legacy address areas (the V2.5 pages are listed separately in the ledger). */
+export const AREA_COUNT = AREAS.filter((a) => !a.key.startsWith('v25.') || a.key === 'v25.build').length;
 const SUB: Record<string, string[]> = { search: ['quality', 'ownership', 'support', 'graph', 'people', 'projects', 'orgs', 'activity', 'vault'], pro: ['assets', 'issues', 'ops', 'eng', 'exec'], service: ['coverage', 'fixes'], lite: ['services', 'guides'], intake: ['new'], servicehands: ['new'], commissioning: ['room'], agent: ['arch'], scouter: ['anatomy'] };
 export function areaKey(hash: string): string {
   const p = (hash.replace(/^#\/?/, '').split('?')[0] || '').split('~')[0]!.split('/').filter(Boolean); const a = p[0] || 'home'; const b = p[1] || '';
   if (a === 'assurance') { if (!b) return 'assurance'; if (['ready', 'signals', 'change'].includes(b)) return `assurance.${b}`; if (b === 'room') return p[3] === 'ready' ? 'assurance.ready' : p[3] === 'recommission' ? 'assurance.recommission' : p[3] === 'history' ? 'assurance.history' : 'assurance.room'; return 'assurance'; }
   if (a === 'search' && b === 'coverage') return 'service.coverage';
   if (a === 'suite') return ({ pro: 'pro', lite: 'lite', scouter: 'scouter', intake: 'intake', budget: 'budget', commission: 'commissioning', assurance: 'assurance', standards: 'pro.eng', operations: 'pro.ops', learn: 'learn', core: 'core', integrations: 'fabric' } as Record<string, string>)[b] || 'none';
-  if (a === 'v25') return b === 'build' ? 'v25.build' : 'investor';
+  if (a === 'v25') return b ? `v25.${b}` : 'investor';   // every V2.5 page is its own ledger row (v25.fi, v25.service, …)
   if (SUB[a] && SUB[a]!.includes(b)) return `${a}.${b}`;
   return a;
 }

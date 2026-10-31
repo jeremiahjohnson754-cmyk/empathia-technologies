@@ -1,6 +1,8 @@
 node_modules/
 dist/
-build/
+/build/
+# a bare "build/" rule once hid apps/demo/src/build (Build a Room source) from every commit and package; source is never ignored by a bare name
+!**/src/build/
 .cache/
 *.log
 .env

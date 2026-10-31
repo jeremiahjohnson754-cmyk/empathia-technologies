@@ -75,6 +75,25 @@ Full run at this commit: `node scripts/build.mjs` PASS (incl. dist hygiene); `no
 
 Full run alone after each step: **30 PASS · 0 FAIL · 1 NOT_RUN** (film decode).
 
+### P4-C — the seven guided scenarios (2026-10-31)
+
+| Item | Status | Evidence |
+|---|---|---|
+| Search Party in the demonstration (`#/search`, `?focus=Type:id`): the shipped `@empathia/search-party` package on a synthetic estate held in the page (2 buildings, 4 rooms, 2 switches, 1 PDU, 8 assets, 1 issue, 1 work order, 3 people, 1 baseline; the Build a Room draft merged in) | IMPLEMENTED · TESTED | demo S-01..S-05: impact of SW-ATL-4A names rooms 4.218/4.220/4.231; "what depends on this" is ANSWERED from DERIVED edges and says an unrecorded link is invisible; an unmodelled question is UNKNOWN; every edge shows provenance |
+| Guided scenario runner (`#/tours/investor?scenario=n`): the 17 canonical V2.5.3 steps carried over verbatim (title, narration, persona, evidence label); perspective follows the persona; Previous/Next/jump; Reset & replay clears the draft; Close | IMPLEMENTED · TESTED | demo T-01..T-06 (every step opens a page, none errors, 10 of 17 say "not migrated yet" with the ledger status) |
+| Step pages native: 1 (Search Party), 3, 4a, 4b, 5b, 5c (Build a Room) = 7 of 17; the other 10 (FI, FI PV, service ×2, APEX, Learn ×2, Mission Control, Executive, Ledger) are status pages that name their ledger row | PARTIAL · honest by construction | registry now resolves every `#/v25/<page>` to its own ledger row (19 V2.5 pages added to the generated registry; D-04 now covers 105 addresses) |
+| Complete journey in Build a Room: create → design → approve → window → install → commission → record → independent verification → accept (baseline v1) → recommission → change (lighting control added) → re-record → re-verify → re-accept (baseline v2, v1 superseded) → compare | IMPLEMENTED · TESTED | demo B-01..B-18 incl. B-15c..B-15g (`[data-testid=lineage]`, `[data-testid=baseline-diff]`: "1 added", changed result labels) |
+| Baseline deep links `#/v25/build?tab=checks|lifecycle` | IMPLEMENTED · TESTED | T-05 |
+
+**Preservation defect found and fixed in this step (PD-01).** The generic `build/` line in `.gitignore` had silently excluded
+`apps/demo/src/build/` (Build a Room: `store.ts`, `BuildRoom.tsx`) from every commit since 457e9f0 and from the delivered source package
+`empathia-source-20261031-a9f184a.tar.gz` (its `FILES.json` has no `apps/demo/src/build` entry). The builds and tests passed because the
+files existed in the workspace, so nothing detected it. Fix: the rule is now `/build/` with `!**/src/build/`; the two files are committed
+here; the preservation package is regenerated from this commit. Guard added: `scripts/release/preserve-source.mjs` now refuses to package
+when any file under a `src/` directory is ignored.
+
+Demo browser suite: **46 checks**. Not done: scenario pages 2, 5 (service/APEX), 6 (Learn), 7 (Mission Control, Executive, Ledger) as native demo pages; tours A/B/C (lifecycle, workplace, engineer, founder, d2a) — ledger rows stay NOT_STARTED.
+
 ## Owner decisions of 2026-10-30 12:59 CT — what was actually done
 
 Each approved decision has an ADR, a migration, API contract entries (OpenAPI regenerated: 74 operations), positive and negative tests

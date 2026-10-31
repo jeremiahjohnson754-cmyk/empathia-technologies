@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Tag, Notice, AppShell } from '@empathia/ui';
 import { areaOf, AREAS, NATIVE } from './registry.js';
 import { BuildRoom } from './build/BuildRoom.js';
+import { SearchPartyDemo } from './search/SearchParty.js';
+import { TourPanel } from './tour/Tour.js';
 
 /** The seven investor scenarios of the 2.5.5 investor landing, with the customer problem each one solves (carried over verbatim in spirit). */
 const SCENARIOS = [
@@ -20,7 +22,7 @@ export function App() {
   const [hash, setHash] = useState(location.hash || '#/investor'); const [as, setAs] = useState(() => { try { return localStorage.getItem('empathia.demo.perspective') || 'visitor'; } catch { return 'visitor'; } });
   useEffect(() => { if (!location.hash) history.replaceState(null, '', '#/investor'); const h = () => setHash(location.hash || '#/investor'); addEventListener('hashchange', h); return () => removeEventListener('hashchange', h); }, []);
   useEffect(() => { try { localStorage.setItem('empathia.demo.perspective', as); } catch { /* storage unavailable: the choice lasts the page */ } }, [as]);
-  const area = areaOf(hash); const home = hash === '#/investor' || hash === '#/' || hash === '#' || !hash.startsWith('#/');   // an in-page anchor (#problems) stays on the landing
+  const area = areaOf(hash); const home = hash === '#/investor' || hash === '#/' || hash === '#' || !hash.startsWith('#/') || hash.startsWith('#/tours/investor');   // an in-page anchor (#problems) stays on the landing
   // the same product rail as the enterprise application, on the legacy address space (every product resolves to a native page or a boundary page)
   const k = area?.key || '';
   const products = [
@@ -38,7 +40,8 @@ export function App() {
       <AppShell products={products} edition="Living Campus" identity={{ name: 'Demonstration', role: as, organization: 'synthetic estate', mode: 'demonstration' }}
         actions={<label className="persp">Perspective <select value={as} onChange={(e) => setAs(e.target.value)} aria-describedby="persp-note">{PERSPECTIVES.map((p) => <option key={p} value={p}>{p}</option>)}</select></label>}
         note={<><Tag tone="warn">DEMONSTRATION · SYNTHETIC DATA</Tag> <span id="persp-note">A perspective changes what the demonstration shows; it grants nothing. Real access is decided by the authenticated application's server.</span></>}>
-        <div className="wrap">{home ? <Landing /> : area?.key === 'v25.build' ? <BuildRoom perspective={as} /> : <Boundary hash={hash} area={area} />}</div>
+        <TourPanel hash={hash} onPerspective={setAs} />
+        <div className="wrap">{home ? <Landing /> : area?.key === 'v25.build' ? <BuildRoom perspective={as} /> : area?.key === 'search' || area?.key === 'search.graph' ? <SearchPartyDemo hash={hash} /> : <Boundary hash={hash} area={area} />}</div>
       </AppShell>
       <footer className="foot">Every person, organisation, room, device, figure and approval here is invented. Nothing is connected to a real system. <a href="#/investor">Back to the start</a></footer>
     </div>
@@ -63,7 +66,7 @@ function Landing() {
       </section>
       <section className="status">
         <h2>Migration status</h2>
-        <p>This demonstration is being rebuilt as modular pages from the Living Campus V2.5.3 source, one area at a time. {AREAS.filter((a) => NATIVE.has(a.key)).length} of {AREAS.length} areas are native today; the rest state their status when opened (see the parity ledger in the repository).</p>
+        <p>This demonstration is being rebuilt as modular pages from the Living Campus V2.5.3 source, one area at a time. {AREAS.filter((a) => NATIVE.has(a.key)).length} of {AREAS.length} addresses (86 areas and 19 V2.5 pages) are native today; the rest state their status when opened (see the parity ledger in the repository).</p>
       </section>
     </>
   );

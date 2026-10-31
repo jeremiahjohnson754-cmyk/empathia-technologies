@@ -1,8 +1,8 @@
 {
- "at": "2026-10-31T00:18:13.988Z",
- "pass": 31,
+ "at": "2026-10-31T00:39:32.072Z",
+ "pass": 46,
  "fail": 0,
- "tests": 31,
+ "tests": 46,
  "results": [
   {
    "id": "D-desktop-01",
@@ -24,7 +24,7 @@
   },
   {
    "id": "D-04",
-   "name": "every one of the 86 legacy areas resolves to a native page or one that states its migration status",
+   "name": "every one of the 105 legacy areas resolves to a native page or one that states its migration status",
    "result": "PASS",
    "detail": ""
   },
@@ -143,10 +143,34 @@
    "detail": ""
   },
   {
+   "id": "B-15d",
+   "name": "lighting control can be added during recommissioning by whoever holds room.design (a new family, so new tests apply)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "B-15e",
+   "name": "the changed room cannot be re-accepted until the new tests are recorded and verified",
+   "result": "PASS",
+   "detail": "Refused.\nacceptance needs every applicable test executed, passed and independently verified with evidence: 73 of 76 passed and independently verified (73 recorded: 0 passed awaiting verification, 0 failed; 3 not tested)"
+  },
+  {
+   "id": "B-15f",
+   "name": "re-acceptance publishes baseline v2 (v1 superseded) and the lineage lists both",
+   "result": "PASS",
+   "detail": "ACCEPTED\nbaseline v2\nReset demonstration"
+  },
+  {
+   "id": "B-15g",
+   "name": "the comparison between v1 and v2 names the added device and the results that changed",
+   "result": "PASS",
+   "detail": "What changed between v1 and v2\nDesign revision\nunchanged (3)\nDevices\n1 added (Lighting control 1), 0 removed (—)\nResult labels\n3 of 76 changed\ninteg_lighting_shades — → PASS_VERIFIED\nlighting_scenes —"
+  },
+  {
    "id": "B-16",
    "name": "the ledger records every refusal with its actor (DENIED rows) alongside the allowed changes",
    "result": "PASS",
-   "detail": "76 denied"
+   "detail": "77 denied"
   },
   {
    "id": "B-17",
@@ -157,6 +181,72 @@
   {
    "id": "B-18",
    "name": "reset returns to the description form",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "S-01",
+   "name": "Search Party opens on the access switch with its neighbourhood graph and the downstream impact: three rooms and their networked devices",
+   "result": "PASS",
+   "detail": "Search Party · demonstration\n\nAccess switch ATL-4A\n\nNative page of this interactive demonstration: the relationship engine the product ships, on a synthetic estate held in this page. Every edge says where it comes from; what is not modelled says so.\n\nSearch\nEvery type\nBuilding (2)\nCommissioning base"
+  },
+  {
+   "id": "S-02",
+   "name": "the dependency question is ANSWERED from recorded edges (DERIVED) and states that an unrecorded link is invisible",
+   "result": "PASS",
+   "detail": "ANSWERED DERIVED depends\n\n7 downstream devices and 3 rooms depend on Access switch ATL-4A.\n\nUC room compute (4.218) downstream graph traversal (FEEDS/CONNECTS_TO/UPLINKS_TO/POWERED_BY/CONTROLS)\nAudio processor (4.218) downstream graph trave"
+  },
+  {
+   "id": "S-03",
+   "name": "an unmodelled question is UNKNOWN with the reason",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "S-04",
+   "name": "every edge of an inspected node names its provenance (DECLARED / OBSERVED / MODELED / DERIVED)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "S-05",
+   "name": "search finds the open issue by code",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "T-01",
+   "name": "scenario 1 opens its first step natively on Search Party as the service technician with its evidence label",
+   "result": "PASS",
+   "detail": "Scenario 1 of 7 · step 1 of 17\nVERIFIED_DEMO\nas service\n1 · If this switch fails, what is affected?\n\nSearch Party starts from a room and walks its dependencies: the access switch, its uplink, the othe"
+  },
+  {
+   "id": "T-02",
+   "name": "the perspective follows the step persona",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "T-03",
+   "name": "every one of the 17 steps opens a page (native or a status page) with no page error; steps on unmigrated areas say so",
+   "result": "PASS",
+   "detail": "16 visited, 10 honest, errors 0"
+  },
+  {
+   "id": "T-04",
+   "name": "the last step is the steward on the ledger",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "T-05",
+   "name": "jumping to scenario 4 opens the commissioning plan step natively as the commissioning engineer",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "T-06",
+   "name": "the panel closes and stays closed on reload",
    "result": "PASS",
    "detail": ""
   },

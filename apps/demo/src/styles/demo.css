@@ -38,3 +38,11 @@ h1 { margin: 0; font-size: clamp(26px, 3.6vw, 34px); line-height: 1.15; letter-s
 .plan { margin: 0; } .plan svg { width: 100%; height: auto; max-height: 420px; background: var(--bg2); border: 1px solid var(--line); border-radius: var(--r-md); } .plan--place { cursor: crosshair; }
 .plan__room { fill: color-mix(in srgb, var(--accent) 8%, transparent); stroke: var(--tx2); } .plan__dev { fill: var(--accent); stroke: var(--bg); } .plan__dev--ceiling { fill: var(--indigo, var(--accent)); } .plan__furn { fill: var(--line2); } .plan__scale { stroke: var(--tx2); } .plan__text { fill: var(--tx2); font-family: var(--font-sans); }
 @media (max-width: 860px) { .build__two { grid-template-columns: 1fr; } }
+
+/* guided scenario panel */
+.tour { position: sticky; top: 56px; z-index: 15; margin: 0 auto; width: min(100% - 32px, 1120px); padding: var(--sp-3) var(--sp-4); border: 1px solid var(--accent); border-radius: var(--r-md); background: color-mix(in srgb, var(--panel) 94%, var(--accent)); box-shadow: 0 8px 30px rgb(0 0 0 / .25); margin-top: var(--sp-3); }
+.tour__head { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: var(--fs-xs); color: var(--tx3); } .tour__k { font-weight: 700; color: var(--accent); } .tour__persona { color: var(--tx2); }
+.tour__title { margin: 6px 0 2px; font-size: var(--fs-md); } .tour__text { margin: 0 0 var(--sp-2); color: var(--tx2); max-width: 90ch; }
+.tour__acts { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; } .tour__jump { display: inline-flex; gap: 4px; margin: 0 6px; }
+.tour__dot { width: 24px; height: 24px; border-radius: 999px; border: 1px solid var(--line2); background: var(--bg2); color: var(--tx2); font: 700 11px var(--font-sans); cursor: pointer; } .tour__dot.on { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+@media (max-width: 760px) { .tour { top: 0; width: min(100% - 32px, 1120px); } }

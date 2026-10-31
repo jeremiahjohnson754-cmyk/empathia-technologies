@@ -16,7 +16,8 @@ const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js')
 fs.rmSync(dist, { recursive: true, force: true }); fs.mkdirSync(dist, { recursive: true });
 // the legacy area registry from the parity ledger (docs/legacy-parity.csv): generated, never edited
 { const csv = fs.readFileSync(path.join(repo, 'docs/legacy-parity.csv'), 'utf8').split('\n').slice(1).filter(Boolean).map((l) => l.match(/("([^"]|"")*"|[^,]*)(,|$)/g).map((c) => c.replace(/,$/, '').replace(/^"|"$/g, '').replace(/""/g, '"')));
-  const areas = csv.filter((r) => r[0] === 'Living Campus' && r[1] === 'area').map((r) => ({ key: r[2], label: r[3], target: r[7], status: r[10], newRoute: r[8] }));
+  const row = (r) => ({ key: r[2].replace(/^v25\//, 'v25.'), label: r[3].split(' — ')[0], target: r[7], status: r[10], newRoute: r[8] });
+  const areas = csv.filter((r) => r[0] === 'Living Campus' && (r[1] === 'area' || r[1] === 'v25 page')).map(row);   // V2.5 pages resolve as v25.<page>
   fs.mkdirSync(path.join(app, 'src/generated'), { recursive: true }); fs.writeFileSync(path.join(app, 'src/generated/parity.json'), JSON.stringify(areas, null, 1)); }
 await esbuild.build({
   entryPoints: [path.join(app, 'src/main.tsx')], bundle: true, minify: !dev, sourcemap: 'external', format: 'iife', target: ['es2022'], jsx: 'automatic',
