@@ -10,62 +10,28 @@
  */
 import { useMemo, useState } from 'react';
 import { Button, Facts, Notice, Tag, Tabs } from '@empathia/ui';
-import { passports, type Passport, type Records } from '@empathia/kpi-engine';
+import { passports, type Passport } from '@empathia/kpi-engine';
 import { TIERS } from '@empathia/apex-engine';
 import areaRoles from '../generated/area-roles.json';
 import * as S from '../workspace/store.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
 import { loadDraft, personaOf, personaLabel, holds, type Draft } from '../build/store.js';
 import { NATIVE } from '../registry.js';
+import { assemble, stationCounts, roomAggregates } from '../workspace/records.js';
 
 const when = (s: string | null | undefined) => (s ? s.slice(0, 16).replace('T', ' ') : '—');
 const local = (s: string) => new Date(s).toLocaleString(undefined, { hour12: false });
 
-// ------------------------------------------------------------------------------------------------------------ the records of this demonstration, assembled once
-export function assemble(w: S.Workspace, d: Draft | null): Records {
-  const now = S.now();
-  const projects: Records['projects'] = [
-    { id: 'PRJ-ATLAS-AV', governance: 'FUNDED', delivery: 'FIELD_ACTIVE', updatedAt: new Date(Date.now() - 6 * 864e5).toISOString(), requestId: 'REQ-0031', history: [{ to: 'ENGINEERING_REVIEW', at: new Date(Date.now() - 60 * 864e5).toISOString() }, { to: 'FIELD_ACTIVE', at: new Date(Date.now() - 12 * 864e5).toISOString() }] },
-    { id: 'PRJ-NST-TH', governance: 'APPROVED', delivery: 'DESIGN_DRAFT', updatedAt: new Date(Date.now() - 2 * 864e5).toISOString(), requestId: 'REQ-0034', history: [{ to: 'ENGINEERING_REVIEW', at: new Date(Date.now() - 9 * 864e5).toISOString() }] },
-  ];
-  if (d) projects.push({ id: d.code, governance: 'FUNDED', delivery: d.design.lifecycle === 'ACCEPTED' || d.design.lifecycle === 'OPERATIONAL' ? 'CUSTOMER_ACCEPTED' : d.design.lifecycle === 'COMMISSIONING' ? 'FIELD_ACTIVE' : 'DESIGN_DRAFT', updatedAt: d.events[0]?.at || d.createdAt, requestId: `REQ-${d.code}`, history: d.events.filter((e) => e.type.startsWith('room.lifecycle:') && e.outcome === 'ALLOWED').map((e) => ({ to: e.type.endsWith('COMMISSIONING') ? 'FIELD_ACTIVE' : e.type.split(':')[1]!, at: e.at })) });
-  const rooms: Records['rooms'] = [
-    { id: 'R-ATL-4-218', requiresCommissioning: true, devices: 5, baseline: { version: 1, publishedAt: new Date(Date.now() - 120 * 864e5).toISOString(), devicesBound: 5, verifiedTests: 14, applicableTests: 14, exceptions: 0 }, instrumented: true, eligibleForUsage: true },
-    { id: 'R-ATL-4-220', requiresCommissioning: true, devices: 2, baseline: { version: 1, publishedAt: new Date(Date.now() - 90 * 864e5).toISOString(), devicesBound: 2, verifiedTests: 9, applicableTests: 9, exceptions: 0 }, instrumented: true, eligibleForUsage: true },
-    { id: 'R-ATL-4-231', requiresCommissioning: true, devices: 2, baseline: { version: 1, publishedAt: new Date(Date.now() - 30 * 864e5).toISOString(), devicesBound: 2, verifiedTests: 11, applicableTests: 12, exceptions: 1 }, instrumented: false, eligibleForUsage: true },
-    { id: 'R-NST-2-101', requiresCommissioning: true, devices: 9, baseline: null, instrumented: false, eligibleForUsage: true },
-  ];
-  if (d) rooms.push({ id: d.code, requiresCommissioning: true, devices: d.design.devices.filter((x) => !x.furniture && !x.removed).length, baseline: d.baseline ? { version: d.baseline.version, publishedAt: d.baseline.at, devicesBound: d.baseline.devices.length, verifiedTests: Object.values(d.baseline.results).filter((r) => r === 'PASS_VERIFIED').length, applicableTests: Object.keys(d.baseline.results).length, exceptions: 0 } : null, instrumented: false, eligibleForUsage: false });
-  const sessions: Records['sessions'] = []; for (let i = 0; i < 60; i++) sessions.push({ roomId: i % 3 === 0 ? 'R-ATL-4-220' : 'R-ATL-4-218', at: new Date(Date.now() - (i * 1.4 + 0.3) * 864e5).toISOString(), conferencing: i % 4 !== 1, whiteboarding: i % 5 === 0, deviceActivation: i % 7 !== 3, interactiveDisplay: i % 3 !== 0 });
-  return { now, projects,
-    decisions: [{ projectId: 'PRJ-ATLAS-AV', decision: 'APPROVED', scopeRev: 1, at: new Date(Date.now() - 70 * 864e5).toISOString() }, { projectId: 'PRJ-NST-TH', decision: 'HELD', scopeRev: 1, at: new Date(Date.now() - 20 * 864e5).toISOString() }, { projectId: 'PRJ-NST-TH', decision: 'APPROVED', scopeRev: 2, at: new Date(Date.now() - 10 * 864e5).toISOString() }],
-    funding: [{ projectId: 'PRJ-ATLAS-AV', kind: 'AUTHORIZED', amount: 184000, currency: 'USD', at: new Date(Date.now() - 65 * 864e5).toISOString() }],
-    workOrders: w.workOrders.map((x) => ({ id: x.id, state: x.state === 'DONE' ? 'RESOLVED' : x.state, openedAt: x.openedAt, resolvedAt: x.state === 'DONE' ? w.incidents.find((i) => i.id === x.incidentId)?.restoredAt || null : null, roomId: x.roomId })),
-    incidents: w.incidents.map((i) => ({ id: i.id, state: i.state, roomId: i.roomId, openedAt: i.openedAt, restoredAt: i.restoredAt, recurrenceOf: i.recurrenceOf, reopened: i.reopened })),
-    requests: [{ id: 'REQ-0031', projectId: 'PRJ-ATLAS-AV', submittedAt: new Date(Date.now() - 80 * 864e5).toISOString() }, { id: 'REQ-0034', projectId: 'PRJ-NST-TH', submittedAt: new Date(Date.now() - 25 * 864e5).toISOString() }, ...(d ? [{ id: `REQ-${d.code}`, projectId: d.code, submittedAt: d.createdAt }] : [])],
-    rooms, documents: rooms.flatMap((r) => [{ roomId: r.id, mandatory: true, state: r.baseline ? 'APPROVED' : 'PENDING', at: r.baseline?.publishedAt || now }, { roomId: r.id, mandatory: true, state: r.baseline && r.id !== 'R-ATL-4-231' ? 'APPROVED' : 'SUBMITTED', at: now }]),
-    standards: [{ id: 'STD-ROOM-HUDDLE-3', effectiveAt: new Date(Date.now() - 40 * 864e5).toISOString() }, { id: 'STD-NET-SEG-2', effectiveAt: null }], sops: [{ id: 'SOP-CX-01', createdAt: new Date(Date.now() - 50 * 864e5).toISOString(), approvedAt: new Date(Date.now() - 35 * 864e5).toISOString() }], sows: [{ id: 'SOW-ATL-2026-1', createdAt: new Date(Date.now() - 66 * 864e5).toISOString(), approvedAt: new Date(Date.now() - 64 * 864e5).toISOString() }],
-    devices: [{ id: 'A-0101', active: true, supportEnd: '2028-01-01' }, { id: 'A-0102', active: true, supportEnd: '2027-06-30', romLow: 1800, romHigh: 2600 }, { id: 'A-0103', active: true, supportEnd: '2029-03-01' }, { id: 'A-0104', active: true, supportEnd: null }, { id: 'A-0105', active: true, supportEnd: '2027-09-01', romLow: 900, romHigh: 1400 }, { id: 'A-0201', active: true, supportEnd: '2030-01-01' }, { id: 'A-0202', active: true, supportEnd: '2027-06-30', romLow: 1800, romHigh: 2600 }, { id: 'A-0301', active: true, supportEnd: '2026-12-31', romLow: 3200, romHigh: 5600 }, { id: 'A-0302', active: true, supportEnd: null }],
-    sessions, profiles: [{ id: 'SCP-DSP-HUDDLE', state: 'PUBLISHED', verifiedCoverage: true }, { id: 'SCP-CAM-BOARD', state: 'PROPOSED', verifiedCoverage: false }], fieldScans: [{ roomId: 'R-ATL-4-231', at: new Date(Date.now() - 20 * 864e5).toISOString(), completed: true }], consentedParticipation: false };
-}
+// the records of this demonstration (assemble), Mission Control's station counts and a room's ledger aggregates live in a pure module
+// (../workspace/records.ts) so the room story and the Build a Room impact panel compute from the same code
+export { assemble } from '../workspace/records.js';
 
 // ------------------------------------------------------------------------------------------------------------ Mission Control
 export function MissionControl({ perspective }: { perspective: string }) {
   const persona = personaOf(perspective);
   const { w } = useWorkspace(); const d = loadDraft();
   const R = useMemo(() => assemble(w, d), [w, d]);
-  const stations: Array<{ key: string; label: string; count: number; href: string; items: string[] }> = [
-    { key: 'intake', label: 'Intake', count: R.requests.length, href: '#/v25/build', items: R.requests.map((r) => `${r.id} → ${r.projectId}`) },
-    { key: 'decision', label: 'Decision', count: R.decisions.length, href: '#/v25/exec', items: R.decisions.map((x) => `${x.projectId} ${x.decision} (scope ${x.scopeRev})`) },
-    { key: 'funding', label: 'Funding', count: R.funding.length, href: '#/v25/exec', items: R.funding.map((f) => `${f.projectId} ${f.amount.toLocaleString()} ${f.currency}`) },
-    { key: 'design', label: 'Design', count: R.projects.filter((p) => p.delivery && /DESIGN/.test(p.delivery)).length, href: '#/v25/build', items: R.projects.filter((p) => p.delivery && /DESIGN/.test(p.delivery)).map((p) => `${p.id} ${p.delivery}`) },
-    { key: 'commissioning', label: 'Commissioning', count: R.rooms.filter((r) => !r.baseline).length, href: '#/v25/build?tab=checks', items: R.rooms.filter((r) => !r.baseline).map((r) => `${r.id} no accepted baseline yet`) },
-    { key: 'field', label: 'Field', count: w.workOrders.filter((x) => x.state !== 'DONE' && x.state !== 'CANCELLED').length, href: '#/v25/service', items: w.workOrders.filter((x) => x.state !== 'DONE').map((x) => `${x.id} ${x.state} · ${x.title}`) },
-    { key: 'documents', label: 'Documents', count: R.documents.filter((x) => x.state !== 'APPROVED').length, href: '#/v25/build?tab=drawings', items: R.documents.filter((x) => x.state !== 'APPROVED').map((x) => `${x.roomId} ${x.state}`) },
-    { key: 'handoff', label: 'Handoff', count: R.projects.filter((p) => p.delivery === 'CUSTOMER_ACCEPTED').length, href: '#/v25/build?tab=lifecycle', items: R.projects.filter((p) => p.delivery === 'CUSTOMER_ACCEPTED').map((p) => `${p.id} accepted, handoff pending`) },
-    { key: 'assurance', label: 'Assurance', count: R.rooms.filter((r) => r.baseline).length, href: '#/v25/build?tab=lifecycle', items: R.rooms.filter((r) => r.baseline).map((r) => `${r.id} baseline v${r.baseline!.version}`) },
-    { key: 'service', label: 'Service', count: w.incidents.filter((i) => !['CLOSED', 'CANCELLED'].includes(i.state)).length, href: '#/v25/service', items: w.incidents.filter((i) => !['CLOSED', 'CANCELLED'].includes(i.state)).map((i) => `${i.id} ${i.state} · ${i.title}`) },
-  ];
+  const stations = stationCounts(R, w);
   const latest = [...w.events, ...(d?.events.map((e) => ({ ...e, aggregate: d.code })) || [])].sort((a, b) => (a.at < b.at ? 1 : -1)).slice(0, 12);
   return (
     <section className="mc">
@@ -131,18 +97,22 @@ export const PAGE_AUTHORITIES: Array<{ page: string; href: string; gates: string
   { page: 'Learn cases', href: '#/v25/learn', gates: [...new Set([...S.LEARN_PROPOSE, ...S.LEARN_SME, 'case.approve'])] },
   { page: 'Executive passports', href: '#/v25/exec', gates: ['(roles: exec, opslead, bpm, syseng, svcmgr, steward, architect)'] },
 ];
-export function LedgerPage({ perspective, policy }: { perspective: string; policy: boolean }) {
+export function LedgerPage({ perspective, policy, hash = '' }: { perspective: string; policy: boolean; hash?: string }) {
   const persona = personaOf(perspective);
   const { w } = useWorkspace(); const d = loadDraft();
   const [q, setQ] = useState(''); const [only, setOnly] = useState<'all' | 'DENIED' | 'ALLOWED'>('all');
+  // #/v25/ledger?room=<id> (linked from a room's story): only the events of that room's records — the room, its incidents, work orders, cases and sessions
+  const room = /[?&]room=([A-Za-z0-9-]+)/.exec(hash)?.[1] || null;
+  const scope = useMemo(() => (room ? roomAggregates(w, room) : null), [w, room]);
   const events = useMemo(() => [...w.events, ...(d?.events.map((e) => ({ ...e, aggregate: d.code })) || [])].sort((a, b) => (a.at < b.at ? 1 : -1)), [w, d]);
-  const shown = events.filter((e) => (only === 'all' || e.outcome === only) && (!q || `${e.type} ${e.aggregate} ${e.detail} ${e.by}`.toLowerCase().includes(q.toLowerCase())));
+  const shown = events.filter((e) => (!scope || scope.has(e.aggregate)) && (only === 'all' || e.outcome === only) && (!q || `${e.type} ${e.aggregate} ${e.detail} ${e.by}`.toLowerCase().includes(q.toLowerCase())));
   const tab = policy ? 'policy' : 'ledger';
   return (
     <section className="ledger">
       <header className="build__head"><div><p className="kicker">Evidence ledger</p><h1>{policy ? 'The role × area matrix the dispatcher uses' : 'The ledger behind every state'}</h1><p className="ui-muted">Acting as <b>{personaLabel(persona)}</b>. Every transition emitted a validated event with its actor, time and local time. This is a demonstration of authorisation, not security.</p></div></header>
       <Tabs label="Ledger" active={tab} onChange={(k) => { location.hash = k === 'policy' ? '#/v25/policy' : '#/v25/ledger'; }} tabs={[{ key: 'ledger', label: 'Events', count: events.length }, { key: 'policy', label: 'Policy' }]} />
       {!policy ? <div className="stack">
+        {room && <p className="ledger__scope" data-testid="ledger-scope">Only the events of room <b>{room}</b>'s records ({scope?.size || 0} record{scope?.size === 1 ? '' : 's'}: {[...(scope || [])].join(', ')}). <a href={`#/story/${room}`}>The room's story</a> · <a href="#/v25/ledger">Show every event</a></p>}
         <div className="build__row"><input className="sp__input" aria-label="Filter events" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter by type, record, actor or detail" />{(['all', 'ALLOWED', 'DENIED'] as const).map((k) => <Button key={k} small kind={only === k ? 'primary' : 'secondary'} onClick={() => setOnly(k)}>{k}</Button>)}</div>
         <table className="build__table" data-testid="ledger"><thead><tr><th>When (UTC)</th><th>Local</th><th>Who</th><th>Event</th><th>Record</th><th>Outcome</th><th>Detail</th></tr></thead><tbody>{shown.slice(0, 200).map((e, i) => <tr key={i}><td className="ui-mono">{e.at.slice(0, 19).replace('T', ' ')}</td><td className="ui-meta">{local(e.at)}</td><td>{personaLabel(e.by)}</td><td className="ui-mono">{e.type}</td><td className="ui-mono">{e.aggregate}</td><td><Tag tone={e.outcome === 'DENIED' ? 'bad' : 'ok'}>{e.outcome}</Tag></td><td className="ui-meta">{e.detail}</td></tr>)}</tbody></table>
         {shown.length > 200 && <p className="ui-meta">{shown.length - 200} more not shown.</p>}

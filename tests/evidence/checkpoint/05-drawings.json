@@ -1,0 +1,180 @@
+{
+ "step": 5,
+ "title": "Generate the drawing set and approve every drawing",
+ "room": "R-PLN-0004",
+ "at": "2026-11-01T00:20:11.272Z",
+ "assertions": [
+  {
+   "id": "C-12",
+   "name": "the designer generates the drawing set (seven drawings, GENERATED)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-13",
+   "name": "the designer cannot approve a drawing (403)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-14",
+   "name": "the systems engineer approves all seven drawings",
+   "result": "PASS"
+  }
+ ],
+ "exchanges": [
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/drawings/generate",
+   "persona": "designer",
+   "status": 200,
+   "body": {
+    "drawings": [
+     {
+      "kind": "plan",
+      "state": "GENERATED",
+      "revNo": 1
+     },
+     {
+      "kind": "placement",
+      "state": "GENERATED",
+      "revNo": 1
+     },
+     {
+      "kind": "schedule",
+      "state": "GENERATED",
+      "revNo": 1
+     },
+     {
+      "kind": "relationships",
+      "state": "GENERATED",
+      "revNo": 1
+     },
+     {
+      "kind": "signal",
+      "state": "GENERATED",
+      "revNo": 1
+     },
+     {
+      "kind": "network",
+      "state": "GENERATED",
+      "revNo": 1
+     },
+     {
+      "kind": "summary",
+      "state": "GENERATED",
+      "revNo": 1
+     }
+    ]
+   },
+   "correlationId": "99a8d270-dfb9-4a86-bc08-b3636fea92a2"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/drawings/plan/approve",
+   "persona": "designer",
+   "status": 403,
+   "body": {
+    "type": "https://errors.empathia.invalid/forbidden",
+    "title": "Not allowed for your role",
+    "status": 403,
+    "detail": "designer may not Approve a current generated drawing (needs room.classify.approve)",
+    "code": "forbidden",
+    "correlationId": "e05e9cda-8e40-46ef-8c88-791348de2d34"
+   },
+   "correlationId": "e05e9cda-8e40-46ef-8c88-791348de2d34"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/drawings/plan/approve",
+   "persona": "syseng",
+   "status": 200,
+   "body": {
+    "kind": "plan",
+    "state": "APPROVED",
+    "revNo": 1
+   },
+   "correlationId": "1bbd479a-9c9a-4457-85bf-892fe58d01e5"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/drawings/placement/approve",
+   "persona": "syseng",
+   "status": 200,
+   "body": {
+    "kind": "placement",
+    "state": "APPROVED",
+    "revNo": 1
+   },
+   "correlationId": "6464e6cf-8133-462f-b8d0-8637dec74e3b"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/drawings/schedule/approve",
+   "persona": "syseng",
+   "status": 200,
+   "body": {
+    "kind": "schedule",
+    "state": "APPROVED",
+    "revNo": 1
+   },
+   "correlationId": "dc951ac9-f15d-4a2a-be80-3a00d7145880"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/drawings/relationships/approve",
+   "persona": "syseng",
+   "status": 200,
+   "body": {
+    "kind": "relationships",
+    "state": "APPROVED",
+    "revNo": 1
+   },
+   "correlationId": "0adc73e3-b7bf-43aa-afbb-463c5593e418"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/drawings/signal/approve",
+   "persona": "syseng",
+   "status": 200,
+   "body": {
+    "kind": "signal",
+    "state": "APPROVED",
+    "revNo": 1
+   },
+   "correlationId": "f95a451f-864a-4430-a993-d52485229eff"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/drawings/network/approve",
+   "persona": "syseng",
+   "status": 200,
+   "body": {
+    "kind": "network",
+    "state": "APPROVED",
+    "revNo": 1
+   },
+   "correlationId": "de2b6b44-6436-44ec-895d-e51ef55be14c"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/drawings/summary/approve",
+   "persona": "syseng",
+   "status": 200,
+   "body": {
+    "kind": "summary",
+    "state": "APPROVED",
+    "revNo": 1
+   },
+   "correlationId": "cc08279d-794f-4c41-b2be-e6a82b531a65"
+  },
+  {
+   "method": "GET",
+   "path": "/v1/rooms/R-PLN-0004",
+   "persona": "designer",
+   "status": 200,
+   "body": {
+    "omitted": "large body; see the step that records it in full"
+   },
+   "correlationId": "7f1d48e5-a320-4fdb-bda7-b1d6e6609a79"
+  }
+ ]
+}

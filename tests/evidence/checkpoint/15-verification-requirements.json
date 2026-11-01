@@ -1,0 +1,626 @@
+{
+ "step": 15,
+ "title": "The new and changed verification requirements, with their reasons (readiness)",
+ "room": "R-PLN-0004",
+ "at": "2026-11-01T00:20:11.274Z",
+ "assertions": [
+  {
+   "id": "C-54",
+   "name": "readiness reports the recommissioning against baseline v1 and the substitution (asset, from, to)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-55",
+   "name": "it names the tests that must be re-run on the new camera, each with its reasons and its responsible role",
+   "result": "PASS"
+  },
+  {
+   "id": "C-56",
+   "name": "every test whose plan row names the camera is required again, and the asset-identity check is required after the substitution",
+   "result": "PASS"
+  },
+  {
+   "id": "C-57",
+   "name": "tests that do not depend on the camera are not reopened",
+   "result": "PASS"
+  },
+  {
+   "id": "C-58",
+   "name": "re-acceptance is blocked with the reasons: the design change needs an approved revision, the reopened tests must be re-run, and the approved drawings no longer match",
+   "result": "PASS"
+  },
+  {
+   "id": "C-59",
+   "name": "the drawing check opens design deficiencies for the approved equipment schedule and placement plan that no longer match",
+   "result": "PASS"
+  },
+  {
+   "id": "C-60",
+   "name": "the outstanding actions name who must do what: approve revision 3 (not its author) and re-run per responsible role",
+   "result": "PASS"
+  },
+  {
+   "id": "C-61",
+   "name": "completion counts only the results that still count: the reopened tests are not verified any more",
+   "result": "PASS"
+  },
+  {
+   "id": "C-62",
+   "name": "an attempt to re-accept now is refused (422) with the same reasons",
+   "result": "PASS"
+  }
+ ],
+ "exchanges": [
+  {
+   "method": "GET",
+   "path": "/v1/rooms/R-PLN-0004/readiness",
+   "persona": "designer",
+   "status": 200,
+   "body": {
+    "room": "R-PLN-0004",
+    "lifecycle": "COMMISSIONING",
+    "next": {
+     "to": "ACCEPTED",
+     "authority": "customer.accept",
+     "blockers": [
+      "2 open issue(s): every deficiency is closed with its retest before acceptance",
+      "the design changed while the room is recommissioned (PA-0061 generic → SYN-PTZ-12X (synthetic PTZ camera)) and the approved revision 2 no longer describes it: revision 3 needs approval (room.design.approve, not its author) — the re-acceptance binds the approved revision",
+      "12 test(s) were last recorded before the substitution and must be re-run on the changed design and verified independently: identity_asset, display_controls, video_signal, camera_preset, video_camera_exposure, video_content_share, video_display_calibration, video_edid_handshake, video_switching, camera_fov, video_av_sync, video_camera_tracking"
+     ],
+     "separationOfDuties": "not a recorder or verifier of the results"
+    },
+    "completion": {
+     "percentVerified": 84,
+     "basis": "independently verified applicable tests over applicable tests; design approval never counts as commissioning progress; a result recorded before a recommissioning substitution of a device it covers does not count (revalidation)",
+     "counts": {
+      "applicable": 75,
+      "verified": 63,
+      "awaiting": 0,
+      "failed": 0,
+      "other": 0,
+      "notTested": 0,
+      "revalidation": 12
+     }
+    },
+    "recommissioning": {
+     "baseline": {
+      "id": "196ce119-53f5-4bd0-8d83-53d91aec39ae",
+      "version": 1,
+      "designRevision": 2
+     },
+     "substitutions": [
+      {
+       "assetId": "PA-0061",
+       "label": "Camera 1",
+       "category": "camera",
+       "from": "generic",
+       "to": "SYN-PTZ-12X (synthetic PTZ camera)",
+       "at": "2026-11-01T00:20:09.230Z",
+       "by": "2780822d-ef25-4b71-802f-e0fcb455d6a1"
+      }
+     ],
+     "design": {
+      "approvedRevision": 2,
+      "latestRevision": 3,
+      "latestAuthor": "2780822d-ef25-4b71-802f-e0fcb455d6a1",
+      "approvedDescribesDesign": false,
+      "latestDescribesDesign": true
+     },
+     "reverification": [
+      {
+       "testId": "identity_asset",
+       "label": "Asset identity confirmed on site",
+       "domain": "Physical",
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "assets": [
+        "PA-0061"
+       ],
+       "reasons": [
+        "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the asset identity is checked again after every substitution"
+       ],
+       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "result": "PASS_VERIFIED",
+       "recordedAt": "2026-11-01T00:20:06.422224+00:00",
+       "rerun": true
+      },
+      {
+       "testId": "display_controls",
+       "label": "Display controls",
+       "domain": "Video",
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "assets": [
+        "PA-0061"
+       ],
+       "reasons": [
+        "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
+       ],
+       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "result": "PASS_VERIFIED",
+       "recordedAt": "2026-11-01T00:20:06.681584+00:00",
+       "rerun": true
+      },
+      {
+       "testId": "video_signal",
+       "label": "Video signal",
+       "domain": "Video",
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "assets": [
+        "PA-0061"
+       ],
+       "reasons": [
+        "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
+       ],
+       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "result": "PASS_VERIFIED",
+       "recordedAt": "2026-11-01T00:20:06.783131+00:00",
+       "rerun": true
+      },
+      {
+       "testId": "camera_preset",
+       "label": "Camera presets recall",
+       "domain": "Video",
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "assets": [
+        "PA-0061"
+       ],
+       "reasons": [
+        "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
+       ],
+       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "result": "PASS_VERIFIED",
+       "recordedAt": "2026-11-01T00:20:06.847446+00:00",
+       "rerun": true
+      },
+      {
+       "testId": "video_camera_exposure",
+       "label": "Camera exposure and white balance",
+       "domain": "Video",
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "assets": [
+        "PA-0061"
+       ],
+       "reasons": [
+        "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
+       ],
+       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "result": "PASS_VERIFIED",
+       "recordedAt": "2026-11-01T00:20:07.228378+00:00",
+       "rerun": true
+      },
+      {
+       "testId": "video_content_share",
+       "label": "Wireless and wired content sharing",
+       "domain": "Video",
+       "personas": [
+        "cxeng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "assets": [
+        "PA-0061"
+       ],
+       "reasons": [
+        "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
+       ],
+       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "result": "PASS_VERIFIED",
+       "recordedAt": "2026-11-01T00:20:07.244143+00:00",
+       "rerun": true
+      },
+      {
+       "testId": "video_display_calibration",
+       "label": "Display picture settings and calibration",
+       "domain": "Video",
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED",
+        "INSTRUMENT_MEASURED"
+       ],
+       "instrument": false,
+       "assets": [
+        "PA-0061"
+       ],
+       "reasons": [
+        "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
+       ],
+       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "result": "PASS_VERIFIED",
+       "recordedAt": "2026-11-01T00:20:07.262023+00:00",
+       "rerun": true
+      },
+      {
+       "testId": "video_edid_handshake",
+       "label": "EDID / HDCP handshake on every input",
+       "domain": "Video",
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "assets": [
+        "PA-0061"
+       ],
+       "reasons": [
+        "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
+       ],
+       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "result": "PASS_VERIFIED",
+       "recordedAt": "2026-11-01T00:20:07.278169+00:00",
+       "rerun": true
+      },
+      {
+       "testId": "video_switching",
+       "label": "Video switching and routing matrix",
+       "domain": "Video",
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "assets": [
+        "PA-0061"
+       ],
+       "reasons": [
+        "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
+       ],
+       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "result": "PASS_VERIFIED",
+       "recordedAt": "2026-11-01T00:20:07.294277+00:00",
+       "rerun": true
+      },
+      {
+       "testId": "camera_fov",
+       "label": "Camera field of view",
+       "domain": "Video",
+       "personas": [
+        "video_eng"
+       ],
+       "evidence": [
+        "INSTRUMENT_MEASURED",
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "assets": [
+        "PA-0061"
+       ],
+       "reasons": [
+        "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
+       ],
+       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "result": "PASS_VERIFIED",
+       "recordedAt": "2026-11-01T00:20:07.367152+00:00",
+       "rerun": true
+      },
+      {
+       "testId": "video_av_sync",
+       "label": "Audio/video synchronisation",
+       "domain": "Video",
+       "personas": [
+        "dsp_eng"
+       ],
+       "evidence": [
+        "INSTRUMENT_MEASURED",
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "assets": [
+        "PA-0061"
+       ],
+       "reasons": [
+        "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): it is a camera and this is a Video test of the room"
+       ],
+       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "result": "PASS_VERIFIED",
+       "recordedAt": "2026-11-01T00:20:07.412592+00:00",
+       "rerun": true
+      },
+      {
+       "testId": "video_camera_tracking",
+       "label": "Camera tracking behaviour",
+       "domain": "Video",
+       "personas": [
+        "video_eng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "assets": [
+        "PA-0061"
+       ],
+       "reasons": [
+        "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
+       ],
+       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "result": "PASS_VERIFIED",
+       "recordedAt": "2026-11-01T00:20:07.428676+00:00",
+       "rerun": true
+      }
+     ],
+     "note": "the accepted baseline stays CURRENT until the re-acceptance publishes the next version; the re-acceptance binds the approved revision and results recorded after the substitution"
+    },
+    "design": {
+     "revisions": 3,
+     "approvedRevision": 2,
+     "classification": {
+      "archetype": "HUD",
+      "stale": false,
+      "at": "2026-11-01T00:20:05.278Z"
+     },
+     "checks": 0
+    },
+    "deficiencies": [
+     {
+      "code": "RISS-0003",
+      "severity": "Medium",
+      "title": "Approved equipment placement plan disagrees with the design",
+      "owner": null
+     },
+     {
+      "code": "RISS-0004",
+      "severity": "Medium",
+      "title": "Approved equipment schedule disagrees with the design",
+      "owner": null
+     }
+    ],
+    "evidence": {
+     "objects": 75,
+     "measurements": []
+    },
+    "baselines": [
+     {
+      "version": 1,
+      "state": "CURRENT",
+      "publishedAt": "2026-11-01T00:20:09.153Z"
+     }
+    ],
+    "exceptionsPending": 0,
+    "outstanding": [
+     {
+      "what": "resolve RISS-0003 (Medium) Approved equipment placement plan disagrees with the design",
+      "who": "design / service"
+     },
+     {
+      "what": "resolve RISS-0004 (Medium) Approved equipment schedule disagrees with the design",
+      "who": "design / service"
+     },
+     {
+      "what": "approve design revision 3 (it carries the change made during recommissioning)",
+      "who": "room.design.approve (not the author of the revision)"
+     },
+     {
+      "what": "re-run on the substituted design (a result recorded before the substitution no longer counts)",
+      "who": "service",
+      "count": 8
+     },
+     {
+      "what": "re-run on the substituted design (a result recorded before the substitution no longer counts)",
+      "who": "installer",
+      "count": 8
+     },
+     {
+      "what": "re-run on the substituted design (a result recorded before the substitution no longer counts)",
+      "who": "cxeng",
+      "count": 1
+     },
+     {
+      "what": "re-run on the substituted design (a result recorded before the substitution no longer counts)",
+      "who": "video_eng",
+      "count": 2
+     },
+     {
+      "what": "re-run on the substituted design (a result recorded before the substitution no longer counts)",
+      "who": "dsp_eng",
+      "count": 1
+     }
+    ],
+    "approvals": [
+     {
+      "what": "room.lifecycle:COMMISSIONING",
+      "by": "syseng",
+      "at": "2026-11-01T00:20:09.195Z",
+      "detail": {
+       "to": "COMMISSIONING",
+       "from": "ACCEPTED"
+      }
+     },
+     {
+      "what": "assurance.baseline_published",
+      "by": "opslead",
+      "at": "2026-11-01T00:20:09.153Z",
+      "detail": {
+       "version": 1,
+       "evidence": 75,
+       "supersedes": null,
+       "designRevision": 2
+      }
+     },
+     {
+      "what": "room.lifecycle:ACCEPTED",
+      "by": "opslead",
+      "at": "2026-11-01T00:20:09.153Z",
+      "detail": {
+       "to": "ACCEPTED",
+       "from": "COMMISSIONING"
+      }
+     },
+     {
+      "what": "room.lifecycle:COMMISSIONING",
+      "by": "syseng",
+      "at": "2026-11-01T00:20:05.563Z",
+      "detail": {
+       "to": "COMMISSIONING",
+       "from": "INSTALLED_UNVERIFIED"
+      }
+     },
+     {
+      "what": "room.lifecycle:DESIGN_APPROVED",
+      "by": "syseng",
+      "at": "2026-11-01T00:20:05.443Z",
+      "detail": {
+       "to": "DESIGN_APPROVED",
+       "from": "PLANNED"
+      }
+     }
+    ],
+    "refusals": [
+     {
+      "what": "move a room to COMMISSIONING",
+      "by": "installer",
+      "at": "2026-11-01T00:20:09.191Z",
+      "why": {
+       "need": "plan.compile",
+       "role": "installer"
+      }
+     },
+     {
+      "what": "room.lifecycle:ACCEPTED",
+      "by": "qa_reviewer",
+      "at": "2026-11-01T00:20:09.090Z",
+      "why": [
+       "separation of duties: the acceptance (its recorded and verified results) cannot be approved by its own author (qa_reviewer)"
+      ]
+     },
+     {
+      "what": "move a room to ACCEPTED",
+      "by": "syseng",
+      "at": "2026-11-01T00:20:09.075Z",
+      "why": {
+       "need": "customer.accept",
+       "role": "syseng"
+      }
+     },
+     {
+      "what": "commission.result.verify",
+      "by": "cxeng",
+      "at": "2026-11-01T00:20:09.071Z",
+      "why": [
+       "already verified"
+      ]
+     },
+     {
+      "what": "commission.result.verify",
+      "by": "cxeng",
+      "at": "2026-11-01T00:20:07.591Z",
+      "why": [
+       "verification must be independent of the person who recorded the result"
+      ]
+     },
+     {
+      "what": "commission.result.record",
+      "by": "cxeng",
+      "at": "2026-11-01T00:20:06.225Z",
+      "why": [
+       "evidence kind PHOTO_INFERRED_GUESS is not accepted for compute_display_capability; accepted: ENGINEER_APPROVED"
+      ]
+     },
+     {
+      "what": "commission.result.record",
+      "by": "designer",
+      "at": "2026-11-01T00:20:06.214Z",
+      "why": [
+       "designer is not the responsible role for compute_display_capability (syseng)"
+      ]
+     },
+     {
+      "what": "move a room to COMMISSIONING",
+      "by": "installer",
+      "at": "2026-11-01T00:20:05.557Z",
+      "why": {
+       "need": "plan.compile",
+       "role": "installer"
+      }
+     },
+     {
+      "what": "move a room to INSTALLATION_PENDING",
+      "by": "installer",
+      "at": "2026-11-01T00:20:05.465Z",
+      "why": {
+       "need": "window.approve",
+       "role": "installer"
+      }
+     },
+     {
+      "what": "room.lifecycle:COMMISSIONING",
+      "by": "syseng",
+      "at": "2026-11-01T00:20:05.436Z",
+      "why": [
+       "no transition PLANNED → COMMISSIONING: the room moves one governed step at a time"
+      ]
+     }
+    ],
+    "liveHealth": "NOT_MONITORED"
+   },
+   "correlationId": "315d0c90-0e56-4550-855d-63df0b839eea"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/lifecycle",
+   "persona": "opslead",
+   "status": 422,
+   "request": {
+    "to": "ACCEPTED"
+   },
+   "body": {
+    "type": "https://errors.empathia.invalid/rule_refused",
+    "title": "Refused by a business rule",
+    "status": 422,
+    "detail": "2 open issue(s): every deficiency is closed with its retest before acceptance",
+    "code": "rule_refused",
+    "reasons": [
+     "2 open issue(s): every deficiency is closed with its retest before acceptance",
+     "the design changed while the room is recommissioned (PA-0061 generic → SYN-PTZ-12X (synthetic PTZ camera)) and the approved revision 2 no longer describes it: revision 3 needs approval (room.design.approve, not its author) — the re-acceptance binds the approved revision",
+     "12 test(s) were last recorded before the substitution and must be re-run on the changed design and verified independently: identity_asset, display_controls, video_signal, camera_preset, video_camera_exposure, video_content_share, video_display_calibration, video_edid_handshake, video_switching, camera_fov, video_av_sync, video_camera_tracking"
+    ],
+    "correlationId": "94097ded-3785-42d1-9b01-1c87ce6e4a32"
+   },
+   "correlationId": "94097ded-3785-42d1-9b01-1c87ce6e4a32"
+  }
+ ]
+}

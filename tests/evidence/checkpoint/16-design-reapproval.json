@@ -1,0 +1,218 @@
+{
+ "step": 16,
+ "title": "The design change is approved by an engineer who is not its author; the drawings are regenerated and re-approved",
+ "room": "R-PLN-0004",
+ "at": "2026-11-01T00:20:11.274Z",
+ "assertions": [
+  {
+   "id": "C-63",
+   "name": "the designer (the author of revision 3) holds no design approval (403)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-64",
+   "name": "the systems engineer approves revision 3: the re-acceptance will bind it",
+   "result": "PASS"
+  },
+  {
+   "id": "C-65",
+   "name": "a revision is approved once (422)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-66",
+   "name": "the regenerated drawings are approved again and the drawing deficiencies resolve",
+   "result": "PASS"
+  }
+ ],
+ "exchanges": [
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/revisions/3/approve",
+   "persona": "designer",
+   "status": 403,
+   "body": {
+    "type": "https://errors.empathia.invalid/forbidden",
+    "title": "Not allowed for your role",
+    "status": 403,
+    "detail": "designer may not Approve the saved revision that carries a change made while an accepted room is  (needs room.design.approve)",
+    "code": "forbidden",
+    "correlationId": "4dd67340-2742-4f40-bcb7-8405de04dd98"
+   },
+   "correlationId": "4dd67340-2742-4f40-bcb7-8405de04dd98"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/revisions/3/approve",
+   "persona": "syseng",
+   "status": 200,
+   "body": {
+    "revision": 3,
+    "approvedRevision": 3,
+    "previous": 2,
+    "applicable": 75,
+    "openIssues": 2,
+    "planChanged": false
+   },
+   "correlationId": "b9e33b31-bd0d-4e81-8d24-9c02ad0f0ced"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/revisions/3/approve",
+   "persona": "syseng",
+   "status": 422,
+   "body": {
+    "type": "https://errors.empathia.invalid/rule_refused",
+    "title": "Refused by a business rule",
+    "status": 422,
+    "detail": "revision 3 is not newer than the approved revision 3",
+    "code": "rule_refused",
+    "reasons": [
+     "revision 3 is not newer than the approved revision 3"
+    ],
+    "correlationId": "91f96114-2787-476c-a351-b8e54ea207e2"
+   },
+   "correlationId": "91f96114-2787-476c-a351-b8e54ea207e2"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/drawings/generate",
+   "persona": "designer",
+   "status": 200,
+   "body": {
+    "drawings": [
+     {
+      "kind": "plan",
+      "state": "GENERATED",
+      "revNo": 2
+     },
+     {
+      "kind": "placement",
+      "state": "GENERATED",
+      "revNo": 2
+     },
+     {
+      "kind": "schedule",
+      "state": "GENERATED",
+      "revNo": 2
+     },
+     {
+      "kind": "relationships",
+      "state": "GENERATED",
+      "revNo": 2
+     },
+     {
+      "kind": "signal",
+      "state": "GENERATED",
+      "revNo": 2
+     },
+     {
+      "kind": "network",
+      "state": "GENERATED",
+      "revNo": 2
+     },
+     {
+      "kind": "summary",
+      "state": "GENERATED",
+      "revNo": 2
+     }
+    ]
+   },
+   "correlationId": "18287288-f9c2-440e-99ea-5b1812a0c1c1"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/drawings/plan/approve",
+   "persona": "syseng",
+   "status": 200,
+   "body": {
+    "kind": "plan",
+    "state": "APPROVED",
+    "revNo": 2
+   },
+   "correlationId": "0bedfbf0-61a4-4e28-bbc1-a588c41de065"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/drawings/placement/approve",
+   "persona": "syseng",
+   "status": 200,
+   "body": {
+    "kind": "placement",
+    "state": "APPROVED",
+    "revNo": 2
+   },
+   "correlationId": "402216eb-373b-4e9c-b130-a7fd6c154de8"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/drawings/schedule/approve",
+   "persona": "syseng",
+   "status": 200,
+   "body": {
+    "kind": "schedule",
+    "state": "APPROVED",
+    "revNo": 2
+   },
+   "correlationId": "2981b56d-bc51-42e4-8d72-e4ae20230ec6"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/drawings/relationships/approve",
+   "persona": "syseng",
+   "status": 200,
+   "body": {
+    "kind": "relationships",
+    "state": "APPROVED",
+    "revNo": 2
+   },
+   "correlationId": "fe8daf76-2934-4309-a93e-38b3047e7d57"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/drawings/signal/approve",
+   "persona": "syseng",
+   "status": 200,
+   "body": {
+    "kind": "signal",
+    "state": "APPROVED",
+    "revNo": 2
+   },
+   "correlationId": "5895b686-d83c-4487-9e2e-e63f2ccbb8d3"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/drawings/network/approve",
+   "persona": "syseng",
+   "status": 200,
+   "body": {
+    "kind": "network",
+    "state": "APPROVED",
+    "revNo": 2
+   },
+   "correlationId": "a045b3f0-6790-4191-9528-1290aa32cab1"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/drawings/summary/approve",
+   "persona": "syseng",
+   "status": 200,
+   "body": {
+    "kind": "summary",
+    "state": "APPROVED",
+    "revNo": 2
+   },
+   "correlationId": "ff0f292f-dd51-4234-bc14-3dbd9a9e03d7"
+  },
+  {
+   "method": "GET",
+   "path": "/v1/rooms/R-PLN-0004",
+   "persona": "designer",
+   "status": 200,
+   "body": {
+    "omitted": "large body; see the step that records it in full"
+   },
+   "correlationId": "b34b3af6-b341-4ecf-83ce-767aa7938de0"
+  }
+ ]
+}

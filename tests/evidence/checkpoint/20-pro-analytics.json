@@ -1,0 +1,1739 @@
+{
+ "step": 20,
+ "title": "The Pro analytics: KPI passports, the building rollup, Mission Control, the KPI summary",
+ "room": "R-PLN-0004",
+ "at": "2026-11-01T00:20:11.278Z",
+ "assertions": [
+  {
+   "id": "C-85",
+   "name": "the 27 KPI passports compute over the records, each with arithmetic or a stated reason (never a silent 0)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-86",
+   "name": "the building rollup computes the Northstar Annex from its own rooms, and the units add up to the estate",
+   "result": "PASS"
+  },
+  {
+   "id": "C-87",
+   "name": "Mission Control reads for the systems engineer",
+   "result": "PASS"
+  },
+  {
+   "id": "C-88",
+   "name": "the KPI summary counts the scenario’s verified results and reports operational performance NOT_MONITORED",
+   "result": "PASS"
+  }
+ ],
+ "exchanges": [
+  {
+   "method": "GET",
+   "path": "/v1/executive/passports?days=30",
+   "persona": "exec",
+   "status": 200,
+   "body": {
+    "now": "2026-11-01T00:20:11.148Z",
+    "days": 30,
+    "version": "2.5.3-kpi-1",
+    "measured": 18,
+    "total": 27,
+    "passports": [
+     {
+      "id": "projects_started",
+      "label": "Projects started",
+      "definition": "Distinct projects whose first authorized field execution started in the window (Delivery FIELD_ACTIVE), not created or merely budgeted",
+      "source": "Delivery records + ledger",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": 0,
+      "unit": "projects",
+      "numerator": 0,
+      "denominator": 0,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 0,
+       "total": 0
+      },
+      "freshness": null,
+      "exclusions": [
+       "projects without a delivery record (never engineering-reviewed)"
+      ],
+      "drill": [],
+      "confidence": {
+       "level": "none",
+       "reasons": [
+        "no eligible records in the window"
+       ]
+      },
+      "state": "MEASURED"
+     },
+     {
+      "id": "projects_approved",
+      "label": "Projects approved",
+      "definition": "Distinct project scope revisions with a valid final APPROVED decision in the window",
+      "source": "Decision records (signed)",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": 0,
+      "unit": "scope revisions",
+      "numerator": 0,
+      "denominator": 0,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 0,
+       "total": 0
+      },
+      "freshness": null,
+      "exclusions": [
+       "HELD and REJECTED decisions are counted apart"
+      ],
+      "drill": [],
+      "confidence": {
+       "level": "none",
+       "reasons": [
+        "no eligible records in the window"
+       ]
+      },
+      "state": "MEASURED"
+     },
+     {
+      "id": "projects_funded",
+      "label": "Projects funded",
+      "definition": "Distinct projects with a current valid funding authorization (AUTHORIZED, not expired, not withdrawn)",
+      "source": "Funding records",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": 0,
+      "unit": "projects",
+      "numerator": 0,
+      "denominator": 1,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 1,
+       "total": 1
+      },
+      "freshness": null,
+      "exclusions": [
+       "SUSPENDED (withdrawn) funding"
+      ],
+      "drill": [],
+      "confidence": {
+       "level": "high",
+       "reasons": []
+      },
+      "state": "MEASURED"
+     },
+     {
+      "id": "committed_budget",
+      "label": "Funds committed",
+      "definition": "Sum of authorized commitments (funding authorizations and accepted vendor quotes), by currency — never projections or ROM figures",
+      "source": "Funding + accepted quotes",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": 0,
+      "unit": "currency",
+      "numerator": 0,
+      "denominator": 0,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 0,
+       "total": 0
+      },
+      "freshness": null,
+      "exclusions": [
+       "ROM and preliminary estimates",
+       "withdrawn funding"
+      ],
+      "drill": [],
+      "confidence": {
+       "level": "none",
+       "reasons": [
+        "no eligible records in the window"
+       ]
+      },
+      "state": "MEASURED",
+      "byCurrency": {}
+     },
+     {
+      "id": "tasks_completed",
+      "label": "Tasks done",
+      "definition": "Distinct work orders accepted as complete (verified RESOLVED or CLOSED) in the window — not checked subtasks",
+      "source": "WorkOrder records",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": 0,
+      "unit": "work orders",
+      "numerator": 0,
+      "denominator": 0,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 0,
+       "total": 0
+      },
+      "freshness": null,
+      "exclusions": [
+       "checked subtasks",
+       "cancelled work orders"
+      ],
+      "drill": [],
+      "confidence": {
+       "level": "none",
+       "reasons": [
+        "no eligible records in the window"
+       ]
+      },
+      "state": "MEASURED"
+     },
+     {
+      "id": "issues_resolved",
+      "label": "Issues resolved",
+      "definition": "Distinct incidents with verified resolution in the window; reopenings counted apart",
+      "source": "Incident records",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": 0,
+      "unit": "incidents",
+      "numerator": 0,
+      "denominator": 0,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 0,
+       "total": 0
+      },
+      "freshness": null,
+      "exclusions": [
+       "0 reopened incident(s) counted apart"
+      ],
+      "drill": [],
+      "confidence": {
+       "level": "none",
+       "reasons": [
+        "no eligible records in the window"
+       ]
+      },
+      "state": "MEASURED"
+     },
+     {
+      "id": "requests_fulfilled",
+      "label": "Requests fulfilled",
+      "definition": "Distinct requests whose outcome was accepted by the customer (Delivery CUSTOMER_ACCEPTED or later), not merely approved or installed",
+      "source": "Request + Delivery records",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": 0,
+      "unit": "requests",
+      "numerator": 0,
+      "denominator": 0,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 0,
+       "total": 0
+      },
+      "freshness": null,
+      "exclusions": [
+       "approved or installed but not accepted"
+      ],
+      "drill": [],
+      "confidence": {
+       "level": "none",
+       "reasons": [
+        "no eligible records in the window"
+       ]
+      },
+      "state": "MEASURED"
+     },
+     {
+      "id": "rooms_commissioned",
+      "label": "Rooms commissioned up to standards",
+      "definition": "Rooms with an accepted current V2.5 baseline (approved applicable tier tests, no blocking deviation) over eligible rooms",
+      "source": "Baseline + plan records",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": 100,
+      "unit": "%",
+      "numerator": 1,
+      "denominator": 1,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 1,
+       "total": 1
+      },
+      "freshness": 0,
+      "exclusions": [
+       "rooms that do not require commissioning"
+      ],
+      "drill": [
+       "R-PLN-0004"
+      ],
+      "confidence": {
+       "level": "high",
+       "reasons": []
+      },
+      "state": "MEASURED"
+     },
+     {
+      "id": "devices_commissioned",
+      "label": "Devices commissioned up to standards",
+      "definition": "Devices named in an accepted baseline snapshot over installed devices in rooms that require commissioning",
+      "source": "Baseline snapshots + room devices",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": 80,
+      "unit": "%",
+      "numerator": 8,
+      "denominator": 10,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 1,
+       "total": 1
+      },
+      "freshness": 0,
+      "exclusions": [
+       "furniture"
+      ],
+      "drill": [
+       "R-PLN-0004"
+      ],
+      "confidence": {
+       "level": "high",
+       "reasons": []
+      },
+      "state": "MEASURED"
+     },
+     {
+      "id": "doc_tracker",
+      "label": "Documentation approved coverage",
+      "definition": "Applicable mandatory document requirements satisfied by approved current evidence, over applicable mandatory requirements",
+      "source": "Tracker records",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": null,
+      "unit": "%",
+      "numerator": 0,
+      "denominator": 0,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 0,
+       "total": 0
+      },
+      "freshness": null,
+      "exclusions": [
+       "NOT_APPLICABLE requirements"
+      ],
+      "drill": [],
+      "confidence": {
+       "level": "none",
+       "reasons": [
+        "no eligible records: not measurable"
+       ]
+      },
+      "state": "NOT_MEASURABLE",
+      "reason": "no eligible records: not measurable"
+     },
+     {
+      "id": "commission_tests",
+      "label": "Commissioning conformance",
+      "definition": "Applicable required test instances with a verified PASS (or approved exception) at the current plan revision, over applicable required test instances",
+      "source": "CommissioningPlan records",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": 100,
+      "unit": "%",
+      "numerator": 75,
+      "denominator": 75,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 1,
+       "total": 1
+      },
+      "freshness": 0,
+      "exclusions": [
+       "rooms without a compiled plan"
+      ],
+      "drill": [
+       "R-PLN-0004"
+      ],
+      "confidence": {
+       "level": "high",
+       "reasons": []
+      },
+      "state": "MEASURED"
+     },
+     {
+      "id": "issue_repeat",
+      "label": "Repeat incident rate",
+      "definition": "Incidents that are recurrences (linked to a closed incident in the same room) over incidents eligible for recurrence",
+      "source": "Incident records",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": null,
+      "unit": "%",
+      "numerator": 0,
+      "denominator": 0,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 0,
+       "total": 0
+      },
+      "freshness": null,
+      "exclusions": [
+       "incidents outside the window"
+      ],
+      "drill": [],
+      "confidence": {
+       "level": "none",
+       "reasons": [
+        "no eligible records: not measurable"
+       ]
+      },
+      "state": "NOT_MEASURABLE",
+      "reason": "no eligible records: not measurable"
+     },
+     {
+      "id": "mttr",
+      "label": "Median restoration time",
+      "definition": "Median hours from incident opening to verified service restoration, over closed incidents with both timestamps",
+      "source": "Incident + WorkOrder records",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": null,
+      "unit": "hours (median)",
+      "numerator": 0,
+      "denominator": 0,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 0,
+       "total": 0
+      },
+      "freshness": null,
+      "exclusions": [
+       "incidents without a verified restoration timestamp"
+      ],
+      "drill": [],
+      "confidence": {
+       "level": "none",
+       "reasons": [
+        "no eligible records: not measurable"
+       ]
+      },
+      "state": "NOT_MEASURABLE",
+      "reason": "no eligible records: not measurable"
+     },
+     {
+      "id": "standards_changed",
+      "label": "Standards changed",
+      "definition": "Distinct standard versions that reached the effective state in the window",
+      "source": "Standard records + standard.changed events",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": 0,
+      "unit": "standard versions",
+      "numerator": 0,
+      "denominator": 0,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 0,
+       "total": 0
+      },
+      "freshness": null,
+      "exclusions": [
+       "drafts"
+      ],
+      "drill": [],
+      "confidence": {
+       "level": "none",
+       "reasons": [
+        "no eligible records in the window"
+       ]
+      },
+      "state": "MEASURED"
+     },
+     {
+      "id": "sop_created",
+      "label": "SOPs created",
+      "definition": "New SOP identities created as drafts in the window",
+      "source": "SOP records",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": 0,
+      "unit": "SOPs",
+      "numerator": 0,
+      "denominator": 0,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 0,
+       "total": 0
+      },
+      "freshness": null,
+      "exclusions": [],
+      "drill": [],
+      "confidence": {
+       "level": "none",
+       "reasons": [
+        "no eligible records in the window"
+       ]
+      },
+      "state": "MEASURED"
+     },
+     {
+      "id": "sop_approved",
+      "label": "SOPs approved",
+      "definition": "SOP versions with a valid approval (sop.approved) in the window — not uploaded drafts",
+      "source": "sop.approved events",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": 0,
+      "unit": "SOP versions",
+      "numerator": 0,
+      "denominator": 0,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 0,
+       "total": 0
+      },
+      "freshness": null,
+      "exclusions": [
+       "uploaded drafts"
+      ],
+      "drill": [],
+      "confidence": {
+       "level": "none",
+       "reasons": [
+        "no eligible records in the window"
+       ]
+      },
+      "state": "MEASURED"
+     },
+     {
+      "id": "sow_created",
+      "label": "SOWs created",
+      "definition": "Statement-of-work drafts authored in the window",
+      "source": "SOW records",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": 0,
+      "unit": "SOWs",
+      "numerator": 0,
+      "denominator": 0,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 0,
+       "total": 0
+      },
+      "freshness": null,
+      "exclusions": [],
+      "drill": [],
+      "confidence": {
+       "level": "none",
+       "reasons": [
+        "no eligible records in the window"
+       ]
+      },
+      "state": "MEASURED"
+     },
+     {
+      "id": "sow_approved",
+      "label": "SOWs approved",
+      "definition": "SOW versions executed or approved under delegated contracting authority (sow.approved)",
+      "source": "sow.approved events",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": 0,
+      "unit": "SOW versions",
+      "numerator": 0,
+      "denominator": 0,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 0,
+       "total": 0
+      },
+      "freshness": null,
+      "exclusions": [],
+      "drill": [],
+      "confidence": {
+       "level": "none",
+       "reasons": [
+        "no eligible records in the window"
+       ]
+      },
+      "state": "MEASURED"
+     },
+     {
+      "id": "lifecycle_exposure",
+      "label": "Lifecycle exposure",
+      "definition": "Installed active devices whose vendor support ends within 24 months, with the ROM replacement range (low–high) — a range, never a quote",
+      "source": "Device records (V1.4.1 inventory) + cost model",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": 0,
+      "unit": "devices",
+      "numerator": 0,
+      "denominator": 0,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 0,
+       "total": 0
+      },
+      "freshness": null,
+      "exclusions": [
+       "0 device(s) without a recorded support end (unknown, not safe)"
+      ],
+      "drill": [],
+      "confidence": {
+       "level": "none",
+       "reasons": [
+        "no eligible records in the window"
+       ]
+      },
+      "state": "MEASURED"
+     },
+     {
+      "id": "room_use",
+      "label": "Room utilization",
+      "definition": "Observed sessions in instrumented eligible rooms over the window (sessions per instrumented room per week); rooms without instrumentation are not measurable",
+      "source": "usage.session_observed events (synthetic)",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": null,
+      "unit": "sessions / room / week",
+      "numerator": 0,
+      "denominator": 0,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 0,
+       "total": 0
+      },
+      "freshness": null,
+      "exclusions": [
+       "0 eligible room(s) without instrumentation: not measurable"
+      ],
+      "drill": [],
+      "confidence": {
+       "level": "none",
+       "reasons": [
+        "no eligible records: not measurable"
+       ]
+      },
+      "state": "NOT_MEASURABLE",
+      "reason": "no eligible records: not measurable"
+     },
+     {
+      "id": "device_use",
+      "label": "Device utilization",
+      "definition": "Sessions with a validated activation of a device function (camera, microphones, display) over instrumented sessions",
+      "source": "usage.session_observed events (synthetic)",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": null,
+      "unit": "%",
+      "numerator": 0,
+      "denominator": 0,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 0,
+       "total": 0
+      },
+      "freshness": null,
+      "exclusions": [],
+      "drill": [],
+      "confidence": {
+       "level": "none",
+       "reasons": [
+        "no eligible records: not measurable"
+       ]
+      },
+      "state": "NOT_MEASURABLE",
+      "reason": "no eligible records: not measurable"
+     },
+     {
+      "id": "whiteboarding_adoption",
+      "label": "Whiteboarding adoption",
+      "definition": "% of eligible observable sessions with a verified whiteboarding interaction (not % of people); concurrent with conferencing counts once",
+      "source": "usage.session_observed events (synthetic) on interactive displays",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": null,
+      "unit": "%",
+      "numerator": 0,
+      "denominator": 0,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 0,
+       "total": 0
+      },
+      "freshness": null,
+      "exclusions": [
+       "sessions in rooms without an interactive display"
+      ],
+      "drill": [],
+      "confidence": {
+       "level": "none",
+       "reasons": [
+        "no eligible records: not measurable"
+       ]
+      },
+      "state": "NOT_MEASURABLE",
+      "reason": "no eligible records: not measurable"
+     },
+     {
+      "id": "meeting_adoption",
+      "label": "Video meeting adoption",
+      "definition": "% of eligible observable sessions with confirmed conferencing activity",
+      "source": "usage.session_observed events (synthetic)",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": null,
+      "unit": "%",
+      "numerator": 0,
+      "denominator": 0,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 0,
+       "total": 0
+      },
+      "freshness": null,
+      "exclusions": [],
+      "drill": [],
+      "confidence": {
+       "level": "none",
+       "reasons": [
+        "no eligible records: not measurable"
+       ]
+      },
+      "state": "NOT_MEASURABLE",
+      "reason": "no eligible records: not measurable"
+     },
+     {
+      "id": "whiteboard_people_pct",
+      "label": "Percentage of people using whiteboarding",
+      "definition": "Only with lawful, informed and reliable person-level participation data; not collected by default",
+      "source": "consent-governed instrumentation (absent)",
+      "owner": "Operations Lead",
+      "privacy": "person-level — absent by design",
+      "version": "2.5.3-kpi-1",
+      "value": null,
+      "unit": "%",
+      "numerator": null,
+      "denominator": null,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 0,
+       "total": 0
+      },
+      "freshness": null,
+      "exclusions": [],
+      "drill": [],
+      "confidence": {
+       "level": "none",
+       "reasons": [
+        "NOT_MEASURABLE: no consent-governed person-level participation data exists; the platform does not infer it"
+       ]
+      },
+      "state": "NOT_MEASURABLE",
+      "reason": "NOT_MEASURABLE: no consent-governed person-level participation data exists; the platform does not infer it"
+     },
+     {
+      "id": "design_profiles",
+      "label": "Approved standardized profiles",
+      "definition": "Scouter DSP/camera/touch profiles with a signed reviewed version (PUBLISHED or APPROVED) and verified device coverage",
+      "source": "ScouterProposal records",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": 0,
+      "unit": "profiles",
+      "numerator": 0,
+      "denominator": 0,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 0,
+       "total": 0
+      },
+      "freshness": null,
+      "exclusions": [
+       "profiles without verified device coverage"
+      ],
+      "drill": [],
+      "confidence": {
+       "level": "none",
+       "reasons": [
+        "no eligible records in the window"
+       ]
+      },
+      "state": "MEASURED"
+     },
+     {
+      "id": "field_scan_coverage",
+      "label": "Recommissioning field scan coverage",
+      "definition": "Rooms with a completed supervised verification (room-verification work order RESOLVED/CLOSED or FI session with evidence) in the window over rooms with a current baseline",
+      "source": "WorkOrder + FISession + MeasurementEvidence records",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": 0,
+      "unit": "%",
+      "numerator": 0,
+      "denominator": 1,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 1,
+       "total": 1
+      },
+      "freshness": null,
+      "exclusions": [
+       "rooms without a baseline"
+      ],
+      "drill": [],
+      "confidence": {
+       "level": "high",
+       "reasons": []
+      },
+      "state": "MEASURED"
+     },
+     {
+      "id": "funding_to_outcome",
+      "label": "Funded project handoff share",
+      "definition": "Funded projects accepted into operations (HANDED_OFF or BASELINED) over funded projects",
+      "source": "Funding + Delivery records",
+      "owner": "Operations Lead",
+      "privacy": "aggregate only",
+      "version": "2.5.3-kpi-1",
+      "value": null,
+      "unit": "%",
+      "numerator": 0,
+      "denominator": 0,
+      "window": {
+       "from": "2026-10-02T00:20:11.148Z",
+       "to": "2026-11-01T00:20:11.148Z",
+       "days": 30
+      },
+      "coverage": {
+       "observed": 0,
+       "total": 0
+      },
+      "freshness": null,
+      "exclusions": [],
+      "drill": [],
+      "confidence": {
+       "level": "none",
+       "reasons": [
+        "no eligible records: not measurable"
+       ]
+      },
+      "state": "NOT_MEASURABLE",
+      "reason": "no eligible records: not measurable"
+     }
+    ],
+    "sources": {
+     "projects": 1,
+     "decisions": 0,
+     "funding": 0,
+     "requests": 0,
+     "workOrders": 0,
+     "deficiencies": 0,
+     "rooms": 4,
+     "baselines": 1,
+     "absent": [
+      "documents",
+      "standards",
+      "sops",
+      "sows",
+      "device support ends",
+      "usage sessions",
+      "standardization profiles",
+      "field scans",
+      "consented participation"
+     ]
+    },
+    "note": "Figures are computed from this organization’s records in your site scope. A passport whose source does not exist in this starter is NOT_MEASURABLE, never 0%. Operational performance stays NOT_MONITORED."
+   },
+   "correlationId": "5d086e52-579b-423d-bfa4-1b718a57b9b6"
+  },
+  {
+   "method": "GET",
+   "path": "/v1/executive/rollup?level=building&days=30",
+   "persona": "exec",
+   "status": 200,
+   "body": {
+    "level": "building",
+    "days": 30,
+    "kpis": [
+     {
+      "id": "tasks_completed",
+      "label": "Tasks done"
+     },
+     {
+      "id": "issues_resolved",
+      "label": "Issues resolved"
+     },
+     {
+      "id": "rooms_commissioned",
+      "label": "Rooms commissioned up to standards"
+     },
+     {
+      "id": "devices_commissioned",
+      "label": "Devices commissioned up to standards"
+     },
+     {
+      "id": "commission_tests",
+      "label": "Commissioning conformance"
+     },
+     {
+      "id": "issue_repeat",
+      "label": "Repeat incident rate"
+     },
+     {
+      "id": "mttr",
+      "label": "Median restoration time"
+     },
+     {
+      "id": "field_scan_coverage",
+      "label": "Recommissioning field scan coverage"
+     }
+    ],
+    "units": [
+     {
+      "code": "ATL",
+      "name": "Atlas Tower (synthetic)",
+      "parent": "SITE-NORTH",
+      "rooms": 2,
+      "passports": [
+       {
+        "id": "tasks_completed",
+        "label": "Tasks done",
+        "unit": "work orders",
+        "state": "MEASURED",
+        "value": 0,
+        "numerator": 0,
+        "denominator": 0,
+        "coverage": {
+         "observed": 0,
+         "total": 0
+        },
+        "confidence": "none"
+       },
+       {
+        "id": "issues_resolved",
+        "label": "Issues resolved",
+        "unit": "incidents",
+        "state": "MEASURED",
+        "value": 0,
+        "numerator": 0,
+        "denominator": 0,
+        "coverage": {
+         "observed": 0,
+         "total": 0
+        },
+        "confidence": "none"
+       },
+       {
+        "id": "rooms_commissioned",
+        "label": "Rooms commissioned up to standards",
+        "unit": "%",
+        "state": "NOT_MEASURABLE",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "coverage": {
+         "observed": 0,
+         "total": 0
+        },
+        "confidence": "none",
+        "reason": "no eligible records: not measurable"
+       },
+       {
+        "id": "devices_commissioned",
+        "label": "Devices commissioned up to standards",
+        "unit": "%",
+        "state": "NOT_MEASURABLE",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "coverage": {
+         "observed": 0,
+         "total": 0
+        },
+        "confidence": "none",
+        "reason": "no eligible records: not measurable"
+       },
+       {
+        "id": "commission_tests",
+        "label": "Commissioning conformance",
+        "unit": "%",
+        "state": "NOT_MEASURABLE",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "coverage": {
+         "observed": 0,
+         "total": 0
+        },
+        "confidence": "none",
+        "reason": "no eligible records: not measurable"
+       },
+       {
+        "id": "issue_repeat",
+        "label": "Repeat incident rate",
+        "unit": "%",
+        "state": "NOT_MEASURABLE",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "coverage": {
+         "observed": 0,
+         "total": 0
+        },
+        "confidence": "none",
+        "reason": "no eligible records: not measurable"
+       },
+       {
+        "id": "mttr",
+        "label": "Median restoration time",
+        "unit": "hours (median)",
+        "state": "NOT_MEASURABLE",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "coverage": {
+         "observed": 0,
+         "total": 0
+        },
+        "confidence": "none",
+        "reason": "no eligible records: not measurable"
+       },
+       {
+        "id": "field_scan_coverage",
+        "label": "Recommissioning field scan coverage",
+        "unit": "%",
+        "state": "NOT_MEASURABLE",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "coverage": {
+         "observed": 0,
+         "total": 0
+        },
+        "confidence": "none",
+        "reason": "no eligible records: not measurable"
+       }
+      ]
+     },
+     {
+      "code": "NST",
+      "name": "Northstar Annex (synthetic)",
+      "parent": "SITE-NORTH",
+      "rooms": 1,
+      "passports": [
+       {
+        "id": "tasks_completed",
+        "label": "Tasks done",
+        "unit": "work orders",
+        "state": "MEASURED",
+        "value": 0,
+        "numerator": 0,
+        "denominator": 0,
+        "coverage": {
+         "observed": 0,
+         "total": 0
+        },
+        "confidence": "none"
+       },
+       {
+        "id": "issues_resolved",
+        "label": "Issues resolved",
+        "unit": "incidents",
+        "state": "MEASURED",
+        "value": 0,
+        "numerator": 0,
+        "denominator": 0,
+        "coverage": {
+         "observed": 0,
+         "total": 0
+        },
+        "confidence": "none"
+       },
+       {
+        "id": "rooms_commissioned",
+        "label": "Rooms commissioned up to standards",
+        "unit": "%",
+        "state": "MEASURED",
+        "value": 100,
+        "numerator": 1,
+        "denominator": 1,
+        "coverage": {
+         "observed": 1,
+         "total": 1
+        },
+        "confidence": "high"
+       },
+       {
+        "id": "devices_commissioned",
+        "label": "Devices commissioned up to standards",
+        "unit": "%",
+        "state": "MEASURED",
+        "value": 80,
+        "numerator": 8,
+        "denominator": 10,
+        "coverage": {
+         "observed": 1,
+         "total": 1
+        },
+        "confidence": "high"
+       },
+       {
+        "id": "commission_tests",
+        "label": "Commissioning conformance",
+        "unit": "%",
+        "state": "MEASURED",
+        "value": 100,
+        "numerator": 75,
+        "denominator": 75,
+        "coverage": {
+         "observed": 1,
+         "total": 1
+        },
+        "confidence": "high"
+       },
+       {
+        "id": "issue_repeat",
+        "label": "Repeat incident rate",
+        "unit": "%",
+        "state": "NOT_MEASURABLE",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "coverage": {
+         "observed": 0,
+         "total": 0
+        },
+        "confidence": "none",
+        "reason": "no eligible records: not measurable"
+       },
+       {
+        "id": "mttr",
+        "label": "Median restoration time",
+        "unit": "hours (median)",
+        "state": "NOT_MEASURABLE",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "coverage": {
+         "observed": 0,
+         "total": 0
+        },
+        "confidence": "none",
+        "reason": "no eligible records: not measurable"
+       },
+       {
+        "id": "field_scan_coverage",
+        "label": "Recommissioning field scan coverage",
+        "unit": "%",
+        "state": "MEASURED",
+        "value": 0,
+        "numerator": 0,
+        "denominator": 1,
+        "coverage": {
+         "observed": 1,
+         "total": 1
+        },
+        "confidence": "high"
+       }
+      ]
+     },
+     {
+      "code": "HZN",
+      "name": "Horizon Hall (synthetic)",
+      "parent": "SITE-SOUTH",
+      "rooms": 1,
+      "passports": [
+       {
+        "id": "tasks_completed",
+        "label": "Tasks done",
+        "unit": "work orders",
+        "state": "MEASURED",
+        "value": 0,
+        "numerator": 0,
+        "denominator": 0,
+        "coverage": {
+         "observed": 0,
+         "total": 0
+        },
+        "confidence": "none"
+       },
+       {
+        "id": "issues_resolved",
+        "label": "Issues resolved",
+        "unit": "incidents",
+        "state": "MEASURED",
+        "value": 0,
+        "numerator": 0,
+        "denominator": 0,
+        "coverage": {
+         "observed": 0,
+         "total": 0
+        },
+        "confidence": "none"
+       },
+       {
+        "id": "rooms_commissioned",
+        "label": "Rooms commissioned up to standards",
+        "unit": "%",
+        "state": "NOT_MEASURABLE",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "coverage": {
+         "observed": 0,
+         "total": 0
+        },
+        "confidence": "none",
+        "reason": "no eligible records: not measurable"
+       },
+       {
+        "id": "devices_commissioned",
+        "label": "Devices commissioned up to standards",
+        "unit": "%",
+        "state": "NOT_MEASURABLE",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "coverage": {
+         "observed": 0,
+         "total": 0
+        },
+        "confidence": "none",
+        "reason": "no eligible records: not measurable"
+       },
+       {
+        "id": "commission_tests",
+        "label": "Commissioning conformance",
+        "unit": "%",
+        "state": "NOT_MEASURABLE",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "coverage": {
+         "observed": 0,
+         "total": 0
+        },
+        "confidence": "none",
+        "reason": "no eligible records: not measurable"
+       },
+       {
+        "id": "issue_repeat",
+        "label": "Repeat incident rate",
+        "unit": "%",
+        "state": "NOT_MEASURABLE",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "coverage": {
+         "observed": 0,
+         "total": 0
+        },
+        "confidence": "none",
+        "reason": "no eligible records: not measurable"
+       },
+       {
+        "id": "mttr",
+        "label": "Median restoration time",
+        "unit": "hours (median)",
+        "state": "NOT_MEASURABLE",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "coverage": {
+         "observed": 0,
+         "total": 0
+        },
+        "confidence": "none",
+        "reason": "no eligible records: not measurable"
+       },
+       {
+        "id": "field_scan_coverage",
+        "label": "Recommissioning field scan coverage",
+        "unit": "%",
+        "state": "NOT_MEASURABLE",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "coverage": {
+         "observed": 0,
+         "total": 0
+        },
+        "confidence": "none",
+        "reason": "no eligible records: not measurable"
+       }
+      ]
+     }
+    ],
+    "estate": {
+     "rooms": 4,
+     "passports": [
+      {
+       "id": "tasks_completed",
+       "label": "Tasks done",
+       "unit": "work orders",
+       "state": "MEASURED",
+       "value": 0,
+       "numerator": 0,
+       "denominator": 0,
+       "coverage": {
+        "observed": 0,
+        "total": 0
+       },
+       "confidence": "none"
+      },
+      {
+       "id": "issues_resolved",
+       "label": "Issues resolved",
+       "unit": "incidents",
+       "state": "MEASURED",
+       "value": 0,
+       "numerator": 0,
+       "denominator": 0,
+       "coverage": {
+        "observed": 0,
+        "total": 0
+       },
+       "confidence": "none"
+      },
+      {
+       "id": "rooms_commissioned",
+       "label": "Rooms commissioned up to standards",
+       "unit": "%",
+       "state": "MEASURED",
+       "value": 100,
+       "numerator": 1,
+       "denominator": 1,
+       "coverage": {
+        "observed": 1,
+        "total": 1
+       },
+       "confidence": "high"
+      },
+      {
+       "id": "devices_commissioned",
+       "label": "Devices commissioned up to standards",
+       "unit": "%",
+       "state": "MEASURED",
+       "value": 80,
+       "numerator": 8,
+       "denominator": 10,
+       "coverage": {
+        "observed": 1,
+        "total": 1
+       },
+       "confidence": "high"
+      },
+      {
+       "id": "commission_tests",
+       "label": "Commissioning conformance",
+       "unit": "%",
+       "state": "MEASURED",
+       "value": 100,
+       "numerator": 75,
+       "denominator": 75,
+       "coverage": {
+        "observed": 1,
+        "total": 1
+       },
+       "confidence": "high"
+      },
+      {
+       "id": "issue_repeat",
+       "label": "Repeat incident rate",
+       "unit": "%",
+       "state": "NOT_MEASURABLE",
+       "value": null,
+       "numerator": 0,
+       "denominator": 0,
+       "coverage": {
+        "observed": 0,
+        "total": 0
+       },
+       "confidence": "none",
+       "reason": "no eligible records: not measurable"
+      },
+      {
+       "id": "mttr",
+       "label": "Median restoration time",
+       "unit": "hours (median)",
+       "state": "NOT_MEASURABLE",
+       "value": null,
+       "numerator": 0,
+       "denominator": 0,
+       "coverage": {
+        "observed": 0,
+        "total": 0
+       },
+       "confidence": "none",
+       "reason": "no eligible records: not measurable"
+      },
+      {
+       "id": "field_scan_coverage",
+       "label": "Recommissioning field scan coverage",
+       "unit": "%",
+       "state": "MEASURED",
+       "value": 0,
+       "numerator": 0,
+       "denominator": 1,
+       "coverage": {
+        "observed": 1,
+        "total": 1
+       },
+       "confidence": "high"
+      }
+     ]
+    },
+    "organizationOnly": [
+     {
+      "id": "projects_started",
+      "label": "Projects started"
+     },
+     {
+      "id": "projects_approved",
+      "label": "Projects approved"
+     },
+     {
+      "id": "projects_funded",
+      "label": "Projects funded"
+     },
+     {
+      "id": "committed_budget",
+      "label": "Funds committed"
+     },
+     {
+      "id": "requests_fulfilled",
+      "label": "Requests fulfilled"
+     },
+     {
+      "id": "funding_to_outcome",
+      "label": "Funded project handoff share"
+     }
+    ],
+    "notMeasurable": [
+     {
+      "id": "doc_tracker",
+      "label": "Documentation approved coverage"
+     },
+     {
+      "id": "standards_changed",
+      "label": "Standards changed"
+     },
+     {
+      "id": "sop_created",
+      "label": "SOPs created"
+     },
+     {
+      "id": "sop_approved",
+      "label": "SOPs approved"
+     },
+     {
+      "id": "sow_created",
+      "label": "SOWs created"
+     },
+     {
+      "id": "sow_approved",
+      "label": "SOWs approved"
+     },
+     {
+      "id": "lifecycle_exposure",
+      "label": "Lifecycle exposure"
+     },
+     {
+      "id": "room_use",
+      "label": "Room utilization"
+     },
+     {
+      "id": "device_use",
+      "label": "Device utilization"
+     },
+     {
+      "id": "whiteboarding_adoption",
+      "label": "Whiteboarding adoption"
+     },
+     {
+      "id": "meeting_adoption",
+      "label": "Video meeting adoption"
+     },
+     {
+      "id": "whiteboard_people_pct",
+      "label": "Percentage of people using whiteboarding"
+     },
+     {
+      "id": "design_profiles",
+      "label": "Approved standardized profiles"
+     }
+    ],
+    "note": "Each building is computed separately from its own rooms' records; nothing is averaged across buildings."
+   },
+   "correlationId": "9387283f-7967-45e6-b8ee-ef5ba6a38112"
+  },
+  {
+   "method": "GET",
+   "path": "/v1/mission-control",
+   "persona": "syseng",
+   "status": 200,
+   "body": {
+    "me": {
+     "name": "Systems Engineer (synthetic)",
+     "role": "syseng",
+     "siteScoped": false
+    },
+    "actions": [
+     {
+      "product": "rooms",
+      "kind": "lifecycle",
+      "ref": "R-PLN-0003",
+      "title": "Horizon Huddle 2.129 (synthetic): move to design approved",
+      "detail": "from PLANNED",
+      "href": "#/rooms/R-PLN-0003",
+      "authority": "room.design.approve",
+      "at": "2026-11-01T00:20:04.533Z"
+     },
+     {
+      "product": "rooms",
+      "kind": "lifecycle",
+      "ref": "R-PLN-0002",
+      "title": "Atlas Boardroom 7.112 (synthetic): move to design approved",
+      "detail": "from PLANNED",
+      "href": "#/rooms/R-PLN-0002",
+      "authority": "room.design.approve",
+      "at": "2026-11-01T00:20:04.406Z"
+     },
+     {
+      "product": "rooms",
+      "kind": "lifecycle",
+      "ref": "R-PLN-0001",
+      "title": "Atlas Town Hall (synthetic): move to design approved",
+      "detail": "from PLANNED",
+      "href": "#/rooms/R-PLN-0001",
+      "authority": "room.design.approve",
+      "at": "2026-11-01T00:20:04.245Z"
+     }
+    ],
+    "total": 3,
+    "byProduct": {
+     "rooms": 3
+    },
+    "exceptions": [],
+    "scanned": {
+     "projects": 0,
+     "rooms": 4,
+     "workOrders": 0,
+     "fiSessions": 0,
+     "learnCases": 0,
+     "competencies": 0
+    },
+    "note": "Steps you hold the authority for, in your site scope. Each opens the record, where the server checks the guard again. Operational performance stays NOT_MONITORED."
+   },
+   "correlationId": "411236ab-60f6-4747-935d-fd01bf11078a"
+  },
+  {
+   "method": "GET",
+   "path": "/v1/reports/summary",
+   "persona": "opslead",
+   "status": 200,
+   "body": {
+    "scope": "tenant",
+    "rooms": {
+     "total": 4,
+     "byLifecycle": {
+      "COMMISSIONING": 1,
+      "PLANNED": 3
+     }
+    },
+    "commissioning": {
+     "applicableTests": 316,
+     "byLabel": {
+      "NOT_TESTED": 241,
+      "PASS_VERIFIED": 75
+     },
+     "coverage": {
+      "value": 0.237,
+      "definition": "tests with any recorded result ÷ applicable tests (latest plan of each room)"
+     },
+     "verifiedShare": {
+      "value": 1,
+      "definition": "PASS_VERIFIED ÷ all recorded passes (PASS_VERIFIED + PASS_UNVERIFIED)"
+     },
+     "firstTimeFailRate": {
+      "value": 0,
+      "definition": "current FAIL results ÷ recorded results"
+     }
+    },
+    "issues": {
+     "open": 1,
+     "openHighOrCritical": 0,
+     "byCategorySeverityState": [
+      {
+       "category": "DESIGN_DEFICIENCY",
+       "severity": "High",
+       "state": "RESOLVED",
+       "n": 1
+      },
+      {
+       "category": "DESIGN_DEFICIENCY",
+       "severity": "Medium",
+       "state": "OPEN",
+       "n": 1
+      },
+      {
+       "category": "DESIGN_DEFICIENCY",
+       "severity": "Medium",
+       "state": "RESOLVED",
+       "n": 2
+      }
+     ],
+     "deficienciesResolved": 0,
+     "meanHoursToResolveDeficiency": null
+    },
+    "workOrders": {},
+    "assets": {
+     "planned": 52,
+     "genericModels": 51,
+     "distinctModels": 2,
+     "genericShare": {
+      "value": 0.981,
+      "definition": "planned devices still on a generic model ÷ planned devices"
+     }
+    },
+    "evidence": {
+     "objects": 75,
+     "bytes": 14683
+    },
+    "operationalPerformance": "NOT_MONITORED",
+    "note": "Computed from synthetic starter data. Not a statement about any real estate or customer."
+   },
+   "correlationId": "6359cf0e-6668-424c-9425-daac318034ff"
+  }
+ ]
+}

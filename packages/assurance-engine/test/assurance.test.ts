@@ -59,6 +59,16 @@ test('a device on the register that the baseline does not hold is device drift (
   assert.equal(p.status, 'drift'); assert.equal(p.ev, 'INFERRED'); assert.equal(a.remedy, 'minor', 'DEVICE findings are minor remediation');
 });
 
+test('a substitution (same asset id, another model than the baseline holds) is device drift on the register, INFERRED, recommission; without models nothing is compared', () => {
+  const withModels: Baseline = { ...base, devices: base.devices.map((d) => ({ ...d, model: 'generic' })) };
+  const a = assess(withModels, cur({ devices: withModels.devices.map((d) => ({ ...d, model: d.id === 'PA-2' ? 'SYN-PTZ-12X' : 'generic' })) }));
+  const p = a.rows.find((r) => r.k === 'presence')!;
+  assert.equal(p.status, 'drift'); assert.equal(p.type, 'DEVICE'); assert.equal(p.ev, 'INFERRED'); assert.deepEqual(p.ids, ['PA-2']);
+  assert.match(p.current, /substituted since handover: camera generic → SYN-PTZ-12X/); assert.equal(p.fix?.kind, 'recom');
+  assert.equal(assess(withModels, cur({ devices: withModels.devices.map((d) => ({ ...d })) })).rows.find((r) => r.k === 'presence')!.status, 'unknown', 'same models: the register matches; whether the devices answer is unknown');
+  assert.equal(assess(base, cur({ devices: base.devices.map((d) => ({ ...d, model: 'SYN-PTZ-12X' })) })).rows.find((r) => r.k === 'presence')!.status, 'unknown', 'a baseline without models is not compared');
+});
+
 test('firmware: not validated is drift; behind the baseline is a gap, not drift', () => {
   const drift = assess(base, cur({ devices: base.devices.map((d) => ({ ...d, fwState: d.id === 'PA-1' ? 'Not validated' : 'Validated', firmware: '2.1', fwBaseline: '2.0' })) }));
   const f = drift.rows.find((r) => r.k === 'firmware')!;

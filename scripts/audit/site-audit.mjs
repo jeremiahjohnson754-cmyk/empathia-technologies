@@ -49,7 +49,7 @@ try {
     const port = 4340 + i; servers.push(await serve(site, port)); const base = `http://127.0.0.1:${port}`;
     const list = site.name === 'empathia-website'
       ? ['/', ...fs.readdirSync(path.join(repo, site.dir), { recursive: true }).filter((f) => f.endsWith('index.html') && f !== 'index.html').map((f) => '/' + path.dirname(f) + '/')]
-      : ['/#/investor', '/#/v25/build', '/#/search', '/#/v25/service', '/#/v25/apex', '/#/v25/learn', '/#/v25', '/#/v25/exec', '/#/v25/ledger', '/#/v25/policy', '/#/v25/fi', '/#/v25/fipv', '/#/suite/commission', '/#/suite/pro', '/#/tours/investor?scenario=1'];
+      : ['/#/investor', '/#/v25/build', '/#/search', '/#/v25/service', '/#/v25/apex', '/#/v25/learn', '/#/v25', '/#/v25/exec', '/#/v25/ledger', '/#/v25/policy', '/#/v25/fi', '/#/v25/fipv', '/#/suite/commission', '/#/suite/pro', '/#/tours/investor?scenario=1', '/#/story/R-ATL-4-218', '/#/story/R-ATL-4-231', '/#/story/R-DEMO-0001'];
     const linkCache = new Map();
     for (const pg of list) for (const width of WIDTHS) {
       const ctx = await browser.newContext({ viewport: { width, height: width < 768 ? 844 : 900 }, deviceScaleFactor: 1, hasTouch: width < 768, reducedMotion: 'no-preference' });

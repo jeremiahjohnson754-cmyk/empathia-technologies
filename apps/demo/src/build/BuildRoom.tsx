@@ -3,6 +3,9 @@ import { Button, Notice, Tag, Field, Tabs, Facts } from '@empathia/ui';
 import { ROOM_LIFECYCLE, type RoomLifecycle } from '@empathia/domain-types';
 import { DRAWING_KINDS, LIFECYCLE_AUTHORITY, resultLabel, resultWords } from '@empathia/commissioning-engine';
 import * as S from './store.js';
+import * as I from './impact.js';
+import { ImpactPanel } from './ImpactPanel.js';
+import { load as loadWorkspace } from '../workspace/store.js';
 
 const TEMPLATES = Object.entries(S.C.templates).map(([k, t]) => [k, t.label] as const);
 const CATS = Object.entries(S.C.categories).map(([k, c]) => [k, c.label, c.group] as const);
@@ -18,19 +21,29 @@ export function BuildRoom({ perspective }: { perspective: string }) {
   const [refusal, setRefusal] = useState<string[] | null>(null);
   const setDraft = (d: S.Draft | null) => { setDraftState(d ? { ...d } : null); S.saveDraft(d); };
   const apply = (r: S.Draft | S.Refusal) => { if ('why' in r) { setRefusal(r.why); return false; } setRefusal(null); setDraft(r); return true; };
+  // a change to the room (add, remove, swap a device) runs on a copy, so the engines can compare the room before and after it (impact.ts);
+  // the impact is attached to the change's ledger event, which the room's story shows. The workspace is only read.
+  const [impact, setImpact] = useState<I.Impact | null>(null);
+  const change = (fn: (x: S.Draft) => S.Draft | S.Refusal) => {
+    if (!draft) return false;
+    const before = structuredClone(draft); const r = fn(structuredClone(draft));
+    if ('why' in r) { setRefusal(r.why); return false; }
+    const im = I.computeImpact(before, r, loadWorkspace()); I.attachImpact(r, im);
+    setRefusal(null); setDraft(r); setImpact(im); return true;
+  };
   const a = useMemo(() => (draft ? S.analysis(draft) : null), [draft]);
   return (
     <section className="build">
       <header className="build__head">
         <div><p className="kicker">Build a Room · interactive demonstration</p><h1>{draft ? draft.name : 'Design a room and watch it reach drawings, commissioning and acceptance'}</h1>
           <p className="ui-muted">Acting as <b>{S.personaLabel(persona)}</b> (perspective <code>{perspective}</code>). The rules are the product's own engine; a refusal here is the refusal the product gives. Everything is synthetic and stays in this page.</p></div>
-        {draft && <div className="build__state"><Tag tone="info">{draft.design.lifecycle}</Tag>{draft.baseline && <Tag tone="ok">baseline v{draft.baseline.version}</Tag>}<Button kind="secondary" small onClick={() => { setDraft(null); setTab('describe'); setRefusal(null); }}>Reset demonstration</Button></div>}
+        {draft && <div className="build__state"><Tag tone="info">{draft.design.lifecycle}</Tag>{draft.baseline && <Tag tone="ok">baseline v{draft.baseline.version}</Tag>}<a className="ui-btn ui-btn--primary ui-btn--sm story-go" href={`#/story/${draft.code}`} data-testid="story-action">Show this room’s entire story</a><Button kind="secondary" small onClick={() => { setDraft(null); setTab('describe'); setRefusal(null); setImpact(null); }}>Reset demonstration</Button></div>}
       </header>
       {refusal && <div role="alert"><Notice tone="bad"><b>Refused.</b><ul className="build__why">{refusal.map((w) => <li key={w}>{w}</li>)}</ul></Notice></div>}
       {!draft ? <Describe persona={persona} onCreate={(input) => { const r = S.createDraft(input, persona); if (apply(r)) setTab('design'); }} /> : (
         <>
           <Tabs label="Build a Room steps" active={tab} onChange={setTab} tabs={[{ key: 'design', label: 'Design' }, { key: 'checks', label: 'Checks & plan', count: a!.checks.length }, { key: 'lifecycle', label: 'Lifecycle & commissioning' }, { key: 'drawings', label: 'Drawings' }, { key: 'ledger', label: 'Ledger', count: draft.events.length }]} />
-          {tab === 'design' && <Design d={draft} persona={persona} a={a!} apply={apply} />}
+          {tab === 'design' && <Design d={draft} persona={persona} a={a!} apply={apply} change={change} impact={impact} />}
           {tab === 'checks' && <Checks d={draft} a={a!} />}
           {tab === 'lifecycle' && <Lifecycle d={draft} persona={persona} a={a!} apply={apply} />}
           {tab === 'drawings' && <Drawings d={draft} persona={persona} apply={apply} />}
@@ -83,17 +96,30 @@ function Plan({ d, onPlace }: { d: S.Draft; onPlace?: (x: number, y: number) => 
   );
 }
 
-function Design({ d, persona, a, apply }: { d: S.Draft; persona: string; a: ReturnType<typeof S.analysis>; apply: (r: S.Draft | S.Refusal) => boolean }) {
-  const [cat, setCat] = useState('micceil'); const [reason, setReason] = useState('');
+function Design({ d, persona, a, apply, change, impact }: { d: S.Draft; persona: string; a: ReturnType<typeof S.analysis>; apply: (r: S.Draft | S.Refusal) => boolean; change: (fn: (x: S.Draft) => S.Draft | S.Refusal) => boolean; impact: I.Impact | null }) {
+  const [cat, setCat] = useState('micceil'); const [reason, setReason] = useState(''); const [why, setWhy] = useState('');
   const g = d.design.geometry; const prov = g.provenance as Record<string, string>;
   const devs = S.live(d.design.devices) as typeof d.design.devices; const conns = S.live(d.design.connections) as typeof d.design.connections;
   const cls = a.classification; const ap = d.design.classification.approved;
+  const changeable = ['PLANNED', 'COMMISSIONING'].includes(d.design.lifecycle);
+  // swap: a device for another category of the same group (a camera for a video bar, …); the video device first, so "swap a camera" is one click
+  const swappable = devs.filter((x) => !x.furniture);
+  const [swapId, setSwapId] = useState('');
+  const from = swappable.find((x) => x.id === swapId) || swappable.find((x) => x.cat === 'camera' || x.cat === 'bar') || swappable[0];
+  const group = from ? S.C.categories[from.cat]?.group : undefined;
+  const targets = CATS.filter(([k, , grp]) => from && k !== from.cat && (grp === group || !CATS.some(([k2, , g2]) => g2 === group && k2 !== from.cat)) && !S.C.categories[k]?.furniture);
+  const [swapTo, setSwapTo] = useState('');
+  const to = targets.some(([k]) => k === swapTo) ? swapTo : targets[0]?.[0] || '';
+  const done = (ok: boolean) => { if (ok) setWhy(''); return ok; };
   return (
     <div className="build__two">
       <div>
-        <Plan d={d} onPlace={['PLANNED', 'COMMISSIONING'].includes(d.design.lifecycle) ? (x, y) => apply(S.addDevice(d, persona, cat, { x, y })) : undefined} />
-        <div className="build__row"><label className="ui-muted" htmlFor="b-cat">Add</label><select id="b-cat" value={cat} onChange={(e) => setCat(e.target.value)}>{CATS.map(([k, l, grp]) => <option key={k} value={k}>{grp} · {l}</option>)}</select><Button small onClick={() => apply(S.addDevice(d, persona, cat, { x: g.widthM / 2, y: g.lengthM / 2 }))}>Place at the centre</Button></div>
+        <Plan d={d} onPlace={changeable ? (x, y) => done(change((v) => S.addDevice(v, persona, cat, { x, y }, why))) : undefined} />
+        <div className="build__row"><label className="ui-muted" htmlFor="b-cat">Add</label><select id="b-cat" value={cat} onChange={(e) => setCat(e.target.value)}>{CATS.map(([k, l, grp]) => <option key={k} value={k}>{grp} · {l}</option>)}</select><Button small onClick={() => done(change((v) => S.addDevice(v, persona, cat, { x: g.widthM / 2, y: g.lengthM / 2 }, why)))}>Place at the centre</Button></div>
+        {from && <div className="build__row build__swap"><label className="ui-muted" htmlFor="b-swap">Swap</label><select id="b-swap" value={from.id} onChange={(e) => { setSwapId(e.target.value); setSwapTo(''); }}>{swappable.map((x) => <option key={x.id} value={x.id}>{x.label} ({x.id})</option>)}</select><label className="ui-muted" htmlFor="b-swap-to">for</label><select id="b-swap-to" value={to} onChange={(e) => setSwapTo(e.target.value)}>{targets.map(([k, l, grp]) => <option key={k} value={k}>{grp} · {l}</option>)}</select><Button small kind="primary" testId="swap" onClick={() => { if (done(change((v) => S.swapDevice(v, persona, from.id, to, why)))) { setSwapId(''); setSwapTo(''); } }}>Swap</Button></div>}
+        <div className="build__row"><label className="ui-muted" htmlFor="b-why">Why</label><input id="b-why" value={why} onChange={(e) => setWhy(e.target.value)} placeholder="the reason for the next change (recorded with it)" maxLength={200} /></div>
         <Facts items={[['Dimensions', <>{g.lengthM} × {g.widthM} × {g.ceiling} m · {Object.entries(prov).map(([k, v]) => <Tag key={k} tone={TONE[v] || 'muted'}>{k} {v}</Tag>)}</>], ['Confidence', g.confidence], ['Template', S.C.templates[d.design.template]?.label || d.design.template], ['Occupancy', String(d.design.occupancy)]]} />
+        <ImpactPanel im={impact} roomId={d.code} />
       </div>
       <div>
         <h2 className="build__h2">Classification</h2>
@@ -101,7 +127,7 @@ function Design({ d, persona, a, apply }: { d: S.Draft; persona: string; a: Retu
         <p>{ap ? <Tag tone={ap.stale ? 'warn' : 'ok'}>{ap.stale ? 'approval stale — the design changed' : `approved ${ap.archetype} by ${S.personaLabel(ap.by || '')}`}</Tag> : <Tag tone="muted">not approved</Tag>}</p>
         <p className="build__row"><Button small onClick={() => apply(S.approveClassification(d, persona))}>Approve the suggestion as {S.personaLabel(persona)}</Button></p>
         <h2 className="build__h2">Devices ({devs.filter((x) => !x.furniture).length}) and proposed connections ({conns.length})</h2>
-        <ul className="build__list">{devs.map((x) => <li key={x.id}><code>{x.id}</code> {x.label} <span className="ui-muted">{x.cat} · {x.mount} · {x.x.toFixed(1)}, {x.y.toFixed(1)} m{x.furniture ? ' · furniture' : ''}</span> {['PLANNED', 'COMMISSIONING'].includes(d.design.lifecycle) && <button type="button" className="build__x" aria-label={`Remove ${x.label}`} onClick={() => apply(S.removeDevice(d, persona, x.id))}>remove</button>}</li>)}</ul>
+        <ul className="build__list">{devs.map((x) => <li key={x.id}><code>{x.id}</code> {x.label} <span className="ui-muted">{x.cat} · {x.mount} · {x.x.toFixed(1)}, {x.y.toFixed(1)} m{x.furniture ? ' · furniture' : ''}</span> {changeable && <button type="button" className="build__x" aria-label={`Remove ${x.label}`} onClick={() => done(change((v) => S.removeDevice(v, persona, x.id, why)))}>remove</button>}</li>)}</ul>
         <ul className="build__list build__list--conn">{conns.map((c) => <li key={c.id}><code>{c.id}</code> {c.from} → {c.to} <Tag tone="info">{c.kind}</Tag> <span className="ui-muted">{c.why}</span></li>)}</ul>
         <h2 className="build__h2">Revisions ({d.revisions.length})</h2>
         <div className="build__row"><input aria-label="Revision reason" value={reason} onChange={(e) => setReason(e.target.value)} placeholder="why this revision" maxLength={200} /><Button small onClick={() => { if (apply(S.saveRevision(d, persona, reason))) setReason(''); }}>Save revision as {S.personaLabel(persona)}</Button></div>
@@ -114,25 +140,43 @@ function Design({ d, persona, a, apply }: { d: S.Draft; persona: string; a: Retu
 function Checks({ d, a }: { d: S.Draft; a: ReturnType<typeof S.analysis> }) {
   const rows = a.applicability.rows; const app = rows.filter((r) => r.applicable); const res = S.results(d);
   const byPhase = app.reduce<Record<string, typeof app>>((m, r) => { (m[r.phase] = m[r.phase] || []).push(r); return m; }, {});
+  const rv = S.reverification(d, a); const stale = new Set(rv.filter((t) => t.rerun).map((t) => t.testId)); const counts = S.countsNow(d, a);
   return (
     <div>
+      {rv.length > 0 && <Reverify d={d} rv={rv} />}
       <h2 className="build__h2">Design checks ({a.checks.length})</h2>
       {a.checks.length ? <ul className="build__list">{a.checks.map((c) => <li key={c.key}><Tag tone={TONE[c.severity]}>{c.severity}</Tag> <b>{c.title}</b> <span className="ui-muted">{c.rationale}{c.assets.length ? ` · ${c.assets.join(', ')}` : ''}</span></li>)}</ul> : <p className="ui-muted">No design deficiency found by the {a.engineVersion} checks on this design.</p>}
-      <h2 className="build__h2">Commissioning plan — {app.length} applicable of {rows.length} in the library · {resultWords(a.counts)}</h2>
+      <h2 className="build__h2">Commissioning plan — {app.length} applicable of {rows.length} in the library · {resultWords(counts)}{counts.reopened ? ` · ${counts.reopened} reopened by a substitution` : ''}</h2>
       <p className="ui-muted">Every row states why it applies (or not), who records it, which evidence is accepted and whether an instrument is required. Nothing passes from a design: results are recorded on the installed room.</p>
-      {Object.entries(byPhase).map(([ph, list]) => <details key={ph} open={ph === '1'}><summary>Phase {ph} · {list.length} tests</summary><table className="build__table"><thead><tr><th>Test</th><th>Domain</th><th>Records</th><th>Evidence</th><th>Result</th><th>Why</th></tr></thead><tbody>{list.map((r) => { const lbl = resultLabel(res[r.id]); return <tr key={r.id}><td><code>{r.id}</code><br />{r.label}</td><td>{r.domain}</td><td>{(r.personas || []).join(', ')}{r.instrument ? ' · instrument' : ''}</td><td>{(r.evidence || []).join(', ')}</td><td><Tag tone={TONE[lbl]}>{lbl}</Tag></td><td className="ui-muted">{r.why.join('; ')}{r.prerequisite ? ` · ${r.prerequisite}` : ''}</td></tr>; })}</tbody></table></details>)}
-      <details><summary>Not applicable ({rows.length - app.length})</summary><ul className="build__list">{rows.filter((r) => !r.applicable).map((r) => <li key={r.id}><code>{r.id}</code> {r.label} <span className="ui-muted">{r.why.join('; ')}</span></li>)}</ul></details>
+      {Object.entries(byPhase).map(([ph, list]) => <details key={ph} open={ph === '1'}><summary>Phase {ph} · {list.length} tests</summary><table className="build__table"><thead><tr><th>Test</th><th>Domain</th><th>Records</th><th>Evidence</th><th>Result</th><th>Why</th></tr></thead><tbody>{list.map((r) => { const lbl = resultLabel(res[r.id]); return <tr key={r.id}><td><code>{r.id}</code><br />{r.label}</td><td>{r.domain}</td><td>{(r.personas || []).join(', ')}{r.instrument ? ' · instrument' : ''}</td><td>{(r.evidence || []).join(', ')}</td><td><Tag tone={TONE[lbl]}>{lbl}</Tag>{stale.has(r.id) && <span className="build__stale">{S.PREVIOUS_DEVICE}</span>}</td><td className="ui-muted">{r.why.join('; ')}{r.prerequisite ? ` · ${r.prerequisite}` : ''}</td></tr>; })}</tbody></table></details>)}
+      <details><summary>Not applicable ({rows.length - app.length})</summary><ul className="build__list">{rows.filter((r) => !r.applicable).map((r) => <li key={r.id}><code>{r.id}</code> {r.label} <span className="ui-muted">{r.justification || r.why.join('; ')}</span></li>)}</ul></details>
     </div>
+  );
+}
+
+/** The tests a substitution reopened while the accepted room is recommissioned, with the engine's reasons (one per substitution). */
+function Reverify({ d, rv }: { d: S.Draft; rv: S.Reverification[] }) {
+  const b = S.recommissioningBaseline(d); const subs = S.activeSubstitutions(d);
+  const out = rv.filter((t) => t.rerun); const unverified = rv.filter((t) => !t.rerun && t.result !== 'PASS_VERIFIED');
+  return (
+    <section className="build__reverify" aria-labelledby="reverify-h" data-testid="reverification" data-reopened={rv.map((t) => t.testId).join(',')} data-outstanding={out.map((t) => t.testId).join(',')} data-unverified={unverified.map((t) => t.testId).join(',')}>
+      <h2 id="reverify-h" className="build__h2">Re-verification required · {rv.length} test{rv.length === 1 ? '' : 's'} reopened</h2>
+      <p>{subs.map((s) => `${s.label} (${s.assetId}, ${s.from}) → ${s.to}`).join('; ')} — substituted by {[...new Set(subs.map((s) => S.personaLabel(s.by)))].join(', ')} while baseline v{b?.version} is recommissioned. A result recorded before the substitution was obtained on the previous device: it stays on record and no longer counts towards the re-acceptance. Each reopened test is re-run on the changed design and verified again by a different person.</p>
+      <p><b>{out.length ? `${out.length} still to re-run` : 'Every reopened test has been re-run since'}</b>{unverified.length ? ` · ${unverified.length} re-run, awaiting a pass verified by a different person` : ''} · baseline v{b?.version} is unchanged and stays CURRENT until the re-acceptance publishes v{(b?.version || 0) + 1}.</p>
+      <ul className="build__list">{rv.map((t) => <li key={t.testId}><code>{t.testId}</code> {t.label} <Tag tone={TONE[t.result]}>{t.result}</Tag> <span className="ui-muted">{t.rerun ? S.PREVIOUS_DEVICE : t.result === 'PASS_VERIFIED' ? 're-run after the substitution and verified by a different person' : 're-run after the substitution'}</span><ul className="build__why">{t.reasons.map((x) => <li key={x} className="ui-muted">{x}</li>)}</ul></li>)}</ul>
+    </section>
   );
 }
 
 function Lifecycle({ d, persona, a, apply }: { d: S.Draft; persona: string; a: ReturnType<typeof S.analysis>; apply: (r: S.Draft | S.Refusal) => boolean }) {
   const i = ROOM_LIFECYCLE.indexOf(d.design.lifecycle as RoomLifecycle); const next = ROOM_LIFECYCLE[i + 1] as RoomLifecycle | undefined;
   const app = a.applicability.rows.filter((r) => r.applicable); const res = S.results(d);
+  // a test a substitution reopened is recorded again (its earlier result stays in its history)
+  const rv = S.reverification(d, a); const stale = new Set(rv.filter((t) => t.rerun).map((t) => t.testId)); const counts = S.countsNow(d, a);
   const [sel, setSel] = useState(app[0]?.id || ''); const row = app.find((r) => r.id === sel) || app[0];
   const [state, setState] = useState('PASS'); const [kind, setKind] = useState(''); const [ref, setRef] = useState('synthetic observation 1'); const [inst, setInst] = useState('SYN-METER-01 (synthetic), calibration SYN-CAL-2026-09');
   const k = kind && (row?.evidence || []).includes(kind) ? kind : row?.evidence?.[0] || '';
-  const recordAll = () => { let cur: S.Draft = d; let okN = 0; const why: string[] = []; for (const r of app) { if (resultLabel(res[r.id]) !== 'NOT_TESTED') continue; const out = S.record(cur, persona, r.id, { state: 'PASS', kind: r.evidence?.[0] || '', ref: `synthetic observation ${r.id}`, instrument: r.instrument ? inst : undefined }); if ('why' in out) { why.push(`${r.id}: ${out.why[0]}`); } else { cur = out; okN += 1; } } if (okN) apply(cur); if (why.length) apply(S.refused([`${okN} recorded; ${why.length} refused — first: ${why[0]}`])); };
+  const recordAll = () => { let cur: S.Draft = d; let okN = 0; const why: string[] = []; for (const r of app) { if (resultLabel(res[r.id]) !== 'NOT_TESTED' && !stale.has(r.id)) continue; const out = S.record(cur, persona, r.id, { state: 'PASS', kind: r.evidence?.[0] || '', ref: `synthetic observation ${r.id}`, instrument: r.instrument ? inst : undefined }); if ('why' in out) { why.push(`${r.id}: ${out.why[0]}`); } else { cur = out; okN += 1; } } if (okN) apply(cur); if (why.length) apply(S.refused([`${okN} recorded; ${why.length} refused — first: ${why[0]}`])); };
   const verifyAll = () => { let cur: S.Draft = d; let okN = 0; const why: string[] = []; for (const r of app) { const rr = res[r.id]; if (!rr || rr.state !== 'PASS' || rr.verified) continue; const out = S.verify(cur, persona, r.id); if ('why' in out) why.push(`${r.id}: ${out.why[0]}`); else { cur = out; okN += 1; } } if (okN) apply(cur); if (why.length) apply(S.refused([`${okN} verified; ${why.length} refused — first: ${why[0]}`])); };
   return (
     <div>
@@ -144,10 +188,11 @@ function Lifecycle({ d, persona, a, apply }: { d: S.Draft; persona: string; a: R
       </p>
       {d.baseline && <Notice tone="ok"><b>Baseline v{d.baseline.version}</b> published at acceptance by {S.personaLabel(d.baseline.by)} against revision {d.baseline.revision}: {Object.keys(d.baseline.results).length} result labels bound. A later re-acceptance publishes v{d.baseline.version + 1}; v{d.baseline.version} is never overwritten.</Notice>}
       {(d.baselines || []).length > 0 && <div className="build__lineage" data-testid="lineage"><h2 className="build__h2">Baseline lineage</h2><ul className="build__list">{d.baselines.map((b) => <li key={b.version}><b>v{b.version}</b> <Tag tone={b.state === 'CURRENT' ? 'ok' : 'muted'}>{b.state}</Tag> <span className="ui-muted">revision {b.revision} · {b.devices.length} devices · {Object.values(b.results).filter((x) => x === 'PASS_VERIFIED').length}/{Object.keys(b.results).length} verified · {S.personaLabel(b.by)} · {b.at.slice(0, 19).replace('T', ' ')}</span></li>)}</ul>{d.baselines.length >= 2 && <BaselineDiff a={d.baselines[d.baselines.length - 2]!} b={d.baselines[d.baselines.length - 1]!} />}</div>}
-      <h2 className="build__h2">Record a result · {resultWords(a.counts)}</h2>
+      {rv.length > 0 && (() => { const waiting = rv.filter((t) => !t.rerun && t.result !== 'PASS_VERIFIED').length; return <Notice tone="warn"><b>Re-verification required:</b> {stale.size ? `${stale.size} of ${rv.length} reopened tests still to re-run on the changed design` : `all ${rv.length} reopened tests re-run since the substitution`}{waiting ? `; ${waiting} awaiting a pass verified by a different person` : ''}. {stale.size || waiting ? 'The re-acceptance waits for them.' : 'They no longer block the re-acceptance.'} <a href="#/v25/build?tab=checks">See each test and its reasons in the plan</a>.</Notice>; })()}
+      <h2 className="build__h2">Record a result · {resultWords(counts)}{counts.reopened ? ` · ${counts.reopened} reopened by a substitution` : ''}</h2>
       <p className="ui-muted">Recording needs the room in COMMISSIONING and the responsible persona (the commissioning engineer may record any); a PASS stays PASS_UNVERIFIED until a different person verifies it; acceptance needs every applicable test independently verified and no open deficiency.</p>
       <div className="build__grid">
-        <Field label="Test" id="b-test">{(fid) => <select id={fid} value={row?.id || ''} onChange={(e) => { setSel(e.target.value); setKind(''); }}>{app.map((r) => <option key={r.id} value={r.id}>{r.id} · {resultLabel(res[r.id])}</option>)}</select>}</Field>
+        <Field label="Test" id="b-test">{(fid) => <select id={fid} value={row?.id || ''} onChange={(e) => { setSel(e.target.value); setKind(''); }}>{app.map((r) => <option key={r.id} value={r.id}>{r.id} · {resultLabel(res[r.id])}{stale.has(r.id) ? ' · re-run required' : ''}</option>)}</select>}</Field>
         <Field label="State" id="b-state">{(fid) => <select id={fid} value={state} onChange={(e) => setState(e.target.value)}>{['PASS', 'FAIL', 'NOT_SUPPORTED', 'INCONCLUSIVE'].map((s) => <option key={s}>{s}</option>)}</select>}</Field>
         <Field label="Evidence kind" id="b-kind">{(fid) => <select id={fid} value={k} onChange={(e) => setKind(e.target.value)}>{(row?.evidence || []).map((e) => <option key={e}>{e}</option>)}</select>}</Field>
         <Field label="Evidence reference" id="b-ref">{(fid) => <input id={fid} value={ref} onChange={(e) => setRef(e.target.value)} />}</Field>
@@ -156,10 +201,10 @@ function Lifecycle({ d, persona, a, apply }: { d: S.Draft; persona: string; a: R
       <p className="build__row">
         <Button small kind="primary" onClick={() => row && apply(S.record(d, persona, row.id, { state, kind: k, ref, instrument: row.instrument ? inst : undefined }))}>Record as {S.personaLabel(persona)}</Button>
         <Button small onClick={() => row && apply(S.verify(d, persona, row.id))}>Verify as {S.personaLabel(persona)}</Button>
-        <Button small onClick={recordAll} title="Demonstration shortcut: records every untested applicable test as PASS with synthetic evidence, one by one, through the same rules">Record all untested as PASS (demonstration)</Button>
+        <Button small onClick={recordAll} title="Demonstration shortcut: records every untested applicable test (and every test a substitution reopened) as PASS with synthetic evidence, one by one, through the same rules">Record all untested as PASS (demonstration)</Button>
         <Button small onClick={verifyAll} title="Demonstration shortcut: verifies every unverified PASS, one by one, through the same rules">Verify all unverified (demonstration)</Button>
       </p>
-      <ul className="build__list">{app.filter((r) => res[r.id]).map((r) => { const rr = res[r.id]!; const lbl = resultLabel(rr); return <li key={r.id}><code>{r.id}</code> <Tag tone={TONE[lbl]}>{lbl}</Tag> <span className="ui-muted">recorded by {S.personaLabel(rr.by)} · {rr.evidence.kind}: {rr.evidence.ref}{rr.verified ? ` · verified by ${S.personaLabel(rr.verified.by)}` : ''}</span></li>; })}</ul>
+      <ul className="build__list">{app.filter((r) => res[r.id]).map((r) => { const rr = res[r.id]!; const lbl = resultLabel(rr); return <li key={r.id}><code>{r.id}</code> <Tag tone={TONE[lbl]}>{lbl}</Tag> <span className="ui-muted">recorded by {S.personaLabel(rr.by)} · {rr.evidence.kind}: {rr.evidence.ref}{rr.verified ? ` · verified by ${S.personaLabel(rr.verified.by)}` : ''}</span>{stale.has(r.id) && <span className="build__stale" data-testid="stale-result">{S.PREVIOUS_DEVICE}</span>}</li>; })}</ul>
     </div>
   );
 }

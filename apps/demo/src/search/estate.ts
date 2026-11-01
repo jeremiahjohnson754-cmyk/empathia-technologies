@@ -4,14 +4,16 @@
  * Every edge carries a provenance label as the product does; nothing here is measured, polled or real. The Build a Room draft (if one
  * exists in this browser) is merged in as a live room with its own devices and proposed connections.
  */
-import { Graph, nodeKey, type Catalogue, type SearchNode, type Edge } from '@empathia/search-party';
-import { loadDraft, live } from '../build/store.js';
+import { Graph, nodeKey, type Catalogue, type SearchNode, type Edge, type NodeRef } from '@empathia/search-party';
+import { loadDraft, live, type Draft } from '../build/store.js';
 import type { PlannedDevice, Connection } from '@empathia/domain-types';
 
 const N = (type: string, id: string, label: string, extra: Partial<SearchNode> = {}): SearchNode => ({ type, id, label, provenance: 'synthetic seed (demonstration)', ...extra });
 const E = (from: [string, string], rel: string, to: [string, string], provenance = 'DECLARED (synthetic seed)'): Edge => ({ from: { type: from[0], id: from[1] }, rel, to: { type: to[0], id: to[1] }, provenance });
 
-export function buildEstate(): Catalogue & { graph: Graph } {
+export type Estate = Catalogue & { graph: Graph };
+/** The estate graph. `draft` defaults to this browser's Build a Room draft; the impact panel passes the draft before and after a change. */
+export function buildEstate(draft?: Draft | null): Estate {
   const nodes: SearchNode[] = [
     N('Site', 'SITE-NORTH', 'North Campus', { facets: { site: 'SITE-NORTH' } }),
     N('Building', 'ATL', 'Atlas Tower', { subtitle: 'North Campus · 12 floors', facets: { site: 'SITE-NORTH' } }),
@@ -59,7 +61,7 @@ export function buildEstate(): Catalogue & { graph: Graph } {
     E(['Room', 'R-ATL-4-231'], 'APPROVED_BY', ['Person', 'p-syseng'], 'DECLARED room.approved_class'), E(['CommissioningBaseline', 'BL-4-231-v1'], 'DOCUMENTS', ['Room', 'R-ATL-4-231'], 'DERIVED baseline.room'), E(['CommissioningBaseline', 'BL-4-231-v1'], 'APPROVED_BY', ['Person', 'p-syseng'], 'DECLARED baseline.published_by'),
   ];
   // the Build a Room draft of this browser, as a live room of the Northstar Annex
-  const d = loadDraft();
+  const d = draft === undefined ? loadDraft() : draft;
   if (d) {
     nodes.push(N('Room', d.code, d.name, { subtitle: `Northstar Annex · ${d.design.lifecycle} · your Build a Room draft`, facets: { site: 'SITE-NORTH', building: 'NST', lifecycle: d.design.lifecycle }, href: '#/v25/build', provenance: 'Build a Room draft (this browser)' }));
     edges.push(E(['Room', d.code], 'LOCATED_IN', ['Building', 'NST'], 'DECLARED (Build a Room)'));
@@ -71,4 +73,23 @@ export function buildEstate(): Catalogue & { graph: Graph } {
   const kept = edges.filter((e) => visible.has(nodeKey(e.from)) && visible.has(nodeKey(e.to)));
   const types: Record<string, number> = {}; for (const n of nodes) types[n.type] = (types[n.type] || 0) + 1;
   return { nodes, edges: kept, graph: new Graph(kept), coverage: { types, edges: kept.length, notes: ['synthetic estate: every record and relationship is invented for the demonstration', 'ownership, support paths, vendors, skills and availability are not modelled: intents about them answer UNKNOWN', d ? 'your Build a Room draft is merged in as a live room' : 'build a room (Lite) and it appears here with its devices and connections'] } };
+}
+
+/** The ServiceHands context packet: devices, the switch that feeds them, its uplink, the other rooms on the same switch, power — recorded edges only.
+ *  (Moved here from pages/Service.tsx so the room story reads the same dependencies the technician sees.) */
+export function contextPacket(est: Estate, roomId: string) {
+  const room: NodeRef = { type: 'Room', id: roomId };
+  const label = (n: NodeRef) => est.nodes.find((x) => nodeKey(x) === nodeKey(n))?.label || n.id;
+  const roomOf = (dev: NodeRef) => est.edges.find((e) => (e.rel === 'PLANS_DEVICE' || e.rel === 'HAS_DEVICE') && nodeKey(e.to) === nodeKey(dev))?.from || null;
+  const devs = est.edges.filter((e) => (e.rel === 'PLANS_DEVICE' || e.rel === 'HAS_DEVICE') && nodeKey(e.from) === nodeKey(room)).map((e) => e.to);
+  const swEdge = est.edges.find((e) => e.rel === 'FEEDS' && e.from.type === 'NetworkNode' && devs.some((d) => nodeKey(d) === nodeKey(e.to))) || null;
+  const sw = swEdge?.from || null;
+  const upEdge = sw ? est.edges.find((e) => e.rel === 'FEEDS' && nodeKey(e.to) === nodeKey(sw)) || null : null;
+  const uplink = upEdge?.from || null;
+  const sharing = sw ? [...new Set(est.edges.filter((e) => e.rel === 'FEEDS' && nodeKey(e.from) === nodeKey(sw)).map((e) => roomOf(e.to)).filter((r): r is NodeRef => !!r && r.id !== roomId).map(label))] : [];
+  const powEdge = sw ? est.edges.find((e) => e.rel === 'POWERED_BY' && nodeKey(e.from) === nodeKey(sw)) || null : null;
+  const power = powEdge?.to || null;
+  return { devices: devs.map(label), switch: sw ? label(sw) : null, uplink: uplink ? label(uplink) : null, sharing, power: power ? label(power) : null,
+    /** the provenance of each recorded edge the packet stands on (the story shows it beside the dependency) */
+    provenance: { switch: swEdge?.provenance || null, uplink: upEdge?.provenance || null, power: powEdge?.provenance || null }, switchId: sw?.id || null };
 }

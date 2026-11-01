@@ -12,6 +12,7 @@ import { buildEstate } from '../search/estate.js';
 import * as S from '../workspace/store.js';
 import { useWorkspace, isRefusal } from '../workspace/useWorkspace.js';
 import { personaOf, personaLabel, holds, loadDraft } from '../build/store.js';
+import { assemble, acceptedBaseline } from '../workspace/records.js';
 
 const CONF: Record<string, 'ok' | 'warn' | 'bad' | 'muted' | 'info'> = { high: 'ok', medium: 'info', low: 'warn', none: 'muted' };
 const OUT: Record<string, 'ok' | 'warn' | 'bad' | 'muted' | 'info'> = { EXPLAINED: 'ok', PROPOSED: 'info', COMPARED: 'ok', DRAFT_STAGED: 'info', EXECUTED_SIMULATED: 'ok', DRY_RUN: 'info', BLOCKED: 'bad', HUMAN_LED: 'warn', ABSTAINED: 'muted', ROLLED_BACK: 'warn', ABORTED: 'warn', REFUSED: 'bad' };
@@ -33,7 +34,8 @@ export function ApexPage({ perspective, hash }: { perspective: string; hash: str
     if (layer === 'control') return devs.filter((d) => /A-0105|A-0302/.test(d.id)).map((d) => d.id);
     return [];
   };
-  const baselineOf = (roomId: string) => { const d = loadDraft(); if (roomId === 'R-ATL-4-231') return { version: 1, evidence: 14 }; if (d && d.code === roomId && d.baseline) return { version: d.baseline.version, evidence: Object.keys(d.baseline.results).length }; return null; };
+  // the room's accepted baseline is read from the records the KPI passports and the room story read (records.ts), never typed here
+  const baselineOf = (roomId: string) => acceptedBaseline(assemble(w, loadDraft()), roomId);
   return (
     <section className="apex">
       <header className="build__head"><div><p className="kicker">APEX · diagnosis with its evidence</p><h1>Cited hypotheses, bounded actions, blocked outcomes</h1>

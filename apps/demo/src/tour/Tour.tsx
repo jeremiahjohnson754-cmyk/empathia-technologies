@@ -11,8 +11,9 @@ import { Tag, Button } from '@empathia/ui';
 import { NATIVE, areaKey, AREAS } from '../registry.js';
 import { saveDraft } from '../build/store.js';
 
-export interface Step { n: number; title: string; text: string; href: string; persona: string; evidence: string; native: boolean }
-const S = (n: number, title: string, text: string, href: string, persona: string, evidence: string): Step => ({ n, title, text, href, persona, evidence, native: NATIVE.has(areaKey(href)) });
+/** `detour`: an optional side trip from a step that is not a step itself (the 17 steps stay as the 2.5.3 tour has them). */
+export interface Step { n: number; title: string; text: string; href: string; persona: string; evidence: string; native: boolean; detour?: { label: string; href: string } }
+const S = (n: number, title: string, text: string, href: string, persona: string, evidence: string, detour?: Step['detour']): Step => ({ n, title, text, href, persona, evidence, native: NATIVE.has(areaKey(href)), ...(detour ? { detour } : {}) });
 /** Verbatim from the 2.5.3 investor tour; the hrefs are the legacy addresses this shell resolves. */
 export const STEPS: Step[] = [
   S(1, '1 · If this switch fails, what is affected?', 'Search Party starts from a room and walks its dependencies: the access switch, its uplink, the other rooms on the same switch, the power panel. Evidence freshness and the synthetic mark sit on every relationship.', '#/search?focus=NetworkNode:SW-ATL-4A', 'service', 'VERIFIED_DEMO'),
@@ -29,7 +30,7 @@ export const STEPS: Step[] = [
   S(5, '5 · APEX: cited hypotheses, bounded actions, blocked outcomes', 'Seven layers of evidence, ranked hypotheses that say why they are not proven, and action tiers A0–A5. A4 needs a signed runbook, owner approval, a window, an occupancy check and a dry run — and the real adapter state blocks it here. Every outcome, including the blocked ones, is in the log.', '#/v25/apex', 'cxeng', 'SIMULATED'),
   S(6, '6 · Learn: reviewed cases from what actually happened', 'A case needs customer permission, de-identification, an SME review and the steward\'s approval; it links lessons, labs, competency and the Lite model. Training performance never grants work authorisation.', '#/v25/learn', 'cxeng', 'VERIFIED_DEMO'),
   S(6, '6 · SIGNAL lessons, labs and drills (V1.4.1)', 'The original Learn surfaces are unchanged: lessons, labs and drills with their own evidence.', '#/learn', 'cxeng', 'VERIFIED_DEMO'),
-  S(7, '7 · One connected lifecycle', 'Mission Control: intake, decision, funding, design, commissioning, field, documents, handoff, assurance, service — every station counts live records, and every record carries its history and its events.', '#/v25', 'architect', 'VERIFIED_DEMO'),
+  S(7, '7 · One connected lifecycle', 'Mission Control: intake, decision, funding, design, commissioning, field, documents, handoff, assurance, service — every station counts live records, and every record carries its history and its events.', '#/v25', 'architect', 'VERIFIED_DEMO', { label: 'Detour: one room’s entire story', href: '#/story/R-ATL-4-218' }),
   S(7, '7 · Executive intelligence that shows its work', 'Twenty-seven KPI passports computed from the records and the ledger: numerator, denominator, window, coverage, freshness and confidence. Usage is aggregate-only; "not measurable" is never 0%.', '#/v25/exec', 'exec', 'VERIFIED_DEMO'),
   S(7, '7 · The ledger behind every state', 'Every transition emitted a validated event with its actor, time and local time. The policy page shows the role × area matrix the dispatcher uses. This is a demonstration of authorisation, not security.', '#/v25/ledger', 'steward', 'VERIFIED_DEMO'),
 ];
@@ -55,6 +56,7 @@ export function TourPanel({ hash, onPerspective }: { hash: string; onPerspective
       <div className="tour__acts">
         <Button small onClick={() => start(Math.max(0, i - 1))} disabled={i === 0}>Previous</Button>
         <Button small kind="primary" onClick={() => start(Math.min(STEPS.length - 1, i + 1))} disabled={i === STEPS.length - 1}>Next</Button>
+        {s.detour && <a className="ui-btn ui-btn--sm tour__detour" href={s.detour.href} data-testid="tour-detour">{s.detour.label}</a>}
         <span className="tour__jump">{SCENARIOS.map((sc) => <button key={sc.n} type="button" className={`tour__dot${sc.n === s.n ? ' on' : ''}`} onClick={() => start(sc.first)} aria-label={`Scenario ${sc.n}`} title={`Scenario ${sc.n}: ${sc.native}/${sc.steps} steps native`}>{sc.n}</button>)}</span>
         <Button small kind="quiet" onClick={() => { saveDraft(null); start(STEPS.findIndex((x) => x.n === s.n)); }} title="Clears the Build a Room draft of this browser and restarts the scenario">Reset &amp; replay scenario</Button>
         <Button small kind="quiet" onClick={stop}>Close</Button>

@@ -7,8 +7,7 @@
 import { useMemo, useState } from 'react';
 import { Button, Facts, Notice, Tag, Field, Tabs } from '@empathia/ui';
 import { SERVICE_TRANSITIONS, WORK_NEEDS, SLA } from '@empathia/service-engine';
-import { neighbourhood, nodeKey, type NodeRef } from '@empathia/search-party';
-import { buildEstate } from '../search/estate.js';
+import { buildEstate, contextPacket } from '../search/estate.js';
 import * as S from '../workspace/store.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
 import { personaOf, personaLabel, holds } from '../build/store.js';
@@ -125,18 +124,4 @@ function RaiseIncident({ persona, apply }: { persona: string; apply: ReturnType<
       <div className="build__row"><select aria-label="Room" value={f.roomId} onChange={(e) => setF({ ...f, roomId: e.target.value })}>{rooms.map(([id, n]) => <option key={id} value={id}>{n}</option>)}</select><input aria-label="Title" value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} placeholder="what people experience" /><input aria-label="Summary" value={f.summary} onChange={(e) => setF({ ...f, summary: e.target.value })} placeholder="when, how often, who noticed" /><Button small kind="primary" onClick={() => { const r = rooms.find((x) => x[0] === f.roomId)!; if (!isRef(apply((x) => S.raiseIncident(x, persona, { roomId: r[0], roomName: r[1], buildingKey: r[2], title: f.title, summary: f.summary })))) setF({ ...f, title: '', summary: '' }); }}>Raise</Button></div>
     </details>
   );
-}
-
-/** The ServiceHands context packet: devices, the switch that feeds them, its uplink, the other rooms on the same switch, power — recorded edges only. */
-export function contextPacket(est: ReturnType<typeof buildEstate>, roomId: string) {
-  const room: NodeRef = { type: 'Room', id: roomId };
-  const label = (n: NodeRef) => est.nodes.find((x) => nodeKey(x) === nodeKey(n))?.label || n.id;
-  const roomOf = (dev: NodeRef) => est.edges.find((e) => (e.rel === 'PLANS_DEVICE' || e.rel === 'HAS_DEVICE') && nodeKey(e.to) === nodeKey(dev))?.from || null;
-  const devs = est.edges.filter((e) => (e.rel === 'PLANS_DEVICE' || e.rel === 'HAS_DEVICE') && nodeKey(e.from) === nodeKey(room)).map((e) => e.to);
-  const sw = est.edges.find((e) => e.rel === 'FEEDS' && e.from.type === 'NetworkNode' && devs.some((d) => nodeKey(d) === nodeKey(e.to)))?.from || null;
-  const uplink = sw ? est.edges.find((e) => e.rel === 'FEEDS' && nodeKey(e.to) === nodeKey(sw))?.from || null : null;
-  const sharing = sw ? [...new Set(est.edges.filter((e) => e.rel === 'FEEDS' && nodeKey(e.from) === nodeKey(sw)).map((e) => roomOf(e.to)).filter((r): r is NodeRef => !!r && r.id !== roomId).map(label))] : [];
-  const power = sw ? est.edges.find((e) => e.rel === 'POWERED_BY' && nodeKey(e.from) === nodeKey(sw))?.to || null : null;
-  void neighbourhood;
-  return { devices: devs.map(label), switch: sw ? label(sw) : null, uplink: uplink ? label(uplink) : null, sharing, power: power ? label(power) : null };
 }

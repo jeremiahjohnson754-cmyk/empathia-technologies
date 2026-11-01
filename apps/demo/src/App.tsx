@@ -9,6 +9,9 @@ import { ApexPage } from './pages/Apex.js';
 import { LearnPage } from './pages/Learn.js';
 import { MissionControl, ExecPage, LedgerPage } from './pages/Control.js';
 import { FieldIntelligencePage } from './pages/FieldIntelligence.js';
+import { StoryPage } from './story/StoryPage.js';
+import { storyRooms } from './story/assemble.js';
+import { buildEstate } from './search/estate.js';
 
 /** The seven investor scenarios of the 2.5.5 investor landing, with the customer problem each one solves (carried over verbatim in spirit). */
 const SCENARIOS = [
@@ -62,10 +65,11 @@ function page(key: string, hash: string, as: string): React.ReactNode {
     case 'v25.learn': case 'learn': return <LearnPage perspective={as} hash={hash} />;
     case 'v25.home': case 'home': return <MissionControl perspective={as} />;
     case 'v25.exec': case 'pro.exec': return <ExecPage perspective={as} />;
-    case 'v25.ledger': case 'ledger': return <LedgerPage perspective={as} policy={false} />;
+    case 'v25.ledger': case 'ledger': return <LedgerPage perspective={as} policy={false} hash={hash} />;
     case 'v25.policy': return <LedgerPage perspective={as} policy />;
     case 'v25.fi': case 'fabric': return <FieldIntelligencePage perspective={as} pv={false} hash={hash} />;
     case 'v25.fipv': return <FieldIntelligencePage perspective={as} pv hash={hash} />;
+    case 'story': return <StoryPage perspective={as} hash={hash} />;
     default: return null;
   }
 }
@@ -82,6 +86,7 @@ function Landing() {
           <a className="go" href="#problems"><b>What each workflow solves</b><span>The customer problem behind each scenario</span></a>
         </div>
       </section>
+      <StoryCard />
       <section id="problems" className="scen">
         <h2>Seven scenarios</h2>
         <ol>{SCENARIOS.map(([t, p], i) => <li key={t}><a href={`#/tours/investor?scenario=${i + 1}`}><b>{i + 1} · {t}</b></a><p><i>The problem</i> {p}</p></li>)}</ol>
@@ -91,6 +96,17 @@ function Landing() {
         <p>This demonstration is being rebuilt as modular pages from the Living Campus V2.5.3 source, one area at a time. {AREAS.filter((a) => NATIVE.has(a.key)).length} of {AREAS.length} addresses (86 areas and 19 V2.5 pages) are native today; the rest state their status when opened (see the parity ledger in the repository).</p>
       </section>
     </>
+  );
+}
+/** The connected experience on the investor start: one room, its whole lifecycle, from the records (never typed). */
+function StoryCard() {
+  const rooms = storyRooms(buildEstate());
+  return (
+    <section className="storycard" aria-labelledby="storycard-h" data-testid="story-card">
+      <div className="storycard__text"><p className="kicker">The connected experience</p><h2 id="storycard-h">Show me this room’s entire story</h2>
+        <p>One room from request to lesson: every design revision, approval and refusal, test, verification, baseline, repair and Learn case the demonstration holds — in order, with who, why and how each is evidenced. Where nothing is recorded, it says so.</p></div>
+      <ul className="storycard__rooms">{rooms.map((r) => <li key={r.id}><a href={`#/story/${r.id}`}><b>{r.label}</b><span>{r.subtitle}</span></a></li>)}</ul>
+    </section>
   );
 }
 function Boundary({ hash, area }: { hash: string; area?: { key: string; label: string; target: string; status: string; newRoute: string } }) {

@@ -187,7 +187,9 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     ok('A-01', 'a case opens on the camera branch: seven layers with what is recorded and what the estate cites; hypotheses ranked, the PoE port first (medium) with the signed runbook', /Physical/.test(layers) && /Network[\s\S]*port down on the access switch[\s\S]*cites SW-ATL-4A/.test(layers) && /nothing recorded/.test(layers) && /^1\.?\s*medium/m.test(hyps.replace(/\n/g, ' ')) === false && /PoE port stopped delivering power/.test(hyps) && /RB-POE-CYCLE/.test(hyps), hyps.slice(0, 200));
     ok('A-02', 'the hypothesis says why it is not proven and what is against it', /port state read from the recorded dependency, not polled now/.test(await page.locator('[data-testid=hypothesis]').innerText()) && /camera firmware unchanged/.test(await page.locator('[data-testid=hypothesis]').innerText()));
     await page.click('[data-testid=hypothesis] .apex__tier:has-text("A2") button'); await page.waitForTimeout(250);
-    ok('A-03', 'A2 is a read-only comparison, honest when there is no accepted baseline for the room', /COMPARED/.test(await page.locator('[data-testid=apex-log]').innerText()) && /NOT_VERIFIED/.test(await page.locator('[data-testid=apex-log]').innerText()), await page.locator('[data-testid=apex-log]').innerText().then((t) => t.slice(0, 200)));
+    // the baseline APEX compares against is the room's accepted baseline on record — the record the KPI passports and the room story read
+    // (records.ts): Atlas 4.220 has baseline v1 with 9 results bound; APEX no longer states a baseline of its own
+    ok('A-03', 'A2 is a read-only comparison against the room’s accepted baseline on record (Atlas 4.220: v1, the record the KPI passports and the story read)', /COMPARED/.test(await page.locator('[data-testid=apex-log]').innerText()) && /read-only comparison against baseline v1 \(9 evidence items\)/.test(await page.locator('[data-testid=apex-log]').innerText()) && /v1 \(9 evidence items\)/.test(await page.locator('[data-testid=apex-case]').innerText()), await page.locator('[data-testid=apex-log]').innerText().then((t) => t.slice(0, 200)));
     await page.click('[data-testid=hypothesis] .apex__tier:has-text("A4") button'); await page.waitForTimeout(250);
     ok('A-04', 'A4 preflight is BLOCKED first on owner approval', /BLOCKED[\s\S]*owner approval missing/.test(await page.locator('[data-testid=apex-log] li >> nth=0').innerText()));
     await page.locator('[data-testid=a4] label:has-text("Owner approval") input').check(); await page.fill('#a4-win', '2026-11-04T20:00Z'); await page.click('[data-testid=hypothesis] .apex__tier:has-text("A4") button'); await page.waitForTimeout(250);
@@ -200,6 +202,9 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     ok('A-08', 'A3 stages a draft work order that stays OPEN until the service manager triages it', /DRAFT_STAGED[\s\S]*work order WO-\d+ drafted/.test(await page.locator('[data-testid=apex-log] li >> nth=0').innerText()));
     await persp('visitor'); await page.waitForTimeout(200);
     ok('A-09', 'a visitor cannot act on a case', /cannot act on an APEX case/.test(await page.locator('[data-testid=apex-case]').innerText()) && !(await page.locator('[data-testid=hypothesis] .apex__tier button').count()));
+    await persp('cxeng'); await page.waitForTimeout(200); await page.click('.svc__list li:has-text("ISS-0402") button:has-text("Open a case")'); await page.waitForTimeout(400); await page.waitForSelector('[data-testid=apex-case]:has-text("ISS-0402")');
+    await page.click('[data-testid=hypothesis] .apex__tier:has-text("A2") button'); await page.waitForTimeout(250);
+    ok('A-03b', 'A2 stays honest where no baseline is accepted on record (Northstar Town Hall, COMMISSIONING): nothing to compare, NOT_VERIFIED', /none accepted — nothing to compare/.test(await page.locator('[data-testid=apex-case]').innerText()) && /COMPARED[\s\S]*no accepted baseline for this room[\s\S]*NOT_VERIFIED/.test(await page.locator('[data-testid=apex-log]').innerText()), await page.locator('[data-testid=apex-log]').innerText().then((t) => t.slice(0, 200)));
 
     // ---------------------------------------------------------------- Learn: the governed case, then the library
     await page.evaluate(() => { location.hash = '#/v25/learn'; }); await page.waitForTimeout(500); await persp('cxeng'); await page.waitForTimeout(200); await page.waitForSelector('[data-testid=propose]');
@@ -291,6 +296,137 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
 
     await page.evaluate(() => { location.hash = '#/v25/service'; }); await page.waitForTimeout(400); await page.click('button:has-text("Reset workspace")'); await page.waitForTimeout(300);
     ok('M-07', 'Reset returns the workspace to its seed: ISS-0417 is OPEN again and the cases are gone', /OPEN[\s\S]*ISS-0417/.test(await page.locator('[data-testid=incidents]').innerText()) && !/APX-/.test(await page.locator('main').innerText()));
+  }
+  if (tag === 'desktop') {
+    // ---------------------------------------------------------------- the connected experience: the living-room cascade (B) and a room's entire story (A)
+    const CE = await import(path.join(repo, 'packages/commissioning-engine/dist/src/index.js'));
+    const persp = async (p) => { await page.selectOption('.persp select', p); await page.waitForTimeout(150); };
+    const refusal = async () => (await page.locator('[role=alert]').count()) ? page.locator('[role=alert]').first().innerText() : '';
+    const draftNow = () => page.evaluate(() => JSON.parse(localStorage.getItem('empathia.demo.build-a-room.v1')));
+    // the engine run directly here, on the room before and after the change (independent of the page's impact.ts)
+    const engineDelta = (b, a) => { const A = new Map(CE.analyzeRoom(b.design).applicability.rows.map((r) => [r.id, r])), Z = CE.analyzeRoom(a.design).applicability.rows;
+      const key = (r) => JSON.stringify([...(r?.devices || [])].sort());
+      return { added: Z.filter((r) => r.applicable && !A.get(r.id)?.applicable).map((r) => r.id).sort(), removed: [...A.values()].filter((r) => r.applicable && !Z.find((z) => z.id === r.id)?.applicable).map((r) => r.id).sort(), kept: Z.filter((r) => r.applicable && A.get(r.id)?.applicable).length, coverage: Z.filter((r) => r.applicable && A.get(r.id)?.applicable && key(r) !== key(A.get(r.id))).map((r) => r.id).sort() }; };
+    const panel = () => page.locator('[data-testid=impact-body]').evaluate((el) => ({ added: (el.dataset.added || '').split(',').filter(Boolean).sort(), removed: (el.dataset.removed || '').split(',').filter(Boolean).sort(), kept: Number(el.dataset.kept), coverage: (el.dataset.coverage || '').split(',').filter(Boolean).sort(), untouched: el.dataset.baselineUntouched, baseline: el.dataset.baseline, text: el.innerText }));
+    const errorsBefore = errs.length;
+    await page.evaluate(() => { localStorage.removeItem('empathia.demo.build-a-room.v1'); location.hash = '#/v25/build'; }); await page.waitForTimeout(300);
+    await persp('designer'); await page.click('button:has-text("Create the room")'); await page.waitForTimeout(300);
+    await page.fill('[aria-label="Revision reason"]', 'initial layout'); await page.click('button:has-text("Save revision")'); await page.waitForTimeout(150);
+    await persp('syseng'); await page.click('button:has-text("Approve the suggestion")'); await page.waitForTimeout(150);
+    await page.click('#tab-lifecycle'); await page.waitForTimeout(150); await page.click('button:has-text("Move to DESIGN_APPROVED")'); await page.waitForTimeout(150);
+    await persp('ops'); await page.click('button:has-text("Move to INSTALLATION_PENDING")'); await page.waitForTimeout(150);
+    await persp('installer'); await page.click('button:has-text("Move to INSTALLED_UNVERIFIED")'); await page.waitForTimeout(150);
+    await persp('syseng'); await page.click('button:has-text("Move to COMMISSIONING")'); await page.waitForTimeout(150);
+    await persp('cxeng'); await page.click('button:has-text("Record all untested as PASS")'); await page.waitForTimeout(400);
+    await persp('architect'); await page.click('button:has-text("Verify all unverified")'); await page.waitForTimeout(400);
+    await persp('qa'); await page.click('button:has-text("Move to ACCEPTED")'); await page.waitForTimeout(250);
+    await persp('syseng'); await page.click('button:has-text("Recommission")'); await page.waitForTimeout(200);
+    const st0 = await page.locator('.build__state').innerText();
+    ok('C-01', 'a room reaches baseline v1 through the governed path and is recommissioned (baseline v1 stays current)', /COMMISSIONING/.test(st0) && /baseline v1/.test(st0), (await refusal()) || st0);
+    // B · swap the camera: the impact panel, from the engines
+    const before = await draftNow(); const baseline0 = JSON.stringify({ current: before.baseline, lineage: before.baselines });
+    await page.click('#tab-design'); await page.waitForTimeout(150); await persp('designer');
+    ok('C-02', 'before any change the Impact panel explains itself and its live region is already mounted', /recompute what the change touches/.test(await page.locator('[data-testid=impact-panel]').innerText()) && (await page.locator('[data-testid=impact-live][aria-live=polite]').count()) === 1);
+    const barId = before.design.devices.find((x) => x.cat === 'bar' && !x.removed).id;
+    ok('C-03', 'the swap control offers the room’s video device and, in its group, a camera', (await page.inputValue('#b-swap')) === barId && (await page.locator('#b-swap-to option[value=camera]').count()) === 1);
+    await page.selectOption('#b-swap-to', 'camera'); await page.fill('#b-why', 'like-for-like camera for the far wall (synthetic)'); await page.click('[data-testid=swap]'); await page.waitForSelector('[data-testid=impact-body]');
+    const after = await draftNow(); const e1 = engineDelta(before, after); const p1 = await panel();
+    ok('C-04', 'after a camera swap the panel’s commissioning delta is the engine’s, run directly on the room before and after (added, removed, unchanged)', JSON.stringify([p1.added, p1.removed, p1.kept]) === JSON.stringify([e1.added, e1.removed, e1.kept]) && new RegExp(`\\+${e1.added.length} added · −${e1.removed.length} removed · ${e1.kept} unchanged`).test(p1.text), JSON.stringify({ panel: [p1.added.length, p1.removed.length, p1.kept], engine: [e1.added.length, e1.removed.length, e1.kept] }));
+    ok('C-05', 'the tests whose covered device changed are the engine’s, and the panel says their results were recorded on the previous device', e1.coverage.length > 0 && JSON.stringify(p1.coverage) === JSON.stringify(e1.coverage) && /recorded before the change, on the previous device/.test(p1.text), `${p1.coverage.length} vs ${e1.coverage.length}`);
+    ok('C-06', 'Search Party: the video bar is no longer in the recorded graph; the camera is, with what now depends on it', /No longer in the recorded graph/.test(p1.text) && /What now depends on it: [^.]*UC room compute/.test(p1.text));
+    ok('C-07', 'Assurance: the room now differs from baseline v1 and recommissioning is proposed; baseline v1 itself is unchanged, byte for byte', /The room now differs from baseline v1/.test(p1.text) && /Recommission the room/.test(p1.text) && p1.untouched === 'true' && p1.baseline === 'v1' && JSON.stringify({ current: after.baseline, lineage: after.baselines }) === baseline0 && /baseline v1/.test(await page.locator('.build__state').innerText()));
+    ok('C-08', 'Pro and Mission Control: a like-for-like swap changes no passport and no count — and the panel does not invent one', /No KPI passport and no Mission Control count changes/.test(p1.text));
+    ok('C-09', 'the update is announced through the aria-live region', /Video bar 1 \(bar\) swapped for Camera 1 \(camera\)\. Commissioning: 0 tests added, 0 removed/.test(await page.locator('[data-testid=impact-live]').innerText()));
+    const ev = after.events[0];
+    ok('C-10', 'the change is one structured event: actor, what, from, to, why and the affected objects the engines found', ev.type === 'room.device_swapped' && ev.by === 'designer' && ev.change.from === 'Video bar 1 (bar)' && ev.change.to === 'Camera 1 (camera)' && ev.change.why === 'like-for-like camera for the far wall (synthetic)' && ['device', 'connection', 'test', 'baseline'].every((k) => ev.change.affected.some((x) => x.kind === k)), JSON.stringify(ev.change || ev).slice(0, 300));
+    const camId = after.design.devices.find((x) => x.cat === 'camera' && !x.removed).id;
+    const want = CE.reopenedBySubstitution(CE.analyzeRoom(before.design).applicability.rows.filter((r) => r.applicable).map((r) => ({ testId: r.id, domain: r.domain, devices: r.devices })), [{ assetId: barId, label: 'Video bar 1', category: 'bar', from: 'bar', to: `Camera 1 (camera, ${camId})` }]);
+    const reopenedIds = (await page.locator('[data-testid=impact-body]').getAttribute('data-reopened')).split(',').filter(Boolean); const gate = await page.locator('[data-testid=impact-gate]').innerText();
+    ok('C-10b', `a swap during recommissioning reopens the ${want.length} tests the engine’s rule reopens (run directly here on the plan before the swap), each listed with its reason`, want.length >= 10 && JSON.stringify(reopenedIds) === JSON.stringify(want.map((t) => t.testId)) && want.every((t) => t.reasons.every((r) => p1.text.includes(r))) && ['identity_asset', 'video_av_sync'].every((id) => reopenedIds.includes(id)), JSON.stringify({ panel: reopenedIds, engine: want.map((t) => t.testId) }).slice(0, 300));
+    ok('C-10c', 'the gate now refuses the re-acceptance and names every reopened test; “no engine condition blocks it” is gone', new RegExp(`${want.length} test\\(s\\) were last recorded before the substitution and must be re-run on the changed design and verified independently`).test(gate) && want.every((t) => gate.includes(t.testId)) && !/no engine condition blocks it/.test(p1.text) && /reopened by the substitution/.test(await page.locator('[data-testid=impact-live]').innerText()), gate.slice(0, 300));
+    await page.click('#tab-checks'); await page.waitForSelector('[data-testid=reverification]');
+    const rvEl = page.locator('[data-testid=reverification]'); const rvText = await rvEl.innerText();
+    ok('C-10d', 'the plan shows “Re-verification required”: each reopened test with its reasons and its earlier result “recorded on the previous device · must be re-run and verified again”', (await rvEl.getAttribute('data-outstanding')) === want.map((t) => t.testId).join(',') && /Re-verification required · \d+ tests reopened/.test(rvText) && want.every((t) => rvText.includes(t.reasons[0])) && (rvText.match(/recorded on the previous device · must be re-run and verified again/g) || []).length === want.length && (await page.locator('.build__table .build__stale').count()) === want.length, rvText.slice(0, 300));
+    await page.click('#tab-lifecycle'); await page.waitForTimeout(150);
+    ok('C-10e', 'the results keep their earlier records, each marked as recorded on the previous device; baseline v1 is still the current one', (await page.locator('[data-testid=stale-result]').count()) === want.length && /Re-verification required/.test(await page.locator('main').innerText()) && JSON.stringify({ current: (await draftNow()).baseline, lineage: (await draftNow()).baselines }) === baseline0);
+    await page.click('#tab-design'); await page.waitForTimeout(150);
+    await page.locator('[data-testid=impact-panel]').screenshot({ path: path.join(out, 'impact-camera-swap.png') });
+    const before2 = await draftNow(); await page.selectOption('#b-cat', 'micceil'); await page.click('button:has-text("Place at the centre")'); await page.waitForTimeout(300);
+    const after2 = await draftNow(); const e2 = engineDelta(before2, after2); const p2 = await panel();
+    ok('C-11', 'adding a ceiling microphone adds exactly the tests the engine adds, each with its reason, and names the KPI passport that changes', e2.added.length > 0 && JSON.stringify(p2.added) === JSON.stringify(e2.added) && JSON.stringify(p2.removed) === JSON.stringify(e2.removed) && /Devices commissioned up to standards/.test(p2.text) && JSON.stringify({ current: after2.baseline, lineage: after2.baselines }) === baseline0, JSON.stringify({ panel: p2.added, engine: e2.added }).slice(0, 300));
+    // A · the room's entire story, from Build a Room
+    await persp('visitor'); await page.click('[data-testid=story-action]'); await page.waitForSelector('[data-testid=story]');
+    const stages = await page.locator('.story__stage').evaluateAll((els) => els.map((e) => ({ key: e.dataset.stage, n: Number(e.dataset.count) })));
+    ok('C-12', 'Build a Room’s “Show this room’s entire story” opens the story, with records in several lifecycle stages', (await page.evaluate(() => location.hash)) === '#/story/R-DEMO-0001' && stages.length === 8 && stages.filter((s) => s.n > 0).length >= 5 && ['design', 'authorize', 'commission', 'verify', 'baseline'].every((k) => stages.find((s) => s.key === k).n > 0), JSON.stringify(stages));
+    const story = await page.locator('[data-testid=story]').innerText();
+    ok('C-13', 'the swap is in the story with its actor, from → to and why; a stage without records says “No record yet”', /Video bar 1 \(bar\) swapped for Camera 1 \(camera\)/.test(story) && /like-for-like camera for the far wall \(synthetic\)/.test(story) && /Designer \/ CAD \/ Revit/.test(story) && /No record yet/.test(story));
+    const sum = await page.locator('[data-testid=story-summary]').innerText();
+    ok('C-14', 'the summary is computed from the records: state, baseline v1, open items, stages on record', (await page.locator('[data-testid=story-state]').innerText()) === 'COMMISSIONING' && /^v1 · CURRENT$/.test(await page.locator('[data-testid=story-baseline]').innerText()) && Number(await page.locator('[data-testid=story-open]').innerText()) >= 2 && (await page.locator('[data-testid=story-completeness]').innerText()) === `${stages.filter((s) => s.n > 0).length} of 8 stages`, sum.slice(0, 300));
+    const rvEntry = page.locator('[data-stage=verify] [data-entry="verify:reverification"]');
+    ok('C-14b', 'the story shows “Re-verification required” under Verify, a state derived from the records, linking to the plan', (await rvEntry.count()) === 1 && new RegExp(`^Re-verification required: ${want.length} tests reopened by the substitution of Video bar 1 while baseline v1 is recommissioned`).test(await rvEntry.locator('.story__what').innerText()) && (await rvEntry.getAttribute('data-evidence')) === 'DERIVED' && (await rvEntry.locator('a.story__link').getAttribute('href')) === '#/v25/build?tab=checks' && /Open the plan/.test(await rvEntry.innerText()) && /Re-verification required: \d+ reopened tests/.test(sum), (await rvEntry.count()) ? await rvEntry.innerText() : 'no entry');
+    const nVisitor = await page.locator('[data-entry]').count(); const idsVisitor = await page.locator('[data-entry]').evaluateAll((els) => els.map((e) => e.dataset.entry).join('|'));
+    const firstTest = CE.analyzeRoom(after2.design).applicability.rows.find((r) => r.applicable && after2.design.results[r.id]).id;
+    const visitorHasIds = story.includes(`synthetic observation ${firstTest}`) || (await page.locator('[data-testid=story] .story__items').count()) > 0;
+    await persp('cxeng'); const tech = await page.locator('[data-testid=story]').innerText(); const techItems = (await page.locator('[data-testid=story] .story__items li').allTextContents()).join('\n');
+    const sameData = (await page.locator('[data-entry]').evaluateAll((els) => els.map((e) => e.dataset.entry).join('|'))) === idsVisitor;
+    ok('C-15', 'a perspective changes density, not data: the same records for a visitor and an engineer; test ids and evidence references only in the engineer’s view', nVisitor > 10 && sameData && !visitorHasIds && tech.includes(firstTest) && techItems.includes(`synthetic observation ${firstTest}`) && /room\.device_swapped/.test(tech), `${nVisitor} entries, same ${sameData}, visitor ids ${visitorHasIds}`);
+    await persp('exec'); const execIds = await page.locator('[data-entry]').evaluateAll((els) => els.map((e) => e.dataset.entry).join('|'));
+    ok('C-16', 'an executive sees impact and status for the same records', execIds === idsVisitor && (await page.locator('.story__impact').count()) >= 2 && /applicable tests verified/.test(await page.locator('[data-testid=story]').innerText()));
+    ok('C-17', 'the story says what it cannot show yet', (await page.locator('[data-testid=story-gaps] li').count()) >= 3 && /live condition/.test(await page.locator('[data-testid=story-gaps]').innerText()) && /intake request/.test(await page.locator('[data-testid=story-gaps]').innerText()));
+    await page.evaluate(() => scrollTo(0, 0)); await page.screenshot({ path: path.join(out, 'story-desktop.png'), fullPage: true });
+    // every link of the story opens a native page of the demonstration (never a boundary or an unknown address)
+    const storyLinks = async () => { const hrefs = [...new Set(await page.locator('[data-testid=story] a[href^="#/"]').evaluateAll((as) => as.map((a) => a.getAttribute('href'))))]; const bad = [];
+      for (const h of hrefs) { await page.evaluate((x) => { location.hash = x; }, h); await page.waitForTimeout(160); const v = await page.evaluate(() => ({ h1: (document.querySelector('main h1') || {}).textContent || '', text: document.querySelector('main').innerText })); if (!v.h1 || /Unknown address|Not migrated yet/.test(v.text)) bad.push(`${h}: ${v.h1}`); }
+      return { hrefs, bad }; };
+    const l1 = await storyLinks();
+    ok('C-18', `every one of the draft story’s ${l1.hrefs.length} distinct links opens a native page (Build a Room’s design, plan, lifecycle, ledger; the room’s ledger)`, l1.hrefs.length >= 4 && l1.hrefs.some((h) => /tab=lifecycle/.test(h)) && l1.hrefs.some((h) => /ledger\?room=/.test(h)) && !l1.bad.length, l1.bad.slice(0, 4).join(' | ') || l1.hrefs.join(' '));
+    await page.evaluate(() => { location.hash = '#/v25/ledger?room=R-DEMO-0001'; }); await page.waitForTimeout(300);
+    const rec = await page.locator('[data-testid=ledger] tbody tr td:nth-child(5)').allInnerTexts();
+    ok('C-19', 'the story’s ledger link shows only this room’s events', (await page.locator('[data-testid=ledger-scope]').count()) === 1 && rec.length > 10 && rec.every((x) => x === 'R-DEMO-0001') && rec.length === after2.events.length, `${rec.length} rows`);
+    // the re-acceptance after the swap: refused until every reopened test is re-run and verified by a different person
+    await page.evaluate(() => { location.hash = '#/v25/build?tab=lifecycle'; }); await page.waitForTimeout(300); await page.click('#tab-lifecycle'); await page.waitForTimeout(150);
+    await persp('qa'); await page.click('button:has-text("Move to ACCEPTED")'); await page.waitForTimeout(250);
+    const ra1 = await refusal();
+    ok('C-19b', 're-acceptance is refused, the refusal naming every reopened test (the enterprise API’s wording)', /Refused/.test(ra1) && new RegExp(`${want.length} test\\(s\\) were last recorded before the substitution`).test(ra1) && want.every((t) => ra1.includes(t.testId)) && (await draftNow()).design.lifecycle === 'COMMISSIONING', ra1.slice(0, 300));
+    await persp('cxeng'); await page.click('button:has-text("Record all untested as PASS")'); await page.waitForTimeout(400);
+    const rerun = await draftNow();
+    await persp('qa'); await page.click('button:has-text("Move to ACCEPTED")'); await page.waitForTimeout(250);
+    const ra2 = await refusal();
+    ok('C-19c', 're-run after the substitution (each earlier record kept in its history), the reopened tests still block until a different person verifies them', !(await page.locator('[data-testid=stale-result]').count()) && want.every((t) => rerun.design.results[t.testId].state === 'PASS' && !rerun.design.results[t.testId].verified && rerun.design.results[t.testId].history.length === 1 && rerun.design.results[t.testId].history[0].verified?.by === 'architect') && /re-run after the substitution and are not yet passed and verified by a different person/.test(ra2) && want.every((t) => ra2.includes(t.testId)), ra2.slice(0, 300));
+    await persp('cxeng'); await page.click('button:has-text("Verify all unverified")'); await page.waitForTimeout(300);
+    const ra3 = await refusal();
+    await persp('architect'); await page.click('button:has-text("Verify all unverified")'); await page.waitForTimeout(400);
+    await persp('qa'); await page.click('button:has-text("Move to ACCEPTED")'); await page.waitForTimeout(300);
+    const acc = await draftNow(); const st3 = await page.locator('.build__state').innerText(); const lin = await page.locator('[data-testid=lineage]').innerText();
+    ok('C-19d', 'the person who re-ran the tests cannot verify them; once a different person has, the room is re-accepted', /independent/.test(ra3) && acc.design.lifecycle === 'ACCEPTED' && /ACCEPTED/.test(st3) && !(await refusal()), (await refusal()) || st3);
+    ok('C-19e', 'the re-acceptance publishes baseline v2 and keeps v1, unchanged, as SUPERSEDED', acc.baseline.version === 2 && acc.baseline.state === 'CURRENT' && acc.baselines.length === 2 && JSON.stringify(acc.baselines[0]) === JSON.stringify({ ...JSON.parse(baseline0).current, state: 'SUPERSEDED' }) && /baseline v2/.test(st3) && /v1\s*SUPERSEDED/.test(lin) && /v2\s*CURRENT/.test(lin) && want.every((t) => acc.baseline.results[t.testId] === 'PASS_VERIFIED') && acc.substitutions.length === 1, lin.slice(0, 300));
+    // A · from Search Party room results, an estate room's story, and a link that opens the record where it lives
+    await persp('visitor'); await page.evaluate(() => { location.hash = '#/search'; }); await page.waitForTimeout(300); await page.fill('#spd-q', 'Boardroom'); await page.waitForTimeout(200);
+    await page.click('.sp__list a.sp__story >> nth=0'); await page.waitForSelector('[data-testid=story]');
+    const es = await page.locator('.story__stage').evaluateAll((els) => els.map((e) => ({ key: e.dataset.stage, n: Number(e.dataset.count) })));
+    ok('C-20', 'a Search Party room result opens that room’s entire story: Atlas 4.218 has records in the request, design, authorize, baseline and service stages', (await page.evaluate(() => location.hash)) === '#/story/R-ATL-4-218' && ['request', 'design', 'authorize', 'baseline', 'operate'].every((k) => es.find((s) => s.key === k).n > 0) && /ISS-0417/.test(await page.locator('[data-testid=story]').innerText()), JSON.stringify(es));
+    const l2 = await storyLinks();
+    ok('C-20b', `every one of the estate room story’s ${l2.hrefs.length} distinct links opens a native page (Search Party, Mission Control, Executive, ServiceHands, the ledger)`, l2.hrefs.length >= 6 && ['#/search', '#/v25/exec', '#/v25/service'].every((p) => l2.hrefs.some((h) => h.startsWith(p))) && !l2.bad.length, l2.bad.slice(0, 4).join(' | ') || l2.hrefs.join(' '));
+    await page.evaluate(() => { location.hash = '#/story/R-ATL-4-218'; }); await page.waitForSelector('[data-testid=story]');
+    await page.click('[data-testid=story] a:has-text("Open ISS-0417 in ServiceHands")'); await page.waitForSelector('[data-testid=incident]');
+    ok('C-21', 'a story link opens the record where it lives: ISS-0417 in ServiceHands', /#\/v25\/service\?id=ISS-0417/.test(await page.evaluate(() => location.hash)) && /Far-end audio drops out/.test(await page.locator('[data-testid=incident] h2').innerText()));
+    await page.evaluate(() => { location.hash = '#/search?focus=Room:R-ATL-4-231'; }); await page.reload(); await page.waitForTimeout(500);
+    await page.click('[data-testid=sp-story]'); await page.waitForSelector('[data-testid=story]');
+    ok('C-22', 'a focused room in Search Party carries “Show this room’s entire story”', (await page.evaluate(() => location.hash)) === '#/story/R-ATL-4-231' && /Atlas 4\.231 Training/.test(await page.locator('main h1').innerText()));
+    await page.evaluate(() => { location.hash = '#/investor'; }); await page.waitForTimeout(300);
+    const cardLinks = await page.locator('[data-testid=story-card] a').count(); await page.click('[data-testid=story-card] a >> nth=0'); await page.waitForSelector('[data-testid=story]');
+    ok('C-23', 'the investor start carries the story card (one link per room) and it opens a story; the three start actions are unchanged', cardLinks >= 5 && /#\/story\//.test(await page.evaluate(() => location.hash)));
+    await page.evaluate(() => { location.hash = '#/tours/investor?scenario=7'; }); await page.waitForTimeout(500); await page.waitForSelector('[data-testid=tour-detour]');
+    await page.click('[data-testid=tour-detour]'); await page.waitForSelector('[data-testid=story]');
+    ok('C-24', 'the guided tour offers the story as a detour from “One connected lifecycle”, without adding a step', /#\/story\/R-ATL-4-218/.test(await page.evaluate(() => location.hash)) && /step 15 of 17/.test(await page.locator('[data-testid=tour]').innerText()));
+    await page.click('[data-testid=tour] button:has-text("Close")'); await page.waitForTimeout(200);
+    ok('C-25', 'no page error and no console error across the cascade and the story', errs.length === errorsBefore, errs.slice(errorsBefore).join(' | '));
+  }
+  if (tag === 'phone') {
+    await page.evaluate(() => { location.hash = '#/story/R-ATL-4-218'; }); await page.waitForTimeout(500); await page.waitForSelector('[data-testid=story]');
+    const ph = await page.evaluate(() => ({ over: document.documentElement.scrollWidth - document.documentElement.clientWidth, entries: document.querySelectorAll('[data-entry]').length, nav: [...document.querySelectorAll('.story__nav button')].map((b) => Math.round(b.getBoundingClientRect().height)) }));
+    ok('C-phone-01', 'on a phone the story renders without sideways scrolling, with 44 px stage buttons', ph.over <= 0 && ph.entries > 5 && ph.nav.length === 8 && Math.min(...ph.nav) >= 44, JSON.stringify(ph));
+    await page.screenshot({ path: path.join(out, 'story-phone.png'), fullPage: true });
   }
   ok(`D-${tag}-07`, 'no page error, no console error, no request outside the page', !errs.length && !ext.length, [...errs, ...ext].slice(0, 3).join(' | '));
   await ctx.close();

@@ -31,7 +31,7 @@ export async function getRoom(ctx: RequestContext, ref: string) {
     const counts = resultCounts(withResult.map((r) => ({ id: String(r['test_id']), applicable: !!r['applicable'], result: r.result } as never)), L.results);
     return {
       room: { code: L.room.code, id: L.room.id, name: L.room.name, lifecycle: L.room.lifecycle, template: L.room.template, intendedUse: L.room.intended_use, occupancy: L.room.occupancy, unit: L.room.unit, geometry: L.room.geometry, rev: L.room.rev, approvedRevision: L.room.approved_revision, classification: L.room.classification, approvedClassification: L.room.approved_class, liveHealth: 'NOT_MONITORED' },
-      devices: L.input.devices, connections: L.input.connections, drawings, revisions, issues,
+      devices: L.input.devices.map((d) => ({ ...d, modelHistory: L.assets.find((a) => a.code === d.id)?.model_history ?? [] })), connections: L.input.connections, drawings, revisions, issues,
       commissioning: plan ? { planId: plan['id'], engineVersion: plan['engine_version'], ruleVersion: plan['rule_version'], library: plan['library_size'], applicable: plan['applicable'], context: plan['context'], compiledAt: plan['compiled_at'], counts, rows: withResult } : null,
     };
   });

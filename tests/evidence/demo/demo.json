@@ -1,8 +1,8 @@
 {
- "at": "2026-10-31T21:30:11.321Z",
- "pass": 101,
+ "at": "2026-11-01T00:22:52.282Z",
+ "pass": 138,
  "fail": 0,
- "tests": 101,
+ "tests": 138,
  "results": [
   {
    "id": "D-desktop-01",
@@ -158,7 +158,7 @@
    "id": "B-15f",
    "name": "re-acceptance publishes baseline v2 (v1 superseded) and the lineage lists both",
    "result": "PASS",
-   "detail": "ACCEPTED\nbaseline v2\nReset demonstration"
+   "detail": "ACCEPTED\nbaseline v2\nShow this room’s entire story\nReset demonstration"
   },
   {
    "id": "B-15g",
@@ -296,7 +296,7 @@
    "id": "V-07",
    "name": "dispatch preflight on the record: the room is booked in the proposed window, the processor stock check is stale, tools unconfirmed — each named",
    "result": "PASS",
-   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-01T19:29 → 2026-11-01T21:29\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
+   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-01T22:21 → 2026-11-02T00:21\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
   },
   {
    "id": "V-08",
@@ -360,9 +360,9 @@
   },
   {
    "id": "A-03",
-   "name": "A2 is a read-only comparison, honest when there is no accepted baseline for the room",
+   "name": "A2 is a read-only comparison against the room’s accepted baseline on record (Atlas 4.220: v1, the record the KPI passports and the story read)",
    "result": "PASS",
-   "detail": "COMPARED A2 H1 2026-10-31 21:29 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
+   "detail": "COMPARED A2 H1 2026-11-01 00:22 · Commissioning Engineer\nread-only comparison against baseline v1 (9 evidence items)"
   },
   {
    "id": "A-04",
@@ -374,7 +374,7 @@
    "id": "A-05",
    "name": "with approval and a window, the real adapter state blocks it: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)",
    "result": "PASS",
-   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-10-31 21:29 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
+   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-11-01 00:22 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
   },
   {
    "id": "A-06",
@@ -399,6 +399,12 @@
    "name": "a visitor cannot act on a case",
    "result": "PASS",
    "detail": ""
+  },
+  {
+   "id": "A-03b",
+   "name": "A2 stays honest where no baseline is accepted on record (Northstar Town Hall, COMMISSIONING): nothing to compare, NOT_VERIFIED",
+   "result": "PASS",
+   "detail": "COMPARED A2 H1 2026-11-01 00:22 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
   },
   {
    "id": "L-01",
@@ -470,7 +476,7 @@
    "id": "M-03",
    "name": "a passport shows numerator, denominator, window, coverage, freshness, confidence with reasons, source, exclusions and drill-down",
    "result": "PASS",
-   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-02 21:29 → 2026-10-31 21:29\nCoverage\n4 of 4 eligible recor"
+   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-03 00:22 → 2026-11-01 00:22\nCoverage\n4 of 4 eligible recor"
   },
   {
    "id": "M-04",
@@ -482,7 +488,7 @@
    "id": "M-05",
    "name": "the ledger filters to the refusals, each with actor, UTC and local time and the reason",
    "result": "PASS",
-   "detail": "When (UTC)\tLocal\tWho\tEvent\tRecord\tOutcome\tDetail\n2026-10-31 21:29:51\t10/31/2026, 16:29:51\tCommissioning Engineer\tlearn.sme_review\tLC-001\tDENIED\trefused: the proposer is not the subject-matter reviewer of their own case (separation of duties)\n2026-10-31 21:29:50\t10/31/2026, 16:29:50\tCommissioning Eng"
+   "detail": "When (UTC)\tLocal\tWho\tEvent\tRecord\tOutcome\tDetail\n2026-11-01 00:22:15\t10/31/2026, 19:22:15\tCommissioning Engineer\tlearn.sme_review\tLC-001\tDENIED\trefused: the proposer is not the subject-matter reviewer of their own case (separation of duties)\n2026-11-01 00:22:14\t10/31/2026, 19:22:14\tCommissioning Eng"
   },
   {
    "id": "M-06",
@@ -581,6 +587,216 @@
    "detail": ""
   },
   {
+   "id": "C-01",
+   "name": "a room reaches baseline v1 through the governed path and is recommissioned (baseline v1 stays current)",
+   "result": "PASS",
+   "detail": "COMMISSIONING\nbaseline v1\nShow this room’s entire story\nReset demonstration"
+  },
+  {
+   "id": "C-02",
+   "name": "before any change the Impact panel explains itself and its live region is already mounted",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "C-03",
+   "name": "the swap control offers the room’s video device and, in its group, a camera",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "C-04",
+   "name": "after a camera swap the panel’s commissioning delta is the engine’s, run directly on the room before and after (added, removed, unchanged)",
+   "result": "PASS",
+   "detail": "{\"panel\":[0,0,65],\"engine\":[0,0,65]}"
+  },
+  {
+   "id": "C-05",
+   "name": "the tests whose covered device changed are the engine’s, and the panel says their results were recorded on the previous device",
+   "result": "PASS",
+   "detail": "10 vs 10"
+  },
+  {
+   "id": "C-06",
+   "name": "Search Party: the video bar is no longer in the recorded graph; the camera is, with what now depends on it",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "C-07",
+   "name": "Assurance: the room now differs from baseline v1 and recommissioning is proposed; baseline v1 itself is unchanged, byte for byte",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "C-08",
+   "name": "Pro and Mission Control: a like-for-like swap changes no passport and no count — and the panel does not invent one",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "C-09",
+   "name": "the update is announced through the aria-live region",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "C-10",
+   "name": "the change is one structured event: actor, what, from, to, why and the affected objects the engines found",
+   "result": "PASS",
+   "detail": "{\"what\":\"device swapped\",\"from\":\"Video bar 1 (bar)\",\"to\":\"Camera 1 (camera)\",\"why\":\"like-for-like camera for the far wall (synthetic)\",\"affected\":[{\"kind\":\"device\",\"id\":\"PA-0004\",\"label\":\"Video bar 1 (bar)\",\"effect\":\"removed\",\"href\":\"#/v25/build?tab=design\"},{\"kind\":\"device\",\"id\":\"PA-0008\",\"label\":\""
+  },
+  {
+   "id": "C-10b",
+   "name": "a swap during recommissioning reopens the 12 tests the engine’s rule reopens (run directly here on the plan before the swap), each listed with its reason",
+   "result": "PASS",
+   "detail": "{\"panel\":[\"identity_asset\",\"display_controls\",\"video_signal\",\"camera_preset\",\"video_camera_exposure\",\"video_content_share\",\"video_display_calibration\",\"video_edid_handshake\",\"video_switching\",\"camera_fov\",\"video_av_sync\",\"video_camera_tracking\"],\"engine\":[\"identity_asset\",\"display_controls\",\"video_s"
+  },
+  {
+   "id": "C-10c",
+   "name": "the gate now refuses the re-acceptance and names every reopened test; “no engine condition blocks it” is gone",
+   "result": "PASS",
+   "detail": "Next step COMMISSIONING → ACCEPTED: the engine refuses it today — 12 test(s) were last recorded before the substitution and must be re-run on the changed design and verified independently: identity_asset, display_controls, video_signal, camera_preset, video_camera_exposure, video_content_share, vide"
+  },
+  {
+   "id": "C-10d",
+   "name": "the plan shows “Re-verification required”: each reopened test with its reasons and its earlier result “recorded on the previous device · must be re-run and verified again”",
+   "result": "PASS",
+   "detail": "Re-verification required · 12 tests reopened\n\nVideo bar 1 (PA-0004, bar) → Camera 1 (camera, PA-0008) — substituted by Designer / CAD / Revit while baseline v1 is recommissioned. A result recorded before the substitution was obtained on the previous device: it stays on record and no longer counts to"
+  },
+  {
+   "id": "C-10e",
+   "name": "the results keep their earlier records, each marked as recorded on the previous device; baseline v1 is still the current one",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "C-11",
+   "name": "adding a ceiling microphone adds exactly the tests the engine adds, each with its reason, and names the KPI passport that changes",
+   "result": "PASS",
+   "detail": "{\"panel\":[\"audio_aec\",\"audio_dsp_firmware\",\"audio_gain\",\"audio_limiter_levels\",\"audio_mic_pickup\",\"audio_noise_floor\",\"audio_zone_routing\",\"network_media_clock\"],\"engine\":[\"audio_aec\",\"audio_dsp_firmware\",\"audio_gain\",\"audio_limiter_levels\",\"audio_mic_pickup\",\"audio_noise_floor\",\"audio_zone_routing\""
+  },
+  {
+   "id": "C-12",
+   "name": "Build a Room’s “Show this room’s entire story” opens the story, with records in several lifecycle stages",
+   "result": "PASS",
+   "detail": "[{\"key\":\"request\",\"n\":0},{\"key\":\"design\",\"n\":5},{\"key\":\"authorize\",\"n\":3},{\"key\":\"commission\",\"n\":5},{\"key\":\"verify\",\"n\":2},{\"key\":\"baseline\",\"n\":1},{\"key\":\"operate\",\"n\":1},{\"key\":\"learn\",\"n\":0}]"
+  },
+  {
+   "id": "C-13",
+   "name": "the swap is in the story with its actor, from → to and why; a stage without records says “No record yet”",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "C-14",
+   "name": "the summary is computed from the records: state, baseline v1, open items, stages on record",
+   "result": "PASS",
+   "detail": "CURRENT STATE\nCOMMISSIONING\nBuild a Room\nACCEPTED BASELINE\nv1 · CURRENT\npublished just now by Document Reviewer / QA · Build a Room\nOPEN ITEMS\n3\nRe-verification required: 12 reopened tests to re-run on the changed design and verify again\n8 applicable tests not tested yet\nRecommissioning in progress:"
+  },
+  {
+   "id": "C-14b",
+   "name": "the story shows “Re-verification required” under Verify, a state derived from the records, linking to the plan",
+   "result": "PASS",
+   "detail": "current state\n\nRe-verification required: 12 tests reopened by the substitution of Video bar 1 while baseline v1 is recommissioned\n\nDERIVED\n\n12 tests still to be re-run on the changed design. A result recorded before the substitution was obtained on the previous device: it stays on record and no longer counts towards the re-acceptance.\n\n12 records behind this entry — an engineer perspective lists t"
+  },
+  {
+   "id": "C-15",
+   "name": "a perspective changes density, not data: the same records for a visitor and an engineer; test ids and evidence references only in the engineer’s view",
+   "result": "PASS",
+   "detail": "17 entries, same true, visitor ids false"
+  },
+  {
+   "id": "C-16",
+   "name": "an executive sees impact and status for the same records",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "C-17",
+   "name": "the story says what it cannot show yet",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "C-18",
+   "name": "every one of the draft story’s 5 distinct links opens a native page (Build a Room’s design, plan, lifecycle, ledger; the room’s ledger)",
+   "result": "PASS",
+   "detail": "#/v25/build?tab=checks #/v25/build?tab=lifecycle #/v25/build?tab=design #/v25/service #/v25/ledger?room=R-DEMO-0001"
+  },
+  {
+   "id": "C-19",
+   "name": "the story’s ledger link shows only this room’s events",
+   "result": "PASS",
+   "detail": "141 rows"
+  },
+  {
+   "id": "C-19b",
+   "name": "re-acceptance is refused, the refusal naming every reopened test (the enterprise API’s wording)",
+   "result": "PASS",
+   "detail": "Refused.\nacceptance needs every applicable test executed, passed and independently verified with evidence: 65 of 73 passed and independently verified (65 recorded: 0 passed awaiting verification, 0 failed; 8 not tested)\n12 test(s) were last recorded before the substitution and must be re-run on the "
+  },
+  {
+   "id": "C-19c",
+   "name": "re-run after the substitution (each earlier record kept in its history), the reopened tests still block until a different person verifies them",
+   "result": "PASS",
+   "detail": "Refused.\nacceptance needs every applicable test executed, passed and independently verified with evidence: 53 of 73 passed and independently verified (73 recorded: 20 passed awaiting verification, 0 failed; 0 not tested)\n12 reopened test(s) were re-run after the substitution and are not yet passed a"
+  },
+  {
+   "id": "C-19d",
+   "name": "the person who re-ran the tests cannot verify them; once a different person has, the room is re-accepted",
+   "result": "PASS",
+   "detail": "ACCEPTED\nbaseline v2\nShow this room’s entire story\nReset demonstration"
+  },
+  {
+   "id": "C-19e",
+   "name": "the re-acceptance publishes baseline v2 and keeps v1, unchanged, as SUPERSEDED",
+   "result": "PASS",
+   "detail": "Baseline lineage\nv1 SUPERSEDED revision 1 · 5 devices · 65/65 verified · Document Reviewer / QA · 2026-11-01 00:22:38\nv2 CURRENT revision 1 · 6 devices · 73/73 verified · Document Reviewer / QA · 2026-11-01 00:22:46\nWhat changed between v1 and v2\nDesign revision\nunchanged (1)\nDevices\n2 added (Camera"
+  },
+  {
+   "id": "C-20",
+   "name": "a Search Party room result opens that room’s entire story: Atlas 4.218 has records in the request, design, authorize, baseline and service stages",
+   "result": "PASS",
+   "detail": "[{\"key\":\"request\",\"n\":1},{\"key\":\"design\",\"n\":3},{\"key\":\"authorize\",\"n\":2},{\"key\":\"commission\",\"n\":1},{\"key\":\"verify\",\"n\":0},{\"key\":\"baseline\",\"n\":1},{\"key\":\"operate\",\"n\":5},{\"key\":\"learn\",\"n\":0}]"
+  },
+  {
+   "id": "C-20b",
+   "name": "every one of the estate room story’s 8 distinct links opens a native page (Search Party, Mission Control, Executive, ServiceHands, the ledger)",
+   "result": "PASS",
+   "detail": "#/v25/service?id=ISS-0417 #/v25 #/search?focus=Room%3AR-ATL-4-218 #/v25/exec #/search?focus=NetworkNode%3ASW-ATL-4A #/v25/service #/v25/service?id=ISS-0380 #/v25/ledger?room=R-ATL-4-218"
+  },
+  {
+   "id": "C-21",
+   "name": "a story link opens the record where it lives: ISS-0417 in ServiceHands",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "C-22",
+   "name": "a focused room in Search Party carries “Show this room’s entire story”",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "C-23",
+   "name": "the investor start carries the story card (one link per room) and it opens a story; the three start actions are unchanged",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "C-24",
+   "name": "the guided tour offers the story as a detour from “One connected lifecycle”, without adding a step",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "C-25",
+   "name": "no page error and no console error across the cascade and the story",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
    "id": "D-desktop-07",
    "name": "no page error, no console error, no request outside the page",
    "result": "PASS",
@@ -603,6 +819,12 @@
    "name": "the perspective picker says it grants nothing",
    "result": "PASS",
    "detail": "A perspective changes what the demonstration shows; it grants nothing. Real access is decided by the authenticated application's server."
+  },
+  {
+   "id": "C-phone-01",
+   "name": "on a phone the story renders without sideways scrolling, with 44 px stage buttons",
+   "result": "PASS",
+   "detail": "{\"over\":0,\"entries\":13,\"nav\":[44,44,44,44,44,44,56,44]}"
   },
   {
    "id": "D-phone-07",

@@ -1,0 +1,2864 @@
+{
+ "step": 6,
+ "title": "Move the governed lifecycle one step at a time, each step by its authority",
+ "room": "R-PLN-0004",
+ "at": "2026-11-01T00:20:11.272Z",
+ "assertions": [
+  {
+   "id": "C-15",
+   "name": "the designer cannot approve the design (403: room.design.approve)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-16",
+   "name": "one governed step at a time: PLANNED → COMMISSIONING is refused (422)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-17",
+   "name": "the systems engineer approves the design (DESIGN_APPROVED)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-18",
+   "name": "the installer cannot open the installation window (403: window.approve)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-19",
+   "name": "the operations lead approves the installation window (INSTALLATION_PENDING)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-20",
+   "name": "the installer records the installation (INSTALLED_UNVERIFIED)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-21",
+   "name": "the installer cannot start commissioning (403: plan.compile)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-22",
+   "name": "the systems engineer starts commissioning (COMMISSIONING)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-23",
+   "name": "the room is COMMISSIONING, the approved revision is 2, every applicable test is NOT_TESTED and needs physical execution",
+   "result": "PASS"
+  }
+ ],
+ "exchanges": [
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/lifecycle",
+   "persona": "designer",
+   "status": 403,
+   "request": {
+    "to": "DESIGN_APPROVED"
+   },
+   "body": {
+    "type": "https://errors.empathia.invalid/forbidden",
+    "title": "Not allowed for your role",
+    "status": 403,
+    "detail": "designer may not move a room to DESIGN_APPROVED (needs room.design.approve)",
+    "code": "forbidden",
+    "correlationId": "c4d9f0b9-ae87-4201-8eaf-955da5d9ae2a"
+   },
+   "correlationId": "c4d9f0b9-ae87-4201-8eaf-955da5d9ae2a"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/lifecycle",
+   "persona": "syseng",
+   "status": 422,
+   "request": {
+    "to": "COMMISSIONING"
+   },
+   "body": {
+    "type": "https://errors.empathia.invalid/rule_refused",
+    "title": "Refused by a business rule",
+    "status": 422,
+    "detail": "no transition PLANNED → COMMISSIONING: the room moves one governed step at a time",
+    "code": "rule_refused",
+    "reasons": [
+     "no transition PLANNED → COMMISSIONING: the room moves one governed step at a time"
+    ],
+    "correlationId": "c5b33bef-810c-475a-b48e-8c2c32db0117"
+   },
+   "correlationId": "c5b33bef-810c-475a-b48e-8c2c32db0117"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/lifecycle",
+   "persona": "syseng",
+   "status": 200,
+   "request": {
+    "to": "DESIGN_APPROVED"
+   },
+   "body": {
+    "from": "PLANNED",
+    "to": "DESIGN_APPROVED",
+    "applicable": 75,
+    "openIssues": 0,
+    "planChanged": true
+   },
+   "correlationId": "d1a0bf95-4d33-4bf6-b9e9-544d8757df25"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/lifecycle",
+   "persona": "installer",
+   "status": 403,
+   "request": {
+    "to": "INSTALLATION_PENDING"
+   },
+   "body": {
+    "type": "https://errors.empathia.invalid/forbidden",
+    "title": "Not allowed for your role",
+    "status": 403,
+    "detail": "installer may not move a room to INSTALLATION_PENDING (needs window.approve)",
+    "code": "forbidden",
+    "correlationId": "69636766-6616-40dd-8dd1-d3c80823fe17"
+   },
+   "correlationId": "69636766-6616-40dd-8dd1-d3c80823fe17"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/lifecycle",
+   "persona": "opslead",
+   "status": 200,
+   "request": {
+    "to": "INSTALLATION_PENDING"
+   },
+   "body": {
+    "from": "DESIGN_APPROVED",
+    "to": "INSTALLATION_PENDING",
+    "applicable": 75,
+    "openIssues": 0,
+    "planChanged": false
+   },
+   "correlationId": "85598a6a-b20e-4dfe-b07c-0820b8aac2ef"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/lifecycle",
+   "persona": "installer",
+   "status": 200,
+   "request": {
+    "to": "INSTALLED_UNVERIFIED"
+   },
+   "body": {
+    "from": "INSTALLATION_PENDING",
+    "to": "INSTALLED_UNVERIFIED",
+    "applicable": 75,
+    "openIssues": 0,
+    "planChanged": false
+   },
+   "correlationId": "fe04216c-0ee2-4d65-91b8-fd706a5b8cad"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/lifecycle",
+   "persona": "installer",
+   "status": 403,
+   "request": {
+    "to": "COMMISSIONING"
+   },
+   "body": {
+    "type": "https://errors.empathia.invalid/forbidden",
+    "title": "Not allowed for your role",
+    "status": 403,
+    "detail": "installer may not move a room to COMMISSIONING (needs plan.compile)",
+    "code": "forbidden",
+    "correlationId": "73dd1a02-0f83-4d89-9557-d60adfa7f96c"
+   },
+   "correlationId": "73dd1a02-0f83-4d89-9557-d60adfa7f96c"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/lifecycle",
+   "persona": "syseng",
+   "status": 200,
+   "request": {
+    "to": "COMMISSIONING"
+   },
+   "body": {
+    "from": "INSTALLED_UNVERIFIED",
+    "to": "COMMISSIONING",
+    "applicable": 75,
+    "openIssues": 0,
+    "planChanged": false
+   },
+   "correlationId": "efed3967-c29f-4536-b98c-e691ec59a6e7"
+  },
+  {
+   "method": "GET",
+   "path": "/v1/rooms/R-PLN-0004",
+   "persona": "designer",
+   "status": 200,
+   "body": {
+    "room": {
+     "code": "R-PLN-0004",
+     "id": "17b276ee-5ebe-4998-8c11-7b1542665dab",
+     "name": "Checkpoint conference room (synthetic)",
+     "lifecycle": "COMMISSIONING",
+     "template": "custom",
+     "intendedUse": "Small conference room: six people meet with remote participants by video",
+     "occupancy": 6,
+     "unit": "m",
+     "geometry": {
+      "shape": "rect",
+      "points": [
+       [
+        0,
+        0
+       ],
+       [
+        4.2,
+        0
+       ],
+       [
+        4.2,
+        5.5
+       ],
+       [
+        0,
+        5.5
+       ]
+      ],
+      "widthM": 4.2,
+      "ceiling": 2.8,
+      "lengthM": 5.5,
+      "confidence": "declared",
+      "provenance": {
+       "width": "DECLARED",
+       "length": "DECLARED",
+       "ceiling": "DECLARED"
+      }
+     },
+     "rev": 16,
+     "approvedRevision": 2,
+     "classification": {
+      "why": [
+       "intended use “Small conference room: six people meet with remote participants by video” and 6 people",
+       "floor area 23.1 m² → medium",
+       "8 devices across 6 families → advanced technology complexity"
+      ],
+      "people": 6,
+      "source": "rule-based classifier (v25-60) over declared geometry, intended use, occupancy and equipment",
+      "subtype": "huddle room",
+      "families": [
+       "display",
+       "camera",
+       "dsp",
+       "uc",
+       "touch_panel",
+       "network_switch"
+      ],
+      "archetype": "HUD",
+      "complexity": "advanced",
+      "confidence": "medium",
+      "cxRoomType": "huddle",
+      "assumptions": [
+       "capacity estimate = floor area 23.1 m² ÷ 2.2 m² per person (meeting seating); a planning assumption, not a fire-code occupancy"
+      ],
+      "intendedUse": "Small conference room: six people meet with remote participants by video",
+      "sizeCategory": "medium",
+      "archetypeName": "Huddle Room",
+      "capacityEstimate": 10
+     },
+     "approvedClassification": {
+      "at": "2026-11-01T00:20:05.278Z",
+      "by": "7a34ae52-ef8e-4596-a776-e8134a317c3a",
+      "byRole": "syseng",
+      "reason": "suggestion accepted",
+      "override": false,
+      "archetype": "HUD",
+      "suggestedWas": "HUD",
+      "archetypeName": "Huddle Room"
+     },
+     "liveHealth": "NOT_MONITORED"
+    },
+    "devices": [
+     {
+      "id": "PA-0058",
+      "cat": "table",
+      "label": "Table 1",
+      "role": "Table 1",
+      "model": "generic",
+      "generic": true,
+      "brand": null,
+      "modelName": null,
+      "x": 2.1,
+      "y": 2.8,
+      "z": 0,
+      "rot": 0,
+      "mount": "floor",
+      "props": {},
+      "furniture": true,
+      "lifecycle": "INSTALLED_UNVERIFIED",
+      "modelHistory": []
+     },
+     {
+      "id": "PA-0059",
+      "cat": "chairs",
+      "label": "Seating block 1",
+      "role": "Seating block 1",
+      "model": "generic",
+      "generic": true,
+      "brand": null,
+      "modelName": null,
+      "x": 2.1,
+      "y": 3.4,
+      "z": 0,
+      "rot": 0,
+      "mount": "floor",
+      "props": {
+       "seats": 6
+      },
+      "furniture": true,
+      "lifecycle": "INSTALLED_UNVERIFIED",
+      "modelHistory": []
+     },
+     {
+      "id": "PA-0060",
+      "cat": "display",
+      "label": "Display 1",
+      "role": "Display 1",
+      "model": "generic",
+      "generic": true,
+      "brand": null,
+      "modelName": null,
+      "x": 2.1,
+      "y": 0.1,
+      "z": 1.2,
+      "rot": 0,
+      "mount": "wall",
+      "props": {
+       "diagonal_in": 75
+      },
+      "furniture": false,
+      "lifecycle": "INSTALLED_UNVERIFIED",
+      "modelHistory": []
+     },
+     {
+      "id": "PA-0061",
+      "cat": "camera",
+      "label": "Camera 1",
+      "role": "Camera 1",
+      "model": "generic",
+      "generic": true,
+      "brand": null,
+      "modelName": null,
+      "x": 2.1,
+      "y": 0.15,
+      "z": 1.8,
+      "rot": 0,
+      "mount": "wall",
+      "props": {
+       "zoom_x": 12,
+       "fov_deg": 70
+      },
+      "furniture": false,
+      "lifecycle": "INSTALLED_UNVERIFIED",
+      "modelHistory": []
+     },
+     {
+      "id": "PA-0062",
+      "cat": "micceil",
+      "label": "Ceiling microphone 1",
+      "role": "Ceiling microphone 1",
+      "model": "generic",
+      "generic": true,
+      "brand": null,
+      "modelName": null,
+      "x": 2.1,
+      "y": 2.8,
+      "z": 2.7,
+      "rot": 0,
+      "mount": "ceiling",
+      "props": {
+       "pickup_m": 3.5,
+       "protocol": "network audio"
+      },
+      "furniture": false,
+      "lifecycle": "INSTALLED_UNVERIFIED",
+      "modelHistory": []
+     },
+     {
+      "id": "PA-0063",
+      "cat": "speaker",
+      "label": "Loudspeaker 1",
+      "role": "Loudspeaker 1",
+      "model": "generic",
+      "generic": true,
+      "brand": null,
+      "modelName": null,
+      "x": 2.1,
+      "y": 1.5,
+      "z": 2.7,
+      "rot": 0,
+      "mount": "ceiling",
+      "props": {
+       "coverage_m": 4
+      },
+      "furniture": false,
+      "lifecycle": "INSTALLED_UNVERIFIED",
+      "modelHistory": []
+     },
+     {
+      "id": "PA-0064",
+      "cat": "dsp",
+      "label": "Audio processor (DSP) 1",
+      "role": "Audio processor (DSP) 1",
+      "model": "generic",
+      "generic": true,
+      "brand": null,
+      "modelName": null,
+      "x": 0.3,
+      "y": 0.3,
+      "z": 1.2,
+      "rot": 0,
+      "mount": "rack",
+      "props": {
+       "inputs": 12,
+       "protocol": "network audio"
+      },
+      "furniture": false,
+      "lifecycle": "INSTALLED_UNVERIFIED",
+      "modelHistory": []
+     },
+     {
+      "id": "PA-0065",
+      "cat": "compute",
+      "label": "UC room compute 1",
+      "role": "UC room compute 1",
+      "model": "generic",
+      "generic": true,
+      "brand": null,
+      "modelName": null,
+      "x": 0.4,
+      "y": 0.3,
+      "z": 0.6,
+      "rot": 0,
+      "mount": "rack",
+      "props": {
+       "usb_ports": 4
+      },
+      "furniture": false,
+      "lifecycle": "INSTALLED_UNVERIFIED",
+      "modelHistory": []
+     },
+     {
+      "id": "PA-0066",
+      "cat": "touch",
+      "label": "Touch panel 1",
+      "role": "Touch panel 1",
+      "model": "generic",
+      "generic": true,
+      "brand": null,
+      "modelName": null,
+      "x": 2.1,
+      "y": 2.6,
+      "z": 0.75,
+      "rot": 0,
+      "mount": "table",
+      "props": {},
+      "furniture": false,
+      "lifecycle": "INSTALLED_UNVERIFIED",
+      "modelHistory": []
+     },
+     {
+      "id": "PA-0067",
+      "cat": "switch",
+      "label": "Network switch 1",
+      "role": "Network switch 1",
+      "model": "generic",
+      "generic": true,
+      "brand": null,
+      "modelName": null,
+      "x": 0.5,
+      "y": 0.3,
+      "z": 1.5,
+      "rot": 0,
+      "mount": "rack",
+      "props": {
+       "ports": 24,
+       "poe_budget_w": 370
+      },
+      "furniture": false,
+      "lifecycle": "INSTALLED_UNVERIFIED",
+      "modelHistory": []
+     }
+    ],
+    "connections": [
+     {
+      "id": "CN-0060",
+      "from": "PA-0062",
+      "to": "PA-0064",
+      "kind": "signal",
+      "why": "microphone → audio processor"
+     },
+     {
+      "id": "CN-0061",
+      "from": "PA-0064",
+      "to": "PA-0063",
+      "kind": "signal",
+      "why": "audio processor → loudspeaker"
+     },
+     {
+      "id": "CN-0062",
+      "from": "PA-0065",
+      "to": "PA-0060",
+      "kind": "signal",
+      "why": "room compute → display"
+     },
+     {
+      "id": "CN-0063",
+      "from": "PA-0061",
+      "to": "PA-0065",
+      "kind": "signal",
+      "why": "camera → room compute"
+     },
+     {
+      "id": "CN-0064",
+      "from": "PA-0065",
+      "to": "PA-0064",
+      "kind": "signal",
+      "why": "room compute ↔ audio processor (far-end audio)"
+     },
+     {
+      "id": "CN-0065",
+      "from": "PA-0066",
+      "to": "PA-0065",
+      "kind": "control",
+      "why": "touch panel → controller"
+     },
+     {
+      "id": "CN-0066",
+      "from": "PA-0060",
+      "to": "PA-0067",
+      "kind": "network",
+      "why": "networked device → room switch"
+     },
+     {
+      "id": "CN-0067",
+      "from": "PA-0061",
+      "to": "PA-0067",
+      "kind": "network",
+      "why": "networked device → room switch"
+     },
+     {
+      "id": "CN-0068",
+      "from": "PA-0062",
+      "to": "PA-0067",
+      "kind": "network",
+      "why": "networked device → room switch"
+     },
+     {
+      "id": "CN-0069",
+      "from": "PA-0064",
+      "to": "PA-0067",
+      "kind": "network",
+      "why": "networked device → room switch"
+     },
+     {
+      "id": "CN-0070",
+      "from": "PA-0065",
+      "to": "PA-0067",
+      "kind": "network",
+      "why": "networked device → room switch"
+     },
+     {
+      "id": "CN-0071",
+      "from": "PA-0066",
+      "to": "PA-0067",
+      "kind": "network",
+      "why": "networked device → room switch"
+     }
+    ],
+    "drawings": [
+     {
+      "kind": "plan",
+      "state": "APPROVED",
+      "revNo": 1,
+      "approvedBy": "7a34ae52-ef8e-4596-a776-e8134a317c3a"
+     },
+     {
+      "kind": "placement",
+      "state": "APPROVED",
+      "revNo": 1,
+      "approvedBy": "7a34ae52-ef8e-4596-a776-e8134a317c3a"
+     },
+     {
+      "kind": "schedule",
+      "state": "APPROVED",
+      "revNo": 1,
+      "approvedBy": "7a34ae52-ef8e-4596-a776-e8134a317c3a"
+     },
+     {
+      "kind": "relationships",
+      "state": "APPROVED",
+      "revNo": 1,
+      "approvedBy": "7a34ae52-ef8e-4596-a776-e8134a317c3a"
+     },
+     {
+      "kind": "signal",
+      "state": "APPROVED",
+      "revNo": 1,
+      "approvedBy": "7a34ae52-ef8e-4596-a776-e8134a317c3a"
+     },
+     {
+      "kind": "network",
+      "state": "APPROVED",
+      "revNo": 1,
+      "approvedBy": "7a34ae52-ef8e-4596-a776-e8134a317c3a"
+     },
+     {
+      "kind": "summary",
+      "state": "APPROVED",
+      "revNo": 1,
+      "approvedBy": "7a34ae52-ef8e-4596-a776-e8134a317c3a"
+     }
+    ],
+    "revisions": [
+     {
+      "rev_no": 1,
+      "reason": "created",
+      "sha256": "22f5c43ec58ad7bcd65c49d11ad73932ad6c04dde8ba813ec51b39b2d67c5afd",
+      "created_by": "2780822d-ef25-4b71-802f-e0fcb455d6a1",
+      "created_at": "2026-11-01T00:20:04.857Z"
+     },
+     {
+      "rev_no": 2,
+      "reason": "checkpoint: the designed conference room",
+      "sha256": "31f686c119f2eba0322ebdf2752317f73cde93194c010734ca82d304fbe3f53c",
+      "created_by": "2780822d-ef25-4b71-802f-e0fcb455d6a1",
+      "created_at": "2026-11-01T00:20:05.194Z"
+     }
+    ],
+    "issues": [
+     {
+      "code": "RISS-0002",
+      "key": "missing-equipment:camera",
+      "category": "DESIGN_DEFICIENCY",
+      "check_name": "missing_required_equipment",
+      "severity": "High",
+      "title": "No camera in a huddle room",
+      "rationale": "the Huddle Room room type requires a camera for its intended use",
+      "assets": [],
+      "state": "RESOLVED",
+      "owner_role": null,
+      "resolution": {
+       "at": "2026-11-01T00:20:04.997Z",
+       "by": "2780822d-ef25-4b71-802f-e0fcb455d6a1",
+       "how": "the design check no longer fires after: device added PA-0061",
+       "byRole": "designer",
+       "revision": 1,
+       "verification": "design re-analysis on every change; an engineer reviews the next saved revision"
+      },
+      "first_seen_rev": 1,
+      "last_seen_rev": 1,
+      "created_at": "2026-11-01T00:20:04.947Z",
+      "updated_at": "2026-11-01T00:20:04.986Z"
+     }
+    ],
+    "commissioning": {
+     "planId": "2200f005-7224-47db-8e4d-34961cb52288",
+     "engineVersion": "2.5.4-port.1",
+     "ruleVersion": "2.5.0",
+     "library": 94,
+     "applicable": 75,
+     "context": {
+      "risk": "standard",
+      "room": "huddle",
+      "tier": "advanced",
+      "type": "new_install",
+      "families": [
+       "display",
+       "camera",
+       "dsp",
+       "uc",
+       "touch_panel",
+       "network_switch"
+      ]
+     },
+     "compiledAt": "2026-11-01T00:20:05.443Z",
+     "counts": {
+      "applicable": 75,
+      "recorded": 0,
+      "verified": 0,
+      "awaiting": 0,
+      "failed": 0,
+      "notSupported": 0,
+      "inconclusive": 0,
+      "notTested": 75
+     },
+     "rows": [
+      {
+       "test_id": "compute_display_capability",
+       "label": "Display count within the compute model's capability record",
+       "pack": "uc_compute",
+       "domain": "Compute",
+       "phase": 1,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack uc_compute: device family uc"
+       ],
+       "personas": [
+        "syseng"
+       ],
+       "evidence": [
+        "ENGINEER_APPROVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "poe_budget",
+       "label": "PoE budget",
+       "pack": null,
+       "domain": "Power",
+       "phase": 1,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "device family network_switch"
+       ],
+       "personas": [
+        "syseng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED",
+        "ENGINEER_APPROVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "power_budget",
+       "label": "Power budget",
+       "pack": null,
+       "domain": "Power",
+       "phase": 1,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "project type new_install"
+       ],
+       "personas": [
+        "syseng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED",
+        "ENGINEER_APPROVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "power_circuit_load",
+       "label": "Circuit load and dedicated supply",
+       "pack": "infrastructure",
+       "domain": "Power",
+       "phase": 1,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack infrastructure: project type new_install"
+       ],
+       "personas": [
+        "syseng"
+       ],
+       "evidence": [
+        "ENGINEER_APPROVED",
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "access_reach",
+       "label": "Control reach and operable parts",
+       "pack": "accessibility",
+       "domain": "Accessibility",
+       "phase": 2,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack accessibility: device family touch_panel"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "audio_dsp_firmware",
+       "label": "DSP firmware against the baseline",
+       "pack": "audio",
+       "domain": "Audio",
+       "phase": 2,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack audio: device family dsp"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED",
+        "OBSERVED_NETWORK"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0062",
+        "PA-0063",
+        "PA-0064"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "compute_patch_baseline",
+       "label": "Compute OS and application patch baseline",
+       "pack": "uc_compute",
+       "domain": "Compute",
+       "phase": 2,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack uc_compute: device family uc"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED",
+        "OBSERVED_NETWORK"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "control_program_version",
+       "label": "Control program and UI build recorded",
+       "pack": "control",
+       "domain": "Control",
+       "phase": 2,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack control: device family touch_panel"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0066"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "control_time_sync",
+       "label": "Time synchronisation (NTP)",
+       "pack": "control",
+       "domain": "Control",
+       "phase": 2,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack control: device family touch_panel"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED",
+        "OBSERVED_NETWORK"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0066"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "cyber_default_credentials",
+       "label": "Default credentials changed on every device",
+       "pack": "cybersecurity",
+       "domain": "Cybersecurity",
+       "phase": 2,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack cybersecurity: applies to every project"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "cyber_firmware_signed",
+       "label": "Firmware from the vendor's signed channel",
+       "pack": "cybersecurity",
+       "domain": "Cybersecurity",
+       "phase": 2,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack cybersecurity: complexity standard/advanced/critical"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "identity_asset",
+       "label": "Asset identity confirmed on site",
+       "pack": null,
+       "domain": "Physical",
+       "phase": 2,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "base: every project"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "infra_labeling",
+       "label": "Device, cable and port labelling",
+       "pack": "infrastructure",
+       "domain": "Infrastructure",
+       "phase": 2,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack infrastructure: applies to every project"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "infra_rack_match",
+       "label": "Rack elevation matches the drawing",
+       "pack": "infrastructure",
+       "domain": "Infrastructure",
+       "phase": 2,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack infrastructure: project type new_install",
+        "pack infrastructure: complexity standard/advanced/critical"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "network_addressing",
+       "label": "Addressing, DHCP reservations and DNS",
+       "pack": "network",
+       "domain": "Network",
+       "phase": 2,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack network: applies to every project"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED",
+        "OBSERVED_NETWORK"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0067"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "network_firmware_baseline",
+       "label": "Network device firmware baseline",
+       "pack": "network",
+       "domain": "Network",
+       "phase": 2,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack network: device family network_switch"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED",
+        "OBSERVED_NETWORK"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0067"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "safety_install",
+       "label": "Installation safety",
+       "pack": null,
+       "domain": "Safety",
+       "phase": 2,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "project type new_install"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "compute_certified_config",
+       "label": "Certified configuration match",
+       "pack": "uc_compute",
+       "domain": "Compute",
+       "phase": 2,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack uc_compute: device family uc",
+        "pack uc_compute: complexity advanced/critical"
+       ],
+       "personas": [
+        "syseng"
+       ],
+       "evidence": [
+        "ENGINEER_APPROVED",
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "design_conformance",
+       "label": "Design conformance",
+       "pack": null,
+       "domain": "Design",
+       "phase": 2,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "project type new_install",
+        "V2.5 addition (+v21aliases): the released revision selects devices, so the installed inventory is checked against the drawing"
+       ],
+       "personas": [
+        "cxeng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "infra_cable_certification",
+       "label": "Structured cabling certification",
+       "pack": "infrastructure",
+       "domain": "Infrastructure",
+       "phase": 2,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack infrastructure: project type new_install/network_change"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "INSTRUMENT_MEASURED",
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "interop_firmware_matrix",
+       "label": "Firmware compatibility matrix",
+       "pack": "interoperability",
+       "domain": "Interoperability",
+       "phase": 2,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack interoperability: complexity standard/advanced/critical"
+       ],
+       "personas": [
+        "syseng"
+       ],
+       "evidence": [
+        "ENGINEER_APPROVED",
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "network_port_profile",
+       "label": "Switch port profile per device",
+       "pack": "network",
+       "domain": "Network",
+       "phase": 2,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack network: device family network_switch"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED",
+        "OBSERVED_NETWORK"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0067"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "access_captions",
+       "label": "Live captions path in the UC platform",
+       "pack": "accessibility",
+       "domain": "Accessibility",
+       "phase": 3,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack accessibility: device family uc"
+       ],
+       "personas": [
+        "cxeng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "access_contrast",
+       "label": "UI contrast and text size",
+       "pack": "accessibility",
+       "domain": "Accessibility",
+       "phase": 3,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack accessibility: device family touch_panel"
+       ],
+       "personas": [
+        "cxeng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "display_controls",
+       "label": "Display controls",
+       "pack": null,
+       "domain": "Video",
+       "phase": 3,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "device family display"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0061"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "network_management_reach",
+       "label": "Management reachability from the monitoring host",
+       "pack": "network",
+       "domain": "Network",
+       "phase": 3,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack network: applies to every project"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "OBSERVED_NETWORK",
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0067"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "network_reachability",
+       "label": "Network reachability",
+       "pack": null,
+       "domain": "Network",
+       "phase": 3,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "base: every project"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED",
+        "OBSERVED_NETWORK"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0067"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "uc_peripherals",
+       "label": "UC peripheral enumeration",
+       "pack": "uc_compute",
+       "domain": "UC",
+       "phase": 3,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack uc_compute: device family uc"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "user_function",
+       "label": "User function check",
+       "pack": null,
+       "domain": "Experience",
+       "phase": 3,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "base: every project"
+       ],
+       "personas": [
+        "cxeng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "video_signal",
+       "label": "Video signal",
+       "pack": null,
+       "domain": "Video",
+       "phase": 3,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "device family display"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0061"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "audio_mic_pickup",
+       "label": "Microphone pickup coverage at every seat",
+       "pack": "audio",
+       "domain": "Audio",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack audio: device family dsp"
+       ],
+       "personas": [
+        "cxeng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0062",
+        "PA-0063",
+        "PA-0064"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "audio_zone_routing",
+       "label": "Zone routing and mute/volume mapping",
+       "pack": "audio",
+       "domain": "Audio",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack audio: device family dsp",
+        "pack audio: complexity advanced/critical"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0062",
+        "PA-0063",
+        "PA-0064"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "camera_preset",
+       "label": "Camera presets recall",
+       "pack": null,
+       "domain": "Video",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "device family camera"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0061"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "control_audio",
+       "label": "Audio control (mute, volume, zones)",
+       "pack": "control",
+       "domain": "Control",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack control: device family touch_panel/dsp"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0066"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "control_camera",
+       "label": "Camera control (PTZ, presets) from the UI",
+       "pack": "control",
+       "domain": "Control",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack control: device family touch_panel/camera"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0066"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "control_error_states",
+       "label": "Error handling and offline states",
+       "pack": "control",
+       "domain": "Control",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack control: device family touch_panel"
+       ],
+       "personas": [
+        "cxeng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0066"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "control_macros",
+       "label": "Room automation macros (start / end meeting)",
+       "pack": "control",
+       "domain": "Control",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack control: device family touch_panel"
+       ],
+       "personas": [
+        "cxeng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0066"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "control_source_switching",
+       "label": "Source switching from the UI",
+       "pack": "control",
+       "domain": "Control",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack control: device family touch_panel"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0066"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "control_third_party",
+       "label": "Third-party integrations from the UI (DSP / UC / shades)",
+       "pack": "control",
+       "domain": "Control",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack control: device family touch_panel",
+        "pack control: complexity standard/advanced/critical"
+       ],
+       "personas": [
+        "cxeng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0066"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "control_ui",
+       "label": "Control UI navigation",
+       "pack": null,
+       "domain": "Control",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "device family touch_panel"
+       ],
+       "personas": [
+        "cxeng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0066"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "control_ups",
+       "label": "UPS graceful power-failure behaviour",
+       "pack": "control",
+       "domain": "Control",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack control: complexity advanced/critical"
+       ],
+       "personas": [
+        "cxeng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0066"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "cyber_logging",
+       "label": "Device logging to the monitoring host",
+       "pack": "cybersecurity",
+       "domain": "Cybersecurity",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack cybersecurity: complexity advanced/critical"
+       ],
+       "personas": [
+        "syseng"
+       ],
+       "evidence": [
+        "OBSERVED_NETWORK",
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "cyber_management_isolation",
+       "label": "Management interfaces isolated to the AV management VLAN",
+       "pack": "cybersecurity",
+       "domain": "Cybersecurity",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack cybersecurity: applies to every project"
+       ],
+       "personas": [
+        "syseng"
+       ],
+       "evidence": [
+        "OBSERVED_NETWORK",
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "cyber_tls",
+       "label": "Certificates and encrypted management",
+       "pack": "cybersecurity",
+       "domain": "Cybersecurity",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack cybersecurity: complexity advanced/critical"
+       ],
+       "personas": [
+        "syseng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED",
+        "OBSERVED_NETWORK"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "env_lighting_levels",
+       "label": "Lighting levels at the camera and the displays",
+       "pack": "infrastructure",
+       "domain": "Environment",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack infrastructure: device family camera/lighting"
+       ],
+       "personas": [
+        "cxeng"
+       ],
+       "evidence": [
+        "INSTRUMENT_MEASURED",
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "integ_bms",
+       "label": "Building management hand-off (occupancy, HVAC)",
+       "pack": "integrations",
+       "domain": "Integration",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack integrations: complexity advanced/critical"
+       ],
+       "personas": [
+        "syseng"
+       ],
+       "evidence": [
+        "ENGINEER_APPROVED",
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "interop_mixed_vendor",
+       "label": "Mixed-vendor interoperability matrix",
+       "pack": "interoperability",
+       "domain": "Interoperability",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack interoperability: complexity standard/advanced/critical"
+       ],
+       "personas": [
+        "cxeng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "network_qos",
+       "label": "QoS marking",
+       "pack": null,
+       "domain": "Network",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "device family network_switch"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "OBSERVED_NETWORK",
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0067"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "network_vlan",
+       "label": "VLAN assignment",
+       "pack": null,
+       "domain": "Network",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "project type new_install",
+        "device family network_switch"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED",
+        "OBSERVED_NETWORK"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0067"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "power_ups_runtime",
+       "label": "UPS runtime under load",
+       "pack": "infrastructure",
+       "domain": "Power",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack infrastructure: complexity advanced/critical"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "uc_calendar",
+       "label": "Calendar / scheduling integration",
+       "pack": "uc_compute",
+       "domain": "UC",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack uc_compute: device family uc/touch_panel"
+       ],
+       "personas": [
+        "cxeng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "uc_media",
+       "label": "UC media path",
+       "pack": null,
+       "domain": "UC",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "room type huddle"
+       ],
+       "personas": [
+        "cxeng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "video_camera_exposure",
+       "label": "Camera exposure and white balance",
+       "pack": "video",
+       "domain": "Video",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack video: device family camera"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0061"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "video_content_share",
+       "label": "Wireless and wired content sharing",
+       "pack": "video",
+       "domain": "Video",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack video: device family display/uc"
+       ],
+       "personas": [
+        "cxeng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0061"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "video_display_calibration",
+       "label": "Display picture settings and calibration",
+       "pack": "video",
+       "domain": "Video",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack video: device family display"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED",
+        "INSTRUMENT_MEASURED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0061"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "video_edid_handshake",
+       "label": "EDID / HDCP handshake on every input",
+       "pack": "video",
+       "domain": "Video",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack video: device family display"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0061"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "video_switching",
+       "label": "Video switching and routing matrix",
+       "pack": "video",
+       "domain": "Video",
+       "phase": 3,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack video: device family display",
+        "pack video: complexity advanced/critical"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0061"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "audio_aec",
+       "label": "Echo cancellation",
+       "pack": null,
+       "domain": "Audio",
+       "phase": 3,
+       "tier": 3,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "device family dsp"
+       ],
+       "personas": [
+        "dsp_eng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED",
+        "INSTRUMENT_MEASURED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0062",
+        "PA-0063",
+        "PA-0064"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "audio_gain",
+       "label": "Gain staging",
+       "pack": null,
+       "domain": "Audio",
+       "phase": 3,
+       "tier": 3,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "device family dsp"
+       ],
+       "personas": [
+        "dsp_eng"
+       ],
+       "evidence": [
+        "INSTRUMENT_MEASURED",
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0062",
+        "PA-0063",
+        "PA-0064"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "audio_limiter_levels",
+       "label": "Limiter and safe listening level",
+       "pack": "audio",
+       "domain": "Audio",
+       "phase": 3,
+       "tier": 3,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack audio: device family dsp"
+       ],
+       "personas": [
+        "dsp_eng"
+       ],
+       "evidence": [
+        "INSTRUMENT_MEASURED"
+       ],
+       "instrument": true,
+       "devices": [
+        "PA-0062",
+        "PA-0063",
+        "PA-0064"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "audio_noise_floor",
+       "label": "Background noise floor (LAeq, unoccupied)",
+       "pack": "audio",
+       "domain": "Audio",
+       "phase": 3,
+       "tier": 3,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack audio: device family dsp",
+        "pack audio: complexity standard/advanced/critical"
+       ],
+       "personas": [
+        "dsp_eng"
+       ],
+       "evidence": [
+        "INSTRUMENT_MEASURED"
+       ],
+       "instrument": true,
+       "devices": [
+        "PA-0062",
+        "PA-0063",
+        "PA-0064"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "camera_fov",
+       "label": "Camera field of view",
+       "pack": null,
+       "domain": "Video",
+       "phase": 3,
+       "tier": 3,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "device family camera"
+       ],
+       "personas": [
+        "video_eng"
+       ],
+       "evidence": [
+        "INSTRUMENT_MEASURED",
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0061"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "control_latency",
+       "label": "Control latency",
+       "pack": null,
+       "domain": "Control",
+       "phase": 3,
+       "tier": 3,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "device family touch_panel"
+       ],
+       "personas": [
+        "control_eng"
+       ],
+       "evidence": [
+        "INSTRUMENT_MEASURED",
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0066"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "network_media_clock",
+       "label": "AVoIP / networked-audio clocking",
+       "pack": "network",
+       "domain": "Network",
+       "phase": 3,
+       "tier": 3,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack network: device family dsp",
+        "pack network: complexity advanced/critical"
+       ],
+       "personas": [
+        "syseng"
+       ],
+       "evidence": [
+        "OBSERVED_NETWORK",
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0067"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "video_av_sync",
+       "label": "Audio/video synchronisation",
+       "pack": "video",
+       "domain": "Video",
+       "phase": 3,
+       "tier": 3,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack video: complexity advanced/critical"
+       ],
+       "personas": [
+        "dsp_eng"
+       ],
+       "evidence": [
+        "INSTRUMENT_MEASURED",
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0062",
+        "PA-0063",
+        "PA-0064"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "video_camera_tracking",
+       "label": "Camera tracking behaviour",
+       "pack": "video",
+       "domain": "Video",
+       "phase": 3,
+       "tier": 3,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack video: device family camera",
+        "pack video: complexity advanced/critical"
+       ],
+       "personas": [
+        "video_eng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0061"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "integ_itsm",
+       "label": "ITSM configuration items created and linked",
+       "pack": "integrations",
+       "domain": "Integration",
+       "phase": 4,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack integrations: complexity standard/advanced/critical"
+       ],
+       "personas": [
+        "syseng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "integ_monitoring_enrol",
+       "label": "Enrolled in Field Intelligence monitoring (v1.3, read-only)",
+       "pack": "integrations",
+       "domain": "Integration",
+       "phase": 4,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack integrations: applies to every project"
+       ],
+       "personas": [
+        "syseng"
+       ],
+       "evidence": [
+        "OBSERVED_NETWORK",
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "network_config_backup",
+       "label": "Network configuration backed up",
+       "pack": "network",
+       "domain": "Network",
+       "phase": 4,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack network: device family network_switch"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [
+        "PA-0067"
+       ],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "cyber_accounts",
+       "label": "Service accounts reviewed and least-privilege",
+       "pack": "cybersecurity",
+       "domain": "Cybersecurity",
+       "phase": 4,
+       "tier": 2,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack cybersecurity: applies to every project"
+       ],
+       "personas": [
+        "syseng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "handover_runbook",
+       "label": "Operations runbook accepted",
+       "pack": "handover",
+       "domain": "Handover",
+       "phase": 5,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack handover: complexity standard/advanced/critical"
+       ],
+       "personas": [
+        "syseng"
+       ],
+       "evidence": [
+        "ENGINEER_APPROVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "handover_spares",
+       "label": "Spares and consumables stocked",
+       "pack": "handover",
+       "domain": "Handover",
+       "phase": 5,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack handover: project type new_install"
+       ],
+       "personas": [
+        "service",
+        "installer"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "handover_support_path",
+       "label": "Support path and owners confirmed",
+       "pack": "handover",
+       "domain": "Handover",
+       "phase": 5,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack handover: applies to every project"
+       ],
+       "personas": [
+        "syseng"
+       ],
+       "evidence": [
+        "ENGINEER_APPROVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "handover_training",
+       "label": "User and operator training delivered",
+       "pack": "handover",
+       "domain": "Handover",
+       "phase": 5,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack handover: project type new_install/dsp_upgrade"
+       ],
+       "personas": [
+        "cxeng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "handover_warranty",
+       "label": "Warranty and licence register",
+       "pack": "handover",
+       "domain": "Handover",
+       "phase": 5,
+       "tier": 1,
+       "applicable": true,
+       "status": "REQUIRES_PHYSICAL_EXECUTION",
+       "why": [
+        "pack handover: applies to every project"
+       ],
+       "personas": [
+        "syseng"
+       ],
+       "evidence": [
+        "FIELD_OBSERVED"
+       ],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "dependency_check",
+       "label": "Dependency check",
+       "pack": null,
+       "domain": "Change",
+       "phase": 1,
+       "tier": 2,
+       "applicable": false,
+       "status": "NOT_APPLICABLE",
+       "why": [
+        "no rule names it for new_install / huddle / display+camera+dsp+uc+touch_panel+network_switch / risk standard"
+       ],
+       "personas": [],
+       "evidence": [],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "safety_review",
+       "label": "Safety review",
+       "pack": null,
+       "domain": "Safety",
+       "phase": 1,
+       "tier": 2,
+       "applicable": false,
+       "status": "NOT_APPLICABLE",
+       "why": [
+        "no rule names it for new_install / huddle / display+camera+dsp+uc+touch_panel+network_switch / risk standard"
+       ],
+       "personas": [],
+       "evidence": [],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "integ_signage_cms",
+       "label": "Signage CMS enrolment",
+       "pack": "integrations",
+       "domain": "Integration",
+       "phase": 3,
+       "tier": 1,
+       "applicable": false,
+       "status": "NOT_APPLICABLE",
+       "why": [
+        "pack integrations: needs device family signage; this room is new_install / huddle / display+camera+dsp+uc+touch_panel+network_switch / advanced"
+       ],
+       "personas": [],
+       "evidence": [],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "occupancy_safety",
+       "label": "Occupancy safety",
+       "pack": null,
+       "domain": "Safety",
+       "phase": 3,
+       "tier": 1,
+       "applicable": false,
+       "status": "NOT_APPLICABLE",
+       "why": [
+        "no rule names it for new_install / huddle / display+camera+dsp+uc+touch_panel+network_switch / risk standard"
+       ],
+       "personas": [],
+       "evidence": [],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "post_repair_function",
+       "label": "Post-repair function",
+       "pack": null,
+       "domain": "Experience",
+       "phase": 3,
+       "tier": 1,
+       "applicable": false,
+       "status": "NOT_APPLICABLE",
+       "why": [
+        "no rule names it for new_install / huddle / display+camera+dsp+uc+touch_panel+network_switch / risk standard"
+       ],
+       "personas": [],
+       "evidence": [],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "access_hearing",
+       "label": "Hearing accessibility provision",
+       "pack": "accessibility",
+       "domain": "Accessibility",
+       "phase": 3,
+       "tier": 2,
+       "applicable": false,
+       "status": "NOT_APPLICABLE",
+       "why": [
+        "pack accessibility: needs room type townhall/boardroom; this room is new_install / huddle / display+camera+dsp+uc+touch_panel+network_switch / advanced"
+       ],
+       "personas": [],
+       "evidence": [],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "audio_assisted_listening",
+       "label": "Assistive listening path",
+       "pack": "audio",
+       "domain": "Audio",
+       "phase": 3,
+       "tier": 2,
+       "applicable": false,
+       "status": "NOT_APPLICABLE",
+       "why": [
+        "pack audio: needs room type townhall/boardroom; this room is new_install / huddle / display+camera+dsp+uc+touch_panel+network_switch / advanced"
+       ],
+       "personas": [],
+       "evidence": [],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "content_schedule",
+       "label": "Content schedule",
+       "pack": null,
+       "domain": "Signage",
+       "phase": 3,
+       "tier": 2,
+       "applicable": false,
+       "status": "NOT_APPLICABLE",
+       "why": [
+        "no rule names it for new_install / huddle / display+camera+dsp+uc+touch_panel+network_switch / risk standard"
+       ],
+       "personas": [],
+       "evidence": [],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "integ_lighting_shades",
+       "label": "Lighting and shade scene integration",
+       "pack": "integrations",
+       "domain": "Integration",
+       "phase": 3,
+       "tier": 2,
+       "applicable": false,
+       "status": "NOT_APPLICABLE",
+       "why": [
+        "pack integrations: needs device family lighting; this room is new_install / huddle / display+camera+dsp+uc+touch_panel+network_switch / advanced"
+       ],
+       "personas": [],
+       "evidence": [],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "lighting_scenes",
+       "label": "Lighting scenes",
+       "pack": null,
+       "domain": "Lighting",
+       "phase": 3,
+       "tier": 2,
+       "applicable": false,
+       "status": "NOT_APPLICABLE",
+       "why": [
+        "no rule names it for new_install / huddle / display+camera+dsp+uc+touch_panel+network_switch / risk standard"
+       ],
+       "personas": [],
+       "evidence": [],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "network_multicast",
+       "label": "Multicast path",
+       "pack": null,
+       "domain": "Network",
+       "phase": 3,
+       "tier": 2,
+       "applicable": false,
+       "status": "NOT_APPLICABLE",
+       "why": [
+        "no rule names it for new_install / huddle / display+camera+dsp+uc+touch_panel+network_switch / risk standard"
+       ],
+       "personas": [],
+       "evidence": [],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "recording_streaming",
+       "label": "Recording and streaming",
+       "pack": null,
+       "domain": "UC",
+       "phase": 3,
+       "tier": 2,
+       "applicable": false,
+       "status": "NOT_APPLICABLE",
+       "why": [
+        "no rule names it for new_install / huddle / display+camera+dsp+uc+touch_panel+network_switch / risk standard"
+       ],
+       "personas": [],
+       "evidence": [],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "signage_priority",
+       "label": "Signage priority",
+       "pack": null,
+       "domain": "Signage",
+       "phase": 3,
+       "tier": 2,
+       "applicable": false,
+       "status": "NOT_APPLICABLE",
+       "why": [
+        "no rule names it for new_install / huddle / display+camera+dsp+uc+touch_panel+network_switch / risk standard"
+       ],
+       "personas": [],
+       "evidence": [],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "acoustic_coverage",
+       "label": "Acoustic coverage",
+       "pack": null,
+       "domain": "Audio",
+       "phase": 3,
+       "tier": 3,
+       "applicable": false,
+       "status": "NOT_APPLICABLE",
+       "why": [
+        "no rule names it for new_install / huddle / display+camera+dsp+uc+touch_panel+network_switch / risk standard"
+       ],
+       "personas": [],
+       "evidence": [],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "audio_intelligibility",
+       "label": "Speech intelligibility (STIPA)",
+       "pack": null,
+       "domain": "Audio",
+       "phase": 3,
+       "tier": 3,
+       "applicable": false,
+       "status": "NOT_APPLICABLE",
+       "why": [
+        "no rule names it for new_install / huddle / display+camera+dsp+uc+touch_panel+network_switch / risk standard"
+       ],
+       "personas": [],
+       "evidence": [],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "reverberation_rt60",
+       "label": "reverberation_rt60",
+       "pack": null,
+       "domain": "Audio",
+       "phase": 3,
+       "tier": 3,
+       "applicable": false,
+       "status": "NOT_APPLICABLE",
+       "why": [
+        "no rule names it for new_install / huddle / display+camera+dsp+uc+touch_panel+network_switch / risk standard"
+       ],
+       "personas": [],
+       "evidence": [],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "dsp_config_backup",
+       "label": "DSP configuration backed up",
+       "pack": null,
+       "domain": "Audio",
+       "phase": 4,
+       "tier": 1,
+       "applicable": false,
+       "status": "NOT_APPLICABLE",
+       "why": [
+        "no rule names it for new_install / huddle / display+camera+dsp+uc+touch_panel+network_switch / risk standard"
+       ],
+       "personas": [],
+       "evidence": [],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "rollback_drill",
+       "label": "Rollback drill",
+       "pack": null,
+       "domain": "Change",
+       "phase": 4,
+       "tier": 2,
+       "applicable": false,
+       "status": "NOT_APPLICABLE",
+       "why": [
+        "no rule names it for new_install / huddle / display+camera+dsp+uc+touch_panel+network_switch / risk standard"
+       ],
+       "personas": [],
+       "evidence": [],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      },
+      {
+       "test_id": "independent_validation",
+       "label": "Independent validation",
+       "pack": null,
+       "domain": "Assurance",
+       "phase": 4,
+       "tier": 3,
+       "applicable": false,
+       "status": "NOT_APPLICABLE",
+       "why": [
+        "no rule names it for new_install / huddle / display+camera+dsp+uc+touch_panel+network_switch / risk standard"
+       ],
+       "personas": [],
+       "evidence": [],
+       "instrument": false,
+       "devices": [],
+       "result": "NOT_TESTED"
+      }
+     ]
+    }
+   },
+   "correlationId": "c4bec0a4-dc0a-4eee-b8e7-51377b53b195"
+  }
+ ]
+}

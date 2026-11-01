@@ -95,6 +95,8 @@ test('slice 4 — classification approval and the governed lifecycle to COMMISSI
   assert.equal((await move('COMMISSIONING', T.syseng)).status, 200);
   const d = await room();
   assert.equal(d.body.room.lifecycle, 'COMMISSIONING');
+  const sub = await c.call('PATCH', `/v1/rooms/${code}/devices/${T.asset}`, { token: T.designer, body: { model: 'SYN-DISPLAY-2 (synthetic)' } });
+  assert.equal(sub.status, 422, 'a first commissioning has no change order: a substitution is accepted only while an accepted room is recommissioned (governance BL-5)');
   const app = d.body.commissioning.rows.filter((x) => x.applicable);
   row = app.find((x) => !x.personas.includes('designer'));
   failRow = app.find((x) => x !== row);

@@ -2,6 +2,7 @@
  * @empathia/commissioning-engine — the Build a Room engines as a reusable TypeScript library.
  *
  *   classify → design checks → commissioning applicability → result labels and counts → lifecycle gates
+ *   (+ re-verification after a substitution during recommissioning: substitution.ts, shared by the API and the demonstration)
  *
  * Every function is deterministic and side-effect free. The demonstrator (V2.5.3 rc3 / 2.5.4) keeps its own copy of this logic in
  * `src/v25-60-room.js`; parity is enforced by test/parity.test.ts over 92 golden cases extracted from the demonstrator build.
@@ -22,6 +23,7 @@ export * from './results.js';
 export * from './recording.js';
 export * from './lifecycle.js';
 export * from './design.js';
+export * from './substitution.js';
 
 export const ENGINE_VERSION = '2.5.4-port.1';
 

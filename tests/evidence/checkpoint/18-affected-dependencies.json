@@ -1,0 +1,4630 @@
+{
+ "step": 18,
+ "title": "The camera’s dependencies: relationships, connections and dependent devices (graph and Search Party)",
+ "room": "R-PLN-0004",
+ "at": "2026-11-01T00:20:11.275Z",
+ "assertions": [
+  {
+   "id": "C-69",
+   "name": "the relationship graph places the camera in its room and feeding the room compute, and connects it to the switch",
+   "result": "PASS"
+  },
+  {
+   "id": "C-70",
+   "name": "downstream impact of the camera includes the devices it feeds (the room compute and onwards)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-71",
+   "name": "Search Party returns the camera’s neighbourhood with edge provenance",
+   "result": "PASS"
+  },
+  {
+   "id": "C-72",
+   "name": "Search Party answers “what depends on this camera?” with the downstream devices and the affected room",
+   "result": "PASS"
+  },
+  {
+   "id": "C-73",
+   "name": "Search Party lists the camera’s connections (signal to the compute, network to the switch), marked as design-proposed",
+   "result": "PASS"
+  }
+ ],
+ "exchanges": [
+  {
+   "method": "GET",
+   "path": "/v1/graph/PlannedAsset/PA-0061?depth=2",
+   "persona": "designer",
+   "status": 200,
+   "body": {
+    "start": {
+     "type": "PlannedAsset",
+     "id": "PA-0061"
+    },
+    "depth": 2,
+    "nodes": [
+     {
+      "node": {
+       "type": "PlannedAsset",
+       "id": "PA-0061"
+      },
+      "depth": 0,
+      "via": null
+     },
+     {
+      "node": {
+       "type": "PlannedAsset",
+       "id": "PA-0065"
+      },
+      "depth": 1,
+      "via": {
+       "rel": "FEEDS",
+       "label": "feeds data to",
+       "from": {
+        "type": "PlannedAsset",
+        "id": "PA-0061"
+       },
+       "provenance": "MODELED"
+      }
+     },
+     {
+      "node": {
+       "type": "PlannedAsset",
+       "id": "PA-0067"
+      },
+      "depth": 1,
+      "via": {
+       "rel": "CONNECTS_TO",
+       "label": "connects to",
+       "from": {
+        "type": "PlannedAsset",
+        "id": "PA-0061"
+       },
+       "provenance": "MODELED"
+      }
+     },
+     {
+      "node": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "depth": 1,
+      "via": {
+       "rel": "PLANS_DEVICE",
+       "label": "planned in",
+       "from": {
+        "type": "PlannedAsset",
+        "id": "PA-0061"
+       },
+       "provenance": "DECLARED"
+      }
+     },
+     {
+      "node": {
+       "type": "PlannedAsset",
+       "id": "PA-0060"
+      },
+      "depth": 2,
+      "via": {
+       "rel": "FEEDS",
+       "label": "feeds data to",
+       "from": {
+        "type": "PlannedAsset",
+        "id": "PA-0065"
+       },
+       "provenance": "MODELED"
+      }
+     },
+     {
+      "node": {
+       "type": "PlannedAsset",
+       "id": "PA-0064"
+      },
+      "depth": 2,
+      "via": {
+       "rel": "FEEDS",
+       "label": "feeds data to",
+       "from": {
+        "type": "PlannedAsset",
+        "id": "PA-0065"
+       },
+       "provenance": "MODELED"
+      }
+     },
+     {
+      "node": {
+       "type": "PlannedAsset",
+       "id": "PA-0066"
+      },
+      "depth": 2,
+      "via": {
+       "rel": "CONNECTS_TO",
+       "label": "serves",
+       "from": {
+        "type": "PlannedAsset",
+        "id": "PA-0065"
+       },
+       "provenance": "MODELED"
+      }
+     },
+     {
+      "node": {
+       "type": "PlannedAsset",
+       "id": "PA-0062"
+      },
+      "depth": 2,
+      "via": {
+       "rel": "CONNECTS_TO",
+       "label": "serves",
+       "from": {
+        "type": "PlannedAsset",
+        "id": "PA-0067"
+       },
+       "provenance": "MODELED"
+      }
+     },
+     {
+      "node": {
+       "type": "Building",
+       "id": "NST"
+      },
+      "depth": 2,
+      "via": {
+       "rel": "LOCATED_IN",
+       "label": "located in",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DECLARED"
+      }
+     },
+     {
+      "node": {
+       "type": "PlannedAsset",
+       "id": "PA-0063"
+      },
+      "depth": 2,
+      "via": {
+       "rel": "PLANS_DEVICE",
+       "label": "plans device",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DECLARED"
+      }
+     },
+     {
+      "node": {
+       "type": "RoomIssue",
+       "id": "RISS-0002"
+      },
+      "depth": 2,
+      "via": {
+       "rel": "AFFECTS",
+       "label": "affected by",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "MODELED"
+      }
+     },
+     {
+      "node": {
+       "type": "RoomIssue",
+       "id": "RISS-0003"
+      },
+      "depth": 2,
+      "via": {
+       "rel": "AFFECTS",
+       "label": "affected by",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "MODELED"
+      }
+     },
+     {
+      "node": {
+       "type": "RoomIssue",
+       "id": "RISS-0004"
+      },
+      "depth": 2,
+      "via": {
+       "rel": "AFFECTS",
+       "label": "affected by",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "MODELED"
+      }
+     }
+    ],
+    "impact": [
+     {
+      "type": "PlannedAsset",
+      "id": "PA-0065"
+     },
+     {
+      "type": "PlannedAsset",
+      "id": "PA-0067"
+     },
+     {
+      "type": "PlannedAsset",
+      "id": "PA-0060"
+     },
+     {
+      "type": "PlannedAsset",
+      "id": "PA-0064"
+     },
+     {
+      "type": "PlannedAsset",
+      "id": "PA-0063"
+     }
+    ],
+    "identity": {
+     "keyed": 133,
+     "legacyCodeOnly": 0,
+     "note": "every edge is keyed by stable identifiers"
+    }
+   },
+   "correlationId": "171f4fbb-7200-4e83-b872-5d4140774c47"
+  },
+  {
+   "method": "GET",
+   "path": "/v1/search/graph/PlannedAsset/PA-0061?depth=2",
+   "persona": "designer",
+   "status": 200,
+   "body": {
+    "start": {
+     "type": "PlannedAsset",
+     "id": "PA-0061",
+     "label": "Camera 1",
+     "subtitle": "camera · Checkpoint conference room (synthetic)",
+     "provenance": "app.planned_asset",
+     "facets": {
+      "site": "SITE-NORTH",
+      "building": "NST",
+      "category": "camera"
+     },
+     "href": "#/rooms/R-PLN-0004/design",
+     "keywords": [
+      "camera"
+     ]
+    },
+    "depth": 2,
+    "nodes": [
+     {
+      "type": "PlannedAsset",
+      "id": "PA-0061",
+      "label": "Camera 1",
+      "subtitle": "camera · Checkpoint conference room (synthetic)",
+      "provenance": "app.planned_asset",
+      "facets": {
+       "site": "SITE-NORTH",
+       "building": "NST",
+       "category": "camera"
+      },
+      "href": "#/rooms/R-PLN-0004/design",
+      "keywords": [
+       "camera"
+      ],
+      "depth": 0,
+      "via": null,
+      "typeLabel": "Planned device"
+     },
+     {
+      "type": "PlannedAsset",
+      "id": "PA-0065",
+      "label": "UC room compute 1",
+      "subtitle": "compute · Checkpoint conference room (synthetic)",
+      "provenance": "app.planned_asset",
+      "facets": {
+       "site": "SITE-NORTH",
+       "building": "NST",
+       "category": "compute"
+      },
+      "href": "#/rooms/R-PLN-0004/design",
+      "keywords": [
+       "compute"
+      ],
+      "depth": 1,
+      "via": {
+       "rel": "FEEDS",
+       "label": "feeds data to",
+       "from": {
+        "type": "PlannedAsset",
+        "id": "PA-0061"
+       },
+       "provenance": "MODELED app.relationship"
+      },
+      "typeLabel": "Planned device"
+     },
+     {
+      "type": "PlannedAsset",
+      "id": "PA-0067",
+      "label": "Network switch 1",
+      "subtitle": "switch · Checkpoint conference room (synthetic)",
+      "provenance": "app.planned_asset",
+      "facets": {
+       "site": "SITE-NORTH",
+       "building": "NST",
+       "category": "switch"
+      },
+      "href": "#/rooms/R-PLN-0004/design",
+      "keywords": [
+       "switch"
+      ],
+      "depth": 1,
+      "via": {
+       "rel": "CONNECTS_TO",
+       "label": "connects to",
+       "from": {
+        "type": "PlannedAsset",
+        "id": "PA-0061"
+       },
+       "provenance": "MODELED app.relationship"
+      },
+      "typeLabel": "Planned device"
+     },
+     {
+      "type": "Room",
+      "id": "R-PLN-0004",
+      "label": "Checkpoint conference room (synthetic)",
+      "subtitle": "Northstar Annex (synthetic) · floor 2 · COMMISSIONING",
+      "provenance": "app.room",
+      "facets": {
+       "site": "SITE-NORTH",
+       "building": "NST",
+       "lifecycle": "COMMISSIONING"
+      },
+      "href": "#/rooms/R-PLN-0004",
+      "keywords": [
+       "custom",
+       "COMMISSIONING"
+      ],
+      "depth": 1,
+      "via": {
+       "rel": "PLANS_DEVICE",
+       "label": "planned in",
+       "from": {
+        "type": "PlannedAsset",
+        "id": "PA-0061"
+       },
+       "provenance": "DECLARED app.relationship"
+      },
+      "typeLabel": "Room"
+     },
+     {
+      "type": "PlannedAsset",
+      "id": "PA-0060",
+      "label": "Display 1",
+      "subtitle": "display · Checkpoint conference room (synthetic)",
+      "provenance": "app.planned_asset",
+      "facets": {
+       "site": "SITE-NORTH",
+       "building": "NST",
+       "category": "display"
+      },
+      "href": "#/rooms/R-PLN-0004/design",
+      "keywords": [
+       "display"
+      ],
+      "depth": 2,
+      "via": {
+       "rel": "FEEDS",
+       "label": "feeds data to",
+       "from": {
+        "type": "PlannedAsset",
+        "id": "PA-0065"
+       },
+       "provenance": "MODELED app.relationship"
+      },
+      "typeLabel": "Planned device"
+     },
+     {
+      "type": "PlannedAsset",
+      "id": "PA-0064",
+      "label": "Audio processor (DSP) 1",
+      "subtitle": "dsp · Checkpoint conference room (synthetic)",
+      "provenance": "app.planned_asset",
+      "facets": {
+       "site": "SITE-NORTH",
+       "building": "NST",
+       "category": "dsp"
+      },
+      "href": "#/rooms/R-PLN-0004/design",
+      "keywords": [
+       "dsp"
+      ],
+      "depth": 2,
+      "via": {
+       "rel": "FEEDS",
+       "label": "feeds data to",
+       "from": {
+        "type": "PlannedAsset",
+        "id": "PA-0065"
+       },
+       "provenance": "MODELED app.relationship"
+      },
+      "typeLabel": "Planned device"
+     },
+     {
+      "type": "PlannedAsset",
+      "id": "PA-0066",
+      "label": "Touch panel 1",
+      "subtitle": "touch · Checkpoint conference room (synthetic)",
+      "provenance": "app.planned_asset",
+      "facets": {
+       "site": "SITE-NORTH",
+       "building": "NST",
+       "category": "touch"
+      },
+      "href": "#/rooms/R-PLN-0004/design",
+      "keywords": [
+       "touch"
+      ],
+      "depth": 2,
+      "via": {
+       "rel": "CONNECTS_TO",
+       "label": "serves",
+       "from": {
+        "type": "PlannedAsset",
+        "id": "PA-0065"
+       },
+       "provenance": "MODELED app.relationship"
+      },
+      "typeLabel": "Planned device"
+     },
+     {
+      "type": "PlannedAsset",
+      "id": "PA-0062",
+      "label": "Ceiling microphone 1",
+      "subtitle": "micceil · Checkpoint conference room (synthetic)",
+      "provenance": "app.planned_asset",
+      "facets": {
+       "site": "SITE-NORTH",
+       "building": "NST",
+       "category": "micceil"
+      },
+      "href": "#/rooms/R-PLN-0004/design",
+      "keywords": [
+       "micceil"
+      ],
+      "depth": 2,
+      "via": {
+       "rel": "CONNECTS_TO",
+       "label": "serves",
+       "from": {
+        "type": "PlannedAsset",
+        "id": "PA-0067"
+       },
+       "provenance": "MODELED app.relationship"
+      },
+      "typeLabel": "Planned device"
+     },
+     {
+      "type": "Person",
+      "id": "7a34ae52-ef8e-4596-a776-e8134a317c3a",
+      "label": "Systems Engineer (synthetic)",
+      "provenance": "app.person (named by a visible record)",
+      "depth": 2,
+      "via": {
+       "rel": "APPROVED_BY",
+       "label": "approved by",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DECLARED app.room.approved_class (classification approval)"
+      },
+      "typeLabel": "Person"
+     },
+     {
+      "type": "Person",
+      "id": "2780822d-ef25-4b71-802f-e0fcb455d6a1",
+      "label": "Designer / CAD / Revit (synthetic)",
+      "provenance": "app.person (named by a visible record)",
+      "depth": 2,
+      "via": {
+       "rel": "DESIGNED_FOR",
+       "label": "designed for",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DECLARED app.room.created_by"
+      },
+      "typeLabel": "Person"
+     },
+     {
+      "type": "Building",
+      "id": "NST",
+      "label": "Northstar Annex (synthetic)",
+      "subtitle": "North Campus (synthetic) · 3 floors",
+      "provenance": "app.building",
+      "facets": {
+       "site": "SITE-NORTH"
+      },
+      "depth": 2,
+      "via": {
+       "rel": "LOCATED_IN",
+       "label": "located in",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DECLARED app.relationship"
+      },
+      "typeLabel": "Building"
+     },
+     {
+      "type": "PlannedAsset",
+      "id": "PA-0063",
+      "label": "Loudspeaker 1",
+      "subtitle": "speaker · Checkpoint conference room (synthetic)",
+      "provenance": "app.planned_asset",
+      "facets": {
+       "site": "SITE-NORTH",
+       "building": "NST",
+       "category": "speaker"
+      },
+      "href": "#/rooms/R-PLN-0004/design",
+      "keywords": [
+       "speaker"
+      ],
+      "depth": 2,
+      "via": {
+       "rel": "PLANS_DEVICE",
+       "label": "plans device",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DECLARED app.relationship"
+      },
+      "typeLabel": "Planned device"
+     },
+     {
+      "type": "CommissioningBaseline",
+      "id": "196ce119-53f5-4bd0-8d83-53d91aec39ae",
+      "label": "Checkpoint conference room (synthetic) · baseline v1",
+      "subtitle": "CURRENT · design revision 2",
+      "provenance": "app.assurance_baseline",
+      "facets": {
+       "state": "CURRENT",
+       "building": "NST"
+      },
+      "href": "#/rooms/R-PLN-0004/assurance",
+      "depth": 2,
+      "via": {
+       "rel": "DOCUMENTS",
+       "label": "documented by",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.assurance_baseline.room_id"
+      },
+      "typeLabel": "Commissioning baseline"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/env_lighting_levels",
+      "label": "env_lighting_levels",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/display_controls",
+      "label": "display_controls",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/handover_support_path",
+      "label": "handover_support_path",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/audio_zone_routing",
+      "label": "audio_zone_routing",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/access_captions",
+      "label": "access_captions",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/video_camera_exposure",
+      "label": "video_camera_exposure",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/network_management_reach",
+      "label": "network_management_reach",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/cyber_default_credentials",
+      "label": "cyber_default_credentials",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/network_firmware_baseline",
+      "label": "network_firmware_baseline",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/audio_dsp_firmware",
+      "label": "audio_dsp_firmware",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/network_vlan",
+      "label": "network_vlan",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/network_reachability",
+      "label": "network_reachability",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/infra_labeling",
+      "label": "infra_labeling",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/uc_calendar",
+      "label": "uc_calendar",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/integ_itsm",
+      "label": "integ_itsm",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/audio_limiter_levels",
+      "label": "audio_limiter_levels",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/safety_install",
+      "label": "safety_install",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/video_signal",
+      "label": "video_signal",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/video_edid_handshake",
+      "label": "video_edid_handshake",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/video_content_share",
+      "label": "video_content_share",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/control_source_switching",
+      "label": "control_source_switching",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/compute_display_capability",
+      "label": "compute_display_capability",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/compute_patch_baseline",
+      "label": "compute_patch_baseline",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/user_function",
+      "label": "user_function",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/compute_certified_config",
+      "label": "compute_certified_config",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/control_latency",
+      "label": "control_latency",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/power_circuit_load",
+      "label": "power_circuit_load",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/network_media_clock",
+      "label": "network_media_clock",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/video_camera_tracking",
+      "label": "video_camera_tracking",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/audio_mic_pickup",
+      "label": "audio_mic_pickup",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/control_third_party",
+      "label": "control_third_party",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/control_program_version",
+      "label": "control_program_version",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/video_display_calibration",
+      "label": "video_display_calibration",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/infra_cable_certification",
+      "label": "infra_cable_certification",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/network_addressing",
+      "label": "network_addressing",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/uc_media",
+      "label": "uc_media",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/camera_fov",
+      "label": "camera_fov",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/control_audio",
+      "label": "control_audio",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/uc_peripherals",
+      "label": "uc_peripherals",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/handover_training",
+      "label": "handover_training",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/control_time_sync",
+      "label": "control_time_sync",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/network_qos",
+      "label": "network_qos",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/network_config_backup",
+      "label": "network_config_backup",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/control_ups",
+      "label": "control_ups",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/poe_budget",
+      "label": "poe_budget",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/audio_gain",
+      "label": "audio_gain",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/access_contrast",
+      "label": "access_contrast",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/cyber_tls",
+      "label": "cyber_tls",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/audio_noise_floor",
+      "label": "audio_noise_floor",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/cyber_accounts",
+      "label": "cyber_accounts",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/integ_monitoring_enrol",
+      "label": "integ_monitoring_enrol",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/control_ui",
+      "label": "control_ui",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/interop_firmware_matrix",
+      "label": "interop_firmware_matrix",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/video_av_sync",
+      "label": "video_av_sync",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/infra_rack_match",
+      "label": "infra_rack_match",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/integ_bms",
+      "label": "integ_bms",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/video_switching",
+      "label": "video_switching",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/camera_preset",
+      "label": "camera_preset",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/access_reach",
+      "label": "access_reach",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/interop_mixed_vendor",
+      "label": "interop_mixed_vendor",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/handover_warranty",
+      "label": "handover_warranty",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/power_ups_runtime",
+      "label": "power_ups_runtime",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/cyber_logging",
+      "label": "cyber_logging",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/control_error_states",
+      "label": "control_error_states",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/network_port_profile",
+      "label": "network_port_profile",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/handover_spares",
+      "label": "handover_spares",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/identity_asset",
+      "label": "identity_asset",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/control_macros",
+      "label": "control_macros",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/control_camera",
+      "label": "control_camera",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/design_conformance",
+      "label": "design_conformance",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/handover_runbook",
+      "label": "handover_runbook",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/audio_aec",
+      "label": "audio_aec",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/cyber_management_isolation",
+      "label": "cyber_management_isolation",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/cyber_firmware_signed",
+      "label": "cyber_firmware_signed",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "CommissioningTest",
+      "id": "R-PLN-0004/power_budget",
+      "label": "power_budget",
+      "subtitle": "R-PLN-0004",
+      "provenance": "app.test_result",
+      "href": "#/rooms/R-PLN-0004/commissioning",
+      "depth": 2,
+      "via": {
+       "rel": "TESTED_IN",
+       "label": "holds test",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "DERIVED app.test_result.room_id"
+      },
+      "typeLabel": "Commissioning test"
+     },
+     {
+      "type": "RoomIssue",
+      "id": "RISS-0002",
+      "label": "No camera in a huddle room",
+      "subtitle": "High · RESOLVED · Checkpoint conference room (synthetic)",
+      "provenance": "app.room_issue",
+      "facets": {
+       "severity": "High",
+       "state": "RESOLVED",
+       "building": "NST"
+      },
+      "href": "#/rooms/R-PLN-0004/issues",
+      "keywords": [
+       "DESIGN_DEFICIENCY"
+      ],
+      "depth": 2,
+      "via": {
+       "rel": "AFFECTS",
+       "label": "affected by",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "MODELED app.relationship"
+      },
+      "typeLabel": "Room issue"
+     },
+     {
+      "type": "RoomIssue",
+      "id": "RISS-0003",
+      "label": "Approved equipment placement plan disagrees with the design",
+      "subtitle": "Medium · RESOLVED · Checkpoint conference room (synthetic)",
+      "provenance": "app.room_issue",
+      "facets": {
+       "severity": "Medium",
+       "state": "RESOLVED",
+       "building": "NST"
+      },
+      "href": "#/rooms/R-PLN-0004/issues",
+      "keywords": [
+       "DESIGN_DEFICIENCY"
+      ],
+      "depth": 2,
+      "via": {
+       "rel": "AFFECTS",
+       "label": "affected by",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "MODELED app.relationship"
+      },
+      "typeLabel": "Room issue"
+     },
+     {
+      "type": "RoomIssue",
+      "id": "RISS-0004",
+      "label": "Approved equipment schedule disagrees with the design",
+      "subtitle": "Medium · RESOLVED · Checkpoint conference room (synthetic)",
+      "provenance": "app.room_issue",
+      "facets": {
+       "severity": "Medium",
+       "state": "RESOLVED",
+       "building": "NST"
+      },
+      "href": "#/rooms/R-PLN-0004/issues",
+      "keywords": [
+       "DESIGN_DEFICIENCY"
+      ],
+      "depth": 2,
+      "via": {
+       "rel": "AFFECTS",
+       "label": "affected by",
+       "from": {
+        "type": "Room",
+        "id": "R-PLN-0004"
+       },
+       "provenance": "MODELED app.relationship"
+      },
+      "typeLabel": "Room issue"
+     }
+    ],
+    "edges": [
+     {
+      "from": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "rel": "APPROVED_BY",
+      "to": {
+       "type": "Person",
+       "id": "7a34ae52-ef8e-4596-a776-e8134a317c3a"
+      },
+      "provenance": "DECLARED app.room.approved_class (classification approval)",
+      "label": "approved by",
+      "inverse": "approved"
+     },
+     {
+      "from": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "rel": "DESIGNED_FOR",
+      "to": {
+       "type": "Person",
+       "id": "2780822d-ef25-4b71-802f-e0fcb455d6a1"
+      },
+      "provenance": "DECLARED app.room.created_by",
+      "label": "designed for",
+      "inverse": "has design"
+     },
+     {
+      "from": {
+       "type": "CommissioningBaseline",
+       "id": "196ce119-53f5-4bd0-8d83-53d91aec39ae"
+      },
+      "rel": "DOCUMENTS",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.assurance_baseline.room_id",
+      "label": "documents",
+      "inverse": "documented by"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/env_lighting_levels"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/display_controls"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/handover_support_path"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/audio_zone_routing"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/access_captions"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/video_camera_exposure"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/network_management_reach"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/cyber_default_credentials"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/network_firmware_baseline"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/audio_dsp_firmware"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/network_vlan"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/network_reachability"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/infra_labeling"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/uc_calendar"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/integ_itsm"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/audio_limiter_levels"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/safety_install"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/video_signal"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/video_edid_handshake"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/video_content_share"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/control_source_switching"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/compute_display_capability"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/compute_patch_baseline"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/user_function"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/compute_certified_config"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/control_latency"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/power_circuit_load"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/network_media_clock"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/video_camera_tracking"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/audio_mic_pickup"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/control_third_party"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/control_program_version"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/video_display_calibration"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/infra_cable_certification"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/network_addressing"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/uc_media"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/camera_fov"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/control_audio"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/uc_peripherals"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/handover_training"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/control_time_sync"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/network_qos"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/network_config_backup"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/control_ups"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/poe_budget"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/audio_gain"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/access_contrast"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/cyber_tls"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/audio_noise_floor"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/cyber_accounts"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/integ_monitoring_enrol"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/control_ui"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/interop_firmware_matrix"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/video_av_sync"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/infra_rack_match"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/integ_bms"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/video_switching"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/camera_preset"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/access_reach"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/interop_mixed_vendor"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/handover_warranty"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/power_ups_runtime"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/cyber_logging"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/control_error_states"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/network_port_profile"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/handover_spares"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/identity_asset"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/control_macros"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/control_camera"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/design_conformance"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/handover_runbook"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/audio_aec"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/cyber_management_isolation"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/cyber_firmware_signed"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/power_budget"
+      },
+      "rel": "TESTED_IN",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "DERIVED app.test_result.room_id",
+      "label": "recorded in",
+      "inverse": "holds test"
+     },
+     {
+      "from": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "rel": "LOCATED_IN",
+      "to": {
+       "type": "Building",
+       "id": "NST"
+      },
+      "provenance": "DECLARED app.relationship",
+      "label": "located in",
+      "inverse": "location of"
+     },
+     {
+      "from": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "rel": "PLANS_DEVICE",
+      "to": {
+       "type": "PlannedAsset",
+       "id": "PA-0060"
+      },
+      "provenance": "DECLARED app.relationship",
+      "label": "plans device",
+      "inverse": "planned in"
+     },
+     {
+      "from": {
+       "type": "PlannedAsset",
+       "id": "PA-0065"
+      },
+      "rel": "FEEDS",
+      "to": {
+       "type": "PlannedAsset",
+       "id": "PA-0060"
+      },
+      "provenance": "MODELED app.relationship",
+      "label": "feeds data to",
+      "inverse": "receives data from"
+     },
+     {
+      "from": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "rel": "PLANS_DEVICE",
+      "to": {
+       "type": "PlannedAsset",
+       "id": "PA-0061"
+      },
+      "provenance": "DECLARED app.relationship",
+      "label": "plans device",
+      "inverse": "planned in"
+     },
+     {
+      "from": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "rel": "PLANS_DEVICE",
+      "to": {
+       "type": "PlannedAsset",
+       "id": "PA-0062"
+      },
+      "provenance": "DECLARED app.relationship",
+      "label": "plans device",
+      "inverse": "planned in"
+     },
+     {
+      "from": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "rel": "PLANS_DEVICE",
+      "to": {
+       "type": "PlannedAsset",
+       "id": "PA-0063"
+      },
+      "provenance": "DECLARED app.relationship",
+      "label": "plans device",
+      "inverse": "planned in"
+     },
+     {
+      "from": {
+       "type": "PlannedAsset",
+       "id": "PA-0064"
+      },
+      "rel": "FEEDS",
+      "to": {
+       "type": "PlannedAsset",
+       "id": "PA-0063"
+      },
+      "provenance": "MODELED app.relationship",
+      "label": "feeds data to",
+      "inverse": "receives data from"
+     },
+     {
+      "from": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "rel": "PLANS_DEVICE",
+      "to": {
+       "type": "PlannedAsset",
+       "id": "PA-0064"
+      },
+      "provenance": "DECLARED app.relationship",
+      "label": "plans device",
+      "inverse": "planned in"
+     },
+     {
+      "from": {
+       "type": "PlannedAsset",
+       "id": "PA-0062"
+      },
+      "rel": "FEEDS",
+      "to": {
+       "type": "PlannedAsset",
+       "id": "PA-0064"
+      },
+      "provenance": "MODELED app.relationship",
+      "label": "feeds data to",
+      "inverse": "receives data from"
+     },
+     {
+      "from": {
+       "type": "PlannedAsset",
+       "id": "PA-0065"
+      },
+      "rel": "FEEDS",
+      "to": {
+       "type": "PlannedAsset",
+       "id": "PA-0064"
+      },
+      "provenance": "MODELED app.relationship",
+      "label": "feeds data to",
+      "inverse": "receives data from"
+     },
+     {
+      "from": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "rel": "PLANS_DEVICE",
+      "to": {
+       "type": "PlannedAsset",
+       "id": "PA-0065"
+      },
+      "provenance": "DECLARED app.relationship",
+      "label": "plans device",
+      "inverse": "planned in"
+     },
+     {
+      "from": {
+       "type": "PlannedAsset",
+       "id": "PA-0061"
+      },
+      "rel": "FEEDS",
+      "to": {
+       "type": "PlannedAsset",
+       "id": "PA-0065"
+      },
+      "provenance": "MODELED app.relationship",
+      "label": "feeds data to",
+      "inverse": "receives data from"
+     },
+     {
+      "from": {
+       "type": "PlannedAsset",
+       "id": "PA-0066"
+      },
+      "rel": "CONNECTS_TO",
+      "to": {
+       "type": "PlannedAsset",
+       "id": "PA-0065"
+      },
+      "provenance": "MODELED app.relationship",
+      "label": "connects to",
+      "inverse": "serves"
+     },
+     {
+      "from": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "rel": "PLANS_DEVICE",
+      "to": {
+       "type": "PlannedAsset",
+       "id": "PA-0066"
+      },
+      "provenance": "DECLARED app.relationship",
+      "label": "plans device",
+      "inverse": "planned in"
+     },
+     {
+      "from": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "rel": "PLANS_DEVICE",
+      "to": {
+       "type": "PlannedAsset",
+       "id": "PA-0067"
+      },
+      "provenance": "DECLARED app.relationship",
+      "label": "plans device",
+      "inverse": "planned in"
+     },
+     {
+      "from": {
+       "type": "PlannedAsset",
+       "id": "PA-0060"
+      },
+      "rel": "CONNECTS_TO",
+      "to": {
+       "type": "PlannedAsset",
+       "id": "PA-0067"
+      },
+      "provenance": "MODELED app.relationship",
+      "label": "connects to",
+      "inverse": "serves"
+     },
+     {
+      "from": {
+       "type": "PlannedAsset",
+       "id": "PA-0061"
+      },
+      "rel": "CONNECTS_TO",
+      "to": {
+       "type": "PlannedAsset",
+       "id": "PA-0067"
+      },
+      "provenance": "MODELED app.relationship",
+      "label": "connects to",
+      "inverse": "serves"
+     },
+     {
+      "from": {
+       "type": "PlannedAsset",
+       "id": "PA-0062"
+      },
+      "rel": "CONNECTS_TO",
+      "to": {
+       "type": "PlannedAsset",
+       "id": "PA-0067"
+      },
+      "provenance": "MODELED app.relationship",
+      "label": "connects to",
+      "inverse": "serves"
+     },
+     {
+      "from": {
+       "type": "PlannedAsset",
+       "id": "PA-0064"
+      },
+      "rel": "CONNECTS_TO",
+      "to": {
+       "type": "PlannedAsset",
+       "id": "PA-0067"
+      },
+      "provenance": "MODELED app.relationship",
+      "label": "connects to",
+      "inverse": "serves"
+     },
+     {
+      "from": {
+       "type": "PlannedAsset",
+       "id": "PA-0065"
+      },
+      "rel": "CONNECTS_TO",
+      "to": {
+       "type": "PlannedAsset",
+       "id": "PA-0067"
+      },
+      "provenance": "MODELED app.relationship",
+      "label": "connects to",
+      "inverse": "serves"
+     },
+     {
+      "from": {
+       "type": "PlannedAsset",
+       "id": "PA-0066"
+      },
+      "rel": "CONNECTS_TO",
+      "to": {
+       "type": "PlannedAsset",
+       "id": "PA-0067"
+      },
+      "provenance": "MODELED app.relationship",
+      "label": "connects to",
+      "inverse": "serves"
+     },
+     {
+      "from": {
+       "type": "RoomIssue",
+       "id": "RISS-0002"
+      },
+      "rel": "AFFECTS",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "MODELED app.relationship",
+      "label": "affects",
+      "inverse": "affected by"
+     },
+     {
+      "from": {
+       "type": "RoomIssue",
+       "id": "RISS-0003"
+      },
+      "rel": "AFFECTS",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "MODELED app.relationship",
+      "label": "affects",
+      "inverse": "affected by"
+     },
+     {
+      "from": {
+       "type": "RoomIssue",
+       "id": "RISS-0004"
+      },
+      "rel": "AFFECTS",
+      "to": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "provenance": "MODELED app.relationship",
+      "label": "affects",
+      "inverse": "affected by"
+     }
+    ],
+    "layout": [
+     {
+      "node": {
+       "type": "PlannedAsset",
+       "id": "PA-0061"
+      },
+      "x": 450,
+      "y": 300,
+      "depth": 0
+     },
+     {
+      "node": {
+       "type": "PlannedAsset",
+       "id": "PA-0065"
+      },
+      "x": 450,
+      "y": 206,
+      "depth": 1
+     },
+     {
+      "node": {
+       "type": "PlannedAsset",
+       "id": "PA-0067"
+      },
+      "x": 531,
+      "y": 347,
+      "depth": 1
+     },
+     {
+      "node": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "x": 369,
+      "y": 347,
+      "depth": 1
+     },
+     {
+      "node": {
+       "type": "PlannedAsset",
+       "id": "PA-0060"
+      },
+      "x": 450,
+      "y": 113,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "PlannedAsset",
+       "id": "PA-0064"
+      },
+      "x": 464,
+      "y": 113,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "PlannedAsset",
+       "id": "PA-0066"
+      },
+      "x": 477,
+      "y": 114,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "PlannedAsset",
+       "id": "PA-0062"
+      },
+      "x": 490,
+      "y": 117,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "Person",
+       "id": "7a34ae52-ef8e-4596-a776-e8134a317c3a"
+      },
+      "x": 503,
+      "y": 120,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "Person",
+       "id": "2780822d-ef25-4b71-802f-e0fcb455d6a1"
+      },
+      "x": 516,
+      "y": 125,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "Building",
+       "id": "NST"
+      },
+      "x": 529,
+      "y": 130,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "PlannedAsset",
+       "id": "PA-0063"
+      },
+      "x": 541,
+      "y": 136,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningBaseline",
+       "id": "196ce119-53f5-4bd0-8d83-53d91aec39ae"
+      },
+      "x": 552,
+      "y": 143,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/env_lighting_levels"
+      },
+      "x": 563,
+      "y": 151,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/display_controls"
+      },
+      "x": 574,
+      "y": 159,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/handover_support_path"
+      },
+      "x": 584,
+      "y": 169,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/audio_zone_routing"
+      },
+      "x": 593,
+      "y": 179,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/access_captions"
+      },
+      "x": 601,
+      "y": 189,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/video_camera_exposure"
+      },
+      "x": 609,
+      "y": 200,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/network_management_reach"
+      },
+      "x": 616,
+      "y": 212,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/cyber_default_credentials"
+      },
+      "x": 622,
+      "y": 224,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/network_firmware_baseline"
+      },
+      "x": 627,
+      "y": 237,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/audio_dsp_firmware"
+      },
+      "x": 631,
+      "y": 250,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/network_vlan"
+      },
+      "x": 634,
+      "y": 263,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/network_reachability"
+      },
+      "x": 636,
+      "y": 276,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/infra_labeling"
+      },
+      "x": 637,
+      "y": 290,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/uc_calendar"
+      },
+      "x": 637,
+      "y": 303,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/integ_itsm"
+      },
+      "x": 637,
+      "y": 317,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/audio_limiter_levels"
+      },
+      "x": 635,
+      "y": 330,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/safety_install"
+      },
+      "x": 632,
+      "y": 344,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/video_signal"
+      },
+      "x": 629,
+      "y": 357,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/video_edid_handshake"
+      },
+      "x": 624,
+      "y": 369,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/video_content_share"
+      },
+      "x": 619,
+      "y": 382,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/control_source_switching"
+      },
+      "x": 612,
+      "y": 394,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/compute_display_capability"
+      },
+      "x": 605,
+      "y": 405,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/compute_patch_baseline"
+      },
+      "x": 597,
+      "y": 416,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/user_function"
+      },
+      "x": 588,
+      "y": 426,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/compute_certified_config"
+      },
+      "x": 579,
+      "y": 436,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/control_latency"
+      },
+      "x": 569,
+      "y": 445,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/power_circuit_load"
+      },
+      "x": 558,
+      "y": 453,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/network_media_clock"
+      },
+      "x": 547,
+      "y": 461,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/video_camera_tracking"
+      },
+      "x": 535,
+      "y": 467,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/audio_mic_pickup"
+      },
+      "x": 523,
+      "y": 473,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/control_third_party"
+      },
+      "x": 510,
+      "y": 478,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/control_program_version"
+      },
+      "x": 497,
+      "y": 482,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/video_display_calibration"
+      },
+      "x": 484,
+      "y": 484,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/infra_cable_certification"
+      },
+      "x": 470,
+      "y": 486,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/network_addressing"
+      },
+      "x": 457,
+      "y": 487,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/uc_media"
+      },
+      "x": 443,
+      "y": 487,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/camera_fov"
+      },
+      "x": 430,
+      "y": 486,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/control_audio"
+      },
+      "x": 416,
+      "y": 484,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/uc_peripherals"
+      },
+      "x": 403,
+      "y": 482,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/handover_training"
+      },
+      "x": 390,
+      "y": 478,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/control_time_sync"
+      },
+      "x": 377,
+      "y": 473,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/network_qos"
+      },
+      "x": 365,
+      "y": 467,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/network_config_backup"
+      },
+      "x": 353,
+      "y": 461,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/control_ups"
+      },
+      "x": 342,
+      "y": 453,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/poe_budget"
+      },
+      "x": 331,
+      "y": 445,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/audio_gain"
+      },
+      "x": 321,
+      "y": 436,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/access_contrast"
+      },
+      "x": 312,
+      "y": 426,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/cyber_tls"
+      },
+      "x": 303,
+      "y": 416,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/audio_noise_floor"
+      },
+      "x": 295,
+      "y": 405,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/cyber_accounts"
+      },
+      "x": 288,
+      "y": 394,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/integ_monitoring_enrol"
+      },
+      "x": 281,
+      "y": 382,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/control_ui"
+      },
+      "x": 276,
+      "y": 369,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/interop_firmware_matrix"
+      },
+      "x": 271,
+      "y": 357,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/video_av_sync"
+      },
+      "x": 268,
+      "y": 344,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/infra_rack_match"
+      },
+      "x": 265,
+      "y": 330,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/integ_bms"
+      },
+      "x": 263,
+      "y": 317,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/video_switching"
+      },
+      "x": 263,
+      "y": 303,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/camera_preset"
+      },
+      "x": 263,
+      "y": 290,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/access_reach"
+      },
+      "x": 264,
+      "y": 276,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/interop_mixed_vendor"
+      },
+      "x": 266,
+      "y": 263,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/handover_warranty"
+      },
+      "x": 269,
+      "y": 250,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/power_ups_runtime"
+      },
+      "x": 273,
+      "y": 237,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/cyber_logging"
+      },
+      "x": 278,
+      "y": 224,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/control_error_states"
+      },
+      "x": 284,
+      "y": 212,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/network_port_profile"
+      },
+      "x": 291,
+      "y": 200,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/handover_spares"
+      },
+      "x": 299,
+      "y": 189,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/identity_asset"
+      },
+      "x": 307,
+      "y": 179,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/control_macros"
+      },
+      "x": 316,
+      "y": 169,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/control_camera"
+      },
+      "x": 326,
+      "y": 159,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/design_conformance"
+      },
+      "x": 337,
+      "y": 151,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/handover_runbook"
+      },
+      "x": 348,
+      "y": 143,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/audio_aec"
+      },
+      "x": 359,
+      "y": 136,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/cyber_management_isolation"
+      },
+      "x": 371,
+      "y": 130,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/cyber_firmware_signed"
+      },
+      "x": 384,
+      "y": 125,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "CommissioningTest",
+       "id": "R-PLN-0004/power_budget"
+      },
+      "x": 397,
+      "y": 120,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "RoomIssue",
+       "id": "RISS-0002"
+      },
+      "x": 410,
+      "y": 117,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "RoomIssue",
+       "id": "RISS-0003"
+      },
+      "x": 423,
+      "y": 114,
+      "depth": 2
+     },
+     {
+      "node": {
+       "type": "RoomIssue",
+       "id": "RISS-0004"
+      },
+      "x": 436,
+      "y": 113,
+      "depth": 2
+     }
+    ],
+    "impact": [
+     {
+      "type": "PlannedAsset",
+      "id": "PA-0065",
+      "label": "UC room compute 1",
+      "subtitle": "compute · Checkpoint conference room (synthetic)",
+      "provenance": "app.planned_asset",
+      "facets": {
+       "site": "SITE-NORTH",
+       "building": "NST",
+       "category": "compute"
+      },
+      "href": "#/rooms/R-PLN-0004/design",
+      "keywords": [
+       "compute"
+      ],
+      "typeLabel": "Planned device"
+     },
+     {
+      "type": "PlannedAsset",
+      "id": "PA-0067",
+      "label": "Network switch 1",
+      "subtitle": "switch · Checkpoint conference room (synthetic)",
+      "provenance": "app.planned_asset",
+      "facets": {
+       "site": "SITE-NORTH",
+       "building": "NST",
+       "category": "switch"
+      },
+      "href": "#/rooms/R-PLN-0004/design",
+      "keywords": [
+       "switch"
+      ],
+      "typeLabel": "Planned device"
+     },
+     {
+      "type": "PlannedAsset",
+      "id": "PA-0060",
+      "label": "Display 1",
+      "subtitle": "display · Checkpoint conference room (synthetic)",
+      "provenance": "app.planned_asset",
+      "facets": {
+       "site": "SITE-NORTH",
+       "building": "NST",
+       "category": "display"
+      },
+      "href": "#/rooms/R-PLN-0004/design",
+      "keywords": [
+       "display"
+      ],
+      "typeLabel": "Planned device"
+     },
+     {
+      "type": "PlannedAsset",
+      "id": "PA-0064",
+      "label": "Audio processor (DSP) 1",
+      "subtitle": "dsp · Checkpoint conference room (synthetic)",
+      "provenance": "app.planned_asset",
+      "facets": {
+       "site": "SITE-NORTH",
+       "building": "NST",
+       "category": "dsp"
+      },
+      "href": "#/rooms/R-PLN-0004/design",
+      "keywords": [
+       "dsp"
+      ],
+      "typeLabel": "Planned device"
+     },
+     {
+      "type": "PlannedAsset",
+      "id": "PA-0063",
+      "label": "Loudspeaker 1",
+      "subtitle": "speaker · Checkpoint conference room (synthetic)",
+      "provenance": "app.planned_asset",
+      "facets": {
+       "site": "SITE-NORTH",
+       "building": "NST",
+       "category": "speaker"
+      },
+      "href": "#/rooms/R-PLN-0004/design",
+      "keywords": [
+       "speaker"
+      ],
+      "typeLabel": "Planned device"
+     }
+    ],
+    "truncated": false,
+    "coverage": {
+     "types": {
+      "Site": 2,
+      "Building": 3,
+      "Room": 4,
+      "PlannedAsset": 67,
+      "RoomIssue": 4,
+      "Project": 1,
+      "CommissioningBaseline": 1,
+      "Evidence": 75,
+      "CommissioningTest": 75,
+      "Person": 8
+     },
+     "edges": 370,
+     "keyed": 133,
+     "legacyCodeOnly": 0,
+     "notes": [
+      "people appear only where a visible record names them; the full directory needs policy.configure",
+      "ownership, support paths, vendors and availability are not modelled yet: intents about them answer UNKNOWN; skills are verified competency records (personal: only recorders and verifiers see everyone's)"
+     ]
+    }
+   },
+   "correlationId": "1020e5d0-854e-48f8-bf43-222df43d43cb"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/search/intent",
+   "persona": "designer",
+   "status": 200,
+   "request": {
+    "question": "What depends on PA-0061?",
+    "target": {
+     "type": "PlannedAsset",
+     "id": "PA-0061"
+    }
+   },
+   "body": {
+    "intent": "depends",
+    "question": "What depends on PA-0061?",
+    "target": {
+     "type": "PlannedAsset",
+     "id": "PA-0061"
+    },
+    "status": "ANSWERED",
+    "summary": "5 downstream devices and 1 room depend on Camera 1.",
+    "items": [
+     {
+      "node": {
+       "type": "PlannedAsset",
+       "id": "PA-0065"
+      },
+      "label": "UC room compute 1",
+      "via": "downstream",
+      "provenance": "graph traversal (FEEDS/CONNECTS_TO/UPLINKS_TO/POWERED_BY/CONTROLS)",
+      "href": "#/rooms/R-PLN-0004/design"
+     },
+     {
+      "node": {
+       "type": "PlannedAsset",
+       "id": "PA-0067"
+      },
+      "label": "Network switch 1",
+      "via": "downstream",
+      "provenance": "graph traversal (FEEDS/CONNECTS_TO/UPLINKS_TO/POWERED_BY/CONTROLS)",
+      "href": "#/rooms/R-PLN-0004/design"
+     },
+     {
+      "node": {
+       "type": "PlannedAsset",
+       "id": "PA-0060"
+      },
+      "label": "Display 1",
+      "via": "downstream",
+      "provenance": "graph traversal (FEEDS/CONNECTS_TO/UPLINKS_TO/POWERED_BY/CONTROLS)",
+      "href": "#/rooms/R-PLN-0004/design"
+     },
+     {
+      "node": {
+       "type": "PlannedAsset",
+       "id": "PA-0064"
+      },
+      "label": "Audio processor (DSP) 1",
+      "via": "downstream",
+      "provenance": "graph traversal (FEEDS/CONNECTS_TO/UPLINKS_TO/POWERED_BY/CONTROLS)",
+      "href": "#/rooms/R-PLN-0004/design"
+     },
+     {
+      "node": {
+       "type": "PlannedAsset",
+       "id": "PA-0063"
+      },
+      "label": "Loudspeaker 1",
+      "via": "downstream",
+      "provenance": "graph traversal (FEEDS/CONNECTS_TO/UPLINKS_TO/POWERED_BY/CONTROLS)",
+      "href": "#/rooms/R-PLN-0004/design"
+     },
+     {
+      "node": {
+       "type": "Room",
+       "id": "R-PLN-0004"
+      },
+      "label": "Checkpoint conference room (synthetic)",
+      "via": "room affected",
+      "provenance": "PLANS_DEVICE/HAS_DEVICE",
+      "href": "#/rooms/R-PLN-0004"
+     }
+    ],
+    "evidence": [],
+    "uncertainty": [
+     "impact follows recorded edges only; an unrecorded cable or an undeclared uplink is invisible here"
+    ],
+    "confidence": "DERIVED",
+    "actions": []
+   },
+   "correlationId": "dd3a719e-1c4f-49ae-908a-a9707502fbb5"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/search/intent",
+   "persona": "designer",
+   "status": 200,
+   "request": {
+    "question": "What is connected to this camera?",
+    "target": {
+     "type": "PlannedAsset",
+     "id": "PA-0061"
+    }
+   },
+   "body": {
+    "intent": "connected",
+    "question": "What is connected to this camera?",
+    "target": {
+     "type": "PlannedAsset",
+     "id": "PA-0061"
+    },
+    "status": "ANSWERED",
+    "summary": "2 connections recorded for Camera 1.",
+    "items": [
+     {
+      "node": {
+       "type": "PlannedAsset",
+       "id": "PA-0065"
+      },
+      "label": "UC room compute 1",
+      "via": "feeds data to",
+      "provenance": "MODELED app.relationship",
+      "href": "#/rooms/R-PLN-0004/design"
+     },
+     {
+      "node": {
+       "type": "PlannedAsset",
+       "id": "PA-0067"
+      },
+      "label": "Network switch 1",
+      "via": "connects to",
+      "provenance": "MODELED app.relationship",
+      "href": "#/rooms/R-PLN-0004/design"
+     }
+    ],
+    "evidence": [],
+    "uncertainty": [
+     "some connections are proposed by the design rules (MODELED), not observed on the installed system"
+    ],
+    "confidence": "DERIVED",
+    "actions": []
+   },
+   "correlationId": "b25b4072-d46e-400c-a645-250c6eac0258"
+  }
+ ]
+}

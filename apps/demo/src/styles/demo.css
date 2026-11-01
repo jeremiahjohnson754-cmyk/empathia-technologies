@@ -95,3 +95,134 @@ h1 { margin: 0; font-size: clamp(26px, 3.6vw, 34px); line-height: 1.15; letter-s
   .card pre, .stack pre { overflow-x: auto; max-width: 100%; }
   .stack { min-width: 0; max-width: 100%; }
 }
+
+/* ---------------------------------------------------------------- sprint 2: the connected experience — a room's entire story, the living-room cascade
+   Calm by default: one accent, the panel surface, a quiet rail; status is always a word as well as a tone. Motion is a short
+   transform/opacity fade (160–240 ms tokens) and none under prefers-reduced-motion. Targets ≥ 32 px on desktop, 44 px on phones. */
+.story-go { white-space: nowrap; }
+a.ui-btn { text-decoration: none; }
+a.ui-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* the card on the investor start */
+.storycard { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: var(--sp-5); align-items: start; margin-top: var(--sp-7); padding: var(--sp-5); border: 1px solid var(--line2); border-radius: var(--r-md); background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 7%, var(--panel)), var(--panel)); }
+.storycard h2 { margin: 0 0 var(--sp-2); font-size: var(--fs-lg); line-height: 1.25; letter-spacing: -.005em; } .storycard p { margin: 0; color: var(--tx2); max-width: 58ch; } .storycard .kicker { margin-bottom: var(--sp-2); }
+.storycard__rooms { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-2); }
+.storycard__rooms a { display: grid; gap: 2px; min-height: 44px; padding: 10px 14px; border: 1px solid var(--line2); border-radius: var(--r-sm); background: var(--bg2); color: var(--tx); transition: border-color var(--t-fast) var(--ease); }
+.storycard__rooms a:hover { border-color: var(--accent); } .storycard__rooms a span { color: var(--tx2); font-size: var(--fs-xs); }
+@media (max-width: 760px) { .storycard { grid-template-columns: 1fr; padding: var(--sp-4); } }
+
+/* Search Party: the story from a room result, and from a focused room */
+.sp__list li.sp__room { display: flex; flex-wrap: wrap; gap: 6px; align-items: stretch; min-width: 0; } .sp__list li.sp__room > a:first-child { flex: 1 1 220px; min-width: 0; }
+.sp__list li a.sp__story { display: inline-flex; align-items: center; flex: 0 0 auto; padding: 0 12px; min-height: 36px; font-size: var(--fs-xs); font-weight: 600; color: var(--accent); white-space: nowrap; }
+.sp__storygo { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 var(--sp-3); }
+.tour__detour { white-space: nowrap; }
+.ledger__scope { margin: 0; padding: var(--sp-2) var(--sp-3); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: var(--r-sm); background: var(--panel); font-size: var(--fs-sm); color: var(--tx2); }
+.build__swap label { white-space: nowrap; }
+
+/* the Impact panel of Build a Room */
+.impact { margin-top: var(--sp-4); padding: var(--sp-3) var(--sp-4) var(--sp-4); border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--panel); }
+.impact > .build__h2 { margin-top: var(--sp-1); }
+.impact__hint { margin: 0; color: var(--tx2); font-size: var(--fs-sm); line-height: 1.55; }
+.impact__body { animation: impact-in var(--t-med) var(--ease) both; }
+@keyframes impact-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.impact__change { margin: 0 0 var(--sp-3); line-height: 1.45; overflow-wrap: anywhere; }
+.impact__grid { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-2); }
+.impact__item { padding: var(--sp-3); border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--bg2); display: grid; gap: 6px; min-width: 0; font-size: var(--fs-sm); line-height: 1.5; overflow-wrap: anywhere; }
+.impact__item p { margin: 0; }
+.impact__h { margin: 0; font-size: var(--fs-sm); font-weight: 700; color: var(--accent); letter-spacing: .01em; }
+.impact__fig { font-size: var(--fs-md); color: var(--tx2); } .impact__fig span { font-weight: 700; color: var(--tx); font-variant-numeric: tabular-nums; }
+.impact__gate { color: var(--tx2); }
+.impact__reopened, .build__reverify { display: grid; gap: 4px; padding: var(--sp-2) var(--sp-3); border: 1px solid var(--line); border-left: 3px solid var(--warn); border-radius: var(--r-sm); background: var(--panel); }
+.build__reverify { margin: 0 0 var(--sp-3); font-size: var(--fs-sm); line-height: 1.5; overflow-wrap: anywhere; } .build__reverify p { margin: 0; }
+.build__stale { display: block; font-size: var(--fs-xs); color: var(--tx2); }
+.impact__dev { display: grid; gap: 4px; padding-top: 6px; border-top: 1px solid var(--line); } .impact__dev:first-of-type { border-top: 0; padding-top: 0; }
+.impact__item details summary { cursor: pointer; font-weight: 600; padding: 4px 0; min-height: 28px; }
+.impact__sub { margin: 8px 0 4px !important; font-size: var(--fs-xs); font-weight: 700; color: var(--tx2); text-transform: uppercase; letter-spacing: .04em; }
+.impact__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; } .impact__list code { font: 600 var(--fs-xs) var(--font-mono); color: var(--tx2); }
+.impact__link, .story__link { display: inline-flex; align-items: center; min-height: 32px; font-weight: 600; font-size: var(--fs-sm); }
+.impact__link::after, .story__link::after { content: ' →'; white-space: pre; }
+.impact__design { margin: var(--sp-2) 0 0; } .impact__foot { margin: var(--sp-3) 0 0; }
+.impact__foot .ui-btn { min-height: 36px; }
+
+/* the story page */
+.story { display: grid; gap: var(--sp-5); }
+.story__head { margin-bottom: 0; } .story__head h1 { max-width: 30ch; } .story__head .ui-muted { margin: 6px 0 0; } .story__persp { max-width: 70ch; }
+.story__head code, .story__rooms code { font: 600 var(--fs-xs) var(--font-mono); color: var(--tx2); }
+.story__summary { display: grid; gap: var(--sp-3); padding: var(--sp-4); border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--panel); }
+.story__summary dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--sp-4); margin: 0; }
+.story__summary dt { font-size: var(--fs-xs); color: var(--tx3); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+.story__summary dd { margin: 4px 0 0; display: grid; gap: 2px; min-width: 0; overflow-wrap: anywhere; } .story__summary dd > b { font-size: var(--fs-md); font-variant-numeric: tabular-nums; }
+.story__open { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 2px; font-size: var(--fs-sm); }
+.story__nav ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; } .story__nav li { min-width: 0; }
+@media (min-width: 900px) { .story__nav ol { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.story__nav button { all: unset; box-sizing: border-box; cursor: pointer; width: 100%; min-height: 40px; display: flex; align-items: center; gap: 8px; padding: 6px 12px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--panel); color: var(--tx); font-size: var(--fs-sm); font-weight: 600; transition: border-color var(--t-fast) var(--ease); }
+.story__nav button:hover { border-color: var(--accent); } .story__nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.story__nav button span:not(.story__n) { flex: 1 1 auto; } .story__nav button b { font-variant-numeric: tabular-nums; color: var(--tx2); }
+.story__nav button.none { color: var(--tx2); border-style: dashed; }
+.story__n { display: inline-grid; place-items: center; width: 22px; height: 22px; flex: 0 0 22px; border-radius: 999px; font: 700 11px/1 var(--font-sans); color: var(--bg); background: var(--accent); }
+.none .story__n, .story__stage[data-count="0"] .story__n { background: var(--line2); color: var(--tx); }
+.story__chapters { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-6); }
+.story__stage { min-width: 0; }
+.story__h { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 0 0 var(--sp-3); font-size: var(--fs-lg); line-height: 1.3; scroll-margin-top: 140px; }
+.story__h:focus { outline: none; } .story__h:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+.story__hc { font-size: var(--fs-sm); font-weight: 600; color: var(--tx3); }
+.story__empty { margin: 0; padding: var(--sp-3) var(--sp-4); border: 1px dashed var(--line2); border-radius: var(--r-md); color: var(--tx2); font-size: var(--fs-sm); line-height: 1.55; } .story__empty b { color: var(--tx); }
+/* the timeline: time on the left, a quiet rail, one card per record */
+.story__entries { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-3); }
+.story__entry { position: relative; display: grid; grid-template-columns: 8.5rem minmax(0, 1fr); gap: var(--sp-4); }
+.story__entry::before { content: ''; position: absolute; left: calc(8.5rem + var(--sp-4) / 2 - 1px); top: 0; bottom: calc(-1 * var(--sp-3)); width: 2px; background: var(--line); }
+.story__entry:last-child::before { bottom: 0; }
+.story__entry::after { content: ''; position: absolute; left: calc(8.5rem + var(--sp-4) / 2 - 5px); top: 16px; width: 10px; height: 10px; border-radius: 999px; background: var(--accent); box-shadow: 0 0 0 3px var(--bg); }
+.story__entry--denied::after { background: var(--bad); }
+.story__entry[data-evidence="DECLARED"]::after, .story__entry[data-evidence="UNKNOWN"]::after { background: var(--tx3); }
+.story__when { padding-top: 10px; text-align: right; font-size: var(--fs-xs); color: var(--tx3); font-variant-numeric: tabular-nums; }
+.story__card { margin-left: var(--sp-4); padding: var(--sp-3) var(--sp-4); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); display: grid; gap: 6px; min-width: 0; overflow-wrap: anywhere; }
+.story__entry--denied .story__card { border-color: color-mix(in srgb, var(--bad) 35%, var(--line)); }
+.story__card p { margin: 0; }
+.story__what { font-weight: 600; line-height: 1.4; }
+.story__tags { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; } .story__ft { font: 600 var(--fs-xs) var(--font-mono); color: var(--tx2); }
+.story__who { font-size: var(--fs-sm); color: var(--tx2); }
+.story__detail { font-size: var(--fs-sm); color: var(--tx2); line-height: 1.55; max-width: 75ch; }
+.story__why { font-size: var(--fs-sm); line-height: 1.5; } .story__why > span { display: inline-block; margin-right: 6px; font-size: var(--fs-xs); font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .05em; }
+.story__why--none { color: var(--tx3); }
+.story__impact { font-size: var(--fs-sm); font-weight: 600; color: var(--tx); padding-left: 10px; border-left: 2px solid var(--accent); }
+.story__tech { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px var(--sp-4); margin: 2px 0 0; padding: 8px 10px; border-radius: var(--r-sm); background: var(--bg2); font-size: var(--fs-xs); }
+.story__tech dt { color: var(--tx3); font-weight: 600; } .story__tech dd { margin: 0; font-family: var(--font-mono); color: var(--tx2); overflow-wrap: anywhere; }
+.story__more summary, .story__legend summary { cursor: pointer; font-size: var(--fs-sm); font-weight: 600; padding: 6px 0; min-height: 32px; box-sizing: border-box; }
+.story__items { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 4px; font-size: var(--fs-xs); line-height: 1.5; color: var(--tx2); max-height: 360px; overflow-y: auto; }
+.story__go { font-size: var(--fs-sm); }
+.story__gaps { padding: var(--sp-4); border: 1px solid var(--line2); border-left: 3px solid var(--warn); border-radius: var(--r-md); background: var(--panel); }
+.story__gaps .ui-muted { margin: 0 0 var(--sp-2); font-size: var(--fs-sm); } .story__gaps ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: var(--fs-sm); line-height: 1.55; color: var(--tx2); }
+.story__legend dl { display: grid; gap: 6px; margin: 6px 0 0; font-size: var(--fs-sm); } .story__legend dl > div { display: grid; grid-template-columns: 10rem minmax(0, 1fr); gap: 8px; align-items: baseline; } .story__legend dd { margin: 0; color: var(--tx2); }
+.story__sources { margin: 0; line-height: 1.6; }
+.story__rooms { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--sp-2); }
+.story__rooms a { display: grid; gap: 2px; min-height: 44px; padding: 10px 14px; border: 1px solid var(--line2); border-radius: var(--r-sm); background: var(--panel); color: var(--tx); }
+.story__rooms a:hover { border-color: var(--accent); }
+/* density: the visitor's narrative stays calm */
+.story[data-density="narrative"] .story__card { gap: 4px; }
+@media (max-width: 760px) {
+  .story__entry { grid-template-columns: 1fr; gap: 2px; }
+  .story__entry::before, .story__entry::after { display: none; }
+  .story__when { text-align: left; padding: 0 0 0 2px; }
+  .story__card { margin-left: 0; border-left: 3px solid var(--accent); } .story__entry--denied .story__card { border-left-color: var(--bad); } .story__entry[data-evidence="DECLARED"] .story__card { border-left-color: var(--line2); }
+  .story__nav button { min-height: 44px; }
+  .story__link, .impact__link, .story__more summary, .story__legend summary, .impact__item details summary, .sp__list li a.sp__story { min-height: 44px; }
+  .story__legend dl > div { grid-template-columns: 1fr; gap: 2px; }
+  .impact { padding: var(--sp-3); }
+  .story__head .build__state { width: 100%; } .story__head .build__state select { flex: 1 1 auto; min-width: 0; max-width: 100%; min-height: 44px; }
+  .storycard__rooms a { min-height: 48px; }
+  .build__state .story-go, .build__state .ui-btn { min-height: 44px; }
+  .tour__detour { min-height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .impact__body { animation: none; }
+  .storycard__rooms a, .story__nav button { transition: none; }
+}
+/* Build a Room's Design tab at 320 px (found in sprint 2): the single-column track was `1fr`, whose minimum is the widest child's
+   min-content (a long select option), so a draft's Design tab scrolled sideways on a small phone. */
+.build__two > * { min-width: 0; }
+.build__row select, .build__row input { max-width: 100%; min-width: 0; }
+@media (max-width: 860px) { .build__two { grid-template-columns: minmax(0, 1fr); } }
+.story__go { display: flex; flex-wrap: wrap; align-items: center; column-gap: 6px; }
+.story__entry--state::after { background: var(--bg); box-shadow: 0 0 0 2px var(--tx3), 0 0 0 4px var(--bg); }
+.story__note { margin: 0; }

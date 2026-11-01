@@ -28,6 +28,8 @@ export const APPROVER_AUTHORITY = 'baseline.approve';
 export type DeviceState = 'Online' | 'Degraded' | 'Offline';
 export interface DeviceFact {
   id: string; category: string; label?: string;
+  /** The model on the register; with the baseline's model for the same asset id, a difference is a substitution. Omitted = not compared. */
+  model?: string | null;
   /** Live state when a monitoring feed or a discovery reports it; null = not known. */
   state?: DeviceState | null;
   networked?: boolean;
@@ -40,7 +42,7 @@ export interface DeviceFact {
 export interface CheckFact { id: string; dimension: Dimension; driftType: DriftType; result: 'Match' | 'Drift' | 'Fail'; metric: string; baselineValue: string; currentValue: string }
 export interface Baseline {
   id: string; version: number; signedAt: string; signedBy: string;
-  devices: Array<{ id: string; category: string; label?: string }>;
+  devices: Array<{ id: string; category: string; label?: string; model?: string | null }>;
   layout: Layout | null; capacity: number; configSignature: string | null;
   documents: string[];
   /** Standards the baseline itself missed at handover (gaps), by dimension. */
@@ -104,16 +106,20 @@ export function assess(base: Baseline, cur: Current): Assessment {
   // 1 presence: the register against the baseline, then live state where known
   {
     const added = cur.devices.filter((d) => !baseIds.has(d.id)); const removed = base.devices.filter((d) => !byId.has(d.id));
+    // a substitution: the same asset id with another model than the baseline holds (compared only when both sides state a model)
+    const baseModel = new Map(base.devices.map((d) => [d.id, d.model]));
+    const swapped = cur.devices.filter((d) => { const m = baseModel.get(d.id); return m != null && d.model != null && m !== d.model; });
     const off = cur.devices.filter((d) => d.state === 'Offline'); const ac = acFor('presence');
     const anyLive = known(cur.devices).length > 0 || ac.length > 0;
-    const st: Status = off.length ? 'fail' : added.length || removed.length ? 'drift' : anyLive ? acState(ac) : 'unknown';
+    const changed = added.length || removed.length || swapped.length;
+    const st: Status = off.length ? 'fail' : changed ? 'drift' : anyLive ? acState(ac) : 'unknown';
     row('presence', st, {
-      type: off.length || removed.length || added.length ? 'DEVICE' : acState(ac) !== 'match' ? 'DEVICE' : null, ev: anyLive ? 'MEASURED' : added.length || removed.length ? 'INFERRED' : 'UNKNOWN',
+      type: off.length || changed ? 'DEVICE' : acState(ac) !== 'match' ? 'DEVICE' : null, ev: anyLive ? 'MEASURED' : changed ? 'INFERRED' : 'UNKNOWN',
       commissioned: `${plural(base.devices.length, 'device')} on the register at handover`,
-      current: off.length ? `${plural(off.length, 'device')} offline` : removed.length ? `${plural(removed.length, 'device')} on the baseline no longer on the register` : added.length ? `${plural(added.length, 'device')} on the register that the baseline does not hold` : anyLive ? 'Every device on the register answering' : 'The register matches the baseline; whether the devices answer is not known without monitoring',
-      ids: off.concat(added).map((d) => d.id).concat(removed.map((d) => d.id), ac.filter((a) => a.result !== 'Match').map((a) => a.id)),
-      note: off.length ? 'An offline device is a failure of presence: Assurance cannot see it.' : added.length ? 'Installed under an approved design? Recommission to bring it into the baseline.' : '',
-      fix: off.length ? fix('Send someone to the room', 'support') : added.length || removed.length ? fix('Recommission the room', 'recom') : null,
+      current: off.length ? `${plural(off.length, 'device')} offline` : removed.length ? `${plural(removed.length, 'device')} on the baseline no longer on the register` : added.length ? `${plural(added.length, 'device')} on the register that the baseline does not hold` : swapped.length ? `${plural(swapped.length, 'device')} on the register substituted since handover: ${swapped.slice(0, 3).map((d) => `${d.label || d.category} ${baseModel.get(d.id)} → ${d.model}`).join('; ')}` : anyLive ? 'Every device on the register answering' : 'The register matches the baseline; whether the devices answer is not known without monitoring',
+      ids: off.concat(added, swapped).map((d) => d.id).concat(removed.map((d) => d.id), ac.filter((a) => a.result !== 'Match').map((a) => a.id)),
+      note: off.length ? 'An offline device is a failure of presence: Assurance cannot see it.' : added.length ? 'Installed under an approved design? Recommission to bring it into the baseline.' : swapped.length ? 'A substitution keeps the asset id. Run the checks it affects and recommission to bring the new model into the baseline.' : '',
+      fix: off.length ? fix('Send someone to the room', 'support') : changed ? fix('Recommission the room', 'recom') : null,
     });
   }
   // 2 network

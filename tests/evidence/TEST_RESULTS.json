@@ -1,18 +1,18 @@
 {
-  "at": "2026-10-31T21:34:34.429Z",
+  "at": "2026-11-01T00:27:43.746Z",
   "node": "v22.22.0",
-  "pass": 50,
-  "fail": 0,
+  "pass": 51,
+  "fail": 1,
   "notRun": 1,
   "suites": [
     {
       "suite": "unit: packages/commissioning-engine",
       "kind": "unit",
       "result": "PASS",
-      "tests": 128,
-      "pass": 128,
+      "tests": 134,
+      "pass": 134,
       "fail": 0,
-      "seconds": 0.5,
+      "seconds": 0.6,
       "command": "../../../opt/node22/bin/node --test packages/commissioning-engine/dist/test/**/*.test.js"
     },
     {
@@ -82,7 +82,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 0.4,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test packages/kpi-engine/dist/test/**/*.test.js"
     },
     {
@@ -99,8 +99,8 @@
       "suite": "unit: packages/assurance-engine",
       "kind": "unit",
       "result": "PASS",
-      "tests": 13,
-      "pass": 13,
+      "tests": 14,
+      "pass": 14,
       "fail": 0,
       "seconds": 0.1,
       "command": "../../../opt/node22/bin/node --test packages/assurance-engine/dist/test/**/*.test.js"
@@ -112,16 +112,16 @@
       "tests": 10,
       "pass": 10,
       "fail": 0,
-      "seconds": 0.4,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test packages/observability/dist/test/**/*.test.js"
     },
     {
       "suite": "unit: packages/api-client",
       "kind": "unit",
-      "result": "PASS",
+      "result": "FAIL",
       "tests": 5,
-      "pass": 5,
-      "fail": 0,
+      "pass": 4,
+      "fail": 1,
       "seconds": 0.1,
       "command": "../../../opt/node22/bin/node --test packages/api-client/dist/test/**/*.test.js"
     },
@@ -156,13 +156,23 @@
       "command": "../../../opt/node22/bin/node --test integrations/mocks/dist/test/**/*.test.js"
     },
     {
+      "suite": "unit: apps/demo (story, impact)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 21,
+      "pass": 21,
+      "fail": 0,
+      "seconds": 1.2,
+      "command": "../../../opt/node22/bin/node --test apps/demo/test/**/*.test.mjs"
+    },
+    {
       "suite": "unit: ml research prototype (python)",
       "kind": "unit",
       "result": "PASS",
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 7,
+      "seconds": 5.5,
       "command": "python3 -I -m unittest discover -s ml/tests"
     },
     {
@@ -172,7 +182,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 0.8,
+      "seconds": 0.6,
       "command": "python3 -I -m unittest discover -s services/intelligence-python/tests"
     },
     {
@@ -182,7 +192,7 @@
       "tests": 22,
       "pass": 22,
       "fail": 0,
-      "seconds": 12.7,
+      "seconds": 4.7,
       "command": "../../../opt/node22/bin/node --test tests/integration/api.test.mjs"
     },
     {
@@ -192,7 +202,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 2.3,
+      "seconds": 2,
       "command": "../../../opt/node22/bin/node --test tests/integration/leads.test.mjs"
     },
     {
@@ -202,7 +212,7 @@
       "tests": 3,
       "pass": 3,
       "fail": 0,
-      "seconds": 2.1,
+      "seconds": 1.8,
       "command": "../../../opt/node22/bin/node --test tests/integration/api-client.test.mjs"
     },
     {
@@ -212,7 +222,7 @@
       "tests": 1,
       "pass": 1,
       "fail": 0,
-      "seconds": 1.9,
+      "seconds": 2,
       "command": "../../../opt/node22/bin/node --test tests/integration/integration-worker.test.mjs"
     },
     {
@@ -232,7 +242,7 @@
       "tests": 45,
       "pass": 45,
       "fail": 0,
-      "seconds": 4.3,
+      "seconds": 4.4,
       "command": "../../../opt/node22/bin/node --test tests/security/authz.test.mjs"
     },
     {
@@ -242,7 +252,7 @@
       "tests": 6,
       "pass": 6,
       "fail": 0,
-      "seconds": 2.5,
+      "seconds": 2.1,
       "command": "../../../opt/node22/bin/node --test tests/security/founder-boundary.test.mjs"
     },
     {
@@ -252,7 +262,7 @@
       "tests": 3,
       "pass": 3,
       "fail": 0,
-      "seconds": 3.1,
+      "seconds": 2.7,
       "command": "../../../opt/node22/bin/node --test tests/security/site-scope.test.mjs"
     },
     {
@@ -262,17 +272,17 @@
       "tests": 2,
       "pass": 2,
       "fail": 0,
-      "seconds": 9.9,
+      "seconds": 9.3,
       "command": "../../../opt/node22/bin/node --test tests/security/authority-matrix.test.mjs"
     },
     {
       "suite": "security: governance.test.mjs",
       "kind": "security",
       "result": "PASS",
-      "tests": 9,
-      "pass": 9,
+      "tests": 10,
+      "pass": 10,
       "fail": 0,
-      "seconds": 5.8,
+      "seconds": 7.1,
       "command": "../../../opt/node22/bin/node --test tests/security/governance.test.mjs"
     },
     {
@@ -282,7 +292,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 2.8,
+      "seconds": 2.7,
       "command": "../../../opt/node22/bin/node --test tests/security/administration.test.mjs"
     },
     {
@@ -292,7 +302,7 @@
       "tests": 7,
       "pass": 7,
       "fail": 0,
-      "seconds": 3.1,
+      "seconds": 3,
       "command": "../../../opt/node22/bin/node --test tests/security/search-party.test.mjs"
     },
     {
@@ -302,7 +312,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 2,
+      "seconds": 2.1,
       "command": "../../../opt/node22/bin/node --test tests/security/oidc.test.mjs"
     },
     {
@@ -312,7 +322,7 @@
       "tests": 16,
       "pass": 16,
       "fail": 0,
-      "seconds": 7.3,
+      "seconds": 7.8,
       "command": "../../../opt/node22/bin/node --test tests/security/project-lifecycle.test.mjs"
     },
     {
@@ -322,7 +332,7 @@
       "tests": 11,
       "pass": 11,
       "fail": 0,
-      "seconds": 3.8,
+      "seconds": 3.6,
       "command": "../../../opt/node22/bin/node --test tests/security/service-lifecycle.test.mjs"
     },
     {
@@ -332,7 +342,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 3.4,
+      "seconds": 3.1,
       "command": "../../../opt/node22/bin/node --test tests/security/apex.test.mjs"
     },
     {
@@ -342,7 +352,7 @@
       "tests": 6,
       "pass": 6,
       "fail": 0,
-      "seconds": 3.2,
+      "seconds": 3.1,
       "command": "../../../opt/node22/bin/node --test tests/security/field-intelligence.test.mjs"
     },
     {
@@ -352,7 +362,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 2.8,
+      "seconds": 3.2,
       "command": "../../../opt/node22/bin/node --test tests/security/learn.test.mjs"
     },
     {
@@ -372,7 +382,7 @@
       "tests": 6,
       "pass": 6,
       "fail": 0,
-      "seconds": 4.1,
+      "seconds": 4.2,
       "command": "../../../opt/node22/bin/node --test tests/security/competency.test.mjs"
     },
     {
@@ -382,7 +392,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 2.8,
+      "seconds": 2.7,
       "command": "../../../opt/node22/bin/node --test tests/security/ledger.test.mjs"
     },
     {
@@ -392,7 +402,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 2.6,
+      "seconds": 2.5,
       "command": "../../../opt/node22/bin/node --test tests/security/measurement-import.test.mjs"
     },
     {
@@ -402,7 +412,7 @@
       "tests": 6,
       "pass": 6,
       "fail": 0,
-      "seconds": 4.3,
+      "seconds": 4.1,
       "command": "../../../opt/node22/bin/node --test tests/security/hardening.test.mjs"
     },
     {
@@ -417,13 +427,24 @@
       "command": "../../../opt/node22/bin/node tests/e2e/website-lead.e2e.mjs"
     },
     {
+      "suite": "e2e: checkpoint room lifecycle over the API (build → accept → camera swap → requirements → Room Story)",
+      "kind": "e2e",
+      "result": "PASS",
+      "tests": 88,
+      "pass": 88,
+      "fail": 0,
+      "notRun": 0,
+      "seconds": 8.7,
+      "command": "../../../opt/node22/bin/node tests/e2e/checkpoint-room-lifecycle.e2e.mjs"
+    },
+    {
       "suite": "browser: enterprise web E2E",
       "kind": "e2e",
       "result": "PASS",
       "tests": 88,
       "pass": 88,
       "fail": 0,
-      "seconds": 30.7,
+      "seconds": 31.2,
       "command": "../../../opt/node22/bin/node tests/browser/enterprise-web.test.mjs"
     },
     {
@@ -434,18 +455,18 @@
       "pass": 54,
       "fail": 0,
       "notRun": 0,
-      "seconds": 13,
+      "seconds": 14.3,
       "command": "../../../opt/node22/bin/node tests/browser/website.test.mjs"
     },
     {
       "suite": "browser: investor demo shell",
       "kind": "browser",
       "result": "PASS",
-      "tests": 101,
-      "pass": 101,
+      "tests": 138,
+      "pass": 138,
       "fail": 0,
       "notRun": 0,
-      "seconds": 97.4,
+      "seconds": 115.4,
       "command": "../../../opt/node22/bin/node tests/browser/demo.test.mjs"
     },
     {
@@ -456,7 +477,7 @@
       "pass": 19,
       "fail": 0,
       "notRun": 1,
-      "seconds": 39.6,
+      "seconds": 41.9,
       "command": "../../../opt/node22/bin/node tests/browser/founder-studio.test.mjs"
     },
     {
@@ -466,7 +487,7 @@
       "tests": 25,
       "pass": 25,
       "fail": 0,
-      "seconds": 49.1,
+      "seconds": 51.2,
       "command": "../../../opt/node22/bin/node tests/e2e/founder-townhall.e2e.mjs"
     },
     {
@@ -477,7 +498,7 @@
       "pass": 9,
       "fail": 0,
       "notRun": 0,
-      "seconds": 6.8,
+      "seconds": 8.4,
       "command": "../../../opt/node22/bin/node tests/e2e/founder-decisions.e2e.mjs"
     },
     {
@@ -500,10 +521,10 @@
       "suite": "deploy: public sites audit (functional, a11y, responsive; no P0/P1)",
       "kind": "deploy",
       "result": "PASS",
-      "tests": 152,
-      "pass": 152,
+      "tests": 164,
+      "pass": 164,
       "fail": 0,
-      "seconds": 157,
+      "seconds": 178.4,
       "command": "../../../opt/node22/bin/node scripts/audit/site-audit.mjs --strict --out=tests/evidence/SITE_AUDIT.json"
     },
     {
@@ -513,7 +534,7 @@
       "tests": 17,
       "pass": 17,
       "fail": 0,
-      "seconds": 10.4,
+      "seconds": 11.4,
       "command": "../../../opt/node22/bin/node scripts/staging/verify-static.mjs"
     }
   ]

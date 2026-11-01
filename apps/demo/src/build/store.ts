@@ -6,9 +6,9 @@
  */
 import {
   analyzeRoom, defaultCatalog, outlineFor, templateDevices, newDevice, proposeConnections, parseLength, lifecycleBlockers, LIFECYCLE_AUTHORITY,
-  recordBlockers, buildResult, verifyBlockers, resultLabel, drawingInput, DRAWING_KINDS, type RoomAnalysis,
+  recordBlockers, buildResult, verifyBlockers, resultLabel, drawingInput, DRAWING_KINDS, reopenedBySubstitution, type RoomAnalysis,
 } from '@empathia/commissioning-engine';
-import type { RoomDesignInput, PlannedDevice, Connection, RecordedResult, RoomLifecycle } from '@empathia/domain-types';
+import type { RoomDesignInput, PlannedDevice, Connection, RecordedResult, RoomLifecycle, ResultCounts, ResultLabel } from '@empathia/domain-types';
 import PERSONAS from '@empathia/domain-data/data/V25_PERSONAS.json' with { type: 'json' };
 
 export const C = defaultCatalog;
@@ -27,23 +27,51 @@ export interface Draft {
   revisions: Array<{ n: number; by: string; at: string; hash: string; reason: string }>;
   approvedRevision: number | null;
   drawings: Record<string, { state: 'DRAFT' | 'GENERATED' | 'APPROVED' | 'REVIEW_REQUIRED'; input: string; by?: string }>;
-  events: Array<{ at: string; by: string; type: string; detail: string; outcome: 'ALLOWED' | 'DENIED' }>;
+  events: DraftEvent[];
   baseline: Baseline | null;
   /** every published version (superseded ones included): a baseline is never overwritten */
   baselines: Baseline[];
+  /** devices substituted while the accepted room is recommissioned, oldest first (kept after the re-acceptance: never deleted) */
+  substitutions: Substitution[];
   seq: { pa: number; cn: number };
 }
+/**
+ * A device substituted while an accepted room is recommissioned (ADR-0003). The tests it reopens are judged, when it happens, by the
+ * commissioning engine's `reopenedBySubstitution` — the rule the enterprise API runs — on the plan the earlier results were recorded
+ * against. Their earlier results stay in the record (and in its history once re-run); they no longer count towards the re-acceptance.
+ */
+export interface Substitution {
+  /** the substituted device (the one whose results no longer count), its label and category */
+  assetId: string; label: string; category: string;
+  /** the change in words: the substituted category → the device that replaced it */
+  from: string; to: string;
+  /** the device that replaced it (in Build a Room a different category is a new planned asset) */
+  replacedBy: string;
+  at: string; by: string;
+  /** the baseline that was CURRENT when it happened: the re-acceptance against it is what the reopened tests block */
+  baselineVersion: number;
+  /** each reopened test with the engine's reason and the number of result records it had then (a later record is a re-run) */
+  reopened: Array<{ testId: string; reason: string; records: number }>;
+}
+/** One ledger event of the draft. A change to the room also carries a structured `change` (actor = `by`, what, from, to, why, affected objects). */
+export interface DraftEvent { at: string; by: string; type: string; detail: string; outcome: 'ALLOWED' | 'DENIED'; change?: DraftChange }
+export interface DraftChange { what: 'device added' | 'device removed' | 'device swapped'; from: string | null; to: string | null; /** the reason the person gave; '' = none given (never invented) */ why: string; affected: Affected[] }
+/** An object a change touched, with what happened to it and the page that shows it. The impact panel appends the engines' findings. */
+export interface Affected { kind: 'device' | 'connection' | 'test' | 'baseline' | 'kpi' | 'station' | 'drawing' | 'classification'; id: string; label: string; effect: string; href: string }
 export interface Baseline { version: number; at: string; by: string; revision: number | null; results: Record<string, string>; devices: Array<{ id: string; cat: string; label: string }>; state: 'CURRENT' | 'SUPERSEDED' }
 export type Refusal = { why: string[] };
 export const refused = (why: string[]): Refusal => ({ why });
 
 const KEY = 'empathia.demo.build-a-room.v1';
-export function loadDraft(): Draft | null { try { const s = localStorage.getItem(KEY); if (!s) return null; const d = JSON.parse(s) as Draft; if (!d.baselines) d.baselines = d.baseline ? [{ ...d.baseline, devices: [], state: 'CURRENT' }] : []; return d; } catch { return null; } }
+export function loadDraft(): Draft | null { try { const s = localStorage.getItem(KEY); if (!s) return null; const d = JSON.parse(s) as Draft; if (!d.baselines) d.baselines = d.baseline ? [{ ...d.baseline, devices: [], state: 'CURRENT' }] : []; if (!d.substitutions) d.substitutions = []; return d; } catch { return null; } }
 export function saveDraft(d: Draft | null): void { try { if (d) localStorage.setItem(KEY, JSON.stringify(d)); else localStorage.removeItem(KEY); } catch { /* storage unavailable: the draft lasts the page */ } }
 
 const now = () => new Date().toISOString();
 const hash = (s: string) => { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8, '0'); };   // display hash of a drawing/revision input (the API uses SHA-256)
-const log = (d: Draft, by: string, type: string, detail: string, outcome: 'ALLOWED' | 'DENIED' = 'ALLOWED') => { d.events.unshift({ at: now(), by, type, detail, outcome }); d.events = d.events.slice(0, 200); };
+const log = (d: Draft, by: string, type: string, detail: string, outcome: 'ALLOWED' | 'DENIED' = 'ALLOWED', change?: DraftChange) => { d.events.unshift({ at: now(), by, type, detail, outcome, ...(change ? { change } : {}) }); d.events = d.events.slice(0, 200); };
+const DESIGN_HREF = '#/v25/build?tab=design';
+const devRef = (x: PlannedDevice, effect: string): Affected => ({ kind: 'device', id: x.id, label: `${x.label} (${x.cat})`, effect, href: DESIGN_HREF });
+const connRef = (c: Connection, effect: string): Affected => ({ kind: 'connection', id: c.id, label: `${c.from} → ${c.to} (${c.kind})`, effect, href: DESIGN_HREF });
 
 export interface CreateInput { name: string; template: string; unit: 'm' | 'ft'; length?: string; width?: string; ceiling?: string; occupancy?: string; intendedUse?: string; shape: 'rect' | 'lshape' }
 
@@ -67,7 +95,7 @@ export function createDraft(input: CreateInput, persona: string): Draft | Refusa
     devices, connections: [], classification: { approved: null }, results: {},
   };
   design.connections = proposeConnections(design, () => `CN-${String(++seq.cn).padStart(4, '0')}`, undefined, C);
-  const d: Draft = { code: 'R-DEMO-0001', name: input.name.trim(), unit: input.unit, createdBy: persona, createdAt: now(), design, lastEditedBy: persona, revisions: [], approvedRevision: null, drawings: {}, events: [], baseline: null, baselines: [], seq };
+  const d: Draft = { code: 'R-DEMO-0001', name: input.name.trim(), unit: input.unit, createdBy: persona, createdAt: now(), design, lastEditedBy: persona, revisions: [], approvedRevision: null, drawings: {}, events: [], baseline: null, baselines: [], substitutions: [], seq };
   log(d, persona, 'room.design_created', `${d.name} from template ${T.label}; ${devices.length} devices, ${design.connections.length} proposed connections; dimensions ${Object.entries(prov).map(([k, v]) => `${k} ${v}`).join(', ')}`);
   refreshDrawings(d);
   return d;
@@ -92,25 +120,112 @@ function touchDesign(d: Draft, persona: string) {
   refreshDrawings(d);
 }
 
-export function addDevice(d: Draft, persona: string, cat: string, pos: { x: number; y: number }): Draft | Refusal {
+const CHANGE_STATES = ['PLANNED', 'COMMISSIONING'];
+export function addDevice(d: Draft, persona: string, cat: string, pos: { x: number; y: number }, why = ''): Draft | Refusal {
   if (!holds(persona, 'room.design')) return refused([`${personaLabel(persona)} does not hold room.design`]);
-  if (d.design.lifecycle !== 'PLANNED' && d.design.lifecycle !== 'COMMISSIONING') return refused([`devices are planned while the room is PLANNED, or changed during (re)commissioning (this one is ${d.design.lifecycle})`]);
+  if (!CHANGE_STATES.includes(d.design.lifecycle)) return refused([`devices are planned while the room is PLANNED, or changed during (re)commissioning (this one is ${d.design.lifecycle})`]);
   if (!C.categories[cat]) return refused([`unknown equipment category ${cat}`]);
   const id = `PA-${String(++d.seq.pa).padStart(4, '0')}`;
   const dev = newDevice(id, cat, d.design.devices.filter((x) => !x.removed), { x: pos.x, y: pos.y }, '', C);
   d.design.devices.push(dev);
   const added = proposeConnections(d.design, () => `CN-${String(++d.seq.cn).padStart(4, '0')}`, id, C);
   d.design.connections.push(...added);
-  log(d, persona, 'room.device_added', `${dev.label} (${cat}) at ${pos.x.toFixed(1)}, ${pos.y.toFixed(1)} m; ${added.length} connections proposed`);
+  log(d, persona, 'room.device_added', `${dev.label} (${cat}) at ${pos.x.toFixed(1)}, ${pos.y.toFixed(1)} m; ${added.length} connections proposed`, 'ALLOWED',
+    { what: 'device added', from: null, to: `${dev.label} (${cat})`, why: why.trim(), affected: [devRef(dev, 'added'), ...added.map((c) => connRef(c, 'proposed (MODELED)'))] });
   touchDesign(d, persona); return d;
 }
-export function removeDevice(d: Draft, persona: string, id: string): Draft | Refusal {
+export function removeDevice(d: Draft, persona: string, id: string, why = ''): Draft | Refusal {
   if (!holds(persona, 'room.design')) return refused([`${personaLabel(persona)} does not hold room.design`]);
-  if (d.design.lifecycle !== 'PLANNED' && d.design.lifecycle !== 'COMMISSIONING') return refused([`devices are planned while the room is PLANNED, or changed during (re)commissioning (this one is ${d.design.lifecycle})`]);
+  if (!CHANGE_STATES.includes(d.design.lifecycle)) return refused([`devices are planned while the room is PLANNED, or changed during (re)commissioning (this one is ${d.design.lifecycle})`]);
   const dev = d.design.devices.find((x) => x.id === id && !x.removed); if (!dev) return refused([`no device ${id}`]);
-  dev.removed = true; for (const c of d.design.connections) if (!c.removed && (c.from === id || c.to === id)) c.removed = true;
-  log(d, persona, 'room.device_removed', `${dev.label} (${dev.cat}) and its connections`);
+  const gone: Connection[] = [];
+  dev.removed = true; for (const c of d.design.connections) if (!c.removed && (c.from === id || c.to === id)) { c.removed = true; gone.push(c); }
+  log(d, persona, 'room.device_removed', `${dev.label} (${dev.cat}) and its connections`, 'ALLOWED',
+    { what: 'device removed', from: `${dev.label} (${dev.cat})`, to: null, why: why.trim(), affected: [devRef(dev, 'removed'), ...gone.map((c) => connRef(c, 'removed'))] });
   touchDesign(d, persona); return d;
+}
+/** Replace one device by a device of another category at the same place (a camera swapped for a video bar, …): one change, one event.
+ *  The new device gets a new planned-asset id — a different category is a different device, not a model substitution. */
+export function swapDevice(d: Draft, persona: string, id: string, cat: string, why = ''): Draft | Refusal {
+  if (!holds(persona, 'room.design')) return refused([`${personaLabel(persona)} does not hold room.design`]);
+  if (!CHANGE_STATES.includes(d.design.lifecycle)) return refused([`devices are planned while the room is PLANNED, or changed during (re)commissioning (this one is ${d.design.lifecycle})`]);
+  const old = d.design.devices.find((x) => x.id === id && !x.removed); if (!old) return refused([`no device ${id}`]);
+  if (!C.categories[cat]) return refused([`unknown equipment category ${cat}`]);
+  if (cat === old.cat) return refused([`${old.label} is already a ${C.categories[cat]!.label}: pick another category to swap it for`]);
+  // an accepted room under recommissioning: the substitution is judged on the plan the earlier results were recorded against (before the swap)
+  const recom = recommissioningBaseline(d);
+  const planBefore = recom ? analysis(d).applicability.rows.filter((r) => r.applicable) : [];
+  const gone: Connection[] = [];
+  old.removed = true; for (const c of d.design.connections) if (!c.removed && (c.from === id || c.to === id)) { c.removed = true; gone.push(c); }
+  const nid = `PA-${String(++d.seq.pa).padStart(4, '0')}`;
+  const dev = newDevice(nid, cat, d.design.devices.filter((x) => !x.removed), { x: old.x, y: old.y, rot: old.rot }, '', C);
+  d.design.devices.push(dev);
+  const added = proposeConnections(d.design, () => `CN-${String(++d.seq.cn).padStart(4, '0')}`, nid, C);
+  d.design.connections.push(...added);
+  const reopened: Affected[] = [];
+  if (recom) {
+    // the commissioning engine's rule, the one the enterprise API runs: a result recorded on the substituted device no longer counts
+    const sub = { assetId: old.id, label: old.label, category: old.cat, from: old.cat, to: `${dev.label} (${cat}, ${nid})` };
+    const res = results(d);
+    const tests = reopenedBySubstitution(planBefore.map((r) => ({ testId: r.id, domain: r.domain, devices: r.devices, label: r.label })), [sub]);
+    d.substitutions = [...(d.substitutions || []), { ...sub, replacedBy: nid, at: now(), by: persona, baselineVersion: recom.version, reopened: tests.map((t) => ({ testId: t.testId, reason: t.reasons[0]!, records: recordCount(res[t.testId]) })) }];
+    for (const t of tests) reopened.push({ kind: 'test', id: t.testId, label: t.row.label, effect: REOPENED, href: '#/v25/build?tab=checks' });
+  }
+  log(d, persona, 'room.device_swapped', `${old.label} (${old.cat}, ${old.id}) → ${dev.label} (${cat}, ${nid}) at ${old.x.toFixed(1)}, ${old.y.toFixed(1)} m; ${gone.length} connections removed, ${added.length} proposed${recom ? `; ${reopened.length} tests reopened against baseline v${recom.version} (results recorded on ${old.label} no longer count towards the re-acceptance)` : ''}`, 'ALLOWED',
+    { what: 'device swapped', from: `${old.label} (${old.cat})`, to: `${dev.label} (${cat})`, why: why.trim(), affected: [devRef(old, 'removed'), devRef(dev, 'added'), ...gone.map((c) => connRef(c, 'removed')), ...added.map((c) => connRef(c, 'proposed (MODELED)')), ...reopened] });
+  touchDesign(d, persona); return d;
+}
+
+// ------------------------------------------------------------------------------------------------ recommissioning: re-verification after a substitution
+/** What the record says of a reopened test until it is re-run (the Impact panel, the plan, the results and the story say it the same way). */
+export const PREVIOUS_DEVICE = 'recorded on the previous device · must be re-run and verified again';
+export const REOPENED = `reopened: ${PREVIOUS_DEVICE}`;
+/** The number of result records a test has (the current one and its history): a record made after a substitution has a higher number. */
+const recordCount = (r: RecordedResult | undefined) => (r ? (r.history || []).length + 1 : 0);
+/** The CURRENT baseline of an accepted room that is being recommissioned (ACCEPTED → COMMISSIONING); null in every other state. */
+export function recommissioningBaseline(d: Draft): Baseline | null {
+  return d.design.lifecycle === 'COMMISSIONING' && d.baseline && d.baseline.state === 'CURRENT' ? d.baseline : null;
+}
+/** The substitutions made under the current baseline while it is being recommissioned. */
+export const activeSubstitutions = (d: Draft): Substitution[] => { const b = recommissioningBaseline(d); return b ? (d.substitutions || []).filter((s) => s.baselineVersion === b.version) : []; };
+
+/** A reopened test as the API's readiness reports it: the reasons (one per substitution), its current result and whether it is still to re-run. */
+export interface Reverification { testId: string; label: string; domain: string; personas: string[]; assets: string[]; reasons: string[]; substitutedAt: string; result: ResultLabel; recordedAt: string | null; rerun: boolean }
+/** The applicable tests the substitutions under the current baseline reopened. `rerun`: its result was recorded before the latest of them. */
+export function reverification(d: Draft, a: RoomAnalysis = analysis(d)): Reverification[] {
+  const subs = activeSubstitutions(d); if (!subs.length) return [];
+  const res = results(d);
+  return a.applicability.rows.filter((r) => r.applicable).flatMap((r) => {
+    const by = subs.flatMap((s) => s.reopened.filter((t) => t.testId === r.id).map((t) => ({ s, t })));
+    if (!by.length) return [];
+    const cur = res[r.id];
+    return [{ testId: r.id, label: r.label, domain: r.domain, personas: r.personas || [], assets: by.map((x) => x.s.assetId), reasons: by.map((x) => x.t.reason), substitutedAt: by[by.length - 1]!.s.at,
+      result: resultLabel(cur), recordedAt: cur?.at ?? null, rerun: recordCount(cur) <= Math.max(...by.map((x) => x.t.records)) }];
+  });
+}
+/** The re-acceptance waits for every reopened test: re-run after the substitution, then passed and verified by a different person. */
+export function reverificationBlockers(rv: Reverification[]): string[] {
+  const why: string[] = [];
+  const rerun = rv.filter((t) => t.rerun);
+  // the enterprise API's wording (rooms.recommissionBlockers)
+  if (rerun.length) why.push(`${rerun.length} test(s) were last recorded before the substitution and must be re-run on the changed design and verified independently: ${rerun.map((t) => t.testId).join(', ')}`);
+  const unverified = rv.filter((t) => !t.rerun && t.result !== 'PASS_VERIFIED');
+  if (unverified.length) why.push(`${unverified.length} reopened test(s) were re-run after the substitution and are not yet passed and verified by a different person: ${unverified.map((t) => `${t.testId} (${t.result})`).join(', ')}`);
+  return why;
+}
+/** The result counts that still count: a reopened test whose result predates the substitution is taken out of them and counted as reopened. */
+export function countsNow(d: Draft, a: RoomAnalysis = analysis(d)): ResultCounts & { reopened: number } {
+  const stale = new Set(reverification(d, a).filter((t) => t.rerun).map((t) => t.testId));
+  const res = results(d); const L = a.applicability.rows.filter((r) => r.applicable && !stale.has(r.id)).map((r) => resultLabel(res[r.id]));
+  const n = (x: ResultLabel) => L.filter((y) => y === x).length;
+  return { applicable: L.length + stale.size, recorded: L.filter((x) => x !== 'NOT_TESTED').length, verified: n('PASS_VERIFIED'), awaiting: n('PASS_UNVERIFIED'), failed: n('FAIL'), notSupported: n('NOT_SUPPORTED'), inconclusive: n('INCONCLUSIVE'), notTested: n('NOT_TESTED'), reopened: stale.size };
+}
+/** Every condition on a lifecycle transition, as reasons (empty = allowed; authority and separation of duties are checked apart): the
+ *  engine's gates and, for a re-acceptance, the tests a substitution reopened — as the enterprise API adds them to its refusal. */
+export function lifecycleConditions(d: Draft, to: RoomLifecycle, a: RoomAnalysis = analysis(d)): string[] {
+  const why = lifecycleBlockers({ from: d.design.lifecycle, to, classificationApproved: !!d.design.classification.approved && !d.design.classification.approved.stale, openIssues: a.checks, savedRevisions: d.revisions.length, rows: a.applicability.rows, results: d.design.results, hasBaseline: !!d.baseline, hasLiveMonitoringEvidence: false });
+  if (to === 'ACCEPTED') why.push(...reverificationBlockers(reverification(d, a)));
+  return why;
 }
 export function saveRevision(d: Draft, persona: string, reason: string): Draft | Refusal {
   if (!holds(persona, 'room.design')) return refused([`${personaLabel(persona)} does not hold room.design`]);
@@ -143,7 +258,7 @@ export function transition(d: Draft, persona: string, to: RoomLifecycle): Draft 
   const need = LIFECYCLE_AUTHORITY[to];
   if (!holds(persona, need)) { log(d, persona, `room.lifecycle:${to}`, `refused: needs ${need}`, 'DENIED'); return refused([`${personaLabel(persona)} may not move a room to ${to} (needs ${need})`]); }
   const a = analysis(d);
-  const why = lifecycleBlockers({ from: d.design.lifecycle, to, classificationApproved: !!d.design.classification.approved && !d.design.classification.approved.stale, openIssues: a.checks, savedRevisions: d.revisions.length, rows: a.applicability.rows, results: d.design.results, hasBaseline: !!d.baseline, hasLiveMonitoringEvidence: false });
+  const why = lifecycleConditions(d, to, a);
   if (why.length) { log(d, persona, `room.lifecycle:${to}`, `refused: ${why.join('; ')}`, 'DENIED'); return refused(why); }
   // separation of duties (ADR-0005): the design is not approved by its author; a room is not accepted by whoever recorded or verified its results
   if (to === 'DESIGN_APPROVED') { const author = d.revisions[d.revisions.length - 1]!.by; if (author === persona) { log(d, persona, `room.lifecycle:${to}`, 'refused: the author of the design does not approve it', 'DENIED'); return refused([`${personaLabel(persona)} saved the design revision and does not approve it (separation of duties)`]); } }
@@ -158,7 +273,7 @@ export function transition(d: Draft, persona: string, to: RoomLifecycle): Draft 
     const next: Baseline = { version: d.baselines.length + 1, at: now(), by: persona, revision: d.approvedRevision, results: labels, devices: live(d.design.devices).filter((x) => !(x as PlannedDevice).furniture).map((x) => ({ id: x.id, cat: (x as PlannedDevice).cat, label: (x as PlannedDevice).label })), state: 'CURRENT' };
     d.baselines.push(next); d.baseline = next;
   }
-  log(d, persona, 'room.lifecycle_changed', `${from} → ${to}${to === 'ACCEPTED' ? ` · baseline v${d.baseline!.version} published` : ''}`); return d;
+  log(d, persona, 'room.lifecycle_changed', `${from} → ${to}${to === 'ACCEPTED' ? ` · baseline v${d.baseline!.version} published${d.baselines.length > 1 ? `, v${d.baseline!.version - 1} SUPERSEDED and kept unchanged` : ''}` : ''}`); return d;
 }
 
 export function record(d: Draft, persona: string, testId: string, input: { state: string; kind: string; ref: string; instrument?: string }): Draft | Refusal {
