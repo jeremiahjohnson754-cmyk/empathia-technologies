@@ -34,7 +34,7 @@ for (const f of films) if (!hasMedia(f.key)) { console.error(`film ${f.key} is V
 const excluded = catalogue.filter((f) => !films.includes(f)).map((f) => ({ key: f.key, status: f.rights?.website?.status || 'NONE', media: hasMedia(f.key) }));
 const vttText = (t) => { const lines = []; for (const block of t.replace(/\r/g, '').split(/\n\n+/)) { const l = block.split('\n').filter((x) => x && !/-->/.test(x) && !/^WEBVTT/.test(x) && !/^\d+$/.test(x) && !/^NOTE/.test(x)); if (l.length) lines.push(l.join(' ').replace(/<[^>]+>/g, '')); } return lines; };
 const transcripts = Object.fromEntries(films.map((f) => [f.key, vttText(fs.readFileSync(path.join(mediaSrc, f.key, 'captions.vtt'), 'utf8'))]));
-const rendered = renderAll({ films, transcripts, demoUrl, preview: filmsMode === 'preview' }, { api: api || null, base });
+const rendered = renderAll({ films, transcripts, demoUrl, preview: filmsMode === 'preview', api: api || null }, { api: api || null, base });
 const PATHS = rendered.map((r) => r.path);
 for (const r of rendered) { const dir = path.join(dist, r.path === '/' ? '' : r.path); fs.mkdirSync(dir, { recursive: true }); fs.writeFileSync(path.join(dir, 'index.html'), r.html); }
 // media: the founder portrait (owner-supplied for the website, metadata stripped) and the films built in

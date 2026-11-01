@@ -19,6 +19,8 @@ h1 { margin: 0; font-size: clamp(26px, 3.6vw, 34px); line-height: 1.15; letter-s
 .scen li { padding: var(--sp-4); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); } .scen li a { color: var(--tx); } .scen p { margin: 6px 0 0; color: var(--tx2); font-size: var(--fs-sm); } .scen i { color: var(--accent); font-style: normal; font-weight: 600; margin-right: 6px; }
 .status { margin-top: var(--sp-7); color: var(--tx2); } .boundary code { font: 600 var(--fs-xs) var(--font-mono); color: var(--tx2); }
 .foot { padding: var(--sp-5) 16px; color: var(--tx3); font-size: var(--fs-sm); border-top: 1px solid var(--line); text-align: center; }
+.foot a { display: inline-block; min-height: 24px; padding-block: 3px; }
+@media (max-width: 640px) { .foot a { display: inline-flex; align-items: center; min-height: 44px; padding-inline: 6px; } }
 @media (max-width: 760px) { .start { grid-template-columns: 1fr; } .go.launch { min-height: 76px; font-size: var(--fs-md); } .wrap { padding-block: var(--sp-5); } }
 
 /* Build a Room */
@@ -226,3 +228,18 @@ a.ui-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; 
 .story__go { display: flex; flex-wrap: wrap; align-items: center; column-gap: 6px; }
 .story__entry--state::after { background: var(--bg); box-shadow: 0 0 0 2px var(--tx3), 0 0 0 4px var(--bg); }
 .story__note { margin: 0; }
+
+/* Work with Empathia (enquiry.ts): the investor start's way to a real conversation; each tile opens the hosted form in a new tab */
+.workwith { margin-top: var(--sp-7); padding: var(--sp-5); border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--panel); }
+.workwith h2 { margin: 0; }
+.workwith__lead { margin: var(--sp-2) 0 0; color: var(--tx2); max-width: 70ch; }
+.workwith__list { list-style: none; padding: 0; margin: var(--sp-4) 0 0; display: grid; gap: var(--sp-3); grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+.workwith__list li { display: grid; min-width: 0; }
+.workwith__go { height: 100%; align-content: start; grid-template-rows: auto 1fr auto; }
+.workwith__go b { display: block; }
+.workwith__go .ext { display: inline-block; vertical-align: -1px; margin-left: 6px; transition: transform 140ms cubic-bezier(.2, .7, .2, 1); }
+.workwith__go:hover .ext, .workwith__go:focus-visible .ext { transform: translate(2px, -2px); }
+.workwith__go .workwith__choose { margin-top: var(--sp-2); color: var(--tx3); font-size: var(--fs-sm); }
+.workwith__go .workwith__choose q { color: var(--tx2); }
+.workwith__note { margin: var(--sp-4) 0 0; color: var(--tx2); font-size: var(--fs-sm); max-width: 80ch; }
+@media (prefers-reduced-motion: reduce) { .workwith__go .ext { transition: none; } }

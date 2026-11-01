@@ -2,11 +2,13 @@
 // company, an award, revenue or a measured outcome; everything shown runs on synthetic data and says so. Claims are limited to what
 // the repository demonstrates (docs/legacy-parity.md). The founder's credentials are exactly the three the founder supplied.
 import React from 'react';
-import { LeadForm } from './form.js';
+import { Enquiry, EnquiryLink, EnquiryDisclosure } from './form.js';
+import { ENQUIRY } from './enquiry.js';
 import { Hero, Section, Cards, Steps, Note, Actions, Tag, EVIDENCE, EvidenceLine, RecordCard, FilmPlayer, Portrait, Credentials, FOUNDER_QUOTE, type Evidence, type Film } from './ui.js';
 
 export interface Page { path: string; title: string; description: string; nav?: string; body: React.ReactNode; }
-export interface SiteContext { films: Film[]; transcripts: Record<string, string[]>; demoUrl: string; preview: boolean }
+/** `api`: the enterprise API's base URL when this build sends leads to it (the site's own form); null sends enquiries to the hosted form. */
+export interface SiteContext { films: Film[]; transcripts: Record<string, string[]>; demoUrl: string; preview: boolean; api: string | null }
 
 /** The products, by what each does in the demonstrated lifecycle, with where the public demonstration shows it and how far it is. */
 export interface Product { slug: string; name: string; purpose: string; body: string; shows: string[]; limits: string; demo?: { href: string; label: string }; demoState: 'native' | 'partial' | 'not-in-demo' | 'app-only'; film?: string }
@@ -183,13 +185,16 @@ export function buildPages(ctx: SiteContext): Page[] {
           { title: 'Authority is explicit', body: 'No one approves their own work; no simulated result becomes an engineering fact; no suggestion becomes an action by itself.' },
           { title: 'Preserve the history', body: 'Evidence is append-only, room designs are revisioned, decisions keep their rationale — and a baseline, once accepted, is never to be overwritten.' },
         ]} /></Section>
-        <section className="band"><div className="wrap band__in"><h2>Talk to the founder.</h2><p>Demonstrations, pilots and investor conversations.</p><Actions><a className="btn btn--primary" href="/request-demo">Request a demonstration</a><a className="btn" href="/contact">Contact</a></Actions></div></section>
+        <section className="band"><div className="wrap band__in"><h2>Talk to the founder.</h2><p>Demonstrations, pilots, partnerships and investor conversations.</p>
+          <Actions>{ctx.api ? <a className="btn btn--primary" href="/contact">Contact</a> : <EnquiryLink topic="investor" />}<a className="btn" href="/request-demo">Request a demonstration</a></Actions>
+          {ctx.api ? null : <EnquiryDisclosure topic="investor" />}</div></section>
       </>
     ) },
     { path: '/about', title: 'About — Empathia Technologies', description: 'Empathia Technologies and its founder.', body: (
       <>
         <Hero label="Company" title="About Empathia" lead="Empathia Technologies builds the Living Campus: software that keeps the technology of a workplace honest about its own state." />
         <Section title="Founder" lead="Empathia was founded by Jeremiah Johnson (CTS, CAPM, CompTIA Network+)."><Actions><a className="btn" href="/founder">About the founder</a></Actions></Section>
+        <Section id="investors" title="Investor conversations" lead="For investors who want to see the platform, its evidence and its limits, and to talk with the founder."><Enquiry api={ctx.api} topic="investor" kind="contact" /></Section>
         <Section title="Principles"><Cards cols={3} items={[
           { title: 'Say what the evidence supports', body: 'Every state in the product has a guard, an actor and an event behind it, and the product labels what is declared, modeled, measured or verified.' },
           { title: 'Authority is explicit', body: 'No one approves their own work; no simulated result becomes an engineering fact; no suggestion becomes an action by itself.' },
@@ -200,7 +205,7 @@ export function buildPages(ctx: SiteContext): Page[] {
     { path: '/request-demo', title: 'Request a demonstration — Empathia Technologies', description: 'Request a guided demonstration of the Empathia Living Campus.', nav: 'Request demo', body: (
       <>
         <Hero label="Request a demonstration" title="See it with your questions" lead="A guided walk through the seven scenarios on synthetic data, for your team and your questions." />
-        <Section title="Tell us about your estate"><LeadForm kind="demo" /></Section>
+        <Section title="Tell us about your estate"><Enquiry api={ctx.api} topic="demo" kind="demo"><p>Tell us who will attend and which questions the demonstration should answer. It runs on synthetic data; nothing from your estate is needed for it.</p></Enquiry></Section>
       </>
     ) },
     { path: '/pilot-partners', title: 'Pilot partnerships — Empathia Technologies', description: 'Pilot the Empathia Living Campus on a bounded scope with your own rooms and people.', nav: 'Pilots', body: (
@@ -211,22 +216,36 @@ export function buildPages(ctx: SiteContext): Page[] {
           { title: 'Data', body: 'Your rooms, devices and standards entered through the product; no customer data leaves your tenant.' },
           { title: 'Readiness report', body: 'A factual account of what the pilot verified, with the tests and the evidence, and what remains.' },
         ]} /></Section>
-        <Section title="Start the conversation"><LeadForm kind="pilot" /></Section>
+        <Section title="Start the conversation"><Enquiry api={ctx.api} topic="pilot" kind="pilot"><p>Tell us the scope you have in mind: a building, a site or a room programme. We come back with what a bounded pilot would take.</p></Enquiry></Section>
+        <Section id="partnerships" title="Partnerships" lead="Strategic partners, and managed service providers and AV integrators who design, commission and service rooms for their customers." tone="deep"><Enquiry api={ctx.api} topic="partner" kind="contact" /></Section>
       </>
     ) },
     { path: '/contact', title: 'Contact — Empathia Technologies', description: 'Contact Empathia Technologies.', nav: 'Contact', body: (
       <>
         <Hero label="Contact" title="Write to us" lead="Questions about the platform, pilots or investor demonstrations." />
-        <Section title="How messages are handled" lead="The form stores your message with Empathia's own service when this site's lead endpoint is configured; until then it says so and cannot send. Postal and email addresses are published here once the company's public contact details are approved for release." />
-        <Section title="Your message"><LeadForm kind="contact" /></Section>
+        <Section title="How messages are handled" lead={ctx.api
+          ? "The form stores your message with Empathia's own service, which answers with a receipt reference. Postal and email addresses are published here once the company's public contact details are approved for release."
+          : <>Enquiries go to Empathia Technologies through its form provider, {ENQUIRY.provider}, which stores them for us in {ENQUIRY.storage}. The <a href="/privacy#enquiries">privacy notice</a> says what is collected and why. Postal and email addresses are published here once the company's public contact details are approved for release.</>} />
+        <Section title="Your message"><Enquiry api={ctx.api} topic="contact" kind="contact" /></Section>
       </>
     ) },
     { path: '/privacy', title: 'Privacy notice — Empathia Technologies', description: 'How Empathia Technologies handles personal data on this site.', body: (
       <>
         <Hero label="Privacy" title="Privacy notice" lead="What this website collects, and what it does with it." />
-        <Section title="This website" lead="The site itself sets no tracking cookies and loads nothing from third parties. Films on this site load only when you press play, from this site. The forms send what you type — your name, organization, email and message — to Empathia's own service, where it is stored for the purpose of answering you. Analytics, if enabled, run only with your consent." />
+        {ctx.api
+          ? <Section title="This website" lead="The site itself sets no tracking cookies and loads nothing from third parties. Films on this site load only when you press play, from this site. The forms send what you type — your name, organization, email and message — to Empathia's own service, where it is stored for the purpose of answering you. Analytics, if enabled, run only with your consent." />
+          : <>
+            <Section title="This website" lead="The site sets no tracking cookies and loads nothing from third parties: no analytics, no outside fonts or scripts, no embedded forms. Films load only when you press play, from this site. Your browser is told not to pass on which page of this site you came from when you follow a link away from it." />
+            <Section id="enquiries" title="Enquiries" lead={<>Every enquiry button on this site opens Empathia's enquiry form, hosted by {ENQUIRY.provider} ({ENQUIRY.host}), in a new tab. The form is not part of this site, and nothing you type in it passes through this site.</>}>
+              <div className="prose">
+                <p>{ENQUIRY.provider} processes and stores what you submit — your name, business email, organization, job title, area of interest, timeline and message — on behalf of Empathia Technologies. Empathia Technologies decides what it is used for (it is the controller); {ENQUIRY.provider} acts as its processor. We use your enquiry only to review it, answer it and continue the conversation you asked for.</p>
+                <p>{ENQUIRY.provider} states that form data is encrypted in transit and at rest and stored in Europe, with hosting by Google Cloud in Belgium. Its sub-processors are listed on its <a href="https://tally.so/help/gdpr" rel="noopener noreferrer">GDPR page</a>; they include an email provider in the United States, used when {ENQUIRY.provider} sends us a notification of a new enquiry. {ENQUIRY.provider}'s own <a href="https://tally.so/privacy" rel="noopener noreferrer">privacy policy</a> applies to its pages.</p>
+                <p>We keep an enquiry only as long as we need it to answer you and to continue that conversation, and then delete it.</p>
+              </div>
+            </Section>
+          </>}
         <Section title="The product" lead="In the authenticated application, personal data is scoped to the tenant that owns it, authorized on every read, and retained under the tenant's policy. Room photos and recordings are processed only with the tenant's approved policy and the consent it requires." />
-        <Section title="Your rights" lead="You may ask what we hold about you and ask for it to be corrected or deleted by writing to us through the contact page." />
+        <Section title="Your rights" lead={ctx.api ? 'You may ask what we hold about you and ask for it to be corrected or deleted by writing to us through the contact page.' : 'You may ask what we hold about you, and ask for it to be corrected or deleted, by sending a request through the enquiry form (choose “General Inquiry”).'} />
       </>
     ) },
     { path: '/legal', title: 'Legal — Empathia Technologies', description: 'Legal notices for the Empathia Technologies website.', body: (

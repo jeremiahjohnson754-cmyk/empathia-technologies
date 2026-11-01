@@ -57,6 +57,7 @@ suite('e2e: checkpoint room lifecycle over the API (build → accept → camera 
 suite('browser: enterprise web E2E', 'e2e', node, ['tests/browser/enterprise-web.test.mjs'], custom, has('--browser') ? {} : { skip: 'pass --browser' });
 suite('browser: public website', 'browser', node, ['tests/browser/website.test.mjs'], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/website/dist/sitemap.xml')) ? {} : { skip: 'website not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
 suite('browser: investor demo shell', 'browser', node, ['tests/browser/demo.test.mjs'], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? {} : { skip: 'demo not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
+suite('browser: investor demo enquiry links', 'browser', node, ['tests/browser/demo-enquiry.test.mjs'], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? {} : { skip: 'demo not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
 const studio = fs.existsSync(path.join(root, 'apps/founder-studio/dist/index.html'));
 suite('browser: Founder Studio', 'browser', node, ['tests/browser/founder-studio.test.mjs'], custom, has('--studio') ? (studio ? {} : { skip: 'studio not built (node scripts/build.mjs --studio)' }) : { skip: 'pass --studio' });
 suite('e2e: founder town hall (Founder Edition)', 'e2e', node, ['tests/e2e/founder-townhall.e2e.mjs'], custom, has('--studio') ? (studio ? {} : { skip: 'studio not built' }) : { skip: 'pass --studio' });

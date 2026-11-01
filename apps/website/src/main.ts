@@ -19,7 +19,7 @@ for (const v of videos) v.addEventListener('play', () => { for (const o of video
 for (const form of Array.from(document.querySelectorAll<HTMLFormElement>('form[data-lead]'))) {
   const status = form.querySelector<HTMLElement>('[data-status]')!; const send = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
   const say = (cls: string, text: string) => { status.className = 'status ' + cls; status.textContent = text; };
-  if (!api) { say('warn', 'The lead endpoint is not configured on this deployment, so this form cannot send yet. The contact page explains how to reach us in the meantime.'); send.disabled = true; }
+  if (!api) { say('warn', 'This form is not accepting submissions yet. An enquiry service is not configured for this site, so nothing you type here is sent or stored.'); send.disabled = true; }
   form.addEventListener('submit', async (ev) => {
     ev.preventDefault(); if (!api) return; if (!form.reportValidity()) return;
     const raw = Object.fromEntries(new FormData(form).entries()) as Record<string, string>; if (raw.website) return;   // honeypot filled: a bot

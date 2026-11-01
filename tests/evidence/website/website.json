@@ -1,14 +1,20 @@
 {
- "at": "2026-11-01T01:51:30.251Z",
- "pass": 54,
+ "at": "2026-11-01T01:45:24.295Z",
+ "pass": 77,
  "fail": 0,
- "tests": 54,
+ "tests": 77,
  "results": [
   {
    "id": "W-00",
    "name": "the sitemap lists the pages",
    "result": "PASS",
    "detail": "/ /platform /products /products/lite /products/scouter /products/commissioning /products/assurance-apex /products/search-party /products/servicehands /products/field-intelligence /products/learn /products/pro /solutions /how-it-works /technology /trust /founder /about /request-demo /pilot-partners /contact /privacy /legal"
+  },
+  {
+   "id": "W-enquiry-source",
+   "name": "the website and the investor demonstration name the same hosted enquiry form",
+   "result": "PASS",
+   "detail": "https://tally.so/r/VpG0Vy / https://tally.so/r/VpG0Vy"
   },
   {
    "id": "W-desktop-/",
@@ -155,10 +161,76 @@
    "detail": ""
   },
   {
-   "id": "W-desktop-form",
-   "name": "without a configured lead endpoint the form says so and does not pretend to send",
+   "id": "W-desktop-enquiry-request-demo",
+   "name": "/request-demo: each entry point opens the hosted form in a new tab (noopener, noreferrer, says so) with the disclosure and the privacy link beside it",
    "result": "PASS",
-   "detail": "{\"status\":\"The lead endpoint is not configured on this deployment, so this form cannot send yet. The contact page explains how to reach us in the meantime.\",\"disabled\":true,\"required\":5}"
+   "detail": "{\"links\":[{\"topic\":\"demo\",\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Request a demonstration (opens the enquiry form on tally.so in a new tab)\"}],\"notes\":[{\"topic\":\"demo\",\"text\":\"The form opens on tally.so, Empathia's form provider. Choose Product Demonstration as your area of interest. Empathia Technologies receives your enquiry; Tally stores it for u"
+  },
+  {
+   "id": "W-desktop-noform-request-demo",
+   "name": "/request-demo: no form of the site's own, and no text that could read as a sent or received message",
+   "result": "PASS",
+   "detail": "{\"forms\":0,\"claims\":false}"
+  },
+  {
+   "id": "W-desktop-enquiry-pilot-partners",
+   "name": "/pilot-partners: each entry point opens the hosted form in a new tab (noopener, noreferrer, says so) with the disclosure and the privacy link beside it",
+   "result": "PASS",
+   "detail": "{\"links\":[{\"topic\":\"pilot\",\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Explore an enterprise pilot (opens the enquiry form on tally.so in a new tab)\"},{\"topic\":\"partner\",\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Discuss a partnership (opens the enquiry form on tally.so in a new tab)\"}],\"notes\":[{\"topic\":\"pi"
+  },
+  {
+   "id": "W-desktop-noform-pilot-partners",
+   "name": "/pilot-partners: no form of the site's own, and no text that could read as a sent or received message",
+   "result": "PASS",
+   "detail": "{\"forms\":0,\"claims\":false}"
+  },
+  {
+   "id": "W-desktop-enquiry-contact",
+   "name": "/contact: each entry point opens the hosted form in a new tab (noopener, noreferrer, says so) with the disclosure and the privacy link beside it",
+   "result": "PASS",
+   "detail": "{\"links\":[{\"topic\":\"contact\",\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Send an enquiry (opens the enquiry form on tally.so in a new tab)\"}],\"notes\":[{\"topic\":\"contact\",\"text\":\"The form opens on tally.so, Empathia's form provider. Choose General Inquiry as your area of interest. Empathia Technologies receives your enquiry; Tally stores it for us in the"
+  },
+  {
+   "id": "W-desktop-noform-contact",
+   "name": "/contact: no form of the site's own, and no text that could read as a sent or received message",
+   "result": "PASS",
+   "detail": "{\"forms\":0,\"claims\":false}"
+  },
+  {
+   "id": "W-desktop-enquiry-founder",
+   "name": "/founder: each entry point opens the hosted form in a new tab (noopener, noreferrer, says so) with the disclosure and the privacy link beside it",
+   "result": "PASS",
+   "detail": "{\"links\":[{\"topic\":\"investor\",\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Start an investor conversation (opens the enquiry form on tally.so in a new tab)\"}],\"notes\":[{\"topic\":\"investor\",\"text\":\"The form opens on tally.so, Empathia's form provider. Choose Investment Conversation as your area of interest. Empathia Technologies receives your enquiry; Tall"
+  },
+  {
+   "id": "W-desktop-noform-founder",
+   "name": "/founder: no form of the site's own, and no text that could read as a sent or received message",
+   "result": "PASS",
+   "detail": "{\"forms\":0,\"claims\":false}"
+  },
+  {
+   "id": "W-desktop-enquiry-about",
+   "name": "/about: each entry point opens the hosted form in a new tab (noopener, noreferrer, says so) with the disclosure and the privacy link beside it",
+   "result": "PASS",
+   "detail": "{\"links\":[{\"topic\":\"investor\",\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Start an investor conversation (opens the enquiry form on tally.so in a new tab)\"}],\"notes\":[{\"topic\":\"investor\",\"text\":\"The form opens on tally.so, Empathia's form provider. Choose Investment Conversation as your area of interest. Empathia Technologies receives your enquiry; Tall"
+  },
+  {
+   "id": "W-desktop-noform-about",
+   "name": "/about: no form of the site's own, and no text that could read as a sent or received message",
+   "result": "PASS",
+   "detail": "{\"forms\":0,\"claims\":false}"
+  },
+  {
+   "id": "W-desktop-enquiry-click",
+   "name": "pressing the contact button opens the hosted form in a new tab and leaves this page where it was",
+   "result": "PASS",
+   "detail": "{\"opened\":\"https://tally.so/r/VpG0Vy\",\"stayed\":\"http://127.0.0.1:4397/contact\"}"
+  },
+  {
+   "id": "W-desktop-privacy",
+   "name": "the privacy notice names Tally as the form provider and processor, where it stores enquiries, and no longer says enquiries go to Empathia's own service",
+   "result": "PASS",
+   "detail": "Skip to content\nEmpathia\nPlatform\nProducts\nSolutions\nHow it works\nTechnology\nTrust\nFounder\nLive demo\nRequest a demo\n\nPrivacy\n\nPrivacy notice\n\nWhat this website collects, and what it does with it.\n\nThis website\n\nThe site sets no tracking cookies and loads nothing from third parties: no analytics, no "
   },
   {
    "id": "W-desktop-clean",
@@ -317,10 +389,76 @@
    "detail": "{\"before\":\"none\",\"after\":{\"d\":\"flex\",\"exp\":\"true\"},\"closed\":\"none\"}"
   },
   {
-   "id": "W-phone-form",
-   "name": "without a configured lead endpoint the form says so and does not pretend to send",
+   "id": "W-phone-enquiry-request-demo",
+   "name": "/request-demo: each entry point opens the hosted form in a new tab (noopener, noreferrer, says so) with the disclosure and the privacy link beside it",
    "result": "PASS",
-   "detail": "{\"status\":\"The lead endpoint is not configured on this deployment, so this form cannot send yet. The contact page explains how to reach us in the meantime.\",\"disabled\":true,\"required\":5}"
+   "detail": "{\"links\":[{\"topic\":\"demo\",\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Request a demonstration (opens the enquiry form on tally.so in a new tab)\"}],\"notes\":[{\"topic\":\"demo\",\"text\":\"The form opens on tally.so, Empathia's form provider. Choose Product Demonstration as your area of interest. Empathia Technologies receives your enquiry; Tally stores it for u"
+  },
+  {
+   "id": "W-phone-noform-request-demo",
+   "name": "/request-demo: no form of the site's own, and no text that could read as a sent or received message",
+   "result": "PASS",
+   "detail": "{\"forms\":0,\"claims\":false}"
+  },
+  {
+   "id": "W-phone-enquiry-pilot-partners",
+   "name": "/pilot-partners: each entry point opens the hosted form in a new tab (noopener, noreferrer, says so) with the disclosure and the privacy link beside it",
+   "result": "PASS",
+   "detail": "{\"links\":[{\"topic\":\"pilot\",\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Explore an enterprise pilot (opens the enquiry form on tally.so in a new tab)\"},{\"topic\":\"partner\",\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Discuss a partnership (opens the enquiry form on tally.so in a new tab)\"}],\"notes\":[{\"topic\":\"pi"
+  },
+  {
+   "id": "W-phone-noform-pilot-partners",
+   "name": "/pilot-partners: no form of the site's own, and no text that could read as a sent or received message",
+   "result": "PASS",
+   "detail": "{\"forms\":0,\"claims\":false}"
+  },
+  {
+   "id": "W-phone-enquiry-contact",
+   "name": "/contact: each entry point opens the hosted form in a new tab (noopener, noreferrer, says so) with the disclosure and the privacy link beside it",
+   "result": "PASS",
+   "detail": "{\"links\":[{\"topic\":\"contact\",\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Send an enquiry (opens the enquiry form on tally.so in a new tab)\"}],\"notes\":[{\"topic\":\"contact\",\"text\":\"The form opens on tally.so, Empathia's form provider. Choose General Inquiry as your area of interest. Empathia Technologies receives your enquiry; Tally stores it for us in the"
+  },
+  {
+   "id": "W-phone-noform-contact",
+   "name": "/contact: no form of the site's own, and no text that could read as a sent or received message",
+   "result": "PASS",
+   "detail": "{\"forms\":0,\"claims\":false}"
+  },
+  {
+   "id": "W-phone-enquiry-founder",
+   "name": "/founder: each entry point opens the hosted form in a new tab (noopener, noreferrer, says so) with the disclosure and the privacy link beside it",
+   "result": "PASS",
+   "detail": "{\"links\":[{\"topic\":\"investor\",\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Start an investor conversation (opens the enquiry form on tally.so in a new tab)\"}],\"notes\":[{\"topic\":\"investor\",\"text\":\"The form opens on tally.so, Empathia's form provider. Choose Investment Conversation as your area of interest. Empathia Technologies receives your enquiry; Tall"
+  },
+  {
+   "id": "W-phone-noform-founder",
+   "name": "/founder: no form of the site's own, and no text that could read as a sent or received message",
+   "result": "PASS",
+   "detail": "{\"forms\":0,\"claims\":false}"
+  },
+  {
+   "id": "W-phone-enquiry-about",
+   "name": "/about: each entry point opens the hosted form in a new tab (noopener, noreferrer, says so) with the disclosure and the privacy link beside it",
+   "result": "PASS",
+   "detail": "{\"links\":[{\"topic\":\"investor\",\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Start an investor conversation (opens the enquiry form on tally.so in a new tab)\"}],\"notes\":[{\"topic\":\"investor\",\"text\":\"The form opens on tally.so, Empathia's form provider. Choose Investment Conversation as your area of interest. Empathia Technologies receives your enquiry; Tall"
+  },
+  {
+   "id": "W-phone-noform-about",
+   "name": "/about: no form of the site's own, and no text that could read as a sent or received message",
+   "result": "PASS",
+   "detail": "{\"forms\":0,\"claims\":false}"
+  },
+  {
+   "id": "W-phone-enquiry-click",
+   "name": "pressing the contact button opens the hosted form in a new tab and leaves this page where it was",
+   "result": "PASS",
+   "detail": "{\"opened\":\"https://tally.so/r/VpG0Vy\",\"stayed\":\"http://127.0.0.1:4397/contact\"}"
+  },
+  {
+   "id": "W-phone-privacy",
+   "name": "the privacy notice names Tally as the form provider and processor, where it stores enquiries, and no longer says enquiries go to Empathia's own service",
+   "result": "PASS",
+   "detail": "Skip to content\nEmpathia\nMenu\n\nPrivacy\n\nPrivacy notice\n\nWhat this website collects, and what it does with it.\n\nThis website\n\nThe site sets no tracking cookies and loads nothing from third parties: no analytics, no outside fonts or scripts, no embedded forms. Films load only when you press play, from"
   },
   {
    "id": "W-phone-clean",

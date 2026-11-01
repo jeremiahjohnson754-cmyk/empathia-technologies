@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // The public site, served by its own server from the built dist: every page answers, has a title and description, renders without
-// console errors or outside requests, has no sideways scroll at 390 px, the menu works by keyboard, every internal link resolves, the
-// forms state plainly that no lead endpoint is configured (none is, in this test), and no page makes a claim the owner forbade.
+// console errors or outside requests, has no sideways scroll at 390 px, the menu works by keyboard, every internal link resolves, and no
+// page makes a claim the owner forbade. Enquiries (no API configured in this build): every entry point opens the owner's hosted Tally
+// form in a new tab, with the disclosure beside it; no page carries a form of its own, so nothing can report a false success; the
+// privacy notice names the provider; the investor demonstration links to the same form.
 //   node tests/browser/website.test.mjs [dist] [evidence-dir]
 import { spawn } from 'node:child_process'; import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -17,6 +19,11 @@ ok('W-00', 'the sitemap lists the pages', pages.length >= 10, pages.join(' '));
 // capabilities that are NOT implemented at this commit (docs/legacy-parity.md): they may appear only as planned or designed, never as present
 const NOT_YET = [/short-lived (download )?(url|link)s? (are|is)\b/i, /baseline[s]? (are|is) (immutable|versioned)/i, /no name-based joins/i, /collectors are outbound-only/i, /dispatch preflight (is|are) (in place|enforced)/i, /multi-factor .* (is|are) (in place|enabled)/i];
 const FORBIDDEN = [/\b(aon|kraft heinz|stefanini|khc)\b/i, /SOC ?2 (certified|compliant)/i, /ISO ?27001 (certified|compliant)/i, /\b(award|awards)\b/i, /\btestimonial/i, /\bcustomers? (include|such as|like)\b/i, /\b\d+% (reduction|increase|roi)\b/i, /guaranteed/i, /production[- ]ready/i, /\bpartnered with\b/i];
+// the owner's hosted enquiry form, from the website's source; the investor demonstration must link to the same one
+const urlIn = (f) => (fs.readFileSync(path.join(repo, f), 'utf8').match(/url: '([^']+)'/) || [])[1];
+const ENQUIRY_URL = urlIn('apps/website/src/enquiry.ts');
+ok('W-enquiry-source', 'the website and the investor demonstration name the same hosted enquiry form', !!ENQUIRY_URL && ENQUIRY_URL === urlIn('apps/demo/src/enquiry.ts') && /^https:\/\/tally\.so\/r\/[A-Za-z0-9]+$/.test(ENQUIRY_URL), `${ENQUIRY_URL} / ${urlIn('apps/demo/src/enquiry.ts')}`);
+const ENQUIRY_PAGES = [['/request-demo', ['demo']], ['/pilot-partners', ['pilot', 'partner']], ['/contact', ['contact']], ['/founder', ['investor']], ['/about', ['investor']]];
 const browser = await chromium.launch();
 for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   const ctx = await browser.newContext({ viewport: { width: w, height: h } }); const page = await ctx.newPage(); const errs = []; const ext = [];
@@ -42,9 +49,26 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     ok('W-phone-menu', 'the phone menu opens by keyboard, reports aria-expanded, and closes on Escape', before === 'none' && after.d !== 'none' && after.exp === 'true' && closed === 'none', JSON.stringify({ before, after, closed }));
     await page.screenshot({ path: path.join(out, 'phone-home.png') });
   }
-  await page.goto(base + '/request-demo'); await page.waitForTimeout(150);
-  const form = await page.evaluate(() => ({ status: (document.querySelector('[data-status]') || {}).textContent || '', disabled: !!(document.querySelector('form[data-lead] button[type=submit]') || {}).disabled, required: document.querySelectorAll('form[data-lead] [required]').length }));
-  ok(`W-${tag}-form`, 'without a configured lead endpoint the form says so and does not pretend to send', /not configured/.test(form.status) && form.disabled && form.required >= 5, JSON.stringify(form));
+  // enquiries: the hosted form, opened outside the site; tally.so is stubbed so the click is tested without leaving the test machine
+  const formUrl = ENQUIRY_URL; await ctx.route('https://tally.so/**', (r) => r.fulfill({ status: 200, contentType: 'text/html', body: '<title>stub of the hosted enquiry form</title>' }));
+  for (const [p, topics] of ENQUIRY_PAGES) {
+    await page.goto(base + p); await page.waitForTimeout(100);
+    const e = await page.evaluate(() => ({
+      links: Array.from(document.querySelectorAll('a[data-enquiry]')).map((a) => ({ topic: a.dataset.enquiry, href: a.getAttribute('href'), target: a.target, rel: a.rel, name: a.textContent.trim() })),
+      notes: Array.from(document.querySelectorAll('[data-enquiry-note]')).map((n) => ({ topic: n.dataset.enquiryNote, text: n.textContent, privacy: !!n.querySelector('a[href="/privacy#enquiries"]') })),
+      forms: document.querySelectorAll('form').length, claims: /\b(sent|received|thank you)\b/i.test(document.body.innerText) }));
+    const good = e.links.length === topics.length && topics.every((t) => e.links.some((l) => l.topic === t)) && e.links.every((l) => l.href === formUrl && l.target === '_blank' && /\bnoopener\b/.test(l.rel) && /\bnoreferrer\b/.test(l.rel) && /new tab/.test(l.name) && /tally\.so/.test(l.name));
+    const disclosed = topics.every((t) => e.notes.some((n) => n.topic === t && /tally\.so/.test(n.text) && /Tally stores it for us in the EU/.test(n.text) && /Empathia Technologies receives your enquiry/.test(n.text) && n.privacy));
+    ok(`W-${tag}-enquiry${p.replace(/\//g, '-')}`, `${p}: each entry point opens the hosted form in a new tab (noopener, noreferrer, says so) with the disclosure and the privacy link beside it`, good && disclosed, JSON.stringify(e));
+    ok(`W-${tag}-noform${p.replace(/\//g, '-')}`, `${p}: no form of the site's own, and no text that could read as a sent or received message`, e.forms === 0 && !e.claims, JSON.stringify({ forms: e.forms, claims: e.claims }));
+  }
+  { await page.goto(base + '/contact'); await page.waitForTimeout(100);
+    const [popup] = await Promise.all([page.waitForEvent('popup', { timeout: 5000 }).catch(() => null), page.click('a[data-enquiry="contact"]')]);
+    const opened = popup ? popup.url() : null; const stayed = page.url(); if (popup) await popup.close();
+    ok(`W-${tag}-enquiry-click`, 'pressing the contact button opens the hosted form in a new tab and leaves this page where it was', opened === formUrl && stayed === base + '/contact', JSON.stringify({ opened, stayed })); }
+  { await page.goto(base + '/privacy'); await page.waitForTimeout(100);
+    const t = await page.evaluate(() => ({ text: document.body.innerText, section: !!document.getElementById('enquiries') }));
+    ok(`W-${tag}-privacy`, 'the privacy notice names Tally as the form provider and processor, where it stores enquiries, and no longer says enquiries go to Empathia\'s own service', t.section && /hosted by Tally/.test(t.text) && /processor/.test(t.text) && /controller/.test(t.text) && /stored in Europe/.test(t.text) && /email provider in the United States/.test(t.text) && !/own service/.test(t.text), t.text.slice(0, 300)); }
   ok(`W-${tag}-clean`, 'no page error, no console error, no request outside the site', !errs.length && !ext.length, [...errs, ...ext].slice(0, 3).join(' | '));
   await ctx.close();
 }

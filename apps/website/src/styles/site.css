@@ -188,6 +188,21 @@ h1.display span { display: block; } h1.display span:last-child { color: var(--te
 .leadform .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .leadform button[type=submit] { justify-self: start; min-width: 160px; }
 .status { margin: 0; min-height: 1.5em; font-size: 15px; } .status:focus { outline: none; }
+
+/* Enquiries (enquiry.ts): every way in opens the hosted form in a new tab, with the disclosure beside the button */
+.sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.enquiry { display: grid; gap: 18px; max-width: 760px; padding: 28px; border: 1px solid var(--line-e); border-radius: var(--r-card); background: var(--graphite); }
+.enquiry__lead p { margin: 0; color: var(--text-2); font-size: 17px; max-width: 64ch; }
+.enquiry .actions { margin: 0; }
+.enquiry__note { margin: 0; max-width: 64ch; color: var(--text-2); font-size: 15px; line-height: 1.6; }
+.enquiry__note q { color: var(--text); font-weight: 500; quotes: "\201C" "\201D"; }
+.band .enquiry__note { margin-top: 18px; font-size: 15px; max-width: 64ch; }
+.btn--enquiry .ext { flex: none; transition: transform var(--t-fast) var(--ease); }
+.btn--enquiry:hover .ext, .btn--enquiry:focus-visible .ext { transform: translate(2px, -2px); }
+.prose { display: grid; gap: 14px; max-width: var(--text-w); }
+.prose p { margin: 0; color: var(--text-2); font-size: 17px; line-height: 1.7; }
+.btn--enquiry { white-space: normal; padding-block: 12px; text-align: left; }
+@media (max-width: 640px) { .enquiry { padding: 20px; } .btn--enquiry { width: 100%; justify-content: space-between; } }
 .status.warn { color: var(--amber); } .status.ok { color: var(--okc); font-weight: 600; }
 
 /* footer */

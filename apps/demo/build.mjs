@@ -12,6 +12,8 @@ const app = path.dirname(fileURLToPath(import.meta.url));
 const repo = path.resolve(app, '../..');
 const dist = path.join(app, 'dist');
 const dev = process.argv.includes('--dev');
+// the corporate website the demonstration links to (founder page, privacy notice): --website=<url>, DEMO_WEBSITE_URL, or the public site
+const website = ((process.argv.find((a) => a.startsWith('--website=')) || '').slice(10) || process.env.DEMO_WEBSITE_URL || 'https://empathia-website.onrender.com').replace(/\/$/, '');
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
 if (!process.argv.includes('--generate-only')) { fs.rmSync(dist, { recursive: true, force: true }); fs.mkdirSync(dist, { recursive: true }); }
 // the legacy area registry from the parity ledger (docs/legacy-parity.csv): generated, never edited
@@ -28,7 +30,7 @@ if (process.argv.includes('--generate-only')) process.exit(0);
 fs.mkdirSync(dist, { recursive: true }); fs.copyFileSync(path.join(repo, 'packages/domain-data/data/SIGNAL_LIB.json'), path.join(dist, 'signal-lib.json'));
 await esbuild.build({
   entryPoints: [path.join(app, 'src/main.tsx')], bundle: true, minify: !dev, sourcemap: 'external', format: 'iife', target: ['es2022'], jsx: 'automatic',
-  outfile: path.join(dist, 'demo.js'), define: { 'process.env.NODE_ENV': dev ? '"development"' : '"production"' }, legalComments: 'linked', logLevel: 'warning',
+  outfile: path.join(dist, 'demo.js'), define: { 'process.env.NODE_ENV': dev ? '"development"' : '"production"', 'process.env.EMPATHIA_WEBSITE_URL': JSON.stringify(website) }, legalComments: 'linked', logLevel: 'warning',
   alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') },
 });
 
