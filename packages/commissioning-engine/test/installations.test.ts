@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import {
   planInstall, planReplacement, planIdentity, identityOf, identityText, replacementsOf, substitutionUnits, reopenedBySubstitution, substitutionReason,
   reverificationBlockers, rerunTask, lifecycleBlockers, IDENTITY_TEST, type InstallationFact, type AssetFact, type PositionFact,
+  designKey, revisionBinding, designBindingSentence, designBindingTask, revisionApprovalBlockers, needsAuthority, notByItsAuthor, REVISION_APPROVAL, ACCEPTANCE_BLOCKER_ORDER,
 } from '../src/index.js';
 
 const pos: PositionFact = { code: 'PA-0061', category: 'camera', label: 'Camera 1', model: 'generic' };
@@ -108,10 +109,69 @@ test('the acceptance gate never counts a superseded PASS_VERIFIED — even witho
   // two results recorded on the previous unit: their PASS_VERIFIED no longer counts
   const sup = lifecycleBlockers({ ...f, reverification: [{ testId: 't1', rerun: true, result: 'PASS_VERIFIED' }, { testId: 't2', rerun: true, result: 'PASS_VERIFIED' }] });
   assert.deepEqual(sup, ['2 test(s) were last recorded before the substitution and must be re-run on the changed design and verified independently: t1, t2 — acceptance counts 2 of 4 applicable tests as passed and independently verified; the 2 earlier result(s) no longer count']);
-  // with another gap as well, the general count names the superseded results apart
+  // with another gap as well, the general count names the superseded results apart — and comes after the reopened tests (ACCEPTANCE_BLOCKER_ORDER)
   const both = lifecycleBlockers({ ...f, rows: rows.map((r: { id: string }) => (r.id === 't4' ? { id: 't4', applicable: true, result: 'NOT_TESTED' } : r)) as never, results: { ...(results as object), t4: undefined } as never, reverification: [{ testId: 't1', rerun: true, result: 'PASS_VERIFIED' }], changeKinds: ['REPLACED'] });
-  assert.deepEqual(both, ['acceptance needs every applicable test executed, passed and independently verified with evidence: 2 of 4 passed and independently verified (2 recorded: 0 passed awaiting verification, 0 failed; 1 not tested; 1 recorded before a change of device and no longer counted)', '1 test(s) were last recorded on the previous unit and must be re-run on the new unit and verified independently: t1']);
+  assert.deepEqual(both, ['1 test(s) were last recorded on the previous unit and must be re-run on the new unit and verified independently: t1', 'acceptance needs every applicable test executed, passed and independently verified with evidence: 2 of 4 passed and independently verified (2 recorded: 0 passed awaiting verification, 0 failed; 1 not tested; 1 recorded before a change of device and no longer counted)']);
   // a test reopened and re-run, not yet verified: counted as recorded, never as verified
   const rerun = lifecycleBlockers({ ...f, rows: rows.map((r: { id: string }) => (r.id === 't1' ? { id: 't1', applicable: true, result: 'PASS_UNVERIFIED' } : r)) as never, results: { ...(results as object), t1: { state: 'PASS', by: 'rec2', verified: null, evidence: { kind: 'X', ref: 'e2' } } } as never, reverification: [{ testId: 't1', rerun: false, result: 'PASS_UNVERIFIED' }] });
-  assert.equal(rerun.length, 2); assert.match(rerun[0]!, /3 of 4 passed and independently verified \(4 recorded: 1 passed awaiting verification/); assert.match(rerun[1]!, /re-run after the substitution and are not yet passed and verified by a different person: t1 \(PASS_UNVERIFIED\)/);
+  assert.equal(rerun.length, 2); assert.match(rerun[1]!, /3 of 4 passed and independently verified \(4 recorded: 1 passed awaiting verification/); assert.match(rerun[0]!, /re-run after the substitution and are not yet passed and verified by a different person: t1 \(PASS_UNVERIFIED\)/);
+});
+
+test('the design a re-acceptance binds (one rule, one sentence for the API and the demonstration): a design change needs an approved revision that describes the room; a like-for-like replacement does not', () => {
+  const dev = (model: string) => ({ id: 'PA-0001', cat: 'camera', model, x: 1, y: 0.2, mount: 'wall' });
+  const before = { devices: [dev('generic'), { id: 'PA-0002', cat: 'display', model: 'generic', x: 2, y: 0.1, mount: 'wall' }], connections: [{ id: 'CN-0001' }] };
+  const after = { ...before, devices: [dev('SYN-PTZ-12X'), before.devices[1]!] };
+  assert.equal(designKey(before), designKey({ ...before, devices: [...before.devices].reverse(), connections: [...before.connections] }), 'order does not matter');
+  assert.equal(designKey(before), designKey({ ...before, devices: [...before.devices, { ...dev('x'), id: 'PA-0009', removed: true }] }), 'a removed device is not part of the design');
+  assert.notEqual(designKey(before), designKey(after), 'a model substitution changes the design');
+  const revs = (cur: typeof before) => [{ n: 2, by: 'designer', describes: designKey(before) === designKey(cur) }];
+  // like for like: the design is unchanged, nothing to bind again
+  const same = revisionBinding(revs(before), 2);
+  assert.deepEqual(same, { approvedRevision: 2, latestRevision: 2, latestAuthor: 'designer', approvedDescribesDesign: true, latestDescribesDesign: true });
+  assert.equal(designBindingSentence({ ...same, substitutions: [] }), null); assert.equal(designBindingTask(same), null);
+  // a model substitution: save the change as a revision, then have it approved
+  const subs = [{ assetId: 'PA-0001', from: 'generic', to: 'SYN-PTZ-12X' }];
+  const changed = revisionBinding(revs(after), 2);
+  assert.equal(designBindingSentence({ ...changed, substitutions: subs }), 'the design changed while the room is recommissioned (PA-0001 generic → SYN-PTZ-12X) and the approved revision 2 no longer describes it: save the change as a revision and have it approved (room.design.approve, not its author) — the re-acceptance binds the approved revision');
+  assert.deepEqual(designBindingTask(changed), { what: 'save the change made during recommissioning as a design revision', who: 'room.design' });
+  const saved = revisionBinding([...revs(after), { n: 3, by: 'designer', describes: true }], 2);
+  assert.equal(designBindingSentence({ ...saved, substitutions: subs }), 'the design changed while the room is recommissioned (PA-0001 generic → SYN-PTZ-12X) and the approved revision 2 no longer describes it: revision 3 needs approval (room.design.approve, not its author) — the re-acceptance binds the approved revision');
+  assert.deepEqual(designBindingTask(saved), { what: 'approve design revision 3 (it carries the change made during recommissioning)', who: 'room.design.approve (not the author of the revision)' });
+  assert.equal(designBindingSentence({ ...revisionBinding([...revs(after), { n: 3, by: 'designer', describes: true }], 3), substitutions: subs }), null, 'once revision 3 is approved, the re-acceptance binds it');
+  // the gate carries the sentence first, and only for an acceptance
+  const rows = [{ id: 't1', applicable: true, result: 'PASS_VERIFIED' }] as never[];
+  const results = { t1: { state: 'PASS', by: 'rec', verified: { by: 'ver' }, evidence: { kind: 'X', ref: 'e' } } } as never;
+  const g = { from: 'COMMISSIONING', classificationApproved: true, openIssues: [], savedRevisions: 3, rows, results, hasBaseline: true, hasLiveMonitoringEvidence: false, designBinding: { ...saved, substitutions: subs } };
+  assert.deepEqual(lifecycleBlockers({ ...g, to: 'ACCEPTED' }), [designBindingSentence({ ...saved, substitutions: subs })]);
+  assert.deepEqual(lifecycleBlockers({ ...g, to: 'ACCEPTED', designBinding: null }), [], 'no binding fact (not recommissioning): nothing to bind again');
+  assert.deepEqual(lifecycleBlockers({ ...g, to: 'ACCEPTED', designBinding: { ...same, substitutions: [] } }), [], 'like for like: no re-approval');
+});
+
+test('acceptance blockers come in one documented order (ACCEPTANCE_BLOCKER_ORDER): the design binding, open issues, the reopened tests, then the general count', () => {
+  assert.deepEqual([...ACCEPTANCE_BLOCKER_ORDER], ['design-binding', 'open-issues', 'reopened-tests', 'acceptance-count']);
+  const rows = ['t1', 't2', 't3'].map((id) => ({ id, applicable: true, result: id === 't3' ? 'NOT_TESTED' : 'PASS_VERIFIED' })) as never[];
+  const results = { t1: { state: 'PASS', by: 'rec', verified: { by: 'ver' }, evidence: { kind: 'X', ref: 'e' } }, t2: { state: 'PASS', by: 'rec', verified: { by: 'ver' }, evidence: { kind: 'X', ref: 'e' } } } as never;
+  const binding = { approvedRevision: 2, latestRevision: 2, latestAuthor: 'designer', approvedDescribesDesign: false, latestDescribesDesign: false, substitutions: [{ assetId: 'PA-0001', from: 'generic', to: 'SYN-PTZ-12X' }] };
+  const all = lifecycleBlockers({ from: 'COMMISSIONING', to: 'ACCEPTED', classificationApproved: true, openIssues: [{ severity: 'Medium' }, { severity: 'Medium' }], savedRevisions: 2, rows, results, hasBaseline: true, hasLiveMonitoringEvidence: false, reverification: [{ testId: 't1', rerun: true, result: 'PASS_VERIFIED' }], changeKinds: ['SUBSTITUTED'], designBinding: binding });
+  assert.equal(all.length, 4, JSON.stringify(all));
+  assert.equal(all[0], designBindingSentence(binding));
+  assert.equal(all[1], '2 open issue(s): every deficiency is closed with its retest before acceptance');
+  assert.equal(all[2], '1 test(s) were last recorded before the substitution and must be re-run on the changed design and verified independently: t1');
+  assert.match(all[3]!, /^acceptance needs every applicable test executed, passed and independently verified with evidence: 1 of 3 passed and independently verified \(1 recorded: .*; 1 not tested; 1 recorded before a change of device and no longer counted\)$/);
+  // when the reopened tests are the only gap, the count travels with them (no general count)
+  const only = lifecycleBlockers({ from: 'COMMISSIONING', to: 'ACCEPTED', classificationApproved: true, openIssues: [{ severity: 'Medium' }], savedRevisions: 2, rows: rows.slice(0, 2), results, hasBaseline: true, hasLiveMonitoringEvidence: false, reverification: [{ testId: 't1', rerun: true, result: 'PASS_VERIFIED' }], designBinding: binding });
+  assert.deepEqual(only, [designBindingSentence(binding), '1 open issue(s): every deficiency is closed with its retest before acceptance', '1 test(s) were last recorded before the substitution and must be re-run on the changed design and verified independently: t1 — acceptance counts 1 of 2 applicable tests as passed and independently verified; the 1 earlier result(s) no longer count']);
+});
+
+test('approving a revision during recommissioning (one rule for the API and the demonstration): only then, only the latest, newer, describing the design; the DESIGN_APPROVED rules; the refusals of authority and authorship worded once', () => {
+  const base = { room: 'R-PLN-0001', lifecycle: 'COMMISSIONING', classificationApproved: true, openIssues: [] as Array<{ severity: string }> };
+  const b = { approvedRevision: 2, latestRevision: 3, latestAuthor: 'designer', approvedDescribesDesign: false, latestDescribesDesign: true };
+  assert.deepEqual(revisionApprovalBlockers({ ...base, lifecycle: 'ACCEPTED', revision: 3, binding: null }), ['a revision is approved here only while an accepted room is recommissioned (R-PLN-0001 is ACCEPTED); a design is otherwise approved by the DESIGN_APPROVED step']);
+  assert.deepEqual(revisionApprovalBlockers({ ...base, revision: 3, binding: b }), []);
+  assert.deepEqual(revisionApprovalBlockers({ ...base, revision: 2, binding: b }), ['revision 2 is not newer than the approved revision 2']);
+  assert.deepEqual(revisionApprovalBlockers({ ...base, revision: 3, binding: { ...b, latestRevision: 4 } }), ['revision 3 is not the latest saved revision (4)']);
+  assert.deepEqual(revisionApprovalBlockers({ ...base, revision: 3, binding: { ...b, latestDescribesDesign: false } }), ['revision 3 does not describe the current design: save the latest change as a revision first']);
+  assert.deepEqual(revisionApprovalBlockers({ ...base, revision: 3, binding: b, classificationApproved: false, openIssues: [{ severity: 'High' }] }), ['the room classification is not approved by an engineer', '1 open High/Critical design deficiencies']);
+  assert.equal(needsAuthority('designer', REVISION_APPROVAL.action, REVISION_APPROVAL.authority), 'designer may not approve a design revision (needs room.design.approve)');
+  assert.equal(notByItsAuthor(REVISION_APPROVAL.what, 'syseng'), 'separation of duties: the design cannot be approved by its own author (syseng)');
 });

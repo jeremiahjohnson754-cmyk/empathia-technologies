@@ -2,7 +2,7 @@
  "step": 4,
  "title": "Approve the classification (an engineer, not the author of the revision)",
  "room": "R-PLN-0004",
- "at": "2026-11-01T02:03:34.061Z",
+ "at": "2026-11-01T02:46:53.780Z",
  "assertions": [
   {
    "id": "C-10",
@@ -28,9 +28,9 @@
     "status": 403,
     "detail": "designer may not Approve the suggested room type, or override it with a reason (needs room.classify.approve)",
     "code": "forbidden",
-    "correlationId": "36c29085-ca2e-4a7b-92ad-5a531353aeae"
+    "correlationId": "9700bee9-7509-4447-aa71-f03aeae61a9d"
    },
-   "correlationId": "36c29085-ca2e-4a7b-92ad-5a531353aeae"
+   "correlationId": "9700bee9-7509-4447-aa71-f03aeae61a9d"
   },
   {
    "method": "POST",
@@ -44,16 +44,16 @@
      "archetypeName": "Huddle Room",
      "override": false,
      "reason": "suggestion accepted",
-     "by": "7137eb54-8072-4111-9e91-e7d6f6087efa",
+     "by": "52845744-bbc9-4b56-b157-d1a719e35439",
      "byRole": "syseng",
-     "at": "2026-11-01T02:03:26.526Z",
+     "at": "2026-11-01T02:46:46.293Z",
      "suggestedWas": "HUD"
     },
     "applicable": 75,
     "openIssues": 0,
     "planChanged": false
    },
-   "correlationId": "34951700-5496-4943-ae63-56a06d1e8ab3"
+   "correlationId": "e1e72e1d-ce51-4ad6-9a25-6da984d4aaf3"
   }
  ]
 }

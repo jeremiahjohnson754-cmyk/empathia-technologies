@@ -152,7 +152,15 @@ test('re-acceptance is refused until every reopened test is re-run and verified 
   assert.ok('why' in B.verify(d, 'cxeng', reopened[0]), 'the person who re-ran it does not verify it');
   for (const r of app) if (d.design.results[r.id]?.state === 'PASS' && !d.design.results[r.id].verified) d = ok(B.verify(d, 'architect', r.id));
   assert.deepEqual(B.reverificationBlockers(B.reverification(d)), []);
+  // D-38: the swap changed the design, and the re-acceptance binds the approved revision — refused until the change is saved and approved
+  const r3 = B.transition(d, 'qa_reviewer', 'ACCEPTED'); assert.ok('why' in r3);
+  assert.deepEqual(r3.why, [B.designBindingReason(d)], 'the design binding is all that is left, in the engine’s words');
+  assert.match(r3.why[0], new RegExp(`^the design changed while the room is recommissioned \\(${bar.id} bar → Camera 1 \\(camera, PA-\\d+\\)\\) and the approved revision 1 no longer describes it: save the change as a revision and have it approved \\(room\\.design\\.approve, not its author\\) — the re-acceptance binds the approved revision$`));
+  d = ok(B.saveRevision(d, 'designer', 'the camera swap, saved during recommissioning (synthetic)')); const rev = d.revisions.length;
+  assert.match(B.transition(structuredClone(d), 'qa_reviewer', 'ACCEPTED').why.join(' | '), new RegExp(`revision ${rev} needs approval`));
+  d = ok(B.approveRevision(d, 'syseng', rev));   // the systems engineer, not the designer who saved it
   d = ok(B.transition(d, 'qa_reviewer', 'ACCEPTED'));
+  assert.equal(d.baseline.revision, rev, 'baseline v2 binds the newly approved revision'); assert.equal(d.baselines[0].revision, 1, 'v1 keeps the revision it was accepted against');
   assert.equal(d.design.lifecycle, 'ACCEPTED'); assert.equal(d.baseline.version, 2); assert.equal(d.baseline.state, 'CURRENT');
   assert.equal(d.baselines.length, 2); assert.equal(d.baselines[0].state, 'SUPERSEDED');
   assert.equal(JSON.stringify({ ...JSON.parse(v1), state: 'SUPERSEDED' }), JSON.stringify(d.baselines[0]), 'v1 is kept as it was, only marked SUPERSEDED');

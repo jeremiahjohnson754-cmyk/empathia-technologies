@@ -25,7 +25,7 @@ const ENQUIRY_URL = urlIn('apps/website/src/enquiry.ts');
 ok('W-enquiry-source', 'the website and the investor demonstration name the same hosted enquiry form', !!ENQUIRY_URL && ENQUIRY_URL === urlIn('apps/demo/src/enquiry.ts') && /^https:\/\/tally\.so\/r\/[A-Za-z0-9]+$/.test(ENQUIRY_URL), `${ENQUIRY_URL} / ${urlIn('apps/demo/src/enquiry.ts')}`);
 const ENQUIRY_PAGES = [['/request-demo', ['demo']], ['/pilot-partners', ['pilot', 'partner']], ['/contact', ['contact']], ['/founder', ['investor']], ['/about', ['investor']]];
 const browser = await chromium.launch();
-for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
+for (const [w, h, tag] of [[1440, 900, 'desktop'], [768, 1024, 'tablet'], [390, 844, 'phone']]) {
   const ctx = await browser.newContext({ viewport: { width: w, height: h } }); const page = await ctx.newPage(); const errs = []; const ext = [];
   page.on('pageerror', (e) => errs.push(e.message)); page.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()); }); page.on('request', (r) => { if (!r.url().startsWith(base)) ext.push(r.url()); });
   const links = new Set();

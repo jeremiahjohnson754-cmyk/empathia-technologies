@@ -20,10 +20,15 @@
  * CHECKPOINT.md and checkpoint.json.
  *   node tests/e2e/checkpoint-room-lifecycle.e2e.mjs [evidence-dir]
  */
-import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
+import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath, pathToFileURL } from 'node:url';
 import { setup, client, DEV_PASSWORD, mail } from '../integration/harness.mjs';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+// the shared engine's sentence builders: the expected acceptance blockers are built with them, so the API's wording and order are the engine's
+const CE = await import(pathToFileURL(path.join(repo, 'packages/commissioning-engine/dist/src/index.js')).href);
+/** The documented order of the acceptance blockers (CE.ACCEPTANCE_BLOCKER_ORDER): the kind of one blocker sentence. */
+const blockerKind = (s) => (/^the design changed while the room is recommissioned/.test(s) ? 'design-binding' : /^\d+ open issue\(s\): /.test(s) ? 'open-issues' : /^\d+ (test\(s\) were last recorded|reopened test\(s\) were re-run)/.test(s) ? 'reopened-tests' : /^acceptance needs every applicable test/.test(s) ? 'acceptance-count' : 'other');
+const inOrder = (list) => list.map(blockerKind).every((k, i, a) => k !== 'other' && (i === 0 || CE.ACCEPTANCE_BLOCKER_ORDER.indexOf(a[i - 1]) <= CE.ACCEPTANCE_BLOCKER_ORDER.indexOf(k)));
 const out = path.resolve(process.argv[2] || path.join(repo, 'tests/evidence/checkpoint')); fs.mkdirSync(out, { recursive: true });
 for (const f of fs.readdirSync(out)) if (/^\d{2}-[a-z0-9-]+\.json$/.test(f) || f === 'CHECKPOINT.md' || f === 'checkpoint.json') fs.rmSync(path.join(out, f));   // only this suite's own files
 const PORT = 4183; const DB = 'empathia_test_checkpoint_e2e';
@@ -242,6 +247,11 @@ try {
   ok('C-93', 'the re-acceptance refusal carries the accurate count: the superseded PASS_VERIFIED results count 0', (early.body.reasons || []).some((x) => x.includes(`acceptance counts ${rows.length - reqs.length} of ${rows.length} applicable tests as passed and independently verified; the ${reqs.length} earlier result(s) no longer count`)), J(early.body.reasons));
   const chg = rc1?.changes?.[0];
   ok('C-94', 'readiness names the change with its units (SUBSTITUTED, original → new unit) and each position with its unit and identity state', rc1?.changes?.length === 1 && chg.kind === 'SUBSTITUTED' && chg.assetId === camera && chg.fromAsset === facts.cameraUnit.original && chg.toAsset === facts.cameraUnit.replacement && rd1.body.installations?.devices?.length === 8 && rd1.body.installations.devices.some((d) => d.position === camera && d.asset === facts.cameraUnit.replacement && d.identityState === 'UNKNOWN'), J(rc1?.changes));
+  // the documented order (ADR-0012 §5, CE.ACCEPTANCE_BLOCKER_ORDER): the design binding, the open issues, the reopened tests (with the count:
+  // they are the only results missing), the general count — each sentence the engine's, and the same list in readiness and in the refusal
+  const want1 = [CE.designBindingSentence({ ...rc1.design, substitutions: rc1.substitutions }), `${rd1.body.deficiencies.length} open issue(s): every deficiency is closed with its retest before acceptance`, `${CE.rerunSentence(reqs, ['SUBSTITUTED'])} — acceptance counts ${rows.length - reqs.length} of ${rows.length} applicable tests as passed and independently verified; the ${reqs.length} earlier result(s) no longer count`];
+  facts.blockerOrder = { step15: b1.map(blockerKind) };
+  ok('C-98', 'the re-acceptance blockers come in the documented order — design binding (approve revision 3: the re-acceptance binds it), open issues, the reopened tests with the count — in the engine’s words, the same list in readiness and in the refusal', J(b1) === J(want1) && J(b1.map(blockerKind)) === J(['design-binding', 'open-issues', 'reopened-tests']) && inOrder(b1) && J(early.body.reasons) === J(b1) && /revision 3 needs approval \(room\.design\.approve, not its author\)/.test(b1[0]), J({ got: b1, want: want1, refusal: early.body.reasons }));
 
   step(16, 'design-reapproval', 'The design change is approved by an engineer who is not its author; the drawings are regenerated and re-approved');
   ok('C-63', 'the designer (the author of revision 3) holds no design approval (403)', (await api('designer', 'POST', `/v1/rooms/${code}/revisions/3/approve`)).status === 403);
@@ -257,6 +267,9 @@ try {
   const rd2 = await api('designer', 'GET', `/v1/rooms/${code}/readiness`);
   const b2 = rd2.body.next?.blockers || [];
   ok('C-67', 'the design requirement is met; the only blocker left is re-running the reopened tests on the new camera', rd2.body.recommissioning?.design?.approvedDescribesDesign === true && b2.length === 1 && /re-run/.test(b2[0]) && reqs.every((t) => b2[0].includes(t.testId)), J(b2));
+  const want2 = [`${CE.rerunSentence(reqs, ['SUBSTITUTED'])} — acceptance counts ${rows.length - reqs.length} of ${rows.length} applicable tests as passed and independently verified; the ${reqs.length} earlier result(s) no longer count`];
+  facts.blockerOrder.step17 = b2.map(blockerKind);
+  ok('C-99', 'after the design approval and the drawings, what is left is exactly the reopened tests with the count, in the engine’s words: no design binding, no open issue, no general count', J(b2) === J(want2) && J(b2.map(blockerKind)) === J(['reopened-tests']) && CE.designBindingSentence({ ...rd2.body.recommissioning.design, substitutions: rd2.body.recommissioning.substitutions }) === null, J({ got: b2, want: want2 }));
   const lin4 = await api('syseng', 'GET', `/v1/rooms/${code}/baselines`);
   ok('C-68', 'baseline v1 is still byte-for-byte unchanged and CURRENT after the design approval', J(lin4.body.items?.find((b) => b.version === 1)) === v1Before && lin4.body.current?.version === 1);
 
@@ -268,6 +281,8 @@ try {
   ok('C-70', 'downstream impact of the camera includes the devices it feeds (the room compute and onwards)', Array.isArray(g.body.impact) && g.body.impact.some((n) => n.id === devices.compute), J(g.body.impact));
   const sg = await api('designer', 'GET', `/v1/search/graph/PlannedAsset/${camera}?depth=2`);
   ok('C-71', 'Search Party returns the camera’s neighbourhood with edge provenance', sg.status === 200 && sg.body.edges.length > 0 && sg.body.edges.every((e) => e.provenance) && sg.body.nodes.some((n) => n.id === code), J(sg.body.edges?.slice(0, 4)));
+  const sgTests = (sg.body.nodes || []).filter((n) => n.type === 'CommissioningTest').map((n) => n.id);
+  ok('C-100', 'D-36: the neighbourhood reads the same on every run — the commissioning tests reached at the same depth come in test-id order (a stable key, not the database’s order), and the radial layout follows the node order', sgTests.length === rows.length && new Set((sg.body.nodes || []).filter((n) => n.type === 'CommissioningTest').map((n) => n.depth)).size === 1 && J(sgTests) === J([...sgTests].sort()) && J((sg.body.layout || []).map((l) => `${l.node.type}:${l.node.id}`)) === J((sg.body.nodes || []).map((n) => `${n.type}:${n.id}`)), J(sgTests.slice(0, 12)));
   const dep = await api('designer', 'POST', '/v1/search/intent', { body: { question: `What depends on ${camera}?`, target: { type: 'PlannedAsset', id: camera } } });
   ok('C-72', 'Search Party answers “what depends on this camera?” with the downstream devices and the affected room', dep.status === 200 && dep.body.intent === 'depends' && dep.body.items.some((i) => i.node.id === devices.compute) && dep.body.items.some((i) => i.node.id === code), J(dep.body).slice(0, 400));
   const con = await api('designer', 'POST', '/v1/search/intent', { body: { question: 'What is connected to this camera?', target: { type: 'PlannedAsset', id: camera } } });

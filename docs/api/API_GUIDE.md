@@ -73,12 +73,20 @@ room and device creation, connections, revisions, results, work orders, projects
 * Header `Idempotency-Key`: 8–128 characters of letters, digits and `._:-` (otherwise 400).
 * Keys are scoped to the **person** (and tenant): `(tenant_id, person_id, key)`.
 * The request fingerprint is SHA-256 of `METHOD path\n` + the raw body.
-* First use: the request runs; if it succeeds (status < 300) the status and body are stored.
+* First use: the key is **reserved by the first statement of the handler's own transaction** (`RequestContext.tx`: a row with
+  `status_code` 0), so the reservation commits or rolls back with the effect. If the request succeeds (status < 300) its status and
+  body are stored in that row.
 * Same key, same fingerprint: the stored response is returned with `idempotent-replay: true`; nothing runs again.
-* Same key, different fingerprint: **422 `idempotency_mismatch`** (the status the IETF Idempotency-Key header draft gives this case).
-* A failed first attempt stores nothing, so the same key can be retried.
-* Keys do not expire yet (NOT IMPLEMENTED; proposed 24–72 h). Concurrent first uses of one key are not serialized (both may run;
-  the second insert is ignored) — a known gap to close with a lock or an "in progress" row.
+* **Concurrent requests with one key (D-35):** exactly one runs its handler. A duplicate blocks on the reservation's unique index until
+  the first transaction ends, then waits for the stored response (up to `IDEMPOTENCY_WAIT_MS`, default 15 s) and replays it; if it is
+  still not stored, **409 `conflict`** ("still in progress, or ended without recording its response") — the request is never run twice.
+  A reservation whose response was never recorded (the process ended between the commit and the write) keeps answering 409.
+* Same key, different fingerprint: **422 `idempotency_mismatch`** (the status the IETF Idempotency-Key header draft gives this case),
+  also while the first request is still running.
+* A failed or refused first attempt releases its reservation and stores nothing, so the same key can be retried.
+* Keys do not expire yet (NOT IMPLEMENTED; proposed 24–72 h).
+* Regression test: `tests/security/recommissioning-negative.test.mjs` RN-15 (two concurrent requests, one key: one result record, one
+  replacement — one installation, unit, outbox event and audit row).
 
 ## Positions, physical assets and installations (ADR-0012)
 

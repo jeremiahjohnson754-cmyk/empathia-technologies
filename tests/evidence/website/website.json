@@ -1,8 +1,8 @@
 {
- "at": "2026-11-01T02:04:18.955Z",
- "pass": 77,
+ "at": "2026-11-01T02:47:44.366Z",
+ "pass": 114,
  "fail": 0,
- "tests": 77,
+ "tests": 114,
  "results": [
   {
    "id": "W-00",
@@ -234,6 +234,228 @@
   },
   {
    "id": "W-desktop-clean",
+   "name": "no page error, no console error, no request outside the site",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "W-tablet-/",
+   "name": "/ answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Every room. Every device. Every decision. With its evidence.\"}"
+  },
+  {
+   "id": "W-tablet-/platform",
+   "name": "/platform answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"One record. One governed lifecycle.\"}"
+  },
+  {
+   "id": "W-tablet-/products",
+   "name": "/products answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Nine products, one record\"}"
+  },
+  {
+   "id": "W-tablet-/products/lite",
+   "name": "/products/lite answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Lite — Build a Room\"}"
+  },
+  {
+   "id": "W-tablet-/products/scouter",
+   "name": "/products/scouter answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Scouter\"}"
+  },
+  {
+   "id": "W-tablet-/products/commissioning",
+   "name": "/products/commissioning answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Universal Commissioning\"}"
+  },
+  {
+   "id": "W-tablet-/products/assurance-apex",
+   "name": "/products/assurance-apex answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Assurance and APEX\"}"
+  },
+  {
+   "id": "W-tablet-/products/search-party",
+   "name": "/products/search-party answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Search Party\"}"
+  },
+  {
+   "id": "W-tablet-/products/servicehands",
+   "name": "/products/servicehands answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"ServiceHands\"}"
+  },
+  {
+   "id": "W-tablet-/products/field-intelligence",
+   "name": "/products/field-intelligence answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Field Intelligence\"}"
+  },
+  {
+   "id": "W-tablet-/products/learn",
+   "name": "/products/learn answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Learn and SIGNAL\"}"
+  },
+  {
+   "id": "W-tablet-/products/pro",
+   "name": "/products/pro answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Pro and Mission Control\"}"
+  },
+  {
+   "id": "W-tablet-/solutions",
+   "name": "/solutions answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"The same record, read by each team\"}"
+  },
+  {
+   "id": "W-tablet-/how-it-works",
+   "name": "/how-it-works answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"From request to accepted baseline\"}"
+  },
+  {
+   "id": "W-tablet-/technology",
+   "name": "/technology answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Built for correctness first\"}"
+  },
+  {
+   "id": "W-tablet-/trust",
+   "name": "/trust answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Security and trust\"}"
+  },
+  {
+   "id": "W-tablet-/founder",
+   "name": "/founder answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Jeremiah Johnson\"}"
+  },
+  {
+   "id": "W-tablet-/about",
+   "name": "/about answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"About Empathia\"}"
+  },
+  {
+   "id": "W-tablet-/request-demo",
+   "name": "/request-demo answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"See it with your questions\"}"
+  },
+  {
+   "id": "W-tablet-/pilot-partners",
+   "name": "/pilot-partners answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"A bounded pilot, with a factual report\"}"
+  },
+  {
+   "id": "W-tablet-/contact",
+   "name": "/contact answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Write to us\"}"
+  },
+  {
+   "id": "W-tablet-/privacy",
+   "name": "/privacy answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Privacy notice\"}"
+  },
+  {
+   "id": "W-tablet-/legal",
+   "name": "/legal answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Legal\"}"
+  },
+  {
+   "id": "W-tablet-links",
+   "name": "every internal link on the site resolves to a listed page or a section of one",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "W-tablet-enquiry-request-demo",
+   "name": "/request-demo: each entry point opens the hosted form in a new tab (noopener, noreferrer, says so) with the disclosure and the privacy link beside it",
+   "result": "PASS",
+   "detail": "{\"links\":[{\"topic\":\"demo\",\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Request a demonstration (opens the enquiry form on tally.so in a new tab)\"}],\"notes\":[{\"topic\":\"demo\",\"text\":\"The form opens on tally.so, Empathia's form provider. Choose Product Demonstration as your area of interest. Empathia Technologies receives your enquiry; Tally stores it for u"
+  },
+  {
+   "id": "W-tablet-noform-request-demo",
+   "name": "/request-demo: no form of the site's own, and no text that could read as a sent or received message",
+   "result": "PASS",
+   "detail": "{\"forms\":0,\"claims\":false}"
+  },
+  {
+   "id": "W-tablet-enquiry-pilot-partners",
+   "name": "/pilot-partners: each entry point opens the hosted form in a new tab (noopener, noreferrer, says so) with the disclosure and the privacy link beside it",
+   "result": "PASS",
+   "detail": "{\"links\":[{\"topic\":\"pilot\",\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Explore an enterprise pilot (opens the enquiry form on tally.so in a new tab)\"},{\"topic\":\"partner\",\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Discuss a partnership (opens the enquiry form on tally.so in a new tab)\"}],\"notes\":[{\"topic\":\"pi"
+  },
+  {
+   "id": "W-tablet-noform-pilot-partners",
+   "name": "/pilot-partners: no form of the site's own, and no text that could read as a sent or received message",
+   "result": "PASS",
+   "detail": "{\"forms\":0,\"claims\":false}"
+  },
+  {
+   "id": "W-tablet-enquiry-contact",
+   "name": "/contact: each entry point opens the hosted form in a new tab (noopener, noreferrer, says so) with the disclosure and the privacy link beside it",
+   "result": "PASS",
+   "detail": "{\"links\":[{\"topic\":\"contact\",\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Send an enquiry (opens the enquiry form on tally.so in a new tab)\"}],\"notes\":[{\"topic\":\"contact\",\"text\":\"The form opens on tally.so, Empathia's form provider. Choose General Inquiry as your area of interest. Empathia Technologies receives your enquiry; Tally stores it for us in the"
+  },
+  {
+   "id": "W-tablet-noform-contact",
+   "name": "/contact: no form of the site's own, and no text that could read as a sent or received message",
+   "result": "PASS",
+   "detail": "{\"forms\":0,\"claims\":false}"
+  },
+  {
+   "id": "W-tablet-enquiry-founder",
+   "name": "/founder: each entry point opens the hosted form in a new tab (noopener, noreferrer, says so) with the disclosure and the privacy link beside it",
+   "result": "PASS",
+   "detail": "{\"links\":[{\"topic\":\"investor\",\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Start an investor conversation (opens the enquiry form on tally.so in a new tab)\"}],\"notes\":[{\"topic\":\"investor\",\"text\":\"The form opens on tally.so, Empathia's form provider. Choose Investment Conversation as your area of interest. Empathia Technologies receives your enquiry; Tall"
+  },
+  {
+   "id": "W-tablet-noform-founder",
+   "name": "/founder: no form of the site's own, and no text that could read as a sent or received message",
+   "result": "PASS",
+   "detail": "{\"forms\":0,\"claims\":false}"
+  },
+  {
+   "id": "W-tablet-enquiry-about",
+   "name": "/about: each entry point opens the hosted form in a new tab (noopener, noreferrer, says so) with the disclosure and the privacy link beside it",
+   "result": "PASS",
+   "detail": "{\"links\":[{\"topic\":\"investor\",\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Start an investor conversation (opens the enquiry form on tally.so in a new tab)\"}],\"notes\":[{\"topic\":\"investor\",\"text\":\"The form opens on tally.so, Empathia's form provider. Choose Investment Conversation as your area of interest. Empathia Technologies receives your enquiry; Tall"
+  },
+  {
+   "id": "W-tablet-noform-about",
+   "name": "/about: no form of the site's own, and no text that could read as a sent or received message",
+   "result": "PASS",
+   "detail": "{\"forms\":0,\"claims\":false}"
+  },
+  {
+   "id": "W-tablet-enquiry-click",
+   "name": "pressing the contact button opens the hosted form in a new tab and leaves this page where it was",
+   "result": "PASS",
+   "detail": "{\"opened\":\"https://tally.so/r/VpG0Vy\",\"stayed\":\"http://127.0.0.1:4397/contact\"}"
+  },
+  {
+   "id": "W-tablet-privacy",
+   "name": "the privacy notice names Tally as the form provider and processor, where it stores enquiries, and no longer says enquiries go to Empathia's own service",
+   "result": "PASS",
+   "detail": "Skip to content\nEmpathia\nMenu\n\nPrivacy\n\nPrivacy notice\n\nWhat this website collects, and what it does with it.\n\nThis website\n\nThe site sets no tracking cookies and loads nothing from third parties: no analytics, no outside fonts or scripts, no embedded forms. Films load only when you press play, from"
+  },
+  {
+   "id": "W-tablet-clean",
    "name": "no page error, no console error, no request outside the site",
    "result": "PASS",
    "detail": ""

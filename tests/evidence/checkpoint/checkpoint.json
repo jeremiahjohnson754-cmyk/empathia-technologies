@@ -1,7 +1,7 @@
 {
- "at": "2026-11-01T02:03:34.072Z",
+ "at": "2026-11-01T02:46:53.789Z",
  "database": "empathia_test_checkpoint_e2e",
- "pass": 97,
+ "pass": 100,
  "fail": 0,
  "facts": {
   "room": "R-PLN-0004",
@@ -26,9 +26,9 @@
    "qa_reviewer": 16
   },
   "v1": {
-   "id": "9d3bb028-3ac1-4c71-b39b-10a245eb7a5a",
+   "id": "d9f2c262-d906-4bad-9198-e5f449b0e541",
    "designRevision": 2,
-   "publishedAt": "2026-11-01T02:03:31.079Z"
+   "publishedAt": "2026-11-01T02:46:50.886Z"
   },
   "requirements": [
    {
@@ -160,6 +160,16 @@
     ]
    }
   ],
+  "blockerOrder": {
+   "step15": [
+    "design-binding",
+    "open-issues",
+    "reopened-tests"
+   ],
+   "step17": [
+    "reopened-tests"
+   ]
+  },
   "dependencies": {
    "downstream": [
     "PA-0065 (compute)",
@@ -181,8 +191,8 @@
     "revision 3: SYN-PTZ-12X (synthetic PTZ camera)"
    ],
    "installations": [
-    "AS-0002 installed at PA-0061 on 2026-11-01T02:03:26.811Z by 90a7d5f2-3eb2-4241-a90f-5b5dfadf5c5c (initial); removed 2026-11-01T02:03:31.174Z by 36720726-6cec-4798-a110-6a98cac552dc (substituted)",
-    "AS-0009 installed at PA-0061 on 2026-11-01T02:03:31.174Z by 36720726-6cec-4798-a110-6a98cac552dc (substitution); still installed"
+    "AS-0002 installed at PA-0061 on 2026-11-01T02:46:46.590Z by 05b960c3-343f-4818-b1a9-9332f1259d25 (initial); removed 2026-11-01T02:46:50.985Z by 44711588-9b68-4e39-891f-344ff9a7dbd2 (substituted)",
+    "AS-0009 installed at PA-0061 on 2026-11-01T02:46:50.985Z by 44711588-9b68-4e39-891f-344ff9a7dbd2 (substitution); still installed"
    ]
   },
   "assetHistories": [
@@ -191,7 +201,7 @@
     "model": "generic",
     "identity": "UNKNOWN",
     "installations": [
-     "AS-0002 installed at PA-0061 on 2026-11-01T02:03:26.811Z by 90a7d5f2-3eb2-4241-a90f-5b5dfadf5c5c (initial); removed 2026-11-01T02:03:31.174Z by 36720726-6cec-4798-a110-6a98cac552dc (substituted)"
+     "AS-0002 installed at PA-0061 on 2026-11-01T02:46:46.590Z by 05b960c3-343f-4818-b1a9-9332f1259d25 (initial); removed 2026-11-01T02:46:50.985Z by 44711588-9b68-4e39-891f-344ff9a7dbd2 (substituted)"
     ]
    },
    {
@@ -199,7 +209,7 @@
     "model": "SYN-PTZ-12X (synthetic PTZ camera)",
     "identity": "UNKNOWN",
     "installations": [
-     "AS-0009 installed at PA-0061 on 2026-11-01T02:03:31.174Z by 36720726-6cec-4798-a110-6a98cac552dc (substitution); still installed"
+     "AS-0009 installed at PA-0061 on 2026-11-01T02:46:50.985Z by 44711588-9b68-4e39-891f-344ff9a7dbd2 (substitution); still installed"
     ]
    }
   ],
@@ -208,8 +218,8 @@
    "checked": 460,
    "head": {
     "seq": 460,
-    "hash": "7cfe224ada688c9d07c2c8d3c90ee9176e3ac3a37e95dfa296d28b1ea1e38b1c",
-    "at": "2026-11-01T02:03:31.697Z"
+    "hash": "64975a7e13f52557994ca04932dcdcc482ca079f5b9f6684153490b584cae296",
+    "at": "2026-11-01T02:46:51.536Z"
    }
   },
   "auditEvents": 365,
@@ -633,6 +643,11 @@
    "result": "PASS"
   },
   {
+   "id": "C-98",
+   "name": "the re-acceptance blockers come in the documented order — design binding (approve revision 3: the re-acceptance binds it), open issues, the reopened tests with the count — in the engine’s words, the same list in readiness and in the refusal",
+   "result": "PASS"
+  },
+  {
    "id": "C-63",
    "name": "the designer (the author of revision 3) holds no design approval (403)",
    "result": "PASS"
@@ -658,6 +673,11 @@
    "result": "PASS"
   },
   {
+   "id": "C-99",
+   "name": "after the design approval and the drawings, what is left is exactly the reopened tests with the count, in the engine’s words: no design binding, no open issue, no general count",
+   "result": "PASS"
+  },
+  {
    "id": "C-68",
    "name": "baseline v1 is still byte-for-byte unchanged and CURRENT after the design approval",
    "result": "PASS"
@@ -675,6 +695,11 @@
   {
    "id": "C-71",
    "name": "Search Party returns the camera’s neighbourhood with edge provenance",
+   "result": "PASS"
+  },
+  {
+   "id": "C-100",
+   "name": "D-36: the neighbourhood reads the same on every run — the commissioning tests reached at the same depth come in test-id order (a stable key, not the database’s order), and the radial layout follows the node order",
    "result": "PASS"
   },
   {

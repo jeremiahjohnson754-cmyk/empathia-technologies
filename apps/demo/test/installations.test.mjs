@@ -131,15 +131,56 @@ test('an old draft is upgraded the way migration 0026 upgrades a room: units of 
   assert.deepEqual(im.assurance.changes, [], 'a baseline without units on record: Assurance does not guess which unit was accepted');
 });
 
+test('D-38 — a model substitution or a category swap during recommissioning: the re-acceptance waits for an approved revision that describes the room (the engine’s sentence, first); the author and a persona without room.design.approve are refused; v2 binds the new revision; a like-for-like replacement needs none', async () => {
+  for (const change of ['model', 'category']) {
+    let d = recommissioned(); await tick(); const b = bar(d);
+    d = ok(change === 'model' ? B.replaceUnit(d, 'designer', b.id, { model: 'SYN-BAR-2 (synthetic)', why: 'synthetic: the newer bar' }) : B.swapDevice(d, 'designer', b.id, 'camera', 'synthetic: a camera instead'));
+    const to = change === 'model' ? 'generic → SYN-BAR-2 \\(synthetic\\)' : 'bar → Camera 1 \\(camera, PA-\\d+\\)';
+    const first = B.lifecycleConditions(d, 'ACCEPTED');
+    assert.match(first[0], new RegExp(`^the design changed while the room is recommissioned \\(${b.id} ${to}\\) and the approved revision 1 no longer describes it: save the change as a revision and have it approved \\(room\\.design\\.approve, not its author\\) — the re-acceptance binds the approved revision$`), `${change}: the design binding comes first`);
+    assert.match(first[1], /were last recorded before the substitution and must be re-run/, `${change}: then the reopened tests`);
+    assert.equal(first[0], B.designBindingReason(d)); assert.deepEqual(B.designBindingTodo(d), { what: 'save the change made during recommissioning as a design revision', who: 'room.design' });
+    // re-run and verify: the reopened tests stop blocking; the design binding does not
+    await tick(); const app = B.analysis(d).applicability.rows.filter((r) => r.applicable); const stale = new Set(B.reverification(d).filter((t) => t.rerun).map((t) => t.testId));
+    for (const r of app) if (stale.has(r.id) || !d.design.results[r.id]) d = ok(B.record(d, 'cxeng', r.id, { state: 'PASS', kind: r.evidence[0], ref: `synthetic re-run ${r.id}`, instrument: r.instrument ? 'SYN-METER-01 (synthetic)' : undefined }));
+    for (const r of app) if (d.design.results[r.id]?.state === 'PASS' && !d.design.results[r.id].verified) d = ok(B.verify(d, 'architect', r.id));
+    const refusedNow = no(B.transition(structuredClone(d), 'qa_reviewer', 'ACCEPTED'));
+    assert.deepEqual(refusedNow.why, [B.designBindingReason(d)], `${change}: without the design approval the re-acceptance is refused, for that reason alone`);
+    // the approval: never before the change is saved, never by a persona without room.design.approve, never by the revision's author
+    no(B.approveRevision(structuredClone(d), 'syseng', 1), /revision 1 is not newer than the approved revision 1/);
+    d = ok(B.saveRevision(d, 'syseng', `synthetic: the ${change} change, saved during recommissioning`)); const rev = d.revisions.length;
+    assert.match(B.designBindingReason(d), new RegExp(`revision ${rev} needs approval \\(room\\.design\\.approve, not its author\\)`));
+    assert.deepEqual(B.designBindingTodo(d), { what: `approve design revision ${rev} (it carries the change made during recommissioning)`, who: 'room.design.approve (not the author of the revision)' });
+    assert.deepEqual(no(B.approveRevision(structuredClone(d), 'designer', rev)).why, [CE.needsAuthority('designer', 'approve a design revision', 'room.design.approve')]);
+    assert.deepEqual(no(B.approveRevision(structuredClone(d), 'syseng', rev)).why, [CE.notByItsAuthor('the design', 'syseng')], 'the author of the revision does not approve it');
+    assert.equal(d.events[0].outcome, 'ALLOWED', 'refusals on a copy leave the draft as it was');
+    d = ok(B.approveRevision(d, 'architect', rev));   // holds room.design.approve and did not save the revision
+    assert.equal(d.approvedRevision, rev); assert.equal(d.events[0].type, 'room.revision.approve'); assert.equal(B.designBindingReason(d), null);
+    no(B.approveRevision(structuredClone(d), 'architect', rev), /not newer than the approved revision/);
+    d = ok(B.transition(d, 'qa_reviewer', 'ACCEPTED'));
+    assert.equal(d.baseline.version, 2); assert.equal(d.baseline.revision, rev, `${change}: baseline v2 binds the newly approved revision`); assert.equal(d.baselines[0].revision, 1);
+    no(B.approveRevision(structuredClone(d), 'architect', rev), /only while an accepted room is recommissioned \(R-DEMO-0001 is ACCEPTED\)/);
+  }
+  // a like-for-like replacement: the design is unchanged — no design approval, the binding holds, re-acceptance needs only the re-runs
+  let d = recommissioned(); await tick(); d = ok(B.replaceUnit(d, 'installer', bar(d).id, { why: 'synthetic: like for like' }));
+  assert.equal(B.designBindingNow(d).approvedDescribesDesign, true); assert.equal(B.designBindingReason(d), null); assert.equal(B.designBindingTodo(d), null);
+  assert.ok(!B.lifecycleConditions(d, 'ACCEPTED').some((x) => /no longer describes it/.test(x)));
+  no(B.approveRevision(structuredClone(d), 'syseng', 1), /not newer than the approved revision 1/);
+});
+
 test('PARITY — the same room through the API’s adapter and through the demonstration’s store: the same reopened tests, reasons, re-run states and acceptance reasons', async () => {
   const toApi = (d) => {
-    // the room as the API's tables hold it: the plan rows, the current result of each test, the positions, the installation records
+    // the room as the API's tables hold it: the plan rows, the current result of each test, the positions (with their model history), the
+    // installation records, and the saved revisions (number, author, snapshot)
     const a = B.analysis(d); const rows = a.applicability.rows.filter((r) => r.applicable).map((r) => ({ test_id: r.id, label: r.label, domain: r.domain, personas: r.personas || [], evidence: r.evidence || [], instrument: !!r.instrument, devices: r.devices || [] }));
     const res = new Map(Object.entries(B.results(d)).map(([id, r]) => [id, { test_id: id, result_label: CE.resultLabel(r), recorded_ms: Date.parse(r.at), recorded_at: r.at }]));
-    const positions = B.live(d.design.devices).map((x) => ({ code: x.id, label: x.label, category: x.cat, model: x.model, model_history: [] }));
+    const positions = B.live(d.design.devices).map((x) => ({ code: x.id, label: x.label, category: x.cat, model: x.model, model_history: (d.designHistory || []).filter((h) => h.position === x.id && h.kind === 'model').map((h) => ({ model: h.from, until: h.at, by: h.by })) }));
     const changes = API.changesFrom(positions, d.installations, Date.parse(d.baseline.at));
     const rv = API.reverificationFrom(rows, res, changes);
-    const gate = CE.lifecycleBlockers({ from: d.design.lifecycle, to: 'ACCEPTED', classificationApproved: !!d.design.classification.approved && !d.design.classification.approved.stale, openIssues: a.checks, savedRevisions: d.revisions.length, rows: a.applicability.rows, results: d.design.results, hasBaseline: !!d.baseline, hasLiveMonitoringEvidence: false, ...API.gateFacts(rv, changes) });
+    // the design binding as rooms.recommissionImpact computes it (while recommissioned): the revisions, the design now, the model substitutions
+    const recom = B.recommissioningBaseline(d);
+    const binding = recom ? API.designBindingFact(API.revisionBindingFrom(d.revisions.map((r) => ({ rev_no: r.n, created_by: r.by, snapshot: r.snapshot })), d.approvedRevision, d.design), API.substitutionsFrom(positions, Date.parse(recom.at))) : null;
+    const gate = CE.lifecycleBlockers({ from: d.design.lifecycle, to: 'ACCEPTED', classificationApproved: !!d.design.classification.approved && !d.design.classification.approved.stale, openIssues: a.checks, savedRevisions: d.revisions.length, rows: a.applicability.rows, results: d.design.results, hasBaseline: !!d.baseline, hasLiveMonitoringEvidence: false, ...API.gateFacts(rv, changes), designBinding: binding });
     return { rv: rv.map((t) => ({ testId: t.testId, assets: t.assets, reasons: t.reasons, result: t.result, rerun: t.rerun })), gate };
   };
   const toDemo = (d) => ({ rv: B.reverification(d).map((t) => ({ testId: t.testId, assets: t.assets, reasons: t.reasons, result: t.result, rerun: t.rerun })), gate: B.lifecycleConditions(d, 'ACCEPTED') });
@@ -154,5 +195,22 @@ test('PARITY — the same room through the API’s adapter and through the demon
   assert.equal(s2[0].rv.filter((t) => !t.rerun).length, 3); assert.equal(s2[0].gate.length, 3, J(s2[0].gate));
   for (const x of rv.slice(0, 3)) d = ok(B.verify(d, 'qa_reviewer', x.testId));
   const s3 = [toApi(d), toDemo(d)]; assert.deepEqual(s3[0], s3[1], 'after a different person verified them');
+  assert.ok(!s3[0].gate.some((x) => /no longer describes it/.test(x)), 'a like-for-like replacement asks for no design approval, in either');
+  // D-38: a model substitution — the design binding, in the API's sentence and in the documented order, from the API's adapter and the store alike
+  let m = recommissioned(); await tick();
+  m = ok(B.replaceUnit(m, 'designer', bar(m).id, { model: 'SYN-BAR-2 (synthetic)', why: 'synthetic: the newer bar' }));
+  const s4 = [toApi(m), toDemo(m)]; assert.deepEqual(s4[0], s4[1], 'after the substitution: the design binding and the reopened tests');
+  assert.match(s4[0].gate[0], new RegExp(`^the design changed while the room is recommissioned \\(${bar(m).id} generic → SYN-BAR-2 \\(synthetic\\)\\) and the approved revision 1 no longer describes it: save the change as a revision and have it approved`), J(s4[0].gate));
+  assert.match(s4[0].gate[1], /were last recorded before the substitution and must be re-run/); assert.equal(s4[0].gate.length, 2, J(s4[0].gate));
+  await tick();
+  for (const x of B.reverification(m)) { const r = B.analysis(m).applicability.rows.find((y) => y.id === x.testId); m = ok(B.record(m, 'cxeng', x.testId, { state: 'PASS', kind: r.evidence[0], ref: `synthetic re-run ${x.testId}`, instrument: r.instrument ? 'SYN-METER-01 (synthetic)' : undefined })); }
+  for (const x of B.reverification(m)) m = ok(B.verify(m, 'qa_reviewer', x.testId));
+  const s5 = [toApi(m), toDemo(m)]; assert.deepEqual(s5[0], s5[1], 'after the re-runs: the design binding alone');
+  assert.equal(s5[0].gate.length, 1); assert.match(s5[0].gate[0], /save the change as a revision and have it approved/);
+  m = ok(B.saveRevision(m, 'designer', 'synthetic: the substituted bar'));
+  const s6 = [toApi(m), toDemo(m)]; assert.deepEqual(s6[0], s6[1], 'after the revision is saved: it needs approval');
+  assert.match(s6[0].gate[0], new RegExp(`revision ${m.revisions.length} needs approval \\(room\\.design\\.approve, not its author\\)`));
+  m = ok(B.approveRevision(m, 'syseng', m.revisions.length));
+  const s7 = [toApi(m), toDemo(m)]; assert.deepEqual(s7[0], s7[1], 'after the approval'); assert.deepEqual(s7[0].gate, [], 'nothing left: the re-acceptance binds the approved revision');
 });
 const J = (x) => JSON.stringify(x);

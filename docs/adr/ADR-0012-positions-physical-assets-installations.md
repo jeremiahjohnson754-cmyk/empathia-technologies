@@ -53,11 +53,41 @@ identities and these invariants, in the database and in the application:
    result(s) no longer count"); otherwise the general sentence names them ("…; 12 recorded before a change of device and no longer
    counted"). Historical labels stay readable; a superseded result cannot be verified; a re-run cannot cite evidence uploaded before the
    change. Design re-approval follows only from a design change (a model substitution), never from a like-for-like replacement.
+5a. **The design a re-acceptance binds is a fact of the same gate** (`binding.ts`, D-38). While an accepted room is recommissioned, the
+   caller hands `lifecycleBlockers` a `designBinding`: whether the approved revision (and the latest saved one) still describes the room —
+   `designKey` of the revision's snapshot against `designKey` of the design now (devices: id, category, model, position, mount; connections)
+   — and the substitutions made since the baseline. The sentence ("the design changed while the room is recommissioned (…) and the approved
+   revision N no longer describes it: …") and the task it leaves (`designBindingTask`) are produced once, in the engine. The API
+   (`rooms.recommissionImpact` through the pure `reverification.revisionBindingFrom`) and Build a Room (`store.designBindingNow`) hand it the
+   same fact. A model substitution changes the design; in Build a Room so does a device of another category, or a device added or removed
+   while recommissioned (the API refuses those). A like-for-like replacement does not: it never asks for a re-approval, in either.
+   Approving the revision that carries the change is one rule too (`revisionApprovalBlockers`): only while recommissioned, only the
+   latest saved revision, newer than the approved one and describing the design, then the DESIGN_APPROVED rules; room.design.approve, never
+   the revision's author — the refusals worded by `needsAuthority` / `notByItsAuthor`, which the API's authority and separation-of-duties
+   checks (`auth/context.ts`) also use. The API's action is `POST /v1/rooms/{room}/revisions/{rev}/approve`; Build a Room's is the client-side
+   "Approve revision" on the synthetic draft (`store.approveRevision`). The re-acceptance then publishes the next baseline against it.
+5b. **One order for the reasons an acceptance is refused for** (`ACCEPTANCE_BLOCKER_ORDER`): the order in which the work has to be done,
+   and by whom.
+   1. *design-binding* — approve the revision the re-acceptance binds (room.design.approve, not its author). What is accepted is the
+      approved design, and the plan the results are recorded against follows from it: approving first means no test is run against a design
+      that will not be the one accepted.
+   2. *open-issues* — every deficiency closed with its retest. Closing an issue can change the design or a unit, and so what has to be run.
+   3. *reopened-tests* — the tests a change of unit reopened, re-run on the final unit and verified independently; when the superseded
+      results are the only results missing, the count travels with this sentence.
+   4. *acceptance-count* — the general count of applicable tests not yet passed and independently verified, when other results are missing
+      (with the superseded results named apart).
+   The API's readiness and its refusal list the same sentences in this order, and so does Build a Room. Before this, the API listed the
+   general count, then open issues, then the reopened tests, and appended the design sentence last (and, before commit 76c48f0, the design
+   sentence before the reopened tests); only the order changed — each sentence and each reopened test's entry (test, reasons, assets,
+   personas, re-run, result) is byte for byte as it was. Asserted in the checkpoint e2e (C-98 at step 15: design binding, open issues, the
+   reopened tests with the count; C-99 at step 17: the reopened tests with the count alone), in Build a Room (B-15h, C-19f, C-19g) and in
+   the engine's tests.
 6. **Reopening is derived, not stored.** Which tests a change reopens is computed on every read from the append-only installation records
    and the plan; nothing is "invalidated" separately. A rolled-back replacement therefore reopens nothing.
 7. **Transactions.** Every mutation locks the room (the lock every room mutation takes), the position and the incoming unit, plans with the
    engine, writes the records, the outbox event (`commission.asset_registered`, `commission.asset_replaced`: existing contract types; no
-   new event type) and the audit row in one transaction. Idempotency-Key is honoured (the existing mechanism); `expectedInstallation`
+   new event type) and the audit row in one transaction. Idempotency-Key is honoured, and since D-35 it is reserved in that same
+   transaction, so two concurrent requests with one key run the handler once (the other replays the stored response, or gets 409); `expectedInstallation`
    makes a concurrent or stale replacement a 409. Recording the room's installation (→ INSTALLED_UNVERIFIED) gives every position without
    a unit a new one of UNKNOWN identity, recorded by the installer. The model-substitution PATCH runs through the same code: the old unit
    is closed SUBSTITUTED and a unit of the new model installed.
@@ -86,9 +116,12 @@ identities and these invariants, in the database and in the application:
 - Build a Room models positions, synthetic units (serials, when declared, are SYN-…; no maker is named) and installations with the same
   engine functions: a device register with the position's design history apart from the unit's history, like-for-like replacement and
   model substitution, identity records; the Impact panel, Search Party, Pro and the Room Story read the same identities.
-- Tests: `tests/security/recommissioning-negative.test.mjs` (RN-01…13), checkpoint C-89…C-97, `packages/commissioning-engine/test/
+- Build a Room's Design tab shows, while the room is recommissioned, whether the approved revision describes the room, what is left to do
+  and by whom, and "Approve revision N"; the Lifecycle tab repeats the engine's sentence while it blocks; the Room Story records each
+  approval and refusal.
+- Tests: `tests/security/recommissioning-negative.test.mjs` (RN-01…15), checkpoint C-89…C-100, `packages/commissioning-engine/test/
   installations.test.ts`, `packages/assurance-engine/test/installation.test.ts`, `apps/demo/test/installations.test.mjs` (with the parity
-  test). `tests/security/governance.test.mjs` BL-5 now uploads evidence after the substitution for its re-run: the evidence it reused from
+  test, which covers the design-binding sentence through the API's pure adapter and the store), demo browser B-15h…k, C-19f…j, C-28b. `tests/security/governance.test.mjs` BL-5 now uploads evidence after the substitution for its re-run: the evidence it reused from
   before the substitution is refused by the new rule (asserted there).
 - Not done: a separate endpoint to register a spare unit (a unit becomes a spare when it is taken out; install and replace can register a
   new one); removal of a unit without a successor; a category change of a position in the API; external asset-registry connectors.

@@ -15,7 +15,7 @@ const base = `http://127.0.0.1:${PORT}/`;
 const FORM = (fs.readFileSync(path.join(repo, 'apps/demo/src/enquiry.ts'), 'utf8').match(/url: '([^']+)'/) || [])[1];
 const browser = await chromium.launch();
 try {
-  for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
+  for (const [w, h, tag] of [[1440, 900, 'desktop'], [768, 1024, 'tablet'], [390, 844, 'phone']]) {
     const ctx = await browser.newContext({ viewport: { width: w, height: h } }); const page = await ctx.newPage(); const errs = []; const ext = [];
     page.on('pageerror', (e) => errs.push(e.message)); page.on('request', (r) => { if (!r.url().startsWith(base)) ext.push(r.url()); });
     await ctx.route('https://tally.so/**', (r) => r.fulfill({ status: 200, contentType: 'text/html', body: '<title>stub of the hosted enquiry form</title>' }));

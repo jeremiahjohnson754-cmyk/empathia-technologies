@@ -45,14 +45,17 @@ before(async () => {
   T.otherDesigner = await c.login('designer', 'second-tenant');
   for (const slug of ['empathia-demo', 'second-tenant']) TID[slug] = (await one('SELECT id FROM app.tenant WHERE slug = $1', [slug])).id;
   // the stub inspects the database at the moment of every call: is the calling worker inside a transaction, and has every earlier
-  // event of the same aggregate already been delivered (committed)?
+  // event of the same aggregate already been delivered (committed)? "Earlier" is the commit order the database assigned (aggregate_seq,
+  // migration 0027) — the order delivery follows (D-37); the earlier comparison of the producer's aggregate_rev is kept beside it
   stub = await startLocalStubSink({
     port: STUB_PORT,
     inspect: async (call) => {
       const tx = await one('SELECT count(*)::int AS n FROM pg_stat_activity WHERE application_name = $1 AND xact_start IS NOT NULL', [call.workerApplication]);
       const a = call.body?.aggregate || {};
-      const earlier = await one("SELECT count(*)::int AS n FROM app.outbox_event WHERE tenant_id = $1 AND aggregate_type = $2 AND aggregate_id = $3 AND aggregate_rev < $4 AND status <> 'DELIVERED'", [call.body?.tenantId, a.type, a.id, a.rev]);
-      return { workerInTransaction: tx.n > 0, earlierUndelivered: earlier.n };
+      const seq = await one('SELECT aggregate_seq FROM app.outbox_event WHERE id = $1', [call.body?.eventId]);
+      const earlier = await one("SELECT count(*)::int AS n FROM app.outbox_event WHERE tenant_id = $1 AND aggregate_type = $2 AND aggregate_id = $3 AND aggregate_seq < $4 AND status <> 'DELIVERED'", [call.body?.tenantId, a.type, a.id, seq?.aggregate_seq]);
+      const earlierRev = await one("SELECT count(*)::int AS n FROM app.outbox_event WHERE tenant_id = $1 AND aggregate_type = $2 AND aggregate_id = $3 AND aggregate_rev < $4 AND status <> 'DELIVERED'", [call.body?.tenantId, a.type, a.id, a.rev]);
+      return { workerInTransaction: tx.n > 0, earlierUndelivered: earlier.n, earlierRevUndelivered: earlierRev.n, seq: seq ? Number(seq.aggregate_seq) : null };
     },
   });
   await h.drain();
@@ -202,32 +205,42 @@ test(`crash: SIGKILL after the external effect and before its receipt — the re
 });
 
 // ================================================================================================ 2. ordering per aggregate
-test('ordering: three concurrent workers deliver each room\'s events in aggregate_rev order; different rooms flow in parallel', { timeout: 60000 }, async () => {
+test('ordering: three concurrent workers deliver each room\'s events in commit order (aggregate_seq; here also aggregate_rev order); different rooms flow in parallel', { timeout: 60000 }, async () => {
   const rooms = await makeRooms(6);
   const t0 = Date.now() - 60000;
   const rows = [];
   for (let rev = 1; rev <= 8; rev += 1) for (const [i, r] of rooms.entries()) rows.push({ aggId: r, rev, at: new Date(t0 + rev * 1000 + i).toISOString() });
   const ids = await insertEvents(rows);
-  const seen = []; const violations = [];
+  const seen = []; const violations = []; const revViolations = [];
+  // D-37: "earlier" is the commit order the database assigned (aggregate_seq, the order delivery follows); the producer's rev is checked beside it
   const probe = (who) => named('test-order-probe', async (qq, e) => {
     if (!rooms.includes(e.aggregate_id)) return;
     await sleep(Math.random() * 6);
-    const n = (await qq.query("SELECT count(*)::int AS n FROM app.outbox_event WHERE tenant_id = $1 AND aggregate_type = $2 AND aggregate_id = $3 AND aggregate_rev < $4 AND status <> 'DELIVERED'", [e.tenant_id, e.aggregate_type, e.aggregate_id, e.aggregate_rev])).rows[0].n;
-    if (n) violations.push(`${who}: ${e.aggregate_id} rev ${e.aggregate_rev} handled while ${n} earlier rev(s) were not delivered`);
-    seen.push({ who, room: e.aggregate_id, rev: e.aggregate_rev });
+    const seq = Number((await qq.query('SELECT aggregate_seq FROM app.outbox_event WHERE id = $1', [e.id])).rows[0].aggregate_seq);
+    const n = (await qq.query("SELECT count(*)::int AS n FROM app.outbox_event WHERE tenant_id = $1 AND aggregate_type = $2 AND aggregate_id = $3 AND aggregate_seq < $4 AND status <> 'DELIVERED'", [e.tenant_id, e.aggregate_type, e.aggregate_id, seq])).rows[0].n;
+    if (n) violations.push(`${who}: ${e.aggregate_id} seq ${seq} (rev ${e.aggregate_rev}) handled while ${n} event(s) committed before it were not delivered`);
+    const nRev = (await qq.query("SELECT count(*)::int AS n FROM app.outbox_event WHERE tenant_id = $1 AND aggregate_type = $2 AND aggregate_id = $3 AND aggregate_rev < $4 AND status <> 'DELIVERED'", [e.tenant_id, e.aggregate_type, e.aggregate_id, e.aggregate_rev])).rows[0].n;
+    if (nRev) revViolations.push(`${who}: ${e.aggregate_id} rev ${e.aggregate_rev} handled while ${nRev} earlier rev(s) were not delivered`);
+    seen.push({ who, room: e.aggregate_id, rev: e.aggregate_rev, seq });
   });
   const ws = ['a', 'b', 'c'].map((x) => ({ x, w: worker(`outbox-test-order-${x}`, [outbox.readModelHandler, outbox.notificationHandler, probe(x)]) }));
   const deadline = Date.now() + 40000;
   const left = async () => (await one("SELECT count(*)::int AS n FROM app.outbox_event WHERE id = ANY($1::uuid[]) AND status <> 'DELIVERED'", [ids])).n;
   await Promise.all(ws.map(async ({ w }) => { while (Date.now() < deadline && (await left()) > 0) { if (!(await w.tick(4))) await sleep(3); } }));
   assert.equal(await left(), 0, 'every event delivered');
-  assert.deepEqual(violations, [], 'no later rev was handled before an earlier one was delivered');
+  assert.deepEqual(violations, [], 'no event was handled before every event committed before it (aggregate_seq) was delivered');
+  assert.deepEqual(revViolations, [], 'no later rev was handled before an earlier one was delivered');
   for (const r of rooms) assert.deepEqual(seen.filter((s) => s.room === r).map((s) => s.rev), [1, 2, 3, 4, 5, 6, 7, 8], `${r} in rev order, each once`);
+  for (const r of rooms) {
+    const handled = seen.filter((s) => s.room === r).map((s) => s.seq);
+    const committed = (await q("SELECT aggregate_seq FROM app.outbox_event WHERE tenant_id = $1 AND aggregate_type = 'Room' AND aggregate_id = $2 AND id = ANY($3::uuid[]) ORDER BY aggregate_seq", [TID['empathia-demo'], r, ids])).map((x) => Number(x.aggregate_seq));
+    assert.deepEqual(handled, committed, `${r}: handled in commit order (aggregate_seq ${committed.join(', ')}), each once`);
+  }
   const by = new Set(seen.map((s) => s.who));
   assert.ok(by.size >= 2, `the work was shared by several workers in parallel (${[...by].join(',')})`);
 });
 
-test(`ordering: effects outside the database (${STUB_LABEL}) leave in aggregate_rev order, one at a time per room, never inside a transaction`, { timeout: 60000 }, async () => {
+test(`ordering: effects outside the database (${STUB_LABEL}) leave in commit order (aggregate_seq; here also aggregate_rev order), one at a time per room, never inside a transaction`, { timeout: 60000 }, async () => {
   stub.reset();
   const rooms = await makeRooms(4);
   const t0 = Date.now() - 60000;
@@ -241,7 +254,9 @@ test(`ordering: effects outside the database (${STUB_LABEL}) leave in aggregate_
   assert.equal(await left(), 0, 'every event delivered');
   assert.equal(stub.effects.size, ids.length, 'one effect per event');
   for (const r of rooms) assert.deepEqual(stub.calls.filter((x) => x.body.aggregate.id === r).map((x) => x.body.aggregate.rev), [1, 2, 3, 4, 5], `${r}: external calls in rev order`);
-  assert.deepEqual(stub.calls.filter((x) => x.earlierUndelivered > 0).map((x) => `${x.body.aggregate.id}#${x.body.aggregate.rev}`), [], 'no call while an earlier rev of the room was undelivered');
+  assert.deepEqual(stub.calls.filter((x) => x.earlierUndelivered > 0).map((x) => `${x.body.aggregate.id}#seq${x.seq}`), [], 'no call while an event of the room committed before it (aggregate_seq) was undelivered');
+  assert.deepEqual(stub.calls.filter((x) => x.earlierRevUndelivered > 0).map((x) => `${x.body.aggregate.id}#${x.body.aggregate.rev}`), [], 'no call while an earlier rev of the room was undelivered');
+  for (const r of rooms) { const s = stub.calls.filter((x) => x.body.aggregate.id === r).map((x) => x.seq); assert.ok(s.every((v, i) => Number.isFinite(v) && (i === 0 || v > s[i - 1])), `${r}: external calls in commit order (aggregate_seq ${s.join(', ')})`); }
   assert.deepEqual(stub.calls.filter((x) => x.workerInTransaction), [], 'no external call inside a database transaction');
   assert.ok(new Set(stub.calls.map((x) => x.workerApplication)).size >= 2, 'several workers delivered in parallel');
 });

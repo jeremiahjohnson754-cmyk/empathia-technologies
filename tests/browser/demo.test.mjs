@@ -6,6 +6,12 @@
 import { spawn } from 'node:child_process'; import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const { chromium } = await import(path.join(repo, 'node_modules/playwright/index.mjs'));
+// the shared engine, run directly here: the expected design-binding sentence and the documented blocker order (independent of the page)
+const ENGINE = await import(path.join(repo, 'packages/commissioning-engine/dist/src/index.js'));
+const blockerKind = (s) => (/^the design changed while the room is recommissioned/.test(s) ? 'design-binding' : /^\d+ open issue\(s\): /.test(s) ? 'open-issues' : /^\d+ (test\(s\) were last recorded|reopened test\(s\) were re-run)/.test(s) ? 'reopened-tests' : /^acceptance needs every applicable test/.test(s) ? 'acceptance-count' : 'other');
+const inOrder = (list) => list.length > 0 && list.map(blockerKind).every((k, i, a) => k !== 'other' && (i === 0 || ENGINE.ACCEPTANCE_BLOCKER_ORDER.indexOf(a[i - 1]) <= ENGINE.ACCEPTANCE_BLOCKER_ORDER.indexOf(k)));
+/** The design binding of a draft, computed here with the engine from the stored revisions (snapshots) and the design now. */
+const bindingOf = (dr, substitutions = []) => ({ ...ENGINE.revisionBinding(dr.revisions.map((r) => ({ n: r.n, by: r.by, describes: !!r.snapshot && ENGINE.designKey(r.snapshot) === ENGINE.designKey(dr.design) })), dr.approvedRevision), substitutions });
 const dist = path.resolve(process.argv[2] || path.join(repo, 'apps/demo/dist')); const out = path.resolve(process.argv[3] || path.join(repo, 'tests/evidence/demo')); fs.mkdirSync(out, { recursive: true });
 const PORT = 4398; const results = []; let failed = 0;
 const ok = (id, name, cond, detail = '') => { results.push({ id, name, result: cond ? 'PASS' : 'FAIL', detail: String(detail).slice(0, 400) }); if (!cond) failed += 1; console.log(`${cond ? 'PASS' : 'FAIL'} ${id} ${name}${cond ? '' : ' — ' + String(detail).slice(0, 300)}`); };
@@ -90,8 +96,22 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     await persp('syseng'); await page.click('#tab-lifecycle'); await page.waitForTimeout(150);
     await persp('qa'); await page.click('button:has-text("Move to ACCEPTED")'); await page.waitForTimeout(200);
     ok('B-15e', 'the changed room cannot be re-accepted until the new tests are recorded and verified', /Refused/.test(await refusal()), await refusal());
+    // D-38: adding a device changed the design — the re-acceptance binds the approved revision, so it is saved and approved first
+    const whyB = await page.locator('[role=alert] li').allInnerTexts(); const drB = JSON.parse(await page.evaluate(() => localStorage.getItem('empathia.demo.build-a-room.v1')));
+    ok('B-15h', 'the refusal starts with the engine’s design-binding sentence (the approved revision no longer describes the room) and lists the blockers in the documented order', whyB[0] === ENGINE.designBindingSentence(bindingOf(drB)) && /save the change as a revision and have it approved/.test(whyB[0]) && inOrder(whyB) && whyB.some((x) => blockerKind(x) === 'acceptance-count'), JSON.stringify(whyB).slice(0, 400));
     await persp('cxeng'); await page.click('button:has-text("Record all untested as PASS")'); await page.waitForTimeout(300);
     await persp('architect'); await page.click('button:has-text("Verify all unverified")'); await page.waitForTimeout(300);
+    await persp('qa'); await page.click('button:has-text("Move to ACCEPTED")'); await page.waitForTimeout(300);
+    const whyB2 = await page.locator('[role=alert] li').allInnerTexts();
+    ok('B-15i', 'with every test recorded and verified, the re-acceptance is still refused for the design binding alone', whyB2.length === 1 && whyB2[0] === ENGINE.designBindingSentence(bindingOf(JSON.parse(await page.evaluate(() => localStorage.getItem('empathia.demo.build-a-room.v1'))))), JSON.stringify(whyB2).slice(0, 300));
+    await page.click('#tab-design'); await page.waitForTimeout(100); await persp('designer');
+    await page.fill('[aria-label="Revision reason"]', 'lighting control added during recommissioning (synthetic)'); await page.click('button:has-text("Save revision")'); await page.waitForTimeout(150);
+    await page.click('[data-testid=approve-revision]'); await page.waitForTimeout(150);
+    ok('B-15j', 'the designer who saved it does not hold room.design.approve: refused, in the API’s words', (await page.locator('[role=alert] li').allInnerTexts()).join('|') === ENGINE.needsAuthority('designer', 'approve a design revision', 'room.design.approve'), await refusal());
+    await persp('syseng'); await page.click('[data-testid=approve-revision]'); await page.waitForTimeout(150);
+    const bound = await page.locator('[data-testid=design-binding]');
+    ok('B-15k', 'the systems engineer approves the new revision: the design binding holds again', !(await refusal()) && (await bound.getAttribute('data-bound')) === 'true' && Number(await bound.getAttribute('data-approved')) === JSON.parse(await page.evaluate(() => localStorage.getItem('empathia.demo.build-a-room.v1'))).revisions.length, (await refusal()) || (await bound.innerText()));
+    await page.click('#tab-lifecycle'); await page.waitForTimeout(150);
     await persp('qa'); await page.click('button:has-text("Move to ACCEPTED")'); await page.waitForTimeout(300);
     const st2 = await page.locator('.build__state').innerText();
     ok('B-15f', 're-acceptance publishes baseline v2 (v1 superseded) and the lineage lists both', /ACCEPTED/.test(st2) && /baseline v2/.test(st2) && /v1/.test(await page.locator('[data-testid=lineage]').innerText()) && /v2/.test(await page.locator('[data-testid=lineage]').innerText()), (await refusal()) || st2);
@@ -388,6 +408,10 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     await persp('qa'); await page.click('button:has-text("Move to ACCEPTED")'); await page.waitForTimeout(250);
     const ra1 = await refusal();
     ok('C-19b', 're-acceptance is refused, the refusal naming every reopened test (the enterprise API’s wording)', /Refused/.test(ra1) && new RegExp(`${want.length} test\\(s\\) were last recorded before the substitution`).test(ra1) && want.every((t) => ra1.includes(t.testId)) && (await draftNow()).design.lifecycle === 'COMMISSIONING', ra1.slice(0, 300));
+    // D-38 and the documented order: the design binding first (the swap and the microphone changed the design), then the reopened tests, then the general count
+    const li1 = await page.locator('[role=alert] li').allInnerTexts(); const dr1 = await draftNow();
+    const subs1 = dr1.substitutions.filter((s) => s.baselineVersion === 1).map((s) => ({ assetId: s.assetId, from: s.from, to: s.to }));
+    ok('C-19f', 'the refusal lists the blockers in the documented order — the engine’s design-binding sentence first (naming the swap), the reopened tests, the general count for the microphone’s new tests', li1[0] === ENGINE.designBindingSentence(bindingOf(dr1, subs1)) && li1[0].includes(`(${barId} bar → Camera 1 (camera, ${camId}))`) && inOrder(li1) && JSON.stringify([...new Set(li1.map(blockerKind))].filter((k) => k !== 'open-issues')) === JSON.stringify(['design-binding', 'reopened-tests', 'acceptance-count']) && /design approval required/i.test(await page.locator('[data-testid=design-binding-notice]').innerText()), JSON.stringify(li1).slice(0, 500));
     await persp('cxeng'); await page.click('button:has-text("Record all untested as PASS")'); await page.waitForTimeout(400);
     const rerun = await draftNow();
     await persp('qa'); await page.click('button:has-text("Move to ACCEPTED")'); await page.waitForTimeout(250);
@@ -396,10 +420,26 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     await persp('cxeng'); await page.click('button:has-text("Verify all unverified")'); await page.waitForTimeout(300);
     const ra3 = await refusal();
     await persp('architect'); await page.click('button:has-text("Verify all unverified")'); await page.waitForTimeout(400);
+    // D-38: every test re-run and verified, the re-acceptance still waits for the design approval — the engine's sentence alone
+    await persp('qa'); await page.click('button:has-text("Move to ACCEPTED")'); await page.waitForTimeout(300);
+    const li2 = await page.locator('[role=alert] li').allInnerTexts(); const dr2 = await draftNow();
+    ok('C-19g', 'without the design approval the re-acceptance is refused for that reason alone, in the engine’s words: “save the change as a revision and have it approved”', li2.length === 1 && li2[0] === ENGINE.designBindingSentence(bindingOf(dr2, subs1)) && /save the change as a revision and have it approved \(room\.design\.approve, not its author\)/.test(li2[0]) && dr2.design.lifecycle === 'COMMISSIONING', JSON.stringify(li2).slice(0, 400));
+    // the matching action (the API's POST /v1/rooms/{room}/revisions/{rev}/approve, here on the synthetic draft): save, then approve — not by its author
+    await page.click('#tab-design'); await page.waitForTimeout(150); await persp('syseng');
+    await page.fill('[aria-label="Revision reason"]', 'the camera swap and the ceiling microphone, saved during recommissioning (synthetic)'); await page.click('button:has-text("Save revision")'); await page.waitForTimeout(150);
+    const newRev = (await draftNow()).revisions.length;
+    const needs = (await page.locator('[data-testid=design-binding]').innerText());
+    await page.click('[data-testid=approve-revision]'); await page.waitForTimeout(150); const own = (await page.locator('[role=alert] li').allInnerTexts()).join('|');
+    await persp('designer'); await page.click('[data-testid=approve-revision]'); await page.waitForTimeout(150); const noAuth = (await page.locator('[role=alert] li').allInnerTexts()).join('|');
+    ok('C-19h', `the saved revision ${newRev} needs approval; its author (the systems engineer) and a persona without room.design.approve (the designer) are refused, in the API’s words`, new RegExp(`revision ${newRev} needs approval`).test(needs) && own === ENGINE.notByItsAuthor('the design', 'syseng') && noAuth === ENGINE.needsAuthority('designer', 'approve a design revision', 'room.design.approve') && (await draftNow()).approvedRevision === 1, JSON.stringify({ needs: needs.slice(0, 200), own, noAuth }));
+    await persp('architect'); await page.click('[data-testid=approve-revision]'); await page.waitForTimeout(200);
+    ok('C-19i', `a different person who holds room.design.approve approves revision ${newRev}: the binding holds and the refusal is gone`, !(await refusal()) && (await page.locator('[data-testid=design-binding]').getAttribute('data-bound')) === 'true' && (await draftNow()).approvedRevision === newRev && (await draftNow()).events[0].type === 'room.revision.approve', (await refusal()) || (await page.locator('[data-testid=design-binding]').innerText()));
+    await page.click('#tab-lifecycle'); await page.waitForTimeout(150);
     await persp('qa'); await page.click('button:has-text("Move to ACCEPTED")'); await page.waitForTimeout(300);
     const acc = await draftNow(); const st3 = await page.locator('.build__state').innerText(); const lin = await page.locator('[data-testid=lineage]').innerText();
     ok('C-19d', 'the person who re-ran the tests cannot verify them; once a different person has, the room is re-accepted', /independent/.test(ra3) && acc.design.lifecycle === 'ACCEPTED' && /ACCEPTED/.test(st3) && !(await refusal()), (await refusal()) || st3);
     ok('C-19e', 'the re-acceptance publishes baseline v2 and keeps v1, unchanged, as SUPERSEDED', acc.baseline.version === 2 && acc.baseline.state === 'CURRENT' && acc.baselines.length === 2 && JSON.stringify(acc.baselines[0]) === JSON.stringify({ ...JSON.parse(baseline0).current, state: 'SUPERSEDED' }) && /baseline v2/.test(st3) && /v1\s*SUPERSEDED/.test(lin) && /v2\s*CURRENT/.test(lin) && want.every((t) => acc.baseline.results[t.testId] === 'PASS_VERIFIED') && acc.substitutions.length === 1, lin.slice(0, 300));
+    ok('C-19j', `baseline v2 binds the newly approved revision ${newRev} (v1 keeps revision 1), and the lineage says so`, acc.baseline.revision === newRev && acc.baselines[0].revision === 1 && new RegExp(`v2\\s*CURRENT\\s*revision ${newRev}`).test(lin), lin.slice(0, 300));
     // A · from Search Party room results, an estate room's story, and a link that opens the record where it lives
     await persp('visitor'); await page.evaluate(() => { location.hash = '#/search'; }); await page.waitForTimeout(300); await page.fill('#spd-q', 'Boardroom'); await page.waitForTimeout(200);
     await page.click('.sp__list a.sp__story >> nth=0'); await page.waitForSelector('[data-testid=story]');
@@ -436,6 +476,8 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     const u1 = await draftNow(); const unitAfter = u1.installations.find((i) => i.position === camPos && !i.removedAt)?.asset;
     const atPos = u1.installations.filter((i) => i.position === camPos);
     ok('C-28', 'a like-for-like replacement keeps the position id, closes the old unit’s installation (REPLACED) and installs a new unit; the design does not change', !(await refusal()) && u1.design.devices.find((x) => x.id === camPos && !x.removed)?.cat === 'camera' && unitAfter && unitAfter !== unitBefore && atPos.find((i) => i.asset === unitBefore)?.removalReason === 'REPLACED' && atPos.find((i) => i.asset === unitAfter)?.installReason === 'REPLACEMENT' && u1.revisions.length === u0.revisions.length && (u1.designHistory || []).length === (u0.designHistory || []).length, (await refusal()) || JSON.stringify(atPos));
+    const gateU = await page.locator('[data-testid=impact-gate]').innerText();
+    ok('C-28b', 'a like-for-like replacement is not a design change: the design binding holds (no re-approval), and the gate names only the reopened tests', (await page.locator('[data-testid=design-binding]').getAttribute('data-bound')) === 'true' && !/no longer describes it/.test(gateU) && /were last recorded on the previous unit and must be re-run on the new unit/.test(gateU) && (await draftNow()).approvedRevision === u0.approvedRevision, gateU.slice(0, 300));
     ok('C-29', 'the Impact panel: Assurance calls it an installation change (unit A → unit B, same model), not a model drift', (await page.locator('[data-testid=impact-assurance-changes] [data-kind=UNIT_REPLACED]').count()) === 1 && !(await page.locator('[data-testid=impact-assurance-changes] [data-kind=MODEL_SUBSTITUTED]').count()) && (await page.locator('[data-testid=impact-assurance-changes]').innerText()).includes(`unit ${unitBefore} → ${unitAfter}`), (await page.locator('[data-testid=impact-body]').innerText()).slice(0, 300));
     await page.selectOption('#b-unit', camPos); await page.waitForTimeout(150);
     const posH = await page.locator('[data-testid=position-history]').innerText(); const unitH = await page.locator('[data-testid=asset-history]').innerText();

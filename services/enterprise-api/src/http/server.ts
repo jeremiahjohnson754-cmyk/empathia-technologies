@@ -8,11 +8,11 @@ import crypto from 'node:crypto';
 import { enforcedAuthorities, type Router, type Res } from './router.js';
 import { validate } from './schema.js';
 import { ApiError } from './errors.js';
-import { RequestContext, type Principal } from '../auth/context.js';
+import { RequestContext, IdempotencyKeyTaken, type Principal } from '../auth/context.js';
 import { OidcVerifier, type OidcClaims } from '../auth/oidc.js';
 import type { TokenVerifier } from '../auth/jwt.js';
 import { resolvePrincipal, resolveOidcPrincipal } from '../domain/platform.js';
-import { asJson, type PgPool } from '../db/pg.js';
+import { asJson, type PgPool, type Queryable } from '../db/pg.js';
 import type { Config } from '../config.js';
 import { log } from '../log.js';
 import type { Telemetry } from '@empathia/observability';
@@ -28,6 +28,27 @@ export const clientAddress = (xff: string | string[] | undefined, socketAddr: st
   const last = String(Array.isArray(xff) ? xff.join(',') : xff || '').split(',').map((x) => x.trim()).filter(Boolean).pop();
   return last || String(socketAddr || 'unknown');
 };
+
+/** How long a duplicate waits for the first request with its Idempotency-Key to store its response (D-35). */
+const IDEMPOTENCY_WAIT_MS = Number(process.env['IDEMPOTENCY_WAIT_MS'] || 15000);
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+/**
+ * The stored response for an Idempotency-Key, waiting while the first request holding it is still running (status_code 0: reserved, D-35).
+ * Null when the key is free (never used, or released by a request that failed). A key used with another request is refused at once (422). A
+ * reservation that outlives the wait — still running, or a process that ended after its commit and before recording the response — is a
+ * 409: the request is never run a second time.
+ */
+async function storedResponse(keyTx: <T>(fn: (q: Queryable) => Promise<T>) => Promise<T>, keyArgs: unknown[], reqHash: string): Promise<{ status_code: number; response: unknown } | null> {
+  const t0 = Date.now();
+  for (;;) {
+    const row = (await keyTx((q) => q.query<{ request_hash: string; status_code: number; response: unknown; age_ms: number }>('SELECT request_hash, status_code, response, (extract(epoch FROM now() - created_at) * 1000)::float8 AS age_ms FROM app.idempotency_key WHERE tenant_id = $1 AND person_id = $2 AND key = $3', keyArgs))).rows[0];
+    if (!row) return null;
+    if (row.request_hash !== reqHash) throw new ApiError('idempotency_mismatch', 'this Idempotency-Key was used with a different request');
+    if (row.status_code > 0) return row;
+    if (Date.now() - t0 >= IDEMPOTENCY_WAIT_MS || row.age_ms >= IDEMPOTENCY_WAIT_MS * 4) throw new ApiError('conflict', 'a request with this Idempotency-Key is still in progress, or ended without recording its response: it is not run twice — retry with the same key later, or check the record before using a new key');
+    await sleep(20);
+  }
+}
 
 class Bucket { tokens: number; at = Date.now(); constructor(public cap: number) { this.tokens = cap; } take(): boolean { const now = Date.now(); this.tokens = Math.min(this.cap, this.tokens + ((now - this.at) / 60000) * this.cap); this.at = now; if (this.tokens < 1) return false; this.tokens -= 1; return true; } }
 
@@ -101,19 +122,34 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
       for (const [k, s] of Object.entries(route.query || {})) { const v = url.searchParams.get(k); if (v != null) { const errs = validate(s, v, `query.${k}`); if (errs.length) throw new ApiError('validation', errs[0]!, errs); } }
       for (const k of url.searchParams.keys()) if (!route.query || !(k in route.query)) throw new ApiError('validation', `unknown query parameter ${k}`);
 
-      // idempotency (POST)
+      // idempotency (POST) — D-35: the key is reserved in the handler's own transaction (RequestContext.tx), so exactly one request with a
+      // given key runs its handler; a concurrent duplicate waits for the stored response and replays it, or is refused 409 while the key is
+      // in use. A failed or refused request releases the key (nothing was stored before either), so the client can retry with it.
       const idem = String(req.headers['idempotency-key'] || '');
       if (route.idempotent && idem && ctx.principal) {
         if (!/^[A-Za-z0-9._:-]{8,128}$/.test(idem)) throw new ApiError('validation', 'Idempotency-Key is 8–128 characters of letters, digits and ._:-');
         const reqHash = crypto.createHash('sha256').update(`${req.method} ${url.pathname}\n`).update(raw || Buffer.alloc(0)).digest('hex');
-        const prev = (await ctx.tx((q) => q.query<{ request_hash: string; status_code: number; response: unknown }>('SELECT request_hash, status_code, response FROM app.idempotency_key WHERE person_id = $1 AND key = $2', [ctx.p.personId, idem]))).rows[0];
-        if (prev) {
-          if (prev.request_hash !== reqHash) throw new ApiError('idempotency_mismatch', 'this Idempotency-Key was used with a different request');
-          send({ status: prev.status_code, body: prev.response, headers: { 'idempotent-replay': 'true' } }); return;
+        const who = { tenantId: ctx.p.tenantId, userId: ctx.p.personId }; const keyArgs = [ctx.p.tenantId, ctx.p.personId, idem];
+        const keyTx = <T>(fn: (q: Queryable) => Promise<T>) => pool.tx(who, fn);   // never a reservation of its own
+        for (let attempt = 0; ; attempt += 1) {
+          const prev = await storedResponse(keyTx, keyArgs, reqHash);
+          if (prev) { send({ status: prev.status_code, body: prev.response, headers: { 'idempotent-replay': 'true' } }); return; }
+          ctx.idempotency = { key: idem, requestHash: reqHash, reserved: false, pending: false };
+          let out: Res;
+          try { out = await route.handler(ctx, { params, query: url.searchParams, body, raw, headers: req.headers }); }
+          catch (e) {
+            const reserved = ctx.idempotency.reserved; ctx.idempotency = null;
+            if (e instanceof IdempotencyKeyTaken && attempt < 3) continue;   // a concurrent request with the key committed first: replay its response
+            if (reserved) await keyTx((q) => q.query('DELETE FROM app.idempotency_key WHERE tenant_id = $1 AND person_id = $2 AND key = $3 AND status_code = 0', keyArgs));
+            throw e;
+          }
+          const reserved = ctx.idempotency.reserved; ctx.idempotency = null;
+          if (out.status < 300) {
+            if (reserved) await keyTx((q) => q.query('UPDATE app.idempotency_key SET status_code = $4, response = $5 WHERE tenant_id = $1 AND person_id = $2 AND key = $3 AND status_code = 0', [...keyArgs, out.status, asJson(out.body ?? null)]));
+            else await keyTx((q) => q.query('INSERT INTO app.idempotency_key (tenant_id, person_id, key, request_hash, status_code, response) VALUES ($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING', [...keyArgs, reqHash, out.status, asJson(out.body ?? null)]));   // a handler that opened no transaction
+          } else if (reserved) await keyTx((q) => q.query('DELETE FROM app.idempotency_key WHERE tenant_id = $1 AND person_id = $2 AND key = $3 AND status_code = 0', keyArgs));
+          send(out); return;
         }
-        const out = await route.handler(ctx, { params, query: url.searchParams, body, raw, headers: req.headers });
-        if (out.status < 300) await ctx.tx((q) => q.query('INSERT INTO app.idempotency_key (tenant_id, person_id, key, request_hash, status_code, response) VALUES ($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING', [ctx.p.tenantId, ctx.p.personId, idem, reqHash, out.status, asJson(out.body ?? null)]));
-        send(out); return;
       }
       send(await route.handler(ctx, { params, query: url.searchParams, body, raw, headers: req.headers }));
     } catch (e) {

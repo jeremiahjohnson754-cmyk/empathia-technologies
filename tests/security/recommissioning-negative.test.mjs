@@ -9,7 +9,9 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { setup, client, DEV_PASSWORD, mail } from '../integration/harness.mjs';
+import { setup, client, DEV_PASSWORD, mail, repo } from '../integration/harness.mjs';
+import path from 'node:path'; import { pathToFileURL } from 'node:url';
+const CE = await import(pathToFileURL(path.join(repo, 'packages/commissioning-engine/dist/src/index.js')).href);   // the shared refusal wording
 
 let h, c, T = {}, ids = {}, A, B, P, rows, v1Before, revsBefore, units = {};
 const J = (x) => JSON.stringify(x);
@@ -232,6 +234,7 @@ test('RN-09 — a model change during recommissioning is a design change: the ol
   const r1 = await call('syseng', 'POST', `/v1/rooms/${A}/revisions`, { body: { reason: 'synthetic: the substituted bar, saved by the systems engineer' } }); assert.equal(r1.status, 201);
   const own = await call('syseng', 'POST', `/v1/rooms/${A}/revisions/${r1.body.revision}/approve`);
   assert.equal(own.status, 422); assert.match(J(own.body), /separation of duties/);
+  assert.equal(own.body.detail, CE.notByItsAuthor('the design', 'syseng'), 'in the wording Build a Room’s “Approve revision” uses (the engine’s)');
   assert.equal((await call('designer', 'POST', `/v1/rooms/${A}/revisions/${r1.body.revision}/approve`)).status, 403, 'no room.design.approve');
   assert.equal((await call('x_syseng', 'POST', `/v1/rooms/${A}/revisions/${r1.body.revision}/approve`)).status, 404, 'another tenant: not found');
   assert.equal((await call('designer', 'PATCH', `/v1/rooms/${A}/devices/${P}`, { body: { model: 'SYN-BAR-3 (synthetic)' } })).status, 200);
@@ -370,4 +373,32 @@ test('RN-14 — site scope: a technician scoped to another site sees none of the
   const leak = await c.call('POST', `/v1/rooms/${S}/positions/${touch}/installation`, { token: south, body: { asset: aTouch } });
   assert.equal(leak.status, 404, J(leak.body)); assert.ok(!J(leak.body).includes(A) && !/installed at PA-/.test(J(leak.body)));
   assert.equal((await c.call('POST', `/v1/rooms/${S}/positions/${touch}/installation`, { token: south, body: {} })).status, 201, 'a new unit at a position of their own site');
+});
+
+test('RN-15 — D-35: two concurrent requests with one Idempotency-Key run the handler once; the duplicate waits and replays the stored response (or is refused 409 as a key in use), never runs the handler: one result record, one replacement (one installation, one unit, one outbox event, one audit row)', async () => {
+  // a result record: a mutating route without a natural precondition — a second execution would add a second result record to the history
+  const r = rows.find((x) => x.devices.includes(P)); const ev = await evidence('before the concurrent requests (D-35)');
+  const results = () => n(`SELECT count(*) FROM app.test_result t JOIN app.room r ON r.id = t.room_id WHERE r.code = '${A}' AND t.test_id = '${r.test_id}'`);
+  const keyRow = (k) => n(`SELECT count(*) FROM app.idempotency_key WHERE key = '${k}'`);
+  const r0 = results();
+  const rec = () => call('cxeng', 'POST', `/v1/rooms/${A}/results`, { body: { testId: r.test_id, state: 'PASS', evidenceId: ev.id, evidenceKind: r.evidence[0], instrument }, headers: { 'idempotency-key': 'rn-concurrent-result-0001' } });
+  const rr = await Promise.all([rec(), rec()]);
+  assert.ok(rr.some((x) => x.status === 201) && rr.every((x) => x.status === 201 || x.status === 409), J(rr.map((x) => [x.status, x.body?.detail])));
+  assert.equal(results(), r0 + 1, 'exactly one result recorded');
+  const created = rr.filter((x) => x.status === 201);
+  if (created.length === 2) { assert.deepEqual(created[0].body, created[1].body, 'the duplicate replays the stored response'); assert.equal(rr.filter((x) => x.headers['idempotent-replay'] === 'true').length, 1, 'one of the two is the replay'); }
+  else assert.match(rr.find((x) => x.status === 409).body.detail, /Idempotency-Key/, 'a 409 names the key in use, not the handler');
+  const again = await rec(); assert.equal(again.status, 201); assert.equal(again.headers['idempotent-replay'], 'true'); assert.deepEqual(again.body, created[0].body); assert.equal(results(), r0 + 1, 'a later retry replays and writes nothing');
+  assert.equal(keyRow('rn-concurrent-result-0001'), 1, 'one stored response for the key');
+  // a replacement: its precondition (expectedInstallation) would refuse a second execution with 409 — the duplicate must not get that far
+  const cur = await current(A, P); const s0 = { n: count.installations(P), ev: count.replacedEvents(), au: count.replacedAudits(), assets: count.assets() };
+  const body = { expectedInstallation: cur.id, reason: 'synthetic: one like-for-like replacement, sent twice at once under one key (D-35)' };
+  const go = () => call('installer', 'POST', `/v1/rooms/${A}/positions/${P}/replace`, { body, headers: { 'idempotency-key': 'rn-concurrent-replace-0001' } });
+  const rs = await Promise.all([go(), go()]);
+  assert.deepEqual([count.installations(P), count.replacedEvents(), count.replacedAudits(), count.assets()], [s0.n + 1, s0.ev + 1, s0.au + 1, s0.assets + 1], 'exactly one execution: one new installation, one new unit, one outbox event, one audit row');
+  const won = rs.filter((x) => x.status === 200);
+  assert.ok(won.length >= 1, J(rs.map((x) => [x.status, x.body?.detail])));
+  assert.ok(rs.every((x) => x.status === 200 || (x.status === 409 && /Idempotency-Key/.test(x.body.detail))), `the duplicate is a replay or a key-in-use 409 — never the handler's stale-precondition refusal: ${J(rs.map((x) => [x.status, x.body?.detail]))}`);
+  if (won.length === 2) assert.deepEqual(won[0].body, won[1].body, 'the duplicate replays the stored response');
+  const again2 = await go(); assert.equal(again2.status, 200); assert.equal(again2.headers['idempotent-replay'], 'true'); assert.equal(count.installations(P), s0.n + 1);
 });

@@ -137,6 +137,7 @@ a.ui-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; 
 .impact__reopened, .build__reverify { display: grid; gap: 4px; padding: var(--sp-2) var(--sp-3); border: 1px solid var(--line); border-left: 3px solid var(--warn); border-radius: var(--r-sm); background: var(--panel); }
 .build__reverify { margin: 0 0 var(--sp-3); font-size: var(--fs-sm); line-height: 1.5; overflow-wrap: anywhere; } .build__reverify p { margin: 0; }
 .build__stale { display: block; font-size: var(--fs-xs); color: var(--tx2); }
+.build__binding { display: grid; gap: 4px; margin: 0 0 var(--sp-2); padding: var(--sp-2) var(--sp-3); border: 1px solid var(--line); border-left: 3px solid var(--warn); border-radius: var(--r-sm); background: var(--panel); font-size: var(--fs-sm); line-height: 1.5; overflow-wrap: anywhere; } .build__binding p { margin: 0; } .build__binding[data-bound="true"] { border-left-color: var(--ok, var(--accent)); }
 .impact__dev { display: grid; gap: 4px; padding-top: 6px; border-top: 1px solid var(--line); } .impact__dev:first-of-type { border-top: 0; padding-top: 0; }
 .impact__item details summary { cursor: pointer; font-weight: 600; padding: 4px 0; min-height: 28px; }
 .impact__sub { margin: 8px 0 4px !important; font-size: var(--fs-xs); font-weight: 700; color: var(--tx2); text-transform: uppercase; letter-spacing: .04em; }

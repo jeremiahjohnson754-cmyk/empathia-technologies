@@ -9,6 +9,7 @@ import {
   recordBlockers, buildResult, verifyBlockers, resultLabel, drawingInput, DRAWING_KINDS, reopenedBySubstitution, type RoomAnalysis,
   planReplacement, planIdentity, identityOf, identityText, installationSentence, timelineOf, placementsOf, openAt, INSTALLED_STATES,
   reverificationBlockers as engineReverificationBlockers, type AssetFact, type InstallationFact, type IdentityState, type InstallReason, type RemovalReason, type ChangeKind, type DeviceIdentity,
+  designKey, revisionBinding, designBindingSentence, designBindingTask, revisionApprovalBlockers, needsAuthority, notByItsAuthor, REVISION_APPROVAL, type DesignSnapshot, type DesignBinding,
 } from '@empathia/commissioning-engine';
 import type { RoomDesignInput, PlannedDevice, Connection, RecordedResult, RoomLifecycle, ResultCounts, ResultLabel } from '@empathia/domain-types';
 import PERSONAS from '@empathia/domain-data/data/V25_PERSONAS.json' with { type: 'json' };
@@ -26,7 +27,9 @@ export interface Draft {
   design: RoomDesignInput;
   /** who saved the latest design change (separation of duties: that person does not approve it) */
   lastEditedBy: string;
-  revisions: Array<{ n: number; by: string; at: string; hash: string; reason: string }>;
+  /** each saved revision with the part of the design a re-acceptance compares (`snapshot`, the engine's `DesignSnapshot`; absent in a draft
+   *  saved before it was recorded — its display hash is compared instead) */
+  revisions: Array<{ n: number; by: string; at: string; hash: string; reason: string; snapshot?: DesignSnapshot }>;
   approvedRevision: number | null;
   drawings: Record<string, { state: 'DRAFT' | 'GENERATED' | 'APPROVED' | 'REVIEW_REQUIRED'; input: string; by?: string }>;
   events: DraftEvent[];
@@ -249,20 +252,62 @@ export function countsNow(d: Draft, a: RoomAnalysis = analysis(d)): ResultCounts
   return { applicable: L.length + stale.size, recorded: L.filter((x) => x !== 'NOT_TESTED').length, verified: n('PASS_VERIFIED'), awaiting: n('PASS_UNVERIFIED'), failed: n('FAIL'), notSupported: n('NOT_SUPPORTED'), inconclusive: n('INCONCLUSIVE'), notTested: n('NOT_TESTED'), reopened: stale.size };
 }
 /** Every condition on a lifecycle transition, as reasons (empty = allowed; authority and separation of duties are checked apart): the
- *  engine's gates and, for a re-acceptance, the tests a substitution reopened — as the enterprise API adds them to its refusal. */
+ *  engine's gates and, for a re-acceptance, the design it binds and the tests a substitution reopened — the facts the enterprise API hands
+ *  the same gate, so the reasons, their wording and their order (`ACCEPTANCE_BLOCKER_ORDER`) are the API's. */
 export function lifecycleConditions(d: Draft, to: RoomLifecycle, a: RoomAnalysis = analysis(d)): string[] {
   // the shared gate: a result recorded on a previous unit never counts, and the tests a change reopened are named (one wording with the API)
   return lifecycleBlockers({ from: d.design.lifecycle, to, classificationApproved: !!d.design.classification.approved && !d.design.classification.approved.stale, openIssues: a.checks, savedRevisions: d.revisions.length, rows: a.applicability.rows, results: d.design.results, hasBaseline: !!d.baseline, hasLiveMonitoringEvidence: false,
-    reverification: reverification(d, a).map((t) => ({ testId: t.testId, rerun: t.rerun, result: t.result })), changeKinds: changeKinds(d) });
+    reverification: reverification(d, a).map((t) => ({ testId: t.testId, rerun: t.rerun, result: t.result })), changeKinds: changeKinds(d), designBinding: to === 'ACCEPTED' ? designBindingNow(d) : null });
 }
+/** The display hash of a revision's input (geometry, live devices, live connections). */
+const revisionHash = (d: Draft) => hash(JSON.stringify([d.design.geometry, d.design.devices.filter((x) => !x.removed), d.design.connections.filter((c) => !c.removed)]));
+/** The part of the design a re-acceptance compares (the API keeps the same in each revision snapshot; the engine's `designKey` reads it). */
+export const designSnapshot = (d: Draft): DesignSnapshot => ({ devices: (live(d.design.devices) as PlannedDevice[]).map((x) => ({ id: x.id, cat: x.cat, model: x.model, x: x.x, y: x.y, mount: x.mount })), connections: (live(d.design.connections) as Connection[]).map((c) => ({ id: c.id })) });
+/** Whether a saved revision describes the design now (a revision saved before snapshots were kept is compared by its display hash). */
+const describes = (d: Draft, r: Draft['revisions'][number]) => (r.snapshot ? designKey(r.snapshot) === designKey(designSnapshot(d)) : r.hash === revisionHash(d));
+/**
+ * The design a re-acceptance binds (ADR-0003; the engine's binding.ts, the fact the enterprise API hands its gate): while an accepted room is
+ * recommissioned, whether the approved revision still describes the room, and the substitutions made under the current baseline (a model,
+ * or a device of another category). A like-for-like replacement changes no design, so it never asks for a re-approval. Null otherwise.
+ */
+export function designBindingNow(d: Draft): DesignBinding | null {
+  if (!recommissioningBaseline(d)) return null;
+  const b = revisionBinding(d.revisions.map((r) => ({ n: r.n, by: r.by, describes: describes(d, r) })), d.approvedRevision);
+  return { ...b, substitutions: activeSubstitutions(d).filter((s) => (s.kind || 'SUBSTITUTED') === 'SUBSTITUTED').map((s) => ({ assetId: s.assetId, from: s.from, to: s.to })) };
+}
+/** The engine's sentence for the design binding (null when the approved revision describes the room), and the task it leaves, with who does it. */
+export const designBindingReason = (d: Draft): string | null => { const b = designBindingNow(d); return b ? designBindingSentence(b) : null; };
+export const designBindingTodo = (d: Draft) => { const b = designBindingNow(d); return b ? designBindingTask(b) : null; };
 export function saveRevision(d: Draft, persona: string, reason: string): Draft | Refusal {
   if (!holds(persona, 'room.design')) return refused([`${personaLabel(persona)} does not hold room.design`]);
-  const h = hash(JSON.stringify([d.design.geometry, d.design.devices.filter((x) => !x.removed), d.design.connections.filter((c) => !c.removed)]));
+  const h = revisionHash(d);
   const last = d.revisions[d.revisions.length - 1];
   if (last && last.hash === h) return refused(['nothing changed since the last revision']);
-  d.revisions.push({ n: d.revisions.length + 1, by: persona, at: now(), hash: h, reason: reason.trim() || 'design change' });
+  d.revisions.push({ n: d.revisions.length + 1, by: persona, at: now(), hash: h, reason: reason.trim() || 'design change', snapshot: designSnapshot(d) });
   d.lastEditedBy = persona;
   log(d, persona, 'room.design_revision_saved', `revision ${d.revisions.length} (${h})`); return d;
+}
+/**
+ * Approve the saved revision that carries a change made while the accepted room is recommissioned — the enterprise API's
+ * POST /v1/rooms/{room}/revisions/{rev}/approve, as a client-side action on the synthetic draft: the same authority (room.design.approve),
+ * the same rule (the engine's `revisionApprovalBlockers`: only while recommissioned, only the latest revision, newer than the approved one,
+ * describing the design; an approved classification and no open High/Critical design deficiency) and the same separation of duties (never
+ * the revision's author), with the same wording. The re-acceptance then binds it: baseline v(n+1) records this revision.
+ */
+export function approveRevision(d: Draft, persona: string, n: number): Draft | Refusal {
+  const type = 'room.revision.approve';
+  const deny = (why: string[]) => { log(d, persona, type, `revision ${n} refused: ${why.join('; ')}`, 'DENIED'); return refused(why); };
+  if (!holds(persona, REVISION_APPROVAL.authority)) return deny([needsAuthority(persona, REVISION_APPROVAL.action, REVISION_APPROVAL.authority)]);
+  const a = analysis(d); const cls = d.design.classification.approved;
+  const facts = { room: d.code, lifecycle: d.design.lifecycle, revision: n, classificationApproved: !!cls && !cls.stale, openIssues: a.checks };
+  const b = designBindingNow(d);
+  if (!b) return deny(revisionApprovalBlockers({ ...facts, binding: null }));
+  const rev = d.revisions.find((r) => r.n === n); if (!rev) return deny([`revision ${n} of ${d.code} was not found`]);
+  const why = revisionApprovalBlockers({ ...facts, binding: b }); if (why.length) return deny(why);
+  if (rev.by === persona) return deny([notByItsAuthor(REVISION_APPROVAL.what, persona)]);
+  const previous = d.approvedRevision; d.approvedRevision = n;
+  log(d, persona, type, `revision ${n} approved during recommissioning (previously ${previous ?? 'none'}): the re-acceptance binds it${b.substitutions.length ? ` — ${b.substitutions.map((s) => `${s.assetId} ${s.from} → ${s.to}`).join(', ')}` : ''}`);
+  return d;
 }
 export function approveClassification(d: Draft, persona: string, override?: { archetype: string; reason: string }): Draft | Refusal {
   if (!holds(persona, 'room.classify.approve')) return refused([`${personaLabel(persona)} does not hold room.classify.approve: a systems engineer approves the classification`]);

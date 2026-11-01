@@ -132,8 +132,25 @@ function Design({ d, persona, a, apply, change, impact }: { d: S.Draft; persona:
         <Register d={d} persona={persona} why={why} run={(fn) => done(change(fn))} />
         <h2 className="build__h2">Revisions ({d.revisions.length})</h2>
         <div className="build__row"><input aria-label="Revision reason" value={reason} onChange={(e) => setReason(e.target.value)} placeholder="why this revision" maxLength={200} /><Button small onClick={() => { if (apply(S.saveRevision(d, persona, reason))) setReason(''); }}>Save revision as {S.personaLabel(persona)}</Button></div>
+        {S.recommissioningBaseline(d) && <DesignBinding d={d} persona={persona} apply={apply} />}
         <ul className="build__list">{d.revisions.map((r) => <li key={r.n}>rev {r.n} · <code>{r.hash}</code> · {S.personaLabel(r.by)} · {r.reason}{d.approvedRevision === r.n && <> <Tag tone="ok">approved</Tag></>}</li>)}</ul>
       </div>
+    </div>
+  );
+}
+
+/**
+ * The design a re-acceptance binds, while the accepted room is recommissioned (ADR-0003; the engine's binding.ts — the enterprise API's
+ * rule and wording): whether the approved revision still describes the room, what is left to do and by whom, and the approval of the latest
+ * saved revision (room.design.approve, never its author — the API's POST /v1/rooms/{room}/revisions/{rev}/approve, here on the synthetic draft).
+ */
+function DesignBinding({ d, persona, apply }: { d: S.Draft; persona: string; apply: (r: S.Draft | S.Refusal) => boolean }) {
+  const why = S.designBindingReason(d); const todo = S.designBindingTodo(d); const latest = d.revisions[d.revisions.length - 1];
+  return (
+    <div className="build__binding" data-testid="design-binding" data-bound={why ? 'false' : 'true'} data-approved={d.approvedRevision ?? ''}>
+      <p>{why ? <><Tag tone="warn">design approval required</Tag> {why}.</> : <><Tag tone="ok">bound</Tag> The approved revision {d.approvedRevision} describes the room: the re-acceptance binds it.</>}</p>
+      {todo && <p className="ui-muted">Next: {todo.what} — {todo.who}.</p>}
+      {latest && <p className="build__row"><Button small testId="approve-revision" onClick={() => apply(S.approveRevision(d, persona, latest.n))}>Approve revision {latest.n} as {S.personaLabel(persona)}</Button></p>}
     </div>
   );
 }
@@ -225,6 +242,7 @@ function Lifecycle({ d, persona, a, apply }: { d: S.Draft; persona: string; a: R
       </p>
       {d.baseline && <Notice tone="ok"><b>Baseline v{d.baseline.version}</b> published at acceptance by {S.personaLabel(d.baseline.by)} against revision {d.baseline.revision}: {Object.keys(d.baseline.results).length} result labels bound. A later re-acceptance publishes v{d.baseline.version + 1}; v{d.baseline.version} is never overwritten.</Notice>}
       {(d.baselines || []).length > 0 && <div className="build__lineage" data-testid="lineage"><h2 className="build__h2">Baseline lineage</h2><ul className="build__list">{d.baselines.map((b) => <li key={b.version}><b>v{b.version}</b> <Tag tone={b.state === 'CURRENT' ? 'ok' : 'muted'}>{b.state}</Tag> <span className="ui-muted">revision {b.revision} · {b.devices.length} devices · {Object.values(b.results).filter((x) => x === 'PASS_VERIFIED').length}/{Object.keys(b.results).length} verified · {S.personaLabel(b.by)} · {b.at.slice(0, 19).replace('T', ' ')}</span></li>)}</ul>{d.baselines.length >= 2 && <BaselineDiff a={d.baselines[d.baselines.length - 2]!} b={d.baselines[d.baselines.length - 1]!} />}</div>}
+      {(() => { const bind = S.designBindingReason(d); return bind ? <div data-testid="design-binding-notice"><Notice tone="warn"><b>Design approval required:</b> {bind}. <a href="#/v25/build?tab=design">Save and approve the revision in the design</a>.</Notice></div> : null; })()}
       {rv.length > 0 && (() => { const waiting = rv.filter((t) => !t.rerun && t.result !== 'PASS_VERIFIED').length; return <Notice tone="warn"><b>Re-verification required:</b> {stale.size ? `${stale.size} of ${rv.length} reopened tests still to re-run on the changed design` : `all ${rv.length} reopened tests re-run since the substitution`}{waiting ? `; ${waiting} awaiting a pass verified by a different person` : ''}. {stale.size || waiting ? 'The re-acceptance waits for them.' : 'They no longer block the re-acceptance.'} <a href="#/v25/build?tab=checks">See each test and its reasons in the plan</a>.</Notice>; })()}
       <h2 className="build__h2">Record a result · {resultWords(counts)}{counts.reopened ? ` · ${counts.reopened} reopened by a substitution` : ''}</h2>
       <p className="ui-muted">Recording needs the room in COMMISSIONING and the responsible persona (the commissioning engineer may record any); a PASS stays PASS_UNVERIFIED until a different person verifies it; acceptance needs every applicable test independently verified and no open deficiency.</p>
