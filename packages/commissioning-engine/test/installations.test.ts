@@ -6,6 +6,7 @@ import {
   planInstall, planReplacement, planIdentity, identityOf, identityText, replacementsOf, substitutionUnits, reopenedBySubstitution, substitutionReason,
   reverificationBlockers, rerunTask, lifecycleBlockers, IDENTITY_TEST, type InstallationFact, type AssetFact, type PositionFact,
   designKey, revisionBinding, designBindingSentence, designBindingTask, revisionApprovalBlockers, needsAuthority, notByItsAuthor, REVISION_APPROVAL, ACCEPTANCE_BLOCKER_ORDER,
+  designEditRefusal, DESIGN_EDITS, type DesignEdit,
 } from '../src/index.js';
 
 const pos: PositionFact = { code: 'PA-0061', category: 'camera', label: 'Camera 1', model: 'generic' };
@@ -174,4 +175,17 @@ test('approving a revision during recommissioning (one rule for the API and the 
   assert.deepEqual(revisionApprovalBlockers({ ...base, revision: 3, binding: b, classificationApproved: false, openIssues: [{ severity: 'High' }] }), ['the room classification is not approved by an engineer', '1 open High/Critical design deficiencies']);
   assert.equal(needsAuthority('designer', REVISION_APPROVAL.action, REVISION_APPROVAL.authority), 'designer may not approve a design revision (needs room.design.approve)');
   assert.equal(notByItsAuthor(REVISION_APPROVAL.what, 'syseng'), 'separation of duties: the design cannot be approved by its own author (syseng)');
+});
+
+test('D-39 — which design edits a room accepts (one rule for the API and the demonstration): every edit while PLANNED; while an accepted room is recommissioned only a model substitution; nothing otherwise — in the API’s words', () => {
+  const planned = 'the design is %s: changes need a change order';
+  const refusal = (lifecycle: string, recommissioning: boolean, edit: DesignEdit) => designEditRefusal({ room: 'R-PLN-0001', lifecycle, recommissioning, edit });
+  for (const edit of DESIGN_EDITS) assert.equal(refusal('PLANNED', false, edit), null, `PLANNED: ${edit}`);
+  for (const lifecycle of ['DESIGN_APPROVED', 'INSTALLATION_PENDING', 'INSTALLED_UNVERIFIED', 'COMMISSIONING', 'OPERATIONAL']) for (const edit of DESIGN_EDITS) assert.equal(refusal(lifecycle, false, edit), planned.replace('%s', lifecycle), `${lifecycle}: ${edit}`);
+  for (const edit of DESIGN_EDITS) assert.equal(refusal('ACCEPTED', false, edit), 'the design is ACCEPTED: changes need a change order — an accepted room is recommissioned first (ACCEPTED → COMMISSIONING, plan.compile); a device model can then be substituted', `ACCEPTED: ${edit}`);
+  // recommissioned: a model substitution is the one design edit; moving a device has its own sentence; the rest are PLANNED-only
+  assert.equal(refusal('COMMISSIONING', true, 'substitute-model'), null);
+  assert.equal(refusal('COMMISSIONING', true, 'move-device'), 'R-PLN-0001 is being recommissioned: only a model substitution is accepted (the asset keeps its id and its position); moving a device needs a change order');
+  for (const edit of ['add-device', 'remove-device', 'swap-category', 'add-connection', 'remove-connection', 'edit-room'] as const) assert.equal(refusal('COMMISSIONING', true, edit), 'the design is COMMISSIONING: changes need a change order', `recommissioned: ${edit}`);
+  assert.deepEqual([...DESIGN_EDITS].sort(), ['add-connection', 'add-device', 'edit-room', 'move-device', 'remove-connection', 'remove-device', 'substitute-model', 'swap-category']);
 });

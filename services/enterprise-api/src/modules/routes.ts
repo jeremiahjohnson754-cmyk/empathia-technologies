@@ -33,7 +33,7 @@ import { fileURLToPath } from 'node:url';
 import type { PgPool } from '../db/pg.js';
 import type { Hs256Tokens } from '../auth/jwt.js';
 import type { ObjectStore } from '../storage/objectStore.js';
-import { LIFECYCLE_AUTHORITY } from '@empathia/commissioning-engine';
+import { LIFECYCLE_AUTHORITY, REVISION_APPROVAL } from '@empathia/commissioning-engine';   // REVISION_APPROVAL: the 403 of a revision approval reads as Build a Room's (D-39)
 import { ROOM_LIFECYCLE } from '@empathia/domain-types';
 import { SERVICE_STATES, WORK_NEEDS, SLA } from '@empathia/service-engine';
 import { BRANCHES as BRANCHES_FI } from '@empathia/field-intelligence';
@@ -108,7 +108,7 @@ export function buildRoutes(deps: { pool: PgPool; tokens: Hs256Tokens; store: Ob
     body: obj({ reason: str({ maxLength: 200 }) }), responses: created('revision number and hash'), handler: async (c, q) => ({ status: 201, body: await rooms.saveRevision(c, q.params['room']!, String((q.body as { reason?: string } | null)?.reason || 'saved')) }) });
   add({ method: 'GET', path: '/v1/rooms/:room/revisions/compare', tag: 'revisions', summary: 'Compare two revisions: geometry, devices added/removed/moved/swapped, connections', auth: true,
     query: { a: str({ pattern: '^[0-9]{1,6}$' }), b: str({ pattern: '^[0-9]{1,6}$' }) }, responses: ok('difference'), handler: async (c, q) => ({ status: 200, body: await read.revisions(c, q.params['room']!, Number(q.query.get('a')), Number(q.query.get('b'))) }) });
-  add({ method: 'POST', path: '/v1/rooms/:room/revisions/:rev/approve', tag: 'revisions', summary: 'Approve the saved revision that carries a change made while an accepted room is recommissioned (never by its author; classification approved, no open High/Critical design deficiency): the re-acceptance binds it (ADR-0003)', auth: true, authority: 'room.design.approve',
+  add({ method: 'POST', path: '/v1/rooms/:room/revisions/:rev/approve', tag: 'revisions', summary: 'Approve the saved revision that carries a change made while an accepted room is recommissioned (never by its author; classification approved, no open High/Critical design deficiency): the re-acceptance binds it (ADR-0003)', auth: true, authority: REVISION_APPROVAL.authority, action: REVISION_APPROVAL.action,
     responses: ok('approved revision'), handler: async (c, q) => { if (!/^[0-9]{1,6}$/.test(q.params['rev']!)) throw invalid('rev is a revision number'); return { status: 200, body: await rooms.approveRevision(c, q.params['room']!, Number(q.params['rev'])) }; } });
   add({ method: 'POST', path: '/v1/rooms/:room/classification/approve', tag: 'rooms', summary: 'Approve the suggested room type, or override it with a reason (≥ 10 characters)', auth: true, authority: 'room.classify.approve',
     body: obj({ archetype: str({ maxLength: 8, nullable: true }), reason: str({ maxLength: 400 }) }), responses: ok('approval'), handler: async (c, q) => ({ status: 200, body: await rooms.approveClassification(c, q.params['room']!, (q.body || {}) as never) }) });

@@ -402,3 +402,32 @@ test('RN-15 — D-35: two concurrent requests with one Idempotency-Key run the h
   if (won.length === 2) assert.deepEqual(won[0].body, won[1].body, 'the duplicate replays the stored response');
   const again2 = await go(); assert.equal(again2.status, 200); assert.equal(again2.headers['idempotent-replay'], 'true'); assert.equal(count.installations(P), s0.n + 1);
 });
+
+test('RN-16 — D-39: a recommissioned room takes a model substitution and nothing else — adding, moving or removing a device is refused (422) in the shared rule’s words and writes nothing; first commissioning takes no design edit at all; the authority refusal of a revision approval reads as Build a Room’s', async () => {
+  const live = (code) => n(`SELECT count(*) FROM app.planned_asset p JOIN app.room r ON r.id = p.room_id WHERE r.code = '${code}' AND p.removed_at IS NULL`);
+  const events = (code) => n(`SELECT count(*) FROM app.outbox_event WHERE aggregate_id = '${code}' AND type IN ('room.device_added', 'room.device_removed', 'room.device_moved')`);
+  const rule = (code, lifecycle, recommissioning, edit) => CE.designEditRefusal({ room: code, lifecycle, recommissioning, edit });
+  // room A: an accepted room under recommissioning (baseline v2 CURRENT)
+  assert.equal((await room(A)).body.room.lifecycle, 'COMMISSIONING'); assert.equal((await call('syseng', 'GET', `/v1/rooms/${A}/baselines`)).body.current.version, 2);
+  const disp = (await room(A)).body.devices.find((d) => d.cat === 'display').id; const d0 = live(A); const e0 = events(A);
+  const add = await call('designer', 'POST', `/v1/rooms/${A}/devices`, { body: { category: 'lighting', x: 1, y: 1, mount: 'ceiling' } });
+  assert.equal(add.status, 422, J(add.body)); assert.equal(add.body.detail, rule(A, 'COMMISSIONING', true, 'add-device')); assert.equal(add.body.detail, 'the design is COMMISSIONING: changes need a change order');
+  const rem = await call('designer', 'DELETE', `/v1/rooms/${A}/devices/${disp}`);
+  assert.equal(rem.status, 422, J(rem.body)); assert.equal(rem.body.detail, rule(A, 'COMMISSIONING', true, 'remove-device'));
+  const mv = await call('designer', 'PATCH', `/v1/rooms/${A}/devices/${disp}`, { body: { x: 1.5 } });
+  assert.equal(mv.status, 422, J(mv.body)); assert.equal(mv.body.detail, rule(A, 'COMMISSIONING', true, 'move-device')); assert.match(mv.body.detail, new RegExp(`^${A} is being recommissioned: only a model substitution is accepted`));
+  assert.deepEqual([live(A), events(A)], [d0, e0], 'nothing written');
+  // first commissioning: installed and commissioning, never accepted — no design edit, not even a model change
+  const F = await build('First-commissioning negatives (synthetic)', 'COMMISSIONING');
+  const fdev = (await room(F)).body.devices.find((d) => d.cat === 'display').id; const f0 = live(F);
+  const fadd = await call('designer', 'POST', `/v1/rooms/${F}/devices`, { body: { category: 'micceil', x: 1, y: 1, mount: 'ceiling' } });
+  assert.equal(fadd.status, 422, J(fadd.body)); assert.equal(fadd.body.detail, rule(F, 'COMMISSIONING', false, 'add-device')); assert.equal(fadd.body.detail, 'the design is COMMISSIONING: changes need a change order');
+  const frem = await call('designer', 'DELETE', `/v1/rooms/${F}/devices/${fdev}`);
+  assert.equal(frem.status, 422); assert.equal(frem.body.detail, rule(F, 'COMMISSIONING', false, 'remove-device'));
+  const fsub = await call('designer', 'PATCH', `/v1/rooms/${F}/devices/${fdev}`, { body: { model: 'SYN-DISP-2 (synthetic)' } });
+  assert.equal(fsub.status, 422); assert.equal(fsub.body.detail, rule(F, 'COMMISSIONING', false, 'substitute-model'));
+  assert.equal(live(F), f0, 'nothing written');
+  // the 403 of a revision approval: the engine's sentence, the one Build a Room shows (not the route summary)
+  const noAuth = await call('designer', 'POST', `/v1/rooms/${A}/revisions/1/approve`);
+  assert.equal(noAuth.status, 403); assert.equal(noAuth.body.detail, CE.needsAuthority('designer', CE.REVISION_APPROVAL.action, CE.REVISION_APPROVAL.authority)); assert.equal(noAuth.body.detail, 'designer may not approve a design revision (needs room.design.approve)');
+});

@@ -10,6 +10,7 @@ import { load } from './bundle.mjs';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const CE = await import(pathToFileURL(path.join(repo, 'packages/commissioning-engine/dist/src/index.js')).href);
 const API = await import(pathToFileURL(path.join(repo, 'services/enterprise-api/dist/src/domain/reverification.js')).href);
+const API_EDITS = await import(pathToFileURL(path.join(repo, 'services/enterprise-api/dist/src/domain/design-edits.js')).href);   // the rule rooms.ts runs on every device edit (D-39)
 const M = await load('src/build/impact.ts', 'src/build/store.ts', 'src/workspace/store.ts', 'src/story/assemble.ts', 'src/search/estate.ts', 'src/workspace/records.ts');
 const I = M.build_impact, B = M.build_store, W = M.workspace_store, A = M.story_assemble, E = M.search_estate;
 const ok = (r) => { if (r && typeof r === 'object' && 'why' in r) throw new Error(r.why.join('; ')); return r; };
@@ -18,6 +19,7 @@ const tick = () => new Promise((r) => setTimeout(r, 5));   // time passes betwee
 
 function planned() { const d = ok(B.createDraft({ name: 'Harbour Huddle (synthetic)', template: 'huddle', unit: 'm', length: '', width: '', ceiling: '', occupancy: '', intendedUse: '', shape: 'rect' }, 'designer')); return ok(B.saveRevision(d, 'designer', 'initial layout')); }
 function installed() { let d = planned(); d = ok(B.approveClassification(d, 'syseng')); for (const [p, to] of [['syseng', 'DESIGN_APPROVED'], ['opslead', 'INSTALLATION_PENDING'], ['installer', 'INSTALLED_UNVERIFIED']]) d = ok(B.transition(d, p, to)); return d; }
+function firstCommissioning() { return ok(B.transition(installed(), 'syseng', 'COMMISSIONING')); }
 function recommissioned() {
   let d = installed(); d = ok(B.transition(d, 'syseng', 'COMMISSIONING'));
   const app = B.analysis(d).applicability.rows.filter((r) => r.applicable);
@@ -131,8 +133,9 @@ test('an old draft is upgraded the way migration 0026 upgrades a room: units of 
   assert.deepEqual(im.assurance.changes, [], 'a baseline without units on record: Assurance does not guess which unit was accepted');
 });
 
-test('D-38 — a model substitution or a category swap during recommissioning: the re-acceptance waits for an approved revision that describes the room (the engine’s sentence, first); the author and a persona without room.design.approve are refused; v2 binds the new revision; a like-for-like replacement needs none', async () => {
-  for (const change of ['model', 'category']) {
+test('D-38 — a model substitution during recommissioning: the re-acceptance waits for an approved revision that describes the room (the engine’s sentence, first); the author and a persona without room.design.approve are refused; v2 binds the new revision; a like-for-like replacement needs none (a category swap is refused while recommissioned: D-39)', async () => {
+  no(B.swapDevice(structuredClone(recommissioned()), 'designer', bar(recommissioned()).id, 'camera', 'synthetic: a camera instead'), /^the design is COMMISSIONING: changes need a change order$/);
+  for (const change of ['model']) {
     let d = recommissioned(); await tick(); const b = bar(d);
     d = ok(change === 'model' ? B.replaceUnit(d, 'designer', b.id, { model: 'SYN-BAR-2 (synthetic)', why: 'synthetic: the newer bar' }) : B.swapDevice(d, 'designer', b.id, 'camera', 'synthetic: a camera instead'));
     const to = change === 'model' ? 'generic → SYN-BAR-2 \\(synthetic\\)' : 'bar → Camera 1 \\(camera, PA-\\d+\\)';
@@ -166,6 +169,52 @@ test('D-38 — a model substitution or a category swap during recommissioning: t
   assert.equal(B.designBindingNow(d).approvedDescribesDesign, true); assert.equal(B.designBindingReason(d), null); assert.equal(B.designBindingTodo(d), null);
   assert.ok(!B.lifecycleConditions(d, 'ACCEPTED').some((x) => /no longer describes it/.test(x)));
   no(B.approveRevision(structuredClone(d), 'syseng', 1), /not newer than the approved revision 1/);
+});
+
+test('D-39 — Build a Room accepts the design edits the API accepts and refuses the others with the API’s sentence, recorded as DENIED: every edit while PLANNED (a model change included); while an accepted room is recommissioned only a model substitution (and a like-for-like unit replacement); none during first commissioning or once accepted', async () => {
+  const rule = (d, edit) => CE.designEditRefusal({ room: d.code, lifecycle: d.design.lifecycle, recommissioning: !!B.recommissioningBaseline(d), edit });
+  const display = (d) => B.live(d.design.devices).find((x) => x.cat === 'display');
+  const edits = {
+    'add-device': [(d) => B.addDevice(d, 'designer', 'micceil', { x: 1, y: 1 }, 'synthetic: pickup for the far seats'), 'room.device_added'],
+    'remove-device': [(d) => B.removeDevice(d, 'designer', display(d).id, 'synthetic: not needed'), 'room.device_removed'],
+    'swap-category': [(d) => B.swapDevice(d, 'designer', bar(d).id, 'camera', 'synthetic: a camera instead'), 'room.device_swapped'],
+    'substitute-model': [(d) => B.replaceUnit(d, 'designer', bar(d).id, { model: 'SYN-BAR-2 (synthetic)', why: 'synthetic: the newer bar' }), 'room.device_swapped'],
+  };
+  const refusedHere = (d0, edit) => {
+    const [fn, type] = edits[edit]; const d = structuredClone(d0); const n = d.events.length; const want = rule(d0, edit);
+    assert.ok(want, `${d0.design.lifecycle}: the rule refuses ${edit}`);
+    const r = no(fn(d)); assert.deepEqual(r.why, [want], `${d0.design.lifecycle} ${edit}: the API's sentence`);
+    assert.equal(d.events.length, n + 1); assert.deepEqual([d.events[0].type, d.events[0].outcome, d.events[0].by], [type, 'DENIED', 'designer'], `${edit}: recorded as DENIED`); assert.ok(d.events[0].detail.includes(want));
+    assert.equal(JSON.stringify([d.design, d.installations, d.assets, d.substitutions, d.designHistory]), JSON.stringify([d0.design, d0.installations, d0.assets, d0.substitutions, d0.designHistory]), `${edit}: nothing else changed`);
+  };
+  // PLANNED: every edit — added, removed, swapped, and a planned model change (no unit yet: the position's designed model and its design history)
+  const p = planned();
+  for (const edit of ['add-device', 'remove-device', 'swap-category']) { assert.equal(rule(p, edit), null); ok(edits[edit][0](structuredClone(p))); }
+  const pm = ok(edits['substitute-model'][0](structuredClone(p)));
+  assert.equal(bar(pm).model, 'SYN-BAR-2 (synthetic)'); assert.deepEqual(pm.installations, [], 'no unit is installed by a planned model change');
+  assert.deepEqual(B.positionHistory(pm, bar(pm).id).design.map((h) => [h.kind, h.from, h.to]), [['model', 'generic', 'SYN-BAR-2 (synthetic)']]);
+  assert.deepEqual([pm.events[0].type, pm.events[0].outcome, pm.events[0].change.what], ['room.device_swapped', 'ALLOWED', 'model substituted']);
+  no(B.replaceUnit(structuredClone(p), 'installer', bar(p).id, { model: 'SYN-BAR-2 (synthetic)' }), /does not hold room\.design/);
+  // installed but not commissioned, and first commissioning: no design edit at all (the like-for-like replacement is field work, not a design edit)
+  for (const d0 of [installed(), firstCommissioning()]) {
+    for (const edit of Object.keys(edits)) refusedHere(d0, edit);
+    assert.equal(rule(d0, 'add-device'), `the design is ${d0.design.lifecycle}: changes need a change order`);
+    ok(B.replaceUnit(structuredClone(d0), 'installer', bar(d0).id, { why: 'synthetic: like for like' }));
+  }
+  // recommissioned: a model substitution (and a like-for-like replacement); adding, removing or swapping a device is refused
+  const rc = recommissioned();
+  for (const edit of ['add-device', 'remove-device', 'swap-category']) refusedHere(rc, edit);
+  assert.equal(rule(rc, 'add-device'), 'the design is COMMISSIONING: changes need a change order');
+  assert.equal(rule(rc, 'substitute-model'), null); ok(edits['substitute-model'][0](structuredClone(rc)));
+  ok(B.replaceUnit(structuredClone(rc), 'installer', bar(rc).id, { why: 'synthetic: like for like' }));
+  // accepted, not recommissioned: refused, with the API's pointer to recommissioning
+  const acc = structuredClone(rc); acc.design.lifecycle = 'ACCEPTED';
+  for (const edit of Object.keys(edits)) refusedHere(acc, edit);
+  assert.match(rule(acc, 'add-device'), /an accepted room is recommissioned first \(ACCEPTED → COMMISSIONING, plan\.compile\); a device model can then be substituted$/);
+  // the authority refusal comes first, as before, and records nothing
+  const n = rc.events.length; no(B.addDevice(rc, 'requestor', 'micceil', { x: 1, y: 1 }), /does not hold room\.design/); assert.equal(rc.events.length, n);
+  // the controls read the same rule (BuildRoom disables them and shows the sentence)
+  assert.equal(B.editRefusal(rc, 'add-device'), rule(rc, 'add-device')); assert.equal(B.editRefusal(p, 'swap-category'), null); assert.equal(B.editRefusal(rc, 'substitute-model'), null);
 });
 
 test('PARITY — the same room through the API’s adapter and through the demonstration’s store: the same reopened tests, reasons, re-run states and acceptance reasons', async () => {
@@ -212,5 +261,20 @@ test('PARITY — the same room through the API’s adapter and through the demon
   assert.match(s6[0].gate[0], new RegExp(`revision ${m.revisions.length} needs approval \\(room\\.design\\.approve, not its author\\)`));
   m = ok(B.approveRevision(m, 'syseng', m.revisions.length));
   const s7 = [toApi(m), toDemo(m)]; assert.deepEqual(s7[0], s7[1], 'after the approval'); assert.deepEqual(s7[0].gate, [], 'nothing left: the re-acceptance binds the approved revision');
+  // D-39: which design edits each state accepts, and the refusal — the API's adapter (domain/design-edits.ts, what rooms.ts runs on POST, PATCH
+  // and DELETE of a device) and the store, alike. A category swap is, in the API, a removal and then an addition: it stops at the first.
+  const apiEdit = (d, edit) => API_EDITS.designEditFor({ code: d.code, lifecycle: d.design.lifecycle }, !!B.recommissioningBaseline(d), edit);
+  const states = { planned: planned(), installed: installed(), firstCommissioning: firstCommissioning(), recommissioned: recommissioned() };
+  states.accepted = structuredClone(states.recommissioned); states.accepted.design.lifecycle = 'ACCEPTED';
+  for (const [k, d0] of Object.entries(states)) {
+    const demo = (fn) => { const r = fn(structuredClone(d0)); return r && 'why' in r ? r.why[0] : null; };
+    const disp = (d) => B.live(d.design.devices).find((x) => x.cat === 'display');
+    assert.equal(demo((d) => B.addDevice(d, 'designer', 'micceil', { x: 1, y: 1 })), apiEdit(d0, 'add-device'), `${k}: POST /v1/rooms/{room}/devices`);
+    assert.equal(demo((d) => B.removeDevice(d, 'designer', disp(d).id)), apiEdit(d0, 'remove-device'), `${k}: DELETE /v1/rooms/{room}/devices/{asset}`);
+    assert.equal(demo((d) => B.swapDevice(d, 'designer', bar(d).id, 'camera')), apiEdit(d0, 'remove-device'), `${k}: a category swap (DELETE, then POST)`);
+    assert.equal(demo((d) => B.replaceUnit(d, 'designer', bar(d).id, { model: 'SYN-BAR-2 (synthetic)' })), apiEdit(d0, API_EDITS.patchEdit({ model: 'SYN-BAR-2 (synthetic)' })), `${k}: PATCH {model}`);
+  }
+  assert.equal(API_EDITS.patchEdit({ model: 'SYN-BAR-2 (synthetic)', x: 1 }), 'move-device'); assert.equal(API_EDITS.patchEdit({ x: 1 }), 'move-device'); assert.equal(API_EDITS.patchEdit({}), 'move-device');
+  assert.equal(apiEdit(states.recommissioned, 'move-device'), `${states.recommissioned.code} is being recommissioned: only a model substitution is accepted (the asset keeps its id and its position); moving a device needs a change order`);
 });
 const J = (x) => JSON.stringify(x);

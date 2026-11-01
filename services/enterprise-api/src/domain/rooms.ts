@@ -9,7 +9,7 @@ import crypto from 'node:crypto';
 import {
   analyzeRoom, polygonCheck, outlineFor, parseLength, templateDevices, newDevice, proposeConnections, drawingInput, DRAWING_KINDS,
   lifecycleBlockers, LIFECYCLE_AUTHORITY, defaultCatalog, area, ENGINE_VERSION, rerunTask, identityOf, revisionApprovalBlockers, designBindingTask, REVISION_APPROVAL,
-  type ChangeKind, type UnitChange, type DesignBinding, type DesignSnapshot, type RevisionBinding,
+  type ChangeKind, type UnitChange, type DesignBinding, type DesignSnapshot, type RevisionBinding, type DesignEdit,
 } from '@empathia/commissioning-engine';
 import type { Connection, PlannedDevice, RecordedResult, RoomDesignInput, RoomLifecycle } from '@empathia/domain-types';
 import { ROOM_LIFECYCLE } from '@empathia/domain-types';
@@ -19,6 +19,7 @@ import { publish as publishBaseline } from './baselines.js';
 import { ApiError, notFound, refused, invalid } from '../http/errors.js';
 import { applyReplacement, planSubstitution, recordRoomInstallation, roomInstallations, failpoint } from './installations.js';
 import { substitutionsFrom, changesFrom, reverificationFrom, gateFacts, revisionBindingFrom, designBindingFact, type Substitution, type Reverification, type Change } from './reverification.js';
+import { designEditFor, patchEdit } from './design-edits.js';
 export type { Substitution, Reverification };
 
 const sha256 = (s: string) => crypto.createHash('sha256').update(s).digest('hex');
@@ -162,7 +163,12 @@ async function unrelate(q: Queryable, fromType: string, fromId: string, rel: str
 }
 
 // ------------------------------------------------------------------------------------------------ helpers for mutations
-const PLANNED_ONLY = (r: RoomRow) => { if (r.lifecycle !== 'PLANNED') throw refused([`the design is ${r.lifecycle}: changes need a change order${r.lifecycle === 'ACCEPTED' ?' — an accepted room is recommissioned first (ACCEPTED → COMMISSIONING, plan.compile); a device model can then be substituted' : ''}`]); };
+/** D-39: which design edits the room accepts now is the shared engine's rule (`designEditRefusal`, through domain/design-edits.ts) — every
+ *  edit while PLANNED; while an accepted room is recommissioned a model substitution only; nothing otherwise. Build a Room runs the same. */
+async function designEdit(q: Queryable, r: RoomRow, edit: DesignEdit): Promise<void> {
+  const recom = r.lifecycle === 'COMMISSIONING' ? !!(await recommissioning(q, r)) : false;
+  const why = designEditFor(r, recom, edit); if (why) throw refused([why]);
+}
 export async function bump(q: Queryable, r: RoomRow): Promise<number> { const n = r.rev + 1; await q.query('UPDATE app.room SET rev = $2 WHERE id = $1', [r.id, n]); r.rev = n; return n; }
 async function nextCode(q: Queryable, kind: string, prefix: string): Promise<string> { return (await q.query<{ c: string }>('SELECT app.next_code($1, $2) AS c', [kind, prefix])).rows[0]!.c; }
 const connRel = (kind: string) => (kind === 'signal' ? 'FEEDS' : 'CONNECTS_TO');
@@ -239,7 +245,7 @@ export async function addDevice(ctx: RequestContext, ref: string, body: { catego
   await ctx.require('room.design', 'add a device', { type: 'Room', id: ref });
   if (!C.categories[body.category]) throw invalid(`unknown equipment category ${body.category}`);
   return ctx.tx(async (q) => {
-    const room = await findRoom(ctx, q, ref, true); PLANNED_ONLY(room);
+    const room = await findRoom(ctx, q, ref, true); await designEdit(q, room, 'add-device');
     const L = await load(ctx, q, room.id);
     const b = { w: Math.max(...room.geometry.points.map((p) => p[0])), l: Math.max(...room.geometry.points.map((p) => p[1])) };
     const code = await nextCode(q, 'asset', 'PA-');
@@ -260,8 +266,7 @@ export async function changeDevice(ctx: RequestContext, ref: string, assetCode: 
     // ADR-0003 change order: an accepted room under recommissioning accepts a model substitution (the asset keeps its id and position;
     // the substitution's time is in the model history, so the results it invalidates are known exactly). Anything else stays PLANNED-only.
     const recom = room.lifecycle === 'PLANNED' ? null : await recommissioning(q, room);
-    if (!recom) PLANNED_ONLY(room);
-    else if (body.x != null || body.y != null || body.rot != null || body.mount != null || !body.model) throw refused([`${room.code} is being recommissioned: only a model substitution is accepted (the asset keeps its id and its position); moving a device needs a change order`]);
+    { const why = designEditFor(room, !!recom, patchEdit(body)); if (why) throw refused([why]); }   // D-39: the shared rule
     if (!recom && (body.expectedInstallation || body.asset)) throw invalid('expectedInstallation and asset apply to a model substitution of an installed room under recommissioning');
     const a = (await q.query<AssetRow & { id: string }>('SELECT * FROM app.planned_asset WHERE room_id = $1 AND code = $2 AND removed_at IS NULL', [room.id, assetCode])).rows[0];
     if (!a) throw notFound(`device ${assetCode} in ${room.code}`);
@@ -299,7 +304,7 @@ export async function changeDevice(ctx: RequestContext, ref: string, assetCode: 
 export async function removeDevice(ctx: RequestContext, ref: string, assetCode: string) {
   await ctx.require('room.design', 'remove a device', { type: 'Room', id: ref });
   return ctx.tx(async (q) => {
-    const room = await findRoom(ctx, q, ref, true); PLANNED_ONLY(room);
+    const room = await findRoom(ctx, q, ref, true); await designEdit(q, room, 'remove-device');
     const a = (await q.query<{ id: string }>('UPDATE app.planned_asset SET removed_at = now() WHERE room_id = $1 AND code = $2 AND removed_at IS NULL RETURNING id', [room.id, assetCode])).rows[0];
     if (!a) throw notFound(`device ${assetCode} in ${room.code}`);
     await q.query('UPDATE app.connection SET removed_at = now() WHERE (from_asset = $1 OR to_asset = $1) AND removed_at IS NULL', [a.id]);
@@ -314,7 +319,7 @@ export async function addConnection(ctx: RequestContext, ref: string, body: { fr
   await ctx.require('room.design', 'add a connection', { type: 'Room', id: ref });
   if (!['network', 'signal', 'control', 'power'].includes(body.kind)) throw invalid('kind is network, signal, control or power');
   return ctx.tx(async (q) => {
-    const room = await findRoom(ctx, q, ref, true); PLANNED_ONLY(room);
+    const room = await findRoom(ctx, q, ref, true); await designEdit(q, room, 'add-connection');
     const both = (await q.query<{ code: string }>('SELECT code FROM app.planned_asset WHERE room_id = $1 AND code = ANY($2::text[]) AND removed_at IS NULL', [room.id, [body.from, body.to]])).rows;
     if (body.from === body.to || both.length !== 2) throw refused(['a connection needs two different devices of this design']);
     const dup = (await q.query('SELECT 1 FROM app.connection c JOIN app.planned_asset fa ON fa.id = c.from_asset JOIN app.planned_asset ta ON ta.id = c.to_asset WHERE c.room_id = $1 AND fa.code = $2 AND ta.code = $3 AND c.kind = $4 AND c.removed_at IS NULL', [room.id, body.from, body.to, body.kind])).rowCount;
@@ -330,7 +335,7 @@ export async function addConnection(ctx: RequestContext, ref: string, body: { fr
 export async function removeConnection(ctx: RequestContext, ref: string, connCode: string) {
   await ctx.require('room.design', 'remove a connection', { type: 'Room', id: ref });
   return ctx.tx(async (q) => {
-    const room = await findRoom(ctx, q, ref, true); PLANNED_ONLY(room);
+    const room = await findRoom(ctx, q, ref, true); await designEdit(q, room, 'remove-connection');
     const c = (await q.query<{ kind: string; f: string; t: string }>(`UPDATE app.connection c SET removed_at = now() FROM app.planned_asset fa, app.planned_asset ta WHERE c.room_id = $1 AND c.code = $2 AND c.removed_at IS NULL AND fa.id = c.from_asset AND ta.id = c.to_asset RETURNING c.kind, fa.code AS f, ta.code AS t`, [room.id, connCode])).rows[0];
     if (!c) throw notFound(`connection ${connCode} in ${room.code}`);
     await unrelate(q, 'PlannedAsset', c.f, connRel(c.kind), 'PlannedAsset', c.t);
@@ -551,7 +556,7 @@ export async function transition(ctx: RequestContext, ref: string, to: RoomLifec
 export async function updateRoom(ctx: RequestContext, ref: string, body: { name?: string; intendedUse?: string; occupancy?: number }) {
   await ctx.require('room.design', 'edit the room', { type: 'Room', id: ref });
   return ctx.tx(async (q) => {
-    const room = await findRoom(ctx, q, ref, true); PLANNED_ONLY(room);
+    const room = await findRoom(ctx, q, ref, true); await designEdit(q, room, 'edit-room');
     const sets: string[] = []; const args: unknown[] = [room.id];
     if (body.name != null) { args.push(String(body.name).slice(0, 80)); sets.push(`name = $${args.length}`); }
     if (body.intendedUse != null) { args.push(String(body.intendedUse).slice(0, 200)); sets.push(`intended_use = $${args.length}`); }

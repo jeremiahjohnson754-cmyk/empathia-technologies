@@ -26,8 +26,9 @@ export function BuildRoom({ perspective }: { perspective: string }) {
   const [impact, setImpact] = useState<I.Impact | null>(null);
   const change = (fn: (x: S.Draft) => S.Draft | S.Refusal) => {
     if (!draft) return false;
-    const before = structuredClone(draft); const r = fn(structuredClone(draft));
-    if ('why' in r) { setRefusal(r.why); return false; }
+    const before = structuredClone(draft); const c = structuredClone(draft); const r = fn(c);
+    // a refusal changes nothing but the ledger: the DENIED event the store recorded on the copy is kept, as every refusal is
+    if ('why' in r) { setRefusal(r.why); if (c.events.length !== draft.events.length || c.events[0]?.at !== draft.events[0]?.at) setDraft({ ...draft, events: c.events }); return false; }
     const im = I.computeImpact(before, r, loadWorkspace()); I.attachImpact(r, im);
     setRefusal(null); setDraft(r); setImpact(im); return true;
   };
@@ -101,7 +102,8 @@ function Design({ d, persona, a, apply, change, impact }: { d: S.Draft; persona:
   const g = d.design.geometry; const prov = g.provenance as Record<string, string>;
   const devs = S.live(d.design.devices) as typeof d.design.devices; const conns = S.live(d.design.connections) as typeof d.design.connections;
   const cls = a.classification; const ap = d.design.classification.approved;
-  const changeable = ['PLANNED', 'COMMISSIONING'].includes(d.design.lifecycle);
+  // D-39: the shared rule decides which design edits the room accepts now; a refused control is disabled and says why (the API's sentence)
+  const addWhy = S.editRefusal(d, 'add-device'); const removeWhy = S.editRefusal(d, 'remove-device'); const swapWhy = S.editRefusal(d, 'swap-category'); const subWhy = S.editRefusal(d, 'substitute-model');
   // swap: a device for another category of the same group (a camera for a video bar, …); the video device first, so "swap a camera" is one click
   const swappable = devs.filter((x) => !x.furniture);
   const [swapId, setSwapId] = useState('');
@@ -114,9 +116,10 @@ function Design({ d, persona, a, apply, change, impact }: { d: S.Draft; persona:
   return (
     <div className="build__two">
       <div>
-        <Plan d={d} onPlace={changeable ? (x, y) => done(change((v) => S.addDevice(v, persona, cat, { x, y }, why))) : undefined} />
-        <div className="build__row"><label className="ui-muted" htmlFor="b-cat">Add</label><select id="b-cat" value={cat} onChange={(e) => setCat(e.target.value)}>{CATS.map(([k, l, grp]) => <option key={k} value={k}>{grp} · {l}</option>)}</select><Button small onClick={() => done(change((v) => S.addDevice(v, persona, cat, { x: g.widthM / 2, y: g.lengthM / 2 }, why)))}>Place at the centre</Button></div>
-        {from && <div className="build__row build__swap"><label className="ui-muted" htmlFor="b-swap">Swap</label><select id="b-swap" value={from.id} onChange={(e) => { setSwapId(e.target.value); setSwapTo(''); }}>{swappable.map((x) => <option key={x.id} value={x.id}>{x.label} ({x.id})</option>)}</select><label className="ui-muted" htmlFor="b-swap-to">for</label><select id="b-swap-to" value={to} onChange={(e) => setSwapTo(e.target.value)}>{targets.map(([k, l, grp]) => <option key={k} value={k}>{grp} · {l}</option>)}</select><Button small kind="primary" testId="swap" onClick={() => { if (done(change((v) => S.swapDevice(v, persona, from.id, to, why)))) { setSwapId(''); setSwapTo(''); } }}>Swap</Button></div>}
+        <Plan d={d} onPlace={!addWhy ? (x, y) => done(change((v) => S.addDevice(v, persona, cat, { x, y }, why))) : undefined} />
+        {(addWhy || swapWhy || removeWhy) && <div data-testid="design-edit-rule"><Notice tone="info"><b>Devices are not added, removed or swapped now:</b> {addWhy || swapWhy || removeWhy}.{!subWhy ? ' The one design change a recommissioned room accepts is a model substitution at a position (“Substitute the model” in the device register); replacing a unit like for like is field work.' : ''}</Notice></div>}
+        <div className="build__row"><label className="ui-muted" htmlFor="b-cat">Add</label><select id="b-cat" value={cat} onChange={(e) => setCat(e.target.value)}>{CATS.map(([k, l, grp]) => <option key={k} value={k}>{grp} · {l}</option>)}</select><Button small testId="add-device" disabled={!!addWhy} title={addWhy || undefined} onClick={() => done(change((v) => S.addDevice(v, persona, cat, { x: g.widthM / 2, y: g.lengthM / 2 }, why)))}>Place at the centre</Button></div>
+        {from && <div className="build__row build__swap"><label className="ui-muted" htmlFor="b-swap">Swap</label><select id="b-swap" value={from.id} onChange={(e) => { setSwapId(e.target.value); setSwapTo(''); }}>{swappable.map((x) => <option key={x.id} value={x.id}>{x.label} ({x.id})</option>)}</select><label className="ui-muted" htmlFor="b-swap-to">for</label><select id="b-swap-to" value={to} onChange={(e) => setSwapTo(e.target.value)}>{targets.map(([k, l, grp]) => <option key={k} value={k}>{grp} · {l}</option>)}</select><Button small kind="primary" testId="swap" disabled={!!swapWhy} title={swapWhy || undefined} onClick={() => { if (done(change((v) => S.swapDevice(v, persona, from.id, to, why)))) { setSwapId(''); setSwapTo(''); } }}>Swap</Button></div>}
         <div className="build__row"><label className="ui-muted" htmlFor="b-why">Why</label><input id="b-why" value={why} onChange={(e) => setWhy(e.target.value)} placeholder="the reason for the next change (recorded with it)" maxLength={200} /></div>
         <Facts items={[['Dimensions', <>{g.lengthM} × {g.widthM} × {g.ceiling} m · {Object.entries(prov).map(([k, v]) => <Tag key={k} tone={TONE[v] || 'muted'}>{k} {v}</Tag>)}</>], ['Confidence', g.confidence], ['Template', S.C.templates[d.design.template]?.label || d.design.template], ['Occupancy', String(d.design.occupancy)]]} />
         <ImpactPanel im={impact} roomId={d.code} />
@@ -127,7 +130,7 @@ function Design({ d, persona, a, apply, change, impact }: { d: S.Draft; persona:
         <p>{ap ? <Tag tone={ap.stale ? 'warn' : 'ok'}>{ap.stale ? 'approval stale — the design changed' : `approved ${ap.archetype} by ${S.personaLabel(ap.by || '')}`}</Tag> : <Tag tone="muted">not approved</Tag>}</p>
         <p className="build__row"><Button small onClick={() => apply(S.approveClassification(d, persona))}>Approve the suggestion as {S.personaLabel(persona)}</Button></p>
         <h2 className="build__h2">Devices ({devs.filter((x) => !x.furniture).length}) and proposed connections ({conns.length})</h2>
-        <ul className="build__list">{devs.map((x) => <li key={x.id} data-identity={x.furniture ? undefined : S.identityLabel(d, x.id)}><code>{x.id}</code> {x.label} <span className="ui-muted">{x.cat} · {x.mount} · {x.x.toFixed(1)}, {x.y.toFixed(1)} m{x.furniture ? ' · furniture' : ''}</span> {changeable && <button type="button" className="build__x" aria-label={`Remove ${x.label}`} onClick={() => done(change((v) => S.removeDevice(v, persona, x.id, why)))}>remove</button>}</li>)}</ul>
+        <ul className="build__list">{devs.map((x) => <li key={x.id} data-identity={x.furniture ? undefined : S.identityLabel(d, x.id)}><code>{x.id}</code> {x.label} <span className="ui-muted">{x.cat} · {x.mount} · {x.x.toFixed(1)}, {x.y.toFixed(1)} m{x.furniture ? ' · furniture' : ''}</span> {!removeWhy && <button type="button" className="build__x" aria-label={`Remove ${x.label}`} onClick={() => done(change((v) => S.removeDevice(v, persona, x.id, why)))}>remove</button>}</li>)}</ul>
         <ul className="build__list build__list--conn">{conns.map((c) => <li key={c.id}><code>{c.id}</code> {c.from} → {c.to} <Tag tone="info">{c.kind}</Tag> <span className="ui-muted">{c.why}</span></li>)}</ul>
         <Register d={d} persona={persona} why={why} run={(fn) => done(change(fn))} />
         <h2 className="build__h2">Revisions ({d.revisions.length})</h2>
@@ -175,7 +178,7 @@ function Register({ d, persona, why, run }: { d: S.Draft; persona: string; why: 
       <div className="build__row"><label className="ui-muted" htmlFor="b-unit">Position</label><select id="b-unit" value={pos.id} onChange={(e) => setSel(e.target.value)}>{devs.map((x) => <option key={x.id} value={x.id}>{x.label} ({x.id})</option>)}</select>
         <Button small testId="replace-unit" onClick={() => run((v) => S.replaceUnit(v, persona, pos.id, { why }))}>Replace the unit (like for like)</Button></div>
       <div className="build__row"><label className="ui-muted" htmlFor="b-model">Model</label><input id="b-model" value={model} onChange={(e) => setModel(e.target.value)} placeholder="e.g. SYN-BAR-2 (synthetic)" maxLength={80} />
-        <Button small testId="substitute-model" onClick={() => { if (run((v) => S.replaceUnit(v, persona, pos.id, { model, why }))) setModel(''); }}>Substitute the model</Button>
+        <Button small testId="substitute-model" disabled={!!S.editRefusal(d, 'substitute-model')} title={S.editRefusal(d, 'substitute-model') || undefined} onClick={() => { if (run((v) => S.replaceUnit(v, persona, pos.id, { model, why }))) setModel(''); }}>Substitute the model</Button>
         {id.asset && <Button small testId="declare-serial" onClick={() => run((v) => S.recordIdentity(v, persona, id.asset!, { state: 'DECLARED', serial: `SYN-SN-${id.asset}` }))}>Declare a synthetic serial</Button>}</div>
       <div className="build__two">
         <div data-testid="position-history"><h3 className="build__h">Position {pos.id} — design history</h3>
@@ -267,10 +270,12 @@ function Lifecycle({ d, persona, a, apply }: { d: S.Draft; persona: string; a: R
 function BaselineDiff({ a, b }: { a: S.Baseline; b: S.Baseline }) {
   const keys = [...new Set([...Object.keys(a.results), ...Object.keys(b.results)])].sort(); const changed = keys.filter((k) => a.results[k] !== b.results[k]);
   const A = new Set(a.devices.map((x) => x.id)), B = new Set(b.devices.map((x) => x.id)); const added = b.devices.filter((x) => !A.has(x.id)), removed = a.devices.filter((x) => !B.has(x.id));
+  // a position kept with another model (a model substitution while recommissioned, D-39): named with both models
+  const modelOf = new Map(a.devices.map((x) => [x.id, x.model] as const)); const models = b.devices.filter((x) => modelOf.get(x.id) != null && x.model != null && modelOf.get(x.id) !== x.model);
   return (
     <div className="build__diff" data-testid="baseline-diff">
       <h3 className="build__h2">What changed between v{a.version} and v{b.version}</h3>
-      <Facts items={[['Design revision', a.revision === b.revision ? `unchanged (${a.revision})` : `${a.revision} → ${b.revision}`], ['Devices', added.length || removed.length ? `${added.length} added (${added.map((x) => x.label).join(', ') || '—'}), ${removed.length} removed (${removed.map((x) => x.label).join(', ') || '—'})` : 'unchanged'], ['Result labels', changed.length ? `${changed.length} of ${keys.length} changed` : `identical (${keys.length}); the versions bind different result records`]]} />
+      <Facts items={[['Design revision', a.revision === b.revision ? `unchanged (${a.revision})` : `${a.revision} → ${b.revision}`], ['Devices', added.length || removed.length ? `${added.length} added (${added.map((x) => x.label).join(', ') || '—'}), ${removed.length} removed (${removed.map((x) => x.label).join(', ') || '—'})` : 'unchanged'], ['Models', models.length ? `${models.length} model substituted (${models.map((x) => `${x.label} at ${x.id}: ${modelOf.get(x.id)} → ${x.model}`).join('; ')})` : 'unchanged'], ['Result labels', changed.length ? `${changed.length} of ${keys.length} changed` : `identical (${keys.length}); the versions bind different result records`]]} />
       {changed.length > 0 && <ul className="build__list">{changed.map((k) => <li key={k}><code>{k}</code> {a.results[k] || '—'} → <b>{b.results[k] || '—'}</b></li>)}</ul>}
     </div>
   );

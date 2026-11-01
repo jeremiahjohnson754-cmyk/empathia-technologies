@@ -83,22 +83,22 @@ test('a Learn case and a refusal of the room reach the story with their actors a
   assert.ok(s.summary.open.some((o) => o.text.includes(r.id)), 'the case awaiting review is an open item');
 });
 
-test('a Build a Room draft: design, authorize, commission, verify and baseline from its own records and ledger; a change carries from, to, why and affected objects', () => {
+test('a Build a Room draft: design, authorize, commission, verify and baseline from its own records and ledger; a change carries from, to, why and affected objects (a model substitution, the change a recommissioned room accepts)', () => {
   const { d, applicable } = acceptedThenRecommissioned(); const w = W.seed();
   const bar = B.live(d.design.devices).find((x) => x.cat === 'bar');
-  const before = structuredClone(d); const after = ok(B.swapDevice(structuredClone(d), 'designer', bar.id, 'camera', 'like-for-like camera (synthetic)'));
+  const before = structuredClone(d); const after = ok(B.replaceUnit(structuredClone(d), 'designer', bar.id, { model: 'SYN-BAR-2 (synthetic)', why: 'the newer bar (synthetic)' }));
   I.attachImpact(after, I.computeImpact(before, after, w));
   const s = A.assembleStory(after.code, sources(w, after));
   assert.equal(s.kind, 'draft');
   for (const k of ['design', 'authorize', 'commission', 'verify', 'baseline']) assert.ok(stage(s, k).entries.length > 0, `${k} has a record`);
-  const swap = stage(s, 'design').entries.find((e) => /swapped for/.test(e.what));
-  assert.equal(swap.from, 'Video bar 1 (bar)'); assert.equal(swap.to, 'Camera 1 (camera)'); assert.equal(swap.why, 'like-for-like camera (synthetic)'); assert.equal(swap.who, 'Designer / CAD / Revit');
-  assert.ok(swap.items.some((x) => /baseline/.test(x.text)) && swap.items.some((x) => /^device PA-/.test(x.text)), 'affected objects: devices and the baseline');
+  const swap = stage(s, 'design').entries.find((e) => /^Model substituted at the same position/.test(e.what));
+  assert.match(swap.from, /^Video bar 1 \(bar\) · unit AS-\d{4} · generic$/); assert.match(swap.to, /^Video bar 1 \(bar\) · unit AS-\d{4} · SYN-BAR-2 \(synthetic\)$/); assert.equal(swap.why, 'the newer bar (synthetic)'); assert.equal(swap.who, 'Designer / CAD / Revit');
+  assert.ok(swap.items.some((x) => /baseline/.test(x.text)) && swap.items.some((x) => /^unit AS-/.test(x.text)), 'affected objects: the units and the baseline');
   assert.match(swap.phase, /while COMMISSIONING · baseline v1 current/);
   // the verifications are events; the re-verification the swap requires is a state of the room (no time, no actor) beside them
   const ver = stage(s, 'verify').entries.filter((e) => !e.state); assert.equal(ver.reduce((n, e) => n + e.items.length, 0), applicable, 'every verification, from the result records');
   assert.ok(ver.every((e) => e.evidence === 'PASS_VERIFIED' && e.who === 'Product Architect'));
-  assert.ok(stage(s, 'verify').entries.some((e) => e.state && /^Re-verification required/.test(e.what)), 'the swap during recommissioning requires re-verification');
+  assert.ok(stage(s, 'verify').entries.some((e) => e.state && /^Re-verification required/.test(e.what)), 'the substitution during recommissioning requires re-verification');
   assert.equal(stage(s, 'commission').entries.filter((e) => /results? recorded/.test(e.what)).reduce((n, e) => n + e.items.length, 0), applicable);
   const bl = stage(s, 'baseline').entries; assert.equal(bl.length, 1); assert.equal(bl[0].who, 'Document Reviewer / QA'); assert.equal(bl[0].evidence, 'PASS_VERIFIED');
   assert.ok(allEntries(s).some((e) => e.outcome === 'DENIED' && /DESIGN_APPROVED refused/.test(e.what)), 'the refusal in the room ledger');
@@ -124,9 +124,9 @@ test('a perspective changes density, never data', () => {
   assert.equal(A.assembleStory.length, 2, 'the assembler takes a room and its sources — no perspective');
 });
 
-test('a swap during recommissioning: “Re-verification required” under Verify, linked to the plan, names each reopened test with its reasons; their results no longer count', () => {
+test('a model substitution during recommissioning: “Re-verification required” under Verify, linked to the plan, names each reopened test with its reasons; their results no longer count', () => {
   const { d } = acceptedThenRecommissioned(); const w = W.seed(); const bar = B.live(d.design.devices).find((x) => x.cat === 'bar');
-  const before = structuredClone(d); const after = ok(B.swapDevice(structuredClone(d), 'designer', bar.id, 'camera', 'like-for-like camera (synthetic)'));
+  const before = structuredClone(d); const after = ok(B.replaceUnit(structuredClone(d), 'designer', bar.id, { model: 'SYN-BAR-2 (synthetic)', why: 'the newer bar (synthetic)' }));
   I.attachImpact(after, I.computeImpact(before, after, w));
   const rv = B.reverification(after); const s = A.assembleStory(after.code, sources(w, after));
   const e = stage(s, 'verify').entries.find((x) => /^Re-verification required/.test(x.what));
@@ -135,8 +135,22 @@ test('a swap during recommissioning: “Re-verification required” under Verify
   assert.match(e.what, new RegExp(`${rv.length} tests reopened by the substitution of Video bar 1 while baseline v1 is recommissioned`));
   assert.ok(s.summary.open.some((o) => /^Re-verification required/.test(o.text) && o.href === '#/v25/build?tab=checks'));
   assert.equal(s.summary.tests.verified, B.analysis(after).counts.verified - rv.length, 'the summary no longer counts the reopened results'); assert.match(s.summary.tests.text, /reopened by a substitution no longer count/);
-  const swap = stage(s, 'design').entries.find((x) => /swapped for/.test(x.what)); assert.match(swap.impact, new RegExp(`${rv.length} tests reopened`));
+  const swap = stage(s, 'design').entries.find((x) => /^Model substituted at the same position/.test(x.what)); assert.match(swap.impact, new RegExp(`${rv.length} tests reopened`));
   const recs = stage(s, 'commission').entries.filter((x) => /results? recorded/.test(x.what)).flatMap((x) => x.items);
   assert.equal(recs.filter((x) => /recorded on the previous device/.test(x.text)).length, rv.length, 'each reopened result is marked where it is listed');
   assert.equal(s.summary.baseline.version, 1); assert.equal(s.summary.baseline.state, 'CURRENT');
+});
+
+test('a swap while PLANNED (the one state a device is swapped, D-39) is in the story with its actor, from → to, why and the affected devices; a refused swap while recommissioned is in it as DENIED', () => {
+  const w = W.seed(); let d = ok(B.createDraft({ name: 'Harbour Huddle (synthetic)', template: 'huddle', unit: 'm', length: '', width: '', ceiling: '', occupancy: '', intendedUse: '', shape: 'rect' }, 'designer'));
+  const bar = B.live(d.design.devices).find((x) => x.cat === 'bar');
+  const before = structuredClone(d); d = ok(B.swapDevice(d, 'designer', bar.id, 'camera', 'like-for-like camera (synthetic)')); I.attachImpact(d, I.computeImpact(before, d, w));
+  const swap = stage(A.assembleStory(d.code, sources(w, d)), 'design').entries.find((e) => /swapped for/.test(e.what));
+  assert.equal(swap.from, 'Video bar 1 (bar)'); assert.equal(swap.to, 'Camera 1 (camera)'); assert.equal(swap.why, 'like-for-like camera (synthetic)'); assert.equal(swap.who, 'Designer / CAD / Revit');
+  assert.ok(swap.items.some((x) => /^device PA-/.test(x.text)) && swap.items.some((x) => /^connection CN-/.test(x.text)), 'affected objects: devices and connections');
+  assert.equal(swap.phase, null, 'before any acceptance');
+  const { d: rc } = acceptedThenRecommissioned(); const r = B.swapDevice(rc, 'designer', B.live(rc.design.devices).find((x) => x.cat === 'bar').id, 'camera', '');
+  assert.deepEqual(r.why, ['the design is COMMISSIONING: changes need a change order']);
+  const refused = allEntries(A.assembleStory(rc.code, sources(w, rc))).find((e) => e.outcome === 'DENIED' && /swap or model substitution refused/i.test(e.what));
+  assert.ok(refused, 'the refusal is in the story'); assert.equal(refused.why, 'the design is COMMISSIONING: changes need a change order');
 });

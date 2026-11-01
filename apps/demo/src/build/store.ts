@@ -10,6 +10,7 @@ import {
   planReplacement, planIdentity, identityOf, identityText, installationSentence, timelineOf, placementsOf, openAt, INSTALLED_STATES,
   reverificationBlockers as engineReverificationBlockers, type AssetFact, type InstallationFact, type IdentityState, type InstallReason, type RemovalReason, type ChangeKind, type DeviceIdentity,
   designKey, revisionBinding, designBindingSentence, designBindingTask, revisionApprovalBlockers, needsAuthority, notByItsAuthor, REVISION_APPROVAL, type DesignSnapshot, type DesignBinding,
+  designEditRefusal, type DesignEdit,
 } from '@empathia/commissioning-engine';
 import type { RoomDesignInput, PlannedDevice, Connection, RecordedResult, RoomLifecycle, ResultCounts, ResultLabel } from '@empathia/domain-types';
 import PERSONAS from '@empathia/domain-data/data/V25_PERSONAS.json' with { type: 'json' };
@@ -144,10 +145,17 @@ function touchDesign(d: Draft, persona: string) {
   refreshDrawings(d);
 }
 
-const CHANGE_STATES = ['PLANNED', 'COMMISSIONING'];
+/**
+ * D-39: which design edits the draft accepts now — the shared engine's rule, the one the enterprise API runs on every device edit
+ * (`designEditRefusal`): every edit while PLANNED; while an accepted room is recommissioned a model substitution only (and, apart from the
+ * design, a like-for-like unit replacement); nothing otherwise. Null when accepted; otherwise the API's sentence. The controls read it too.
+ */
+export const editRefusal = (d: Draft, edit: DesignEdit): string | null => designEditRefusal({ room: d.code, lifecycle: d.design.lifecycle, recommissioning: !!recommissioningBaseline(d), edit });
+/** A refused design edit, recorded in the ledger as DENIED like every other refusal (the draft is otherwise unchanged). */
+const editRefused = (d: Draft, persona: string, type: string, edit: DesignEdit): Refusal | null => { const why = editRefusal(d, edit); if (!why) return null; log(d, persona, type, `refused: ${why}`, 'DENIED'); return refused([why]); };
 export function addDevice(d: Draft, persona: string, cat: string, pos: { x: number; y: number }, why = ''): Draft | Refusal {
   if (!holds(persona, 'room.design')) return refused([`${personaLabel(persona)} does not hold room.design`]);
-  if (!CHANGE_STATES.includes(d.design.lifecycle)) return refused([`devices are planned while the room is PLANNED, or changed during (re)commissioning (this one is ${d.design.lifecycle})`]);
+  { const no = editRefused(d, persona, 'room.device_added', 'add-device'); if (no) return no; }
   if (!C.categories[cat]) return refused([`unknown equipment category ${cat}`]);
   const id = `PA-${String(++d.seq.pa).padStart(4, '0')}`;
   const dev = newDevice(id, cat, d.design.devices.filter((x) => !x.removed), { x: pos.x, y: pos.y }, '', C);
@@ -161,7 +169,7 @@ export function addDevice(d: Draft, persona: string, cat: string, pos: { x: numb
 }
 export function removeDevice(d: Draft, persona: string, id: string, why = ''): Draft | Refusal {
   if (!holds(persona, 'room.design')) return refused([`${personaLabel(persona)} does not hold room.design`]);
-  if (!CHANGE_STATES.includes(d.design.lifecycle)) return refused([`devices are planned while the room is PLANNED, or changed during (re)commissioning (this one is ${d.design.lifecycle})`]);
+  { const no = editRefused(d, persona, 'room.device_removed', 'remove-device'); if (no) return no; }
   const dev = d.design.devices.find((x) => x.id === id && !x.removed); if (!dev) return refused([`no device ${id}`]);
   const gone: Connection[] = [];
   dev.removed = true; for (const c of d.design.connections) if (!c.removed && (c.from === id || c.to === id)) { c.removed = true; gone.push(c); }
@@ -171,16 +179,14 @@ export function removeDevice(d: Draft, persona: string, id: string, why = ''): D
   touchDesign(d, persona); return d;
 }
 /** Replace one device by a device of another category at the same place (a camera swapped for a video bar, …): one change, one event.
- *  The new device gets a new planned-asset id — a different category is a different device, not a model substitution. */
+ *  The new device gets a new planned-asset id — a different category is a different device, not a model substitution. In the API a swap
+ *  is a removal and then an addition, so it is made while the room is PLANNED only (D-39); a recommissioned room substitutes a model instead. */
 export function swapDevice(d: Draft, persona: string, id: string, cat: string, why = ''): Draft | Refusal {
   if (!holds(persona, 'room.design')) return refused([`${personaLabel(persona)} does not hold room.design`]);
-  if (!CHANGE_STATES.includes(d.design.lifecycle)) return refused([`devices are planned while the room is PLANNED, or changed during (re)commissioning (this one is ${d.design.lifecycle})`]);
+  { const no = editRefused(d, persona, 'room.device_swapped', 'swap-category'); if (no) return no; }
   const old = d.design.devices.find((x) => x.id === id && !x.removed); if (!old) return refused([`no device ${id}`]);
   if (!C.categories[cat]) return refused([`unknown equipment category ${cat}`]);
   if (cat === old.cat) return refused([`${old.label} is already a ${C.categories[cat]!.label}: pick another category to swap it for`]);
-  // an accepted room under recommissioning: the substitution is judged on the plan the earlier results were recorded against (before the swap)
-  const recom = recommissioningBaseline(d);
-  const planBefore = recom ? analysis(d).applicability.rows.filter((r) => r.applicable) : [];
   const gone: Connection[] = [];
   old.removed = true; for (const c of d.design.connections) if (!c.removed && (c.from === id || c.to === id)) { c.removed = true; gone.push(c); }
   const nid = `PA-${String(++d.seq.pa).padStart(4, '0')}`;
@@ -194,17 +200,8 @@ export function swapDevice(d: Draft, persona: string, id: string, cat: string, w
   if (was) closeUnit(was, persona, 'REMOVED', `position ${old.id} replaced by ${nid} (${cat})`);
   const now0 = installed(d) ? openUnit(d, persona, dev, newUnit(d, persona, dev, 'INSTALLATION_RECORD'), 'INITIAL', `installed at ${nid}, which replaces ${old.id}`) : null;
   d.designHistory = [...(d.designHistory || []), { position: old.id, kind: 'category', from: `${old.label} (${old.cat})`, to: `${dev.label} (${cat}, ${nid})`, at: now(), by: persona }];
-  const reopened: Affected[] = [];
-  if (recom) {
-    // the commissioning engine's rule, the one the enterprise API runs: a result recorded on the substituted device no longer counts
-    const sub = { assetId: old.id, label: old.label, category: old.cat, from: old.cat, to: `${dev.label} (${cat}, ${nid})` };
-    const res = results(d);
-    const tests = reopenedBySubstitution(planBefore.map((r) => ({ testId: r.id, domain: r.domain, devices: r.devices, label: r.label })), [sub]);
-    d.substitutions = [...(d.substitutions || []), { ...sub, replacedBy: nid, at: now(), by: persona, baselineVersion: recom.version, kind: 'SUBSTITUTED', fromAsset: was?.asset ?? null, toAsset: now0?.asset ?? null, reopened: tests.map((t) => ({ testId: t.testId, reason: t.reasons[0]!, records: recordCount(res[t.testId]) })) }];
-    for (const t of tests) reopened.push({ kind: 'test', id: t.testId, label: t.row.label, effect: REOPENED, href: '#/v25/build?tab=checks' });
-  }
-  log(d, persona, 'room.device_swapped', `${old.label} (${old.cat}, ${old.id}) → ${dev.label} (${cat}, ${nid}) at ${old.x.toFixed(1)}, ${old.y.toFixed(1)} m; ${gone.length} connections removed, ${added.length} proposed${recom ? `; ${reopened.length} tests reopened against baseline v${recom.version} (results recorded on ${old.label} no longer count towards the re-acceptance)` : ''}`, 'ALLOWED',
-    { what: 'device swapped', from: `${old.label} (${old.cat})`, to: `${dev.label} (${cat})`, why: why.trim(), affected: [devRef(old, 'removed'), devRef(dev, 'added'), ...gone.map((c) => connRef(c, 'removed')), ...added.map((c) => connRef(c, 'proposed (MODELED)')), ...reopened] });
+  log(d, persona, 'room.device_swapped', `${old.label} (${old.cat}, ${old.id}) → ${dev.label} (${cat}, ${nid}) at ${old.x.toFixed(1)}, ${old.y.toFixed(1)} m; ${gone.length} connections removed, ${added.length} proposed`, 'ALLOWED',
+    { what: 'device swapped', from: `${old.label} (${old.cat})`, to: `${dev.label} (${cat})`, why: why.trim(), affected: [devRef(old, 'removed'), devRef(dev, 'added'), ...gone.map((c) => connRef(c, 'removed')), ...added.map((c) => connRef(c, 'proposed (MODELED)'))] });
   touchDesign(d, persona); return d;
 }
 
@@ -409,6 +406,11 @@ export function replaceUnit(d: Draft, persona: string, id: string, opts: { model
   const model = opts.model?.trim() || dev.model; const substitution = model !== dev.model;
   const need = substitution ? 'room.design' : 'work.evidence';
   if (!holds(persona, need)) { log(d, persona, 'commission.asset_replaced', `refused: needs ${need}`, 'DENIED'); return refused([`${personaLabel(persona)} does not hold ${need}: ${substitution ? 'a model substitution is a design change' : 'a unit is replaced by the person who records field work'}`]); }
+  if (substitution) {
+    // D-39: a model change is a design edit — the shared rule first (PLANNED, or an accepted room under recommissioning)
+    const no = editRefused(d, persona, 'room.device_swapped', 'substitute-model'); if (no) return no;
+    if (d.design.lifecycle === 'PLANNED') return plannedModel(d, persona, dev, model, (opts.why || '').trim());
+  }
   const recom = recommissioningBaseline(d); const open = openAt(id, d.installations || []) as DemoInstallation | null;
   const plan = planReplacement({ lifecycle: d.design.lifecycle, recommissioning: !!recom, position: { code: dev.id, category: dev.cat, label: dev.label, model: dev.model, furniture: dev.furniture }, open, expected: opts.expected ?? null, model, incoming: { create: {} } });
   if (!plan.ok) { log(d, persona, 'commission.asset_replaced', `${id} refused: ${plan.why.join('; ')}`, 'DENIED'); return refused(plan.why); }
@@ -426,6 +428,16 @@ export function replaceUnit(d: Draft, persona: string, id: string, opts: { model
     { what: substitution ? 'model substituted' : 'unit replaced', from: `${dev.label} (${dev.cat}) · unit ${open!.asset}${substitution ? ` · ${oldModel}` : ''}`, to: `${dev.label} (${dev.cat}) · unit ${unit.code}${substitution ? ` · ${model}` : ''}`, why, affected: [ref(open!.asset, `taken out (${plan.plan.close.reason})`), ref(unit.code, 'installed'), ...tests.map((t) => ({ kind: 'test' as const, id: t.testId, label: t.row.label || t.testId, effect: REOPENED, href: '#/v25/build?tab=checks' }))] });
   if (substitution) touchDesign(d, persona);
   return d;
+}
+
+/** A model change while PLANNED (the API's PATCH {model} on a planned room): the position's designed model and its design history change;
+ *  no unit is installed yet, so nothing is replaced and no test is reopened. */
+function plannedModel(d: Draft, persona: string, dev: PlannedDevice, model: string, why: string): Draft {
+  const old = dev.model; dev.model = model; dev.generic = model === 'generic'; dev.modelName = model === 'generic' ? null : model;
+  d.designHistory = [...(d.designHistory || []), { position: dev.id, kind: 'model', from: old, to: model, at: now(), by: persona }];
+  log(d, persona, 'room.device_swapped', `${dev.label} (${dev.id}): planned model ${old} → ${model} (no unit is installed yet)`, 'ALLOWED',
+    { what: 'model substituted', from: `${dev.label} (${dev.cat}) · ${old}`, to: `${dev.label} (${dev.cat}) · ${model}`, why, affected: [devRef(dev, `planned model ${old} → ${model}`)] });
+  touchDesign(d, persona); return d;
 }
 
 /** Record what is known of a unit's identity, forward only (the API's `planIdentity`). Visitor Mode is synthetic: a serial is SYN-…, and no maker is named. */

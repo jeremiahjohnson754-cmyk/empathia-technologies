@@ -82,6 +82,17 @@ identities and these invariants, in the database and in the application:
    personas, re-run, result) is byte for byte as it was. Asserted in the checkpoint e2e (C-98 at step 15: design binding, open issues, the
    reopened tests with the count; C-99 at step 17: the reopened tests with the count alone), in Build a Room (B-15h, C-19f, C-19g) and in
    the engine's tests.
+5c. **Which design edits a room accepts is one rule too** (`edits.ts`, `designEditRefusal`, D-39), run by the API on every device,
+   connection and room-detail edit (`rooms.ts` through the pure `design-edits.ts`) and by Build a Room on its add, remove, swap and
+   "Substitute the model" controls. While PLANNED, every edit. While an accepted room is recommissioned, a model substitution at a
+   position only; moving a device has its own sentence ("… is being recommissioned: only a model substitution is accepted …"); adding,
+   removing or swapping a device, and editing connections or the room's details, get the PLANNED-only sentence ("the design is
+   COMMISSIONING: changes need a change order"). In every other state, including first commissioning, no design edit ("the design is
+   <state>: changes need a change order", with the pointer to recommissioning when ACCEPTED). The API's sentences are kept byte for byte. A
+   category swap is not an API operation: it is a removal and then an addition, refused or allowed as they are, so in Build a Room it is
+   made while PLANNED only. A like-for-like unit replacement is field work, not a design edit (`planReplacement`). Build a Room disables
+   a refused control and shows the sentence, records a refused edit in its ledger as DENIED and in the Room Story, and makes a model change
+   while PLANNED as the API's PATCH does: the position's designed model and its design history, with no unit to replace.
 6. **Reopening is derived, not stored.** Which tests a change reopens is computed on every read from the append-only installation records
    and the plan; nothing is "invalidated" separately. A rolled-back replacement therefore reopens nothing.
 7. **Transactions.** Every mutation locks the room (the lock every room mutation takes), the position and the incoming unit, plans with the
@@ -119,9 +130,10 @@ identities and these invariants, in the database and in the application:
 - Build a Room's Design tab shows, while the room is recommissioned, whether the approved revision describes the room, what is left to do
   and by whom, and "Approve revision N"; the Lifecycle tab repeats the engine's sentence while it blocks; the Room Story records each
   approval and refusal.
-- Tests: `tests/security/recommissioning-negative.test.mjs` (RN-01…15), checkpoint C-89…C-100, `packages/commissioning-engine/test/
+- Tests: `tests/security/recommissioning-negative.test.mjs` (RN-01…16), checkpoint C-89…C-100, `packages/commissioning-engine/test/
   installations.test.ts`, `packages/assurance-engine/test/installation.test.ts`, `apps/demo/test/installations.test.mjs` (with the parity
-  test, which covers the design-binding sentence through the API's pure adapter and the store), demo browser B-15h…k, C-19f…j, C-28b. `tests/security/governance.test.mjs` BL-5 now uploads evidence after the substitution for its re-run: the evidence it reused from
+  test, which covers the design-binding sentence and the design-edit rule per state through the API's pure adapters and the store), demo
+  browser B-06b, B-15d…l, C-19f…j, C-28b, C-37, C-10f. `tests/security/governance.test.mjs` BL-5 now uploads evidence after the substitution for its re-run: the evidence it reused from
   before the substitution is refused by the new rule (asserted there).
 - Not done: a separate endpoint to register a spare unit (a unit becomes a spare when it is taken out; install and replace can register a
   new one); removal of a unit without a successor; a category change of a position in the API; external asset-registry connectors.

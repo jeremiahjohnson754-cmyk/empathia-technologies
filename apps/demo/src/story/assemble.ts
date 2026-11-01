@@ -137,6 +137,8 @@ export function assembleStory(roomId: string, src: StorySources): Story {
       const base = { at: e.at, who: who(e.by), source: 'Build a Room ledger', tech: [['Event', e.type], ['Outcome', e.outcome], ['Detail', e.detail]] as Array<[string, string]>, phase: phaseAt(e.at) };
       const refusal = e.outcome === 'DENIED'; const reason = e.detail.replace(/^refused: /, '').replace(/^\S+ refused: /, '');
       if (e.type === 'room.design_created') push({ ...base, stage: 'design', what: `Room created from the ${tl} template`, detail: e.detail, evidence: d.design.geometry.confidence === 'declared' ? 'DECLARED' : 'MODELED', why: null, href: LINK.build('design'), linkLabel: 'Open the design' });
+      // D-39: a design edit the room does not accept in its state (the shared rule), refused and recorded
+      else if ((e.type === 'room.device_added' || e.type === 'room.device_removed' || e.type === 'room.device_swapped') && refusal) push({ ...base, stage: 'design', what: `Device ${e.type === 'room.device_added' ? 'addition' : e.type === 'room.device_removed' ? 'removal' : 'swap or model substitution'} refused`, why: reason, evidence: 'DERIVED', outcome: 'DENIED', href: LINK.build('ledger'), linkLabel: 'Open the room ledger' });
       else if (e.type === 'room.device_added' || e.type === 'room.device_removed' || e.type === 'room.device_swapped') {
         const c = e.change;
         const what = c ? (c.what === 'device swapped' ? `${c.from} swapped for ${c.to}` : c.what === 'model substituted' ? `Model substituted at the same position: ${c.from} → ${c.to}` : c.what === 'device added' ? `${c.to} added` : `${c.from} removed`) : e.detail;

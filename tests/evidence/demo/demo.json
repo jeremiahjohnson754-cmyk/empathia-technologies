@@ -1,8 +1,8 @@
 {
- "at": "2026-11-01T02:49:50.144Z",
- "pass": 159,
+ "at": "2026-11-01T03:19:49.414Z",
+ "pass": 163,
  "fail": 0,
- "tests": 159,
+ "tests": 163,
  "results": [
   {
    "id": "D-desktop-01",
@@ -77,6 +77,12 @@
    "detail": "Refused.\nSystems Engineer saved the design revision and does not approve it (separation of duties)"
   },
   {
+   "id": "B-06b",
+   "name": "while PLANNED, lighting control is added by the designer (a new family, so new tests apply: the engine’s count grows)",
+   "result": "PASS",
+   "detail": "73 → 76 "
+  },
+  {
    "id": "B-07",
    "name": "the systems engineer approves the design (DESIGN_APPROVED)",
    "result": "PASS",
@@ -104,7 +110,7 @@
    "id": "B-11",
    "name": "the recorder cannot verify their own results",
    "result": "PASS",
-   "detail": "Refused.\n0 verified; 73 refused — first: compute_display_capability: verification must be independent of the person who recorded the result"
+   "detail": "Refused.\n0 verified; 76 refused — first: compute_display_capability: verification must be independent of the person who recorded the result"
   },
   {
    "id": "B-12",
@@ -144,27 +150,33 @@
   },
   {
    "id": "B-15d",
-   "name": "lighting control can be added during recommissioning by whoever holds room.design (a new family, so new tests apply)",
+   "name": "during recommissioning no device is added, removed or swapped: the controls are disabled and say why in the API’s words, pointing to the model substitution",
    "result": "PASS",
-   "detail": ""
+   "detail": "Devices are not added, removed or swapped now: the design is COMMISSIONING: changes need a change order. The one design change a recommissioned room accepts is a model substitution at a position (“Substitute the model” in the device register); replacing a unit like for like is field work."
+  },
+  {
+   "id": "B-15l",
+   "name": "the one design change a recommissioned room accepts: the designer substitutes the video bar’s model — the position keeps its id, its unit is replaced",
+   "result": "PASS",
+   "detail": "{\"at\":\"2026-11-01T03:18:07.966Z\",\"by\":\"designer\",\"type\":\"room.device_swapped\",\"detail\":\"Video bar 1 (PA-0004): unit AS-0002 → AS-0009, model generic → SYN-BAR-2 (synthetic); 12 tests reopened against "
   },
   {
    "id": "B-15e",
-   "name": "the changed room cannot be re-accepted until the new tests are recorded and verified",
+   "name": "the changed room cannot be re-accepted until the reopened tests are re-run and verified",
    "result": "PASS",
-   "detail": "Refused.\nthe design changed while the room is recommissioned and the approved revision 3 no longer describes it: save the change as a revision and have it approved (room.design.approve, not its author) — the re-acceptance binds the approved revision\nacceptance needs every applicable test executed, passed and independently verified with evidence: 73 of 76 passed and independently verified (73 recor"
+   "detail": "Refused.\nthe design changed while the room is recommissioned (PA-0004 generic → SYN-BAR-2 (synthetic)) and the approved revision 3 no longer describes it: save the change as a revision and have it approved (room.design.approve, not its author) — the re-acceptance binds the approved revision\n12 test(s) were last recorded before the substitution and must be re-run on the changed design and verified "
   },
   {
    "id": "B-15h",
    "name": "the refusal starts with the engine’s design-binding sentence (the approved revision no longer describes the room) and lists the blockers in the documented order",
    "result": "PASS",
-   "detail": "[\"the design changed while the room is recommissioned and the approved revision 3 no longer describes it: save the change as a revision and have it approved (room.design.approve, not its author) — the re-acceptance binds the approved revision\",\"acceptance needs every applicable test executed, passed and independently verified with evidence: 73 of 76 passed and independently verified (73 recorded: "
+   "detail": "[\"the design changed while the room is recommissioned (PA-0004 generic → SYN-BAR-2 (synthetic)) and the approved revision 3 no longer describes it: save the change as a revision and have it approved (room.design.approve, not its author) — the re-acceptance binds the approved revision\",\"12 test(s) were last recorded before the substitution and must be re-run on the changed design and verified indep"
   },
   {
    "id": "B-15i",
    "name": "with every test recorded and verified, the re-acceptance is still refused for the design binding alone",
    "result": "PASS",
-   "detail": "[\"the design changed while the room is recommissioned and the approved revision 3 no longer describes it: save the change as a revision and have it approved (room.design.approve, not its author) — the re-acceptance binds the approved revision\"]"
+   "detail": "[\"the design changed while the room is recommissioned (PA-0004 generic → SYN-BAR-2 (synthetic)) and the approved revision 3 no longer describes it: save the change as a revision and have it approved (room.design.approve, not its author) — the re-acceptance binds the approved revision\"]"
   },
   {
    "id": "B-15j",
@@ -186,15 +198,15 @@
   },
   {
    "id": "B-15g",
-   "name": "the comparison between v1 and v2 names the added device and the results that changed",
+   "name": "the comparison between v1 and v2 names the change — the model substituted at the video bar’s position — and the new design revision",
    "result": "PASS",
-   "detail": "What changed between v1 and v2\nDesign revision\n3 → 4\nDevices\n1 added (Lighting control 1), 0 removed (—)\nResult labels\n3 of 76 changed\ninteg_lighting_shades — → PASS_VERIFIED\nlighting_scenes — → PASS_"
+   "detail": "What changed between v1 and v2\nDesign revision\n3 → 4\nDevices\nunchanged\nModels\n1 model substituted (Video bar 1 at PA-0004: generic → SYN-BAR-2 (synthetic))\nResult labels\nidentical (76); the versions bind different result records"
   },
   {
    "id": "B-16",
    "name": "the ledger records every refusal with its actor (DENIED rows) alongside the allowed changes",
    "result": "PASS",
-   "detail": "79 denied"
+   "detail": "82 denied"
   },
   {
    "id": "B-17",
@@ -320,7 +332,7 @@
    "id": "V-07",
    "name": "dispatch preflight on the record: the room is booked in the proposed window, the processor stock check is stale, tools unconfirmed — each named",
    "result": "PASS",
-   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-02T00:48 → 2026-11-02T02:48\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
+   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-02T01:18 → 2026-11-02T03:18\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
   },
   {
    "id": "V-08",
@@ -386,7 +398,7 @@
    "id": "A-03",
    "name": "A2 is a read-only comparison against the room’s accepted baseline on record (Atlas 4.220: v1, the record the KPI passports and the story read)",
    "result": "PASS",
-   "detail": "COMPARED A2 H1 2026-11-01 02:49 · Commissioning Engineer\nread-only comparison against baseline v1 (9 evidence items)"
+   "detail": "COMPARED A2 H1 2026-11-01 03:18 · Commissioning Engineer\nread-only comparison against baseline v1 (9 evidence items)"
   },
   {
    "id": "A-04",
@@ -398,7 +410,7 @@
    "id": "A-05",
    "name": "with approval and a window, the real adapter state blocks it: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)",
    "result": "PASS",
-   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-11-01 02:49 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
+   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-11-01 03:19 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
   },
   {
    "id": "A-06",
@@ -428,7 +440,7 @@
    "id": "A-03b",
    "name": "A2 stays honest where no baseline is accepted on record (Northstar Town Hall, COMMISSIONING): nothing to compare, NOT_VERIFIED",
    "result": "PASS",
-   "detail": "COMPARED A2 H1 2026-11-01 02:49 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
+   "detail": "COMPARED A2 H1 2026-11-01 03:19 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
   },
   {
    "id": "L-01",
@@ -500,7 +512,7 @@
    "id": "M-03",
    "name": "a passport shows numerator, denominator, window, coverage, freshness, confidence with reasons, source, exclusions and drill-down",
    "result": "PASS",
-   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-03 02:49 → 2026-11-01 02:49\nCoverage\n4 of 4 eligible recor"
+   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-03 03:19 → 2026-11-01 03:19\nCoverage\n4 of 4 eligible recor"
   },
   {
    "id": "M-04",
@@ -512,7 +524,7 @@
    "id": "M-05",
    "name": "the ledger filters to the refusals, each with actor, UTC and local time and the reason",
    "result": "PASS",
-   "detail": "When (UTC)\tLocal\tWho\tEvent\tRecord\tOutcome\tDetail\n2026-11-01 02:49:05\t10/31/2026, 21:49:05\tCommissioning Engineer\tlearn.sme_review\tLC-001\tDENIED\trefused: the proposer is not the subject-matter reviewer of their own case (separation of duties)\n2026-11-01 02:49:04\t10/31/2026, 21:49:04\tCommissioning Eng"
+   "detail": "When (UTC)\tLocal\tWho\tEvent\tRecord\tOutcome\tDetail\n2026-11-01 03:19:04\t10/31/2026, 22:19:04\tCommissioning Engineer\tlearn.sme_review\tLC-001\tDENIED\trefused: the proposer is not the subject-matter reviewer of their own case (separation of duties)\n2026-11-01 03:19:03\t10/31/2026, 22:19:03\tCommissioning Eng"
   },
   {
    "id": "M-06",
@@ -611,12 +623,6 @@
    "detail": ""
   },
   {
-   "id": "C-01",
-   "name": "a room reaches baseline v1 through the governed path and is recommissioned (baseline v1 stays current)",
-   "result": "PASS",
-   "detail": "COMMISSIONING\nbaseline v1\nShow this room’s entire story\nReset demonstration"
-  },
-  {
    "id": "C-02",
    "name": "before any change the Impact panel explains itself and its live region is already mounted",
    "result": "PASS",
@@ -636,19 +642,13 @@
   },
   {
    "id": "C-05",
-   "name": "the tests whose covered device changed are the engine’s, and the panel says their results were recorded on the previous device",
+   "name": "the tests whose covered device changed are the engine’s; nothing was recorded on the design, so the panel claims no earlier result",
    "result": "PASS",
    "detail": "10 vs 10"
   },
   {
    "id": "C-06",
    "name": "Search Party: the video bar is no longer in the recorded graph; the camera is, with what now depends on it",
-   "result": "PASS",
-   "detail": ""
-  },
-  {
-   "id": "C-07",
-   "name": "Assurance: the room now differs from baseline v1 and recommissioning is proposed; baseline v1 itself is unchanged, byte for byte",
    "result": "PASS",
    "detail": ""
   },
@@ -666,13 +666,43 @@
   },
   {
    "id": "C-10",
-   "name": "the change is one structured event: actor, what, from, to, why and the affected objects the engines found",
+   "name": "the change is one structured event: actor, what, from, to, why and the affected objects the engines found (devices, connections, tests; there is no baseline yet)",
    "result": "PASS",
    "detail": "{\"what\":\"device swapped\",\"from\":\"Video bar 1 (bar)\",\"to\":\"Camera 1 (camera)\",\"why\":\"like-for-like camera for the far wall (synthetic)\",\"affected\":[{\"kind\":\"device\",\"id\":\"PA-0004\",\"label\":\"Video bar 1 (bar)\",\"effect\":\"removed\",\"href\":\"#/v25/build?tab=design\"},{\"kind\":\"device\",\"id\":\"PA-0008\",\"label\":\""
   },
   {
+   "id": "C-11",
+   "name": "adding a ceiling microphone (while PLANNED) adds exactly the tests the engine adds, each with its reason, and names the KPI passport that changes; there is no baseline to touch yet",
+   "result": "PASS",
+   "detail": "{\"panel\":[\"audio_aec\",\"audio_dsp_firmware\",\"audio_gain\",\"audio_limiter_levels\",\"audio_mic_pickup\",\"audio_noise_floor\",\"audio_zone_routing\",\"network_media_clock\"],\"engine\":[\"audio_aec\",\"audio_dsp_firmware\",\"audio_gain\",\"audio_limiter_levels\",\"audio_mic_pickup\",\"audio_noise_floor\",\"audio_zone_routing\""
+  },
+  {
+   "id": "C-01",
+   "name": "a room reaches baseline v1 through the governed path and is recommissioned (baseline v1 stays current)",
+   "result": "PASS",
+   "detail": "COMMISSIONING\nbaseline v1\nShow this room’s entire story\nReset demonstration"
+  },
+  {
+   "id": "C-37",
+   "name": "while recommissioned no device is added, removed or swapped: “Place at the centre” and “Swap” are disabled, no device offers “remove”, and the reason is the API’s sentence; “Substitute the model” stays offered",
+   "result": "PASS",
+   "detail": "Devices are not added, removed or swapped now: the design is COMMISSIONING: changes need a change order. The one design change a recommissioned room accepts is a model substitution at a position (“Substitute the model” in the device register); replacing a unit like for like is field work."
+  },
+  {
+   "id": "C-07",
+   "name": "Assurance: the room now differs from baseline v1 (a model drift at the camera’s position) and recommissioning is proposed; baseline v1 itself is unchanged, byte for byte",
+   "result": "PASS",
+   "detail": "Camera 1 (camera) · unit AS-0005 · generic → Camera 1 (camera) · unit AS-0007 · SYN-PTZ-12X (synthetic PTZ camera) · Designer / CAD / Revit · 03:19 UTC · why: “a PTZ camera for the far wall (synthetic)”\n\nCommissioning\n\n+0 added · −0 removed · 73 unchanged\n\n73 → 73 applicable of 94 in the library · a"
+  },
+  {
+   "id": "C-10f",
+   "name": "the substitution is one structured event: actor, what (model substituted), from → to with both units and models, why, and the affected objects (the units, the reopened tests, the baseline)",
+   "result": "PASS",
+   "detail": "{\"what\":\"model substituted\",\"from\":\"Camera 1 (camera) · unit AS-0005 · generic\",\"to\":\"Camera 1 (camera) · unit AS-0007 · SYN-PTZ-12X (synthetic PTZ camera)\",\"why\":\"a PTZ camera for the far wall (synthetic)\",\"affected\":[{\"kind\":\"unit\",\"id\":\"AS-0005\",\"label\":\"unit AS-0005\",\"effect\":\"taken out (SUBSTIT"
+  },
+  {
    "id": "C-10b",
-   "name": "a swap during recommissioning reopens the 12 tests the engine’s rule reopens (run directly here on the plan before the swap), each listed with its reason",
+   "name": "a model substitution during recommissioning reopens the 12 tests the engine’s rule reopens (run directly here on the plan before it), each listed with its reason",
    "result": "PASS",
    "detail": "{\"panel\":[\"identity_asset\",\"display_controls\",\"video_signal\",\"camera_preset\",\"video_camera_exposure\",\"video_content_share\",\"video_display_calibration\",\"video_edid_handshake\",\"video_switching\",\"camera_fov\",\"video_av_sync\",\"video_camera_tracking\"],\"engine\":[\"identity_asset\",\"display_controls\",\"video_s"
   },
@@ -680,13 +710,13 @@
    "id": "C-10c",
    "name": "the gate now refuses the re-acceptance and names every reopened test; “no engine condition blocks it” is gone",
    "result": "PASS",
-   "detail": "Next step COMMISSIONING → ACCEPTED: the engine refuses it today — the design changed while the room is recommissioned (PA-0004 bar → Camera 1 (camera, PA-0008)) and the approved revision 1 no longer describes it: save the change as a revision and have it approved (room.design.approve, not its author"
+   "detail": "Next step COMMISSIONING → ACCEPTED: the engine refuses it today — the design changed while the room is recommissioned (PA-0008 generic → SYN-PTZ-12X (synthetic PTZ camera)) and the approved revision 1 no longer describes it: save the change as a revision and have it approved (room.design.approve, no"
   },
   {
    "id": "C-10d",
    "name": "the plan shows “Re-verification required”: each reopened test with its reasons and its earlier result “recorded on the previous device · must be re-run and verified again”",
    "result": "PASS",
-   "detail": "Re-verification required · 12 tests reopened\n\nVideo bar 1 (PA-0004, bar) → Camera 1 (camera, PA-0008) [unit AS-0002 → AS-0006] — substituted by Designer / CAD / Revit while baseline v1 is recommissioned. A result recorded before the substitution was obtained on the previous device: it stays on recor"
+   "detail": "Re-verification required · 12 tests reopened\n\nCamera 1 (PA-0008, generic) → SYN-PTZ-12X (synthetic PTZ camera) [unit AS-0005 → AS-0007] — substituted by Designer / CAD / Revit while baseline v1 is recommissioned. A result recorded before the substitution was obtained on the previous device: it stays"
   },
   {
    "id": "C-10e",
@@ -695,16 +725,10 @@
    "detail": ""
   },
   {
-   "id": "C-11",
-   "name": "adding a ceiling microphone adds exactly the tests the engine adds, each with its reason, and names the KPI passport that changes",
-   "result": "PASS",
-   "detail": "{\"panel\":[\"audio_aec\",\"audio_dsp_firmware\",\"audio_gain\",\"audio_limiter_levels\",\"audio_mic_pickup\",\"audio_noise_floor\",\"audio_zone_routing\",\"network_media_clock\"],\"engine\":[\"audio_aec\",\"audio_dsp_firmware\",\"audio_gain\",\"audio_limiter_levels\",\"audio_mic_pickup\",\"audio_noise_floor\",\"audio_zone_routing\""
-  },
-  {
    "id": "C-12",
    "name": "Build a Room’s “Show this room’s entire story” opens the story, with records in several lifecycle stages",
    "result": "PASS",
-   "detail": "[{\"key\":\"request\",\"n\":0},{\"key\":\"design\",\"n\":6},{\"key\":\"authorize\",\"n\":3},{\"key\":\"commission\",\"n\":7},{\"key\":\"verify\",\"n\":2},{\"key\":\"baseline\",\"n\":1},{\"key\":\"operate\",\"n\":1},{\"key\":\"learn\",\"n\":0}]"
+   "detail": "[{\"key\":\"request\",\"n\":0},{\"key\":\"design\",\"n\":7},{\"key\":\"authorize\",\"n\":3},{\"key\":\"commission\",\"n\":7},{\"key\":\"verify\",\"n\":2},{\"key\":\"baseline\",\"n\":1},{\"key\":\"operate\",\"n\":1},{\"key\":\"learn\",\"n\":0}]"
   },
   {
    "id": "C-13",
@@ -716,19 +740,19 @@
    "id": "C-14",
    "name": "the summary is computed from the records: state, baseline v1, open items, stages on record",
    "result": "PASS",
-   "detail": "CURRENT STATE\nCOMMISSIONING\nBuild a Room\nACCEPTED BASELINE\nv1 · CURRENT\npublished just now by Document Reviewer / QA · Build a Room\nOPEN ITEMS\n3\nRe-verification required: 12 reopened tests to re-run on the changed design and verify again\n8 applicable tests not tested yet\nRecommissioning in progress:"
+   "detail": "CURRENT STATE\nCOMMISSIONING\nBuild a Room\nACCEPTED BASELINE\nv1 · CURRENT\npublished just now by Document Reviewer / QA · Build a Room\nOPEN ITEMS\n2\nRe-verification required: 12 reopened tests to re-run on the changed design and verify again\nRecommissioning in progress: baseline v1 stays current until t"
   },
   {
    "id": "C-14b",
    "name": "the story shows “Re-verification required” under Verify, a state derived from the records, linking to the plan",
    "result": "PASS",
-   "detail": "current state\n\nRe-verification required: 12 tests reopened by the substitution of Video bar 1 while baseline v1 is recommissioned\n\nDERIVED\n\n12 tests still to be re-run on the changed design. A result recorded before the substitution was obtained on the previous device: it stays on record and no longer counts towards the re-acceptance.\n\n12 records behind this entry — an engineer perspective lists t"
+   "detail": "current state\n\nRe-verification required: 12 tests reopened by the substitution of Camera 1 while baseline v1 is recommissioned\n\nDERIVED\n\n12 tests still to be re-run on the changed design. A result recorded before the substitution was obtained on the previous device: it stays on record and no longer counts towards the re-acceptance.\n\n12 records behind this entry — an engineer perspective lists them"
   },
   {
    "id": "C-15",
    "name": "a perspective changes density, not data: the same records for a visitor and an engineer; test ids and evidence references only in the engineer’s view",
    "result": "PASS",
-   "detail": "20 entries, same true, visitor ids false"
+   "detail": "21 entries, same true, visitor ids false"
   },
   {
    "id": "C-16",
@@ -752,37 +776,37 @@
    "id": "C-19",
    "name": "the story’s ledger link shows only this room’s events",
    "result": "PASS",
-   "detail": "142 rows"
+   "detail": "159 rows"
   },
   {
    "id": "C-19b",
    "name": "re-acceptance is refused, the refusal naming every reopened test (the enterprise API’s wording)",
    "result": "PASS",
-   "detail": "Refused.\nthe design changed while the room is recommissioned (PA-0004 bar → Camera 1 (camera, PA-0008)) and the approved revision 1 no longer describes it: save the change as a revision and have it approved (room.design.approve, not its author) — the re-acceptance binds the approved revision\n12 test"
+   "detail": "Refused.\nthe design changed while the room is recommissioned (PA-0008 generic → SYN-PTZ-12X (synthetic PTZ camera)) and the approved revision 1 no longer describes it: save the change as a revision and have it approved (room.design.approve, not its author) — the re-acceptance binds the approved revi"
   },
   {
    "id": "C-19f",
-   "name": "the refusal lists the blockers in the documented order — the engine’s design-binding sentence first (naming the swap), the reopened tests, the general count for the microphone’s new tests",
+   "name": "the refusal lists the blockers in the documented order — the engine’s design-binding sentence first (naming the substitution), then the reopened tests with the count",
    "result": "PASS",
-   "detail": "[\"the design changed while the room is recommissioned (PA-0004 bar → Camera 1 (camera, PA-0008)) and the approved revision 1 no longer describes it: save the change as a revision and have it approved (room.design.approve, not its author) — the re-acceptance binds the approved revision\",\"12 test(s) were last recorded before the substitution and must be re-run on the changed design and verified inde"
+   "detail": "[\"the design changed while the room is recommissioned (PA-0008 generic → SYN-PTZ-12X (synthetic PTZ camera)) and the approved revision 1 no longer describes it: save the change as a revision and have it approved (room.design.approve, not its author) — the re-acceptance binds the approved revision\",\"12 test(s) were last recorded before the substitution and must be re-run on the changed design and v"
   },
   {
    "id": "C-19c",
    "name": "re-run after the substitution (each earlier record kept in its history), the reopened tests still block until a different person verifies them",
    "result": "PASS",
-   "detail": "Refused.\nthe design changed while the room is recommissioned (PA-0004 bar → Camera 1 (camera, PA-0008)) and the approved revision 1 no longer describes it: save the change as a revision and have it approved (room.design.approve, not its author) — the re-acceptance binds the approved revision\n12 reop"
+   "detail": "Refused.\nthe design changed while the room is recommissioned (PA-0008 generic → SYN-PTZ-12X (synthetic PTZ camera)) and the approved revision 1 no longer describes it: save the change as a revision and have it approved (room.design.approve, not its author) — the re-acceptance binds the approved revi"
   },
   {
    "id": "C-19g",
    "name": "without the design approval the re-acceptance is refused for that reason alone, in the engine’s words: “save the change as a revision and have it approved”",
    "result": "PASS",
-   "detail": "[\"the design changed while the room is recommissioned (PA-0004 bar → Camera 1 (camera, PA-0008)) and the approved revision 1 no longer describes it: save the change as a revision and have it approved (room.design.approve, not its author) — the re-acceptance binds the approved revision\"]"
+   "detail": "[\"the design changed while the room is recommissioned (PA-0008 generic → SYN-PTZ-12X (synthetic PTZ camera)) and the approved revision 1 no longer describes it: save the change as a revision and have it approved (room.design.approve, not its author) — the re-acceptance binds the approved revision\"]"
   },
   {
    "id": "C-19h",
    "name": "the saved revision 2 needs approval; its author (the systems engineer) and a persona without room.design.approve (the designer) are refused, in the API’s words",
    "result": "PASS",
-   "detail": "{\"needs\":\"design approval required the design changed while the room is recommissioned (PA-0004 bar → Camera 1 (camera, PA-0008)) and the approved revision 1 no longer describes it: revision 2 needs approval (r\",\"own\":\"separation of duties: the design cannot be approved by its own author (syseng)\",\"noAuth\":\"designer may not approve a design revision (needs room.design.approve)\"}"
+   "detail": "{\"needs\":\"design approval required the design changed while the room is recommissioned (PA-0008 generic → SYN-PTZ-12X (synthetic PTZ camera)) and the approved revision 1 no longer describes it: revision 2 needs\",\"own\":\"separation of duties: the design cannot be approved by its own author (syseng)\",\"noAuth\":\"designer may not approve a design revision (needs room.design.approve)\"}"
   },
   {
    "id": "C-19i",
@@ -800,13 +824,13 @@
    "id": "C-19e",
    "name": "the re-acceptance publishes baseline v2 and keeps v1, unchanged, as SUPERSEDED",
    "result": "PASS",
-   "detail": "Baseline lineage\nv1 SUPERSEDED revision 1 · 5 devices · 65/65 verified · Document Reviewer / QA · 2026-11-01 02:49:28\nv2 CURRENT revision 2 · 6 devices · 73/73 verified · Document Reviewer / QA · 2026-11-01 02:49:39\nWhat changed between v1 and v2\nDesign revision\n1 → 2\nDevices\n2 added (Camera 1, Ceil"
+   "detail": "Baseline lineage\nv1 SUPERSEDED revision 1 · 6 devices · 73/73 verified · Document Reviewer / QA · 2026-11-01 03:19:28\nv2 CURRENT revision 2 · 6 devices · 73/73 verified · Document Reviewer / QA · 2026-11-01 03:19:38\nWhat changed between v1 and v2\nDesign revision\n1 → 2\nDevices\nunchanged\nModels\n1 mode"
   },
   {
    "id": "C-19j",
    "name": "baseline v2 binds the newly approved revision 2 (v1 keeps revision 1), and the lineage says so",
    "result": "PASS",
-   "detail": "Baseline lineage\nv1 SUPERSEDED revision 1 · 5 devices · 65/65 verified · Document Reviewer / QA · 2026-11-01 02:49:28\nv2 CURRENT revision 2 · 6 devices · 73/73 verified · Document Reviewer / QA · 2026-11-01 02:49:39\nWhat changed between v1 and v2\nDesign revision\n1 → 2\nDevices\n2 added (Camera 1, Ceil"
+   "detail": "Baseline lineage\nv1 SUPERSEDED revision 1 · 6 devices · 73/73 verified · Document Reviewer / QA · 2026-11-01 03:19:28\nv2 CURRENT revision 2 · 6 devices · 73/73 verified · Document Reviewer / QA · 2026-11-01 03:19:38\nWhat changed between v1 and v2\nDesign revision\n1 → 2\nDevices\nunchanged\nModels\n1 mode"
   },
   {
    "id": "C-20",
@@ -854,7 +878,7 @@
    "id": "C-26",
    "name": "the device register lists every position with the physical unit installed there and its identity state (synthetic units, UNKNOWN identity)",
    "result": "PASS",
-   "detail": "PA-0008 AS-0006"
+   "detail": "PA-0008 AS-0007"
   },
   {
    "id": "C-27",
@@ -866,7 +890,7 @@
    "id": "C-28",
    "name": "a like-for-like replacement keeps the position id, closes the old unit’s installation (REPLACED) and installs a new unit; the design does not change",
    "result": "PASS",
-   "detail": "[{\"id\":\"IN-0006\",\"position\":\"PA-0008\",\"asset\":\"AS-0006\",\"installedAt\":\"2026-11-01T02:49:29.483Z\",\"removedAt\":\"2026-11-01T02:49:45.495Z\",\"basis\":\"RECORDED\",\"installReason\":\"INITIAL\",\"removalReason\":\"REPLACED\",\"installedBy\":\"designer\",\"removedBy\":\"installer\",\"note\":\"installed at PA-0008, which replaces PA-0004\",\"removalNote\":\"the camera failed its self-test (synthetic)\"},{\"id\":\"IN-0008\",\"position\":\""
+   "detail": "[{\"id\":\"IN-0005\",\"position\":\"PA-0008\",\"asset\":\"AS-0005\",\"installedAt\":\"2026-11-01T03:19:26.052Z\",\"removedAt\":\"2026-11-01T03:19:29.187Z\",\"basis\":\"RECORDED\",\"installReason\":\"INITIAL\",\"removalReason\":\"SUBSTITUTED\",\"installedBy\":\"installer\",\"removedBy\":\"designer\",\"note\":\"recorded with the room’s installation (identity not yet recorded)\",\"removalNote\":\"a PTZ camera for the far wall (synthetic)\"},{\"id\":"
   },
   {
    "id": "C-28b",
@@ -878,25 +902,25 @@
    "id": "C-29",
    "name": "the Impact panel: Assurance calls it an installation change (unit A → unit B, same model), not a model drift",
    "result": "PASS",
-   "detail": "Camera 1 (camera) · unit AS-0006 → Camera 1 (camera) · unit AS-0008 · Installer · 02:49 UTC · why: “the camera failed its self-test (synthetic)”\n\nCommissioning\n\n+0 added · −0 removed · 73 unchanged\n\n73 → 73 applicable of 94 in the library · applicability engine 2.5.4-port.1, re-run on the changed de"
+   "detail": "Camera 1 (camera) · unit AS-0007 → Camera 1 (camera) · unit AS-0008 · Installer · 03:19 UTC · why: “the camera failed its self-test (synthetic)”\n\nCommissioning\n\n+0 added · −0 removed · 73 unchanged\n\n73 → 73 applicable of 94 in the library · applicability engine 2.5.4-port.1, re-run on the changed de"
   },
   {
    "id": "C-30",
    "name": "the register keeps the position’s design history apart from the unit’s history: the position lists both units’ installations, the unit its own",
    "result": "PASS",
-   "detail": "Position PA-0008 — design history\n\nCamera 1 · camera · designed model generic · now: PA-0008 · unit AS-0008 · identity UNKNOWN\n\nNo design change since it was placed.\n\nInstallations at PA-0008\nAS-0006  || Unit history — AS-0008\n\ncamera · model generic · identity UNKNOWN · no serial on record\n\nAS-0008 installed at PA-0008 on 2026-11-01T02:49:45.495Z by Installer (replacement); still installed"
+   "detail": "Position PA-0008 — design history\n\nCamera 1 · camera · designed model SYN-PTZ-12X (synthetic PTZ camera) · now: PA-0008 · unit AS-0008 · identity UNKNOWN\n\nmodel generic → SYN-PTZ-12X (synthetic PTZ ca || Unit history — AS-0008\n\ncamera · model SYN-PTZ-12X (synthetic PTZ camera) · identity UNKNOWN · no serial on record\n\nAS-0008 installed at PA-0008 on 2026-11-01T03:19:44.898Z by Installer (replaceme"
   },
   {
    "id": "C-31",
    "name": "Commissioning: the reopened tests name both units and say “replaced by another unit of the same model”",
    "result": "PASS",
-   "detail": "Re-verification required · 12 tests reopened\n\nCamera 1 (PA-0008, AS-0006) → AS-0008 [unit AS-0006 → AS-0008] — substituted by Installer while baseline v2 is recommissioned. A result recorded before the substitution was obtained on the previous device: it stays on record and no longer counts towards "
+   "detail": "Re-verification required · 12 tests reopened\n\nCamera 1 (PA-0008, AS-0007) → AS-0008 [unit AS-0007 → AS-0008] — substituted by Installer while baseline v2 is recommissioned. A result recorded before the substitution was obtained on the previous device: it stays on record and no longer counts towards "
   },
   {
    "id": "C-32",
    "name": "Search Party finds the unit and the position it is located in, with the same reading: position · unit · identity",
    "result": "PASS",
-   "detail": "ASSET\nAS-0008 · generic\n· identity UNKNOWN · synthetic unit at PA-0008\nR-DEMO-0001/AS-0008\nPLANNED DEVICE\nCamera 1 (Harbour Huddle (synthetic))\n· camera · Harbour Huddle (synthetic) · unit AS-0008 · identity UNKNOWN\nR-DEMO-0001/PA-0008"
+   "detail": "ASSET\nAS-0008 · SYN-PTZ-12X (synthetic PTZ camera)\n· identity UNKNOWN · synthetic unit at PA-0008\nR-DEMO-0001/AS-0008\nPLANNED DEVICE\nCamera 1 (Harbour Huddle (synthetic))\n· camera · Harbour Huddle (synthetic) · unit AS-0008 · identity UNKNOWN\nR-DEMO-0001/PA-0008"
   },
   {
    "id": "C-33",

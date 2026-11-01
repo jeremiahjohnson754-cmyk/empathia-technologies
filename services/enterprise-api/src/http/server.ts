@@ -105,7 +105,7 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
       if (!b.take()) throw new ApiError('rate_limited', 'slow down: the per-caller request budget is spent for this minute');
 
       // authority (central, before the body is read — red-team RT-03): a role without any of the route's authority keys is refused and audited
-      if (route.auth) { const keys = enforcedAuthorities(route); if (keys.length) await ctx.require(keys, route.summary.split(' (')[0]!.slice(0, 80)); }
+      if (route.auth) { const keys = enforcedAuthorities(route); if (keys.length) await ctx.require(keys, route.action ?? route.summary.split(' (')[0]!.slice(0, 80)); }
 
       // body
       let raw: Buffer | null = null; let body: unknown = null;

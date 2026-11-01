@@ -2,7 +2,7 @@
  "step": 18,
  "title": "The camera’s dependencies: relationships, connections and dependent devices (graph and Search Party)",
  "room": "R-PLN-0004",
- "at": "2026-11-01T02:46:53.785Z",
+ "at": "2026-11-01T03:16:52.372Z",
  "assertions": [
   {
    "id": "C-69",
@@ -282,7 +282,7 @@
      "note": "every edge is keyed by stable identifiers"
     }
    },
-   "correlationId": "29e0e7b6-555b-4c3b-adaa-e3f43b3ff837"
+   "correlationId": "d33c1db2-f9ee-440f-b4c6-3ae0c623f13b"
   },
   {
    "method": "GET",
@@ -393,7 +393,7 @@
       "type": "Asset",
       "id": "AS-0009",
       "label": "AS-0009 · SYN-PTZ-12X (synthetic PTZ camera)",
-      "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-01T02:46:50.985Z",
+      "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-01T03:16:49.625Z",
       "provenance": "app.physical_asset",
       "facets": {
        "site": "SITE-NORTH",
@@ -509,7 +509,7 @@
       "type": "Asset",
       "id": "AS-0006",
       "label": "AS-0006 · generic",
-      "subtitle": "identity UNKNOWN · at PA-0065 since 2026-11-01T02:46:46.590Z",
+      "subtitle": "identity UNKNOWN · at PA-0065 since 2026-11-01T03:16:45.497Z",
       "provenance": "app.physical_asset",
       "facets": {
        "site": "SITE-NORTH",
@@ -568,7 +568,7 @@
       "type": "Asset",
       "id": "AS-0008",
       "label": "AS-0008 · generic",
-      "subtitle": "identity UNKNOWN · at PA-0067 since 2026-11-01T02:46:46.590Z",
+      "subtitle": "identity UNKNOWN · at PA-0067 since 2026-11-01T03:16:45.497Z",
       "provenance": "app.physical_asset",
       "facets": {
        "site": "SITE-NORTH",
@@ -625,7 +625,7 @@
      },
      {
       "type": "Person",
-      "id": "52845744-bbc9-4b56-b157-d1a719e35439",
+      "id": "bde74db5-2a2d-4d96-9584-7be9d60e12d7",
       "label": "Systems Engineer (synthetic)",
       "provenance": "app.person (named by a visible record)",
       "depth": 2,
@@ -642,7 +642,7 @@
      },
      {
       "type": "Person",
-      "id": "44711588-9b68-4e39-891f-344ff9a7dbd2",
+      "id": "f0d8422d-32c4-4105-9aac-0aa3f07d1670",
       "label": "Designer / CAD / Revit (synthetic)",
       "provenance": "app.person (named by a visible record)",
       "depth": 2,
@@ -709,7 +709,7 @@
      },
      {
       "type": "CommissioningBaseline",
-      "id": "d9f2c262-d906-4bad-9198-e5f449b0e541",
+      "id": "4311fa25-7f83-466a-8466-7c9d062b9786",
       "label": "Checkpoint conference room (synthetic) · baseline v1",
       "subtitle": "CURRENT · design revision 2",
       "provenance": "app.assurance_baseline",
@@ -2246,7 +2246,7 @@
       "rel": "APPROVED_BY",
       "to": {
        "type": "Person",
-       "id": "52845744-bbc9-4b56-b157-d1a719e35439"
+       "id": "bde74db5-2a2d-4d96-9584-7be9d60e12d7"
       },
       "provenance": "DECLARED app.room.approved_class (classification approval)",
       "label": "approved by",
@@ -2260,7 +2260,7 @@
       "rel": "DESIGNED_FOR",
       "to": {
        "type": "Person",
-       "id": "44711588-9b68-4e39-891f-344ff9a7dbd2"
+       "id": "f0d8422d-32c4-4105-9aac-0aa3f07d1670"
       },
       "provenance": "DECLARED app.room.created_by",
       "label": "designed for",
@@ -2311,7 +2311,7 @@
      {
       "from": {
        "type": "CommissioningBaseline",
-       "id": "d9f2c262-d906-4bad-9198-e5f449b0e541"
+       "id": "4311fa25-7f83-466a-8466-7c9d062b9786"
       },
       "rel": "DOCUMENTS",
       "to": {
@@ -3812,7 +3812,7 @@
      {
       "node": {
        "type": "Person",
-       "id": "52845744-bbc9-4b56-b157-d1a719e35439"
+       "id": "bde74db5-2a2d-4d96-9584-7be9d60e12d7"
       },
       "x": 527,
       "y": 129,
@@ -3821,7 +3821,7 @@
      {
       "node": {
        "type": "Person",
-       "id": "44711588-9b68-4e39-891f-344ff9a7dbd2"
+       "id": "f0d8422d-32c4-4105-9aac-0aa3f07d1670"
       },
       "x": 539,
       "y": 135,
@@ -3848,7 +3848,7 @@
      {
       "node": {
        "type": "CommissioningBaseline",
-       "id": "d9f2c262-d906-4bad-9198-e5f449b0e541"
+       "id": "4311fa25-7f83-466a-8466-7c9d062b9786"
       },
       "x": 572,
       "y": 157,
@@ -4678,7 +4678,7 @@
      ]
     }
    },
-   "correlationId": "58494141-edbd-483d-adad-dc6c324cfa84"
+   "correlationId": "ea28e835-7ee5-4895-9c5d-09b768f1415d"
   },
   {
    "method": "POST",
@@ -4770,7 +4770,7 @@
     "confidence": "DERIVED",
     "actions": []
    },
-   "correlationId": "eb1d6279-e7f2-44a3-b639-02ae1e1f2024"
+   "correlationId": "ea8ce6ad-3f97-4cc3-bebc-bad3cc50ece9"
   },
   {
    "method": "POST",
@@ -4822,7 +4822,7 @@
     "confidence": "DERIVED",
     "actions": []
    },
-   "correlationId": "e5171cf6-7ba3-460e-aeef-d1675abd0c08"
+   "correlationId": "0a3868a4-1bfe-4508-8f8a-ee437f0acf6c"
   },
   {
    "method": "GET",
@@ -4835,7 +4835,7 @@
       "type": "Asset",
       "id": "AS-0009",
       "label": "AS-0009 · SYN-PTZ-12X (synthetic PTZ camera)",
-      "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-01T02:46:50.985Z",
+      "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-01T03:16:49.625Z",
       "provenance": "app.physical_asset",
       "facets": {
        "site": "SITE-NORTH",
@@ -4980,7 +4980,7 @@
      }
     ]
    },
-   "correlationId": "4b2bc3bc-f03a-4dd1-b798-346bc4be11b8"
+   "correlationId": "b6170c26-0d7f-40d6-874a-74be1103be1a"
   },
   {
    "method": "GET",
@@ -4992,7 +4992,7 @@
      "type": "Asset",
      "id": "AS-0009",
      "label": "AS-0009 · SYN-PTZ-12X (synthetic PTZ camera)",
-     "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-01T02:46:50.985Z",
+     "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-01T03:16:49.625Z",
      "provenance": "app.physical_asset",
      "facets": {
       "site": "SITE-NORTH",
@@ -5013,7 +5013,7 @@
       "type": "Asset",
       "id": "AS-0009",
       "label": "AS-0009 · SYN-PTZ-12X (synthetic PTZ camera)",
-      "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-01T02:46:50.985Z",
+      "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-01T03:16:49.625Z",
       "provenance": "app.physical_asset",
       "facets": {
        "site": "SITE-NORTH",
@@ -5122,7 +5122,7 @@
      ]
     }
    },
-   "correlationId": "aabd3241-ac6b-4a2f-b287-b9aee4581272"
+   "correlationId": "777ca56a-fd23-4ec3-bcf6-d5a52eda66b7"
   }
  ]
 }
