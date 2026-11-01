@@ -35,14 +35,14 @@ export function App() {
   // the same product rail as the enterprise application, on the legacy address space (every product resolves to a native page or a boundary page)
   const k = area?.key || '';
   const products = [
+    { key: 'investor', label: 'Investor start', href: '#/investor', purpose: 'Three ways in: Build a Room, guided scenarios, the problems each workflow solves', active: home },
     { key: 'home', label: 'Mission Control', href: '#/v25', purpose: 'What changed, what matters, what needs action', active: k === 'home' || k === 'v25.home' },
-    { key: 'pro', label: 'Pro', href: '#/suite/pro', purpose: 'Operational intelligence, portfolio, service performance', active: k.startsWith('pro') },
+    { key: 'pro', label: 'Pro', href: '#/v25/exec', purpose: 'Executive intelligence: KPI passports with their numerators and denominators', active: k.startsWith('pro') || k === 'v25.exec' },
     { key: 'lite', label: 'Lite', href: '#/v25/build', purpose: 'Build a Room: spatial design on the real engine', active: k === 'v25.build' || k.startsWith('lite') },
     { key: 'search', label: 'Search Party', href: '#/search', purpose: 'Universal entity search and relationship intelligence', active: k.startsWith('search') },
     { key: 'cx', label: 'Commissioning & Assurance', href: '#/suite/commission', purpose: 'Plans, evidence, verification, acceptance, baselines', active: k.startsWith('commissioning') || k.startsWith('assurance') },
     { key: 'fi', label: 'Field Intelligence', href: '#/v25/fi', purpose: 'What the collector declares, observes and verifies', active: k === 'fabric' || k === 'v25.fi' || k === 'v25.fipv' },
     { key: 'learn', label: 'Learn', href: '#/v25/learn', purpose: 'Evidence-backed cases and training', active: k === 'learn' || k === 'v25.learn' },
-    { key: 'investor', label: 'Investor start', href: '#/investor', purpose: 'Three ways in: Build a Room, guided scenarios, the problems each workflow solves', active: home },
   ];
   return (
     <div className="demo">
@@ -130,15 +130,27 @@ function StoryCard() {
     </section>
   );
 }
+/** For an area not yet migrated as its own page, the native pages that already run the same engine (an address, a label, why it fits). */
+const NATIVE_ELSEWHERE: Record<string, [string, string, string][]> = {
+  commissioning: [
+    ['#/v25/build?tab=checks', 'Build a Room: the commissioning plan', 'The adaptive plan with why each test applies, results, independent verification and acceptance to a baseline, on the shared commissioning engine.'],
+    ['#/story/R-ATL-4-231', 'A room’s story: Atlas 4.231', 'Its verified tests and accepted baseline, in order, from the records.'],
+  ],
+  assurance: [
+    ['#/v25/apex', 'APEX: diagnosis against the baseline', 'Cited hypotheses read against the accepted baseline, with bounded actions.'],
+    ['#/v25/build?tab=checks', 'Build a Room: drift against baseline v1', 'Recommission an accepted room and see the difference from its baseline.'],
+  ],
+};
 function Boundary({ hash, area }: { hash: string; area?: { key: string; label: string; target: string; status: string; newRoute: string } }) {
   if (!area) return <Notice tone="warn"><b>Unknown address.</b> This address is not part of the Living Campus. <a href="#/investor">Back to the start</a></Notice>;
   return (
     <section className="boundary">
-      <h1>{area.label}</h1>
+      <h1>{area.label.charAt(0).toUpperCase() + area.label.slice(1)}</h1>
       <p className="ui-muted">Address <code>{hash}</code> · legacy area <code>{area.key}</code></p>
       <Notice tone={area.status.startsWith('DONE') ? 'ok' : 'info'}>
         <b>{area.status.startsWith('DONE') ? 'Native page. ' : 'Not migrated yet. '}</b>{area.status.startsWith('DONE') ? <>This area runs natively; its page is being connected to this shell.</> : <>This part of the demonstration has not been rebuilt in the new application yet. Parity ledger: target <b>{area.target}</b>, status <b>{area.status}</b>, planned route <code>{area.newRoute}</code>. Until it is, the original V2.5.3 demonstration remains the reference for this area.</>}
       </Notice>
+      {NATIVE_ELSEWHERE[area.key] ? <div className="boundary__native" data-testid="boundary-native"><h2>Where this runs natively today</h2><ul>{NATIVE_ELSEWHERE[area.key]!.map(([href, label, why]) => <li key={href}><a href={href}><b>{label}</b><span>{why}</span></a></li>)}</ul></div> : null}
       <p><a className="ui-btn" href="#/investor">Back to the start</a></p>
     </section>
   );

@@ -1,5 +1,5 @@
 {
- "at": "2026-11-01T03:19:49.414Z",
+ "at": "2026-11-01T03:34:25.002Z",
  "pass": 163,
  "fail": 0,
  "tests": 163,
@@ -158,7 +158,7 @@
    "id": "B-15l",
    "name": "the one design change a recommissioned room accepts: the designer substitutes the video bar’s model — the position keeps its id, its unit is replaced",
    "result": "PASS",
-   "detail": "{\"at\":\"2026-11-01T03:18:07.966Z\",\"by\":\"designer\",\"type\":\"room.device_swapped\",\"detail\":\"Video bar 1 (PA-0004): unit AS-0002 → AS-0009, model generic → SYN-BAR-2 (synthetic); 12 tests reopened against "
+   "detail": "{\"at\":\"2026-11-01T03:32:43.322Z\",\"by\":\"designer\",\"type\":\"room.device_swapped\",\"detail\":\"Video bar 1 (PA-0004): unit AS-0002 → AS-0009, model generic → SYN-BAR-2 (synthetic); 12 tests reopened against "
   },
   {
    "id": "B-15e",
@@ -188,7 +188,7 @@
    "id": "B-15k",
    "name": "the systems engineer approves the new revision: the design binding holds again",
    "result": "PASS",
-   "detail": "bound The approved revision 4 describes the room: the re-acceptance binds it.\n\nApprove revision 4 as Systems Engineer"
+   "detail": "bound The approved revision 4 describes the room: the re-acceptance binds it."
   },
   {
    "id": "B-15f",
@@ -332,7 +332,7 @@
    "id": "V-07",
    "name": "dispatch preflight on the record: the room is booked in the proposed window, the processor stock check is stale, tools unconfirmed — each named",
    "result": "PASS",
-   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-02T01:18 → 2026-11-02T03:18\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
+   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-02T01:32 → 2026-11-02T03:32\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
   },
   {
    "id": "V-08",
@@ -398,7 +398,7 @@
    "id": "A-03",
    "name": "A2 is a read-only comparison against the room’s accepted baseline on record (Atlas 4.220: v1, the record the KPI passports and the story read)",
    "result": "PASS",
-   "detail": "COMPARED A2 H1 2026-11-01 03:18 · Commissioning Engineer\nread-only comparison against baseline v1 (9 evidence items)"
+   "detail": "COMPARED A2 H1 2026-11-01 03:33 · Commissioning Engineer\nread-only comparison against baseline v1 (9 evidence items)"
   },
   {
    "id": "A-04",
@@ -410,7 +410,7 @@
    "id": "A-05",
    "name": "with approval and a window, the real adapter state blocks it: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)",
    "result": "PASS",
-   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-11-01 03:19 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
+   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-11-01 03:33 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
   },
   {
    "id": "A-06",
@@ -440,7 +440,7 @@
    "id": "A-03b",
    "name": "A2 stays honest where no baseline is accepted on record (Northstar Town Hall, COMMISSIONING): nothing to compare, NOT_VERIFIED",
    "result": "PASS",
-   "detail": "COMPARED A2 H1 2026-11-01 03:19 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
+   "detail": "COMPARED A2 H1 2026-11-01 03:33 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
   },
   {
    "id": "L-01",
@@ -512,7 +512,7 @@
    "id": "M-03",
    "name": "a passport shows numerator, denominator, window, coverage, freshness, confidence with reasons, source, exclusions and drill-down",
    "result": "PASS",
-   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-03 03:19 → 2026-11-01 03:19\nCoverage\n4 of 4 eligible recor"
+   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-03 03:33 → 2026-11-01 03:33\nCoverage\n4 of 4 eligible recor"
   },
   {
    "id": "M-04",
@@ -524,7 +524,7 @@
    "id": "M-05",
    "name": "the ledger filters to the refusals, each with actor, UTC and local time and the reason",
    "result": "PASS",
-   "detail": "When (UTC)\tLocal\tWho\tEvent\tRecord\tOutcome\tDetail\n2026-11-01 03:19:04\t10/31/2026, 22:19:04\tCommissioning Engineer\tlearn.sme_review\tLC-001\tDENIED\trefused: the proposer is not the subject-matter reviewer of their own case (separation of duties)\n2026-11-01 03:19:03\t10/31/2026, 22:19:03\tCommissioning Eng"
+   "detail": "When (UTC)\tLocal\tWho\tEvent\tRecord\tOutcome\tDetail\n2026-11-01 03:33:39\t10/31/2026, 22:33:39\tCommissioning Engineer\tlearn.sme_review\tLC-001\tDENIED\trefused: the proposer is not the subject-matter reviewer of their own case (separation of duties)\n2026-11-01 03:33:38\t10/31/2026, 22:33:38\tCommissioning Eng"
   },
   {
    "id": "M-06",
@@ -692,7 +692,7 @@
    "id": "C-07",
    "name": "Assurance: the room now differs from baseline v1 (a model drift at the camera’s position) and recommissioning is proposed; baseline v1 itself is unchanged, byte for byte",
    "result": "PASS",
-   "detail": "Camera 1 (camera) · unit AS-0005 · generic → Camera 1 (camera) · unit AS-0007 · SYN-PTZ-12X (synthetic PTZ camera) · Designer / CAD / Revit · 03:19 UTC · why: “a PTZ camera for the far wall (synthetic)”\n\nCommissioning\n\n+0 added · −0 removed · 73 unchanged\n\n73 → 73 applicable of 94 in the library · a"
+   "detail": "Camera 1 (camera) · unit AS-0005 · generic → Camera 1 (camera) · unit AS-0007 · SYN-PTZ-12X (synthetic PTZ camera) · Designer / CAD / Revit · 03:34 UTC · why: “a PTZ camera for the far wall (synthetic)”\n\nCommissioning\n\n+0 added · −0 removed · 73 unchanged\n\n73 → 73 applicable of 94 in the library · a"
   },
   {
    "id": "C-10f",
@@ -812,7 +812,7 @@
    "id": "C-19i",
    "name": "a different person who holds room.design.approve approves revision 2: the binding holds and the refusal is gone",
    "result": "PASS",
-   "detail": "bound The approved revision 2 describes the room: the re-acceptance binds it.\n\nApprove revision 2 as Product Architect"
+   "detail": "bound The approved revision 2 describes the room: the re-acceptance binds it."
   },
   {
    "id": "C-19d",
@@ -824,13 +824,13 @@
    "id": "C-19e",
    "name": "the re-acceptance publishes baseline v2 and keeps v1, unchanged, as SUPERSEDED",
    "result": "PASS",
-   "detail": "Baseline lineage\nv1 SUPERSEDED revision 1 · 6 devices · 73/73 verified · Document Reviewer / QA · 2026-11-01 03:19:28\nv2 CURRENT revision 2 · 6 devices · 73/73 verified · Document Reviewer / QA · 2026-11-01 03:19:38\nWhat changed between v1 and v2\nDesign revision\n1 → 2\nDevices\nunchanged\nModels\n1 mode"
+   "detail": "Baseline lineage\nv1 SUPERSEDED revision 1 · 6 devices · 73/73 verified · Document Reviewer / QA · 2026-11-01 03:34:03\nv2 CURRENT revision 2 · 6 devices · 73/73 verified · Document Reviewer / QA · 2026-11-01 03:34:13\nWhat changed between v1 and v2\nDesign revision\n1 → 2\nDevices\nunchanged\nModels\n1 mode"
   },
   {
    "id": "C-19j",
    "name": "baseline v2 binds the newly approved revision 2 (v1 keeps revision 1), and the lineage says so",
    "result": "PASS",
-   "detail": "Baseline lineage\nv1 SUPERSEDED revision 1 · 6 devices · 73/73 verified · Document Reviewer / QA · 2026-11-01 03:19:28\nv2 CURRENT revision 2 · 6 devices · 73/73 verified · Document Reviewer / QA · 2026-11-01 03:19:38\nWhat changed between v1 and v2\nDesign revision\n1 → 2\nDevices\nunchanged\nModels\n1 mode"
+   "detail": "Baseline lineage\nv1 SUPERSEDED revision 1 · 6 devices · 73/73 verified · Document Reviewer / QA · 2026-11-01 03:34:03\nv2 CURRENT revision 2 · 6 devices · 73/73 verified · Document Reviewer / QA · 2026-11-01 03:34:13\nWhat changed between v1 and v2\nDesign revision\n1 → 2\nDevices\nunchanged\nModels\n1 mode"
   },
   {
    "id": "C-20",
@@ -890,7 +890,7 @@
    "id": "C-28",
    "name": "a like-for-like replacement keeps the position id, closes the old unit’s installation (REPLACED) and installs a new unit; the design does not change",
    "result": "PASS",
-   "detail": "[{\"id\":\"IN-0005\",\"position\":\"PA-0008\",\"asset\":\"AS-0005\",\"installedAt\":\"2026-11-01T03:19:26.052Z\",\"removedAt\":\"2026-11-01T03:19:29.187Z\",\"basis\":\"RECORDED\",\"installReason\":\"INITIAL\",\"removalReason\":\"SUBSTITUTED\",\"installedBy\":\"installer\",\"removedBy\":\"designer\",\"note\":\"recorded with the room’s installation (identity not yet recorded)\",\"removalNote\":\"a PTZ camera for the far wall (synthetic)\"},{\"id\":"
+   "detail": "[{\"id\":\"IN-0005\",\"position\":\"PA-0008\",\"asset\":\"AS-0005\",\"installedAt\":\"2026-11-01T03:34:01.216Z\",\"removedAt\":\"2026-11-01T03:34:04.387Z\",\"basis\":\"RECORDED\",\"installReason\":\"INITIAL\",\"removalReason\":\"SUBSTITUTED\",\"installedBy\":\"installer\",\"removedBy\":\"designer\",\"note\":\"recorded with the room’s installation (identity not yet recorded)\",\"removalNote\":\"a PTZ camera for the far wall (synthetic)\"},{\"id\":"
   },
   {
    "id": "C-28b",
@@ -902,13 +902,13 @@
    "id": "C-29",
    "name": "the Impact panel: Assurance calls it an installation change (unit A → unit B, same model), not a model drift",
    "result": "PASS",
-   "detail": "Camera 1 (camera) · unit AS-0007 → Camera 1 (camera) · unit AS-0008 · Installer · 03:19 UTC · why: “the camera failed its self-test (synthetic)”\n\nCommissioning\n\n+0 added · −0 removed · 73 unchanged\n\n73 → 73 applicable of 94 in the library · applicability engine 2.5.4-port.1, re-run on the changed de"
+   "detail": "Camera 1 (camera) · unit AS-0007 → Camera 1 (camera) · unit AS-0008 · Installer · 03:34 UTC · why: “the camera failed its self-test (synthetic)”\n\nCommissioning\n\n+0 added · −0 removed · 73 unchanged\n\n73 → 73 applicable of 94 in the library · applicability engine 2.5.4-port.1, re-run on the changed de"
   },
   {
    "id": "C-30",
    "name": "the register keeps the position’s design history apart from the unit’s history: the position lists both units’ installations, the unit its own",
    "result": "PASS",
-   "detail": "Position PA-0008 — design history\n\nCamera 1 · camera · designed model SYN-PTZ-12X (synthetic PTZ camera) · now: PA-0008 · unit AS-0008 · identity UNKNOWN\n\nmodel generic → SYN-PTZ-12X (synthetic PTZ ca || Unit history — AS-0008\n\ncamera · model SYN-PTZ-12X (synthetic PTZ camera) · identity UNKNOWN · no serial on record\n\nAS-0008 installed at PA-0008 on 2026-11-01T03:19:44.898Z by Installer (replaceme"
+   "detail": "Position PA-0008 — design history\n\nCamera 1 · camera · designed model SYN-PTZ-12X (synthetic PTZ camera) · now: PA-0008 · unit AS-0008 · identity UNKNOWN\n\nmodel generic → SYN-PTZ-12X (synthetic PTZ ca || Unit history — AS-0008\n\ncamera · model SYN-PTZ-12X (synthetic PTZ camera) · identity UNKNOWN · no serial on record\n\nAS-0008 installed at PA-0008 on 2026-11-01T03:34:20.339Z by Installer (replaceme"
   },
   {
    "id": "C-31",

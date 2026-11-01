@@ -153,7 +153,7 @@ function DesignBinding({ d, persona, apply }: { d: S.Draft; persona: string; app
     <div className="build__binding" data-testid="design-binding" data-bound={why ? 'false' : 'true'} data-approved={d.approvedRevision ?? ''}>
       <p>{why ? <><Tag tone="warn">design approval required</Tag> {why}.</> : <><Tag tone="ok">bound</Tag> The approved revision {d.approvedRevision} describes the room: the re-acceptance binds it.</>}</p>
       {todo && <p className="ui-muted">Next: {todo.what} — {todo.who}.</p>}
-      {latest && <p className="build__row"><Button small testId="approve-revision" onClick={() => apply(S.approveRevision(d, persona, latest.n))}>Approve revision {latest.n} as {S.personaLabel(persona)}</Button></p>}
+      {latest && latest.n !== d.approvedRevision && <p className="build__row"><Button small testId="approve-revision" onClick={() => apply(S.approveRevision(d, persona, latest.n))}>Approve revision {latest.n} as {S.personaLabel(persona)}</Button></p>}
     </div>
   );
 }

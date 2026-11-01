@@ -1,0 +1,152 @@
+{
+ "at": "2026-11-01T03:31:24.519Z",
+ "pass": 24,
+ "fail": 0,
+ "tests": 24,
+ "results": [
+  {
+   "id": "UX-01-phone",
+   "name": "a Search Party result name stays readable: no more lines than its length needs (no one-letter-per-line wrap)",
+   "result": "PASS",
+   "detail": "[{\"t\":\"Access switch ATL-4A\",\"lines\":1,\"w\":229},{\"t\":\"Core switch ATL-CORE\",\"lines\":1,\"w\":211}]"
+  },
+  {
+   "id": "UX-02-phone",
+   "name": "the search box and the type filter do not overlap and each keeps a usable width",
+   "result": "PASS",
+   "detail": "{\"qw\":328,\"sw\":328,\"overlap\":false}"
+  },
+  {
+   "id": "UX-03-phone",
+   "name": "APEX incident rows keep each card at least 200 px wide (the action wraps below on a phone)",
+   "result": "PASS",
+   "detail": "[328,328,328]"
+  },
+  {
+   "id": "UX-04a-phone",
+   "name": "the product rail starts with \"Investor start\"",
+   "result": "PASS",
+   "detail": "[\"Investor start\",\"Mission Control\",\"Pro\",\"Lite\",\"Search Party\",\"Commissioning & Assurance\",\"Field Intelligence\",\"Learn\"]"
+  },
+  {
+   "id": "UX-04b-phone",
+   "name": "every rail link opens a native page, except an area still being migrated, which says so and links to where it runs natively",
+   "result": "PASS",
+   "detail": "[{\"t\":\"Commissioning & Assurance\",\"href\":\"#/suite/commission\",\"boundary\":true,\"native\":2,\"h1\":\"The Commissioning Command Center\"}]"
+  },
+  {
+   "id": "UX-05-phone",
+   "name": "the Commissioning boundary page has a sentence-case heading and links only to native pages that run the same engine",
+   "result": "PASS",
+   "detail": "{\"h1\":\"The Commissioning Command Center\",\"links\":[\"#/v25/build?tab=checks\",\"#/story/R-ATL-4-231\"]}"
+  },
+  {
+   "id": "UX-06-phone",
+   "name": "status tags, tab counters and tour dots are at least 12 px",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "UX-07-phone",
+   "name": "no page error across these pages",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "UX-01-tablet",
+   "name": "a Search Party result name stays readable: no more lines than its length needs (no one-letter-per-line wrap)",
+   "result": "PASS",
+   "detail": "[{\"t\":\"Access switch ATL-4A\",\"lines\":1,\"w\":637},{\"t\":\"Core switch ATL-CORE\",\"lines\":1,\"w\":619}]"
+  },
+  {
+   "id": "UX-02-tablet",
+   "name": "the search box and the type filter do not overlap and each keeps a usable width",
+   "result": "PASS",
+   "detail": "{\"qw\":444,\"sw\":284,\"overlap\":false}"
+  },
+  {
+   "id": "UX-03-tablet",
+   "name": "APEX incident rows keep each card at least 200 px wide (the action wraps below on a phone)",
+   "result": "PASS",
+   "detail": "[260,260,260]"
+  },
+  {
+   "id": "UX-04a-tablet",
+   "name": "the product rail starts with \"Investor start\"",
+   "result": "PASS",
+   "detail": "[\"Investor start\",\"Mission Control\",\"Pro\",\"Lite\",\"Search Party\",\"Commissioning & Assurance\",\"Field Intelligence\",\"Learn\"]"
+  },
+  {
+   "id": "UX-04b-tablet",
+   "name": "every rail link opens a native page, except an area still being migrated, which says so and links to where it runs natively",
+   "result": "PASS",
+   "detail": "[{\"t\":\"Commissioning & Assurance\",\"href\":\"#/suite/commission\",\"boundary\":true,\"native\":2,\"h1\":\"The Commissioning Command Center\"}]"
+  },
+  {
+   "id": "UX-05-tablet",
+   "name": "the Commissioning boundary page has a sentence-case heading and links only to native pages that run the same engine",
+   "result": "PASS",
+   "detail": "{\"h1\":\"The Commissioning Command Center\",\"links\":[\"#/v25/build?tab=checks\",\"#/story/R-ATL-4-231\"]}"
+  },
+  {
+   "id": "UX-06-tablet",
+   "name": "status tags, tab counters and tour dots are at least 12 px",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "UX-07-tablet",
+   "name": "no page error across these pages",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "UX-01-desktop",
+   "name": "a Search Party result name stays readable: no more lines than its length needs (no one-letter-per-line wrap)",
+   "result": "PASS",
+   "detail": "[{\"t\":\"Access switch ATL-4A\",\"lines\":1,\"w\":266},{\"t\":\"Core switch ATL-CORE\",\"lines\":1,\"w\":249}]"
+  },
+  {
+   "id": "UX-02-desktop",
+   "name": "the search box and the type filter do not overlap and each keeps a usable width",
+   "result": "PASS",
+   "detail": "{\"qw\":636,\"sw\":476,\"overlap\":false}"
+  },
+  {
+   "id": "UX-03-desktop",
+   "name": "APEX incident rows keep each card at least 200 px wide (the action wraps below on a phone)",
+   "result": "PASS",
+   "detail": "[365,365,365]"
+  },
+  {
+   "id": "UX-04a-desktop",
+   "name": "the product rail starts with \"Investor start\"",
+   "result": "PASS",
+   "detail": "[\"Investor start\",\"Mission Control\",\"Pro\",\"Lite\",\"Search Party\",\"Commissioning & Assurance\",\"Field Intelligence\",\"Learn\"]"
+  },
+  {
+   "id": "UX-04b-desktop",
+   "name": "every rail link opens a native page, except an area still being migrated, which says so and links to where it runs natively",
+   "result": "PASS",
+   "detail": "[{\"t\":\"Commissioning & Assurance\",\"href\":\"#/suite/commission\",\"boundary\":true,\"native\":2,\"h1\":\"The Commissioning Command Center\"}]"
+  },
+  {
+   "id": "UX-05-desktop",
+   "name": "the Commissioning boundary page has a sentence-case heading and links only to native pages that run the same engine",
+   "result": "PASS",
+   "detail": "{\"h1\":\"The Commissioning Command Center\",\"links\":[\"#/v25/build?tab=checks\",\"#/story/R-ATL-4-231\"]}"
+  },
+  {
+   "id": "UX-06-desktop",
+   "name": "status tags, tab counters and tour dots are at least 12 px",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "UX-07-desktop",
+   "name": "no page error across these pages",
+   "result": "PASS",
+   "detail": ""
+  }
+ ]
+}

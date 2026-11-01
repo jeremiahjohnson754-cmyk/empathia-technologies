@@ -47,7 +47,7 @@
   color: var(--tone); background: color-mix(in srgb, var(--tone) 12%, transparent); border: 1px solid color-mix(in srgb, var(--tone) 30%, transparent);
 }
 .ui-badge__glyph { font-size: 11px; letter-spacing: -1px; }
-.ui-tag { display: inline-block; padding: 0 6px; border-radius: 4px; font: 600 11px/18px var(--font-mono); color: var(--tone); background: color-mix(in srgb, var(--tone) 10%, transparent); }
+.ui-tag { display: inline-block; padding: 0 6px; border-radius: 4px; font: 600 12px/18px var(--font-mono); color: var(--tone); background: color-mix(in srgb, var(--tone) 10%, transparent); }
 
 /* ------------------------------------------------------------------ states */
 .ui-state { display: flex; flex-direction: column; align-items: flex-start; gap: var(--sp-2); padding: var(--sp-5); color: var(--tx2); }
@@ -102,7 +102,7 @@
 .ui-tab { all: unset; cursor: pointer; padding: 10px 14px; font-size: var(--fs-sm); font-weight: 600; color: var(--tx2); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
 .ui-tab:hover { color: var(--tx); }
 .ui-tab--on { color: var(--tx); border-bottom-color: var(--accent); }
-.ui-tab__count { margin-left: 6px; font-size: 11px; padding: 0 6px; border-radius: var(--r-pill); background: var(--panel2); color: var(--tx2); font-variant-numeric: tabular-nums; }
+.ui-tab__count { margin-left: 6px; font-size: 12px; padding: 0 6px; border-radius: var(--r-pill); background: var(--panel2); color: var(--tx2); font-variant-numeric: tabular-nums; }
 
 /* ------------------------------------------------------------------ drawer */
 .ui-scrim { position: fixed; inset: 0; background: color-mix(in srgb, var(--bg) 60%, transparent); display: flex; justify-content: flex-end; z-index: 50; }
@@ -143,11 +143,12 @@
 
 /* ---------------------------------------------------------------- Search Party (shared by the enterprise app and the demonstration) */
 .ui-visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.sp__search { display: flex; gap: var(--sp-2); margin: var(--sp-3) 0; } .sp__search select { min-width: 160px; }
+.sp__search { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin: var(--sp-3) 0; } .sp__search select { flex: 1 1 160px; min-width: 160px; }
 .sp__input { flex: 1 1 320px; min-width: 0; min-height: 40px; padding: 0 12px; font: inherit; font-size: var(--fs-md); background: var(--bg2); color: var(--tx); border: 1px solid var(--line2); border-radius: var(--r-sm); }
 .sp__grid { display: grid; grid-template-columns: minmax(280px, 1fr) minmax(0, 2fr); gap: var(--sp-5); align-items: start; }
 .sp__facets { display: flex; gap: var(--sp-3); flex-wrap: wrap; align-items: center; font-size: var(--fs-sm); color: var(--tx2); margin-bottom: var(--sp-2); } .sp__facets select { font: inherit; background: var(--bg2); color: var(--tx); border: 1px solid var(--line2); border-radius: var(--r-sm); min-height: 28px; }
-.sp__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; } .sp__list li a { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: baseline; padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--r-sm); color: var(--tx); text-decoration: none; min-width: 0; }
+.sp__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; } .sp__list li a { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 8px; row-gap: 2px; align-items: baseline; padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--r-sm); color: var(--tx); text-decoration: none; min-width: 0; }
+.sp__list li a > .sp__type { grid-column: 1 / -1; grid-row: 1; } .sp__list li a > b { grid-column: 1; grid-row: 2; } .sp__list li a > .sp__id { grid-column: 2; grid-row: 2; } .sp__list li a > .ui-muted { grid-column: 1 / -1; grid-row: 3; }
 .sp__list li a:hover, .sp__list li.on a { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 6%, transparent); } .sp__list b { overflow-wrap: anywhere; }
 .sp__type { font-size: var(--fs-xs); color: var(--tx3); text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; } .sp__id { color: var(--tx3); font-size: var(--fs-xs); }
 .sp__coverage { margin-top: var(--sp-3); font-size: var(--fs-sm); color: var(--tx2); } .sp__coverage ul { margin: 6px 0 0; padding-left: 18px; }
