@@ -6,7 +6,7 @@ live sites are unchanged. This is not a production-readiness claim: the gate bel
 | | |
 |---|---|
 | Branch | `restoration/sprint-0-1` |
-| Tested revision (code) | `b5d152f` |
+| Tested revision (code) | `b5d152f`; the matrix ran there, and the clean-copy rehearsal ran on `9fa4a55`, which has the same code plus evidence and documents |
 | Final commit (adds this report and evidence only) | see `git log -1`; `git diff b5d152f HEAD --stat` lists documentation and evidence only |
 | Handoff bundle | `empathia-restoration-sprint-0-1.bundle` (`ea84222..restoration/sprint-0-1`) with its `.sha256`, applied as in `docs/operations/TERMUX_HANDOFF.md` |
 
@@ -52,7 +52,10 @@ the log in `tests/evidence/TEST_RESULTS.md` and the gate in `tests/evidence/RELE
   ordering are proven against a local stub sink only, which is not proof of a live Microsoft connector.
 
 **Clean-copy CI rehearsal:** `node scripts/release/verify-fresh.mjs --ci` in an empty clone that reads nothing outside it.
-{{FRESH}}
+**PASS.** Commit `9fa4a55` (the same code as `b5d152f`, plus evidence and documents) was cloned into an empty directory and run with
+its own toolchain links and database cluster: build 41 s, tests 620 s, release gate RELEASABLE (platform). Fresh copy: PASS 57 ·
+FAIL 0 · NOT_RUN 1. Workspace: PASS 57 · FAIL 0 · NOT_RUN 1. No suite differs between the two. Evidence is in
+`tests/evidence/FRESH_CHECKOUT.{json,md}`.
 
 ## 3. Defect disposition (D-19 to D-39)
 
@@ -129,7 +132,8 @@ constraint-proof tests.
 
 **In the investor demo:**
 - Browser checks C-01…C-37 and B-flow.
-- 22 screenshots at 1440 and 390 px in the handoff (`screens/journey/`, with `INDEX.md` naming each screen and the engine rule behind it).
+- 22 screenshots at 1440 and 390 px in the handoff (`screens/journey/`, recaptured on the final build, 44 in all, none of the 12 stages unreached; `INDEX.md` names each screen and the engine rule behind it).
+- Release-candidate screenshots of both sites at 360, 768 and 1440 px in `screens/rc/` (website: 16 pages; demo: 13 addresses).
 - The journey covers: Lite design, approval, plan, verification, baseline v1, recommissioning, the substitution's impact (12 reopened tests, Assurance drift against v1, Search Party, Pro: no passport changes and the panel says so), refusal with the reasons in the documented order, re-approval by a non-author, re-run, independent verification, baseline v2 with v1 SUPERSEDED, and the Room Story.
 - The like-for-like physical replacement (same model, new unit; no design re-approval) is checked by C-28…C-31.
 

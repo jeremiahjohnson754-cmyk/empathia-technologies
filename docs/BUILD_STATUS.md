@@ -5,6 +5,12 @@ Program: `legacy/mandate/MASTER_PROMPT.md` (phases P0–P9), executed in this mo
 Labels: **DONE** (built and a named test passes here) · **PARTIAL** · **NOT_STARTED** · **NOT_RUN** (test not executed) · **BLOCKED** (needs
 something this environment does not have). Nothing here is production-ready, certified or independently audited; nothing is deployed.
 
+## Latest: restoration release candidate (2026-10-31, frozen)
+
+`restoration/sprint-0-1`, matrix on `b5d152f`: 57 suites PASS, 0 FAIL, 1 NOT_RUN (film decode); RELEASABLE (platform); the clean-copy
+CI rehearsal PASS on `9fa4a55`. Report: `docs/releases/RELEASE_CANDIDATE_2026-10-31.md`. Defects: `docs/qa/DEFECT_REGISTER.md`
+(D-19…D-39; no P0/P1 open). Enquiries: `docs/operations/LEAD_CAPTURE_TALLY.md`. Not merged, not deployed: the owner's approval gate.
+
 ## Phase ledger
 
 | Phase | Scope | Status | Evidence |

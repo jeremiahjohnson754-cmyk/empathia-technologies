@@ -1,34 +1,34 @@
 {
-  "at": "2026-10-31T22:35:36.160Z",
+  "at": "2026-11-01T03:59:54.416Z",
   "mode": "ci (no inputs from outside the clone)",
   "releaseGate": "RELEASABLE",
-  "commit": "3e7a0a9bb0c1f5c8cc6fc12f8674d53efd2dd2a7",
-  "directory": "/tmp/empathia-fresh-3e7a0a9",
+  "commit": "9fa4a55f4fde68eba99b5e447b4ab121c5054b57",
+  "directory": "/tmp/empathia-fresh-9fa4a55",
   "node": "v22.22.0",
   "steps": [
     {
       "name": "clone",
-      "command": "git clone --quiet --no-hardlinks /home/claude/empathia-technologies /tmp/empathia-fresh-3e7a0a9",
+      "command": "git clone --quiet --no-hardlinks /home/claude/empathia-technologies /tmp/empathia-fresh-9fa4a55",
       "exit": 0,
-      "seconds": 0.9
+      "seconds": 20.4
     },
     {
       "name": "bootstrap",
       "command": "/opt/node22/bin/node scripts/bootstrap.mjs",
       "exit": 0,
-      "seconds": 0.1
+      "seconds": 0.2
     },
     {
       "name": "database",
       "command": "/opt/node22/bin/node scripts/db.mjs up",
       "exit": 0,
-      "seconds": 1.2
+      "seconds": 1.1
     },
     {
       "name": "build",
       "command": "/opt/node22/bin/node scripts/build.mjs --studio",
       "exit": 0,
-      "seconds": 41.6
+      "seconds": 41
     },
     {
       "name": "ml dataset",
@@ -40,19 +40,19 @@
       "name": "ml training",
       "command": "python3 -I ml/training/train.py",
       "exit": 0,
-      "seconds": 3.1
+      "seconds": 3
     },
     {
       "name": "test",
       "command": "/opt/node22/bin/node scripts/test.mjs --browser --studio",
       "exit": 0,
-      "seconds": 522.7
+      "seconds": 619.7
     },
     {
       "name": "release gate (platform)",
       "command": "/opt/node22/bin/node scripts/verify/no-unexpected-skips.mjs --profile=platform",
       "exit": 0,
-      "seconds": 0
+      "seconds": 0.1
     }
   ],
   "externalInputs": [
@@ -62,17 +62,17 @@
       "present": true
     }
   ],
-  "seconds": 572,
+  "seconds": 687,
   "fresh": {
-    "pass": 50,
+    "pass": 57,
     "fail": 0,
     "notRun": 1,
     "suites": [
       {
         "suite": "unit: packages/commissioning-engine",
         "result": "PASS",
-        "pass": 128,
-        "tests": 128
+        "pass": 145,
+        "tests": 145
       },
       {
         "suite": "unit: packages/event-contracts",
@@ -125,8 +125,8 @@
       {
         "suite": "unit: packages/assurance-engine",
         "result": "PASS",
-        "pass": 13,
-        "tests": 13
+        "pass": 18,
+        "tests": 18
       },
       {
         "suite": "unit: packages/observability",
@@ -157,6 +157,12 @@
         "result": "PASS",
         "pass": 5,
         "tests": 5
+      },
+      {
+        "suite": "unit: apps/demo (story, impact)",
+        "result": "PASS",
+        "pass": 32,
+        "tests": 32
       },
       {
         "suite": "unit: ml research prototype (python)",
@@ -201,6 +207,18 @@
         "tests": 5
       },
       {
+        "suite": "integration: installation-migration.test.mjs",
+        "result": "PASS",
+        "pass": 6,
+        "tests": 6
+      },
+      {
+        "suite": "integration: outbox.test.mjs",
+        "result": "PASS",
+        "pass": 21,
+        "tests": 22
+      },
+      {
         "suite": "security: authz.test.mjs",
         "result": "PASS",
         "pass": 45,
@@ -227,8 +245,8 @@
       {
         "suite": "security: governance.test.mjs",
         "result": "PASS",
-        "pass": 9,
-        "tests": 9
+        "pass": 10,
+        "tests": 10
       },
       {
         "suite": "security: administration.test.mjs",
@@ -303,6 +321,12 @@
         "tests": 4
       },
       {
+        "suite": "security: recommissioning-negative.test.mjs",
+        "result": "PASS",
+        "pass": 16,
+        "tests": 16
+      },
+      {
         "suite": "security: hardening.test.mjs",
         "result": "PASS",
         "pass": 6,
@@ -315,6 +339,12 @@
         "tests": 6
       },
       {
+        "suite": "e2e: checkpoint room lifecycle over the API (build → accept → camera swap → requirements → Room Story)",
+        "result": "PASS",
+        "pass": 100,
+        "tests": 100
+      },
+      {
         "suite": "browser: enterprise web E2E",
         "result": "PASS",
         "pass": 88,
@@ -323,14 +353,26 @@
       {
         "suite": "browser: public website",
         "result": "PASS",
-        "pass": 54,
-        "tests": 54
+        "pass": 114,
+        "tests": 114
       },
       {
         "suite": "browser: investor demo shell",
         "result": "PASS",
-        "pass": 101,
-        "tests": 101
+        "pass": 163,
+        "tests": 163
+      },
+      {
+        "suite": "browser: investor demo enquiry links",
+        "result": "PASS",
+        "pass": 21,
+        "tests": 21
+      },
+      {
+        "suite": "browser: investor demo release UX (360/768/1440)",
+        "result": "PASS",
+        "pass": 24,
+        "tests": 24
       },
       {
         "suite": "browser: Founder Studio",
@@ -364,8 +406,8 @@
       {
         "suite": "deploy: public sites audit (functional, a11y, responsive; no P0/P1)",
         "result": "PASS",
-        "pass": 152,
-        "tests": 152
+        "pass": 164,
+        "tests": 164
       },
       {
         "suite": "deploy: public static sites under the declared headers",
@@ -376,8 +418,8 @@
     ]
   },
   "workspace": {
-    "at": "2026-10-31T21:34:34.429Z",
-    "pass": 50,
+    "at": "2026-11-01T03:47:55.349Z",
+    "pass": 57,
     "fail": 0,
     "notRun": 1
   },
