@@ -64,7 +64,8 @@ before(async () => {
 after(async () => { await owner?.end(); });
 
 test('MIG-1 — 0026 applies on a database that already holds rooms, and the runner does not apply it twice', async () => {
-  assert.deepEqual(legacy.run1.applied, [files.find((f) => f.startsWith('0026'))]);
+  // the runner applies every pending migration in order, starting with 0026 (0027, the outbox's, follows it on this branch)
+  assert.deepEqual(legacy.run1.applied, files.filter((f) => f >= '0026')); assert.ok(legacy.run1.applied[0].startsWith('0026'));
   const { migrate } = await import(path.join(dist, 'db/migrate.js'));
   const run2 = await migrate(ownerUrl); assert.deepEqual(run2.applied, []);
   assert.equal(one("SELECT extname FROM pg_extension WHERE extname = 'btree_gist'"), 'btree_gist');

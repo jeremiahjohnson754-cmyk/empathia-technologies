@@ -64,6 +64,32 @@ Read the totals with care:
 | D-17 | P3 | Both sites | About 520 controls on phones are below the project's own 44 px target (mostly the demo; the 24 px WCAG minimum is met). | Always | Systematic pass on the demo's `@empathia/ui` controls. | **Open** |
 | D-18 | P3 | Demo | One skipped heading level. | Always | — | **Open** |
 
+## Checkpoint defects: recommissioning, installations, outbox, enquiries (2026-10-31, evening)
+
+Each was found by a test written before the fix. The "before" result is recorded in the commit that fixed it.
+
+| ID | Sev | Component | Defect | Found by | Correction | State |
+|---|---|---|---|---|---|---|
+| D-19 | P0 | Outbox worker | Handlers ran with no tenant context, and the worker role could write notification and read-model rows into another tenant. | `outbox.test.mjs` (tenant isolation) | The worker sets each event's tenant before any handler runs; its cross-tenant permissions on those tables are removed (migration 0027). | **Fixed** |
+| D-20 | P1 | Outbox worker | A room's later events could overtake earlier ones that were pending or retrying (21 out-of-order deliveries with 3 workers). | `outbox.test.mjs` (ordering) | Per-room ordering; a later event is held behind an earlier undelivered one. | **Fixed** |
+| D-21 | P1 | Outbox / producers | Ordering used the producer's `aggregate_rev`, which several producers hard-code. A test failure (rev 1) overtook room events at revs 2–6; after a reopen, a work-order reassignment (rev 2) overtook revs 4–6. | `outbox.test.mjs` (real producers) | The database assigns `aggregate_seq` in commit order (a head row taken at commit, in sorted order, so no deadlock); delivery follows it. | **Fixed** |
+| D-22 | P1 | Outbox worker | Malformed events (unknown type, invalid payload, a room of another tenant) reached handlers and were delivered. | `outbox.test.mjs` (contract) | The event-contract check runs before any handler; failures dead-letter at once as NON_RETRYABLE, and a replay re-checks them (422). | **Fixed** |
+| D-23 | P1 | Outbox grants | The app role could rewrite an event's payload, type, aggregate, tenant and correlation id. | Constraint-proof test | Column grants: the app role can update delivery-state columns only. | **Fixed** |
+| D-24 | P2 | Outbox replay | A dead-letter replay needed no reason, a second replay returned 404 instead of 409, the audit record had no detail, and nothing linked an event to its replays. | `outbox.test.mjs` (replay) | Reason required; 409 on a non-dead-letter; audit with who, why, prior attempts, last error and outcome; `replay_count` / `last_replay_audit_id`; failure kinds TRANSIENT / PERMANENT / NON_RETRYABLE. | **Fixed** |
+| D-25 | P2 | Outbox, effects outside the database | No stage outside the transaction existed: an external call would have run inside it, and after a crash it ran twice. | `outbox.test.mjs` (SIGKILL) | Sinks run after commit under a lease, with the idempotency key `outbox:<event>:<sink>` and per-handler receipts. Proven against a local stub only. | **Fixed (stub)**; live Teams/Outlook **NOT RUN** (no connector) |
+| D-26 | P1 | Commissioning engine | The general acceptance count included PASS_VERIFIED results that a substitution had superseded. A separate blocker still refused acceptance, so nothing was accepted wrongly. | Owner requirement 2 review | `lifecycle.ts` excludes superseded results in both callers. | **Fixed** |
+| D-27 | P1 | Data model | Position and physical unit were one record. A replacement overwrote the position's model, a unit could not be followed across positions, and nothing prevented double installation. | Owner requirement 4 | ADR-0012: position, physical asset, effective-dated installations; exclusion constraints; append-only; atomic replacement. | **Fixed** |
+| D-28 | P2 | Assurance | Compared device ids only: a model substitution or a different unit was invisible. | Checkpoint e2e | Model drift and installation change are detected and labelled differently. | **Fixed** |
+| D-29 | P2 | Demo | "FUNDED" with no funding record; an empty project history; Atlas 4.218 shown with baseline v1 by the KPI records and none by APEX. | Demo review | Status only from records; history from the lifecycle events; APEX reads the KPI baseline record. | **Fixed** |
+| D-30 | P2 | Demo | A swap during recommissioning kept the removed device's PASS_VERIFIED results, and nothing blocked re-acceptance. | Demo review | The shared reopened-tests rule (the same as the API's). | **Fixed** |
+| D-31 | P3 | Website | The unconfigured lead form's notice sent visitors to contact details that are not published. | Review | Enquiries open the hosted form; the notice is reworded for builds that have neither. | **Fixed** |
+| D-32 | P2 | Website (live, `main`) | The live privacy notice says forms send messages to "Empathia's own service". That is untrue for the Tally form. | Tally integration | Corrected on the branch (`/privacy#enquiries`); it stays live until the branch is deployed. | **Open: deployment** |
+| D-33 | P3 | Tally form (owner's account) | In the consent checkbox, "View Privacy Policy" is plain text, not a link. | Read-only form check | Owner to link it to `/privacy#enquiries` once the branch is deployed. | **Open: owner** |
+| D-34 | P3 | Outbox | There is no audited skip for an event that can never succeed: it holds its room's later events until it is fixed and replayed. | Design review | Decision needed: an audited skip, or keep replay-only. | **Open: decision** |
+| D-35 | P3 | API | The Idempotency-Key check is not atomic with the handler: two concurrent requests with one key can both run (the precondition or the state check refuses the second's effect). | Negative-path review | Reserve the key in the handler's transaction. | **Open** |
+| D-36 | P3 | Evidence | The checkpoint e2e evidence lists some items in a different order from run to run (normalised comparisons are unaffected). | Repeated runs | Sort the evidence output. | **Open** |
+| D-37 | P3 | Tests | Two existing outbox ordering probes compare `aggregate_rev`. They pass, but now prove less than a comparison of `aggregate_seq` would. | Outbox review | Point them at `aggregate_seq`. | **Open** |
+
 ## What was not tested
 
 - **Browsers:** real iOS Safari, Android Chrome, Firefox and Edge were not available. Chromium only.

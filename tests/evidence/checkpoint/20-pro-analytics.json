@@ -2,7 +2,7 @@
  "step": 20,
  "title": "The Pro analytics: KPI passports, the building rollup, Mission Control, the KPI summary",
  "room": "R-PLN-0004",
- "at": "2026-11-01T01:50:45.924Z",
+ "at": "2026-11-01T02:03:34.072Z",
  "assertions": [
   {
    "id": "C-85",
@@ -37,7 +37,7 @@
    "persona": "exec",
    "status": 200,
    "body": {
-    "now": "2026-11-01T01:50:45.813Z",
+    "now": "2026-11-01T02:03:33.944Z",
     "days": 30,
     "version": "2.5.3-kpi-1",
     "measured": 18,
@@ -56,8 +56,8 @@
       "numerator": 0,
       "denominator": 0,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -90,8 +90,8 @@
       "numerator": 0,
       "denominator": 0,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -124,8 +124,8 @@
       "numerator": 0,
       "denominator": 1,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -156,8 +156,8 @@
       "numerator": 0,
       "denominator": 0,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -192,8 +192,8 @@
       "numerator": 0,
       "denominator": 0,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -227,8 +227,8 @@
       "numerator": 0,
       "denominator": 0,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -261,8 +261,8 @@
       "numerator": 0,
       "denominator": 0,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -295,8 +295,8 @@
       "numerator": 1,
       "denominator": 1,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -329,8 +329,8 @@
       "numerator": 8,
       "denominator": 10,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -363,8 +363,8 @@
       "numerator": 0,
       "denominator": 0,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -398,8 +398,8 @@
       "numerator": 75,
       "denominator": 75,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -432,8 +432,8 @@
       "numerator": 0,
       "denominator": 0,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -467,8 +467,8 @@
       "numerator": 0,
       "denominator": 0,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -502,8 +502,8 @@
       "numerator": 0,
       "denominator": 0,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -536,8 +536,8 @@
       "numerator": 0,
       "denominator": 0,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -568,8 +568,8 @@
       "numerator": 0,
       "denominator": 0,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -602,8 +602,8 @@
       "numerator": 0,
       "denominator": 0,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -634,8 +634,8 @@
       "numerator": 0,
       "denominator": 0,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -666,8 +666,8 @@
       "numerator": 0,
       "denominator": 0,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -700,8 +700,8 @@
       "numerator": 0,
       "denominator": 0,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -735,8 +735,8 @@
       "numerator": 0,
       "denominator": 0,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -768,8 +768,8 @@
       "numerator": 0,
       "denominator": 0,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -803,8 +803,8 @@
       "numerator": 0,
       "denominator": 0,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -836,8 +836,8 @@
       "numerator": null,
       "denominator": null,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -869,8 +869,8 @@
       "numerator": 0,
       "denominator": 0,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -903,8 +903,8 @@
       "numerator": 0,
       "denominator": 1,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -935,8 +935,8 @@
       "numerator": 0,
       "denominator": 0,
       "window": {
-       "from": "2026-10-02T01:50:45.813Z",
-       "to": "2026-11-01T01:50:45.813Z",
+       "from": "2026-10-02T02:03:33.944Z",
+       "to": "2026-11-01T02:03:33.944Z",
        "days": 30
       },
       "coverage": {
@@ -979,7 +979,7 @@
     },
     "note": "Figures are computed from this organization’s records in your site scope. A passport whose source does not exist in this starter is NOT_MEASURABLE, never 0%. Operational performance stays NOT_MONITORED."
    },
-   "correlationId": "70ff9015-8ef9-484a-b1e3-bb42243f67e3"
+   "correlationId": "03afe1c7-d155-430f-8fce-5d7cf9191f75"
   },
   {
    "method": "GET",
@@ -1600,7 +1600,7 @@
     ],
     "note": "Each building is computed separately from its own rooms' records; nothing is averaged across buildings."
    },
-   "correlationId": "290dd021-8fd9-462c-98d3-8727a7bea4d3"
+   "correlationId": "168f186c-bb58-4d84-af11-6b55581069d3"
   },
   {
    "method": "GET",
@@ -1622,7 +1622,7 @@
       "detail": "from PLANNED",
       "href": "#/rooms/R-PLN-0003",
       "authority": "room.design.approve",
-      "at": "2026-11-01T01:50:38.246Z"
+      "at": "2026-11-01T02:03:25.703Z"
      },
      {
       "product": "rooms",
@@ -1632,7 +1632,7 @@
       "detail": "from PLANNED",
       "href": "#/rooms/R-PLN-0002",
       "authority": "room.design.approve",
-      "at": "2026-11-01T01:50:38.096Z"
+      "at": "2026-11-01T02:03:25.544Z"
      },
      {
       "product": "rooms",
@@ -1642,7 +1642,7 @@
       "detail": "from PLANNED",
       "href": "#/rooms/R-PLN-0001",
       "authority": "room.design.approve",
-      "at": "2026-11-01T01:50:37.912Z"
+      "at": "2026-11-01T02:03:25.392Z"
      }
     ],
     "total": 3,
@@ -1660,7 +1660,7 @@
     },
     "note": "Steps you hold the authority for, in your site scope. Each opens the record, where the server checks the guard again. Operational performance stays NOT_MONITORED."
    },
-   "correlationId": "74b348b3-7b66-40f8-9c81-d4d1bf949b6a"
+   "correlationId": "44c220b3-0e8c-49b9-b373-41249351b566"
   },
   {
    "method": "GET",
@@ -1760,7 +1760,7 @@
     "operationalPerformance": "NOT_MONITORED",
     "note": "Computed from synthetic starter data. Not a statement about any real estate or customer."
    },
-   "correlationId": "24788d0b-1f12-445c-a05f-3af7c1a96c53"
+   "correlationId": "8f148be4-c0d3-462f-b4b8-b92b2c8ce347"
   }
  ]
 }
