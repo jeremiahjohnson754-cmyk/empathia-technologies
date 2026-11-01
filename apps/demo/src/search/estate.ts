@@ -5,7 +5,7 @@
  * exists in this browser) is merged in as a live room with its own devices and proposed connections.
  */
 import { Graph, nodeKey, type Catalogue, type SearchNode, type Edge, type NodeRef } from '@empathia/search-party';
-import { loadDraft, live, type Draft } from '../build/store.js';
+import { loadDraft, live, identity, unitOf, type Draft } from '../build/store.js';
 import type { PlannedDevice, Connection } from '@empathia/domain-types';
 
 const N = (type: string, id: string, label: string, extra: Partial<SearchNode> = {}): SearchNode => ({ type, id, label, provenance: 'synthetic seed (demonstration)', ...extra });
@@ -65,7 +65,9 @@ export function buildEstate(draft?: Draft | null): Estate {
   if (d) {
     nodes.push(N('Room', d.code, d.name, { subtitle: `Northstar Annex · ${d.design.lifecycle} · your Build a Room draft`, facets: { site: 'SITE-NORTH', building: 'NST', lifecycle: d.design.lifecycle }, href: '#/v25/build', provenance: 'Build a Room draft (this browser)' }));
     edges.push(E(['Room', d.code], 'LOCATED_IN', ['Building', 'NST'], 'DECLARED (Build a Room)'));
-    for (const x of live(d.design.devices) as PlannedDevice[]) { if (x.furniture) continue; nodes.push(N('PlannedAsset', `${d.code}/${x.id}`, `${x.label} (${d.name})`, { subtitle: `${x.cat} · ${d.name}`, facets: { building: 'NST', category: x.cat }, provenance: 'Build a Room draft (this browser)', href: '#/v25/build' })); edges.push(E(['Room', d.code], 'PLANS_DEVICE', ['PlannedAsset', `${d.code}/${x.id}`], 'DECLARED (Build a Room)')); }
+    for (const x of live(d.design.devices) as PlannedDevice[]) { if (x.furniture) continue; const u = identity(d, x.id); nodes.push(N('PlannedAsset', `${d.code}/${x.id}`, `${x.label} (${d.name})`, { subtitle: `${x.cat} · ${d.name} · ${u.asset ? `unit ${u.asset} · identity ${u.identityState}` : 'no unit installed'}`, facets: { building: 'NST', category: x.cat, identity: u.identityState || 'NO_UNIT' }, provenance: 'Build a Room draft (this browser)', href: '#/v25/build', keywords: [x.cat, ...(u.asset ? [u.asset] : [])] }));
+      // ADR-0012: the unit at the position, located in it (DERIVED from the open installation record, as the enterprise API's catalogue does)
+      if (u.asset) { const a = unitOf(d, u.asset); nodes.push(N('Asset', `${d.code}/${u.asset}`, `${u.asset} · ${a?.model || ''}`, { subtitle: `identity ${u.identityState} · synthetic unit at ${x.id}`, facets: { building: 'NST', identity: u.identityState || '' }, provenance: 'Build a Room draft (this browser)', href: '#/v25/build', keywords: [u.asset, 'unit', 'asset'] })); edges.push(E(['Asset', `${d.code}/${u.asset}`], 'LOCATED_IN', ['PlannedAsset', `${d.code}/${x.id}`], 'DERIVED (open installation record, Build a Room)')); } edges.push(E(['Room', d.code], 'PLANS_DEVICE', ['PlannedAsset', `${d.code}/${x.id}`], 'DECLARED (Build a Room)')); }
     for (const c of live(d.design.connections) as Connection[]) edges.push(E(['PlannedAsset', `${d.code}/${c.from}`], c.kind === 'control' ? 'CONTROLS' : c.kind === 'power' ? 'POWERED_BY' : 'CONNECTS_TO', ['PlannedAsset', `${d.code}/${c.to}`], 'MODELED (proposed connection, Build a Room)'));
     for (const b of d.baselines || []) { nodes.push(N('CommissioningBaseline', `${d.code}/v${b.version}`, `${d.name} · baseline v${b.version}`, { subtitle: `${b.state} · revision ${b.revision}`, facets: { state: b.state, building: 'NST' }, provenance: 'Build a Room draft (this browser)', href: '#/v25/build' })); edges.push(E(['CommissioningBaseline', `${d.code}/v${b.version}`], 'DOCUMENTS', ['Room', d.code], 'DERIVED baseline.room')); if (b.version > 1) edges.push(E(['CommissioningBaseline', `${d.code}/v${b.version}`], 'SUPERSEDES', ['CommissioningBaseline', `${d.code}/v${b.version - 1}`], 'DECLARED baseline.supersedes')); }
   }

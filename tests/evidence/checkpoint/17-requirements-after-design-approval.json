@@ -2,7 +2,7 @@
  "step": 17,
  "title": "What remains is the verification the change requires",
  "room": "R-PLN-0004",
- "at": "2026-11-01T00:20:11.274Z",
+ "at": "2026-11-01T01:50:45.921Z",
  "assertions": [
   {
    "id": "C-67",
@@ -28,7 +28,7 @@
      "to": "ACCEPTED",
      "authority": "customer.accept",
      "blockers": [
-      "12 test(s) were last recorded before the substitution and must be re-run on the changed design and verified independently: identity_asset, display_controls, video_signal, camera_preset, video_camera_exposure, video_content_share, video_display_calibration, video_edid_handshake, video_switching, camera_fov, video_av_sync, video_camera_tracking"
+      "12 test(s) were last recorded before the substitution and must be re-run on the changed design and verified independently: identity_asset, display_controls, video_signal, camera_preset, video_camera_exposure, video_content_share, video_display_calibration, video_edid_handshake, video_switching, camera_fov, video_av_sync, video_camera_tracking — acceptance counts 63 of 75 applicable tests as passed and independently verified; the 12 earlier result(s) no longer count"
      ],
      "separationOfDuties": "not a recorder or verifier of the results"
     },
@@ -47,7 +47,7 @@
     },
     "recommissioning": {
      "baseline": {
-      "id": "196ce119-53f5-4bd0-8d83-53d91aec39ae",
+      "id": "7038791b-97e4-4adf-bdb0-163c73021ffd",
       "version": 1,
       "designRevision": 2
      },
@@ -58,14 +58,28 @@
        "category": "camera",
        "from": "generic",
        "to": "SYN-PTZ-12X (synthetic PTZ camera)",
-       "at": "2026-11-01T00:20:09.230Z",
-       "by": "2780822d-ef25-4b71-802f-e0fcb455d6a1"
+       "at": "2026-11-01T01:50:43.872Z",
+       "by": "bffa9ce3-03ce-4be9-82d6-004e927f08b8"
+      }
+     ],
+     "changes": [
+      {
+       "assetId": "PA-0061",
+       "label": "Camera 1",
+       "category": "camera",
+       "from": "generic",
+       "to": "SYN-PTZ-12X (synthetic PTZ camera)",
+       "at": "2026-11-01T01:50:43.872Z",
+       "by": "bffa9ce3-03ce-4be9-82d6-004e927f08b8",
+       "kind": "SUBSTITUTED",
+       "fromAsset": "AS-0002",
+       "toAsset": "AS-0009"
       }
      ],
      "design": {
       "approvedRevision": 3,
       "latestRevision": 3,
-      "latestAuthor": "2780822d-ef25-4b71-802f-e0fcb455d6a1",
+      "latestAuthor": "bffa9ce3-03ce-4be9-82d6-004e927f08b8",
       "approvedDescribesDesign": true,
       "latestDescribesDesign": true
      },
@@ -88,9 +102,9 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the asset identity is checked again after every substitution"
        ],
-       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "substitutedAt": "2026-11-01T01:50:43.872Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-01T00:20:06.422224+00:00",
+       "recordedAt": "2026-11-01T01:50:40.385138+00:00",
        "rerun": true
       },
       {
@@ -111,9 +125,9 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
        ],
-       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "substitutedAt": "2026-11-01T01:50:43.872Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-01T00:20:06.681584+00:00",
+       "recordedAt": "2026-11-01T01:50:40.758038+00:00",
        "rerun": true
       },
       {
@@ -134,9 +148,9 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
        ],
-       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "substitutedAt": "2026-11-01T01:50:43.872Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-01T00:20:06.783131+00:00",
+       "recordedAt": "2026-11-01T01:50:40.851503+00:00",
        "rerun": true
       },
       {
@@ -157,9 +171,9 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
        ],
-       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "substitutedAt": "2026-11-01T01:50:43.872Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-01T00:20:06.847446+00:00",
+       "recordedAt": "2026-11-01T01:50:40.929008+00:00",
        "rerun": true
       },
       {
@@ -180,9 +194,9 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
        ],
-       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "substitutedAt": "2026-11-01T01:50:43.872Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-01T00:20:07.228378+00:00",
+       "recordedAt": "2026-11-01T01:50:41.410124+00:00",
        "rerun": true
       },
       {
@@ -202,9 +216,9 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
        ],
-       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "substitutedAt": "2026-11-01T01:50:43.872Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-01T00:20:07.244143+00:00",
+       "recordedAt": "2026-11-01T01:50:41.433708+00:00",
        "rerun": true
       },
       {
@@ -226,9 +240,9 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
        ],
-       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "substitutedAt": "2026-11-01T01:50:43.872Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-01T00:20:07.262023+00:00",
+       "recordedAt": "2026-11-01T01:50:41.458438+00:00",
        "rerun": true
       },
       {
@@ -249,9 +263,9 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
        ],
-       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "substitutedAt": "2026-11-01T01:50:43.872Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-01T00:20:07.278169+00:00",
+       "recordedAt": "2026-11-01T01:50:41.483413+00:00",
        "rerun": true
       },
       {
@@ -272,9 +286,9 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
        ],
-       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "substitutedAt": "2026-11-01T01:50:43.872Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-01T00:20:07.294277+00:00",
+       "recordedAt": "2026-11-01T01:50:41.506203+00:00",
        "rerun": true
       },
       {
@@ -295,9 +309,9 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
        ],
-       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "substitutedAt": "2026-11-01T01:50:43.872Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-01T00:20:07.367152+00:00",
+       "recordedAt": "2026-11-01T01:50:41.626432+00:00",
        "rerun": true
       },
       {
@@ -318,9 +332,9 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): it is a camera and this is a Video test of the room"
        ],
-       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "substitutedAt": "2026-11-01T01:50:43.872Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-01T00:20:07.412592+00:00",
+       "recordedAt": "2026-11-01T01:50:41.685933+00:00",
        "rerun": true
       },
       {
@@ -340,13 +354,73 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
        ],
-       "substitutedAt": "2026-11-01T00:20:09.230Z",
+       "substitutedAt": "2026-11-01T01:50:43.872Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-01T00:20:07.428676+00:00",
+       "recordedAt": "2026-11-01T01:50:41.706469+00:00",
        "rerun": true
       }
      ],
      "note": "the accepted baseline stays CURRENT until the re-acceptance publishes the next version; the re-acceptance binds the approved revision and results recorded after the substitution"
+    },
+    "installations": {
+     "devices": [
+      {
+       "position": "PA-0060",
+       "asset": "AS-0001",
+       "identityState": "UNKNOWN"
+      },
+      {
+       "position": "PA-0061",
+       "asset": "AS-0009",
+       "identityState": "UNKNOWN"
+      },
+      {
+       "position": "PA-0062",
+       "asset": "AS-0003",
+       "identityState": "UNKNOWN"
+      },
+      {
+       "position": "PA-0063",
+       "asset": "AS-0004",
+       "identityState": "UNKNOWN"
+      },
+      {
+       "position": "PA-0064",
+       "asset": "AS-0005",
+       "identityState": "UNKNOWN"
+      },
+      {
+       "position": "PA-0065",
+       "asset": "AS-0006",
+       "identityState": "UNKNOWN"
+      },
+      {
+       "position": "PA-0066",
+       "asset": "AS-0007",
+       "identityState": "UNKNOWN"
+      },
+      {
+       "position": "PA-0067",
+       "asset": "AS-0008",
+       "identityState": "UNKNOWN"
+      }
+     ],
+     "changes": [
+      {
+       "assetId": "PA-0061",
+       "label": "Camera 1",
+       "category": "camera",
+       "from": "generic",
+       "to": "SYN-PTZ-12X (synthetic PTZ camera)",
+       "at": "2026-11-01T01:50:43.872Z",
+       "by": "bffa9ce3-03ce-4be9-82d6-004e927f08b8",
+       "kind": "SUBSTITUTED",
+       "fromAsset": "AS-0002",
+       "toAsset": "AS-0009"
+      }
+     ],
+     "reverification": null,
+     "note": "each position (PA-) with the physical unit (AS-) installed there now and its identity state; a change of unit reopens the tests that covered the position (GET /v1/rooms/{room}/positions/{position}/history)"
     },
     "design": {
      "revisions": 3,
@@ -354,7 +428,7 @@
      "classification": {
       "archetype": "HUD",
       "stale": false,
-      "at": "2026-11-01T00:20:05.278Z"
+      "at": "2026-11-01T01:50:39.053Z"
      },
      "checks": 0
     },
@@ -367,7 +441,7 @@
      {
       "version": 1,
       "state": "CURRENT",
-      "publishedAt": "2026-11-01T00:20:09.153Z"
+      "publishedAt": "2026-11-01T01:50:43.784Z"
      }
     ],
     "exceptionsPending": 0,
@@ -402,7 +476,7 @@
      {
       "what": "room.revision.approve",
       "by": "syseng",
-      "at": "2026-11-01T00:20:09.367Z",
+      "at": "2026-11-01T01:50:44.016Z",
       "detail": {
        "previous": 2,
        "revision": 3,
@@ -418,7 +492,7 @@
      {
       "what": "room.lifecycle:COMMISSIONING",
       "by": "syseng",
-      "at": "2026-11-01T00:20:09.195Z",
+      "at": "2026-11-01T01:50:43.839Z",
       "detail": {
        "to": "COMMISSIONING",
        "from": "ACCEPTED"
@@ -427,7 +501,7 @@
      {
       "what": "assurance.baseline_published",
       "by": "opslead",
-      "at": "2026-11-01T00:20:09.153Z",
+      "at": "2026-11-01T01:50:43.784Z",
       "detail": {
        "version": 1,
        "evidence": 75,
@@ -438,7 +512,7 @@
      {
       "what": "room.lifecycle:ACCEPTED",
       "by": "opslead",
-      "at": "2026-11-01T00:20:09.153Z",
+      "at": "2026-11-01T01:50:43.784Z",
       "detail": {
        "to": "ACCEPTED",
        "from": "COMMISSIONING"
@@ -447,7 +521,7 @@
      {
       "what": "room.lifecycle:COMMISSIONING",
       "by": "syseng",
-      "at": "2026-11-01T00:20:05.563Z",
+      "at": "2026-11-01T01:50:39.376Z",
       "detail": {
        "to": "COMMISSIONING",
        "from": "INSTALLED_UNVERIFIED"
@@ -456,7 +530,7 @@
      {
       "what": "room.lifecycle:DESIGN_APPROVED",
       "by": "syseng",
-      "at": "2026-11-01T00:20:05.443Z",
+      "at": "2026-11-01T01:50:39.241Z",
       "detail": {
        "to": "DESIGN_APPROVED",
        "from": "PLANNED"
@@ -467,7 +541,7 @@
      {
       "what": "room.revision.approve",
       "by": "syseng",
-      "at": "2026-11-01T00:20:09.392Z",
+      "at": "2026-11-01T01:50:44.045Z",
       "why": [
        "revision 3 is not newer than the approved revision 3"
       ]
@@ -475,17 +549,17 @@
      {
       "what": "room.lifecycle:ACCEPTED",
       "by": "opslead",
-      "at": "2026-11-01T00:20:09.356Z",
+      "at": "2026-11-01T01:50:44.007Z",
       "why": [
        "2 open issue(s): every deficiency is closed with its retest before acceptance",
-       "the design changed while the room is recommissioned (PA-0061 generic → SYN-PTZ-12X (synthetic PTZ camera)) and the approved revision 2 no longer describes it: revision 3 needs approval (room.design.approve, not its author) — the re-acceptance binds the approved revision",
-       "12 test(s) were last recorded before the substitution and must be re-run on the changed design and verified independently: identity_asset, display_controls, video_signal, camera_preset, video_camera_exposure, video_content_share, video_display_calibration, video_edid_handshake, video_switching, camera_fov, video_av_sync, video_camera_tracking"
+       "12 test(s) were last recorded before the substitution and must be re-run on the changed design and verified independently: identity_asset, display_controls, video_signal, camera_preset, video_camera_exposure, video_content_share, video_display_calibration, video_edid_handshake, video_switching, camera_fov, video_av_sync, video_camera_tracking — acceptance counts 63 of 75 applicable tests as passed and independently verified; the 12 earlier result(s) no longer count",
+       "the design changed while the room is recommissioned (PA-0061 generic → SYN-PTZ-12X (synthetic PTZ camera)) and the approved revision 2 no longer describes it: revision 3 needs approval (room.design.approve, not its author) — the re-acceptance binds the approved revision"
       ]
      },
      {
       "what": "move a room to COMMISSIONING",
       "by": "installer",
-      "at": "2026-11-01T00:20:09.191Z",
+      "at": "2026-11-01T01:50:43.834Z",
       "why": {
        "need": "plan.compile",
        "role": "installer"
@@ -494,7 +568,7 @@
      {
       "what": "room.lifecycle:ACCEPTED",
       "by": "qa_reviewer",
-      "at": "2026-11-01T00:20:09.090Z",
+      "at": "2026-11-01T01:50:43.702Z",
       "why": [
        "separation of duties: the acceptance (its recorded and verified results) cannot be approved by its own author (qa_reviewer)"
       ]
@@ -502,7 +576,7 @@
      {
       "what": "move a room to ACCEPTED",
       "by": "syseng",
-      "at": "2026-11-01T00:20:09.075Z",
+      "at": "2026-11-01T01:50:43.686Z",
       "why": {
        "need": "customer.accept",
        "role": "syseng"
@@ -511,7 +585,7 @@
      {
       "what": "commission.result.verify",
       "by": "cxeng",
-      "at": "2026-11-01T00:20:09.071Z",
+      "at": "2026-11-01T01:50:43.681Z",
       "why": [
        "already verified"
       ]
@@ -519,7 +593,7 @@
      {
       "what": "commission.result.verify",
       "by": "cxeng",
-      "at": "2026-11-01T00:20:07.591Z",
+      "at": "2026-11-01T01:50:41.962Z",
       "why": [
        "verification must be independent of the person who recorded the result"
       ]
@@ -527,7 +601,7 @@
      {
       "what": "commission.result.record",
       "by": "cxeng",
-      "at": "2026-11-01T00:20:06.225Z",
+      "at": "2026-11-01T01:50:40.090Z",
       "why": [
        "evidence kind PHOTO_INFERRED_GUESS is not accepted for compute_display_capability; accepted: ENGINEER_APPROVED"
       ]
@@ -535,7 +609,7 @@
      {
       "what": "commission.result.record",
       "by": "designer",
-      "at": "2026-11-01T00:20:06.214Z",
+      "at": "2026-11-01T01:50:40.083Z",
       "why": [
        "designer is not the responsible role for compute_display_capability (syseng)"
       ]
@@ -543,7 +617,7 @@
      {
       "what": "move a room to COMMISSIONING",
       "by": "installer",
-      "at": "2026-11-01T00:20:05.557Z",
+      "at": "2026-11-01T01:50:39.370Z",
       "why": {
        "need": "plan.compile",
        "role": "installer"
@@ -552,7 +626,7 @@
     ],
     "liveHealth": "NOT_MONITORED"
    },
-   "correlationId": "8b0b62c2-8484-4bce-96fd-b0847f65de73"
+   "correlationId": "1a9ea803-fb4a-4302-ae1b-42c5de9c4d43"
   },
   {
    "method": "GET",
@@ -562,12 +636,12 @@
    "body": {
     "room": "R-PLN-0004",
     "current": {
-     "id": "196ce119-53f5-4bd0-8d83-53d91aec39ae",
+     "id": "7038791b-97e4-4adf-bdb0-163c73021ffd",
      "version": 1,
      "state": "CURRENT",
      "design_revision": 2,
      "design_sha256": "31f686c119f2eba0322ebdf2752317f73cde93194c010734ca82d304fbe3f53c",
-     "plan_id": "10b8d67e-63e7-4e6b-8f68-384d0c1a601c",
+     "plan_id": "21ecded3-8fa6-48f5-a913-a276c5b96c62",
      "results": {
       "uc_media": "PASS_VERIFIED",
       "audio_aec": "PASS_VERIFIED",
@@ -646,81 +720,81 @@
       "cyber_management_isolation": "PASS_VERIFIED"
      },
      "evidence_ids": [
-      "197de3f7-f16c-4328-a4d4-10928b34441d",
-      "a29dac51-04a9-43be-945f-789ff70ae185",
-      "d14459dd-1c17-4119-858e-8a168ef198f1",
-      "f20ba59b-5b64-41c6-b457-fed4f756b84b",
-      "29646a84-3084-475d-81ca-9f12277afa3a",
-      "9ccbd440-21eb-4631-a71f-3916598dabf3",
-      "32f68e2f-0f43-4d38-ba14-5e62d1aa6c9b",
-      "68b63280-b2e1-4869-9d2a-3463dd4996f5",
-      "ab13f84b-395e-4686-824d-b162fe76913c",
-      "0fcfc5c8-0542-4018-afab-37e789726e50",
-      "768f1fe7-6f56-4d90-80a5-3539c6ab4af5",
-      "ced0b511-f0b3-4085-954b-7c313c70e03d",
-      "5f04e5ec-4079-4e61-99c3-8a4aacc1b6a2",
-      "500f1785-93e3-4e2a-87fd-16834450a537",
-      "509f5d89-f28e-4de0-b6cb-afb65a26ba17",
-      "79ada7da-6385-43a4-8718-2c49f42ecfe1",
-      "e6502f8d-e923-472d-a1bf-189764c2f786",
-      "e429b4b7-aec8-4d7c-ad77-323660e1493d",
-      "5faabbf2-fbb5-488a-96b3-c4a605c9fbcf",
-      "e5bcb65f-84a9-4a31-a301-52b26a3725cd",
-      "6b7194ae-bdfc-4986-9ad0-95a52ce86967",
-      "428d78ce-7d1a-4993-b29f-cb710df06243",
-      "68c37f8e-3833-49ec-83ff-80e371b0ccfe",
-      "7f6f768a-9d82-47df-9d20-ad8b5ebb43e6",
-      "badb9c00-5b72-4206-b187-26f05e9da019",
-      "9aaade60-358c-4848-b243-52dca77fc63e",
-      "ae337f96-1c4e-404b-9433-e8664b0dbdb4",
-      "256dafef-0f14-45b7-9e0a-7ff76e1fa3ce",
-      "fc75310b-b5dc-4428-a0fe-6a36c6ed3278",
-      "e13c13d5-e294-47ac-8115-c54a62dea5ad",
-      "f3fbcb00-2465-4983-99f9-fba77326eb90",
-      "a8837107-974f-4107-b044-9d00aa4408ad",
-      "eb6078b1-9f43-4562-8ea7-2c5b40cf94e9",
-      "0a06d0eb-250f-4999-b5be-327cea8d77aa",
-      "0675234e-923d-4cdf-bf64-9355488a17a5",
-      "ec8e3fc9-ebfd-492d-8847-52ed295852de",
-      "e4c14c77-022c-4933-86ba-5cd7f8bda7fc",
-      "0cf808eb-4e4f-4307-8d57-ad8a00e1c586",
-      "7f09b382-4c2e-4bcc-98c9-3e2ae0936d04",
-      "d5853de6-41ae-4ec2-9bcc-ebea89be8bd7",
-      "e56fa035-56fb-49c7-837b-6ef177c1e983",
-      "718e6d33-1135-4d9c-84ff-f25633cb398c",
-      "2fbdcbbf-e584-499a-8264-1154ef59a300",
-      "c4a4e085-99c5-4049-8c04-565ff0dc62e9",
-      "c81b1b7e-124e-4e48-bc7d-9dd5a9f60b9f",
-      "304ff6dd-8497-4c1f-9916-f03319c4fd70",
-      "b3a69c84-8f37-41d3-bb92-b30868bb9f14",
-      "be36b08c-f4c7-4222-a054-1fd62f9eef00",
-      "d4e393f5-5175-4e70-a3c0-516846f92260",
-      "72b8a36a-3f9b-4975-a882-e6c59aeee400",
-      "81472112-8f52-418e-a549-70a661f187a6",
-      "25c55116-0dd7-42ff-aee5-c2b15bc30d51",
-      "241a4409-e0fa-4e55-862b-8a0f0a406e4f",
-      "683a271f-8851-42c5-8df5-efdc1e84066b",
-      "e445355e-5b66-496d-83e0-2ce511d901b3",
-      "7ffc8960-65f2-4126-aecd-5bfa772e16fa",
-      "2e954bc3-0d02-4496-b7d2-a7f2a439f5f1",
-      "2d7adba3-ae51-4bfb-a01c-1c59e726e461",
-      "9c38bc33-514a-4feb-85a5-70c38e66abf6",
-      "fd04bdbc-347d-4a13-86e5-a0eb1a170fd7",
-      "62fddc62-ea65-446d-ad56-fd4fa7f895c5",
-      "de2caca1-86dd-48e6-8de8-45a652062001",
-      "3a195621-2c5f-485b-8d56-31ee95de579b",
-      "2fe5f3e6-2eca-4514-82b9-97728221b237",
-      "7545b1e0-6d72-4f86-b214-e3d65c181370",
-      "7af58920-be39-4241-9965-19aa758e2dbb",
-      "5c442008-fec8-4169-aea3-5ae734df1641",
-      "c209f42e-ec25-4605-8506-99b023586d7f",
-      "20a66366-b78c-415e-b482-f791529f9398",
-      "6858ca79-5b52-4a54-bb02-fb89c2aa4aec",
-      "41527834-d8a5-48ac-a793-15b71f5d77ed",
-      "6c3e4040-7318-46de-91ab-9186f9cdeb5b",
-      "3dcb0a62-d518-4f29-816d-18f41667046e",
-      "3aa23acb-83d7-401a-87a1-e99082e07aed",
-      "c8c3bbdb-4c87-406b-924b-4c6abc51607d"
+      "f9251b5f-3a8b-4de3-9937-b2d374af949c",
+      "11eba6fd-5035-4d03-bb47-dc8df3f18a0f",
+      "b4aca476-08ec-4e94-8848-b1fd40dfb4c2",
+      "3e393090-a17f-470b-b97e-ea6a016eee03",
+      "a8b7e469-d127-4e99-ad23-02e5fe5ec900",
+      "45e2a3d6-057b-45ef-be61-9bb0db7ba273",
+      "62383422-4f67-4463-afce-018d0882b522",
+      "2c9a201c-e422-440e-8cf2-67bf102ace44",
+      "ecef37da-7d5e-40d2-ab99-6c3530e8c557",
+      "4e4ac049-8660-431b-83e4-e4794e1b0a96",
+      "c7e0825a-731d-4c4e-962a-89dd6c98561f",
+      "df4fee20-f054-4b42-8fd1-56ecd3df5516",
+      "8f290fc0-c80a-4bbe-bab1-26decfc8a55c",
+      "6e7ac063-9027-4e6b-8344-aaed6f6a4a4d",
+      "e89e637a-94fc-4ab6-9e52-a5afa63a0552",
+      "1ce82ba0-76b8-4664-b774-948ea208107c",
+      "76f26189-3478-43a3-9dae-7dda58a1c2d8",
+      "11c5715e-d9cf-4b74-b340-4f41c800a8fa",
+      "1df9d28e-dba9-4f07-8068-d900be94515d",
+      "cc1c9712-0f1c-4bd7-b9aa-d81f32c2b2cc",
+      "03cad457-5d33-4042-a256-057329e73b26",
+      "13747703-7622-42ab-a9e9-22cdca8fb748",
+      "f2b1b462-e569-4aa2-93f5-51df5a76fcd0",
+      "5ebecde1-4882-4b8f-94ca-7bca24fe3454",
+      "8833f51f-204a-47f8-b1b8-73297c9f2c00",
+      "7bef3d16-5753-4ad3-b015-cc9762da95cd",
+      "f93a4050-b0ab-436a-9a61-ad10fd6e0ff6",
+      "57bef808-cf7f-4dd0-9083-aca6d6aca734",
+      "adf3053a-f53d-4c52-a158-c38fbe8707e1",
+      "fc326286-3e99-431c-ac21-dd134e11aa7b",
+      "eee61b04-0af0-411a-8078-e4012ceaf623",
+      "8dc06080-133c-4a0a-89df-91ed0743e266",
+      "6ed367b1-415c-4cf4-b3f5-9aeadda7664f",
+      "7f1b60c7-a397-4aa3-a993-12d8a937d7fb",
+      "c7876e23-e536-4425-9b85-fe42bd55160d",
+      "9cf145fa-a891-4f23-ae1e-108cfeab94ad",
+      "7989ce62-d7f5-43f1-a3c3-632f6a926d22",
+      "fbceedc6-3d0c-46f9-aeea-62b7eb1efd2b",
+      "8ee86131-4124-4e5b-922b-21c857530645",
+      "64d5f4ed-2949-4b23-bff0-d44a6f748611",
+      "6f34daa7-17fa-4611-9ef9-c0f097b71bbf",
+      "7cc5c511-3f2e-4b8b-b694-4d087bf122a3",
+      "fd1ca334-d564-4804-ae38-732836af4a04",
+      "ae9b5e0d-4978-4e7f-8dec-13cb61d17c9c",
+      "79d7e123-9133-4472-b8be-c5fd55458628",
+      "eabbead8-fe3b-4502-86b9-a98a7cb583c0",
+      "02252e18-1220-4112-ba9d-20d8accead71",
+      "95082107-187d-402b-8c68-820cfecc90ca",
+      "6ab62c12-1c9c-4226-9ecc-bf8a95c9472b",
+      "83419b01-4267-455c-a572-8d64df125c4e",
+      "5294b1ad-bd90-4850-ad17-b95b1696aaea",
+      "294356e4-ebfb-4b22-9f10-ba3704132344",
+      "2ddcbdbd-4815-4335-a9a5-61bc404b4c6f",
+      "7e3288d1-6110-4154-b369-efb8e32800c6",
+      "548c2f32-072a-4c03-a515-c78ce2590916",
+      "cb2b87da-5a43-4814-af46-46462729573c",
+      "60df8bee-8e36-4823-92a0-10e69f394738",
+      "4abbeb93-7b23-42d5-94d9-aaac3de9e90f",
+      "576593d4-2af3-4811-8b26-e12b25d67240",
+      "6cce3a5a-b250-49bc-9b63-e80d95ca1fa5",
+      "19fd238a-117a-425d-9793-dea667b0f082",
+      "5e68c527-a1ec-4b1a-97cb-ad257818ef15",
+      "012dfc9e-1f0a-41ef-adc2-c0691e616ad7",
+      "3d5414c4-115f-4e95-836e-ee8460d375de",
+      "5018d9db-d38a-4dc3-b2d1-e808e506eef9",
+      "0370bb57-35e8-43ff-8481-a0e8b183d44e",
+      "78c89a9d-8e82-47c4-ad9a-fe04af957d5b",
+      "ca669142-1031-44f2-8b3c-8464efabe938",
+      "a11ad37f-4f0c-4631-833c-d06d385f1dc9",
+      "f2f1d0e3-1c4f-44fd-be26-c883bcf4327c",
+      "d97a5e5d-5447-42c0-87be-52c372d690b3",
+      "7c2e9ec6-6faf-4169-b420-38893ad76b8f",
+      "8d63d4ee-f0f8-4418-82b2-0cc103ac10ba",
+      "540af58e-5ed2-4acb-b976-b2d5f1ebc72c",
+      "bc89ae89-686f-4393-98a4-7f12a2e747fd"
      ],
      "devices": [
       {
@@ -765,20 +839,20 @@
       }
      ],
      "reason": "accepted: first baseline (ADR-0003)",
-     "published_by": "5dfb2a59-c0c2-4652-aad2-423c2911674a",
-     "published_at": "2026-11-01T00:20:09.153Z",
+     "published_by": "9d29a650-f821-499f-910b-559dfeca5e8c",
+     "published_at": "2026-11-01T01:50:43.784Z",
      "supersedes": null,
      "superseded_at": null,
      "superseded_by": null
     },
     "items": [
      {
-      "id": "196ce119-53f5-4bd0-8d83-53d91aec39ae",
+      "id": "7038791b-97e4-4adf-bdb0-163c73021ffd",
       "version": 1,
       "state": "CURRENT",
       "design_revision": 2,
       "design_sha256": "31f686c119f2eba0322ebdf2752317f73cde93194c010734ca82d304fbe3f53c",
-      "plan_id": "10b8d67e-63e7-4e6b-8f68-384d0c1a601c",
+      "plan_id": "21ecded3-8fa6-48f5-a913-a276c5b96c62",
       "results": {
        "uc_media": "PASS_VERIFIED",
        "audio_aec": "PASS_VERIFIED",
@@ -857,81 +931,81 @@
        "cyber_management_isolation": "PASS_VERIFIED"
       },
       "evidence_ids": [
-       "197de3f7-f16c-4328-a4d4-10928b34441d",
-       "a29dac51-04a9-43be-945f-789ff70ae185",
-       "d14459dd-1c17-4119-858e-8a168ef198f1",
-       "f20ba59b-5b64-41c6-b457-fed4f756b84b",
-       "29646a84-3084-475d-81ca-9f12277afa3a",
-       "9ccbd440-21eb-4631-a71f-3916598dabf3",
-       "32f68e2f-0f43-4d38-ba14-5e62d1aa6c9b",
-       "68b63280-b2e1-4869-9d2a-3463dd4996f5",
-       "ab13f84b-395e-4686-824d-b162fe76913c",
-       "0fcfc5c8-0542-4018-afab-37e789726e50",
-       "768f1fe7-6f56-4d90-80a5-3539c6ab4af5",
-       "ced0b511-f0b3-4085-954b-7c313c70e03d",
-       "5f04e5ec-4079-4e61-99c3-8a4aacc1b6a2",
-       "500f1785-93e3-4e2a-87fd-16834450a537",
-       "509f5d89-f28e-4de0-b6cb-afb65a26ba17",
-       "79ada7da-6385-43a4-8718-2c49f42ecfe1",
-       "e6502f8d-e923-472d-a1bf-189764c2f786",
-       "e429b4b7-aec8-4d7c-ad77-323660e1493d",
-       "5faabbf2-fbb5-488a-96b3-c4a605c9fbcf",
-       "e5bcb65f-84a9-4a31-a301-52b26a3725cd",
-       "6b7194ae-bdfc-4986-9ad0-95a52ce86967",
-       "428d78ce-7d1a-4993-b29f-cb710df06243",
-       "68c37f8e-3833-49ec-83ff-80e371b0ccfe",
-       "7f6f768a-9d82-47df-9d20-ad8b5ebb43e6",
-       "badb9c00-5b72-4206-b187-26f05e9da019",
-       "9aaade60-358c-4848-b243-52dca77fc63e",
-       "ae337f96-1c4e-404b-9433-e8664b0dbdb4",
-       "256dafef-0f14-45b7-9e0a-7ff76e1fa3ce",
-       "fc75310b-b5dc-4428-a0fe-6a36c6ed3278",
-       "e13c13d5-e294-47ac-8115-c54a62dea5ad",
-       "f3fbcb00-2465-4983-99f9-fba77326eb90",
-       "a8837107-974f-4107-b044-9d00aa4408ad",
-       "eb6078b1-9f43-4562-8ea7-2c5b40cf94e9",
-       "0a06d0eb-250f-4999-b5be-327cea8d77aa",
-       "0675234e-923d-4cdf-bf64-9355488a17a5",
-       "ec8e3fc9-ebfd-492d-8847-52ed295852de",
-       "e4c14c77-022c-4933-86ba-5cd7f8bda7fc",
-       "0cf808eb-4e4f-4307-8d57-ad8a00e1c586",
-       "7f09b382-4c2e-4bcc-98c9-3e2ae0936d04",
-       "d5853de6-41ae-4ec2-9bcc-ebea89be8bd7",
-       "e56fa035-56fb-49c7-837b-6ef177c1e983",
-       "718e6d33-1135-4d9c-84ff-f25633cb398c",
-       "2fbdcbbf-e584-499a-8264-1154ef59a300",
-       "c4a4e085-99c5-4049-8c04-565ff0dc62e9",
-       "c81b1b7e-124e-4e48-bc7d-9dd5a9f60b9f",
-       "304ff6dd-8497-4c1f-9916-f03319c4fd70",
-       "b3a69c84-8f37-41d3-bb92-b30868bb9f14",
-       "be36b08c-f4c7-4222-a054-1fd62f9eef00",
-       "d4e393f5-5175-4e70-a3c0-516846f92260",
-       "72b8a36a-3f9b-4975-a882-e6c59aeee400",
-       "81472112-8f52-418e-a549-70a661f187a6",
-       "25c55116-0dd7-42ff-aee5-c2b15bc30d51",
-       "241a4409-e0fa-4e55-862b-8a0f0a406e4f",
-       "683a271f-8851-42c5-8df5-efdc1e84066b",
-       "e445355e-5b66-496d-83e0-2ce511d901b3",
-       "7ffc8960-65f2-4126-aecd-5bfa772e16fa",
-       "2e954bc3-0d02-4496-b7d2-a7f2a439f5f1",
-       "2d7adba3-ae51-4bfb-a01c-1c59e726e461",
-       "9c38bc33-514a-4feb-85a5-70c38e66abf6",
-       "fd04bdbc-347d-4a13-86e5-a0eb1a170fd7",
-       "62fddc62-ea65-446d-ad56-fd4fa7f895c5",
-       "de2caca1-86dd-48e6-8de8-45a652062001",
-       "3a195621-2c5f-485b-8d56-31ee95de579b",
-       "2fe5f3e6-2eca-4514-82b9-97728221b237",
-       "7545b1e0-6d72-4f86-b214-e3d65c181370",
-       "7af58920-be39-4241-9965-19aa758e2dbb",
-       "5c442008-fec8-4169-aea3-5ae734df1641",
-       "c209f42e-ec25-4605-8506-99b023586d7f",
-       "20a66366-b78c-415e-b482-f791529f9398",
-       "6858ca79-5b52-4a54-bb02-fb89c2aa4aec",
-       "41527834-d8a5-48ac-a793-15b71f5d77ed",
-       "6c3e4040-7318-46de-91ab-9186f9cdeb5b",
-       "3dcb0a62-d518-4f29-816d-18f41667046e",
-       "3aa23acb-83d7-401a-87a1-e99082e07aed",
-       "c8c3bbdb-4c87-406b-924b-4c6abc51607d"
+       "f9251b5f-3a8b-4de3-9937-b2d374af949c",
+       "11eba6fd-5035-4d03-bb47-dc8df3f18a0f",
+       "b4aca476-08ec-4e94-8848-b1fd40dfb4c2",
+       "3e393090-a17f-470b-b97e-ea6a016eee03",
+       "a8b7e469-d127-4e99-ad23-02e5fe5ec900",
+       "45e2a3d6-057b-45ef-be61-9bb0db7ba273",
+       "62383422-4f67-4463-afce-018d0882b522",
+       "2c9a201c-e422-440e-8cf2-67bf102ace44",
+       "ecef37da-7d5e-40d2-ab99-6c3530e8c557",
+       "4e4ac049-8660-431b-83e4-e4794e1b0a96",
+       "c7e0825a-731d-4c4e-962a-89dd6c98561f",
+       "df4fee20-f054-4b42-8fd1-56ecd3df5516",
+       "8f290fc0-c80a-4bbe-bab1-26decfc8a55c",
+       "6e7ac063-9027-4e6b-8344-aaed6f6a4a4d",
+       "e89e637a-94fc-4ab6-9e52-a5afa63a0552",
+       "1ce82ba0-76b8-4664-b774-948ea208107c",
+       "76f26189-3478-43a3-9dae-7dda58a1c2d8",
+       "11c5715e-d9cf-4b74-b340-4f41c800a8fa",
+       "1df9d28e-dba9-4f07-8068-d900be94515d",
+       "cc1c9712-0f1c-4bd7-b9aa-d81f32c2b2cc",
+       "03cad457-5d33-4042-a256-057329e73b26",
+       "13747703-7622-42ab-a9e9-22cdca8fb748",
+       "f2b1b462-e569-4aa2-93f5-51df5a76fcd0",
+       "5ebecde1-4882-4b8f-94ca-7bca24fe3454",
+       "8833f51f-204a-47f8-b1b8-73297c9f2c00",
+       "7bef3d16-5753-4ad3-b015-cc9762da95cd",
+       "f93a4050-b0ab-436a-9a61-ad10fd6e0ff6",
+       "57bef808-cf7f-4dd0-9083-aca6d6aca734",
+       "adf3053a-f53d-4c52-a158-c38fbe8707e1",
+       "fc326286-3e99-431c-ac21-dd134e11aa7b",
+       "eee61b04-0af0-411a-8078-e4012ceaf623",
+       "8dc06080-133c-4a0a-89df-91ed0743e266",
+       "6ed367b1-415c-4cf4-b3f5-9aeadda7664f",
+       "7f1b60c7-a397-4aa3-a993-12d8a937d7fb",
+       "c7876e23-e536-4425-9b85-fe42bd55160d",
+       "9cf145fa-a891-4f23-ae1e-108cfeab94ad",
+       "7989ce62-d7f5-43f1-a3c3-632f6a926d22",
+       "fbceedc6-3d0c-46f9-aeea-62b7eb1efd2b",
+       "8ee86131-4124-4e5b-922b-21c857530645",
+       "64d5f4ed-2949-4b23-bff0-d44a6f748611",
+       "6f34daa7-17fa-4611-9ef9-c0f097b71bbf",
+       "7cc5c511-3f2e-4b8b-b694-4d087bf122a3",
+       "fd1ca334-d564-4804-ae38-732836af4a04",
+       "ae9b5e0d-4978-4e7f-8dec-13cb61d17c9c",
+       "79d7e123-9133-4472-b8be-c5fd55458628",
+       "eabbead8-fe3b-4502-86b9-a98a7cb583c0",
+       "02252e18-1220-4112-ba9d-20d8accead71",
+       "95082107-187d-402b-8c68-820cfecc90ca",
+       "6ab62c12-1c9c-4226-9ecc-bf8a95c9472b",
+       "83419b01-4267-455c-a572-8d64df125c4e",
+       "5294b1ad-bd90-4850-ad17-b95b1696aaea",
+       "294356e4-ebfb-4b22-9f10-ba3704132344",
+       "2ddcbdbd-4815-4335-a9a5-61bc404b4c6f",
+       "7e3288d1-6110-4154-b369-efb8e32800c6",
+       "548c2f32-072a-4c03-a515-c78ce2590916",
+       "cb2b87da-5a43-4814-af46-46462729573c",
+       "60df8bee-8e36-4823-92a0-10e69f394738",
+       "4abbeb93-7b23-42d5-94d9-aaac3de9e90f",
+       "576593d4-2af3-4811-8b26-e12b25d67240",
+       "6cce3a5a-b250-49bc-9b63-e80d95ca1fa5",
+       "19fd238a-117a-425d-9793-dea667b0f082",
+       "5e68c527-a1ec-4b1a-97cb-ad257818ef15",
+       "012dfc9e-1f0a-41ef-adc2-c0691e616ad7",
+       "3d5414c4-115f-4e95-836e-ee8460d375de",
+       "5018d9db-d38a-4dc3-b2d1-e808e506eef9",
+       "0370bb57-35e8-43ff-8481-a0e8b183d44e",
+       "78c89a9d-8e82-47c4-ad9a-fe04af957d5b",
+       "ca669142-1031-44f2-8b3c-8464efabe938",
+       "a11ad37f-4f0c-4631-833c-d06d385f1dc9",
+       "f2f1d0e3-1c4f-44fd-be26-c883bcf4327c",
+       "d97a5e5d-5447-42c0-87be-52c372d690b3",
+       "7c2e9ec6-6faf-4169-b420-38893ad76b8f",
+       "8d63d4ee-f0f8-4418-82b2-0cc103ac10ba",
+       "540af58e-5ed2-4acb-b976-b2d5f1ebc72c",
+       "bc89ae89-686f-4393-98a4-7f12a2e747fd"
       ],
       "devices": [
        {
@@ -976,8 +1050,8 @@
        }
       ],
       "reason": "accepted: first baseline (ADR-0003)",
-      "published_by": "5dfb2a59-c0c2-4652-aad2-423c2911674a",
-      "published_at": "2026-11-01T00:20:09.153Z",
+      "published_by": "9d29a650-f821-499f-910b-559dfeca5e8c",
+      "published_at": "2026-11-01T01:50:43.784Z",
       "supersedes": null,
       "superseded_at": null,
       "superseded_by": null
@@ -985,7 +1059,7 @@
     ],
     "exceptions": []
    },
-   "correlationId": "b8f6ca3f-c04e-48de-99c1-49a55eb5223c"
+   "correlationId": "5e3ffd08-c834-410f-b2b1-42c3e7aa26d7"
   }
  ]
 }

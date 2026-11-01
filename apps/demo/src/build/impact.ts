@@ -16,7 +16,7 @@
  */
 import { ROOM_LIFECYCLE, type ApplicabilityRow, type DesignFinding, type PlannedDevice, type RoomLifecycle } from '@empathia/domain-types';
 import { ENGINE_VERSION, DRAWING_KINDS } from '@empathia/commissioning-engine';
-import { assess, STATUS_TEXT, type Baseline as AssuranceBaseline, type Status } from '@empathia/assurance-engine';
+import { assess, STATUS_TEXT, type Baseline as AssuranceBaseline, type Status, type PresenceChange } from '@empathia/assurance-engine';
 import { impact as downstream, nodeKey, RELATIONS, type NodeRef } from '@empathia/search-party';
 import { passports, type Passport } from '@empathia/kpi-engine';
 import * as S from './store.js';
@@ -43,7 +43,9 @@ export interface Impact {
     gate: { from: string; to: string | null; before: string[]; after: string[] };
   };
   search: GraphDevice[];
-  assurance: { baseline: { version: number; state: string; at: string; by: string; revision: number | null; devices: number } | null; untouched: boolean; presence: { before: Status; after: Status; beforeText: string; afterText: string; current: string; evidence: string; fix: string | null } | null; added: string[]; removed: string[] };
+  assurance: { baseline: { version: number; state: string; at: string; by: string; revision: number | null; devices: number } | null; untouched: boolean; presence: { before: Status; after: Status; beforeText: string; afterText: string; current: string; evidence: string; fix: string | null } | null; added: string[]; removed: string[];
+    /** ADR-0012: each change at a position against the baseline, labelled — MODEL_SUBSTITUTED, UNIT_REPLACED (an installation change), ADDED, REMOVED */
+    changes: PresenceChange[] };
   kpis: Array<{ id: string; label: string; from: string; to: string }>;
   stations: Array<{ key: string; label: string; from: number; to: number; href: string }>;
   design: { drawings: Array<{ kind: string; label: string; from: string; to: string }>; classification: { from: string; to: string } | null };
@@ -108,12 +110,14 @@ export function computeImpact(before: S.Draft, after: S.Draft, w: Workspace, at:
   // Assurance: the current accepted baseline, read and compared — never written
   const b = after.baseline;
   const untouched = JSON.stringify(before.baselines || []) === JSON.stringify(after.baselines || []) && JSON.stringify(before.baseline) === JSON.stringify(after.baseline);
-  let presence: Impact['assurance']['presence'] = null; let added: string[] = []; let removed: string[] = [];
+  let presence: Impact['assurance']['presence'] = null; let added: string[] = []; let removed: string[] = []; let changes: PresenceChange[] = [];
   if (b) {
-    const base: AssuranceBaseline = { id: `${after.code}/v${b.version}`, version: b.version, signedAt: b.at, signedBy: b.by, devices: b.devices.map((x) => ({ id: x.id, category: x.cat, label: x.label })), layout: null, capacity: after.design.occupancy, configSignature: null, documents: [] };
-    const facts = (d: S.Draft) => ({ now: new Date(at).toISOString(), devices: live(d).filter((x) => !x.furniture).map((x) => ({ id: x.id, category: x.cat, label: x.label, networked: !!S.C.categories[x.cat]?.net, state: null })) });
+    // the model and the physical unit each position had when the baseline was published (a baseline published before units were recorded holds neither: not compared)
+    const base: AssuranceBaseline = { id: `${after.code}/v${b.version}`, version: b.version, signedAt: b.at, signedBy: b.by, devices: b.devices.map((x) => ({ id: x.id, category: x.cat, label: x.label, model: x.model ?? null, unit: x.unit ?? null })), layout: null, capacity: after.design.occupancy, configSignature: null, documents: [] };
+    const facts = (d: S.Draft) => ({ now: new Date(at).toISOString(), devices: live(d).filter((x) => !x.furniture).map((x) => ({ id: x.id, category: x.cat, label: x.label, model: x.model, unit: S.identity(d, x.id).asset, networked: !!S.C.categories[x.cat]?.net, state: null })) });
     const p0 = assess(base, facts(before)).rows.find((r) => r.k === 'presence')!; const p1 = assess(base, facts(after)).rows.find((r) => r.k === 'presence')!;
     presence = { before: p0.status, after: p1.status, beforeText: STATUS_TEXT[p0.status], afterText: STATUS_TEXT[p1.status], current: p1.current, evidence: p1.ev, fix: p1.fix ? `${p1.fix.label} (a proposal: needs ${p1.fix.approverAuthority})` : null };
+    changes = p1.changes || [];
     const ids = new Set(b.devices.map((x) => x.id)); const now = live(after).filter((x) => !x.furniture);
     added = now.filter((x) => !ids.has(x.id)).map((x) => `${x.label} (${x.id})`); removed = b.devices.filter((x) => !now.some((y) => y.id === x.id)).map((x) => `${x.label} (${x.id})`);
   }
@@ -132,7 +136,7 @@ export function computeImpact(before: S.Draft, after: S.Draft, w: Workspace, at:
     commissioning: { engineVersion: ENGINE_VERSION, applicable: [cx.A0.applicability.applicable, cx.A1.applicability.applicable], library: cx.A1.applicability.library, added: cx.added, removed: cx.removed, kept: cx.kept, statusChanged: cx.statusChanged, coverageChanged: cx.coverageChanged, reopened: cx.reopened, reverification: cx.reverification, findings: cx.findings,
       gate: { from: lc, to: next || null, before: next ? gateFacts(before, cx.A0, next) : [], after: next ? gateFacts(after, cx.A1, next) : [] } },
     search,
-    assurance: { baseline: b ? { version: b.version, state: b.state, at: b.at, by: b.by, revision: b.revision, devices: b.devices.length } : null, untouched, presence, added, removed },
+    assurance: { baseline: b ? { version: b.version, state: b.state, at: b.at, by: b.by, revision: b.revision, devices: b.devices.length } : null, untouched, presence, added, removed, changes },
     kpis, stations,
     design: { drawings, classification: c0 !== c1 ? { from: c0, to: c1 } : null },
   };

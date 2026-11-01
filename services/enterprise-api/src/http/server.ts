@@ -117,7 +117,9 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
       }
       send(await route.handler(ctx, { params, query: url.searchParams, body, raw, headers: req.headers }));
     } catch (e) {
-      const err = e instanceof ApiError ? e : (e as { code?: string }).code === '23505' ? new ApiError('conflict', 'that record already exists') : /^EM00[1-4]$/.test(String((e as { code?: string }).code)) ? new ApiError('rule_refused', (e as Error).message) : (e as { code?: string }).code === '23514' ? new ApiError('rule_refused', `a database constraint refused the change: ${(e as { constraint?: string }).constraint || (e as Error).message}`) : new ApiError('internal', 'internal error (see the server log for this correlation id)');
+      // 23505 unique / 23P01 exclusion: the database refused a second record of something there is one of (an open installation per
+      // position or per unit, overlapping installation periods, a serial) → 409; EM009 is the installation/asset guard (ADR-0012) → 422
+      const err = e instanceof ApiError ? e : (e as { code?: string }).code === '23505' ? new ApiError('conflict', 'that record already exists') : (e as { code?: string }).code === '23P01' ? new ApiError('conflict', `a database constraint refused an overlapping record: ${(e as { constraint?: string }).constraint || (e as Error).message}`) : /^EM00[1-49]$/.test(String((e as { code?: string }).code)) ? new ApiError('rule_refused', (e as Error).message) : (e as { code?: string }).code === '23514' ? new ApiError('rule_refused', `a database constraint refused the change: ${(e as { constraint?: string }).constraint || (e as Error).message}`) : new ApiError('internal', 'internal error (see the server log for this correlation id)');
       if (err.code === 'internal') {
         log('error', 'request failed', { correlationId, error: (e as Error).message, stack: (e as Error).stack?.split('\n').slice(0, 4).join(' | ') });
         // the same correlation id is in the problem document, the log line and the telemetry event; nothing from the request body goes with it

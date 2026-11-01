@@ -8,12 +8,18 @@ const fake = (status: number, body: unknown, seen: Seen[]) => (async (url: strin
   return new Response(typeof body === 'string' ? body : JSON.stringify(body), { status, headers: { 'content-type': status >= 400 ? 'application/problem+json' : 'application/json', 'x-correlation-id': 'corr-12345678' } });
 }) as typeof fetch;
 
-test('the generated operation table covers the contract (151 operations) and keeps paths and methods', () => {
-  assert.equal(Object.keys(OPERATIONS).length, 151);
+test('the generated operation table covers the contract (156 operations) and keeps paths and methods', () => {
+  assert.equal(Object.keys(OPERATIONS).length, 156);
   assert.deepEqual(OPERATIONS.getV1RoomsRoom, { method: 'GET', path: '/v1/rooms/{room}', auth: true });
   // added with the recommissioning checkpoint: the change-order design approval (never by the revision's author)
   assert.deepEqual(OPERATIONS.postV1RoomsRoomRevisionsRevApprove, { method: 'POST', path: '/v1/rooms/{room}/revisions/{rev}/approve', auth: true });
   assert.equal(OPERATIONS.getHealth.auth, false);
+  // added with positions, physical assets and installations (ADR-0012): install, replace, the two histories, and the identity record
+  assert.deepEqual(OPERATIONS.postV1RoomsRoomPositionsPositionInstallation, { method: 'POST', path: '/v1/rooms/{room}/positions/{position}/installation', auth: true });
+  assert.deepEqual(OPERATIONS.postV1RoomsRoomPositionsPositionReplace, { method: 'POST', path: '/v1/rooms/{room}/positions/{position}/replace', auth: true });
+  assert.deepEqual(OPERATIONS.getV1RoomsRoomPositionsPositionHistory, { method: 'GET', path: '/v1/rooms/{room}/positions/{position}/history', auth: true });
+  assert.deepEqual(OPERATIONS.getV1AssetsAssetHistory, { method: 'GET', path: '/v1/assets/{asset}/history', auth: true });
+  assert.deepEqual(OPERATIONS.postV1AssetsAssetIdentity, { method: 'POST', path: '/v1/assets/{asset}/identity', auth: true });
 });
 
 test('path parameters are encoded, query parameters added, the bearer token and idempotency key sent', async () => {

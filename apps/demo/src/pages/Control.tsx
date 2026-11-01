@@ -15,7 +15,7 @@ import { TIERS } from '@empathia/apex-engine';
 import areaRoles from '../generated/area-roles.json';
 import * as S from '../workspace/store.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
-import { loadDraft, personaOf, personaLabel, holds, type Draft } from '../build/store.js';
+import { loadDraft, personaOf, personaLabel, holds, identity as unitIdentity, identityLabel, live as liveOf, type Draft } from '../build/store.js';
 import { NATIVE } from '../registry.js';
 import { assemble, stationCounts, roomAggregates } from '../workspace/records.js';
 
@@ -75,7 +75,21 @@ export function ExecPage({ perspective }: { perspective: string }) {
         <div className="build__state">{[30, 90, 180, 365].map((n) => <Button key={n} small kind={n === days ? 'primary' : 'secondary'} onClick={() => setDays(n)}>{n} days</Button>)}</div></header>
       <div className="exec__grid" data-testid="passports">{ps.map((x) => <button key={x.id} type="button" className={`exec__tile${x.id === sel ? ' on' : ''}${x.state === 'NOT_MEASURABLE' ? ' nm' : ''}`} onClick={() => setSel(x.id)}><span className="exec__label">{x.label}</span><span className="exec__value">{x.state === 'NOT_MEASURABLE' ? 'not measurable' : x.byCurrency ? Object.entries(x.byCurrency).map(([c, v]) => `${v.toLocaleString()} ${c}`).join(' · ') : `${x.value}${x.unit === '%' ? '%' : ''}`}</span><span className="ui-meta">{x.state === 'NOT_MEASURABLE' ? x.reason : `${x.numerator} / ${x.denominator} ${x.unit !== '%' ? x.unit : ''}`}</span><Tag tone={LEVEL[x.confidence.level]}>{x.confidence.level}</Tag></button>)}</div>
       {p && <PassportView p={p} />}
+      {d && (d.installations || []).length > 0 && <Units d={d} />}
     </section>
+  );
+}
+/** Pro reads the same identities as Build a Room, the register, Assurance and Search Party (ADR-0012): position · unit · identity, and
+ *  how much of the installed estate has a recorded identity — UNKNOWN is never counted as known. */
+function Units({ d }: { d: Draft }) {
+  const devs = (liveOf(d.design.devices) as Array<{ id: string; label: string; furniture?: boolean }>).filter((x) => !x.furniture);
+  const ids = devs.map((x) => unitIdentity(d, x.id)); const known = ids.filter((i) => i.identityState && i.identityState !== 'UNKNOWN').length;
+  return (
+    <div className="card stack" data-testid="exec-units">
+      <h2 className="build__h">Installed units · {d.name}</h2>
+      <p>{ids.filter((i) => i.asset).length} of {devs.length} positions hold a unit; {known} with a recorded identity ({ids.length ? Math.round((known / ids.length) * 100) : 0}%). Synthetic units: UNKNOWN means nothing about the unit is recorded.</p>
+      <ul className="build__list">{devs.map((x) => <li key={x.id} data-identity={identityLabel(d, x.id)}>{identityLabel(d, x.id)} <span className="ui-muted">{x.label}</span></li>)}</ul>
+    </div>
   );
 }
 function PassportView({ p }: { p: Passport }) {

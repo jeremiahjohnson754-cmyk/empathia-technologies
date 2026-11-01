@@ -127,13 +127,50 @@ function Design({ d, persona, a, apply, change, impact }: { d: S.Draft; persona:
         <p>{ap ? <Tag tone={ap.stale ? 'warn' : 'ok'}>{ap.stale ? 'approval stale — the design changed' : `approved ${ap.archetype} by ${S.personaLabel(ap.by || '')}`}</Tag> : <Tag tone="muted">not approved</Tag>}</p>
         <p className="build__row"><Button small onClick={() => apply(S.approveClassification(d, persona))}>Approve the suggestion as {S.personaLabel(persona)}</Button></p>
         <h2 className="build__h2">Devices ({devs.filter((x) => !x.furniture).length}) and proposed connections ({conns.length})</h2>
-        <ul className="build__list">{devs.map((x) => <li key={x.id}><code>{x.id}</code> {x.label} <span className="ui-muted">{x.cat} · {x.mount} · {x.x.toFixed(1)}, {x.y.toFixed(1)} m{x.furniture ? ' · furniture' : ''}</span> {changeable && <button type="button" className="build__x" aria-label={`Remove ${x.label}`} onClick={() => done(change((v) => S.removeDevice(v, persona, x.id, why)))}>remove</button>}</li>)}</ul>
+        <ul className="build__list">{devs.map((x) => <li key={x.id} data-identity={x.furniture ? undefined : S.identityLabel(d, x.id)}><code>{x.id}</code> {x.label} <span className="ui-muted">{x.cat} · {x.mount} · {x.x.toFixed(1)}, {x.y.toFixed(1)} m{x.furniture ? ' · furniture' : ''}</span> {changeable && <button type="button" className="build__x" aria-label={`Remove ${x.label}`} onClick={() => done(change((v) => S.removeDevice(v, persona, x.id, why)))}>remove</button>}</li>)}</ul>
         <ul className="build__list build__list--conn">{conns.map((c) => <li key={c.id}><code>{c.id}</code> {c.from} → {c.to} <Tag tone="info">{c.kind}</Tag> <span className="ui-muted">{c.why}</span></li>)}</ul>
+        <Register d={d} persona={persona} why={why} run={(fn) => done(change(fn))} />
         <h2 className="build__h2">Revisions ({d.revisions.length})</h2>
         <div className="build__row"><input aria-label="Revision reason" value={reason} onChange={(e) => setReason(e.target.value)} placeholder="why this revision" maxLength={200} /><Button small onClick={() => { if (apply(S.saveRevision(d, persona, reason))) setReason(''); }}>Save revision as {S.personaLabel(persona)}</Button></div>
         <ul className="build__list">{d.revisions.map((r) => <li key={r.n}>rev {r.n} · <code>{r.hash}</code> · {S.personaLabel(r.by)} · {r.reason}{d.approvedRevision === r.n && <> <Tag tone="ok">approved</Tag></>}</li>)}</ul>
       </div>
     </div>
+  );
+}
+
+/**
+ * The device register (ADR-0012): each position (PA-) with the physical unit installed there now (AS-) and its identity state — the same
+ * reading as the enterprise API's registry, Assurance and Search Party. Replace a unit like for like (field work) or substitute the model
+ * (a design change, while recommissioned); declare a synthetic serial. The position's design history is shown apart from the unit's history.
+ */
+function Register({ d, persona, why, run }: { d: S.Draft; persona: string; why: string; run: (fn: (x: S.Draft) => S.Draft | S.Refusal) => boolean }) {
+  const devs = (S.live(d.design.devices) as Array<{ id: string; label: string; cat: string; model: string; furniture?: boolean }>).filter((x) => !x.furniture);
+  const [sel, setSel] = useState(''); const [model, setModel] = useState('');
+  const pos = devs.find((x) => x.id === sel) || devs.find((x) => x.cat === 'bar' || x.cat === 'camera') || devs[0];
+  if (!pos) return null;
+  const id = S.identity(d, pos.id); const ph = S.positionHistory(d, pos.id); const ah = id.asset ? S.assetHistory(d, id.asset) : null;
+  return (
+    <section data-testid="device-register" aria-labelledby="register-h">
+      <h2 id="register-h" className="build__h2">Device register — positions and their units</h2>
+      <table className="build__table"><thead><tr><th>Position</th><th>Device</th><th>Model</th><th>Unit</th><th>Identity</th></tr></thead>
+        <tbody>{devs.map((x) => { const i = S.identity(d, x.id); return <tr key={x.id} data-position={x.id} data-asset={i.asset || ''} data-identity-state={i.identityState || ''}><td><code>{x.id}</code></td><td>{x.label}</td><td>{x.model}</td><td>{i.asset ? <code>{i.asset}</code> : <span className="ui-muted">no unit installed</span>}</td><td>{i.identityState ? <Tag tone={i.identityState === 'VERIFIED' ? 'ok' : i.identityState === 'UNKNOWN' ? 'muted' : 'info'}>{i.identityState}</Tag> : '—'}</td></tr>; })}</tbody></table>
+      <p className="ui-muted">Units are synthetic (Visitor Mode): a serial, when declared, is a synthetic one (SYN-…), and no manufacturer is named. UNKNOWN means nothing about the unit has been recorded.</p>
+      <div className="build__row"><label className="ui-muted" htmlFor="b-unit">Position</label><select id="b-unit" value={pos.id} onChange={(e) => setSel(e.target.value)}>{devs.map((x) => <option key={x.id} value={x.id}>{x.label} ({x.id})</option>)}</select>
+        <Button small testId="replace-unit" onClick={() => run((v) => S.replaceUnit(v, persona, pos.id, { why }))}>Replace the unit (like for like)</Button></div>
+      <div className="build__row"><label className="ui-muted" htmlFor="b-model">Model</label><input id="b-model" value={model} onChange={(e) => setModel(e.target.value)} placeholder="e.g. SYN-BAR-2 (synthetic)" maxLength={80} />
+        <Button small testId="substitute-model" onClick={() => { if (run((v) => S.replaceUnit(v, persona, pos.id, { model, why }))) setModel(''); }}>Substitute the model</Button>
+        {id.asset && <Button small testId="declare-serial" onClick={() => run((v) => S.recordIdentity(v, persona, id.asset!, { state: 'DECLARED', serial: `SYN-SN-${id.asset}` }))}>Declare a synthetic serial</Button>}</div>
+      <div className="build__two">
+        <div data-testid="position-history"><h3 className="build__h">Position {pos.id} — design history</h3>
+          <p>{pos.label} · {pos.cat} · designed model <b>{pos.model}</b> · now: {S.identityLabel(d, pos.id)}</p>
+          {ph.design.length ? <ul className="build__list">{ph.design.map((h, k) => <li key={k}>{h.kind === 'model' ? `model ${h.from} → ${h.to}` : `${h.from} replaced by ${h.to}`} · {S.personaLabel(h.by)} · <span className="ui-muted">{h.at}</span></li>)}</ul> : <p className="ui-muted">No design change since it was placed.</p>}
+          <h3 className="build__h">Installations at {pos.id}</h3>
+          {ph.installations.length ? <ul className="build__list">{ph.installations.map((i) => <li key={i.id}>{i.sentence}</li>)}</ul> : <p className="ui-muted">No unit recorded yet (units are recorded when the installation is, at INSTALLED_UNVERIFIED).</p>}</div>
+        <div data-testid="asset-history"><h3 className="build__h">Unit history{ah?.asset ? ` — ${ah.asset.code}` : ''}</h3>
+          {ah?.asset ? <><p>{ah.asset.category} · model <b>{ah.asset.model}</b> · identity <b>{ah.asset.identityState}</b>{ah.asset.serial ? ` · serial ${ah.asset.serial} (synthetic)` : ' · no serial on record'}</p>
+            <ul className="build__list">{ah.installations.map((i) => <li key={i.id}>{i.sentence}</li>)}{ah.identity.map((e, k) => <li key={`id${k}`}>identity {e.from} → {e.to} by {S.personaLabel(e.by)} (synthetic serial {e.serial})</li>)}</ul></> : <p className="ui-muted">No unit at this position.</p>}</div>
+      </div>
+    </section>
   );
 }
 
@@ -161,7 +198,7 @@ function Reverify({ d, rv }: { d: S.Draft; rv: S.Reverification[] }) {
   return (
     <section className="build__reverify" aria-labelledby="reverify-h" data-testid="reverification" data-reopened={rv.map((t) => t.testId).join(',')} data-outstanding={out.map((t) => t.testId).join(',')} data-unverified={unverified.map((t) => t.testId).join(',')}>
       <h2 id="reverify-h" className="build__h2">Re-verification required · {rv.length} test{rv.length === 1 ? '' : 's'} reopened</h2>
-      <p>{subs.map((s) => `${s.label} (${s.assetId}, ${s.from}) → ${s.to}`).join('; ')} — substituted by {[...new Set(subs.map((s) => S.personaLabel(s.by)))].join(', ')} while baseline v{b?.version} is recommissioned. A result recorded before the substitution was obtained on the previous device: it stays on record and no longer counts towards the re-acceptance. Each reopened test is re-run on the changed design and verified again by a different person.</p>
+      <p data-testid="reverification-units">{subs.map((s) => `${s.label} (${s.assetId}, ${s.from}) → ${s.to}${s.fromAsset || s.toAsset ? ` [unit ${s.fromAsset || '—'} → ${s.toAsset || '—'}]` : ''}`).join('; ')} — substituted by {[...new Set(subs.map((s) => S.personaLabel(s.by)))].join(', ')} while baseline v{b?.version} is recommissioned. A result recorded before the substitution was obtained on the previous device: it stays on record and no longer counts towards the re-acceptance. Each reopened test is re-run on the changed design and verified again by a different person.</p>
       <p><b>{out.length ? `${out.length} still to re-run` : 'Every reopened test has been re-run since'}</b>{unverified.length ? ` · ${unverified.length} re-run, awaiting a pass verified by a different person` : ''} · baseline v{b?.version} is unchanged and stays CURRENT until the re-acceptance publishes v{(b?.version || 0) + 1}.</p>
       <ul className="build__list">{rv.map((t) => <li key={t.testId}><code>{t.testId}</code> {t.label} <Tag tone={TONE[t.result]}>{t.result}</Tag> <span className="ui-muted">{t.rerun ? S.PREVIOUS_DEVICE : t.result === 'PASS_VERIFIED' ? 're-run after the substitution and verified by a different person' : 're-run after the substitution'}</span><ul className="build__why">{t.reasons.map((x) => <li key={x} className="ui-muted">{x}</li>)}</ul></li>)}</ul>
     </section>
@@ -176,7 +213,7 @@ function Lifecycle({ d, persona, a, apply }: { d: S.Draft; persona: string; a: R
   const [sel, setSel] = useState(app[0]?.id || ''); const row = app.find((r) => r.id === sel) || app[0];
   const [state, setState] = useState('PASS'); const [kind, setKind] = useState(''); const [ref, setRef] = useState('synthetic observation 1'); const [inst, setInst] = useState('SYN-METER-01 (synthetic), calibration SYN-CAL-2026-09');
   const k = kind && (row?.evidence || []).includes(kind) ? kind : row?.evidence?.[0] || '';
-  const recordAll = () => { let cur: S.Draft = d; let okN = 0; const why: string[] = []; for (const r of app) { if (resultLabel(res[r.id]) !== 'NOT_TESTED' && !stale.has(r.id)) continue; const out = S.record(cur, persona, r.id, { state: 'PASS', kind: r.evidence?.[0] || '', ref: `synthetic observation ${r.id}`, instrument: r.instrument ? inst : undefined }); if ('why' in out) { why.push(`${r.id}: ${out.why[0]}`); } else { cur = out; okN += 1; } } if (okN) apply(cur); if (why.length) apply(S.refused([`${okN} recorded; ${why.length} refused — first: ${why[0]}`])); };
+  const recordAll = () => { let cur: S.Draft = d; let okN = 0; const why: string[] = []; for (const r of app) { if (resultLabel(res[r.id]) !== 'NOT_TESTED' && !stale.has(r.id)) continue; const out = S.record(cur, persona, r.id, { state: 'PASS', kind: r.evidence?.[0] || '', ref: stale.has(r.id) ? `synthetic re-run observation ${r.id} (after the change of unit)` : `synthetic observation ${r.id}`, instrument: r.instrument ? inst : undefined }); if ('why' in out) { why.push(`${r.id}: ${out.why[0]}`); } else { cur = out; okN += 1; } } if (okN) apply(cur); if (why.length) apply(S.refused([`${okN} recorded; ${why.length} refused — first: ${why[0]}`])); };
   const verifyAll = () => { let cur: S.Draft = d; let okN = 0; const why: string[] = []; for (const r of app) { const rr = res[r.id]; if (!rr || rr.state !== 'PASS' || rr.verified) continue; const out = S.verify(cur, persona, r.id); if ('why' in out) why.push(`${r.id}: ${out.why[0]}`); else { cur = out; okN += 1; } } if (okN) apply(cur); if (why.length) apply(S.refused([`${okN} verified; ${why.length} refused — first: ${why[0]}`])); };
   return (
     <div>

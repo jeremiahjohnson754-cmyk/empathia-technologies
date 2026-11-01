@@ -6,6 +6,7 @@
  * Live operational performance is NOT_MONITORED: the starter has no monitoring feed, so no uptime or health KPI is computed.
  */
 import type { RequestContext } from '../auth/context.js';
+import { findRoom, load, reverificationNow } from './rooms.js';
 
 const ratio = (num: number, den: number) => (den > 0 ? Math.round((num / den) * 1000) / 1000 : null);
 
@@ -31,6 +32,13 @@ export async function summary(ctx: RequestContext) {
     const recorded = applicable - (labels['NOT_TESTED'] || 0);
     const passed = (labels['PASS_VERIFIED'] || 0) + (labels['PASS_UNVERIFIED'] || 0);
 
+    // a current PASS_VERIFIED recorded on a unit that has since been replaced or substituted is still its label, but it no longer counts
+    // (ADR-0012): the summary says how many, so no stale verification is presented as the room's state
+    let superseded = 0; let supersededVerified = 0;
+    for (const r of (await q.query<{ id: string }>(`SELECT r.id FROM app.room r JOIN ${S} s ON s.id = r.id WHERE r.lifecycle = 'COMMISSIONING' ORDER BY r.code`, args)).rows) {
+      const rv = await reverificationNow(q, await findRoom(ctx, q, r.id), await load(ctx, q, r.id));
+      superseded += rv.reverification.filter((t) => t.rerun).length; supersededVerified += rv.reverification.filter((t) => t.rerun && t.result === 'PASS_VERIFIED').length;
+    }
     const issues = (await q.query<{ category: string; severity: string; state: string; n: number }>(`SELECT i.category, i.severity, i.state, count(*)::int AS n FROM app.room_issue i JOIN ${S} s ON s.id = i.room_id GROUP BY 1, 2, 3 ORDER BY 1, 2, 3`, args)).rows;
     const open = issues.filter((i) => i.state === 'OPEN');
     const resolved = (await q.query<{ n: number; hours: number | null }>(`
@@ -41,6 +49,16 @@ export async function summary(ctx: RequestContext) {
 
     const wo = (await q.query<{ state: string; n: number }>(`SELECT w.state, count(*)::int AS n FROM app.work_order w JOIN app.room_issue i ON i.id = w.issue_id JOIN ${S} s ON s.id = i.room_id GROUP BY 1`, args)).rows;
     const assets = (await q.query<{ n: number; generic: number; models: number }>(`SELECT count(*)::int AS n, count(*) FILTER (WHERE a.generic)::int AS generic, count(DISTINCT a.model)::int AS models FROM app.planned_asset a JOIN ${S} s ON s.id = a.room_id WHERE a.removed_at IS NULL AND NOT a.furniture`, args)).rows[0]!;
+    // ADR-0012: positions, the units installed at them, and what is known of each unit's identity
+    const inst = (await q.query<{ positions: number; installed: number; unknown: number; declared: number; observed: number; verified: number; migrated: number; replaced: number }>(`
+      SELECT count(DISTINCT a.id)::int AS positions, count(i.id)::int AS installed,
+             count(*) FILTER (WHERE pa.identity_state = 'UNKNOWN')::int AS unknown, count(*) FILTER (WHERE pa.identity_state = 'DECLARED')::int AS declared,
+             count(*) FILTER (WHERE pa.identity_state = 'OBSERVED')::int AS observed, count(*) FILTER (WHERE pa.identity_state = 'VERIFIED')::int AS verified,
+             count(*) FILTER (WHERE i.effective_basis = 'KNOWN_AS_OF_MIGRATION')::int AS migrated,
+             (SELECT count(*)::int FROM app.asset_installation x JOIN app.planned_asset y ON y.id = x.position_id JOIN ${S} s2 ON s2.id = y.room_id WHERE x.removal_reason IN ('REPLACED', 'SUBSTITUTED')) AS replaced
+        FROM app.planned_asset a JOIN ${S} s ON s.id = a.room_id
+        LEFT JOIN app.asset_installation i ON i.position_id = a.id AND i.removed_at IS NULL LEFT JOIN app.physical_asset pa ON pa.id = i.asset_id
+       WHERE a.removed_at IS NULL AND NOT a.furniture`, args)).rows[0]!;
     const ev = (await q.query<{ n: number; bytes: string | null }>(`SELECT count(*)::int AS n, sum(e.bytes)::text AS bytes FROM app.evidence_object e WHERE e.id IN (SELECT tr.evidence_id FROM app.test_result tr JOIN ${S} s ON s.id = tr.room_id)`, args)).rows[0]!;
 
     return {
@@ -52,6 +70,7 @@ export async function summary(ctx: RequestContext) {
         coverage: { value: ratio(recorded, applicable), definition: 'tests with any recorded result ÷ applicable tests (latest plan of each room)' },
         verifiedShare: { value: ratio(labels['PASS_VERIFIED'] || 0, passed), definition: 'PASS_VERIFIED ÷ all recorded passes (PASS_VERIFIED + PASS_UNVERIFIED)' },
         firstTimeFailRate: { value: ratio(labels['FAIL'] || 0, recorded), definition: 'current FAIL results ÷ recorded results' },
+        superseded: { results: superseded, passVerifiedNotCounting: supersededVerified, verifiedCountingTowardsAcceptance: (labels['PASS_VERIFIED'] || 0) - supersededVerified, definition: 'current results recorded on a unit that has since been replaced or substituted (rooms being commissioned): their label is kept as recorded (byLabel), but they never count towards an acceptance and must be re-run' },
       },
       issues: {
         open: open.reduce((a, i) => a + i.n, 0),
@@ -61,7 +80,9 @@ export async function summary(ctx: RequestContext) {
         meanHoursToResolveDeficiency: resolved.n ? Math.round((resolved.hours || 0) * 10) / 10 : null,
       },
       workOrders: Object.fromEntries(wo.map((w) => [w.state, w.n])),
-      assets: { planned: assets.n, genericModels: assets.generic, distinctModels: assets.models, genericShare: { value: ratio(assets.generic, assets.n), definition: 'planned devices still on a generic model ÷ planned devices' } },
+      assets: { planned: assets.n, genericModels: assets.generic, distinctModels: assets.models, genericShare: { value: ratio(assets.generic, assets.n), definition: 'planned devices still on a generic model ÷ planned devices' },
+      installations: { positions: inst.positions, installed: inst.installed, byIdentity: { UNKNOWN: inst.unknown, DECLARED: inst.declared, OBSERVED: inst.observed, VERIFIED: inst.verified }, knownAsOfMigration: inst.migrated, unitsTakenOut: inst.replaced,
+        identityKnownShare: { value: ratio(inst.declared + inst.observed + inst.verified, inst.installed), definition: 'installed units with a recorded identity (DECLARED, OBSERVED or VERIFIED) ÷ installed units; UNKNOWN is never counted as known' } } },
       evidence: { objects: ev.n, bytes: Number(ev.bytes || 0) },
       operationalPerformance: 'NOT_MONITORED',
       note: 'Computed from synthetic starter data. Not a statement about any real estate or customer.',

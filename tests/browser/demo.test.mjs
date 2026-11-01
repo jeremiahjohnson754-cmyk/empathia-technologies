@@ -421,6 +421,39 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     ok('C-24', 'the guided tour offers the story as a detour from “One connected lifecycle”, without adding a step', /#\/story\/R-ATL-4-218/.test(await page.evaluate(() => location.hash)) && /step 15 of 17/.test(await page.locator('[data-testid=tour]').innerText()));
     await page.click('[data-testid=tour] button:has-text("Close")'); await page.waitForTimeout(200);
     ok('C-25', 'no page error and no console error across the cascade and the story', errs.length === errorsBefore, errs.slice(errorsBefore).join(' | '));
+    // ---------------------------------------------------------------- ADR-0012: positions, physical units and installations — one reading everywhere
+    const errorsUnits = errs.length;
+    await page.evaluate(() => { location.hash = '#/v25/build?tab=lifecycle'; }); await page.waitForTimeout(300); await page.click('#tab-lifecycle'); await page.waitForTimeout(150);
+    await persp('syseng'); await page.click('button:has-text("Recommission")'); await page.waitForTimeout(250);
+    await page.click('#tab-design'); await page.waitForTimeout(200);
+    const u0 = await draftNow(); const camPos = u0.design.devices.find((x) => x.cat === 'camera' && !x.removed).id;
+    const unitBefore = u0.installations.find((i) => i.position === camPos && !i.removedAt)?.asset;
+    const regRow = page.locator(`[data-testid=device-register] tr[data-position="${camPos}"]`);
+    ok('C-26', 'the device register lists every position with the physical unit installed there and its identity state (synthetic units, UNKNOWN identity)', (await page.locator('[data-testid=device-register] tbody tr').count()) === u0.design.devices.filter((x) => !x.removed && !x.furniture).length && !!unitBefore && (await regRow.getAttribute('data-asset')) === unitBefore && (await regRow.getAttribute('data-identity-state')) === 'UNKNOWN' && /synthetic/.test(await page.locator('[data-testid=device-register]').innerText()), `${camPos} ${unitBefore}`);
+    await persp('designer'); await page.selectOption('#b-unit', camPos); await page.click('[data-testid=replace-unit]'); await page.waitForTimeout(250);
+    ok('C-27', 'a designer may not replace a unit like for like: it is field work (work.evidence)', /does not hold work\.evidence/.test(await refusal()), await refusal());
+    await persp('installer'); await page.selectOption('#b-unit', camPos); await page.fill('#b-why', 'the camera failed its self-test (synthetic)'); await page.click('[data-testid=replace-unit]'); await page.waitForTimeout(300);
+    const u1 = await draftNow(); const unitAfter = u1.installations.find((i) => i.position === camPos && !i.removedAt)?.asset;
+    const atPos = u1.installations.filter((i) => i.position === camPos);
+    ok('C-28', 'a like-for-like replacement keeps the position id, closes the old unit’s installation (REPLACED) and installs a new unit; the design does not change', !(await refusal()) && u1.design.devices.find((x) => x.id === camPos && !x.removed)?.cat === 'camera' && unitAfter && unitAfter !== unitBefore && atPos.find((i) => i.asset === unitBefore)?.removalReason === 'REPLACED' && atPos.find((i) => i.asset === unitAfter)?.installReason === 'REPLACEMENT' && u1.revisions.length === u0.revisions.length && (u1.designHistory || []).length === (u0.designHistory || []).length, (await refusal()) || JSON.stringify(atPos));
+    ok('C-29', 'the Impact panel: Assurance calls it an installation change (unit A → unit B, same model), not a model drift', (await page.locator('[data-testid=impact-assurance-changes] [data-kind=UNIT_REPLACED]').count()) === 1 && !(await page.locator('[data-testid=impact-assurance-changes] [data-kind=MODEL_SUBSTITUTED]').count()) && (await page.locator('[data-testid=impact-assurance-changes]').innerText()).includes(`unit ${unitBefore} → ${unitAfter}`), (await page.locator('[data-testid=impact-body]').innerText()).slice(0, 300));
+    await page.selectOption('#b-unit', camPos); await page.waitForTimeout(150);
+    const posH = await page.locator('[data-testid=position-history]').innerText(); const unitH = await page.locator('[data-testid=asset-history]').innerText();
+    ok('C-30', 'the register keeps the position’s design history apart from the unit’s history: the position lists both units’ installations, the unit its own', posH.includes(`${unitBefore} installed at ${camPos}`) && /removed .*\(replaced\)/.test(posH) && posH.includes(`${unitAfter} installed at ${camPos}`) && unitH.includes(`Unit history — ${unitAfter}`) && !unitH.includes(`${unitBefore} installed`), `${posH.slice(0, 200)} || ${unitH.slice(0, 200)}`);
+    await page.click('#tab-checks'); await page.waitForSelector('[data-testid=reverification]');
+    const rvU = await page.locator('[data-testid=reverification]').innerText();
+    ok('C-31', 'Commissioning: the reopened tests name both units and say “replaced by another unit of the same model”', rvU.includes(`[unit ${unitBefore} → ${unitAfter}]`) && rvU.includes(`was replaced by another unit of the same model (${unitBefore} → ${unitAfter}`), rvU.slice(0, 300));
+    await persp('visitor'); await page.evaluate(() => { location.hash = '#/search'; }); await page.waitForTimeout(300); await page.fill('#spd-q', unitAfter); await page.waitForTimeout(250);
+    const spU = await page.locator('.sp__list').innerText();
+    ok('C-32', 'Search Party finds the unit and the position it is located in, with the same reading: position · unit · identity', spU.includes(`${unitAfter} · `) && spU.includes(`unit ${unitAfter} · identity UNKNOWN`), spU.slice(0, 300));
+    await persp('exec'); await page.evaluate(() => { location.hash = '#/v25/exec'; }); await page.waitForTimeout(300);
+    ok('C-33', 'Pro reads the same identities: the installed units of the room, none counted as known while UNKNOWN', (await page.locator(`[data-testid=exec-units] li[data-identity="${camPos} · unit ${unitAfter} · identity UNKNOWN"]`).count()) === 1 && /with a recorded identity \(0%\)/.test(await page.locator('[data-testid=exec-units]').innerText()));
+    await persp('visitor'); await page.evaluate(() => { location.hash = '#/story/R-DEMO-0001'; }); await page.waitForSelector('[data-testid=story]');
+    const stU = await page.locator('[data-testid=story]').innerText();
+    ok('C-34', 'the Room Story shows the positions (design) apart from the physical units (commission), and the replacement as a unit event', (await page.locator('[data-stage=design] [data-entry="design:positions"]').count()) === 1 && (await page.locator('[data-stage=commission] [data-entry="commission:units"]').count()) === 1 && /Unit replaced like for like/.test(stU), stU.slice(0, 300));
+    await page.evaluate(() => { location.hash = '#/v25/build?tab=design'; }); await page.waitForTimeout(300); await persp('installer'); await page.selectOption('#b-unit', camPos); await page.click('[data-testid=declare-serial]'); await page.waitForTimeout(250);
+    ok('C-35', 'an installer declares a synthetic serial: the register and the history read DECLARED, the serial labelled synthetic', (await page.locator(`[data-testid=device-register] tr[data-position="${camPos}"]`).getAttribute('data-identity-state')) === 'DECLARED' && /serial SYN-SN-.*\(synthetic\)/.test(await page.locator('[data-testid=asset-history]').innerText()), (await refusal()) || '');
+    ok('C-36', 'no page error and no console error across the register, the replacement and the readings', errs.length === errorsUnits, errs.slice(errorsUnits).join(' | '));
   }
   if (tag === 'phone') {
     await page.evaluate(() => { location.hash = '#/story/R-ATL-4-218'; }); await page.waitForTimeout(500); await page.waitForSelector('[data-testid=story]');

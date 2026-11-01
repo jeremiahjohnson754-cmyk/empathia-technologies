@@ -12,6 +12,10 @@
  * accepted room is recommissioned (ACCEPTED → COMMISSIONING, ADR-0003) and its model substituted; the change is saved as a revision and
  * approved by an engineer who is not its author; the requirements it generates come back from readiness with their reasons.
  *
+ * ADR-0012 (C-89 onward): the camera is a POSITION (PA-) with a PHYSICAL UNIT (AS-) installed by a dated installation record; the
+ * substitution keeps the position, closes the original unit's installation (SUBSTITUTED) and installs a unit of the new model, and the
+ * evidence holds both the position history and each unit's history.
+ *
  * Every request and response is saved as evidence (tokens redacted): one JSON file per step under tests/evidence/checkpoint/, plus
  * CHECKPOINT.md and checkpoint.json.
  *   node tests/e2e/checkpoint-room-lifecycle.e2e.mjs [evidence-dir]
@@ -110,6 +114,11 @@ try {
   const rows = r3.body.commissioning.rows.filter((x) => x.applicable);
   facts.applicable = rows.length; facts.approvedRevision = r3.body.room.approvedRevision;
   ok('C-23', 'the room is COMMISSIONING, the approved revision is 2, every applicable test is NOT_TESTED and needs physical execution', r3.body.room.lifecycle === 'COMMISSIONING' && r3.body.room.approvedRevision === 2 && rows.length > 0 && rows.every((x) => x.result === 'NOT_TESTED' && x.status !== 'BLOCKED_BY_PREREQUISITE'), `${rows.length} applicable`);
+  const installed = r3.body.devices.filter((d) => !d.furniture);
+  const camPos0 = await api('installer', 'GET', `/v1/rooms/${code}/positions/${devices.camera}/history`);
+  const unit0 = camPos0.body.current?.asset; facts.cameraUnit = { original: unit0 };
+  const unit0h = await api('installer', 'GET', `/v1/assets/${unit0}/history`);
+  ok('C-89', 'recording the installation put one physical unit at every non-furniture position — identity UNKNOWN, no serial, no maker — recorded by the installer (ADR-0012)', installed.length === 8 && installed.every((d) => /^AS-\d{4,}$/.test(d.asset) && d.identityState === 'UNKNOWN') && new Set(installed.map((d) => d.asset)).size === 8 && camPos0.body.installations.length === 1 && camPos0.body.installations[0].installedRole === 'installer' && camPos0.body.installations[0].basis === 'RECORDED' && unit0h.body.asset.serial === null && unit0h.body.asset.manufacturer === null, J(installed.map((d) => [d.id, d.asset, d.identityState])));
 
   // ============================================================================================ 3 · commission it
   step(7, 'evidence', 'Upload one evidence file per applicable test (content-addressed, hashed, retained)');
@@ -167,6 +176,7 @@ try {
   ok('C-39', 'v1 binds the approved design revision 2, its hash, the plan, every applicable result PASS_VERIFIED and every evidence object', v1 && v1.design_revision === 2 && /^[0-9a-f]{64}$/.test(v1.design_sha256) && v1.plan_id && Object.keys(v1.results).length === rows.length && Object.values(v1.results).every((x) => x === 'PASS_VERIFIED') && v1.evidence_ids.length === rows.length && v1.published_by === opsId, J(v1).slice(0, 400));
   facts.v1 = { id: v1?.id, designRevision: v1?.design_revision, publishedAt: v1?.published_at };
   const v1Before = J(v1);
+  const rev2Before = J((await api('designer', 'GET', `/v1/rooms/${code}`, { keep: false })).body.revisions.find((x) => x.rev_no === 2));
 
   // ============================================================================================ 5 · change the camera (the governed way)
   step(11, 'recommission', 'An accepted room is not edited directly: it is recommissioned (ACCEPTED → COMMISSIONING, plan.compile)');
@@ -188,6 +198,12 @@ try {
   const cam = r4.body.devices.find((d) => d.id === camera);
   ok('C-47', 'the camera keeps its asset id, carries the new model, and its model history keeps the previous model', cam && cam.model === NEW_MODEL && cam.cat === 'camera' && Array.isArray(cam.modelHistory) && cam.modelHistory.length === 1 && cam.modelHistory[0].model === 'generic' && cam.modelHistory[0].until, J(cam));
   ok('C-48', 'no other device changed: same ten asset ids', r4.body.devices.length === 10 && r4.body.devices.every((d) => Object.values(devices).includes(d.id)));
+  const camPos = await api('designer', 'GET', `/v1/rooms/${code}/positions/${camera}/history`);
+  const [inst0, inst1] = camPos.body.installations || [];
+  facts.cameraUnit.replacement = inst1?.asset;
+  ok('C-90', 'the swap produced two installation records for the camera position: the original unit closed SUBSTITUTED, a unit of the new model open; the position keeps its code', camPos.status === 200 && camPos.body.position.code === camera && camPos.body.installations.length === 2 && inst0.asset === facts.cameraUnit.original && inst0.removalReason === 'SUBSTITUTED' && inst0.removedRole === 'designer' && inst1.installReason === 'SUBSTITUTION' && inst1.model === NEW_MODEL && !inst1.removedAt && inst1.asset !== inst0.asset && cam.asset === inst1.asset && swap.body.installation?.installed?.asset === inst1.asset, J(camPos.body.installations));
+  const unit0After = await api('designer', 'GET', `/v1/assets/${facts.cameraUnit.original}/history`);
+  ok('C-91', 'the original unit’s history survives intact: its own identity (UNKNOWN, model generic) and its installation at the camera position with both ends, actors and reasons', unit0After.status === 200 && J(unit0After.body.asset) === J(unit0h.body.asset) && unit0After.body.installations.length === 1 && unit0After.body.installations[0].position === camera && unit0After.body.installations[0].installReason === 'INITIAL' && unit0After.body.installations[0].removalReason === 'SUBSTITUTED' && unit0After.body.current === null && unit0After.body.asset.model === 'generic', J(unit0After.body).slice(0, 400));
 
   step(13, 'revision-compare', 'Save the change as a new design revision and compare it with the accepted revision');
   const rev3 = await api('designer', 'POST', `/v1/rooms/${code}/revisions`, { body: { reason: `checkpoint: camera ${camera} substituted during recommissioning` }, headers: { 'idempotency-key': 'checkpoint-rev-0003' } });
@@ -203,6 +219,8 @@ try {
   const presence = as.body.rows?.find((x) => x.k === 'presence');
   ok('C-52', 'Assurance assesses the room against baseline v1 and reports the substitution on the register as drift (recorded, not measured)', as.status === 200 && as.body.state === 'ASSESSED' && as.body.baseline?.version === 1 && presence?.status === 'drift' && presence.ids.includes(camera) && presence.ev === 'INFERRED' && new RegExp(NEW_MODEL.replace(/[()]/g, '.')).test(presence.current), J(presence));
   ok('C-53', 'the remedy proposed is a fix that needs an engineer’s approval, and live health stays NOT_MONITORED', presence?.fix?.requiresApproval === true && presence.fix.approverAuthority === 'baseline.approve' && as.body.liveHealth === 'NOT_MONITORED', J(presence?.fix));
+  const rev2After = J((await api('designer', 'GET', `/v1/rooms/${code}`, { keep: false })).body.revisions.find((x) => x.rev_no === 2));
+  ok('C-92', 'Assurance labels the change a model substitution with both units named (not an installation change), against the unit accepted in v1; baseline v1 and the accepted revision 2 are byte-for-byte unchanged', J(presence?.changes) === J([{ id: camera, kind: 'MODEL_SUBSTITUTED', fromModel: 'generic', toModel: NEW_MODEL, fromUnit: facts.cameraUnit.original, toUnit: facts.cameraUnit.replacement }]) && as.body.installation?.devices?.find((d) => d.position === camera)?.assetAtBaseline === facts.cameraUnit.original && v1After === v1Before && rev2After === rev2Before, J({ changes: presence?.changes, rev2: rev2After === rev2Before }));
 
   step(15, 'verification-requirements', 'The new and changed verification requirements, with their reasons (readiness)');
   const rd1 = await api('designer', 'GET', `/v1/rooms/${code}/readiness`);
@@ -221,6 +239,9 @@ try {
   ok('C-61', 'completion counts only the results that still count: the reopened tests are not verified any more', rd1.body.completion.counts.revalidation === reqs.length && rd1.body.completion.counts.verified === rows.length - reqs.length, J(rd1.body.completion));
   const early = await move('opslead', 'ACCEPTED', opsTok);
   ok('C-62', 'an attempt to re-accept now is refused (422) with the same reasons', early.status === 422 && /re-run/.test(J(early.body)) && /approved revision/.test(J(early.body)), J(early.body));
+  ok('C-93', 'the re-acceptance refusal carries the accurate count: the superseded PASS_VERIFIED results count 0', (early.body.reasons || []).some((x) => x.includes(`acceptance counts ${rows.length - reqs.length} of ${rows.length} applicable tests as passed and independently verified; the ${reqs.length} earlier result(s) no longer count`)), J(early.body.reasons));
+  const chg = rc1?.changes?.[0];
+  ok('C-94', 'readiness names the change with its units (SUBSTITUTED, original → new unit) and each position with its unit and identity state', rc1?.changes?.length === 1 && chg.kind === 'SUBSTITUTED' && chg.assetId === camera && chg.fromAsset === facts.cameraUnit.original && chg.toAsset === facts.cameraUnit.replacement && rd1.body.installations?.devices?.length === 8 && rd1.body.installations.devices.some((d) => d.position === camera && d.asset === facts.cameraUnit.replacement && d.identityState === 'UNKNOWN'), J(rc1?.changes));
 
   step(16, 'design-reapproval', 'The design change is approved by an engineer who is not its author; the drawings are regenerated and re-approved');
   ok('C-63', 'the designer (the author of revision 3) holds no design approval (403)', (await api('designer', 'POST', `/v1/rooms/${code}/revisions/3/approve`)).status === 403);
@@ -251,6 +272,10 @@ try {
   ok('C-72', 'Search Party answers “what depends on this camera?” with the downstream devices and the affected room', dep.status === 200 && dep.body.intent === 'depends' && dep.body.items.some((i) => i.node.id === devices.compute) && dep.body.items.some((i) => i.node.id === code), J(dep.body).slice(0, 400));
   const con = await api('designer', 'POST', '/v1/search/intent', { body: { question: 'What is connected to this camera?', target: { type: 'PlannedAsset', id: camera } } });
   ok('C-73', 'Search Party lists the camera’s connections (signal to the compute, network to the switch), marked as design-proposed', con.status === 200 && con.body.intent === 'connected' && con.body.items.some((i) => i.node.id === devices.compute) && con.body.items.some((i) => i.node.id === devices.switch), J(con.body).slice(0, 400));
+  const su = await api('designer', 'GET', `/v1/search?q=${facts.cameraUnit.replacement}`);
+  const unitNode = (su.body.items || []).find((n) => n.type === 'Asset' && n.id === facts.cameraUnit.replacement); const posNode = (su.body.items || []).find((n) => n.type === 'PlannedAsset' && n.id === camera);
+  const sgu = await api('designer', 'GET', `/v1/search/graph/Asset/${facts.cameraUnit.replacement}?depth=1`);
+  ok('C-95', 'Search Party finds the camera’s current unit, located in the camera position, and shows position · unit · identity on the camera', su.status === 200 && !!unitNode && /identity UNKNOWN/.test(unitNode.subtitle) && !!posNode && posNode.subtitle.includes(`unit ${facts.cameraUnit.replacement} · identity UNKNOWN`) && sgu.status === 200 && sgu.body.edges.some((e) => e.rel === 'LOCATED_IN' && e.to?.id === camera && /asset_installation/.test(e.provenance)), J({ unit: unitNode, pos: posNode?.subtitle }).slice(0, 400));
   const catOf = Object.fromEntries(Object.entries(devices).map(([k, v]) => [v, k]));
   facts.dependencies = { downstream: (g.body.impact || []).map((n) => `${n.id} (${catOf[n.id] || n.type})`), connected: (con.body.items || []).map((i) => `${i.node.id} (${catOf[i.node.id] || i.node.type}; ${i.via})`), dependsSummary: dep.body.summary };
 
@@ -258,6 +283,11 @@ try {
   step(19, 'room-story', 'The Room Story: room, baselines, service history, audit events (data steward), ledger integrity, read model');
   const story = await api('designer', 'GET', `/v1/rooms/${code}`);
   ok('C-74', 'the room reads back COMMISSIONING (recommissioning) with revision 3 approved and every device', story.status === 200 && story.body.room.lifecycle === 'COMMISSIONING' && story.body.room.approvedRevision === 3 && story.body.revisions.length === 3);
+  const ph = await api('designer', 'GET', `/v1/rooms/${code}/positions/${camera}/history`);
+  const ah0 = await api('designer', 'GET', `/v1/assets/${facts.cameraUnit.original}/history`); const ah1 = await api('designer', 'GET', `/v1/assets/${facts.cameraUnit.replacement}/history`);
+  facts.positionHistory = { design: (ph.body.design?.revisions || []).map((r) => `revision ${r.revision}: ${r.inRevision ? r.model : 'not in the design'}`), installations: (ph.body.installations || []).map((i) => i.sentence) };
+  facts.assetHistories = [ah0.body, ah1.body].map((h) => ({ asset: h.asset?.code, model: h.asset?.model, identity: h.asset?.identityState, installations: (h.installations || []).map((i) => i.sentence) }));
+  ok('C-96', 'the story keeps the position history (its design: absent from revision 1 — the room was created empty — generic in revision 2, the new model in revision 3) apart from each unit’s own history (one installation each, with both ends)', ph.status === 200 && J((ph.body.design?.revisions || []).map((r) => (r.inRevision ? r.model : null))) === J([null, 'generic', NEW_MODEL]) && J(ph.body.design.modelHistory.map((m) => m.model)) === J(['generic']) && ph.body.installations.length === 2 && ah0.body.installations.length === 1 && ah1.body.installations.length === 1 && ah1.body.current?.position === camera && ah1.body.asset.model === NEW_MODEL && ah0.body.asset.model === 'generic', J(facts.positionHistory));
   const bls = await api('syseng', 'GET', `/v1/rooms/${code}/baselines`);
   ok('C-75', 'the baseline lineage holds v1 (CURRENT) and no other version', bls.body.items.length === 1 && bls.body.current.version === 1);
   const svc = await api('svcmgr', 'GET', `/v1/rooms/${code}/service-history`);
@@ -303,6 +333,8 @@ try {
   ok('C-87', 'Mission Control reads for the systems engineer', mc.status === 200 && Array.isArray(mc.body.actions), J(mc.body).slice(0, 200));
   const sum = await api('opslead', 'GET', '/v1/reports/summary');
   ok('C-88', 'the KPI summary counts the scenario’s verified results and reports operational performance NOT_MONITORED', sum.status === 200 && sum.body.commissioning.byLabel.PASS_VERIFIED >= rows.length && sum.body.operationalPerformance === 'NOT_MONITORED', J(sum.body.commissioning).slice(0, 300));
+  const inst = sum.body.assets?.installations;
+  ok('C-97', 'Pro reports the units by identity state (UNKNOWN never counted as known) and says that the 12 superseded PASS_VERIFIED results no longer count', inst && inst.installed >= 8 && inst.byIdentity.UNKNOWN >= 8 && inst.identityKnownShare.value === 0 && inst.unitsTakenOut >= 1 && sum.body.commissioning.superseded?.passVerifiedNotCounting === reqs.length && sum.body.commissioning.superseded.verifiedCountingTowardsAcceptance === sum.body.commissioning.byLabel.PASS_VERIFIED - reqs.length, J({ inst, superseded: sum.body.commissioning.superseded }).slice(0, 400));
 } catch (e) {
   ok('C-ERR', 'the scenario ran to the end', false, e.stack || e.message);
 } finally {
@@ -323,11 +355,16 @@ const md = [
   `| Applicable tests | ${facts.applicable} — recorded by ${Object.entries(facts.recordedBy || {}).map(([k, v]) => `${k} ${v}`).join(', ')}; verified by ${Object.entries(facts.verifiedBy || {}).map(([k, v]) => `${k} ${v}`).join(', ')} |`,
   `| Baselines | v1 CURRENT (design revision ${facts.v1?.designRevision}, published ${facts.v1?.publishedAt}); unchanged byte-for-byte after the change; no v2 (re-acceptance waits for the re-run tests) |`,
   `| Design revisions | 1 created · 2 designed and approved (bound by v1) · 3 the camera substitution, approved during recommissioning |`,
+  `| Camera position and units (ADR-0012) | position \`${facts.camera}\` stays; unit \`${facts.cameraUnit?.original}\` (generic, identity UNKNOWN) closed SUBSTITUTED → unit \`${facts.cameraUnit?.replacement}\` (${NEW_MODEL}, identity UNKNOWN) installed |`,
   `| Audit events for the room | ${facts.auditEvents ?? '—'} (${facts.auditDenied ?? '—'} DENIED) |`,
   `| Evidence Ledger integrity | ${facts.integrity ? `verified ${facts.integrity.verified}, ${facts.integrity.checked} events checked, head seq ${facts.integrity.head?.seq} \`${facts.integrity.head?.hash}\`` : '—'} |`,
   `| KPI passports | ${facts.passports ? `${facts.passports.measured} of ${facts.passports.total} measured; rooms_commissioned ${J(facts.passports.rooms_commissioned)}` : '—'} |`, '',
   '## Verification requirements generated by the camera change', '',
   ...(facts.requirements?.length ? ['| Test | Responsible role | Reasons |', '|---|---|---|', ...facts.requirements.map((t) => `| \`${t.testId}\` ${t.label} | ${t.personas.join(', ')} | ${t.reasons.join('; ')} |`)] : ['(none recorded)']), '',
+  '## Position history and unit histories of the camera (ADR-0012)', '',
+  `- Position \`${facts.camera}\`, design: ${(facts.positionHistory?.design || []).join(' · ') || '—'}`,
+  ...(facts.positionHistory?.installations || []).map((x) => `- Position \`${facts.camera}\`, installation: ${x}`),
+  ...(facts.assetHistories || []).flatMap((a) => (a.installations || []).map((x) => `- Unit \`${a.asset}\` (${a.model}, identity ${a.identity}): ${x}`)), '',
   '## Affected dependencies of the camera', '',
   `- Downstream (graph impact): ${(facts.dependencies?.downstream || []).join(', ') || '—'}`,
   `- Connected (Search Party): ${(facts.dependencies?.connected || []).join(', ') || '—'}`,

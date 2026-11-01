@@ -1,7 +1,7 @@
 {
- "at": "2026-11-01T00:20:11.278Z",
+ "at": "2026-11-01T01:50:45.925Z",
  "database": "empathia_test_checkpoint_e2e",
- "pass": 88,
+ "pass": 97,
  "fail": 0,
  "facts": {
   "room": "R-PLN-0004",
@@ -9,6 +9,10 @@
   "archetype": "Huddle Room",
   "applicable": 75,
   "approvedRevision": 2,
+  "cameraUnit": {
+   "original": "AS-0002",
+   "replacement": "AS-0009"
+  },
   "recordedBy": {
    "syseng": 17,
    "service": 34,
@@ -22,9 +26,9 @@
    "qa_reviewer": 16
   },
   "v1": {
-   "id": "196ce119-53f5-4bd0-8d83-53d91aec39ae",
+   "id": "7038791b-97e4-4adf-bdb0-163c73021ffd",
    "designRevision": 2,
-   "publishedAt": "2026-11-01T00:20:09.153Z"
+   "publishedAt": "2026-11-01T01:50:43.784Z"
   },
   "requirements": [
    {
@@ -170,16 +174,45 @@
    ],
    "dependsSummary": "5 downstream devices and 1 room depend on Camera 1."
   },
+  "positionHistory": {
+   "design": [
+    "revision 1: not in the design",
+    "revision 2: generic",
+    "revision 3: SYN-PTZ-12X (synthetic PTZ camera)"
+   ],
+   "installations": [
+    "AS-0002 installed at PA-0061 on 2026-11-01T01:50:39.336Z by 9cc90168-09ab-4b67-a3ab-3673ecf82b56 (initial); removed 2026-11-01T01:50:43.869Z by bffa9ce3-03ce-4be9-82d6-004e927f08b8 (substituted)",
+    "AS-0009 installed at PA-0061 on 2026-11-01T01:50:43.869Z by bffa9ce3-03ce-4be9-82d6-004e927f08b8 (substitution); still installed"
+   ]
+  },
+  "assetHistories": [
+   {
+    "asset": "AS-0002",
+    "model": "generic",
+    "identity": "UNKNOWN",
+    "installations": [
+     "AS-0002 installed at PA-0061 on 2026-11-01T01:50:39.336Z by 9cc90168-09ab-4b67-a3ab-3673ecf82b56 (initial); removed 2026-11-01T01:50:43.869Z by bffa9ce3-03ce-4be9-82d6-004e927f08b8 (substituted)"
+    ]
+   },
+   {
+    "asset": "AS-0009",
+    "model": "SYN-PTZ-12X (synthetic PTZ camera)",
+    "identity": "UNKNOWN",
+    "installations": [
+     "AS-0009 installed at PA-0061 on 2026-11-01T01:50:43.869Z by bffa9ce3-03ce-4be9-82d6-004e927f08b8 (substitution); still installed"
+    ]
+   }
+  ],
   "integrity": {
    "verified": true,
-   "checked": 458,
+   "checked": 460,
    "head": {
-    "seq": 458,
-    "hash": "197058730ed2a3c7ca9b41d4771d6b62d2e5c685d508d2c440b8f9fb90a74789",
-    "at": "2026-11-01T00:20:09.673Z"
+    "seq": 460,
+    "hash": "5c47a58406a775e45ec3282ffca54e81a68b62be0c4f20d5863c4518f0381a7d",
+    "at": "2026-11-01T01:50:44.407Z"
    }
   },
-  "auditEvents": 364,
+  "auditEvents": 365,
   "auditDenied": 13,
   "milestones": [
    {
@@ -196,39 +229,39 @@
    },
    {
     "action": "room.lifecycle:INSTALLED_UNVERIFIED",
-    "seq": 40
+    "seq": 41
    },
    {
     "action": "room.lifecycle:COMMISSIONING",
-    "seq": 43
+    "seq": 44
    },
    {
     "action": "commission.result.record",
-    "seq": 124
+    "seq": 125
    },
    {
     "action": "commission.result.verify",
-    "seq": 276
+    "seq": 277
    },
    {
     "action": "assurance.baseline_published",
-    "seq": 431
-   },
-   {
-    "action": "room.lifecycle:ACCEPTED",
     "seq": 432
    },
    {
+    "action": "room.lifecycle:ACCEPTED",
+    "seq": 433
+   },
+   {
     "action": "room.lifecycle:COMMISSIONING (#2)",
-    "seq": 435
+    "seq": 436
    },
    {
     "action": "commission.asset_replaced",
-    "seq": 439
+    "seq": 440
    },
    {
     "action": "room.revision.approve",
-    "seq": 445
+    "seq": 446
    }
   ],
   "outboxSample": [
@@ -239,8 +272,8 @@
    "commission.asset_replaced",
    "room.lifecycle_changed",
    "handoff.accepted",
-   "commission.applicability_compiled",
    "room.test_verified",
+   "commission.applicability_compiled",
    "commission.test_result_submitted"
   ],
   "passports": {
@@ -375,6 +408,11 @@
    "result": "PASS"
   },
   {
+   "id": "C-89",
+   "name": "recording the installation put one physical unit at every non-furniture position — identity UNKNOWN, no serial, no maker — recorded by the installer (ADR-0012)",
+   "result": "PASS"
+  },
+  {
    "id": "C-24",
    "name": "the systems engineer holds no evidence-upload authority (403); the commissioning engineer files the engineering records for the tests the systems engineer records",
    "result": "PASS"
@@ -500,6 +538,16 @@
    "result": "PASS"
   },
   {
+   "id": "C-90",
+   "name": "the swap produced two installation records for the camera position: the original unit closed SUBSTITUTED, a unit of the new model open; the position keeps its code",
+   "result": "PASS"
+  },
+  {
+   "id": "C-91",
+   "name": "the original unit’s history survives intact: its own identity (UNKNOWN, model generic) and its installation at the camera position with both ends, actors and reasons",
+   "result": "PASS"
+  },
+  {
    "id": "C-49",
    "name": "the designer saves revision 3",
    "result": "PASS"
@@ -522,6 +570,11 @@
   {
    "id": "C-53",
    "name": "the remedy proposed is a fix that needs an engineer’s approval, and live health stays NOT_MONITORED",
+   "result": "PASS"
+  },
+  {
+   "id": "C-92",
+   "name": "Assurance labels the change a model substitution with both units named (not an installation change), against the unit accepted in v1; baseline v1 and the accepted revision 2 are byte-for-byte unchanged",
    "result": "PASS"
   },
   {
@@ -567,6 +620,16 @@
   {
    "id": "C-62",
    "name": "an attempt to re-accept now is refused (422) with the same reasons",
+   "result": "PASS"
+  },
+  {
+   "id": "C-93",
+   "name": "the re-acceptance refusal carries the accurate count: the superseded PASS_VERIFIED results count 0",
+   "result": "PASS"
+  },
+  {
+   "id": "C-94",
+   "name": "readiness names the change with its units (SUBSTITUTED, original → new unit) and each position with its unit and identity state",
    "result": "PASS"
   },
   {
@@ -625,8 +688,18 @@
    "result": "PASS"
   },
   {
+   "id": "C-95",
+   "name": "Search Party finds the camera’s current unit, located in the camera position, and shows position · unit · identity on the camera",
+   "result": "PASS"
+  },
+  {
    "id": "C-74",
    "name": "the room reads back COMMISSIONING (recommissioning) with revision 3 approved and every device",
+   "result": "PASS"
+  },
+  {
+   "id": "C-96",
+   "name": "the story keeps the position history (its design: absent from revision 1 — the room was created empty — generic in revision 2, the new model in revision 3) apart from each unit’s own history (one installation each, with both ends)",
    "result": "PASS"
   },
   {
@@ -651,7 +724,7 @@
   },
   {
    "id": "C-79",
-   "name": "the room’s 364 audit events are sealed into the chain, in order (sequence, id and time agree)",
+   "name": "the room’s 365 audit events are sealed into the chain, in order (sequence, id and time agree)",
    "result": "PASS"
   },
   {
@@ -697,6 +770,11 @@
   {
    "id": "C-88",
    "name": "the KPI summary counts the scenario’s verified results and reports operational performance NOT_MONITORED",
+   "result": "PASS"
+  },
+  {
+   "id": "C-97",
+   "name": "Pro reports the units by identity state (UNKNOWN never counted as known) and says that the 12 superseded PASS_VERIFIED results no longer count",
    "result": "PASS"
   }
  ]

@@ -1,8 +1,8 @@
 {
- "at": "2026-11-01T00:22:52.282Z",
- "pass": 138,
+ "at": "2026-11-01T01:53:31.740Z",
+ "pass": 149,
  "fail": 0,
- "tests": 138,
+ "tests": 149,
  "results": [
   {
    "id": "D-desktop-01",
@@ -296,7 +296,7 @@
    "id": "V-07",
    "name": "dispatch preflight on the record: the room is booked in the proposed window, the processor stock check is stale, tools unconfirmed — each named",
    "result": "PASS",
-   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-01T22:21 → 2026-11-02T00:21\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
+   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-01T23:52 → 2026-11-02T01:52\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
   },
   {
    "id": "V-08",
@@ -362,7 +362,7 @@
    "id": "A-03",
    "name": "A2 is a read-only comparison against the room’s accepted baseline on record (Atlas 4.220: v1, the record the KPI passports and the story read)",
    "result": "PASS",
-   "detail": "COMPARED A2 H1 2026-11-01 00:22 · Commissioning Engineer\nread-only comparison against baseline v1 (9 evidence items)"
+   "detail": "COMPARED A2 H1 2026-11-01 01:52 · Commissioning Engineer\nread-only comparison against baseline v1 (9 evidence items)"
   },
   {
    "id": "A-04",
@@ -374,7 +374,7 @@
    "id": "A-05",
    "name": "with approval and a window, the real adapter state blocks it: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)",
    "result": "PASS",
-   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-11-01 00:22 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
+   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-11-01 01:52 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
   },
   {
    "id": "A-06",
@@ -404,7 +404,7 @@
    "id": "A-03b",
    "name": "A2 stays honest where no baseline is accepted on record (Northstar Town Hall, COMMISSIONING): nothing to compare, NOT_VERIFIED",
    "result": "PASS",
-   "detail": "COMPARED A2 H1 2026-11-01 00:22 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
+   "detail": "COMPARED A2 H1 2026-11-01 01:52 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
   },
   {
    "id": "L-01",
@@ -476,7 +476,7 @@
    "id": "M-03",
    "name": "a passport shows numerator, denominator, window, coverage, freshness, confidence with reasons, source, exclusions and drill-down",
    "result": "PASS",
-   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-03 00:22 → 2026-11-01 00:22\nCoverage\n4 of 4 eligible recor"
+   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-03 01:52 → 2026-11-01 01:52\nCoverage\n4 of 4 eligible recor"
   },
   {
    "id": "M-04",
@@ -488,7 +488,7 @@
    "id": "M-05",
    "name": "the ledger filters to the refusals, each with actor, UTC and local time and the reason",
    "result": "PASS",
-   "detail": "When (UTC)\tLocal\tWho\tEvent\tRecord\tOutcome\tDetail\n2026-11-01 00:22:15\t10/31/2026, 19:22:15\tCommissioning Engineer\tlearn.sme_review\tLC-001\tDENIED\trefused: the proposer is not the subject-matter reviewer of their own case (separation of duties)\n2026-11-01 00:22:14\t10/31/2026, 19:22:14\tCommissioning Eng"
+   "detail": "When (UTC)\tLocal\tWho\tEvent\tRecord\tOutcome\tDetail\n2026-11-01 01:52:48\t10/31/2026, 20:52:48\tCommissioning Engineer\tlearn.sme_review\tLC-001\tDENIED\trefused: the proposer is not the subject-matter reviewer of their own case (separation of duties)\n2026-11-01 01:52:48\t10/31/2026, 20:52:48\tCommissioning Eng"
   },
   {
    "id": "M-06",
@@ -662,7 +662,7 @@
    "id": "C-10d",
    "name": "the plan shows “Re-verification required”: each reopened test with its reasons and its earlier result “recorded on the previous device · must be re-run and verified again”",
    "result": "PASS",
-   "detail": "Re-verification required · 12 tests reopened\n\nVideo bar 1 (PA-0004, bar) → Camera 1 (camera, PA-0008) — substituted by Designer / CAD / Revit while baseline v1 is recommissioned. A result recorded before the substitution was obtained on the previous device: it stays on record and no longer counts to"
+   "detail": "Re-verification required · 12 tests reopened\n\nVideo bar 1 (PA-0004, bar) → Camera 1 (camera, PA-0008) [unit AS-0002 → AS-0006] — substituted by Designer / CAD / Revit while baseline v1 is recommissioned. A result recorded before the substitution was obtained on the previous device: it stays on recor"
   },
   {
    "id": "C-10e",
@@ -680,7 +680,7 @@
    "id": "C-12",
    "name": "Build a Room’s “Show this room’s entire story” opens the story, with records in several lifecycle stages",
    "result": "PASS",
-   "detail": "[{\"key\":\"request\",\"n\":0},{\"key\":\"design\",\"n\":5},{\"key\":\"authorize\",\"n\":3},{\"key\":\"commission\",\"n\":5},{\"key\":\"verify\",\"n\":2},{\"key\":\"baseline\",\"n\":1},{\"key\":\"operate\",\"n\":1},{\"key\":\"learn\",\"n\":0}]"
+   "detail": "[{\"key\":\"request\",\"n\":0},{\"key\":\"design\",\"n\":6},{\"key\":\"authorize\",\"n\":3},{\"key\":\"commission\",\"n\":7},{\"key\":\"verify\",\"n\":2},{\"key\":\"baseline\",\"n\":1},{\"key\":\"operate\",\"n\":1},{\"key\":\"learn\",\"n\":0}]"
   },
   {
    "id": "C-13",
@@ -704,7 +704,7 @@
    "id": "C-15",
    "name": "a perspective changes density, not data: the same records for a visitor and an engineer; test ids and evidence references only in the engineer’s view",
    "result": "PASS",
-   "detail": "17 entries, same true, visitor ids false"
+   "detail": "20 entries, same true, visitor ids false"
   },
   {
    "id": "C-16",
@@ -728,13 +728,13 @@
    "id": "C-19",
    "name": "the story’s ledger link shows only this room’s events",
    "result": "PASS",
-   "detail": "141 rows"
+   "detail": "142 rows"
   },
   {
    "id": "C-19b",
    "name": "re-acceptance is refused, the refusal naming every reopened test (the enterprise API’s wording)",
    "result": "PASS",
-   "detail": "Refused.\nacceptance needs every applicable test executed, passed and independently verified with evidence: 65 of 73 passed and independently verified (65 recorded: 0 passed awaiting verification, 0 failed; 8 not tested)\n12 test(s) were last recorded before the substitution and must be re-run on the "
+   "detail": "Refused.\nacceptance needs every applicable test executed, passed and independently verified with evidence: 53 of 73 passed and independently verified (53 recorded: 0 passed awaiting verification, 0 failed; 8 not tested; 12 recorded before a change of device and no longer counted)\n12 test(s) were las"
   },
   {
    "id": "C-19c",
@@ -752,7 +752,7 @@
    "id": "C-19e",
    "name": "the re-acceptance publishes baseline v2 and keeps v1, unchanged, as SUPERSEDED",
    "result": "PASS",
-   "detail": "Baseline lineage\nv1 SUPERSEDED revision 1 · 5 devices · 65/65 verified · Document Reviewer / QA · 2026-11-01 00:22:38\nv2 CURRENT revision 1 · 6 devices · 73/73 verified · Document Reviewer / QA · 2026-11-01 00:22:46\nWhat changed between v1 and v2\nDesign revision\nunchanged (1)\nDevices\n2 added (Camera"
+   "detail": "Baseline lineage\nv1 SUPERSEDED revision 1 · 5 devices · 65/65 verified · Document Reviewer / QA · 2026-11-01 01:53:11\nv2 CURRENT revision 1 · 6 devices · 73/73 verified · Document Reviewer / QA · 2026-11-01 01:53:20\nWhat changed between v1 and v2\nDesign revision\nunchanged (1)\nDevices\n2 added (Camera"
   },
   {
    "id": "C-20",
@@ -793,6 +793,72 @@
   {
    "id": "C-25",
    "name": "no page error and no console error across the cascade and the story",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "C-26",
+   "name": "the device register lists every position with the physical unit installed there and its identity state (synthetic units, UNKNOWN identity)",
+   "result": "PASS",
+   "detail": "PA-0008 AS-0006"
+  },
+  {
+   "id": "C-27",
+   "name": "a designer may not replace a unit like for like: it is field work (work.evidence)",
+   "result": "PASS",
+   "detail": "Refused.\nDesigner / CAD / Revit does not hold work.evidence: a unit is replaced by the person who records field work"
+  },
+  {
+   "id": "C-28",
+   "name": "a like-for-like replacement keeps the position id, closes the old unit’s installation (REPLACED) and installs a new unit; the design does not change",
+   "result": "PASS",
+   "detail": "[{\"id\":\"IN-0006\",\"position\":\"PA-0008\",\"asset\":\"AS-0006\",\"installedAt\":\"2026-11-01T01:53:13.048Z\",\"removedAt\":\"2026-11-01T01:53:27.193Z\",\"basis\":\"RECORDED\",\"installReason\":\"INITIAL\",\"removalReason\":\"REPLACED\",\"installedBy\":\"designer\",\"removedBy\":\"installer\",\"note\":\"installed at PA-0008, which replaces PA-0004\",\"removalNote\":\"the camera failed its self-test (synthetic)\"},{\"id\":\"IN-0008\",\"position\":\""
+  },
+  {
+   "id": "C-29",
+   "name": "the Impact panel: Assurance calls it an installation change (unit A → unit B, same model), not a model drift",
+   "result": "PASS",
+   "detail": "Camera 1 (camera) · unit AS-0006 → Camera 1 (camera) · unit AS-0008 · Installer · 01:53 UTC · why: “the camera failed its self-test (synthetic)”\n\nCommissioning\n\n+0 added · −0 removed · 73 unchanged\n\n73 → 73 applicable of 94 in the library · applicability engine 2.5.4-port.1, re-run on the changed de"
+  },
+  {
+   "id": "C-30",
+   "name": "the register keeps the position’s design history apart from the unit’s history: the position lists both units’ installations, the unit its own",
+   "result": "PASS",
+   "detail": "Position PA-0008 — design history\n\nCamera 1 · camera · designed model generic · now: PA-0008 · unit AS-0008 · identity UNKNOWN\n\nNo design change since it was placed.\n\nInstallations at PA-0008\nAS-0006  || Unit history — AS-0008\n\ncamera · model generic · identity UNKNOWN · no serial on record\n\nAS-0008 installed at PA-0008 on 2026-11-01T01:53:27.193Z by Installer (replacement); still installed"
+  },
+  {
+   "id": "C-31",
+   "name": "Commissioning: the reopened tests name both units and say “replaced by another unit of the same model”",
+   "result": "PASS",
+   "detail": "Re-verification required · 12 tests reopened\n\nCamera 1 (PA-0008, AS-0006) → AS-0008 [unit AS-0006 → AS-0008] — substituted by Installer while baseline v2 is recommissioned. A result recorded before the substitution was obtained on the previous device: it stays on record and no longer counts towards "
+  },
+  {
+   "id": "C-32",
+   "name": "Search Party finds the unit and the position it is located in, with the same reading: position · unit · identity",
+   "result": "PASS",
+   "detail": "ASSET\nAS-0008 · generic\n· identity UNKNOWN · synthetic unit at PA-0008\nR-DEMO-0001/AS-0008\nPLANNED DEVICE\nCamera 1 (Harbour Huddle (synthetic))\n· camera · Harbour Huddle (synthetic) · unit AS-0008 · identity UNKNOWN\nR-DEMO-0001/PA-0008"
+  },
+  {
+   "id": "C-33",
+   "name": "Pro reads the same identities: the installed units of the room, none counted as known while UNKNOWN",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "C-34",
+   "name": "the Room Story shows the positions (design) apart from the physical units (commission), and the replacement as a unit event",
+   "result": "PASS",
+   "detail": "A room’s entire story · synthetic records only\n\nHarbour Huddle (synthetic)\n\nR-DEMO-0001 · Northstar Annex · North Campus · Build a Room draft (this browser)\n\nActing as Requestor / Employee (perspective visitor): you see the narrative. A perspective changes how much is shown, never what is recorded —"
+  },
+  {
+   "id": "C-35",
+   "name": "an installer declares a synthetic serial: the register and the history read DECLARED, the serial labelled synthetic",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "C-36",
+   "name": "no page error and no console error across the register, the replacement and the readings",
    "result": "PASS",
    "detail": ""
   },

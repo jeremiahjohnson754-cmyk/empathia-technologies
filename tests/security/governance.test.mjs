@@ -240,9 +240,15 @@ test('BL-5 — a model substitution is the change order of an accepted room: ref
   assert.equal(rd.next.blockers.length, 1, JSON.stringify(rd.next.blockers)); assert.match(rd.next.blockers[0], /re-run/);
   assert.equal(JSON.stringify((await c.call('GET', `/v1/rooms/${code}/baselines`, { token: T.syseng })).body.current), v2, 'the current baseline is untouched while recommissioning');
   // the reopened tests are re-run on the new unit and verified independently; then the re-acceptance publishes v3, bound to the approved revision
+  // ADR-0012 (owner, 2026-10-31): a re-run cites evidence obtained after the change of unit — the evidence uploaded before the substitution
+  // (and cited by the superseded results) is refused, so the re-run uploads its own
+  const t0 = rd.recommissioning.reverification[0]; const r0 = rows.find((x) => x.test_id === t0.testId);
+  const old = await c.call('POST', `/v1/rooms/${code}/results`, { token: T.cxeng, body: { testId: t0.testId, state: 'PASS', evidenceId: evidence.id, evidenceKind: r0.evidence[0], instrument } });
+  assert.equal(old.status, 422, JSON.stringify(old.body)); assert.match(JSON.stringify(old.body), /uploaded .*before the change of unit/);
+  const fresh = (await c.call('POST', '/v1/evidence', { token: T.cxeng, raw: Buffer.from('synthetic governance re-run observation, after the substitution'), headers: { 'content-type': 'text/plain', 'x-file-name': 'gov-rerun.txt' } })).body;
   for (const t of rd.recommissioning.reverification) {
     const r = rows.find((x) => x.test_id === t.testId);
-    assert.equal((await c.call('POST', `/v1/rooms/${code}/results`, { token: T.cxeng, body: { testId: t.testId, state: 'PASS', evidenceId: evidence.id, evidenceKind: r.evidence[0], instrument } })).status, 201);
+    assert.equal((await c.call('POST', `/v1/rooms/${code}/results`, { token: T.cxeng, body: { testId: t.testId, state: 'PASS', evidenceId: fresh.id, evidenceKind: r.evidence[0], instrument } })).status, 201);
     assert.equal((await c.call('POST', `/v1/rooms/${code}/results/${t.testId}/verify`, { token: T.qa_reviewer })).status, 200);
   }
   rd = await ready();

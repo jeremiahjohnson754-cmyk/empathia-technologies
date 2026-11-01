@@ -6,7 +6,7 @@ production-ready** (see `docs/operations/PRODUCTION_READINESS_CHECKLIST.md`).
 
 | Reference | Content | Source |
 |---|---|---|
-| [`openapi.json`](openapi.json) | OpenAPI 3.1, 151 operations | generated from the route table: `node scripts/api/export-openapi.mjs` (`--check` fails when stale); also served at `GET /v1/openapi.json` |
+| [`openapi.json`](openapi.json) | OpenAPI 3.1, 156 operations | generated from the route table: `node scripts/api/export-openapi.mjs` (`--check` fails when stale); also served at `GET /v1/openapi.json` |
 | [ENDPOINTS.md](ENDPOINTS.md) | endpoint inventory: method, path, summary, auth, authority, idempotency | `node scripts/docs/api-inventory.mjs` |
 | [RBAC_MATRIX.md](RBAC_MATRIX.md) | which role can call which endpoint, and the rules beyond authority | `node scripts/docs/api-inventory.mjs` |
 | [EXAMPLES.md](EXAMPLES.md) | real requests and responses (sign-in, list, detail, 400/401/403/404/422, idempotent replay) | `node scripts/docs/api-examples.mjs` |
@@ -79,6 +79,26 @@ room and device creation, connections, revisions, results, work orders, projects
 * A failed first attempt stores nothing, so the same key can be retried.
 * Keys do not expire yet (NOT IMPLEMENTED; proposed 24–72 h). Concurrent first uses of one key are not serialized (both may run;
   the second insert is ignored) — a known gap to close with a lock or an "in progress" row.
+
+## Positions, physical assets and installations (ADR-0012)
+
+A room's device (`PA-xxxx`) is a **position**: the slot, its purpose, mounting and design history. The hardware is a **physical asset**
+(`AS-xxxx`: category, manufacturer, model, serial, `identityState` UNKNOWN → DECLARED → OBSERVED → VERIFIED), joined to a position by
+an append-only, dated **installation** record. Every read that shows a device carries the same three fields — `position`, `asset`,
+`identityState` (room detail `devices[]`, readiness `installations.devices`, Assurance `installation.devices`, Search Party `Asset` nodes).
+
+| Operation | Authority | Notes |
+|---|---|---|
+| `POST /v1/rooms/{room}/positions/{position}/installation` | `work.evidence` | an empty position, INSTALLATION_PENDING or INSTALLED_UNVERIFIED; a spare `asset` or a new unit (`serial` → DECLARED) |
+| `POST /v1/rooms/{room}/positions/{position}/replace` | `work.evidence` | like for like; `expectedInstallation` required (stale → 409); one transaction: close, open, outbox, audit; reopens the tests that covered the position |
+| `PATCH /v1/rooms/{room}/devices/{asset}` `{ model }` | `room.design` | a model substitution while recommissioned: the old unit closes SUBSTITUTED, a unit of the new model opens; optional `expectedInstallation`, spare `asset` |
+| `GET /v1/rooms/{room}/positions/{position}/history` | read | the design history apart from the installation timeline |
+| `GET /v1/assets/{asset}/history` | read | identity changes and installations across positions and rooms (within your site scope) |
+| `POST /v1/assets/{asset}/identity` | `work.evidence` / `field.scan`; VERIFIED: a verification authority | forward only; OBSERVED/VERIFIED need `evidenceId`; never verified by its declarer; a serial is final; a duplicate serial → 409 |
+
+A result recorded at or before a change of unit that reopens its test is superseded: it keeps its label but never counts towards an
+acceptance, cannot be verified, and its re-run needs evidence uploaded after the change. Database constraints back every rule (one open
+installation per position and per unit, no overlapping periods, close-once, no DELETE): a refused overlap is `409`, a guard (`EM009`) `422`.
 
 ## Rate limiting
 

@@ -5,6 +5,7 @@
  */
 import { ROOM_LIFECYCLE, type ApplicabilityRow, type RecordedResult, type RoomLifecycle } from '@empathia/domain-types';
 import { resultCounts, resultWords } from './results.js';
+import { reverificationBlockers, type ChangeKind, type ReverificationState } from './substitution.js';
 
 /** The authority each target state requires (the demonstrator's policy names). */
 export const LIFECYCLE_AUTHORITY: Record<RoomLifecycle, string> = {
@@ -28,6 +29,13 @@ export interface LifecycleFacts {
   hasBaseline: boolean;
   /** Live monitoring evidence on the installed room. The synthetic demonstrator and the starter never have it. */
   hasLiveMonitoringEvidence: boolean;
+  /**
+   * The tests a change of unit at a position reopened (a model substitution or a like-for-like replacement, ADR-0012), and the kinds
+   * of change behind them. A reopened test whose current result predates the change (`rerun`) is SUPERSEDED: whatever its label — even
+   * PASS_VERIFIED — it never counts towards an acceptance. Omitted = no change of unit.
+   */
+  reverification?: readonly ReverificationState[];
+  changeKinds?: readonly ChangeKind[];
 }
 
 /** Returns the reasons a transition is refused; an empty list means the transition is allowed (authority still to be checked). */
@@ -47,11 +55,21 @@ export function lifecycleBlockers(f: LifecycleFacts): string[] {
   }
   if (f.to === 'ACCEPTED') {
     const app = f.rows.filter((r) => r.applicable);
-    if (!app.length || app.some((r) => r.result !== 'PASS_VERIFIED')) {
-      const C = resultCounts(f.rows, f.results);
-      why.push(`acceptance needs every applicable test executed, passed and independently verified with evidence: ${C.verified} of ${app.length} passed and independently verified (${C.recorded} recorded: ${resultWords(C).replace(/^\d+ passed and independently verified, /, '')}; ${C.notTested} not tested)`);
+    const appIds = new Set(app.map((r) => r.id));
+    // superseded results never count: a result recorded on the previous unit is taken out of the counts, whatever its label
+    const rv = (f.reverification || []).filter((t) => appIds.has(t.testId));
+    const superseded = new Set(rv.filter((t) => t.rerun).map((t) => t.testId));
+    const counted = app.filter((r) => !superseded.has(r.id));
+    const gap = counted.some((r) => r.result !== 'PASS_VERIFIED');
+    const C = resultCounts(counted, f.results);
+    if (!app.length || gap) {
+      why.push(`acceptance needs every applicable test executed, passed and independently verified with evidence: ${C.verified} of ${app.length} passed and independently verified (${C.recorded} recorded: ${resultWords(C).replace(/^\d+ passed and independently verified, /, '')}; ${C.notTested} not tested${superseded.size ? `; ${superseded.size} recorded before a change of device and no longer counted` : ''})`);
     }
+    // the tests a change of unit reopened (one wording with the demonstration); when they are the only gap, the count goes with them
+    const rb = reverificationBlockers(rv, f.changeKinds);
+    if (rb.length && superseded.size && !gap) rb[0] = `${rb[0]} — acceptance counts ${C.verified} of ${app.length} applicable tests as passed and independently verified; the ${superseded.size} earlier result(s) no longer count`;
     if (f.openIssues.length) why.push(`${f.openIssues.length} open issue(s): every deficiency is closed with its retest before acceptance`);
+    why.push(...rb);
   }
   if (f.to === 'OPERATIONAL') {
     if (!f.hasBaseline) why.push('no accepted, signed baseline');

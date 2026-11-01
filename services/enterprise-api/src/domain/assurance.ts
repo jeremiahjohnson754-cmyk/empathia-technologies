@@ -8,6 +8,8 @@
 import { assess, type Baseline, type Current, ENGINE_VERSION } from '@empathia/assurance-engine';
 import type { RequestContext } from '../auth/context.js';
 import { findRoom, load } from './rooms.js';
+import { roomInstallations, unitsAt } from './installations.js';
+import { identityOf } from '@empathia/commissioning-engine';
 
 export async function roomAssurance(ctx: RequestContext, ref: string) {
   return ctx.tx(async (q) => {
@@ -19,15 +21,22 @@ export async function roomAssurance(ctx: RequestContext, ref: string) {
     if (!b) return { room: room.code, state: 'NO_BASELINE', engineVersion: ENGINE_VERSION, reason: `Assurance compares a room with its accepted, signed baseline. ${room.code} is ${room.lifecycle}: it has none yet (a room gets one when it is ACCEPTED).` };
     const snap = (await q.query<{ snapshot: { devices: Array<{ id: string; cat: string; label: string; model?: string; x: number; y: number; rot: number; furniture: boolean }> } }>('SELECT snapshot FROM app.room_revision WHERE room_id = $1 AND rev_no = $2', [room.id, b.revision])).rows[0]?.snapshot;
     const L = await load(ctx, q, room.id);
+    // ADR-0012: the unit at each position when the baseline was published (the installation records are append-only, so this is read
+    // back exactly) against the unit there now — a different unit of the same model is an installation change, not a model drift
+    const accepted = await unitsAt(q, room.id, b.at);
+    const inst = await roomInstallations(q, room.id);
+    const unitNow = (id: string) => identityOf(id, inst.facts, inst.assets).asset;
     // the register comparison includes the model: a substitution keeps the asset id, so comparing ids alone would call the register unchanged
     const baseline: Baseline = {
       id: b.id, version: b.version, signedAt: b.at, signedBy: b.signedBy, capacity: room.occupancy, configSignature: null, documents: [],
-      devices: (snap?.devices || []).filter((d) => !d.furniture).map((d) => ({ id: d.id, category: d.cat, label: d.label, model: d.model ?? null })),
+      devices: (snap?.devices || []).filter((d) => !d.furniture).map((d) => ({ id: d.id, category: d.cat, label: d.label, model: d.model ?? null, unit: accepted.get(d.id) ?? null })),
       layout: snap ? { objs: snap.devices.map((d) => ({ id: d.id, kind: d.cat, label: d.label, x: d.x, y: d.y, rot: d.rot })) } : null,
     };
-    const current: Current = { now: new Date().toISOString(), devices: L.input.devices.filter((d) => !d.furniture).map((d) => ({ id: d.id, category: d.cat, label: d.label, model: d.model, state: null })), layout: null, seats: null, configSignature: null, documentsMissing: null, environment: null, signals: null, checks: [] };
+    const current: Current = { now: new Date().toISOString(), devices: L.input.devices.filter((d) => !d.furniture).map((d) => ({ id: d.id, category: d.cat, label: d.label, model: d.model, unit: unitNow(d.id), state: null })), layout: null, seats: null, configSignature: null, documentsMissing: null, environment: null, signals: null, checks: [] };
     const a = assess(baseline, current);
     await ctx.audit(q, 'assurance.assess', 'ALLOWED', { type: 'Room', id: room.code }, { worst: a.worst, remedy: a.remedy, assessed: a.coverage.assessed });
-    return { room: room.code, state: 'ASSESSED', engineVersion: ENGINE_VERSION, baseline: { id: b.id, version: b.version, signedAt: b.at, revision: b.revision }, liveHealth: 'NOT_MONITORED', note: 'No monitoring feed, discovery agent or field survey is connected: dimensions without evidence are NOT ASSESSED, never assumed to match.', ...a };
+    const devices = L.input.devices.filter((d) => !d.furniture).map((d) => ({ ...identityOf(d.id, inst.facts, inst.assets), assetAtBaseline: accepted.get(d.id) ?? null }));
+    return { room: room.code, state: 'ASSESSED', engineVersion: ENGINE_VERSION, baseline: { id: b.id, version: b.version, signedAt: b.at, revision: b.revision }, liveHealth: 'NOT_MONITORED', note: 'No monitoring feed, discovery agent or field survey is connected: dimensions without evidence are NOT ASSESSED, never assumed to match.', ...a,
+      installation: { devices, changes: (a.rows.find((r) => r.k === 'presence')?.changes || []).filter((c) => c.kind === 'MODEL_SUBSTITUTED' || c.kind === 'UNIT_REPLACED'), basis: 'the unit at each position when the baseline was published (append-only installation records) against the unit there now; assetAtBaseline null = not on record at publication (e.g. a room migrated after its acceptance)' } };
   });
 }

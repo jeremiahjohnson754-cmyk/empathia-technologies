@@ -2,7 +2,7 @@
  "step": 6,
  "title": "Move the governed lifecycle one step at a time, each step by its authority",
  "room": "R-PLN-0004",
- "at": "2026-11-01T00:20:11.272Z",
+ "at": "2026-11-01T01:50:45.917Z",
  "assertions": [
   {
    "id": "C-15",
@@ -48,6 +48,11 @@
    "id": "C-23",
    "name": "the room is COMMISSIONING, the approved revision is 2, every applicable test is NOT_TESTED and needs physical execution",
    "result": "PASS"
+  },
+  {
+   "id": "C-89",
+   "name": "recording the installation put one physical unit at every non-furniture position — identity UNKNOWN, no serial, no maker — recorded by the installer (ADR-0012)",
+   "result": "PASS"
   }
  ],
  "exchanges": [
@@ -65,9 +70,9 @@
     "status": 403,
     "detail": "designer may not move a room to DESIGN_APPROVED (needs room.design.approve)",
     "code": "forbidden",
-    "correlationId": "c4d9f0b9-ae87-4201-8eaf-955da5d9ae2a"
+    "correlationId": "76365c27-5073-4f7f-b235-296d87170b57"
    },
-   "correlationId": "c4d9f0b9-ae87-4201-8eaf-955da5d9ae2a"
+   "correlationId": "76365c27-5073-4f7f-b235-296d87170b57"
   },
   {
    "method": "POST",
@@ -86,9 +91,9 @@
     "reasons": [
      "no transition PLANNED → COMMISSIONING: the room moves one governed step at a time"
     ],
-    "correlationId": "c5b33bef-810c-475a-b48e-8c2c32db0117"
+    "correlationId": "9dfe638b-7ede-406e-986c-b50c43f03e3d"
    },
-   "correlationId": "c5b33bef-810c-475a-b48e-8c2c32db0117"
+   "correlationId": "9dfe638b-7ede-406e-986c-b50c43f03e3d"
   },
   {
    "method": "POST",
@@ -105,7 +110,7 @@
     "openIssues": 0,
     "planChanged": true
    },
-   "correlationId": "d1a0bf95-4d33-4bf6-b9e9-544d8757df25"
+   "correlationId": "56f39ccb-3bea-4854-9118-64905d7a1f95"
   },
   {
    "method": "POST",
@@ -121,9 +126,9 @@
     "status": 403,
     "detail": "installer may not move a room to INSTALLATION_PENDING (needs window.approve)",
     "code": "forbidden",
-    "correlationId": "69636766-6616-40dd-8dd1-d3c80823fe17"
+    "correlationId": "9dc3807d-22b0-4fdb-b133-4c55821f7621"
    },
-   "correlationId": "69636766-6616-40dd-8dd1-d3c80823fe17"
+   "correlationId": "9dc3807d-22b0-4fdb-b133-4c55821f7621"
   },
   {
    "method": "POST",
@@ -140,7 +145,7 @@
     "openIssues": 0,
     "planChanged": false
    },
-   "correlationId": "85598a6a-b20e-4dfe-b07c-0820b8aac2ef"
+   "correlationId": "a375b9fb-0e33-4f0c-829f-d3015ea0163d"
   },
   {
    "method": "POST",
@@ -157,7 +162,7 @@
     "openIssues": 0,
     "planChanged": false
    },
-   "correlationId": "fe04216c-0ee2-4d65-91b8-fd706a5b8cad"
+   "correlationId": "12f7311b-5b02-4027-8a6b-f574618034a0"
   },
   {
    "method": "POST",
@@ -173,9 +178,9 @@
     "status": 403,
     "detail": "installer may not move a room to COMMISSIONING (needs plan.compile)",
     "code": "forbidden",
-    "correlationId": "73dd1a02-0f83-4d89-9557-d60adfa7f96c"
+    "correlationId": "43d70c6a-79c9-4fd0-91bf-86550b4659ee"
    },
-   "correlationId": "73dd1a02-0f83-4d89-9557-d60adfa7f96c"
+   "correlationId": "43d70c6a-79c9-4fd0-91bf-86550b4659ee"
   },
   {
    "method": "POST",
@@ -192,7 +197,7 @@
     "openIssues": 0,
     "planChanged": false
    },
-   "correlationId": "efed3967-c29f-4536-b98c-e691ec59a6e7"
+   "correlationId": "b1d18d40-3b7c-42b0-bc13-eb0b44417153"
   },
   {
    "method": "GET",
@@ -202,7 +207,7 @@
    "body": {
     "room": {
      "code": "R-PLN-0004",
-     "id": "17b276ee-5ebe-4998-8c11-7b1542665dab",
+     "id": "61d3cec4-82f5-4c5a-8728-8773f69b5b7d",
      "name": "Checkpoint conference room (synthetic)",
      "lifecycle": "COMMISSIONING",
      "template": "custom",
@@ -271,8 +276,8 @@
       "capacityEstimate": 10
      },
      "approvedClassification": {
-      "at": "2026-11-01T00:20:05.278Z",
-      "by": "7a34ae52-ef8e-4596-a776-e8134a317c3a",
+      "at": "2026-11-01T01:50:39.053Z",
+      "by": "1e09b1a1-35e7-4e54-a6fd-d08d0d45d3a2",
       "byRole": "syseng",
       "reason": "suggestion accepted",
       "override": false,
@@ -300,7 +305,11 @@
       "props": {},
       "furniture": true,
       "lifecycle": "INSTALLED_UNVERIFIED",
-      "modelHistory": []
+      "modelHistory": [],
+      "position": "PA-0058",
+      "asset": null,
+      "identityState": null,
+      "installations": []
      },
      {
       "id": "PA-0059",
@@ -321,7 +330,11 @@
       },
       "furniture": true,
       "lifecycle": "INSTALLED_UNVERIFIED",
-      "modelHistory": []
+      "modelHistory": [],
+      "position": "PA-0059",
+      "asset": null,
+      "identityState": null,
+      "installations": []
      },
      {
       "id": "PA-0060",
@@ -342,7 +355,24 @@
       },
       "furniture": false,
       "lifecycle": "INSTALLED_UNVERIFIED",
-      "modelHistory": []
+      "modelHistory": [],
+      "position": "PA-0060",
+      "asset": "AS-0001",
+      "identityState": "UNKNOWN",
+      "installations": [
+       {
+        "id": "08e14c7e-772e-4795-ada7-3e893bf1d4c2",
+        "asset": "AS-0001",
+        "model": "generic",
+        "identityState": "UNKNOWN",
+        "installedAt": "2026-11-01T01:50:39.336Z",
+        "basis": "RECORDED",
+        "installReason": "INITIAL",
+        "removedAt": null,
+        "removalReason": null,
+        "sentence": "AS-0001 installed at PA-0060 on 2026-11-01T01:50:39.336Z by 9cc90168-09ab-4b67-a3ab-3673ecf82b56 (initial); still installed"
+       }
+      ]
      },
      {
       "id": "PA-0061",
@@ -364,7 +394,24 @@
       },
       "furniture": false,
       "lifecycle": "INSTALLED_UNVERIFIED",
-      "modelHistory": []
+      "modelHistory": [],
+      "position": "PA-0061",
+      "asset": "AS-0002",
+      "identityState": "UNKNOWN",
+      "installations": [
+       {
+        "id": "f8f70e75-b8ad-408f-82e9-2b336e5b61de",
+        "asset": "AS-0002",
+        "model": "generic",
+        "identityState": "UNKNOWN",
+        "installedAt": "2026-11-01T01:50:39.336Z",
+        "basis": "RECORDED",
+        "installReason": "INITIAL",
+        "removedAt": null,
+        "removalReason": null,
+        "sentence": "AS-0002 installed at PA-0061 on 2026-11-01T01:50:39.336Z by 9cc90168-09ab-4b67-a3ab-3673ecf82b56 (initial); still installed"
+       }
+      ]
      },
      {
       "id": "PA-0062",
@@ -386,7 +433,24 @@
       },
       "furniture": false,
       "lifecycle": "INSTALLED_UNVERIFIED",
-      "modelHistory": []
+      "modelHistory": [],
+      "position": "PA-0062",
+      "asset": "AS-0003",
+      "identityState": "UNKNOWN",
+      "installations": [
+       {
+        "id": "531132c9-ec6d-4681-a827-bae2b9e8639c",
+        "asset": "AS-0003",
+        "model": "generic",
+        "identityState": "UNKNOWN",
+        "installedAt": "2026-11-01T01:50:39.336Z",
+        "basis": "RECORDED",
+        "installReason": "INITIAL",
+        "removedAt": null,
+        "removalReason": null,
+        "sentence": "AS-0003 installed at PA-0062 on 2026-11-01T01:50:39.336Z by 9cc90168-09ab-4b67-a3ab-3673ecf82b56 (initial); still installed"
+       }
+      ]
      },
      {
       "id": "PA-0063",
@@ -407,7 +471,24 @@
       },
       "furniture": false,
       "lifecycle": "INSTALLED_UNVERIFIED",
-      "modelHistory": []
+      "modelHistory": [],
+      "position": "PA-0063",
+      "asset": "AS-0004",
+      "identityState": "UNKNOWN",
+      "installations": [
+       {
+        "id": "ffe2d26f-22b5-431b-a990-b49f5e8bda3e",
+        "asset": "AS-0004",
+        "model": "generic",
+        "identityState": "UNKNOWN",
+        "installedAt": "2026-11-01T01:50:39.336Z",
+        "basis": "RECORDED",
+        "installReason": "INITIAL",
+        "removedAt": null,
+        "removalReason": null,
+        "sentence": "AS-0004 installed at PA-0063 on 2026-11-01T01:50:39.336Z by 9cc90168-09ab-4b67-a3ab-3673ecf82b56 (initial); still installed"
+       }
+      ]
      },
      {
       "id": "PA-0064",
@@ -429,7 +510,24 @@
       },
       "furniture": false,
       "lifecycle": "INSTALLED_UNVERIFIED",
-      "modelHistory": []
+      "modelHistory": [],
+      "position": "PA-0064",
+      "asset": "AS-0005",
+      "identityState": "UNKNOWN",
+      "installations": [
+       {
+        "id": "68aadbfa-9fe9-4240-b3f4-dbe652e236c2",
+        "asset": "AS-0005",
+        "model": "generic",
+        "identityState": "UNKNOWN",
+        "installedAt": "2026-11-01T01:50:39.336Z",
+        "basis": "RECORDED",
+        "installReason": "INITIAL",
+        "removedAt": null,
+        "removalReason": null,
+        "sentence": "AS-0005 installed at PA-0064 on 2026-11-01T01:50:39.336Z by 9cc90168-09ab-4b67-a3ab-3673ecf82b56 (initial); still installed"
+       }
+      ]
      },
      {
       "id": "PA-0065",
@@ -450,7 +548,24 @@
       },
       "furniture": false,
       "lifecycle": "INSTALLED_UNVERIFIED",
-      "modelHistory": []
+      "modelHistory": [],
+      "position": "PA-0065",
+      "asset": "AS-0006",
+      "identityState": "UNKNOWN",
+      "installations": [
+       {
+        "id": "02050159-897e-434a-b0e3-ab1601a8be6a",
+        "asset": "AS-0006",
+        "model": "generic",
+        "identityState": "UNKNOWN",
+        "installedAt": "2026-11-01T01:50:39.336Z",
+        "basis": "RECORDED",
+        "installReason": "INITIAL",
+        "removedAt": null,
+        "removalReason": null,
+        "sentence": "AS-0006 installed at PA-0065 on 2026-11-01T01:50:39.336Z by 9cc90168-09ab-4b67-a3ab-3673ecf82b56 (initial); still installed"
+       }
+      ]
      },
      {
       "id": "PA-0066",
@@ -469,7 +584,24 @@
       "props": {},
       "furniture": false,
       "lifecycle": "INSTALLED_UNVERIFIED",
-      "modelHistory": []
+      "modelHistory": [],
+      "position": "PA-0066",
+      "asset": "AS-0007",
+      "identityState": "UNKNOWN",
+      "installations": [
+       {
+        "id": "ee74e0b1-9332-4810-abbd-4469e23e5937",
+        "asset": "AS-0007",
+        "model": "generic",
+        "identityState": "UNKNOWN",
+        "installedAt": "2026-11-01T01:50:39.336Z",
+        "basis": "RECORDED",
+        "installReason": "INITIAL",
+        "removedAt": null,
+        "removalReason": null,
+        "sentence": "AS-0007 installed at PA-0066 on 2026-11-01T01:50:39.336Z by 9cc90168-09ab-4b67-a3ab-3673ecf82b56 (initial); still installed"
+       }
+      ]
      },
      {
       "id": "PA-0067",
@@ -491,7 +623,24 @@
       },
       "furniture": false,
       "lifecycle": "INSTALLED_UNVERIFIED",
-      "modelHistory": []
+      "modelHistory": [],
+      "position": "PA-0067",
+      "asset": "AS-0008",
+      "identityState": "UNKNOWN",
+      "installations": [
+       {
+        "id": "ba972ed7-ff10-4f18-890c-5769b9fedb62",
+        "asset": "AS-0008",
+        "model": "generic",
+        "identityState": "UNKNOWN",
+        "installedAt": "2026-11-01T01:50:39.336Z",
+        "basis": "RECORDED",
+        "installReason": "INITIAL",
+        "removedAt": null,
+        "removalReason": null,
+        "sentence": "AS-0008 installed at PA-0067 on 2026-11-01T01:50:39.336Z by 9cc90168-09ab-4b67-a3ab-3673ecf82b56 (initial); still installed"
+       }
+      ]
      }
     ],
     "connections": [
@@ -585,43 +734,43 @@
       "kind": "plan",
       "state": "APPROVED",
       "revNo": 1,
-      "approvedBy": "7a34ae52-ef8e-4596-a776-e8134a317c3a"
+      "approvedBy": "1e09b1a1-35e7-4e54-a6fd-d08d0d45d3a2"
      },
      {
       "kind": "placement",
       "state": "APPROVED",
       "revNo": 1,
-      "approvedBy": "7a34ae52-ef8e-4596-a776-e8134a317c3a"
+      "approvedBy": "1e09b1a1-35e7-4e54-a6fd-d08d0d45d3a2"
      },
      {
       "kind": "schedule",
       "state": "APPROVED",
       "revNo": 1,
-      "approvedBy": "7a34ae52-ef8e-4596-a776-e8134a317c3a"
+      "approvedBy": "1e09b1a1-35e7-4e54-a6fd-d08d0d45d3a2"
      },
      {
       "kind": "relationships",
       "state": "APPROVED",
       "revNo": 1,
-      "approvedBy": "7a34ae52-ef8e-4596-a776-e8134a317c3a"
+      "approvedBy": "1e09b1a1-35e7-4e54-a6fd-d08d0d45d3a2"
      },
      {
       "kind": "signal",
       "state": "APPROVED",
       "revNo": 1,
-      "approvedBy": "7a34ae52-ef8e-4596-a776-e8134a317c3a"
+      "approvedBy": "1e09b1a1-35e7-4e54-a6fd-d08d0d45d3a2"
      },
      {
       "kind": "network",
       "state": "APPROVED",
       "revNo": 1,
-      "approvedBy": "7a34ae52-ef8e-4596-a776-e8134a317c3a"
+      "approvedBy": "1e09b1a1-35e7-4e54-a6fd-d08d0d45d3a2"
      },
      {
       "kind": "summary",
       "state": "APPROVED",
       "revNo": 1,
-      "approvedBy": "7a34ae52-ef8e-4596-a776-e8134a317c3a"
+      "approvedBy": "1e09b1a1-35e7-4e54-a6fd-d08d0d45d3a2"
      }
     ],
     "revisions": [
@@ -629,15 +778,15 @@
       "rev_no": 1,
       "reason": "created",
       "sha256": "22f5c43ec58ad7bcd65c49d11ad73932ad6c04dde8ba813ec51b39b2d67c5afd",
-      "created_by": "2780822d-ef25-4b71-802f-e0fcb455d6a1",
-      "created_at": "2026-11-01T00:20:04.857Z"
+      "created_by": "bffa9ce3-03ce-4be9-82d6-004e927f08b8",
+      "created_at": "2026-11-01T01:50:38.574Z"
      },
      {
       "rev_no": 2,
       "reason": "checkpoint: the designed conference room",
       "sha256": "31f686c119f2eba0322ebdf2752317f73cde93194c010734ca82d304fbe3f53c",
-      "created_by": "2780822d-ef25-4b71-802f-e0fcb455d6a1",
-      "created_at": "2026-11-01T00:20:05.194Z"
+      "created_by": "bffa9ce3-03ce-4be9-82d6-004e927f08b8",
+      "created_at": "2026-11-01T01:50:38.978Z"
      }
     ],
     "issues": [
@@ -653,8 +802,8 @@
       "state": "RESOLVED",
       "owner_role": null,
       "resolution": {
-       "at": "2026-11-01T00:20:04.997Z",
-       "by": "2780822d-ef25-4b71-802f-e0fcb455d6a1",
+       "at": "2026-11-01T01:50:38.781Z",
+       "by": "bffa9ce3-03ce-4be9-82d6-004e927f08b8",
        "how": "the design check no longer fires after: device added PA-0061",
        "byRole": "designer",
        "revision": 1,
@@ -662,12 +811,12 @@
       },
       "first_seen_rev": 1,
       "last_seen_rev": 1,
-      "created_at": "2026-11-01T00:20:04.947Z",
-      "updated_at": "2026-11-01T00:20:04.986Z"
+      "created_at": "2026-11-01T01:50:38.689Z",
+      "updated_at": "2026-11-01T01:50:38.753Z"
      }
     ],
     "commissioning": {
-     "planId": "2200f005-7224-47db-8e4d-34961cb52288",
+     "planId": "835a5cc5-57f3-4913-8bc4-a0923043488c",
      "engineVersion": "2.5.4-port.1",
      "ruleVersion": "2.5.0",
      "library": 94,
@@ -686,7 +835,7 @@
        "network_switch"
       ]
      },
-     "compiledAt": "2026-11-01T00:20:05.443Z",
+     "compiledAt": "2026-11-01T01:50:39.241Z",
      "counts": {
       "applicable": 75,
       "recorded": 0,
@@ -2858,7 +3007,145 @@
      ]
     }
    },
-   "correlationId": "c4bec0a4-dc0a-4eee-b8e7-51377b53b195"
+   "correlationId": "9b6548f4-f77f-43c2-b472-ed984a5fd75d"
+  },
+  {
+   "method": "GET",
+   "path": "/v1/rooms/R-PLN-0004/positions/PA-0061/history",
+   "persona": "installer",
+   "status": 200,
+   "body": {
+    "position": {
+     "code": "PA-0061",
+     "room": "R-PLN-0004",
+     "label": "Camera 1",
+     "category": "camera",
+     "role": "Camera 1",
+     "model": "generic",
+     "generic": true,
+     "mount": "wall",
+     "x": 2.1,
+     "y": 0.15,
+     "z": 1.8,
+     "rot": 0,
+     "lifecycle": "INSTALLED_UNVERIFIED",
+     "removedAt": null,
+     "createdAt": "2026-11-01T01:50:38.753Z"
+    },
+    "design": {
+     "model": "generic",
+     "modelHistory": [],
+     "revisions": [
+      {
+       "revision": 1,
+       "at": "2026-11-01T01:50:38.574Z",
+       "by": "bffa9ce3-03ce-4be9-82d6-004e927f08b8",
+       "model": null,
+       "category": null,
+       "inRevision": false
+      },
+      {
+       "revision": 2,
+       "at": "2026-11-01T01:50:38.978Z",
+       "by": "bffa9ce3-03ce-4be9-82d6-004e927f08b8",
+       "model": "generic",
+       "category": "camera",
+       "inRevision": true
+      }
+     ]
+    },
+    "installations": [
+     {
+      "id": "f8f70e75-b8ad-408f-82e9-2b336e5b61de",
+      "position": "PA-0061",
+      "room": "R-PLN-0004",
+      "asset": "AS-0002",
+      "model": "generic",
+      "installedAt": "2026-11-01T01:50:39.336Z",
+      "basis": "RECORDED",
+      "installReason": "INITIAL",
+      "installedBy": "9cc90168-09ab-4b67-a3ab-3673ecf82b56",
+      "installedRole": "installer",
+      "note": "recorded with the room’s installation (identity not yet recorded)",
+      "evidenceId": null,
+      "eventId": "ffae1126-ae4a-4d53-9a7b-8b6960c352c1",
+      "correlationId": "12f7311b-5b02-4027-8a6b-f574618034a0",
+      "removedAt": null,
+      "removalReason": null,
+      "removedBy": null,
+      "removedRole": null,
+      "removalNote": null,
+      "removalEvidenceId": null,
+      "removalEventId": null,
+      "removalCorrelationId": null,
+      "sentence": "AS-0002 installed at PA-0061 on 2026-11-01T01:50:39.336Z by 9cc90168-09ab-4b67-a3ab-3673ecf82b56 (initial); still installed"
+     }
+    ],
+    "current": {
+     "position": "PA-0061",
+     "asset": "AS-0002",
+     "identityState": "UNKNOWN"
+    },
+    "note": "the design history (model substitutions) belongs to the position; the installation timeline names the physical units that occupied it — each unit keeps its own history (GET /v1/assets/{asset}/history)"
+   },
+   "correlationId": "5682fe0e-d1de-43bd-b182-9fd5e25e5593"
+  },
+  {
+   "method": "GET",
+   "path": "/v1/assets/AS-0002/history",
+   "persona": "installer",
+   "status": 200,
+   "body": {
+    "asset": {
+     "code": "AS-0002",
+     "category": "camera",
+     "manufacturer": null,
+     "model": "generic",
+     "serial": null,
+     "identityState": "UNKNOWN",
+     "identityEvidenceId": null,
+     "origin": "INSTALLATION_RECORD",
+     "createdAt": "2026-11-01T01:50:39.336Z",
+     "createdBy": "9cc90168-09ab-4b67-a3ab-3673ecf82b56"
+    },
+    "identity": [],
+    "installations": [
+     {
+      "id": "f8f70e75-b8ad-408f-82e9-2b336e5b61de",
+      "position": "PA-0061",
+      "room": "R-PLN-0004",
+      "asset": "AS-0002",
+      "model": "generic",
+      "installedAt": "2026-11-01T01:50:39.336Z",
+      "basis": "RECORDED",
+      "installReason": "INITIAL",
+      "installedBy": "9cc90168-09ab-4b67-a3ab-3673ecf82b56",
+      "installedRole": "installer",
+      "note": "recorded with the room’s installation (identity not yet recorded)",
+      "evidenceId": null,
+      "eventId": "ffae1126-ae4a-4d53-9a7b-8b6960c352c1",
+      "correlationId": "12f7311b-5b02-4027-8a6b-f574618034a0",
+      "removedAt": null,
+      "removalReason": null,
+      "removedBy": null,
+      "removedRole": null,
+      "removalNote": null,
+      "removalEvidenceId": null,
+      "removalEventId": null,
+      "removalCorrelationId": null,
+      "roomName": "Checkpoint conference room (synthetic)",
+      "sentence": "AS-0002 installed at PA-0061 on 2026-11-01T01:50:39.336Z by 9cc90168-09ab-4b67-a3ab-3673ecf82b56 (initial); still installed"
+     }
+    ],
+    "current": {
+     "position": "PA-0061",
+     "room": "R-PLN-0004",
+     "installation": "f8f70e75-b8ad-408f-82e9-2b336e5b61de",
+     "since": "2026-11-01T01:50:39.336Z"
+    },
+    "note": null
+   },
+   "correlationId": "e5446973-aad5-42ed-8b44-f07454deeb94"
   }
  ]
 }
