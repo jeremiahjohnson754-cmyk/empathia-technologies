@@ -102,18 +102,42 @@ export async function aiRequest(ctx: RequestContext, body: { purpose: string; pr
   throw new ApiError('not_configured', 'No AI model is configured in the starter. The request was logged; the permitted sources below are what an answer would have to cite.', sources.map((s) => `${s.title} (${s.source})`));
 }
 
+/** Outbox events of the caller's tenant (row-level security), never their payloads. A PENDING event can be held behind an earlier
+ *  undelivered event of the same aggregate (worker/outbox.ts): aggregate_rev shows where it sits. */
 export async function outboxAdmin(ctx: RequestContext, status: string) {
   await ctx.require('policy.configure', 'read the outbox');
   if (!['PENDING', 'DELIVERED', 'DEAD_LETTER'].includes(status)) throw invalid('status is PENDING, DELIVERED or DEAD_LETTER');
-  return ctx.tx(async (q) => ({ items: (await q.query('SELECT id, type, aggregate_type, aggregate_id, status, attempts, next_attempt_at, last_error, occurred_at, delivered_at FROM app.outbox_event WHERE status = $1 ORDER BY occurred_at DESC LIMIT 200', [status])).rows }));
+  return ctx.tx(async (q) => ({ items: (await q.query('SELECT id, type, aggregate_type, aggregate_id, aggregate_rev, status, attempts, next_attempt_at, last_error, occurred_at, delivered_at FROM app.outbox_event WHERE status = $1 ORDER BY occurred_at DESC LIMIT 200', [status])).rows }));
 }
 
-export async function outboxRetry(ctx: RequestContext, id: string) {
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * Replay one dead-lettered event (security admin, policy.configure). A reason is required. Only a DEAD_LETTER event can be replayed
+ * (409 otherwise, so a duplicate request never requeues twice); an event of another tenant, or none, is 404 with the same answer.
+ * The audit event (Evidence Ledger) records who, when, why, the prior status, attempts and last error, and the outcome; refusals are
+ * audited too. Handlers that already took effect for the event (their delivery receipts) are not run again by the replay.
+ */
+export async function outboxRetry(ctx: RequestContext, id: string, body: { reason?: string }) {
   await ctx.require('policy.configure', 'retry a dead-lettered event');
-  return ctx.tx(async (q) => {
-    const r = await q.query(`UPDATE app.outbox_event SET status = 'PENDING', attempts = 0, next_attempt_at = now(), last_error = NULL WHERE id = $1 AND status = 'DEAD_LETTER' RETURNING id`, [id]);
-    if (!r.rowCount) throw notFound(`dead-lettered event ${id}`);
-    await ctx.audit(q, 'outbox.retry', 'ALLOWED', { type: 'OutboxEvent', id });
-    return { id, status: 'PENDING' };
+  const reason = String(body?.reason ?? '').trim();
+  if (reason.length < 5 || reason.length > 1000) throw invalid('a reason (5–1000 characters) is required to replay an event');
+  const aggregate = { type: 'OutboxEvent', id: id.slice(0, 80) };
+  const missing = async (): Promise<never> => { await ctx.audit(null, 'outbox.retry', 'DENIED', aggregate, { reason, outcome: 'NOT_FOUND' }); throw notFound('outbox event'); };
+  if (!UUID_RE.test(id)) return missing();
+  const out = await ctx.tx(async (q) => {
+    const e = (await q.query<{ status: string; attempts: number; last_error: string | null; type: string; aggregate_type: string; aggregate_id: string; aggregate_rev: number }>(
+      'SELECT status, attempts, last_error, type, aggregate_type, aggregate_id, aggregate_rev FROM app.outbox_event WHERE id = $1 FOR UPDATE', [id])).rows[0];
+    if (!e) return { refused: 'NOT_FOUND' as const };
+    if (e.status !== 'DEAD_LETTER') return { refused: 'NOT_DEAD_LETTER' as const, status: e.status };
+    await q.query(`UPDATE app.outbox_event SET status = 'PENDING', attempts = 0, next_attempt_at = now(), last_error = NULL, lease_owner = NULL, lease_until = NULL WHERE id = $1`, [id]);
+    await ctx.audit(q, 'outbox.retry', 'ALLOWED', aggregate, { reason, priorStatus: e.status, priorAttempts: e.attempts, lastError: e.last_error, eventType: e.type, eventAggregate: { type: e.aggregate_type, id: e.aggregate_id, rev: e.aggregate_rev }, outcome: 'REQUEUED' });
+    return { id, status: 'PENDING', priorAttempts: e.attempts };
   });
+  if ('refused' in out) {
+    if (out.refused === 'NOT_FOUND') return missing();
+    await ctx.audit(null, 'outbox.retry', 'DENIED', aggregate, { reason, status: out.status, outcome: 'REFUSED_NOT_DEAD_LETTERED' });
+    throw new ApiError('conflict', `only a dead-lettered event can be replayed; this one is ${out.status}`);
+  }
+  return out;
 }

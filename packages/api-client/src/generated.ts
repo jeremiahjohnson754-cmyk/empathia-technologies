@@ -612,10 +612,12 @@ export interface Operations {
   };
   /** POST /v1/admin/outbox/{event}/retry — Retry a dead-lettered event (security admin) (authority: policy.configure) */
   postV1AdminOutboxEventRetry: {
-    method: 'POST'; path: '/v1/admin/outbox/{event}/retry'; auth: true; idempotent: false;
+    method: 'POST'; path: '/v1/admin/outbox/{event}/retry'; auth: true; idempotent: true;
     params: { event: string };
     query: { };
-    body: undefined;
+    body: {
+      reason: string;
+    };
     response: R<'postV1AdminOutboxEventRetry'>;
   };
   /** POST /v1/admin/request-types — Configure the request catalogue for your organization: add an industry- or customer-specific request type, change one, or disable a platform default (policy.configure; audited) (authority: policy.configure) */

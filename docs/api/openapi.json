@@ -11043,11 +11043,44 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "reason"
+                ],
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 1000,
+                    "pattern": "\\S",
+                    "description": "why the event is replayed (recorded in the Evidence Ledger with the prior attempts and last error)"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "requeued"
+            "description": "requeued: id, status PENDING, prior attempts"
           },
           "400": {
             "description": "validation error",
@@ -11081,6 +11114,16 @@
           },
           "404": {
             "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "the event is not dead-lettered (pending, held or already delivered): nothing is requeued",
             "content": {
               "application/problem+json": {
                 "schema": {
