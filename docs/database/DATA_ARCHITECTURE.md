@@ -76,7 +76,10 @@ flowchart LR
   for it are appended to `outbox_event` **in the same transaction** — a change and its event commit or roll back together.
 * The read model is rebuilt from the canonical tables, never patched incrementally (`readModelHandler` in
   `services/enterprise-api/src/worker/outbox.ts`), so a lost or repeated event cannot leave it wrong for long.
-* Delivery (migration 0027): an aggregate's events are delivered strictly in `(aggregate_rev, seq)` order — a later event is held while an
+* Delivery (migration 0027): an aggregate's events are delivered strictly in `aggregate_seq` order — the order their transactions
+  committed, numbered by the database at COMMIT (a deferred trigger takes the aggregates' `outbox_aggregate_head` rows in one sorted order,
+  so concurrent emitters cannot deadlock on them); the producer's `aggregate_rev` is kept for consumers but never used for ordering, because
+  several producers hard-code it. A later event is held while an
   earlier one is pending, retrying, leased or dead-lettered (until an audited replay; there is no skip); other aggregates flow in parallel.
   Each internal handler writes a receipt (`outbox_delivery`) in the same transaction as its effect (exactly once). External sinks
   (Teams/Outlook/connector events — none is configured in the starter) are called only after that transaction commits, with no

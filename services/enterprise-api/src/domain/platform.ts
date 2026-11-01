@@ -104,13 +104,13 @@ export async function aiRequest(ctx: RequestContext, body: { purpose: string; pr
 }
 
 /** Outbox events of the caller's tenant (row-level security), never their payloads. A PENDING event can be held behind an earlier
- *  undelivered event of the same aggregate (worker/outbox.ts): aggregate_rev shows where it sits. failure_kind tells a retrying failure
+ *  undelivered event of the same aggregate (worker/outbox.ts): aggregate_seq (commit order) shows where it sits. failure_kind tells a retrying failure
  *  (TRANSIENT, with next_attempt_at) from exhausted attempts (PERMANENT) and from a contract failure (NON_RETRYABLE); replay_count and
  *  last_replay_audit_id link the event to the Evidence Ledger records of its replays (GET /v1/audit?aggregateType=OutboxEvent&aggregateId=…). */
 export async function outboxAdmin(ctx: RequestContext, status: string) {
   await ctx.require('policy.configure', 'read the outbox');
   if (!['PENDING', 'DELIVERED', 'DEAD_LETTER'].includes(status)) throw invalid('status is PENDING, DELIVERED or DEAD_LETTER');
-  return ctx.tx(async (q) => ({ items: (await q.query(`SELECT id, type, aggregate_type, aggregate_id, aggregate_rev, correlation_id, status, attempts, failure_kind, next_attempt_at, last_error, replay_count, last_replay_audit_id, occurred_at, delivered_at
+  return ctx.tx(async (q) => ({ items: (await q.query(`SELECT id, type, aggregate_type, aggregate_id, aggregate_rev, aggregate_seq, correlation_id, status, attempts, failure_kind, next_attempt_at, last_error, replay_count, last_replay_audit_id, occurred_at, delivered_at
     FROM app.outbox_event WHERE status = $1 ORDER BY occurred_at DESC LIMIT 200`, [status])).rows }));
 }
 

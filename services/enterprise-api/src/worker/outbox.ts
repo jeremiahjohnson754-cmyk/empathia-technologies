@@ -2,8 +2,9 @@
  * The outbox worker: delivers events at least once to idempotent handlers, in order per aggregate, each under its own tenant.
  * Runs as the database role empathia_worker (migration 0008). Several workers can run at once.
  *
- * Ordering (migration 0027). An aggregate's events (tenant, aggregate_type, aggregate_id) are delivered strictly in (aggregate_rev, seq)
- * order, seq being the order they were appended in. A worker takes an aggregate only under a transaction-scoped advisory lock and only
+ * Ordering (migration 0027). An aggregate's events (tenant, aggregate_type, aggregate_id) are delivered strictly in aggregate_seq order:
+ * the order in which their transactions COMMITTED, numbered by the database at commit (never by the producer — several producers
+ * hard-code aggregate_rev, which is kept unchanged for consumers as the domain's own revision). A worker takes an aggregate only under a transaction-scoped advisory lock and only
  * from its head: the earliest event not yet DELIVERED. While that event is pending, retrying (backoff), leased (external delivery in
  * flight) or DEAD_LETTER, the later events of the same aggregate are HELD — never attempted — until it is delivered, which for a
  * dead letter means a security admin's audited replay (POST /v1/admin/outbox/:event/retry). There is no skip. Other aggregates keep
@@ -119,9 +120,9 @@ export async function eventProblems(q: Queryable, e: Pick<OutboxEvent, 'tenant_i
   return p;
 }
 
-interface Row extends OutboxEvent { schema_version: string; status: string; due: boolean; leased: boolean }
+interface Row extends OutboxEvent { schema_version: string; aggregate_seq: number | null; status: string; due: boolean; leased: boolean }
 interface ExternalJob { e: OutboxEvent; sinks: ExternalSink[] }
-const COLS = 'id, tenant_id, type, schema_version, aggregate_type, aggregate_id, aggregate_rev, payload, attempts, correlation_id';
+const COLS = 'id, tenant_id, type, schema_version, aggregate_type, aggregate_id, aggregate_rev, aggregate_seq, payload, attempts, correlation_id';
 const errText = (err: unknown) => String((err as Error)?.message ?? err).slice(0, 500);
 const plain = (e: OutboxEvent): OutboxEvent => ({ id: e.id, tenant_id: e.tenant_id, type: e.type, aggregate_type: e.aggregate_type, aggregate_id: e.aggregate_id, aggregate_rev: e.aggregate_rev, payload: e.payload, attempts: e.attempts, correlation_id: e.correlation_id });
 
@@ -175,7 +176,7 @@ export class OutboxWorker {
           SELECT tenant_id, aggregate_type, aggregate_id FROM (
             SELECT DISTINCT ON (tenant_id, aggregate_type, aggregate_id) tenant_id, aggregate_type, aggregate_id, status, next_attempt_at, lease_until, seq
               FROM app.outbox_event WHERE status IN ('PENDING', 'DEAD_LETTER')
-             ORDER BY tenant_id, aggregate_type, aggregate_id, aggregate_rev, seq) h
+             ORDER BY tenant_id, aggregate_type, aggregate_id, aggregate_seq NULLS FIRST, seq) h
            WHERE status = 'PENDING' AND next_attempt_at <= now() AND (lease_until IS NULL OR lease_until <= now())
            ORDER BY seq LIMIT $1`, [batch])).rows;
         let n = 0;
@@ -187,7 +188,7 @@ export class OutboxWorker {
           // re-read under the lock (a fresh snapshot): the aggregate's undelivered events in delivery order
           const run = (await q.query<Row>(`SELECT ${COLS}, status, next_attempt_at <= now() AS due, (lease_until IS NOT NULL AND lease_until > now()) AS leased
               FROM app.outbox_event WHERE tenant_id = $1 AND aggregate_type = $2 AND aggregate_id = $3 AND status IN ('PENDING', 'DEAD_LETTER')
-             ORDER BY aggregate_rev, seq LIMIT $4 FOR UPDATE`, [a.tenant_id, a.aggregate_type, a.aggregate_id, batch - n])).rows;
+             ORDER BY aggregate_seq NULLS FIRST, seq LIMIT $4 FOR UPDATE`, [a.tenant_id, a.aggregate_type, a.aggregate_id, batch - n])).rows;
           for (const e of run) {
             if (e.status !== 'PENDING' || !e.due || e.leased) break;            // the head is not deliverable now: hold everything after it
             n += 1;
@@ -213,6 +214,8 @@ export class OutboxWorker {
       await q.query("SELECT set_config('app.tenant_id', $1, true)", [e.tenant_id]);
       // an event that fails its contract is never handed to a handler, and retrying cannot fix it: dead-letter it now
       const problems = await eventProblems(q, e);
+      // a committed event always has its number (assigned at COMMIT); one without it was written around the trigger: its place is unknown
+      if (e.aggregate_seq == null) problems.push('the event has no aggregate sequence (written without the outbox sequence trigger): its position in its aggregate is unknown');
       if (problems.length) {
         await q.query('ROLLBACK TO SAVEPOINT ev');
         await this.recordNonRetryable(q, e, problems);

@@ -40,7 +40,7 @@ before(async () => {
   outbox = await import(path.join(api, 'worker/outbox.js'));
   const { PgConnection } = await import(path.join(api, 'db/pg.js'));
   su = new PgConnection({ host: '127.0.0.1', port: h.creds.port, user: h.creds.superuser, password: h.creds.superPassword, database: DB }); await su.connect();
-  for (const r of ['secadmin', 'designer', 'steward', 'opslead']) T[r] = await c.login(r);
+  for (const r of ['secadmin', 'designer', 'steward', 'opslead', 'syseng', 'installer', 'cxeng', 'svcmgr', 'service']) T[r] = await c.login(r);
   T.otherSec = await c.login('secadmin', 'second-tenant');
   T.otherDesigner = await c.login('designer', 'second-tenant');
   for (const slug of ['empathia-demo', 'second-tenant']) TID[slug] = (await one('SELECT id FROM app.tenant WHERE slug = $1', [slug])).id;
@@ -638,6 +638,112 @@ test('constraint proof (database grants, row-level security and constraints — 
   await assert.rejects(q("INSERT INTO app.outbox_event (tenant_id, type, schema_version, aggregate_type, aggregate_id, aggregate_rev, payload, correlation_id) VALUES ($1, 'issue.assigned', '1.0.0', 'RoomIssue', 'ISS-SYN-NOREV', NULL, '{}', 'x')", [A]), (e) => e.code === '23502', 'a missing rev is refused (NOT NULL)');
   assert.deepEqual(await identity(id), original, 'the event is exactly as it was written');
   await h.drain();
+});
+
+// ================================================================================================ 8. per-aggregate commit order (not the producer's rev)
+/** Handle every event of the given aggregates with one worker and return the order they were handed to a handler, per aggregate. */
+async function deliveryOrder(app, keys) {
+  const seen = {};
+  const probe = named('test-delivery-order', async (_q, e) => { const k = `${e.aggregate_type}/${e.aggregate_id}`; if (keys.includes(k)) (seen[k] ||= []).push(e.id); });
+  await drainWith(worker(app, [probe, outbox.readModelHandler, outbox.notificationHandler]));
+  return seen;
+}
+/** The append (commit) order of an aggregate's events: seq is taken at INSERT, and these producers commit one request after another. */
+const appendOrder = async (tenant, type, id) => q('SELECT id, type, aggregate_rev FROM app.outbox_event WHERE tenant_id = $1 AND aggregate_type = $2 AND aggregate_id = $3 ORDER BY seq', [tenant, type, id]);
+
+test('commit order: a producer that sends a lower rev after a higher rev on the same room is delivered in commit order, and cannot choose its own sequence', { timeout: 60000 }, async () => {
+  const [room] = await makeRooms(1);
+  const ids = [];
+  for (const rev of [6, 1, 3]) ids.push(...await insertEvents([{ aggId: room, rev }]));   // three commits, in this order
+  const order = await deliveryOrder('outbox-test-commit-order', [`Room/${room}`]);
+  assert.deepEqual(order[`Room/${room}`], ids, 'delivered in commit order (rev 6, then 1, then 3), not in rev order');
+  const seqs = await q('SELECT id, aggregate_seq FROM app.outbox_event WHERE id = ANY($1::uuid[])', [ids]);
+  const s = ids.map((id) => Number(seqs.find((x) => x.id === id).aggregate_seq));
+  assert.ok(s[0] < s[1] && s[1] < s[2], `aggregate_seq follows commit order (${s.join(', ')})`);
+  const forged = crypto.randomUUID();
+  await q("INSERT INTO app.outbox_event (id, tenant_id, type, schema_version, aggregate_type, aggregate_id, aggregate_rev, aggregate_seq, payload, correlation_id) VALUES ($1, $2, 'room.geometry_updated', '1.0.0', 'Room', $3, 8, 1, $4, 'forged-seq')", [forged, TID['empathia-demo'], room, JSON.stringify({ designId: room })]);
+  assert.ok(Number((await one('SELECT aggregate_seq FROM app.outbox_event WHERE id = $1', [forged])).aggregate_seq) > s[2], 'a sequence supplied by the producer is ignored: the database assigns the next one');
+  await h.drain();
+});
+
+test('commit order with real producers: a commissioning failure (Room rev 1) after the room\'s lifecycle events, and a work order reopened then reassigned (rev 6, then 2), are delivered in commit order', { timeout: 90000 }, async () => {
+  await h.drain();
+  const A = TID['empathia-demo'];
+  const instrument = 'SYN-METER-01 (synthetic), calibration record SYN-CAL-2026-09';
+  const ok = (r, what) => { assert.ok(r.status < 300, `${what}: ${r.status} ${JSON.stringify(r.body)}`); return r.body; };
+  const room = ok(await c.call('POST', '/v1/rooms', { token: T.designer, body: { name: 'Outbox Order Huddle (synthetic)', template: 'huddle', buildingCode: 'ATL', floor: 4 } }), 'room').code;
+  const rev = await c.call('POST', `/v1/rooms/${room}/revisions`, { token: T.designer, body: { reason: 'outbox order' } });
+  assert.ok(rev.status === 201 || rev.status === 200 || (rev.status === 422 && /nothing changed/.test(rev.body.detail)), JSON.stringify(rev.body));   // revision 1 may already exist
+  ok(await c.call('POST', `/v1/rooms/${room}/drawings/generate`, { token: T.designer }), 'drawings');
+  ok(await c.call('POST', `/v1/rooms/${room}/drawings/plan/approve`, { token: T.syseng }), 'drawing approve');
+  ok(await c.call('POST', `/v1/rooms/${room}/classification/approve`, { token: T.syseng, body: {} }), 'classification');
+  for (const [to, tok] of [['DESIGN_APPROVED', T.syseng], ['INSTALLATION_PENDING', T.opslead], ['INSTALLED_UNVERIFIED', T.installer], ['COMMISSIONING', T.syseng]]) ok(await c.call('POST', `/v1/rooms/${room}/lifecycle`, { token: tok, body: { to } }), to);
+  const d = ok(await c.call('GET', `/v1/rooms/${room}`, { token: T.designer }), 'room detail');
+  const row = d.commissioning.rows.find((x) => x.applicable);
+  const ev = ok(await c.call('POST', '/v1/evidence', { token: T.cxeng, raw: Buffer.from('synthetic observation (outbox order)'), headers: { 'content-type': 'text/plain', 'x-file-name': 'o.txt' } }), 'evidence');
+  ok(await c.call('POST', `/v1/rooms/${room}/results`, { token: T.cxeng, body: { testId: row.test_id, state: 'FAIL', evidenceId: ev.id, evidenceKind: row.evidence[0], instrument } }), 'FAIL result');
+  const issue = ok(await c.call('GET', `/v1/rooms/${room}`, { token: T.designer }), 'room').issues.find((i) => i.state === 'OPEN').code;
+  const wo = ok(await c.call('POST', `/v1/issues/${issue}/work-orders`, { token: T.svcmgr, body: { note: 'outbox order (synthetic)' } }), 'work order').workOrderId;
+  const tech = (await one("SELECT id FROM app.person WHERE email = 'service@empathia-demo.empathia.invalid'")).id;
+  const w = (p, tok, body) => c.call('POST', `/v1/work-orders/${wo}${p}`, { token: tok, body: body ?? {} });
+  for (const [p, tok, body] of [['/triage', T.svcmgr, { severity: 'Standard', scope: 's', risk: 'r', workType: 'break_fix', window: { from: '2026-11-04T08:00:00Z', to: '2026-11-04T10:00:00Z' } }], ['/assign', T.svcmgr, { personId: tech }], ['/accept', T.service],
+    ['/preflight', T.service, { safetyBriefed: true, toolsConfirmed: ['service kit'], accessConfirmedBy: 'desk' }], ['/start', T.service], ['/evidence', T.service, { kind: 'note', note: 'n' }], ['/submit', T.service], ['/verify', T.cxeng, { outcome: 'pass', note: 'ok' }],
+    ['/reopen', T.svcmgr, { reason: 'recurrence (synthetic, outbox order)' }], ['/triage', T.svcmgr, { severity: 'High', scope: 's', risk: 'r' }], ['/assign', T.svcmgr, { personId: tech }], ['/accept', T.service]]) ok(await w(p, tok, body), p);
+  const roomEvents = await appendOrder(A, 'Room', room); const woEvents = await appendOrder(A, 'WorkOrder', wo);
+  // preconditions: these producers really do send a lower rev after a higher one
+  const failAt = roomEvents.findIndex((x) => x.type === 'commission.test_failed');
+  assert.ok(failAt > 0 && roomEvents.slice(0, failAt).some((x) => x.aggregate_rev > roomEvents[failAt].aggregate_rev), `room: commission.test_failed (rev ${roomEvents[failAt]?.aggregate_rev}) is appended after higher revs`);
+  const revs = woEvents.map((x) => `${x.type}@${x.aggregate_rev}`);
+  assert.ok(revs.indexOf('incident.reopened@6') >= 0 && revs.lastIndexOf('work_order.assigned@2') > revs.indexOf('incident.reopened@6'), `work order: a new assignment (rev 2) after the reopen (rev 6): ${revs.join(' ')}`);
+  const order = await deliveryOrder('outbox-test-real-producers', [`Room/${room}`, `WorkOrder/${wo}`]);
+  const label = (list, all) => (list || []).map((id) => { const x = all.find((y) => y.id === id); return `${x.type}@${x.aggregate_rev}`; });
+  assert.deepEqual({ room: label(order[`Room/${room}`], roomEvents), workOrder: label(order[`WorkOrder/${wo}`], woEvents) },
+    { room: label(roomEvents.map((x) => x.id), roomEvents), workOrder: revs }, 'the room\'s and the work order\'s events are delivered in commit order');
+  assert.deepEqual(order[`Room/${room}`], roomEvents.map((x) => x.id));
+  assert.deepEqual(order[`WorkOrder/${wo}`], woEvents.map((x) => x.id));
+});
+
+test('commit order under concurrency: concurrent API transactions on the same room all succeed, and their sequences follow commit order', { timeout: 60000 }, async () => {
+  const [room] = await makeRooms(1);
+  for (let round = 0; round < 5; round += 1) {
+    const rs = await Promise.all([1, 2, 3].map((i) => c.call('PATCH', `/v1/rooms/${room}`, { token: T.designer, body: { intendedUse: `concurrent change ${round}.${i} (synthetic)` } })));
+    assert.deepEqual(rs.map((r) => r.status), [200, 200, 200], JSON.stringify(rs.map((r) => r.body)));
+  }
+  // the room row lock orders the transactions: the one holding it commits first and has the lower room rev
+  const ev = await q("SELECT aggregate_rev, aggregate_seq FROM app.outbox_event WHERE tenant_id = $1 AND aggregate_type = 'Room' AND aggregate_id = $2 AND type = 'room.geometry_updated' ORDER BY aggregate_rev", [TID['empathia-demo'], room]);
+  assert.equal(ev.length, 15);
+  const s = ev.map((x) => Number(x.aggregate_seq));
+  assert.deepEqual([...s].sort((a, b) => a - b), s, 'aggregate_seq increases with the commit order');
+  assert.equal(new Set(s).size, s.length, 'no two events share a sequence');
+  await h.drain();
+});
+
+test('commit order without deadlocks: two transactions emitting on the same two aggregates in opposite orders both commit, and agree on the order', { timeout: 60000 }, async () => {
+  const [room] = await makeRooms(1);
+  const A = TID['empathia-demo'];
+  const ins = (k, aggType, aggId, rev, payload) => k.query("INSERT INTO app.outbox_event (tenant_id, type, schema_version, aggregate_type, aggregate_id, aggregate_rev, payload, correlation_id) VALUES ($1, $2, '1.0.0', $3, $4, $5, $6, 'outbox-deadlock-test') RETURNING id",
+    [A, aggType === 'Room' ? 'room.geometry_updated' : 'issue.assigned', aggType, aggId, rev, JSON.stringify(payload)]).then((r) => r.rows[0].id);
+  const issue = 'ISS-SYN-DEADLOCK-1';
+  for (let round = 0; round < 10; round += 1) {
+    const k1 = await h.appConn(); const k2 = await h.appConn();
+    try {
+      for (const k of [k1, k2]) { await k.query("SELECT set_config('app.tenant_id', $1, false)", [A]); await k.query('BEGIN'); }
+      // T1: the room, then the issue; T2: the issue, then the room (as a room mutation and an issue mutation might)
+      const r1 = await ins(k1, 'Room', room, 40 + round, { designId: room });
+      const i2 = await ins(k2, 'RoomIssue', issue, 1, { issueId: issue, owner: 'opslead' });
+      const [i1, r2] = await Promise.all([ins(k1, 'RoomIssue', issue, 2, { issueId: issue, owner: 'opslead' }), ins(k2, 'Room', room, 1, { designId: room })]);
+      const done = await Promise.allSettled([k1.query('COMMIT'), k2.query('COMMIT')]);
+      assert.deepEqual(done.map((x) => x.status), ['fulfilled', 'fulfilled'], `round ${round}: both commit (${done.map((x) => x.reason?.code || '').join(',')})`);
+      const seq = async (id) => Number((await one('SELECT aggregate_seq FROM app.outbox_event WHERE id = $1', [id])).aggregate_seq);
+      const [sr1, sr2, si1, si2] = [await seq(r1), await seq(r2), await seq(i1), await seq(i2)];
+      assert.equal(Math.sign(sr1 - sr2), Math.sign(si1 - si2), `round ${round}: the transaction that committed first is first on both aggregates (room ${sr1}/${sr2}, issue ${si1}/${si2})`);
+    } finally { await k1.end(); await k2.end(); }
+  }
+  const order = await deliveryOrder('outbox-test-deadlock', [`Room/${room}`, `RoomIssue/${issue}`]);
+  for (const [type, id] of [['Room', room], ['RoomIssue', issue]]) {
+    const bySeq = (await q('SELECT id FROM app.outbox_event WHERE tenant_id = $1 AND aggregate_type = $2 AND aggregate_id = $3 AND correlation_id = $4 ORDER BY aggregate_seq', [A, type, id, 'outbox-deadlock-test'])).map((x) => x.id);
+    assert.deepEqual(order[`${type}/${id}`].filter((x) => bySeq.includes(x)), bySeq, `${type}: delivered in sequence order`);
+  }
 });
 
 test('real Teams / Outlook connector idempotency', { skip: 'NOT RUN: no real Teams or Outlook connector exists in this repository; deduplication is proven only against the local stub sink' }, () => {});
