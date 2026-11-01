@@ -11080,7 +11080,7 @@
         },
         "responses": {
           "200": {
-            "description": "requeued: id, status PENDING, prior attempts"
+            "description": "requeued: id, status PENDING, prior attempts and failure kind, replay number, audit record id"
           },
           "400": {
             "description": "validation error",

@@ -77,10 +77,20 @@ async function insertEvents(rows) {
   for (const r of rows) {
     const id = crypto.randomUUID(); ids.push(id);
     await q(`INSERT INTO app.outbox_event (id, tenant_id, type, schema_version, aggregate_type, aggregate_id, aggregate_rev, payload, correlation_id, occurred_at)
-             VALUES ($1, $2, $3, '1.0.0', $4, $5, $6, $7, $8, coalesce($9::timestamptz, now()))`,
-    [id, r.tenant ?? TID['empathia-demo'], r.type ?? 'room.geometry_updated', r.aggType ?? 'Room', r.aggId, r.rev, JSON.stringify(r.payload ?? { designId: r.aggId, fields: ['synthetic'] }), `outbox-test-${crypto.randomUUID()}`, r.at ?? null]);
+             VALUES ($1, $2, $3, $10, $4, $5, $6, $7, $8, coalesce($9::timestamptz, now()))`,
+    [id, r.tenant ?? TID['empathia-demo'], r.type ?? 'room.geometry_updated', r.aggType ?? 'Room', r.aggId, r.rev, JSON.stringify(r.payload ?? { designId: r.aggId, fields: ['synthetic'] }), `outbox-test-${crypto.randomUUID()}`, r.at ?? null, r.schema ?? '1.0.0']);
   }
   return ids;
+}
+/** Real rooms (created through the API, so they exist in the tenant) for events that concern a room. */
+async function makeRooms(n, token = T.designer, buildingCode = 'NST') {
+  const codes = [];
+  for (let i = 0; i < n; i += 1) {
+    const r = await c.call('POST', '/v1/rooms', { token, body: { name: `Outbox Test Room ${crypto.randomUUID().slice(0, 8)} (synthetic)`, template: 'huddle', buildingCode, floor: 1 } });
+    assert.equal(r.status, 201, JSON.stringify(r.body)); codes.push(r.body.code);
+  }
+  await h.drain();
+  return codes;
 }
 const statusOf = async (id) => one('SELECT status, attempts, last_error FROM app.outbox_event WHERE id = $1', [id]);
 async function drainWith(w, max = 200) { let n = 0; for (let i = 0; i < max; i += 1) { const k = await w.tick(); n += k; if (!k) break; } return n; }
@@ -193,14 +203,14 @@ test(`crash: SIGKILL after the external effect and before its receipt — the re
 
 // ================================================================================================ 2. ordering per aggregate
 test('ordering: three concurrent workers deliver each room\'s events in aggregate_rev order; different rooms flow in parallel', { timeout: 60000 }, async () => {
-  const rooms = ['R-ORD-01', 'R-ORD-02', 'R-ORD-03', 'R-ORD-04', 'R-ORD-05', 'R-ORD-06'];
+  const rooms = await makeRooms(6);
   const t0 = Date.now() - 60000;
   const rows = [];
   for (let rev = 1; rev <= 8; rev += 1) for (const [i, r] of rooms.entries()) rows.push({ aggId: r, rev, at: new Date(t0 + rev * 1000 + i).toISOString() });
   const ids = await insertEvents(rows);
   const seen = []; const violations = [];
   const probe = (who) => named('test-order-probe', async (qq, e) => {
-    if (!e.aggregate_id.startsWith('R-ORD-0')) return;
+    if (!rooms.includes(e.aggregate_id)) return;
     await sleep(Math.random() * 6);
     const n = (await qq.query("SELECT count(*)::int AS n FROM app.outbox_event WHERE tenant_id = $1 AND aggregate_type = $2 AND aggregate_id = $3 AND aggregate_rev < $4 AND status <> 'DELIVERED'", [e.tenant_id, e.aggregate_type, e.aggregate_id, e.aggregate_rev])).rows[0].n;
     if (n) violations.push(`${who}: ${e.aggregate_id} rev ${e.aggregate_rev} handled while ${n} earlier rev(s) were not delivered`);
@@ -219,12 +229,12 @@ test('ordering: three concurrent workers deliver each room\'s events in aggregat
 
 test(`ordering: effects outside the database (${STUB_LABEL}) leave in aggregate_rev order, one at a time per room, never inside a transaction`, { timeout: 60000 }, async () => {
   stub.reset();
-  const rooms = ['R-ORD-X1', 'R-ORD-X2', 'R-ORD-X3', 'R-ORD-X4'];
+  const rooms = await makeRooms(4);
   const t0 = Date.now() - 60000;
   const rows = [];
   for (let rev = 1; rev <= 5; rev += 1) for (const [i, r] of rooms.entries()) rows.push({ aggId: r, rev, at: new Date(t0 + rev * 1000 + i).toISOString() });
   const ids = await insertEvents(rows);
-  const ws = ['a', 'b', 'c'].map((x) => { const app = `outbox-test-ext-${x}`; return worker(app, undefined, { externalSinks: [localStubSinkAdapter({ url: stub.url, workerApplication: app, accepts: (e) => e.aggregate_id.startsWith('R-ORD-X') })] }); });
+  const ws = ['a', 'b', 'c'].map((x) => { const app = `outbox-test-ext-${x}`; return worker(app, undefined, { externalSinks: [localStubSinkAdapter({ url: stub.url, workerApplication: app, accepts: (e) => ids.includes(e.id) })] }); });
   const deadline = Date.now() + 40000;
   const left = async () => (await one("SELECT count(*)::int AS n FROM app.outbox_event WHERE id = ANY($1::uuid[]) AND status <> 'DELIVERED'", [ids])).n;
   await Promise.all(ws.map(async (w) => { while (Date.now() < deadline && (await left()) > 0) { if (!(await w.tick(4))) await sleep(3); } }));
@@ -237,13 +247,14 @@ test(`ordering: effects outside the database (${STUB_LABEL}) leave in aggregate_
 });
 
 test('ordering: a later rev never overtakes an earlier one that is retrying or dead-lettered; other rooms keep flowing; a replay releases the held events in order', { timeout: 60000 }, async () => {
+  const [HOLD, FREE] = await makeRooms(2);
   const t0 = Date.now() - 60000;
-  const ids = await insertEvents([1, 2, 3].flatMap((rev) => [{ aggId: 'R-ORD-HOLD', rev, at: new Date(t0 + rev * 1000).toISOString() }, { aggId: 'R-ORD-FREE', rev, at: new Date(t0 + rev * 1000 + 1).toISOString() }]));
+  const ids = await insertEvents([1, 2, 3].flatMap((rev) => [{ aggId: HOLD, rev, at: new Date(t0 + rev * 1000).toISOString() }, { aggId: FREE, rev, at: new Date(t0 + rev * 1000 + 1).toISOString() }]));
   const hold = ids.filter((_, i) => i % 2 === 0); const free = ids.filter((_, i) => i % 2 === 1);
   let failing = true; const handled = [];
   const flaky = named('test-flaky-handler', async (_q, e) => {
-    if (!e.aggregate_id.startsWith('R-ORD-HOLD') && !e.aggregate_id.startsWith('R-ORD-FREE')) return;
-    if (failing && e.id === hold[0]) throw new Error('injected failure of R-ORD-HOLD rev 1 (outbox test)');
+    if (!ids.includes(e.id)) return;
+    if (failing && e.id === hold[0]) throw new Error(`injected failure of ${HOLD} rev 1 (outbox test)`);
     handled.push(`${e.aggregate_id}#${e.aggregate_rev}`);
   });
   const w = worker('outbox-test-hold', [outbox.readModelHandler, outbox.notificationHandler, flaky]);
@@ -261,8 +272,8 @@ test('ordering: a later rev never overtakes an earlier one that is retrying or d
   assert.equal((await statusOf(hold[0])).status, 'DEAD_LETTER');
   for (let i = 0; i < 3; i += 1) { await q('UPDATE app.outbox_event SET next_attempt_at = now() WHERE id = ANY($1::uuid[])', [hold]); await drainWith(w); }
   await heldOk('while rev 1 is dead-lettered');
-  assert.deepEqual(handled.filter((x) => x.startsWith('R-ORD-HOLD')), [], 'no R-ORD-HOLD event was handled');
-  assert.deepEqual(handled.filter((x) => x.startsWith('R-ORD-FREE')), ['R-ORD-FREE#1', 'R-ORD-FREE#2', 'R-ORD-FREE#3']);
+  assert.deepEqual(handled.filter((x) => x.startsWith(`${HOLD}#`)), [], 'no event of the held room was handled');
+  assert.deepEqual(handled.filter((x) => x.startsWith(`${FREE}#`)), [`${FREE}#1`, `${FREE}#2`, `${FREE}#3`]);
   // the security admin sees the dead letter and the held events, fixes the cause and replays: rev 1, 2, 3 in order
   const dl = await c.call('GET', '/v1/admin/outbox?status=DEAD_LETTER', { token: T.secadmin });
   assert.ok(dl.body.items.some((x) => x.id === hold[0]));
@@ -272,7 +283,7 @@ test('ordering: a later rev never overtakes an earlier one that is retrying or d
   const r = await c.call('POST', `/v1/admin/outbox/${hold[0]}/retry`, { token: T.secadmin, body: { reason: 'synthetic: the flaky handler was fixed (outbox ordering test)' } });
   assert.equal(r.status, 200, JSON.stringify(r.body));
   await drainWith(w);
-  assert.deepEqual(handled.filter((x) => x.startsWith('R-ORD-HOLD')), ['R-ORD-HOLD#1', 'R-ORD-HOLD#2', 'R-ORD-HOLD#3']);
+  assert.deepEqual(handled.filter((x) => x.startsWith(`${HOLD}#`)), [`${HOLD}#1`, `${HOLD}#2`, `${HOLD}#3`]);
   for (const id of hold) assert.equal((await statusOf(id)).status, 'DELIVERED');
 });
 
@@ -436,6 +447,197 @@ test('replay: bounded and explicit — one event per request, no bulk replay rou
   assert.equal(trail.body.items.filter((x) => x.action === 'outbox.retry' && x.outcome === 'ALLOWED').length, 1, 'requeued once');
   await h.drain();
   assert.equal((await one('SELECT count(*)::int AS n FROM app.notification WHERE event_id = $1', [id])).n, 1);
+});
+
+// ================================================================================================ 5. replay identity and traceability
+const identity = async (id) => one(`SELECT id, tenant_id, type, schema_version, aggregate_type, aggregate_id, aggregate_rev, payload::text AS payload_text, md5(payload::text) AS payload_md5,
+  correlation_id, occurred_at, actor_id, seq FROM app.outbox_event WHERE id = $1`, [id]);
+
+test(`replay identity: a replayed event keeps its id, type, schema version, aggregate (type, id, rev), tenant, payload bytes, correlation id, occurrence time and append order; its receipts and the ${STUB_LABEL} see the same event id`, { timeout: 60000 }, async () => {
+  stub.reset();
+  const payload = { issueId: 'ISS-SYN-IDENT-1', owner: 'opslead', roomId: 'R-PLN-0001', note: 'synthetic — “quotes”, ünïcode, 0.10' };
+  const [id] = await insertEvents([{ type: 'issue.assigned', aggType: 'RoomIssue', aggId: 'ISS-SYN-IDENT-1', rev: 3, payload }]);
+  const original = await identity(id);
+  await deadLetter([id]);
+  assert.deepEqual(await identity(id), original, 'dead-lettering changes no identity field');
+  const r = await c.call('POST', `/v1/admin/outbox/${id}/retry`, { token: T.secadmin, body: { reason: 'synthetic: identity test replay' } });
+  assert.equal(r.status, 200, JSON.stringify(r.body)); assert.equal(r.body.id, id);
+  assert.deepEqual(await identity(id), original, 'the replay changes no identity field');
+  const app = 'outbox-test-identity';
+  await drainWith(worker(app, undefined, { externalSinks: [localStubSinkAdapter({ url: stub.url, workerApplication: app, accepts: (e) => e.id === id })] }));
+  assert.equal((await statusOf(id)).status, 'DELIVERED');
+  assert.deepEqual(await identity(id), original, 'nor does the delivery after it');
+  assert.equal((await one('SELECT count(*)::int AS n FROM app.outbox_event WHERE correlation_id = $1', [original.correlation_id])).n, 1, 'the replay re-delivers the same row; it never creates a copy');
+  const receipts = await q('SELECT event_id, tenant_id, kind, handler, idempotency_key FROM app.outbox_delivery WHERE idempotency_key LIKE $1 ORDER BY kind, handler', [`outbox:${id}:%`]);
+  assert.deepEqual(receipts.map((x) => `${x.kind}:${x.handler}`), ['EXTERNAL:local-stub-sink', 'INTERNAL:notificationHandler', 'INTERNAL:readModelHandler']);
+  assert.ok(receipts.every((x) => x.event_id === id && x.tenant_id === original.tenant_id), 'every receipt references the original event and tenant');
+  assert.equal(stub.calls.length, 1);
+  assert.equal(stub.calls[0].body.eventId, id); assert.equal(stub.calls[0].key, `outbox:${id}:local-stub-sink`);
+  assert.deepEqual(stub.calls[0].body.payload, payload, 'the consumer receives the original payload');
+  assert.deepEqual(stub.calls[0].body.aggregate, { type: 'RoomIssue', id: 'ISS-SYN-IDENT-1', rev: 3 });
+  assert.equal((await one('SELECT count(*)::int AS n FROM app.notification WHERE event_id = $1', [id])).n, 1);
+});
+
+test('replay traceability: each replay is linked both ways — the event records its replay count and latest replay audit record; each replay audit record names the event and its original correlation id', { timeout: 60000 }, async () => {
+  const [id] = await insertEvents([{ type: 'issue.assigned', aggType: 'RoomIssue', aggId: 'ISS-SYN-TRACE-1', rev: 1, payload: { issueId: 'ISS-SYN-TRACE-1', owner: 'opslead' } }]);
+  const corr = (await identity(id)).correlation_id;
+  const listed = async (status) => (await c.call('GET', `/v1/admin/outbox?status=${status}`, { token: T.secadmin })).body.items.find((x) => x.id === id);
+  await deadLetter([id]);
+  const before = await listed('DEAD_LETTER');
+  assert.equal(before.replay_count, 0, 'the admin listing shows the replay count');
+  assert.equal(before.last_replay_audit_id, null);
+  assert.equal(before.correlation_id, corr);
+  const r1 = await c.call('POST', `/v1/admin/outbox/${id}/retry`, { token: T.secadmin, body: { reason: 'synthetic: first replay (traceability test)' } });
+  assert.equal(r1.status, 200, JSON.stringify(r1.body));
+  await deadLetter([id], 'injected failure after the first replay (outbox test)');
+  const r2 = await c.call('POST', `/v1/admin/outbox/${id}/retry`, { token: T.secadmin, body: { reason: 'synthetic: second replay (traceability test)' } });
+  assert.equal(r2.status, 200, JSON.stringify(r2.body));
+  await h.drain();
+  const ev = await listed('DELIVERED');
+  assert.equal(ev.replay_count, 2);
+  assert.equal(ev.correlation_id, corr, 'the original correlation id is kept');
+  const trail = await c.call('GET', `/v1/audit?aggregateType=OutboxEvent&aggregateId=${id}&limit=50`, { token: T.secadmin });
+  const replays = trail.body.items.filter((x) => x.action === 'outbox.retry' && x.outcome === 'ALLOWED').sort((a, b) => Number(a.id) - Number(b.id));
+  assert.equal(replays.length, 2, 'one audit record per replay');
+  assert.equal(String(ev.last_replay_audit_id), String(replays[1].id), 'event → its latest replay audit record');
+  assert.equal(String(r2.body.auditId), String(replays[1].id), 'the replay answer names its audit record');
+  replays.forEach((a, i) => {
+    assert.equal(a.aggregate_type, 'OutboxEvent'); assert.equal(a.aggregate_id, id, 'audit record → event');
+    assert.equal(a.detail.replayNumber, i + 1);
+    assert.equal(a.detail.eventCorrelationId, corr, 'audit record → the event\'s original correlation id');
+    assert.match(a.detail.reason, i ? /second/ : /first/);
+  });
+  assert.equal(replays[0].correlation_id, r1.headers['x-correlation-id'], 'the audit record carries the replay request\'s own correlation id');
+  assert.equal(replays[1].detail.priorAttempts, outbox.MAX_ATTEMPTS); assert.match(replays[1].detail.lastError, /after the first replay/);
+});
+
+// ================================================================================================ 6. failure kinds
+test('failures are distinguishable in the record and the admin listing: TRANSIENT (retrying, with next_attempt_at), PERMANENT (attempts exhausted), NON_RETRYABLE (fails its contract)', { timeout: 60000 }, async () => {
+  const kind = async (id) => one('SELECT status, attempts, failure_kind, last_error, next_attempt_at > now() AS later FROM app.outbox_event WHERE id = $1', [id]);
+  const [pId] = await insertEvents([{ type: 'issue.assigned', aggType: 'RoomIssue', aggId: 'ISS-SYN-KIND-P', rev: 1, payload: { issueId: 'ISS-SYN-KIND-P', owner: 'opslead' } }]);
+  await deadLetter([pId], 'injected persistent failure (outbox test)');
+  const [tId, nId] = await insertEvents([
+    { type: 'issue.assigned', aggType: 'RoomIssue', aggId: 'ISS-SYN-KIND-T', rev: 1, payload: { issueId: 'ISS-SYN-KIND-T', owner: 'opslead' } },
+    { type: 'room.teleported', aggType: 'RoomIssue', aggId: 'ISS-SYN-KIND-N', rev: 1, payload: { issueId: 'ISS-SYN-KIND-N', owner: 'opslead' } },
+  ]);
+  await drainWith(worker('outbox-test-kind', [named('test-fails-once', async (_q, e) => { if (e.id === tId) throw new Error('injected transient failure (outbox test)'); }), outbox.readModelHandler, outbox.notificationHandler]));
+  assert.deepEqual(await kind(tId), { status: 'PENDING', attempts: 1, failure_kind: 'TRANSIENT', last_error: 'injected transient failure (outbox test)', later: true }, 'TRANSIENT: retrying later');
+  assert.deepEqual(await kind(pId), { status: 'DEAD_LETTER', attempts: outbox.MAX_ATTEMPTS, failure_kind: 'PERMANENT', last_error: 'injected persistent failure (outbox test)', later: true }, 'PERMANENT: attempts exhausted');
+  const n = await kind(nId);
+  assert.equal(n.status, 'DEAD_LETTER'); assert.equal(n.attempts, 1, 'NON_RETRYABLE: dead-lettered on its first attempt'); assert.equal(n.failure_kind, 'NON_RETRYABLE');
+  assert.match(n.last_error, /unknown event type room\.teleported/);
+  const pend = (await c.call('GET', '/v1/admin/outbox?status=PENDING', { token: T.secadmin })).body.items.find((x) => x.id === tId);
+  assert.equal(pend.failure_kind, 'TRANSIENT'); assert.ok(Date.parse(pend.next_attempt_at) > Date.now(), 'the listing shows when it retries');
+  const dl = (await c.call('GET', '/v1/admin/outbox?status=DEAD_LETTER', { token: T.secadmin })).body.items;
+  assert.equal(dl.find((x) => x.id === pId).failure_kind, 'PERMANENT');
+  assert.equal(dl.find((x) => x.id === nId).failure_kind, 'NON_RETRYABLE');
+  await q('UPDATE app.outbox_event SET next_attempt_at = now() WHERE id = $1', [tId]);
+  await h.drain();
+  assert.equal((await statusOf(tId)).status, 'DELIVERED', 'the transient failure recovered');
+});
+
+// ================================================================================================ 7. malformed and unauthorized events
+test('malformed events are dead-lettered at once as NON_RETRYABLE with their reason: never handed to a handler, never retried; later events of the aggregate stay held', { timeout: 60000 }, async () => {
+  const A = TID['empathia-demo']; const B = TID['second-tenant'];
+  const aOnly = (await one('SELECT code FROM app.room WHERE tenant_id = $1 AND code NOT IN (SELECT code FROM app.room WHERE tenant_id = $2) ORDER BY code LIMIT 1', [A, B])).code;
+  const ok = (k) => ({ issueId: `ISS-SYN-BAD-${k}`, owner: 'opslead' });
+  const [passRoom] = await makeRooms(1);
+  const cases = [
+    ['unknown type', { type: 'room.teleported', aggType: 'RoomIssue', aggId: 'ISS-SYN-BAD-1', rev: 1, payload: ok(1) }, /unknown event type room\.teleported/],
+    ['payload fails the contract', { type: 'issue.assigned', aggType: 'RoomIssue', aggId: 'ISS-SYN-BAD-2', rev: 1, payload: { issueId: 'ISS-SYN-BAD-2' } }, /missing payload field owner/],
+    ['payload is not an object', { type: 'issue.assigned', aggType: 'RoomIssue', aggId: 'ISS-SYN-BAD-3', rev: 1, payload: 'synthetic text, not an object' }, /payload is not an object/],
+    ['bare PASS result label', { type: 'commission.test_result_submitted', aggType: 'Room', aggId: passRoom, rev: 1, payload: { planId: 'SYN', testId: 'SYN', state: 'RECORDED', evidence: 'SYN', resultLabel: 'PASS' } }, /resultLabel PASS/],
+    ['negative aggregate rev', { type: 'issue.assigned', aggType: 'RoomIssue', aggId: 'ISS-SYN-BAD-5', rev: -1, payload: ok(5) }, /aggregateRevision must be a non-negative integer/],
+    ['empty aggregate id', { type: 'issue.assigned', aggType: 'RoomIssue', aggId: '', rev: 1, payload: ok(6) }, /missing aggregateId/],
+    ['unsupported schema version', { type: 'issue.assigned', aggType: 'RoomIssue', aggId: 'ISS-SYN-BAD-7', rev: 1, payload: ok(7), schema: '2.0.0' }, /schema version 2\.0\.0/],
+    ['aggregate room of another tenant', { tenant: B, type: 'room.geometry_updated', aggType: 'Room', aggId: aOnly, rev: 1, payload: { designId: aOnly } }, new RegExp(`room ${aOnly} is not a room of the event's tenant`)],
+    ['payload room of another tenant', { tenant: B, type: 'issue.assigned', aggType: 'RoomIssue', aggId: 'ISS-SYN-BAD-9', rev: 1, payload: { ...ok(9), roomId: aOnly } }, new RegExp(`room ${aOnly} is not a room of the event's tenant`)],
+  ];
+  const ids = await insertEvents(cases.map(([, row]) => row));
+  const [laterId] = await insertEvents([{ type: 'issue.assigned', aggType: 'RoomIssue', aggId: 'ISS-SYN-BAD-1', rev: 2, payload: ok(1) }]);
+  const seen = [];
+  const probe = named('test-sees-events', async (_q, e) => { seen.push(e.id); });
+  const w = worker('outbox-test-malformed', [probe, outbox.readModelHandler, outbox.notificationHandler]);
+  await drainWith(w);
+  for (let i = 0; i < 2; i += 1) { await q('UPDATE app.outbox_event SET next_attempt_at = now() WHERE id = ANY($1::uuid[])', [[...ids, laterId]]); await drainWith(w); }
+  const handed = cases.filter((_, i) => seen.includes(ids[i])).map(([what]) => what);
+  assert.deepEqual(handed, [], 'no handler was handed a malformed event');
+  for (const [i, [what, , why]] of cases.entries()) {
+    const s = await one('SELECT status, attempts, failure_kind, last_error FROM app.outbox_event WHERE id = $1', [ids[i]]);
+    assert.equal(s.status, 'DEAD_LETTER', `${what}: dead-lettered`);
+    assert.equal(s.attempts, 1, `${what}: not retried`);
+    assert.equal(s.failure_kind, 'NON_RETRYABLE', `${what}: NON_RETRYABLE`);
+    assert.match(s.last_error || '', why, `${what}: with its reason`);
+  }
+  assert.equal((await one('SELECT count(*)::int AS n FROM app.notification WHERE event_id = ANY($1::uuid[])', [ids])).n, 0);
+  assert.deepEqual(await statusOf(laterId), { status: 'PENDING', attempts: 0, last_error: null }, 'the next event of the aggregate stays held behind it');
+});
+
+test('replaying a NON_RETRYABLE event that still fails its contract is refused (422) with the reason; once the cause is gone it can be replayed; payloads cannot be edited through the API', { timeout: 60000 }, async () => {
+  const [badId] = await insertEvents([{ type: 'room.teleported', aggType: 'RoomIssue', aggId: 'ISS-SYN-REPLAY-BAD', rev: 1, payload: { issueId: 'ISS-SYN-REPLAY-BAD', owner: 'opslead' } }]);
+  // an event for the next room the second tenant will create: it fails (no such room in the tenant) until that room exists
+  const [first] = await makeRooms(1, T.otherDesigner, 'BX1');
+  const next = `R-PLN-${String(Number(first.slice(-4)) + 1).padStart(4, '0')}`;
+  const [lateId] = await insertEvents([{ tenant: TID['second-tenant'], type: 'room.geometry_updated', aggType: 'Room', aggId: next, rev: 1, payload: { designId: next } }]);
+  await h.drain();
+  for (const id of [badId, lateId]) assert.equal((await statusOf(id)).status, 'DEAD_LETTER', 'precondition: the malformed event was dead-lettered, not delivered');
+  for (const id of [badId, lateId]) assert.equal((await one('SELECT failure_kind FROM app.outbox_event WHERE id = $1', [id])).failure_kind, 'NON_RETRYABLE');
+  const reason = { reason: 'synthetic: replay of a malformed event (outbox test)' };
+  const refused = await c.call('POST', `/v1/admin/outbox/${badId}/retry`, { token: T.secadmin, body: reason });
+  assert.equal(refused.status, 422, JSON.stringify(refused.body));
+  assert.ok(refused.body.reasons.some((x) => /unknown event type room\.teleported/.test(x)), 'the refusal names the contract failure');
+  assert.equal((await statusOf(badId)).status, 'DEAD_LETTER', 'nothing was requeued');
+  const trail = await c.call('GET', `/v1/audit?aggregateType=OutboxEvent&aggregateId=${badId}&limit=20`, { token: T.secadmin });
+  assert.ok(trail.body.items.some((x) => x.action === 'outbox.retry' && x.outcome === 'DENIED' && x.detail.outcome === 'REFUSED_CONTRACT' && x.detail.problems.some((p) => /unknown event type/.test(p))), 'the refusal is audited with the reason');
+  assert.equal((await c.call('POST', `/v1/admin/outbox/${lateId}/retry`, { token: T.otherSec, body: reason })).status, 422, 'still no such room');
+  const [made] = await makeRooms(1, T.otherDesigner, 'BX1');
+  assert.equal(made, next, 'precondition: the room the event names now exists in its tenant');
+  const roomEvents = async () => q("SELECT status, attempts FROM app.outbox_event WHERE tenant_id = $1 AND aggregate_type = 'Room' AND aggregate_id = $2 AND id <> $3", [TID['second-tenant'], next, lateId]);
+  const held = await roomEvents();
+  assert.ok(held.length > 0 && held.every((x) => x.status === 'PENDING' && x.attempts === 0), 'the new room\'s own events (from the API) are held behind the dead letter of the same aggregate');
+  const accepted = await c.call('POST', `/v1/admin/outbox/${lateId}/retry`, { token: T.otherSec, body: { reason: 'synthetic: the room now exists (outbox test)' } });
+  assert.equal(accepted.status, 200, JSON.stringify(accepted.body));
+  await h.drain();
+  assert.equal((await statusOf(lateId)).status, 'DELIVERED');
+  assert.ok((await roomEvents()).every((x) => x.status === 'DELIVERED'), 'and flow once it is delivered');
+  // no route edits an event: the replay body accepts a reason only, and the outbox has no write route besides the replay
+  assert.equal((await c.call('POST', `/v1/admin/outbox/${badId}/retry`, { token: T.secadmin, body: { ...reason, payload: { owner: 'opslead' } } })).status, 400);
+  assert.equal((await c.call('POST', `/v1/admin/outbox/${badId}/retry`, { token: T.secadmin, body: { ...reason, type: 'issue.assigned' } })).status, 400);
+  const writes = h.app.router.routes.filter((r) => r.method !== 'GET' && /outbox/.test(r.path)).map((r) => `${r.method} ${r.path}`);
+  assert.deepEqual(writes, ['POST /v1/admin/outbox/:event/retry']);
+});
+
+test('constraint proof (database grants, row-level security and constraints — not worker logic): roles that must not write events cannot; an existing event\'s identity and payload cannot be rewritten; an unknown tenant or a missing rev cannot be stored', { timeout: 60000 }, async () => {
+  const A = TID['empathia-demo']; const B = TID['second-tenant'];
+  const [id] = await insertEvents([{ type: 'issue.assigned', aggType: 'RoomIssue', aggId: 'ISS-SYN-CONSTRAINT', rev: 1, payload: { issueId: 'ISS-SYN-CONSTRAINT', owner: 'opslead' } }]);
+  const original = await identity(id);
+  const ins = "INSERT INTO app.outbox_event (tenant_id, type, schema_version, aggregate_type, aggregate_id, aggregate_rev, payload, correlation_id) VALUES ($1, 'issue.assigned', '1.0.0', 'RoomIssue', 'ISS-SYN-FORGED', 1, '{\"issueId\":\"ISS-SYN-FORGED\",\"owner\":\"opslead\"}', 'forged')";
+  const refusedWith = (code, re) => (e) => e.code === code && re.test(e.message);
+  // the worker role: no INSERT grant on the outbox at all, and no UPDATE of identity columns
+  const { PgConnection } = await import(path.join(api, 'db/pg.js'));
+  const w = new PgConnection(configFromUrl(h.urls.WORKER_DATABASE_URL)); await w.connect();
+  try {
+    await w.query("SELECT set_config('app.tenant_id', $1, false)", [A]);
+    await assert.rejects(w.query(ins, [A]), refusedWith('42501', /permission denied/), 'empathia_worker cannot insert an event');
+    for (const col of ['payload', 'type', 'aggregate_rev', 'tenant_id', 'correlation_id']) await assert.rejects(w.query(`UPDATE app.outbox_event SET ${col} = ${col} WHERE id = $1`, [id]), refusedWith('42501', /permission denied/), `empathia_worker cannot rewrite ${col}`);
+  } finally { await w.end(); }
+  // the runtime role: may append only for its own tenant (row-level security), and may not rewrite an event
+  const k = await h.appConn();
+  try {
+    await assert.rejects(k.query(ins, [A]), refusedWith('42501', /row-level security/), 'empathia_app without a tenant context cannot insert');
+    await k.query("SELECT set_config('app.tenant_id', $1, false)", [A]);
+    await assert.rejects(k.query(ins, [B]), refusedWith('42501', /row-level security/), 'empathia_app cannot insert an event for another tenant');
+    for (const [col, v] of [['payload', "'{\"issueId\":\"x\",\"owner\":\"x\"}'::jsonb"], ['type', "'issue.created_or_updated'"], ['aggregate_type', "'Room'"], ['aggregate_id', "'ISS-SYN-OTHER'"], ['aggregate_rev', '99'], ['tenant_id', `'${B}'::uuid`], ['correlation_id', "'rewritten'"], ['schema_version', "'1.9.0'"], ['occurred_at', 'now()']]) {
+      await assert.rejects(k.query(`UPDATE app.outbox_event SET ${col} = ${v} WHERE id = $1`, [id]), refusedWith('42501', /permission denied/), `empathia_app cannot rewrite ${col}`);
+    }
+    await assert.rejects(k.query('DELETE FROM app.outbox_event WHERE id = $1', [id]), refusedWith('42501', /permission denied/), 'empathia_app cannot delete an event');
+    await k.query('BEGIN'); await k.query(ins, [A]); await k.query('ROLLBACK');   // positive control: its own tenant, as ctx.emit does
+  } finally { await k.end(); }
+  // constraints, whoever writes: an unknown tenant (foreign key) and a missing rev (NOT NULL) are refused even for the superuser
+  await assert.rejects(q(ins, [crypto.randomUUID()]), (e) => e.code === '23503', 'an unknown tenant is refused by the foreign key');
+  await assert.rejects(q("INSERT INTO app.outbox_event (tenant_id, type, schema_version, aggregate_type, aggregate_id, aggregate_rev, payload, correlation_id) VALUES ($1, 'issue.assigned', '1.0.0', 'RoomIssue', 'ISS-SYN-NOREV', NULL, '{}', 'x')", [A]), (e) => e.code === '23502', 'a missing rev is refused (NOT NULL)');
+  assert.deepEqual(await identity(id), original, 'the event is exactly as it was written');
+  await h.drain();
 });
 
 test('real Teams / Outlook connector idempotency', { skip: 'NOT RUN: no real Teams or Outlook connector exists in this repository; deduplication is proven only against the local stub sink' }, () => {});

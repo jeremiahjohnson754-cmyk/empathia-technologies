@@ -41,10 +41,12 @@ export class RequestContext {
   tx<T>(fn: (q: Queryable) => Promise<T>): Promise<T> {
     return this.pool.tx({ tenantId: this.p.tenantId, userId: this.p.personId }, fn);
   }
-  async audit(q: Queryable | null, action: string, outcome: 'ALLOWED' | 'DENIED' | 'FAILED', aggregate?: { type: string; id: string }, detail: Record<string, unknown> = {}): Promise<void> {
-    const sql = `INSERT INTO app.audit_event (tenant_id, actor_id, actor_role, action, outcome, aggregate_type, aggregate_id, correlation_id, detail) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`;
+  /** Append an audit event; returns its id (so a record can point at the Evidence Ledger entry that explains it). */
+  async audit(q: Queryable | null, action: string, outcome: 'ALLOWED' | 'DENIED' | 'FAILED', aggregate?: { type: string; id: string }, detail: Record<string, unknown> = {}): Promise<number> {
+    const sql = `INSERT INTO app.audit_event (tenant_id, actor_id, actor_role, action, outcome, aggregate_type, aggregate_id, correlation_id, detail) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id`;
     const args = [this.p.tenantId, this.p.personId, this.p.role, action, outcome, aggregate?.type ?? null, aggregate?.id ?? null, this.correlationId, detail];
-    if (q) await q.query(sql, args); else await this.tx((t) => t.query(sql, args));
+    const r = q ? await q.query<{ id: number }>(sql, args) : await this.tx((t) => t.query<{ id: number }>(sql, args));
+    return r.rows[0]!.id;
   }
   /** A rule refusal inside a transaction: the DENIED audit row is written in its own transaction first (the request's transaction is
    *  about to roll back and would take the row with it — red-team RT-01), then the refusal is thrown. */

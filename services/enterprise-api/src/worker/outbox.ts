@@ -21,11 +21,17 @@
  * expires: delivery outside the database is at-least-once, and the consumer deduplicates on the key. No sink is configured in this
  * starter (no real Teams/Outlook connector exists); the tests use a local stub sink.
  *
- * Failures retry with exponential backoff and move to DEAD_LETTER after MAX_ATTEMPTS, where an admin can see and replay them.
+ * Before any handler sees an event, it is checked against its contract (eventProblems: @empathia/event-contracts, schema version,
+ * tenant, the rooms it concerns). An event that fails is dead-lettered at once as NON_RETRYABLE with its reasons — it is never handed
+ * to a handler and never retried — and the later events of its aggregate stay held behind it.
+ * Other failures are TRANSIENT (retried with exponential backoff, next_attempt_at) until MAX_ATTEMPTS, then PERMANENT (DEAD_LETTER),
+ * where an admin can see and replay them; a replay re-delivers the same row (identity unchanged) and is counted on it (replay_count,
+ * last_replay_audit_id).
  * The worker has no fault-injection hook; crash tests drive it from a test-only child process (tests/integration/outbox-worker-child.mjs).
  */
 import os from 'node:os';
 import crypto from 'node:crypto';
+import { validateEvent } from '@empathia/event-contracts';
 import type { PgPool, Queryable } from '../db/pg.js';
 import { log } from '../log.js';
 
@@ -87,9 +93,35 @@ export const notificationHandler: Handler = async (q, e) => {
   if (e.type === 'commission.test_result_submitted' && e.payload['resultLabel'] === 'PASS_UNVERIFIED') await note('qa_reviewer', 'result.awaiting_verification', `${e.payload['testId']} in ${e.payload['roomId']} passed and awaits independent verification`, `/v1/rooms/${e.payload['roomId']}`);
 };
 
-interface Row extends OutboxEvent { status: string; due: boolean; leased: boolean }
+/** The kind of an event's last failure (outbox_event.failure_kind). */
+export type FailureKind = 'TRANSIENT' | 'PERMANENT' | 'NON_RETRYABLE';
+/** The schema MAJOR version this worker reads (docs/api/EVENT_VERSIONING.md: consumers accept every MINOR of the MAJOR they declare). */
+const SUPPORTED_SCHEMA = /^1\.\d+\.\d+$/;
+
+/**
+ * Why an event must not be handed to any handler, or [] when it may. Run under the event's tenant (app.tenant_id = its tenant), by the
+ * worker before delivery and by the replay endpoint before requeueing. Checks: the event's contract (@empathia/event-contracts: known
+ * type, required payload fields, aggregate type and id, a non-negative integer aggregate rev, no bare PASS label), a supported schema
+ * version, a tenant that exists, and that every room the event concerns (a Room aggregate, a payload roomId or designId) is a room of
+ * the event's tenant. Other aggregate kinds are not looked up (the worker role cannot read their tables; least privilege).
+ */
+export async function eventProblems(q: Queryable, e: Pick<OutboxEvent, 'tenant_id' | 'type' | 'aggregate_type' | 'aggregate_id' | 'aggregate_rev' | 'payload'> & { schema_version: string }): Promise<string[]> {
+  const p = validateEvent({ type: e.type, aggregateType: e.aggregate_type, aggregateId: e.aggregate_id, aggregateRevision: e.aggregate_rev, payload: e.payload });
+  if (!SUPPORTED_SCHEMA.test(String(e.schema_version))) p.push(`schema version ${e.schema_version} is not supported (this worker reads 1.x)`);
+  if (!(await q.query('SELECT 1 FROM app.tenant WHERE id = $1', [e.tenant_id])).rowCount) p.push('the event\'s tenant is unknown');
+  const rooms = new Set<string>();
+  if (e.aggregate_type === 'Room' && e.aggregate_id) rooms.add(e.aggregate_id);
+  const pl: Record<string, unknown> = e.payload && typeof e.payload === 'object' && !Array.isArray(e.payload) ? e.payload : {};
+  for (const k of ['roomId', 'designId']) { const v = pl[k]; if (typeof v === 'string' && v.startsWith('R-')) rooms.add(v); }
+  for (const code of rooms) {
+    if (!(await q.query('SELECT 1 FROM app.room WHERE tenant_id = $1 AND (code = $2 OR id::text = $2)', [e.tenant_id, code])).rowCount) p.push(`room ${code} is not a room of the event's tenant`);
+  }
+  return p;
+}
+
+interface Row extends OutboxEvent { schema_version: string; status: string; due: boolean; leased: boolean }
 interface ExternalJob { e: OutboxEvent; sinks: ExternalSink[] }
-const COLS = 'id, tenant_id, type, aggregate_type, aggregate_id, aggregate_rev, payload, attempts, correlation_id';
+const COLS = 'id, tenant_id, type, schema_version, aggregate_type, aggregate_id, aggregate_rev, payload, attempts, correlation_id';
 const errText = (err: unknown) => String((err as Error)?.message ?? err).slice(0, 500);
 const plain = (e: OutboxEvent): OutboxEvent => ({ id: e.id, tenant_id: e.tenant_id, type: e.type, aggregate_type: e.aggregate_type, aggregate_id: e.aggregate_id, aggregate_rev: e.aggregate_rev, payload: e.payload, attempts: e.attempts, correlation_id: e.correlation_id });
 
@@ -179,6 +211,13 @@ export class OutboxWorker {
     await q.query('SAVEPOINT ev');
     try {
       await q.query("SELECT set_config('app.tenant_id', $1, true)", [e.tenant_id]);
+      // an event that fails its contract is never handed to a handler, and retrying cannot fix it: dead-letter it now
+      const problems = await eventProblems(q, e);
+      if (problems.length) {
+        await q.query('ROLLBACK TO SAVEPOINT ev');
+        await this.recordNonRetryable(q, e, problems);
+        return 'failed';
+      }
       const done = new Set((await q.query<{ k: string }>("SELECT kind || ':' || handler AS k FROM app.outbox_delivery WHERE event_id = $1", [e.id])).rows.map((r) => r.k));
       for (const [i, h] of this.handlers.entries()) {
         const name = this.handlerName(h, i);
@@ -205,11 +244,20 @@ export class OutboxWorker {
     }
   }
 
+  /** A failed attempt: TRANSIENT (retried at next_attempt_at with backoff) until MAX_ATTEMPTS, then PERMANENT (DEAD_LETTER). */
   private async recordFailure(q: Queryable, e: OutboxEvent, err: unknown): Promise<void> {
-    const attempts = e.attempts + 1; const dead = attempts >= MAX_ATTEMPTS;
-    await q.query(`UPDATE app.outbox_event SET attempts = $2, status = $3, next_attempt_at = now() + make_interval(secs => $4), last_error = $5, lease_owner = NULL, lease_until = NULL WHERE id = $1`, [e.id, attempts, dead ? 'DEAD_LETTER' : 'PENDING', Math.min(2 ** attempts, 600), errText(err)]);
+    const attempts = e.attempts + 1; const dead = attempts >= MAX_ATTEMPTS; const kind: FailureKind = dead ? 'PERMANENT' : 'TRANSIENT';
+    await q.query(`UPDATE app.outbox_event SET attempts = $2, status = $3, next_attempt_at = now() + make_interval(secs => $4), last_error = $5, failure_kind = $6, lease_owner = NULL, lease_until = NULL WHERE id = $1`, [e.id, attempts, dead ? 'DEAD_LETTER' : 'PENDING', Math.min(2 ** attempts, 600), errText(err), kind]);
     this.failed += 1; if (dead) this.dead += 1;
-    log(dead ? 'error' : 'warn', dead ? 'outbox event dead-lettered' : 'outbox delivery failed', { eventId: e.id, type: e.type, attempts, correlationId: e.correlation_id, error: errText(err) });
+    log(dead ? 'error' : 'warn', dead ? 'outbox event dead-lettered' : 'outbox delivery failed', { eventId: e.id, type: e.type, attempts, failureKind: kind, correlationId: e.correlation_id, error: errText(err) });
+  }
+
+  /** An event that fails its contract: DEAD_LETTER at once as NON_RETRYABLE, with its reasons. Later events of the aggregate stay held. */
+  private async recordNonRetryable(q: Queryable, e: OutboxEvent, problems: string[]): Promise<void> {
+    const reason = errText(`contract: ${problems.join('; ')}`);
+    await q.query(`UPDATE app.outbox_event SET attempts = attempts + 1, status = 'DEAD_LETTER', last_error = $2, failure_kind = 'NON_RETRYABLE', lease_owner = NULL, lease_until = NULL WHERE id = $1`, [e.id, reason]);
+    this.failed += 1; this.dead += 1;
+    log('error', 'outbox event refused (non-retryable): it fails its contract and was not handed to any handler', { eventId: e.id, type: e.type, failureKind: 'NON_RETRYABLE', correlationId: e.correlation_id, error: reason });
   }
 
   /**

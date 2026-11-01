@@ -9,9 +9,17 @@
 --      so no other worker redelivers it before the lease expires (a crashed worker's lease simply expires);
 --   4. the worker's writes are confined to the tenant of the event being handled: the cross-tenant worker policies on notification and
 --      room_read_model are dropped, so the standard tenant policy (tenant_id = app.current_tenant(), set by the worker per event) applies.
---      The outbox itself keeps its cross-tenant worker policy (the worker must claim every tenant's events; it can change status columns only).
+--      The outbox itself keeps its cross-tenant worker policy (the worker must claim every tenant's events; it can change status columns only);
+--   5. the kind of the last failure: TRANSIENT (retrying at next_attempt_at), PERMANENT (attempts exhausted) or NON_RETRYABLE (the event
+--      fails its contract — unknown type, payload, aggregate, schema version or tenant — and is dead-lettered without being handed to a handler);
+--   6. replay traceability: replay_count and last_replay_audit_id (the Evidence Ledger record of the latest replay; every replay's record names
+--      the event as its aggregate). A replay re-delivers the same row: id, type, aggregate, tenant, payload and correlation id never change —
+--      the runtime role may update only the delivery-state columns of an event (column grants below), and the worker only its own.
 
-ALTER TABLE app.outbox_event ADD COLUMN seq bigint, ADD COLUMN lease_owner text, ADD COLUMN lease_until timestamptz;
+ALTER TABLE app.outbox_event ADD COLUMN seq bigint, ADD COLUMN lease_owner text, ADD COLUMN lease_until timestamptz,
+  ADD COLUMN failure_kind text CHECK (failure_kind IN ('TRANSIENT', 'PERMANENT', 'NON_RETRYABLE')),
+  ADD COLUMN replay_count integer NOT NULL DEFAULT 0 CHECK (replay_count >= 0),
+  ADD COLUMN last_replay_audit_id bigint REFERENCES app.audit_event (id);
 CREATE SEQUENCE app.outbox_event_seq OWNED BY app.outbox_event.seq;
 
 -- number the existing events in their historical order (RLS is forced on the owner too: one tenant at a time, under its own policy)
@@ -24,6 +32,9 @@ BEGIN
       FROM (SELECT id, row_number() OVER (ORDER BY occurred_at, aggregate_rev, id) AS rn FROM app.outbox_event WHERE tenant_id = t) s
      WHERE e.id = s.id;
     GET DIAGNOSTICS n = ROW_COUNT; base := base + n;
+    -- every earlier dead letter exhausted its attempts; a pending event with an error is retrying
+    UPDATE app.outbox_event SET failure_kind = CASE WHEN status = 'DEAD_LETTER' THEN 'PERMANENT' ELSE 'TRANSIENT' END
+     WHERE tenant_id = t AND last_error IS NOT NULL AND status IN ('PENDING', 'DEAD_LETTER');
   END LOOP;
   PERFORM set_config('app.tenant_id', '', true);
   PERFORM setval('app.outbox_event_seq', base + 1, false);
@@ -55,11 +66,14 @@ DROP POLICY IF EXISTS read_model_worker ON app.room_read_model;
 
 DO $$ BEGIN
   IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'empathia_worker') THEN
-    GRANT UPDATE (lease_owner, lease_until) ON app.outbox_event TO empathia_worker;
+    GRANT UPDATE (lease_owner, lease_until, failure_kind) ON app.outbox_event TO empathia_worker;
     GRANT SELECT, INSERT ON app.outbox_delivery TO empathia_worker;
   END IF;
   IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'empathia_app') THEN
     GRANT USAGE, SELECT ON SEQUENCE app.outbox_event_seq TO empathia_app;
     GRANT SELECT ON app.outbox_delivery TO empathia_app;
+    -- an event's identity is immutable: the runtime role appends events (ctx.emit) and, for a replay, changes delivery state only
+    REVOKE UPDATE ON app.outbox_event FROM empathia_app;
+    GRANT UPDATE (status, attempts, next_attempt_at, last_error, lease_owner, lease_until, failure_kind, replay_count, last_replay_audit_id) ON app.outbox_event TO empathia_app;
   END IF;
 END $$;

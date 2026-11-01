@@ -81,6 +81,11 @@ flowchart LR
   Each internal handler writes a receipt (`outbox_delivery`) in the same transaction as its effect (exactly once). External sinks
   (Teams/Outlook/connector events — none is configured in the starter) are called only after that transaction commits, with no
   transaction open, under a lease and with an idempotency key `outbox:<event id>:<sink>`: at-least-once, deduplicated by the consumer.
+* Before any handler sees an event, the worker checks it against its contract (`@empathia/event-contracts`), its schema version, its
+  tenant and the rooms it concerns; an event that fails is dead-lettered at once (`failure_kind = NON_RETRYABLE`, reason in `last_error`).
+  Other failures are `TRANSIENT` until the 8th attempt, then `PERMANENT`. An event's identity (id, type, aggregate, tenant, payload,
+  correlation id) never changes: the runtime role may update only its delivery-state columns; a replay is counted on the same row
+  (`replay_count`, `last_replay_audit_id` → the `audit_event` of the latest replay, whose aggregate is the event).
 * `room_read_model.live_health` accepts only `NOT_MONITORED` (CHECK constraint): no live-health claim can be stored without a monitoring
   feed, which the starter does not have.
 * Observations from integrations do **not** feed the commissioning or assurance records. A non-VERIFIED source can only store
@@ -189,9 +194,10 @@ stateDiagram-v2
   PENDING --> PENDING: held · an earlier event of the same aggregate is not yet delivered (never attempted)
   PENDING --> PENDING: leased · internal handlers committed, external sinks in flight (no transaction open)
   PENDING --> DELIVERED: every handler and sink has a receipt
-  PENDING --> PENDING: handler failed · attempts+1 · backoff min(2^attempts, 600) s
-  PENDING --> DEAD_LETTER: 8th failed attempt (later events of the aggregate stay held)
-  DEAD_LETTER --> PENDING: admin replay with a reason (policy.configure; audited; 409 unless DEAD_LETTER)
+  PENDING --> PENDING: handler failed · TRANSIENT · attempts+1 · backoff min(2^attempts, 600) s
+  PENDING --> DEAD_LETTER: 8th failed attempt · PERMANENT (later events of the aggregate stay held)
+  PENDING --> DEAD_LETTER: fails its contract · NON_RETRYABLE · first attempt, never handed to a handler (later events stay held)
+  DEAD_LETTER --> PENDING: admin replay with a reason (policy.configure; audited; 409 unless DEAD_LETTER; 422 while it still fails its contract; same row, replay_count+1)
 ```
 
 Other enumerations: drawing_revision `GENERATED | APPROVED | SUPERSEDED` (presented as `REVIEW_REQUIRED` when its input hash no longer

@@ -243,7 +243,7 @@ export function buildRoutes(deps: { pool: PgPool; tokens: Hs256Tokens; store: Ob
   add({ method: 'GET', path: '/v1/admin/outbox', tag: 'admin', summary: 'Outbox events by status (security admin)', auth: true, authority: 'policy.configure', query: { status: str({ enum: ['PENDING', 'DELIVERED', 'DEAD_LETTER'] }) }, responses: ok('events'), handler: async (c, q) => ({ status: 200, body: await platform.outboxAdmin(c, q.query.get('status') || 'DEAD_LETTER') }) });
   add({ method: 'POST', path: '/v1/admin/outbox/:event/retry', tag: 'admin', summary: 'Retry a dead-lettered event (security admin)', auth: true, authority: 'policy.configure', idempotent: true,
     body: obj({ reason: str({ minLength: 5, maxLength: 1000, pattern: '\\S', description: 'why the event is replayed (recorded in the Evidence Ledger with the prior attempts and last error)' }) }, ['reason']),
-    responses: { ...ok('requeued: id, status PENDING, prior attempts'), 409: { description: 'the event is not dead-lettered (pending, held or already delivered): nothing is requeued' } },
+    responses: { ...ok('requeued: id, status PENDING, prior attempts and failure kind, replay number, audit record id'), 409: { description: 'the event is not dead-lettered (pending, held or already delivered): nothing is requeued' } },   // 422 (still fails its contract) is the generic rule refusal
     handler: async (c, q) => ({ status: 200, body: await platform.outboxRetry(c, q.params['event']!, q.body as never) }) });
 
   // ---------------------------------------------------------------------------------------- assurance baselines (ADR-0003: versioned, immutable, lineage; exceptions decided by someone else)

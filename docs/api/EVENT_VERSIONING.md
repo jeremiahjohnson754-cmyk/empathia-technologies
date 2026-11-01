@@ -45,6 +45,9 @@ at-least-once (outbox worker, 8 attempts, then DEAD_LETTER); handlers must be id
 canonical tables; notifications are unique per event, kind and role). Per aggregate, delivery follows `(aggregate_rev, seq)` and a later
 event is held behind an undelivered earlier one; each handler's effect is recorded by a delivery receipt, and a consumer outside the
 database receives the idempotency key `outbox:<event id>:<sink>` to deduplicate on (`worker/outbox.ts`, migration 0027).
+The worker validates every event again before delivery (the same `validateEvent`, a schema version of MAJOR 1, a known tenant, and
+rooms that belong to the event's tenant): an event that fails is never handed to a handler; it is dead-lettered as `NON_RETRYABLE`,
+and a replay is refused (422) while it still fails. Events are never edited — fix the producer and emit a new event.
 
 ## Compatibility rules
 

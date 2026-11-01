@@ -50,7 +50,8 @@ function Outbox() {
       {retry.error ? <ErrorState error={retry.error} /> : null}
       <DataTable rows={q.data.items} rowKey={(x) => x['id']!} dense caption="Dead-lettered events" empty={<Empty title="No dead-lettered events">Every event was delivered.</Empty>} columns={[
         { key: 't', header: 'Event', render: (x) => <span className="mono">{x['type']}</span> }, { key: 'a', header: 'Aggregate', render: (x) => `${x['aggregate_type']} ${x['aggregate_id']}` },
-        { key: 'n', header: 'Attempts', render: (x) => x['attempts'], align: 'right' }, { key: 'e', header: 'Last error', render: (x) => <span className="ui-meta">{x['last_error']}</span> },
+        { key: 'n', header: 'Attempts', render: (x) => x['attempts'], align: 'right' }, { key: 'k', header: 'Failure', render: (x) => <Tag tone={x['failure_kind'] === 'NON_RETRYABLE' ? 'bad' : 'warn'}>{x['failure_kind'] || '—'}</Tag> },
+        { key: 'e', header: 'Last error', render: (x) => <span className="ui-meta">{x['last_error']}</span> }, { key: 'p', header: 'Replays', render: (x) => x['replay_count'], align: 'right' },
         { key: 'r', header: '', render: (x) => <Button small kind="quiet" busy={retry.busy} disabled={!ready} title={ready ? undefined : 'Enter a reason first'} onClick={() => void retry.run(x['id']!)}>Replay</Button> }]} />
     </div>
   );
