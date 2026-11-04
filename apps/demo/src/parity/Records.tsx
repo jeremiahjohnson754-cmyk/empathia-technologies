@@ -91,7 +91,10 @@ function Passport({ role, type, id }: PageProps & { type: string; id: string }) 
   );
 }
 
-function Sets({ role, k }: PageProps & { k: string }) {
+/** V2.5.3's family names (#/set/devices …) are kept as aliases of the short keys, so every legacy address still opens its family. */
+const LEGACY_FAMILY: Record<string, string> = { devices: 'dev', rooms: 'room', issues: 'iss', docs: 'doc', changes: 'chg' };
+function Sets({ role, k: raw }: PageProps & { k: string }) {
+  const k = LEGACY_FAMILY[raw] ?? raw;
   const core = useCore();
   const mayFamily = (key: string) => allows(setAuthority(key), role);
   const fams = FAMILIES.filter((f) => mayFamily(f.key === 'as' ? f.sets[0]!.key : f.key));
