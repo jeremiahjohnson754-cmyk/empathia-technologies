@@ -29,3 +29,7 @@ Look here for the logo look through the videos too it's the green drawing compas
 
 (No attachment is named in the turn text; "look here" may refer to something attached or linked that the turn does not show.)
 
+## Turn 681 — Tue 2026-11-03 04:19 America/Chicago (UTC-06:00)
+
+Use adobe and figma to redesign the logos i love your decisions and creativity with it let's just make sure the quality matches the artistry and cleverness continue working as you were on your tasks and continue building both sites
+

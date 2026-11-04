@@ -41,3 +41,40 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx
 ```
 (Docs regenerated via `node scripts/docs/api-inventory.mjs`.)
+
+### Turn 507 — commit `56124a4` on branch `restoration/enquiry-tally` (in worktree .claude/worktrees/agent-a098690563b8344ea; branch created from 457361d). Preceded by `git checkout -- tests/evidence/demo/demo.json tests/evidence/website-lead/website-lead.json && git add -A`
+
+```
+Enquiries through the owner's hosted Tally form on both sites (opened externally, not embedded)
+
+Owner-approved 2026-10-31 20:18 CT: https://tally.so/r/VpG0Vy. The form was verified first, read-only: its fields, its consent text
+naming Tally as the form provider, and its thank-you page. No test entry was submitted.
+
+Website
+- Request a demonstration, Pilots, a new Partnerships section, Contact, Founder and a new About > Investor conversations section each
+  open the hosted form in a new tab (target=_blank, rel=noopener noreferrer). The accessible name says so, an external-link mark shows
+  it, and the disclosure beside every button names tally.so, who receives the enquiry, where Tally stores it and the "Area of Interest"
+  to choose (the form has no pre-fill).
+- Privacy notice: a new Enquiries section covers Tally as processor and Empathia as controller, the fields collected, EU storage as
+  Tally states it, Tally's US email sub-processor for notifications, and retention. The claim that enquiries go to Empathia's own service
+  is removed from builds without an API.
+- The site's own lead form is kept and rendered only when a build is given an API (--api), so the enterprise API lead route and its
+  e2e (6/6) stay intact. CSP is unchanged: nothing from tally.so loads on the site.
+- When a form is unconfigured, its notice no longer points to contact details that are not published.
+
+Demo
+- "Work with Empathia" on the investor start: pilot, partnership, investor conversation and guided demonstration entry points, with the
+  disclosure. A footer contact link and a founder link on every page. Footer links are 24 px, or 44 px on phones.
+
+Tests
+- website.test.mjs 77/77. The disabled-form check is replaced by stronger enquiry checks at 1440/390: URL, new tab, rel, wording,
+  disclosure, no site form and no success wording, a stubbed click opening a popup, the privacy content, and website/demo URL parity.
+- New demo-enquiry.test.mjs 14/14; demo.test.mjs 138/138; website-lead e2e 6/6.
+- Site audit --strict: P0 0, P1 0; P2 92 -> 71, P3 556 -> 538.
+
+Docs: docs/operations/LEAD_CAPTURE_TALLY.md lists the verification and the owner's remaining privacy and configuration decisions.
+Not merged, not deployed.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx
+```
