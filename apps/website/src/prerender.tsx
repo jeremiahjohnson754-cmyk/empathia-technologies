@@ -18,7 +18,7 @@ export function renderAll(ctx: SiteContext, opts: RenderOpts = {}): { path: stri
 <title>${esc(page.title)}</title>
 <meta name="description" content="${esc(page.description)}">
 <meta name="color-scheme" content="dark light">
-<meta name="theme-color" content="#0e1012" media="(prefers-color-scheme: dark)"><meta name="theme-color" content="#f7f5f1" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#070d1a" media="(prefers-color-scheme: dark)"><meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)">
 ${notFound ? '<meta name="robots" content="noindex">\n' : `<link rel="canonical" href="${esc(canonical)}">\n`}<meta property="og:title" content="${esc(page.title)}"><meta property="og:description" content="${esc(page.description)}"><meta property="og:type" content="website">
 ${ctx.preview ? '<meta name="robots" content="noindex, nofollow">\n' : ''}<meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="stylesheet" href="/site.css">
