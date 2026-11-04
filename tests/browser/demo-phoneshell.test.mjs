@@ -10,8 +10,10 @@ const { ok, open, main, done } = await harness('demo-phoneshell');
 
 for (const w of [360, 390, 768]) {
   const t = await open('#/campus/scouter', { role: 'architect', w, h: 800 }); const p = t.page;
-  const m = await p.evaluate(() => ({ top: Math.round(document.getElementById('main').getBoundingClientRect().top), over: document.documentElement.scrollWidth - innerWidth, emblem: !!document.querySelector('header .shell__emblem')?.naturalWidth, rail: getComputedStyle(document.querySelector('.shell__rail')).display }));
-  ok(`P-${w}-01`, `${w} px: the header takes ${m.top} px before content (< 120), the emblem loads, the rail moves into the menu`, m.top < 120 && m.emblem && m.rail === 'none', JSON.stringify(m));
+  // QUALITY_UPLIFT shell: there is no inline product rail any more (products live in the More sheet at every width); on a phone the
+  // role's rail is the bottom tab bar and the bar carries no product row
+  const m = await p.evaluate(() => ({ top: Math.round(document.getElementById('main').getBoundingClientRect().top), over: document.documentElement.scrollWidth - innerWidth, emblem: !!document.querySelector('header .shell__emblem')?.naturalWidth, rail: document.querySelectorAll('.shell__rail').length, more: !!document.querySelector('[data-testid=hometabs] [data-testid=menu-open]') }));
+  ok(`P-${w}-01`, `${w} px: the header takes ${m.top} px before content (< 120), the emblem loads, products sit behind More in the tab bar`, m.top < 120 && m.emblem && m.rail === 0 && m.more, JSON.stringify(m));
   ok(`P-${w}-02`, `${w} px: no sideways scroll`, m.over <= 0, m.over);
   const small = await p.$$eval('header button, header a, [data-testid=hometabs] a, [data-testid=hometabs] button', (els) => els.filter((e) => e.offsetParent && getComputedStyle(e).display !== 'none').map((e) => { const r = e.getBoundingClientRect(); return { t: e.textContent.trim().slice(0, 14) || e.className, w: Math.round(r.width), h: Math.round(r.height) }; }).filter((r) => r.w < 44 || r.h < 44));
   ok(`P-${w}-03`, `${w} px: every header and tab target is at least 44 × 44`, !small.length, JSON.stringify(small));
@@ -38,15 +40,30 @@ for (const w of [360, 390, 768]) {
   await p.click('.find__btn'); await p.waitForTimeout(80); await p.keyboard.type('which camera'); await p.waitForTimeout(150);
   const opt = await p.locator('#find-list [role=option]').first().innerText().catch(() => ''); await p.keyboard.press('Enter'); await p.waitForTimeout(400);
   ok(`P-${w}-11`, `${w} px: find expands from its button and answers “which camera” with Scouter`, /Scouter/.test(opt) && /#\/campus\/scouter/.test(p.url()), opt);
-  ok(`P-${w}-12`, `${w} px: the demonstration note stays, on one line`, await p.evaluate(() => { const n = document.querySelector('.shell__note'); return n && n.getBoundingClientRect().height < 34 && /SYNTHETIC/.test(n.textContent); }));
+  // QUALITY_UPLIFT: the per-page note row is gone; the bar carries a small "Synthetic data" chip and the footer one synthetic-data line
+  ok(`P-${w}-12`, `${w} px: the synthetic-data chip stays in the bar on one line, and no note row stacks above the page`, await p.evaluate(() => { const n = document.querySelector('header .synth-chip'); return !!n && n.getBoundingClientRect().height < 30 && /Synthetic data/.test(n.textContent) && !document.querySelector('.shell__note'); }));
   ok(`P-${w}-13`, `${w} px: no console error`, !t.errs.length, t.errs.join(' | ')); await t.close();
 }
 { const t = await open('#/investor', { role: 'architect', w: 1440 }); const p = t.page;
-  const d = await p.evaluate(() => ({ rail: getComputedStyle(document.querySelector('.shell__rail')).display, n: document.querySelectorAll('.shell__rail a').length, menu: 0, tabs: getComputedStyle(document.querySelector('[data-testid=hometabs]')).position, theme: getComputedStyle(document.querySelector('header [data-testid=theme-switch]')).display, find: getComputedStyle(document.querySelector('.find__box')).display }));
-  await p.click('[data-testid=menu-open]'); d.menu = await p.locator('.drawer__product').count(); await p.keyboard.press('Escape');
+  // QUALITY_UPLIFT shell (V2.5.3 aurora): the role's tabs are a left icon rail on desktop, ending in More; the products are switched
+  // through More (the product sheet) instead of an inline row, so the sheet is what keeps the canonical order now
+  const d = await p.evaluate(() => { const r = document.querySelector('[data-testid=hometabs]').getBoundingClientRect(); return { left: Math.round(r.left), w: Math.round(r.width), h: Math.round(r.height), vh: innerHeight, tabs: document.querySelectorAll('[data-testid=hometabs] .hometab').length, menu: 0, theme: getComputedStyle(document.querySelector('header [data-testid=theme-switch]')).display, find: getComputedStyle(document.querySelector('.find__box')).display, bell: !!document.querySelector('header [data-testid=notifications]') }; });
+  await p.click('[data-testid=menu-open]'); d.menu = await p.locator('.drawer__product').count();
+  const order = await p.$$eval('.drawer__product > a .drawer__pn', (a) => a.map((x) => x.textContent.replace(' (current)', '').trim())); await p.keyboard.press('Escape');
   // every product with a registered page (nine once the spaces and ops slices have landed theirs)
-  ok('P-1440-01', 'desktop: every product inline in the rail, the theme switch and find in the header, tabs in the role strip', d.rail === 'flex' && d.n >= 8 && d.n === d.menu && d.tabs !== 'fixed' && d.theme !== 'none' && d.find !== 'none', JSON.stringify(d));
-  const order = await p.$$eval('.shell__rail a', (a) => a.map((x) => x.textContent.trim()));
-  ok('P-1440-02', 'desktop: the rail keeps the canonical order of packages/ui products.ts (D37/D40), no drift', !checkProductOrder(order, { requireAll: false }).length && order.every((n) => PRODUCT_NAMES.includes(n)), checkProductOrder(order, { requireAll: false }).join('; ') || order.join(','));
-  ok('P-1440-03', 'desktop: no sideways scroll, no console error', await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth) && !t.errs.length, t.errs.join(' | ')); await t.close(); }
+  ok('P-1440-01', 'desktop: a left icon rail (the role’s tabs + More), the theme switch, find and notifications in the bar, every product in More', d.left === 0 && d.w < 120 && d.h > d.vh * 0.8 && d.tabs >= 3 && d.menu >= 8 && d.theme !== 'none' && d.find !== 'none' && d.bell, JSON.stringify(d));
+  ok('P-1440-02', 'desktop: the product sheet keeps the canonical order of packages/ui products.ts (D37/D40), no drift', !checkProductOrder(order, { requireAll: false }).length && order.every((n) => PRODUCT_NAMES.includes(n)), checkProductOrder(order, { requireAll: false }).join('; ') || order.join(','));
+  ok('P-1440-03', 'desktop: no sideways scroll, no console error', await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth) && !t.errs.length, t.errs.join(' | '));
+  // QUALITY_UPLIFT checks: route focus lands on the h1 without a ring (mouse and keyboard), the synthetic line appears once, the bell works
+  const ring = async () => p.evaluate(() => { const a = document.activeElement; return { tag: a?.tagName, ring: a ? getComputedStyle(a).outlineStyle : '' }; });
+  await p.locator('[data-testid=hometabs] a', { hasText: 'Campus' }).click(); await p.waitForTimeout(500); const r1 = await ring();
+  await p.locator('[data-testid=hometabs] a', { hasText: 'Search' }).focus(); await p.keyboard.press('Enter'); await p.waitForTimeout(500); const r2 = await ring();
+  ok('P-1440-04', 'desktop: after navigating from the rail (mouse, then keyboard) the h1 has focus and draws no ring', r1.tag === 'H1' && r1.ring === 'none' && r2.tag === 'H1' && r2.ring === 'none', JSON.stringify([r1, r2]));
+  const once = await p.evaluate(() => ({ tags: [...document.querySelectorAll('.ui-tag, .synth-chip')].filter((e) => /synthetic data/i.test(e.textContent)).map((e) => e.closest('header') ? 'bar' : e.closest('footer') ? 'foot' : 'page'), banner: /DEMONSTRATION · SYNTHETIC DATA/.test(document.body.innerText), stacked: !!document.querySelector('.shell__role, .greet, .shell__note') }));
+  ok('P-1440-05', 'desktop: one chip in the bar and one footer line say “Synthetic data”; no per-page banner, no greeting/breadcrumb row', once.tags.join() === 'bar,foot' && !once.banner && !once.stacked, JSON.stringify(once));
+  await p.click('[data-testid=notifications]'); const np = await p.evaluate(() => ({ open: !!document.getElementById('notes-panel'), items: document.querySelectorAll('#notes-panel li').length, label: document.querySelector('[data-testid=notifications]').getAttribute('aria-label') }));
+  await p.keyboard.press('Escape'); const nb = await p.evaluate(() => ({ closed: !document.getElementById('notes-panel'), focus: document.activeElement?.dataset.testid }));
+  ok('P-1440-06', 'desktop: notifications open a panel of the open service incidents (counted from the records, named in the button), Escape closes it and returns focus', np.open && new RegExp(`: ${np.items} open service`).test(np.label) && nb.closed && nb.focus === 'notifications', JSON.stringify({ ...np, ...nb }));
+  await p.keyboard.press('/'); await p.waitForTimeout(60); ok('P-1440-07', 'desktop: “/” focuses quick find', await p.evaluate(() => document.activeElement?.id) === 'find-in');
+  await t.close(); }
 await done();
