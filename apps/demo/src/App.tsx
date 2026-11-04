@@ -1,112 +1,131 @@
-import React, { useEffect, useState } from 'react';
-import { Tag, Notice, AppShell } from '@empathia/ui';
-import { areaOf, areaKey, AREAS, NATIVE } from './registry.js';
-import { BuildRoom } from './build/BuildRoom.js';
-import { SearchPartyDemo } from './search/SearchParty.js';
+/**
+ * The investor demonstration: the shell, the router and the policy gate. Every address resolves, in order, to
+ *   1. a registered page (registry.pages.ts) — opened only when the policy admits the current role at that exact address, and only then is
+ *      its code loaded; otherwise the Agora Owl access page (D44);
+ *   2. a legacy V2.5.3 area (registry.ts) — its migration-status page, behind the same policy;
+ *   3. nothing — the not-found page.
+ * View as (D1) changes the role; the role veil marks every switch; the page, tabs and buttons re-render from the policy.
+ */
+import React, { Component, useCallback, useEffect, useRef, useState, type ComponentType, type ReactNode } from 'react';
+import { Tag, Notice, Loading, Button } from '@empathia/ui';
+import type { PageProps, RoleKey } from './registry.types.js';
+import { areaOf, areaKey } from './registry.js';
+import { resolve } from './registry.pages.js';
+import { ROLES, ROLE_KEYS, canOpen, canDo, canSee, whoCanOpen, legacyAuthority, allows, tabsFor, type Resolved } from './access/policy.js';
+import { AccessProvider } from './access/Gate.js';
+import { AccessPage, NotFound } from './access/AccessPage.js';
+import { Shell, opensNative, translate } from './shell/Shell.js';
+import { ViewAsSheet } from './viewas/ViewAsSheet.js';
+import { RoleVeil, type VeilShow } from './viewas/RoleVeil.js';
+import { ViewAsContext } from './viewas/context.js';
+import { useRoleState } from './viewas/role.js';
 import { TourPanel } from './tour/Tour.js';
-import { ServicePage } from './pages/Service.js';
-import { ApexPage } from './pages/Apex.js';
-import { LearnPage } from './pages/Learn.js';
-import { MissionControl, ExecPage, LedgerPage } from './pages/Control.js';
-import { FieldIntelligencePage } from './pages/FieldIntelligence.js';
-import { opsPage } from './hardening/opsRoutes.js';
-import { WorkWith, ContactLinks } from './enquiry/WorkWith.js';
+import { ContactLinks } from './enquiry/WorkWith.js';
 import { ENQUIRY } from './enquiry.js';
 
-/** The seven investor scenarios of the 2.5.5 investor landing, with the customer problem each one solves (carried over verbatim in spirit). */
-const SCENARIOS = [
-  ['If this switch fails, what is affected?', 'Nobody can say what a failing device takes down. Search Party shows the room, the switch, its uplink, the rooms that share it and the power behind it, each with its freshness.'],
-  ['Field Intelligence: what the collector declares', 'Monitoring tools report what a configuration file says, not what is true. Every observation is labelled declared, observed, verified, modeled, unknown or unavailable.'],
-  ['Room optimisation in Lite', 'Rooms are changed on a hunch. Lite states a prediction with its uncertainty and never calls a scenario a measurement.'],
-  ['Commissioning and governance', 'Rooms are accepted without proof. An adaptive plan states why each test applies, and an approval is refused in front of you with every unresolved item named.'],
-  ['Incident → service → retest → closure', 'Repairs close on a technician\'s word. Hard gates before dispatch, evidence in the field, independent verification, and the baseline that decides whether it is fixed.'],
-  ['Learn', 'Lessons stay in people\'s heads. Reviewed cases are written from what actually happened, with permission and de-identification, and training never grants authority.'],
-  ['The connected ecosystem', 'Every system has its own numbers. Mission Control, 27 KPI passports with numerator and denominator, and the ledger behind every state.'],
-] as const;
-/** The 14 legacy perspectives, plus `qa` (the Document Reviewer / QA persona) so the demonstration can show an acceptance by someone who neither recorded nor verified (ADR-0005). */
-const PERSPECTIVES = ['visitor', 'employee', 'exec', 'service', 'svcmgr', 'syseng', 'designer', 'installer', 'cxeng', 'ipm', 'bpm', 'ops', 'steward', 'architect', 'qa'];
+const START = '#/investor';
+/** The address the router reads: an in-page anchor (#problems) or an empty hash is the investor start. */
+const routeOf = (h: string) => (h.startsWith('#/') && h.length > 2 ? h : START);
+const homeOf = (role: RoleKey) => tabsFor(role, (h) => opensNative(role, h), translate)[0]?.href || START;
+
+/** Where an address leads for a role, without loading anything: the page and whether it opens, or a legacy area, or nothing. */
+export function decide(role: RoleKey, hash: string) {
+  const at = resolve(hash);
+  if (at) return { kind: 'page' as const, at, allowed: canOpen(role, at), title: at.page.title, purpose: at.page.purpose, who: whoCanOpen(at) };
+  const key = areaKey(hash); const area = areaOf(hash);
+  if (key === 'none' || !area || area.key === 'none') return { kind: 'missing' as const, at: null, allowed: true, title: 'Unknown address', purpose: undefined, who: [] as RoleKey[] };
+  const a = legacyAuthority(key);
+  return { kind: 'legacy' as const, at: null, area, allowed: allows(a, role), title: area.label, purpose: undefined, who: ROLE_KEYS.filter((k) => allows(a, k)) };
+}
 
 export function App() {
-  const [hash, setHash] = useState(location.hash || '#/investor'); const [as, setAs] = useState(() => { try { return localStorage.getItem('empathia.demo.perspective') || 'visitor'; } catch { return 'visitor'; } });
-  useEffect(() => { if (!location.hash) history.replaceState(null, '', '#/investor'); const h = () => setHash(location.hash || '#/investor'); addEventListener('hashchange', h); return () => removeEventListener('hashchange', h); }, []);
-  useEffect(() => { try { localStorage.setItem('empathia.demo.perspective', as); } catch { /* storage unavailable: the choice lasts the page */ } }, [as]);
-  const area = areaOf(hash); const home = hash === '#/investor' || hash === '#/' || hash === '#' || !hash.startsWith('#/') || hash.startsWith('#/tours/investor');   // an in-page anchor (#problems) stays on the landing
-  // the same product rail as the enterprise application, on the legacy address space (every product resolves to a native page or a boundary page)
-  const k = area?.key || '';
-  const products = [
-    { key: 'home', label: 'Mission Control', href: '#/v25', purpose: 'What changed, what matters, what needs action', active: k === 'home' || k === 'v25.home' },
-    { key: 'pro', label: 'Pro', href: '#/suite/pro', purpose: 'Operational intelligence, portfolio, service performance', active: k.startsWith('pro') },
-    { key: 'lite', label: 'Lite', href: '#/v25/build', purpose: 'Build a Room: spatial design on the real engine', active: k === 'v25.build' || k.startsWith('lite') },
-    { key: 'search', label: 'Search Party', href: '#/search', purpose: 'Universal entity search and relationship intelligence', active: k.startsWith('search') },
-    { key: 'cx', label: 'Commissioning & Assurance', href: '#/suite/commission', purpose: 'Plans, evidence, verification, acceptance, baselines', active: k.startsWith('commissioning') || k.startsWith('assurance') },
-    { key: 'fi', label: 'Field Intelligence', href: '#/v25/fi', purpose: 'What the collector declares, observes and verifies', active: k === 'fabric' || k === 'v25.fi' || k === 'v25.fipv' },
-    { key: 'learn', label: 'Learn', href: '#/v25/learn', purpose: 'Evidence-backed cases and training', active: k === 'learn' || k === 'v25.learn' },
-    { key: 'investor', label: 'Investor start', href: '#/investor', purpose: 'Three ways in: Build a Room, guided scenarios, the problems each workflow solves', active: home },
-  ];
+  const [hash, setHash] = useState(() => location.hash || START);
+  const [role, setRoleState] = useRoleState();
+  const [sheet, setSheet] = useState(false);
+  const [veil, setVeil] = useState<VeilShow | null>(null);
+  const [said, setSaid] = useState('');
+  const first = useRef(true);
+  useEffect(() => {
+    if (!location.hash) history.replaceState(null, '', START);
+    const h = () => setHash(location.hash || START); addEventListener('hashchange', h); return () => removeEventListener('hashchange', h);
+  }, []);
+  const route = routeOf(hash);
+  const d = decide(role, route);
+
+  const switchTo = useCallback((r: RoleKey, o: { tour?: boolean } = {}) => {
+    setSheet(false);
+    if (r === role) return;
+    const here = decide(r, routeOf(location.hash || START));
+    let lands = here.allowed && here.kind !== 'missing' ? `stays on ${here.title}` : '';
+    if (!lands && !o.tour) { const to = homeOf(r); const t = decide(r, to); lands = `lands on ${t.title}`; location.hash = to; }
+    setRoleState(r);
+    if (!o.tour) setVeil((v) => ({ role: r, lands: lands || ROLES[r].home, n: (v?.n || 0) + 1 }));
+    setSaid(`Now viewing as ${ROLES[r].label}${lands ? `; ${lands}` : ''}. Viewing as a role grants nothing.`);
+  }, [role, setRoleState]);
+
+  // route focus: after an in-app navigation, focus the page's heading and announce it (not on the first load)
+  useEffect(() => {
+    if (first.current) { first.current = false; return; }
+    const t = setTimeout(() => { const h1 = document.querySelector<HTMLElement>('main h1'); const m = document.getElementById('main'); if (h1) { if (!h1.hasAttribute('tabindex')) h1.setAttribute('tabindex', '-1'); h1.focus({ preventScroll: false }); } else m?.focus(); setSaid(h1?.textContent || d.title); }, 60);
+    return () => clearTimeout(t);
+  }, [route, role]);   // eslint-disable-line react-hooks/exhaustive-deps
+
+  const home = homeOf(role);
+  let body: ReactNode;
+  if (d.kind === 'missing') body = <NotFound hash={hash} home={home} />;
+  else if (!d.allowed) body = <AccessPage role={role} title={d.title} purpose={d.purpose} who={d.who} home={home} onRole={(r) => switchTo(r)} onViewAs={() => setSheet(true)} />;
+  else if (d.kind === 'page') body = <PageHost key={d.at.page.id} at={d.at} role={role} hash={route} />;
+  else body = <Boundary hash={route} area={d.area} />;
+
   return (
-    <div className="demo">
-      <AppShell products={products} edition="Living Campus" identity={{ name: 'Demonstration', role: as, organization: 'synthetic estate', mode: 'demonstration' }}
-        actions={<label className="persp">Perspective <select value={as} onChange={(e) => setAs(e.target.value)} aria-describedby="persp-note">{PERSPECTIVES.map((p) => <option key={p} value={p}>{p}</option>)}</select></label>}
-        note={<><Tag tone="warn">DEMONSTRATION · SYNTHETIC DATA</Tag> <span id="persp-note">A perspective changes what the demonstration shows; it grants nothing. Real access is decided by the authenticated application's server.</span></>}>
-        <TourPanel hash={hash} onPerspective={setAs} />
-        <div className="wrap">{home ? <Landing /> : opsPage(hash, as) || page(areaKey(hash), hash, as) || <Boundary hash={hash} area={area} />}</div>
-      </AppShell>
-      <footer className="foot">Every person, organisation, room, device, figure and approval here is invented. Nothing is connected to a real system; the only way out is Empathia's enquiry form, which opens on {ENQUIRY.host}. <a href="#/investor">Back to the start</a><ContactLinks /></footer>
-    </div>
+    <ViewAsContext.Provider value={{ switchTo: (r) => switchTo(r), open: () => setSheet(true) }}>
+      <div className="demo" data-r={role}>
+        <Shell role={role} hash={route} at={d.kind === 'page' ? d.at : null} onViewAs={() => setSheet(true)} onRole={(r) => switchTo(r)}
+          note={<><Tag tone="warn">DEMONSTRATION · SYNTHETIC DATA</Tag> <span id="persp-note">A perspective changes what the demonstration shows; it grants nothing.<span className="note__more"> Real access is decided by the authenticated application's server.</span></span></>}>
+          <TourPanel hash={hash} onPerspective={(p) => { if (ROLE_KEYS.includes(p as RoleKey)) switchTo(p as RoleKey, { tour: true }); }} />
+          <div className="wrap">{body}</div>
+        </Shell>
+        <ViewAsSheet open={sheet} role={role} onPick={(r) => switchTo(r)} onClose={() => setSheet(false)} />
+        <RoleVeil show={veil} />
+        <p id="route-announcer" className="ui-sr" aria-live="polite" aria-atomic="true">{said}</p>
+        <footer className="foot">Every person, organisation, room, device, figure and approval here is invented. Nothing is connected to a real system; the only way out is Empathia's enquiry form, which opens on {ENQUIRY.host}. <a href="#/investor">Back to the start</a><ContactLinks /></footer>
+      </div>
+    </ViewAsContext.Provider>
   );
 }
-/** The native pages of this demonstration, by legacy area key (everything else is a boundary page that states its migration status). */
-function page(key: string, hash: string, as: string): React.ReactNode {
-  switch (key) {
-    case 'v25.build': return <BuildRoom perspective={as} />;
-    case 'search': case 'search.graph': return <SearchPartyDemo hash={hash} />;
-    case 'v25.service': case 'service': case 'servicehands': return <ServicePage perspective={as} hash={hash} />;
-    case 'v25.apex': return <ApexPage perspective={as} hash={hash} />;
-    case 'v25.learn': case 'learn': return <LearnPage perspective={as} hash={hash} />;
-    case 'v25.home': case 'home': return <MissionControl perspective={as} />;
-    case 'v25.exec': case 'pro.exec': return <ExecPage perspective={as} />;
-    case 'v25.ledger': case 'ledger': return <LedgerPage perspective={as} policy={false} />;
-    case 'v25.policy': return <LedgerPage perspective={as} policy />;
-    case 'v25.fi': case 'fabric': return <FieldIntelligencePage perspective={as} pv={false} hash={hash} />;
-    case 'v25.fipv': return <FieldIntelligencePage perspective={as} pv hash={hash} />;
-    default: return null;
-  }
+
+const loaded = new Map<string, ComponentType<PageProps>>();
+/** Loads the page's chunk (once per page), with a visible loading state and a retry when the network or the chunk fails. */
+function PageHost({ at, role, hash }: { at: Resolved; role: RoleKey; hash: string }) {
+  const [C, setC] = useState<ComponentType<PageProps> | null>(() => loaded.get(at.page.id) ?? null);
+  const [err, setErr] = useState<string | null>(null); const [n, setN] = useState(0);
+  useEffect(() => {
+    if (C) return; let live = true; setErr(null);
+    at.page.load().then((m) => { if (!live) return; loaded.set(at.page.id, m.default); setC(() => m.default); }).catch((e: unknown) => { if (live) setErr(e instanceof Error ? e.message : String(e)); });
+    return () => { live = false; };
+  }, [at.page.id, n]);   // eslint-disable-line react-hooks/exhaustive-deps
+  if (err) return <section className="loadfail" role="alert"><h1 tabIndex={-1}>{at.page.title} did not load</h1><p>The page's code could not be fetched — the connection may have dropped. Nothing was changed.</p><Button kind="primary" onClick={() => setN(n + 1)}>Try again</Button></section>;
+  if (!C) return <Loading label={`Loading ${at.page.title}`} />;
+  const props: PageProps = { role, hash, params: at.params, query: at.query, can: (id) => canDo(role, at, id), sees: (id) => canSee(role, at, id) };
+  return <AccessProvider role={role} at={at}><PageBoundary title={at.page.title}><C {...props} /></PageBoundary></AccessProvider>;
 }
-function Landing() {
-  return (
-    <>
-      <section className="hero">
-        <p className="kicker">Investor demonstration · release in migration</p>
-        <h1>Every state here has a guard, an actor and an event behind it.</h1>
-        <p className="lead">Declared is not verified; modeled is not measured — and the product says so itself. Three ways in:</p>
-        <div className="start">
-          <a className="go launch" href="#/v25/build"><b>Launch interactive room builder</b><span>Design a room and watch it reach drawings, commissioning, Search Party and Pro.</span></a>
-          <a className="go" href="#/tours/investor"><b>Watch a guided scenario</b><span>Seven scenarios · about 14 minutes</span></a>
-          <a className="go" href="#problems"><b>What each workflow solves</b><span>The customer problem behind each scenario</span></a>
-        </div>
-      </section>
-      <section id="problems" className="scen">
-        <h2>Seven scenarios</h2>
-        <ol>{SCENARIOS.map(([t, p], i) => <li key={t}><a href={`#/tours/investor?scenario=${i + 1}`}><b>{i + 1} · {t}</b></a><p><i>The problem</i> {p}</p></li>)}</ol>
-      </section>
-      <WorkWith />
-      <section className="status">
-        <h2>Migration status</h2>
-        <p>This demonstration is being rebuilt as modular pages from the Living Campus V2.5.3 source, one area at a time. {AREAS.filter((a) => NATIVE.has(a.key)).length} of {AREAS.length} addresses (86 areas and 19 V2.5 pages) are native today; the rest state their status when opened (see the parity ledger in the repository).</p>
-      </section>
-    </>
-  );
+class PageBoundary extends Component<{ title: string; children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  render() { return this.state.failed ? <section className="loadfail" role="alert"><h1 tabIndex={-1}>{this.props.title} stopped</h1><p>Something on this page failed. The rest of the demonstration still works.</p><a className="ui-btn" href="#/investor">Back to the start</a></section> : this.props.children; }
 }
-function Boundary({ hash, area }: { hash: string; area?: { key: string; label: string; target: string; status: string; newRoute: string } }) {
-  if (!area) return <Notice tone="warn"><b>Unknown address.</b> This address is not part of the Living Campus. <a href="#/investor">Back to the start</a></Notice>;
+
+function Boundary({ hash, area }: { hash: string; area: { key: string; label: string; target: string; status: string; newRoute: string } }) {
+  const done = area.status.startsWith('DONE');
   return (
     <section className="boundary">
       <h1>{area.label}</h1>
       <p className="ui-muted">Address <code>{hash}</code> · legacy area <code>{area.key}</code></p>
-      <Notice tone={area.status.startsWith('DONE') ? 'ok' : 'info'}>
-        <b>{area.status.startsWith('DONE') ? 'Native page. ' : 'Not migrated yet. '}</b>{area.status.startsWith('DONE') ? <>This area runs natively; its page is being connected to this shell.</> : <>This part of the demonstration has not been rebuilt in the new application yet. Parity ledger: target <b>{area.target}</b>, status <b>{area.status}</b>, planned route <code>{area.newRoute}</code>. Until it is, the original V2.5.3 demonstration remains the reference for this area.</>}
+      <Notice tone={done ? 'ok' : 'info'}>
+        <b>{done ? 'Native page. ' : 'Not migrated yet. '}</b>{done ? <>This area runs natively; its page is being connected to this shell.</> : <>This part of the demonstration has not been rebuilt in the new application yet. Parity ledger: target <b>{area.target}</b>, status <b>{area.status}</b>, planned route <code>{area.newRoute}</code>. Until it is, the original V2.5.3 demonstration remains the reference for this area.</>}
       </Notice>
       <p><a className="ui-btn" href="#/investor">Back to the start</a></p>
     </section>
   );
 }
+export default React.memo(App);

@@ -32,12 +32,12 @@ if (process.argv.includes('--generate-only')) process.exit(0);
 // the SIGNAL library ships beside the bundle and is fetched on demand by Learn (2 MB; never inlined)
 fs.mkdirSync(dist, { recursive: true }); fs.copyFileSync(path.join(repo, 'packages/domain-data/data/SIGNAL_LIB.json'), path.join(dist, 'signal-lib.json'));
 await esbuild.build({
-  // ES modules with code splitting: each operational workspace (src/ops-routes.tsx) is its own chunk under dist/chunks/, loaded when its
-  // address is opened; a chunk that fails to load shows a named alert with Try again (src/hardening/lazy.tsx), never a blank page
-  // the workspaces are entries with stable names (ws/<name>.js) so a failed load can be retried at a fresh URL (?retry=n): a browser keeps a
-  // failed module fetch for the life of the page, so importing the same URL again would fail without asking the network
+  // ES modules with code splitting: every page registered with a lazy `load` is its own chunk, fetched only when the role may open it
+  // (D44: a forbidden address never downloads its screen). The entry stays demo.js; pages land in chunks/.
+  // The operational workspaces (src/hardening/opsRoutes.tsx) are entries with stable names (ws/<name>.js) so a failed load can be retried
+  // at a fresh URL (?retry=n): a browser keeps a failed module fetch for the life of the page, so the same URL would fail without asking.
   entryPoints: { demo: path.join(app, 'src/main.tsx'), ...Object.fromEntries(Object.entries(WORKSPACES).map(([k, f]) => [`ws/${k}`, path.join(app, 'src', f)])) }, bundle: true, minify: !dev, sourcemap: 'external', format: 'esm', splitting: true, target: ['es2022'], jsx: 'automatic',
-  outdir: dist, chunkNames: 'chunks/[name]-[hash]', define: { 'process.env.NODE_ENV': dev ? '"development"' : '"production"', 'process.env.EMPATHIA_WEBSITE_URL': JSON.stringify(website), 'process.env.DEMO_BUILD_ID': JSON.stringify(buildId) }, legalComments: 'linked', logLevel: 'warning',
+  outdir: dist, entryNames: '[dir]/[name]', chunkNames: 'chunks/[name]-[hash]', define: { 'process.env.NODE_ENV': dev ? '"development"' : '"production"', 'process.env.EMPATHIA_WEBSITE_URL': JSON.stringify(website), 'process.env.DEMO_BUILD_ID': JSON.stringify(buildId) }, legalComments: 'linked', logLevel: 'warning',
   alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') },
 });
 
@@ -45,10 +45,15 @@ await esbuild.build({
 { const maps = path.join(repo, '.local/sourcemaps', path.basename(app)); fs.mkdirSync(maps, { recursive: true });
   const walk = (d) => fs.readdirSync(d).flatMap((f) => { const p = path.join(d, f); return fs.statSync(p).isDirectory() ? walk(p) : [p]; });
   for (const f of walk(dist).filter((f) => f.endsWith('.map'))) fs.renameSync(f, path.join(maps, path.basename(f))); }
-const css = [path.join(repo, 'packages/design-tokens/dist/tokens.css'), path.join(repo, 'packages/ui/src/ui.css'), path.join(app, 'src/styles/demo.css'), path.join(app, 'src/hardening/ops.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`).join('\n');
+const css = [path.join(repo, 'packages/design-tokens/dist/fonts.css'), path.join(repo, 'packages/design-tokens/dist/tokens.css'), path.join(repo, 'packages/ui/src/ui.css'), path.join(app, 'src/styles/demo.css'), path.join(app, 'src/styles/shell.css'), path.join(app, 'src/hardening/ops.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`).join('\n');
 fs.writeFileSync(path.join(dist, 'demo.css'), css);
 fs.copyFileSync(path.join(app, 'src/index.html'), path.join(dist, 'index.html'));
-const files = (function list(d, pre = '') { return fs.readdirSync(d).flatMap((f) => fs.statSync(path.join(d, f)).isDirectory() ? list(path.join(d, f), `${pre}${f}/`) : [`${pre}${f}`]); })(dist);
+// the theme is applied before first paint by a tiny same-origin script (the CSP forbids inline scripts); the brand marks ship as files
+fs.copyFileSync(path.join(app, 'src/theme-boot.js'), path.join(dist, 'theme-boot.js'));
+fs.cpSync(path.join(repo, 'packages/design-tokens/dist/fonts'), path.join(dist, 'fonts'), { recursive: true });   // self-hosted Inter (fonts.css urls)
+fs.mkdirSync(path.join(dist, 'brand'), { recursive: true });
+for (const f of ['emblem-small.svg', 'owl.svg']) fs.copyFileSync(path.join(repo, 'packages/design-tokens/brand', f), path.join(dist, 'brand', f));
+const files = (function walk(d, pre = '') { return fs.readdirSync(d).flatMap((f) => fs.statSync(path.join(d, f)).isDirectory() ? walk(path.join(d, f), `${pre}${f}/`) : [`${pre}${f}`]); })(dist);
 const manifest = { app: '@empathia/demo', builtAt: new Date().toISOString(), files: Object.fromEntries(files.map((f) => [f, { bytes: fs.statSync(path.join(dist, f)).size, sha256: crypto.createHash('sha256').update(fs.readFileSync(path.join(dist, f))).digest('hex') }])) };
 fs.writeFileSync(path.join(dist, 'BUILD_MANIFEST.json'), JSON.stringify(manifest, null, 2));
 console.log(`demo built: ${files.map((f) => `${f} ${(manifest.files[f].bytes / 1024).toFixed(0)} KiB`).join(', ')}`);

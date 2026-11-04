@@ -10,8 +10,9 @@
  *   #/learn/labs, #/learn/labs/<lab>                  Learn labs: Audio, Camera and Lighting labs and the SIGNAL fault labs
  *   #/hardening                                       Resilience: how a workspace that fails to load or to draw is handled
  */
-import type { ReactNode } from 'react';
-import { lazyWorkspace } from './lazy.js';
+import type { ReactElement, ReactNode } from 'react';
+type ComponentType<P> = (props: P) => ReactElement | null;
+import { lazyWorkspace, type WorkspaceProps } from './lazy.js';
 import { opsPath } from './path.js';
 export { opsPath };
 
@@ -39,6 +40,12 @@ export const OPS_WORKSPACES: Array<{ name: string; href: string; purpose: string
 ];
 
 
+/** A registry `load` for an operational workspace: resolves at once to a component that fetches the workspace's own file (only when
+ * the shell has admitted the role at that address), with the named failure alert and the fresh-URL retry of lazy.tsx. */
+const LAZY: Record<string, ComponentType<WorkspaceProps>> = { dispatch: Dispatch, servicehands: ServiceHands, replay: Replay, fiscan: FiScan, decisions: Decisions, labs: Labs, resilience: Resilience };
+export const opsLoad = (name: keyof typeof LAZY) => () => Promise.resolve({ default: (p: { role: string; hash: string }) => { const C = LAZY[name]!; return <C perspective={p.role} hash={p.hash} />; } });
+
+/** Before the page registry existed, App.tsx asked this first; kept for addresses outside the registry (none today). */
 export function opsPage(hash: string, perspective: string): ReactNode | null {
   const p = opsPath(hash); const props = { perspective, hash };
   if ((p[0] === 'service' && (!p[1] || ['coverage', 'board', 'queue'].includes(p[1]))) || p[0] === 'dispatch') return <Dispatch {...props} />;

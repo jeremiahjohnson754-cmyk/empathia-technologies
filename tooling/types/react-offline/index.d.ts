@@ -24,6 +24,10 @@ declare module 'react' {
   export const Fragment: (props: { children?: ReactNode }) => ReactElement;
   export const StrictMode: (props: { children?: ReactNode }) => ReactElement;
   export type FC<P = {}> = (props: P) => ReactElement | null;
+  /** the demo's page registry (apps/demo/src/registry.types.ts) and its adapters */
+  export type ComponentType<P = {}> = ((props: P) => ReactElement | null) | (new (props: P) => Component<P, unknown>);
+  export function createElement<P>(type: ComponentType<P> | string, props?: P | null, ...children: ReactNode[]): ReactElement;
+  export function memo<T>(c: T): T;
   /** Class components exist only for error boundaries (apps/enterprise-web/src/components/ErrorBoundary.tsx); hooks cannot catch render errors. */
   export class Component<P = {}, S = {}> {
     constructor(props: P);
