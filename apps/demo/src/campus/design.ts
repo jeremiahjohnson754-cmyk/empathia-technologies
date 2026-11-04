@@ -14,7 +14,7 @@ import {
   verifyBlockers, resultCounts, type RoomAnalysis,
 } from '@empathia/commissioning-engine';
 import type { RoomDesignInput, PlannedDevice, Connection, RecordedResult, RoomLifecycle, ApplicabilityRow, DesignFinding } from '@empathia/domain-types';
-import { ROOMS, TEMPLATE_FOR, ARCHETYPE_NAME, REFERENCE_ROOM_ID, roomById, seeded, type RoomOutline } from './canon.js';
+import { ROOMS, CAMPUS_ROOMS, TEMPLATE_FOR, ARCHETYPE_NAME, REFERENCE_ROOM_ID, roomById, seeded, type RoomOutline } from './canon.js';
 
 export const C = defaultCatalog;
 /** The demonstration's fixed "now": every generated date is relative to it, so the record never changes between visits. */
@@ -116,10 +116,12 @@ export function roomRecord(id: string): RoomRecord | null {
   const r = build(o); cache.set(id, r); return r;
 }
 export const allRecords = (): RoomRecord[] => ROOMS.map((o) => roomRecord(o.id)!);
+/** All 45 rooms of the plan (the thirty, then rooms 31–45), generated lazily the same way. */
+export const campusRecords = (): RoomRecord[] => CAMPUS_ROOMS.map((o) => roomRecord(o.id)!);
 
 function build(o: RoomOutline): RoomRecord {
   const rng = seeded(o.id);
-  const t = TEMPLATE_FOR[o.archetype] || { template: 'custom' };
+  const t = o.template || TEMPLATE_FOR[o.archetype] || { template: 'custom' };
   const [w, l, h] = o.dims;
   const points = outlineFor('rect', w, l);
   const geoProv = o.kind === 'reference' ? 'DECLARED' : 'MODELED';
@@ -220,7 +222,7 @@ function build(o: RoomOutline): RoomRecord {
 }
 
 /** Each room's physical assets get their own block of codes, so codes never collide across rooms. */
-function assetBase(id: string): number { if (id === REFERENCE_ROOM_ID) return 101; const i = ROOMS.findIndex((r) => r.id === id); return 1000 + i * 50; }
+function assetBase(id: string): number { if (id === REFERENCE_ROOM_ID) return 101; const i = CAMPUS_ROOMS.findIndex((r) => r.id === id); return 1000 + i * 50; }
 
 function recordAs(row: ApplicabilityRow, state: 'PASS' | 'FAIL', d: RoomDesignInput, days: number): RecordedResult | null {
   const persona = (row.personas || []).find((p) => p !== 'architect') || 'cxeng';
