@@ -53,7 +53,7 @@ await suite('demo-dispatch', 4481, async ({ ok, open, goto, over, text, smallTar
       await page.goBack(); await page.waitForTimeout(200);
       ok('DX-18', 'the browser Back button returns to the previous view', (await page.locator('[data-testid=list]').count()) === 1, page.url());
       // read-only perspective: no assign controls
-      await goto(page, '#/service?id=ISS-0421', 'employee'); await page.waitForTimeout(150);
+      await goto(page, '#/service?id=ISS-0421', 'ops');   // may open the board (V2.5.3 area service) but holds no service.triage/assign await page.waitForTimeout(150);
       // changed with the shell's D44 contract (README-routes.md): no refusal message either, so the check is that nothing to act on is shown
       ok('DX-19', 'a perspective without the authority sees no triage, assign or reassign controls and no refusal message (D44)', (await page.locator('[data-testid=assign], [data-testid=triage], [data-testid=reassign], [data-testid=matching]').count()) === 0 && !/Refused|not your|does not hold/i.test(await text(page)));
       // keyboard: cards are buttons reachable by Tab, activated by Enter

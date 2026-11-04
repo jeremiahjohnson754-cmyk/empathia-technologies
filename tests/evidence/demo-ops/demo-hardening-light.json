@@ -1,5 +1,5 @@
 {
- "at": "2026-11-04T01:20:43.864Z",
+ "at": "2026-11-04T01:32:37.327Z",
  "scheme": "light",
  "pass": 38,
  "fail": 0,
@@ -63,7 +63,7 @@
    "id": "HZ-03",
    "name": "Try again (by keyboard) fetches the workspace again at a fresh URL and it opens",
    "result": "PASS",
-   "detail": "[\"http://127.0.0.1:4487/ws/decisions.js?v=5efd8eded1\",\"http://127.0.0.1:4487/ws/decisions.js?v=5efd8eded1&retry=1\"]"
+   "detail": "[\"http://127.0.0.1:4487/ws/decisions.js?v=cf0d061533\",\"http://127.0.0.1:4487/ws/decisions.js?v=cf0d061533&retry=1\"]"
   },
   {
    "id": "HZ-04",

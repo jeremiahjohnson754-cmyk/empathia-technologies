@@ -1,15 +1,81 @@
 {
- "at": "2026-11-04T01:30:58.611Z",
+ "at": "2026-11-04T01:50:34.421Z",
  "scheme": "light",
- "pass": 0,
- "fail": 1,
- "tests": 1,
+ "pass": 10,
+ "fail": 2,
+ "tests": 12,
  "results": [
+  {
+   "id": "LL-desktop-01",
+   "name": "the labs page lists three instrument labs and every SIGNAL lab, and says passing is competency evidence",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "LL-desktop-02",
+   "name": "no sideways scroll",
+   "result": "PASS",
+   "detail": "0"
+  },
+  {
+   "id": "LL-04",
+   "name": "the list filters by kind of lab",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "LL-05",
+   "name": "nothing plays until a source is pressed",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "LL-06",
+   "name": "pressing a source processes it live: the output meter reads a level",
+   "result": "PASS",
+   "detail": "Output RMS -1.1 dBFS · peak 7.1 dBFS · limiter -3.5 dB"
+  },
+  {
+   "id": "LL-07",
+   "name": "testing before the fix is recorded as an attempt, not a pass",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "LL-08",
+   "name": "with the fix every check of the Audio Lab passes",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "LL-09",
+   "name": "the pass is recorded as competency evidence",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "LL-10",
+   "name": "the Camera Lab fault is fixable to every check (no banding, blur, exposure, gain, white balance)",
+   "result": "PASS",
+   "detail": "No banding under 60 Hz lighting (shutter in step with the mains) now 1/120 s\nMotion blur on the moving hand under 3 px now 1.6 px\nExposure within ±0.5 EV of correct now +0.0 EV\nGain at or under 12 dB (noise stays out of faces) now 6 dB\nWhite balance within 300 K of the room (4000 K) now 4000 K\nShutter at least as fast as the frame rate now 1/120 s at 30 fps"
+  },
+  {
+   "id": "LL-11",
+   "name": "the Lighting Lab fault is fixable to every check (face level, key-to-fill, one colour, spill)",
+   "result": "PASS",
+   "detail": "Face lit to 500–800 lux (vertical) now 617 lux\nKey-to-fill ratio between 1.5 and 3 (shape without hard shadows) now 2.1\nFixtures within 300 K of each other (one colour on the face) now 0 K apart\nSpill on the display behind under 150 lux now 103 lux"
+  },
+  {
+   "id": "LL-12",
+   "name": "a signal-flow lab starts with its targets failing",
+   "result": "FAIL",
+   "detail": ""
+  },
   {
    "id": "learn-labs-crash",
    "name": "the suite ran to the end",
    "result": "FAIL",
-   "detail": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:4488/#/learn/labs\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:4488/#/learn/labs\", waiting until \"load\"\u001b[22m\n\n    at goto (/home/claude/empathia-technologies/.claude/worktrees/agent-a22781dca118c462d/tests/browser/demo-ops-harness.mjs:30:16)\n    at async file:///home/claude/empathia-technologies/.claude/worktrees/agent-a22781dca118c46"
+   "detail": "page.selectOption: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=sf-from]')\u001b[22m\n\u001b[2m    - locator resolved to <select data-testid=\"sf-from\">…</select>\u001b[22m\n\u001b[2m  - attempting select option action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible and enabled\u001b[22m\n\u001b[2m      - did not find some options\u001b[22m\n\u001b[2m    - retrying select option action\u001b[22m\n\u001b[2m    - waiti"
   }
  ]
 }

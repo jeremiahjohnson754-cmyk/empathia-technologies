@@ -9,7 +9,7 @@ import { suite } from './demo-ops-harness.mjs';
 await suite('demo-servicehands', 4482, async ({ ok, open, goto, over, text, smallTargets, clearState, VIEWPORTS }) => {
   for (const [w, hgt, tag] of VIEWPORTS) {
     const { ctx, page, errs, ext } = await open(w, hgt);
-    await goto(page, '#/servicehands', 'employee'); await clearState(page); await page.reload(); await page.waitForSelector('[data-testid=servicehands]');
+    await goto(page, '#/servicehands', 'service');   // the shell admits /servicehands to V2.5.3's servicehands roles; /servicehands/new to every staff role await clearState(page); await page.reload(); await page.waitForSelector('[data-testid=servicehands]');
     ok(`SH-${tag}-01`, 'ServiceHands opens with its twelve stages and the job list; no sideways scroll', (await page.locator('.ops-strip li').count()) === 12 && (await page.locator('[data-testid=jobs] li').count()) >= 5 && (await over(page)) <= 0, await over(page));
     await goto(page, '#/servicehands/new', 'employee');
     await page.click('[data-testid=in-submit]'); await page.waitForTimeout(100);

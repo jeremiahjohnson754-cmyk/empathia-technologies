@@ -1,8 +1,8 @@
 {
- "at": "2026-11-04T01:28:38.265Z",
+ "at": "2026-11-04T01:38:58.366Z",
  "scheme": "light",
- "pass": 24,
- "fail": 1,
+ "pass": 25,
+ "fail": 0,
  "tests": 25,
  "results": [
   {
@@ -38,7 +38,7 @@
   {
    "id": "DC-07",
    "name": "rejecting asks for the project id to be typed and says it cannot be undone",
-   "result": "FAIL",
+   "result": "PASS",
    "detail": "Reject Northstar Town Hall audio?\n\nThe project is rejected at scope revision 1 with your reason: “Out of scope for this financial year”.\n\nThis cannot be undone. A rejection is history; the project ret"
   },
   {

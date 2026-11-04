@@ -40,8 +40,8 @@ await suite('learn-labs', 4488, async ({ ok, open, goto, over, text, smallTarget
       // a signal-flow lab
       await goto(page, '#/learn/labs/LAB-SF-01', 'service'); await page.waitForSelector('[data-testid=signal-lab]');
       ok('LL-12', 'a signal-flow lab starts with its targets failing', (await page.locator('[data-testid=sf-targets] .ops-fail').count()) === 2);
-      await page.selectOption('[data-testid=sf-from]', 'room'); await page.selectOption('[data-testid=sf-to]', 'main'); await page.click('[data-testid=sf-patch]');
-      ok('LL-13', 'a backward patch (output → bus) is refused with the reason', /signal runs from sources/.test(await text(page)));
+      await page.selectOption('[data-testid=sf-from]', 'main'); await page.selectOption('[data-testid=sf-to]', 'pp'); await page.click('[data-testid=sf-patch]');
+      ok('LL-13', 'a backward patch (bus → processor) is refused with the reason', /signal runs from sources/.test(await text(page)));
       for (const f of ['pp', 'lp', 'bp']) { await page.selectOption('[data-testid=sf-from]', f); await page.selectOption('[data-testid=sf-to]', 'strm'); await page.click('[data-testid=sf-patch]'); }
       await page.fill('[data-testid=sf-gain-pp]', '32'); await page.fill('[data-testid=sf-math-0]', '32'); await page.fill('[data-testid=sf-math-1]', '-13.2');
       ok('LL-14', 'patching the three sources into the stream bus, setting the preamp and doing the math meets every target', !(await page.locator('[data-testid=sf-targets] .ops-fail').count()) && /Right\./.test(await text(page)));

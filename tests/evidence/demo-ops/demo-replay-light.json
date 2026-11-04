@@ -1,15 +1,171 @@
 {
- "at": "2026-11-04T01:30:56.167Z",
+ "at": "2026-11-04T01:42:32.787Z",
  "scheme": "light",
- "pass": 0,
- "fail": 1,
- "tests": 1,
+ "pass": 22,
+ "fail": 5,
+ "tests": 27,
  "results": [
   {
-   "id": "demo-replay-crash",
-   "name": "the suite ran to the end",
+   "id": "RP-desktop-01",
+   "name": "the replay home offers every room",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "RP-desktop-02",
+   "name": "playing, stepping and scrubbing (keyboard too) never write the workspace and add no history entries",
+   "result": "PASS",
+   "detail": "true 3->3"
+  },
+  {
+   "id": "RP-desktop-03",
+   "name": "the position is kept in the address, so a reload resumes at the same stage",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "RP-desktop-04",
+   "name": "after a reload the same stage is shown",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "RP-06",
+   "name": "the replacement stage names AS-0097 → AS-0112 at PA-0007 and lists the reopened tests, as many as it says",
    "result": "FAIL",
-   "detail": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:4484/#/replay\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:4484/#/replay\", waiting until \"load\"\u001b[22m\n\n    at goto (/home/claude/empathia-technologies/.claude/worktrees/agent-a22781dca118c462d/tests/browser/demo-ops-harness.mjs:30:16)\n    at async file:///home/claude/empathia-technologies/.claude/worktrees/agent-a22781dca118c462d/tests"
+   "detail": "Issue · 2026-09-20\nISS-0380: Echo reported on a board call\n\nRecorded\n\nAn earlier echo report in the same room, closed after a DSP re-tune. State CLOSED.\n\nBaseline in force: v1\n\nRecords: ISS-0380"
+  },
+  {
+   "id": "RP-07",
+   "name": "each stage says how sure it is",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "RP-08",
+   "name": "reverification says earlier PASS_VERIFIED results on the removed unit never count",
+   "result": "FAIL",
+   "detail": ""
+  },
+  {
+   "id": "RP-09",
+   "name": "EXC-4218-01 is shown as proposed, pending approval — never as acceptance",
+   "result": "FAIL",
+   "detail": ""
+  },
+  {
+   "id": "RP-10",
+   "name": "time layers compare two stages: the asset at PA-0007 and the baseline version change",
+   "result": "PASS",
+   "detail": "PA-0007: AS-0097 → AS-0112\nbaseline v— → v2"
+  },
+  {
+   "id": "RP-11",
+   "name": "the replay can be read as text",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "RP-12",
+   "name": "applying a scenario asks for the room id to be typed",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "RP-13",
+   "name": "the scenario opens a triaged ServiceHands job with a camera-replacement work order, and records it",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "RP-14",
+   "name": "Undo takes the scenario back",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "RP-15",
+   "name": "a room with a lighter history says its early life is not held, and offers no scenario control to a perspective without the authority",
+   "result": "FAIL",
+   "detail": ""
+  },
+  {
+   "id": "RP-16",
+   "name": "an unknown room says so with a way back",
+   "result": "FAIL",
+   "detail": ""
+  },
+  {
+   "id": "RP-desktop-99",
+   "name": "no page error, no console error, no request leaves the page",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "RP-tablet-01",
+   "name": "the replay home offers every room",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "RP-tablet-02",
+   "name": "playing, stepping and scrubbing (keyboard too) never write the workspace and add no history entries",
+   "result": "PASS",
+   "detail": "true 3->3"
+  },
+  {
+   "id": "RP-tablet-03",
+   "name": "the position is kept in the address, so a reload resumes at the same stage",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "RP-tablet-04",
+   "name": "after a reload the same stage is shown",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "RP-tablet-99",
+   "name": "no page error, no console error, no request leaves the page",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "RP-phone-01",
+   "name": "the replay home offers every room",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "RP-phone-02",
+   "name": "playing, stepping and scrubbing (keyboard too) never write the workspace and add no history entries",
+   "result": "PASS",
+   "detail": "true 3->3"
+  },
+  {
+   "id": "RP-phone-03",
+   "name": "the position is kept in the address, so a reload resumes at the same stage",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "RP-phone-04",
+   "name": "after a reload the same stage is shown",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "RP-phone-05",
+   "name": "every replay control is at least 44 px tall on a phone",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "RP-phone-99",
+   "name": "no page error, no console error, no request leaves the page",
+   "result": "PASS",
+   "detail": ""
   }
  ]
 }

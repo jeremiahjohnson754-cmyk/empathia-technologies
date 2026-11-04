@@ -31,6 +31,8 @@ export default function FiScan({ perspective, hash }: WorkspaceProps) {
   const mode = param(hash, 'mode') === 'audit' ? 'audit' : 'observe';
   const [step, setStep] = useState(() => Math.max(0, Math.min(MAX_STEP, Number(param(hash, 'step')) || 0)));
   const [playing, setPlaying] = useState(false);
+  // a link to another room or step while this workspace stays mounted (the shell keeps one instance per page) re-reads the address
+  useEffect(() => { setPlaying(false); setStep(Math.max(0, Math.min(MAX_STEP, Number(param(hash, 'step')) || 0))); }, [id, param(hash, 'step')]);   // eslint-disable-line react-hooks/exhaustive-deps
   const findings = useMemo(() => (room ? findingsOf(room.id) : []), [room]);
   const actions = useMemo(() => (room ? actionsOf(room) : []), [room]);
   const set = (n: number) => { const k = Math.max(0, Math.min(MAX_STEP, n)); setStep(k); try { history.replaceState(null, '', `#/v25/fi/scan/${id}?mode=${mode}&step=${k}`); } catch { /* keep going */ } };

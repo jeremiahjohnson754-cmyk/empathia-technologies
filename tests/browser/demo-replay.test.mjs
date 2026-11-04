@@ -44,9 +44,9 @@ await suite('demo-replay', 4484, async ({ ok, open, goto, over, text, smallTarge
       await page.click('[data-testid=undo]'); await page.waitForTimeout(100);
       const ws2 = await page.evaluate(() => JSON.parse(localStorage.getItem('empathia.demo.workspace.v1')));
       ok('RP-14', 'Undo takes the scenario back', !ws2.incidents.some((i) => /Replace the front camera/.test(i.title)));
-      await goto(page, '#/replay/R-ATL-4-220', 'employee');
+      await goto(page, '#/replay/R-ATL-4-220', 'designer');   // may open Core Replay (V2.5.3 area), holds no service.triage
       ok('RP-15', 'a room with a lighter history says its early life is not held, and offers no scenario control to a perspective without the authority', /Not held/.test(await text(page)) && (await page.locator('[data-testid=rp-apply]').count()) === 0);
-      await goto(page, '#/replay/R-NOPE', 'employee');
+      await goto(page, '#/replay/R-NOPE', 'designer');
       ok('RP-16', 'an unknown room says so with a way back', /Room not found/.test(await text(page)));
     }
     ok(`RP-${tag}-99`, 'no page error, no console error, no request leaves the page', !errs.length && !ext.length, [...errs, ...ext].slice(0, 3).join(' | '));
