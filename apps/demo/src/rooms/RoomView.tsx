@@ -60,6 +60,9 @@ export function RoomView({ id, hash, sees = () => true, opens = () => true, base
     { href: `#/servicehands/new?room=${o.id}`, label: 'Report a problem', icon: 'plus' },
   ].filter((a) => opens(a.href.split('?')[0]!));
   const stages = spine(r, w);
+  // the recorded stories Core Replay plays for this room: a unit replaced after acceptance; an incident that came back after its repair
+  const stories = [...moves(r).filter((m) => m.kind === 'unit').map((m) => `${m.title.replace(' unit replaced', '')}, replaced after acceptance`),
+    ...(w?.incidents || []).filter((i) => i.roomId === o.id && i.recurrenceOf).map((i) => `${i.title.split(' ').slice(0, 3).join(' ')}: a repair, and its return (${i.recurrenceOf} → ${i.id})`)];
   const doneN = stages.filter((s) => s.state === 'DONE').length;
   return (
     <section className="room" data-native="" data-testid="room-view" data-room={o.id}>
@@ -80,8 +83,10 @@ export function RoomView({ id, hash, sees = () => true, opens = () => true, base
           <Chip tone={o.kind === 'reference' ? 'accent' : 'muted'}>Record: {o.kind === 'reference' ? 'reference room' : o.kind === 'earlier' ? 'earlier record' : 'modelled from archetype'}</Chip>
           <span className="ui-meta mono">{o.id}</span>
         </div>
+        <div className="room__cfg"><Chip tone="warn">Synthetic configuration</Chip><Chip tone="muted">Simulated adapters · no live telemetry</Chip><Chip tone="muted">Device classes only · no make, model or serial invented</Chip></div>
         {acts.length > 0 && <div className="room__acts" data-testid="room-actions">{acts.map((a) => <a key={a.label} href={a.href} className={`ui-btn${a.primary ? ' ui-btn--primary' : ''}`}><Icon name={a.icon} /> {a.label}</a>)}</div>}
       </header>
+      {stories.length > 0 && <div className="replay" data-testid="replay-card"><b><Icon name="clock" /> Core Replay</b><span className="ui-meta">This room’s recorded history, played back read-only:</span>{stories.map((s) => <Chip key={s} tone="accent" href={opens('#/replay') ? `#/replay/${o.id}` : undefined}>{s}</Chip>)}</div>}
       <div className="tiles" data-testid="room-tiles">
         <StatTile label="Health" value={h.score ?? '—'} unit={h.score == null ? undefined : '/100'} sub={h.score == null ? 'not scored: no test result on record' : `${BAND_LABEL[h.band]} · ${plural(iss.length, 'open issue')}`} tone={h.band} icon="heart" testId="tile-health" />
         <StatTile label="Devices" value={hw.length} sub={`${plural(r.connections.length, 'connection')} · identity ${hw.length ? 'UNKNOWN until verified' : '—'}`} icon="device" testId="tile-devices" />
@@ -157,11 +162,18 @@ function RoomSummary({ r, setSel }: { r: RoomRecord; setSel: (c: string) => void
   const shown = all ? hw : hw.slice(0, 6);
   return (
     <div className="stack">
-      <div className="room__devhead"><h2 className="build__h">Devices</h2><span className="ui-meta">{hw.length} in the room</span></div>
+      <p className="kicker">The room</p>
+      <h2 className="build__h">{hw.length} position{hw.length === 1 ? '' : 's'}, {new Set(hw.map((p) => p.cat)).size} device class{new Set(hw.map((p) => p.cat)).size === 1 ? '' : 'es'}</h2>
+      <dl className="room__facts">
+        <dt>Baseline</dt><dd>{r.baselines.find((b) => b.state === 'CURRENT') ? `BL-${r.outline.id.slice(2)}-v${r.baselines.find((b) => b.state === 'CURRENT')!.version}: ${r.installations.filter((x) => !x.removedAt).length} positions bound, ${r.counts.verified} of ${r.counts.applicable} applicable tests verified` : `none accepted · ${r.counts.verified} of ${r.counts.applicable} applicable tests verified`}{r.baselines.find((b) => b.state === 'PENDING_ACCEPTANCE') ? ` · v${r.baselines.find((b) => b.state === 'PENDING_ACCEPTANCE')!.version} pending acceptance` : ''}</dd>
+        <dt>Connections</dt><dd>{r.connections.length ? `${r.connections.length} proposed by the engine’s rules (MODELED, not traced)` : 'none recorded'}</dd>
+        <dt>Drift since handover</dt><dd>{moves(r).length ? `${moves(r).length} change${moves(r).length === 1 ? '' : 's'}: ${moves(r).map((m) => m.title.toLowerCase()).slice(0, 3).join(' · ')}` : r.baselines.some((b) => b.state === 'CURRENT') ? 'nothing has moved' : 'not handed over yet'}</dd>
+      </dl>
+      <div className="room__devhead"><h3 className="build__h3">Choose a device in the view or here</h3></div>
       {hw.length ? <ul className="rows rows--tight" data-testid="device-preview">{shown.map((p) => <li key={p.code} className="row"><span className="layers__sw" style={{ background: LAYER_COLOR[p.layer] }} aria-hidden="true" /><span className="row__main"><button type="button" className="linkish" onClick={() => setSel(p.code)}>{p.label}</button><span className="ui-meta mono">{p.code} · {p.asset || '—'}</span></span><span className="row__end ui-meta">{p.identity.toLowerCase()}</span></li>)}</ul>
         : <div className="empty"><b>No devices recorded</b><p>The earlier record of this room holds no device positions; none are invented.</p></div>}
       {hw.length > 6 && <button type="button" className="sp__more" onClick={() => setAll(!all)} aria-expanded={all}>{all ? 'Show fewer' : `Show ${hw.length - 6} more of ${hw.length}`}</button>}
-      <dl className="facts"><dt>Connections</dt><dd>{r.connections.length} {r.connections.length ? '(proposed, MODELED)' : ''}</dd><dt>Tests</dt><dd>{r.counts.verified} of {r.counts.applicable} passed and independently verified</dd><dt>Baseline</dt><dd>{r.baselines.length ? r.baselines.map((b) => `v${b.version} ${b.state}`).join(' · ') : 'none'}</dd></dl>
+      <dl className="facts"><dt>Tests</dt><dd>{r.counts.verified} of {r.counts.applicable} passed and independently verified</dd><dt>Baselines</dt><dd>{r.baselines.length ? r.baselines.map((b) => `v${b.version} ${b.state}`).join(' · ') : 'none'}</dd></dl>
       {r.templateNote && <p className="ui-meta">{r.templateNote}.</p>}
     </div>
   );

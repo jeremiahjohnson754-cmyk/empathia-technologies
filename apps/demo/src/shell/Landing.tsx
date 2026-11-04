@@ -12,6 +12,20 @@ import { campusStats, BAND_LABEL } from '../campus/metrics.js';
 import { load as loadWorkspace } from '../workspace/store.js';
 import { ScoreRing, Icon, Chip } from '../spatial/parts.js';
 import { CampusMap } from '../spatial/Spatial.js';
+import { openPages } from '../viewas/scope.js';
+import { PAGES } from '../registry.pages.js';
+
+/** A small drawing of what each role mostly looks at (a trend, a room, passports, a queue …); decorative. */
+function RoleArt({ i }: { i: number }) {
+  const k = i % 4;
+  return <svg className="shelf__art" viewBox="0 0 120 56" aria-hidden="true" focusable="false">
+    <rect x="1" y="1" width="118" height="54" rx="8" className="shelf__art-bg" />
+    {k === 0 && <><polyline points="10,44 32,34 50,38 70,20 92,24 110,10" className="shelf__art-l" /><circle cx="70" cy="20" r="3" className="shelf__art-d" /></>}
+    {k === 1 && <><ellipse cx="38" cy="28" rx="20" ry="12" className="shelf__art-l" /><rect x="66" y="12" width="44" height="6" rx="3" className="shelf__art-f" /><rect x="66" y="24" width="34" height="6" rx="3" className="shelf__art-f" /><rect x="66" y="36" width="40" height="6" rx="3" className="shelf__art-f" /></>}
+    {k === 2 && <>{[14, 30, 46, 62, 78, 94].map((x, j) => <rect key={x} x={x} y={46 - [18, 26, 14, 32, 22, 36][j]!} width="10" height={[18, 26, 14, 32, 22, 36][j]} rx="2" className={j === 5 ? 'shelf__art-d' : 'shelf__art-f'} />)}</>}
+    {k === 3 && <>{[10, 24, 38].map((y) => <g key={y}><circle cx="16" cy={y + 4} r="3" className="shelf__art-d" /><rect x="26" y={y} width={y === 24 ? 60 : 78} height="8" rx="4" className="shelf__art-f" /></g>)}</>}
+  </svg>;
+}
 
 const SCENARIOS = [
   ['If this switch fails, what is affected?', 'Nobody can say what a failing device takes down. Search Party shows the room, the switch, its uplink, the rooms that share it and the power behind it, each with its freshness.', 'graph'],
@@ -71,10 +85,11 @@ export default function Landing({ role }: PageProps) {
       </section>
 
       <section className="shelf" aria-labelledby="shelf-h">
-        <h2 id="shelf-h">See it as the people who use it</h2>
-        <p className="ui-meta">Each role is given what its work needs and nothing else; the tabs, buttons and screens change with it.</p>
+        <p className="kicker">Perspectives</p>
+        <h2 id="shelf-h">Every role, one Core</h2>
+        <p className="ui-meta">Each role is given its own share of the same records; the tabs, buttons and screens change with it. A perspective grants nothing.</p>
         <ul className="shelf__list">
-          {SHELF.map((k) => <li key={k}><button type="button" className="shelf__role" data-r={k} data-role-key={k} aria-pressed={k === role} onClick={() => va.switchTo(k)}><span className="ava" aria-hidden="true">{ROLES[k].initials}</span><span><b>{ROLES[k].label}</b><span>{ROLES[k].home}</span></span></button></li>)}
+          {SHELF.map((k) => <li key={k}><button type="button" className="shelf__role" data-r={k} data-role-key={k} aria-pressed={k === role} onClick={() => va.switchTo(k)}><RoleArt i={SHELF.indexOf(k)} /><span className="ava" aria-hidden="true">{ROLES[k].initials}</span><span><b>{ROLES[k].label}</b><span>{ROLES[k].home}</span><span className="shelf__n">{openPages(k).length} of {PAGES.length} surfaces</span></span></button></li>)}
           <li><button type="button" className="shelf__role shelf__more" onClick={va.open}><span className="ava" aria-hidden="true">+</span><span><b>Every role</b><span>View as…</span></span></button></li>
         </ul>
       </section>

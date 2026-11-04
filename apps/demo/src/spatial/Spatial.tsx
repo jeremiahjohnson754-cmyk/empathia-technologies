@@ -149,7 +149,7 @@ export function IsoView({ w, l, h, positions, layers, selected, onSelect, angle 
         return (
           <g key={p.code} className={`rv__dev${selected === p.code ? ' on' : ''}`} role="button" tabIndex={0} aria-pressed={selected === p.code} aria-label={`${p.label}, position ${p.code}, ${p.z} m high`} onClick={() => onSelect(p.code)} onKeyDown={keyAct(() => onSelect(p.code))}>
             {p.z > 0.05 && <line x1={fx} y1={fy} x2={px} y2={py} className="iso__drop" />}
-            <g transform={`translate(${px.toFixed(1)} ${py.toFixed(1)})`}><rect x={-9} y={-9} width={18} height={18} rx={4} fill={LAYER_COLOR[p.layer]} /><text y={4} textAnchor="middle" className="rv__glyph">{LAYER_GLYPH[p.layer]}</text></g>
+            <g transform={`translate(${px.toFixed(1)} ${py.toFixed(1)})`}><rect x={-9} y={-9} width={18} height={18} rx={4} fill={LAYER_COLOR[p.layer]} /><text y={4} textAnchor="middle" className="rv__glyph">{LAYER_GLYPH[p.layer]}</text>{(vis.length <= 18 || ['display', 'video'].includes(p.layer)) && <g className="iso__tag" aria-hidden="true"><rect x={12} y={-21} width={8 + Math.min(18, p.label.length) * 6.4} height={16} rx={4} /><text x={16} y={-9}>{p.label.length > 18 ? `${p.label.slice(0, 17)}…` : p.label}</text></g>}</g>
           </g>
         );
       })}

@@ -64,7 +64,7 @@ for (const scheme of SCHEMES) for (const vp of VPS) {
     await t.go('#/search?focus=Nope:nothing', 500);
     ok(`CORE-${scheme}-sp-03`, 'an unknown focus does not break the page', !t.errs.length && (await t.page.locator('main h1').count()) === 1);
     await t.go('#/search', 400);
-    ok(`CORE-${scheme}-sp-04`, 'Search Party: directory of the five relationship questions and the try-one-of-these list with live counts', (await t.page.locator('[aria-label="Directory"] li').count()) === 5 && (await t.page.locator('[data-testid="sp-try"]').count()) >= 8);
+    ok(`CORE-${scheme}-sp-04`, 'Search Party: directory of the five relationship questions and the try-one-of-these list with live counts', (await t.page.locator('[aria-label="Five ways in"] li').count()) === 5 && (await t.page.locator('[data-testid="sp-try"]').count()) >= 8);
     // V2.5.3's Search Party tab set, each at its address, each a finished pane built from the records
     for (const [h, id] of [['#/search/graph', 'impact'], ['#/search/people', 'sp-people'], ['#/search/support', 'sp-support'], ['#/search/ownership', 'sp-support'], ['#/search/projects', 'sp-map'], ['#/search/orgs', 'sp-orgs'], ['#/search/activity', 'sp-activity'], ['#/search/vault', 'sp-vault']]) {
       await t.go(h, 600);

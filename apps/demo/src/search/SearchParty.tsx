@@ -27,6 +27,14 @@ function subType(hash: string, est: { coverage: { types: Record<string, number> 
   const sub = (/^#?\/?search\/([a-z]+)/.exec(hash) || [])[1] || ''; const want = SUB_LABEL[sub]; if (!want) return '';
   return Object.keys(est.coverage.types).find((t) => (NODE_TYPES[t]?.[0] || t) === want) || '';
 }
+/** The five ways in (the 3 November composition), each one of the relationship scenarios. */
+const WAYS: Array<[string, string, string, string]> = [
+  ['S2', 'Who supports this room?', 'From one room to the people and paper behind it.', 'people'],
+  ['S1', 'What happens if this device changes?', 'One switch, and everything that would have to be proven again.', 'graph'],
+  ['S3', 'Find someone with the right skills', 'Competency from records and hard gates, not from a job title.', 'device'],
+  ['S4', 'Follow the incident', 'One issue, traced through every module that holds a record of it.', 'check'],
+  ['S5', 'Discover a systemic problem', 'Patterns computed from the records — each with what it cannot claim.', 'spark'],
+];
 /** Searches an investor can try; each shows the count the search finds now. */
 const TRY = ['camera', '4.218', 'boardroom', 'microphone', 'ISS-0417', 'switch', 'Horizon', 'WO-0088'];
 
@@ -63,8 +71,8 @@ export function SearchPartyDemo({ hash, role }: { hash: string; role?: RoleKey }
       </nav>
       <header className="room__hero sp__hero">
         <p className="kicker">Search Party · relationship intelligence</p>
-        <h1>{focus ? label(focus) : TAB_TITLE[tab] || 'Search Party'}</h1>
-        <p className="room__intent">{focus ? <>{NODE_TYPES[focus.type]?.[0] || focus.type} · {byKey.get(nodeKey(focus))?.subtitle || 'its neighbourhood, what depends on it and the questions you can ask'}</> : TAB_LEDE[tab] || 'Find the person, the room or the part, and see what it is connected to.'}</p>
+        <h1>{focus ? label(focus) : TAB_TITLE[tab] || 'Start anywhere. Follow the relationships.'}</h1>
+        <p className="room__intent">{focus ? <>{NODE_TYPES[focus.type]?.[0] || focus.type} · {byKey.get(nodeKey(focus))?.subtitle || 'its neighbourhood, what depends on it and the questions you can ask'}</> : TAB_LEDE[tab] || 'The people, records and equipment of a synthetic campus, and how each connects to the rest: who owns it, what depends on it, what changed, who can help, and the evidence for each.'}</p>
         {!PANE[tab] && <>
         <div className="sp__search"><label className="ui-visually-hidden" htmlFor="spd-q">Search</label><span className="sp__glass" aria-hidden="true"><Icon name="search" /></span><input id="spd-q" className="sp__input" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search a room, switch, device, issue, work order…" autoComplete="off" maxLength={80} /><select aria-label="Type" value={type} onChange={(e) => setType(e.target.value)}><option value="">Every type</option>{Object.entries(est.coverage.types).sort().map(([t, n]) => <option key={t} value={t}>{NODE_TYPES[t]?.[0] || t} ({n})</option>)}</select></div>
         <div className="sp__types" role="group" aria-label="Records by type">{typeCounts.map(([t, n]) => <button key={t} type="button" className="sp__tchip" aria-pressed={type === t} onClick={() => setType(type === t ? '' : t)}><span>{NODE_TYPES[t]?.[0] || t}</span><b>{n}</b></button>)}</div>
@@ -73,8 +81,8 @@ export function SearchPartyDemo({ hash, role }: { hash: string; role?: RoleKey }
       </header>
       {PANE[tab] ? PANE[tab]!(opens) : browsing ? (
         <div className="room__two sp__browse">
-          <Section title="Directory" aside="Who to go to, what is affected" id="sp-dir-h">
-            <List label="Directory">{SCENARIO_IDS.map((id) => { const sc = scenario(id); return <ListRow key={id} href={opens('#/search/scenarios') ? `#/search/scenarios/${id}` : undefined} leading={<span className="row__ic"><Icon name={id === 'S1' ? 'graph' : id === 'S2' ? 'people' : id === 'S3' ? 'device' : id === 'S4' ? 'check' : 'spark'} /></span>} title={SCENARIO_TITLES[id]} sub={sc ? `${scenarioCount(sc)} recorded relationships · from ${sc.start.label}` : undefined} />; })}</List>
+          <Section title="Five ways in" aside="Each answered from recorded relationships, list first" id="sp-dir-h">
+            <ol className="sp__ways" aria-label="Five ways in">{WAYS.map(([id, t, d, ic], i) => { const sc = scenario(id); const body = <><span className="sp__wayn">{i + 1}</span><span className="sp__wayic" aria-hidden="true"><Icon name={ic} /></span><b>{t}</b><span>{d}</span><span className="ui-meta">{sc ? `${scenarioCount(sc)} recorded relationships · from ${sc.start.label}` : ''}</span></>; return <li key={id}>{opens('#/search/scenarios') ? <a href={`#/search/scenarios/${id}`}>{body}</a> : <div>{body}</div>}</li>; })}</ol>
           </Section>
           <Section title="Try one of these" aside="Each count is what the search finds now" id="sp-try-h">
             <List label="Try one of these">{TRY.map((t) => { const n = search(est, { q: t, type: null, limit: 1 }).total; return <ListRow key={t} testId="sp-try" onClick={() => setQ(t)} leading={<span className="row__ic"><Icon name="search" /></span>} title={t} sub={`${n} record${n === 1 ? '' : 's'}`} />; })}
