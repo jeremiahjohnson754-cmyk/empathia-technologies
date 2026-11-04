@@ -10,7 +10,10 @@
  *   - Keyboard and screen reader complete; motion only where prefers-reduced-motion allows (kit.css).
  */
 import { createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react';
+<<<<<<< HEAD
 /** the keyboard event the handlers read (the offline React shim exports no KeyboardEvent type) */
+=======
+>>>>>>> origin/uplift/workspaces
 type RKE = { key: string; preventDefault: () => void };
 import { Icon, type IconName } from './icons.js';
 import type { Tone } from './status.js';

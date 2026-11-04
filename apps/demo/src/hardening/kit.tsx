@@ -39,15 +39,20 @@ export const when = (s: string | null | undefined) => (s ? s.slice(0, 16).replac
 export const param = (hash: string, k: string) => { const m = new RegExp(`[?&]${k}=([^&]+)`).exec(hash); if (!m) return null; try { return decodeURIComponent(m[1]!); } catch { return m[1]!; } };
 
 /** The head of every operational workspace: product kicker, the page title (the only h1), who you are acting as, and the page actions. */
-export function OpsHead({ kicker, title, persona, lead, actions, product }: { kicker: string; title: string; persona: string; lead?: ReactNode; actions?: ReactNode; product?: string }) {
+/** Drawn as the kit's hero card (packages/ui kit.css .kit-hero: gradient ground, product eyebrow), compact so the workspace stays dense;
+ * the h1 takes route focus without a ring (tabIndex -1, :focus-visible only). `meta` adds evidence chips (what is simulated or modelled). */
+export function OpsHead({ kicker, title, persona, lead, actions, product, meta, aside }: { kicker: string; title: string; persona: string; lead?: ReactNode; actions?: ReactNode; product?: string; meta?: ReactNode; aside?: ReactNode }) {
+  const p = product === 'mission' ? 'mission-control' : product;
   return (
-    <header className="ops__head" data-product={product}>
-      <div className="ops__title">
-        <p className="kicker">{kicker}</p>
-        <h1>{title}</h1>
-        <p className="ui-muted ops__as">Acting as <b>{personaLabel(persona)}</b> in this interactive demonstration. {lead}</p>
+    <header className={`ops__head kit-hero kit-hero--compact${p ? ` kit-hero--p ui-p--${p}` : ''}${aside ? ' kit-hero--aside' : ''}`} data-product={product}>
+      <div className="ops__title kit-hero__main">
+        <p className="kit-hero__eyebrow">{kicker}</p>
+        <h1 className="kit-hero__title" tabIndex={-1}>{title}</h1>
+        <p className="kit-hero__lede ops__as">Acting as <b>{personaLabel(persona)}</b> in this interactive demonstration. {lead}</p>
+        {meta ? <div className="kit-hero__meta">{meta}</div> : null}
+        {actions ? <div className="ops__actions kit-hero__actions">{actions}</div> : null}
       </div>
-      {actions ? <div className="ops__actions">{actions}</div> : null}
+      {aside ? <div className="kit-hero__aside">{aside}</div> : null}
     </header>
   );
 }
