@@ -25,6 +25,6 @@ await esbuild.build({
   outfile: path.join(dist, 'gallery.js'), define: { 'process.env.NODE_ENV': '"production"', __TOKENS__: JSON.stringify(tokens) }, legalComments: 'linked', logLevel: 'warning',
   alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') },
 });
-fs.writeFileSync(path.join(dist, 'gallery.css'), [path.join(repo, 'packages/design-tokens/dist/tokens.css'), path.join(repo, 'packages/ui/src/ui.css'), path.join(here, 'gallery.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`).join('\n'));
+fs.writeFileSync(path.join(dist, 'gallery.css'), [path.join(repo, 'packages/design-tokens/dist/tokens.css'), path.join(repo, 'packages/ui/src/ui.css'), path.join(repo, 'packages/ui/src/kit.css'), path.join(here, 'gallery.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`).join('\n'));
 fs.copyFileSync(path.join(here, 'index.html'), path.join(dist, 'index.html'));
 console.log(`gallery built: ${tokens.length} tokens; ${fs.readdirSync(dist).join(', ')}`);

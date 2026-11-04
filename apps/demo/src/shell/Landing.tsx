@@ -2,8 +2,13 @@
 import type { PageProps, RoleKey } from '../registry.types.js';
 import { WorkWith } from '../enquiry/WorkWith.js';
 import { AREAS, NATIVE } from '../registry.js';
-import { ROLES } from '../access/policy.js';
+import { ROLES, ROLE_KEYS } from '../access/policy.js';
+import { PageHero, Chip, ProgressBar, StatusDot, PRODUCTS } from '@empathia/ui';
 import { useViewAs } from '../viewas/context.js';
+import { opensNative } from './Shell.js';
+
+const BUILD = '#/v25/build';
+const OPENS_AS: RoleKey = 'designer';
 
 const SCENARIOS = [
   ['If this switch fails, what is affected?', 'Nobody can say what a failing device takes down. Search Party shows the room, the switch, its uplink, the rooms that share it and the power behind it, each with its freshness.'],
@@ -19,18 +24,24 @@ const SHELF: RoleKey[] = ['exec', 'ops', 'designer', 'service', 'cxeng', 'employ
 
 export default function Landing({ role }: PageProps) {
   const va = useViewAs();
+  // D44: a role that cannot open the builder is never handed a link to a refusal; the launch opens it as the Designer, said on the button
+  // (3 Nov investor start: "Opens as Designer · you can switch back any time") — the switch is View as, transparent and granting nothing
+  const build = opensNative(role, BUILD);
+  const native = AREAS.filter((a) => NATIVE.has(a.key)).length;
   return (
     <>
-      <section className="hero">
-        <p className="kicker">Investor demonstration · release in migration</p>
-        <h1>Every state here has a guard, an actor and an event behind it.</h1>
-        <p className="lead">Declared is not verified; modeled is not measured — and the product says so itself. Three ways in:</p>
-        <div className="start">
-          <a className="go launch" href="#/v25/build"><b>Launch interactive room builder</b><span>Design a room and watch it reach drawings, commissioning, Search Party and Pro.</span></a>
+      <PageHero eyebrow="Investor demonstration · release in migration" icon="spark" className="landing-hero"
+        title="Every state here has a guard, an actor and an event behind it."
+        lede="Declared is not verified; modeled is not measured — and the product says so itself. Three ways in:"
+        meta={[<Chip key="s" small icon="play">{SCENARIOS.length} guided scenarios</Chip>, <Chip key="r" small icon="users">{ROLE_KEYS.length} roles to view as</Chip>, <Chip key="p" small icon="products">{PRODUCTS.length} products, one platform</Chip>]}
+        aside={<div className="landing-hero__aside"><ProgressBar label="Addresses rebuilt natively" value={native} max={AREAS.length} valueText={`${native} of ${AREAS.length}`} tone="accent" /><StatusDot state="modelled" label="Synthetic, in-browser" /></div>}
+        actions={<div className="start">
+          {build
+            ? <a className="go launch" href={BUILD}><b>Launch interactive room builder</b><span>Design a room and watch it reach drawings, commissioning, Search Party and Pro.</span></a>
+            : <button type="button" className="go launch" onClick={() => { va.switchTo(OPENS_AS); setTimeout(() => { location.hash = BUILD; }, 0); }}><b>Launch interactive room builder</b><span>Design a room and watch it reach drawings, commissioning, Search Party and Pro.</span><span className="go__as">Opens as {ROLES[OPENS_AS].label} · you can switch back at any time</span></button>}
           <a className="go" href="#/tours/investor"><b>Watch a guided scenario</b><span>Seven scenarios · about 14 minutes</span></a>
           <a className="go" href="#problems"><b>What each workflow solves</b><span>The customer problem behind each scenario</span></a>
-        </div>
-      </section>
+        </div>} />
       <section className="shelf" aria-labelledby="shelf-h">
         <h2 id="shelf-h">See it as the people who use it</h2>
         <p className="ui-meta">Each role is given what its work needs and nothing else; the tabs, buttons and screens change with it.</p>
@@ -46,7 +57,7 @@ export default function Landing({ role }: PageProps) {
       <WorkWith />
       <section className="status">
         <h2>Migration status</h2>
-        <p>This demonstration is being rebuilt as modular pages from the Living Campus V2.5.3 source, one area at a time. {AREAS.filter((a) => NATIVE.has(a.key)).length} of {AREAS.length} addresses (86 areas and 19 V2.5 pages) are native today; the rest state their status when opened (see the parity ledger in the repository).</p>
+        <p>This demonstration is being rebuilt as modular pages from the Living Campus V2.5.3 source, one area at a time. {native} of {AREAS.length} addresses (86 areas and 19 V2.5 pages) are native today; the rest state their status when opened (see the parity ledger in the repository).</p>
       </section>
     </>
   );

@@ -60,3 +60,19 @@ test('ui.css: on the tokens — no literal colours outside comments; the primary
   const local = new Set(['tone', 'p', 'p-ink']);
   for (const u of new Set((css.match(/var\(--[a-z0-9-]+/g) || []).map((v) => v.slice(6)))) assert.ok(local.has(u) || defined.has(u), `--${u} is not a token`);
 });
+
+// QUALITY_UPLIFT kit: kit.css holds to the same rules as ui.css; kit.tsx, icons.tsx and components.tsx never write a style attribute
+// (the demo's CSP is style-src 'self'); a heading focused by script after navigation draws no ring.
+test('kit.css: on the tokens, no literal colours; kit components carry no style attribute; route-focused headings draw no ring', () => {
+  const css = fs.readFileSync(path.join(repo, 'packages/ui/src/kit.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  assert.deepEqual(css.match(/#[0-9a-f]{3,8}\b/gi) || [], [], 'hex colours belong in tokens.json');
+  assert.match(css, /\[tabindex="-1"\]:focus \{ outline: none; \}/);
+  assert.match(css, /prefers-reduced-motion: reduce/);
+  for (const p of PRODUCTS) assert.ok(css.includes(`.kit-s--${p.id} { --s: var(${p.colorVar}); }`), `series class for ${p.id}`);
+  const built = path.join(repo, 'packages/design-tokens/dist/tokens.css');
+  if (fs.existsSync(built)) {
+    const defined = new Set((fs.readFileSync(built, 'utf8').match(/--[a-z0-9-]+(?=:)/g) || []).map((v) => v.slice(2)));
+    for (const u of new Set((css.match(/var\(--[a-z0-9-]+/g) || []).map((v) => v.slice(6)))) assert.ok(['s', 'tone', 'p'].includes(u) || defined.has(u), `--${u} is not a token`);
+  }
+  for (const f of ['kit.tsx', 'icons.tsx', 'components.tsx']) assert.doesNotMatch(fs.readFileSync(path.join(repo, 'packages/ui/src', f), 'utf8'), /\bstyle=\{/, `${f} writes a style attribute`);
+});
