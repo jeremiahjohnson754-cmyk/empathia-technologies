@@ -227,6 +227,11 @@ for (const [w, h] of [[1440, 900], [768, 1024], [390, 844]]) {
   const c3 = await newCtx({ viewport: { width: 1440, height: 900 }, javaScriptEnabled: false }); const p3 = await c3.newPage(); await p3.goto(base + '/'); await p3.click('.pmenu > summary');
   ok('W-nojs-products', 'the products menu opens without JavaScript', await p3.evaluate(() => document.querySelector('.pmenu').open && getComputedStyle(document.querySelector('.pmenu__panel')).display !== 'none'));
   await c3.close();
+  // destructive: the script fails to load (a lost connection, a bad deploy): the page still reads, its links and enquiries still work
+  const c5 = await newCtx({ viewport: { width: 390, height: 844 } }); await c5.route('**/site.js', (r) => r.abort()); const p5 = await c5.newPage(); const e5 = []; p5.on('pageerror', (e) => e5.push(e.message));
+  await p5.goto(base + '/founder'); const nf5 = await p5.evaluate(() => ({ h1: document.querySelector('h1')?.textContent, conn: document.querySelector('a[data-enquiry=founder]')?.getAttribute('href'), visible: getComputedStyle(document.querySelector('.philosophy')).visibility }));
+  ok('W-nosite-js', 'without site.js the founder page still reads and its enquiry link still works', !e5.length && nf5.h1 === 'Jeremiah Johnson' && nf5.conn === `${TALLY}?source=founder` && nf5.visible === 'visible', JSON.stringify(nf5));
+  await c5.close();
   const c4 = await newCtx({ viewport: { width: 1440, height: 900 } }); const p4 = await c4.newPage(); await p4.goto(base + '/');
   await p4.focus('.pmenu > summary'); await p4.keyboard.press('Enter'); const opened = await p4.evaluate(() => document.querySelector('.pmenu').open);
   await p4.keyboard.press('Escape'); const closed = await p4.evaluate(() => ({ open: document.querySelector('.pmenu').open, focus: document.activeElement?.tagName }));
@@ -237,8 +242,9 @@ for (const [w, h] of [[1440, 900], [768, 1024], [390, 844]]) {
 // ---- budgets (approved image-performance and weight budgets) ----
 {
   const m = JSON.parse(fs.readFileSync(path.join(dist, 'BUILD_MANIFEST.json'), 'utf8')).files; const sum = (re) => Object.entries(m).filter(([f]) => re.test(f)).reduce((a, [, v]) => a + v.bytes, 0);
-  const b = { home: m['index.html'].bytes, js: m['site.js'].bytes, theme: m['theme.js'].bytes, fonts: sum(/^fonts\/.*\.woff2$/), faces: Object.keys(m).filter((f) => /^fonts\/.*\.woff2$/.test(f)).length, captures: sum(/^media\/product\//), maxCapture: Math.max(0, ...Object.entries(m).filter(([f]) => /^media\/product\//.test(f)).map(([, v]) => v.bytes)) };
-  ok('W-budgets', 'home ≤ 48 KB, site.js ≤ 8 KB, theme.js ≤ 512 B, three Inter faces ≤ 88 KB (D38), captures ≤ 1.4 MB and each ≤ 80 KB', b.home <= 48 * 1024 && b.js <= 8192 && b.theme <= 512 && b.faces === 3 && b.fonts <= 88 * 1024 && b.captures <= 1400 * 1024 && b.maxCapture <= 80 * 1024, JSON.stringify(b));
+  const pre = (fs.readFileSync(path.join(dist, 'index.html'), 'utf8').match(/rel="preload" href="\/fonts\/([^"]+)"/g) || []).map((x) => x.match(/fonts\/([^"]+)/)[1]);
+  const b = { home: m['index.html'].bytes, js: m['site.js'].bytes, theme: m['theme-init.js'].bytes, faces: pre.length, fonts: pre.reduce((a, f) => a + (m[`fonts/${f}`]?.bytes || 1e9), 0), captures: sum(/^media\/product\//), maxCapture: Math.max(0, ...Object.entries(m).filter(([f]) => /^media\/product\//.test(f)).map(([, v]) => v.bytes)) };
+  ok('W-budgets', 'home ≤ 48 KB, site.js ≤ 8 KB, theme-init.js ≤ 512 B, three preloaded Inter faces ≤ 88 KB (D38), captures ≤ 1.4 MB and each ≤ 80 KB', b.home <= 48 * 1024 && b.js <= 8192 && b.theme <= 512 && b.faces === 3 && b.fonts <= 88 * 1024 && b.captures <= 1400 * 1024 && b.maxCapture <= 80 * 1024, JSON.stringify(b));
 }
 
 await browser.close(); srv.kill();

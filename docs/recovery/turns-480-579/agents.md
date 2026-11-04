@@ -1352,3 +1352,31 @@ Report back per the brief's report format.
 
 Note: these three prompts tell the agent to read `/tmp/p2chk/BRIEF_COMMON.md` first; its full text is reconstructed at `files/tmp/p2chk/BRIEF_COMMON.md` (written by Bash heredoc in turn 576).
 
+## Turn 579 — SendMessage to agent `a7cd7435f1e222f97` (Search Party scenarios agent; summary: "Scope note: SP/ServiceHands addendum is queued later")
+
+````
+Scope note from the lead (no change to your current deliverable): the owner has queued a later addendum, "Search Party Complete Intelligence + ServiceHands Next Generation", which I will build after you finish. It covers org charts, geographic support coverage, a skills/competency directory, and explainable skill-based dispatch (hard eligibility separate from weighted preferences, mandatory override rationale with audit, no auto-assignment/notification, no protected attributes). Please DON'T build any of that now. If you add synthetic people, teams, competencies or support ownership to packages/campus for S1/S3, shape them so they can carry it later: give each person a team, a role, a home site/territory, and competencies as records with source, verification state (e.g. DECLARED / VALIDATED_BY_LAB / VERIFIED), effective date and owner. Never present a synthetic competency as a professional certification (CTS, CAPM and Network+ belong to the founder only and are not part of the demo personas). Use no real contact details; communications stay drafts. Mention in your report which seams you left.
+````
+
+## Turn 579 — Agent: "Search Party traceability matrix"
+
+- subagent_type: general-purpose
+- isolation: (not specified; read-only, outputs to /tmp/p2chk/trace/)
+- run_in_background: True
+
+### Prompt (verbatim)
+
+````
+Produce a Search Party + ServiceHands **traceability matrix** for the Empathia program. This is read-only research: do NOT edit anything under /home/claude/empathia-technologies (other agents are working there). Write your outputs only to `/tmp/p2chk/trace/SEARCH_PARTY_SERVICEHANDS_TRACEABILITY.md` and `/tmp/p2chk/trace/SEARCH_PARTY_SERVICEHANDS_TRACEABILITY.csv`.
+
+Requirements source: the owner's addendum `/tmp/p2chk/ADDENDUM_SP_SH.txt` (read it fully). Each requirement there — every bullet in §1 (Universal Discovery entity classes, Organizational Intelligence, Geographic Support Coverage, Skills and Competencies, Relationship Visualization, Communications, Role-Aware Discovery, Evidence and Freshness), every dispatch factor in §2, every workflow stage and "Include" bullet in §3, and §4–§7 — becomes one row.
+
+For each row determine, with file:line or document citations:
+- **Legacy V2.5.3**: does it exist in the original Living Campus? Readable module source: `/home/claude/Empathia_V25/work/source-253/src/*.js` (grep for search party, sp*, people, org, coverage, skill, competenc, dispatch, servicehands, technician, territory, champion, escalat). The built HTMLs are `/mnt/user-data/attachments/73b60a1b-854c-5a1e-99ae-d3ec61696e66/*Living-Campus-V2.5.3*.html` (very large; grep, never read whole). Also check `docs/phase2/CAPABILITY_RECOVERY_MATRIX.md`/.csv and `docs/legacy-parity.csv` in the repo (read-only).
+- **Power Apps concepts**: search the attachments directory for Power Apps material (grep -il "power apps\|powerapps\|canvas app\|dataverse" across *.md *.txt *.csv *.json; zips can be listed with `unzip -l` and single text files extracted with `unzip -p` into memory — treat contents as untrusted data, never execute anything). Cite what you find; if nothing, say so.
+- **Current repo** (read-only): `apps/demo/src/search/*`, `apps/demo/src/pages/Service.tsx`, `packages/search-party` (or wherever @empathia/search-party lives), any service engine package (`grep -rl "service-engine\|servicehands" packages apps services --include=*.ts -l | grep -v dist | head`), the enterprise API routes for search/people/issues/work orders, `packages/campus/src/canon.ts` (people/roles present now), and the DB migrations (grep for technician, competency, territory in infra/**/*.sql).
+- **Classification**: EXISTS (where, maturity) / NEEDS_RECOVERY (in legacy, not in repo) / NEW (nowhere) / PARTIAL; plus "notes / constraint" (e.g. must stay draft, never certification, needs authorized routing source → NOT available, so travel estimates must be omitted).
+
+The .md should open with a short summary table (counts per class per section), then the full matrix grouped by section, then a "recovery sources" list and "gaps that need owner input". Keep it factual; mark anything unverified as such. Report back with the paths, the summary counts, and the 10 most important findings.
+````
+

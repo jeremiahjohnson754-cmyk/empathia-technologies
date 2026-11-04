@@ -3,7 +3,8 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { buildPages, notFoundPage, type SiteContext, type Page } from './content.js';
 import { Shell } from './site.js';
-export interface RenderOpts { api?: string | null; base?: string; iconLinks?: string }
+export interface RenderOpts { api?: string | null; base?: string }
+// theme-init, the three Inter preloads (D38) and the icon links are put into every <head> by the shared helper (build.mjs → shipBrandAndType)
 export function renderAll(ctx: SiteContext, opts: RenderOpts = {}): { path: string; html: string; title: string }[] {
   const pages = buildPages({ ...ctx, api: !!opts.api });
   const doc = (page: Page, notFound = false) => {
@@ -20,12 +21,7 @@ export function renderAll(ctx: SiteContext, opts: RenderOpts = {}): { path: stri
 <meta name="theme-color" content="#0e1012" media="(prefers-color-scheme: dark)"><meta name="theme-color" content="#f7f5f1" media="(prefers-color-scheme: light)">
 ${notFound ? '<meta name="robots" content="noindex">\n' : `<link rel="canonical" href="${esc(canonical)}">\n`}<meta property="og:title" content="${esc(page.title)}"><meta property="og:description" content="${esc(page.description)}"><meta property="og:type" content="website">
 ${ctx.preview ? '<meta name="robots" content="noindex, nofollow">\n' : ''}<meta name="referrer" content="strict-origin-when-cross-origin">
-${opts.iconLinks || '<link rel="icon" href="/brand/favicon.svg" type="image/svg+xml">'}
-<link rel="preload" href="/fonts/inter-display-800.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/inter-600.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/site.css">
-<script src="/theme.js"></script>
 <script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'Organization', name: 'Empathia Technologies', url: opts.base || undefined, founder: { '@type': 'Person', name: 'Jeremiah Johnson' }, description: 'Empathia Living Campus: an operating platform for enterprise AV, collaboration and workplace technology.' }).replace(/</g, '\\u003c')}</script>
 </head>
 <body>${body}<script src="/site.js" defer></script></body>
