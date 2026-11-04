@@ -1,0 +1,140 @@
+{
+ "$description": "Captures of the synthetic investor demonstration for the website (dark only, D43). The website build admits only these files with these hashes.",
+ "captures": {
+  "mission-control": {
+   "route": "#/v25",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "4fc1b7b",
+   "capturedAt": "2026-11-04T00:43:03.894Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "mission-control-1280.webp": "c86884657a0d5f790ca45bfe48799742060b9ba0d6c552fb10c9504ccb43c0fe",
+    "mission-control-640.webp": "6f7168ebe3431029807c14322ab3692b004d1394907241fb97937a12064cc765"
+   }
+  },
+  "lite": {
+   "route": "#/v25/build",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "4fc1b7b",
+   "capturedAt": "2026-11-04T00:44:54.182Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "lite-1280.webp": "6622de4a638d13ad4f14614a4914c8669613dddaf86a691dbb2e87f5ea78ae53",
+    "lite-640.webp": "ac8bb22dc7e34610bfffda5791f6edb9d916e300644539c674fa62f28bfa99ef"
+   }
+  },
+  "pro": {
+   "route": "#/v25/exec",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "4fc1b7b",
+   "capturedAt": "2026-11-04T00:45:15.952Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "pro-1280.webp": "c883615f333f7aedf1b85a16245a4ceabc837b16101bf9266f069969a99c3fb4",
+    "pro-640.webp": "0477f36c5492bcc5f88a7b6d6a72d763ff9ab3eec586e1d529d992f467c00951"
+   }
+  },
+  "search-party": {
+   "route": "#/search",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "4fc1b7b",
+   "capturedAt": "2026-11-04T00:43:10.310Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "search-party-1280.webp": "842bd3fdafbc1cdf085f4cf99b3bd75aa6d133e994d6a06816e700d0b6e6d15a",
+    "search-party-640.webp": "f4b3455d10e18856a8d43415ceab4d7860ff92ec67c7cf1fb2837c782dc5da86"
+   }
+  },
+  "servicehands": {
+   "route": "#/v25/service",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "4fc1b7b",
+   "capturedAt": "2026-11-04T00:43:12.450Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "servicehands-1280.webp": "f7c5c02edeec689c2e94db600c67ffd1ce2f302c3f45001ba261be4faabe0982",
+    "servicehands-640.webp": "423f9e2f47fdc686757f45264a9cf48f8fa0ec5641025b6a5a5aa6d72c4f5a06"
+   }
+  },
+  "apex": {
+   "route": "#/v25/apex",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "4fc1b7b",
+   "capturedAt": "2026-11-04T00:43:16.677Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "apex-1280.webp": "392a703060b1ca672adb53c41b4d48b2bac72c2fc7d12bcf8dcff25e5bb72328",
+    "apex-640.webp": "9ed13222aefa132ae0a7fd2f4bafcf0ed5ab6e6540b931d0f8b8ca6939da80b3"
+   }
+  },
+  "learn": {
+   "route": "#/v25/learn",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "4fc1b7b",
+   "capturedAt": "2026-11-04T00:43:21.107Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "learn-1280.webp": "fe2a4b99e617d2faa5a62a886231f6c48a361a3317b2bc54f3fd58c41177b5b7",
+    "learn-640.webp": "4d11bed42079d3e38a525d93a7bb88948f0afe479a93a6b30fde9dc4125d7292"
+   }
+  },
+  "commissioning": {
+   "route": "#/v25/build",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "4fc1b7b",
+   "capturedAt": "2026-11-04T00:44:57.533Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "commissioning-1280.webp": "90f24a1e20d1c6f98120e9f167d33b48667100d32eb8222736af4b56dcd0c4c8",
+    "commissioning-640.webp": "33d2eb6823e3a12db17587ccf10e33f499d63e473df9d19cea7eb2038d856c93"
+   }
+  },
+  "field": {
+   "route": "#/v25/fi",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "991eb30",
+   "capturedAt": "2026-11-04T00:50:00.488Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "field-1280.webp": "a11a838731d97c0c06a5684f9076720981896accf6b984bc64564bdb8f44dba2",
+    "field-640.webp": "3d3e6618dc7058809223e7071d0914aceda88a8847c4a03f0124da63f72f0a0f"
+   }
+  }
+ }
+}
