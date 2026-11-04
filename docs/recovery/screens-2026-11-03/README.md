@@ -23,3 +23,5 @@ V2.5.3. Match their content and composition, then exceed both.
    Propose (needs scouter.propose).
 13 Access by role: the header for six roles showing only their products.
 14 The owl access pages: "Core Replay isn't part of the Visitor's work", roles whose work it is, what the role can open; enterprise variant.
+
+more-01..13: further founder screenshots of the 3 November demo (Quick find over the room, the V2.5.3-style phone home with role flashcards — AV Operations Lead, Service Manager, Service/Systems Engineer, Designer, Installation and Commissioning Engineers, Integration and Internal PM, Data Steward, Executive, Employee, Visitor — each with an illustration, record and surface counts; the View-as sheet with coverage bars; the website contact sheets).
