@@ -42,7 +42,7 @@ for (const w of [360, 390, 768]) {
   ok(`P-${w}-13`, `${w} px: no console error`, !t.errs.length, t.errs.join(' | ')); await t.close();
 }
 { const t = await open('#/investor', { role: 'architect', w: 1440 }); const p = t.page;
-  const d = await p.evaluate(() => ({ rail: getComputedStyle(document.querySelector('.shell__rail')).display, n: document.querySelectorAll('.shell__rail a').length, menu: 0, tabs: getComputedStyle(document.querySelector('[data-testid=hometabs]')).position, theme: getComputedStyle(document.querySelector('header .theme-switch')).display, find: getComputedStyle(document.querySelector('.find__box')).display }));
+  const d = await p.evaluate(() => ({ rail: getComputedStyle(document.querySelector('.shell__rail')).display, n: document.querySelectorAll('.shell__rail a').length, menu: 0, tabs: getComputedStyle(document.querySelector('[data-testid=hometabs]')).position, theme: getComputedStyle(document.querySelector('header [data-testid=theme-switch]')).display, find: getComputedStyle(document.querySelector('.find__box')).display }));
   await p.click('[data-testid=menu-open]'); d.menu = await p.locator('.drawer__product').count(); await p.keyboard.press('Escape');
   // every product with a registered page (nine once the spaces and ops slices have landed theirs)
   ok('P-1440-01', 'desktop: every product inline in the rail, the theme switch and find in the header, tabs in the role strip', d.rail === 'flex' && d.n >= 8 && d.n === d.menu && d.tabs !== 'fixed' && d.theme !== 'none' && d.find !== 'none', JSON.stringify(d));

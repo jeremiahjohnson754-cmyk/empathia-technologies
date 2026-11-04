@@ -115,7 +115,7 @@ const V25: Record<string, Authority> = {
   'v25.design': { area: 'builder' }, 'v25.scouter': { area: 'scouter' }, 'v25.lite': { area: 'lite' }, 'v25.fi': { area: 'agent' }, 'v25.fipv': { area: 'agent' },
   'v25.commissioning': { area: 'commissioning' }, 'v25.tracker': { area: 'commissioning' }, 'v25.coverage': { area: 'service.coverage' },
   'v25.service': { area: 'servicehands' }, 'v25.assurance': { area: 'assurance' }, 'v25.apex': { area: 'assurance.analysis' }, 'v25.exec': { area: 'pro.exec' },
-  'v25.learn': { area: 'learn' }, 'v25.ledger': { area: 'ledger' }, 'v25.walkthrough': { area: 'investor' }, 'v25.build': { area: 'v25.build' },
+  'v25.learn': { area: 'lessons' }, 'v25.ledger': { area: 'ledger' }, 'v25.walkthrough': { area: 'investor' }, 'v25.build': { area: 'v25.build' },
   'v25.policy': { roles: ROLE_KEYS, why: 'the V2.5 Policy page: a demonstration of authorization, shown to every role' },
 };
 /** The authority for a legacy area key (registry.ts › areaKey). Unknown keys fall to V2.5.3's `none` area: the Product Architect only. */

@@ -46,7 +46,7 @@ export const OPS_PAGES: readonly PageDef[] = [
   },
   {
     id: 'learn', title: 'Learn', purpose: 'Evidence-backed cases and training', product: 'learn', landing: true,
-    path: '/v25/learn', alias: ['/learn'], authority: { area: 'learn' },
+    path: '/v25/learn', alias: ['/learn'], authority: { area: 'lessons' },   // V2.5 Learn is reviewed cases from what happened: V2.5.3 lessons (the steward approves them)
     load: adapt(() => import('./pages/Learn.js'), (m, p) => h(m.LearnPage, { perspective: p.role, hash: p.hash })),
     search: { keywords: 'training cases signal lessons', aliases: ['signal', 'training'] },
   },
