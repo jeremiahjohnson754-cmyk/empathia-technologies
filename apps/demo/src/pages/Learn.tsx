@@ -15,7 +15,7 @@ interface Lesson { domain: string; title: string; sum: string; cards: string[]; 
 interface CanonCase { title: string; episode: string; hook: string; learn: string[]; id: string; canon: boolean }
 interface Lib { lessons: Record<string, Lesson>; lessonOrder: string[]; lessonDomains: string[]; quizzes: Record<string, Quiz>; drills: Record<string, Drill>; drillOrder: string[]; cases: Record<string, CanonCase>; caseOrder: string[]; formulas: Record<string, { name: string; eq: string; where: Array<[string, string]>; ex: string }>; glossary: Array<{ id: string; term: string; d: string; dom: string }> }
 let cache: Lib | null = null; let pending: Promise<Lib> | null = null;
-export function loadLib(): Promise<Lib> { if (cache) return Promise.resolve(cache); if (!pending) pending = fetch('signal-lib.json').then((r) => { if (!r.ok) throw new Error(`signal-lib.json ${r.status}`); return r.json(); }).then((j: Lib) => { cache = j; return j; }); return pending; }
+export function loadLib(): Promise<Lib> { if (cache) return Promise.resolve(cache); if (!pending) pending = fetch('signal-lib.json').then((r) => { if (!r.ok) throw new Error(`signal-lib.json ${r.status}`); return r.json(); }).then((j: Lib) => { cache = j; return j; }, (e) => { pending = null; throw e; }); return pending; }   // a failed load can be retried (it was kept as a rejected promise)
 const html = (s: string) => ({ __html: s });   // first-party library text (lesson cards carry <b> and formula spans), shipped with the build, never user input
 const TONE: Record<string, 'ok' | 'warn' | 'bad' | 'muted' | 'info'> = { PROPOSED: 'warn', SME_REVIEWED: 'info', REJECTED: 'bad', APPROVED: 'ok' };
 const when = (s: string) => s.slice(0, 16).replace('T', ' ');

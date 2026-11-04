@@ -6,6 +6,7 @@
 import { SERVICE_TRANSITIONS, serviceBlockers, type ServiceState } from '@empathia/service-engine';
 import * as S from '../workspace/store.js';
 import { deny, dx, log, need, now, type WX } from '../hardening/kit.js';
+import { labEvidence } from '../learn/store.js';
 import { assignmentBlockers, match, poolOf, reassignBlockers } from './engine.js';
 
 export const today = () => now().slice(0, 10);
@@ -13,7 +14,7 @@ export function matchFor(w: WX, incidentId: string, prefs: { language?: string |
   const inc = S.incidentOf(w, incidentId); if (!inc) return null;
   const wo = inc.workOrderId ? S.workOrderOf(w, inc.workOrderId) : undefined;
   const exclude = inc.recurrenceOf ? w.incidents.filter((i) => i.id === inc.recurrenceOf).flatMap((i) => i.history.filter((h) => h.to === 'ACCEPTED').map((h) => h.by)) : [];
-  return match(poolOf(w.staff), { workType: wo?.workType || 'break_fix', roomId: inc.roomId, buildingKey: inc.buildingKey, window: wo?.window || null, excludeIds: exclude, language: prefs.language || null, timeZone: prefs.timeZone || null }, today());
+  return match(poolOf(w.staff), { workType: wo?.workType || 'break_fix', roomId: inc.roomId, buildingKey: inc.buildingKey, window: wo?.window || null, excludeIds: exclude, language: prefs.language || null, timeZone: prefs.timeZone || null }, today(), labEvidence());
 }
 function step(w: WX, persona: string, inc: S.Incident, to: ServiceState, facts: Partial<Parameters<typeof serviceBlockers>[1]>): S.Refusal | null {
   const t = SERVICE_TRANSITIONS.find((x) => x.from === inc.state && x.to === to);
