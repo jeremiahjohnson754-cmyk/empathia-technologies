@@ -146,13 +146,13 @@ export const PLAN_ROOMS: RoomOutline[] = [
   P(45, 'R-RDG-1-100', 'Emergency Operations Center', 'OPS', 20, [13, 10, 3.4], 'Coordinate an emergency response across sites with agencies joining remotely.', 'A severe-weather drill: the regional teams, the campus and an outside agency on one wall (simulated, non-operational).', ['eoc', 'emergency operations', 'control tower'], { nonOperational: true, template: TOWER }),
 ];
 
-/** The 45-room campus of the plan: the thirty above, then rooms 31–45. `ROOMS` stays the thirty until every screen moves to this list. */
+/** The 45-room campus of the plan: the thirty above, then rooms 31–45. Every campus, Lite and search screen reads this list; `ROOMS` stays the thirty for the stories that speak of thirty (tours, Search Party S5, the website). */
 export const CAMPUS_ROOMS: RoomOutline[] = [...ROOMS, ...PLAN_ROOMS];
 
 export const REFERENCE_ROOM_ID = 'R-ATL-4-218';
 export const roomById = (id: string): RoomOutline | undefined => CAMPUS_ROOMS.find((r) => r.id === id);
 export const buildingByKey = (k: string): Building | undefined => BUILDINGS.find((b) => b.key === k) || REGIONAL_SITES.find((b) => b.key === k);
-export const roomsIn = (b: string, floor?: number): RoomOutline[] => ROOMS.filter((r) => r.building === b && (floor == null || r.floor === floor));
+export const roomsIn = (b: string, floor?: number): RoomOutline[] => CAMPUS_ROOMS.filter((r) => r.building === b && (floor == null || r.floor === floor));
 /** e.g. "Atlas 4.218" */
 export const shortName = (r: RoomOutline): string => `${buildingByKey(r.building)?.short || r.building} ${r.number}`;
 export const fullName = (r: RoomOutline): string => `${shortName(r)} — ${r.name}`;

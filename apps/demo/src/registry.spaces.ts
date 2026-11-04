@@ -31,6 +31,21 @@ export const SPACES_PAGES: readonly PageDef[] = [
     load: adapt(() => import('./campus/CampusPage.js'), (m, p) => h(m.CampusPage, { hash: p.hash, sees: p.sees })),
     search: { keywords: 'room 3d plan devices reference room 4.218', aliases: ['meeting room', 'reference room'] },
   },
+  // ---- Empathia Lite (uplift/lite): the campus for the people who use it, every room in 3D with layers, overlays and four states
+  {
+    id: 'lite', title: 'Empathia Lite', purpose: 'The living campus in 3D: buildings, floors, every room with coverage overlays and its designed, commissioned, current and proposed states; places, guides, wayfinding, visit, QR and Scouter', product: 'lite', landing: true,
+    path: '/lite', alias: ['/lite/*'], authority: { area: 'lite' },
+    // V2.5.3 refined Lite by the exact address: places need lite.services, guides lite.guides, a room's ?mode= its lens (AZ_LENS)
+    authorityFor: (params, query) => {
+      const sub = (params['*'] || '').split('/')[0];
+      if (sub === 'services' || sub === 'spaces') return { area: 'lite.services' };
+      if (sub === 'guides') return { area: 'lite.guides' };
+      if (sub === 'room' && query.get('mode')) return { lens: query.get('mode')! };
+      return undefined;
+    },
+    load: () => import('./lite/LiteApp.js'),
+    search: { keywords: 'lite living campus 3d room twin coverage overlays camera microphone speaker accessibility infrastructure designed commissioned current proposed spaces guides wayfinding visit qr commons town hall war room control tower', aliases: ['lite', 'room twin', 'coverage overlays', 'wayfinding', 'visitor check-in', 'guides', 'commons', 'control tower', 'war room', 'town hall', 'auditorium'] },
+  },
   {
     id: 'rooms', title: 'Rooms', purpose: 'Every room of the campus in one list, with its lifecycle and coverage', product: 'lite',
     path: '/rooms', authority: { area: 'campus' },

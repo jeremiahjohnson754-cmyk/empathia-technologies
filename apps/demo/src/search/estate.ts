@@ -7,7 +7,9 @@
 import { Graph, nodeKey, type Catalogue, type SearchNode, type Edge } from '@empathia/search-party';
 import { loadDraft, live } from '../build/store.js';
 import type { PlannedDevice, Connection } from '@empathia/domain-types';
-import { BUILDINGS, ROOMS, SITE, fullName, roomHref, buildingByKey, roomById } from '../campus/canon.js';
+import { BUILDINGS as CAMPUS_BUILDINGS, REGIONAL_SITES, CAMPUS_ROOMS as ROOMS, SITE, fullName, roomHref, buildingByKey, roomById } from '../campus/canon.js';
+/** the campus buildings and the fictional regional sites of the rooms plan (rows 40, 42, 45 sit on them) */
+const BUILDINGS = [...CAMPUS_BUILDINGS, ...REGIONAL_SITES];
 import { roomRecord } from '../campus/design.js';
 
 const N = (type: string, id: string, label: string, extra: Partial<SearchNode> = {}): SearchNode => ({ type, id, label, provenance: 'synthetic seed (demonstration)', ...extra });
