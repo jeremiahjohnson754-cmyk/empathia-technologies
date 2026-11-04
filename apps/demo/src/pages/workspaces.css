@@ -37,4 +37,24 @@ a.wk-card:hover { border-color: var(--accent); } a.wk-card:focus-visible { outli
 .wk-legend li { display: inline-flex; align-items: center; gap: 6px; } .wk-legend i { width: 10px; height: 10px; border-radius: 3px; background: var(--s); }
 .wk-filters { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-4); align-items: center; }
 .wk-foot { margin: 0; color: var(--tx3); font-size: var(--fs-xs); text-align: center; }
-@media (prefers-reduced-motion: reduce) { .wk-card { transition: none; } }
+.wk-v25nav, .wk-chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.wk-score { display: grid; justify-items: center; gap: 4px; text-align: center; min-width: 170px; }
+.wk-score__v { font-size: 3rem; font-weight: 700; line-height: 1; letter-spacing: var(--track-tight); font-variant-numeric: tabular-nums; } .wk-score__v small { font-size: 1.2rem; color: var(--tx3); }
+.wk-score__l { font-size: var(--fs-sm); font-weight: 600; } .wk-score__s { font-size: var(--fs-xs); color: var(--tx3); }
+.wk-rules { margin-top: var(--sp-3); font-size: var(--fs-sm); } .wk-rules summary { cursor: pointer; color: var(--tx2); min-height: 32px; display: flex; align-items: center; } .wk-rules[open] summary { margin-bottom: var(--sp-2); }
+.wk-lifebars { display: grid; gap: var(--sp-2); grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); }
+@media (max-width: 600px) { .wk-rules summary { min-height: 44px; } .wk-bars li { grid-template-columns: minmax(5em, 7em) minmax(0, 1fr) 2.5em; } }
+
+/* Mission Control stations and Executive passports, restyled on the kit's surfaces (demo.css keeps their structure) */
+.wk .mc__stations { margin: 0; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); }
+.wk .mc__station, .wk .exec__tile { background: linear-gradient(180deg, var(--sheen, transparent), transparent 60%), var(--panel2); border: 1px solid var(--line2); border-radius: var(--r-md); transition: border-color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease); }
+.wk .mc__station:hover, .wk .exec__tile:hover { border-color: var(--accent); transform: translateY(-1px); }
+.wk .mc__station:focus-visible, .wk .exec__tile:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.mc__top { display: flex; align-items: center; justify-content: space-between; }
+.wk .mc__n { font-size: 1.9rem; font-weight: 700; letter-spacing: var(--track-tight); font-variant-numeric: tabular-nums; }
+.wk .exec__grid { margin: 0; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); }
+.wk .exec__tile { padding: var(--sp-3) var(--sp-4); gap: 6px; align-content: start; }
+.wk .exec__tile.on { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.wk .exec__value { font-size: 1.6rem; font-weight: 700; letter-spacing: var(--track-tight); font-variant-numeric: tabular-nums; }
+.exec__value small { font-size: var(--fs-sm); font-weight: 600; color: var(--tx3); letter-spacing: 0; }
+@media (prefers-reduced-motion: reduce) { .wk-card, .wk .mc__station, .wk .exec__tile { transition: none; } .wk .mc__station:hover, .wk .exec__tile:hover { transform: none; } }

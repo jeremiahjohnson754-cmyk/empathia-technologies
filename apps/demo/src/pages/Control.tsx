@@ -9,7 +9,10 @@
  *     is the role × area matrix the demonstrator's dispatcher used, verbatim, beside the authority each native page checks.
  */
 import { useMemo, useState } from 'react';
-import { Button, Facts, Notice, Tag, Tabs } from '@empathia/ui';
+import { Button, Facts, Notice, Tag, Tabs, PageHero, StatTile, ScoreRing, Segmented, Card, Chip, List, ListRow, EmptyState, ProgressBar, Icon, type IconName } from '@empathia/ui';
+import { BUILDINGS } from '../campus/canon.js';
+import { plural, Foot, weekCounts, weekBacklog, deltaOf } from './viz.js';
+import { V25Nav } from './V25Nav.js';
 import { passports, type Passport, type Records } from '@empathia/kpi-engine';
 import { TIERS } from '@empathia/apex-engine';
 import areaRoles from '../generated/area-roles.json';
@@ -67,14 +70,35 @@ export function MissionControl({ perspective }: { perspective: string }) {
     { key: 'service', label: 'Service', count: w.incidents.filter((i) => !['CLOSED', 'CANCELLED'].includes(i.state)).length, href: '#/v25/service', items: w.incidents.filter((i) => !['CLOSED', 'CANCELLED'].includes(i.state)).map((i) => `${i.id} ${i.state} · ${i.title}`) },
   ];
   const latest = [...w.events, ...(d?.events.map((e) => ({ ...e, aggregate: d.code })) || [])].sort((a, b) => (a.at < b.at ? 1 : -1)).slice(0, 12);
+  const todo = needsAction(w, d, persona);
+  const based = R.rooms.filter((r) => r.baseline).length; const openJobs = w.incidents.filter((i) => !['CLOSED', 'CANCELLED'].includes(i.state));
+  const allEvents = [...w.events, ...(d?.events || [])]; const evWeeks = weekCounts(allEvents, (e) => e.at); const denied = allEvents.filter((e) => e.outcome === 'DENIED').length;
+  const ICON: Record<string, IconName> = { intake: 'inbox', decision: 'check', funding: 'ticket', design: 'layers', commissioning: 'shield', field: 'wrench', documents: 'book', handoff: 'link', assurance: 'pulse', service: 'route' };
   return (
-    <section className="mc">
-      <header className="build__head"><div><p className="kicker">Mission Control · one connected lifecycle</p><h1>What changed, what matters, what needs action</h1><p className="ui-muted">Acting as <b>{personaLabel(persona)}</b>. Every station counts live records of this demonstration; every record opens where it lives and carries its history and its events.</p></div></header>
-      <div className="mc__stations" data-testid="stations">{stations.map((s) => <a key={s.key} className="mc__station" href={s.href}><span className="mc__n">{s.count}</span><b>{s.label}</b><ul>{s.items.slice(0, 3).map((x) => <li key={x}>{x}</li>)}{s.items.length > 3 && <li className="ui-meta">+{s.items.length - 3} more</li>}{!s.items.length && <li className="ui-meta">nothing pending</li>}</ul></a>)}</div>
-      <div className="svc__grid">
-        <div className="card stack"><h2 className="build__h">Needs action by {personaLabel(persona)}</h2><ul className="plain">{needsAction(w, d, persona).map((x) => <li key={x.text}><a href={x.href}>{x.text}</a></li>)}{!needsAction(w, d, persona).length && <li className="ui-meta">Nothing waits on this perspective right now.</li>}</ul></div>
-        <div className="card stack"><h2 className="build__h">Latest events</h2><ul className="plain">{latest.map((e, i) => <li key={i}><Tag tone={e.outcome === 'DENIED' ? 'bad' : 'ok'}>{e.outcome}</Tag> <b>{e.type}</b> <span className="ui-meta">{('aggregate' in e ? (e as { aggregate: string }).aggregate : '')} · {personaLabel(e.by)} · {when(e.at)}</span></li>)}</ul><a href="#/v25/ledger">The whole ledger →</a></div>
+    <section className="mc wk">
+      <PageHero product="mission-control" icon="pulse" eyebrow="Empathia V2.5 · one connected lifecycle" title="What changed, what matters, what needs action"
+        lede={<>Intake to decision to design to commissioning to handoff to service — one lifecycle, with the evidence behind every state. <b>{plural(todo.length, 'thing')}</b> wait{todo.length === 1 ? 's' : ''} on <b>{personaLabel(persona)}</b>; <b>{plural(openJobs.length, 'service job')}</b> open.</>}
+        meta={[<Chip key="s" small tone="muted">Synthetic records · simulated</Chip>, <Chip key="e" small tone="accent">{plural(allEvents.length, 'event')} in the ledger</Chip>]}
+        aside={<ScoreRing value={based} max={R.rooms.length} label="Rooms with an accepted baseline" caption={`${based} of ${R.rooms.length} rooms in the lifecycle`} />} />
+      <V25Nav role={perspective} current="#/v25" />
+      <div className="kit-grid kit-grid--tiles wk-tiles4" data-testid="tiles">
+        <StatTile label="Waiting on you" value={todo.length} icon="bell" tone={todo.length ? 'warn' : 'ok'} hint={todo[0]?.text || 'Nothing waits on this perspective'} />
+        <StatTile label="Open service jobs" value={openJobs.length} icon="route" tone="servicehands" href="#/servicehands" spark={weekBacklog(w.incidents, (i) => i.openedAt, (i) => i.closedAt)} delta={deltaOf(weekBacklog(w.incidents, (i) => i.openedAt, (i) => i.closedAt), 'down', 'vs 4 wk ago', { level: true })} />
+        <StatTile label="Rooms without a baseline" value={R.rooms.length - based} icon="shield" tone="commissioning" hint="Commissioning not accepted yet" />
+        <StatTile label="Ledger events" value={allEvents.length} icon="book" tone="mission-control" spark={evWeeks} delta={deltaOf(evWeeks, 'none', 'vs prior 4 wk')} href="#/v25/ledger" />
       </div>
+      <Card icon="route" tone="mission-control" title="Where every record is" sub="The lifecycle, station by station · each count is the live records at that station; open one where it lives">
+        <div className="mc__stations" data-testid="stations">{stations.map((s) => <a key={s.key} className="mc__station" href={s.href}><span className="mc__top"><span className="kit-card__icon" aria-hidden="true"><Icon name={ICON[s.key] || 'info'} size={16} /></span><span className="mc__n">{s.count}</span></span><b>{s.label}</b><ul>{s.items.slice(0, 3).map((x) => <li key={x}>{x}</li>)}{s.items.length > 3 && <li className="ui-meta">+{s.items.length - 3} more</li>}{!s.items.length && <li className="ui-meta">nothing pending</li>}</ul></a>)}</div>
+      </Card>
+      <div className="wk-g2">
+        <Card icon="bell" tone="warn" title={`Needs action by ${personaLabel(persona)}`} sub={todo.length ? plural(todo.length, 'step') + ', each opens where it is decided' : undefined}>
+          {todo.length ? <List label="Waiting on this perspective">{todo.map((x) => <ListRow key={x.text} title={x.text} href={x.href} chevron leading={<Icon name="arrow-right" />} />)}</List> : <EmptyState title="Nothing waits on this perspective right now" icon="check" />}
+        </Card>
+        <Card icon="book" title="Latest events" sub={`${plural(denied, 'refusal')} recorded beside the allowed steps`} action={<a className="ui-btn ui-btn--quiet" href="#/v25/ledger">The whole ledger</a>}>
+          <ul className="wk-rows">{latest.map((e, i) => <li key={i}><span><b>{e.type}</b><span className="wk-r__m">{('aggregate' in e ? (e as { aggregate: string }).aggregate : '')} · {personaLabel(e.by)} · {when(e.at)}</span></span><Tag tone={e.outcome === 'DENIED' ? 'bad' : 'ok'}>{e.outcome}</Tag></li>)}</ul>
+        </Card>
+      </div>
+      <Foot>Every count is computed in this page from the demonstration’s synthetic records. Nothing is connected to a real system.</Foot>
     </section>
   );
 }
@@ -94,31 +118,91 @@ function needsAction(w: S.Workspace, d: Draft | null, persona: string): Array<{ 
 
 // ------------------------------------------------------------------------------------------------------------ Executive intelligence
 const LEVEL: Record<string, 'ok' | 'warn' | 'bad' | 'muted' | 'info'> = { high: 'ok', medium: 'info', low: 'warn', none: 'muted' };
+/** Which building a record belongs to: a room by its id (R-<building>-…), a project by the room it delivers. The Build a Room draft is
+ * not placed in a building, so it counts only under "All buildings" (said on the page). */
+const PROJECT_BUILDING: Record<string, string> = { 'PRJ-ATLAS-AV': 'ATL', 'PRJ-NST-TH': 'NST' };
+const bOfRoom = (id: string | null | undefined) => (id && /^R-([A-Z]+)-/.exec(id)?.[1]) || null;
+export function scopeRecords(R: Records, b: string): Records {
+  if (b === 'all') return R;
+  const inR = (id: string | null | undefined) => bOfRoom(id) === b; const inP = (id: string | null | undefined) => !!id && PROJECT_BUILDING[id] === b;
+  return { ...R, projects: R.projects.filter((p) => inP(p.id)), decisions: R.decisions.filter((x) => inP(x.projectId)), funding: R.funding.filter((x) => inP(x.projectId)),
+    requests: R.requests.filter((x) => inP(x.projectId)), workOrders: R.workOrders.filter((x) => inR(x.roomId)), incidents: R.incidents.filter((x) => inR(x.roomId)),
+    rooms: R.rooms.filter((x) => inR(x.id)), documents: R.documents.filter((x) => inR(x.roomId)), sessions: R.sessions.filter((x) => inR(x.roomId)), fieldScans: R.fieldScans.filter((x) => inR(x.roomId)) };
+}
+/** Decisions still waiting: a project whose latest decision is HELD, or APPROVED with no authorized funding yet. */
+export function pendingFunding(R: Records) {
+  return R.projects.flatMap((p): Array<{ id: string; state: string; tone: 'warn' | 'info'; why: string; at: string }> => {
+    const last = R.decisions.filter((x) => x.projectId === p.id).sort((a, b) => (a.at < b.at ? 1 : -1))[0];
+    const funded = R.funding.filter((f) => f.projectId === p.id && f.kind === 'AUTHORIZED').reduce((a, f) => a + f.amount, 0);
+    if (!last) return [{ id: p.id, state: 'Decision pending', tone: 'warn', why: 'no decision recorded yet', at: p.updatedAt }];
+    if (last.decision === 'HELD') return [{ id: p.id, state: 'Held', tone: 'warn', why: `held at scope revision ${last.scopeRev}`, at: last.at }];
+    if (last.decision === 'APPROVED' && !funded) return [{ id: p.id, state: 'Awaiting funding', tone: 'info', why: `approved at scope revision ${last.scopeRev}; funding is a separate decision`, at: last.at }];
+    return [];
+  });
+}
 export function ExecPage({ perspective }: { perspective: string }) {
   const persona = personaOf(perspective);
   const { w } = useWorkspace(); const d = loadDraft();
-  const [days, setDays] = useState(90); const [sel, setSel] = useState<string | null>(null);
-  const R = useMemo(() => assemble(w, d), [w, d]);
-  const ps = useMemo(() => passports(R, days), [R, days]);
+  const [days, setDays] = useState('90'); const [bld, setBld] = useState('all'); const [sel, setSel] = useState<string | null>(null);
+  const R0 = useMemo(() => assemble(w, d), [w, d]);
+  const R = useMemo(() => scopeRecords(R0, bld), [R0, bld]);
+  const ps = useMemo(() => passports(R, Number(days)), [R, days]);
+  const prev = useMemo(() => passports({ ...R, now: new Date(Date.parse(R.now) - Number(days) * 864e5).toISOString() }, Number(days)), [R, days]);
   const p = ps.find((x) => x.id === sel) || null;
   const allowed = ['exec', 'opslead', 'bpm', 'syseng', 'svcmgr', 'steward', 'architect'].includes(persona);
   if (!allowed) return <section className="exec"><header className="build__head"><div><p className="kicker">Executive intelligence</p><h1>KPI passports</h1></div></header><Notice tone="warn"><b>Acting as {personaLabel(persona)}: this perspective does not see executive passports.</b> They are read by the executive, operations, business and systems leads, the service manager and the steward; usage figures are aggregate-only for everyone.</Notice></section>;
+  const measured = ps.filter((x) => x.state === 'MEASURED'); const high = measured.filter((x) => x.confidence.level === 'high');
+  const pend = pendingFunding(R); const committed = R.funding.filter((f) => f.kind === 'AUTHORIZED').reduce((a, f) => a + f.amount, 0);
+  const pick = (id: string) => { setSel(id); setTimeout(() => document.getElementById('passport-h')?.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }), 0); };
+  const val = (x: Passport) => (x.state === 'MEASURED' && typeof x.value === 'number' ? `${x.value.toLocaleString('en-GB', { maximumFractionDigits: 1 })}${x.unit === '%' ? '%' : ''}` : '—');
+  const unitOf = (x: Passport) => (x.state === 'MEASURED' && x.unit !== '%' ? x.unit : '');
+  const bname = bld === 'all' ? 'All buildings' : BUILDINGS.find((b) => b.key === bld)?.name || bld;
+  const withRecords = new Set([...R0.rooms.map((r) => bOfRoom(r.id)), ...Object.values(PROJECT_BUILDING)].filter(Boolean));
   return (
-    <section className="exec">
-      <header className="build__head"><div><p className="kicker">Executive intelligence · shows its work</p><h1>Twenty-seven KPI passports</h1><p className="ui-muted">Acting as <b>{personaLabel(persona)}</b>. Computed from the records and the ledger: numerator, denominator, window, coverage, freshness and confidence. Usage is aggregate-only; "not measurable" is never 0%.</p></div>
-        <div className="build__state">{[30, 90, 180, 365].map((n) => <Button key={n} small kind={n === days ? 'primary' : 'secondary'} onClick={() => setDays(n)}>{n} days</Button>)}</div></header>
-      <div className="exec__grid" data-testid="passports">{ps.map((x) => <button key={x.id} type="button" className={`exec__tile${x.id === sel ? ' on' : ''}${x.state === 'NOT_MEASURABLE' ? ' nm' : ''}`} onClick={() => setSel(x.id)}><span className="exec__label">{x.label}</span><span className="exec__value">{x.state === 'NOT_MEASURABLE' ? 'not measurable' : x.byCurrency ? Object.entries(x.byCurrency).map(([c, v]) => `${v.toLocaleString()} ${c}`).join(' · ') : `${x.value}${x.unit === '%' ? '%' : ''}`}</span><span className="ui-meta">{x.state === 'NOT_MEASURABLE' ? x.reason : `${x.numerator} / ${x.denominator} ${x.unit !== '%' ? x.unit : ''}`}</span><Tag tone={LEVEL[x.confidence.level]}>{x.confidence.level}</Tag></button>)}</div>
+    <section className="exec wk">
+      <PageHero product="pro" icon="chart" eyebrow="Executive intelligence · shows its work" title="Twenty-seven KPI passports"
+        lede={<>Pending decisions, funding and {ps.length} measures computed from the records and the ledger — numerator, denominator, window, coverage, freshness and confidence. Nothing typed in; &ldquo;not measurable&rdquo; is never 0%. Acting as <b>{personaLabel(persona)}</b>.</>}
+        meta={[<Chip key="b" small tone="accent">{bname}</Chip>, <Chip key="d" small tone="muted">Last {days} days</Chip>, <Chip key="u" small tone="muted">Usage aggregate-only</Chip>]}
+        aside={<ScoreRing value={measured.length} max={ps.length} label="Passports measurable" caption={`${high.length} with high confidence`} />} />
+      <div className="wk-filters" data-testid="exec-filters">
+        <Segmented label="Period" value={days} onChange={(v) => setDays(v)} options={['30', '90', '180', '365'].map((n) => ({ value: n, label: `${n} days` }))} />
+        <Segmented label="Building" value={bld} onChange={(v) => { setBld(v); setSel(null); }} options={[{ value: 'all', label: 'All buildings' }, ...BUILDINGS.filter((b) => withRecords.has(b.key)).map((b) => ({ value: b.key, label: b.short }))]} />
+      </div>
+      <div className="kit-grid kit-grid--tiles wk-tiles4" data-testid="tiles">
+        <StatTile label="Passports measurable" value={measured.length} unit={`of ${ps.length}`} icon="chart" tone="pro" delta={{ value: measured.length - prev.filter((x) => x.state === 'MEASURED').length, good: 'up', label: 'vs the period before' }} />
+        <StatTile label="High confidence" value={high.length} icon="shield" tone="ok" hint="Coverage of 90% or more, fresh sources" />
+        <StatTile label="Funds committed" value={committed} unit="USD" icon="ticket" tone="info" hint={`${plural(R.funding.length, 'authorization')} on record`} />
+        <StatTile label="Decisions waiting" value={pend.length} icon="clock" tone={pend.length ? 'warn' : 'ok'} href="#/v25/decisions" hint="Held, or approved without funding" />
+      </div>
+      <Card icon="ticket" tone="pro" title="Pending funding and approval" sub={`${plural(pend.length, 'project')} in ${bname.toLowerCase() === 'all buildings' ? 'all buildings' : bname}`} action={<a className="ui-btn ui-btn--quiet" href="#/v25/decisions">Decision desk</a>} testId="pending-funding">
+        {pend.length ? <List label="Projects waiting for a decision or funding">{pend.map((x) => <ListRow key={x.id} title={x.id} sub={`${x.why} · since ${when(x.at)}`} leading={<Icon name="clock" />} trailing={<Chip small tone={x.tone}>{x.state}</Chip>} href="#/v25/decisions" chevron />)}</List>
+          : <EmptyState title="Nothing is waiting" icon="check">Every project in scope has its decision and its funding.</EmptyState>}
+      </Card>
+      <Card icon="grid" title="The passports" sub={`Select one to see how it was computed${bld === 'all' && d ? ` · includes the Build a Room draft ${d.code}, which is in no building` : ''}`}>
+        <div className="exec__grid" data-testid="passports">{ps.map((x) => {
+          const was = prev.find((y) => y.id === x.id);
+          const dv = x.state === 'MEASURED' && was?.state === 'MEASURED' && typeof x.value === 'number' && typeof was.value === 'number' ? Math.round((x.value - was.value) * 10) / 10 : null;
+          return <button key={x.id} type="button" aria-pressed={x.id === sel} className={`exec__tile${x.id === sel ? ' on' : ''}${x.state === 'NOT_MEASURABLE' ? ' nm' : ''}`} onClick={() => pick(x.id)}>
+            <span className="exec__label">{x.label}</span>
+            <span className="exec__value">{val(x)}{unitOf(x) ? <small> {unitOf(x)}</small> : null}</span>
+            <span className="ui-meta">{x.state === 'MEASURED' ? `${x.numerator} / ${x.denominator}${dv !== null && dv !== 0 ? ` · ${dv > 0 ? '+' : '−'}${Math.abs(dv)} vs before` : ''}` : 'not measurable'}</span>
+            {x.coverage.total ? <ProgressBar small label="Coverage" value={x.coverage.observed} max={x.coverage.total} valueText={`${x.coverage.observed}/${x.coverage.total}`} tone={LEVEL[x.confidence.level] === 'ok' ? 'ok' : LEVEL[x.confidence.level] === 'warn' ? 'warn' : 'info'} /> : null}
+            <Tag tone={LEVEL[x.confidence.level]}>{x.confidence.level}</Tag></button>;
+        })}</div>
+      </Card>
       {p && <PassportView p={p} />}
+      <Foot>Every figure is computed in this page from the demonstration’s synthetic records; nothing is measured from a real building.</Foot>
     </section>
   );
 }
 function PassportView({ p }: { p: Passport }) {
   return (
-    <div className="card stack" data-testid="passport">
-      <h2 className="build__h">KPI passport · {p.label} <Tag tone={p.state === 'MEASURED' ? 'ok' : 'muted'}>{p.state}</Tag></h2>
-      <p>{p.definition}</p>
+    <section className="kit-card" aria-labelledby="passport-h" data-testid="passport">
+      <header className="kit-card__head"><span className="kit-card__icon" aria-hidden="true"><Icon name="book" size={18} /></span><div className="kit-card__titles"><h2 id="passport-h" className="kit-card__title">KPI passport · {p.label} <Tag tone={p.state === 'MEASURED' ? 'ok' : 'muted'}>{p.state}</Tag></h2><p className="kit-card__sub">{p.definition}</p></div></header>
+      <div className="kit-card__body">
       <Facts items={[['Value', p.state === 'MEASURED' ? `${p.value}${p.unit === '%' ? '%' : ` ${p.unit}`}` : `not measurable — ${p.reason}`], ['Numerator / denominator', p.numerator === null ? '—' : `${p.numerator} / ${p.denominator}`], ['Window', `${p.window.days} days · ${when(p.window.from)} → ${when(p.window.to)}`], ['Coverage', `${p.coverage.observed} of ${p.coverage.total} eligible records observed`], ['Freshness', p.freshness === null ? '—' : `freshest source ${p.freshness} day(s) old`], ['Confidence', `${p.confidence.level}${p.confidence.reasons.length ? ` — ${p.confidence.reasons.join('; ')}` : ''}`], ['Source · owner · privacy', `${p.source} · ${p.owner} · ${p.privacy}`], ['Exclusions', p.exclusions.join('; ') || 'none'], ['Drill-down', p.drill.length ? p.drill.join(', ') : '—'], ['Version', p.version]]} />
-    </div>
+      </div>
+    </section>
   );
 }
 
