@@ -52,7 +52,9 @@ for (const [id, c] of Object.entries(prov.captures || {})) {
 }
 const rendered = renderAll({ films, transcripts, demoUrl, preview: filmsMode === 'preview', captures }, { api: api || null, base });
 const PATHS = rendered.map((r) => r.path).filter((p) => p !== '/404');
-for (const r of rendered) { if (r.path === '/404') { fs.writeFileSync(path.join(dist, '404.html'), decorate(r.html)); continue; } const dir = path.join(dist, r.path === '/' ? '' : r.path); fs.mkdirSync(dir, { recursive: true }); fs.writeFileSync(path.join(dir, 'index.html'), decorate(r.html)); }
+// every page carries its CSP as <meta> too (assessment SA-01): a host that drops render.yaml's headers still cannot load or send off-origin
+const { injectMetaCsp, originOf } = await import(path.join(repo, 'scripts/security/policy.mjs')); const page = (h) => injectMetaCsp(decorate(h), [originOf(api)].filter(Boolean));
+for (const r of rendered) { if (r.path === '/404') { fs.writeFileSync(path.join(dist, '404.html'), page(r.html)); continue; } const dir = path.join(dist, r.path === '/' ? '' : r.path); fs.mkdirSync(dir, { recursive: true }); fs.writeFileSync(path.join(dir, 'index.html'), page(r.html)); }
 // media: the founder portrait (owner-supplied for the website, metadata stripped) and the films built in
 for (const f of fs.readdirSync(path.join(mediaSrc, 'founder'))) copy(path.join(mediaSrc, 'founder', f), path.join(dist, 'media/founder', f));
 for (const f of films) for (const x of ['720.mp4', 'poster.webp', 'poster.jpg', 'captions.vtt']) copy(path.join(mediaSrc, f.key, x), path.join(dist, 'media', f.key, x));

@@ -16,7 +16,9 @@ const apiOrigin = new URL(arg('api', process.env.API_URL || 'http://127.0.0.1:41
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.txt': 'text/plain; charset=utf-8', '.xml': 'application/xml', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.woff': 'font/woff', '.woff2': 'font/woff2', '.webmanifest': 'application/manifest+json', '.mp4': 'video/mp4', '.vtt': 'text/vtt; charset=utf-8' };
 // addresses that moved when the product pages followed the nine (D42): permanent redirects, the same map as render.yaml's routes
 const MOVED = JSON.parse(fs.readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../redirects.json'), 'utf8'));
-const CSP = `default-src 'self'; connect-src 'self' ${apiOrigin}; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'`;   // D7: Inter is self-hosted; no font kit, no third party
+// the policy both public sites share (scripts/security/policy.mjs; render.yaml declares the same). D7: Inter is self-hosted; no font kit, no third party
+const { cspHeader, COMMON_HEADERS } = await import(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../scripts/security/policy.mjs'));
+const CSP = cspHeader([apiOrigin]); const COMMON = Object.fromEntries(Object.entries(COMMON_HEADERS).map(([k, v]) => [k.toLowerCase(), v]));
 export function serve() {
   const s = http.createServer((req, res) => {
     const host = String(req.headers.host || '');
@@ -27,10 +29,11 @@ export function serve() {
     if (p.endsWith('/')) p += 'index.html'; else if (!path.extname(p)) p += '/index.html';   // pre-rendered pages: /platform → /platform/index.html
     let f = path.join(root, path.normalize(p).replace(/^(\.\.[/\\])+/, '')); let status = 200;
     if (p.includes('\u0000') || !f.startsWith(root + path.sep) || !fs.existsSync(f) || !fs.statSync(f).isFile()) { f = path.join(root, '404.html'); status = 404; }   // the designed not-found page, status 404
-    const head = { 'content-type': TYPES[path.extname(f)] || 'application/octet-stream', 'x-content-type-options': 'nosniff', 'referrer-policy': 'no-referrer', 'cache-control': 'no-cache' };
-    if (f.endsWith('.html')) Object.assign(head, { 'content-security-policy': CSP, 'x-frame-options': 'DENY' });
+    const head = { ...COMMON, 'content-type': TYPES[path.extname(f)] || 'application/octet-stream', 'cache-control': 'no-cache' };
+    if (f.endsWith('.html')) head['content-security-policy'] = CSP;
     if (status === 404) { const html = fs.readFileSync(f); res.writeHead(404, { ...head, 'content-length': html.length }); res.end(req.method === 'HEAD' ? undefined : html); return; }
-    res.writeHead(200, head); fs.createReadStream(f).pipe(res);
+    res.writeHead(200, head); if (req.method === 'HEAD') { res.end(); return; }
+    fs.createReadStream(f).on('error', () => res.destroy()).pipe(res);   // a file that vanishes mid-read ends this response, not the server (SA-05)
   });
   return new Promise((ok) => s.listen(port, host, () => ok(s)));
 }

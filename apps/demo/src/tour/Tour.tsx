@@ -44,7 +44,8 @@ export function TourPanel({ hash, onPerspective }: { hash: string; onPerspective
   return <><InvestorPanel hash={hash} onPerspective={onPerspective} /><GuidedPanel hash={hash} /></>;
 }
 function InvestorPanel({ hash, onPerspective }: { hash: string; onPerspective: (p: string) => void }) {
-  const [i, setI] = useState<number | null>(() => { try { const v = sessionStorage.getItem(KEY); return v === null ? null : Number(v); } catch { return null; } });
+  // a stored step outside the tour (tampered or from an older build) is no tour at all, never a crash (assessment SA-09)
+  const [i, setI] = useState<number | null>(() => { try { const v = sessionStorage.getItem(KEY); const n = v === null ? NaN : Number(v); return Number.isInteger(n) && n >= 0 && n < STEPS.length ? n : null; } catch { return null; } });
   // #/tours/investor?scenario=n starts (or restarts) at the first step of a scenario
   useEffect(() => { const m = /^#\/tours\/investor(?:\?scenario=(\d))?/.exec(hash); if (m) { const n = m[1] ? Number(m[1]) : 1; const first = STEPS.findIndex((s) => s.n === n); start(first < 0 ? 0 : first); } }, [hash]);   // eslint-disable-line react-hooks/exhaustive-deps
   const start = (idx: number) => { setI(idx); try { sessionStorage.setItem(KEY, String(idx)); } catch { /* storage unavailable */ } const s = STEPS[idx]!; onPerspective(s.persona); location.hash = s.href; };

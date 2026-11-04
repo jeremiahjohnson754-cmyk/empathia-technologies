@@ -8,13 +8,20 @@
 #                       not indexed by search engines. Its external distribution is an owner decision (RELEASE_ACCEPTANCE_CRITERIA S11).
 #
 # Fields follow https://render.com/docs/blueprint-spec (static sites: type web + runtime static; region and plan do not apply).
+# Security (docs/security/ASSESSMENT_2026-11-04.md): the headers below are the policy of scripts/security/policy.mjs, which the builds also
+# write into every page as a <meta> CSP; tests/security/public-sites.test.mjs proves the two agree. These headers and routes apply only to
+# the services this Blueprint manages; a static site created through the API (empathia-website-next, empathia-demo-next) needs them set
+# on the service itself (scripts/security/render-headers.mjs prints and, with RENDER_API_KEY in the environment, applies them).
+# Install: no lockfile is committed yet, so --frozen-lockfile cannot be used; dependency lifecycle scripts never run (--ignore-scripts), and
+# pnpm-workspace.yaml refuses versions published in the last 24 hours (minimumReleaseAge). Commit pnpm-lock.yaml and switch to
+# --frozen-lockfile as soon as a connected machine can produce it.
 services:
   - type: web
     runtime: static
     name: empathia-website
     branch: main
     autoDeployTrigger: commit
-    buildCommand: npx --yes pnpm@10.18.3 install --no-frozen-lockfile && node scripts/build.mjs --public
+    buildCommand: npx --yes pnpm@10.18.3 install --no-frozen-lockfile --ignore-scripts && node scripts/build.mjs --public
     staticPublishPath: apps/website/dist
     envVars:
       - key: SKIP_INSTALL_DEPS          # Render's automatic npm install cannot resolve pnpm workspace:* links; the build command installs
@@ -35,7 +42,7 @@ services:
     headers:
       - path: /*
         name: Content-Security-Policy
-        value: "default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"
+        value: "default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"
       - path: /*
         name: X-Content-Type-Options
         value: nosniff
@@ -47,14 +54,23 @@ services:
         value: no-referrer
       - path: /*
         name: Strict-Transport-Security
-        value: max-age=31536000
+        value: max-age=31536000; includeSubDomains
+      - path: /*
+        name: Permissions-Policy
+        value: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+      - path: /*
+        name: Cross-Origin-Opener-Policy
+        value: same-origin
+      - path: /*
+        name: Cross-Origin-Resource-Policy
+        value: same-origin
 
   - type: web
     runtime: static
     name: empathia-demo
     branch: main
     autoDeployTrigger: commit
-    buildCommand: npx --yes pnpm@10.18.3 install --no-frozen-lockfile && node scripts/build.mjs --public
+    buildCommand: npx --yes pnpm@10.18.3 install --no-frozen-lockfile --ignore-scripts && node scripts/build.mjs --public
     staticPublishPath: apps/demo/dist
     envVars:
       - key: SKIP_INSTALL_DEPS
@@ -64,7 +80,7 @@ services:
     headers:
       - path: /*
         name: Content-Security-Policy
-        value: "default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"
+        value: "default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"
       - path: /*
         name: X-Robots-Tag
         value: noindex, nofollow
@@ -79,4 +95,13 @@ services:
         value: no-referrer
       - path: /*
         name: Strict-Transport-Security
-        value: max-age=31536000
+        value: max-age=31536000; includeSubDomains
+      - path: /*
+        name: Permissions-Policy
+        value: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+      - path: /*
+        name: Cross-Origin-Opener-Policy
+        value: same-origin
+      - path: /*
+        name: Cross-Origin-Resource-Policy
+        value: same-origin

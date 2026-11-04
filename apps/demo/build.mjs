@@ -53,7 +53,9 @@ const { shipBrandAndType, tokenCss } = await import(path.join(repo, 'packages/de
 const decorate = shipBrandAndType(dist, { preload: 'app', manifest: { name: 'Empathia Living Campus — investor demonstration', shortName: 'Empathia demo' } });
 const css = [tokenCss(), ...[path.join(repo, 'packages/ui/src/ui.css'), path.join(app, 'src/styles/demo.css'), path.join(app, 'src/styles/shell.css'), path.join(app, 'src/hardening/ops.css'), path.join(app, 'src/spatial/spaces.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`)].join('\n');
 fs.writeFileSync(path.join(dist, 'demo.css'), css);
-fs.writeFileSync(path.join(dist, 'index.html'), decorate(fs.readFileSync(path.join(app, 'src/index.html'), 'utf8')));
+// the CSP rides in the page as <meta> too (assessment SA-01): served without render.yaml's headers, nothing still leaves the page
+const { injectMetaCsp } = await import(path.join(repo, 'scripts/security/policy.mjs'));
+fs.writeFileSync(path.join(dist, 'index.html'), injectMetaCsp(decorate(fs.readFileSync(path.join(app, 'src/index.html'), 'utf8'))));
 // the View-as role is applied before first paint by a tiny same-origin script (the CSP forbids inline scripts), so the role colour is right on the first frame
 fs.copyFileSync(path.join(app, 'src/role-boot.js'), path.join(dist, 'role-boot.js'));
 const files = (function walk(d, pre = '') { return fs.readdirSync(d).flatMap((f) => fs.statSync(path.join(d, f)).isDirectory() ? walk(path.join(d, f), `${pre}${f}/`) : [`${pre}${f}`]); })(dist);

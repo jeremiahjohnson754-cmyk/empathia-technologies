@@ -16,22 +16,28 @@ const apiOrigin = new URL(arg('api', process.env.API_URL || 'http://127.0.0.1:41
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.txt': 'text/plain; charset=utf-8',
   // brand, Inter and media (D7, D39): served with their real types, which nosniff requires
   '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.woff2': 'font/woff2', '.woff': 'font/woff', '.webmanifest': 'application/manifest+json', '.mp4': 'video/mp4', '.vtt': 'text/vtt; charset=utf-8', '.mp3': 'audio/mpeg' };
-// Typography: when FONT_KIT_ID names the Adobe Fonts kit (Empathia platform UI: Acumin Pro, kit kis0uqz), the stylesheet is linked and its hosts allow-listed; unset = system fonts, no external request
-const fontKit = arg('font-kit', process.env.FONT_KIT_ID || '');
-const fontSrc = fontKit ? ' https://use.typekit.net https://p.typekit.net' : '';
-const CSP = `default-src 'self'; connect-src 'self' ${apiOrigin}${fontKit ? ' https://p.typekit.net' : ''}; img-src 'self' data:${fontKit ? ' https://p.typekit.net' : ''}; style-src 'self'${fontSrc}; font-src 'self'${fontSrc}; script-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'`;
+// the policy both public sites share (scripts/security/policy.mjs; render.yaml declares the same). D7: Inter is self-hosted, so there is
+// no font kit and no third-party host; the demonstration runs entirely in the browser, so connect-src is the page's own origin only
+// (the configured API origin is still named in the page, for a deployment that adds one).
+const { cspHeader, COMMON_HEADERS } = await import(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../scripts/security/policy.mjs'));
+const CSP = cspHeader();
+const lower = (o) => Object.fromEntries(Object.entries(o).map(([k, v]) => [k.toLowerCase(), v]));
 export function serve() {
   const s = http.createServer((req, res) => {
     const host = String(req.headers.host || '');
     if (!/^(127\.0\.0\.1|localhost)(:\d+)?$/.test(host)) { res.writeHead(421).end('misdirected'); return; }
-    let p = decodeURIComponent(new URL(req.url || '/', 'http://x').pathname);
+    // assessment SA-05: static files only (GET/HEAD), and a malformed escape is a 404, never an uncaught exception that stops the server
+    if (req.method !== 'GET' && req.method !== 'HEAD') { res.writeHead(405, { allow: 'GET, HEAD', 'content-type': 'text/plain' }).end('method not allowed'); return; }
+    let p; try { p = decodeURIComponent(new URL(req.url || '/', 'http://x').pathname); } catch { p = '/\u0000'; }
     if (p === '/') p = '/index.html';
     const f = path.join(root, path.normalize(p).replace(/^(\.\.[/\\])+/, ''));
-    if (!f.startsWith(root) || !fs.existsSync(f) || !fs.statSync(f).isFile()) { res.writeHead(404, { 'content-type': 'text/plain' }).end('not found'); return; }
-    const head = { 'content-type': TYPES[path.extname(f)] || 'application/octet-stream', 'x-content-type-options': 'nosniff', 'referrer-policy': 'no-referrer', 'cache-control': 'no-cache' };
-    if (f.endsWith('.html')) Object.assign(head, { 'content-security-policy': CSP, 'x-frame-options': 'DENY' });
-    if (f.endsWith('index.html')) { const html = fs.readFileSync(f, 'utf8').replace('<head>', `<head>\n  <meta name="empathia-api" content="${apiOrigin}">${fontKit ? `\n  <link rel="stylesheet" href="https://use.typekit.net/${fontKit}.css">` : ''}`); res.writeHead(200, { ...head, 'content-length': Buffer.byteLength(html) }); res.end(html); return; }   // the API origin the deployment configured
-    res.writeHead(200, head); fs.createReadStream(f).pipe(res);
+    const base = { ...lower(COMMON_HEADERS), 'cache-control': 'no-cache' };
+    if (p.includes('\u0000') || !f.startsWith(root + path.sep) || !fs.existsSync(f) || !fs.statSync(f).isFile()) { res.writeHead(404, { ...base, 'content-type': 'text/plain' }).end('not found'); return; }
+    const head = { ...base, 'content-type': TYPES[path.extname(f)] || 'application/octet-stream' };
+    if (f.endsWith('.html')) head['content-security-policy'] = CSP;
+    if (f.endsWith('index.html')) { const html = fs.readFileSync(f, 'utf8').replace('<head>', `<head>\n  <meta name="empathia-api" content="${apiOrigin}">`); res.writeHead(200, { ...head, 'content-length': Buffer.byteLength(html) }); res.end(req.method === 'HEAD' ? undefined : html); return; }   // the API origin the deployment configured
+    res.writeHead(200, head); if (req.method === 'HEAD') { res.end(); return; }
+    fs.createReadStream(f).on('error', () => res.destroy()).pipe(res);   // a file that vanishes mid-read ends this response, not the server
   });
   return new Promise((ok) => s.listen(port, host, () => ok(s)));
 }
