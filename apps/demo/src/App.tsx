@@ -10,6 +10,8 @@ import { LearnPage } from './pages/Learn.js';
 import { MissionControl, ExecPage, LedgerPage } from './pages/Control.js';
 import { FieldIntelligencePage } from './pages/FieldIntelligence.js';
 import { opsPage } from './hardening/opsRoutes.js';
+import { WorkWith, ContactLinks } from './enquiry/WorkWith.js';
+import { ENQUIRY } from './enquiry.js';
 
 /** The seven investor scenarios of the 2.5.5 investor landing, with the customer problem each one solves (carried over verbatim in spirit). */
 const SCENARIOS = [
@@ -49,7 +51,7 @@ export function App() {
         <TourPanel hash={hash} onPerspective={setAs} />
         <div className="wrap">{home ? <Landing /> : opsPage(hash, as) || page(areaKey(hash), hash, as) || <Boundary hash={hash} area={area} />}</div>
       </AppShell>
-      <footer className="foot">Every person, organisation, room, device, figure and approval here is invented. Nothing is connected to a real system. <a href="#/investor">Back to the start</a></footer>
+      <footer className="foot">Every person, organisation, room, device, figure and approval here is invented. Nothing is connected to a real system; the only way out is Empathia's enquiry form, which opens on {ENQUIRY.host}. <a href="#/investor">Back to the start</a><ContactLinks /></footer>
     </div>
   );
 }
@@ -87,6 +89,7 @@ function Landing() {
         <h2>Seven scenarios</h2>
         <ol>{SCENARIOS.map(([t, p], i) => <li key={t}><a href={`#/tours/investor?scenario=${i + 1}`}><b>{i + 1} · {t}</b></a><p><i>The problem</i> {p}</p></li>)}</ol>
       </section>
+      <WorkWith />
       <section className="status">
         <h2>Migration status</h2>
         <p>This demonstration is being rebuilt as modular pages from the Living Campus V2.5.3 source, one area at a time. {AREAS.filter((a) => NATIVE.has(a.key)).length} of {AREAS.length} addresses (86 areas and 19 V2.5 pages) are native today; the rest state their status when opened (see the parity ledger in the repository).</p>
