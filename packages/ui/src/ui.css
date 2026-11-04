@@ -163,8 +163,11 @@
 .sp__input { flex: 1 1 320px; min-width: 0; min-height: 40px; padding: 0 12px; font: inherit; font-size: var(--fs-md); background: var(--bg2); color: var(--tx); border: 1px solid var(--line2); border-radius: var(--r-sm); }
 .sp__grid { display: grid; grid-template-columns: minmax(280px, 1fr) minmax(0, 2fr); gap: var(--sp-5); align-items: start; }
 .sp__facets { display: flex; gap: var(--sp-3); flex-wrap: wrap; align-items: center; font-size: var(--fs-sm); color: var(--tx2); margin-bottom: var(--sp-2); } .sp__facets select { font: inherit; background: var(--bg2); color: var(--tx); border: 1px solid var(--line2); border-radius: var(--r-sm); min-height: 28px; }
-.sp__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; } .sp__list li a { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: baseline; padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--r-sm); color: var(--tx); text-decoration: none; min-width: 0; }
+.sp__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; } .sp__list li a { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 8px; align-items: baseline; padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--r-sm); color: var(--tx); text-decoration: none; min-width: 0; }
 .sp__list li a:hover, .sp__list li.on a { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 6%, transparent); } .sp__list b { overflow-wrap: anywhere; }
+/* QA round 1 (R1-02): four items in a three-column row squeezed the name to one character per line; the name keeps the wide column,
+   the subtitle sits under it and the id under the type */
+.sp__list li a > .ui-muted { grid-column: 2; grid-row: 2; overflow-wrap: anywhere; } .sp__list li a > .sp__id { grid-column: 1; grid-row: 2; overflow-wrap: anywhere; }
 .sp__type { font-size: var(--fs-xs); color: var(--tx3); text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; } .sp__id { color: var(--tx3); font-size: var(--fs-xs); }
 .sp__coverage { margin-top: var(--sp-3); font-size: var(--fs-sm); color: var(--tx2); } .sp__coverage ul { margin: 6px 0 0; padding-left: 18px; }
 .sp__start h2 { margin: 4px 0; } .sp__graph { margin: var(--sp-3) 0; } .sp__graph svg { width: 100%; height: auto; max-height: 520px; background: var(--bg2); border: 1px solid var(--line); border-radius: var(--r-md); }
