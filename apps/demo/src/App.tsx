@@ -10,7 +10,7 @@ import React, { Component, useCallback, useEffect, useRef, useState, type Compon
 import { Notice, Loading, Button } from '@empathia/ui';
 import type { PageProps, RoleKey } from './registry.types.js';
 import { areaOf, areaKey } from './registry.js';
-import { resolve } from './registry.pages.js';
+import { resolve, PAGES, hrefOf } from './registry.pages.js';
 import { ROLES, ROLE_KEYS, canOpen, canDo, canSee, whoCanOpen, legacyAuthority, allows, tabsFor, type Resolved } from './access/policy.js';
 import { AccessProvider } from './access/Gate.js';
 import { AccessPage, NotFound } from './access/AccessPage.js';
@@ -116,16 +116,16 @@ class PageBoundary extends Component<{ title: string; children: ReactNode }, { f
   render() { return this.state.failed ? <section className="loadfail" role="alert"><h1 tabIndex={-1}>{this.props.title} stopped</h1><p>Something on this page failed. The rest of the demonstration still works.</p><a className="ui-btn" href="#/investor">Back to the start</a></section> : this.props.children; }
 }
 
+/** A legacy address no page claims (none should remain: tests/browser/demo-parity-areas.test.mjs asserts it). It still lands on a finished screen: what the area is, the nearest pages, and the full address list. */
 function Boundary({ hash, area }: { hash: string; area: { key: string; label: string; target: string; status: string; newRoute: string } }) {
-  const done = area.status.startsWith('DONE');
+  const near = PAGES.filter((p) => p.product !== 'shell').slice(0, 6);
   return (
     <section className="boundary">
       <h1>{area.label}</h1>
-      <p className="ui-muted">Address <code>{hash}</code> · legacy area <code>{area.key}</code></p>
-      <Notice tone={done ? 'ok' : 'info'}>
-        <b>{done ? 'Native page. ' : 'Not migrated yet. '}</b>{done ? <>This area runs natively; its page is being connected to this shell.</> : <>This part of the demonstration has not been rebuilt in the new application yet. Parity ledger: target <b>{area.target}</b>, status <b>{area.status}</b>, planned route <code>{area.newRoute}</code>. Until it is, the original V2.5.3 demonstration remains the reference for this area.</>}
-      </Notice>
-      <p><a className="ui-btn" href="#/investor">Back to the start</a></p>
+      <p className="ui-muted">Address <code>{hash}</code> · V2.5.3 area <code>{area.key}</code></p>
+      <Notice tone="info">This address belongs to the V2.5.3 area “{area.label}”. Its content is served by the pages below; the full map of every original address is on <a href="#/parity">Every V2.5.3 address</a>.</Notice>
+      <ul className="ui-list">{near.map((p) => <li key={p.id}><a href={hrefOf(p.id)}>{p.title}</a> — {p.purpose}</li>)}</ul>
+      <p><a className="ui-btn" href="#/parity">Every V2.5.3 address</a> <a className="ui-btn ui-btn--quiet" href="#/investor">Back to the start</a></p>
     </section>
   );
 }

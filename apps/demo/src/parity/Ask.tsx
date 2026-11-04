@@ -3,7 +3,7 @@
  * is matched to one of the prepared questions by its words, the answer is computed from the records, and every answer cites the records
  * it stands on. A question that is not one of them is said to be so, with the nearest prepared questions offered instead.
  */
-import { useMemo, useState, type FormEvent, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { PageHero, Chip, Tag, Icon } from '@empathia/ui';
 import type { PageProps, RoleKey } from '../registry.types.js';
 import { allows } from '../access/policy.js';
@@ -69,7 +69,7 @@ export default function AskPage({ role, query }: PageProps) {
   const mine = QUESTIONS.filter((q) => mayAsk(q, role));
   const result = useMemo(() => (asked ? match(asked, role) : null), [asked, role]);
   const ans = result ? result.q.answer(core, result.room, role) : null;
-  const submit = (e: FormEvent) => { e.preventDefault(); setAsked(text.trim()); };
+  const submit = (e: { preventDefault(): void }) => { e.preventDefault(); setAsked(text.trim()); };
   const groups = ['Rooms', 'The estate', 'Design', 'The workplace'] as const;
   return (
     <div className="pa" data-testid="parity-ask">

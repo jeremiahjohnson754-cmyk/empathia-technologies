@@ -11,7 +11,7 @@ import { shortName, fullName, roomHref } from '../campus/canon.js';
 import { openIssues, type RoomRecord } from '../campus/design.js';
 import { healthOf, RULES, plural, day, type Core, type Rec } from './core.js';
 import { useCore, honest, Crumbs, Pills, Zone, RecList, FactsTable, canEntity } from './ui.js';
-import { runsOf, runOf, hasAgent } from './agent.js';
+import { runsOf, runOf, hasAgent } from './agentModel.js';
 import { outcomeTag } from './Agent.js';
 
 type Strength = 'Verified' | 'Recorded' | 'Derived' | 'Inferred';

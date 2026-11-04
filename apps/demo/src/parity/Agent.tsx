@@ -3,7 +3,7 @@ import { PageHero, Card, StatTile, Tag, ProgressBar } from '@empathia/ui';
 import type { PageProps } from '../registry.types.js';
 import { shortName } from '../campus/canon.js';
 import { useCore, honest, Crumbs, Zone, Bars } from './ui.js';
-import { CHECKS, PARTS, runsOf, hasAgent, type Outcome } from './agent.js';
+import { CHECKS, PARTS, runsOf, hasAgent, type Outcome } from './agentModel.js';
 import { hhmm } from './core.js';
 
 const OUT: Record<Outcome, [string, 'ok' | 'bad' | 'warn' | 'muted']> = { pass: ['pass', 'ok'], fault: ['real fault', 'bad'], 'false-alarm': ['false alarm', 'warn'], 'not-applicable': ['no device', 'muted'] };

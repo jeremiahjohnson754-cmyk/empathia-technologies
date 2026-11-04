@@ -2,7 +2,7 @@
  * #/gate (the welcome page, V2.5.3's first touch): who you are today, the search bar, and the way into your work. Choosing a role is the
  * demonstration's View as (D1): it changes what is shown and grants nothing.
  */
-import { useState, type FormEvent } from 'react';
+import { useState } from 'react';
 import { PageHero, Icon, Chip } from '@empathia/ui';
 import type { PageProps, RoleKey } from '../registry.types.js';
 import { ROLES, ROLE_KEYS, tabsFor } from '../access/policy.js';
@@ -19,7 +19,7 @@ const GROUPS: Array<[string, RoleKey[]]> = [
 
 export default function GatePage({ role }: PageProps) {
   const v = useViewAs(); const [q, setQ] = useState('');
-  const go = (e: FormEvent) => { e.preventDefault(); const t = q.trim(); location.hash = t ? `#/find?q=${encodeURIComponent(t.slice(0, 120))}` : '#/find'; };
+  const go = (e: { preventDefault(): void }) => { e.preventDefault(); const t = q.trim(); location.hash = t ? `#/find?q=${encodeURIComponent(t.slice(0, 120))}` : '#/find'; };
   const home = tabsFor(role, () => true)[0];
   return (
     <div className="pa" data-testid="parity-gate">

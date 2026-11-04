@@ -66,7 +66,7 @@ function RoomControl({ role, id, can, query }: PageProps & { id: string }) {
   const [dock, setDock] = useState<Record<string, boolean>>({ mic: false, vol: true, cam: false, share: false, session: !!(o && busyAt(o.id)) });
   const [said, setSaid] = useState('');
   if (!o || !rec) return <EmptyState title="No room has this address" icon="room" action={<a className="ui-btn" href="#/control">Every room’s panel</a>}>Nothing in the campus records is called <code>{id}</code>.</EmptyState>;
-  const busy = busyAt(o.id); const next = nextOf(o.id); const use = can('ctl.use');
+  const busy = busyAt(o.id); const next = nextOf(o.id); const use = can('control.use');
   const has = (layer: string) => rec.positions.some((p) => p.layer === layer);
   const sentence = dock.session ? `${shortName(o)} is in a session${busy ? ` (${busy.title})` : ''}${dock.share ? ', sharing a screen' : ''}${dock.mic ? '' : ', microphones muted'}.` : `${shortName(o)} is free${next ? ` until ${hhmm(next.from)}` : ' for the rest of the day'}.`;
   const tap = (k: string) => { if (!use) return; setDock((d) => { const n = { ...d, [k]: !d[k] }; setSaid(`${DOCK.find((x) => x.key === k)!.label} ${n[k] ? 'on' : 'off'} (simulated: nothing was sent to the room)`); return n; }); };

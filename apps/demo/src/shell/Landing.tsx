@@ -23,7 +23,7 @@ export default function Landing({ role }: PageProps) {
   const native = AREAS.filter((a) => NATIVE.has(a.key)).length;
   return (
     <>
-      <PageHero eyebrow="Investor demonstration · release in migration" icon="spark" className="landing-hero"
+      <PageHero eyebrow="Investor demonstration" icon="spark" className="landing-hero"
         title="Every state here has a guard, an actor and an event behind it."
         lede="Declared is not verified; modeled is not measured — and the product says so itself. Three ways in:"
         meta={[<Chip key="s" small icon="play">{SCENARIOS.length} guided scenarios</Chip>, <Chip key="r" small icon="users">{ROLE_KEYS.length} roles to view as</Chip>, <Chip key="p" small icon="products">{PRODUCTS.length} products, one platform</Chip>]}
@@ -47,8 +47,8 @@ export default function Landing({ role }: PageProps) {
       </section>
       <WorkWith />
       <section className="status">
-        <h2>Migration status</h2>
-        <p>This demonstration is being rebuilt as modular pages from the Living Campus V2.5.3 source, one area at a time. {native} of {AREAS.length} addresses (86 areas and 19 V2.5 pages) are native today; the rest state their status when opened (see the parity ledger in the repository).</p>
+        <h2>Coverage</h2>
+        <p>This demonstration is built as modular pages from the Living Campus V2.5.3 source. {native} of {AREAS.length} address areas (86 areas and 19 V2.5 pages) land on a native page; <a href="#/parity">the full map of every original address</a> is computed from the page registry, never typed.</p>
       </section>
     </>
   );
