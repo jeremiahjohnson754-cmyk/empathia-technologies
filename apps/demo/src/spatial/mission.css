@@ -101,3 +101,39 @@
 .campus__pills { display: flex; flex-wrap: wrap; gap: 8px; margin: var(--sp-3) 0; }
 .bpill { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line2); background: var(--panel); color: var(--tx); text-decoration: none; }
 .bpill:hover { border-color: var(--accent); } .bpill--action { border-color: color-mix(in srgb, var(--bad) 55%, var(--line2)); } .bpill--monitor { border-color: color-mix(in srgb, var(--warn) 55%, var(--line2)); }
+
+/* ================================================================ the investor start: "Every role, one Core" carousel (screen 03) */
+.shelf__head { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--sp-3); flex-wrap: wrap; } .shelf__head > div:first-child { max-width: 62ch; }
+.shelf__nav { display: inline-flex; align-items: center; gap: 6px; }
+.shelf__btn { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line2); background: var(--panel); color: var(--tx); cursor: pointer; }
+.shelf__btn:hover { border-color: var(--accent); color: var(--accent); }
+.lnd .shelf__track { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 4px; padding: 4px 4px 10px; margin: var(--sp-3) -4px 0; scrollbar-width: thin; }
+.lnd .shelf__track > li { flex: 0 0 min(78%, 224px); scroll-snap-align: start; display: flex; }
+.lnd .shelf__track .shelf__role { height: 100%; display: grid; grid-template-rows: auto 1fr; gap: 8px; align-content: start; padding: 10px 10px 12px; }
+.lnd .shelf__track .ava { display: none; }
+.shelf__body { display: grid; gap: 4px; min-width: 0; } .shelf__body b { font-size: var(--fs-md); }
+.shelf__blurb { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.35; }
+.shelf__go { color: var(--accent) !important; font-weight: 600; display: inline-flex !important; align-items: center; gap: 2px; margin-top: 4px; }
+.shelf__role[aria-pressed="true"] .shelf__art-bg { fill: color-mix(in srgb, var(--accent) 16%, var(--bg2)); }
+@media (prefers-reduced-motion: reduce) { .lnd .shelf__track { scroll-behavior: auto; } }
+
+/* the divisible room's combine / split */
+.divisible { display: grid; gap: 8px; margin-top: 6px; padding: 12px; border: 1px solid var(--line); border-radius: var(--r-lg, 14px); background: var(--bg2); }
+.divisible__secs { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.divisible__sec { display: grid; gap: 2px; flex: 1 1 140px; padding: 10px 12px; border-radius: 10px; border: 1px dashed var(--line2); }
+.divisible__sec--own { border-style: solid; border-color: color-mix(in srgb, var(--accent) 55%, var(--line2)); background: color-mix(in srgb, var(--accent) 7%, transparent); }
+.divisible p { margin: 0; }
+.campus__view { margin-bottom: var(--sp-3); }
+
+/* Search Party: the list before the graph */
+.sp__first { list-style: none; margin: 0 0 var(--sp-3); padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 6px; }
+.sp__firstbtn { width: 100%; display: grid; gap: 2px; text-align: left; min-height: 44px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg2); color: var(--tx); font: inherit; cursor: pointer; }
+.sp__firstbtn:hover, .sp__firstbtn[aria-pressed="true"] { border-color: var(--accent); }
+.sp__firstbtn .sp__rel { font-size: var(--fs-xs); color: var(--accent); text-transform: uppercase; letter-spacing: .04em; font-weight: 700; }
+
+/* the room page's Core Replay and configuration chips carry sentences: they wrap on phones instead of widening the page */
+.replay .kit-chip, .room__cfg .kit-chip, .mc-chips .kit-chip { white-space: normal; max-width: 100%; height: auto; min-height: 28px; text-align: left; }
+.replay .kit-chip > span, .room__cfg .kit-chip > span, .mc-chips .kit-chip > span { overflow-wrap: anywhere; }
+.replay, .room__cfg { max-width: 100%; min-width: 0; }
+.room, .campus, .mc, .lnd, .sp { min-width: 0; max-width: 100%; overflow-x: clip; }
+.mc-hero__acts { display: flex; flex-wrap: wrap; gap: 8px; }

@@ -2,28 +2,32 @@
  * The investor start (2.5.5 landing composition, at V2.5.3's richness): a gradient hero with three ways in, the campus right now (every
  * number computed from the records), the seven scenarios with the problem each solves, the View-as shelf, what it is for, disclosures.
  */
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { PageProps, RoleKey } from '../registry.types.js';
 import { WorkWith } from '../enquiry/WorkWith.js';
 import { AREAS, NATIVE } from '../registry.js';
-import { ROLES } from '../access/policy.js';
+import { ROLES, ROLE_KEYS } from '../access/policy.js';
 import { useViewAs } from '../viewas/context.js';
 import { campusStats, BAND_LABEL } from '../campus/metrics.js';
 import { load as loadWorkspace } from '../workspace/store.js';
 import { ScoreRing, Icon, Chip } from '../spatial/parts.js';
 import { CampusMap } from '../spatial/Spatial.js';
-import { openPages } from '../viewas/scope.js';
+import { openPages, recordsFor, typeCounts } from '../viewas/scope.js';
 import { PAGES } from '../registry.pages.js';
+import { reducedMotion } from '../viewas/role.js';
 
-/** A small drawing of what each role mostly looks at (a trend, a room, passports, a queue …); decorative. */
-function RoleArt({ i }: { i: number }) {
-  const k = i % 4;
+/** A small drawing of what each role mostly looks at (a trend, a room, passports, a queue, a plan, a shield); decorative. */
+const ART: Record<string, number> = { exec: 0, bpm: 0, ops: 1, designer: 1, syseng: 1, service: 2, installer: 2, svcmgr: 3, ipm: 3, employee: 3, cxeng: 4, qa: 4, steward: 5, architect: 5, visitor: 1 };
+function RoleArt({ k }: { k: string }) {
+  const i = ART[k] ?? 0;
   return <svg className="shelf__art" viewBox="0 0 120 56" aria-hidden="true" focusable="false">
     <rect x="1" y="1" width="118" height="54" rx="8" className="shelf__art-bg" />
-    {k === 0 && <><polyline points="10,44 32,34 50,38 70,20 92,24 110,10" className="shelf__art-l" /><circle cx="70" cy="20" r="3" className="shelf__art-d" /></>}
-    {k === 1 && <><ellipse cx="38" cy="28" rx="20" ry="12" className="shelf__art-l" /><rect x="66" y="12" width="44" height="6" rx="3" className="shelf__art-f" /><rect x="66" y="24" width="34" height="6" rx="3" className="shelf__art-f" /><rect x="66" y="36" width="40" height="6" rx="3" className="shelf__art-f" /></>}
-    {k === 2 && <>{[14, 30, 46, 62, 78, 94].map((x, j) => <rect key={x} x={x} y={46 - [18, 26, 14, 32, 22, 36][j]!} width="10" height={[18, 26, 14, 32, 22, 36][j]} rx="2" className={j === 5 ? 'shelf__art-d' : 'shelf__art-f'} />)}</>}
-    {k === 3 && <>{[10, 24, 38].map((y) => <g key={y}><circle cx="16" cy={y + 4} r="3" className="shelf__art-d" /><rect x="26" y={y} width={y === 24 ? 60 : 78} height="8" rx="4" className="shelf__art-f" /></g>)}</>}
+    {i === 0 && <><polyline points="10,44 32,34 50,38 70,20 92,24 110,10" className="shelf__art-l" /><circle cx="70" cy="20" r="3" className="shelf__art-d" /></>}
+    {i === 1 && <><ellipse cx="38" cy="28" rx="20" ry="12" className="shelf__art-l" /><rect x="66" y="12" width="44" height="6" rx="3" className="shelf__art-f" /><rect x="66" y="24" width="34" height="6" rx="3" className="shelf__art-f" /><rect x="66" y="36" width="40" height="6" rx="3" className="shelf__art-f" /></>}
+    {i === 2 && <>{[14, 30, 46, 62, 78, 94].map((x, j) => <rect key={x} x={x} y={46 - [18, 26, 14, 32, 22, 36][j]!} width="10" height={[18, 26, 14, 32, 22, 36][j]} rx="2" className={j === 5 ? 'shelf__art-d' : 'shelf__art-f'} />)}</>}
+    {i === 3 && <>{[10, 24, 38].map((y) => <g key={y}><circle cx="16" cy={y + 4} r="3" className="shelf__art-d" /><rect x="26" y={y} width={y === 24 ? 60 : 78} height="8" rx="4" className="shelf__art-f" /></g>)}</>}
+    {i === 4 && <><rect x="12" y="10" width="60" height="36" rx="4" className="shelf__art-l" /><polyline points="22,30 30,38 44,20" className="shelf__art-l" /><rect x="82" y="14" width="26" height="6" rx="3" className="shelf__art-f" /><rect x="82" y="26" width="26" height="6" rx="3" className="shelf__art-f" /><rect x="82" y="38" width="18" height="6" rx="3" className="shelf__art-d" /></>}
+    {i === 5 && <><path d="M60 8 L84 16 V30 C84 40 72 48 60 50 C48 48 36 40 36 30 V16 Z" className="shelf__art-l" /><circle cx="60" cy="29" r="5" className="shelf__art-d" /></>}
   </svg>;
 }
 
@@ -37,7 +41,8 @@ const SCENARIOS = [
   ['The connected ecosystem', 'Every system has its own numbers. Mission Control, 27 KPI passports with numerator and denominator, and the ledger behind every state.', 'passport'],
 ] as const;
 /** The shelf: the roles an investor most often wants to see the platform as, one tap each (the full list is in View as). */
-const SHELF: RoleKey[] = ['exec', 'ops', 'designer', 'service', 'cxeng', 'employee', 'visitor'];
+/** Every role, the one being viewed first; the Product Architect (every surface) last. */
+const shelfOrder = (role: RoleKey): RoleKey[] => [role, ...ROLE_KEYS.filter((k) => k !== role && k !== 'architect'), ...(role === 'architect' ? [] : ['architect' as RoleKey])];
 /** What it is for (V2.5.3's four audiences). */
 const FOR = [
   ['For the operator', 'One room record from request to recommission, with the people, the money, the design, the tests, the documents and the service history on it — and the authority behind each.'],
@@ -84,15 +89,7 @@ export default function Landing({ role }: PageProps) {
         <ol>{SCENARIOS.map(([t, p, ic], i) => <li key={t}><a href={`#/tours/investor?scenario=${i + 1}`}><span className="lnd__n">{i + 1}</span><span className="lnd__sic" aria-hidden="true"><Icon name={ic} /></span><b>{t}</b></a><p><i>The problem</i> {p}</p></li>)}</ol>
       </section>
 
-      <section className="shelf" aria-labelledby="shelf-h">
-        <p className="kicker">Perspectives</p>
-        <h2 id="shelf-h">Every role, one Core</h2>
-        <p className="ui-meta">Each role is given its own share of the same records; the tabs, buttons and screens change with it. A perspective grants nothing.</p>
-        <ul className="shelf__list">
-          {SHELF.map((k) => <li key={k}><button type="button" className="shelf__role" data-r={k} data-role-key={k} aria-pressed={k === role} onClick={() => va.switchTo(k)}><RoleArt i={SHELF.indexOf(k)} /><span className="ava" aria-hidden="true">{ROLES[k].initials}</span><span><b>{ROLES[k].label}</b><span>{ROLES[k].home}</span><span className="shelf__n">{openPages(k).length} of {PAGES.length} surfaces</span></span></button></li>)}
-          <li><button type="button" className="shelf__role shelf__more" onClick={va.open}><span className="ava" aria-hidden="true">+</span><span><b>Every role</b><span>View as…</span></span></button></li>
-        </ul>
-      </section>
+      <RoleShelf role={role} />
 
       <section className="lnd__for" aria-labelledby="for-h">
         <h2 id="for-h">What it is for</h2>
@@ -111,5 +108,41 @@ export default function Landing({ role }: PageProps) {
         </ul>
       </section>
     </div>
+  );
+}
+
+/** "Every role, one Core": a carousel of all roles (3 November screen 03), each a flashcard with an illustration, the records and the
+ *  surfaces its share of the Core gives it, computed from the policy; the viewed role is first and marked. */
+function RoleShelf({ role }: { role: RoleKey }) {
+  const va = useViewAs();
+  const list = useMemo(() => shelfOrder(role), [role]);
+  const [types, setTypes] = useState<Record<string, number> | null>(null);
+  useEffect(() => { let on = true; typeCounts().then((t) => { if (on) setTypes(t); }).catch(() => { /* counts stay — */ }); return () => { on = false; }; }, []);
+  const track = useRef<HTMLUListElement>(null);
+  const step = (dir: 1 | -1) => { const el = track.current; if (!el) return; const card = el.querySelector('li'); const w = card ? card.getBoundingClientRect().width + 10 : 220; el.scrollBy({ left: dir * w * 2, behavior: reducedMotion() ? 'auto' : 'smooth' }); };
+  return (
+    <section className="shelf" aria-labelledby="shelf-h" data-testid="role-shelf">
+      <div className="shelf__head"><div>
+        <p className="kicker">Perspectives</p>
+        <h2 id="shelf-h">Every role, one Core</h2>
+        <p className="ui-meta">Each role is given its own share of the same records. View as switches this demonstration to that perspective and opens the page the role starts from — announced, with the way back. A perspective grants nothing.</p>
+      </div>
+        <div className="shelf__nav"><span className="ui-meta">{list.length} roles</span><button type="button" className="shelf__btn" onClick={() => step(-1)} aria-label="Earlier roles"><Icon name="chevron-left" size={16} /></button><button type="button" className="shelf__btn" onClick={() => step(1)} aria-label="Later roles"><Icon name="chevron-right" size={16} /></button></div>
+      </div>
+      <ul className="shelf__list shelf__track" ref={track}>
+        {list.map((k) => { const r = ROLES[k]; const pages = openPages(k).length; const rec = types ? recordsFor(k, types) : null; const here = k === role; return (
+          <li key={k}>
+            <button type="button" className="shelf__role" data-r={k} data-role-key={k} aria-pressed={here} onClick={() => { if (!here) va.switchTo(k); else location.hash = '#/home'; }}>
+              <RoleArt k={k} />
+              <span className="shelf__body">
+                <b>{r.label}</b>
+                <span className="shelf__blurb">{r.blurb}</span>
+                <span className="shelf__n" data-testid="shelf-counts">{rec ? <>{rec.records.toLocaleString('en-US')} of {rec.of.toLocaleString('en-US')} records · </> : ''}{pages} of {PAGES.filter((p) => !p.path.includes(':')).length} surfaces</span>
+                <span className="shelf__go">{here ? 'Viewing now · open Mission Control' : 'View as'} <Icon name="chevron-right" size={14} /></span>
+              </span>
+            </button>
+          </li>); })}
+      </ul>
+    </section>
   );
 }

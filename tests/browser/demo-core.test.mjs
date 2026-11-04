@@ -152,6 +152,38 @@ for (const scheme of SCHEMES) { // View as changes the work; D44; destructive in
   const d = await t.page.evaluate(() => getComputedStyle(document.querySelector('.mc-prod')).transitionDuration);
   ok('MC-reduced-motion', 'reduced motion: the product tiles do not animate', /^0s(, 0s)*$/.test(d), d); await t.close(); }
 
+// ---------------------------------------------------------------------------------------------------------------- investor start, room facts, divisible rooms, campus list
+for (const scheme of SCHEMES) {
+  const t = await open([1440, 900], scheme, { hash: '#/investor' }); await t.page.waitForTimeout(900);
+  const sh = await t.page.evaluate(() => { const cards = Array.from(document.querySelectorAll('[data-testid="role-shelf"] .shelf__role')); return { n: cards.length, art: cards.filter((c) => c.querySelector('svg.shelf__art')).length, counts: cards.map((c) => c.querySelector('[data-testid="shelf-counts"]')?.textContent || ''), first: cards[0]?.getAttribute('aria-pressed') }; });
+  ok(`CORE-${scheme}-shelf-01`, 'Every role, one Core: a carousel of all 15 roles, each with an illustration and its records and surfaces counts; the viewed role first', sh.n === 15 && sh.art === 15 && sh.first === 'true' && sh.counts.every((c) => /\d[\d,]* of \d[\d,]* records · \d+ of \d+ surfaces/.test(c)), JSON.stringify(sh).slice(0, 300));
+  const vis = sh.counts.find((c, i) => i > 0); const arch = sh.counts[sh.counts.length - 1];
+  ok(`CORE-${scheme}-shelf-02`, 'the counts differ by role (the Product Architect sees every record and surface, a lesser role fewer)', vis !== arch, `${vis} | ${arch}`);
+  await t.page.click('[data-testid="role-shelf"] [data-role-key="employee"]'); await t.page.waitForTimeout(1200);
+  ok(`CORE-${scheme}-shelf-03`, 'tapping a flashcard views as that role (the shell changes)', /Employee/.test(await t.page.locator('[data-testid="viewas-open"]').getAttribute('aria-label')));
+  await t.page.evaluate(() => localStorage.setItem('empathia.demo.perspective', 'architect')); await t.page.reload(); await t.page.waitForTimeout(600);
+  await t.go('#/room', 700);
+  const facts = await t.page.locator('[data-testid="room-facts"]').innerText();
+  ok(`CORE-${scheme}-facts-01`, 'the room panel: "N positions, N models", baseline, camera coverage (modeled), PoE W of W (declared), drift dimensions', /\d+ positions, \d+ models/.test(await t.page.locator('[data-testid="device-panel"] h2').innerText()) && /BL-ATL-4-218-v1/.test(facts) && /\d+ of \d+ seats/.test(facts) && /\d+\.\d W of 370 W/.test(facts) && /dimensions?:/.test(facts), facts.slice(0, 300));
+  await t.go('#/room/R-BCN-1-300', 700);
+  const dv = t.page.locator('[data-testid="divisible"]');
+  ok(`CORE-${scheme}-div-01`, 'the divisible town hall offers combine / split with its three sections', (await dv.count()) === 1 && (await dv.locator('li').count()) === 3 && (await dv.getAttribute('data-mode')) === 'combined');
+  await dv.locator('button:has-text("Split")').click(); await t.page.waitForTimeout(150);
+  ok(`CORE-${scheme}-div-02`, 'split: each section becomes its own room, nothing is written', (await dv.getAttribute('data-mode')) === 'split' && /its own audio/.test(await dv.innerText()) && /nothing is written/.test(await dv.innerText()));
+  await t.go('#/room/R-MER-1-300', 600);
+  ok(`CORE-${scheme}-ops-01`, 'a control-tower room is labelled simulated, non-operational', /non-operational/.test(await t.page.locator('[data-testid="room-chips"]').innerText()));
+  await t.go('#/campus', 600); await t.page.click('.campus__view button:has-text("List")'); await t.page.waitForTimeout(200);
+  ok(`CORE-${scheme}-list-01`, 'campus: the list alternative shows every building and site with health bars', (await t.page.locator('[data-testid="campus-list-rows"] .kit-meter').count()) === 8 && (await t.page.locator('[data-testid="campus-stage"]').count()) === 0);
+  await t.page.reload(); await t.page.waitForTimeout(600);
+  ok(`CORE-${scheme}-list-02`, 'the choice is remembered for this viewer', (await t.page.locator('[data-testid="campus-list-rows"]').count()) === 1);
+  await t.page.click('.campus__view button:has-text("3D map")'); await t.page.waitForTimeout(200);
+  ok(`CORE-${scheme}-list-03`, 'and the 3D map comes back', (await t.page.locator('[data-testid="campus-stage"]').count()) === 1);
+  await t.go('#/campus/LKS', 600);
+  ok(`CORE-${scheme}-site-01`, 'a regional site opens: its rooms listed, a note instead of the campus map', (await t.page.locator('[data-testid="regional-note"]').count()) === 1 && (await t.page.locator('[data-testid="room-list"] tbody tr').count()) === 2);
+  ok(`CORE-${scheme}-more-clean`, 'no page error and no request leaves the page', !t.errs.length && !t.ext.length, [...t.errs, ...t.ext].join(' | '));
+  await t.close();
+}
+
 { // reduced motion: the 3D campus and the room still work
   const t = await open([1440, 900], SCHEMES[0], { hash: '#/campus', reducedMotion: 'reduce' }); await t.page.waitForTimeout(500);
   await t.page.focus('[data-testid="campus-b-HZN"]'); await t.page.keyboard.press('Enter'); await t.page.waitForTimeout(400);

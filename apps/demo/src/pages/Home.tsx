@@ -92,6 +92,9 @@ export default function Home({ role }: PageProps) {
   const P = programme();
   const pages = useMemo(() => openPages(role), [role]);
   const liveReq = inc.filter((i) => i.live);
+  // DIRECTION §5: the count in the H1 is the open and triaged service requests (jobs), from the workspace
+  const jobs = (w?.incidents || []).filter((i) => i.state === 'OPEN' || i.state === 'TRIAGED').length;
+  const firstJob = inc.find((i) => i.live);
   const wos = (w?.workOrders || []).filter((x) => !['DONE', 'CANCELLED'].includes(x.state));
   const first = queue[0];
   const needAction = queue.filter((x) => x.h.band === 'action' || x.issues.some((i) => i.severity === 'High')).length;
@@ -131,14 +134,15 @@ export default function Home({ role }: PageProps) {
       {/* ---------------------------------------------------------------- hero: the sentence that matters, the Search Party bar, campus health */}
       <header className="mc-hero" data-testid="mc-hero">
         <div className="mc-hero__t">
-          <p className="kicker"><span className="home__live" aria-hidden="true" />Mission Control · {R.label} · {today}</p>
-          <div className="mc-hero__h"><h1 tabIndex={-1}>Mission Control</h1><span className="mc-hero__tag">Your operational command centre</span></div>
+          <p className="kicker"><span className="home__live" aria-hidden="true" />Mission Control · one connected lifecycle · {R.label} · {today}</p>
+          <div className="mc-hero__h"><h1 tabIndex={-1}>{greeting()} — {jobs === 0 ? 'nothing needs you today' : `${plural(jobs, 'job')} need${jobs === 1 ? 's' : ''} you today`}</h1><span className="mc-hero__tag">Mission Control</span></div>
           <p className="home__say" data-testid="home-say">
             <b>{needAction} room{needAction === 1 ? '' : 's'} need{needAction === 1 ? 's' : ''} action</b> and {watch} more {watch === 1 ? 'is' : 'are'} worth watching.
             {first && <> {roomLink(roomHref(first.r.outline), shortName(first.r.outline))} comes first{first.issues[0] ? <>: {first.issues[0].title.charAt(0).toLowerCase() + first.issues[0].title.slice(1)}</> : ''}.</>}
             {' '}<b>{waiting} decision{waiting === 1 ? ' is' : 's are'} waiting for a person</b>, and {nChanges} change{nChanges === 1 ? ' was' : 's were'} recorded this week.
           </p>
-          {opens('#/search') && <div className="mc-hero__search"><span className="mc-hero__sp" aria-hidden="true"><Icon name="search" size={20} /> Search Party</span><SearchBar hero label="Ask Search Party" placeholder="Search buildings, rooms, devices, people, incidents…" /></div>}
+          {opens('#/search') && <div className="mc-hero__search"><span className="mc-hero__sp" aria-hidden="true"><Icon name="search" size={20} /> Search Party</span><SearchBar hero label="Ask Search Party" placeholder="Try “4.218”, “ISS-0417”, “switch” or a device category" /></div>}
+          <div className="mc-hero__acts">{firstJob && opens(firstJob.href) && <a className="ui-btn ui-btn--primary" href={firstJob.href} data-testid="mc-open-job"><Icon name="alert" /> Open {firstJob.id}</a>}{opens('#/replay') && <a className="ui-btn" href="#/replay/R-ATL-4-218"><Icon name="clock" /> Replay a story</a>}</div>
           {opens('#/search') && <p className="mc-hero__try ui-meta">Try {[['#/search?q=4.218', '4.218'], ['#/search?q=camera', 'camera'], ['#/search/scenarios/S1', 'if this switch fails'], ['#/search/scenarios/S2', 'who supports']].filter(([h]) => opens(h!)).map(([h, l], i) => <span key={h}>{i ? ' · ' : ''}<a href={h}>{l}</a></span>)}</p>}
         </div>
         <div className="mc-hero__aside">

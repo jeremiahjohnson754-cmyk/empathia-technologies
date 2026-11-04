@@ -109,6 +109,16 @@ test('Mission Control: series are month-end counts from dated records; incidents
   assert.equal(MI.savedWork(w, null).length, 0); assert.equal(MI.savedWork(w, { code: 'RB-1', name: 'Huddle', createdAt: new Date().toISOString() })[0].href, '#/v25/build');
 });
 
+test('room facts: positions and models (device classes), declared PoE against the switch budget, modeled camera coverage, drift dimensions', () => {
+  const F = M.roomFacts(design.roomRecord('R-ATL-4-218'));
+  assert.equal(F.positions, 11); assert.ok(F.models >= 5 && F.models <= F.positions);
+  assert.ok(F.poe && F.poe.draw > 0 && F.poe.budget === 370 && /declared/.test(F.poe.source), JSON.stringify(F.poe));
+  assert.ok(F.coverage && F.coverage.seats > 0 && F.coverage.covered <= F.coverage.seats && /modeled/i.test(F.coverage.source), JSON.stringify(F.coverage));
+  assert.ok(F.drift.dimensions >= 2 && F.drift.items.includes('a unit replaced'));
+  const nst = M.roomFacts(design.roomRecord('R-NST-2-101')); assert.equal(nst.positions, 0, 'the earlier town hall record holds no device positions; none are invented'); assert.equal(nst.poe, null); assert.equal(nst.drift.dimensions, 0, 'never handed over: no drift');
+  for (const r of recs) { const f = M.roomFacts(r); assert.ok(f.models <= f.positions); if (f.poe) assert.ok(f.poe.draw >= 0); }
+});
+
 test('summary print (for the report)', () => {
   const c = M.campusStats(w);
   console.log(JSON.stringify({ score: c.score, scored: c.scored, healthy: c.healthy, monitor: c.monitor, action: c.action, unscored: c.unscored, open: c.open, devices: c.devices, verifiedPct: c.verifiedPct, buildings: c.buildings.map((b) => [b.b.key, b.score, b.rooms, b.open, b.verifiedPct]) }));

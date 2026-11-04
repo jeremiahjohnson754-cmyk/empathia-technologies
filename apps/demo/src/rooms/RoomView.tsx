@@ -10,7 +10,7 @@ import { Tag, Notice, Button } from '@empathia/ui';
 import { resultLabel } from '@empathia/commissioning-engine';
 import { buildingByKey, roomHref, shortName, CAMPUS_ROOMS as ROOMS } from '../campus/canon.js';
 import { roomRecord, LAYERS, PEOPLE, type Layer, type RoomRecord, type Position } from '../campus/design.js';
-import { roomHealth, roomIssues, spine, moves, featuredRooms, BAND_LABEL, type Stage as SpineStage } from '../campus/metrics.js';
+import { roomHealth, roomIssues, spine, moves, featuredRooms, roomFacts, BAND_LABEL, type Stage as SpineStage } from '../campus/metrics.js';
 import { load as loadWorkspace, type Workspace } from '../workspace/store.js';
 import { Stage, PlanView, IsoView, LAYER_COLOR } from '../spatial/Spatial.js';
 import { StatusDot, Chip, StatTile, Icon, Section, List, ListRow, EmptyState } from '../spatial/parts.js';
@@ -81,8 +81,11 @@ export function RoomView({ id, hash, sees = () => true, opens = () => true, base
           <Chip tone={LIFE_TONE[r.lifecycle] === 'ok' ? 'ok' : LIFE_TONE[r.lifecycle] === 'warn' ? 'warn' : 'info'}>{r.lifecycle.replace(/_/g, ' ')}</Chip>
           {iss.some((i) => i.severity === 'High') && <Chip tone="bad">High-severity issue open</Chip>}
           <Chip tone={o.kind === 'reference' ? 'accent' : 'muted'}>Record: {o.kind === 'reference' ? 'reference room' : o.kind === 'earlier' ? 'earlier record' : 'modelled from archetype'}</Chip>
+          {o.nonOperational && <Chip tone="warn">Control-tower experience · simulated, non-operational</Chip>}
+          {o.divisible && <Chip tone="info">Divisible · {o.divisible.sections.length} sections</Chip>}
           <span className="ui-meta mono">{o.id}</span>
         </div>
+        {o.divisible && <Divisible sections={o.divisible.sections} name={o.name} />}
         <div className="room__cfg"><Chip tone="warn">Synthetic configuration</Chip><Chip tone="muted">Simulated adapters · no live telemetry</Chip><Chip tone="muted">Device classes only · no make, model or serial invented</Chip></div>
         {acts.length > 0 && <div className="room__acts" data-testid="room-actions">{acts.map((a) => <a key={a.label} href={a.href} className={`ui-btn${a.primary ? ' ui-btn--primary' : ''}`}><Icon name={a.icon} /> {a.label}</a>)}</div>}
       </header>
@@ -160,14 +163,18 @@ function RoomSummary({ r, setSel }: { r: RoomRecord; setSel: (c: string) => void
   const hw = r.positions.filter((p) => !p.furniture);
   const [all, setAll] = useState(false);
   const shown = all ? hw : hw.slice(0, 6);
+  const F = roomFacts(r); const cur = r.baselines.find((b) => b.state === 'CURRENT'); const pend = r.baselines.find((b) => b.state === 'PENDING_ACCEPTANCE');
   return (
     <div className="stack">
       <p className="kicker">The room</p>
-      <h2 className="build__h">{hw.length} position{hw.length === 1 ? '' : 's'}, {new Set(hw.map((p) => p.cat)).size} device class{new Set(hw.map((p) => p.cat)).size === 1 ? '' : 'es'}</h2>
-      <dl className="room__facts">
-        <dt>Baseline</dt><dd>{r.baselines.find((b) => b.state === 'CURRENT') ? `BL-${r.outline.id.slice(2)}-v${r.baselines.find((b) => b.state === 'CURRENT')!.version}: ${r.installations.filter((x) => !x.removedAt).length} positions bound, ${r.counts.verified} of ${r.counts.applicable} applicable tests verified` : `none accepted · ${r.counts.verified} of ${r.counts.applicable} applicable tests verified`}{r.baselines.find((b) => b.state === 'PENDING_ACCEPTANCE') ? ` · v${r.baselines.find((b) => b.state === 'PENDING_ACCEPTANCE')!.version} pending acceptance` : ''}</dd>
+      <h2 className="build__h">{F.positions} position{F.positions === 1 ? '' : 's'}, {F.models} model{F.models === 1 ? '' : 's'}</h2>
+      <p className="ui-meta">Models are device classes from the catalogue; no make, model or serial is invented.</p>
+      <dl className="room__facts" data-testid="room-facts">
+        <dt>Baseline</dt><dd>{cur ? `BL-${r.outline.id.slice(2)}-v${cur.version}: ${r.installations.filter((x) => !x.removedAt).length} positions bound, ${r.counts.verified} of ${r.counts.applicable} applicable tests verified` : `none accepted · ${r.counts.verified} of ${r.counts.applicable} applicable tests verified`}{pend ? ` · v${pend.version} pending acceptance` : ''}</dd>
+        <dt>Camera coverage</dt><dd>{F.coverage ? <>{F.coverage.covered} of {F.coverage.seats} seats <span className="ui-meta">· MODELED: {F.coverage.source}</span></> : 'no camera or seating on record'}</dd>
+        <dt>PoE</dt><dd>{F.poe ? <>{F.poe.draw.toFixed(1)} W of {F.poe.budget ?? '—'} W <span className="ui-meta">· DECLARED: {F.poe.source}</span></> : 'no switch on record'}</dd>
         <dt>Connections</dt><dd>{r.connections.length ? `${r.connections.length} proposed by the engine’s rules (MODELED, not traced)` : 'none recorded'}</dd>
-        <dt>Drift since handover</dt><dd>{moves(r).length ? `${moves(r).length} change${moves(r).length === 1 ? '' : 's'}: ${moves(r).map((m) => m.title.toLowerCase()).slice(0, 3).join(' · ')}` : r.baselines.some((b) => b.state === 'CURRENT') ? 'nothing has moved' : 'not handed over yet'}</dd>
+        <dt>Drift since handover</dt><dd>{F.drift.dimensions ? `${F.drift.dimensions} dimension${F.drift.dimensions === 1 ? '' : 's'}: ${F.drift.items.join(' · ')}` : cur ? 'nothing has moved' : 'not handed over yet'}</dd>
       </dl>
       <div className="room__devhead"><h3 className="build__h3">Choose a device in the view or here</h3></div>
       {hw.length ? <ul className="rows rows--tight" data-testid="device-preview">{shown.map((p) => <li key={p.code} className="row"><span className="layers__sw" style={{ background: LAYER_COLOR[p.layer] }} aria-hidden="true" /><span className="row__main"><button type="button" className="linkish" onClick={() => setSel(p.code)}>{p.label}</button><span className="ui-meta mono">{p.code} · {p.asset || '—'}</span></span><span className="row__end ui-meta">{p.identity.toLowerCase()}</span></li>)}</ul>
@@ -251,5 +258,21 @@ function Coverage({ r }: { r: RoomRecord }) {
       <thead><tr><th scope="col">Area</th><th scope="col">State</th><th scope="col">Note</th></tr></thead>
       <tbody>{r.coverage.map((c) => <tr key={c.area}><th scope="row">{c.area}</th><td><Tag tone={COV_TONE[c.state] || 'muted'}>{c.state}</Tag></td><td>{c.note}</td></tr>)}</tbody>
     </table></div>
+  );
+}
+
+/**
+ * A divisible room's combine / split (rooms plan rows 32 and 42): the partitions decide the configuration, and each configuration has its
+ * own requirements. The choice is a view of the same record (nothing is written): combined, every section's devices serve one room; split,
+ * each section is its own room with its own audio, cameras and control.
+ */
+function Divisible({ sections, name }: { sections: string[]; name: string }) {
+  const [mode, setMode] = useState<'combined' | 'split'>('combined');
+  return (
+    <div className="divisible" data-testid="divisible" data-mode={mode}>
+      <div className="seg" role="group" aria-label="Partitions"><button type="button" aria-pressed={mode === 'combined'} onClick={() => setMode('combined')}>Combined · one room</button><button type="button" aria-pressed={mode === 'split'} onClick={() => setMode('split')}>Split · {sections.length} rooms</button></div>
+      <ul className="divisible__secs" aria-label={`Sections of ${name}`}>{sections.map((x) => <li key={x} className={mode === 'split' ? 'divisible__sec divisible__sec--own' : 'divisible__sec'}><b>{mode === 'split' ? `${name} ${x}` : `Section ${x}`}</b><span className="ui-meta">{mode === 'split' ? 'its own audio, cameras and control' : 'serves the combined room'}</span></li>)}</ul>
+      <p className="ui-meta">{mode === 'combined' ? 'Combined: one audio system, the cameras follow one stage, one control. ' : 'Split: each section has its own requirements and is commissioned as its own room. '}A view of the record, nothing is written; the partition state is MODELED, not sensed.</p>
+    </div>
   );
 }

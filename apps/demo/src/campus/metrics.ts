@@ -14,7 +14,7 @@
  */
 import type { RoomLifecycle } from '@empathia/domain-types';
 import { BUILDINGS, REGIONAL_SITES, CAMPUS_ROOMS as ROOMS, roomById, shortName, type Building, type RoomOutline } from './canon.js';
-import { roomRecord, allRecords, PEOPLE, type RoomRecord, type Issue } from './design.js';
+import { roomRecord, allRecords, PEOPLE, C, type RoomRecord, type Issue, type Position } from './design.js';
 import { programme } from './programme.js';
 import type { Workspace, Incident, WorkOrder } from '../workspace/store.js';
 
@@ -161,3 +161,35 @@ export function featuredRooms(n = 8): RoomOutline[] {
 }
 export const roomLabel = (o: RoomOutline) => shortName(o);
 export { roomRecord };
+
+// ------------------------------------------------------------------------------------------------------------ the room's technical facts
+/**
+ * The right panel of the technical room page (3 November screen 02): positions and models, PoE, camera coverage, drift dimensions — each
+ * DECLARED from the catalogue or MODELED from the plan, never measured. `models` are distinct device classes: no make or model is invented.
+ */
+export interface RoomFacts {
+  positions: number; models: number;
+  poe: { draw: number; budget: number | null; source: string } | null;
+  coverage: { seats: number; covered: number; source: string } | null;
+  drift: { dimensions: number; items: string[] };
+}
+export function roomFacts(r: RoomRecord): RoomFacts {
+  const hw = r.positions.filter((p) => !p.furniture);
+  const cats = C.categories;
+  const sw = hw.find((p) => p.cat === 'switch');
+  const draw = Math.round(hw.filter((p) => p.cat !== 'switch' && cats[p.cat]?.net).reduce((s, p) => s + (cats[p.cat]?.poe || 0), 0) * 10) / 10;
+  const budget = sw ? Number(cats['switch']?.props?.['poe_budget_w']) || null : null;
+  // camera coverage: a seating block is covered when it lies within a camera's declared field of view and 9 m (MODELED planning rule)
+  const seats = r.positions.filter((p) => p.cat === 'chairs'); const cams = hw.filter((p) => p.cat === 'camera');
+  const perBlock = Number(cats['chairs']?.props?.['seats']) || 6;
+  const inView = (cam: Position, seat: Position) => { const dx = seat.x - cam.x, dy = seat.y - cam.y; if (Math.hypot(dx, dy) > 9) return false; const fov = (Number(cats['camera']?.props?.['fov_deg']) || 70) / 2; const a = (Math.atan2(dy, dx) * 180) / Math.PI; const diff = Math.abs((((a - cam.rot) % 360) + 540) % 360 - 180); return diff <= fov; };
+  const covered = seats.filter((s) => cams.some((c) => inView(c, s))).length * perBlock;
+  const dims = new Set(moves(r).map((m) => m.kind));
+  const WORD: Record<string, string> = { unit: 'a unit replaced', baseline: 'a baseline pending', issue: 'an issue opened', lifecycle: 'a lifecycle change', exception: 'an exception requested' };
+  return {
+    positions: hw.length, models: new Set(hw.map((p) => p.cat)).size,
+    poe: sw ? { draw, budget, source: 'declared catalogue values, not measured' } : null,
+    coverage: cams.length && seats.length ? { seats: seats.length * perBlock, covered, source: 'modeled from the plan: field of view and 9 m reach, not a verified sightline' } : null,
+    drift: { dimensions: dims.size, items: [...dims].map((k) => WORD[k] || k) },
+  };
+}

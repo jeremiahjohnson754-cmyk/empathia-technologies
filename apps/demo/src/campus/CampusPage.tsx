@@ -87,6 +87,8 @@ function SitePage() {
   const w = useWs();
   const c = useMemo(() => campusStats(w), [w]);
   const [peek, setPeek] = useState<Building | null>(null);
+  const [view, setView] = useState<'map' | 'list'>(() => { try { return localStorage.getItem('empathia.demo.campus.view') === 'list' ? 'list' : 'map'; } catch { return 'map'; } });
+  useEffect(() => { try { localStorage.setItem('empathia.demo.campus.view', view); } catch { /* per-viewer convenience only */ } }, [view]);
   const shown = c.buildings.find((s) => s.b.key === (peek?.key || 'ATL'))!;
   return (
     <section className="campus" data-native="" data-testid="campus-site">
@@ -99,10 +101,11 @@ function SitePage() {
         </div>
         <div className="campus__score"><ScoreRing score={c.score} band={c.band} size={104} label="Campus health" caption={`mean of ${c.scored} scored rooms`} /></div>
       </header>
-      <div className="campus__stagewrap">
+      <div className="seg campus__view" role="group" aria-label="Campus view"><button type="button" aria-pressed={view === 'map'} onClick={() => setView('map')}>3D map</button><button type="button" aria-pressed={view === 'list'} onClick={() => setView('list')}>List</button></div>
+      {view === 'map' ? <div className="campus__stagewrap">
         <Stage label="Campus in 3D" testId="campus-stage"><CampusMap tiles={tilesOf(c.buildings)} onOpen={(B) => go(`#/campus/${B.key}`)} onPreview={setPeek} /><Legend /></Stage>
         <Preview s={shown} />
-      </div>
+      </div> : <Section title="Every building and site" aside="The list alternative to the 3D map · health, rooms, issues, tests verified" id="campus-list-h" testId="campus-list"><BuildingRows stats={[...c.buildings, ...c.sites]} testId="campus-list-rows" /></Section>}
       <nav className="campus__pills" aria-label="Buildings" data-testid="building-pills">{[...c.buildings, ...c.sites].map((s) => <a key={s.b.key} href={`#/campus/${s.b.key}`} className={`bpill bpill--${s.band}`}><StatusDot band={s.band} label={s.score == null ? 'not scored' : String(s.score)} /><b>{s.b.short}</b><span className="ui-meta">{s.rooms} rooms{s.open ? ` · ${s.open} open` : ''}</span></a>)}</nav>
       <div className="tiles">
         <StatTile label="Healthy rooms" value={c.healthy} unit={`of ${c.rooms}`} sub={`${c.monitor} to monitor · ${c.action} need action · ${c.unscored} not scored`} icon="heart" />
