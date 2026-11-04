@@ -17,6 +17,8 @@ const ORG = {
   AV: { name: 'Larkspur Managed Services', kind: 'Managed service provider' }, NET: { name: 'Fernhill Network Services', kind: 'Network provider' },
   PWR: { name: 'Velmoor Electrical', kind: 'Electrical contractor' }, MEDIA: { name: 'Saffron Hill Broadcast', kind: 'AV / technology integrator' }, INT: { name: 'Brightwater AV Integration', kind: 'AV / technology integrator' },
 };
+/** The fictional partner organisations, for the Organizations tab. */
+export const ORGS = Object.values(ORG);
 const fict = (n: string) => `${n} (fictional organisation)`;
 type Comp = 'declared' | 'lab-evidenced' | 'reviewer-verified';
 const TECHS: Array<{ id: string; name: string; site: boolean; comps: Record<string, Comp>; tz: string; load: number }> = [

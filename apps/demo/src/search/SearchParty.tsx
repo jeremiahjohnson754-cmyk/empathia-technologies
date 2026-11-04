@@ -9,12 +9,20 @@ import { search, neighbourhood, impact, radialLayout, ask, nodeKey, RELATIONS, N
 import { buildEstate } from './estate.js';
 import { scenario, scenarioCount, SCENARIO_IDS, SCENARIO_TITLES } from './scenarios.js';
 import { Icon, Section, List, ListRow } from '../spatial/parts.js';
+import { PeopleTab, SupportTab, MapTab, OrgsTab, ActivityTab, VaultTab } from './Tabs.js';
 import { resolve } from '../registry.pages.js';
 import { canOpen } from '../access/policy.js';
 import type { RoleKey } from '../registry.types.js';
 
+/** V2.5.3's tab set, at its addresses; the panes beyond Search and Relationships live in Tabs.tsx. */
+const TABS: Array<[string, string]> = [['', 'Search'], ['graph', 'Relationships'], ['people', 'People and expertise'], ['support', 'Support coverage'], ['projects', 'Project map'], ['orgs', 'Organizations'], ['activity', 'Activity'], ['vault', 'Evidence and artifacts']];
+const TAB_TITLE: Record<string, string> = { graph: 'The estate', people: 'People and expertise', support: 'Support paths', ownership: 'Support paths and ownership', projects: 'Project map', orgs: 'Who is who', activity: 'What is happening', vault: 'Artifact vault' };
+const TAB_LEDE: Record<string, string> = { graph: 'Start from a place, a record or a question; every connection is a recorded relationship with its provenance.', people: 'Who can do what, from the jobs and certifications on record — never a self-rating.', support: 'For each building: who answers first, the escalation organisation and the response target.', ownership: 'For each building: who answers first, the escalation organisation and the response target.', projects: 'One campus read through a lens; each building carries the number its records give.', orgs: 'Northstar and the partners it works with, grouped by kind.', activity: 'Every recorded change across the rooms and the service workspace, newest first.', vault: 'The evidence behind the records: test evidence, baselines, installations and exceptions.' };
+const PANE: Record<string, (opens: (h: string) => boolean) => ReturnType<typeof PeopleTab>> = { people: (o) => <PeopleTab opens={o} />, support: (o) => <SupportTab opens={o} />, ownership: (o) => <SupportTab opens={o} />, projects: (o) => <MapTab opens={o} />, orgs: () => <OrgsTab />, activity: () => <ActivityTab />, vault: () => <VaultTab /> };
+const tabOf = (hash: string) => { const sub = (/^#?\/?search\/([a-z]+)/.exec(hash) || [])[1] || ''; return sub === 'scenarios' ? '' : sub; };
+const START: NodeRef = { type: 'NetworkNode', id: 'SW-ATL-4A' };
 /** V2.5.3's Search Party areas (#/search/people …) open this page filtered to the record type each area is about. */
-const SUB_LABEL: Record<string, string> = { people: 'Person', projects: 'Project', quality: 'Room issue', activity: 'Work order', ownership: 'Role', support: 'Role', orgs: 'Site', vault: 'Commissioning baseline', coverage: 'Room' };
+const SUB_LABEL: Record<string, string> = { quality: 'Room issue', coverage: 'Room' };
 function subType(hash: string, est: { coverage: { types: Record<string, number> } }): string {
   const sub = (/^#?\/?search\/([a-z]+)/.exec(hash) || [])[1] || ''; const want = SUB_LABEL[sub]; if (!want) return '';
   return Object.keys(est.coverage.types).find((t) => (NODE_TYPES[t]?.[0] || t) === want) || '';
@@ -29,9 +37,9 @@ export function SearchPartyDemo({ hash, role }: { hash: string; role?: RoleKey }
   const opens = (href: string) => { if (!role) return true; const r = resolve(href); return !!r && canOpen(role, r); };
   const est = useMemo(() => buildEstate(), []);
   const init = parseHash(hash);
-  const [q, setQ] = useState(init.q); const [type, setType] = useState(() => subType(hash, est)); const [focus, setFocus] = useState<NodeRef | null>(init.focus); const [sel, setSel] = useState<string | null>(null);
+  const [q, setQ] = useState(init.q); const [type, setType] = useState(() => subType(hash, est)); const [focus, setFocus] = useState<NodeRef | null>(init.focus || (tabOf(hash) === 'graph' ? START : null)); const [sel, setSel] = useState<string | null>(null);
   // a new address (#/search?q=… or ?focus=…, from the search bar, a tour or a link) replaces what the page shows
-  useEffect(() => { const n = parseHash(hash); setQ(n.q); setFocus(n.focus); setType(subType(hash, est)); setSel(null); setAnswer(null); }, [hash]);   // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { const n = parseHash(hash); setQ(n.q); setFocus(n.focus || (tabOf(hash) === 'graph' ? START : null)); setType(subType(hash, est)); setSel(null); setAnswer(null); }, [hash]);   // eslint-disable-line react-hooks/exhaustive-deps
   const [question, setQuestion] = useState(''); const [answer, setAnswer] = useState<IntentAnswer | null>(null);
   const byKey = useMemo(() => new Map(est.nodes.map((n) => [nodeKey(n), n])), [est]);
   const res = useMemo(() => search(est, { q, type: type || null, limit: 40 }), [est, q, type]);
@@ -44,25 +52,26 @@ export function SearchPartyDemo({ hash, role }: { hash: string; role?: RoleKey }
   const askNow = (text: string) => { if (!text.trim()) return; setQuestion(text); setAnswer(ask({ graph: est.graph, nodes: byKey, facts: {} }, text, focus)); };
   const label = (n: NodeRef) => byKey.get(nodeKey(n))?.label || n.id;
   const selected = sel ? byKey.get(sel) : null;
+  const tab = tabOf(hash);
   const browsing = !q.trim() && !focus && !type;
   const pick = (n: NodeRef) => { setFocus({ type: n.type, id: n.id }); setSel(null); setAnswer(null); };
   const typeCounts = Object.entries(est.coverage.types).sort((x, y) => y[1] - x[1]);
   return (
-    <section className="sp" data-testid="search-party">
-      <nav className="roomtabs sp__nav" aria-label="Search Party">
-        <a className="roomtabs__t" href="#/search" aria-current={!focus ? 'page' : undefined} onClick={(e) => { e.preventDefault(); setQ(''); setType(''); setFocus(null); setSel(null); setAnswer(null); history.replaceState(null, '', '#/search'); }}>Search</a>
-        {focus && <span className="roomtabs__t" aria-current="page">Relationships</span>}
-        {opens('#/search/scenarios') && SCENARIO_IDS.map((id) => <a key={id} className="roomtabs__t" href={`#/search/scenarios/${id}`}>{SCENARIO_TITLES[id]}</a>)}
+    <section className="sp" data-native="" data-testid="search-party">
+      <nav className="roomtabs sp__nav" aria-label="Search Party" data-testid="sp-tabs">
+        {TABS.filter(([k]) => k === '' || opens(`#/search/${k}`)).map(([k, l]) => <a key={k || 'search'} className="roomtabs__t" href={k ? `#/search/${k}` : '#/search'} aria-current={tab === k ? 'page' : undefined}>{l}</a>)}
       </nav>
       <header className="room__hero sp__hero">
         <p className="kicker">Search Party · relationship intelligence</p>
-        <h1>{focus ? label(focus) : 'Search Party'}</h1>
-        <p className="room__intent">{focus ? <>{NODE_TYPES[focus.type]?.[0] || focus.type} · {byKey.get(nodeKey(focus))?.subtitle || 'its neighbourhood, what depends on it and the questions you can ask'}</> : 'Find the person, the room or the part, and see what it is connected to.'}</p>
+        <h1>{focus ? label(focus) : TAB_TITLE[tab] || 'Search Party'}</h1>
+        <p className="room__intent">{focus ? <>{NODE_TYPES[focus.type]?.[0] || focus.type} · {byKey.get(nodeKey(focus))?.subtitle || 'its neighbourhood, what depends on it and the questions you can ask'}</> : TAB_LEDE[tab] || 'Find the person, the room or the part, and see what it is connected to.'}</p>
+        {!PANE[tab] && <>
         <div className="sp__search"><label className="ui-visually-hidden" htmlFor="spd-q">Search</label><span className="sp__glass" aria-hidden="true"><Icon name="search" /></span><input id="spd-q" className="sp__input" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search a room, switch, device, issue, work order…" autoComplete="off" maxLength={80} /><select aria-label="Type" value={type} onChange={(e) => setType(e.target.value)}><option value="">Every type</option>{Object.entries(est.coverage.types).sort().map(([t, n]) => <option key={t} value={t}>{NODE_TYPES[t]?.[0] || t} ({n})</option>)}</select></div>
         <div className="sp__types" role="group" aria-label="Records by type">{typeCounts.map(([t, n]) => <button key={t} type="button" className="sp__tchip" aria-pressed={type === t} onClick={() => setType(type === t ? '' : t)}><span>{NODE_TYPES[t]?.[0] || t}</span><b>{n}</b></button>)}</div>
         <p className="ui-meta">{est.nodes.length} records and {est.coverage.edges} relationships of a synthetic estate held in this page. Every edge says where it comes from; what is not modelled says so.</p>
+        </>}
       </header>
-      {browsing ? (
+      {PANE[tab] ? PANE[tab]!(opens) : browsing ? (
         <div className="room__two sp__browse">
           <Section title="Directory" aside="Who to go to, what is affected" id="sp-dir-h">
             <List label="Directory">{SCENARIO_IDS.map((id) => { const sc = scenario(id); return <ListRow key={id} href={opens('#/search/scenarios') ? `#/search/scenarios/${id}` : undefined} leading={<span className="row__ic"><Icon name={id === 'S1' ? 'graph' : id === 'S2' ? 'people' : id === 'S3' ? 'device' : id === 'S4' ? 'check' : 'spark'} /></span>} title={SCENARIO_TITLES[id]} sub={sc ? `${scenarioCount(sc)} recorded relationships · from ${sc.start.label}` : undefined} />; })}</List>

@@ -65,6 +65,14 @@ for (const scheme of SCHEMES) for (const vp of VPS) {
     ok(`CORE-${scheme}-sp-03`, 'an unknown focus does not break the page', !t.errs.length && (await t.page.locator('main h1').count()) === 1);
     await t.go('#/search', 400);
     ok(`CORE-${scheme}-sp-04`, 'Search Party: directory of the five relationship questions and the try-one-of-these list with live counts', (await t.page.locator('[aria-label="Directory"] li').count()) === 5 && (await t.page.locator('[data-testid="sp-try"]').count()) >= 8);
+    // V2.5.3's Search Party tab set, each at its address, each a finished pane built from the records
+    for (const [h, id] of [['#/search/graph', 'impact'], ['#/search/people', 'sp-people'], ['#/search/support', 'sp-support'], ['#/search/ownership', 'sp-support'], ['#/search/projects', 'sp-map'], ['#/search/orgs', 'sp-orgs'], ['#/search/activity', 'sp-activity'], ['#/search/vault', 'sp-vault']]) {
+      await t.go(h, 600);
+      const v = await t.page.evaluate((x) => ({ pane: !!document.querySelector(`[data-testid="${x}"]`), tabs: document.querySelectorAll('[data-testid="sp-tabs"] a').length, cur: document.querySelector('[data-testid="sp-tabs"] [aria-current="page"]')?.textContent || '' }), id);
+      ok(`CORE-${scheme}-tab-${h.split('/').pop()}`, `${h}: the eight V2.5.3 tabs, the current one marked, and its pane`, v.pane && v.tabs === 8 && v.cur.length > 3, JSON.stringify(v));
+    }
+    await t.go('#/search/projects', 500); await t.page.click('[data-testid="sp-map"] .sp__tchip:has-text("Open issues")'); await t.page.waitForTimeout(200);
+    ok(`CORE-${scheme}-tab-lens`, 'Project map: a lens changes the numbers on the buildings and the rows below', (await t.page.locator('[data-testid="sp-map"] .kit-row-li').count()) >= 1);
     // rapid navigation and back/forward
     for (const r of ['#/home', '#/campus', '#/room', '#/search', '#/campus/ATL', '#/room/R-ATL-7-112', '#/investor']) await t.page.evaluate((x) => { location.hash = x; }, r);
     await t.page.waitForTimeout(900);
