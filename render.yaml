@@ -23,6 +23,15 @@ services:
         value: "22.22.0"
       # WEBSITE_BASE_URL defaults to RENDER_EXTERNAL_URL (sitemap, robots); set it when a custom domain is added.
       # WEBSITE_API_URL stays unset until the enterprise API exists (Phase 2).
+    # Product pages follow the nine (D42): superseded addresses redirect permanently (same map as apps/website/redirects.json; the
+    # website's 404.html explains them too). Unknown paths get the site's 404.html.
+    routes:
+      - type: redirect
+        source: /products/scouter
+        destination: /products/lite#scouter
+      - type: redirect
+        source: /products/assurance-apex
+        destination: /products/apex
     headers:
       - path: /*
         name: Content-Security-Policy

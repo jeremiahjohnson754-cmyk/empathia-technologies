@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { Tag, Button } from '@empathia/ui';
 import { NATIVE, areaKey, AREAS } from '../registry.js';
 import { saveDraft } from '../build/store.js';
+import { GuidedPanel } from './Guided.js';
 
 export interface Step { n: number; title: string; text: string; href: string; persona: string; evidence: string; native: boolean }
 const S = (n: number, title: string, text: string, href: string, persona: string, evidence: string): Step => ({ n, title, text, href, persona, evidence, native: NATIVE.has(areaKey(href)) });
@@ -38,7 +39,11 @@ const KEY = 'empathia.demo.tour.v1';
 const EVIDENCE_TONE: Record<string, 'ok' | 'warn' | 'info' | 'muted'> = { VERIFIED_DEMO: 'ok', DECLARED: 'muted', MODELED: 'info', SIMULATED: 'warn' };
 
 /** The persistent tour panel. `onPerspective` switches the demonstration's perspective to the step's persona. */
+/** The tour layer the shell mounts once: the investor scenarios and the guided tours A/B/C (whichever is running). */
 export function TourPanel({ hash, onPerspective }: { hash: string; onPerspective: (p: string) => void }) {
+  return <><InvestorPanel hash={hash} onPerspective={onPerspective} /><GuidedPanel hash={hash} /></>;
+}
+function InvestorPanel({ hash, onPerspective }: { hash: string; onPerspective: (p: string) => void }) {
   const [i, setI] = useState<number | null>(() => { try { const v = sessionStorage.getItem(KEY); return v === null ? null : Number(v); } catch { return null; } });
   // #/tours/investor?scenario=n starts (or restarts) at the first step of a scenario
   useEffect(() => { const m = /^#\/tours\/investor(?:\?scenario=(\d))?/.exec(hash); if (m) { const n = m[1] ? Number(m[1]) : 1; const first = STEPS.findIndex((s) => s.n === n); start(first < 0 ? 0 : first); } }, [hash]);   // eslint-disable-line react-hooks/exhaustive-deps

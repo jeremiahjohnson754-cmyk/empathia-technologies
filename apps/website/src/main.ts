@@ -1,5 +1,6 @@
 // Client script of the public site (no framework in the browser): the menu, the lead forms and the films. A form posts to the public
 // lead endpoint of the API when the deployment configured one (data-api on <html>); otherwise it says so and never pretends to have sent.
+import MOVED from '../redirects.json';
 const api = document.documentElement.getAttribute('data-api') || '';
 const shownAt = performance.now();   // the API refuses a form sent faster than a person can fill it (minimum fill time)
 
@@ -10,6 +11,35 @@ if (btn && nav) {
   btn.addEventListener('click', () => set(btn.getAttribute('aria-expanded') !== 'true'));
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') { set(false); btn.focus(); } });
   document.addEventListener('click', (e) => { if (btn.getAttribute('aria-expanded') === 'true' && !nav.contains(e.target as Node) && !btn.contains(e.target as Node)) set(false); });
+}
+
+// products menu (<details>, works without script): Escape closes it and returns focus, a click outside closes it
+const pmenu = document.querySelector<HTMLDetailsElement>('.pmenu');
+if (pmenu) {
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && pmenu.open) { pmenu.open = false; pmenu.querySelector('summary')?.focus(); e.stopPropagation(); } }, true);
+  document.addEventListener('click', (e) => { if (pmenu.open && !pmenu.contains(e.target as Node)) pmenu.open = false; });
+}
+
+// theme: System / Light / Dark (D9). The choice is kept in this browser only (key empathia.theme) and wins over the system setting.
+const root = document.documentElement; const KEY = 'empathia.theme';
+const current = () => root.getAttribute('data-theme') || 'system';
+const paint = () => { const c = current(); document.querySelectorAll<HTMLButtonElement>('[data-theme-set]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.themeSet === c))); };
+document.querySelectorAll<HTMLButtonElement>('[data-theme-set]').forEach((b) => b.addEventListener('click', () => {
+  const t = b.dataset.themeSet || 'system';
+  if (t === 'light' || t === 'dark') root.setAttribute('data-theme', t); else root.removeAttribute('data-theme');
+  try { localStorage.setItem(KEY, t); } catch { /* storage unavailable: the choice lasts the page */ }
+  paint();
+}));
+addEventListener('storage', (e) => { if (e.key === KEY) { if (e.newValue === 'light' || e.newValue === 'dark') root.setAttribute('data-theme', e.newValue); else root.removeAttribute('data-theme'); paint(); } });
+paint();
+
+// not-found page: show the address asked for (as text, never as markup) and, if it moved, where it lives now
+const asked = document.querySelector<HTMLElement>('[data-asked]');
+if (asked) {
+  const p = location.pathname.replace(/\/+$/, '') || '/'; let shown = location.pathname; try { shown = decodeURIComponent(shown); } catch { /* malformed escape: show it as typed */ }
+  asked.textContent = shown.length > 120 ? shown.slice(0, 120) + '…' : shown;
+  const to = (MOVED as Record<string, string>)[p]; const box = document.querySelector<HTMLElement>('[data-moved]');
+  if (to && box) { const a = document.createElement('a'); a.href = to; a.textContent = to; box.append('This page moved to ', a, '.'); box.hidden = false; }
 }
 
 // films: only one plays at a time
