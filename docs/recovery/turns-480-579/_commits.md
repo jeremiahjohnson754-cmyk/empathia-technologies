@@ -78,3 +78,65 @@ Not merged, not deployed.
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx
 ```
+
+### Turn 515 — commit `76c48f0` on restoration/sprint-0-1 (installation records; hash from the assistant's summary)
+
+```
+Positions, physical assets and installation records (ADR-0012); recommissioning negative paths
+
+Owner requirements 18:51/18:53 and the checkpoint's requirement 4: a stable room position (planned_asset, PA-xxxx) is distinct from the
+physical unit installed there (physical_asset, AS-xxxx), linked by effective-dated installation records.
+
+Database (0026_device_installations.sql)
+- physical_asset: maker nullable, model/category/code immutable, serial nullable and final once recorded; identity UNKNOWN -> DECLARED
+  -> OBSERVED/VERIFIED only forward. CHECKs: UNKNOWN <=> no serial; OBSERVED/VERIFIED need evidence. Serial unique per tenant + maker + model.
+- asset_installation: one open row per position and per asset (partial unique indexes), no overlapping periods (EXCLUDE USING gist,
+  btree_gist), append-only (trigger EM009: no delete, a row is closed once and never rewritten), effective_basis RECORDED or
+  KNOWN_AS_OF_MIGRATION. RLS forced; the app role inserts and closes, never deletes; the worker gets nothing.
+- Migration: one UNKNOWN unit per installed position, with no serial, no maker, no identity claim and no fabricated install date.
+  It is idempotent (a second run finds nothing).
+
+Shared engine (commissioning-engine)
+- installations.ts plans and validates a replacement: like-for-like unit or model substitution; refuses an asset installed elsewhere,
+  a stale expected installation, or an identity downgrade.
+- The reopened-tests rule covers any change of unit and words a replacement and a substitution differently. The checkpoint's 12
+  reopened tests and their reasons are byte-identical (normalised diff, additions only).
+- lifecycle.ts: the general acceptance count excludes superseded results, so stale PASS_VERIFIED never counts. The re-run-but-
+  unverified sentence comes from the engine, so the API and the demo say the same.
+- Assurance distinguishes an installation change (another unit) from a model drift.
+
+API
+- POST /v1/rooms/:room/positions/:position/installation and .../replace (one transaction: lock, close, open, outbox event, audit,
+  reopened tests derived from the records); GET position history and asset history (follows the unit across positions);
+  POST /v1/assets/:asset/identity. The existing model-substitution PATCH goes through the same transaction.
+- Existing authorities only (work.evidence, room.design, field.scan, the verification authorities); existing event types only.
+- Failpoints for the rollback tests fire only with NODE_ENV=test, EMPATHIA_FAILPOINTS and a test database (empathia_test_*).
+
+Demo: positions, units and installations in the store with the same engine functions; "Replace the unit" and "Substitute the model";
+position history and unit history in the register and the Room Story.
+
+Tests (final run by the implementing agent: 54 suites PASS, 0 FAIL, 1 NOT_RUN film decode)
+- New: security/recommissioning-negative RN-01..14 (stale evidence, old-camera reuse, unauthorized approvals, duplicates, conflicting
+  revisions, concurrent replacements, interrupted transactions at two failpoints and a client disconnect, double and overlapping
+  installation via constraint proof, baseline mutation, tenant boundary, site scope); integration/installation-migration MIG-1..6;
+  engine +7 (141); assurance-engine +4 (18); demo unit +8 including the API/demo parity test (29); demo browser C-26..C-36 (149);
+  checkpoint e2e C-89..C-97 (97/97, C-01..C-88 unchanged).
+- governance BL-5: its re-run now uploads evidence after the substitution and first asserts that the pre-substitution evidence is
+  refused (422); no assertion removed.
+- Refusals of a double approval, a double acceptance and a stale revision approval stay 422, as C-65 and BL-5 pin; 409 is used for
+  the new conflicts (stale expected installation, concurrent replacement, unit installed elsewhere, duplicate serial, overlap).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx
+```
+
+### Turn 515 — cherry-picks onto restoration/sprint-0-1: d557bda (conflicts resolved: scripts/test.mjs merged both integration suites; INDEX.json --ours), 3e9c0ac, ff0a6ad, 1e7abc4, 56124a4 (tests/evidence/website/website.json --theirs). New hashes not shown in transcript.
+
+### Turn 515 — commit (hash not shown) on restoration/sprint-0-1
+
+```
+Regenerate the API inventory and schema index after merging the installation and outbox work (156 operations)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx
+```
