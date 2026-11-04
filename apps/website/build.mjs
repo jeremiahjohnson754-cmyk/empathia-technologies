@@ -50,7 +50,9 @@ for (const [id, c] of Object.entries(prov.captures || {})) {
   for (const [f, sha] of files) { const buf = fs.readFileSync(path.join(capDir, f)); if (crypto.createHash('sha256').update(buf).digest('hex') !== sha) { console.error(`capture ${f} does not match its PROVENANCE.json hash`); process.exit(1); } copy(path.join(capDir, f), path.join(dist, 'media/product', f)); }
   captures[id] = { w: c.width, h: c.height, route: c.route };
 }
-const rendered = renderAll({ films, transcripts, demoUrl, preview: filmsMode === 'preview', captures }, { api: api || null, base });
+// films not yet cleared are listed on /films by title and summary only (no frame, no file): the page always exists and says why they do not play
+const pendingFilms = catalogue.filter((f) => !films.includes(f)).map(({ key, title, runtime, summary, disclosure }) => ({ key, title, runtime, summary, disclosure }));
+const rendered = renderAll({ films, pendingFilms, transcripts, demoUrl, preview: filmsMode === 'preview', captures }, { api: api || null, base });
 const PATHS = rendered.map((r) => r.path).filter((p) => p !== '/404');
 // every page carries its CSP as <meta> too (assessment SA-01): a host that drops render.yaml's headers still cannot load or send off-origin
 const { injectMetaCsp, originOf } = await import(path.join(repo, 'scripts/security/policy.mjs')); const page = (h) => injectMetaCsp(decorate(h), [originOf(api)].filter(Boolean));

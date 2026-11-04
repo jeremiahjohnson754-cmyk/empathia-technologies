@@ -239,6 +239,82 @@ for (const [w, h] of [[1440, 900], [768, 1024], [390, 844]]) {
   await c4.close();
 }
 
+// ---- the quality uplift (docs/recovery/QUALITY_UPLIFT.md, 2026-11-04): the V2.5.3 atmosphere, the home story told with the product's
+// own screens, layout at 320 px, and nothing drawn over the words. Added, nothing above relaxed. ----
+{
+  const prov = JSON.parse(fs.readFileSync(path.join(repo, 'apps/website/media/product/PROVENANCE.json'), 'utf8')).captures;
+  const ctx = await newCtx({ viewport: { width: 1440, height: 900 } }); const page = await ctx.newPage(); const errs = []; watch(page, errs, []);
+  await page.goto(base + '/'); await page.waitForTimeout(200);
+  const home = await page.evaluate(() => {
+    const hero = document.querySelector('.hero--home'); const cs = getComputedStyle(hero);
+    const chapters = Array.from(document.querySelectorAll('.chapter')).map((c) => ({ p: c.dataset.p, h: c.querySelector('h3')?.textContent || '', img: c.querySelector('.shot img')?.getAttribute('src') || '', links: Array.from(c.querySelectorAll('.chapter__go a')).map((a) => a.getAttribute('href')) }));
+    const chip = Array.from(document.querySelectorAll('.stage__chip li')).map((l) => l.textContent);
+    const cells = document.querySelectorAll('.mix__cells li').length; const key = Array.from(document.querySelectorAll('.mix__key b')).reduce((a, b) => a + Number(b.textContent), 0);
+    const cards = Array.from(document.querySelectorAll('main .card, main .tile, main .states > div')).map((e) => getComputedStyle(e).boxShadow);
+    return { bg: cs.backgroundImage, chapters, chip, cells, key, n: document.querySelector('.campus__n')?.childNodes[0]?.textContent, nSize: parseFloat(getComputedStyle(document.querySelector('.campus__n')).fontSize), flat: cards.filter((s) => s === 'none').length, cardCount: cards.length };
+  });
+  // the story follows the lifecycle (design, prove, run, learn), not the product order: the products' own order is checked above (W-canon)
+  const inOrder = home.chapters.map((c) => c.p).join('|') === 'lite|commissioning|servicehands|apex';
+  ok('W-uplift-hero', 'the home hero is a gradient panel with a glow, and its counts come from the records (9 products, 30 rooms, 1 record)', /radial-gradient/.test(home.bg) && /linear-gradient/.test(home.bg) && home.chip.join('|') === '9products|30rooms|1record', JSON.stringify({ bg: home.bg.slice(0, 80), chip: home.chip }));
+  ok('W-uplift-story', 'the home page tells the lifecycle in four chapters, in lifecycle order, each with its product’s own dark capture (when captured; the acceptance chapter shows the room record) and a link to its product page', home.chapters.length === 4 && inOrder && home.chapters.every((c) => c.h.length > 10 && c.links.every((l) => /^\/products\//.test(l)) && (!prov[c.p] || c.img === `/media/product/${c.p}-1280.webp` || (c.p === 'commissioning' && prov.room && c.img === '/media/product/room-1280.webp'))), JSON.stringify(home.chapters));
+  ok('W-uplift-rooms', 'the thirty rooms are drawn as thirty cells whose key adds up to thirty, and the number is display-sized', home.cells === 30 && home.key === 30 && home.n === '30' && home.nSize >= 80, JSON.stringify({ cells: home.cells, key: home.key, n: home.n, size: home.nSize }));
+  ok('W-uplift-layered', 'every card, tile and evidence card is a layered surface (it carries a shadow) in this scheme', home.cardCount >= 18 && home.flat === 0, JSON.stringify({ cards: home.cardCount, flat: home.flat }));
+  // The founder page carries the founder's own words verbatim (2026-11-01 05:42 and 05:46 CT): the overview beneath his name, the founding
+  // story as its own section, and "My Cinderella shoe." as its own final line with generous space.
+  await page.goto(base + '/founder', { waitUntil: 'load' }); await page.waitForTimeout(120);
+  const fs1 = await page.evaluate(() => { const b = document.querySelector('[data-founder-bio]'); const st = document.querySelector('[data-founding-story]'); const ps = st ? [...st.querySelectorAll('p')] : []; const last = ps[ps.length - 1]; const prev = ps[ps.length - 2];
+    return { bio: b ? b.textContent : '', h: st ? st.querySelector('h2').textContent : '', n: ps.length, last: last ? last.textContent : '', gap: last && prev ? last.getBoundingClientRect().top - prev.getBoundingClientRect().bottom : 0, img: !!document.querySelector('.portrait img[src*="/media/founder/"]') }; });
+  ok('W-founder-bio', '/founder shows the founder\'s professional overview beneath his name, verbatim', fs1.bio.startsWith('Jeremiah Johnson is an AV/IT technology leader with over eight years of experience') && fs1.bio.endsWith('through a unified, evidence-driven platform.'), fs1.bio.slice(0, 80));
+  ok('W-founder-story', '/founder tells "The Missing Piece" in his words and closes with "My Cinderella shoe." on its own line, with generous space', fs1.h === 'The Missing Piece' && fs1.n === 6 && fs1.last === 'My Cinderella shoe.' && fs1.gap >= 40, JSON.stringify(fs1));
+  ok('W-founder-portrait', '/founder shows the supplied portrait', fs1.img);
+  for (const s of ['lite', 'apex']) {
+    await page.goto(base + `/products/${s}`); const pb = await page.evaluate(() => getComputedStyle(document.querySelector('.hero--product')).backgroundImage);
+    ok(`W-uplift-product-${s}`, `/products/${s}: the hero's glow is tinted by the product's own colour`, /radial-gradient/.test(pb) && pb !== 'none', pb.slice(0, 120));
+  }
+  ok('W-uplift-clean', 'no error on the uplifted pages', !errs.length, errs.join(' | '));
+  await ctx.close();
+  // 320 px (the narrowest phone the audit covers): no sideways scroll, the hero stage stacks, nothing overlaps the words
+  const c320 = await newCtx({ viewport: { width: 320, height: 720 } }); const p320 = await c320.newPage();
+  for (const p of ['/', '/products/lite', '/founder', '/contact']) {
+    await p320.goto(base + p); await p320.waitForTimeout(100);
+    const r = await p320.evaluate(() => { const over = document.documentElement.scrollWidth - document.documentElement.clientWidth; const card = document.querySelector('.stage__card'); const cap = document.querySelector('.stage .shot figcaption'); let hit = false; if (card && cap) { const a = card.getBoundingClientRect(), b = cap.getBoundingClientRect(); hit = a.top < b.bottom - 1 && a.bottom > b.top + 1; } const wide = Array.from(document.querySelectorAll('main h1, main h2, main h3, main p, main .btn')).filter((e) => e.getBoundingClientRect().right > innerWidth + 1).length; return { over, hit, wide }; });
+    ok(`W-uplift-320-${p}`, `${p} at 320 px: no sideways scroll, no text or button past the edge, the record card never covers the caption`, r.over <= 0 && !r.wide && !r.hit, JSON.stringify(r));
+  }
+  await c320.close();
+}
+
+// ---- the concept composition (docs/recovery/inspiration/website-concept.png, 2026-11-04): glass product tiles, the workflow, estates and
+// architecture strips, a closing band with a drawn room, and /films always present. Taken without the concept's unearned claims. Added. ----
+{
+  const ctx = await newCtx({ viewport: { width: 1440, height: 900 } }); const page = await ctx.newPage(); const errs = []; watch(page, errs, []);
+  await page.goto(base + '/'); await page.waitForTimeout(150);
+  const h = await page.evaluate(() => {
+    const rail = Array.from(document.querySelectorAll('.hero--home .glass__tile')).map((t) => ({ p: t.dataset.p, name: t.querySelector('a')?.textContent, href: t.querySelector('a')?.getAttribute('href'), r: t.getBoundingClientRect().height }));
+    const strip = (id) => { const s = document.querySelector(`[data-strip="${id}"]`); return s ? { tag: s.querySelector('.strip__items').tagName, n: s.querySelectorAll('.strip__item').length, text: s.textContent, links: Array.from(s.querySelectorAll('a')).map((a) => a.getAttribute('href')), h2: s.querySelector('h2')?.id, label: s.getAttribute('aria-labelledby') } : null; };
+    const band = document.querySelector('.band--drawn'); const svg = band?.querySelector('svg.drawing');
+    return { rail, flow: strip('flow'), estates: strip('estates'), arch: strip('architecture'), band: !!band, drawingHidden: svg?.getAttribute('aria-hidden') === 'true', bandImgs: band ? band.querySelectorAll('img').length : -1 };
+  });
+  ok('W-concept-rail', 'the home hero ends in nine glass product tiles, in canonical order, each a link to its product page and at least 44 px tall', h.rail.map((r) => r.name).join('|') === CANON.join('|') && h.rail.every((r) => /^\/products\//.test(r.href) && r.r >= 44), JSON.stringify(h.rail.map((r) => r.name)));
+  ok('W-concept-flow', 'the workflow strip is an ordered list of five moves, each linking its product page', h.flow && h.flow.tag === 'OL' && h.flow.n === 5 && h.flow.links.length === 5 && h.flow.links.every((l) => /^\/products\//.test(l)) && h.flow.label === h.flow.h2, JSON.stringify(h.flow && { n: h.flow.n, links: h.flow.links }));
+  ok('W-concept-estates', 'the estates strip names six estates and says that no customer is named and no deployment is claimed', h.estates && h.estates.n === 6 && /No customer is named and no deployment/.test(h.estates.text), h.estates?.text.slice(0, 120));
+  ok('W-concept-arch', 'the architecture strip claims only what the product enforces (no SOC 2 / ISO / certification) and links the trust page', h.arch && h.arch.n === 5 && !/SOC|ISO|certif|complian|real-time|live telemetry/i.test(h.arch.text) && h.arch.links.includes('/trust'), h.arch?.text.slice(0, 160));
+  ok('W-concept-band', 'the closing band carries a drawn room (decorative svg), never a photograph', h.band && h.drawingHidden && h.bandImgs === 0, JSON.stringify({ band: h.band, hidden: h.drawingHidden, imgs: h.bandImgs }));
+  const f = await page.goto(base + '/films'); await page.waitForTimeout(100);
+  const fm = await page.evaluate(() => ({ h1: document.querySelector('h1')?.textContent, pending: document.querySelectorAll('[data-film-pending]').length, videos: document.querySelectorAll('video').length, srcs: Array.from(document.querySelectorAll('video source')).map((s) => s.getAttribute('src')), why: /once its rights for the website are confirmed/.test(document.body.textContent), foot: !!document.querySelector('.foot a[href="/films"]') }));
+  const catalogue = JSON.parse(fs.readFileSync(path.join(repo, 'apps/website/films.json'), 'utf8')).films; const cleared = catalogue.filter((x) => x.rights?.website?.status === 'VERIFIED').length;
+  ok('W-films-page', '/films exists in every build: cleared films play, every other film is listed by title only with the reason, and no uncleared film is shipped', f.status() === 200 && fm.h1 && pages.includes('/films') && fm.pending + fm.videos === catalogue.length && fm.videos >= cleared && (!fm.pending || fm.why) && fm.foot && !fs.readdirSync(path.join(dist, 'media')).some((d) => catalogue.some((c) => c.key === d && c.rights?.website?.status !== 'VERIFIED')), JSON.stringify(fm));
+  for (const w of [320, 390]) {
+    await page.setViewportSize({ width: w, height: 800 });
+    for (const p of ['/', '/platform', '/films', '/solutions']) {
+      await page.goto(base + p); await page.waitForTimeout(80);
+      const r = await page.evaluate(() => { const vw = document.documentElement.clientWidth; const over = document.documentElement.scrollWidth - vw; const wide = Array.from(document.querySelectorAll('.glass__tile, .strip__item, .strip__panel, .filmcard, .band--drawn .wrap, .drawing')).filter((e) => { const b = e.getBoundingClientRect(); return b.width && (b.right > vw + 0.5 || b.left < -0.5); }).map((e) => e.className.baseVal ?? e.className); return { over, wide }; });
+      ok(`W-concept-${w}-${p}`, `${p} at ${w} px: the glass tiles, strips, film cards and drawn band stay inside the page`, r.over <= 0 && !r.wide.length, JSON.stringify(r));
+    }
+  }
+  ok('W-concept-clean', 'no error on the concept pages', !errs.length, errs.join(' | '));
+  await ctx.close();
+}
+
 // ---- budgets (approved image-performance and weight budgets) ----
 {
   const m = JSON.parse(fs.readFileSync(path.join(dist, 'BUILD_MANIFEST.json'), 'utf8')).files; const sum = (re) => Object.entries(m).filter(([f]) => re.test(f)).reduce((a, [, v]) => a + v.bytes, 0);
