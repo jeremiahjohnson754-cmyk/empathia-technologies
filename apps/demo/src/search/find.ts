@@ -5,7 +5,7 @@
  * nothing leaves the page, and an empty or unmatched query says so.
  */
 import DEST from './v253-destinations.json';
-import { BUILDINGS, ROOMS, fullName, roomHref, ARCHETYPE_NAME } from '../campus/canon.js';
+import { BUILDINGS, CAMPUS_ROOMS as ROOMS, fullName, roomHref, ARCHETYPE_NAME } from '../campus/canon.js';
 import { allRecords, C } from '../campus/design.js';
 
 export interface Hit { id: string; kind: 'room' | 'building' | 'device' | 'product' | 'page' | 'tour'; label: string; description: string; href: string; terms: string; score?: number; why?: string }

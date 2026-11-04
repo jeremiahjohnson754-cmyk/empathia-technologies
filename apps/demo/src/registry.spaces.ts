@@ -8,17 +8,24 @@ import type { PageDef } from './registry.types.js';
 import { adapt } from './registry.adapt.js';
 
 export const SPACES_PAGES: readonly PageDef[] = [
+  // ---- Home: Mission Control as V2.5.3 opened it (uplift/core-screens); #/v25 keeps the lifecycle stations
+  {
+    id: 'home', title: 'Mission Control', purpose: 'Health, issues, lifecycle and portfolio decisions across the campus', product: 'mission-control', landing: true,
+    path: '/home', authority: { area: 'home' },
+    load: () => import('./pages/Home.js'),
+    search: { keywords: 'home mission control health issues decisions campus status attention', aliases: ['home', 'mission control', 'what needs me'] },
+  },
   // ---- the living campus and its thirty rooms (rebuild/demo-spaces)
   {
     id: 'campus', title: 'Campus', purpose: 'Buildings, floors and rooms with their status', product: 'lite', landing: true,
     path: '/campus', authority: { area: 'campus' },
-    load: adapt(() => import('./campus/CampusPage.js'), (m, p) => h(m.CampusPage, { hash: p.hash })),
+    load: adapt(() => import('./campus/CampusPage.js'), (m, p) => h(m.CampusPage, { hash: p.hash, role: p.role })),
     search: { keywords: 'map buildings floors estate living campus', aliases: ['campus map', 'buildings'] },
   },
   {
     id: 'campus.building', title: 'Building', purpose: 'One building: its floors and rooms', product: 'lite',
     path: '/campus/:building', alias: ['/campus/:building/:floor'], authority: { area: 'campus' },
-    load: adapt(() => import('./campus/CampusPage.js'), (m, p) => h(m.CampusPage, { hash: p.hash })),
+    load: adapt(() => import('./campus/CampusPage.js'), (m, p) => h(m.CampusPage, { hash: p.hash, role: p.role })),
   },
   {
     id: 'campus.room', title: 'Room', purpose: 'One room in 3D and plan: devices, connections, tests, history and coverage', product: 'lite',
@@ -28,13 +35,25 @@ export const SPACES_PAGES: readonly PageDef[] = [
       { id: 'room.tests', label: 'Tests', authority: { field: 'commissioning.record' } },
       { id: 'room.history', label: 'History', authority: { field: 'history' } },
     ],
-    load: adapt(() => import('./campus/CampusPage.js'), (m, p) => h(m.CampusPage, { hash: p.hash, sees: p.sees })),
+    load: adapt(() => import('./campus/CampusPage.js'), (m, p) => h(m.CampusPage, { hash: p.hash, sees: p.sees, role: p.role })),
     search: { keywords: 'room 3d plan devices reference room 4.218', aliases: ['meeting room', 'reference room'] },
+  },
+  {
+    // V2.5.3's technical room page: #/room (the reference room, Atlas 4.218), #/room/<id>, #/room~<id> — the same room page as the campus address
+    id: 'room', title: 'Room', purpose: 'The technical room page: status, health, the delivery spine, what moved, open issues, 3D and plan', product: 'lite',
+    path: '/room', alias: ['/room/:room'], authority: { area: 'room' },
+    sections: [
+      { id: 'room.devices', label: 'Devices', authority: { field: 'technical' } },
+      { id: 'room.tests', label: 'Tests', authority: { field: 'commissioning.record' } },
+      { id: 'room.history', label: 'History', authority: { field: 'history' } },
+    ],
+    load: () => import('./rooms/RoomPage.js'),
+    search: { keywords: 'room technical page atlas 4.218 delivery spine health devices issues lifecycle', aliases: ['technical room page', 'room page', 'atlas 4.218'] },
   },
   {
     id: 'rooms', title: 'Rooms', purpose: 'Every room of the campus in one list, with its lifecycle and coverage', product: 'lite',
     path: '/rooms', authority: { area: 'campus' },
-    load: adapt(() => import('./campus/CampusPage.js'), (m, p) => h(m.RoomsIndex, { hash: p.hash })),
+    load: adapt(() => import('./campus/CampusPage.js'), (m, p) => h(m.RoomsIndex, { hash: p.hash, role: p.role })),
     search: { keywords: 'rooms list lifecycle', aliases: ['all rooms', 'room list'] },
   },
   {
@@ -71,7 +90,7 @@ export const SPACES_PAGES: readonly PageDef[] = [
     id: 'search', title: 'Search Party', purpose: 'Universal entity search and relationship intelligence', product: 'search-party', landing: true,
     path: '/search', alias: ['/search/*'], authority: { area: 'search' },
     authorityFor: (params) => { const sub = (params['*'] || '').split('/')[0]; return sub && ['quality', 'ownership', 'support', 'graph', 'people', 'projects', 'orgs', 'activity', 'vault'].includes(sub) ? { area: `search.${sub}` } : undefined; },
-    load: adapt(() => import('./search/SearchParty.js'), (m, p) => h(m.SearchPartyDemo, { hash: p.hash })),
+    load: adapt(() => import('./search/SearchParty.js'), (m, p) => h(m.SearchPartyDemo, { hash: p.hash, role: p.role })),
     search: { keywords: 'search find entity relationship', aliases: ['find', 'what is affected'] },
   },
   {

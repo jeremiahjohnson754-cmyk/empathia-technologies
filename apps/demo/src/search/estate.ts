@@ -7,7 +7,7 @@
 import { Graph, nodeKey, type Catalogue, type SearchNode, type Edge } from '@empathia/search-party';
 import { loadDraft, live } from '../build/store.js';
 import type { PlannedDevice, Connection } from '@empathia/domain-types';
-import { BUILDINGS, ROOMS, SITE, fullName, roomHref, buildingByKey, roomById } from '../campus/canon.js';
+import { BUILDINGS, REGIONAL_SITES, CAMPUS_ROOMS as ROOMS, SITE, fullName, roomHref, buildingByKey, roomById } from '../campus/canon.js';
 import { roomRecord } from '../campus/design.js';
 
 const N = (type: string, id: string, label: string, extra: Partial<SearchNode> = {}): SearchNode => ({ type, id, label, provenance: 'synthetic seed (demonstration)', ...extra });
@@ -63,7 +63,7 @@ export function buildEstate(): Catalogue & { graph: Graph } {
   ];
   // the canonical campus: every building and room, and each room's device positions (position code · asset code · identity state)
   const have = new Set(nodes.map((n) => nodeKey(n)));
-  for (const b of BUILDINGS) if (!have.has(`Building:${b.key}`)) { nodes.push(N('Building', b.key, b.name, { subtitle: `${SITE.name} · ${b.floors} floors`, facets: { site: 'SITE-NORTH' }, href: `#/campus/${b.key}` })); edges.push(E(['Building', b.key], 'LOCATED_IN', ['Site', 'SITE-NORTH'], 'DERIVED building.site')); }
+  for (const b of [...BUILDINGS, ...REGIONAL_SITES]) if (!have.has(`Building:${b.key}`)) { nodes.push(N('Building', b.key, b.name, { subtitle: `${SITE.name} · ${b.floors} floors`, facets: { site: 'SITE-NORTH' }, href: `#/campus/${b.key}` })); edges.push(E(['Building', b.key], 'LOCATED_IN', ['Site', 'SITE-NORTH'], 'DERIVED building.site')); }
   for (const o of ROOMS) {
     const rec = roomRecord(o.id)!;
     if (!have.has(`Room:${o.id}`)) { nodes.push(N('Room', o.id, fullName(o), { subtitle: `${buildingByKey(o.building)!.name} · floor ${o.floor} · ${rec.lifecycle}`, facets: { site: 'SITE-NORTH', building: o.building, lifecycle: rec.lifecycle }, href: roomHref(o), provenance: o.kind === 'designed' ? 'MODELED room (designed from its archetype)' : 'synthetic seed (demonstration)' })); edges.push(E(['Room', o.id], 'LOCATED_IN', ['Building', o.building])); }
