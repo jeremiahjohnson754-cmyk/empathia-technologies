@@ -12,6 +12,8 @@ const app = path.dirname(fileURLToPath(import.meta.url));
 const repo = path.resolve(app, '../..');
 const dist = path.join(app, 'dist');
 const dev = process.argv.includes('--dev');
+// the corporate website the demonstration links to (founder page, privacy notice): --website=<url>, DEMO_WEBSITE_URL, or the public site
+const website = ((process.argv.find((a) => a.startsWith('--website=')) || '').slice(10) || process.env.DEMO_WEBSITE_URL || 'https://empathia-website.onrender.com').replace(/\/$/, '');
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
 if (!process.argv.includes('--generate-only')) { fs.rmSync(dist, { recursive: true, force: true }); fs.mkdirSync(dist, { recursive: true }); }
 // the legacy area registry from the parity ledger (docs/legacy-parity.csv): generated, never edited
@@ -22,13 +24,20 @@ if (!process.argv.includes('--generate-only')) { fs.rmSync(dist, { recursive: tr
   // the demonstrator's role × area visibility matrix (AZ_KEYS × areas), verbatim from the inventory: the policy page shows it, never edits it
   const inv = JSON.parse(fs.readFileSync(path.join(repo, 'legacy/inventory/v253-inventory.json'), 'utf8'));
   fs.writeFileSync(path.join(app, 'src/generated/area-roles.json'), JSON.stringify({ roles: inv.uiRoles, areas: inv.areas.map((a) => ({ key: a.area, label: a.label, roles: a.roles })) }, null, 1)); }
+// the operational workspaces, each its own entry (src/hardening/opsRoutes.tsx loads them by these names); the build id versions their URLs
+const WORKSPACES = { dispatch: 'dispatch/Dispatch.tsx', servicehands: 'service/ServiceHands.tsx', replay: 'replay/Replay.tsx', fiscan: 'fi/FiScan.tsx', decisions: 'decisions/Decisions.tsx', labs: 'learn/Labs.tsx', resilience: 'hardening/Resilience.tsx' };
+const buildId = crypto.createHash('sha256').update(String(Date.now())).digest('hex').slice(0, 10);
 // --generate-only: write the generated sources and stop (scripts/build.mjs runs this before type-checking, so a fresh checkout builds)
 if (process.argv.includes('--generate-only')) process.exit(0);
 // the SIGNAL library ships beside the bundle and is fetched on demand by Learn (2 MB; never inlined)
 fs.mkdirSync(dist, { recursive: true }); fs.copyFileSync(path.join(repo, 'packages/domain-data/data/SIGNAL_LIB.json'), path.join(dist, 'signal-lib.json'));
 await esbuild.build({
-  entryPoints: [path.join(app, 'src/main.tsx')], bundle: true, minify: !dev, sourcemap: 'external', format: 'iife', target: ['es2022'], jsx: 'automatic',
-  outfile: path.join(dist, 'demo.js'), define: { 'process.env.NODE_ENV': dev ? '"development"' : '"production"' }, legalComments: 'linked', logLevel: 'warning',
+  // ES modules with code splitting: each operational workspace (src/ops-routes.tsx) is its own chunk under dist/chunks/, loaded when its
+  // address is opened; a chunk that fails to load shows a named alert with Try again (src/hardening/lazy.tsx), never a blank page
+  // the workspaces are entries with stable names (ws/<name>.js) so a failed load can be retried at a fresh URL (?retry=n): a browser keeps a
+  // failed module fetch for the life of the page, so importing the same URL again would fail without asking the network
+  entryPoints: { demo: path.join(app, 'src/main.tsx'), ...Object.fromEntries(Object.entries(WORKSPACES).map(([k, f]) => [`ws/${k}`, path.join(app, 'src', f)])) }, bundle: true, minify: !dev, sourcemap: 'external', format: 'esm', splitting: true, target: ['es2022'], jsx: 'automatic',
+  outdir: dist, chunkNames: 'chunks/[name]-[hash]', define: { 'process.env.NODE_ENV': dev ? '"development"' : '"production"', 'process.env.EMPATHIA_WEBSITE_URL': JSON.stringify(website), 'process.env.DEMO_BUILD_ID': JSON.stringify(buildId) }, legalComments: 'linked', logLevel: 'warning',
   alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') },
 });
 
@@ -39,7 +48,7 @@ await esbuild.build({
 const css = [path.join(repo, 'packages/design-tokens/dist/tokens.css'), path.join(repo, 'packages/ui/src/ui.css'), path.join(app, 'src/styles/demo.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`).join('\n');
 fs.writeFileSync(path.join(dist, 'demo.css'), css);
 fs.copyFileSync(path.join(app, 'src/index.html'), path.join(dist, 'index.html'));
-const files = fs.readdirSync(dist).filter((f) => fs.statSync(path.join(dist, f)).isFile());
+const files = (function list(d, pre = '') { return fs.readdirSync(d).flatMap((f) => fs.statSync(path.join(d, f)).isDirectory() ? list(path.join(d, f), `${pre}${f}/`) : [`${pre}${f}`]); })(dist);
 const manifest = { app: '@empathia/demo', builtAt: new Date().toISOString(), files: Object.fromEntries(files.map((f) => [f, { bytes: fs.statSync(path.join(dist, f)).size, sha256: crypto.createHash('sha256').update(fs.readFileSync(path.join(dist, f))).digest('hex') }])) };
 fs.writeFileSync(path.join(dist, 'BUILD_MANIFEST.json'), JSON.stringify(manifest, null, 2));
 console.log(`demo built: ${files.map((f) => `${f} ${(manifest.files[f].bytes / 1024).toFixed(0)} KiB`).join(', ')}`);

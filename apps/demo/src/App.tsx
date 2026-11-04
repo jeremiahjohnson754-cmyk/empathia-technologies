@@ -9,6 +9,7 @@ import { ApexPage } from './pages/Apex.js';
 import { LearnPage } from './pages/Learn.js';
 import { MissionControl, ExecPage, LedgerPage } from './pages/Control.js';
 import { FieldIntelligencePage } from './pages/FieldIntelligence.js';
+import { opsPage } from './hardening/opsRoutes.js';
 
 /** The seven investor scenarios of the 2.5.5 investor landing, with the customer problem each one solves (carried over verbatim in spirit). */
 const SCENARIOS = [
@@ -46,7 +47,7 @@ export function App() {
         actions={<label className="persp">Perspective <select value={as} onChange={(e) => setAs(e.target.value)} aria-describedby="persp-note">{PERSPECTIVES.map((p) => <option key={p} value={p}>{p}</option>)}</select></label>}
         note={<><Tag tone="warn">DEMONSTRATION · SYNTHETIC DATA</Tag> <span id="persp-note">A perspective changes what the demonstration shows; it grants nothing. Real access is decided by the authenticated application's server.</span></>}>
         <TourPanel hash={hash} onPerspective={setAs} />
-        <div className="wrap">{home ? <Landing /> : page(areaKey(hash), hash, as) || <Boundary hash={hash} area={area} />}</div>
+        <div className="wrap">{home ? <Landing /> : opsPage(hash, as) || page(areaKey(hash), hash, as) || <Boundary hash={hash} area={area} />}</div>
       </AppShell>
       <footer className="foot">Every person, organisation, room, device, figure and approval here is invented. Nothing is connected to a real system. <a href="#/investor">Back to the start</a></footer>
     </div>
