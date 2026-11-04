@@ -58,3 +58,12 @@ a.wk-card:hover { border-color: var(--accent); } a.wk-card:focus-visible { outli
 .wk .exec__value { font-size: 1.6rem; font-weight: 700; letter-spacing: var(--track-tight); font-variant-numeric: tabular-nums; }
 .exec__value small { font-size: var(--fs-sm); font-weight: 600; color: var(--tx3); letter-spacing: 0; }
 @media (prefers-reduced-motion: reduce) { .wk-card, .wk .mc__station, .wk .exec__tile { transition: none; } .wk .mc__station:hover, .wk .exec__tile:hover { transform: none; } }
+
+/* the operational workspaces' head (hardening/kit.tsx OpsHead) drawn as the kit hero, compact */
+.ops__head.kit-hero { display: grid; border-top: 1px solid var(--line2); padding: 18px 20px 16px; margin: 0; gap: var(--sp-3); align-items: start; }
+.ops__head.kit-hero--aside { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+@media (max-width: 720px) { .ops__head.kit-hero--aside { grid-template-columns: minmax(0, 1fr); } }
+.ops__head.kit-hero .kit-hero__title { margin: 8px 0 0; font-size: clamp(22px, 2.6vw, 28px); line-height: 1.1; max-width: 32ch; }
+.ops__head.kit-hero .kit-hero__lede { max-width: 78ch; }
+.ops__head.kit-hero .kit-hero__actions { margin-top: var(--sp-3); }
+.kit-hero__title:focus:not(:focus-visible) { outline: none; }

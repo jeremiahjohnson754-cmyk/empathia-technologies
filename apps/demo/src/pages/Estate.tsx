@@ -88,7 +88,7 @@ export function CommissioningPage({ perspective }: { perspective: string }) {
   const verified = scope.reduce((a, r) => a + r.counts.verified, 0); const applicable = scope.reduce((a, r) => a + r.counts.applicable, 0);
   const bname = bld === 'all' ? 'the campus' : BUILDINGS.find((b) => b.key === bld)?.name || bld;
   return (
-    <section className="wk" data-testid="commissioning">
+    <section className="wk" data-native="workspace" data-testid="commissioning">
       <PageHero product="commissioning" icon="shield" eyebrow="Commissioning · command center" title="Commissioning"
         lede={<>Commissioning proves two things: the system was installed correctly, and the space supports its intended human experience. <b>{plural(n('blocked'), 'room')}</b> {n('blocked') === 1 ? 'is' : 'are'} blocked and <b>{n('conditions')}</b> accepted with conditions{first ? <>; <b>{roomName(first.r)}</b> comes first: {first.why}</> : null}. <b>{plural(defs.length, 'deficiency', 'deficiencies')}</b> open in {bname}.</>}
         meta={[<Chip key="s" small tone="muted">Synthetic records · simulated tests</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]}
@@ -141,7 +141,7 @@ export function AssurancePage({ perspective }: { perspective: string }) {
   const first = attention[0];
   const opened = weekCounts(w.incidents, (i) => i.openedAt);
   return (
-    <section className="wk" data-testid="assurance">
+    <section className="wk" data-native="workspace" data-testid="assurance">
       <PageHero product="commissioning" icon="pulse" eyebrow="Assurance · command center" title="Assurance"
         lede={<>Is the estate still behaving the way it was designed and commissioned to behave? <b>{plural(n('failed'), 'room')}</b> failed a check and <b>{n('drift')}</b> drifted from their baseline{first ? <>; <b>{roomName(first.r)}</b> comes first: {first.why}</> : null}. <b>{plural(eligible.length - rd.length, 'room')}</b> {eligible.length - rd.length === 1 ? 'is' : 'are'} not ready for the next session.</>}
         meta={[<Chip key="s" small tone="muted">Modelled · not live monitoring</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]}
@@ -189,7 +189,7 @@ export function ProPage({ perspective }: { perspective: string }) {
   const working = [...inc.map((i) => ({ key: i.id, title: i.title, sub: `${i.roomName} · ${i.severity} · opened ${Math.round((now - Date.parse(i.openedAt)) / DAY)} d ago${late(i) ? ` · past its ${TARGET_DAYS[i.severity] ?? 5}-day target` : ''}`, href: i.workOrderId ? `#/servicehands/wo/${i.workOrderId}` : `#/servicehands?id=${i.id}`, tone: (i.severity === 'Standard' ? 'warn' : 'bad') as Series, chip: late(i) ? 'Past target' : i.state, rank: late(i) ? 0 : 1 })),
     ...roomIssues.map(({ r, i }) => ({ key: `${r.outline.id}:${i.id}`, title: i.title, sub: `${roomName(r)} · ${i.severity} · ${i.source}`, href: roomHref(r.outline), tone: (i.severity === 'High' ? 'bad' : i.severity === 'Medium' ? 'warn' : 'info') as Series, chip: i.severity, rank: i.severity === 'High' ? 1 : i.severity === 'Medium' ? 2 : 3 }))].sort((a, b) => a.rank - b.rank);
   return (
-    <section className="wk" data-testid="pro">
+    <section className="wk" data-native="workspace" data-testid="pro">
       <PageHero product="pro" icon="chart" eyebrow="Pro · command center" title="Command center"
         lede={<>What is open right now, how it stands against its target, and where to look next. <b>{plural(working.length, 'issue')}</b> open across <b>{plural(needRooms.size, 'room')}</b>; <b>{inc.filter(late).length}</b> service {inc.filter(late).length === 1 ? 'job is' : 'jobs are'} past target.</>}
         meta={[<Chip key="s" small tone="muted">Modelled · not production monitoring</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]}

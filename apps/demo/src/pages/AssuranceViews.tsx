@@ -42,7 +42,7 @@ export function AssuranceAnalysisPage({ perspective }: { perspective: string }) 
   const rows = recs.map((r) => ({ r, s: asState(r, w.incidents), c: r.counts }));
   const tot = rows.reduce((a, x) => ({ v: a.v + x.c.verified, f: a.f + x.c.failed, n: a.n + x.c.notTested, ap: a.ap + x.c.applicable }), { v: 0, f: 0, n: 0, ap: 0 });
   return (
-    <section className="wk" data-testid="assurance-analysis">
+    <section className="wk" data-native="workspace" data-testid="assurance-analysis">
       <PageHero product="commissioning" icon="chart" eyebrow="Assurance · engineering analysis" title="Drift, test by test"
         lede={<>The engineering view behind the summary: for each room, how many of its applicable tests are verified, failed or still untested, and why it sits where it does. <b>{tot.v.toLocaleString('en-GB')}</b> of {tot.ap.toLocaleString('en-GB')} applicable tests verified; <b>{tot.f}</b> failed.</>}
         meta={[<Chip key="m" small tone="muted">Modelled · not live monitoring</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]} />
@@ -72,7 +72,7 @@ export function ReadyPage({ perspective }: { perspective: string }) {
   const ready = rows.filter((x) => !x.fails.length); const notReady = rows.filter((x) => x.fails.length && accepted(x.r));
   const byCheck = rows[0]!.checks.map((c, k) => ({ key: c.id, label: c.label, value: rows.filter((x) => !x.checks[k]!.ok).length, tone: (['muted', 'warn', 'bad', 'bad', 'servicehands'] as Series[])[k]! }));
   return (
-    <section className="wk" data-testid="assurance-ready">
+    <section className="wk" data-native="workspace" data-testid="assurance-ready">
       <PageHero product="commissioning" icon="check" eyebrow="Assurance · ready checks" title="Ready for the next session"
         lede={<>Five checks before a room is trusted with its next meeting. <b>{plural(ready.length, 'room')}</b> pass all five; <b>{plural(notReady.length, 'accepted room')}</b> {notReady.length === 1 ? 'fails' : 'fail'} at least one.</>}
         meta={[<Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]} />
@@ -98,7 +98,7 @@ export function ChangePage({ perspective }: { perspective: string }) {
   const exc = recs.filter((r) => r.exception);
   const replaced = recs.flatMap((r) => r.installations.filter((i) => i.removedAt).map((i) => ({ r, i })));
   return (
-    <section className="wk" data-testid="assurance-change">
+    <section className="wk" data-native="workspace" data-testid="assurance-change">
       <PageHero product="commissioning" icon="route" eyebrow="Assurance · change impact" title="What a change reopens"
         lede={<>A change never goes silently into the baseline. <b>{plural(replaced.length, 'unit')}</b> replaced, <b>{plural(reopened.reduce((a, r) => a + r.reopened.length, 0), 'test')}</b> reopened by it, <b>{plural(pend.length, 'new baseline')}</b> waiting for acceptance and <b>{plural(exc.length, 'exception')}</b> waiting for an independent reviewer.</>}
         meta={[<Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]} />
@@ -130,7 +130,7 @@ export function SignalsPage({ perspective }: { perspective: string }) {
   const persona = personaOf(perspective); const { w } = useWorkspace(); const recs = allRecords();
   const sig = recs.map((r) => { const inc = w.incidents.filter((i) => i.roomId === r.outline.id); return { r, inc, rec: inc.filter((i) => i.recurrenceOf).length, low: openIssues(r).filter((i) => i.severity !== 'High').length }; }).filter((x) => x.inc.length || x.low);
   return (
-    <section className="wk" data-testid="assurance-signals">
+    <section className="wk" data-native="workspace" data-testid="assurance-signals">
       <PageHero product="commissioning" icon="bell" eyebrow="Assurance · maintenance and experience signals" title="Early signals"
         lede={<>Before a room fails, it tells you: repeated service jobs, low and medium issues left open, recurrences. <b>{plural(sig.length, 'room')}</b> {sig.length === 1 ? 'sends' : 'send'} a signal; the strongest first.</>}
         meta={[<Chip key="m" small tone="muted">Signals from records, not sensors</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]} />
@@ -149,7 +149,7 @@ export function DeficienciesPage({ perspective }: { perspective: string }) {
   const open = defs.filter((x) => x.i.state !== 'RESOLVED');
   const sev = (['High', 'Medium', 'Low'] as const).map((s, k) => ({ key: s, label: s, value: open.filter((x) => x.i.severity === s).length, tone: (['bad', 'warn', 'info'] as Series[])[k]! }));
   return (
-    <section className="wk" data-testid="cx-deficiencies">
+    <section className="wk" data-native="workspace" data-testid="cx-deficiencies">
       <PageHero product="commissioning" icon="alert" eyebrow="Commissioning · deficiencies" title="Open deficiencies"
         lede={<>Every commissioning deficiency that is not closed, most serious first. <b>{plural(open.length, 'deficiency', 'deficiencies')}</b> open in <b>{plural(new Set(open.map((x) => x.r.outline.id)).size, 'room')}</b>; {defs.length - open.length} resolved and kept.</>}
         meta={[<Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]} />

@@ -75,7 +75,7 @@ export function MissionControl({ perspective }: { perspective: string }) {
   const allEvents = [...w.events, ...(d?.events || [])]; const evWeeks = weekCounts(allEvents, (e) => e.at); const denied = allEvents.filter((e) => e.outcome === 'DENIED').length;
   const ICON: Record<string, IconName> = { intake: 'inbox', decision: 'check', funding: 'ticket', design: 'layers', commissioning: 'shield', field: 'wrench', documents: 'book', handoff: 'link', assurance: 'pulse', service: 'route' };
   return (
-    <section className="mc wk">
+    <section className="mc wk" data-native="workspace">
       <PageHero product="mission-control" icon="pulse" eyebrow="Empathia V2.5 · one connected lifecycle" title="What changed, what matters, what needs action"
         lede={<>Intake to decision to design to commissioning to handoff to service — one lifecycle, with the evidence behind every state. <b>{plural(todo.length, 'thing')}</b> wait{todo.length === 1 ? 's' : ''} on <b>{personaLabel(persona)}</b>; <b>{plural(openJobs.length, 'service job')}</b> open.</>}
         meta={[<Chip key="s" small tone="muted">Synthetic records · simulated</Chip>, <Chip key="e" small tone="accent">{plural(allEvents.length, 'event')} in the ledger</Chip>]}
@@ -159,7 +159,7 @@ export function ExecPage({ perspective }: { perspective: string }) {
   const bname = bld === 'all' ? 'All buildings' : BUILDINGS.find((b) => b.key === bld)?.name || bld;
   const withRecords = new Set([...R0.rooms.map((r) => bOfRoom(r.id)), ...Object.values(PROJECT_BUILDING)].filter(Boolean));
   return (
-    <section className="exec wk">
+    <section className="exec wk" data-native="workspace">
       <PageHero product="pro" icon="chart" eyebrow="Executive intelligence · shows its work" title="Twenty-seven KPI passports"
         lede={<>Pending decisions, funding and {ps.length} measures computed from the records and the ledger — numerator, denominator, window, coverage, freshness and confidence. Nothing typed in; &ldquo;not measurable&rdquo; is never 0%. Acting as <b>{personaLabel(persona)}</b>.</>}
         meta={[<Chip key="b" small tone="accent">{bname}</Chip>, <Chip key="d" small tone="muted">Last {days} days</Chip>, <Chip key="u" small tone="muted">Usage aggregate-only</Chip>]}
