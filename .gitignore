@@ -38,7 +38,9 @@ releases/source/
 # derived release stamp (scripts/build.mjs)
 apps/enterprise-web/src/generated/
 
-# website film renditions: only a film VERIFIED for the website is committed (apps/website/films.json); the founder portrait is committed
+# website film renditions: only a film VERIFIED for the website is committed (apps/website/films.json); the founder portrait and the
+# product captures (dark demo screenshots, hashes in apps/website/media/product/PROVENANCE.json) are committed
 apps/website/media/*
 !apps/website/media/founder/
+!apps/website/media/product/
 .claude/

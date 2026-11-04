@@ -1,6 +1,8 @@
-// Building blocks of the public site (Experience System v1: docs/design-system/EXPERIENCE_SYSTEM.md, Figma "Empathia — Experience
-// System v1"). Rendered at build time; the browser needs no framework. Every component has one job and names it in its class.
+// Building blocks of the public site (LEI direction on the Experience System). Rendered at build time; the browser needs no framework.
+// Every component has one job and names it in its class.
 import React from 'react';
+import { PRODUCTS, CANON, DEMO_STATE, type Product } from './products.js';
+import { ENQUIRIES, enquiryUrl, disclosure, type Source } from './enquiry.js';
 
 export type Evidence = 'verified' | 'observed' | 'declared' | 'modeled' | 'simulated' | 'unknown';
 export const EVIDENCE: Record<Evidence, { label: string; meaning: string }> = {
@@ -65,7 +67,6 @@ export const RecordCard = () => (
       <div><dt>Touch panel firmware</dt><dd><Tag s="declared" /><span>supplier record, not yet tested</span></dd></div>
       <div><dt>Occupancy sensor</dt><dd><Tag s="unknown" /><span>no source; shown as unknown</span></dd></div>
     </dl>
-    <p className="record__base"><span>Baseline v2 accepted</span><span>v1 preserved, with the difference</span></p>
   </figure>
 );
 
@@ -87,10 +88,74 @@ export const FilmPlayer = ({ film, transcript, lead }: { film: Film; transcript:
 
 export const Portrait = ({ size }: { size: 'lg' | 'sm' }) => (
   <picture className={`portrait portrait--${size}`}>
-    <source type="image/webp" srcSet="/media/founder/480.webp 480w, /media/founder/800.webp 800w, /media/founder/1200.webp 1200w" sizes={size === 'lg' ? '(max-width: 760px) 90vw, 420px' : '(max-width: 760px) 60vw, 220px'} />
-    <img src="/media/founder/800.jpg" srcSet="/media/founder/480.jpg 480w, /media/founder/800.jpg 800w, /media/founder/1200.jpg 1200w" sizes={size === 'lg' ? '(max-width: 760px) 90vw, 420px' : '(max-width: 760px) 60vw, 220px'} width={800} height={1000} loading={size === 'lg' ? 'eager' : 'lazy'} decoding="async" alt="Portrait of Jeremiah Johnson in a light hoodie, indoors." />
+    <source type="image/webp" srcSet="/media/founder/480.webp 480w, /media/founder/800.webp 800w, /media/founder/1200.webp 1200w" sizes="(max-width: 720px) 300px, (max-width: 1100px) 340px, 460px" />
+    <img src="/media/founder/800.jpg" srcSet="/media/founder/480.jpg 480w, /media/founder/800.jpg 800w, /media/founder/1200.jpg 1200w" sizes="(max-width: 720px) 300px, (max-width: 1100px) 340px, 460px" width={800} height={1000} loading={size === 'lg' ? 'eager' : 'lazy'} decoding="async" alt="Portrait of Jeremiah Johnson in a light hoodie, indoors." />
   </picture>
 );
 export const CREDENTIALS = [{ abbr: 'CTS', full: 'Certified Technology Specialist', by: 'AVIXA' }, { abbr: 'CAPM', full: 'Certified Associate in Project Management', by: 'PMI' }, { abbr: 'Network+', full: 'CompTIA Network+', by: 'CompTIA' }];
 export const Credentials = () => <ul className="creds" aria-label="Credentials">{CREDENTIALS.map((c) => <li key={c.abbr}><abbr title={c.full}>{c.abbr}</abbr><span>{c.by}</span></li>)}</ul>;
 export const FOUNDER_QUOTE = 'Empathia grew from a simple conviction: the technology behind a workplace should be understandable, accountable and provable. We’re connecting design, people, systems, service, and learning into one evidence-backed lifecycle.';
+
+/** The nine product colours as one strip: the website's hero signature in both themes (replaces the old glow). */
+export const Spectrum = () => <div className="spectrum" aria-hidden="true">{CANON.map((p) => <i key={p.id} data-p={p.id} />)}</div>;
+
+export interface Capture { w: number; h: number; route: string }
+/** A dark capture of the investor demonstration (D43), with its provenance stated. */
+export const Shot = ({ p, cap, eager }: { p: Product; cap?: Capture; eager?: boolean }) => cap ? (
+  <figure className="shot" data-p={p.id}>
+    <div className="shot__frame">
+      <img src={`/media/product/${p.id}-1280.webp`} srcSet={`/media/product/${p.id}-640.webp 640w, /media/product/${p.id}-1280.webp 1280w`} sizes="(max-width: 1100px) 92vw, 620px" width={cap.w} height={cap.h} loading={eager ? 'eager' : 'lazy'} decoding="async" alt={`${p.name} in the investor demonstration: ${p.purpose.charAt(0).toLowerCase() + p.purpose.slice(1)}.`} />
+    </div>
+    <figcaption><b>Synthetic demonstration data</b><span>Captured from the investor demonstration</span></figcaption>
+  </figure>
+) : null;
+
+/** The nine products as image-led tiles, in the canonical order (D37/D40), each in its own colour. */
+export const ProductTiles = ({ captures, exclude, compact }: { captures: Record<string, Capture>; exclude?: string; compact?: boolean }) => (
+  <ul className="tiles" aria-label="The nine products">{PRODUCTS.filter((p) => p.id !== exclude).map((p) => {
+    const n = CANON.findIndex((c) => c.id === p.id) + 1; const cap = captures[p.id];
+    return (
+      <li key={p.id} className="tile" data-p={p.id} data-product={p.id}>
+        <div className={`tile__art${cap ? '' : ' tile__art--empty'}`}>
+          <span className="tile__n" aria-hidden="true">{String(n).padStart(2, '0')}</span>
+          {cap ? <img src={`/media/product/${p.id}-640.webp`} width={640} height={Math.round(640 * cap.h / cap.w)} loading="lazy" decoding="async" alt="" /> : <b aria-hidden="true">{p.name}</b>}
+        </div>
+        <div className="tile__body"><h3><a href={`/products/${p.slug}`}>{p.name}</a></h3><p>{p.purpose}</p>{p.apps.length ? <p className="tile__apps">Includes {p.apps.join(' and ')}</p> : null}{compact ? null : <Tag s={DEMO_STATE[p.demoState].s}>{DEMO_STATE[p.demoState].text}</Tag>}</div>
+      </li>
+    );
+  })}</ul>
+);
+
+export const ExtIcon = () => <svg className="ext" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3H3v10h10v-3M9 2h5v5M14 2 7 9" /></svg>;
+/** An entry point to the hosted enquiry form: new tab, noopener noreferrer, the destination in its accessible name, the disclosure beside it. */
+export const EnquiryLink = ({ source, primary, id }: { source: Source; primary?: boolean; id?: string }) => {
+  const e = ENQUIRIES[source]; const did = `disc-${id || source}`;
+  return (<>
+    <a className={`btn${primary ? ' btn--primary' : ''}`} href={enquiryUrl(source)} target="_blank" rel="noopener noreferrer" data-enquiry={source} aria-describedby={did}>{e.button}<span className="sr"> (opens the enquiry form on tally.so in a new tab)</span><ExtIcon /></a>
+    <p className="disclosure" id={did}>{disclosure(e)} <a href="/privacy#enquiries">How enquiries are handled</a>.</p>
+  </>);
+};
+export const EnquiryCard = ({ source, primary }: { source: Source; primary?: boolean }) => { const e = ENQUIRIES[source]; return (
+  <div className="enquire"><h3>{e.title}</h3><p>{e.body}</p><EnquiryLink source={source} primary={primary} /></div>
+); };
+
+/** The founder: the person and the thinking behind the company, not a second product page (founder 2026-10-31 21:35 / 21:42 / 21:46).
+ *  Two distinct calls to action: "About the founder" (this site, same tab) and "Connect with the founder" (the enquiry form, new tab,
+ *  marked source=founder). Only the supplied portrait, only the three credentials, no invented biography. */
+export const FounderBlock = ({ page }: { page: 'home' | 'founder' }) => (
+  <div className="founder" data-founder={page}>
+    <Portrait size={page === 'founder' ? 'lg' : 'sm'} />
+    <div className="founder__text">
+      <p className="label">{page === 'founder' ? 'Founder' : 'The founder'}</p>
+      {page === 'founder' ? <h1 className="founder__name">Jeremiah Johnson</h1> : <h2 className="founder__name">Jeremiah Johnson</h2>}
+      <p className="founder__role">Founder, Empathia Technologies</p>
+      <Credentials />
+      <blockquote className="philosophy"><p>{FOUNDER_QUOTE}</p><footer>Jeremiah Johnson, on why Empathia exists</footer></blockquote>
+      <div className="founder__ctas">
+        {page === 'home' ? <a className="btn btn--lg" href="/founder" data-founder-about>About the founder</a> : null}
+        <a className="btn btn--primary btn--lg" href={enquiryUrl('founder')} target="_blank" rel="noopener noreferrer" data-enquiry="founder" aria-describedby={`disc-founder-${page}`}>Connect with the founder<span className="sr"> (opens the enquiry form on tally.so in a new tab)</span><ExtIcon /></a>
+      </div>
+      <p className="disclosure" id={`disc-founder-${page}`}>{disclosure(ENQUIRIES.founder)} The enquiry is marked for the founder; it is not a private channel. <a href="/privacy#enquiries">How enquiries are handled</a>.</p>
+    </div>
+  </div>
+);
