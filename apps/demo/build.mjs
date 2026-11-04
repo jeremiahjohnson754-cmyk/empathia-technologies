@@ -45,12 +45,14 @@ await esbuild.build({
 { const maps = path.join(repo, '.local/sourcemaps', path.basename(app)); fs.mkdirSync(maps, { recursive: true });
   const walk = (d) => fs.readdirSync(d).flatMap((f) => { const p = path.join(d, f); return fs.statSync(p).isDirectory() ? walk(p) : [p]; });
   for (const f of walk(dist).filter((f) => f.endsWith('.map'))) fs.renameSync(f, path.join(maps, path.basename(f))); }
-const css = [path.join(repo, 'packages/design-tokens/dist/fonts.css'), path.join(repo, 'packages/design-tokens/dist/tokens.css'), path.join(repo, 'packages/ui/src/ui.css'), path.join(app, 'src/styles/demo.css'), path.join(app, 'src/styles/shell.css'), path.join(app, 'src/hardening/ops.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`).join('\n');
+// brand, Inter and the theme script from @empathia/design-tokens (D7, D9, D39): files copied into dist, the <head> decorated. The shell's
+// own theme-boot.js already applies the stored theme before first paint (src/index.html), so the tokens' theme-init is not added twice.
+const { shipBrandAndType, tokenCss } = await import(path.join(repo, 'packages/design-tokens/brand.mjs'));
+const decorate = shipBrandAndType(dist, { preload: 'app', themeInit: false, manifest: { name: 'Empathia Living Campus — investor demonstration', shortName: 'Empathia demo' } });
+const css = [tokenCss(), ...[path.join(repo, 'packages/ui/src/ui.css'), path.join(app, 'src/styles/demo.css'), path.join(app, 'src/styles/shell.css'), path.join(app, 'src/hardening/ops.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`)].join('\n');
 fs.writeFileSync(path.join(dist, 'demo.css'), css);
-fs.copyFileSync(path.join(app, 'src/index.html'), path.join(dist, 'index.html'));
-// the theme is applied before first paint by a tiny same-origin script (the CSP forbids inline scripts); the brand marks ship as files
+fs.writeFileSync(path.join(dist, 'index.html'), decorate(fs.readFileSync(path.join(app, 'src/index.html'), 'utf8')));
 fs.copyFileSync(path.join(app, 'src/theme-boot.js'), path.join(dist, 'theme-boot.js'));
-fs.cpSync(path.join(repo, 'packages/design-tokens/dist/fonts'), path.join(dist, 'fonts'), { recursive: true });   // self-hosted Inter (fonts.css urls)
 fs.mkdirSync(path.join(dist, 'brand'), { recursive: true });
 for (const f of ['emblem-small.svg', 'owl.svg']) fs.copyFileSync(path.join(repo, 'packages/design-tokens/brand', f), path.join(dist, 'brand', f));
 const files = (function walk(d, pre = '') { return fs.readdirSync(d).flatMap((f) => fs.statSync(path.join(d, f)).isDirectory() ? walk(path.join(d, f), `${pre}${f}/`) : [`${pre}${f}`]); })(dist);

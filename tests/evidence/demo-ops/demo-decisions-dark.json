@@ -1,0 +1,159 @@
+{
+ "at": "2026-11-04T01:30:51.673Z",
+ "scheme": "dark",
+ "pass": 24,
+ "fail": 1,
+ "tests": 25,
+ "results": [
+  {
+   "id": "DC-desktop-01",
+   "name": "the Decision desk lists pending projects, projects awaiting funding and field readiness; no sideways scroll",
+   "result": "PASS",
+   "detail": "0"
+  },
+  {
+   "id": "DC-03",
+   "name": "the sponsor who wrote the brief cannot approve it (segregation of duties)",
+   "result": "PASS",
+   "detail": "Refused.\nthe approver authored the brief (segregation of duties)"
+  },
+  {
+   "id": "DC-04",
+   "name": "a hold without a reason and a review date is refused with both named",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "DC-05",
+   "name": "a hold with a review date in the past is refused",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "DC-06",
+   "name": "a rejection without a reason is refused before any confirmation",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "DC-07",
+   "name": "rejecting asks for the project id to be typed and says it cannot be undone",
+   "result": "FAIL",
+   "detail": "Reject Northstar Town Hall audio?\n\nThe project is rejected at scope revision 1 with your reason: “Out of scope for this financial year”.\n\nThis cannot be undone. A rejection is history; the project ret"
+  },
+  {
+   "id": "DC-08",
+   "name": "after the named confirmation the project is REJECTED and the decision is in the log with its scope revision",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "DC-09",
+   "name": "the executive approves the Atlas refresh as pitched; field readiness then says approved, not funded",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "DC-10",
+   "name": "the executive is not offered the funding signature (D44)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "DC-11",
+   "name": "funding that names another scope revision is refused",
+   "result": "PASS",
+   "detail": "Refused.\nfunding names scope revision 2, the approved scope is 1"
+  },
+  {
+   "id": "DC-12",
+   "name": "funding bound to the approved scope revision makes the project field-ready",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "DC-13",
+   "name": "a decision without a rationale is refused",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "DC-14",
+   "name": "with a rationale the decision is recorded, marked as recorded in this demonstration",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "DC-15",
+   "name": "you may withdraw only what you recorded: the seeded decision by the architect offers no withdraw button to the systems engineer",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "DC-16",
+   "name": "Escape closes the confirmation with nothing changed and focus back on the button that opened it",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "DC-17",
+   "name": "withdrawing removes it and offers Undo",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "DC-18",
+   "name": "Undo restores the withdrawn decision",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "DC-19",
+   "name": "damaged saved decisions do not break the page: it opens from the seed",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "DC-20",
+   "name": "a perspective without project.decide sees no decision controls and no refusal message (D44)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "DC-desktop-99",
+   "name": "no page error, no console error, no request leaves the page",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "DC-tablet-01",
+   "name": "the Decision desk lists pending projects, projects awaiting funding and field readiness; no sideways scroll",
+   "result": "PASS",
+   "detail": "0"
+  },
+  {
+   "id": "DC-tablet-99",
+   "name": "no page error, no console error, no request leaves the page",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "DC-phone-01",
+   "name": "the Decision desk lists pending projects, projects awaiting funding and field readiness; no sideways scroll",
+   "result": "PASS",
+   "detail": "0"
+  },
+  {
+   "id": "DC-phone-02",
+   "name": "every desk control is at least 44 px tall on a phone",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "DC-phone-99",
+   "name": "no page error, no console error, no request leaves the page",
+   "result": "PASS",
+   "detail": ""
+  }
+ ]
+}

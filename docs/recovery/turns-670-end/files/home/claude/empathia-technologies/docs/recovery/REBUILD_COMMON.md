@@ -42,3 +42,15 @@ state the founder approved, by tomorrow morning. The founder has given full appr
   ```
 - Report at the end (concise): branch, commits, what is rebuilt vs. what the recovered briefs specified and is still missing, test counts
   light/dark, anything not run and why.
+
+## Founder direction, 2026-11-03 18:34 and 18:38 CT (binding)
+
+- "there's no more design — you just need to execute what all was given for both websites": rebuild to the approved state; no new
+  visual direction, no new product decisions.
+- "bring it back to that quality and finish it where you left off and merge it all and commit to render and destructive QA and QA fixup
+  polish and harden it": every slice ends with destructive QA (break it on purpose: bad input, lost network, chunk failure, rapid
+  double-taps, back/forward, reload mid-flow, narrow phones, keyboard only, screen reader names, dark mode) and the fixes.
+- "reform and refine and improve where you can … make the UI UX security workflows and screens better, nothing too crazy": within the
+  approved design, tighten copy, states, focus, empty/error states, motion under reduced-motion, contrast, target sizes, and the
+  security posture (deny by default, no secret ever in the client, CSP intact). Say in your report what you refined and why.
+- The founder is paying per token: be economical — don't re-read large files you already know, don't narrate, batch tool calls.

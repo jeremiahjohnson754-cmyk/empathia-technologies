@@ -39,10 +39,16 @@ const PATHS = rendered.map((r) => r.path);
 for (const r of rendered) { const dir = path.join(dist, r.path === '/' ? '' : r.path); fs.mkdirSync(dir, { recursive: true }); fs.writeFileSync(path.join(dir, 'index.html'), r.html); }
 // media: the founder portrait (owner-supplied for the website, metadata stripped) and the films built in
 const copy = (from, to) => { fs.mkdirSync(path.dirname(to), { recursive: true }); fs.copyFileSync(from, to); };
-for (const f of fs.readdirSync(path.join(app, 'fonts')).filter((x) => /\.(woff2?|txt)$/.test(x))) copy(path.join(app, 'fonts', f), path.join(dist, 'fonts', f));   // self-hosted Poppins (OFL)
 for (const f of fs.readdirSync(path.join(mediaSrc, 'founder'))) copy(path.join(mediaSrc, 'founder', f), path.join(dist, 'media/founder', f));
 for (const f of films) for (const x of ['720.mp4', 'poster.webp', 'poster.jpg', 'captions.vtt']) copy(path.join(mediaSrc, f.key, x), path.join(dist, 'media', f.key, x));
-const css = [path.join(repo, 'packages/design-tokens/dist/tokens.css'), path.join(app, 'src/styles/site.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`).join('\n');
+// brand, Inter and the theme script from @empathia/design-tokens (D7, D9, D38, D39): files copied into dist, every page's <head> decorated
+const { shipBrandAndType, tokenCss } = await import(path.join(repo, 'packages/design-tokens/brand.mjs'));
+// themeInit stays off until the website's own Paper (light) composition lands (website slice): its colours are still dark-only, so
+// following a light system setting would put token-coloured text on its dark ground (audit A5)
+const decorate = shipBrandAndType(dist, { base: '/', preload: 'website', themeInit: false });
+{ const walkHtml = (d) => fs.readdirSync(d).flatMap((f) => { const p = path.join(d, f); return fs.statSync(p).isDirectory() ? walkHtml(p) : p.endsWith('.html') ? [p] : []; });
+  for (const f of walkHtml(dist)) fs.writeFileSync(f, decorate(fs.readFileSync(f, 'utf8'))); }
+const css = [tokenCss(), path.join(app, 'src/styles/site.css')].map((f) => f.startsWith('/*') ? f : `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`).join('\n');
 fs.writeFileSync(path.join(dist, 'site.css'), css);
 fs.writeFileSync(path.join(dist, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${PATHS.map((p) => `  <url><loc>${base}${p}</loc></url>`).join('\n')}\n</urlset>\n`);
 fs.writeFileSync(path.join(dist, 'robots.txt'), filmsMode === 'preview' ? 'User-agent: *\nDisallow: /\n' : `User-agent: *\nAllow: /\nSitemap: ${base}/sitemap.xml\n`);

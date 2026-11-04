@@ -1,0 +1,15 @@
+{
+ "at": "2026-11-04T01:30:57.986Z",
+ "scheme": "dark",
+ "pass": 0,
+ "fail": 1,
+ "tests": 1,
+ "results": [
+  {
+   "id": "demo-fi-scan-crash",
+   "name": "the suite ran to the end",
+   "result": "FAIL",
+   "detail": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:4485/#/v25/fi/scan/R-ATL-4-218?mode=observe&step=0\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:4485/#/v25/fi/scan/R-ATL-4-218?mode=observe&step=0\", waiting until \"load\"\u001b[22m\n\n    at goto (/home/claude/empathia-technologies/.claude/worktrees/agent-a22781dca118c462d/tests/browser/demo-ops-harness.mjs:30:16)\n    at async file:///home/cl"
+  }
+ ]
+}

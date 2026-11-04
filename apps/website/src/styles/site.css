@@ -3,14 +3,12 @@
    for depth, amber for evidence that needs attention, violet only for Learn. The signature is the evidence line: the lifecycle drawn as
    one continuous rule whose stops each carry the kind of evidence they add. One orchestrated entrance on load; nothing else moves on
    its own, and nothing moves for readers who ask for reduced motion. */
-@font-face { font-family: "Poppins"; src: url("/fonts/poppins-400.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: "Poppins"; src: url("/fonts/poppins-500.woff") format("woff"); font-weight: 500 600; font-style: normal; font-display: swap; }
-@font-face { font-family: "Poppins"; src: url("/fonts/poppins-700.woff") format("woff"); font-weight: 700 800; font-style: normal; font-display: swap; }
+/* Type: Inter everywhere (D7) — the @font-face rules and the three preloads (D38) come from @empathia/design-tokens (build.mjs). */
 :root {
   --obsidian: #090C11; --graphite: #11161D; --graphite-2: #171D26; --graphite-warm: #1D1B19; --line-e: #26303C; --line-strong: #3A4656;
   --text: #F6F2EC; --text-2: #C3BCB2; --text-3: #A29B92; --signal: #2ED6C5; --signal-ink: #04211E; --ultra: #4C63FF; --amber: #F3B54A; --violet: #A487FF;
   --okc: #4CC38A; --danger: #FF6F6A;
-  --sans: "Poppins", "Helvetica Neue", Helvetica, Arial, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --sans: var(--font-sans); --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --r-control: 999px; --r-field: 14px; --r-card: 22px; --r-media: 26px; --page: 1200px; --text-w: 680px;
   --ease: cubic-bezier(.2, .7, .2, 1); --t-fast: 140ms; --t-base: 220ms;
   color-scheme: dark;

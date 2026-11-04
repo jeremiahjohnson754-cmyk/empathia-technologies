@@ -1,0 +1,15 @@
+{
+ "at": "2026-11-04T01:31:00.473Z",
+ "scheme": "dark",
+ "pass": 0,
+ "fail": 1,
+ "tests": 1,
+ "results": [
+  {
+   "id": "demo-destructive-crash",
+   "name": "the suite ran to the end",
+   "result": "FAIL",
+   "detail": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:4489/#/service\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:4489/#/service\", waiting until \"load\"\u001b[22m\n\n    at goto (/home/claude/empathia-technologies/.claude/worktrees/agent-a22781dca118c462d/tests/browser/demo-ops-harness.mjs:30:16)\n    at async file:///home/claude/empathia-technologies/.claude/worktrees/agent-a22781dca118c462d/tes"
+  }
+ ]
+}
