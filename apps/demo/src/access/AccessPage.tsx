@@ -6,15 +6,17 @@
 import type { RoleKey } from '../registry.types.js';
 import { ROLES } from './policy.js';
 
-export function AccessPage({ role, title, purpose, who, home, onRole, onViewAs }: { role: RoleKey; title: string; purpose?: string; who: RoleKey[]; home: string; onRole: (r: RoleKey) => void; onViewAs: () => void }) {
+export function AccessPage({ role, title, purpose, who, home, own, onRole, onViewAs }: { role: RoleKey; title: string; purpose?: string; who: RoleKey[]; home: string; own: { label: string; href: string }[]; onRole: (r: RoleKey) => void; onViewAs: () => void }) {
   return (
     <section className="owlpage" aria-labelledby="owl-h" data-testid="access-page">
-      <img className="owlpage__owl" src="brand/owl.svg" alt="" width="148" height="148" />
+      <img className="owlpage__owl" src="brand/owl.svg" alt="" width="112" height="112" />
       <div className="owlpage__b">
         <p className="kicker">Not part of this role’s work</p>
         <h1 id="owl-h" tabIndex={-1}>{title} is not open to the {ROLES[role].label}</h1>
         {purpose && <p className="lead">{purpose}.</p>}
         <p>A role is given what its work needs and nothing else, so this screen was not loaded for the {ROLES[role].label}.</p>
+        {own.length > 0 && <><h2 className="owlpage__h2" id="owl-own">What the {ROLES[role].label} can open</h2>
+          <ul className="owlpage__own" aria-labelledby="owl-own" data-testid="access-own">{own.map((o) => <li key={o.href}><a href={o.href}>{o.label}</a></li>)}</ul></>}
         {who.length > 0 ? (<>
           <h2 className="owlpage__h2" id="owl-who">Roles whose work it is</h2>
           <ul className="owlpage__who" aria-labelledby="owl-who" data-testid="access-who">
@@ -31,7 +33,7 @@ export function AccessPage({ role, title, purpose, who, home, onRole, onViewAs }
 export function NotFound({ hash, home }: { hash: string; home: string }) {
   return (
     <section className="owlpage" aria-labelledby="nf-h" data-testid="not-found">
-      <img className="owlpage__owl" src="brand/owl.svg" alt="" width="148" height="148" />
+      <img className="owlpage__owl" src="brand/owl.svg" alt="" width="112" height="112" />
       <div className="owlpage__b">
         <p className="kicker">Unknown address</p>
         <h1 id="nf-h" tabIndex={-1}>This address is not part of the Living Campus</h1>

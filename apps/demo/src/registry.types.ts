@@ -12,7 +12,7 @@ import type { ComponentType } from 'react';
 export type RoleKey = 'visitor' | 'employee' | 'exec' | 'service' | 'svcmgr' | 'syseng' | 'designer' | 'installer' | 'cxeng' | 'ipm' | 'bpm' | 'ops' | 'steward' | 'architect' | 'qa';
 
 /** The nine products in the canonical order (D37/D40) — the ids of packages/design-tokens (--p-<id>) and packages/ui products — plus `shell` for the investor start and other platform pages. */
-export type ProductKey = 'mission-control' | 'lite' | 'pro' | 'search-party' | 'servicehands' | 'commissioning' | 'apex' | 'field' | 'learn' | 'shell';
+export type ProductKey = import('@empathia/ui').ProductId | 'shell';
 
 /**
  * Who may use something, named by its V2.5.3 authority. The policy resolves it against the tables extracted from V2.5.3

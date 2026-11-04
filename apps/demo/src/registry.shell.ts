@@ -15,20 +15,13 @@ export const SHELL_PAGES: readonly PageDef[] = [
     search: { keywords: 'start investor scenarios tour guided', aliases: ['start', 'tour', 'guided scenarios'] },
   },
   {
-    id: 'scouter', title: 'Scouter', purpose: 'Device evaluation: every candidate scored against the room’s requirements, with the evidence behind each score', product: 'lite',
+    id: 'scouter', title: 'Scouter', purpose: 'Does this device suit this room? Each device class checked against the room’s own requirement, with the source of every figure', product: 'lite',
     // D41: Scouter is part of Lite and stays highly discoverable there; the V2.5.3 and V2.5 addresses open the same page
     path: '/campus/scouter', alias: ['/campus/scouter/:candidate', '/scouter', '/scouter/:candidate', '/v25/scouter', '/suite/scouter', '/lite/scouter'],
     authority: { area: 'scouter' },
-    sections: [
-      { id: 'scouter.cost', label: 'Cost of ownership', authority: { field: 'cost' } },
-      { id: 'scouter.evidence', label: 'Operational evidence from this estate', authority: { field: 'technical' } },
-    ],
-    actions: [
-      { id: 'scout.pick', label: 'Choose for the design', authority: { action: 'scout.pick' } },
-      { id: 'scout.verify', label: 'Verify a score', authority: { action: 'scout.verify' } },
-    ],
+    actions: [{ id: 'scout.pick', label: 'Propose for the design', authority: { action: 'scout.pick' } }],
     load: () => import('./scouter/ScouterPage.js'),
-    search: { keywords: 'scouter device evaluation compare candidates market watch standard profile shortlist', aliases: ['scouter', 'scout', 'device evaluation', 'compare devices', 'which camera', 'which display', 'equipment shortlist', 'market watch', 'standard profiles'] },
+    search: { keywords: 'scouter device evaluation compare candidates market watch standard profile shortlist', aliases: ['scouter', 'scout', 'evaluate a device', 'does this device suit', 'device evaluation', 'which camera', 'which display', 'which microphone'] },
   },
   {
     id: 'policy', title: 'Policy', purpose: 'Who may open, see and do what: the demonstration’s access policy, from V2.5.3', product: 'shell',

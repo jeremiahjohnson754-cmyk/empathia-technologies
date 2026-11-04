@@ -39,9 +39,11 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     const persp = async (p) => { await page.selectOption('.persp select', p); await page.waitForTimeout(150); };
     const refusal = async () => { const el = page.locator('[role=alert]'); return (await el.count()) ? await el.first().innerText() : ''; };
     await page.evaluate(() => { try { localStorage.removeItem('empathia.demo.build-a-room.v1'); } catch {} location.hash = '#/v25/build'; }); await page.waitForTimeout(300);
-    await persp('visitor');
-    ok('B-01', 'the builder opens from the launch address and says the visitor perspective cannot create a room', /Build a Room/.test(await main()) && /does not hold room\.design/.test(await main()));
-    await persp('designer'); await page.fill('#b-length', 'abc'); await page.click('button:has-text("Create the room")'); await page.waitForTimeout(200);
+    await persp('visitor'); await page.evaluate(() => { location.hash = '#/v25/build'; }); await page.waitForTimeout(300);
+    // changed for D44 (founder, 2026-11-03 09:39: a role never sees a screen it cannot use): the visitor now gets the Agora Owl access
+    // page for Build a Room (V2.5.3 area v25.build excludes the visitor) instead of the builder with a refusal; the designer then opens it
+    ok('B-01', 'the launch address is refused to the visitor with the owl access page, which names the designer among the roles whose work it is', /Build a Room is not open to the Visitor/.test(await main()) && (await page.locator('[data-testid=access-page]').count()) === 1 && (await page.locator('[data-testid=access-who] [data-role-key=designer]').count()) === 1);
+    await persp('designer'); await page.evaluate(() => { location.hash = '#/v25/build'; }); await page.waitForTimeout(400); await page.fill('#b-length', 'abc'); await page.click('button:has-text("Create the room")'); await page.waitForTimeout(200);
     ok('B-02', 'an unreadable dimension is refused, never substituted', /not readable/.test(await refusal()), await refusal());
     await page.fill('#b-length', "19' 8\""); await page.fill('#b-width', '4'); await page.selectOption('#b-unit', 'ft'); await page.fill('#b-width', '13'); await page.click('button:has-text("Create the room")'); await page.waitForTimeout(400);
     const t1 = await main();
@@ -199,7 +201,9 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     await page.click('[data-testid=hypothesis] .apex__tier:has-text("A3") button'); await page.waitForTimeout(250);
     ok('A-08', 'A3 stages a draft work order that stays OPEN until the service manager triages it', /DRAFT_STAGED[\s\S]*work order WO-\d+ drafted/.test(await page.locator('[data-testid=apex-log] li >> nth=0').innerText()));
     await persp('visitor'); await page.waitForTimeout(200);
-    ok('A-09', 'a visitor cannot act on a case', /cannot act on an APEX case/.test(await page.locator('[data-testid=apex-case]').innerText()) && !(await page.locator('[data-testid=hypothesis] .apex__tier button').count()));
+    // changed for D44: APEX (V2.5.3 area pro.issues) is not the visitor's, so the visitor no longer sees the case at all — not even a refusal
+    await page.evaluate(() => { location.hash = '#/v25/apex'; }); await page.waitForTimeout(300);
+    ok('A-09', 'a visitor cannot act on a case: the screen is not shown to the visitor (owl access page), so no tier button exists', (await page.locator('[data-testid=access-page]').count()) === 1 && !(await page.locator('[data-testid=hypothesis] .apex__tier button').count()));
 
     // ---------------------------------------------------------------- Learn: the governed case, then the library
     await page.evaluate(() => { location.hash = '#/v25/learn'; }); await page.waitForTimeout(500); await persp('cxeng'); await page.waitForTimeout(200); await page.waitForSelector('[data-testid=propose]');
@@ -287,7 +291,8 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     const ab = await page.locator('[data-testid=fi-session]').innerText();
     ok('F-13', 'the E-stop aborts: output terminated, restore requested, the session ended; nothing can be stepped afterwards', /ABORTED/.test(ab) && /restore requested/.test(ab) && !(await page.locator('[data-testid=fi-run]').count()), ab.slice(0, 200));
     await persp('visitor'); await page.waitForTimeout(200); await page.evaluate(() => { location.hash = '#/v25/fipv?room=R-NST-2-101'; }); await page.waitForTimeout(400);
-    ok('F-14', 'the town hall is not licensed at this site, and a visitor cannot change that', /NOT LICENSED/.test(await page.locator('[data-testid=fi-licence]').innerText()) && /Security \/ Platform Admin/.test(await page.locator('[data-testid=fi-licence]').innerText()));
+    // changed for D44: Physical Validation (V2.5.3 area agent) is not the visitor's, so the visitor gets the owl page and cannot change the licence
+    ok('F-14', 'a visitor cannot change the town hall licence: Physical Validation is not shown to the visitor (owl access page)', (await page.locator('[data-testid=access-page]').count()) === 1 && !(await page.locator('[data-testid=fi-licence]').count()));
 
     await page.evaluate(() => { location.hash = '#/v25/service'; }); await page.waitForTimeout(400); await page.click('button:has-text("Reset workspace")'); await page.waitForTimeout(300);
     ok('M-07', 'Reset returns the workspace to its seed: ISS-0417 is OPEN again and the cases are gone', /OPEN[\s\S]*ISS-0417/.test(await page.locator('[data-testid=incidents]').innerText()) && !/APX-/.test(await page.locator('main').innerText()));

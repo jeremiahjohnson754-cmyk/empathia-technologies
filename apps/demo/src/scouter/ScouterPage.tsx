@@ -1,87 +1,71 @@
 /**
- * Scouter, inside Lite (D41): pick a room and a category; every candidate is gated, then scored, then ranked, and every score says
- * what it rests on. Address: #/campus/scouter?room=<id>&cat=<category>, and #/campus/scouter/<candidate> for one candidate's evidence.
+ * Scouter, inside Lite (D41): pick a room; each of the catalogue's nine device classes is checked against that room's own recorded
+ * requirement, and every check names its source and whether it is published or modelled. Address: #/campus/scouter?room=<template>,
+ * and #/campus/scouter/<class>?room=<template> for one class's checks.
  */
 import { useState } from 'react';
 import { Tag, Button, Notice } from '@empathia/ui';
 import type { PageProps } from '../registry.types.js';
-import { Section, Action } from '../access/Gate.js';
-import { evaluate, STATES, CATEGORY_LABEL, DIMS, money, fiveYear, type Category, type Evaluation } from './evaluate.js';
-import { ROOMS, REQUIREMENTS, CANDIDATES } from './data.js';
+import { Action } from '../access/Gate.js';
+import { evaluate, ranked, VERDICT, NOT_REBUILT, type Evaluation } from './evaluate.js';
+import { ROOMS, cats, required } from './data.js';
 import { ROLES } from '../access/policy.js';
 
-const CATS = Object.keys(CATEGORY_LABEL) as Category[];
-const KEY = 'empathia.demo.scouter.v1';
-interface Picks { [roomCat: string]: { id: string; by: string } }
-const load = (): Picks => { try { const v = JSON.parse(sessionStorage.getItem(KEY) || '{}'); return v && typeof v === 'object' ? v : {}; } catch { return {}; } };
-const BASIS_TONE = { MEASURED: 'ok', VERIFIED: 'ok', DECLARED: 'muted', MODELED: 'info', UNKNOWN: 'warn' } as const;
+const KEY = 'empathia.demo.scouter.v2';
+type Proposals = Record<string, { key: string; by: string }[]>;
+const load = (): Proposals => { try { const v = JSON.parse(sessionStorage.getItem(KEY) || '{}'); return v && typeof v === 'object' && !Array.isArray(v) ? v : {}; } catch { return {}; } };
 
 export default function ScouterPage({ role, params, query }: PageProps) {
-  const room = ROOMS.find((r) => r.id === query.get('room')) ?? ROOMS[0]!;
-  const cat = (CATS as string[]).includes(query.get('cat') || '') ? query.get('cat') as Category : 'camera';
-  const [picks, setPicks] = useState<Picks>(load);
-  const [asked, setAsked] = useState<string | null>(null);
-  const results = evaluate(room, REQUIREMENTS[cat], CANDIDATES);
-  const open = results.find((e) => e.candidate.id === params.candidate) ?? null;
-  const go = (p: { room?: string; cat?: string; candidate?: string | null }) => {
-    const q = new URLSearchParams({ room: p.room ?? room.id, cat: p.cat ?? cat });
-    location.hash = `#/campus/scouter${p.candidate ? `/${encodeURIComponent(p.candidate)}` : ''}?${q}`;
-  };
-  const pick = (e: Evaluation) => { const next = { ...picks, [`${room.id}:${cat}`]: { id: e.candidate.id, by: ROLES[role].label } }; setPicks(next); try { sessionStorage.setItem(KEY, JSON.stringify(next)); } catch { /* the choice lasts the page */ } };
-  const chosen = picks[`${room.id}:${cat}`];
+  const room = ROOMS.find((r) => r.key === query.get('room')) ?? ROOMS[0]!;
+  const [props, setProps] = useState<Proposals>(load);
+  const list = ranked(evaluate(room.key, room, cats, required));
+  const open = list.find((e) => e.key === params.candidate) ?? null;
+  const href = (k?: string, r = room.key) => `#/campus/scouter${k ? `/${encodeURIComponent(k)}` : ''}?room=${encodeURIComponent(r)}`;
+  const mine = props[room.key] || [];
+  const propose = (e: Evaluation) => { if (mine.some((x) => x.key === e.key)) return; const next = { ...props, [room.key]: [...mine, { key: e.key, by: ROLES[role].label }] }; setProps(next); try { sessionStorage.setItem(KEY, JSON.stringify(next)); } catch { /* lasts the page */ } };
   return (
     <section className="scouter" aria-labelledby="scouter-h">
-      <p className="kicker product-kicker" data-product="lite">Lite · Scouter</p>
-      <h1 id="scouter-h">Which device for this room?</h1>
-      <p className="lead">Every candidate passes the hard gates first — lifecycle, room type, ports, power, must-haves, budget — and only then is scored on fifteen dimensions. A dimension without a score is left out and the coverage says so; spatial fit is modelled from the room, never measured.</p>
-      <p className="ui-meta">Acting as {ROLES[role].label}. Synthetic candidates and rooms.</p>
-      <form className="scouter__pick" onSubmit={(e) => e.preventDefault()}>
-        <label className="scouter__field">Room
-          <select value={room.id} onChange={(e) => go({ room: e.target.value })}>{ROOMS.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}</select>
-        </label>
-        <fieldset className="scouter__cats"><legend>Category</legend>
-          {CATS.map((c) => <label key={c} className={`scouter__cat${c === cat ? ' on' : ''}`}><input type="radio" name="scouter-cat" value={c} checked={c === cat} onChange={() => go({ cat: c })} />{CATEGORY_LABEL[c]}</label>)}
-        </fieldset>
-      </form>
-      <p className="ui-meta">{room.name}: {room.seats} seats, {room.lengthM} × {room.widthM} m, {room.freePorts} free ports, {room.poeBudgetW} W of network power left{room.pilotPlan ? ', pilot plan in place' : ''}. Must-haves: {REQUIREMENTS[cat].mustHave.map((m) => `${DIMS.find((d) => d[0] === m.dim)![1]} ≥ ${m.min}`).join(', ')}; unit budget {money(REQUIREMENTS[cat].budget)}.</p>
-      {chosen && <Notice tone="ok"><b>Chosen for this room:</b> {CANDIDATES.find((c) => c.id === chosen.id)?.model} — by {chosen.by}, in this browser only (synthetic).</Notice>}
-      <ol className="scouter__list" aria-label={`${CATEGORY_LABEL[cat]} candidates for ${room.name}`}>
-        {results.map((e) => (
-          <li key={e.candidate.id} className={`scouter__row${e.eligible ? '' : ' scouter__row--out'}${open?.candidate.id === e.candidate.id ? ' on' : ''}`}>
-            <div className="scouter__rank" aria-hidden="true">{e.rank ?? '—'}</div>
+      <p className="kicker product-kicker" data-product="lite"><a href="#/v25/build">Lite</a> · Scouter</p>
+      <h1 id="scouter-h">Does this device suit this room?</h1>
+      <p className="lead">Ask Scouter before anyone buys. Each of the catalogue’s nine device classes is checked against the room’s own requirement — not against each other — and every check says where its figure comes from and whether it is published or modelled.</p>
+      <p className="ui-meta">Acting as {ROLES[role].label}. Synthetic rooms; this build’s device catalogue.</p>
+      <label className="scouter__field">Room
+        <select value={room.key} onChange={(e) => { location.hash = href(undefined, e.target.value); }}>{ROOMS.map((r) => <option key={r.key} value={r.key}>{r.label}</option>)}</select>
+      </label>
+      <p className="ui-meta">{room.label}: {room.use}. {room.dims[0]} × {room.dims[1]} m, ceiling {room.dims[2]} m, {room.occ} seats{room.arch ? `, archetype ${room.arch} (requires ${(required[room.arch] || []).join(', ') || 'nothing'})` : ''}.</p>
+      {mine.length > 0 && <Notice tone="ok"><b>Proposed for this room:</b> {mine.map((m) => `${cats[m.key]?.label} (by ${m.by})`).join('; ')} — in this browser only, for the discipline engineer’s review.</Notice>}
+      <ol className="scouter__list" aria-label={`Device classes checked against ${room.label}`}>
+        {list.map((e) => { const fail = e.checks.find((c) => c.id !== 'required' && !c.pass); return (
+          <li key={e.key} className={`scouter__row${e.verdict === 'DOES_NOT_SUIT' || e.verdict === 'NOT_REQUIRED' ? ' scouter__row--out' : ''}${open?.key === e.key ? ' on' : ''}`} data-verdict={e.verdict}>
             <div className="scouter__main">
-              <a href={`#/campus/scouter/${encodeURIComponent(e.candidate.id)}?room=${room.id}&cat=${cat}`} className="scouter__name"><b>{e.candidate.brand} {e.candidate.model}</b></a>
-              <span className="scouter__tags"><Tag tone={STATES[e.candidate.state].tone}>{STATES[e.candidate.state].label}</Tag>{e.eligible ? <Tag tone="ok">rank {e.rank}</Tag> : <Tag tone="bad">not eligible</Tag>}</span>
-              <p className="scouter__why">{e.eligible ? `All ${e.gates.length} gates met.` : e.gates.filter((g) => !g.met).map((g) => `${g.label}: ${g.why}`).join(' ')}</p>
+              <a href={href(e.key)} className="scouter__name"><b>{e.label}</b></a>
+              <span className="scouter__tags"><Tag tone={VERDICT[e.verdict].tone}>{VERDICT[e.verdict].label}</Tag></span>
+              <p className="scouter__why">{e.verdict === 'NOT_REQUIRED' ? e.checks[0]!.detail : fail ? `${fail.label}: ${fail.detail}` : e.condition || `All ${e.checks.length} checks pass.`}</p>
             </div>
-            <div className="scouter__score"><b>{e.score == null ? 'no score' : e.score}</b><span>{Math.round(e.coverage * 100)}% of the weight · {e.confidence} confidence</span></div>
-          </li>
-        ))}
+            <div className="scouter__score"><b>{e.checks.filter((c) => c.pass).length}/{e.checks.length}</b><span>checks · {e.checks.filter((c) => c.basis === 'MODELED').length} modelled</span></div>
+          </li>); })}
       </ol>
-      {open && <Detail e={open} roomName={room.name} chosen={chosen?.id === open.candidate.id} onPick={() => pick(open)} onVerify={(dim) => setAsked(`${open.candidate.model}: ${dim}`)} onClose={() => go({ candidate: null })} />}
-      {asked && <p role="status" className="ui-meta">Verification requested for {asked}. The score keeps its basis until a reviewer has checked it. Synthetic.</p>}
+      {open && <Detail e={open} roomLabel={room.label} proposed={mine.some((m) => m.key === open.key)} onPropose={() => propose(open)} closeHref={href()} />}
+      <section className="scouter__gap" aria-labelledby="scouter-gap"><h2 id="scouter-gap">Not rebuilt yet</h2>
+        <p className="ui-meta">V2.5.3 Scouter also had these. This build’s data cannot back them honestly, so they are not shown.</p>
+        <ul>{NOT_REBUILT.map((n) => <li key={n.what}>{n.what} <span className="ui-meta">(parity {n.rows})</span></li>)}</ul></section>
     </section>
   );
 }
 
-function Detail({ e, roomName, chosen, onPick, onVerify, onClose }: { e: Evaluation; roomName: string; chosen: boolean; onPick: () => void; onVerify: (dim: string) => void; onClose: () => void }) {
-  const c = e.candidate;
+function Detail({ e, roomLabel, proposed, onPropose, closeHref }: { e: Evaluation; roomLabel: string; proposed: boolean; onPropose: () => void; closeHref: string }) {
   return (
     <article className="scouter__detail" aria-labelledby="scouter-d">
-      <header className="scouter__dhead"><h2 id="scouter-d">{c.brand} {c.model}</h2><Button small kind="quiet" onClick={onClose}>Close</Button></header>
-      <p className="ui-meta">{CATEGORY_LABEL[c.category]} · {STATES[c.state].meaning}{c.condition ? ` Condition: ${c.condition.text}.` : ''}</p>
-      <h3>Gates for {roomName}</h3>
-      <ul className="scouter__gates">{e.gates.map((g) => <li key={g.id}><Tag tone={g.met ? 'ok' : 'bad'}>{g.met ? 'met' : 'not met'}</Tag> <b>{g.label}.</b> {g.why}</li>)}</ul>
+      <header className="scouter__dhead"><h2 id="scouter-d">{e.label} in {roomLabel}</h2><a className="ui-btn ui-btn--quiet" href={closeHref}>Close</a></header>
+      <p><Tag tone={VERDICT[e.verdict].tone}>{VERDICT[e.verdict].label}</Tag>{e.condition ? ` ${e.condition}` : ''}</p>
       <div className="ui-table-wrap"><table className="ui-table">
-        <caption className="ui-sr">Scores by dimension, with the basis of each</caption>
-        <thead><tr><th scope="col">Dimension</th><th scope="col">Weight</th><th scope="col">Score</th><th scope="col">Basis</th><th scope="col">Why</th></tr></thead>
-        <tbody>{e.dims.map((d) => <tr key={d.dim}><th scope="row">{d.label}</th><td>{d.weight}</td><td>{d.value ?? '—'}</td><td><Tag tone={BASIS_TONE[d.basis]}>{d.basis}</Tag></td><td>{d.note}{d.basis === 'DECLARED' && <Action id="scout.verify"> <Button small kind="quiet" onClick={() => onVerify(d.label)}>Verify</Button></Action>}</td></tr>)}</tbody>
+        <caption className="ui-sr">Checks, each with its result, basis and source</caption>
+        <thead><tr><th scope="col">Check</th><th scope="col">Result</th><th scope="col">Basis</th><th scope="col">Source</th><th scope="col">Why</th></tr></thead>
+        <tbody>{e.checks.map((c) => <tr key={c.id}><th scope="row">{c.label}</th><td><Tag tone={c.pass ? 'ok' : 'bad'}>{c.pass ? 'pass' : 'fail'}</Tag></td><td><Tag tone={c.basis === 'MODELED' ? 'info' : 'muted'}>{c.basis}</Tag></td><td><code>{c.source}</code></td><td>{c.detail}</td></tr>)}</tbody>
       </table></div>
-      <Section id="scouter.cost"><h3>Cost of ownership</h3><p>Unit {money(c.unitCost)}, installation {money(c.install)}, five years of running {money(c.run5y)}: <b>{money(fiveYear(c))}</b> over five years (modelled).</p></Section>
-      <Section id="scouter.evidence"><h3>In this estate</h3><p>{c.installed ? `${c.installed.units} units installed; ${c.installed.incidents12m} incidents in the last 12 months.` : 'Not installed anywhere on the campus yet: no operational evidence.'}</p></Section>
-      {e.eligible
-        ? <Action id="scout.pick"><p><Button kind="primary" onClick={onPick} disabled={chosen}>{chosen ? 'Chosen for this room' : 'Choose for the design'}</Button></p></Action>
-        : <p className="ui-meta">Not eligible here, so it cannot be chosen for this room.</p>}
+      {(e.verdict === 'SUITS' || e.verdict === 'SUITS_WITH_CONDITION')
+        ? <Action id="scout.pick"><p><Button kind="primary" onClick={onPropose} disabled={proposed}>{proposed ? 'Proposed for this room' : 'Propose for the design'}</Button></p></Action>
+        : <p className="ui-meta">{e.verdict === 'NOT_REQUIRED' ? 'Not required for this room, so there is nothing to propose.' : 'It does not suit this room, so it cannot be proposed for it.'}</p>}
     </article>
   );
 }

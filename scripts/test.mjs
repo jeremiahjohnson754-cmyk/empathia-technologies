@@ -46,6 +46,7 @@ for (const p of ['packages/commissioning-engine', 'packages/event-contracts', 'p
 suite('unit: packages/design-tokens (contrast both themes, D7/D37/D38)', 'unit', node, ['--test', 'packages/design-tokens/test/*.test.mjs'], tap);
 suite('unit: packages/ui (canonical products, ui.css on the tokens)', 'unit', node, ['--test', 'packages/ui/test/*.test.mjs'], tap);
 suite('unit: ml research prototype (python)', 'unit', 'python3', ['-I', '-m', 'unittest', 'discover', '-s', 'ml/tests'], unittest, fs.existsSync(path.join(root, 'ml/datasets/synthetic_first_attempt_v1.csv')) ? {} : { skip: 'dataset not generated (node ml/datasets/generate_synthetic.mjs; python3 -I ml/training/train.py)' });
+suite('unit: demo access policy and Scouter', 'unit', node, ['--test', 'tests/unit/demo-policy.test.mjs'], tap);
 suite('service: intelligence-python', 'integration', 'python3', ['-I', '-m', 'unittest', 'discover', '-s', 'services/intelligence-python/tests'], unittest);
 const db = fs.existsSync(path.join(root, '.local/pg/credentials.json'));
 for (const f of ['tests/integration/api.test.mjs', 'tests/integration/leads.test.mjs', 'tests/integration/api-client.test.mjs', 'tests/integration/integration-worker.test.mjs', 'tests/integration/observability.test.mjs']) suite(`integration: ${path.basename(f)}`, 'integration', node, ['--test', f], tap, db ? {} : { skip: 'no local database (node scripts/db.mjs up)' });
@@ -62,6 +63,7 @@ suite('browser: investor demo shell', 'browser', node, ['tests/browser/demo.test
 suite('unit: demo operational workspaces', 'unit', node, ['--test', 'tests/unit/demo-ops.test.mjs'], tap);
 for (const [n, f] of [['dispatch', 'demo-dispatch'], ['ServiceHands', 'demo-servicehands'], ['Core Replay', 'demo-replay'], ['FI scan replay', 'demo-fi-scan'], ['decisions', 'demo-decisions'], ['destructive-action safeguards', 'demo-destructive'], ['enquiry links', 'demo-enquiry'], ['Learn labs', 'learn-labs'], ['hardening', 'demo-hardening']])
   suite(`browser: investor demo ${n}`, 'browser', node, [`tests/browser/${f}.test.mjs`], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? {} : { skip: 'demo not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
+for (const s of ['demo-access', 'demo-viewas', 'demo-phoneshell', 'demo-scouter', 'demo-rolemotion']) suite(`browser: ${s}`, 'browser', node, [`tests/browser/${s}.test.mjs`], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? {} : { skip: 'demo not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
 const studio = fs.existsSync(path.join(root, 'apps/founder-studio/dist/index.html'));
 suite('browser: Founder Studio', 'browser', node, ['tests/browser/founder-studio.test.mjs'], custom, has('--studio') ? (studio ? {} : { skip: 'studio not built (node scripts/build.mjs --studio)' }) : { skip: 'pass --studio' });
 suite('e2e: founder town hall (Founder Edition)', 'e2e', node, ['tests/e2e/founder-townhall.e2e.mjs'], custom, has('--studio') ? (studio ? {} : { skip: 'studio not built' }) : { skip: 'pass --studio' });

@@ -34,10 +34,9 @@ fs.mkdirSync(dist, { recursive: true }); fs.copyFileSync(path.join(repo, 'packag
 await esbuild.build({
   // ES modules with code splitting: every page registered with a lazy `load` is its own chunk, fetched only when the role may open it
   // (D44: a forbidden address never downloads its screen). The entry stays demo.js; pages land in chunks/.
-  // The operational workspaces (src/hardening/opsRoutes.tsx) are entries with stable names (ws/<name>.js) so a failed load can be retried
-  // at a fresh URL (?retry=n): a browser keeps a failed module fetch for the life of the page, so the same URL would fail without asking.
   entryPoints: { demo: path.join(app, 'src/main.tsx'), ...Object.fromEntries(Object.entries(WORKSPACES).map(([k, f]) => [`ws/${k}`, path.join(app, 'src', f)])) }, bundle: true, minify: !dev, sourcemap: 'external', format: 'esm', splitting: true, target: ['es2022'], jsx: 'automatic',
   outdir: dist, entryNames: '[dir]/[name]', chunkNames: 'chunks/[name]-[hash]', define: { 'process.env.NODE_ENV': dev ? '"development"' : '"production"', 'process.env.EMPATHIA_WEBSITE_URL': JSON.stringify(website), 'process.env.DEMO_BUILD_ID': JSON.stringify(buildId) }, legalComments: 'linked', logLevel: 'warning',
+  // the operational workspaces are entries with stable names (ws/<name>.js): a failed load is retried at a fresh URL (src/hardening/lazy.tsx)
   alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') },
 });
 
@@ -48,13 +47,12 @@ await esbuild.build({
 // brand, Inter and the theme script from @empathia/design-tokens (D7, D9, D39): files copied into dist, the <head> decorated. The shell's
 // own theme-boot.js already applies the stored theme before first paint (src/index.html), so the tokens' theme-init is not added twice.
 const { shipBrandAndType, tokenCss } = await import(path.join(repo, 'packages/design-tokens/brand.mjs'));
-const decorate = shipBrandAndType(dist, { preload: 'app', themeInit: false, manifest: { name: 'Empathia Living Campus — investor demonstration', shortName: 'Empathia demo' } });
+const decorate = shipBrandAndType(dist, { preload: 'app', manifest: { name: 'Empathia Living Campus — investor demonstration', shortName: 'Empathia demo' } });
 const css = [tokenCss(), ...[path.join(repo, 'packages/ui/src/ui.css'), path.join(app, 'src/styles/demo.css'), path.join(app, 'src/styles/shell.css'), path.join(app, 'src/hardening/ops.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`)].join('\n');
 fs.writeFileSync(path.join(dist, 'demo.css'), css);
 fs.writeFileSync(path.join(dist, 'index.html'), decorate(fs.readFileSync(path.join(app, 'src/index.html'), 'utf8')));
-fs.copyFileSync(path.join(app, 'src/theme-boot.js'), path.join(dist, 'theme-boot.js'));
-fs.mkdirSync(path.join(dist, 'brand'), { recursive: true });
-for (const f of ['emblem-small.svg', 'owl.svg']) fs.copyFileSync(path.join(repo, 'packages/design-tokens/brand', f), path.join(dist, 'brand', f));
+// the View-as role is applied before first paint by a tiny same-origin script (the CSP forbids inline scripts), so the role colour is right on the first frame
+fs.copyFileSync(path.join(app, 'src/role-boot.js'), path.join(dist, 'role-boot.js'));
 const files = (function walk(d, pre = '') { return fs.readdirSync(d).flatMap((f) => fs.statSync(path.join(d, f)).isDirectory() ? walk(path.join(d, f), `${pre}${f}/`) : [`${pre}${f}`]); })(dist);
 const manifest = { app: '@empathia/demo', builtAt: new Date().toISOString(), files: Object.fromEntries(files.map((f) => [f, { bytes: fs.statSync(path.join(dist, f)).size, sha256: crypto.createHash('sha256').update(fs.readFileSync(path.join(dist, f))).digest('hex') }])) };
 fs.writeFileSync(path.join(dist, 'BUILD_MANIFEST.json'), JSON.stringify(manifest, null, 2));
