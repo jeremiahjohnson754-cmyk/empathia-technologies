@@ -59,6 +59,16 @@ const PATHS = {
   route: 'M6 19.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM18 9.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM8.5 17H15a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h6.5',
   lock: 'M6 11h12v9.5H6zM8.5 11V8a3.5 3.5 0 0 1 7 0v3',
   download: 'M12 4v11M7 10.5l5 5 5-5M4.5 19.5h15',
+  // device families (TagChip kind="device"): one glyph per V2.5.3 layer, never a drawing of a vendor's product
+  display: 'M3 5h18v11H3zM8.5 20h7M12 16v4',
+  camera: 'M3.5 7.5h11v9h-11zM14.5 10.5l6-3v9l-6-3',
+  mic: 'M12 14.5a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5.5a3 3 0 0 0 3 3ZM6 11.5a6 6 0 0 0 12 0M12 17.5v3',
+  speaker: 'M4 9.5h3.5L12 5.5v13l-4.5-4H4zM15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11',
+  control: 'M5 3.5h14v17H5zM9 7.5h6M9 11h6M12 16.5h.01',
+  network: 'M3.5 14h17v5h-17zM7 16.5h.01M10.5 16.5h.01M12 14V9M6 9h12M6 9V6.5M18 9V6.5',
+  power: 'M9 3.5v4M15 3.5v4M6.5 7.5h11v4a5.5 5.5 0 0 1-11 0zM12 17v3.5',
+  furniture: 'M4 11h16v3H4zM6 14v6M18 14v6M7 11V7.5h10V11',
+  keyboard: 'M3 6.5h18v11H3zM6.5 10h.01M10 10h.01M13.5 10h.01M17 10h.01M8 14h8',
 } as const;
 export type IconName = keyof typeof PATHS;
 export const ICON_NAMES = Object.keys(PATHS) as IconName[];

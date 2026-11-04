@@ -28,7 +28,12 @@ const role = (p) => p.evaluate(() => document.documentElement.dataset.role);
   ok('V-08', 'the native quick switch (.persp select) still drives the role', await role(p) === 'exec' && /grants nothing/.test(await p.locator('#persp-note').innerText()));
   await p.click('[data-testid=viewas-open]');
   const names = await p.$$eval('[data-testid=viewas-sheet] [data-role-key]', (b) => b.map((x) => x.innerText.split('\n')[1]));
-  ok('V-09', 'every role shows its domain and how much of the platform it reaches', names.length === 15 && (await p.$$eval('.viewas__n', (n) => n.map((x) => x.textContent))).every((x) => /^\d+ of \d+ pages$/.test(x)));
+  ok('V-09', 'every role shows its domain and how much of the platform it reaches', names.length === 15 && (await p.$$eval('.viewas__n', (n) => n.map((x) => x.textContent))).every((x) => /^(\d[\d,]* of [\d,]+ records · )?\d+ of \d+ surfaces · \d+ of \d+ pages$/.test(x)));
+  // V-09 changed (uplift/system-shell): the coverage line now reads records · surfaces · pages, as the 3 Nov View-as sheet did (screens 04,
+  // more-08); records load with the sheet, so the records part is optional on the first paint and checked in V-09b once loaded.
+  await p.waitForFunction(() => [...document.querySelectorAll('.viewas__n')].every((x) => /records/.test(x.textContent)), null, { timeout: 5000 }).catch(() => undefined);
+  const cov = await p.$$eval('.viewas__n', (n) => n.map((x) => (/^([\d,]+) of ([\d,]+) records/.exec(x.textContent) || []).slice(1).map((v) => +v.replace(/,/g, ''))));
+  ok('V-09b', 'records coverage is computed per role: the Product Architect sees every record, the Visitor fewer, every total equal', cov.every((c) => c.length === 2 && c[1] === cov[0][1] && c[0] <= c[1]) && Math.max(...cov.map((c) => c[0])) === cov[0][1] && Math.min(...cov.map((c) => c[0])) < cov[0][1]);
   await p.keyboard.press('Escape');
   ok('V-10', 'no console error, nothing off the page', !t.errs.length && !t.off.length, t.errs.join(' | ')); await t.close(); }
 
