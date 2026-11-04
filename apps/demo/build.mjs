@@ -36,9 +36,12 @@ await esbuild.build({
 { const maps = path.join(repo, '.local/sourcemaps', path.basename(app)); fs.mkdirSync(maps, { recursive: true });
   const walk = (d) => fs.readdirSync(d).flatMap((f) => { const p = path.join(d, f); return fs.statSync(p).isDirectory() ? walk(p) : [p]; });
   for (const f of walk(dist).filter((f) => f.endsWith('.map'))) fs.renameSync(f, path.join(maps, path.basename(f))); }
-const css = [path.join(repo, 'packages/design-tokens/dist/tokens.css'), path.join(repo, 'packages/ui/src/ui.css'), path.join(app, 'src/styles/demo.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`).join('\n');
+// brand, Inter and the theme script from @empathia/design-tokens (D7, D9, D39): files copied into dist, the <head> decorated
+const { shipBrandAndType, tokenCss } = await import(path.join(repo, 'packages/design-tokens/brand.mjs'));
+const decorate = shipBrandAndType(dist, { preload: 'app', manifest: { name: 'Empathia Living Campus — investor demonstration', shortName: 'Empathia demo' } });
+const css = [tokenCss(), ...[path.join(repo, 'packages/ui/src/ui.css'), path.join(app, 'src/styles/demo.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`)].join('\n');
 fs.writeFileSync(path.join(dist, 'demo.css'), css);
-fs.copyFileSync(path.join(app, 'src/index.html'), path.join(dist, 'index.html'));
+fs.writeFileSync(path.join(dist, 'index.html'), decorate(fs.readFileSync(path.join(app, 'src/index.html'), 'utf8')));
 const files = fs.readdirSync(dist).filter((f) => fs.statSync(path.join(dist, f)).isFile());
 const manifest = { app: '@empathia/demo', builtAt: new Date().toISOString(), files: Object.fromEntries(files.map((f) => [f, { bytes: fs.statSync(path.join(dist, f)).size, sha256: crypto.createHash('sha256').update(fs.readFileSync(path.join(dist, f))).digest('hex') }])) };
 fs.writeFileSync(path.join(dist, 'BUILD_MANIFEST.json'), JSON.stringify(manifest, null, 2));
