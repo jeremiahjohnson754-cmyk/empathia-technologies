@@ -47,11 +47,36 @@ export const OPS_PAGES: readonly PageDef[] = [
     search: { keywords: 'diagnosis root cause tiers', aliases: ['diagnose'] },
   },
   {
-    id: 'learn', title: 'Learn', purpose: 'Evidence-backed cases and training', product: 'learn', landing: true,
-    path: '/v25/learn', alias: ['/learn'], authority: { area: 'lessons' },   // V2.5 Learn is reviewed cases from what happened: V2.5.3 lessons (the steward approves them)
+    id: 'learn', title: 'V2.5 Learn', purpose: 'Independently reviewed engineering cases, linked to lessons and labs', product: 'learn',
+    path: '/v25/learn', authority: { area: 'lessons' },   // V2.5 Learn is reviewed cases from what happened: V2.5.3 lessons (the steward approves them)
     load: adapt(() => import('./pages/Learn.js'), (m, p) => h(m.LearnPage, { perspective: p.role, hash: p.hash })),
     search: { keywords: 'training cases signal lessons', aliases: ['signal', 'training'] },
   },
+  // ---- Empathia Learn, every V2.5.3 area (uplift/workspaces): pages/LearnAreas.tsx, content from learn/model.ts
+  ...([
+    ['learn.home', 'Empathia Learn', 'Readiness, what you proved, what to do next, competencies, learn from a room', '/learn', 'LearnHome', 'learn', 'learn home readiness competencies'],
+    ['learn.signal', 'SIGNAL', 'A story in twelve seasons: the cast, the authored episodes, competency signals', '/learn/signal', 'SignalPage', 'learn', 'signal story seasons episodes maya'],
+    ['learn.episode', 'SIGNAL episode', 'One authored episode, scene by scene, with its decisions', '/learn/signal/:ep', 'EpisodePage', 'learn', 'episode sound check'],
+    ['learn.story', 'Room story', 'A room’s history from its own records, with three decisions left to you', '/learn/story', 'StoryPage', 'learn', 'room story history decisions'],
+    ['learn.story.room', 'Room story', 'Eight panels and three decisions for one room', '/learn/story/:room', 'StoryPage', 'learn', 'story room'],
+    ['learn.practice', 'Practice', 'SIGNAL drills and drills made from each room’s records', '/learn/practice', 'PracticePage', 'learn', 'practice drills evidence signal check'],
+    ['learn.service', 'Service Mode', 'A call, a clock and ten things you can do, on a room’s records; the SIGNAL incidents', '/learn/service', 'ServiceModePage', 'learn', 'service mode incidents clock ratings'],
+    ['learn.service.run', 'Service Mode case', 'One case or SIGNAL incident on the clock, scored on six ratings', '/learn/service/:id', 'ServiceRunPage', 'learn', 'case run clock'],
+    ['learn.cases', 'Case Files', 'How an incident becomes a lesson: room cases, generalized cases, SIGNAL case files', '/learn/cases', 'CaseFilesPage', 'learn', 'case files incidents lesson'],
+    ['learn.case', 'Case file', 'Seven sources from Core, the work, and how it became a better operation', '/learn/cases/:id', 'CaseFilePage', 'learn', 'case file sources'],
+    ['learn.design', 'Design clinic', 'Eight lessons with figures worked on rooms in Core; rooms the rules flag', '/learn/design', 'DesignClinicPage', 'learn', 'design clinic acoustics microphones sightlines loudspeakers'],
+    ['learn.design.lesson', 'Design lesson', 'One design-clinic lesson and its figures', '/learn/design/:lesson', 'DesignLessonPage', 'learn', 'design lesson figures'],
+    ['learn.fieldbook', 'Fieldbook', 'The glossary and the formulas, by domain', '/learn/fieldbook', 'FieldbookPage', 'learn', 'fieldbook glossary formulas terms'],
+    ['learn.library', 'Learn library', 'SIGNAL lessons, thirteen kinds of knowledge, signal flows by kind of room', '/learn/library', 'LibraryPage', 'learn', 'library lessons knowledge signal flows'],
+    ['learn.ask', 'Ask Empathia', 'Fifteen questions answered from Core, each with its sources', '/learn/ask', 'AskPage', 'ask', 'ask question answer'],
+    ['learn.explore', 'System explorer', 'The SIGNAL venues, layer by layer', '/learn/explore', 'ExplorePage', 'learn', 'explore sanctuary layers'],
+    ['learn.explore.one', 'System explorer', 'One SIGNAL venue, layer by layer', '/learn/explore/:id', 'ExplorePage', 'learn', 'explore'],
+    ['learn.academy', 'ServiceHands Academy', 'Fifteen jobs from intake to close, and the live requests waiting on each', '/learn/servicehands', 'AcademyPage', 'learn', 'academy servicehands jobs training'],
+  ] as const).map(([id, title, purpose, path, exp, area, keywords]): PageDef => ({
+    id, title, purpose, product: 'learn', path, authority: { area }, landing: id === 'learn.home' || undefined,
+    load: adapt(() => import('./pages/LearnAreas.js'), (m, p) => h((m as unknown as Record<string, (x: { perspective: string; params: Record<string, string> }) => ReturnType<typeof h>>)[exp]!, { perspective: p.role, params: p.params })),
+    search: { keywords, aliases: [title.toLowerCase()] },
+  })),
   // ---- the estate's command centers (uplift/workspaces): computed from the thirty room records and the service workspace
   {
     id: 'pro.command', title: 'Pro command center', purpose: 'What is open, how it stands against its target, and where to look next', product: 'pro', landing: true,
