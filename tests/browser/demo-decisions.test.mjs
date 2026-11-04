@@ -29,7 +29,7 @@ await suite('demo-decisions', 4483, async ({ ok, open, goto, over, text, smallTa
       ok('DC-08', 'after the named confirmation the project is REJECTED and the decision is in the log with its scope revision', /REJECTED/.test(await page.locator('[data-testid=decision-log]').innerText()) && /rev 1/.test(await page.locator('[data-testid=decision-log]').innerText()));
       await atlas.locator('[data-testid=dec-approve]').click(); await page.waitForTimeout(100);
       ok('DC-09', 'the executive approves the Atlas refresh as pitched; field readiness then says approved, not funded', /approved, not funded/.test(await page.locator('[data-testid=readiness]').innerText()));
-      ok('DC-10', 'the executive is not offered the funding signature (D44); it names who signs', (await page.locator('[data-testid=fund]').count()) === 0 && /Finance \/ Budget Authority/.test(await text(page)));
+      ok('DC-10', 'the executive is not offered the funding signature (D44)', (await page.locator('[data-testid=fund]').count()) === 0);
       await goto(page, '#/v25/decisions', 'architect');
       const cam = page.locator('[data-project=PRJ-ATL-CAM]'); await cam.locator('[data-testid=fund-cc]').fill('CC-4100'); await cam.locator('[data-testid=fund-rev]').fill('2'); await cam.locator('[data-testid=fund]').click(); await page.waitForTimeout(100);
       ok('DC-11', 'funding that names another scope revision is refused', /funding names scope revision 2/.test(await refusal(page)), await refusal(page));
@@ -55,7 +55,8 @@ await suite('demo-decisions', 4483, async ({ ok, open, goto, over, text, smallTa
       await page.evaluate(() => localStorage.setItem('empathia.demo.decisions.v1', '{not json')); await page.reload(); await page.waitForSelector('[data-testid=decisions]');
       ok('DC-19', 'damaged saved decisions do not break the page: it opens from the seed', (await page.locator('[data-memory]').count()) === 3);
       await goto(page, '#/v25/decisions', 'employee');
-      ok('DC-20', 'a perspective without project.decide sees no decision buttons, only who decides', (await page.locator('[data-testid=dec-approve]').count()) === 0 && /is for the Executive/.test(await text(page)));
+      // changed with the shell's D44 contract: no refusal message, so the check is that no decision control is shown
+      ok('DC-20', 'a perspective without project.decide sees no decision controls and no refusal message (D44)', (await page.locator('[data-testid=dec-approve], [data-testid=dec-reject], [data-testid=dec-hold], [data-testid=fund]').count()) === 0 && !/Refused|does not hold/i.test(await text(page)));
     }
     ok(`DC-${tag}-99`, 'no page error, no console error, no request leaves the page', !errs.length && !ext.length, [...errs, ...ext].slice(0, 3).join(' | '));
     await ctx.close();

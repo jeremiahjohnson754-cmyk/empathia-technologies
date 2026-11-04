@@ -54,7 +54,8 @@ export function Refused({ r }: { r: S.Refusal | null }) {
   return <div role="alert" className="ops-refused" data-testid="refusal"><b>Refused.</b><ul>{r.why.map((x) => <li key={x}>{x}</li>)}</ul></div>;
 }
 
-/** The read-only line a perspective sees where another role acts (D44: a role is not shown controls it cannot use). */
-export function NotYours({ who, what }: { who: string; what: string }) {
-  return <p className="ui-meta ops-notyours">{what} is for the {who}. Use <i>Perspective</i> at the top to see it as that role; a perspective grants nothing.</p>;
-}
+/**
+ * Where another role acts, a perspective sees nothing at all (D44, and the shell's contract in README-routes.md: no button, no disabled
+ * control, no refusal message). Kept as a component so every such place is marked in the source; `who`/`what` document the owner.
+ */
+export function NotYours(_: { who: string; what: string }) { return null; }

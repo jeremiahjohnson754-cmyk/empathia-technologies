@@ -67,9 +67,9 @@ export function ConfirmDialog({ req, onClose }: { req: ConfirmRequest; onClose: 
           <p>{req.consequence}</p>
           <p className={spec.reversibility === 'never' ? 'sg-never' : 'sg-undo'}><b>{spec.reversibility === 'never' ? 'This cannot be undone.' : 'You can undo this right after.'}</b> {spec.why}</p>
         </div>
-        {req.reason && <label className="sg-field">{req.reason.label} <span className="ui-meta">(at least {req.reason.min} characters, recorded with the action)</span>
+        {req.reason && <label className="sg-field"><span>{req.reason.label} <span className="ui-meta">(at least {req.reason.min} characters, recorded with the action)</span></span>
           <textarea value={reason} onChange={(e) => setReason(e.target.value)} rows={2} data-testid="confirm-reason" /></label>}
-        {named && <label className="sg-field">Type <code className="sg-name">{req.object}</code> to confirm
+        {named && <label className="sg-field"><span>Type <code className="sg-name">{req.object}</code> to confirm</span>
           <input value={typed} onChange={(e) => setTyped(e.target.value)} autoComplete="off" spellCheck={false} data-testid="confirm-name" aria-describedby={`${id}-h`} />
           <span id={`${id}-h`} className="ui-meta">{typed && typed.trim() !== req.object ? 'Not the same name yet.' : 'The button works once the name matches exactly.'}</span></label>}
         <div className="sg-dialog__acts">

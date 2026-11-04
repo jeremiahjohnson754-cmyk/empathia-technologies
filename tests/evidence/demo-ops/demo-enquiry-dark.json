@@ -1,0 +1,147 @@
+{
+ "at": "2026-11-04T01:26:28.992Z",
+ "scheme": "dark",
+ "pass": 23,
+ "fail": 0,
+ "tests": 23,
+ "results": [
+  {
+   "id": "DE-00",
+   "name": "the demonstration names the owner's hosted form (tally.so/r/…)",
+   "result": "PASS",
+   "detail": "https://tally.so/r/VpG0Vy"
+  },
+  {
+   "id": "DE-desktop-01",
+   "name": "the investor start offers pilot, partnership, investor and demonstration entry points, each opening the hosted form in a new tab and saying so",
+   "result": "PASS",
+   "detail": "[{\"k\":\"pilot\",\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Explore an enterprise pilotA bounded scope with your own rooms and people, ending in a readiness report that states what was verified and what was not. (opens the enquiry form on tally.so in a new tab)In the form, choose Enterprise Pilot.\"},{\"k\":\"partner\",\"href\":\"https://tally.so/r/VpG0Vy\",\"targe"
+  },
+  {
+   "id": "DE-desktop-02",
+   "name": "each entry point names the choice to make in the form, and the disclosure says who receives and who stores the enquiry and that nothing from the demonstration is sent",
+   "result": "PASS",
+   "detail": "The form opens on tally.so, Empathia's form provider. Empathia Technologies receives your enquiry; Tally stores it for us in the EU. Nothing you do in this demonstration is sent with it. How enquiries are handled · About the founder"
+  },
+  {
+   "id": "DE-desktop-03",
+   "name": "the footer carries the contact link to the same form, opening in a new tab and saying so",
+   "result": "PASS",
+   "detail": "[{\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Contact Empathia (opens the enquiry form on tally.so in a new tab)\"}]"
+  },
+  {
+   "id": "DE-desktop-04",
+   "name": "no sideways scroll with the section on the page",
+   "result": "PASS",
+   "detail": "over=0"
+  },
+  {
+   "id": "DE-desktop-05",
+   "name": "pressing an entry point opens the hosted form in a new tab and the demonstration stays where it was",
+   "result": "PASS",
+   "detail": "{\"opened\":\"https://tally.so/r/VpG0Vy\",\"at\":\"http://127.0.0.1:4486/#/investor\"}"
+  },
+  {
+   "id": "DE-desktop-06",
+   "name": "the contact link is in the footer of a page deep in the demonstration too",
+   "result": "PASS",
+   "detail": "links=1"
+  },
+  {
+   "id": "DE-desktop-07",
+   "name": "no page error and no request outside the demonstration from its own page",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "DE-tablet-01",
+   "name": "the investor start offers pilot, partnership, investor and demonstration entry points, each opening the hosted form in a new tab and saying so",
+   "result": "PASS",
+   "detail": "[{\"k\":\"pilot\",\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Explore an enterprise pilotA bounded scope with your own rooms and people, ending in a readiness report that states what was verified and what was not. (opens the enquiry form on tally.so in a new tab)In the form, choose Enterprise Pilot.\"},{\"k\":\"partner\",\"href\":\"https://tally.so/r/VpG0Vy\",\"targe"
+  },
+  {
+   "id": "DE-tablet-02",
+   "name": "each entry point names the choice to make in the form, and the disclosure says who receives and who stores the enquiry and that nothing from the demonstration is sent",
+   "result": "PASS",
+   "detail": "The form opens on tally.so, Empathia's form provider. Empathia Technologies receives your enquiry; Tally stores it for us in the EU. Nothing you do in this demonstration is sent with it. How enquiries are handled · About the founder"
+  },
+  {
+   "id": "DE-tablet-03",
+   "name": "the footer carries the contact link to the same form, opening in a new tab and saying so",
+   "result": "PASS",
+   "detail": "[{\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Contact Empathia (opens the enquiry form on tally.so in a new tab)\"}]"
+  },
+  {
+   "id": "DE-tablet-04",
+   "name": "no sideways scroll with the section on the page",
+   "result": "PASS",
+   "detail": "over=0"
+  },
+  {
+   "id": "DE-tablet-05",
+   "name": "pressing an entry point opens the hosted form in a new tab and the demonstration stays where it was",
+   "result": "PASS",
+   "detail": "{\"opened\":\"https://tally.so/r/VpG0Vy\",\"at\":\"http://127.0.0.1:4486/#/investor\"}"
+  },
+  {
+   "id": "DE-tablet-06",
+   "name": "the contact link is in the footer of a page deep in the demonstration too",
+   "result": "PASS",
+   "detail": "links=1"
+  },
+  {
+   "id": "DE-tablet-07",
+   "name": "no page error and no request outside the demonstration from its own page",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "DE-phone-01",
+   "name": "the investor start offers pilot, partnership, investor and demonstration entry points, each opening the hosted form in a new tab and saying so",
+   "result": "PASS",
+   "detail": "[{\"k\":\"pilot\",\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Explore an enterprise pilotA bounded scope with your own rooms and people, ending in a readiness report that states what was verified and what was not. (opens the enquiry form on tally.so in a new tab)In the form, choose Enterprise Pilot.\"},{\"k\":\"partner\",\"href\":\"https://tally.so/r/VpG0Vy\",\"targe"
+  },
+  {
+   "id": "DE-phone-02",
+   "name": "each entry point names the choice to make in the form, and the disclosure says who receives and who stores the enquiry and that nothing from the demonstration is sent",
+   "result": "PASS",
+   "detail": "The form opens on tally.so, Empathia's form provider. Empathia Technologies receives your enquiry; Tally stores it for us in the EU. Nothing you do in this demonstration is sent with it. How enquiries are handled · About the founder"
+  },
+  {
+   "id": "DE-phone-03",
+   "name": "the footer carries the contact link to the same form, opening in a new tab and saying so",
+   "result": "PASS",
+   "detail": "[{\"href\":\"https://tally.so/r/VpG0Vy\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"name\":\"Contact Empathia (opens the enquiry form on tally.so in a new tab)\"}]"
+  },
+  {
+   "id": "DE-phone-04",
+   "name": "no sideways scroll with the section on the page",
+   "result": "PASS",
+   "detail": "over=0"
+  },
+  {
+   "id": "DE-phone-05",
+   "name": "pressing an entry point opens the hosted form in a new tab and the demonstration stays where it was",
+   "result": "PASS",
+   "detail": "{\"opened\":\"https://tally.so/r/VpG0Vy\",\"at\":\"http://127.0.0.1:4486/#/investor\"}"
+  },
+  {
+   "id": "DE-phone-06",
+   "name": "the contact link is in the footer of a page deep in the demonstration too",
+   "result": "PASS",
+   "detail": "links=1"
+  },
+  {
+   "id": "DE-phone-08",
+   "name": "footer links are at least 44 px tall on a phone",
+   "result": "PASS",
+   "detail": "[44,44,44]"
+  },
+  {
+   "id": "DE-phone-07",
+   "name": "no page error and no request outside the demonstration from its own page",
+   "result": "PASS",
+   "detail": ""
+  }
+ ]
+}

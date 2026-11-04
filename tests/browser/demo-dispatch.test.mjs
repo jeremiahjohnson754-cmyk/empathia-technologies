@@ -54,7 +54,8 @@ await suite('demo-dispatch', 4481, async ({ ok, open, goto, over, text, smallTar
       ok('DX-18', 'the browser Back button returns to the previous view', (await page.locator('[data-testid=list]').count()) === 1, page.url());
       // read-only perspective: no assign controls
       await goto(page, '#/service?id=ISS-0421', 'employee'); await page.waitForTimeout(150);
-      ok('DX-19', 'a perspective without the authority sees no triage or assign controls, and is told who acts here (D44)', (await page.locator('[data-testid=assign], [data-testid=triage]').count()) === 0 && /is for the Service Manager/.test(await text(page)));
+      // changed with the shell's D44 contract (README-routes.md): no refusal message either, so the check is that nothing to act on is shown
+      ok('DX-19', 'a perspective without the authority sees no triage, assign or reassign controls and no refusal message (D44)', (await page.locator('[data-testid=assign], [data-testid=triage], [data-testid=reassign], [data-testid=matching]').count()) === 0 && !/Refused|not your|does not hold/i.test(await text(page)));
       // keyboard: cards are buttons reachable by Tab, activated by Enter
       await goto(page, '#/service', 'svcmgr'); await page.locator('[data-job]').first().focus(); await page.keyboard.press('Enter'); await page.waitForTimeout(150);
       ok('DX-20', 'a card is a button that opens with the keyboard', (await page.locator('[data-testid=job-detail]').count()) === 1);
