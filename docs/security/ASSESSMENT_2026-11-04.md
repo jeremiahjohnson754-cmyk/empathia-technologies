@@ -175,7 +175,8 @@ without a range check; `Guided.tsx` checked `Number.isInteger(i)` but not the ra
 themself, or an older build), so the impact is the viewer's own tab. A probe of the pre-fix build stalled and was stopped (cause not
 isolated); the defect was confirmed by reading the code.
 
-**Fix.** Both loaders accept only an integer within the tour; anything else means no tour. The other stores (workspace, Build a Room,
+**Fix.** Both loaders accept only an integer within the tour; anything else means no tour. The `Tour.tsx` half was fixed identically and
+independently by QA round 1 (`f0c8cfa`), which this branch rebased onto; the `Guided.tsx` half is this branch's. The other stores (workspace, Build a Room,
 labs, decisions, Scouter, theme, View-as) already fell back on any parse error and checked a version or type; they were not changed and
 pass the tests below.
 

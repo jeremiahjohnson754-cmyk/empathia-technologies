@@ -29,7 +29,7 @@ try {
         const page = await ctx.newPage(); const loaded = watchRequests(page); const errs = [];
         page.on('pageerror', (e) => errs.push(e.message)); page.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()); });
         const r = await page.goto(base + p, { waitUntil: 'load' }); await page.waitForTimeout(300);
-        if (s.shellMark) await page.locator('.shell__mark').first().waitFor({ timeout: 5000 }).catch(() => {});
+        if (s.shellMark) await page.locator('.shell__mark, .shell__emblem').first().waitFor({ timeout: 5000 }).catch(() => {});
         ok(`BR-${s.app}-${w}${p}-200`, `${s.app} ${p} at ${w}: answers 200`, r.status() === 200, r.status());
         for (const c of await brandChecks(page, { loaded, manifest: s.manifest, shellMark: s.shellMark, themeInit: s.themeInit !== false, prefix: `BR-${s.app}-${w}${p}` })) ok(c.id, `${s.app} ${p} at ${w}: ${c.name}`, c.pass, c.detail);
         const csp = errs.filter((e) => /Content Security Policy|Refused to/i.test(e));
