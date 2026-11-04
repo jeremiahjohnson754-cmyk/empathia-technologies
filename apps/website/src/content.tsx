@@ -84,14 +84,16 @@ export function buildPages(ctx: SiteContext): Page[] {
         <div className="hero__aside"><Shot p={p} cap={ctx.captures[p.id]} eager /></div>
       </div></section>
       {p.film && film(p.film) ? <Section title="Watch it">{film(p.film)}</Section> : null}
-      <Section title="What the demonstration shows"><ul className="ticks">{p.shows.map((s) => <li key={s}>{s}</li>)}</ul></Section>
+      <section className="section"><div className="wrap"><div className="facts">
+        <div className="facts__shows"><p className="eyebrow">In the public demonstration</p><h2>What the demonstration shows</h2><ul className="ticks">{p.shows.map((s) => <li key={s}>{s}</li>)}</ul></div>
+        <div className="facts__limits"><p className="eyebrow">Limits</p><h2>Limits, stated</h2><p>{p.limits}</p></div>
+      </div></div></section>
       {p.id === 'lite' ? <section className="section" id="scouter" aria-labelledby="scouter-h"><div className="wrap"><div className="scouter">
         <div><p className="label">Part of Lite</p><h2 id="scouter-h">Scouter</h2><p>Ask Scouter whether a device suits a room before anyone buys it. It proposes equipment from comparable rooms and checks each proposal against the room’s recorded requirements, not against other products.</p><p>Every proposal states its limits and goes to the discipline engineer, who decides. Nothing is adopted by Scouter itself.</p></div>
         <div><ul className="ticks"><li>Proposals from comparable rooms, with the comparison stated</li><li>Each check against the requirement, with its source</li><li>Engineer review before anything is adopted</li></ul>
           <Actions><a className="btn btn--primary" href={demo('#/v25/build')}>Open Lite in the demonstration</a></Actions></div>
       </div></div></section> : null}
-      <Section title="Limits, stated" lead={p.limits} tone="deep" />
-      <Section title="Where it sits in the lifecycle"><EvidenceLine /></Section>
+      <Section title="Where it sits in the lifecycle" tone="deep"><EvidenceLine /></Section>
       <Section title="The other products"><ProductTiles captures={ctx.captures} exclude={p.id} compact /></Section>
     </div>
   ) }));

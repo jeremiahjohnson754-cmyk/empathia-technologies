@@ -239,6 +239,42 @@ for (const [w, h] of [[1440, 900], [768, 1024], [390, 844]]) {
   await c4.close();
 }
 
+// ---- the quality uplift (docs/recovery/QUALITY_UPLIFT.md, 2026-11-04): the V2.5.3 atmosphere, the home story told with the product's
+// own screens, layout at 320 px, and nothing drawn over the words. Added, nothing above relaxed. ----
+{
+  const prov = JSON.parse(fs.readFileSync(path.join(repo, 'apps/website/media/product/PROVENANCE.json'), 'utf8')).captures;
+  const ctx = await newCtx({ viewport: { width: 1440, height: 900 } }); const page = await ctx.newPage(); const errs = []; watch(page, errs, []);
+  await page.goto(base + '/'); await page.waitForTimeout(200);
+  const home = await page.evaluate(() => {
+    const hero = document.querySelector('.hero--home'); const cs = getComputedStyle(hero);
+    const chapters = Array.from(document.querySelectorAll('.chapter')).map((c) => ({ p: c.dataset.p, h: c.querySelector('h3')?.textContent || '', img: c.querySelector('.shot img')?.getAttribute('src') || '', links: Array.from(c.querySelectorAll('.chapter__go a')).map((a) => a.getAttribute('href')) }));
+    const chip = Array.from(document.querySelectorAll('.stage__chip li')).map((l) => l.textContent);
+    const cells = document.querySelectorAll('.mix__cells li').length; const key = Array.from(document.querySelectorAll('.mix__key b')).reduce((a, b) => a + Number(b.textContent), 0);
+    const cards = Array.from(document.querySelectorAll('main .card, main .tile, main .states > div')).map((e) => getComputedStyle(e).boxShadow);
+    return { bg: cs.backgroundImage, chapters, chip, cells, key, n: document.querySelector('.campus__n')?.childNodes[0]?.textContent, nSize: parseFloat(getComputedStyle(document.querySelector('.campus__n')).fontSize), flat: cards.filter((s) => s === 'none').length, cardCount: cards.length };
+  });
+  // the story follows the lifecycle (design, prove, run, learn), not the product order: the products' own order is checked above (W-canon)
+  const inOrder = home.chapters.map((c) => c.p).join('|') === 'lite|commissioning|servicehands|apex';
+  ok('W-uplift-hero', 'the home hero is a gradient panel with a glow, and its counts come from the records (9 products, 30 rooms, 1 record)', /radial-gradient/.test(home.bg) && /linear-gradient/.test(home.bg) && home.chip.join('|') === '9products|30rooms|1record', JSON.stringify({ bg: home.bg.slice(0, 80), chip: home.chip }));
+  ok('W-uplift-story', 'the home page tells the lifecycle in four chapters, in lifecycle order, each with its product’s own dark capture (when captured) and a link to its product page', home.chapters.length === 4 && inOrder && home.chapters.every((c) => c.h.length > 10 && c.links.every((l) => /^\/products\//.test(l)) && (!prov[c.p] || c.img === `/media/product/${c.p}-1280.webp`)), JSON.stringify(home.chapters));
+  ok('W-uplift-rooms', 'the thirty rooms are drawn as thirty cells whose key adds up to thirty, and the number is display-sized', home.cells === 30 && home.key === 30 && home.n === '30' && home.nSize >= 80, JSON.stringify({ cells: home.cells, key: home.key, n: home.n, size: home.nSize }));
+  ok('W-uplift-layered', 'every card, tile and evidence card is a layered surface (it carries a shadow) in this scheme', home.cardCount >= 20 && home.flat === 0, JSON.stringify({ cards: home.cardCount, flat: home.flat }));
+  for (const s of ['lite', 'apex']) {
+    await page.goto(base + `/products/${s}`); const pb = await page.evaluate(() => getComputedStyle(document.querySelector('.hero--product')).backgroundImage);
+    ok(`W-uplift-product-${s}`, `/products/${s}: the hero's glow is tinted by the product's own colour`, /radial-gradient/.test(pb) && pb !== 'none', pb.slice(0, 120));
+  }
+  ok('W-uplift-clean', 'no error on the uplifted pages', !errs.length, errs.join(' | '));
+  await ctx.close();
+  // 320 px (the narrowest phone the audit covers): no sideways scroll, the hero stage stacks, nothing overlaps the words
+  const c320 = await newCtx({ viewport: { width: 320, height: 720 } }); const p320 = await c320.newPage();
+  for (const p of ['/', '/products/lite', '/founder', '/contact']) {
+    await p320.goto(base + p); await p320.waitForTimeout(100);
+    const r = await p320.evaluate(() => { const over = document.documentElement.scrollWidth - document.documentElement.clientWidth; const card = document.querySelector('.stage__card'); const cap = document.querySelector('.stage .shot figcaption'); let hit = false; if (card && cap) { const a = card.getBoundingClientRect(), b = cap.getBoundingClientRect(); hit = a.top < b.bottom - 1 && a.bottom > b.top + 1; } const wide = Array.from(document.querySelectorAll('main h1, main h2, main h3, main p, main .btn')).filter((e) => e.getBoundingClientRect().right > innerWidth + 1).length; return { over, hit, wide }; });
+    ok(`W-uplift-320-${p}`, `${p} at 320 px: no sideways scroll, no text or button past the edge, the record card never covers the caption`, r.over <= 0 && !r.wide && !r.hit, JSON.stringify(r));
+  }
+  await c320.close();
+}
+
 // ---- budgets (approved image-performance and weight budgets) ----
 {
   const m = JSON.parse(fs.readFileSync(path.join(dist, 'BUILD_MANIFEST.json'), 'utf8')).files; const sum = (re) => Object.entries(m).filter(([f]) => re.test(f)).reduce((a, [, v]) => a + v.bytes, 0);

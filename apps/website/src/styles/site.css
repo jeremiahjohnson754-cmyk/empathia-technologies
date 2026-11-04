@@ -214,7 +214,7 @@ p { text-wrap: pretty; }
 .record__rows dd span:last-child { color: var(--w-tx3); font-size: 13px; }
 
 /* sections: generous rhythm, a deep tone that alternates with the page */
-.section { position: relative; padding: clamp(72px, 9vw, 128px) 0; border-bottom: 1px solid var(--w-line); }
+.section { position: relative; padding: clamp(72px, 9vw, 128px) 0; border-bottom: 1px solid var(--w-line); overflow-x: clip; }   /* glows may reach past the page edge; clip never makes a scroll container (view timelines keep the page) */
 .section--deep { background: radial-gradient(1000px 420px at 50% 0%, color-mix(in srgb, var(--w-glow-b) 50%, transparent), transparent 70%), var(--w-bg2); }
 .section__head { max-width: 820px; margin-bottom: clamp(36px, 4vw, 56px); }
 .section__head:only-child { margin-bottom: 0; }
@@ -301,6 +301,15 @@ p { text-wrap: pretty; }
 .mix__key li { display: inline-flex; align-items: center; gap: 8px; }
 .mix__key i { width: 12px; height: 12px; border-radius: 3px; background: var(--k); }
 .mix__key b { color: var(--w-tx); }
+
+/* a product page's facts: what the demonstration shows, beside its stated limits */
+.facts { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 20px; align-items: stretch; }
+.facts > div { min-width: 0; padding: clamp(26px, 3.4vw, 44px); border: 1px solid var(--w-line); border-radius: var(--w-r-card); background: var(--w-card); box-shadow: var(--w-edge), var(--w-lift); }
+.facts > .facts__shows { background: radial-gradient(640px 280px at 0% 0%, color-mix(in srgb, var(--pc, var(--w-accent)) 12%, transparent), transparent 70%), var(--w-card); }
+.facts h2 { margin: 0 0 24px; font-size: clamp(26px, 2.6vw, 34px); line-height: 1.1; letter-spacing: -.025em; }
+.facts > .facts__limits { border-left: 3px solid var(--w-warn); }
+.facts__limits p:not(.eyebrow) { margin: 0; color: var(--w-tx2); font-size: 17px; }
+.facts__limits .eyebrow::before { background: var(--w-warn); }
 
 /* Scouter inside Lite */
 .scouter { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; align-items: start; padding: clamp(26px, 4vw, 44px); border: 1px solid var(--w-line2); border-left: 4px solid var(--w-p-lite); border-radius: var(--w-r-card); background: radial-gradient(600px 260px at 0% 0%, color-mix(in srgb, var(--w-p-lite) 14%, transparent), transparent 70%), var(--w-card); box-shadow: var(--w-edge), var(--w-lift); }
@@ -447,7 +456,7 @@ p { text-wrap: pretty; }
   .eline { grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 28px; }
   .eline::before { display: none; }
   .founder { grid-template-columns: minmax(0, 340px) minmax(0, 1fr); }
-  .scouter { grid-template-columns: 1fr; }
+  .scouter, .facts { grid-template-columns: 1fr; }
   .campus { grid-template-columns: 1fr; }
   .foot__grid { grid-template-columns: 1fr 1fr 1fr; } .foot__grid > div:first-child { grid-column: 1 / -1; }
 }
