@@ -53,3 +53,28 @@ These are refinements, not reasons to derail Claude's current work. Continue wor
 
 One additional architectural nuance: if replacement eventually triggers external Teams notifications or connector events, those should use a reliable transactional-outbox mechanism rather than attempting external calls inside the database transaction. Continue working as you were claude my apologies last instructions
 
+## Turn 495 — Sat 2026-10-31 18:56 (America/Chicago)
+
+The final safeguards I'd want verified
+Only four things remain on my immediate checklist for this particular architecture: duplicate delivery after a worker crash, event ordering for the same room, cross-tenant isolation, and controlled dead-letter replay with full audit records.
+Those are validation requirements, not reasons to interrupt the current sprint. Continue working as you were
+
+## Turn 500 — Sat 2026-10-31 19:32 (America/Chicago)
+
+Progress
+Shared rule: the API and the demo now use one camera-replacement rule. The API's output is unchanged: the same 12 tests reopen, with the same reasons.
+Demo fixes: three truth problems are fixed: "FUNDED" with no funding record, the empty project history, and the conflicting Atlas 4.218 baseline. The fix uses the actual records.
+Commit: this is committed on the restoration branch as 457361d. Tests: 52 pass, and the only one not run is the film decode, which needs your film masters.
+Outbox checks: all four now pass. Ten of the eleven new tests failed before the fixes.
+Workers handled events without setting the tenant, and could write into another tenant's tables.
+A later event for a room could overtake an earlier one.
+A dead-letter replay needed no reason and was not fully audited.
+Still open: idempotency with a real Teams/Outlook connector can't be tested until a connector exists, so it is recorded as not run.
+Now running: position-versus-asset installation records and the failure-path tests.
+
+## Turn 502 — Sat 2026-10-31 19:37 (America/Chicago)
+
+One thing I'd emphasize: Claude finding and correcting cross-tenant worker access is arguably a bigger engineering win than another beautiful dashboard. That's the kind of issue that can become a serious enterprise security incident if it survives into production.
+I would also recommend Tally for initial website inquiries, assuming its privacy and integration configuration checks out. You can use it as an interim lead-capture solution without paying for a full enterprise API deployment just to receive investor messages.
+Your immediate priority, though, is preserving the restoration branch and finishing the combined security, installation, and regression test gates.
+
