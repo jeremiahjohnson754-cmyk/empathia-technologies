@@ -7,7 +7,8 @@
  *   3. the chunk is slow → a labelled loading state with the workspace's name, announced politely, never a spinner alone.
  * A module that loaded once is kept, so going back to a workspace is instant.
  */
-import { Component, useEffect, useState, type ComponentType, type ReactNode } from 'react';
+import { Component, useEffect, useState, type ReactElement, type ReactNode } from 'react';
+type ComponentType<P> = (props: P) => ReactElement | null;
 
 export interface WorkspaceProps { perspective: string; hash: string }
 /** Loads the workspace module; `attempt` > 0 is a retry and must use a fresh URL (a failed module fetch is remembered by the page). */

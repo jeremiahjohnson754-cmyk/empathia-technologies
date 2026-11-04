@@ -12,6 +12,8 @@
  */
 import type { ReactNode } from 'react';
 import { lazyWorkspace } from './lazy.js';
+import { opsPath } from './path.js';
+export { opsPath };
 
 declare const process: { env: Record<string, string | undefined> };
 /** Each workspace is a build entry at ws/<name>.js (apps/demo/build.mjs WORKSPACES), versioned by the build id; a retry adds ?retry=n. */
@@ -36,7 +38,6 @@ export const OPS_WORKSPACES: Array<{ name: string; href: string; purpose: string
   { name: 'Learn labs', href: '#/learn/labs', purpose: 'Audio, Camera and Lighting labs and the SIGNAL fault labs' },
 ];
 
-export function opsPath(hash: string): string[] { return (hash.replace(/^#\/?/, '').split('?')[0] || '').split('/').filter(Boolean).map((x) => { try { return decodeURIComponent(x); } catch { return x; } }); }
 
 export function opsPage(hash: string, perspective: string): ReactNode | null {
   const p = opsPath(hash); const props = { perspective, hash };
