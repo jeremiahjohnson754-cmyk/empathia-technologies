@@ -103,6 +103,8 @@ export const Portrait = ({ size }: { size: 'lg' | 'sm' }) => (
 );
 export const CREDENTIALS = [{ abbr: 'CTS', full: 'Certified Technology Specialist', by: 'AVIXA' }, { abbr: 'CAPM', full: 'Certified Associate in Project Management', by: 'PMI' }, { abbr: 'Network+', full: 'CompTIA Network+', by: 'CompTIA' }];
 export const Credentials = () => <ul className="creds" aria-label="Credentials">{CREDENTIALS.map((c) => <li key={c.abbr}><abbr title={c.full}>{c.abbr}</abbr><span>{c.by}</span></li>)}</ul>;
+import { FOUNDER_BIO, FOUNDING_STORY, FOUNDING_STORY_CLOSE } from './founder.js';
+export { FOUNDER_BIO, FOUNDING_STORY, FOUNDING_STORY_CLOSE };
 export const FOUNDER_QUOTE = 'Empathia grew from a simple conviction: the technology behind a workplace should be understandable, accountable and provable. We’re connecting design, people, systems, service, and learning into one evidence-backed lifecycle.';
 
 /** The nine product colours as one strip: the website's hero signature in both themes, above the hero's glow (V2.5.3 atmosphere). */
@@ -159,6 +161,7 @@ export const FounderBlock = ({ page }: { page: 'home' | 'founder' }) => (
       <p className="label">{page === 'founder' ? 'Founder' : 'The founder'}</p>
       {page === 'founder' ? <h1 className="founder__name">Jeremiah Johnson</h1> : <h2 className="founder__name">Jeremiah Johnson</h2>}
       <p className="founder__role">Founder, Empathia Technologies</p>
+      {page === 'founder' ? <p className="founder__bio" data-founder-bio>{FOUNDER_BIO}</p> : null}
       <Credentials />
       <blockquote className="philosophy"><p>{FOUNDER_QUOTE}</p><footer>Jeremiah Johnson, on why Empathia exists</footer></blockquote>
       <div className="founder__ctas">
@@ -172,6 +175,15 @@ export const FounderBlock = ({ page }: { page: 'home' | 'founder' }) => (
 
 /** The home hero's composition: Mission Control as the screen, a room record layered over it (the evidence labels the product keeps),
  *  and the counts this site is built from (computed from the product list and the room mix, never typed). All synthetic, and labelled. */
+/** The founding story, in the founder's own words (2026-11-01 05:46 CT); its closing line stands alone with generous space, as he asked. */
+export const FoundingStory = () => (
+  <section className="section story" aria-labelledby="story-title" data-founding-story><div className="wrap story__wrap">
+    <h2 id="story-title">The Missing Piece</h2>
+    {FOUNDING_STORY.map((t, i) => <p key={i}>{t}</p>)}
+    <p className="story__close">{FOUNDING_STORY_CLOSE}</p>
+  </div></section>
+);
+
 export const Stage = ({ p, cap, counts }: { p: Product; cap?: Capture; counts: { label: string; n: number }[] }) => (
   <div className="stage" data-p={p.id}>
     <span className="stage__glow" aria-hidden="true" />

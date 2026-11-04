@@ -4,7 +4,7 @@
 // pages carry the founder's own words and portrait only, never an invented biography.
 import React from 'react';
 import { LeadForm, type LeadKind } from './form.js';
-import { Hero, Section, Cards, Steps, Note, Actions, Tag, EVIDENCE, EvidenceLine, FilmPlayer, Spectrum, Shot, ProductTiles, EnquiryCard, EnquiryLink, FounderBlock, Stage, Chapters, RoomMix, type Evidence, type Film, type Capture, type ChapterItem } from './ui.js';
+import { Hero, Section, Cards, Steps, Note, Actions, Tag, EVIDENCE, EvidenceLine, FilmPlayer, Spectrum, Shot, ProductTiles, EnquiryCard, EnquiryLink, FounderBlock, FoundingStory, Stage, Chapters, RoomMix, type Evidence, type Film, type Capture, type ChapterItem } from './ui.js';
 import { PRODUCTS, DEMO_STATE, ROOMS_SENTENCE, ROOM_MIX, ROOM_TOTAL } from './products.js';
 import { TALLY_FORM } from './enquiry.js';
 
@@ -175,6 +175,7 @@ export function buildPages(ctx: SiteContext): Page[] {
     { path: '/founder', title: 'Jeremiah Johnson, founder — Empathia Technologies', description: 'Jeremiah Johnson founded Empathia Technologies. CTS (AVIXA), CAPM (PMI), CompTIA Network+.', nav: 'Founder', body: (
       <>
         <section className="hero hero--founder"><div className="wrap"><FounderBlock page="founder" /></div></section>
+        <FoundingStory />
         <Section title="The thinking behind the company" lead="A workplace’s technology is designed, installed, tested, accepted and serviced by different people, and its record is usually scattered across suppliers, spreadsheets and memory. Empathia is built so that record stays whole, and stays honest about what is known." />
         <Section title="The principles Empathia is built on" tone="deep"><Cards cols={3} items={PRINCIPLES} /></Section>
         <section className="band"><div className="wrap"><h2>Talk with the founder.</h2><p>Investor conversations, pilots and partnerships go through Empathia’s enquiry form, marked for the founder.</p><div className="actions"><EnquiryLink source="founder" primary id="founder-band" /></div></div></section>

@@ -505,3 +505,10 @@ p { text-wrap: pretty; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 @media (forced-colors: active) { .tag, .btn, .card, .tile, .states div, .steps li { border: 1px solid CanvasText; } .spectrum, .hero__band, .mix__cells { forced-color-adjust: none; } }
 @media print { .top, .foot, .band, .skip, .theme, .stage__glow, .chapter__glow { display: none; } .hero, .section--deep { background: none; } body { background: #fff; color: #000; } }
+
+/* The founder's overview and founding story (his words; the closing line on its own, with generous space). */
+.founder__bio { margin: 18px 0 0; max-width: 62ch; color: var(--w-tx2, var(--w-tx)); font-size: 17px; line-height: 1.65; }
+.story__wrap { max-width: 68ch; }
+.story h2 { margin: 0 0 20px; }
+.story p { margin: 0 0 16px; font-size: 18px; line-height: 1.7; color: var(--w-tx); }
+.story__close { margin-top: 56px !important; font: 800 clamp(26px, 3vw, 40px)/1.2 var(--w-display); letter-spacing: -.02em; color: var(--w-tx); }
