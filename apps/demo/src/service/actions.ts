@@ -120,3 +120,30 @@ export function stageOf(w: WX, inc: S.Incident): number {
     case 'CLOSED': return 11; default: return 0;
   }
 }
+
+/**
+ * How a job is routed — rule-based, every reason stated on the job (V2.5.3's "How requests are routed", on this workspace's records).
+ * The first rule that holds decides; the reason names the record that made it hold.
+ */
+export const ROUTES = {
+  diagnose: { label: 'Diagnose first', tone: 'apex', rule: 'A recurrence of a closed job in the same room: APEX diagnoses the cause before another visit, so the same fix is not repeated.' },
+  engineered: { label: 'Engineered service', tone: 'indigo', rule: 'High severity, or work that changes the commissioned configuration (a DSP change, a network change, a replacement): an engineer approves the method and the room is reverified.' },
+  quick: { label: 'Quick service', tone: 'accent', rule: 'A known like-for-like fix at standard severity that leaves the room as it was commissioned.' },
+} as const;
+export type RouteKey = keyof typeof ROUTES;
+const CHANGES_CONFIG = new Set(['dsp_upgrade', 'network_change', 'camera_replacement', 'lifecycle_replacement']);
+export function routeOf(w: WX, inc: S.Incident): { key: RouteKey; why: string } {
+  if (inc.recurrenceOf) return { key: 'diagnose', why: `recurrence of ${inc.recurrenceOf}` };
+  const wo = inc.workOrderId ? S.workOrderOf(w, inc.workOrderId) : undefined;
+  if (wo && CHANGES_CONFIG.has(wo.workType)) return { key: 'engineered', why: `${wo.workType.replace(/_/g, ' ')} changes the commissioned configuration` };
+  if (inc.severity !== 'Standard') return { key: 'engineered', why: `${inc.severity} severity` };
+  return { key: 'quick', why: wo ? `${wo.workType.replace(/_/g, ' ')} at standard severity` : 'standard severity, no configuration change asked' };
+}
+/** The board's lanes: the twelve stages grouped by where the work is. */
+export const LANES: Array<{ key: string; title: string; stages: number[] }> = [
+  { key: 'intake', title: 'Intake and triage', stages: [0, 1, 2] },
+  { key: 'match', title: 'Matching and dispatch', stages: [3, 4, 5] },
+  { key: 'field', title: 'In the field', stages: [6, 7] },
+  { key: 'verify', title: 'Verify and resolve', stages: [8, 9] },
+  { key: 'close', title: 'Closure and learning', stages: [10, 11] },
+];
