@@ -65,7 +65,7 @@ test('V2.5.3 areas, spot-checked against 12-authz.js', () => {
   assert.ok(who('#/search').length === 15, 'Search Party is everyone’s');
   assert.deepEqual(who('#/search/quality'), ['architect', 'steward'], 'the exact address (sub-view) narrows who may open it');
   assert.ok(!who('#/v25/service').includes('visitor') && !who('#/v25/service').includes('exec'));
-  assert.ok(who('#/investor').length === 15 && who('#/v25/policy').length === 15);
+  assert.ok(who('#/investor').length === 15 && who('#/v25/policy').length === 15 && who('#/access').length === 15);
 });
 test('home tabs follow V2.5.3 tabsFor and never lead to a refusal', () => {
   for (const k of ROLES) {

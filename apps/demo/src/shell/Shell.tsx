@@ -85,7 +85,7 @@ function Drawer({ open, onClose, products, current, at, onViewAs, role }: { open
           ))}
         </ul>
         <div className="drawer__theme"><span className="drawer__lbl" aria-hidden="true">Appearance</span><ThemeSwitch labels /></div>
-        <p className="drawer__foot"><a href="#/investor" onClick={onClose}>Investor start</a> · <a href="#/v25/policy" onClick={onClose}>Who may see what</a></p>
+        <p className="drawer__foot"><a href="#/investor" onClick={onClose}>Investor start</a> · <a href="#/access" onClick={onClose}>Who may see what</a></p>
       </div>
     </div>
   );

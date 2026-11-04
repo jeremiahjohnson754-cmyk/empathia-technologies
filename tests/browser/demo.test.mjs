@@ -242,8 +242,9 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     await page.click('[data-testid=passports] .exec__tile:has-text("Median restoration time")'); await page.waitForSelector('[data-testid=passport]');
     const pp = await page.locator('[data-testid=passport]').innerText();
     ok('M-03', 'a passport shows numerator, denominator, window, coverage, freshness, confidence with reasons, source, exclusions and drill-down', /Numerator \/ denominator/.test(pp) && /90 days/.test(pp) && /Coverage/.test(pp) && /Confidence/.test(pp) && /Exclusions/.test(pp) && /ISS-0417/.test(pp), pp.slice(0, 300));
-    await persp('service'); await page.waitForTimeout(200);
-    ok('M-04', 'a technician does not see executive passports', /this perspective does not see executive passports/.test(await page.locator('main').innerText()) && !(await page.locator('[data-testid=passports]').count()));
+    await persp('service'); await page.evaluate(() => { location.hash = '#/v25/exec'; }); await page.waitForTimeout(300);   // D44: a switch lands on the role's home; reopen the address
+    // changed for D44: the Executive page (V2.5.3 pro.exec) is not the technician's, so the screen is not shown at all (owl access page)
+    ok('M-04', 'a technician does not see executive passports: the screen is not shown (owl access page)', (await page.locator('[data-testid=access-page]').count()) === 1 && !(await page.locator('[data-testid=passports]').count()));
     await page.evaluate(() => { location.hash = '#/v25/ledger'; }); await page.waitForTimeout(400); await persp('steward'); await page.waitForTimeout(200);
     await page.click('button:has-text("DENIED")'); await page.waitForTimeout(150);
     const led = await page.locator('[data-testid=ledger]').innerText();
@@ -294,7 +295,8 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     // changed for D44: Physical Validation (V2.5.3 area agent) is not the visitor's, so the visitor gets the owl page and cannot change the licence
     ok('F-14', 'a visitor cannot change the town hall licence: Physical Validation is not shown to the visitor (owl access page)', (await page.locator('[data-testid=access-page]').count()) === 1 && !(await page.locator('[data-testid=fi-licence]').count()));
 
-    await page.evaluate(() => { location.hash = '#/v25/service'; }); await page.waitForTimeout(400); await page.click('button:has-text("Reset workspace")'); await page.waitForTimeout(300);
+    // changed for D44: ServiceHands is not the visitor's (the owl page would show), so the reset is done as the service manager
+    await persp('svcmgr'); await page.evaluate(() => { location.hash = '#/v25/service'; }); await page.waitForTimeout(400); await page.click('button:has-text("Reset workspace")'); await page.waitForTimeout(300);
     ok('M-07', 'Reset returns the workspace to its seed: ISS-0417 is OPEN again and the cases are gone', /OPEN[\s\S]*ISS-0417/.test(await page.locator('[data-testid=incidents]').innerText()) && !/APX-/.test(await page.locator('main').innerText()));
   }
   ok(`D-${tag}-07`, 'no page error, no console error, no request outside the page', !errs.length && !ext.length, [...errs, ...ext].slice(0, 3).join(' | '));
