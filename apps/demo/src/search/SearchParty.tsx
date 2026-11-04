@@ -13,6 +13,12 @@ import { resolve } from '../registry.pages.js';
 import { canOpen } from '../access/policy.js';
 import type { RoleKey } from '../registry.types.js';
 
+/** V2.5.3's Search Party areas (#/search/people …) open this page filtered to the record type each area is about. */
+const SUB_LABEL: Record<string, string> = { people: 'Person', projects: 'Project', quality: 'Room issue', activity: 'Work order', ownership: 'Role', support: 'Role', orgs: 'Site', vault: 'Commissioning baseline', coverage: 'Room' };
+function subType(hash: string, est: { coverage: { types: Record<string, number> } }): string {
+  const sub = (/^#?\/?search\/([a-z]+)/.exec(hash) || [])[1] || ''; const want = SUB_LABEL[sub]; if (!want) return '';
+  return Object.keys(est.coverage.types).find((t) => (NODE_TYPES[t]?.[0] || t) === want) || '';
+}
 /** Searches an investor can try; each shows the count the search finds now. */
 const TRY = ['camera', '4.218', 'boardroom', 'microphone', 'ISS-0417', 'switch', 'Horizon', 'WO-0088'];
 
@@ -23,9 +29,9 @@ export function SearchPartyDemo({ hash, role }: { hash: string; role?: RoleKey }
   const opens = (href: string) => { if (!role) return true; const r = resolve(href); return !!r && canOpen(role, r); };
   const est = useMemo(() => buildEstate(), []);
   const init = parseHash(hash);
-  const [q, setQ] = useState(init.q); const [type, setType] = useState(''); const [focus, setFocus] = useState<NodeRef | null>(init.focus); const [sel, setSel] = useState<string | null>(null);
+  const [q, setQ] = useState(init.q); const [type, setType] = useState(() => subType(hash, est)); const [focus, setFocus] = useState<NodeRef | null>(init.focus); const [sel, setSel] = useState<string | null>(null);
   // a new address (#/search?q=… or ?focus=…, from the search bar, a tour or a link) replaces what the page shows
-  useEffect(() => { const n = parseHash(hash); setQ(n.q); setFocus(n.focus); setSel(null); setAnswer(null); }, [hash]);   // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { const n = parseHash(hash); setQ(n.q); setFocus(n.focus); setType(subType(hash, est)); setSel(null); setAnswer(null); }, [hash]);   // eslint-disable-line react-hooks/exhaustive-deps
   const [question, setQuestion] = useState(''); const [answer, setAnswer] = useState<IntentAnswer | null>(null);
   const byKey = useMemo(() => new Map(est.nodes.map((n) => [nodeKey(n), n])), [est]);
   const res = useMemo(() => search(est, { q, type: type || null, limit: 40 }), [est, q, type]);

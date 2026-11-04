@@ -214,3 +214,17 @@ main h1[tabindex="-1"]:focus { outline: none; box-shadow: none; }
 .lnd__top { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: var(--sp-5); align-items: center; }
 .lnd__art { margin: 0; border-radius: var(--r-lg, 14px); } .lnd__art .iso3d { max-height: 340px; }
 @media (max-width: 980px) { .lnd__top { grid-template-columns: 1fr; } .lnd__art .iso3d { max-height: 260px; } }
+
+/* the kit on the core screens: titles, labels and meter names wrap instead of truncating (a cut title hides the very fact the row is
+   about); the tiles grid uses the kit's own tile cards */
+:is(.room, .campus, .home, .sp, .lnd) :is(.kit-row__title, .kit-row__sub, .kit-tile__label, .kit-meter__name, .kit-meter__sub) { white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: break-word; }
+:is(.room, .campus, .home, .sp, .lnd) .kit-row__sub { line-height: 1.4; }
+.tiles { gap: var(--sp-3); border: 0; border-radius: 0; background: none; overflow: visible; }
+.tilecell { display: grid; min-width: 0; } .tilecell > .kit-tile { height: 100%; box-sizing: border-box; }
+.tilecell--text .kit-tile__value { font-size: clamp(1.05rem, .95rem + .6vw, 1.35rem); text-transform: capitalize; overflow-wrap: normal; hyphens: auto; }
+@media (max-width: 520px) { .kit-meter__row { grid-template-columns: minmax(0, 1fr) 72px 3ch 14px; gap: 8px; } }
+.campus__score { border: 0; background: none; padding: 0; } .campus__score .kit-ring { margin: 0; }
+@media (max-width: 640px) { .campus__score svg { width: 84px; height: 84px; } }
+.lnd__score .kit-ring { margin: 0; flex-direction: row; }
+.roomtabs .kit-chip { flex: none; white-space: nowrap; }
+@media (max-width: 760px) { .roomtabs .kit-chip { min-height: var(--target-min, 44px); } }

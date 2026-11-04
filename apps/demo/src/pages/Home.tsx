@@ -102,7 +102,7 @@ export default function Home({ role }: PageProps) {
           <StatTile label="Campus health" value={c.score ?? '—'} unit="/100" sub={`${BAND_LABEL[c.band]} · mean of ${c.scored} scored rooms`} tone={c.band} icon="heart" />
           <StatTile label="Healthy rooms" value={c.healthy} unit={`of ${c.rooms}`} sub="health 88 or more" icon="heart" />
           <StatTile label="Rooms needing attention" value={queue.length} sub={`${needAction} need action, ${watch} to watch`} tone={queue.length ? 'monitor' : undefined} icon="alert" />
-          <StatTile label="Critical issues" value={c.high} sub={`${c.open} open issues in all`} tone={c.high ? 'action' : undefined} icon="alert" />
+          <StatTile label="Critical issues" testId="kpi-critical" value={c.high} sub={`${c.open} open issues in all`} tone={c.high ? 'action' : undefined} icon="alert" />
           <StatTile label="Commissioning readiness" value={c.verifiedPct ?? '—'} unit="%" sub={`${c.verified} of ${c.applicable} tests verified`} icon="check" />
           <StatTile label="Accepted rooms" value={c.accepted} unit={`of ${c.rooms}`} sub="with a current baseline" icon="cycle" />
           <StatTile label="Open service requests" value={liveReq.length} sub={`${(w?.workOrders || []).filter((x) => !['DONE', 'CANCELLED'].includes(x.state)).length} work orders open`} icon="device" />

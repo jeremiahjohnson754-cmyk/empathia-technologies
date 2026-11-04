@@ -36,7 +36,9 @@ function useWs(): Workspace | null {
 const tilesOf = (bs: BuildingStats[]): Record<string, CampusTile> => Object.fromEntries(bs.map((s) => [s.b.key, { score: s.score, band: s.band, issues: s.open, rooms: s.rooms }]));
 
 export function CampusPage({ hash, sees, role }: { hash: string; sees?: (id: string) => boolean; role?: RoleKey }) {
-  const { b, f, room } = parseCampus(hash);
+  const parsed = parseCampus(hash); const { f, room } = parsed;
+  // a building may be named by its key in any case or by its short name (#/campus/atlas): shown at its canonical key
+  const b = parsed.b && !buildingByKey(parsed.b) ? (BUILDINGS.find((x) => x.key === parsed.b!.toUpperCase() || x.short.toLowerCase() === parsed.b!.toLowerCase())?.key ?? parsed.b) : parsed.b;
   if (room) {
     const o = roomById(room);
     if (!o || o.building !== b || o.floor !== f) return <NotFound what={`room ${room}`} />;

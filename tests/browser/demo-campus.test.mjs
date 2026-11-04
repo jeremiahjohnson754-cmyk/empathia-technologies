@@ -12,8 +12,9 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   const site = await t.page.evaluate(() => {
     const st = document.querySelector('[data-testid="campus-stage"]'); const bg = st ? getComputedStyle(st).backgroundColor : '';
     const lum = (() => { const m = bg.match(/\d+(\.\d+)?/g); if (!m) return 1; const [r, g, b] = m.map(Number); return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255; })();
-    return { h1: document.querySelector('main h1')?.textContent || '', buildings: document.querySelectorAll('[data-testid^="campus-b-"]').length, cards: document.querySelectorAll('.campus__card').length, lum, stats: document.querySelector('.campus__stats')?.textContent || '' };
+    return { h1: document.querySelector('main h1')?.textContent || '', buildings: document.querySelectorAll('[data-testid^="campus-b-"]').length, cards: document.querySelectorAll('[data-testid="building-list"] .kit-meter').length, lum, stats: document.querySelector('.campus__stats')?.textContent || '' };
   });
+  // changed for uplift/core-screens (founder, 2026-11-04: V2.5.3's buildings list with health bars): the list is the kit's MeterRow
   ok(`CA-${tag}-01`, 'the campus page shows the site, six buildings on the map and six in the list', /Northstar Innovation Campus/.test(site.h1) && site.buildings === 6 && site.cards === 6, JSON.stringify(site));
   ok(`CA-${tag}-02`, 'the spatial stage stays dark in either theme (D36)', site.lum < 0.25, site.lum);
   ok(`CA-${tag}-03`, 'no horizontal overflow on the campus page', (await t.overflow()) <= 0, await t.overflow());
