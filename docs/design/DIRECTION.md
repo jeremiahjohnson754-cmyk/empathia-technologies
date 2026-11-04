@@ -17,13 +17,13 @@ taken from `apps/demo/src/workspace/store.ts`, `campus/canon.ts`, `search/`, `ac
 | Mission Control | `8:2` | [01-mission-control-1440.png](direction/01-mission-control-1440.png) | source frame 2 in `direction.html` |
 | Room · Atlas 4.218 | `9:2` | [03-room-atlas-4-218-1440.png](direction/03-room-atlas-4-218-1440.png) | frame 4 |
 | ServiceHands · WO-0088 | `10:2` | [05-servicehands-wo-0088-1440.png](direction/05-servicehands-wo-0088-1440.png) | frame 6 |
-| Search Party · ⌘K | pending (frame 7) | — | frame 8 |
-| Lite · Living Campus | pending (frame 9) | — | frame 10 |
-| Investor start · role flashcards | pending (frame 11) | — | frame 12 |
-| Website · Home | pending (frame 13) | — | frame 14 |
+| Search Party · ⌘K | `11:2` | [07-search-party-cmdk-1440.png](direction/07-search-party-cmdk-1440.png) | frame 8 |
+| Lite · Living Campus | `13:2` | [09-lite-living-campus-1440.png](direction/09-lite-living-campus-1440.png) | frame 10 |
+| Investor start · role flashcards | `12:2` | [11-investor-start-1440.png](direction/11-investor-start-1440.png) | frame 12 |
+| Website · Home | `14:2` | [13-website-home-1440.png](direction/13-website-home-1440.png) | frame 14 |
 
 Figma links: `https://www.figma.com/design/vIAkEx5MIdBOy5KDIHJrzX/Empathia-Emblem?node-id=8-2` (replace the node id per row).
-The pending frames exist in `direction.html` and in `cjson` form; they go into Figma with the same builder (see "How to add a frame").
+All seven 1440 frames are in Figma; the seven 390 frames exist in `direction.html` (frames 2, 4, 6, 8, 10, 12, 14) and go in with the same builder (see "How to add a frame") — the mobile contact sheet is reproducible locally with `preview.mjs`.
 
 ---
 
