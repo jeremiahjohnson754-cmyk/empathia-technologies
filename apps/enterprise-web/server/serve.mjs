@@ -17,7 +17,9 @@ const host = arg('host', process.env.WEB_HOST || '127.0.0.1');   // 0.0.0.0 only
 const allowedHosts = new Set([...String(arg('allowed-hosts', process.env.WEB_ALLOWED_HOSTS || '')).split(','), process.env.RENDER_EXTERNAL_HOSTNAME || ''].map((h) => h.trim().toLowerCase()).filter(Boolean));   // Render sets RENDER_EXTERNAL_HOSTNAME to this service's own name
 const hostAllowed = (h) => /^(127\.0\.0\.1|localhost)(:\d+)?$/.test(h) || allowedHosts.has(h.toLowerCase().replace(/:\d+$/, ''));
 const apiOrigin = new URL(arg('api', process.env.API_URL || 'http://127.0.0.1:4100')).origin;
-const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.txt': 'text/plain; charset=utf-8' };
+const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.txt': 'text/plain; charset=utf-8',
+  // brand, Inter and media (D7, D39): served with their real types, which nosniff requires
+  '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.woff2': 'font/woff2', '.woff': 'font/woff', '.webmanifest': 'application/manifest+json', '.mp4': 'video/mp4', '.vtt': 'text/vtt; charset=utf-8' };
 // Typography: when FONT_KIT_ID names the Adobe Fonts kit (Empathia platform UI: Acumin Pro, kit kis0uqz), the stylesheet is linked and its hosts allow-listed; unset = system fonts, no external request
 const fontKit = arg('font-kit', process.env.FONT_KIT_ID || '');
 const fontSrc = fontKit ? ' https://use.typekit.net https://p.typekit.net' : '';

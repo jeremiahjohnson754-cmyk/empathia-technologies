@@ -44,6 +44,7 @@ for (const p of ['packages/commissioning-engine', 'packages/event-contracts', 'p
   suite(`unit: ${p}`, 'unit', node, ['--test', `${p}/dist/test/**/*.test.js`], tap, fs.existsSync(dir) ? {} : { skip: 'not built (node scripts/build.mjs)' });
 }
 suite('unit: packages/design-tokens (contrast both themes, D7/D37/D38)', 'unit', node, ['--test', 'packages/design-tokens/test/*.test.mjs'], tap);
+suite('unit: packages/ui (canonical products, ui.css on the tokens)', 'unit', node, ['--test', 'packages/ui/test/*.test.mjs'], tap);
 suite('unit: ml research prototype (python)', 'unit', 'python3', ['-I', '-m', 'unittest', 'discover', '-s', 'ml/tests'], unittest, fs.existsSync(path.join(root, 'ml/datasets/synthetic_first_attempt_v1.csv')) ? {} : { skip: 'dataset not generated (node ml/datasets/generate_synthetic.mjs; python3 -I ml/training/train.py)' });
 suite('service: intelligence-python', 'integration', 'python3', ['-I', '-m', 'unittest', 'discover', '-s', 'services/intelligence-python/tests'], unittest);
 const db = fs.existsSync(path.join(root, '.local/pg/credentials.json'));
@@ -54,6 +55,7 @@ for (const f of ['tests/security/site-scope.test.mjs', 'tests/security/authority
 suite('e2e: website lead form over the API', 'e2e', node, ['tests/e2e/website-lead.e2e.mjs'], custom, has('--browser') ? (db ? {} : { skip: 'no local database' }) : { skip: 'pass --browser' });
 suite('browser: enterprise web E2E', 'e2e', node, ['tests/browser/enterprise-web.test.mjs'], custom, has('--browser') ? {} : { skip: 'pass --browser' });
 suite('browser: design tokens (themes, theme-init, Inter)', 'browser', node, ['tests/browser/tokens.test.mjs'], custom, has('--browser') ? (fs.existsSync(path.join(root, 'packages/design-tokens/dist/tokens.css')) ? {} : { skip: 'tokens not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
+suite('browser: brand and type on the three surfaces (D39, D7)', 'browser', node, ['tests/browser/brand.test.mjs'], custom, has('--browser') ? (['website', 'demo', 'enterprise-web'].every((a) => fs.existsSync(path.join(root, `apps/${a}/dist/index.html`))) ? {} : { skip: 'surfaces not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
 suite('browser: public website', 'browser', node, ['tests/browser/website.test.mjs'], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/website/dist/sitemap.xml')) ? {} : { skip: 'website not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
 suite('browser: investor demo shell', 'browser', node, ['tests/browser/demo.test.mjs'], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? {} : { skip: 'demo not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
 // rebuild/demo-spaces: campus, rooms, tours, search bar, Search Party scenarios (unit + browser, light and dark in one run)

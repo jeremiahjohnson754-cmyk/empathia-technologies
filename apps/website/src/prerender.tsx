@@ -18,8 +18,6 @@ export function renderAll(ctx: SiteContext, opts: { api?: string | null; base?: 
 <link rel="canonical" href="${esc(canonical)}">
 <meta property="og:title" content="${esc(page.title)}"><meta property="og:description" content="${esc(page.description)}"><meta property="og:type" content="website">
 ${ctx.preview ? '<meta name="robots" content="noindex, nofollow">\n' : ''}<meta name="referrer" content="strict-origin-when-cross-origin">
-<link rel="preload" href="/fonts/poppins-700.woff" as="font" type="font/woff" crossorigin>
-<link rel="preload" href="/fonts/poppins-400.woff" as="font" type="font/woff" crossorigin>
 <link rel="stylesheet" href="/site.css">
 <script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'Organization', name: 'Empathia Technologies', url: opts.base || undefined, founder: { '@type': 'Person', name: 'Jeremiah Johnson' }, description: 'Empathia Living Campus: an operating platform for enterprise AV, collaboration and workplace technology.' }).replace(/</g, '\\u003c')}</script>
 </head>
