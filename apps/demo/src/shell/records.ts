@@ -23,8 +23,8 @@ export function entries(): Entry[] {
     for (const p of rec.positions) {
       if (p.furniture) continue;
       const href = `${at}?device=${encodeURIComponent(p.code)}`;
-      out.push({ id: `pos:${o.id}:${p.code}`, group: 'position', entity: 'Device', title: `${p.label} (${o.number})`, sub: `${p.catLabel} · ${room} · position ${p.code}`, href, cat: p.cat, chip: 'Position', hay: `${p.label} ${p.catLabel} ${p.cat} ${room} ${o.name} ${p.code}`.toLowerCase() });
-      if (p.asset) out.push({ id: `unit:${p.asset}`, group: 'unit', entity: 'Asset', title: `${p.asset} · ${p.label}`, sub: `identity ${p.identity} · synthetic unit at ${p.code} · ${room}`, href, cat: p.cat, chip: 'Unit', hay: `${p.asset} ${p.label} ${p.catLabel} ${p.cat} ${room} ${o.name} ${p.identity}`.toLowerCase() });
+      out.push({ id: `pos:${o.id}:${p.code}`, group: 'position', entity: 'Device', title: `${p.label} (${o.number})`, sub: `${p.catLabel} · ${room} · position ${p.code}`, href, cat: p.cat, chip: 'Planned device', hay: `${p.label} ${p.catLabel} ${p.cat} ${room} ${o.name} ${p.code}`.toLowerCase() });
+      if (p.asset) out.push({ id: `unit:${p.asset}`, group: 'unit', entity: 'Asset', title: `${p.asset} · ${p.label}`, sub: `identity ${p.identity} · synthetic unit at ${p.code} · ${room}`, href, cat: p.cat, chip: 'Asset', hay: `${p.asset} ${p.label} ${p.catLabel} ${p.cat} ${room} ${o.name} ${p.identity}`.toLowerCase() });
     }
     for (const i of rec.issues) {
       const pos = rec.positions.find((p) => i.positions.includes(p.code));

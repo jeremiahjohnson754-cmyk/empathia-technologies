@@ -50,7 +50,7 @@ body.has-dialog { overflow: hidden; }
   color: var(--bg); background: var(--rc, var(--role)); }
 
 /* ---------------------------------------------------------------- top bar (V2.5.3 aurora .top: compact, blurred navy glass) */
-.demo { --top-h: 60px; --rail-w: 88px; }
+.demo { --top-h: 60px; --rail-w: 76px; }   /* DIRECTION §3: rail 76, top bar 60 */
 .demo-shell .shell__bar { position: sticky; top: 0; z-index: 30; display: flex; flex-wrap: nowrap; align-items: center; gap: 12px; padding: 8px 16px; min-height: var(--top-h);
   background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
 .shell__brand { display: inline-flex; align-items: center; justify-content: center; gap: 10px; color: var(--tx); font-weight: 700; flex: none; min-height: 44px; min-width: 44px; }
@@ -65,8 +65,8 @@ body.has-dialog { overflow: hidden; }
 .shell__pn { overflow: hidden; text-overflow: ellipsis; }
 .pmark { width: 9px; height: 9px; border-radius: 3px; background: var(--pc); flex: none; }
 .shell__tools { display: flex; align-items: center; gap: 8px; flex: 1 1 auto; justify-content: flex-end; min-width: 0; }
-.viewas-btn { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 3px 12px 3px 4px; border-radius: 14px; border: 1px solid var(--line2); background: var(--panel); color: var(--tx); cursor: pointer; font: inherit; flex: none; }
-.viewas-btn .ava { width: 34px; height: 34px; }
+.viewas-btn { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 3px 12px 3px 4px; border-radius: 999px; border: 1px solid var(--line2); background: var(--panel); color: var(--tx); cursor: pointer; font: inherit; flex: none; }
+.viewas-btn .ava { width: 34px; height: 34px; border-radius: 50%; }
 .viewas-btn:hover { border-color: var(--rc); }
 .viewas-btn__t { display: grid; text-align: left; line-height: 1.15; } .viewas-btn__k { font-size: 11px; color: var(--tx3); font-weight: 600; }
 .viewas-btn__n { font-size: var(--fs-sm); font-weight: 700; max-width: 16ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--rc); }
@@ -81,7 +81,7 @@ body.has-dialog { overflow: hidden; }
 
 /* the Search Party bar (3 Nov 01–02, concept "prominent Search Party bar with ⌘K"): a labelled field in the bar on desktop, a full-width row
    under the bar on phones (V2.5.3 phone .search); "/" or ⌘K / Ctrl K focuses it */
-.find { position: relative; display: flex; align-items: center; flex: 0 1 600px; min-width: 0; margin-right: auto; margin-left: 8px; }
+.find { position: relative; display: flex; align-items: center; flex: 0 1 560px; min-width: 0; margin-inline: auto; }   /* centred ⌘K field, 560 max (DIRECTION §3) */
 .find__btn { display: none; }
 .find__box { position: relative; width: 100%; }
 .find__sp { position: absolute; left: 5px; top: 50%; transform: translateY(-50%); display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px 0 9px; border-radius: 9px; pointer-events: none;
@@ -94,7 +94,7 @@ body.has-dialog { overflow: hidden; }
 .find__box input:focus { outline: none; border-color: color-mix(in srgb, var(--accent) 75%, transparent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent); }
 .find__kbd { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); padding: 2px 6px; border-radius: 6px; border: 1px solid var(--line2); background: var(--panel2); color: var(--tx2); font: 600 11px var(--font-mono); text-align: center; pointer-events: none; white-space: nowrap; }
 .find__box input:focus ~ .find__kbd { display: none; }
-.find__list, .find__none { position: absolute; left: 0; top: calc(100% + 8px); z-index: 50; width: min(600px, calc(100vw - 32px)); margin: 0; padding: 6px; list-style: none; border: 1px solid var(--line2); border-radius: 16px; box-shadow: var(--shadow);
+.find__list, .find__none { position: absolute; left: 0; top: calc(100% + 8px); z-index: 50; width: min(640px, calc(100vw - 32px)); margin: 0; padding: 6px; list-style: none; border: 1px solid var(--line2); border-radius: 16px; box-shadow: var(--shadow);
   background: linear-gradient(180deg, var(--sheen), transparent 40%), var(--panel); }   /* opaque: a backdrop blur cannot work inside the bar's own blur */
 .find__none { padding: 12px 14px; font-size: var(--fs-sm); color: var(--tx2); }
 .find__opt { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; cursor: pointer; min-height: 48px; }
@@ -122,7 +122,7 @@ body.has-dialog { overflow: hidden; }
 /* ---------------------------------------------------------------- the rail (V2.5.3 aurora .tabs): the role's tabs + More, from the policy */
 .demo-shell .rail { position: fixed; z-index: 25; left: 0; top: calc(var(--top-h) + 2px); bottom: 0; width: var(--rail-w); display: flex; flex-direction: column; gap: 4px; padding: 10px 8px; overflow-y: auto; scrollbar-width: none;
   background: color-mix(in srgb, var(--bg) 92%, transparent); border-right: 1px solid var(--line); }
-.hometab { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 64px; padding: 6px 4px; border-radius: 12px; border: 0; background: transparent; color: var(--tx2);
+.hometab { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 60px; padding: 6px 2px; border-radius: 12px; border: 0; background: transparent; color: var(--tx2);
   font: 600 11px/1.15 var(--font-sans); text-align: center; cursor: pointer; text-decoration: none; transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease); }
 .hometab__l { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .hometab:hover { color: var(--tx); background: var(--panel); }
@@ -183,7 +183,7 @@ body.has-dialog { overflow: hidden; }
   .viewas-btn { padding: 4px; border-radius: 12px; }
   .demo-shell .shell__product { min-height: 44px; }
   .shell__tools { gap: 6px; }
-  .demo { --top-h: 107px; }   /* two rows: the bar (44) and the Search Party row (44), 6 px gaps and padding, the hairline */
+  .demo { --top-h: 106px; }   /* DIRECTION: 56 top bar + the Search Party row (44 + 6) */
   .demo-shell .shell__bar { flex-wrap: wrap; row-gap: 6px; }
   .demo-shell .shell__tools { display: contents; }
   .notes { margin-left: auto; }
@@ -192,12 +192,12 @@ body.has-dialog { overflow: hidden; }
   .find__sp span { display: none; } .find__sp { background: transparent; padding: 0 8px; }
   .find__list, .find__none { left: 0; right: 0; width: auto; max-height: calc(100dvh - var(--top-h) - 84px); }
   .find__kbd, .find__all { display: none; }
-  .demo-shell .rail { top: auto; right: 0; width: auto; height: auto; flex-direction: row; gap: 0; padding: 4px 6px calc(4px + env(safe-area-inset-bottom)); overflow: hidden;
+  .demo-shell .rail { top: auto; right: 0; width: auto; height: auto; flex-direction: row; gap: 0; padding: 8px 6px calc(8px + env(safe-area-inset-bottom)); min-height: 84px; box-sizing: border-box; overflow: hidden;
     background: color-mix(in srgb, var(--bg) 94%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-right: 0; border-top: 1px solid var(--line); }
-  .hometab { flex: 1 1 0; min-width: 0; min-height: 52px; font-size: 10.5px; }
+  .hometab { flex: 1 1 0; min-width: 0; min-height: 56px; font-size: 11px; }
   .hometab--more { margin-top: 0; }
   .demo-shell .shell__main, .demo > .foot { margin-left: 0; }
-  .demo { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
+  .demo { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }   /* DIRECTION: 84 bottom tab bar */
   /* phone: View as and More rise from the bottom as sheets with a grab handle (3 Nov more-08) */
   .sheet-scrim { align-items: flex-end; }
   .sheet { width: 100vw; height: auto; max-height: calc(100dvh - 40px); border-left: 0; border-top: 1px solid var(--line2); border-radius: 22px 22px 0 0; padding: 10px 16px calc(16px + env(safe-area-inset-bottom)); animation: rise var(--t-med) var(--ease); }
@@ -278,7 +278,10 @@ body.has-dialog { overflow: hidden; }
 .find__opt[data-kind="unit"], .find__opt[data-kind="position"] { --pc: var(--accent); } .find__opt[data-kind="issue"] { --pc: var(--warn); }
 .find__opt[data-kind="room"] { --pc: var(--p-lite); } .find__opt[data-kind="building"] { --pc: var(--indigo); } .find__opt[data-kind="all"] { --pc: var(--p-search-party); }
 .find__grp--all { padding-top: 4px; }
-.find__all { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin: 6px 10px 4px; font-size: 11px; color: var(--tx3); }
+.find__warn { display: flex; gap: 6px; align-items: flex-start; margin: 6px 10px 2px; padding: 8px 10px; border-radius: 8px; font-size: var(--fs-xs); color: var(--warn); background: color-mix(in srgb, var(--warn) 10%, transparent); }
+.find__all { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; justify-content: space-between; margin: 6px 10px 4px; padding-top: 6px; border-top: 1px solid var(--line); font-size: 11px; color: var(--tx3); }
+.find__open { color: var(--accent); font-weight: 600; margin-left: auto; }
+.find__sp .kit-icon { color: var(--p-search-party); }
 .find__all kbd { padding: 0 5px; border-radius: 4px; border: 1px solid var(--line2); font: 600 10.5px var(--font-mono); color: var(--tx2); }
 /* the product sheet (3 Nov reference: count, investor start first, "You are here") */
 .drawer__count { margin-left: 6px; padding: 1px 8px; border-radius: var(--r-pill); background: var(--line); color: var(--tx2); font-size: 12px; font-weight: 700; vertical-align: middle; }

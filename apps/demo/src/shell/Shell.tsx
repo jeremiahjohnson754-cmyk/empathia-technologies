@@ -241,9 +241,10 @@ function QuickFind({ role, pages, open, setOpen }: { role: RoleKey; pages: PageD
             </li>))}
             {allOpt && <li role="presentation" className="find__grp find__grp--all"><ul role="group" aria-label="Everything">{opt(allOpt, 'all')}</ul></li>}
           </ul>
-          <p className="find__all" aria-hidden="true"><kbd>↑</kbd><kbd>↓</kbd> to move · <kbd>Enter</kbd> to open · <kbd>Esc</kbd> to clear</p>
+          {failed && <p className="find__warn" role="status"><Icon name="alert" size={14} /> The records could not be loaded — the connection may have dropped; these are the pages only. Reload the page to retry.</p>}
+          <p className="find__all"><span aria-hidden="true"><kbd>↑</kbd><kbd>↓</kbd> move · <kbd>↵</kbd> open · <kbd>esc</kbd> clear</span>{allHref && <a href={allHref} className="find__open" onMouseDown={(e) => { e.preventDefault(); location.hash = allHref; close(); }}>Open all in Search Party →</a>}</p>
         </div>}
-        {words.length > 0 && !hits.length && <p className="find__none" role="status">{loading ? 'Searching the records…' : failed ? 'The records could not be loaded — the connection may have dropped. Type again to retry.' : <>Nothing for “{text}” that this role can open.{allHref ? ' Press Enter to search every record.' : ''}</>}</p>}
+        {words.length > 0 && !hits.length && <p className="find__none" role="status">{loading ? 'Searching the records…' : failed ? 'The records could not be loaded — the connection may have dropped. Reload the page to retry.' : <>Nothing for “{text}” that this role can open.{allHref ? ' Press Enter to search every record.' : ''}</>}</p>}
       </div>
     </div>
   );
