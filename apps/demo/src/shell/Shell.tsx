@@ -101,7 +101,7 @@ function QuickFind({ role, pages, open, setOpen }: { role: RoleKey; pages: PageD
     return { p, s: words.every((w) => hay.includes(w)) ? (alias ? 3 : 0) + (p.title.toLowerCase().includes(words[0]!) ? 2 : 1) : 0 };
   }).filter((x) => x.s).sort((a, b) => b.s - a.s).slice(0, 7).map((x) => x.p) : [];
   const go = (p: PageDef) => { location.hash = hrefOf(p.id); setQ(''); setOpen(false); };
-  const submit = () => { if (hits[i]) go(hits[i]!); else if (q.trim() && pages.some((p) => p.id === 'search')) { location.hash = `#/search?q=${encodeURIComponent(q.trim())}`; setQ(''); setOpen(false); } };
+  const submit = () => { if (hits[i]) go(hits[i]!); else if (q.trim() && pages.some((p) => p.id === 'find')) { location.hash = `#/find?q=${encodeURIComponent(q.trim())}`; setQ(''); setOpen(false); } };
   return (
     <div className={`find${open ? ' find--open' : ''}`} data-testid="quickfind" data-role={role}>
       <button type="button" className="find__btn" aria-expanded={open} aria-controls="find-in" onClick={() => { setOpen(!open); setTimeout(() => input.current?.focus(), 0); }}><span aria-hidden="true" className="find__icon" /><span className="ui-sr">Find a page</span></button>

@@ -13,28 +13,28 @@ const arg = (k, d) => (process.argv.find((a) => a.startsWith(`--${k}=`)) || '').
 const port = Number(arg('port', process.env.WWW_PORT || 4300));
 const host = arg('host', process.env.WWW_HOST || '127.0.0.1');   // 0.0.0.0 only inside a container, published on 127.0.0.1 by compose
 const apiOrigin = new URL(arg('api', process.env.API_URL || 'http://127.0.0.1:4100')).origin;
-const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.txt': 'text/plain; charset=utf-8',
-  // brand, Inter and media (D7, D39): served with their real types, which nosniff requires
-  '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.woff2': 'font/woff2', '.woff': 'font/woff', '.webmanifest': 'application/manifest+json', '.mp4': 'video/mp4', '.vtt': 'text/vtt; charset=utf-8' };
-// Typography: when FONT_KIT_ID names the Adobe Fonts kit (Empathia platform UI: Acumin Pro, kit kis0uqz), the stylesheet is linked and its hosts allow-listed; unset = system fonts, no external request
-const fontKit = arg('font-kit', process.env.FONT_KIT_ID || '');
-const fontSrc = fontKit ? ' https://use.typekit.net https://p.typekit.net' : '';
-const CSP = `default-src 'self'; connect-src 'self' ${apiOrigin}${fontKit ? ' https://p.typekit.net' : ''}; img-src 'self' data:${fontKit ? ' https://p.typekit.net' : ''}; style-src 'self'${fontSrc}; font-src 'self'${fontSrc}; script-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'`;
+const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.txt': 'text/plain; charset=utf-8', '.xml': 'application/xml', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.woff': 'font/woff', '.woff2': 'font/woff2', '.webmanifest': 'application/manifest+json', '.mp4': 'video/mp4', '.vtt': 'text/vtt; charset=utf-8' };
+// addresses that moved when the product pages followed the nine (D42): permanent redirects, the same map as render.yaml's routes
+const MOVED = JSON.parse(fs.readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../redirects.json'), 'utf8'));
+const CSP = `default-src 'self'; connect-src 'self' ${apiOrigin}; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'`;   // D7: Inter is self-hosted; no font kit, no third party
 export function serve() {
   const s = http.createServer((req, res) => {
     const host = String(req.headers.host || '');
-    let p = decodeURIComponent(new URL(req.url || '/', 'http://x').pathname);
+    if (req.method !== 'GET' && req.method !== 'HEAD') { res.writeHead(405, { allow: 'GET, HEAD', 'content-type': 'text/plain' }).end('method not allowed'); return; }
+    let p; try { p = decodeURIComponent(new URL(req.url || '/', 'http://x').pathname); } catch { p = '/\u0000'; }   // a malformed escape is simply not found
+    const bare = p.replace(/\/+$/, '') || '/';
+    if (MOVED[bare]) { res.writeHead(301, { location: MOVED[bare], 'cache-control': 'no-cache' }).end(); return; }
     if (p.endsWith('/')) p += 'index.html'; else if (!path.extname(p)) p += '/index.html';   // pre-rendered pages: /platform → /platform/index.html
-    const f = path.join(root, path.normalize(p).replace(/^(\.\.[/\\])+/, ''));
-    if (!f.startsWith(root) || !fs.existsSync(f) || !fs.statSync(f).isFile()) { res.writeHead(404, { 'content-type': 'text/plain' }).end('not found'); return; }
+    let f = path.join(root, path.normalize(p).replace(/^(\.\.[/\\])+/, '')); let status = 200;
+    if (p.includes('\u0000') || !f.startsWith(root + path.sep) || !fs.existsSync(f) || !fs.statSync(f).isFile()) { f = path.join(root, '404.html'); status = 404; }   // the designed not-found page, status 404
     const head = { 'content-type': TYPES[path.extname(f)] || 'application/octet-stream', 'x-content-type-options': 'nosniff', 'referrer-policy': 'no-referrer', 'cache-control': 'no-cache' };
     if (f.endsWith('.html')) Object.assign(head, { 'content-security-policy': CSP, 'x-frame-options': 'DENY' });
-    if (f.endsWith('.html') && fontKit) { const html = fs.readFileSync(f, 'utf8').replace('<head>', `<head>\n  <link rel="stylesheet" href="https://use.typekit.net/${fontKit}.css">`); res.writeHead(200, { ...head, 'content-length': Buffer.byteLength(html) }); res.end(html); return; }
+    if (status === 404) { const html = fs.readFileSync(f); res.writeHead(404, { ...head, 'content-length': html.length }); res.end(req.method === 'HEAD' ? undefined : html); return; }
     res.writeHead(200, head); fs.createReadStream(f).pipe(res);
   });
   return new Promise((ok) => s.listen(port, host, () => ok(s)));
 }
 if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
   if (!fs.existsSync(path.join(root, 'index.html'))) { console.error('build first: node apps/website/build.mjs'); process.exit(1); }
-  serve().then(() => console.log(`Empathia enterprise web: http://127.0.0.1:${port}/  (API ${apiOrigin}; add ?api=… to point elsewhere)`));
+  serve().then(() => console.log(`Empathia website: http://127.0.0.1:${port}/  (API ${apiOrigin}; add ?api=… to point elsewhere)`));
 }
