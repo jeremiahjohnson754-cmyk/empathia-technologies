@@ -54,3 +54,12 @@ state the founder approved, by tomorrow morning. The founder has given full appr
   approved design, tighten copy, states, focus, empty/error states, motion under reduced-motion, contrast, target sizes, and the
   security posture (deny by default, no secret ever in the client, CSP intact). Say in your report what you refined and why.
 - The founder is paying per token: be economical — don't re-read large files you already know, don't narrate, batch tool calls.
+
+## Final phase after all slices merge (founder, 2026-11-03 18:45 CT)
+
+1. Destructive QA round one across both sites, and the fix-up.
+2. A security and vulnerability assessment in the CEH mould — access control and privilege, injection and input handling, CSP and
+   security headers, client-side tampering and storage, secrets exposure, dependency and build-chain review, the demo's "no request
+   leaves the page" guarantee, the website's forms and outbound links — with findings fixed and hardened, and a report with nothing
+   claimed beyond what was tested.
+3. Destructive QA round two, polish, and the last regression before the Render cut-over.
