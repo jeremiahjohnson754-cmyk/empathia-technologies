@@ -1,0 +1,15 @@
+{
+  "id": "tour-sample",
+  "purpose": "Pilot: one short investor-tour line, to prove generation → export into the repository → playback and level checks",
+  "status": "READY",
+  "via": "ElevenLabs connector (creative_generate_speech), one take",
+  "model": "eleven_multilingual_v2",
+  "voiceId": "hpp4J3VqNfWAUOO0d1Us",
+  "voiceName": "Bella (ElevenLabs premade voice: professional, bright, warm; American)",
+  "takes": 1,
+  "textSource": "original line written for the tour; describes the synthetic reference room only",
+  "estimateCheckedAt": "2026-11-01: connector estimate_only = 162 credits",
+  "items": [
+    { "id": "s01", "text": "This is Atlas 4.218, a boardroom on the fourth floor. Every device here has a position, a history and evidence behind it. Let's see what changed, and how we know." }
+  ]
+}

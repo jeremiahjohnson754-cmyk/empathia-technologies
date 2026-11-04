@@ -140,3 +140,45 @@ Regenerate the API inventory and schema index after merging the installation and
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx
 ```
+
+### Turn 519 — commit `84eb9c3` on restoration/sprint-0-1 (hash from the assistant's SendUserMessage and the next Agent prompt)
+
+```
+Migration test: the runner applies every pending migration from 0026 on (0027 follows after the merge); defect register D-19..D-37; evidence from the merged-branch matrix (56 PASS, 1 FAIL fixed here, 1 NOT_RUN)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx
+```
+Branch composition reported in turn 519: installation records `76c48f0`; outbox cherry-picks `2493126`, `7698fa4`, `bfa9883`, `674f2c7`; Tally integration `28963af`; tip `84eb9c3`.
+
+### Turn 540 — commit `a4957d5` on restoration/sprint-0-1 (preceded by `git restore ml/models/first_attempt_logreg_v1.json`)
+
+```
+Shared design-binding rule and blocker order (D-38); atomic Idempotency-Key (D-35); deterministic Search Party order (D-36); outbox probes on commit order (D-37); tablet enquiry checks; Tally attribution plan
+
+D-38 (P1): the rule that re-acceptance binds an approved revision that describes the room lived only in the API. It is now in the
+shared engine (binding.ts; lifecycleBlockers takes the binding as a gate fact; revisionApprovalBlockers). The API uses it unchanged
+byte for byte. The demo saves a snapshot per revision and gains "Approve revision N" (not by its author, room.design.approve), so a
+model substitution or a category swap during recommissioning needs re-approval, and baseline v2 binds the newly approved revision.
+A like-for-like unit replacement needs none, in the API and in the demo.
+
+Blocker order: ACCEPTANCE_BLOCKER_ORDER in lifecycle.ts, documented in ADR-0012 §5a-5b: design binding, open issues, reopened tests
+(with the count when they are the only gap), the general acceptance count. Asserted in checkpoint e2e C-98/C-99 and demo B-15h,
+C-19f/g. The 12 reopened-test entries are byte-identical; only the sentence order changed.
+
+D-35 (P3): the Idempotency-Key is reserved as the first statement of the handler's transaction. A concurrent duplicate waits and
+replays the stored response, or gets 409 while the key is in use; never two executions (RN-15, which failed before: 5 !== 4).
+D-36 (P3): the Search Party catalogue queries have a stable ORDER BY ... COLLATE "C"; the checkpoint evidence is the same across runs
+apart from ledger hash values (e2e C-100).
+D-37 (P3): the outbox ordering probes compare aggregate_seq, with the aggregate_rev checks kept beside them.
+
+Tests: matrix 56 PASS, 0 FAIL, 1 NOT_RUN (film decode); engine 144, demo unit 30, demo browser 159, website 114 (tablet width added
+for the enquiry checks), demo enquiry 21, negative paths 15, checkpoint e2e 100, outbox 21 + 1 NOT RUN (live Teams/Outlook).
+No route changed; 156 operations.
+
+Docs: ADR-0012, API_GUIDE, ERRORS, DEFECT_REGISTER (D-38 added; D-35..D-38 fixed with tests). LEAD_CAPTURE_TALLY gains the owner's
+pre-rollout checklist and the hidden `source` field plan (owner's choice; not applied to the live form; task #337).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx
+```

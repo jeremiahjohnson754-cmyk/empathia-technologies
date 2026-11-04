@@ -568,3 +568,157 @@ Then run the build and the integration and security suites (all of them), and re
 - the suite counts.
 ````
 
+## Turn 519 — Agent: "Parity, ordering and open defects"
+
+- subagent_type: (not specified)
+- isolation: (not specified; main tree)
+- run_in_background: True
+
+### Prompt (verbatim)
+
+````
+You are fixing the last release-blocking defects of the Empathia restoration checkpoint. The repo is `/home/claude/empathia-technologies`, branch `restoration/sprint-0-1`, tip `84eb9c3`, with a clean tree apart from regenerated evidence. Work directly in this tree; no other agent is running. Do not commit; I review and commit.
+
+## Context
+On this branch the API and the investor demo share `packages/commissioning-engine`:
+- `substitution.ts`: `reopenedBySubstitution`, `reverificationBlockers`;
+- `installations.ts`: the replacement plan;
+- `lifecycle.ts`: `lifecycleBlockers`, including the acceptance count that excludes superseded results.
+
+The owner's rule: "API and demo workflows reflect the same domain rules and refusal reasons", with "no duplicate or divergent logic".
+
+Supporting material:
+- the checkpoint e2e: `tests/e2e/checkpoint-room-lifecycle.e2e.mjs` (97 checks; evidence in `tests/evidence/checkpoint/`);
+- the demo: `apps/demo/src/build/store.ts`, `BuildRoom.tsx`, `impact.ts`, `ImpactPanel.tsx`;
+- demo tests: `apps/demo/test/*.test.mjs` and `tests/browser/demo.test.mjs` (C-01…C-36);
+- the API: `services/enterprise-api/src/domain/rooms.ts` (`recommissionBlockers`, `approveRevision`, `recommissionImpact`) and `reverification.ts`;
+- the negative-path suite: `tests/security/recommissioning-negative.test.mjs`;
+- `docs/adr/ADR-0012-positions-physical-assets-installations.md`;
+- `docs/qa/DEFECT_REGISTER.md`, D-19…D-37.
+
+## Fix these, in this order
+
+### D-38 (P1, new): a design-binding rule exists only in the API
+- **The API's rule.** `recommissionBlockers` in `rooms.ts` refuses re-acceptance while the approved revision no longer describes the room after a model substitution: "the design changed while the room is recommissioned (…) and the approved revision N no longer describes it: revision M needs approval (room.design.approve, not its author) — the re-acceptance binds the approved revision".
+- **The demo's gap.** The demo (`store.ts` `transition` → `lifecycleConditions`) has no such rule. After a model substitution or a category swap during recommissioning, it re-accepts and publishes baseline v2 bound to the old approved revision, which no longer describes the room.
+- **The fix.**
+  1. Move the rule into the shared engine, for example a design-binding fact in the lifecycle gate facts: whether the approved revision describes the current design, plus the substitutions.
+  2. Make the API and the demo both use it. Produce the sentence once, in the engine, with the same wording.
+  3. Give the demo the matching action: during COMMISSIONING, save the changed design as a new revision, and let someone other than its author approve that revision. This mirrors the API's `POST /v1/rooms/:room/revisions/:rev/approve`, with the same refusal for the author and for a persona without `room.design.approve`.
+  4. Bind baseline v2 to the newly approved revision.
+- **Which changes need re-approval.** A like-for-like unit replacement (same model) does NOT need design re-approval, in either the API or the demo: the design is unchanged. A model substitution or a category swap does.
+- **Tests.**
+  - Update the demo browser and unit tests that re-accept after a model or category change (for example C-19b…C-19e) so they perform the design re-approval step. Add checks that re-acceptance is refused without it, with the engine's sentence.
+  - Do not delete or loosen any existing assertion. Where an existing assertion's expected flow changes, say exactly which one and why.
+  - Extend the API/demo parity unit test so it covers this sentence too.
+
+### Blocker ordering (owner: "correctness of acceptance-blocker ordering")
+**Current state.** The API now lists open issues, then the reopened-tests sentence, then the design sentence. Before 76c48f0 it listed the design sentence before the reopened tests.
+
+**The rule to implement.** Define one documented order in the shared engine, used by both the API and the demo: the order in which the work must be done and by whom.
+1. The design binding (approve the revision that the re-acceptance binds).
+2. Open issues (closed with their retests).
+3. The reopened tests (re-run and verified independently, with the count when they are the only gap).
+4. The general acceptance count, when other results are missing.
+
+**Where to record it.** Document it in ADR-0012, or in a short section of the commissioning docs, with the reason. Assert the exact order in the checkpoint e2e (steps 15 and 17), and in a demo check with the same wording.
+
+**Byte-identical rule.** Keep each reopened test's entry byte-identical (testId, reasons, assets, personas, rerun, result). Copy `tests/evidence/checkpoint/15-verification-requirements.json` to a scratch folder before you start, then diff the normalised entries at the end. Only the ORDER of the blocker sentences may change.
+
+### D-35 (P3): the Idempotency-Key check is not atomic with the handler
+Two concurrent requests with the same key can both execute.
+- Find the idempotency mechanism (`app.idempotency_key`, migration 0004, and its use in the routes or server).
+- Reserve the key inside the handler's transaction (or with an insert-first reservation), so that a concurrent duplicate waits and then replays the stored response, or gets 409. Exactly one execution, either way.
+- Add a regression test with two concurrent requests carrying the same key on a mutating route (for example a replacement or a result record): exactly one effect.
+
+### D-36 (P3): checkpoint e2e evidence is listed in a nondeterministic order across runs
+Make the e2e's evidence output deterministic: sort by a stable key where the order is not meaningful. Do not reorder data whose order is meaningful, such as chronology or blocker order. Prove it by running the e2e twice and diffing the evidence after normalising timestamps and UUIDs.
+
+### D-37 (P3): two outbox ordering probes compare `aggregate_rev`
+In `tests/integration/outbox.test.mjs`, the "three concurrent workers" ordering probe and the stub sink's `earlierUndelivered` check compare `aggregate_rev`. Delivery is now ordered by `aggregate_seq`, the database-assigned commit order. Make them compare `aggregate_seq`, which proves commit order directly. Keep their existing expectations, adding to them rather than removing.
+
+## Rules (the owner's)
+- Do not weaken, skip or delete tests. Report NOT RUN honestly; never as PASS. No fabricated results.
+- Synthetic data only.
+- Never use `pkill -f` or `pgrep -f`.
+- Keep the forced-failure hooks gated: NODE_ENV=test, plus EMPATHIA_FAILPOINTS, plus a test database name.
+- If you change routes, regenerate `docs/api/openapi.json`, `packages/api-client/src/generated.ts` and `node scripts/docs/api-inventory.mjs`, and update the operation count in `packages/api-client/test/client.test.ts` (156 now). Prefer no new routes.
+- The demo's design re-approval is a client-side action in the synthetic store, not an API route.
+- At the end, run `node scripts/build.mjs --studio` and the full `node scripts/test.mjs --browser --studio`. The film decode is the only allowed NOT_RUN. Fix what you broke.
+- Then update `docs/qa/DEFECT_REGISTER.md`:
+  - add D-38;
+  - for D-35, D-36, D-37 and D-38, set the state, the fix (by file) and the regression test name;
+  - leave D-32, D-33 and D-34 open, as they need the owner or a deployment.
+
+## Report back (concise)
+- Files changed.
+- For each defect: root cause, fix, regression test, and the result before and after.
+- The documented blocker order and where it is asserted.
+- The byte-identical proof.
+- Any existing assertion whose flow you had to change, and why.
+- The full matrix counts per suite group.
+````
+
+## Turn 540 — SendMessage to agent `a24774711c6ea06fc` (the "Parity, ordering and open defects" agent; summary: "D-39: align demo design-edit rules with API")
+
+````
+Your work is committed as a4957d5. The tablet and Tally edits you saw were mine. One more parity defect is in scope now; please take it as D-39 with the same rules: no commit, write the tests first, never weaken an assertion, report NOT RUN honestly.
+
+**D-39 (P2): the demo allows design edits that the API refuses.** You found one case: design changes during first commissioning, before any baseline. There is a second: adding or removing devices during recommissioning. In the API:
+- `POST`/`PATCH` of devices is PLANNED-only;
+- an accepted room under recommissioning accepts only a model substitution (through the installation transaction) and a like-for-like unit replacement;
+- anything else is refused with the API's sentence ("… is being recommissioned: only a model substitution is accepted …", and its PLANNED-only refusal).
+
+The demo instead lets a device be added (lighting, a ceiling microphone) or removed during recommissioning or first commissioning, with re-approval.
+
+**What to do:**
+1. **Read the API's actual rules first.** Do not assume my summary: check `rooms.ts` device create, update and delete, and the lifecycle states that permit them.
+2. **Put the edit-permission rule in the shared engine,** as a function of (lifecycle, recommissioning?, change kind) that returns the refusal sentence or null. Make the API and the demo both use it, with the same sentences. The API's wording should stay byte-identical where it already exists.
+3. **Demo behaviour.** Edits that the rule refuses are refused with that sentence and are recorded in the demo's ledger as DENIED, the same as other refusals. The UI disables or explains the control rather than offering it.
+4. **Existing demo tests that relied on the looser rule.** For example: B-15f…k (lighting added during recommissioning), C-11 if it runs outside PLANNED, and any cascade test that adds or removes during commissioning.
+   - Change the scenario so the same coverage still runs where the rule allows it. For example, add the microphone while PLANNED, or as a model substitution.
+   - Add explicit refusal checks for the now-refused edits.
+   - Tell me exactly which assertions changed meaning and why. Delete no coverage.
+5. **The 403 wording for revision approval.** The API's 403 comes from the central route check and quotes the route summary, while the demo says "may not approve a design revision". Make the authorization refusal for this action read identically in the API and the demo, preferring the engine's sentence. If changing the central route check is too broad, the demo can quote the API's exact sentence; tell me which you chose.
+6. **Parity tests.** Extend the PARITY test, the API's negative-path suite (one refused add or remove during recommissioning, and one during first commissioning) and the demo tests.
+7. **Clean up.** Drop the scratch database `empathia_test_d35_probe`.
+8. **Finish.** Run `node scripts/build.mjs --studio` and the full `node scripts/test.mjs --browser --studio`, then update `DEFECT_REGISTER.md` (D-39: root cause, fix by file, tests, state).
+
+**Report:**
+- the files;
+- the rule as implemented, as a table of state × change → allowed or the sentence;
+- the changed assertions;
+- the parity and negative test names;
+- the matrix counts per group.
+````
+
+## Turn 540 — SendMessage to agent `a24774711c6ea06fc` (summary: "Add journey screenshot capture after D-39")
+
+````
+One addition after D-39 and your full matrix run: capture the owner's Living Room journey as screenshots for the investor-facing evidence.
+
+Write a small script, `scripts/evidence/journey-screens.mjs`, that drives the built demo with Playwright. Reuse the flows from `tests/browser/demo.test.mjs`, but do not change that test. Use the demo's own server, as the tests do.
+
+**Viewports and file names.** Run it at 1440×900 and at 390×844, with reduced motion. Save numbered PNGs to `/tmp/handoff/screens/journey/<width>/NN-<stage>.png`.
+
+**The stages, in order:**
+1. Lite: the room designed in Build a Room.
+2. The design approved (revision preserved).
+3. The commissioning plan with why each test applies.
+4. Results independently verified, and baseline v1 accepted.
+5. Recommissioning started.
+6. The physical camera replaced: the Impact panel before and after, and the register showing the position kept and the unit changed.
+7. The reopened tests with their reasons.
+8. Assurance: drift against baseline v1.
+9. Search Party: the dependency change.
+10. Pro: the measures that changed, and those that did not.
+11. Design re-approval (for a model substitution, if your flow has one), then the re-run, independent verification, and re-acceptance as baseline v2 with v1 SUPERSEDED.
+12. The Room Story with the whole sequence.
+
+**Captions.** Also write `/tmp/handoff/screens/journey/INDEX.md`: one line per screenshot, saying what it shows and which engine rule produced it. Say plainly that the demonstration runs on synthetic data.
+
+Do not commit the PNGs (`tests/evidence/**/*.png` is git-ignored, and these live in `/tmp/handoff`). Do commit-ready the script itself.
+
+Report the file list. If a stage can't be reached in the demo, say so plainly rather than staging it.
+````
+
