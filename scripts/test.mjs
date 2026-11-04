@@ -44,6 +44,7 @@ for (const p of ['packages/commissioning-engine', 'packages/event-contracts', 'p
   suite(`unit: ${p}`, 'unit', node, ['--test', `${p}/dist/test/**/*.test.js`], tap, fs.existsSync(dir) ? {} : { skip: 'not built (node scripts/build.mjs)' });
 }
 suite('unit: packages/design-tokens (contrast both themes, D7/D37/D38)', 'unit', node, ['--test', 'packages/design-tokens/test/*.test.mjs'], tap);
+suite('unit: packages/ui (canonical products, ui.css on the tokens)', 'unit', node, ['--test', 'packages/ui/test/*.test.mjs'], tap);
 suite('unit: ml research prototype (python)', 'unit', 'python3', ['-I', '-m', 'unittest', 'discover', '-s', 'ml/tests'], unittest, fs.existsSync(path.join(root, 'ml/datasets/synthetic_first_attempt_v1.csv')) ? {} : { skip: 'dataset not generated (node ml/datasets/generate_synthetic.mjs; python3 -I ml/training/train.py)' });
 suite('service: intelligence-python', 'integration', 'python3', ['-I', '-m', 'unittest', 'discover', '-s', 'services/intelligence-python/tests'], unittest);
 const db = fs.existsSync(path.join(root, '.local/pg/credentials.json'));

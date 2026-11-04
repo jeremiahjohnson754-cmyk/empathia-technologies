@@ -6,8 +6,8 @@
   "license": "UNLICENSED",
   "description": "Empathia reusable React components and their CSS (built on @empathia/design-tokens). Consumed from source by the apps' bundlers.",
   "main": "./src/index.ts",
-  "exports": { ".": "./src/index.ts", "./ui.css": "./src/ui.css" },
-  "scripts": { "typecheck": "tsc -p tsconfig.json --noEmit" },
+  "exports": { ".": "./src/index.ts", "./ui.css": "./src/ui.css", "./products": "./src/products.ts", "./theme": "./src/theme.tsx" },
+  "scripts": { "typecheck": "tsc -p tsconfig.json --noEmit", "test": "node --test \"test/*.test.mjs\"" },
   "peerDependencies": { "react": "^19.2.0" },
   "dependencies": { "@empathia/design-tokens": "workspace:*" }
 }
