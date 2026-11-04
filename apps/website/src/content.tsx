@@ -78,14 +78,16 @@ export function buildPages(ctx: SiteContext): Page[] {
   const productPages: Page[] = PRODUCTS.map((p) => ({ path: `/products/${p.slug}`, title: `${p.name} — Empathia Technologies`, description: `${p.name}: ${p.purpose}. ${p.body.split('. ')[0]}.`, body: (
     <div data-p={p.id}>
       <section className="hero hero--product hero--split"><div className="hero__band" aria-hidden="true" /><div className="wrap hero__grid">
-        <div className="hero__copy"><p className="label"><span className="dot" aria-hidden="true" />Product {String(PRODUCTS.indexOf(p) + 1).padStart(2, '0')} of 9</p><h1>{p.name}</h1><p className="lede">{p.body}</p>
+        <div className="hero__copy"><p className="label"><span className="dot" aria-hidden="true" />Product {String(PRODUCTS.indexOf(p) + 1).padStart(2, '0')} of 9</p><h1>{p.name}</h1><p className="hero__sub">{p.purpose}</p><p className="lede">{p.body}</p>
           <Actions>{p.demo ? <a className="btn btn--primary" href={demo(p.demo.href)}>{p.demo.label}</a> : null}<a className="btn" href="/request-demo">Request a demonstration</a>{p.id === 'lite' ? <a className="btn btn--quiet" href="#scouter">Scouter, inside Lite</a> : null}</Actions>
           <p className="status-line"><Tag s={DEMO_STATE[p.demoState].s}>{DEMO_STATE[p.demoState].text}</Tag></p></div>
-        <div className="hero__aside"><Shot p={p} cap={ctx.captures[p.id]} eager /></div>
+        <div className="hero__aside"><Shot p={p} cap={ctx.captures[p.id]} eager cta={p.demo ? { href: demo(p.demo.href), label: 'Open the interactive demonstration' } : undefined} />
+          <ul className="claims" aria-label="What the demonstration shows, with its evidence label">{p.shows.map((t, i) => <li key={t}><Tag s={p.showsAs[i] || 'declared'} /><span>{t}</span></li>)}</ul></div>
       </div></section>
       {p.film && film(p.film) ? <Section title="Watch it">{film(p.film)}</Section> : null}
       <section className="section"><div className="wrap"><div className="facts">
-        <div className="facts__shows"><p className="eyebrow">In the public demonstration</p><h2>What the demonstration shows</h2><ul className="ticks">{p.shows.map((s) => <li key={s}>{s}</li>)}</ul></div>
+        <div className="facts__shows"><p className="eyebrow">Try it</p><h2>Open it in the demonstration</h2><p>{DEMO_STATE[p.demoState].text}, on synthetic data in your browser. Every value on its screens carries its evidence label; nothing is connected to a live system.</p>
+          <Actions>{p.demo ? <a className="btn btn--primary" href={demo(p.demo.href)}>{p.demo.label}</a> : null}<a className="btn" href="/request-demo">Request a guided demonstration</a></Actions></div>
         <div className="facts__limits"><p className="eyebrow">Limits</p><h2>Limits, stated</h2><p>{p.limits}</p></div>
       </div></div></section>
       {p.id === 'lite' ? <section className="section" id="scouter" aria-labelledby="scouter-h"><div className="wrap"><div className="scouter">
@@ -255,12 +257,12 @@ export function notFoundPage(): Page {
   return { path: '/404', title: 'Page not found — Empathia Technologies', description: 'This address is not part of the Empathia Technologies website.', body: (
     <section className="hero"><div className="wrap lost">
       <div>
-        <p className="label">Not found</p>
+        <p className="label">Error 404 · Page not found</p>
         <h1>This address isn’t part of the site.</h1>
         <p className="lede">You asked for <code data-asked>this address</code>. It may be mistyped, or the page may have moved.</p>
         <p className="lost__moved" data-moved hidden />
         <Actions><a className="btn btn--primary btn--lg" href="/">Back to the home page</a><a className="btn btn--lg" href="/products">All nine products</a></Actions>
-        <ul className="lost__dest" aria-label="Main destinations">{[['/platform', 'Platform'], ['/how-it-works', 'How it works'], ['/founder', 'Founder'], ['/request-demo', 'Request a demonstration'], ['/contact', 'Contact']].map(([h, t]) => <li key={h}><a href={h}>{t}</a></li>)}</ul>
+        <ul className="lost__dest" aria-label="Main destinations">{[['/', 'Home', 'Every room, every device, every decision, with its evidence.'], ['/platform', 'Platform', 'One record and one governed lifecycle, read by every product.'], ['/products', 'Products', 'The nine products, in lifecycle order.'], ['/how-it-works', 'How it works', 'From request to accepted baseline.'], ['/founder', 'Founder', 'The person and the thinking behind the company.'], ['/request-demo', 'Request a demonstration', 'A guided walk through the scenarios on synthetic data.']].map(([h, t, d]) => <li key={h}><a href={h}><b>{t}</b><span>{d}</span><i aria-hidden="true">→</i></a></li>)}</ul>
       </div>
       <img className="lost__owl" src="/brand/owl.svg" width={300} height={300} alt="" data-owl />
     </div></section>

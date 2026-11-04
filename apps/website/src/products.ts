@@ -12,7 +12,10 @@ export const slugOf = (id: string) => (id === 'field' ? 'field-intelligence' : i
 
 export type DemoState = 'native' | 'partial' | 'not-in-demo';
 export interface Product extends CanonProduct {
-  slug: string; body: string; shows: string[]; limits: string; demoState: DemoState; film?: string;
+  slug: string; body: string; shows: string[];
+  /** the evidence label of each line of shows, in order (3 Nov product pages: claims labelled as the product labels them). Everything
+   *  in the public demonstration is synthetic, so no line is ever labelled observed or verified here. */
+  showsAs: ('declared' | 'modeled' | 'simulated')[]; limits: string; demoState: DemoState; film?: string;
   demo?: { href: string; label: string };
   /** a dark capture of the investor demonstration (D43), built by apps/website/scripts/captures.mjs; absent until captured */
   capture?: string;
@@ -24,49 +27,49 @@ type Story = Omit<Product, keyof CanonProduct | 'slug'>;
 const STORY: Record<string, Story> = {
   'mission-control': {
     body: 'Mission Control counts live records at every station of the lifecycle, from the first request to the last service visit, and says what changed, what matters and what needs action. Every count opens the records behind it.',
-    shows: ['The lifecycle with every station counted', 'What changed since you last looked, and why it matters', 'The ledger behind every state'],
+    showsAs: ['simulated', 'declared', 'simulated'], shows: ['The lifecycle with every station counted', 'What changed since you last looked, and why it matters', 'The ledger behind every state'],
     limits: 'The counts come from the synthetic demonstration estate; nothing is connected to a live system.', demoState: 'native', demo: { href: '#/v25', label: 'Open Mission Control' },
     shotAlt: 'Mission Control in the investor demonstration: the campus drawn as buildings, each with its health and open issues computed from its rooms’ records.',
   },
   lite: {
     body: 'A conceptual room model from an archetype, dimensions, plans and photos. Geometry carries its provenance: extracted, inferred, simulated, field-measured or engineer-approved, and never promoted silently. Coverage is predicted and labelled modeled. Scouter works inside Lite: equipment proposals from comparable rooms, reviewed by the engineer before anything is adopted.',
-    shows: ['Drawing a room from an archetype and its dimensions', 'Seats, displays, cameras and microphones placed in plan and 3D', 'Modeled coverage with the assumptions stated', 'Scouter: equipment proposals from comparable rooms, with their limits'],
+    showsAs: ['modeled', 'modeled', 'modeled', 'declared'], shows: ['Drawing a room from an archetype and its dimensions', 'Seats, displays, cameras and microphones placed in plan and 3D', 'Modeled coverage with the assumptions stated', 'Scouter: equipment proposals from comparable rooms, with their limits'],
     limits: 'Predictions are modeled values; a calibrated instrument measures. Photo and plan extraction are not part of the public demonstration.', demoState: 'native', demo: { href: '#/v25/build', label: 'Open Build a Room' },
   },
   pro: {
     body: 'Executive intelligence that shows its work: each measure with its numerator, denominator, window, coverage and freshness, and missing data shown as missing, never as success.',
-    shows: ['Executive measures with their denominators', 'Portfolio and service performance', 'Coverage and freshness on every figure'],
+    showsAs: ['simulated', 'simulated', 'declared'], shows: ['Executive measures with their denominators', 'Portfolio and service performance', 'Coverage and freshness on every figure'],
     limits: 'The Pro command centre, operations hub and standards pages are still being migrated in the public demonstration.', demoState: 'partial', demo: { href: '#/v25/exec', label: 'Open the executive measures' },
   },
   'search-party': {
     body: 'One search across people, rooms, devices, projects, standards and documents, with the relationships between them: who owns this, who covers it, what depends on it. Each relationship carries its source and its freshness.',
-    shows: ['“If this switch fails, what is affected?”', 'Recorded relationships with provenance; unknown links shown as unknown', 'A list first on phones, with the graph a tap away'],
+    showsAs: ['simulated', 'declared', 'simulated'], shows: ['“If this switch fails, what is affected?”', 'Recorded relationships with provenance; unknown links shown as unknown', 'A list first on phones, with the graph a tap away'],
     limits: 'Relationships are recorded in the synthetic estate; no network discovery runs.', demoState: 'native', demo: { href: '#/search', label: 'Open Search Party' },
   },
   servicehands: {
     body: 'Issues become work orders, closed with field evidence and resolved only by a verified retest. A technician sees the sites assigned and nothing else; the context of the room travels with the job.',
-    shows: ['The service context: the room, its dependencies, its baseline', 'Hard gates before dispatch; preferences kept separate', 'Corrective action, retest and closure'],
+    showsAs: ['simulated', 'declared', 'simulated'], shows: ['The service context: the room, its dependencies, its baseline', 'Hard gates before dispatch; preferences kept separate', 'Corrective action, retest and closure'],
     limits: 'Dispatch, scheduling and notifications are demonstrated on synthetic people and sites.', demoState: 'native', demo: { href: '#/servicehands', label: 'Open ServiceHands' },
     shotAlt: 'ServiceHands in the investor demonstration: open jobs, jobs waiting for dispatch or verification, and how jobs are routed, counted from the service records.',
   },
   commissioning: {
     body: 'An adaptive test plan compiled from the project type, the room, its devices, the approved design and the standard versions, with the reason for every test. Failed tests open deficiencies; nothing is accepted on the word of the person who did the work. An accepted result becomes the room’s baseline, and drift is read against it.',
-    shows: ['The plan, with why each test applies and why others do not', 'A blocked approval that names every unresolved item', 'Retest, independent verification, acceptance and the baseline that follows'],
+    showsAs: ['declared', 'simulated', 'simulated'], shows: ['The plan, with why each test applies and why others do not', 'A blocked approval that names every unresolved item', 'Retest, independent verification, acceptance and the baseline that follows'],
     limits: 'Test results in the demonstration are synthetic; no instrument is connected.', demoState: 'native', film: 'F02P', demo: { href: '#/v25/build?tab=checks', label: 'Open the commissioning plan' },
   },
   apex: {
     body: 'APEX reads a room against its accepted baseline and ranks the hypotheses that could explain what changed, each with the evidence that supports it and the reason it is not yet proven. Actions stay in bounded tiers; a suggestion never becomes an action by itself.',
-    shows: ['Ranked hypotheses with cited evidence', 'Why each hypothesis is not yet proven', 'Bounded action tiers, with a person deciding'],
+    showsAs: ['simulated', 'modeled', 'declared'], shows: ['Ranked hypotheses with cited evidence', 'Why each hypothesis is not yet proven', 'Bounded action tiers, with a person deciding'],
     limits: 'APEX runs on simulated evidence in the public demonstration.', demoState: 'partial', demo: { href: '#/v25/apex', label: 'Open APEX' },
   },
   field: {
     body: 'Every observation is labelled declared, observed, verified, modeled, unknown or unavailable. A device that answers is not a room that works; the plan keeps every pair untested until evidence arrives.',
-    shows: ['Collector facts as declared, with their limits', 'Plan versus executed, with nothing filled in', 'An optional physical-validation flow, simulated'],
+    showsAs: ['declared', 'simulated', 'simulated'], shows: ['Collector facts as declared, with their limits', 'Plan versus executed, with nothing filled in', 'An optional physical-validation flow, simulated'],
     limits: 'No collector is connected in the public demonstration; physical validation is simulated.', demoState: 'native', film: 'IE', demo: { href: '#/v25/fi', label: 'Open Field Intelligence' },
   },
   learn: {
     body: 'A case needs permission, de-identification, a subject-matter review and approval before it teaches anyone. Lessons, labs and the SIGNAL story link to competencies, and training never grants authority.',
-    shows: ['Reviewed cases linked to lessons and competencies', 'SIGNAL lessons, labs and drills'],
+    showsAs: ['declared', 'declared'], shows: ['Reviewed cases linked to lessons and competencies', 'SIGNAL lessons, labs and drills'],
     limits: 'The full SIGNAL corpus is not yet produced as playable media, and narration is not yet cleared for public use.', demoState: 'partial', demo: { href: '#/v25/learn', label: 'Open Learn' },
   },
 };

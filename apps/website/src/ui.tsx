@@ -110,10 +110,11 @@ export const Spectrum = () => <div className="spectrum" aria-hidden="true">{CANO
 
 export interface Capture { w: number; h: number; route: string }
 /** A dark capture of the investor demonstration (D43), with its provenance stated. */
-export const Shot = ({ p, cap, eager, file, alt }: { p: Product; cap?: Capture; eager?: boolean; file?: string; alt?: string }) => { const f = file || p.id; return cap ? (
+export const Shot = ({ p, cap, eager, file, alt, cta }: { p: Product; cap?: Capture; eager?: boolean; file?: string; alt?: string; cta?: { href: string; label: string } }) => { const f = file || p.id; return cap ? (
   <figure className="shot" data-p={p.id}>
     <div className="shot__frame">
       <img src={`/media/product/${f}-1280.webp`} srcSet={`/media/product/${f}-640.webp 640w, /media/product/${f}-1280.webp 1280w`} sizes="(max-width: 1100px) 92vw, 620px" width={cap.w} height={cap.h} loading={eager ? 'eager' : 'lazy'} decoding="async" alt={alt || p.shotAlt || `${p.name} in the investor demonstration: ${p.purpose.charAt(0).toLowerCase() + p.purpose.slice(1)}.`} />
+    <span className="shot__badge" aria-hidden="true">Synthetic demonstration data</span>{cta ? <a className="shot__cta btn btn--primary" href={cta.href}>{cta.label}<span aria-hidden="true"> →</span></a> : null}
     </div>
     <figcaption><b>Synthetic demonstration data</b><span>Captured from the investor demonstration</span></figcaption>
   </figure>
