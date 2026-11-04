@@ -65,7 +65,7 @@ export default function Landing({ role }: PageProps) {
     <div className="lnd">
       <section className="hero lnd__hero">
         <div className="lnd__top"><div>
-        <p className="kicker">Investor demonstration · release in migration</p>
+        <p className="kicker">Investor demonstration · </p>
         <h1>Every state here has a guard, an actor and an event behind it.</h1>
         <p className="lead">Declared is not verified; modeled is not measured — and the product says so itself. Three ways in:</p>
         </div>
@@ -107,12 +107,12 @@ export default function Landing({ role }: PageProps) {
       <WorkWith />
 
       <section className="status lnd__disc">
-        <h2>Disclosures and migration status</h2>
+        <h2>Disclosures and coverage</h2>
         <ul className="lnd__dl">
           <li>Every person, organisation, room, device, figure and approval is synthetic; no customer data is present.</li>
           <li>Roles, personas and permissions are a front-end demonstration of a policy, never production security.</li>
           <li>No device, network or acoustic measurement is taken by this page; every health score is modeled from the records.</li>
-          <li>This demonstration is being rebuilt as modular pages from the Living Campus V2.5.3 source, one area at a time. {AREAS.filter((a) => NATIVE.has(a.key)).length} of {AREAS.length} addresses (86 areas and 19 V2.5 pages) are native today; the rest state their status when opened (see the parity ledger in the repository).</li>
+          <li>This demonstration is built as modular pages from the Living Campus V2.5.3 source. {AREAS.filter((a) => NATIVE.has(a.key)).length} of {AREAS.length} address areas land on a native page; <a href="#/parity">the map of every original address</a> is computed from the page registry, never typed.</li>
         </ul>
       </section>
     </div>

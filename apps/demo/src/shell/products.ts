@@ -1,5 +1,5 @@
 /**
- * The nine products in the canonical order (D37/D40), with the ids of the design tokens (--p-<id>). The shared list is being rebuilt in
+ * The nine products in the canonical order (D37/D40), with the ids of the design tokens (--p-<id>). The shared list is kept in
  * packages/ui/src/products.ts by the foundation slice; this file mirrors it for the demo shell until that lands, and must keep its order.
  */
 import type { ProductKey } from '../registry.types.js';

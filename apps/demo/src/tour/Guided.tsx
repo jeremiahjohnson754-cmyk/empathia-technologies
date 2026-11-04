@@ -36,12 +36,12 @@ export function GuidedPanel({ hash }: { hash: string }) {
   return (
     <aside ref={panel} tabIndex={-1} className={`tour guided${run.paused ? ' paused' : ''}`} aria-label={t.title} data-testid="guided"
       onKeyDown={(e) => { if ((e.target as HTMLElement).closest('audio, input, select, textarea')) return; if (e.key === 'ArrowRight' && !last) { e.preventDefault(); goto({ ...run, i: run.i + 1, paused: false }); } else if (e.key === 'ArrowLeft' && run.i > 0) { e.preventDefault(); goto({ ...run, i: run.i - 1, paused: false }); } else if (e.key === 'Escape') { e.preventDefault(); exit(); } }}>
-      <div className="tour__head"><span className="tour__k">{t.title} · stop {run.i + 1} of {t.stops.length}</span>{run.paused && <Tag tone="muted">paused</Tag>}{!native && <Tag tone="warn">page being rebuilt</Tag>}</div>
+      <div className="tour__head"><span className="tour__k">{t.title} · stop {run.i + 1} of {t.stops.length}</span>{run.paused && <Tag tone="muted">paused</Tag>}{!native && <Tag tone="warn">address without its own page</Tag>}</div>
       <p className="ui-visually-hidden" role="status" aria-live="polite">{`Stop ${run.i + 1} of ${t.stops.length}: ${s.title}${run.paused ? ', paused' : ''}`}</p>
       {!run.paused && <>
         <h2 className="tour__title">{s.title}</h2>
         <p className="tour__text">{s.text}</p>
-        {!native && <p className="ui-meta">This stop’s page is still being rebuilt in this demonstration; the address shows its status instead of pretending.</p>}
+        {!native && <p className="ui-meta">This stop’s address has no page of its own; it lands on the address map instead of pretending.</p>}
         {take && <Narration id={s.narration!} />}
       </>}
       <div className="tour__acts">
