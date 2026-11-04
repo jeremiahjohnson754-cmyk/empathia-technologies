@@ -1,10 +1,17 @@
 {
   "name": "@empathia/design-tokens",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "license": "UNLICENSED",
-  "description": "Empathia design tokens (Aurora dark, from the demonstrator; Aurora Daylight light). Source: tokens.json.",
-  "exports": { ".": { "types": "./dist/tokens.d.ts", "default": "./dist/tokens.js" }, "./tokens.css": "./dist/tokens.css", "./tokens.json": "./tokens.json" },
-  "scripts": { "build": "node build-tokens.mjs" }
+  "description": "Empathia design tokens v2: Graphite (dark) and Paper (light), teal as the interaction accent only, the nine product colours, self-hosted Inter, the theme-init script and the brand marks. Source: tokens.json, fonts/, brand/.",
+  "exports": {
+    ".": { "types": "./dist/tokens.d.ts", "default": "./dist/tokens.js" },
+    "./tokens.css": "./dist/tokens.css",
+    "./fonts.css": "./dist/fonts.css",
+    "./fonts/*": "./dist/fonts/*",
+    "./theme-init.js": "./dist/theme-init.js",
+    "./tokens.json": "./tokens.json"
+  },
+  "scripts": { "build": "node build-tokens.mjs", "fonts": "node make-fonts.mjs", "test": "node --test \"test/*.test.mjs\"" }
 }
