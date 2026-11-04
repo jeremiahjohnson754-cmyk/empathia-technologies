@@ -41,7 +41,7 @@ export const ROLES: Readonly<Record<RoleKey, RoleInfo>> = Object.fromEntries([
 
 // ------------------------------------------------------------------ the Document Reviewer (not in V2.5.3)
 /** ADR-0005 added an independent reviewer; V2.5.3 has no such role, so its grants are listed here, explicitly and narrowly. */
-const QA_AREAS = new Set(['home', 'investor', 'search', 'commissioning', 'commissioning.room', 'ledger', 'assurance.history', 'decisions', 'lessons', 'gate']);
+const QA_AREAS = new Set(['home', 'investor', 'v25.build', 'search', 'commissioning', 'commissioning.room', 'ledger', 'assurance.history', 'decisions', 'lessons', 'gate']);
 const QA_ACTIONS = new Set(['review.decide', 'cx.accept', 'decision.record', 'favourite']);
 const QA_FIELDS = new Set(['commissioning.record', 'assurance.evidence', 'history']);
 

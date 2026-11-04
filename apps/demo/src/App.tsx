@@ -43,6 +43,7 @@ export function App() {
   const [veil, setVeil] = useState<VeilShow | null>(null);
   const [said, setSaid] = useState('');
   const first = useRef(true);
+  const pending = useRef('');   // a role switch's announcement, said instead of the heading by the focus effect that follows it
   useEffect(() => {
     if (!location.hash) history.replaceState(null, '', START);
     const h = () => setHash(location.hash || START); addEventListener('hashchange', h); return () => removeEventListener('hashchange', h);
@@ -58,13 +59,13 @@ export function App() {
     if (!lands && !o.tour) { const to = homeOf(r); const t = decide(r, to); lands = `lands on ${t.title}`; location.hash = to; }
     setRoleState(r);
     if (!o.tour) setVeil((v) => ({ role: r, lands: lands || ROLES[r].home, n: (v?.n || 0) + 1 }));
-    setSaid(`Now viewing as ${ROLES[r].label}${lands ? `; ${lands}` : ''}. Viewing as a role grants nothing.`);
+    pending.current = `Now viewing as ${ROLES[r].label}${lands ? `; ${lands}` : ''}. Viewing as a role grants nothing.`; setSaid(pending.current);
   }, [role, setRoleState]);
 
   // route focus: after an in-app navigation, focus the page's heading and announce it (not on the first load)
   useEffect(() => {
     if (first.current) { first.current = false; return; }
-    const t = setTimeout(() => { const h1 = document.querySelector<HTMLElement>('main h1'); const m = document.getElementById('main'); if (h1) { if (!h1.hasAttribute('tabindex')) h1.setAttribute('tabindex', '-1'); h1.focus({ preventScroll: false }); } else m?.focus(); setSaid(h1?.textContent || d.title); }, 60);
+    const t = setTimeout(() => { const h1 = document.querySelector<HTMLElement>('main h1'); const m = document.getElementById('main'); if (h1) { if (!h1.hasAttribute('tabindex')) h1.setAttribute('tabindex', '-1'); h1.focus({ preventScroll: false }); } else m?.focus(); setSaid(pending.current || h1?.textContent || d.title); pending.current = ''; }, 60);
     return () => clearTimeout(t);
   }, [route, role]);   // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -102,7 +103,7 @@ function PageHost({ at, role, hash }: { at: Resolved; role: RoleKey; hash: strin
     at.page.load().then((m) => { if (!live) return; loaded.set(at.page.id, m.default); setC(() => m.default); }).catch((e: unknown) => { if (live) setErr(e instanceof Error ? e.message : String(e)); });
     return () => { live = false; };
   }, [at.page.id, n]);   // eslint-disable-line react-hooks/exhaustive-deps
-  if (err) return <section className="loadfail" role="alert"><h1 tabIndex={-1}>{at.page.title} did not load</h1><p>The page's code could not be fetched — the connection may have dropped. Nothing was changed.</p><Button kind="primary" onClick={() => setN(n + 1)}>Try again</Button></section>;
+  if (err) return <section className="loadfail" role="alert"><h1 tabIndex={-1}>{at.page.title} did not load</h1><p>The page's code could not be fetched — the connection may have dropped. Nothing was changed.</p><Button kind="primary" onClick={() => { if (n < 1) setN(n + 1); else location.reload(); }}>Try again</Button></section>;
   if (!C) return <Loading label={`Loading ${at.page.title}`} />;
   const props: PageProps = { role, hash, params: at.params, query: at.query, can: (id) => canDo(role, at, id), sees: (id) => canSee(role, at, id) };
   return <AccessProvider role={role} at={at}><PageBoundary title={at.page.title}><C {...props} /></PageBoundary></AccessProvider>;

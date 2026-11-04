@@ -52,7 +52,7 @@ body.has-dialog { overflow: hidden; }
 /* ---------------------------------------------------------------- header */
 .demo-shell .shell__bar { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: var(--sp-4); padding: 8px 16px; min-height: 60px;
   background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
-.shell__brand { display: inline-flex; align-items: center; gap: 10px; color: var(--tx); font-weight: 700; flex: none; min-height: 44px; }
+.shell__brand { display: inline-flex; align-items: center; justify-content: center; gap: 10px; color: var(--tx); font-weight: 700; flex: none; min-height: 44px; min-width: 44px; }
 .shell__emblem { width: 28px; height: 28px; display: block; }
 .shell__word { font-size: 16px; letter-spacing: -.01em; } .shell__edition { color: var(--tx3); font-weight: 500; font-size: var(--fs-sm); }
 .demo-shell .shell__bar { flex-wrap: wrap; row-gap: 0; }
