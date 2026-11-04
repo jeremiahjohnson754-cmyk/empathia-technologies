@@ -42,7 +42,7 @@ export function Shell({ page, pages, demoUrl, preview }: { page: Page; pages: Pa
       <main id="main">{page.body}</main>
       <footer className="foot"><div className="wrap foot__grid">
         <div>
-          <a className="lockup" href="/" aria-label="Empathia Technologies, home"><img src="/brand/emblem.svg" width={72} height={72} alt="" /><span><b>EMPATHIA</b><small>THE LIVING SYSTEM</small></span></a>
+          <a className="lockup" href="/" aria-label="Empathia Technologies, home"><img src="/brand/emblem.svg" width={72} height={72} loading="lazy" decoding="async" alt="" /><span><b>EMPATHIA</b><small>THE LIVING SYSTEM</small></span></a>
           <p>Empathia Technologies. Living Campus.</p><p>Demonstrations run on synthetic data; nothing shown is a live system.</p>
         </div>
         <div><h2>Products</h2><ul>{PRODUCTS.map((p) => <li key={p.id}><a href={`/products/${p.slug}`} data-p={p.id}><span className="dot" aria-hidden="true" />{p.name}</a></li>)}</ul></div>
