@@ -182,3 +182,88 @@ pre-rollout checklist and the hidden `source` field plan (owner's choice; not ap
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx
 ```
+
+### Turn 554 — commit `30f1b45` on restoration/sprint-0-1 (hash from the release report and later turns; preceded by `git restore ml/models/first_attempt_logreg_v1.json`)
+
+```
+D-39: one design-edit rule for the API and the demo (shared engine), identical refusal and 403 wording; journey screenshot script
+
+The engine's designEditRefusal (edits.ts) decides which design edits a room accepts in each lifecycle state, and the API (every device,
+connection and room-detail edit) and the demo (add, remove, swap, "Substitute the model") both run it. The API's wording is kept byte
+for byte:
+- PLANNED: every edit; a model change changes the planned model.
+- Any later state: "the design is <state>: changes need a change order".
+- Recommissioned: only a model substitution; a move gets the API's "only a model substitution is accepted" sentence.
+- Like-for-like unit replacement: field work from INSTALLED_UNVERIFIED through COMMISSIONING (planReplacement).
+
+The demo disables refused controls and shows the sentence; refused edits are in its ledger as DENIED and in the Room Story. The
+revision-approval 403 now reads the same in the API and the demo ("<role> may not approve a design revision (needs
+room.design.approve)") through an optional route `action`. OpenAPI unchanged, 156 operations.
+
+Tests: the scenarios that relied on the demo's looser rule now run where the rule allows them. The camera swap and the microphone
+addition happen while PLANNED; recommissioning uses a model substitution. Each now-refused edit has an explicit refusal check (engine
+"D-39 …", demo unit "D-39 …" plus the PARITY test over five states, story PLANNED-swap test, API RN-16, demo browser B-06b, B-15d,
+B-15l, C-37, C-10f). Every changed assertion is listed in the agent report kept with the checkpoint docs.
+Matrix 56 PASS, 0 FAIL, 1 NOT_RUN (film decode): unit 269, integration 67/68 (1 NOT RUN live Teams/Outlook), security 169, e2e 228,
+browser 317, deploy 204.
+
+scripts/evidence/journey-screens.mjs captures the Living Room journey at 1440 and 390 (output kept out of git, in the handoff).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx
+```
+
+### Turn 554 — commit `b5d152f` on restoration/sprint-0-1 (hash from the release report; preceded by `git restore ml/models/first_attempt_logreg_v1.json`)
+
+```
+Release-candidate UX fixes from the final review of the investor demo at 360/768/1440 (no redesign)
+
+Found by a sweep of both sites. The website had no findings in 48 page×width checks: no overflow, broken image, failed request,
+console error, clipped text, off-screen control or text under 12 px. The demo fixes:
+- Search Party: a result's name wrapped one letter per line on phones (and to 3 lines on desktop), because the type label and subtitle
+  columns took its width. The type label is now its own row, the name and id share a row, and the subtitle has a full row.
+  The search box and the type filter wrap.
+- APEX: "Incidents without a case" rows wrap their action below the card instead of squeezing it.
+- Product rail: "Investor start" leads (it was scrolled out of view on phones and tablets). "Pro" opens the native Pro page (KPI
+  passports, #/v25/exec) instead of a not-migrated page.
+- Boundary pages: sentence-case heading. The Commissioning and Assurance boundaries still say plainly that the area is not migrated as
+  its own page, and link to the native pages that run the same engine (Build a Room's plan; a Room Story; APEX).
+- Status tags, tab counters and tour dots: 11 px -> 12 px.
+- Build a Room: "Approve revision N" is no longer offered once revision N is the approved one.
+
+Regression: tests/browser/demo-ux.test.mjs UX-01..UX-07 at 360/768/1440 (24 checks). Run against the pre-fix build (30f1b45), 14 of
+them fail, including UX-01 at desktop; after the fix 24/24. demo.test 163/163, demo unit 32/32; site audit --strict P0 0, P1 0,
+P2 75, P3 526 (committed baseline 92/556).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx
+```
+
+### Turn 555 — commit `9fa4a55` on restoration/sprint-0-1 (preceded by `git restore ml/models/first_attempt_logreg_v1.json`)
+
+```
+Evidence from the final matrix on b5d152f (57 suites PASS, 0 FAIL, 1 NOT_RUN film decode; RELEASABLE platform) and the release-candidate report draft
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx
+```
+
+### Turn 556 — commit `ebcecb0` on restoration/sprint-0-1 (top of the release candidate; hash from the assistant's summary)
+
+```
+Release-candidate report completed: clean-copy CI rehearsal PASS on 9fa4a55 (57/0/1, no suite differs); journey and site screenshots recaptured on the final build; build status pointer
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx
+```
+Handoff: `git bundle create /tmp/handoff/empathia-restoration-sprint-0-1.bundle ea84222..restoration/sprint-0-1` + `.sha256` (checksum value not in transcript); rehearsed fetch into a clone reset to ea84222: fast-forward from main.
+
+### Turn 569 — commit (hash not shown) on phase2/living-universe
+
+```
+Media rights: ElevenLabs Starter plan evidence (non-personal facts only)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx
+```
+(The Slice 0 agent's commit `23f03e9` with docs/phase2/* is referenced in the turn-569 agent prompt as the base of the reference-room work; its message is not in the transcript.)
