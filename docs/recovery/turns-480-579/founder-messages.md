@@ -78,3 +78,25 @@ One thing I'd emphasize: Claude finding and correcting cross-tenant worker acces
 I would also recommend Tally for initial website inquiries, assuming its privacy and integration configuration checks out. You can use it as an interim lead-capture solution without paying for a full enterprise API deployment just to receive investor messages.
 Your immediate priority, though, is preserving the restoration branch and finishing the combined security, installation, and regression test gates.
 
+## Turn 506 — Sat 2026-10-31 20:18 (America/Chicago)
+
+Claude, the Empathia Technologies Tally inquiry form is now available.
+
+Official form URL:
+https://tally.so/r/VpG0Vy
+
+Please prepare the integration across both Empathia websites:
+
+1. Connect the corporate website's Contact, Request Demo, Investor Inquiry, Enterprise Pilot, and Partnership calls to action to this hosted Tally form.
+2. Add appropriate contact and partnership entry points within the investor demonstration.
+3. Open the hosted form externally rather than embedding it.
+4. Preserve Empathia's premium branding, visual continuity, responsiveness, and accessibility.
+5. Update the privacy policy to accurately disclose Tally as our form processor and remove any inaccurate claims that inquiries go exclusively to our own backend.
+6. Remove or replace the disabled contact form only after verifying the hosted link and its disclosure.
+7. Verify mobile and desktop navigation and confirm that no form submission falsely reports success.
+8. Keep all enterprise API and outbox security safeguards intact.
+
+Do not merge or deploy these changes until the current restoration release gates pass and I approve deployment.
+
+Provide a summary of the changes and any remaining privacy or configuration requirements.
+

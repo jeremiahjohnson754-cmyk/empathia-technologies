@@ -29,3 +29,15 @@ Tests
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx
 ```
+
+### Turn 504 — commit `ff0a6ad` on branch `restoration/outbox-on-457361d` (worktree .claude/worktrees/agent-a098690563b8344ea)
+
+Branch created from 457361d; `git cherry-pick 53c6324 4d1629b` produced d557bda and 3e9c0ac (the outbox agent's two commits). Then `git commit -qam`:
+
+```
+Regenerate the API inventory after rebasing the outbox work onto the checkpoint (151 operations)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx
+```
+(Docs regenerated via `node scripts/docs/api-inventory.mjs`.)

@@ -272,3 +272,299 @@ Put the API cases in a new `tests/security/recommissioning-negative.test.mjs`, r
 - Open questions or residual risks.
 ````
 
+## Turn 503 — SendMessage to agent `ad94918ad61635425` (summary: "Resume installation work after interrupt")
+
+(Not an Agent call; a message to the earlier "Installation records and negative paths" agent. The assistant then reported the agent could not be resumed and launched a restart, below.)
+
+````
+Resume the installation-records task: the user's interrupt stopped you at 19:32. You had not changed any files yet. The tree is clean at 457361d on restoration/sprint-0-1, and no database or processes are running; start the database again with `node scripts/db.mjs up`. Carry on from where your reading reached. Do not start over.
+
+The owner has since added these points. Fold them into the same brief.
+
+1. **Physical asset.** It is a separate identity: manufacturer, model and serial number when known, plus its own lifecycle history.
+   - Add a nullable `manufacturer` column. Seed and demo data may only use fictional or synthetic makers, never real OEM names. Unknown stays NULL.
+   - Historical device identity follows the physical unit, even when it moves to another position or room. The asset history must show that.
+2. **Installation record.** It carries the responsible actors, the reasons and the supporting evidence references for each installation and removal.
+3. **Migration.** It must be repeatable and safe: re-running it creates nothing twice. Test it independently, including a second run that changes nothing.
+4. **Existing accepted design and evidence history remain immutable.** Prove that baseline v1 and the accepted revision are byte-for-byte unchanged after a physical replacement and after a model substitution.
+5. **One reading of identity everywhere.** Lite, the Device Registry, Commissioning, Assurance, Search Party, Pro and Room Story must interpret the same identities and installation records consistently.
+   - In the API, the read endpoints those surfaces use expose position code + current asset code + identity_state.
+   - In the demo, the same three fields appear wherever a device is shown or linked. The asset registry and Room Story distinguish position history from asset history.
+   - Assurance must detect a genuine installation change (a different physical unit), not only a model change. Label it differently from a model drift.
+6. **Specific proofs the owner asked for.** Each needs an explicit test:
+   1. a replaced asset's old verification results cannot authorize acceptance of the new installation;
+   2. a new verifier independently verifies reopened tests;
+   3. the accepted baseline is unchanged byte for byte;
+   4. Assurance detects both model and installation changes;
+   5. positions stay stable while asset identities change;
+   6. the API and the demo use the same underlying rules: a test that runs the same shared function on the same input from both callers' adapters and gets equal output;
+   7. no stale or contradictory status is presented as verified truth.
+7. **Use real API calls and real DB transactions for the integration checks.** Never write directly to tables to manufacture a successful state. Direct SQL is allowed only to prove that a constraint refuses an invalid row (the double-installation and append-only checks), and the test must say so.
+8. **Concurrent replacements and interrupted transactions.** Include two concurrent replacements on one position (exactly one wins) and an interrupted transaction (the client disconnects or the server throws mid-way): no partial rows, no outbox event, no audit row.
+
+Everything else in your original brief stands: no commit, the full `node scripts/build.mjs --studio` plus `node scripts/test.mjs --browser --studio` at the end, an honest NOT RUN, and no weakened tests. Report as originally asked.
+````
+
+## Turn 503 — Agent: "Installation records and negative paths (restart)"
+
+- subagent_type: (not specified)
+- isolation: (not specified; main tree)
+- run_in_background: True
+
+### Prompt (verbatim)
+
+````
+You are implementing the owner's device-installation model and the checkpoint's negative-path tests in the Empathia monorepo. The repo is `/home/claude/empathia-technologies`, branch `restoration/sprint-0-1`, tip `457361d`, and the tree is clean. Work directly in this tree.
+
+A previous attempt was interrupted before it changed any file; start from the code as it is. Another agent may work in `.claude/worktrees/` on the outbox worker (`services/enterprise-api/src/worker/outbox.ts`, migration 0027, outbox tests). Do not touch those files or that directory.
+
+## What exists (read these first)
+
+**The logical position.** `app.planned_asset` (`database/migrations/0002_core.sql:125`) is the logical position in a room:
+- `code PA-xxxx`, category, label, role, model (default 'generic'), placement x/y/z/rot/mount;
+- `model_history` jsonb, lifecycle, removed_at.
+
+There is no physical-asset table. A room's device is currently both the position and the hardware.
+
+**Model substitution** is in `services/enterprise-api/src/domain/rooms.ts`:
+- A PATCH of a device during recommissioning accepts a model substitution only.
+- It appends to model_history, emits `commission.asset_replaced` through `ctx.emit` (the transactional outbox) and audits.
+- The functions `recommissioning()`, `substitutions()`, `reverification()`, `recommissionImpact()` and `approveRevision` handle the rest.
+
+**The shared rule.** `packages/commissioning-engine/src/substitution.ts` has `reopenedBySubstitution(rows, subs)`. The API and the demo both call it.
+
+**The demo** (`apps/demo`) is a synthetic Visitor Mode. In `apps/demo/src/build/store.ts`:
+- `swapDevice` creates a new device id on a swap, while the API keeps the same id and changes its model.
+- Both approaches conflate the position with the hardware.
+
+Also relevant in the demo: Room Story `apps/demo/src/story/assemble.ts`, Impact `apps/demo/src/build/impact.ts`, the registry `apps/demo/src/registry.ts`, and the Search Party estate `apps/demo/src/search/estate.ts`.
+
+**The end-to-end checkpoint.** `tests/e2e/checkpoint-room-lifecycle.e2e.mjs` (88 checks) writes evidence to `tests/evidence/checkpoint/`. Room R-PLN-0004, camera PA-0061 `generic` → `SYN-PTZ-12X`, 12 reopened tests, baseline v1 byte-identical.
+
+**Tooling:**
+- Build: `node scripts/build.mjs --studio`.
+- Tests: `node scripts/test.mjs --browser --studio`. The film decode is the only allowed NOT_RUN.
+- Database: `node scripts/db.mjs up` (port 55432).
+- Migrations: `database/migrations/`; the latest is 0025. **Use 0026_device_installations.sql** (0027 is reserved for the outbox work).
+- The idempotency table is `app.idempotency_key`; check how routes use it. RLS is forced; `app.tenant_rls()` sets it up.
+- Roles: empathia_owner, empathia_app, empathia_worker.
+- OpenAPI: regenerate `docs/api/openapi.json` and `packages/api-client/src/generated.ts` with the repo's generator; `--check` must pass. Update the operation count in `packages/api-client/test/client.test.ts` (it is 151 now) and `docs/api/API_GUIDE.md`, and assert each new operation by name.
+
+## The owner's requirements (verbatim intent)
+
+**Logical room position.** "a stable room-position identifier representing the slot, purpose, mounting location, location geometry, and design history".
+
+**Physical asset.** "a separate identity representing the actual installed device, manufacturer, model, serial number when known, and its own lifecycle history".
+
+**Installation record.** "a dated relationship connecting a physical asset to a logical position, preserving installation and removal events, responsible actors, reasons, and supporting evidence".
+
+**Invariants, in both the database and the application:**
+- one active installation per room position;
+- one active installation per physical asset;
+- an asset cannot occupy two positions simultaneously;
+- replacing equipment does not overwrite the previous physical asset's identity or history;
+- existing accepted design and evidence history remain immutable;
+- replacement transactions close the old installation, create the new one, record the relevant audit/outbox events, and reopen affected verification requirements atomically;
+- failed replacement transactions leave the database unchanged;
+- historical device identity follows the physical unit even when it moves;
+- existing records migrate without inventing serial numbers or falsely claiming identity verification;
+- migration is repeatable, safe, and independently tested.
+
+"Make sure Lite, the Device Registry, Commissioning, Assurance, Search Party, Pro, and Room Story interpret the same identities and installation records consistently."
+
+External notifications and connector events go through the transactional outbox (`ctx.emit`), never as external calls inside the DB transaction.
+
+**The shared rules.** The demo and the API share the same authoritative camera-replacement and recommissioning rules, with no duplicate or divergent logic.
+
+**Reopened tests.** They require new execution and independent verification. Historical PASS_VERIFIED records are preserved but never count toward re-acceptance.
+
+**Baselines.** Baseline v1 is preserved immutably, and a model change creates a detectable deviation.
+
+**Evidence.** "Never fabricate missing evidence."
+
+**Explicit proofs the owner wants:**
+1. A replaced physical asset's old verification results cannot authorize acceptance of the new installation.
+2. A new verifier independently verifies reopened tests.
+3. The accepted baseline remains byte-for-byte unchanged.
+4. Assurance detects genuine model AND installation changes.
+5. Logical positions remain stable while physical asset identities change.
+6. The API and demo use the same underlying engineering rules.
+7. No stale or contradictory status is presented as verified truth.
+
+**Adversarial tests.** Cover stale evidence, old-camera test reuse, unauthorized approvals, duplicate actions, conflicting revisions, concurrent replacements, interrupted transactions, partially failed operations, tenant-boundary violations, overlapping installations, and baseline mutations.
+
+"Use real API and database transactions for the integration checks rather than writing directly to database tables to manufacture successful results." Direct SQL is allowed only to prove that a constraint refuses an invalid row, and the test must say so.
+
+## Build this
+
+### A. Schema (0026)
+
+**`app.physical_asset`.**
+- Columns: tenant, a stable code (for example `AS-xxxx`), category, `manufacturer` nullable, model (immutable after creation), and `serial` nullable.
+- Seed and demo data use only fictional or synthetic makers, never real OEM names. Unknown stays NULL.
+- `identity_state`: UNKNOWN / DECLARED / OBSERVED / VERIFIED. Enforce with CHECKs that UNKNOWN ⇔ serial IS NULL. VERIFIED requires an evidence reference.
+- Serial is unique per tenant + manufacturer + model when present.
+
+**`app.asset_installation`.**
+- Columns: position (planned_asset), asset (physical_asset), installed_at, removed_at, install and removal reasons, the actor of each, evidence references, and the event/correlation id.
+- Add an effective-date basis column, so a migrated row says honestly that its start is "known as of migration", not a fabricated install date.
+- Partial unique indexes: one open installation per position, and one open installation per asset.
+- Prevent overlapping periods per asset and per position, either with an EXCLUDE constraint (btree_gist is available locally and is a trusted extension) or with a trigger. Say which you used and why.
+
+**Append-only.** No DELETE. The only UPDATE allowed is closing an open row once (removed_at, plus the removal reason, actor and evidence). Enforce it with a trigger and with column grants.
+
+**Access.** RLS on both tables. Grants by least privilege.
+
+**Migration of existing rows.**
+- Every current position whose lifecycle means hardware is in place gets one physical_asset with serial NULL, manufacturer NULL and identity UNKNOWN, plus an open installation with the migration basis. Read the codebase for which lifecycle values mean that; for example INSTALLED_UNVERIFIED and later states, not PLANNED.
+- Do not invent serials, makers, dates or verification. Keep `model_history` as the position's design history.
+- The migration is idempotent: a second run creates nothing.
+- Test it: no fabricated serials or makers, every migrated identity UNKNOWN, one row per eligible position, and a second run that changes nothing.
+
+### B. A shared pure model in `packages/commissioning-engine` (for example `src/installations.ts`)
+
+**Planning and validation.** A replacement plan is: close the current installation, open the new one, and decide whether it is a like-for-like physical replacement (same model, different unit) or a model substitution (a design change).
+
+**Refusals:** an asset already installed elsewhere, no current installation, a stale expected installation, an identity downgrade.
+
+**Reverification for any change of physical unit at a position.** Use `reopenedBySubstitution`; extend it, do not fork it. Its reason wording must distinguish "replaced by another unit of the same model" from "substituted by a different model".
+
+**Byte-identical output for the existing substitution.** The checkpoint's model-substitution output (the 12 tests and their reasons) must stay byte-identical. Copy `tests/evidence/checkpoint/15-verification-requirements.json` to a scratch folder before you start. At the end, diff the normalised file (timestamps and UUIDs replaced).
+
+**Design re-approval** is required only for a model change.
+
+**Parity fix 1.** The general acceptance blocker in `packages/commissioning-engine/src/lifecycle.ts` (the "acceptance needs every applicable test executed, passed and independently verified … X of Y" check) currently counts results that a substitution has superseded. Make it exclude them, in both callers, so stale PASS_VERIFIED can never count, even if the specific blocker were bypassed. The API's 422 will gain an accurate count reason. Assert it in the tests; that adds an assertion and weakens nothing.
+
+**Parity fix 2.** The demo names reopened tests that were re-run but are not yet independently verified; the API gives only its general blocker. Produce that sentence in the shared engine so both say the same thing.
+
+**Parity proof.** Write a test that feeds the same input through the API's adapter and the demo's adapter into the shared functions and asserts that the outputs are equal.
+
+### C. API (one transaction for each mutation; DB constraints as the backstop)
+
+**Endpoints:**
+- install an asset at an empty position;
+- replace the unit at a position, atomically: lock the position, close the old installation, open the new one with a new or a spare asset, write the outbox event and the audit record, and invalidate the affected results;
+- the position's history (design/model changes plus its installation timeline);
+- the asset's history (installations across positions and rooms, plus its identity changes; it follows the unit when it moves);
+- record an asset identity (UNKNOWN → DECLARED with a serial; OBSERVED/VERIFIED only with evidence).
+
+**Read endpoints.** Those used by the device registry, commissioning, assurance, search and Pro expose the position code, the current asset code and identity_state.
+
+**Assurance.** It detects a physical installation change (a different unit), labelled differently from a model drift.
+
+**Route the existing model-substitution PATCH through the same installation transaction.** The position code stays stable; a new physical asset of the new model is installed; the old one is closed with reason SUBSTITUTED and keeps its full history.
+
+**Concurrency and idempotency.** Mutations accept the existing Idempotency-Key mechanism. A precondition (the expected current installation, or the codebase's revision/ETag convention) makes concurrent conflicting replacements return 409.
+
+**Authorization.** Reuse existing authorities whose meaning matches. If you truly need a new one, justify it in your report. "Never invent additional event handlers, roles or permissions merely to satisfy a numerical target. Do not weaken least privilege."
+
+**Immutability.** Prove that baseline v1 and the accepted revision are byte-for-byte unchanged after a physical replacement and after a model substitution.
+
+**The checkpoint e2e.** Extend it:
+- the camera swap produces two installation records for PA-0061;
+- the original asset's history survives intact;
+- the evidence shows both the position history and the asset history.
+
+Keep the existing 88 checks passing unchanged. Add new checks; never relax old ones.
+
+### D. Demo
+
+**Store.** The store models positions, physical assets and installations, using the same shared engine functions. Swapping keeps the position id stable and creates or installs a physical asset. Visitor Mode is synthetic, so label any serial as synthetic, or leave it UNKNOWN. Makers are fictional only.
+
+**One reading of identity.** Wherever a device is shown or linked (Lite/Build a Room, the registry, Commissioning, Assurance, Search Party, Pro, Room Story), show the same position code + asset code + identity state. The Room Story and the registry show position history separately from asset history.
+
+**Tests.** Update the demo unit and browser tests by adding checks; keep the existing ones.
+
+### E. Negative-path tests
+
+Put the API cases in a new `tests/security/recommissioning-negative.test.mjs`, registered in `scripts/test.mjs`. Add demo unit cases where the demo has the behaviour.
+
+- **Stale evidence / old-camera reuse:** a pre-replacement result, or evidence attached before the swap, never satisfies the re-run.
+- **Unauthorized approvals:** a revision's author approving it → refused; a person without the authority → refused; the same person running and verifying a result → refused; another tenant → not found.
+- **Duplicate actions:** an Idempotency-Key replay returns the same response with no duplicate rows; a double approval and a double acceptance → 409.
+- **Conflicting revisions:** approving a superseded or stale revision → 409.
+- **Concurrent replacements on one position:** exactly one wins; the other gets 409.
+- **Interrupted or partially failed operations:** a forced failure part-way through a replacement (a server-side throw, or a client disconnect) rolls back everything. The old installation is still open, the new one is absent, and there is no outbox event, no audit row and no result invalidation. `/v1/audit/integrity` still verifies.
+- **Changed device models:** a model change during recommissioning requires re-approval; a model change in an accepted room that is not being recommissioned → refused.
+- **Re-acceptance without retesting:** refused with the named reasons; historical PASS_VERIFIED is still readable but counted as 0.
+- **Overlapping or double installation:** installing an asset that is open elsewhere → 409, and a direct SQL insert as empathia_app hits the constraint. That test says it is a constraint proof.
+- **Baseline mutation:** any attempt to change an accepted baseline is refused, and the bytes are unchanged.
+- **Tenant boundary:** another tenant cannot read or replace positions, assets or installations (404).
+
+## Rules (the owner's)
+- Do not weaken, skip or delete tests. Report NOT RUN honestly; never as PASS. No fabricated results.
+- Synthetic data only. No real company, customer or manufacturer names.
+- Never use `pkill -f` or `pgrep -f`.
+- Do not commit. I review and commit.
+- Finish by running `node scripts/build.mjs --studio` and the full `node scripts/test.mjs --browser --studio`. Fix what you broke. Write an ADR in `docs/architecture/adr/` (look for the folder and its numbering) for the position/asset/installation model.
+
+## Report back (concise)
+- Files changed.
+- The schema decisions: exclusion versus trigger, the grants, the basis column.
+- The authority choices.
+- The byte-identical proof for the 12-test output.
+- The new check names per area.
+- The full matrix counts (PASS/FAIL/NOT_RUN per suite group).
+- Open questions or residual risks.
+````
+
+## Turn 503 — SendMessage to agent `a098690563b8344ea` (outbox agent; summary: "Outbox follow-up: replay identity, failure kinds, malformed events")
+
+````
+Outbox follow-up: three more verification items from the owner, plus one doc fix. Same worktree, same branch (restoration/outbox-delivery-0027). Add a second commit on top of 53c6324 with the same two attribution lines. Same database port (55433) and the same rules: write the test first, record the result before the fix, never weaken a test, report NOT RUN honestly.
+
+1. **"Replayed events retain appropriate original identity and traceability."**
+   - Prove that a replay keeps the event's id, type, aggregate (type, id, rev), tenant, payload bytes and correlation_id unchanged.
+   - Prove that the replay is linkable both ways: from the event to the audit record of each replay, and from the audit record to the event.
+   - Prove that the delivery receipts after the replay reference the same event id.
+   - If a link is missing, add it in 0027. For example, a replay count or last-replay audit id on the event, or a query the admin read uses.
+2. **"Transient failures, retries, and permanent failures are distinguishable."**
+   - Today a failure is retried until MAX_ATTEMPTS. Make the kind of failure visible in the event's record and in the admin listing: TRANSIENT (retrying, with next_attempt_at), PERMANENT (attempts exhausted), and NON_RETRYABLE (see item 3).
+   - Test each one.
+3. **"Unauthorized or malformed events are rejected."**
+   - The `packages/event-contracts` package exists; read it. The worker must not hand a handler an event that fails its contract: an unknown type, a payload that fails the contract's schema, an unknown or mismatched tenant, or an aggregate rev that is missing or invalid.
+   - Such an event is dead-lettered immediately as NON_RETRYABLE, with its reason. It is not retried 8 times, and later events of the same aggregate stay held behind it, as the ordering rule requires.
+   - Replaying a NON_RETRYABLE event that still fails its contract is refused (422) with that reason. Payloads cannot be edited through the API.
+   - Also test that an event row inserted by a role that should not be able to write to the outbox is refused by grants or RLS. That is a constraint-proof test, and it must say so.
+4. **Regenerate the stale docs** you flagged: `ENDPOINTS.md` and `RBAC_MATRIX.md`, if a generator exists. If none exists, say so.
+
+Keep the real Teams/Outlook connector as NOT_RUN / NOT_CONNECTED. A stub-sink pass is not proof of a live connector.
+
+Report briefly: the new tests, the result before and after, the defects found, the files, the suite counts, and the commit sha.
+````
+
+## Turn 504 — SendMessage to agent `a098690563b8344ea` (summary: "Fix per-aggregate ordering to use commit order, not producer rev")
+
+````
+One more outbox fix: the per-room ordering defect you flagged as a residual risk. Same-room ordering is an owner requirement, so it must be fixed before the ordering check can count as passed.
+
+**Where to work.** I rebased your two commits onto the checkpoint commit 457361d. Your worktree is now on branch `restoration/outbox-on-457361d` at `ff0a6ad`: d557bda and 3e9c0ac are your commits, and ff0a6ad regenerates the inventory (151 operations). The build and the OpenAPI check pass there. Keep `restoration/outbox-delivery-0027` as it is. Commit on top of ff0a6ad, with the same database port (55433) and the same rules.
+
+**The defect.** Ordering follows the producer's `aggregate_rev`, and many producers hard-code it:
+- `commission.test_failed` always sends rev 1 on a Room. A test failure appended after a room event at rev 5 is treated as earlier and can overtake it.
+- Work orders use the state position (assigned 2, accepted 3, …, reopened 6+n). After a reopen, a new assignment gets rev 2 again, so it orders before the reopen.
+- Issue events send 1 or 2.
+
+**The fix.**
+1. Do not rely on producers. In the emit path (inside `ctx.emit`'s transaction), assign a per-aggregate sequence `aggregate_seq` that follows the commit order for each (tenant, aggregate_type, aggregate_id). Two ways:
+   - a head row in an `outbox_aggregate_head` table, using `INSERT … ON CONFLICT DO UPDATE SET last_seq = last_seq + 1 RETURNING`;
+   - or a transaction-scoped advisory lock taken before the sequence is read.
+
+   The row or lock must be held until commit. Then a later-committing producer on the same aggregate always gets a higher sequence.
+2. Order delivery and the "held behind" rule by `aggregate_seq`. Keep `aggregate_rev` unchanged as the domain's revision for consumers. Backfill existing rows in 0027 from (aggregate_rev, seq) in their current order.
+3. **Deadlocks:** work out the lock order when one transaction emits for several aggregates (for example a Room, then a RoomIssue). If two code paths can take them in opposite orders, either make the order consistent or explain why it can't deadlock. Add a test where two concurrent transactions emit on the same two aggregates.
+
+**Tests (write them first; record the result before the fix):**
+- A producer that sends a lower rev after a higher rev on the same room: delivery follows commit order.
+- Two concurrent API transactions on the same room: their sequences follow commit order, and both succeed.
+- A work order that is reopened and then reassigned: delivery follows commit order.
+- Everything already in `outbox.test.mjs`, `api.test.mjs` and the security suites still passes unchanged. If an existing assertion encoded rev ordering, tell me exactly which one and why, before changing it.
+
+Then run the build and the integration and security suites (all of them), and report:
+- the commit sha;
+- the before and after results;
+- the files changed;
+- the lock design and the deadlock reasoning;
+- the suite counts.
+````
+
