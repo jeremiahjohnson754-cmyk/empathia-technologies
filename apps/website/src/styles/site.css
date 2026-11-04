@@ -69,7 +69,7 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-padding-top: 88px; }
-body { margin: 0; background: var(--w-bg); color: var(--w-tx); font: 400 17px/1.65 var(--w-sans); text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; font-feature-settings: "cv11", "ss01"; }
+body { margin: 0; background: var(--w-bg); color: var(--w-tx); font: 400 17px/1.65 var(--w-sans); text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; font-feature-settings: "cv11", "ss01", "tnum"; }   /* DIRECTION.md §2: single-storey a, open digits, tabular numbers */
 img, video { max-width: 100%; display: block; }
 a { color: var(--w-accent); text-underline-offset: 3px; }
 a:hover { color: var(--w-accent-hover); }
@@ -130,6 +130,7 @@ abbr[title] { text-decoration: none; }
 .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
 
 /* type: heavy, tight, confident */
+.hero .label { color: var(--w-accent); }   /* DIRECTION.md frame 13: the teal eyebrow */
 .label { margin: 0 0 18px; color: var(--w-tx2); font-size: 14px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
 .eyebrow { display: inline-flex; align-items: center; gap: 10px; margin: 0 0 16px; color: var(--w-tx2); font-size: 13px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
 .eyebrow::before { content: ""; width: 18px; height: 2px; border-radius: 1px; background: var(--w-accent); }
@@ -137,7 +138,7 @@ h1, h2, h3 { text-wrap: balance; color: var(--w-tx); }
 h1, h2 { font-family: var(--w-display); font-weight: 800; }
 h1 { margin: 0; font-size: clamp(40px, 5.6vw, 76px); line-height: 1.02; letter-spacing: -.035em; max-width: 18ch; }
 h1.display { font-size: clamp(44px, 5.4vw, 80px); line-height: .98; letter-spacing: -.042em; max-width: none; }
-h1.display span { display: block; } h1.display span:last-child { color: var(--w-tx2); }
+h1.display span { display: block; } h1.display span:last-child { color: var(--w-accent); }   /* DIRECTION.md frame 13: the last line in teal */
 .lede { margin: 26px 0 0; max-width: 56ch; color: var(--w-tx2); font-size: clamp(18px, 1.6vw, 21px); line-height: 1.6; text-wrap: pretty; }
 p { text-wrap: pretty; }
 
@@ -418,8 +419,7 @@ p { text-wrap: pretty; }
 .glass__txt, .strip__txt { display: grid; gap: 2px; min-width: 0; }
 .glass__txt a { color: var(--w-tx); font-weight: 600; font-size: 17px; line-height: 1.25; letter-spacing: -.01em; text-decoration: none; }
 .glass__txt a::after, .strip__txt a::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
-.glass__txt a:focus-visible, .strip__txt a:focus-visible { outline: none; }
-.glass__tile:focus-within, .strip__item:focus-within { outline: 2px solid var(--w-accent); outline-offset: 3px; }
+.glass__txt a:focus-visible, .strip__txt a:focus-visible { outline: 2px solid var(--w-accent); outline-offset: 4px; border-radius: 4px; }   /* the ring on the link itself (the audit's A8), as the tiles do */
 .glass__txt small { color: var(--w-tx2); font-size: 13.5px; line-height: 1.4; }
 .glass__go { flex: none; margin-left: auto; color: var(--pc); font-weight: 600; }
 
