@@ -14,7 +14,7 @@ import {
   verifyBlockers, resultCounts, type RoomAnalysis,
 } from '@empathia/commissioning-engine';
 import type { RoomDesignInput, PlannedDevice, Connection, RecordedResult, RoomLifecycle, ApplicabilityRow, DesignFinding } from '@empathia/domain-types';
-import { ROOMS, TEMPLATE_FOR, ARCHETYPE_NAME, REFERENCE_ROOM_ID, roomById, seeded, type RoomOutline } from './canon.js';
+import { ROOMS, CAMPUS_ROOMS, TEMPLATE_FOR, ARCHETYPE_NAME, REFERENCE_ROOM_ID, roomById, seeded, type RoomOutline } from './canon.js';
 
 export const C = defaultCatalog;
 /** The demonstration's fixed "now": every generated date is relative to it, so the record never changes between visits. */
@@ -93,12 +93,18 @@ const HELD: Record<string, { why: string; untested: number; fail?: string; issue
   'R-BCN-3-101': { why: 'installed this autumn; commissioning in progress', untested: 9 },
   'R-BCN-3-225': { why: 'reverberation under the high open ceiling fails speech intelligibility', untested: 3, fail: 'Audio', issue: { title: 'Speech intelligibility below the room standard under the open ceiling', severity: 'High', state: 'OPEN', cat: 'micceil' } },
   'R-MER-2-160': { why: 'the AV network routes are not yet commissioned', untested: 6 },
+  // rooms plan (rows 32 and 45): each room's one scenario decides where its record ends
+  'R-BCN-1-300': { why: 'the combined (A+B+C) configuration is not yet commissioned; the split sections are', untested: 5 },
+  'R-RDG-1-100': { why: 'the outside-agency bridge and the regional feeds are not yet commissioned (simulated, non-operational)', untested: 4 },
 };
 /** Accepted rooms that carry an open operational issue (Assurance drift or a field report), from the V2.5.3 storylines. */
 const OPEN_ISSUE: Record<string, { title: string; severity: 'High' | 'Medium' | 'Low'; cat: string }> = {
   'R-MER-1-140': { title: 'Furniture moved since handover: the camera and ceiling microphone no longer cover every seat', severity: 'Medium', cat: 'camera' },
   'R-MER-2-120': { title: 'Drift against the commissioning baseline on the wall absorbers', severity: 'Low', cat: 'speaker' },
   'R-ATL-7-112': { title: 'Display does not wake from standby on the first try', severity: 'Low', cat: 'display' },
+  // rooms plan (rows 33 and 37): the scenario's open question after acceptance
+  'R-HZN-1-500': { title: 'Far rows: speech level reported low at the back of the auditorium during the keynote rehearsal', severity: 'Medium', cat: 'speaker' },
+  'R-FRG-2-300': { title: 'Bridge to remote responders took longer than the two-minute target in the last drill', severity: 'Low', cat: 'compute' },
 };
 
 /** The earlier records of this demonstration, kept unchanged (positions as recorded; nothing else is invented for them). */
@@ -115,11 +121,14 @@ export function roomRecord(id: string): RoomRecord | null {
   const o = roomById(id); if (!o) return null;
   const r = build(o); cache.set(id, r); return r;
 }
+/** The thirty rooms of the original campus (kept for the screens and tests that speak of thirty). */
 export const allRecords = (): RoomRecord[] => ROOMS.map((o) => roomRecord(o.id)!);
+/** All 45 rooms of the plan (the thirty, then rooms 31–45), generated lazily the same way. */
+export const campusRecords = (): RoomRecord[] => CAMPUS_ROOMS.map((o) => roomRecord(o.id)!);
 
 function build(o: RoomOutline): RoomRecord {
   const rng = seeded(o.id);
-  const t = TEMPLATE_FOR[o.archetype] || { template: 'custom' };
+  const t = o.template || TEMPLATE_FOR[o.archetype] || { template: 'custom' };
   const [w, l, h] = o.dims;
   const points = outlineFor('rect', w, l);
   const geoProv = o.kind === 'reference' ? 'DECLARED' : 'MODELED';
@@ -220,7 +229,7 @@ function build(o: RoomOutline): RoomRecord {
 }
 
 /** Each room's physical assets get their own block of codes, so codes never collide across rooms. */
-function assetBase(id: string): number { if (id === REFERENCE_ROOM_ID) return 101; const i = ROOMS.findIndex((r) => r.id === id); return 1000 + i * 50; }
+function assetBase(id: string): number { if (id === REFERENCE_ROOM_ID) return 101; const i = CAMPUS_ROOMS.findIndex((r) => r.id === id); return 1000 + i * 50; }
 
 function recordAs(row: ApplicabilityRow, state: 'PASS' | 'FAIL', d: RoomDesignInput, days: number): RecordedResult | null {
   const persona = (row.personas || []).find((p) => p !== 'architect') || 'cxeng';
@@ -323,7 +332,7 @@ function coverageOf(o: RoomOutline, positions: Position[], a: RoomAnalysis, temp
 /** Open issues per building (for the campus glyphs). */
 export function openIssuesByBuilding(): Record<string, number> {
   const out: Record<string, number> = {};
-  for (const r of allRecords()) out[r.outline.building] = (out[r.outline.building] || 0) + r.issues.filter((i) => i.state !== 'RESOLVED').length;
+  for (const r of campusRecords()) out[r.outline.building] = (out[r.outline.building] || 0) + r.issues.filter((i) => i.state !== 'RESOLVED').length;
   return out;
 }
 export const openIssues = (r: RoomRecord): Issue[] => r.issues.filter((i) => i.state !== 'RESOLVED');
