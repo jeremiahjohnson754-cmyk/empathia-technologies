@@ -507,7 +507,7 @@ p { text-wrap: pretty; }
 @media print { .top, .foot, .band, .skip, .theme, .stage__glow, .chapter__glow { display: none; } .hero, .section--deep { background: none; } body { background: #fff; color: #000; } }
 
 /* The founder's overview and founding story (his words; the closing line on its own, with generous space). */
-.founder__bio { margin: 18px 0 0; max-width: 62ch; color: var(--w-tx2, var(--w-tx)); font-size: 17px; line-height: 1.65; }
+.founder__bio { margin: 18px 0 22px; max-width: 62ch; color: var(--w-tx2, var(--w-tx)); font-size: 17px; line-height: 1.65; }
 .story__wrap { max-width: 68ch; }
 .story h2 { margin: 0 0 20px; }
 .story p { margin: 0 0 16px; font-size: 18px; line-height: 1.7; color: var(--w-tx); }
