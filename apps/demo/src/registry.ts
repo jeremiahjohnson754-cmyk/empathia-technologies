@@ -4,7 +4,7 @@
 import parity from './generated/parity.json';
 export interface AreaStatus { key: string; label: string; target: string; status: string; newRoute: string; }
 /** Areas with a native page in this shell (everything else resolves to a boundary page that states its migration status). */
-export const NATIVE = new Set(['investor', 'v25.build', 'search', 'search.graph', 'v25.service', 'service', 'servicehands', 'v25.apex', 'v25.learn', 'learn', 'v25.home', 'home', 'v25.exec', 'pro.exec', 'v25.ledger', 'ledger', 'v25.policy', 'v25.fi', 'v25.fipv', 'fabric']);
+export const NATIVE = new Set(['investor', 'v25.build', 'search', 'search.graph', 'v25.service', 'service', 'servicehands', 'v25.apex', 'v25.learn', 'learn', 'v25.home', 'home', 'v25.exec', 'pro.exec', 'v25.ledger', 'ledger', 'v25.policy', 'v25.fi', 'v25.fipv', 'fabric', 'scouter', 'v25.scouter', 'v25.policy']);
 export const AREAS: AreaStatus[] = parity as AreaStatus[];
 /** The 86 legacy address areas (the V2.5 pages are listed separately in the ledger). */
 export const AREA_COUNT = AREAS.filter((a) => !a.key.startsWith('v25.') || a.key === 'v25.build').length;

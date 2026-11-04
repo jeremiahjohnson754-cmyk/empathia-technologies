@@ -27,8 +27,10 @@ if (process.argv.includes('--generate-only')) process.exit(0);
 // the SIGNAL library ships beside the bundle and is fetched on demand by Learn (2 MB; never inlined)
 fs.mkdirSync(dist, { recursive: true }); fs.copyFileSync(path.join(repo, 'packages/domain-data/data/SIGNAL_LIB.json'), path.join(dist, 'signal-lib.json'));
 await esbuild.build({
-  entryPoints: [path.join(app, 'src/main.tsx')], bundle: true, minify: !dev, sourcemap: 'external', format: 'iife', target: ['es2022'], jsx: 'automatic',
-  outfile: path.join(dist, 'demo.js'), define: { 'process.env.NODE_ENV': dev ? '"development"' : '"production"' }, legalComments: 'linked', logLevel: 'warning',
+  // ES modules with code splitting: every page registered with a lazy `load` is its own chunk, fetched only when the role may open it
+  // (D44: a forbidden address never downloads its screen). The entry stays demo.js; pages land in chunks/.
+  entryPoints: { demo: path.join(app, 'src/main.tsx') }, bundle: true, minify: !dev, sourcemap: 'external', format: 'esm', splitting: true, target: ['es2022'], jsx: 'automatic',
+  outdir: dist, entryNames: '[name]', chunkNames: 'chunks/[name]-[hash]', define: { 'process.env.NODE_ENV': dev ? '"development"' : '"production"' }, legalComments: 'linked', logLevel: 'warning',
   alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') },
 });
 
@@ -39,10 +41,12 @@ await esbuild.build({
 // brand, Inter and the theme script from @empathia/design-tokens (D7, D9, D39): files copied into dist, the <head> decorated
 const { shipBrandAndType, tokenCss } = await import(path.join(repo, 'packages/design-tokens/brand.mjs'));
 const decorate = shipBrandAndType(dist, { preload: 'app', manifest: { name: 'Empathia Living Campus — investor demonstration', shortName: 'Empathia demo' } });
-const css = [tokenCss(), ...[path.join(repo, 'packages/ui/src/ui.css'), path.join(app, 'src/styles/demo.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`)].join('\n');
+const css = [tokenCss(), ...[path.join(repo, 'packages/ui/src/ui.css'), path.join(app, 'src/styles/demo.css'), path.join(app, 'src/styles/shell.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`)].join('\n');
 fs.writeFileSync(path.join(dist, 'demo.css'), css);
 fs.writeFileSync(path.join(dist, 'index.html'), decorate(fs.readFileSync(path.join(app, 'src/index.html'), 'utf8')));
-const files = fs.readdirSync(dist).filter((f) => fs.statSync(path.join(dist, f)).isFile());
+// the View-as role is applied before first paint by a tiny same-origin script (the CSP forbids inline scripts), so the role colour is right on the first frame
+fs.copyFileSync(path.join(app, 'src/role-boot.js'), path.join(dist, 'role-boot.js'));
+const files = (function walk(d, pre = '') { return fs.readdirSync(d).flatMap((f) => fs.statSync(path.join(d, f)).isDirectory() ? walk(path.join(d, f), `${pre}${f}/`) : [`${pre}${f}`]); })(dist);
 const manifest = { app: '@empathia/demo', builtAt: new Date().toISOString(), files: Object.fromEntries(files.map((f) => [f, { bytes: fs.statSync(path.join(dist, f)).size, sha256: crypto.createHash('sha256').update(fs.readFileSync(path.join(dist, f))).digest('hex') }])) };
 fs.writeFileSync(path.join(dist, 'BUILD_MANIFEST.json'), JSON.stringify(manifest, null, 2));
 console.log(`demo built: ${files.map((f) => `${f} ${(manifest.files[f].bytes / 1024).toFixed(0)} KiB`).join(', ')}`);
