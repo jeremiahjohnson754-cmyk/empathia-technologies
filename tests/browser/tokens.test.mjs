@@ -94,7 +94,7 @@ try {
     ok('TS-01', 'the switch is a named radio group of System, Light, Dark; System checked and the only tab stop', names.join(',') === 'System:true:0,Light:false:-1,Dark:false:-1', names.join(','));
     await g.getByRole('radio', { name: 'System' }).focus(); await p.keyboard.press('ArrowRight');
     let st = await p.evaluate(() => ({ attr: document.documentElement.getAttribute('data-theme'), stored: localStorage.getItem('empathia.theme'), meta: document.querySelector('meta[name=theme-color]').content, focus: document.activeElement.textContent, both: [...document.querySelectorAll('[aria-checked=true]')].map((e) => e.textContent).join() }));
-    ok('TS-02', 'ArrowRight chooses Light: applied, stored, the bar colour follows, focus moves, every switch on the page agrees', st.attr === 'light' && st.stored === 'light' && st.meta === '#f7f5f1' && st.focus === 'Light' && st.both === 'Light,Light', JSON.stringify(st));
+    ok('TS-02', 'ArrowRight chooses Light: applied, stored, the bar colour follows, focus moves, every switch on the page agrees', st.attr === 'light' && st.stored === 'light' && st.meta === '#f4f6fa' /* Paper's bar colour since the navy retune (QUALITY_UPLIFT) */ && st.focus === 'Light' && st.both === 'Light,Light', JSON.stringify(st));
     await p.keyboard.press('End'); await p.keyboard.press('ArrowRight');
     st = await p.evaluate(() => ({ attr: document.documentElement.getAttribute('data-theme'), stored: localStorage.getItem('empathia.theme') }));
     ok('TS-03', 'End then ArrowRight wraps to System: the attribute is removed and System stored', st.attr === null && st.stored === 'system', JSON.stringify(st));

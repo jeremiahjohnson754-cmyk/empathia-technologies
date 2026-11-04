@@ -3,6 +3,8 @@
 *, *::before, *::after { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--tx); font: 400 var(--fs-base)/1.55 var(--font-sans); }
 a { color: var(--accent); text-decoration: none; } :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+/* QA round 1 (R1-03): a heading or landmark that receives the route focus (tabindex=-1, never a tab stop) draws no ring; controls keep theirs */
+h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus, main[tabindex="-1"]:focus, #main:focus { outline: none; }
 .skip { position: absolute; left: -999px; top: 8px; background: var(--accent); color: var(--bg); padding: 8px 12px; border-radius: var(--r-sm); z-index: 10; } .skip:focus { left: 8px; }
 .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--tx); font-weight: 700; } .mark { width: 12px; height: 12px; border-radius: 3px; background: linear-gradient(135deg, var(--accent), var(--indigo)); }
 .synthetic { margin-left: auto; } .persp { display: inline-flex; gap: 8px; align-items: center; font-size: var(--fs-sm); color: var(--tx2); }
@@ -19,6 +21,7 @@ h1 { margin: 0; font-size: clamp(26px, 3.6vw, 34px); line-height: 1.15; letter-s
 .scen li { padding: var(--sp-4); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); } .scen li a { color: var(--tx); } .scen p { margin: 6px 0 0; color: var(--tx2); font-size: var(--fs-sm); } .scen i { color: var(--accent); font-style: normal; font-weight: 600; margin-right: 6px; }
 .status { margin-top: var(--sp-7); color: var(--tx2); } .boundary code { font: 600 var(--fs-xs) var(--font-mono); color: var(--tx2); }
 .foot { padding: var(--sp-5) 16px; color: var(--tx3); font-size: var(--fs-sm); border-top: 1px solid var(--line); text-align: center; }
+.boot { max-width: 40rem; margin: 20vh auto 0; padding: 0 16px; color: var(--tx2); text-align: center; }
 @media (max-width: 760px) { .start { grid-template-columns: 1fr; } .go.launch { min-height: 76px; font-size: var(--fs-md); } .wrap { padding-block: var(--sp-5); } }
 
 /* Build a Room */

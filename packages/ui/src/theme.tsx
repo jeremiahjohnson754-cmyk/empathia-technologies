@@ -12,7 +12,7 @@ export const THEME_KEY = 'empathia.theme';
 export const THEME_EVENT = 'empathia:theme';
 const CHOICES: readonly ThemeChoice[] = ['system', 'light', 'dark'];
 /** the browser bar colour for each theme (tokens.json → theme.*.meta) */
-const META: Record<'light' | 'dark', string> = { dark: '#0e1012', light: '#f7f5f1' };
+const META: Record<'light' | 'dark', string> = { dark: '#070d1a', light: '#f4f6fa' };
 let memory: ThemeChoice = 'system';   // used when storage is unavailable
 
 const isChoice = (v: unknown): v is ThemeChoice => typeof v === 'string' && (CHOICES as readonly string[]).includes(v);
