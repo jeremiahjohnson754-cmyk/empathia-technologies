@@ -8,7 +8,7 @@ import { Tag, Notice, Button } from '@empathia/ui';
 import { search, neighbourhood, impact, radialLayout, ask, nodeKey, RELATIONS, NODE_TYPES, INTENTS, type NodeRef, type IntentAnswer } from '@empathia/search-party';
 import { buildEstate } from './estate.js';
 import { scenario, scenarioCount, SCENARIO_IDS, SCENARIO_TITLES } from './scenarios.js';
-import { Icon, Section } from '../spatial/parts.js';
+import { Icon, Section, List, ListRow } from '../spatial/parts.js';
 import { resolve } from '../registry.pages.js';
 import { canOpen } from '../access/policy.js';
 import type { RoleKey } from '../registry.types.js';
@@ -59,11 +59,11 @@ export function SearchPartyDemo({ hash, role }: { hash: string; role?: RoleKey }
       {browsing ? (
         <div className="room__two sp__browse">
           <Section title="Directory" aside="Who to go to, what is affected" id="sp-dir-h">
-            <ul className="rows">{SCENARIO_IDS.map((id) => { const sc = scenario(id); return <li key={id} className="row"><span className="row__ic"><Icon name={id === 'S1' ? 'graph' : id === 'S2' ? 'people' : id === 'S3' ? 'device' : id === 'S4' ? 'check' : 'spark'} /></span><span className="row__main">{opens('#/search/scenarios') ? <a href={`#/search/scenarios/${id}`}><b>{SCENARIO_TITLES[id]}</b></a> : <b>{SCENARIO_TITLES[id]}</b>}<span className="ui-meta">{sc ? `${scenarioCount(sc)} recorded relationships · from ${sc.start.label}` : ''}</span></span><span className="row__end" aria-hidden="true"><Icon name="chevron" size={16} /></span></li>; })}</ul>
+            <List label="Directory">{SCENARIO_IDS.map((id) => { const sc = scenario(id); return <ListRow key={id} href={opens('#/search/scenarios') ? `#/search/scenarios/${id}` : undefined} leading={<span className="row__ic"><Icon name={id === 'S1' ? 'graph' : id === 'S2' ? 'people' : id === 'S3' ? 'device' : id === 'S4' ? 'check' : 'spark'} /></span>} title={SCENARIO_TITLES[id]} sub={sc ? `${scenarioCount(sc)} recorded relationships · from ${sc.start.label}` : undefined} />; })}</List>
           </Section>
           <Section title="Try one of these" aside="Each count is what the search finds now" id="sp-try-h">
-            <ul className="rows" data-testid="sp-try">{TRY.map((t) => { const n = search(est, { q: t, type: null, limit: 1 }).total; return <li key={t} className="row"><span className="row__ic"><Icon name="search" /></span><span className="row__main"><button type="button" className="linkish" onClick={() => setQ(t)}><b>{t}</b></button><span className="ui-meta">{n} record{n === 1 ? '' : 's'}</span></span><span className="row__end" aria-hidden="true"><Icon name="chevron" size={16} /></span></li>; })}
-              <li className="row"><span className="row__ic"><Icon name="graph" /></span><span className="row__main"><a href="#/search?focus=NetworkNode:SW-ATL-4A" onClick={(e) => { e.preventDefault(); pick({ type: 'NetworkNode', id: 'SW-ATL-4A' }); }}><b>The access switch SW-ATL-4A and what depends on it</b></a><span className="ui-meta">Open its relationship graph</span></span><span className="row__end" aria-hidden="true"><Icon name="chevron" size={16} /></span></li></ul>
+            <List label="Try one of these">{TRY.map((t) => { const n = search(est, { q: t, type: null, limit: 1 }).total; return <ListRow key={t} testId="sp-try" onClick={() => setQ(t)} leading={<span className="row__ic"><Icon name="search" /></span>} title={t} sub={`${n} record${n === 1 ? '' : 's'}`} />; })}
+              <ListRow onClick={() => pick({ type: 'NetworkNode', id: 'SW-ATL-4A' })} leading={<span className="row__ic"><Icon name="graph" /></span>} title="The access switch SW-ATL-4A and what depends on it" sub="Open its relationship graph" /></List>
           </Section>
         </div>
       ) : (

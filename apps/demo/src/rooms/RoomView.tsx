@@ -13,7 +13,7 @@ import { roomRecord, LAYERS, PEOPLE, type Layer, type RoomRecord, type Position 
 import { roomHealth, roomIssues, spine, moves, featuredRooms, BAND_LABEL, type Stage as SpineStage } from '../campus/metrics.js';
 import { load as loadWorkspace, type Workspace } from '../workspace/store.js';
 import { Stage, PlanView, IsoView, LAYER_COLOR } from '../spatial/Spatial.js';
-import { StatusDot, Chip, ScoreRing, StatTile, Icon, Section } from '../spatial/parts.js';
+import { StatusDot, Chip, StatTile, Icon, Section, List, ListRow, EmptyState } from '../spatial/parts.js';
 
 export const LIFE_TONE: Record<string, 'ok' | 'warn' | 'info' | 'muted' | 'bad'> = { OPERATIONAL: 'ok', ACCEPTED: 'ok', COMMISSIONING: 'warn', INSTALLED_UNVERIFIED: 'info', PLANNED: 'muted', DESIGN_APPROVED: 'info', INSTALLATION_PENDING: 'info' };
 const ALL_TABS = [['overview', 'Room'], ['devices', 'Devices'], ['tests', 'Tests'], ['history', 'History'], ['coverage', 'Coverage']] as const;
@@ -65,7 +65,7 @@ export function RoomView({ id, hash, sees = () => true, opens = () => true, base
     <section className="room" data-native="" data-testid="room-view" data-room={o.id}>
       <nav aria-label="Breadcrumb" className="crumbs"><ol><li><a href="#/campus">Campus</a></li><li><a href={`#/campus/${o.building}`}>{B.name}</a></li><li><a href={`#/campus/${o.building}/${o.floor}`}>Floor {o.floor}</a></li><li><span aria-current="page">{o.number}</span></li></ol></nav>
       <nav className="roomtabs" aria-label="Rooms" data-testid="room-tabs">
-        {featured.map((x) => <a key={x.id} href={roomAt(x)} className="roomtabs__t" aria-current={x.id === o.id ? 'page' : undefined}>{shortName(x)}</a>)}
+        {featured.map((x) => <Chip key={x.id} href={roomAt(x)} selected={x.id === o.id} tone={x.id === o.id ? 'accent' : undefined}>{shortName(x)}</Chip>)}
         <a href="#/rooms" className="roomtabs__t roomtabs__all">All {ROOMS.length} rooms <Icon name="chevron" size={14} /></a>
       </nav>
       <header className="room__hero">
@@ -83,10 +83,10 @@ export function RoomView({ id, hash, sees = () => true, opens = () => true, base
         {acts.length > 0 && <div className="room__acts" data-testid="room-actions">{acts.map((a) => <a key={a.label} href={a.href} className={`ui-btn${a.primary ? ' ui-btn--primary' : ''}`}><Icon name={a.icon} /> {a.label}</a>)}</div>}
       </header>
       <div className="tiles" data-testid="room-tiles">
-        <StatTile label="Health" value={h.score ?? '—'} unit={h.score == null ? undefined : '/100'} sub={h.score == null ? 'not scored: no test result on record' : `${BAND_LABEL[h.band]} · ${plural(iss.length, 'open issue')}`} tone={h.band} icon={<ScoreRing score={h.score} band={h.band} size={44} label="Room health" />} testId="tile-health" />
-        <StatTile label="Devices" value={hw.length} sub={`${plural(r.connections.length, 'connection')} · identity ${hw.length ? 'UNKNOWN until verified' : '—'}`} icon={<Icon name="device" />} testId="tile-devices" />
-        <StatTile label="Open issues" value={iss.length} sub={`${iss.filter((i) => i.severity === 'High').length} High · ${iss.filter((i) => i.live).length} live service request${iss.filter((i) => i.live).length === 1 ? '' : 's'}`} tone={iss.some((i) => i.severity === 'High') ? 'action' : iss.length ? 'monitor' : undefined} icon={<Icon name="alert" />} testId="tile-issues" />
-        <StatTile label="Lifecycle" value={r.lifecycle.replace(/_/g, ' ').toLowerCase()} sub={r.nextStep?.blockers.length ? `→ ${r.nextStep.to.toLowerCase()} held: ${plural(r.nextStep.blockers.length, 'reason')}` : r.baselines.find((b) => b.state === 'CURRENT') ? `baseline v${r.baselines.find((b) => b.state === 'CURRENT')!.version} current` : 'no accepted baseline'} icon={<Icon name="cycle" />} tone="text" testId="tile-lifecycle" />
+        <StatTile label="Health" value={h.score ?? '—'} unit={h.score == null ? undefined : '/100'} sub={h.score == null ? 'not scored: no test result on record' : `${BAND_LABEL[h.band]} · ${plural(iss.length, 'open issue')}`} tone={h.band} icon="heart" testId="tile-health" />
+        <StatTile label="Devices" value={hw.length} sub={`${plural(r.connections.length, 'connection')} · identity ${hw.length ? 'UNKNOWN until verified' : '—'}`} icon="device" testId="tile-devices" />
+        <StatTile label="Open issues" value={iss.length} sub={`${iss.filter((i) => i.severity === 'High').length} High · ${iss.filter((i) => i.live).length} live service request${iss.filter((i) => i.live).length === 1 ? '' : 's'}`} tone={iss.some((i) => i.severity === 'High') ? 'action' : iss.length ? 'monitor' : undefined} icon="alert" testId="tile-issues" />
+        <StatTile label="Lifecycle" value={r.lifecycle.replace(/_/g, ' ').toLowerCase()} sub={r.nextStep?.blockers.length ? `→ ${r.nextStep.to.toLowerCase()} held: ${plural(r.nextStep.blockers.length, 'reason')}` : r.baselines.find((b) => b.state === 'CURRENT') ? `baseline v${r.baselines.find((b) => b.state === 'CURRENT')!.version} current` : 'no accepted baseline'} icon="cycle" tone="text" testId="tile-lifecycle" />
       </div>
       <details className="howto"><summary><Chip tone="muted">MODELED · NOT MEASURED</Chip> How the health score is computed</summary><p>100, less 15 for each open High issue, 8 for each Medium and 4 for each Low, less up to 30 for failed tests and up to 20 for tests not yet run. {h.why} Bands: 88 or more Healthy, 75–87 Monitor, below 75 Action required.</p></details>
       {r.nextStep && r.nextStep.blockers.length > 0 && <Notice tone={o.kind === 'reference' ? 'warn' : 'info'}><b>{r.lifecycle} → {r.nextStep.to}: held by the engine.</b> {r.nextStep.blockers.join(' · ')}</Notice>}
@@ -104,8 +104,8 @@ export function RoomView({ id, hash, sees = () => true, opens = () => true, base
           <div className="room__two">
             <Section title="Where the room has moved" aside="Since handover" id="moved-h" testId="moved"><MovedList r={r} /></Section>
             <Section title="Open issues" aside={plural(iss.length, 'open')} id="issues-h" testId="open-issues">
-              {iss.length ? <ul className="rows">{iss.map((i) => <li key={i.id} className="row row--stack"><span className={`row__ic row__ic--${i.severity === 'High' ? 'bad' : i.severity === 'Medium' ? 'warn' : 'muted'}`}><Icon name="alert" /></span><span className="row__main"><b>{i.href && opens(i.href.split('?')[0]!) ? <a href={i.href}>{i.title}</a> : i.title}</b><span className="ui-meta">{i.id} · {i.source}{i.openedAt ? ` · opened ${ago(i.openedAt)}` : ''}{i.positions.length ? ` · ${i.positions.join(', ')}` : ''}</span></span><span className="row__end"><Chip tone={i.severity === 'High' ? 'bad' : i.severity === 'Medium' ? 'warn' : 'muted'}>{i.severity} · {i.state.toLowerCase().replace('_', ' ')}</Chip></span></li>)}</ul>
-                : <div className="empty"><b>No open issue</b><p>Nothing is open on this room’s record or in the service workspace.</p></div>}
+              {iss.length ? <List label="Open issues">{iss.map((i) => <ListRow key={i.id} href={i.href && opens(i.href.split('?')[0]!) ? i.href : undefined} leading={<span className={`row__ic row__ic--${i.severity === 'High' ? 'bad' : i.severity === 'Medium' ? 'warn' : 'muted'}`}><Icon name="alert" /></span>} title={i.title} sub={`${i.id} · ${i.source}${i.openedAt ? ` · opened ${ago(i.openedAt)}` : ''}${i.positions.length ? ` · ${i.positions.join(', ')}` : ''}`} trailing={<Chip tone={i.severity === 'High' ? 'bad' : i.severity === 'Medium' ? 'warn' : 'muted'}>{i.severity} · {i.state.toLowerCase().replace('_', ' ')}</Chip>} />)}</List>
+                : <EmptyState title="No open issue" icon="check">Nothing is open on this room’s record or in the service workspace.</EmptyState>}
             </Section>
           </div>
         </>}
@@ -121,8 +121,8 @@ export function RoomView({ id, hash, sees = () => true, opens = () => true, base
 
 function MovedList({ r }: { r: RoomRecord }) {
   const mv = moves(r);
-  if (!mv.length) return <div className="empty"><b>{r.baselines.some((b) => b.state === 'CURRENT') ? 'Nothing has moved since handover' : 'Not handed over yet'}</b><p>{r.baselines.some((b) => b.state === 'CURRENT') ? 'No unit, baseline or issue has changed since the room was accepted.' : 'Changes are tracked from the first accepted baseline; this room has none yet.'}</p></div>;
-  return <ul className="rows">{mv.map((m, i) => <li key={i} className="row row--stack"><span className="row__ic"><Icon name={m.kind === 'unit' ? 'device' : m.kind === 'baseline' ? 'cycle' : m.kind === 'issue' ? 'alert' : 'clock'} /></span><span className="row__main"><b>{m.title}</b><span className="ui-meta">{m.from} → {m.to} · {m.by}</span></span><span className="row__end ui-meta">{ago(m.at)}</span></li>)}</ul>;
+  if (!mv.length) { const acc = r.baselines.some((b) => b.state === 'CURRENT'); return <EmptyState title={acc ? 'Nothing has moved since handover' : 'Not handed over yet'} icon={acc ? 'check' : 'clock'}>{acc ? 'No unit, baseline or issue has changed since the room was accepted.' : 'Changes are tracked from the first accepted baseline; this room has none yet.'}</EmptyState>; }
+  return <List label="Where the room has moved">{mv.map((m, i) => <ListRow key={i} leading={<span className="row__ic"><Icon name={m.kind === 'unit' ? 'device' : m.kind === 'baseline' ? 'cycle' : m.kind === 'issue' ? 'alert' : 'clock'} /></span>} title={m.title} sub={`${m.from} → ${m.to} · ${m.by}`} trailing={<span className="ui-meta">{ago(m.at)}</span>} />)}</List>;
 }
 
 function Overview({ r, sel, setSel }: { r: RoomRecord; sel: string | null; setSel: (c: string | null) => void }) {

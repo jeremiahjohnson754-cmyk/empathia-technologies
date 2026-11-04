@@ -12,7 +12,7 @@ import { campusStats, roomHealth, roomIssues, BAND_LABEL, type BuildingStats } f
 import { load as loadWorkspace, type Workspace } from '../workspace/store.js';
 import { CampusMap, FloorPlate, Stage, type CampusTile } from '../spatial/Spatial.js';
 import { RoomView, LIFE_TONE } from '../rooms/RoomView.js';
-import { StatusDot, Chip, ScoreRing, StatTile, Bar, Icon, Section } from '../spatial/parts.js';
+import { StatusDot, Chip, ScoreRing, StatTile, Icon, Section, MeterRow, stateOf } from '../spatial/parts.js';
 import type { RoleKey } from '../registry.types.js';
 import { resolve } from '../registry.pages.js';
 import { canOpen } from '../access/policy.js';
@@ -64,7 +64,7 @@ function Legend() {
 function Preview({ s }: { s: BuildingStats }) {
   return (
     <div className="cprev" aria-live="polite" data-testid="campus-preview">
-      <div className="cprev__head"><ScoreRing score={s.score} band={s.band} size={56} label={`${s.b.name} health`} /><div><b>{s.b.name}</b><span className="ui-meta">{s.b.purpose}</span></div></div>
+      <div className="cprev__head"><ScoreRing score={s.score} band={s.band} size={72} label="Health" /><div><b>{s.b.name}</b><span className="ui-meta">{s.b.purpose}</span></div></div>
       <dl className="cprev__facts"><div><dt>Rooms</dt><dd>{s.rooms}</dd></div><div><dt>Open issues</dt><dd>{s.open}</dd></div><div><dt>Devices</dt><dd>{s.devices}</dd></div><div><dt>Tests verified</dt><dd>{s.verifiedPct == null ? '—' : `${s.verifiedPct}%`}</dd></div></dl>
       <p className="ui-meta">{s.b.floors} floors · opened {s.b.opened} · {s.scored} of {s.rooms} rooms scored</p>
       <a className="ui-btn ui-btn--primary" href={`#/campus/${s.b.key}`}>Open {s.b.short} <Icon name="chevron" size={14} /></a>
@@ -73,15 +73,7 @@ function Preview({ s }: { s: BuildingStats }) {
 }
 
 function BuildingRows({ stats }: { stats: BuildingStats[] }) {
-  return (
-    <ul className="brows" data-testid="building-list">{stats.map((s) => (
-      <li key={s.b.key}><a href={`#/campus/${s.b.key}`} className="campus__card brow">
-        <span className="brow__top"><b>{s.b.name}</b><StatusDot band={s.band} label={s.score == null ? 'Not scored' : <><b>{s.score}</b> · {BAND_LABEL[s.band]}</>} /></span>
-        <span className="brow__meta"><span><b>{s.rooms}</b> rooms</span><span><b>{s.open}</b> open issue{s.open === 1 ? '' : 's'}</span><span><b>{s.verifiedPct == null ? '—' : `${s.verifiedPct}%`}</b> tests verified</span><span><b>{s.devices}</b> devices</span></span>
-        <Bar value={s.score} band={s.band} />
-      </a></li>))}
-    </ul>
-  );
+  return <ul className="kit-meters" data-testid="building-list" aria-label="Buildings by health">{stats.map((s) => <MeterRow key={s.b.key} href={`#/campus/${s.b.key}`} label={s.b.name} value={s.score} state={stateOf(s.band)} sub={`${s.rooms} rooms · ${s.open} open issue${s.open === 1 ? '' : 's'} · ${s.verifiedPct == null ? '—' : `${s.verifiedPct}%`} tests verified · ${s.devices} devices · ${s.score == null ? 'not scored' : BAND_LABEL[s.band]}`} />)}</ul>;
 }
 
 function SitePage() {
@@ -98,17 +90,17 @@ function SitePage() {
           <p className="room__intent">{BUILDINGS.length} buildings, {c.rooms} rooms, {c.devices} devices. Select a building to go inside.</p>
           <p className="ui-meta">One complete reference room, three that keep this demonstration’s earlier records, and {ROOMS.filter((r) => r.kind === 'designed').length} designed from their archetypes — modelled layouts and devices, never surveyed.</p>
         </div>
-        <div className="campus__score"><ScoreRing score={c.score} band={c.band} size={92} label="Campus health" /><div><b>Campus health</b><span>{BAND_LABEL[c.band]} · mean of {c.scored} scored rooms</span></div></div>
+        <div className="campus__score"><ScoreRing score={c.score} band={c.band} size={104} label="Campus health" caption={`mean of ${c.scored} scored rooms`} /></div>
       </header>
       <div className="campus__stagewrap">
         <Stage label="Campus in 3D" testId="campus-stage"><CampusMap tiles={tilesOf(c.buildings)} onOpen={(B) => go(`#/campus/${B.key}`)} onPreview={setPeek} /><Legend /></Stage>
         <Preview s={shown} />
       </div>
       <div className="tiles">
-        <StatTile label="Healthy rooms" value={c.healthy} unit={`of ${c.rooms}`} sub={`${c.monitor} to monitor · ${c.action} need action · ${c.unscored} not scored`} icon={<Icon name="heart" />} />
-        <StatTile label="Open issues" value={c.open} sub={`${c.high} High · record issues and live service requests`} tone={c.high ? 'monitor' : undefined} icon={<Icon name="alert" />} />
-        <StatTile label="Tests verified" value={c.verifiedPct ?? '—'} unit="%" sub={`${c.verified} of ${c.applicable} applicable tests passed and independently verified`} icon={<Icon name="check" />} />
-        <StatTile label="Accepted rooms" value={c.accepted} unit={`of ${c.rooms}`} sub="with a current commissioning baseline" icon={<Icon name="cycle" />} />
+        <StatTile label="Healthy rooms" value={c.healthy} unit={`of ${c.rooms}`} sub={`${c.monitor} to monitor · ${c.action} need action · ${c.unscored} not scored`} icon="heart" />
+        <StatTile label="Open issues" value={c.open} sub={`${c.high} High · record issues and live service requests`} tone={c.high ? 'monitor' : undefined} icon="alert" />
+        <StatTile label="Tests verified" value={c.verifiedPct ?? '—'} unit="%" sub={`${c.verified} of ${c.applicable} applicable tests passed and independently verified`} icon="check" />
+        <StatTile label="Accepted rooms" value={c.accepted} unit={`of ${c.rooms}`} sub="with a current commissioning baseline" icon="cycle" />
       </div>
       <Section title="Buildings" aside="Health · rooms · issues · tests verified" id="bld-h"><BuildingRows stats={c.buildings} /></Section>
       <Section title="Rooms by lifecycle" aside={`${c.rooms} rooms`} id="life-h">
@@ -133,13 +125,13 @@ function BuildingPage({ b }: { b: string }) {
       <Crumbs items={[['Campus', '#/campus'], [B.name]]} />
       <header className="room__hero campus__hero">
         <div className="campus__herot"><p className="kicker">{B.short} · opened {B.opened} · {B.floors} floors</p><h1>{B.name}</h1><p className="room__intent">{B.purpose}.</p><p className="ui-meta">Source: {B.source}.</p></div>
-        <div className="campus__score"><ScoreRing score={s.score} band={s.band} size={92} label={`${B.name} health`} /><div><b>Building health</b><span>{s.score == null ? 'not scored' : `${BAND_LABEL[s.band]} · mean of ${s.scored} scored rooms`}</span></div></div>
+        <div className="campus__score"><ScoreRing score={s.score} band={s.band} size={104} label="Building health" caption={s.score == null ? 'not scored' : `mean of ${s.scored} scored rooms`} /></div>
       </header>
       <div className="tiles">
-        <StatTile label="Rooms" value={s.rooms} sub={`${s.scored} scored`} icon={<Icon name="room" />} />
-        <StatTile label="Open issues" value={s.open} sub={`${s.high} High`} tone={s.high ? 'monitor' : undefined} icon={<Icon name="alert" />} />
-        <StatTile label="Devices" value={s.devices} sub="positions across its rooms" icon={<Icon name="device" />} />
-        <StatTile label="Tests verified" value={s.verifiedPct ?? '—'} unit={s.verifiedPct == null ? undefined : '%'} sub={`${s.verified} of ${s.applicable}`} icon={<Icon name="check" />} />
+        <StatTile label="Rooms" value={s.rooms} sub={`${s.scored} scored`} icon="room" />
+        <StatTile label="Open issues" value={s.open} sub={`${s.high} High`} tone={s.high ? 'monitor' : undefined} icon="alert" />
+        <StatTile label="Devices" value={s.devices} sub="positions across its rooms" icon="device" />
+        <StatTile label="Tests verified" value={s.verifiedPct ?? '—'} unit={s.verifiedPct == null ? undefined : '%'} sub={`${s.verified} of ${s.applicable}`} icon="check" />
       </div>
       <div className="campus__stagewrap">
         <Stage label={`Campus in 3D with ${B.name} selected`} testId="campus-stage"><CampusMap tiles={tilesOf(c.buildings)} current={b} onOpen={(x) => go(`#/campus/${x.key}`)} /><Legend /></Stage>

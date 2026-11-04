@@ -14,7 +14,7 @@ import { campusStats, attentionQueue, BAND_LABEL, type BuildingStats } from '../
 import { programme } from '../campus/programme.js';
 import { load as loadWorkspace, type Workspace } from '../workspace/store.js';
 import { CampusMap, Stage } from '../spatial/Spatial.js';
-import { StatusDot, Chip, ScoreRing, StatTile, Bar, Icon, Section } from '../spatial/parts.js';
+import { StatusDot, Chip, StatTile, Icon, Section, List, ListRow, MeterRow, EmptyState, stateOf } from '../spatial/parts.js';
 
 const DAY = 864e5;
 const ago = (t: number) => { const d = Math.floor((Date.now() - t) / DAY); return d <= 0 ? 'today' : d === 1 ? '1 day ago' : `${d} days ago`; };
@@ -56,7 +56,7 @@ export function recentChanges(w: Workspace | null): Array<Change & { n: number }
 
 function More<T>({ items, n, render, label }: { items: T[]; n: number; render: (x: T, i: number) => ReactElement; label: string }) {
   const [all, setAll] = useState(false);
-  return <>{(all ? items : items.slice(0, n)).map(render)}{items.length > n && <li className="row row--more"><button type="button" className="sp__more" aria-expanded={all} onClick={() => setAll(!all)}>{all ? 'Show fewer' : `Show ${items.length - n} more of ${items.length} ${label}`}</button></li>}</>;
+  return <>{(all ? items : items.slice(0, n)).map(render)}{items.length > n && <li className="kit-row-li row--more"><button type="button" className="sp__more" aria-expanded={all} onClick={() => setAll(!all)}>{all ? 'Show fewer' : `Show ${items.length - n} more of ${items.length} ${label}`}</button></li>}</>;
 }
 
 export default function Home({ role }: PageProps) {
@@ -93,42 +93,42 @@ export default function Home({ role }: PageProps) {
             {' '}<b>{dec.length} decision{dec.length === 1 ? ' is' : 's are'} waiting for a person</b>, and {nChanges} change{nChanges === 1 ? ' was' : 's were'} recorded this week.
           </p>
         </div>
-        {entries.length > 0 && <ul className="rows home__entries" aria-label="Start here">{entries.map((e) => <li key={e.href} className="row"><span className="row__ic"><Icon name={e.icon} /></span><span className="row__main"><a href={e.href}><b>{e.t}</b></a><span className="ui-meta">{e.s}</span></span><span className="row__end home__open" aria-hidden="true">Open <Icon name="chevron" size={14} /></span></li>)}</ul>}
+        {entries.length > 0 && <div className="home__entries"><List label="Start here">{entries.map((e) => <ListRow key={e.href} href={e.href} leading={<span className="row__ic"><Icon name={e.icon} /></span>} title={e.t} sub={e.s} trailing={<span className="home__open">Open</span>} />)}</List></div>}
         <div className="room__acts">{opens('#/search') && <a className="ui-btn ui-btn--primary" href="#/search"><Icon name="search" /> Search everything</a>}{opens('#/tours') && <a className="ui-btn" href="#/tours"><Icon name="spark" /> Guided experience</a>}{opens('#/v25') && <a className="ui-btn" href="#/v25"><Icon name="cycle" /> Lifecycle stations</a>}</div>
       </header>
 
       <div className="home__grid">
         <div className="tiles tiles--home" data-testid="home-kpis">
-          <StatTile label="Campus health" value={c.score ?? '—'} unit="/100" sub={<StatusDot band={c.band} label={`${BAND_LABEL[c.band]} · mean of ${c.scored} scored rooms`} />} icon={<ScoreRing score={c.score} band={c.band} size={40} label="Campus health" />} />
-          <StatTile label="Healthy rooms" value={c.healthy} unit={`of ${c.rooms}`} sub="health 88 or more" icon={<Icon name="heart" />} />
-          <StatTile label="Rooms needing attention" value={queue.length} sub={`${needAction} need action, ${watch} to watch`} tone={queue.length ? 'monitor' : undefined} icon={<Icon name="alert" />} />
-          <StatTile label="Critical issues" value={c.high} sub={`${c.open} open issues in all`} tone={c.high ? 'action' : undefined} icon={<Icon name="alert" />} />
-          <StatTile label="Commissioning readiness" value={c.verifiedPct ?? '—'} unit="%" sub={`${c.verified} of ${c.applicable} tests verified`} icon={<Icon name="check" />} />
-          <StatTile label="Accepted rooms" value={c.accepted} unit={`of ${c.rooms}`} sub="with a current baseline" icon={<Icon name="cycle" />} />
-          <StatTile label="Open service requests" value={liveReq.length} sub={`${(w?.workOrders || []).filter((x) => !['DONE', 'CANCELLED'].includes(x.state)).length} work orders open`} icon={<Icon name="device" />} />
-          <StatTile label="Funding authorised" value={usd(funded)} sub={`${P.funding.length} of ${P.projects.length} projects funded · not a quote`} icon={<Icon name="passport" />} />
+          <StatTile label="Campus health" value={c.score ?? '—'} unit="/100" sub={`${BAND_LABEL[c.band]} · mean of ${c.scored} scored rooms`} tone={c.band} icon="heart" />
+          <StatTile label="Healthy rooms" value={c.healthy} unit={`of ${c.rooms}`} sub="health 88 or more" icon="heart" />
+          <StatTile label="Rooms needing attention" value={queue.length} sub={`${needAction} need action, ${watch} to watch`} tone={queue.length ? 'monitor' : undefined} icon="alert" />
+          <StatTile label="Critical issues" value={c.high} sub={`${c.open} open issues in all`} tone={c.high ? 'action' : undefined} icon="alert" />
+          <StatTile label="Commissioning readiness" value={c.verifiedPct ?? '—'} unit="%" sub={`${c.verified} of ${c.applicable} tests verified`} icon="check" />
+          <StatTile label="Accepted rooms" value={c.accepted} unit={`of ${c.rooms}`} sub="with a current baseline" icon="cycle" />
+          <StatTile label="Open service requests" value={liveReq.length} sub={`${(w?.workOrders || []).filter((x) => !['DONE', 'CANCELLED'].includes(x.state)).length} work orders open`} icon="device" />
+          <StatTile label="Funding authorised" value={usd(funded)} sub={`${P.funding.length} of ${P.projects.length} projects funded · not a quote`} icon="passport" />
         </div>
         <Section title="Campus status" aside={opens('#/campus') ? <a href="#/campus">Open campus</a> : undefined} id="home-campus-h">
           <Stage label="Campus in 3D" testId="home-stage"><CampusMap tiles={tiles} onOpen={(b) => { if (opens(`#/campus/${b.key}`)) location.hash = `#/campus/${b.key}`; }} /></Stage>
-          <ul className="brows home__brows">{c.buildings.map((s) => <li key={s.b.key}><a href={`#/campus/${s.b.key}`} className="brow campus__card"><span className="brow__top"><b>{s.b.name}</b><StatusDot band={s.band} label={s.score == null ? 'Not scored' : <><b>{s.score}</b> · {BAND_LABEL[s.band]}</>} /></span><span className="brow__meta"><span><b>{s.rooms}</b> rooms</span><span><b>{s.open}</b> open issues</span><span><b>{s.verifiedPct ?? '—'}{s.verifiedPct == null ? '' : '%'}</b> verified</span></span><Bar value={s.score} band={s.band} /></a></li>)}</ul>
+          <ul className="kit-meters home__brows" aria-label="Buildings by health">{c.buildings.map((s) => <MeterRow key={s.b.key} href={`#/campus/${s.b.key}`} label={s.b.name} value={s.score} state={stateOf(s.band)} sub={`${s.rooms} rooms · ${s.open} open issue${s.open === 1 ? '' : 's'} · ${s.verifiedPct ?? '—'}${s.verifiedPct == null ? '' : '%'} verified`} />)}</ul>
         </Section>
       </div>
 
       <div className="room__two home__two">
         <div>
           <Section title="What needs you" aside={`Attention queue · ${queue.length} rooms · most urgent first`} id="home-att-h" testId="attention">
-            {queue.length ? <ul className="rows"><More items={queue} n={4} label="rooms" render={(x) => <li key={x.r.outline.id} className="row row--stack"><span className={`row__ic row__ic--${x.issues.some((i) => i.severity === 'High') ? 'bad' : 'warn'}`}><Icon name="alert" /></span><span className="row__main"><a href={roomHref(x.r.outline)}><b>{x.issues[0]?.title || 'Health below the healthy band'}</b></a><span className="ui-meta">{shortName(x.r.outline)} · {x.issues.length} open · {x.issues[0]?.source || x.h.why}</span></span><span className="row__end"><StatusDot band={x.h.band} label={x.h.score == null ? 'not scored' : `${x.h.score}`} /></span></li>} /></ul>
-              : <div className="empty"><b>Nothing needs attention</b><p>No room has an open issue or a health below the healthy band.</p></div>}
+            {queue.length ? <List label="Attention queue"><More items={queue} n={4} label="rooms" render={(x) => <ListRow key={x.r.outline.id} href={roomHref(x.r.outline)} leading={<span className={`row__ic row__ic--${x.issues.some((i) => i.severity === 'High') ? 'bad' : 'warn'}`}><Icon name="alert" /></span>} title={x.issues[0]?.title || 'Health below the healthy band'} sub={`${shortName(x.r.outline)} · ${x.issues.length} open · ${x.issues[0]?.source || x.h.why}`} trailing={<StatusDot band={x.h.band} label={x.h.score == null ? 'not scored' : `${x.h.score}`} />} />} /></List>
+              : <EmptyState title="Nothing needs attention" icon="check">No room has an open issue or a health below the healthy band.</EmptyState>}
           </Section>
           <Section title="Decision queue" aside={`${dec.length} waiting for a person`} id="home-dec-h" testId="decisions">
-            {dec.length ? <ul className="rows"><More items={dec} n={4} label="decisions" render={(d) => <li key={d.id} className="row row--stack"><span className="row__ic"><Icon name="passport" /></span><span className="row__main">{opens(d.href.split('?')[0]!) ? <a href={d.href}><b>{d.title}</b></a> : <b>{d.title}</b>}<span className="ui-meta">{d.where} · {d.decides}</span></span><span className="row__end"><Chip tone={d.tone}>{d.id}</Chip></span></li>} /></ul>
-              : <div className="empty"><b>No decision waits</b><p>Nothing in the records is pending a person.</p></div>}
+            {dec.length ? <List label="Decision queue"><More items={dec} n={4} label="decisions" render={(d) => <ListRow key={d.id} href={opens(d.href.split('?')[0]!) ? d.href : undefined} leading={<span className="row__ic"><Icon name="passport" /></span>} title={d.title} sub={`${d.where} · ${d.decides}`} trailing={<Chip tone={d.tone}>{d.id}</Chip>} />} /></List>
+              : <EmptyState title="No decision waits" icon="check">Nothing in the records is pending a person.</EmptyState>}
           </Section>
         </div>
         <div>
           <Section title="Recent changes" aside="Last 7 days · newest first" id="home-chg-h" testId="changes">
-            {changes.length ? <ul className="rows"><More items={changes} n={5} label="changes" render={(x, i) => <li key={i} className="row row--stack"><span className={`row__ic${x.denied ? ' row__ic--bad' : ''}`}><Icon name="clock" /></span><span className="row__main"><b>{x.href ? <a href={x.href}>{x.title} · {x.where}</a> : `${x.title} · ${x.where}`}</b><span className="ui-meta">{x.detail}</span></span><span className="row__end ui-meta">{ago(x.at)}{x.denied ? ' · refused' : ''}</span></li>} /></ul>
-              : <div className="empty"><b>No change this week</b><p>Nothing was recorded in the last seven days.</p></div>}
+            {changes.length ? <List label="Recent changes"><More items={changes} n={5} label="changes" render={(x, i) => <ListRow key={i} href={x.href} leading={<span className={`row__ic${x.denied ? ' row__ic--bad' : ''}`}><Icon name="clock" /></span>} title={`${x.title} · ${x.where}`} sub={x.detail} trailing={<span className="ui-meta">{ago(x.at)}{x.denied ? ' · refused' : ''}</span>} />} /></List>
+              : <EmptyState title="No change this week" icon="clock">Nothing was recorded in the last seven days.</EmptyState>}
           </Section>
           <Section title="Quick actions" id="home-qa-h">
             <nav className="campus__more home__quick" aria-label="Quick actions">{[
