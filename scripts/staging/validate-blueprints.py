@@ -44,8 +44,9 @@ build = rd('scripts/build.mjs')
 outs = {'apps/website/dist': 'apps/website/build.mjs', 'apps/demo/dist': 'apps/demo'}
 rec('P1-2', 'each static site publishes a directory the public build produces', all(s.get('staticPublishPath') in outs and '--public' in s.get('buildCommand', '') for s in s1) and "includes('--public')" in build, ', '.join(f"{s['name']}→{s.get('staticPublishPath')}" for s in s1))
 rec('P1-3', 'no secret or dashboard-entered variable in Phase 1', all(not e.get('sync') is False and 'generateValue' not in e and 'fromDatabase' not in e for s in s1 for e in s.get('envVars', [])))
-need_h = {'Content-Security-Policy', 'X-Content-Type-Options', 'X-Frame-Options', 'Strict-Transport-Security', 'Referrer-Policy'}
-rec('P1-4', 'every static site sends CSP, nosniff, frame denial, HSTS, no-referrer on /*', all(need_h <= {h['name'] for h in s.get('headers', []) if h.get('path') == '/*'} for s in s1))
+# strengthened by the security assessment (2026-11-04, SA-02): Permissions-Policy and cross-origin isolation headers are required too
+need_h = {'Content-Security-Policy', 'X-Content-Type-Options', 'X-Frame-Options', 'Strict-Transport-Security', 'Referrer-Policy', 'Permissions-Policy', 'Cross-Origin-Opener-Policy', 'Cross-Origin-Resource-Policy'}
+rec('P1-4', 'every static site sends CSP, nosniff, frame denial, HSTS, no-referrer, Permissions-Policy, COOP, CORP on /*', all(need_h <= {h['name'] for h in s.get('headers', []) if h.get('path') == '/*'} for s in s1))
 demo = next((s for s in s1 if s['name'] == 'empathia-demo'), None)
 rec('P1-5', 'the investor demo is not indexed (X-Robots-Tag noindex)', bool(demo) and any(h['name'] == 'X-Robots-Tag' and 'noindex' in h['value'] for h in demo.get('headers', [])))
 nv = {e.get('value') for s in s1 for e in s.get('envVars', []) if e.get('key') == 'NODE_VERSION'}
