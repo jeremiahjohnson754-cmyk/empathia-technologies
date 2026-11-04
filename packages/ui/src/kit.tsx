@@ -13,7 +13,7 @@ import { createContext, useCallback, useContext, useEffect, useId, useMemo, useR
 import { Icon, type IconName } from './icons.js';
 import type { Tone } from './status.js';
 
-const cx = (...a: Array<string | false | null | undefined>) => a.filter(Boolean).join(' ');
+const cx = (...a: Array<string | false | null | undefined | 0>) => a.filter(Boolean).join(' ');
 /** A data-series colour: a status tone, a data hue, or one of the nine products (their --p-<id>). */
 export type Series = Tone | 'indigo' | 'violet' | 'mission-control' | 'lite' | 'pro' | 'search-party' | 'servicehands' | 'commissioning' | 'apex' | 'field' | 'learn';
 const fmt = (n: number, d = 0) => (Number.isFinite(n) ? n.toLocaleString('en-GB', { maximumFractionDigits: d, minimumFractionDigits: 0 }) : '—');
@@ -235,7 +235,7 @@ export function Segmented<T extends string>({ options, value, onChange, label, s
   return (
     <div className={cx('kit-seg', small && 'kit-seg--sm')} role="radiogroup" aria-label={label}>
       {options.map((o, i) => (
-        <button key={o.value} ref={(el) => { refs.current[i] = el; }} type="button" role="radio" aria-checked={o.value === value} tabIndex={o.value === value ? 0 : -1}
+        <button key={o.value} ref={(el: HTMLButtonElement | null) => { refs.current[i] = el; }} type="button" role="radio" aria-checked={o.value === value} tabIndex={o.value === value ? 0 : -1}
           className={cx('kit-seg__opt', o.value === value && 'kit-seg__opt--on')} onClick={() => onChange(o.value)} onKeyDown={(e) => key(e, i)}>
           {o.icon ? <Icon name={o.icon} size={16} /> : null}<span>{o.label}</span>{o.count !== undefined ? <span className="kit-seg__n">{o.count}</span> : null}
         </button>))}
@@ -250,7 +250,7 @@ export function KitTabs({ tabs, active, onChange, label, idBase }: { tabs: Array
   return (
     <div className="kit-tabs" role="tablist" aria-label={label}>
       {tabs.map((t) => (
-        <button key={t.key} ref={(el) => { refs.current[t.key] = el; }} type="button" role="tab" id={`${idBase}-tab-${t.key}`} aria-controls={`${idBase}-panel-${t.key}`} aria-selected={t.key === active} tabIndex={t.key === active ? 0 : -1}
+        <button key={t.key} ref={(el: HTMLButtonElement | null) => { refs.current[t.key] = el; }} type="button" role="tab" id={`${idBase}-tab-${t.key}`} aria-controls={`${idBase}-panel-${t.key}`} aria-selected={t.key === active} tabIndex={t.key === active ? 0 : -1}
           className={cx('kit-tab', t.key === active && 'kit-tab--on')} onClick={() => onChange(t.key)}
           onKeyDown={(e) => { const k = e.key; if (k === 'ArrowRight') { e.preventDefault(); go(at + 1); } else if (k === 'ArrowLeft') { e.preventDefault(); go(at - 1); } else if (k === 'Home') { e.preventDefault(); go(0); } else if (k === 'End') { e.preventDefault(); go(tabs.length - 1); } }}>
           {t.icon ? <Icon name={t.icon} size={16} /> : null}<span>{t.label}</span>{t.count !== undefined ? <span className="kit-tab__n">{t.count}</span> : null}
