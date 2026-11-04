@@ -13,44 +13,43 @@
   --w-ok: var(--ok); --w-warn: var(--warn); --w-bad: var(--bad);
   --w-ev-verified: var(--ok); --w-ev-observed: var(--info); --w-ev-declared: var(--tx2); --w-ev-modeled: var(--violet); --w-ev-simulated: var(--warn); --w-ev-unknown: var(--tx3);
   --w-shadow: var(--shadow); --w-frame: #08111d;
+  /* the V2.5.3 atmosphere, shared with the demonstration (tokens of the navy retune): hero ground, the teal and indigo glows, the grid */
+  --w-hero-1: var(--hero-1); --w-hero-2: var(--hero-2); --w-glow-a: var(--glow-a); --w-glow-b: var(--glow-b); --w-grid: var(--hero-grid);
   --w-p-mission-control: var(--p-mission-control); --w-p-lite: var(--p-lite); --w-p-pro: var(--p-pro); --w-p-search-party: var(--p-search-party);
   --w-p-servicehands: var(--p-servicehands); --w-p-commissioning: var(--p-commissioning); --w-p-apex: var(--p-apex); --w-p-field: var(--p-field); --w-p-learn: var(--p-learn);
 }
 /* atmosphere, dark (the default and [data-theme=dark]): glows of the accent and the indigo/violet pair over a deep base, cards that
    catch a little light on their top edge, shadows that sink into the page */
 :root, [data-theme="dark"] {
-  --w-glow-a: color-mix(in srgb, var(--accent) 20%, transparent); --w-glow-b: color-mix(in srgb, var(--indigo) 24%, transparent); --w-glow-c: color-mix(in srgb, var(--violet) 14%, transparent);
+  --w-glow-c: color-mix(in srgb, var(--violet) 14%, transparent);
   --w-glow-k: 26%;   /* how strongly a product colour tints its glow */
   --w-card: linear-gradient(180deg, color-mix(in srgb, var(--panel) 94%, var(--tx)) 0%, var(--panel) 48%);
   --w-card-hi: color-mix(in srgb, var(--panel2) 90%, var(--tx));
   --w-edge: inset 0 1px 0 color-mix(in srgb, var(--tx) 8%, transparent);
   --w-lift: 0 1px 1px rgba(0, 0, 0, .25), 0 24px 56px -24px rgba(0, 0, 0, .7);
   --w-lift-hi: 0 1px 1px rgba(0, 0, 0, .3), 0 32px 72px -28px rgba(0, 0, 0, .8);
-  --w-grid: color-mix(in srgb, var(--tx) 7%, transparent);
   --w-glass: color-mix(in srgb, var(--panel) 82%, transparent);
 }
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
-    --w-glow-a: color-mix(in srgb, var(--accent) 13%, transparent); --w-glow-b: color-mix(in srgb, var(--indigo) 11%, transparent); --w-glow-c: color-mix(in srgb, var(--violet) 8%, transparent);
+    --w-glow-c: color-mix(in srgb, var(--violet) 8%, transparent);
     --w-glow-k: 16%;
     --w-card: linear-gradient(180deg, var(--panel) 0%, color-mix(in srgb, var(--panel) 70%, var(--bg)) 100%);
     --w-card-hi: var(--panel);
     --w-edge: inset 0 1px 0 rgba(255, 255, 255, .9);
     --w-lift: 0 1px 2px rgba(28, 24, 18, .06), 0 20px 44px -24px rgba(28, 24, 18, .24);
     --w-lift-hi: 0 1px 2px rgba(28, 24, 18, .08), 0 28px 60px -26px rgba(28, 24, 18, .32);
-    --w-grid: color-mix(in srgb, var(--tx) 6%, transparent);
     --w-glass: color-mix(in srgb, var(--panel) 88%, transparent);
   }
 }
 [data-theme="light"] {
-  --w-glow-a: color-mix(in srgb, var(--accent) 13%, transparent); --w-glow-b: color-mix(in srgb, var(--indigo) 11%, transparent); --w-glow-c: color-mix(in srgb, var(--violet) 8%, transparent);
+  --w-glow-c: color-mix(in srgb, var(--violet) 8%, transparent);
   --w-glow-k: 16%;
   --w-card: linear-gradient(180deg, var(--panel) 0%, color-mix(in srgb, var(--panel) 70%, var(--bg)) 100%);
   --w-card-hi: var(--panel);
   --w-edge: inset 0 1px 0 rgba(255, 255, 255, .9);
   --w-lift: 0 1px 2px rgba(28, 24, 18, .06), 0 20px 44px -24px rgba(28, 24, 18, .24);
   --w-lift-hi: 0 1px 2px rgba(28, 24, 18, .08), 0 28px 60px -26px rgba(28, 24, 18, .32);
-  --w-grid: color-mix(in srgb, var(--tx) 6%, transparent);
   --w-glass: color-mix(in srgb, var(--panel) 88%, transparent);
 }
 
@@ -144,7 +143,7 @@ p { text-wrap: pretty; }
 
 /* hero: a gradient panel with a soft glow (V2.5.3), the nine colours above it, a faint grid that fades out */
 .hero { position: relative; isolation: isolate; padding: clamp(56px, 8vw, 112px) 0 clamp(56px, 7vw, 96px); border-bottom: 1px solid var(--w-line); overflow: hidden;
-  background: radial-gradient(900px 520px at 10% -12%, var(--w-glow-a), transparent 62%), radial-gradient(900px 560px at 92% -4%, var(--w-glow-b), transparent 62%), radial-gradient(760px 520px at 55% 118%, var(--w-glow-c), transparent 62%), linear-gradient(180deg, var(--w-bg2), var(--w-bg)); }
+  background: radial-gradient(900px 520px at 10% -12%, var(--w-glow-a), transparent 62%), radial-gradient(900px 560px at 92% -4%, var(--w-glow-b), transparent 62%), radial-gradient(760px 520px at 55% 118%, var(--w-glow-c), transparent 62%), linear-gradient(180deg, var(--w-hero-1) 0%, var(--w-hero-2) 55%, var(--w-bg) 100%); }
 .hero::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background-image: linear-gradient(var(--w-grid) 1px, transparent 1px), linear-gradient(90deg, var(--w-grid) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(70% 60% at 50% 0%, #000 10%, transparent 75%); -webkit-mask-image: radial-gradient(70% 60% at 50% 0%, #000 10%, transparent 75%); }
 .spectrum { display: grid; grid-template-columns: repeat(9, 1fr); gap: 3px; height: 4px; margin: 0 0 clamp(36px, 5vw, 64px); border-radius: 2px; overflow: hidden; }
 .spectrum i { background: var(--pc); }
@@ -153,12 +152,12 @@ p { text-wrap: pretty; }
 .hero__copy, .hero__aside { min-width: 0; }
 .status-line { margin: 24px 0 0; }
 /* a product's hero: its own colour leads the glow */
-.hero--product { padding-top: 0; background: radial-gradient(900px 560px at 86% 8%, color-mix(in srgb, var(--pc) var(--w-glow-k), transparent), transparent 64%), radial-gradient(800px 480px at 4% -10%, var(--w-glow-a), transparent 62%), linear-gradient(180deg, var(--w-bg2), var(--w-bg)); }
+.hero--product { padding-top: 0; background: radial-gradient(900px 560px at 86% 8%, color-mix(in srgb, var(--pc) var(--w-glow-k), transparent), transparent 64%), radial-gradient(800px 480px at 4% -10%, var(--w-glow-a), transparent 62%), linear-gradient(180deg, var(--w-hero-1) 0%, var(--w-hero-2) 55%, var(--w-bg) 100%); }
 .hero--product .hero__band { height: 4px; background: var(--pc); margin-bottom: clamp(48px, 7vw, 96px); box-shadow: 0 0 24px 2px color-mix(in srgb, var(--pc) 50%, transparent); }
 .hero--product .label { display: inline-flex; align-items: center; gap: 10px; color: var(--w-tx2); }
 .hero--product h1 { max-width: 14ch; }
 .hero--product h1::after { content: ""; display: block; width: 72px; height: 5px; margin-top: 24px; border-radius: 3px; background: var(--pc); }
-.hero--founder { background: radial-gradient(800px 520px at 18% 30%, var(--w-glow-a), transparent 62%), radial-gradient(800px 520px at 90% 0%, var(--w-glow-b), transparent 62%), linear-gradient(180deg, var(--w-bg2), var(--w-bg)); }
+.hero--founder { background: radial-gradient(800px 520px at 18% 30%, var(--w-glow-a), transparent 62%), radial-gradient(800px 520px at 90% 0%, var(--w-glow-b), transparent 62%), linear-gradient(180deg, var(--w-hero-1) 0%, var(--w-hero-2) 55%, var(--w-bg) 100%); }
 
 /* captures of the investor demonstration (dark, D43), framed like a screen, lit by their product's colour */
 .shot { margin: 0; }
