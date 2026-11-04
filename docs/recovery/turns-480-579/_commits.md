@@ -267,3 +267,57 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx
 ```
 (The Slice 0 agent's commit `23f03e9` with docs/phase2/* is referenced in the turn-569 agent prompt as the base of the reference-room work; its message is not in the transcript.)
+
+### Turn 570–571 — cherry-picks onto phase2/living-universe: website wave 1 `2edff2d`, `911261e`; labs `afe3ba8` (agent commits; their messages and the new hashes are not in the transcript).
+
+### Turn 575 — commit (hash not shown) on phase2/living-universe (`git add -A apps/website tests/browser/website.test.mjs`)
+
+```
+Founder page: the founder's own professional overview beneath his name (credentials kept separate) and his founding story, closing on 'My Cinderella shoe.' as its own line
+
+Text supplied by Jeremiah Johnson on 2026-11-01 (05:42 and 05:46 CT), used verbatim (apps/website/src/founder.ts). Tests: W-*-founder-bio and
+W-*-founding-story at every width; website 197/197.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx
+```
+
+### Turn 576 — cherry-pick of reference-room agent commit `b68a2d1` onto phase2/living-universe (new hash not shown); worktree agent-a039e2512b9307d34 removed afterwards.
+
+### Turn 576 — commit (hash not shown; tool #5, Reference-room Learn links) on phase2/living-universe
+
+```
+Reference room: Learn links go to the real labs (camera → Camera Lab, microphones/DSP/loudspeakers → Audio Lab); the network lab is stated as planned, never linked
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx
+```
+
+### Turn 576 — commit (hash not shown; tool #33, Campus floor-plan labels) on phase2/living-universe
+
+```
+Campus floor plan: room labels fit their footprints (number alone when the name would spill); a schematic building core gives the plate its bearings
+
+Measured check CN-*-03b on every floor holding a room, at 360/768/1440.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx
+```
+
+### Turn 576 — commit (hash not shown; tool #70, Parity ledger + audit record) on phase2/living-universe
+
+```
+Parity ledger: campus and Learn rows describe the reference room and the three new labs; reference-room doc records the strict site audit (P0 0, P1 0)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx
+```
+
+### Turn 576 — commit (hash not shown; tool #74, ElevenLabs download blocker) on phase2/living-universe
+
+```
+ElevenLabs evidence: generated audio cannot reach the workspace (allowlist), so no credits spent; two ways forward recorded
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01RMXk1jVqvE4J2bVn1EY9vx
+```

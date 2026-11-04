@@ -9,3 +9,9 @@
 | 554 | `/home/claude/empathia-technologies/tests/browser/demo-ux.test.mjs` | Bash heredoc `cat > tests/browser/demo-ux.test.mjs` |
 | 554 | `/home/claude/empathia-technologies/docs/releases/RELEASE_CANDIDATE_2026-10-31.md` | Write (draft with {{TESTED}}/{{MATRIX}}/{{FRESH}} placeholders) |
 | 568 | `/home/claude/empathia-technologies/docs/media/ELEVENLABS_PLAN_EVIDENCE.md` | Bash heredoc `cat > docs/media/ELEVENLABS_PLAN_EVIDENCE.md` (cwd main tree; branch phase2/living-universe) |
+| 573 | `/home/claude/empathia-technologies/apps/website/src/founder.ts` | created by `python3 - <<'EOF'` (open().write) in turn 573; stored here as it stands after the second python edit of the same turn (comment reworded) |
+| 575 | `/home/claude/empathia-technologies/apps/website/src/founder.ts` | rewritten by python in turn 575 (FOUNDING_STORY_QUOTE removed; FOUNDING_STORY array + FOUNDING_STORY_CLOSE added); the stored file is this LAST state |
+| 576 | `/tmp/p2chk/campus.mjs` | Bash heredoc `cat > /tmp/p2chk/campus.mjs` (tool #10) |
+| 576 | `/tmp/p2chk/levels.mjs` | Bash heredoc `cat > /tmp/p2chk/levels.mjs` (tool #14) |
+| 576 | `/tmp/p2chk/floors.mjs` | Bash heredoc `cat > /tmp/p2chk/floors.mjs` (tool #22) |
+| 576 | `/tmp/p2chk/BRIEF_COMMON.md` | Bash heredoc `cat > /tmp/p2chk/BRIEF_COMMON.md` (tool #53) |

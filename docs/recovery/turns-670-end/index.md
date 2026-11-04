@@ -80,3 +80,70 @@ Branch in play at start of range: `phase3/legendary-experience` (LEI). Timestamp
 | 760 | Tue 2026-11-03 18:23 CST | **Founder message**: look through the Empathia files sent earlier (decisions and everything done); just build on Render so this doesn't happen again. |
 | 761 | - | Listed non-media attachments and `.saved-uploads.jsonl` entries since 31 Oct (the uploads include 48 narration takes for tour audio). Checked recovery extraction progress. Committed "Recovery (in progress): more turns extracted" and pushed as **a48c07c**. Restated Render plan: `empathia-website-next` and `empathia-demo-next` auto-rebuild from `phase3/legendary-experience` on each push; main Render sites to move over once each site is back to its 3 Nov state. |
 | 762 | Tue 2026-11-03 18:26 CST | **Founder message**: build both sites as you go; add a few agents; deadline tomorrow morning (~15 hours). |
+| 763 | - | Wrote `docs/recovery/REBUILD_COMMON.md` (common brief for build agents: read STANDING_RULES, LEI_DECISIONS, recovery files, V2.5.3 sources; branch `rebuild/<slice>` from `origin/phase3/legendary-experience`, push after every commit, never push main or the integration branch; offline toolchain via `node scripts/bootstrap.mjs`; Inter OTF at `/usr/share/fonts/opentype/inter/`; tests light/dark; quality bar). Committed "Rebuild: common brief for the build agents; recovery progress" and pushed. Restored V2.5.3 sources into `legacy/source/v253/` from attachments `c61c819a-...-offline.html`, `ad9d053b-...-live.html`, `6bcf86da-...-engineer-private.html`; hashes match `legacy/source/SHA256SUMS.txt`. Relaunched failed recovery range as agents for 580–624 and 625–669 (model sonnet); committed/pushed "Recovery (in progress)". Noted turn 580 contains the API key the founder once pasted (reading it triggered a filter), so relaunched 582–624 skipping 580–581. SendMessage to recovery agent `a97f8d5448e0dcd03` to skip turn 629 and continue from 630. Launched five background worktree build agents: `rebuild/foundation` (tokens v2, Inter, ThemeSwitch, products.ts, brand.mjs, test helpers), `rebuild/website`, `rebuild/demo-shell` (registry, View as, D44 access policy, role transitions, Scouter), `rebuild/demo-spaces` (campus, 30 rooms, tours with narration, search), `rebuild/demo-ops` (dispatch, ServiceHands, replay, FI scan, decisions, safeguards, enquiry, Learn labs, hardening). Committed "Recovery (in progress)" with attribution "Co-Authored-By: Claude Fable 5.1" (note: differs from the Opus 5.5 line used elsewhere). Added `.claude/` to `.gitignore`; committed "Ignore the local agent worktree folder; recovery progress" (also "Claude Fable 5.1" attribution) and pushed as **8ef6e10**; working tree clean. |
+| 764 | - | Committed "Recovery: turns 582–624 transcribed (588 and 595 not recorded)" ("Claude Fable 5.1" attribution) and pushed (hash given in 766 as **ce51849**). |
+| 765 | Tue 2026-11-03 18:34 CST | **Founder message**: bring it back to the earlier quality, finish where it left off, merge everything, deploy to Render, destructive QA, QA fix-up, polish and harden; last directive for this build — no more design, just execute what was given for both websites; 48% of max usage left. |
+| 766 | - | Acknowledged: no new design; execute, merge, destructive QA, polish, harden, Render. Turns 582–624 recovered and pushed (`ce51849`), incl. hold-v2 approval, Search Party, hardening and tours briefs, audio production plan; two turns not transcribable (touch the credential). Will check in only when a slice lands or a site goes live. |
+| 767 | Tue 2026-11-03 18:38 CST | **Founder message**: pace usage to full completion; refine and improve where possible; make both "12/10 websites"; strategic and creative within strict limits; better UI/UX, security, workflows and screens, "nothing too crazy". |
+| 768 | - | Appended "Founder direction, 2026-11-03 18:34 and 18:38 CT (binding)" to `docs/recovery/REBUILD_COMMON.md` (no new design; destructive QA list; refine UI/UX/security within approved design; economical token use); committed "Rebuild brief: the founder's final direction (execute, destructive QA, refine within limits)" and pushed. SendMessage with the same note to all five build agents. Committed "Recovery (in progress)" and pushed as **bc1ea6e**; tree clean. Last turn in the conversation at extraction time (total_turns reported 769; the final page ended at 768 with no next_page_token). |
+
+## Reconstructed files (`files/`)
+
+Each path below is reconstructed under `files/<path without leading />`. "Bash heredoc" = body of a `cat > path <<EOF` command; "Write" = a Write call.
+
+| Turn(s) | Path | How |
+|---|---|---|
+| 670 | `/tmp/claude-0/-home-claude/73b60a1b-854c-5a1e-99ae-d3ec61696e66/scratchpad/lei-int/run.sh` | Bash heredoc |
+| 673 | `/tmp/claude-0/-home-claude/73b60a1b-854c-5a1e-99ae-d3ec61696e66/scratchpad/lei-int/probe.mjs` | Bash heredoc |
+| 674 | `/tmp/claude-0/-home-claude/73b60a1b-854c-5a1e-99ae-d3ec61696e66/scratchpad/lei-int/shots.mjs` | Bash heredoc |
+| 674 | `/tmp/p2chk/BRIEF_WEBSITE.md` | Bash heredoc |
+| 674 | `/tmp/p2chk/BRIEF_PHONESHELL.md` | Bash heredoc |
+| 678 | `/tmp/claude-0/-home-claude/73b60a1b-854c-5a1e-99ae-d3ec61696e66/scratchpad/logo/render.mjs` | Bash heredoc |
+| 678 | `/tmp/claude-0/-home-claude/73b60a1b-854c-5a1e-99ae-d3ec61696e66/scratchpad/logo/draw.py` | Bash heredoc |
+| 680 | `/tmp/claude-0/-home-claude/73b60a1b-854c-5a1e-99ae-d3ec61696e66/scratchpad/logo/draw2.py` | Bash heredoc |
+| 680 | `/tmp/claude-0/-home-claude/73b60a1b-854c-5a1e-99ae-d3ec61696e66/scratchpad/logo/canvas/project/canvas.json` | Write (2nd of 2; 1st also in turn 680) |
+| 680 | `/tmp/claude-0/-home-claude/73b60a1b-854c-5a1e-99ae-d3ec61696e66/scratchpad/logo/canvas/project/Main.dc.html` | Write |
+| 680 | `/tmp/claude-0/-home-claude/73b60a1b-854c-5a1e-99ae-d3ec61696e66/scratchpad/logo/canvas/project/Concepts.dc.html` | Write |
+| 680 | `/tmp/claude-0/-home-claude/73b60a1b-854c-5a1e-99ae-d3ec61696e66/scratchpad/logo/canvas/project/Lineage.dc.html` | Write |
+| 680 | `/tmp/claude-0/-home-claude/73b60a1b-854c-5a1e-99ae-d3ec61696e66/scratchpad/logo/canvas/project/Voice.dc.html` | Write |
+| 680 | `/tmp/claude-0/-home-claude/73b60a1b-854c-5a1e-99ae-d3ec61696e66/scratchpad/logo/canvas/project/Owl.dc.html` | Write |
+| 680 | `/home/claude/empathia-technologies/media/brand/README.md` | Bash heredoc |
+| 680 | `/home/claude/empathia-technologies/media/brand/concepts/draw.py` | cp of draw2.py |
+| 680 | `/home/claude/empathia-technologies/media/brand/concepts/1-aspis-flagship.svg` | regenerated by running the turn-680 draw.py |
+| 680 | `/home/claude/empathia-technologies/media/brand/concepts/1s-aspis-small.svg` | regenerated by running the turn-680 draw.py |
+| 680 | `/home/claude/empathia-technologies/media/brand/concepts/2-tile-app-icon.svg` | regenerated by running the turn-680 draw.py |
+| 680 | `/home/claude/empathia-technologies/media/brand/concepts/3-heraldic-crest.svg` | regenerated by running the turn-680 draw.py |
+| 680 | `/home/claude/empathia-technologies/media/brand/concepts/4-war-paint.svg` | regenerated by running the turn-680 draw.py |
+| 680 | `/home/claude/empathia-technologies/media/brand/concepts/5-agora-owl.svg` | regenerated by running the turn-680 draw.py |
+| 682 | `/tmp/p2chk/BRIEF_VOCAB.md` | Bash heredoc |
+| 682 | `/tmp/claude-0/-home-claude/73b60a1b-854c-5a1e-99ae-d3ec61696e66/scratchpad/logo/v3/gen.py` | Bash heredoc |
+| 682 | `/tmp/claude-0/-home-claude/73b60a1b-854c-5a1e-99ae-d3ec61696e66/scratchpad/logo/v3/one.mjs` | Bash heredoc |
+| 684 | `/tmp/claude-0/-home-claude/73b60a1b-854c-5a1e-99ae-d3ec61696e66/scratchpad/logo/v3/original-mark.svg` | Bash heredoc |
+| 684 | `/tmp/claude-0/-home-claude/73b60a1b-854c-5a1e-99ae-d3ec61696e66/scratchpad/logo/express/shot.mjs` | Bash heredoc |
+| 686 | `/tmp/claude-0/-home-claude/73b60a1b-854c-5a1e-99ae-d3ec61696e66/scratchpad/logo/png.mjs` | Bash heredoc |
+| 686 | `/home/claude/empathia-technologies/packages/design-tokens/brand.mjs` | Bash heredoc |
+| 686 | `/home/claude/empathia-technologies/packages/design-tokens/brand/README.md` | Bash heredoc |
+| 686 | `/tmp/p2chk/BRIEF_BRAND.md` | Bash heredoc |
+| 710 | `/tmp/p2chk/BRIEF_SCOUTER.md` | Bash heredoc |
+| 713 | `/tmp/p2chk/BRIEF_ACCESS.md` | Bash heredoc |
+| 717 | `/tmp/p2chk/BRIEF_LEASTPRIV.md` | Bash heredoc |
+| 717 | `/tmp/p2chk/BRIEF_ROLEMOTION.md` | Bash heredoc |
+| 731 | `/tmp/claude-0/-home-claude/73b60a1b-854c-5a1e-99ae-d3ec61696e66/scratchpad/base/run.sh` | Bash heredoc |
+| 747 | `/home/claude/empathia-technologies/packages/design-tokens/brand/original-mark.svg` | Write |
+| 747 | `/home/claude/empathia-technologies/packages/design-tokens/brand/emblem-small.svg` | Write (supersedes the turn-686 copy of aspis-small.svg) |
+| 749 | `/home/claude/empathia-technologies/docs/phase3/STANDING_RULES.md` | Write |
+| 749 | `/home/claude/empathia-technologies/docs/phase3/LEI_DECISIONS.md` | Write (full rebuild after workspace loss; earlier turns edited the lost copy via python) |
+| 759 | `/tmp/claude-0/-home-claude/73b60a1b-854c-5a1e-99ae-d3ec61696e66/scratchpad/RECOVERY_BRIEF.md` | Bash heredoc |
+| 759 | `/home/claude/empathia-technologies/packages/design-tokens/brand/owl.svg` | Write |
+| 759 | `/home/claude/empathia-technologies/packages/design-tokens/brand/app-tile.svg` | Write |
+| 759 | `/home/claude/empathia-technologies/packages/design-tokens/brand/emblem.svg` | Write |
+| 763, 768 | `/home/claude/empathia-technologies/docs/recovery/REBUILD_COMMON.md` | Write; Bash append (cat >>) applied to the turn-763 Write; file shows the final state |
+
+Notes:
+- `scratchpad/logo/canvas/project/canvas.json` was written twice in turn 680; the second (kept) version preserves the user-created Page 2 artboard.
+- `media/brand/concepts/*.svg` (turn 680 set) were generated by python, not written directly; they were regenerated here by running the turn-680 `draw.py` unchanged (deterministic). They were later `git rm`ed in turn 684 and replaced by v3 SVGs generated from `scratchpad/logo/v3/gen.py` after four (682) and one (684) python in-place edits; those v3 outputs are not reconstructed as files, but the generator heredoc (682) and every edit to it are in `edits.jsonl`, and the approved v3 marks were later re-saved exactly from Figma / the Design artifact (turns 747, 759) under `packages/design-tokens/brand/`.
+- Python-generated files not reconstructable from the turns: `scratchpad/logo/v3/figma-import.js`, `fig0.js`, `fig1.js`, `scratchpad/logo/express/brand-kit.html`, `brand-kit-inline.html`, rendered PNGs and contact sheets. Their generator commands are in `edits.jsonl`.
+- `docs/recovery/REBUILD_COMMON.md` = the turn-763 Write plus the turn-768 `cat >>` append (final state).
+- `packages/design-tokens/brand/*.svg` in `files/` are the post-loss restorations (turns 747, 759); the turn-686 copies in the lost workspace were copies of the v3 concept SVGs.
+- Turn 686 `packages/design-tokens/brand.mjs` and `brand/README.md` belong to the lost workspace; they are reconstructed here because the rebuild may want them.
+

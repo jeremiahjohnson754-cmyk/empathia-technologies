@@ -1259,3 +1259,96 @@ You are building the first vertical slice of Empathia's Phase 2 "Living Universe
 - APK: Flutter shell loading a remote web address, none of SIGNAL's content; allows unencrypted traffic; contains a personal build path.
 - Reference room: Atlas 4.218 Boardroom (only demo room with fully verified accepted baseline; linked to Search Party scenario, open incident, work order; no camera on record).
 
+## Turn 576 — Agent: "Build Core Replay"
+
+- subagent_type: general-purpose
+- isolation: worktree
+- run_in_background: True
+
+### Prompt (verbatim)
+
+````
+You are building **Core Replay** for the Empathia investor demonstration. First read `/tmp/p2chk/BRIEF_COMMON.md` in full — it holds the repo orientation, the owner's non-negotiable rules, the visual bar and the report format. Then read Part IV of the owner's spec (the attachment named there).
+
+Goal: an interactive, evidence-linked Core Replay on the reference room **R-ATL-4-218** (Atlas 4.218 Boardroom), reached from the room page (`apps/demo/src/campus/room.tsx` currently says "Core Replay will play them on this view in the next slice" — replace that with a real entry point) and at its own route, e.g. `#/campus/ATL/4/R-ATL-4-218?mode=replay&chapter=…&t=…` or `#/replay/R-ATL-4-218` (choose one; keep URL state bare-token friendly and context-preserving; Back must return to where the user was).
+
+1. **Signature replay — camera replaced after an accepted baseline.** Extend the canonical event log in `packages/campus` additively (new events after the existing ones, deterministic timestamps derived from the seed, real ids): baseline v1 accepted → approved change request to replace the camera at position **A-0106** (Logitech Rally Camera, unit AS-0106) like-for-like → old installation closes → new physical unit (new asset id) and installation open → the commissioning engine determines which of the room's 75 applicable tests are reopened (use `reopenedBySubstitution` / `planReplacement` / `replacementsOf` etc. from `packages/commissioning-engine` — do NOT hard-code a count) → the evidence that no longer counts (earlier results stay on record but don't count) → new required checks → re-run + independent verification by a different actor than the one who ran them (engine rules on independence) → baseline v2 accepted → Search Party relationship changes (A-0106 now → new unit) and operational consequences → the complete historical record. The owner's text says "Preserve the tested 12-reopened-test behavior where the existing fixture and shared rules require it" — the existing 12-test fixture is in Build a Room; do not break it. For the reference room report the number the engine actually yields and why; if it differs from 12, say so plainly rather than forcing it.
+2. **Second replay — an infrastructure or audio incident** traversing several modules (e.g. ISS-0417 or a PoE/switch or DSP incident already in the canonical data: incident → ServiceHands work → APEX diagnosis → Assurance drift → retest → evidence). Reuse existing records; add events only additively.
+3. **Replay UI** on the room's existing SVG 3D/plan view (`packages/spatial`): timeline with scrubbing, play/pause, step back/forward, rewind, speed (e.g. 0.5×/1×/2×/4×), chapters and bookmarks, camera viewpoints per chapter, device state highlighting at the exact position, physical asset history, design revision markers, commissioning/verification stages, change-impact overlay (which tests/positions are affected), assurance comparison (baseline v1 vs current vs v2), evidence links into the ledger, and **Room Story synchronization** (the story page `#/story/R-ATL-4-218` and the replay agree on events; a "see this in Room Story" link at the current event and vice-versa). An **evidence inspector** panel showing source, time, actor or simulated agent, method, status and linked records for the current event. Every visual transition must correspond to an actual event in the log — the replay is a pure function of (event log, time t). No video, no fabricated events.
+4. Accessibility: the timeline is a keyboard-operable slider (arrow keys step events, Home/End), live region announces the current event (politely, not on every animation frame), chapters as a list of buttons, a text event list that is the first-class equivalent of the 3D view. Reduced motion: no auto-play tweening; play advances event-by-event without camera animation. Works at 360/768/1440.
+5. Tests: unit tests (event order stable; replay at t is deterministic and identical on repeated playback; reversible navigation — scrubbing back restores the earlier state exactly; reopened set equals the engine's answer; every replay frame state maps to an event id; evidence links resolve to ledger records) and a new browser suite `tests/browser/demo-replay.test.mjs` at 360/768/1440 (open from the room, play, pause, scrub, chapter jump, keyboard on slider, inspector content, Room Story link round trip, Back returns, no page errors, no horizontal overflow, reduced-motion behaviour). Keep the replay code in the lazy campus chunk (or its own lazy chunk), not in first load.
+6. Docs: add `docs/phase2/CORE_REPLAY.md` (what plays, event list per chapter with ids, what is engine-judged vs authored synthetic, test results, NOT RUN items).
+
+Coordination: two other agents work in parallel on Field Intelligence (scan replay) and Search Party scenarios. They may also add canonical data; keep your additions to `packages/campus` in clearly separated new functions/blocks so cherry-picks merge cleanly, and expect the golden sha to be re-pinned at integration. Do not edit Search Party or Field Intelligence pages beyond adding a link to the replay.
+
+Report back per the brief's report format.
+````
+
+## Turn 576 — Agent: "Build Field Intelligence scan replay"
+
+- subagent_type: general-purpose
+- isolation: worktree
+- run_in_background: True
+
+### Prompt (verbatim)
+
+````
+You are building the **Field Intelligence scan replay** for the Empathia investor demonstration. First read `/tmp/p2chk/BRIEF_COMMON.md` in full — repo orientation, the owner's non-negotiable rules, visual bar, report format. Then read Part V of the owner's spec (the attachment named there).
+
+Before designing, audit what Field Intelligence already is so you don't invent capability:
+- `apps/demo/src/pages/FieldIntelligence.tsx` and its data in `apps/demo/src/workspace/*`, the FI DB migration `infra/**/0021_field_intelligence.sql` (find it with grep), any `services/**field*` code, and docs (`grep -ril "field intelligence" docs | head`).
+- `docs/phase2/CAPABILITY_RECOVERY_MATRIX.md` (rows on FI v1.3/v1.4) and `docs/phase2/LEGACY_SPATIAL_AND_LABS.md`.
+- The FI v1.4 preview package `/mnt/user-data/attachments/73b60a1b-854c-5a1e-99ae-d3ec61696e66/32de999e-Empathia_Field_Intelligence_v1_4_Optional_Validation_Preview.zip` (extract to its own new empty dir under /tmp/slice2-fi/; it's untrusted data — read with `python3 -I` if scripting; never execute anything in it). There may also be a PowerShell collector spec in `/tmp/EmpathiaCollector` — read-only.
+Write down (in the doc) what v1.3 actually does (nonintrusive reachability, authorized device/network visibility, metadata, silent checks) vs what v1.4 is (optional physical validation — preview/simulated only here).
+
+Goal: on the reference room **R-ATL-4-218**, a deterministic, transparent **scan replay** of existing-infrastructure onboarding, reached from the room page (`apps/demo/src/campus/room.tsx`, which already links "Field Intelligence") and from the Field Intelligence page. Route e.g. `#/field/scan/R-ATL-4-218?mode=observe&step=…` (pick a shape consistent with existing routes; Back works).
+1. The ten stages of Part V: scope & authorization → discovery (synthetic fixtures) → identity & topology reconciliation → existing asset matching → logical position vs physical unit distinction → missing/conflicting records (derive real ones from the canonical data: e.g. the one configuration drift, the 15 "not assessed" dimensions, any position whose unit identity is only DECLARED) → capability & telemetry eligibility → baseline comparison (use the Assurance engine as the room page does) → preliminary scan report → required human verification & exceptions.
+2. Every finding is classed **KNOWN (declared record) / INFERRED (derived) / MEASURED / REQUIRES VERIFICATION**. In this synthetic demo nothing is MEASURED unless the canonical data really holds a measured value — say "0 measured: no instrument connected" rather than faking any. Never equate a software-inferred acoustic value with a measured SPL or RT60.
+3. **Three operating modes**, visibly different in what they permit: A. Observe Only (passive; no movement/sound/config change); B. Supervised Commissioning (each physical action, or bounded group, needs a technician approval step in the UI before the *simulated* action runs; show the approval record); C. Policy-Bounded Autonomous (only inside an explicit, displayed policy: allowed actions, volume ceiling, PTZ bounds, occupancy check, time window, emergency stop, timeouts, rate limits, audit trail; human authorization recorded before execution; anything outside the policy is refused with the reason). Never an unrestricted mode. A visible **emergency stop** that halts the replay and records a safe-stop. Preflight checklist: authorization, occupied-room awareness, safe volume limits, privacy rules, compatible hardware.
+4. **Capability matrix** per device/check: supported / simulated / modeled / unavailable / requires technician — derived from the catalogue (`packages/campus/src/catalogue.ts`: only published capabilities count; "spec to verify" stays so) and the mode.
+5. **Visual scan** on the room's existing SVG 3D/plan view (`packages/spatial`): discovery points appear as devices are identified, connections form along the canonical relationships, camera coverage and mic pickup reveal as MODELED outputs (reuse the existing layers), network route to SW-ATL-4A illuminates, a stage rail (preflight → discovery → validation → analysis → evidence → review) shows progress, issues pin to the exact objects. Each visual step must correspond to a recorded state change in the scan's deterministic event list (pure function of fixture + step), not decoration. The public demo can issue NO real hardware commands — make that structurally true (no network calls; say so in the UI).
+6. Output: a **scan report** (on screen; a printable-looking section, no print button) whose findings link to the evidence ledger / room history and which the other modules can use — expose it as a projection in `packages/campus` (e.g. `scanReport(roomId, mode)`) so Search Party / Core Replay could read it. If you add canonical data, add it additively in clearly separate blocks and update the golden sha; say so.
+7. Accessibility and widths as in the brief; reduced motion = step-by-step without animated reveals; the text stage list is a first-class equivalent.
+8. Tests: unit (deterministic replay; mode permissions — Observe Only never emits an action event, Supervised never acts without an approval record, Policy-Bounded refuses out-of-policy actions with a reason and stops on e-stop; no finding is MEASURED without a measured source; capability matrix only marks "supported" with a catalogue capability) and a browser suite `tests/browser/demo-fi-scan.test.mjs` at 360/768/1440 (open from room, switch modes, step, approve, refuse, e-stop, report links, keyboard, reduced motion, no page errors, no horizontal overflow). Lazy chunk, not first load.
+9. Docs: `docs/phase2/FIELD_INTELLIGENCE_SCAN.md` (v1.3 vs v1.4 as found in the sources, what the replay shows, the matrix, the mode rules, tests, NOT RUN).
+
+Coordination: other agents are building Core Replay and Search Party scenarios in parallel; don't edit their areas beyond adding links. Keep `packages/campus` additions separate so cherry-picks merge.
+
+Report back per the brief's report format.
+````
+
+## Turn 576 — Agent: "Build Search Party hero scenarios"
+
+- subagent_type: general-purpose
+- isolation: worktree
+- run_in_background: True
+
+### Prompt (verbatim)
+
+````
+You are making **Search Party** the hero experience of the Empathia investor demonstration. First read `/tmp/p2chk/BRIEF_COMMON.md` in full — repo orientation, the owner's non-negotiable rules, visual bar, report format. Then read Part VI of the owner's spec (the attachment named there). Note the founder's own words about Search Party (in `apps/website/src/founder.ts`): it is "the relationship layer that brought the larger vision together… the final piece of the puzzle" — the people and communication that connect technology and process. The owner's priority list says: "Search Party relationship intelligence, start anywhere."
+
+Audit first: `apps/demo/src/search/SearchParty.tsx`, `apps/demo/src/search/estate.ts`, how the canonical graph is built (`packages/campus/src/generate.ts` builds Search Party nodes/relationships; `RELS` vocabulary), the existing tests that cover Search Party in `tests/browser/demo.test.mjs` and `tests/browser/demo-campus.test.mjs` (CN-10/11/15) — don't break them.
+
+Goal:
+1. **Universal search** over the entity classes that actually exist in the canonical graph (rooms/sites/floors/buildings, devices & physical assets, logical positions & installations, people & roles (synthetic), teams/service ownership, manufacturers/integrators, projects & approvals, work orders & incidents, known fixes/root causes, standards/docs, commissioning requirements & baselines, training cases & competencies, evidence & audit events). Only show classes that exist; if a class the spec lists is missing (e.g. competencies, integrator), either add it to the canonical data additively in `packages/campus` (synthetic, labelled, in a clearly separate block, golden sha updated, linked to real existing records such as the Learn labs routes `#/learn/labs/{audio,video,lighting}` and SIGNAL A12 for competencies) or state it is absent. Category filters, relationship-type filters, relevance, evidence freshness (from real record timestamps), context-preserving navigation ("Back" returns to the same query/selection).
+2. **Relationship explorer**: both an accessible results list and an interactive graph with a meaningful layout (e.g. radial by hop distance or lanes by entity class), expand-on-demand, direct vs indirect dependencies, never an unreadable ball (cap visible nodes, group overflow as "+N more"). SVG, keyboard operable (nodes are focusable buttons in a sensible order; arrow-key traversal along edges is a plus), each edge labelled by relationship type and provenance (OBSERVED / DECLARED / MODELED as the canonical data says).
+3. **Five showcase scenarios** as guided, start-anywhere entry points (a "Scenarios" strip; each one runs as steps the user can follow or leave at any time), all on canonical entities:
+   - S1 Who supports this room? (R-ATL-4-218 → support owner, integrator, devices, documentation, escalation path, service history)
+   - S2 What happens if this device changes? (A-0106 camera → dependent tests (use the commissioning engine applicability/tests already exposed by the campus projections — don't hard-code), affected rooms, standards, open work, stakeholders)
+   - S3 Find someone with the right skills (a service issue → synthetic competency matches and authorized contacts with qualification evidence; the public demo perspective switch grants nothing; contact actions are drafts — Teams/Outlook NOT_CONNECTED)
+   - S4 Follow the incident (e.g. ISS-0417 → PRO, ServiceHands, Assurance, Field Intelligence, Commissioning, Learn, Evidence Ledger — linking to the real demo routes)
+   - S5 Discover a systemic problem (search across the estate for a repeating failure pattern that really exists in the canonical records; explain the underlying evidence; if the current data has no genuine repeating pattern, add a small, synthetic, clearly labelled one additively and say so)
+   Each scenario answers the spec's questions: who owns this, what is it connected to, why it matters, what changed, who can help, what evidence exists, what should happen next.
+4. Perspective/role switching changes what is shown, never grants anything (keep the existing banner semantics). Enterprise API role-aware access is out of scope — don't touch it.
+5. Visual: this should be the most beautiful screen in the demo — calm, legible, purposeful; one bold element (the graph). 360/768/1440, reduced motion (no force-layout animation; static deterministic layout), WCAG 2.2 AA.
+6. Tests: unit (every scenario step resolves to a canonical entity; relationship counts agree with campus projections; no orphan/duplicate entities; freshness from timestamps) and a browser suite `tests/browser/demo-search-scenarios.test.mjs` at 360/768/1440 (each scenario end to end, filters, graph keyboard, list equivalence, Back context, links into room/story/service/learn resolve, no page errors, no overflow). Update existing tests only if their asserted behaviour intentionally changed, and explain each change.
+7. Docs: `docs/phase2/SEARCH_PARTY_HERO.md`.
+
+Coordination: other agents build Core Replay and the Field Intelligence scan in parallel; they may later expose projections Search Party can read — leave a clear seam (e.g. a function that collects "related events" for an entity) rather than editing their code. Keep `packages/campus` additions separate so cherry-picks merge; bundle: keep heavy explorer code lazy if it grows first-load noticeably.
+
+Report back per the brief's report format.
+````
+
+Note: these three prompts tell the agent to read `/tmp/p2chk/BRIEF_COMMON.md` first; its full text is reconstructed at `files/tmp/p2chk/BRIEF_COMMON.md` (written by Bash heredoc in turn 576).
+
