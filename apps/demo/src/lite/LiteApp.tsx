@@ -98,7 +98,7 @@ function LiteHome({ role }: PageProps) {
       <LensPicker role={role} lens={lens} onPick={pick} />
       <div className="lt-home">
         <Card title="The campus" sub="Choose a building. Height is floors; colour is readiness from the record." icon="campus" pad={false} testId="lite-campus-card">
-          <figure className="stage lt-stage" data-stage=""><CampusScene onOpen={(k) => { location.hash = `#/lite/b/${k}`; }} /><figcaption className="stage__cap">Isometric campus drawn from the building footprints (V2.5.3 BUILDINGS). Regional sites are listed beside it.</figcaption></figure>
+          <figure className="stage lt-stage" data-stage=""><CampusScene onOpen={(k) => { location.hash = `#/lite/b/${k}`; }} /><figcaption className="stage__cap lt-capchips"><Chip small tone="muted" icon="moon">Stage stays dark (D36)</Chip><Chip small tone="ok">green · healthy</Chip><Chip small tone="warn">amber · monitor</Chip><Chip small tone="bad">red · action</Chip><span>Footprints from V2.5.3 BUILDINGS · readiness computed from the room records</span></figcaption></figure>
         </Card>
         <div className="lt-side">
           {scouter && <Card title="Scouter in Lite" sub="Does this device suit this room?" icon="spark" tone="lite" testId="lite-scouter-card">
@@ -165,7 +165,7 @@ function CampusScene({ onOpen, current }: { onOpen: (k: string) => void; current
             <polygon points={pts([[x + w, y, 0], [x + w, y + d, 0], [x + w, y + d, z], [x + w, y, z]])} className="lt-bld__s2" />
             <polygon points={pts([[x, y, z], [x + w, y, z], [x + w, y + d, z], [x, y + d, z]])} className="lt-bld__top" />
             {Array.from({ length: B.floors - 1 }, (_, i) => <polyline key={i} points={pts([[x, y + d, (i + 1) * FH], [x + w, y + d, (i + 1) * FH], [x + w, y, (i + 1) * FH]])} className="lt-bld__floor" />)}
-            <g transform={`translate(${lx.toFixed(1)} ${(ly - 18).toFixed(1)})`} className="lt-pill"><rect x={-58} y={-15} width={116} height={30} rx={15} /><text y={5} textAnchor="middle">{B.short}</text>{s.issues > 0 && <g transform="translate(58 -12)" className="lt-pill__n"><circle r={12} /><text y={4} textAnchor="middle">{s.issues}</text></g>}</g>
+            <g transform={`translate(${lx.toFixed(1)} ${(ly - 18).toFixed(1)})`} className="lt-pill"><rect x={-58} y={-19} width={116} height={38} rx={12} /><text y={-2} textAnchor="middle">{B.short}</text><text y={13} textAnchor="middle" className="lt-pill__fl">{B.floors} floors · {s.rooms} rooms</text>{s.issues > 0 && <g transform="translate(58 -12)" className="lt-pill__n"><circle r={12} /><text y={4} textAnchor="middle">{s.issues}</text></g>}</g>
           </g>
         );
       })}

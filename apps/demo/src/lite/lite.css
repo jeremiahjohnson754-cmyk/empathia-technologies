@@ -73,9 +73,9 @@
 .lt-partition { fill: rgba(169, 143, 235, .18); stroke: #a98feb; stroke-width: 1.5; stroke-dasharray: 6 4; }
 .lt-active { fill: rgba(69, 207, 193, .10); stroke: var(--accent); stroke-width: 2; }
 .lt-ov { stroke-width: 1.5; }
-.lt-ov--cam { fill: rgba(122, 167, 255, .20); stroke: rgba(122, 167, 255, .8); }
-.lt-ov--mic { fill: rgba(61, 220, 151, .16); stroke: rgba(61, 220, 151, .75); }
-.lt-ov--spk { fill: rgba(245, 185, 66, .14); stroke: rgba(245, 185, 66, .7); }
+.lt-ov--cam { fill: rgba(122, 167, 255, .13); stroke: rgba(122, 167, 255, .8); }
+.lt-ov--mic { fill: rgba(61, 220, 151, .11); stroke: rgba(61, 220, 151, .75); }
+.lt-ov--spk { fill: rgba(245, 185, 66, .10); stroke: rgba(245, 185, 66, .7); }
 .lt-target { fill: none; stroke: #3ddc97; stroke-width: 2; }
 .lt-route { fill: none; stroke: #6aa5f2; stroke-width: 4; stroke-dasharray: 8 6; stroke-linecap: round; }
 .lt-route--way { stroke: var(--accent); }
@@ -111,7 +111,9 @@
 .lt-bld__floor { fill: none; stroke: rgba(214, 228, 255, .12); }
 .lt-bld:hover .lt-bld__top, .lt-bld:focus-visible .lt-bld__top, .lt-bld.on .lt-bld__top { stroke: #45cfc1; stroke-width: 3; }
 .lt-pill rect { fill: rgba(10, 18, 34, .88); stroke: rgba(69, 207, 193, .7); }
-.lt-pill text { fill: #edf3ff; font-size: 15px; font-weight: 600; }
+.lt-pill text { fill: #edf3ff; font-size: 14px; font-weight: 700; } .lt-pill__fl { font-size: 11px; font-weight: 600; fill: #b4c1dc; }
+.lt-capchips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.lt-pill__n circle { fill: #e8a93c; stroke: #0a1222; stroke-width: 2; } .lt-pill__n text { fill: #0e1012; font-size: 13px; font-weight: 800; }
 .lt-slab { fill: #121e34; stroke: rgba(214, 228, 255, .15); }
 .lt-tilept rect { fill: #1d2c48; stroke: rgba(214, 228, 255, .3); stroke-width: 1.5; }
 .lt-tilept--healthy rect { stroke: #62c684; } .lt-tilept--monitor rect { stroke: #e8a93c; } .lt-tilept--action rect { stroke: #f0655a; }
