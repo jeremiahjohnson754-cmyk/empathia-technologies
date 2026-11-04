@@ -127,8 +127,8 @@ export function stageOf(w: WX, inc: S.Incident): number {
  */
 export const ROUTES = {
   diagnose: { label: 'Diagnose first', tone: 'apex', rule: 'A recurrence of a closed job in the same room: APEX diagnoses the cause before another visit, so the same fix is not repeated.' },
-  engineered: { label: 'Engineered service', tone: 'info', rule: 'High severity, or work that changes the commissioned configuration (a DSP change, a network change, a replacement): an engineer approves the method and the room is reverified.' },
-  quick: { label: 'Quick service', tone: 'teal', rule: 'A known like-for-like fix at standard severity that leaves the room as it was commissioned.' },
+  engineered: { label: 'Engineered service', tone: 'indigo', rule: 'High severity, or work that changes the commissioned configuration (a DSP change, a network change, a replacement): an engineer approves the method and the room is reverified.' },
+  quick: { label: 'Quick service', tone: 'accent', rule: 'A known like-for-like fix at standard severity that leaves the room as it was commissioned.' },
 } as const;
 export type RouteKey = keyof typeof ROUTES;
 const CHANGES_CONFIG = new Set(['dsp_upgrade', 'network_change', 'camera_replacement', 'lifecycle_replacement']);
