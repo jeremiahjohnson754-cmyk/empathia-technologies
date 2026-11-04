@@ -229,3 +229,4 @@ main h1[tabindex="-1"]:focus { outline: none; box-shadow: none; }
 .roomtabs .kit-chip { flex: none; white-space: nowrap; }
 @media (max-width: 760px) { .roomtabs .kit-chip { min-height: var(--target-min, 44px); } }
 .fnd .room__hero { overflow: visible; z-index: 2; } .fnd .room__hero .fnd__bar { margin-bottom: 0; }
+.sp__grid--solo { grid-template-columns: minmax(0, 1fr); }

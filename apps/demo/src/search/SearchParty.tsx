@@ -82,12 +82,12 @@ export function SearchPartyDemo({ hash, role }: { hash: string; role?: RoleKey }
           </Section>
         </div>
       ) : (
-      <div className="sp__grid">
-        <div className="sp__results">
+      <div className={`sp__grid${!q.trim() && focus ? ' sp__grid--solo' : ''}`}>
+        {(q.trim() || !focus) && <div className="sp__results">
           <p className="ui-muted" role="status">{res.total} record{res.total === 1 ? '' : 's'}{type ? ` · ${NODE_TYPES[type]?.[0] || type}` : ''}</p>
           {!res.items.length ? <Notice tone="info">Nothing matches. Try “switch”, “4.218”, “ISS-0417” or a device category.</Notice> : <ul className="sp__list sp__rlist">{res.items.map((n) => <li key={nodeKey(n)} className={focus && nodeKey(focus) === nodeKey(n) ? 'on' : ''}><a href={`#/search?focus=${encodeURIComponent(nodeKey(n))}`} onClick={(e) => { e.preventDefault(); pick(n); }}><span className="sp__rtop"><span className="sp__type">{NODE_TYPES[n.type]?.[0] || n.type}</span><span className="sp__id mono">{n.id}</span></span><b>{n.label}</b>{n.subtitle && <span className="sp__sub">{n.subtitle}</span>}</a></li>)}</ul>}
           <details className="sp__coverage"><summary>Coverage · {est.coverage.edges} edges</summary><ul>{est.coverage.notes.map((x) => <li key={x}>{x}</li>)}</ul></details>
-        </div>
+        </div>}
         <div className="sp__detail">
           {!focus ? <Notice tone="info"><b>Pick a record</b> — its neighbourhood, downstream impact and the questions you can ask appear here. Try the access switch <a href="#/search?focus=NetworkNode:SW-ATL-4A" onClick={(e) => { e.preventDefault(); pick({ type: 'NetworkNode', id: 'SW-ATL-4A' }); }}>SW-ATL-4A</a>.</Notice> : (
             <div className="sp__nbhd">
