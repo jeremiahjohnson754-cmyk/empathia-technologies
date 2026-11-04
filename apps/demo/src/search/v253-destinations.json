@@ -1,0 +1,548 @@
+[
+{
+"href": "#/home",
+"label": "Mission Control",
+"description": "What changed, what matters, what needs action",
+"keywords": "dashboard overview today",
+"primary": true
+},
+{
+"href": "#/campus",
+"label": "Campus",
+"description": "Buildings, floors and rooms with their status",
+"keywords": "map buildings floors estate",
+"primary": true
+},
+{
+"href": "#/search",
+"label": "Search Party",
+"description": "People, rooms, parts and what they connect to",
+"keywords": "find relationships graph",
+"primary": true
+},
+{
+"href": "#/search/support",
+"label": "Support paths",
+"description": "Who to call, in what order, for each room",
+"keywords": "escalation contact",
+"primary": false
+},
+{
+"href": "#/search/ownership",
+"label": "Ownership",
+"description": "Who owns each room, record and standard",
+"keywords": "owner accountable",
+"primary": false
+},
+{
+"href": "#/search/quality",
+"label": "Record quality",
+"description": "Validation queue and open questions in Core",
+"keywords": "data steward governance",
+"primary": false
+},
+{
+"href": "#/search/people",
+"label": "People and expertise",
+"description": "Who knows what",
+"keywords": "expertise skills",
+"primary": false
+},
+{
+"href": "#/search/projects",
+"label": "Project map",
+"description": "Projects and the rooms they touch",
+"keywords": "",
+"primary": false
+},
+{
+"href": "#/search/orgs",
+"label": "Organizations",
+"description": "Vendors, integrators and teams",
+"keywords": "",
+"primary": false
+},
+{
+"href": "#/search/activity",
+"label": "Activity",
+"description": "What changed recently, by whom",
+"keywords": "recent changes",
+"primary": false
+},
+{
+"href": "#/search/vault",
+"label": "Evidence and artifacts",
+"description": "Documents, drawings and captures",
+"keywords": "files drawings",
+"primary": false
+},
+{
+"href": "#/room",
+"label": "My room",
+"description": "The room in focus and its story",
+"keywords": "focus room",
+"primary": true
+},
+{
+"href": "#/lite",
+"label": "Empathia Lite",
+"description": "The living campus: walk in, look around, understand the systems",
+"keywords": "spatial 3d explore visitor",
+"primary": true
+},
+{
+"href": "#/lite/way",
+"label": "Wayfinding",
+"description": "From here to any room, step by step",
+"keywords": "directions route navigate",
+"primary": false
+},
+{
+"href": "#/lite/services",
+"label": "Workplace services",
+"description": "Cafés, desks, help points and hours",
+"keywords": "services amenities",
+"primary": false
+},
+{
+"href": "#/lite/guides",
+"label": "Guides",
+"description": "How to use the rooms and the tools",
+"keywords": "how to instructions onboarding",
+"primary": false
+},
+{
+"href": "#/studio",
+"label": "Design a Space",
+"description": "A furnished room you can change: place equipment, see coverage, save a concept",
+"keywords": "studio room design sandbox layout plan perspective",
+"primary": true
+},
+{
+"href": "#/pro",
+"label": "Empathia Pro",
+"description": "Command center: issues, targets, devices and rooms",
+"keywords": "operations command center kpi",
+"primary": true
+},
+{
+"href": "#/pro/assets",
+"label": "Assets",
+"description": "Every device, its state, support and lifecycle",
+"keywords": "inventory lifecycle",
+"primary": false
+},
+{
+"href": "#/pro/issues",
+"label": "Issues",
+"description": "Open issues, patterns and escalations",
+"keywords": "incidents problems",
+"primary": false
+},
+{
+"href": "#/pro/issues/patterns",
+"label": "Incident patterns",
+"description": "Issues that recur, and where",
+"keywords": "recurring",
+"primary": false
+},
+{
+"href": "#/pro/operations",
+"label": "Operations hub",
+"description": "Rooms, schedules, services and monitoring",
+"keywords": "hub",
+"primary": false
+},
+{
+"href": "#/pro/standards",
+"label": "Standards and engineering",
+"description": "The standards rooms are held to",
+"keywords": "engineering rules",
+"primary": false
+},
+{
+"href": "#/pro/exec",
+"label": "Executive intelligence",
+"description": "Risk, cost and the decisions waiting",
+"keywords": "executive briefing portfolio",
+"primary": false
+},
+{
+"href": "#/intake",
+"label": "Intake",
+"description": "A room or a device: what you need, as a brief",
+"keywords": "request new room device needs assessment",
+"primary": true
+},
+{
+"href": "#/intake/new",
+"label": "New request",
+"description": "Start a room or device intake",
+"keywords": "",
+"primary": false
+},
+{
+"href": "#/builder",
+"label": "Room Builder",
+"description": "Current room against the proposed design, on the same engine as Lite",
+"keywords": "design proposal compare",
+"primary": false
+},
+{
+"href": "#/builder/sound",
+"label": "Sound system calculator",
+"description": "Loudspeaker lines, taps and impedance",
+"keywords": "audio calculation 70v",
+"primary": false
+},
+{
+"href": "#/builder/states",
+"label": "Divisible room states",
+"description": "A room that splits, designed as states",
+"keywords": "divisible partition hall",
+"primary": false
+},
+{
+"href": "#/scouter",
+"label": "Scouter",
+"description": "Device evaluation: a ranked short-list and what each maker’s notice means",
+"keywords": "catalog compare candidates market watch",
+"primary": true
+},
+{
+"href": "#/scouter/arch",
+"label": "Architecture compare",
+"description": "Two architectures across sixteen dimensions",
+"keywords": "architecture",
+"primary": false
+},
+{
+"href": "#/budget",
+"label": "Budgeting",
+"description": "Scenarios, exposure and the funding need",
+"keywords": "cost money finance",
+"primary": false
+},
+{
+"href": "#/assurance",
+"label": "Room Assurance",
+"description": "Is each room still what was commissioned?",
+"keywords": "drift baseline verify",
+"primary": true
+},
+{
+"href": "#/assurance/ready",
+"label": "Readiness",
+"description": "Rooms ready for use, and why not",
+"keywords": "",
+"primary": false
+},
+{
+"href": "#/assurance/signals",
+"label": "Maintenance signals",
+"description": "Early signs from the records",
+"keywords": "maintenance",
+"primary": false
+},
+{
+"href": "#/assurance/change",
+"label": "Change impact",
+"description": "What a planned change touches",
+"keywords": "impact planned change",
+"primary": false
+},
+{
+"href": "#/commissioning",
+"label": "Commissioning",
+"description": "Five phases, the evidence each needs, what blocks sign-off",
+"keywords": "cx acceptance sign-off deficiencies",
+"primary": true
+},
+{
+"href": "#/control",
+"label": "Room control",
+"description": "What the touch controller does, simulated",
+"keywords": "touch panel control",
+"primary": false
+},
+{
+"href": "#/scheduler",
+"label": "Room scheduler",
+"description": "Bookings and free rooms",
+"keywords": "booking calendar free rooms",
+"primary": false
+},
+{
+"href": "#/learn",
+"label": "Empathia Learn",
+"description": "Mission cockpit: the next lesson, lab, drill and case",
+"keywords": "training academy",
+"primary": true
+},
+{
+"href": "#/learn/signal",
+"label": "SIGNAL",
+"description": "A story in twelve seasons: decide, enter the room, prove it",
+"keywords": "story episodes seasons maya",
+"primary": false
+},
+{
+"href": "#/learn/labs",
+"label": "Labs",
+"description": "Simulators with a fault to fix",
+"keywords": "simulators practice",
+"primary": false
+},
+{
+"href": "#/learn/labs/hear",
+"label": "Audio Lab: hear the engineering",
+"description": "Real processing in your browser: EQ, gain, high-pass, meters",
+"keywords": "audio lab web audio eq equalizer meter spectrum voice guitar hearing",
+"primary": true
+},
+{
+"href": "#/learn/labs/see",
+"label": "Camera Lab: see the settings",
+"description": "Focus, shutter, frame rate, gain, exposure, colour temperature",
+"keywords": "camera lab video shutter motion blur focus exposure iso",
+"primary": false
+},
+{
+"href": "#/learn/labs/light",
+"label": "Lighting Lab: shape the light",
+"description": "Fixtures you move: beam, distance, colour temperature, DMX",
+"keywords": "lighting lab dmx fixture beam inverse square colour temperature",
+"primary": false
+},
+{
+"href": "#/learn/library",
+"label": "Lessons",
+"description": "Short lessons by domain",
+"keywords": "library reading",
+"primary": false
+},
+{
+"href": "#/learn/practice",
+"label": "Practice",
+"description": "Drills and quizzes that score",
+"keywords": "quiz drill",
+"primary": false
+},
+{
+"href": "#/learn/cases",
+"label": "Case files",
+"description": "Real campus cases to reason through",
+"keywords": "case study",
+"primary": false
+},
+{
+"href": "#/learn/service",
+"label": "Service Mode",
+"description": "Live incidents, worked as a technician",
+"keywords": "incidents",
+"primary": false
+},
+{
+"href": "#/learn/fieldbook",
+"label": "Fieldbook",
+"description": "The vocabulary and the rules of thumb",
+"keywords": "glossary reference",
+"primary": false
+},
+{
+"href": "#/learn/design",
+"label": "Design clinic",
+"description": "The design rules, applied to rooms",
+"keywords": "design rules",
+"primary": false
+},
+{
+"href": "#/learn/servicehands",
+"label": "ServiceHands Academy",
+"description": "How a request moves through service",
+"keywords": "academy",
+"primary": false
+},
+{
+"href": "#/learn/story",
+"label": "Room story",
+"description": "Each room’s history as a story",
+"keywords": "history narrative",
+"primary": false
+},
+{
+"href": "#/ask",
+"label": "Ask Empathia",
+"description": "A question in plain words, answered from Core",
+"keywords": "question answer why",
+"primary": false
+},
+{
+"href": "#/replay",
+"label": "Core Replay",
+"description": "The campus at any earlier moment",
+"keywords": "history time machine",
+"primary": false
+},
+{
+"href": "#/compare",
+"label": "Core Compare",
+"description": "Two rooms, standards or devices side by side",
+"keywords": "compare diff",
+"primary": false
+},
+{
+"href": "#/ledger",
+"label": "Evidence ledger",
+"description": "Every claim and what backs it",
+"keywords": "claims provenance",
+"primary": false
+},
+{
+"href": "#/fabric",
+"label": "Integration Fabric",
+"description": "What Empathia would connect to, and how",
+"keywords": "integrations connectors",
+"primary": false
+},
+{
+"href": "#/qr",
+"label": "QR Launch Center",
+"description": "Codes that open a room or a guide",
+"keywords": "qr codes",
+"primary": false
+},
+{
+"href": "#/tours",
+"label": "Guided experiences",
+"description": "Narrated walks through the product",
+"keywords": "tour presentation demo",
+"primary": false
+},
+{
+"href": "#/servicehands",
+"label": "ServiceHands",
+"description": "Requests, routing and the board",
+"keywords": "service requests tickets board",
+"primary": true
+},
+{
+"href": "#/servicehands/new",
+"label": "New request",
+"description": "Raise a change or a repair",
+"keywords": "ticket",
+"primary": false
+},
+{
+"href": "#/service",
+"label": "Service command",
+"description": "Queue, coverage and escalation",
+"keywords": "service manager queue",
+"primary": false
+},
+{
+"href": "#/service/fixes",
+"label": "Known fixes",
+"description": "What fixed it last time",
+"keywords": "fix library",
+"primary": false
+},
+{
+"href": "#/service/coverage",
+"label": "Coverage",
+"description": "Who covers which room and when",
+"keywords": "coverage rota",
+"primary": false
+},
+{
+"href": "#/projects",
+"label": "Project delivery",
+"description": "Milestones, risks, vendors and the next decision",
+"keywords": "projects pm delivery timeline",
+"primary": true
+},
+{
+"href": "#/decisions",
+"label": "Decision memory",
+"description": "Every decision, who made it and what happened after",
+"keywords": "decisions",
+"primary": false
+},
+{
+"href": "#/lessons",
+"label": "Lessons learned",
+"description": "What projects taught",
+"keywords": "",
+"primary": false
+},
+{
+"href": "#/install",
+"label": "Installation",
+"description": "Tasks, dependencies, redlines and evidence",
+"keywords": "installer field",
+"primary": false
+},
+{
+"href": "#/handoff",
+"label": "Handoff chain",
+"description": "Who handed what to whom",
+"keywords": "handoff",
+"primary": false
+},
+{
+"href": "#/agent",
+"label": "Room Health Check",
+"description": "Reachability checks every 15 minutes, quiet during meetings",
+"keywords": "reachability ping health check monitoring schedule automated",
+"primary": false
+},
+{
+"href": "#/investigate",
+"label": "Investigate",
+"description": "One case: symptom, hypotheses, tests, cause, fix, verification",
+"keywords": "investigate incident diagnosis hypothesis root cause",
+"primary": false
+},
+{
+"href": "#/list/Room",
+"label": "All rooms",
+"description": "Every room as a list",
+"keywords": "",
+"primary": false
+},
+{
+"href": "#/list/Device",
+"label": "All devices",
+"description": "Every device as a list",
+"keywords": "",
+"primary": false
+},
+{
+"href": "#/list/Issue",
+"label": "All issues",
+"description": "Every issue as a list",
+"keywords": "",
+"primary": false
+},
+{
+"href": "#/list/Project",
+"label": "All projects",
+"description": "",
+"keywords": "",
+"primary": false
+},
+{
+"href": "#/list/Standard",
+"label": "All standards",
+"description": "",
+"keywords": "",
+"primary": false
+},
+{
+"href": "#/list/Vendor",
+"label": "All vendors",
+"description": "",
+"keywords": "",
+"primary": false
+}
+]

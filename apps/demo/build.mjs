@@ -26,6 +26,8 @@ if (!process.argv.includes('--generate-only')) { fs.rmSync(dist, { recursive: tr
 if (process.argv.includes('--generate-only')) process.exit(0);
 // the SIGNAL library ships beside the bundle and is fetched on demand by Learn (2 MB; never inlined)
 fs.mkdirSync(dist, { recursive: true }); fs.copyFileSync(path.join(repo, 'packages/domain-data/data/SIGNAL_LIB.json'), path.join(dist, 'signal-lib.json'));
+// static media (narration takes and captions): apps/demo/public/** ships as is beside the bundle
+if (fs.existsSync(path.join(app, 'public'))) fs.cpSync(path.join(app, 'public'), dist, { recursive: true });
 await esbuild.build({
   entryPoints: [path.join(app, 'src/main.tsx')], bundle: true, minify: !dev, sourcemap: 'external', format: 'iife', target: ['es2022'], jsx: 'automatic',
   outfile: path.join(dist, 'demo.js'), define: { 'process.env.NODE_ENV': dev ? '"development"' : '"production"' }, legalComments: 'linked', logLevel: 'warning',
@@ -36,7 +38,7 @@ await esbuild.build({
 { const maps = path.join(repo, '.local/sourcemaps', path.basename(app)); fs.mkdirSync(maps, { recursive: true });
   const walk = (d) => fs.readdirSync(d).flatMap((f) => { const p = path.join(d, f); return fs.statSync(p).isDirectory() ? walk(p) : [p]; });
   for (const f of walk(dist).filter((f) => f.endsWith('.map'))) fs.renameSync(f, path.join(maps, path.basename(f))); }
-const css = [path.join(repo, 'packages/design-tokens/dist/tokens.css'), path.join(repo, 'packages/ui/src/ui.css'), path.join(app, 'src/styles/demo.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`).join('\n');
+const css = [path.join(repo, 'packages/design-tokens/dist/tokens.css'), path.join(repo, 'packages/ui/src/ui.css'), path.join(app, 'src/styles/demo.css'), path.join(app, 'src/spatial/spaces.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`).join('\n');
 fs.writeFileSync(path.join(dist, 'demo.css'), css);
 fs.copyFileSync(path.join(app, 'src/index.html'), path.join(dist, 'index.html'));
 const files = fs.readdirSync(dist).filter((f) => fs.statSync(path.join(dist, f)).isFile());

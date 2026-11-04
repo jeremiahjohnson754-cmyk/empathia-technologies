@@ -9,6 +9,10 @@ import { ApexPage } from './pages/Apex.js';
 import { LearnPage } from './pages/Learn.js';
 import { MissionControl, ExecPage, LedgerPage } from './pages/Control.js';
 import { FieldIntelligencePage } from './pages/FieldIntelligence.js';
+// spatial and guided experiences (campus, rooms, search bar, Search Party scenarios, tours A/B/C): resolved before the legacy registry
+import { spacesPage } from './spatial/routes.js';
+import { SearchBar } from './search/SearchBar.js';
+import { GuidedPanel } from './tour/Guided.js';
 
 /** The seven investor scenarios of the 2.5.5 investor landing, with the customer problem each one solves (carried over verbatim in spirit). */
 const SCENARIOS = [
@@ -43,10 +47,11 @@ export function App() {
   return (
     <div className="demo">
       <AppShell products={products} edition="Living Campus" identity={{ name: 'Demonstration', role: as, organization: 'synthetic estate', mode: 'demonstration' }}
-        actions={<label className="persp">Perspective <select value={as} onChange={(e) => setAs(e.target.value)} aria-describedby="persp-note">{PERSPECTIVES.map((p) => <option key={p} value={p}>{p}</option>)}</select></label>}
+        actions={<><SearchBar /><label className="persp">Perspective <select value={as} onChange={(e) => setAs(e.target.value)} aria-describedby="persp-note">{PERSPECTIVES.map((p) => <option key={p} value={p}>{p}</option>)}</select></label></>}
         note={<><Tag tone="warn">DEMONSTRATION · SYNTHETIC DATA</Tag> <span id="persp-note">A perspective changes what the demonstration shows; it grants nothing. Real access is decided by the authenticated application's server.</span></>}>
         <TourPanel hash={hash} onPerspective={setAs} />
-        <div className="wrap">{home ? <Landing /> : page(areaKey(hash), hash, as) || <Boundary hash={hash} area={area} />}</div>
+        <GuidedPanel hash={hash} />
+        <div className="wrap">{home ? <Landing /> : spacesPage(hash) || page(areaKey(hash), hash, as) || <Boundary hash={hash} area={area} />}</div>
       </AppShell>
       <footer className="foot">Every person, organisation, room, device, figure and approval here is invented. Nothing is connected to a real system. <a href="#/investor">Back to the start</a></footer>
     </div>

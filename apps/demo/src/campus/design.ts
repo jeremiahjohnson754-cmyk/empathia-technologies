@@ -242,8 +242,9 @@ function verifyAs(row: ApplicabilityRow, d: RoomDesignInput, days: number): stri
 /** Position codes for the reference room follow the earlier estate (A-0101 display … A-0105 touch panel), then continue. */
 function renameReference(devices: PlannedDevice[]) {
   const fixed: Record<string, string> = { display: 'A-0101', compute: 'A-0102', dsp: 'A-0103', micceil: 'A-0104', touch: 'A-0105' };
-  const used = new Set<string>(); let n = 106;
+  const used = new Set<string>(); let n = 106; let fu = 0;
   for (const d of devices) {
+    if (d.furniture) { d.id = `F-${String(++fu).padStart(2, '0')}`; continue; }
     const f = fixed[d.cat];
     if (f && !used.has(f)) { d.id = f; used.add(f); } else d.id = `A-0${n++}`;
   }
