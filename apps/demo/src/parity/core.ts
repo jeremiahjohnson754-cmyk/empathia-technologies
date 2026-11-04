@@ -105,8 +105,8 @@ export const RULES = {
 } as const;
 export const coveredBy = (building: string, layer: string) => AGREEMENTS.find((a) => a.status === 'Active' && a.buildings.includes(building) && a.layers.includes(layer)) || null;
 export function stageOf(r: RoomRecord, p: Position): Stage {
-  if (r.lifecycle === 'PLANNED' || r.lifecycle.startsWith('DESIGN') || !r.installations.some((i) => i.position === p.code)) return 'Planned';
-  if (r.lifecycle === 'COMMISSIONING' || r.lifecycle === 'INSTALLED') return 'Commissioning';
+  if (r.lifecycle === 'PLANNED' || r.lifecycle === 'DESIGN_APPROVED' || r.lifecycle === 'INSTALLATION_PENDING' || !r.installations.some((i) => i.position === p.code)) return 'Planned';
+  if (r.lifecycle === 'COMMISSIONING' || r.lifecycle === 'INSTALLED_UNVERIFIED') return 'Commissioning';
   return coveredBy(r.outline.building, p.layer) ? 'Support' : 'In service';
 }
 export function healthOf(r: RoomRecord): number {
@@ -157,7 +157,7 @@ export function buildCore(w: Pick<Workspace, 'incidents' | 'workOrders'>, d: Pic
       facts: [['Severity', i.severity], ['State', i.state], ['Positions', i.positions.join(', ') || '—'], ['Source', i.source]], prov: 'KNOWN', source: i.source, href: roomHref(o), links: [{ type: 'Room', id: o.id, rel: 'in' }] });
     r.events.forEach((e, k) => add({ type: 'LifecycleEvent', id: `EV-${o.id.slice(2)}-${String(r.events.length - k).padStart(4, '0')}`, name: `${e.type.replace(/[._]/g, ' ')} · ${nameOf(o)}`, sub: `${day(e.at)} · ${e.by} · ${e.outcome || 'ALLOWED'}`, roomId: o.id, building: o.building, state: e.type.split('.')[0], tone: e.outcome === 'DENIED' ? 'warn' : 'muted', at: e.at,
       facts: [['When', day(e.at)], ['By', e.by], ['Event', e.type], ['Outcome', e.outcome || 'ALLOWED'], ['Detail', e.detail]], prov: 'KNOWN', source: 'room record (engine rules, fixed seed)', href: roomHref(o), links: [{ type: 'Room', id: o.id, rel: 'happened to' }] }));
-    const rev = r.baselines.length ? Math.max(...r.baselines.map((b) => b.revision)) : 1; const approved = !['PLANNED', 'DESIGN_DRAFT', 'ENGINEERING_REVIEW'].includes(r.lifecycle);
+    const rev = r.baselines.length ? Math.max(...r.baselines.map((b) => b.revision)) : 1; const approved = r.lifecycle !== 'PLANNED';
     add({ type: 'Design', id: `DS-${o.id.slice(2)}`, name: `${nameOf(o)} design, revision ${rev}`, sub: `${r.archetypeName} · ${r.findings.length} engine findings · ${r.connections.length} proposed connections`, roomId: o.id, building: o.building, state: approved ? 'Approved' : 'In review', tone: approved ? 'ok' : 'warn',
       facts: [['Revision', String(rev)], ['Template', r.templateNote || 'catalogue template for the archetype'], ['Findings', String(r.findings.length)], ['Connections', `${r.connections.length} proposed`], ['Applicable tests', String(r.counts.applicable)]], prov: 'KNOWN', source: 'room design record', href: roomHref(o), links: [{ type: 'Room', id: o.id, rel: 'designs' }] });
     const docs: Array<[string, boolean, string]> = [['Design summary', true, `revision ${rev}`], ['Commissioning report', r.counts.recorded > 0, `${r.counts.verified} verified results`], ['As-built drawing', r.installations.length > 0 && !['PLANNED', 'DESIGN_APPROVED'].includes(r.lifecycle), `${r.installations.length} installations`], ['Room user guide', r.lifecycle === 'ACCEPTED' || r.lifecycle === 'OPERATIONAL', 'for the people using the room']];
