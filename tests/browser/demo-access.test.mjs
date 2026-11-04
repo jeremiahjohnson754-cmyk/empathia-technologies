@@ -60,4 +60,24 @@ for (const [role, pick] of [['designer', true], ['ops', false], ['syseng', true]
   await t.page.evaluate(() => { location.hash = '#/' + 'a/'.repeat(400); }); await t.page.waitForTimeout(200);
   ok('A-17', 'destructive: a very long address is shown shortened on the not-found page', await t.page.locator('[data-testid=not-found]').count() === 1 && (await main(t.page)).length < 2000);
   ok('A-18', 'no console error except the deliberately aborted chunk', t.errs.filter((e) => !/ScouterPage|scouter\.js|Failed to fetch|dynamically imported|net::ERR_FAILED/i.test(e)).length === 0, t.errs.join(' | ')); await t.close(); }
+
+// ---------------------------------------------------------------- QA round 1 regressions (docs/qa/ROUND1.md)
+{ const t = await open('#/investor', { role: 'architect' });
+  // R1-03: route focus lands on the heading without drawing a ring, even after a keyboard navigation; a control focused next keeps its ring
+  await t.page.focus('header a[href="#/search"]').catch(() => undefined); await t.page.keyboard.press('Enter'); await t.page.waitForTimeout(400);
+  const f = await t.page.evaluate(() => { const e = document.activeElement; const cs = getComputedStyle(e); return { tag: e.tagName, inMain: !!e.closest('main'), outline: cs.outlineStyle, w: parseFloat(cs.outlineWidth) }; });
+  await t.page.keyboard.press('Tab'); const n = await t.page.evaluate(() => { const cs = getComputedStyle(document.activeElement); return cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) > 0 || cs.boxShadow !== 'none'; });
+  ok('R1-03', 'after a keyboard navigation the route focus is on the page h1 with no focus ring; the next Tab stop shows its ring', f.tag === 'H1' && f.inMain && (f.outline === 'none' || f.w === 0) && n, JSON.stringify({ f, n }));
+  // R1-04: a damaged investor-tour step in session storage is ignored instead of taking the whole shell down
+  for (const v of ['abc', '99', '-1']) { await t.page.evaluate((x) => sessionStorage.setItem('empathia.demo.tour.v1', x), v); await t.page.reload(); await t.page.waitForSelector('main h1', { timeout: 5000 }).catch(() => undefined); }
+  ok('R1-04', 'a damaged tour step (abc, 99, -1) in session storage leaves the shell working: heading, no page error', await t.page.locator('main h1').count() === 1 && !t.errs.some((e) => /Cannot read|undefined/.test(e)), t.errs.join(' | '));
+  // R1-05: when the main bundle cannot be fetched the page says so instead of staying blank
+  const p2 = await t.ctx.newPage(); await p2.route(/\/demo\.js$/, (r) => r.abort()); await p2.goto(t.page.url().split('#')[0]); await p2.waitForTimeout(300);
+  ok('R1-05', 'with demo.js blocked the page shows a visible loading line that says to reload, not a blank page', /Loading the demonstration[\s\S]*reload/.test(await p2.evaluate(() => document.body.innerText)));
+  await p2.close(); await t.close(); }
+for (const w of [390, 1440]) { const t = await open('#/search', { role: 'architect', w });
+  // R1-02: Search Party's result rows never squeeze a name to one character per line
+  const narrow = await t.page.evaluate(() => [...document.querySelectorAll('.sp__list b')].map((b) => Math.round(b.getBoundingClientRect().width)).filter((x) => x < 60));
+  ok(`R1-02-${w}`, `Search Party at ${w}px: every result name keeps a readable width (≥ 60 px)`, (await t.page.locator('.sp__list b').count()) > 3 && narrow.length === 0, narrow.slice(0, 5).join(','));
+  await t.close(); }
 await done();
