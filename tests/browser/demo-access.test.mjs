@@ -36,8 +36,10 @@ for (const role of ['visitor', 'installer', 'exec', 'qa']) {
   await t.close();
 }
 { const t = await open('#/investor', { role: 'visitor' });
-  const rail = await t.page.$$eval('.shell__rail a', (a) => a.map((x) => x.textContent.trim()));
-  ok('A-11', 'the rail offers the visitor only products it can open (never present-but-locked)', rail.length >= 1 && rail.length < 9 && !rail.includes('ServiceHands') && await t.page.locator('[aria-disabled=true]').count() === 0, rail.join(','));
+  // QUALITY_UPLIFT shell: products are offered in the More sheet (no inline product rail any more)
+  await t.page.click('[data-testid=menu-open]'); await t.page.waitForSelector('[data-testid=menu]');
+  const rail = await t.page.$$eval('.drawer__product > a .drawer__pn', (a) => a.map((x) => x.textContent.replace(' (current)', '').trim())); await t.page.keyboard.press('Escape');
+  ok('A-11', 'the product sheet offers the visitor only products it can open (never present-but-locked)', rail.length >= 1 && rail.length < 9 && !rail.includes('ServiceHands') && await t.page.locator('[aria-disabled=true]').count() === 0, rail.join(','));
   await t.page.fill('#find-in', 'scouter'); await t.page.waitForTimeout(150);
   ok('A-12', 'quick find never offers a page the role cannot open', await t.page.locator('#find-list [role=option]').count() === 0); await t.close(); }
 
@@ -64,7 +66,8 @@ for (const [role, pick] of [['designer', true], ['ops', false], ['syseng', true]
 // ---------------------------------------------------------------- QA round 1 regressions (docs/qa/ROUND1.md)
 { const t = await open('#/investor', { role: 'architect' });
   // R1-03: route focus lands on the heading without drawing a ring, even after a keyboard navigation; a control focused next keeps its ring
-  await t.page.focus('header a[href="#/search"]').catch(() => undefined); await t.page.keyboard.press('Enter'); await t.page.waitForTimeout(400);
+  // QUALITY_UPLIFT shell: the Search link lives in the role's rail now (not in the header)
+  await t.page.focus('[data-testid=hometabs] a[href="#/search"]').catch(() => undefined); await t.page.keyboard.press('Enter'); await t.page.waitForTimeout(400);
   const f = await t.page.evaluate(() => { const e = document.activeElement; const cs = getComputedStyle(e); return { tag: e.tagName, inMain: !!e.closest('main'), outline: cs.outlineStyle, w: parseFloat(cs.outlineWidth) }; });
   await t.page.keyboard.press('Tab'); const n = await t.page.evaluate(() => { const cs = getComputedStyle(document.activeElement); return cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) > 0 || cs.boxShadow !== 'none'; });
   ok('R1-03', 'after a keyboard navigation the route focus is on the page h1 with no focus ring; the next Tab stop shows its ring', f.tag === 'H1' && f.inMain && (f.outline === 'none' || f.w === 0) && n, JSON.stringify({ f, n }));
