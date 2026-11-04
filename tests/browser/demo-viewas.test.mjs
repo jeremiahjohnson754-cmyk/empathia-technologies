@@ -28,7 +28,7 @@ const role = (p) => p.evaluate(() => document.documentElement.dataset.role);
   ok('V-08', 'the native quick switch (.persp select) still drives the role', await role(p) === 'exec' && /grants nothing/.test(await p.locator('#persp-note').innerText()));
   await p.click('[data-testid=viewas-open]');
   const names = await p.$$eval('[data-testid=viewas-sheet] [data-role-key]', (b) => b.map((x) => x.innerText.split('\n')[1]));
-  ok('V-09', 'every role shows its domain and how much of the platform it reaches', names.length === 15 && (await p.$$eval('.viewas__n', (n) => n.map((x) => x.textContent))).every((x) => /^\d+ of \d+ surfaces$/.test(x)));
+  ok('V-09', 'every role shows its domain and how much of the platform it reaches', names.length === 15 && (await p.$$eval('.viewas__n', (n) => n.map((x) => x.textContent))).every((x) => /^\d+ of \d+ pages$/.test(x)));
   await p.keyboard.press('Escape');
   ok('V-10', 'no console error, nothing off the page', !t.errs.length && !t.off.length, t.errs.join(' | ')); await t.close(); }
 

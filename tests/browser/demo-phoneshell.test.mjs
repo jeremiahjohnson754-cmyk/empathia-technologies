@@ -2,7 +2,10 @@
 // The phone shell (backlog 11, UX-10): up to 820 px one compact bar — emblem, find, View as, menu — and a drawer with every product
 // (colour mark, one-line purpose, the current one marked in words) and the theme choice; header under 120 px before content; every
 // product in two taps; the role's home tabs as a bottom bar; 44 px targets; no sideways scroll; desktop keeps the rail inline.
-import { harness } from './demo-shell-lib.mjs';
+import { harness, repo } from './demo-shell-lib.mjs';
+import path from 'node:path';
+// the one canonical list (packages/ui/src/products.ts, D37/D40): the rail and the menu are checked against it for drift
+const { checkProductOrder, PRODUCT_NAMES } = await import(path.join(repo, 'packages/ui/src/products.ts'));
 const { ok, open, main, done } = await harness('demo-phoneshell');
 
 for (const w of [360, 390, 768]) {
@@ -17,7 +20,7 @@ for (const w of [360, 390, 768]) {
   await p.click('[data-testid=menu-open]'); await p.waitForSelector('[data-testid=menu]');
   const menu = await p.evaluate(() => { const d = document.querySelector('[data-testid=menu]'); return { role: d.getAttribute('role'), modal: d.getAttribute('aria-modal'), inside: d.contains(document.activeElement), products: Array.from(d.querySelectorAll('.drawer__product > a')).map((a) => ({ n: a.querySelector('.drawer__pn').textContent, purpose: !!a.querySelector('.drawer__pp')?.textContent, mark: getComputedStyle(a.querySelector('.pmark')).backgroundColor })), scouter: !!Array.from(d.querySelectorAll('.drawer__pages a')).find((a) => /Scouter/.test(a.textContent)), theme: !!d.querySelector('[data-testid=theme-switch]') }; });
   const names = menu.products.map((x) => x.n.replace(' (current)', ''));
-  ok(`P-${w}-05`, `${w} px: the menu is a dialog listing the nine products in canonical order with colour and purpose, the current one marked in words`, menu.role === 'dialog' && menu.modal === 'true' && menu.inside && names.join('|') === 'Mission Control|Lite|Pro|Search Party|ServiceHands|Commissioning & Assurance|APEX|Field Intelligence|Learn'.split('|').filter((n) => names.includes(n)).join('|') && names.length >= 7 && menu.products.every((x) => x.purpose) && new Set(menu.products.map((x) => x.mark)).size === menu.products.length && menu.products.some((x) => /\(current\)/.test(x.n) && /Lite/.test(x.n)), JSON.stringify(menu));
+  ok(`P-${w}-05`, `${w} px: the menu is a dialog listing the nine products in canonical order with colour and purpose, the current one marked in words`, menu.role === 'dialog' && menu.modal === 'true' && menu.inside && !checkProductOrder(names, { requireAll: false }).length && names.length >= 7 && menu.products.every((x) => x.purpose) && new Set(menu.products.map((x) => x.mark)).size === menu.products.length && menu.products.some((x) => /\(current\)/.test(x.n) && /Lite/.test(x.n)), JSON.stringify(menu));
   ok(`P-${w}-06`, `${w} px: Scouter is listed under Lite and the theme choice is in the menu`, menu.scouter && menu.theme);
   await p.keyboard.press('Escape'); await p.waitForTimeout(100);
   ok(`P-${w}-07`, `${w} px: Escape closes the menu and focus returns to the menu button`, await p.locator('[data-testid=menu]').count() === 0 && await p.evaluate(() => document.activeElement?.dataset.testid) === 'menu-open');
@@ -27,7 +30,7 @@ for (const w of [360, 390, 768]) {
     if (await p.locator('[data-testid=access-page], [data-testid=not-found]').count() === 0 && (await main(p)).length > 20 && await p.locator('[data-testid=menu]').count() === 0) reached += 1; else missed.push(menu.products[i].n);
   }
   ok(`P-${w}-08`, `${w} px: every product is reached in two taps (menu, product)`, reached === menu.products.length, missed.join(','));
-  await p.click('[data-testid=menu-open]'); await p.click('[data-testid=menu] .theme-switch__opt:has-text("Light")'); await p.waitForTimeout(100);
+  await p.click('[data-testid=menu-open]'); await p.click('[data-testid=menu] [data-theme-choice=light]'); await p.waitForTimeout(100);
   const th = await p.evaluate(() => ({ t: document.documentElement.dataset.theme, s: localStorage.getItem('empathia.theme') })); await p.keyboard.press('Escape');
   ok(`P-${w}-09`, `${w} px: the theme choice works from the menu and is remembered`, th.t === 'light' && th.s === 'light', JSON.stringify(th));
   await p.click('[data-testid=viewas-open]');
@@ -44,6 +47,6 @@ for (const w of [360, 390, 768]) {
   // every product with a registered page (nine once the spaces and ops slices have landed theirs)
   ok('P-1440-01', 'desktop: every product inline in the rail, the theme switch and find in the header, tabs in the role strip', d.rail === 'flex' && d.n >= 8 && d.n === d.menu && d.tabs !== 'fixed' && d.theme !== 'none' && d.find !== 'none', JSON.stringify(d));
   const order = await p.$$eval('.shell__rail a', (a) => a.map((x) => x.textContent.trim()));
-  ok('P-1440-02', 'desktop: the rail keeps the canonical order (D37/D40)', order.join('|') === 'Mission Control|Lite|Pro|Search Party|ServiceHands|Commissioning & Assurance|APEX|Field Intelligence|Learn' || order.every((n, i) => i === 0 || ['Mission Control', 'Lite', 'Pro', 'Search Party', 'ServiceHands', 'Commissioning & Assurance', 'APEX', 'Field Intelligence', 'Learn'].indexOf(n) > ['Mission Control', 'Lite', 'Pro', 'Search Party', 'ServiceHands', 'Commissioning & Assurance', 'APEX', 'Field Intelligence', 'Learn'].indexOf(order[i - 1])), order.join(','));
+  ok('P-1440-02', 'desktop: the rail keeps the canonical order of packages/ui products.ts (D37/D40), no drift', !checkProductOrder(order, { requireAll: false }).length && order.every((n) => PRODUCT_NAMES.includes(n)), checkProductOrder(order, { requireAll: false }).join('; ') || order.join(','));
   ok('P-1440-03', 'desktop: no sideways scroll, no console error', await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth) && !t.errs.length, t.errs.join(' | ')); await t.close(); }
 await done();

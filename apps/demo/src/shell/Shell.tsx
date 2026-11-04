@@ -9,14 +9,11 @@ import { useMemo, useRef, useState, type ReactNode } from 'react';
 import type { PageDef, RoleKey } from '../registry.types.js';
 import { PAGES, resolve, hrefOf } from '../registry.pages.js';
 import { ROLES, ROLE_KEYS, canOpen, tabsFor, type Resolved } from '../access/policy.js';
-import { PRODUCTS } from './products.js';
-import { ThemeSwitch } from './ThemeSwitch.js';
+import { PRODUCTS, ThemeSwitch } from '@empathia/ui';   // the one canonical list of the nine (D37/D40) and the shared System/Light/Dark switch (D9)
 import { useDialog } from '../viewas/ViewAsSheet.js';
+import { openPages } from '../viewas/scope.js';
+export { openPages };
 
-/** Pages this role can open at their own (parameter-free) address. */
-export function openPages(role: RoleKey): PageDef[] {
-  return PAGES.filter((p) => !p.path.includes(':') && !p.path.includes('*') && (() => { const r = resolve(hrefOf(p.id)); return !!r && r.page.id === p.id && canOpen(role, r); })());
-}
 /** Can the role open this address through a registered page? (Tabs and links never lead to a refusal.) */
 export const opensNative = (role: RoleKey, href: string) => { const r = resolve(href); return !!r && canOpen(role, r); };
 /** A legacy V2.5.3 address, re-pointed at the registered page that answers it, at that page's own address. */
@@ -87,7 +84,7 @@ function Drawer({ open, onClose, products, current, at, onViewAs, role }: { open
             </li>
           ))}
         </ul>
-        <div className="drawer__theme"><span className="drawer__lbl" id="drawer-theme">Appearance</span><ThemeSwitch labelledBy="drawer-theme" /></div>
+        <div className="drawer__theme"><span className="drawer__lbl" aria-hidden="true">Appearance</span><ThemeSwitch labels /></div>
         <p className="drawer__foot"><a href="#/investor" onClick={onClose}>Investor start</a> · <a href="#/v25/policy" onClick={onClose}>Who may see what</a></p>
       </div>
     </div>

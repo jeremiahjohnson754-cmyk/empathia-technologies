@@ -40,7 +40,7 @@ export const OPS_PAGES: readonly PageDef[] = [
   },
   {
     id: 'apex', title: 'APEX', purpose: 'Diagnosis tiers A0–A5 with their evidence', product: 'apex', landing: true,
-    path: '/v25/apex', authority: { area: 'pro.issues' },
+    path: '/v25/apex', authority: { area: 'assurance.analysis' },   // diagnosis is the engineering analysis: AZ_ENG and the commissioning engineer
     load: adapt(() => import('./pages/Apex.js'), (m, p) => h(m.ApexPage, { perspective: p.role, hash: p.hash })),
     search: { keywords: 'diagnosis root cause tiers', aliases: ['diagnose'] },
   },

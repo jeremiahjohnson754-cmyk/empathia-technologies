@@ -41,11 +41,11 @@ for (const role of ['visitor', 'installer', 'exec', 'qa']) {
   await t.page.fill('#find-in', 'scouter'); await t.page.waitForTimeout(150);
   ok('A-12', 'quick find never offers a page the role cannot open', await t.page.locator('#find-list [role=option]').count() === 0); await t.close(); }
 
-const detail = '#/campus/scouter/CAM-ORB4K?room=R-BCN-3-101&cat=camera';
-for (const [role, pick, verify, cost] of [['designer', true, true, true], ['ops', false, false, true], ['syseng', true, true, true]]) {
+const detail = '#/campus/scouter/display?room=huddle';
+for (const [role, pick] of [['designer', true], ['ops', false], ['syseng', true], ['architect', true]]) {
   const t = await open(detail, { role }); await t.page.waitForSelector('#scouter-d');
-  const has = { pick: await t.page.locator('button', { hasText: 'Choose for the design' }).count() > 0, verify: await t.page.locator('button', { hasText: /^Verify$/ }).count() > 0, cost: await t.page.locator('h3', { hasText: 'Cost of ownership' }).count() > 0 };
-  ok(`A-13-${role}`, `${role}: buttons and sections follow the policy (pick ${pick}, verify ${verify}, cost ${cost}) — absent, never disabled`, has.pick === pick && has.verify === verify && has.cost === cost, JSON.stringify(has));
+  const has = await t.page.locator('button', { hasText: 'Propose for the design' }).count() > 0;
+  ok(`A-13-${role}`, `${role}: “Propose for the design” follows V2.5.3 scout.pick (${pick}) — absent from the DOM, never disabled`, has === pick && await t.page.locator('button[disabled]', { hasText: 'Propose' }).count() === 0, String(has));
   await t.close();
 }
 { const t = await open('#/investor', { role: 'architect' });
@@ -57,7 +57,7 @@ for (const [role, pick, verify, cost] of [['designer', true, true, true], ['ops'
   if (await t.page.locator('.loadfail').count()) await t.page.click('text=Try again'); await t.page.waitForSelector('#scouter-h', { timeout: 5000 }).catch(() => undefined);
   ok('A-15', 'destructive: Try again loads it once the network is back', await t.page.locator('#scouter-h').count() === 1);
   await t.page.evaluate(() => { location.hash = '#/campus/scouter?room=%3Cimg%20src=x%20onerror=alert(1)%3E&cat=%22%3E'; }); await t.page.waitForTimeout(250);
-  ok('A-16', 'destructive: hostile query values fall back to defaults and are never rendered as markup', await t.page.locator('main img[src=x]').count() === 0 && /Atlas HQ 4\.218/.test(await main(t.page)));
+  ok('A-16', 'destructive: hostile query values fall back to defaults and are never rendered as markup', await t.page.locator('main img[src=x]').count() === 0 && /Huddle Room: Small-team/.test(await main(t.page)));
   await t.page.evaluate(() => { location.hash = '#/' + 'a/'.repeat(400); }); await t.page.waitForTimeout(200);
   ok('A-17', 'destructive: a very long address is shown shortened on the not-found page', await t.page.locator('[data-testid=not-found]').count() === 1 && (await main(t.page)).length < 2000);
   ok('A-18', 'no console error except the deliberately aborted chunk', t.errs.filter((e) => !/ScouterPage|Failed to fetch|dynamically imported|net::ERR_FAILED/i.test(e)).length === 0, t.errs.join(' | ')); await t.close(); }

@@ -1,147 +1,93 @@
 /**
- * Scouter (part of Lite, D41): device evaluation against a room's requirements. A port of V2.5.3's Scouter model — its fifteen
- * dimensions and weights (SCOUT_DIMS, SCOUT_WEIGHTS) and its nine lifecycle states (SCOUT_STATES) — as a pure function:
- *
- *   1. Hard gates first, never traded against a score: the lifecycle state allows designs, the category fits the room archetype, the
- *      network has the ports and the power budget, every must-have dimension reaches its minimum, the unit cost is inside the budget.
- *      A must-have that cannot be confirmed (no score yet) is a gate that is NOT met: unknown is never pass.
- *   2. Then a weighted score over the dimensions that HAVE a score, with the coverage of the weight it rests on stated beside it.
- *      Unknown dimensions are left out, never counted as zero and never as average.
- *   3. Every score carries its basis (MEASURED, VERIFIED, DECLARED, MODELED, UNKNOWN). Spatial fit is MODELED from the room geometry
- *      with the Lite rules below; a modeled value is never presented as a measurement.
- *
- * Every candidate, brand, model, figure and room here is synthetic (the invented V2.5.3 brands Vantora, Orvique and Sonarith).
+ * Scouter (part of Lite, D41): "does this device suit this room, before anyone buys it?" — evaluated ONLY from this build's own data
+ * (packages/domain-data, extracted unchanged from the demonstrator): the nine audio-visual device classes of the catalogue
+ * (V25_ROOM_CATS: display, LED wall, projector, camera, video bar, ceiling, table and wireless microphones, loudspeaker) against a room
+ * template's recorded dimensions, seats and devices (V25_ROOM_TEMPLATES) and its archetype's required systems (V25_ROOM_REQUIRED).
+ * Each candidate is checked against the room's requirement, not against the others (V2.5.3); every check names its source and says
+ * whether it is PUBLISHED (read from the catalogue or the template) or MODELED (computed here from them). No brand, model, price, lead time
+ * or market fact is invented: what V2.5.3 Scouter had that this build cannot back is listed as not rebuilt (NOT_REBUILT).
  */
 
-export type Dim = 'ux' | 'audio' | 'video' | 'spatial' | 'mgmt' | 'mon' | 'net' | 'sec' | 'interop' | 'deploy' | 'comm' | 'support' | 'life' | 'tco' | 'evidence';
-/** V2.5.3 SCOUT_DIMS: key, label, what it asks */
-export const DIMS: readonly (readonly [Dim, string, string])[] = [
-  ['ux', 'User experience', 'How it feels to the people in the room'],
-  ['audio', 'Audio', 'Pickup or playback quality for speech'],
-  ['video', 'Video', 'Image quality and framing'],
-  ['spatial', 'Spatial fit', 'Does its coverage suit this room: modeled with the Lite engine'],
-  ['mgmt', 'Management', 'Remote configuration and firmware'],
-  ['mon', 'Monitoring', 'Health and alerts it can report'],
-  ['net', 'Network fit', 'Against the current network standard and the ports that are free'],
-  ['sec', 'Security fit', 'Authentication, encryption and patching'],
-  ['interop', 'Interoperability', 'With what is already installed'],
-  ['deploy', 'Deployment', 'How hard it is to install'],
-  ['comm', 'Commissioning', 'How much there is to set up and verify'],
-  ['support', 'Supportability', 'Spares, skills and the support path'],
-  ['life', 'Lifecycle', 'How long it will be sold and supported'],
-  ['tco', 'Cost of ownership', 'Unit cost, installation and five years of running'],
-  ['evidence', 'Operational evidence', 'How it has behaved in this estate'],
-];
-/** V2.5.3 SCOUT_WEIGHTS */
-export const WEIGHTS: Readonly<Record<Dim, number>> = { ux: 1, audio: 1.3, video: 1.3, spatial: 1.6, mgmt: 0.9, mon: 0.7, net: 0.8, sec: 0.9, interop: 1.1, deploy: 0.6, comm: 0.6, support: 1, life: 1, tco: 1, evidence: 1 };
-
-export type LifeState = 'WATCH' | 'EVALUATE' | 'PILOT' | 'CONDITIONAL' | 'APPROVED' | 'PREFERRED' | 'SUNSET' | 'REPLACE' | 'BLOCKED';
-/** V2.5.3 SCOUT_STATES: key, label, tone, meaning, may it be chosen for a new design */
-export const STATES: Readonly<Record<LifeState, { label: string; tone: 'muted' | 'info' | 'warn' | 'ok' | 'bad'; meaning: string; selectable: boolean }>> = {
-  WATCH: { label: 'Watch', tone: 'muted', meaning: 'Announced or new to the market. Not for designs yet.', selectable: false },
-  EVALUATE: { label: 'Evaluate', tone: 'info', meaning: 'Being assessed on paper. Not for designs yet.', selectable: false },
-  PILOT: { label: 'Pilot', tone: 'info', meaning: 'On trial in one or two rooms. Selectable with a pilot plan.', selectable: true },
-  CONDITIONAL: { label: 'Conditional', tone: 'warn', meaning: 'Approved only where its condition is met.', selectable: true },
-  APPROVED: { label: 'Approved', tone: 'ok', meaning: 'May be used in any new design.', selectable: true },
-  PREFERRED: { label: 'Preferred', tone: 'ok', meaning: 'The standard choice for its category.', selectable: true },
-  SUNSET: { label: 'Sunset', tone: 'warn', meaning: 'Still supported, no longer chosen for new designs.', selectable: false },
-  REPLACE: { label: 'Replace', tone: 'bad', meaning: 'Installed units should be planned out.', selectable: false },
-  BLOCKED: { label: 'Blocked', tone: 'bad', meaning: 'Must not be bought or installed.', selectable: false },
+export type Basis = 'PUBLISHED' | 'MODELED';
+export type Verdict = 'SUITS' | 'SUITS_WITH_CONDITION' | 'DOES_NOT_SUIT' | 'NOT_REQUIRED';
+export const VERDICT: Readonly<Record<Verdict, { label: string; tone: 'ok' | 'warn' | 'bad' | 'muted' }>> = {
+  SUITS: { label: 'Suits this room', tone: 'ok' },
+  SUITS_WITH_CONDITION: { label: 'Suits, with a condition', tone: 'warn' },
+  DOES_NOT_SUIT: { label: 'Does not suit', tone: 'bad' },
+  NOT_REQUIRED: { label: 'Not required here', tone: 'muted' },
 };
+export interface Cat { label: string; group: string; cat: string; net: boolean; poe: number; props: Record<string, number | string> }
+export interface Template { label: string; arch: string | null; use: string; dims: [number, number, number]; occ: number; items: [string, number, number, number][] }
+export interface Check { id: string; label: string; pass: boolean; basis: Basis; source: string; detail: string }
+export interface Evaluation { key: string; label: string; group: string; verdict: Verdict; checks: Check[]; condition: string | null }
 
-export type Basis = 'MEASURED' | 'VERIFIED' | 'DECLARED' | 'MODELED' | 'UNKNOWN';
-export interface Score { value: number; basis: Exclude<Basis, 'UNKNOWN'>; note: string }
-export type Category = 'camera' | 'display' | 'micceil' | 'bar';
-export const CATEGORY_LABEL: Readonly<Record<Category, string>> = { camera: 'PTZ camera', display: 'Display', micceil: 'Ceiling microphone array', bar: 'Video bar' };
+/** The nine device classes Scouter evaluates (the catalogue's display, video, audio-capture and playback classes). */
+export const CANDIDATES = ['display', 'ledwall', 'projector', 'camera', 'bar', 'micceil', 'mictable', 'micwireless', 'speaker'] as const;
+/** The room templates that are meeting or presentation rooms (the others hold no audio-visual requirement to evaluate). */
+export const ROOM_KEYS = ['huddle', 'small_conf', 'medium_conf', 'boardroom', 'executive', 'training', 'collab', 'private_office', 'studio', 'townhall'] as const;
+/** What the requirement table calls each class (V25_ROOM_REQUIRED speaks of "mic", not of the three microphone classes). */
+const REQ_KEY: Record<string, string> = { display: 'display', ledwall: 'display', projector: 'display', camera: 'camera', bar: 'camera', micceil: 'mic', mictable: 'mic', micwireless: 'mic', speaker: 'speaker' };
+const SRC = { cats: 'V25_ROOM_CATS', tpl: 'V25_ROOM_TEMPLATES', req: 'V25_ROOM_REQUIRED' } as const;
 
-export interface Candidate {
-  id: string; category: Category; brand: string; model: string; state: LifeState;
-  /** a CONDITIONAL candidate's condition, checked against the room: max seats, or archetypes */
-  condition?: { maxSeats?: number; archetypes?: readonly string[]; text: string };
-  archetypes: readonly string[];
-  ports: number; poeW: number; unitCost: number; install: number; run5y: number;
-  /** geometry the spatial model needs: display diagonal (in), camera horizontal field of view (degrees) and reach (m), mic coverage (m²) */
-  geometry: { diagonalIn?: number; hfovDeg?: number; reachM?: number; coverM2?: number };
-  scores: Partial<Record<Exclude<Dim, 'spatial'>, Score>>;
-  /** units in this (synthetic) estate, for the evidence line */
-  installed?: { units: number; incidents12m: number };
-}
+/** What V2.5.3 Scouter had that this build's data cannot back, with the parity rows that track it. */
+export const NOT_REBUILT: readonly { what: string; rows: string }[] = [
+  { what: 'Named makes and models, prices, lead times and five-year cost', rows: 'LP-031, LP-091 · CR-16' },
+  { what: 'The nine Scouter lifecycle states (Watch … Blocked) and market watch', rows: 'LP-072, LP-119' },
+  { what: 'Architectural competition and operational evidence from the estate', rows: 'LP-179 · CR-16' },
+];
 
-export interface Room { id: string; name: string; archetype: string; seats: number; lengthM: number; widthM: number; freePorts: number; poeBudgetW: number; pilotPlan: boolean }
-export interface Requirement { category: Category; mustHave: readonly { dim: Dim; min: number }[]; budget: number }
-
-export interface Gate { id: 'state' | 'condition' | 'archetype' | 'ports' | 'power' | 'musthave' | 'budget'; label: string; met: boolean; why: string }
-export interface DimResult { dim: Dim; label: string; weight: number; value: number | null; basis: Basis; note: string }
-export interface Evaluation {
-  candidate: Candidate;
-  gates: Gate[];
-  eligible: boolean;
-  /** weighted score 0–100 over the dimensions that have a score; null when none has */
-  score: number | null;
-  /** share (0–1) of the total weight the score rests on */
-  coverage: number;
-  confidence: 'High' | 'Medium' | 'Low';
-  dims: DimResult[];
-  /** 1-based among eligible candidates; null when not eligible */
-  rank: number | null;
-}
-
-/** Lite's spatial rules (MODELED): display height against the farthest viewer, camera width at the far wall, microphone coverage. */
-export function spatialFit(c: Candidate, room: Room): Score | null {
-  const g = c.geometry; const far = room.lengthM;
-  if (c.category === 'display' && g.diagonalIn) {
-    // image height of a 16:9 diagonal, then the farthest viewer against six image heights (detailed viewing at four)
-    const h = g.diagonalIn * 0.0254 * 9 / Math.hypot(16, 9); const ratio = far / h;
-    const value = ratio <= 4 ? 5 : ratio <= 6 ? 4 : ratio <= 7 ? 3 : ratio <= 8 ? 2 : 1;
-    return { value, basis: 'MODELED', note: `Image height ${h.toFixed(2)} m; farthest seat ${far.toFixed(1)} m is ${ratio.toFixed(1)} image heights away (comfortable up to 6).` };
-  }
-  if ((c.category === 'camera' || c.category === 'bar') && g.hfovDeg && g.reachM) {
-    const width = 2 * far * Math.tan((g.hfovDeg / 2) * Math.PI / 180); const covers = width / room.widthM; const reach = g.reachM / far;
-    const value = Math.max(1, Math.min(5, Math.round(Math.min(covers, 1.4) * 2.5 + Math.min(reach, 1.2) * 1.5 - 0.6)));
-    return { value, basis: 'MODELED', note: `Frames ${width.toFixed(1)} m at the far wall for a ${room.widthM.toFixed(1)} m room; framing reach ${g.reachM} m for ${far.toFixed(1)} m.` };
-  }
-  if (c.category === 'micceil' && g.coverM2) {
-    const area = room.lengthM * room.widthM; const share = g.coverM2 / area;
-    const value = share >= 1.2 ? 5 : share >= 1 ? 4 : share >= 0.8 ? 3 : share >= 0.6 ? 2 : 1;
-    return { value, basis: 'MODELED', note: `One array covers ${g.coverM2} m² of a ${area.toFixed(0)} m² room (${Math.round(share * 100)}%).` };
-  }
-  return null;
-}
-
-/** Evaluate every candidate of the requirement's category for the room: gates, then the weighted score, then the rank. */
-export function evaluate(room: Room, req: Requirement, candidates: readonly Candidate[]): Evaluation[] {
-  const totalW = DIMS.reduce((s, [d]) => s + WEIGHTS[d], 0);
-  const out: Evaluation[] = candidates.filter((c) => c.category === req.category).map((c) => {
-    const spatial = spatialFit(c, room);
-    const dims: DimResult[] = DIMS.map(([d, label]) => {
-      const s = d === 'spatial' ? spatial : c.scores[d as Exclude<Dim, 'spatial'>];
-      return s ? { dim: d, label, weight: WEIGHTS[d], value: s.value, basis: s.basis, note: s.note } : { dim: d, label, weight: WEIGHTS[d], value: null, basis: 'UNKNOWN', note: 'No score yet: left out of the total, not counted as zero.' };
-    });
-    const st = STATES[c.state];
-    const gates: Gate[] = [];
-    gates.push({ id: 'state', label: 'Lifecycle allows new designs', met: st.selectable && (c.state !== 'PILOT' || room.pilotPlan), why: c.state === 'PILOT' && !room.pilotPlan ? 'Pilot: needs a pilot plan for this room, and there is none.' : `${st.label}: ${st.meaning}` });
-    if (c.condition) {
-      const okSeats = c.condition.maxSeats == null || room.seats <= c.condition.maxSeats; const okArch = !c.condition.archetypes || c.condition.archetypes.includes(room.archetype);
-      gates.push({ id: 'condition', label: 'Its approval condition holds here', met: okSeats && okArch, why: `${c.condition.text}${okSeats && okArch ? '' : ` — not met for ${room.seats} seats, ${room.archetype}.`}` });
+/** Evaluate every candidate class for one room template. Pure and deterministic. */
+export function evaluate(roomKey: string, tpl: Template, cats: Readonly<Record<string, Cat>>, required: Readonly<Record<string, readonly string[]>>): Evaluation[] {
+  const [L, W] = tpl.dims; const area = L * W; const far = L;
+  const req = new Set(tpl.arch ? required[tpl.arch] || [] : []);
+  const sw = cats['switch']; const poeBudget = Number(sw?.props['poe_budget_w'] ?? 0);
+  const roomPoe = tpl.items.reduce((s, [k]) => s + (cats[k]?.poe || 0), 0);
+  return CANDIDATES.filter((k) => cats[k]).map((key) => {
+    const c = cats[key]!; const checks: Check[] = []; let condition: string | null = null;
+    const isReq = req.has(REQ_KEY[key]!);
+    checks.push({ id: 'required', label: 'Required for this kind of room', pass: isReq, basis: 'PUBLISHED', source: SRC.req, detail: tpl.arch ? `${tpl.arch} requires ${[...req].join(', ') || 'nothing'}.` : 'This template has no archetype, so nothing is required.' });
+    const p = c.props;
+    if (key === 'display' || key === 'projector') {
+      const diag = key === 'display' ? Number(p['diagonal_in']) : null;
+      if (diag) {
+        const h = diag * 0.0254 * 9 / Math.hypot(16, 9); const ratio = far / h;
+        checks.push({ id: 'spatial', label: 'Readable from the farthest seat', pass: ratio <= 8, basis: 'MODELED', source: `${SRC.cats} (diagonal) · ${SRC.tpl} (length)`, detail: `A ${diag} in image is ${h.toFixed(2)} m high; the farthest seat, ${far} m away, is ${ratio.toFixed(1)} image heights (≤ 6 for detail, ≤ 8 for general viewing).` });
+        if (ratio > 6 && ratio <= 8) condition = 'Fine for general viewing; detailed content needs a second display or a larger image.';
+      } else checks.push({ id: 'spatial', label: 'Readable from the farthest seat', pass: true, basis: 'PUBLISHED', source: SRC.cats, detail: `${p['lumens']} lumens; image size is set at design time, so readability is decided by the design.` });
     }
-    gates.push({ id: 'archetype', label: 'Suits this kind of room', met: c.archetypes.includes(room.archetype), why: c.archetypes.includes(room.archetype) ? `Listed for ${room.archetype}.` : `Not listed for ${room.archetype} (listed: ${c.archetypes.join(', ')}).` });
-    gates.push({ id: 'ports', label: 'Network ports are free', met: c.ports <= room.freePorts, why: `Needs ${c.ports}, ${room.freePorts} free on the room segment.` });
-    gates.push({ id: 'power', label: 'Power over the network cable fits', met: c.poeW <= room.poeBudgetW, why: c.poeW ? `Draws ${c.poeW} W, ${room.poeBudgetW} W left on the switch.` : 'Mains powered.' });
-    const miss = req.mustHave.map((m) => ({ m, r: dims.find((x) => x.dim === m.dim)! })).filter(({ m, r }) => r.value == null || r.value < m.min);
-    gates.push({ id: 'musthave', label: 'Every must-have is reached', met: miss.length === 0, why: miss.length ? miss.map(({ m, r }) => r.value == null ? `${r.label}: no score, so it cannot be confirmed` : `${r.label} ${r.value} below ${m.min}`).join('; ') + '.' : req.mustHave.map((m) => `${dims.find((x) => x.dim === m.dim)!.label} ≥ ${m.min}`).join(', ') + '.' });
-    gates.push({ id: 'budget', label: 'Inside the unit budget', met: c.unitCost <= req.budget, why: `Unit ${money(c.unitCost)} against ${money(req.budget)}.` });
-    const known = dims.filter((x) => x.value != null);
-    const w = known.reduce((s, x) => s + x.weight, 0);
-    const score = w ? Math.round((known.reduce((s, x) => s + x.weight * (x.value as number), 0) / w / 5) * 100) : null;
-    const coverage = w / totalW;
-    const soft = known.filter((x) => x.basis === 'MODELED' || x.basis === 'DECLARED').reduce((s, x) => s + x.weight, 0) / (w || 1);
-    const confidence: Evaluation['confidence'] = coverage >= 0.85 && soft <= 0.35 ? 'High' : coverage >= 0.6 ? 'Medium' : 'Low';
-    return { candidate: c, gates, eligible: gates.every((g) => g.met), score, coverage, confidence, dims, rank: null };
+    if (key === 'ledwall') {
+      const wm = Number(p['width_m']); checks.push({ id: 'spatial', label: 'Fits the front wall', pass: wm <= W, basis: 'MODELED', source: `${SRC.cats} (width) · ${SRC.tpl} (width)`, detail: `${wm} m wide against a ${W} m wall.` });
+    }
+    if (key === 'camera' || key === 'bar') {
+      const fov = Number(p['fov_deg']); const width = 2 * far * Math.tan((fov / 2) * Math.PI / 180);
+      checks.push({ id: 'spatial', label: 'Frames the whole room', pass: width >= W, basis: 'MODELED', source: `${SRC.cats} (field of view) · ${SRC.tpl} (dimensions)`, detail: `A ${fov}° view is ${width.toFixed(1)} m wide at the far wall; the room is ${W} m wide.` });
+      if (key === 'bar') {
+        const pick = Number(p['pickup_m']); checks.push({ id: 'pickup', label: 'Hears the farthest seat', pass: pick >= far, basis: 'MODELED', source: `${SRC.cats} (pickup) · ${SRC.tpl} (length)`, detail: `Pickup ${pick} m; the farthest seat is ${far} m away.` });
+      }
+    }
+    if (key === 'micceil' || key === 'mictable') {
+      const r = Number(p['pickup_m']); const units = Math.max(1, Math.ceil(area / (Math.PI * r * r)));
+      const max = key === 'micceil' ? 4 : Math.max(2, Math.ceil(tpl.occ / 2));
+      checks.push({ id: 'pickup', label: 'Covers the seating area', pass: units <= max, basis: 'MODELED', source: `${SRC.cats} (pickup radius) · ${SRC.tpl} (dimensions)`, detail: `A ${r} m pickup radius covers ${(Math.PI * r * r).toFixed(0)} m²; the room is ${area.toFixed(0)} m², so ${units} unit${units === 1 ? '' : 's'}.` });
+      if (units > 1 && units <= max) condition = `Needs ${units} units to cover the room.`;
+    }
+    if (key === 'micwireless') {
+      const ch = Number(p['channels']); checks.push({ id: 'pickup', label: 'Enough channels for the presenters', pass: true, basis: 'PUBLISHED', source: SRC.cats, detail: `${ch} channels; the number of presenters is not recorded for this room, so it is a design question.` });
+      if (!tpl.items.some(([k]) => k === 'lectern')) condition = 'This room has no presenter position recorded; useful only if it gains one.';
+    }
+    if (key === 'speaker') {
+      const cov = Number(p['coverage_m']); const units = Math.max(1, Math.ceil(L / (cov * 2)) * Math.max(1, Math.ceil(W / (cov * 2))));
+      checks.push({ id: 'coverage', label: 'Covers the listening area', pass: units <= 8, basis: 'MODELED', source: `${SRC.cats} (coverage) · ${SRC.tpl} (dimensions)`, detail: `${cov} m coverage each: ${units} needed for ${L} × ${W} m.` });
+      if (units > 1 && units <= 8) condition = `Needs ${units} loudspeakers.`;
+    }
+    if (c.net) {
+      const after = roomPoe + c.poe;
+      checks.push({ id: 'network', label: c.poe ? 'Power over the network cable fits the switch' : 'Has a network port to use', pass: !c.poe || after <= poeBudget, basis: c.poe ? 'MODELED' : 'PUBLISHED', source: c.poe ? `${SRC.cats} (PoE draw, switch budget) · ${SRC.tpl} (devices)` : SRC.cats, detail: c.poe ? `Draws ${c.poe} W; the room's devices already draw ${roomPoe.toFixed(1)} W of the switch's ${poeBudget} W.` : 'Needs one port on the room network; mains powered.' });
+    }
+    const physical = checks.filter((x) => x.id !== 'required');
+    const verdict: Verdict = !isReq ? 'NOT_REQUIRED' : physical.every((x) => x.pass) ? (condition ? 'SUITS_WITH_CONDITION' : 'SUITS') : 'DOES_NOT_SUIT';
+    return { key, label: c.label, group: c.group, verdict, checks, condition: verdict === 'SUITS_WITH_CONDITION' ? condition : null };
   });
-  out.sort((a, b) => Number(b.eligible) - Number(a.eligible) || (b.score ?? -1) - (a.score ?? -1) || b.coverage - a.coverage || a.candidate.id.localeCompare(b.candidate.id));
-  let n = 0; for (const e of out) e.rank = e.eligible ? ++n : null;
-  return out;
 }
-export const money = (n: number) => `$${n.toLocaleString('en-US')}`;
-/** Five-year cost of ownership: unit, installation and five years of running. */
-export const fiveYear = (c: Candidate) => c.unitCost + c.install + c.run5y;
+const ORDER: Verdict[] = ['SUITS', 'SUITS_WITH_CONDITION', 'DOES_NOT_SUIT', 'NOT_REQUIRED'];
+export const ranked = (e: Evaluation[]) => [...e].sort((a, b) => ORDER.indexOf(a.verdict) - ORDER.indexOf(b.verdict) || CANDIDATES.indexOf(a.key as typeof CANDIDATES[number]) - CANDIDATES.indexOf(b.key as typeof CANDIDATES[number]));

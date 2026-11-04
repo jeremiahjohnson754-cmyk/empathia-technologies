@@ -5,7 +5,8 @@
  */
 import { useEffect, useRef } from 'react';
 import type { RoleKey } from '../registry.types.js';
-import { ROLES, ROLE_KEYS, DEFAULT_ROLE, surfaces } from '../access/policy.js';
+import { ROLES, ROLE_KEYS, DEFAULT_ROLE } from '../access/policy.js';
+import { scope } from './scope.js';
 
 export function useDialog(open: boolean, onClose: () => void) {
   const ref = useRef<HTMLDivElement>(null);
@@ -38,12 +39,12 @@ export function ViewAsSheet({ open, role, onPick, onClose }: { open: boolean; ro
           </div>
         )}
         <ul className="viewas__list">
-          {ROLE_KEYS.map((k) => { const r = ROLES[k]; const sc = surfaces(k); return (
+          {ROLE_KEYS.map((k) => { const r = ROLES[k]; const sc = scope(k); return (
             <li key={k}>
               <button type="button" className="viewas__opt" data-r={k} aria-pressed={k === role} onClick={() => onPick(k)} data-role-key={k}>
                 <span className="ava" aria-hidden="true">{r.initials}</span>
                 <span className="viewas__b"><span className="viewas__t">{r.label}</span><span className="viewas__s">{r.domain} · {r.blurb}</span>
-                  <span className="viewas__scope" aria-hidden="true"><i data-pct={Math.round((sc.surfaces / sc.of) * 20) * 5} /></span><span className="viewas__n">{sc.surfaces} of {sc.of} surfaces</span></span>
+                  <span className="viewas__scope" aria-hidden="true"><i data-pct={Math.max(1, Math.round((sc.pages / sc.of) * 20)) * 5} /></span><span className="viewas__n">{sc.pages} of {sc.of} pages</span></span>
                 {k === role && <span className="viewas__check" aria-hidden="true">✓</span>}
               </button>
             </li>); })}

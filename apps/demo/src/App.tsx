@@ -59,7 +59,7 @@ export function App() {
     if (!lands && !o.tour) { const to = homeOf(r); const t = decide(r, to); lands = `lands on ${t.title}`; location.hash = to; }
     setRoleState(r);
     if (!o.tour) setVeil((v) => ({ role: r, lands: lands || ROLES[r].home, n: (v?.n || 0) + 1 }));
-    pending.current = `Now viewing as ${ROLES[r].label}${lands ? `; ${lands}` : ''}. Viewing as a role grants nothing.`; setSaid(pending.current);
+    pending.current = `Now viewing as ${ROLES[r].label}${lands ? `; ${lands}` : ''}. Viewing as a role grants nothing; View as returns you.`; setSaid(pending.current);
   }, [role, setRoleState]);
 
   // route focus: after an in-app navigation, focus the page's heading and announce it (not on the first load)
@@ -72,7 +72,7 @@ export function App() {
   const home = homeOf(role);
   let body: ReactNode;
   if (d.kind === 'missing') body = <NotFound hash={hash} home={home} />;
-  else if (!d.allowed) body = <AccessPage role={role} title={d.title} purpose={d.purpose} who={d.who} home={home} onRole={(r) => switchTo(r)} onViewAs={() => setSheet(true)} />;
+  else if (!d.allowed) body = <AccessPage role={role} title={d.title} purpose={d.purpose} who={d.who} home={home} own={tabsFor(role, (h) => opensNative(role, h), translate).filter((t) => !t.act).map((t) => ({ label: t.label, href: t.href }))} onRole={(r) => switchTo(r)} onViewAs={() => setSheet(true)} />;
   else if (d.kind === 'page') body = <PageHost key={d.at.page.id} at={d.at} role={role} hash={route} />;
   else body = <Boundary hash={route} area={d.area} />;
 
