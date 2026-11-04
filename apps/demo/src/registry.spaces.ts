@@ -28,8 +28,20 @@ export const SPACES_PAGES: readonly PageDef[] = [
       { id: 'room.tests', label: 'Tests', authority: { field: 'commissioning.record' } },
       { id: 'room.history', label: 'History', authority: { field: 'history' } },
     ],
-    load: adapt(() => import('./campus/CampusPage.js'), (m, p) => h(m.CampusPage, { hash: p.hash, sees: p.sees })),
+    load: adapt(() => import('./campus/CampusPage.js'), (m, p) => h(m.CampusPage, { hash: p.hash, sees: p.sees, role: p.role })),
     search: { keywords: 'room 3d plan devices reference room 4.218', aliases: ['meeting room', 'reference room'] },
+  },
+  {
+    // V2.5.3's technical room page: #/room (the reference room, Atlas 4.218), #/room/<id>, #/room~<id> — the same room page as the campus address
+    id: 'room', title: 'Room', purpose: 'The technical room page: status, health, the delivery spine, what moved, open issues, 3D and plan', product: 'lite',
+    path: '/room', alias: ['/room/:room'], authority: { area: 'room' },
+    sections: [
+      { id: 'room.devices', label: 'Devices', authority: { field: 'technical' } },
+      { id: 'room.tests', label: 'Tests', authority: { field: 'commissioning.record' } },
+      { id: 'room.history', label: 'History', authority: { field: 'history' } },
+    ],
+    load: () => import('./rooms/RoomPage.js'),
+    search: { keywords: 'room technical page atlas 4.218 delivery spine health devices issues lifecycle', aliases: ['technical room page', 'room page', 'atlas 4.218'] },
   },
   {
     id: 'rooms', title: 'Rooms', purpose: 'Every room of the campus in one list, with its lifecycle and coverage', product: 'lite',
