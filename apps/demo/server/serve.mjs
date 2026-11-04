@@ -13,7 +13,9 @@ const arg = (k, d) => (process.argv.find((a) => a.startsWith(`--${k}=`)) || '').
 const port = Number(arg('port', process.env.DEMO_PORT || 4310));
 const host = arg('host', process.env.DEMO_HOST || '127.0.0.1');   // 0.0.0.0 only inside a container, published on 127.0.0.1 by compose
 const apiOrigin = new URL(arg('api', process.env.API_URL || 'http://127.0.0.1:4100')).origin;
-const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.txt': 'text/plain; charset=utf-8' };
+const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.txt': 'text/plain; charset=utf-8',
+  // brand, Inter and media (D7, D39): served with their real types, which nosniff requires
+  '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.woff2': 'font/woff2', '.woff': 'font/woff', '.webmanifest': 'application/manifest+json', '.mp4': 'video/mp4', '.vtt': 'text/vtt; charset=utf-8' };
 // Typography: when FONT_KIT_ID names the Adobe Fonts kit (Empathia platform UI: Acumin Pro, kit kis0uqz), the stylesheet is linked and its hosts allow-listed; unset = system fonts, no external request
 const fontKit = arg('font-kit', process.env.FONT_KIT_ID || '');
 const fontSrc = fontKit ? ' https://use.typekit.net https://p.typekit.net' : '';
