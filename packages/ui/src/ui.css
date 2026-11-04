@@ -67,8 +67,8 @@
 .ui-stat__label { font-size: var(--fs-sm); color: var(--tx2); font-weight: 600; }
 .ui-stat__def { font-size: var(--fs-xs); color: var(--tx3); max-width: 36ch; }
 .ui-comp { margin: 0; display: flex; flex-direction: column; gap: var(--sp-2); }
-.ui-comp__bar { display: flex; gap: 2px; height: 10px; border-radius: 4px; overflow: hidden; background: var(--line); }
-.ui-comp__seg { display: block; min-width: 3px; }
+.ui-comp__bar { display: block; width: 100%; height: 10px; border-radius: 4px; overflow: hidden; background: var(--line); }
+.ui-comp__seg { fill: var(--tone); stroke: var(--panel); stroke-width: 2px; }
 .ui-comp__legend { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-4); font-size: var(--fs-xs); color: var(--tx2); font-variant-numeric: tabular-nums; }
 .ui-comp__legend b { color: var(--tx); }
 .ui-dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; vertical-align: 0; }
@@ -80,6 +80,20 @@
 .ui-table td { padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
 .ui-table--dense td { padding: 5px 10px; }
 .ui-table tbody tr:last-child td { border-bottom: 0; }
+.ui-table .ui-al-r { text-align: right; }
+.ui-row--link:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+/* responsive: below 640 px each row becomes a labelled card (cells keep their header as data-label) */
+@media (max-width: 640px) {
+  .ui-table-wrap--stack { overflow: visible; border: 0; }
+  .ui-table--stack, .ui-table--stack tbody, .ui-table--stack tr, .ui-table--stack td { display: block; width: 100%; }
+  .ui-table--stack thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .ui-table--stack colgroup { display: none; }
+  .ui-table--stack tr { border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); margin-bottom: var(--sp-2); padding: 6px 0; }
+  .ui-table--stack td { display: grid; grid-template-columns: minmax(96px, 38%) 1fr; gap: var(--sp-3); border: 0; padding: 6px 12px; text-align: left; overflow-wrap: anywhere; }
+  .ui-table--stack td::before { content: attr(data-label); color: var(--tx3); font-size: var(--fs-xs); font-weight: 600; }
+  .ui-table--stack td.ui-al-r { text-align: left; }
+  .ui-table--stack .ui-td--minor { display: none; }
+}
 .ui-row--link { cursor: pointer; }
 .ui-row--link:hover td { background: var(--accent-bg); }
 .ui-th-sort { all: unset; cursor: pointer; }
