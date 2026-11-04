@@ -9,11 +9,13 @@
  *     and no state is carried by colour alone (a word, a shape or both travel with it).
  *   - Keyboard and screen reader complete; motion only where prefers-reduced-motion allows (kit.css).
  */
-import { createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useState, type ReactNode, type KeyboardEvent as RKE } from 'react';
+import { createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react';
+/** The keyboard event the kit's handlers read (kept structural so it types under the offline React shim too). */
+type RKE = { key: string; preventDefault(): void };
 import { Icon, type IconName } from './icons.js';
 import type { Tone } from './status.js';
 
-const cx = (...a: Array<string | false | null | undefined | 0>) => a.filter(Boolean).join(' ');
+const cx = (...a: Array<string | false | 0 | null | undefined>) => a.filter(Boolean).join(' ');
 /** A data-series colour: a status tone, a data hue, or one of the nine products (their --p-<id>). */
 export type Series = Tone | 'indigo' | 'violet' | 'mission-control' | 'lite' | 'pro' | 'search-party' | 'servicehands' | 'commissioning' | 'apex' | 'field' | 'learn';
 const fmt = (n: number, d = 0) => (Number.isFinite(n) ? n.toLocaleString('en-GB', { maximumFractionDigits: d, minimumFractionDigits: 0 }) : '—');
@@ -82,11 +84,11 @@ export function PageHero({ eyebrow, title, lede, actions, meta, aside, product, 
 
 // ================================================================================================ cards
 /** A card with an icon header (the icon sits in a tinted tile in the series/product colour), an optional action, body and footer. */
-export function Card({ title, sub, icon, tone, action, footer, children, level = 2, pad = true, className, id, testId }: { title?: ReactNode; sub?: ReactNode; icon?: IconName; tone?: Series; action?: ReactNode; footer?: ReactNode; children?: ReactNode; level?: 2 | 3 | 4; pad?: boolean; className?: string; id?: string; testId?: string }) {
+export function Card({ title, sub, icon, tone, action, footer, children, level = 2, pad = true, glass, className, id, testId }: { title?: ReactNode; sub?: ReactNode; icon?: IconName; tone?: Series; action?: ReactNode; footer?: ReactNode; children?: ReactNode; level?: 2 | 3 | 4; pad?: boolean; /** a glass layer (translucent, blurred) for a card that floats over a hero or a spatial stage */ glass?: boolean; className?: string; id?: string; testId?: string }) {
   const auto = useId(); const hid = `${id || 'card'}-${auto.replace(/:/g, '')}-h`;
   const H = (`h${level}`) as 'h2' | 'h3' | 'h4';
   return (
-    <section className={cx('kit-card', !pad && 'kit-card--flush', tone && `kit-s--${tone}`, className)} aria-labelledby={title ? hid : undefined} id={id} data-testid={testId}>
+    <section className={cx('kit-card', !pad && 'kit-card--flush', glass && 'kit-glass', tone && `kit-s--${tone}`, className)} aria-labelledby={title ? hid : undefined} id={id} data-testid={testId}>
       {title ? (
         <header className="kit-card__head">
           {icon ? <span className="kit-card__icon" aria-hidden="true"><Icon name={icon} size={18} /></span> : null}
@@ -100,8 +102,30 @@ export function Card({ title, sub, icon, tone, action, footer, children, level =
   );
 }
 /** A plain raised surface (no header semantics) for grouping. */
-export function Panel({ children, className, raised, as = 'div' }: { children?: ReactNode; className?: string; raised?: boolean; as?: 'div' | 'section' | 'aside' }) {
-  const T = as; return <T className={cx('kit-panel', raised && 'kit-panel--raised', className)}>{children}</T>;
+export function Panel({ children, className, raised, glass, as = 'div' }: { children?: ReactNode; className?: string; raised?: boolean; glass?: boolean; as?: 'div' | 'section' | 'aside' }) {
+  const T = as; return <T className={cx('kit-panel', raised && 'kit-panel--raised', glass && 'kit-glass', className)}>{children}</T>;
+}
+
+// ================================================================================================ tag chips (status · room · device)
+/** V2.5.3's device categories → the icon of their family (the layer the device sits in); an unknown category gets the generic device glyph. */
+const DEVICE_ICON: Record<string, IconName> = {
+  display: 'display', ledwall: 'display', projector: 'display', switcher: 'display', encoder: 'display', camera: 'camera', bar: 'camera', seccam: 'camera',
+  micceil: 'mic', mictable: 'mic', micwireless: 'mic', speaker: 'speaker', dsp: 'speaker', amp: 'speaker',
+  compute: 'control', control: 'control', touch: 'control', scheduler: 'control', occsensor: 'control', lighting: 'control', iot: 'control', hvac: 'control',
+  switch: 'network', rack: 'power', pdu: 'power', table: 'furniture', chairs: 'furniture', lectern: 'furniture',
+};
+export const deviceIcon = (category: string | undefined): IconName => (category && DEVICE_ICON[category]) || 'device';
+export type TagKind = 'status' | 'room' | 'building' | 'device' | 'role' | 'product';
+const KIND: Record<TagKind, { word: string; icon: IconName }> = { status: { word: 'Status', icon: 'pulse' }, room: { word: 'Room', icon: 'room' }, building: { word: 'Building', icon: 'building' }, device: { word: 'Device', icon: 'device' }, role: { word: 'Role', icon: 'user' }, product: { word: 'Product', icon: 'products' } };
+/**
+ * A tag that says what kind of thing it names (the design-language concept's status, room and device tags): the icon names the kind, the
+ * text names the thing, a status tag carries its StatusDot shape, and a screen reader hears "Room: Atlas 4.218" — never colour alone.
+ */
+export function TagChip({ kind, children, state, category, tone, href, small = true, title }: { kind: TagKind; children: ReactNode; state?: HealthState; category?: string; tone?: Tone | Series; href?: string; small?: boolean; title?: string }) {
+  const cls = cx('kit-chip', 'kit-tag', `kit-tag--${kind}`, small && 'kit-chip--sm', tone && `kit-s--${tone}`, tone && 'kit-chip--tone', href && 'kit-chip--act');
+  const lead = kind === 'status' ? <StatusDot state={state ?? 'offline'} hideLabel /> : <Icon name={kind === 'device' ? deviceIcon(category) : KIND[kind].icon} size={small ? 14 : 16} />;
+  const inner = <>{lead}<span className="ui-sr">{KIND[kind].word}: </span><span>{children}</span></>;
+  return href ? <a className={cls} href={href} title={title} data-kind={kind}>{inner}</a> : <span className={cls} title={title} data-kind={kind}>{inner}</span>;
 }
 
 // ================================================================================================ sparkline

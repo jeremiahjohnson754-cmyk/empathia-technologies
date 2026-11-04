@@ -17,6 +17,7 @@ h1 { margin: 0; font-size: clamp(26px, 3.6vw, 34px); line-height: 1.15; letter-s
 .go { display: grid; gap: 4px; padding: var(--sp-4); border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--panel); color: var(--tx); min-height: 68px; }
 .go span { color: var(--tx2); font-size: var(--fs-sm); } .go.launch { background: var(--accent); border-color: var(--accent); color: var(--bg); } .go.launch span { color: color-mix(in srgb, var(--bg) 75%, transparent); }
 .go:hover { border-color: var(--accent); }
+button.go { font: inherit; text-align: left; cursor: pointer; width: 100%; align-content: start; } .go .go__as { font-size: var(--fs-xs); font-weight: 600; opacity: .9; }
 .scen { margin-top: var(--sp-7); } .scen ol { list-style: none; padding: 0; margin: var(--sp-4) 0 0; display: grid; gap: var(--sp-3); grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
 .scen li { padding: var(--sp-4); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); } .scen li a { color: var(--tx); } .scen p { margin: 6px 0 0; color: var(--tx2); font-size: var(--fs-sm); } .scen i { color: var(--accent); font-style: normal; font-weight: 600; margin-right: 6px; }
 .status { margin-top: var(--sp-7); color: var(--tx2); } .boundary code { font: 600 var(--fs-xs) var(--font-mono); color: var(--tx2); }

@@ -37,9 +37,13 @@ for (const w of [360, 390, 768]) {
   ok(`P-${w}-09`, `${w} px: the theme choice works from the menu and is remembered`, th.t === 'light' && th.s === 'light', JSON.stringify(th));
   await p.click('[data-testid=viewas-open]');
   ok(`P-${w}-10`, `${w} px: View as is one tap away`, await p.locator('[data-testid=viewas-sheet]').count() === 1); await p.keyboard.press('Escape');
-  await p.click('.find__btn'); await p.waitForTimeout(80); await p.keyboard.type('which camera'); await p.waitForTimeout(150);
+  // P-11 changed (uplift/system-shell): on phones the Search Party bar is a full-width row under the bar (V2.5.3 phone, 3 Nov 01), not a
+  // button that expands — so the test types into the visible field; it must be visible and full width without a tap first
+  const row = await p.evaluate(() => { const r = document.getElementById('find-in').getBoundingClientRect(); return { w: Math.round(r.width), vis: r.height >= 44 }; });
+  ok(`P-${w}-11a`, `${w} px: the Search Party bar is visible as a full-width row, at least 44 px tall`, row.vis && row.w >= w - 40, JSON.stringify(row));
+  await p.click('#find-in'); await p.waitForTimeout(80); await p.keyboard.type('which camera'); await p.waitForTimeout(400);
   const opt = await p.locator('#find-list [role=option]').first().innerText().catch(() => ''); await p.keyboard.press('Enter'); await p.waitForTimeout(400);
-  ok(`P-${w}-11`, `${w} px: find expands from its button and answers “which camera” with Scouter`, /Scouter/.test(opt) && /#\/campus\/scouter/.test(p.url()), opt);
+  ok(`P-${w}-11`, `${w} px: the Search Party bar answers “which camera” with Scouter`, /Scouter/.test(opt) && /#\/campus\/scouter/.test(p.url()), opt);
   // QUALITY_UPLIFT: the per-page note row is gone; the bar carries a small "Synthetic data" chip and the footer one synthetic-data line
   ok(`P-${w}-12`, `${w} px: the synthetic-data chip stays in the bar on one line, and no note row stacks above the page`, await p.evaluate(() => { const n = document.querySelector('header .synth-chip'); return !!n && n.getBoundingClientRect().height < 30 && /Synthetic data/.test(n.textContent) && !document.querySelector('.shell__note'); }));
   ok(`P-${w}-13`, `${w} px: no console error`, !t.errs.length, t.errs.join(' | ')); await t.close();
