@@ -198,7 +198,12 @@ function QuickFind({ role, pages, open, setOpen }: { role: RoleKey; pages: PageD
     const ROWS: Array<[keyof typeof ent, string]> = [['unit', 'Devices & physical units'], ['position', 'Logical positions & installations'], ['issue', 'Incidents & work orders']];
     for (const [g, label] of ROWS) { const x = ent[g]; if (x.total) groups.push({ key: g, label, opts: x.hits.slice(0, 4).map((e) => ({ key: e.id, href: e.href, title: e.title, sub: e.sub, icon: g === 'issue' ? 'alert' : deviceIcon(e.cat), chip: e.chip })), more: x.total - Math.min(4, x.total) }); }
     const hits = index.find(text, 40).filter((h) => (h.kind === 'room' || h.kind === 'building') && allows({ entity: h.kind === 'room' ? 'Room' : 'Building' }, role) && opensNative(role, h.href));
-    for (const [k, label, icon, chip] of [['room', 'Rooms', 'room', 'Room'], ['building', 'Buildings', 'building', 'Building']] as const) { const xs = hits.filter((h) => h.kind === k); if (xs.length) groups.push({ key: k, label, opts: xs.slice(0, 3).map((h) => ({ key: `${k}-${h.id}`, href: h.href, title: h.label, sub: h.description, icon, chip })), more: Math.max(0, xs.length - 3) }); }
+    // a room or building the words name outright ("atlas 4.218") leads; otherwise places follow the records
+    const named = hits.some((h) => words.every((w) => h.label.toLowerCase().includes(w)));
+    const at = named ? (pagesGroup && pageHits[0]!.alias ? 1 : 0) : groups.length;
+    const places: Grp[] = [];
+    for (const [k, label, icon, chip] of [['room', 'Rooms', 'room', 'Room'], ['building', 'Buildings', 'building', 'Building']] as const) { const xs = hits.filter((h) => h.kind === k); if (xs.length) places.push({ key: k, label, opts: xs.slice(0, 3).map((h) => ({ key: `${k}-${h.id}`, href: h.href, title: h.label, sub: h.description, icon, chip })), more: Math.max(0, xs.length - 3) }); }
+    groups.splice(at, 0, ...places);
   }
   if (pagesGroup && !pageHits[0]!.alias) groups.push(pagesGroup);
   const opts = groups.flatMap((g) => g.opts);
