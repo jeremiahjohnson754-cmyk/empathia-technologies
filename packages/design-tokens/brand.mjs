@@ -40,7 +40,7 @@ export const iconLinks = (base = '', { manifest = false } = {}) => [
 ].join('');
 
 /** Write dest/manifest.webmanifest (the tile at 192 and 512; Graphite as the theme and background colour). */
-export function writeManifest(dest, { name, shortName = 'Empathia', startUrl = './', themeColor = '#0e1012', backgroundColor = '#0e1012', display = 'standalone' }) {
+export function writeManifest(dest, { name, shortName = 'Empathia', startUrl = './', themeColor = '#070d1a', backgroundColor = '#070d1a', display = 'standalone' }) {
   const m = { name, short_name: shortName, start_url: startUrl, scope: './', display, theme_color: themeColor, background_color: backgroundColor,
     icons: [{ src: 'brand/icon-192.png', sizes: '192x192', type: 'image/png' }, { src: 'brand/icon-512.png', sizes: '512x512', type: 'image/png' }, { src: 'brand/favicon.svg', sizes: 'any', type: 'image/svg+xml' }] };
   fs.writeFileSync(path.join(dest, 'manifest.webmanifest'), JSON.stringify(m, null, 1) + '\n');
