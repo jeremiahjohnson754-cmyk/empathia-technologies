@@ -45,7 +45,7 @@ function SitePage() {
   const recs = allRecords();
   const by = (s: string) => recs.filter((r) => r.lifecycle === s).length;
   return (
-    <section className="campus" data-testid="campus-site">
+    <section className="campus" data-native="" data-testid="campus-site">
       <Crumbs items={[['Campus']]} />
       <header className="campus__head"><div><p className="kicker">The living campus · synthetic</p><h1>{SITE.name}</h1>
         <p className="ui-muted">Six buildings, {ROOMS.length} rooms: one complete reference room, three that keep this demonstration’s earlier records, and {ROOMS.filter((r) => r.kind === 'designed').length} designed from their archetypes — modelled layouts and devices, never surveyed.</p></div>
@@ -63,7 +63,7 @@ function BuildingPage({ b }: { b: string }) {
   const B = buildingByKey(b)!; const issues = openIssuesByBuilding(); const counts = Object.fromEntries(BUILDINGS.map((x) => [x.key, roomsIn(x.key).length]));
   const floors = Array.from({ length: B.floors }, (_, i) => B.floors - i);
   return (
-    <section className="campus" data-testid="campus-building">
+    <section className="campus" data-native="" data-testid="campus-building">
       <Crumbs items={[['Campus', '#/campus'], [B.name]]} />
       <header className="campus__head"><div><p className="kicker">{B.short} · opened {B.opened}</p><h1>{B.name}</h1><p className="ui-muted">{B.purpose}. Source: {B.source}.</p></div></header>
       <Stage label={`Campus map with ${B.name} selected`} testId="campus-stage"><CampusMap issues={issues} rooms={counts} current={b} onOpen={(x) => go(`#/campus/${x.key}`)} /></Stage>
@@ -77,7 +77,7 @@ function BuildingPage({ b }: { b: string }) {
 function FloorPage({ b, f }: { b: string; f: number }) {
   const B = buildingByKey(b)!; const rs = roomsIn(b, f).map((o) => roomRecord(o.id)!);
   return (
-    <section className="campus" data-testid="campus-floor">
+    <section className="campus" data-native="" data-testid="campus-floor">
       <Crumbs items={[['Campus', '#/campus'], [B.name, `#/campus/${b}`], [`Floor ${f}`]]} />
       <header className="campus__head"><div><p className="kicker">{B.name}</p><h1>Floor {f}</h1></div><nav className="campus__step" aria-label="Floors">{f > 1 && <a className="ui-btn" href={`#/campus/${b}/${f - 1}`}>Floor {f - 1}</a>}{f < B.floors && <a className="ui-btn" href={`#/campus/${b}/${f + 1}`}>Floor {f + 1}</a>}</nav></header>
       {rs.length ? <Stage label={`Floor plate of ${B.name} floor ${f}`} testId="floor-stage"><FloorPlate rooms={rs.map((r) => ({ id: r.outline.id, label: shortName(r.outline), w: r.outline.dims[0], l: r.outline.dims[1], state: r.lifecycle, issues: openIssues(r).length }))} onOpen={(id) => go(roomHref(roomById(id)!))} /></Stage>
@@ -103,7 +103,7 @@ export function RoomsIndex({ hash }: { hash: string }) {
   const all = allRecords(); const rows = all.filter((r) => (!state || r.lifecycle === state) && (!b || r.outline.building === b));
   const set = (k: string, v: string) => { const n = new URLSearchParams(q); if (v) n.set(k, v); else n.delete(k); go(`#/rooms${n.toString() ? `?${n}` : ''}`); };
   return (
-    <section className="campus" data-testid="rooms-index">
+    <section className="campus" data-native="" data-testid="rooms-index">
       <Crumbs items={[['Campus', '#/campus'], ['Rooms']]} />
       <header className="campus__head"><div><p className="kicker">The canonical campus</p><h1>Thirty rooms</h1><p className="ui-muted">Every room opens in the same room view. Coverage says per room what is complete, modelled or a gap.</p></div></header>
       <div className="filters"><label>Lifecycle <select value={state} onChange={(e) => set('state', e.target.value)}><option value="">Every state</option>{[...new Set(all.map((r) => r.lifecycle))].map((s) => <option key={s} value={s}>{s}</option>)}</select></label>

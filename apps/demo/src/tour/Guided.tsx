@@ -69,7 +69,7 @@ function Narration({ id }: { id: string }) {
 
 export function ToursPage() {
   return (
-    <section className="tours" data-testid="tours-index">
+    <section className="tours" data-native="" data-testid="tours-index">
       <p className="kicker">Guided experiences</p><h1>Three tours, or explore on your own</h1>
       <p className="ui-muted">Each tour can be paused, resumed, skipped and left at any stop. Nothing in the demonstration needs a tour.</p>
       <ul className="tours__list">{TOURS.map((t) => <li key={t.key}><a href={`#/tours/${t.key}`} className="campus__card" data-testid={`tour-start-${t.key}`}><b>{t.title}</b><span className="ui-muted">{t.goal}</span><span className="ui-meta">{t.audience} · {t.stops.length} stops</span></a></li>)}</ul>

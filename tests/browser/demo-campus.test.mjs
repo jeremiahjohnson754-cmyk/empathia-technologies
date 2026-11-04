@@ -45,6 +45,9 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   ok(`CA-${tag}-12`, 'the rooms index lists the thirty rooms', all === 30, all);
   await t.go('#/rooms?state=OPERATIONAL&building=HZN');
   ok(`CA-${tag}-13`, 'a filter with no match shows an empty state, not a blank', /No room matches/.test(await t.text()));
+  // D36 under an explicit Light choice (the shell's switch sets data-theme="light"): the stage keeps the dark tokens
+  await t.go('#/campus'); const forced = await t.page.evaluate(() => { const was = document.documentElement.dataset.theme; document.documentElement.dataset.theme = 'light'; const m = getComputedStyle(document.querySelector('[data-testid="campus-stage"]')).backgroundColor.match(/\d+/g).map(Number); if (was === undefined) delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = was; return (0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]) / 255; });
+  ok(`CA-${tag}-15`, 'with Light chosen explicitly, the spatial stage still takes the dark tokens (D36)', forced < 0.25, forced);
   ok(`CA-${tag}-14`, 'no page error and no request leaves the page', !t.errs.length && !t.ext.length, [...t.errs, ...t.ext].join(' | '));
   await t.close();
 }

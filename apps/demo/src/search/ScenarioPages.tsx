@@ -27,7 +27,7 @@ function RoomPick({ room, base }: { room: string; base: string }) {
 
 function Index({ room }: { room: string }) {
   return (
-    <section className="sp" data-testid="sp-scenarios">
+    <section className="sp" data-native="" data-testid="sp-scenarios">
       <p className="kicker">Search Party · scenarios</p><h1>Five questions, answered from recorded relationships</h1>
       <p className="ui-muted">Each starts from one record of the synthetic campus. Support organisations, agreements, people and competencies are labelled synthetic demonstration fixtures.</p>
       <RoomPick room={room} base="#/search/scenarios" />
@@ -41,7 +41,7 @@ function ScenarioView({ s, room }: { s: Scenario; room: string }) {
   const toggle = (k: string) => setOpen((o) => { const n = new Set(o); if (n.has(k)) n.delete(k); else n.add(k); return n; });
   const total = scenarioCount(s);
   return (
-    <section className="sp" data-testid="sp-scenario" data-scenario={s.id}>
+    <section className="sp" data-native="" data-testid="sp-scenario" data-scenario={s.id}>
       <nav aria-label="Breadcrumb" className="crumbs"><ol><li><a href="#/search">Search Party</a></li><li><a href={`#/search/scenarios?room=${room}`}>Scenarios</a></li><li><span aria-current="page">{s.id}</span></li></ol></nav>
       <p className="kicker">{s.id}{s.hero ? ` · ${HERO[s.hero]}` : ''}</p><h1>{s.title}</h1>
       <p className="lead">{s.question}</p>

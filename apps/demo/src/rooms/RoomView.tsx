@@ -20,12 +20,13 @@ export function RoomView({ id, hash }: { id: string; hash: string }) {
   const r = useMemo(() => roomRecord(id)!, [id]);
   const q = new URLSearchParams(/\?(.*)$/.exec(hash)?.[1] || '');
   const tab = (TABS.find(([k]) => k === q.get('tab'))?.[0]) || 'overview';
-  const [sel, setSel] = useState<string | null>(q.get('device'));
-  useEffect(() => { setSel(q.get('device')); }, [id]);   // eslint-disable-line react-hooks/exhaustive-deps
+  const dev = q.get('device');
+  const [sel, setSel] = useState<string | null>(dev);
+  useEffect(() => { setSel(dev); }, [id, dev]);   // a deep link (?device=) selects that position
   const o = r.outline; const B = buildingByKey(o.building)!;
   const setTab = (k: string) => { const n = new URLSearchParams(q); if (k === 'overview') n.delete('tab'); else n.set('tab', k); history.replaceState(null, '', `${roomHref(o)}${n.toString() ? `?${n}` : ''}`); dispatchEvent(new HashChangeEvent('hashchange')); };
   return (
-    <section className="room" data-testid="room-view" data-room={o.id}>
+    <section className="room" data-native="" data-testid="room-view" data-room={o.id}>
       <nav aria-label="Breadcrumb" className="crumbs"><ol><li><a href="#/campus">Campus</a></li><li><a href={`#/campus/${o.building}`}>{B.name}</a></li><li><a href={`#/campus/${o.building}/${o.floor}`}>Floor {o.floor}</a></li><li><span aria-current="page">{o.number}</span></li></ol></nav>
       <header className="room__head">
         <div><p className="kicker">{shortName(o)} · {r.archetypeName} · {o.capacity} seats</p><h1>{o.name}</h1><p className="ui-muted">{o.intent}</p></div>

@@ -18,7 +18,7 @@ export const TOURS: Tour[] = [
     { id: 'A4', title: 'A floor', text: 'Floor 4: the room footprints are their modelled dimensions, not a survey.', href: '#/campus/ATL/4', spot: 'floor-stage' },
     { id: 'A5', title: 'The reference room in 3D', text: 'Atlas 4.218. Every device has a position, a history and evidence behind it. Rotate the view, switch to the plan, turn layers off.', href: ROOM, spot: 'room-stage', narration: 'tour-a-05' },
     { id: 'A6', title: 'Inspect a device', text: 'The camera position keeps its code while the unit changed: position, asset and identity state are shown together, and the identity stays UNKNOWN because no serial is invented.', href: `${ROOM}?device=A-0106`, spot: 'device-panel' },
-    { id: 'A7', title: 'Who supports this room', text: 'Search Party answers from recorded relationships: support paths, synthetic agreements with fictional organisations, and internal competencies — never certifications.', href: `#/search/scenarios/S2?room=${REFERENCE_ROOM_ID}`, spot: 'sp-list' },
+    { id: 'A7', title: 'Who supports this room', text: 'Search Party answers from recorded relationships: support paths, synthetic agreements with fictional organisations, and internal competencies with their verification state.', href: `#/search/scenarios/S2?room=${REFERENCE_ROOM_ID}`, spot: 'sp-list' },
     { id: 'A8', title: 'Core Replay: the camera change', text: 'The replay walks the room’s history. Watching or scrubbing never changes the record.', href: `#/replay/${REFERENCE_ROOM_ID}` },
     { id: 'A9', title: 'Acceptance held, honestly', text: 'The tests the replacement reopened were re-run and verified by someone else, yet the engine still holds acceptance: an exception is pending approval.', href: `${ROOM}?tab=history`, spot: 'exception' },
     { id: 'A10', title: 'The room’s story', text: 'Every event behind the state, with who and when. From here, explore freely.', href: `#/story/${REFERENCE_ROOM_ID}` },
@@ -41,7 +41,7 @@ export const TOURS: Tour[] = [
     { id: 'C3', title: 'See it: the camera lab', text: 'Framing and coverage as a model of the room, never a measurement.', href: '#/learn/labs/see' },
     { id: 'C4', title: 'Light it: the lighting lab', text: 'Scenes and their effect on the picture, simulated.', href: '#/learn/labs/light' },
     { id: 'C5', title: 'Diagnose, repair, verify', text: 'A real storyline of the campus: the camera replaced at Atlas 4.218, the tests it reopened, and the independent verification.', href: '#/search/scenarios/S4', spot: 'sp-list' },
-    { id: 'C6', title: 'Competency evidence', text: 'Completing a lab is evidence of competency — never a certification, and it never authorises work by itself.', href: '#/v25/learn' },
+    { id: 'C6', title: 'Competency evidence', text: 'Completing a lab is evidence of competency, shown with its verification state; it never authorises work by itself.', href: '#/v25/learn' },
     { id: 'C7', title: 'Back to the room', text: 'The lesson came from this room. From here, explore freely.', href: ROOM, spot: 'room-view' },
   ] },
 ];
@@ -55,5 +55,5 @@ export const NARRATION: Record<string, { src: string; captions: string; transcri
     sha256: 'a5f1b476451d504d1b2144b766de7509e758bee9e3a27e9f2d84b3fce5a36064', source: 'pilot take tour-sample s01 (owner-approved 2026-11-01 08:07 CT; source sha256 8a9927d3…), gain −4.65 dB to −23 LUFS, mono 96 kb/s',
   },
 };
-export const BANNED = /\b(live|real-time monitoring|certified|production-ready|100%)\b/i;
+export const BANNED = /\b(live|real-time monitoring|certif\w*|production-ready|100%)\b/i;
 export const tourByKey = (k: string) => TOURS.find((t) => t.key === k);

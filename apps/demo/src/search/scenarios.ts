@@ -75,7 +75,7 @@ export function scenario(id: string, roomId = REFERENCE_ROOM_ID): Scenario | nul
         { key: 'gated', label: 'Refused by a hard gate (never overridable)', items: no.map((t) => ({ id: t.id, label: t.name, detail: gate(t).join(' · '), rel: 'GATED', provenance: FIXTURE })) },
       ],
       answer: ok.length ? `${ok.length} technician${ok.length === 1 ? '' : 's'} pass the hard gates; the order is a preference (fewer open jobs) a dispatcher may change with a reason. Gates are never overridden.` : 'No technician passes the hard gates: escalate to the support path.',
-      cannot: ['Competencies are internal, synthetic and labelled by verification state; none is a certification.', 'Assignment is an explicit dispatcher action in ServiceHands; nothing is auto-assigned.', 'No travel estimate is made.'],
+      cannot: ['Competencies are internal and synthetic, each shown with its verification state; none grants authority on its own.', 'Assignment is an explicit dispatcher action in ServiceHands; nothing is auto-assigned.', 'No travel estimate is made.'],
       acts: [{ label: 'Dispatch in ServiceHands', href: '#/v25/service' }],
     };
   }
@@ -87,7 +87,7 @@ export function scenario(id: string, roomId = REFERENCE_ROOM_ID): Scenario | nul
         { key: 'change', label: 'The replacement', items: ref.installations.filter((x) => ref.positions.find((p) => p.code === x.position)?.cat === 'camera').map((x) => ({ id: `${x.position}/${x.asset}`, label: `${x.asset} at ${x.position}`, detail: `${x.installedAt.slice(0, 10)}${x.removedAt ? ` → ${x.removedAt.slice(0, 10)} (${x.removalReason})` : ' → current'}`, rel: 'INSTALLED_AT', provenance: x.basis })) },
         { key: 'reopened', label: 'Tests reopened and re-verified', items: re.map((x) => ({ id: x.testId, label: x.testId, detail: x.reasons.join('; '), rel: 'REOPENED_BY', provenance: 'commissioning engine (re-run, independently verified)' })) },
         { key: 'held', label: 'What still holds acceptance', items: (ref.nextStep?.blockers || []).map((b, i) => ({ id: `B-${i}`, label: b, detail: ref.exception ? `${ref.exception.id} pending approval` : '', rel: 'BLOCKS', provenance: 'commissioning engine gate' })) },
-        { key: 'learn', label: 'Learning', items: [{ id: 'CASE-4218-CAM', label: 'Learn case: camera replacement and re-verification (synthetic, sanitized)', detail: 'competency EVIDENCE only — never a certification or a work authorisation', rel: 'TEACHES', provenance: FIXTURE, href: '#/v25/learn' }] },
+        { key: 'learn', label: 'Learning', items: [{ id: 'CASE-4218-CAM', label: 'Learn case: camera replacement and re-verification (synthetic, sanitized)', detail: 'competency EVIDENCE only — it never authorises work', rel: 'TEACHES', provenance: FIXTURE, href: '#/v25/learn' }] },
       ],
       answer: `The unit changed, the position stayed. ${re.length} tests were reopened by the replacement, re-run and verified by a different person; acceptance is still held by the engine.`,
       cannot: ['A closed ticket is not recommissioning: re-acceptance is decided by the engine’s gate.', 'Baseline v1 stays CURRENT until v2 is accepted.'],
