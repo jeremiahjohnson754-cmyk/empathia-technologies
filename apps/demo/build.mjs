@@ -51,7 +51,7 @@ await esbuild.build({
 // brand, Inter and the theme script from @empathia/design-tokens (D7, D9, D39): files copied into dist, the <head> decorated
 const { shipBrandAndType, tokenCss } = await import(path.join(repo, 'packages/design-tokens/brand.mjs'));
 const decorate = shipBrandAndType(dist, { preload: 'app', manifest: { name: 'Empathia Living Campus — investor demonstration', shortName: 'Empathia demo' } });
-const css = [tokenCss(), ...[path.join(repo, 'packages/ui/src/ui.css'), path.join(repo, 'packages/ui/src/kit.css'), path.join(app, 'src/styles/demo.css'), path.join(app, 'src/styles/shell.css'), path.join(app, 'src/hardening/ops.css'), path.join(app, 'src/spatial/spaces.css'), path.join(app, 'src/spatial/core.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`)].join('\n');
+const css = [tokenCss(), ...[path.join(repo, 'packages/ui/src/ui.css'), path.join(repo, 'packages/ui/src/kit.css'), path.join(app, 'src/styles/demo.css'), path.join(app, 'src/styles/shell.css'), path.join(app, 'src/hardening/ops.css'), path.join(app, 'src/pages/workspaces.css'), path.join(app, 'src/spatial/spaces.css'), path.join(app, 'src/spatial/core.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`)].join('\n');
 fs.writeFileSync(path.join(dist, 'demo.css'), css);
 fs.writeFileSync(path.join(dist, 'index.html'), decorate(fs.readFileSync(path.join(app, 'src/index.html'), 'utf8')));
 // the View-as role is applied before first paint by a tiny same-origin script (the CSP forbids inline scripts), so the role colour is right on the first frame

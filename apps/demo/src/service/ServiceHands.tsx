@@ -5,7 +5,8 @@
  * technician's mobile-first workspace (instructions, safety, preflight, parts, notes, blockers, escalation, evidence, FI findings), the
  * independent verification, the resolution, the closure (which says plainly that a closed ticket is not recommissioning) and learning.
  */
-import { useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
+import { Hero, Tiles, Tile, Donut, Zone, Lanes, Chip, Foot, weekCounts, weekBacklog, plural, type VTone } from '../pages/viz.js';
 import { WORK_NEEDS } from '@empathia/service-engine';
 import { Tag } from '@empathia/ui';
 import * as S from '../workspace/store.js';
@@ -15,7 +16,7 @@ import { useOps } from '../hardening/useOps.js';
 import { opsPath } from '../hardening/path.js';
 import { useConfirm, useUndo } from '../safeguards/Safeguards.js';
 import { ROOMS, roomOf, findingsOf, PROVENANCE_TEXT } from '../fi/rooms.js';
-import { CATEGORIES, ENTRY_POINTS, RESOLUTION_CODES, BAND_OF, ATTACH_PLACEHOLDERS, STAGES, stageOf, intakeErrors, submitRequest, addNote, clearBlocker, attachFinding, recordResolution, closeIncident, cancelWorkOrder, type IntakeInput } from './actions.js';
+import { CATEGORIES, ENTRY_POINTS, RESOLUTION_CODES, BAND_OF, ATTACH_PLACEHOLDERS, STAGES, stageOf, ROUTES, LANES, routeOf, type RouteKey, intakeErrors, submitRequest, addNote, clearBlocker, attachFinding, recordResolution, closeIncident, cancelWorkOrder, type IntakeInput } from './actions.js';
 
 const TONE: Record<string, 'ok' | 'warn' | 'bad' | 'muted' | 'info'> = { OPEN: 'warn', TRIAGED: 'info', ASSIGNED: 'info', ACCEPTED: 'info', IN_PROGRESS: 'info', VERIFYING: 'warn', RESOLVED: 'ok', CLOSED: 'muted', REOPENED: 'bad', CANCELLED: 'muted' };
 type Ops = ReturnType<typeof useOps>;
@@ -32,24 +33,60 @@ export default function ServiceHands({ perspective, hash }: WorkspaceProps) {
 }
 function Missing({ what }: { what: string }) { return <div className="ops-card" role="alert"><h1>Not found</h1><p>There is no {what} in this demonstration workspace. It may have been reset. <a href="#/servicehands">Back to ServiceHands</a></p></div>; }
 
+const DONE = ['CLOSED', 'CANCELLED'];
+const hrefOf = (i: S.Incident) => (i.workOrderId ? `#/servicehands/wo/${i.workOrderId}` : `#/servicehands?id=${i.id}`);
 function Home({ ops }: { ops: Ops }) {
   const { w, persona } = ops; const me = S.techForPersona(persona);
-  const mine = me ? w.incidents.filter((i) => i.workOrderId && S.workOrderOf(w, i.workOrderId)?.techId === me && !['CLOSED', 'CANCELLED'].includes(i.state)) : [];
-  const list = [...w.incidents].sort((a, b) => (['CLOSED', 'CANCELLED'].includes(a.state) ? 1 : 0) - (['CLOSED', 'CANCELLED'].includes(b.state) ? 1 : 0) || b.openedAt.localeCompare(a.openedAt));
+  const mineOf = (i: S.Incident) => !!me && !!i.workOrderId && S.workOrderOf(w, i.workOrderId)?.techId === me;
+  const mine = w.incidents.filter((i) => mineOf(i) && !DONE.includes(i.state));
+  const open = w.incidents.filter((i) => !DONE.includes(i.state));
+  const list = [...w.incidents].sort((a, b) => (DONE.includes(a.state) ? 1 : 0) - (DONE.includes(b.state) ? 1 : 0) || b.openedAt.localeCompare(a.openedAt));
   const canReport = ['request.submit', 'service.triage', 'work.evidence'].some((a) => holds(persona, a));
+  const st = (i: S.Incident) => stageOf(w, i);
+  const inStages = (xs: S.Incident[], a: number, b: number) => xs.filter((i) => st(i) >= a && st(i) <= b);
+  const restored = w.incidents.filter((i) => i.restoredAt);
+  const hours = restored.map((i) => (Date.parse(i.restoredAt!) - Date.parse(i.openedAt)) / 36e5).sort((a, b) => a - b);
+  const median = hours.length ? Math.round(hours[Math.floor((hours.length - 1) / 2)]!) : null;
+  const opened = weekCounts(w.incidents, (i) => i.openedAt); const backlog = weekBacklog(w.incidents, (i) => i.openedAt, (i) => i.closedAt || (i.state === 'CANCELLED' ? i.openedAt : null));
+  const routes = (Object.keys(ROUTES) as RouteKey[]).map((k) => ({ label: ROUTES[k].label, value: w.incidents.filter((i) => routeOf(w, i).key === k).length, tone: ROUTES[k].tone as VTone }));
+  const byStage = STAGES.map((_, k) => open.filter((i) => st(i) === k).length);
+  const card = (i: S.Incident) => { const r = routeOf(w, i); const m = mineOf(i) && !DONE.includes(i.state);
+    return <a key={i.id} href={hrefOf(i)} className={`wk-card${m ? ' mine' : ''}`} data-card={i.id}>
+      <span className="wk-card__t"><b>{i.id}</b><Chip tone={ROUTES[r.key].tone as VTone}>{ROUTES[r.key].label}</Chip>{m ? <Chip tone="teal">Your job</Chip> : null}</span>
+      <span className="wk-card__n">{i.title}</span><span className="wk-card__p">{i.roomName} · {i.severity}</span>
+      <span className="wk-card__x"><Tag tone={TONE[i.state]}>{i.state}</Tag> next: {DONE.includes(i.state) ? 'nothing — the record is kept' : STAGES[Math.min(11, st(i) + (i.state === 'RESOLVED' ? 1 : 0))]}</span></a>; };
   return (<>
-    <OpsHead product="servicehands" kicker="ServiceHands · incident to service" title="ServiceHands" persona={persona}
-      lead={<>Every job moves through twelve stages, one governed step at a time; the person who did the work never verifies it.</>}
-      actions={<>{canReport && <a className="ui-btn ui-btn--primary" href="#/servicehands/new" data-testid="report">Report a problem</a>}{holds(persona, 'service.assign') && <a className="ui-btn" href="#/service">Dispatch board</a>}</>} />
-    <ol className="ops-strip" aria-label="The twelve stages of a service job">{STAGES.map((s) => <li key={s}>{s}</li>)}</ol>
-    {me && <section className="ops-card" aria-labelledby="mine-h" data-testid="my-jobs"><h2 id="mine-h">My jobs · {S.techOf(w, me)?.name}</h2>
-      {mine.length ? <ul className="ops-list">{mine.map((i) => <JobLine key={i.id} w={w} i={i} />)}</ul> : <p className="ops-note">Nothing is assigned to you right now.</p>}</section>}
-    <section className="ops-card" aria-labelledby="all-h"><h2 id="all-h">All service jobs</h2><ul className="ops-list" data-testid="jobs">{list.map((i) => <JobLine key={i.id} w={w} i={i} />)}</ul></section>
+    <Hero product="servicehands" kicker="ServiceHands · incident to service" title="ServiceHands" testId="sh-hero"
+      lead={<>Every job moves through twelve stages, one governed step at a time; the person who did the work never verifies it. <b>{plural(open.length, 'job')}</b> open{mine.length ? <>, <b>{mine.length}</b> assigned to you</> : null}. Acting as <b>{personaLabel(persona)}</b>.</>}
+      actions={<>{canReport && <a className="ui-btn ui-btn--primary" href="#/servicehands/new" data-testid="report">Report a problem</a>}{holds(persona, 'service.assign') && <a className="ui-btn" href="#/service">Dispatch board</a>}</>}>
+      <ol className="ops-strip" aria-label="The twelve stages of a service job, with the open jobs at each">{STAGES.map((s, k) => <li key={s} className={byStage[k] ? 'on' : ''}>{s}{byStage[k] ? ` · ${byStage[k]}` : ''}</li>)}</ol>
+    </Hero>
+    <Tiles cols={5} label="ServiceHands measures">
+      <Tile label="Open jobs" value={open.length} icon="ops" tone="sh" trend={{ vals: backlog, good: 'down', per: 'open at the end of each week', vs: 'open, vs four weeks ago' }} note={`${plural(opened.slice(-4).reduce((a, v) => a + v, 0), 'job')} raised in four weeks`} />
+      <Tile label="Waiting for dispatch" value={inStages(open, 0, 4).length} icon="people" tone="info" href={holds(persona, 'service.assign') ? '#/service' : undefined} note="Triage, matching or assignment" />
+      <Tile label="In the field" value={inStages(open, 5, 7).length} icon="field" tone="ok" note="Dispatched, working or recording evidence" />
+      <Tile label="Awaiting verification" value={open.filter((i) => i.state === 'VERIFYING').length} icon="shield" tone="warn" note="Verified by someone other than the technician" />
+      <Tile label="Median time to restore" value={median === null ? '—' : median} unit={median === null ? undefined : 'h'} icon="clock" tone="mute" trend={{ vals: weekCounts(restored, (i) => i.restoredAt), good: 'up', per: 'restored by week', vs: 'restored, vs the 4 weeks before' }} note={`over ${plural(restored.length, 'restored job')}`} />
+    </Tiles>
+    <div className="wk-g2">
+      <Zone id="sh-routes" title="How jobs are routed" sub="Rule-based routing · the reason is shown on every job">
+        <Donut segs={routes} label="Jobs by route" centerLabel="Jobs" />
+      </Zone>
+      <Zone id="sh-rules" title="The routes" testId="routes">
+        <dl className="wk-kv">{(Object.keys(ROUTES) as RouteKey[]).map((k) => <Fragment key={k}><dt><Chip tone={ROUTES[k].tone as VTone}>{ROUTES[k].label}</Chip></dt><dd>{ROUTES[k].rule}</dd></Fragment>)}</dl>
+        <p className="ops-note">Routing never escalates silently: when a job leaves quick service, the job says so, with the rule that sent it.</p>
+      </Zone>
+    </div>
+    {me && <Zone id="mine" title={`My jobs · ${S.techOf(w, me)?.name}`} testId="my-jobs">
+      {mine.length ? <div className="wk-lanes">{mine.map(card)}</div> : <p className="ops-note">Nothing is assigned to you right now.</p>}</Zone>}
+    <Zone id="board" title="The board" sub="Open jobs by where they are in the twelve stages">
+      <Lanes label="Open jobs by lane" lanes={LANES.map((l) => ({ key: l.key, title: l.title, items: open.filter((i) => l.stages.includes(st(i))).map(card) }))} />
+    </Zone>
+    <Zone id="all" title="All service jobs" sub={`${plural(w.incidents.length, 'job')} · open first, newest first`}>
+      <ul className="wk-rows" data-testid="jobs">{list.map((i) => { const r = routeOf(w, i); return <li key={i.id}><a href={hrefOf(i)} data-job={i.id}><b>{i.title}</b><span className="wk-r__m">{i.id}{i.workOrderId ? ` · ${i.workOrderId}` : ''} · {i.roomName} · {ROUTES[r.key].label}: {r.why}</span></a><span className="ops-row"><Tag tone={TONE[i.state]}>{i.state}</Tag><span className="ops-meta">{STAGES[st(i)]}</span></span></li>; })}</ul>
+    </Zone>
+    <Foot>ServiceHands is simulated: no ticket, purchase or dispatch is created outside this page. Every person, place and device is fictional.</Foot>
   </>);
-}
-function JobLine({ w, i }: { w: WX; i: S.Incident }) {
-  const href = i.workOrderId ? `#/servicehands/wo/${i.workOrderId}` : `#/servicehands?id=${i.id}`;
-  return <li><a href={href} className="ops-job" data-job={i.id}><b>{i.title}</b><span className="ops-meta">{i.id}{i.workOrderId ? ` · ${i.workOrderId}` : ''} · {i.roomName}</span><span className="ops-row"><Tag tone={TONE[i.state]}>{i.state}</Tag><span className="ops-meta">stage: {STAGES[stageOf(w, i)]}</span></span></a></li>;
 }
 
 function Intake({ ops, hash }: { ops: Ops; hash: string }) {
