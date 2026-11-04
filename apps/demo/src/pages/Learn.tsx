@@ -6,7 +6,9 @@
  * more.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Facts, Notice, Tag, Tabs, QuizRunner, DrillRunner, DRILL_KINDS, type Quiz, type Drill } from '@empathia/ui';
+import { Button, Facts, Notice, Tag, Tabs, QuizRunner, DrillRunner, DRILL_KINDS, PageHero, StatTile, Card, Chip, List, ListRow, MeterRow, Icon, type Quiz, type Drill } from '@empathia/ui';
+import { loadLabs, DOMAIN_COMPETENCY } from '../learn/store.js';
+import { plural } from './viz.js';
 import * as S from '../workspace/store.js';
 import { useWorkspace, isRefusal } from '../workspace/useWorkspace.js';
 import { personaOf, personaLabel, holds } from '../build/store.js';
@@ -28,17 +30,65 @@ export function LearnPage({ perspective, hash }: { perspective: string; hash: st
   const wantCase = /[?&]case=([A-Z0-9-]+)/.exec(hash)?.[1];
   const [tab, setTab] = useState(hash.startsWith('#/learn') ? 'lessons' : 'cases');
   return (
-    <section className="learn">
-      <header className="build__head"><div><p className="kicker">Empathia Learn · SIGNAL</p><h1>Reviewed cases from what actually happened</h1>
-        <p className="ui-muted">Acting as <b>{personaLabel(persona)}</b>. A case needs customer permission, de-identification, an SME review and the steward's approval. Training performance never grants work authorization.</p></div>
-        {lib && <div className="build__state"><Tag tone="muted">{Object.keys(lib.lessons).length} lessons</Tag><Tag tone="muted">{Object.keys(lib.drills).length} drills</Tag><Tag tone="muted">{Object.keys(lib.cases).length} canon cases</Tag></div>}
-      </header>
+    <section className="learn wk" data-native="workspace">
+      <PageHero product="learn" icon="book" eyebrow="Empathia Learn · SIGNAL" title="Reviewed cases from what actually happened"
+        lede={<>SIGNAL: the same Core that runs the estate, read as something to practise on. A case needs customer permission, de-identification, an SME review and the steward's approval. Training performance never grants work authorization. Acting as <b>{personaLabel(persona)}</b>.</>}
+        meta={lib ? [<Chip key="l" small tone="muted">{Object.keys(lib.lessons).length} lessons</Chip>, <Chip key="d" small tone="muted">{Object.keys(lib.drills).length} drills</Chip>, <Chip key="c" small tone="muted">{Object.keys(lib.cases).length} canon cases</Chip>, <Chip key="s" small tone="accent">Scores stay in this browser</Chip>] : [<Chip key="s" small tone="accent">Scores stay in this browser</Chip>]}
+        actions={<><a className="ui-btn ui-btn--primary" href="#/learn/labs">Open the labs</a><a className="ui-btn" href="#/servicehands">ServiceHands</a></>} />
+      <Overview w={w} persona={persona} lib={lib} />
       {refusal && <div role="alert"><Notice tone="bad"><b>Refused.</b><ul className="build__why">{refusal.why.map((x) => <li key={x}>{x}</li>)}</ul></Notice></div>}
       <Tabs label="Learn" active={tab} onChange={setTab} tabs={[{ key: 'cases', label: 'Cases', count: w.learnCases.length }, { key: 'lessons', label: 'Lessons' }, { key: 'drills', label: 'Drills' }, { key: 'canon', label: 'Casebook' }, { key: 'reference', label: 'Formulas & glossary' }]} />
       {tab === 'cases' && <Cases w={w} apply={apply} persona={persona} want={wantCase || null} />}
       {tab !== 'cases' && (err ? <Notice tone="bad">The SIGNAL library did not load: {err}</Notice> : !lib ? <p className="ui-meta">Loading the SIGNAL library…</p> : tab === 'lessons' ? <Lessons lib={lib} /> : tab === 'drills' ? <Drills lib={lib} w={w} apply={apply} persona={persona} /> : tab === 'canon' ? <Canon lib={lib} /> : <Reference lib={lib} />)}
     </section>
   );
+}
+
+// ------------------------------------------------------------------------------------------------------------ overview: readiness, competencies, learn from a room
+/** Readiness points (the demonstration's stated rule; practice evidence only, never an authorization): a drill answered correctly 5,
+ * a lab passed 10, a case this person proposed that reached APPROVED 20. Levels at 30, 90 and 200 points. */
+export const POINTS = { drill: 5, lab: 10, case: 20 } as const;
+export const LEVELS: Array<[number, string]> = [[0, 'Shadowing'], [30, 'Assisted'], [90, 'Independent'], [200, 'Trusted']];
+export function readiness(w: S.Workspace, persona: string, labsPassed: number) {
+  const drills = new Set(w.training.filter((t) => t.by === persona && t.correct).map((t) => t.drillId));
+  const cases = w.learnCases.filter((c) => c.proposedBy === persona && c.state === 'APPROVED').length;
+  const points = drills.size * POINTS.drill + labsPassed * POINTS.lab + cases * POINTS.case;
+  const k = LEVELS.filter(([p]) => points >= p).length - 1; const next = LEVELS[k + 1];
+  return { points, level: LEVELS[k]![1], next: next ? { at: next[0], name: next[1], need: next[0] - points } : null, drills: drills.size, cases };
+}
+function Overview({ w, persona, lib }: { w: S.Workspace; persona: string; lib: Lib | null }) {
+  const labs = Object.values(loadLabs().results).filter((r) => r.persona === persona);
+  const passed = labs.filter((r) => r.passed);
+  const R = readiness(w, persona, passed.length);
+  const drillTotal = lib ? lib.drillOrder.length : null; const labTotal = 3 + (lib && (lib as unknown as { labOrder?: string[] }).labOrder ? (lib as unknown as { labOrder: string[] }).labOrder.length : 0);
+  const comps = [...new Set(Object.values(DOMAIN_COMPETENCY))].map((c) => ({ c, labs: passed.filter((r) => DOMAIN_COMPETENCY[r.domain] === c) }));
+  const rooms = [...new Set(w.incidents.map((i) => i.roomId))].map((id) => { const inc = w.incidents.filter((i) => i.roomId === id); const kase = w.learnCases.find((c) => inc.some((i) => i.id === c.incidentId)); return { id, name: inc[0]!.roomName, inc, kase, eligible: inc.filter((i) => ['RESOLVED', 'CLOSED'].includes(i.state) && !i.learnCaseId) }; });
+  const nextDrill = lib?.drillOrder.find((id) => !w.training.some((t) => t.by === persona && t.drillId === id && t.correct));
+  const tech = S.techForPersona(persona);
+  return (<>
+    <div className="kit-grid kit-grid--tiles wk-tiles4" data-testid="learn-tiles">
+      <StatTile label="Readiness" value={R.level} icon="spark" tone="learn" hint={`${R.points} points${R.next ? ` · ${R.next.need} to ${R.next.name.toLowerCase()}` : ''}`} />
+      <StatTile label="Cases proven" value={w.learnCases.filter((c) => c.state === 'APPROVED').length} unit={`of ${w.learnCases.length}`} icon="book" tone="ok" hint={`${R.cases} proposed by you`} />
+      <StatTile label="Drills passed" value={R.drills} unit={drillTotal === null ? undefined : `of ${drillTotal}`} icon="check" tone="info" hint="Six kinds, from the SIGNAL library" />
+      <StatTile label="Labs passed" value={passed.length} unit={`of ${labTotal}`} icon="play" tone="indigo" href="#/learn/labs" hint={`${labs.length - passed.length} attempted, not yet passed`} />
+    </div>
+    <div className="wk-g3">
+      <Card icon="arrow-right" tone="learn" title="What to do next" sub="The next step for this perspective">
+        <List label="Next steps">
+          {rooms.some((r) => r.eligible.length) && S.LEARN_PROPOSE.some((a) => holds(persona, a)) ? <ListRow title="Write a case from a resolved incident" sub={`${rooms.flatMap((r) => r.eligible).length} incident(s) eligible`} href="#/v25/learn" chevron leading={<Icon name="book" />} /> : null}
+          {nextDrill && lib ? <ListRow title={`Drill: ${lib.drills[nextDrill]!.title}`} sub={`${lib.drills[nextDrill]!.domain} · not passed yet`} href="#/learn" chevron leading={<Icon name="check" />} /> : null}
+          <ListRow title={passed.length < 3 ? 'Open a lab: Audio, Camera or Lighting' : 'Try a SIGNAL fault lab'} sub="Simulated instruments; the result is evidence on your record" href="#/learn/labs" chevron leading={<Icon name="play" />} />
+        </List>
+      </Card>
+      <Card icon="shield" title="Competencies" sub={tech ? 'Evidenced by passed labs on this person’s internal record' : 'Labs evidence the technicians’ internal records'}>
+        <ul className="kit-meters">{comps.map(({ c, labs: l }) => <MeterRow key={c} label={c.replace('cert.', '').replace('_', ' ')} sub={l.length ? `lab-evidenced: ${l.map((x) => x.title.split(':')[0]).join(', ')}` : 'no lab evidence yet'} value={l.length ? 100 : 0} state={l.length ? 'healthy' : 'modelled'} />)}</ul>
+        <p className="wk-note">Lab evidence is never a credential and never an authorization to work.</p>
+      </Card>
+      <Card icon="room" title="Learn from a room" sub="Rooms whose service history can become a reviewed case" testId="learn-rooms">
+        <List label="Rooms with service history">{rooms.map((r) => <ListRow key={r.id} title={r.name} sub={`${plural(r.inc.length, 'service job')}${r.kase ? ` · case ${r.kase.id} ${r.kase.state}` : r.eligible.length ? ` · ${r.eligible.length} eligible for a case` : ''}`} href={`#/replay/${r.id}`} chevron leading={<Icon name="room" />} trailing={r.kase ? <Chip small tone={r.kase.state === 'APPROVED' ? 'ok' : 'warn'}>{r.kase.state === 'APPROVED' ? 'Case proven' : 'In review'}</Chip> : <Chip small tone="muted">Not taken</Chip>} />)}</List>
+      </Card>
+    </div>
+  </>);
 }
 
 // ------------------------------------------------------------------------------------------------------------ governed cases

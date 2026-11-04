@@ -52,6 +52,74 @@ export const OPS_PAGES: readonly PageDef[] = [
     load: adapt(() => import('./pages/Learn.js'), (m, p) => h(m.LearnPage, { perspective: p.role, hash: p.hash })),
     search: { keywords: 'training cases signal lessons', aliases: ['signal', 'training'] },
   },
+  // ---- the estate's command centers (uplift/workspaces): computed from the thirty room records and the service workspace
+  {
+    id: 'pro.command', title: 'Pro command center', purpose: 'What is open, how it stands against its target, and where to look next', product: 'pro', landing: true,
+    path: '/pro', authority: { area: 'pro' },
+    load: adapt(() => import('./pages/Estate.js'), (m, p) => h(m.ProPage, { perspective: p.role })),
+    search: { keywords: 'pro command center issues target buildings lifecycle', aliases: ['pro', 'command center', 'operations'] },
+  },
+  {
+    id: 'pro.assets', title: 'Asset Intelligence', purpose: 'What the organization owns: positions, identities, installations', product: 'pro',
+    path: '/pro/assets', authority: { area: 'pro.assets' },
+    load: adapt(() => import('./pages/ProViews.js'), (m, p) => h(m.AssetsPage, { perspective: p.role })),
+    search: { keywords: 'assets devices positions identity', aliases: ['asset intelligence'] },
+  },
+  {
+    id: 'pro.issues', title: 'Issue Intelligence', purpose: 'How and where it fails: severity, source, building, recurrence', product: 'pro',
+    path: '/pro/issues', authority: { area: 'pro.issues' },
+    load: adapt(() => import('./pages/ProViews.js'), (m, p) => h(m.IssuesPage, { perspective: p.role })),
+    search: { keywords: 'issues severity recurrence patterns', aliases: ['issue intelligence'] },
+  },
+  {
+    id: 'pro.ops', title: 'Operations Hub', purpose: 'People, certifications, stock and work windows behind the work', product: 'pro',
+    path: '/pro/ops', authority: { area: 'pro.ops' },
+    load: adapt(() => import('./pages/ProViews.js'), (m, p) => h(m.OpsHubPage, { perspective: p.role })),
+    search: { keywords: 'operations hub people certifications stock bookings', aliases: ['operations hub'] },
+  },
+  {
+    id: 'pro.eng', title: 'Standards and Engineering', purpose: 'Archetypes, templates, applicable tests and conformance', product: 'pro',
+    path: '/pro/eng', authority: { area: 'pro.eng' },
+    load: adapt(() => import('./pages/ProViews.js'), (m, p) => h(m.StandardsPage, { perspective: p.role })),
+    search: { keywords: 'standards engineering archetypes templates conformance', aliases: ['standards'] },
+  },
+  {
+    id: 'commissioning', title: 'Commissioning', purpose: 'Accepted, accepted with conditions, blocked: every room and its deficiencies', product: 'commissioning', landing: true,
+    path: '/commissioning', authority: { area: 'commissioning' },
+    load: adapt(() => import('./pages/Estate.js'), (m, p) => h(m.CommissioningPage, { perspective: p.role })),
+    search: { keywords: 'commissioning acceptance baseline deficiencies tests', aliases: ['commissioning command center', 'acceptance'] },
+  },
+  {
+    id: 'assurance', title: 'Assurance', purpose: 'Is the estate still behaving the way it was commissioned to behave', product: 'commissioning',
+    path: '/assurance', authority: { area: 'assurance' },
+    authorityFor: (_p, q) => (q.get('view') === 'analysis' ? { area: 'assurance.analysis' } : undefined),   // V2.5.3: the engineering analysis has its own authority
+    load: adapt(() => import('./pages/AssuranceViews.js'), (m, p) => (/[?&]view=analysis/.test(p.hash) ? h(m.AssuranceAnalysisPage, { perspective: p.role }) : h(m.AssurancePage, { perspective: p.role }))),
+    search: { keywords: 'assurance drift baseline ready next session', aliases: ['assurance command center', 'drift'] },
+  },
+  {
+    id: 'assurance.ready', title: 'Ready checks', purpose: 'Five checks before a room is trusted with its next session', product: 'commissioning',
+    path: '/assurance/ready', authority: { area: 'assurance.ready' },
+    load: adapt(() => import('./pages/AssuranceViews.js'), (m, p) => h(m.ReadyPage, { perspective: p.role })),
+    search: { keywords: 'ready checks next session', aliases: ['ready checks'] },
+  },
+  {
+    id: 'assurance.change', title: 'Change impact', purpose: 'What a replacement or change reopens, and what waits for acceptance', product: 'commissioning',
+    path: '/assurance/change', authority: { area: 'assurance.change' },
+    load: adapt(() => import('./pages/AssuranceViews.js'), (m, p) => h(m.ChangePage, { perspective: p.role })),
+    search: { keywords: 'change impact reopened tests replacement', aliases: ['change impact'] },
+  },
+  {
+    id: 'assurance.signals', title: 'Signals', purpose: 'Maintenance and experience signals before a room fails', product: 'commissioning',
+    path: '/assurance/signals', authority: { area: 'assurance.signals' },
+    load: adapt(() => import('./pages/AssuranceViews.js'), (m, p) => h(m.SignalsPage, { perspective: p.role })),
+    search: { keywords: 'signals maintenance recurrence', aliases: ['early signals'] },
+  },
+  {
+    id: 'commissioning.deficiencies', title: 'Deficiencies', purpose: 'Every open commissioning deficiency, most serious first', product: 'commissioning',
+    path: '/commissioning/deficiencies', authority: { area: 'commissioning' },
+    load: adapt(() => import('./pages/AssuranceViews.js'), (m, p) => h(m.DeficienciesPage, { perspective: p.role })),
+    search: { keywords: 'deficiencies punch list open', aliases: ['open deficiencies'] },
+  },
   // ---- the operational workspaces (rebuild/demo-ops): each loads its own file (ws/<name>.js) only once the role is admitted
   {
     id: 'servicehands.dispatch', title: 'Dispatch board', purpose: 'Queue, board, explained matching, assignment, reassignment and coverage', product: 'servicehands',
