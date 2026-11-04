@@ -67,7 +67,7 @@ export function SearchPartyDemo({ hash, role }: { hash: string; role?: RoleKey }
   return (
     <section className="sp" data-native="" data-testid="search-party">
       <nav className="roomtabs sp__nav" aria-label="Search Party" data-testid="sp-tabs">
-        {TABS.filter(([k]) => k === '' || opens(`#/search/${k}`)).map(([k, l]) => <a key={k || 'search'} className="roomtabs__t" href={k ? `#/search/${k}` : '#/search'} aria-current={tab === k ? 'page' : undefined}>{l}</a>)}
+        {TABS.filter(([k]) => k === '' || opens(`#/search/${k}`)).map(([k, l]) => <a key={k || 'search'} className="roomtabs__t" href={k ? `#/search/${k}` : '#/search'} aria-current={tab === k || (tab === 'ownership' && k === 'support') ? 'page' : undefined}>{l}</a>)}
       </nav>
       <header className="room__hero sp__hero">
         <p className="kicker">Search Party · relationship intelligence</p>

@@ -152,7 +152,7 @@ export const CAMPUS_ROOMS: RoomOutline[] = [...ROOMS, ...PLAN_ROOMS];
 export const REFERENCE_ROOM_ID = 'R-ATL-4-218';
 export const roomById = (id: string): RoomOutline | undefined => CAMPUS_ROOMS.find((r) => r.id === id);
 export const buildingByKey = (k: string): Building | undefined => BUILDINGS.find((b) => b.key === k) || REGIONAL_SITES.find((b) => b.key === k);
-export const roomsIn = (b: string, floor?: number): RoomOutline[] => ROOMS.filter((r) => r.building === b && (floor == null || r.floor === floor));
+export const roomsIn = (b: string, floor?: number): RoomOutline[] => CAMPUS_ROOMS.filter((r) => r.building === b && (floor == null || r.floor === floor));
 /** e.g. "Atlas 4.218" */
 export const shortName = (r: RoomOutline): string => `${buildingByKey(r.building)?.short || r.building} ${r.number}`;
 export const fullName = (r: RoomOutline): string => `${shortName(r)} — ${r.name}`;

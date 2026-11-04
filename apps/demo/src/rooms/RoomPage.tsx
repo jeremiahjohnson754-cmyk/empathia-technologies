@@ -5,7 +5,7 @@
 import type { PageProps } from '../registry.types.js';
 import { resolve } from '../registry.pages.js';
 import { canOpen } from '../access/policy.js';
-import { ROOMS, REFERENCE_ROOM_ID, roomById, shortName, buildingByKey } from '../campus/canon.js';
+import { CAMPUS_ROOMS as ROOMS, REFERENCE_ROOM_ID, roomById, shortName, buildingByKey } from '../campus/canon.js';
 import { roomRecord } from '../campus/design.js';
 import { roomHealth } from '../campus/metrics.js';
 import { load as loadWorkspace } from '../workspace/store.js';

@@ -13,7 +13,7 @@
  *   engine's results, baselines, the service workspace). A stage is DONE only when a record says so.
  */
 import type { RoomLifecycle } from '@empathia/domain-types';
-import { BUILDINGS, ROOMS, roomById, shortName, type Building, type RoomOutline } from './canon.js';
+import { BUILDINGS, REGIONAL_SITES, CAMPUS_ROOMS as ROOMS, roomById, shortName, type Building, type RoomOutline } from './canon.js';
 import { roomRecord, allRecords, PEOPLE, type RoomRecord, type Issue } from './design.js';
 import { programme } from './programme.js';
 import type { Workspace, Incident, WorkOrder } from '../workspace/store.js';
@@ -58,7 +58,7 @@ const mean = (xs: number[]) => (xs.length ? Math.round(xs.reduce((a, b) => a + b
 
 export interface BuildingStats { b: Building; rooms: number; scored: number; score: number | null; band: Band; open: number; high: number; devices: number; applicable: number; verified: number; verifiedPct: number | null; byLife: Record<string, number> }
 export function buildingStats(key: string, w?: Workspace | null): BuildingStats {
-  const b = BUILDINGS.find((x) => x.key === key)!;
+  const b = BUILDINGS.find((x) => x.key === key) || REGIONAL_SITES.find((x) => x.key === key)!;
   const recs = allRecords().filter((r) => r.outline.building === key);
   const hs = recs.map((r) => roomHealth(r, w)); const scores = hs.map((h) => h.score).filter((s): s is number => s != null);
   const iss = recs.flatMap((r) => roomIssues(r, w));
@@ -68,7 +68,7 @@ export function buildingStats(key: string, w?: Workspace | null): BuildingStats 
   return { b, rooms: recs.length, scored: scores.length, score, band: bandOf(score), open: iss.length, high: iss.filter((i) => i.severity === 'High').length, devices: recs.reduce((s, r) => s + r.positions.filter((p) => !p.furniture).length, 0), applicable, verified, verifiedPct: applicable ? Math.round((100 * verified) / applicable) : null, byLife };
 }
 
-export interface CampusStats { buildings: BuildingStats[]; rooms: number; devices: number; score: number | null; band: Band; scored: number; healthy: number; monitor: number; action: number; unscored: number; open: number; high: number; applicable: number; verified: number; verifiedPct: number | null; accepted: number; byLife: Record<string, number> }
+export interface CampusStats { buildings: BuildingStats[]; /** the fictional regional sites of the rooms plan (not on the campus map) */ sites: BuildingStats[]; rooms: number; devices: number; score: number | null; band: Band; scored: number; healthy: number; monitor: number; action: number; unscored: number; open: number; high: number; applicable: number; verified: number; verifiedPct: number | null; accepted: number; byLife: Record<string, number> }
 export function campusStats(w?: Workspace | null): CampusStats {
   const recs = allRecords(); const hs = recs.map((r) => roomHealth(r, w));
   const scores = hs.map((h) => h.score).filter((s): s is number => s != null);
@@ -77,7 +77,7 @@ export function campusStats(w?: Workspace | null): CampusStats {
   const byLife: Record<string, number> = {}; for (const r of recs) byLife[r.lifecycle] = (byLife[r.lifecycle] || 0) + 1;
   const score = mean(scores);
   return {
-    buildings: BUILDINGS.map((b) => buildingStats(b.key, w)), rooms: recs.length, devices: recs.reduce((s, r) => s + r.positions.filter((p) => !p.furniture).length, 0),
+    buildings: BUILDINGS.map((b) => buildingStats(b.key, w)), sites: REGIONAL_SITES.map((b) => buildingStats(b.key, w)), rooms: recs.length, devices: recs.reduce((s, r) => s + r.positions.filter((p) => !p.furniture).length, 0),
     score, band: bandOf(score), scored: scores.length, healthy: hs.filter((h) => h.band === 'healthy').length, monitor: hs.filter((h) => h.band === 'monitor').length, action: hs.filter((h) => h.band === 'action').length, unscored: hs.filter((h) => h.band === 'none').length,
     open: iss.length, high: iss.filter((i) => i.severity === 'High').length, applicable, verified, verifiedPct: applicable ? Math.round((100 * verified) / applicable) : null,
     accepted: recs.filter((r) => r.baselines.some((x) => x.state === 'CURRENT')).length, byLife,

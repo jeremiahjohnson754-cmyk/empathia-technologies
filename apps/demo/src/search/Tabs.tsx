@@ -14,7 +14,7 @@
  */
 import { useMemo, useState } from 'react';
 import { SKILL_NAMES, CERTS } from '@empathia/service-engine';
-import { BUILDINGS, ROOMS, roomById, roomHref, shortName, fullName } from '../campus/canon.js';
+import { BUILDINGS, CAMPUS_ROOMS as ROOMS, roomById, roomHref, shortName, fullName } from '../campus/canon.js';
 import { allRecords, PEOPLE, DEMO_NOW } from '../campus/design.js';
 import { campusStats } from '../campus/metrics.js';
 import { programme } from '../campus/programme.js';

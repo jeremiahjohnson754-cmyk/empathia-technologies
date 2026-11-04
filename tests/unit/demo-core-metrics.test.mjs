@@ -9,9 +9,9 @@ const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js')
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'demo-core-'));
 const entry = path.join(tmp, 'entry.ts');
 const src = (p) => JSON.stringify(path.join(repo, 'apps/demo/src', p));
-fs.writeFileSync(entry, `export * as M from ${src('campus/metrics.ts')}; export * as canon from ${src('campus/canon.ts')}; export * as design from ${src('campus/design.ts')}; export * as S from ${src('workspace/store.ts')};`);
+fs.writeFileSync(entry, `export * as M from ${src('campus/metrics.ts')}; export * as canon from ${src('campus/canon.ts')}; export * as design from ${src('campus/design.ts')}; export * as S from ${src('workspace/store.ts')}; export * as MI from ${src('campus/mission.ts')};`);
 await esbuild.build({ entryPoints: [entry], bundle: true, platform: 'node', format: 'esm', outfile: path.join(tmp, 'out.mjs'), logLevel: 'error' });
-const { M, design, S, canon } = await import(pathToFileURL(path.join(tmp, 'out.mjs')).href);
+const { M, design, S, canon, MI } = await import(pathToFileURL(path.join(tmp, 'out.mjs')).href);
 process.on('exit', () => fs.rmSync(tmp, { recursive: true, force: true }));
 const w = S.seed();
 const recs = design.allRecords();
@@ -37,10 +37,12 @@ test('open issues: record issues plus live incidents, one per id, the live state
 
 test('building and campus aggregates add up from the rooms', () => {
   const c = M.campusStats(w);
-  const N = canon.ROOMS.length; assert.equal(c.rooms, N); assert.equal(c.buildings.length, 6);
-  assert.equal(c.buildings.reduce((s, b) => s + b.rooms, 0), N);
-  assert.equal(c.buildings.reduce((s, b) => s + b.open, 0), c.open);
-  assert.equal(c.buildings.reduce((s, b) => s + b.devices, 0), c.devices);
+  // every screen shows the 45 rooms of the plan (uplift/core-screens); rows 40, 42 and 45 sit on the two fictional regional sites
+  const N = canon.CAMPUS_ROOMS.length; assert.equal(N, 45); assert.equal(c.rooms, N); assert.equal(c.buildings.length, 6); assert.equal(c.sites.length, 2);
+  const all = [...c.buildings, ...c.sites];
+  assert.equal(all.reduce((s, b) => s + b.rooms, 0), N);
+  assert.equal(all.reduce((s, b) => s + b.open, 0), c.open);
+  assert.equal(all.reduce((s, b) => s + b.devices, 0), c.devices);
   assert.equal(c.healthy + c.monitor + c.action + c.unscored, N);
   const scores = recs.map((r) => M.roomHealth(r, w).score).filter((s) => s != null);
   assert.equal(c.score, Math.round(scores.reduce((a, b) => a + b, 0) / scores.length));
@@ -69,6 +71,42 @@ test('where the room has moved: the reference camera replacement and the pending
 
 test('featured rooms start with the reference room and are unique', () => {
   const f = M.featuredRooms(8); assert.equal(f[0].id, 'R-ATL-4-218'); assert.equal(new Set(f.map((x) => x.id)).size, f.length); assert.equal(f.length, 8);
+});
+
+test('Mission Control: every room sits on exactly one station of the flow; intake counts the requests', () => {
+  const st = MI.flow(w, null, recs);
+  assert.deepEqual(st.map((s) => s.key), ['intake', 'design', 'procurement', 'installation', 'commissioning', 'acceptance', 'service', 'operating']);
+  assert.equal(st.filter((s) => s.key !== 'intake').reduce((n, s) => n + s.count, 0), recs.length);
+  assert.equal(st[0].count, 2, 'the two programme requests');
+  assert.equal(MI.flow(w, { code: 'RB-1', name: 'Draft' }, recs)[0].count, 3, 'a Build a Room draft joins intake');
+  assert.equal(st.find((s) => s.key === 'acceptance').rooms[0].id, 'R-ATL-4-218', 'the reference room waits at acceptance (v2 pending)');
+  const w2 = structuredClone(w); for (const i of w2.incidents) i.state = 'CLOSED';
+  assert.ok(MI.flow(w2, null, recs).find((s) => s.key === 'service').count < st.find((s) => s.key === 'service').count, 'closing the live requests moves rooms out of Service');
+});
+
+test('Mission Control: priorities name whose work they are; View as changes what comes first; nothing the role cannot open', () => {
+  const all = MI.priorities(w, recs);
+  assert.ok(all.length > 3); assert.equal(new Set(all.map((p) => p.id)).size, all.length, 'one row per record');
+  assert.ok(all.every((p) => ['Take action', 'Resume', 'Review'].includes(p.verb) && p.href.startsWith('#/') && p.whose.length));
+  const tri = all.find((p) => p.id === 'ISS-0417'); assert.equal(tri.verb, 'Take action'); assert.equal(tri.tone, 'bad');
+  assert.equal(all.find((p) => p.id === 'ISS-0421').verb, 'Resume', 'a triaged request is resumed, not triaged again');
+  const yes = () => true;
+  const sm = MI.prioritiesFor('svcmgr', yes, all), ex = MI.prioritiesFor('exec', yes, all);
+  assert.ok(sm.mine.some((p) => p.id === 'ISS-0417') && !ex.mine.some((p) => p.id === 'ISS-0417'), 'triage is the service manager’s, not the executive’s');
+  assert.ok(ex.mine.some((p) => p.id === 'PRJ-NST-TH'), 'funding the approved project is the executive’s');
+  assert.equal(MI.prioritiesFor('visitor', () => false, all).mine.length + MI.prioritiesFor('visitor', () => false, all).others.length, 0, 'an address the role cannot open is never offered (D44)');
+  const order = { bad: 0, warn: 1, info: 2 }; for (let i = 1; i < all.length; i++) assert.ok(order[all[i - 1].tone] <= order[all[i].tone], 'most severe first');
+});
+
+test('Mission Control: series are month-end counts from dated records; incidents, active rooms and the insight follow the workspace', () => {
+  const S12 = MI.series(w, 12, recs);
+  for (const k of ['verified', 'accepted', 'activity', 'requests']) { assert.equal(S12[k].values.length, 12); assert.ok(S12[k].values.every((v) => Number.isInteger(v) && v >= 0)); }
+  for (let i = 1; i < 12; i++) assert.ok(S12.verified.values[i] >= S12.verified.values[i - 1], 'cumulative verified never falls');
+  assert.equal(S12.verified.values[11], recs.reduce((n, r) => n + r.events.filter((e) => e.type === 'commission.result_verified').length, 0));
+  const inc = MI.incidents(w); assert.equal(inc.length, w.incidents.length); assert.ok(inc[0].live, 'live requests first');
+  assert.ok(MI.activeRooms(w, recs).some((a) => a.id === 'R-ATL-4-218'));
+  assert.match(MI.insight(w, recs).text, /2 live service requests/);
+  assert.equal(MI.savedWork(w, null).length, 0); assert.equal(MI.savedWork(w, { code: 'RB-1', name: 'Huddle', createdAt: new Date().toISOString() })[0].href, '#/v25/build');
 });
 
 test('summary print (for the report)', () => {

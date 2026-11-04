@@ -5,7 +5,7 @@
  */
 import { useMemo, useState } from 'react';
 import { Tag, Notice } from '@empathia/ui';
-import { ROOMS, fullName, REFERENCE_ROOM_ID } from '../campus/canon.js';
+import { CAMPUS_ROOMS as ROOMS, fullName, REFERENCE_ROOM_ID } from '../campus/canon.js';
 import { scenario, scenarioCount, SCENARIO_IDS, SCENARIO_TITLES, type Scenario, type SGroup } from './scenarios.js';
 import { Stage } from '../spatial/Spatial.js';
 

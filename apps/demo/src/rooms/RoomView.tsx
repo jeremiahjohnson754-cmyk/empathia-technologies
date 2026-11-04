@@ -8,7 +8,7 @@
 import { useMemo, useState, useEffect } from 'react';
 import { Tag, Notice, Button } from '@empathia/ui';
 import { resultLabel } from '@empathia/commissioning-engine';
-import { buildingByKey, roomHref, shortName, ROOMS } from '../campus/canon.js';
+import { buildingByKey, roomHref, shortName, CAMPUS_ROOMS as ROOMS } from '../campus/canon.js';
 import { roomRecord, LAYERS, PEOPLE, type Layer, type RoomRecord, type Position } from '../campus/design.js';
 import { roomHealth, roomIssues, spine, moves, featuredRooms, BAND_LABEL, type Stage as SpineStage } from '../campus/metrics.js';
 import { load as loadWorkspace, type Workspace } from '../workspace/store.js';

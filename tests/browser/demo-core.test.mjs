@@ -7,8 +7,8 @@
 import path from 'node:path';
 import fs from 'node:fs';
 import { harness, SCHEMES, repo } from './demo-spaces-lib.mjs';
-// the room count comes from the campus data (30 today; 45 once the 15-room plan lands), never a literal
-const NROOMS = [...fs.readFileSync(path.join(repo, 'apps/demo/src/campus/canon.ts'), 'utf8').matchAll(/^ {2}R\('(R-[A-Z]+-\d+-\d+)'/gm)].length;
+// the room count comes from the campus data (the thirty R(...) rows and the plan's P(row, ...) rows 31–45), never a literal
+const NROOMS = [...fs.readFileSync(path.join(repo, 'apps/demo/src/campus/canon.ts'), 'utf8').matchAll(/^ {2}(?:R\(|P\(\d+, )'(R-[A-Z]+-\d+-\d+)'/gm)].length;
 const { ok, open, done, out } = await harness('demo-core');
 const VPS = [[320, 640, 'p320'], [390, 844, 'phone'], [768, 1024, 'tablet'], [1440, 900, 'desktop']];
 const ROUTES = ['#/investor', '#/home', '#/campus', '#/room', '#/search'];
@@ -32,8 +32,8 @@ for (const scheme of SCHEMES) for (const vp of VPS) {
   }
   // the numbers equal the records
   await t.go('#/campus', 600);
-  const camp = await t.page.evaluate(() => ({ b: document.querySelectorAll('[data-testid^="campus-b-"]').length, rows: document.querySelectorAll('[data-testid="building-list"] .kit-meter').length, intro: document.querySelector('main')?.innerText.match(/(\d+) buildings, (\d+) rooms, (\d+) devices/)?.slice(1).map(Number) }));
-  ok(`CORE-${tag}-05`, 'campus: six extruded buildings on the 3D stage, six rows with health bars, the intro counts 6 buildings and every room of the campus data', camp.b === 6 && camp.rows === 6 && camp.intro?.[0] === 6 && camp.intro?.[1] === NROOMS, JSON.stringify(camp));
+  const camp = await t.page.evaluate(() => ({ b: document.querySelectorAll('[data-testid^="campus-b-"]').length, rows: document.querySelectorAll('[data-testid="building-list"] .kit-meter').length, intro: document.querySelector('main')?.innerText.match(/(\d+) buildings and (\d+) regional sites, (\d+) rooms, (\d+) device positions/)?.slice(1).map(Number), sites: document.querySelectorAll('[data-testid="regional-sites"] .kit-meter').length, pills: document.querySelectorAll('[data-testid="building-pills"] a').length }));
+  ok(`CORE-${tag}-05`, 'campus: six extruded buildings on the 3D stage, six rows with health bars, two regional sites, eight building pills, the intro counts 6 buildings, 2 sites and every room of the campus data', camp.b === 6 && camp.rows === 6 && camp.sites === 2 && camp.pills === 8 && camp.intro?.[0] === 6 && camp.intro?.[1] === 2 && camp.intro?.[2] === NROOMS, JSON.stringify(camp));
   await t.go('#/room', 600);
   const room = await t.page.evaluate(() => ({ id: document.querySelector('[data-testid="room-view"]')?.getAttribute('data-room'), stages: document.querySelectorAll('[data-testid="spine"] .spine__s').length, tiles: document.querySelectorAll('[data-testid="room-tiles"] .kit-tile').length, tabs: document.querySelectorAll('[data-testid="room-tabs"] a').length, three: !!document.querySelector('[data-testid="room-3d"]') }));
   ok(`CORE-${tag}-06`, '#/room is Atlas 4.218: room tabs, four tiles, the nine-stage delivery spine and the 3D stage', room.id === 'R-ATL-4-218' && room.stages === 9 && room.tiles === 4 && room.tabs >= 8 && room.three, JSON.stringify(room));
@@ -91,6 +91,67 @@ for (const scheme of SCHEMES) for (const vp of VPS) {
     await t.close();
   }
 }
+// ---------------------------------------------------------------------------------------------------------------- Mission Control (#/home)
+// The front door (founder 2026-11-04: "a true 20/10"): hero with the Search Party bar, products, greeting with the role's own work,
+// "What can I help you do?", eight stat tiles with sparklines, the mission flow over every room, priorities with their verbs, incidents,
+// active rooms, the Search Party insight — computed from the records, role-aware (D44), keyboard complete; then destructive QA.
+const setRole = (t, r) => t.page.evaluate((x) => localStorage.setItem('empathia.demo.perspective', x), r);
+for (const scheme of SCHEMES) for (const vp of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
+  const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/home' }); await t.page.waitForTimeout(700);
+  const v = await t.page.evaluate(() => {
+    const q = (s) => document.querySelector(s); const qa = (s) => Array.from(document.querySelectorAll(s));
+    const st = qa('[data-testid="mc-flow"] .mc-st'); const n = (el) => parseInt(el.querySelector('.mc-st__dot')?.textContent || '0', 10) || 0;
+    return { hero: !!q('[data-testid="mc-hero"] h1') && !!q('[data-testid="hero-search"] input'), prods: qa('[data-testid="mc-products"] a').length, tiles: qa('[data-testid="home-kpis"] .kit-tile').length, sparks: qa('[data-testid="home-kpis"] svg[role="img"]').length,
+      stations: st.length, rooms: st.filter((e) => e.getAttribute('data-station') !== 'intake').reduce((s, e) => s + n(e), 0), greet: q('[data-testid="mc-greeting"] h2')?.textContent || '', acts: qa('[data-testid="mc-actions"] a').length,
+      pri: qa('[data-testid="mc-priority"] a').length, inc: qa('[data-testid="mc-incidents"] li').length, active: qa('[data-testid="mc-active"] .mc-room').length, ins: q('[data-testid="mc-insight"]')?.textContent || '',
+      small: qa('main .mc-st button, main .mc-pri a, main .mc-act, main .mc-prod, main .mc-ask').filter((e) => { const b = e.getBoundingClientRect(); return b.width > 0 && (b.height < 43.5 || b.width < 43.5); }).map((e) => e.textContent.slice(0, 20)) };
+  });
+  ok(`MC-${tag}-01`, 'Mission Control: hero with the Search Party bar, products, greeting, help actions, eight tiles with sparklines', v.hero && v.prods >= 6 && v.tiles === 8 && v.sparks >= 3 && /Good (morning|afternoon|evening), Product Architect/.test(v.greet) && v.acts >= 5, JSON.stringify(v));
+  ok(`MC-${tag}-02`, `mission flow: eight stations and every one of the ${NROOMS} rooms on exactly one`, v.stations === 8 && v.rooms === NROOMS, `${v.stations} stations, ${v.rooms} rooms`);
+  ok(`MC-${tag}-03`, 'priorities with their verbs, recent incidents, active rooms and the insight are computed and present', v.pri >= 3 && v.inc >= 3 && v.active >= 3 && /live service request/.test(v.ins), JSON.stringify(v).slice(0, 300));
+  ok(`MC-${tag}-04`, 'every control is a 44 px target', !v.small.length, v.small.join(' | '));
+  ok(`MC-${tag}-05`, 'no horizontal overflow', (await t.overflow()) <= 0, await t.overflow());
+  // keyboard: a station opens its rooms with Enter, the rooms are links to their pages, and Enter again closes it
+  const cx = t.page.locator('[data-station="commissioning"] button'); await cx.focus(); await t.page.keyboard.press('Enter'); await t.page.waitForTimeout(150);
+  const want = parseInt(await t.page.locator('[data-station="commissioning"] .mc-st__dot').innerText(), 10);
+  const chips = await t.page.locator('#mc-flow-rooms a[href^="#/campus/"]').count();
+  ok(`MC-${tag}-06`, 'keyboard: Enter on a station shows its rooms, one link per room', (await cx.getAttribute('aria-pressed')) === 'true' && chips === want, `${chips} of ${want}`);
+  await t.page.keyboard.press('Enter'); await t.page.waitForTimeout(100);
+  ok(`MC-${tag}-07`, 'Enter again closes it', (await cx.getAttribute('aria-pressed')) === 'false');
+  // the first Take action opens the record it names
+  const first = t.page.locator('[data-testid="mc-greeting"] a').first(); const href = await first.getAttribute('href'); await first.click(); await t.page.waitForTimeout(700);
+  ok(`MC-${tag}-08`, 'the greeting’s first item opens the record it names (not a refusal)', (await t.page.evaluate(() => location.hash)) === href && (await t.page.locator('[data-testid="access-page"]').count()) === 0, href);
+  if (vp[2] === 'desktop') await t.page.goto(t.page.url().split('#')[0] + '#/home').catch(() => {});
+  await t.close();
+}
+for (const scheme of SCHEMES) { // View as changes the work; D44; destructive input
+  const t = await open([1440, 900], scheme, { hash: '#/investor' });
+  const who = async (r) => { await setRole(t, r); await t.page.evaluate(() => { location.hash = '#/home'; }); await t.page.reload(); await t.page.waitForTimeout(800);
+    return t.page.evaluate(() => ({ greet: document.querySelector('[data-testid="mc-greeting"]')?.textContent || '', mine: Array.from(document.querySelectorAll('[data-testid="mc-priorities"] [data-testid="mc-priority"]')).map((e) => e.textContent), links: Array.from(document.querySelectorAll('main a[href^="#/"]')).map((a) => a.getAttribute('href')) })); };
+  const sm = await who('svcmgr'); const ex = await who('exec'); const vi = await who('visitor');
+  ok(`MC-${scheme}-role-01`, 'View as: the service manager’s own work starts with the triage; the executive’s with the funding decision', /Service Manager/.test(sm.greet) && /Triage ISS-0417/.test(sm.mine[0] || '') && ex.mine.some((x) => /Fund PRJ-NST-TH/.test(x)) && !ex.mine.some((x) => /Triage/.test(x)), JSON.stringify({ sm: sm.mine.slice(0, 2), ex: ex.mine.slice(0, 2) }).slice(0, 300));
+  // D44: every link Mission Control offers the visitor opens without the owl page
+  const refused = [];
+  for (const h of [...new Set(vi.links)].slice(0, 40)) { await t.go(h, 250); if (await t.page.locator('[data-testid="access-page"]').count()) refused.push(h); }
+  ok(`MC-${scheme}-role-02`, `D44: none of the ${new Set(vi.links).size} links Mission Control offers the visitor leads to a refusal`, vi.links.length >= 3 && !refused.length, refused.join(' '));
+  await setRole(t, 'architect');
+  // destructive: a damaged workspace, an empty workspace, hostile search text, rapid double taps on a station
+  await t.page.evaluate(() => localStorage.setItem('empathia.demo.workspace.v1', '{not json')); await t.go('#/investor'); await t.page.reload(); await t.go('#/home', 800);
+  ok(`MC-${scheme}-dq-01`, 'a damaged saved workspace does not break Mission Control (it opens from the seed)', (await t.page.locator('[data-testid="mc-flow"]').count()) === 1 && !t.errs.length, t.errs.join(' | '));
+  await t.page.evaluate(() => { const k = 'empathia.demo.workspace.v1'; const w = JSON.parse(localStorage.getItem(k)); w.incidents = []; w.workOrders = []; localStorage.setItem(k, JSON.stringify(w)); }); await t.page.reload(); await t.page.waitForTimeout(800);
+  ok(`MC-${scheme}-dq-02`, 'an empty service workspace: the incidents card says so, the tile reads 0, nothing invented', /No incident on record/.test(await t.text()) && /Open service requests\s*0/.test(await t.page.locator('[data-testid="home-kpis"]').innerText()));
+  await t.page.fill('[data-testid="hero-search"] input', '"><img src=x onerror=alert(1)>' + 'y'.repeat(120)); await t.page.keyboard.press('Enter'); await t.page.waitForTimeout(600);
+  const h2 = await t.page.evaluate(() => decodeURIComponent(location.hash));
+  ok(`MC-${scheme}-dq-03`, 'hostile text in the Search Party bar is capped, asks Search Party and is never run', /^#\/search\?q=/.test(h2) && h2.length <= 100 && (await t.page.locator('img[src="x"]').count()) === 0 && !t.errs.length, h2.slice(0, 120));
+  await t.go('#/home', 700); const b = t.page.locator('[data-station="service"] button'); await b.dblclick(); await b.click(); await t.page.waitForTimeout(150);
+  ok(`MC-${scheme}-dq-04`, 'rapid taps on a station leave it in a consistent state (three taps: open)', (await b.getAttribute('aria-pressed')) === 'true' && (await t.page.locator('#mc-flow-rooms a').count()) >= 1);
+  ok(`MC-${scheme}-clean`, 'no page error and no request leaves the page', !t.errs.length && !t.ext.length, [...t.errs, ...t.ext].join(' | '));
+  await t.close();
+}
+{ const t = await open([390, 844], SCHEMES[0], { hash: '#/home', reducedMotion: 'reduce' }); await t.page.waitForTimeout(600);
+  const d = await t.page.evaluate(() => getComputedStyle(document.querySelector('.mc-prod')).transitionDuration);
+  ok('MC-reduced-motion', 'reduced motion: the product tiles do not animate', /^0s(, 0s)*$/.test(d), d); await t.close(); }
+
 { // reduced motion: the 3D campus and the room still work
   const t = await open([1440, 900], SCHEMES[0], { hash: '#/campus', reducedMotion: 'reduce' }); await t.page.waitForTimeout(500);
   await t.page.focus('[data-testid="campus-b-HZN"]'); await t.page.keyboard.press('Enter'); await t.page.waitForTimeout(400);
