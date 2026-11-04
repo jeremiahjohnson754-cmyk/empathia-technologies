@@ -12,7 +12,7 @@ import { resolve } from '../registry.pages.js';
 
 const KEY = 'empathia.demo.guided.v1';
 interface Run { tour: Tour['key']; i: number; paused: boolean }
-const load = (): Run | null => { try { const v = JSON.parse(sessionStorage.getItem(KEY) || 'null') as Run | null; return v && tourByKey(v.tour) && Number.isInteger(v.i) ? v : null; } catch { return null; } };
+const load = (): Run | null => { try { const v = JSON.parse(sessionStorage.getItem(KEY) || 'null') as Run | null; const t = v && typeof v === 'object' ? tourByKey(v.tour) : undefined; return t && Number.isInteger(v!.i) && v!.i >= 0 && v!.i < t.stops.length ? v : null; } catch { return null; } };   // a stop outside the tour is no tour (SA-09)
 const save = (r: Run | null) => { try { if (r) sessionStorage.setItem(KEY, JSON.stringify(r)); else sessionStorage.removeItem(KEY); } catch { /* storage unavailable: the tour lasts the page */ } };
 export const stopNative = (href: string) => !!resolve(href) || NATIVE.has(areaKey(href));
 

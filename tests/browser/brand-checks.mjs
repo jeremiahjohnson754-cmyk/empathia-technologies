@@ -38,7 +38,9 @@ export async function brandChecks(page, { loaded = [], manifest = false, shellMa
     add('preload', 'the Inter preloads (two or three faces) resolve as WOFF2', head.preloads.length >= 2 && head.preloads.length <= 3 && head.preloads.every((u) => /inter-[\w-]+\.woff2$/.test(u)) && fonts.every((f) => f.status === 200 && f.bytes > 1000), JSON.stringify({ preloads: head.preloads, fonts }));
   }
   if (shellMark) {
-    const mark = await page.evaluate(() => { const el = document.querySelector('.shell__mark'); if (!el) return null; const cs = getComputedStyle(el); const r = el.getBoundingClientRect(); return { bg: cs.backgroundImage, src: el.currentSrc || el.getAttribute('src') || null, w: r.width, h: r.height, hidden: el.getAttribute('aria-hidden') || (el.getAttribute('alt') === '' ? 'alt-empty' : null) }; });
+    // the demo's own shell (apps/demo/src/shell/Shell.tsx) draws the small shield as <img class="shell__emblem" alt="">; packages/ui's shell as
+    // .shell__mark. Same assertions for either (selector only widened, 2026-11-04 security assessment: the check found no element at all).
+    const mark = await page.evaluate(() => { const el = document.querySelector('.shell__mark, .shell__emblem'); if (!el) return null; const cs = getComputedStyle(el); const r = el.getBoundingClientRect(); return { bg: cs.backgroundImage, src: el.currentSrc || el.getAttribute('src') || null, w: r.width, h: r.height, hidden: el.getAttribute('aria-hidden') || (el.getAttribute('alt') === '' ? 'alt-empty' : null) }; });
     const url = mark && (mark.src || (/url\("?([^")]+)"?\)/.exec(mark.bg) || [])[1]);
     const info = url ? await fetchInfo(url) : null;
     add('shell-mark', 'the shell mark is the small shield (emblem-small.svg), served, 16–48 px and decorative beside the name', mark && /emblem-small\.svg$/.test(url || '') && info?.status === 200 && mark.w >= 16 && mark.w <= 48 && mark.h >= 16 && mark.h <= 48 && mark.hidden, JSON.stringify({ mark, info }));
