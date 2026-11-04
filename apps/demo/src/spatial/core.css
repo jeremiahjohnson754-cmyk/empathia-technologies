@@ -224,7 +224,8 @@ main h1[tabindex="-1"]:focus { outline: none; box-shadow: none; }
 .tilecell--text .kit-tile__value { font-size: clamp(1.05rem, .95rem + .6vw, 1.35rem); text-transform: capitalize; overflow-wrap: normal; hyphens: auto; }
 @media (max-width: 520px) { .kit-meter__row { grid-template-columns: minmax(0, 1fr) 72px 3ch 14px; gap: 8px; } }
 .campus__score { border: 0; background: none; padding: 0; } .campus__score .kit-ring { margin: 0; }
-@media (max-width: 640px) { .campus__score svg { width: 84px; height: 84px; } }
+@media (max-width: 640px) { .campus__score .kit-ring > svg { width: 84px; height: 84px; } }
 .lnd__score .kit-ring { margin: 0; flex-direction: row; }
 .roomtabs .kit-chip { flex: none; white-space: nowrap; }
 @media (max-width: 760px) { .roomtabs .kit-chip { min-height: var(--target-min, 44px); } }
+.fnd .room__hero { overflow: visible; z-index: 2; } .fnd .room__hero .fnd__bar { margin-bottom: 0; }
