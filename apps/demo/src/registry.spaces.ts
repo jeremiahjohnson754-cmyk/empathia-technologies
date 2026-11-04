@@ -8,6 +8,13 @@ import type { PageDef } from './registry.types.js';
 import { adapt } from './registry.adapt.js';
 
 export const SPACES_PAGES: readonly PageDef[] = [
+  // ---- Home: Mission Control as V2.5.3 opened it (uplift/core-screens); #/v25 keeps the lifecycle stations
+  {
+    id: 'home', title: 'Mission Control', purpose: 'Health, issues, lifecycle and portfolio decisions across the campus', product: 'mission-control', landing: true,
+    path: '/home', authority: { area: 'home' },
+    load: () => import('./pages/Home.js'),
+    search: { keywords: 'home mission control health issues decisions campus status attention', aliases: ['home', 'mission control', 'what needs me'] },
+  },
   // ---- the living campus and its thirty rooms (rebuild/demo-spaces)
   {
     id: 'campus', title: 'Campus', purpose: 'Buildings, floors and rooms with their status', product: 'lite', landing: true,
@@ -83,7 +90,7 @@ export const SPACES_PAGES: readonly PageDef[] = [
     id: 'search', title: 'Search Party', purpose: 'Universal entity search and relationship intelligence', product: 'search-party', landing: true,
     path: '/search', alias: ['/search/*'], authority: { area: 'search' },
     authorityFor: (params) => { const sub = (params['*'] || '').split('/')[0]; return sub && ['quality', 'ownership', 'support', 'graph', 'people', 'projects', 'orgs', 'activity', 'vault'].includes(sub) ? { area: `search.${sub}` } : undefined; },
-    load: adapt(() => import('./search/SearchParty.js'), (m, p) => h(m.SearchPartyDemo, { hash: p.hash })),
+    load: adapt(() => import('./search/SearchParty.js'), (m, p) => h(m.SearchPartyDemo, { hash: p.hash, role: p.role })),
     search: { keywords: 'search find entity relationship', aliases: ['find', 'what is affected'] },
   },
   {

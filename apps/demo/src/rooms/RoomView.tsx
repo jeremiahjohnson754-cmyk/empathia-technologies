@@ -104,7 +104,7 @@ export function RoomView({ id, hash, sees = () => true, opens = () => true, base
           <div className="room__two">
             <Section title="Where the room has moved" aside="Since handover" id="moved-h" testId="moved"><MovedList r={r} /></Section>
             <Section title="Open issues" aside={plural(iss.length, 'open')} id="issues-h" testId="open-issues">
-              {iss.length ? <ul className="rows">{iss.map((i) => <li key={i.id} className="row"><span className={`row__ic row__ic--${i.severity === 'High' ? 'bad' : i.severity === 'Medium' ? 'warn' : 'muted'}`}><Icon name="alert" /></span><span className="row__main"><b>{i.href && opens(i.href.split('?')[0]!) ? <a href={i.href}>{i.title}</a> : i.title}</b><span className="ui-meta">{i.id} · {i.source}{i.openedAt ? ` · opened ${ago(i.openedAt)}` : ''}{i.positions.length ? ` · ${i.positions.join(', ')}` : ''}</span></span><span className="row__end"><Chip tone={i.severity === 'High' ? 'bad' : i.severity === 'Medium' ? 'warn' : 'muted'}>{i.severity} · {i.state.toLowerCase().replace('_', ' ')}</Chip></span></li>)}</ul>
+              {iss.length ? <ul className="rows">{iss.map((i) => <li key={i.id} className="row row--stack"><span className={`row__ic row__ic--${i.severity === 'High' ? 'bad' : i.severity === 'Medium' ? 'warn' : 'muted'}`}><Icon name="alert" /></span><span className="row__main"><b>{i.href && opens(i.href.split('?')[0]!) ? <a href={i.href}>{i.title}</a> : i.title}</b><span className="ui-meta">{i.id} · {i.source}{i.openedAt ? ` · opened ${ago(i.openedAt)}` : ''}{i.positions.length ? ` · ${i.positions.join(', ')}` : ''}</span></span><span className="row__end"><Chip tone={i.severity === 'High' ? 'bad' : i.severity === 'Medium' ? 'warn' : 'muted'}>{i.severity} · {i.state.toLowerCase().replace('_', ' ')}</Chip></span></li>)}</ul>
                 : <div className="empty"><b>No open issue</b><p>Nothing is open on this room’s record or in the service workspace.</p></div>}
             </Section>
           </div>
@@ -122,7 +122,7 @@ export function RoomView({ id, hash, sees = () => true, opens = () => true, base
 function MovedList({ r }: { r: RoomRecord }) {
   const mv = moves(r);
   if (!mv.length) return <div className="empty"><b>{r.baselines.some((b) => b.state === 'CURRENT') ? 'Nothing has moved since handover' : 'Not handed over yet'}</b><p>{r.baselines.some((b) => b.state === 'CURRENT') ? 'No unit, baseline or issue has changed since the room was accepted.' : 'Changes are tracked from the first accepted baseline; this room has none yet.'}</p></div>;
-  return <ul className="rows">{mv.map((m, i) => <li key={i} className="row"><span className="row__ic"><Icon name={m.kind === 'unit' ? 'device' : m.kind === 'baseline' ? 'cycle' : m.kind === 'issue' ? 'alert' : 'clock'} /></span><span className="row__main"><b>{m.title}</b><span className="ui-meta">{m.from} → {m.to} · {m.by}</span></span><span className="row__end ui-meta">{ago(m.at)}</span></li>)}</ul>;
+  return <ul className="rows">{mv.map((m, i) => <li key={i} className="row row--stack"><span className="row__ic"><Icon name={m.kind === 'unit' ? 'device' : m.kind === 'baseline' ? 'cycle' : m.kind === 'issue' ? 'alert' : 'clock'} /></span><span className="row__main"><b>{m.title}</b><span className="ui-meta">{m.from} → {m.to} · {m.by}</span></span><span className="row__end ui-meta">{ago(m.at)}</span></li>)}</ul>;
 }
 
 function Overview({ r, sel, setSel }: { r: RoomRecord; sel: string | null; setSel: (c: string | null) => void }) {
