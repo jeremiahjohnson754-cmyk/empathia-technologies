@@ -1,7 +1,7 @@
 /**
  * The demonstration's shell (QUALITY_UPLIFT, after V2.5.3's aurora shell, better):
  *   - a compact top bar: the small-shield emblem (D39) with a small "Synthetic data" chip, the current product (its colour mark, the role's
- *     halo), global quick find (→ #/find), notifications computed from the demo's records, the System/Light/Dark switch (D9), View as (D1);
+ *     halo), the Search Party bar (⌘K / Ctrl K, grouped results → #/search), notifications computed from the demo's records, the System/Light/Dark switch (D9), View as (D1);
  *   - the role's navigation from the policy (V2.5.3 tabsFor, D44) as ONE nav: a left icon rail on desktop, the bottom tab bar on phones,
  *     ending in "More", which opens the product sheet: the nine products in the canonical order (D37/D40) with their pages and the theme;
  *   - no greeting, breadcrumb or product rows, and no per-page banner: one synthetic-data line lives in the footer (App.tsx).
@@ -12,8 +12,8 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { PageDef, RoleKey } from '../registry.types.js';
 import { resolve, hrefOf } from '../registry.pages.js';
-import { ROLES, ROLE_KEYS, canOpen, tabsFor, type Resolved } from '../access/policy.js';
-import { PRODUCTS, ThemeSwitch, Icon, type IconName } from '@empathia/ui';   // the one canonical list of the nine (D37/D40), the shared theme switch (D9), the kit's icons
+import { ROLES, ROLE_KEYS, canOpen, allows, tabsFor, type Resolved } from '../access/policy.js';
+import { PRODUCTS, ThemeSwitch, Icon, deviceIcon, type IconName } from '@empathia/ui';   // the one canonical list of the nine (D37/D40), the shared theme switch (D9), the kit's icons
 import { useDialog } from '../viewas/ViewAsSheet.js';
 import { openPages } from '../viewas/scope.js';
 export { openPages };
@@ -84,6 +84,7 @@ function Drawer({ open, onClose, products, current, at, onViewAs, role }: { open
   return (
     <div className="sheet-scrim" onClick={onClose}>
       <div ref={ref} className="sheet drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-h" tabIndex={-1} onClick={(e) => e.stopPropagation()} data-testid="menu">
+        <span className="sheet__grab" aria-hidden="true" />
         <div className="sheet__head"><h2 id="drawer-h">Products <span className="drawer__count">{products.length}</span></h2><button type="button" className="sheet__x" onClick={onClose} aria-label="Close the menu"><Icon name="close" size={20} /></button></div>
         <button type="button" className="drawer__who" data-r={role} onClick={onViewAs}><span className="ava" aria-hidden="true">{r.initials}</span><span><b>View as</b> · {r.label}</span><Icon name="chevron-right" size={18} className="drawer__chev" /></button>
         <a className="drawer__start" href="#/investor" onClick={onClose} aria-current={at?.page.id === 'investor' ? 'page' : undefined}><Icon name="spark" size={18} /><span><b>Investor start</b><span>Three ways in: build a room, a guided scenario, the problem each workflow solves</span></span>{at?.page.id === 'investor' && <span className="drawer__here" aria-hidden="true">You are here</span>}</a>
@@ -147,57 +148,97 @@ function Notifications({ role }: { role: RoleKey }) {
   );
 }
 
-// ------------------------------------------------------------------------------------------------ quick find
-/** Quick find: the registered pages this role can open, by title, purpose, product and alias (Scouter answers "which camera"); "/" focuses it. */
+// ------------------------------------------------------------------------------------------------ quick find (Search Party bar)
+/** ⌘K on Apple keyboards, Ctrl K elsewhere (the hint shows the one this keyboard has). */
+const MAC = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent || '');
+const KEYS = MAC ? '⌘K' : 'Ctrl K';
+type Opt = { key: string; href: string; title: string; sub: string; product?: string; icon: IconName; chip: string; all?: boolean };
+type Grp = { key: string; label: string; opts: Opt[]; more: number };
+type Records = typeof import('./records.js');
+type FindFn = (q: string, n: number) => Array<{ id: string; kind: string; label: string; description: string; href: string }>;
+/**
+ * The Search Party bar (3 Nov reference 01–02, concept "prominent Search Party bar with ⌘K"): pages the role can open by title, purpose,
+ * product and alias (Scouter answers "which camera"), then the records — physical units, logical positions, incidents, rooms, buildings —
+ * grouped with "N more in Search Party". Every result is filtered twice before it is offered (D44): the role may see that kind of record
+ * (V2.5.3 entity authority) and may open the address it leads to. "/" or ⌘K / Ctrl K focuses it; Escape clears, then closes.
+ */
 function QuickFind({ role, pages, open, setOpen }: { role: RoleKey; pages: PageDef[]; open: boolean; setOpen: (b: boolean) => void }) {
   const [q, setQ] = useState(''); const [i, setI] = useState(0); const input = useRef<HTMLInputElement>(null);
   useEffect(() => {
-    const k = (e: KeyboardEvent) => { const t = e.target as HTMLElement | null; if (e.key === '/' && !e.metaKey && !e.ctrlKey && !e.altKey && !(t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) && !document.body.classList.contains('has-dialog')) { e.preventDefault(); setOpen(true); input.current?.focus(); setTimeout(() => input.current?.focus(), 0); } };
+    const k = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null; const typing = !!t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
+      const cmdK = (e.metaKey || e.ctrlKey) && !e.altKey && !e.shiftKey && e.key.toLowerCase() === 'k';
+      if ((cmdK || (e.key === '/' && !e.metaKey && !e.ctrlKey && !e.altKey && !typing)) && !document.body.classList.contains('has-dialog')) {
+        e.preventDefault(); setOpen(true); input.current?.focus(); input.current?.select(); setTimeout(() => input.current?.focus(), 0);
+      }
+    };
     addEventListener('keydown', k); return () => removeEventListener('keydown', k);
   }, [setOpen]);
-  // the demo-wide index of rooms, buildings and devices (search/find.ts) loads on first use, so the main bundle stays small
-  const [index, setIndex] = useState<null | ((q: string, n: number) => Array<{ id: string; kind: string; label: string; description: string; href: string }>)>(null);
-  useEffect(() => { if (!q.trim() || index) return; let live = true; import('../search/find.js').then((m) => { if (live) setIndex(() => m.find); }).catch(() => undefined); return () => { live = false; }; }, [q, index]);
-  const words = q.toLowerCase().split(/\s+/).filter(Boolean);
+  // the record indexes load on first use (search/find.ts, shell/records.ts), so the main bundle stays small; a failed chunk says so
+  const [index, setIndex] = useState<null | { find: FindFn; rec: Records }>(null); const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    if (!q.trim() || index) return; let live = true; setFailed(false);
+    Promise.all([import('../search/find.js'), import('./records.js')]).then(([f, rec]) => { if (live) setIndex({ find: f.find as FindFn, rec }); }).catch(() => { if (live) setFailed(true); });
+    return () => { live = false; };
+  }, [q, index]);
+  const text = q.trim(); const words = text.toLowerCase().split(/\s+/).filter(Boolean);
   const pageHits = words.length ? pages.map((p) => {
     const hay = [p.title, p.purpose, PRODUCTS.find((x) => x.id === p.product)?.name || '', p.search?.keywords || '', ...(p.search?.aliases || [])].join(' ').toLowerCase();
-    const alias = (p.search?.aliases || []).some((a) => a.toLowerCase().startsWith(q.toLowerCase().trim()));
-    return { p, s: words.every((w) => hay.includes(w)) ? (alias ? 3 : 0) + (p.title.toLowerCase().includes(words[0]!) ? 2 : 1) : 0 };
-  }).filter((x) => x.s).sort((a, b) => b.s - a.s).map((x) => x.p) : [];
-  type Opt = { key: string; href: string; title: string; sub: string; product?: string };
-  const GROUPS: Array<[string, string]> = [['room', 'Rooms'], ['device', 'Devices & positions'], ['building', 'Buildings']];
-  const ents = words.length && index ? index(q, 40).filter((h) => GROUPS.some(([k]) => k === h.kind) && opensNative(role, h.href)) : [];
-  const groups: Array<{ key: string; label: string; opts: Opt[]; more: number }> = [];
-  if (pageHits.length) groups.push({ key: 'page', label: 'Pages', opts: pageHits.slice(0, 5).map((p) => ({ key: `p-${p.id}`, href: hrefOf(p.id), title: p.title, sub: `${PRODUCTS.find((x) => x.id === p.product)?.name ?? 'Empathia'} · ${p.purpose}`, product: p.product })), more: Math.max(0, pageHits.length - 5) });
-  for (const [k, label] of GROUPS) { const xs = ents.filter((h) => h.kind === k); if (xs.length) groups.push({ key: k, label, opts: xs.slice(0, 4).map((h) => ({ key: `${k}-${h.id}`, href: h.href, title: h.label, sub: h.description })), more: Math.max(0, xs.length - 4) }); }
-  const hits = groups.flatMap((g) => g.opts);
-  const canFind = pages.some((p) => p.id === 'find');
+    const alias = (p.search?.aliases || []).some((a) => a.toLowerCase().startsWith(text.toLowerCase()));
+    return { p, alias, s: words.every((w) => hay.includes(w)) ? (alias ? 3 : 0) + (p.title.toLowerCase().includes(words[0]!) ? 2 : 1) : 0 };
+  }).filter((x) => x.s).sort((a, b) => b.s - a.s) : [];
+  const canSearch = pages.some((p) => p.id === 'search'); const canFind = pages.some((p) => p.id === 'find');
+  const allHref = canSearch ? `#/search?q=${encodeURIComponent(text)}` : canFind ? `#/find?q=${encodeURIComponent(text)}` : '';
+  const moreIn = canSearch ? ' in Search Party' : canFind ? ' in Search' : '';
+  const groups: Grp[] = [];
+  const pagesGroup: Grp | null = pageHits.length ? { key: 'page', label: 'Pages', opts: pageHits.slice(0, 4).map(({ p }) => ({ key: `p-${p.id}`, href: hrefOf(p.id), title: p.title, sub: `${PRODUCTS.find((x) => x.id === p.product)?.name ?? 'Empathia'} · ${p.purpose}`, product: p.product, icon: 'grid', chip: 'Page' })), more: Math.max(0, pageHits.length - 4) } : null;
+  if (pagesGroup && pageHits[0]!.alias) groups.push(pagesGroup);   // a page the words name outright ("which camera" → Scouter) leads
+  if (words.length && index) {
+    const R = index.rec; const ent = R.match(text, (e) => allows({ entity: e.entity }, role) && opensNative(role, e.href));
+    const ROWS: Array<[keyof typeof ent, string]> = [['unit', 'Devices & physical units'], ['position', 'Logical positions & installations'], ['issue', 'Incidents & work orders']];
+    for (const [g, label] of ROWS) { const x = ent[g]; if (x.total) groups.push({ key: g, label, opts: x.hits.slice(0, 4).map((e) => ({ key: e.id, href: e.href, title: e.title, sub: e.sub, icon: g === 'issue' ? 'alert' : deviceIcon(e.cat), chip: e.chip })), more: x.total - Math.min(4, x.total) }); }
+    const hits = index.find(text, 40).filter((h) => (h.kind === 'room' || h.kind === 'building') && allows({ entity: h.kind === 'room' ? 'Room' : 'Building' }, role) && opensNative(role, h.href));
+    for (const [k, label, icon, chip] of [['room', 'Rooms', 'room', 'Room'], ['building', 'Buildings', 'building', 'Building']] as const) { const xs = hits.filter((h) => h.kind === k); if (xs.length) groups.push({ key: k, label, opts: xs.slice(0, 3).map((h) => ({ key: `${k}-${h.id}`, href: h.href, title: h.label, sub: h.description, icon, chip })), more: Math.max(0, xs.length - 3) }); }
+  }
+  if (pagesGroup && !pageHits[0]!.alias) groups.push(pagesGroup);
+  const opts = groups.flatMap((g) => g.opts);
+  const more = groups.reduce((n, g) => n + g.more, 0);
+  const allOpt: Opt | null = text && allHref && opts.length ? { key: 'all', href: allHref, title: more ? `See all ${opts.length + more} results${moreIn}` : `Open “${text}”${moreIn}`, sub: 'Every record that matches, with its relationships', icon: 'search', chip: '', all: true } : null;
+  const hits = allOpt ? [...opts, allOpt] : opts;
+  const sel = Math.min(i, Math.max(0, hits.length - 1));
   const close = () => { setQ(''); setOpen(false); input.current?.blur(); };
   const go = (o: Opt) => { location.hash = o.href; close(); };
-  const submit = () => { if (hits[i]) go(hits[i]!); else if (q.trim() && canFind) { location.hash = `#/find?q=${encodeURIComponent(q.trim())}`; close(); } };
+  const submit = () => { if (hits[sel]) go(hits[sel]!); else if (text && allHref) { location.hash = allHref; close(); } };
   const optId = (o: Opt) => `find-${o.key.replace(/[^a-zA-Z0-9_-]/g, '_')}`;
+  const loading = words.length > 0 && !index && !failed;
   let n = -1;
+  const opt = (o: Opt, kind: string) => { n += 1; const k = n; return (
+    <li key={o.key} id={optId(o)} role="option" aria-selected={k === sel} className={`find__opt${o.all ? ' find__opt--all' : ''}`} data-p={o.product} data-kind={kind} onMouseDown={(e) => { e.preventDefault(); go(o); }} onMouseEnter={() => setI(k)}>
+      <span className="find__ic" aria-hidden="true"><Icon name={o.icon} size={16} /></span>
+      <span className="find__tx"><b>{o.title}</b><span>{o.sub}</span></span>
+      {o.chip ? <span className="find__chip" aria-hidden="true">{o.chip}</span> : <Icon name="arrow-right" size={16} className="find__go" />}
+    </li>); };
   return (
     <div className={`find${open ? ' find--open' : ''}`} data-testid="quickfind" data-role={role}>
-      <button type="button" className="find__btn" aria-expanded={open} aria-controls="find-in" onClick={() => { setOpen(!open); setTimeout(() => input.current?.focus(), 0); }}><Icon name="search" size={20} /><span className="ui-sr">Find a page</span></button>
+      <button type="button" className="find__btn" aria-expanded={open} aria-controls="find-in" onClick={() => { setOpen(!open); setTimeout(() => input.current?.focus(), 0); }}><Icon name="search" size={20} /><span className="ui-sr">Search Party: find a room, device or page</span></button>
       <div className="find__box">
-        <Icon name="search" size={16} className="find__glass" />
-        <input ref={input} id="find-in" type="search" role="combobox" aria-expanded={hits.length > 0} aria-controls="find-list" aria-autocomplete="list" aria-activedescendant={hits[i] ? optId(hits[i]!) : undefined}
-          placeholder="Search rooms, devices, pages…" aria-label="Find a page or a task" aria-keyshortcuts="/" value={q} autoComplete="off" maxLength={80}
+        <span className="find__sp" aria-hidden="true"><Icon name="search" size={16} /><span>Search Party</span></span>
+        <input ref={input} id="find-in" type="search" role="combobox" aria-expanded={hits.length > 0} aria-controls="find-list" aria-autocomplete="list" aria-activedescendant={hits[sel] ? optId(hits[sel]!) : undefined}
+          placeholder="Rooms, devices, incidents, pages…" aria-label="Search Party: find a room, device, incident or page" aria-keyshortcuts="Control+K Meta+K /" value={q} autoComplete="off" spellCheck={false} maxLength={80}
           onChange={(e) => { setQ(e.target.value); setI(0); }}
-          onKeyDown={(e) => { if (e.key === 'ArrowDown') { e.preventDefault(); setI(Math.min(i + 1, hits.length - 1)); } else if (e.key === 'ArrowUp') { e.preventDefault(); setI(Math.max(i - 1, 0)); } else if (e.key === 'Enter') { e.preventDefault(); submit(); } else if (e.key === 'Escape') { setQ(''); setOpen(false); } }} />
-        <kbd className="find__kbd" aria-hidden="true">/</kbd>
+          onKeyDown={(e) => { if (e.key === 'ArrowDown') { e.preventDefault(); setI(Math.min(sel + 1, hits.length - 1)); } else if (e.key === 'ArrowUp') { e.preventDefault(); setI(Math.max(sel - 1, 0)); } else if (e.key === 'Enter') { e.preventDefault(); submit(); } else if (e.key === 'Escape') { e.preventDefault(); if (q) setQ(''); else close(); } }} />
+        <kbd className="find__kbd" aria-hidden="true">{KEYS}</kbd>
         {hits.length > 0 && <div className="find__list">
-          <ul id="find-list" role="listbox" aria-label="Results">{groups.map((g) => (
+          <ul id="find-list" role="listbox" aria-label={`Results for ${text}`}>{groups.map((g) => (
             <li key={g.key} role="presentation" className="find__grp">
-              <span className="find__g" id={`find-g-${g.key}`} aria-hidden="true">{g.label}{g.more ? <i> · {g.more} more{canFind ? ' in Search' : ''}</i> : null}</span>
-              <ul role="group" aria-labelledby={`find-g-${g.key}`}>{g.opts.map((o) => { n += 1; const k = n; return (
-                <li key={o.key} id={optId(o)} role="option" aria-selected={k === i} className="find__opt" data-p={o.product} data-kind={g.key} onMouseDown={(e) => { e.preventDefault(); go(o); }}>
-                  <b>{o.title}</b><span>{o.sub}</span></li>); })}</ul>
-            </li>))}</ul>
-          {canFind && <p className="find__all" aria-hidden="true">Enter on nothing selected opens every result for “{q.trim()}”</p>}
+              <span className="find__g" id={`find-g-${g.key}`}>{g.label}{g.more ? <i> · {g.more} more{moreIn}</i> : null}</span>
+              <ul role="group" aria-labelledby={`find-g-${g.key}`}>{g.opts.map((o) => opt(o, g.key))}</ul>
+            </li>))}
+            {allOpt && <li role="presentation" className="find__grp find__grp--all"><ul role="group" aria-label="Everything">{opt(allOpt, 'all')}</ul></li>}
+          </ul>
+          <p className="find__all" aria-hidden="true"><kbd>↑</kbd><kbd>↓</kbd> to move · <kbd>Enter</kbd> to open · <kbd>Esc</kbd> to clear</p>
         </div>}
-        {words.length > 0 && !hits.length && <p className="find__none" role="status">No page for “{q.trim()}” that this role can open.{canFind ? ' Press Enter to search the records.' : ''}</p>}
+        {words.length > 0 && !hits.length && <p className="find__none" role="status">{loading ? 'Searching the records…' : failed ? 'The records could not be loaded — the connection may have dropped. Type again to retry.' : <>Nothing for “{text}” that this role can open.{allHref ? ' Press Enter to search every record.' : ''}</>}</p>}
       </div>
     </div>
   );

@@ -4,7 +4,7 @@
  */
 import { useState } from 'react';
 import {
-  PageHero, Card, Panel, StatTile, ScoreRing, Donut, Sparkline, ProgressBar, Chip, StatusDot, Segmented, KitTabs, TabPanel, List, ListRow,
+  PageHero, Card, Panel, TagChip, StatTile, ScoreRing, Donut, Sparkline, ProgressBar, Chip, StatusDot, Segmented, KitTabs, TabPanel, List, ListRow,
   EmptyState, ToastProvider, useToast, MeterRow, Icon, ICON_NAMES, DataTable, Button, type HealthState, type Column,
 } from '@empathia/ui';
 
@@ -72,7 +72,7 @@ function Inner() {
         </Card>
         <Card title="Tabs and states" icon="layers">
           <KitTabs idBase="g-kit" label="Room views" active={tab} onChange={setTab} tabs={[{ key: 'overview', label: 'Overview', icon: 'eye' }, { key: 'devices', label: 'Devices', count: 14 }, { key: 'issues', label: 'Issues', count: 0 }]} />
-          <TabPanel idBase="g-kit" tab={tab}>{tab === 'issues' ? <EmptyState title="No open issues" icon="check" tone="ok">Nothing is waiting on a person in this room.</EmptyState> : <div className="g-chips">{(['healthy', 'monitor', 'action', 'modelled', 'offline'] as HealthState[]).map((s) => <StatusDot key={s} state={s} />)}<Chip tone="accent">Selected</Chip><Chip tone="search-party">Search Party</Chip><Chip tone="bad" icon="alert">Blocked</Chip></div>}</TabPanel>
+          <TabPanel idBase="g-kit" tab={tab}>{tab === 'issues' ? <EmptyState title="No open issues" icon="check" tone="ok">Nothing is waiting on a person in this room.</EmptyState> : <div className="g-chips">{(['healthy', 'monitor', 'action', 'modelled', 'offline'] as HealthState[]).map((s) => <StatusDot key={s} state={s} />)}<Chip tone="accent">Selected</Chip><Chip tone="search-party">Search Party</Chip><Chip tone="bad" icon="alert">Blocked</Chip><TagChip kind="status" state="monitor">Monitor</TagChip><TagChip kind="room">Atlas 4.218</TagChip><TagChip kind="building">Atlas HQ</TagChip><TagChip kind="device" category="camera">Cam 1</TagChip><TagChip kind="device" category="micceil">Mic array</TagChip><TagChip kind="device" category="switch">SW-ATL-4A</TagChip></div>}</TabPanel>
         </Card>
         <Panel raised>
           <p className="g-note">Toast with Undo (pauses on hover or focus, Escape dismisses)</p>
