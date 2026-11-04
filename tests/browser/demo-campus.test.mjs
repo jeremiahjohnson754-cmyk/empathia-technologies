@@ -12,8 +12,9 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   const site = await t.page.evaluate(() => {
     const st = document.querySelector('[data-testid="campus-stage"]'); const bg = st ? getComputedStyle(st).backgroundColor : '';
     const lum = (() => { const m = bg.match(/\d+(\.\d+)?/g); if (!m) return 1; const [r, g, b] = m.map(Number); return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255; })();
-    return { h1: document.querySelector('main h1')?.textContent || '', buildings: document.querySelectorAll('[data-testid^="campus-b-"]').length, cards: document.querySelectorAll('.campus__card').length, lum, stats: document.querySelector('.campus__stats')?.textContent || '' };
+    return { h1: document.querySelector('main h1')?.textContent || '', buildings: document.querySelectorAll('[data-testid^="campus-b-"]').length, cards: document.querySelectorAll('[data-testid="building-list"] .kit-meter').length, lum, stats: document.querySelector('.campus__stats')?.textContent || '' };
   });
+  // changed for uplift/core-screens (founder, 2026-11-04: V2.5.3's buildings list with health bars): the list is the kit's MeterRow
   ok(`CA-${tag}-01`, 'the campus page shows the site, six buildings on the map and six in the list', /Northstar Innovation Campus/.test(site.h1) && site.buildings === 6 && site.cards === 6, JSON.stringify(site));
   ok(`CA-${tag}-02`, 'the spatial stage stays dark in either theme (D36)', site.lum < 0.25, site.lum);
   ok(`CA-${tag}-03`, 'no horizontal overflow on the campus page', (await t.overflow()) <= 0, await t.overflow());
@@ -42,7 +43,8 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   ok(`CA-${tag}-11`, 'back returns to the building page', (await t.page.evaluate(() => location.hash)) === '#/campus/HZN' && /Horizon Media Center/.test(await t.text()));
   // the rooms index filters, with an empty state
   await t.go('#/rooms'); const all = await t.page.locator('[data-testid="room-list"] tbody tr').count();
-  ok(`CA-${tag}-12`, 'the rooms index lists the 45 rooms of the plan (thirty plus rows 31–45; uplift/lite)', all === 45, all);
+  // 45 since 2026-11-04 (uplift/core-screens: every screen shows the 45 rooms of the plan, rooms 31–45 included)
+  ok(`CA-${tag}-12`, 'the rooms index lists the 45 rooms', all === 45, all);
   await t.go('#/rooms?state=OPERATIONAL&building=HZN');
   ok(`CA-${tag}-13`, 'a filter with no match shows an empty state, not a blank', /No room matches/.test(await t.text()));
   // D36 under an explicit Light choice (the shell's switch sets data-theme="light"): the stage keeps the dark tokens

@@ -6,7 +6,7 @@
  */
 import DEST from './v253-destinations.json';
 import { BUILDINGS, CAMPUS_ROOMS as ROOMS, fullName, roomHref, ARCHETYPE_NAME } from '../campus/canon.js';
-import { campusRecords as allRecords, C } from '../campus/design.js';
+import { allRecords, C } from '../campus/design.js';
 
 export interface Hit { id: string; kind: 'room' | 'building' | 'device' | 'product' | 'page' | 'tour'; label: string; description: string; href: string; terms: string; score?: number; why?: string }
 

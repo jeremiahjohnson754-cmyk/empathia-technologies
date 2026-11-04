@@ -121,8 +121,8 @@ export function roomRecord(id: string): RoomRecord | null {
   const o = roomById(id); if (!o) return null;
   const r = build(o); cache.set(id, r); return r;
 }
-/** The thirty rooms of the original campus (kept for the screens and tests that speak of thirty). */
-export const allRecords = (): RoomRecord[] => ROOMS.map((o) => roomRecord(o.id)!);
+/** Every room of the campus — the 45 of the rooms plan (uplift/core-screens: every screen shows all 45). */
+export const allRecords = (): RoomRecord[] => CAMPUS_ROOMS.map((o) => roomRecord(o.id)!);
 /** All 45 rooms of the plan (the thirty, then rooms 31–45), generated lazily the same way. */
 export const campusRecords = (): RoomRecord[] => CAMPUS_ROOMS.map((o) => roomRecord(o.id)!);
 

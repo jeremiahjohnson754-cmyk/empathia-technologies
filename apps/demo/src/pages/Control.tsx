@@ -17,6 +17,7 @@ import * as S from '../workspace/store.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
 import { loadDraft, personaOf, personaLabel, holds, type Draft } from '../build/store.js';
 import { NATIVE } from '../registry.js';
+import { programme } from '../campus/programme.js';
 
 const when = (s: string | null | undefined) => (s ? s.slice(0, 16).replace('T', ' ') : '—');
 const local = (s: string) => new Date(s).toLocaleString(undefined, { hour12: false });
@@ -24,10 +25,8 @@ const local = (s: string) => new Date(s).toLocaleString(undefined, { hour12: fal
 // ------------------------------------------------------------------------------------------------------------ the records of this demonstration, assembled once
 export function assemble(w: S.Workspace, d: Draft | null): Records {
   const now = S.now();
-  const projects: Records['projects'] = [
-    { id: 'PRJ-ATLAS-AV', governance: 'FUNDED', delivery: 'FIELD_ACTIVE', updatedAt: new Date(Date.now() - 6 * 864e5).toISOString(), requestId: 'REQ-0031', history: [{ to: 'ENGINEERING_REVIEW', at: new Date(Date.now() - 60 * 864e5).toISOString() }, { to: 'FIELD_ACTIVE', at: new Date(Date.now() - 12 * 864e5).toISOString() }] },
-    { id: 'PRJ-NST-TH', governance: 'APPROVED', delivery: 'DESIGN_DRAFT', updatedAt: new Date(Date.now() - 2 * 864e5).toISOString(), requestId: 'REQ-0034', history: [{ to: 'ENGINEERING_REVIEW', at: new Date(Date.now() - 9 * 864e5).toISOString() }] },
-  ];
+  const P = programme();   // the programme records: one source with the room page's delivery spine (campus/programme.ts)
+  const projects: Records['projects'] = P.projects.map(({ roomIds: _r, ...p }) => p);
   if (d) projects.push({ id: d.code, governance: 'FUNDED', delivery: d.design.lifecycle === 'ACCEPTED' || d.design.lifecycle === 'OPERATIONAL' ? 'CUSTOMER_ACCEPTED' : d.design.lifecycle === 'COMMISSIONING' ? 'FIELD_ACTIVE' : 'DESIGN_DRAFT', updatedAt: d.events[0]?.at || d.createdAt, requestId: `REQ-${d.code}`, history: d.events.filter((e) => e.type.startsWith('room.lifecycle:') && e.outcome === 'ALLOWED').map((e) => ({ to: e.type.endsWith('COMMISSIONING') ? 'FIELD_ACTIVE' : e.type.split(':')[1]!, at: e.at })) });
   const rooms: Records['rooms'] = [
     { id: 'R-ATL-4-218', requiresCommissioning: true, devices: 5, baseline: { version: 1, publishedAt: new Date(Date.now() - 120 * 864e5).toISOString(), devicesBound: 5, verifiedTests: 14, applicableTests: 14, exceptions: 0 }, instrumented: true, eligibleForUsage: true },
@@ -38,11 +37,11 @@ export function assemble(w: S.Workspace, d: Draft | null): Records {
   if (d) rooms.push({ id: d.code, requiresCommissioning: true, devices: d.design.devices.filter((x) => !x.furniture && !x.removed).length, baseline: d.baseline ? { version: d.baseline.version, publishedAt: d.baseline.at, devicesBound: d.baseline.devices.length, verifiedTests: Object.values(d.baseline.results).filter((r) => r === 'PASS_VERIFIED').length, applicableTests: Object.keys(d.baseline.results).length, exceptions: 0 } : null, instrumented: false, eligibleForUsage: false });
   const sessions: Records['sessions'] = []; for (let i = 0; i < 60; i++) sessions.push({ roomId: i % 3 === 0 ? 'R-ATL-4-220' : 'R-ATL-4-218', at: new Date(Date.now() - (i * 1.4 + 0.3) * 864e5).toISOString(), conferencing: i % 4 !== 1, whiteboarding: i % 5 === 0, deviceActivation: i % 7 !== 3, interactiveDisplay: i % 3 !== 0 });
   return { now, projects,
-    decisions: [{ projectId: 'PRJ-ATLAS-AV', decision: 'APPROVED', scopeRev: 1, at: new Date(Date.now() - 70 * 864e5).toISOString() }, { projectId: 'PRJ-NST-TH', decision: 'HELD', scopeRev: 1, at: new Date(Date.now() - 20 * 864e5).toISOString() }, { projectId: 'PRJ-NST-TH', decision: 'APPROVED', scopeRev: 2, at: new Date(Date.now() - 10 * 864e5).toISOString() }],
-    funding: [{ projectId: 'PRJ-ATLAS-AV', kind: 'AUTHORIZED', amount: 184000, currency: 'USD', at: new Date(Date.now() - 65 * 864e5).toISOString() }],
+    decisions: P.decisions,
+    funding: P.funding,
     workOrders: w.workOrders.map((x) => ({ id: x.id, state: x.state === 'DONE' ? 'RESOLVED' : x.state, openedAt: x.openedAt, resolvedAt: x.state === 'DONE' ? w.incidents.find((i) => i.id === x.incidentId)?.restoredAt || null : null, roomId: x.roomId })),
     incidents: w.incidents.map((i) => ({ id: i.id, state: i.state, roomId: i.roomId, openedAt: i.openedAt, restoredAt: i.restoredAt, recurrenceOf: i.recurrenceOf, reopened: i.reopened })),
-    requests: [{ id: 'REQ-0031', projectId: 'PRJ-ATLAS-AV', submittedAt: new Date(Date.now() - 80 * 864e5).toISOString() }, { id: 'REQ-0034', projectId: 'PRJ-NST-TH', submittedAt: new Date(Date.now() - 25 * 864e5).toISOString() }, ...(d ? [{ id: `REQ-${d.code}`, projectId: d.code, submittedAt: d.createdAt }] : [])],
+    requests: [...P.requests.map(({ title: _t, ...q }) => q), ...(d ? [{ id: `REQ-${d.code}`, projectId: d.code, submittedAt: d.createdAt }] : [])],
     rooms, documents: rooms.flatMap((r) => [{ roomId: r.id, mandatory: true, state: r.baseline ? 'APPROVED' : 'PENDING', at: r.baseline?.publishedAt || now }, { roomId: r.id, mandatory: true, state: r.baseline && r.id !== 'R-ATL-4-231' ? 'APPROVED' : 'SUBMITTED', at: now }]),
     standards: [{ id: 'STD-ROOM-HUDDLE-3', effectiveAt: new Date(Date.now() - 40 * 864e5).toISOString() }, { id: 'STD-NET-SEG-2', effectiveAt: null }], sops: [{ id: 'SOP-CX-01', createdAt: new Date(Date.now() - 50 * 864e5).toISOString(), approvedAt: new Date(Date.now() - 35 * 864e5).toISOString() }], sows: [{ id: 'SOW-ATL-2026-1', createdAt: new Date(Date.now() - 66 * 864e5).toISOString(), approvedAt: new Date(Date.now() - 64 * 864e5).toISOString() }],
     devices: [{ id: 'A-0101', active: true, supportEnd: '2028-01-01' }, { id: 'A-0102', active: true, supportEnd: '2027-06-30', romLow: 1800, romHigh: 2600 }, { id: 'A-0103', active: true, supportEnd: '2029-03-01' }, { id: 'A-0104', active: true, supportEnd: null }, { id: 'A-0105', active: true, supportEnd: '2027-09-01', romLow: 900, romHigh: 1400 }, { id: 'A-0201', active: true, supportEnd: '2030-01-01' }, { id: 'A-0202', active: true, supportEnd: '2027-06-30', romLow: 1800, romHigh: 2600 }, { id: 'A-0301', active: true, supportEnd: '2026-12-31', romLow: 3200, romHigh: 5600 }, { id: 'A-0302', active: true, supportEnd: null }],

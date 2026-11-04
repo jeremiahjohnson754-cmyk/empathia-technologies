@@ -12,7 +12,7 @@ import { ROLE_KEYS } from './access/policy.js';
 export const OPS_PAGES: readonly PageDef[] = [
   {
     id: 'control', title: 'Mission Control', purpose: 'What changed, what matters, what needs action', product: 'mission-control', landing: true,
-    path: '/v25', alias: ['/home'], authority: { area: 'home' },
+    path: '/v25', authority: { area: 'home' },   // #/home is the Home page (registry.spaces.ts, uplift/core-screens); #/v25 keeps the lifecycle stations
     load: adapt(() => import('./pages/Control.js'), (m, p) => h(m.MissionControl, { perspective: p.role })),
     search: { keywords: 'dashboard overview today home', aliases: ['home', 'dashboard'] },
   },

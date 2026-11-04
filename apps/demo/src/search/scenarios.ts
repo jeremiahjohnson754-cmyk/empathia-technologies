@@ -4,7 +4,7 @@
  * DEMONSTRATION FIXTURES (owner decision 2026-11-01): no real company, contract or credential is implied; competencies read
  * "Internal competency · declared / lab-evidenced / reviewer-verified" — never "certified".
  */
-import { ROOMS, roomById, fullName, roomHref, shortName, buildingByKey, REFERENCE_ROOM_ID } from '../campus/canon.js';
+import { CAMPUS_ROOMS as ROOMS, roomById, fullName, roomHref, shortName, buildingByKey, REFERENCE_ROOM_ID } from '../campus/canon.js';
 import { allRecords, roomRecord, openIssues } from '../campus/design.js';
 
 export interface SItem { id: string; label: string; detail: string; rel: string; provenance: string; href?: string }
@@ -17,6 +17,8 @@ const ORG = {
   AV: { name: 'Larkspur Managed Services', kind: 'Managed service provider' }, NET: { name: 'Fernhill Network Services', kind: 'Network provider' },
   PWR: { name: 'Velmoor Electrical', kind: 'Electrical contractor' }, MEDIA: { name: 'Saffron Hill Broadcast', kind: 'AV / technology integrator' }, INT: { name: 'Brightwater AV Integration', kind: 'AV / technology integrator' },
 };
+/** The fictional partner organisations, for the Organizations tab. */
+export const ORGS = Object.values(ORG);
 const fict = (n: string) => `${n} (fictional organisation)`;
 type Comp = 'declared' | 'lab-evidenced' | 'reviewer-verified';
 const TECHS: Array<{ id: string; name: string; site: boolean; comps: Record<string, Comp>; tz: string; load: number }> = [

@@ -69,7 +69,7 @@ export function PageHero({ eyebrow, title, lede, actions, meta, aside, product, 
   const auto = useId(); const hid = id || `hero-${auto.replace(/:/g, '')}`;
   const H = level === 1 ? 'h1' : 'h2';
   return (
-    <header className={cx('kit-hero', product && `ui-p--${product}`, product && 'kit-hero--p', compact && 'kit-hero--compact', aside && 'kit-hero--aside', className)} aria-labelledby={hid} data-testid="page-hero">
+    <header className={cx('kit-hero', product && `ui-p--${product}`, product && 'kit-hero--p', compact && 'kit-hero--compact', !!aside && 'kit-hero--aside', className)} aria-labelledby={hid} data-testid="page-hero">
       <div className="kit-hero__main">
         {eyebrow ? <p className="kit-hero__eyebrow">{icon ? <Icon name={icon} size={16} /> : null}<span>{eyebrow}</span></p> : null}
         <H id={hid} className="kit-hero__title" tabIndex={-1}>{title}</H>
