@@ -12,7 +12,9 @@ const app = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'); co
 const require = createRequire(import.meta.url); const { chromium } = require(path.join(repo, 'node_modules/playwright'));
 const demo = path.join(repo, 'apps/demo/dist'); const out = path.join(app, 'media/product'); fs.mkdirSync(out, { recursive: true });
 if (!fs.existsSync(path.join(demo, 'index.html'))) { console.error('build the demonstration first: node scripts/build.mjs'); process.exit(1); }
-const ROUTES = { 'mission-control': '#/v25', lite: '#/v25/build', pro: '#/v25/exec', 'search-party': '#/search', servicehands: '#/v25/service', commissioning: '#/v25/build', apex: '#/v25/apex', field: '#/v25/fi', learn: '#/v25/learn' };
+// the uplifted demonstration (2026-11-04): Mission Control is shown by its isometric campus, ServiceHands by its home; "room" is not a
+// product but the room record (#/room, Atlas 4.218), which the home page's acceptance chapter uses
+const ROUTES = { 'mission-control': '#/campus', lite: '#/v25/build', pro: '#/v25/exec', 'search-party': '#/search', servicehands: '#/servicehands', commissioning: '#/v25/build', apex: '#/v25/apex', field: '#/v25/fi', learn: '#/v25/learn', room: '#/room' };
 // Build a Room starts empty: describe the default room first; the commissioning capture then opens its checks and plan
 const draft = async (page) => { const f = page.locator('form.build__form'); if (await f.count()) { await f.locator('button[type=submit], button').last().click(); await page.waitForTimeout(600); } };
 const PREP = { lite: draft, commissioning: async (page) => { await draft(page); await page.getByText(/^Checks & plan/).first().click(); await page.waitForTimeout(500); } };

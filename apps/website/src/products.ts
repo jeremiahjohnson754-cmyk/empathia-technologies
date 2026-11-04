@@ -16,6 +16,8 @@ export interface Product extends CanonProduct {
   demo?: { href: string; label: string };
   /** a dark capture of the investor demonstration (D43), built by apps/website/scripts/captures.mjs; absent until captured */
   capture?: string;
+  /** what the capture shows, when it is not simply the product's purpose (the alt text of its image) */
+  shotAlt?: string;
 }
 
 type Story = Omit<Product, keyof CanonProduct | 'slug'>;
@@ -24,6 +26,7 @@ const STORY: Record<string, Story> = {
     body: 'Mission Control counts live records at every station of the lifecycle, from the first request to the last service visit, and says what changed, what matters and what needs action. Every count opens the records behind it.',
     shows: ['The lifecycle with every station counted', 'What changed since you last looked, and why it matters', 'The ledger behind every state'],
     limits: 'The counts come from the synthetic demonstration estate; nothing is connected to a live system.', demoState: 'native', demo: { href: '#/v25', label: 'Open Mission Control' },
+    shotAlt: 'Mission Control in the investor demonstration: the campus drawn as buildings, each with its health and open issues computed from its rooms’ records.',
   },
   lite: {
     body: 'A conceptual room model from an archetype, dimensions, plans and photos. Geometry carries its provenance: extracted, inferred, simulated, field-measured or engineer-approved, and never promoted silently. Coverage is predicted and labelled modeled. Scouter works inside Lite: equipment proposals from comparable rooms, reviewed by the engineer before anything is adopted.',
@@ -43,7 +46,8 @@ const STORY: Record<string, Story> = {
   servicehands: {
     body: 'Issues become work orders, closed with field evidence and resolved only by a verified retest. A technician sees the sites assigned and nothing else; the context of the room travels with the job.',
     shows: ['The service context: the room, its dependencies, its baseline', 'Hard gates before dispatch; preferences kept separate', 'Corrective action, retest and closure'],
-    limits: 'Dispatch, scheduling and notifications are demonstrated on synthetic people and sites.', demoState: 'native', demo: { href: '#/v25/service', label: 'Open ServiceHands' },
+    limits: 'Dispatch, scheduling and notifications are demonstrated on synthetic people and sites.', demoState: 'native', demo: { href: '#/servicehands', label: 'Open ServiceHands' },
+    shotAlt: 'ServiceHands in the investor demonstration: open jobs, jobs waiting for dispatch or verification, and how jobs are routed, counted from the service records.',
   },
   commissioning: {
     body: 'An adaptive test plan compiled from the project type, the room, its devices, the approved design and the standard versions, with the reason for every test. Failed tests open deficiencies; nothing is accepted on the word of the person who did the work. An accepted result becomes the room’s baseline, and drift is read against it.',

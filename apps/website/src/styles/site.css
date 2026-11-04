@@ -171,19 +171,18 @@ p { text-wrap: pretty; }
 /* the home hero's stage: the screen, a record layered over it, the counts */
 .stage { position: relative; padding: 18px 0 0; }
 .stage__glow { position: absolute; inset: -12% -8% -6% -8%; z-index: -1; pointer-events: none; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--pc) var(--w-glow-k), transparent), transparent), radial-gradient(60% 50% at 20% 90%, var(--w-glow-a), transparent); filter: blur(8px); }
-.stage__card { position: absolute; left: -32px; bottom: 6px; z-index: 2; width: min(320px, 62%); margin: 0; padding: 14px 16px 10px; border: 1px solid var(--w-line2); border-radius: var(--w-r-card); background: var(--w-glass); box-shadow: var(--w-edge), var(--w-lift-hi); }
+.stage__card { position: absolute; right: -16px; bottom: 64px; z-index: 2; width: min(300px, 54%); margin: 0; padding: 14px 16px 10px; border: 1px solid var(--w-line2); border-radius: var(--w-r-card); background: var(--w-glass); box-shadow: var(--w-edge), var(--w-lift-hi); }
 @supports (backdrop-filter: blur(1px)) { .stage__card { backdrop-filter: blur(16px) saturate(1.2); } }
 .stage__card figcaption { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; padding-bottom: 10px; border-bottom: 1px solid var(--w-line); color: var(--w-tx2); font-size: 13px; }
 .stage__card ul { list-style: none; margin: 0; padding: 0; }
 .stage__card li { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--w-line); color: var(--w-tx); font-size: 14px; font-weight: 600; }
 .stage__card li:last-child { border-bottom: 0; }
 .stage__card .tag { font-size: 12px; padding: 2px 8px 2px 7px; }
-.stage__chip { position: absolute; right: 18px; top: 0; z-index: 2; list-style: none; margin: 0; padding: 6px; display: flex; gap: 2px; border: 1px solid var(--w-line2); border-radius: 999px; background: var(--w-glass); box-shadow: var(--w-edge), var(--w-lift); }
+.stage__chip { position: absolute; left: 20px; top: 0; z-index: 2; list-style: none; margin: 0; padding: 6px; display: flex; gap: 2px; border: 1px solid var(--w-line2); border-radius: 999px; background: var(--w-glass); box-shadow: var(--w-edge), var(--w-lift); }
 @supports (backdrop-filter: blur(1px)) { .stage__chip { backdrop-filter: blur(16px) saturate(1.2); } }
 .stage__chip li { display: inline-flex; align-items: baseline; gap: 6px; padding: 4px 12px; border-radius: 999px; color: var(--w-tx2); font-size: 13px; font-weight: 600; }
 .stage__chip li + li { box-shadow: inset 1px 0 0 var(--w-line2); border-radius: 0; }
 .stage__chip b { color: var(--w-tx); font: 800 18px/1 var(--w-display); letter-spacing: -.02em; }
-.stage .shot figcaption { padding-left: 300px; justify-content: flex-end; }
 
 /* the evidence line, on a glass panel under the hero */
 .eline { list-style: none; margin: clamp(48px, 6vw, 80px) 0 0; padding: 26px 28px; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); position: relative; border: 1px solid var(--w-line2); border-radius: var(--w-r-card); background: var(--w-glass); box-shadow: var(--w-edge), var(--w-lift); }
@@ -446,7 +445,7 @@ p { text-wrap: pretty; }
   .nav__cta { flex-direction: column; } .nav__cta .btn { min-height: 52px; font-size: 17px; }
   .hero--home .hero__grid, .hero--split .hero__grid { grid-template-columns: 1fr; }
   .stage { max-width: 760px; }
-  .stage__card { left: 16px; bottom: 40px; }
+  .stage__card { right: 16px; bottom: 72px; }
   .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cards, .cards--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .states, .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -466,8 +465,7 @@ p { text-wrap: pretty; }
   .hero::before { background-size: 40px 40px; }
   .stage { padding-top: 0; }
   .stage__card { position: relative; left: auto; bottom: auto; width: auto; margin: 14px 0 0; }
-  .stage__chip { position: relative; right: auto; top: auto; width: max-content; max-width: 100%; margin: 14px 0 0; }
-  .stage .shot figcaption { padding-left: 0; justify-content: flex-start; }
+  .stage__chip { position: relative; left: auto; top: auto; width: max-content; max-width: 100%; margin: 14px 0 0; }
   .eline { grid-template-columns: 1fr; row-gap: 0; padding: 22px 18px 4px 20px; }
   .eline::before { display: block; left: 27px; right: auto; top: 30px; bottom: 30px; width: 2px; height: auto; background: var(--w-line2); opacity: 1; }
   .eline__stop { grid-template-columns: 16px minmax(0, 1fr); column-gap: 16px; row-gap: 4px; padding: 0 0 22px; }

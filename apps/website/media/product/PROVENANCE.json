@@ -2,18 +2,18 @@
  "$description": "Captures of the synthetic investor demonstration for the website (dark only, D43). The website build admits only these files with these hashes.",
  "captures": {
   "mission-control": {
-   "route": "#/v25",
+   "route": "#/campus",
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "4fc1b7b",
-   "capturedAt": "2026-11-04T00:43:03.894Z",
+   "commit": "283dc2f",
+   "capturedAt": "2026-11-04T07:54:51.326Z",
    "data": "synthetic demonstration data",
    "width": 1280,
    "height": 800,
    "files": {
-    "mission-control-1280.webp": "c86884657a0d5f790ca45bfe48799742060b9ba0d6c552fb10c9504ccb43c0fe",
-    "mission-control-640.webp": "6f7168ebe3431029807c14322ab3692b004d1394907241fb97937a12064cc765"
+    "mission-control-1280.webp": "69b46968373efd608646b6f23a031149342e208004e67ca30266197015141eca",
+    "mission-control-640.webp": "6b4fcd361961b6aa4339a9786fbd38fafe8e57d5cc1dca2510f54da96b560471"
    }
   },
   "lite": {
@@ -21,14 +21,14 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "4fc1b7b",
-   "capturedAt": "2026-11-04T00:44:54.182Z",
+   "commit": "ffa8692",
+   "capturedAt": "2026-11-04T07:49:58.180Z",
    "data": "synthetic demonstration data",
    "width": 1280,
    "height": 800,
    "files": {
-    "lite-1280.webp": "6622de4a638d13ad4f14614a4914c8669613dddaf86a691dbb2e87f5ea78ae53",
-    "lite-640.webp": "ac8bb22dc7e34610bfffda5791f6edb9d916e300644539c674fa62f28bfa99ef"
+    "lite-1280.webp": "2b2d7f0aaddf7e67954cc571e38a81c2b547366a6187461e660ccc4b87588d33",
+    "lite-640.webp": "50ed0d108fbb23ff64ed3415b2482c2c957b519e7151a46f314866caa5e5a790"
    }
   },
   "pro": {
@@ -36,14 +36,14 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "4fc1b7b",
-   "capturedAt": "2026-11-04T00:45:15.952Z",
+   "commit": "ffa8692",
+   "capturedAt": "2026-11-04T07:50:00.777Z",
    "data": "synthetic demonstration data",
    "width": 1280,
    "height": 800,
    "files": {
-    "pro-1280.webp": "c883615f333f7aedf1b85a16245a4ceabc837b16101bf9266f069969a99c3fb4",
-    "pro-640.webp": "0477f36c5492bcc5f88a7b6d6a72d763ff9ab3eec586e1d529d992f467c00951"
+    "pro-1280.webp": "225c2a91c3dac6f8aa06d0141264695712ddd70f681166152534b44c41e2191d",
+    "pro-640.webp": "cecf4fd137c58cacbcbae756ad5d42f2040007bc01bf6b351e2d86d4302f3ee7"
    }
   },
   "search-party": {
@@ -51,29 +51,29 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "4fc1b7b",
-   "capturedAt": "2026-11-04T00:43:10.310Z",
+   "commit": "ffa8692",
+   "capturedAt": "2026-11-04T07:50:03.376Z",
    "data": "synthetic demonstration data",
    "width": 1280,
    "height": 800,
    "files": {
-    "search-party-1280.webp": "842bd3fdafbc1cdf085f4cf99b3bd75aa6d133e994d6a06816e700d0b6e6d15a",
-    "search-party-640.webp": "f4b3455d10e18856a8d43415ceab4d7860ff92ec67c7cf1fb2837c782dc5da86"
+    "search-party-1280.webp": "86b011f88ef5d1126002e8be38d764c853fb4dd5e581b28ea1af6c5a994214ce",
+    "search-party-640.webp": "03d0d7fede74eed4d101ef62bea446ee04a45f3aedaa362a2c0864f936e7a32d"
    }
   },
   "servicehands": {
-   "route": "#/v25/service",
+   "route": "#/servicehands",
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "4fc1b7b",
-   "capturedAt": "2026-11-04T00:43:12.450Z",
+   "commit": "283dc2f",
+   "capturedAt": "2026-11-04T07:54:53.725Z",
    "data": "synthetic demonstration data",
    "width": 1280,
    "height": 800,
    "files": {
-    "servicehands-1280.webp": "f7c5c02edeec689c2e94db600c67ffd1ce2f302c3f45001ba261be4faabe0982",
-    "servicehands-640.webp": "423f9e2f47fdc686757f45264a9cf48f8fa0ec5641025b6a5a5aa6d72c4f5a06"
+    "servicehands-1280.webp": "66c1a4e9422ea25cd4048a3e6846c4b86a913b3e150413796b0599cd2207b399",
+    "servicehands-640.webp": "1e52eea0474ad16ff9b58260a2b0baf5f51e37f9fc44e17853ba88a45837a983"
    }
   },
   "apex": {
@@ -81,14 +81,14 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "4fc1b7b",
-   "capturedAt": "2026-11-04T00:43:16.677Z",
+   "commit": "ffa8692",
+   "capturedAt": "2026-11-04T07:50:12.052Z",
    "data": "synthetic demonstration data",
    "width": 1280,
    "height": 800,
    "files": {
-    "apex-1280.webp": "392a703060b1ca672adb53c41b4d48b2bac72c2fc7d12bcf8dcff25e5bb72328",
-    "apex-640.webp": "9ed13222aefa132ae0a7fd2f4bafcf0ed5ab6e6540b931d0f8b8ca6939da80b3"
+    "apex-1280.webp": "009f7004c1451fab2f3e6b5549c0de9500a9a0ac8f01eb59854f5fdd2c3dbe28",
+    "apex-640.webp": "813060121f62d0d3354194e142b2e2444771b09054f54ae64b43847458cb34e4"
    }
   },
   "learn": {
@@ -96,14 +96,14 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "4fc1b7b",
-   "capturedAt": "2026-11-04T00:43:21.107Z",
+   "commit": "ffa8692",
+   "capturedAt": "2026-11-04T07:50:17.069Z",
    "data": "synthetic demonstration data",
    "width": 1280,
    "height": 800,
    "files": {
-    "learn-1280.webp": "fe2a4b99e617d2faa5a62a886231f6c48a361a3317b2bc54f3fd58c41177b5b7",
-    "learn-640.webp": "4d11bed42079d3e38a525d93a7bb88948f0afe479a93a6b30fde9dc4125d7292"
+    "learn-1280.webp": "2c541c71912ec60cc3984940052faa800830bcdfd4ab1764ce933fcda21d7c71",
+    "learn-640.webp": "c5f5abf9c86221e36bcac1b534157e18aeb21ee874b0458322c9e986ad1c1487"
    }
   },
   "commissioning": {
@@ -111,14 +111,14 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "4fc1b7b",
-   "capturedAt": "2026-11-04T00:44:57.533Z",
+   "commit": "ffa8692",
+   "capturedAt": "2026-11-04T07:50:09.524Z",
    "data": "synthetic demonstration data",
    "width": 1280,
    "height": 800,
    "files": {
-    "commissioning-1280.webp": "90f24a1e20d1c6f98120e9f167d33b48667100d32eb8222736af4b56dcd0c4c8",
-    "commissioning-640.webp": "33d2eb6823e3a12db17587ccf10e33f499d63e473df9d19cea7eb2038d856c93"
+    "commissioning-1280.webp": "3838a03b7f87002ab9aff6358a8b643d0022b2adf000bd25bb9dfe5dbf5b4060",
+    "commissioning-640.webp": "edc8b3a26b80de72508ba9fb0ae956a7a41b00c110db2a1745ad335e94408ecf"
    }
   },
   "field": {
@@ -126,14 +126,29 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "991eb30",
-   "capturedAt": "2026-11-04T00:50:00.488Z",
+   "commit": "ffa8692",
+   "capturedAt": "2026-11-04T07:50:14.542Z",
    "data": "synthetic demonstration data",
    "width": 1280,
    "height": 800,
    "files": {
-    "field-1280.webp": "a11a838731d97c0c06a5684f9076720981896accf6b984bc64564bdb8f44dba2",
-    "field-640.webp": "3d3e6618dc7058809223e7071d0914aceda88a8847c4a03f0124da63f72f0a0f"
+    "field-1280.webp": "64cb7d3803d52704fe7b8f74424909a360a4c3beb0a41b90d6c06891ded33642",
+    "field-640.webp": "1e6e5ff1d4a8e3d57c53b6c44726c8208e1cca8afb1f5682b27058af7ef5d423"
+   }
+  },
+  "room": {
+   "route": "#/room",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "283dc2f",
+   "capturedAt": "2026-11-04T07:54:56.081Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "room-1280.webp": "6ba57d40a0df595874a1dd5d9d71298a255b465bf4dda716237def3b9aba7156",
+    "room-640.webp": "62c79283c496f9458a9be9d638fe52a21650244d7fe9ee78182f1e471ba58c53"
    }
   }
  }

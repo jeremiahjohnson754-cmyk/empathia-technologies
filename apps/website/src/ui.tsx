@@ -110,14 +110,14 @@ export const Spectrum = () => <div className="spectrum" aria-hidden="true">{CANO
 
 export interface Capture { w: number; h: number; route: string }
 /** A dark capture of the investor demonstration (D43), with its provenance stated. */
-export const Shot = ({ p, cap, eager }: { p: Product; cap?: Capture; eager?: boolean }) => cap ? (
+export const Shot = ({ p, cap, eager, file, alt }: { p: Product; cap?: Capture; eager?: boolean; file?: string; alt?: string }) => { const f = file || p.id; return cap ? (
   <figure className="shot" data-p={p.id}>
     <div className="shot__frame">
-      <img src={`/media/product/${p.id}-1280.webp`} srcSet={`/media/product/${p.id}-640.webp 640w, /media/product/${p.id}-1280.webp 1280w`} sizes="(max-width: 1100px) 92vw, 620px" width={cap.w} height={cap.h} loading={eager ? 'eager' : 'lazy'} decoding="async" alt={`${p.name} in the investor demonstration: ${p.purpose.charAt(0).toLowerCase() + p.purpose.slice(1)}.`} />
+      <img src={`/media/product/${f}-1280.webp`} srcSet={`/media/product/${f}-640.webp 640w, /media/product/${f}-1280.webp 1280w`} sizes="(max-width: 1100px) 92vw, 620px" width={cap.w} height={cap.h} loading={eager ? 'eager' : 'lazy'} decoding="async" alt={alt || p.shotAlt || `${p.name} in the investor demonstration: ${p.purpose.charAt(0).toLowerCase() + p.purpose.slice(1)}.`} />
     </div>
     <figcaption><b>Synthetic demonstration data</b><span>Captured from the investor demonstration</span></figcaption>
   </figure>
-) : null;
+) : null; };
 
 /** The nine products as image-led tiles, in the canonical order (D37/D40), each in its own colour. */
 export const ProductTiles = ({ captures, exclude, compact }: { captures: Record<string, Capture>; exclude?: string; compact?: boolean }) => (
@@ -187,12 +187,13 @@ export const Stage = ({ p, cap, counts }: { p: Product; cap?: Capture; counts: {
   </div>
 );
 
-export interface ChapterItem { p: Product; title: string; body: string; points: string[]; also?: Product }
+/** shot: another capture than the product's own (the room record), with its own description */
+export interface ChapterItem { p: Product; title: string; body: string; points: string[]; also?: Product; shot?: { file: string; alt: string } }
 /** The home page's story: each stage of the lifecycle told with the product's own screen (a dark capture, D43), in lifecycle order. */
 export const Chapters = ({ items, captures }: { items: ChapterItem[]; captures: Record<string, Capture> }) => (
   <ol className="chapters">{items.map((c, i) => (
     <li key={c.p.id} className="chapter" data-p={c.p.id}>
-      <div className="chapter__media"><span className="chapter__glow" aria-hidden="true" /><Shot p={c.p} cap={captures[c.p.id]} /></div>
+      <div className="chapter__media"><span className="chapter__glow" aria-hidden="true" /><Shot p={c.p} cap={captures[c.shot && captures[c.shot.file] ? c.shot.file : c.p.id]} file={c.shot && captures[c.shot.file] ? c.shot.file : undefined} alt={c.shot && captures[c.shot.file] ? c.shot.alt : undefined} /></div>
       <div className="chapter__text">
         <p className="chapter__n"><span className="dot" aria-hidden="true" />{String(i + 1).padStart(2, '0')} · {c.p.name}{c.also ? ` and ${c.also.name}` : ''}</p>
         <h3>{c.title}</h3><p>{c.body}</p>
