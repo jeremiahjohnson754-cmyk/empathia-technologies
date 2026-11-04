@@ -4,7 +4,7 @@ import type { PageProps } from '../registry.types.js';
 import { PAGES } from '../registry.pages.js';
 import { ROLES, ROLE_KEYS, rolesFor, describe } from './policy.js';
 
-export function PolicyPage({ role }: PageProps) {
+export default function PolicyPage({ role }: PageProps) {
   const rows = PAGES.flatMap((p) => [
     { kind: 'Page', id: p.id, label: p.title, a: p.authority },
     ...(p.sections || []).map((s) => ({ kind: 'Section', id: s.id, label: `${p.title} › ${s.label}`, a: { all: [p.authority, s.authority] } })),

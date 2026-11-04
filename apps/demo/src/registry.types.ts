@@ -76,7 +76,8 @@ export interface PageDef {
   sections?: readonly SectionDef[];
   actions?: readonly ActionDef[];
   /** lazy import of the page module; the module's default export is the page component */
-  load: () => Promise<{ default: ComponentType<PageProps> }>;
+  /** `attempt` > 0 is a retry after a failed fetch: a loader that can should fetch at a fresh URL (a failed module fetch is remembered by the page) */
+  load: (attempt?: number) => Promise<{ default: ComponentType<PageProps> }>;
   /** search-bar entries for this page (label defaults to title); aliases are extra words people type */
   search?: { keywords?: string; aliases?: readonly string[]; href?: string };
   /** true: listed in the product menu as the product's landing page */

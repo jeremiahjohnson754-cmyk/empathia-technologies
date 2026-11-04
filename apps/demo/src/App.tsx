@@ -20,6 +20,8 @@ import { RoleVeil, type VeilShow } from './viewas/RoleVeil.js';
 import { ViewAsContext } from './viewas/context.js';
 import { useRoleState } from './viewas/role.js';
 import { TourPanel } from './tour/Tour.js';
+import { ContactLinks } from './enquiry/WorkWith.js';
+import { ENQUIRY } from './enquiry.js';
 
 const START = '#/investor';
 /** The address the router reads: an in-page anchor (#problems) or an empty hash is the investor start. */
@@ -87,7 +89,7 @@ export function App() {
         <ViewAsSheet open={sheet} role={role} onPick={(r) => switchTo(r)} onClose={() => setSheet(false)} />
         <RoleVeil show={veil} />
         <p id="route-announcer" className="ui-sr" aria-live="polite" aria-atomic="true">{said}</p>
-        <footer className="foot">Every person, organisation, room, device, figure and approval here is invented. Nothing is connected to a real system. <a href="#/investor">Back to the start</a></footer>
+        <footer className="foot">Every person, organisation, room, device, figure and approval here is invented. Nothing is connected to a real system; the only way out is Empathia's enquiry form, which opens on {ENQUIRY.host}. <a href="#/investor">Back to the start</a><ContactLinks /></footer>
       </div>
     </ViewAsContext.Provider>
   );
@@ -100,10 +102,10 @@ function PageHost({ at, role, hash }: { at: Resolved; role: RoleKey; hash: strin
   const [err, setErr] = useState<string | null>(null); const [n, setN] = useState(0);
   useEffect(() => {
     if (C) return; let live = true; setErr(null);
-    at.page.load().then((m) => { if (!live) return; loaded.set(at.page.id, m.default); setC(() => m.default); }).catch((e: unknown) => { if (live) setErr(e instanceof Error ? e.message : String(e)); });
+    at.page.load(n).then((m) => { if (!live) return; loaded.set(at.page.id, m.default); setC(() => m.default); }).catch((e: unknown) => { if (live) setErr(e instanceof Error ? e.message : String(e)); });
     return () => { live = false; };
   }, [at.page.id, n]);   // eslint-disable-line react-hooks/exhaustive-deps
-  if (err) return <section className="loadfail" role="alert"><h1 tabIndex={-1}>{at.page.title} did not load</h1><p>The page's code could not be fetched — the connection may have dropped. Nothing was changed.</p><Button kind="primary" onClick={() => { if (n < 1) setN(n + 1); else location.reload(); }}>Try again</Button></section>;
+  if (err) return <section className="loadfail" role="alert"><h1 tabIndex={-1}>{at.page.title} did not load</h1><p>The page's code could not be fetched — the connection may have dropped. Nothing was changed.</p><Button kind="primary" onClick={() => setN(n + 1)}>Try again</Button></section>;
   if (!C) return <Loading label={`Loading ${at.page.title}`} />;
   const props: PageProps = { role, hash, params: at.params, query: at.query, can: (id) => canDo(role, at, id), sees: (id) => canSee(role, at, id) };
   return <AccessProvider role={role} at={at}><PageBoundary title={at.page.title}><C {...props} /></PageBoundary></AccessProvider>;

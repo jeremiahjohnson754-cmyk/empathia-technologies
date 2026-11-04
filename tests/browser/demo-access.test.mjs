@@ -9,11 +9,11 @@ const chunk = (reqs, name) => reqs.some((u) => new RegExp(`^chunks/${name}-`).te
 const whoKeys = (p) => p.$$eval('[data-testid=access-who] [data-role-key]', (b) => b.map((x) => x.dataset.roleKey).sort());
 
 { const t = await open('#/campus/scouter', { role: 'visitor' });
-  ok('A-01', 'a forbidden page shows the owl access page and its chunk is never requested', await t.page.locator('[data-testid=access-page]').count() === 1 && !chunk(t.reqs, 'ScouterPage') && /Scouter is not open to the Visitor/.test(await main(t.page)), t.reqs.join(' '));
+  ok('A-01', 'a forbidden page shows the owl access page and its chunk is never requested', await t.page.locator('[data-testid=access-page]').count() === 1 && !t.reqs.some((u) => /^shell\/scouter\.js/.test(u)) && /Scouter is not open to the Visitor/.test(await main(t.page)), t.reqs.join(' '));
   ok('A-02', 'the owl page names exactly the roles whose work it is (V2.5.3 scouter: syseng, ops, designer, architect)', JSON.stringify(await whoKeys(t.page)) === JSON.stringify(['architect', 'designer', 'ops', 'syseng']), JSON.stringify(await whoKeys(t.page)));
   ok('A-03', 'the owl illustration and the role buttons have accessible names; nothing from the screen leaks', await t.page.locator('button', { hasText: 'View as Designer' }).count() === 1 && !/Orbit|Vantora|Sonarith/.test(await main(t.page)));
   await t.page.click('[data-testid=access-who] [data-role-key=designer]'); await t.page.waitForSelector('#scouter-h', { timeout: 5000 }).catch(() => undefined);
-  ok('A-04', 'View as from the owl page switches to that role and only then loads the screen', chunk(t.reqs, 'ScouterPage') && await t.page.locator('#scouter-h').count() === 1 && await t.page.evaluate(() => document.documentElement.dataset.role) === 'designer');
+  ok('A-04', 'View as from the owl page switches to that role and only then loads the screen', t.reqs.some((u) => /^shell\/scouter\.js/.test(u)) && await t.page.locator('#scouter-h').count() === 1 && await t.page.evaluate(() => document.documentElement.dataset.role) === 'designer');
   ok('A-05', 'no console error and nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
 
 { const t = await open('#/search/quality', { role: 'employee' });
@@ -49,16 +49,15 @@ for (const [role, pick] of [['designer', true], ['ops', false], ['syseng', true]
   await t.close();
 }
 { const t = await open('#/investor', { role: 'architect' });
-  await t.page.route(/chunks\/ScouterPage-/, (r) => r.abort());
+  await t.page.route(/shell\/scouter\.js/, (r) => r.abort());
   await t.page.evaluate(() => { location.hash = '#/campus/scouter'; }); await t.page.waitForSelector('.loadfail', { timeout: 5000 }).catch(() => undefined);
   ok('A-14', 'destructive: a chunk that fails to load shows a recoverable error, not a blank page', /did not load/.test(await main(t.page)) && await t.page.locator('[role=alert] button', { hasText: 'Try again' }).count() === 1);
-  await t.page.unroute(/chunks\/ScouterPage-/); await t.page.click('text=Try again'); await t.page.waitForTimeout(600);
-  // a failed module import is cached by the browser, so the second try reloads the page (state lives in the address and storage)
-  if (await t.page.locator('.loadfail').count()) await t.page.click('text=Try again'); await t.page.waitForSelector('#scouter-h', { timeout: 5000 }).catch(() => undefined);
-  ok('A-15', 'destructive: Try again loads it once the network is back', await t.page.locator('#scouter-h').count() === 1);
+  await t.page.unroute(/shell\/scouter\.js/); await t.page.click('text=Try again');   // one retry, at a fresh URL (the failed fetch is remembered by the page)
+  await t.page.waitForSelector('#scouter-h', { timeout: 5000 }).catch(() => undefined);
+  ok('A-15', 'destructive: one Try again loads it at a fresh URL once the network is back (no page reload)', await t.page.locator('#scouter-h').count() === 1);
   await t.page.evaluate(() => { location.hash = '#/campus/scouter?room=%3Cimg%20src=x%20onerror=alert(1)%3E&cat=%22%3E'; }); await t.page.waitForTimeout(250);
   ok('A-16', 'destructive: hostile query values fall back to defaults and are never rendered as markup', await t.page.locator('main img[src=x]').count() === 0 && /Huddle Room: Small-team/.test(await main(t.page)));
   await t.page.evaluate(() => { location.hash = '#/' + 'a/'.repeat(400); }); await t.page.waitForTimeout(200);
   ok('A-17', 'destructive: a very long address is shown shortened on the not-found page', await t.page.locator('[data-testid=not-found]').count() === 1 && (await main(t.page)).length < 2000);
-  ok('A-18', 'no console error except the deliberately aborted chunk', t.errs.filter((e) => !/ScouterPage|Failed to fetch|dynamically imported|net::ERR_FAILED/i.test(e)).length === 0, t.errs.join(' | ')); await t.close(); }
+  ok('A-18', 'no console error except the deliberately aborted chunk', t.errs.filter((e) => !/ScouterPage|scouter\.js|Failed to fetch|dynamically imported|net::ERR_FAILED/i.test(e)).length === 0, t.errs.join(' | ')); await t.close(); }
 await done();

@@ -1,5 +1,6 @@
 /** The investor start (2.5.5 landing composition): three ways in, the seven scenarios with their problems, the View-as shelf. */
 import type { PageProps, RoleKey } from '../registry.types.js';
+import { WorkWith } from '../enquiry/WorkWith.js';
 import { AREAS, NATIVE } from '../registry.js';
 import { ROLES } from '../access/policy.js';
 import { useViewAs } from '../viewas/context.js';
@@ -42,6 +43,7 @@ export default function Landing({ role }: PageProps) {
         <h2>Seven scenarios</h2>
         <ol>{SCENARIOS.map(([t, p], i) => <li key={t}><a href={`#/tours/investor?scenario=${i + 1}`}><b>{i + 1} · {t}</b></a><p><i>The problem</i> {p}</p></li>)}</ol>
       </section>
+      <WorkWith />
       <section className="status">
         <h2>Migration status</h2>
         <p>This demonstration is being rebuilt as modular pages from the Living Campus V2.5.3 source, one area at a time. {AREAS.filter((a) => NATIVE.has(a.key)).length} of {AREAS.length} addresses (86 areas and 19 V2.5 pages) are native today; the rest state their status when opened (see the parity ledger in the repository).</p>
