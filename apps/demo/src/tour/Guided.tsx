@@ -8,13 +8,13 @@ import { useEffect, useRef, useState } from 'react';
 import { Button, Tag } from '@empathia/ui';
 import { TOURS, NARRATION, tourByKey, type Tour } from './tours.js';
 import { NATIVE, areaKey } from '../registry.js';
-import { isSpacesRoute } from '../spatial/routes.js';
+import { resolve } from '../registry.pages.js';
 
 const KEY = 'empathia.demo.guided.v1';
 interface Run { tour: Tour['key']; i: number; paused: boolean }
 const load = (): Run | null => { try { const v = JSON.parse(sessionStorage.getItem(KEY) || 'null') as Run | null; return v && tourByKey(v.tour) && Number.isInteger(v.i) ? v : null; } catch { return null; } };
 const save = (r: Run | null) => { try { if (r) sessionStorage.setItem(KEY, JSON.stringify(r)); else sessionStorage.removeItem(KEY); } catch { /* storage unavailable: the tour lasts the page */ } };
-export const stopNative = (href: string) => isSpacesRoute(href) || NATIVE.has(areaKey(href));
+export const stopNative = (href: string) => !!resolve(href) || NATIVE.has(areaKey(href));
 
 export function GuidedPanel({ hash }: { hash: string }) {
   const [run, setRun] = useState<Run | null>(load);

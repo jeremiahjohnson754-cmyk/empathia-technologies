@@ -10,13 +10,16 @@ import { roomRecord, LAYERS, PEOPLE, openIssues, type Layer, type RoomRecord, ty
 import { Stage, PlanView, IsoView, LAYER_COLOR } from '../spatial/Spatial.js';
 import { LIFE_TONE } from '../campus/CampusPage.js';
 
-const TABS = [['overview', 'Room'], ['devices', 'Devices'], ['tests', 'Tests'], ['history', 'History'], ['coverage', 'Coverage']] as const;
+const ALL_TABS = [['overview', 'Room'], ['devices', 'Devices'], ['tests', 'Tests'], ['history', 'History'], ['coverage', 'Coverage']] as const;
 const RESULT_TONE: Record<string, 'ok' | 'warn' | 'bad' | 'muted' | 'info'> = { PASS_VERIFIED: 'ok', PASS_UNVERIFIED: 'info', FAIL: 'bad', NOT_TESTED: 'muted', NOT_SUPPORTED: 'warn', INCONCLUSIVE: 'warn' };
 const COV_TONE: Record<string, 'ok' | 'info' | 'warn' | 'muted'> = { complete: 'ok', recorded: 'info', modeled: 'info', gap: 'warn' };
 const who = (p: string | null | undefined) => (p ? PEOPLE[p] || p : '—');
 const date = (s: string) => s.slice(0, 10);
 
-export function RoomView({ id, hash }: { id: string; hash: string }) {
+/** `sees` comes from the shell's policy (D44): a tab the role may not see is not rendered at all. */
+export function RoomView({ id, hash, sees = () => true }: { id: string; hash: string; sees?: (id: string) => boolean }) {
+  const SECTION: Record<string, string> = { devices: 'room.devices', tests: 'room.tests', history: 'room.history' };
+  const TABS = ALL_TABS.filter(([k]) => !SECTION[k] || sees(SECTION[k]!));
   const r = useMemo(() => roomRecord(id)!, [id]);
   const q = new URLSearchParams(/\?(.*)$/.exec(hash)?.[1] || '');
   const tab = (TABS.find(([k]) => k === q.get('tab'))?.[0]) || 'overview';

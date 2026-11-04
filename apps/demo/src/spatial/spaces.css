@@ -8,9 +8,9 @@
 .campus__stats li { display: grid; padding: 8px 12px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); min-width: 92px; }
 .campus__stats b { font-size: 22px; line-height: 1.1; } .campus__stats span { font-size: var(--fs-xs); color: var(--tx2); }
 .campus__h2 { font-size: var(--fs-md); margin: var(--sp-5) 0 var(--sp-2); }
-.campus__cards, .campus__floors, .tours__list, .sp__scen, .find__list { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--sp-3); grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); }
-.campus__card, .sp__scen a, .find__list a { display: grid; gap: 4px; padding: var(--sp-3) var(--sp-4); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); color: var(--tx); min-height: var(--target-min, 44px); }
-.campus__card:hover, .sp__scen a:hover, .find__list a:hover { border-color: var(--accent); }
+.campus__cards, .campus__floors, .tours__list, .sp__scen, .fnd__list { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--sp-3); grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); }
+.campus__card, .sp__scen a, .fnd__list a { display: grid; gap: 4px; padding: var(--sp-3) var(--sp-4); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); color: var(--tx); min-height: var(--target-min, 44px); }
+.campus__card:hover, .sp__scen a:hover, .fnd__list a:hover { border-color: var(--accent); }
 .campus__step { display: flex; gap: 8px; }
 .room__state { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .filters { display: flex; gap: var(--sp-3); align-items: center; flex-wrap: wrap; margin-bottom: var(--sp-3); font-size: var(--fs-sm); color: var(--tx2); }
@@ -67,7 +67,7 @@
 .sbar__list { position: absolute; z-index: 40; left: 0; right: 0; top: calc(100% + 4px); list-style: none; margin: 0; padding: 4px; background: var(--panel); border: 1px solid var(--line2); border-radius: var(--r-md); box-shadow: var(--shadow, 0 8px 30px rgb(0 0 0 / .3)); max-height: min(60vh, 420px); overflow: auto; }
 .sbar__list li { display: grid; gap: 1px; padding: 8px 10px; border-radius: var(--r-sm); cursor: pointer; min-height: var(--target-min, 44px); } .sbar__list li.on, .sbar__list li:hover { background: color-mix(in srgb, var(--accent) 14%, transparent); }
 .sbar__kind { font-size: var(--fs-xs); color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
-.find__group { margin-top: var(--sp-4); }
+.fnd__group { margin-top: var(--sp-4); }
 
 /* Search Party scenarios */
 .sp__two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sp-4); align-items: start; margin: var(--sp-3) 0; }
@@ -91,7 +91,9 @@
 .tours__free { padding-left: 18px; display: grid; gap: 6px; }
 @media (prefers-reduced-motion: reduce) { .tour-spot { transition: none; } }
 @media (max-width: 760px) {
-  .guided { position: fixed; top: auto; bottom: 0; left: 0; right: 0; width: auto; margin: 0; border-radius: var(--r-md) var(--r-md) 0 0; max-height: 52vh; overflow: auto; z-index: 30; }
+  .guided { position: fixed; top: auto; bottom: 0; left: 0; right: 0; width: auto; margin: 0; border-radius: var(--r-md) var(--r-md) 0 0; max-height: 52vh; overflow: auto; z-index: 45; }
+  .demo-shell:has(.hometabs) .guided { bottom: calc(58px + env(safe-area-inset-bottom)); }
   .demo:has(.guided) .foot { padding-bottom: 54vh; }
   .sbar { max-width: none; flex-basis: 100%; }
 }
+.fnd__bar { margin: var(--sp-3) 0; max-width: 560px; } .fnd__bar .sbar { max-width: none; }

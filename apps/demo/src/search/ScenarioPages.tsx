@@ -12,11 +12,14 @@ import { Stage } from '../spatial/Spatial.js';
 const HERO: Record<string, string> = { A: 'Hero experience A', B: 'Hero experience B', C: 'Hero experience C' };
 const PER = 3;
 
-export function ScenariosPage({ hash }: { hash: string }) {
+const SECTION_OF: Record<string, string> = { S1: 'sp.graph', S2: 'sp.support', S3: 'sp.support', S4: 'sp.graph', S5: 'sp.graph' };
+/** `sees` comes from the shell's policy (D44): a scenario the role may not see is neither listed nor opened. */
+export function ScenariosPage({ hash, sees = () => true }: { hash: string; sees?: (id: string) => boolean }) {
+  const visible = SCENARIO_IDS.filter((x) => sees(SECTION_OF[x]!));
   const p = hash.replace(/^#\/?/, '').split('?')[0]!.split('/'); const q = new URLSearchParams(/\?(.*)$/.exec(hash)?.[1] || '');
   const room = q.get('room') || REFERENCE_ROOM_ID; const id = p[2];
-  if (!id) return <Index room={room} />;
-  const s = (SCENARIO_IDS as readonly string[]).includes(id) ? scenario(id, room) : null;
+  if (!id) return <Index room={room} ids={visible} />;
+  const s = (visible as readonly string[]).includes(id) ? scenario(id, room) : null;
   if (!s) return <section className="sp"><h1>Unknown scenario</h1><Notice tone="warn">There is no Search Party scenario “{id}”. <a href="#/search/scenarios">See the five scenarios</a></Notice></section>;
   return <ScenarioView s={s} room={room} />;
 }
@@ -25,13 +28,13 @@ function RoomPick({ room, base }: { room: string; base: string }) {
   return <label className="sp__pick">Room <select value={room} onChange={(e) => { location.hash = `${base}?room=${e.target.value}`; }}>{ROOMS.map((r) => <option key={r.id} value={r.id}>{fullName(r)}</option>)}</select></label>;
 }
 
-function Index({ room }: { room: string }) {
+function Index({ room, ids }: { room: string; ids: readonly string[] }) {
   return (
     <section className="sp" data-native="" data-testid="sp-scenarios">
-      <p className="kicker">Search Party · scenarios</p><h1>Five questions, answered from recorded relationships</h1>
+      <p className="kicker">Search Party · scenarios</p><h1>{ids.length === 5 ? 'Five questions' : `${ids.length} question${ids.length === 1 ? '' : 's'}`}, answered from recorded relationships</h1>
       <p className="ui-muted">Each starts from one record of the synthetic campus. Support organisations, agreements, people and competencies are labelled synthetic demonstration fixtures.</p>
       <RoomPick room={room} base="#/search/scenarios" />
-      <ol className="sp__scen">{SCENARIO_IDS.map((id) => { const s = scenario(id, room)!; return <li key={id}><a href={`#/search/scenarios/${id}?room=${room}`} data-testid={`sp-scen-${id}`}><span className="ui-meta">{id}{s.hero ? ` · ${HERO[s.hero]}` : ''}</span><b>{SCENARIO_TITLES[id]}</b><span className="ui-muted">{s.question}</span><span className="ui-meta">{scenarioCount(s)} related records in {s.groups.length} groups</span></a></li>; })}</ol>
+      <ol className="sp__scen">{ids.map((id) => { const s = scenario(id, room)!; return <li key={id}><a href={`#/search/scenarios/${id}?room=${room}`} data-testid={`sp-scen-${id}`}><span className="ui-meta">{id}{s.hero ? ` · ${HERO[s.hero]}` : ''}</span><b>{SCENARIO_TITLES[id]}</b><span className="ui-muted">{s.question}</span><span className="ui-meta">{scenarioCount(s)} related records in {s.groups.length} groups</span></a></li>; })}</ol>
     </section>
   );
 }

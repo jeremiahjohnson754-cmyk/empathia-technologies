@@ -20,12 +20,12 @@ export function parseCampus(hash: string): { b?: string; f?: number; room?: stri
 
 const go = (h: string) => { location.hash = h; };
 
-export function CampusPage({ hash }: { hash: string }) {
+export function CampusPage({ hash, sees }: { hash: string; sees?: (id: string) => boolean }) {
   const { b, f, room } = parseCampus(hash);
   if (room) {
     const o = roomById(room);
     if (!o || o.building !== b || o.floor !== f) return <NotFound what={`room ${room}`} />;
-    return <RoomView id={room} hash={hash} />;
+    return <RoomView id={room} hash={hash} sees={sees} />;
   }
   if (b) { const B = buildingByKey(b); if (!B) return <NotFound what={`building ${b}`} />; if (f != null) { if (!(f >= 1 && f <= B.floors)) return <NotFound what={`floor ${f} of ${B.name}`} />; return <FloorPage b={b} f={f} />; } return <BuildingPage b={b} />; }
   return <SitePage />;

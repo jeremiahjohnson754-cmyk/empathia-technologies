@@ -39,11 +39,12 @@ export function FindPage({ hash }: { hash: string }) {
   const hits = useMemo(() => find(q, 60), [q]);
   const groups = (['room', 'product', 'tour', 'building', 'device', 'page'] as const).map((k) => [k, hits.filter((h) => h.kind === k)] as const).filter(([, l]) => l.length);
   return (
-    <section className="find" data-native="" data-testid="find-page">
+    <section className="fnd" data-native="" data-testid="find-page">
       <p className="kicker">Search</p><h1>{q ? <>Results for “{q}”</> : 'Search the demonstration'}</h1>
-      <p className="ui-muted" role="status">{q ? `${hits.length} result${hits.length === 1 ? '' : 's'}` : 'Type in the search bar above: a room (“4.218”, “boardroom”), a device (“tv”, “mic”), a product or a question word (“who supports”).'}</p>
+      <div className="fnd__bar"><SearchBar /></div>
+      <p className="ui-muted" role="status">{q ? `${hits.length} result${hits.length === 1 ? '' : 's'}` : 'Type in the search bar: a room (“4.218”, “boardroom”), a device (“tv”, “mic”), a product or a question word (“who supports”).'}</p>
       {q && !hits.length && <Notice tone="info">Nothing matches “{q}”. Try a room number such as 4.218, a device such as “camera”, or a product such as “Search Party”. For relationships, open <a href={`#/search?q=${encodeURIComponent(q)}`}>Search Party with this text</a>.</Notice>}
-      {groups.map(([k, l]) => <div key={k} className="find__group"><h2 className="build__h">{KIND[k]}s ({l.length})</h2><ul className="find__list">{l.map((h) => <li key={h.id}><a href={h.href}><b>{h.label}</b><span className="ui-muted">{h.description}</span>{h.why && <span className="ui-meta">alias {h.why}</span>}</a></li>)}</ul></div>)}
+      {groups.map(([k, l]) => <div key={k} className="fnd__group"><h2 className="build__h">{KIND[k]}s ({l.length})</h2><ul className="fnd__list">{l.map((h) => <li key={h.id}><a href={h.href}><b>{h.label}</b><span className="ui-muted">{h.description}</span>{h.why && <span className="ui-meta">alias {h.why}</span>}</a></li>)}</ul></div>)}
     </section>
   );
 }
