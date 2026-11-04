@@ -4,7 +4,7 @@
  * Intelligence findings attached as provenance-labelled evidence, the resolution code and root cause, and cancelling a work order.
  */
 import * as S from '../workspace/store.js';
-import { deny, log, need, now, sh, holds, type WX } from '../hardening/kit.js';
+import { deny, log, need, now, sh, shView, holds, type WX } from '../hardening/kit.js';
 import { roomOf, type Finding } from '../fi/rooms.js';
 
 export const CATEGORIES: Record<string, { label: string; questions: string[]; workType: string }> = {
@@ -113,7 +113,7 @@ export function cancelWorkOrder(w: WX, persona: string, incidentId: string, reas
 
 export const STAGES = ['Request', 'Intake', 'Triage', 'Matching', 'Assignment', 'Dispatch', 'Execution', 'Evidence', 'Validation', 'Resolution', 'Closure', 'Learning'] as const;
 export function stageOf(w: WX, inc: S.Incident): number {
-  const wo = inc.workOrderId ? S.workOrderOf(w, inc.workOrderId) : undefined; const res = sh(w).resolution[inc.id];
+  const wo = inc.workOrderId ? S.workOrderOf(w, inc.workOrderId) : undefined; const res = shView(w).resolution[inc.id];   // read-only: stageOf runs while drawing
   switch (inc.state) {
     case 'OPEN': case 'REOPENED': return 2; case 'TRIAGED': return 3; case 'ASSIGNED': return 4; case 'ACCEPTED': return 5;
     case 'IN_PROGRESS': return wo?.evidence.length ? 7 : 6; case 'VERIFYING': return 8; case 'RESOLVED': return res ? 10 : 9;

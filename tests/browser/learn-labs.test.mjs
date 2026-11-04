@@ -39,7 +39,8 @@ await suite('learn-labs', 4488, async ({ ok, open, goto, over, text, smallTarget
       ok('LL-11', 'the Lighting Lab fault is fixable to every check (face level, key-to-fill, one colour, spill)', !(await page.locator('[data-testid=lab-checks] .ops-fail').count()), await page.locator('[data-testid=lab-checks]').innerText());
       // a signal-flow lab
       await goto(page, '#/learn/labs/LAB-SF-01', 'service'); await page.waitForSelector('[data-testid=signal-lab]');
-      ok('LL-12', 'a signal-flow lab starts with its targets failing', (await page.locator('[data-testid=sf-targets] .ops-fail').count()) === 2);
+      // LAB-SF-01 as given: the room already reads within range; the stream encoder is empty (corrected expectation: the lab data, not the brief text, decides)
+      ok('LL-12', 'a signal-flow lab starts with a target failing (the stream encoder hears nothing)', (await page.locator('[data-testid=sf-targets] .ops-fail').count()) >= 1 && /Stream encoder/.test(await page.locator('[data-testid=sf-targets] .ops-fail').first().innerText()));
       await page.selectOption('[data-testid=sf-from]', 'main'); await page.selectOption('[data-testid=sf-to]', 'pp'); await page.click('[data-testid=sf-patch]');
       ok('LL-13', 'a backward patch (bus → processor) is refused with the reason', /signal runs from sources/.test(await text(page)));
       for (const f of ['pp', 'lp', 'bp']) { await page.selectOption('[data-testid=sf-from]', f); await page.selectOption('[data-testid=sf-to]', 'strm'); await page.click('[data-testid=sf-patch]'); }

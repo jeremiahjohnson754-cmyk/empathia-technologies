@@ -10,7 +10,7 @@ import { WORK_NEEDS } from '@empathia/service-engine';
 import { Tag } from '@empathia/ui';
 import * as S from '../workspace/store.js';
 import type { WorkspaceProps } from '../hardening/lazy.js';
-import { OpsHead, Refused, NotYours, holds, param, when, personaLabel, sh, type WX } from '../hardening/kit.js';
+import { OpsHead, Refused, NotYours, holds, param, when, personaLabel, shView, type WX } from '../hardening/kit.js';
 import { useOps } from '../hardening/useOps.js';
 import { opsPath } from '../hardening/path.js';
 import { useConfirm, useUndo } from '../safeguards/Safeguards.js';
@@ -92,7 +92,7 @@ function Intake({ ops, hash }: { ops: Ops; hash: string }) {
 function Job({ ops, inc, confirm, offerUndo }: { ops: Ops; inc: S.Incident; confirm: ReturnType<typeof useConfirm>['ask']; offerUndo: ReturnType<typeof useUndo>['offer'] }) {
   const { w, persona } = ops; const wo = inc.workOrderId ? S.workOrderOf(w, inc.workOrderId) : undefined;
   const me = S.techForPersona(persona); const mine = !!wo && !!me && wo.techId === me; const tech = S.techOf(w, wo?.techId || null);
-  const st = stageOf(w, inc); const X = sh(w); const intake = X.intake[inc.id]; const res = X.resolution[inc.id];
+  const st = stageOf(w, inc); const X = shView(w); const intake = X.intake[inc.id]; const res = X.resolution[inc.id];
   const notes = wo ? X.notes[wo.id] || [] : []; const fiev = wo ? X.fiEvidence[wo.id] || [] : []; const cancelled = wo ? X.cancelled[wo.id] : undefined;
   const needs = wo ? WORK_NEEDS[wo.workType] || WORK_NEEDS['break_fix']! : null;
   const [pf, setPf] = useState({ access: false, safety: false, heightPermit: false, tools: [] as string[] });

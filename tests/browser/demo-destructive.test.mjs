@@ -30,7 +30,12 @@ await suite('demo-destructive', 4489, async ({ ok, open, goto, smallTargets, cle
       return d;
     };
     const confirmIt = async (object, reason) => { if (reason) await page.fill('[data-testid=confirm-reason]', reason); if (object) await page.fill('[data-testid=confirm-name]', object); await page.click('[data-testid=confirm-go]'); await page.waitForTimeout(150); };
-    const undoes = async (key, read, before) => { ok(`DD-${tag}-${key}-5`, `${key}: Undo is offered and restores the previous state exactly`, (await page.locator('[data-testid=undo]').count()) === 1 && (await page.click('[data-testid=undo]'), await page.waitForTimeout(120), before === await read())); };
+    const undoes = async (key, read, before) => {
+      const offered = (await page.locator('[data-testid=undo]').count()) === 1;
+      if (offered) { await page.click('[data-testid=undo]'); await page.waitForTimeout(150); }
+      const now = await read(); let k = 0; while (now && before && k < now.length && now[k] === before[k]) k++;
+      ok(`DD-${tag}-${key}-5`, `${key}: Undo is offered and restores the previous state exactly`, offered && now === before, offered ? `differs at ${k}: was …${(before || '').slice(Math.max(0, k - 60), k + 100)}… now …${(now || '').slice(Math.max(0, k - 60), k + 100)}…` : 'no Undo offered');
+    };
 
     // dispatch.reset
     await page.click('[data-job=ISS-0417]'); await page.click('[data-testid=triage]'); await page.waitForTimeout(100);

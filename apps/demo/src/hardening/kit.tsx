@@ -23,6 +23,10 @@ export interface Ext {
 export type WX = S.Workspace & Ext;
 export const sh = (w: WX) => (w.sh ||= { intake: {}, notes: {}, resolution: {}, fiEvidence: {}, cancelled: {} });
 export const dx = (w: WX) => (w.dx ||= { overrides: [], reassigned: [] });
+/** Read-only views for rendering: never initialise state while drawing (a render must not change the workspace). */
+const EMPTY_SH: NonNullable<Ext['sh']> = Object.freeze({ intake: {}, notes: {}, resolution: {}, fiEvidence: {}, cancelled: {} }) as NonNullable<Ext['sh']>;
+export const shView = (w: WX) => w.sh || EMPTY_SH;
+export const dxView = (w: WX) => w.dx || { overrides: [], reassigned: [] };
 
 export const now = () => new Date().toISOString();
 export function log(w: S.Workspace, by: string, type: string, aggregate: string, detail: string, outcome: 'ALLOWED' | 'DENIED' = 'ALLOWED') { w.events.unshift({ at: now(), by, type, aggregate, detail, outcome }); w.events = w.events.slice(0, 500); }

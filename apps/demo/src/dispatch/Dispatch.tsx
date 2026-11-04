@@ -9,7 +9,7 @@ import { SLA } from '@empathia/service-engine';
 import { Tag } from '@empathia/ui';
 import * as S from '../workspace/store.js';
 import type { WorkspaceProps } from '../hardening/lazy.js';
-import { OpsHead, Refused, NotYours, holds, param, when, personaLabel, dx, type WX } from '../hardening/kit.js';
+import { OpsHead, Refused, NotYours, holds, param, when, personaLabel, dxView, type WX } from '../hardening/kit.js';
 import { useOps } from '../hardening/useOps.js';
 import { opsPath } from '../hardening/path.js';
 import { useConfirm, useUndo } from '../safeguards/Safeguards.js';
@@ -96,7 +96,7 @@ function Detail({ w, inc, ops, persona, nowMs, confirm, offerUndo }: { w: WX; in
   const m = useMemo(() => matchFor(w, inc.id, { language: lang || null, timeZone: tz || null }), [w, inc.id, lang, tz]);
   const canTriage = holds(persona, 'service.triage'); const canAssign = holds(persona, 'service.assign');
   const events = w.events.filter((e) => e.aggregate === inc.id || (wo && e.aggregate === wo.id)).slice(0, 8);
-  const ov = dx(w).overrides.find((o) => o.woId === wo?.id);
+  const ov = dxView(w).overrides.find((o) => o.woId === wo?.id);
   return (
     <div className="ops-card" data-testid="job-detail" aria-labelledby="job-h">
       <h2 id="job-h">{inc.title} <Tag tone={TONE[inc.state]}>{inc.state}</Tag></h2>
