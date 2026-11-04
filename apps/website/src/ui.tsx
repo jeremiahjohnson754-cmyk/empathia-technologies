@@ -95,7 +95,16 @@ export const FilmPlayer = ({ film, transcript, lead }: { film: Film; transcript:
   </figure>
 );
 
-export const Portrait = ({ size }: { size: 'lg' | 'sm' }) => (
+/** A film that is not yet cleared for publication: a drawn poster (no frame of the film), its title, runtime and summary, and the honest
+ *  reason it does not play here. Nothing is downloaded. */
+export const FilmPending = ({ film, n }: { film: Pick<Film, 'key' | 'title' | 'runtime' | 'summary' | 'disclosure'>; n: number }) => (
+  <article className="filmcard" data-film-pending={film.key}>
+    <div className="filmcard__poster" aria-hidden="true"><span className="filmcard__n">{String(n).padStart(2, '0')}</span><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" /><path d="M19 15v18l15-9z" /></svg><span className="filmcard__rt">{film.runtime}</span></div>
+    <div className="filmcard__body"><h3>{film.title}</h3><p>{film.summary}</p><p className="filmcard__state"><Tag s="unknown">Not yet published</Tag><span>It appears here, with captions and a transcript, once its rights for the website are confirmed.</span></p></div>
+  </article>
+);
+
+export const Portrait =({ size }: { size: 'lg' | 'sm' }) => (
   <picture className={`portrait portrait--${size}`}>
     <source type="image/webp" srcSet="/media/founder/480.webp 480w, /media/founder/800.webp 800w, /media/founder/1200.webp 1200w" sizes="(max-width: 720px) 300px, (max-width: 1100px) 340px, 460px" />
     <img src="/media/founder/800.jpg" srcSet="/media/founder/480.jpg 480w, /media/founder/800.jpg 800w, /media/founder/1200.jpg 1200w" sizes="(max-width: 720px) 300px, (max-width: 1100px) 340px, 460px" width={800} height={1000} loading={size === 'lg' ? 'eager' : 'lazy'} decoding="async" alt="Portrait of Jeremiah Johnson in a light hoodie, indoors." />
@@ -215,6 +224,66 @@ export const Chapters = ({ items, captures }: { items: ChapterItem[]; captures: 
       </div>
     </li>
   ))}</ol>
+);
+
+/** One drawn line icon per product (24 px grid, currentColor): the glass rail's signifier; the name beside it carries the meaning. */
+const PRODUCT_ICON: Record<string, string> = {
+  'mission-control': 'M12 3a9 9 0 1 0 9 9M12 7.5a4.5 4.5 0 1 0 4.5 4.5M12 12l6.5-6.5', lite: 'M12 2 3 7v10l9 5 9-5V7zM3 7l9 5 9-5M12 12v10',
+  pro: 'M4 20V11M10 20V5M16 20v-6M21 20H3', 'search-party': 'M10.5 3a7.5 7.5 0 1 0 0 15 7.5 7.5 0 0 0 0-15zM21 21l-5.2-5.2M8 10.5h5M10.5 8v5',
+  servicehands: ICONS.service!, commissioning: ICONS.evidence!, apex: 'M3 20 12 4l9 16zM7.5 15h3l1.2-2.4 2.1 4.2 1.2-1.8h1.5',
+  field: 'M4 13a8 8 0 0 1 16 0M7.5 13a4.5 4.5 0 0 1 9 0M12 13v7M9 20h6', learn: 'M2 9l10-5 10 5-10 5zM6 11v5c3 2.5 9 2.5 12 0v-5M22 9v6',
+};
+const Glyph = ({ d }: { d: string }) => <svg className="ico" viewBox="0 0 24 24" aria-hidden="true"><path d={d} /></svg>;
+
+/** The nine products as glass tiles under the home hero (the concept's product row, in the canonical order D37/D40), each tinted by its
+ *  own colour. Navigation, not imagery: the image-led tiles further down carry the captures. */
+export const GlassRail = () => (
+  <ul className="glass" aria-label="The nine products, in lifecycle order">{PRODUCTS.map((p) => (
+    <li key={p.id} className="glass__tile" data-p={p.id}>
+      <span className="glass__ico"><Glyph d={PRODUCT_ICON[p.id] || ICONS.model!} /></span>
+      <span className="glass__txt"><a href={`/products/${p.slug}`}>{p.name}</a><small>{p.purpose}</small></span>
+      <span className="glass__go" aria-hidden="true">→</span>
+    </li>
+  ))}</ul>
+);
+
+/** A labelled strip of glass chips (the concept's industries / workflow / architecture rows): a title block, then the chips. With
+ *  `flow`, the chips are steps joined by arrows and read as an ordered list. */
+export interface StripItem { title: string; sub: string; icon: string; href?: string; p?: string }
+export const Strip = ({ id, eyebrow, title, items, flow, foot }: { id: string; eyebrow: string; title: string; items: StripItem[]; flow?: boolean; foot?: React.ReactNode }) => {
+  const L = flow ? 'ol' : 'ul';
+  return (
+    <section className="strip" aria-labelledby={`${id}-h`} data-strip={id}><div className="wrap"><div className="strip__panel">
+      <div className="strip__head"><p className="eyebrow">{eyebrow}</p><h2 id={`${id}-h`}>{title}</h2></div>
+      <L className={`strip__items${flow ? ' strip__items--flow' : ''}`}>{items.map((it) => (
+        <li key={it.title} className="strip__item" data-p={it.p}>
+          <span className="strip__ico"><Glyph d={PRODUCT_ICON[it.icon] || ICONS[it.icon] || STRIP_ICON[it.icon] || ICONS.model!} /></span>
+          <span className="strip__txt">{it.href ? <a href={it.href}>{it.title}</a> : <b>{it.title}</b>}<small>{it.sub}</small></span>
+        </li>
+      ))}</L>
+      {foot ? <div className="strip__foot">{foot}</div> : null}
+    </div></div></section>
+  );
+};
+const STRIP_ICON: Record<string, string> = {
+  health: 'M9 3h6v6h6v6h-6v6H9v-6H3V9h6z', civic: 'M3 21h18M5 21V10M9.5 21V10M14.5 21V10M19 21V10M2 10l10-6 10 6z', venue: 'M3 4h18v11H3zM7 20h10M12 15v5',
+  mixed: 'M3 21V8h7v13M10 21V3h11v18M2 21h20M6 12h1M6 16h1M14 7h3M14 11h3M14 15h3', school: 'M2 9l10-5 10 5-10 5zM6 11v5c3 2.5 9 2.5 12 0v-5',
+  label: 'M3 12V4h8l10 10-8 8zM7.5 8h.01', flask: 'M9 3h6M10 3v6L4 20h16l-6-11V3',
+};
+
+/** The closing call to action with a drawn illustration (never stock imagery): one room in line work, its devices as nodes, each node
+ *  wearing an evidence colour, the way the product labels them. Decorative; the heading and the buttons carry the meaning. */
+export const RoomDrawing = () => (
+  <svg className="drawing" viewBox="0 0 420 320" aria-hidden="true" focusable="false">
+    <g className="drawing__room"><path d="M30 215 210 125l180 90-180 90z" /><path d="M30 215V105L210 15l180 90v110M210 125V15" /></g>
+    <g className="drawing__wall"><path d="M75 170v-58l90-45v58z" /><path d="M90 150l60-30M90 136l60-30" /><path d="M262 82l76 38v40l-76-38z" /></g>
+    <g className="drawing__table"><path d="M150 215l60-30 60 30-60 30z" /><path d="M150 215v8l60 30 60-30v-8M210 245v8" /></g>
+    <g className="drawing__links"><path d="M210 212 120 80M210 212 120 118M210 212 150 242M210 212 270 242M210 212 300 112" /></g>
+    <g className="drawing__nodes">
+      <circle cx="120" cy="80" r="9" data-s="verified" /><circle cx="120" cy="118" r="8" data-s="observed" /><circle cx="210" cy="212" r="11" data-s="verified" />
+      <circle cx="150" cy="242" r="8" data-s="modeled" /><circle cx="270" cy="242" r="8" data-s="declared" /><circle cx="300" cy="112" r="8" data-s="unknown" />
+    </g>
+  </svg>
 );
 
 /** The thirty demonstration rooms as thirty cells, one per room, marked by how each was made; the approved wording stays beside it. */

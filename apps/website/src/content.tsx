@@ -4,12 +4,12 @@
 // pages carry the founder's own words and portrait only, never an invented biography.
 import React from 'react';
 import { LeadForm, type LeadKind } from './form.js';
-import { Hero, Section, Cards, Steps, Note, Actions, Tag, EVIDENCE, EvidenceLine, FilmPlayer, Spectrum, Shot, ProductTiles, EnquiryCard, EnquiryLink, FounderBlock, FoundingStory, Stage, Chapters, RoomMix, type Evidence, type Film, type Capture, type ChapterItem } from './ui.js';
+import { Hero, Section, Cards, Steps, Note, Actions, Tag, EVIDENCE, EvidenceLine, FilmPlayer, Spectrum, Shot, ProductTiles, EnquiryCard, EnquiryLink, FounderBlock, FoundingStory, Stage, Chapters, RoomMix, GlassRail, Strip, RoomDrawing, FilmPending, type StripItem, type Evidence, type Film, type Capture, type ChapterItem } from './ui.js';
 import { PRODUCTS, DEMO_STATE, ROOMS_SENTENCE, ROOM_MIX, ROOM_TOTAL } from './products.js';
 import { TALLY_FORM } from './enquiry.js';
 
 export interface Page { path: string; title: string; description: string; nav?: string; body: React.ReactNode; }
-export interface SiteContext { films: Film[]; transcripts: Record<string, string[]>; demoUrl: string; preview: boolean; captures: Record<string, Capture>; api?: boolean }
+export interface SiteContext { films: Film[]; pendingFilms?: Pick<Film, 'key' | 'title' | 'runtime' | 'summary' | 'disclosure'>[]; transcripts: Record<string, string[]>; demoUrl: string; preview: boolean; captures: Record<string, Capture>; api?: boolean }
 
 const AUDIENCES = [
   { title: 'CIOs and CTOs', body: 'One accountable record for the technology estate: what was approved, funded, installed, proved and accepted.', href: '/solutions#enterprise', icon: 'exec' },
@@ -27,6 +27,36 @@ const Campus = () => (
     <div className="campus__text"><p>The demonstration campus has thirty rooms: {ROOMS_SENTENCE}</p><RoomMix mix={ROOM_MIX} /></div></div>
 );
 const byId = (id: string) => PRODUCTS.find((p) => p.id === id)!;
+/** The estates whose rooms the demonstration models (the concept's industries strip). No customer is named and no deployment is claimed. */
+const ESTATES: StripItem[] = [
+  { title: 'Corporate campuses', sub: 'Boardrooms, huddles, town halls', icon: 'facility' },
+  { title: 'Higher education', sub: 'Lecture halls, active learning', icon: 'school' },
+  { title: 'Healthcare', sub: 'Conference and training rooms', icon: 'health' },
+  { title: 'Public sector', sub: 'Chambers and briefing rooms', icon: 'civic' },
+  { title: 'Venues and events', sub: 'Divisible halls, auditoriums', icon: 'venue' },
+  { title: 'Mixed-use estates', sub: 'Rooms shared across tenants', icon: 'mixed' },
+];
+/** The workflow strip: five moves of one record, each the product that makes it. */
+const FLOW: StripItem[] = [
+  { title: 'Design', sub: 'Lite draws the room and its coverage', icon: 'lite', p: 'lite', href: '/products/lite' },
+  { title: 'Prove', sub: 'Commissioning tests, a reviewer verifies', icon: 'commissioning', p: 'commissioning', href: '/products/commissioning' },
+  { title: 'Operate', sub: 'Mission Control reads it against the baseline', icon: 'mission-control', p: 'mission-control', href: '/products/mission-control' },
+  { title: 'Repair', sub: 'ServiceHands closes on a verified retest', icon: 'servicehands', p: 'servicehands', href: '/products/servicehands' },
+  { title: 'Learn', sub: 'APEX explains, Learn teaches', icon: 'learn', p: 'learn', href: '/products/learn' },
+];
+/** The architecture strip: only what the repository enforces and tests (the trust page says what is not claimed). */
+const ARCH: StripItem[] = [
+  { title: 'Deny by default', sub: 'The server and the database decide every read', icon: 'key' },
+  { title: 'Append-only evidence', sub: 'Never edited, never overwritten', icon: 'history' },
+  { title: 'Typed contracts', sub: 'OpenAPI and JSON Schemas, generated', icon: 'code' },
+  { title: 'Every value labelled', sub: 'Six evidence words, kept apart', icon: 'label' },
+  { title: 'Synthetic in public', sub: 'Nothing connected, nothing live', icon: 'flask' },
+];
+const archFoot = <p><a href="/trust">What is in place, and what we do not claim<span aria-hidden="true"> →</span></a></p>;
+const estatesFoot = <p>The demonstration’s rooms are modelled on these estates. No customer is named and no deployment in any of them is claimed.</p>;
+const CtaBand = ({ title, body, children }: { title: string; body: string; children: React.ReactNode }) => (
+  <section className="band band--drawn"><div className="wrap"><div className="band__copy"><h2>{title}</h2><p>{body}</p>{children}</div><RoomDrawing /></div></section>
+);
 /** The home page's story, in lifecycle order, each chapter told with that product's own screen. Wording kept to what the
  *  demonstration shows (products.ts), so a chapter never claims more than its product page. */
 const STORY: ChapterItem[] = [
@@ -57,6 +87,7 @@ export function buildPages(ctx: SiteContext): Page[] {
           <div className="hero__aside">{film('M2', true) || heroArt}</div>
         </div>
         <EvidenceLine />
+        <GlassRail />
       </div></section>
       <Section eyebrow="The lifecycle, in the product" title="From an empty room to an accepted baseline" lead="Four moments of one record, each shown on the product’s own screen in the public demonstration. Every screen runs on synthetic data.">
         <Chapters items={STORY} captures={ctx.captures} />
@@ -64,13 +95,16 @@ export function buildPages(ctx: SiteContext): Page[] {
       <Section eyebrow="The products" title="Nine products. One record." lead="Each product is a stage of the same governed lifecycle and shares one identity for every room, device, person and project. Each says how much of it you can see in the public demonstration today." tone="deep">
         <ProductTiles captures={ctx.captures} />
       </Section>
+      <Strip id="flow" eyebrow="The workflow" title="From request to a proven room" items={FLOW} flow />
       <Section eyebrow="The demonstration campus" title="Thirty rooms, each with its record"><Campus /></Section>
+      <Strip id="estates" eyebrow="Where it fits" title="Built for the rooms of every estate" items={ESTATES} foot={estatesFoot} />
       <Section eyebrow="Evidence" title="Six words the product will not blur" lead="Every value on every screen carries one of these labels. Most tools collapse them; Empathia keeps them apart so a decision can be traced to what was actually known." tone="deep">
         <dl className="states">{(Object.keys(EVIDENCE) as Evidence[]).map((s) => <div key={s} data-s={s}><dt><Tag s={s} /></dt><dd>{EVIDENCE[s].meaning}</dd></div>)}</dl>
       </Section>
       <Section eyebrow="Who it is for" title="Read by every team that touches a room"><Cards cols={4} items={AUDIENCES} /></Section>
+      <Strip id="architecture" eyebrow="The architecture" title="Built to be checked" items={ARCH} foot={archFoot} />
       <section className="section section--deep"><div className="wrap"><FounderBlock page="home" /></div></section>
-      <section className="band"><div className="wrap"><h2>See it on your own rooms.</h2><p>A guided walk through the scenarios on synthetic data, or a bounded pilot with your rooms and your people.</p><Actions><a className="btn btn--primary btn--lg" href="/request-demo">Request a demonstration</a><a className="btn btn--lg" href="/pilot-partners">Pilots and partnerships</a></Actions></div></section>
+      <CtaBand title="See it on your own rooms." body="A guided walk through the scenarios on synthetic data, or a bounded pilot with your rooms and your people."><Actions><a className="btn btn--primary btn--lg" href="/request-demo">Request a demonstration</a><a className="btn btn--lg" href="/pilot-partners">Pilots and partnerships</a></Actions></CtaBand>
       <div className="wrap"><Note>What you can see today is a demonstration on synthetic data. No customer, partner or device is named or connected, and every measurement shown is labelled modeled, simulated, declared, observed or verified.</Note></div>
     </>
   ) };
@@ -107,10 +141,13 @@ export function buildPages(ctx: SiteContext): Page[] {
         <Hero label="Platform" title="One record. One governed lifecycle." lead="One canonical identity for every room, device, person, project and standard; one governed lifecycle that every product reads from and writes to; one audit record of who did what, with which evidence." />
         {film('FA') ? <Section title="The platform in two minutes">{film('FA')}</Section> : null}
         <Section title="The lifecycle"><EvidenceLine /></Section>
+        <Strip id="flow" eyebrow="The workflow" title="Five moves of one record" items={FLOW} flow />
         <Section title="The products"><ProductTiles captures={ctx.captures} /></Section>
         <Section title="The demonstration campus" tone="deep"><Campus /></Section>
         <Section id="executive" title="Executive Intelligence" lead="Projects started and funded, commissioning conformance, open issues, standards alignment and room usage, each measure with its source, its period, its denominator and its coverage. Missing data shows as missing, never as success." />
         <Section title="What runs where" lead="The authenticated application enforces every permission on the server and in the database. The public demonstration runs on synthetic data in your browser. The two never share data." tone="deep"><Note>Integrations with manufacturers' systems are described as simulated, proposed or configured; none is claimed to work until it has been verified with that system.</Note></Section>
+        <Strip id="architecture" eyebrow="The architecture" title="Built to be checked" items={ARCH} foot={archFoot} />
+        <CtaBand title="Walk the record with us." body="A guided demonstration on synthetic data, with your questions."><Actions><a className="btn btn--primary btn--lg" href="/request-demo">Request a demonstration</a><a className="btn btn--lg" href={demo()}>Explore the live demo</a></Actions></CtaBand>
       </>
     ) },
     { path: '/products', title: 'Products — Empathia Technologies', description: `The nine Empathia products: ${PRODUCTS.map((p) => p.name).join(', ')}.`, body: (
@@ -127,11 +164,14 @@ export function buildPages(ctx: SiteContext): Page[] {
         <Section id="integrators" title="Systems integrators" lead="Design revisions with change-impact traceability, an adaptive commissioning plan with the reason for each test, field evidence captured as the work is done, and a documentation packet that is complete when the applicable requirements are met, not when files are uploaded." />
         <Section id="msp" title="Managed service providers" lead="Who covers each room and in what order; work orders with hard gates before dispatch and verified completion; recommissioning as a new baseline version rather than a replaced record." />
         <Section id="facilities" title="Facilities and workplace" lead="Room readiness, service coverage and the right contact, with engineering detail kept where engineers need it." />
+        <Strip id="estates" eyebrow="Where it fits" title="Built for the rooms of every estate" items={ESTATES} foot={estatesFoot} />
+        <CtaBand title="Bring your team’s questions." body="A guided demonstration on synthetic data, or a bounded pilot with your rooms."><Actions><a className="btn btn--primary btn--lg" href="/request-demo">Request a demonstration</a><a className="btn btn--lg" href="/pilot-partners">Pilots and partnerships</a></Actions></CtaBand>
       </>
     ) },
     { path: '/how-it-works', title: 'How it works — Empathia Technologies', description: 'The governed lifecycle from request to assurance baseline.', nav: 'How it works', body: (
       <>
         <Hero label="How it works" title="From request to accepted baseline" lead="The governed lifecycle the platform is built around, as the demonstration shows it: every transition with an authorized role, the required evidence, a guard, an event and an audit record." />
+        <Strip id="flow" eyebrow="In five moves" title="Design, prove, operate, repair, learn" items={FLOW} flow />
         <Section title="Nine steps, one record"><Steps steps={[
           { title: 'Request', body: 'A requestor describes the room, with photos, plans, known dimensions and constraints. Photos follow a stated privacy policy.' },
           { title: 'Acknowledgement and pitch', body: 'The assigned supplier acknowledges; the operations lead assembles a revisioned business case.' },
@@ -157,6 +197,7 @@ export function buildPages(ctx: SiteContext): Page[] {
           { icon: 'gauge', title: 'Engines with golden tests', body: 'The commissioning and assurance engines are deterministic rule systems with published parity cases, not trained models. The demonstration and the API share one reverification rule.' },
           { icon: 'plug', title: 'Connectors by capability', body: 'Adapters declare what they can observe or do and carry an honest state; today every adapter is a mock or a contract, and none is claimed to work with a manufacturer\'s system.' },
         ]} /></Section>
+        <Strip id="architecture" eyebrow="In five lines" title="Built to be checked" items={ARCH} foot={archFoot} />
       </>
     ) },
     { path: '/trust', title: 'Security and trust — Empathia Technologies', description: 'What Empathia does and does not claim about security, privacy and compliance.', nav: 'Trust', body: (
@@ -243,10 +284,17 @@ export function buildPages(ctx: SiteContext): Page[] {
       </>
     ) },
   ];
-  if (hasFilms) pages.splice(pages.findIndex((p) => p.path === '/technology'), 0, { path: '/films', title: 'Films — Empathia Technologies', description: 'Films of the Empathia Living Campus, with captions and transcripts.', nav: 'Films', body: (
+  // /films always exists (31 Oct and 3 Nov screens): a cleared film plays with captions and a transcript; a film whose rights for the
+  // website are not yet confirmed is listed by title and summary only, with the reason, and nothing of it is shipped
+  const pending = ctx.pendingFilms || [];
+  pages.splice(pages.findIndex((p) => p.path === '/technology'), 0, { path: '/films', title: 'Films — Empathia Technologies', description: 'Films of the Empathia Living Campus, with captions and transcripts.', nav: 'Films', body: (
     <>
       <Hero label="Films" title="Watch the record being made" lead="Each film is recorded from the demonstration or illustrates a scenario, and says which. Every one has captions and a transcript." />
       {ctx.films.map((f) => <Section key={f.key} title={f.title} lead={f.summary}>{film(f.key)}</Section>)}
+      {pending.length ? <Section title={hasFilms ? 'Coming to this page' : 'The films'} lead="These films are made. Each is published here only once its rights for the website are confirmed; until then, the demonstration itself is the best way to see the product." tone={hasFilms ? 'deep' : undefined}>
+        <div className="filmcards">{pending.map((f, i) => <FilmPending key={f.key} film={f} n={i + 1} />)}</div>
+        <Actions><a className="btn btn--primary" href={demo()}>Explore the live demo</a><a className="btn" href="/request-demo">Request a guided demonstration</a></Actions>
+      </Section> : null}
     </>
   ) });
   return pages;

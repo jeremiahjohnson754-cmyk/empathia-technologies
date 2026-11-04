@@ -6,14 +6,14 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "283dc2f",
-   "capturedAt": "2026-11-04T07:54:51.326Z",
+   "commit": "a541837",
+   "capturedAt": "2026-11-04T08:54:41.981Z",
    "data": "synthetic demonstration data",
    "width": 1280,
    "height": 800,
    "files": {
-    "mission-control-1280.webp": "69b46968373efd608646b6f23a031149342e208004e67ca30266197015141eca",
-    "mission-control-640.webp": "6b4fcd361961b6aa4339a9786fbd38fafe8e57d5cc1dca2510f54da96b560471"
+    "mission-control-1280.webp": "29267eeea064ca61ff46df29dd20b4e87ef8c615cc8e0b18ed853795e62b461e",
+    "mission-control-640.webp": "e238937fd62e8c2eae3ae1107c5552d9f2cb2cdb7274ffaacf2a7bcc90a86831"
    }
   },
   "lite": {
@@ -21,14 +21,14 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "ffa8692",
-   "capturedAt": "2026-11-04T07:49:58.180Z",
+   "commit": "a541837",
+   "capturedAt": "2026-11-04T08:54:45.161Z",
    "data": "synthetic demonstration data",
    "width": 1280,
    "height": 800,
    "files": {
-    "lite-1280.webp": "2b2d7f0aaddf7e67954cc571e38a81c2b547366a6187461e660ccc4b87588d33",
-    "lite-640.webp": "50ed0d108fbb23ff64ed3415b2482c2c957b519e7151a46f314866caa5e5a790"
+    "lite-1280.webp": "b7448c110822456543832df68fab9b889228a6cf5f651820774d505da5d9f40a",
+    "lite-640.webp": "1760ed63a0a24ef0c9eac3971ab7ceb0ff9a2dd21eecfad55de386d30d0e61e1"
    }
   },
   "pro": {
@@ -36,14 +36,14 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "ffa8692",
-   "capturedAt": "2026-11-04T07:50:00.777Z",
+   "commit": "a541837",
+   "capturedAt": "2026-11-04T08:54:47.765Z",
    "data": "synthetic demonstration data",
    "width": 1280,
    "height": 800,
    "files": {
-    "pro-1280.webp": "225c2a91c3dac6f8aa06d0141264695712ddd70f681166152534b44c41e2191d",
-    "pro-640.webp": "cecf4fd137c58cacbcbae756ad5d42f2040007bc01bf6b351e2d86d4302f3ee7"
+    "pro-1280.webp": "ba069cf2c2154eaee463db4f51df420e7358876cd7dd3befe2884c409e8075e1",
+    "pro-640.webp": "115beb6e644ff323f9f622cb46542766a2e6c2faf48115c9c3ddf6ab14441bd1"
    }
   },
   "search-party": {
@@ -51,14 +51,14 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "ffa8692",
-   "capturedAt": "2026-11-04T07:50:03.376Z",
+   "commit": "a541837",
+   "capturedAt": "2026-11-04T08:54:50.228Z",
    "data": "synthetic demonstration data",
    "width": 1280,
    "height": 800,
    "files": {
-    "search-party-1280.webp": "86b011f88ef5d1126002e8be38d764c853fb4dd5e581b28ea1af6c5a994214ce",
-    "search-party-640.webp": "03d0d7fede74eed4d101ef62bea446ee04a45f3aedaa362a2c0864f936e7a32d"
+    "search-party-1280.webp": "cf70faded22c5bbb32291a7b990b85cc58012b4ac1ad16267e6f959da473d1f1",
+    "search-party-640.webp": "3e088cb8d6efe92d970d96c4ddeb019aa3318ccfef6ff5d7129a4f2fc4ce1e45"
    }
   },
   "servicehands": {
@@ -66,14 +66,14 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "283dc2f",
-   "capturedAt": "2026-11-04T07:54:53.725Z",
+   "commit": "a541837",
+   "capturedAt": "2026-11-04T08:54:52.665Z",
    "data": "synthetic demonstration data",
    "width": 1280,
    "height": 800,
    "files": {
-    "servicehands-1280.webp": "66c1a4e9422ea25cd4048a3e6846c4b86a913b3e150413796b0599cd2207b399",
-    "servicehands-640.webp": "1e52eea0474ad16ff9b58260a2b0baf5f51e37f9fc44e17853ba88a45837a983"
+    "servicehands-1280.webp": "b355a0fa6b9f81b5c55968227171f09b55b18c95ee11b961259a8a3c88545560",
+    "servicehands-640.webp": "9080351beb56c49fe0a49ddcf5c235a657589a442b911097051b639e1730c159"
    }
   },
   "apex": {
@@ -81,14 +81,14 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "ffa8692",
-   "capturedAt": "2026-11-04T07:50:12.052Z",
+   "commit": "a541837",
+   "capturedAt": "2026-11-04T08:54:58.710Z",
    "data": "synthetic demonstration data",
    "width": 1280,
    "height": 800,
    "files": {
-    "apex-1280.webp": "009f7004c1451fab2f3e6b5549c0de9500a9a0ac8f01eb59854f5fdd2c3dbe28",
-    "apex-640.webp": "813060121f62d0d3354194e142b2e2444771b09054f54ae64b43847458cb34e4"
+    "apex-1280.webp": "e4f04f8c17fc0366cb476f3ddb4fc2812993a6dfb9273fa823da0ff4258124c1",
+    "apex-640.webp": "7b987794a8e18f765282505effd9b4c553929bce9251307ca1247c6178cccf02"
    }
   },
   "learn": {
@@ -96,14 +96,14 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "ffa8692",
-   "capturedAt": "2026-11-04T07:50:17.069Z",
+   "commit": "a541837",
+   "capturedAt": "2026-11-04T08:55:03.652Z",
    "data": "synthetic demonstration data",
    "width": 1280,
    "height": 800,
    "files": {
-    "learn-1280.webp": "2c541c71912ec60cc3984940052faa800830bcdfd4ab1764ce933fcda21d7c71",
-    "learn-640.webp": "c5f5abf9c86221e36bcac1b534157e18aeb21ee874b0458322c9e986ad1c1487"
+    "learn-1280.webp": "8c79ee31e4d051f409f1d246d7e39a01881027f2d1e6b8d53349e3cb98ae0c2f",
+    "learn-640.webp": "401a58274db3724b94f272382510a0495bda22fe64b7b807a990305b4c0dab9a"
    }
   },
   "commissioning": {
@@ -111,14 +111,14 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "ffa8692",
-   "capturedAt": "2026-11-04T07:50:09.524Z",
+   "commit": "a541837",
+   "capturedAt": "2026-11-04T08:54:56.307Z",
    "data": "synthetic demonstration data",
    "width": 1280,
    "height": 800,
    "files": {
-    "commissioning-1280.webp": "3838a03b7f87002ab9aff6358a8b643d0022b2adf000bd25bb9dfe5dbf5b4060",
-    "commissioning-640.webp": "edc8b3a26b80de72508ba9fb0ae956a7a41b00c110db2a1745ad335e94408ecf"
+    "commissioning-1280.webp": "9edf07682eb371856b58d649b41e0b5c7ff17fd6245d555cfba71173b947b9c6",
+    "commissioning-640.webp": "6ec81293a2daa6295076a35e91d4c4d94f1b2f964a07dd9d2268842b353b7c38"
    }
   },
   "field": {
@@ -126,14 +126,14 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "ffa8692",
-   "capturedAt": "2026-11-04T07:50:14.542Z",
+   "commit": "a541837",
+   "capturedAt": "2026-11-04T08:55:01.105Z",
    "data": "synthetic demonstration data",
    "width": 1280,
    "height": 800,
    "files": {
-    "field-1280.webp": "64cb7d3803d52704fe7b8f74424909a360a4c3beb0a41b90d6c06891ded33642",
-    "field-640.webp": "1e6e5ff1d4a8e3d57c53b6c44726c8208e1cca8afb1f5682b27058af7ef5d423"
+    "field-1280.webp": "4ed68eae69d00a5b0d31d87d875a876c2b4118e457f22babfb6a8d861c086048",
+    "field-640.webp": "8fd076bebd349971ba647fa0d80f4292201e2b0b11a56d91d6f4dcbd6e507a08"
    }
   },
   "room": {
@@ -141,14 +141,14 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "283dc2f",
-   "capturedAt": "2026-11-04T07:54:56.081Z",
+   "commit": "a541837",
+   "capturedAt": "2026-11-04T08:55:06.143Z",
    "data": "synthetic demonstration data",
    "width": 1280,
    "height": 800,
    "files": {
-    "room-1280.webp": "6ba57d40a0df595874a1dd5d9d71298a255b465bf4dda716237def3b9aba7156",
-    "room-640.webp": "62c79283c496f9458a9be9d638fe52a21650244d7fe9ee78182f1e471ba58c53"
+    "room-1280.webp": "1b3a824050facbe3401f409025678458ae467b292dfdb91ead9a853a31b50a45",
+    "room-640.webp": "ae5c08e88416b6d6c4c356081a9b95595a8efed72d0b8a1cf20ab739d382085e"
    }
   }
  }

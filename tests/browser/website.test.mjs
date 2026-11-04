@@ -283,6 +283,38 @@ for (const [w, h] of [[1440, 900], [768, 1024], [390, 844]]) {
   await c320.close();
 }
 
+// ---- the concept composition (docs/recovery/inspiration/website-concept.png, 2026-11-04): glass product tiles, the workflow, estates and
+// architecture strips, a closing band with a drawn room, and /films always present. Taken without the concept's unearned claims. Added. ----
+{
+  const ctx = await newCtx({ viewport: { width: 1440, height: 900 } }); const page = await ctx.newPage(); const errs = []; watch(page, errs, []);
+  await page.goto(base + '/'); await page.waitForTimeout(150);
+  const h = await page.evaluate(() => {
+    const rail = Array.from(document.querySelectorAll('.hero--home .glass__tile')).map((t) => ({ p: t.dataset.p, name: t.querySelector('a')?.textContent, href: t.querySelector('a')?.getAttribute('href'), r: t.getBoundingClientRect().height }));
+    const strip = (id) => { const s = document.querySelector(`[data-strip="${id}"]`); return s ? { tag: s.querySelector('.strip__items').tagName, n: s.querySelectorAll('.strip__item').length, text: s.textContent, links: Array.from(s.querySelectorAll('a')).map((a) => a.getAttribute('href')), h2: s.querySelector('h2')?.id, label: s.getAttribute('aria-labelledby') } : null; };
+    const band = document.querySelector('.band--drawn'); const svg = band?.querySelector('svg.drawing');
+    return { rail, flow: strip('flow'), estates: strip('estates'), arch: strip('architecture'), band: !!band, drawingHidden: svg?.getAttribute('aria-hidden') === 'true', bandImgs: band ? band.querySelectorAll('img').length : -1 };
+  });
+  ok('W-concept-rail', 'the home hero ends in nine glass product tiles, in canonical order, each a link to its product page and at least 44 px tall', h.rail.map((r) => r.name).join('|') === CANON.join('|') && h.rail.every((r) => /^\/products\//.test(r.href) && r.r >= 44), JSON.stringify(h.rail.map((r) => r.name)));
+  ok('W-concept-flow', 'the workflow strip is an ordered list of five moves, each linking its product page', h.flow && h.flow.tag === 'OL' && h.flow.n === 5 && h.flow.links.length === 5 && h.flow.links.every((l) => /^\/products\//.test(l)) && h.flow.label === h.flow.h2, JSON.stringify(h.flow && { n: h.flow.n, links: h.flow.links }));
+  ok('W-concept-estates', 'the estates strip names six estates and says that no customer is named and no deployment is claimed', h.estates && h.estates.n === 6 && /No customer is named and no deployment/.test(h.estates.text), h.estates?.text.slice(0, 120));
+  ok('W-concept-arch', 'the architecture strip claims only what the product enforces (no SOC 2 / ISO / certification) and links the trust page', h.arch && h.arch.n === 5 && !/SOC|ISO|certif|complian|real-time|live telemetry/i.test(h.arch.text) && h.arch.links.includes('/trust'), h.arch?.text.slice(0, 160));
+  ok('W-concept-band', 'the closing band carries a drawn room (decorative svg), never a photograph', h.band && h.drawingHidden && h.bandImgs === 0, JSON.stringify({ band: h.band, hidden: h.drawingHidden, imgs: h.bandImgs }));
+  const f = await page.goto(base + '/films'); await page.waitForTimeout(100);
+  const fm = await page.evaluate(() => ({ h1: document.querySelector('h1')?.textContent, pending: document.querySelectorAll('[data-film-pending]').length, videos: document.querySelectorAll('video').length, srcs: Array.from(document.querySelectorAll('video source')).map((s) => s.getAttribute('src')), why: /once its rights for the website are confirmed/.test(document.body.textContent), foot: !!document.querySelector('.foot a[href="/films"]') }));
+  const catalogue = JSON.parse(fs.readFileSync(path.join(repo, 'apps/website/films.json'), 'utf8')).films; const cleared = catalogue.filter((x) => x.rights?.website?.status === 'VERIFIED').length;
+  ok('W-films-page', '/films exists in every build: cleared films play, every other film is listed by title only with the reason, and no uncleared film is shipped', f.status() === 200 && fm.h1 && pages.includes('/films') && fm.pending + fm.videos === catalogue.length && fm.videos >= cleared && (!fm.pending || fm.why) && fm.foot && !fs.readdirSync(path.join(dist, 'media')).some((d) => catalogue.some((c) => c.key === d && c.rights?.website?.status !== 'VERIFIED')), JSON.stringify(fm));
+  for (const w of [320, 390]) {
+    await page.setViewportSize({ width: w, height: 800 });
+    for (const p of ['/', '/platform', '/films', '/solutions']) {
+      await page.goto(base + p); await page.waitForTimeout(80);
+      const r = await page.evaluate(() => { const vw = document.documentElement.clientWidth; const over = document.documentElement.scrollWidth - vw; const wide = Array.from(document.querySelectorAll('.glass__tile, .strip__item, .strip__panel, .filmcard, .band--drawn .wrap, .drawing')).filter((e) => { const b = e.getBoundingClientRect(); return b.width && (b.right > vw + 0.5 || b.left < -0.5); }).map((e) => e.className.baseVal ?? e.className); return { over, wide }; });
+      ok(`W-concept-${w}-${p}`, `${p} at ${w} px: the glass tiles, strips, film cards and drawn band stay inside the page`, r.over <= 0 && !r.wide.length, JSON.stringify(r));
+    }
+  }
+  ok('W-concept-clean', 'no error on the concept pages', !errs.length, errs.join(' | '));
+  await ctx.close();
+}
+
 // ---- budgets (approved image-performance and weight budgets) ----
 {
   const m = JSON.parse(fs.readFileSync(path.join(dist, 'BUILD_MANIFEST.json'), 'utf8')).files; const sum = (re) => Object.entries(m).filter(([f]) => re.test(f)).reduce((a, [, v]) => a + v.bytes, 0);
