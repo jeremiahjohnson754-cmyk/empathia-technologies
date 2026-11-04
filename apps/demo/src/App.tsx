@@ -7,7 +7,7 @@
  * View as (D1) changes the role; the role veil marks every switch; the page, tabs and buttons re-render from the policy.
  */
 import React, { Component, useCallback, useEffect, useRef, useState, type ComponentType, type ReactNode } from 'react';
-import { Tag, Notice, Loading, Button } from '@empathia/ui';
+import { Notice, Loading, Button } from '@empathia/ui';
 import type { PageProps, RoleKey } from './registry.types.js';
 import { areaOf, areaKey } from './registry.js';
 import { resolve } from './registry.pages.js';
@@ -81,15 +81,15 @@ export function App() {
   return (
     <ViewAsContext.Provider value={{ switchTo: (r) => switchTo(r), open: () => setSheet(true) }}>
       <div className="demo" data-r={role}>
-        <Shell role={role} hash={route} at={d.kind === 'page' ? d.at : null} onViewAs={() => setSheet(true)} onRole={(r) => switchTo(r)}
-          note={<><Tag tone="warn">DEMONSTRATION · SYNTHETIC DATA</Tag> <span id="persp-note">A perspective changes what the demonstration shows; it grants nothing.<span className="note__more"> Real access is decided by the authenticated application's server.</span></span></>}>
+        <Shell role={role} hash={route} at={d.kind === 'page' ? d.at : null} onViewAs={() => setSheet(true)} onRole={(r) => switchTo(r)}>
           <TourPanel hash={hash} onPerspective={(p) => { if (ROLE_KEYS.includes(p as RoleKey)) switchTo(p as RoleKey, { tour: true }); }} />
           <div className="wrap">{body}</div>
         </Shell>
         <ViewAsSheet open={sheet} role={role} onPick={(r) => switchTo(r)} onClose={() => setSheet(false)} />
         <RoleVeil show={veil} />
         <p id="route-announcer" className="ui-sr" aria-live="polite" aria-atomic="true">{said}</p>
-        <footer className="foot">Every person, organisation, room, device, figure and approval here is invented. Nothing is connected to a real system; the only way out is Empathia's enquiry form, which opens on {ENQUIRY.host}. <a href="#/investor">Back to the start</a><ContactLinks /></footer>
+        {/* the ONE synthetic-data line (QUALITY_UPLIFT: no per-page banner; V2.5.3 shows a chip by the logo and one footer line) */}
+        <footer className="foot"><span className="ui-tag ui-tone--warn foot__tag">Synthetic data</span> <span id="persp-note">Everything here is invented and connected to no real system; viewing as a role grants nothing.</span><span className="foot__more"> The only way out is Empathia's enquiry form on {ENQUIRY.host}.</span> <a href="#/investor">Back to the start</a><ContactLinks /></footer>
       </div>
     </ViewAsContext.Provider>
   );
