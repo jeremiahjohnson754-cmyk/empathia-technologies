@@ -34,7 +34,7 @@ function UnknownRoom({ id }: { id: string }) {
       <header className="room__hero">
         <p className="kicker">Not on this campus</p>
         <h1>There is no room “{id.slice(0, 40)}”</h1>
-        <p className="room__intent">The demonstration models thirty rooms of the Northstar Innovation Campus. Pick one, or open the reference room.</p>
+        <p className="room__intent">The demonstration models {ROOMS.length} rooms of the Northstar Innovation Campus. Pick one, or open the reference room.</p>
         <div className="room__acts"><a className="ui-btn ui-btn--primary" href="#/room">Open the reference room (Atlas 4.218)</a><a className="ui-btn" href="#/rooms">Every room in a list</a></div>
       </header>
       <ul className="pick" data-testid="room-pick">{ROOMS.map((o) => { const h = roomHealth(roomRecord(o.id)!, w); return <li key={o.id}><a href={`#/room/${o.id}`}><b>{shortName(o)}</b><span className="ui-meta">{o.name}</span><span className="pick__m"><StatusDot band={h.band} label={h.score == null ? 'not scored' : `${h.score}`} /><span className="ui-meta">{buildingByKey(o.building)?.short}</span></span></a></li>; })}</ul>

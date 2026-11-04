@@ -3,7 +3,7 @@
  * HealthState, and the kit's StatusDot, Chip, ScoreRing, StatTile, Icon, List/ListRow, MeterRow, EmptyState and PageHero re-exported.
  * The band thresholds are V2.5.3's as its records show them (89 Healthy, 87 Monitor): 88 and over healthy, 75–87 monitor.
  */
-import type { ReactNode } from 'react';
+import { createContext, useContext, type ReactNode } from 'react';
 import { StatusDot as KDot, Chip as KChip, ScoreRing as KRing, StatTile as KTile, Icon as KIcon, type HealthState, type IconName } from '@empathia/ui';
 import { BAND_LABEL, type Band } from '../campus/metrics.js';
 export { List, ListRow, MeterRow, EmptyState, PageHero, Card } from '@empathia/ui';
@@ -33,4 +33,13 @@ export function StatTile({ label, value, unit, sub, tone, icon, testId, href }: 
 
 export function Section({ title, aside, children, id, testId }: { title: ReactNode; aside?: ReactNode; children: ReactNode; id?: string; testId?: string }) {
   return <section className="sect" aria-labelledby={id} data-testid={testId}><div className="sect__head"><h2 id={id}>{title}</h2>{aside && <span className="sect__aside">{aside}</span>}</div>{children}</section>;
+}
+
+/** May the current role open this address? Provided by each core page from the policy (D44: a link that would be refused is not offered). */
+export const OpensContext = createContext<(href: string) => boolean>(() => true);
+export const useOpens = () => useContext(OpensContext);
+/** A link the role can follow, or the same words as plain text when it cannot. */
+export function A({ href, className, children, testId }: { href: string; className?: string; children: ReactNode; testId?: string }) {
+  const opens = useOpens();
+  return opens(href.split('?')[0]!) ? <a href={href} className={className} data-testid={testId}>{children}</a> : <span className={className} data-testid={testId}>{children}</span>;
 }

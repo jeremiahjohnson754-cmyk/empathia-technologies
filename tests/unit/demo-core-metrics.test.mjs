@@ -9,9 +9,9 @@ const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js')
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'demo-core-'));
 const entry = path.join(tmp, 'entry.ts');
 const src = (p) => JSON.stringify(path.join(repo, 'apps/demo/src', p));
-fs.writeFileSync(entry, `export * as M from ${src('campus/metrics.ts')}; export * as design from ${src('campus/design.ts')}; export * as S from ${src('workspace/store.ts')};`);
+fs.writeFileSync(entry, `export * as M from ${src('campus/metrics.ts')}; export * as canon from ${src('campus/canon.ts')}; export * as design from ${src('campus/design.ts')}; export * as S from ${src('workspace/store.ts')};`);
 await esbuild.build({ entryPoints: [entry], bundle: true, platform: 'node', format: 'esm', outfile: path.join(tmp, 'out.mjs'), logLevel: 'error' });
-const { M, design, S } = await import(pathToFileURL(path.join(tmp, 'out.mjs')).href);
+const { M, design, S, canon } = await import(pathToFileURL(path.join(tmp, 'out.mjs')).href);
 process.on('exit', () => fs.rmSync(tmp, { recursive: true, force: true }));
 const w = S.seed();
 const recs = design.allRecords();
@@ -37,11 +37,11 @@ test('open issues: record issues plus live incidents, one per id, the live state
 
 test('building and campus aggregates add up from the rooms', () => {
   const c = M.campusStats(w);
-  assert.equal(c.rooms, 30); assert.equal(c.buildings.length, 6);
-  assert.equal(c.buildings.reduce((s, b) => s + b.rooms, 0), 30);
+  const N = canon.ROOMS.length; assert.equal(c.rooms, N); assert.equal(c.buildings.length, 6);
+  assert.equal(c.buildings.reduce((s, b) => s + b.rooms, 0), N);
   assert.equal(c.buildings.reduce((s, b) => s + b.open, 0), c.open);
   assert.equal(c.buildings.reduce((s, b) => s + b.devices, 0), c.devices);
-  assert.equal(c.healthy + c.monitor + c.action + c.unscored, 30);
+  assert.equal(c.healthy + c.monitor + c.action + c.unscored, N);
   const scores = recs.map((r) => M.roomHealth(r, w).score).filter((s) => s != null);
   assert.equal(c.score, Math.round(scores.reduce((a, b) => a + b, 0) / scores.length));
   assert.equal(c.verified, recs.reduce((s, r) => s + r.counts.verified, 0));

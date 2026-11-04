@@ -1,5 +1,5 @@
 /**
- * The technical room page — one page for all thirty rooms, at #/room (the reference room), #/room/<id>, #/room~<id> (V2.5.3) and the
+ * The technical room page — one page for every room of the campus (campus/canon.ts ROOMS), at #/room (the reference room), #/room/<id>, #/room~<id> (V2.5.3) and the
  * campus address #/campus/<B>/<floor>/<id>. As V2.5.3's Atlas 4.218 page, then further: room tabs, status chips, actions, the health /
  * devices / issues / lifecycle tiles, the delivery spine Intake → Service read from the records, "where the room has moved", the open
  * issues — and, below, the 3D and plan stage with layers, a device panel (position code, asset code, identity state), the engine-judged

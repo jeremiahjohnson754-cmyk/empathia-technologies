@@ -5,7 +5,10 @@
 // screen equal the records (rooms, buildings, spine stages). Destructive: unknown ids, hostile query text, rapid navigation, back/forward.
 //   node tests/browser/demo-core.test.mjs
 import path from 'node:path';
-import { harness, SCHEMES } from './demo-spaces-lib.mjs';
+import fs from 'node:fs';
+import { harness, SCHEMES, repo } from './demo-spaces-lib.mjs';
+// the room count comes from the campus data (30 today; 45 once the 15-room plan lands), never a literal
+const NROOMS = [...fs.readFileSync(path.join(repo, 'apps/demo/src/campus/canon.ts'), 'utf8').matchAll(/^ {2}R\('(R-[A-Z]+-\d+-\d+)'/gm)].length;
 const { ok, open, done, out } = await harness('demo-core');
 const VPS = [[320, 640, 'p320'], [390, 844, 'phone'], [768, 1024, 'tablet'], [1440, 900, 'desktop']];
 const ROUTES = ['#/investor', '#/home', '#/campus', '#/room', '#/search'];
@@ -30,7 +33,7 @@ for (const scheme of SCHEMES) for (const vp of VPS) {
   // the numbers equal the records
   await t.go('#/campus', 600);
   const camp = await t.page.evaluate(() => ({ b: document.querySelectorAll('[data-testid^="campus-b-"]').length, rows: document.querySelectorAll('[data-testid="building-list"] .kit-meter').length, intro: document.querySelector('main')?.innerText.match(/(\d+) buildings, (\d+) rooms, (\d+) devices/)?.slice(1).map(Number) }));
-  ok(`CORE-${tag}-05`, 'campus: six extruded buildings on the 3D stage, six rows with health bars, the intro counts 6 buildings and 30 rooms', camp.b === 6 && camp.rows === 6 && camp.intro?.[0] === 6 && camp.intro?.[1] === 30, JSON.stringify(camp));
+  ok(`CORE-${tag}-05`, 'campus: six extruded buildings on the 3D stage, six rows with health bars, the intro counts 6 buildings and every room of the campus data', camp.b === 6 && camp.rows === 6 && camp.intro?.[0] === 6 && camp.intro?.[1] === NROOMS, JSON.stringify(camp));
   await t.go('#/room', 600);
   const room = await t.page.evaluate(() => ({ id: document.querySelector('[data-testid="room-view"]')?.getAttribute('data-room'), stages: document.querySelectorAll('[data-testid="spine"] .spine__s').length, tiles: document.querySelectorAll('[data-testid="room-tiles"] .kit-tile').length, tabs: document.querySelectorAll('[data-testid="room-tabs"] a').length, three: !!document.querySelector('[data-testid="room-3d"]') }));
   ok(`CORE-${tag}-06`, '#/room is Atlas 4.218: room tabs, four tiles, the nine-stage delivery spine and the 3D stage', room.id === 'R-ATL-4-218' && room.stages === 9 && room.tiles === 4 && room.tabs >= 8 && room.three, JSON.stringify(room));
@@ -45,7 +48,7 @@ for (const scheme of SCHEMES) for (const vp of VPS) {
     await t.go('#/room/R-MER-1-140', 600);
     ok(`CORE-${scheme}-addr-02`, '#/room/<id> opens that room, with its tabs pointing at #/room/<id> addresses', (await t.page.locator('[data-testid="room-view"]').getAttribute('data-room').catch(() => '')) === 'R-MER-1-140' && (await t.page.locator('[data-testid="room-tabs"] a[href^="#/room/"]').count()) >= 8);
     await t.go('#/room/R-NOPE-9-999', 500);
-    ok(`CORE-${scheme}-addr-03`, 'an unknown room id lands on a finished screen with every room to pick', (await t.page.locator('[data-testid="room-unknown"]').count()) === 1 && (await t.page.locator('[data-testid="room-pick"] a').count()) === 30);
+    ok(`CORE-${scheme}-addr-03`, 'an unknown room id lands on a finished screen with every room to pick', (await t.page.locator('[data-testid="room-unknown"]').count()) === 1 && (await t.page.locator('[data-testid="room-pick"] a').count()) === NROOMS);
     await t.go('#/room/%3Cimg%20src%3Dx%20onerror%3Dalert(1)%3E', 500);
     ok(`CORE-${scheme}-addr-04`, 'markup in the address is shown as text, never run', (await t.page.locator('main img[src="x"]').count()) === 0 && /There is no room/.test(await t.text()));
     await t.go('#/room?tab=history', 500);

@@ -1,7 +1,7 @@
 /**
  * Home — Mission Control (#/home), V2.5.3's composition and further: one sentence that says what matters, the campus KPIs, the campus in
  * 3D with its buildings, what needs a person (rooms by attention, decisions waiting), recent changes and quick actions. Every number is
- * computed from the records — the thirty room records, the programme and the service workspace (campus/metrics.ts) — never typed in.
+ * computed from the records — the room records, the programme and the service workspace (campus/metrics.ts) — never typed in.
  * Links a role cannot open are not offered (D44).
  */
 import { useEffect, useMemo, useState, type ReactElement } from 'react';
@@ -110,14 +110,14 @@ export default function Home({ role }: PageProps) {
         </div>
         <Section title="Campus status" aside={opens('#/campus') ? <a href="#/campus">Open campus</a> : undefined} id="home-campus-h">
           <Stage label="Campus in 3D" testId="home-stage"><CampusMap tiles={tiles} onOpen={(b) => { if (opens(`#/campus/${b.key}`)) location.hash = `#/campus/${b.key}`; }} /></Stage>
-          <ul className="kit-meters home__brows" aria-label="Buildings by health">{c.buildings.map((s) => <MeterRow key={s.b.key} href={`#/campus/${s.b.key}`} label={s.b.name} value={s.score} state={stateOf(s.band)} sub={`${s.rooms} rooms · ${s.open} open issue${s.open === 1 ? '' : 's'} · ${s.verifiedPct ?? '—'}${s.verifiedPct == null ? '' : '%'} verified`} />)}</ul>
+          <ul className="kit-meters home__brows" aria-label="Buildings by health">{c.buildings.map((s) => <MeterRow key={s.b.key} href={opens(`#/campus/${s.b.key}`) ? `#/campus/${s.b.key}` : undefined} label={s.b.name} value={s.score} state={stateOf(s.band)} sub={`${s.rooms} rooms · ${s.open} open issue${s.open === 1 ? '' : 's'} · ${s.verifiedPct ?? '—'}${s.verifiedPct == null ? '' : '%'} verified`} />)}</ul>
         </Section>
       </div>
 
       <div className="room__two home__two">
         <div>
           <Section title="What needs you" aside={`Attention queue · ${queue.length} rooms · most urgent first`} id="home-att-h" testId="attention">
-            {queue.length ? <List label="Attention queue"><More items={queue} n={4} label="rooms" render={(x) => <ListRow key={x.r.outline.id} href={roomHref(x.r.outline)} leading={<span className={`row__ic row__ic--${x.issues.some((i) => i.severity === 'High') ? 'bad' : 'warn'}`}><Icon name="alert" /></span>} title={x.issues[0]?.title || 'Health below the healthy band'} sub={`${shortName(x.r.outline)} · ${x.issues.length} open · ${x.issues[0]?.source || x.h.why}`} trailing={<StatusDot band={x.h.band} label={x.h.score == null ? 'not scored' : `${x.h.score}`} />} />} /></List>
+            {queue.length ? <List label="Attention queue"><More items={queue} n={4} label="rooms" render={(x) => <ListRow key={x.r.outline.id} href={opens(roomHref(x.r.outline)) ? roomHref(x.r.outline) : undefined} leading={<span className={`row__ic row__ic--${x.issues.some((i) => i.severity === 'High') ? 'bad' : 'warn'}`}><Icon name="alert" /></span>} title={x.issues[0]?.title || 'Health below the healthy band'} sub={`${shortName(x.r.outline)} · ${x.issues.length} open · ${x.issues[0]?.source || x.h.why}`} trailing={<StatusDot band={x.h.band} label={x.h.score == null ? 'not scored' : `${x.h.score}`} />} />} /></List>
               : <EmptyState title="Nothing needs attention" icon="check">No room has an open issue or a health below the healthy band.</EmptyState>}
           </Section>
           <Section title="Decision queue" aside={`${dec.length} waiting for a person`} id="home-dec-h" testId="decisions">
@@ -127,7 +127,7 @@ export default function Home({ role }: PageProps) {
         </div>
         <div>
           <Section title="Recent changes" aside="Last 7 days · newest first" id="home-chg-h" testId="changes">
-            {changes.length ? <List label="Recent changes"><More items={changes} n={5} label="changes" render={(x, i) => <ListRow key={i} href={x.href} leading={<span className={`row__ic${x.denied ? ' row__ic--bad' : ''}`}><Icon name="clock" /></span>} title={`${x.title} · ${x.where}`} sub={x.detail} trailing={<span className="ui-meta">{ago(x.at)}{x.denied ? ' · refused' : ''}</span>} />} /></List>
+            {changes.length ? <List label="Recent changes"><More items={changes} n={5} label="changes" render={(x, i) => <ListRow key={i} href={x.href && opens(x.href) ? x.href : undefined} leading={<span className={`row__ic${x.denied ? ' row__ic--bad' : ''}`}><Icon name="clock" /></span>} title={`${x.title} · ${x.where}`} sub={x.detail} trailing={<span className="ui-meta">{ago(x.at)}{x.denied ? ' · refused' : ''}</span>} />} /></List>
               : <EmptyState title="No change this week" icon="clock">Nothing was recorded in the last seven days.</EmptyState>}
           </Section>
           <Section title="Quick actions" id="home-qa-h">

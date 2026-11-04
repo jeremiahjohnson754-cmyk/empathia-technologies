@@ -19,13 +19,13 @@ export const SPACES_PAGES: readonly PageDef[] = [
   {
     id: 'campus', title: 'Campus', purpose: 'Buildings, floors and rooms with their status', product: 'lite', landing: true,
     path: '/campus', authority: { area: 'campus' },
-    load: adapt(() => import('./campus/CampusPage.js'), (m, p) => h(m.CampusPage, { hash: p.hash })),
+    load: adapt(() => import('./campus/CampusPage.js'), (m, p) => h(m.CampusPage, { hash: p.hash, role: p.role })),
     search: { keywords: 'map buildings floors estate living campus', aliases: ['campus map', 'buildings'] },
   },
   {
     id: 'campus.building', title: 'Building', purpose: 'One building: its floors and rooms', product: 'lite',
     path: '/campus/:building', alias: ['/campus/:building/:floor'], authority: { area: 'campus' },
-    load: adapt(() => import('./campus/CampusPage.js'), (m, p) => h(m.CampusPage, { hash: p.hash })),
+    load: adapt(() => import('./campus/CampusPage.js'), (m, p) => h(m.CampusPage, { hash: p.hash, role: p.role })),
   },
   {
     id: 'campus.room', title: 'Room', purpose: 'One room in 3D and plan: devices, connections, tests, history and coverage', product: 'lite',
@@ -53,7 +53,7 @@ export const SPACES_PAGES: readonly PageDef[] = [
   {
     id: 'rooms', title: 'Rooms', purpose: 'Every room of the campus in one list, with its lifecycle and coverage', product: 'lite',
     path: '/rooms', authority: { area: 'campus' },
-    load: adapt(() => import('./campus/CampusPage.js'), (m, p) => h(m.RoomsIndex, { hash: p.hash })),
+    load: adapt(() => import('./campus/CampusPage.js'), (m, p) => h(m.RoomsIndex, { hash: p.hash, role: p.role })),
     search: { keywords: 'rooms list lifecycle', aliases: ['all rooms', 'room list'] },
   },
   {

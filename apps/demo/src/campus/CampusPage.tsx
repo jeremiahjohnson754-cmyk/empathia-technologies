@@ -12,7 +12,7 @@ import { campusStats, roomHealth, roomIssues, BAND_LABEL, type BuildingStats } f
 import { load as loadWorkspace, type Workspace } from '../workspace/store.js';
 import { CampusMap, FloorPlate, Stage, type CampusTile } from '../spatial/Spatial.js';
 import { RoomView, LIFE_TONE } from '../rooms/RoomView.js';
-import { StatusDot, Chip, ScoreRing, StatTile, Icon, Section, MeterRow, stateOf } from '../spatial/parts.js';
+import { StatusDot, Chip, ScoreRing, StatTile, Icon, Section, MeterRow, stateOf, A, OpensContext, useOpens } from '../spatial/parts.js';
 import type { RoleKey } from '../registry.types.js';
 import { resolve } from '../registry.pages.js';
 import { canOpen } from '../access/policy.js';
@@ -35,15 +35,19 @@ function useWs(): Workspace | null {
 }
 const tilesOf = (bs: BuildingStats[]): Record<string, CampusTile> => Object.fromEntries(bs.map((s) => [s.b.key, { score: s.score, band: s.band, issues: s.open, rooms: s.rooms }]));
 
-export function CampusPage({ hash, sees, role }: { hash: string; sees?: (id: string) => boolean; role?: RoleKey }) {
+export function CampusPage(props: { hash: string; sees?: (id: string) => boolean; role?: RoleKey }) {
+  return <OpensContext.Provider value={opensFor(props.role)}><CampusInner {...props} /></OpensContext.Provider>;
+}
+const opensFor = (role?: RoleKey) => (href: string) => { if (!role) return true; const r = resolve(href); return !!r && canOpen(role, r); };
+
+function CampusInner({ hash, sees, role }: { hash: string; sees?: (id: string) => boolean; role?: RoleKey }) {
   const parsed = parseCampus(hash); const { f, room } = parsed;
   // a building may be named by its key in any case or by its short name (#/campus/atlas): shown at its canonical key
   const b = parsed.b && !buildingByKey(parsed.b) ? (BUILDINGS.find((x) => x.key === parsed.b!.toUpperCase() || x.short.toLowerCase() === parsed.b!.toLowerCase())?.key ?? parsed.b) : parsed.b;
   if (room) {
     const o = roomById(room);
     if (!o || o.building !== b || o.floor !== f) return <NotFound what={`room ${room}`} />;
-    const opens = (href: string) => { if (!role) return true; const r = resolve(href); return !!r && canOpen(role, r); };
-    return <RoomView id={room} hash={hash} sees={sees} opens={opens} />;
+    return <RoomView id={room} hash={hash} sees={sees} opens={opensFor(role)} />;
   }
   if (b) { const B = buildingByKey(b); if (!B) return <NotFound what={`building ${b}`} />; if (f != null) { if (!(Number.isInteger(f) && f >= 1 && f <= B.floors)) return <NotFound what={`floor ${f} of ${B.name}`} />; return <FloorPage b={b} f={f} />; } return <BuildingPage b={b} />; }
   return <SitePage />;
@@ -69,7 +73,7 @@ function Preview({ s }: { s: BuildingStats }) {
       <div className="cprev__head"><ScoreRing score={s.score} band={s.band} size={72} label="Health" /><div><b>{s.b.name}</b><span className="ui-meta">{s.b.purpose}</span></div></div>
       <dl className="cprev__facts"><div><dt>Rooms</dt><dd>{s.rooms}</dd></div><div><dt>Open issues</dt><dd>{s.open}</dd></div><div><dt>Devices</dt><dd>{s.devices}</dd></div><div><dt>Tests verified</dt><dd>{s.verifiedPct == null ? '—' : `${s.verifiedPct}%`}</dd></div></dl>
       <p className="ui-meta">{s.b.floors} floors · opened {s.b.opened} · {s.scored} of {s.rooms} rooms scored</p>
-      <a className="ui-btn ui-btn--primary" href={`#/campus/${s.b.key}`}>Open {s.b.short} <Icon name="chevron" size={14} /></a>
+      <A className="ui-btn ui-btn--primary" href={`#/campus/${s.b.key}`}>Open {s.b.short} <Icon name="chevron" size={14} /></A>
     </div>
   );
 }
@@ -109,10 +113,10 @@ function SitePage() {
         <ul className="campus__stats lifebar" aria-label="Rooms by lifecycle">{LIFE_ORDER.filter((s) => c.byLife[s]).map((s) => <li key={s} className={`lifebar__s lifebar__s--${(LIFE_TONE[s] || 'muted')}`} style={{ flexGrow: c.byLife[s] }}><b>{c.byLife[s]}</b><span>{s.replace(/_/g, ' ').toLowerCase()}</span></li>)}</ul>
       </Section>
       <nav className="campus__more" aria-label="More on the campus">
-        <a href="#/rooms" className="mlink"><Icon name="room" /><span><b>Every room in one list</b><span className="ui-meta">Filter by lifecycle and building</span></span></a>
-        <a href={roomHref(roomById(REFERENCE_ROOM_ID)!)} className="mlink"><Icon name="cube" /><span><b>The reference room in 3D</b><span className="ui-meta">Atlas 4.218, its devices, tests and history</span></span></a>
-        <a href="#/search/scenarios" className="mlink"><Icon name="people" /><span><b>Support paths</b><span className="ui-meta">Who supports each space, from recorded relationships</span></span></a>
-        <a href="#/search" className="mlink"><Icon name="graph" /><span><b>The campus in the model</b><span className="ui-meta">Search Party: what connects to what</span></span></a>
+        <A href="#/rooms" className="mlink"><Icon name="room" /><span><b>Every room in one list</b><span className="ui-meta">Filter by lifecycle and building</span></span></A>
+        <A href={roomHref(roomById(REFERENCE_ROOM_ID)!)} className="mlink"><Icon name="cube" /><span><b>The reference room in 3D</b><span className="ui-meta">Atlas 4.218, its devices, tests and history</span></span></A>
+        <A href="#/search/scenarios" className="mlink"><Icon name="people" /><span><b>Support paths</b><span className="ui-meta">Who supports each space, from recorded relationships</span></span></A>
+        <A href="#/search" className="mlink"><Icon name="graph" /><span><b>The campus in the model</b><span className="ui-meta">Search Party: what connects to what</span></span></A>
       </nav>
     </section>
   );
@@ -148,14 +152,15 @@ function BuildingPage({ b }: { b: string }) {
 }
 
 function FloorPage({ b, f }: { b: string; f: number }) {
+  const opens = useOpens();
   const w = useWs();
   const B = buildingByKey(b)!; const rs = roomsIn(b, f).map((o) => roomRecord(o.id)!);
   return (
     <section className="campus" data-native="" data-testid="campus-floor">
       <Crumbs items={[['Campus', '#/campus'], [B.name, `#/campus/${b}`], [`Floor ${f}`]]} />
       <header className="campus__head"><div><p className="kicker">{B.name}</p><h1>Floor {f}</h1><p className="ui-muted">{rs.length ? `${rs.length} room${rs.length === 1 ? '' : 's'} of the canonical campus. Select a room to open it.` : 'No room of the canonical campus on this floor.'}</p></div><nav className="campus__step" aria-label="Floors">{f > 1 && <a className="ui-btn" href={`#/campus/${b}/${f - 1}`}>Floor {f - 1}</a>}{f < B.floors && <a className="ui-btn" href={`#/campus/${b}/${f + 1}`}>Floor {f + 1}</a>}</nav></header>
-      {rs.length ? <Stage label={`Floor plate of ${B.name} floor ${f}`} testId="floor-stage"><FloorPlate rooms={rs.map((r) => ({ id: r.outline.id, label: shortName(r.outline), w: r.outline.dims[0], l: r.outline.dims[1], state: r.lifecycle, issues: roomIssues(r, w).length }))} onOpen={(id) => go(roomHref(roomById(id)!))} /></Stage>
-        : <div className="empty"><b>No room of the canonical campus on this floor</b><p>The demonstration models thirty rooms; this floor has none of them. Other floors of {B.name} do.</p></div>}
+      {rs.length ? <Stage label={`Floor plate of ${B.name} floor ${f}`} testId="floor-stage"><FloorPlate rooms={rs.map((r) => ({ id: r.outline.id, label: shortName(r.outline), w: r.outline.dims[0], l: r.outline.dims[1], state: r.lifecycle, issues: roomIssues(r, w).length }))} onOpen={(id) => { const h = roomHref(roomById(id)!); if (opens(h)) go(h); }} /></Stage>
+        : <div className="empty"><b>No room of the canonical campus on this floor</b><p>The demonstration models {ROOMS.length} rooms; this floor has none of them. Other floors of {B.name} do.</p></div>}
       <RoomList rows={rs} w={w} />
     </section>
   );
@@ -166,12 +171,15 @@ export function RoomList({ rows, caption, w }: { rows: RoomRecord[]; caption?: s
   return (
     <div className="table-wrap"><table className="build__table" data-testid="room-list">{caption && <caption className="ui-visually-hidden">{caption}</caption>}
       <thead><tr><th scope="col">Room</th><th scope="col">Archetype</th><th scope="col">Seats</th><th scope="col">Lifecycle</th><th scope="col">Tests verified</th><th scope="col">Open issues</th><th scope="col">Health</th><th scope="col">Record</th></tr></thead>
-      <tbody>{rows.map((r) => { const h = roomHealth(r, w); return <tr key={r.outline.id}><th scope="row"><a href={roomHref(r.outline)}>{fullName(r.outline)}</a><div className="ui-meta mono">{r.outline.id}</div></th><td>{ARCHETYPE_NAME[r.outline.archetype]}</td><td>{r.outline.capacity}</td><td><Tag tone={LIFE_TONE[r.lifecycle] || 'muted'}>{r.lifecycle}</Tag></td><td>{r.counts.verified} of {r.counts.applicable}</td><td>{roomIssues(r, w).length || '—'}</td><td><StatusDot band={h.band} label={h.score == null ? 'not scored' : String(h.score)} /></td><td>{KIND_LABEL[r.outline.kind]}</td></tr>; })}</tbody>
+      <tbody>{rows.map((r) => { const h = roomHealth(r, w); return <tr key={r.outline.id}><th scope="row"><A href={roomHref(r.outline)}>{fullName(r.outline)}</A><div className="ui-meta mono">{r.outline.id}</div></th><td>{ARCHETYPE_NAME[r.outline.archetype]}</td><td>{r.outline.capacity}</td><td><Tag tone={LIFE_TONE[r.lifecycle] || 'muted'}>{r.lifecycle}</Tag></td><td>{r.counts.verified} of {r.counts.applicable}</td><td>{roomIssues(r, w).length || '—'}</td><td><StatusDot band={h.band} label={h.score == null ? 'not scored' : String(h.score)} /></td><td>{KIND_LABEL[r.outline.kind]}</td></tr>; })}</tbody>
     </table></div>
   );
 }
 
-export function RoomsIndex({ hash }: { hash: string }) {
+export function RoomsIndex({ hash, role }: { hash: string; role?: RoleKey }) {
+  return <OpensContext.Provider value={opensFor(role)}><RoomsInner hash={hash} /></OpensContext.Provider>;
+}
+function RoomsInner({ hash }: { hash: string }) {
   const w = useWs();
   const q = new URLSearchParams(/\?(.*)$/.exec(hash)?.[1] || '');
   const state = q.get('state') || ''; const b = q.get('building') || ''; const band = q.get('health') || '';
@@ -180,7 +188,7 @@ export function RoomsIndex({ hash }: { hash: string }) {
   return (
     <section className="campus" data-native="" data-testid="rooms-index">
       <Crumbs items={[['Campus', '#/campus'], ['Rooms']]} />
-      <header className="campus__head"><div><p className="kicker">The canonical campus</p><h1>Thirty rooms</h1><p className="ui-muted">Every room opens in the same room page. Coverage says per room what is complete, modelled or a gap.</p></div></header>
+      <header className="campus__head"><div><p className="kicker">The canonical campus</p><h1>{ROOMS.length} rooms</h1><p className="ui-muted">Every room opens in the same room page. Coverage says per room what is complete, modelled or a gap.</p></div></header>
       <div className="filters"><label>Lifecycle <select value={state} onChange={(e) => set('state', e.target.value)}><option value="">Every state</option>{[...new Set(all.map((r) => r.lifecycle))].map((s) => <option key={s} value={s}>{s}</option>)}</select></label>
         <label>Building <select value={b} onChange={(e) => set('building', e.target.value)}><option value="">Every building</option>{BUILDINGS.map((x) => <option key={x.key} value={x.key}>{x.name}</option>)}</select></label>
         <label>Health <select value={band} onChange={(e) => set('health', e.target.value)}><option value="">Any</option>{(['healthy', 'monitor', 'action', 'none'] as const).map((x) => <option key={x} value={x}>{BAND_LABEL[x]}</option>)}</select></label>

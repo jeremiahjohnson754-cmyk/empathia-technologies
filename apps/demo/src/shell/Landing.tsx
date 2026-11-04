@@ -55,7 +55,7 @@ export default function Landing({ role }: PageProps) {
       </section>
 
       <section className="lnd__now" aria-labelledby="now-h" data-testid="landing-now">
-        <div className="lnd__nowhead"><h2 id="now-h">The campus right now</h2><span className="ui-meta">Computed from the thirty room records and the service workspace · MODELED, not measured</span></div>
+        <div className="lnd__nowhead"><h2 id="now-h">The campus right now</h2><span className="ui-meta">Computed from the {c.rooms} room records and the service workspace · MODELED, not measured</span></div>
         <div className="lnd__nowgrid">
           <a className="lnd__score" href="#/home"><ScoreRing score={c.score} band={c.band} size={84} label="Campus health" caption={`${c.scored} rooms scored`} /></a>
           <a href="#/campus" className="lnd__k"><b>{c.rooms}</b><span>rooms in {c.buildings.length} buildings</span></a>
