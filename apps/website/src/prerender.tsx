@@ -3,6 +3,8 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { buildPages, notFoundPage, type SiteContext, type Page } from './content.js';
 import { Shell } from './site.js';
+// the browser-chrome colour follows the shared tokens (the dark and light theme's meta colour), never a copy of it
+import TOKENS from '../../../packages/design-tokens/tokens.json';
 export interface RenderOpts { api?: string | null; base?: string }
 // theme-init, the three Inter preloads (D38) and the icon links are put into every <head> by the shared helper (build.mjs → shipBrandAndType)
 export function renderAll(ctx: SiteContext, opts: RenderOpts = {}): { path: string; html: string; title: string }[] {
@@ -18,7 +20,7 @@ export function renderAll(ctx: SiteContext, opts: RenderOpts = {}): { path: stri
 <title>${esc(page.title)}</title>
 <meta name="description" content="${esc(page.description)}">
 <meta name="color-scheme" content="dark light">
-<meta name="theme-color" content="#0e1012" media="(prefers-color-scheme: dark)"><meta name="theme-color" content="#f7f5f1" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="${TOKENS.theme.dark.meta}" media="(prefers-color-scheme: dark)"><meta name="theme-color" content="${TOKENS.theme.light.meta}" media="(prefers-color-scheme: light)">
 ${notFound ? '<meta name="robots" content="noindex">\n' : `<link rel="canonical" href="${esc(canonical)}">\n`}<meta property="og:title" content="${esc(page.title)}"><meta property="og:description" content="${esc(page.description)}"><meta property="og:type" content="website">
 ${ctx.preview ? '<meta name="robots" content="noindex, nofollow">\n' : ''}<meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="stylesheet" href="/site.css">

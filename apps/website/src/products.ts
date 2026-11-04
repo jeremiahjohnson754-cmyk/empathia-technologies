@@ -79,5 +79,12 @@ export const DEMO_STATE: Record<DemoState, { text: string; s: 'observed' | 'decl
  *  the website's own server) and explained on the not-found page. */
 export { default as MOVED } from '../redirects.json';
 
+/** How the thirty demonstration rooms were made (the counts of the approved wording below; the total is their sum, never typed). */
+export const ROOM_MIX = [
+  { k: 'reference', n: 1, label: 'complete reference room' },
+  { k: 'earlier', n: 3, label: 'with the demonstration’s earlier records' },
+  { k: 'archetype', n: 26, label: 'designed from their archetypes' },
+];
+export const ROOM_TOTAL = ROOM_MIX.reduce((a, m) => a + m.n, 0);
 /** The thirty demonstration rooms, in the founder-approved wording. */
 export const ROOMS_SENTENCE = 'one is the complete reference room, three keep the demonstration’s earlier records and twenty-six are designed from their archetypes: modelled layouts and devices, never surveyed.';

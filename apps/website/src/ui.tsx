@@ -21,15 +21,24 @@ export const Hero = ({ label, title, lead, children, aside }: { label?: string; 
     {aside ? <div className="hero__aside">{aside}</div> : null}
   </div></section>
 );
-export const Section = ({ id, title, lead, children, tone }: { id?: string; title: string; lead?: React.ReactNode; children?: React.ReactNode; tone?: 'warm' | 'deep' }) => (
+export const Section = ({ id, title, lead, children, tone, eyebrow }: { id?: string; title: string; lead?: React.ReactNode; children?: React.ReactNode; tone?: 'warm' | 'deep'; eyebrow?: string }) => (
   <section id={id} className={`section${tone ? ` section--${tone}` : ''}`}><div className="wrap">
-    <div className="section__head"><h2>{title}</h2>{lead ? <p className="section__lead">{lead}</p> : null}</div>{children}
+    <div className="section__head">{eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}<h2>{title}</h2>{lead ? <p className="section__lead">{lead}</p> : null}</div>{children}
   </div></section>
 );
-export const Cards = ({ items, cols }: { items: { title: string; body: React.ReactNode; href?: string; meta?: React.ReactNode }[]; cols?: 2 | 3 | 4 }) => (
+/** A small line icon (24 px grid, stroked in currentColor), decorative: the card's heading carries the meaning. */
+const ICONS: Record<string, string> = {
+  exec: 'M4 20V10M10 20V4M16 20v-7M22 20H2', integrator: 'M4 7h16v10H4zM8 21h8M12 17v4M8 11h3M8 13.5h6', service: 'M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z', facility: 'M3 21V8l9-5 9 5v13M9 21v-6h6v6M3 21h18',
+  evidence: 'M9 12l2 2 4-4M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z', key: 'M15 3a6 6 0 0 0-5.7 7.9L3 17.2V21h3.8v-2.2H9v-2.3h2.3l1.8-1.8A6 6 0 1 0 15 3zM16.5 7.5h.01', history: 'M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 7v5l3 2',
+  model: 'M12 2 3 7v10l9 5 9-5V7zM3 7l9 5 9-5M12 12v10', db: 'M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3zM4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3', lock: 'M6 11h12v10H6zM8 11V7a4 4 0 0 1 8 0v4', code: 'M8 8l-5 4 5 4M16 8l5 4-5 4M14 4l-4 16', gauge: 'M12 14l4-4M3.5 18a9 9 0 1 1 17 0', plug: 'M9 2v5M15 2v5M6 7h12v4a6 6 0 0 1-12 0zM12 17v5',
+  scope: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z', data: 'M4 5h16M4 12h16M4 19h10', report: 'M6 3h9l3 3v15H6zM9 12h6M9 16h6M9 8h3', file: 'M6 3h9l3 3v15H6zM9 13l2 2 4-4',
+};
+export const Icon = ({ name }: { name: string }) => ICONS[name] ? <svg className="ico" viewBox="0 0 24 24" aria-hidden="true"><path d={ICONS[name]} /></svg> : null;
+export const Cards = ({ items, cols }: { items: { title: string; body: React.ReactNode; href?: string; meta?: React.ReactNode; icon?: string }[]; cols?: 2 | 3 | 4 }) => (
   <div className={`cards cards--${cols || 3}`}>{items.map((it) => (
     <article key={it.title} className={`card${it.href ? ' card--link' : ''}`}>
-      <h3>{it.href ? <a href={it.href}>{it.title}</a> : it.title}</h3><p>{it.body}</p>{it.meta ? <div className="card__meta">{it.meta}</div> : null}
+      {it.icon ? <span className="card__ico"><Icon name={it.icon} /></span> : null}
+      <h3>{it.href ? <a href={it.href}>{it.title}</a> : it.title}</h3><p>{it.body}</p>{it.meta ? <div className="card__meta">{it.meta}</div> : null}{it.href ? <span className="card__go" aria-hidden="true">→</span> : null}
     </article>
   ))}</div>
 );
@@ -96,7 +105,7 @@ export const CREDENTIALS = [{ abbr: 'CTS', full: 'Certified Technology Specialis
 export const Credentials = () => <ul className="creds" aria-label="Credentials">{CREDENTIALS.map((c) => <li key={c.abbr}><abbr title={c.full}>{c.abbr}</abbr><span>{c.by}</span></li>)}</ul>;
 export const FOUNDER_QUOTE = 'Empathia grew from a simple conviction: the technology behind a workplace should be understandable, accountable and provable. We’re connecting design, people, systems, service, and learning into one evidence-backed lifecycle.';
 
-/** The nine product colours as one strip: the website's hero signature in both themes (replaces the old glow). */
+/** The nine product colours as one strip: the website's hero signature in both themes, above the hero's glow (V2.5.3 atmosphere). */
 export const Spectrum = () => <div className="spectrum" aria-hidden="true">{CANON.map((p) => <i key={p.id} data-p={p.id} />)}</div>;
 
 export interface Capture { w: number; h: number; route: string }
@@ -157,5 +166,47 @@ export const FounderBlock = ({ page }: { page: 'home' | 'founder' }) => (
       </div>
       <p className="disclosure" id={`disc-founder-${page}`}>{disclosure(ENQUIRIES.founder)} The enquiry is marked for the founder; it is not a private channel. <a href="/privacy#enquiries">How enquiries are handled</a>.</p>
     </div>
+  </div>
+);
+
+/** The home hero's composition: Mission Control as the screen, a room record layered over it (the evidence labels the product keeps),
+ *  and the counts this site is built from (computed from the product list and the room mix, never typed). All synthetic, and labelled. */
+export const Stage = ({ p, cap, counts }: { p: Product; cap?: Capture; counts: { label: string; n: number }[] }) => (
+  <div className="stage" data-p={p.id}>
+    <span className="stage__glow" aria-hidden="true" />
+    {cap ? <Shot p={p} cap={cap} eager /> : <RecordCard />}
+    {cap ? <figure className="stage__card" aria-label="A room record from the demonstration">
+      <figcaption><span className="record__id">ATL-4.218</span><span>Executive collaboration</span></figcaption>
+      <ul>
+        <li><span>Speech coverage, every seat</span><Tag s="modeled" /></li>
+        <li><span>Far-end audio test</span><Tag s="verified" /></li>
+        <li><span>Occupancy sensor</span><Tag s="unknown" /></li>
+      </ul>
+    </figure> : null}
+    <ul className="stage__chip" aria-label="The demonstration in numbers">{counts.map((c) => <li key={c.label}><b>{c.n}</b><span>{c.label}</span></li>)}</ul>
+  </div>
+);
+
+export interface ChapterItem { p: Product; title: string; body: string; points: string[]; also?: Product }
+/** The home page's story: each stage of the lifecycle told with the product's own screen (a dark capture, D43), in lifecycle order. */
+export const Chapters = ({ items, captures }: { items: ChapterItem[]; captures: Record<string, Capture> }) => (
+  <ol className="chapters">{items.map((c, i) => (
+    <li key={c.p.id} className="chapter" data-p={c.p.id}>
+      <div className="chapter__media"><span className="chapter__glow" aria-hidden="true" /><Shot p={c.p} cap={captures[c.p.id]} /></div>
+      <div className="chapter__text">
+        <p className="chapter__n"><span className="dot" aria-hidden="true" />{String(i + 1).padStart(2, '0')} · {c.p.name}{c.also ? ` and ${c.also.name}` : ''}</p>
+        <h3>{c.title}</h3><p>{c.body}</p>
+        <ul className="ticks">{c.points.map((t) => <li key={t}>{t}</li>)}</ul>
+        <p className="chapter__go"><a href={`/products/${c.p.slug}`}>{c.p.name}<span className="sr">: the product page</span><span aria-hidden="true"> →</span></a>{c.also ? <a href={`/products/${c.also.slug}`} data-p={c.also.id}>{c.also.name}<span className="sr">: the product page</span><span aria-hidden="true"> →</span></a> : null}</p>
+      </div>
+    </li>
+  ))}</ol>
+);
+
+/** The thirty demonstration rooms as thirty cells, one per room, marked by how each was made; the approved wording stays beside it. */
+export const RoomMix = ({ mix }: { mix: { n: number; label: string; k: string }[] }) => (
+  <div className="mix">
+    <ul className="mix__cells" aria-hidden="true">{mix.flatMap((m) => Array.from({ length: m.n }, (_, i) => <li key={m.k + i} data-k={m.k} />))}</ul>
+    <ul className="mix__key">{mix.map((m) => <li key={m.k} data-k={m.k}><i aria-hidden="true" /><b>{m.n}</b><span>{m.label}</span></li>)}</ul>
   </div>
 );
