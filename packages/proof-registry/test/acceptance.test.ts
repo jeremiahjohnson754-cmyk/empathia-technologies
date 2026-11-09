@@ -46,6 +46,7 @@ test('the whole recovery: every blocker cleared and verified, then acceptance is
   ]);
   const before = replay(D, ev); assert.deepEqual(before.blockers, []); assert.equal(before.acceptance, 'HELD', 'nothing accepts itself');
   assert.deepEqual({ pass: before.totals.pass, evidence: before.totals.evidence }, { pass: 32, evidence: 32 });
+  for (const who of [cx, qa]) { const r = attempt(D, ev, { kind: 'ACCEPT', by: who, at }, ALL); assert.ok('refused' in r && /independent of the work/.test(r.refused), who.role); }
   const done = run([...ev, { kind: 'ACCEPT', by: ex, at }]); const w = replay(D, done);
   assert.equal(w.acceptance, 'ACCEPTED'); assert.equal(w.acceptedBy!.role, 'exec');
   assert.ok('refused' in attempt(D, done, { kind: 'RETEST', test: 'T-SIM-001', result: 'FAIL', evidence: null, by: cx, at }, ALL), 'closed after acceptance');

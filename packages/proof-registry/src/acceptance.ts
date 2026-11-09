@@ -6,7 +6,8 @@
  * that replay, so no number is ever typed and a held dossier cannot be turned green by editing a field.
  *
  * Rules: a pass needs an evidence record; a result recorded after the snapshot counts only once someone in a different role verifies it;
- * a failure needs a deficiency raised against it; acceptance is refused while any blocker stands, and names the blockers.
+ * a failure needs a deficiency raised against it; acceptance is refused while any blocker stands, and names the blockers; and the role
+ * that accepts is one that neither recorded nor verified any result in the dossier.
  */
 import type { Dossier, DossierTest, Deficiency, TestResult } from './seed.js';
 
@@ -65,6 +66,8 @@ export function attempt(d: Dossier, events: readonly DossierEvent[], e: DossierE
   if (e.kind === 'ACCEPT') {
     if (!may.accept) return { refused: 'This role cannot record acceptance.' };
     if (w.blockers.length) { const first = w.blockers.slice(0, 3).map((b) => `${b.test} ${b.reason}`).join('; '); return { refused: `Acceptance stays held: ${w.blockers.length} ${w.blockers.length === 1 ? 'blocker stands' : 'blockers stand'} (${first}${w.blockers.length > 3 ? '; and more' : ''}).` }; }
+    // the policy's own description of an acceptor: someone who neither recorded nor verified what is being accepted
+    if (w.tests.some((x) => x.recordedBy?.role === e.by.role || x.verifiedBy?.role === e.by.role)) return { refused: 'Acceptance is independent of the work it accepts: a role that recorded or verified a result in this dossier cannot also accept it.' };
     return { events: [...events, e] };
   }
   const t = w.tests.find((x) => x.id === e.test); if (!t) return { refused: `No test ${e.test} in this dossier.` };

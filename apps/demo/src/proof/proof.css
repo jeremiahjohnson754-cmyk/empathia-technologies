@@ -1,0 +1,70 @@
+/* v1.8 proof slice: Proof Center, QR Hub, commissioning dossier. Records and rules, shown with type and hairlines on the shared tokens.
+   Teal stays the interaction accent (D8); results use the semantic ok / warn / bad tokens, always with a word beside the colour. */
+.pf { max-inline-size: 1180px; }
+.pf-h { margin: var(--sp-3) 0 6px; font-size: var(--fs-sm); font-weight: 650; color: var(--tx2); }
+.pf-note { display: block; margin: 0; color: var(--tx3); font-size: var(--fs-sm); line-height: 1.5; }
+.pf-wrap { overflow-wrap: anywhere; word-break: break-all; }
+.pf-line { margin: 0; max-inline-size: 78ch; font-size: 1.02rem; line-height: 1.6; color: var(--tx2); } .pf-line b { color: var(--tx); }
+.pf-claims { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: var(--sp-4); }
+.pf-claim { display: flex; flex-direction: column; gap: 10px; min-inline-size: 0; padding: 18px 20px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--panel); }
+.pf-claim__head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: var(--fs-xs); color: var(--tx3); }
+.pf-claim__product { margin-inline-start: auto; }
+.pf-claim__text { margin: 0; font-size: 1.02rem; line-height: 1.55; color: var(--tx); max-inline-size: 68ch; }
+.pf-claim__down { margin: 0; color: var(--bad); font-size: var(--fs-sm); }
+.pf-claim__go { margin: 4px 0 0; }
+.pf-limits { margin: 0; padding-inline-start: 18px; color: var(--tx2); font-size: var(--fs-sm); line-height: 1.55; }
+.pf-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px 18px; margin: 4px 0 0; padding-block-start: 12px; border-block-start: 1px solid var(--line); font-size: var(--fs-xs); }
+.pf-meta dt { color: var(--tx3); } .pf-meta dd { margin: 2px 0 0; color: var(--tx2); overflow-wrap: anywhere; } .pf-meta a { color: var(--accent); }
+.pf-keys { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: var(--sp-4); }
+.pf-keys li { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; color: var(--tx2); font-size: var(--fs-sm); line-height: 1.55; } .pf-keys b { display: block; color: var(--tx); } .pf-keys svg { color: var(--tx3); margin-block-start: 2px; }
+
+/* QR Hub */
+.pf-scan { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: var(--sp-5); align-items: start; }
+.pf-scan__label { display: grid; gap: 10px; padding: 18px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--panel); min-inline-size: 0; }
+.pf-scan__label > .pf-h { margin: 0; }
+.pf-qr { inline-size: min(100%, 220px); block-size: auto; justify-self: center; border-radius: 10px; border: 1px solid var(--line); background: #fff; }
+.pf-scan__id { margin: 0; text-align: center; font-size: 1.05rem; font-weight: 650; letter-spacing: .02em; }
+.pf-scan__form { display: grid; gap: 6px; margin-block-start: 6px; } .pf-scan__form label { font-size: var(--fs-sm); font-weight: 600; color: var(--tx2); }
+.pf-scan__row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.pf-scan__row input { min-block-size: 40px; inline-size: 100%; padding: 0 12px; border-radius: var(--r-md); border: 1px solid var(--line); background: var(--bg); color: var(--tx); font: inherit; }
+.pf-scan__row input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.pf-try { display: flex; flex-wrap: wrap; gap: 6px; }
+.pf-scan__out { min-inline-size: 0; display: grid; gap: var(--sp-3); }
+.pf-pass { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0; margin: 0 0 var(--sp-3); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; }
+.pf-pass div { padding: 12px 14px; border-block-end: 1px solid var(--line); border-inline-end: 1px solid var(--line); margin: 0 -1px -1px 0; }
+.pf-pass dt { color: var(--tx3); font-size: var(--fs-xs); } .pf-pass dd { margin: 3px 0 0; color: var(--tx); font-weight: 600; overflow-wrap: anywhere; } .pf-pass a { color: var(--accent); }
+.pf-pass .pf-note { display: inline; font-weight: 400; }
+.pf-held { color: var(--warn) !important; } .pf-ok { color: var(--ok) !important; }
+.pf-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-block: 4px var(--sp-3); }
+
+/* Dossier */
+.pf-decision { display: grid; gap: 8px; padding: 18px 20px; border-radius: var(--r-lg); border: 1px solid var(--line); background: var(--panel); border-inline-start: 4px solid var(--ok); }
+.pf-decision--held { border-inline-start-color: var(--bad); }
+.pf-decision h2 { margin: 0; font-size: 1.05rem; font-weight: 650; } .pf-decision p { margin: 0; max-inline-size: 78ch; color: var(--tx2); line-height: 1.55; }
+.pf-blockers { margin: 0; padding-inline-start: 18px; columns: 2 280px; column-gap: var(--sp-5); color: var(--tx2); font-size: var(--fs-sm); line-height: 1.7; } .pf-blockers a { color: var(--accent); text-decoration: none; } .pf-blockers a:hover { text-decoration: underline; }
+.pf-refusal, .pf-done { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; margin: 4px 0 0; padding: 10px 12px; border-radius: var(--r-md); font-size: var(--fs-sm); line-height: 1.5; }
+.pf-refusal { background: color-mix(in srgb, var(--bad) 12%, transparent); border: 1px solid color-mix(in srgb, var(--bad) 45%, transparent); color: var(--tx); } .pf-refusal svg { color: var(--bad); } .pf-refusal:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.pf-done { background: color-mix(in srgb, var(--ok) 10%, transparent); border: 1px solid color-mix(in srgb, var(--ok) 40%, transparent); color: var(--tx); } .pf-done svg { color: var(--ok); }
+.pf-tests th[scope=row] { font-weight: 400; min-inline-size: 220px; } .pf-tests th[scope=row] code { display: block; color: var(--tx3); font-size: var(--fs-xs); }
+.pf-tests__name { display: block; color: var(--tx); font-weight: 600; }
+.pf-tests tr.pf-changed th[scope=row] { box-shadow: inset 3px 0 0 var(--accent); }
+.pf-missing { color: var(--bad); font-weight: 600; }
+.pf-defs { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-3); }
+.pf-defs li { padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); display: grid; gap: 6px; }
+.pf-defs header { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; } .pf-defs header code { font-weight: 650; } .pf-defs header .pf-note { display: inline; }
+.pf-defs p { margin: 0; color: var(--tx); line-height: 1.5; }
+.pf-who { display: grid; gap: 6px; } .pf-who p { margin: 0; color: var(--tx2); font-size: var(--fs-sm); line-height: 1.55; max-inline-size: 86ch; } .pf-who b { color: var(--tx); }
+.pf-history { list-style: none; margin: 0 0 var(--sp-3); padding: 0; display: grid; gap: 0; border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; }
+.pf-history li { display: grid; grid-template-columns: minmax(110px, auto) 1fr; gap: 14px; padding: 9px 14px; border-block-start: 1px solid var(--line); font-size: var(--fs-sm); color: var(--tx2); } .pf-history li:first-child { border-block-start: 0; }
+.pf-history time { color: var(--tx3); font-variant-numeric: tabular-nums; }
+@media (max-width: 820px) { .pf-scan { grid-template-columns: 1fr; } .pf-claim__product { margin-inline-start: 0; } .pf-history li { grid-template-columns: 1fr; gap: 2px; } }
+@media (pointer: coarse) { .pf-try .ui-btn, .pf-tests .ui-btn, .pf-actions .ui-btn { min-block-size: 44px; } .pf-scan__row input { min-block-size: 44px; } }
+.pf-tests td code { white-space: nowrap; }
+.pf-tests__res { display: none; align-items: center; gap: 8px; margin-block: 4px; color: var(--tx3); font-size: var(--fs-xs); }
+@media (max-width: 640px) { .pf-tests__res { display: flex; } .pf-tests th:nth-child(2), .pf-tests td:nth-child(2), .pf-tests th:nth-child(3), .pf-tests td:nth-child(3) { display: none; } .pf-tests th[scope=row] { min-inline-size: 200px; } }
+.pf .kit-seg { display: flex; inline-size: 100%; min-inline-size: 0; max-inline-size: 100%; overflow-x: auto; }
+.pf .kit-seg__opt { flex: none; }
+.pf-zone-fix, .pf .pa-zone { min-inline-size: 0; }
+.pf .pa-zone > * { min-inline-size: 0; }
+@media (max-width: 640px) { .pf .kit-seg__opt, .pf-try .ui-btn, .pf-tests .ui-btn, .pf-actions .ui-btn, .pf .ui-btn--sm { min-block-size: 44px; } .pf-scan__row input { min-block-size: 44px; } .pf-scan__row .ui-btn { min-block-size: 44px; } }
+.pf .pa-table-wrap { position: relative; }   /* visually-hidden headers are absolutely positioned: keep them inside the scroller */

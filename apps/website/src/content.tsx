@@ -2,6 +2,7 @@
 // company, an award, revenue or a measured outcome; everything shown runs on synthetic data and says so. Claims are limited to what
 // the repository demonstrates (docs/legacy-parity.md). The founder's credentials are exactly the three the founder supplied; the founder
 // pages carry the founder's own words and portrait only, never an invented biography.
+import { proofPage, LeadClaim } from './proof.js';
 import React from 'react';
 import { LeadForm, type LeadKind } from './form.js';
 import { Hero, Section, Cards, Steps, Note, Actions, Tag, EVIDENCE, EvidenceLine, FilmPlayer, Spectrum, Shot, ProductTiles, EnquiryCard, EnquiryLink, FounderBlock, FoundingStory, Stage, Chapters, RoomMix, GlassRail, Strip, RoomDrawing, FilmPending, type StripItem, type Evidence, type Film, type Capture, type ChapterItem } from './ui.js';
@@ -9,7 +10,7 @@ import { PRODUCTS, DEMO_STATE, ROOMS_SENTENCE, ROOM_MIX, ROOM_TOTAL } from './pr
 import { TALLY_FORM } from './enquiry.js';
 
 export interface Page { path: string; title: string; description: string; nav?: string; body: React.ReactNode; }
-export interface SiteContext { films: Film[]; pendingFilms?: Pick<Film, 'key' | 'title' | 'runtime' | 'summary' | 'disclosure'>[]; transcripts: Record<string, string[]>; demoUrl: string; preview: boolean; captures: Record<string, Capture>; api?: boolean }
+export interface SiteContext { asOf?: string; films: Film[]; pendingFilms?: Pick<Film, 'key' | 'title' | 'runtime' | 'summary' | 'disclosure'>[]; transcripts: Record<string, string[]>; demoUrl: string; preview: boolean; captures: Record<string, Capture>; api?: boolean }
 
 const AUDIENCES = [
   { title: 'CIOs and CTOs', body: 'One accountable record for the technology estate: what was approved, funded, installed, proved and accepted.', href: '/solutions#enterprise', icon: 'exec' },
@@ -103,6 +104,7 @@ export function buildPages(ctx: SiteContext): Page[] {
       </Section>
       <Section eyebrow="Who it is for" title="Read by every team that touches a room"><Cards cols={4} items={AUDIENCES} /></Section>
       <Strip id="architecture" eyebrow="The architecture" title="Built to be checked" items={ARCH} foot={archFoot} />
+      <Section eyebrow="Proof" title="One claim, the same on both sites" lead="Each thing we say about the product is a record with a state. This one is read from the same registry the demonstration reads."><LeadClaim asOf={ctx.asOf || new Date().toISOString()} demoUrl={ctx.demoUrl} /></Section>
       <section className="section section--deep"><div className="wrap"><FounderBlock page="home" /></div></section>
       <CtaBand title="See it on your own rooms." body="A guided walk through the scenarios on synthetic data, or a bounded pilot with your rooms and your people."><Actions><a className="btn btn--primary btn--lg" href="/request-demo">Request a demonstration</a><a className="btn btn--lg" href="/pilot-partners">Pilots and partnerships</a></Actions></CtaBand>
       <div className="wrap"><Note>What you can see today is a demonstration on synthetic data. No customer, partner or device is named or connected, and every measurement shown is labelled modeled, simulated, declared, observed or verified.</Note></div>
@@ -200,6 +202,7 @@ export function buildPages(ctx: SiteContext): Page[] {
         <Strip id="architecture" eyebrow="In five lines" title="Built to be checked" items={ARCH} foot={archFoot} />
       </>
     ) },
+    proofPage(ctx.demoUrl, ctx.asOf || new Date().toISOString()),
     { path: '/trust', title: 'Security and trust — Empathia Technologies', description: 'What Empathia does and does not claim about security, privacy and compliance.', nav: 'Trust', body: (
       <>
         <Hero label="Trust" title="Security and trust" lead="What is in place, what is planned, and what we do not claim." />

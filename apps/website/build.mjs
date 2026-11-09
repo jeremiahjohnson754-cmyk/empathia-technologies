@@ -52,7 +52,8 @@ for (const [id, c] of Object.entries(prov.captures || {})) {
 }
 // films not yet cleared are listed on /films by title and summary only (no frame, no file): the page always exists and says why they do not play
 const pendingFilms = catalogue.filter((f) => !films.includes(f)).map(({ key, title, runtime, summary, disclosure }) => ({ key, title, runtime, summary, disclosure }));
-const rendered = renderAll({ films, pendingFilms, transcripts, demoUrl, preview: filmsMode === 'preview', captures }, { api: api || null, base });
+const asOf = new Date().toISOString();
+const rendered = renderAll({ asOf, films, pendingFilms, transcripts, demoUrl, preview: filmsMode === 'preview', captures }, { api: api || null, base });
 const PATHS = rendered.map((r) => r.path).filter((p) => p !== '/404');
 // every page carries its CSP as <meta> too (assessment SA-01): a host that drops render.yaml's headers still cannot load or send off-origin
 const { injectMetaCsp, originOf } = await import(path.join(repo, 'scripts/security/policy.mjs')); const page = (h) => injectMetaCsp(decorate(h), [originOf(api)].filter(Boolean));
@@ -62,6 +63,10 @@ for (const f of fs.readdirSync(path.join(mediaSrc, 'founder'))) copy(path.join(m
 for (const f of films) for (const x of ['720.mp4', 'poster.webp', 'poster.jpg', 'captions.vtt']) copy(path.join(mediaSrc, f.key, x), path.join(dist, 'media', f.key, x));
 const css = [tokenCss(), `/* apps/website/src/styles/site.css */\n${fs.readFileSync(path.join(app, 'src/styles/site.css'), 'utf8')}`].join('\n');
 fs.writeFileSync(path.join(dist, 'site.css'), css);
+// the Proof Registry's public projection, as data (v1.8 A): the same file the demonstration ships, so the two can be compared
+{ const { SEED_CLAIMS, publicProjection } = await import('@empathia/proof-registry');
+  const claims = SEED_CLAIMS.map((c) => publicProjection(c, asOf)).filter(Boolean);
+  fs.mkdirSync(path.join(dist, 'proof'), { recursive: true }); fs.writeFileSync(path.join(dist, 'proof/claims.json'), JSON.stringify({ schema_version: '1.8', as_of: asOf, claims }, null, 1)); }
 fs.writeFileSync(path.join(dist, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${PATHS.map((p) => `  <url><loc>${base}${p}</loc></url>`).join('\n')}\n</urlset>\n`);
 fs.writeFileSync(path.join(dist, 'robots.txt'), filmsMode === 'preview' ? 'User-agent: *\nDisallow: /\n' : `User-agent: *\nAllow: /\nSitemap: ${base}/sitemap.xml\n`);
 const walk = (d) => fs.readdirSync(d).flatMap((f) => { const p = path.join(d, f); return fs.statSync(p).isDirectory() ? walk(p) : [p]; });

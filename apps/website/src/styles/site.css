@@ -597,3 +597,27 @@ p { text-wrap: pretty; }
 .story h2 { margin: 0 0 20px; }
 .story p { margin: 0 0 16px; font-size: 18px; line-height: 1.7; color: var(--w-tx); }
 .story__close { margin-top: 56px !important; font: 800 clamp(26px, 3vw, 40px)/1.2 var(--w-display); letter-spacing: -.02em; color: var(--w-tx); }
+
+/* Proof Center (v1.8 A): a claim is a record — state, data kind, wording, limits, provenance. Hairlines and type; no decoration. */
+.proofs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 20px; }
+.proof { display: flex; flex-direction: column; gap: 12px; min-width: 0; padding: 22px 24px; border: 1px solid var(--w-line); border-radius: 16px; background: var(--w-card); }
+.proof__head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: 13px; color: var(--w-tx2); }
+.proof__product { margin-left: auto; }
+.proof__text { margin: 0; font-size: 17px; line-height: 1.5; color: var(--w-tx); max-width: 68ch; }
+.proof__down { margin: 0; font-size: 14px; color: var(--w-ev-unknown); }
+.proof__h { margin: 4px 0 0; font-size: 13px; font-weight: 600; color: var(--w-tx2); }
+.proof__limits { margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.55; color: var(--w-tx2); }
+.proof__meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px 20px; margin: 4px 0 0; padding-top: 14px; border-top: 1px solid var(--w-line); font-size: 13px; }
+.proof__meta dt { color: var(--w-tx2); } .proof__meta dd { margin: 2px 0 0; color: var(--w-tx); overflow-wrap: anywhere; }
+.proof__meta code, .proof-totals code { font-size: 12.5px; }
+.proof__go { margin: 0; font-size: 14px; font-weight: 600; }
+.proof-lead { display: grid; gap: 14px; max-width: 760px; } .proof-lead__more { margin: 0; font-size: 14px; font-weight: 600; }
+.proof-keys { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 20px 32px; margin: 0; padding: 0; list-style: none; font-size: 15px; line-height: 1.55; color: var(--w-tx2); }
+.proof-keys b { display: block; margin-bottom: 4px; color: var(--w-tx); }
+.proof-totals { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0; margin: 0 0 24px; border: 1px solid var(--w-line); border-radius: 14px; overflow: hidden; }
+.proof-totals div { padding: 16px 18px; border-right: 1px solid var(--w-line); } .proof-totals div:last-child { border-right: 0; }
+.proof-totals dt { font-size: 13px; color: var(--w-tx2); } .proof-totals dd { margin: 4px 0 0; font-size: 26px; font-weight: 650; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.proof-states { display: grid; gap: 0; margin: 0; }
+.proof-states div { display: grid; grid-template-columns: minmax(0, 230px) minmax(0, 1fr); gap: 8px 24px; align-items: baseline; padding: 12px 0; border-top: 1px solid var(--w-line); }
+.proof-states dd { margin: 0; font-size: 15px; line-height: 1.5; color: var(--w-tx2); }
+@media (max-width: 640px) { .proof { padding: 18px; } .proof__product { margin-left: 0; } .proof-states div { grid-template-columns: 1fr; } .proof-totals div { border-right: 0; border-top: 1px solid var(--w-line); } .proof-totals div:first-child { border-top: 0; } }

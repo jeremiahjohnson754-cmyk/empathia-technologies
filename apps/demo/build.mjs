@@ -51,13 +51,16 @@ await esbuild.build({
 // brand, Inter and the theme script from @empathia/design-tokens (D7, D9, D39): files copied into dist, the <head> decorated
 const { shipBrandAndType, tokenCss } = await import(path.join(repo, 'packages/design-tokens/brand.mjs'));
 const decorate = shipBrandAndType(dist, { preload: 'app', manifest: { name: 'Empathia Living Campus — investor demonstration', shortName: 'Empathia demo' } });
-const css = [tokenCss(), ...[path.join(repo, 'packages/ui/src/ui.css'), path.join(repo, 'packages/ui/src/kit.css'), path.join(app, 'src/styles/demo.css'), path.join(app, 'src/styles/shell.css'), path.join(app, 'src/hardening/ops.css'), path.join(app, 'src/spatial/spaces.css'), path.join(app, 'src/lite/lite.css'), path.join(app, 'src/spatial/core.css'), path.join(app, 'src/spatial/mission.css'), path.join(app, 'src/pages/workspaces.css'), path.join(app, 'src/pages/learn.css'), path.join(app, 'src/parity/parity.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`)].join('\n');
+const css = [tokenCss(), ...[path.join(repo, 'packages/ui/src/ui.css'), path.join(repo, 'packages/ui/src/kit.css'), path.join(app, 'src/styles/demo.css'), path.join(app, 'src/styles/shell.css'), path.join(app, 'src/hardening/ops.css'), path.join(app, 'src/spatial/spaces.css'), path.join(app, 'src/lite/lite.css'), path.join(app, 'src/spatial/core.css'), path.join(app, 'src/spatial/mission.css'), path.join(app, 'src/pages/workspaces.css'), path.join(app, 'src/pages/learn.css'), path.join(app, 'src/parity/parity.css'), path.join(app, 'src/proof/proof.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`)].join('\n');
 fs.writeFileSync(path.join(dist, 'demo.css'), css);
 // the CSP rides in the page as <meta> too (assessment SA-01): served without render.yaml's headers, nothing still leaves the page
 const { injectMetaCsp } = await import(path.join(repo, 'scripts/security/policy.mjs'));
 fs.writeFileSync(path.join(dist, 'index.html'), injectMetaCsp(decorate(fs.readFileSync(path.join(app, 'src/index.html'), 'utf8'))));
 // the View-as role is applied before first paint by a tiny same-origin script (the CSP forbids inline scripts), so the role colour is right on the first frame
 fs.copyFileSync(path.join(app, 'src/role-boot.js'), path.join(dist, 'role-boot.js'));
+// the Proof Registry's public projection, as data (v1.8 A): the same file the website ships, so the two can be compared claim by claim
+{ const { SEED_CLAIMS, publicProjection } = await import('@empathia/proof-registry'); const asOf = new Date().toISOString();
+  fs.mkdirSync(path.join(dist, 'proof'), { recursive: true }); fs.writeFileSync(path.join(dist, 'proof/claims.json'), JSON.stringify({ schema_version: '1.8', as_of: asOf, claims: SEED_CLAIMS.map((c) => publicProjection(c, asOf)).filter(Boolean) }, null, 1)); }
 const files = (function walk(d, pre = '') { return fs.readdirSync(d).flatMap((f) => fs.statSync(path.join(d, f)).isDirectory() ? walk(path.join(d, f), `${pre}${f}/`) : [`${pre}${f}`]); })(dist);
 const manifest = { app: '@empathia/demo', builtAt: new Date().toISOString(), files: Object.fromEntries(files.map((f) => [f, { bytes: fs.statSync(path.join(dist, f)).size, sha256: crypto.createHash('sha256').update(fs.readFileSync(path.join(dist, f))).digest('hex') }])) };
 fs.writeFileSync(path.join(dist, 'BUILD_MANIFEST.json'), JSON.stringify(manifest, null, 2));
