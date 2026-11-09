@@ -1,0 +1,31 @@
+/**
+ * Pages of the worlds slice (owner: v18/worlds): the world-first entry of handoff v1.8 §3 (ADR-022) — "Choose a world", a world's
+ * journeys, and a journey's screen. Contract: registry.types.ts and README-routes.md.
+ *
+ * These pages are open to every View-as role: they are a public, synthetic presentation layer. A world, a journey or a role
+ * configuration grants nothing; which journey a configuration is presented is decided inside the page (worlds/registry.ts › presents),
+ * and every existing page keeps its own authority.
+ */
+import type { PageDef } from './registry.types.js';
+import { ROLE_KEYS } from './access/policy.js';
+
+const OPEN = { roles: ROLE_KEYS, why: 'the world-first entry (v1.8 ADR-022): a public, synthetic presentation layer, shown to every role; choosing a world or a role configuration grants nothing' } as const;
+
+export const WORLD_PAGES: readonly PageDef[] = [
+  {
+    id: 'worlds', title: 'Choose a world', purpose: 'Four worlds — Enterprise, Stadium, University, Convention — each with a handful of everyday journeys', product: 'shell',
+    path: '/worlds', authority: OPEN,
+    load: () => import('./worlds/WorldsPage.js'),
+    search: { keywords: 'worlds world stadium university convention enterprise journeys choose', aliases: ['worlds', 'choose a world', 'stadium', 'university', 'convention'] },
+  },
+  {
+    id: 'world', title: 'World', purpose: 'A world’s journeys, its role configurations by purpose, and what can be done there', product: 'shell',
+    path: '/world/:world', authority: OPEN,
+    load: () => import('./worlds/WorldPage.js'),
+  },
+  {
+    id: 'world.journey', title: 'World journey', purpose: 'One journey of a world, on synthetic data, presented to the role configurations whose work it is', product: 'shell',
+    path: '/world/:world/:journey', authority: OPEN,
+    load: () => import('./worlds/JourneyPage.js'),
+  },
+];

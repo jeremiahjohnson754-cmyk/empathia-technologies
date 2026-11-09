@@ -78,6 +78,7 @@ export default function Landing({ role }: PageProps) {
           <a className="go" href="#/tours/investor"><span className="go__ic" aria-hidden="true"><Icon name="spark" size={22} /></span><b>Watch a guided scenario</b><span>Seven scenarios · about 14 minutes</span></a>
           <a className="go" href="#problems"><span className="go__ic" aria-hidden="true"><Icon name="check" size={22} /></span><b>What each workflow solves</b><span>The customer problem behind each scenario</span></a>
         </div>
+        <a className="lnd__worlds" href="#/worlds" data-testid="worlds-entry"><b>Choose a world</b><span>Enterprise, Stadium, University or Convention: a handful of everyday journeys each, in 2D first</span></a>
         <ul className="lnd__facts" aria-label="This edition"><li><Chip tone="accent">Offline · self-contained</Chip></li><li><Chip tone="warn">Synthetic data</Chip></li><li><Chip tone="muted">No request leaves the page</Chip></li><li><Chip tone="muted">A demonstration of authorisation, not security</Chip></li></ul>
       </section>
 
