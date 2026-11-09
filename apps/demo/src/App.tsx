@@ -67,8 +67,24 @@ export function App() {
   // route focus: after an in-app navigation, focus the page's heading and announce it (not on the first load)
   useEffect(() => {
     if (first.current) { first.current = false; return; }
-    const t = setTimeout(() => { const h1 = document.querySelector<HTMLElement>('main h1'); const m = document.getElementById('main'); if (h1) { if (!h1.hasAttribute('tabindex')) h1.setAttribute('tabindex', '-1'); h1.focus({ preventScroll: false }); } else m?.focus(); setSaid(pending.current || h1?.textContent || d.title); pending.current = ''; }, 60);
-    return () => clearTimeout(t);
+    // a page whose code is still loading has no heading yet: focus stays on main until the heading arrives (within 4 s), then moves to it —
+    // unless the person has already moved focus somewhere else
+    let obs: MutationObserver | null = null; let stop: ReturnType<typeof setTimeout> | undefined;
+    const toHeading = (h1: HTMLElement) => { if (!h1.hasAttribute('tabindex')) h1.setAttribute('tabindex', '-1'); h1.focus({ preventScroll: false }); };
+    const t = setTimeout(() => {
+      const h1 = document.querySelector<HTMLElement>('main h1'); const m = document.getElementById('main');
+      // a field inside the page that changed the address (a room select, a search box) keeps the focus: the person is still using it
+      const a = document.activeElement; const inField = !!a && !!m && m.contains(a) && /^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName);
+      if (inField) { /* announce only */ } else if (h1) toHeading(h1); else {
+        m?.focus();
+        if (m && typeof MutationObserver !== 'undefined') {
+          obs = new MutationObserver(() => { const late = m.querySelector<HTMLElement>('h1'); if (!late) return; obs?.disconnect(); obs = null; const a = document.activeElement; if (!a || a === m || a === document.body) { toHeading(late); setSaid(late.textContent || d.title); } });
+          obs.observe(m, { childList: true, subtree: true }); stop = setTimeout(() => { obs?.disconnect(); obs = null; }, 4000);
+        }
+      }
+      setSaid(pending.current || h1?.textContent || d.title); pending.current = '';
+    }, 60);
+    return () => { clearTimeout(t); if (stop) clearTimeout(stop); obs?.disconnect(); };
   }, [route, role]);   // eslint-disable-line react-hooks/exhaustive-deps
 
   const home = homeOf(role);
