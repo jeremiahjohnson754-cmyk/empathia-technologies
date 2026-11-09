@@ -46,7 +46,7 @@ const pub = process.argv.includes('--public');
 log(`Empathia build${pub ? ' (public sites only)' : ''} ${new Date().toISOString()} on ${process.platform} ${process.version}`);
 run('link workspace', process.execPath, [path.join(root, 'scripts/bootstrap.mjs')]);
 run('design tokens', process.execPath, [path.join(root, 'packages/design-tokens/build-tokens.mjs')]);
-for (const p of ['packages/domain-types', 'packages/commissioning-engine', 'packages/event-contracts', 'packages/relationship-engine', 'packages/search-party', 'packages/project-governance', 'packages/service-engine', 'packages/apex-engine', 'packages/kpi-engine', 'packages/field-intelligence', 'packages/assurance-engine', 'packages/observability',
+for (const p of ['packages/domain-types', 'packages/commissioning-engine', 'packages/event-contracts', 'packages/relationship-engine', 'packages/search-party', 'packages/project-governance', 'packages/service-engine', 'packages/apex-engine', 'packages/kpi-engine', 'packages/proof-registry', 'packages/field-intelligence', 'packages/assurance-engine', 'packages/observability',
   'integrations/contracts', 'integrations/mocks', 'services/enterprise-api', 'packages/api-client', 'packages/schemas'].filter((p) => !pub || !['services/enterprise-api', 'packages/api-client', 'packages/schemas', 'integrations/contracts', 'integrations/mocks'].includes(p))) run(`tsc -b ${p}`, process.execPath, [tsc, '-b', path.join(root, p)]);
 // the release stamp: the commit the artifact was built from (RELEASE_SHA, else git), read by the API's config for telemetry release correlation
 {
