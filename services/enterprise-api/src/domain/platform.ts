@@ -5,6 +5,7 @@ import type { RequestContext, Principal } from '../auth/context.js';
 import type { Hs256Tokens } from '../auth/jwt.js';
 import { verifyPassword } from '../auth/password.js';
 import { ApiError, invalid, notFound } from '../http/errors.js';
+import { eventProblems } from '../worker/outbox.js';
 
 interface Membership { tenant_id: string; tenant_slug: string; tenant_name: string; role_key: string; authorities: string[]; site_scope: string[] | null }
 
@@ -102,18 +103,55 @@ export async function aiRequest(ctx: RequestContext, body: { purpose: string; pr
   throw new ApiError('not_configured', 'No AI model is configured in the starter. The request was logged; the permitted sources below are what an answer would have to cite.', sources.map((s) => `${s.title} (${s.source})`));
 }
 
+/** Outbox events of the caller's tenant (row-level security), never their payloads. A PENDING event can be held behind an earlier
+ *  undelivered event of the same aggregate (worker/outbox.ts): aggregate_seq (commit order) shows where it sits. failure_kind tells a retrying failure
+ *  (TRANSIENT, with next_attempt_at) from exhausted attempts (PERMANENT) and from a contract failure (NON_RETRYABLE); replay_count and
+ *  last_replay_audit_id link the event to the Evidence Ledger records of its replays (GET /v1/audit?aggregateType=OutboxEvent&aggregateId=…). */
 export async function outboxAdmin(ctx: RequestContext, status: string) {
   await ctx.require('policy.configure', 'read the outbox');
   if (!['PENDING', 'DELIVERED', 'DEAD_LETTER'].includes(status)) throw invalid('status is PENDING, DELIVERED or DEAD_LETTER');
-  return ctx.tx(async (q) => ({ items: (await q.query('SELECT id, type, aggregate_type, aggregate_id, status, attempts, next_attempt_at, last_error, occurred_at, delivered_at FROM app.outbox_event WHERE status = $1 ORDER BY occurred_at DESC LIMIT 200', [status])).rows }));
+  return ctx.tx(async (q) => ({ items: (await q.query(`SELECT id, type, aggregate_type, aggregate_id, aggregate_rev, aggregate_seq, correlation_id, status, attempts, failure_kind, next_attempt_at, last_error, replay_count, last_replay_audit_id, occurred_at, delivered_at
+    FROM app.outbox_event WHERE status = $1 ORDER BY occurred_at DESC LIMIT 200`, [status])).rows }));
 }
 
-export async function outboxRetry(ctx: RequestContext, id: string) {
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * Replay one dead-lettered event (security admin, policy.configure). A reason is required. Only a DEAD_LETTER event can be replayed
+ * (409 otherwise, so a duplicate request never requeues twice); an event of another tenant, or none, is 404 with the same answer.
+ * An event that still fails its contract (worker/outbox.ts eventProblems) is refused with 422 and the reasons: it would only be
+ * dead-lettered again, and an event cannot be edited (no route changes it; the runtime role may update its delivery state only).
+ * The audit event (Evidence Ledger) records who, when, why, the prior status, failure kind, attempts and last error, the replay number,
+ * the event's original correlation id and the outcome; refusals are audited too. The event row keeps its identity and records the
+ * replay (replay_count, last_replay_audit_id). Handlers that already took effect (their delivery receipts) are not run again.
+ */
+export async function outboxRetry(ctx: RequestContext, id: string, body: { reason?: string }) {
   await ctx.require('policy.configure', 'retry a dead-lettered event');
-  return ctx.tx(async (q) => {
-    const r = await q.query(`UPDATE app.outbox_event SET status = 'PENDING', attempts = 0, next_attempt_at = now(), last_error = NULL WHERE id = $1 AND status = 'DEAD_LETTER' RETURNING id`, [id]);
-    if (!r.rowCount) throw notFound(`dead-lettered event ${id}`);
-    await ctx.audit(q, 'outbox.retry', 'ALLOWED', { type: 'OutboxEvent', id });
-    return { id, status: 'PENDING' };
+  const reason = String(body?.reason ?? '').trim();
+  if (reason.length < 5 || reason.length > 1000) throw invalid('a reason (5–1000 characters) is required to replay an event');
+  const aggregate = { type: 'OutboxEvent', id: id.slice(0, 80) };
+  const missing = async (): Promise<never> => { await ctx.audit(null, 'outbox.retry', 'DENIED', aggregate, { reason, outcome: 'NOT_FOUND' }); throw notFound('outbox event'); };
+  if (!UUID_RE.test(id)) return missing();
+  type Ev = { status: string; attempts: number; last_error: string | null; failure_kind: string | null; replay_count: number; correlation_id: string; tenant_id: string; type: string; schema_version: string; aggregate_type: string; aggregate_id: string; aggregate_rev: number; payload: Record<string, unknown> };
+  const out = await ctx.tx(async (q) => {
+    const e = (await q.query<Ev>('SELECT status, attempts, last_error, failure_kind, replay_count, correlation_id, tenant_id, type, schema_version, aggregate_type, aggregate_id, aggregate_rev, payload FROM app.outbox_event WHERE id = $1 FOR UPDATE', [id])).rows[0];
+    if (!e) return { refused: 'NOT_FOUND' as const };
+    if (e.status !== 'DEAD_LETTER') return { refused: 'NOT_DEAD_LETTER' as const, status: e.status };
+    const problems = await eventProblems(q, e);
+    if (problems.length) return { refused: 'CONTRACT' as const, problems, failureKind: e.failure_kind };
+    const replayNumber = e.replay_count + 1;
+    const auditId = await ctx.audit(q, 'outbox.retry', 'ALLOWED', aggregate, { reason, priorStatus: e.status, priorFailureKind: e.failure_kind, priorAttempts: e.attempts, lastError: e.last_error, replayNumber, eventCorrelationId: e.correlation_id, eventType: e.type, eventAggregate: { type: e.aggregate_type, id: e.aggregate_id, rev: e.aggregate_rev }, outcome: 'REQUEUED' });
+    await q.query(`UPDATE app.outbox_event SET status = 'PENDING', attempts = 0, next_attempt_at = now(), last_error = NULL, failure_kind = NULL, lease_owner = NULL, lease_until = NULL, replay_count = $2, last_replay_audit_id = $3 WHERE id = $1`, [id, replayNumber, auditId]);
+    return { id, status: 'PENDING', priorAttempts: e.attempts, priorFailureKind: e.failure_kind, replayNumber, auditId };
   });
+  if ('refused' in out) {
+    if (out.refused === 'NOT_FOUND') return missing();
+    if (out.refused === 'CONTRACT') {
+      await ctx.audit(null, 'outbox.retry', 'DENIED', aggregate, { reason, status: 'DEAD_LETTER', failureKind: out.failureKind, problems: out.problems, outcome: 'REFUSED_CONTRACT' });
+      throw new ApiError('rule_refused', 'this event fails its contract and would be dead-lettered again; events cannot be edited', out.problems);
+    }
+    await ctx.audit(null, 'outbox.retry', 'DENIED', aggregate, { reason, status: out.status, outcome: 'REFUSED_NOT_DEAD_LETTERED' });
+    throw new ApiError('conflict', `only a dead-lettered event can be replayed; this one is ${out.status}`);
+  }
+  return out;
 }

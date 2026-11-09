@@ -21,7 +21,7 @@ correlation id. Real captured examples: [EXAMPLES.md](EXAMPLES.md).
 | `not_found` | 404 | Not found | no such endpoint; a record outside the caller's tenant **or site scope** (existence is not disclosed) |
 | `validation` | 400 | The request is not valid | body or query fails the route schema; unknown query parameter; body is not JSON; bad Idempotency-Key format; bad path id |
 | `validation` | **405** | The request is not valid | the path exists but not with this method (`allow` header lists the methods) |
-| `conflict` | 409 | The record changed or already exists | unique violation (PostgreSQL 23505), e.g. an existing project code; several memberships match at sign-in (with the choices in `reasons`) |
+| `conflict` | 409 | The record changed or already exists | unique violation (PostgreSQL 23505), e.g. an existing project code; several memberships match at sign-in (with the choices in `reasons`); an Idempotency-Key still held by a concurrent request (or one that ended without recording its response): the request is not run twice |
 | `rule_refused` | 422 | Refused by a business rule | a domain rule refuses: lifecycle gates, results before COMMISSIONING, self-verification, unchanged revision, work order on a design deficiency, …; also every database rule below |
 | `idempotency_mismatch` | 422 | Idempotency key reused with a different request | same Idempotency-Key, different method/path/body |
 | `payload_too_large` | 413 | Request too large | body over `MAX_BODY_BYTES` (default 25 MiB) |

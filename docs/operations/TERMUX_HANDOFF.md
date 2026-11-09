@@ -66,6 +66,24 @@ build and tests on it (`.github/workflows/ci.yml`); check the result on the repo
 - **Fastest:** Render dashboard → the static site → **Deploys** → the previous deploy → **Rollback**.
 - **In Git:** on the phone, `git revert -m 1 <merge-commit>` then `git push`. Render redeploys the reverted `main`.
 
+## Updating a branch you already pushed
+
+Use this when a newer bundle arrives for the same branch: the same steps, then a normal push. The new commits sit on top of the ones
+already on GitHub, so this is a fast-forward and no force push is needed.
+
+```sh
+cd ~/storage/downloads && sha256sum -c empathia-restoration-sprint-0-1.bundle.sha256 && cp empathia-restoration-sprint-0-1.bundle ~/work/
+cd ~/work/empathia-technologies
+git checkout restoration/sprint-0-1 && git pull --ff-only origin restoration/sprint-0-1       # match what GitHub has first
+git fetch ../empathia-restoration-sprint-0-1.bundle restoration/sprint-0-1:refs/remotes/bundle/sprint
+git merge --ff-only bundle/sprint                                                              # refuses if anything diverged
+git log --oneline -5                                                                           # the top commit must match the one given with the bundle
+git push origin restoration/sprint-0-1
+```
+
+CI starts on the push (the workflow also runs on `restoration/**` branches). Open the run under **Actions**. It must end with
+"RELEASABLE (platform)". The evidence is kept 90 days, as the artifact `test-evidence-<commit>`.
+
 ## Troubleshooting
 
 | Symptom | Fix |
@@ -74,3 +92,4 @@ build and tests on it (`.github/workflows/ci.yml`); check the result on the repo
 | `error: Repository lacks these prerequisite commits` | Your local `main` is older than `ea84222`. Run `git fetch origin && git checkout main && git pull`, then repeat step 3b. |
 | `Authentication failed` | Use the token, not your GitHub password. Check that it covers this repository with Contents read and write. |
 | `Permission denied` on `~/storage` | Run `termux-setup-storage` again and allow access. |
+| `Not possible to fast-forward` | GitHub has a commit the bundle does not (someone pushed meanwhile). Stop and send the output of `git log --oneline -5 origin/restoration/sprint-0-1`. |

@@ -1,6 +1,6 @@
 /** Administration: integrations (honest states), outbox dead letters, people, audit. Each tab's data is refused by the API to other roles. */
 import { useState } from 'react';
-import { Button, DataTable, Empty, ErrorState, Facts, Loading, Notice, StatusBadge, Tabs, Tag, INTEGRATION } from '@empathia/ui';
+import { Button, DataTable, Empty, ErrorState, Facts, Field, Loading, Notice, StatusBadge, Tabs, Tag, INTEGRATION } from '@empathia/ui';
 import { api, useMutation, useQuery } from '../api.js';
 import { go } from '../router.js';
 import { useMe } from '../me.js';
@@ -39,12 +39,22 @@ function Integrations() {
 }
 
 function Outbox() {
+  const [reason, setReason] = useState('');
   const q = useQuery<{ items: Array<Record<string, string>> }>('outbox', () => api.call('getV1AdminOutbox', { query: { status: 'DEAD_LETTER' } }) as never);
-  const retry = useMutation((event: string) => api.call('postV1AdminOutboxEventRetry', { params: { event } }), ['outbox']);
-  return q.error ? <ErrorState error={q.error} /> : !q.data ? <Loading /> : <DataTable rows={q.data.items} rowKey={(x) => x['id']!} dense caption="Dead-lettered events" empty={<Empty title="No dead-lettered events">Every event was delivered.</Empty>} columns={[
-    { key: 't', header: 'Event', render: (x) => <span className="mono">{x['type']}</span> }, { key: 'a', header: 'Aggregate', render: (x) => `${x['aggregate_type']} ${x['aggregate_id']}` },
-    { key: 'n', header: 'Attempts', render: (x) => x['attempts'], align: 'right' }, { key: 'e', header: 'Last error', render: (x) => <span className="ui-meta">{x['last_error']}</span> },
-    { key: 'r', header: '', render: (x) => <Button small kind="quiet" busy={retry.busy} onClick={() => void retry.run(x['id']!)}>Retry</Button> }]} />;
+  const retry = useMutation((event: string) => api.call('postV1AdminOutboxEventRetry', { params: { event }, body: { reason: reason.trim() } }), ['outbox']);
+  const ready = reason.trim().length >= 5;
+  return q.error ? <ErrorState error={q.error} /> : !q.data ? <Loading /> : (
+    <div className="stack">
+      <Notice tone="muted">A dead-lettered event holds the later events of the same record until it is replayed. A replay is recorded in the audit trail with your reason, the attempts so far and the last error.</Notice>
+      <Field label="Reason for the replay" hint="At least 5 characters; kept in the audit trail.">{(id, h) => <input id={id} aria-describedby={h} value={reason} onChange={(e) => setReason(e.target.value)} maxLength={1000} />}</Field>
+      {retry.error ? <ErrorState error={retry.error} /> : null}
+      <DataTable rows={q.data.items} rowKey={(x) => x['id']!} dense caption="Dead-lettered events" empty={<Empty title="No dead-lettered events">Every event was delivered.</Empty>} columns={[
+        { key: 't', header: 'Event', render: (x) => <span className="mono">{x['type']}</span> }, { key: 'a', header: 'Aggregate', render: (x) => `${x['aggregate_type']} ${x['aggregate_id']}` },
+        { key: 'n', header: 'Attempts', render: (x) => x['attempts'], align: 'right' }, { key: 'k', header: 'Failure', render: (x) => <Tag tone={x['failure_kind'] === 'NON_RETRYABLE' ? 'bad' : 'warn'}>{x['failure_kind'] || '—'}</Tag> },
+        { key: 'e', header: 'Last error', render: (x) => <span className="ui-meta">{x['last_error']}</span> }, { key: 'p', header: 'Replays', render: (x) => x['replay_count'], align: 'right' },
+        { key: 'r', header: '', render: (x) => <Button small kind="quiet" busy={retry.busy} disabled={!ready} title={ready ? undefined : 'Enter a reason first'} onClick={() => void retry.run(x['id']!)}>Replay</Button> }]} />
+    </div>
+  );
 }
 
 function People() {

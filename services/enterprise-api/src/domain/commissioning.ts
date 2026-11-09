@@ -11,7 +11,7 @@ import type { ApplicabilityRow, RecordedResult } from '@empathia/domain-types';
 import type { Queryable } from '../db/pg.js';
 import type { RequestContext } from '../auth/context.js';
 import type { ObjectStore } from '../storage/objectStore.js';
-import { analyze, findRoom, load, relate } from './rooms.js';
+import { analyze, findRoom, load, relate, reverificationNow } from './rooms.js';
 import { ApiError, invalid, notFound, refused } from '../http/errors.js';
 
 async function code(q: Queryable, kind: string, prefix: string): Promise<string> { return (await q.query<{ c: string }>('SELECT app.next_code($1, $2) AS c', [kind, prefix])).rows[0]!.c; }
@@ -79,13 +79,19 @@ export async function recordResult(ctx: RequestContext, ref: string, body: { tes
   return ctx.tx(async (q) => {
     const room = await findRoom(ctx, q, ref, true);
     const { planId, row } = await currentPlanRow(q, room.id, body.testId);
-    const ev = (await q.query<{ id: string }>('SELECT id FROM app.evidence_object WHERE id = $1', [body.evidenceId])).rows[0];
+    const ev = (await q.query<{ id: string; uploaded_ms: number; uploaded_at: string }>("SELECT id, (extract(epoch FROM uploaded_at) * 1000)::float8 AS uploaded_ms, to_json(uploaded_at) #>> '{}' AS uploaded_at FROM app.evidence_object WHERE id = $1", [body.evidenceId])).rows[0];
     if (!ev) throw notFound(`evidence ${body.evidenceId}`);
     const why = recordBlockers(room.lifecycle, row, ctx.p.role, { state: body.state, evidence: { kind: body.evidenceKind, ref: body.evidenceId, instrument: body.instrument ?? null } });
     if (why.length) {
       const isRole = /is not the responsible role/.test(why[0]!);
       await ctx.audit(null, 'commission.result.record', 'DENIED', { type: 'Room', id: room.code }, { testId: body.testId, why });   // own transaction: survives the rollback (RT-01)
       throw isRole ? new ApiError('forbidden', why[0]!) : refused(why);
+    }
+    // ADR-0012: a test that a change of unit reopened is re-run on the new unit — with evidence obtained after the change. Evidence
+    // uploaded before it (whatever it was uploaded for) was obtained on the previous unit and never satisfies the re-run.
+    const reopened = (await reverificationNow(q, room, await load(ctx, q, room.id))).reverification.find((t) => t.testId === body.testId);
+    if (reopened && ev.uploaded_ms <= Date.parse(reopened.substitutedAt)) {
+      await ctx.refuse('commission.result.record', { type: 'Room', id: room.code }, [`evidence ${body.evidenceId} was uploaded at ${ev.uploaded_at}, before the change of unit at ${reopened.assets.join(', ')} (${reopened.substitutedAt}): ${body.testId} is re-run on the new unit, with evidence obtained after the change`], { testId: body.testId, evidenceId: body.evidenceId });
     }
     const prev = (await q.query<{ result_id: string }>('SELECT result_id FROM app.current_result WHERE room_id = $1 AND test_id = $2', [room.id, body.testId])).rows[0];
     const r = (await q.query<{ id: string }>(`INSERT INTO app.test_result (tenant_id, room_id, test_id, state, evidence_id, evidence_kind, instrument, recorded_by, recorded_role, supersedes) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING id`,
@@ -130,6 +136,9 @@ export async function verifyResult(ctx: RequestContext, ref: string, testId: str
     const rr: RecordedResult | undefined = cur ? { state: cur.state as RecordedResult['state'], evidence: { kind: cur.evidence_kind, ref: cur.evidence_id }, by: cur.recorded_by, verified: cur.verified_by ? { by: cur.verified_by } : null } : undefined;
     const why = verifyBlockers(rr, ctx.p.personId);
     if (why.length) await ctx.refuse('commission.result.verify', { type: 'Room', id: room.code }, why, { testId });
+    // a result recorded on a unit that has since been replaced or substituted no longer counts: it is re-run, never verified (ADR-0012)
+    const stale = (await reverificationNow(q, room, await load(ctx, q, room.id))).reverification.find((t) => t.testId === testId && t.rerun);
+    if (stale) await ctx.refuse('commission.result.verify', { type: 'Room', id: room.code }, [`the current result of ${testId} was recorded on the previous unit (before the change of unit at ${stale.assets.join(', ')}, ${stale.substitutedAt}): it no longer counts and is not verified — re-run the test on the new unit`], { testId });
     await q.query('INSERT INTO app.verification (tenant_id, result_id, recorded_by, verified_by, verified_role) VALUES ($1,$2,$3,$4,$5)', [ctx.p.tenantId, cur!.result_id, cur!.recorded_by, ctx.p.personId, ctx.p.role]);
     const label = resultLabel({ ...rr!, verified: { by: ctx.p.personId } });
     await ctx.emit(q, 'room.test_verified', { type: 'Room', id: room.code, rev: room.rev }, { designId: room.code, testId, resultLabel: label, verifiedBy: ctx.p.personId });

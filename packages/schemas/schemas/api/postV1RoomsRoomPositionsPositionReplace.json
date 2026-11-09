@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomPositionsPositionReplace/0.1.0.json",
+  "title": "POST /v1/rooms/{room}/positions/{position}/replace request body",
+  "description": "Replace the unit at a position like for like (another unit of the same model), atomically: the old installation closes (REPLACED, its history kept), the new one opens, the outbox event and the audit row are written, and the tests that covered the position are reopened (INSTALLED_UNVERIFIED or COMMISSIONING; an accepted room is recommissioned first; a different model is a design change: PATCH the device)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "expectedInstallation",
+    "reason"
+  ],
+  "properties": {
+    "expectedInstallation": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 500
+    },
+    "asset": {
+      "type": "string",
+      "pattern": "^AS-[0-9]{4,10}$",
+      "description": "physical asset code (AS-0001)"
+    },
+    "manufacturer": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "serial": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "evidenceId": {
+      "type": "string",
+      "format": "uuid"
+    }
+  }
+}

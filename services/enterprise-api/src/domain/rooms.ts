@@ -8,7 +8,8 @@
 import crypto from 'node:crypto';
 import {
   analyzeRoom, polygonCheck, outlineFor, parseLength, templateDevices, newDevice, proposeConnections, drawingInput, DRAWING_KINDS,
-  lifecycleBlockers, LIFECYCLE_AUTHORITY, defaultCatalog, area, ENGINE_VERSION,
+  lifecycleBlockers, LIFECYCLE_AUTHORITY, defaultCatalog, area, ENGINE_VERSION, rerunTask, identityOf, revisionApprovalBlockers, designBindingTask, REVISION_APPROVAL,
+  type ChangeKind, type UnitChange, type DesignBinding, type DesignSnapshot, type RevisionBinding, type DesignEdit,
 } from '@empathia/commissioning-engine';
 import type { Connection, PlannedDevice, RecordedResult, RoomDesignInput, RoomLifecycle } from '@empathia/domain-types';
 import { ROOM_LIFECYCLE } from '@empathia/domain-types';
@@ -16,6 +17,10 @@ import { asJson, type Queryable } from '../db/pg.js';
 import type { RequestContext } from '../auth/context.js';
 import { publish as publishBaseline } from './baselines.js';
 import { ApiError, notFound, refused, invalid } from '../http/errors.js';
+import { applyReplacement, planSubstitution, recordRoomInstallation, roomInstallations, failpoint } from './installations.js';
+import { substitutionsFrom, changesFrom, reverificationFrom, gateFacts, revisionBindingFrom, designBindingFact, type Substitution, type Reverification, type Change } from './reverification.js';
+import { designEditFor, patchEdit } from './design-edits.js';
+export type { Substitution, Reverification };
 
 const sha256 = (s: string) => crypto.createHash('sha256').update(s).digest('hex');
 const C = defaultCatalog;
@@ -158,8 +163,13 @@ async function unrelate(q: Queryable, fromType: string, fromId: string, rel: str
 }
 
 // ------------------------------------------------------------------------------------------------ helpers for mutations
-const PLANNED_ONLY = (r: RoomRow) => { if (r.lifecycle !== 'PLANNED') throw refused([`the design is ${r.lifecycle}: changes need a change order`]); };
-async function bump(q: Queryable, r: RoomRow): Promise<number> { const n = r.rev + 1; await q.query('UPDATE app.room SET rev = $2 WHERE id = $1', [r.id, n]); r.rev = n; return n; }
+/** D-39: which design edits the room accepts now is the shared engine's rule (`designEditRefusal`, through domain/design-edits.ts) — every
+ *  edit while PLANNED; while an accepted room is recommissioned a model substitution only; nothing otherwise. Build a Room runs the same. */
+async function designEdit(q: Queryable, r: RoomRow, edit: DesignEdit): Promise<void> {
+  const recom = r.lifecycle === 'COMMISSIONING' ? !!(await recommissioning(q, r)) : false;
+  const why = designEditFor(r, recom, edit); if (why) throw refused([why]);
+}
+export async function bump(q: Queryable, r: RoomRow): Promise<number> { const n = r.rev + 1; await q.query('UPDATE app.room SET rev = $2 WHERE id = $1', [r.id, n]); r.rev = n; return n; }
 async function nextCode(q: Queryable, kind: string, prefix: string): Promise<string> { return (await q.query<{ c: string }>('SELECT app.next_code($1, $2) AS c', [kind, prefix])).rows[0]!.c; }
 const connRel = (kind: string) => (kind === 'signal' ? 'FEEDS' : 'CONNECTS_TO');
 
@@ -235,7 +245,7 @@ export async function addDevice(ctx: RequestContext, ref: string, body: { catego
   await ctx.require('room.design', 'add a device', { type: 'Room', id: ref });
   if (!C.categories[body.category]) throw invalid(`unknown equipment category ${body.category}`);
   return ctx.tx(async (q) => {
-    const room = await findRoom(ctx, q, ref, true); PLANNED_ONLY(room);
+    const room = await findRoom(ctx, q, ref, true); await designEdit(q, room, 'add-device');
     const L = await load(ctx, q, room.id);
     const b = { w: Math.max(...room.geometry.points.map((p) => p[0])), l: Math.max(...room.geometry.points.map((p) => p[1])) };
     const code = await nextCode(q, 'asset', 'PA-');
@@ -249,12 +259,20 @@ export async function addDevice(ctx: RequestContext, ref: string, body: { catego
   });
 }
 
-export async function changeDevice(ctx: RequestContext, ref: string, assetCode: string, body: { x?: number; y?: number; mount?: string; rot?: number; model?: string }) {
+export async function changeDevice(ctx: RequestContext, ref: string, assetCode: string, body: { x?: number; y?: number; mount?: string; rot?: number; model?: string; expectedInstallation?: string; asset?: string }) {
   await ctx.require('room.design', 'change a device', { type: 'Room', id: ref });
   return ctx.tx(async (q) => {
-    const room = await findRoom(ctx, q, ref, true); PLANNED_ONLY(room);
+    const room = await findRoom(ctx, q, ref, true);
+    // ADR-0003 change order: an accepted room under recommissioning accepts a model substitution (the asset keeps its id and position;
+    // the substitution's time is in the model history, so the results it invalidates are known exactly). Anything else stays PLANNED-only.
+    const recom = room.lifecycle === 'PLANNED' ? null : await recommissioning(q, room);
+    { const why = designEditFor(room, !!recom, patchEdit(body)); if (why) throw refused([why]); }   // D-39: the shared rule
+    if (!recom && (body.expectedInstallation || body.asset)) throw invalid('expectedInstallation and asset apply to a model substitution of an installed room under recommissioning');
     const a = (await q.query<AssetRow & { id: string }>('SELECT * FROM app.planned_asset WHERE room_id = $1 AND code = $2 AND removed_at IS NULL', [room.id, assetCode])).rows[0];
     if (!a) throw notFound(`device ${assetCode} in ${room.code}`);
+    // ADR-0012: the position keeps its code; the unit of the previous model is taken out (SUBSTITUTED, its history kept) and a unit of
+    // the new model is installed — planned (and refused) before anything is written, applied in this same transaction
+    const sub = recom && body.model && body.model !== a.model ? await planSubstitution(ctx, q, room, assetCode, body.model, body) : null;
     const sets: string[] = []; const args: unknown[] = [a.id];
     for (const k of ['x', 'y', 'rot'] as const) if (body[k] != null) { if (!Number.isFinite(body[k])) throw invalid(`${k} must be a number`); args.push(Math.round(body[k]! * 100) / 100); sets.push(`${k} = $${args.length}`); }
     if (body.mount) { if (!['wall', 'ceiling', 'floor', 'table', 'rack'].includes(body.mount)) throw invalid('mount is wall, ceiling, floor, table or rack'); args.push(body.mount); sets.push(`mount = $${args.length}`); }
@@ -268,15 +286,25 @@ export async function changeDevice(ctx: RequestContext, ref: string, assetCode: 
     if (!sets.length) throw invalid('nothing to change');
     await q.query(`UPDATE app.planned_asset SET ${sets.join(', ')} WHERE id = $1`, args);
     const rev = await bump(q, room);
-    await ctx.emit(q, event, { type: 'Room', id: room.code, rev }, payload);
-    return { assetId: assetCode, ...(await analyze(ctx, q, room.id, `${event === 'room.device_swapped' ? 'device swapped' : 'device moved'} ${assetCode}`)) };
+    const eventId = await ctx.emit(q, event, { type: 'Room', id: room.code, rev }, payload);
+    const unit = sub ? await applyReplacement(ctx, q, sub.pos, sub.plan, sub.spare, { note: `model substitution ${a.model} → ${body.model}`, evidenceId: null, eventId }) : null;
+    const s = await analyze(ctx, q, room.id, `${event === 'room.device_swapped' ? 'device swapped' : 'device moved'} ${assetCode}`);
+    if (!recom) return { assetId: assetCode, ...s };
+    // the substitution reopens the results that covered the replaced unit (the demonstrator's asset replacement, v25CxReplace)
+    const subs = substitutions(await load(ctx, q, room.id), recom.published_ms).filter((x) => x.assetId === assetCode);
+    const affected = (await reverification(q, room.id, subs)).map((t) => t.testId);
+    const planId = (await q.query<{ id: string }>('SELECT id FROM app.cx_plan WHERE room_id = $1 ORDER BY compiled_at DESC, id DESC LIMIT 1', [room.id])).rows[0]?.id || '';
+    await ctx.emit(q, 'commission.asset_replaced', { type: 'Room', id: room.code, rev }, { planId, assetId: assetCode, affected, roomId: room.code, from: a.model, to: body.model!, baselineVersion: recom.version, kind: 'SUBSTITUTED', fromAsset: unit?.closed.asset ?? null, toAsset: unit?.opened.asset ?? null, installationId: unit?.opened.installation ?? null });
+    failpoint('installation.substitute:after-records');
+    await ctx.audit(q, 'commission.asset_replaced', 'ALLOWED', { type: 'Room', id: room.code }, { assetId: assetCode, from: a.model, to: body.model, baselineVersion: recom.version, affected, kind: 'SUBSTITUTED', fromAsset: unit?.closed.asset ?? null, toAsset: unit?.opened.asset ?? null, closedInstallation: unit?.closed.installation ?? null, installation: unit?.opened.installation ?? null });
+    return { assetId: assetCode, ...s, reverification: affected, installation: unit ? { closed: unit.closed, installed: unit.opened, model: body.model } : null };
   });
 }
 
 export async function removeDevice(ctx: RequestContext, ref: string, assetCode: string) {
   await ctx.require('room.design', 'remove a device', { type: 'Room', id: ref });
   return ctx.tx(async (q) => {
-    const room = await findRoom(ctx, q, ref, true); PLANNED_ONLY(room);
+    const room = await findRoom(ctx, q, ref, true); await designEdit(q, room, 'remove-device');
     const a = (await q.query<{ id: string }>('UPDATE app.planned_asset SET removed_at = now() WHERE room_id = $1 AND code = $2 AND removed_at IS NULL RETURNING id', [room.id, assetCode])).rows[0];
     if (!a) throw notFound(`device ${assetCode} in ${room.code}`);
     await q.query('UPDATE app.connection SET removed_at = now() WHERE (from_asset = $1 OR to_asset = $1) AND removed_at IS NULL', [a.id]);
@@ -291,7 +319,7 @@ export async function addConnection(ctx: RequestContext, ref: string, body: { fr
   await ctx.require('room.design', 'add a connection', { type: 'Room', id: ref });
   if (!['network', 'signal', 'control', 'power'].includes(body.kind)) throw invalid('kind is network, signal, control or power');
   return ctx.tx(async (q) => {
-    const room = await findRoom(ctx, q, ref, true); PLANNED_ONLY(room);
+    const room = await findRoom(ctx, q, ref, true); await designEdit(q, room, 'add-connection');
     const both = (await q.query<{ code: string }>('SELECT code FROM app.planned_asset WHERE room_id = $1 AND code = ANY($2::text[]) AND removed_at IS NULL', [room.id, [body.from, body.to]])).rows;
     if (body.from === body.to || both.length !== 2) throw refused(['a connection needs two different devices of this design']);
     const dup = (await q.query('SELECT 1 FROM app.connection c JOIN app.planned_asset fa ON fa.id = c.from_asset JOIN app.planned_asset ta ON ta.id = c.to_asset WHERE c.room_id = $1 AND fa.code = $2 AND ta.code = $3 AND c.kind = $4 AND c.removed_at IS NULL', [room.id, body.from, body.to, body.kind])).rowCount;
@@ -307,7 +335,7 @@ export async function addConnection(ctx: RequestContext, ref: string, body: { fr
 export async function removeConnection(ctx: RequestContext, ref: string, connCode: string) {
   await ctx.require('room.design', 'remove a connection', { type: 'Room', id: ref });
   return ctx.tx(async (q) => {
-    const room = await findRoom(ctx, q, ref, true); PLANNED_ONLY(room);
+    const room = await findRoom(ctx, q, ref, true); await designEdit(q, room, 'remove-connection');
     const c = (await q.query<{ kind: string; f: string; t: string }>(`UPDATE app.connection c SET removed_at = now() FROM app.planned_asset fa, app.planned_asset ta WHERE c.room_id = $1 AND c.code = $2 AND c.removed_at IS NULL AND fa.id = c.from_asset AND ta.id = c.to_asset RETURNING c.kind, fa.code AS f, ta.code AS t`, [room.id, connCode])).rows[0];
     if (!c) throw notFound(`connection ${connCode} in ${room.code}`);
     await unrelate(q, 'PlannedAsset', c.f, connRel(c.kind), 'PlannedAsset', c.t);
@@ -338,6 +366,98 @@ export async function saveRevision(ctx: RequestContext, ref: string, reason: str
     if (!r) { const last = (await q.query<{ n: number }>('SELECT max(rev_no) AS n FROM app.room_revision WHERE room_id = $1', [room.id])).rows[0]!.n; throw refused([`nothing changed since revision ${last}`]); }
     const s = await analyze(ctx, q, room.id, `revision ${r.revision} saved`);
     return { ...r, ...s };
+  });
+}
+
+// ------------------------------------------------------------------------------------------------ recommissioning (ADR-0003): the change order of an accepted room
+/** The CURRENT baseline of a room under recommissioning (ACCEPTED → COMMISSIONING): the one state in which an accepted design changes. */
+export async function recommissioning(q: Queryable, room: Pick<RoomRow, 'id' | 'lifecycle'>): Promise<{ id: string; version: number; design_revision: number; published_ms: number } | null> {
+  if (room.lifecycle !== 'COMMISSIONING') return null;
+  return (await q.query<{ id: string; version: number; design_revision: number; published_ms: number }>("SELECT id, version, design_revision, (extract(epoch FROM published_at) * 1000)::float8 AS published_ms FROM app.assurance_baseline WHERE room_id = $1 AND state = 'CURRENT'", [room.id])).rows[0] ?? null;
+}
+
+/** Model substitutions since the baseline was published, from each asset's model history (the model it had at acceptance → now). */
+const substitutions = (L: Loaded, sinceMs: number): Substitution[] => substitutionsFrom(L.assets, sinceMs);
+/**
+ * The tests a substitution reopens. The rule is the shared engine's `reopenedBySubstitution` (ported from the demonstrator's asset
+ * replacement, v25CxReplace; Build a Room in the investor demonstration calls the same function): every applicable test whose plan row
+ * names the substituted asset, the Video tests when a camera is substituted, the Audio tests when a part of the audio chain is, and the
+ * asset-identity check. A result recorded before the substitution was obtained on the previous model: it no longer counts for the
+ * re-acceptance, and the test is re-run (`rerun`) and verified again. The plan, the results and that bookkeeping are read here.
+ */
+async function reverification(q: Queryable, roomId: string, subs: Change[]): Promise<Reverification[]> {
+  if (!subs.length) return [];
+  const plan = (await q.query<{ id: string }>('SELECT id FROM app.cx_plan WHERE room_id = $1 ORDER BY compiled_at DESC, id DESC LIMIT 1', [roomId])).rows[0];
+  if (!plan) return [];
+  const rows = (await q.query<{ test_id: string; label: string; domain: string; personas: string[]; evidence: string[]; instrument: boolean; devices: string[] }>('SELECT test_id, label, domain, personas, evidence, instrument, devices FROM app.cx_plan_row WHERE plan_id = $1 AND applicable ORDER BY phase, tier, test_id', [plan.id])).rows;
+  const res = new Map((await q.query<{ test_id: string; result_label: string; recorded_ms: number; recorded_at: string }>("SELECT test_id, result_label, (extract(epoch FROM recorded_at) * 1000)::float8 AS recorded_ms, to_json(recorded_at) #>> '{}' AS recorded_at FROM app.current_result WHERE room_id = $1", [roomId])).rows.map((r) => [r.test_id, r]));
+  return reverificationFrom(rows, res, subs);   // the pure adapter: the shared rule + the API's bookkeeping (domain/reverification.ts)
+}
+
+/**
+ * The changes of unit that reopen tests now (ADR-0012), and the tests they reopen: while an accepted room is recommissioned, the model
+ * substitutions of the design history and the like-for-like replacements recorded since the current baseline was published; otherwise
+ * the like-for-like replacements recorded at any time (during installation and first commissioning). Derived from the append-only
+ * installation records on every read — never stored separately, so a rolled-back replacement reopens nothing.
+ */
+export interface ReverificationNow { recommissioning: Awaited<ReturnType<typeof recommissioning>>; changes: UnitChange[]; reverification: Reverification[]; kinds: ChangeKind[] }
+export async function reverificationNow(q: Queryable, room: RoomRow, L: Loaded): Promise<ReverificationNow> {
+  const recom = await recommissioning(q, room);
+  const { facts } = await roomInstallations(q, room.id);
+  const changes = changesFrom(L.assets, facts, recom ? recom.published_ms : null);
+  return { recommissioning: recom, changes, reverification: await reverification(q, room.id, changes), kinds: [...new Set(changes.map((c) => c.kind))] };
+}
+
+export interface RecommissionImpact {
+  baseline: { id: string; version: number; designRevision: number };
+  substitutions: Substitution[];
+  /** every change of unit since the baseline, labelled: SUBSTITUTED (a different model) or REPLACED (another unit of the same model) */
+  changes: UnitChange[];
+  design: RevisionBinding;
+  reverification: Reverification[];
+}
+/** Everything a recommissioning change requires before the re-acceptance; null when the room is not being recommissioned. */
+export async function recommissionImpact(q: Queryable, room: RoomRow, L: Loaded, known?: ReverificationNow): Promise<RecommissionImpact | null> {
+  const b = await recommissioning(q, room); if (!b) return null;
+  const subs = substitutions(L, b.published_ms);
+  const rv = known ?? await reverificationNow(q, room, L);
+  const revs = (await q.query<{ rev_no: number; created_by: string; snapshot: DesignSnapshot }>('SELECT rev_no, created_by, snapshot FROM app.room_revision WHERE room_id = $1 AND (rev_no = $2 OR rev_no = (SELECT max(rev_no) FROM app.room_revision WHERE room_id = $1)) ORDER BY rev_no', [room.id, room.approved_revision])).rows;
+  return {
+    baseline: { id: b.id, version: b.version, designRevision: b.design_revision }, substitutions: subs, changes: rv.changes,
+    // whether the approved (and the latest) revision still describes the room: the engine's designKey comparison (binding.ts)
+    design: revisionBindingFrom(revs, room.approved_revision, L.input),
+    reverification: rv.reverification,
+  };
+}
+/** The design-binding fact of the shared acceptance gate (ADR-0003): the re-acceptance binds an approved revision that describes the room.
+ *  The sentence, and its place among the reasons (`ACCEPTANCE_BLOCKER_ORDER`), are the engine's — the demonstration hands it the same fact. */
+export const recommissionBinding = (rc: RecommissionImpact | null): DesignBinding | null => (rc ? designBindingFact(rc.design, rc.substitutions) : null);
+const rvFacts = (rv: ReverificationNow) => gateFacts(rv.reverification, rv.changes);
+
+/** Approve the saved revision that carries a recommissioning change (the DESIGN_APPROVED rules, applied while the room stays COMMISSIONING). */
+export async function approveRevision(ctx: RequestContext, ref: string, revNo: number) {
+  await ctx.require(REVISION_APPROVAL.authority, REVISION_APPROVAL.action, { type: 'Room', id: ref });
+  if (!Number.isInteger(revNo) || revNo < 1) throw invalid('rev is a revision number');
+  return ctx.tx(async (q) => {
+    const room = await findRoom(ctx, q, ref, true);
+    const action = 'room.revision.approve'; const agg = { type: 'Room', id: room.code };
+    const rc = await recommissionImpact(q, room, await load(ctx, q, room.id));
+    const cls = room.approved_class as { stale?: boolean } | null;
+    const open = (await q.query<{ severity: string }>("SELECT severity FROM app.room_issue WHERE room_id = $1 AND state = 'OPEN' AND category = 'DESIGN_DEFICIENCY'", [room.id])).rows;
+    // the rule is the engine's (`revisionApprovalBlockers`), the one Build a Room's "Approve revision" runs
+    const facts = { room: room.code, lifecycle: room.lifecycle, revision: revNo, classificationApproved: !!cls && !cls.stale, openIssues: open };
+    if (!rc) return ctx.refuse(action, agg, revisionApprovalBlockers({ ...facts, binding: null }), { revision: revNo });
+    const rev = (await q.query<{ rev_no: number; created_by: string }>('SELECT rev_no, created_by FROM app.room_revision WHERE room_id = $1 AND rev_no = $2', [room.id, revNo])).rows[0];
+    if (!rev) throw notFound(`revision ${revNo} of ${room.code}`);
+    const why = revisionApprovalBlockers({ ...facts, binding: rc.design });
+    if (why.length) await ctx.refuse(action, agg, why, { revision: revNo });
+    await ctx.separate(action, agg, [rev.created_by], REVISION_APPROVAL.what);   // ADR-0005: never by the author of the revision
+    const previous = room.approved_revision;
+    await q.query('UPDATE app.room SET approved_revision = $2 WHERE id = $1', [room.id, revNo]);
+    const r = await bump(q, room);
+    await ctx.emit(q, 'room.design_approved', { type: 'Room', id: room.code, rev: r }, { designId: room.code, revision: revNo, previous, during: 'recommissioning' });
+    await ctx.audit(q, action, 'ALLOWED', agg, { revision: revNo, previous, substitutions: rc.substitutions.map((s) => ({ assetId: s.assetId, from: s.from, to: s.to })) });
+    return { revision: revNo, approvedRevision: revNo, previous, ...(await analyze(ctx, q, room.id, `revision ${revNo} approved during recommissioning`)) };
   });
 }
 
@@ -401,11 +521,15 @@ export async function transition(ctx: RequestContext, ref: string, to: RoomLifec
     const rows = plan ? (await q.query<{ test_id: string; applicable: boolean }>('SELECT test_id, applicable FROM app.cx_plan_row WHERE plan_id = $1', [plan.id])).rows : [];
     const labels = new Map((await q.query<{ test_id: string; result_label: string }>('SELECT test_id, result_label FROM app.current_result WHERE room_id = $1', [room.id])).rows.map((r) => [r.test_id, r.result_label]));
     const approved = room.approved_class as { stale?: boolean } | null;
+    // a result recorded on a unit that has since been replaced or substituted is superseded: it never counts (ADR-0012)
+    const rvn = await reverificationNow(q, room, L);
+    // a re-acceptance after a recommissioning change binds an approved revision that describes the room, and results obtained on it
+    const rc = to === 'ACCEPTED' ? await recommissionImpact(q, room, L, rvn) : null;
     const why = lifecycleBlockers({
       from: room.lifecycle, to, classificationApproved: !!approved && !approved.stale, openIssues: open,
       savedRevisions: (await q.query<{ n: number }>('SELECT count(*)::int AS n FROM app.room_revision WHERE room_id = $1', [room.id])).rows[0]!.n,
       rows: rows.map((r) => ({ id: r.test_id, applicable: r.applicable, result: (labels.get(r.test_id) || 'NOT_TESTED') as never } as never)),
-      results: L.results, hasBaseline: !!room.baseline, hasLiveMonitoringEvidence: false,
+      results: L.results, hasBaseline: !!room.baseline, hasLiveMonitoringEvidence: false, ...rvFacts(rvn), designBinding: recommissionBinding(rc),
     });
     if (why.length) await ctx.refuse(`room.lifecycle:${to}`, { type: 'Room', id: room.code }, why);
     // separation of duties (ADR-0005): the design is not approved by its author; a room is not accepted by whoever recorded or verified its results
@@ -419,6 +543,8 @@ export async function transition(ctx: RequestContext, ref: string, to: RoomLifec
     await q.query(`UPDATE app.room SET lifecycle = $2${extra.length ? `, ${extra.join(', ')}` : ''} WHERE id = $1`, args);
     if (to === 'INSTALLED_UNVERIFIED') await q.query(`UPDATE app.planned_asset SET lifecycle = 'INSTALLED_UNVERIFIED' WHERE room_id = $1 AND removed_at IS NULL`, [room.id]);
     room.lifecycle = to; const rev = await bump(q, room);
+    // ADR-0012: recording the installation records which unit is at each position (identity UNKNOWN until someone records it)
+    if (to === 'INSTALLED_UNVERIFIED') await recordRoomInstallation(ctx, q, room, rev);
     if (to === 'ACCEPTED') { const bl = await publishBaseline(ctx, q, room, 'accepted: first baseline (ADR-0003)'); await ctx.emit(q, 'handoff.accepted', { type: 'Room', id: room.code, rev }, { projectId: room.code, roomId: room.code, baselineId: bl.id, version: bl.version }); }
     if (to === 'DESIGN_APPROVED') await ctx.emit(q, 'room.design_approved', { type: 'Room', id: room.code, rev }, { designId: room.code, from, to });
     else await ctx.emit(q, 'room.lifecycle_changed', { type: 'Room', id: room.code, rev }, { designId: room.code, from, to });
@@ -430,7 +556,7 @@ export async function transition(ctx: RequestContext, ref: string, to: RoomLifec
 export async function updateRoom(ctx: RequestContext, ref: string, body: { name?: string; intendedUse?: string; occupancy?: number }) {
   await ctx.require('room.design', 'edit the room', { type: 'Room', id: ref });
   return ctx.tx(async (q) => {
-    const room = await findRoom(ctx, q, ref, true); PLANNED_ONLY(room);
+    const room = await findRoom(ctx, q, ref, true); await designEdit(q, room, 'edit-room');
     const sets: string[] = []; const args: unknown[] = [room.id];
     if (body.name != null) { args.push(String(body.name).slice(0, 80)); sets.push(`name = $${args.length}`); }
     if (body.intendedUse != null) { args.push(String(body.intendedUse).slice(0, 200)); sets.push(`intended_use = $${args.length}`); }
@@ -459,26 +585,33 @@ export async function readiness(ctx: RequestContext, ref: string) {
     const approved = room.approved_class as { stale?: boolean; by?: string; at?: string; archetype?: string } | null;
     const i = ROOM_LIFECYCLE.indexOf(room.lifecycle as RoomLifecycle); const next = ROOM_LIFECYCLE[i + 1] as RoomLifecycle | undefined;
     const applicable = rows.filter((r) => r.applicable); const lab = (id: string) => labels.get(id) || 'NOT_TESTED';
-    const counts = { applicable: applicable.length, verified: applicable.filter((r) => lab(r.test_id) === 'PASS_VERIFIED').length, awaiting: applicable.filter((r) => lab(r.test_id) === 'PASS_UNVERIFIED').length, failed: applicable.filter((r) => lab(r.test_id) === 'FAIL').length, other: applicable.filter((r) => ['NOT_SUPPORTED', 'INCONCLUSIVE'].includes(lab(r.test_id))).length, notTested: applicable.filter((r) => lab(r.test_id) === 'NOT_TESTED').length };
+    const rvn = await reverificationNow(q, room, L);   // the tests a change of unit reopened (recommissioning or not)
+    const rc = await recommissionImpact(q, room, L, rvn);   // null unless an accepted room is being recommissioned
+    const reopened = new Set(rvn.reverification.filter((t) => t.rerun).map((t) => t.testId));
+    const counts = { applicable: applicable.length, verified: applicable.filter((r) => lab(r.test_id) === 'PASS_VERIFIED' && !reopened.has(r.test_id)).length, awaiting: applicable.filter((r) => lab(r.test_id) === 'PASS_UNVERIFIED').length, failed: applicable.filter((r) => lab(r.test_id) === 'FAIL').length, other: applicable.filter((r) => ['NOT_SUPPORTED', 'INCONCLUSIVE'].includes(lab(r.test_id))).length, notTested: applicable.filter((r) => lab(r.test_id) === 'NOT_TESTED').length, revalidation: reopened.size };
     const facts = { from: room.lifecycle, classificationApproved: !!approved && !approved.stale, openIssues: open, savedRevisions: revisions.n, rows: rows.map((r) => ({ id: r.test_id, applicable: r.applicable, result: lab(r.test_id) as never } as never)), results: L.results as never, hasBaseline: !!room.baseline, hasLiveMonitoringEvidence: false };
-    const blockers = next ? lifecycleBlockers({ ...facts, to: next }) : ['the room is OPERATIONAL: no further governed step'];
+    const blockers = next ? lifecycleBlockers({ ...facts, to: next, ...rvFacts(rvn), designBinding: next === 'ACCEPTED' ? recommissionBinding(rc) : null }) : ['the room is OPERATIONAL: no further governed step'];
     const evidence = (await q.query<{ n: number }>('SELECT count(DISTINCT evidence_id)::int AS n FROM app.test_result WHERE room_id = $1 AND evidence_id IS NOT NULL', [room.id])).rows[0]!.n;
     const baselines = (await q.query<{ version: number; state: string; published_at: string }>('SELECT version, state, published_at FROM app.assurance_baseline WHERE room_id = $1 ORDER BY version', [room.id])).rows;
     const exceptions = (await q.query<{ n: number }>("SELECT count(*)::int AS n FROM app.baseline_exception WHERE room_id = $1 AND state = 'REQUESTED'", [room.id])).rows[0]!.n;
     const measurements = (await q.query<{ provenance: string; approval_state: string; n: number }>('SELECT provenance, approval_state, count(*)::int AS n FROM app.measurement WHERE room_id = $1 GROUP BY 1, 2', [room.id])).rows;
-    const approvals = (await q.query<{ action: string; actor_role: string | null; actor_id: string | null; at: string; detail: Record<string, unknown> }>("SELECT action, actor_role, actor_id, at, detail FROM app.audit_event WHERE aggregate_type = 'Room' AND aggregate_id = $1 AND outcome = 'ALLOWED' AND action IN ('room.classification_approved', 'room.lifecycle:DESIGN_APPROVED', 'room.lifecycle:ACCEPTED', 'room.lifecycle:COMMISSIONING', 'assurance.baseline_published', 'room.drawing_approved') ORDER BY at DESC LIMIT 20", [room.code])).rows;
+    const approvals = (await q.query<{ action: string; actor_role: string | null; actor_id: string | null; at: string; detail: Record<string, unknown> }>("SELECT action, actor_role, actor_id, at, detail FROM app.audit_event WHERE aggregate_type = 'Room' AND aggregate_id = $1 AND outcome = 'ALLOWED' AND action IN ('room.classification_approved', 'room.lifecycle:DESIGN_APPROVED', 'room.lifecycle:ACCEPTED', 'room.lifecycle:COMMISSIONING', 'assurance.baseline_published', 'room.drawing_approved', 'room.revision.approve') ORDER BY at DESC LIMIT 20", [room.code])).rows;
     const refusals = (await q.query<{ action: string; actor_role: string | null; at: string; detail: Record<string, unknown> }>("SELECT action, actor_role, at, detail FROM app.audit_event WHERE aggregate_type = 'Room' AND aggregate_id = $1 AND outcome = 'DENIED' ORDER BY at DESC LIMIT 10", [room.code])).rows;
     // outstanding actions: who must do what next (derived from the plan and the gate, never invented)
     const outstanding: Array<{ what: string; who: string; count?: number }> = [];
     if (!approved || approved.stale) outstanding.push({ what: approved?.stale ? 're-approve the classification (the design changed)' : 'approve the classification', who: 'room.classify.approve (not the design author)' });
     if (!revisions.n) outstanding.push({ what: 'save a design revision', who: 'room.design' });
     for (const o of open) outstanding.push({ what: `resolve ${o.code} (${o.severity}) ${o.title}`, who: o.owner_role || 'design / service' });
+    { const task = rc ? designBindingTask(rc.design) : null; if (task) outstanding.push(task); }
+    if (rvn.reverification.length) { const byPersona = new Map<string, number>(); for (const t of rvn.reverification) if (t.rerun) for (const p of t.personas) byPersona.set(p, (byPersona.get(p) || 0) + 1); for (const [p, n] of byPersona) outstanding.push({ what: rerunTask(rvn.kinds), who: p, count: n }); }
     if (room.lifecycle === 'COMMISSIONING') { const byPersona = new Map<string, number>(); for (const r of applicable) if (lab(r.test_id) === 'NOT_TESTED') for (const p of r.personas) byPersona.set(p, (byPersona.get(p) || 0) + 1); for (const [p, n] of byPersona) outstanding.push({ what: 'record results', who: p, count: n }); if (counts.awaiting) outstanding.push({ what: 'verify recorded passes', who: 'an independent verifier (not the recorder)', count: counts.awaiting }); if (counts.failed) outstanding.push({ what: 'remediate and retest failures', who: 'service / commissioning', count: counts.failed }); }
     if (exceptions) outstanding.push({ what: 'decide baseline exceptions', who: 'baseline.approve (not the requester)', count: exceptions });
     const completion = applicable.length ? Math.round((counts.verified / applicable.length) * 100) : null;
     return {
       room: room.code, lifecycle: room.lifecycle, next: next ? { to: next, authority: LIFECYCLE_AUTHORITY[next], blockers, separationOfDuties: next === 'DESIGN_APPROVED' ? 'not the author of the latest revision' : next === 'ACCEPTED' ? 'not a recorder or verifier of the results' : null } : null,
-      completion: { percentVerified: completion, basis: 'independently verified applicable tests over applicable tests; design approval never counts as commissioning progress', counts },
+      completion: { percentVerified: completion, basis: 'independently verified applicable tests over applicable tests; design approval never counts as commissioning progress; a result recorded before a recommissioning substitution of a device it covers does not count (revalidation)', counts },
+      recommissioning: rc ? { ...rc, note: 'the accepted baseline stays CURRENT until the re-acceptance publishes the next version; the re-acceptance binds the approved revision and results recorded after the substitution' } : null,
+      installations: { devices: [...(await roomIdentityList(q, room.id, L))], changes: rvn.changes, reverification: rc ? null : rvn.reverification, note: 'each position (PA-) with the physical unit (AS-) installed there now and its identity state; a change of unit reopens the tests that covered the position (GET /v1/rooms/{room}/positions/{position}/history)' },
       design: { revisions: revisions.n, approvedRevision: room.approved_revision, classification: approved ? { archetype: approved.archetype, stale: !!approved.stale, at: approved.at } : null, checks: a.checks.length },
       deficiencies: open.map((o) => ({ code: o.code, severity: o.severity, title: o.title, owner: o.owner_role })),
       evidence: { objects: evidence, measurements: measurements.map((m) => ({ provenance: m.provenance, approvalState: m.approval_state, n: m.n })) },
@@ -487,4 +620,10 @@ export async function readiness(ctx: RequestContext, ref: string) {
       liveHealth: 'NOT_MONITORED',
     };
   });
+}
+
+/** position · current unit · identity state for every live position of the room (the readiness, the registry and Search Party agree). */
+async function roomIdentityList(q: Queryable, roomId: string, L: Loaded) {
+  const { facts, assets } = await roomInstallations(q, roomId);
+  return L.assets.filter((a) => !a.furniture).map((a) => identityOf(a.code, facts, assets));
 }

@@ -1402,7 +1402,7 @@
         "tags": [
           "devices"
         ],
-        "summary": "Move a device or substitute its model (the asset keeps its id; the model history is kept)",
+        "summary": "Move a device or substitute its model (the position keeps its id and its model history; in an installed room under recommissioning the unit of the previous model is taken out — SUBSTITUTED, its history kept — and a unit of the new model, new or a spare `asset`, is installed in the same transaction; `expectedInstallation` refuses a stale change with 409)",
         "operationId": "patchV1RoomsRoomDevicesAsset",
         "x-authority": "room.design",
         "x-authority-enforced": [
@@ -1428,6 +1428,16 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
             }
           }
         ],
@@ -1463,6 +1473,14 @@
                     "type": "string",
                     "minLength": 1,
                     "maxLength": 80
+                  },
+                  "expectedInstallation": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "asset": {
+                    "type": "string",
+                    "pattern": "^AS-[0-9]{4,10}$"
                   }
                 }
               }
@@ -1505,6 +1523,16 @@
           },
           "404": {
             "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "the installation changed since it was read (expectedInstallation), or the spare asset is installed elsewhere",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -1594,6 +1622,631 @@
           },
           "404": {
             "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/rooms/{room}/positions/{position}/installation": {
+      "post": {
+        "tags": [
+          "devices"
+        ],
+        "summary": "Install a unit at an empty position while the room is INSTALLATION_PENDING or INSTALLED_UNVERIFIED: a spare asset of the position’s model, or a new unit registered here (identity UNKNOWN, or DECLARED with a serial); one open installation per position and per unit",
+        "operationId": "postV1RoomsRoomPositionsPositionInstallation",
+        "x-authority": "work.evidence",
+        "x-authority-enforced": [
+          "work.evidence"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "room",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "position",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [],
+                "properties": {
+                  "asset": {
+                    "type": "string",
+                    "pattern": "^AS-[0-9]{4,10}$",
+                    "description": "physical asset code (AS-0001)"
+                  },
+                  "manufacturer": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "serial": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "note": {
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "evidenceId": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "the installation"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "the position already holds a unit, or the asset is installed elsewhere",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/rooms/{room}/positions/{position}/replace": {
+      "post": {
+        "tags": [
+          "devices"
+        ],
+        "summary": "Replace the unit at a position like for like (another unit of the same model), atomically: the old installation closes (REPLACED, its history kept), the new one opens, the outbox event and the audit row are written, and the tests that covered the position are reopened (INSTALLED_UNVERIFIED or COMMISSIONING; an accepted room is recommissioned first; a different model is a design change: PATCH the device)",
+        "operationId": "postV1RoomsRoomPositionsPositionReplace",
+        "x-authority": "work.evidence",
+        "x-authority-enforced": [
+          "work.evidence"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "room",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "position",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "expectedInstallation",
+                  "reason"
+                ],
+                "properties": {
+                  "expectedInstallation": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 500
+                  },
+                  "asset": {
+                    "type": "string",
+                    "pattern": "^AS-[0-9]{4,10}$",
+                    "description": "physical asset code (AS-0001)"
+                  },
+                  "manufacturer": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "serial": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "evidenceId": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "the closed and the new installation, and the tests the change reopens"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "the installation changed since it was read (a concurrent replacement), or the asset is installed elsewhere",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/rooms/{room}/positions/{position}/history": {
+      "get": {
+        "tags": [
+          "devices"
+        ],
+        "summary": "A position’s history: its design (model and substitutions across revisions) kept apart from its installation timeline (each unit, from when to when, why, by whom, with what evidence)",
+        "operationId": "getV1RoomsRoomPositionsPositionHistory",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "room",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "position",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "position history"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/assets/{asset}/history": {
+      "get": {
+        "tags": [
+          "devices"
+        ],
+        "summary": "A physical unit’s history: its identity changes and its installations across positions and rooms (it follows the unit when it moves; installations outside your site scope are not shown)",
+        "operationId": "getV1AssetsAssetHistory",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "asset",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "asset history"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/assets/{asset}/identity": {
+      "post": {
+        "tags": [
+          "devices"
+        ],
+        "summary": "Record a unit’s identity, forward only: DECLARED with a serial (work.evidence or field.scan), OBSERVED with evidence (the same), VERIFIED with evidence by a verification authority who neither declared nor observed it; a recorded serial is final",
+        "operationId": "postV1AssetsAssetIdentity",
+        "x-authority": [
+          "work.evidence",
+          "field.scan",
+          "tests.verify.all",
+          "test.verify",
+          "customer.accept"
+        ],
+        "x-authority-enforced": [
+          "work.evidence",
+          "field.scan",
+          "tests.verify.all",
+          "test.verify",
+          "customer.accept"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "asset",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "state"
+                ],
+                "properties": {
+                  "state": {
+                    "type": "string",
+                    "enum": [
+                      "DECLARED",
+                      "OBSERVED",
+                      "VERIFIED"
+                    ]
+                  },
+                  "serial": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "manufacturer": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "evidenceId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "note": {
+                    "type": "string",
+                    "maxLength": 500
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "the identity recorded"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "the serial is already recorded for another unit of the same maker and model",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -1988,6 +2641,97 @@
         "responses": {
           "200": {
             "description": "difference"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/rooms/{room}/revisions/{rev}/approve": {
+      "post": {
+        "tags": [
+          "revisions"
+        ],
+        "summary": "Approve the saved revision that carries a change made while an accepted room is recommissioned (never by its author; classification approved, no open High/Critical design deficiency): the re-acceptance binds it (ADR-0003)",
+        "operationId": "postV1RoomsRoomRevisionsRevApprove",
+        "x-authority": "room.design.approve",
+        "x-authority-enforced": [
+          "room.design.approve"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "room",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rev",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "approved revision"
           },
           "400": {
             "description": "validation error",
@@ -10299,11 +11043,44 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "reason"
+                ],
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 1000,
+                    "pattern": "\\S",
+                    "description": "why the event is replayed (recorded in the Evidence Ledger with the prior attempts and last error)"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "requeued"
+            "description": "requeued: id, status PENDING, prior attempts and failure kind, replay number, audit record id"
           },
           "400": {
             "description": "validation error",
@@ -10337,6 +11114,16 @@
           },
           "404": {
             "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "the event is not dead-lettered (pending, held or already delivered): nothing is requeued",
             "content": {
               "application/problem+json": {
                 "schema": {

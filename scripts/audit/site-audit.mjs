@@ -49,7 +49,7 @@ try {
     const port = 4340 + i; servers.push(await serve(site, port)); const base = `http://127.0.0.1:${port}`;
     const list = site.name === 'empathia-website'
       ? ['/', ...fs.readdirSync(path.join(repo, site.dir), { recursive: true }).filter((f) => f.endsWith('index.html') && f !== 'index.html').map((f) => '/' + path.dirname(f) + '/')]
-      : ['/#/investor', '/#/v25/build', '/#/search', '/#/v25/service', '/#/v25/apex', '/#/v25/learn', '/#/v25', '/#/v25/exec', '/#/v25/ledger', '/#/v25/policy', '/#/v25/fi', '/#/v25/fipv', '/#/suite/commission', '/#/suite/pro', '/#/tours/investor?scenario=1'];
+      : ['/#/investor', '/#/v25/build', '/#/search', '/#/v25/service', '/#/v25/apex', '/#/v25/learn', '/#/v25', '/#/v25/exec', '/#/v25/ledger', '/#/v25/policy', '/#/v25/fi', '/#/v25/fipv', '/#/suite/commission', '/#/suite/pro', '/#/tours/investor?scenario=1', '/#/story/R-ATL-4-218', '/#/story/R-ATL-4-231', '/#/story/R-DEMO-0001'];
     const linkCache = new Map();
     for (const pg of list) for (const width of WIDTHS) {
       const ctx = await browser.newContext({ viewport: { width, height: width < 768 ? 844 : 900 }, deviceScaleFactor: 1, hasTouch: width < 768, reducedMotion: 'no-preference' });
@@ -128,8 +128,9 @@ defects.forEach((d, i) => { d.id = `AUD-${String(i + 1).padStart(3, '0')}`; d.re
 const count = (s) => defects.filter((d) => d.severity === s).length;
 const report = { label, at: new Date().toISOString(), widths: WIDTHS, pagesChecked: pages.length, method: 'in-house Playwright rules A1–A10 (not axe-core)', totals: { P0: count('P0'), P1: count('P1'), P2: count('P2'), P3: count('P3') }, defects };
 const out = arg('out'); if (out) { fs.mkdirSync(path.dirname(path.resolve(repo, out)), { recursive: true }); fs.writeFileSync(path.resolve(repo, out), JSON.stringify(report, null, 2) + '\n'); }
-for (const d of defects) console.log(`${d.severity} ${d.id} [${d.site}${d.page}] ${d.rule}: ${d.detail} @${d.widths.join(',')}`);
+// P0–P2 are listed one per line; P3 (the 44 px project target) is counted here and listed in the JSON report
+for (const d of defects.filter((x) => x.severity !== 'P3')) console.log(`${d.severity} ${d.id} [${d.site}${d.page}] ${d.rule}: ${d.detail} @${d.widths.join(',')}`);
 const blocking = count('P0') + count('P1');
 console.log(`\n${pages.length} page×width checks · P0 ${count('P0')} · P1 ${count('P1')} · P2 ${count('P2')} · P3 ${count('P3')}`);
 console.log(`PASS ${pages.length - new Set(defects.filter((d) => d.severity <= 'P1').flatMap((d) => d.widths.map((w) => `${d.site}${d.page}${w}`))).size} · FAIL ${new Set(defects.filter((d) => d.severity <= 'P1').flatMap((d) => d.widths.map((w) => `${d.site}${d.page}${w}`))).size}`);
-process.exit(strict && blocking ? 1 : 0);
+process.exitCode = strict && blocking ? 1 : 0;   // not process.exit(): that can truncate piped output, and the summary line above is what the test runner counts

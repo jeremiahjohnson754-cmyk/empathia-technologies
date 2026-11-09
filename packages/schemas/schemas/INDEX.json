@@ -4,7 +4,7 @@
   "apiVersion": "0.1.0",
   "counts": {
     "events": 101,
-    "api": 69,
+    "api": 73,
     "entities": 4
   },
   "files": [
@@ -546,7 +546,22 @@
     {
       "file": "api/patchV1RoomsRoomDevicesAsset.json",
       "$id": "https://schemas.empathia.invalid/api/patchV1RoomsRoomDevicesAsset/0.1.0.json",
-      "sha256": "3b7adc4b83704683bef53a24d5814f0cce350678882e58f4e19d112b4743feee"
+      "sha256": "c96b1c99aed52ebd9fbb7517afaeb53acf72b5fd8259afa6b46624d82e3478da"
+    },
+    {
+      "file": "api/postV1RoomsRoomPositionsPositionInstallation.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomPositionsPositionInstallation/0.1.0.json",
+      "sha256": "401567087240d3ac2b77f80052833ee654e209729e6422941b30ab6cc25cdaf2"
+    },
+    {
+      "file": "api/postV1RoomsRoomPositionsPositionReplace.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomPositionsPositionReplace/0.1.0.json",
+      "sha256": "689ff3a950e83f82cf45baa323f63a8c6ef9cdb97ad319affc741af1f85c2684"
+    },
+    {
+      "file": "api/postV1AssetsAssetIdentity.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1AssetsAssetIdentity/0.1.0.json",
+      "sha256": "87a42cc936d4a0245673b98b9cc8e9255c1640d886bf87dd3f6b54ef0342039f"
     },
     {
       "file": "api/postV1RoomsRoomConnections.json",
@@ -722,6 +737,11 @@
       "file": "api/postV1AiRequests.json",
       "$id": "https://schemas.empathia.invalid/api/postV1AiRequests/0.1.0.json",
       "sha256": "8a555d3bd5f068223aaa48181814974532b13e05a10a503681d3c061668f673b"
+    },
+    {
+      "file": "api/postV1AdminOutboxEventRetry.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1AdminOutboxEventRetry/0.1.0.json",
+      "sha256": "a317e0696a578089215ac38d0e2a408683504fc277c2f3b5c79470c4524adc05"
     },
     {
       "file": "api/postV1RoomsRoomBaselinesExceptions.json",

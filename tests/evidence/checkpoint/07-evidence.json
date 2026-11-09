@@ -1,0 +1,1627 @@
+{
+ "step": 7,
+ "title": "Upload one evidence file per applicable test (content-addressed, hashed, retained)",
+ "room": "R-PLN-0004",
+ "at": "2026-11-01T03:40:01.823Z",
+ "assertions": [
+  {
+   "id": "C-24",
+   "name": "the systems engineer holds no evidence-upload authority (403); the commissioning engineer files the engineering records for the tests the systems engineer records",
+   "result": "PASS"
+  },
+  {
+   "id": "C-25",
+   "name": "one evidence object per applicable test is stored with its SHA-256 and a retention date (75)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-26",
+   "name": "an evidence file reads back byte-for-byte (its hash re-verified on read)",
+   "result": "PASS"
+  }
+ ],
+ "exchanges": [
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "syseng",
+   "status": 403,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "compute_display_capability.json",
+    "bytes": 231
+   },
+   "body": {
+    "type": "https://errors.empathia.invalid/forbidden",
+    "title": "Not allowed for your role",
+    "status": 403,
+    "detail": "syseng may not Upload an evidence file (needs work.evidence or field.scan or test.verify or tests.verify.all or test.verify.audio or test.verify.video or test.verify.control)",
+    "code": "forbidden",
+    "correlationId": "4d2836d8-140d-4100-ad8e-86e49225c6e6"
+   },
+   "correlationId": "4d2836d8-140d-4100-ad8e-86e49225c6e6"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "compute_display_capability.json",
+    "bytes": 231
+   },
+   "body": {
+    "id": "8c202597-80f3-456f-8503-0ea4f9e1dd23",
+    "sha256": "e0d218e5980a39926163529d054030b18b8e263a46768f0a48a02f00f82a24e1",
+    "bytes": 231,
+    "mediaType": "application/json",
+    "fileName": "compute_display_capability.json",
+    "uploadedAt": "2026-11-01T03:39:54.224Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "9acb5422-e149-4549-9890-571cfbd58ce9"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "poe_budget.json",
+    "bytes": 164
+   },
+   "body": {
+    "id": "e123222f-aa00-4e8c-9d1b-4e8d10f16632",
+    "sha256": "dc6d2aa0339b020f2d83d37509552a2bcb9cba392d8e8b47d3fdc493f3f0c459",
+    "bytes": 164,
+    "mediaType": "application/json",
+    "fileName": "poe_budget.json",
+    "uploadedAt": "2026-11-01T03:39:54.231Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "93eee057-7d01-437e-ab22-ea466506ffdb"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "power_budget.json",
+    "bytes": 168
+   },
+   "body": {
+    "id": "138f181f-76ca-4626-b119-1874ac58a771",
+    "sha256": "0f311e1e56466dcf2dc21a9e254ad1537b21797bdc392e7c53d093b6d07175ad",
+    "bytes": 168,
+    "mediaType": "application/json",
+    "fileName": "power_budget.json",
+    "uploadedAt": "2026-11-01T03:39:54.236Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "4f016e94-dbf4-4ea2-8ae2-8d5b5c277988"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "power_circuit_load.json",
+    "bytes": 198
+   },
+   "body": {
+    "id": "a350525e-f3af-4351-b3f1-bd844aefd9bb",
+    "sha256": "d4936badeb0ad2fb75b19cdc957ad982f7b9c4c9bb2e640560a72a76fc4e8177",
+    "bytes": 198,
+    "mediaType": "application/json",
+    "fileName": "power_circuit_load.json",
+    "uploadedAt": "2026-11-01T03:39:54.241Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "65136fd5-f382-4614-bfa6-28d233fc1ff9"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "access_reach.json",
+    "bytes": 189
+   },
+   "body": {
+    "id": "5f39c7e5-3f37-4ee3-924c-51ed1f9bc2e8",
+    "sha256": "cbfce041a1e9589be856dc198bc76e0e6de339f24b52a3b2356f88817a14dd8c",
+    "bytes": 189,
+    "mediaType": "application/json",
+    "fileName": "access_reach.json",
+    "uploadedAt": "2026-11-01T03:39:54.290Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "82530213-6389-40a9-b7a5-a933fd020b30"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "audio_dsp_firmware.json",
+    "bytes": 196
+   },
+   "body": {
+    "id": "8d1ca5d8-7729-4e6a-849c-afa7d43bebd2",
+    "sha256": "a57dc7f971ca2d2c9c1849cdae74b988eea2bb2f8a2ba11ce975453fce58a767",
+    "bytes": 196,
+    "mediaType": "application/json",
+    "fileName": "audio_dsp_firmware.json",
+    "uploadedAt": "2026-11-01T03:39:54.296Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "8dc39339-284b-41cf-ba2a-a518a87a2f87"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "compute_patch_baseline.json",
+    "bytes": 208
+   },
+   "body": {
+    "id": "ee68fdca-94b1-428c-b71e-dba76e25d10a",
+    "sha256": "91483f569f6137f6f77efae1231833da54e8f320125ab7e8338c5b78818b296c",
+    "bytes": 208,
+    "mediaType": "application/json",
+    "fileName": "compute_patch_baseline.json",
+    "uploadedAt": "2026-11-01T03:39:54.301Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "e3f126cb-447e-4df5-b33b-826153bf7f68"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "control_program_version.json",
+    "bytes": 205
+   },
+   "body": {
+    "id": "301b8645-01b8-414e-93f3-23e20c1f5128",
+    "sha256": "0b24fa42528f3cf3bd0afda44e422d0fb9e4471c3902cb67779aae5178cacb09",
+    "bytes": 205,
+    "mediaType": "application/json",
+    "fileName": "control_program_version.json",
+    "uploadedAt": "2026-11-01T03:39:54.314Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "d6648eae-b4f1-4013-b387-4ccb557dc934"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "control_time_sync.json",
+    "bytes": 188
+   },
+   "body": {
+    "id": "1945e769-c68b-447c-9496-a6fb0899401c",
+    "sha256": "1d314b0361f321234a0fc79a698dffd46038892884e0f989562fd5a77e47babc",
+    "bytes": 188,
+    "mediaType": "application/json",
+    "fileName": "control_time_sync.json",
+    "uploadedAt": "2026-11-01T03:39:54.319Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "1e2ec40a-bc40-4d71-a0bc-c87f80e6906e"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "cyber_default_credentials.json",
+    "bytes": 213
+   },
+   "body": {
+    "id": "113eb277-f939-4134-8ca5-769bb1dbf8ca",
+    "sha256": "9ed96065e77627f78cf103e1ffe98c520d248f799435ea78a1e443746543c543",
+    "bytes": 213,
+    "mediaType": "application/json",
+    "fileName": "cyber_default_credentials.json",
+    "uploadedAt": "2026-11-01T03:39:54.326Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "98d9bfa0-92bb-46f8-ac65-32af51aff521"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "cyber_firmware_signed.json",
+    "bytes": 207
+   },
+   "body": {
+    "id": "557dec75-79a4-4451-93b5-db031d8d74b8",
+    "sha256": "8bf0bf70bc5cef33b367eb4024f72ea8f534ba60b0f3ca9ca9bbcdad475711b4",
+    "bytes": 207,
+    "mediaType": "application/json",
+    "fileName": "cyber_firmware_signed.json",
+    "uploadedAt": "2026-11-01T03:39:54.337Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "13303f49-7c22-406d-af65-5ce2d4ab0993"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "identity_asset.json",
+    "bytes": 191
+   },
+   "body": {
+    "id": "3162c03f-902d-441f-baea-53946648baba",
+    "sha256": "73a09d00fa0584d2c495df2c0d3d305f61d6c9b409747708e1442db61c4466a8",
+    "bytes": 191,
+    "mediaType": "application/json",
+    "fileName": "identity_asset.json",
+    "uploadedAt": "2026-11-01T03:39:54.346Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "432f1d4f-4808-44ee-8d8a-5fad4712fbf3"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "infra_labeling.json",
+    "bytes": 191
+   },
+   "body": {
+    "id": "de13b33d-5373-4fac-bc3a-f5814573bf2d",
+    "sha256": "54646f43f50753045081b1346283366aab5ceecc8c82df0fe4c8ab054a8e6617",
+    "bytes": 191,
+    "mediaType": "application/json",
+    "fileName": "infra_labeling.json",
+    "uploadedAt": "2026-11-01T03:39:54.352Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "07c34f0c-cfd9-4fbd-a1b4-1ecd9d19639d"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "infra_rack_match.json",
+    "bytes": 195
+   },
+   "body": {
+    "id": "02e49cce-c556-4230-bec3-5cabc1f062d6",
+    "sha256": "a5b7c7a3fc575afa544fb07fae2c736883cf72b4f3947917b914713dd3c67619",
+    "bytes": 195,
+    "mediaType": "application/json",
+    "fileName": "infra_rack_match.json",
+    "uploadedAt": "2026-11-01T03:39:54.360Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "f524f610-000b-4cdd-b006-9c6d4bbd3a14"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "network_addressing.json",
+    "bytes": 200
+   },
+   "body": {
+    "id": "e6b5770d-befc-462a-9fef-0067d232dbfd",
+    "sha256": "966827e1acec9bbeab1b2d85c757beea2bed45127b7f01e1d8959a21d16d8621",
+    "bytes": 200,
+    "mediaType": "application/json",
+    "fileName": "network_addressing.json",
+    "uploadedAt": "2026-11-01T03:39:54.365Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "179962f8-83f3-4e54-8a27-14da3ee1cba9"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "network_firmware_baseline.json",
+    "bytes": 202
+   },
+   "body": {
+    "id": "980ecbac-8fe3-4e26-ac3c-95e203b7f745",
+    "sha256": "da21bd16802d6b32286a31b70698c4801d4a3e566d254532e960cfe91f09cb58",
+    "bytes": 202,
+    "mediaType": "application/json",
+    "fileName": "network_firmware_baseline.json",
+    "uploadedAt": "2026-11-01T03:39:54.369Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "3f3d163e-0155-4b89-9189-e4237aa221cb"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "safety_install.json",
+    "bytes": 178
+   },
+   "body": {
+    "id": "11f0c453-9352-4afa-b7c0-5690c5e75eb8",
+    "sha256": "4224326f7601a99363dd240e6d581bfeea1000ee46d1c4a2c726643c37afbb5c",
+    "bytes": 178,
+    "mediaType": "application/json",
+    "fileName": "safety_install.json",
+    "uploadedAt": "2026-11-01T03:39:54.374Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "927b0934-2925-4e2f-bcd3-79a5aaf8653d"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "compute_certified_config.json",
+    "bytes": 200
+   },
+   "body": {
+    "id": "a40dc9e1-1ecc-4423-b603-43a8b5560402",
+    "sha256": "00525a845da19946a0e6e63f5aa451423d1a6f52e33b9b80765f935da40847a1",
+    "bytes": 200,
+    "mediaType": "application/json",
+    "fileName": "compute_certified_config.json",
+    "uploadedAt": "2026-11-01T03:39:54.380Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "69d66f65-ea4e-4a90-ad8f-53bcf13432c9"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "design_conformance.json",
+    "bytes": 179
+   },
+   "body": {
+    "id": "cd2445d3-ec42-4ad9-bd59-e889bd0864f7",
+    "sha256": "4bc49bd13cb451c301a6e11a528a7653b5262f1d6e9921018b597d3b1c7f97c9",
+    "bytes": 179,
+    "mediaType": "application/json",
+    "fileName": "design_conformance.json",
+    "uploadedAt": "2026-11-01T03:39:54.386Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "54aec2bc-e97e-40e5-95c9-4c5001a65ab1"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "infra_cable_certification.json",
+    "bytes": 207
+   },
+   "body": {
+    "id": "c58ac271-8e61-4291-91cc-4de440261909",
+    "sha256": "007f5dd10912393b26a9987818f644d50d5647bc053dcd798772c98b30a1db19",
+    "bytes": 207,
+    "mediaType": "application/json",
+    "fileName": "infra_cable_certification.json",
+    "uploadedAt": "2026-11-01T03:39:54.391Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "5c1794af-4ddf-4961-8b75-7c5ed578c543"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "interop_firmware_matrix.json",
+    "bytes": 199
+   },
+   "body": {
+    "id": "6c4ef2d7-e83f-4bee-889e-3c2140fe9fa8",
+    "sha256": "a99367dfdd38ecf971624ac2c5f2652ea06c9280cb2004d50673b75679d6a7ee",
+    "bytes": 199,
+    "mediaType": "application/json",
+    "fileName": "interop_firmware_matrix.json",
+    "uploadedAt": "2026-11-01T03:39:54.396Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "7a3c41ac-0c6b-4a1b-a568-3fb0012da307"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "network_port_profile.json",
+    "bytes": 195
+   },
+   "body": {
+    "id": "62fbd7d0-4f44-42e2-a5a3-2619b2a8289e",
+    "sha256": "630077726e588313ebb6d03b4972cf05bd2d108d816d0375cd9d9e3eb906fd7f",
+    "bytes": 195,
+    "mediaType": "application/json",
+    "fileName": "network_port_profile.json",
+    "uploadedAt": "2026-11-01T03:39:54.402Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "6145dc95-576c-4ab4-962f-6e9f1d174ad2"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "access_captions.json",
+    "bytes": 195
+   },
+   "body": {
+    "id": "94d3e37d-b2be-483c-8ec4-7cd4cf7ae5d8",
+    "sha256": "4e5a75347ef0322b499378938df43e19e4b803bd14a72dcfa946c194fd3bc69b",
+    "bytes": 195,
+    "mediaType": "application/json",
+    "fileName": "access_captions.json",
+    "uploadedAt": "2026-11-01T03:39:54.406Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "9ef07bf9-215d-4bec-bdf9-5aabbada0390"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "access_contrast.json",
+    "bytes": 183
+   },
+   "body": {
+    "id": "0a7037dd-eb93-4005-9e01-00bac8947c39",
+    "sha256": "5523c99aa9069f5f7471de8cc3c6ebf03c3b49ad112b5a8b8f58b2d3bfbac2ef",
+    "bytes": 183,
+    "mediaType": "application/json",
+    "fileName": "access_contrast.json",
+    "uploadedAt": "2026-11-01T03:39:54.410Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "fe7cb8e4-538b-400a-bde5-3daa3261d969"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "display_controls.json",
+    "bytes": 177
+   },
+   "body": {
+    "id": "afe93454-9f30-41aa-96fd-8e71af23d9c0",
+    "sha256": "b145f428b535ebec7b0fb40733e46522372aeea485171cf28e66f8a285c5744a",
+    "bytes": 177,
+    "mediaType": "application/json",
+    "fileName": "display_controls.json",
+    "uploadedAt": "2026-11-01T03:39:54.415Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "86d79ee1-e252-4a0f-85fc-7042680c4822"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "network_management_reach.json",
+    "bytes": 219
+   },
+   "body": {
+    "id": "f2fd2291-7e32-4ce4-b04a-0eb76d729bc4",
+    "sha256": "b5ab313d5cc5b4912b8edbad82b3752074fb900ad8878cbbbf78e02ded4c503c",
+    "bytes": 219,
+    "mediaType": "application/json",
+    "fileName": "network_management_reach.json",
+    "uploadedAt": "2026-11-01T03:39:54.420Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "bee1262f-001e-420e-a996-b704eee1d60d"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "network_reachability.json",
+    "bytes": 185
+   },
+   "body": {
+    "id": "40e8c9a8-19e5-4a1a-a3f0-ef8f76ae9f8c",
+    "sha256": "6b1108840f194d1d639a297b612cc45a007ad1240d93fbfbabb7e126959fc73f",
+    "bytes": 185,
+    "mediaType": "application/json",
+    "fileName": "network_reachability.json",
+    "uploadedAt": "2026-11-01T03:39:54.426Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "b84a8a90-59f5-43b0-8a3b-95fa3d53369f"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "uc_peripherals.json",
+    "bytes": 184
+   },
+   "body": {
+    "id": "30284402-61e9-46d6-a3c8-de0d03ecc212",
+    "sha256": "ef362f4a1ac9091c72547befca5b8a158dfa4592a506582dd93c61ad17059d72",
+    "bytes": 184,
+    "mediaType": "application/json",
+    "fileName": "uc_peripherals.json",
+    "uploadedAt": "2026-11-01T03:39:54.432Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "6846a071-83ac-46ed-a23f-380f547eefa0"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "user_function.json",
+    "bytes": 175
+   },
+   "body": {
+    "id": "ea29a906-bf65-4b14-bead-7f56c0d22910",
+    "sha256": "96dddd0dc7171b527893984735d3adf99795bc8260bea565e38ef8149271a77d",
+    "bytes": 175,
+    "mediaType": "application/json",
+    "fileName": "user_function.json",
+    "uploadedAt": "2026-11-01T03:39:54.439Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "d170cc2a-a2a0-4bd6-ad7b-1f1c5d8e85e6"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "video_signal.json",
+    "bytes": 169
+   },
+   "body": {
+    "id": "1ab4e854-b06d-4e99-aca4-6f7e85adf098",
+    "sha256": "6685ab3043a49d3076cd852e3890c7d0030af2fc3285078e1c9a60a04b495a81",
+    "bytes": 169,
+    "mediaType": "application/json",
+    "fileName": "video_signal.json",
+    "uploadedAt": "2026-11-01T03:39:54.445Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "1bc7a067-7255-4bfc-9fb2-839d9ecd7152"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "audio_mic_pickup.json",
+    "bytes": 199
+   },
+   "body": {
+    "id": "338cb577-cf58-4480-bb20-31551ea68dd8",
+    "sha256": "3b412e3b12de26fb0ef818aecd2f37db363c8b8c7c6152a3d2962089c04750e3",
+    "bytes": 199,
+    "mediaType": "application/json",
+    "fileName": "audio_mic_pickup.json",
+    "uploadedAt": "2026-11-01T03:39:54.452Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "4ae52bec-2335-451e-ad58-46b0df131fd1"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "audio_zone_routing.json",
+    "bytes": 199
+   },
+   "body": {
+    "id": "020d67f1-f3a5-41e4-a71e-a82b76823c6b",
+    "sha256": "9ad5e62ad7b0ec993eb80d9c25c77fb96543760199a9631b99e826461c0d0721",
+    "bytes": 199,
+    "mediaType": "application/json",
+    "fileName": "audio_zone_routing.json",
+    "uploadedAt": "2026-11-01T03:39:54.460Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "9568e55f-2482-4a21-8f7d-6b2820379f74"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "camera_preset.json",
+    "bytes": 179
+   },
+   "body": {
+    "id": "e5a7d16d-b180-4e02-8637-ebe28fe88263",
+    "sha256": "c0e54c8d035072c278058fd6fa23f4c56116c0682e46c19bad29a19e45d9bd7e",
+    "bytes": 179,
+    "mediaType": "application/json",
+    "fileName": "camera_preset.json",
+    "uploadedAt": "2026-11-01T03:39:54.466Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "5bd99527-3fb7-4142-9ab9-f4077abf3895"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "control_audio.json",
+    "bytes": 193
+   },
+   "body": {
+    "id": "ad6277b7-5022-4f03-a578-c18cae8c21af",
+    "sha256": "2ffcd74b17443dd91cd5083ad16ec4a10d5d12df3365830ed79103bc87b51630",
+    "bytes": 193,
+    "mediaType": "application/json",
+    "fileName": "control_audio.json",
+    "uploadedAt": "2026-11-01T03:39:54.473Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "a88fcc15-48a3-4215-9a66-0637a34805eb"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "control_camera.json",
+    "bytes": 200
+   },
+   "body": {
+    "id": "6f6e8ddf-7c15-4725-82de-7d70ddb4ecb0",
+    "sha256": "f60f7babdc183dea5504690d6f844c9d6daee52ff4fc7718028af589d983bd5f",
+    "bytes": 200,
+    "mediaType": "application/json",
+    "fileName": "control_camera.json",
+    "uploadedAt": "2026-11-01T03:39:54.478Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "75da3f5f-f5eb-49cd-bfc7-6b8580546d8e"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "control_error_states.json",
+    "bytes": 196
+   },
+   "body": {
+    "id": "fbac2f3b-b916-40d9-b0d3-51639765112c",
+    "sha256": "7be283d837297d3901388fb17578b76cd647739f98c8532c391bdfd84a2d3cec",
+    "bytes": 196,
+    "mediaType": "application/json",
+    "fileName": "control_error_states.json",
+    "uploadedAt": "2026-11-01T03:39:54.484Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "2e097023-c4e0-48d5-b2b9-e789a9d093ee"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "control_macros.json",
+    "bytes": 201
+   },
+   "body": {
+    "id": "f2ebdf55-bec4-4461-a146-3089f134870c",
+    "sha256": "39abf223d59e2b7374bd5cf8221d1d1f2ecbad48a1aca9222080b0812425a188",
+    "bytes": 201,
+    "mediaType": "application/json",
+    "fileName": "control_macros.json",
+    "uploadedAt": "2026-11-01T03:39:54.491Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "03da7b52-43ea-4c47-adbb-9db7f5634275"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "control_source_switching.json",
+    "bytes": 197
+   },
+   "body": {
+    "id": "a97689a0-0776-484b-a883-5a7a3b58db13",
+    "sha256": "52cff651fa583c333d88f580e1bfdd0eb6b20fc92f4e6f1328cb5e6536bb999f",
+    "bytes": 197,
+    "mediaType": "application/json",
+    "fileName": "control_source_switching.json",
+    "uploadedAt": "2026-11-01T03:39:54.496Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "1ef33c5b-4716-46f3-8081-cb54b42e8759"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "control_third_party.json",
+    "bytes": 218
+   },
+   "body": {
+    "id": "5914147b-5e7e-4bbd-bb2b-5a7c838eb792",
+    "sha256": "da4741d72441b96e6776623e4fdd4e0ce7a4371b7b539016572dc62be8293e0c",
+    "bytes": 218,
+    "mediaType": "application/json",
+    "fileName": "control_third_party.json",
+    "uploadedAt": "2026-11-01T03:39:54.501Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "584599f5-891f-46a4-a139-299eb82e8743"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "control_ui.json",
+    "bytes": 174
+   },
+   "body": {
+    "id": "d324086e-ad47-463f-a58b-f4c616642c29",
+    "sha256": "4bf88a7d9730bc65a6ab70ef0d7bdd522bfaa923d1c814541fd8c9d1531e8bcf",
+    "bytes": 174,
+    "mediaType": "application/json",
+    "fileName": "control_ui.json",
+    "uploadedAt": "2026-11-01T03:39:54.506Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "46eed87a-ff34-4bb4-beeb-04914e6e9a27"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "control_ups.json",
+    "bytes": 190
+   },
+   "body": {
+    "id": "2d3b2a15-1801-4af5-bded-fa5e6f8fa496",
+    "sha256": "3f04d2ef9f88b85085e929462219783c7ae7ed830eb681b9924669e62f2dc654",
+    "bytes": 190,
+    "mediaType": "application/json",
+    "fileName": "control_ups.json",
+    "uploadedAt": "2026-11-01T03:39:54.511Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "3ed5e1e8-eccb-4529-ba0b-4fe028a399fa"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "cyber_logging.json",
+    "bytes": 196
+   },
+   "body": {
+    "id": "29e9480f-ba11-4c6d-a69d-c45dcf24cb7f",
+    "sha256": "4e5aedeaf7c0f92d4656422542c7deb212fa63afffb2f2964097f10d6b5d6db6",
+    "bytes": 196,
+    "mediaType": "application/json",
+    "fileName": "cyber_logging.json",
+    "uploadedAt": "2026-11-01T03:39:54.516Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "5955d985-5cd1-47d6-9519-0da500fbf740"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "cyber_management_isolation.json",
+    "bytes": 228
+   },
+   "body": {
+    "id": "c8a69a0c-d72e-4200-87dc-78b3f6608ea0",
+    "sha256": "2b6d2a20201b6cabdfb6b159f13f4ea268cf473497b4f3b80eabfa6bae4c0efb",
+    "bytes": 228,
+    "mediaType": "application/json",
+    "fileName": "cyber_management_isolation.json",
+    "uploadedAt": "2026-11-01T03:39:54.521Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "7aef30e1-a522-4da4-ac23-1422ac157b4c"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "cyber_tls.json",
+    "bytes": 190
+   },
+   "body": {
+    "id": "e6704dc4-220f-4bcf-95f1-7109e87dead2",
+    "sha256": "4202412a95e688acb30ac1134f88a1526ee4c7ffcc0a3337afe610d15af92e54",
+    "bytes": 190,
+    "mediaType": "application/json",
+    "fileName": "cyber_tls.json",
+    "uploadedAt": "2026-11-01T03:39:54.526Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "904676cf-e5e7-4bb3-a013-bcb1591c17f9"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "env_lighting_levels.json",
+    "bytes": 213
+   },
+   "body": {
+    "id": "db19b3fe-1c63-478b-b876-617aadbaca87",
+    "sha256": "4fb87bb7b698eb24440f59415583aff623ffcf0384910112da2a9cc81514e1de",
+    "bytes": 213,
+    "mediaType": "application/json",
+    "fileName": "env_lighting_levels.json",
+    "uploadedAt": "2026-11-01T03:39:54.533Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "dcb8fe79-1de6-46fb-ae9e-73c73966b26d"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "integ_bms.json",
+    "bytes": 202
+   },
+   "body": {
+    "id": "31c92f7f-73b8-4ec6-b861-05a6f8224e41",
+    "sha256": "6ab9225932879ddf9a1367584c8e8170f8d98566ad018737ff9cb2468e01f272",
+    "bytes": 202,
+    "mediaType": "application/json",
+    "fileName": "integ_bms.json",
+    "uploadedAt": "2026-11-01T03:39:54.538Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "ec9acf63-b6cf-4b95-8cde-b570a6b7e74e"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "interop_mixed_vendor.json",
+    "bytes": 199
+   },
+   "body": {
+    "id": "c8ace05e-7941-4f25-a1b0-85c984719d8c",
+    "sha256": "dc1705dadbb05da71501739dc50aeb3ac9ab2c60d396f9af7aad2504835056f8",
+    "bytes": 199,
+    "mediaType": "application/json",
+    "fileName": "interop_mixed_vendor.json",
+    "uploadedAt": "2026-11-01T03:39:54.543Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "bcc3f503-93ca-43b4-ae34-e299bc0c49b0"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "network_qos.json",
+    "bytes": 169
+   },
+   "body": {
+    "id": "a55f6f20-3431-474c-a741-d5acc83be58c",
+    "sha256": "d7514637f1277b4c515974dd88fd408903f3b42e5428cfb50d7e3a42b4a2b090",
+    "bytes": 169,
+    "mediaType": "application/json",
+    "fileName": "network_qos.json",
+    "uploadedAt": "2026-11-01T03:39:54.550Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "d16ea29e-754d-4fe8-a61e-c32069e12cf5"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "network_vlan.json",
+    "bytes": 172
+   },
+   "body": {
+    "id": "7fbff042-072f-4d09-954c-26f16dd1661b",
+    "sha256": "7d6db46409e4eb80aa5cdf89785f449e51b1107d2a4f0401ffcf2983f37f4849",
+    "bytes": 172,
+    "mediaType": "application/json",
+    "fileName": "network_vlan.json",
+    "uploadedAt": "2026-11-01T03:39:54.556Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "8cd78b64-c3ca-4064-b6ee-10204226b9b0"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "power_ups_runtime.json",
+    "bytes": 184
+   },
+   "body": {
+    "id": "3f8a3ede-df0f-40a3-8f2c-0b7f80f2204a",
+    "sha256": "460b52d9644d7f03a275fcdcd561d5471f64f6407475833fd6b64ba4efeb68b2",
+    "bytes": 184,
+    "mediaType": "application/json",
+    "fileName": "power_ups_runtime.json",
+    "uploadedAt": "2026-11-01T03:39:54.561Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "ea948db6-b08f-4099-900f-aad9f4c33ca8"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "uc_calendar.json",
+    "bytes": 187
+   },
+   "body": {
+    "id": "1ff64cf1-4d42-4723-a595-43cd909652bf",
+    "sha256": "df266cc3208b0f2333e8d9b554ca0374c2f64d6e022a0904a62ec84164f4ad35",
+    "bytes": 187,
+    "mediaType": "application/json",
+    "fileName": "uc_calendar.json",
+    "uploadedAt": "2026-11-01T03:39:54.565Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "55b3f822-ca3f-4249-a67f-097b41b27b47"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "uc_media.json",
+    "bytes": 164
+   },
+   "body": {
+    "id": "97ac790c-eb8f-4408-ab05-be8a66afa25e",
+    "sha256": "10c1c59d0d3141913d8068283f3f49ff85436b2e78c4ac7aa633d2ae0d08d9af",
+    "bytes": 164,
+    "mediaType": "application/json",
+    "fileName": "uc_media.json",
+    "uploadedAt": "2026-11-01T03:39:54.570Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "7c858240-b90a-42ff-8247-e5c60a2db27c"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "video_camera_exposure.json",
+    "bytes": 199
+   },
+   "body": {
+    "id": "2cf30381-3a1d-487c-b59f-6d0c3a01ca03",
+    "sha256": "6c984765f3259d294ccdd07b4f22c37e66acbf8855f0b1899fbaf22af2a0dfbe",
+    "bytes": 199,
+    "mediaType": "application/json",
+    "fileName": "video_camera_exposure.json",
+    "uploadedAt": "2026-11-01T03:39:54.575Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "aeabe5b2-13c1-4304-9d71-be652e597f28"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "video_content_share.json",
+    "bytes": 196
+   },
+   "body": {
+    "id": "4122a52a-af75-490d-8d81-8eec04bd207e",
+    "sha256": "c5d17abae2e0fb28df9eb4faf4795f4037519ea748e296c2a6f35b1aa334cce5",
+    "bytes": 196,
+    "mediaType": "application/json",
+    "fileName": "video_content_share.json",
+    "uploadedAt": "2026-11-01T03:39:54.580Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "24ae70c5-e6ff-4a1a-b409-ac5d5b2d7f22"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "video_display_calibration.json",
+    "bytes": 210
+   },
+   "body": {
+    "id": "d85501a1-b8cd-494b-9616-d1c8b2f2564a",
+    "sha256": "09fd3e547dbdaee168194745fae37d73b8fc2edee35a99e3e0754c313397b960",
+    "bytes": 210,
+    "mediaType": "application/json",
+    "fileName": "video_display_calibration.json",
+    "uploadedAt": "2026-11-01T03:39:54.584Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "d22020d1-a0f7-4441-b01c-9dda032965f2"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "video_edid_handshake.json",
+    "bytes": 201
+   },
+   "body": {
+    "id": "4235a923-0c4c-4b2b-a976-0531e2f67c84",
+    "sha256": "816a3b4ce54ba2dc6425b12810b4b65928a73a518d75b67779b2224e58423b9c",
+    "bytes": 201,
+    "mediaType": "application/json",
+    "fileName": "video_edid_handshake.json",
+    "uploadedAt": "2026-11-01T03:39:54.588Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "fd4754bb-08ad-4d1b-a3fe-cf4e87c86c22"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "video_switching.json",
+    "bytes": 194
+   },
+   "body": {
+    "id": "9c3c61a7-1a26-43bf-8b0b-6ec3f3fca3f9",
+    "sha256": "f9110a2a06e27d418a6ae551c464c2406cecd948e1e397082e67c50996560ca5",
+    "bytes": 194,
+    "mediaType": "application/json",
+    "fileName": "video_switching.json",
+    "uploadedAt": "2026-11-01T03:39:54.594Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "8c0f3c3b-502b-4187-8919-775d1e6c2a80"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "dsp_eng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "audio_aec.json",
+    "bytes": 171
+   },
+   "body": {
+    "id": "6cea7e57-0634-44c5-8d47-7bb47ed89ba2",
+    "sha256": "461b8634cecd4e8ee5d6e6e34d61bd659af41716fb42a6bcf4785b4976730e50",
+    "bytes": 171,
+    "mediaType": "application/json",
+    "fileName": "audio_aec.json",
+    "uploadedAt": "2026-11-01T03:39:54.650Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "fd6ebb38-1cf8-4441-a3f4-b22f382c79fd"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "dsp_eng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "audio_gain.json",
+    "bytes": 172
+   },
+   "body": {
+    "id": "c16ceef9-ed31-4153-8142-1a1367fcee41",
+    "sha256": "719475ae7aee40d740094c16e5400161968c831571a8f604929ebb3172786039",
+    "bytes": 172,
+    "mediaType": "application/json",
+    "fileName": "audio_gain.json",
+    "uploadedAt": "2026-11-01T03:39:54.656Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "1343bbfa-bc5c-489a-9904-0d48c5d61e5d"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "dsp_eng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "audio_limiter_levels.json",
+    "bytes": 278
+   },
+   "body": {
+    "id": "3b67691b-0d78-446c-a420-a44b679eca22",
+    "sha256": "fc9e989a24ed2e7194de41b379a17f9f62ba8f5be5e111d120f9a19af931569b",
+    "bytes": 278,
+    "mediaType": "application/json",
+    "fileName": "audio_limiter_levels.json",
+    "uploadedAt": "2026-11-01T03:39:54.663Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "b325c197-21ed-4b22-99b4-1c9f5fed7eb9"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "dsp_eng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "audio_noise_floor.json",
+    "bytes": 284
+   },
+   "body": {
+    "id": "981a8963-bac3-4aac-8aa0-8400b5c4a9c7",
+    "sha256": "32b7becf8166636ee8a883c03eac12e2aa44aa0a0164c6caecbc26fa1250ee23",
+    "bytes": 284,
+    "mediaType": "application/json",
+    "fileName": "audio_noise_floor.json",
+    "uploadedAt": "2026-11-01T03:39:54.668Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "78d9a6d2-1da6-4006-86a4-52b74eb63e0f"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "video_eng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "camera_fov.json",
+    "bytes": 182
+   },
+   "body": {
+    "id": "35beb76b-531a-43ab-a107-329fe9f3ed38",
+    "sha256": "048aae898b6c5263bdd57ead26ed275f884fd6d6c4de1aedd2e0fef40dfeedb3",
+    "bytes": 182,
+    "mediaType": "application/json",
+    "fileName": "camera_fov.json",
+    "uploadedAt": "2026-11-01T03:39:54.721Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "7bca1bba-94f4-43e0-baf1-2de410deccc9"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "control_eng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "control_latency.json",
+    "bytes": 184
+   },
+   "body": {
+    "id": "5f19ec8e-f784-496f-bd82-9a185fe3cb02",
+    "sha256": "2c59a68594dd92430e166c05cf3d5bbb17b8dd1c75a974ef800396ca566a6ced",
+    "bytes": 184,
+    "mediaType": "application/json",
+    "fileName": "control_latency.json",
+    "uploadedAt": "2026-11-01T03:39:54.776Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "b34e0e31-f1cc-4831-b0da-a07b66f7f05c"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "network_media_clock.json",
+    "bytes": 197
+   },
+   "body": {
+    "id": "a4fbf349-8714-4b33-bcbb-90b8c66bd171",
+    "sha256": "bbc0fd83272c5b4920d118ff047b52e085c89f091ff04303df1565105bf8de86",
+    "bytes": 197,
+    "mediaType": "application/json",
+    "fileName": "network_media_clock.json",
+    "uploadedAt": "2026-11-01T03:39:54.780Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "9931f68b-e12e-4472-8e0c-9c4dfba7d50a"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "dsp_eng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "video_av_sync.json",
+    "bytes": 190
+   },
+   "body": {
+    "id": "7f3279d7-2392-4411-aeb0-4ec5bf190fdd",
+    "sha256": "61d1fdc5a3725092ba9364e50b66c36043f5169c11c5b48e3abc378ca20cb1b6",
+    "bytes": 190,
+    "mediaType": "application/json",
+    "fileName": "video_av_sync.json",
+    "uploadedAt": "2026-11-01T03:39:54.785Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "9e9ae44c-6fdc-481a-98a8-f7a35943d942"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "video_eng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "video_camera_tracking.json",
+    "bytes": 193
+   },
+   "body": {
+    "id": "b2bc3199-6aca-42f1-8a18-6dafd285920a",
+    "sha256": "37e9b81b3a2f771628f7ba0203c3b0d20f85c68a798c635d2884724a074469aa",
+    "bytes": 193,
+    "mediaType": "application/json",
+    "fileName": "video_camera_tracking.json",
+    "uploadedAt": "2026-11-01T03:39:54.789Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "3e590cc1-220d-4b44-84df-d6472d3865a2"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "integ_itsm.json",
+    "bytes": 197
+   },
+   "body": {
+    "id": "c244721a-e046-423d-a9c3-594112e6f3d1",
+    "sha256": "b85ddcfab797847750496b44b0cbb314035471420f92b8045884a967d69062ee",
+    "bytes": 197,
+    "mediaType": "application/json",
+    "fileName": "integ_itsm.json",
+    "uploadedAt": "2026-11-01T03:39:54.793Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "84d4c796-0a2e-43b8-8f98-6cbc022bce8f"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "integ_monitoring_enrol.json",
+    "bytes": 227
+   },
+   "body": {
+    "id": "16e36141-6dba-4698-8a08-cecd5df07021",
+    "sha256": "efcc8ed4c300cbbc370654a91d15b9a21b96fc5e5f7b764c9307681d3c2db46a",
+    "bytes": 227,
+    "mediaType": "application/json",
+    "fileName": "integ_monitoring_enrol.json",
+    "uploadedAt": "2026-11-01T03:39:54.800Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "04572a2b-2ab8-4bf7-b69b-74d316706aef"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "network_config_backup.json",
+    "bytes": 197
+   },
+   "body": {
+    "id": "4384bc75-cd51-497a-ae37-9fda5ca7b31c",
+    "sha256": "75911332e878967c36200d4bd7559a481d61dca779537ad443a1776bc9072df2",
+    "bytes": 197,
+    "mediaType": "application/json",
+    "fileName": "network_config_backup.json",
+    "uploadedAt": "2026-11-01T03:39:54.805Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "4c7cae97-29d9-4a30-a538-1e0bdd07d2d7"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "cyber_accounts.json",
+    "bytes": 203
+   },
+   "body": {
+    "id": "b43a42cb-7157-4381-a3ba-72b73c6170ad",
+    "sha256": "bc2cea518124a610c7ba84c97cf853ceef49ac86f301ea55bc69ee2d518a8ae4",
+    "bytes": 203,
+    "mediaType": "application/json",
+    "fileName": "cyber_accounts.json",
+    "uploadedAt": "2026-11-01T03:39:54.810Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "2a246ef9-4e43-4245-a95b-8e0981a16282"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "handover_runbook.json",
+    "bytes": 190
+   },
+   "body": {
+    "id": "d15ea6be-f0c8-4790-b742-5b76800fb457",
+    "sha256": "d6a32b066013e45eb986ad543a735698aa937f3db3b1ea3509d04f93c6ce262c",
+    "bytes": 190,
+    "mediaType": "application/json",
+    "fileName": "handover_runbook.json",
+    "uploadedAt": "2026-11-01T03:39:54.816Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "0fe8dad6-e5f5-46ff-b810-fa48a2ccaefa"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "handover_spares.json",
+    "bytes": 190
+   },
+   "body": {
+    "id": "efa3cfbb-29e7-4a0b-8888-55e2c2687737",
+    "sha256": "3848fecfc463a759dc96820726cb7a74cdf313af637d6b214a1ffeaa19df2f2b",
+    "bytes": 190,
+    "mediaType": "application/json",
+    "fileName": "handover_spares.json",
+    "uploadedAt": "2026-11-01T03:39:54.820Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "babb6713-8feb-40c6-b921-1fbffe18c960"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "handover_support_path.json",
+    "bytes": 201
+   },
+   "body": {
+    "id": "21a48325-1387-4df4-9b02-608355fc5004",
+    "sha256": "da02fa188e43ff9f28b0f4c003b0dfcf0155c75d662121c46d9c123a69da0195",
+    "bytes": 201,
+    "mediaType": "application/json",
+    "fileName": "handover_support_path.json",
+    "uploadedAt": "2026-11-01T03:39:54.824Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "8c7a5e31-acb5-4cd3-8705-439c93178c29"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "handover_training.json",
+    "bytes": 196
+   },
+   "body": {
+    "id": "48ea341b-32f5-480d-af1e-60c8170b037e",
+    "sha256": "e73faf4de216c40267724b455c5659ef0f24b506ea767179cfb411276dddfab7",
+    "bytes": 196,
+    "mediaType": "application/json",
+    "fileName": "handover_training.json",
+    "uploadedAt": "2026-11-01T03:39:54.829Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "0466cab6-2afb-461e-94f7-31e281bddd72"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/evidence",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "contentType": "application/json",
+    "fileName": "handover_warranty.json",
+    "bytes": 190
+   },
+   "body": {
+    "id": "25cfc4cd-3dcd-40dd-9cdf-1816cae6a1c7",
+    "sha256": "e5f7b9d9e0616b9e9f4c699ea6803859a5bbbcd9ccce61123220b3e2da36f3c8",
+    "bytes": 190,
+    "mediaType": "application/json",
+    "fileName": "handover_warranty.json",
+    "uploadedAt": "2026-11-01T03:39:54.835Z",
+    "retentionUntil": "2033-11-01"
+   },
+   "correlationId": "329eb2ce-b3d8-437b-9f84-4f6444248326"
+  },
+  {
+   "method": "GET",
+   "path": "/v1/evidence/8c202597-80f3-456f-8503-0ea4f9e1dd23/content",
+   "persona": "cxeng",
+   "status": 200,
+   "body": "{\"room\":\"R-PLN-0004\",\"test\":\"compute_display_capability\",\"kind\":\"ENGINEER_APPROVED\",\"recordedBy\":\"syseng\",\"observation\":\"synthetic Display count within the compute model's capability record observation for the checkpoint scenario\"}"
+  }
+ ]
+}

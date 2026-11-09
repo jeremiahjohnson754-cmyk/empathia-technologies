@@ -13,6 +13,7 @@ export interface Route {
   summary: string;
   auth: boolean;                                  // false only for /health, /v1/auth/token and /v1/openapi.json
   authority?: string | string[];                  // authority keys (a.b.c) are enforced centrally by the server before the body is read; prose describes a finer rule the handler enforces
+  action?: string;                                // the words of the central authority refusal ('<role> may not <action> (needs …)'); default: the summary's first clause
   body?: Schema;
   bodyKind?: 'json' | 'binary';
   query?: Record<string, Schema>;

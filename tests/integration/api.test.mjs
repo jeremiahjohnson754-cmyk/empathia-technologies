@@ -95,6 +95,8 @@ test('slice 4 — classification approval and the governed lifecycle to COMMISSI
   assert.equal((await move('COMMISSIONING', T.syseng)).status, 200);
   const d = await room();
   assert.equal(d.body.room.lifecycle, 'COMMISSIONING');
+  const sub = await c.call('PATCH', `/v1/rooms/${code}/devices/${T.asset}`, { token: T.designer, body: { model: 'SYN-DISPLAY-2 (synthetic)' } });
+  assert.equal(sub.status, 422, 'a first commissioning has no change order: a substitution is accepted only while an accepted room is recommissioned (governance BL-5)');
   const app = d.body.commissioning.rows.filter((x) => x.applicable);
   row = app.find((x) => !x.personas.includes('designer'));
   failRow = app.find((x) => x !== row);
@@ -221,16 +223,21 @@ test('outbox: a failing handler retries with backoff and dead-letters after 8 at
   await c.call('PATCH', '/v1/rooms/R-PLN-0002', { token: T.designer, body: { intendedUse: 'Board meetings (synthetic, dead-letter test)' } });
   const pending = Number(h.asSuper(`SELECT count(*) FROM app.outbox_event WHERE status = 'PENDING'`));
   assert.ok(pending > 0);
+  // per-aggregate ordering (migration 0027): only the head (earliest undelivered event) of each aggregate is attempted; the later events
+  // of the same aggregate are held behind it, never attempted, until it is delivered
+  const heads = Number(h.asSuper(`SELECT count(DISTINCT (tenant_id, aggregate_type, aggregate_id)) FROM app.outbox_event WHERE status = 'PENDING'`));
   const bad = new h.OutboxWorker(h.app.workerPool, [async () => { throw new Error('injected handler failure (test)'); }]);
   for (let i = 0; i < 8; i += 1) { await bad.tick(); h.asSuper(`UPDATE app.outbox_event SET next_attempt_at = now() WHERE status = 'PENDING'`); }
-  assert.equal(h.asSuper(`SELECT count(*) FROM app.outbox_event WHERE status = 'PENDING'`), '0');
-  assert.equal(Number(h.asSuper(`SELECT count(*) FROM app.outbox_event WHERE status = 'DEAD_LETTER' AND attempts = 8`)), pending);
+  assert.equal(h.asSuper(`SELECT count(*) FROM app.outbox_event WHERE status = 'PENDING' AND attempts > 0`), '0', 'no event is left retrying');
+  assert.equal(Number(h.asSuper(`SELECT count(*) FROM app.outbox_event WHERE status = 'DEAD_LETTER' AND attempts = 8`)), heads, 'the head of each aggregate dead-lettered after 8 attempts');
+  assert.equal(Number(h.asSuper(`SELECT count(*) FROM app.outbox_event WHERE status = 'DEAD_LETTER'`)), heads);
+  assert.equal(Number(h.asSuper(`SELECT count(*) FROM app.outbox_event p WHERE p.status = 'PENDING' AND p.attempts = 0 AND EXISTS (SELECT 1 FROM app.outbox_event d WHERE d.status = 'DEAD_LETTER' AND d.tenant_id = p.tenant_id AND d.aggregate_type = p.aggregate_type AND d.aggregate_id = p.aggregate_id AND (d.aggregate_rev, d.seq) < (p.aggregate_rev, p.seq))`)), pending - heads, 'every other pending event is held behind its dead-lettered head');
   assert.equal((await c.call('GET', '/v1/admin/outbox?status=DEAD_LETTER', { token: T.designer })).status, 403);
   const list = await c.call('GET', '/v1/admin/outbox?status=DEAD_LETTER', { token: T.secadmin });
   assert.equal(list.status, 200);
   const ids = list.body.items.map((e) => e.id);
-  assert.equal(ids.length, pending);
-  for (const id of ids) assert.equal((await c.call('POST', `/v1/admin/outbox/${id}/retry`, { token: T.secadmin })).status, 200);
+  assert.equal(ids.length, heads);
+  for (const id of ids) assert.equal((await c.call('POST', `/v1/admin/outbox/${id}/retry`, { token: T.secadmin, body: { reason: 'synthetic: the injected handler failure is gone (test)' } })).status, 200);
   await h.drain();
   assert.equal(h.asSuper(`SELECT count(*) FROM app.outbox_event WHERE status <> 'DELIVERED'`), '0');
 });

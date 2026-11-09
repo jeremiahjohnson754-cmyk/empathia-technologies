@@ -5,6 +5,12 @@ Program: `legacy/mandate/MASTER_PROMPT.md` (phases P0–P9), executed in this mo
 Labels: **DONE** (built and a named test passes here) · **PARTIAL** · **NOT_STARTED** · **NOT_RUN** (test not executed) · **BLOCKED** (needs
 something this environment does not have). Nothing here is production-ready, certified or independently audited; nothing is deployed.
 
+## Latest: restoration release candidate (2026-10-31, frozen)
+
+`restoration/sprint-0-1`, matrix on `b5d152f`: 57 suites PASS, 0 FAIL, 1 NOT_RUN (film decode); RELEASABLE (platform); the clean-copy
+CI rehearsal PASS on `9fa4a55`. Report: `docs/releases/RELEASE_CANDIDATE_2026-10-31.md`. Defects: `docs/qa/DEFECT_REGISTER.md`
+(D-19…D-39; no P0/P1 open). Enquiries: `docs/operations/LEAD_CAPTURE_TALLY.md`. Not merged, not deployed: the owner's approval gate.
+
 ## Phase ledger
 
 | Phase | Scope | Status | Evidence |
@@ -305,6 +311,16 @@ room's own lifecycle), instrument import (covered by IMP-1..4 on its own room), 
 | `deploy/render/rehearse.mjs`: the full sequence from the assembled tree against a throwaway database and OIDC provider | **PASS 14/14** | `tests/evidence/RENDER_REHEARSAL.json` |
 | `scripts/staging/smoke.mjs`: deployment tests D1–D10 for the live environment | IMPLEMENTED · PASS in rehearsal; on Render NOT_RUN | — |
 | Open | — | V-1 (can Render's default user create roles?) is checked first on Render; B-2 the web app has no OIDC sign-in (decision A5); approvals A1–A5 |
+
+### CI release blocker remediation (2026-10-31 17:04 CT) — branch `restoration/sprint-0-1`
+
+| Item | Status | Evidence |
+|---|---|---|
+| CI built no Founder Studio and no ML dataset → 5 NOT_RUN, gate failed | FIXED: studio inputs committed + pinned (`apps/founder-studio/inputs`, `studio-inputs.mjs`), diagram renders pinned, CI `--studio`, pinned Python, ML regenerated, explicit test DB | `.github/workflows/ci.yml`, `docs/releases/RELEASE_PROFILES.md` |
+| Release profiles: `platform` names only the full film decode; `media` names nothing | IMPLEMENTED · TESTED (media gate blocks, platform passes) | `RELEASE_GATE.json` |
+| CI-faithful fresh run found 3 failures: Studio requested absent films (real defect, fixed with `GET /api/films`); W-17 race (fixed, assertion unchanged); audit output truncated by `process.exit()` (fixed) | FIXED | `FRESH_CHECKOUT.json` |
+| CI-equivalent result at `3e7a0a9` | **50 PASS · 0 FAIL · 1 NOT_RUN · RELEASABLE (platform)** | `tests/evidence/CI_EQUIVALENT_TEST_RESULTS.md` |
+| GitHub Actions job; registry installs | NOT_RUN here (no GitHub/registry access) | — |
 
 ### Restoration sprint 0–1 (2026-10-31, post-launch directive and 35/10 brief) — branch `restoration/sprint-0-1`
 

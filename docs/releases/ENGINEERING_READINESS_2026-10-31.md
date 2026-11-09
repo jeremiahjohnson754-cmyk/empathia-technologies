@@ -36,13 +36,43 @@
 | 8 | Motion graphics across both sites (owner request 16:38 CT): a motion map, then website hero, evidence line, scroll reveals and interactions; demo state transitions, graph, tour and Build a Room; then motion QA (INP/CLS, reduced motion, phones) | Queued as tasks | Next sprint, after this branch is reviewed |
 | 9 | Render releases only after CI passes | **Your approval** (a deployment-policy change) | One line per site in `render.yaml`: `autoDeployTrigger: checksPass` |
 
-## 3. Test evidence
+## 3. CI release blocker (17:04 CT): resolved
+
+GitHub CI reported 46 PASS · 0 FAIL · 5 NOT_RUN, and the gate failed, correctly.
+
+**Cause.** CI never built the Founder Studio (no `--studio`) and never generated the ML dataset. The Studio's inputs also lived
+outside the repository.
+
+**Fixes:**
+- Studio inputs committed and pinned by SHA-256, checked on every build.
+- Diagram renders committed by source hash.
+- CI builds `--studio`, installs pinned Python packages, regenerates the ML dataset and model, starts the test database explicitly,
+  then runs the gate with a release profile (`docs/releases/RELEASE_PROFILES.md`).
+
+**Defects the CI-faithful run then exposed** (`node scripts/release/verify-fresh.mjs --ci`, a fresh clone that reads nothing outside
+itself):
+1. **Founder Studio (real product defect).** The Media Library requested films that were not on the computer. The launcher now
+   answers `GET /api/films`, and the player asks before loading.
+2. **Enterprise web W-17.** The test raced the hash change. It now waits; the assertion is unchanged.
+3. **Site audit.** `process.exit()` truncated its piped output, so the runner lost the summary line.
+
+**Result at `3e7a0a9`, CI-equivalent run:**
+- **50 PASS · 0 FAIL · 1 NOT_RUN** (the full film decode, named by the `platform` profile).
+- Gate: **RELEASABLE (platform)**; `media` correctly **NOT RELEASABLE**.
+- Founder Studio 19/19 with synthetic film fixtures, and 19/19 again here with the real masters.
+- Town Hall 25/25, Founder Decisions 9/9, ML prototype PASS.
+- Evidence: `tests/evidence/FRESH_CHECKOUT.{json,md}`, `RELEASE_GATE.json`, `CI_EQUIVALENT_TEST_RESULTS.md`.
+
+**Not run here:** the GitHub Actions job itself, and the pip and pnpm installs from the public registries (this workspace cannot
+reach them). The first push runs them.
+
+## 4. Test evidence
 
 - **Full regression:** `node scripts/test.mjs --browser --studio`. The result is recorded in `tests/evidence/TEST_RESULTS.md` and in
   the commit message.
 - **Full build:** PASS, including type checks, the OpenAPI contract (regenerated for `elapsedMs`) and dist hygiene.
 
-## 4. Connectors
+## 5. Connectors
 
 | Tool | Status | Use |
 |---|---|---|
@@ -52,7 +82,7 @@
 | ElevenLabs, HeyGen, Adobe | available | **skipped**: chargeable; rights and approval first |
 | Firecrawl / web | used (web fetch only) | live-site parity, competitor pages |
 
-## 5. Next safe deployment action
+## 6. Next safe deployment action
 
 1. Push this branch from Termux (`docs/operations/TERMUX_HANDOFF.md`). This changes nothing that is live.
 2. Read the GitHub Actions result on the branch.

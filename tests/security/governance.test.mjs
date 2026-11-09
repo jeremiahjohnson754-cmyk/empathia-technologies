@@ -190,3 +190,74 @@ test('MEAS-1 — provenance is preserved; dBFS is never recorded as SPL; SIMULAT
   assert.throws(() => h.asSuper(`UPDATE app.measurement SET approval_state = 'VERIFIED', approved_by = recorded_by WHERE id = '${unc.body.id}'`), /EM006|check|violat/i);
   assert.ok(await audit((e) => e.outcome === 'DENIED' && e.actor_role === 'qa_reviewer' && /measurement\.verify/.test(JSON.stringify(e))), 'refused verifications are audited');
 });
+
+test('BL-5 — a model substitution is the change order of an accepted room: refused while ACCEPTED, accepted during recommissioning (only a substitution); it reopens the tests that covered the unit, the re-acceptance waits for an approved revision (never its author) and for results recorded after the substitution, and then binds both', async () => {
+  const bar = (await room()).body.devices.find((d) => d.cat === 'bar').id;
+  const swap = (tok, body) => c.call('PATCH', `/v1/rooms/${code}/devices/${bar}`, { token: tok, body });
+  const ready = async () => (await c.call('GET', `/v1/rooms/${code}/readiness`, { token: T.designer })).body;
+  const v2 = JSON.stringify((await c.call('GET', `/v1/rooms/${code}/baselines`, { token: T.syseng })).body.current);
+  const direct = await swap(T.designer, { model: 'SYN-BAR-2 (synthetic)' });
+  assert.equal(direct.status, 422); assert.match(JSON.stringify(direct.body), /recommissioned first/);
+  assert.equal((await move('COMMISSIONING', T.syseng)).status, 200, 'recommissioning');
+  assert.equal((await swap(T.designer, { x: 1 })).status, 422, 'a device is not moved during recommissioning');
+  const s1 = await swap(T.designer, { model: 'SYN-BAR-2 (synthetic)' });
+  assert.equal(s1.status, 200, JSON.stringify(s1.body)); assert.equal(s1.body.assetId, bar);
+  const dev = (await room()).body.devices.find((d) => d.id === bar);
+  assert.equal(dev.model, 'SYN-BAR-2 (synthetic)'); assert.deepEqual(dev.modelHistory.map((m) => m.model), ['generic']);
+  let rd = await ready();
+  assert.equal(rd.recommissioning.substitutions[0].assetId, bar); assert.equal(rd.recommissioning.baseline.version, 2);
+  const reopened = rd.recommissioning.reverification.filter((t) => t.rerun).map((t) => t.testId);
+  assert.ok(reopened.length > 0 && reopened.length < rows.length, `${reopened.length} of ${rows.length} reopened`);
+  assert.deepEqual([...s1.body.reverification].sort(), [...reopened].sort(), 'the substitution names the tests it reopens');
+  assert.ok(rd.recommissioning.reverification.every((t) => t.reasons.length && t.assets.includes(bar)));
+  assert.ok(rows.filter((r) => r.devices.includes(bar)).every((r) => reopened.includes(r.test_id)), 'every test whose plan row names the unit is reopened');
+  assert.equal(rd.completion.counts.revalidation, reopened.length);
+  assert.ok(Number(h.asSuper(`SELECT count(*) FROM app.outbox_event WHERE type = 'commission.asset_replaced' AND aggregate_id = '${code}'`)) === 1);
+  // the re-acceptance is refused with both reasons (the acceptor holds customer.accept through a fresh delegation)
+  assert.equal((await c.call('POST', '/v1/delegations', { token: T.qa_reviewer, body: { granteeId: ids.opslead, authority: 'customer.accept', reason: 'synthetic: re-acceptance after the substitution', days: 1 }, headers: { 'idempotency-key': 'del-0005' } })).status, 201);
+  const early = await move('ACCEPTED', T.opslead);
+  assert.equal(early.status, 422, JSON.stringify(early.body)); assert.match(JSON.stringify(early.body), /approved revision \d+ no longer describes it/); assert.match(JSON.stringify(early.body), /re-run on the changed design/);
+  // the design approval: the latest revision must describe the design; never by its author
+  const before = (await room()).body.room.approvedRevision;
+  assert.equal((await c.call('POST', `/v1/rooms/${code}/revisions/${before}/approve`, { token: T.syseng })).status, 422, 'the approved revision is not approved again');
+  const r1 = await c.call('POST', `/v1/rooms/${code}/revisions`, { token: T.syseng, body: { reason: 'synthetic: the substituted bar, saved by the syseng' } });
+  assert.equal(r1.status, 201, JSON.stringify(r1.body));
+  const own = await c.call('POST', `/v1/rooms/${code}/revisions/${r1.body.revision}/approve`, { token: T.syseng });
+  assert.equal(own.status, 422, JSON.stringify(own.body)); assert.match(JSON.stringify(own.body), /separation of duties/);
+  assert.equal((await c.call('POST', `/v1/rooms/${code}/revisions/${r1.body.revision}/approve`, { token: T.designer })).status, 403, 'room.design.approve');
+  // a second substitution by the designer, saved by the designer: the systems engineer may approve it now
+  assert.equal((await swap(T.designer, { model: 'SYN-BAR-3 (synthetic)' })).status, 200);
+  assert.equal((await c.call('POST', `/v1/rooms/${code}/revisions/${r1.body.revision}/approve`, { token: T.qa_reviewer })).status, 403);
+  const stale = await c.call('POST', `/v1/rooms/${code}/revisions/${r1.body.revision}/approve`, { token: T.syseng });
+  assert.equal(stale.status, 422, 'a revision that no longer describes the design is not approved');
+  const r2 = await c.call('POST', `/v1/rooms/${code}/revisions`, { token: T.designer, body: { reason: 'synthetic: the second substitution' } });
+  assert.equal(r2.status, 201);
+  const ap = await c.call('POST', `/v1/rooms/${code}/revisions/${r2.body.revision}/approve`, { token: T.syseng });
+  assert.equal(ap.status, 200, JSON.stringify(ap.body)); assert.equal(ap.body.approvedRevision, r2.body.revision); assert.equal(ap.body.previous, before);
+  assert.ok(await audit((e) => e.action === 'room.revision.approve' && e.outcome === 'ALLOWED' && e.actor_role === 'syseng'), 'the approval is audited');
+  rd = await ready();
+  assert.equal(rd.recommissioning.design.approvedDescribesDesign, true);
+  assert.equal(rd.next.blockers.length, 1, JSON.stringify(rd.next.blockers)); assert.match(rd.next.blockers[0], /re-run/);
+  assert.equal(JSON.stringify((await c.call('GET', `/v1/rooms/${code}/baselines`, { token: T.syseng })).body.current), v2, 'the current baseline is untouched while recommissioning');
+  // the reopened tests are re-run on the new unit and verified independently; then the re-acceptance publishes v3, bound to the approved revision
+  // ADR-0012 (owner, 2026-10-31): a re-run cites evidence obtained after the change of unit — the evidence uploaded before the substitution
+  // (and cited by the superseded results) is refused, so the re-run uploads its own
+  const t0 = rd.recommissioning.reverification[0]; const r0 = rows.find((x) => x.test_id === t0.testId);
+  const old = await c.call('POST', `/v1/rooms/${code}/results`, { token: T.cxeng, body: { testId: t0.testId, state: 'PASS', evidenceId: evidence.id, evidenceKind: r0.evidence[0], instrument } });
+  assert.equal(old.status, 422, JSON.stringify(old.body)); assert.match(JSON.stringify(old.body), /uploaded .*before the change of unit/);
+  const fresh = (await c.call('POST', '/v1/evidence', { token: T.cxeng, raw: Buffer.from('synthetic governance re-run observation, after the substitution'), headers: { 'content-type': 'text/plain', 'x-file-name': 'gov-rerun.txt' } })).body;
+  for (const t of rd.recommissioning.reverification) {
+    const r = rows.find((x) => x.test_id === t.testId);
+    assert.equal((await c.call('POST', `/v1/rooms/${code}/results`, { token: T.cxeng, body: { testId: t.testId, state: 'PASS', evidenceId: fresh.id, evidenceKind: r.evidence[0], instrument } })).status, 201);
+    assert.equal((await c.call('POST', `/v1/rooms/${code}/results/${t.testId}/verify`, { token: T.qa_reviewer })).status, 200);
+  }
+  rd = await ready();
+  assert.ok(rd.recommissioning.reverification.every((t) => !t.rerun && t.result === 'PASS_VERIFIED')); assert.equal(rd.completion.counts.revalidation, 0); assert.deepEqual(rd.next.blockers, []);
+  const acc = await move('ACCEPTED', T.opslead);
+  assert.equal(acc.status, 200, JSON.stringify(acc.body));
+  const lin = (await c.call('GET', `/v1/rooms/${code}/baselines`, { token: T.syseng })).body;
+  assert.equal(lin.items.length, 3); assert.equal(lin.current.version, 3); assert.equal(lin.current.design_revision, r2.body.revision, 'v3 binds the revision approved during recommissioning');
+  assert.equal(lin.items[1].state, 'SUPERSEDED');
+  const as = (await c.call('GET', `/v1/rooms/${code}/assurance`, { token: T.syseng })).body;
+  assert.notEqual(as.rows.find((r) => r.k === 'presence').status, 'drift', 'the new baseline holds the substituted model');
+});

@@ -1,0 +1,806 @@
+{
+ "at": "2026-11-01T03:40:01.828Z",
+ "database": "empathia_test_checkpoint_e2e",
+ "pass": 100,
+ "fail": 0,
+ "facts": {
+  "room": "R-PLN-0004",
+  "camera": "PA-0061",
+  "archetype": "Huddle Room",
+  "applicable": 75,
+  "approvedRevision": 2,
+  "cameraUnit": {
+   "original": "AS-0002",
+   "replacement": "AS-0009"
+  },
+  "recordedBy": {
+   "syseng": 17,
+   "service": 34,
+   "cxeng": 16,
+   "dsp_eng": 5,
+   "video_eng": 2,
+   "control_eng": 1
+  },
+  "verifiedBy": {
+   "cxeng": 59,
+   "qa_reviewer": 16
+  },
+  "v1": {
+   "id": "1acdf296-c410-4db6-9f4b-80c4c4d442e4",
+   "designRevision": 2,
+   "publishedAt": "2026-11-01T03:39:58.994Z"
+  },
+  "requirements": [
+   {
+    "testId": "identity_asset",
+    "label": "Asset identity confirmed on site",
+    "personas": [
+     "service",
+     "installer"
+    ],
+    "reasons": [
+     "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the asset identity is checked again after every substitution"
+    ]
+   },
+   {
+    "testId": "display_controls",
+    "label": "Display controls",
+    "personas": [
+     "service",
+     "installer"
+    ],
+    "reasons": [
+     "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
+    ]
+   },
+   {
+    "testId": "video_signal",
+    "label": "Video signal",
+    "personas": [
+     "service",
+     "installer"
+    ],
+    "reasons": [
+     "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
+    ]
+   },
+   {
+    "testId": "camera_preset",
+    "label": "Camera presets recall",
+    "personas": [
+     "service",
+     "installer"
+    ],
+    "reasons": [
+     "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
+    ]
+   },
+   {
+    "testId": "video_camera_exposure",
+    "label": "Camera exposure and white balance",
+    "personas": [
+     "service",
+     "installer"
+    ],
+    "reasons": [
+     "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
+    ]
+   },
+   {
+    "testId": "video_content_share",
+    "label": "Wireless and wired content sharing",
+    "personas": [
+     "cxeng"
+    ],
+    "reasons": [
+     "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
+    ]
+   },
+   {
+    "testId": "video_display_calibration",
+    "label": "Display picture settings and calibration",
+    "personas": [
+     "service",
+     "installer"
+    ],
+    "reasons": [
+     "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
+    ]
+   },
+   {
+    "testId": "video_edid_handshake",
+    "label": "EDID / HDCP handshake on every input",
+    "personas": [
+     "service",
+     "installer"
+    ],
+    "reasons": [
+     "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
+    ]
+   },
+   {
+    "testId": "video_switching",
+    "label": "Video switching and routing matrix",
+    "personas": [
+     "service",
+     "installer"
+    ],
+    "reasons": [
+     "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
+    ]
+   },
+   {
+    "testId": "camera_fov",
+    "label": "Camera field of view",
+    "personas": [
+     "video_eng"
+    ],
+    "reasons": [
+     "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
+    ]
+   },
+   {
+    "testId": "video_av_sync",
+    "label": "Audio/video synchronisation",
+    "personas": [
+     "dsp_eng"
+    ],
+    "reasons": [
+     "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): it is a camera and this is a Video test of the room"
+    ]
+   },
+   {
+    "testId": "video_camera_tracking",
+    "label": "Camera tracking behaviour",
+    "personas": [
+     "video_eng"
+    ],
+    "reasons": [
+     "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
+    ]
+   }
+  ],
+  "blockerOrder": {
+   "step15": [
+    "design-binding",
+    "open-issues",
+    "reopened-tests"
+   ],
+   "step17": [
+    "reopened-tests"
+   ]
+  },
+  "dependencies": {
+   "downstream": [
+    "PA-0065 (compute)",
+    "PA-0067 (switch)",
+    "PA-0060 (display)",
+    "PA-0064 (dsp)",
+    "PA-0063 (speaker)"
+   ],
+   "connected": [
+    "PA-0065 (compute; feeds data to)",
+    "PA-0067 (switch; connects to)"
+   ],
+   "dependsSummary": "5 downstream devices and 1 room depend on Camera 1."
+  },
+  "positionHistory": {
+   "design": [
+    "revision 1: not in the design",
+    "revision 2: generic",
+    "revision 3: SYN-PTZ-12X (synthetic PTZ camera)"
+   ],
+   "installations": [
+    "AS-0002 installed at PA-0061 on 2026-11-01T03:39:54.094Z by aa6ea1c5-85b8-4d8c-91d8-243af518d415 (initial); removed 2026-11-01T03:39:59.083Z by d46add71-8997-4132-9011-8206641b17dd (substituted)",
+    "AS-0009 installed at PA-0061 on 2026-11-01T03:39:59.083Z by d46add71-8997-4132-9011-8206641b17dd (substitution); still installed"
+   ]
+  },
+  "assetHistories": [
+   {
+    "asset": "AS-0002",
+    "model": "generic",
+    "identity": "UNKNOWN",
+    "installations": [
+     "AS-0002 installed at PA-0061 on 2026-11-01T03:39:54.094Z by aa6ea1c5-85b8-4d8c-91d8-243af518d415 (initial); removed 2026-11-01T03:39:59.083Z by d46add71-8997-4132-9011-8206641b17dd (substituted)"
+    ]
+   },
+   {
+    "asset": "AS-0009",
+    "model": "SYN-PTZ-12X (synthetic PTZ camera)",
+    "identity": "UNKNOWN",
+    "installations": [
+     "AS-0009 installed at PA-0061 on 2026-11-01T03:39:59.083Z by d46add71-8997-4132-9011-8206641b17dd (substitution); still installed"
+    ]
+   }
+  ],
+  "integrity": {
+   "verified": true,
+   "checked": 460,
+   "head": {
+    "seq": 460,
+    "hash": "8d00707afc8a0c33bfc7958d0fca8de7b40e30a578a9406d22d9830e1e9515ea",
+    "at": "2026-11-01T03:39:59.665Z"
+   }
+  },
+  "auditEvents": 365,
+  "auditDenied": 13,
+  "milestones": [
+   {
+    "action": "room.create",
+    "seq": 10
+   },
+   {
+    "action": "room.lifecycle:DESIGN_APPROVED",
+    "seq": 35
+   },
+   {
+    "action": "room.lifecycle:INSTALLATION_PENDING",
+    "seq": 38
+   },
+   {
+    "action": "room.lifecycle:INSTALLED_UNVERIFIED",
+    "seq": 41
+   },
+   {
+    "action": "room.lifecycle:COMMISSIONING",
+    "seq": 44
+   },
+   {
+    "action": "commission.result.record",
+    "seq": 125
+   },
+   {
+    "action": "commission.result.verify",
+    "seq": 277
+   },
+   {
+    "action": "assurance.baseline_published",
+    "seq": 432
+   },
+   {
+    "action": "room.lifecycle:ACCEPTED",
+    "seq": 433
+   },
+   {
+    "action": "room.lifecycle:COMMISSIONING (#2)",
+    "seq": 436
+   },
+   {
+    "action": "commission.asset_replaced",
+    "seq": 440
+   },
+   {
+    "action": "room.revision.approve",
+    "seq": 446
+   }
+  ],
+  "outboxSample": [
+   "drawing.revision_generated",
+   "room.design_approved",
+   "room.design_revision_saved",
+   "commission.asset_replaced",
+   "room.device_swapped",
+   "room.lifecycle_changed",
+   "handoff.accepted",
+   "commission.applicability_compiled",
+   "room.test_verified",
+   "commission.test_result_submitted"
+  ],
+  "passports": {
+   "measured": 18,
+   "total": 27,
+   "rooms_commissioned": {
+    "state": "MEASURED",
+    "numerator": 1,
+    "denominator": 1,
+    "value": 100
+   }
+  },
+  "rollup": {
+   "code": "NST",
+   "rooms": 1
+  }
+ },
+ "results": [
+  {
+   "id": "C-01",
+   "name": "a person without room.design cannot create a room (403)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-02",
+   "name": "the designer creates the room: 201 with a canonical room code",
+   "result": "PASS"
+  },
+  {
+   "id": "C-03",
+   "name": "the room is PLANNED with declared dimensions and no devices yet",
+   "result": "PASS"
+  },
+  {
+   "id": "C-04",
+   "name": "all ten devices are added, each with a tenant-unique canonical asset id",
+   "result": "PASS"
+  },
+  {
+   "id": "C-05",
+   "name": "before the camera is added, Lite’s required-equipment rule opens a High design deficiency: the room type needs a camera",
+   "result": "PASS"
+  },
+  {
+   "id": "C-06",
+   "name": "with the camera in the design the deficiency is resolved, and the camera is proposed into the video path (camera → room compute) and the network",
+   "result": "PASS"
+  },
+  {
+   "id": "C-07",
+   "name": "no open High/Critical design deficiency remains; the plan is compiled server-side with applicable tests",
+   "result": "PASS"
+  },
+  {
+   "id": "C-08",
+   "name": "the designer saves revision 2 with its SHA-256",
+   "result": "PASS"
+  },
+  {
+   "id": "C-09",
+   "name": "a revision with nothing changed is refused (422)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-10",
+   "name": "the designer cannot approve the classification (403)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-11",
+   "name": "the systems engineer approves the suggested classification",
+   "result": "PASS"
+  },
+  {
+   "id": "C-12",
+   "name": "the designer generates the drawing set (seven drawings, GENERATED)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-13",
+   "name": "the designer cannot approve a drawing (403)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-14",
+   "name": "the systems engineer approves all seven drawings",
+   "result": "PASS"
+  },
+  {
+   "id": "C-15",
+   "name": "the designer cannot approve the design (403: room.design.approve)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-16",
+   "name": "one governed step at a time: PLANNED → COMMISSIONING is refused (422)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-17",
+   "name": "the systems engineer approves the design (DESIGN_APPROVED)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-18",
+   "name": "the installer cannot open the installation window (403: window.approve)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-19",
+   "name": "the operations lead approves the installation window (INSTALLATION_PENDING)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-20",
+   "name": "the installer records the installation (INSTALLED_UNVERIFIED)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-21",
+   "name": "the installer cannot start commissioning (403: plan.compile)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-22",
+   "name": "the systems engineer starts commissioning (COMMISSIONING)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-23",
+   "name": "the room is COMMISSIONING, the approved revision is 2, every applicable test is NOT_TESTED and needs physical execution",
+   "result": "PASS"
+  },
+  {
+   "id": "C-89",
+   "name": "recording the installation put one physical unit at every non-furniture position — identity UNKNOWN, no serial, no maker — recorded by the installer (ADR-0012)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-24",
+   "name": "the systems engineer holds no evidence-upload authority (403); the commissioning engineer files the engineering records for the tests the systems engineer records",
+   "result": "PASS"
+  },
+  {
+   "id": "C-25",
+   "name": "one evidence object per applicable test is stored with its SHA-256 and a retention date (75)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-26",
+   "name": "an evidence file reads back byte-for-byte (its hash re-verified on read)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-27",
+   "name": "the designer is not a responsible role for a commissioning test (403)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-28",
+   "name": "an evidence kind the test does not accept is refused (422)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-29",
+   "name": "every applicable test is recorded by its responsible role and is PASS_UNVERIFIED (syseng 17, service 34, cxeng 16, dsp_eng 5, video_eng 2, control_eng 1)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-30",
+   "name": "self-verification is refused: the commissioning engineer cannot verify a result they recorded (422)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-31",
+   "name": "the field technician holds no verification authority (403)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-32",
+   "name": "every result is PASS_VERIFIED by a different person (cxeng 59, qa_reviewer 16)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-33",
+   "name": "a result is never verified twice (422)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-34",
+   "name": "the systems engineer cannot accept the room (403: customer.accept)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-35",
+   "name": "the QA reviewer verified results of this room and is refused the acceptance (422, separation of duties)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-36",
+   "name": "the QA reviewer lends customer.accept to the operations lead, scoped and expiring (ADR-0005)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-37",
+   "name": "the operations lead — neither recorder nor verifier — accepts the room through the delegation (200)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-38",
+   "name": "baseline v1 exists and is CURRENT",
+   "result": "PASS"
+  },
+  {
+   "id": "C-39",
+   "name": "v1 binds the approved design revision 2, its hash, the plan, every applicable result PASS_VERIFIED and every evidence object",
+   "result": "PASS"
+  },
+  {
+   "id": "C-40",
+   "name": "substituting the camera of the ACCEPTED room directly is refused (422) and the refusal names recommissioning",
+   "result": "PASS"
+  },
+  {
+   "id": "C-41",
+   "name": "the installer cannot recommission the room (403: plan.compile)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-42",
+   "name": "the systems engineer recommissions the room (ACCEPTED → COMMISSIONING)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-43",
+   "name": "baseline v1 stays CURRENT while the room is recommissioned",
+   "result": "PASS"
+  },
+  {
+   "id": "C-44",
+   "name": "the installer cannot change the design (403: room.design)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-45",
+   "name": "during recommissioning a device is not moved: only a model substitution is accepted (422)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-46",
+   "name": "the designer substitutes the camera model (200); the response names the tests the substitution reopens",
+   "result": "PASS"
+  },
+  {
+   "id": "C-47",
+   "name": "the camera keeps its asset id, carries the new model, and its model history keeps the previous model",
+   "result": "PASS"
+  },
+  {
+   "id": "C-48",
+   "name": "no other device changed: same ten asset ids",
+   "result": "PASS"
+  },
+  {
+   "id": "C-90",
+   "name": "the swap produced two installation records for the camera position: the original unit closed SUBSTITUTED, a unit of the new model open; the position keeps its code",
+   "result": "PASS"
+  },
+  {
+   "id": "C-91",
+   "name": "the original unit’s history survives intact: its own identity (UNKNOWN, model generic) and its installation at the camera position with both ends, actors and reasons",
+   "result": "PASS"
+  },
+  {
+   "id": "C-49",
+   "name": "the designer saves revision 3",
+   "result": "PASS"
+  },
+  {
+   "id": "C-50",
+   "name": "the comparison of the accepted revision 2 with revision 3 shows exactly the camera swap",
+   "result": "PASS"
+  },
+  {
+   "id": "C-51",
+   "name": "baseline v1 is byte-for-byte unchanged (same JSON before and after the change) and still CURRENT",
+   "result": "PASS"
+  },
+  {
+   "id": "C-52",
+   "name": "Assurance assesses the room against baseline v1 and reports the substitution on the register as drift (recorded, not measured)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-53",
+   "name": "the remedy proposed is a fix that needs an engineer’s approval, and live health stays NOT_MONITORED",
+   "result": "PASS"
+  },
+  {
+   "id": "C-92",
+   "name": "Assurance labels the change a model substitution with both units named (not an installation change), against the unit accepted in v1; baseline v1 and the accepted revision 2 are byte-for-byte unchanged",
+   "result": "PASS"
+  },
+  {
+   "id": "C-54",
+   "name": "readiness reports the recommissioning against baseline v1 and the substitution (asset, from, to)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-55",
+   "name": "it names the tests that must be re-run on the new camera, each with its reasons and its responsible role",
+   "result": "PASS"
+  },
+  {
+   "id": "C-56",
+   "name": "every test whose plan row names the camera is required again, and the asset-identity check is required after the substitution",
+   "result": "PASS"
+  },
+  {
+   "id": "C-57",
+   "name": "tests that do not depend on the camera are not reopened",
+   "result": "PASS"
+  },
+  {
+   "id": "C-58",
+   "name": "re-acceptance is blocked with the reasons: the design change needs an approved revision, the reopened tests must be re-run, and the approved drawings no longer match",
+   "result": "PASS"
+  },
+  {
+   "id": "C-59",
+   "name": "the drawing check opens design deficiencies for the approved equipment schedule and placement plan that no longer match",
+   "result": "PASS"
+  },
+  {
+   "id": "C-60",
+   "name": "the outstanding actions name who must do what: approve revision 3 (not its author) and re-run per responsible role",
+   "result": "PASS"
+  },
+  {
+   "id": "C-61",
+   "name": "completion counts only the results that still count: the reopened tests are not verified any more",
+   "result": "PASS"
+  },
+  {
+   "id": "C-62",
+   "name": "an attempt to re-accept now is refused (422) with the same reasons",
+   "result": "PASS"
+  },
+  {
+   "id": "C-93",
+   "name": "the re-acceptance refusal carries the accurate count: the superseded PASS_VERIFIED results count 0",
+   "result": "PASS"
+  },
+  {
+   "id": "C-94",
+   "name": "readiness names the change with its units (SUBSTITUTED, original → new unit) and each position with its unit and identity state",
+   "result": "PASS"
+  },
+  {
+   "id": "C-98",
+   "name": "the re-acceptance blockers come in the documented order — design binding (approve revision 3: the re-acceptance binds it), open issues, the reopened tests with the count — in the engine’s words, the same list in readiness and in the refusal",
+   "result": "PASS"
+  },
+  {
+   "id": "C-63",
+   "name": "the designer (the author of revision 3) holds no design approval (403)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-64",
+   "name": "the systems engineer approves revision 3: the re-acceptance will bind it",
+   "result": "PASS"
+  },
+  {
+   "id": "C-65",
+   "name": "a revision is approved once (422)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-66",
+   "name": "the regenerated drawings are approved again and the drawing deficiencies resolve",
+   "result": "PASS"
+  },
+  {
+   "id": "C-67",
+   "name": "the design requirement is met; the only blocker left is re-running the reopened tests on the new camera",
+   "result": "PASS"
+  },
+  {
+   "id": "C-99",
+   "name": "after the design approval and the drawings, what is left is exactly the reopened tests with the count, in the engine’s words: no design binding, no open issue, no general count",
+   "result": "PASS"
+  },
+  {
+   "id": "C-68",
+   "name": "baseline v1 is still byte-for-byte unchanged and CURRENT after the design approval",
+   "result": "PASS"
+  },
+  {
+   "id": "C-69",
+   "name": "the relationship graph places the camera in its room and feeding the room compute, and connects it to the switch",
+   "result": "PASS"
+  },
+  {
+   "id": "C-70",
+   "name": "downstream impact of the camera includes the devices it feeds (the room compute and onwards)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-71",
+   "name": "Search Party returns the camera’s neighbourhood with edge provenance",
+   "result": "PASS"
+  },
+  {
+   "id": "C-100",
+   "name": "D-36: the neighbourhood reads the same on every run — the commissioning tests reached at the same depth come in test-id order (a stable key, not the database’s order), and the radial layout follows the node order",
+   "result": "PASS"
+  },
+  {
+   "id": "C-72",
+   "name": "Search Party answers “what depends on this camera?” with the downstream devices and the affected room",
+   "result": "PASS"
+  },
+  {
+   "id": "C-73",
+   "name": "Search Party lists the camera’s connections (signal to the compute, network to the switch), marked as design-proposed",
+   "result": "PASS"
+  },
+  {
+   "id": "C-95",
+   "name": "Search Party finds the camera’s current unit, located in the camera position, and shows position · unit · identity on the camera",
+   "result": "PASS"
+  },
+  {
+   "id": "C-74",
+   "name": "the room reads back COMMISSIONING (recommissioning) with revision 3 approved and every device",
+   "result": "PASS"
+  },
+  {
+   "id": "C-96",
+   "name": "the story keeps the position history (its design: absent from revision 1 — the room was created empty — generic in revision 2, the new model in revision 3) apart from each unit’s own history (one installation each, with both ends)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-75",
+   "name": "the baseline lineage holds v1 (CURRENT) and no other version",
+   "result": "PASS"
+  },
+  {
+   "id": "C-76",
+   "name": "the service history reads (no work order was needed: no test failed) with the room’s issue events",
+   "result": "PASS"
+  },
+  {
+   "id": "C-77",
+   "name": "the designer cannot read the audit trail (403)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-78",
+   "name": "the Evidence Ledger chain verifies end to end (data steward)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-79",
+   "name": "the room’s 365 audit events are sealed into the chain, in order (sequence, id and time agree)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-80",
+   "name": "the Room Story reads in order: created → design approved → window → installed → commissioning → results → verification → baseline v1 published by the acceptance → recommissioned → camera replaced → revision approved",
+   "result": "PASS"
+  },
+  {
+   "id": "C-81",
+   "name": "the refusals of the scenario are in the trail too (DENIED, with the actor’s role)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-82",
+   "name": "the acceptance is audited as delegated, naming the delegation and its grantor",
+   "result": "PASS"
+  },
+  {
+   "id": "C-83",
+   "name": "the domain events of the change were delivered by the outbox: room.device_swapped, commission.asset_replaced, room.design_approved",
+   "result": "PASS"
+  },
+  {
+   "id": "C-84",
+   "name": "the operational read model is rebuilt from the events: COMMISSIONING, live health NOT_MONITORED",
+   "result": "PASS"
+  },
+  {
+   "id": "C-85",
+   "name": "the 27 KPI passports compute over the records, each with arithmetic or a stated reason (never a silent 0)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-86",
+   "name": "the building rollup computes the Northstar Annex from its own rooms, and the units add up to the estate",
+   "result": "PASS"
+  },
+  {
+   "id": "C-87",
+   "name": "Mission Control reads for the systems engineer",
+   "result": "PASS"
+  },
+  {
+   "id": "C-88",
+   "name": "the KPI summary counts the scenario’s verified results and reports operational performance NOT_MONITORED",
+   "result": "PASS"
+  },
+  {
+   "id": "C-97",
+   "name": "Pro reports the units by identity state (UNKNOWN never counted as known) and says that the 12 superseded PASS_VERIFIED results no longer count",
+   "result": "PASS"
+  }
+ ]
+}

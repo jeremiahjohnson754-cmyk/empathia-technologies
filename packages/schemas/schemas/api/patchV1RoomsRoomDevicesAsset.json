@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://schemas.empathia.invalid/api/patchV1RoomsRoomDevicesAsset/0.1.0.json",
   "title": "PATCH /v1/rooms/{room}/devices/{asset} request body",
-  "description": "Move a device or substitute its model (the asset keeps its id; the model history is kept)",
+  "description": "Move a device or substitute its model (the position keeps its id and its model history; in an installed room under recommissioning the unit of the previous model is taken out — SUBSTITUTED, its history kept — and a unit of the new model, new or a spare `asset`, is installed in the same transaction; `expectedInstallation` refuses a stale change with 409)",
   "type": "object",
   "additionalProperties": false,
   "required": [],
@@ -30,6 +30,14 @@
       "type": "string",
       "minLength": 1,
       "maxLength": 80
+    },
+    "expectedInstallation": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "asset": {
+      "type": "string",
+      "pattern": "^AS-[0-9]{4,10}$"
     }
   }
 }

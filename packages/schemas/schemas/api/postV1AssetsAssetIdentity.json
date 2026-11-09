@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1AssetsAssetIdentity/0.1.0.json",
+  "title": "POST /v1/assets/{asset}/identity request body",
+  "description": "Record a unit’s identity, forward only: DECLARED with a serial (work.evidence or field.scan), OBSERVED with evidence (the same), VERIFIED with evidence by a verification authority who neither declared nor observed it; a recorded serial is final",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "state"
+  ],
+  "properties": {
+    "state": {
+      "type": "string",
+      "enum": [
+        "DECLARED",
+        "OBSERVED",
+        "VERIFIED"
+      ]
+    },
+    "serial": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "manufacturer": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "evidenceId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 500
+    }
+  }
+}

@@ -1,15 +1,66 @@
 /**
- * The outbox worker: delivers events at least once, in order of occurrence, to idempotent handlers.
- * Claims a batch with FOR UPDATE SKIP LOCKED (several workers can run), retries with exponential backoff, and moves an event to
- * DEAD_LETTER after MAX_ATTEMPTS, where an admin can see it and retry it (/v1/admin/outbox). Runs as the database role empathia_worker,
- * the only role the cross-tenant outbox, notification and read-model policies admit (migration 0008).
+ * The outbox worker: delivers events at least once to idempotent handlers, in order per aggregate, each under its own tenant.
+ * Runs as the database role empathia_worker (migration 0008). Several workers can run at once.
+ *
+ * Ordering (migration 0027). An aggregate's events (tenant, aggregate_type, aggregate_id) are delivered strictly in aggregate_seq order:
+ * the order in which their transactions COMMITTED, numbered by the database at commit (never by the producer — several producers
+ * hard-code aggregate_rev, which is kept unchanged for consumers as the domain's own revision). A worker takes an aggregate only under a transaction-scoped advisory lock and only
+ * from its head: the earliest event not yet DELIVERED. While that event is pending, retrying (backoff), leased (external delivery in
+ * flight) or DEAD_LETTER, the later events of the same aggregate are HELD — never attempted — until it is delivered, which for a
+ * dead letter means a security admin's audited replay (POST /v1/admin/outbox/:event/retry). There is no skip. Other aggregates keep
+ * flowing, in parallel across workers.
+ *
+ * Internal handlers (read model, notifications) run inside the delivery transaction with app.tenant_id set to the event's tenant, so
+ * row-level security confines their writes to that tenant. Each writes a delivery receipt (app.outbox_delivery) in the same transaction
+ * as its effect: a crash anywhere before COMMIT rolls back effects and receipts together (exactly once), and a handler with a receipt
+ * is never run again for that event.
+ *
+ * External sinks (effects outside the database — a Teams/Outlook message, a connector event) are NEVER called inside a transaction.
+ * After the internal effects commit, the event is leased to this worker and stays PENDING; the worker then calls the sinks with no
+ * transaction open, passing an idempotency key derived from the event id (outbox:<event id>:<sink>), and records each sink's receipt
+ * afterwards. A crash between a sink's effect and its receipt means the sink is called again (with the same key) once the lease
+ * expires: delivery outside the database is at-least-once, and the consumer deduplicates on the key. No sink is configured in this
+ * starter (no real Teams/Outlook connector exists); the tests use a local stub sink.
+ *
+ * Before any handler sees an event, it is checked against its contract (eventProblems: @empathia/event-contracts, schema version,
+ * tenant, the rooms it concerns). An event that fails is dead-lettered at once as NON_RETRYABLE with its reasons — it is never handed
+ * to a handler and never retried — and the later events of its aggregate stay held behind it.
+ * Other failures are TRANSIENT (retried with exponential backoff, next_attempt_at) until MAX_ATTEMPTS, then PERMANENT (DEAD_LETTER),
+ * where an admin can see and replay them; a replay re-delivers the same row (identity unchanged) and is counted on it (replay_count,
+ * last_replay_audit_id).
+ * The worker has no fault-injection hook; crash tests drive it from a test-only child process (tests/integration/outbox-worker-child.mjs).
  */
+import os from 'node:os';
+import crypto from 'node:crypto';
+import { validateEvent } from '@empathia/event-contracts';
 import type { PgPool, Queryable } from '../db/pg.js';
 import { log } from '../log.js';
 
 export const MAX_ATTEMPTS = 8;
 export interface OutboxEvent { id: string; tenant_id: string; type: string; aggregate_type: string; aggregate_id: string; aggregate_rev: number; payload: Record<string, unknown>; attempts: number; correlation_id: string }
 export type Handler = (q: Queryable, e: OutboxEvent) => Promise<void>;
+
+/** An effect outside the database. deliver() must be idempotent on idempotencyKey: a repeated call with the same key must not repeat the effect. */
+export interface ExternalSink {
+  /** Stable name (1–80 characters): part of the idempotency key and of the delivery receipt. */
+  readonly name: string;
+  /** The events this sink takes (default: all). */
+  accepts?(e: OutboxEvent): boolean;
+  /** Called with no database transaction open. Rejecting (or exceeding the timeout) counts as a failed attempt of the event. */
+  deliver(e: OutboxEvent, idempotencyKey: string, signal: AbortSignal): Promise<void>;
+}
+export interface OutboxWorkerOptions {
+  externalSinks?: ExternalSink[];
+  /** Recorded on leases and receipts. Default: host:pid:random. */
+  workerId?: string;
+  /** How long an event with external sinks in flight is reserved for this worker (default 60 s). Must exceed externalTimeoutMs. */
+  leaseMs?: number;
+  /** Per-call limit for an external sink (default 10 s). */
+  externalTimeoutMs?: number;
+}
+
+/** The idempotency key an external consumer deduplicates on: derived from the event id, stable across redeliveries. */
+export const idempotencyKey = (eventId: string, handler: string) => `outbox:${eventId}:${handler}`;
 
 /** Rebuild the operational read model of the room an event concerns. Idempotent: a full recompute from the canonical tables. */
 export const readModelHandler: Handler = async (q, e) => {
@@ -43,10 +94,53 @@ export const notificationHandler: Handler = async (q, e) => {
   if (e.type === 'commission.test_result_submitted' && e.payload['resultLabel'] === 'PASS_UNVERIFIED') await note('qa_reviewer', 'result.awaiting_verification', `${e.payload['testId']} in ${e.payload['roomId']} passed and awaits independent verification`, `/v1/rooms/${e.payload['roomId']}`);
 };
 
+/** The kind of an event's last failure (outbox_event.failure_kind). */
+export type FailureKind = 'TRANSIENT' | 'PERMANENT' | 'NON_RETRYABLE';
+/** The schema MAJOR version this worker reads (docs/api/EVENT_VERSIONING.md: consumers accept every MINOR of the MAJOR they declare). */
+const SUPPORTED_SCHEMA = /^1\.\d+\.\d+$/;
+
+/**
+ * Why an event must not be handed to any handler, or [] when it may. Run under the event's tenant (app.tenant_id = its tenant), by the
+ * worker before delivery and by the replay endpoint before requeueing. Checks: the event's contract (@empathia/event-contracts: known
+ * type, required payload fields, aggregate type and id, a non-negative integer aggregate rev, no bare PASS label), a supported schema
+ * version, a tenant that exists, and that every room the event concerns (a Room aggregate, a payload roomId or designId) is a room of
+ * the event's tenant. Other aggregate kinds are not looked up (the worker role cannot read their tables; least privilege).
+ */
+export async function eventProblems(q: Queryable, e: Pick<OutboxEvent, 'tenant_id' | 'type' | 'aggregate_type' | 'aggregate_id' | 'aggregate_rev' | 'payload'> & { schema_version: string }): Promise<string[]> {
+  const p = validateEvent({ type: e.type, aggregateType: e.aggregate_type, aggregateId: e.aggregate_id, aggregateRevision: e.aggregate_rev, payload: e.payload });
+  if (!SUPPORTED_SCHEMA.test(String(e.schema_version))) p.push(`schema version ${e.schema_version} is not supported (this worker reads 1.x)`);
+  if (!(await q.query('SELECT 1 FROM app.tenant WHERE id = $1', [e.tenant_id])).rowCount) p.push('the event\'s tenant is unknown');
+  const rooms = new Set<string>();
+  if (e.aggregate_type === 'Room' && e.aggregate_id) rooms.add(e.aggregate_id);
+  const pl: Record<string, unknown> = e.payload && typeof e.payload === 'object' && !Array.isArray(e.payload) ? e.payload : {};
+  for (const k of ['roomId', 'designId']) { const v = pl[k]; if (typeof v === 'string' && v.startsWith('R-')) rooms.add(v); }
+  for (const code of rooms) {
+    if (!(await q.query('SELECT 1 FROM app.room WHERE tenant_id = $1 AND (code = $2 OR id::text = $2)', [e.tenant_id, code])).rowCount) p.push(`room ${code} is not a room of the event's tenant`);
+  }
+  return p;
+}
+
+interface Row extends OutboxEvent { schema_version: string; aggregate_seq: number | null; status: string; due: boolean; leased: boolean }
+interface ExternalJob { e: OutboxEvent; sinks: ExternalSink[] }
+const COLS = 'id, tenant_id, type, schema_version, aggregate_type, aggregate_id, aggregate_rev, aggregate_seq, payload, attempts, correlation_id';
+const errText = (err: unknown) => String((err as Error)?.message ?? err).slice(0, 500);
+const plain = (e: OutboxEvent): OutboxEvent => ({ id: e.id, tenant_id: e.tenant_id, type: e.type, aggregate_type: e.aggregate_type, aggregate_id: e.aggregate_id, aggregate_rev: e.aggregate_rev, payload: e.payload, attempts: e.attempts, correlation_id: e.correlation_id });
+
 export class OutboxWorker {
   private timer: NodeJS.Timeout | null = null; private busy = false;
   delivered = 0; failed = 0; dead = 0;
-  constructor(private pool: PgPool, private handlers: Handler[] = [readModelHandler, notificationHandler], private intervalMs = 500) {}
+  readonly workerId: string;
+  private readonly sinks: ExternalSink[]; private readonly leaseMs: number; private readonly externalTimeoutMs: number;
+  constructor(private pool: PgPool, private handlers: Handler[] = [readModelHandler, notificationHandler], private intervalMs = 500, opts: OutboxWorkerOptions = {}) {
+    this.sinks = opts.externalSinks || [];
+    this.workerId = (opts.workerId || `${os.hostname()}:${process.pid}:${crypto.randomBytes(3).toString('hex')}`).slice(0, 120);
+    this.externalTimeoutMs = opts.externalTimeoutMs ?? 10000;
+    this.leaseMs = opts.leaseMs ?? 60000;
+    if (!(this.leaseMs > this.externalTimeoutMs)) throw new Error('OutboxWorker: leaseMs must exceed externalTimeoutMs (an event must not be redelivered while its sink call can still be running)');
+    const names = [...this.handlers.map((h, i) => this.handlerName(h, i)), ...this.sinks.map((s) => s.name)];
+    for (const s of this.sinks) if (!s.name || s.name.length > 80) throw new Error('OutboxWorker: an external sink needs a name of 1–80 characters');
+    if (new Set(this.sinks.map((s) => s.name)).size !== this.sinks.length) throw new Error(`OutboxWorker: external sink names must be unique (${names.join(', ')})`);
+  }
   sealed = 0; private ticks = 0;
   /** Every 10th tick, seal committed audit events into each tenant's hash chain (ADR-0010; sealing never runs inside a request). */
   /** The last tick's failure (database unreachable, …), or null. A failing tick never ends the process: it is logged once per outage. */
@@ -63,30 +157,154 @@ export class OutboxWorker {
     catch (err) { log('warn', 'audit chain seal failed', { error: (err as Error).message }); return 0; }
   }
   stop(): void { if (this.timer) clearInterval(this.timer); this.timer = null; }
-  /** Process one batch. Returns the number of events handled. */
+
+  /** A handler's receipt name: its function name, else its position (anonymous test handlers). */
+  private handlerName(h: Handler, i: number): string { return (h.name || `handler#${i}`).slice(0, 80); }
+
+  /**
+   * Process one batch: up to `batch` events, aggregate by aggregate, each aggregate from its head and in order. Internal effects and
+   * receipts commit in one transaction; external sinks are called after it commits, with no transaction open. Returns the number of
+   * events taken (delivered, failed or leased for external delivery).
+   */
   async tick(batch = 50): Promise<number> {
     if (this.busy) return 0; this.busy = true;
     try {
-      return await this.pool.tx({}, async (q) => {
-        const evs = (await q.query<OutboxEvent>(`SELECT id, tenant_id, type, aggregate_type, aggregate_id, aggregate_rev, payload, attempts, correlation_id FROM app.outbox_event WHERE status = 'PENDING' AND next_attempt_at <= now() ORDER BY occurred_at, id LIMIT $1 FOR UPDATE SKIP LOCKED`, [batch])).rows;
-        for (const e of evs) {
-          await q.query('SAVEPOINT ev');
-          try {
-            for (const h of this.handlers) await h(q, e);
-            await q.query(`UPDATE app.outbox_event SET status = 'DELIVERED', delivered_at = now(), attempts = attempts + 1 WHERE id = $1`, [e.id]);
-            await q.query('RELEASE SAVEPOINT ev'); this.delivered += 1;
-          } catch (err) {
-            await q.query('ROLLBACK TO SAVEPOINT ev');
-            const attempts = e.attempts + 1; const dead = attempts >= MAX_ATTEMPTS;
-            await q.query(`UPDATE app.outbox_event SET attempts = $2, status = $3, next_attempt_at = now() + make_interval(secs => $4), last_error = $5 WHERE id = $1`, [e.id, attempts, dead ? 'DEAD_LETTER' : 'PENDING', Math.min(2 ** attempts, 600), String((err as Error).message).slice(0, 500)]);
-            this.failed += 1; if (dead) this.dead += 1;
-            log(dead ? 'error' : 'warn', dead ? 'outbox event dead-lettered' : 'outbox delivery failed', { eventId: e.id, type: e.type, attempts, correlationId: e.correlation_id, error: (err as Error).message });
+      const external: ExternalJob[] = [];
+      const taken = await this.pool.tx({}, async (q) => {
+        // candidate aggregates: those whose head (earliest undelivered event) is pending, due and not leased — oldest head first
+        const heads = (await q.query<{ tenant_id: string; aggregate_type: string; aggregate_id: string }>(`
+          SELECT tenant_id, aggregate_type, aggregate_id FROM (
+            SELECT DISTINCT ON (tenant_id, aggregate_type, aggregate_id) tenant_id, aggregate_type, aggregate_id, status, next_attempt_at, lease_until, seq
+              FROM app.outbox_event WHERE status IN ('PENDING', 'DEAD_LETTER')
+             ORDER BY tenant_id, aggregate_type, aggregate_id, aggregate_seq NULLS FIRST, seq) h
+           WHERE status = 'PENDING' AND next_attempt_at <= now() AND (lease_until IS NULL OR lease_until <= now())
+           ORDER BY seq LIMIT $1`, [batch])).rows;
+        let n = 0;
+        for (const a of heads) {
+          if (n >= batch) break;
+          // one worker per aggregate at a time; another worker skips it (and takes the next aggregate) instead of waiting
+          const lock = (await q.query<{ ok: boolean }>("SELECT pg_try_advisory_xact_lock(hashtextextended('app.outbox:' || $1 || ':' || $2 || ':' || $3, 0)) AS ok", [a.tenant_id, a.aggregate_type, a.aggregate_id])).rows[0]!;
+          if (!lock.ok) continue;
+          // re-read under the lock (a fresh snapshot): the aggregate's undelivered events in delivery order
+          const run = (await q.query<Row>(`SELECT ${COLS}, status, next_attempt_at <= now() AS due, (lease_until IS NOT NULL AND lease_until > now()) AS leased
+              FROM app.outbox_event WHERE tenant_id = $1 AND aggregate_type = $2 AND aggregate_id = $3 AND status IN ('PENDING', 'DEAD_LETTER')
+             ORDER BY aggregate_seq NULLS FIRST, seq LIMIT $4 FOR UPDATE`, [a.tenant_id, a.aggregate_type, a.aggregate_id, batch - n])).rows;
+          for (const e of run) {
+            if (e.status !== 'PENDING' || !e.due || e.leased) break;            // the head is not deliverable now: hold everything after it
+            n += 1;
+            const out = await this.deliverInternal(q, e);
+            if (Array.isArray(out)) { external.push({ e: plain(e), sinks: out }); break; }   // leased: later events wait for it
+            if (out === 'failed') break;
           }
         }
-        return evs.length;
+        return n;
       });
+      if (external.length) await this.deliverExternal(external);
+      return taken;
     } finally { this.busy = false; }
   }
+
+  private acceptingSinks(e: OutboxEvent): ExternalSink[] { return this.sinks.filter((s) => !s.accepts || s.accepts(e)); }
+
+  /** Inside the batch transaction: run the internal handlers that have no receipt yet, under the event's tenant. Returns the external
+   *  sinks still to call (the event is then leased to this worker), or the outcome. */
+  private async deliverInternal(q: Queryable, e: Row): Promise<'delivered' | 'failed' | ExternalSink[]> {
+    await q.query('SAVEPOINT ev');
+    try {
+      await q.query("SELECT set_config('app.tenant_id', $1, true)", [e.tenant_id]);
+      // an event that fails its contract is never handed to a handler, and retrying cannot fix it: dead-letter it now
+      const problems = await eventProblems(q, e);
+      // a committed event always has its number (assigned at COMMIT); one without it was written around the trigger: its place is unknown
+      if (e.aggregate_seq == null) problems.push('the event has no aggregate sequence (written without the outbox sequence trigger): its position in its aggregate is unknown');
+      if (problems.length) {
+        await q.query('ROLLBACK TO SAVEPOINT ev');
+        await this.recordNonRetryable(q, e, problems);
+        return 'failed';
+      }
+      const done = new Set((await q.query<{ k: string }>("SELECT kind || ':' || handler AS k FROM app.outbox_delivery WHERE event_id = $1", [e.id])).rows.map((r) => r.k));
+      for (const [i, h] of this.handlers.entries()) {
+        const name = this.handlerName(h, i);
+        if (done.has(`INTERNAL:${name}`)) continue;
+        await h(q, e);
+        await q.query("SELECT set_config('app.tenant_id', $1, true)", [e.tenant_id]);   // whatever the handler did with the setting
+        await q.query("INSERT INTO app.outbox_delivery (tenant_id, event_id, kind, handler, idempotency_key, worker) VALUES ($1, $2, 'INTERNAL', $3, $4, $5)", [e.tenant_id, e.id, name, idempotencyKey(e.id, name), this.workerId]);
+      }
+      const pendingSinks = this.acceptingSinks(e).filter((s) => !done.has(`EXTERNAL:${s.name}`));
+      if (pendingSinks.length) {
+        await q.query('UPDATE app.outbox_event SET lease_owner = $2, lease_until = now() + make_interval(secs => $3) WHERE id = $1', [e.id, this.workerId, this.leaseMs / 1000]);
+        await q.query('RELEASE SAVEPOINT ev');
+        return pendingSinks;
+      }
+      await q.query(`UPDATE app.outbox_event SET status = 'DELIVERED', delivered_at = now(), attempts = attempts + 1, lease_owner = NULL, lease_until = NULL WHERE id = $1`, [e.id]);
+      await q.query('RELEASE SAVEPOINT ev'); this.delivered += 1;
+      return 'delivered';
+    } catch (err) {
+      await q.query('ROLLBACK TO SAVEPOINT ev');
+      await this.recordFailure(q, e, err);
+      return 'failed';
+    } finally {
+      await q.query("SELECT set_config('app.tenant_id', '', true)");
+    }
+  }
+
+  /** A failed attempt: TRANSIENT (retried at next_attempt_at with backoff) until MAX_ATTEMPTS, then PERMANENT (DEAD_LETTER). */
+  private async recordFailure(q: Queryable, e: OutboxEvent, err: unknown): Promise<void> {
+    const attempts = e.attempts + 1; const dead = attempts >= MAX_ATTEMPTS; const kind: FailureKind = dead ? 'PERMANENT' : 'TRANSIENT';
+    await q.query(`UPDATE app.outbox_event SET attempts = $2, status = $3, next_attempt_at = now() + make_interval(secs => $4), last_error = $5, failure_kind = $6, lease_owner = NULL, lease_until = NULL WHERE id = $1`, [e.id, attempts, dead ? 'DEAD_LETTER' : 'PENDING', Math.min(2 ** attempts, 600), errText(err), kind]);
+    this.failed += 1; if (dead) this.dead += 1;
+    log(dead ? 'error' : 'warn', dead ? 'outbox event dead-lettered' : 'outbox delivery failed', { eventId: e.id, type: e.type, attempts, failureKind: kind, correlationId: e.correlation_id, error: errText(err) });
+  }
+
+  /** An event that fails its contract: DEAD_LETTER at once as NON_RETRYABLE, with its reasons. Later events of the aggregate stay held. */
+  private async recordNonRetryable(q: Queryable, e: OutboxEvent, problems: string[]): Promise<void> {
+    const reason = errText(`contract: ${problems.join('; ')}`);
+    await q.query(`UPDATE app.outbox_event SET attempts = attempts + 1, status = 'DEAD_LETTER', last_error = $2, failure_kind = 'NON_RETRYABLE', lease_owner = NULL, lease_until = NULL WHERE id = $1`, [e.id, reason]);
+    this.failed += 1; this.dead += 1;
+    log('error', 'outbox event refused (non-retryable): it fails its contract and was not handed to any handler', { eventId: e.id, type: e.type, failureKind: 'NON_RETRYABLE', correlationId: e.correlation_id, error: reason });
+  }
+
+  /**
+   * After the batch transaction committed: call every pending sink of every leased event with NO transaction open (all calls of the
+   * batch settle before any receipt is written), then record receipts and outcomes, one short transaction per event.
+   */
+  private async deliverExternal(jobs: ExternalJob[]): Promise<void> {
+    const results = await Promise.all(jobs.map(async (j) => {
+      const outcomes: Array<{ sink: ExternalSink; error: unknown | null }> = [];
+      for (const s of j.sinks) outcomes.push({ sink: s, error: await this.callSink(s, j.e).then(() => null, (err: unknown) => err ?? new Error('external sink failed')) });
+      return { j, outcomes };
+    }));
+    for (const { j, outcomes } of results) {
+      try {
+        await this.pool.tx({ tenantId: j.e.tenant_id }, async (q) => {
+          for (const o of outcomes) if (!o.error) await q.query("INSERT INTO app.outbox_delivery (tenant_id, event_id, kind, handler, idempotency_key, worker) VALUES ($1, $2, 'EXTERNAL', $3, $4, $5) ON CONFLICT DO NOTHING", [j.e.tenant_id, j.e.id, o.sink.name, idempotencyKey(j.e.id, o.sink.name), this.workerId]);
+          const cur = (await q.query<{ status: string; lease_owner: string | null; attempts: number }>('SELECT status, lease_owner, attempts FROM app.outbox_event WHERE id = $1 FOR UPDATE', [j.e.id])).rows[0];
+          if (!cur || cur.status !== 'PENDING') return;
+          const failed = outcomes.find((o) => o.error);
+          if (failed) {
+            // only the lease holder records the failure (a worker whose lease expired leaves the event to its new holder)
+            if (cur.lease_owner === this.workerId) await this.recordFailure(q, { ...j.e, attempts: cur.attempts }, new Error(`external sink ${failed.sink.name}: ${errText(failed.error)}`));
+            return;
+          }
+          const want = this.acceptingSinks(j.e).map((s) => s.name);
+          const have = new Set((await q.query<{ handler: string }>("SELECT handler FROM app.outbox_delivery WHERE event_id = $1 AND kind = 'EXTERNAL'", [j.e.id])).rows.map((r) => r.handler));
+          if (want.every((w) => have.has(w))) {
+            await q.query(`UPDATE app.outbox_event SET status = 'DELIVERED', delivered_at = now(), attempts = attempts + 1, lease_owner = NULL, lease_until = NULL WHERE id = $1`, [j.e.id]);
+            this.delivered += 1;
+          }
+        });
+      } catch (err) {
+        // the receipt could not be recorded: the lease expires and the sink is called again with the same idempotency key
+        log('warn', 'outbox external receipt not recorded; the event will be redelivered after its lease', { eventId: j.e.id, error: errText(err) });
+      }
+    }
+  }
+
+  private async callSink(s: ExternalSink, e: OutboxEvent): Promise<void> {
+    const ac = new AbortController(); let timer: NodeJS.Timeout | undefined;
+    const timeout = new Promise<never>((_, bad) => { timer = setTimeout(() => { ac.abort(); bad(new Error(`timed out after ${this.externalTimeoutMs} ms`)); }, this.externalTimeoutMs); });
+    try { await Promise.race([s.deliver(e, idempotencyKey(e.id, s.name), ac.signal), timeout]); } finally { clearTimeout(timer); }
+  }
+
   /** Drain everything currently due (tests and the seed use this). */
-  async drain(max = 50): Promise<number> { let n = 0; for (let i = 0; i < max; i += 1) { const k = await this.tick(); n += k; if (!k) break; } return n; }
+  async drain(max = 1000): Promise<number> { let n = 0; for (let i = 0; i < max; i += 1) { const k = await this.tick(); n += k; if (!k) break; } return n; }
 }

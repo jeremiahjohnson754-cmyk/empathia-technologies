@@ -1,0 +1,61 @@
+{
+ "step": 13,
+ "title": "Save the change as a new design revision and compare it with the accepted revision",
+ "room": "R-PLN-0004",
+ "at": "2026-11-01T03:40:01.824Z",
+ "assertions": [
+  {
+   "id": "C-49",
+   "name": "the designer saves revision 3",
+   "result": "PASS"
+  },
+  {
+   "id": "C-50",
+   "name": "the comparison of the accepted revision 2 with revision 3 shows exactly the camera swap",
+   "result": "PASS"
+  }
+ ],
+ "exchanges": [
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/revisions",
+   "persona": "designer",
+   "status": 201,
+   "request": {
+    "reason": "checkpoint: camera PA-0061 substituted during recommissioning"
+   },
+   "body": {
+    "revision": 3,
+    "sha256": "238c3ff23af5873a71456fae153bebe876138b24605fd5e327249337f7578c5c",
+    "applicable": 75,
+    "openIssues": 2,
+    "planChanged": false
+   },
+   "correlationId": "14d258fd-fc02-4431-9c25-68ea664230de"
+  },
+  {
+   "method": "GET",
+   "path": "/v1/rooms/R-PLN-0004/revisions/compare?a=2&b=3",
+   "persona": "designer",
+   "status": 200,
+   "body": {
+    "a": 2,
+    "b": 3,
+    "geometry": [],
+    "added": [],
+    "removed": [],
+    "moved": [],
+    "swapped": [
+     {
+      "id": "PA-0061",
+      "from": "camera:generic",
+      "to": "camera:SYN-PTZ-12X (synthetic PTZ camera)"
+     }
+    ],
+    "connectionsAdded": [],
+    "connectionsRemoved": []
+   },
+   "correlationId": "9c13efda-03e3-4af2-8a8f-8dfd7c8a5998"
+  }
+ ]
+}
