@@ -29,6 +29,7 @@ flowchart TB
     kpi_engine["kpi-engine"]
     observability["observability"]
     project_governance["project-governance"]
+    proof_registry["proof-registry"]
     relationship_engine["relationship-engine"]
     schemas["schemas"]
     search_party["search-party"]
@@ -43,6 +44,7 @@ flowchart TB
   search_party --> relationship_engine
   search_party --> domain_data
   ui --> design_tokens
+  enterprise_api --> proof_registry
   enterprise_api --> commissioning_engine
   enterprise_api --> domain_types
   enterprise_api --> event_contracts

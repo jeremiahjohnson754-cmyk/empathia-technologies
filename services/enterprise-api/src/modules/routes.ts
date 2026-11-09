@@ -28,6 +28,7 @@ import * as mission from '../domain/mission.js';
 import * as comp from '../domain/competency.js';
 import * as ledger from '../domain/ledger.js';
 import * as inst from '../domain/installations.js';
+import * as proof from '../domain/proof.js';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { PgPool } from '../db/pg.js';
@@ -207,6 +208,24 @@ export function buildRoutes(deps: { pool: PgPool; tokens: Hs256Tokens; store: Ob
     // the client address is the one the HTTP server computed (http/server.ts clientAddress: the socket, or the rightmost X-Forwarded-For
     // entry when TRUSTED_PROXY=on); a client-supplied x-empathia-remote is overwritten there, and the leftmost (spoofable) entry is never used
     handler: async (c, q) => ({ status: 201, body: await leads.createLead(deps.pool, q.body as never, { ip: String(q.headers['x-empathia-remote'] || 'unknown'), userAgent: String(q.headers['user-agent'] || ''), correlationId: c.correlationId }) }) });
+  // ---------------------------------------------------------------------------------------- proof registry (v1.8 A, ADR-021)
+  add({ method: 'GET', path: '/v1/public/proof/claims', tag: 'proof', summary: 'Published capability claims, sanitized: state, data kind, wording, limitations and provenance. No sign-in; never a tenant, a verifier or unapproved evidence', auth: false,
+    responses: ok('the public projection of every approved public claim, with expiry and stale-source downgrades applied'), handler: async () => ({ status: 200, body: await proof.listPublic(deps.pool) }) });
+  add({ method: 'GET', path: '/v1/public/proof/claims/:claim', tag: 'proof', summary: 'One published claim. Unknown, unapproved, revoked, blocked and private claims all answer 404', auth: false,
+    responses: { ...ok('the claim’s public projection'), 404: { description: 'no published claim has that identifier' } }, handler: async (_c, q) => ({ status: 200, body: await proof.getPublic(deps.pool, q.params['claim']!) }) });
+  add({ method: 'GET', path: '/v1/proof/claims', tag: 'proof', summary: 'Your organization’s claims with their effective state (staff-scope claims need policy.configure)', auth: true, responses: ok('claims'), handler: async (c) => ({ status: 200, body: await proof.listMine(c) }) });
+  add({ method: 'POST', path: '/v1/proof/claims', tag: 'proof', summary: 'Record a claim (tenant claims: security admin; public claims: the founder organization). A claim always starts unpublished; audited', auth: true, authority: ['policy.configure', 'founder.workspace'], idempotent: true,
+    body: obj({ claim_id: str({ pattern: '^[A-Za-z0-9][A-Za-z0-9._-]{3,127}$' }), capability_id: str({ minLength: 2, maxLength: 160 }), product: str({ minLength: 2, maxLength: 120 }), world: str({ maxLength: 40, nullable: true }),
+      scope: str({ enum: ['PUBLIC_SANITIZED', 'TENANT', 'STAFF'] }), environment: str({ enum: ['dev', 'test', 'staging', 'production', 'synthetic_demo'] }), data_kind: str({ enum: ['SYNTHETIC', 'MODELED', 'IMPORTED', 'LAB_OBSERVED', 'CUSTOMER_OBSERVED'] }),
+      verification_state: str({ enum: ['SPECIFIED', 'SYNTHETIC_DEMO', 'IMPLEMENTED_NOT_VERIFIED', 'LAB_VERIFIED', 'CUSTOMER_AUTHORIZED', 'LIVE_OBSERVING', 'DEGRADED', 'BLOCKED', 'REVOKED', 'RELEASED_VERIFIED'] }),
+      implementation_revision: str({ minLength: 1, maxLength: 120 }), verification_method: str({ maxLength: 400, nullable: true }), verifier_identity: str({ maxLength: 200, nullable: true }), verified_at: str({ maxLength: 40 }), expires_at: str({ maxLength: 40, nullable: true }),
+      source_type: str({ minLength: 1, maxLength: 200 }), source_freshness_at: str({ maxLength: 40, nullable: true }), evidence_ids: arr(str({ minLength: 1, maxLength: 160 }), { maxItems: 50 }), approved_derivative_ids: arr(str({ minLength: 1, maxLength: 160 }), { maxItems: 50 }),
+      limitations: arr(str({ minLength: 1, maxLength: 400 }), { maxItems: 20 }), claim_text_public: str({ maxLength: 1200, nullable: true }), owner: str({ minLength: 1, maxLength: 120 }) },
+      ['claim_id', 'capability_id', 'product', 'scope', 'environment', 'data_kind', 'verification_state', 'implementation_revision', 'verified_at', 'source_type', 'evidence_ids', 'limitations', 'owner']),
+    responses: created('the claim, unpublished'), handler: async (c, q) => ({ status: 201, body: await proof.createClaim(c, q.body as never) }) });
+  add({ method: 'POST', path: '/v1/proof/claims/:claim/transitions', tag: 'proof', summary: 'Request, approve, reject or revoke publication; revoke, block or degrade the claim. Refused when the rules of a claim forbid it; audited', auth: true, authority: ['policy.configure', 'founder.workspace'],
+    body: obj({ action: str({ enum: proof.CLAIM_ACTIONS }), note: str({ maxLength: 1000 }) }, ['action']), responses: ok('the claim after the move'), handler: async (c, q) => ({ status: 200, body: await proof.moveClaim(c, q.params['claim']!, q.body as never) }) });
+  add({ method: 'GET', path: '/v1/proof/claims/:claim/history', tag: 'proof', summary: 'The claim’s append-only history of moves', auth: true, responses: ok('history'), handler: async (c, q) => ({ status: 200, body: await proof.claimHistory(c, q.params['claim']!) }) });
   add({ method: 'GET', path: '/v1/admin/leads', tag: 'admin', summary: 'The lead inbox (security admin; audited): messages from the public website with their handling status and whether a notification went out', auth: true, authority: 'policy.configure',
     query: { status: str({ enum: ['NEW', 'ANSWERED', 'SPAM'] }), limit: str({ pattern: '^[0-9]{1,3}$' }) }, responses: ok('leads and the email adapter status'), handler: async (c, q) => ({ status: 200, body: await leads.listLeads(c, q.query.get('status'), Number(q.query.get('limit') || 100)) }) });
   add({ method: 'PATCH', path: '/v1/admin/leads/:id', tag: 'admin', summary: 'Mark a lead answered or spam, or add handling notes (security admin; audited)', auth: true, authority: 'policy.configure',

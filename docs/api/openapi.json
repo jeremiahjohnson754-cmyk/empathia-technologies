@@ -9097,6 +9097,585 @@
         }
       }
     },
+    "/v1/public/proof/claims": {
+      "get": {
+        "tags": [
+          "proof"
+        ],
+        "summary": "Published capability claims, sanitized: state, data kind, wording, limitations and provenance. No sign-in; never a tenant, a verifier or unapproved evidence",
+        "operationId": "getV1PublicProofClaims",
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "the public projection of every approved public claim, with expiry and stale-source downgrades applied"
+          }
+        }
+      }
+    },
+    "/v1/public/proof/claims/{claim}": {
+      "get": {
+        "tags": [
+          "proof"
+        ],
+        "summary": "One published claim. Unknown, unapproved, revoked, blocked and private claims all answer 404",
+        "operationId": "getV1PublicProofClaimsClaim",
+        "security": [],
+        "parameters": [
+          {
+            "name": "claim",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "the claim’s public projection"
+          },
+          "404": {
+            "description": "no published claim has that identifier",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/proof/claims": {
+      "get": {
+        "tags": [
+          "proof"
+        ],
+        "summary": "Your organization’s claims with their effective state (staff-scope claims need policy.configure)",
+        "operationId": "getV1ProofClaims",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "claims"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "proof"
+        ],
+        "summary": "Record a claim (tenant claims: security admin; public claims: the founder organization). A claim always starts unpublished; audited",
+        "operationId": "postV1ProofClaims",
+        "x-authority": [
+          "policy.configure",
+          "founder.workspace"
+        ],
+        "x-authority-enforced": [
+          "policy.configure",
+          "founder.workspace"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "claim_id",
+                  "capability_id",
+                  "product",
+                  "scope",
+                  "environment",
+                  "data_kind",
+                  "verification_state",
+                  "implementation_revision",
+                  "verified_at",
+                  "source_type",
+                  "evidence_ids",
+                  "limitations",
+                  "owner"
+                ],
+                "properties": {
+                  "claim_id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{3,127}$"
+                  },
+                  "capability_id": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 160
+                  },
+                  "product": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 120
+                  },
+                  "world": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "maxLength": 40
+                  },
+                  "scope": {
+                    "type": "string",
+                    "enum": [
+                      "PUBLIC_SANITIZED",
+                      "TENANT",
+                      "STAFF"
+                    ]
+                  },
+                  "environment": {
+                    "type": "string",
+                    "enum": [
+                      "dev",
+                      "test",
+                      "staging",
+                      "production",
+                      "synthetic_demo"
+                    ]
+                  },
+                  "data_kind": {
+                    "type": "string",
+                    "enum": [
+                      "SYNTHETIC",
+                      "MODELED",
+                      "IMPORTED",
+                      "LAB_OBSERVED",
+                      "CUSTOMER_OBSERVED"
+                    ]
+                  },
+                  "verification_state": {
+                    "type": "string",
+                    "enum": [
+                      "SPECIFIED",
+                      "SYNTHETIC_DEMO",
+                      "IMPLEMENTED_NOT_VERIFIED",
+                      "LAB_VERIFIED",
+                      "CUSTOMER_AUTHORIZED",
+                      "LIVE_OBSERVING",
+                      "DEGRADED",
+                      "BLOCKED",
+                      "REVOKED",
+                      "RELEASED_VERIFIED"
+                    ]
+                  },
+                  "implementation_revision": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "verification_method": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "maxLength": 400
+                  },
+                  "verifier_identity": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "maxLength": 200
+                  },
+                  "verified_at": {
+                    "type": "string",
+                    "maxLength": 40
+                  },
+                  "expires_at": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "maxLength": 40
+                  },
+                  "source_type": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "source_freshness_at": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "maxLength": 40
+                  },
+                  "evidence_ids": {
+                    "type": "array",
+                    "maxItems": 50,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    }
+                  },
+                  "approved_derivative_ids": {
+                    "type": "array",
+                    "maxItems": 50,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    }
+                  },
+                  "limitations": {
+                    "type": "array",
+                    "maxItems": 20,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 400
+                    }
+                  },
+                  "claim_text_public": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "maxLength": 1200
+                  },
+                  "owner": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "the claim, unpublished"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/proof/claims/{claim}/transitions": {
+      "post": {
+        "tags": [
+          "proof"
+        ],
+        "summary": "Request, approve, reject or revoke publication; revoke, block or degrade the claim. Refused when the rules of a claim forbid it; audited",
+        "operationId": "postV1ProofClaimsClaimTransitions",
+        "x-authority": [
+          "policy.configure",
+          "founder.workspace"
+        ],
+        "x-authority-enforced": [
+          "policy.configure",
+          "founder.workspace"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "claim",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "action"
+                ],
+                "properties": {
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "request_publication",
+                      "approve_publication",
+                      "reject_publication",
+                      "revoke_publication",
+                      "revoke",
+                      "block",
+                      "degrade"
+                    ]
+                  },
+                  "note": {
+                    "type": "string",
+                    "maxLength": 1000
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "the claim after the move"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/proof/claims/{claim}/history": {
+      "get": {
+        "tags": [
+          "proof"
+        ],
+        "summary": "The claim’s append-only history of moves",
+        "operationId": "getV1ProofClaimsClaimHistory",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "claim",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "history"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/admin/leads": {
       "get": {
         "tags": [

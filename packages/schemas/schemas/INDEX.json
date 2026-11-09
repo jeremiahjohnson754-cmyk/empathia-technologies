@@ -4,7 +4,7 @@
   "apiVersion": "0.1.0",
   "counts": {
     "events": 101,
-    "api": 73,
+    "api": 75,
     "entities": 4
   },
   "files": [
@@ -712,6 +712,16 @@
       "file": "api/postV1PublicLeads.json",
       "$id": "https://schemas.empathia.invalid/api/postV1PublicLeads/0.1.0.json",
       "sha256": "abffe9cb11f536b9cf771e1f9de7f377aef86a78dccb81ddfc100447a11fba66"
+    },
+    {
+      "file": "api/postV1ProofClaims.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1ProofClaims/0.1.0.json",
+      "sha256": "80244188c1effa6746b5654f560948d0b535615f9163dce99b886470e0a0880e"
+    },
+    {
+      "file": "api/postV1ProofClaimsClaimTransitions.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1ProofClaimsClaimTransitions/0.1.0.json",
+      "sha256": "47158cd09879fc051b18a8f376dc4757606f4713681f143127fd8569a74d40c2"
     },
     {
       "file": "api/patchV1AdminLeadsId.json",
