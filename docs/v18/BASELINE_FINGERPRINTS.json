@@ -1,0 +1,57 @@
+{
+ "requirements_v1_8_consolidated": {
+  "rows": 1099,
+  "distinct_ids": 1099,
+  "sha256": "35999eab45edea522fd60b7c52a3750d88e7b6c2116538c8f0c47e3f11517a5e",
+  "ids_sha256": "4c9f781da7685e7e2b210a9a136815a1cfc3cf7dae597fdc0bfdb31ec14657e3",
+  "first_column": "requirement_id"
+ },
+ "qa_tests_v1_8_consolidated": {
+  "rows": 652,
+  "distinct_ids": 652,
+  "sha256": "72ade616fcaba858626b3be8f6ce0d42199f1ecfc92ce9a10d1875c9ca0a5dff",
+  "ids_sha256": "78747523c6c8ca3068ae27317caf5f2b0ad3dae46438c33a7f414eb9d102c0e5",
+  "first_column": "test_id"
+ },
+ "requirements_v1_8_only": {
+  "rows": 90,
+  "distinct_ids": 90,
+  "sha256": "9c149b1ffbbcd9926cc9f4af44155cec492c6fd27afd529e5e3ce90d8a0cf354",
+  "ids_sha256": "5ed702ce33d6316ce1822fc3cd9507150cf17a4ebf3209945c76d044c13b1720",
+  "first_column": "requirement_id"
+ },
+ "qa_tests_v1_8_only": {
+  "rows": 90,
+  "distinct_ids": 90,
+  "sha256": "3376d3cde0cb3faf899993d1124e3de630688fc42abc7d37abb3664b7fd6d087",
+  "ids_sha256": "4ef56ae21acc1d0055b80f5496ab00a622c4596e408a3e5a8e663a343b962f2b",
+  "first_column": "test_id"
+ },
+ "requirements_v1_7_consolidated": {
+  "rows": 1009,
+  "distinct_ids": 1009,
+  "sha256": "2581639e7836b376694f85950fe08821400918ab99315a2f3f435a4f44c9fa8c",
+  "ids_sha256": "5c06274580309ad9a0a398e4bcf21b704a3a6e4fe24faac10c4aa6e861100d25",
+  "first_column": "requirement_id"
+ },
+ "qa_tests_v1_7_consolidated": {
+  "rows": 562,
+  "distinct_ids": 562,
+  "sha256": "773eab51d35737e749d987da72846d883329a25e8b507b320212ed8cf3b6cfdb",
+  "ids_sha256": "b83be77d12802f7e51c776f72eca89c47df4c25d710cf8fedc0bee27cb0bd23e",
+  "first_column": "test_id"
+ },
+ "roles_all_52_v1_4": {
+  "rows": 52,
+  "distinct_ids": 52,
+  "sha256": "9aa58a61b61e952eeb6723ab6338d6c3cc2c21d795defa9775b7697ed68ed0f2",
+  "ids_sha256": "3bc370e6ccc0251aae3dc825c587e24a866f953cf6dd1be2b6d0ec2bc3b4803d",
+  "first_column": "world_type/role_id"
+ },
+ "_roles_by_world": {
+  "enterprise": 13,
+  "stadium": 14,
+  "university": 13,
+  "convention": 12
+ }
+}
