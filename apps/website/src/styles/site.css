@@ -597,3 +597,101 @@ p { text-wrap: pretty; }
 .story h2 { margin: 0 0 20px; }
 .story p { margin: 0 0 16px; font-size: 18px; line-height: 1.7; color: var(--w-tx); }
 .story__close { margin-top: 56px !important; font: 800 clamp(26px, 3vw, 40px)/1.2 var(--w-display); letter-spacing: -.02em; color: var(--w-tx); }
+
+/* ---- v18/pilot: the price list, bundles, pilot packages and the readiness check (apps/website/src/commercial.tsx, pilot.ts) ----
+   The site's own cards, controls and tokens; teal stays the interaction accent (the selected option, focus, the primary button). */
+.listprice { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 24px 0 0; max-width: 64ch; color: var(--w-tx2); font-size: 15px; }
+.prices { list-style: none; margin: 0; padding: 0; display: grid; }
+.prices > li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 24px; align-items: start; padding: 18px 0; border-top: 1px solid var(--w-line); }
+.prices > li:first-child { border-top: 0; padding-top: 4px; }
+.prices h3, .prices h4 { margin: 0; font: 600 18px/1.35 var(--w-sans); letter-spacing: -.01em; }
+.prices p { margin: 6px 0 0; max-width: 60ch; color: var(--w-tx2); font-size: 15px; line-height: 1.55; }
+.prices .prices__sku { font: 400 12px/1.4 var(--w-mono); letter-spacing: .02em; }
+.price { display: grid; gap: 2px; min-width: 9em; text-align: right; }
+.price b { color: var(--w-tx); font: 800 24px/1.15 var(--w-display); letter-spacing: -.02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.price span { color: var(--w-tx2); font-size: 13px; line-height: 1.35; max-width: 16em; justify-self: end; }
+.price .price__zero { font: 400 14px/1 var(--w-sans); letter-spacing: 0; }
+.prices--solo > li, .prices--grid > li, .fam { padding: 24px 26px; border: 1px solid var(--w-line); border-radius: var(--w-r-card); background: var(--w-card); box-shadow: var(--w-edge), var(--w-lift); }
+.prices--solo > li:first-child, .prices--grid > li:first-child { padding-top: 24px; border-top: 1px solid var(--w-line); }
+.prices--solo { max-width: 820px; }
+.prices--grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.fams { columns: 2; column-gap: 18px; }
+.fam { break-inside: avoid; margin: 0 0 18px; }
+.fam > h3 { margin: 0 0 6px; color: var(--w-tx2); font: 600 13px/1.4 var(--w-sans); letter-spacing: .1em; text-transform: uppercase; }
+.bundle__pct { order: -1; color: var(--w-tx2); font-size: 14px; }
+.bundle__pct b { margin-right: 6px; color: var(--w-tx); font: 800 30px/1 var(--w-display); letter-spacing: -.02em; }
+.bundle__skus { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; }
+.bundle__skus li { padding: 3px 10px; border: 1px solid var(--w-line2); border-radius: 999px; color: var(--w-tx2); font-size: 13px; }
+.card .bundle__rule { font-size: 14px; }
+.caveat, .card .caveat { margin: 18px 0 0; padding-left: 12px; border-left: 3px solid var(--w-warn); color: var(--w-tx2); font-size: 14px; max-width: 70ch; }
+.tablewrap { margin-top: 28px; overflow-x: auto; border: 1px solid var(--w-line); border-radius: var(--w-r-card); background: var(--w-card); box-shadow: var(--w-edge), var(--w-lift); }
+.terms { width: 100%; min-width: 600px; border-collapse: collapse; font-size: 15px; font-variant-numeric: tabular-nums; }
+.terms caption { padding: 18px 22px 14px; text-align: left; font-weight: 600; font-size: 17px; }
+.terms th, .terms td { padding: 12px 22px; border-top: 1px solid var(--w-line); text-align: left; font-weight: 400; color: var(--w-tx2); }
+.terms thead th { font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.terms tbody th, .terms td b { color: var(--w-tx); font-weight: 600; }
+.pkgs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+.pkg__price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.card .pkg__price b { color: var(--w-tx); font: 800 34px/1.05 var(--w-display); letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.card .pkg__price span { font-size: 14px; }
+.pkg__scope { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: auto 0 0; padding-top: 6px; }
+.pkg__scope div, .wiz__scope div { padding: 10px 12px; border: 1px solid var(--w-line); border-radius: var(--w-r-control); min-width: 0; }
+.pkg__scope dt, .wiz__scope dt { color: var(--w-tx2); font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+.pkg__scope dd, .wiz__scope dd { margin: 2px 0 0; color: var(--w-tx); font-weight: 600; font-size: 15px; }
+.wiz { display: grid; gap: 18px; max-width: 940px; }
+.wiz__q { min-width: 0; margin: 0; padding: 24px 26px 26px; border: 1px solid var(--w-line); border-radius: var(--w-r-card); background: var(--w-card); box-shadow: var(--w-edge), var(--w-lift); }
+.wiz__q > legend { float: left; display: flex; align-items: center; gap: 12px; width: 100%; margin: 0 0 18px; padding: 0; color: var(--w-tx); font: 600 19px/1.3 var(--w-sans); letter-spacing: -.01em; }
+.wiz__q > legend ~ * { clear: both; }
+.wiz__n { display: inline-grid; place-items: center; flex: none; width: 34px; height: 34px; border-radius: 10px; background: var(--w-accent-soft); color: var(--w-accent); font: 600 14px/1 var(--w-mono); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--w-accent) 28%, transparent); }
+.opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.opts--stack { grid-template-columns: minmax(0, 1fr); max-width: 620px; }
+.opt { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 12px; align-items: start; min-height: 56px; padding: 14px 16px; border: 1px solid var(--w-line2); border-radius: var(--w-r-control); background: var(--w-panel); cursor: pointer; transition: border-color var(--w-t-fast) var(--w-ease); }
+.opt:hover { border-color: var(--w-tx2); }
+.opt input { width: 22px; height: 22px; margin: 1px 0 0; accent-color: var(--w-accent); }
+.opt:has(input:checked) { border-color: var(--w-accent); box-shadow: inset 0 0 0 1px var(--w-accent); }
+.opt:has(input:focus-visible) { outline: 2px solid var(--w-accent); outline-offset: 3px; }
+.opt input:focus-visible { outline: none; }
+.opt b { display: block; color: var(--w-tx); font-weight: 600; line-height: 1.35; }
+.opt small { display: block; margin-top: 2px; color: var(--w-tx2); font-size: 14px; line-height: 1.45; }
+.wiz__field { display: grid; gap: 8px; color: var(--w-tx2); font-weight: 600; font-size: 15px; }
+.wiz select, .wiz input[type=number] { width: 100%; max-width: 100%; min-width: 0; min-height: 48px; margin-top: 8px; padding: 10px 14px; border: 1px solid var(--w-line2); border-radius: var(--w-r-control); background: var(--w-panel); color: var(--w-tx); font: 400 16px var(--w-sans); }
+.wiz__field input[type=number] { margin-top: 0; }
+.wiz select:focus-visible, .wiz input[type=number]:focus-visible { outline: 2px solid var(--w-accent); outline-offset: 1px; border-color: var(--w-accent); }
+.wiz__row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; max-width: 420px; }
+.wiz__note { margin: 12px 0 0; max-width: 72ch; color: var(--w-tx2); font-size: 14px; }
+.wiz__go { display: grid; gap: 8px; justify-items: start; }
+.wiz__result { --rs: var(--w-tx2); padding: 28px; border: 1px solid var(--w-line2); border-top: 4px solid var(--rs); border-radius: var(--w-r-card); background: var(--w-card); box-shadow: var(--w-edge), var(--w-lift-hi); scroll-margin-top: 96px; }
+.wiz__result[hidden] { display: none; }
+.wiz__result:focus { outline: none; } .wiz__result:focus-visible { outline: 2px solid var(--w-accent); outline-offset: 3px; }
+.wiz__result > h3 { margin: 0 0 10px; color: var(--w-tx2); font: 600 13px/1.4 var(--w-sans); letter-spacing: .1em; text-transform: uppercase; }
+.wiz__result[data-state=READY_TO_PURCHASE], .rstates [data-s=READY_TO_PURCHASE] { --rs: var(--w-ok); } .wiz__result[data-state=READY_AFTER_CUSTOMER_ACTION], .rstates [data-s=READY_AFTER_CUSTOMER_ACTION] { --rs: var(--w-ev-observed); }
+.wiz__result[data-state=REQUIRES_SALES_REVIEW], .rstates [data-s=REQUIRES_SALES_REVIEW] { --rs: var(--w-warn); } .wiz__result[data-state=NOT_CURRENTLY_SUPPORTED], .rstates [data-s=NOT_CURRENTLY_SUPPORTED] { --rs: var(--w-tx2); }
+.wiz__state { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px; margin: 0; }
+.wiz__state strong { color: var(--w-tx); font: 800 clamp(24px, 3vw, 32px)/1.1 var(--w-display); letter-spacing: -.025em; }
+.wiz__state code { padding: 3px 8px; border: 1px solid var(--w-line2); border-radius: 6px; color: var(--w-tx2); font: 400 12px/1.4 var(--w-mono); overflow-wrap: anywhere; }
+.wiz__meaning { margin: 8px 0 0; color: var(--w-tx2); }
+.wiz__summary { margin: 14px 0 0; padding: 12px 14px; border: 1px solid var(--w-line); border-radius: var(--w-r-control); color: var(--w-tx); font-weight: 600; font-size: 15px; }
+.wiz__part h4 { margin: 24px 0 8px; color: var(--w-tx2); font: 600 13px/1.4 var(--w-sans); letter-spacing: .08em; text-transform: uppercase; }
+.wiz__part ul { display: grid; gap: 6px; margin: 0; padding-left: 20px; font-size: 16px; }
+.wiz__part p { margin: 0 0 14px; max-width: 70ch; }
+.wiz__scope { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0; }
+.rstates { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 40px 0 0; }
+.rstates div { --rs: var(--w-tx2); padding: 16px 18px; border: 1px solid var(--w-line); border-left: 3px solid var(--rs); border-radius: 0 var(--w-r-control) var(--w-r-control) 0; background: var(--w-card); }
+.rstates dt { color: var(--w-tx); font-weight: 600; font-size: 15px; } .rstates dd { margin: 4px 0 0; color: var(--w-tx2); font-size: 14px; }
+@media (max-width: 1100px) { .pkgs, .rstates { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 900px) { .fams { columns: 1; } }
+@media (max-width: 720px) {
+  .prices > li { grid-template-columns: minmax(0, 1fr); } .price { text-align: left; } .price span { justify-self: start; }
+  .prices--grid, .pkgs, .opts, .rstates { grid-template-columns: minmax(0, 1fr); }
+  .wiz__q, .wiz__result, .prices--solo > li, .prices--grid > li, .fam { padding: 20px 18px; }
+  .wiz__scope { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wiz__go .btn { width: 100%; }
+}
+@media (forced-colors: active) { .opt, .wiz__q, .wiz__result, .fam, .prices--grid > li, .rstates div { border: 1px solid CanvasText; } .opt:has(input:checked) { outline: 2px solid Highlight; } }
+/* v18/pilot: the header carries two more destinations (Pricing, Pilots). Labels never wrap and the links sit a little closer; between
+   the menu breakpoint and 1320 px the secondary "Open the demo" button leaves the header so the bar keeps one row (the demonstration is
+   still linked from the menu below 1100 px, the home page and every product page). */
+.nav__links > li > a, .pmenu > summary, .nav__cta .btn { white-space: nowrap; }
+.brand { flex: none; }
+@media (min-width: 1101px) { .nav__links > li > a, .pmenu > summary { padding: 0 8px; } .nav { gap: 10px; } }
+@media (min-width: 1101px) and (max-width: 1320px) { .nav__cta .btn--quiet { display: none; } }

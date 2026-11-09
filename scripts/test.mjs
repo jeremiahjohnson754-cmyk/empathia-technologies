@@ -86,6 +86,8 @@ suite('deploy: public static sites under the declared headers', 'deploy', node, 
 // security assessment 2026-11-04 (docs/security/ASSESSMENT_2026-11-04.md): Blueprint, build chain, local servers and dist (no database), then the browser checks under no headers
 suite('security: public sites (headers, build chain, servers, dist)', 'security', node, ['--test', 'tests/security/public-sites.test.mjs'], tap);
 suite('browser: public sites security (CSP in the page, no request leaves, injection, tampering, View-as)', 'browser', node, ['tests/browser/public-security.test.mjs'], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/website/dist/index.html')) && fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? {} : { skip: 'public sites not built (node scripts/build.mjs --public)' }) : { skip: 'pass --browser' });
+// v18/pilot (handoff v1.8 §4): the price list and pilot readiness on the website; the pilot activation API; the demo's sandbox pilot
+suite('browser: website pricing and pilot readiness', 'browser', node, ['tests/browser/website-pilot.test.mjs'], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/website/dist/pilot.js')) ? {} : { skip: 'website not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
 
 const out = path.join(root, 'tests/evidence'); fs.mkdirSync(out, { recursive: true });
 const sum = { at: new Date().toISOString(), node: process.version, pass: suites.filter((s) => s.result === 'PASS').length, fail: suites.filter((s) => s.result === 'FAIL').length, notRun: suites.filter((s) => s.result === 'NOT_RUN').length, suites };
