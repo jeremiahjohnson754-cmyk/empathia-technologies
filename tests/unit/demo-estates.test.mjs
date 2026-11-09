@@ -6,8 +6,8 @@ import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
 const out = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'demo-estates-')), 'm.mjs');
-await esbuild.build({ stdin: { contents: `export * as M from './estate/index.ts'; export * as U from './estate/university.ts'; export * as S from './estate/stadium.ts'; export * as C from './estate/convention.ts';`, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' }, bundle: true, format: 'esm', platform: 'node', outfile: out, logLevel: 'error' });
-const { M, U, S, C } = await import(pathToFileURL(out).href);
+await esbuild.build({ stdin: { contents: `export * as M from './estate/index.ts'; export * as U from './estate/university.ts'; export * as S from './estate/stadium.ts'; export * as C from './estate/convention.ts'; export * as JS from './worlds/stadium/data.public.ts'; export * as JU from './worlds/university/data.public.ts';`, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' }, bundle: true, format: 'esm', platform: 'node', outfile: out, logLevel: 'error', jsx: 'automatic', alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') }, nodePaths: [path.join(repo, 'node_modules')] });
+const { M, U, S, C, JS, JU } = await import(pathToFileURL(out).href);
 const ALL = [U.UNIVERSITY, S.STADIUM, C.CONVENTION];
 const count = (e, type) => M.ofType(e, type).length;
 
@@ -58,4 +58,25 @@ test('ES-11 step-free and stepped routes are both recorded where both exist, so 
 });
 test('ES-12 the registry serves the three seeded worlds and does not pretend the Enterprise adapter exists', () => {
   assert.deepEqual(Object.keys(M.ESTATES).sort(), ['convention', 'stadium', 'university']); assert.equal(M.estateOf('enterprise'), undefined);
+});
+
+// One ecosystem: a place a journey screen names is a record in the estate, under the same name. The journeys keep their own small plans
+// for now; this is the guard that the two never drift apart while they are joined up.
+test('ES-13 Stadium: every seat the match-day journey tickets, and every gate, kitchen, lift and help point it names, is an estate record', () => {
+  const names = new Set(S.STADIUM.nodes.map((n) => n.name)); const ids = new Set(S.STADIUM.nodes.map((n) => n.id));
+  for (const t of [...JS.TICKETS, JS.VISITING]) assert.ok(ids.has(`STA-SEC-${t.section}`), t.label);
+  assert.equal(S.VISITING_SECTION, `STA-SEC-${JS.VISITING.section}`);
+  for (const a of JS.AMENITIES.filter((x) => x.kind !== 'water')) assert.ok(names.has(a.label), a.label);
+  const platform = JS.TICKETS.find((t) => t.platform); assert.equal(S.STADIUM.nodes.find((n) => n.id === `STA-SEC-${platform.section}`).stepFree, true);
+});
+test('ES-14 University: every building, green and stop on the campus-day map is an estate record', () => {
+  const names = new Set(U.UNIVERSITY.nodes.map((n) => n.name));
+  for (const x of [...JU.SPOTS, ...JU.STOPS]) assert.ok(names.has(x.label), x.label);
+  assert.ok(U.UNIVERSITY.nodes.some((n) => n.id === 'UNI-SCI-110' && n.type === 'lecture-theatre'));
+});
+test('ES-15 Convention: the hall, theatre, session rooms, help points and the eight named exhibitors of the expo journey are estate records', () => {
+  const names = new Set(C.CONVENTION.nodes.map((n) => n.name));
+  for (const x of ['Hall A', 'Keynote Theatre', 'Session Room 1', 'Session Room 2', 'Food court', 'Main entrance', 'Registration', 'First aid', 'Quiet room']) assert.ok(names.has(x), x);
+  const src = fs.readFileSync(path.join(repo, 'apps/demo/src/worlds/convention/ConventionPublic.tsx'), 'utf8');
+  for (const [booth, [name]] of Object.entries(C.EXHIBITORS)) { assert.ok(names.has(`Booth ${booth}`)); assert.ok(src.includes(`name: '${name}', booth: '${booth}'`), `${name} at ${booth}`); }
 });

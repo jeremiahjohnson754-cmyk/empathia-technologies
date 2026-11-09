@@ -34,12 +34,13 @@ building('UNI-HUM', 'Humanities Building', 'UNI-C', 'academic', 3, [470, 200, 12
 building('UNI-LIB', 'Hollis Library', 'UNI-C', 'library', 4, [320, 200, 130, 70]);
 building('UNI-ADM', 'Founders Hall', 'UNI-C', 'administration', 2, [320, 320, 110, 60], { note: 'Administration, registrar and admissions' });
 building('UNI-SUN', 'Student Union', 'UNI-C', 'student-life', 3, [450, 320, 140, 60]);
+building('UNI-WLC', 'Welcome Centre', 'UNI-C', 'visitor-services', 1, [320, 250, 80, 50], { note: 'Visitor desk, tours and parking validation' });
 building('UNI-WEL', 'Wellbeing Centre', 'UNI-C', 'student-services', 2, [610, 200, 90, 60], { note: 'Health and counselling' });
 building('UNI-PAC', 'Ashby Auditorium', 'UNI-C', 'performance', 2, [610, 290, 100, 80]);
 building('UNI-BUS', 'Business & Innovation Hall', 'UNI-S', 'academic', 3, [40, 450, 150, 80], { group: school('BUS') });
-building('UNI-ART', 'Arts Hall', 'UNI-S', 'academic', 2, [210, 450, 110, 80], { group: school('AMC'), stepFree: false, accessNote: 'The upper floor has no lift; ground-floor rooms are step-free' });
+building('UNI-ART', 'Arts Hall', 'UNI-S', 'academic', 3, [210, 450, 110, 80], { group: school('AMC'), stepFree: false, accessNote: 'The upper floors have no lift; ground-floor rooms are step-free' });
 building('UNI-MED', 'Media Centre', 'UNI-S', 'academic', 2, [340, 450, 110, 80], { group: school('AMC') });
-building('UNI-REC', 'Recreation Centre', 'UNI-S', 'recreation', 2, [470, 450, 130, 80]);
+building('UNI-REC', 'Sports Pavilion', 'UNI-S', 'recreation', 2, [470, 450, 130, 80]);
 building('UNI-FAC', 'Facilities Yard', 'UNI-S', 'facilities', 1, [980, 470, 80, 60], { access: 'staff' });
 export const DORMS = [['UNI-RSA', 'Alder House', 4, 620], ['UNI-RSB', 'Birch House', 5, 720], ['UNI-RSC', 'Cedar House', 4, 820], ['UNI-RSD', 'Dunlin House', 3, 920]] as const;
 for (const [id, name, floors, x] of DORMS) building(id, name, 'UNI-S', 'dormitory', floors + 1, [x, 450, 80, 80], { group: 'Residences', access: 'public', note: 'A residence: its common rooms are for residents; student rooms are not listed' });
@@ -69,7 +70,7 @@ const C: [string, number, string, keyof typeof T, boolean, Commissioning, number
   ['BUS', 0, '010', 'tiered', true, 'ACCEPTED', 2025], ['BUS', 0, '014', 'tiered', true, 'ACCEPTED', 2023], ['BUS', 1, '103', 'flat', true, 'ACCEPTED', 2024], ['BUS', 1, '107', 'flat', false, 'ACCEPTED', 2020], ['BUS', 1, '112', 'active', true, 'COMMISSIONING', 2026], ['BUS', 2, '202', 'seminar', true, 'ACCEPTED', 2023], ['BUS', 2, '205', 'seminar', false, 'ACCEPTED', 2021], ['BUS', 2, '209', 'computer', false, 'ACCEPTED', 2022],
   ['SCI', 1, '105', 'flat', true, 'ACCEPTED', 2024], ['SCI', 1, '109', 'flat', false, 'ACCEPTED', 2019], ['SCI', 2, '206', 'active', true, 'ACCEPTED', 2025], ['SCI', 2, '211', 'seminar', false, 'ACCEPTED', 2021],
   ['HLT', 1, '101', 'skills', true, 'ACCEPTED', 2025], ['HLT', 1, '108', 'skills', false, 'ACCEPTED', 2022], ['HLT', 2, '202', 'flat', true, 'COMMISSIONING', 2026], ['HLT', 2, '207', 'seminar', true, 'ACCEPTED', 2023],
-  ['ART', 0, '004', 'studio', false, 'ACCEPTED', 2020], ['ART', 0, '009', 'studio', true, 'ACCEPTED', 2024], ['ART', 1, '103', 'seminar', false, 'ACCEPTED', 2018],
+  ['ART', 0, '004', 'studio', false, 'ACCEPTED', 2020], ['ART', 0, '009', 'studio', true, 'ACCEPTED', 2024], ['ART', 2, '204', 'seminar', false, 'ACCEPTED', 2018],
   ['MED', 0, '006', 'computer', true, 'ACCEPTED', 2024], ['MED', 1, '102', 'flat', true, 'ACCEPTED', 2023], ['MED', 1, '107', 'seminar', true, 'DESIGNED', 2026],
   ['HUM', 0, '012', 'tiered', true, 'ACCEPTED', 2022], ['HUM', 1, '101', 'flat', false, 'ACCEPTED', 2019], ['HUM', 1, '105', 'flat', true, 'ACCEPTED', 2024], ['HUM', 1, '109', 'seminar', false, 'ACCEPTED', 2020], ['HUM', 2, '203', 'seminar', true, 'ACCEPTED', 2023], ['HUM', 2, '207', 'active', true, 'ACCEPTED', 2025],
 ];
@@ -83,7 +84,7 @@ C.forEach(([b, l, num, tpl, hybrid, cx, year], i) => {
 });
 // other teaching and research spaces (not classrooms)
 const AV = [K('projector', 'Projection', 'Laser projector, 10,000 lumen class', 2), K('microphone', 'Lectern and wireless microphones', 'Gooseneck and wireless set'), K('loudspeaker', 'Main loudspeakers', 'Line array loudspeaker', 2), K('processor', 'Audio processor', 'Digital signal processor'), K('camera', 'Capture cameras', 'PTZ camera', 2), K('capture', 'Lecture capture', 'Capture and streaming encoder'), K('assistive', 'Assistive listening', 'Assistive listening transmitter'), K('control', 'Lectern control panel', 'Touch panel, 10 inch class')];
-room('UNI-SCI-LT1', 'Science Hall Lecture Theatre', 'UNI-SCI-L0', 'lecture-theatre', 180, [20, 16, 6.5], { group: school('HAS'), layout: 'Raked theatre, 180 seats, six wheelchair positions at the rear cross-aisle', refreshed: 2024, kit: AV });
+room('UNI-SCI-110', 'Lecture Theatre SCI-110', 'UNI-SCI-L0', 'lecture-theatre', 180, [20, 16, 6.5], { group: school('HAS'), layout: 'Raked theatre, 180 seats, six wheelchair positions at the rear cross-aisle', refreshed: 2024, kit: AV });
 room('UNI-BUS-LT1', 'Innovation Hall Lecture Theatre', 'UNI-BUS-L0', 'lecture-theatre', 140, [18, 15, 6], { group: school('BUS'), layout: 'Raked theatre, 140 seats', refreshed: 2023, kit: AV });
 room('UNI-HUM-LT1', 'Humanities Lecture Theatre', 'UNI-HUM-L0', 'lecture-theatre', 120, [17, 14, 5.5], { group: school('HSS'), layout: 'Raked theatre, 120 seats', refreshed: 2019, commissioning: 'ACCEPTED', kit: AV.slice(0, 6) });
 room('UNI-ENG-MKR', 'Maker Studio', 'UNI-ENG-L0', 'maker-space', 32, [16, 12, 4.2], { group: school('ENG'), layout: 'Benches, a tool wall and a demonstration bench with an overhead camera', refreshed: 2023, kit: [K('display', 'Demonstration display', 'Flat panel, 75 inch class'), K('camera', 'Bench camera', 'Fixed document camera'), K('loudspeaker', 'Wall loudspeakers', 'Surface loudspeaker', 4)] });
@@ -101,12 +102,14 @@ const sr = [K('display', 'Room display', 'Flat panel, 55 inch class'), K('comput
 for (const [n, cap] of [['A', 6], ['B', 6], ['C', 8], ['D', 4]] as const) room(`UNI-LIB-SR${n}`, `Study Room ${n}`, 'UNI-LIB-L1', 'study-room', cap, [4.5, cap > 6 ? 4.2 : 3.4, 2.8], { layout: `Bookable group study room for ${cap}`, refreshed: 2023, kit: sr });
 room('UNI-LIB-RDG', 'Reading Room', 'UNI-LIB-L2', 'reading-room', 120, [28, 16, 5], { access: 'public', layout: 'Silent study, 120 seats' });
 room('UNI-LIB-TEC', 'Technology Help Desk', 'UNI-LIB-L0', 'support', 12, [9, 6, 3], { access: 'public', layout: 'Walk-up help for devices, accounts and classroom technology', kit: [K('signage', 'Queue display', 'Small signage display')], refreshed: 2024 });
-room('UNI-SUN-DIN', 'Dining Commons', 'UNI-SUN-L0', 'dining', 320, [34, 22, 5], { access: 'public', layout: 'Five counters and 320 seats', kit: [K('signage', 'Menu boards', 'Signage display', 6), K('loudspeaker', 'Background and paging loudspeakers', 'Ceiling loudspeaker', 16)], refreshed: 2022 });
+room('UNI-SUN-DIN', 'Dining Hall', 'UNI-SUN-L0', 'dining', 320, [34, 22, 5], { access: 'public', layout: 'Five counters and 320 seats', kit: [K('signage', 'Menu boards', 'Signage display', 6), K('loudspeaker', 'Background and paging loudspeakers', 'Ceiling loudspeaker', 16)], refreshed: 2022 });
 room('UNI-SUN-CAF', 'Quad Coffee', 'UNI-SUN-L0', 'cafe', 40, [10, 7, 3.4], { access: 'public', layout: 'Coffee bar with forty seats facing the Quad' });
 room('UNI-SUN-BKS', 'University Bookstore', 'UNI-SUN-L0', 'retail', 60, [16, 11, 3.4], { access: 'public', layout: 'Books, supplies and university goods' });
 room('UNI-SUN-SOC1', 'Societies Room 1', 'UNI-SUN-L1', 'student-organization', 24, [9, 7, 3], { layout: 'Bookable by student societies', kit: sr, refreshed: 2022 });
 room('UNI-SUN-SOC2', 'Societies Room 2', 'UNI-SUN-L1', 'student-organization', 16, [7, 6, 3], { layout: 'Bookable by student societies', kit: sr, refreshed: 2022 });
 room('UNI-SUN-CAR', 'Career Services', 'UNI-SUN-L2', 'student-services', 18, [10, 8, 3], { access: 'public', layout: 'Drop-in desk and four interview rooms' });
+room('UNI-WLC-DSK', 'Visitor Desk', 'UNI-WLC-L0', 'visitor-services', 20, [10, 8, 3.2], { access: 'public', layout: 'Visitor desk, tour meeting point and parking validation', kit: [K('signage', 'Wayfinding display', 'Interactive signage display')], refreshed: 2024 });
+room('UNI-SCI-118', 'Teaching Team Room 118', 'UNI-SCI-L1', 'office', 8, [6, 4.5, 3], { group: school('HAS'), layout: 'A small room for office hours' });
 room('UNI-ADM-REG', 'Registrar', 'UNI-ADM-L0', 'administration', 20, [11, 8, 3], { access: 'public', layout: 'Enrolment, records and timetabling counter' });
 room('UNI-ADM-ADS', 'Admissions', 'UNI-ADM-L0', 'administration', 24, [11, 9, 3], { access: 'public', layout: 'Visitor and applicant reception', kit: [K('display', 'Welcome display', 'Flat panel, 65 inch class')], refreshed: 2023 });
 room('UNI-ADM-FAC', 'Faculty Offices', 'UNI-ADM-L1', 'office', 40, [26, 14, 3], { access: 'staff', layout: 'Shared and single offices' });
@@ -130,16 +133,16 @@ for (const [id, name, floors] of DORMS) {
 add({ id: 'UNI-QUAD', kind: 'space', type: 'quad', name: 'The Quad', parent: 'UNI-C', spans: ['UNI-LIB', 'UNI-HUM', 'UNI-SUN', 'UNI-ADM'], access: 'public', stepFree: true, plan: { x: 440, y: 275, w: 150, h: 40 }, note: 'The central green; every Central Campus building opens onto it' });
 add({ id: 'UNI-PLZ', kind: 'space', type: 'plaza', name: 'Union Plaza', parent: 'UNI-C', spans: ['UNI-SUN', 'UNI-PAC'], access: 'public', stepFree: true, plan: { x: 600, y: 375, w: 110, h: 30 } });
 add({ id: 'UNI-NCT', kind: 'space', type: 'courtyard', name: 'North Court', parent: 'UNI-N', spans: ['UNI-ENG', 'UNI-CMP', 'UNI-SCI'], access: 'public', stepFree: true, plan: { x: 450, y: 135, w: 280, h: 22 } });
-add({ id: 'UNI-RGN', kind: 'space', type: 'garden', name: 'Residence Green', parent: 'UNI-S', spans: DORMS.map((d) => d[0]), access: 'public', stepFree: true, plan: { x: 620, y: 535, w: 380, h: 30 } });
+add({ id: 'UNI-RGN', kind: 'space', type: 'garden', name: 'Residence Court', parent: 'UNI-S', spans: DORMS.map((d) => d[0]), access: 'public', stepFree: true, plan: { x: 620, y: 535, w: 380, h: 30 } });
 for (const [id, name, c, x, y] of [['UNI-STN', 'North Loop stop', 'UNI-N', 600, 4], ['UNI-STC', 'Union stop', 'UNI-C', 520, 385], ['UNI-STS', 'Residence stop', 'UNI-S', 800, 575]] as const)
   add({ id, kind: 'space', type: 'transit-stop', name, parent: c, access: 'public', stepFree: true, plan: { x, y, w: 24, h: 14 }, note: 'Campus shuttle; times in the demonstration are a synthetic timetable' });
 
 const R = (id: string, from: string, to: string, minutes: number, stepFree: boolean, via: string, note?: string): Route => ({ id, from, to, minutes, stepFree, via, ...(note ? { note } : {}) });
 const routes: Route[] = [
   R('UNI-RT-01', 'UNI-QUAD', 'UNI-NCT', 7, true, 'the Science Walk, a level path with dropped kerbs'), R('UNI-RT-02', 'UNI-QUAD', 'UNI-NCT', 5, false, 'the Library steps', 'Fourteen steps; not step-free'),
-  R('UNI-RT-03', 'UNI-QUAD', 'UNI-BUS', 9, true, 'South Avenue'), R('UNI-RT-04', 'UNI-QUAD', 'UNI-RGN', 11, true, 'South Avenue and the Residence Green path'),
+  R('UNI-RT-03', 'UNI-QUAD', 'UNI-BUS', 9, true, 'South Avenue'), R('UNI-RT-04', 'UNI-QUAD', 'UNI-RGN', 11, true, 'South Avenue and the Residence Court path'),
   R('UNI-RT-05', 'UNI-STC', 'UNI-STN', 6, true, 'the campus shuttle', 'A low-floor vehicle'), R('UNI-RT-06', 'UNI-STC', 'UNI-STS', 5, true, 'the campus shuttle', 'A low-floor vehicle'),
-  R('UNI-RT-07', 'UNI-RGN', 'UNI-REC', 4, true, 'the Residence Green path'), R('UNI-RT-08', 'UNI-NCT', 'UNI-HLT', 3, true, 'the covered link'), R('UNI-RT-09', 'UNI-PLZ', 'UNI-PAC', 1, true, 'the plaza doors'),
+  R('UNI-RT-07', 'UNI-RGN', 'UNI-REC', 4, true, 'the Residence Court path'), R('UNI-RT-08', 'UNI-NCT', 'UNI-HLT', 3, true, 'the covered link'), R('UNI-RT-09', 'UNI-PLZ', 'UNI-PAC', 1, true, 'the plaza doors'),
   R('UNI-RT-10', 'UNI-BUS', 'UNI-ART', 3, true, 'South Avenue'), R('UNI-RT-11', 'UNI-QUAD', 'UNI-LIB', 2, true, 'the east ramp'), R('UNI-RT-12', 'UNI-QUAD', 'UNI-SUN', 2, true, 'the Quad path'),
 ];
 export const UNIVERSITY: Estate = { world: W, version: 'kvu-2026.11.1', name: 'Kestrel Valley University', fictional: true, nodes, assets, routes };
