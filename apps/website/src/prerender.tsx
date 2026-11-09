@@ -26,7 +26,7 @@ ${ctx.preview ? '<meta name="robots" content="noindex, nofollow">\n' : ''}<meta 
 <link rel="stylesheet" href="/site.css">
 <script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'Organization', name: 'Empathia Technologies', url: opts.base || undefined, founder: { '@type': 'Person', name: 'Jeremiah Johnson' }, description: 'Empathia Living Campus: an operating platform for enterprise AV, collaboration and workplace technology.' }).replace(/</g, '\\u003c')}</script>
 </head>
-<body>${body}<script src="/site.js" defer></script></body>
+<body>${body}<script src="/site.js" defer></script>${page.script ? `<script src="/${esc(page.script)}" defer></script>` : ''}</body>
 </html>
 `;
   };

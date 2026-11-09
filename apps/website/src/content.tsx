@@ -8,8 +8,9 @@ import { LeadForm, type LeadKind } from './form.js';
 import { Hero, Section, Cards, Steps, Note, Actions, Tag, EVIDENCE, EvidenceLine, FilmPlayer, Spectrum, Shot, ProductTiles, EnquiryCard, EnquiryLink, FounderBlock, FoundingStory, Stage, Chapters, RoomMix, GlassRail, Strip, RoomDrawing, FilmPending, type StripItem, type Evidence, type Film, type Capture, type ChapterItem } from './ui.js';
 import { PRODUCTS, DEMO_STATE, ROOMS_SENTENCE, ROOM_MIX, ROOM_TOTAL } from './products.js';
 import { TALLY_FORM } from './enquiry.js';
+import { commercialPages } from './commercial.js';   // v18/pilot: /pricing and /pilots
 
-export interface Page { path: string; title: string; description: string; nav?: string; body: React.ReactNode; }
+export interface Page { path: string; title: string; description: string; nav?: string; body: React.ReactNode; /** a page's own script in dist (e.g. 'pilot.js'), loaded after site.js on that page only */ script?: string; }
 export interface SiteContext { asOf?: string; films: Film[]; pendingFilms?: Pick<Film, 'key' | 'title' | 'runtime' | 'summary' | 'disclosure'>[]; transcripts: Record<string, string[]>; demoUrl: string; preview: boolean; captures: Record<string, Capture>; api?: boolean }
 
 const AUDIENCES = [
@@ -300,6 +301,7 @@ export function buildPages(ctx: SiteContext): Page[] {
       </Section> : null}
     </>
   ) });
+  pages.splice(pages.findIndex((p) => p.path === '/request-demo'), 0, ...commercialPages());   // v18/pilot: the price list and the pilot packages
   return pages;
 }
 

@@ -14,6 +14,8 @@ const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js')
 fs.rmSync(dist, { recursive: true, force: true }); fs.mkdirSync(dist, { recursive: true });
 await esbuild.build({ entryPoints: [path.join(app, 'src/main.ts')], bundle: true, minify: true, sourcemap: 'external', format: 'iife', target: ['es2022'], jsx: 'automatic', outfile: path.join(dist, 'site.js'), define: { 'process.env.NODE_ENV': '"production"' }, legalComments: 'linked', logLevel: 'warning' });
 
+// v18/pilot: the Pilot Readiness check is its own script, loaded on /pilots only (site.js keeps its 8 KB budget)
+await esbuild.build({ entryPoints: [path.join(app, 'src/pilot.ts')], bundle: true, minify: true, sourcemap: 'external', format: 'iife', target: ['es2022'], outfile: path.join(dist, 'pilot.js'), define: { 'process.env.NODE_ENV': '"production"' }, legalComments: 'linked', logLevel: 'warning' });
 
 // source maps never ship (red-team RT-20): moved out of dist, kept for an error tracker under .local/sourcemaps/<app>/
 { const maps = path.join(repo, '.local/sourcemaps', path.basename(app)); fs.mkdirSync(maps, { recursive: true });
@@ -76,4 +78,5 @@ const home = manifest.files['index.html'].bytes, js = manifest.files['site.js'].
 const themeJs = manifest.files['theme-init.js'].bytes; const fonts = ['inter-400.woff2', 'inter-600.woff2', 'inter-display-800.woff2'].reduce((a, f) => a + manifest.files[`fonts/${f}`].bytes, 0);   // the three preloaded faces (D38)
 const capBytes = Object.entries(manifest.files).filter(([f]) => f.startsWith('media/product/')).reduce((a, [, v]) => a + v.bytes, 0);
 if (home > 48 * 1024 || js > 8 * 1024 || themeJs > 512 || fonts > 88 * 1024 || capBytes > 1400 * 1024) { console.error(`BUDGET EXCEEDED: index.html ${home} B (limit 49152), site.js ${js} B (limit 8192), theme-init.js ${themeJs} B (limit 512), fonts ${fonts} B (limit 90112, D38), captures ${capBytes} B (limit 1433600)`); process.exit(1); }
+{ const pj = manifest.files['pilot.js'].bytes; if (pj > 16 * 1024) { console.error(`BUDGET EXCEEDED: pilot.js ${pj} B (limit 16384)`); process.exit(1); } }   // v18/pilot
 console.log(`website built: ${PATHS.length} pages, films ${filmsMode}: ${films.map((f) => f.key).join(', ') || 'none'} (excluded: ${excluded.map((e) => `${e.key} ${e.status}`).join(', ') || 'none'}), index.html ${(home / 1024).toFixed(1)} KiB, site.js ${(js / 1024).toFixed(1)} KiB, site.css ${(manifest.files['site.css'].bytes / 1024).toFixed(1)} KiB`);

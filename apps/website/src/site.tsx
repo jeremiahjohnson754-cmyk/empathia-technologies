@@ -5,7 +5,8 @@ import React from 'react';
 import type { Page } from './content';
 import { PRODUCTS } from './products.js';
 
-const PRIMARY = ['/platform', '/how-it-works', '/technology', '/proof', '/trust', '/founder'];
+// Pilots is reached from Pricing and the footer: the bar stays short (founder, 9 Nov: outcomes first, the catalogue deeper)
+const PRIMARY = ['/platform', '/how-it-works', '/technology', '/proof', '/trust', '/pricing', '/founder'];
 const ICON = {
   system: <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2" /><path d="M8 20h8M12 16v4" /></svg>,
   light: <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></svg>,
@@ -46,7 +47,7 @@ export function Shell({ page, pages, demoUrl, preview }: { page: Page; pages: Pa
           <p>Empathia Technologies. Living Campus.</p><p>Demonstrations run on synthetic data; nothing shown is a live system.</p>
         </div>
         <div><h2>Products</h2><ul>{PRODUCTS.map((p) => <li key={p.id}><a href={`/products/${p.slug}`} data-p={p.id}><span className="dot" aria-hidden="true" />{p.name}</a></li>)}</ul></div>
-        <div><h2>Company</h2><ul><li><a href="/founder">Founder</a></li><li><a href="/about">About</a></li><li><a href="/pilot-partners">Pilots and partners</a></li><li><a href="/films">Films</a></li><li><a href="/contact">Contact</a></li></ul></div>
+        <div><h2>Company</h2><ul><li><a href="/founder">Founder</a></li><li><a href="/about">About</a></li><li><a href="/pricing">Pricing</a></li><li><a href="/pilots">Pilot packages</a></li><li><a href="/pilot-partners">Pilots and partners</a></li><li><a href="/films">Films</a></li><li><a href="/contact">Contact</a></li></ul></div>
         <div><h2>Policies</h2><ul><li><a href="/trust">Security and trust</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/legal">Legal and accessibility</a></li></ul></div>
       </div></footer>
     </>
