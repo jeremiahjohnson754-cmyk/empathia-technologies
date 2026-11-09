@@ -1,9 +1,0 @@
-sku,term,months,term_amount_usd,equivalent_monthly_usd,saving_vs_month_to_month_pct,unit,status
-SIGNAL-IND,Monthly,1,24.99,24.99,0.0,per subscriber,PROPOSED_FOUNDER_REVIEW
-SIGNAL-IND,3 months,3,69.99,23.33,6.6,per subscriber,PROPOSED_FOUNDER_REVIEW
-SIGNAL-IND,6 months,6,129.99,21.67,13.3,per subscriber,PROPOSED_FOUNDER_REVIEW
-SIGNAL-IND,12 months,12,239.99,20.00,20.0,per subscriber,PROPOSED_FOUNDER_REVIEW
-SIGNAL-TEAM,Monthly,1,44.99,44.99,0.0,per seat,PROPOSED_FOUNDER_REVIEW
-SIGNAL-TEAM,3 months,3,129.99,43.33,3.7,per seat,PROPOSED_FOUNDER_REVIEW
-SIGNAL-TEAM,6 months,6,249.99,41.66,7.4,per seat,PROPOSED_FOUNDER_REVIEW
-SIGNAL-TEAM,12 months,12,479.99,40.00,11.1,per seat,PROPOSED_FOUNDER_REVIEW

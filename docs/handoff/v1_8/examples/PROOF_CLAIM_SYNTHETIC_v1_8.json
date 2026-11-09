@@ -1,9 +1,0 @@
-{
- "schema_version":"1.8", "claim_id":"DEMO-COMMISSION-001", "capability_id":"commissioning.asset-evidence-summary", "product":"Universal Commissioning", "world":"Enterprise", "tenant_id":null,
- "scope":"PUBLIC_SANITIZED", "environment":"synthetic_demo", "data_kind":"SYNTHETIC", "verification_state":"SYNTHETIC_DEMO", "implementation_revision":"DEMO-NOT-PRODUCTION",
- "verification_method":"Synthetic fixture and specification example, no real device test", "verifier_identity":null, "verified_at":"2026-11-08T00:00:00Z", "expires_at":null,
- "source_type":"ORIGINAL_CREATED_EXAMPLE", "source_freshness_at":null, "evidence_ids":[],
- "limitations":["Illustrative claim only; not production verified", "No customer equipment connected", "No actual code deployment demonstrated by this file"],
- "claim_text_public":"Concept example: browse how an equipment passport could link to commissioning evidence in the investor demo.",
- "public_approval":"NOT_REQUESTED", "owner":"Specification author", "approved_derivative_ids":[]
-}
