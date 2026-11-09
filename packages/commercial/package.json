@@ -1,0 +1,13 @@
+{
+  "name": "@empathia/commercial",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "description": "The founder-approved list prices (34 SKUs, 7 bundles, 4 pilots, SIGNAL terms) generated once from the founder's price CSVs, the connector catalogue summary, the pilot readiness rules and the pilot activation state machines (v1.8 ADR-023). Prices are never typed here: scripts/generate.mjs copies them from the source.",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": { ".": { "types": "./dist/src/index.d.ts", "default": "./dist/src/index.js" }, "./connectors": { "types": "./dist/src/generated/connectors.d.ts", "default": "./dist/src/generated/connectors.js" } },
+  "scripts": { "generate": "node scripts/generate.mjs", "build": "tsc -b", "test": "node --test \"dist/test/**/*.test.js\"" },
+  "dependencies": {}
+}
