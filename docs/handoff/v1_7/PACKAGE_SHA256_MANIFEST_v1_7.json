@@ -1,0 +1,251 @@
+{
+  "release": "Empathia v1.7 100/10 implementation-only handoff",
+  "created": "2026-11-08",
+  "items": [
+    {
+      "path": "CLAUDE_100_10_READ_AND_EXECUTE_FIRST_v1_7.md",
+      "bytes": 7952,
+      "sha256": "ef4ee29cf0d4df01af5558ff810a1f50fa9eed15372d33437159e8622564989c"
+    },
+    {
+      "path": "EMPATHIA_100_10_CLAUDE_HANDOFF_v1_7.docx",
+      "bytes": 568512,
+      "sha256": "d0c06190d17c3f90f268a243b62d5fb63b2b2a199f9ce4d7ad12ce84e2f39d55"
+    },
+    {
+      "path": "EMPATHIA_100_10_CLAUDE_HANDOFF_v1_7.pdf",
+      "bytes": 936337,
+      "sha256": "0dbb0e096733f5f979d42c593bbceef9c6c613b7fac382e9f1a8c9af8bc73ff4"
+    },
+    {
+      "path": "EMPATHIA_100_10_COMPLETE_DOCUMENT_v1_7.md",
+      "bytes": 75420,
+      "sha256": "b70b6609a3fa19451d3e28d061cf388df114e3429e2116ba95fce6d8cd767d69"
+    },
+    {
+      "path": "EMPATHIA_100_10_MASTER_HANDOFF_v1_7.md",
+      "bytes": 43677,
+      "sha256": "d9f4261d7aaf13a3426dec2a5e9ca42ee2ab47a5c72ac832a7e479a3cf45e275"
+    },
+    {
+      "path": "README_START_HERE.md",
+      "bytes": 3363,
+      "sha256": "68aa2bc9474f9cf5184923295ba55e134fa850b2f76034264d003461e7f1948f"
+    },
+    {
+      "path": "contracts/QA_MEDIA_DEFECT_AND_RETAKE_v1_7.schema.json",
+      "bytes": 2008,
+      "sha256": "5f96b97a1ebd211dd81f89235e7a91de9ea89d2bb6661a581008c1084d838586"
+    },
+    {
+      "path": "contracts/RELEASE_EVIDENCE_PACKET_v1_7.schema.json",
+      "bytes": 1607,
+      "sha256": "5cf98f7ee56d3f849e56f0319a54d8f41bbf26f1ef10943412e461d842dce259"
+    },
+    {
+      "path": "contracts/SECURE_PLATFORM_DOMAIN_EVENT_v1_7.schema.json",
+      "bytes": 1452,
+      "sha256": "92199faa7ca93e73f9db20bb3eea72983195e05c649817ec39ef6f0ca38daa5a"
+    },
+    {
+      "path": "contracts/SIGNAL_CANON_SCENE_AND_MEDIA_v1_7.schema.json",
+      "bytes": 2930,
+      "sha256": "c391e0275f5066e329270ad563b686f0f36d613da4bab9de19401dc7c162f30d"
+    },
+    {
+      "path": "design/01_SHAPED_SHARED_ARCHITECTURE.png",
+      "bytes": 92238,
+      "sha256": "120631a2f643504ba51a48cc7c25647d791b8c4bae63c7a97fec3ba7e86af86d"
+    },
+    {
+      "path": "design/01_SHAPED_SHARED_ARCHITECTURE.svg",
+      "bytes": 7608,
+      "sha256": "b1f07f7f4cad80de87e4d26595d7c221bcc477626a33f43400972814b3fddcfd"
+    },
+    {
+      "path": "design/02_REAL_PILOT_FROM_PURCHASE_TO_PROOF.png",
+      "bytes": 91274,
+      "sha256": "a6c24c67782d00243e3c20222fb36ae83fb29f86ca478b3f8fffd35e8599a636"
+    },
+    {
+      "path": "design/02_REAL_PILOT_FROM_PURCHASE_TO_PROOF.svg",
+      "bytes": 7819,
+      "sha256": "2ed229e5b543b088a5a5e71bc05081c5e9a8316fad4de6a43d73660dfa537b31"
+    },
+    {
+      "path": "design/03_SIGNAL_CINEMATIC_STORY_AND_QA.png",
+      "bytes": 88106,
+      "sha256": "ec6c6a2d64483e31387368d65ebbee1faf579c9623a6ca0e64b386acab73ecb6"
+    },
+    {
+      "path": "design/03_SIGNAL_CINEMATIC_STORY_AND_QA.svg",
+      "bytes": 5074,
+      "sha256": "419087e0658804cc74095db1145abd4656fa36497aa35f64dc721c0bd24f3bca"
+    },
+    {
+      "path": "design/04_DESTRUCTIVE_QA_RELEASE_GATE.png",
+      "bytes": 85570,
+      "sha256": "7bd84249c89b401af27e02b2a217548a9a73aa6571edc644813b760689635890"
+    },
+    {
+      "path": "design/04_DESTRUCTIVE_QA_RELEASE_GATE.svg",
+      "bytes": 6677,
+      "sha256": "47d238197323ba08d81adfb371cf0ddd31285651b5df1c1d2eb8b3df0cd1e7b3"
+    },
+    {
+      "path": "design/05_TWO_WEBSITES_CONVERSION_AND_TRUST.png",
+      "bytes": 91719,
+      "sha256": "2ce8204d7251de236fb6bee9aec21cec95f1c451af281e70edb25c372402fd7a"
+    },
+    {
+      "path": "design/05_TWO_WEBSITES_CONVERSION_AND_TRUST.svg",
+      "bytes": 4606,
+      "sha256": "f8cb9a2783e025bf8550ad818b268522b8d5bf53ee226e528e5ad2c57fcbd443"
+    },
+    {
+      "path": "design/06_COMMISSIONING_DOSSIER_DIRECTION.png",
+      "bytes": 109747,
+      "sha256": "6e5154dad254af5dd265a16719eb46fdb3dd00848984868094d359ce0bd2a7f3"
+    },
+    {
+      "path": "design/06_COMMISSIONING_DOSSIER_DIRECTION.svg",
+      "bytes": 5360,
+      "sha256": "fa955db17f51924907b2cc4ac553f771aab2358ef36253ba5799debc470d1c10"
+    },
+    {
+      "path": "docs/ARCHITECTURE_DECISION_REGISTER_v1_7.md",
+      "bytes": 3956,
+      "sha256": "eaeaab290cd45d26f14cea767a0cecc30f946e749cee049a405ae92cd6ddc3d3"
+    },
+    {
+      "path": "docs/SOURCE_LINEAGE_AND_CURRENT_TRUTH_v1_7.md",
+      "bytes": 3800,
+      "sha256": "06b9bad7ff599505ef52eb8ebdb42ecef44c4be65721ac6d6119b5d1bf4ec63a"
+    },
+    {
+      "path": "matrices/ARCHITECTURE_50_IMPROVEMENTS_v1_7.csv",
+      "bytes": 5123,
+      "sha256": "18d0a669692c7b84b953e58183e8b2e74a4bd8397279898e2f3aa6031fb9a699"
+    },
+    {
+      "path": "matrices/EMPATHIA_CONSOLIDATED_QA_TESTS_v1_7.csv",
+      "bytes": 281626,
+      "sha256": "773eab51d35737e749d987da72846d883329a25e8b507b320212ed8cf3b6cfdb"
+    },
+    {
+      "path": "matrices/EMPATHIA_CONSOLIDATED_REQUIREMENTS_v1_7.csv",
+      "bytes": 458090,
+      "sha256": "2581639e7836b376694f85950fe08821400918ab99315a2f3f435a4f44c9fa8c"
+    },
+    {
+      "path": "matrices/QA_REVIEWER_SIGNOFF_MATRIX_v1_7.csv",
+      "bytes": 2019,
+      "sha256": "562b772325efd3d1a0e555ba77bb236a553eeff0bdeda32c5446b887484faa0c"
+    },
+    {
+      "path": "pricing/BUNDLES_AND_DISCOUNTS_v1_5.csv",
+      "bytes": 2023,
+      "sha256": "e16ae53c118184b4be42d87f8463db9cf47528e3b2d6d40e64b047c70bfaf89d"
+    },
+    {
+      "path": "pricing/INDIVIDUAL_PRODUCT_PRICING_v1_5.csv",
+      "bytes": 6777,
+      "sha256": "2b9869d3866964a9dab7d354dbf74bf2bd5df5ae9f40015421f4e991941b30d7"
+    },
+    {
+      "path": "pricing/PILOT_OFFER_CATALOG_v1_5.csv",
+      "bytes": 1081,
+      "sha256": "269d70028fc07e6e376169b5a0aac7f2098faaf121b6ba6cbf6368808e467402"
+    },
+    {
+      "path": "pricing/PRICING_RECONCILIATION_AND_UNIT_ECONOMICS.md",
+      "bytes": 2941,
+      "sha256": "f67ce277b0636867ee3b63eaad0a66cc06d6e3d8317ba12ee3ff6d3b1bf5fa1e"
+    },
+    {
+      "path": "pricing/SIGNAL_SUBSCRIPTION_TERMS_v1_5.csv",
+      "bytes": 711,
+      "sha256": "93ce5c78d6a005232da31b5b17576559922bbd4140bd76d72c50c047a180daf7"
+    },
+    {
+      "path": "qa/ASSEMBLY_COUNTS_AND_LINEAGE_v1_7.json",
+      "bytes": 508,
+      "sha256": "98cfba3b3c48448a2440c20afb2fc6c31805b91e6a5b8461cdb3ee71ca876224"
+    },
+    {
+      "path": "qa/DESTRUCTIVE_QA_SECURITY_MEDIA_MASTER_v1_7.md",
+      "bytes": 8842,
+      "sha256": "d980f247cb223fdb01ec18421423eca1b539aeb18111b9568243f1eea116ed48"
+    },
+    {
+      "path": "qa/SOURCE_SHA256_MANIFEST_v1_7.json",
+      "bytes": 1267,
+      "sha256": "3b2bdf92d9f0c632b4fb838bfdf2ad3e0cd68ddf96675a29286f8d8d3d3e5203"
+    },
+    {
+      "path": "signal/SIGNAL_100_10_STORY_CINEMATICS_SHOWRUNNER_BIBLE_v1_7.md",
+      "bytes": 16911,
+      "sha256": "78084cb053cf5fe38aa717f5052b571ada76e30f61a2d7efac74bbc1af0d257c"
+    },
+    {
+      "path": "signal/SIGNAL_CANON_CHAPTER_INVENTORY_v1_7.json",
+      "bytes": 251688,
+      "sha256": "d906c4f136d26e2cd15cf698d0e30a5881e68d472883abd00e51722a7da7d8ca"
+    },
+    {
+      "path": "source_references/signal-standalone_ORIGINAL_2026-11-08.html",
+      "bytes": 27825274,
+      "sha256": "80f8d992851f9651377d13eb7f69739a57de7fc1a15e3532549d6c1f4b8a466d"
+    },
+    {
+      "path": "source_references/EMPATHIA_v1_6_COMPLETE_PREDECESSOR.zip",
+      "bytes": 42239020,
+      "sha256": "b69b8cc9376a24e8bbee88422309cc8987598aabc245b45ed84dfca5912caf05"
+    },
+    {
+      "path": "source_references/ENTERPRISE_v1_2_MASTER_SPEC.md",
+      "bytes": 198126,
+      "sha256": "57ba94c0211323e4f0d37c77a7d1b0cfaa97664be6f0669a17604c29a8b23bf5"
+    },
+    {
+      "path": "source_references/ENTERPRISE_v1_2_ARCHITECTURE_REVIEW.md",
+      "bytes": 104442,
+      "sha256": "0cf1e3e9557d6932fec9f3fa10367ed1955f0a23f273be6f2a77fc20bbea7b36"
+    },
+    {
+      "path": "source_references/ENTERPRISE_v1_2_CLAUDE_DIRECTIVE.md",
+      "bytes": 13803,
+      "sha256": "04f796df90291832c4f3c1605eabff2f64037e20d11456ba66a3fe86b8f20f69"
+    },
+    {
+      "path": "source_references/HISTORICAL_Empathia-Living-Campus-V2.5.3-live.html",
+      "bytes": 6957191,
+      "sha256": "9d6e53ef9f5a4e797b3be16c08f041b7c0c0766abbadb5186296ac925a09f2f1"
+    },
+    {
+      "path": "source_references/HISTORICAL_Empathia-Living-Campus-V2.5.3-offline.html",
+      "bytes": 6957206,
+      "sha256": "ecbde0bba17eafc9e5bcf98b57d15fbbb2378bac66d017c7a402194e78307756"
+    },
+    {
+      "path": "source_references/DEFECT_REGISTER_2026-10-31.md",
+      "bytes": 7543,
+      "sha256": "0fc8eb8a80851814ec387d8cede18156d77be4133dbd63633070d4a01359d9a5"
+    },
+    {
+      "path": "source_references/ENGINEERING_READINESS_2026-10-31.md",
+      "bytes": 7753,
+      "sha256": "7b58e5e0420fc47ee6f6fa49c998982a4e2c9535c2aed7ce7e671519e7dfd78e"
+    },
+    {
+      "path": "source_references/V2_5_3_SOURCE_INSPECTION.md",
+      "bytes": 3148,
+      "sha256": "ca70feb399e04306192bc82f0fcf545a17b2f57bd623105c4c37b1f09bb4a8b2"
+    },
+    {
+      "path": "source_references/90_ROOM_INVESTOR_DEMO_VISUAL_HANDOFF.md",
+      "bytes": 23042,
+      "sha256": "b376ad1a956ebd570825c66b5cb31835e86068f3c83c0eafa9d014ebc332813b"
+    }
+  ]
+}

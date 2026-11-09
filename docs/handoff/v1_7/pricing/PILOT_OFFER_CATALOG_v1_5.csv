@@ -1,0 +1,5 @@
+sku,pilot,one_time_usd,duration,scope,go_live_caveat
+PILOT-DISCOVERY,Self-Serve Discovery,49.99,14 days,Synthetic tenant + one sample room + admin setup + readiness checklist; no actual hardware promise,"Subject to source authorization, supported connector maturity and security gates"
+PILOT-READONLY,Read-Only Live Connector,199.99,30 days,"One supported customer-approved cloud source, <=5 rooms; adapter availability and consent prerequisite; self-serve, no staffed setup","Subject to source authorization, supported connector maturity and security gates"
+PILOT-HARDWARE,Controlled Hardware Validation,499.99,30 days,"<=10 approved rooms, one named supported connector, guided onboarding session capped by agreement, no invasive tests without authorization","Subject to source authorization, supported connector maturity and security gates"
+PILOT-CAMPUS,Multi-Site Evaluation,1499.99,45 days,<=3 sites and <=25 rooms; security review and bounded discovery; contract/approved scope required,"Subject to source authorization, supported connector maturity and security gates"

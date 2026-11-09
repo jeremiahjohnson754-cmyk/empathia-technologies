@@ -1,0 +1,32 @@
+{
+  "SIGNAL_ORIGINAL_HTML": {
+    "path": "/mnt/data/signal-standalone.html",
+    "bytes": 27825274,
+    "sha256": "80f8d992851f9651377d13eb7f69739a57de7fc1a15e3532549d6c1f4b8a466d"
+  },
+  "ENTERPRISE_V1_2_MASTER": {
+    "path": "/mnt/data/empathia_master_spec/Empathia_Enterprise_Complete_Master_Spec_v1_2_2026-11-07.md",
+    "bytes": 198126,
+    "sha256": "57ba94c0211323e4f0d37c77a7d1b0cfaa97664be6f0669a17604c29a8b23bf5"
+  },
+  "V1_6_PREDECESSOR_ZIP": {
+    "path": "/mnt/data/Empathia_75_10_Real_SaaS_QR_Import_Export_Executive_Commissioning_Claude_Handoff_v1_6.zip",
+    "bytes": 42239020,
+    "sha256": "b69b8cc9376a24e8bbee88422309cc8987598aabc245b45ed84dfca5912caf05"
+  },
+  "V2_5_3_LIVE_REFERENCE": {
+    "path": "/mnt/data/Empathia-Living-Campus-V2.5.3-live.html",
+    "bytes": 6957191,
+    "sha256": "9d6e53ef9f5a4e797b3be16c08f041b7c0c0766abbadb5186296ac925a09f2f1"
+  },
+  "V2_5_3_OFFLINE_REFERENCE": {
+    "path": "/mnt/data/Empathia-Living-Campus-V2.5.3-offline.html",
+    "bytes": 6957206,
+    "sha256": "ecbde0bba17eafc9e5bcf98b57d15fbbb2378bac66d017c7a402194e78307756"
+  },
+  "HISTORICAL_DEFECTS": {
+    "path": "/mnt/data/DEFECT_REGISTER.md",
+    "bytes": 7543,
+    "sha256": "0fc8eb8a80851814ec387d8cede18156d77be4133dbd63633070d4a01359d9a5"
+  }
+}
