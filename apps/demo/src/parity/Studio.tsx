@@ -55,7 +55,7 @@ export function judge(c: Concept): Array<{ rule: string; ok: boolean | null; why
 export default function StudioPage(p: PageProps) {
   const seg = p.hash.replace(/^#\/?/, '').split(/[?~]/)[0]!.split('/').filter(Boolean).map((s) => { try { return decodeURIComponent(s); } catch { return s; } });
   const c = seg[1] === 'room' && seg[2] ? fromRoom(seg[2]) : seg[1] === 'new' && seg[2] ? (seg[2].startsWith('saved:') ? loadSaved().find((x) => x.id === seg[2]!.slice(6)) || null : fromTpl(seg[2])) : undefined;
-  return <div className="pa" data-testid="parity-studio">{c === undefined ? <Start rooms={seg[1] === 'room'} /> : c === null ? <EmptyState title="Nothing to design from this address" icon="map" action={<a className="ui-btn" href="#/studio/new">Start a concept</a>}>There is no template or room called <code>{seg[2]}</code>.</EmptyState> : <Editor key={c.id} initial={c} />}</div>;
+  return <div className="pa" data-native="" data-testid="parity-studio">{c === undefined ? <Start rooms={seg[1] === 'room'} /> : c === null ? <EmptyState title="Nothing to design from this address" icon="map" action={<a className="ui-btn" href="#/studio/new">Start a concept</a>}>There is no template or room called <code>{seg[2]}</code>.</EmptyState> : <Editor key={c.id} initial={c} />}</div>;
 }
 
 function Start({ rooms }: { rooms: boolean }) {

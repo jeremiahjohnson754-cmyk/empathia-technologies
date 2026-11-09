@@ -36,19 +36,21 @@ function useLiveWorkspace(): Workspace | null {
  * `sees` comes from the shell's policy (D44): a tab the role may not see is not rendered at all. `opens` says whether the role may open
  * an address, so an action that leads to a refusal is not offered. `base` is the address the page lives at (tabs keep it).
  */
-export function RoomView({ id, hash, sees = () => true, opens = () => true, base }: { id: string; hash: string; sees?: (id: string) => boolean; opens?: (href: string) => boolean; base?: string }) {
+export function RoomView({ id, hash, sees = () => true, opens = () => true, base, context, startTab }: { id: string; hash: string; sees?: (id: string) => boolean; opens?: (href: string) => boolean; base?: string;
+  /** a V2.5.3 address that opens this room for one purpose (its commissioning record, its baseline history): named above the heading, and the tab it starts on */
+  context?: string; startTab?: string }) {
   const SECTION: Record<string, string> = { devices: 'room.devices', tests: 'room.tests', history: 'room.history' };
   const TABS = ALL_TABS.filter(([k]) => !SECTION[k] || sees(SECTION[k]!));
   const r = useMemo(() => roomRecord(id)!, [id]);
   const w = useLiveWorkspace();
   const q = new URLSearchParams(/\?(.*)$/.exec(hash)?.[1] || '');
-  const tab = (TABS.find(([k]) => k === q.get('tab'))?.[0]) || 'overview';
+  const tab = (TABS.find(([k]) => k === (q.get('tab') || startTab))?.[0]) || 'overview';
   const dev = q.get('device');
   const [sel, setSel] = useState<string | null>(dev);
   useEffect(() => { setSel(dev); }, [id, dev]);   // a deep link (?device=) selects that position
   const o = r.outline; const B = buildingByKey(o.building)!;
   const here = base || roomHref(o);
-  const setTab = (k: string) => { const n = new URLSearchParams(q); if (k === 'overview') n.delete('tab'); else n.set('tab', k); n.delete('device'); history.replaceState(null, '', `${here}${n.toString() ? `?${n}` : ''}`); dispatchEvent(new HashChangeEvent('hashchange')); };
+  const setTab = (k: string) => { const n = new URLSearchParams(q); if (k === 'overview' && !startTab) n.delete('tab'); else n.set('tab', k); n.delete('device'); history.replaceState(null, '', `${here}${n.toString() ? `?${n}` : ''}`); dispatchEvent(new HashChangeEvent('hashchange')); };
   const h = roomHealth(r, w); const iss = roomIssues(r, w); const hw = r.positions.filter((p) => !p.furniture);
   const featured = featuredRooms(8); if (!featured.some((x) => x.id === o.id)) featured.splice(1, 0, o);
   const roomAt = (x: typeof o) => (base && base.startsWith('#/room') ? `#/room/${x.id}` : roomHref(x));
@@ -72,7 +74,7 @@ export function RoomView({ id, hash, sees = () => true, opens = () => true, base
         <a href="#/rooms" className="roomtabs__t roomtabs__all">All {ROOMS.length} rooms <Icon name="chevron" size={14} /></a>
       </nav>
       <header className="room__hero">
-        <p className="kicker">{B.name} · floor {o.floor} · {r.archetypeName} · {o.capacity} seats</p>
+        <p className="kicker">{context ? <span data-testid="room-context">{context} · </span> : null}{B.name} · floor {o.floor} · {r.archetypeName} · {o.capacity} seats</p>
         <h1>{shortName(o)} — {o.name}</h1>
         <p className="room__intent">{o.intent}</p>
         <div className="room__chips" data-testid="room-chips">

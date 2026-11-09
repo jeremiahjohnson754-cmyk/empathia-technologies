@@ -29,9 +29,9 @@ const DOCK: Array<{ key: string; label: string; icon: IconName; layer: string }>
 
 export default function ControlPage(p: PageProps) {
   const seg = p.hash.replace(/^#\/?/, '').split(/[?~]/)[0]!.split('/').filter(Boolean);
-  const body = seg[0] === 'scheduler' ? (seg[1] ? <DoorPanel {...p} id={decodeURIComponent(seg[1])} /> : <Scheduler />)
+  const body = seg[0] === 'scheduler' || seg[0] === 'lite' || seg[0] === 'qr' ? (seg[1] && seg[0] === 'scheduler' ? <DoorPanel {...p} id={decodeURIComponent(seg[1])} /> : <Scheduler />)
     : seg[1] === 'space' || seg[1] === 'commons' ? <Spaces /> : seg[1] ? <RoomControl {...p} id={decodeURIComponent(seg[1])} /> : <Language {...p} />;
-  return <div className="pa" data-testid="parity-control">{body}</div>;
+  return <div className="pa" data-native="" data-testid="parity-control">{body}</div>;
 }
 
 function Language({ role }: PageProps) {
@@ -143,8 +143,8 @@ function DoorPanel({ id }: PageProps & { id: string }) {
     <>
       <Crumbs items={[['Room scheduler', '#/scheduler'], [shortName(o)]]} />
       <div className={`pa-panel-door kit-s--${s ? 'warn' : 'ok'}`} data-testid="door-panel">
+        <h1 className="pa-panel-door__state">{shortName(o)}: {s ? 'in use' : 'available'}</h1>
         <p className="pa-note">{fullName(o)} · seats {o.capacity}</p>
-        <p className="pa-panel-door__state">{s ? 'In use' : 'Available'}</p>
         <p>{s ? `${s.title} until ${hhmm(s.to)}` : n ? `Free until ${hhmm(n.from)} — next: ${n.title}` : 'Free for the rest of the day'}</p>
         <div className="pa-row-actions"><a className="ui-btn ui-btn--primary" href={`#/control/${o.id}`}>Open the room panel</a><a className="ui-btn" href={roomHref(o)}>Room guide</a></div>
         <p className="pa-note">Simulated: booking from this panel is not connected to any calendar.</p>

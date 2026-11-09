@@ -32,7 +32,7 @@ export default function TowerPage({ query }: PageProps) {
   const sites = BUILDINGS.map((b) => { const rs = core.rooms.filter((r) => r.outline.building === b.key); const items = q.filter((x) => x.building === b.key); const h = rs.length ? Math.round(rs.reduce((s, r) => s + healthOf(r), 0) / rs.length) : null; return { b, rs, items, h, cx: rs.filter((r) => r.lifecycle === 'COMMISSIONING' || r.lifecycle === 'INSTALLED_UNVERIFIED').length }; });
   const campusH = Math.round(core.rooms.reduce((s, r) => s + healthOf(r), 0) / core.rooms.length);
   return (
-    <div className="pa pa-tower" data-testid="parity-tower">
+    <div className="pa pa-tower" data-native="" data-testid="parity-tower">
       <PageHero eyebrow="Mission Control · Control Tower" title="Operations Control Tower" product="mission-control" icon="grid"
         lede="One room to watch the campus: where it is healthy, what is open, who has it and how it escalated. Built for the operations-centre room archetype; every figure is counted from this demonstration’s records."
         meta={honest(['Non-operational demonstration', 'warn'], ['Synthetic sites and incidents', 'warn'], ['Not a live feed', 'muted'])}

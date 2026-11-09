@@ -4,7 +4,7 @@ import type { PageDef, RoleKey } from '../registry.types.js';
 import { PAGES, resolve, hrefOf } from '../registry.pages.js';
 import { canOpen, allows, known } from '../access/policy.js';
 
-const listed = () => PAGES.filter((p) => !p.path.includes(':') && !p.path.includes('*'));
+const listed = () => PAGES.filter((p) => !p.legacy && !p.path.includes(':') && !p.path.includes('*'));
 export function openPages(role: RoleKey): PageDef[] {
   return listed().filter((p) => { const r = resolve(hrefOf(p.id)); return !!r && r.page.id === p.id && canOpen(role, r); });
 }

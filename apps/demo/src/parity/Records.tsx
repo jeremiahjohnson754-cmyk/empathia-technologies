@@ -9,11 +9,13 @@ import type { PageProps } from '../registry.types.js';
 import { allows } from '../access/policy.js';
 import { TYPES, TYPE_KEYS, isType, PROV_TEXT, RULES, type EntityType, type Rec } from './core.js';
 import { useCore, canEntity, visible, recHref, honest, Crumbs, Pills, RecList, FactsTable, Zone, ProvTag, TypeIcon, toneOf } from './ui.js';
-import { FAMILIES, setOf, familyOf, setAuthority } from './sets.js';
+import { FAMILIES, setOf, familyOf, setAuthority, LEGACY_FAMILY } from './sets.js';
 
 export default function RecordsPage(p: PageProps) {
-  const seg = p.hash.replace(/^#\/?/, '').split(/[?~]/)[0]!.split('/').filter(Boolean).map((s) => { try { return decodeURIComponent(s); } catch { return s; } });
-  return <div className="pa" data-testid="parity-records">{seg[0] === 'set' ? <Sets {...p} k={seg[1] || ''} /> : seg[2] ? <Passport {...p} type={seg[1]!} id={seg.slice(2).join('/')} /> : seg[1] ? <TypeList {...p} type={seg[1]} /> : <Index {...p} />}</div>;
+  let seg = p.hash.replace(/^#\/?/, '').split(/[?~]/)[0]!.split('/').filter(Boolean).map((s) => { try { return decodeURIComponent(s); } catch { return s; } });
+  if (seg[0] === 'pro' || seg[0] === 'v14' || seg[0] === 'registry') seg = ['list', 'Device'];   // #/pro/registry, #/v14/registry, #/registry: the device register
+  if (seg[0] !== 'set' && seg[0] !== 'list') seg = ['list'];             // #/core, #/suite/core: the Core model index
+  return <div className="pa" data-native="" data-testid="parity-records">{seg[0] === 'set' ? <Sets {...p} k={seg[1] || ''} /> : seg[2] ? <Passport {...p} type={seg[1]!} id={seg.slice(2).join('/')} /> : seg[1] ? <TypeList {...p} type={seg[1]} /> : <Index {...p} />}</div>;
 }
 
 function Index({ role }: PageProps) {
@@ -91,8 +93,6 @@ function Passport({ role, type, id }: PageProps & { type: string; id: string }) 
   );
 }
 
-/** V2.5.3's family names (#/set/devices …) are kept as aliases of the short keys, so every legacy address still opens its family. */
-const LEGACY_FAMILY: Record<string, string> = { devices: 'dev', rooms: 'room', issues: 'iss', docs: 'doc', changes: 'chg' };
 function Sets({ role, k: raw }: PageProps & { k: string }) {
   const k = LEGACY_FAMILY[raw] ?? raw;
   const core = useCore();

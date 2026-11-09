@@ -28,7 +28,7 @@ export default function V14Page(p: PageProps) {
   const view = p.params['view'] || ''; const sub = p.params['sub'];
   const known = PILLS.some((x) => x[0] === view);
   return (
-    <div className="pa" data-testid="parity-v14">
+    <div className="pa" data-native="" data-testid="parity-v14">
       {!known ? <EmptyState title={`The V1.4 foundation has no view called “${view}”`} icon="layers" action={<a className="ui-btn" href="#/v14">Overview</a>} /> : (
         <>
           <Pills label="V1.4 foundation" items={PILLS.slice(0, 12).map(([k, l]) => ({ label: l, href: `#/v14${k ? `/${k}` : ''}`, on: view === k }))} />

@@ -60,7 +60,7 @@ export default function ExportsPage({ role, params }: PageProps) {
     else { const text = `${e.title}: ${rows.length} records. ${e.how} (Empathia demonstration, synthetic data.)`; (navigator.clipboard?.writeText(text) || Promise.reject(new Error('no clipboard'))).then(() => setSaid('Summary copied.'), () => setSaid(`Copying is blocked here; the summary is: ${text}`)); }
   };
   return (
-    <div className="pa" data-testid="parity-exports">
+    <div className="pa" data-native="" data-testid="parity-exports">
       <PageHero eyebrow="Reports and exports" title="What the numbers are made of, as files" product="pro" icon="download"
         lede="Every export is the same records the page shows for your role, with the same rule, demonstration clock and a provenance header that says whether the figures are recorded, inferred or simulated."
         meta={honest(['Synthetic data', 'warn'], ['Role projection · not security', 'muted'], ['Made in your browser · nothing uploaded', 'accent'])} />

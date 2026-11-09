@@ -132,3 +132,10 @@ button.pa-inc { font: inherit; text-align: start; inline-size: 100%; cursor: poi
 button.pa-inc[aria-pressed=true] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
 button.pa-card-link:focus-visible, button.pa-inc:focus-visible, a.pa-inc:focus-visible, a.pa-card-link:focus-visible, a.pa-site:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .pa-card-link__h { font-size: 1rem; font-weight: 650; display: flex; gap: 8px; align-items: center; } .pa-card-link__p { color: var(--tx2); font-size: var(--fs-sm); }
+/* phones: inline links in notes, tables and card footers keep a 24 px line box and a 44 px tap area via padding; selects never exceed the viewport */
+.pa a:not(.ui-btn):not(.kit-chip):not(.pa-pill):not(.pa-card-link):not(.pa-inc):not(.pa-site):not(.kit-row):not(.pa-bars__row) { display: inline-block; padding: 10px 2px; margin: -10px -2px; line-height: 1.3; }
+.pa-field { max-inline-size: 100%; min-width: 0; } .pa-field .pa-select { inline-size: 100%; max-inline-size: 100%; }
+.pa .kit-seg { flex-wrap: wrap; max-inline-size: 100%; }
+.pa-toolbar > * { min-width: 0; max-inline-size: 100%; }
+.pa-crumbs li, .pa-crumbs span { overflow-wrap: anywhere; min-width: 0; }
+.pa-crumbs ol { max-inline-size: 100%; }
