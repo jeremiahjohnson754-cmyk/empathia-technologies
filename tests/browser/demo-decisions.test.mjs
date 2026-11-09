@@ -56,7 +56,9 @@ await suite('demo-decisions', 4483, async ({ ok, open, goto, over, text, smallTa
       ok('DC-19', 'damaged saved decisions do not break the page: it opens from the seed', (await page.locator('[data-memory]').count()) === 3);
       await goto(page, '#/v25/decisions', 'employee');
       // changed with the shell's D44 contract: no refusal message, so the check is that no decision control is shown
-      ok('DC-20', 'a perspective without project.decide sees no decision controls and no refusal message (D44)', (await page.locator('[data-testid=dec-approve], [data-testid=dec-reject], [data-testid=dec-hold], [data-testid=fund]').count()) === 0 && !/Refused|does not hold/i.test(await text(page)));
+      // 2026-11-09: the check now also requires the owl page at this address. Before, the harness left the employee on its own home after
+      // the role switch (see goto in demo-ops-harness.mjs), so this line read Mission Control's change feed, not the Decision desk address.
+      ok('DC-20', 'a perspective without project.decide sees no decision controls and no refusal message (D44): the owl page, not the desk', (await page.locator('[data-testid=dec-approve], [data-testid=dec-reject], [data-testid=dec-hold], [data-testid=fund], [data-testid=decisions], [data-testid=refusal]').count()) === 0 && (await page.locator('[data-testid=access-page]').count()) === 1 && /#\/v25\/decisions/.test(page.url()) && !/Refused|does not hold/i.test(await text(page)), page.url());
     }
     ok(`DC-${tag}-99`, 'no page error, no console error, no request leaves the page', !errs.length && !ext.length, [...errs, ...ext].slice(0, 3).join(' | '));
     await ctx.close();

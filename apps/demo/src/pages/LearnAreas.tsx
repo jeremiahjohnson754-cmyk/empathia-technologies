@@ -666,9 +666,11 @@ function answer(qn: number, w: S.Workspace): Answer {
   }
 }
 const GROUPS: Array<[string, number[]]> = [['Rooms', [0, 1, 2, 3]], ['The estate', [4, 5, 6, 7, 8]], ['Design', [13, 14]], ['The workplace', [9, 10, 11, 12]]];
+/** Words every question shares: they never make an unknown question look like a prepared one ("what is the weather"). */
+const ASK_STOP = new Set('what which who whom whose why how when where the this that these those are was were does did has have had can could should would will for and but with from into about than then there here its our your you any all not'.split(' '));
 export function AskPage({ perspective }: { perspective: string }) {
   const { w } = useWorkspace(); const [q, setQ] = useState(''); const [n, setN] = useState<number | null>(null); const [miss, setMiss] = useState(false);
-  const ask = (text: string) => { const words = text.toLowerCase().replace(/[^a-z0-9. ]/g, ' ').split(/\s+/).filter((x) => x.length > 2); let best = -1; let bs = 0; V.ASK_QUESTIONS.forEach((x, i) => { const s = words.filter((wd) => x.toLowerCase().includes(wd)).length; if (s > bs) { bs = s; best = i; } }); if (bs >= 2) { setN(best); setMiss(false); } else { setN(null); setMiss(true); } };
+  const ask = (text: string) => { const words = text.toLowerCase().replace(/[^a-z0-9. ]/g, ' ').split(/\s+/).filter((x) => x.length > 2 && !ASK_STOP.has(x)); let best = -1; let bs = 0; V.ASK_QUESTIONS.forEach((x, i) => { const s = words.filter((wd) => x.toLowerCase().includes(wd)).length; if (s > bs) { bs = s; best = i; } }); if (bs >= 2) { setN(best); setMiss(false); } else { setN(null); setMiss(true); } };
   const a = n === null ? null : answer(n, w);
   return (
     <section className="wk ln" data-native="workspace" data-testid="learn-ask">
