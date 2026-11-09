@@ -29,7 +29,12 @@ export async function suite(name, port, body) {
     if (persp) await page.evaluate((p) => { try { localStorage.setItem('empathia.demo.perspective', p); } catch {} }, persp).catch(() => {});
     await page.goto(base + hash); await page.waitForSelector('main h1', { timeout: 8000 }).catch(() => {});
     await page.waitForFunction(() => !document.querySelector('[data-testid=workspace-loading]'), null, { timeout: 8000 }).catch(() => {});
-    if (persp && (await page.locator('.persp select').count())) { const cur = await page.locator('.persp select').inputValue(); if (cur !== persp) { await page.selectOption('.persp select', persp); await page.waitForTimeout(120); } }
+    if (persp && (await page.locator('.persp select').count())) { const cur = await page.locator('.persp select').inputValue(); if (cur !== persp) { await page.selectOption('.persp select', persp); await page.waitForTimeout(120);
+      // 2026-11-09: since the merged shell (D44), switching role on an address that is not that role's work lands the role on its own
+      // home. goto means "open THIS address as THIS role", so return to the address: the role then sees what the shell gives it there
+      // (the screen, or the owl page). Without this, checks made after a switch read the role's home instead of the address under test.
+      if (await page.evaluate((h) => location.hash !== h, hash)) { await page.evaluate((h) => { location.hash = h; }, hash); await page.waitForTimeout(200); await page.waitForSelector('main h1', { timeout: 8000 }).catch(() => {}); }
+    } }
   };
   const over = (page) => page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
   const text = (page) => page.evaluate(() => document.querySelector('main')?.innerText || '');

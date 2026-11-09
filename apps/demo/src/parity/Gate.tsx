@@ -22,7 +22,7 @@ export default function GatePage({ role }: PageProps) {
   const go = (e: { preventDefault(): void }) => { e.preventDefault(); const t = q.trim(); location.hash = t ? `#/find?q=${encodeURIComponent(t.slice(0, 120))}` : '#/find'; };
   const home = tabsFor(role, () => true)[0];
   return (
-    <div className="pa" data-testid="parity-gate">
+    <div className="pa" data-native="" data-testid="parity-gate">
       <PageHero eyebrow="Empathia · welcome" title="Welcome to the Northstar campus" product="lite" icon="home"
         lede={`${ROOMS.length} rooms in ${BUILDINGS.length} buildings, one record of each. Tell us who you are today and the campus arranges itself around your work.`}
         meta={honest(['Synthetic data', 'warn'], ['Choosing a role grants nothing', 'muted'])}

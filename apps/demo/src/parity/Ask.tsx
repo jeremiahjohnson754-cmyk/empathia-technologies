@@ -72,7 +72,7 @@ export default function AskPage({ role, query }: PageProps) {
   const submit = (e: { preventDefault(): void }) => { e.preventDefault(); setAsked(text.trim()); };
   const groups = ['Rooms', 'The estate', 'Design', 'The workplace'] as const;
   return (
-    <div className="pa" data-testid="parity-ask">
+    <div className="pa" data-native="" data-testid="parity-ask">
       <PageHero eyebrow="Core · Ask Empathia" title="Ask Empathia" product="search-party" icon="search" lede="A question, an answer built from Core, and the records it stands on."
         meta={honest(['Answers from Core · no language model', 'accent'], ['Every answer cites its sources', 'muted'], ['Synthetic data', 'warn'])} />
       <form className="pa-ask" role="search" onSubmit={submit} aria-label="Ask Empathia">

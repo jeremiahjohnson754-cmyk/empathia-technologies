@@ -34,7 +34,7 @@ const done = (s: string) => s === 'RESOLVED' || s === 'CLOSED';
 
 export default function InvestigatePage({ params }: PageProps) {
   const core = useCore(); const all = cases(core); const id = params['issue'];
-  return <div className="pa" data-testid="parity-investigate">{id ? <OneCase c={all.find((x) => x.id === id)} id={id} /> : <Index all={all} />}</div>;
+  return <div className="pa" data-native="" data-testid="parity-investigate">{id ? <OneCase c={all.find((x) => x.id === id)} id={id} /> : <Index all={all} />}</div>;
 }
 
 function Index({ all }: { all: Case[] }) {

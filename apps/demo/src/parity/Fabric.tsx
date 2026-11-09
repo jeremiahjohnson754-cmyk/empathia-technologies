@@ -33,7 +33,7 @@ export const CATS: Cat[] = [
 export default function FabricPage(p: PageProps) {
   const seg = p.hash.replace(/^#\/?/, '').split(/[?~]/)[0]!.split('/').filter(Boolean);
   const nav = <Pills label="Fabrics" items={[{ label: 'Integration fabric', href: '#/fabric', on: seg[1] !== 'events' }, { label: 'Event fabric', href: '#/fabric/events', on: seg[1] === 'events' }]} />;
-  return <div className="pa" data-testid="parity-fabric">{seg[1] === 'events' ? <Events nav={nav} /> : seg[1] === 'c' && seg[2] ? <Connector id={decodeURIComponent(seg[2])} /> : <Integration nav={nav} list={seg[1] === 'c'} />}</div>;
+  return <div className="pa" data-native="" data-testid="parity-fabric">{seg[1] === 'events' ? <Events nav={nav} /> : seg[1] === 'c' && seg[2] ? <Connector id={decodeURIComponent(seg[2])} /> : <Integration nav={nav} list={seg[1] === 'c'} />}</div>;
 }
 
 function Integration({ nav, list }: { nav: ReactElement; list: boolean }) {

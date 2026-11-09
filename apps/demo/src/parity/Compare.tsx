@@ -33,12 +33,12 @@ export default function ComparePage({ role, params }: PageProps) {
   const mine = KINDS.filter((k) => allows({ compare: k.key }, role));
   if (params['kind'] && !kind) return <div className="pa"><EmptyState title={`Core Compare has no comparison called “${params['kind']}”`} icon="search" action={<a className="ui-btn" href="#/compare">Every comparison</a>} /></div>;
   if (!kind) return (
-    <div className="pa" data-testid="parity-compare">
+    <div className="pa" data-native="" data-testid="parity-compare">
       <PageHero eyebrow="Core · compare" title="Core Compare" product="pro" icon="layers" lede="Put two things side by side on the same measures. Every value is read from Core, and what differs is marked." meta={honest(['Read from Core', 'accent'], ['Synthetic data', 'warn'])} />
       <div className="kit-grid">{mine.map((k) => { const ex = example(core, k.key); return <a key={k.key} className="pa-card-link" href={`#/compare/${k.key}`}><h3>{k.title}</h3><p>{k.sub}</p><span className="pa-card-link__meta">{ex ? `${ex.label} · ${ex.diff} of ${ex.total} differ` : 'nothing on record to compare yet'}</span></a>; })}</div>
     </div>
   );
-  return <div className="pa" data-testid="parity-compare"><Crumbs items={[['Core Compare', '#/compare'], [kind.title]]} /><Pills label="Comparisons" items={mine.map((k) => ({ label: k.title, href: `#/compare/${k.key}`, on: k.key === kind.key }))} /><Kinded key={kind.key} core={core} kind={kind} /></div>;
+  return <div className="pa" data-native="" data-testid="parity-compare"><Crumbs items={[['Core Compare', '#/compare'], [kind.title]]} /><Pills label="Comparisons" items={mine.map((k) => ({ label: k.title, href: `#/compare/${k.key}`, on: k.key === kind.key }))} /><Kinded key={kind.key} core={core} kind={kind} /></div>;
 }
 
 function example(core: Core, k: string) { const pairs = options(core, k); if (pairs.length < 1) return null; const [a, b] = defaults(core, k, pairs); const rows = rowsFor(core, k, a, b); return { label: `${labelOf(pairs, a)}${k === 'rooms' || k === 'devices' || k === 'standards' ? ` and ${labelOf(pairs, b)}` : ''}`, diff: rows.filter(differs).length, total: rows.length }; }

@@ -78,7 +78,9 @@ for (const [role, pick] of [['designer', true], ['ops', false], ['syseng', true]
   const p2 = await t.ctx.newPage(); await p2.route(/\/demo\.js$/, (r) => r.abort()); await p2.goto(t.page.url().split('#')[0]); await p2.waitForTimeout(300);
   ok('R1-05', 'with demo.js blocked the page shows a visible loading line that says to reload, not a blank page', /Loading the demonstration[\s\S]*reload/.test(await p2.evaluate(() => document.body.innerText)));
   await p2.close(); await t.close(); }
-for (const w of [390, 1440]) { const t = await open('#/search', { role: 'architect', w });
+// 2026-11-09: opened with a query. The core-screens uplift replaced Search Party's plain address with a browse view ("Five ways in",
+// "Try one of these"; asserted in demo-core.test.mjs), so the result rows this check measures exist once something is searched.
+for (const w of [390, 1440]) { const t = await open('#/search?q=switch', { role: 'architect', w }); await t.page.waitForSelector('.sp__list b', { timeout: 5000 }).catch(() => undefined);
   // R1-02: Search Party's result rows never squeeze a name to one character per line
   const narrow = await t.page.evaluate(() => [...document.querySelectorAll('.sp__list b')].map((b) => Math.round(b.getBoundingClientRect().width)).filter((x) => x < 60));
   ok(`R1-02-${w}`, `Search Party at ${w}px: every result name keeps a readable width (≥ 60 px)`, (await t.page.locator('.sp__list b').count()) > 3 && narrow.length === 0, narrow.slice(0, 5).join(','));

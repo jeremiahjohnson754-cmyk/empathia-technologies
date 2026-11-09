@@ -25,7 +25,7 @@ export function conclusions(core: Core): Conclusion[] {
     out.push({ id: `C-H-${id}`, kind: 'Room health', text: `Health of ${shortName(o)}: ${band(h)}, ${h} of 100`, about: fullName(o), strength: 'Derived', rule: RULES.health, evidence: [...room, ...ev('Issue', (x) => x.roomId === o.id && x.state !== 'RESOLVED')], href: roomHref(o) });
     if (r.lifecycle === 'ACCEPTED' || r.lifecycle === 'OPERATIONAL') {
       const cur = r.baselines.find((b) => b.state === 'CURRENT');
-      const contra = r.counts.applicable && r.counts.verified < r.counts.applicable ? `The record says ${r.lifecycle}, yet ${r.counts.applicable - r.counts.verified} of ${r.counts.applicable} applicable tests have no verified result: both cannot be right. The engine would not reach ${r.lifecycle} on this evidence.` : undefined;
+      const contra = r.counts.applicable && r.counts.verified < r.counts.applicable ? `The record says ${r.lifecycle}, yet ${r.counts.applicable - r.counts.verified} of ${r.counts.applicable} applicable tests have no verified result: the two cannot both be right. The engine would not reach ${r.lifecycle} on this evidence.` : undefined;
       out.push({ id: `C-C-${id}`, kind: 'Commissioning', text: `Commissioning of ${shortName(o)}: ${r.lifecycle.toLowerCase()}`, about: fullName(o), strength: contra ? 'Recorded' : 'Verified', rule: 'Accepted when every applicable test has a verified result and no deficiency is open (the commissioning engine’s rule).', evidence: [...room, ...ev('Document', (x) => x.roomId === o.id && x.state === 'Commissioning report')], contradiction: contra, signedBy: cur?.by || undefined, href: roomHref(o) });
     }
     if (r.baselines.length && openIssues(r).length) out.push({ id: `C-A-${id}`, kind: 'Assurance', text: `${shortName(o)} differs from its baseline on ${plural(openIssues(r).length, 'open issue')}`, about: fullName(o), strength: 'Recorded', rule: 'An open issue on a device of a baselined room is a difference from what was commissioned.', evidence: ev('Issue', (x) => x.roomId === o.id && x.state !== 'RESOLVED'), href: roomHref(o) });
@@ -42,7 +42,7 @@ const STRENGTH_TONE: Record<Strength, 'ok' | 'info' | 'warn' | 'muted'> = { Veri
 
 export default function LedgerPage(p: PageProps) {
   const seg = p.hash.replace(/^#\/?/, '').split(/[?~]/)[0]!.split('/').filter(Boolean).map((s) => { try { return decodeURIComponent(s); } catch { return s; } });
-  return <div className="pa" data-testid="parity-ledger">{seg[1] === 'agent' ? <AgentLog {...p} room={seg[2]} /> : seg[1] === 'rec' && seg[2] ? <Entry {...p} id={seg[2]} /> : <Ledger {...p} />}</div>;
+  return <div className="pa" data-native="" data-testid="parity-ledger">{seg[1] === 'agent' ? <AgentLog {...p} room={seg[2]} /> : seg[1] === 'rec' && seg[2] ? <Entry {...p} id={seg[2]} /> : <Ledger {...p} />}</div>;
 }
 const nav = (on: 'all' | 'agent') => <Pills label="Ledger views" items={[{ label: 'Conclusions', href: '#/ledger', on: on === 'all' }, { label: 'Room Health Check log', href: '#/ledger/agent', on: on === 'agent' }]} />;
 

@@ -15,7 +15,7 @@ export default function OverviewPage({ role }: PageProps) {
   const native = rows.filter((r) => r.page).length;
   const groups = [...new Set(rows.map((r) => (r.a.key.startsWith('v25.') ? 'V2.5 pages' : r.page?.product || 'unclaimed')))];
   return (
-    <div className="pa" data-testid="parity-overview">
+    <div className="pa" data-native="" data-testid="parity-overview">
       <PageHero eyebrow="Parity" title="Every V2.5.3 address" product="shell" icon="map" lede={`${AREAS.length - 1} address areas of the original demonstration, each with the page that answers it here. Nothing on this list is typed by hand: it is the parity ledger read against the page registry.`}
         meta={honest(['Computed from the registry', 'accent'], ['Synthetic data', 'warn'])} />
       <div className="kit-grid kit-grid--tiles">

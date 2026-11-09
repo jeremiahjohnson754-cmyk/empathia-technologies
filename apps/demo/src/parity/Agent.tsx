@@ -10,7 +10,7 @@ const OUT: Record<Outcome, [string, 'ok' | 'bad' | 'warn' | 'muted']> = { pass: 
 export const outcomeTag = (o: Outcome) => <Tag tone={OUT[o][1]}>{OUT[o][0]}</Tag>;
 
 export default function AgentPage({ hash }: PageProps) {
-  return <div className="pa" data-testid="parity-agent">{/\/architecture/.test(hash) ? <Architecture /> : <HealthCheck />}</div>;
+  return <div className="pa" data-native="" data-testid="parity-agent">{/\/arch(itecture)?\b/.test(hash) ? <Architecture /> : <HealthCheck />}</div>;
 }
 
 function HealthCheck() {

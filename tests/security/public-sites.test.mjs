@@ -66,11 +66,16 @@ test('SA-01 every built page carries the CSP as <meta>, first in <head>, before 
 
 test('SA-04/SA-08 dist: no source maps, no inline script or style or handler, every new-tab link is noopener noreferrer, known hosts only', { skip: !built && 'not built' }, () => {
   const HOSTS = /^https:\/\/(tally\.so|empathia-(website|demo)(-next)?\.onrender\.com|schema\.org|react\.dev)$|^http:\/\/www\.w3\.org$/;
+  // 2026-11-09: Lite's QR codes (uplift/lite, merged after this assessment) encode V2.5.3's illustrative addresses under
+  // northstar.example.com. example.com is reserved for documentation (RFC 2606) and the name does not resolve; the page draws the code
+  // and never requests the address (public-security.test.mjs still fails any request that leaves the page). That one exact host is
+  // allowed, in the demo only, and only as the text of a QR code; every other host is still refused.
+  const QR_TEXT = /^https:\/\/northstar\.example\.com$/;
   for (const [site, d] of Object.entries(DIST)) for (const f of walk(d)) {
     const rel = path.relative(repo, f); assert.ok(!f.endsWith('.map'), `${rel}: source map shipped`);
     if (!/\.(html|js|css|json|webmanifest|xml)$/.test(f) || f.endsWith('signal-lib.json')) continue;   // licence texts (OFL.txt, *.LEGAL.txt) name their upstream, which no page loads
     const s = fs.readFileSync(f, 'utf8');
-    for (const m of s.matchAll(/\bhttps?:\/\/[a-z0-9.-]+/gi)) if (!(site === 'website' && /sitemap\.xml|BUILD_MANIFEST/.test(f))) assert.match(m[0], HOSTS, `${rel}: unexpected host ${m[0]}`);
+    for (const m of s.matchAll(/\bhttps?:\/\/[a-z0-9.-]+/gi)) if (!(site === 'website' && /sitemap\.xml|BUILD_MANIFEST/.test(f))) assert.ok(HOSTS.test(m[0]) || (site === 'demo' && QR_TEXT.test(m[0])), `${rel}: unexpected host ${m[0]}`);
     if (!f.endsWith('.html')) continue;
     for (const t of s.match(/<script\b[^>]*>/g) || []) assert.ok(/\bsrc="/.test(t) || /type="application\/ld\+json"/.test(t), `${rel}: inline script ${t}`);
     for (const ld of s.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) { JSON.parse(ld[1]); assert.doesNotMatch(ld[1], /<\//, `${rel}: JSON-LD may close its script`); }

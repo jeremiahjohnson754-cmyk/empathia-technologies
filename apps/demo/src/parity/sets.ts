@@ -47,8 +47,11 @@ export const ALL_SETS = FAMILIES.flatMap((f) => f.sets.map((s) => ({ ...s, famil
 export const setOf = (key: string) => ALL_SETS.find((s) => s.key === key);
 export const familyOf = (key: string) => FAMILIES.find((f) => f.key === key.split(':')[0]);
 /** V2.5.3 azArea for #/set/<key> (12-authz.js), verbatim in effect. */
+/** V2.5.3's family names (#/set/devices …) are kept as aliases of the short keys, so every legacy address still opens its family —
+ * for the roles V2.5.3 gave that family to (the authority reads the same alias the page does). */
+export const LEGACY_FAMILY: Record<string, string> = { devices: 'dev', rooms: 'room', issues: 'iss', docs: 'doc', changes: 'chg' };
 export function setAuthority(key: string): Authority {
-  const k = key.split('@')[0]!.split(':');
+  const k = key.split('@')[0]!.split(':'); k[0] = LEGACY_FAMILY[k[0]!] ?? k[0]!;
   if (k[0] === 'as') return { area: k[1] === 'ready' ? 'assurance.ready' : k[1] === 'worst' || k[1] === 'remedy' ? 'assurance.portfolio' : k[1] === 'baselines' ? 'assurance.history' : k[1] === 'signals' || k[1] === 'maint' ? 'assurance.signals' : 'assurance.room' };
   const m: Record<string, string> = { pc: 'assurance.change', cm: 'commissioning', dev: 'set.devices', room: 'set.rooms', iss: 'set.issues', pt: 'set.issues', gov: 'search.quality', conf: 'search.quality', doc: 'set.docs', chg: 'set.changes', mw: 'scouter', sc: 'scouter', pf: 'budget', fin: 'budget', eng: 'intake', sh: 'servicehands', svc: 'service', pj: 'projects', ar: 'search.vault', dec: 'decisions', ppl: 'search.people' };
   return { area: m[k[0]!] || 'none' };

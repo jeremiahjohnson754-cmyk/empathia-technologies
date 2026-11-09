@@ -82,4 +82,9 @@ export interface PageDef {
   search?: { keywords?: string; aliases?: readonly string[]; href?: string };
   /** true: listed in the product menu as the product's landing page */
   landing?: boolean;
+  /**
+   * true: a V2.5.3 address kept for parity that opens a screen another page already lists (#/intake, #/budget, #/qr …). It resolves and
+   * is access-checked like any page, under its own V2.5.3 authority, but is not listed a second time in the menu, quick find or View as.
+   */
+  legacy?: boolean;
 }
