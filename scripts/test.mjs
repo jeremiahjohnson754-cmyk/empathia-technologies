@@ -71,6 +71,7 @@ for (const s of ['demo-access', 'demo-viewas', 'demo-phoneshell', 'demo-scouter'
 suite('unit: demo spaces (campus records, search, scenarios, tours)', 'unit', node, ['--test', 'tests/unit/demo-spaces.test.mjs'], tap);
 suite('unit: demo Lite (45 rooms, lenses, coverage overlays, four states, wayfinding, QR)', 'unit', node, ['--test', 'tests/unit/demo-lite.test.mjs'], tap);
 suite('unit: demo worlds (four worlds, 52 role configurations, no-loss, no grant)', 'unit', node, ['--test', 'tests/unit/demo-worlds.test.mjs'], tap);
+suite('unit: demo estates (one model, University 38 classrooms / 4 dormitories / 3 campuses, Stadium, Convention)', 'unit', node, ['--test', 'tests/unit/demo-estates.test.mjs'], tap);
 suite('unit: demo core screens (health, spine, campus aggregates)', 'unit', node, ['--test', 'tests/unit/demo-core-metrics.test.mjs'], tap);
 for (const s of ['demo-campus', 'demo-rooms', 'demo-lite', 'demo-tours', 'demo-searchbar', 'demo-search-scenarios', 'demo-core', 'demo-proof', 'demo-worlds']) suite(`browser: ${s}`, 'browser', node, [`tests/browser/${s}.test.mjs`], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? { timeout: 1200000 } : { skip: 'demo not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
 const studio = fs.existsSync(path.join(root, 'apps/founder-studio/dist/index.html'));

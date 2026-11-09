@@ -27,10 +27,12 @@ const optsOf = (p) => p.$$eval('#find-list [role=option]', (o) => o.map((x) => (
   await p.keyboard.press('/'); await p.keyboard.type('atlas 4.218'); await p.waitForFunction(() => document.querySelectorAll('#find-list [role=option]').length > 1, null, { timeout: 5000 }).catch(() => undefined);
   const g2 = await groupsOf(p); const o2 = await optsOf(p);
   ok('S-07', '“/” focuses it too; a room named outright leads the results', g2[0] === 'Rooms' && o2[0].k === 'room' && /Atlas 4\.218/.test(o2[0].t), JSON.stringify({ g2, first: o2[0] }));
-  await p.keyboard.press('ArrowDown'); await p.keyboard.press('ArrowDown');   // past the room(s) to the first unit
+  // S-08 changed (v18/continuation, 9 Nov): the Commissioning dossier page for this room now ranks among the pages, so the first unit is no
+  // longer always two steps down. The check steps to the first unit wherever it sits; what it asserts (a unit opens its room at ?device=) is unchanged.
+  const firstUnit = o2.findIndex((o) => o.k === 'unit'); for (let i = 0; i < (firstUnit > 0 ? firstUnit : 2); i++) await p.keyboard.press('ArrowDown');
   const sel = await p.evaluate(() => document.getElementById(document.getElementById('find-in').getAttribute('aria-activedescendant'))?.dataset.kind);
   await p.keyboard.press('Enter'); await p.waitForTimeout(600);
-  ok('S-08', 'choosing a physical unit opens its room with that position selected (?device=)', sel === 'unit' ? /#\/campus\/ATL\/4\/R-ATL-4-218\?device=/.test(p.url()) : /#\/campus\/ATL/.test(p.url()), `${sel} ${p.url()}`);
+  ok('S-08', 'choosing a physical unit opens its room with that position selected (?device=)', sel === 'unit' && /#\/campus\/ATL\/4\/R-ATL-4-218\?device=/.test(p.url()), `${sel} ${p.url()}`);
   await p.keyboard.press('Control+k'); await p.keyboard.type('zzqx'); await p.waitForTimeout(400);
   ok('S-09', 'nothing matching is said in words, with the way to search every record', /Nothing for “zzqx”/.test(await p.locator('.find__none').innerText()));
   await p.keyboard.press('Escape'); const afterOne = await p.evaluate(() => ({ v: document.getElementById('find-in').value, f: document.activeElement?.id }));

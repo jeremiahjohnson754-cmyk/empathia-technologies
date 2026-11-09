@@ -19,7 +19,12 @@ const role = (p) => p.evaluate(() => document.documentElement.dataset.role);
   const after = await p.evaluate(() => ({ ava: document.querySelector('[data-testid=viewas-open] .ava').textContent, said: document.getElementById('route-announcer').textContent, stored: localStorage.getItem('empathia.demo.perspective') }));
   ok('V-04', 'choosing Designer re-renders the shell as the designer, announces it and remembers it', await role(p) === 'designer' && after.ava === 'DE' && /Now viewing as Designer/.test(after.said) && /grants nothing/.test(after.said) && after.stored === 'designer', JSON.stringify(after));
   const tabs = await p.$$eval('[data-testid=hometabs] a', (a) => a.map((x) => x.textContent));
-  ok('V-05', 'the designer’s home tabs are V2.5.3’s (Desk, Intake, Builder, Scouter) kept only where they open', tabs.includes('Scouter') && tabs.includes('Desk') && !tabs.includes('Intake'), tabs.join(','));
+  // V-05 changed (v18/continuation, 9 Nov): Intake was absent while no page opened behind it. The parity work built #/intake, so the rule
+  // "kept only where they open" now keeps it; the check follows each tab and requires every one to open a real page for the designer.
+  const tabHrefs = await p.$$eval('[data-testid=hometabs] a', (a) => a.map((x) => x.getAttribute('href')));
+  const opens = []; for (const h of tabHrefs) { await p.evaluate((x) => { location.hash = x; }, h); await p.waitForTimeout(500); opens.push(await p.evaluate(() => !!document.querySelector('main h1') && !document.querySelector('[data-testid=access-page]') && document.querySelector('main').innerText.length > 200)); }
+  await p.evaluate(() => { location.hash = '#/home'; }); await p.waitForTimeout(400);
+  ok('V-05', 'the designer’s home tabs are V2.5.3’s (Desk, Intake, Builder, Scouter), and every one shown opens a page', ['Desk', 'Intake', 'Builder', 'Scouter'].every((x) => tabs.includes(x)) && opens.every(Boolean), `${tabs.join(',')} ${opens.join(',')}`);
   await p.reload(); await p.waitForTimeout(400);
   ok('V-06', 'the role survives a reload', await role(p) === 'designer');
   await p.click('[data-testid=viewas-open]'); await p.click('text=Return to Product Architect'); await p.waitForTimeout(300);
