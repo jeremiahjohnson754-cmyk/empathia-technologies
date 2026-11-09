@@ -21,6 +21,8 @@ export function enterContext(next: string): boolean {
   if (next === key) return false;
   for (const r of [...resets]) r();
   key = next; epoch += 1;
+  // tell the shell (its quick find, an open menu) after this render, never during it
+  if (typeof window !== 'undefined') queueMicrotask(() => { try { window.dispatchEvent(new Event('empathia:context')); } catch { /* no listeners */ } });
   return true;
 }
 export const contextKey = (): string => key;

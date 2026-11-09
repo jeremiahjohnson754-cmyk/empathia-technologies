@@ -164,6 +164,8 @@ type FindFn = (q: string, n: number) => Array<{ id: string; kind: string; label:
  */
 function QuickFind({ role, pages, open, setOpen }: { role: RoleKey; pages: PageDef[]; open: boolean; setOpen: (b: boolean) => void }) {
   const [q, setQ] = useState(''); const [i, setI] = useState(0); const input = useRef<HTMLInputElement>(null);
+  // a world or role-configuration change (worlds/scope.ts) drops the query, so nothing typed in one context is carried into the next
+  useEffect(() => { const on = () => { setQ(''); setI(0); }; window.addEventListener('empathia:context', on); return () => window.removeEventListener('empathia:context', on); }, []);
   useEffect(() => {
     const k = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement | null; const typing = !!t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
