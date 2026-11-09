@@ -7,7 +7,7 @@
 import React from 'react';
 import type { Page } from './content';
 import { Hero, Section, Actions, Note, EnquiryLink } from './ui.js';
-import { SKUS, BUNDLES, PILOTS, SIGNAL_TERMS, FAMILIES, PRICE_LABEL, PILOT_RULES, READINESS_STATES, READINESS_MEANING, usd, unitLabel, choiceOf } from '../../../packages/commercial/src/index.ts';
+import { SKUS, BUNDLES, PILOTS, SIGNAL_TERMS, FAMILIES, PRICE_LABEL, PILOT_RULES, READINESS_STATES, READINESS_MEANING, usd, unitLabel, choiceOf, quote } from '../../../packages/commercial/src/index.ts';
 import { CONNECTORS } from '../../../packages/commercial/src/generated/connectors.ts';
 
 const CAVEAT = PILOTS[0]!.caveat;
@@ -17,14 +17,85 @@ const ListPrice = () => <p className="listprice" data-price-label><span classNam
 const seat = SKUS.find((s) => s.sku === 'SEAT-ENTERPRISE')!;
 const signal = (id: string) => SKUS.find((s) => s.sku === id)!;
 
+/** The three bundles the short page leads with (the other four are in the full list). */
+const FEATURED = ['WORKPLACE-ESSENTIALS', 'SERVICE-INTELLIGENCE', 'ENGINEERING-LIFECYCLE'];
+const OUTCOMES: { title: string; body: string; href: string; go: string }[] = [
+  { title: 'See it on synthetic data first', body: 'A bounded pilot at a fixed price shows the whole record working before anything of yours is connected.', href: '#pilot-prices', go: 'The four pilots' },
+  { title: 'Know what every room costs to run', body: 'A platform base, a per-room licence and a per-person seat. The quantities are yours; the arithmetic is shown.', href: '#example', go: 'A worked example' },
+  { title: 'Buy a lifecycle, not a parts list', body: 'A bundle groups the products one team uses together and takes a stated percentage off each of its monthly lines.', href: '#bundles', go: 'Three bundles' },
+];
+/** One worked example, computed by the same quote() the readiness check uses: nothing on this page is added up by hand. */
+function Example() {
+  const q = quote({ quantities: { 'CORE-ENTERPRISE': 1, 'PRO-ROOM': 25, 'SEAT-ENTERPRISE': 40, COMMISSION: 25 }, bundle: 'WORKPLACE-ESSENTIALS', pilot: 'PILOT-READONLY' });
+  return (
+    <div className="tablewrap" role="region" aria-label="A worked example" tabIndex={0}><table className="terms quote" data-quote>
+      <caption>25 rooms and 40 named users on Workplace Essentials, starting with the read-only pilot</caption>
+      <thead><tr><th scope="col">Line</th><th scope="col">Quantity</th><th scope="col">List price</th><th scope="col">Discount</th><th scope="col">Amount</th></tr></thead>
+      <tbody>
+        {q.monthly.map((l) => <tr key={l.sku} data-line={l.sku}><th scope="row">{l.name}{l.note ? <small> {l.note}</small> : null}</th><td>{l.quantity}</td><td>{usd(l.unitCents)}</td><td>{l.discountPct ? `${l.discountPct}%` : '—'}</td><td><b>{usd(l.cents)}</b></td></tr>)}
+        <tr className="quote__total" data-total="monthly"><th scope="row" colSpan={4}>Each month, before tax</th><td><b>{usd(q.monthlyCents)}</b></td></tr>
+        {q.oneTime.map((l) => <tr key={l.sku} data-line={l.sku}><th scope="row">{l.name} <small>one time; never discounted</small></th><td>{l.quantity}</td><td>{usd(l.unitCents)}</td><td>—</td><td><b>{usd(l.cents)}</b></td></tr>)}
+        <tr className="quote__total" data-total="once"><th scope="row" colSpan={4}>Once, before tax</th><td><b>{usd(q.oneTimeCents)}</b></td></tr>
+      </tbody>
+    </table></div>
+  );
+}
+
 function pricingPage(): Page {
+  const featured = FEATURED.map((id) => BUNDLES.find((b) => b.id === id)).filter((b): b is (typeof BUNDLES)[number] => !!b);
+  return { path: '/pricing', nav: 'Pricing', title: 'Pricing — Empathia Technologies', description: `How Empathia is priced: a named-user seat, ${featured.length} bundles for the commonest estates, ${PILOTS.length} bounded pilots and SIGNAL, with one worked total. The full price list is one click deeper.`, body: (
+    <>
+      <Hero label="Pricing" title="Start with a pilot. Pay for what you run." lead="A fixed-price pilot first, then a seat for each person and a licence for each room. Every figure on this page is a list price, and the one total below is added up in front of you.">
+        <ListPrice />
+        <Actions><a className="btn btn--primary btn--lg" href="/pilots">Check which pilot fits</a><a className="btn btn--lg" href="/pricing/catalogue">The full price list</a></Actions>
+      </Hero>
+      <Section id="outcomes" title="What you are paying for">
+        <div className="cards cards--3">{OUTCOMES.map((o) => <article key={o.title} className="card"><h3>{o.title}</h3><p>{o.body}</p><p><a href={o.href}>{o.go}</a></p></article>)}</div>
+      </Section>
+      <Section id="pilot-prices" title="Four pilots, each a fixed price" lead="One-time packages with a fixed scope and length. Bundle discounts never apply to them.">
+        <ul className="prices prices--grid">{PILOTS.map((p) => <li key={p.sku} data-sku={p.sku}><div className="prices__what"><h3>{p.name}</h3><p>{p.scope}.</p><p className="prices__sku">{p.sku}</p></div><Price cents={p.cents} unit={`once, ${p.duration}`} /></li>)}</ul>
+        <p className="caveat">{CAVEAT}.</p>
+        <Actions><a className="btn btn--primary" href="/pilots">Check which pilot fits</a></Actions>
+      </Section>
+      <Section id="seats" title="People" lead="Staff are licensed by name. Public guests are never charged per user." tone="deep">
+        <ul className="prices prices--solo"><li data-sku={seat.sku}><div className="prices__what"><h3>{seat.name}</h3><p>{seat.scope}.</p><p className="prices__sku">{seat.sku}</p></div><Price cents={seat.cents} unit={unitLabel(seat.billingUnit)} /></li></ul>
+      </Section>
+      <Section id="bundles" title="Three bundles for the commonest estates" lead="A bundle takes a percentage off each eligible monthly line of its own products. Quantities stay explicit; a bundle is never a flat price.">
+        <div className="cards cards--3">{featured.map((b) => (
+          <article key={b.id} className="card bundle" data-bundle={b.id}>
+            <p className="bundle__pct"><b>{b.discount}</b> off eligible lines</p><h3>{b.name}</h3><p>{b.summary}.</p>
+            <ul className="bundle__skus" aria-label={`Products in ${b.name}`}>{b.skus.map((x) => <li key={x}>{skuName(x)}</li>)}</ul>
+          </article>))}
+        </div>
+        <p className="caveat">Bundles never discount tax, payment fees, external licences, services or pilot fees.</p>
+        <Actions><a className="btn" href="/pricing/catalogue#bundles">All {BUNDLES.length} bundles</a></Actions>
+      </Section>
+      <Section id="example" title="One total, added up in front of you" lead="An example estate, priced line by line from the list. These are the only charges: there is no set-up fee, no per-guest fee and no connector fee hidden behind the total. Tax, and any vendor’s own subscription, are separate and are said so." tone="deep">
+        <Example />
+        <Note>The example is arithmetic on list prices, not an offer. Your own quantities change the lines, never the rules.</Note>
+      </Section>
+      <Section id="signal" title="SIGNAL and Learn" lead={`${signal('SIGNAL-FREE').scope}: free. The full story is a subscription.`}>
+        <ul className="prices prices--grid">{SKUS.filter((x) => x.family === 'SIGNAL').map((x) => <li key={x.sku} data-sku={x.sku}><div className="prices__what"><h3>{x.name}</h3><p>{x.scope}.</p><p className="prices__sku">{x.sku}</p></div><Price cents={x.cents} unit={unitLabel(x.billingUnit)} /></li>)}</ul>
+        <Actions><a className="btn" href="/pricing/catalogue#signal">Terms for 3, 6 and 12 months</a></Actions>
+      </Section>
+      <Section id="full" title="Everything else, line by line" lead={`The complete list has ${SKUS.length} products in ${FAMILIES.length} families, all ${BUNDLES.length} bundles and the SIGNAL terms, each with what it covers and what it does not.`} tone="deep">
+        <Actions><a className="btn btn--lg" href="/pricing/catalogue" data-catalogue>Open the full price list</a></Actions>
+      </Section>
+      <Section id="how-to-buy" title="How to buy today" lead="Self-serve purchase is not open yet, and no payment is taken on this site. An enquiry reaches a person, who confirms the scope and the terms in writing.">
+        <div className="enquire"><h3>Ask about a price or a pilot</h3><p>Tell us the products and the quantities you have in mind.</p><EnquiryLink source="website-pilot" primary id="pricing" /></div>
+      </Section>
+    </>
+  ) };
+}
+
+function cataloguePage(): Page {
   const rest = SKUS.filter((s) => s.family !== 'SIGNAL' && s.sku !== seat.sku);
   const families = FAMILIES.filter((f) => rest.some((s) => s.family === f));
-  return { path: '/pricing', nav: 'Pricing', title: 'Pricing — Empathia Technologies', description: `The Empathia list prices: ${SKUS.length} products by family, ${BUNDLES.length} bundles, the SIGNAL terms and the ${PILOTS.length} pilot packages, each with its scope and limits.`, body: (
+  return { path: '/pricing/catalogue', title: 'Full price list — Empathia Technologies', description: `The Empathia list prices: ${SKUS.length} products by family, ${BUNDLES.length} bundles, the SIGNAL terms and the ${PILOTS.length} pilot packages, each with its scope and limits.`, body: (
     <>
-      <Hero label="Pricing" title="One price list, with its limits" lead={`${SKUS.length} products priced one by one, ${BUNDLES.length} bundles and ${PILOTS.length} bounded pilots. Every line states what it covers and what it does not.`}>
+      <Hero label="Pricing · full catalogue" title="The full price list, line by line" lead={`${SKUS.length} products priced one by one, ${BUNDLES.length} bundles and ${PILOTS.length} bounded pilots. Every line states what it covers and what it does not.`}>
         <ListPrice />
-        <Actions><a className="btn btn--primary btn--lg" href="/pilots">See the pilot packages</a><a className="btn btn--lg" href="#products">The price list</a></Actions>
+        <Actions><a className="btn btn--primary btn--lg" href="/pricing">Back to the short version</a><a className="btn btn--lg" href="/pilots">The pilot packages</a></Actions>
       </Hero>
       <Section id="seats" title="People" lead="Staff are licensed by name. Public guests are never charged per user.">
         <ul className="prices prices--solo"><li data-sku={seat.sku}><div className="prices__what"><h3>{seat.name}</h3><p>{seat.scope}.</p><p className="prices__sku">{seat.sku}</p></div><Price cents={seat.cents} unit={unitLabel(seat.billingUnit)} /></li></ul>
@@ -72,7 +143,7 @@ function pilotsPage(): Page {
     <>
       <Hero label="Pilots" title="A bounded pilot, checked before you buy" lead="Four packages with a fixed price and a fixed scope. The readiness check below tells you which one fits, what it needs from your side, and what is not offered today.">
         <ListPrice />
-        <Actions><a className="btn btn--primary btn--lg" href="#readiness">Check your readiness</a><a className="btn btn--lg" href="/pricing">The full price list</a></Actions>
+        <Actions><a className="btn btn--primary btn--lg" href="#readiness">Check your readiness</a><a className="btn btn--lg" href="/pricing">Pricing</a></Actions>
       </Hero>
       <Section id="packages" title="The four packages">
         <div className="pkgs">{PILOTS.map((p) => { const r = PILOT_RULES[p.sku]; return (
@@ -128,4 +199,4 @@ function pilotsPage(): Page {
   ) };
 }
 
-export const commercialPages = (): Page[] => [pricingPage(), pilotsPage()];
+export const commercialPages = (): Page[] => [pricingPage(), cataloguePage(), pilotsPage()];

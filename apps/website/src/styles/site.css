@@ -718,3 +718,7 @@ p { text-wrap: pretty; }
 .brand { flex: none; }
 @media (min-width: 1101px) { .nav__links > li > a, .pmenu > summary { padding: 0 8px; } .nav { gap: 10px; } }
 @media (min-width: 1101px) and (max-width: 1320px) { .nav__cta .btn--quiet { display: none; } }
+/* the worked total on /pricing: the last row of each group is the figure to read */
+.quote th small { display: block; font-weight: 400; color: var(--w-tx2); }
+.quote__total th, .quote__total td { border-top: 2px solid var(--w-line); font-weight: 650; }
+.quote td:last-child, .quote th:last-child { text-align: right; font-variant-numeric: tabular-nums; }
