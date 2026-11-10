@@ -13,7 +13,9 @@ const optsOf = (p) => p.$$eval('#find-list [role=option]', (o) => o.map((x) => (
 { const t = await open('#/investor', { role: 'architect' }); const p = t.page;
   await p.keyboard.press('Control+k'); await p.waitForTimeout(80);
   ok('S-01', 'Ctrl K focuses the Search Party bar from anywhere; the field says what it is and its shortcut', await p.evaluate(() => document.activeElement?.id === 'find-in' && /Search Party/.test(document.getElementById('find-in').getAttribute('aria-label')) && /Control\+K/.test(document.getElementById('find-in').getAttribute('aria-keyshortcuts')) && /Search Party/.test(document.querySelector('.find__sp').textContent)));
-  await p.keyboard.type('camera'); await p.waitForFunction(() => document.querySelectorAll('#find-list [role=option]').length > 3, null, { timeout: 5000 }).catch(() => undefined);
+  // S-02 wait changed (9 Nov): it used to wait for "more than three options", which page results alone now satisfy before the Search Party
+  // index has answered. It waits for the first physical unit instead; what S-02 and S-03 assert is unchanged.
+  await p.keyboard.type('camera'); await p.waitForSelector('#find-list [role=option][data-kind=unit]', { timeout: 8000 }).catch(() => undefined);
   const g = await groupsOf(p); const o = await optsOf(p);
   ok('S-02', 'results come grouped as the 3 Nov reference: physical units first, then logical positions, incidents, with “N more in Search Party”', /^Devices & physical units/.test(g[0] || '') && g.some((x) => /^Logical positions/.test(x)) && g.some((x) => /^Incidents/.test(x)) && g.some((x) => /\d+ more in Search Party/.test(x)), JSON.stringify(g));
   ok('S-03', 'each result carries its kind chip (Asset, Planned device, Incident) and an icon; no invented make, model or serial', o.length >= 8 && o.filter((x) => x.k === 'unit').every((x) => x.chip === 'Asset' && /^AS-\d{4} · /.test(x.t)) && o.some((x) => x.chip === 'Planned device') && !o.some((x) => /Logitech|Crestron|Shure|Sony|serial/i.test(x.t)), JSON.stringify(o.slice(0, 3)));
