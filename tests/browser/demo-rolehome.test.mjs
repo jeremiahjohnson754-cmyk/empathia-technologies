@@ -44,6 +44,13 @@ ok('RS-16', 'the thirteen role pages do not all say the same thing: their headli
   ok('RS-18', 'an employee’s start page is their room, rooms near it and what they reported: no scores, money or other people’s work', /Your room is Atlas 4\.218/.test(text) && !/\$\d|\/100|funded|authoris|work order/i.test(text) && (await s.page.locator('[data-zone=near] [data-testid=rh-row]').count()) >= 3 && (await s.page.locator('[data-testid=rh-tiles], [data-testid=rh-strip]').count()) === 0, text.slice(0, 300));
   await s.close(); }
 
+// ---------------------------------------------------------------------------------------------------------- the bell follows the role too
+for (const [role, scope] of [['visitor', 'own'], ['employee', 'own'], ['exec', 'own'], ['svcmgr', 'all'], ['service', 'all']]) {
+  const s = await open('#/home', { role }); const p = s.page; await settle(p); await p.click('[data-testid=notifications]'); await p.waitForSelector('#notes-panel');
+  const b = await p.evaluate(() => ({ scope: document.querySelector('[data-testid=notifications]').getAttribute('data-scope'), head: document.querySelector('#notes-panel .notes__h')?.textContent || '', label: document.querySelector('[data-testid=notifications]').getAttribute('aria-label') }));
+  ok(`RS-18-bell-${role}`, scope === 'all' ? `${role} works on incidents and is told about every open one` : `${role} is told only about what they reported, not the campus’s incidents`, b.scope === scope && (scope === 'all' ? /^Open service incidents/.test(b.head) : /^Your open reports/.test(b.head) && /of your reports/.test(b.label)), JSON.stringify(b));
+  await s.close();
+}
 // ---------------------------------------------------------------------------------------------------------- shortcuts
 { const s = await open('#/home', { role: 'cxeng' }); const p = s.page; await settle(p);
   await p.keyboard.press('g'); await p.waitForTimeout(120);

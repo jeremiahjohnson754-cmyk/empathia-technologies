@@ -105,7 +105,7 @@ function Drawer({ open, onClose, products, current, at, onViewAs, role }: { open
 
 // ------------------------------------------------------------------------------------------------ notifications
 interface Note { id: string; text: string; sub: string; href?: string; tone: 'bad' | 'warn' | 'info' }
-type Inc = { id: string; title: string; roomName: string; severity: string; state: string };
+type Inc = { id: string; title: string; roomName: string; severity: string; state: string; history?: Array<{ by: string }> };
 const WS_KEY = 'empathia.demo.workspace.v1';
 const STEP: Record<string, string> = { OPEN: 'needs triage', TRIAGED: 'needs a technician', ASSIGNED: 'assigned, not yet accepted', ACCEPTED: 'accepted', IN_PROGRESS: 'being repaired', VERIFYING: 'awaiting verification' };
 /** The open service incidents of the demo's own workspace (read only: the stored workspace, or the seed it starts from — never written). */
@@ -117,8 +117,11 @@ function Notifications({ role }: { role: RoleKey }) {
   const [items, setItems] = useState<Note[] | null>(null);
   const [open, setOpen] = useState(false);
   const btn = useRef<HTMLButtonElement>(null); const box = useRef<HTMLDivElement>(null);
+  // D44: the campus's open incidents are shown to the roles that work on them (a role that may open a service or issues page).
+  // Everyone else — an employee, a visitor, an executive — is told only about what they reported themselves.
+  const all = ['#/v25/service', '#/service', '#/servicehands', '#/pro/issues'].some((h) => opensNative(role, h));
   const refresh = () => {
-    readIncidents().then((xs) => setItems(xs.filter((i) => STEP[i.state]).sort((a, b) => (a.severity === 'Mission critical' ? -1 : 0) - (b.severity === 'Mission critical' ? -1 : 0))
+    readIncidents().then((xs) => setItems(xs.filter((i) => STEP[i.state]).filter((i) => all || i.history?.[0]?.by === 'requestor').sort((a, b) => (a.severity === 'Mission critical' ? -1 : 0) - (b.severity === 'Mission critical' ? -1 : 0))
       .map((i) => { const href = `#/v25/service?id=${encodeURIComponent(i.id)}`; return { id: i.id, text: `${i.id} · ${i.title}`, sub: `${i.roomName} · ${i.severity} · ${STEP[i.state]}`, href: opensNative(role, href) ? href : undefined, tone: i.severity === 'Mission critical' ? 'bad' : i.severity === 'High' ? 'warn' : 'info' } as Note; })))
       .catch(() => setItems([]));
   };
@@ -134,14 +137,14 @@ function Notifications({ role }: { role: RoleKey }) {
   return (
     <div className="notes">
       <button ref={btn} type="button" className="notes__btn" aria-expanded={open} aria-controls="notes-panel" onClick={() => setOpen(!open)} data-testid="notifications"
-        aria-label={items === null ? 'Notifications' : `Notifications: ${n} open service ${n === 1 ? 'incident' : 'incidents'}`}>
+        aria-label={items === null ? 'Notifications' : all ? `Notifications: ${n} open service ${n === 1 ? 'incident' : 'incidents'}` : `Notifications: ${n} of your reports ${n === 1 ? 'is' : 'are'} open`} data-scope={all ? 'all' : 'own'}>
         <Icon name="bell" size={20} />{n > 0 && <span className="notes__n" aria-hidden="true">{n > 9 ? '9+' : n}</span>}
       </button>
       {open && <div ref={box} id="notes-panel" className="notes__panel" role="region" aria-label="Notifications">
-        <p className="notes__h">Open service incidents <span className="notes__c">{n}</span></p>
+        <p className="notes__h">{all ? 'Open service incidents' : 'Your open reports'} <span className="notes__c">{n}</span></p>
         {n ? <ul className="notes__list">{items!.map((x) => <li key={x.id} className={`notes__i ui-tone--${x.tone}`}>
           {x.href ? <a href={x.href} onClick={() => setOpen(false)}><b>{x.text}</b><span>{x.sub}</span></a> : <div><b>{x.text}</b><span>{x.sub}</span></div>}
-        </li>)}</ul> : <p className="notes__none">Nothing open: every incident in this demonstration is resolved or closed.</p>}
+        </li>)}</ul> : <p className="notes__none">{all ? 'Nothing open: every incident in this demonstration is resolved or closed.' : 'Nothing you reported is open.'}</p>}
         <p className="notes__foot">Computed from the demonstration's synthetic service records.</p>
       </div>}
     </div>

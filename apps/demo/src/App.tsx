@@ -23,7 +23,7 @@ import { TourPanel } from './tour/Tour.js';
 import { ContactLinks } from './enquiry/WorkWith.js';
 import { ENQUIRY } from './enquiry.js';
 import { OfflineStrip } from './offline/Strip.js';
-import { Shortcuts } from './start/Shortcuts.js';
+import { Shortcuts } from './start/ShortcutSheet.js';
 
 const START = '#/investor';
 /** The address the router reads: an in-page anchor (#problems) or an empty hash is the investor start. */

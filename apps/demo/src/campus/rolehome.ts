@@ -83,7 +83,7 @@ export interface Inputs { role: RoleKey; w: Workspace | null; opens: (href: stri
 /** The Mission Control strip of V2.5.3 for a role: what changed in the last day, what matters, what waits for this role's decision. */
 function stripFor(i: Inputs, mine: Priority[], cols: Strip['cols']): Strip {
   const now = i.now ?? Date.now(); const recs = i.recs || allRecords();
-  const changed: Row[] = (i.w?.events || []).filter((e) => now - Date.parse(e.at) <= DAY).sort((a, b) => b.at.localeCompare(a.at)).slice(0, 3).map((e, n) => ({ id: `chg-${n}`, title: `${e.type.replace(/^[a-z]+\./, '').replace(/_/g, ' ')} · ${e.aggregate}`, sub: `${e.detail}${e.outcome === 'DENIED' ? ' · refused' : ''}`, tone: e.outcome === 'DENIED' ? 'bad' : 'info' }));
+  const changed: Row[] = (i.w?.events || []).filter((e) => e.by !== 'system' && now - Date.parse(e.at) <= DAY)   /* a person's change, not the workspace being set up */.sort((a, b) => b.at.localeCompare(a.at)).slice(0, 3).map((e, n) => ({ id: `chg-${n}`, title: `${e.type.replace(/^[a-z]+\./, '').replace(/_/g, ' ')} · ${e.aggregate}`, sub: `${e.detail}${e.outcome === 'DENIED' ? ' · refused' : ''}`, tone: e.outcome === 'DENIED' ? 'bad' : 'info' }));
   const matters = mine.filter((p) => p.verb !== 'Review').slice(0, 3).map(fromPriority);
   const decide = mine.filter((p) => p.verb === 'Review').slice(0, 3).map(fromPriority);
   void recs;
@@ -154,7 +154,7 @@ export function startFor(i: Inputs): Start {
         { id: 'jobs', title: role === 'installer' ? 'Your package' : 'Your jobs', hint: 'Assigned to you, earliest window first', rows: myWos.map(jobRow), empty: 'No work order is assigned to you.', more: open('#/servicehands') ? { label: 'Every job', href: '#/servicehands' } : undefined },
         role === 'installer'
           ? { id: 'install', title: 'Rooms being installed', hint: 'Installation pending, or installed and not yet verified', rows: installing.map((r) => ({ id: r.outline.id, title: `${shortName(r.outline)} · ${r.outline.name}`, sub: `${r.lifecycle.toLowerCase().replace(/_/g, ' ')}${r.nextStep?.blockers.length ? ` · held: ${r.nextStep.blockers[0]}` : ''}`, href: link(roomHref(r.outline)), tone: r.nextStep?.blockers.length ? 'warn' : 'info' })), empty: 'No room is waiting for installation.', more: open('#/install') ? { label: 'Installation', href: '#/install' } : undefined }
-          : { id: 'queue', title: 'Queue', hint: 'Most severe first', rows: queue.slice(0, 6), empty: 'Nothing is open in your work.', more: open('#/pro/issues') ? { label: 'All issues in your work', href: '#/pro/issues' } : undefined },
+          : { id: 'queue', title: 'Queue', hint: 'Most severe first', rows: queue, empty: 'Nothing is open in your work.', more: open('#/pro/issues') ? { label: 'All issues in your work', href: '#/pro/issues' } : undefined },
       ];
       return { ...base, headline: nowJob ? `${roomName(nowJob.roomId)}: ${lower1(nowJob.title)}` : role === 'installer' ? 'Nothing booked today.' : `${plural(queue.length, 'item')} in your work.`,
         summary: `${plural(myWos.length, 'work order')} ${myWos.length === 1 ? 'is' : 'are'} assigned to you${myWos.filter((x) => x.state === 'ASSIGNED').length ? `, ${myWos.filter((x) => x.state === 'ASSIGNED').length} still to accept` : ''}. ${role === 'installer' ? `${plural(installing.length, 'room')} ${installing.length === 1 ? 'is' : 'are'} in installation.` : `${plural(live.length, 'service request')} ${live.length === 1 ? 'is' : 'are'} live across the campus.`}`,
