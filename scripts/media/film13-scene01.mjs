@@ -4,6 +4,7 @@
  * demonstration, driven shot by shot. Nothing is generated or composited: what is recorded is what the product does. The only thing
  * added for the recording is a pointer dot, because a headless browser draws no cursor.
  *   node scripts/media/film13-scene01.mjs            → .local/media/film-13/scene-01/{scene-01.mp4, scene-01.vtt, poster.jpg, frames/, QC.json}
+ *   node scripts/media/film13-scene01-qc.mjs --measure → the QC record (docs/media/film-13/SCENE_01_QC.md)
  * The output stays outside git (the founder reviews it first; V18-FILM-07). Needs: node scripts/build.mjs, ffmpeg.
  */
 import { spawn, spawnSync } from 'node:child_process'; import fs from 'node:fs'; import net from 'node:net'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
@@ -55,7 +56,8 @@ const video = await page.video().path(); await ctx.close(); await browser.close(
 const mp4 = path.join(out, 'scene-01.mp4');
 const ff = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-ss', lead.toFixed(3), '-i', video, '-t', String(END), '-vf', 'fps=30,format=yuv420p', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '18', '-movflags', '+faststart', '-an', mp4], { encoding: 'utf8' });
 spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-ss', String(PLAN[3] + 3.5), '-i', mp4, '-frames:v', '1', '-q:v', '3', path.join(out, 'poster.jpg')]);
-fs.writeFileSync(path.join(out, 'scene-01.vtt'), 'WEBVTT\n\n00:00.000 --> 00:05.000\nOne label.\n\n00:05.000 --> 00:10.000\nOne record. Twenty-nine of thirty-two tests have their evidence.\n\n00:10.000 --> 00:17.000\nTwenty-seven pass. Three are pending. Two fail.\n\n00:17.000 --> 00:23.000\nSo the answer is no.\n\n00:23.000 --> 00:27.000\nEmpathia. Proof, before acceptance.\n');
+// captions: the committed file, timed to the recorded voice and checked by scripts/media/film13-scene01-qc.mjs (one source, never retyped here)
+fs.copyFileSync(path.join(repo, 'docs/media/film-13/scene-01.vtt'), path.join(out, 'scene-01.vtt'));
 const probe = spawnSync('ffprobe', ['-v', 'error', '-show_entries', 'stream=codec_name,pix_fmt,r_frame_rate,width,height:format=duration,size', '-of', 'json', mp4], { encoding: 'utf8' });
 const info = probe.status === 0 ? JSON.parse(probe.stdout) : null; const v = info?.streams?.[0];
 const shots = marks.map((m) => ({ shot: m.shot, starts: +(m.at - lead).toFixed(2) })); const plan = PLAN;

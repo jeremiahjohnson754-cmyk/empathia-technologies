@@ -1,6 +1,6 @@
 # Film 13 — ONE ROOM. ONE TRUTH. · Continuity-validation scene 01, "Held"
 
-Status: **PICTURE RECORDED · NARRATION COMPOSED (Brian voice, 9 November) · NOT LISTENED TO · NOT REVIEWED**. The narrated master and its line timings are in `docs/surpass/MEDIA_MASTER_MANIFEST.md`. This file is the production package for one
+Status: **PICTURE RECORDED · NARRATION COMPOSED (Brian voice, 9 November) · MACHINE QC RUN 10 November: QC_FAILED on one check (the refusal sentence is too small to read on a phone) · NOT LISTENED TO BY A PERSON · NOT REVIEWED**. The measured record is `SCENE_01_QC.md`. The narrated master and its line timings are in `docs/surpass/MEDIA_MASTER_MANIFEST.md`. This file is the production package for one
 27-second scene, made by `node scripts/media/film13-scene01.mjs` (output in `.local/media/film-13/scene-01/`, outside git until reviewed). It is not a film, and Film 13 is not made. Films 01 to 12 and the SIGNAL canon are untouched (V18-FILM-01, -06).
 
 ## Why this scene
@@ -50,24 +50,9 @@ Narration total: 33 words in 27 seconds, about 73 words a minute. The first cut 
 
 ## Captions (WebVTT, to ship beside the file)
 
-```
-WEBVTT
-
-00:00.000 --> 00:05.000
-One label.
-
-00:05.000 --> 00:10.000
-One record. Twenty-nine of thirty-two tests have their evidence.
-
-00:10.000 --> 00:17.000
-Twenty-seven pass. Three are pending. Two fail.
-
-00:17.000 --> 00:23.000
-So the answer is no.
-
-00:23.000 --> 00:27.000
-Empathia. Proof, before acceptance.
-```
+`docs/media/film-13/scene-01.vtt`, six cues timed to the recorded voice (each appears a tenth of a second before its first word and
+stays until the line has been said). The first cut of the captions was timed to the shots, not the voice, and showed "So the answer is
+no." two and a half seconds before it was spoken; the QC run of 10 November caught that and the file was re-timed.
 
 ## Continuity check (run on the finished file, frame by frame at each cut)
 

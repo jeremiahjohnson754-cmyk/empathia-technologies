@@ -75,6 +75,7 @@ suite('unit: demo estates (one model, University 38 classrooms / 4 dormitories /
 suite('unit: Space Optimizer engine (nine dimensions, options A/B/C, stated rules, every world)', 'unit', node, ['--test', 'tests/unit/demo-optimizer.test.mjs'], tap);
 suite('unit: SIGNAL canon (hash manifest, 133 chapters / 1,610 panels / 387 decisions, engine rules, every chapter readable)', 'unit', node, ['--test', 'tests/unit/signal-canon.test.mjs'], tap);
 suite('unit: generated documents are current (estate manifests, product census, workflow matrix)', 'unit', node, ['--test', 'tests/unit/docs-generated.test.mjs'], tap);
+suite('unit: video QA (narration words, sync, captions, picture; the Film 13 scene record is what its measurements say)', 'unit', node, ['--test', 'tests/unit/media-qc.test.mjs'], tap);
 suite('unit: role start pages and keyboard shortcuts (15 roles against the real policy and records; every link opens for its role)', 'unit', node, ['--test', 'tests/unit/demo-rolehome.test.mjs'], tap);
 suite('unit: offline worker and its build step (atomic install, shells kept across builds, network-first with fallback, ranged answers, packs)', 'unit', node, ['--test', 'tests/unit/demo-offline.test.mjs'], tap);
 suite('unit: game day state machine (phases, faults on estate records, holds, independent verification, public view)', 'unit', node, ['--test', 'tests/unit/demo-gameday.test.mjs'], tap);

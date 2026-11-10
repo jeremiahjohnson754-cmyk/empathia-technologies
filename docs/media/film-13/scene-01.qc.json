@@ -1,0 +1,507 @@
+{
+ "id": "film-13/scene-01",
+ "title": "Film 13 \"ONE ROOM. ONE TRUTH.\" — continuity scene 01, \"Held\"",
+ "measured_on": "2026-11-10",
+ "master": {
+  "where": "https://assets.vidiq.com/compositions/e7ec6a97-bd7e-420a-ac60-5e9928295665/if3g33oya2ngvc8exbgisprb.mp4",
+  "duration": 27.093,
+  "width": 1920,
+  "height": 1080,
+  "streams": 2,
+  "sound_extracted": "mono MP3, 192 kbit/s, 27.093 s, taken from the master by the composing service (10 November)"
+ },
+ "plan": {
+  "seconds": 27,
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "longest_hold": 5,
+  "explained_dark": [
+   {
+    "from": 14.83,
+    "to": 15.4,
+    "why": "the product's own role-change card (\"Service Manager\"), shown while the viewing role changes; seen on the frames"
+   }
+  ],
+  "text": [
+   {
+    "what": "the 27 / 3 / 2 totals",
+    "css_px": 26
+   },
+   {
+    "what": "the refusal sentence",
+    "css_px": 13.5
+   }
+  ],
+  "watched_at": [
+   {
+    "name": "a desktop page (1280 px player)",
+    "width": 1280,
+    "floor_px": 9
+   },
+   {
+    "name": "a phone held sideways (844 px)",
+    "width": 844,
+    "floor_px": 9
+   }
+  ]
+ },
+ "shots": [
+  {
+   "n": 1,
+   "from": 0,
+   "how": "start of file"
+  },
+  {
+   "n": 2,
+   "from": 4.97,
+   "how": "picture settles on the passport (measured)"
+  },
+  {
+   "n": 3,
+   "from": 9.67,
+   "how": "hard cut to the dossier (measured)"
+  },
+  {
+   "n": 4,
+   "from": 17,
+   "how": "script mark; the pointer moves to the acceptance button"
+  },
+  {
+   "n": 5,
+   "from": 23,
+   "how": "script mark; the hold"
+  }
+ ],
+ "lines": [
+  {
+   "n": 1,
+   "shot": 1,
+   "text": "One label.",
+   "planned": 1.2,
+   "offset": 0.1
+  },
+  {
+   "n": 2,
+   "shot": 2,
+   "text": "One record. Twenty-nine of thirty-two tests have their evidence.",
+   "planned": 5.3,
+   "offset": 0.08
+  },
+  {
+   "n": 3,
+   "shot": 3,
+   "text": "Twenty-seven pass. Three are pending. Two fail.",
+   "planned": 10.9,
+   "offset": 0.22
+  },
+  {
+   "n": 4,
+   "shot": 4,
+   "text": "So the answer is no.",
+   "planned": 19.2,
+   "offset": 0.22
+  },
+  {
+   "n": 5,
+   "shot": 5,
+   "text": "Empathia. Proof, before acceptance.",
+   "planned": 23.5,
+   "offset": 0.14
+  }
+ ],
+ "heard": {
+  "by": "speech-to-text (Scribe v1) through the founder's ElevenLabs connector, 10 November 2026; six transcriptions, 223.8 credits",
+  "lines": [
+   {
+    "words": [
+     {
+      "text": "One",
+      "start": 0.1,
+      "end": 0.22
+     },
+     {
+      "text": "label",
+      "start": 0.3,
+      "end": 0.62
+     }
+    ]
+   },
+   {
+    "words": [
+     {
+      "text": "One",
+      "start": 0.08,
+      "end": 0.2
+     },
+     {
+      "text": "record.",
+      "start": 0.3,
+      "end": 0.64
+     },
+     {
+      "text": "29",
+      "start": 1.42,
+      "end": 1.9
+     },
+     {
+      "text": "of",
+      "start": 1.94,
+      "end": 2.08
+     },
+     {
+      "text": "32",
+      "start": 2.24,
+      "end": 2.6
+     },
+     {
+      "text": "tests",
+      "start": 2.68,
+      "end": 3.02
+     },
+     {
+      "text": "have",
+      "start": 3.24,
+      "end": 3.38
+     },
+     {
+      "text": "their",
+      "start": 3.4,
+      "end": 3.52
+     },
+     {
+      "text": "evidence",
+      "start": 3.6,
+      "end": 4.019
+     }
+    ]
+   },
+   {
+    "words": [
+     {
+      "text": "27",
+      "start": 0.22,
+      "end": 0.68
+     },
+     {
+      "text": "pass,",
+      "start": 0.82,
+      "end": 1.22
+     },
+     {
+      "text": "three",
+      "start": 1.84,
+      "end": 2.06
+     },
+     {
+      "text": "are",
+      "start": 2.1,
+      "end": 2.24
+     },
+     {
+      "text": "pending,",
+      "start": 2.28,
+      "end": 2.68
+     },
+     {
+      "text": "two",
+      "start": 3.16,
+      "end": 3.3
+     },
+     {
+      "text": "fail",
+      "start": 3.44,
+      "end": 3.72
+     }
+    ]
+   },
+   {
+    "words": [
+     {
+      "text": "So",
+      "start": 0.22,
+      "end": 0.32
+     },
+     {
+      "text": "the",
+      "start": 0.36,
+      "end": 0.44
+     },
+     {
+      "text": "answer",
+      "start": 0.52,
+      "end": 0.76
+     },
+     {
+      "text": "is",
+      "start": 0.82,
+      "end": 0.98
+     },
+     {
+      "text": "no",
+      "start": 1.06,
+      "end": 1.28
+     }
+    ]
+   },
+   {
+    "words": [
+     {
+      "text": "Empathia:",
+      "start": 0.14,
+      "end": 0.74
+     },
+     {
+      "text": "proof",
+      "start": 1.2,
+      "end": 1.56
+     },
+     {
+      "text": "before",
+      "start": 1.9,
+      "end": 2.18
+     },
+     {
+      "text": "acceptance",
+      "start": 2.22,
+      "end": 2.74
+     }
+    ]
+   }
+  ],
+  "master": {
+   "words": [
+    {
+     "text": "One",
+     "start": 1.38,
+     "end": 1.52
+    },
+    {
+     "text": "label.",
+     "start": 1.58,
+     "end": 1.92
+    },
+    {
+     "text": "One",
+     "start": 5.5,
+     "end": 5.6
+    },
+    {
+     "text": "record.",
+     "start": 5.68,
+     "end": 6.02
+    },
+    {
+     "text": "Twenty-nine",
+     "start": 6.64,
+     "end": 7.28
+    },
+    {
+     "text": "of",
+     "start": 7.34,
+     "end": 7.46
+    },
+    {
+     "text": "thirty-two",
+     "start": 7.5,
+     "end": 7.9
+    },
+    {
+     "text": "tests",
+     "start": 8.06,
+     "end": 8.4
+    },
+    {
+     "text": "have",
+     "start": 8.62,
+     "end": 8.76
+    },
+    {
+     "text": "their",
+     "start": 8.8,
+     "end": 8.92
+    },
+    {
+     "text": "evidence.",
+     "start": 8.98,
+     "end": 9.4
+    },
+    {
+     "text": "Twenty-seven",
+     "start": 11.1,
+     "end": 11.66
+    },
+    {
+     "text": "pass,",
+     "start": 11.8,
+     "end": 12.22
+    },
+    {
+     "text": "three",
+     "start": 12.84,
+     "end": 13.04
+    },
+    {
+     "text": "are",
+     "start": 13.08,
+     "end": 13.22
+    },
+    {
+     "text": "pending,",
+     "start": 13.28,
+     "end": 13.66
+    },
+    {
+     "text": "two",
+     "start": 14.16,
+     "end": 14.28
+    },
+    {
+     "text": "fail.",
+     "start": 14.42,
+     "end": 14.7
+    },
+    {
+     "text": "So",
+     "start": 19.5,
+     "end": 19.62
+    },
+    {
+     "text": "the",
+     "start": 19.66,
+     "end": 19.72
+    },
+    {
+     "text": "answer",
+     "start": 19.8,
+     "end": 20.04
+    },
+    {
+     "text": "is",
+     "start": 20.1,
+     "end": 20.28
+    },
+    {
+     "text": "no.",
+     "start": 20.34,
+     "end": 20.62
+    },
+    {
+     "text": "Empathia,",
+     "start": 23.72,
+     "end": 24.34
+    },
+    {
+     "text": "proof",
+     "start": 24.78,
+     "end": 25.14
+    },
+    {
+     "text": "before",
+     "start": 25.48,
+     "end": 25.76
+    },
+    {
+     "text": "acceptance",
+     "start": 25.8,
+     "end": 26.32
+    }
+   ]
+  }
+ },
+ "picture": {
+  "codec": "h264",
+  "pixel_format": "yuv420p",
+  "frame_rate": "30/1",
+  "width": 1920,
+  "height": 1080,
+  "frames": 809,
+  "duration": 26.967,
+  "bytes": 1855085,
+  "audio_streams": 0,
+  "dark_spans": [
+   {
+    "from": 14.83,
+    "to": 15.4
+   }
+  ],
+  "still_spans": [
+   {
+    "from": 3.23,
+    "seconds": 1.73
+   },
+   {
+    "from": 4.97,
+    "seconds": 3.33
+   },
+   {
+    "from": 9.67,
+    "seconds": 3.77
+   },
+   {
+    "from": 18.6,
+    "seconds": 4.3
+   },
+   {
+    "from": 25.13,
+    "seconds": null
+   }
+  ],
+  "hard_cuts": [
+   9.67
+  ]
+ },
+ "not_run": [
+  {
+   "check": "Loudness (integrated level and true peak)",
+   "why": "no tool reachable from this workspace reports a measured level. A copy levelled to −16 LUFS was made by the composing service, but it returns no figure for the original"
+  },
+  {
+   "check": "Pronunciation and tone, above all the name \"Empathia\"",
+   "why": "the transcription wrote \"Empathia\" from both the voice file and the joined file, so the word is intelligible; whether it is said the way the founder says it needs ears"
+  },
+  {
+   "check": "Picture of the joined file (cut points, re-encoding, sync by eye)",
+   "why": "the joined file cannot be brought into this workspace; every picture figure here is from the silent recording it was made from"
+  },
+  {
+   "check": "Vertical (9:16) and square versions",
+   "why": "not made. The founder's blueprint requires native vertical compositions, not a crop of this frame"
+  },
+  {
+   "check": "Playback in a second browser and on a phone",
+   "why": "not done"
+  },
+  {
+   "check": "Review by a person",
+   "why": "the founder has not yet watched or listened"
+  }
+ ],
+ "events": [
+  {
+   "what": "the passport is open",
+   "at": 4.97,
+   "line": 2
+  },
+  {
+   "what": "the totals are on screen",
+   "at": 9.67,
+   "line": 3
+  },
+  {
+   "what": "the refusal is on screen",
+   "at": 18.6,
+   "line": 4
+  }
+ ],
+ "seen": {
+  "by": "Claude, on a contact sheet of the silent recording at one frame a second and ten frames a second across 14.5–15.8 s (10 November). Not a person, and not the joined file",
+  "notes": [
+   "Every frame carries the product's \"Synthetic data\" chip and the viewing role; the role shown changes from Commissioning Engineer to Service Manager at 14.8 s, before the acceptance button is pressed.",
+   "The dark half second at 14.83–15.40 s is the product's role-change card, not a dropped frame.",
+   "From about 18 s to 23 s the pointer dot rests on the \"Record final acceptance\" button and hides part of its label. Move the pointer off the label after the press.",
+   "The totals, the headline and the red \"Held\" chip read clearly at phone size. The refusal sentence, which is the point of the scene, does not: it is the smallest text on the page.",
+   "Line 2 ends 0.27 s before the cut to the dossier. It passes the quarter-second rule with two hundredths to spare; start it 0.2 s earlier in the next take."
+  ]
+ }
+}
