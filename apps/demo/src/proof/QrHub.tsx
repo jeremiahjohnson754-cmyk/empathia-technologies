@@ -8,11 +8,15 @@ import { useEffect, useMemo, useState } from 'react';
 import { PageHero, Chip, Card, EmptyState, Icon } from '@empathia/ui';
 import { DOSSIER_4218, QR_PAYLOAD_4218, parseQr, resolveQr, DEMO_LABELS, DEMO_TENANT, type QrParse, type QrResolution } from '@empathia/proof-registry';
 import type { PageProps } from '../registry.types.js';
-import { ROLES } from '../access/policy.js';
+import { ROLES, canOpen } from '../access/policy.js';
+import { resolve } from '../registry.pages.js';
+import { roomById } from '../campus/canon.js';
 import { qrMatrix, qrPath } from '../lite/qr.js';
 import { useCore, canEntity, recHref, honest, Zone } from '../parity/ui.js';
 import { useDossier } from './store.js';
 
+/** A room's label also opens In this room (#/here), for a role that page admits. */
+const hereOpens = (role: PageProps['role']) => { const r = resolve('#/here'); return !!r && canOpen(role, r); };
 const WHY: Record<Extract<QrParse, { ok: false }>['error'], [string, string]> = {
   empty: ['Type or paste what the label says', 'An identifier such as SIM-AV-0042, or the full text a scanner reads from the label.'],
   too_long: ['That is too long to be a label', 'A label holds an identifier, not a document. Nothing was looked up.'],
@@ -67,7 +71,7 @@ function Outcome({ input, role, can, sees }: { input: string } & Pick<PageProps,
   if (r.state === 'REVOKED' || r.state === 'EXPIRED') return <div data-testid={`scan-${r.state.toLowerCase()}`}><EmptyState title={`Label ${r.label.id} ${r.state === 'REVOKED' ? 'was withdrawn' : 'has expired'}`} icon="lock">{r.label.note} It opens no passport. If the label is on equipment, report it so it can be reprinted.</EmptyState></div>;
   // not one of the hub's labels: an identifier of the estate's own records, when it is typed bare and this role may read that type
   const rec = p.tenant === null ? core.get(p.id) : undefined;
-  if (rec && canEntity(role, rec.type)) return <div data-testid="scan-record"><Card title={rec.name} sub={rec.sub} icon="link" action={<Chip small tone="warn">Synthetic</Chip>}><p className="pf-note">{p.id} is a record of the demonstration estate. It opens in its own passport.</p><div className="pf-actions"><a className="ui-btn ui-btn--primary" href={rec.href || recHref(rec)}>Open {rec.name}</a></div></Card></div>;
+  if (rec && canEntity(role, rec.type)) return <div data-testid="scan-record"><Card title={rec.name} sub={rec.sub} icon="link" action={<Chip small tone="warn">Synthetic</Chip>}><p className="pf-note">{p.id} is a record of the demonstration estate. It opens in its own passport.</p><div className="pf-actions"><a className="ui-btn ui-btn--primary" href={rec.href || recHref(rec)}>Open {rec.name}</a>{roomById(p.id) && hereOpens(role) && <a className="ui-btn" href={`#/here/${p.id}`} data-testid="scan-here">I am in this room</a>}</div></Card></div>;
   return <div data-testid="scan-notfound"><EmptyState title="No label with that identifier" icon="search">Nothing opens for <code>{p.id}</code>. A label that belongs to another organisation reads exactly the same way: whether it exists elsewhere is not disclosed.</EmptyState></div>;
 }
 

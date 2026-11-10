@@ -61,6 +61,7 @@ export function RoomView({ id, hash, sees = () => true, opens = () => true, base
     { href: `${roomHref(o)}?view=3d`, label: 'Open in Lite', icon: 'cube' },
     { href: `#/servicehands/new?room=${o.id}`, label: 'Report a problem', icon: 'plus' },
     { href: `#/request?kind=add-devices&room=${o.id}`, label: 'Ask for a change', icon: 'plus' },
+    { href: `#/here/${o.id}`, label: 'I am in this room', icon: 'place' },
   ].filter((a) => opens(a.href.split('?')[0]!));
   const stages = spine(r, w);
   // the recorded stories Core Replay plays for this room: a unit replaced after acceptance; an incident that came back after its repair

@@ -11,7 +11,7 @@ import { WORK_NEEDS } from '@empathia/service-engine';
 import { Tag, PageHero, StatTile, Donut, Card, Chip, EmptyState } from '@empathia/ui';
 import * as S from '../workspace/store.js';
 import type { WorkspaceProps } from '../hardening/lazy.js';
-import { OpsHead, Refused, NotYours, holds, param, when, personaLabel, shView, type WX } from '../hardening/kit.js';
+import { OpsHead, Refused, NotYours, holds, param, when, personaLabel, shView, hrView, type WX } from '../hardening/kit.js';
 import { useOps } from '../hardening/useOps.js';
 import { opsPath } from '../hardening/path.js';
 import { useConfirm, useUndo } from '../safeguards/Safeguards.js';
@@ -130,7 +130,7 @@ function Intake({ ops, hash }: { ops: Ops; hash: string }) {
 function Job({ ops, inc, confirm, offerUndo }: { ops: Ops; inc: S.Incident; confirm: ReturnType<typeof useConfirm>['ask']; offerUndo: ReturnType<typeof useUndo>['offer'] }) {
   const { w, persona } = ops; const wo = inc.workOrderId ? S.workOrderOf(w, inc.workOrderId) : undefined;
   const me = S.techForPersona(persona); const mine = !!wo && !!me && wo.techId === me; const tech = S.techOf(w, wo?.techId || null);
-  const st = stageOf(w, inc); const X = shView(w); const intake = X.intake[inc.id]; const res = X.resolution[inc.id];
+  const st = stageOf(w, inc); const X = shView(w); const intake = X.intake[inc.id]; const res = X.resolution[inc.id]; const seen = hrView(w).seen[inc.id] || [];
   const notes = wo ? X.notes[wo.id] || [] : []; const fiev = wo ? X.fiEvidence[wo.id] || [] : []; const cancelled = wo ? X.cancelled[wo.id] : undefined;
   const needs = wo ? WORK_NEEDS[wo.workType] || WORK_NEEDS['break_fix']! : null;
   const [pf, setPf] = useState({ access: false, safety: false, heightPermit: false, tools: [] as string[] });
@@ -205,10 +205,11 @@ function Job({ ops, inc, confirm, offerUndo }: { ops: Ops; inc: S.Incident; conf
         <section className="ops-card" aria-labelledby="facts-h"><h2 id="facts-h">The job</h2>
           <dl className="ops-kv"><dt>Incident</dt><dd>{inc.id}{inc.recurrenceOf ? ` · recurrence of ${inc.recurrenceOf}` : ''}</dd><dt>Room</dt><dd>{inc.roomName}</dd><dt>Opened</dt><dd>{when(inc.openedAt)}</dd>
             <dt>Work order</dt><dd>{wo ? `${wo.id} · ${wo.workType.replace(/_/g, ' ')} · ${wo.state}` : 'not yet — the service manager opens one when assigning'}</dd>
-            {intake && <><dt>Reported by</dt><dd>{ENTRY_POINTS[intake.entry]} · {CATEGORIES[intake.category]?.label}{intake.assetId ? ` · ${intake.assetId}` : ''}</dd></>}</dl>
+            {intake && <><dt>Reported by</dt><dd>{ENTRY_POINTS[intake.entry] || intake.entry} · {CATEGORIES[intake.category]?.label}{intake.assetId ? ` · ${intake.assetId}` : ''}</dd></>}</dl>
           <p className="ops-note">{inc.summary}</p>
           {intake?.answers.length ? <ul className="ops-list">{intake.answers.map(([q, a]) => <li key={q} className="ops-note">{q} <b>{a}</b></li>)}</ul> : null}
           {intake?.attachments.length ? <p className="ops-meta">Attachments: {intake.attachments.join(', ')}</p> : null}
+          {seen.length > 0 && <div data-testid="seen-again"><h3>Seen again in the room ({seen.length})</h3><ul className="ops-list">{seen.map((x) => <li key={x.at} className="ops-note"><b>{when(x.at)} · {x.who}</b>{x.note ? ` — ${x.note}` : ''}{x.tried.length ? <span className="ops-meta"> Tried: {x.tried.map(([q, a]) => `${q} (${a})`).join('; ')}</span> : null}</li>)}</ul></div>}
           {['OPEN', 'REOPENED', 'TRIAGED'].includes(inc.state) && <p className="ops-note">Next: {inc.state === 'TRIAGED' ? 'choosing who may do the work' : 'triage'} on the <a href={`#/service?id=${inc.id}`}>Dispatch board</a>.</p>}
           {wo && holds(persona, 'service.assign') && !['RESOLVED', 'CLOSED', 'CANCELLED', 'VERIFYING'].includes(inc.state) && <button type="button" className="ui-btn ui-btn--quiet" data-testid="cancel-wo" onClick={() => confirm({ key: 'servicehands.cancel', title: `Cancel work order ${wo.id}?`, object: wo.id, actionLabel: 'Cancel the work order', reason: { label: 'Why it is cancelled', min: 8 }, consequence: <>{tech ? `${tech.name} stops the work. ` : ''}The incident becomes CANCELLED; its record and history are kept and the cancellation is in the ledger.</>,
             onConfirm: (reason) => { const prev = ops.snapshot(); if (!cancelWorkOrder(structuredClone(prev), persona, inc.id, reason)) { ops.apply((x) => cancelWorkOrder(x, persona, inc.id, reason)); offerUndo({ label: `${wo.id} was cancelled`, undo: () => ops.restore(prev) }); } else ops.apply((x) => cancelWorkOrder(x, persona, inc.id, reason)); } })}>Cancel the work order…</button>}

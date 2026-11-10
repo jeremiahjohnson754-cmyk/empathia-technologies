@@ -19,9 +19,13 @@ export interface Ext {
     cancelled: Record<string, { reason: string; by: string; at: string; prevState: string }>;
   };
   rp?: { applied: Array<{ roomId: string; scenario: string; by: string; at: string }> };
+  /** In this room (#/here): people who saw an already-reported problem again, with what they tried, kept on the job it belongs to */
+  hr?: { seen: Record<string, Array<{ at: string; by: string; who: string; note: string; tried: Array<[string, string]> }>> };
 }
 export type WX = S.Workspace & Ext;
 export const sh = (w: WX) => (w.sh ||= { intake: {}, notes: {}, resolution: {}, fiEvidence: {}, cancelled: {} });
+export const hr = (w: WX) => (w.hr ||= { seen: {} });
+export const hrView = (w: WX) => w.hr || { seen: {} };
 export const dx = (w: WX) => (w.dx ||= { overrides: [], reassigned: [] });
 /** Read-only views for rendering: never initialise state while drawing (a render must not change the workspace). */
 const EMPTY_SH: NonNullable<Ext['sh']> = Object.freeze({ intake: {}, notes: {}, resolution: {}, fiEvidence: {}, cancelled: {} }) as NonNullable<Ext['sh']>;

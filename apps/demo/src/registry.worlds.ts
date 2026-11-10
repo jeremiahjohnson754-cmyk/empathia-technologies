@@ -65,6 +65,20 @@ export const WORLD_PAGES: readonly PageDef[] = [
     search: { keywords: 'request ask new room equipment device add replace event intake need want order', aliases: ['ask for a room', 'new room', 'add a device', 'request', 'new request', 'more equipment'] },
   },
   {
+    // Founder, 10 Nov 2026 (the signature demonstration): walk into a room you do not know, and one page carries you from what is in it
+    // to a written outcome. Who may open it is V2.5.3's Lite table; history, codes and reporting each keep their own V2.5.3 rule.
+    id: 'here', title: 'In this room', purpose: 'Walk into a room you do not know: what is in it, what has happened there, what to try when something is wrong, and a record of how it ended', product: 'lite',
+    path: '/here', alias: ['/here/:room'], authority: { area: 'lite' },
+    sections: [
+      { id: 'here.devices', label: 'Position and asset codes', authority: { field: 'technical' } },
+      { id: 'here.history', label: 'What has happened in the room', authority: { field: 'history' } },
+      { id: 'here.known', label: 'Problems already reported in the room', authority: { action: 'issue.report' } },
+    ],
+    actions: [{ id: 'here.report', label: 'Report the problem', authority: { action: 'issue.report' } }],
+    load: () => import('./here/HerePage.js'),
+    search: { keywords: 'in this room walk in unfamiliar room equipment what is here help something not working problem fix guide troubleshoot report door label', aliases: ['in this room', 'room help', 'help in a room', 'something is not working', 'i am in a room', 'walk in'] },
+  },
+  {
     id: 'optimizer', title: 'Space Optimizer', purpose: 'Three ways to equip a room, scored on nine dimensions by a stated planning model', product: 'pro',
     path: '/optimizer/:world', alias: ['/optimizer/:world/:room'], authority: OPEN,
     load: () => import('./optimizer/OptimizerPage.js'),
