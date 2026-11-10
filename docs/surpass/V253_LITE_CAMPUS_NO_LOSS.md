@@ -34,7 +34,7 @@ zoom, wayfinding, layers and overlays, camera view, microphone pickup, loudspeak
 | `agentLiteZone` | Field agent checks inside the room page | **NOT FOUND** in Lite | Field Intelligence has its own pages; the in-room panel is not there |
 | `actLiteEdit`, in-room palette (`lite-pal`) | Placing and moving things in the room from a palette | **NOT FOUND** | This is the root of Showroom Builder |
 | `actLitePropose`, `actLiteDrift`, `actLiteCheck` | Saving a proposal, marking drift, ticking checks on a room | PRESENT IN PART (Proposed and Current states are computed) | A visitor cannot yet save their own proposal or mark drift |
-| `v25LiteStudio`, `v25LiteCreate`, `v25LiteAdd`, `v25LiteMove`, `v25LiteCorrect`, `v25LiteGeometry`, `v25LiteSvg` | Lite Studio: a conceptual model with its uncertainty, editable | **NOT FOUND** as a studio | Build a Room covers creation from a template, not free geometry |
+| `v25LiteStudio`, `v25LiteCreate`, `v25LiteAdd`, `v25LiteMove`, `v25LiteCorrect`, `v25LiteGeometry`, `v25LiteSvg` | Lite Studio: a conceptual model with its uncertainty, editable | PRESENT IN PART: `#/studio` "Design a Space" (a concept from a template or a real room, its plan and objects, judged by the planning rules, saved in this browser) | Objects can be moved; there is no drag on the plan, no undo or redo, and it has not been compared function by function with the V2.5.3 studio |
 | `v25LiteVariant` | A variant of a model, with a required reason | **NOT FOUND** | |
 | `v25LitePredict` | Predicted coverage from placements | PRESENT IN PART | The Space Optimizer and the Lite overlays compute coverage; not from a visitor's own placements |
 | `v25LiteReconcile` | Reconciling model against field record, decision with a reason | **NOT FOUND** | |
@@ -43,7 +43,6 @@ zoom, wayfinding, layers and overlays, camera view, microphone pickup, loudspeak
 
 ## What this means for the task
 
-Lite's browsing, the 3D room, the spaces, wayfinding, visit, QR, guides and the modes came across on 4 November. What did **not**
-come across is Lite as a place to *make* things: the studio, the in-room palette, variants, reconciliation, and the hand-offs with
-Field Intelligence. Those are exactly what Showroom Builder and "surpass V2.5.3" need, so they are built first, on the shared
+Lite's browsing, the 3D room, the spaces, wayfinding, visit, QR, guides and the modes came across on 4 November. What came across only in part is Lite as a place to *make* things: a studio exists (`#/studio`) but without drag, undo, variants
+or reconciliation, and the in-room palette and the hand-offs with Field Intelligence are absent. Those are exactly what Showroom Builder and "surpass V2.5.3" need, so they are built first, on the shared
 estate model so that all four worlds get them.
