@@ -16,7 +16,9 @@ await suite('demo-learn', 4489, async ({ ok, open, goto, over, text, smallTarget
     // 2026-11-09: eleven room cases, not nine. A case is computed for every room whose record carries an issue (learn/model.ts); the
     // founder-approved rooms plan (docs/recovery/ROOMS_PLAN.md rows 33 and 37, campus/design.ts OPEN_ISSUE) gave the Large Auditorium
     // (R-HZN-1-500) and the Major Incident War Room (R-FRG-2-300) an open issue each, so Learn now has a case for both. The count stays exact.
-    ok(`LN-${tag}-02`, 'the home has the six ratings, the competencies, learn from a room (eleven cases) and the chain', (await page.locator('[data-testid=ln-ratings] .kit-meter').count()) === 6 && (await page.locator('[data-testid=ln-competencies] .kit-meter').count()) === 9 && (await page.locator('[data-testid=learn-rooms] [data-testid^=case-]').count()) === 11 && (await page.locator('.ln-chain li').count()) === 8 && /of\s*11/.test(await page.locator('[data-testid=learn-tiles]').innerText()));
+    // 2026-11-10: nineteen, not eleven. The 90-room estate (campus/design.ts HELD and OPEN_ISSUE for rooms 46–90) gave eight of the new rooms
+    // an issue, and a case is computed for every room whose record carries one. The count stays exact.
+    ok(`LN-${tag}-02`, 'the home has the six ratings, the competencies, learn from a room (nineteen cases) and the chain', (await page.locator('[data-testid=ln-ratings] .kit-meter').count()) === 6 && (await page.locator('[data-testid=ln-competencies] .kit-meter').count()) === 9 && (await page.locator('[data-testid=learn-rooms] [data-testid^=case-]').count()) === 19 && (await page.locator('.ln-chain li').count()) === 8 && /of\s*19/.test(await page.locator('[data-testid=learn-tiles]').innerText()));
     ok(`LN-${tag}-03`, 'no sideways scroll', (await over(page)) <= 0, await over(page));
     if (tag === 'phone') { const s = await smallTargets(page); ok(`LN-${tag}-04`, 'controls are at least 44 px tall on a phone', !s.length, s.join(' | ')); }
     if (tag === 'desktop') {
@@ -70,7 +72,7 @@ await suite('demo-learn', 4489, async ({ ok, open, goto, over, text, smallTarget
       // case files
       await goto(page, '#/learn/cases', 'service'); await page.waitForSelector('[data-testid=learn-cases]');
       // 2026-11-09: eleven room cases (see LN-02: the rooms plan added an open issue to the auditorium and the war room)
-      ok('LN-25', 'Case Files: eleven room cases, six generalized cases, SIGNAL case files by season', (await page.locator('[data-testid^=case-]').count()) === 11 && /Find the echo/.test(await text(page)) && (await page.locator('[data-testid=signal-casefiles] details').count()) === 12);
+      ok('LN-25', 'Case Files: nineteen room cases (eleven until 10 Nov 2026), six generalized cases, SIGNAL case files by season', (await page.locator('[data-testid^=case-]').count()) === 19 && /Find the echo/.test(await text(page)) && (await page.locator('[data-testid=signal-casefiles] details').count()) === 12);
       await goto(page, '#/learn/cases/TC-R-BCN-3-225', 'service'); await page.waitForSelector('[data-testid=casefile-sources]');
       ok('LN-26', 'a case file shows the seven sources from Core and hides the cause until asked', (await page.locator('.ln-src article').count()) === 7 && !/places the cause at/.test(await text(page)));
       await page.click('[data-testid=reveal]');
