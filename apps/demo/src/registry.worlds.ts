@@ -41,6 +41,11 @@ export const WORLD_PAGES: readonly PageDef[] = [
     search: { keywords: 'signal story graphic novel maya ray seasons chapters episodes decisions quests sanctuary load-in workplace on air campus drawing set estate topping out breach take mission room principal', aliases: ['signal', 'story'] },
   },
   {
+    id: 'play', title: 'SIGNAL played', purpose: 'A SIGNAL chapter performed as scenes: camera, timed lines, choices inside the frame and things to find', product: 'learn',
+    path: '/play/:chapter', authority: OPEN,
+    load: () => import('./signal/PlayPage.js'),
+  },
+  {
     id: 'gameday', title: 'Game day', purpose: 'The stadium event clock: move through the day, inject a fault, work it and see what guests are told', product: 'pro',
     path: '/gameday', authority: OPEN,
     load: () => import('./gameday/GameDayPage.js'),

@@ -14,20 +14,20 @@ import { BANDS, answerTalk, choose, complete, emphasis, emptyChapter, find, load
 
 type Flags = Record<string, { type: string; title: string; detail?: string }>;
 let ixCache: Promise<StoryIndex> | null = null; let flagCache: Promise<Flags> | null = null; let defsReady: Promise<void> | null = null;
-const getJson = <T,>(url: string): Promise<T> => fetch(url).then((r) => { if (!r.ok) throw new Error(`${url} ${r.status}`); return r.json() as Promise<T>; });
-const loadIndex = () => (ixCache ||= getJson<StoryIndex>('signal/index.json').catch((e) => { ixCache = null; throw e; }));
+export const getJson = <T,>(url: string): Promise<T> => fetch(url).then((r) => { if (!r.ok) throw new Error(`${url} ${r.status}`); return r.json() as Promise<T>; });
+export const loadIndex = () => (ixCache ||= getJson<StoryIndex>('signal/index.json').catch((e) => { ixCache = null; throw e; }));
 const loadFlags = () => (flagCache ||= getJson<Flags>('signal/flags.json').catch(() => ({} as Flags)));
 /** The shared sprite sheet (figures, props, backgrounds) is first-party art shipped with the build; it is put in the page once so panels can refer to it. */
-const loadDefs = () => (defsReady ||= fetch('signal/defs.svg').then((r) => r.text()).then((svg) => { if (document.getElementById('sg-defs')) return; const d = document.createElement('div'); d.id = 'sg-defs'; d.className = 'sg-defs'; d.setAttribute('aria-hidden', 'true'); d.innerHTML = svg; document.body.appendChild(d); }).catch(() => { defsReady = null; }));
-function useLoaded<T>(get: () => Promise<T>, key: string): { data: T | null; error: string | null } {
+export const loadDefs = () => (defsReady ||= fetch('signal/defs.svg').then((r) => r.text()).then((svg) => { if (document.getElementById('sg-defs')) return; const d = document.createElement('div'); d.id = 'sg-defs'; d.className = 'sg-defs'; d.setAttribute('aria-hidden', 'true'); d.innerHTML = svg; document.body.appendChild(d); }).catch(() => { defsReady = null; }));
+export function useLoaded<T>(get: () => Promise<T>, key: string): { data: T | null; error: string | null } {
   const [st, set] = useState<{ data: T | null; error: string | null }>({ data: null, error: null });
   useEffect(() => { let live = true; set({ data: null, error: null }); get().then((d) => live && set({ data: d, error: null }), (e: Error) => live && set({ data: null, error: e.message })); return () => { live = false; }; }, [key]);   // eslint-disable-line react-hooks/exhaustive-deps
   return st;
 }
 const Em = ({ text }: { text: string }) => <>{emphasis(text).map((p, i) => (p.b ? <b key={i}>{p.t}</b> : p.i ? <i key={i}>{p.t}</i> : <span key={i}>{p.t}</span>))}</>;
 const Paras = ({ text }: { text: string }) => <>{text.split(/\n{2,}/).map((p, i) => <p key={i}><Em text={p} /></p>)}</>;
-const Face = ({ id, pose, expr }: { id: string; pose: string; expr: string }) => <svg className="sg-face" viewBox="36 20 128 128" width="40" height="40" aria-hidden="true"><use href={`#f-${id}-${pose}-${expr}`} width="200" height="320" /></svg>;
-const Draft = () => <span className="ui-tag" data-testid="story-draft">Draft · under review</span>;
+export const Face = ({ id, pose, expr }: { id: string; pose: string; expr: string }) => <svg className="sg-face" viewBox="36 20 128 128" width="40" height="40" aria-hidden="true"><use href={`#f-${id}-${pose}-${expr}`} width="200" height="320" /></svg>;
+export const Draft = () => <span className="ui-tag" data-testid="story-draft">Draft · under review</span>;
 
 export default function StoryPage({ params }: PageProps) {
   const ix = useLoaded(loadIndex, 'ix'); const [progress, setProgress] = useState<Progress>(load);
@@ -114,6 +114,7 @@ function Reader({ ix, id, progress, commit }: { ix: StoryIndex; id: string; prog
         </Block>)}
       <p className="sg-acts">
         {next && finished && <a className="ui-btn ui-btn--primary" href={`#/story/${next.id}`} data-testid="story-next">Next: {next.title}</a>}
+        <a className="ui-btn" href={`#/play/${id}`} data-testid="story-play">Play this chapter as scenes</a>
         <a className="ui-btn" href="#/story">Library</a>
         {(Object.keys(state.choices).length > 0 || state.found.length > 0 || Object.keys(state.talks).length > 0) && <button type="button" className="ui-btn ui-btn--quiet" data-testid="story-replay" onClick={() => { set(emptyChapter()); setSaid('Chapter reset. Your earlier choices in it are forgotten.'); }}>Replay this chapter</button>}
       </p>
@@ -121,9 +122,9 @@ function Reader({ ix, id, progress, commit }: { ix: StoryIndex; id: string; prog
   );
 }
 
-interface ViewProps { it: Item; n: number; svg?: string; cast: Record<string, string>; state: ChapterState; clock: Clock; gated: boolean; onChoose: (d: Extract<Item, { type: 'decision' }>, letter: string, meta: { hints: number; timedOut: boolean }) => Outcome; onTalk: (id: string, o: number) => void; onFind: (id: string) => void }
+export interface ViewProps { it: Item; n: number; svg?: string; cast: Record<string, string>; state: ChapterState; clock: Clock; gated: boolean; onChoose: (d: Extract<Item, { type: 'decision' }>, letter: string, meta: { hints: number; timedOut: boolean }) => Outcome; onTalk: (id: string, o: number) => void; onFind: (id: string) => void }
 const MOUNT_WORD: Record<string, string> = { lesson: 'Lesson', lab: 'Lab', quiz: 'Quiz', drill: 'Drill', incident: 'Live incident', review: 'Season review', boss: 'Boss level', meltdown: 'Meltdown' };
-function ItemView(p: ViewProps): JSX.Element | null {
+export function ItemView(p: ViewProps): JSX.Element | null {
   const { it, cast } = p; const name = (id: string) => cast[id] || id;
   switch (it.type) {
     case 'heading': return <header className="sg-h" data-item="heading"><h2>{it.text}</h2>{it.sub && <p>{it.sub}</p>}</header>;
