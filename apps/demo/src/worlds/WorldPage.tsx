@@ -96,6 +96,7 @@ function WorldView({ world, config, role, asked, panel: firstPanel }: { world: W
 
       <div className="w-acts" role="group" aria-label="More in this world">
         <a className="ui-btn w-btn" href={`#/estate/${world.key}${!ent && config.id !== world.defaultConfig ? `?as=${encodeURIComponent(config.id)}` : ''}`} data-testid="open-estate">Explore the estate</a>
+        {world.key === 'stadium' && <a className="ui-btn w-btn" href={`#/gameday${config.id !== world.defaultConfig ? `?as=${encodeURIComponent(config.id)}` : ''}`} data-testid="open-gameday">Run a game day</a>}
         <button type="button" className="ui-btn w-btn" aria-expanded={panel === 'roles'} aria-controls="w-panel" onClick={() => toggle('roles')} data-testid="advanced-open">All roles and advanced tools</button>
         <button type="button" className="ui-btn w-btn" aria-expanded={panel === 'all'} aria-controls="w-panel" onClick={() => toggle('all')} data-testid="all-features">Show all features</button>
         <button type="button" className="ui-btn w-btn" aria-expanded={panel === 'what'} aria-controls="w-panel" onClick={() => toggle('what')} data-testid="what-can-i-do">What can I do here?</button>

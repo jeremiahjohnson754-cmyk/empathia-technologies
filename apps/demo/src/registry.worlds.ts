@@ -41,6 +41,12 @@ export const WORLD_PAGES: readonly PageDef[] = [
     search: { keywords: 'signal story graphic novel maya ray seasons chapters episodes decisions quests sanctuary load-in workplace on air campus drawing set estate topping out breach take mission room principal', aliases: ['signal', 'story'] },
   },
   {
+    id: 'gameday', title: 'Game day', purpose: 'The stadium event clock: move through the day, inject a fault, work it and see what guests are told', product: 'pro',
+    path: '/gameday', authority: OPEN,
+    load: () => import('./gameday/GameDayPage.js'),
+    search: { keywords: 'game day stadium event clock kick-off gates halftime broadcast fault incident readiness simulation', aliases: ['gameday', 'game day'] },
+  },
+  {
     id: 'optimizer', title: 'Space Optimizer', purpose: 'Three ways to equip a room, scored on nine dimensions by a stated planning model', product: 'pro',
     path: '/optimizer/:world', alias: ['/optimizer/:world/:room'], authority: OPEN,
     load: () => import('./optimizer/OptimizerPage.js'),
