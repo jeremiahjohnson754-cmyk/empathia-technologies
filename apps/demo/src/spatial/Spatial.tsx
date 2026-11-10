@@ -101,10 +101,10 @@ export function FloorPlate({ rooms, onOpen }: { rooms: Array<{ id: string; label
   );
 }
 
-interface RoomViewProps { w: number; l: number; h: number; positions: Position[]; connections: Connection[]; layers: Set<Layer>; selected: string | null; onSelect: (code: string) => void; showLinks: boolean }
+interface RoomViewProps { w: number; l: number; h: number; positions: Position[]; connections: Connection[]; layers: Set<Layer>; selected: string | null; onSelect: (code: string) => void; showLinks: boolean; /** positions a request proposes to add or replace: ringed, and said to be proposed (the request portal) */ marked?: ReadonlySet<string> }
 
 /** Plan: top-down, metres, a 1 m grid. */
-export function PlanView({ w, l, positions, connections, layers, selected, onSelect, showLinks }: RoomViewProps) {
+export function PlanView({ w, l, positions, connections, layers, selected, onSelect, showLinks, marked }: RoomViewProps) {
   const S = 60; const pad = 30; const vis = positions.filter((p) => layers.has(p.layer));
   const at = new Map(positions.map((p) => [p.code, p]));
   return (
@@ -117,8 +117,8 @@ export function PlanView({ w, l, positions, connections, layers, selected, onSel
         const size = C.categories[p.cat]?.size;
         if (p.furniture) return <rect key={p.code} x={(p.x - (size?.[0] || 1) / 2) * S} y={(p.y - (size?.[1] || 0.6) / 2) * S} width={(size?.[0] || 1) * S} height={(size?.[1] || 0.6) * S} className="rv__furn" rx={6} aria-hidden="true" />;
         return (
-          <g key={p.code} transform={`translate(${p.x * S} ${p.y * S})`} className={`rv__dev${selected === p.code ? ' on' : ''}`} role="button" tabIndex={0} aria-pressed={selected === p.code} aria-label={`${p.label}, position ${p.code}, ${p.asset ? `asset ${p.asset}` : 'no asset recorded'}, identity ${p.identity}`} data-testid={`dev-${p.code}`} onClick={() => onSelect(p.code)} onKeyDown={keyAct(() => onSelect(p.code))}>
-            <circle r={13} fill={LAYER_COLOR[p.layer]} /><text y={4} textAnchor="middle" className="rv__glyph">{LAYER_GLYPH[p.layer]}</text>
+          <g key={p.code} transform={`translate(${p.x * S} ${p.y * S})`} className={`rv__dev${selected === p.code ? ' on' : ''}${marked?.has(p.code) ? ' is-marked' : ''}`} role="button" tabIndex={0} aria-pressed={selected === p.code} aria-label={marked ? `${p.label}${marked.has(p.code) ? `, ${p.provenance}` : ''}` : `${p.label}, position ${p.code}, ${p.asset ? `asset ${p.asset}` : 'no asset recorded'}, identity ${p.identity}`} data-testid={`dev-${p.code}`} data-marked={marked?.has(p.code) ? '' : undefined} onClick={() => onSelect(p.code)} onKeyDown={keyAct(() => onSelect(p.code))}>
+            {marked?.has(p.code) && <circle r={19} className="rv__mark" />}<circle r={13} fill={LAYER_COLOR[p.layer]} /><text y={4} textAnchor="middle" className="rv__glyph">{LAYER_GLYPH[p.layer]}</text>
           </g>
         );
       })}
@@ -128,7 +128,7 @@ export function PlanView({ w, l, positions, connections, layers, selected, onSel
 }
 
 /** 3D: an isometric projection of the room (two walls cut away), devices at their mounting height. Four viewing angles. */
-export function IsoView({ w, l, h, positions, layers, selected, onSelect, angle }: RoomViewProps & { angle: number }) {
+export function IsoView({ w, l, h, positions, layers, selected, onSelect, angle, marked }: RoomViewProps & { angle: number }) {
   const S = 34; const cos = Math.cos(Math.PI / 6), sin = Math.sin(Math.PI / 6);
   const rot = (x: number, y: number): [number, number] => { switch (angle % 4) { case 1: return [l - y, x]; case 2: return [w - x, l - y]; case 3: return [y, w - x]; default: return [x, y]; } };
   const W = angle % 2 ? l : w, L = angle % 2 ? w : l;
@@ -147,9 +147,9 @@ export function IsoView({ w, l, h, positions, layers, selected, onSelect, angle 
         if (p.furniture) { const s = C.categories[p.cat]?.size || [1, 0.6]; const hh = p.cat === 'table' ? 0.74 : 0.45; const a = s[0] / 2, b = s[1] / 2; return <polygon key={p.code} points={pts([[x - a, y - b, hh], [x + a, y - b, hh], [x + a, y + b, hh], [x - a, y + b, hh]])} className="iso__furn" aria-hidden="true" />; }
         const [px, py] = P(x, y, p.z); const [fx, fy] = P(x, y, 0);
         return (
-          <g key={p.code} className={`rv__dev${selected === p.code ? ' on' : ''}`} role="button" tabIndex={0} aria-pressed={selected === p.code} aria-label={`${p.label}, position ${p.code}, ${p.z} m high`} onClick={() => onSelect(p.code)} onKeyDown={keyAct(() => onSelect(p.code))}>
+          <g key={p.code} className={`rv__dev${selected === p.code ? ' on' : ''}${marked?.has(p.code) ? ' is-marked' : ''}`} role="button" tabIndex={0} aria-pressed={selected === p.code} aria-label={`${p.label}${marked?.has(p.code) ? `, ${p.provenance}` : marked ? '' : `, position ${p.code}`}, ${p.z} m high`} onClick={() => onSelect(p.code)} onKeyDown={keyAct(() => onSelect(p.code))}>
             {p.z > 0.05 && <line x1={fx} y1={fy} x2={px} y2={py} className="iso__drop" />}
-            <g transform={`translate(${px.toFixed(1)} ${py.toFixed(1)})`}><rect x={-9} y={-9} width={18} height={18} rx={4} fill={LAYER_COLOR[p.layer]} /><text y={4} textAnchor="middle" className="rv__glyph">{LAYER_GLYPH[p.layer]}</text>{(vis.length <= 18 || ['display', 'video'].includes(p.layer)) && <g className="iso__tag" aria-hidden="true"><rect x={12} y={-21} width={8 + Math.min(18, p.label.length) * 6.4} height={16} rx={4} /><text x={16} y={-9}>{p.label.length > 18 ? `${p.label.slice(0, 17)}…` : p.label}</text></g>}</g>
+            <g transform={`translate(${px.toFixed(1)} ${py.toFixed(1)})`}>{marked?.has(p.code) && <rect x={-14} y={-14} width={28} height={28} rx={7} className="rv__mark" />}<rect x={-9} y={-9} width={18} height={18} rx={4} fill={LAYER_COLOR[p.layer]} /><text y={4} textAnchor="middle" className="rv__glyph">{LAYER_GLYPH[p.layer]}</text>{(vis.length <= 18 || ['display', 'video'].includes(p.layer)) && <g className="iso__tag" aria-hidden="true"><rect x={12} y={-21} width={8 + Math.min(18, p.label.length) * 6.4} height={16} rx={4} /><text x={16} y={-9}>{p.label.length > 18 ? `${p.label.slice(0, 17)}…` : p.label}</text></g>}</g>
           </g>
         );
       })}

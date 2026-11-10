@@ -25,7 +25,7 @@ test('RH-01 all fifteen roles have a start page, named as V2.5.3 named each role
 });
 test('RH-02 every role is offered at least three places to jump to, each one action away, with a letter of its own', () => {
   for (const r of ROLES) {
-    const j = start(r).jumps; assert.ok(j.length >= 3, `${r}: ${j.length} jumps (${j.map((x) => x.label).join(', ')})`); assert.ok(j.length <= 6, r);
+    const j = start(r).jumps; assert.ok(j.length >= 3, `${r}: ${j.length} jumps (${j.map((x) => x.label).join(', ')})`); assert.ok(j.length <= 7, r);   // was 6 until 10 Nov: the founder asked for a request shortcut on the start page of every role that may ask, and two roles already had six
     const keys = j.map((x) => x.key); assert.equal(new Set(keys).size, keys.length, `${r}: a letter is used twice`);
     for (const x of j) { assert.match(x.key, /^[a-z]$/, r); assert.ok(!['g', 'h'].includes(x.key), `${r}: ${x.key} is reserved`); assert.ok(x.label && x.sub, r); }
   }

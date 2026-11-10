@@ -12,7 +12,7 @@ import { useConfirm, useUndo } from '../safeguards/Safeguards.js';
 import { load, save, seed, decide, fund, record, withdraw, mayWithdraw, fieldReady, funded, decidable, MEMORY_AUTHORITIES, type DecisionState, type Refusal, type Project } from './store.js';
 
 const TONE: Record<string, 'ok' | 'warn' | 'bad' | 'muted' | 'info'> = { DECISION_PENDING: 'warn', APPROVED: 'ok', FUNDED: 'ok', HELD: 'warn', REJECTED: 'bad' };
-const money = (n: number) => `$${n.toLocaleString('en-US')}`;
+const money = (n: number) => (n > 0 ? `$${n.toLocaleString('en-US')}` : 'not yet estimated');   // a request from the portal has no estimate until an engineer writes one
 
 function useDecisions() {
   const [d, setD] = useState<DecisionState>(load); const cur = useRef(d); const [refusal, setRefusal] = useState<Refusal | null>(null);

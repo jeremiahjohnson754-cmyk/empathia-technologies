@@ -58,6 +58,13 @@ export const WORLD_PAGES: readonly PageDef[] = [
     search: { keywords: 'offline device save install connection no signal download keep packs storage phone field', aliases: ['offline', 'offline use', 'this device'] },
   },
   {
+    id: 'intake.request', title: 'Ask for a room or equipment', purpose: 'A request anyone can finish: a few plain answers, a picture of what is asked for, and where it goes next', product: 'pro',
+    path: '/request', alias: ['/request/:kind', '/requests'],
+    authority: { roles: ['employee', 'exec', 'bpm', 'ops', 'svcmgr', 'syseng', 'designer', 'architect'], why: 'Founder, 10 November 2026: the request portal is for requestors and employees. V2.5.3 admits the Executive, Systems Engineer, Operations Lead, Product Architect, Designer and Business PM to a new intake request; the Employee and the Service Manager are added here' },
+    load: () => import('./intake/RequestPage.js'),
+    search: { keywords: 'request ask new room equipment device add replace event intake need want order', aliases: ['ask for a room', 'new room', 'add a device', 'request', 'new request', 'more equipment'] },
+  },
+  {
     id: 'optimizer', title: 'Space Optimizer', purpose: 'Three ways to equip a room, scored on nine dimensions by a stated planning model', product: 'pro',
     path: '/optimizer/:world', alias: ['/optimizer/:world/:room'], authority: OPEN,
     load: () => import('./optimizer/OptimizerPage.js'),
