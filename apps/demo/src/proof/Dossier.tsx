@@ -9,7 +9,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { PageHero, Chip, Card, StatTile, Segmented, EmptyState, Icon } from '@empathia/ui';
 import { DOSSIER_4218 as D, type Authority, type DossierEvent, type WorkingTest } from '@empathia/proof-registry';
 import type { PageProps, RoleKey } from '../registry.types.js';
-import { ROLES, allows } from '../access/policy.js';
+import { ROLES, allows, roleTitle } from '../access/policy.js';
 import { useViewAs } from '../viewas/context.js';
 import { Crumbs, Zone, honest } from '../parity/ui.js';
 import { useDossier, nowIso } from './store.js';
@@ -18,8 +18,9 @@ import { make, download, type Artifact, type Redaction } from './exports.js';
 type Filter = 'attention' | 'all' | 'FAIL' | 'PENDING' | 'PASS';
 const RESULT_TONE = { PASS: 'ok', PENDING: 'warn', FAIL: 'bad' } as const;
 const RESULT_LABEL = { PASS: 'Pass', PENDING: 'Pending', FAIL: 'Fail' } as const;
-const ACCEPTORS: RoleKey[] = ['svcmgr', 'ops', 'architect', 'qa']; const RECORDERS: RoleKey[] = ['cxeng', 'syseng', 'architect']; const VERIFIERS: RoleKey[] = ['qa', 'svcmgr', 'ops', 'architect'];
+const FIRST: RoleKey[] = ['svcmgr', 'exec']; const SECOND: RoleKey[] = ['ops', 'syseng']; const RECORDERS: RoleKey[] = ['cxeng', 'syseng', 'architect']; const VERIFIERS: RoleKey[] = ['qa', 'svcmgr', 'ops', 'architect'];
 const names = (r: RoleKey[]) => r.map((k) => ROLES[k].label).join(', ');
+const either = (r: RoleKey[]) => r.map((k) => roleTitle(k)).join(' or the ');
 const when = (iso: string) => new Date(iso).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 
 function describe(e: DossierEvent): string {
@@ -28,7 +29,8 @@ function describe(e: DossierEvent): string {
     case 'EVIDENCE': return `${e.by.label} attached evidence ${e.evidence} to ${e.test}`;
     case 'VERIFY': return `${e.by.label} verified ${e.test}`;
     case 'RAISE': return `${e.by.label} raised ${e.id} against ${e.test}`;
-    case 'ACCEPT': return `${e.by.label} recorded final acceptance`;
+    case 'ACCEPT': return `${e.by.label} gave the first approval of the final sign-off`;
+    case 'COUNTERSIGN': return `${e.by.label} gave the second approval: final acceptance recorded`;
   }
 }
 
@@ -40,7 +42,7 @@ export default function Dossier({ role, params, query, can, sees }: PageProps) {
   const [made, setMade] = useState<Artifact[]>([]); const [busy, setBusy] = useState(false);
   const exportRef = useRef<HTMLDivElement>(null); const alertRef = useRef<HTMLDivElement>(null);
   const me = useMemo(() => ({ role, label: ROLES[role].label }), [role]);
-  const may: Authority = { record: can('dossier.record'), verify: can('dossier.verify'), raise: can('dossier.raise'), accept: can('dossier.accept') };
+  const may: Authority = { record: can('dossier.record'), verify: can('dossier.verify'), raise: can('dossier.raise'), accept: can('dossier.accept'), countersign: can('dossier.countersign') };
   useEffect(() => { setRefusal(null); setDone(null); }, [role]);
   useEffect(() => { if (query.get('focus') === 'export') exportRef.current?.scrollIntoView({ block: 'start' }); }, [query]);
   useEffect(() => { if (refusal) alertRef.current?.focus(); }, [refusal]);
@@ -88,13 +90,21 @@ export default function Dossier({ role, params, query, can, sees }: PageProps) {
 
       <section className={`pf-decision${held ? ' pf-decision--held' : ''}`} aria-labelledby="dec-h" data-testid="dossier-decision">
         <h2 id="dec-h">{held ? 'Decision required' : 'Accepted'}</h2>
-        {held ? <p>{D.acceptanceReason}</p> : <p>Recorded by the {w.acceptedBy?.label}{w.acceptedAt ? ` on ${when(w.acceptedAt)}` : ''}. Every test passes with evidence, and every result recorded after the snapshot was independently verified. The record is closed.</p>}
+        {held ? <p>{w.blockers.length ? D.acceptanceReason : w.signoff === 'AWAITING_SECOND' ? 'Commissioning is complete and the first approval is given. Acceptance stays held until the second.' : 'Commissioning is complete. Acceptance stays held until both approvals of the final sign-off are given.'}</p>
+          : <p>First approval by the {w.firstApproval?.by.label}{w.firstApproval ? ` on ${when(w.firstApproval.at)}` : ''}; second by the {w.secondApproval?.by.label}{w.secondApproval ? ` on ${when(w.secondApproval.at)}` : ''}. Every test passes with evidence, and every result recorded after the snapshot was independently verified. The record is closed.</p>}
         {held ? <>
           <h3 className="pf-h">{w.blockers.length} {w.blockers.length === 1 ? 'blocker' : 'blockers'} to acceptance</h3>
           {w.blockers.length ? <ul className="pf-blockers" data-testid="dossier-blockers">{w.blockers.map((b, i) => <li key={`${b.test}-${i}`}><a href={`#t-${b.test}`} onClick={(e) => { e.preventDefault(); setFilter('all'); setTimeout(() => document.getElementById(`t-${b.test}`)?.scrollIntoView({ block: 'center' }), 0); }}><code>{b.test}</code></a> {b.reason}</li>)}</ul> : <p className="pf-note">None. Acceptance can be recorded.</p>}
-          {may.accept ? <p><button type="button" className="ui-btn ui-btn--primary" data-testid="dossier-accept" onClick={() => step({ kind: 'ACCEPT', by: me, at: nowIso() }, 'Final acceptance recorded. The dossier is closed.')}>Record final acceptance</button></p>
-            : <p className="pf-note">Acceptance is recorded by the {names(ACCEPTORS)}.</p>}
         </> : null}
+        <h3 className="pf-h" id="signoff-h">Phase 6 · Final sign-off</h3>
+        <ol className="pf-signoff" aria-labelledby="signoff-h" data-testid="dossier-signoff" data-signoff={w.signoff}>
+          <li data-step="tests" data-state={w.blockers.length ? 'open' : 'done'}><b>Commissioning complete</b><span>{w.blockers.length ? `${w.blockers.length} ${w.blockers.length === 1 ? 'blocker stands' : 'blockers stand'}` : 'Every test passes with evidence, and every new result is verified'}</span></li>
+          <li data-step="first" data-state={w.firstApproval ? 'done' : w.signoff === 'AWAITING_FIRST' ? 'next' : 'open'}><b>First approval</b><span>{w.firstApproval ? `Given by the ${w.firstApproval.by.label} on ${when(w.firstApproval.at)}` : `The ${either(FIRST)}`}</span>
+            {held && !w.firstApproval && may.accept ? <button type="button" className="ui-btn ui-btn--primary" data-testid="dossier-accept" onClick={() => step({ kind: 'ACCEPT', by: me, at: nowIso() }, `First approval recorded by the ${me.label}. The dossier now waits for the ${either(SECOND)}.`)}>Give the first approval</button> : null}</li>
+          <li data-step="second" data-state={w.secondApproval ? 'done' : w.signoff === 'AWAITING_SECOND' ? 'next' : 'open'}><b>Second approval</b><span>{w.secondApproval ? `Given by the ${w.secondApproval.by.label} on ${when(w.secondApproval.at)}` : `The ${either(SECOND)}, after the first`}</span>
+            {held && may.countersign ? <button type="button" className="ui-btn ui-btn--primary" data-testid="dossier-countersign" onClick={() => step({ kind: 'COUNTERSIGN', by: me, at: nowIso() }, 'Second approval recorded. Final acceptance is recorded and the dossier is closed.')}>Give the second approval</button> : null}</li>
+        </ol>
+        {held && !may.accept && !may.countersign ? <p className="pf-note">The {ROLES[role].label} does not approve. The first approval is the {either(FIRST)}’s; the second is the {either(SECOND)}’s.</p> : null}
         {refusal ? <div ref={alertRef} tabIndex={-1} role="alert" className="pf-refusal" data-testid="dossier-refusal"><Icon name="alert" size={18} /><span>{refusal}</span></div> : null}
         {done && !refusal ? <p role="status" className="pf-done" data-testid="dossier-done"><Icon name="check" size={18} /><span>{done}</span></p> : null}
       </section>
@@ -128,8 +138,9 @@ export default function Dossier({ role, params, query, can, sees }: PageProps) {
         <div className="pf-who">
           <p><b>Record a result, attach evidence, raise a deficiency:</b> {names(RECORDERS)}.</p>
           <p><b>Verify a new result:</b> {names(VERIFIERS)}, and never the role that recorded it.</p>
-          <p><b>Record final acceptance:</b> {names(ACCEPTORS)}; only when no blocker stands, and never a role that recorded or verified a result here.</p>
-          <div className="pf-actions" role="group" aria-label="View this dossier as another role">{(['cxeng', 'qa', 'svcmgr', 'exec'] as RoleKey[]).filter((k) => k !== role).map((k) => <button key={k} type="button" className="ui-btn ui-btn--sm" data-viewas={k} onClick={() => va.switchTo(k)}>View as {ROLES[k].label}</button>)}</div>
+          <p><b>Final sign-off, first approval:</b> the {either(FIRST)}; only when no blocker stands.</p>
+          <p><b>Final sign-off, second approval:</b> the {either(SECOND)}; only after the first, from a different role. Neither approval comes from a role that recorded or verified a result here, and a new result withdraws an approval already given.</p>
+          <div className="pf-actions" role="group" aria-label="View this dossier as another role">{(['cxeng', 'qa', 'svcmgr', 'exec', 'ops', 'syseng'] as RoleKey[]).filter((k) => k !== role).map((k) => <button key={k} type="button" className="ui-btn ui-btn--sm" data-viewas={k} onClick={() => va.switchTo(k)}>View as {roleTitle(k)}</button>)}</div>
         </div>
       </Zone>
 

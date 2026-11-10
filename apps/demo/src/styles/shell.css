@@ -293,3 +293,8 @@ body.has-dialog { overflow: hidden; }
 .drawer__start > span:not(.drawer__here) { display: grid; gap: 2px; flex: 1; } .drawer__start > span > span { font-size: var(--fs-xs); color: var(--tx2); }
 .drawer__start[aria-current] { background: var(--accent-bg); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
 .drawer__start .kit-icon { color: var(--accent); }
+
+/* an internal role is said to be one wherever roles are chosen (founder, 10 Nov 2026: the Systems Engineer) */
+.role-internal { display: inline-block; margin-inline-start: 8px; padding: 1px 8px; border: 1px solid var(--line2); border-radius: var(--r-pill, 999px); font-size: var(--fs-xs); font-weight: 600; color: var(--tx2); vertical-align: middle; white-space: nowrap; }
+.find__fix { margin: 6px 12px 2px; font-size: var(--fs-xs); color: var(--tx2); }
+.find__opt[data-kind=answer] { border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); background: color-mix(in srgb, var(--accent) 8%, transparent); }

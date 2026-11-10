@@ -16,7 +16,8 @@ const head = (w: Working, redaction: Redaction, role: string, at: string) => ({
 });
 export function toJson(w: Working, redaction: Redaction, role: string, at: string): string {
   const eng = redaction === 'engineering';
-  return JSON.stringify({ ...head(w, redaction, role, at), acceptance: w.acceptance, totals: w.totals,
+  return JSON.stringify({ ...head(w, redaction, role, at), acceptance: w.acceptance,
+    final_signoff: { state: w.signoff, first_approval: w.firstApproval ? { by: w.firstApproval.by.label, at: w.firstApproval.at } : null, second_approval: w.secondApproval ? { by: w.secondApproval.by.label, at: w.secondApproval.at } : null }, totals: w.totals,
     blockers: w.blockers.map((b) => `${b.test} ${b.reason}`),
     deficiencies: w.deficiencies.map((x) => ({ id: x.id, severity: x.severity, test: x.test, statement: x.statement, owner: x.owner, action: x.action, state: x.state })),
     tests: w.tests.map((t) => ({ id: t.id, discipline: t.discipline, name: t.name, result: t.result, ...(eng ? { evidence: t.evidence, recorded_by: t.recordedBy?.label ?? null, verified_by: t.verifiedBy?.label ?? null } : { has_evidence: !!t.evidence }), changed_after_snapshot: t.changed })),

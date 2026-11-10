@@ -68,4 +68,11 @@ for (const [device, choice, want] of [['dark', 'light', '#a51e24'], ['light', 'd
   ok(`V-theme-${device}-${choice || 'system'}`, `role colour takes its ${want === '#a51e24' ? 'light' : 'dark'} step on a ${device} device with “${choice || 'System'}”; a role switch never changes the theme or the teal accent`, v.c === want && w.theme === v.theme && w.accent === v.accent, JSON.stringify({ v, w }));
   await t.close();
 }
+// Internal role (10 Nov, founder: "systems engineer is a internal role make sure you indicate that"). The picker and the landing shelf mark
+// the Systems Engineer, and only the Systems Engineer, as an internal role; the label is text, not colour alone.
+{ const t = await open('#/investor', { role: 'architect' }); const p = t.page;
+  await p.click('[data-testid=viewas-open]'); await p.waitForSelector('[data-testid=viewas-sheet]');
+  const m = await p.evaluate(() => { const s = document.querySelector('[data-testid=viewas-sheet]'); const tags = [...s.querySelectorAll('[data-testid=role-internal]')]; const el = tags[0]; const cs = el ? getComputedStyle(el) : null; return { on: tags.map((x) => x.closest('[data-role-key]').dataset.roleKey), text: el?.textContent, size: cs ? parseFloat(cs.fontSize) : 0, name: s.querySelector('[data-role-key=syseng]').textContent }; });
+  ok('V-int-01', 'View as marks the Systems Engineer, and only it, “Internal role”, in words a screen reader reads with the name', m.on.join() === 'syseng' && m.text === 'Internal role' && m.size >= 11 && /Systems Engineer\s*Internal role/.test(m.name), JSON.stringify(m));
+  await p.keyboard.press('Escape'); await t.close(); }
 await done();

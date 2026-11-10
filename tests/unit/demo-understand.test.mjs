@@ -102,3 +102,8 @@ test('UN-12 every row opens a room that exists, and no reading invents a room, a
   for (const q of ['rooms', 'rooms held', 'largest room', 'how many cameras', 'rooms with a display', 'accepted rooms', 'rooms at highfield', 'labs', 'rooms for 12 people']) { const r = U.understand(q, { limit: 90 }); assert.ok(r.total <= 90 || r.subject === 'devices'); for (const row of r.rows) { const o = K.roomById(row.id); assert.ok(o, row.id); assert.equal(row.href, K.roomHref(o)); assert.equal(row.label, K.fullName(o)); seen.add(row.id); } }
   assert.ok(seen.size > 60, 'between them these readings reach most of the estate'); assert.equal(recs.length, 90);
 });
+
+test('UN-13 a question leads the search bar with its answer; a name leads with the thing named', () => {
+  for (const q of ['rooms held', 'how many cameras', 'boardrooms over 12 seats at atlas with a camera', 'rooms with a projector', 'largest room', 'rooms on floor 4', 'accepted boardrooms', 'rooms for 40 people']) assert.equal(U.understand(q).question, true, q);
+  for (const q of ['atlas 4.218', 'boardroom', 'atlas', '4.218', 'Search Party', 'mic', 'studios', 'eastgate', 'xyzzy']) assert.equal(U.understand(q).question, false, q);
+});

@@ -21,6 +21,9 @@ export interface Reading {
   ask: 'list' | 'count' | 'largest' | 'smallest'; subject: 'rooms' | 'devices';
   filters: Filter[]; said: string; lead: string; rows: Row[]; total: number; outOf: number;
   hits: Hit[]; loose: boolean; next: Suggest[]; withheld: string | null;
+  /** true when the words ask something (a count, a superlative, a state, a size, equipment, two or more conditions) and are not just a
+   *  name: "rooms held" and "how many cameras" are questions; "atlas 4.218" and "boardroom" are names, and a search bar leads with the thing named */
+  question: boolean;
 }
 
 const STOP = new Set(('a an the of in at on for to and or me my our we i show find list give get see all any every which what whats is are there that those these do does did have has having ' +
@@ -173,7 +176,7 @@ const STARTERS: Suggest[] = [
 /** Read a query. `may` answers whether the viewing role sees a field (open issues are engineering information). */
 export function understand(query: string, opts: { may?: (field: string) => boolean; limit?: number } = {}): Reading {
   const may = opts.may || (() => true); const limit = opts.limit ?? 12; const raw = norm(query).slice(0, 120);
-  const base: Reading = { query, corrected: raw, fixes: [], unread: [], mode: 'empty', ask: 'list', subject: 'rooms', filters: [], said: '', lead: '', rows: [], total: 0, outOf: ROOMS.length, hits: [], loose: false, next: STARTERS, withheld: null };
+  const base: Reading = { query, corrected: raw, fixes: [], unread: [], mode: 'empty', ask: 'list', subject: 'rooms', filters: [], said: '', lead: '', rows: [], total: 0, outOf: ROOMS.length, hits: [], loose: false, next: STARTERS, withheld: null, question: false };
   if (!raw) return base;
   // 1 · typing mistakes, word by word
   const fixes: Fix[] = []; const corrected = raw.split(' ').map((w) => { if (/[:<>=+]/.test(w)) return w; const c = correct(w); if (c) { fixes.push({ from: w, to: c }); return c; } return w; }).join(' ');
@@ -197,6 +200,7 @@ export function understand(query: string, opts: { may?: (field: string) => boole
   if (named) { out.filters = []; out.unread = []; }
   if (!structural || named) { out.mode = hits.length ? 'lookup' : 'empty'; out.said = hits.length ? '' : `Nothing on record matches “${query.trim()}”.`; out.next = hits.length ? [] : STARTERS; return out; }
   // 4 · the answer, counted from the records
+  const hard = filters.filter((f) => f.kind !== 'text'); out.question = p.ask !== 'list' || !!p.deviceWord || hard.length >= 2 || hard.some((f) => !['place', 'kind'].includes(f.kind));
   out.mode = 'answer'; const match = recs.filter((r) => filters.every((f) => f.test(r))); const cond = filters.map((f) => f.label).join(', ');
   if (p.deviceWord) {
     const { cats, word } = p.deviceWord; const name = catLabel(cats, word); const n = match.reduce((s, r) => s + r.positions.filter((x) => cats.includes(x.cat)).length, 0); const withIt = match.filter((r) => r.positions.some((x) => cats.includes(x.cat)));

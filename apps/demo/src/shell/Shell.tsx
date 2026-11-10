@@ -159,6 +159,7 @@ type Opt = { key: string; href: string; title: string; sub: string; product?: st
 type Grp = { key: string; label: string; opts: Opt[]; more: number };
 type Records = typeof import('./records.js');
 type FindFn = (q: string, n: number) => Array<{ id: string; kind: string; label: string; description: string; href: string }>;
+type ReadFn = typeof import('../search/understand.js').understand;
 /**
  * The Search Party bar (3 Nov reference 01–02, concept "prominent Search Party bar with ⌘K"): pages the role can open by title, purpose,
  * product and alias (Scouter answers "which camera"), then the records — physical units, logical positions, incidents, rooms, buildings —
@@ -180,19 +181,22 @@ function QuickFind({ role, pages, open, setOpen }: { role: RoleKey; pages: PageD
     addEventListener('keydown', k); return () => removeEventListener('keydown', k);
   }, [setOpen]);
   // the record indexes load on first use (search/find.ts, shell/records.ts), so the main bundle stays small; a failed chunk says so
-  const [index, setIndex] = useState<null | { find: FindFn; rec: Records }>(null); const [failed, setFailed] = useState(false);
+  const [index, setIndex] = useState<null | { find: FindFn; rec: Records; read: ReadFn }>(null); const [failed, setFailed] = useState(false);
   useEffect(() => {
     if (!q.trim() || index) return; let live = true; setFailed(false);
-    Promise.all([import('../search/find.js'), import('./records.js')]).then(([f, rec]) => { if (live) setIndex({ find: f.find as FindFn, rec }); }).catch(() => { if (live) setFailed(true); });
+    Promise.all([import('../search/find.js'), import('./records.js'), import('../search/understand.js')]).then(([f, rec, u]) => { if (live) setIndex({ find: f.find as FindFn, rec, read: u.understand }); }).catch(() => { if (live) setFailed(true); });
     return () => { live = false; };
   }, [q, index]);
-  const text = q.trim(); const words = text.toLowerCase().split(/\s+/).filter(Boolean);
+  const typed = q.trim(); const canFind = pages.some((p) => p.id === 'find');
+  // the words are read before they are matched (search/understand.ts): a typing mistake is corrected and said, and a question gets its answer first
+  const reading = useMemo(() => (typed && index ? index.read(typed, { limit: 3, may: (f) => allows({ field: f } as Parameters<typeof allows>[0], role) }) : null), [typed, index, role]);
+  const text = reading && reading.fixes.length ? reading.corrected : typed; const words = text.toLowerCase().split(/\s+/).filter(Boolean);
   const pageHits = words.length ? pages.map((p) => {
     const hay = [p.title, p.purpose, PRODUCTS.find((x) => x.id === p.product)?.name || '', p.search?.keywords || '', ...(p.search?.aliases || [])].join(' ').toLowerCase();
     const alias = (p.search?.aliases || []).some((a) => a.toLowerCase().startsWith(text.toLowerCase()));
     return { p, alias, s: words.every((w) => hay.includes(w)) ? (alias ? 3 : 0) + (p.title.toLowerCase().includes(words[0]!) ? 2 : 1) : 0 };
   }).filter((x) => x.s).sort((a, b) => b.s - a.s) : [];
-  const canSearch = pages.some((p) => p.id === 'search'); const canFind = pages.some((p) => p.id === 'find');
+  const canSearch = pages.some((p) => p.id === 'search');
   const allHref = canSearch ? `#/search?q=${encodeURIComponent(text)}` : canFind ? `#/find?q=${encodeURIComponent(text)}` : '';
   const moreIn = canSearch ? ' in Search Party' : canFind ? ' in Search' : '';
   const groups: Grp[] = [];
@@ -213,6 +217,8 @@ function QuickFind({ role, pages, open, setOpen }: { role: RoleKey; pages: PageD
     groups.splice(at, 0, ...places);
   }
   if (pagesGroup && !pageHits[0]!.alias) groups.push(pagesGroup);
+  // a question ("rooms held", "how many cameras", "boardrooms over 12 seats with a camera") is answered first, from the room records
+  if (reading && reading.question && canFind) groups.unshift({ key: 'answer', label: 'Answer', opts: [{ key: 'answer', href: `#/find?q=${encodeURIComponent(typed)}`, title: reading.lead, sub: reading.said, icon: 'spark', chip: 'Answer' }], more: 0 });
   const opts = groups.flatMap((g) => g.opts);
   const more = groups.reduce((n, g) => n + g.more, 0);
   const allOpt: Opt | null = text && allHref && opts.length ? { key: 'all', href: allHref, title: more ? `See all ${opts.length + more} results${moreIn}` : `Open “${text}”${moreIn}`, sub: 'Every record that matches, with its relationships', icon: 'search', chip: '', all: true } : null;
@@ -248,6 +254,7 @@ function QuickFind({ role, pages, open, setOpen }: { role: RoleKey; pages: PageD
             </li>))}
             {allOpt && <li role="presentation" className="find__grp find__grp--all"><ul role="group" aria-label="Everything">{opt(allOpt, 'all')}</ul></li>}
           </ul>
+          {reading && reading.fixes.length > 0 && <p className="find__fix" role="status" data-testid="find-fix">Showing results for <b>{reading.corrected}</b></p>}
           {failed && <p className="find__warn" role="status"><Icon name="alert" size={14} /> The records could not be loaded — the connection may have dropped; these are the pages only. Reload the page to retry.</p>}
           <p className="find__all"><span aria-hidden="true"><kbd>↑</kbd><kbd>↓</kbd> move · <kbd>↵</kbd> open · <kbd>esc</kbd> clear</span>{allHref && <a href={allHref} className="find__open" onMouseDown={(e) => { e.preventDefault(); location.hash = allHref; close(); }}>Open all in Search Party →</a>}</p>
         </div>}

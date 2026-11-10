@@ -51,7 +51,7 @@ export function ViewAsSheet({ open, role, onPick, onClose }: { open: boolean; ro
             <li key={k}>
               <button type="button" className="viewas__opt" data-r={k} aria-pressed={k === role} onClick={() => onPick(k)} data-role-key={k}>
                 <span className="ava" aria-hidden="true">{r.initials}</span>
-                <span className="viewas__b"><span className="viewas__t">{r.label}</span><span className="viewas__s">{r.domain} · {r.blurb}</span>
+                <span className="viewas__b"><span className="viewas__t">{r.label}{r.internal && <span className="role-internal" data-testid="role-internal">Internal role</span>}</span><span className="viewas__s">{r.domain} · {r.blurb}</span>
                   <span className="viewas__scope" aria-hidden="true"><i data-pct={rc ? pct(rc.records, rc.of) : pct(su.surfaces, su.of)} /></span>
                   <span className="viewas__n" data-testid="viewas-coverage">{rc ? `${nf(rc.records)} of ${nf(rc.of)} records · ` : ''}{su.surfaces} of {su.of} surfaces · {sc.pages} of {sc.of} pages</span></span>
                 {k === role && <span className="viewas__check" aria-hidden="true"><Icon name="check" size={18} /></span>}

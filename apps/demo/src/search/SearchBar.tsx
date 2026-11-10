@@ -24,13 +24,13 @@ export function SearchBar({ hero, placeholder, label = 'Search the demonstration
   const hits = useMemo<Opt[]>(() => {
     if (!reading) return []; const list: Opt[] = reading.hits.map((h) => ({ id: h.id, kind: KIND[h.kind], label: h.label, description: h.description, href: h.href }));
     // a counted answer leads: it is what was asked, and the results page shows the rooms behind the count
-    return reading.mode === 'answer' && answers ? [{ id: 'answer', kind: 'Answer', label: reading.lead, description: reading.said, href: findHref(q) }, ...list.slice(0, 7)] : list;
+    return reading.mode === 'answer' && reading.question && answers ? [{ id: 'answer', kind: 'Answer', label: reading.lead, description: reading.said, href: findHref(q) }, ...list.slice(0, 7)] : list;
   }, [reading, answers, q]);
   const fixed = reading && reading.fixes.length ? `Searching for ${reading.corrected}. ` : '';
   const own = useRef<HTMLInputElement>(null); const box = inputRef || own;
   const go = (href: string) => { setOpen(false); setAct(-1); setQ(''); location.hash = href; box.current?.blur(); };
   // Enter with nothing highlighted: a sentence that has a counted answer opens that answer; otherwise the hero bar asks Search Party
-  const submit = () => { if (act >= 0 && hits[act]) go(hits[act]!.href); else if (q.trim()) go(hero && !(reading?.mode === 'answer' && answers) ? `#/search?q=${encodeURIComponent(q.trim().slice(0, 80))}` : findHref(q)); };
+  const submit = () => { if (act >= 0 && hits[act]) go(hits[act]!.href); else if (q.trim()) go(hero && !(reading?.mode === 'answer' && reading.question && answers) ? `#/search?q=${encodeURIComponent(q.trim().slice(0, 80))}` : findHref(q)); };
   return (
     <div className={`sbar${hero ? ' sbar--hero' : ''}`} role="search" data-testid={hero ? 'hero-search' : 'searchbar'}>
       <label htmlFor={`${id}-q`} className="ui-visually-hidden">{label}</label>

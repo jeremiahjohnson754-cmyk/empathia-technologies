@@ -8,18 +8,25 @@
  * Rules: a pass needs an evidence record; a result recorded after the snapshot counts only once someone in a different role verifies it;
  * a failure needs a deficiency raised against it; acceptance is refused while any blocker stands, and names the blockers; and the role
  * that accepts is one that neither recorded nor verified any result in the dossier.
+ *
+ * Final sign-off is the sixth phase, after the five commissioning phases, and takes two approvals in order (founder, 10 Nov 2026):
+ * first the Service Manager or the Executive, once everything in commissioning is done; then the Operations Lead or the Systems
+ * Engineer. Which roles those are is the caller's policy (`accept` and `countersign`); the order, the independence of both from the
+ * work, that the two come from two different roles, and that any new result withdraws an approval already given, are rules here.
+ * The dossier is accepted, and closed, only when both stand.
  */
 import type { Dossier, DossierTest, Deficiency, TestResult } from './seed.js';
 
 export interface Actor { role: string; label: string }
 /** What the caller's access policy lets this actor do. The rules below are applied on top of it, never instead of it. */
-export interface Authority { record: boolean; verify: boolean; raise: boolean; accept: boolean }
+export interface Authority { record: boolean; verify: boolean; raise: boolean; /** may give the first approval of the final sign-off */ accept: boolean; /** may give the second */ countersign: boolean }
 export type DossierEvent =
   | { kind: 'RETEST'; test: string; result: 'PASS' | 'FAIL'; evidence: string | null; by: Actor; at: string }
   | { kind: 'EVIDENCE'; test: string; evidence: string; by: Actor; at: string }
   | { kind: 'VERIFY'; test: string; by: Actor; at: string }
   | { kind: 'RAISE'; test: string; id: string; statement: string; by: Actor; at: string }
-  | { kind: 'ACCEPT'; by: Actor; at: string };
+  | { kind: 'ACCEPT'; by: Actor; at: string }
+  | { kind: 'COUNTERSIGN'; by: Actor; at: string };
 
 export interface WorkingTest extends DossierTest { recordedBy: Actor | null; verifiedBy: Actor | null; changed: boolean }
 export interface WorkingDeficiency extends Omit<Deficiency, 'state'> { state: Deficiency['state'] | 'CLOSED'; raisedAfterSnapshot: boolean }
@@ -28,16 +35,20 @@ export interface Working {
   tests: WorkingTest[]; deficiencies: WorkingDeficiency[];
   totals: { tests: number; pass: number; pending: number; fail: number; evidence: number; awaitingVerification: number };
   blockers: Blocker[]; acceptance: 'HELD' | 'ACCEPTED'; acceptedBy: Actor | null; acceptedAt: string | null; changed: boolean;
+  /** Phase 6. TESTS_OPEN: blockers stand. AWAITING_FIRST: ready for the first approval. AWAITING_SECOND: first given. COMPLETE: both. */
+  signoff: 'TESTS_OPEN' | 'AWAITING_FIRST' | 'AWAITING_SECOND' | 'COMPLETE'; firstApproval: { by: Actor; at: string } | null; secondApproval: { by: Actor; at: string } | null;
 }
 
 export function replay(d: Dossier, events: readonly DossierEvent[]): Working {
   const tests: WorkingTest[] = d.tests.map((t) => ({ ...t, recordedBy: null, verifiedBy: null, changed: false }));
   const defs: WorkingDeficiency[] = d.deficiencies.map((x) => ({ ...x, raisedAfterSnapshot: false }));
   const byId = (id: string) => tests.find((t) => t.id === id);
-  let acceptedBy: Actor | null = null; let acceptedAt: string | null = null;
+  let first: { by: Actor; at: string } | null = null; let second: { by: Actor; at: string } | null = null;
   for (const e of events) {
-    if (e.kind === 'ACCEPT') { acceptedBy = e.by; acceptedAt = e.at; continue; }
+    if (e.kind === 'ACCEPT') { first = { by: e.by, at: e.at }; second = null; continue; }
+    if (e.kind === 'COUNTERSIGN') { if (first && e.by.role !== first.by.role) second = { by: e.by, at: e.at }; continue; }   // a second approval with no first, or from the first's own role, is not one
     const t = byId(e.test); if (!t) continue;
+    first = null; second = null;                                                    // an approval covers the record as it stood: any later result, evidence, verification or deficiency withdraws it
     if (e.kind === 'RETEST') { t.result = e.result; t.evidence = e.evidence ?? t.evidence; t.recordedBy = e.by; t.verifiedBy = null; t.changed = true; delete t.note; }
     else if (e.kind === 'EVIDENCE') { t.evidence = e.evidence; t.recordedBy = e.by; t.verifiedBy = null; t.changed = true; }
     else if (e.kind === 'VERIFY') t.verifiedBy = e.by;
@@ -54,9 +65,13 @@ export function replay(d: Dossier, events: readonly DossierEvent[]): Working {
   }
   for (const x of defs) if (x.state !== 'CLOSED' && !blockers.some((b) => b.test === x.test)) blockers.push({ test: x.test, reason: `has deficiency ${x.id} open` });
   const n = (r: TestResult) => tests.filter((t) => t.result === r).length;
-  const accepted = !!acceptedBy && blockers.length === 0;
+  // approvals stand only over a record with no blocker, and only from roles that did none of the work: a stored event cannot say otherwise
+  const worked = (a: Actor) => tests.some((x) => x.recordedBy?.role === a.role || x.verifiedBy?.role === a.role);
+  if (blockers.length || (first && worked(first.by))) { first = null; second = null; } if (second && worked(second.by)) second = null;
+  const accepted = !!first && !!second; const acceptedBy = first?.by ?? null; const acceptedAt = second?.at ?? null;
+  const signoff: Working['signoff'] = blockers.length ? 'TESTS_OPEN' : !first ? 'AWAITING_FIRST' : !second ? 'AWAITING_SECOND' : 'COMPLETE';
   return { tests, deficiencies: defs, totals: { tests: tests.length, pass: n('PASS'), pending: n('PENDING'), fail: n('FAIL'), evidence: tests.filter((t) => t.evidence).length, awaitingVerification: tests.filter((t) => t.changed && t.result === 'PASS' && t.evidence && !t.verifiedBy).length },
-    blockers, acceptance: accepted ? 'ACCEPTED' : 'HELD', acceptedBy: accepted ? acceptedBy : null, acceptedAt: accepted ? acceptedAt : null, changed: events.length > 0 };
+    blockers, acceptance: accepted ? 'ACCEPTED' : 'HELD', acceptedBy: accepted ? acceptedBy : null, acceptedAt: accepted ? acceptedAt : null, changed: events.length > 0, signoff, firstApproval: first, secondApproval: second };
 }
 
 /** Try one step. Returns the new event list, or the reason it is refused; a refusal changes nothing. */
@@ -68,6 +83,15 @@ export function attempt(d: Dossier, events: readonly DossierEvent[], e: DossierE
     if (w.blockers.length) { const first = w.blockers.slice(0, 3).map((b) => `${b.test} ${b.reason}`).join('; '); return { refused: `Acceptance stays held: ${w.blockers.length} ${w.blockers.length === 1 ? 'blocker stands' : 'blockers stand'} (${first}${w.blockers.length > 3 ? '; and more' : ''}).` }; }
     // the policy's own description of an acceptor: someone who neither recorded nor verified what is being accepted
     if (w.tests.some((x) => x.recordedBy?.role === e.by.role || x.verifiedBy?.role === e.by.role)) return { refused: 'Acceptance is independent of the work it accepts: a role that recorded or verified a result in this dossier cannot also accept it.' };
+    if (w.firstApproval) return { refused: `The first approval is already recorded, by the ${w.firstApproval.by.label}. The dossier now waits for the second.` };
+    return { events: [...events, e] };
+  }
+  if (e.kind === 'COUNTERSIGN') {
+    if (!may.countersign) return { refused: 'This role cannot give the second approval.' };
+    if (w.blockers.length) return { refused: `The second approval cannot be given while ${w.blockers.length} ${w.blockers.length === 1 ? 'blocker stands' : 'blockers stand'}.` };
+    if (!w.firstApproval) return { refused: 'The second approval follows the first, and the first has not been given.' };
+    if (w.firstApproval.by.role === e.by.role) return { refused: 'The two approvals come from two different roles.' };
+    if (w.tests.some((x) => x.recordedBy?.role === e.by.role || x.verifiedBy?.role === e.by.role)) return { refused: 'Acceptance is independent of the work it accepts: a role that recorded or verified a result in this dossier cannot also approve it.' };
     return { events: [...events, e] };
   }
   const t = w.tests.find((x) => x.id === e.test); if (!t) return { refused: `No test ${e.test} in this dossier.` };

@@ -144,7 +144,7 @@ function RoleShelf({ role }: { role: RoleKey }) {
             <button type="button" className="shelf__role" data-r={k} data-role-key={k} aria-pressed={here} onClick={() => { if (!here) va.switchTo(k); else location.hash = '#/home'; }}>
               <RoleArt k={k} />
               <span className="shelf__body">
-                <b>{r.label}</b>
+                <b>{r.label}{r.internal && <span className="role-internal" data-testid="role-internal">Internal role</span>}</b>
                 <span className="shelf__blurb">{r.blurb}</span>
                 <span className="shelf__n" data-testid="shelf-counts">{rec ? <>{rec.records.toLocaleString('en-US')} of {rec.of.toLocaleString('en-US')} records · </> : ''}{pages} of {PAGES.filter((p) => !p.path.includes(':')).length} surfaces</span>
                 <span className="shelf__go">{here ? 'Viewing now · open Mission Control' : 'View as'} <Icon name="chevron-right" size={14} /></span>

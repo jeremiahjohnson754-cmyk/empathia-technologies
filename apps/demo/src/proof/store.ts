@@ -1,7 +1,8 @@
 /**
  * The working record of the Atlas 4.218 dossier in this browser: the events recorded after the reference snapshot. The snapshot itself
  * is a constant of @empathia/proof-registry and is never written. Stored state is treated as untrusted: only well-formed events are
- * read back, and replay() decides what they amount to (a hand-edited "ACCEPT" accepts nothing while a blocker stands).
+ * read back, and replay() decides what they amount to (a hand-edited "ACCEPT" or "COUNTERSIGN" accepts nothing while a blocker stands,
+ * out of order, from one role twice, or from a role that did the work).
  */
 import { useCallback, useEffect, useState } from 'react';
 import { DOSSIER_4218, attempt, replay, type DossierEvent, type Authority, type Working } from '@empathia/proof-registry';
@@ -13,7 +14,7 @@ const str = (v: unknown, max: number): v is string => typeof v === 'string' && v
 function wellFormed(e: unknown): e is DossierEvent {
   if (!e || typeof e !== 'object') return false; const x = e as Record<string, unknown>;
   if (!isActor(x['by']) || !str(x['at'], 40) || Number.isNaN(Date.parse(x['at'] as string))) return false;
-  if (x['kind'] === 'ACCEPT') return true;
+  if (x['kind'] === 'ACCEPT' || x['kind'] === 'COUNTERSIGN') return true;
   if (!str(x['test'], 20) || !/^T-SIM-\d{3}$/.test(x['test'] as string)) return false;
   if (x['kind'] === 'RETEST') return (x['result'] === 'PASS' || x['result'] === 'FAIL') && (x['evidence'] === null || str(x['evidence'], 40));
   if (x['kind'] === 'EVIDENCE') return str(x['evidence'], 40);

@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import { DOSSIER_4218 as D, QR_PAYLOAD_4218, replay, attempt, parseQr, resolveQr, DEMO_LABELS, DEMO_TENANT, type DossierEvent, type Authority, type Actor } from '../src/index.js';
 
 const cx: Actor = { role: 'cxeng', label: 'Commissioning Engineer' }; const qa: Actor = { role: 'qa', label: 'Document Reviewer' }; const ex: Actor = { role: 'exec', label: 'Executive' };
-const ALL: Authority = { record: true, verify: true, raise: true, accept: true }; const NONE: Authority = { record: false, verify: false, raise: false, accept: false };
+const ALL: Authority = { record: true, verify: true, raise: true, accept: true, countersign: true }; const NONE: Authority = { record: false, verify: false, raise: false, accept: false, countersign: false };
+const ops: Actor = { role: 'ops', label: 'AV Operations Lead' }; const se: Actor = { role: 'syseng', label: 'Systems Engineer' }; const sm: Actor = { role: 'svcmgr', label: 'Service Manager' };
 const at = '2026-11-09T12:00:00Z';
 const run = (steps: DossierEvent[], may: Authority = ALL) => { let ev: DossierEvent[] = []; for (const s of steps) { const r = attempt(D, ev, s, may); assert.ok('events' in r, 'refused' in r ? r.refused : ''); if ('events' in r) ev = r.events; } return ev; };
 
@@ -47,9 +48,41 @@ test('the whole recovery: every blocker cleared and verified, then acceptance is
   const before = replay(D, ev); assert.deepEqual(before.blockers, []); assert.equal(before.acceptance, 'HELD', 'nothing accepts itself');
   assert.deepEqual({ pass: before.totals.pass, evidence: before.totals.evidence }, { pass: 32, evidence: 32 });
   for (const who of [cx, qa]) { const r = attempt(D, ev, { kind: 'ACCEPT', by: who, at }, ALL); assert.ok('refused' in r && /independent of the work/.test(r.refused), who.role); }
-  const done = run([...ev, { kind: 'ACCEPT', by: ex, at }]); const w = replay(D, done);
-  assert.equal(w.acceptance, 'ACCEPTED'); assert.equal(w.acceptedBy!.role, 'exec');
+  // Changed 10 Nov 2026 (founder): one approval no longer accepts. Final sign-off is two approvals in order; the first leaves it held.
+  const one = run([...ev, { kind: 'ACCEPT', by: ex, at }]); const h = replay(D, one);
+  assert.equal(h.acceptance, 'HELD', 'the first approval alone does not accept'); assert.equal(h.signoff, 'AWAITING_SECOND'); assert.equal(h.firstApproval!.by.role, 'exec');
+  const done = run([...one, { kind: 'COUNTERSIGN', by: ops, at: '2026-11-09T13:00:00Z' }]); const w = replay(D, done);
+  assert.equal(w.acceptance, 'ACCEPTED'); assert.equal(w.signoff, 'COMPLETE'); assert.equal(w.acceptedBy!.role, 'exec'); assert.equal(w.secondApproval!.by.role, 'ops'); assert.equal(w.acceptedAt, '2026-11-09T13:00:00Z', 'accepted when the second approval is given');
   assert.ok('refused' in attempt(D, done, { kind: 'RETEST', test: 'T-SIM-001', result: 'FAIL', evidence: null, by: cx, at }, ALL), 'closed after acceptance');
+  assert.ok('refused' in attempt(D, done, { kind: 'COUNTERSIGN', by: se, at }, ALL), 'and no third approval');
+});
+const cleared = (): DossierEvent[] => { const fix = (t: string, n: string): DossierEvent[] => [{ kind: 'RETEST', test: t, result: 'PASS', evidence: `EV-SIM-${n}`, by: cx, at }, { kind: 'VERIFY', test: t, by: qa, at }];
+  return run([{ kind: 'RAISE', test: 'T-SIM-032', id: 'DEF-SIM-003', statement: 'Assistive listening feed is below the specified level.', by: cx, at }, ...fix('T-SIM-008', '108'), ...fix('T-SIM-016', '116'), ...fix('T-SIM-028', '128'), ...fix('T-SIM-031', '131'), ...fix('T-SIM-032', '132'), { kind: 'EVIDENCE', test: 'T-SIM-030', evidence: 'EV-SIM-130', by: cx, at }, { kind: 'VERIFY', test: 'T-SIM-030', by: qa, at }]); };
+test('phase 6: the second approval follows the first, comes from a different role, and from a role that did none of the work', () => {
+  const ev = cleared(); assert.equal(replay(D, ev).signoff, 'AWAITING_FIRST'); assert.equal(replay(D, []).signoff, 'TESTS_OPEN');
+  const early = attempt(D, ev, { kind: 'COUNTERSIGN', by: ops, at }, ALL); assert.ok('refused' in early && /follows the first/.test(early.refused));
+  const blocked = attempt(D, [], { kind: 'COUNTERSIGN', by: ops, at }, ALL); assert.ok('refused' in blocked && /blockers stand/.test(blocked.refused));
+  const one = run([...ev, { kind: 'ACCEPT', by: sm, at }]);
+  const twice = attempt(D, one, { kind: 'ACCEPT', by: ex, at }, ALL); assert.ok('refused' in twice && /first approval is already recorded, by the Service Manager/.test(twice.refused));
+  const same = attempt(D, one, { kind: 'COUNTERSIGN', by: sm, at }, ALL); assert.ok('refused' in same && /two different roles/.test(same.refused));
+  for (const who of [cx, qa]) { const r = attempt(D, one, { kind: 'COUNTERSIGN', by: who, at }, ALL); assert.ok('refused' in r && /independent of the work/.test(r.refused), `${who.role} did the work`); }
+  const none = attempt(D, one, { kind: 'COUNTERSIGN', by: se, at }, { ...ALL, countersign: false }); assert.ok('refused' in none && /cannot give the second approval/.test(none.refused));
+  assert.equal(replay(D, run([...one, { kind: 'COUNTERSIGN', by: se, at }])).acceptance, 'ACCEPTED', 'the Systems Engineer may give the second, having recorded nothing here');
+});
+test('phase 6: a result recorded after the first approval withdraws it, and the approvals are given again', () => {
+  const one = run([...cleared(), { kind: 'ACCEPT', by: sm, at }]); assert.equal(replay(D, one).signoff, 'AWAITING_SECOND');
+  const again = run([...one, { kind: 'RETEST', test: 'T-SIM-008', result: 'FAIL', evidence: null, by: cx, at }]); const w = replay(D, again);
+  assert.equal(w.firstApproval, null); assert.equal(w.signoff, 'TESTS_OPEN'); assert.ok(w.blockers.length > 0);
+  const r = attempt(D, again, { kind: 'COUNTERSIGN', by: ops, at }, ALL); assert.ok('refused' in r);
+});
+test('phase 6: stored events cannot forge it: a second approval with no first, from the first’s own role, or over blockers accepts nothing', () => {
+  const ev = cleared();
+  assert.equal(replay(D, [...ev, { kind: 'COUNTERSIGN', by: ops, at }]).acceptance, 'HELD', 'no first');
+  assert.equal(replay(D, [...ev, { kind: 'ACCEPT', by: sm, at }, { kind: 'COUNTERSIGN', by: sm, at }]).acceptance, 'HELD', 'same role twice');
+  assert.equal(replay(D, [...ev, { kind: 'ACCEPT', by: cx, at }, { kind: 'COUNTERSIGN', by: ops, at }]).acceptance, 'HELD', 'the first approver did the work');
+  assert.equal(replay(D, [...ev, { kind: 'ACCEPT', by: sm, at }, { kind: 'COUNTERSIGN', by: qa, at }]).acceptance, 'HELD', 'the second approver did the work');
+  assert.equal(replay(D, [{ kind: 'ACCEPT', by: sm, at }, { kind: 'COUNTERSIGN', by: ops, at }]).acceptance, 'HELD', 'blockers stand');
+  assert.equal(replay(D, [...ev, { kind: 'COUNTERSIGN', by: ops, at }, { kind: 'ACCEPT', by: sm, at }]).acceptance, 'HELD', 'out of order');
 });
 test('the caller’s authority is required as well as the rules', () => {
   for (const e of [{ kind: 'RETEST', test: 'T-SIM-008', result: 'FAIL', evidence: null, by: ex, at }, { kind: 'VERIFY', test: 'T-SIM-008', by: ex, at }, { kind: 'ACCEPT', by: cx, at }, { kind: 'EVIDENCE', test: 'T-SIM-030', evidence: 'EV-1', by: ex, at }] as DossierEvent[])

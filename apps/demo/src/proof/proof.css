@@ -68,3 +68,12 @@
 .pf .pa-zone > * { min-inline-size: 0; }
 @media (max-width: 640px) { .pf .kit-seg__opt, .pf-try .ui-btn, .pf-tests .ui-btn, .pf-actions .ui-btn, .pf .ui-btn--sm { min-block-size: 44px; } .pf-scan__row input { min-block-size: 44px; } .pf-scan__row .ui-btn { min-block-size: 44px; } }
 .pf .pa-table-wrap { position: relative; }   /* visually-hidden headers are absolutely positioned: keep them inside the scroller */
+
+/* Phase 6 · final sign-off: commissioning complete, then two approvals in order (Dossier.tsx) */
+.pf-signoff { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 8px; counter-reset: so; }
+.pf-signoff li { counter-increment: so; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; padding: 10px 14px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--bg2); }
+.pf-signoff li::before { content: counter(so); grid-row: 1 / span 2; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--line2); font-weight: 700; font-size: var(--fs-sm); color: var(--tx2); }
+.pf-signoff li > b { grid-column: 2; } .pf-signoff li > span { grid-column: 2; color: var(--tx2); font-size: var(--fs-sm); } .pf-signoff li > button { grid-column: 3; grid-row: 1 / span 2; }
+.pf-signoff li[data-state=done] { border-color: color-mix(in srgb, var(--ok) 50%, var(--line)); } .pf-signoff li[data-state=done]::before { content: '✓'; background: var(--ok); border-color: var(--ok); color: #06121f; }
+.pf-signoff li[data-state=next] { border-color: var(--accent); } .pf-signoff li[data-state=next]::before { border-color: var(--accent); color: var(--accent); }
+@media (max-width: 560px) { .pf-signoff li { grid-template-columns: auto minmax(0, 1fr); } .pf-signoff li > button { grid-column: 1 / -1; grid-row: auto; justify-self: start; } }

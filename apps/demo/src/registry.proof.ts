@@ -43,7 +43,9 @@ export const PROOF_PAGES: readonly PageDef[] = [
       { id: 'dossier.record', label: 'Record a result or evidence', authority: { action: 'cx.tech' } },
       { id: 'dossier.raise', label: 'Raise a deficiency', authority: { action: 'cx.tech' } },
       { id: 'dossier.verify', label: 'Verify a result', authority: { roles: ['qa', 'svcmgr', 'ops', 'architect'], why: 'independent verification: the Document Reviewer and the roles V2.5.3 lets accept; never the role that recorded the result' } },
-      { id: 'dossier.accept', label: 'Record acceptance', authority: { action: 'cx.accept' } },
+      // Final sign-off is phase 6 and takes two approvals in order (founder, 10 November 2026). Until then V2.5.3's cx.accept decided one acceptance.
+      { id: 'dossier.accept', label: 'Give the first approval of the final sign-off', authority: { roles: ['svcmgr', 'exec'], why: 'Founder, 10 November 2026: phase 6 is approved first by the Service Manager or the Executive, once everything in commissioning is done' } },
+      { id: 'dossier.countersign', label: 'Give the second approval of the final sign-off', authority: { roles: ['ops', 'syseng'], why: 'Founder, 10 November 2026: then by the Operations Lead or the Systems Engineer, an internal role' } },
       { id: 'dossier.export', label: 'Export', authority: { roles: DOSSIER_READERS, why: 'a reader may export what they can read' } },
     ],
     load: () => import('./proof/Dossier.js'),

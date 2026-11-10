@@ -48,7 +48,7 @@ function Passport({ role, can, sees }: Pick<PageProps, 'role' | 'can' | 'sees'>)
           <div><dt>Lifecycle</dt><dd>{D.asset.lifecycle[0]} <span aria-hidden="true">→</span><span className="ui-visually-hidden"> to </span> {D.asset.lifecycle[1]}</dd></div>
           <div><dt>Evidence records</dt><dd data-testid="scan-evidence">{w.totals.evidence} of {w.totals.tests}{w.changed ? <span className="pf-note"> · snapshot {D.totals.evidence} of {D.totals.tests}</span> : null}</dd></div>
         </> : null}
-        {sees('scan.acceptance') ? <div><dt>Acceptance</dt><dd data-testid="scan-acceptance" className={w.acceptance === 'HELD' ? 'pf-held' : 'pf-ok'}>{w.acceptance === 'HELD' ? `Held · ${w.blockers.length} ${w.blockers.length === 1 ? 'blocker' : 'blockers'}` : 'Accepted'}</dd></div> : null}
+        {sees('scan.acceptance') ? <div><dt>Acceptance</dt><dd data-testid="scan-acceptance" className={w.acceptance === 'HELD' ? 'pf-held' : 'pf-ok'}>{w.acceptance !== 'HELD' ? 'Accepted' : w.blockers.length ? `Held · ${w.blockers.length} ${w.blockers.length === 1 ? 'blocker' : 'blockers'}` : w.signoff === 'AWAITING_SECOND' ? 'Held · awaiting the second approval' : 'Held · awaiting final sign-off'}</dd></div> : null}
       </dl>
       {mine.length ? <><h3 className="pf-h">What the {ROLES[role].label} can do here</h3><div className="pf-actions" data-testid="scan-actions">{mine.map(([id, label, href, primary]) => <a key={id} className={`ui-btn${primary ? ' ui-btn--primary' : ''}`} data-action={id} href={href}>{label}</a>)}</div></>
         : <p className="pf-note" data-testid="scan-actions-none">This label identifies a piece of room equipment. There is nothing for the {ROLES[role].label} to do with it; the room itself is the place to start.</p>}

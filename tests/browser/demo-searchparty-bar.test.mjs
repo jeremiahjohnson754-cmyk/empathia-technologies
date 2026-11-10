@@ -80,4 +80,30 @@ for (const w of [320, 390]) { const t = await open('#/investor', { role: 'archit
   ok('S-19', 'double Enter, back and forward leave a working page with a focused heading and no error', await p.evaluate(() => !!document.querySelector('main h1')) && !t.errs.length, t.errs.join(' | '));
   await t.close(); }
 
+// Questions in the header bar (10 Nov, founder: Search Party "easy to understand and use", smartest it can be). The words are read before they
+// are matched: a question gets its answer as the first option and Enter opens the full answer; a typing mistake is corrected and the bar says
+// which words it searched for; a plain name ("camera") still leads with its records, as S-02 requires.
+{ const t = await open('#/investor', { role: 'architect' }); const p = t.page;
+  await p.keyboard.press('Control+k'); await p.keyboard.type('how many rooms are held'); await p.waitForSelector('#find-list [role=option][data-kind=answer]', { timeout: 8000 }).catch(() => undefined);
+  const g = await groupsOf(p); const first = await p.$eval('#find-list [role=option]', (o) => ({ k: o.dataset.kind, t: o.querySelector('b').textContent, chip: o.querySelector('.find__chip')?.textContent || '' })).catch(() => null);
+  ok('S-20', 'a question is answered first: an “Answer” group leads, its first line carries a number from the room records', /^Answer/.test(g[0] || '') && first && first.k === 'answer' && first.chip === 'Answer' && /\d/.test(first.t), JSON.stringify({ g: g[0], first }));
+  await p.keyboard.press('Enter'); await p.waitForSelector('[data-testid=find-answer]', { timeout: 8000 }).catch(() => undefined);
+  ok('S-21', 'Enter on the answer opens the full answer with the same words, and the rooms behind the number', /#\/find\?q=how%20many%20rooms%20are%20held/.test(p.url()) && await p.locator('[data-testid=find-answer]').count() === 1 && await p.locator('[data-testid=find-rows] a').count() > 0, p.url());
+  // typed at once, inside the 60 ms before route focus moves to the heading: the bar keeps the focus and every letter (found by this check, 10 Nov)
+  await p.keyboard.press('Control+k'); await p.keyboard.type('boardrom'); await p.waitForSelector('[data-testid=find-fix]', { timeout: 8000 }).catch(() => undefined);
+  ok('S-22a', 'going straight back to the bar after opening a result keeps the focus there and loses no letter', await p.evaluate(() => document.activeElement?.id === 'find-in' && document.getElementById('find-in').value === 'boardrom'));
+  const fix = await p.locator('[data-testid=find-fix]').innerText().catch(() => ''); const o = await optsOf(p);
+  ok('S-22', 'a typing mistake is corrected and said (“Showing results for boardroom”), and the results are the corrected word’s', /Showing results for\s+boardroom/i.test(fix) && o.some((x) => /board/i.test(x.t)), JSON.stringify({ fix, first: o[0] }));
+  await p.keyboard.press('Escape'); await p.keyboard.press('Escape'); await p.keyboard.press('Control+k'); await p.keyboard.type('camera'); await p.waitForSelector('#find-list [role=option][data-kind=unit]', { timeout: 8000 }).catch(() => undefined);
+  ok('S-23', 'a plain name is not treated as a question: no Answer group, records lead', !(await groupsOf(p)).some((x) => /^Answer/.test(x)) && await p.locator('[data-testid=find-fix]').count() === 0);
+  ok('S-24', 'no console error, no request off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
+// D44: a role with no Find page is offered no answer it could not open
+{ const t = await open('#/home', { role: 'visitor' }); const p = t.page;
+  await p.keyboard.press('Control+k'); await p.keyboard.type('how many rooms are held'); await p.waitForTimeout(1200);
+  const kinds = await p.$$eval('#find-list [role=option]', (os) => os.map((e) => e.dataset.kind)); const canFind = await p.evaluate(() => !!document.querySelector('a[href^="#/find"]'));
+  const href = kinds.includes('answer'); let refused = false;
+  if (href) { await p.keyboard.press('Enter'); await p.waitForTimeout(600); refused = await p.locator('[data-testid=access-page]').count() > 0; }
+  ok('S-25', 'the visitor is offered an answer only if the answer opens for the visitor', !refused, JSON.stringify({ kinds, canFind }));
+  await t.close(); }
+
 await done();

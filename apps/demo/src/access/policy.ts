@@ -32,12 +32,18 @@ export interface RoleInfo {
   blurb: string;
   /** what the role is given, verbatim from V2.5.3 (AZ_ROLE) */
   work: string;
+  /** an internal role: a member of the organisation's own engineering team, not a requester, a contractor or a visitor (founder, 10 Nov 2026) */
+  internal?: boolean;
 }
 const QA: RoleInfo = { key: 'qa', label: 'Document Reviewer', initials: 'QA', home: 'Review desk', domain: 'Quality', blurb: 'Accepts or returns evidence they neither recorded nor verified', work: 'commissioning records, evidence, baselines and the ledger, to accept or return what others recorded and verified (ADR-0005)' };
+/** Founder, 10 Nov 2026: the Systems Engineer is an internal role, and is shown as one. */
+export const INTERNAL_ROLES: readonly RoleKey[] = ['syseng'];
 export const ROLES: Readonly<Record<RoleKey, RoleInfo>> = Object.fromEntries([
   ...V.AZ_KEYS.map((k) => [k, { key: k, label: V.ROLE[k].label, initials: V.ROLE[k].ava, home: V.ROLE[k].home, domain: V.ROLE_UI[k].sub, blurb: V.ROLE[k].blurb, work: V.AZ_ROLE[k] } satisfies RoleInfo]),
   ['qa', QA],
-]) as Record<RoleKey, RoleInfo>;
+].map(([k, r]) => [k, INTERNAL_ROLES.includes(k as RoleKey) ? { ...(r as RoleInfo), internal: true } : r])) as Record<RoleKey, RoleInfo>;
+/** The role's name where it matters that it is internal: "Systems Engineer (internal role)". */
+export const roleTitle = (k: RoleKey): string => `${ROLES[k].label}${ROLES[k].internal ? ' (internal role)' : ''}`;
 
 // ------------------------------------------------------------------ the Document Reviewer (not in V2.5.3)
 /** ADR-0005 added an independent reviewer; V2.5.3 has no such role, so its grants are listed here, explicitly and narrowly. */
