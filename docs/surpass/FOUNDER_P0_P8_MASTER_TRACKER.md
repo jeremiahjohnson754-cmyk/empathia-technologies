@@ -1,4 +1,4 @@
-# FOUNDER-P0..P8 master tracker — Surpass directive, as of 9 November 2026, 23:25
+# FOUNDER-P0..P8 master tracker — Surpass directive, as of 10 November 2026
 
 > **Staging.** Commit `97201d4` is live on the two staging sites (`empathia-demo-next`, `empathia-website-next`; Render reports both deploys live at 05:19 UTC on 10 November). The main sites are unchanged and wait for the founder. I could not open the staging pages from the workspace (its network does not reach them), so "live" is Render's report, not a page I loaded.
 
@@ -18,6 +18,15 @@ is not deployed. A phase is not complete because a document exists.
 | **P6** Websites, media | PARTLY. Website: Proof page, short pricing page, pilot readiness. Film 13 continuity scene: picture recorded and narration composed in the Brian voice | `docs/media/film-13/SCENE_01_CONTINUITY.md`, `docs/surpass/MEDIA_MASTER_MANIFEST.md` | Founder review of the scene; the 180-second master; Collabora-SING source analysis; investor tours; Founder Studio text |
 | **P7** Commercial readiness | SPECIFIED, with groundwork (`packages/commercial`, migration 0028) | 15 unit tests | Checkout sandbox end to end; entitlements; import and export |
 | **P8** Independent validation and release | NOT_RUN. Continuous checks only: full browser matrix passed in both colour schemes on the build before the estate work | `.local/qa/v18/*.log` | QA Round One and Round Two, defect register closure, release packet |
+
+## Added on 10 November (founder instructions of 05:53, 06:05 and 06:19)
+
+| Instruction | What is true today | Evidence | Not done |
+|---|---|---|---|
+| Field products work offline, on any device | The demonstration had a web manifest and **no service worker**: nothing loaded without a connection. It now saves itself on the device and opens with the network cut; Lite, Commissioning, Assurance, ServiceHands and ten more pages were opened offline without having been opened before; work done offline survives an offline reload. A field-queue package holds the rules for work sent later (never counted before the server acknowledges it) | `docs/surpass/OFFLINE_AND_DEVICES.md`; unit 17 + 22; browser `demo-offline` 33 | Not deployed. No product screen uses the queue; never run against a server. Phone performance not measured. No pinch or two-finger gestures. Chromium only |
+| Each role's start page is different and gets it working; jump-to buttons and shortcuts | V2.5.3 gave each role its own home; the rebuild showed one Mission Control to all (a visitor saw health scores and funding). Role start pages are back on the rebuild's records: the sentence that matters, one thing to start, three to six jumps, the "What changed / What matters / What needs my decision" strip, figures and queues; `g` + letter shortcuts with an off switch | `apps/demo/src/campus/rolehome.ts`; unit `demo-rolehome` 19 (15 roles against the real policy, every link proven to open for its role) | IMPLEMENTED_NOT_VERIFIED in a browser until the suite `demo-rolehome` has run on a build. The V2.5.3 homes' own drawings (the designer's title block and plan, the executive's investment columns, the visitor's route map, the 14-day agenda) are **not** carried yet. Role selector art, role transitions and "the greatest Mission Control" are not started |
+| Investor tours of the best features; Search Party, Campus and Lite to the search / maps / navigation standard | Recorded as task 33 | — | Not started: no comparison table, no new tour stop |
+| Lite and Campus 100/10; carry V2.5.3 over for seven products | First function-level pass for Lite and Campus only | `docs/surpass/V253_LITE_CAMPUS_NO_LOSS.md` | Studio drag / undo / variants / reconciliation, in-room palette, X-ray, agent zone, FI↔Lite hand-offs not carried. No table yet for Pro, Search Party, Scouter, Commissioning, Assurance |
 
 ## Stop-ship items open now
 
