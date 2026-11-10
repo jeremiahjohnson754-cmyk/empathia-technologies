@@ -6,7 +6,7 @@
 //   node tests/browser/demo-tours.test.mjs
 import { harness, VIEWPORTS, SCHEMES } from './demo-spaces-lib.mjs';
 const { ok, open, done, base } = await harness('demo-tours');
-const COUNTS = { a: 10, b: 10, c: 7 };
+const COUNTS = { a: 10, b: 10, c: 7, d: 14 };   // d: Tour D, "What investors ask" (10 Nov 2026)
 
 const runTour = async (t, key, tag) => {
   await t.go(`#/tours/${key}`, 500);
@@ -25,8 +25,22 @@ const runTour = async (t, key, tag) => {
 
 for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/tours' });
-  ok(`TR-${tag}-00`, 'the tours page offers three tours and free exploration', (await t.page.locator('[data-testid^="tour-start-"]').count()) === 3 && /explore on your own/.test(await t.text()));
-  for (const key of ['a', 'b', 'c']) await runTour(t, key, tag);
+  ok(`TR-${tag}-00`, 'the tours page offers four tours and free exploration', (await t.page.locator('[data-testid^="tour-start-"]').count()) === 4 /* 3 until 10 Nov 2026: Tour D was added */ && /explore on your own/.test(await t.text()));
+  for (const key of ['a', 'b', 'c', 'd']) await runTour(t, key, tag);
+  // Tour D: every stop lands on a real page (never the access page), carries the question it raises with a plain answer, and the
+  // search stop's suggestions really search
+  { await t.go('#/tours/d', 500); const badD = [];
+    for (let i = 0; i < COUNTS.d; i += 1) {
+      const v = await t.page.evaluate(() => { const g = document.querySelector('[data-testid="guided"]'); const a = g?.querySelector('[data-testid="tour-ask"]'); return { h1: document.querySelector('main h1')?.textContent || '', refused: !!document.querySelector('[data-testid="access-page"], [data-testid="not-found"], .loadfail'), q: a?.querySelector('summary')?.textContent || '', open: a?.hasAttribute('open'), warn: /address without its own page/.test(g?.textContent || '') }; });
+      if (!v.h1 || v.refused || v.warn || !v.q.endsWith('?') || v.open) badD.push(`${i + 1}: ${JSON.stringify(v)}`);
+      if (i === 4) { await t.page.click('[data-testid="tour-ask"] summary'); const ans = await t.page.textContent('[data-testid="tour-ask"] p'); if (!/Nothing is generated/.test(ans || '')) badD.push(`5: answer ${ans}`);
+        const n = await t.page.locator('[data-testid="tour-tries"] a').count(); await t.page.click('[data-testid="tour-tries"] a:has-text("ballroom")'); await t.page.waitForTimeout(700);
+        const found = await t.page.evaluate(() => ({ hash: location.hash, hit: /Divisible Grand Ballroom/.test(document.querySelector('main')?.innerText || ''), tour: !!document.querySelector('[data-testid="guided"]') }));
+        if (n < 4 || !/q=ballroom/.test(found.hash) || !found.hit || !found.tour) badD.push(`5: tries ${n} ${JSON.stringify(found)}`); }
+      if (i < COUNTS.d - 1) { await t.page.click('[data-testid="guided"] button:has-text("Next")'); await t.page.waitForTimeout(500); }
+    }
+    ok(`TR-${tag}-d-03`, 'tour D: all 14 stops land on a page the visitor may open, each with its question (closed until asked) and a plain answer; "Search anything" finds the new ballroom and the tour stays', !badD.length, badD.slice(0, 3).join(' | '));
+    await t.page.click('[data-testid="guided"] button:has-text("Finish")'); await t.page.waitForTimeout(150); }
   // controls: keyboard, pause/resume, skip, reload resumes, Esc exits
   await t.go('#/tours/a', 500);
   await t.page.locator('[data-testid="guided"]').focus(); await t.page.keyboard.press('ArrowRight'); await t.page.waitForTimeout(400);

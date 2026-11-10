@@ -6,8 +6,12 @@
  */
 import { REFERENCE_ROOM_ID } from '../campus/canon.js';
 
-export interface Stop { id: string; title: string; text: string; href: string; spot?: string; narration?: string }
-export interface Tour { key: 'a' | 'b' | 'c'; title: string; audience: string; goal: string; stops: Stop[] }
+export interface Stop { id: string; title: string; text: string; href: string; spot?: string; narration?: string;
+  /** the question this stop tends to raise, and its plain answer (tour D) */
+  ask?: { q: string; a: string };
+  /** searches a visitor can run from this stop with one press (tour D's "search anything" stop) */
+  tries?: string[] }
+export interface Tour { key: 'a' | 'b' | 'c' | 'd'; title: string; audience: string; goal: string; stops: Stop[] }
 
 const ROOM = `#/campus/ATL/4/${REFERENCE_ROOM_ID}`;
 export const TOURS: Tour[] = [
@@ -43,6 +47,38 @@ export const TOURS: Tour[] = [
     { id: 'C5', title: 'Diagnose, repair, verify', text: 'A real storyline of the campus: the camera replaced at Atlas 4.218, the tests it reopened, and the independent verification.', href: '#/search/scenarios/S4', spot: 'sp-list' },
     { id: 'C6', title: 'Competency evidence', text: 'Completing a lab is evidence of competency, shown with its verification state; it never authorises work by itself.', href: '#/v25/learn' },
     { id: 'C7', title: 'Back to the room', text: 'The lesson came from this room. From here, explore freely.', href: ROOM, spot: 'room-view' },
+  ] },
+  // Tour D (founder, 10 November 2026): the strongest features, and at each stop the question an investor tends to ask with its plain
+  // answer. Every answer says what is synthetic, modelled or not built; none claims a customer, a measurement or a release.
+  { key: 'd', title: 'Tour D — What investors ask', audience: 'Investors and partners', goal: 'See the strongest parts in fifteen minutes, with a plain answer to the question each one raises.', stops: [
+    { id: 'D1', title: 'Everyone starts where their work is', text: 'This is Mission Control, where the people who run the estate start. Every other role has its own start page: View as shows all fifteen. Press g and a letter to jump.', href: '#/home', spot: 'rh-jump',
+      ask: { q: 'Is this monitoring real rooms?', a: 'No. Every figure is computed from synthetic records when the page opens. Nothing is monitored, and the page says so.' } },
+    { id: 'D2', title: 'Ninety rooms, one estate', text: 'Six buildings on the map and seven more sites: ninety rooms, each with its devices, tests, baselines and history. Open any building.', href: '#/campus', spot: 'campus-stage',
+      ask: { q: 'Whose rooms are these?', a: 'Nobody’s. A fictional enterprise with ninety designed rooms. No customer data is in the demonstration.' } },
+    { id: 'D3', title: 'A room you can walk around', text: 'A ballroom that divides in four. Turn it, switch the lens from visitor to engineer, and compare what was designed, commissioned, current and proposed.', href: '#/lite/room/R-EGT-1-140', spot: 'lite-3d',
+      ask: { q: 'Are the coverage figures measured?', a: 'No. They are modelled from the room’s geometry and device classes. A measured figure would need reviewed evidence, and there is none here.' } },
+    { id: 'D4', title: 'Find the way', text: 'Choose where you are going: the route is step by step, with a step-free choice. A site away from the campus says so first.', href: '#/lite/way', spot: 'lite-way',
+      ask: { q: 'Does it know where I am standing?', a: 'No. You choose where you start. Indoor positioning is not built.' } },
+    { id: 'D5', title: 'Search anything', text: 'One box over rooms, devices, people, issues and pages. Type anything you like, or press one of these.', href: '#/search', spot: 'search-party', tries: ['4.218', 'ballroom', 'camera', 'ISS-0417', 'who supports Atlas 4.218'],
+      ask: { q: 'Is a language model answering?', a: 'No. Search Party ranks recorded records and walks recorded relationships, and shows where each answer comes from. Nothing is generated.' } },
+    { id: 'D6', title: 'If this switch fails, what is affected?', text: 'Search Party starts from one switch and walks to its uplink, the rooms that share it and the power behind it. Each step names its source.', href: '#/search/scenarios/S1',
+      ask: { q: 'Where does the dependency data come from?', a: 'Here, from the synthetic model. In a customer’s estate it would come from sources they connect; no connector reads a real system yet.' } },
+    { id: 'D7', title: 'Four worlds on the same engines', text: 'Enterprise, a stadium, a university and a convention centre: each with its own places, people and journeys, and the same records underneath.', href: '#/worlds',
+      ask: { q: 'Are the other three as deep as Enterprise?', a: 'Not yet. They have estates, journeys, search and plans in 2D. Rooms in 3D exist for Enterprise only.' } },
+    { id: 'D8', title: 'A stadium on game day', text: 'Move the event from doors to final whistle, put a fault on the ribbon display, and work it: acknowledge, dispatch, fix, and a second person verifies.', href: '#/gameday?as=stadium.av_it_engineer', spot: 'gameday-phases',
+      ask: { q: 'Is that a real venue?', a: 'No. Harborlight Stadium is fictional and the event is a simulation, labelled as one.' } },
+    { id: 'D9', title: 'Three ways to equip a room', text: 'The Space Optimizer scores options A, B and C on nine dimensions and shows the rule behind every score.', href: '#/optimizer/university',
+      ask: { q: 'Does it design the room?', a: 'No. It compares options with a stated planning model so an engineer can decide. It is not a physics simulation.' } },
+    { id: 'D10', title: 'Proof, not claims', text: 'One room’s commissioning dossier: 27 tests passed, 3 pending, 2 failed. Acceptance is held, and the page says exactly why.', href: '#/dossier', spot: 'dossier-blockers',
+      ask: { q: 'Could someone mark it accepted anyway?', a: 'Not through these rules: a result is verified by a different person than recorded it, and acceptance is refused while a test is failed or pending.' } },
+    { id: 'D11', title: 'A problem, followed to closure', text: 'Reported in plain words, triaged, assigned only to people who pass the checks, repaired with evidence, verified by someone else, closed with the requester.', href: '#/servicehands', spot: 'servicehands',
+      ask: { q: 'Does it dispatch real technicians?', a: 'No. The people, clocks and windows are synthetic. The rules that decide who may be assigned are real code.' } },
+    { id: 'D12', title: 'No connection, still working', text: 'The app saves itself on the device. With the network cut, Lite, Commissioning, Assurance and ServiceHands still open, and work done offline is kept.', href: '#/offline', spot: 'offline-app',
+      ask: { q: 'Does offline work reach a server later?', a: 'In this demonstration nothing is sent anywhere, so there is nothing to send later. The queue for that exists as tested code and is not connected to a screen yet.' } },
+    { id: 'D13', title: 'SIGNAL: learning as a story', text: 'The Prologue and 133 chapters across twelve seasons: read them or play them as scenes, with decisions that can fail and things to find.', href: '#/story',
+      ask: { q: 'Is it finished?', a: 'The whole text and its drawings are here. Recorded voices and video are not made yet, and 318 passages are flagged for review.' } },
+    { id: 'D14', title: 'What is real today', text: 'Everything you saw is synthetic and runs in this browser. Nothing is sold from here. From this page, explore freely or send an enquiry.', href: '#/investor',
+      ask: { q: 'What can a customer buy today?', a: 'Nothing self-serve. Of 34 products, 22 are demonstrated on synthetic data, 6 are partly built, 1 is unverified code and 5 are specified only.' } },
   ] },
 ];
 

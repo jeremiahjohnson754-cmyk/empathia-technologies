@@ -99,3 +99,8 @@ button.go { font: inherit; text-align: left; cursor: pointer; width: 100%; align
   .card pre, .stack pre { overflow-x: auto; max-width: 100%; }
   .stack { min-width: 0; max-width: 100%; }
 }
+/* tour D: the question a stop raises, and searches to try */
+.tour__tries { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 var(--sp-2); padding: 0; }
+.tour__ask { margin: 0 0 var(--sp-2); padding: 6px 12px; border-left: 3px solid var(--accent); background: var(--panel2); border-radius: 0 var(--r-sm) var(--r-sm) 0; }
+.tour__ask summary { cursor: pointer; font-weight: 600; font-size: var(--fs-sm); min-height: 32px; display: flex; align-items: center; }
+.tour__ask p { margin: 4px 0 6px; color: var(--tx2); font-size: var(--fs-sm); max-width: 68ch; }

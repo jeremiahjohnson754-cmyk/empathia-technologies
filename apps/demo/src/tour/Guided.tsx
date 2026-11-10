@@ -19,8 +19,8 @@ export const stopNative = (href: string) => !!resolve(href) || NATIVE.has(areaKe
 export function GuidedPanel({ hash }: { hash: string }) {
   const [run, setRun] = useState<Run | null>(load);
   const panel = useRef<HTMLElement>(null);
-  // #/tours/a|b|c[?stop=n] starts (or restarts) a tour
-  useEffect(() => { const m = /^#\/tours\/([abc])(?:\?stop=(\d+))?$/.exec(hash); if (m) { const t = tourByKey(m[1]!)!; const i = Math.min(t.stops.length - 1, Math.max(0, Number(m[2] || 1) - 1)); goto({ tour: t.key, i, paused: false }); } }, [hash]);   // eslint-disable-line react-hooks/exhaustive-deps
+  // #/tours/a|b|c|d[?stop=n] starts (or restarts) a tour
+  useEffect(() => { const m = /^#\/tours\/([abcd])(?:\?stop=(\d+))?$/.exec(hash); if (m) { const t = tourByKey(m[1]!)!; const i = Math.min(t.stops.length - 1, Math.max(0, Number(m[2] || 1) - 1)); goto({ tour: t.key, i, paused: false }); } }, [hash]);   // eslint-disable-line react-hooks/exhaustive-deps
   const t = run ? tourByKey(run.tour)! : null; const s = t && run ? t.stops[run.i]! : null;
   const goto = (r: Run) => { setRun(r); save(r); const st = tourByKey(r.tour)!.stops[r.i]!; if (location.hash !== st.href) location.hash = st.href; setTimeout(() => panel.current?.focus({ preventScroll: true }), 50); };
   const exit = () => { setRun(null); save(null); };
@@ -42,6 +42,8 @@ export function GuidedPanel({ hash }: { hash: string }) {
         <h2 className="tour__title">{s.title}</h2>
         <p className="tour__text">{s.text}</p>
         {!native && <p className="ui-meta">This stop’s address has no page of its own; it lands on the address map instead of pretending.</p>}
+        {s.tries && <ul className="tour__tries" aria-label="Searches to try" data-testid="tour-tries">{s.tries.map((q) => <li key={q}><a className="ui-btn ui-btn--sm" href={`#/search?q=${encodeURIComponent(q)}`}>{q}</a></li>)}</ul>}
+        {s.ask && <details className="tour__ask" data-testid="tour-ask"><summary>{s.ask.q}</summary><p>{s.ask.a}</p></details>}
         {take && <Narration id={s.narration!} />}
       </>}
       <div className="tour__acts">
@@ -70,7 +72,7 @@ function Narration({ id }: { id: string }) {
 export function ToursPage() {
   return (
     <section className="tours" data-native="" data-testid="tours-index">
-      <p className="kicker">Guided experiences</p><h1>Three tours, or explore on your own</h1>
+      <p className="kicker">Guided experiences</p><h1>Four tours, or explore on your own</h1>
       <p className="ui-muted">Each tour can be paused, resumed, skipped and left at any stop. Nothing in the demonstration needs a tour.</p>
       <ul className="tours__list">{TOURS.map((t) => <li key={t.key}><a href={`#/tours/${t.key}`} className="campus__card" data-testid={`tour-start-${t.key}`}><b>{t.title}</b><span className="ui-muted">{t.goal}</span><span className="ui-meta">{t.audience} · {t.stops.length} stops</span></a></li>)}</ul>
       <h2 className="build__h">Or start where you are</h2>
