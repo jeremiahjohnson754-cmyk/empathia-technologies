@@ -36,6 +36,7 @@ export const render = (r, captions) => {
   L.push('## Where each line falls', '', '| Line | Script | Spoken (s) | Shot (s) | After the cut | Before the next |', '|---|---|---|---|---|---|');
   for (const [i, p] of j.placed.entries()) { const l = r.lines[i]; L.push(p ? `| ${l.n} | ${cell(l.text)} | ${p.from.toFixed(2)}–${p.to.toFixed(2)} | ${p.shotFrom.toFixed(2)}–${p.shotEnd.toFixed(2)} | ${(p.from - p.shotFrom).toFixed(2)} s | ${(p.shotEnd - p.to).toFixed(2)} s |` : `| ${l.n} | ${cell(l.text)} | not found | | | |`); }
   L.push('');
+  if (r.history) L.push('## Earlier takes', '', ...r.history.map((h) => `- Take ${h.take}: ${h.result}${h.master ? ` (\`${h.master}\`)` : ''}`), '');
   if (r.seen) L.push('## Seen on the frames', '', `By ${r.seen.by}.`, '', ...r.seen.notes.map((n) => `- ${n}`), '');
   return { text: L.join('\n'), verdict: j.verdict, counts: j.counts };
 };

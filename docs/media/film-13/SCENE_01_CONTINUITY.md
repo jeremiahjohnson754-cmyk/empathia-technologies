@@ -1,6 +1,6 @@
 # Film 13 — ONE ROOM. ONE TRUTH. · Continuity-validation scene 01, "Held"
 
-Status: **PICTURE RECORDED · NARRATION COMPOSED (Brian voice, 9 November) · MACHINE QC RUN 10 November: QC_FAILED on one check (the refusal sentence is too small to read on a phone) · NOT LISTENED TO BY A PERSON · NOT REVIEWED**. The measured record is `SCENE_01_QC.md`. The narrated master and its line timings are in `docs/surpass/MEDIA_MASTER_MANIFEST.md`. This file is the production package for one
+Status: **PICTURE RECORDED · NARRATION COMPOSED (Brian voice, 9 November) · TAKE 2 RECORDED AND NARRATED 10 November (page drawn 1.6 times larger) · MACHINE QC: 41 pass, 0 fail, 6 not run · NOT WATCHED OR LISTENED TO BY A PERSON · NOT REVIEWED**. Take 1 failed one check (the refusal sentence was too small to read on a phone). The measured record is `SCENE_01_QC.md`. The narrated master and its line timings are in `docs/surpass/MEDIA_MASTER_MANIFEST.md`. This file is the production package for one
 27-second scene, made by `node scripts/media/film13-scene01.mjs` (output in `.local/media/film-13/scene-01/`, outside git until reviewed). It is not a film, and Film 13 is not made. Films 01 to 12 and the SIGNAL canon are untouched (V18-FILM-01, -06).
 
 ## Why this scene

@@ -58,8 +58,10 @@ test('MQ-05 captions: the committed file passes; a late, overlapping, too fast, 
 });
 
 test('MQ-06 picture: unexplained dark frames, a frozen hold, a wrong size and text too small to read each fail', () => {
-  const r = rec(); const base = pictureCheck(r.picture, r.plan);
-  assert.deepEqual(failed(base), ['"the refusal sentence" readable at a phone held sideways (844 px)'], 'the one failure of this take: the sentence the scene exists for cannot be read on a phone');
+  const r = rec(); const base = pictureCheck(r.picture, r.plan); assert.deepEqual(failed(base), [], 'take 2 passes every picture check');
+  // take 1 drew the page at its ordinary size: the sentence the scene exists for was 13.5 px in the frame and could not be read on a phone
+  const take1 = structuredClone(r.plan); take1.text = [{ what: 'the 27 / 3 / 2 totals', css_px: 26 }, { what: 'the refusal sentence', css_px: 13.5 }];
+  assert.deepEqual(failed(pictureCheck(r.picture, take1)), ['"the refusal sentence" readable at a phone held sideways (844 px)']);
   const dark = structuredClone(r.picture); dark.dark_spans.push({ from: 20, to: 20.2 }); assert.ok(failed(pictureCheck(dark, r.plan)).includes('No unexplained dark frames'));
   const frozen = structuredClone(r.picture); frozen.still_spans.push({ from: 5, seconds: 9 }); assert.ok(failed(pictureCheck(frozen, r.plan)).includes('No hold longer than 5 s'));
   const small = structuredClone(r.picture); small.width = 1280; small.height = 720; assert.ok(failed(pictureCheck(small, r.plan)).includes('Encoding'));
@@ -68,8 +70,8 @@ test('MQ-06 picture: unexplained dark frames, a frozen hold, a wrong size and te
 });
 
 test('MQ-07 the verdict is never better than the worst row, a record with nothing measured is not a pass, and no verdict says approved', () => {
-  const r = rec(); const j = judge(r, vtt()); assert.equal(j.verdict, 'QC_FAILED'); assert.equal(j.counts.FAIL, 1); assert.ok(j.counts['NOT RUN'] >= 6);
-  const fixed = structuredClone(r); fixed.plan.text[1].css_px = 21.6; const f = judge(fixed, vtt()); assert.equal(f.counts.FAIL, 0); assert.equal(f.verdict, 'QC_AUTOMATED · NOT REVIEWED BY A PERSON');
+  const r = rec(); const f = judge(r, vtt()); assert.equal(f.counts.FAIL, 0); assert.ok(f.counts['NOT RUN'] >= 6); assert.equal(f.verdict, 'QC_AUTOMATED · NOT REVIEWED BY A PERSON', 'take 2: nothing measured fails, and it still is not reviewed');
+  const small = structuredClone(r); small.plan.text[1].css_px = 13.5; const j = judge(small, vtt()); assert.equal(j.verdict, 'QC_FAILED', 'one failing row fails the scene (take 1)'); assert.equal(j.counts.FAIL, 1);
   const empty = structuredClone(r); delete empty.heard; empty.picture = null; const e = judge(empty, null); assert.equal(e.counts.PASS, 0, 'nothing measured, nothing passes'); assert.notEqual(e.verdict, 'QC_AUTOMATED');
   for (const v of [j, f, e]) assert.ok(!/APPROVED|HUMAN_REVIEWED/.test(v.verdict.replace('NOT REVIEWED', '')));
   assert.ok(r.not_run.some((n) => /person/i.test(n.check)), 'the record always carries the row only a person can fill');

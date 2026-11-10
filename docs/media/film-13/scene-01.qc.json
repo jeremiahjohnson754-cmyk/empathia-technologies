@@ -1,10 +1,10 @@
 {
  "id": "film-13/scene-01",
- "title": "Film 13 \"ONE ROOM. ONE TRUTH.\" — continuity scene 01, \"Held\"",
+ "title": "Film 13 \"ONE ROOM. ONE TRUTH.\" — continuity scene 01, \"Held\" (take 2)",
  "measured_on": "2026-11-10",
  "master": {
-  "where": "https://assets.vidiq.com/compositions/e7ec6a97-bd7e-420a-ac60-5e9928295665/if3g33oya2ngvc8exbgisprb.mp4",
-  "duration": 27.093,
+  "where": "https://assets.vidiq.com/compositions/e7ec6a97-bd7e-420a-ac60-5e9928295665/f1cytes2hw3burixb9yfrxpy.mp4",
+  "duration": 27.094,
   "width": 1920,
   "height": 1080,
   "streams": 2,
@@ -18,19 +18,19 @@
   "longest_hold": 5,
   "explained_dark": [
    {
-    "from": 14.83,
-    "to": 15.4,
+    "from": 15.17,
+    "to": 15.67,
     "why": "the product's own role-change card (\"Service Manager\"), shown while the viewing role changes; seen on the frames"
    }
   ],
   "text": [
    {
     "what": "the 27 / 3 / 2 totals",
-    "css_px": 26
+    "css_px": 41.6
    },
    {
     "what": "the refusal sentence",
-    "css_px": 13.5
+    "css_px": 21.6
    }
   ],
   "watched_at": [
@@ -44,7 +44,8 @@
     "width": 844,
     "floor_px": 9
    }
-  ]
+  ],
+  "zoom": "the page is drawn 1.6 times larger than in take 1 (browser layout zoom); sizes above are pixels in the 1920 px frame"
  },
  "shots": [
   {
@@ -54,13 +55,13 @@
   },
   {
    "n": 2,
-   "from": 4.97,
-   "how": "picture settles on the passport (measured)"
+   "from": 4.77,
+   "how": "cut to the passport (measured)"
   },
   {
    "n": 3,
-   "from": 9.67,
-   "how": "hard cut to the dossier (measured)"
+   "from": 9.93,
+   "how": "cut to the dossier (measured)"
   },
   {
    "n": 4,
@@ -111,7 +112,7 @@
   }
  ],
  "heard": {
-  "by": "speech-to-text (Scribe v1) through the founder's ElevenLabs connector, 10 November 2026; six transcriptions, 223.8 credits",
+  "by": "speech-to-text (Scribe v1) through the founder's ElevenLabs connector, 10 November 2026. Take 1: six transcriptions, 223.8 credits. Take 2: the joined file again, 149.0 credits (the five voice files did not change)",
   "lines": [
    {
     "words": [
@@ -415,40 +416,50 @@
   "frame_rate": "30/1",
   "width": 1920,
   "height": 1080,
-  "frames": 809,
-  "duration": 26.967,
-  "bytes": 1855085,
+  "frames": 810,
+  "duration": 27,
+  "bytes": 2120595,
   "audio_streams": 0,
+  "sampled_frames": 27,
+  "padded_frames": 0,
   "dark_spans": [
    {
-    "from": 14.83,
-    "to": 15.4
+    "from": 15.17,
+    "to": 15.67
    }
   ],
   "still_spans": [
    {
-    "from": 3.23,
-    "seconds": 1.73
+    "from": 1.33,
+    "seconds": 1.5
    },
    {
-    "from": 4.97,
-    "seconds": 3.33
+    "from": 10.23,
+    "seconds": 2.83
    },
    {
-    "from": 9.67,
-    "seconds": 3.77
+    "from": 13.43,
+    "seconds": 1.6
    },
    {
-    "from": 18.6,
-    "seconds": 4.3
+    "from": 16.33,
+    "seconds": 1.67
    },
    {
-    "from": 25.13,
-    "seconds": null
+    "from": 20.63,
+    "seconds": 2.7
+   },
+   {
+    "from": 23.47,
+    "seconds": 2.67
    }
   ],
   "hard_cuts": [
-   9.67
+   0.43,
+   4.77,
+   9.93,
+   15.13,
+   18
   ]
  },
  "not_run": [
@@ -480,28 +491,40 @@
  "events": [
   {
    "what": "the passport is open",
-   "at": 4.97,
+   "at": 4.77,
    "line": 2
   },
   {
    "what": "the totals are on screen",
-   "at": 9.67,
+   "at": 9.93,
    "line": 3
   },
   {
    "what": "the refusal is on screen",
-   "at": 18.6,
+   "at": 18,
    "line": 4
   }
  ],
  "seen": {
-  "by": "Claude, on a contact sheet of the silent recording at one frame a second and ten frames a second across 14.5–15.8 s (10 November). Not a person, and not the joined file",
+  "by": "Claude, on contact sheets of the silent take 2 recording: one frame a second across the whole scene, five a second across 17.6–18.8 s, and single frames at 7 s and 21 s (10 November). Not a person, and not the joined file",
   "notes": [
-   "Every frame carries the product's \"Synthetic data\" chip and the viewing role; the role shown changes from Commissioning Engineer to Service Manager at 14.8 s, before the acceptance button is pressed.",
-   "The dark half second at 14.83–15.40 s is the product's role-change card, not a dropped frame.",
-   "From about 18 s to 23 s the pointer dot rests on the \"Record final acceptance\" button and hides part of its label. Move the pointer off the label after the press.",
-   "The totals, the headline and the red \"Held\" chip read clearly at phone size. The refusal sentence, which is the point of the scene, does not: it is the smallest text on the page.",
-   "Line 2 ends 0.27 s before the cut to the dossier. It passes the quarter-second rule with two hundredths to spare; start it 0.2 s earlier in the next take."
+   "Every frame carries the product's \"Synthetic data\" chip and the viewing role. The role changes from Commissioning Engineer to Service Manager at 15.1 s, through the product's own role-change card, before the acceptance button is pressed.",
+   "The refusal sentence, the seven blockers and the button now read clearly at phone size. After the press the pointer moves off the button, whose label it hid in take 1.",
+   "Still to fix (next take): at about 7 s the pointer rests on the words \"Held · 7 blockers\" in the passport and hides a letter.",
+   "Still to fix (next take): the scene opens part-way down the scan page, with the top of the label cut off; the page title is first seen when the passport opens at 4.8 s. Open on the top of the page, then move to the field.",
+   "Still to fix (next take): when the refusal appears the page moves to it, so the red \"Held\" chip and the totals are out of frame during the closing hold. The storyboard promised the chip in the hold; either keep it in frame or change the storyboard.",
+   "Take 1's caption fault (a caption 2.5 s ahead of its line) is gone; the captions are timed to the measured voice."
   ]
- }
+ },
+ "history": [
+  {
+   "take": 1,
+   "master": "https://assets.vidiq.com/compositions/e7ec6a97-bd7e-420a-ac60-5e9928295665/if3g33oya2ngvc8exbgisprb.mp4",
+   "result": "QC_FAILED: the refusal sentence was 13.5 px in the frame, 5.9 px on a phone held sideways. Line 2 ended 0.27 s before its cut. The pointer hid the button label."
+  },
+  {
+   "take": "2, first try",
+   "result": "discarded before narration: recorded as a 1200 × 675 page at 1.6 device pixels, the recorder left the page small in a grey frame and reported success. This is why the record now checks that the picture fills the frame."
+  }
+ ]
 }

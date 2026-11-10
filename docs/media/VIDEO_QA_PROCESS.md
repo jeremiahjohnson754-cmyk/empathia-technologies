@@ -4,8 +4,9 @@ Every video made for Empathia goes through this before anyone calls it done: fil
 anything made with a generation service. It is built on the production gates in the founder's film campaign blueprint (G1 to G5) and
 on the founder's rule of 9 November: no video is done without its record filled in, and a row that could not be run says NOT RUN.
 
-The first video through it was Film 13, scene 01. The process failed it on one check and caught a caption fault nobody had noticed.
-That record is `docs/media/film-13/SCENE_01_QC.md`.
+The first video through it was Film 13, scene 01. The process failed take 1 on one check (text too small on a phone), caught a caption
+fault nobody had noticed, and caught a first try at take 2 that the recorder reported as a success but had not filled the frame.
+Take 2 passes the machine pass and has three critic findings open. The record is `docs/media/film-13/SCENE_01_QC.md`.
 
 ## Three passes, in this order
 
@@ -47,7 +48,8 @@ any NOT RUN row remains. Nothing is published, embedded on the website or used a
 | | Say the script | Word for word |
 | | Timed to the voice | A cue is up when its line starts, no more than 0.3 s early; still up when the line ends |
 | | Readable | Each cue at least 1 s; at most 17 characters a second |
-| Picture | Encoding and length | The planned codec, pixel format, frame rate and size; length within 0.2 s of plan |
+| Picture | The picture fills the frame | No sampled frame has a flat grey corner (a recorder that cannot fill the frame pads it and reports success) |
+| | Encoding and length | The planned codec, pixel format, frame rate and size; length within 0.2 s of plan |
 | | Dark frames | None, unless the record names the span and what it is (and it has been seen on the frames) |
 | | Holds | No stretch without change longer than the plan allows (a longer one reads as a frozen player) |
 | | Text size | Every piece of text the scene depends on is at least 9 px tall at each size it will be watched at, computed from the product's own type size |
@@ -88,3 +90,4 @@ file's own picture, playback in a second browser and on a phone.
 6. Critic pass; then send the file and the record to the founder.
 
 Cost of the machine pass for a 27-second scene: six transcriptions, 223.8 ElevenLabs credits (about 4.5 US cents), and 2 vidIQ credits.
+A second take with the same voice files needs one transcription (149 credits) and one sound extraction.
