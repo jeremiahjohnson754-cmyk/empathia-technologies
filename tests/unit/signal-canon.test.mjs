@@ -6,7 +6,7 @@ import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..'); const canon = path.join(repo, 'packages/signal-canon');
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
 const out = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'signal-canon-')), 'm.mjs');
-await esbuild.build({ stdin: { contents: `export * from './signal/story.ts';`, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' }, bundle: true, format: 'esm', platform: 'node', outfile: out, logLevel: 'error' });
+await esbuild.build({ stdin: { contents: `export * from './signal/story.ts'; export * as SC from './signal/scene.ts';`, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' }, bundle: true, format: 'esm', platform: 'node', outfile: out, logLevel: 'error' });
 const E = await import(pathToFileURL(out).href);
 const J = (p) => JSON.parse(fs.readFileSync(path.join(canon, 'data', p), 'utf8'));
 const index = J('story/index.json'); const stats = J('stats.json'); const chapters = index.map((c) => J(`story/${c.id}.json`));
@@ -74,4 +74,42 @@ test('SC-12 the reader is returned to where they were: the unfinished chapter la
   assert.equal(E.resume(ix, { ...fresh, last: 's03e04', chapters: { s03e04: E.emptyChapter() } }).id, 's03e04');
   assert.equal(E.resume(ix, { ...fresh, last: 's03e04', chapters: { s03e04: { ...E.emptyChapter(), done: true } } }).id, 's03e05');
   assert.equal(E.nextOf(ix, 's12e11'), null); assert.equal(E.nextOf(ix, 'pro11').id, 's01e00');
+});
+
+// Played scenes (apps/demo/src/signal/scene.ts): staging only, nothing invented, nothing lost.
+const scenes = chapters.map((c) => E.SC.buildScene(c));
+test('SC-13 every chapter stages: each panel is one live shot in canon order, each decision one choice, each conversation one reply', () => {
+  for (const [i, sc] of scenes.entries()) { const c = chapters[i]; const live = sc.shots.filter((s) => s.kind === 'live');
+    assert.equal(live.length, c.items.filter((x) => x.type === 'panel').length, index[i].id); assert.deepEqual(live.map((s) => s.panel), live.map((_, k) => k));
+    assert.deepEqual(sc.shots.filter((s) => s.kind === 'choice').map((s) => s.decision), c.items.filter((x) => x.type === 'decision').map((x) => x.id));
+    assert.deepEqual(sc.shots.filter((s) => s.kind === 'reply').map((s) => s.talk), c.items.filter((x) => x.type === 'talk').map((x) => x.id));
+    assert.deepEqual(sc.shots.map((s) => s.item), [...sc.shots.map((s) => s.item)].sort((a, b) => a - b), 'canon order kept'); }
+  assert.equal(scenes.reduce((t, s) => t + s.panels, 0), 1610);
+});
+test('SC-14 every word of the canon is performed: each narration line, bubble, caption and beat line appears once, unchanged', () => {
+  for (const [i, sc] of scenes.entries()) { const want = chapters[i].items.flatMap((x) => (x.type === 'panel' ? [...x.narration.map((n) => n.replace(/\s*\[COMIC\]\s*$/, '')), ...x.bubbles.map((b) => b.text), ...(x.caption ? [x.caption] : [])] : x.type === 'beat' ? x.lines.map((l) => l.text) : []));
+    assert.deepEqual(sc.shots.flatMap((s) => (s.lines || []).map((l) => l.text)), want, index[i].id); }
+});
+test('SC-15 every one of the canon’s 250 discoveries is hidden in a shot, inside the frame, exactly once', () => {
+  const hs = scenes.flatMap((s) => s.shots.flatMap((x) => x.hotspots || [])); assert.equal(hs.length, 250); assert.equal(new Set(hs.map((h) => h.discovery)).size, 250);
+  for (const h of hs) { assert.ok(h.x >= 0 && h.y >= 0 && h.x + h.w <= 1 && h.y + h.h <= 1, h.id); assert.ok(h.to > h.from && h.label.length > 2, h.id); }
+  for (const [i, sc] of scenes.entries()) for (const s of sc.shots) for (const h of s.hotspots || []) assert.ok(h.to <= s.dur + 1e-9 && E.SC.hotspotsAt(s, h.to).includes(h), `${index[i].id} ${h.id}`);
+});
+test('SC-16 cards carry every other canon item, so nothing is left out of the played chapter', () => {
+  for (const [i, sc] of scenes.entries()) { const seen = new Set([...sc.shots.filter((s) => s.kind !== 'card').map((s) => s.item), ...sc.shots.flatMap((s) => s.cards || [])]); const disc = chapters[i].items.map((x, k) => (x.type === 'discovery' ? k : -1)).filter((k) => k >= 0);
+    assert.equal(seen.size + disc.length, chapters[i].items.length, index[i].id); }
+});
+test('SC-17 timings follow the words, lines never overlap, and staging is deterministic', () => {
+  assert.equal(E.SC.lineSeconds('One two three.'), 1.6); assert.equal(E.SC.lineSeconds(Array(26).fill('w').join(' ')), 10);
+  for (const sc of scenes) for (const s of sc.shots) { if (!s.lines) continue; for (let k = 1; k < s.lines.length; k += 1) assert.ok(s.lines[k].at >= s.lines[k - 1].at + s.lines[k - 1].dur); assert.ok(s.dur >= 3); const last = s.lines[s.lines.length - 1]; if (last) { assert.ok(last.at + last.dur <= s.dur); assert.equal(E.SC.lineAt(s, last.at + 0.1), last); } }
+  assert.deepEqual(E.SC.buildScene(chapters[20]), scenes[20]); assert.ok(scenes.every((s) => s.shots.filter((x) => x.kind === 'live').every((x) => E.SC.CAMERAS.includes(x.camera))));
+});
+test('SC-18 a choice holds the scene: the player cannot move past a decision or a reply until it is made', () => {
+  const k = index.findIndex((c) => c.id === 's01e00'); const sc = scenes[k]; const first = sc.shots.findIndex((s) => s.kind === 'choice' || s.kind === 'reply'); let st = E.emptyChapter();
+  assert.equal(E.SC.frontier(sc, st), first); assert.equal(E.SC.mayPass(sc.shots[first], st), false);
+  const shot = sc.shots[first]; if (shot.kind === 'choice') { const d = chapters[k].items[shot.item]; st = E.choose(st, d, d.options.find((o) => !o.fail).letter).state; } else st = E.answerTalk(st, shot.talk, 0);
+  assert.ok(E.SC.frontier(sc, st) > first); const r = E.SC.recap(sc, st); assert.equal(r.found, 0); assert.equal(r.hidden, r.missed.length); assert.ok(r.minutes > 1);
+});
+test('SC-19 the whole story has a running time that can be stated: the sum of its staged shots', () => {
+  const hours = scenes.reduce((t, s) => t + s.dur, 0) / 3600; assert.ok(hours > 3 && hours < 30, String(hours));
 });
