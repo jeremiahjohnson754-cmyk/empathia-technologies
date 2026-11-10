@@ -50,7 +50,7 @@ for (const [role, pick] of [['designer', true], ['ops', false], ['syseng', true]
   ok(`A-13-${role}`, `${role}: “Propose for the design” follows V2.5.3 scout.pick (${pick}) — absent from the DOM, never disabled`, has === pick && await t.page.locator('button[disabled]', { hasText: 'Propose' }).count() === 0, String(has));
   await t.close();
 }
-{ const t = await open('#/investor', { role: 'architect' });
+{ const t = await open('#/investor', { role: 'architect', sw: false /* an injected failure needs a page the offline worker does not answer */ });
   await t.page.route(/shell\/scouter\.js/, (r) => r.abort());
   await t.page.evaluate(() => { location.hash = '#/campus/scouter'; }); await t.page.waitForSelector('.loadfail', { timeout: 5000 }).catch(() => undefined);
   ok('A-14', 'destructive: a chunk that fails to load shows a recoverable error, not a blank page', /did not load/.test(await main(t.page)) && await t.page.locator('[role=alert] button', { hasText: 'Try again' }).count() === 1);
@@ -75,9 +75,10 @@ for (const [role, pick] of [['designer', true], ['ops', false], ['syseng', true]
   for (const v of ['abc', '99', '-1']) { await t.page.evaluate((x) => sessionStorage.setItem('empathia.demo.tour.v1', x), v); await t.page.reload(); await t.page.waitForSelector('main h1', { timeout: 5000 }).catch(() => undefined); }
   ok('R1-04', 'a damaged tour step (abc, 99, -1) in session storage leaves the shell working: heading, no page error', await t.page.locator('main h1').count() === 1 && !t.errs.some((e) => /Cannot read|undefined/.test(e)), t.errs.join(' | '));
   // R1-05: when the main bundle cannot be fetched the page says so instead of staying blank
-  const p2 = await t.ctx.newPage(); await p2.route(/\/demo\.js$/, (r) => r.abort()); await p2.goto(t.page.url().split('#')[0]); await p2.waitForTimeout(300);
+  // in a context without the offline worker: with it, a blocked demo.js is answered from the saved copy and the page simply loads
+  const bare = await open('#/investor', { role: 'architect', sw: false }); const p2 = await bare.ctx.newPage(); await p2.route(/\/demo\.js$/, (r) => r.abort()); await p2.goto(t.page.url().split('#')[0]); await p2.waitForTimeout(300);
   ok('R1-05', 'with demo.js blocked the page shows a visible loading line that says to reload, not a blank page', /Loading the demonstration[\s\S]*reload/.test(await p2.evaluate(() => document.body.innerText)));
-  await p2.close(); await t.close(); }
+  await p2.close(); await bare.close(); await t.close(); }
 // 2026-11-09: opened with a query. The core-screens uplift replaced Search Party's plain address with a browse view ("Five ways in",
 // "Try one of these"; asserted in demo-core.test.mjs), so the result rows this check measures exist once something is searched.
 for (const w of [390, 1440]) { const t = await open('#/search?q=switch', { role: 'architect', w }); await t.page.waitForSelector('.sp__list b', { timeout: 5000 }).catch(() => undefined);

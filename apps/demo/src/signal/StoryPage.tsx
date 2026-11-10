@@ -15,6 +15,8 @@ import { BANDS, answerTalk, choose, complete, emphasis, emptyChapter, find, load
 type Flags = Record<string, { type: string; title: string; detail?: string }>;
 let ixCache: Promise<StoryIndex> | null = null; let flagCache: Promise<Flags> | null = null; let defsReady: Promise<void> | null = null;
 export const getJson = <T,>(url: string): Promise<T> => fetch(url).then((r) => { if (!r.ok) throw new Error(`${url} ${r.status}`); return r.json() as Promise<T>; });
+/** A failed read while the browser reports no connection: the file is simply not on this device. */
+export const notKept = () => typeof navigator !== 'undefined' && navigator.onLine === false;
 export const loadIndex = () => (ixCache ||= getJson<StoryIndex>('signal/index.json').catch((e) => { ixCache = null; throw e; }));
 const loadFlags = () => (flagCache ||= getJson<Flags>('signal/flags.json').catch(() => ({} as Flags)));
 /** The shared sprite sheet (figures, props, backgrounds) is first-party art shipped with the build; it is put in the page once so panels can refer to it. */
@@ -78,7 +80,7 @@ function Reader({ ix, id, progress, commit }: { ix: StoryIndex; id: string; prog
   const items = ch.data?.items || []; const upTo = reached(items, state, progress.gates); const finished = ch.data ? complete(items, state) : false;
   useEffect(() => { if (ch.data && finished && !state.done) set({ ...state, done: true }); });   // a chapter is read once every decision in it is made
   const t = useMemo(() => tally(items, state), [items, state]); const next = nextOf(ix, id);
-  if (ch.error) return <div className="sg" data-testid="story-error"><h1 tabIndex={-1}>{ref.title} did not load</h1><p className="lead">This chapter’s file could not be read ({ch.error}). Your progress is untouched.</p><p><a className="ui-btn ui-btn--primary" href="#/story">Back to the library</a></p></div>;
+  if (ch.error) return <div className="sg" data-testid="story-error"><h1 tabIndex={-1}>{ref.title} did not load</h1>{notKept() ? <p className="lead" data-testid="story-not-kept">You are offline and this chapter is not kept on this device. Chapters you have already opened, and seasons kept from <a href="#/offline">Offline and this device</a>, open without a connection. Your progress is untouched.</p> : <p className="lead">This chapter’s file could not be read ({ch.error}). Your progress is untouched.</p>}<p><a className="ui-btn ui-btn--primary" href="#/story">Back to the library</a></p></div>;
   let panelNo = -1;
   return (
     <article className="sg sg-read" data-testid="story-reader" data-chapter={id} data-reached={upTo} data-items={items.length} aria-busy={!ch.data}>

@@ -66,7 +66,7 @@ for (const w of [320, 390]) { const t = await open('#/investor', { role: 'archit
   ok(`S-${w}-16`, `${w} px: no console error`, !t.errs.length, t.errs.join(' | ')); await t.close(); }
 
 // destructive: the records chunk fails to load → the bar says so and the page keeps working; typing again retries
-{ const t = await open('#/investor', { role: 'architect' }); const p = t.page;
+{ const t = await open('#/investor', { role: 'architect', sw: false /* an injected failure needs a page the offline worker does not answer */ }); const p = t.page;
   await p.route('**/chunks/records-*.js', (r) => r.abort());
   await p.keyboard.press('Control+k'); await p.keyboard.type('camera'); await p.waitForTimeout(900);
   const said = await p.locator('.find__warn, .find__none').first().innerText().catch(() => '');

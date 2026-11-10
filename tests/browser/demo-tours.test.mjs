@@ -56,7 +56,7 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   const tr = await t.page.evaluate(() => { const s = document.querySelector('.tour-spot'); return s ? getComputedStyle(s).transitionDuration : 'none'; });
   ok('TR-reduced-motion', 'under reduced motion the spotlight has no transition', /^(0s|none)/.test(tr) && !t.errs.length, tr); await t.close(); }
 // destructive: the narration fails to load (network lost) → the transcript stands in; rapid double-taps on Next never overshoot
-{ const t = await open([390, 844], SCHEMES[0], { hash: '#/tours' }); await t.page.route('**/media/narration/**', (r) => r.abort());
+{ const t = await open([390, 844], SCHEMES[0], { hash: '#/tours', sw: false /* an injected failure needs a page the offline worker does not answer */ }); await t.page.route('**/media/narration/**', (r) => r.abort());
   await t.go('#/tours/a?stop=5', 700); await t.page.evaluate(() => document.querySelector('[data-testid="narration"] audio')?.play().catch(() => {})); await t.page.waitForTimeout(800);
   ok('TR-lost-network', 'when the take cannot load, the stop says so and the transcript remains', /could not be loaded/.test(await t.page.locator('[data-testid="narration"]').innerText()) && (await t.page.locator('[data-testid="narration"] details').count()) === 1);
   const next = t.page.locator('[data-testid="guided"] button:has-text("Next")'); for (let i = 0; i < 12; i += 1) await next.click({ timeout: 300 }).catch(() => {});

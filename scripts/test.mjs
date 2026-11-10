@@ -39,7 +39,7 @@ function suite(name, kind, cmd, args, parse, opts = {}) {
 }
 
 const node = process.execPath;
-for (const p of ['packages/commissioning-engine', 'packages/event-contracts', 'packages/relationship-engine', 'packages/search-party', 'packages/project-governance', 'packages/service-engine', 'packages/apex-engine', 'packages/kpi-engine', 'packages/proof-registry', 'packages/field-intelligence', 'packages/assurance-engine', 'packages/observability', 'packages/api-client', 'packages/schemas', 'integrations/contracts', 'integrations/mocks']) {
+for (const p of ['packages/commissioning-engine', 'packages/event-contracts', 'packages/relationship-engine', 'packages/search-party', 'packages/project-governance', 'packages/service-engine', 'packages/apex-engine', 'packages/kpi-engine', 'packages/proof-registry', 'packages/field-queue', 'packages/field-intelligence', 'packages/assurance-engine', 'packages/observability', 'packages/api-client', 'packages/schemas', 'integrations/contracts', 'integrations/mocks']) {
   const dir = path.join(root, p, 'dist/test');
   suite(`unit: ${p}`, 'unit', node, ['--test', `${p}/dist/test/**/*.test.js`], tap, fs.existsSync(dir) ? {} : { skip: 'not built (node scripts/build.mjs)' });
 }
@@ -74,9 +74,10 @@ suite('unit: demo worlds (four worlds, 52 role configurations, no-loss, no grant
 suite('unit: demo estates (one model, University 38 classrooms / 4 dormitories / 3 campuses, Stadium, Convention)', 'unit', node, ['--test', 'tests/unit/demo-estates.test.mjs'], tap);
 suite('unit: Space Optimizer engine (nine dimensions, options A/B/C, stated rules, every world)', 'unit', node, ['--test', 'tests/unit/demo-optimizer.test.mjs'], tap);
 suite('unit: SIGNAL canon (hash manifest, 133 chapters / 1,610 panels / 387 decisions, engine rules, every chapter readable)', 'unit', node, ['--test', 'tests/unit/signal-canon.test.mjs'], tap);
+suite('unit: offline worker and its build step (atomic install, shells kept across builds, network-first with fallback, ranged answers, packs)', 'unit', node, ['--test', 'tests/unit/demo-offline.test.mjs'], tap);
 suite('unit: game day state machine (phases, faults on estate records, holds, independent verification, public view)', 'unit', node, ['--test', 'tests/unit/demo-gameday.test.mjs'], tap);
 suite('unit: demo core screens (health, spine, campus aggregates)', 'unit', node, ['--test', 'tests/unit/demo-core-metrics.test.mjs'], tap);
-for (const s of ['demo-campus', 'demo-rooms', 'demo-lite', 'demo-tours', 'demo-searchbar', 'demo-search-scenarios', 'demo-core', 'demo-proof', 'demo-worlds', 'demo-estate', 'demo-optimizer', 'demo-story', 'demo-gameday', 'demo-play']) suite(`browser: ${s}`, 'browser', node, [`tests/browser/${s}.test.mjs`], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? { timeout: 1200000 } : { skip: 'demo not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
+for (const s of ['demo-campus', 'demo-rooms', 'demo-lite', 'demo-tours', 'demo-searchbar', 'demo-search-scenarios', 'demo-core', 'demo-proof', 'demo-worlds', 'demo-estate', 'demo-optimizer', 'demo-story', 'demo-gameday', 'demo-play', 'demo-offline']) suite(`browser: ${s}`, 'browser', node, [`tests/browser/${s}.test.mjs`], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? { timeout: 1200000 } : { skip: 'demo not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
 const studio = fs.existsSync(path.join(root, 'apps/founder-studio/dist/index.html'));
 suite('browser: Founder Studio', 'browser', node, ['tests/browser/founder-studio.test.mjs'], custom, has('--studio') ? (studio ? {} : { skip: 'studio not built (node scripts/build.mjs --studio)' }) : { skip: 'pass --studio' });
 suite('e2e: founder town hall (Founder Edition)', 'e2e', node, ['tests/e2e/founder-townhall.e2e.mjs'], custom, has('--studio') ? (studio ? {} : { skip: 'studio not built' }) : { skip: 'pass --studio' });

@@ -62,12 +62,15 @@ await suite('learn-labs', 4488, async ({ ok, open, goto, over, text, smallTarget
       const cleared = /\b0\b lab\(s\) passed/.test(await text(page)); await page.click('[data-testid=undo]'); await page.waitForTimeout(100);
       ok('LL-20', 'the results are cleared, and Undo brings them back', cleared && /\b[1-9]\d* lab\(s\) passed/.test(await text(page)));
       // lost library
-      await ctx.route(/signal-lib\.json/, (r) => r.abort('failed'));
-      const p2 = await ctx.newPage(); const e2 = []; p2.on('pageerror', (e) => e2.push(e.message)); await p2.goto(page.url().replace(/#.*/, '#/learn/labs')); await p2.waitForSelector('[data-testid=lib-error]', { timeout: 8000 }).catch(() => {});
+      // in its own context without the offline worker: the worker answers signal-lib.json from its saved copy, so a failure injected
+      // with route() would never reach the page (demo-ops-harness.mjs). What the worker does with a lost library is in demo-offline.
+      const lost = await open(w, hgt, { sw: false }); await lost.page.goto(page.url().replace(/#.*/, '#/investor')); await lost.page.evaluate(() => { try { localStorage.setItem('empathia.demo.perspective', 'service'); } catch {} });
+      await lost.ctx.route(/signal-lib\.json/, (r) => r.abort('failed'));
+      const p2 = await lost.ctx.newPage(); const e2 = []; p2.on('pageerror', (e) => e2.push(e.message)); await p2.goto(page.url().replace(/#.*/, '#/learn/labs')); await p2.waitForSelector('[data-testid=lib-error]', { timeout: 8000 }).catch(() => {});
       ok('LL-21', 'when the SIGNAL library cannot load, the page says so, keeps the instrument labs and offers Try again', (await p2.locator('[data-testid=lib-error] button').count()) === 1 && (await p2.locator('[data-testid=instruments] [data-lab]').count()) === 3 && !e2.length);
-      await ctx.unroute(/signal-lib\.json/); await p2.click('[data-testid=lib-error] button'); await p2.waitForSelector('[data-testid=signal-labs] [data-lab]', { timeout: 8000 }).catch(() => {});
+      await lost.ctx.unroute(/signal-lib\.json/); await p2.click('[data-testid=lib-error] button'); await p2.waitForSelector('[data-testid=signal-labs] [data-lab]', { timeout: 8000 }).catch(() => {});
       ok('LL-22', 'Try again loads the library once the network is back', (await p2.locator('[data-testid=signal-labs] [data-lab]').count()) === 91);
-      await p2.close();
+      await p2.close(); await lost.ctx.close();
     }
     ok(`LL-${tag}-99`, 'no page error, no console error, no request leaves the page', !errs.filter((e) => !/Failed to load resource/.test(e)).length && !ext.length, [...errs, ...ext].slice(0, 3).join(' | '));
     await ctx.close();

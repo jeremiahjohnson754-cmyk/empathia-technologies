@@ -18,7 +18,8 @@ export async function suite(name, port, body) {
   const browser = await chromium.launch();
   /** A fresh page with error/request capture; `allow` filters expected console errors (e.g. a deliberately failed chunk). */
   const open = async (w, h, opts = {}) => {
-    const ctx = await browser.newContext({ viewport: { width: w, height: h }, reducedMotion: opts.reducedMotion || 'no-preference', ...(process.env.PW_COLOR_SCHEME ? {} : { colorScheme: 'light' }) });
+    // opts.sw === false opens the context without the offline worker: a failure injected with route() never reaches a page whose requests the offline worker answers (the saved copy is served instead, which is the worker's purpose and is tested in demo-offline). The failure path is therefore tested in a context without the worker.
+    const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: opts.sw === false ? 'block' : 'allow', reducedMotion: opts.reducedMotion || 'no-preference', ...(process.env.PW_COLOR_SCHEME ? {} : { colorScheme: 'light' }) });
     const page = await ctx.newPage(); const errs = []; const ext = [];
     page.on('pageerror', (e) => errs.push(e.message)); page.on('console', (m) => { if (m.type() === 'error' && !(opts.allow && opts.allow.test(m.text()))) errs.push(m.text()); });
     page.on('request', (r) => { if (!r.url().startsWith(base)) ext.push(r.url()); });

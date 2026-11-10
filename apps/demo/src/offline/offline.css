@@ -1,0 +1,22 @@
+/* Offline and this device (#/offline) and the shell's offline strip, on the shared tokens. */
+.of-strip { display: flex; gap: var(--sp-2); align-items: center; padding: 10px var(--sp-4); margin: 0 0 var(--sp-3); border: 1px solid var(--line3); border-left: 4px solid var(--warn); border-radius: var(--r-md); background: var(--panel2); color: var(--tx); font-size: var(--fs-sm); line-height: 1.45; }
+.of-strip--none { display: none; }
+.of-strip a { margin-left: 6px; white-space: nowrap; }
+.of-strip[data-online="true"] { border-left-color: var(--ok); }
+.of .lead { max-width: 68ch; }
+.of-acts { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; margin-top: var(--sp-3); }
+.of-acts .ui-btn, .of-pack .ui-btn { min-height: var(--target-min, 44px); }
+.of-confirm { display: inline-flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; }
+.of-works { list-style: none; margin: 0 0 var(--sp-3); padding: 0; display: grid; }
+.of-works li { display: grid; grid-template-columns: minmax(9rem, 14rem) 1fr; gap: var(--sp-3); padding: 10px 0; border-bottom: 1px solid var(--line2); align-items: baseline; }
+.of-works li a { font-weight: 600; }
+.of-works li span { color: var(--tx2); min-width: 0; }
+.of-h3 { font-size: var(--fs-md); margin: var(--sp-4) 0 var(--sp-2); }
+.of-packs { list-style: none; margin: var(--sp-2) 0 0; padding: 0; display: grid; }
+.of-pack { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-4); align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--line2); }
+.of-pack__t { display: grid; gap: 2px; min-width: 0; flex: 1 1 16rem; }
+.of-pack .kit-progress { flex: 1 1 12rem; max-width: 22rem; }
+@media (max-width: 560px) {
+  .of-works li { grid-template-columns: 1fr; gap: 2px; }
+  .of-pack .ui-btn { flex: 1 1 100%; }
+}

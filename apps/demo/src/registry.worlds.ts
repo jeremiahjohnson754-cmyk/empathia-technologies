@@ -52,6 +52,12 @@ export const WORLD_PAGES: readonly PageDef[] = [
     search: { keywords: 'game day stadium event clock kick-off gates halftime broadcast fault incident readiness simulation', aliases: ['gameday', 'game day'] },
   },
   {
+    id: 'offline', title: 'Offline and this device', purpose: 'Whether the app is saved on this device, what works without a connection, and the packs you can keep', product: 'shell',
+    path: '/offline', authority: OPEN,
+    load: () => import('./offline/OfflinePage.js'),
+    search: { keywords: 'offline device save install connection no signal download keep packs storage phone field', aliases: ['offline', 'offline use', 'this device'] },
+  },
+  {
     id: 'optimizer', title: 'Space Optimizer', purpose: 'Three ways to equip a room, scored on nine dimensions by a stated planning model', product: 'pro',
     path: '/optimizer/:world', alias: ['/optimizer/:world/:room'], authority: OPEN,
     load: () => import('./optimizer/OptimizerPage.js'),

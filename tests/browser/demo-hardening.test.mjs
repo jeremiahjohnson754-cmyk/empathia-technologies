@@ -8,7 +8,8 @@ import { suite } from './demo-ops-harness.mjs';
 const WS = [['#/service', 'Dispatch board', 'dispatch'], ['#/servicehands', 'ServiceHands', 'servicehands'], ['#/replay/R-ATL-4-218', 'Core Replay', 'replay'], ['#/v25/fi/scan/R-ATL-4-218', 'Field Intelligence scan', 'fiscan'], ['#/v25/decisions', 'Decisions', 'decisions'], ['#/learn/labs', 'Learn labs', 'labs'], ['#/hardening', 'Resilience', 'resilience']];
 await suite('demo-hardening', 4487, async ({ ok, open, goto, over, base, VIEWPORTS }) => {
   for (const [w, hgt, tag] of VIEWPORTS) {
-    const { ctx, page, errs, ext } = await open(w, hgt, { allow: /Failed to load resource|demonstration: a drawing failure|The above error occurred/ });
+    // sw: false — this suite injects chunk-load failures with route(), which the offline worker would answer from its saved copy (demo-ops-harness.mjs)
+    const { ctx, page, errs, ext } = await open(w, hgt, { sw: false, allow: /Failed to load resource|demonstration: a drawing failure|The above error occurred/ });
     for (const [href, name] of WS) {
       await goto(page, href, 'svcmgr');
       const v = await page.evaluate(() => ({ h1: document.querySelectorAll('main h1').length, fail: !!document.querySelector('[data-testid=workspace-failure]'), over: document.documentElement.scrollWidth - innerWidth }));

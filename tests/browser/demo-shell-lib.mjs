@@ -14,8 +14,12 @@ export async function harness(name) {
   const browser = await chromium.launch(); const results = []; let failed = 0; const scheme = process.env.PW_COLOR_SCHEME || 'default';
   const ok = (id, title, cond, detail = '') => { results.push({ id, title, result: cond ? 'PASS' : 'FAIL', detail: String(detail).slice(0, 300) }); if (!cond) failed += 1; console.log(`${cond ? 'PASS' : 'FAIL'} ${id} ${title}${cond ? '' : ' — ' + String(detail).slice(0, 300)}`); };
   /** a page with the role chosen before load; `errs` collects console errors, `reqs` every request path */
-  async function open(hash, { role = 'architect', w = 1440, h = 900, theme, reduced, colorScheme } = {}) {
-    const ctx = await browser.newContext({ viewport: { width: w, height: h }, reducedMotion: reduced ? 'reduce' : 'no-preference', ...(colorScheme ? { colorScheme } : {}) });
+  // The offline worker (dist/sw.js) registers in every context, as it does for a visitor, so each suite runs with the worker in control
+  // once it has installed. A suite can open a context without it (`sw: false`); PW_SERVICE_WORKER=block runs a whole suite without it.
+  const swDefault = process.env.PW_SERVICE_WORKER !== 'block';
+  async function open(hash, { role = 'architect', w = 1440, h = 900, theme, reduced, colorScheme, sw = swDefault, init } = {}) {
+    const ctx = await browser.newContext({ viewport: { width: w, height: h }, reducedMotion: reduced ? 'reduce' : 'no-preference', serviceWorkers: sw ? 'allow' : 'block', ...(colorScheme ? { colorScheme } : {}) });
+    if (init) await ctx.addInitScript(init);
     await ctx.addInitScript(([r, t]) => { try { if (!sessionStorage.getItem('__seeded')) { localStorage.setItem('empathia.demo.perspective', r); if (t) localStorage.setItem('empathia.theme', t); else localStorage.removeItem('empathia.theme'); sessionStorage.setItem('__seeded', '1'); } } catch { /* */ } }, [role, theme || '']);
     const page = await ctx.newPage(); const errs = []; const reqs = []; const off = [];
     page.on('pageerror', (e) => errs.push(e.message)); page.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()); });

@@ -22,6 +22,7 @@ import { useRoleState } from './viewas/role.js';
 import { TourPanel } from './tour/Tour.js';
 import { ContactLinks } from './enquiry/WorkWith.js';
 import { ENQUIRY } from './enquiry.js';
+import { OfflineStrip } from './offline/Strip.js';
 
 const START = '#/investor';
 /** The address the router reads: an in-page anchor (#problems) or an empty hash is the investor start. */
@@ -99,13 +100,13 @@ export function App() {
       <div className="demo" data-r={role}>
         <Shell role={role} hash={route} at={d.kind === 'page' ? d.at : null} onViewAs={() => setSheet(true)} onRole={(r) => switchTo(r)}>
           <TourPanel hash={hash} onPerspective={(p) => { if (ROLE_KEYS.includes(p as RoleKey)) switchTo(p as RoleKey, { tour: true }); }} />
-          <div className="wrap">{body}</div>
+          <div className="wrap"><OfflineStrip />{body}</div>
         </Shell>
         <ViewAsSheet open={sheet} role={role} onPick={(r) => switchTo(r)} onClose={() => setSheet(false)} />
         <RoleVeil show={veil} />
         <p id="route-announcer" className="ui-sr" aria-live="polite" aria-atomic="true">{said}</p>
         {/* the ONE synthetic-data line (QUALITY_UPLIFT: no per-page banner; V2.5.3 shows a chip by the logo and one footer line) */}
-        <footer className="foot"><span className="ui-tag ui-tone--warn foot__tag">Synthetic data</span> <span id="persp-note">Everything here is invented and connected to no real system; viewing as a role grants nothing.</span><span className="foot__more"> The only way out is Empathia's enquiry form on {ENQUIRY.host}.</span> <a href="#/investor">Back to the start</a><ContactLinks /></footer>
+        <footer className="foot"><span className="ui-tag ui-tone--warn foot__tag">Synthetic data</span> <span id="persp-note">Everything here is invented and connected to no real system; viewing as a role grants nothing.</span><span className="foot__more"> The only way out is Empathia's enquiry form on {ENQUIRY.host}.</span> <a href="#/investor">Back to the start</a> <a href="#/offline" data-testid="foot-offline">Offline use</a><ContactLinks /></footer>
       </div>
     </ViewAsContext.Provider>
   );

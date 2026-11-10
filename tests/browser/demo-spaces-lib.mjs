@@ -21,7 +21,8 @@ export async function harness(name) {
   const ok = (id, title, cond, detail = '') => { results.push({ id, title, result: cond ? 'PASS' : 'FAIL', detail: String(detail).slice(0, 400) }); if (!cond) failed += 1; console.log(`${cond ? 'PASS' : 'FAIL'} ${id} ${title}${cond ? '' : ` — ${String(detail).slice(0, 300)}`}`); };
   async function open(viewport, scheme, opts = {}) {
     const [w, h] = viewport;
-    const ctx = await browser.newContext({ viewport: { width: w, height: h }, colorScheme: scheme, reducedMotion: opts.reducedMotion || 'no-preference' });
+    // opts.sw === false opens the context without the offline worker: a failure injected with route() never reaches a page whose requests the offline worker answers (the saved copy is served instead, which is the worker's purpose and is tested in demo-offline). The failure path is therefore tested in a context without the worker.
+    const ctx = await browser.newContext({ viewport: { width: w, height: h }, colorScheme: scheme, serviceWorkers: opts.sw === false ? 'block' : 'allow', reducedMotion: opts.reducedMotion || 'no-preference' });
     const page = await ctx.newPage(); const errs = []; const ext = [];
     page.on('pageerror', (e) => errs.push(e.message)); page.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()); });
     page.on('request', (r) => { if (!r.url().startsWith(base) && !r.url().startsWith('data:')) ext.push(r.url()); });
