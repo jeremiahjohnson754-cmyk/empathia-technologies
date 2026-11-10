@@ -213,3 +213,8 @@
   .lt-fleet li { grid-template-columns: minmax(0, 1fr); }
   .lt-nav__brand { width: 100%; }
 }
+/* the 90-room estate on Lite's home: nine sectors, five rooms each */
+.lt-sectors { display: flex; flex-wrap: wrap; gap: 6px; margin: var(--sp-2) 0 var(--sp-3); }
+.lt-sector { min-height: var(--target-min, 44px); padding: 8px 14px; border: 1px solid var(--line2); border-radius: var(--r-pill); background: var(--panel); color: var(--tx2); font: inherit; font-size: var(--fs-sm); cursor: pointer; }
+.lt-sector:hover { border-color: var(--accent); color: var(--tx); }
+.lt-sector[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-bg); color: var(--tx); font-weight: 700; }

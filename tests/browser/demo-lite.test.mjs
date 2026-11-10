@@ -16,7 +16,10 @@ const lum = (page, sel) => page.evaluate((s) => { const el = document.querySelec
 for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/lite' });
   const home = await t.page.evaluate(() => ({ h1: document.querySelector('main h1')?.textContent || '', blds: document.querySelectorAll('[data-testid^="lite-bld-"]').length, lenses: document.querySelectorAll('[data-testid^="lite-lens-"]').length, plan: document.querySelectorAll('[data-testid^="lite-room-"]').length, scouter: !!document.querySelector('[data-testid="lite-scouter-card"]'), nav: document.querySelectorAll('.lt-nav a').length }));
-  ok(`LT-${tag}-01`, 'Lite opens on the campus: six buildings in 3D, six lenses for the architect, the fifteen plan rooms, Scouter in Lite (D41)', /Northstar/.test(home.h1) && home.blds === 6 && home.lenses === 6 && home.plan === 15 && home.scouter && home.nav >= 8, JSON.stringify(home));
+  // 10 Nov 2026: 15 → 20 room cards on Lite's home: the fifteen plan rooms, then the first of nine sectors (five rooms) of the 90-room estate
+  ok(`LT-${tag}-01`, 'Lite opens on the campus: six buildings in 3D, six lenses for the architect, the fifteen plan rooms and one sector of five more, Scouter in Lite (D41)', /Northstar/.test(home.h1) && home.blds === 6 && home.lenses === 6 && home.plan === 20 && home.scouter && home.nav >= 8, JSON.stringify(home));
+  { await t.page.locator('[data-testid="lite-sector"]').nth(3).click(); await t.page.waitForTimeout(150); const sec = await t.page.evaluate(() => ({ n: document.querySelectorAll('[data-testid="lite-sector"]').length, on: document.querySelector('[data-testid="lite-sector"][aria-pressed="true"]')?.textContent, cards: Array.from(document.querySelectorAll('[data-testid="lite-estate"] [data-testid^="lite-room-"]')).map((a) => a.getAttribute('data-testid')) }));
+    ok(`LT-${tag}-01b`, 'the 45 additions are browsed a sector at a time: nine sectors, five rooms each, and choosing one changes the five', sec.n === 9 && sec.on === 'Health / research' && sec.cards.length === 5 && sec.cards.every((c) => /lite-room-R-WMR-/.test(c)), JSON.stringify(sec)); }
   ok(`LT-${tag}-02`, 'the campus stage stays dark in either theme (D36)', (await lum(t.page, '[data-testid="lite-campus-card"] .stage')) < 0.25);
   ok(`LT-${tag}-03`, 'no horizontal overflow on the Lite home', (await t.overflow()) <= 0, await t.overflow());
   if (vp[2] === 'desktop') await t.page.screenshot({ path: path.join(out, `${tag}-home.png`), fullPage: true });
@@ -26,7 +29,8 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   await t.page.click('[data-testid="lite-floor-1"]'); await t.page.waitForTimeout(300);
   const fl = await t.page.evaluate(() => ({ plan: !!document.querySelector('[data-testid="lite-floorplan"]'), tiles: document.querySelectorAll('[data-testid="lite-floorplan"] a').length, cards: document.querySelectorAll('[data-testid^="lite-room-"]').length }));
   ok(`LT-${tag}-05`, 'a floor shows its rooms on a floor plan and as cards (same count)', fl.plan && fl.tiles >= 2 && fl.tiles === fl.cards, JSON.stringify(fl));
-  await t.go('#/lite/b/NST/1'); ok(`LT-${tag}-06`, 'an empty floor says so rather than going blank', /No modelled room on this floor/.test(await t.text()), (await t.text()).slice(0, 100));
+  // 10 Nov 2026: NST floor 3, not floor 1: the 90-room estate put two rooms on floor 1, so it is no longer an empty floor
+  await t.go('#/lite/b/NST/3'); ok(`LT-${tag}-06`, 'an empty floor says so rather than going blank', /No modelled room on this floor/.test(await t.text()), (await t.text()).slice(0, 100));
   // the rooms: all 90 at desktop (45 until 10 Nov 2026), a sample on phone and tablet
   const list = vp[2] === 'desktop' ? ids : SAMPLE; const bad = [];
   for (const id of list) {

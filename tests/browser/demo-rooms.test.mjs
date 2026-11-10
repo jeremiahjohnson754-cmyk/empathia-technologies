@@ -20,7 +20,7 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
     const v = await t.page.evaluate(() => ({ room: document.querySelector('[data-testid="room-view"]')?.getAttribute('data-room'), stage: !!document.querySelector('[data-testid="room-3d"]'), over: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
     if (v.room !== id || !v.stage || v.over > 0) bad.push(`${id} ${JSON.stringify(v)}`);
   }
-  ok(`RM-${tag}-01`, `${list.length === ids.length ? `all ${ids.length} rooms open` : `a sample of ${list.length} rooms opens`} in the room view with a 3D stage and no overflow`, list.length >= 5 && !bad.length && (vp[2] !== 'desktop' || (list.length === ids.length && ids.length === 45)), bad.slice(0, 3).join(' | '));
+  ok(`RM-${tag}-01`, `${list.length === ids.length ? `all ${ids.length} rooms open` : `a sample of ${list.length} rooms opens`} in the room view with a 3D stage and no overflow`, list.length >= 5 && !bad.length && (vp[2] !== 'desktop' || (list.length === ids.length && ids.length === 90)), bad.slice(0, 3).join(' | '));
   await t.go(href('R-ATL-4-218'), 300);
   const lum = await t.page.evaluate(() => { const m = getComputedStyle(document.querySelector('[data-testid="room-stage"]')).backgroundColor.match(/\d+/g).map(Number); return (0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]) / 255; });
   ok(`RM-${tag}-02`, 'the room stage stays dark in either theme (D36)', lum < 0.25, lum);

@@ -178,13 +178,13 @@ for (const scheme of SCHEMES) {
   await t.go('#/room/R-MER-1-300', 600);
   ok(`CORE-${scheme}-ops-01`, 'a control-tower room is labelled simulated, non-operational', /non-operational/.test(await t.page.locator('[data-testid="room-chips"]').innerText()));
   await t.go('#/campus', 600); await t.page.click('.campus__view button:has-text("List")'); await t.page.waitForTimeout(200);
-  ok(`CORE-${scheme}-list-01`, 'campus: the list alternative shows every building and site with health bars', (await t.page.locator('[data-testid="campus-list-rows"] .kit-meter').count()) === 8 && (await t.page.locator('[data-testid="campus-stage"]').count()) === 0);
+  ok(`CORE-${scheme}-list-01`, 'campus: the list alternative shows every building and site with health bars', (await t.page.locator('[data-testid="campus-list-rows"] .kit-meter').count()) === 13 /* 8 until 10 Nov 2026: six buildings and now seven other sites (the 90-room estate) */ && (await t.page.locator('[data-testid="campus-stage"]').count()) === 0);
   await t.page.reload(); await t.page.waitForTimeout(600);
   ok(`CORE-${scheme}-list-02`, 'the choice is remembered for this viewer', (await t.page.locator('[data-testid="campus-list-rows"]').count()) === 1);
   await t.page.click('.campus__view button:has-text("3D map")'); await t.page.waitForTimeout(200);
   ok(`CORE-${scheme}-list-03`, 'and the 3D map comes back', (await t.page.locator('[data-testid="campus-stage"]').count()) === 1);
   await t.go('#/campus/LKS', 600);
-  ok(`CORE-${scheme}-site-01`, 'a regional site opens: its rooms listed, a note instead of the campus map', (await t.page.locator('[data-testid="regional-note"]').count()) === 1 && (await t.page.locator('[data-testid="room-list"] tbody tr').count()) === 2);
+  ok(`CORE-${scheme}-site-01`, 'a regional site opens: its rooms listed, a note instead of the campus map', (await t.page.locator('[data-testid="regional-note"]').count()) === 1 && (await t.page.locator('[data-testid="room-list"] tbody tr').count()) === 3 /* 2 until 10 Nov 2026: Lakeshore gained the coworking neighbourhood (ADD-43) */);
   ok(`CORE-${scheme}-more-clean`, 'no page error and no request leaves the page', !t.errs.length && !t.ext.length, [...t.errs, ...t.ext].join(' | '));
   await t.close();
 }

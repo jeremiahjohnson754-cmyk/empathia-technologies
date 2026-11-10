@@ -11,7 +11,7 @@ import { useMemo, useState, type ReactNode } from 'react';
 import { PageHero, Card, Chip, ScoreRing, MeterRow, StatusDot, bandOf, Icon, EmptyState, type IconName } from '@empathia/ui';
 import type { PageProps, RoleKey } from '../registry.types.js';
 import { allows } from '../access/policy.js';
-import { SITE, PLAN_ROOMS, shortName, buildingByKey } from '../campus/canon.js';
+import { SITE, PLAN_ROOMS, ESTATE_ROOMS, REGIONAL_SITES, BUILDINGS, shortName, buildingByKey } from '../campus/canon.js';
 import { roomRecord, openIssues } from '../campus/design.js';
 import { LIFE_TONE } from '../campus/CampusPage.js';
 import { LITE_TAGLINE, SPACES, GUIDES, VISITOR_PATH, CAMPUS_PLAZA } from './data/v253.js';
@@ -92,7 +92,7 @@ function LiteHome({ role }: PageProps) {
     <section className="lt-page" data-testid="lite-home">
       <LiteNav here="" role={role} />
       <PageHero product="lite" icon="campus" eyebrow="Empathia Lite · Living campus experience" title={SITE.name}
-        lede={<>{LITE_TAGLINE} Six buildings and two fictional regional sites, {s.rooms} rooms — {s.plan} of them added by the rooms plan — {SPACES.length} workplace spaces and {GUIDES.length} guides of {chapterCount()} chapters. Synthetic, modeled, never surveyed.</>}
+        lede={<>{LITE_TAGLINE} {BUILDINGS.length} buildings on the campus and {REGIONAL_SITES.length} fictional sites beyond it, {s.rooms} rooms — {s.plan} added by the rooms plan and {ESTATE_ROOMS.length} by the 90-room estate — {SPACES.length} workplace spaces and {GUIDES.length} guides of {chapterCount()} chapters. Synthetic, modeled, never surveyed.</>}
         meta={[<Chip key="a" small tone="ok" icon="check">{s.accepted} accepted</Chip>, <Chip key="c" small tone="warn" icon="clock">{s.commissioning} commissioning</Chip>, <Chip key="i" small tone={s.issues ? 'warn' : 'ok'} icon="alert">{s.issues} open issue{s.issues === 1 ? '' : 's'}</Chip>, <Chip key="s" small tone="muted">Synthetic campus · seed 20261020</Chip>]}
         aside={<ScoreRing value={s.score} label="Campus readiness" caption="Computed from the room records: verified tests and open issues" />} />
       <LensPicker role={role} lens={lens} onPick={pick} />
@@ -121,6 +121,7 @@ function LiteHome({ role }: PageProps) {
       <h2 className="lt-h2">Fifteen rooms of the plan</h2>
       <p className="ui-muted lt-lede">Town halls, an auditorium, war rooms, operations centres and the Global Operations Control Tower — each with one scenario. Operations rooms are simulated and non-operational.</p>
       <ul className="lt-rooms">{PLAN_ROOMS.map((o) => <li key={o.id}><RoomCard id={o.id} extra={o.scenario} /></li>)}</ul>
+      <EstateSectors />
     </section>
   );
 }
@@ -129,7 +130,20 @@ function Tile({ href, icon, title, sub }: { href: string; icon: IconName; title:
   return <li><a className="lt-tile" href={href}><span className="lt-tile__icon" aria-hidden="true"><Icon name={icon} size={20} /></span><b>{title}</b><span className="ui-muted">{sub}</span></a></li>;
 }
 
-export function RoomCard({ id, extra }: { id: string; extra?: string }) {
+export /** Rooms 46–90 of the 90-room estate, a sector at a time: nine sectors of five, each room with what it shows (docs/surpass/ENTERPRISE_90_ROOMS.md). */
+function EstateSectors() {
+  const sectors = useMemo(() => [...new Set(ESTATE_ROOMS.map((o) => o.sector!))], []); const [sector, setSector] = useState(sectors[0]!);
+  const rooms = ESTATE_ROOMS.filter((o) => o.sector === sector);
+  return (
+    <section aria-labelledby="lt-estate-h" data-testid="lite-estate" data-sector={sector}>
+      <h2 className="lt-h2" id="lt-estate-h">Forty-five more rooms, in nine sectors</h2>
+      <p className="ui-muted lt-lede">The estate beyond the first forty-five: briefing centres, broadcast and operations rooms, clinics and lecture halls, plants and galleries. Each is designed from an archetype, with one scenario. Synthetic and modeled.</p>
+      <div className="lt-sectors" role="group" aria-label="Sector">{sectors.map((x) => <button key={x} type="button" className="lt-sector" aria-pressed={x === sector} onClick={() => setSector(x)} data-testid="lite-sector">{x}</button>)}</div>
+      <ul className="lt-rooms" aria-live="polite">{rooms.map((o) => <li key={o.id}><RoomCard id={o.id} extra={`${o.scenario} Shows: ${o.roster!.showcase}.`} /></li>)}</ul>
+    </section>
+  );
+}
+function RoomCard({ id, extra }: { id: string; extra?: string }) {
   const r = roomRecord(id)!; const o = r.outline; const score = readiness(r); const n = openIssues(r).length;
   return (
     <a className="lt-room" href={liteRoomHref(id)} data-testid={`lite-room-${id}`}>
@@ -146,7 +160,7 @@ function CampusScene({ onOpen, current }: { onOpen: (k: string) => void; current
   const S = 70; const cos = Math.cos(Math.PI / 6), sin = Math.sin(Math.PI / 6); const FH = 0.36;
   const P = (x: number, y: number, z: number): [number, number] => [(x - y) * cos * S, ((x + y) * sin - z) * S];
   const pts = (a: Array<[number, number, number]>) => a.map(([x, y, z]) => P(x, y, z).map((v) => v.toFixed(1)).join(',')).join(' ');
-  const campus = ALL_SITES.filter((b) => !b.source.includes('regional'));
+  const campus = ALL_SITES.filter((b) => !REGIONAL_SITES.some((x) => x.key === b.key));   // the campus map draws its own six buildings; every other site is listed, not drawn
   const order = [...campus].sort((a, b) => a.map.x + a.map.y - (b.map.x + b.map.y));
   const W = 10, D = 8.4; const minX = P(0, D, 0)[0] - 20, maxX = P(W, 0, 0)[0] + 20, maxY = P(W, D, 0)[1] + 20;
   const minY = Math.min(P(0, 0, 0)[1], ...campus.map((b) => P(b.map.x, b.map.y, b.floors * FH)[1])) - 70;
@@ -181,7 +195,7 @@ function LiteBuilding({ role, b, f }: PageProps & { b: string; f?: string }) {
   if (floor != null && !(Number.isInteger(floor) && floor >= 1 && floor <= B.floors)) return <LiteMissing what={`floor ${f} of ${B.name}`} />;
   const s = buildingSummary(b); const floors = Array.from({ length: B.floors }, (_, i) => i + 1);
   const rooms = roomsOf(b, floor ?? undefined);
-  const regional = B.source.includes('regional');
+  const regional = REGIONAL_SITES.some((x) => x.key === B.key);
   return (
     <section className="lt-page" data-testid="lite-building">
       <LiteNav here="" role={role} />

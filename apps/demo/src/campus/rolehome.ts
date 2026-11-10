@@ -166,7 +166,7 @@ export function startFor(i: Inputs): Start {
       const triage = incidents.filter((x) => x.state === 'OPEN'); const staff = w?.staff || [];
       const load: Row[] = staff.map((s) => { const n = wos.filter((x) => x.techId === s.id).length; return { id: s.id, title: s.name.replace(' (synthetic)', ''), sub: `${plural(n, 'open work order')}${s.internal ? '' : ` · ${s.orgName || 'vendor'}`}`, tone: (n > 2 ? 'warn' : 'muted') as Tone, tag: String(n) }; }).sort((a, b) => Number(b.tag) - Number(a.tag));
       const unassigned = wos.filter((x) => !x.techId);
-      const triRows: Row[] = triage.map((x) => ({ id: x.id, title: x.title, sub: `${roomName(x.roomId, x.roomName)} · ${x.severity} · opened ${x.openedAt.slice(0, 10)}`, href: link(`#/v25/service?id=${x.id}`) || link('#/service'), tone: x.severity === 'Standard' ? 'warn' : 'bad', tag: 'To triage' }));
+      const triRows: Row[] = triage.map((x) => ({ id: x.id, title: x.title, sub: `${x.id} · ${roomName(x.roomId, x.roomName)} · ${x.severity} · opened ${x.openedAt.slice(0, 10)}`, href: link(`#/v25/service?id=${x.id}`) || link('#/service'), tone: x.severity === 'Standard' ? 'warn' : 'bad', tag: 'To triage' }));
       return { ...base, headline: `${plural(live.length, 'request')} live, ${triage.length} to triage.`,
         summary: `${plural(wos.length, 'work order')} ${wos.length === 1 ? 'is' : 'are'} open, ${unassigned.length} with nobody assigned. ${plural(staff.length, 'technician')} on the roster, ${staff.filter((s) => !s.internal).length} from a vendor.`,
         primary: primaryOf(triRows, 'Triage', 'Severity first, then who may do the work') || (open('#/service') ? { label: 'Open the dispatch board', href: '#/service', why: 'Nothing waits for triage' } : null),
