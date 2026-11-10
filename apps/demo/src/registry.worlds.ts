@@ -28,4 +28,16 @@ export const WORLD_PAGES: readonly PageDef[] = [
     path: '/world/:world/:journey', authority: OPEN,
     load: () => import('./worlds/JourneyPage.js'),
   },
+  {
+    id: 'estate', title: 'Estate', purpose: 'Every place of a world as one record: what it is, what it offers, how to reach it, and Search Party within it', product: 'lite',
+    path: '/estate/:world', alias: ['/estate/:world/:node'], authority: OPEN,
+    load: () => import('./estate/EstatePage.js'),
+    search: { keywords: 'estate places rooms classrooms dormitories suites booths sections map plan campus stadium university convention', aliases: ['estate', 'places'] },
+  },
+  {
+    id: 'optimizer', title: 'Space Optimizer', purpose: 'Three ways to equip a room, scored on nine dimensions by a stated planning model', product: 'pro',
+    path: '/optimizer/:world', alias: ['/optimizer/:world/:room'], authority: OPEN,
+    load: () => import('./optimizer/OptimizerPage.js'),
+    search: { keywords: 'space optimizer sightlines coverage audio capture reproduction accessibility options study design room layout', aliases: ['optimizer', 'space optimizer'] },
+  },
 ];

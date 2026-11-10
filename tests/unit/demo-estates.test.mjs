@@ -6,8 +6,8 @@ import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
 const out = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'demo-estates-')), 'm.mjs');
-await esbuild.build({ stdin: { contents: `export * as M from './estate/index.ts'; export * as U from './estate/university.ts'; export * as S from './estate/stadium.ts'; export * as C from './estate/convention.ts'; export * as JS from './worlds/stadium/data.public.ts'; export * as JU from './worlds/university/data.public.ts';`, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' }, bundle: true, format: 'esm', platform: 'node', outfile: out, logLevel: 'error', jsx: 'automatic', alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') }, nodePaths: [path.join(repo, 'node_modules')] });
-const { M, U, S, C, JS, JU } = await import(pathToFileURL(out).href);
+await esbuild.build({ stdin: { contents: `export * as M from './estate/index.ts'; export * as U from './estate/university.ts'; export * as S from './estate/stadium.ts'; export * as C from './estate/convention.ts'; export * as JS from './worlds/stadium/data.public.ts'; export * as JU from './worlds/university/data.public.ts'; export * as RD from './estate/reader.ts'; export * as WR from './worlds/registry.ts';`, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' }, bundle: true, format: 'esm', platform: 'node', outfile: out, logLevel: 'error', jsx: 'automatic', alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') }, nodePaths: [path.join(repo, 'node_modules')] });
+const { M, U, S, C, JS, JU, RD, WR } = await import(pathToFileURL(out).href);
 const ALL = [U.UNIVERSITY, S.STADIUM, C.CONVENTION];
 const count = (e, type) => M.ofType(e, type).length;
 
@@ -79,4 +79,32 @@ test('ES-15 Convention: the hall, theatre, session rooms, help points and the ei
   for (const x of ['Hall A', 'Keynote Theatre', 'Session Room 1', 'Session Room 2', 'Food court', 'Main entrance', 'Registration', 'First aid', 'Quiet room']) assert.ok(names.has(x), x);
   const src = fs.readFileSync(path.join(repo, 'apps/demo/src/worlds/convention/ConventionPublic.tsx'), 'utf8');
   for (const [booth, [name]] of Object.entries(C.EXHIBITORS)) { assert.ok(names.has(`Booth ${booth}`)); assert.ok(src.includes(`name: '${name}', booth: '${booth}'`), `${name} at ${booth}`); }
+});
+
+// The reader rules and Search Party in context (estate/reader.ts)
+const cfg = (id) => WR.ROLE_CONFIGS.find((r) => r.id === id);
+test('ES-16 all 52 role configurations resolve to a reader level; walk-in roles are public and never more', () => {
+  assert.equal(WR.ROLE_CONFIGS.length, 52);
+  for (const r of WR.ROLE_CONFIGS) assert.ok(M.ACCESS_ORDER.includes(RD.readerOf(r)), r.id);
+  for (const id of ['stadium.fan', 'stadium.away_fan', 'stadium.visitor', 'university.visitor', 'university.prospective_student', 'convention.convention_visitor']) assert.equal(RD.readerOf(cfg(id)), 'public', id);
+  assert.equal(RD.readerOf(cfg('university.student')), 'members'); assert.equal(RD.readerOf(cfg('stadium.guest_services')), 'staff'); assert.equal(RD.readerOf(cfg('stadium.av_it_engineer')), 'restricted');
+});
+test('ES-17 a place found by words is the record browsed to: same identifier, one record', () => {
+  const ix = M.indexOf(U.UNIVERSITY); const hits = RD.find(ix, 'members', 'lecture theatre sci-110');
+  assert.equal(hits[0].node, 'UNI-SCI-110'); assert.equal(hits[0].id, ix.byId.get('UNI-SCI-110').id); assert.equal(hits[0].kind, 'place');
+});
+test('ES-18 search never returns what the reader is not shown: no locker room for a fan, no equipment below staff', () => {
+  const ix = M.indexOf(S.STADIUM);
+  assert.equal(RD.find(ix, 'public', 'locker').length, 0); assert.equal(RD.find(ix, 'members', 'locker').length, 0); assert.ok(RD.find(ix, 'restricted', 'locker').some((h) => h.node === 'STA-LKR-H'));
+  assert.ok(RD.find(ix, 'public', 'first aid').some((h) => h.node === 'STA-FA-NE'));
+  assert.ok(RD.find(ix, 'members', 'switcher').every((h) => h.kind === 'place')); assert.ok(RD.find(ix, 'staff', 'switcher').some((h) => h.kind === 'equipment' && h.node === 'STA-BCR'));
+  for (const reader of M.ACCESS_ORDER) for (const h of RD.find(ix, reader, 'room', 200)) assert.ok(RD.shown(ix, reader, h.node), `${reader} ${h.node}`);
+});
+test('ES-19 a public place inside a place the reader cannot see stays hidden; totals grow with the reader and never invent equipment for the public', () => {
+  const ix = M.indexOf(U.UNIVERSITY); const inner = U.UNIVERSITY.nodes.find((n) => n.id.startsWith('UNI-RSH-L')); assert.equal(RD.shown(ix, 'public', inner.id), false);
+  for (const e of ALL) { const i = M.indexOf(e); const t = M.ACCESS_ORDER.map((r) => RD.totals(i, r)); for (let k = 1; k < t.length; k++) assert.ok(t[k].places >= t[k - 1].places, e.name);
+    assert.equal(t[0].equipment, null); assert.equal(t[3].places, t[3].all); assert.equal(t[3].equipment, e.assets.reduce((s, a) => s + a.qty, 0)); }
+});
+test('ES-20 what a room offers is said in plain words, from its equipment only', () => {
+  const ix = M.indexOf(U.UNIVERSITY); const o = RD.offers(ix.assetsOf.get('UNI-SCI-110')); assert.ok(o.includes('A screen everyone can see')); assert.deepEqual(RD.offers([]), []);
 });

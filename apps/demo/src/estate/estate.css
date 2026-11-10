@@ -1,0 +1,22 @@
+/* The estate page (v1.8.1): one layout for every world, on the worlds' tokens and classes (worlds.css). Targets are 44 px. */
+.es-as { color: var(--tx2); font-size: var(--fs-sm); } .es-as b { color: var(--tx); } .es-as a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 4px; }
+.es-totals { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-5); color: var(--tx2); }
+.es-totals b { color: var(--tx); font-size: var(--fs-xl); font-variant-numeric: tabular-nums; margin-right: 4px; }
+.es-find { display: grid; gap: 6px; max-width: 34rem; } .es-find label { font-weight: 600; font-size: var(--fs-sm); }
+.es-find input { min-height: 44px; padding: 0 12px; border: 1px solid var(--line3); border-radius: var(--r-md); background: var(--panel); color: var(--tx); font: inherit; width: 100%; }
+.es-find input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.es-hits { margin-top: var(--sp-3); grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.es-cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+.es-cards .w-item, .es-hits .w-item { height: 100%; text-decoration: none; }
+.es-two { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 4fr); gap: var(--sp-5); align-items: start; }
+.es-level h3 { margin-top: var(--sp-4); }
+.es-offers { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; }
+.es-routes li { display: grid; gap: 2px; padding: 10px 12px; border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--panel2); } .es-routes span { color: var(--tx2); }
+.es-routes { margin-top: var(--sp-3); }
+.es-tablewrap { overflow-x: auto; position: relative; }
+.es-table { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); font-variant-numeric: tabular-nums; }
+.es-table th, .es-table td { text-align: left; padding: 8px 10px; border-top: 1px solid var(--line); vertical-align: top; } .es-table thead th { border-top: 0; color: var(--tx2); font-weight: 600; white-space: nowrap; }
+.es-table code, .es code { font: 500 12px var(--font-mono); color: var(--tx2); overflow-wrap: anywhere; }
+.es-plan__z { cursor: pointer; } .es-plan__z:hover rect { stroke: var(--world); } .es-plan__z:focus-visible { outline: none; } .es-plan__z:focus-visible rect { stroke: var(--tx); stroke-width: 3; }
+.es-plan__z[data-kind="ring"] text { font-size: 12px; fill: var(--tx3); }
+@media (max-width: 760px) { .es-two { grid-template-columns: minmax(0, 1fr); } .es-table { min-width: 520px; } }
