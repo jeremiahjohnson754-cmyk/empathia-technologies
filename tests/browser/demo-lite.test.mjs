@@ -8,7 +8,8 @@
 import path from 'node:path'; import fs from 'node:fs';
 import { harness, VIEWPORTS, SCHEMES, repo } from './demo-spaces-lib.mjs';
 const { ok, open, done, out } = await harness('demo-lite');
-const ids = [...fs.readFileSync(path.join(repo, 'apps/demo/src/campus/canon.ts'), 'utf8').matchAll(/^ {2}[RP]\((?:\d+, )?'(R-[A-Z]+-\d+-\d+)'/gm)].map((m) => m[1]);
+// 10 Nov 2026: the estate is the founder's 90 rooms (docs/surpass/ENTERPRISE_90_ROOMS.md); rows 46–90 are the X(...) rows of canon.ts
+const ids = [...fs.readFileSync(path.join(repo, 'apps/demo/src/campus/canon.ts'), 'utf8').matchAll(/^ {2}[RPX]\((?:\d+, )?'(R-[A-Z]+-\d+-\d+)'/gm)].map((m) => m[1]);
 const SAMPLE = ['R-ATL-4-218', 'R-BCN-1-300', 'R-HZN-1-500', 'R-ATL-6-300', 'R-RDG-1-100', 'R-NST-2-101'];
 const lum = (page, sel) => page.evaluate((s) => { const el = document.querySelector(s); if (!el) return 1; const m = getComputedStyle(el).backgroundColor.match(/\d+(\.\d+)?/g); if (!m) return 1; const [r, g, b] = m.map(Number); return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255; }, sel);
 
@@ -26,14 +27,14 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   const fl = await t.page.evaluate(() => ({ plan: !!document.querySelector('[data-testid="lite-floorplan"]'), tiles: document.querySelectorAll('[data-testid="lite-floorplan"] a').length, cards: document.querySelectorAll('[data-testid^="lite-room-"]').length }));
   ok(`LT-${tag}-05`, 'a floor shows its rooms on a floor plan and as cards (same count)', fl.plan && fl.tiles >= 2 && fl.tiles === fl.cards, JSON.stringify(fl));
   await t.go('#/lite/b/NST/1'); ok(`LT-${tag}-06`, 'an empty floor says so rather than going blank', /No modelled room on this floor/.test(await t.text()), (await t.text()).slice(0, 100));
-  // the rooms: all 45 at desktop, a sample on phone and tablet
+  // the rooms: all 90 at desktop (45 until 10 Nov 2026), a sample on phone and tablet
   const list = vp[2] === 'desktop' ? ids : SAMPLE; const bad = [];
   for (const id of list) {
     await t.go(`#/lite/room/${id}`, 260);
     const v = await t.page.evaluate(() => ({ room: document.querySelector('[data-testid="lite-room"]')?.getAttribute('data-room'), stage: !!document.querySelector('[data-testid="lite-3d"]'), states: document.querySelectorAll('[data-testid^="lite-state-"]').length, ov: document.querySelectorAll('[data-testid^="lite-ov-"]').length, over: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
     if (v.room !== id || !v.stage || v.states !== 4 || v.ov !== 5 || v.over > 0) bad.push(`${id} ${JSON.stringify(v)}`);
   }
-  ok(`LT-${tag}-07`, `${list.length === 45 ? 'all 45 rooms' : `a sample of ${list.length} rooms`} open in Lite with a 3D stage, four states and five overlays, no overflow`, !bad.length && (vp[2] !== 'desktop' || list.length === 45), bad.slice(0, 3).join(' | '));
+  ok(`LT-${tag}-07`, `${list.length === 90 ? 'all 90 rooms' : `a sample of ${list.length} rooms`} open in Lite with a 3D stage, four states and five overlays, no overflow`, !bad.length && (vp[2] !== 'desktop' || list.length === 90), bad.slice(0, 3).join(' | '));
   // states, overlays, layers, orbit and the device panel on the reference room
   await t.go('#/lite/room/R-ATL-4-218?mode=engineer', 300);
   ok(`LT-${tag}-08`, 'the room stage stays dark in either theme (D36)', (await lum(t.page, '[data-testid="lite-room"] .stage')) < 0.25);
@@ -64,7 +65,7 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   ok(`LT-${tag}-17`, 'a divisible room offers combined and split configurations, draws the partitions and highlights the chosen section', div.cfgs === 4 && div.on === 'true' && div.parts === 2 && div.active === 1, JSON.stringify(div));
   await t.go('#/lite/room/R-ATL-6-300', 300);
   const tower = await t.page.evaluate(() => ({ nonop: /non-operational/i.test(document.querySelector('[data-testid="lite-nonop"]')?.textContent || ''), cells: document.querySelectorAll('[data-testid="lite-fleet"] .lt-cell').length }));
-  ok(`LT-${tag}-18`, 'the Global Operations Control Tower is labelled non-operational and its fleet wall shows the 45 rooms', tower.nonop && tower.cells === 45, JSON.stringify(tower));
+  ok(`LT-${tag}-18`, 'the Global Operations Control Tower is labelled non-operational and its fleet wall shows the 90 rooms', tower.nonop && tower.cells === 90, JSON.stringify(tower));
   // places, guides, wayfinding, visit, QR, Commons
   await t.go('#/lite/services'); ok(`LT-${tag}-19`, 'Places lists the fourteen spaces', (await t.page.locator('[data-testid^="lite-space-"]').count()) === 14);
   await t.go('#/lite/space/SP-ATL-TECHZONE', 300);

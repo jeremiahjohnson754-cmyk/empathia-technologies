@@ -6,7 +6,9 @@
 import path from 'node:path'; import fs from 'node:fs';
 import { harness, VIEWPORTS, SCHEMES, repo } from './demo-spaces-lib.mjs';
 const { ok, open, done, out } = await harness('demo-rooms');
-const ids = [...fs.readFileSync(path.join(repo, 'apps/demo/src/campus/canon.ts'), 'utf8').matchAll(/^ {2}[RP]\((?:\d+, )?'(R-[A-Z]+-\d+-\d+)'/gm)].map((m) => m[1]);
+// 10 Nov 2026: the estate is the founder's 90 rooms (docs/surpass/ENTERPRISE_90_ROOMS.md); rows 46–90 are the X(...) rows of canon.ts
+const ids = [...fs.readFileSync(path.join(repo, 'apps/demo/src/campus/canon.ts'), 'utf8').matchAll(/^ {2}[RPX]\((?:\d+, )?'(R-[A-Z]+-\d+-\d+)'/gm)].map((m) => m[1]);
+if (ids.length !== 90) { console.error(`expected 90 room ids in canon.ts, read ${ids.length}`); process.exit(1); }
 const href = (id) => { const [, b, f] = /^R-([A-Z]+)-(\d+)-/.exec(id); return `#/campus/${b}/${Number(f)}/${id}`; };
 const SAMPLE = ['R-ATL-4-218', 'R-NST-2-101', 'R-HZN-1-400', 'R-BCN-3-225', 'R-MER-1-130'];
 

@@ -43,8 +43,8 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   ok(`CA-${tag}-11`, 'back returns to the building page', (await t.page.evaluate(() => location.hash)) === '#/campus/HZN' && /Horizon Media Center/.test(await t.text()));
   // the rooms index filters, with an empty state
   await t.go('#/rooms'); const all = await t.page.locator('[data-testid="room-list"] tbody tr').count();
-  // 45 since 2026-11-04 (uplift/core-screens: every screen shows the 45 rooms of the plan, rooms 31–45 included)
-  ok(`CA-${tag}-12`, 'the rooms index lists the 45 rooms', all === 45, all);
+  // 45 since 2026-11-04 (every screen shows the rooms plan); 90 since 2026-11-10 (the founder's 90-room estate, docs/surpass/ENTERPRISE_90_ROOMS.md)
+  ok(`CA-${tag}-12`, 'the rooms index lists the 90 rooms', all === 90, all);
   await t.go('#/rooms?state=OPERATIONAL&building=HZN');
   ok(`CA-${tag}-13`, 'a filter with no match shows an empty state, not a blank', /No room matches/.test(await t.text()));
   // D36 under an explicit Light choice (the shell's switch sets data-theme="light"): the stage keeps the dark tokens

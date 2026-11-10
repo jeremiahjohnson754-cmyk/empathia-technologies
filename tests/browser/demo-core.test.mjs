@@ -8,7 +8,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { harness, SCHEMES, repo } from './demo-spaces-lib.mjs';
 // the room count comes from the campus data (the thirty R(...) rows and the plan's P(row, ...) rows 31–45), never a literal
-const NROOMS = [...fs.readFileSync(path.join(repo, 'apps/demo/src/campus/canon.ts'), 'utf8').matchAll(/^ {2}(?:R\(|P\(\d+, )'(R-[A-Z]+-\d+-\d+)'/gm)].length;
+const NROOMS = [...fs.readFileSync(path.join(repo, 'apps/demo/src/campus/canon.ts'), 'utf8').matchAll(/^ {2}(?:R\(|[PX]\(\d+, )'(R-[A-Z]+-\d+-\d+)'/gm)].length;   // X(...) rows: rooms 46–90 of the 90-room estate (10 Nov 2026)
 const { ok, open, done, out } = await harness('demo-core');
 const VPS = [[320, 640, 'p320'], [390, 844, 'phone'], [768, 1024, 'tablet'], [1440, 900, 'desktop']];
 const ROUTES = ['#/investor', '#/home', '#/campus', '#/room', '#/search'];
@@ -33,7 +33,9 @@ for (const scheme of SCHEMES) for (const vp of VPS) {
   // the numbers equal the records
   await t.go('#/campus', 600);
   const camp = await t.page.evaluate(() => ({ b: document.querySelectorAll('[data-testid^="campus-b-"]').length, rows: document.querySelectorAll('[data-testid="building-list"] .kit-meter').length, intro: document.querySelector('main')?.innerText.match(/(\d+) buildings and (\d+) regional sites, (\d+) rooms, (\d+) device positions/)?.slice(1).map(Number), sites: document.querySelectorAll('[data-testid="regional-sites"] .kit-meter').length, pills: document.querySelectorAll('[data-testid="building-pills"] a').length }));
-  ok(`CORE-${tag}-05`, 'campus: six extruded buildings on the 3D stage, six rows with health bars, two regional sites, eight building pills, the intro counts 6 buildings, 2 sites and every room of the campus data', camp.b === 6 && camp.rows === 6 && camp.sites === 2 && camp.pills === 8 && camp.intro?.[0] === 6 && camp.intro?.[1] === 2 && camp.intro?.[2] === NROOMS, JSON.stringify(camp));
+  // 10 Nov 2026: 2 → 7 sites off the map and 8 → 13 pills: the 90-room estate adds five fictional sites (Westmere, Highfield, Eastgate,
+  // Stonebridge, Millbrook). The campus map still draws its six buildings.
+  ok(`CORE-${tag}-05`, 'campus: six extruded buildings on the 3D stage, six rows with health bars, seven other sites, thirteen building pills, the intro counts 6 buildings, 7 sites and every room of the campus data', camp.b === 6 && camp.rows === 6 && camp.sites === 7 && camp.pills === 13 && camp.intro?.[0] === 6 && camp.intro?.[1] === 7 && camp.intro?.[2] === NROOMS, JSON.stringify(camp));
   await t.go('#/room', 600);
   const room = await t.page.evaluate(() => ({ id: document.querySelector('[data-testid="room-view"]')?.getAttribute('data-room'), stages: document.querySelectorAll('[data-testid="spine"] .spine__s').length, tiles: document.querySelectorAll('[data-testid="room-tiles"] .kit-tile').length, tabs: document.querySelectorAll('[data-testid="room-tabs"] a').length, three: !!document.querySelector('[data-testid="room-3d"]') }));
   ok(`CORE-${tag}-06`, '#/room is Atlas 4.218: room tabs, four tiles, the nine-stage delivery spine and the 3D stage', room.id === 'R-ATL-4-218' && room.stages === 9 && room.tiles === 4 && room.tabs >= 8 && room.three, JSON.stringify(room));
