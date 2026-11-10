@@ -127,13 +127,16 @@ for (const scheme of SCHEMES) for (const vp of [[1440, 900, 'desktop'], [390, 84
 for (const scheme of SCHEMES) { // View as changes the work; D44; destructive input
   const t = await open([1440, 900], scheme, { hash: '#/investor' });
   const who = async (r) => { await setRole(t, r); await t.page.evaluate(() => { location.hash = '#/home'; }); await t.page.reload(); await t.page.waitForTimeout(800);
-    return t.page.evaluate(() => ({ greet: document.querySelector('[data-testid="mc-greeting"]')?.textContent || '', mine: Array.from(document.querySelectorAll('[data-testid="mc-priorities"] [data-testid="mc-priority"]')).map((e) => e.textContent), links: Array.from(document.querySelectorAll('main a[href^="#/"]')).map((a) => a.getAttribute('href')) })); };
+    // 10 Nov 2026: the service manager, the executive and the visitor no longer land on Mission Control but on their own start pages
+    // (pages/RoleHome.tsx, V2.5.3's role homes). The check is the same — whose work comes first — read from the start page's own
+    // parts: the kicker names the role, the first zone lists its work, and the one "start here" button names the first item.
+    return t.page.evaluate(() => ({ greet: document.querySelector('[data-testid="home"] .kicker')?.textContent || '', primary: document.querySelector('[data-testid="rh-primary"]')?.textContent || '', mine: Array.from(document.querySelectorAll('[data-testid="rh-zone"]:first-of-type [data-testid="rh-row"], [data-testid="rh-zone"][data-zone="triage"] [data-testid="rh-row"], [data-testid="rh-zone"][data-zone="decide"] [data-testid="rh-row"]')).map((e) => e.textContent), links: Array.from(document.querySelectorAll('main a[href^="#/"]')).map((a) => a.getAttribute('href')) })); };
   const sm = await who('svcmgr'); const ex = await who('exec'); const vi = await who('visitor');
-  ok(`MC-${scheme}-role-01`, 'View as: the service manager’s own work starts with the triage; the executive’s with the funding decision', /Service Manager/.test(sm.greet) && /Triage ISS-0417/.test(sm.mine[0] || '') && ex.mine.some((x) => /Fund PRJ-NST-TH/.test(x)) && !ex.mine.some((x) => /Triage/.test(x)), JSON.stringify({ sm: sm.mine.slice(0, 2), ex: ex.mine.slice(0, 2) }).slice(0, 300));
-  // D44: every link Mission Control offers the visitor opens without the owl page
+  ok(`MC-${scheme}-role-01`, 'View as: the service manager’s own work starts with the triage; the executive’s with the funding decision', /Service Manager/.test(sm.greet) && /Triage ISS-0417/.test(sm.primary) && /ISS-0417/.test(sm.mine[0] || '') && /To triage/.test(sm.mine[0] || '') && /Decide PRJ-NST-TH/.test(ex.primary) && ex.mine.some((x) => /Fund PRJ-NST-TH/.test(x)) && !ex.mine.some((x) => /Triage|ISS-/.test(x)), JSON.stringify({ sm: [sm.primary, ...sm.mine.slice(0, 1)], ex: [ex.primary, ...ex.mine.slice(0, 1)] }).slice(0, 300));
+  // D44: every link the visitor's start page offers opens without the owl page
   const refused = [];
   for (const h of [...new Set(vi.links)].slice(0, 40)) { await t.go(h, 250); if (await t.page.locator('[data-testid="access-page"]').count()) refused.push(h); }
-  ok(`MC-${scheme}-role-02`, `D44: none of the ${new Set(vi.links).size} links Mission Control offers the visitor leads to a refusal`, vi.links.length >= 3 && !refused.length, refused.join(' '));
+  ok(`MC-${scheme}-role-02`, `D44: none of the ${new Set(vi.links).size} links the visitor’s start page offers leads to a refusal`, vi.links.length >= 3 && !refused.length, refused.join(' '));
   await setRole(t, 'architect');
   // destructive: a damaged workspace, an empty workspace, hostile search text, rapid double taps on a station
   await t.page.evaluate(() => localStorage.setItem('empathia.demo.workspace.v1', '{not json')); await t.go('#/investor'); await t.page.reload(); await t.go('#/home', 800);

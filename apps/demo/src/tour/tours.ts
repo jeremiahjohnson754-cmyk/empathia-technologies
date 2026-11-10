@@ -13,7 +13,7 @@ const ROOM = `#/campus/ATL/4/${REFERENCE_ROOM_ID}`;
 export const TOURS: Tour[] = [
   { key: 'a', title: 'Tour A — The Living Campus', audience: 'Anyone', goal: 'Understand the concept in a few minutes.', stops: [
     { id: 'A1', title: 'From the company site to the product', text: 'This is the investor demonstration. Everything in it is synthetic and runs in this browser; nothing is connected to a real building.', href: '#/tours' },
-    { id: 'A2', title: 'An explorable campus', text: 'Six buildings and thirty rooms. The glyph on a building counts its open issues, taken from the room records.', href: '#/campus', spot: 'campus-stage' },
+    { id: 'A2', title: 'An explorable campus', text: 'Six buildings on the campus map, and ninety rooms across the estate with its other sites. The glyph on a building counts its open issues, taken from the room records.', href: '#/campus', spot: 'campus-stage' },
     { id: 'A3', title: 'A building', text: 'Atlas HQ, the headquarters. Pick a floor; the floors without a modelled room say so.', href: '#/campus/ATL', spot: 'floor-ATL-4' },
     { id: 'A4', title: 'A floor', text: 'Floor 4: the room footprints are their modelled dimensions, not a survey.', href: '#/campus/ATL/4', spot: 'floor-stage' },
     { id: 'A5', title: 'The reference room in 3D', text: 'Atlas 4.218. Every device has a position, a history and evidence behind it. Rotate the view, switch to the plan, turn layers off.', href: ROOM, spot: 'room-stage', narration: 'tour-a-05' },

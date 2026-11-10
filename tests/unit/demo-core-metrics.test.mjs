@@ -37,8 +37,9 @@ test('open issues: record issues plus live incidents, one per id, the live state
 
 test('building and campus aggregates add up from the rooms', () => {
   const c = M.campusStats(w);
-  // every screen shows the 45 rooms of the plan (uplift/core-screens); rows 40, 42 and 45 sit on the two fictional regional sites
-  const N = canon.CAMPUS_ROOMS.length; assert.equal(N, 45); assert.equal(c.rooms, N); assert.equal(c.buildings.length, 6); assert.equal(c.sites.length, 2);
+  // 10 Nov 2026: 45 → 90 and 2 → 7 sites. The Enterprise estate now holds the founder's 90 rooms (docs/surpass/ENTERPRISE_90_ROOMS.md): the 45
+  // of the plan unchanged, then rows 46–90 on the campus and five more fictional sites. Every screen shows all of them.
+  const N = canon.CAMPUS_ROOMS.length; assert.equal(N, 90); assert.equal(c.rooms, N); assert.equal(c.buildings.length, 6); assert.equal(c.sites.length, 7);
   const all = [...c.buildings, ...c.sites];
   assert.equal(all.reduce((s, b) => s + b.rooms, 0), N);
   assert.equal(all.reduce((s, b) => s + b.open, 0), c.open);

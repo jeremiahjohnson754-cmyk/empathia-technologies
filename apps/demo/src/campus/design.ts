@@ -95,7 +95,13 @@ const HELD: Record<string, { why: string; untested: number; fail?: string; issue
   'R-MER-2-160': { why: 'the AV network routes are not yet commissioned', untested: 6 },
   // rooms plan (rows 32 and 45): each room's one scenario decides where its record ends
   'R-BCN-1-300': { why: 'the combined (A+B+C) configuration is not yet commissioned; the split sections are', untested: 5 },
-  'R-RDG-1-100': { why: 'the outside-agency bridge and the regional feeds are not yet commissioned (simulated, non-operational)', untested: 4 },
+  'R-RDG-1-100': { why: 'the outside-agency bridge and the regional feeds are not yet commissioned (simulated, non-operational)', untested: 4 },  // rooms 46–90 (docs/surpass/ENTERPRISE_90_ROOMS.md): the roster asks for pass, conditional and fail conditions, not ninety accepted rooms
+  'R-EGT-1-140': { why: 'the combined four-section configuration is not yet commissioned; the single sections are', untested: 6 },
+  'R-HFD-1-140': { why: 'ceremony mode is not yet commissioned; lecture mode is', untested: 5 },
+  'R-SBR-1-110': { why: 'installed this autumn; commissioning in progress (simulated, non-operational)', untested: 8 },
+  'R-MER-2-440': { why: 'the prototype room is being fitted out; commissioning in progress', untested: 10 },
+  'R-HZN-2-420': { why: 'the delay from player desk to gallery wall is outside the target on two feeds', untested: 2, fail: 'Video', issue: { title: 'Delay from player desk to gallery wall outside the target on two feeds', severity: 'High', state: 'OPEN', cat: 'display' } },
+  'R-WMR-2-120': { why: 'the debrief replay loses audio after a marked moment', untested: 3, fail: 'Audio', issue: { title: 'Debrief replay loses audio after a marked moment', severity: 'High', state: 'OPEN', cat: 'dsp' } },
 };
 /** Accepted rooms that carry an open operational issue (Assurance drift or a field report), from the V2.5.3 storylines. */
 const OPEN_ISSUE: Record<string, { title: string; severity: 'High' | 'Medium' | 'Low'; cat: string }> = {
@@ -104,7 +110,13 @@ const OPEN_ISSUE: Record<string, { title: string; severity: 'High' | 'Medium' | 
   'R-ATL-7-112': { title: 'Display does not wake from standby on the first try', severity: 'Low', cat: 'display' },
   // rooms plan (rows 33 and 37): the scenario's open question after acceptance
   'R-HZN-1-500': { title: 'Far rows: speech level reported low at the back of the auditorium during the keynote rehearsal', severity: 'Medium', cat: 'speaker' },
-  'R-FRG-2-300': { title: 'Bridge to remote responders took longer than the two-minute target in the last drill', severity: 'Low', cat: 'compute' },
+  'R-FRG-2-300': { title: 'Bridge to remote responders took longer than the two-minute target in the last drill', severity: 'Low', cat: 'compute' },  // rooms 46–90: accepted rooms with something open
+  'R-ATL-7-410': { title: 'Interpretation channel 3 is faintly audible on channel 2 at two seats', severity: 'Medium', cat: 'dsp' },
+  'R-HFD-2-120': { title: 'One group display does not accept sharing from tablets', severity: 'Medium', cat: 'display' },
+  'R-MBK-1-110': { title: 'The display by the dock door dims when the door stands open in winter', severity: 'Low', cat: 'display' },
+  'R-BCN-2-410': { title: 'Hearing-loop coverage is uneven at the two seats nearest the door', severity: 'Medium', cat: 'speaker' },
+  'R-HZN-1-430': { title: 'A kit came back with a damaged camera cable: replaced, retest pending', severity: 'Low', cat: 'camera' },
+  'R-EGT-2-120': { title: 'The public-gallery display showed an exhibit title in rehearsal: the routing rule was corrected and awaits verification', severity: 'Medium', cat: 'display' },
 };
 
 /** The earlier records of this demonstration, kept unchanged (positions as recorded; nothing else is invented for them). */
@@ -121,9 +133,9 @@ export function roomRecord(id: string): RoomRecord | null {
   const o = roomById(id); if (!o) return null;
   const r = build(o); cache.set(id, r); return r;
 }
-/** Every room of the campus — the 45 of the rooms plan (uplift/core-screens: every screen shows all 45). */
+/** Every room of the estate: the 45 of the rooms plan, then rooms 46–90 of the 90-room estate. Every screen reads this list. */
 export const allRecords = (): RoomRecord[] => CAMPUS_ROOMS.map((o) => roomRecord(o.id)!);
-/** All 45 rooms of the plan (the thirty, then rooms 31–45), generated lazily the same way. */
+/** The same ninety records (kept under its earlier name for the screens that import it). */
 export const campusRecords = (): RoomRecord[] => CAMPUS_ROOMS.map((o) => roomRecord(o.id)!);
 
 function build(o: RoomOutline): RoomRecord {

@@ -15,10 +15,22 @@ const { canon, design, m, qr, v } = await import(pathToFileURL(path.join(tmp, 'o
 process.on('exit', () => fs.rmSync(tmp, { recursive: true, force: true }));
 const recs = design.campusRecords();
 
-test('the campus has 45 rooms: the thirty, then rows 31–45 of the rooms plan; ids unique; each plan row has one scenario', () => {
-  assert.equal(canon.CAMPUS_ROOMS.length, 45);
+// 10 Nov 2026: the estate grew from 45 to the founder's 90 rooms. This test used to assert 45; it now asserts 90 AND that the first 45 are
+// exactly the rooms they were (a fingerprint of every outline taken from the commit before the additions), so growth cannot rewrite them.
+test('the estate has 90 rooms: the thirty, rows 31–45 of the rooms plan, then rows 46–90; the first 45 are untouched; ids unique', async () => {
+  assert.equal(canon.CAMPUS_ROOMS.length, 90);
   assert.equal(canon.ROOMS.length, 30, 'ROOMS stays the thirty for the stories that speak of thirty');
-  assert.equal(new Set(canon.CAMPUS_ROOMS.map((r) => r.id)).size, 45);
+  assert.equal(new Set(canon.CAMPUS_ROOMS.map((r) => r.id)).size, 90);
+  assert.equal(canon.PLAN_45.length, 45); assert.deepEqual(canon.CAMPUS_ROOMS.slice(0, 45), canon.PLAN_45, 'the first 45 keep their order (asset codes are numbered by it)');
+  const { createHash } = await import('node:crypto');
+  const fp = createHash('sha256').update(JSON.stringify(canon.PLAN_45.map((r) => [r.id, r.building, r.floor, r.number, r.name, r.archetype, r.capacity, r.dims, r.kind, r.intent, r.scenario || null]))).digest('hex');
+  assert.equal(fp, 'a6331fc79b8cde573cb9ab99a9de273e51b0f04c30260c0c467490e5da5b5e1a', 'an id, a name, a size or a scenario of the first 45 changed');
+  assert.deepEqual(canon.ESTATE_ROOMS.map((r) => r.planRow), Array.from({ length: 45 }, (_, i) => 46 + i));
+  assert.deepEqual(canon.ESTATE_ROOMS.map((r) => r.roster.id), Array.from({ length: 45 }, (_, i) => `ADD-${String(i + 1).padStart(2, '0')}`));
+  const sectors = [...new Set(canon.ESTATE_ROOMS.map((r) => r.sector))]; assert.equal(sectors.length, 9); for (const s of sectors) assert.equal(canon.ESTATE_ROOMS.filter((r) => r.sector === s).length, 5, s);
+  const dims = new Set(canon.PLAN_45.map((r) => r.dims.join('x'))); for (const r of canon.ESTATE_ROOMS) { const k = r.dims.join('x'); assert.ok(!dims.has(k), `${r.id} shares its dimensions with another room`); dims.add(k); }
+  for (const r of canon.ESTATE_ROOMS) { assert.ok(r.scenario && r.scenario.length > 40 && r.intent.length > 20 && r.roster.showcase, `${r.id} scenario, intent and showcase`); const B = canon.buildingByKey(r.building); assert.ok(B && r.floor >= 1 && r.floor <= B.floors, `${r.id} is on a floor its building has`); assert.ok(canon.ARCHETYPE_NAME[r.archetype], `${r.id} archetype`); }
+  assert.equal(canon.ESTATE_GROUPS.filter((g) => g.kind === 'campus').length, 3, 'three primary campuses'); assert.equal(canon.ESTATE_GROUPS.reduce((n, g) => n + canon.CAMPUS_ROOMS.filter((r) => g.buildings.includes(r.building)).length, 0), 90, 'every room is on a campus or a satellite site');
   assert.deepEqual(canon.PLAN_ROOMS.map((r) => r.planRow), Array.from({ length: 15 }, (_, i) => 31 + i));
   for (const r of canon.PLAN_ROOMS) { assert.ok(r.scenario && r.scenario.length > 20, `${r.id} scenario`); assert.ok(canon.buildingByKey(r.building), `${r.id} building`); const B = canon.buildingByKey(r.building); assert.ok(r.floor >= 1 && r.floor <= B.floors, `${r.id} floor`); }
   const names = canon.PLAN_ROOMS.map((r) => r.name).join('|');
@@ -93,7 +105,7 @@ test('fourteen spaces, three guides of twenty-five chapters, ten visit steps, se
 
 test('wayfinding reaches every room and space; unknown destinations return null', () => {
   for (const d of m.DESTINATIONS) { const r = m.routeTo(d.id); assert.ok(r && r.steps.length >= 3, d.id); }
-  assert.equal(m.DESTINATIONS.length, 45 + 14);
+  assert.equal(m.DESTINATIONS.length, 90 + 14);   // 10 Nov 2026: 45 → 90 rooms (the 90-room estate); the 14 spaces are unchanged
   assert.equal(m.routeTo('R-NOPE-1-1'), null); assert.equal(m.routeTo('<script>'), null);
   assert.match(m.routeTo('R-RDG-1-100').steps[0], /regional site/);
 });
