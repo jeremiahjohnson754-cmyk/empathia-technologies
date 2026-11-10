@@ -12,11 +12,12 @@ not the page, not a screen that had already been opened. `navigator.onLine` was 
 
 | Part | Where | Status | Evidence |
 |---|---|---|---|
-| Offline worker for the demonstration | `apps/demo/src/offline/sw.template.js`, written to `dist/sw.js` by `apps/demo/build.offline.mjs` | SYNTHETIC_DEMO (built, tested, not deployed) | `tests/unit/demo-offline.test.mjs` (17), `tests/browser/demo-offline.test.mjs` (33) |
+| Offline worker for the demonstration | `apps/demo/src/offline/sw.template.js`, written to `dist/sw.js` by `apps/demo/build.offline.mjs` | SYNTHETIC_DEMO (built, tested, not deployed) | `tests/unit/demo-offline.test.mjs` (17), `tests/browser/demo-offline.test.mjs` (44 in all) |
 | Page-side control and the offline strip | `apps/demo/src/offline/offline.ts`, `Strip.tsx` | SYNTHETIC_DEMO | same browser suite |
 | "Offline and this device" page (`#/offline`) | `apps/demo/src/offline/OfflinePage.tsx` | SYNTHETIC_DEMO | same browser suite |
 | Packs: 13 SIGNAL seasons, the library, narration | `dist/offline-packs.json` (generated) | SYNTHETIC_DEMO | OFU-15, OF-15..OF-21a |
-| Field queue (work recorded offline, sent later) | `packages/field-queue` | IMPLEMENTED_NOT_VERIFIED against a server (pure logic, tested; no product screen uses it yet) | `packages/field-queue/test/queue.test.ts` (22), six mutations each caught |
+| Field queue (work recorded offline, sent later) | `packages/field-queue` | IMPLEMENTED_NOT_VERIFIED against a real server (pure logic, tested) | `packages/field-queue/test/queue.test.ts` (22), six mutations each caught |
+| The field queue demonstrated against a simulated server | `apps/demo/src/offline/FieldQueueDemo.tsx`, on `#/offline` | SYNTHETIC_DEMO: the server is an object in the page, and the page says so | browser `demo-offline` OF-40 to OF-50 (11) |
 
 ### What the worker does
 
@@ -56,8 +57,10 @@ does. The package holds the rules for that, as pure functions with the clock and
 ## Not done, said plainly
 
 - **Not deployed.** The staging sites are still at `97201d4`.
-- **No product screen uses the field queue yet.** Commissioning, Assurance and ServiceHands in the demonstration write to browser
-  storage. The queue has never talked to the enterprise API: NOT_RUN against a server.
+- **No product screen sends its work through the field queue.** It is demonstrated on `#/offline` against a simulated server:
+  record a result with the connection off, switch it on, lose an answer, let a colleague change the record first. Commissioning,
+  Assurance and ServiceHands themselves still write to browser storage. The queue has never talked to the enterprise API: NOT_RUN
+  against a real server.
 - **Phone smoothness is not measured.** Layout at phone width is tested in many suites (targets of 44 px, no sideways scroll). Interaction
   latency, long tasks and memory on a mid-range phone profile are NOT_RUN. No INP, LCP or CLS figure exists and none is claimed.
 - **Pinch and two-finger orbit** in the 3D room and plans: not built. Button equivalents exist.
