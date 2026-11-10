@@ -74,7 +74,7 @@ export const SPACES_PAGES: readonly PageDef[] = [
   {
     id: 'find', title: 'Search results', purpose: 'Rooms, devices, products and pages for what you typed (aliases included)', product: 'shell',
     path: '/find', authority: { area: 'search' },
-    load: adapt(() => import('./search/SearchBar.js'), (m, p) => h(m.FindPage, { hash: p.hash })),
+    load: adapt(() => import('./search/SearchBar.js'), (m, p) => h(m.FindPage, { hash: p.hash, role: p.role })),
     search: { keywords: 'search find room device', aliases: ['find a room', 'find a device'] },
   },
   {

@@ -204,7 +204,9 @@ function QuickFind({ role, pages, open, setOpen }: { role: RoleKey; pages: PageD
     for (const [g, label] of ROWS) { const x = ent[g]; if (x.total) groups.push({ key: g, label, opts: x.hits.slice(0, 4).map((e) => ({ key: e.id, href: e.href, title: e.title, sub: e.sub, icon: g === 'issue' ? 'alert' : deviceIcon(e.cat), chip: e.chip })), more: x.total - Math.min(4, x.total) }); }
     const hits = index.find(text, 40).filter((h) => (h.kind === 'room' || h.kind === 'building') && allows({ entity: h.kind === 'room' ? 'Room' : 'Building' }, role) && opensNative(role, h.href));
     // a room or building the words name outright ("atlas 4.218") leads everything, a page alias included; otherwise places follow the records
-    const named = hits.some((h) => words.every((w) => h.label.toLowerCase().includes(w)));
+    // "names outright" means whole words of the label, or the start of one ("atlas 4.2"): "camera" does not name the Multi-camera Podcast
+    // Studio, so for a device word the physical units still lead (3 Nov reference), now that ninety rooms give more names to brush against
+    const named = hits.some((h) => { const ws = h.label.toLowerCase().split(/[^a-z0-9.\-]+/).filter(Boolean); return words.every((w) => ws.some((x) => x.startsWith(w))); });
     const at = named ? 0 : groups.length;
     const places: Grp[] = [];
     for (const [k, label, icon, chip] of [['room', 'Rooms', 'room', 'Room'], ['building', 'Buildings', 'building', 'Building']] as const) { const xs = hits.filter((h) => h.kind === k); if (xs.length) places.push({ key: k, label, opts: xs.slice(0, 3).map((h) => ({ key: `${k}-${h.id}`, href: h.href, title: h.label, sub: h.description, icon, chip })), more: Math.max(0, xs.length - 3) }); }

@@ -18,7 +18,10 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
       return { groups, graph, listFirst: list.top <= g.top + 1, text: document.querySelector('main').innerText };
     });
     ok(`SS-${tag}-${id}-a`, `${id}: every group's count equals its listed items and the graph's count`, v.groups.length > 0 && v.groups.every((g) => g.count === g.items && v.graph[g.key] === g.count), JSON.stringify(v.groups) + JSON.stringify(v.graph));
-    ok(`SS-${tag}-${id}-b`, `${id}: the list comes before (or beside) the graph, and nothing says “certif…”`, v.listFirst && !/certif/i.test(v.text));
+    // Changed 10 Nov: the 90-room estate has a room the founder's roster names "AV Product Certification Bay" (ADD-38), and the room picker
+    // lists every room. The rule this checks is that no person or organisation is called certified; a room's given name is not that claim,
+    // so that one name is set aside and every other use of the word still fails.
+    ok(`SS-${tag}-${id}-b`, `${id}: the list comes before (or beside) the graph, and nothing says “certif…”`, v.listFirst && !/certif/i.test(v.text.replaceAll('AV Product Certification Bay', '')));
   }
   // "+N more": S5 or S1 has a group larger than three
   await t.go('#/search/scenarios/S1', 300);

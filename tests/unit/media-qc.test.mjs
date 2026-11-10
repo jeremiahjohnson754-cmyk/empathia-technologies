@@ -63,6 +63,7 @@ test('MQ-06 picture: unexplained dark frames, a frozen hold, a wrong size and te
   const dark = structuredClone(r.picture); dark.dark_spans.push({ from: 20, to: 20.2 }); assert.ok(failed(pictureCheck(dark, r.plan)).includes('No unexplained dark frames'));
   const frozen = structuredClone(r.picture); frozen.still_spans.push({ from: 5, seconds: 9 }); assert.ok(failed(pictureCheck(frozen, r.plan)).includes('No hold longer than 5 s'));
   const small = structuredClone(r.picture); small.width = 1280; small.height = 720; assert.ok(failed(pictureCheck(small, r.plan)).includes('Encoding'));
+  const padded = structuredClone(r.picture); padded.sampled_frames = 27; padded.padded_frames = 22; assert.ok(failed(pictureCheck(padded, r.plan)).includes('The picture fills the frame'), 'the first try at take 2 came out as a small page in a grey frame; the recorder said nothing');
   assert.equal(pictureCheck(null, r.plan)[0].result, 'NOT RUN');
 });
 

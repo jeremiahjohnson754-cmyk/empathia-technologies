@@ -14,15 +14,18 @@ const out = path.join(repo, '.local/media/film-13/scene-01'); fs.rmSync(out, { r
 const port = await new Promise((ok) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => ok(p)); }); });
 const srv = spawn(process.execPath, [path.join(repo, 'apps/demo/server/serve.mjs'), `--port=${port}`], { stdio: ['ignore', 'pipe', 'pipe'] });
 await new Promise((r) => { srv.stdout.on('data', r); setTimeout(r, 2500); });
-const W = 1920, H = 1080; const REPORT = 'SIM-REPORT-2026-11-08-001';
+// Take 2 (10 November): the page is drawn 1.6 times larger so the text the scene exists for can be read on a phone held sideways
+// (QC: the refusal sentence was 5.9 px there; it is 9.5 px now). The frame is still 1920 × 1080; the page is zoomed by the browser's own
+// layout zoom, set on the root element. (A 1200 × 675 page at 1.6 device pixels was tried first: the recorder does not fill the frame.)
+const W = 1920, H = 1080, ZOOM = 1.6; const REPORT = 'SIM-REPORT-2026-11-08-001';
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: 1, colorScheme: 'dark', reducedMotion: 'no-preference', recordVideo: { dir: out, size: { width: W, height: H } } });
-await ctx.addInitScript(() => {
+await ctx.addInitScript((ZOOM_IN_PAGE) => {
   try { localStorage.setItem('empathia.demo.perspective', 'cxeng'); localStorage.setItem('empathia.theme', 'dark'); localStorage.removeItem('empathia.demo.dossier.v1'); } catch { /* */ }
-  addEventListener('DOMContentLoaded', () => { const d = document.createElement('div'); d.id = '__ptr'; d.setAttribute('aria-hidden', 'true');
+  addEventListener('DOMContentLoaded', () => { document.body.style.zoom = String(ZOOM_IN_PAGE); const d = document.createElement('div'); d.id = '__ptr'; d.setAttribute('aria-hidden', 'true');
     d.style.cssText = 'position:fixed;z-index:2147483647;left:0;top:0;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 0 0 2px rgba(0,0,0,.45);pointer-events:none;transform:translate(960px,540px);transition:transform .05s linear';
     document.documentElement.appendChild(d); addEventListener('mousemove', (e) => { d.style.transform = `translate(${e.clientX}px,${e.clientY}px)`; }, true); });
-});
+}, ZOOM);
 const page = await ctx.newPage(); const errs = []; page.on('pageerror', (e) => errs.push(e.message)); page.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()); });
 const t0 = Date.now(); const marks = []; const mark = (shot) => marks.push({ shot, at: (Date.now() - t0) / 1000 });
 const until = async (sec) => { const ms = sec * 1000 - (Date.now() - t0); if (ms > 0) await page.waitForTimeout(ms); };
@@ -36,15 +39,16 @@ const lead = (Date.now() - t0) / 1000; const T = (s) => lead + s;
 const log = []; const lap = (k) => log.push([k, +(((Date.now() - t0) / 1000) - lead).toFixed(2)]);
 // shot 1 · one label
 mark(1); await glide('[data-testid=scan-input]'); await page.click('[data-testid=scan-input]'); await page.waitForTimeout(250);
-await page.keyboard.type('SIM-AV-0042', { delay: 95 }); await page.waitForTimeout(500); await frame('shot-1'); await glide('[data-testid=scan-go]'); lap('typed'); await until(T(PLAN[1] - 0.3)); await page.click('[data-testid=scan-go]');
+await page.keyboard.type('SIM-AV-0042', { delay: 95 }); await page.waitForTimeout(500); await frame('shot-1'); await glide('[data-testid=scan-go]'); lap('typed'); await until(T(PLAN[1] - 0.7)); await page.click('[data-testid=scan-go]');   // take 2: pressed earlier, so the passport is on screen before "One record." on a slower machine too
 // shot 2 · one record
 await page.waitForSelector('[data-testid=scan-passport]'); await until(T(PLAN[1])); mark(2); await glide('[data-testid=scan-evidence]'); await page.waitForTimeout(1000); await glide('[data-testid=scan-acceptance]'); await page.waitForTimeout(900); await frame('shot-2');
-await glide('[data-action="scan.openTest"]'); lap('passport read'); await until(T(PLAN[2] - 0.3)); await page.click('[data-action="scan.openTest"]');
+await glide('[data-action="scan.openTest"]'); lap('passport read'); await until(T(PLAN[2] - 0.1)); await page.click('[data-action="scan.openTest"]');   // take 2: the cut comes 0.2 s later, so line 2 ends half a second before it (QC: it was 0.27 s)
 // shot 3 · 27 / 3 / 2
 await page.waitForSelector('[data-testid=dossier-blockers]'); await until(T(PLAN[2])); mark(3); await glide('[data-testid=dossier-pass]'); await page.waitForTimeout(800); await glide('[data-testid=dossier-pending]'); await page.waitForTimeout(700); await glide('[data-testid=dossier-fail]'); await page.waitForTimeout(800); await frame('shot-3');
 await glide('[data-testid=dossier-blockers]'); lap('totals read'); await until(T(PLAN[3] - 3.2));
 // shot 4 · the answer is no (viewing as the Service Manager, who may record acceptance and is refused by the rule, not by the role)
 await page.selectOption('.persp select', 'svcmgr'); await page.waitForSelector('[data-testid=dossier-accept]', { timeout: 10000 }); lap('role switched'); await until(T(PLAN[3])); mark(4); await glide('[data-testid=dossier-accept]'); await page.waitForTimeout(900); await page.click('[data-testid=dossier-accept]');
+{ const b = await page.locator('[data-testid=dossier-accept]').boundingBox(); await page.mouse.move(b.x + b.width + 48, b.y + b.height / 2, { steps: 10 }); }   // take 2: the pointer leaves the button, whose label it was hiding (QC)
 await page.waitForSelector('[data-testid=dossier-refusal]'); await page.waitForTimeout(900); await frame('shot-4'); lap('refused');
 // shot 5 · hold
 await until(T(PLAN[4])); mark(5); await page.mouse.move(W - 240, H - 200, { steps: 14 }); await until(T(END - 0.5)); await frame('shot-5');

@@ -92,10 +92,13 @@ export const measurePicture = (file) => {
   const run = (vf) => spawnSync('ffmpeg', ['-hide_banner', '-nostats', '-i', file, '-vf', vf, '-an', '-f', 'null', '-'], { encoding: 'utf8' }).stderr || '';
   const nums = (text, re) => [...text.matchAll(re)].map((m) => +Number(m[1]).toFixed(2));
   const black = run('blackdetect=d=0.05:pix_th=0.10'); const freeze = run('freezedetect=n=0.001:d=1.5'); const scene = run("select='gt(scene,0.08)',showinfo");
+  // a recorder that could not fill the frame pads it with flat mid-grey: look for a perfectly even grey corner, once a second
+  const corner = spawnSync('ffmpeg', ['-hide_banner', '-nostats', '-i', file, '-vf', 'fps=1,crop=iw*0.12:ih*0.12:iw*0.88:ih*0.88,signalstats,metadata=print:file=-', '-an', '-f', 'null', '-'], { encoding: 'utf8' }).stdout || '';
+  const ymin = nums(corner, /YMIN=([0-9.]+)/g), ymax = nums(corner, /YMAX=([0-9.]+)/g); const padded = ymin.filter((lo, i) => ymax[i] - lo <= 2 && lo >= 90 && ymax[i] <= 170).length;
   const bs = nums(black, /black_start:([0-9.]+)/g), be = nums(black, /black_end:([0-9.]+)/g); const fs_ = nums(freeze, /freeze_start: ([0-9.]+)/g), fd = nums(freeze, /freeze_duration: ([0-9.]+)/g);
   return {
     codec: v.codec_name, pixel_format: v.pix_fmt, frame_rate: v.r_frame_rate, width: v.width, height: v.height, frames: Number(v.nb_frames), duration: +Number(info.format.duration).toFixed(3), bytes: Number(info.format.size),
-    audio_streams: info.streams.filter((s) => s.codec_type === 'audio').length,
+    audio_streams: info.streams.filter((s) => s.codec_type === 'audio').length, sampled_frames: ymin.length, padded_frames: padded,
     dark_spans: bs.map((from, i) => ({ from, to: be[i] ?? null })), still_spans: fs_.map((from, i) => ({ from, seconds: fd[i] ?? null })), hard_cuts: nums(scene, /pts_time:([0-9.]+)/g),
   };
 };
@@ -108,6 +111,7 @@ export const pictureCheck = (p, plan) => {
   if (!p) return [row('Picture file', null, 'not measured (the file is not in this workspace)')];
   const rows = [row('Encoding', p.codec === 'h264' && p.pixel_format === 'yuv420p' && p.frame_rate === `${plan.fps}/1` && p.width === plan.width && p.height === plan.height, `${p.codec}, ${p.pixel_format}, ${p.frame_rate} fps, ${p.width} × ${p.height}, ${p.frames} frames`)];
   rows.push(row('Length as planned', Math.abs(p.duration - plan.seconds) <= 0.2, `${p.duration} s against ${plan.seconds} s planned`));
+  if (p.sampled_frames !== undefined) rows.push(row('The picture fills the frame', p.padded_frames === 0, p.padded_frames ? `${p.padded_frames} of ${p.sampled_frames} sampled frames have a flat grey corner: the recorder padded the frame` : `${p.sampled_frames} frames sampled, none padded`));
   const explained = (d) => (plan.explained_dark || []).find((e) => d.from >= e.from - 0.2 && d.to <= e.to + 0.2);
   rows.push(row('No unexplained dark frames', p.dark_spans.every(explained), p.dark_spans.length ? p.dark_spans.map((d) => `${s2(d.from)}–${s2(d.to)} s: ${explained(d)?.why || 'UNEXPLAINED'}`).join(' · ') : 'none found'));
   const longest = Math.max(0, ...p.still_spans.map((x) => x.seconds || 0));

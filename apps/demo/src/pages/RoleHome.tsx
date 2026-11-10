@@ -66,7 +66,7 @@ export default function RoleHome({ role }: PageProps) {
         <h1 tabIndex={-1}>{s.headline}</h1>
         <p className="rh-sum" data-testid="rh-summary">{s.summary}</p>
         {s.primary && <div className="rh-start" data-testid="rh-start"><a className="ui-btn ui-btn--primary rh-start__a" href={s.primary.href} data-testid="rh-primary"><Icon name="spark" /> {s.primary.label}</a><span className="ui-meta">{s.primary.why}</span></div>}
-        {opens('#/search') && <div className="rh-search"><SearchBar hero label="Ask Search Party" placeholder={SEARCH_HINT[role] || 'Search rooms, devices, people and records'} /></div>}
+        {opens('#/search') && <div className="rh-search"><SearchBar hero role={role} answers={opens('#/find')} label="Ask Search Party" placeholder={SEARCH_HINT[role] || 'Search rooms, devices, people and records'} /></div>}
       </header>
       <JumpBar s={s} />
       {s.strip && <section className="rh-strip" aria-label="Mission Control" data-testid="rh-strip" data-n={s.strip.cols.length}>

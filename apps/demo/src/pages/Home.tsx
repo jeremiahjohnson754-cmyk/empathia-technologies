@@ -146,7 +146,7 @@ function MissionControl({ role }: PageProps) {
             {first && <> {roomLink(roomHref(first.r.outline), shortName(first.r.outline))} comes first{first.issues[0] ? <>: {first.issues[0].title.charAt(0).toLowerCase() + first.issues[0].title.slice(1)}</> : ''}.</>}
             {' '}<b>{waiting} decision{waiting === 1 ? ' is' : 's are'} waiting for a person</b>, and {nChanges} change{nChanges === 1 ? ' was' : 's were'} recorded this week.
           </p>
-          {opens('#/search') && <div className="mc-hero__search"><span className="mc-hero__sp" aria-hidden="true"><Icon name="search" size={20} /> Search Party</span><SearchBar hero label="Ask Search Party" placeholder="Try “4.218”, “ISS-0417”, “switch” or a device category" /></div>}
+          {opens('#/search') && <div className="mc-hero__search"><span className="mc-hero__sp" aria-hidden="true"><Icon name="search" size={20} /> Search Party</span><SearchBar hero role={role} answers={opens('#/find')} label="Ask Search Party" placeholder="Try “4.218”, “ISS-0417”, “switch” or a device category" /></div>}
           <div className="mc-hero__acts">{firstJob && opens(firstJob.href) && <a className="ui-btn ui-btn--primary" href={firstJob.href} data-testid="mc-open-job"><Icon name="alert" /> Open {firstJob.id}</a>}{opens('#/replay') && <a className="ui-btn" href="#/replay/R-ATL-4-218"><Icon name="clock" /> Replay a story</a>}</div>
           {opens('#/search') && <p className="mc-hero__try ui-meta">Try {[['#/search?q=4.218', '4.218'], ['#/search?q=camera', 'camera'], ['#/search/scenarios/S1', 'if this switch fails'], ['#/search/scenarios/S2', 'who supports']].filter(([h]) => opens(h!)).map(([h, l], i) => <span key={h}>{i ? ' · ' : ''}<a href={h}>{l}</a></span>)}</p>}
         </div>

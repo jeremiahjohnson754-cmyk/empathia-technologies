@@ -97,3 +97,17 @@
   .sbar { max-width: none; flex-basis: 100%; }
 }
 .fnd__bar { margin: var(--sp-3) 0; max-width: 560px; } .fnd__bar .sbar { max-width: none; }
+
+/* search that reads the sentence (search/understand.ts): the counted answer on the results page, and its row in the suggestions */
+.fnd-ans { margin-top: var(--sp-4); padding: var(--sp-4); border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line)); border-radius: var(--r-lg, 14px); background: color-mix(in srgb, var(--accent) 6%, var(--panel)); display: grid; gap: var(--sp-3); }
+.fnd-ans .kicker { margin: 0; } .fnd-ans__lead { margin: 0; font-size: var(--fs-lg); line-height: 1.25; text-wrap: balance; }
+.fnd-ans__read { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.fnd-ans__read li { display: inline-flex; align-items: center; gap: 2px; padding-inline-start: 12px; min-height: 32px; border: 1px solid var(--line2); border-radius: var(--r-pill, 999px); background: var(--bg2); color: var(--tx); font-size: var(--fs-sm); }
+.fnd-ans__read li > span { padding-inline-end: 12px; } .fnd-ans__read li:has(a) > span { padding-inline-end: 2px; }
+.fnd-ans__read a { display: inline-grid; place-items: center; min-width: 44px; min-height: 44px; margin-block: -6px; border-radius: 50%; color: var(--tx2); text-decoration: none; font-size: 1.1rem; }
+.fnd-ans__read a:hover, .fnd-ans__read a:focus-visible { color: var(--bad); }
+.fnd-ans__next ul { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.fnd-ans__next a { display: inline-flex; align-items: center; min-height: var(--target-min, 44px); padding: 0 14px; border: 1px solid var(--line2); border-radius: var(--r-pill, 999px); background: var(--panel); color: var(--tx); text-decoration: none; }
+.fnd-ans__next a:hover { border-color: var(--accent); } .fnd-ans__next .build__h { margin: 0; }
+.fnd__also { margin-top: var(--sp-5); }
+.sbar__list li.sbar__answer { border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); background: color-mix(in srgb, var(--accent) 8%, transparent); }

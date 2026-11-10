@@ -75,12 +75,15 @@ export function App() {
     const toHeading = (h1: HTMLElement) => { if (!h1.hasAttribute('tabindex')) h1.setAttribute('tabindex', '-1'); h1.focus({ preventScroll: false }); };
     const t = setTimeout(() => {
       const h1 = document.querySelector<HTMLElement>('main h1'); const m = document.getElementById('main');
+      // a role change is announced with the page it lands on. When that page's code arrives late (a slow phone, a busy machine), the late
+      // heading is added to the announcement and never replaces it: "viewing as a role grants nothing" must always be heard
+      const roleMsg = pending.current;
       // a field inside the page that changed the address (a room select, a search box) keeps the focus: the person is still using it
       const a = document.activeElement; const inField = !!a && !!m && m.contains(a) && /^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName);
       if (inField) { /* announce only */ } else if (h1) toHeading(h1); else {
         m?.focus();
         if (m && typeof MutationObserver !== 'undefined') {
-          obs = new MutationObserver(() => { const late = m.querySelector<HTMLElement>('h1'); if (!late) return; obs?.disconnect(); obs = null; const a = document.activeElement; if (!a || a === m || a === document.body) { toHeading(late); setSaid(late.textContent || d.title); } });
+          obs = new MutationObserver(() => { const late = m.querySelector<HTMLElement>('h1'); if (!late) return; obs?.disconnect(); obs = null; const a = document.activeElement; if (!a || a === m || a === document.body) { toHeading(late); setSaid(roleMsg ? `${roleMsg} ${late.textContent || d.title}.` : late.textContent || d.title); } });
           obs.observe(m, { childList: true, subtree: true }); stop = setTimeout(() => { obs?.disconnect(); obs = null; }, 4000);
         }
       }
