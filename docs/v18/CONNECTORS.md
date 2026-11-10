@@ -15,3 +15,11 @@ Checked by calling each one, not from the connector directory. "Used" means used
 | CircleCI, Descript | Not connected | — | BLOCKED until connected; nothing waits on them |
 
 Nothing proprietary was sent to any external service this iteration.
+
+## Added 9 November, evening (Surpass directive; founder granted connector use)
+
+| Connector | Access | Used for | Cost and limits |
+|---|---|---|---|
+| vidIQ | Working. It does generate here: voiceover, video composition, video generation, motion graphics, music | Film 13 scene 01: five narration lines in the Brian voice (5 × 28 credits), five timed segments (5 × 2), one joined master (7). **157 credits** of 475 | The composed file lives on vidIQ's CDN; it cannot be downloaded into the workspace, so nobody has heard it yet. Renewable credits (6,000) reset on 10 November 04:04 UTC |
+| Web search and fetch | Working | Re-verified the convention scale benchmark on its official page (4.6 million sq ft facility, about 2.9 million sq ft exhibit, 225 meeting rooms) | The stadium benchmark page is not reachable from this session; the founder's stated 60–65,000 figure is used and marked as not re-checked |
+| GitHub | Working | Branch `media/film-13-pilot` holds the silent scene so the voice service could fetch it | The repository is public: only synthetic screen recordings go there |

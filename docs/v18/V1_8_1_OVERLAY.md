@@ -29,9 +29,9 @@ World → Campus or Venue → District → Building → Level → Space → Room
 | V181-UNI-03 | Exactly four dormitory buildings | TESTED | estates ES-04; estate E-13 |
 | V181-UNI-04 | Campus life places (union, library, dining, recreation, wellbeing, transit) | TESTED (as records) | estates ES-14 |
 | V181-UNI-05 | Original explorable social campus: real software, a playable circuit activity, persistent progress | SPECIFIED | Not started. The existing learning quest (circuit rounds) is a journey screen, not yet an explorable space. No multiplayer is claimed or simulated |
-| V181-STA-01 | Stadium: fan and public, premium, team, broadcast and technology, operations | TESTED (as records) | estates ES-05, ES-13 |
+| V181-STA-01 | Stadium: fan and public, premium, team, broadcast and technology, operations; 60,000 to 65,000 seats with a full space program (Surpass §20) | TESTED (as records) | estates ES-05, ES-13, ES-21; estate E-32. 62,200 seats counted from records |
 | V181-STA-02 | Team and engineering areas never shown to fans | TESTED | estates ES-07, ES-18; estate E-14, E-15 |
-| V181-CNV-01 | Expo hall with booths, keynote hall, 8 to 12 breakouts, operations | TESTED (as records) | estates ES-06, ES-15; estate E-20 |
+| V181-CNV-01 | Superseded by Surpass §22: thirteen halls in four groups (about 2.9 million sq ft), exactly 225 meeting and breakout rooms, keynote, ballrooms, operations | TESTED (as records) | estates ES-06, ES-15, ES-21; estate E-20, E-33. The event schedule with collisions is not started |
 | V181-CNV-02 | No real association, show or exhibitor | TESTED | estates ES-10; estate E-22. Exhibitors are invented and said to be |
 | V181-LITE-01 | Lite in every world: what a place is, what it offers, how to reach it | TESTED | estate E-01, E-06, E-07, E-17 |
 | V181-LITE-02 | Step-free routes can be asked for | TESTED | estates ES-11; estate E-17. Routes are recorded pairs, not computed paths |
@@ -39,7 +39,7 @@ World → Campus or Venue → District → Building → Level → Space → Room
 | V181-SP-02 | Search never returns what the role is not shown | TESTED | estates ES-18, ES-19; estate E-03, E-15 |
 | V181-ROLE-01 | All 52 configurations resolve; selection grants nothing | TESTED | estates ES-16; estate E-02, E-26. Presentation only: the product's server decides real access |
 | V181-JOURNEY-01 | Journey screens and the estate name the same places | TESTED (names) | estates ES-13, ES-14, ES-15. The journey screens still draw their own small plans; they do not yet read the estate records |
-| V181-OPT-01 | Space Optimizer: nine dimensions, options A / B / C, one saved study per world | SPECIFIED | Not started |
+| V181-OPT-01 | Space Optimizer: nine dimensions, options A / B / C, one saved study per world | TESTED (three worlds) | optimizer unit SO-01..14; browser O-01..24. A study reopens from its address. Not done: Enterprise rooms, adjustable assumptions, saving a visitor's own proposal, the directive's A = minimal / B = balanced / C = maximum framing against a current baseline |
 | V181-SHOW-01 | Showroom Builder on Build a Room: canvas, placement, versions, undo and redo, outputs | SPECIFIED | Not started |
 | V181-FI-01 | Field Intelligence closed loop in every world | SPECIFIED | Exists for Enterprise only |
 | V181-REF-01..04 | Four reference journeys (one per world) end to end | SPECIFIED | Not started as end-to-end paths |

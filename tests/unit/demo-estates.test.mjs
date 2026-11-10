@@ -25,14 +25,27 @@ test('ES-04 University: exactly four dormitory buildings and three campuses', ()
   assert.equal(count(U.UNIVERSITY, 'dormitory'), 4); assert.equal(U.DORMS.length, 4);
   assert.equal(U.UNIVERSITY.nodes.filter((n) => n.kind === 'campus').length, 3);
 });
-test('ES-05 Stadium: public, premium, team, broadcast and operations districts, with the rooms each needs', () => {
+// ES-05 and ES-06 changed (9 Nov, founder's Surpass directive §20 and §22): the stadium is programmed at the 60,000 to 65,000 seat
+// benchmark and the convention centre at the scale of the largest centres, superseding the smaller first programs. The checks follow.
+test('ES-05 Stadium: 60,000 to 65,000 seats counted from its records, with every district and the rooms each needs', () => {
   const e = S.STADIUM; assert.equal(e.nodes.filter((n) => n.kind === 'district').length, 5);
-  for (const t of ['gate', 'concourse', 'seating-section', 'suite', 'locker-room', 'broadcast-control', 'press-conference', 'commentary-booth', 'camera-position', 'operations-centre', 'first-aid', 'guest-services']) assert.ok(count(e, t) >= 1, t);
+  const seats = [...M.ofType(e, 'seating-section'), ...M.ofType(e, 'suite')].reduce((t, n) => t + n.capacity, 0);
+  assert.ok(seats >= 60000 && seats <= 65000, String(seats)); assert.equal(S.SEATS, seats); assert.equal(e.nodes.find((n) => n.id === 'STA-V').capacity, seats);
+  for (const [t, min] of [['gate', 4], ['entrance', 4], ['security-screening', 4], ['concourse', 4], ['seating-section', 130], ['suite', 100], ['club', 3], ['concession', 30], ['restrooms', 30], ['accessible-restroom', 12], ['family-room', 4], ['first-aid', 3], ['guest-services', 4], ['retail', 5], ['lift', 14], ['escalator', 8], ['stair', 12], ['ramp', 4],
+    ['locker-room', 3], ['coaches-room', 2], ['team-meeting', 2], ['medical', 1], ['training-room', 1], ['recovery', 2], ['broadcast-control', 1], ['production-gallery', 1], ['replay', 1], ['audio-control', 1], ['commentary-booth', 6], ['camera-position', 12], ['press-box', 1], ['press-conference', 1], ['interview-studio', 2],
+    ['display-control', 1], ['network-room', 16], ['electrical-room', 8], ['plant-room', 6], ['operations-centre', 1], ['security', 1], ['kitchen', 3], ['storage', 6], ['loading-dock', 1], ['meeting-room', 8]]) assert.ok(count(e, t) >= min, `${t}: ${count(e, t)} < ${min}`);
   assert.equal(count(e, 'seating-section'), S.SECTIONS.length); assert.equal(count(e, 'suite'), S.SUITES.length);
+  assert.ok(M.ofType(e, 'seating-section').filter((n) => n.stepFree).length >= 40, 'accessible seating in every part of the bowl');
 });
-test('ES-06 Convention: one expo hall with booths, a keynote hall, and eight to twelve breakouts', () => {
-  const e = C.CONVENTION; assert.equal(count(e, 'expo-hall'), 1); assert.equal(count(e, 'keynote-hall'), 1);
-  const b = count(e, 'breakout-room'); assert.ok(b >= 8 && b <= 12, String(b)); assert.equal(count(e, 'booth'), C.BOOTHS.length); assert.ok(C.BOOTHS.length >= 40);
+test('ES-06 Convention: thirteen halls in four groups near 2.9 million square feet, exactly 225 meeting and breakout rooms, a show of over a thousand booths', () => {
+  const e = C.CONVENTION; assert.equal(count(e, 'hall-group'), 4); assert.equal(count(e, 'expo-hall'), 13); assert.equal(C.HALLS.length, 13);
+  const sqft = M.ofType(e, 'expo-hall').reduce((t, n) => t + n.dims[0] * n.dims[1], 0) * 10.7639; assert.ok(sqft > 2.7e6 && sqft < 3.1e6, String(Math.round(sqft)));
+  assert.equal(count(e, 'breakout-room') + count(e, 'meeting-room'), 225); assert.equal(C.MEETING_ROOMS.length, 225); assert.equal(new Set(C.MEETING_ROOMS).size, 225);
+  assert.equal(count(e, 'booth'), C.BOOTHS.length); assert.ok(C.BOOTHS.length >= 1000); assert.equal(count(e, 'keynote-hall'), 1); assert.equal(count(e, 'ballroom'), 3);
+  for (const [t, min] of [['registration', 4], ['entrance', 4], ['food-service', 4], ['restrooms', 60], ['first-aid', 4], ['loading-dock', 13], ['network-room', 26], ['lift', 20], ['escalator', 12], ['stair', 20], ['production-control', 4], ['green-room', 6], ['kitchen', 3], ['executive-suite', 8], ['storage', 13]]) assert.ok(count(e, t) >= min, `${t}: ${count(e, t)}`);
+  assert.equal(M.ofType(e, 'loading-dock').reduce((t, n) => t + n.capacity, 0), 104);
+  for (const id of C.BOOTHS) assert.ok(/^CNV-EXPO-[ABCD]$/.test(e.nodes.find((n) => n.id === id).parent), id);   // booths belong to the show's halls only
+  const sizes = new Set(C.MEETING_ROOMS.map((id) => e.nodes.find((n) => n.id === id).capacity)); assert.ok(sizes.size >= 8, 'rooms are not identical shells');
 });
 test('ES-07 a public reader is never handed a staff or restricted node; restricted needs the highest level', () => {
   for (const e of ALL) { const pub = e.nodes.filter((n) => M.maySee('public', n)); assert.ok(pub.length > 0 && pub.every((n) => n.access === 'public'), e.name);
@@ -107,4 +120,11 @@ test('ES-19 a public place inside a place the reader cannot see stays hidden; to
 });
 test('ES-20 what a room offers is said in plain words, from its equipment only', () => {
   const ix = M.indexOf(U.UNIVERSITY); const o = RD.offers(ix.assetsOf.get('UNI-SCI-110')); assert.ok(o.includes('A screen everyone can see')); assert.deepEqual(RD.offers([]), []);
+});
+
+test('ES-21 the space program is counted from the records and shrinks with the reader', () => {
+  for (const e of ALL) { const ix = M.indexOf(e); const full = RD.program(ix, 'restricted'); const pub = RD.program(ix, 'public');
+    assert.equal(full.reduce((t, r) => t + r.count, 0), e.nodes.filter((n) => !['world', 'venue', 'campus', 'district', 'level'].includes(n.kind)).length, e.name);
+    assert.ok(pub.reduce((t, r) => t + r.count, 0) < full.reduce((t, r) => t + r.count, 0)); for (const r of pub) assert.ok(full.find((x) => x.type === r.type).count >= r.count); }
+  const pubStadium = RD.program(M.indexOf(S.STADIUM), 'public').map((r) => r.type); for (const t of ['locker-room', 'network-room', 'broadcast-control', 'suite']) assert.ok(!pubStadium.includes(t), t);
 });

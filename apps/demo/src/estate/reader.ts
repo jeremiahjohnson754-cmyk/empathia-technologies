@@ -58,3 +58,12 @@ export function find(ix: Index, reader: Access, words: string, limit = 24): Hit[
 }
 export const totals = (ix: Index, reader: Access, e: Estate = ix.estate) => { const v = visibleNodes(ix, reader); const ids = new Set(v.map((n) => n.id));
   return { places: v.filter((n) => n.kind !== 'world' && n.kind !== 'level').length, rooms: v.filter((n) => n.kind === 'room').length, equipment: seesEquipment(reader) ? e.assets.filter((a) => ids.has(a.room)).reduce((s, a) => s + a.qty, 0) : null, routes: e.routes.filter((r) => ids.has(r.from) && ids.has(r.to)).length, all: e.nodes.filter((n) => n.kind !== 'world' && n.kind !== 'level').length }; };
+
+export interface ProgramRow { type: string; count: number; capacity: number; areaM2: number }
+/** The space program: what this reader is shown, counted by kind of place from the records themselves. Nothing here is typed in. */
+export function program(ix: Index, reader: Access): ProgramRow[] {
+  const rows = new Map<string, ProgramRow>();
+  for (const n of ix.estate.nodes) { if (['world', 'venue', 'campus', 'district', 'level'].includes(n.kind) || !shown(ix, reader, n.id)) continue;
+    const r = rows.get(n.type) || { type: n.type, count: 0, capacity: 0, areaM2: 0 }; r.count += 1; r.capacity += n.type === 'seating-bowl' ? 0 : n.capacity || 0; r.areaM2 += n.dims ? Math.round(n.dims[0] * n.dims[1]) : 0; rows.set(n.type, r); }
+  return [...rows.values()].sort((a, b) => b.count - a.count || a.type.localeCompare(b.type));
+}

@@ -1,6 +1,6 @@
 # Film 13 — ONE ROOM. ONE TRUTH. · Continuity-validation scene 01, "Held"
 
-Status: **PICTURE RECORDED (27 s, silent) · NARRATION NOT RECORDED · NOT REVIEWED**. This file is the production package for one
+Status: **PICTURE RECORDED · NARRATION COMPOSED (Brian voice, 9 November) · NOT LISTENED TO · NOT REVIEWED**. The narrated master and its line timings are in `docs/surpass/MEDIA_MASTER_MANIFEST.md`. This file is the production package for one
 27-second scene, made by `node scripts/media/film13-scene01.mjs` (output in `.local/media/film-13/scene-01/`, outside git until reviewed). It is not a film, and Film 13 is not made. Films 01 to 12 and the SIGNAL canon are untouched (V18-FILM-01, -06).
 
 ## Why this scene

@@ -13,7 +13,7 @@ import { enterContext, contextOf, contextKey } from '../worlds/scope.js';
 import { Block, Crumbs, Pick, Rows, Synthetic } from '../worlds/kit.js';
 import { UnknownWorld } from '../worlds/WorldPage.js';
 import { ESTATES, indexOf, pathOf, type Asset, type Commissioning, type Estate, type EstateNode, type Index } from './index.js';
-import { ACCESS_WORDS, READER_WORDS, find, offers, readerOf, seesEquipment, shown, totals } from './reader.js';
+import { ACCESS_WORDS, READER_WORDS, find, offers, program, readerOf, seesEquipment, shown, totals } from './reader.js';
 import { studiable } from '../optimizer/engine.js';
 
 const LITE_STATE: Record<Commissioning, string | null> = { ACCEPTED: 'Commissioned', COMMISSIONING: 'In commissioning', DESIGNED: 'Designed, not yet built', NOT_APPLICABLE: null };
@@ -77,6 +77,14 @@ function Overview({ world, config, ix, q: firstQ }: { world: World; config: Role
       <Block title="Plan" sub="Not to scale"><EstatePlan ix={ix} world={world} config={config} /></Block>
       <Block title="Browse" testId="estate-browse">
         <ul className="es-cards">{top.map((n) => <li key={n.id}><a className="w-item" href={estateHref(world.key, n.id, config.id)} data-node={n.id}><b>{n.name}</b><span className="ui-meta">{n.note || words(n.type)}</span></a></li>)}</ul>
+      </Block>
+      <Block title="Space program" sub="Counted from the records · designed, not surveyed" testId="estate-program">
+        <div className="es-tablewrap"><table className="es-table es-program">
+          <caption className="ui-visually-hidden">Places of {e.name} shown to the {config.label}, by kind</caption>
+          <thead><tr><th scope="col">Kind of place</th><th scope="col" className="es-n">Count</th><th scope="col" className="es-n">Seats or places</th><th scope="col" className="es-n">Floor area</th></tr></thead>
+          <tbody>{program(ix, reader).map((r) => <tr key={r.type} data-type={r.type}><th scope="row">{words(r.type)}</th><td className="es-n">{nf(r.count)}</td><td className="es-n">{r.capacity ? nf(r.capacity) : '—'}</td><td className="es-n">{r.areaM2 ? `${nf(r.areaM2)} m²` : '—'}</td></tr>)}</tbody>
+        </table></div>
+        <p className="ui-meta">Every figure is the sum of the records this role is shown. They are planning figures for a fictional place, not a survey and not a statement of code compliance.</p>
       </Block>
       <p className="ui-meta">Synthetic records of a fictional place. Nothing here is measured, surveyed or live.</p>
     </div>

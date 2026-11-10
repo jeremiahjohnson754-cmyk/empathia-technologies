@@ -67,9 +67,18 @@ const overflow = (p) => p.evaluate(() => document.documentElement.scrollWidth - 
 { const t = await open('#/estate/convention/CNV-BTH-A1?as=convention.convention_attendee'); const p = t.page; const text = await main(p);
   ok('E-20', 'booth A1 is the journey’s exhibitor, said to be invented', /Quillfinch Audio/.test(text) && /invented/.test(text), text.slice(0, 200));
   await p.goto(p.url().replace(/#.*/, '#/estate/convention')); await p.waitForSelector('[data-testid=estate]');
-  ok('E-21', 'a walk-in visitor to the convention is not shown the badge-only hall', !(await p.$$eval('[data-testid=estate-plan] a', (a) => a.map((x) => x.dataset.node))).includes('CNV-EXPO') && (await p.locator('[data-testid=estate-reader]').getAttribute('data-reader')) === 'public');
+  ok('E-21', 'a walk-in visitor to the convention is not shown the badge-only hall', !(await p.$$eval('[data-testid=estate-plan] a', (a) => a.map((x) => x.dataset.node))).some((id) => /^CNV-(EXPO|HBR|SMT|GDN)-/.test(id)) && (await p.$$eval('[data-testid=estate-program] tbody tr', (r) => r.map((x) => x.dataset.type))).every((t) => !['expo-hall', 'booth', 'network-room'].includes(t)) && (await p.locator('[data-testid=estate-reader]').getAttribute('data-reader')) === 'public');
   ok('E-22', 'no association, show or venue of the real world is named', !/avixa|infocomm|playstation/i.test(await main(p)));
   await t.close(); }
+
+{ const t = await open('#/estate/stadium?as=stadium.venue_ops_lead'); const p = t.page;
+  const prog = Object.fromEntries(await p.$$eval('[data-testid=estate-program] tbody tr', (r) => r.map((x) => [x.dataset.type, [...x.querySelectorAll('td')].map((c) => c.textContent)])));
+  const seats = Number(prog['seating-section'][1].replace(/,/g, '')) + Number(prog.suite[1].replace(/,/g, ''));
+  ok('E-32', 'Stadium: the space program on screen adds up to a 60,000 to 65,000 seat venue (Surpass §20)', seats >= 60000 && seats <= 65000 && Number(prog.suite[0]) === 120 && Number(prog.restrooms[0]) >= 30, `${seats} seats`);
+  await p.goto(p.url().replace(/#.*/, '#/estate/convention?as=convention.convention_av_it_engineer')); await p.waitForSelector('[data-testid=estate-program]');
+  const cp = Object.fromEntries(await p.$$eval('[data-testid=estate-program] tbody tr', (r) => r.map((x) => [x.dataset.type, [...x.querySelectorAll('td')].map((c) => c.textContent)])));
+  ok('E-33', 'Convention: thirteen halls, 225 meeting and breakout rooms and the show’s booths are on screen (Surpass §22)', Number(cp['expo-hall'][0]) === 13 && Number(cp['breakout-room'][0]) + Number(cp['meeting-room'][0]) === 225 && Number(cp.booth[0].replace(/,/g, '')) >= 1000 && /269,100 m²/.test(cp['expo-hall'][2]), JSON.stringify(cp['expo-hall']));
+  ok('E-34', 'the large estates still open without console errors', !t.errs.length, t.errs.join(' | ')); await t.close(); }
 
 { const t = await open('#/estate/enterprise'); const p = t.page;
   ok('E-23', 'Enterprise hands over to the existing campus, Lite and Search Party; nothing parallel is built', await p.locator('[data-testid=estate-enterprise]').count() === 1 && (await p.$$eval('[data-testid=estate-enterprise] a.ui-btn', (a) => a.map((x) => x.getAttribute('href')))).join() === '#/campus,#/lite,#/search');

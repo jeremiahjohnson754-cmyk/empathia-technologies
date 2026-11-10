@@ -20,3 +20,4 @@
 .es-plan__z { cursor: pointer; } .es-plan__z:hover rect { stroke: var(--world); } .es-plan__z:focus-visible { outline: none; } .es-plan__z:focus-visible rect { stroke: var(--tx); stroke-width: 3; }
 .es-plan__z[data-kind="ring"] text { font-size: 12px; fill: var(--tx3); }
 @media (max-width: 760px) { .es-two { grid-template-columns: minmax(0, 1fr); } .es-table { min-width: 520px; } }
+.es-n { text-align: right !important; white-space: nowrap; } .es-program { max-width: 46rem; }
