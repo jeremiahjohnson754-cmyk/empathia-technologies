@@ -80,7 +80,7 @@ function Preview({ s }: { s: BuildingStats }) {
 }
 
 function BuildingRows({ stats, testId = 'building-list' }: { stats: BuildingStats[]; testId?: string }) {
-  return <ul className="kit-meters" data-testid={testId} aria-label="Buildings by health">{stats.map((s) => <MeterRow key={s.b.key} href={`#/campus/${s.b.key}`} label={s.b.name} value={s.score} state={stateOf(s.band)} sub={`${s.rooms} rooms · ${s.open} open issue${s.open === 1 ? '' : 's'} · ${s.verifiedPct == null ? '—' : `${s.verifiedPct}%`} tests verified · ${s.devices} devices · ${s.score == null ? 'not scored' : BAND_LABEL[s.band]}`} />)}</ul>;
+  return <ul className="kit-meters" data-testid={testId} aria-label="Buildings by health">{stats.map((s) => <MeterRow key={s.b.key} href={`#/campus/${s.b.key}`} label={s.b.name} value={s.score} state={stateOf(s.band)} sub={`${s.rooms} ${s.rooms === 1 ? 'room' : 'rooms'} · ${s.open} open issue${s.open === 1 ? '' : 's'} · ${s.verifiedPct == null ? '—' : `${s.verifiedPct}%`} tests verified · ${s.devices} devices · ${s.score == null ? 'not scored' : BAND_LABEL[s.band]}`} />)}</ul>;
 }
 
 function SitePage() {
@@ -97,7 +97,7 @@ function SitePage() {
           <p className="kicker">The living campus · synthetic</p>
           <h1>{SITE.name}</h1>
           <p className="room__intent">{BUILDINGS.length} buildings and {REGIONAL_SITES.length} regional sites, {c.rooms} rooms, {c.devices} device positions. Select a building to go inside.</p>
-          <p className="ui-meta">One complete reference room, three that keep this demonstration’s earlier records, and {ROOMS.filter((r) => r.kind === 'designed').length} designed from their archetypes ({ROOMS.filter((r) => r.planRow).length} of them the rooms plan’s additions) — modelled layouts and devices, never surveyed.</p>
+          <p className="ui-meta">One complete reference room, three that keep this demonstration’s earlier records, and {ROOMS.filter((r) => r.kind === 'designed').length} designed from their archetypes ({ROOMS.filter((r) => r.planRow && !r.roster).length} added by the rooms plan and {ROOMS.filter((r) => r.roster).length} by the 90-room estate) — modelled layouts and devices, never surveyed.</p>
         </div>
         <div className="campus__score"><ScoreRing score={c.score} band={c.band} size={104} label="Campus health" caption={`mean of ${c.scored} scored rooms`} /></div>
       </header>
@@ -106,7 +106,7 @@ function SitePage() {
         <Stage label="Campus in 3D" testId="campus-stage"><CampusMap tiles={tilesOf(c.buildings)} onOpen={(B) => go(`#/campus/${B.key}`)} onPreview={setPeek} /><Legend /></Stage>
         <Preview s={shown} />
       </div> : <Section title="Every building and site" aside="The list alternative to the 3D map · health, rooms, issues, tests verified" id="campus-list-h" testId="campus-list"><BuildingRows stats={[...c.buildings, ...c.sites]} testId="campus-list-rows" /></Section>}
-      <nav className="campus__pills" aria-label="Buildings" data-testid="building-pills">{[...c.buildings, ...c.sites].map((s) => <a key={s.b.key} href={`#/campus/${s.b.key}`} className={`bpill bpill--${s.band}`}><StatusDot band={s.band} label={s.score == null ? 'not scored' : String(s.score)} /><b>{s.b.short}</b><span className="ui-meta">{s.rooms} rooms{s.open ? ` · ${s.open} open` : ''}</span></a>)}</nav>
+      <nav className="campus__pills" aria-label="Buildings" data-testid="building-pills">{[...c.buildings, ...c.sites].map((s) => <a key={s.b.key} href={`#/campus/${s.b.key}`} className={`bpill bpill--${s.band}`}><StatusDot band={s.band} label={s.score == null ? 'not scored' : String(s.score)} /><b>{s.b.short}</b><span className="ui-meta">{s.rooms} {s.rooms === 1 ? 'room' : 'rooms'}{s.open ? ` · ${s.open} open` : ''}</span></a>)}</nav>
       <div className="tiles">
         <StatTile label="Healthy rooms" value={c.healthy} unit={`of ${c.rooms}`} sub={`${c.monitor} to monitor · ${c.action} need action · ${c.unscored} not scored`} icon="heart" />
         <StatTile label="Open issues" value={c.open} sub={`${c.high} High · record issues and live service requests`} tone={c.high ? 'monitor' : undefined} icon="alert" />
@@ -114,7 +114,7 @@ function SitePage() {
         <StatTile label="Accepted rooms" value={c.accepted} unit={`of ${c.rooms}`} sub="with a current commissioning baseline" icon="cycle" />
       </div>
       <Section title="Buildings" aside="Health · rooms · issues · tests verified" id="bld-h"><BuildingRows stats={c.buildings} /></Section>
-      <Section title="Regional sites" aside="Fictional sites of the rooms plan · not on the campus map" id="sites-h" testId="regional-sites"><BuildingRows stats={c.sites} testId="site-list" /></Section>
+      <Section title="Regional sites" aside="Fictional sites beyond the campus · listed, not drawn on the campus map" id="sites-h" testId="regional-sites"><BuildingRows stats={c.sites} testId="site-list" /></Section>
       <Section title="Rooms by lifecycle" aside={`${c.rooms} rooms`} id="life-h">
         <ul className="campus__stats lifebar" aria-label="Rooms by lifecycle">{LIFE_ORDER.filter((s) => c.byLife[s]).map((s) => <li key={s} className={`lifebar__s lifebar__s--${(LIFE_TONE[s] || 'muted')}`} style={{ flexGrow: c.byLife[s] }}><b>{c.byLife[s]}</b><span>{s.replace(/_/g, ' ').toLowerCase()}</span></li>)}</ul>
       </Section>
