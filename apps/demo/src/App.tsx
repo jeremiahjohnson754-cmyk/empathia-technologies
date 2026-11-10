@@ -23,6 +23,7 @@ import { TourPanel } from './tour/Tour.js';
 import { ContactLinks } from './enquiry/WorkWith.js';
 import { ENQUIRY } from './enquiry.js';
 import { OfflineStrip } from './offline/Strip.js';
+import { Shortcuts } from './start/Shortcuts.js';
 
 const START = '#/investor';
 /** The address the router reads: an in-page anchor (#problems) or an empty hash is the investor start. */
@@ -104,6 +105,7 @@ export function App() {
         </Shell>
         <ViewAsSheet open={sheet} role={role} onPick={(r) => switchTo(r)} onClose={() => setSheet(false)} />
         <RoleVeil show={veil} />
+        <Shortcuts role={role} opens={(h) => opensNative(role, h)} />
         <p id="route-announcer" className="ui-sr" aria-live="polite" aria-atomic="true">{said}</p>
         {/* the ONE synthetic-data line (QUALITY_UPLIFT: no per-page banner; V2.5.3 shows a chip by the logo and one footer line) */}
         <footer className="foot"><span className="ui-tag ui-tone--warn foot__tag">Synthetic data</span> <span id="persp-note">Everything here is invented and connected to no real system; viewing as a role grants nothing.</span><span className="foot__more"> The only way out is Empathia's enquiry form on {ENQUIRY.host}.</span> <a href="#/investor">Back to the start</a> <a href="#/offline" data-testid="foot-offline">Offline use</a><ContactLinks /></footer>

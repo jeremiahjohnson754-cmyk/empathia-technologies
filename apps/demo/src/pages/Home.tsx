@@ -25,6 +25,8 @@ import { openPages } from '../viewas/scope.js';
 import { SearchBar } from '../search/SearchBar.js';
 import { CampusMap, Stage } from '../spatial/Spatial.js';
 import { StatusDot, Chip, Icon, Section, List, ListRow, MeterRow, EmptyState, ScoreRing, stateOf } from '../spatial/parts.js';
+import { MISSION_ROLES } from '../campus/rolehome.js';
+import RoleHome, { JumpBar, useStart } from './RoleHome.js';
 
 const DAY = 864e5;
 const ago = (t: number) => { const m = Math.round((Date.now() - t) / 6e4); return m < 60 ? `${Math.max(1, m)} min ago` : m < 1440 ? `${Math.round(m / 60)} h ago` : Math.round(m / 1440) === 1 ? '1 day ago' : `${Math.round(m / 1440)} days ago`; };
@@ -73,8 +75,11 @@ function PriorityRow({ p, mine }: { p: Priority; mine: boolean }) {
   );
 }
 
-export default function Home({ role }: PageProps) {
-  const w = useWs();
+/** #/home: Mission Control for the roles that run the estate (V2.5.3 viewHome), and every other role's own start page (viewHomeFor). */
+export default function Home(props: PageProps) { return MISSION_ROLES.includes(props.role) ? <MissionControl {...props} /> : <RoleHome {...props} />; }
+
+function MissionControl({ role }: PageProps) {
+  const w = useWs(); const start = useStart(role);
   const draft = useMemo(() => loadDraft(), [w]);   // eslint-disable-line react-hooks/exhaustive-deps
   const opens = (href: string) => { const r = resolve(href.split('?')[0]!); return !!r && canOpen(role, r); };
   const R = ROLES[role];
@@ -154,6 +159,7 @@ export default function Home({ role }: PageProps) {
         </div>
       </header>
 
+      <JumpBar s={start} />
       {/* ---------------------------------------------------------------- the products this role can open */}
       {products.length > 0 && <nav className="mc-products" aria-label="Products" data-testid="mc-products">
         {products.map(({ p, landing }) => <a key={p.id} href={hrefOf(landing!.id)} className={`mc-prod kit-s--${p.id}`} data-p={p.id}><span className="mc-prod__mark" aria-hidden="true" /><b>{p.name}</b><span className="mc-prod__n">{pnum[p.id]}</span><Icon name="chevron" size={16} /></a>)}
