@@ -1,0 +1,2238 @@
+{
+ "chapter": {
+  "id": "s02e10",
+  "kicker": "S02 · E10 · FINALE",
+  "title": "Festival in the Rain",
+  "pill": "S02E10 · Rain",
+  "sub": "Twelve thousand people, three faults, and a sky that gets a vote.",
+  "status": "**DRAFT** · scripted from the season map (MS-04) ahead of its production-bible entry · IDs provisional",
+  "flags": [
+   "DR-S02E10",
+   "RT-03",
+   "RV-56",
+   "RV-58",
+   "RV-59",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--red)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 2 · EPISODE 10 · DRAFT · SEASON FINALE  Countdown · MS-04 · Maya, Ben and Imani · Level L3  Riverbend Festival. Twelve thousand people, a headliner at 9:15, and rain forecast for after nine. The rain doesn't read forecasts.  ⚑ RV-56 · RV-58: weather holds belong to the weather plan and the person it names; generators and wet power belong to the power vendor. Distances, times and readings are illustrative. Most choices in this episode run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Twelve Thousand and a Sky",
+   "kind": "BOSS · SEASON FINALE",
+   "level": "L3",
+   "party": [
+    "maya",
+    "ben",
+    "dante",
+    "hank",
+    "rosa",
+    "imani"
+   ],
+   "stakes": "Twelve thousand people. The headliner's ninety minutes. Three faults that look like one. A sky that gets a vote.",
+   "clock": "Curfew at 11:30. First cells in twenty minutes.",
+   "reward": "A show that stops safely and starts again. A story Ben has never told.",
+   "objectives": [
+    {
+     "key": "BR-S02E10-01",
+     "text": "Keep the headliner in the song"
+    },
+    {
+     "key": "BR-S02E10-02",
+     "text": "Leave the generator to its owner"
+    },
+    {
+     "key": "twist",
+     "text": "Prove it isn't the crowd"
+    },
+    {
+     "key": "BR-S02E10-03",
+     "text": "Back the hold"
+    },
+    {
+     "key": "BR-S02E10-05",
+     "text": "Tell Rosa you're ready — only if you are"
+    },
+    {
+     "key": "disc:3",
+     "text": "Look closer: three things the rain uncovers"
+    }
+   ],
+   "rumor": "Ben's brass tag has a date on it. Tonight it will mean something."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Nine-fifteen”",
+   "sub": "Riverbend Festival · night one · 9:15 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The festival main stage from the FOH tent: the headliner in silhouette at center stage, lights blazing, the crowd filling the field. Maya at the console; Ben beside her with his phone.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "ben",
+     "pose": "H",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Weather plan's printed and taped to the desk. Section three's highlighted."
+    },
+    {
+     "side": "R",
+     "who": "Ben",
+     "kind": "speech",
+     "text": "Good. Radar's early. First cells in twenty minutes. Maybe less."
+    }
+   ],
+   "narration": [],
+   "caption": "Twelve thousand people (illustrative). The headliner has ninety minutes. Curfew is eleven-thirty.",
+   "flags": [
+    "RV-56",
+    "RT-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6675
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "ben",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Radar's early. First cells in twenty. Maybe less."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Section three's highlighted."
+    },
+    {
+     "who": "ben",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Good. Highlighters are the most underrated safety equipment we own."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Flashback to 11:04 that morning: a production truck's ramp is set down on the grass during load-in. A thin cable runs along the ground and under the ramp's lip. A crew member waves the next case through.",
+   "characters": [
+    {
+     "id": "crew",
+     "pose": "W",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [],
+   "narration": [],
+   "caption": "11:04 a.m. Load-in. The truck ramp goes down where it always goes down.",
+   "flags": [],
+   "kind": "flashback",
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4359
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Flashback to 8:40 p.m.: Imani photographs the stage-left network junction on her walk. It sits on the ground; a black rubber boot hangs loosely off one connector. A golf cart has just rolled past.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Imani photographs every junction on her 8:40 walk. Forty-one photos. Nobody looks at them tonight — yet.",
+   "flags": [],
+   "kind": "flashback",
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4092
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S2-10a",
+   "teaser": "Imani's 8:40 photos",
+   "title": "Photo 17 of 41",
+   "body": "Stage left. A junction box. The rubber boot is lying next to it, not on it. At 8:40 it wasn't raining. At 9:21 it will be.",
+   "thread": "The as-built",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "9:21 p.m. Rain slants across the stage lights and the crowd. On the console, a warning flashes: stage box, no control. Maya's arms fly up.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Dante",
+     "kind": "radio",
+     "text": "Vocal one just dropped. And guitar two. Mid-chorus!"
+    }
+   ],
+   "narration": [],
+   "caption": "Twenty minutes early. Two wireless channels, and FOH's control of the stage flickering in and out.",
+   "flags": [
+    "RV-59"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 10034
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E10-01",
+   "prompt": "9:21. Headliner's vocal and a guitar drop out. Control flickers. Fifteen seconds.",
+   "happening": "Rain, early. Two wireless channels dropping. FOH control of the stage box dropping for seconds.",
+   "clock": "9:21 p.m. · curfew 11:30",
+   "known": [
+    "◉ Vocal 1 and guitar 2 dropping",
+    "◉ Control drops of 2–3 s",
+    "◉ Rain started 9:21"
+   ],
+   "unknown": [
+    "Whether the two faults are one fault",
+    "What changed"
+   ],
+   "risk": "Twelve thousand people in the rain; the headliner's voice.",
+   "timer_s": 15,
+   "timeout": [
+    "The headliner sings two more lines into a dead mic, then points at FOH.",
+    "In the first seconds, service first — with a move you can undo."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Protect the next minute with something you can undo."
+    }
+   ],
+   "note": "Draft decision (DR-S02E10). Branch A.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Headliner to the wired backup mic on the stand; tell Dante; keep going while you troubleshoot",
+     "result": "She grabs the stand mic mid-line without missing a beat. The crowd sings the chorus back at her.",
+     "consequence": "The show survives the next minute. Now you have time to find out why.",
+     "chips": [
+      "Reversible",
+      "Show protected"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Dante": 2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Rescan and re-coordinate every frequency now",
+     "result": "Two more channels start dropping as new frequencies land near each other.",
+     "consequence": "You changed sixteen things because of two.",
+     "chips": [
+      "4 channels down"
+     ],
+     "badges": [
+      {
+       "kind": "erase",
+       "text": "MAY ERASE EVIDENCE"
+      }
+     ],
+     "canonical": false,
+     "fail": "No interference was measured. Re-coordinating live creates the collisions you feared.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Crew": -2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Reboot the console — it updated last week",
+     "result": "Ninety seconds of silence for twelve thousand people. It comes back; the drops come back with the next burst of rain.",
+     "consequence": "The drop log is gone too.",
+     "chips": [
+      "90 s silence"
+     ],
+     "badges": [
+      {
+       "kind": "erase",
+       "text": "MAY ERASE EVIDENCE"
+      }
+     ],
+     "canonical": false,
+     "fail": "Recent isn't evidence. You silenced the show to test a hunch.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Crew": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Run to the stage junction in the rain to look",
+     "result": "You're halfway across the field when Ben's voice on the radio stops you: “Where's FOH?”",
+     "consequence": "The console is unattended, and the junction sits next to a power distro in the wet.",
+     "chips": [
+      "FOH empty"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Your job right now is the show and the evidence, not a wet box beside a distro.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Ben": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The headliner at the stand mic, rain in the lights; the whole crowd singing the chorus back.",
+   "characters": [],
+   "location": "scenes.bg_festival",
+   "bubbles": [],
+   "narration": [],
+   "caption": "The crowd sings the part the wireless dropped. Some nights the audience is the backup system.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 9124
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "9:24 p.m. Behind the stage, the generator's status light flashes red: ALARM. Hank, the power vendor's technician, in his hi-vis vest, already on the radio.",
+   "characters": [
+    {
+     "id": "hank",
+     "pose": "H",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Hank",
+     "kind": "radio",
+     "text": "Genny three's showing an alarm. Who's touching it?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-58"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7105
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "warm",
+   "where": null,
+   "lines": [
+    {
+     "who": "hank",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Genny three's showing an alarm. Who's touching it?"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Nobody. It's yours."
+    },
+    {
+     "who": "hank",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Best answer I've had from AV all year."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E10-02",
+   "prompt": "9:24. The generator that feeds the stage shows an alarm. Twenty seconds.",
+   "happening": "The stage generator shows ALARM.",
+   "clock": "9:24 p.m.",
+   "known": [
+    "◉ Generator: Hank's",
+    "◉ Audio still running"
+   ],
+   "unknown": [
+    "What the alarm means"
+   ],
+   "risk": "Everyone on and around the stage; the show's power.",
+   "timer_s": 20,
+   "timeout": [
+    "A stagehand walks toward the generator, reaching for the panel. Hank shouts across the field.",
+    "An alarm is a question for its owner. Somebody has to ask it."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Whose machine is it?"
+    }
+   ],
+   "note": "Draft decision (DR-S02E10).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Radio Hank: “Nobody. It's yours. What do you need from us?”",
+     "result": "“Keep your loads where they are. Four minutes.” He's already walking.",
+     "consequence": "The owner has his machine.",
+     "chips": [
+      "Owner on it"
+     ],
+     "badges": [
+      {
+       "kind": "up",
+       "text": "ESCALATE"
+      }
+     ],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Hank": 2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Reset the alarm yourself — there's a button",
+     "result": "The light goes green. The fault underneath doesn't.",
+     "consequence": "You hid a real fault on someone else's machine, in the rain.",
+     "chips": [
+      "Not yours"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "The generator is the power vendor's. Resetting its alarm is not your call. ⚑ RV-58",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Crew": -2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Shed load: switch off our amplifiers",
+     "result": "The PA goes dark mid-song.",
+     "consequence": "Hank didn't ask for it and now has to guess what changed.",
+     "chips": [
+      "Show dark"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Load changes on someone else's generator happen on their word, not your guess.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Hank": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ignore it — the sound's still on",
+     "result": "It is, for now.",
+     "consequence": "An alarm nobody owns is an alarm nobody answers.",
+     "chips": [
+      "Unanswered"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Silence isn't an answer to an alarm.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Crew": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “It isn't the crowd”",
+   "sub": "9:26 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "At FOH, Dante — on the radio from the stage — and Imani argue across Maya.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "imani",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dante",
+     "kind": "radio",
+     "text": "It's the crowd. Twelve thousand phones. That's your RF."
+    },
+    {
+     "side": "R",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "And the console updated last week. That's your control."
+    }
+   ],
+   "narration": [],
+   "caption": "Two confident theories. Neither has a measurement yet.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 9141
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "An RF scan display: our channels all present, no new signals anywhere in the band. Beside it, antenna signal bars: antenna A healthy, antenna B far down in red.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [],
+   "narration": [],
+   "caption": "No new signals in the band. One antenna, weak.",
+   "flags": [
+    "RV-59",
+    "RV-35",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "RF scan · no new signals · antenna B low"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 8202
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "It isn't the crowd.",
+   "body": "Twelve thousand phones would show up as new signals. The scan shows none. What it shows is one antenna — B — receiving far less than it should, from the same transmitters that antenna A hears perfectly. The dropouts aren't something in the air; they're something between antenna B and its receiver.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S02E10-1",
+   "label": "Test: reason from the scan before you read on."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya follows antenna B's cable from its stand at the side of the stage along the grass — straight under the lip of the truck ramp, where it's flattened.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Antenna B's cable runs under the truck ramp. It has since 11:04 this morning.",
+   "flags": [
+    "RV-59"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "antenna B cable · under the ramp · flattened"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 6983
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View chart from 9:15 to 9:30: blue bars of rain intensity rising after 9:21; red blocks marking control drops that line up with each burst of heavier rain. A note: switch port 7, the stage-left junction, flapped 23 times; every other port steady.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The drops don't follow the console. They follow the rain.",
+   "flags": [
+    "RV-58",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya on the radio to Dante at the stage; Dante gestures at the small fallback mixer beside the monitor world.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    },
+    {
+     "id": "dante",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "radio",
+     "text": "Take the headliner's ears on the stage mixer. If FOH drops again, it can't reach her."
+    },
+    {
+     "side": "R",
+     "who": "Dante",
+     "kind": "radio",
+     "text": "Fallback's live. Her in-ears are mine now."
+    }
+   ],
+   "narration": [],
+   "caption": "Branch C: the planned local fallback. Written in the plan, set up at soundcheck.",
+   "flags": [
+    "RV-59"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6662
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Hold”",
+   "sub": "9:31 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A white flash splits the sky behind the stage. Ben, at the side of FOH, is counting under his breath.",
+   "characters": [
+    {
+     "id": "ben",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [],
+   "narration": [
+    "…seven. Eight. Nine."
+   ],
+   "caption": "A crack of thunder. Nine seconds: about three kilometers (illustrative).",
+   "flags": [
+    "RV-56"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 8843
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": "9:31 p.m.",
+   "lines": [
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "worried",
+     "text": "…seven. Eight. Nine."
+    },
+    {
+     "who": "ben",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Three kilometers. Plan says hold."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ben on the radio, calm; at the stage manager's desk, Rosa listens on her headset.",
+   "characters": [
+    {
+     "id": "ben",
+     "pose": "H",
+     "expr": "flat"
+    },
+    {
+     "id": "rosa",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ben",
+     "kind": "radio",
+     "text": "Hold. Weather plan, section three. Production concurs. Rosa, call it."
+    },
+    {
+     "side": "R",
+     "who": "Rosa",
+     "kind": "radio",
+     "text": "Holding. Announcement in ten. Booth, give me the announce mic."
+    }
+   ],
+   "narration": [],
+   "caption": "Not Maya's call. Not the headliner's. The plan's, and the person it names.",
+   "flags": [
+    "RV-56"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 9135
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E10-03",
+   "prompt": "9:32. Ben has called the hold. The headliner's manager is shouting for one more song. What do you do?",
+   "happening": "Lightning within the plan's trigger distance; Ben has called a hold; the manager wants one more song.",
+   "clock": "9:32 p.m.",
+   "known": [
+    "◉ Flash-to-bang: 9 s",
+    "◉ Weather plan, section three: hold",
+    "◉ Rosa is calling it"
+   ],
+   "unknown": [
+    "How long the hold lasts"
+   ],
+   "risk": "Twelve thousand people in the open; everyone on stage.",
+   "timer_s": 20,
+   "timeout": [
+    "The band, hearing nothing from FOH, starts the next song's intro. Rosa has to shout them off.",
+    "In a hold, silence from the booth reads as permission."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "The decision is made. What does Rosa need from the booth to carry it out?"
+    }
+   ],
+   "note": "Draft decision (DR-S02E10). Branch B — the plan's call, not the booth's.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Keep the band's channels open — “just one more song” while Rosa decides",
+     "result": "The manager hears a yes. The band starts a count-in on a stage under a lightning hold.",
+     "consequence": "You just overrode the weather plan from the booth.",
+     "chips": [
+      "Plan overridden"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "The hold isn't a suggestion. “Just one more song” is how the plan gets broken.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Rosa": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Support the hold: announce mic live for Rosa, talkback into the headliner's ears, band channels down, then shelter",
+     "result": "Rosa's voice fills the field, steady. Dante talks the headliner off stage through her in-ears.",
+     "consequence": "The hold runs the way the plan says. Nobody on stage, nobody at wet power.",
+     "chips": [
+      "Hold supported",
+      "Comms alive"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Dante": 2,
+       "Rosa": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Use the lull: run to the junction and fix it now",
+     "result": "Ben, sharply, on the radio: “Stop.”",
+     "consequence": "A wet junction beside a live distro, in lightning.",
+     "chips": [
+      "Unsafe"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "UNSAFE"
+      }
+     ],
+     "canonical": false,
+     "fail": "Nobody works outside, at wet power or near structures during a lightning hold. Nothing on a show is worth it.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Ben": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Argue for the headliner: the crowd is fine, it's only rain",
+     "result": "Ben: “Stop.” Calmly, once.",
+     "consequence": "You spent the first minute of the hold arguing with the plan.",
+     "chips": [
+      "Wasted minute"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The weather plan isn't a debate at FOH. It was agreed before doors so nobody has to argue in the rain.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Ben": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "physbreak",
+   "cls": "physbreak",
+   "text": "🔭 PHYSICS IN MOTION  How far the PA reaches  The science under this episode’s problem — live."
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Ben and Maya beside a board. A delay speaker sits out in the crowd, delayed so its sound lands just after the stage's. Sound moves about three hundred forty-three metres a second. So the delay is… Distance over speed. Tower seventeen metres out: seventeen over three forty-three — about fifty milliseconds. And weather holds are the safety lead's call.",
+   "characters": [
+    {
+     "id": "ben",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ben",
+     "kind": "speech",
+     "text": "A delay speaker sits out in the crowd, delayed so its sound lands just after the stage's. Sound moves about three hundred forty-three metres a second."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "So the delay is…"
+    },
+    {
+     "side": "L",
+     "who": "Ben",
+     "kind": "speech",
+     "text": "Distance over speed. Tower seventeen metres out: seventeen over three forty-three — about fifty milliseconds. And weather holds are the safety lead's call."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3502
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    Delay speaker   A loudspeaker farther from the stage, delayed so its sound arrives just after the main speakers'.   Speed of sound   About 343 m/s in air at 20 °C; faster when warmer.   Weather hold   Stopping outdoor work or a show because of wind or lightning, called by the weather/safety lead.   Formula, variables and a worked example   ƒ FORMULA · Travel time  t = d ÷ c   t  time, s (× 1,000 for ms)  d  distance, m  c  speed of sound, about 343 m/s in air at 20 °C    Worked example.  A delay speaker 17.15 m farther away: 17.15 ÷ 343 = 0.05 s = 50 ms."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 21 OF 31 · PP. 61–64, 75–83  PART 5 DSP, MIXING & EAR TRAINING  Page 63, the corner folded down at soundcheck. Maya's note, written under the canopy: “Rain on the roof is a noise floor too. Gate what you can. Ride the rest.”"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB21",
+   "label": "**Fieldbook module 21 — Dynamics — compressors, gates, limiters and effects.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 21 · tap a plate to open it full size     Audio DSP fundamentals     Audio filters explained     Audio compression deep dive     Gating and de-essing"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "demo-note",
+   "cls": "demo-note",
+   "text": "🗜 Compression · HANDS-ON DEMO  Move the threshold and ratio and watch a sung phrase, drum hits or a bass line get steadier — or squashed.  Open the demo ▸",
+   "opens": {
+    "kind": "demo",
+    "id": "comp"
+   }
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "👂 HEAR IT · CHALLENGE · LEVEL 1  Fix the over-compressed vocal  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "hear-comp"
+   }
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lab",
+   "id": "PHY-S02E10",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "At the side of the stage, the headliner's manager — a dark shape with arms thrown wide — shouts at Ben. Ben stands still in the rain, hands at his sides.",
+   "characters": [
+    {
+     "id": "ben",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Headliner's manager",
+     "kind": "speech",
+     "text": "Twelve thousand people! She's fine! One more song and we're done!"
+    },
+    {
+     "side": "R",
+     "who": "Ben",
+     "kind": "speech",
+     "text": "Stop. It's not my opinion. It's the plan. We agreed it before doors."
+    }
+   ],
+   "narration": [],
+   "caption": "Ben says “Stop” calmly, and means it.",
+   "flags": [
+    "RV-56"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 9102
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S2-10",
+   "who": "ben",
+   "prompt": "(The manager is screaming for one more song. Ben looks at you — not for permission. For company.)",
+   "options": [
+    {
+     "label": "Stand next to Ben. Say nothing. Hand Rosa the announce mic.",
+     "who": "ben",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "(He doesn't look at you. He doesn't need to. He knows you're there.)",
+     "trust": {
+      "Ben": 2
+     }
+    },
+    {
+     "label": "“She's fine, Ben. One song?”",
+     "who": "ben",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Stop. Not you too.",
+     "trust": {
+      "Ben": -3
+     }
+    },
+    {
+     "label": "Tell the manager the plan was agreed before doors.",
+     "who": "ben",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "(A small nod. The manager hears it from two people now.)",
+     "trust": {
+      "Ben": 1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Stage lights drop to work lights. Rosa at the announce mic. The crowd, ponchos glinting, begins to move in the direction the stewards point.",
+   "characters": [
+    {
+     "id": "rosa",
+     "pose": "M",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Rosa",
+     "kind": "speech",
+     "text": "Ladies and gentlemen, we're pausing the show for your safety. Please follow the stewards. We'll be back."
+    }
+   ],
+   "narration": [],
+   "caption": "Twelve thousand people moving where the event's safety plan tells them. Not AV's plan. Theirs.",
+   "flags": [
+    "RV-56"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 8988
+  },
+  {
+   "origin": "injected",
+   "type": "history",
+   "title": "Faraday and the loudspeaker's ancestor",
+   "body": "Michael Faraday showed in 1831 that a moving magnet makes current flow in a wire — and that current in a wire makes a magnet move. Every loudspeaker on a festival tower is Faraday's experiment, turned into air pressure.",
+   "flag": "RV-27",
+   "when": "1831",
+   "lab": "PHY-S02E10"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "The hold",
+   "sub": "9:44 p.m. · the production truck"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Inside the production truck, rain drumming on the roof. Imani scrolls photos on a tablet; Maya watches. Just outside the open door, on the ground at the foot of the steps, sits a road case stenciled MAYA · RF, beside a spreading puddle.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "R",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "Forty-one photos from my walk. I haven't looked at one of them."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Look now. Stage left. Anything near the ground."
+    }
+   ],
+   "narration": [],
+   "caption": "The hold is the best troubleshooting hour you'll ever get. From shelter.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1823
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Imani's 8:40 photo on the tablet: the stage-left junction box on the ground in a dip in the grass, its rain boot hanging off one connector.",
+   "characters": [],
+   "location": "scenes.bg_truck",
+   "bubbles": [],
+   "narration": [],
+   "caption": "The boot is off. The box is in the lowest spot on the field. And it's been raining for twenty minutes.",
+   "flags": [
+    "RV-58"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "photo 8:40 · junction boot off · on the ground"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2139
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The console isn't the problem. The water is.",
+   "body": "The console that “updated last week” drops control only when the rain gets heavier. The switch log shows one port — the stage-left junction — flapping; every other port is steady. And Imani's photo shows why: that junction lost its rain boot and sits at the lowest point of the field. Nobody touches it until the storm has passed and Hank says the distro beside it is safe.",
+   "test_kind": "drill",
+   "test_id": "C-22",
+   "label": "Test: which clues actually separate the explanations?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A quiet corner of the truck. Ben, hard hat off, turns the small brass tag on his harness between his fingers. Maya waits.",
+   "characters": [
+    {
+     "id": "ben",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ben",
+     "kind": "speech",
+     "text": "Years ago. An outdoor show. The wind came up, and we were told to keep going."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "…"
+    }
+   ],
+   "narration": [],
+   "caption": "The date stamped on the tag is older than Maya's first job.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1457
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S2-10b",
+   "teaser": "the date on the tag",
+   "title": "Nine years ago, this month",
+   "body": "An outdoor show. Rising wind. A crew told to keep going. A roof section came down after the audience had gone. Nobody was hurt. Ben says it was luck, and he says the word *luck* like it tastes bad.",
+   "thread": "The brass tag",
+   "who": [
+    "ben",
+    "N",
+    "closed"
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ben, eyes closed for a moment; Maya listening. Rain on the roof.",
+   "characters": [
+    {
+     "id": "ben",
+     "pose": "N",
+     "expr": "closed"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ben",
+     "kind": "speech",
+     "text": "A roof section came down after the audience had gone. Nobody was hurt. That was luck, not planning."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "So that's why “stop” is normal on your crew."
+    }
+   ],
+   "narration": [],
+   "caption": "Ben: “It's why it's boring. Boring is the goal.”",
+   "flags": [
+    "RV-56"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1207
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "ben",
+     "pose": "N",
+     "expr": "closed",
+     "text": "It's why it's boring. Boring is the goal."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(She will think about this sentence for the rest of her career.)"
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lab",
+   "id": "LAB-EQ-03",
+   "label": "**Fix-It Lab:** after the hold, time the delay tower.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III — “After the all-clear”",
+   "sub": "10:31 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The rain has eased to a drizzle; the sky is dark and quiet. Ben and Hank stand at the side of the stage with the plan.",
+   "characters": [
+    {
+     "id": "ben",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "hank",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ben",
+     "kind": "speech",
+     "text": "Thirty minutes since the last strike. Plan says clear. Nobody touches the junction until Hank says so."
+    },
+    {
+     "side": "R",
+     "who": "Hank",
+     "kind": "speech",
+     "text": "Distro beside it's mine. Give me three minutes. Generator was a fuel filter — changed."
+    }
+   ],
+   "narration": [],
+   "caption": "Owners first. Then one fix at a time. Curfew is fifty-nine minutes away.",
+   "flags": [
+    "RV-56",
+    "RV-58"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3220
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E10-04",
+   "prompt": "10:32. All clear. The junction sits in a puddle next to Hank's distro. Twenty seconds.",
+   "happening": "The all-clear has come; the wet junction still carries the control link.",
+   "clock": "10:32 p.m. · curfew 11:30",
+   "known": [
+    "◉ Junction boot off; box in water",
+    "◉ Hank: the distro is his",
+    "◉ Spare jumper and a booted box in the truck"
+   ],
+   "unknown": [],
+   "risk": "Whoever touches that box; the restart.",
+   "timer_s": 20,
+   "timeout": [
+    "A helpful stagehand crouches over the junction with a towel. Ben's voice cracks across the field: “Stop.”",
+    "When you don't direct the fix, the nearest person improvises it — at wet power."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Whose word comes first?"
+    }
+   ],
+   "note": "Draft decision (DR-S02E10).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Dry it and re-seat it now, quickly — the crowd's coming back",
+     "result": "Ben's hand lands on your shoulder before yours reaches the box. “Stop.”",
+     "consequence": "An energized connector, in water, beside a power distro. Not tonight, not ever.",
+     "chips": [
+      "Unsafe"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "UNSAFE"
+      }
+     ],
+     "canonical": false,
+     "fail": "Never re-seat an energized connector sitting in water. Wait for the owner of the power to make it safe.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Ben": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Wait for Hank's OK on the distro; then swap in the spare jumper, in a booted box on a stand, off the ground",
+     "result": "Three minutes. Hank: “Safe.” The crew lifts the new junction onto a stand in a booted box; the old wet jumper goes in a bag, labeled.",
+     "consequence": "Port 7 comes up and stays up.",
+     "chips": [
+      "Owner first",
+      "Raised, booted"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Hank": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Throw a bin bag over it and hope",
+     "result": "The bag fills with water and slides off.",
+     "consequence": "Hope isn't rain protection.",
+     "chips": [
+      "Still wet"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The fault is water in a connector. Covering a puddle doesn't dry it.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Hank": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Skip it: run the show on the fallback mixer only",
+     "result": "Monitors are fine. FOH still drops control every time it drizzles.",
+     "consequence": "A branch meant for minutes, stretched over an hour.",
+     "chips": [
+      "FOH unstable"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #21 · AVERY'S LENS  One voice in an emergency  Under stress, fewer choices and one clear authority beat many opinions (Hick's law).  Ben's hold call was one sentence on one channel. Everybody knew who decided."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S02E10",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The new junction: a booted box on a stand above the puddle, glowing green link lights. A crew member steps back; Hank writes on a tag on his clipboard.",
+   "characters": [
+    {
+     "id": "crew",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "hank",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Raised, booted, dry. Hank signs the generator back into service.",
+   "flags": [
+    "RV-58"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "Hank · distro safe · generator signed back in"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3741
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Dante walks the stage with a handheld mic, talking; a new cable runs from antenna B's stand along the edge, clear of the truck ramp. Beside him, the RF readout: antenna A and B both healthy.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "M",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Dante",
+     "kind": "radio",
+     "text": "Downstage right. Upstage. The lip. Behind the drum riser. Solid everywhere."
+    }
+   ],
+   "narration": [],
+   "caption": "New cable, clear of the ramp. Walk test where the performers actually walk.",
+   "flags": [
+    "RV-59",
+    "RV-35"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "RF walk test · antenna B healthy · 10:40 p.m."
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 5081
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View map of the festival: the main stage, FOH, and three numbered faults — the junction in water on the control link (owner: us, after Hank's OK), the generator alarm (owner: Hank), and antenna B's cable crushed under the truck ramp (owner: us). Weather: the plan's and Ben's. Restart: Rosa's.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Three faults, three owners, one plan.",
+   "flags": [
+    "RV-56",
+    "RV-58",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A laptop at FOH: switch port 7, the stage-left junction — zero flaps from 10:41 to 10:51. Stage-box control stable. Maya watches it with her notebook.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Ten minutes. Zero drops. A monitored period, not a hopeful glance.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "port 7 · 0 flaps · 10 min"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 4169
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E10-05",
+   "prompt": "10:52. Rosa, on headset: “Booth. Are we ready?” Fifteen seconds.",
+   "happening": "The monitored period is clean; RF is proven; the generator is signed back.",
+   "clock": "10:52 p.m. · curfew 11:30",
+   "known": [
+    "▮ Port 7: 0 flaps in 10 min",
+    "✓ RF walk test clean",
+    "✓ Hank's sign-off"
+   ],
+   "unknown": [],
+   "risk": "Twelve thousand people waiting in ponchos; the curfew.",
+   "timer_s": 15,
+   "timeout": [
+    "Rosa waits three seconds, then calls another booth check. The crowd starts a slow clap.",
+    "The stage manager needs your facts, in time, to make her call."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Report, don't decide."
+    }
+   ],
+   "note": "Draft decision (DR-S02E10).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "“We're good — go, go, go!”",
+     "result": "Rosa: “Is that a report or a feeling?”",
+     "consequence": "The restart isn't yours to call, and she can't hear a proof in “go.”",
+     "chips": [
+      "Not your call"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "FOH reports facts. Restart is production's call, through the stage manager.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Rosa": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "“Booth is ready: control stable ten minutes, zero drops; RF walk test clean on the new cable; Hank has signed the generator. Your call.”",
+     "result": "Rosa: “Copy. Restarting in two.”",
+     "consequence": "Facts to the person who decides.",
+     "chips": [
+      "Facts",
+      "Her call"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Rosa": 1,
+       "Hank": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "“Give us another thirty minutes to be sure”",
+     "result": "Curfew is 11:30. Thirty minutes more means no show.",
+     "consequence": "Proof is done; caution is now just delay.",
+     "chips": [
+      "Show lost"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You had your proof. Asking for more time without a reason costs twelve thousand people the end of the night.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Rosa": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "“Ask the headliner's manager”",
+     "result": "Rosa: “I'm asking you what the booth knows.”",
+     "consequence": "Not his call either.",
+     "chips": [
+      "Wrong person"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The manager doesn't decide restarts, and he doesn't know what the booth knows.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Rosa": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "10:54 p.m. The stage lights slam back on; the headliner strides to center; the crowd, thousands of phone lights up, roars. Rosa at the announce mic, grinning.",
+   "characters": [
+    {
+     "id": "rosa",
+     "pose": "M",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Rosa",
+     "kind": "speech",
+     "text": "Riverbend — we are back!"
+    }
+   ],
+   "narration": [
+    "10:54 p.m."
+   ],
+   "caption": "The restart. The loudest sound of the season.",
+   "flags": [
+    "RV-56"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 8917
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "warm",
+   "where": "10:54 p.m.",
+   "lines": [
+    {
+     "who": "rosa",
+     "pose": "M",
+     "expr": "grin",
+     "text": "Riverbend — we are BACK!"
+    },
+    {
+     "who": "dante",
+     "pose": "N",
+     "expr": "grin",
+     "text": "Seven's solid. Everything's solid. I'm going to cry into a cable."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "From FOH: the headliner singing, the crowd swaying. Maya and Ben, soaked, side by side at the desk, both watching the stage.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "grin"
+    },
+    {
+     "id": "ben",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Nobody in that crowd will ever know about port 7, a flattened cable, or a fuel filter. That's the job.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "show restarted · 10:54 p.m. · Rosa's call"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 6041
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-210",
+   "label": "**Service Mode:** MS-04. Rain, three faults, a sky with a vote — and lines you must not cross.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "O-24",
+   "label": "**Sequence:** rain, lightning, hold, restart — the AV team's part.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "A10",
+   "label": "**Learn it now:** mix-minus, IFB and in-ear monitoring — and the fallback that kept the headliner's ears.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-005 · from the Empathia Learn Fieldbook, p. 129  One Dim Panel  The rest of the wall was fine. One square wasn't — and everybody's eyes went straight to it.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-005"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "1:10 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya's post-show report: the three faults and their owners, the hold from 9:31 to 10:31 under section three of the plan, the restart on Rosa's call. At the bottom: RF file only on laptop — move to shared and print. Tomorrow.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-08",
+    "RV-56"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2992
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "hist-extra",
+   "cls": "hist-extra",
+   "text": "⚑ REPRESENTATION REVIEW · RV-57  ⚑ SAFETY BOUNDARY · RV-56"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "M-23",
+   "label": "**Season review:** nine failures from Season 2. Where did each cause really live?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S02-FINAL",
+   "label": "**Season 2 final check** — twelve questions across the whole season.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "3 A.M.",
+   "sub": "the production truck · the rain has stopped"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "3:02 a.m. Inside the dim truck, Maya has lifted the lid of the MAYA · RF road case. It is full of water to the brim of the foam.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [],
+   "narration": [],
+   "caption": "The case sat at the foot of the truck steps all night. The steps were the lowest point on the lot.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2063
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Close on Maya's laptop, pulled from the case: water beaded on a black screen. It doesn't power on.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The RF coordination file for next month's tour lived on this laptop. Only on this laptop.",
+   "flags": [
+    "RV-59"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1255
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S2-10c",
+   "teaser": "the drowned laptop",
+   "title": "The last file saved",
+   "body": "*RF_TOUR2_MASTER.plan — modified 11:58 p.m.* No other copy. No cloud. No stick. Under it, a sticky note in her own writing: *back up in city 2.* City two was five weeks ago.",
+   "thread": "The RF file · DEBT-004",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The only copy.",
+   "body": "Everyone on the tour said “ask Maya.” The RF plan for six cities, the spares for each one, the per-city notes — all of it lived in one file, on one laptop, in one road case, at the lowest point of a festival lot. Maya spent Season 1 taking knowledge out of Ray's notebook. Season 2 put it all back in one person. Her.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S02E10-3",
+   "label": "Test: what should that file have been?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya's phone buzzes: a message from Aldermoor Group — enterprise AV/IT systems engineer; Priya says you're the one; can we talk?",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [],
+   "narration": [
+    "Buzz."
+   ],
+   "caption": "A job offer at 3:04 a.m., sitting next to a drowned laptop.",
+   "flags": [
+    "VR-03",
+    "RT-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2399
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The phone buzzes again: a text from Priya — Before you say yes: did anyone write down the 1 a.m. fix?",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [],
+   "narration": [
+    "Buzz."
+   ],
+   "caption": "Priya doesn't ask questions she doesn't already know the answer to.",
+   "flags": [
+    "VR-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2073
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "mystery",
+   "where": "3:05 a.m. · a text",
+   "lines": [
+    {
+     "who": "priya",
+     "pose": "H",
+     "expr": "flat",
+     "text": "Before you say yes: did anyone write down the 1 a.m. fix?"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "worried",
+     "text": "(The napkin was in the jacket. The jacket was in the rain.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Close on Maya's open notebook under the truck's dim light: the page headed Riverbend · Network, still blank. A pen hovers above it.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The page is still blank. The fix is in production. The person who knows it is about to leave.",
+   "flags": [
+    "RV-55",
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1714
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "End of Season 2",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Dawn over the empty festival field. Maya stands alone by the truck, notebook in one hand, the drowned road case at her feet.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [],
+   "narration": [
+    "When there's no time, what do you refuse to skip?"
+   ],
+   "caption": "END OF SEASON 2 · The boss level, then Season 3, The Workplace.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3674
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Outdoors, the weather plan decides, and the person it names calls the hold — never FOH. Protect the show with reversible moves, send power and structure to their owners, and support the hold with a working announce mic and talkback. Use the hold to gather evidence from shelter: correlate the fault with the weather, read the logs, look at your own photos. After the all-clear, owners make their areas safe, then fix one thing at a time and prove it — a monitored period, a walk test, a signature. And anything that lives in one place or one person is an outage waiting for a flood."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Ben carries a date on a brass tag so he never has to argue about stopping. Maya carried a tour on one laptop so nobody ever had to ask where it was. What do you carry that only you could hand over?  Boundary: this reflection proves nothing about the storm."
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Season 2 review",
+   "sub": "Six ratings, one Story Score. Below 65, the story ends here — and you can retry."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "review",
+   "id": "S2",
+   "label": "**Season 2 review.** Everything you did this season — first attempts, not retries — is scored on six ratings. Your Story Score must be **65 or higher** for the story to go on.",
+   "gate": "hard"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S02E10",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

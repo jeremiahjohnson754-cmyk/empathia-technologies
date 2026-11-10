@@ -1,0 +1,1739 @@
+{
+ "chapter": {
+  "id": "s02e06",
+  "kicker": "S02 · E06",
+  "title": "Ballroom Flip",
+  "pill": "S02E06 · Ballroom Flip",
+  "sub": "Two rooms, one airwall, and a system that still thinks there's one room.",
+  "status": "**DRAFT** · scripted from the season map ahead of its production-bible entry · IDs provisional",
+  "flags": [
+   "DR-S02E06",
+   "RT-03",
+   "RV-50",
+   "RV-51",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--amber)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 2 · EPISODE 6 · DRAFT  Comedy cold open · Leah and Maya · Level L3  “Easy one,” Leah said. “Two rooms, one airwall.” Forty-three minutes before the keynote, half the ballroom is silent and nobody touched anything.  ⚑ RV-50 · RV-51: the hotel's room-combine system is a SIGNAL model, and it belongs to the hotel. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Who Touched It?",
+   "kind": "MYSTERY · WHODUNIT",
+   "level": "L3 · SYSTEMS TECH",
+   "party": [
+    "maya",
+    "leah",
+    "jordan"
+   ],
+   "stakes": "Four hundred seats and the association's president in Room A. It's silent. A DO NOT REMOVE label is wrapped around a vacuum wheel.",
+   "clock": "The keynote walks on at 1:30.",
+   "reward": "Two rooms, each hearing only itself. A label that says what it actually wants.",
+   "objectives": [
+    {
+     "key": "BR-S02E06-01",
+     "text": "Pick your first move with three alibis"
+    },
+    {
+     "key": "twist",
+     "text": "Work out who really took the cable"
+    },
+    {
+     "key": "BR-S02E06-02",
+     "text": "Leave the hotel's sensor alone"
+    },
+    {
+     "key": "BR-S02E06-03",
+     "text": "Give the keynote the only working bus"
+    },
+    {
+     "key": "BR-S02E06-04",
+     "text": "Change the state without dropping the program"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two witnesses nobody questioned"
+    }
+   ],
+   "rumor": "Three people have perfect alibis. One of them is a vacuum cleaner."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Who touched it?”",
+   "sub": "A hotel ballroom · Thursday · 12:47 p.m. · 43 minutes to the keynote"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A hotel ballroom split in two by a closed airwall; chips read Room A · Keynote and Room B · Lunch. Maya stares at an empty spot on the floor. Leah is on her headset.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "surprised"
+    },
+    {
+     "id": "leah",
+     "pose": "H",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_ballroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "My label's gone. “DO NOT REMOVE.” And the cable it was on."
+    },
+    {
+     "side": "R",
+     "who": "Leah",
+     "kind": "radio",
+     "text": "Room A is dead silent. The keynote's at one-thirty. Tell me that's related."
+    }
+   ],
+   "narration": [],
+   "caption": "Room A: 400 seats and the association's president. Room B: 300 sponsors, already eating.",
+   "flags": [
+    "RV-50"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2758
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Three people in a row: the banquet captain with open hands, a houseperson beside an upright vacuum, and Jordan with his arms up.",
+   "characters": [
+    {
+     "id": "usher",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "worker",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "jordan",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_ballroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Banquet captain",
+     "kind": "speech",
+     "text": "My team set four hundred chairs. Nobody touched your wires."
+    },
+    {
+     "side": "R",
+     "who": "Jordan",
+     "kind": "speech",
+     "text": "I was at catering. I touched a sandwich."
+    }
+   ],
+   "narration": [
+    "Three people. Three alibis."
+   ],
+   "caption": "The houseperson says nothing. The vacuum says nothing either.",
+   "flags": [
+    "RV-51"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2271
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "jordan",
+     "pose": "N",
+     "expr": "flat",
+     "text": "I was at catering. I touched a sandwich. The sandwich can vouch for me."
+    },
+    {
+     "who": "leah",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Jordan."
+    },
+    {
+     "who": "jordan",
+     "pose": "N",
+     "expr": "worried",
+     "text": "It was a very good sandwich."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Close on the vacuum's front wheel. A strip of white label tape is wound round it, reading DO NOT RE…. Maya points at it.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "grin"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Found the label."
+    }
+   ],
+   "narration": [],
+   "caption": "One clue down. It's wrapped round a vacuum wheel, which is not where Maya put it.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1340
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S2-06a",
+   "teaser": "the vacuum",
+   "title": "The fourth witness",
+   "body": "Wrapped around the rear wheel: Maya's label, and six inches of the hotel's sensor lead — not her cable at all. The houseperson who ran it says nothing. He's been told for eleven years that the wire people get angry.",
+   "thread": "People",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E06-01",
+   "prompt": "12:48. Room A is silent. The label is on a vacuum. The cable is missing. Your first move?",
+   "happening": "The airwall closed at 12:45. Room A — the keynote room — plays none of Maya's feed.",
+   "clock": "12:48 p.m. · keynote 1:30",
+   "known": [
+    "◉ Room A silent for our feed",
+    "◉ Room B normal",
+    "◉ Label found on a vacuum wheel"
+   ],
+   "unknown": [
+    "Which cable the label was on",
+    "What state the house system is in"
+   ],
+   "risk": "400 people and the association's president in Room A; 300 sponsors in Room B.",
+   "timer_s": 25,
+   "timeout": [
+    "Leah re-patches your feed herself, into the first plate she finds. The sponsors get walk-in music over their soup.",
+    "When nobody decides, somebody guesses. Reading the panel cost nothing and touched nothing."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Before you touch a cable, ask the system what it thinks the room is."
+    },
+    {
+     "id": "H2",
+     "keep": 0.8,
+     "text": "A divisible room has a state. Where would it show?"
+    }
+   ],
+   "note": "Draft decision (DR-S02E06).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Find out who pulled it",
+     "result": "Ten minutes of “not me.” The banquet captain stops answering your radio.",
+     "consequence": "You know less than when you started, and the hotel team trusts you less.",
+     "chips": [
+      "10 min",
+      "Goodwill spent"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Blame spends the clock and the people you'll need in twenty minutes.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Read the state: Room A's house panel, then listen in both rooms",
+     "result": "Room A's panel reads COMBINED · WALL OPEN. Room B sounds normal. In silent Room A, faintly: the lunch emcee's voice.",
+     "consequence": "The wall is closed. The system doesn't know it.",
+     "chips": [
+      "2 min",
+      "State read, nothing touched"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Crew": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Plug your feed into a different wall plate and see",
+     "result": "You try the tie-in plate in Room B. The sponsors' lunch suddenly gets your walk-in music at full level.",
+     "consequence": "Room A is still silent from where the captain is standing.",
+     "chips": [
+      "Lunch disrupted"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Re-patching by guess fixed nothing and broke the room that worked.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Turn your console outputs up",
+     "result": "The meters hit the top. Room A stays silent.",
+     "consequence": "Level isn't routing.",
+     "chips": [
+      "No change"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Nothing you send is reaching those speakers. Louder just makes the eventual fix dangerous.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “The room thinks it's one room”",
+   "sub": "12:49 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Close on Room A's house touch panel, mounted beside the closed airwall: COMBINED, and under it, WALL: OPEN. Maya reads it with her notebook out.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_ballroom",
+   "bubbles": [],
+   "narration": [],
+   "caption": "The wall is closed. The hotel's system says it's open.",
+   "flags": [
+    "RV-50"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "Room A panel · COMBINED · WALL OPEN"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2677
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Room A, empty chairs. From the ceiling loudspeakers above Room A comes a faint voice from the other side of the wall. Maya cups her ear.",
+   "characters": [
+    {
+     "id": "jordan",
+     "pose": "N",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_ballroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Lunch emcee, through Room A's ceiling",
+     "kind": "hollow",
+     "text": "…and a big thank-you to our dessert sponsors…"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Room A isn't silent. It's playing Room B."
+    }
+   ],
+   "narration": [],
+   "caption": "Silent for our feed. Not silent for theirs.",
+   "flags": [
+    "RV-50"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2787
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya points to wall plate A. Her own feed cable is plugged in, tagged HALYARD → A. Leah, on the radio, looks at it.",
+   "characters": [
+    {
+     "id": "leah",
+     "pose": "H",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_ballroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Leah",
+     "kind": "speech",
+     "text": "Then it's your feed to Room A. Re-run it."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "My feed's right here. Plugged in. A tester at the plate reads signal."
+    }
+   ],
+   "narration": [],
+   "caption": "So what was the label on?",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "console → plate A · signal present"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2690
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Flashback, 7:10 that morning. At the airwall's stacking pocket, the hotel's house tech holds a short cable running from a small SENSOR box. Maya has her label maker.",
+   "characters": [
+    {
+     "id": "crew",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_ballroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "House tech",
+     "kind": "speech",
+     "text": "That lead is the wall's brain. Sensor says closed, the system divides. Says open: one big room."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then it gets a label."
+    }
+   ],
+   "narration": [],
+   "caption": "7:10 a.m. Maya labels the hotel's sensor lead: DO NOT REMOVE. She tells no one who has to move it.",
+   "flags": [
+    "RV-50"
+   ],
+   "kind": "flashback",
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3355
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Nobody took our cable. The wall did.",
+   "body": "The label was on the hotel's airwall sensor lead, down in the stacking pocket. To stack the panels, the wall crew had to unplug it — that's their job, and they did it right. With the sensor unplugged, the hotel's processor still believes the wall is open, so it stays COMBINED: every zone plays Room B's plates, and Room A's plates — including Maya's keynote feed — are ignored. The emcee in Room A's ceiling was the clue.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S02E06-1",
+   "label": "Test: reason from the new fact before you read on."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The sensor lead, coiled neatly on the dessert cart among the tarts. The banquet captain gestures at it; Maya nods.",
+   "characters": [
+    {
+     "id": "usher",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_ballroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Banquet captain",
+     "kind": "speech",
+     "text": "It was in the pocket. Panels don't stack on a cable."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "You did exactly the right thing. My label didn't."
+    }
+   ],
+   "narration": [],
+   "caption": "A label that says DO NOT REMOVE on something that must be removed isn't a plan. It's a wish.",
+   "flags": [
+    "RV-51"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2692
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S2-06",
+   "who": "crew:Banquet captain",
+   "prompt": "(arms folded) It was in the pocket. Panels don't stack on a cable. We did our job.",
+   "options": [
+    {
+     "label": "“You did exactly the right thing. My label didn't.”",
+     "who": "crew",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "(He blinks. Nobody from AV has ever said that to him.) …Good. Thank you.",
+     "trust": {
+      "Crew": 2
+     }
+    },
+    {
+     "label": "“You should have called us.”",
+     "who": "crew",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Called who? Your label said DO NOT REMOVE. It didn't say who.",
+     "trust": {
+      "Crew": -1
+     }
+    },
+    {
+     "label": "“Whatever. We're fixing it.”",
+     "who": "crew",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Right. The wire people.",
+     "trust": {
+      "Crew": -2
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E06-02",
+   "prompt": "The hotel's sensor lead is on the dessert cart. The pocket is two steps away. Now what?",
+   "happening": "The sensor lead is found. The system is still COMBINED.",
+   "clock": null,
+   "known": [
+    "◉ Sensor lead unplugged",
+    "◉ Panel: COMBINED · WALL OPEN",
+    "▮ Your feed reaches plate A"
+   ],
+   "unknown": [
+    "When the house tech can come"
+   ],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "Draft decision (DR-S02E06).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Plug it back in yourself — it's just a plug",
+     "result": "The system flips to DIVIDED instantly. Room A gets your walk-in music; the hotel tech, arriving later, finds his wall reconfigured by a guest.",
+     "consequence": "It worked this time. You changed someone else's system without asking, and you'll do it mid-keynote next time.",
+     "chips": [
+      "Not yours"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "It's the hotel's system and a state change. The owner decides when it changes.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Crew": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Radio the house tech: what you found, what you didn't touch, what you need",
+     "result": "“Sensor lead's out of the Room A pocket, panel says WALL OPEN, I haven't touched it.” — “Good. Don't. I'm at a wedding across the property. Forty minutes, maybe.”",
+     "consequence": "The owner knows. The clock is now the problem.",
+     "chips": [
+      "Owner informed",
+      "40 min"
+     ],
+     "badges": [
+      {
+       "kind": "up",
+       "text": "ESCALATE"
+      }
+     ],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Crew": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Keep pressing DIVIDE on the panel",
+     "result": "WALL OPEN — CANNOT DIVIDE. Again. And again.",
+     "consequence": "The interlock is doing its job.",
+     "chips": [
+      "Refused"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The panel can't overrule the sensor. That's the design, and it's a good one.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask the wall crew to open the wall and close it again",
+     "result": "Fifteen minutes of panels moving through the lunch service.",
+     "consequence": "The sensor is still unplugged at the end of it.",
+     "chips": [
+      "15 min",
+      "Lunch disrupted"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Re-running the change doesn't fix the thing the change unplugged.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Split panel: Maya on the radio in the ballroom; inset, the house tech in another venue with a wedding in progress, radio to his ear.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "flat"
+    },
+    {
+     "id": "crew",
+     "pose": "H",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_ballroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "radio",
+     "text": "Sensor lead's out of the Room A pocket. Panel says WALL OPEN. I haven't touched it."
+    },
+    {
+     "side": "R",
+     "who": "House tech",
+     "kind": "radio",
+     "text": "Good. Don't. The couple's mid-vows and my projector just died. Forty minutes, maybe."
+    }
+   ],
+   "narration": [],
+   "caption": "The keynote walks on in forty-one.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2380
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "F-21",
+   "label": "**First failure point:** the feed leaves the console and reaches the plate. Where does it stop?",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Jordan and Maya beside a board. Reverberation is the room still ringing after the sound stops. RT-sixty is how long it takes to fall sixty decibels. And you can predict it? Sabine: point-one-six-one times volume over absorption. Five hundred cubic metres, fifty square metres of absorption: about one point six seconds.",
+   "characters": [
+    {
+     "id": "jordan",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_ballroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Jordan",
+     "kind": "speech",
+     "text": "Reverberation is the room still ringing after the sound stops. RT-sixty is how long it takes to fall sixty decibels."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And you can predict it?"
+    },
+    {
+     "side": "L",
+     "who": "Jordan",
+     "kind": "speech",
+     "text": "Sabine: point-one-six-one times volume over absorption. Five hundred cubic metres, fifty square metres of absorption: about one point six seconds."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1763
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    Reverberation   Sound persisting in a room after the source stops, from many reflections.   Room standard   The written specification every meeting room follows.   Formula, variables and a worked example   ƒ FORMULA · Sabine reverberation time  RT 60  = 0.161 × V ÷ A   RT 60   time for sound to fall 60 dB, s  V  room volume, m³  A  total absorption, m² (sabins)    Worked example.  A 500 m³ room with 50 m² of absorption: 0.161 × 500 ÷ 50 ≈ 1.6 s."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 17 OF 31 · PP. 86–89, 97–106  PART 6 ROOM PHYSICS & COVERAGE  Page 97. Maya had sketched the ballroom in the margin, with arrows where the bass piled up. Ray's older note beside it: “Measure three seats before you believe one.”"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB17",
+   "label": "**Fieldbook module 17 — Room physics — the room is part of the signal chain.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 17 · tap a plate to open it full size     Sound, rooms and signals — five views     The physics of sound — a five-part series     Sound pressure, room modes and the spectrum     Audio coverage, room physics and vocal control"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "C1",
+   "label": "**Learn it now:** room combining, partition sensors and control states.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “One bus, two rooms”",
+   "sub": "1:28 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Room A is full: four hundred people facing an empty lectern. In the wings, the silhouette of the association's president. Room B is still at dessert.",
+   "characters": [],
+   "location": "scenes.bg_ballroom",
+   "bubbles": [],
+   "narration": [],
+   "caption": "1:28. Four hundred seats. The house tech is still at the wedding.",
+   "flags": [
+    "RV-50"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 5285
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "physbreak",
+   "cls": "physbreak",
+   "text": "🔭 PHYSICS IN MOTION  Two rooms, two reverbs  The science under this episode’s problem — live."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lab",
+   "id": "PHY-S02E06",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View of the hotel's room-combine processor in COMBINED: the wall sensor is unplugged and reads OPEN; plate B feeds both Room A and Room B zones; Room A's plate goes nowhere.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "In COMBINED, whoever is on plate B owns every loudspeaker in the ballroom.",
+   "flags": [
+    "RV-50",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "injected",
+   "type": "history",
+   "title": "Symphony Hall",
+   "body": "Boston's Symphony Hall, opened in 1900, was the first hall designed with Sabine's formula. Hotel ballrooms, built for dinners and dancing, rarely get that care — which is why every keynote in one sounds like a lecture in a swimming pool.",
+   "flag": "RV-27",
+   "when": "1900",
+   "lab": "PHY-S02E06"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Leah and Maya, heads together by the airwall.",
+   "characters": [
+    {
+     "id": "leah",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_ballroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Leah",
+     "kind": "speech",
+     "text": "Options. Fast."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "One bus works, and it plays in both rooms. Plate B. The president goes there — or nowhere."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2025
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E06-03",
+   "prompt": "The keynote walks on in 20 seconds. One working bus, and it plays in both rooms. Who gets it?",
+   "happening": "The system is COMBINED; only plate B's inputs reach any loudspeaker.",
+   "clock": "1:29:40 p.m. · walk-on 1:30",
+   "known": [
+    "◉ Plate B feeds every zone",
+    "◉ Room B's zone level is on its panel",
+    "◉ Lunch awards at 2:15"
+   ],
+   "unknown": [
+    "When the house tech arrives"
+   ],
+   "risk": "Four hundred people waiting for a keynote; three hundred sponsors who didn't ask for one.",
+   "timer_s": 20,
+   "timeout": [
+    "The president walks on to silence and taps the microphone twice. Leah looks at you across the wall.",
+    "Waiting for the owner was right for the sensor; it was wrong for the walk-on. The bridge was yours."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Which room's program is happening right now, and which one is only dessert?"
+    },
+    {
+     "id": "H2",
+     "keep": 0.8,
+     "text": "A bridge is fine if the people it costs are told."
+    }
+   ],
+   "note": "Draft decision (DR-S02E06).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "The keynote: patch into plate B too, mute the lunch mic, turn Room B's zone right down — and Leah tells the captain now",
+     "result": "The president's first line lands in Room A. In Room B it's a murmur under the clink of dessert forks. Leah is already at the captain's elbow.",
+     "consequence": "Sponsors hear a soft keynote for a few minutes. Their awards aren't until 2:15. It works; it isn't right; it's a bridge.",
+     "chips": [
+      "Keynote heard",
+      "Lunch told",
+      "Temporary"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Leah": 1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Re-patch everything to plate B and push it all up",
+     "result": "The keynote booms through both rooms. The lunch emcee's toast disappears under it.",
+     "consequence": "Two angry rooms instead of one.",
+     "chips": [
+      "Lunch drowned"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Turning everything up turned a routing problem into a room-relations problem.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Tell the hotel it's their system and wait",
+     "result": "The president walks on to silence. “Can you hear me? …Can you hear me?”",
+     "consequence": "Four hundred phones come out.",
+     "chips": [
+      "Silence"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Blaming the hotel doesn't move a single sample. The bridge was yours to build.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Give the bus to the lunch; the president goes unamplified",
+     "result": "The back half of Room A strains, then gives up.",
+     "consequence": "The reason everyone is in Room A is the keynote.",
+     "chips": [
+      "Keynote lost"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You protected the room with a dessert course and abandoned the room with a keynote.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Room A: the president at the lectern, the audience listening. On the other side of the wall, Leah speaks quietly to the banquet captain.",
+   "characters": [
+    {
+     "id": "leah",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "usher",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_ballroom",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Association president",
+     "kind": "speech",
+     "text": "Good afternoon. Thank you all for coming back from lunch — some of you, I hear, are still at it."
+    }
+   ],
+   "narration": [],
+   "caption": "It works. It isn't right. It's a bridge, and everybody it costs has been told.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4095
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Later, by the service door. Leah is quiet and angry; Maya takes it.",
+   "characters": [
+    {
+     "id": "leah",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_ballroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Leah",
+     "kind": "speech",
+     "text": "“Easy one,” I said. Two rooms, one airwall. The captain just called us “the wire people.”"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "I labeled the brain of the wall at seven, and told nobody who had to move it."
+    }
+   ],
+   "narration": [],
+   "caption": "The low point isn't the silence. It's knowing the fix was a two-minute conversation at 7 a.m.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1241
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "leah",
+     "pose": "N",
+     "expr": "flat",
+     "text": "The captain just called us “the wire people.”"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Honestly? Today we are the wire people."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "R-21",
+   "label": "**Route it:** the path the keynote needs once the wall and the system agree.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III — “Make before break”",
+   "sub": "1:44 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "1:44. The house tech has arrived at the wall pocket, sensor lead in hand, the plug an inch from the socket.",
+   "characters": [
+    {
+     "id": "crew",
+     "pose": "R",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_ballroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "House tech",
+     "kind": "speech",
+     "text": "Wedding ran short. I plug this in, the system divides instantly. No fade."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Wait. Don't. The keynote's on plate B right now."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-50"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3099
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The fix is a state change.",
+   "body": "Right now the keynote rides plate B, because plate B is the only input COMBINED listens to. The instant the sensor is reconnected, the system goes DIVIDED — and in DIVIDED, plate B feeds only Room B. The president would vanish from Room A mid-sentence and play at full level into the sponsors' lunch. Fixing the state, done carelessly, would break both rooms at once.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S02E06-2",
+   "label": "Test: what has to be true before that plug goes in?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View in DIVIDED: the sensor reconnected reads CLOSED; plate A feeds only Room A's zones and plate B only Room B's. A note: keynote on A and B until the flip, mute B on the count.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Put the program where the new state will look for it — before you change the state.",
+   "flags": [
+    "RV-50",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E06-04",
+   "prompt": "The house tech has the lead. When does it go in?",
+   "happening": "The sensor lead is in the house tech's hand. The keynote is live on plate B.",
+   "clock": "1:45 p.m. · video roll at 1:52",
+   "known": [
+    "◉ The flip is instant",
+    "◉ Video roll at 1:52: two minutes with no live mic",
+    "◉ Your console can feed A and B at once"
+   ],
+   "unknown": [],
+   "risk": "Four hundred people mid-keynote; three hundred sponsors who've been patient.",
+   "timer_s": 25,
+   "timeout": [
+    "The tech shrugs and plugs it in while you're thinking. The president vanishes from Room A mid-sentence.",
+    "An idle plan gets replaced by the nearest action. He was waiting for you to say when."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "When is the one moment in the keynote where nobody is speaking?"
+    },
+    {
+     "id": "H2",
+     "keep": 0.8,
+     "text": "What would have to be on plate A already?"
+    }
+   ],
+   "note": "Draft decision (DR-S02E06).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Now — the sooner the better",
+     "result": "Click. DIVIDED. The president disappears from Room A mid-sentence and booms into the lunch.",
+     "consequence": "Ten seconds of chaos in two rooms before you pull plate B.",
+     "chips": [
+      "Both rooms broken"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The right fix at the wrong moment is still a failure. A state change is a change.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Crew": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "At the 1:52 video roll, on a count: your feed already on plate A and B, your finger on plate B's mute",
+     "result": "During the roll you add plate A. The tech counts; the plug goes in on “one”; you mute plate B on the click.",
+     "consequence": "Room A never notices. Room B gets its room back.",
+     "chips": [
+      "Make before break",
+      "Counted in"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Crew": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "After the keynote ends at 2:15",
+     "result": "No risk to the keynote.",
+     "consequence": "The sponsors' awards start at 2:15 — on a system that still thinks there's one room.",
+     "chips": [
+      "Awards at risk"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You protected your client by postponing their problem into the other room.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Crew": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask the tech to bypass the sensor and set DIVIDED from his laptop",
+     "result": "He looks at you for a long second. “No.”",
+     "consequence": "The sensor is how the system stays honest.",
+     "chips": [
+      "Refused"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "Asking the owner to defeat his own interlock isn't a plan; it's a new failure mode.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Crew": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #17 · AVERY'S LENS  Natural mapping  Controls should be laid out like the space they control.  A combine panel drawn as the actual ballroom — Room A left, Room B right, the airwall in between — prevents the wrong-room mistake."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S02E06",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "1:52. The keynote's video rolls on the screen. Maya on the radio at the console end; the house tech at the pocket, counting on his fingers.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "flat"
+    },
+    {
+     "id": "crew",
+     "pose": "P",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_ballroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "radio",
+     "text": "Plate A's live, plate B's on my finger. Your count."
+    },
+    {
+     "side": "R",
+     "who": "House tech",
+     "kind": "radio",
+     "text": "Three. Two. One. In."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-50"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2560
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "awkward",
+   "where": null,
+   "lines": [
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Plate A's live, plate B's on my finger. Your count."
+    },
+    {
+     "who": "crew",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(The house tech counts. Nobody breathes. It's the least dramatic thing that's ever felt this dramatic.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Room A's house panel, green now: DIVIDED, WALL: CLOSED. Maya exhales.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_ballroom",
+   "bubbles": [],
+   "narration": [],
+   "caption": "The video never blinked. The system finally agrees with the wall.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "Room A panel · DIVIDED · WALL CLOSED"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2678
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Room B. Maya stands at the back of the lunch listening; Leah gives a thumbs-up from the other door.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    },
+    {
+     "id": "leah",
+     "pose": "P",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_ballroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Room B: only Room B. Room A: only the keynote."
+    },
+    {
+     "side": "R",
+     "who": "Leah",
+     "kind": "speech",
+     "text": "Awards at 2:15 are the captain's again. He says thank you. Loudly."
+    }
+   ],
+   "narration": [],
+   "caption": "Verified in both rooms — including the one Maya wasn't working in.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "both rooms walked · 1:55 p.m."
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2402
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-206",
+   "label": "**Service Mode:** run the flip yourself — before the walk-on.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-002 · from the Empathia Learn Fieldbook, pp. 97–98, 103–105  Building the Room  The room leaned left before the first note — and every fix made it lean harder.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-002"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya's notebook: Flip plan v2. 1, the sensor lead is the hotel's; tell the wall crew it comes out and who re-plugs. 2, feed both plates before any flip. 3, a state change is a change; count it in. 4, verify in both rooms. New label: Unplug me, then call Maya.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2316
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The houseperson hands Maya the peeled-off label, a little crumpled from the vacuum wheel.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_ballroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Houseperson",
+     "kind": "speech",
+     "text": "Your label. Next time write what you actually want."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "“Unplug me, then call Maya.” Printing it now."
+    }
+   ],
+   "narration": [],
+   "caption": "The label maker is Ray's. The lesson is too: a label is a message to the next person.",
+   "flags": [
+    "RV-51"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1562
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S2-06b",
+   "teaser": "the new label",
+   "title": "Printed on Ray's label maker",
+   "body": "*UNPLUG ME — THEN CALL MAYA 555-0142.* The first label she's ever printed that asks for something instead of forbidding it. Ray would like it. She doesn't tell him. She should.",
+   "thread": "The label maker",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The hotel lobby, afterward. Graham, a corporate client in a crisp suit, has come to meet Leah about next week.",
+   "characters": [
+    {
+     "id": "graham",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "leah",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_lobby",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Graham",
+     "kind": "speech",
+     "text": "Next week. Hybrid product launch. Four thousand people online. Nobody in the room is allowed to notice."
+    },
+    {
+     "side": "R",
+     "who": "Leah",
+     "kind": "speech",
+     "text": "Online's the easy part."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Stems.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 775
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A divisible room is one system with several states, and every state has its own routing. When one room plays the other room, suspect the state before any cable: read the panel, listen in both rooms. The sensor, the interlock and any override belong to the venue. A state change is a change — put your program on the path the new state will use, count the change in with the owner, and verify in every room."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Maya did label the cable. She just wrote an instruction to people she never met, about a thing they had to do anyway. Who in your work touches your equipment when you are not there — and have you ever talked to them?  Boundary: this reflection proves nothing about the ballroom."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S02E06",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

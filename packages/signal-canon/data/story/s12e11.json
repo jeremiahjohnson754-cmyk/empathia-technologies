@@ -1,0 +1,274 @@
+{
+ "chapter": {
+  "id": "s12e11",
+  "kicker": "S12 · E11 · BOSS LEVEL",
+  "title": "The Inheritance, Live",
+  "pill": "S12E11 · Boss",
+  "sub": "Principal test — your architecture and your team must succeed largely without you.",
+  "status": "**DRAFT** · boss level (owner request) · physics challenges are teaching models (CH-01)",
+  "flags": [
+   "DR-S12E11",
+   "CH-01",
+   "BOSS-01",
+   "BOSS-02"
+  ],
+  "accent": "#EF4444"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 12 · EPISODE 11 · BOSS LEVEL · DRAFT  Principal test — your architecture and your team must succeed largely without you · Level 4  Maya's last week. The global event runs on the standards she wrote and the people she trained. She's on a plane for most of it. Every stage is the team using what she left behind — and before she boards, the board votes on the seven-year global standard she has to design, scope and price.  ⚑ This season the run also carries a design commission — a client meeting, a turn-key scope, a full system design inside hard limits and a priced estimate. Every one of them is do or die.  ⚑ CH-01 · BOSS-01: five physics challenges, a signal trace and the calls that aren't yours to make — on the clock. Fail anything and the run starts over. The edge of the screen glows yellow under pressure, red when time is short or the run fails, green when you clear it; it pulses no faster than once a second, and holds steady if you prefer reduced motion."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Everything at once”",
+   "sub": "The Inheritance, Live"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The alarm light at the edge of everything turns yellow. Maya's last week. The global event runs on the standards she wrote and the people she trained. She's on a plane for most…",
+   "characters": [
+    {
+     "id": "rashida",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s12kit.bg_hq",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Rashida",
+     "kind": "speech",
+     "text": "Everything, at once. Where do we start?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Where the signal starts. Then one thing at a time — and nothing that isn't ours."
+    }
+   ],
+   "narration": [],
+   "caption": "Five modes, one clock, no second chances inside a run.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3459
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The alarm light turns red. Your junior's on the phone. They want you to decide.",
+   "characters": [
+    {
+     "id": "noor",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "s12kit.bg_hq",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Noor",
+     "kind": "speech",
+     "text": "Your junior's on the phone. They want you to decide."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "I'll ask what the runbook says — then back their call."
+    }
+   ],
+   "narration": [],
+   "caption": "Trace · hear · see · reach · build · record. The boss isn't the fault — it's the pressure to cut a corner.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3209
+  },
+  {
+   "origin": "authored",
+   "type": "beat",
+   "mood": "dark",
+   "where": "The Inheritance, Live",
+   "lines": [
+    {
+     "who": "maya",
+     "pose": "W",
+     "expr": "flat",
+     "text": "One check per stage. If it fails, we start over from the top — and we'll know why."
+    },
+    {
+     "who": "rashida",
+     "pose": "N",
+     "expr": "worried",
+     "text": "And if we fail again?"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Then we start again. That's the job: until it passes, and we can prove it."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "The commission — “Design it, scope it, price it”",
+   "sub": "Act II of the same run"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A second clock inside the same run. The CEO, the CIO and three regional heads — Maya's last design review. The board votes on the global standard at noon. A budget chip reads the client's number.",
+   "characters": [
+    {
+     "id": "rashida",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": "s12kit.bg_hq",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Rashida",
+     "kind": "speech",
+     "text": "They want a design, a scope and a price — before the deadline."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then we ask before we draw, and we draw before we price. And nothing that isn't ours goes in it."
+    }
+   ],
+   "narration": [],
+   "caption": "9 questions, 8 you can't skip. 13 scope lines. 10 design blocks. One budget.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3452
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "⚑ BOSS-02: every price, hour, watt, kilogram and megabit in the commission is illustrative. The hardest: nine questions with three follow-ups and four traps, six owners, ten blocks including the hours your team can actually give, and a seven-year lifecycle with a refresh."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "The run",
+   "sub": "5 stages · a trace · 2 calls · the commission: ask · scope · design · cost"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "boss",
+   "id": "S12",
+   "label": "**Boss level: The Inheritance, Live.** Clear every stage in one run to open the next season. Fail anything and you start again from the top.",
+   "gate": "hard"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     The first step to networking, AV style     The OSI model applied to video and wireless     Live sound signal chain and gain structure"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief — “Until it passes”",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The alarm light fades to green. It worked without her. The runbook was followed, the junior made the call, and nobody needed to phone Maya. The board approved a seven-year …",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s12kit.bg_hq",
+   "bubbles": [],
+   "narration": [
+    "It worked without her. The runbook was followed, the junior made the call, and nobody needed to phone Maya. The board approved a seven-year standard that six technicians can run in sixty rooms — and not one line of it has her name as the only contact."
+   ],
+   "caption": "Cleared. Written down. Handed over.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3139
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE · THE COMMISSION —  Ask before you draw: what the room is for, who runs it, who needs access support, what it must survive and what it can cost — never lead the client to gear, never ask for what isn't yours to know. Scope it end to end: ours arrives designed, installed, tested, documented, taught and supported; everything else is named to its owner. Design inside the limits other people set — the electrician's circuit, the structural engineer's rating, the mechanical engineer's cooling, the network owner's capacity — and meet every requirement. Price it honestly (T = (E × (1 + t) + L) × (1 + c), plus running and later costs for ownership), then save money without cutting a requirement or the contingency."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Under pressure, the method doesn't change: trace the signal from source to destination, fix one thing at a time and prove it where the people are, and hand every decision that isn't yours to the person who owns it — the electrician, the rigger and structural engineer, the network owner, security, the emergency managers, the clinical and privacy owners, the artist. Then write it down."
+  }
+ ]
+}

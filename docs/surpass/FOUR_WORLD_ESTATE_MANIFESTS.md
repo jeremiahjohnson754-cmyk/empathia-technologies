@@ -61,7 +61,7 @@ Schools and classrooms: Engineering & Computing 10; Business & Innovation 8; Hea
 Seed version `hls-2026.11.2`. 551 records in the hierarchy, 714 equipment records (1,748 pieces), 15 recorded routes (12 step-free).
 A walk-in visitor is shown 256 of 545 places; an engineer is shown all of them. Rooms the Space Optimizer can study: 262.
 
-Seats: **62,200**, the sum of every section and suite record. Scale benchmark: a 60,000 to 65,000 seat professional venue (the founder's stated reference; not re-checked against its source this session). No real venue's plans, names or marks are used.
+Seats: **62,200**, the sum of every section and suite record. Scale benchmark: a large professional stadium of 62,500 seats and 133 suites (its encyclopaedia entry, read 9 November 2026); only the scale is borrowed. No real venue's plans, names or marks are used.
 
 | Kind of place | Count | Seats or places | Floor area (m²) |
 |---|---:|---:|---:|

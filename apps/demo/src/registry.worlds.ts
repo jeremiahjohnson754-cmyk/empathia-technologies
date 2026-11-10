@@ -35,6 +35,12 @@ export const WORLD_PAGES: readonly PageDef[] = [
     search: { keywords: 'estate places rooms classrooms dormitories suites booths sections map plan campus stadium university convention', aliases: ['estate', 'places'] },
   },
   {
+    id: 'story', title: 'SIGNAL story', purpose: 'The complete SIGNAL graphic novel: the Prologue and 133 chapters across twelve seasons, with decisions that gate the story and can fail', product: 'learn',
+    path: '/story', alias: ['/story/:chapter'], authority: OPEN,
+    load: () => import('./signal/StoryPage.js'),
+    search: { keywords: 'signal story graphic novel maya ray seasons chapters episodes decisions quests sanctuary load-in workplace on air campus drawing set estate topping out breach take mission room principal', aliases: ['signal', 'story'] },
+  },
+  {
     id: 'optimizer', title: 'Space Optimizer', purpose: 'Three ways to equip a room, scored on nine dimensions by a stated planning model', product: 'pro',
     path: '/optimizer/:world', alias: ['/optimizer/:world/:room'], authority: OPEN,
     load: () => import('./optimizer/OptimizerPage.js'),

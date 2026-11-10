@@ -1,0 +1,1688 @@
+{
+ "chapter": {
+  "id": "s03e02",
+  "kicker": "S03 · E02",
+  "title": "The Room That Hears Twice",
+  "pill": "S03E02 · Hears Twice",
+  "sub": "One room sends your voice back to you, half a second late. The client thinks it's a recording.",
+  "status": "**DRAFT** · scripted from the season map ahead of its production-bible entry · IDs provisional · CASE-013 proposed (Q-014)",
+  "flags": [
+   "DR-S03E02",
+   "RT-03",
+   "RV-61",
+   "RV-65",
+   "RV-66",
+   "RV-67",
+   "Q-014",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--cyan)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 3 · EPISODE 2 · DRAFT  Countdown · Maya · Level L3 · Case File CASE-013  One room sends people's voices back to them, half a second late. A client thinks it's a recording. She calls back at two — into the same room.  ⚑ RV-61: echo cancellation is simplified; levels and delays are illustrative. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Is Someone Recording This?",
+   "kind": "MYSTERY · CLIENT",
+   "level": "L3 · SYSTEMS ENGINEER",
+   "party": [
+    "maya",
+    "sam",
+    "worker:Tom"
+   ],
+   "stakes": "Helen Voss thinks Aldermoor recorded her and played it back. Legal is on the invite. She insisted on the same room.",
+   "clock": "Fifty minutes to Helen.",
+   "reward": "An echo explained, not just removed. An account that stays.",
+   "objectives": [
+    {
+     "key": "BR-S03E02-01",
+     "text": "Hear it the way Helen heard it"
+    },
+    {
+     "key": "twist",
+     "text": "Clear the new microphones"
+    },
+    {
+     "key": "BR-S03E02-02",
+     "text": "Choose which canceller stays"
+    },
+    {
+     "key": "BR-S03E02-03",
+     "text": "Handle the echo that isn't yours — quietly"
+    },
+    {
+     "key": "BR-S03E02-04",
+     "text": "Make it survive next Sunday"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two Sunday nights"
+    }
+   ],
+   "rumor": "Every Sunday at 2 a.m., something in the building changes. On Monday, the Ghost walks."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Is someone recording this?”",
+   "sub": "Tuesday · 11:40 a.m. · the Harbor Room"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The Harbor Room during a call. On the display, a client's video tile labeled H. VOSS. At the table, the account manager looks alarmed. Faint red letters repeat: ...this? ...this?",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "S",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_confroom",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Helen Voss",
+     "kind": "phone",
+     "text": "Hold on. Is someone recording this? I can hear my own voice. Coming back. Late."
+    }
+   ],
+   "narration": [],
+   "caption": "Helen Voss, a client's operations director. She hangs up four minutes later.",
+   "flags": [
+    "RV-67",
+    "RV-61"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2427
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Next day, 1:05 p.m. Tom, the account manager, catches Maya in the corridor outside the Harbor Room.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tom",
+     "kind": "speech",
+     "text": "Two o'clock. Helen Voss. She thinks we recorded her and played it back. Legal is on the invite. Same room — she insisted."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Nobody recorded anything. But she heard something real. Let's find it before she does."
+    }
+   ],
+   "narration": [],
+   "caption": "Fifty-five minutes. If Helen walks, so does the account (illustrative).",
+   "flags": [
+    "RV-65",
+    "RV-66"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1391
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "worker:Tom",
+     "pose": "N",
+     "expr": "worried",
+     "text": "If Helen walks, so does the account. So does my bonus. So, probably, does my marriage. Not in that order."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "…Let's start with the echo."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya reads Helen's email on Tom's screen, copied to legal: she heard her own voice played back seconds late, wants to know who was recording and why; same room, 2 p.m.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [],
+   "narration": [],
+   "caption": "She isn't being difficult. From where she sat, it sounded exactly like a recording.",
+   "flags": [
+    "RV-67",
+    "RV-65"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2371
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Hear it the way she heard it”",
+   "sub": "1:08 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Inside the Harbor Room. Two ceiling microphones hang above the table, their pickup zones drawn as dashed ovals. In the corner of the display, a small notice reads: Updates installed, Sun 02:04. Sam points up at the mics.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "P",
+     "expr": "grin"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_confroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "New ceiling mics. Installed last month. I'd bet my lunch on those."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Maybe. First I want to hear it the way she heard it."
+    }
+   ],
+   "narration": [],
+   "caption": "Everything in this room is a suspect. Some suspects are quieter than others.",
+   "flags": [
+    "RV-67"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2240
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "sam",
+     "pose": "N",
+     "expr": "grin",
+     "text": "New ceiling mics. I'd bet my lunch."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "What's for lunch?"
+    },
+    {
+     "who": "sam",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Leftover lasagne. I'm very confident."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E02-01",
+   "prompt": "1:10. Remote people hear themselves from this room. Fifty minutes to Helen. Your first move?",
+   "happening": "The far end hears itself ~half a second late, only from Harbor.",
+   "clock": "13:10 · Helen at 14:00",
+   "known": [
+    "◉ Only the Harbor Room",
+    "◉ Ceiling mics new last month",
+    "◉ Helen heard her own voice, late"
+   ],
+   "unknown": [
+    "When it happens",
+    "Which part returns it"
+   ],
+   "risk": "Helen's trust, the account, and Tom.",
+   "timer_s": 20,
+   "timeout": [
+    "Sam climbs a ladder to reseat a microphone while you think. Twenty minutes later: same echo, and a ceiling tile that won't sit flat.",
+    "An idle plan gets replaced by the nearest hunch."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Before changing anything, hear the fault from where the user was."
+    }
+   ],
+   "note": "Draft decision (DR-S03E02).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Turn the ceiling mics down 10 dB",
+     "result": "Everyone in the room gets quieter. From the far end, the echo is still there — softer, but there.",
+     "consequence": "Tom's team will sound distant to Helen, and she'll still hear herself.",
+     "chips": [
+      "Room quieter",
+      "Echo unchanged"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Level isn't the path. You made the room worse and left the echo.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Tom": -1,
+       "Helen": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Replace the new ceiling microphone",
+     "result": "A ladder, a ceiling tile, forty minutes. Same echo.",
+     "consequence": "The obvious suspect, the wrong one, and the clock is gone.",
+     "chips": [
+      "40 min"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Swapping the newest part before you've heard the fault is fix-by-guess.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Tom": -1,
+       "Helen": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Reproduce it: call in on cellular from the corridor and listen as the far end",
+     "result": "Maya dials in from outside the glass. Sam talks, then stops. Her own voice comes back, faint and late — only when the room is quiet.",
+     "consequence": "Now you know what she heard, and when.",
+     "chips": [
+      "3 min",
+      "Evidence"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Sam": 1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Tell remote participants to mute when not speaking",
+     "result": "Tom: “I am not telling Helen Voss to mute.”",
+     "consequence": "It moves your room's problem onto your users.",
+     "chips": [
+      "Client blamed"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The person hearing the echo isn't the one causing it — and she's the client.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Tom": -1,
+       "Helen": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the corridor, Maya listens on her phone as the far end. A waveform shows Sam's voice, then a smaller red copy arriving about half a second later.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "phone",
+     "text": "Sam, say something, then stop. …There. My voice, half a second late. Only when you stop."
+    }
+   ],
+   "narration": [],
+   "caption": "The far end hears its own voice return — faint, warbly, only in silence.",
+   "flags": [
+    "RV-61",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "far end · echo ~0.5 s · in silence"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3344
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View: the far end's voice goes to the room processor, which keeps a copy as the reference and plays it through the loudspeakers. The room reflects it into the ceiling mics. Canceller number one subtracts its prediction using that reference, and only the room's voices go to the call.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "An echo canceller subtracts what it knows it played. It can only cancel what it can see.",
+   "flags": [
+    "RV-61",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Sam and Maya beside a board. Echo cancellation removes the far end's voice from our microphones. When it can't keep up, they hear themselves. How do you measure how bad it is? Echo return loss: speaker level at the mic minus the echo the mic picks up. Seventy dB speaker, fifty dB echo — twenty dB of return loss.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_confroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "Echo cancellation removes the far end's voice from our microphones. When it can't keep up, they hear themselves."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "How do you measure how bad it is?"
+    },
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "Echo return loss: speaker level at the mic minus the echo the mic picks up. Seventy dB speaker, fifty dB echo — twenty dB of return loss."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1469
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    Echo cancellation   Processing that removes the far end's voice from a room's microphones in conferencing.   Echo   A distinct, delayed repeat of a sound.   Formula, variables and a worked example   ƒ FORMULA · Echo return loss  ERL = L speaker at mic  − L echo at mic    L speaker at mic   loudspeaker level at the mic position, dB  L echo at mic   echo level picked up, dB    Worked example.  Loudspeaker at the mic 70 dB, echo picked up 50 dB: ERL = 20 dB."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 23 OF 31 · PP. 61–62  PART 5 DSP, MIXING & EAR TRAINING  Page 61 has Avery's first question in the margin: “Why is a higher Q narrower?” Maya's answer is underneath: “Q = center ÷ width. Same center, bigger Q → smaller width.”"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB23",
+   "label": "**Fieldbook module 23 — DSP fundamentals — filters, Q and slopes.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 23 · tap a plate to open it full size     Audio DSP fundamentals     Audio filters explained"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "A11",
+   "label": "**Learn it now:** acoustic echo cancellation — the reference, the room, and why one canceller beats two.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the equipment closet, the room processor's status: canceller on, reference far-end to speakers, echo reduction good, tested alone with no echo.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "sam",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The room's canceller is healthy. With nothing after it, no echo. So something after it lets it back."
+    },
+    {
+     "side": "R",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "After it is the room computer. Its audio settings are mine. Finally, something that's mine."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-61"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "processor canceller · clean alone"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1745
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The room computer's audio settings: echo cancellation ON, noise suppression HIGH, speaker and mic both the room processor; settings restored by update, Sunday 02:04. Sam gapes.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "We turned those off at install. The update turned them back on. Sunday, two a.m. Again."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-61",
+    "RV-67"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "software canceller ON · restored Sun 02:04"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1680
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S3-02a",
+   "teaser": "the room computer's update history",
+   "title": "Sunday 02:04 · settings restored to defaults",
+   "body": "The same timestamp as last month's Monday. And the month before. Maya writes *Sunday 02:0x* on a sticky note and puts it on the Monday Ghost whiteboard, under the little ghost.",
+   "thread": "The Monday Ghost",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The new mics are innocent. Sunday's update switched on a second canceller.",
+   "body": "Nothing in the room changed last month that matters. The room computer changed on Sunday: its update restored the software's own echo cancellation and noise suppression. Two cancellers now work on the same voices — and the second one can't see the loudspeakers.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S03E02-1",
+   "label": "Test: what does this rule out, and what do you test next?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View with two cancellers: after canceller number one, the software's canceller number two, switched back on, sees an already-cleaned signal, keeps re-learning, and leaks bursts of the far end back. The fix: one canceller, nearest the mics, with the true reference.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Two cancellers in series: the second chases a signal the first already cleaned.",
+   "flags": [
+    "RV-61",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "F-31",
+   "label": "**First failure point:** walk the conferencing audio chain. Where does the echo get through?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E02-02",
+   "prompt": "1:26. Two cancellers on one path. Which one stays?",
+   "happening": "Processor canceller healthy; software canceller switched back on by Sunday's update.",
+   "clock": "13:26 · Helen at 14:00",
+   "known": [
+    "▮ Processor canceller clean alone",
+    "◉ Software canceller ON since Sun 02:04"
+   ],
+   "unknown": [
+    "Whether the fix survives the next update"
+   ],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "Draft decision (DR-S03E02).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Keep both — belt and braces",
+     "result": "The echo keeps leaking in bursts, and now and then the room's own voices chop during double-talk.",
+     "consequence": "Two cancellers keep fighting.",
+     "chips": [
+      "Echo stays"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "More cancellation isn't better cancellation. They fight.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -2,
+      "sev": 1,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Turn off the room processor's canceller; trust the software",
+     "result": "The software's canceller can't see the room's loudspeaker path. The echo gets LOUDER.",
+     "consequence": "You removed the one with the true reference.",
+     "chips": [
+      "Worse"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Keep the canceller that can see what the loudspeakers play.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -2,
+      "sev": 1,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Keep the processor's; Sam turns the software's off in the managed room profile",
+     "result": "Profile applied to Harbor: software echo cancellation and noise suppression off. The processor does both jobs.",
+     "consequence": "One canceller, nearest the mics, with the true reference — in a setting the next update can't quietly undo.",
+     "chips": [
+      "One canceller",
+      "Survives updates"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 2,
+      "sev": 1,
+      "trust": {
+       "Sam": 1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Turn both off to “start clean”",
+     "result": "Raw echo: the far end hears the whole room, loudly, at once.",
+     "consequence": "A clean start with the loudspeakers talking straight into the mics.",
+     "chips": [
+      "Worse"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "No canceller is the problem, not a baseline.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -2,
+      "sev": 1,
+      "trust": {
+       "Team": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Sam at a laptop on the Harbor Room table, applying a profile change. Maya beside him.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "R",
+     "expr": "grin"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_confroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "Harbor's profile: software canceller off, noise suppression off. The processor does both. It'll survive Sunday."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Now we test it the way Helen will use it. From outside. In silence and with both of us talking."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-61"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1245
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "physbreak",
+   "cls": "physbreak",
+   "text": "🔭 PHYSICS IN MOTION  Echo is a loop  The science under this episode’s problem — live."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lab",
+   "id": "PHY-S03E02",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the corridor on cellular, Maya listens as the far end: Sam's voice, then silence, then both talking at once. No red copy in the waveform.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "phone",
+     "text": "Silence: nothing. Double-talk: both of us, clean. Silence again: nothing."
+    }
+   ],
+   "narration": [],
+   "caption": "13:41. Far end, independent network, silence and double-talk: no echo.",
+   "flags": [
+    "RV-61"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "far end · cellular · 13:41"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2355
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Tom paces outside the Harbor Room, card in hand. Maya leans on the glass.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tom",
+     "kind": "speech",
+     "text": "And if she hears it anyway? In front of legal?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then I'll be in the back corner, and we'll know within a sentence whether it's us. It won't be."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1392
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S3-02",
+   "who": "worker:Tom",
+   "prompt": "And if she hears it anyway? In front of legal?",
+   "options": [
+    {
+     "label": "“Then I'll know within a sentence whether it's us. It won't be.”",
+     "who": "worker:Tom",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "…I'm choosing to find that reassuring.",
+     "trust": {}
+    },
+    {
+     "label": "“It won't happen.”",
+     "who": "worker:Tom",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "You can't know that. Can you?",
+     "trust": {}
+    },
+    {
+     "label": "“Then you apologise and I fix it live.”",
+     "who": "worker:Tom",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "In front of legal. Great. Love it.",
+     "trust": {}
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "history",
+   "title": "Echo cancellers for the long line",
+   "body": "When phone calls began bouncing off satellites in the 1960s, the extra delay made echoes unbearable. Engineers at Bell Labs built adaptive echo cancellers that learned the echo and subtracted it — the same job the room's processor does, and why two of them fight.",
+   "flag": "RV-27",
+   "when": "1960s",
+   "lab": "PHY-S03E02"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Two o'clock”",
+   "sub": "1:59 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The Harbor Room at 1:59. Helen's tile fills the display. Tom sits at the table, a card in front of him.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_confroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tom",
+     "kind": "speech",
+     "text": "Helen, thank you for joining. Before anything else—"
+    },
+    {
+     "side": "R",
+     "who": "Helen Voss",
+     "kind": "phone",
+     "text": "Before anything else: am I being recorded right now?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-67"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2118
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Tom reads from his card. Maya sits quietly in the back corner of the room.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "R",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_confroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tom",
+     "kind": "speech",
+     "text": "No. What you heard Tuesday was an echo: our room sent your voice back to you. We found it and fixed it this morning."
+    },
+    {
+     "side": "R",
+     "who": "Helen Voss",
+     "kind": "phone",
+     "text": "Hm. We'll see."
+    }
+   ],
+   "narration": [],
+   "caption": "Legal is still on the invite. Nobody breathes.",
+   "flags": [
+    "RV-65"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1954
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #23 · AVERY'S LENS  Calm technology  Good systems stay invisible when they work and speak up clearly when they don't.  Echo cancellation should never be noticed. Two cancellers fighting made it the loudest thing in the room."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S03E02",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Seven minutes in. Tom stops mid-sentence, eyes wide. Faint red letters repeat his words: ...terms ...terms.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_confroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tom",
+     "kind": "whisper",
+     "text": "…the renewal terms— terms— Maya. I can hear MYSELF now."
+    }
+   ],
+   "narration": [],
+   "caption": "The echo is back. This time it's in the Harbor Room.",
+   "flags": [
+    "RV-61"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2335
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "mystery",
+   "where": null,
+   "lines": [
+    {
+     "who": "worker:Tom",
+     "pose": "N",
+     "expr": "worried",
+     "text": "…the renewal terms— terms— Maya. I can hear MYSELF now."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(Helen's room is sending it back. The mystery just changed sides of the call.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E02-03",
+   "prompt": "14:07. Tom hears his own voice come back late. Helen hears nothing odd. Decide — quietly.",
+   "happening": "The Harbor Room hears itself, late. The far end hears nothing wrong.",
+   "clock": "14:07 · live client call",
+   "known": [
+    "▮ Harbor tested clean from outside at 13:41",
+    "◉ Tom hears his own voice",
+    "◉ Helen hears nothing odd"
+   ],
+   "unknown": [
+    "What Helen is calling from"
+   ],
+   "risk": "Helen's trust — and the account.",
+   "timer_s": 20,
+   "timeout": [
+    "Tom keeps talking over his own echo. He speeds up, loses his place, and apologizes three times.",
+    "In a live call, a note to the person talking is often the fastest tool you have."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who hears an echo, and whose room sends it back?"
+    },
+    {
+     "id": "H2",
+     "keep": 0.8,
+     "text": "Your room was proven clean from the far end twenty minutes ago."
+    }
+   ],
+   "note": "Draft decision (DR-S03E02).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Turn off the Harbor Room's canceller to test",
+     "result": "The room's echo control disappears mid-call. Now Helen hears herself too.",
+     "consequence": "You broke the room you just proved.",
+     "chips": [
+      "Two problems"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Your room is proven clean. Changing it live to chase someone else's echo adds a second fault.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Helen": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Pass Tom a note: “Not us — their room. Ask kindly if they're on a room system; a headset would help.”",
+     "result": "Tom reads it, nods, and asks. Helen: “We're in our boardroom, on the ceiling speakers. Our AV person left last month.”",
+     "consequence": "One headset later, the echo is gone — and Helen understands what happened on Tuesday.",
+     "chips": [
+      "Their room",
+      "Kind"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Tom": 1,
+       "Helen": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "End the call and redial",
+     "result": "Helen: “Is this how you handle problems?” She rejoins in the same room, with the same echo.",
+     "consequence": "Redialing doesn't change her room.",
+     "chips": [
+      "Trust lost"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You spent the client's patience and changed nothing.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Helen": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Mute the Harbor Room's mics until it stops",
+     "result": "Tom can't talk to his own client.",
+     "consequence": "The echo stops because nobody on your side is speaking.",
+     "chips": [
+      "Silence"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Muting yourself hides the symptom and ends the meeting.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Tom": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya's note to Tom — 'Not us, their room. Ask kindly: room system? Headset would help' — beside two boxes: Harbor hears Harbor, because Tom's voice comes back from Helen's room; Helen hears nothing, because our room was tested clean.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The person who hears the echo isn't the one causing it. This time, the leak is theirs.",
+   "flags": [
+    "RV-61",
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2181
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "This time, the echo is theirs.",
+   "body": "Maya's own rule from an hour ago, turned around: if your room hears itself, the leak is in the other room. Helen is calling from a boardroom whose ceiling speakers play Tom's voice straight into her ceiling microphones — and her room's echo control has nobody looking after it.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S03E02-2",
+   "label": "Test: where is the leak, and what's the kind, fast move?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Helen's tile now shows her wearing a headset. Tom relaxes.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "W",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_confroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tom",
+     "kind": "speech",
+     "text": "Then you know exactly how we felt on Tuesday."
+    },
+    {
+     "side": "R",
+     "who": "Helen Voss",
+     "kind": "phone",
+     "text": "…So nobody was recording anybody. Rooms are just — rooms. All right. Let's talk terms."
+    }
+   ],
+   "narration": [],
+   "caption": "The call runs forty minutes. Zero echoes. Helen stays.",
+   "flags": [
+    "RV-67"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2120
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "warm",
+   "where": null,
+   "lines": [
+    {
+     "who": "worker:Helen Voss",
+     "pose": "N",
+     "expr": "grin",
+     "text": "So nobody was recording anybody. Rooms are just — rooms."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Rooms are just rooms."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "An hour later Tom shows Maya a new email from Helen: thank you for explaining it; could your AV person talk to ours? We don't have one now.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tom",
+     "kind": "speech",
+     "text": "Legal dropped off the thread. She wants to borrow you."
+    }
+   ],
+   "narration": [],
+   "caption": "The fix was a setting. The save was an explanation.",
+   "flags": [
+    "RV-67"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1939
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III — “Make it survive Sunday”",
+   "sub": "3:05 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Sam and Maya at Sam's desk. A label hangs between them: rooms with a processor, per the inventory: 212.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "Push the same profile to every room with a processor? The inventory says two hundred and twelve."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Pilot ring first, with a far-end echo test after every update. Then the rest."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-66"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1420
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E02-04",
+   "prompt": "How do you make sure no room hears twice after next Sunday?",
+   "happening": "The fix works in Harbor. 211 other rooms have the same processor and the same update.",
+   "clock": "15:05",
+   "known": [
+    "◉ Update restored software audio defaults",
+    "◉ Profile fix survives updates"
+   ],
+   "unknown": [
+    "Which other rooms already hear twice"
+   ],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "Draft decision (DR-S03E02).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Re-check Harbor by hand every Monday",
+     "result": "Sam adds a calendar reminder. It works for three weeks. Then he's on leave.",
+     "consequence": "A fix that depends on one person remembering.",
+     "chips": [
+      "Fragile"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "That's a ghost you've agreed to keep feeding.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -2,
+      "sev": 1,
+      "trust": {
+       "Sam": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Block updates on the Harbor Room computer",
+     "result": "No more surprise settings — and no more security fixes. Harbor quietly becomes a room that's “different”.",
+     "consequence": "That's how exception rooms are born: nobody writes down why, and nobody remembers.",
+     "chips": [
+      "Exception created"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You stopped security updates to protect a setting, and created an undocumented exception.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -2,
+      "sev": 1,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Managed profile for rooms with a processor, rolled out ring by ring, plus a far-end echo check after each update",
+     "result": "The pilot ring takes it first; the post-update checklist gains one line: “far-end echo test, silence + double-talk.”",
+     "consequence": "The setting lives in one place; every update is followed by a proof.",
+     "chips": [
+      "Fleet fix",
+      "Proof after updates"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 2,
+      "sev": 1,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Nothing — Harbor works now",
+     "result": "Next Monday, another room with a processor hears twice.",
+     "consequence": "The ghost moves one room over.",
+     "chips": [
+      "Ghost returns"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-302",
+   "label": "**Service Mode:** run the fifty minutes before Helen's call yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-013 · SIGNAL original  The Room That Hears Twice  One room, one client, her own voice coming back half a second late — and she thinks it's a recording.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-013"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Change log entry 2: Harbor, far end heard itself; Sunday 02:04 update turned the software canceller on; profile turns software canceller and noise suppression off so the processor does both, surviving updates; proof from the far end on cellular in silence and double-talk at 13:41; post-update checklist gains an echo test; Helen's room was their echo, solved with a headset.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2055
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "R-31",
+   "label": "**Route it:** one canceller, the right reference — rebuild the Harbor Room's audio path.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The Monday Ghost whiteboard now has entries, not just tallies: number 8, Harbor, an update reset a setting; number 7, pilot rooms, identity.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "Two Mondays, two Sunday-night surprises. Different ghosts."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Write down what each one was. Not just that it happened. One day they'll line up."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2056
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S3-02b",
+   "teaser": "the ghost board, a week later",
+   "title": "Three sticky notes now",
+   "body": "*Sunday 02:0x — identity policy.* *Sunday 02:04 — canceller re-enabled.* A space for the third. Sam draws a question mark in it. Then a very small ghost wearing a watch.",
+   "thread": "The Monday Ghost",
+   "who": [
+    "sam",
+    "N",
+    "flat"
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Sam reads a new ticket on his monitor: Studio Room, priority 3, the fourth this month: 'The camera randomly disappears from calls. Again.' Signed R. Castillo.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "Fourth one this month. New manager. She keeps unplugging it, I swear."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *USB.*",
+   "flags": [
+    "RV-67",
+    "RV-65"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1923
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Echo is the far end's voice coming back through a room's loudspeakers and microphones. Reproduce it from the far end; read which cancellers are on and what reference each one sees; keep one canceller, nearest the mics, with the true reference; prove it from the far end in silence and in double-talk; and put the setting where the next update can't undo it. If your room hears itself, the leak is in theirs."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Helen's fear was reasonable: a voice coming back late sounds exactly like a recording. Explaining the mechanism was part of the fix. When did a clear explanation last calm a situation for you?  Boundary: this reflection doesn't prove anything about the room."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S03E02",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

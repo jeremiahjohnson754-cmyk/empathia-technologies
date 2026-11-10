@@ -1,0 +1,962 @@
+{
+ "chapter": {
+  "id": "s10e07",
+  "kicker": "S10 · E07",
+  "title": "The Hum That Went Away",
+  "pill": "S10E07 · The Hum That Went Away",
+  "sub": "Her father's amp hums. Then, one Monday, it doesn't — and that's worse.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S10E07",
+   "RV-176",
+   "RV-177",
+   "RV-178",
+   "RV-180",
+   "RV-181",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#FB923C"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 10 · EPISODE 7 · DRAFT  Coldframe Sound, the live room · weeks four and five · Maya, Esme, Pim and Bea (the studio’s licensed electrician) · Level L6 · Mastery support (reference only — choose the tool and say why)  Esme wants her late father’s amp on the last song. It hums. Everyone has a fix, and one of them is the most dangerous thing anyone says all season.  ⚑ RV-178: nobody lifts, bypasses or adapts away a protective earth, and the story never shows how. Circuits and earthing are the electrician’s; repairs are a qualified technician’s. RV-177: figures illustrative. Some choices run on a clock — and some depend on your loadout."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "The Hum That Went Away",
+   "kind": "STUDIO · POWER & EARTH",
+   "level": "L6 · MASTERY",
+   "party": [
+    "maya",
+    "esme",
+    "bea"
+   ],
+   "stakes": "Esme wants her late father's amp on the last song. It hums — and then, one Monday, it doesn't.",
+   "clock": "Before the last song on Thursday.",
+   "reward": "A quiet guitar, the circuits done properly — and an amp that's safe before anyone plays it.",
+   "objectives": [
+    {
+     "key": "BR-S10E07-01",
+     "text": "Decide how to hunt the hum"
+    },
+    {
+     "key": "twist",
+     "text": "Find the two earths"
+    },
+    {
+     "key": "core",
+     "text": "Order a safe hum hunt"
+    },
+    {
+     "key": "BR-S10E07-02",
+     "text": "Decide the fix"
+    },
+    {
+     "key": "BR-S10E07-03",
+     "text": "Decide about the amp"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "The silence was the danger."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Saying hello”",
+   "sub": "Thursday · 2:00 p.m. · the live room"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The live room; an old valve amp on the floor between them; Esme smiles at it; Maya listens to the hum.",
+   "characters": [
+    {
+     "id": "esme",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s10kit.bg_live",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Esme",
+     "kind": "speech",
+     "text": "It always hummed. Dad said it was the amp saying hello."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then let's find out who it's saying hello to."
+    }
+   ],
+   "narration": [],
+   "caption": "Sixty cycles, and something harder above them.",
+   "flags": [
+    "RV-178"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2769
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "warm",
+   "where": "live room · Thursday 14:00",
+   "lines": [
+    {
+     "who": "esme",
+     "pose": "N",
+     "expr": "smile",
+     "text": "It always hummed. Dad said it was the amp saying hello."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Then let's find out who it's saying hello to."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Two earths, one cable”",
+   "sub": "Thursday · 2:10 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S10E07-01",
+   "prompt": "14:10. Hum and buzz on the amp and its DI. Pim has an adapter in his hand and an idea about the plug. What now?",
+   "happening": "Hum and buzz.",
+   "clock": "Thursday 14:10 · last song next Thursday",
+   "known": [
+    "◉ Hum at 60 Hz",
+    "◉ A hard buzz above it"
+   ],
+   "unknown": [
+    "What joins the two earths"
+   ],
+   "risk": "Someone near a mains earth — or a loop recorded onto the album.",
+   "timer_s": 20,
+   "timeout": [
+    "Nobody decides.",
+    "Pim is still holding the adapter."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What can you change that carries audio only?"
+    }
+   ],
+   "note": "Draft decision (DR-S10E07).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Let Pim take the earth off the amp's plug — just for today",
+     "result": "Bea, in the doorway: “Stop. That earth is what keeps the chassis from killing someone.” Nothing is changed.",
+     "consequence": "The one fix that is never a fix.",
+     "chips": [
+      "Never"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "PROTECTIVE EARTH"
+      }
+     ],
+     "canonical": false,
+     "fail": "A protective earth is never lifted, bypassed or adapted away (RV-178).",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Pim": -2,
+       "Bea": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Leave every earth as it is; find when the hum appears — amp alone, DI alone, both — and ask Bea which circuit each piece of gear is on",
+     "result": "Amp alone: quiet. DI alone: quiet. Both: hum. Bea: the amp is on K3, the kitchen run; the desk on T1.",
+     "consequence": "Find the loop by its connections; the circuits are the electrician's to map.",
+     "chips": [
+      "Safe",
+      "Evidence"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Bea": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Notch out 60 and 180 Hz on the guitar channel",
+     "result": "Quieter hum, thinner guitar, the loop still running.",
+     "consequence": "Hides the symptom.",
+     "chips": [
+      "Hidden"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Record the amp with a microphone only, no DI",
+     "result": "The hum mostly goes — and so does the DI track Esme wanted, and the circuits are still wrong.",
+     "consequence": "A workaround that loses something and fixes nothing.",
+     "chips": [
+      "Workaround"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Two earths, one cable.",
+   "body": "The amp is plugged into the live room's north wall — which, Bea's panel schedule says, is on K3 with the kitchen's fridge and kettle. The desk and racks are on T1, technical power. The DI's cable shield is the only thing joining the two earths, and a small current runs along it: 60 Hz, with strong odd harmonics — a buzz that swells when the fridge cycles.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S10E07-1",
+   "label": "Test: name the buzz — and say what closed the loop."
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Which one — and why?",
+   "sub": "Mastery · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Bea and Maya beside a board. The amp's on the kitchen circuit; the desk's on technical power. Two earth paths, one audio cable between them. Sixty hertz and a strong one-eighty on the DI. And Pim asked if we could just break the earth pin. Nobody touches an earth pin. Ever. Show me the DI.",
+   "characters": [
+    {
+     "id": "bea",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s10kit.bg_live",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Bea",
+     "kind": "speech",
+     "text": "The amp's on the kitchen circuit; the desk's on technical power. Two earth paths, one audio cable between them."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Sixty hertz and a strong one-eighty on the DI. And Pim asked if we could just break the earth pin."
+    },
+    {
+     "side": "L",
+     "who": "Bea",
+     "kind": "speech",
+     "text": "Nobody touches an earth pin. Ever. Show me the DI."
+    }
+   ],
+   "narration": [],
+   "caption": "Mastery: nobody hands you the tool. Pick it, and say why.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3911
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t4",
+   "text": "📕 WHEN & WHY · MASTERY  Terms   Ground lift   Protective earth   DI box   Ground loop   The situation  A hum at 60 Hz with a strong buzz above it, only when the amp and the DI are both connected, and the amp is on a different circuit from the desk. Which relationship names the buzz — and which one does the electrician need for the circuit?   Which relationship do you reach for?  Size of uncompressed audio  Samples and time  Harmonics     Reference: the 📖 Glossary has every formula. At mastery, knowing  which  and  why  is the skill."
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "T7",
+   "label": "**Learn it now:** hum, earth and safety.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     What the room is telling you     Power, grounding and electrical safety     Case study: how one SDI cable took the main camera"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "O-1007",
+   "label": "**Order it:** a safe hum hunt.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A hum sheet. Left: a spectrum of the guitar DI with bars at 60, 120, 180, 240 and 300 Hz — 60, 180 and 300 strongest, all well above the dashed noise floor. Right: a schematic — the amp on K3, the kitchen run; the DI box; the desk on T1; a dashed red loop through two earths.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Two earths, joined by a shield.",
+   "flags": [
+    "RV-177",
+    "RV-178"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "spectrum and connections"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 6368
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S10-07a",
+   "teaser": "the panel schedule",
+   "title": "K3 · ‘kitchen, live room north’",
+   "body": "Bea's panel schedule for the building: ‘K3 — kitchen, fridge, live room north wall’. The live room's only outlet on that wall had been on the kitchen's circuit since the glasshouse was converted.",
+   "thread": "Power",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "The third prong",
+   "body": "In 1928 an American inventor, Philip Labre, was granted a patent for a plug and socket with a third, grounding prong — so that the metal case of an appliance would be connected to earth, and a fault would trip a fuse instead of electrifying whoever touched it. Nearly a century later, that third pin is still the one thing in a hum hunt nobody touches.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The live room; Bea, the electrician, in a navy work shirt with a yellow badge, holds out her hand; Pim, embarrassed, has put the adapter away.",
+   "characters": [
+    {
+     "id": "bea",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "pim",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "s10kit.bg_live",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Bea",
+     "kind": "speech",
+     "text": "Nobody touches an earth. Ever. Show me the DI, and I'll show you the circuits."
+    },
+    {
+     "side": "R",
+     "who": "Pim",
+     "kind": "speech",
+     "text": "Sorry. I — sorry."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-178"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2584
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S10E07-02",
+   "prompt": "Bea's mapped it: amp on K3, desk on T1. What's the fix?",
+   "happening": "Loop found.",
+   "clock": "Thursday 15:30",
+   "known": [
+    "◉ Amp on K3, desk on T1",
+    "◉ Hum through the DI shield"
+   ],
+   "unknown": [
+    "What's on T2"
+   ],
+   "risk": "A hum on the last song, or a circuit over its line.",
+   "timer_s": 25,
+   "timeout": [
+    "Nobody decides.",
+    "The amp stays on the kitchen circuit."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Which part is audio — and which part is the electrician's?"
+    }
+   ],
+   "note": "Draft decision (DR-S10E07).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Run an extension lead from the control room's T1 to the amp",
+     "result": "A trip hazard across the doorway and T1 over its line.",
+     "consequence": "Moves the problem and adds two.",
+     "chips": [
+      "Overload"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Bea's plan: a technical outlet in the live room on T2 for all the backline, loads balanced under the 80% line; the DI's audio ground lift only if anything remains — it touches the audio shield, never the mains earth",
+     "result": "Bea orders the parts and books the outlet for Tuesday. Until then the amp waits.",
+     "consequence": "Fix it in the circuits and the audio path — the electrician's work, your plan.",
+     "chips": [
+      "Technical power",
+      "Audio only"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Bea": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "An isolation transformer between the DI and the desk",
+     "result": "The hum goes. The amp stays on the kitchen circuit with the fridge.",
+     "consequence": "Safe and effective for the audio — and it leaves the circuit plan wrong.",
+     "chips": [
+      "Half"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Plug all the backline into one power strip on the north wall",
+     "result": "Everything's on K3 now, with the kettle.",
+     "consequence": "More load on the wrong circuit.",
+     "chips": [
+      "Wrong circuit"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lab",
+   "id": "LAB-PWR-06",
+   "label": "**Plan it:** the backline onto technical power, for Bea.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “The hum that went away”",
+   "sub": "The next Monday · 10:00 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The hum that went away.",
+   "body": "On Monday Pim is delighted: on Saturday he tried the amp again on the old north-wall outlet, and the hum had gone. Nothing had been changed; Bea's outlet isn't due until Tuesday. Maya doesn't smile. A hum that stops by itself is a change. Bea tests the amp: its protective earth is open, the wire broken inside the old mains cord at the strain relief. The loop had gone quiet because the safety earth had gone.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S10E07-2",
+   "label": "Test: why did it go quiet — and who repairs it?"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #98 · AVERY'S LENS  A hum is a safety question before it's an audio one  Hum from a ground loop is fixed in the audio path and the circuit plan — never by touching a protective earth. And a hum that stops by itself is evidence that something changed.  An old amplifier's hum vanished over a weekend because its safety earth had broken. The silence was the danger."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S10E07",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The live room; the old amp on the floor with a yellow DO NOT USE tag tied to its handle, marked ‘earth open’; Bea beside it; Esme, stricken.",
+   "characters": [
+    {
+     "id": "bea",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "esme",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "s10kit.bg_live",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Bea",
+     "kind": "speech",
+     "text": "If that chassis had gone live, the strings would've gone live with it."
+    },
+    {
+     "side": "R",
+     "who": "Esme",
+     "kind": "speech",
+     "text": "It's the only thing of his I've got that makes a sound."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-178",
+    "RV-180"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3388
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S10-07",
+   "who": "esme",
+   "prompt": "It's his amp. Can't we just use it once, carefully?",
+   "options": [
+    {
+     "label": "“Not until it's safe — and you won't lose it. We kept your DI track; when it's repaired, we'll play the take back through it.”",
+     "who": "esme",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "…So his amp still gets the song. Just later.",
+     "trust": {
+      "Esme": 2
+     }
+    },
+    {
+     "label": "“Rules are rules.”",
+     "who": "esme",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "That's not a reason. That's a sign on a wall.",
+     "trust": {
+      "Esme": -1
+     }
+    },
+    {
+     "label": "“Ask Bea.”",
+     "who": "esme",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Bea already said no. I'm asking you why.",
+     "trust": {
+      "Esme": 0
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S10-07b",
+   "teaser": "the amp's service sticker",
+   "title": "last tested 1994",
+   "body": "A faded sticker on the back of the amp: ‘Safety tested — 1994’. Thirty years of gigs, one mains cord, and no test since.",
+   "thread": "Power",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The hum sheet on Tuesday, after Bea's outlet, with the studio's spare amp: every harmonic below the dashed noise floor; the schematic shows the backline on T2, the desk on T1, one technical earth and no loop.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Tuesday: below the noise — with the spare amp.",
+   "flags": [
+    "RV-177"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "after the outlet"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 6092
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S10E07-03",
+   "prompt": "The amp's earth is open. Esme wants her father's amp on the last song, on Thursday.",
+   "happening": "Earth open.",
+   "clock": "Monday 11:00 · last song Thursday",
+   "known": [
+    "◉ Earth open",
+    "◉ DI track recorded"
+   ],
+   "unknown": [
+    "How long the repair takes"
+   ],
+   "risk": "A shock hazard — or the artist losing the one sound she asked for.",
+   "timer_s": 25,
+   "timeout": [
+    "Nobody decides.",
+    "The amp sits untagged in the live room."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "How can the amp be safe now and still be on the song later?"
+    }
+   ],
+   "note": "Draft decision (DR-S10E07). Option B needs Redundancy at LIMITED or better — a spare amp in the building.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Use it carefully on Thursday — it's only one song",
+     "result": "Bea: “Careful isn't an earth.” The session stops.",
+     "consequence": "A known shock hazard in the room.",
+     "chips": [
+      "Unsafe"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "SAFETY"
+      }
+     ],
+     "canonical": false,
+     "fail": "Gear with a failed earth is not used until a qualified technician has repaired it.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Bea": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Tag it out until a qualified technician replaces the cord and safety-tests it; record Thursday through the studio's spare valve amp with the DI track kept, so Esme can play the take back through her father's amp once it's certified",
+     "result": "The spare amp sounds close. In two weeks, repaired and tested, her father's amp plays the DI track back and goes on the album.",
+     "consequence": "Safe now, and nothing of hers lost.",
+     "chips": [
+      "Tagged out",
+      "Re-amp later"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": {
+      "redundancy": 1
+     },
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Esme": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Tag it out and postpone the last song until it's repaired",
+     "result": "Safe — and the album slips two weeks. The label is not pleased.",
+     "consequence": "The right safety call, paid for in the schedule because there's no spare.",
+     "chips": [
+      "Late"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Tag it out and use an amp-simulator plug-in instead",
+     "result": "Esme: “That's not his sound.”",
+     "consequence": "Safe, and not what the artist asked for.",
+     "chips": [
+      "Not hers"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-1007",
+   "label": "**Service Mode:** run the hum yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Two weeks later · 4:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The live room two weeks later; the old amp, repaired, with a new safety sticker; Esme grinning; Bea satisfied.",
+   "characters": [
+    {
+     "id": "esme",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "bea",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s10kit.bg_live",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Esme",
+     "kind": "speech",
+     "text": "New cord, new sticker, and it still says hello. Quietly."
+    },
+    {
+     "side": "R",
+     "who": "Bea",
+     "kind": "speech",
+     "text": "Tested this morning. It's his amp — and it's safe."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2769
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The control room; Esme holds out her phone toward Maya; the screen shows a message from a stranger with an audio file attached.",
+   "characters": [
+    {
+     "id": "esme",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s10kit.bg_ctrl",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Esme",
+     "kind": "speech",
+     "text": "A stranger just sent me my own vocal. With a remix on it. From the ballad."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The unreleased ballad?"
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Her Voice.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6714
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Hum from a ground loop is 60 Hz and its harmonics (fₙ = n × f₀) carried by an audio shield joining two earths. Find it by its connections; fix it in the audio path (the DI’s ground lift, an isolation transformer) and in the circuit plan (the electrician’s technical power, under the 80% line). Never lift, bypass or adapt away a protective earth. A hum that stops by itself is evidence: have the earth tested, and tag out anything that fails until a qualified technician repairs it."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · When a problem goes quiet on its own, what do you check before you celebrate?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S10E07",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

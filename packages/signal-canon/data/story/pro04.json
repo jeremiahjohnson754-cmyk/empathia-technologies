@@ -1,0 +1,92 @@
+{
+ "chapter": {
+  "id": "pro04",
+  "kicker": "PROLOGUE · CH.04",
+  "title": "The Console & the Stagebox",
+  "pill": "Prologue · Ch.04",
+  "sub": "Forty channels. Four decisions.",
+  "status": null,
+  "flags": [],
+  "accent": "var(--violet)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray points at four colored lanes — the vocal, drum, music and speech buses — that forty channels feed into.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "P",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Vocal bus. Drum bus. Music bus. Speech bus. Everything gets a lane."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1269
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya saves the console scene; the screen reads SCENE SAVED — SUNDAY 01. Ray nods.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "grin"
+    },
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Scene saved — Sunday's first snapshot."
+    },
+    {
+     "side": "R",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Now next week starts sixty seconds faster."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 895
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A clean bus structure turns forty channels into four decisions — and turns Sunday's setup into Tuesday's five-minute recall."
+  }
+ ]
+}

@@ -1,0 +1,873 @@
+{
+ "chapter": {
+  "id": "s07e03",
+  "kicker": "S07 · E03",
+  "title": "License Cliff",
+  "pill": "S07E03 · Cliff",
+  "sub": "Twelve hundred licences, one renewal date, one bounced payment — and the AGM on the other side of the grace period.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S07E03",
+   "RV-150",
+   "RV-151",
+   "RV-152",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#2DD4BF"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 7 · EPISODE 3 · DRAFT · CASE-037  Countdown · Maya, Henrik and Adaeze · Level L5 · Advanced support (formulas on request)  Twelve hundred room licences renew on one day. The payment bounced into the mailbox of someone who left. The grace period ends the night before the AGM.  ⚑ RV-150: finance approves spending; procurement speaks to the vendor. RV-151: prices illustrative. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "License Cliff",
+   "kind": "COUNTDOWN · RENEWALS",
+   "level": "L5 · ADVANCED",
+   "party": [
+    "maya",
+    "henrik",
+    "adaeze"
+   ],
+   "stakes": "Twelve hundred licences renew on one day. The payment bounced. The grace period ends the night before the AGM.",
+   "clock": "Before 00:00 UTC on 15 April.",
+   "reward": "An AGM that works in forty rooms — and a renewal date somebody owns.",
+   "objectives": [
+    {
+     "key": "BR-S07E03-01",
+     "text": "Decide what to do first"
+    },
+    {
+     "key": "twist",
+     "text": "Find why nobody saw it coming"
+    },
+    {
+     "key": "core",
+     "text": "Spend sixty thousand well"
+    },
+    {
+     "key": "BR-S07E03-02",
+     "text": "Decide what to put to the CFO"
+    },
+    {
+     "key": "BR-S07E03-03",
+     "text": "Decide how the next renewal is safe"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two forgotten lists"
+    }
+   ],
+   "rumor": "One date. Twelve hundred licences. Nobody holding the calendar."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Which day?”",
+   "sub": "Friday 10 April · 9:00 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The executive floor, morning. Henrik, anxious, gestures at a printed finance notice; Maya reads it.",
+   "characters": [
+    {
+     "id": "henrik",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s7kit.bg_hq",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Henrik",
+     "kind": "speech",
+     "text": "Every room licence we own renewed on the thirty-first of March. Nobody paid."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And the grace period ends… the night before the AGM."
+    }
+   ],
+   "narration": [],
+   "caption": "Five days. Forty sites watching.",
+   "flags": [
+    "RV-151"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1288
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "tension",
+   "where": "Harrowmere HQ · Friday 10 April · 09:15",
+   "lines": [
+    {
+     "who": "henrik",
+     "pose": "W",
+     "expr": "worried",
+     "text": "Just pay it. All of it. Today."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Let me find out what ‘all of it’ is first. Give me until two."
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #64 · AVERY'S LENS  Every deadline needs an owner who's still here  A date that can break forty sites belongs to a named person and a deputy, with alerts that reach a team — not one inbox.  The renewal bounced into the mailbox of someone who had left in January. Nobody else knew the date existed until the grace period was nearly over."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S07E03",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A licence sheet: a timeline from the 31 March renewal through a 14-day grace period to 00:00 UTC on 15 April, fifteen hours before the AGM. A bar: 910 real rooms, 290 grey ghosts. Notes: order bounced, owner left, nobody alerted.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "One date. One cliff.",
+   "flags": [
+    "RV-151"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "renewal unpaid"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2175
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “One date, one cliff”",
+   "sub": "Friday · 9:30 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S07E03-01",
+   "prompt": "9:30. Henrik wants it paid today, all of it. What do you do first?",
+   "happening": "Renewal unpaid; grace ends 15 April 00:00 UTC.",
+   "clock": "Friday 10 April · 09:30",
+   "known": [
+    "◉ 1,200 licences, one date",
+    "◉ AGM on 15 April"
+   ],
+   "unknown": [
+    "Why it wasn't paid",
+    "Which licences matter"
+   ],
+   "risk": "The AGM dark in forty rooms.",
+   "timer_s": 20,
+   "timeout": [
+    "The morning goes to meetings about meetings.",
+    "It's Monday before anyone looks at the list."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What broke, how big is it really, and whose money is it?"
+    }
+   ],
+   "note": "Draft decision (DR-S07E03).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Pay all 1,200 on the corporate card",
+     "result": "Declined — the limit is $50,000. And some of those rooms don't exist.",
+     "consequence": "Paying around a break you haven't found.",
+     "chips": [
+      "Unexamined"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Find out why the renewal wasn't paid, match the licence list against the room inventory, and ask finance for the fastest approval route for what the AGM needs",
+     "result": "By two o'clock: the bounced order, the ghosts, and a CFO meeting at three.",
+     "consequence": "Find the break, size the problem, then ask the owner of the money.",
+     "chips": [
+      "Evidence",
+      "Owners"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Henrik": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Phone the vendor and ask them to stop the countdown",
+     "result": "Their account manager: “I need a purchase order from your procurement team.”",
+     "consequence": "Not your contract to renegotiate.",
+     "chips": [
+      "Not yours"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Let the order go through normal approval",
+     "result": "Five working days — the grace period ends first.",
+     "consequence": "The normal route is too slow for this date.",
+     "chips": [
+      "Too slow"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Know the date before choosing the route.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Henrik": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "One date, one cliff.",
+   "body": "Two years ago procurement co-termed every room licence to 31 March for an 8% discount — one invoice, one date. This year finance's new system changed the cost-centre codes; the order bounced, and the bounce went to the owner named on the memo — a procurement lead who left in January. Twelve hundred small renewals had become one payment, and nobody left was holding it.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S07E03-1",
+   "label": "Test: how much margin was left — and why did nobody see it?"
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ask for it",
+   "sub": "Advanced · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Henrik and Maya beside a board. Twelve hundred licences, one renewal date. Finance says just pay them all. Two hundred and ninety are for rooms we closed — a quarter. At a hundred and fifty each, forty-three thousand five hundred a year for nothing. And the reconciliation tool is eighteen thousand once. Paid back in… five months. Fine. Show me the rest.",
+   "characters": [
+    {
+     "id": "henrik",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s12kit.bg_hq",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Henrik",
+     "kind": "speech",
+     "text": "Twelve hundred licences, one renewal date. Finance says just pay them all."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Two hundred and ninety are for rooms we closed — a quarter. At a hundred and fifty each, forty-three thousand five hundred a year for nothing."
+    },
+    {
+     "side": "L",
+     "who": "Henrik",
+     "kind": "speech",
+     "text": "And the reconciliation tool is eighteen thousand once. Paid back in… five months. Fine. Show me the rest."
+    }
+   ],
+   "narration": [],
+   "caption": "Advanced: the formula is there if you ask. Try without it first.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3724
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t3",
+   "text": "📙 ON REQUEST · ADVANCED  Terms   Co-terming   Grace period   Asset register   If you need it   ƒ Ask for the formula · Payback time (money)   ƒ FORMULA · Payback time (money)  years = one-off cost ÷ savings per year   one-off cost  what the change costs once  savings per year  the recurring cost it removes      ƒ Ask for the formula · Percentage   ƒ FORMULA · Percentage  % = part ÷ whole × 100   part  the piece you are measuring  whole  everything it is part of"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "E3",
+   "label": "**Learn it now:** licences, renewals and payback.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     Sound, rooms and signals — five views     What the room is telling you     The OSI model applied to video and wireless"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "⏺ RECORD IT · CHALLENGE · LEVEL 3  Deliver the programme at the right loudness  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "record-loud"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Paying for ghosts”",
+   "sub": "Friday · 1:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Paying for ghosts.",
+   "body": "Matched against the room inventory, 290 licences belong to rooms closed in last year's consolidation — a quarter of the list, $43,500 a year for nothing. The consolidation plan's licence line still says ‘TBC’. A reconciliation run every quarter would have found them; building it costs $18,000 once.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S07E03-2",
+   "label": "Test: what do the ghosts cost — and how fast does the fix pay back?"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "T-703",
+   "label": "**Triage it:** sixty thousand before the cliff.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S07E03-02",
+   "prompt": "3:00 p.m. with the CFO. What do you ask for?",
+   "happening": "Ghosts found; AGM needs listed.",
+   "clock": "Friday 15:00 · grace ends in 4 days 4 h",
+   "known": [
+    "◉ 910 real licences",
+    "◉ AGM path ≈ $11k, reconciliation $18k"
+   ],
+   "unknown": [
+    "The vendor's answer"
+   ],
+   "risk": "An AGM with no viewing rooms or captions.",
+   "timer_s": 25,
+   "timeout": [
+    "The CFO leaves for the weekend at four.",
+    "Monday's approval comes too late for the vendor's weekend processing."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What must work on the day, what can follow, and whose limit is it?"
+    }
+   ],
+   "note": "Draft decision (DR-S07E03).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Emergency approval for all 1,200",
+     "result": "$180,000 — three times her limit, ghosts included. She says no to all of it.",
+     "consequence": "Asking for too much gets nothing.",
+     "chips": [
+      "Over limit"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "$29k now for the AGM path — auditorium, stream, captions, one viewing room per site, the boardrooms — and the reconciliation; procurement asks for a 30-day extension on the other 910 under the normal order; the 290 ghosts are dropped",
+     "result": "Approved at 3:40. The vendor grants the extension on Monday against the order number.",
+     "consequence": "The date protected, the rest through the right door, the waste gone.",
+     "chips": [
+      "Right door",
+      "Numbers"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Let the licences lapse and run the AGM from a laptop and a meeting link",
+     "result": "No captions, no viewing rooms, forty sites crowding around desks.",
+     "consequence": "Drops the access requirement and the sites.",
+     "chips": [
+      "Access lost"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Captions are a requirement, not a nicety.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Renew only the auditorium",
+     "result": "The AGM streams to forty rooms that can't join.",
+     "consequence": "Protects the stage, not the audience.",
+     "chips": [
+      "Audience lost"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "The year 2000",
+   "body": "For decades, programs saved space by storing years as two digits. As 1 January 2000 approached, organisations everywhere hunted for code that would read ‘00’ as 1900 — one date that every system shared. Remediation cost, by common estimates, hundreds of billions of dollars worldwide, and the new year passed with few serious failures. Critics called it an overreaction; the people who did the work called it a deadline that had been owned.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The licence sheet after the fix: 910 real rooms renewed or extended; 290 ghosts dropped; the AGM path renewed under the CFO's approval; an owner, a deputy and 90/60/30 alerts; the rehearsal on 14 April passing in 40 of 40 viewing rooms.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Forty rooms rehearsed the day before.",
+   "flags": [
+    "RV-150"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "rehearsal · 40/40 rooms"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2194
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S7-03",
+   "who": "adaeze",
+   "prompt": "You want me to own renewals? I own forty rooms in the west and a broken printer.",
+   "options": [
+    {
+     "label": "“You'd own the date, with procurement as deputy and alerts to a team mailbox. The work is a quarterly reconciliation — two hours.”",
+     "who": "adaeze",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "Two hours a quarter to never do this again? Deal.",
+     "trust": {
+      "Adaeze": 2
+     }
+    },
+    {
+     "label": "“Somebody has to.”",
+     "who": "adaeze",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "That's what they told the person who left in January.",
+     "trust": {
+      "Adaeze": -1
+     }
+    },
+    {
+     "label": "“What would make it easy for you?”",
+     "who": "adaeze",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "A list that matches real rooms. Which, apparently, we don't have yet.",
+     "trust": {
+      "Adaeze": 1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S7-03a",
+   "teaser": "the co-terming memo",
+   "title": "8% discount",
+   "body": "Procurement's memo from two years ago: ‘Co-term all room licences to 31 March — 8% discount, one invoice.’ A good idea. The last line: ‘Owner: J. Ashby (procurement).’ J. Ashby left in January.",
+   "thread": "Method",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S07E03-03",
+   "prompt": "The week after the AGM. How is the next renewal made safe?",
+   "happening": "AGM ran.",
+   "clock": "Monday 20 April",
+   "known": [
+    "◉ The owner had left",
+    "◉ The list had ghosts"
+   ],
+   "unknown": [
+    "Next year's cost codes"
+   ],
+   "risk": "The same cliff next March.",
+   "timer_s": 25,
+   "timeout": [
+    "Everyone relaxes after the AGM.",
+    "Next March arrives with the same memo."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who holds the date if Maya leaves too?"
+    }
+   ],
+   "note": "Draft decision (DR-S07E03).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Spread renewals across the year",
+     "result": "The discount goes; the dates are still unowned — now there are twelve cliffs.",
+     "consequence": "More dates, same problem.",
+     "chips": [
+      "Unowned"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Keep co-terming for the discount — with a named owner and deputy, 90/60/30-day alerts to a team mailbox, and a quarterly reconciliation against the room inventory",
+     "result": "Adaeze owns it; procurement deputises; next year's order goes out in January.",
+     "consequence": "The discount and an owner who's still here.",
+     "chips": [
+      "Owned",
+      "Reconciled"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Adaeze": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Put the date in Maya's calendar",
+     "result": "Maya is the next person who leaves.",
+     "consequence": "One inbox again.",
+     "chips": [
+      "Single point"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Deadlines belong to roles and teams.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Switch to perpetual licences",
+     "result": "Not offered for these products.",
+     "consequence": "Wishful.",
+     "chips": [
+      "Not available"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-703",
+   "label": "**Service Mode:** run the five days yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-037 · SIGNAL original  License Cliff  Twelve hundred licences, one renewal date, one bounced order — and the grace period ending the night before the AGM.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-037"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Wednesday 15 April · after the AGM"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "After the AGM: Henrik relieved; Adaeze with a clipboard titled RENEWALS · OWNER.",
+   "characters": [
+    {
+     "id": "henrik",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "adaeze",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "s7kit.bg_hq",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Henrik",
+     "kind": "speech",
+     "text": "Forty rooms, captions, and we stopped paying for two hundred and ninety empty ones."
+    },
+    {
+     "side": "R",
+     "who": "Adaeze",
+     "kind": "speech",
+     "text": "Next March's order goes out in January. With my name — and a deputy's."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1289
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S7-03b",
+   "teaser": "the consolidation plan",
+   "title": "‘licences: TBC’",
+   "body": "Last year's site consolidation plan closed 290 rooms across nine sites. Row 41: ‘Room licences — TBC.’ Nobody confirmed. Nobody released them.",
+   "thread": "Method",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Weeks later, the operations centre late in the evening; clocks read 21:40, 03:40 and 10:40. Yuki points at a ticket; Maya, working late, leans in.",
+   "characters": [
+    {
+     "id": "yuki",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s7kit.bg_gnoc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Yuki",
+     "kind": "speech",
+     "text": "A Tahvara boardroom ticket — open eighteen hours. Three desks have touched it. Nobody owns it."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And the SLA?"
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Follow the Sun.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7053
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Co-terming concentrates risk: one date, one payment, one owner — so the owner must be named, deputised and alerted through a team. A grace period is a countdown. Reconcile licences against real rooms. Payback = one-off cost ÷ savings per year: bring finance the number, and let finance and procurement act through their own doors."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · What date at your work would break the most if the person who knows about it left tomorrow?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S07E03",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

@@ -1,0 +1,879 @@
+{
+ "chapter": {
+  "id": "s09e08",
+  "kicker": "S09 · E08",
+  "title": "Tabletop",
+  "pill": "S09E08 · Tabletop",
+  "sub": "An exercise around a table: the screens say something they shouldn’t, during a full house. The cheapest place to fail.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S09E08",
+   "RV-170",
+   "RV-172",
+   "RV-173",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#F472B6"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 9 · EPISODE 8 · DRAFT  A meeting room · Solveig, Tamsin, Odile, Raffa, the communications lead, facilities, Maya and Kit · Level L5 · Advanced support (formulas on request)  A tabletop exercise: the screens say something they shouldn’t, during a full house. Nothing is real — so this is the cheapest place to fail.  ⚑ RV-170 / RV-173: the incident commander decides; everyone else owns a lane. RV-172: figures illustrative. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Tabletop",
+   "kind": "LIVE VENUE · EXERCISE",
+   "level": "L5 · ADVANCED",
+   "party": [
+    "maya",
+    "solveig",
+    "tamsin"
+   ],
+   "stakes": "An exercise around a table: the screens say something they shouldn't, during a full house. The point is to fail here, not at the gala.",
+   "clock": "Two weeks to the gala.",
+   "reward": "A plan written by role, two people deep — that works with its author out of the room.",
+   "objectives": [
+    {
+     "key": "BR-S09E08-01",
+     "text": "Decide what you say at the CEO inject"
+    },
+    {
+     "key": "twist",
+     "text": "Find who owns the off switch"
+    },
+    {
+     "key": "core",
+     "text": "Sort whose decision is whose"
+    },
+    {
+     "key": "BR-S09E08-02",
+     "text": "Decide who blanks the screens"
+    },
+    {
+     "key": "BR-S09E08-03",
+     "text": "Decide what the runbook names"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "The plan's weakest step is the one with your name on it."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Fail now”",
+   "sub": "Thursday · 2:00 p.m. · meeting room"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A meeting room with a whiteboard reading TABLETOP · SCREENS · FULL HOUSE; Solveig at the board; Tamsin and Maya at the table.",
+   "characters": [
+    {
+     "id": "solveig",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "tamsin",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Solveig",
+     "kind": "speech",
+     "text": "19:12. The lobby wall shows a false message. Full house. Go."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Tamsin decides. I tell her what's safe to rely on."
+    }
+   ],
+   "narration": [],
+   "caption": "Nothing here is real. That's the point.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1039
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "tension",
+   "where": "meeting room · Thursday 14:00",
+   "lines": [
+    {
+     "who": "solveig",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Nothing here is real. That's the point. Fail now."
+    },
+    {
+     "who": "tamsin",
+     "pose": "N",
+     "expr": "flat",
+     "text": "I'm the incident commander. Bring me facts, not opinions."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Nobody owns the off switch”",
+   "sub": "Thursday · 2:10 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S09E08-01",
+   "prompt": "Inject 4, 19:18: the chief executive phones — “Pull every plug in the building.” What do you say?",
+   "happening": "The CEO wants everything off.",
+   "clock": "Exercise 19:18",
+   "known": [
+    "◉ Paging independent",
+    "◉ Signage untrusted"
+   ],
+   "unknown": [
+    "Who can reach the off switch"
+   ],
+   "risk": "A dark building with no paging — or a lying screen left on.",
+   "timer_s": 20,
+   "timeout": [
+    "The room argues.",
+    "The exercise clock runs on."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What must stay up — and whose decision is it?"
+    }
+   ],
+   "note": "Draft decision (DR-S09E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Back him: pull everything",
+     "result": "Paging and the fire interface go dark with the screens.",
+     "consequence": "Takes down the trusted paths with the untrusted one.",
+     "chips": [
+      "Everything dark"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "INCIDENT COMMANDER'S"
+      }
+     ],
+     "canonical": false,
+     "fail": "The incident commander decides — and never loses paging and life safety.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Team": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Give Tamsin the facts: paging and the fire interface are on their own paths and must stay up; only signage needs to go dark, by facilities at the power controllers or two AV staff in the CMS — her call",
+     "result": "Tamsin: “Signage dark. Paging stays. Tell the chief executive that's my decision.”",
+     "consequence": "Facts to the incident commander; her decision.",
+     "chips": [
+      "Facts",
+      "One commander"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Tamsin": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Ignore the chief executive",
+     "result": "He calls again, louder, and nobody has explained anything.",
+     "consequence": "Silence isn't a boundary.",
+     "chips": [
+      "Unanswered"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Go and pull the signage plugs yourself",
+     "result": "Building power is facilities'; the decision is Tamsin's.",
+     "consequence": "Acts outside your lane.",
+     "chips": [
+      "Not yours"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "FACILITIES'"
+      }
+     ],
+     "canonical": false,
+     "fail": "Power is facilities', on the incident commander's instruction.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Tamsin": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Nobody owns the off switch.",
+   "body": "The screens need to go dark. Facilities hold the signage power controllers; AV holds the rack key; the decision is Tamsin's — and it takes the room ten minutes to agree who does what. The target from detection to paging was 225 seconds. The exercise took 780.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S09E08-1",
+   "label": "Test: the extra time — and whose decision it is."
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ask for it",
+   "sub": "Advanced · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Solveig and Tamsin beside a board. Detect in sixty seconds, decide in ninety, blank the screens in forty-five, page the house in thirty. Three minutes forty-five. If the person who blanks the screens is at home, it's never. Then the runbook names two people per shift — and neither of them is Maya.",
+   "characters": [
+    {
+     "id": "solveig",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "tamsin",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Solveig",
+     "kind": "speech",
+     "text": "Detect in sixty seconds, decide in ninety, blank the screens in forty-five, page the house in thirty."
+    },
+    {
+     "side": "R",
+     "who": "Tamsin",
+     "kind": "speech",
+     "text": "Three minutes forty-five. If the person who blanks the screens is at home, it's never."
+    },
+    {
+     "side": "L",
+     "who": "Solveig",
+     "kind": "speech",
+     "text": "Then the runbook names two people per shift — and neither of them is Maya."
+    }
+   ],
+   "narration": [],
+   "caption": "Advanced: the formula is there if you ask. Try without it first.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1424
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t3",
+   "text": "📙 ON REQUEST · ADVANCED  Terms   Tabletop exercise   Inject   Incident commander   Holding statement   If you need it   ƒ Ask for the formula · Time budget   ƒ FORMULA · Time budget  T = Σ (count × time each)   count  how many of each task  time each  minutes or seconds per task — keep units the same"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "G8",
+   "label": "**Learn it now:** tabletop exercises and incident roles.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     The first step to networking, AV style     The OSI model applied to video and wireless     Stay locked in — roles during the service"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "⏺ RECORD IT · CHALLENGE · LEVEL 3  Record a clean vocal take  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "record-take"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "An exercise sheet: injects at 19:12 false message, 19:14 video spreading, 19:16 exit screens, 19:18 the chief executive demanding every plug pulled — highlighted — and 19:20 an unfamiliar session; runbook step 4, ‘Maya switches signage to safe mode’, highlighted. Footer: plan 225 s, exercise 780 s, ten minutes to agree the off switch.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Five injects, two gaps.",
+   "flags": [
+    "RV-172"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "exercise clock"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 4169
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "M-908",
+   "label": "**Sort it:** whose decision?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “The runbook assumes Maya”",
+   "sub": "Thursday · 3:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The runbook assumes Maya.",
+   "body": "Solveig asks Maya to read step 4 of her own runbook aloud. ‘Maya switches signage to safe mode.’ Her mobile number is written next to it. Three nights a week, Maya is at home. On one of them, step 4 is a phone ringing in an empty flat.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S09E08-2",
+   "label": "Test: how many people to train — and why roles?"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S09E08-02",
+   "prompt": "15:10. Who blanks the screens from now on?",
+   "happening": "Ten minutes to agree.",
+   "clock": "Exercise debrief · 15:10",
+   "known": [
+    "◉ Facilities: controllers",
+    "◉ AV: CMS and key"
+   ],
+   "unknown": [
+    "Night-shift cover"
+   ],
+   "risk": "A false message left up for ten minutes on the night.",
+   "timer_s": 25,
+   "timeout": [
+    "No owner is named.",
+    "The gap is still there at the gala."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who decides — and who acts, fast, on every shift?"
+    }
+   ],
+   "note": "Draft decision (DR-S09E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Give AV the power-controller key and let them decide",
+     "result": "The decision drifts to whoever holds a key.",
+     "consequence": "Moves a decision to the wrong lane.",
+     "chips": [
+      "Wrong lane"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "The incident commander decides; facilities cut signage power at the controllers, or two named AV staff blank the CMS — whichever is faster that night — both rehearsed",
+     "result": "Facilities and AV each name two people per shift; Tamsin's card lists both routes.",
+     "consequence": "One decider, two routes, named people.",
+     "chips": [
+      "Two routes",
+      "Named"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Tamsin": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "A big red button in the lobby",
+     "result": "Anyone can press it — including the next false message's author.",
+     "consequence": "An off switch nobody owns.",
+     "chips": [
+      "Unowned"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Whoever's nearest",
+     "result": "Ten minutes of ‘is it me?’ again.",
+     "consequence": "The gap the exercise found.",
+     "chips": [
+      "Same gap"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "A war game on a table",
+   "body": "In 1824 a young Prussian officer showed his army's general staff a game played on a table with maps, blocks and dice, where officers made decisions under time pressure and umpires judged the results. The chief of staff is said to have exclaimed that it wasn't a game but training for war. Rehearsing decisions around a table, where mistakes are cheap, spread to armies — and much later to emergency planners.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #89 · AVERY'S LENS  Write the plan by role, not by name  A runbook that names one person fails the night that person is away. Name roles, train two per shift, and rehearse.  Step 4 said ‘Maya switches signage to safe mode’. On the night it matters, Maya is at home."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S09E08",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The runbook by role: 0:00 anyone reports to the duty manager; 1:00 the incident commander decides to hold and orders the screens dark; 2:30 facilities cut signage power, or two AV staff blank the CMS; 2:30 security takes the account and keeps the logs; 3:30 the incident commander pages ‘please stay where you are’; 3:30 communications issue a holding statement. Footer: re-run without Maya, 210 s to paging.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Written by role, two people deep.",
+   "flags": [
+    "RV-173"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "re-run without Maya"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 4020
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S9-08a",
+   "teaser": "the exercise clock",
+   "title": "780 s",
+   "body": "Solveig's exercise clock: detected 19:12:00, paged 19:25:00 — 780 s. The target was 225 s. Ten minutes of it were four people establishing who could reach the signage power controllers.",
+   "thread": "Safety",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S09E08-03",
+   "prompt": "Friday. What does the runbook name from now on?",
+   "happening": "Two routes named.",
+   "clock": "Friday 10:00",
+   "known": [
+    "◉ Step 4 named Maya"
+   ],
+   "unknown": [
+    "Who's on shift at the gala"
+   ],
+   "risk": "A plan that needs its author in the building.",
+   "timer_s": 25,
+   "timeout": [
+    "Step 4 stays as it was.",
+    "Maya's phone is the plan."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Would this plan work if you were on holiday?"
+    }
+   ],
+   "note": "Draft decision (DR-S09E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Maya — she's the expert, and on call every night",
+     "result": "One person, every night, for ever.",
+     "consequence": "A single point of failure with a pager.",
+     "chips": [
+      "Single point"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Roles, not people: two trained per shift for each AV step, the incident commander's pre-recorded ‘please stay where you are’, and the exercise twice a year with new injects",
+     "result": "Six people trained in two weeks; Tamsin records her message; the next exercise is in the calendar.",
+     "consequence": "The plan works without its author.",
+     "chips": [
+      "By role",
+      "Rehearsed"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Tamsin": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "A longer, more detailed runbook",
+     "result": "Forty pages nobody reads at 19:12.",
+     "consequence": "Detail isn't depth.",
+     "chips": [
+      "Unread"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "An on-call contractor",
+     "result": "Forty minutes away, on a good night.",
+     "consequence": "Too far from the room.",
+     "chips": [
+      "Too slow"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-908",
+   "label": "**Service Mode:** run the exercise yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Two weeks later · the re-run"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The meeting room at the re-run; Maya's chair is empty; Kit holds a stopwatch; Tamsin and Solveig.",
+   "characters": [
+    {
+     "id": "kit",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "tamsin",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "solveig",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Kit",
+     "kind": "speech",
+     "text": "Two hundred and ten seconds. Nobody asked for Maya."
+    },
+    {
+     "side": "R",
+     "who": "Solveig",
+     "kind": "speech",
+     "text": "That's the best score this exercise can give."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1041
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S9-08",
+   "who": "tamsin",
+   "prompt": "Step four had your name on it. Did you write it that way on purpose?",
+   "options": [
+    {
+     "label": "“No — I wrote what I'd do. That's the mistake. The plan has to work on the nights I'm not here.”",
+     "who": "tamsin",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "Then train my night duty managers' people. I'll pick the two.",
+     "trust": {
+      "Tamsin": 2
+     }
+    },
+    {
+     "label": "“It's the safest way.”",
+     "who": "tamsin",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Not at 23:00 on a Saturday when you're at home.",
+     "trust": {
+      "Tamsin": -1
+     }
+    },
+    {
+     "label": "“I'll just always be on call.”",
+     "who": "tamsin",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "That's not a plan. That's a burnout date.",
+     "trust": {
+      "Tamsin": 0
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S9-08b",
+   "teaser": "runbook step 4",
+   "title": "‘Maya switches signage…’",
+   "body": "The runbook, step 4: ‘Maya switches signage to safe mode.’ Maya wrote it in the second month after opening. It has her mobile number next to it.",
+   "thread": "Method",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The meeting room; Odile holds a board paper titled SEASON REVIEW · WHO OWNED WHAT; Maya reads it.",
+   "characters": [
+    {
+     "id": "odile",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Odile",
+     "kind": "speech",
+     "text": "The board wants a review. Who owned the integrator's accounts? Who approved them? Why did nobody remove them?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The answer's going to be ‘everyone thought someone else did’."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *The Review.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 964
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  One incident commander decides; security, facilities, communications and AV each own a lane and bring facts. Time the plan (T = Σ stages) and exercise it with injects — the viral video, the executive who wants every plug pulled. Keep paging and life safety up; never counter-message on a lying channel. Write every step by role, train two per shift, and re-run it with the author out of the room."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Which step in your plans only works if you pick up the phone?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S09E08",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

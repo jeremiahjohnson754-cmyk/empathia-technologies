@@ -1,0 +1,1524 @@
+{
+ "chapter": {
+  "id": "s01e08",
+  "kicker": "S01 · E08",
+  "title": "The Budget Meeting",
+  "pill": "S01E08 · Budget",
+  "sub": "Tasha has one budget line and three good reasons to spend it.",
+  "status": "**DRAFT** · scripted from the season map ahead of its production-bible entry · IDs provisional",
+  "flags": [
+   "DR-S01E08",
+   "RV-30",
+   "RV-34",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--green)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 1 · EPISODE 8 · DRAFT  Owner board · Maya and Tasha · Level L2 (Operator)  Tasha has one budget line and three good reasons to spend it. Nobody in this episode touches a cable — and it's still the most dangerous room of the season.  ⚑ RV-30: every dollar figure, likelihood and score in this episode is invented for the story. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Twelve Minutes, Six Thousand Dollars",
+   "kind": "SIDE QUEST · THE BOARD",
+   "level": "L2 · OPERATOR",
+   "party": [
+    "maya",
+    "tasha",
+    "dante",
+    "ray"
+   ],
+   "stakes": "The roof ate half the AV budget. Dante wants the wall. The equipment room has never lost power — that anyone knows of.",
+   "clock": "Twelve minutes on the agenda.",
+   "reward": "A funded plan with names on it — and Tasha's belief.",
+   "objectives": [
+    {
+     "key": "BR-S01E08-01",
+     "text": "Write each risk the way an owner reads it"
+    },
+    {
+     "key": "BR-S01E08-02",
+     "text": "Answer Dante in front of the board"
+    },
+    {
+     "key": "BR-S01E08-03",
+     "text": "Say “I don't know” — well"
+    },
+    {
+     "key": "BR-S01E08-04",
+     "text": "Make the recommendation in four minutes"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: find two pages nobody reads"
+    }
+   ],
+   "rumor": "Ray's notebook has a page for the processor password. He's never let anyone see it."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Twelve minutes”",
+   "sub": "January 14 · 7:02 p.m. · the church office"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The church office, set up for the board meeting. Tasha, the treasurer, in a burgundy blazer and glasses, stands at the head of the table with a folder.",
+   "characters": [
+    {
+     "id": "tasha",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Tasha",
+     "kind": "speech",
+     "text": "The roof came in high. The AV line was twelve thousand. It's now six."
+    }
+   ],
+   "narration": [],
+   "caption": "The budget line, cut in half before anyone said a word.",
+   "flags": [
+    "RV-30",
+    "RV-34",
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1316
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "tasha",
+     "pose": "N",
+     "expr": "flat",
+     "text": "The roof came in high. The AV line was twelve thousand. It's now six."
+    },
+    {
+     "who": "dante",
+     "pose": "N",
+     "expr": "worried",
+     "text": "…What did the roof buy?"
+    },
+    {
+     "who": "tasha",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Not raining on you, Dante."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A bar chart of the AV line: $12,000 cut to $6,000, the other half going to the roof.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "$6,000 left. Illustrative.",
+   "flags": [
+    "RV-30",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2030
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Dante, the worship leader, speaks up; Maya holds a single sheet of paper.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "P",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "Then let's at least keep the wall. The kids loved Christmas Eve. We can do payments."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "whisper",
+     "text": "(One page. Twelve minutes.)"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-34"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1390
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Tasha turns to Maya.",
+   "characters": [
+    {
+     "id": "tasha",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Tasha",
+     "kind": "speech",
+     "text": "Maya, you have twelve minutes. Don't tell me it's important. Tell me what happens if we don't."
+    }
+   ],
+   "narration": [],
+   "caption": "“What happens if we don't?” is the only question an owner really asks.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1316
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "worried",
+     "text": "(Twelve minutes. She has rehearsed it nine times in the car. The car was very impressed.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Title card: One week earlier. January 7.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 364
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “The register”",
+   "sub": "January 7 · the booth"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya reads through the booth change log: the stream, the fill re-aim, the hum, the rack tidy, the breaker, the listening system.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Eight entries in a year. The log is the only honest history the room has.",
+   "flags": [
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2913
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray and Maya disagree, gently.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "The equipment room has never lost power. Not once in nine years."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Never that we know of. The console has a little battery. The processor and amps don't."
+    }
+   ],
+   "narration": [],
+   "caption": "Absence of evidence is not evidence of absence.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1279
+  },
+  {
+   "origin": "injected",
+   "type": "twist",
+   "title": "The roof took half the line",
+   "body": "Before Maya says a word, the AV budget is cut from twelve thousand to six. Everything on her page still matters — and now half of it won't be funded. The question is no longer 'what do we buy' but 'what do we choose not to fix, and who owns that?'",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S01E08-R",
+   "label": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray taps his worn notebook. Maya points at it.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "My notebook works fine."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "It works when you're here, Ray. That's DEBT-002."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2122
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S1-08a",
+   "teaser": "the notebook, open for one second",
+   "title": "A page Ray turns quickly",
+   "body": "Not the processor password. A different page, headed in capitals: *KESTREL VALLEY — BACKUP REF: HOUSE BLACK. KEEP IT.* A date from twenty years ago. Ray closes it. “Other people's buildings,” he says.",
+   "thread": "Ray's notebook · DEBT-002",
+   "who": [
+    "ray",
+    "N",
+    "closed"
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E08-01",
+   "prompt": "How should each item be written on the one page for the board?",
+   "happening": "Building the one-page register.",
+   "clock": null,
+   "known": [
+    "◉ Eight incidents in the change log",
+    "◉ Six candidate items"
+   ],
+   "unknown": [
+    "How the board will weigh them"
+   ],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "Draft decision (DR-S01E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Model numbers and specifications",
+     "result": "A page full of numbers nobody on the board can compare.",
+     "consequence": "Tasha, later: “Which of these matters?”",
+     "chips": [
+      "Unreadable"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Specifications answer questions an owner never asked.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -2,
+      "sev": 1,
+      "trust": {
+       "Tasha": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "What it is, what happens if we don't, likelihood × impact, cost, owner",
+     "result": "Six rows. Anyone can compare them in two minutes.",
+     "consequence": "It's also arguable — which means the board can disagree with a number instead of with you.",
+     "chips": [
+      "One page",
+      "Comparable"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 2,
+      "sev": 1,
+      "trust": {
+       "Crew": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Just the costs, cheapest first",
+     "result": "Easy to read; impossible to decide from.",
+     "consequence": "Cheap isn't the same as important.",
+     "chips": [
+      "Missing risk"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Lead with the scariest story",
+     "result": "The stream failure on Baptism Sunday, told dramatically.",
+     "consequence": "It works once. Next time, the board discounts you.",
+     "chips": [
+      "Spends trust"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The one-page register. Rows: DEBT-009 booth network, risk 4×4=16, $4,500, owner Priya. Failing receivers, 5×3=15, $900, Imani. Proposed DEBT-011 equipment-room UPS, 2×5=10, $2,200, owner unknown. DEBT-010 balcony front, 5×2=10, $3,800, Imani. DEBT-002 Ray's notebook to documentation, 3×3=9, $1,200, Ray. Buy the LED wall, 1×1=1, $28,000.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "One page. Every row has a risk, a cost and an owner — except one.",
+   "flags": [
+    "RV-30",
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7048
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Ray and Maya beside a board. Triage is deciding what goes first when you can't do everything. Technical debt is every shortcut still waiting to be paid. How do I show them a small fault is expensive? Count everybody's time. Fixer twenty minutes, ten people waiting fifteen each: twenty plus ten times fifteen — a hundred seventy person-minutes, every time.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_lobby",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Triage is deciding what goes first when you can't do everything. Technical debt is every shortcut still waiting to be paid."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "How do I show them a small fault is expensive?"
+    },
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Count everybody's time. Fixer twenty minutes, ten people waiting fifteen each: twenty plus ten times fifteen — a hundred seventy person-minutes, every time."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1302
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    Triage   Deciding what to do first when you can't do everything, by weighing risk, people affected and time.   Root cause   The underlying reason a fault happened, as opposed to the symptom people noticed.   Technical debt   Shortcuts and workarounds that keep working until the day they fail — recorded in SIGNAL as DEBT items.   Formula, variables and a worked example   ƒ FORMULA · Cost of one incident  cost = t fixer  + people × t delay    t fixer   minutes the fixer spends  people  how many people wait  t delay   minutes each waits    Worked example.  A fixer spends 20 min while 10 people wait 15 min each: 20 + 10 × 15 = 170 person-minutes."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 09 OF 31 · PP. 10–11, 176, 181  PART 1 CORE TECHNOLOGY FOUNDATIONS · PART 11 OPERATIONS  Page 176:  Care today. No surprises tomorrow.  Ray's note: “A budget is a maintenance schedule with feelings.”"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB9",
+   "label": "**Fieldbook module 9 — Readiness — maintenance, computers and the register.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 9 · tap a plate to open it full size     Preventive maintenance and cable discipline     What “ready” looks like"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "🧰 BUILD IT · CHALLENGE · LEVEL 1  Build a home recording studio  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "build-studio"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "P1",
+   "label": "**Learn it now:** power for AV — watts, amps, earth, and what a UPS is (and isn't) for.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “What happens if we don't?”",
+   "sub": "January 14 · 7:05 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya hands a single page to each board member.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Six rows. For each one: what happens if we don't."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "register handed out · 7:05"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1725
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "The decibel was born counting losses",
+   "body": "The bel — and its tenth, the decibel — came out of telephone engineering in the 1920s, named in honor of Alexander Graham Bell. Engineers needed a way to add up how much signal was lost along miles of line, amplifier by amplifier, so they could plan how much was left at the far end. They still call that plan a “loss budget” or “link budget”. A budget, in engineering as in a board room, is a promise about what's left when you get there.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Dante, reading the page, frowns at the bottom row.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "Risk one? The wall was the best thing that happened all year."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "whisper",
+     "text": "(He's not wrong about that.)"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-34"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1387
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E08-02",
+   "prompt": "Dante wants the wall. The board is listening. Say something.",
+   "happening": "The worship leader proposes buying the LED wall.",
+   "clock": "7:06 p.m. · 11 minutes left",
+   "known": [
+    "◉ Wall: loved, $28,000",
+    "◉ Line: $6,000"
+   ],
+   "unknown": [
+    "What the worship team actually needs"
+   ],
+   "risk": "The board decides on enthusiasm instead of evidence — or the worship team stops trusting the booth.",
+   "timer_s": 30,
+   "timeout": [
+    "Tasha, after a long pause: “We'll table the wall. And the AV items. Next month.”",
+    "The meeting's clock ran; nothing got funded, and next month's line may be smaller."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.9,
+     "text": "Is the wall a want or a risk? Both are allowed; they're not the same."
+    },
+    {
+     "id": "H2",
+     "keep": 0.7,
+     "text": "Can Dante get most of what he wants some other way?"
+    }
+   ],
+   "note": "Draft decision (DR-S01E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Separate a want from a risk — and offer a path",
+     "result": "“The wall made Christmas Eve. It doesn't stop anything from breaking. Renting it for Easter and Christmas costs far less than buying it — can we put that in the worship budget?”",
+     "consequence": "Dante exhales. “Rent it twice. Fine. I can live with that.”",
+     "chips": [
+      "Respectful",
+      "Alternative offered"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Dante": 1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Agree, to keep the peace",
+     "result": "The board leans in. Twenty-eight thousand over five years sounds manageable.",
+     "consequence": "The whole line goes to something that isn't breaking; everything that is breaking keeps breaking.",
+     "chips": [
+      "Line spent"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Agreeing to avoid conflict spent the only money on the one item that retires no risk.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Dante": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "“That's a terrible idea.”",
+     "result": "Dante folds his arms. Two board members look at the table.",
+     "consequence": "You were right about the number and wrong about the person.",
+     "chips": [
+      "Trust with worship team lost"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Winning the argument cost the relationship you'll need at Easter.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Dante": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Say nothing and let the board decide",
+     "result": "Silence. Tasha looks at you. “Well?”",
+     "consequence": "The question comes back to you, with less time.",
+     "chips": [
+      "Time lost"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Tasha points at the UPS row.",
+   "characters": [
+    {
+     "id": "tasha",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tasha",
+     "kind": "speech",
+     "text": "The UPS. Two out of five likely. Why two? How likely is it really?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "whisper",
+     "text": "(I don't actually know.)"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-30"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1390
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S1-08",
+   "who": "tasha",
+   "prompt": "Two out of five likely. Where did that number come from, Maya?",
+   "options": [
+    {
+     "label": "“Honestly? I don't know. Here's how I'd find out, and what it costs to not know.”",
+     "who": "tasha",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "Thank you. That's the first honest number tonight.",
+     "trust": {
+      "Tasha": 2
+     }
+    },
+    {
+     "label": "“Industry averages.”",
+     "who": "tasha",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Which industry? Name one.",
+     "trust": {
+      "Tasha": -2
+     }
+    },
+    {
+     "label": "(Look at Ray.)",
+     "who": "ray",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Don't look at me. I'm a notebook, not a statistic.",
+     "trust": {
+      "Tasha": -1,
+      "Ray": -1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E08-03",
+   "prompt": "Tasha wants to know how likely a power dip is. You don't know. Answer.",
+   "happening": "Board asks for the likelihood of a power dip.",
+   "clock": "7:09 p.m. · 8 minutes left",
+   "known": [],
+   "unknown": [],
+   "risk": "",
+   "timer_s": 25,
+   "timeout": [
+    "You stammer. Tasha moves on: “Let's leave the UPS off entirely.” No mitigation, no owner.",
+    "Silence under a hard question reads as ‘no idea’. ‘I don't know yet, and here's what I'll do’ was the answer."
+   ],
+   "hints": [],
+   "note": "Draft decision (DR-S01E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "“It will happen. The room will go silent.”",
+     "result": "Tasha: “When?” You can't say.",
+     "consequence": "You spent credibility on certainty you don't have.",
+     "chips": [
+      "Overclaim"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Overclaiming a risk makes the board discount every other number on your page.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Tasha": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "“Rare, and I can't size it yet. Here's a free mitigation.”",
+     "result": "“I'll write a power-dip recovery card this week and tape it in the rack. It costs nothing. If we see a dip, we revisit.”",
+     "consequence": "Tasha writes something down. “Thank you for telling me what you don't know.”",
+     "chips": [
+      "Calibrated",
+      "Free mitigation"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Tasha": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "“Ray says it's never happened.”",
+     "result": "Ray, from the back: “Never that we know of.” Laughter.",
+     "consequence": "Ray's own correction. Absence of evidence isn't evidence of absence.",
+     "chips": [
+      "Weak evidence"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "“Let's just buy it to be safe.”",
+     "result": "“Safe from what, how often?”",
+     "consequence": "A purchase without a reason is a want.",
+     "chips": [
+      "No reason"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "T-01",
+   "label": "**Triage:** you have $6,000. Build the plan you'd defend in front of Tasha.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E08-04",
+   "prompt": "Four minutes left. Make the recommendation.",
+   "happening": "Recommendation time.",
+   "clock": "7:13 p.m. · 4 minutes left",
+   "known": [],
+   "unknown": [],
+   "risk": "",
+   "timer_s": 30,
+   "timeout": [
+    "The chair calls time. “Bring it back in March.”",
+    "Four minutes was enough — if you'd decided what you'd recommend before you walked in."
+   ],
+   "hints": [],
+   "note": "Draft decision (DR-S01E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Receivers + network redesign ($5,400)",
+     "result": "Commitments first; then the item that fails most often, for the most people.",
+     "consequence": "The board votes yes. The UPS and the documentation day are deferred — with owners and dates.",
+     "chips": [
+      "Within budget",
+      "Most people, most weeks"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Crew": 1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Receivers + UPS + documentation day ($4,300)",
+     "result": "More total risk on paper, and Ray's notebook becomes a drawing set.",
+     "consequence": "A defensible plan. But the stream keeps sharing a temporary switch, and in February it bites again (DEBT-009).",
+     "chips": [
+      "Defensible",
+      "Stream still exposed"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Receivers + balcony loudspeaker ($4,700)",
+     "result": "Forty seats every week, a little clearer.",
+     "consequence": "Nice, certain, mild. The bigger risks stay open.",
+     "chips": [
+      "Low risk retired"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask for everything over two years",
+     "result": "Tasha: “So nothing this year?”",
+     "consequence": "The vote is postponed.",
+     "chips": [
+      "Nothing funded"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A plan the board can't pay for isn't a plan.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Tasha": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The vote. Hands up around the table.",
+   "characters": [
+    {
+     "id": "tasha",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "imani",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tasha",
+     "kind": "speech",
+     "text": "The UPS and the documentation day: deferred. Owners and dates, please."
+    },
+    {
+     "side": "R",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "UPS: me, review in April. Documentation: Ray and Maya, before summer."
+    }
+   ],
+   "narration": [
+    "7:16 p.m. Receivers and network: approved."
+   ],
+   "caption": "Deferred is a decision. Forgotten is an accident.",
+   "flags": [
+    "RV-30"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1390
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #9 · AVERY'S LENS  Help people recover  When failure can't be prevented, design the recovery: simple, visible, written down.  The power-dip card taped inside the rack is a recovery interface — for a bad day, in a hurry."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S01E08",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "After the meeting, Tasha stops Maya at the door.",
+   "characters": [
+    {
+     "id": "tasha",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tasha",
+     "kind": "speech",
+     "text": "You told me what you didn't know. That's why I believed the rest."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "I'll have the card in the rack by Friday."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1388
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Tasha adds one more thing.",
+   "characters": [
+    {
+     "id": "tasha",
+     "pose": "P",
+     "expr": "talk"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Tasha",
+     "kind": "speech",
+     "text": "And the donor's lighting project: we hold the last payment until someone independent signs it off. His name's Elias."
+    }
+   ],
+   "narration": [],
+   "caption": "The stage lighting installed in the fall hasn't been accepted yet.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1316
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III — “See R.”",
+   "sub": "January 16 · the equipment room"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya writes the power-dip recovery card: keep amps muted; recall processor preset 04 SERVICE; password — see R.; bring outputs up one at a time; verify room, stream and receivers.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "A free mitigation, taped inside the rack door.",
+   "flags": [
+    "RV-32",
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2372
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya asks Ray for the processor password.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Step three needs the processor password. Can you write it on the card?"
+    },
+    {
+     "side": "R",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Not on a card on a door. I'll put it somewhere proper. Later."
+    }
+   ],
+   "narration": [],
+   "caption": "He's right that a password doesn't belong on a door. “Later” is the problem.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1279
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": "the rack door",
+   "lines": [
+    {
+     "who": "ray",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Not on a card on a door. I'll put it somewhere proper."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "When?"
+    },
+    {
+     "who": "ray",
+     "pose": "N",
+     "expr": "closed",
+     "text": "Later."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Close-up of the card: step 3 reads “Password: see R.” circled in red.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "One line on the card still depends on one person. (DEBT-002)",
+   "flags": [
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2424
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-11",
+   "label": "**Service Mode:** run the twelve minutes yourself. The board is the system; trust is the signal.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-011 · from the Empathia Learn Fieldbook, p. 166  The License That Expired  Two renewals nobody was tracking. One Sunday morning. Fifteen percent of the stage lit.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-011"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The updated register: DEBT-009 network funded; receivers funded; DEBT-011 UPS deferred, owner Imani, review in April, mitigation: the recovery card; DEBT-002 documentation: Ray and Maya, before summer; the wall: rent it for Easter and Christmas.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-30",
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1787
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S1-08b",
+   "teaser": "the minutes of the meeting",
+   "title": "Item 7(c)",
+   "body": "*UPS — deferred. Owner: Imani. Review: April.* Someone on the board wrote *who will remember this?* in the margin of their printed copy and left it on the chair.",
+   "thread": "Temporary things",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray, reading the register, gives one principle.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Every fix you don't fund is still a decision. Write it down with a name on it."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1209
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "February. Elias, a gray-bearded commissioning agent with a clipboard, stands on the stage under the new lighting rig.",
+   "characters": [
+    {
+     "id": "elias",
+     "pose": "H",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Elias",
+     "kind": "speech",
+     "text": "It works? Good. Now show me."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Pass.*",
+   "flags": [
+    "RV-31",
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 506
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Owners fund risk reduced, not features. Write each item as what happens if we don't, likelihood × impact, cost and owner. Say what you don't know, offer a free mitigation when you can't fund a fix, and give every deferred risk an owner and a date."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Dante wasn't wrong: the wall mattered to people. A good register makes room for what people love and what keeps them safe, and is honest about which is which.  Boundary: none of this makes the numbers real — they're the story's."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S01E08",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

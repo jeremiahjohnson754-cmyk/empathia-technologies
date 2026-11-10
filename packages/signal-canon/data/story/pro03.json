@@ -1,0 +1,117 @@
+{
+ "chapter": {
+  "id": "pro03",
+  "kicker": "PROLOGUE · CH.03",
+  "title": "Signal Flow & Gain",
+  "pill": "Prologue · Ch.03",
+  "sub": "Green at the source. Clean all the way home.",
+  "status": null,
+  "flags": [],
+  "accent": "var(--cyan)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Soundcheck on stage: two microphones on stands, the digital console glowing, Maya waiting at the desk.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [],
+   "narration": [
+    "Soundcheck. Forty-five minutes to doors."
+   ],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2338
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The meters light up red from the preamp onward — the signal is clipping. 'CRRK!' Maya jumps back from the console.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "It's clipping — I barely touched the fader!"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4218
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray points to the meters: every stage now sits in the green, from the microphone to the fader.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "P",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Gain first, always. Keep every stage green before your fingers touch anything else."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Green at the source. Clean all the way home."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4074
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Signal moves: capture, process, route, reproduce. Fix problems at the earliest stage you can reach."
+  }
+ ]
+}

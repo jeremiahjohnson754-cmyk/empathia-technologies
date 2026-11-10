@@ -1,0 +1,915 @@
+{
+ "chapter": {
+  "id": "s10e01",
+  "kicker": "S10 · E01",
+  "title": "Two Clocks",
+  "pill": "S10E01 · Two Clocks",
+  "sub": "The long takes click. The short ones never do. Everyone has a theory; the fault has a watch.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S10E01",
+   "RV-176",
+   "RV-177",
+   "RV-181",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#FB923C"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 10 · EPISODE 1 · DRAFT · CASE-050  Coldframe Sound, Studio A · week one of six · Maya, Hollis (owner and chief engineer), Pim (assistant engineer) and Esme (the artist) · Level L6 · Mastery support (reference only — choose the tool and say why)  Maya takes a six-week contract on one small room, on purpose. The album is due at the label in six weeks. The long takes click, the short ones don’t, and everyone has a theory.  ⚑ RV-176: the performance is Esme’s; the studio is Hollis’s. RV-177: figures illustrative. Some choices run on a clock — and some depend on the loadout your Season 9 review locked."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Two Clocks",
+   "kind": "STUDIO · CLOCKING",
+   "level": "L6 · MASTERY",
+   "party": [
+    "maya",
+    "hollis",
+    "pim"
+   ],
+   "stakes": "The long takes click and the short ones don't. The album is due in six weeks, and Esme sings the ballad at two.",
+   "clock": "Before Esme's session at 14:00.",
+   "reward": "A clean ten-minute take — and a studio with one leader.",
+   "objectives": [
+    {
+     "key": "BR-S10E01-01",
+     "text": "Decide what to do first"
+    },
+    {
+     "key": "twist",
+     "text": "Time the click"
+    },
+    {
+     "key": "core",
+     "text": "Sort the clocks"
+    },
+    {
+     "key": "BR-S10E01-02",
+     "text": "Decide which clock leads"
+    },
+    {
+     "key": "BR-S10E01-03",
+     "text": "Decide what stops the next one"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "A fault that keeps time is telling you something."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “The ghost”",
+   "sub": "Monday · 10:40 a.m. · Studio A control room"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Studio A's control room at Coldframe Sound: fabric panels, a window into the live room, two monitors on stands and a long console; Hollis, grey-bearded in a cardigan, points at the speakers; Maya listens.",
+   "characters": [
+    {
+     "id": "hollis",
+     "pose": "P",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s10kit.bg_ctrl",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Hollis",
+     "kind": "speech",
+     "text": "There. One minute seven in. Every long take, one click. Short takes, never."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Play me the next one. Don't touch anything."
+    }
+   ],
+   "narration": [],
+   "caption": "Six weeks to the album.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6294
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": "Studio A control room · Monday 10:40",
+   "lines": [
+    {
+     "who": "hollis",
+     "pose": "N",
+     "expr": "smile",
+     "text": "It's the ghost. Came free with the building in ninety-six."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Then your ghost has a very good watch."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “It keeps time”",
+   "sub": "Monday · 11:00 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S10E01-01",
+   "prompt": "11:00. Long takes click; short ones never do. Esme arrives at two. What first?",
+   "happening": "Clicks on long takes.",
+   "clock": "Monday 11:00 · Esme at 14:00",
+   "known": [
+    "◉ Long takes click",
+    "◉ Short takes never do"
+   ],
+   "unknown": [
+    "Which channels",
+    "How far apart"
+   ],
+   "risk": "A ghost hunt that eats the day — or a fault hidden in the best takes.",
+   "timer_s": 20,
+   "timeout": [
+    "Nobody decides.",
+    "Esme sings at two into the same fault."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What would the fault look like if you gave it long enough to happen?"
+    }
+   ],
+   "note": "Draft decision (DR-S10E01).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Recable the live room before two",
+     "result": "Four hours of recabling. At 14:40 the ballad clicks again, in the same place.",
+     "consequence": "A change before a measurement — and every cable you touched is now a new suspect.",
+     "chips": [
+      "No evidence"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Before touching anything, record ten minutes of tone on every input and mark each click: which channels, how far apart",
+     "result": "A click every 66.7 seconds — only on the converter's sixteen channels. The stage boxes are clean.",
+     "consequence": "Measure the fault on its own terms: longer than it takes to appear.",
+     "chips": [
+      "Measured",
+      "Evidence"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Esme": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Raise the interface's input buffer so it absorbs the clicks",
+     "result": "The clicks now come every four and a half minutes. Fewer takes click. Nobody knows why.",
+     "consequence": "Hides the fault and keeps it.",
+     "chips": [
+      "Hidden"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask Esme to sing the ballad in sections under a minute",
+     "result": "Esme: “It's a four-minute song. I don't sing it in pieces.”",
+     "consequence": "Changing the performance to dodge a fault isn't yours to ask.",
+     "chips": [
+      "Not yours"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "ESME'S"
+      }
+     ],
+     "canonical": false,
+     "fail": "The performance is the artist's.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Esme": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Sixty-seven seconds.",
+   "body": "Maya lays the ten-minute test against a timeline. The clicks don't wander: 66.7 s, 133.3 s, 200 s — like a metronome set far too slow. Only the converter's sixteen channels click; the stage boxes on the network never do. Ghosts don't keep time. Clocks do.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S10E01-1",
+   "label": "Test: what clock difference makes exactly this interval?"
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Which one — and why?",
+   "sub": "Mastery · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Pim and Maya beside a board. Hollis says the room's haunted. I say it's a cable. It only clicks on the long takes. Sixty-seven seconds apart, every time. Ghosts don't keep time. So what does? …Something counting?",
+   "characters": [
+    {
+     "id": "pim",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s10kit.bg_ctrl",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Pim",
+     "kind": "speech",
+     "text": "Hollis says the room's haunted. I say it's a cable. It only clicks on the long takes."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Sixty-seven seconds apart, every time. Ghosts don't keep time. So what does?"
+    },
+    {
+     "side": "L",
+     "who": "Pim",
+     "kind": "speech",
+     "text": "…Something counting?"
+    }
+   ],
+   "narration": [],
+   "caption": "Mastery: nobody hands you the tool. Pick it, and say why.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6734
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t4",
+   "text": "📕 WHEN & WHY · MASTERY  Terms   Word clock   Clock leader   Sample slip   The situation  Clicks arrive about every 67 seconds, only on takes longer than a minute. The converter runs on its own clock; the network interface runs on another. Which relationship tests whether two clocks could make exactly this?   Which relationship do you reach for?  FFT bin to frequency  Harmonics  Time between sample slips     Reference: the 📖 Glossary has every formula. At mastery, knowing  which  and  why  is the skill."
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "T1",
+   "label": "**Learn it now:** clocks — one leader, everyone follows.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     Point it at people, not at the ceiling     The studio camera — image settings and standards     The first step to networking, AV style"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "M-1001",
+   "label": "**Sort it:** leader, follower or free-running?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A test sheet: ten minutes of tone on every input. The converter's channels, drawn as an amber waveform, carry red click marks at 66.7, 133.3 and 200 seconds and every 66.7 seconds after; the stage-box channels, in blue, are clean. Note: takes under a minute never click.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The fault keeps better time than the band.",
+   "flags": [
+    "RV-177"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "ten-minute tone test"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 22321
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S10-01a",
+   "teaser": "the session notes",
+   "title": "ballad · take 7 · ‘ghost again’",
+   "body": "Pim's session notes from last month, in pencil: ‘Ballad take 7 — ghost again, 1:07 and 2:13.’ Nobody had subtracted the two times. Sixty-six seconds.",
+   "thread": "Audio",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "The watch that kept the time",
+   "body": "In 1761 a clockmaker's marine watch sailed from Portsmouth to Jamaica to prove that a ship could carry its home port's time across an ocean — and so work out its longitude. After 81 days at sea it had lost only about five seconds. What mattered wasn't that it was a good clock. It was that the whole ship could agree to follow one.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “The warning that went away”",
+   "sub": "Monday · 3:30 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Two leaders.",
+   "body": "Maya reads every clock source. The interface leads the network. The converter leads itself — set to internal clock. Pim goes quiet, then says it: in the spring, when the interface arrived, the converter kept showing a lock warning on external clock, so Pim set it to internal and the warning went away. Nobody had plugged the word-clock cable in. The warning was right for four months.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S10E01-2",
+   "label": "Test: why did the warning disappear — and where did the fault go?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The control room, late afternoon. Pim, in a teal hoodie, stands with his hands at his sides; Maya faces him, calm.",
+   "characters": [
+    {
+     "id": "pim",
+     "pose": "S",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": "s10kit.bg_ctrl",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Pim",
+     "kind": "speech",
+     "text": "I just wanted the warning gone. It was red all the time."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "It was red because it was right. Next time, bring it to someone."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6293
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S10-01",
+   "who": "pim",
+   "prompt": "Are you going to tell Hollis it was me?",
+   "options": [
+    {
+     "label": "“You'll tell him, and I'll be there. The warning was the most honest thing in the room — you just didn't have anyone to ask.”",
+     "who": "pim",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "…Okay. Can I ask you things? Like, all the time?",
+     "trust": {
+      "Pim": 2
+     }
+    },
+    {
+     "label": "“He'll work it out.”",
+     "who": "pim",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "That's worse, isn't it.",
+     "trust": {
+      "Pim": 0
+     }
+    },
+    {
+     "label": "“It doesn't matter who. It matters that the next warning gets written up.”",
+     "who": "pim",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Right. Written up. Not switched off.",
+     "trust": {
+      "Pim": 1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S10E01-02",
+   "prompt": "Two clocks. Which one leads?",
+   "happening": "Two leaders found.",
+   "clock": "Monday 15:40",
+   "known": [
+    "◉ Interface leads the network",
+    "◉ Converter on its own clock"
+   ],
+   "unknown": [
+    "Which leader Hollis prefers"
+   ],
+   "risk": "Clicks in every long take of the album.",
+   "timer_s": 25,
+   "timeout": [
+    "Nobody decides.",
+    "Esme's ballad goes down with two clocks in the room."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "How many leaders should there be — and does it matter which?"
+    }
+   ],
+   "note": "Draft decision (DR-S10E01). Mastery: two answers are defensible.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "The interface stays the leader; the converter follows it over word clock; the network follows the interface as before",
+     "result": "One cable plugged in, one setting changed. Every lock light green.",
+     "consequence": "One leader — the simplest chain that's already half built.",
+     "chips": [
+      "One leader"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "The old word-clock generator leads; the interface follows it and still serves the network; the converter follows the generator",
+     "result": "Two cables, two settings. Every lock light green — and one more box whose failure stops the studio.",
+     "consequence": "Also one leader. Defensible: Hollis trusts the old box; it adds a dependency.",
+     "chips": [
+      "One leader"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Hollis": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Every device on its own internal clock — ‘each one stable’",
+     "result": "Five leaders. The clicks multiply.",
+     "consequence": "Stable clocks, disagreeing — the exact fault, everywhere.",
+     "chips": [
+      "More leaders"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Every device on its own clock is the fault itself.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Leave both, and put a sample-rate converter on the converter's input",
+     "result": "It works — with a converter in the path that alters the audio slightly and adds delay, and a second clock still in the room.",
+     "consequence": "A patch over a design problem.",
+     "chips": [
+      "Patch"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lab",
+   "id": "LAB-SF-23",
+   "label": "**Fix it:** one leader for Studio A.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #92 · AVERY'S LENS  One clock leads; everything else follows  Digital audio devices must agree on when each sample happens. Pick one leader, make every other device follow it — and treat a lock warning as evidence, not noise.  A converter set to its own clock ‘to make the warning go away’ put a click into every take longer than a minute — for four months."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S10E01",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A clock map after the fix: the interface is the one leader; the stage boxes and cue mixers follow the network; the converter follows the interface over a word-clock cable; the old generator is marked spare, not in the chain. Note: the generator would also have been one leader — Hollis chose the interface.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "One leader. Everything else follows.",
+   "flags": [
+    "RV-177"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "ten minutes, no clicks"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3637
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S10-01b",
+   "teaser": "the converter's manual",
+   "title": "page 31 · ‘EXT UNLOCK’",
+   "body": "The converter's manual, page 31: ‘EXT UNLOCK: the unit cannot lock to the external reference. Check the reference cable and the leader's output.’ The word-clock cable from the interface had never been plugged in. The warning was right.",
+   "thread": "Audio",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S10E01-03",
+   "prompt": "What stops the next click — and the next silenced warning?",
+   "happening": "One leader; the ballad is clean.",
+   "clock": "Monday 17:00",
+   "known": [
+    "◉ One leader, all locked"
+   ],
+   "unknown": [
+    "What the next device will do when it arrives"
+   ],
+   "risk": "The same fault the next time anything is plugged in.",
+   "timer_s": 25,
+   "timeout": [
+    "Nothing changes.",
+    "The next device arrives into a studio with no map."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who would notice a device falling off the leader — and how fast?"
+    }
+   ],
+   "note": "Draft decision (DR-S10E01). Option B needs Monitoring & tools at LIMITED or better.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "A sticker on the converter: DO NOT CHANGE",
+     "result": "The sticker lasts until the next piece of gear arrives.",
+     "consequence": "A rule without a reason.",
+     "chips": [
+      "Fragile"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Lock-status monitoring on every clocked device, alarming in the control room; a clock map on the wall; a ten-minute tone test in the session-start sheet; warnings written up, never silenced",
+     "result": "Hollis funds the monitoring. Pim draws the map and writes the first entry in a new ‘warnings’ page.",
+     "consequence": "Watched, drawn, tested — and a culture where a red light gets asked about.",
+     "chips": [
+      "Monitored",
+      "Documented"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": {
+      "monitoring": 1
+     },
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Hollis": 1,
+       "Pim": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Session-start sheet only: Pim checks every lock light and records a ten-minute tone test each morning",
+     "result": "It works while Pim remembers. The morning he's ill, nobody does.",
+     "consequence": "The best you can do without monitoring — and it depends on one person.",
+     "chips": [
+      "Manual"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Replace the converter with a newer one",
+     "result": "A new converter — which also needs to follow the leader.",
+     "consequence": "Money on the wrong problem.",
+     "chips": [
+      "Wrong fix"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-1001",
+   "label": "**Service Mode:** run the Monday yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-050 · SIGNAL original  Two Clocks  Both clocks were good. That was the problem.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-050"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Monday · 6:10 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The control room in the evening; Esme, in an amber jumper with locs tied back, grins after the ballad; Maya beside the console.",
+   "characters": [
+    {
+     "id": "esme",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s10kit.bg_ctrl",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Esme",
+     "kind": "speech",
+     "text": "Four minutes and not one click. I sang it straight through."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "It was never you. It was two clocks arguing."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6293
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Outside Coldframe Sound at night: an old glasshouse with warm windows and a painted sign by the door. Hollis points at his car, its door open; Maya listens.",
+   "characters": [
+    {
+     "id": "hollis",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s10kit.bg_glass",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Hollis",
+     "kind": "speech",
+     "text": "Listen to that. Last week's mix. In the room it's lovely. Out here it shakes the mirrors."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "How long has it done that?"
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *The Mix That Only Sounded Good Here.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1317
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A fault that keeps time is a clue: time it, on every input, for longer than it takes to appear. Digital audio needs one clock leader; every other device follows it. Two good clocks are still two clocks — a buffer only decides how long it takes to click. Treat a lock warning as evidence, not noise. Either leader can be right; two leaders never are."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Which warning in your world have people learned to switch off instead of ask about?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S10E01",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

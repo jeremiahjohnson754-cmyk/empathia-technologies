@@ -1,0 +1,1234 @@
+{
+ "chapter": {
+  "id": "s04e09",
+  "kicker": "S04 · E09",
+  "title": "The Notebook",
+  "pill": "S04E09 · The Notebook",
+  "sub": "A 2 a.m. failover drill, a retiring engineer's notebook, and the reason Cal walked out.",
+  "status": "**DRAFT** · scripted from the owner's request to continue the story · IDs provisional · DEBT-002 retired",
+  "flags": [
+   "DR-S04E09",
+   "RT-03",
+   "RT-04",
+   "RV-82",
+   "RV-83",
+   "RV-84",
+   "RV-85",
+   "RV-96",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--magenta)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 4 · EPISODE 9 · DRAFT  Teach-back · Tess, Ray, Cal and Maya · Level L4  At 2 a.m., for the first time, the backup master control takes the valley for an hour. Tess runs it. Ray has retired. Cal has something to say.  ⚑ RV-96: drill simplified. RV-85: a confession. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "The Notebook",
+   "kind": "TEACH-BACK · MENTOR",
+   "level": "L4 · SYSTEMS",
+   "party": [
+    "maya",
+    "tess",
+    "ray",
+    "cal"
+   ],
+   "stakes": "At 2 a.m. the backup master control takes the valley for one hour — for the first time ever. Tess runs it. Ray brings a cardboard box. Cal brings coffee and something he's been carrying for two years.",
+   "clock": "One hour: 2:00–3:00 a.m.",
+   "reward": "A backup that's been proven. A notebook that's become a runbook. Cal, telling the truth.",
+   "objectives": [
+    {
+     "key": "BR-S04E09-01",
+     "text": "Decide whether the drill goes"
+    },
+    {
+     "key": "core",
+     "text": "Make the backup MCR carry everything"
+    },
+    {
+     "key": "BR-S04E09-02",
+     "text": "Roll back by the plan when it fails"
+    },
+    {
+     "key": "twist",
+     "text": "Hear what Cal came to say"
+    },
+    {
+     "key": "BR-S04E09-03",
+     "text": "Answer Cal"
+    },
+    {
+     "key": "disc:3",
+     "text": "Look closer: three pages in the notebook"
+    }
+   ],
+   "rumor": "The notebook has a page about this building. It's dated 2004. It's in Ray's handwriting. And in Cal's."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “The box”",
+   "sub": "Tuesday · 1:40 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The backup master control room in the sister radio station's building: a compact monitor wall, two racks, a small desk. Ray sets down a cardboard box with a worn notebook on top.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_backup_site",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Thirty years of other people's buildings. Type it, and it's yours."
+    }
+   ],
+   "narration": [],
+   "caption": "The backup MCR. It has never run a real night.",
+   "flags": [
+    "RV-96"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4757
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "warm",
+   "where": "the backup MCR · 1:40 a.m.",
+   "lines": [
+    {
+     "who": "ray",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Thirty years of other people's buildings in here. Some of it's wrong. Most of it's just old."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Why me?"
+    },
+    {
+     "who": "ray",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Because you'll type it."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The view from the backup site's window at 1:45 a.m.: the valley's scattered lights, the river a dark band under the Old Mill bridge, and across it the main building, dark except one lit window — master control.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [
+    "From across the valley the main building is a single lit window. The river runs under the Old Mill bridge exactly where it always has."
+   ],
+   "caption": "For now.",
+   "flags": [
+    "RV-84"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2838
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #40 · AVERY'S LENS  Rehearse the bad night on a good night  The only way to know a fallback works is to use it on purpose, with rollback criteria written first.  The backup MCR had never run a real night. At 2 a.m., on purpose, it showed two problems — on a quiet night instead of a flood."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S04E09",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Tess at the backup desk with a printed drill plan; Maya beside her.",
+   "characters": [
+    {
+     "id": "tess",
+     "pose": "R",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_backup_site",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tess",
+     "kind": "speech",
+     "text": "Rollback criteria: captions, audio, alert path. If any fails, back to main. No debate."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "You wrote the exits before you walked in. That's the whole trick."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-96"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 5059
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S4-09a",
+   "teaser": "the notebook's first page",
+   "title": "CityLight, 1996",
+   "body": "*Sanctuary. Fill speaker aimed at the balcony (Pastor wants). Middle rows? Check.* He never checked. The ten hollow seats in row 8 were a question on page one of this notebook for thirty years.",
+   "thread": "Ray's notebook · DEBT-002",
+   "who": [
+    "ray",
+    "N",
+    "closed"
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S4-09",
+   "who": "tess",
+   "prompt": "(1:58 a.m.) What if I break the valley? At 2 a.m.? Who's even watching?",
+   "options": [
+    {
+     "label": "“Insomniacs, night nurses, and eleven deaf viewers who watch the overnight weather. That's why we drill.”",
+     "who": "tess",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "…Okay. That's terrifying and helpful.",
+     "trust": {
+      "Tess": 2
+     }
+    },
+    {
+     "label": "“Nobody. It's fine.”",
+     "who": "tess",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "That's… not true, is it.",
+     "trust": {
+      "Tess": -1
+     }
+    },
+    {
+     "label": "“I'll do it if you're nervous.”",
+     "who": "tess",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "No. You said the operator runs the drill.",
+     "trust": {
+      "Tess": 1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S04E09-01",
+   "prompt": "1:58. Two minutes to the drill window. Vera texts: “Are we really doing this at 2 a.m.?”",
+   "happening": "Drill window 2:00–3:00.",
+   "clock": "1:58",
+   "known": [
+    "◉ Rollback criteria written",
+    "◉ Newsroom + EM office told"
+   ],
+   "unknown": [
+    "What the backup will do"
+   ],
+   "risk": "A valley's overnight viewers — and the night you'll really need it.",
+   "timer_s": 20,
+   "timeout": [
+    "The window opens with nobody deciding. Tess waits. It's 2:04 before anyone says go.",
+    "A drill that starts late is a drill nobody owned."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "When is failing cheapest?"
+    }
+   ],
+   "note": "Draft decision (DR-S04E09).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Skip it — the backup worked last year",
+     "result": "Nobody can find a record of last year's test. There wasn't one.",
+     "consequence": "The only rehearsal before the worst night, skipped.",
+     "chips": [
+      "Untested"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "'It worked last year' is a memory, not a test.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Vera": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Go: everyone told, rollback criteria written, Tess on the switcher, you coaching",
+     "result": "Vera: “Then good luck. I'll be awake anyway.”",
+     "consequence": "The operator who'll run the real night runs the rehearsal.",
+     "chips": [
+      "Drill",
+      "Tess runs it"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Vera": 1,
+       "Tess": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Go, but you take the switcher",
+     "result": "Tess steps back. The drill goes fine.",
+     "consequence": "On the real night, you might not be here.",
+     "chips": [
+      "Tess sidelined"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Drills train the people who'll be there.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Tess": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Postpone to a weekend afternoon when it's 'safer'",
+     "result": "A weekend afternoon has ten times the viewers.",
+     "consequence": "You'd rehearse at the worst time instead of the best.",
+     "chips": [
+      "Worse window"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Tess on the headset at the backup desk, finger over the switcher.",
+   "characters": [
+    {
+     "id": "tess",
+     "pose": "M",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_backup_site",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Tess",
+     "kind": "radio",
+     "text": "Failing over to backup. In three, two, one… take."
+    }
+   ],
+   "narration": [],
+   "caption": "2:10 a.m. The valley's channel, from across the river, for the first time.",
+   "flags": [
+    "RV-96"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4986
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A living room at 2:10 a.m. An older man with a hearing aid watches the overnight weather with captions. The picture blinks once at the switch. He doesn't look up from his tea.",
+   "characters": [
+    {
+     "id": "tunde",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [
+    "One blink. He'll never know the channel just moved across the river. That's what a good failover looks like from the couch."
+   ],
+   "caption": "The best drill is the one the audience sleeps through.",
+   "flags": [
+    "RV-81",
+    "RV-96"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2480
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "physbreak",
+   "cls": "physbreak",
+   "text": "🔭 PHYSICS IN MOTION  A night is a long time for a clock  The science under this episode’s problem — live."
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Field notes",
+   "sub": "Intermediate · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Maya and Tess beside a board. Frames equals drift times f-p-s. Drift is the time error in seconds; f-p-s the frame rate. And the drift comes from the clock error over the night. Right. Both halves are yours.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "tess",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_backup_site",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Frames equals drift times f-p-s. Drift is the time error in seconds; f-p-s the frame rate."
+    },
+    {
+     "side": "R",
+     "who": "Tess",
+     "kind": "speech",
+     "text": "And the drift comes from the clock error over the night."
+    },
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Right. Both halves are yours."
+    }
+   ],
+   "narration": [],
+   "caption": "Intermediate: the formula and what every letter means. The arithmetic is yours.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 5354
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t2",
+   "text": "📗 FIELD NOTES · INTERMEDIATE  Terms   Timecode   Failover drill   Runbook   Formula and variables   ƒ FORMULA · Drift in frames  frames = drift × fps   drift  time error, s  fps  frames per second"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lab",
+   "id": "PHY-S04E09",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View at the backup MCR: REF B, Ray's house black, is locked; the timecode generator is free-running and two frames off; the stream bypasses the caption inserter, so the stream has no captions.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Two problems a flood would have found. A drill found them at 2 a.m.",
+   "flags": [
+    "RV-96",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S4-09b",
+   "teaser": "the bottom of rack 2",
+   "title": "A coil of cable, taped",
+   "body": "*TC → REF B — wrong connector. Next visit. — C., 2016.* Cal brought the cable Ray asked for twelve years earlier. It didn't fit. He meant to come back. So did Ray. The timecode has been free-running ever since.",
+   "thread": "Ray's notebook · DEBT-002",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S04E09-02",
+   "prompt": "2:14. Stream from the backup: no captions. Eleven deaf viewers watch the overnight weather. Decide.",
+   "happening": "Backup on air. Stream captions missing.",
+   "clock": "2:14",
+   "known": [
+    "▮ Stream: no captions",
+    "◉ Criterion: captions are a must"
+   ],
+   "unknown": [
+    "How long the fix takes"
+   ],
+   "risk": "Eleven overnight viewers — and the habit you'll use on the real night.",
+   "timer_s": 15,
+   "timeout": [
+    "Tess waits for you to decide. You wait for her. Four minutes pass without captions.",
+    "Rollback criteria only work if someone calls them."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What did you write down at 1:55?"
+    }
+   ],
+   "note": "Draft decision (DR-S04E09).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Keep going — it's 2 a.m., finish the hour",
+     "result": "Eleven people lose the weather for forty-six minutes.",
+     "consequence": "You broke your own criterion in the first test.",
+     "chips": [
+      "Criterion broken"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The criterion said captions are a must. At 2 a.m. they're still someone's audio.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Roll back to main by the written criterion, fix the backup off air, retry",
+     "result": "02:16 back on main. Fixed by 2:40. Retry at 2:48: clean.",
+     "consequence": "Following the plan is not failure. It's the plan working.",
+     "chips": [
+      "Rolled back",
+      "Retried"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Fix it live at the backup without rolling back",
+     "result": "Six minutes of fiddling on air; captions come back mid-forecast.",
+     "consequence": "It works, and it's the habit that breaks on a real night.",
+     "chips": [
+      "Improvised"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Blame the backup site's radio staff",
+     "result": "They run a radio station. They never had captions.",
+     "consequence": "Wrong people, wrong night.",
+     "chips": [
+      "Blame"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The station never set it up. That's the finding.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "At 2:50 a.m. the sister radio station's overnight host, in slippers and a cardigan, leans into the backup room holding a mug.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "tess",
+     "pose": "N",
+     "expr": "surprised"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_backup_site",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Overnight host",
+     "kind": "speech",
+     "text": "Are you the TV people? You've had a room in our building for twenty years. I've never met a single one of you."
+    },
+    {
+     "side": "L",
+     "who": "Tess",
+     "kind": "speech",
+     "text": "…Hi?"
+    }
+   ],
+   "narration": [
+    "He stays twenty minutes and shows Tess where the building's other exits are. It goes straight into the runbook."
+   ],
+   "caption": "Two stations, one building, twenty years, zero introductions.",
+   "flags": [
+    "RV-96"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4906
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lab",
+   "id": "LAB-SF-12",
+   "label": "**Fix it:** make the backup MCR carry everything — timecode and captions.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "M4",
+   "label": "**Learn it now:** failover drills and runbooks.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     Point it at people, not at the ceiling     What the room is telling you     The first step to networking, AV style"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “3 a.m.”",
+   "sub": "3:10 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "3:04 a.m. In the dark car park outside the backup site, a car with its engine off. Through the window, a tray of coffees on the dashboard and someone in the driver's seat who hasn't moved.",
+   "characters": [],
+   "location": "scenes.bg_parking",
+   "bubbles": [],
+   "narration": [
+    "The car has been there eleven minutes. The coffee has been getting colder for all of them."
+   ],
+   "caption": "Some doors take longer to open than others.",
+   "flags": [
+    "RV-85"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1115
+  },
+  {
+   "origin": "injected",
+   "type": "history",
+   "title": "The second, redefined",
+   "body": "In 1967 the international definition of the second changed from a fraction of the Earth's orbit to 9,192,631,770 oscillations of a caesium atom. From then on, the best clocks on Earth disagreed with the planet — and every studio's reference traces back to that count.",
+   "flag": "RV-27",
+   "when": "1967",
+   "lab": "PHY-S04E09"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "3:10 a.m. The drill is over. Cal has arrived with a tray of coffees. He sits across from Maya, not drinking his.",
+   "characters": [
+    {
+     "id": "cal",
+     "pose": "N",
+     "expr": "closed"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_backup_site",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Cal",
+     "kind": "speech",
+     "text": "Warning number three. The backup following the main. I configured that. Six years ago. I found it that afternoon."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And you walked out."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-85"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4889
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": "3:11 a.m.",
+   "lines": [
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(The room is very quiet. The coffee is very cold. Somewhere behind them the radio station plays a song nobody is awake to hear.)"
+    },
+    {
+     "who": "cal",
+     "pose": "N",
+     "expr": "closed",
+     "text": "I've been driving past this building for two weeks. Every night."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Warning #3 was his.",
+   "body": "Cal didn't walk out over fourteen ignored warnings. He walked out because, two hours before air, he discovered that the most dangerous one — the backup that follows the main — was his own configuration from six years ago. He couldn't face the switcher. He wrote the card, sent the email, and left.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S04E09-1",
+   "label": "Test: what does Maya do with that?"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S04E09-03",
+   "prompt": "3:12. Cal is waiting for you to say something.",
+   "happening": "Cal has confessed warning #3.",
+   "clock": "3:12",
+   "known": [
+    "◉ Cal configured #3",
+    "◉ He left the rack card and the email"
+   ],
+   "unknown": [
+    "Whether he'll come back"
+   ],
+   "risk": "Cal — and whether anyone at the station ever reports their own mistake again.",
+   "timer_s": 25,
+   "timeout": [
+    "Cal stands, says 'forget it,' and leaves the coffee.",
+    "Some sentences have to be said within a minute or not at all."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "When did you last say 'it was mine'?"
+    }
+   ],
+   "note": "Draft decision (DR-S04E09).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "“On a festival stage I built a template that put a presenter's own voice in her ear. I found out in front of the whole crew. I said it was mine. It was the worst and best day of that year.”",
+     "result": "Cal, after a long time: “…Did they keep you?” Maya: “They booked me again.”",
+     "consequence": "One mistake, told, makes room for another.",
+     "chips": [
+      "Cal heard",
+      "Trust"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Cal": 1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "“You should have told everyone.”",
+     "result": "“I know.” He puts his coat back on.",
+     "consequence": "True, and it closes the door he just opened.",
+     "chips": [
+      "Door closed"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "He's telling everyone — starting with you.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Cal": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "“I'll have to tell Lena.”",
+     "result": "Cal: “I already did. This afternoon.”",
+     "consequence": "You reached for process when he needed a person.",
+     "chips": [
+      "Process"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Say nothing",
+     "result": "He waits. Then he stands up.",
+     "consequence": "Silence after a confession is heard as judgment.",
+     "chips": [
+      "Silence"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "He needed one sentence.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Cal": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A notebook page: page 212, Kestrel Valley, 2004. Backup MCR. REF B equals house black. KEEP IT, in red. Timecode generator should lock to B — no cable, next visit, R. Below, in blue: got the cable, C., 2016; didn't fit, crossed out.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Ray taught it. Cal learned it. Neither finished it.",
+   "flags": [
+    "RV-96"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1657
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Written down twice.",
+   "body": "Cal's rack card — IF GPS DIES: GATEWAY → HOUSE REF B — is Ray's 2004 note in different words. Cal learned it from this page as a young engineer. The knowledge survived six years of neglect because two people wrote it down in two places. Tonight it goes into a third: the runbook.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S04E09-2",
+   "label": "Test: why did it survive?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Four a.m. Ray, Tess and Maya around the backup desk, the notebook open, a laptop typing it into the runbook.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "R",
+     "expr": "smile"
+    },
+    {
+     "id": "tess",
+     "pose": "W",
+     "expr": "grin"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_backup_site",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tess",
+     "kind": "speech",
+     "text": "Page nineteen says 'ask Ray.' What do I type?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Type what Ray says. Then Ray gets to retire."
+    }
+   ],
+   "narration": [],
+   "caption": "DEBT-002: retired. Thirty-four pages, typed, tested, owned by more than one person.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4899
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "warm",
+   "where": null,
+   "lines": [
+    {
+     "who": "ray",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Thirty-four pages. You corrected four of mine."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Page 212 took three of us and twenty-two years."
+    },
+    {
+     "who": "ray",
+     "pose": "N",
+     "expr": "flat",
+     "text": "…Buildings are patient. People aren't. That's the whole notebook."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "O-53",
+   "label": "**Sequence:** run the drill in the right order.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-409",
+   "label": "**Service Mode:** run the 2 a.m. failover yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "6:00 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Cal's warnings on the wall. Cal himself crosses out three, twelve and thirteen. Only one, two, four, eight — and the missing fourteenth — remain.",
+   "characters": [
+    {
+     "id": "cal",
+     "pose": "P",
+     "expr": "closed"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Warnings #3, #12 and #13: crossed off — by Cal. Fourteen is still missing.",
+   "flags": [
+    "RV-85"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4090
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Cal hands Maya a sealed envelope.",
+   "characters": [
+    {
+     "id": "cal",
+     "pose": "R",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_backup_site",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Cal",
+     "kind": "speech",
+     "text": "Number fourteen. Open it after the flood."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "What flood?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-85"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4926
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S4-09c",
+   "teaser": "the sealed envelope",
+   "title": "“#14 — open after the flood. C.”",
+   "body": "Cal's handwriting, heavy. The envelope is thicker than one warning should be. When Maya holds it up to the light she can see a diagram, and the word HUB.",
+   "thread": "The hub",
+   "who": [
+    "cal",
+    "N",
+    "closed"
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Master control, morning. Maya on the phone, very still.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "County emergency manager",
+     "kind": "phone",
+     "text": "The river will crest Saturday night. Higher than anyone here remembers. You may be the only station still broadcasting from the valley."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Crest.* Season finale.",
+   "flags": [
+    "RV-84"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 8223
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A backup you've never used is a hope. Drill it on a quiet night, write the rollback criteria first, check every clock, verify every output where the audience is, roll back by the plan, and type what you learn into the runbook before you sleep."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Cal walked out because of a mistake he found in his own work. Maya stayed because someone once let her say \"it was mine.\" Who made it safe for you to say that?  Boundary: this reflection doesn't lock any clock."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S04E09",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

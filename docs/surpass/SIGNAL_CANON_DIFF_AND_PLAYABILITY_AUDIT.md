@@ -1,4 +1,11 @@
-# SIGNAL canon and playability audit — 9 November 2026
+# SIGNAL canon and playability audit — 9 November 2026 (updated the same night)
+
+> **Update, 22:30.** On the founder's instruction the canon is now in the repository (`packages/signal-canon`, 1,764 files, hash manifest) and
+> readable in the product at `#/story`: all 144 chapter files (Prologue 11 + 133), 1,610 panels with their art, 387 decisions that gate the
+> story and can fail, hints, conversations, discoveries, progress and replay. Evidence: `tests/unit/signal-canon.test.mjs` (12) and
+> `tests/browser/demo-story.test.mjs` (33). The source is the founder's build package, whose data matches variant 1 below. The table
+> "What the current build carries" further down describes the state **before** this update and is kept as the record of the gap.
+> Still not built: drills, incidents, bosses and meltdowns launched from the story; Service Mode 0–5; Competency Engine V2; narration.
 
 Derived by reading the founder's `signal-standalone.html` as text (never executed) and comparing it with the v1.7 structural inventory
 and with what the current build carries. Counts and identifiers only: no dialogue is reproduced here.

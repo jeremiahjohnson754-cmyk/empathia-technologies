@@ -1,0 +1,1544 @@
+{
+ "chapter": {
+  "id": "s01e03",
+  "kicker": "S01 · E03",
+  "title": "Hum at 9:14",
+  "pill": "S01E03 · Hum at 9:14",
+  "sub": "The safety ground is never the fix.",
+  "status": "**DRAFT** · scripted from the season map ahead of its production-bible entry · IDs provisional",
+  "flags": [
+   "DR-S01E03",
+   "RV-02",
+   "SB-01",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--red)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 1 · EPISODE 3 · DRAFT  Comedy cold open, serious back half · Maya · Level L1 (Foundation)  The one adapter that fits the guest speaker's laptop brings a hum with it — and the tempting fix is the wrong one."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "The Oldest Ghost in the Rack",
+   "kind": "MAIN QUEST",
+   "level": "L1 · OPERATOR",
+   "party": [
+    "maya",
+    "gus",
+    "park",
+    "lily"
+   ],
+   "stakes": "Dr. Park's talk has a video at the sermon. The room hums. The only adapter that fits brings the ghost with it.",
+   "clock": "Fifteen minutes to doors.",
+   "reward": "Quiet — without trading away anyone's safety.",
+   "objectives": [
+    {
+     "key": "BR-S01E03-01",
+     "text": "Find where the hum lives before doors open"
+    },
+    {
+     "key": "BR-S01E03-02",
+     "text": "Answer Gus's “old trick” — without shaming him"
+    },
+    {
+     "key": "twist",
+     "text": "Name what's really disagreeing"
+    },
+    {
+     "key": "BR-S01E03-03",
+     "text": "Fix it in the signal path"
+    },
+    {
+     "key": "disc:1",
+     "text": "Look closer: find one relic in the adapter drawer"
+    }
+   ],
+   "rumor": "Every church has a drawer of adapters. Every drawer has one that should never have been kept."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “The one hole”",
+   "sub": "Sunday, week 6 · 8:52"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Imani brings the guest speaker, Dr. Naomi Park, to the booth. Dr. Park holds out a very thin laptop.",
+   "characters": [
+    {
+     "id": "park",
+     "pose": "R",
+     "expr": "smile"
+    },
+    {
+     "id": "imani",
+     "pose": "W",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dr. Park",
+     "kind": "speech",
+     "text": "It has one hole. I'm told that's modern."
+    },
+    {
+     "side": "R",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "Maya, meet our speaker. She has a video with sound at the sermon."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1346
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Theo dumps his box of adapters onto the booth desk. Lily starts sorting them with masking tape and a marker.",
+   "characters": [
+    {
+     "id": "theo",
+     "pose": "S",
+     "expr": "grin"
+    },
+    {
+     "id": "lily",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Theo",
+     "kind": "speech",
+     "text": "Every adapter this church has ever owned. One of them fits. Probably."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2183
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "theo",
+     "pose": "N",
+     "expr": "grin",
+     "text": "Every adapter this church has ever owned. One of them fits. Probably. One of them is from a VCR."
+    },
+    {
+     "who": "park",
+     "pose": "N",
+     "expr": "flat",
+     "text": "I'm told that's modern."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Lily's masking-tape labels pile up: camera, 2009; phone, not ours; a tiny fan; projector, old.",
+   "characters": [
+    {
+     "id": "lily",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "theo",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Lily",
+     "kind": "speech",
+     "text": "Why do we own a fan that plugs into a computer?"
+    },
+    {
+     "side": "R",
+     "who": "Theo",
+     "kind": "speech",
+     "text": "Summer of the broken air conditioner. Don't ask."
+    }
+   ],
+   "narration": [
+    "Lily labels as they go. Nobody asked her to. Ray will like her."
+   ],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1284
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S1-03a",
+   "teaser": "the bottom of the adapter drawer",
+   "title": "A two-prong cheater plug",
+   "body": "Grey, cracked, with a strip of tape: *HUM FIX — DON'T TELL AR.* The tape is from the same roll as Ray's labels. The handwriting isn't his.",
+   "thread": "The building remembers",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya holds up an adapter in a pool of light, like a trophy. It fits. Theo cheers.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "grin"
+    },
+    {
+     "id": "theo",
+     "pose": "S",
+     "expr": "grin"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "It fits.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 703
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "9:14. The slides appear on the screen. Maya brings up the laptop's audio channel, and a low, steady hum fills the room. A waveform shows the program with a steady low wave underneath it.",
+   "characters": [],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [
+    "60-cycle hum. The oldest ghost in the rack. [COMIC Ch.07]"
+   ],
+   "caption": "[low, steady hum through the room speakers]",
+   "flags": [
+    "VR-06",
+    "RV-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 5638
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Where is it?”",
+   "sub": "9:15 · doors at 9:30"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya in the booth, the hum still going. Her first guess: the new adapter is bad. Confidence 60.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": "*It's the adapter. It has to be the adapter.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": 60,
+   "art_bytes": 1287
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E03-01",
+   "prompt": "The room is humming and doors open in fifteen minutes. What's your first move?",
+   "happening": "A low hum in the room whenever the laptop's channel is up.",
+   "clock": "15:00 to doors",
+   "known": [
+    "◉ The hum started at 9:14",
+    "◉ Slides look fine"
+   ],
+   "unknown": [
+    "Which path the hum rides in on"
+   ],
+   "risk": "Dr. Park's video at the sermon; everyone in the room and online.",
+   "timer_s": 20,
+   "timeout": [
+    "Doors open with the hum still in the room.",
+    "Mute/unmute would have shrunk the problem to one path in ten seconds."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Before you fix the sound, find where it enters."
+    },
+    {
+     "id": "H2",
+     "keep": 0.85,
+     "text": "Mute things one at a time and listen."
+    },
+    {
+     "id": "H3",
+     "keep": 0.7,
+     "text": "If one channel carries the hum, you've found its path."
+    },
+    {
+     "id": "H4",
+     "keep": 0.5,
+     "text": "Now ask: what does that channel connect to that nothing else does?"
+    },
+    {
+     "id": "H5",
+     "keep": 0.25,
+     "text": "Walkthrough, then a variant: a hum that appears only when a camera is plugged in."
+    }
+   ],
+   "note": "Draft decision (DR-S01E03).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Turn the main down",
+     "result": "The hum gets quieter — and so does everything else, including Pastor Jo's microphone.",
+     "consequence": "The hum is hidden, not found. It's back the moment the main comes up.",
+     "chips": [
+      "Quick",
+      "Whole room affected"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Hiding a symptom for the whole room isn't finding it.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Pastor Jo": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Mute the laptop channel",
+     "result": "The hum stops. Unmute: it's back. It lives in that one channel.",
+     "consequence": "She's shrunk the problem to one path before changing anything.",
+     "chips": [
+      "Quick",
+      "Knows: test to tell ideas apart"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Dr. Park": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Swap the audio cable",
+     "result": "Same hum with a new cable.",
+     "consequence": "Five minutes spent; the cable is ruled out, but the clock is shorter.",
+     "chips": [
+      "About 5 minutes"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Restart the laptop",
+     "result": "Dr. Park waits, politely. The hum returns with the slides.",
+     "consequence": "Time lost, and the speaker is now nervous.",
+     "chips": [
+      "About 4 minutes",
+      "Speaker trusts you less"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Changed everything, learned nothing, and rattled the speaker.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Dr. Park": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "twist",
+   "title": "Battery makes it vanish",
+   "body": "Pull the charger and the hum disappears. Plug it back in and it returns. It isn't the cable or the laptop — it's the path through the power connection, and the safe fix lives in the signal path.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S01E03-R",
+   "label": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Muted: no hum. Unmuted: hum. The hum lives in the laptop's channel.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Mute: gone. Unmute: back.",
+   "flags": [
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "hum only in the laptop channel"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 7715
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "At the lectern, Maya looks at what the laptop connects to: a charger plugged into the stage outlet, the video adapter to the projector, and the audio cable running back to the booth console.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": "The laptop touches three things: stage power, the projector, the console.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1790
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “An old trick”",
+   "sub": "9:20"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Gus, a friendly retired congregant who ran sound decades ago, holds out a little plug adapter that drops the round ground pin.",
+   "characters": [
+    {
+     "id": "gus",
+     "pose": "P",
+     "expr": "grin"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Gus",
+     "kind": "speech",
+     "text": "Hum? Old trick. Pop this on the charger, lose the ground pin, hum's gone. Did it for years."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "SB-01",
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 844
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "awkward",
+   "where": null,
+   "lines": [
+    {
+     "who": "gus",
+     "pose": "N",
+     "expr": "smile",
+     "text": "We did it for years. Nobody ever got hurt."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(Nobody ever got hurt yet is not a safety record.)"
+    },
+    {
+     "who": "gus",
+     "pose": "N",
+     "expr": "worried",
+     "text": "…You're about to be polite at me, aren't you."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E03-02",
+   "prompt": "Gus holds out an adapter that drops the ground pin. “Old trick.” What do you do?",
+   "happening": "The hum comes in on the laptop's channel.",
+   "clock": "10:00 to doors",
+   "known": [
+    "◉ Hum only in the laptop channel",
+    "◉ Laptop touches stage power, projector and console"
+   ],
+   "unknown": [
+    "Which connection brings the hum"
+   ],
+   "risk": "Anyone who touches that laptop or lectern if something inside ever fails.",
+   "timer_s": 15,
+   "timeout": [
+    "Gus plugs his adapter in while you think. The hum stops. The safety ground is gone.",
+    "Some decisions can't wait: saying no to a defeated earth is instant."
+   ],
+   "hints": [],
+   "note": "Draft decision (DR-S01E03). Options A and C are shown only to be stopped: the story never depicts a defeated safety ground as a fix.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Try it, just for today",
+     "result": "Ray, from the aisle: “No. The safety ground is never the fix.” Back to the choice.",
+     "consequence": "The boundary conversation. No credit — and Gus's adapter goes in Ray's pocket.",
+     "chips": [
+      "Safety: never"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "Safety ground — never"
+      }
+     ],
+     "canonical": false,
+     "fail": "Defeating a protective earth is never the fix.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Ray": -2,
+       "Gus": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Test on battery first",
+     "result": "Charger unplugged, laptop on battery: the hum stops. Charger back in: the hum returns.",
+     "consequence": "A safe, reversible test that points at the power connection — without touching any safety ground.",
+     "chips": [
+      "Quick",
+      "Measured: hum follows the charger"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Gus": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Let Gus do it",
+     "result": "Imani, arriving: “Nobody's doing that. Gus, coffee's on me.” Back to the choice.",
+     "consequence": "Same boundary. No credit.",
+     "chips": [
+      "Safety: never"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "Safety ground — never"
+      }
+     ],
+     "canonical": false,
+     "fail": "Letting someone else defeat the earth is the same boundary.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Imani": -2,
+       "Gus": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Drop the video's sound",
+     "result": "Dr. Park agrees to show the video silently.",
+     "consequence": "The hum is avoided, not solved, and the talk loses its most important minute.",
+     "chips": [
+      "Speaker disappointed"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "physbreak",
+   "cls": "physbreak",
+   "text": "🔭 PHYSICS IN MOTION  Hum is a chord  The science under this episode’s problem — live."
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Ray and Maya beside a board. Hum is the power line singing — sixty hertz here — plus its harmonics: whole-number multiples of it. So the third harmonic is… Three times sixty. One hundred eighty hertz. A ground loop is how the power line gets into your audio cable in the first place.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Hum is the power line singing — sixty hertz here — plus its harmonics: whole-number multiples of it."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "So the third harmonic is…"
+    },
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Three times sixty. One hundred eighty hertz. A ground loop is how the power line gets into your audio cable in the first place."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1016
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    Hum   A low buzz at the mains frequency and its harmonics, usually from a grounding problem.   Harmonic   A frequency that is a whole-number multiple of the fundamental.   Ground loop   Two or more paths to ground that let a small mains current flow in audio cables, heard as hum.   Formula, variables and a worked example   ƒ FORMULA · Harmonics  f n  = n × f 0    f 0   fundamental frequency, Hz  n  harmonic number (2, 3, 4 …)    Worked example.  Hum at 50 Hz: the 3rd harmonic is 3 × 50 = 150 Hz."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 04 OF 31 · PP. 42, 45–46, 59  PART 3 AUDIO FOUNDATIONS  Page 46, next to  ground loops : “Never the earth pin. Never. — R.” The pen had gone through the paper."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB4",
+   "label": "**Fieldbook module 4 — Gain structure, noise and hum.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 4 · tap a plate to open it full size     Audio — the beginner series     Audio signal flow and gain structure     Audio signal flow and gain structure — every stage     Preamp gain and gain structure"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lab",
+   "id": "PHY-S01E03",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya declines Gus's adapter, kindly.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "gus",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "That pin is what keeps someone safe if something inside fails. We don't trade it for quiet."
+    },
+    {
+     "side": "R",
+     "who": "Gus",
+     "kind": "speech",
+     "text": "…Fair. We didn't know that, back then."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "SB-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 743
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S1-03",
+   "who": "gus",
+   "prompt": "I've been doing sound here since before you were born. Did I do it wrong all that time?",
+   "options": [
+    {
+     "label": "“You did what everyone did. We know more now. That's all.”",
+     "who": "gus",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "…Huh. Okay. Show me the right way, then.",
+     "trust": {
+      "Gus": 2
+     }
+    },
+    {
+     "label": "“Yes. That trick removes the one thing keeping people safe.”",
+     "who": "gus",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Right. Well. Thank you, I suppose.",
+     "trust": {
+      "Gus": -1
+     }
+    },
+    {
+     "label": "(Change the subject to the laptop.)",
+     "who": "gus",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "Sure. The laptop.",
+     "trust": {}
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Close-up: the charger's three-prong plug, fully intact, lies unplugged beside the outlet. The laptop runs on battery at 80 percent. The waveform shows no hum.",
+   "characters": [],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Charger out: silence. Charger in: hum. Every prong stays where it belongs.",
+   "flags": [
+    "RV-02",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "hum follows the charger"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 4069
+  },
+  {
+   "origin": "injected",
+   "type": "history",
+   "title": "Joseph Fourier's sums of sines",
+   "body": "In 1822 Joseph Fourier argued that any repeating wave is a sum of sine waves. That is why a hum that 'sounds like 60 Hz' can still ring at 180, 300 and 420 — and why a filter at one frequency rarely kills it.",
+   "flag": "RV-27",
+   "when": "1822",
+   "lab": "PHY-S01E03"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View diagram: the laptop, powered from a stage outlet on one circuit, and the console, powered from a booth outlet on another, are both safely grounded. Their ground references differ slightly, and the audio cable between them carries that difference as hum.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Both are safely grounded. The audio cable is where their small disagreement becomes hum.",
+   "flags": [
+    "RV-02",
+    "RV-18"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1062
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray asks Maya what she now thinks. She answers with a confidence of 75.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "So what is it?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Not the adapter. Two grounded systems disagreeing a little. The grounds are fine — the hum rides the signal path."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": 75,
+   "art_bytes": 1292
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III — “Fix it in the signal path”",
+   "sub": "9:28"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E03-03",
+   "prompt": "On battery, the hum is gone. What do you set up for the service?",
+   "happening": "The hum follows the laptop's charger.",
+   "clock": "2:00 to doors",
+   "known": [
+    "▮ Battery: no hum · charger: hum",
+    "◉ Stage and booth outlets are on different circuits"
+   ],
+   "unknown": [
+    "Whether the outlets are wired correctly — an electrician's question"
+   ],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "Draft decision (DR-S01E03).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Run on battery; done",
+     "result": "Quiet now. Dr. Park's battery reads 80%.",
+     "consequence": "It lasts the service — but nothing is written down, and the next guest laptop hums again.",
+     "chips": [
+      "Quick",
+      "Nothing learned for next time"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Isolate the audio path",
+     "result": "Ray's drawer has an audio isolator. In the laptop's audio line, with the charger plugged in: no hum.",
+     "consequence": "A fix in the signal path; every safety ground intact; logged; the circuits go to the electrician.",
+     "chips": [
+      "About 5 minutes",
+      "Change log #4",
+      "Electrician request"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Ray": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Run a cord from the booth",
+     "result": "The hum goes — and a cord now crosses the center aisle as doors open.",
+     "consequence": "An usher tapes it down and frowns. A trip hazard during the busiest minutes.",
+     "chips": [
+      "Cord across the aisle"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "Walkway hazard"
+      }
+     ],
+     "canonical": false,
+     "fail": "A cord across the aisle during a service is a trip hazard.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Crew": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Open the outlet and check it",
+     "result": "Imani: “That's electrician work. Not ours.” Back to the choice.",
+     "consequence": "Building wiring belongs to a licensed electrician.",
+     "chips": [
+      "Not yours: building wiring"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "Not yours"
+      }
+     ],
+     "canonical": false,
+     "fail": "Building wiring belongs to a licensed electrician.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Imani": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray's drawer: a small box labeled, in his handwriting, ISOLATOR · AUDIO, signal only.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "P",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Isolate the signal. Never the safety."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 835
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #4 · AVERY'S LENS  Prevent the error, don't just warn  The best error message is a design that makes the dangerous action impossible or obviously wrong.  An adapter that removes the ground pin makes the unsafe fix easy. Good systems make the safe path the easy one."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S01E03",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View again: the same two outlets and circuits, both grounds untouched, with the isolator in the audio cable between the laptop and the console. The audio passes through; the hum does not.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Both safety grounds untouched. The break is in the signal path only.",
+   "flags": [
+    "RV-02",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1313
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Soundcheck with the charger plugged in and the isolator in the audio line: Maya listens with her eyes closed. The waveform is clean.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "closed"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Charger in. Isolator in. Quiet.",
+   "flags": [
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "condition 1 · soundcheck"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3935
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "9:30, the doors open behind Maya as she writes in her notebook.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": "*Hum = two safe grounds disagreeing about “zero.” Fix it in the signal path.*  9:30: doors.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1295
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "lily",
+     "pose": "R",
+     "expr": "smile",
+     "text": "Hum is two safe grounds disagreeing about zero."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "grin",
+     "text": "That's going on a mug."
+    },
+    {
+     "who": "lily",
+     "pose": "N",
+     "expr": "flat",
+     "text": "It's going in the log. Mugs get washed."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act IV — Proof · “The minute that matters”",
+   "sub": "10:40"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "10:40. Dr. Park plays her video. The sound comes through the room clearly; the waveform shows no hum underneath.",
+   "characters": [
+    {
+     "id": "park",
+     "pose": "W",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Condition 2: a full room, the video with sound. No hum.",
+   "flags": [
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "condition 2 · live, full room"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 4036
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the booth, Lily checks the stream on her phone: no hum. Pastor Jo's microphone is clean; the projector picture is fine.",
+   "characters": [
+    {
+     "id": "lily",
+     "pose": "H",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Adjacent checks: nothing next door broke.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2000
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "After the service, Dr. Park thanks Maya.",
+   "characters": [
+    {
+     "id": "park",
+     "pose": "W",
+     "expr": "grin"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dr. Park",
+     "kind": "speech",
+     "text": "I've given that talk in eleven buildings. That's the first time nobody apologized for the hum."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The building was fine. It just needed a translator."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 744
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "warm",
+   "where": null,
+   "lines": [
+    {
+     "who": "park",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Eleven buildings. Eleven apologies. You're the first one who explained it instead."
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "lessonbreak",
+   "cls": "lessonbreak",
+   "text": "PRACTICE BREAK · S01 · E03  Your turn before the debrief  Work this episode's problem yourself: a drill, a lesson, and the live incident. Every one can be failed, and every failure explains itself."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "drill",
+   "id": "M-01",
+   "label": "**Class match:** where did the cause live?",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "P1",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-02",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Change log entry #4: 'Guest laptop audio: isolator in the audio line, signal only. No safety ground touched. Request: electrician to check stage versus booth circuits.'",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-08",
+    "RV-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1394
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray reads the entry. Gus's little adapter sits on the desk beside him, set aside.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "The safety ground is never the fix."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "SB-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1311
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Imani, on the phone, books the electrician.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "H",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "Andre can come Tuesday to look at the stage circuits. He's bringing his apprentice."
+    }
+   ],
+   "narration": [],
+   "caption": "(Malik. S01E05.)",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1283
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S1-03b",
+   "teaser": "Imani's calendar",
+   "title": "Tuesday · 9:00",
+   "body": "*Andre + apprentice — stage circuits.* Beside it, crossed out twice: *get panel schedule updated (1998??)*",
+   "thread": "The building remembers",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya's phone lights up with a text from Sofia: the Easter fixtures have arrived — twelve more lights.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Next: *Not Mine to Open.*",
+   "flags": [
+    "VR-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1907
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A hum can mean two safely grounded systems disagreeing a little about “zero.” Find the path it rides in on, test on battery, and fix it in the  signal  path. The safety ground is never the fix — and building wiring belongs to a licensed electrician."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Gus shared the best he knew. Maya said no to the trick and yes to the person.  Boundary: none of this explains or proves the hum."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S01E03",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

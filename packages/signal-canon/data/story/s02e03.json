@@ -1,0 +1,1638 @@
+{
+ "chapter": {
+  "id": "s02e03",
+  "kicker": "S02 · E03",
+  "title": "The Rigging Call",
+  "pill": "S02E03 · Rigging Call",
+  "sub": "One beam with no number, three ways of seeing the same afternoon, and a word nobody can take back.",
+  "status": "**DRAFT** · scripted from the season map ahead of its production-bible entry · IDs provisional",
+  "flags": [
+   "DR-S02E03",
+   "RT-03",
+   "RV-41",
+   "RV-47",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--amber)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 2 · EPISODE 3 · DRAFT  Parallel lenses · Ben, Jordan and Sofia · Level L3  One beam with no number. Three people see the same afternoon three different ways. Somebody is going to be called a coward before focus call.  ⚑ RV-41: everything overhead is shown only as people discussing plans, drawings and a video call. Nobody is under a load, and nothing here is a rigging procedure. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "The Beam With No Number",
+   "kind": "BOUNDARY · THREE LENSES",
+   "level": "L3 · SYSTEMS TECH",
+   "party": [
+    "maya",
+    "ben",
+    "sofia",
+    "jordan",
+    "kim"
+   ],
+   "stakes": "Act 2 lives on a beam nobody can rate. Sofia's best moment against Ben's signature. Maya's friendship against a number that doesn't exist.",
+   "clock": "Focus call at 6. Doors at 7:30.",
+   "reward": "A show nobody has to hope about. Maybe not a friend, tonight.",
+   "objectives": [
+    {
+     "key": "BR-S02E03-01",
+     "text": "Answer “we've hung heavier before”"
+    },
+    {
+     "key": "twist",
+     "text": "Find out when “before” was"
+    },
+    {
+     "key": "BR-S02E03-02",
+     "text": "Choose a side in front of the crew"
+    },
+    {
+     "key": "BR-S02E03-03",
+     "text": "Save the look without the beam"
+    },
+    {
+     "key": "BR-S02E03-04",
+     "text": "Write the honest show report"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two things the building hid"
+    }
+   ],
+   "rumor": "The plaque in the lobby says RENOVATED 2019. Gil's story is from before that."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Stop.”",
+   "sub": "The Carroway · city 3 · 12:58 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "An empty stage. High above the downstage edge runs a steel beam. Sofia points up at it; Ben stands on the deck beside her, hands at his sides.",
+   "characters": [
+    {
+     "id": "sofia",
+     "pose": "P",
+     "expr": "grin"
+    },
+    {
+     "id": "ben",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sofia",
+     "kind": "speech",
+     "text": "Right there. The halo hangs from that beam, over the lip. Act 2 lives on it."
+    },
+    {
+     "side": "R",
+     "who": "Ben",
+     "kind": "speech",
+     "text": "Stop. That beam has no number."
+    }
+   ],
+   "narration": [],
+   "caption": "Focus call at 6. Doors at 7:30. Act 2's biggest moment lives on a beam nobody can rate.",
+   "flags": [
+    "RV-41",
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1011
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Title card: One afternoon, three ways of seeing it. 1:00 p.m. Ben, Jordan, Sofia.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 553
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Lens 1 — Ben · “The number”",
+   "sub": "1:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ben crosses the Carroway's lobby reading the venue's reply on his tablet. On the wall behind him, a bronze plaque: THE CARROWAY · RENOVATED 2019.",
+   "characters": [
+    {
+     "id": "ben",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_lobby",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Ben",
+     "kind": "speech",
+     "text": "“No drawings since the renovation. Facilities will look.” Nobody knows who has them."
+    }
+   ],
+   "narration": [],
+   "caption": "The plaque on the wall says RENOVATED 2019. Ben reads it on the way past.",
+   "flags": [
+    "RV-41",
+    "RT-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1315
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S2-03a",
+   "teaser": "the lobby plaque",
+   "title": "RENOVATED 2019",
+   "body": "Under it, a smaller plaque, older, half covered by a potted plant: *In memory of the crew of the 2016 winter season.* It doesn't say what happened. The plant has been moved there on purpose.",
+   "thread": "The building remembers",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Gil, the Carroway's house crew chief, friendly and certain, gestures up at the beam. Ben listens.",
+   "characters": [
+    {
+     "id": "crew",
+     "pose": "W",
+     "expr": "grin"
+    },
+    {
+     "id": "ben",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Gil",
+     "kind": "speech",
+     "text": "We've hung heavier from that beam before. Big shows. Trust me."
+    },
+    {
+     "side": "R",
+     "who": "Ben",
+     "kind": "speech",
+     "text": "I believe you hung it. I can't sign “before”."
+    }
+   ],
+   "narration": [],
+   "caption": "Gil isn't lying. He isn't an engineer either.",
+   "flags": [
+    "RV-41",
+    "RV-47"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1010
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "ben",
+     "pose": "N",
+     "expr": "flat",
+     "text": "“Trust me” is not a load rating. I've looked. It's not in any of the tables."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E03-01",
+   "prompt": "Gil offers: “We've hung heavier from that beam before.” Sofia is watching, and focus call is creeping closer. What do you do?",
+   "happening": "The house crew chief vouches for a beam with no data.",
+   "clock": "1:14 p.m. · focus call 6:00",
+   "known": [
+    "◉ No drawings since the 2019 renovation",
+    "◉ Gil: “heavier before”"
+   ],
+   "unknown": [
+    "The beam's rating",
+    "When “before” was"
+   ],
+   "risk": "Everyone in the front rows, every night the look is up.",
+   "timer_s": 25,
+   "timeout": [
+    "While you hesitate, Gil's crew starts sorting the halo's cable. Ben says “Stop” — calmly — and the afternoon starts over, twenty minutes shorter.",
+    "Not deciding lets momentum decide. Momentum always votes for the hang."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who in this room can sign a rating? Ask for what they'd need."
+    }
+   ],
+   "note": "Draft decision (DR-S02E03). ⚑ RV-41.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Accept it — he knows his building",
+     "result": "The halo goes on the plan. Everyone relaxes.",
+     "consequence": "Tonight, a hundred kilos of light hang over the front row on the strength of a memory.",
+     "chips": [
+      "Relief",
+      "A guess over people"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "Absence of a failure isn't evidence of a rating, and Gil isn't qualified to give one.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Sofia": -2,
+       "Gil": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Ask for documentation: drawings and a rating for that beam as it is now",
+     "result": "Gil shrugs: “Facilities, maybe.” Ben writes the request and copies Kim.",
+     "consequence": "Slow and unglamorous — and the only answer anyone can sign.",
+     "chips": [
+      "Right question",
+      "Maybe no answer"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Ben": 2,
+       "Kim": 2,
+       "Gil": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Send Kim a photo and ask her to estimate",
+     "result": "Kim replies from bed: “I can't sign a guess.”",
+     "consequence": "You woke an engineer to ask her to stop being one.",
+     "chips": [
+      "Refused"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "An engineer's approval is a claim she stands behind. A photo can't carry that.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Kim": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Tell Sofia no, flat",
+     "result": "Sofia's jaw sets. There's no alternative on the table.",
+     "consequence": "You're right about the beam and wrong about the show.",
+     "chips": [
+      "True, unhelpful"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Lens 2 — Jordan · “The cost”",
+   "sub": "1:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Jordan on the phone with Leah, an estimate beside him: ground support rental $2,400, three extra crew hours, two hours to re-cue Act 2, no budget line.",
+   "characters": [
+    {
+     "id": "jordan",
+     "pose": "H",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Jordan",
+     "kind": "phone",
+     "text": "Ground support is a rental we didn't budget and three crew hours we don't have."
+    },
+    {
+     "side": "R",
+     "who": "Leah",
+     "kind": "phone",
+     "text": "And if we cut the position?"
+    }
+   ],
+   "narration": [],
+   "caption": "Keeping it costs money and time. Cutting it costs Act 2. Jordan's job is to say both out loud.",
+   "flags": [
+    "RV-30",
+    "RV-41"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1669
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The Carroway's house pipe schedule: pipe 4 approved and rated; a small grey line underneath says house electrics permanently hung. Jordan's sticky note: pipe 4 free? $0!",
+   "characters": [
+    {
+     "id": "jordan",
+     "pose": "R",
+     "expr": "grin"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Jordan finds an approved, rated pipe. His note says “free”. The line underneath says something else.",
+   "flags": [
+    "RV-41",
+    "RV-49"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2305
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Lens 3 — Sofia · “The moment”",
+   "sub": "1:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Sofia alone in the house seats with her sketchbook: Act 2, lantern — eight months of drafts; from the side it's just light; from above, a sky.",
+   "characters": [
+    {
+     "id": "sofia",
+     "pose": "W",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_theater",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Sofia",
+     "kind": "speech",
+     "text": "The whole show turns on that moment. From the side it's just light. From above it's a sky."
+    }
+   ],
+   "narration": [],
+   "caption": "Sofia isn't being difficult. She's defending the one thing the audience will remember.",
+   "flags": [
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6264
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S2-03",
+   "who": "sofia",
+   "prompt": "From the side it's just light. From above, it's a sky. You get that, right? You of all people?",
+   "options": [
+    {
+     "label": "“I get it. I also can't sign a sky.”",
+     "who": "sofia",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "Nobody asked you to sign anything, Maya.",
+     "trust": {
+      "Sofia": -1,
+      "Ben": 1
+     }
+    },
+    {
+     "label": "“It's the best moment in the show. Let's find it another way.”",
+     "who": "sofia",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "…There isn't another way. But fine. Find one.",
+     "trust": {
+      "Sofia": 1
+     }
+    },
+    {
+     "label": "“Ben's being careful. That's his job.”",
+     "who": "sofia",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Everyone keeps telling me what everyone's job is.",
+     "trust": {
+      "Sofia": -1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Together — “The call”",
+   "sub": "3:10 p.m. here · 3:10 a.m. for Kim"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A laptop on a road case at center stage shows Kim on a video call. Ben listens on one side; Sofia on the other.",
+   "characters": [
+    {
+     "id": "kim",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "ben",
+     "pose": "L",
+     "expr": "flat"
+    },
+    {
+     "id": "sofia",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Kim",
+     "kind": "phone",
+     "text": "Without the beam's rating I can't approve it. And I won't estimate from a photo."
+    },
+    {
+     "side": "R",
+     "who": "Sofia",
+     "kind": "speech",
+     "text": "Then what can you give me?"
+    }
+   ],
+   "narration": [],
+   "caption": "Kim is on another continent. It's 3:10 a.m. She picked up on the second ring.",
+   "flags": [
+    "RV-41",
+    "RV-49",
+    "VR-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2203
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Kim shares a screen: Ben's photo of the beam, with a new duct opening through its web circled in red and a newer plate circled in yellow. Gil looks up, surprised.",
+   "characters": [
+    {
+     "id": "crew",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Kim",
+     "kind": "phone",
+     "text": "Look at the web. That opening is new — a duct. And that plate. When was “before”?"
+    },
+    {
+     "side": "R",
+     "who": "Gil",
+     "kind": "speech",
+     "text": "…Twenty-sixteen. Before the renovation."
+    }
+   ],
+   "narration": [],
+   "caption": "The plaque in the lobby said 2019.",
+   "flags": [
+    "RV-41",
+    "RV-49"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "beam modified · 2019"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2237
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "“Before” was a different beam",
+   "body": "The heavy hang Gil remembers was in 2016. In 2019 the renovation cut a duct opening through the beam and added a plate. Whatever the beam held then, it held as a different structure. The lobby plaque said RENOVATED 2019 all along — and Gil's “before” was true, and irrelevant.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S02E03-1",
+   "label": "Test: reason from the modification — what does it rule out, and what do you ask for next?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Kim, on the laptop, offers an alternative. Ben nods. Maya listens.",
+   "characters": [
+    {
+     "id": "kim",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "ben",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Kim",
+     "kind": "phone",
+     "text": "What I can do tonight: a ground-supported truss. Towers on your deck, nothing on the beam. Send Ben's plan; I'll check it."
+    },
+    {
+     "side": "R",
+     "who": "Ben",
+     "kind": "speech",
+     "text": "You'll have it in forty minutes."
+    }
+   ],
+   "narration": [],
+   "caption": "Not a yes. Not a no. A different design that doesn't need the missing number.",
+   "flags": [
+    "RV-41"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2200
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Ben and Maya beside a board. Rigging is anything hung overhead. Every piece has a working load limit. And the decisions belong to the rigger and the engineer — that's a boundary. Then why learn the math? To understand the call. Hundred kilos, one metre from the left support, four-metre span: the right support carries a hundred times one over four — twenty-five kilos.",
+   "characters": [
+    {
+     "id": "ben",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ben",
+     "kind": "speech",
+     "text": "Rigging is anything hung overhead. Every piece has a working load limit. And the decisions belong to the rigger and the engineer — that's a boundary."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then why learn the math?"
+    },
+    {
+     "side": "L",
+     "who": "Ben",
+     "kind": "speech",
+     "text": "To understand the call. Hundred kilos, one metre from the left support, four-metre span: the right support carries a hundred times one over four — twenty-five kilos."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3506
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    Rigging   Hanging equipment overhead. Belongs to the rigger and structural engineer.   Working load limit   The most a piece of rigging hardware is rated to hold in use.   Boundary   A line you don't cross because a system or decision belongs to someone else — power, rigging, towers, security, evacuations.   Formula, variables and a worked example   ƒ FORMULA · Beam support reactions (moments)  R right  = W × a ÷ span   W  load, kg  a  load's distance from the left support, m  span  distance between supports, m    Worked example.  A 100 kg load 1 m from the left support on a 4 m span: right support carries 100 × 1 ÷ 4 = 25 kg."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 14 OF 31 · PP. 157–159, 167–171  PART 10 LIGHTING ENGINEERING  Ben borrowed the Fieldbook for ten minutes and gave it back with one line on the positions page, in block capitals: “CHOOSING A POSITION IS DESIGN. HANGING IT IS RIGGING.”"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB14",
+   "label": "**Fieldbook module 14 — Fixtures, angles, and key, fill and back.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 14 · tap a plate to open it full size     Lighting fixture types and optics     Stage lighting positions and coverage     Lighting fundamentals — beam angle, throw, color     The lighting system guide"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "demo-note",
+   "cls": "demo-note",
+   "text": "💡 Beam sizes and fixture types · HANDS-ON DEMO  Pick a PAR, a Fresnel, an ellipsoidal or a moving head; set the throw and see the pool of light — and the lux — change.  Open the demo ▸",
+   "opens": {
+    "kind": "demo",
+    "id": "beam"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "S1",
+   "label": "**Learn it now:** overhead is a boundary — what a rating is, what a plan contains, and who signs.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "On the deck, in front of the crew, Sofia rounds on Ben. A crew member behind them freezes mid-step.",
+   "characters": [
+    {
+     "id": "crew",
+     "pose": "N",
+     "expr": "worried"
+    },
+    {
+     "id": "sofia",
+     "pose": "P",
+     "expr": "talk"
+    },
+    {
+     "id": "ben",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sofia",
+     "kind": "speech",
+     "text": "That beam has held for a hundred years and you're scared of it. That's cowardice in a hard hat."
+    },
+    {
+     "side": "R",
+     "who": "Ben",
+     "kind": "speech",
+     "text": "Stop. Maybe I'm scared. I'm still not signing a guess."
+    }
+   ],
+   "narration": [],
+   "caption": "The whole crew heard it. Ben's voice didn't change.",
+   "flags": [
+    "RV-47",
+    "RV-41"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1099
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "sofia",
+     "pose": "P",
+     "expr": "flat",
+     "text": "That's cowardice in a hard hat."
+    },
+    {
+     "who": "ben",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Stop."
+    },
+    {
+     "who": "crew",
+     "pose": "N",
+     "expr": "worried",
+     "text": "(Nobody moves. Somebody drops a wrench and doesn't pick it up.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Sofia turns to Maya, her friend since CityLight.",
+   "characters": [
+    {
+     "id": "sofia",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sofia",
+     "kind": "speech",
+     "text": "Maya. You've been here all day. You know it'll hold. Tell him."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Sofia…"
+    }
+   ],
+   "narration": [],
+   "caption": "Everyone is looking at Maya now.",
+   "flags": [
+    "RV-47"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 821
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E03-02",
+   "prompt": "Sofia wants you on her side, in front of the crew. What do you say?",
+   "happening": "Sofia called Ben a coward and asked you to back her.",
+   "clock": "3:30 p.m. · focus call 6:00",
+   "known": [
+    "◉ No rating exists",
+    "◉ Beam modified in 2019",
+    "↑ Kim offers ground support"
+   ],
+   "unknown": [
+    "Whether Sofia will forgive you"
+   ],
+   "risk": "A friendship, a crew's trust in stop-work, and the front rows.",
+   "timer_s": 20,
+   "timeout": [
+    "You say nothing for twenty seconds. Sofia says, “Right,” and leaves. Ben goes back to his plan alone.",
+    "Not choosing in front of a crew is still a choice — just the one nobody can learn from."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What are you actually agreeing with — a person, or a piece of evidence?"
+    }
+   ],
+   "note": "Draft decision (DR-S02E03). ⚑ RV-47.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "“I'm with Ben. Not against you — with the number we don't have.”",
+     "result": "Sofia looks at you like you've slapped her, and walks off the stage.",
+     "consequence": "The right answer, and it costs a friendship for now.",
+     "chips": [
+      "Backs the evidence",
+      "Sofia stops speaking to you"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Sofia": 2,
+       "Ben": 2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "“It's probably fine, Ben. It's held for years.”",
+     "result": "Ben says “Stop” again, calmly. Now two people are arguing with the person responsible for the hang.",
+     "consequence": "You've lent your credibility to a guess.",
+     "chips": [
+      "Boundary pushed"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "Overhead approval isn't yours to give, and “probably” isn't a rating.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Ben": -2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Say nothing",
+     "result": "The silence stretches. Sofia takes it as yes; Ben takes it as no.",
+     "consequence": "Both are hurt, and nobody knows where you stand.",
+     "chips": [
+      "Ambiguous"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "In a crew argument, silence reads as agreement with the loudest voice.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Sofia": -2,
+       "Ben": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "“Let's ask Jordan what it costs.”",
+     "result": "Jordan, cornered, starts a spreadsheet out loud.",
+     "consequence": "You turned a safety question into a budget question.",
+     "chips": [
+      "Deflected"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "physbreak",
+   "cls": "physbreak",
+   "text": "🔭 PHYSICS IN MOTION  Why the beam's number matters  The science under this episode’s problem — live."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lab",
+   "id": "PHY-S02E03",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Sofia walks away across the deck, her back to Maya. Maya stays where she is.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    },
+    {
+     "id": "sofia",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Sofia stops speaking to Maya. It will last until Opening Night.",
+   "flags": [
+    "RV-47",
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 882
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "awkward",
+   "where": "the bus · after load-out",
+   "lines": [
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(Sofia stops speaking to her. It lasts until Opening Night. The bus gets very quiet in a way buses shouldn't.)"
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "history",
+   "title": "Archimedes and the lever",
+   "body": "Archimedes worked out that a lever balances when weight times distance is equal on both sides — 'give me a place to stand and I will move the Earth.' Every structural rating Ben asks for is that same balance, with a safety factor added by an engineer.",
+   "flag": "RV-27",
+   "when": "≈250 BC",
+   "lab": "PHY-S02E03"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "The redesign",
+   "sub": "4:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E03-03",
+   "prompt": "Kim will check a ground-supported truss. How does the Act 2 look survive?",
+   "happening": "Kim offered ground support. Jordan found an approved pipe.",
+   "clock": "4:00 p.m. · focus call 6:00",
+   "known": [
+    "↑ Kim will check a ground-supported plan",
+    "◉ Pipe 4: approved and rated"
+   ],
+   "unknown": [
+    "How much of pipe 4's rating is already used"
+   ],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "Draft decision (DR-S02E03). ⚑ RV-41.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Ground-supported truss for the halo; backlight on approved house pipe 4",
+     "result": "Ben draws the towers; Jordan is thrilled about pipe 4 being “free”.",
+     "consequence": "The plan is safe. The budget is about to get a surprise.",
+     "chips": [
+      "Safe",
+      "Pipe 4: check the fine print"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Jordan": 1,
+       "Ben": 1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Cut the position entirely",
+     "result": "Safe, cheap, fast. Act 2's lantern moment is lit from the side.",
+     "consequence": "Sofia's sky becomes just light.",
+     "chips": [
+      "Safe",
+      "The moment is lost"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Hang the halo from the beam at half weight",
+     "result": "It's lighter. It's still on a beam with no number.",
+     "consequence": "Nothing about the beam changed; only your hopes did.",
+     "chips": [
+      "No rating"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "Half of unknown is still unknown.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Jordan": -2,
+       "Kim": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Everything onto pipe 4 — it's rated",
+     "result": "Jordan loves it: no rental.",
+     "consequence": "Everything onto a pipe whose rating you haven't read to the end.",
+     "chips": [
+      "Unchecked"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A rating covers everything on the pipe, not just what you add.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Jordan": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The detail page for pipe 4: rated for all loads on the pipe; house electrics permanently hung; remaining allowance small. Ben holds it; Jordan reacts.",
+   "characters": [
+    {
+     "id": "ben",
+     "pose": "R",
+     "expr": "flat"
+    },
+    {
+     "id": "jordan",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ben",
+     "kind": "speech",
+     "text": "Rated for everything on it. Including what's already there."
+    },
+    {
+     "side": "R",
+     "who": "Jordan",
+     "kind": "speech",
+     "text": "So “free” was… the part I read."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-41",
+    "RV-49"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1654
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S2-03b",
+   "teaser": "Jordan's “free” pipe",
+   "title": "The line under the line",
+   "body": "*Approved position 4 — free.* Underneath, in the rating sheet's small print: *already loaded with house speaker cluster, 60%.* Free is a word that means “I read the top half.”",
+   "thread": "The as-built",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Approved doesn't mean empty",
+   "body": "Pipe 4 is approved and rated — for its total load, and the Carroway's own lighting is permanently hung there. What's left is a sliver. Jordan's “free” position was mostly spoken for; the small grey line on the schedule said so this afternoon. Now the look has to fit a real budget: Kim's allowance for the ground truss, plus what little pipe 4 has left.",
+   "test_kind": "drill",
+   "test_id": "T-11",
+   "label": "Test: build Act 2's look inside the combined load budget. Faces are a commitment."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Two truss towers now stand on the deck with a crossbar and four halo units, fully built. A yellow and black line on the floor marks Ben's crew-only zone. Ben stands outside it with his plan.",
+   "characters": [
+    {
+     "id": "ben",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Built by Ben's crew, checked by Kim at 3:52 a.m. her time. Nothing touches the beam.",
+   "flags": [
+    "RV-41",
+    "VR-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4314
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "O-12",
+   "label": "**Sequence:** when there's no number — who does what, in what order.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-203",
+   "label": "**Service Mode:** the beam with no number, on the clock before focus call.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act 2",
+   "sub": "9:05 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Act 2, the lantern moment. The halo glows from the ground-supported truss, lower and wider than Sofia drew. The audience, in silhouette, is utterly still.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Not the look Sofia drew. A look that works — and that nobody has to hope about.",
+   "flags": [
+    "RV-41",
+    "VR-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6452
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #14 · AVERY'S LENS  Constraints are features  Good constraints guide people to safe choices without a lecture.  Ben's approved-points list is a menu of safe options. Sofia designs inside it and the show still works."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S02E03",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "After the show, Sofia sits alone at the lighting console in the house. Maya approaches from the aisle. Sofia doesn't look up.",
+   "characters": [
+    {
+     "id": "sofia",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_theater",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Sofia",
+     "kind": "speech",
+     "text": "Not tonight, Maya."
+    }
+   ],
+   "narration": [],
+   "caption": "The show worked. The friendship didn't, tonight.",
+   "flags": [
+    "RV-47"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4935
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E03-04",
+   "prompt": "Jordan asks you to draft tonight's show report. What goes in?",
+   "happening": "The show opened with an adapted look.",
+   "clock": "11:20 p.m.",
+   "known": [],
+   "unknown": [],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "Draft decision (DR-S02E03).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "“Act 2 look adapted. No issues.”",
+     "result": "Short and clean. Leah reads it in four seconds.",
+     "consequence": "The next venue gets the same surprise, and nobody knows what the show gave up.",
+     "chips": [
+      "Hides the cost"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A report that hides the cost teaches nobody — and quietly makes Ben's stop look like a whim.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -2,
+      "sev": 1,
+      "trust": {
+       "Leah": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "What changed, why, who decided, what the look lost, what's still open",
+     "result": "“No structural data for the modified beam; Kim declined without a rating; ground-supported truss checked by Kim; halo lower, two units cut; +3 crew hours, rental; venue to supply drawings.”",
+     "consequence": "Leah reads it twice and adds one line to every future advance: ask for ratings dated after any renovation.",
+     "chips": [
+      "Honest",
+      "Changes the next advance"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 2,
+      "sev": 1,
+      "trust": {
+       "Leah": 1,
+       "Kim": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Blame the venue for missing data",
+     "result": "Accurate and unhelpful. The venue's GM reads it too.",
+     "consequence": "Next year's booking gets harder.",
+     "chips": [
+      "Burns a bridge"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Leave it out; Jordan will explain",
+     "result": "Jordan explains it three different ways to three people.",
+     "consequence": "The record is whatever someone remembers.",
+     "chips": [
+      "No record"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Show report, city 3: beam has no data, modified 2019. Kim: no approval without a rating. Ground truss, Ben's plan, Kim checked. Pipe 4: house load, small margin. Cost: halo lower, two units cut, three extra crew hours, rental. Open: venue to send drawings.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-08",
+    "RV-41",
+    "RV-30"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1819
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Midnight on the Carroway's loading dock. Ben and Maya lean on the truck. The brass tag on Ben's chest catches the sodium light.",
+   "characters": [
+    {
+     "id": "ben",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_dock",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ben",
+     "kind": "speech",
+     "text": "You didn't have to back me in front of her."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "I didn't back you. I backed the number we didn't have."
+    }
+   ],
+   "narration": [],
+   "caption": "Ben's thumb finds the brass tag, the way it does when he's thinking. Maya notices. She doesn't ask. Not yet.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2680
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "mystery",
+   "where": null,
+   "lines": [
+    {
+     "who": "ben",
+     "pose": "N",
+     "expr": "closed",
+     "text": "You didn't have to back me."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "I backed the number we didn't have."
+    },
+    {
+     "who": "ben",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(His thumb finds the tag. For a second he looks like he's going to say something. He doesn't.)"
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The next day, 2:00 p.m., the Meridian in city 4. On the lighting console's screen: RECOMMENDED UPDATE available — install now? Two buttons, INSTALL and LATER. Sofia stands beside it, alone.",
+   "characters": [
+    {
+     "id": "sofia",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_theater",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Opening Night in city 4 is tonight. At 2:00 p.m. the console asks a question. Next: *Opening Night.*",
+   "flags": [
+    "RV-44",
+    "RV-49",
+    "RT-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4670
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Overhead is a boundary. “It held before” is history; a photo is not a rating; confidence is not a rating. Ask the venue for data about the structure as it is now, escalate with facts to the engineer, and let the head rigger own the plan. When there's no number, change the design, not the rules — and write down what the show lost. An approved position has a total rating, not a free one."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Sofia wasn't wrong that the moment mattered. Ben wasn't wrong that the beam had no number. Maya chose the number and lost a friend for a night. Sometimes being right costs exactly what it looks like it costs.  Boundary: this reflection doesn't prove anything about the beam."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S02E03",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

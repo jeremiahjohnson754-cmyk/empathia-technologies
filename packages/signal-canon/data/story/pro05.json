@@ -1,0 +1,111 @@
+{
+ "chapter": {
+  "id": "pro05",
+  "kicker": "PROLOGUE · CH.05",
+  "title": "The Muddy Mix",
+  "pill": "Prologue · Ch.05",
+  "sub": "Cut before you boost.",
+  "status": null,
+  "flags": [],
+  "accent": "var(--amber)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The sanctuary seen through a murky blue haze, like the sound is underwater.",
+   "characters": [],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [
+    "Something's off. The mix feels heavy — almost underwater."
+   ],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2491
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray points to an analyzer graph with a big hump between 250 and 500 hertz, shaded red.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Right there. Two-fifty to five hundred hertz. That's mud."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3457
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "An EQ curve shows a gentle cut around 350 hertz. Maya and Ray listen.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Cut, don't just boost. Ears before eyes."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Now find what's actually missing."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1721
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  EQ is subtraction first. Find the mud, cut it, then listen for what's genuinely gone."
+  }
+ ]
+}

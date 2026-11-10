@@ -1,0 +1,1328 @@
+{
+ "chapter": {
+  "id": "s04e03",
+  "kicker": "S04 · E03",
+  "title": "Too Loud",
+  "pill": "S04E03 · Too Loud",
+  "sub": "Thirty-one complaints. The loudest thing on air is the station's own flood-safety message.",
+  "status": "**DRAFT** · scripted from the owner's request to continue the story · IDs provisional",
+  "flags": [
+   "DR-S04E03",
+   "RT-03",
+   "RT-04",
+   "RV-82",
+   "RV-83",
+   "RV-84",
+   "RV-85",
+   "RV-88",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--amber)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 4 · EPISODE 3 · DRAFT  Parallel lenses · Vera, Ivo and Maya · Level L3  Thirty-one people say the breaks are too loud. The loudest thing on air is the station’s own flood-safety message. The person who made it loud had a reason.  ⚑ RV-88: loudness figures illustrative. RV-84: a flood memory. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "The Loudest Thing on Air",
+   "kind": "PARALLEL LENSES",
+   "level": "L3 · BROADCAST",
+   "party": [
+    "maya",
+    "vera",
+    "worker:Ivo"
+   ],
+   "stakes": "Thirty-one complaints. A news director who wants a number by four. A producer who made the safety message loud on purpose — for a reason he hasn't told anyone.",
+   "clock": "Three hours to Vera's meeting.",
+   "reward": "A PSA people hear instead of mute. Ivo's trust. Warning #5 crossed off.",
+   "objectives": [
+    {
+     "key": "BR-S04E03-01",
+     "text": "Decide what happens to the PSA tonight"
+    },
+    {
+     "key": "twist",
+     "text": "Find the loudest thing on air — and why"
+    },
+    {
+     "key": "core",
+     "text": "Put the breaks back through the processor"
+    },
+    {
+     "key": "BR-S04E03-02",
+     "text": "Give Vera the right number"
+    },
+    {
+     "key": "BR-S04E03-03",
+     "text": "Tell Ivo the truth kindly"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two reasons for loud"
+    }
+   ],
+   "rumor": "Somebody made the flood message loud on purpose. They had a reason. It's older than the station's current logo."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Mute”",
+   "sub": "Monday · 9:14 p.m. · up the valley"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A living room at night. On the TV, a loud flood-preparedness spot: be flood ready, know your route. A viewer points the remote and mutes it.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The most important thirty seconds on the channel. Muted, again.",
+   "flags": [
+    "RV-84",
+    "RV-88"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1264
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": "a living room up the valley · 9:14 p.m.",
+   "lines": [
+    {
+     "who": "worker:Viewer",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(mute)"
+    },
+    {
+     "who": "worker:Viewer",
+     "pose": "N",
+     "expr": "flat",
+     "text": "…Oh, it's the flood thing again. It's always SHOUTING."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Late at night in the promo suite. Ivo alone at his edit screen, the flood PSA file open, its meters pinned in the red. Taped to the edge of the monitor, a photo: a basement staircase with water up to the fourth step. Written on it: 2011.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [
+    "The promo suite, 11:48 p.m. The file is called FINAL_final. It isn't."
+   ],
+   "caption": "Nobody in the building has asked Ivo about the photo. He's never offered.",
+   "flags": [
+    "RV-84"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1911
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Lens 1 · Vera — “Thirty-one”",
+   "sub": "Tuesday · 1:05 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The newsroom. Vera holds a folder of printed complaints. Maya listens.",
+   "characters": [
+    {
+     "id": "vera",
+     "pose": "R",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_newsroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Vera",
+     "kind": "speech",
+     "text": "Thirty-one complaints. Breaks too loud. If viewers don't trust our volume, they won't trust our news. Number by four."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "A number from the right meter. Give me the afternoon."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-88"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7248
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #34 · AVERY'S LENS  Loud is not the same as noticed  Attention comes from clarity and contrast, not level; the loudest thing on a channel is the first thing people mute.  Ivo made the flood PSA loud so people would notice. They noticed — and reached for the mute button."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S04E03",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The peak meter on a master-control screen: news peaks at minus 6, the PSA at minus 9. By this meter the PSA is quieter. Tess frowns.",
+   "characters": [
+    {
+     "id": "tess",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [],
+   "narration": [],
+   "caption": "By the peak meter, the PSA is quieter than the news. Thirty-one people disagree.",
+   "flags": [
+    "RV-88",
+    "RV-83"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 9265
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S4-03a",
+   "teaser": "Vera's complaint folder",
+   "title": "Thirty-one printouts, one with coffee on it",
+   "body": "Most say *too loud.* One says: *I muted the flood ad so often I don't know what it says.* Vera has circled that one twice. It's the only complaint she's answered by hand.",
+   "thread": "The river",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Vera holds her phone at arm's length: she's on hold with the regional complaints office. The hold music blares out of it. Maya winces.",
+   "characters": [
+    {
+     "id": "vera",
+     "pose": "H",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_newsroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Vera",
+     "kind": "speech",
+     "text": "Twelve minutes on hold with the complaints office. About loudness."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Their hold music is louder than our PSA."
+    },
+    {
+     "side": "L",
+     "who": "Vera",
+     "kind": "speech",
+     "text": "Write that down. I'm using it."
+    }
+   ],
+   "narration": [],
+   "caption": "The complaints office is not, itself, a quiet place.",
+   "flags": [
+    "RV-88"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7757
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S04E03-01",
+   "prompt": "1:20. Vera, sharply: “Do I pull the flood PSA tonight? Yes or no.”",
+   "happening": "Complaints: breaks too loud. Peak meter: breaks quieter.",
+   "clock": "1:20 · meeting at 4:00",
+   "known": [
+    "◉ 31 complaints",
+    "▮ Peaks: PSA below news"
+   ],
+   "unknown": [
+    "Loudness per segment",
+    "What changed"
+   ],
+   "risk": "The flood message — and viewers' trust in the channel.",
+   "timer_s": 20,
+   "timeout": [
+    "Vera pulls the PSA herself to stop the complaints.",
+    "When you don't answer, the fastest way to make the noise stop wins."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Is the message the problem, or its level?"
+    }
+   ],
+   "note": "Draft decision (DR-S04E03).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Pull it until it's fixed",
+     "result": "Vera: “The flood PSA. In October. With the river high.”",
+     "consequence": "The safety message goes dark to fix its volume.",
+     "chips": [
+      "Message gone"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You removed the one message you most need people to hear, to fix a level.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Vera": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Keep it airing — and correct its loudness to the target this afternoon",
+     "result": "Vera: “Then fix it by the six o'clock.”",
+     "consequence": "The message stays; the level changes.",
+     "chips": [
+      "Message stays"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Vera": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Turn the whole channel down five dB",
+     "result": "Now the news is quiet and the PSA is still ten LU above it.",
+     "consequence": "The jump is relative. Viewers turn everything up and get shouted at again.",
+     "chips": [
+      "Jump stays"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A global change can't fix a relative jump.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Vera": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Tell Vera the peak meter says it's fine",
+     "result": "Vera: “Thirty-one people say it isn't.”",
+     "consequence": "Right meter, wrong question.",
+     "chips": [
+      "Wrong meter"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Peaks don't show how loud something feels.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Vera": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "physbreak",
+   "cls": "physbreak",
+   "text": "🔭 PHYSICS IN MOTION  How much louder does it sound?  The science under this episode’s problem — live."
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Field notes",
+   "sub": "Intermediate · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Maya and Tess beside a board. Gain equals L-target minus L-measured. Both in LUFS, from a loudness meter — not the peak meter. Target's minus twenty-four. Then you know the rest.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "tess",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Gain equals L-target minus L-measured. Both in LUFS, from a loudness meter — not the peak meter."
+    },
+    {
+     "side": "R",
+     "who": "Tess",
+     "kind": "speech",
+     "text": "Target's minus twenty-four."
+    },
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then you know the rest."
+    }
+   ],
+   "narration": [],
+   "caption": "Intermediate: the formula and what every letter means. The arithmetic is yours.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 8817
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t2",
+   "text": "📗 FIELD NOTES · INTERMEDIATE  Terms   Loudness   LUFS   Peak meter   Formula and variables   ƒ FORMULA · Loudness correction  G = L target  − L measured    L target   the loudness target, LUFS  L measured   integrated loudness of the program, LUFS  G  gain to apply, dB (1 LU = 1 dB)"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lab",
+   "id": "PHY-S04E03",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Lens 2 · Ivo — “Cut through”",
+   "sub": "2:10 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ivo, the promo producer, sleeves rolled, defensive, at his edit desk. Maya listens.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_newsroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ivo",
+     "kind": "speech",
+     "text": "I made it loud. On purpose. People scroll. People talk over the TV. I wanted it to cut through."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "It cut through. Then people muted it."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-84"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7250
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S4-03",
+   "who": "worker:Ivo",
+   "prompt": "(defensive) I made it loud. On purpose. People scroll. People talk over the TV. I wanted it to cut through.",
+   "options": [
+    {
+     "label": "“Why this one, Ivo?”",
+     "who": "worker:Ivo",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "…My sister's basement filled in forty minutes in 2011. There was a warning. She didn't hear it over the dishwasher.",
+     "trust": {
+      "Ivo": 2
+     }
+    },
+    {
+     "label": "“Rules are rules.”",
+     "who": "worker:Ivo",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Right. The rules.",
+     "trust": {
+      "Ivo": -2
+     }
+    },
+    {
+     "label": "“It's too loud. That's all.”",
+     "who": "worker:Ivo",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Thirty-one people agree with you. Great.",
+     "trust": {
+      "Ivo": -1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(Ivo wasn't being careless. He was being afraid, in the right direction, with the wrong tool.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View of loudness across two days of air: news at minus 24, the flood PSA at minus 14, ads around minus 17 to 19. The peak meter shows the PSA lower than the news; the loudness meter shows it ten LU louder.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Same thirty seconds. Two meters. Two different answers.",
+   "flags": [
+    "RV-88",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The loudest thing on air is the safety message.",
+   "body": "It isn't the car ads. The flood-preparedness PSA sits ten LU above the news — roughly twice as loud to the ear — and it's the spot people mute most. The station's most important thirty seconds are the ones fewest people hear.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S04E03-1",
+   "label": "Test: what does this mean for tonight?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The river gauge by the Old Mill bridge in the afternoon: the water is brown and quick but well below the painted 1964 line at the top of the gauge.",
+   "characters": [],
+   "location": "scenes.bg_river",
+   "bubbles": [],
+   "narration": [
+    "Across the valley, the Kestrel River is a little higher than yesterday. It doesn't know about the complaints. It doesn't know about the PSA."
+   ],
+   "caption": "The river doesn't read the complaints folder.",
+   "flags": [
+    "RV-84"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2430
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "A13",
+   "label": "**Learn it now:** loudness and metering — why the peak meter lied.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     Point it at people, not at the ceiling     Sound that brings people in     The OSI model applied to video and wireless"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "demo-note",
+   "cls": "demo-note",
+   "text": "🗜 Compression · HANDS-ON DEMO  Move the threshold and ratio and watch a sung phrase, drum hits or a bass line get steadier — or squashed.  Open the demo ▸",
+   "opens": {
+    "kind": "demo",
+    "id": "comp"
+   }
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "⏺ RECORD IT · CHALLENGE · LEVEL 2  Deliver the programme at the right loudness  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "record-loud"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Lens 3 · Maya — “What changed?”",
+   "sub": "3:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The loudness processor's preset page: break path preset NEWS NIGHT — breaks unprocessed, temp, signed C. — loaded Tuesday 17:24 by Tess.",
+   "characters": [
+    {
+     "id": "tess",
+     "pose": "S",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Tuesday, 5:24 p.m. The night the reference died, Tess loaded anything that said NEWS.",
+   "flags": [
+    "RV-83",
+    "RV-85"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 9324
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S4-03b",
+   "teaser": "the processor's preset list",
+   "title": "“NEWS NIGHT — breaks unprocessed (temp) — C.”",
+   "body": "Saved two years ago for a night when the processor misbehaved. Reloaded on Tuesday at 5:24 p.m. — the night the reference died, when Tess was clicking through anything that said NEWS. *(temp)*, again.",
+   "thread": "Cal's fourteen warnings",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The bypass was on purpose — two years ago.",
+   "body": "Cal saved a preset for one bad night that skipped processing on breaks. On the chaotic night of the reference failure, Tess loaded it because its name said NEWS. It's warning #5 on the wall: break path unmetered.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S04E03-2",
+   "label": "Test: whose mistake is this, really?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Tess, stricken, in master control. Maya, calm.",
+   "characters": [
+    {
+     "id": "tess",
+     "pose": "S",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tess",
+     "kind": "speech",
+     "text": "Again? It's me again? I'm going to get my own warning on that wall."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "It's a preset called NEWS, on a night when everything said NEWS. Cal wrote the warning. Nobody wrote the label."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-85"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 8294
+  },
+  {
+   "origin": "injected",
+   "type": "history",
+   "title": "Measuring how loud things feel",
+   "body": "In 1936 the psychologist S. S. Stevens proposed the sone, a scale of how loud a sound seems rather than how strong it is. People reported that a sound about 10 dB stronger felt roughly twice as loud. Loudness meters today still try to measure what listeners feel, not just what the needle sees.",
+   "flag": "RV-27",
+   "when": "1936",
+   "lab": "PHY-S04E03"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya, phone to her ear, in master control. On the screen: calling Cal, voicemail.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Cal · voicemail",
+     "kind": "phone",
+     "text": "“You've reached Cal. I'm not here. If it's about the station — it's always about the station.” Beep."
+    }
+   ],
+   "narration": [
+    "She means to ask why he saved a preset that skips the processor. She hangs up without leaving a message. Some questions go better in person."
+   ],
+   "caption": "The third call this week. The third voicemail.",
+   "flags": [
+    "RV-85"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 8823
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lab",
+   "id": "LAB-SF-08",
+   "label": "**Fix it:** put the breaks back through the loudness processor, at the target.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S04E03-02",
+   "prompt": "3:55. Vera's meeting. She asks: “Give me the number. One number.”",
+   "happening": "Fixed and measured.",
+   "clock": "3:55",
+   "known": [
+    "▮ PSA −14 → −24 LUFS",
+    "◉ Break path processed again"
+   ],
+   "unknown": [
+    "What the complaints office will ask next"
+   ],
+   "risk": "Vera's credibility — and Tess's.",
+   "timer_s": 20,
+   "timeout": [
+    "Vera goes into the meeting with 'we're looking into it.'",
+    "Owners need a number and what changed."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "One number, from the right meter."
+    }
+   ],
+   "note": "Draft decision (DR-S04E03).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "“The PSA was ten LU above our target. It's corrected, and every break path is processed again.”",
+     "result": "Vera writes TEN on her pad and underlines it.",
+     "consequence": "One number, the right meter, and what's changed.",
+     "chips": [
+      "Right number"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Vera": 1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "“Peak levels were within limits.”",
+     "result": "Vera: “Then why are thirty-one people wrong?”",
+     "consequence": "True and irrelevant.",
+     "chips": [
+      "Wrong meter"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Peaks don't answer a loudness complaint.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Vera": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "“It's the viewers' TVs.”",
+     "result": "Vera stares.",
+     "consequence": "Blaming the audience.",
+     "chips": [
+      "Blame viewers"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The measurement says otherwise.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Vera": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "“Tess loaded the wrong preset.”",
+     "result": "Tess, at the back, goes quiet.",
+     "consequence": "True, and it hides the unlabeled preset.",
+     "chips": [
+      "Blame"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The preset's name told her it was the news preset.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Tess": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Vera, after her meeting, lighter.",
+   "characters": [
+    {
+     "id": "vera",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_newsroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Vera",
+     "kind": "speech",
+     "text": "Ten. I said ten, and 'fixed on every path.' They asked what LUFS stands for. I said 'ask Maya.'"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Loudness units, full scale. And now it's the same as the news."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7250
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "vera",
+     "pose": "N",
+     "expr": "flat",
+     "text": "So the number is… ten."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Ten LU hot. Corrected to target. On every path now."
+    },
+    {
+     "who": "vera",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Ten. I can say ten. Ten fits in a headline."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S04E03-03",
+   "prompt": "4:30. Ivo wants to remaster the PSA tonight. How do you brief him?",
+   "happening": "The PSA is corrected on air. Ivo wants to remake it.",
+   "clock": "4:30",
+   "known": [
+    "◉ Loud gets muted",
+    "◉ No written delivery spec for promos"
+   ],
+   "unknown": [
+    "How Ivo will take it"
+   ],
+   "risk": "The message — and Ivo's willingness to work with engineering.",
+   "timer_s": 25,
+   "timeout": [
+    "Ivo remasters it alone, louder, 'to make up for the correction.'",
+    "If you don't give the producer a better tool, he'll reach for the old one."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "His goal is right. Which tool gets him there?"
+    }
+   ],
+   "note": "Draft decision (DR-S04E03).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "“Make it clear, not hot: voice forward, music down, delivered at −24 — the same as the news.”",
+     "result": "Ivo: “Clear, not hot.” He writes it on a sticky note and puts it on his screen.",
+     "consequence": "The message gets heard for the right reason.",
+     "chips": [
+      "Clarity"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "“Make it quieter than everything so nobody complains.”",
+     "result": "Nobody complains. Nobody hears it either.",
+     "consequence": "The opposite mistake.",
+     "chips": [
+      "Too quiet"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Quiet isn't the goal; matching is.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "“You broke the delivery rules.”",
+     "result": "Ivo: “There were rules?”",
+     "consequence": "There weren't. Now he's defensive.",
+     "chips": [
+      "Blame"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "There was no written delivery spec — that's the gap.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Remaster it yourself without telling him",
+     "result": "Ivo finds out from the logs.",
+     "consequence": "He stops sending you anything.",
+     "chips": [
+      "Trust"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "It's his work. Bring him the meter.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ivo at his edit desk, remastering the PSA; Maya beside him pointing at a loudness meter on his screen.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "R",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_newsroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ivo",
+     "kind": "speech",
+     "text": "Do you know how hard it is to make something urgent without making it loud?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Harder. That's why it's your job and not mine."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-88"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7251
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "warm",
+   "where": null,
+   "lines": [
+    {
+     "who": "worker:Ivo",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Voice forward. Music down. Same loudness as the news."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "And people will hear the words instead of the volume."
+    },
+    {
+     "who": "worker:Ivo",
+     "pose": "N",
+     "expr": "flat",
+     "text": "…My sister would have liked that version."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-403",
+   "label": "**Service Mode:** run the afternoon yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "6:02 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The same living room. The PSA plays at normal loudness — know your route, Old Mill Road, Route 9. The viewer doesn't reach for the remote. They listen.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Same thirty seconds. Heard, this time.",
+   "flags": [
+    "RV-84"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1060
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Cal's warnings on the wall: numbers five and six are crossed out.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Warning #5: crossed off. Twelve to go.",
+   "flags": [
+    "RV-85"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3550
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "June, the station's live captioner, glasses on, hearing aid visible, typing fast on her phone. A monitor beside her: captions on the stream, 22:14 to 22:26, no data.",
+   "characters": [
+    {
+     "id": "june",
+     "pose": "W",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_newsroom",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "June",
+     "kind": "speech",
+     "text": "Captions dropped for twelve minutes last night. Twelve minutes where deaf viewers didn't know Route 9 was closed."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Twelve Minutes.*",
+   "flags": [
+    "RV-81",
+    "RV-83"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7809
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Answer a loudness complaint with a loudness meter, not a peak meter. Measure each segment, correct by target − measured, and put every path through the same processing. Loud is not the same as noticed: make important messages clear, not hot."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Ivo turned the volume up because he was afraid people wouldn't hear. What do you make louder when you're afraid of not being heard?  Boundary: this reflection doesn't change any level."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S04E03",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

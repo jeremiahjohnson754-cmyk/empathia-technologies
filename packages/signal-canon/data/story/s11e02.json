@@ -1,0 +1,870 @@
+{
+ "chapter": {
+  "id": "s11e02",
+  "kicker": "S11 · E02",
+  "title": "Failover That Failed Over Too Much",
+  "pill": "S11E02 · Failover That Failed Over Too Much",
+  "sub": "The backup worked perfectly — sixty times an hour.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S11E02",
+   "RV-182",
+   "RV-183",
+   "RV-186",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#EF4444"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 11 · EPISODE 2 · DRAFT · CASE-056  The Brennock County EOC · the night after the first crest · Maya, Wendell (county IT, the network owner), Fitz (radio systems manager) and Director Oduya · Level L6 · Mastery support (reference only — choose the tool and say why)  The room paid for two carriers so it could never go off the air. At two in the morning it is off the air more than it’s on — because of the backup.  ⚑ RV-182: the network is Wendell’s; the carriers’ cables are theirs; towers are for certified crews only. RV-183: figures illustrative. Some choices run on a clock — and some depend on your loadout."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Failover That Failed Over Too Much",
+   "kind": "REGION · NETWORK",
+   "level": "L6 · MASTERY",
+   "party": [
+    "maya",
+    "wendell",
+    "fitz"
+   ],
+   "stakes": "The room's main link is flapping, and the automatic failover is following every flap.",
+   "clock": "Before the 07:00 briefing.",
+   "reward": "A room that stays on the air — and two paths that are really two.",
+   "objectives": [
+    {
+     "key": "BR-S11E02-01",
+     "text": "Decide the first move"
+    },
+    {
+     "key": "twist",
+     "text": "Size what the failover costs"
+    },
+    {
+     "key": "core",
+     "text": "Order the fix"
+    },
+    {
+     "key": "BR-S11E02-02",
+     "text": "Decide how failback works"
+    },
+    {
+     "key": "BR-S11E02-03",
+     "text": "Decide about the second path"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "Fail over fast; fail back slow."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Flip. Flop.”",
+   "sub": "Saturday · 2:10 a.m. · the EOC"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The EOC at night; half the wall's tiles stuttering amber; Wendell, county IT, points at the network rack; Maya with a laptop open.",
+   "characters": [
+    {
+     "id": "wendell",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s11kit.bg_eoc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Wendell",
+     "kind": "speech",
+     "text": "Flip. Flop. Flip. I can hear the router thinking."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then let's time what each thought costs."
+    }
+   ],
+   "narration": [],
+   "caption": "Carrier A, drowning.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7544
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "tension",
+   "where": "the EOC · Saturday 02:10",
+   "lines": [
+    {
+     "who": "wendell",
+     "pose": "N",
+     "expr": "worried",
+     "text": "Flip. Flop. Flip. I can hear the router thinking."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Then let's time what each thought costs."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Forty-five percent”",
+   "sub": "Saturday · 2:15 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S11E02-01",
+   "prompt": "02:15. The router is flipping between carriers and the radio and video keep dropping. First move?",
+   "happening": "Failover flipping.",
+   "clock": "Saturday 02:15 · briefing 07:00",
+   "known": [
+    "◉ Carrier A flapping",
+    "◉ Sessions dropping"
+   ],
+   "unknown": [
+    "How much each switch costs"
+   ],
+   "risk": "A room off the air in the middle of a flood.",
+   "timer_s": 20,
+   "timeout": [
+    "Nobody decides.",
+    "The router keeps flipping until dawn."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Is the flap the outage — or the switching?"
+    }
+   ],
+   "note": "Draft decision (DR-S11E02).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Unplug carrier A at the router so it stops flapping",
+     "result": "Wendell: “My router. Tell me what you want and I'll do it.”",
+     "consequence": "The right idea by the wrong hands.",
+     "chips": [
+      "Not yours"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NETWORK"
+      }
+     ],
+     "canonical": false,
+     "fail": "The router is the network owner's.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Wendell": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Pull the router's log with Wendell and time every switch against the radio and video drops",
+     "result": "Two switches a minute; each drops radio and video for about twelve seconds.",
+     "consequence": "Measure what the cure is costing before you choose a new one.",
+     "chips": [
+      "Measured",
+      "Owner"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Wendell": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Call carrier A and wait for their engineer",
+     "result": "They'll come at first light. The room drops sixty times an hour until then.",
+     "consequence": "Their repair — but the room needs the owner's change now.",
+     "chips": [
+      "Slow"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Tell the room to use phones until morning",
+     "result": "Six agencies on personal phones in a flood.",
+     "consequence": "Gives up the room's own systems.",
+     "chips": [
+      "Gives up"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Forty-five percent.",
+   "body": "Carrier A is up about forty-five seconds and down about fifteen. For three seconds nobody notices; then the router declares it dead and fails over; the instant A answers, it fails back. Two switches a minute, and every switch makes the radio gateway and the video bridge rebuild their sessions: twelve seconds each. Twenty-seven seconds lost in every sixty. On carrier B alone, nothing would have been lost at all.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S11E02-1",
+   "label": "Test: how often — and what would B alone have given?"
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Which one — and why?",
+   "sub": "Mastery · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Wendell and Maya beside a board. Carrier A drops for ten seconds every forty. The router fails over, then straight back. And every switch costs twelve seconds while the radio and video sessions come back. Both ways. So the backup's making it worse?",
+   "characters": [
+    {
+     "id": "wendell",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s11kit.bg_eoc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Wendell",
+     "kind": "speech",
+     "text": "Carrier A drops for ten seconds every forty. The router fails over, then straight back."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And every switch costs twelve seconds while the radio and video sessions come back. Both ways."
+    },
+    {
+     "side": "L",
+     "who": "Wendell",
+     "kind": "speech",
+     "text": "So the backup's making it worse?"
+    }
+   ],
+   "narration": [],
+   "caption": "Mastery: nobody hands you the tool. Pick it, and say why.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7309
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t4",
+   "text": "📕 WHEN & WHY · MASTERY  Terms   Flapping   Hold-down timer   Shared risk   The situation  A link goes down 10 s in every 40; failover triggers after three missed one-second heartbeats and fails back the moment the link answers; each switch drops sessions for 12 s. Which relationship tells you how long to wait before trusting the link — and which tells you whether two carriers are really two?   Which relationship do you reach for?  Heartbeat timeout  Log storage  Replacement reserve     Reference: the 📖 Glossary has every formula. At mastery, knowing  which  and  why  is the skill."
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "U2",
+   "label": "**Learn it now:** failover, flapping and shared risk.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     The first step to networking, AV style     Point it at people, not at the ceiling     Why the upward center fill fails — comb filtering"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "O-1102",
+   "label": "**Order it:** stop a flapping failover.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A timing sheet of two minutes: carrier A green for forty-five seconds and red for fifteen, twice; the router's lane moving to carrier B three seconds after each drop and straight back when A returns; the radio-and-video lane red for twenty-seven seconds of every minute.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The backup is the outage.",
+   "flags": [
+    "RV-183"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "router log"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 4930
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S11-02a",
+   "teaser": "the router's config",
+   "title": "‘failback: immediate’",
+   "body": "The router's configuration, as the integrator left it: ‘track primary · 3 × 1 s · failback: immediate’. Fast both ways. Nobody had imagined a link that came back and left again sixty times an hour.",
+   "thread": "Network",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S11E02-02",
+   "prompt": "45% lost to switching. How should failover behave?",
+   "happening": "Switching measured.",
+   "clock": "Saturday 02:30",
+   "known": [
+    "◉ Detect 3 s",
+    "◉ Fail back instantly"
+   ],
+   "unknown": [
+    "When A will be repaired"
+   ],
+   "risk": "A room off the air every minute.",
+   "timer_s": 25,
+   "timeout": [
+    "Nobody decides.",
+    "Flip, flop, until the carrier arrives."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Which half of the failover helped — and which half hurt?"
+    }
+   ],
+   "note": "Draft decision (DR-S11E02).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Make detection slower — ten missed heartbeats",
+     "result": "Now a real failure takes ten seconds to notice, and the flapping still drags it back.",
+     "consequence": "Slows the useful half and keeps the harmful half.",
+     "chips": [
+      "Wrong half"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Wendell pins traffic to carrier B for the activation and adds a hold-down: fail back only after five clean minutes, and manually during activations",
+     "result": "The flipping stops. Radio and video hold. The hold-down goes into the network runbook.",
+     "consequence": "Fail over fast, fail back slow — the owner's change.",
+     "chips": [
+      "Pinned",
+      "Hold-down"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Wendell": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Turn automatic failover off entirely",
+     "result": "Tonight's fine. Next time carrier B fails, nobody notices for an hour.",
+     "consequence": "Throws away the useful half.",
+     "chips": [
+      "No failover"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask the radio gateway vendor to make sessions rebuild faster",
+     "result": "Twelve seconds becomes eight. Still a third of every minute lost.",
+     "consequence": "Polishes the symptom.",
+     "chips": [
+      "Symptom"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "One relay, thirty million people",
+   "body": "On 9 November 1965 a single protective relay on a line out of a power station in Ontario tripped — it had been set years earlier, for lighter loads. The power it had carried swung onto neighbouring lines, which tripped in turn. Within minutes about thirty million people across the north-east of North America were in the dark. The system had backups everywhere. They all moved at once.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Four hundred metres”",
+   "sub": "Saturday · 10:00 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Four hundred metres of shared conduit.",
+   "body": "With the room steady, Maya lays the two carriers' route maps over the county's conduit records. They were sold as diverse. For four hundred metres they aren't: both run through the same duct under the Mill Road bridge. The river is two metres below its deck and rising. Two carriers, one bridge — one flood away from none.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S11E02-2",
+   "label": "Test: what survives a washout — and what would a separate path give?"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #103 · AVERY'S LENS  A backup must be slower to trust than to use  Fail over fast; fail back slowly, and only to a path that has stayed healthy. And check that two paths are really two — a shared conduit makes them one.  A failover that followed every flap of a waterlogged link took the operations room off the air nearly half the time — and both ‘diverse’ carriers crossed the river in one conduit."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S11E02",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A schematic: carrier A in red and carrier B in purple approach the Sable River from different directions, meet and run together through one black conduit on the Mill Road bridge for 400 metres, then split again to the EOC; a dashed green line marks a funded, separate licensed microwave path to the hilltop.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Two carriers, one bridge.",
+   "flags": [
+    "RV-183"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "route maps and records"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2585
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S11-02",
+   "who": "wendell",
+   "prompt": "I bought two carriers so this couldn't happen.",
+   "options": [
+    {
+     "label": "“You did the right thing. Nobody told you they share a bridge. Now you know, and the director can fund the fix.”",
+     "who": "wendell",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "Then I'm writing ‘check the conduit’ on every contract from now on.",
+     "trust": {
+      "Wendell": 2
+     }
+    },
+    {
+     "label": "“Two carriers isn't two paths.”",
+     "who": "wendell",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "I've noticed.",
+     "trust": {
+      "Wendell": 0
+     }
+    },
+    {
+     "label": "“The carriers lied.”",
+     "who": "wendell",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "They didn't lie. I didn't ask.",
+     "trust": {
+      "Wendell": 1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S11-02b",
+   "teaser": "the carriers' route maps",
+   "title": "both · ‘Mill Rd bridge duct’",
+   "body": "Two route maps from two carriers, sold as diverse. Laid over each other, both lines run through ‘Mill Rd bridge duct’ for 400 m. The same duct. The same bridge. The same river.",
+   "thread": "Network",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S11E02-03",
+   "prompt": "Both carriers share the bridge. What do you ask for?",
+   "happening": "Shared conduit found.",
+   "clock": "Saturday 11:00",
+   "known": [
+    "◉ One conduit, one bridge",
+    "◉ River rising"
+   ],
+   "unknown": [
+    "What the grant can cover"
+   ],
+   "risk": "Both paths lost to one washout.",
+   "timer_s": 25,
+   "timeout": [
+    "Nothing changes.",
+    "Two carriers, one bridge, into the next flood."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What would still connect the room if the bridge went?"
+    }
+   ],
+   "note": "Draft decision (DR-S11E02). Option B needs Budget at LIMITED or better.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Nothing — two carriers is the standard",
+     "result": "The bridge closes on Tuesday. Both carriers go with it.",
+     "consequence": "A standard that shares a bridge.",
+     "chips": [
+      "Shared risk"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Take it to Director Oduya with the maps: a separate, licensed microwave path to the county's hilltop site — installed by the radio shop's certified tower crew — funded from the grant",
+     "result": "Oduya moves it to the top of the grant list. Fitz books a crew for calm weather.",
+     "consequence": "A second path that fails separately, through every owner it needs.",
+     "chips": [
+      "Separate",
+      "Funded"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": {
+      "budget": 1
+     },
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Oduya": 2,
+       "Fitz": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Bonded cellular for the radio gateway and the video bridge until there's money",
+     "result": "It carries the critical sessions — on masts that may lose power in the same flood.",
+     "consequence": "The best you can do without the budget — useful, and not independent enough.",
+     "chips": [
+      "Stopgap"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Re-aim the old microwave dish on the roof yourself tonight",
+     "result": "Fitz: “Nobody climbs. Not tonight, not you.”",
+     "consequence": "Work at height, in weather, on someone else's licence.",
+     "chips": [
+      "Never"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "TOWER"
+      }
+     ],
+     "canonical": false,
+     "fail": "Nobody climbs; towers are for certified crews, in calm weather.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Fitz": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-1102",
+   "label": "**Service Mode:** run the night yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-056 · SIGNAL original  Failover That Failed Over Too Much  The backup worked perfectly — sixty times an hour.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-056"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Tuesday · 2:05 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The EOC in daylight, the wall steady; Wendell with the router's new configuration printed; Fitz, the radio systems manager, a handheld radio on his belt.",
+   "characters": [
+    {
+     "id": "wendell",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "fitz",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s11kit.bg_eoc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Wendell",
+     "kind": "speech",
+     "text": "A clean for twenty-four hours. Failback done by hand, at two, with the director's OK."
+    },
+    {
+     "side": "R",
+     "who": "Fitz",
+     "kind": "speech",
+     "text": "And a crew for the hilltop dish the first calm week. Nobody else goes up."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6867
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The radio room: consoles, the interoperability gateway rack and a window onto the antenna mast; Fitz points at a console; Maya listens.",
+   "characters": [
+    {
+     "id": "fitz",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s11kit.bg_radio",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Fitz",
+     "kind": "speech",
+     "text": "Fire can't hear public works on the patch. And fire's receiver hisses when nobody's talking."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Since when?"
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Radio Interop.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2973
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Fail over fast; fail back slow. Measure what each switch costs before trusting automatic failover, and use a hold-down so a flapping link can’t drag the room back and forth. Two paths only count if they fail separately — A = 1 − (1 − A)² assumes independence, and a shared conduit makes two carriers one. The network is its owner’s; towers are for certified crews."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Which of your “two of everything” share one thing you haven’t looked for?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S11E02",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

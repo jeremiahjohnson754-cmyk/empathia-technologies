@@ -1,0 +1,2297 @@
+[
+ {
+  "id": "maya",
+  "name": "Maya",
+  "panels": 797,
+  "chapters": [
+   "pro01",
+   "pro02",
+   "pro03",
+   "pro04",
+   "pro05",
+   "pro06",
+   "pro07",
+   "pro08",
+   "pro09",
+   "pro10",
+   "pro11",
+   "s01e00",
+   "s01e01",
+   "s01e02",
+   "s01e03",
+   "s01e04",
+   "s01e05",
+   "s01e06",
+   "s01e07",
+   "s01e08",
+   "s01e09",
+   "s01e10",
+   "s01e11",
+   "s02e01",
+   "s02e02",
+   "s02e03",
+   "s02e04",
+   "s02e05",
+   "s02e06",
+   "s02e07",
+   "s02e08",
+   "s02e09",
+   "s02e10",
+   "s02e11",
+   "s03e01",
+   "s03e02",
+   "s03e03",
+   "s03e04",
+   "s03e05",
+   "s03e06",
+   "s03e07",
+   "s03e08",
+   "s03e09",
+   "s03e10",
+   "s03e11",
+   "s04e01",
+   "s04e02",
+   "s04e03",
+   "s04e04",
+   "s04e05",
+   "s04e06",
+   "s04e07",
+   "s04e08",
+   "s04e09",
+   "s04e10",
+   "s04e11",
+   "s05e01",
+   "s05e02",
+   "s05e03",
+   "s05e04",
+   "s05e05",
+   "s05e06",
+   "s05e07",
+   "s05e08",
+   "s05e09",
+   "s05e10",
+   "s05e11",
+   "s06e01",
+   "s06e02",
+   "s06e03",
+   "s06e04",
+   "s06e05",
+   "s06e06",
+   "s06e07",
+   "s06e08",
+   "s06e09",
+   "s06e10",
+   "s06e11",
+   "s07e01",
+   "s07e02",
+   "s07e03",
+   "s07e04",
+   "s07e05",
+   "s07e06",
+   "s07e07",
+   "s07e08",
+   "s07e09",
+   "s07e10",
+   "s07e11",
+   "s08e01",
+   "s08e02",
+   "s08e03",
+   "s08e04",
+   "s08e05",
+   "s08e06",
+   "s08e08",
+   "s08e09",
+   "s08e10",
+   "s09e01",
+   "s09e02",
+   "s09e03",
+   "s09e04",
+   "s09e05",
+   "s09e06",
+   "s09e07",
+   "s09e08",
+   "s09e09",
+   "s09e10",
+   "s09e11",
+   "s10e01",
+   "s10e02",
+   "s10e03",
+   "s10e04",
+   "s10e05",
+   "s10e06",
+   "s10e07",
+   "s10e08",
+   "s10e09",
+   "s10e10",
+   "s10e11",
+   "s11e01",
+   "s11e02",
+   "s11e03",
+   "s11e04",
+   "s11e05",
+   "s11e06",
+   "s11e07",
+   "s11e08",
+   "s11e09",
+   "s11e10",
+   "s11e11",
+   "s12e01",
+   "s12e02",
+   "s12e03",
+   "s12e04",
+   "s12e05",
+   "s12e06",
+   "s12e07",
+   "s12e08",
+   "s12e09",
+   "s12e10",
+   "s12e11"
+  ],
+  "seasons": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ],
+  "first": "pro01",
+  "poses": {
+   "N": 379,
+   "S": 41,
+   "P": 45,
+   "W": 80,
+   "R": 64,
+   "L": 129,
+   "H": 57,
+   "M": 2
+  }
+ },
+ {
+  "id": "ray",
+  "name": "Ray",
+  "panels": 83,
+  "chapters": [
+   "pro01",
+   "pro02",
+   "pro03",
+   "pro04",
+   "pro05",
+   "pro06",
+   "pro07",
+   "pro08",
+   "pro09",
+   "pro11",
+   "s01e00",
+   "s01e01",
+   "s01e02",
+   "s01e03",
+   "s01e04",
+   "s01e05",
+   "s01e06",
+   "s01e07",
+   "s01e08",
+   "s01e09",
+   "s01e10",
+   "s03e06",
+   "s03e09",
+   "s03e10",
+   "s04e08",
+   "s04e09",
+   "s12e10"
+  ],
+  "seasons": [
+   0,
+   1,
+   3,
+   4,
+   12
+  ],
+  "first": "pro01",
+  "poses": {
+   "P": 10,
+   "W": 21,
+   "N": 27,
+   "S": 2,
+   "R": 20,
+   "H": 3
+  }
+ },
+ {
+  "id": "sam",
+  "name": "Sam",
+  "panels": 80,
+  "chapters": [
+   "s03e01",
+   "s03e02",
+   "s03e03",
+   "s03e04",
+   "s03e05",
+   "s03e06",
+   "s03e07",
+   "s03e08",
+   "s03e10",
+   "s03e11",
+   "s04e07",
+   "s07e11"
+  ],
+  "seasons": [
+   3,
+   4,
+   7
+  ],
+  "first": "s03e01",
+  "poses": {
+   "S": 11,
+   "W": 16,
+   "N": 25,
+   "P": 15,
+   "H": 6,
+   "R": 5,
+   "L": 2
+  }
+ },
+ {
+  "id": "worker",
+  "name": "Colleague",
+  "panels": 61,
+  "chapters": [
+   "s02e05",
+   "s02e06",
+   "s02e07",
+   "s02e09",
+   "s03e01",
+   "s03e02",
+   "s03e03",
+   "s03e06",
+   "s03e07",
+   "s03e08",
+   "s04e01",
+   "s04e03",
+   "s04e05",
+   "s04e06",
+   "s04e07",
+   "s04e08",
+   "s04e09",
+   "s04e10",
+   "s06e06",
+   "s07e07"
+  ],
+  "seasons": [
+   2,
+   3,
+   4,
+   6,
+   7
+  ],
+  "first": "s02e05",
+  "poses": {
+   "W": 21,
+   "P": 9,
+   "N": 12,
+   "S": 6,
+   "R": 7,
+   "L": 2,
+   "M": 3,
+   "H": 1
+  }
+ },
+ {
+  "id": "imani",
+  "name": "Imani",
+  "panels": 47,
+  "chapters": [
+   "s01e00",
+   "s01e01",
+   "s01e02",
+   "s01e03",
+   "s01e04",
+   "s01e05",
+   "s01e06",
+   "s01e07",
+   "s01e08",
+   "s01e10",
+   "s02e08",
+   "s02e09",
+   "s02e10",
+   "s03e05",
+   "s03e07",
+   "s03e08",
+   "s03e10",
+   "s03e11"
+  ],
+  "seasons": [
+   1,
+   2,
+   3
+  ],
+  "first": "s01e00",
+  "poses": {
+   "P": 4,
+   "W": 17,
+   "N": 15,
+   "H": 6,
+   "R": 4,
+   "L": 1
+  }
+ },
+ {
+  "id": "tess",
+  "name": "Tess",
+  "panels": 45,
+  "chapters": [
+   "s04e01",
+   "s04e02",
+   "s04e03",
+   "s04e05",
+   "s04e07",
+   "s04e08",
+   "s04e09",
+   "s04e10",
+   "s04e11",
+   "s05e01",
+   "s05e08",
+   "s05e10"
+  ],
+  "seasons": [
+   4,
+   5
+  ],
+  "first": "s04e01",
+  "poses": {
+   "S": 8,
+   "N": 10,
+   "L": 6,
+   "R": 5,
+   "W": 3,
+   "P": 6,
+   "M": 5,
+   "H": 2
+  }
+ },
+ {
+  "id": "priya",
+  "name": "Priya",
+  "panels": 38,
+  "chapters": [
+   "s01e00",
+   "s01e01",
+   "s02e09",
+   "s03e01",
+   "s03e03",
+   "s03e04",
+   "s03e05",
+   "s03e08",
+   "s04e07",
+   "s06e01",
+   "s06e02",
+   "s06e03",
+   "s06e08",
+   "s06e09",
+   "s06e10",
+   "s07e11"
+  ],
+  "seasons": [
+   1,
+   2,
+   3,
+   4,
+   6,
+   7
+  ],
+  "first": "s01e00",
+  "poses": {
+   "H": 10,
+   "P": 5,
+   "W": 14,
+   "N": 6,
+   "R": 3
+  }
+ },
+ {
+  "id": "dante",
+  "name": "Dante",
+  "panels": 37,
+  "chapters": [
+   "s01e02",
+   "s01e08",
+   "s01e10",
+   "s02e01",
+   "s02e02",
+   "s02e05",
+   "s02e07",
+   "s02e10"
+  ],
+  "seasons": [
+   1,
+   2
+  ],
+  "first": "s01e02",
+  "poses": {
+   "W": 8,
+   "L": 4,
+   "N": 11,
+   "P": 9,
+   "S": 4,
+   "M": 1
+  }
+ },
+ {
+  "id": "kit",
+  "name": "Kit",
+  "panels": 32,
+  "chapters": [
+   "s06e02",
+   "s06e07",
+   "s06e08",
+   "s06e09",
+   "s06e10",
+   "s06e11",
+   "s08e01",
+   "s08e04",
+   "s08e05",
+   "s08e06",
+   "s08e10",
+   "s09e01",
+   "s09e02",
+   "s09e03",
+   "s09e08",
+   "s09e09",
+   "s09e10",
+   "s11e06",
+   "s11e07",
+   "s11e10",
+   "s11e11"
+  ],
+  "seasons": [
+   6,
+   8,
+   9,
+   11
+  ],
+  "first": "s06e02",
+  "poses": {
+   "W": 11,
+   "H": 2,
+   "S": 2,
+   "L": 6,
+   "N": 3,
+   "P": 8
+  }
+ },
+ {
+  "id": "ben",
+  "name": "Ben",
+  "panels": 29,
+  "chapters": [
+   "s02e01",
+   "s02e02",
+   "s02e03",
+   "s02e09",
+   "s02e10",
+   "s02e11"
+  ],
+  "seasons": [
+   2
+  ],
+  "first": "s02e01",
+  "poses": {
+   "P": 5,
+   "R": 5,
+   "H": 4,
+   "W": 3,
+   "N": 10,
+   "L": 2
+  }
+ },
+ {
+  "id": "sofia",
+  "name": "Sofia",
+  "panels": 28,
+  "chapters": [
+   "s01e00",
+   "s01e04",
+   "s01e05",
+   "s01e09",
+   "s02e01",
+   "s02e02",
+   "s02e03",
+   "s02e04"
+  ],
+  "seasons": [
+   1,
+   2
+  ],
+  "first": "s01e00",
+  "poses": {
+   "W": 9,
+   "P": 4,
+   "N": 9,
+   "S": 4,
+   "R": 2
+  }
+ },
+ {
+  "id": "lily",
+  "name": "Lily",
+  "panels": 28,
+  "chapters": [
+   "s01e00",
+   "s01e02",
+   "s01e03",
+   "s01e04",
+   "s01e05",
+   "s01e06",
+   "s01e07",
+   "s01e10",
+   "s01e11"
+  ],
+  "seasons": [
+   1
+  ],
+  "first": "s01e00",
+  "poses": {
+   "N": 7,
+   "W": 7,
+   "P": 3,
+   "R": 10,
+   "H": 1
+  }
+ },
+ {
+  "id": "maya_site",
+  "name": "Maya (site PPE)",
+  "panels": 28,
+  "chapters": [
+   "s08e01",
+   "s08e02",
+   "s08e03",
+   "s08e05",
+   "s08e06",
+   "s08e07",
+   "s08e08",
+   "s08e09",
+   "s08e10",
+   "s08e11"
+  ],
+  "seasons": [
+   8
+  ],
+  "first": "s08e01",
+  "poses": {
+   "N": 21,
+   "W": 4,
+   "M": 1,
+   "S": 1,
+   "R": 1
+  }
+ },
+ {
+  "id": "wes",
+  "name": "Wes",
+  "panels": 27,
+  "chapters": [
+   "s05e01",
+   "s05e03",
+   "s05e04",
+   "s05e05",
+   "s05e08",
+   "s05e09",
+   "s05e10",
+   "s05e11",
+   "s06e08",
+   "s06e09"
+  ],
+  "seasons": [
+   5,
+   6
+  ],
+  "first": "s05e01",
+  "poses": {
+   "N": 12,
+   "S": 1,
+   "L": 5,
+   "H": 5,
+   "R": 2,
+   "W": 1,
+   "P": 1
+  }
+ },
+ {
+  "id": "theo",
+  "name": "Theo",
+  "panels": 24,
+  "chapters": [
+   "s01e00",
+   "s01e02",
+   "s01e03",
+   "s01e04",
+   "s01e05",
+   "s01e07",
+   "s01e09",
+   "s01e10"
+  ],
+  "seasons": [
+   1
+  ],
+  "first": "s01e00",
+  "poses": {
+   "R": 2,
+   "S": 8,
+   "N": 8,
+   "P": 2,
+   "W": 4
+  }
+ },
+ {
+  "id": "leah",
+  "name": "Leah",
+  "panels": 20,
+  "chapters": [
+   "s02e01",
+   "s02e02",
+   "s02e05",
+   "s02e06",
+   "s02e07",
+   "s02e08"
+  ],
+  "seasons": [
+   2
+  ],
+  "first": "s02e01",
+  "poses": {
+   "W": 5,
+   "H": 5,
+   "L": 2,
+   "N": 6,
+   "P": 2
+  }
+ },
+ {
+  "id": "mei",
+  "name": "Mei",
+  "panels": 20,
+  "chapters": [
+   "s03e01",
+   "s03e08",
+   "s03e09",
+   "s03e10"
+  ],
+  "seasons": [
+   3
+  ],
+  "first": "s03e01",
+  "poses": {
+   "W": 8,
+   "P": 4,
+   "N": 3,
+   "R": 5
+  }
+ },
+ {
+  "id": "pim",
+  "name": "Pim",
+  "panels": 20,
+  "chapters": [
+   "s10e01",
+   "s10e02",
+   "s10e03",
+   "s10e05",
+   "s10e06",
+   "s10e07",
+   "s10e08",
+   "s10e09",
+   "s10e10",
+   "s12e03",
+   "s12e04",
+   "s12e10"
+  ],
+  "seasons": [
+   10,
+   12
+  ],
+  "first": "s10e01",
+  "poses": {
+   "W": 7,
+   "S": 3,
+   "P": 3,
+   "N": 4,
+   "H": 2,
+   "R": 1
+  }
+ },
+ {
+  "id": "esme",
+  "name": "Esme",
+  "panels": 20,
+  "chapters": [
+   "s10e01",
+   "s10e03",
+   "s10e04",
+   "s10e05",
+   "s10e06",
+   "s10e07",
+   "s10e08",
+   "s10e10",
+   "s10e11"
+  ],
+  "seasons": [
+   10
+  ],
+  "first": "s10e01",
+  "poses": {
+   "W": 15,
+   "P": 3,
+   "N": 2
+  }
+ },
+ {
+  "id": "jordan",
+  "name": "Jordan",
+  "panels": 19,
+  "chapters": [
+   "s02e01",
+   "s02e02",
+   "s02e03",
+   "s02e06",
+   "s02e08",
+   "s02e11"
+  ],
+  "seasons": [
+   2
+  ],
+  "first": "s02e01",
+  "poses": {
+   "R": 2,
+   "W": 7,
+   "N": 5,
+   "S": 3,
+   "H": 1,
+   "P": 1
+  }
+ },
+ {
+  "id": "crew",
+  "name": "Crew",
+  "panels": 18,
+  "chapters": [
+   "s02e02",
+   "s02e03",
+   "s02e05",
+   "s02e06",
+   "s02e07",
+   "s02e08",
+   "s02e09",
+   "s02e10"
+  ],
+  "seasons": [
+   2
+  ],
+  "first": "s02e02",
+  "poses": {
+   "P": 4,
+   "W": 7,
+   "N": 5,
+   "H": 1,
+   "R": 1
+  }
+ },
+ {
+  "id": "noor",
+  "name": "Noor",
+  "panels": 18,
+  "chapters": [
+   "s02e05",
+   "s12e01",
+   "s12e02",
+   "s12e03",
+   "s12e05",
+   "s12e06",
+   "s12e08",
+   "s12e10",
+   "s12e11"
+  ],
+  "seasons": [
+   2,
+   12
+  ],
+  "first": "s02e05",
+  "poses": {
+   "S": 2,
+   "W": 5,
+   "N": 2,
+   "R": 6,
+   "P": 3
+  }
+ },
+ {
+  "id": "hollis",
+  "name": "Hollis",
+  "panels": 18,
+  "chapters": [
+   "s10e01",
+   "s10e02",
+   "s10e04",
+   "s10e05",
+   "s10e08",
+   "s10e09",
+   "s10e10",
+   "s10e11"
+  ],
+  "seasons": [
+   10
+  ],
+  "first": "s10e01",
+  "poses": {
+   "P": 5,
+   "W": 7,
+   "N": 6
+  }
+ },
+ {
+  "id": "nora",
+  "name": "Nora",
+  "panels": 17,
+  "chapters": [
+   "s03e04",
+   "s03e05",
+   "s03e07",
+   "s03e10"
+  ],
+  "seasons": [
+   3
+  ],
+  "first": "s03e04",
+  "poses": {
+   "R": 4,
+   "P": 6,
+   "W": 4,
+   "N": 3
+  }
+ },
+ {
+  "id": "anselm",
+  "name": "Anselm",
+  "panels": 17,
+  "chapters": [
+   "s06e01",
+   "s06e02",
+   "s06e04",
+   "s06e05",
+   "s06e06",
+   "s06e07",
+   "s06e11"
+  ],
+  "seasons": [
+   6
+  ],
+  "first": "s06e01",
+  "poses": {
+   "R": 4,
+   "W": 6,
+   "P": 4,
+   "N": 3
+  }
+ },
+ {
+  "id": "dolores",
+  "name": "Dolores",
+  "panels": 16,
+  "chapters": [
+   "s01e01",
+   "s01e02",
+   "s01e05",
+   "s01e06",
+   "s01e10",
+   "s04e02",
+   "s04e04"
+  ],
+  "seasons": [
+   1,
+   4
+  ],
+  "first": "s01e01",
+  "poses": {
+   "L": 7,
+   "W": 6,
+   "N": 3
+  }
+ },
+ {
+  "id": "marisol",
+  "name": "Marisol",
+  "panels": 16,
+  "chapters": [
+   "s01e02",
+   "s01e04",
+   "s01e05",
+   "s02e01",
+   "s02e02"
+  ],
+  "seasons": [
+   1,
+   2
+  ],
+  "first": "s01e02",
+  "poses": {
+   "M": 11,
+   "N": 4,
+   "W": 1
+  }
+ },
+ {
+  "id": "kit_site",
+  "name": "Kit (site PPE)",
+  "panels": 15,
+  "chapters": [
+   "s08e02",
+   "s08e03",
+   "s08e04",
+   "s08e05",
+   "s08e06",
+   "s08e07",
+   "s08e10",
+   "s08e11"
+  ],
+  "seasons": [
+   8
+  ],
+  "first": "s08e02",
+  "poses": {
+   "P": 6,
+   "L": 2,
+   "W": 4,
+   "N": 3
+  }
+ },
+ {
+  "id": "tamsin",
+  "name": "Tamsin",
+  "panels": 15,
+  "chapters": [
+   "s09e01",
+   "s09e02",
+   "s09e03",
+   "s09e04",
+   "s09e07",
+   "s09e08",
+   "s09e10",
+   "s09e11"
+  ],
+  "seasons": [
+   9
+  ],
+  "first": "s09e01",
+  "poses": {
+   "P": 5,
+   "W": 4,
+   "N": 5,
+   "L": 1
+  }
+ },
+ {
+  "id": "oduya",
+  "name": "Director Oduya",
+  "panels": 15,
+  "chapters": [
+   "s11e01",
+   "s11e05",
+   "s11e07",
+   "s11e08",
+   "s11e09",
+   "s11e10",
+   "s11e11"
+  ],
+  "seasons": [
+   11
+  ],
+  "first": "s11e01",
+  "poses": {
+   "P": 4,
+   "W": 8,
+   "N": 3
+  }
+ },
+ {
+  "id": "rashida",
+  "name": "Rashida",
+  "panels": 15,
+  "chapters": [
+   "s12e01",
+   "s12e02",
+   "s12e04",
+   "s12e05",
+   "s12e07",
+   "s12e09",
+   "s12e10",
+   "s12e11"
+  ],
+  "seasons": [
+   12
+  ],
+  "first": "s12e01",
+  "poses": {
+   "W": 10,
+   "R": 4,
+   "N": 1
+  }
+ },
+ {
+  "id": "avery",
+  "name": "Avery",
+  "panels": 14,
+  "chapters": [
+   "s01e06",
+   "s03e06",
+   "s03e07"
+  ],
+  "seasons": [
+   1,
+   3
+  ],
+  "first": "s01e06",
+  "poses": {
+   "W": 4,
+   "P": 3,
+   "R": 7
+  }
+ },
+ {
+  "id": "henrik",
+  "name": "Henrik",
+  "panels": 14,
+  "chapters": [
+   "s07e01",
+   "s07e02",
+   "s07e03",
+   "s07e05",
+   "s07e08",
+   "s07e09",
+   "s07e10"
+  ],
+  "seasons": [
+   7
+  ],
+  "first": "s07e01",
+  "poses": {
+   "P": 1,
+   "L": 1,
+   "N": 4,
+   "H": 2,
+   "W": 4,
+   "R": 2
+  }
+ },
+ {
+  "id": "vera",
+  "name": "Vera",
+  "panels": 13,
+  "chapters": [
+   "s04e02",
+   "s04e03",
+   "s04e07",
+   "s04e08",
+   "s04e10",
+   "s04e11"
+  ],
+  "seasons": [
+   4
+  ],
+  "first": "s04e02",
+  "poses": {
+   "R": 3,
+   "H": 2,
+   "N": 2,
+   "S": 2,
+   "W": 1,
+   "P": 2,
+   "L": 1
+  }
+ },
+ {
+  "id": "nkechi",
+  "name": "Nkechi",
+  "panels": 13,
+  "chapters": [
+   "s08e01",
+   "s08e03",
+   "s08e04",
+   "s08e08",
+   "s08e09",
+   "s08e10",
+   "s09e04",
+   "s09e05"
+  ],
+  "seasons": [
+   8,
+   9
+  ],
+  "first": "s08e01",
+  "poses": {
+   "R": 3,
+   "W": 5,
+   "P": 4,
+   "N": 1
+  }
+ },
+ {
+  "id": "jo",
+  "name": "Pastor Jo",
+  "panels": 12,
+  "chapters": [
+   "s01e00",
+   "s01e01",
+   "s01e04",
+   "s01e05",
+   "s01e10",
+   "s01e11"
+  ],
+  "seasons": [
+   1
+  ],
+  "first": "s01e00",
+  "poses": {
+   "P": 2,
+   "N": 2,
+   "W": 6,
+   "M": 2
+  }
+ },
+ {
+  "id": "lena",
+  "name": "Lena",
+  "panels": 12,
+  "chapters": [
+   "s01e07",
+   "s03e10",
+   "s04e01",
+   "s04e05",
+   "s04e06",
+   "s04e08",
+   "s04e10"
+  ],
+  "seasons": [
+   1,
+   3,
+   4
+  ],
+  "first": "s01e07",
+  "poses": {
+   "N": 4,
+   "P": 3,
+   "H": 2,
+   "W": 2,
+   "R": 1
+  }
+ },
+ {
+  "id": "cal",
+  "name": "Cal",
+  "panels": 12,
+  "chapters": [
+   "s04e06",
+   "s04e09",
+   "s04e10"
+  ],
+  "seasons": [
+   4
+  ],
+  "first": "s04e06",
+  "poses": {
+   "N": 5,
+   "W": 1,
+   "S": 1,
+   "R": 2,
+   "P": 2,
+   "M": 1
+  }
+ },
+ {
+  "id": "farah",
+  "name": "Farah",
+  "panels": 12,
+  "chapters": [
+   "s05e02",
+   "s05e03",
+   "s05e05",
+   "s05e10",
+   "s06e03",
+   "s06e04"
+  ],
+  "seasons": [
+   5,
+   6
+  ],
+  "first": "s05e02",
+  "poses": {
+   "W": 5,
+   "N": 3,
+   "P": 3,
+   "H": 1
+  }
+ },
+ {
+  "id": "odile",
+  "name": "Odile",
+  "panels": 12,
+  "chapters": [
+   "s06e02",
+   "s06e05",
+   "s06e06",
+   "s06e10",
+   "s07e10",
+   "s08e10",
+   "s09e08",
+   "s09e09"
+  ],
+  "seasons": [
+   6,
+   7,
+   8,
+   9
+  ],
+  "first": "s06e02",
+  "poses": {
+   "W": 6,
+   "L": 1,
+   "N": 2,
+   "H": 1,
+   "P": 2
+  }
+ },
+ {
+  "id": "solveig",
+  "name": "Solveig",
+  "panels": 12,
+  "chapters": [
+   "s09e01",
+   "s09e06",
+   "s09e07",
+   "s09e08",
+   "s09e10",
+   "s09e11"
+  ],
+  "seasons": [
+   9
+  ],
+  "first": "s09e01",
+  "poses": {
+   "L": 2,
+   "W": 4,
+   "N": 3,
+   "P": 3
+  }
+ },
+ {
+  "id": "nadia",
+  "name": "Nadia",
+  "panels": 11,
+  "chapters": [
+   "s05e01",
+   "s05e05",
+   "s05e08",
+   "s05e09",
+   "s05e10",
+   "s05e11"
+  ],
+  "seasons": [
+   5
+  ],
+  "first": "s05e01",
+  "poses": {
+   "P": 2,
+   "H": 1,
+   "N": 1,
+   "R": 1,
+   "W": 6
+  }
+ },
+ {
+  "id": "rosa",
+  "name": "Rosa",
+  "panels": 10,
+  "chapters": [
+   "s02e04",
+   "s02e08",
+   "s02e10"
+  ],
+  "seasons": [
+   2
+  ],
+  "first": "s02e04",
+  "poses": {
+   "N": 2,
+   "L": 3,
+   "W": 2,
+   "R": 1,
+   "M": 2
+  }
+ },
+ {
+  "id": "ines",
+  "name": "Ines",
+  "panels": 10,
+  "chapters": [
+   "s03e03",
+   "s03e04",
+   "s03e05",
+   "s03e09",
+   "s03e10"
+  ],
+  "seasons": [
+   3
+  ],
+  "first": "s03e03",
+  "poses": {
+   "W": 2,
+   "R": 5,
+   "P": 1,
+   "L": 2
+  }
+ },
+ {
+  "id": "june",
+  "name": "June",
+  "panels": 10,
+  "chapters": [
+   "s04e03",
+   "s04e04"
+  ],
+  "seasons": [
+   4
+  ],
+  "first": "s04e03",
+  "poses": {
+   "W": 3,
+   "N": 3,
+   "P": 3,
+   "L": 1
+  }
+ },
+ {
+  "id": "luis",
+  "name": "Luis",
+  "panels": 10,
+  "chapters": [
+   "s07e04",
+   "s07e05",
+   "s07e06",
+   "s07e07",
+   "s07e08",
+   "s07e09"
+  ],
+  "seasons": [
+   7
+  ],
+  "first": "s07e04",
+  "poses": {
+   "H": 2,
+   "P": 1,
+   "L": 1,
+   "W": 3,
+   "N": 3
+  }
+ },
+ {
+  "id": "elias",
+  "name": "Elias",
+  "panels": 9,
+  "chapters": [
+   "s01e08",
+   "s01e09"
+  ],
+  "seasons": [
+   1
+  ],
+  "first": "s01e08",
+  "poses": {
+   "H": 2,
+   "N": 5,
+   "W": 1,
+   "P": 1
+  }
+ },
+ {
+  "id": "dana",
+  "name": "Dana",
+  "panels": 9,
+  "chapters": [
+   "s03e04",
+   "s03e05",
+   "s03e10"
+  ],
+  "seasons": [
+   3
+  ],
+  "first": "s03e04",
+  "poses": {
+   "W": 5,
+   "N": 2,
+   "P": 2
+  }
+ },
+ {
+  "id": "yuki",
+  "name": "Yuki",
+  "panels": 9,
+  "chapters": [
+   "s07e01",
+   "s07e02",
+   "s07e03",
+   "s07e04",
+   "s07e09",
+   "s07e10"
+  ],
+  "seasons": [
+   7
+  ],
+  "first": "s07e01",
+  "poses": {
+   "H": 2,
+   "P": 3,
+   "L": 1,
+   "W": 3
+  }
+ },
+ {
+  "id": "raffa",
+  "name": "Raffa",
+  "panels": 9,
+  "chapters": [
+   "s09e04",
+   "s09e05",
+   "s09e06",
+   "s09e07"
+  ],
+  "seasons": [
+   9
+  ],
+  "first": "s09e04",
+  "poses": {
+   "W": 3,
+   "N": 1,
+   "P": 4,
+   "L": 1
+  }
+ },
+ {
+  "id": "wendell",
+  "name": "Wendell",
+  "panels": 9,
+  "chapters": [
+   "s11e01",
+   "s11e02",
+   "s11e07",
+   "s11e08"
+  ],
+  "seasons": [
+   11
+  ],
+  "first": "s11e01",
+  "poses": {
+   "W": 5,
+   "P": 4
+  }
+ },
+ {
+  "id": "galen",
+  "name": "Galen",
+  "panels": 9,
+  "chapters": [
+   "s12e01",
+   "s12e02",
+   "s12e03",
+   "s12e04",
+   "s12e05",
+   "s12e06",
+   "s12e10"
+  ],
+  "seasons": [
+   12
+  ],
+  "first": "s12e01",
+  "poses": {
+   "W": 4,
+   "N": 2,
+   "P": 2,
+   "R": 1
+  }
+ },
+ {
+  "id": "omar",
+  "name": "Omar",
+  "panels": 8,
+  "chapters": [
+   "s04e01",
+   "s04e02",
+   "s04e08",
+   "s04e10"
+  ],
+  "seasons": [
+   4
+  ],
+  "first": "s04e01",
+  "poses": {
+   "W": 4,
+   "L": 1,
+   "N": 2,
+   "R": 1
+  }
+ },
+ {
+  "id": "corbin",
+  "name": "Corbin",
+  "panels": 8,
+  "chapters": [
+   "s10e03",
+   "s10e04",
+   "s10e05",
+   "s10e06",
+   "s10e08"
+  ],
+  "seasons": [
+   10
+  ],
+  "first": "s10e03",
+  "poses": {
+   "W": 4,
+   "P": 2,
+   "N": 2
+  }
+ },
+ {
+  "id": "usher",
+  "name": "Usher",
+  "panels": 7,
+  "chapters": [
+   "s01e01",
+   "s01e04",
+   "s02e06"
+  ],
+  "seasons": [
+   1,
+   2
+  ],
+  "first": "s01e01",
+  "poses": {
+   "P": 2,
+   "N": 2,
+   "W": 3
+  }
+ },
+ {
+  "id": "mateo",
+  "name": "Mateo",
+  "panels": 7,
+  "chapters": [
+   "s01e01",
+   "s01e04"
+  ],
+  "seasons": [
+   1
+  ],
+  "first": "s01e01",
+  "poses": {
+   "P": 2,
+   "R": 1,
+   "W": 2,
+   "N": 1,
+   "H": 1
+  }
+ },
+ {
+  "id": "graham",
+  "name": "Graham",
+  "panels": 7,
+  "chapters": [
+   "s02e06",
+   "s02e07",
+   "s02e08"
+  ],
+  "seasons": [
+   2
+  ],
+  "first": "s02e06",
+  "poses": {
+   "W": 2,
+   "P": 3,
+   "N": 2
+  }
+ },
+ {
+  "id": "felix",
+  "name": "Felix",
+  "panels": 7,
+  "chapters": [
+   "s04e04",
+   "s04e05"
+  ],
+  "seasons": [
+   4
+  ],
+  "first": "s04e04",
+  "poses": {
+   "H": 3,
+   "W": 2,
+   "R": 1,
+   "P": 1
+  }
+ },
+ {
+  "id": "adaeze",
+  "name": "Adaeze",
+  "panels": 7,
+  "chapters": [
+   "s07e01",
+   "s07e03",
+   "s07e07",
+   "s07e08"
+  ],
+  "seasons": [
+   7
+  ],
+  "first": "s07e01",
+  "poses": {
+   "L": 2,
+   "R": 1,
+   "P": 1,
+   "H": 2,
+   "W": 1
+  }
+ },
+ {
+  "id": "hektor",
+  "name": "Hektor",
+  "panels": 7,
+  "chapters": [
+   "s11e04",
+   "s11e05",
+   "s11e09",
+   "s11e10"
+  ],
+  "seasons": [
+   11
+  ],
+  "first": "s11e04",
+  "poses": {
+   "P": 2,
+   "W": 3,
+   "N": 2
+  }
+ },
+ {
+  "id": "tasha",
+  "name": "Tasha",
+  "panels": 6,
+  "chapters": [
+   "s01e08"
+  ],
+  "seasons": [
+   1
+  ],
+  "first": "s01e08",
+  "poses": {
+   "P": 3,
+   "W": 1,
+   "N": 2
+  }
+ },
+ {
+  "id": "tomas",
+  "name": "Tomas",
+  "panels": 6,
+  "chapters": [
+   "s05e02",
+   "s05e04",
+   "s05e07",
+   "s05e08"
+  ],
+  "seasons": [
+   5
+  ],
+  "first": "s05e02",
+  "poses": {
+   "W": 1,
+   "P": 3,
+   "R": 2
+  }
+ },
+ {
+  "id": "delgado",
+  "name": "Officer Delgado",
+  "panels": 6,
+  "chapters": [
+   "s05e03",
+   "s05e04",
+   "s05e06",
+   "s05e07"
+  ],
+  "seasons": [
+   5
+  ],
+  "first": "s05e03",
+  "poses": {
+   "N": 2,
+   "P": 1,
+   "H": 1,
+   "W": 1,
+   "L": 1
+  }
+ },
+ {
+  "id": "mara",
+  "name": "Mara",
+  "panels": 6,
+  "chapters": [
+   "s07e02",
+   "s07e05",
+   "s07e06"
+  ],
+  "seasons": [
+   7
+  ],
+  "first": "s07e02",
+  "poses": {
+   "W": 4,
+   "P": 2
+  }
+ },
+ {
+  "id": "lindqvist",
+  "name": "Marshal Lindqvist",
+  "panels": 6,
+  "chapters": [
+   "s08e07",
+   "s08e08",
+   "s08e10",
+   "s09e02"
+  ],
+  "seasons": [
+   8,
+   9
+  ],
+  "first": "s08e07",
+  "poses": {
+   "P": 2,
+   "W": 4
+  }
+ },
+ {
+  "id": "fitz",
+  "name": "Fitz",
+  "panels": 6,
+  "chapters": [
+   "s11e02",
+   "s11e03",
+   "s11e10"
+  ],
+  "seasons": [
+   11
+  ],
+  "first": "s11e02",
+  "poses": {
+   "N": 1,
+   "P": 2,
+   "W": 3
+  }
+ },
+ {
+  "id": "imogen",
+  "name": "Imogen",
+  "panels": 6,
+  "chapters": [
+   "s11e03",
+   "s11e04",
+   "s11e06",
+   "s11e10"
+  ],
+  "seasons": [
+   11
+  ],
+  "first": "s11e03",
+  "poses": {
+   "W": 4,
+   "N": 2
+  }
+ },
+ {
+  "id": "amara",
+  "name": "Amara",
+  "panels": 6,
+  "chapters": [
+   "s11e04",
+   "s11e05",
+   "s11e06"
+  ],
+  "seasons": [
+   11
+  ],
+  "first": "s11e04",
+  "poses": {
+   "P": 3,
+   "N": 1,
+   "W": 2
+  }
+ },
+ {
+  "id": "ana",
+  "name": "Ana",
+  "panels": 5,
+  "chapters": [
+   "s01e00",
+   "s01e01",
+   "s01e06"
+  ],
+  "seasons": [
+   1
+  ],
+  "first": "s01e00",
+  "poses": {
+   "N": 1,
+   "W": 1,
+   "H": 2,
+   "M": 1
+  }
+ },
+ {
+  "id": "andre",
+  "name": "Andre",
+  "panels": 5,
+  "chapters": [
+   "s01e05"
+  ],
+  "seasons": [
+   1
+  ],
+  "first": "s01e05",
+  "poses": {
+   "H": 1,
+   "R": 3,
+   "N": 1
+  }
+ },
+ {
+  "id": "hank",
+  "name": "Hank",
+  "panels": 5,
+  "chapters": [
+   "s02e01",
+   "s02e10",
+   "s04e10"
+  ],
+  "seasons": [
+   2,
+   4
+  ],
+  "first": "s02e01",
+  "poses": {
+   "H": 2,
+   "N": 1,
+   "R": 1,
+   "P": 1
+  }
+ },
+ {
+  "id": "hale",
+  "name": "Dr. Hale",
+  "panels": 5,
+  "chapters": [
+   "s05e01",
+   "s05e02"
+  ],
+  "seasons": [
+   5
+  ],
+  "first": "s05e01",
+  "poses": {
+   "H": 2,
+   "W": 2,
+   "N": 1
+  }
+ },
+ {
+  "id": "grant",
+  "name": "Professor Grant",
+  "panels": 5,
+  "chapters": [
+   "s05e05",
+   "s05e06"
+  ],
+  "seasons": [
+   5
+  ],
+  "first": "s05e05",
+  "poses": {
+   "W": 2,
+   "L": 2,
+   "P": 1
+  }
+ },
+ {
+  "id": "dez",
+  "name": "Dez",
+  "panels": 5,
+  "chapters": [
+   "s10e02",
+   "s10e03"
+  ],
+  "seasons": [
+   10
+  ],
+  "first": "s10e02",
+  "poses": {
+   "P": 2,
+   "W": 2,
+   "N": 1
+  }
+ },
+ {
+  "id": "malik",
+  "name": "Malik",
+  "panels": 4,
+  "chapters": [
+   "s01e05"
+  ],
+  "seasons": [
+   1
+  ],
+  "first": "s01e05",
+  "poses": {
+   "W": 2,
+   "R": 1,
+   "P": 1
+  }
+ },
+ {
+  "id": "tunde",
+  "name": "Mr. Adeyemi",
+  "panels": 4,
+  "chapters": [
+   "s01e06",
+   "s04e09"
+  ],
+  "seasons": [
+   1,
+   4
+  ],
+  "first": "s01e06",
+  "poses": {
+   "W": 2,
+   "L": 1,
+   "N": 1
+  }
+ },
+ {
+  "id": "nico",
+  "name": "Nico",
+  "panels": 4,
+  "chapters": [
+   "s01e09"
+  ],
+  "seasons": [
+   1
+  ],
+  "first": "s01e09",
+  "poses": {
+   "P": 1,
+   "W": 2,
+   "N": 1
+  }
+ },
+ {
+  "id": "kim",
+  "name": "Kim",
+  "panels": 4,
+  "chapters": [
+   "s02e01",
+   "s02e03"
+  ],
+  "seasons": [
+   2
+  ],
+  "first": "s02e01",
+  "poses": {
+   "W": 1,
+   "N": 3
+  }
+ },
+ {
+  "id": "bram",
+  "name": "Bram",
+  "panels": 4,
+  "chapters": [
+   "s08e01",
+   "s08e03",
+   "s08e09",
+   "s08e11"
+  ],
+  "seasons": [
+   8
+  ],
+  "first": "s08e01",
+  "poses": {
+   "W": 2,
+   "P": 2
+  }
+ },
+ {
+  "id": "tove",
+  "name": "Tove",
+  "panels": 4,
+  "chapters": [
+   "s08e01",
+   "s08e02"
+  ],
+  "seasons": [
+   8
+  ],
+  "first": "s08e01",
+  "poses": {
+   "H": 1,
+   "P": 1,
+   "W": 2
+  }
+ },
+ {
+  "id": "odile_site",
+  "name": "Odile (site PPE)",
+  "panels": 4,
+  "chapters": [
+   "s08e06",
+   "s08e07",
+   "s08e09",
+   "s08e10"
+  ],
+  "seasons": [
+   8
+  ],
+  "first": "s08e06",
+  "poses": {
+   "P": 3,
+   "N": 1
+  }
+ },
+ {
+  "id": "bea",
+  "name": "Bea",
+  "panels": 4,
+  "chapters": [
+   "s10e07"
+  ],
+  "seasons": [
+   10
+  ],
+  "first": "s10e07",
+  "poses": {
+   "W": 2,
+   "P": 1,
+   "N": 1
+  }
+ },
+ {
+  "id": "quino",
+  "name": "Quino",
+  "panels": 4,
+  "chapters": [
+   "s11e01",
+   "s11e03"
+  ],
+  "seasons": [
+   11
+  ],
+  "first": "s11e01",
+  "poses": {
+   "S": 1,
+   "N": 2,
+   "W": 1
+  }
+ },
+ {
+  "id": "teodor",
+  "name": "Teodor",
+  "panels": 4,
+  "chapters": [
+   "s12e06",
+   "s12e07"
+  ],
+  "seasons": [
+   12
+  ],
+  "first": "s12e06",
+  "poses": {
+   "P": 2,
+   "W": 2
+  }
+ },
+ {
+  "id": "lian",
+  "name": "Lian",
+  "panels": 4,
+  "chapters": [
+   "s12e08",
+   "s12e09"
+  ],
+  "seasons": [
+   12
+  ],
+  "first": "s12e08",
+  "poses": {
+   "P": 2,
+   "W": 1,
+   "N": 1
+  }
+ },
+ {
+  "id": "park",
+  "name": "Dr. Park",
+  "panels": 3,
+  "chapters": [
+   "s01e03"
+  ],
+  "seasons": [
+   1
+  ],
+  "first": "s01e03",
+  "poses": {
+   "R": 1,
+   "W": 2
+  }
+ },
+ {
+  "id": "ruth",
+  "name": "Ruth",
+  "panels": 3,
+  "chapters": [
+   "s06e03",
+   "s06e05"
+  ],
+  "seasons": [
+   6
+  ],
+  "first": "s06e03",
+  "poses": {
+   "R": 1,
+   "W": 2
+  }
+ },
+ {
+  "id": "obi",
+  "name": "Judge Obi",
+  "panels": 3,
+  "chapters": [
+   "s06e03",
+   "s06e07"
+  ],
+  "seasons": [
+   6
+  ],
+  "first": "s06e03",
+  "poses": {
+   "N": 2,
+   "W": 1
+  }
+ },
+ {
+  "id": "nkechi_site",
+  "name": "Nkechi (site PPE)",
+  "panels": 3,
+  "chapters": [
+   "s08e08",
+   "s08e09",
+   "s08e10"
+  ],
+  "seasons": [
+   8
+  ],
+  "first": "s08e08",
+  "poses": {
+   "N": 2,
+   "W": 1
+  }
+ },
+ {
+  "id": "sabine",
+  "name": "Sabine",
+  "panels": 3,
+  "chapters": [
+   "s12e07",
+   "s12e08"
+  ],
+  "seasons": [
+   12
+  ],
+  "first": "s12e07",
+  "poses": {
+   "P": 2,
+   "W": 1
+  }
+ },
+ {
+  "id": "gus",
+  "name": "Gus",
+  "panels": 2,
+  "chapters": [
+   "s01e03"
+  ],
+  "seasons": [
+   1
+  ],
+  "first": "s01e03",
+  "poses": {
+   "P": 1,
+   "N": 1
+  }
+ },
+ {
+  "id": "oskar",
+  "name": "Oskar",
+  "panels": 1,
+  "chapters": [
+   "s07e06"
+  ],
+  "seasons": [
+   7
+  ],
+  "first": "s07e06",
+  "poses": {
+   "N": 1
+  }
+ },
+ {
+  "id": "dario_site",
+  "name": "Dario (site PPE)",
+  "panels": 1,
+  "chapters": [
+   "s08e06"
+  ],
+  "seasons": [
+   8
+  ],
+  "first": "s08e06",
+  "poses": {
+   "P": 1
+  }
+ },
+ {
+  "id": "aksel",
+  "name": "Aksel",
+  "panels": 1,
+  "chapters": [
+   "s12e09"
+  ],
+  "seasons": [
+   12
+  ],
+  "first": "s12e09",
+  "poses": {
+   "W": 1
+  }
+ }
+]

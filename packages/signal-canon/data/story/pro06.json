@@ -1,0 +1,100 @@
+{
+ "chapter": {
+  "id": "pro06",
+  "kicker": "PROLOGUE · CH.06",
+  "title": "The Case of the Upward Center Fill",
+  "pill": "Prologue · Ch.06",
+  "sub": "A mystery, solved with geometry.",
+  "status": null,
+  "flags": [],
+  "accent": "var(--red)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A side view of the room: a center-fill loudspeaker tilted up at the ceiling. Its sound reaches seat 13 twice — directly, and late after bouncing off the ceiling.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [
+    "The complaint always comes from the same ten seats — dead center."
+   ],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1199
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A graph of the sound at seat 13 swings between sharp peaks and deep nulls — comb filtering. Ray explains.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Direct sound gets there first. The ceiling bounce arrives a few milliseconds late — and they fight. That's comb filtering."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2599
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The fill loudspeaker is re-aimed flat at the listeners; a green check mark. Maya points at the seats.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "grin"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Aim at people, not the ceiling. Every time."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 818
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A few milliseconds between a direct and a reflected sound can hollow out clarity. In audio, geometry is part of the mix."
+  }
+ ]
+}

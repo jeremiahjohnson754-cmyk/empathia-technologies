@@ -1,0 +1,1638 @@
+{
+ "chapter": {
+  "id": "s02e07",
+  "kicker": "S02 · E07",
+  "title": "Stems",
+  "pill": "S02E07 · Stems",
+  "sub": "The room sounded perfect. Four thousand people online heard a different show.",
+  "status": "**DRAFT** · scripted from the season map ahead of its production-bible entry · CASE-008 mechanism is the SIGNAL adaptation (Q-004) · IDs provisional",
+  "flags": [
+   "DR-S02E07",
+   "RT-03",
+   "RV-52",
+   "Q-004",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--cyan)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 2 · EPISODE 7 · DRAFT  Countdown · Leah and Maya · Level L3 · CASE-008  Graham's launch sounds perfect in the room. Online, four thousand people — and his CEO — are hearing a show nobody approved.  ⚑ RV-52 · Q-004: the stream mechanism is the SIGNAL adaptation; tap-point behavior differs by console. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "The Mix Nobody Approved",
+   "kind": "MYSTERY · LIVE",
+   "level": "L3 · SYSTEMS TECH",
+   "party": [
+    "maya",
+    "dante",
+    "leah",
+    "graham"
+   ],
+   "stakes": "Four thousand people online heard a joke from the wings. Graham's CEO is watching from an airport lounge.",
+   "clock": "Fifteen seconds. Then the whole launch.",
+   "reward": "The stream that follows the room's mutes but not its faders. Graham's trust — or at least his silence.",
+   "objectives": [
+    {
+     "key": "BR-S02E07-01",
+     "text": "Kill the wings mic online — in fifteen seconds"
+    },
+    {
+     "key": "twist",
+     "text": "Figure out who the stream is listening to"
+    },
+    {
+     "key": "BR-S02E07-03",
+     "text": "Choose the right tap point — now"
+    },
+    {
+     "key": "BR-S02E07-04",
+     "text": "Prove it on a second pair of ears"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two things said at 1:20 p.m."
+    }
+   ],
+   "rumor": "The stream vendor said “you'll never fight the FOH guy.” That was the problem."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Nobody in the room noticed”",
+   "sub": "Tuesday · a launch venue · 2:14 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A dark launch room: a big LED wall glows with an abstract new product under the word INTRODUCING. A presenter in silhouette stands on stage. The audience fills the frame's bottom edge.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Graham's launch. 380 in the room. 4,000 online. His CEO is watching from an airport lounge.",
+   "flags": [
+    "RT-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4013
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Stage left, in the wings: Reid, the co-presenter, laughing with a stagehand, a wireless pack clipped to his belt and its mic on his collar.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "W",
+     "expr": "grin"
+    },
+    {
+     "id": "crew",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Reid goes on in twenty minutes. His mic is on. In the room, it's muted.",
+   "flags": [
+    "RV-52"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 809
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The tech desk at the back of the room. Dante mixes the room, relaxed. Maya, at the stream mixer beside him, presses her headphones to her ears.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "Room's easy. Small room, loud band — I've barely got them in the PA."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Dante. Somebody in the wings is on the stream. Telling a joke."
+    }
+   ],
+   "narration": [],
+   "caption": "In Maya's headphones: a joke nobody in the room would ever repeat. Four thousand people just heard it.",
+   "flags": [
+    "RV-52"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1280
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "dante",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Somebody in the wings is on the stream? Telling a joke?"
+    },
+    {
+     "who": "maya",
+     "pose": "L",
+     "expr": "worried",
+     "text": "It's not a good joke."
+    },
+    {
+     "who": "dante",
+     "pose": "N",
+     "expr": "flat",
+     "text": "They never are, when four thousand people hear them."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Two phones. One shows the stream's chat filling with alarm and complaints about the band. The other, Graham's, shows a message from the CEO: Who is telling jokes on my launch?",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Nobody in the room noticed. Everybody online did.",
+   "flags": [
+    "VR-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2190
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E07-01",
+   "prompt": "A live mic in the wings is on the stream right now. Fifteen seconds.",
+   "happening": "A co-presenter's mic in the wings is live on the stream, not in the room.",
+   "clock": "2:15:10 p.m.",
+   "known": [
+    "◉ The room doesn't hear it",
+    "◉ The stream does",
+    "◉ The stream mixer has a WINGS stem"
+   ],
+   "unknown": [
+    "Why the stream hears a mic the room doesn't"
+   ],
+   "risk": "Four thousand viewers, a CEO, a product launch — and Reid's reputation.",
+   "timer_s": 15,
+   "timeout": [
+    "The joke finishes. Reid laughs, and so does someone next to him. Online, the clip is already being shared.",
+    "In a live leak, the first job is stopping it — with the smallest move."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What is the smallest move that stops this one input online?"
+    }
+   ],
+   "note": "Draft decision (DR-S02E07).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Mute that input on the stream mixer",
+     "result": "One button. The wings go silent online. The presenter and band carry on.",
+     "consequence": "The harm stops. You still don't know why the stream heard it.",
+     "chips": [
+      "2 s",
+      "Contained"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Crew": 1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Pull the whole stream audio",
+     "result": "Four thousand people lose the presenter, the band, everything.",
+     "consequence": "Chat fills with “no sound?”",
+     "chips": [
+      "Everything lost"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The whole stream for one bad input. The smallest move was one button away.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Cut the stream to a holding slide",
+     "result": "A beautiful slide. The joke carries on underneath it.",
+     "consequence": "Viewers now see a slide and hear the wings.",
+     "chips": [
+      "Wrong fix"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The problem was audio. You changed the picture.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Wait — the joke will end on its own",
+     "result": "It ends. Then Reid starts another.",
+     "consequence": "Every second is a clip somebody saves.",
+     "chips": [
+      "Clipped"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Not deciding is deciding to broadcast.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Dante points at his console: the wings channel's mute button is lit red. Maya looks from it to her stream mixer.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "P",
+     "expr": "surprised"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "That mic's been muted for ten minutes. Look — red."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Not on the stream it hasn't."
+    }
+   ],
+   "narration": [],
+   "caption": "A mute that works in the room and not online. Remember that.",
+   "flags": [
+    "RV-52"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1212
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “The mix nobody approved”",
+   "sub": "2:16 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Close on the stream mixer: the BAND stem meter pinned red at the top, SPEECH at half, the WINGS stem muted by hand.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [],
+   "narration": [],
+   "caption": "The wings are muted by hand. The band is still pinned. The presenter is fighting it.",
+   "flags": [
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "stream band stem · pinned"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3573
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Dante pulls the band's group fader down ten decibels. Maya watches her stream mixer's band meter: it doesn't move.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "Band down ten. Anything?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Nothing. The stream doesn't care what your faders do."
+    }
+   ],
+   "narration": [],
+   "caption": "Mute ignored. Fader ignored.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "fader −10 dB · stream band stem unchanged"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1426
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E07-02",
+   "prompt": "The joke has stopped online. The band is still pinned. Where do you look?",
+   "happening": "The stream ignores Dante's mute and his faders.",
+   "clock": null,
+   "known": [
+    "◉ Mute ignored",
+    "▮ Fader ignored"
+   ],
+   "unknown": [
+    "Where the stems are tapped"
+   ],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "Draft decision (DR-S02E07).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "The stream vendor's patch sheet and the stem sends' tap setting",
+     "result": "The sheet says STREAM STEMS · TAP: INPUT (PRE). The console confirms it: every stem is taken before processing, mute and fader.",
+     "consequence": "You know exactly where the stream is listening.",
+     "chips": [
+      "2 min",
+      "Evidence"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Dante": 1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Swap Reid's wireless mic",
+     "result": "A new mic, same routing. The stream still ignores Dante's mute.",
+     "consequence": "You replaced the only part that was working perfectly.",
+     "chips": [
+      "Wrong part"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The mic did its job. The routing decided who heard it.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Dante": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Ask the vendor to “fix the stream”",
+     "result": "He's in the loading dock. “Fix what? It's healthy.”",
+     "consequence": "He's right about the encoder and wrong about the mix.",
+     "chips": [
+      "Slow"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Restart the encoder to reset its audio",
+     "result": "Sixty seconds of black stream. It comes back with the same mix.",
+     "consequence": "Four thousand people saw the fault get worse.",
+     "chips": [
+      "Stream down"
+     ],
+     "badges": [
+      {
+       "kind": "erase",
+       "text": "MAY ERASE EVIDENCE"
+      }
+     ],
+     "canonical": false,
+     "fail": "The encoder was faithfully encoding the wrong mix.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Dante": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Flashback to 1:20 p.m.: the stream vendor hands Maya his patch sheet. It reads: stems 1–4 to the stream mixer, tap: input (pre). Independent of the room.",
+   "characters": [
+    {
+     "id": "crew",
+     "pose": "W",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Stream vendor, 1:20 p.m.",
+     "kind": "speech",
+     "text": "Stems are pre. The stream's independent of the room — you'll never fight the FOH guy."
+    }
+   ],
+   "narration": [],
+   "caption": "It's a good template for a multitrack recording. Maya nodded. She never asked what “independent” would cost.",
+   "flags": [
+    "RV-52",
+    "VR-08"
+   ],
+   "kind": "flashback",
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2840
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S2-07a",
+   "teaser": "the vendor's handover note",
+   "title": "“Stems are pre.”",
+   "body": "Signed at 1:20 p.m. The box for *who approved the stream mix?* is empty. Maya remembers nodding. She doesn't remember anyone asking.",
+   "thread": "Maya's template",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The stream isn't listening to Dante.",
+   "body": "Everyone assumed the stream heard the room engineer's mix. It doesn't. The stems are tapped at each channel's input — before the gate, before the mute, before the fader. Dante's mute on Reid's mic never reached the stream; neither did his riding the loud band down. The room and the stream share one console and hear two different shows.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S02E07-1",
+   "label": "Test: reason from the tap point before you read on."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View: one console channel strip, input to preamp to gate-EQ-compressor to mute to fader to the room mix. The stream's tap is drawn at the input, before everything.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Tapped at the input, the stream hears everything the room engineer silences.",
+   "flags": [
+    "RV-52",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "C-21",
+   "label": "**Clue Board:** which three clues prove where the stream is listening?",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Leah and Maya beside a board. Lip sync is voice and lips arriving together. Every box in the picture path adds latency; the audio path usually adds less. So I delay the audio? By the difference. Picture path a hundred twenty milliseconds, audio already twenty: add a hundred. Measured, not by ear.",
+   "characters": [
+    {
+     "id": "leah",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Leah",
+     "kind": "speech",
+     "text": "Lip sync is voice and lips arriving together. Every box in the picture path adds latency; the audio path usually adds less."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "So I delay the audio?"
+    },
+    {
+     "side": "L",
+     "who": "Leah",
+     "kind": "speech",
+     "text": "By the difference. Picture path a hundred twenty milliseconds, audio already twenty: add a hundred. Measured, not by ear."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1467
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    Lip sync   Whether a speaker's voice and lip movement arrive together.   Latency   Delay a stage adds to a signal.   Formula, variables and a worked example   ƒ FORMULA · Audio delay to match picture  D audio  = L video  − L audio    L video   latency of the picture path, ms  L audio   latency already in the audio path, ms    Worked example.  Picture path 120 ms, audio path already 20 ms: add 120 − 20 = 100 ms of audio delay."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 18 OF 31 · PP. 142–154  PART 9 LIVESTREAMING, COMPUTERS & SOFTWARE  Page 142. Maya: “The stream is a room too. It's just a room full of phones.”"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB18",
+   "label": "**Fieldbook module 18 — The livestream audio journey.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 18 · tap a plate to open it full size     Livestream audio foundations     Livestreaming myths debunked     Vocals, bass, snare and mic technique     Better vocals, a greater reach"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "⏺ RECORD IT · CHALLENGE · LEVEL 1  Record a clean vocal take  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "record-take"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "V8",
+   "label": "**Learn it now:** stream tap points and A/V sync.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “A helpful fix”",
+   "sub": "2:24 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the wings, Maya quietly explains to Reid that his mic has been on the stream. Reid's hands fly up in horror.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "worker",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "whisper",
+     "text": "Your mic's muted in the room. It wasn't online. I'm sorry — that's our routing, not you."
+    },
+    {
+     "side": "R",
+     "who": "Reid",
+     "kind": "whisper",
+     "text": "Four thousand people. Oh no. Oh, no."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-52"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 500
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S2-07",
+   "who": "worker:Reid",
+   "prompt": "(white as paper) Four thousand people. That was supposed to be a joke for the crew. Oh no. Oh, no.",
+   "options": [
+    {
+     "label": "“That's our routing, not you. I'm sorry.”",
+     "who": "worker",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "…Is it still on?",
+     "trust": {
+      "Graham": 1
+     }
+    },
+    {
+     "label": "“Maybe don't tell jokes near a mic.”",
+     "who": "worker",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Thank you. That's very helpful right now.",
+     "trust": {
+      "Graham": -1
+     }
+    },
+    {
+     "label": "(Say nothing. Fix it.)",
+     "who": "worker",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "(He stands there, not knowing whether to leave.)",
+     "trust": {}
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "The first concert on the internet",
+   "body": "On June 24, 1993, a band made up largely of computer researchers played a set in Palo Alto, California, and sent it live — sound and grainy video — over the MBone, an experimental multicast layer of the early internet. Only a few hundred machines could receive it, and the picture ran at a few frames per second. The group was reportedly named Severe Tire Damage. The point wasn't the picture quality: it was that a room's performance could reach people who weren't in the room, and that they might hear something different from the people who were.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Back at the desk, alone, Dante reaches across to Maya's console settings and flips the stem sends. On the stream mixer, the band meter falls almost to nothing.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "P",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "Easy. Make the stems follow my faders. Now my mutes count too."
+    }
+   ],
+   "narration": [],
+   "caption": "2:26 p.m. A trusted hand, a reasonable idea, and one setting changed while Maya was in the wings.",
+   "flags": [
+    "RV-52"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3571
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the green room, Leah watches the stream on her phone: the band is playing on screen, but she can hardly hear it.",
+   "characters": [
+    {
+     "id": "leah",
+     "pose": "H",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Leah",
+     "kind": "phone",
+     "text": "Maya — where's the band? On the stream, they're miming. There's no band."
+    }
+   ],
+   "narration": [],
+   "caption": "Two minutes ago the band was too loud online. Now it's gone.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 800
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "leah",
+     "pose": "S",
+     "expr": "surprised",
+     "text": "Maya — where's the band? On the stream they're miming."
+    },
+    {
+     "who": "dante",
+     "pose": "N",
+     "expr": "grin",
+     "text": "I fixed it."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "You fixed it so hard it's gone."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya, back at the desk, sees what Dante changed.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "I made the stems follow my faders. That's what you wanted, right?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Your band's nearly out of the PA. The room hears them through the air. The stream can't."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-52"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1215
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The fix made the stream follow the room.",
+   "body": "Post-fader, the stream inherits the room's balance — and the room's balance is built on sound the stream can't hear. In a small room with a loud band, Dante barely needed them in the PA, so online they all but vanished. Dante's instinct (obey the room engineer) was half right: the stream should obey his mutes, not his faders.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S02E07-2",
+   "label": "Test: which tap is half of each?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View: the same channel strip with the tap moved to after the fader; the stream now follows the room's balance.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Post-fader: the stream hears only what the room needed from the PA.",
+   "flags": [
+    "RV-52",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E07-03",
+   "prompt": "2:27. The band is gone online; the wings mic must stay dead. Choose the tap, now.",
+   "happening": "The stems are post-fader; the band has vanished online.",
+   "clock": "2:27 p.m. · the demo in 3 minutes",
+   "known": [
+    "◉ Input taps ignored mutes",
+    "◉ Post-fader lost the band",
+    "◉ The console offers pre-fader post-mute"
+   ],
+   "unknown": [],
+   "risk": "The demo is the product's big moment. Four thousand people and a CEO.",
+   "timer_s": 20,
+   "timeout": [
+    "The demo starts with a silent band online and Dante still pushing faders.",
+    "The two wrong taps were both on screen. So was the right one."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "You want the room's mutes, not the room's faders."
+    }
+   ],
+   "note": "Draft decision (DR-S02E07).",
+   "lab": "LAB-SF-05",
+   "lab_label": "build the stems: after processing, after the mutes, before the faders.",
+   "options": [
+    {
+     "letter": "A",
+     "label": "Leave it post-fader and push the band up in the room",
+     "result": "The room gets louder than anyone wanted. The stream gets some band back.",
+     "consequence": "You're mixing the room for the stream.",
+     "chips": [
+      "Room too loud"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Two audiences, one balance: somebody always loses.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Pre-fader, post-mute, after processing — then balance the stems in headphones",
+     "result": "Mutes and gates apply online; Dante's faders don't. Maya trims the band stem for headphones.",
+     "consequence": "The wings mic stays dead because Dante muted it. The band is back, at a level someone approved.",
+     "chips": [
+      "Obeys mutes",
+      "Own balance"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Dante": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Back to input taps; ride every hot mic by hand",
+     "result": "It works, until the next mic Dante mutes and you don't.",
+     "consequence": "A stream that depends on you never blinking.",
+     "chips": [
+      "Fragile"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You'd be the mute. For every channel. For the rest of the show.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Dante": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Feed the stream the room's main mix",
+     "result": "Room EQ, room balance, almost no band. Worse in headphones.",
+     "consequence": "The stream becomes a microphone in the wrong room.",
+     "chips": [
+      "Wrong mix"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A room mix isn't a stream mix.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The stream mixer again: SPEECH strong, BAND healthy in the green, WINGS dead. Maya listens in headphones, one hand on the band stem.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Pre-fader, post-mute: the room's mutes count online; the room's faders don't.",
+   "flags": [
+    "RV-52"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "stream stems · pre-fader post-mute · balanced"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3570
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "R-22",
+   "label": "**Route it:** the co-presenter's path to the stream, with the tap in the right place.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III — “A second pair of ears”",
+   "sub": "2:31 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E07-04",
+   "prompt": "The stream sounds right at the desk. How do you prove it?",
+   "happening": "The tap is fixed and balanced at the desk.",
+   "clock": null,
+   "known": [],
+   "unknown": [],
+   "risk": "",
+   "timer_s": 20,
+   "timeout": [
+    "You go back to mixing. Nobody listens to the stream on a phone until tomorrow's recording review.",
+    "A fix you haven't heard where the viewers are is a belief."
+   ],
+   "hints": [],
+   "note": "Draft decision (DR-S02E07).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "The booth confidence monitor",
+     "result": "It sounds fine at the booth.",
+     "consequence": "It shares every stage you just changed.",
+     "chips": [
+      "Weak test"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The weakest test: it rides the path you're trying to prove.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "The encoder says “Healthy”",
+     "result": "It does. It said that during the joke too.",
+     "consequence": "It reports its own view.",
+     "chips": [
+      "Meaningless"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Healthy was never the question.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Leah on cellular, headphones, the real stream, a whole song — plus a clap test for sync",
+     "result": "Leah: “Clean. Band's there. Nobody in the wings. But the words come before the lips.”",
+     "consequence": "Proof where the viewers are — and a new fault found by it.",
+     "chips": [
+      "Independent path",
+      "New finding"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Leah": 1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Watch chat for complaints",
+     "result": "Chat moves on to the product.",
+     "consequence": "Silence isn't proof.",
+     "chips": [
+      "Unproven"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #18 · AVERY'S LENS  Monitor what the audience gets  The operator should hear exactly what the audience hears, not a different mix.  Nobody in the room listened to the stream. A stream monitor on real headphones would have caught the wings mic in seconds."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S02E07",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Leah in the green room, headphones on, phone in hand, on cellular.",
+   "characters": [
+    {
+     "id": "leah",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Leah",
+     "kind": "phone",
+     "text": "Clean. Band's back. But the words land before the lips move. Like a badly dubbed film."
+    }
+   ],
+   "narration": [],
+   "caption": "Proof on an independent path found something the desk couldn't.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "stream · cellular · audio early"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 186
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View of a clap test: the picture track shows the clap three frames after the sound track shows the clap arriving. Fix: delay audio by the measured gap.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The picture is late through the switcher and frame sync. The audio waits — by a measured 40 ms.",
+   "flags": [
+    "RV-52",
+    "RV-33",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Leah, still on headphones, gives a thumbs-up; Maya on the phone at the desk.",
+   "characters": [
+    {
+     "id": "leah",
+     "pose": "N",
+     "expr": "grin"
+    },
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Leah",
+     "kind": "phone",
+     "text": "Lips match. Song's done. Clean the whole way."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "phone",
+     "text": "Then it's proven. Stay on through the demo anyway."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "stream · cellular · headphones · in sync · 2:36 p.m."
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 189
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "After the launch. Graham at the tech desk, jabbing a finger at the stream mixer. Maya stands and takes it.",
+   "characters": [
+    {
+     "id": "graham",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Graham",
+     "kind": "speech",
+     "text": "Four thousand people. My CEO. A joke from the wings. Who is responsible?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The stream's tap point was wrong, and I checked the room, not the stream. That's on me."
+    }
+   ],
+   "narration": [],
+   "caption": "Leah, two steps behind, between her biggest client and her crew.",
+   "flags": [
+    "RV-52"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1444
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Graham's phone buzzes: the CEO writes that it was the best stream they've ever had after 2:15 — and to tell Reid she heard the joke.",
+   "characters": [
+    {
+     "id": "graham",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The joke was Graham's own product lead. The CEO knows. So, now, does Graham.",
+   "flags": [
+    "VR-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1298
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S2-07b",
+   "teaser": "Graham's phone, face up on the table",
+   "title": "A message from the airport lounge",
+   "body": "*Who was that in the wings?* It's from the CEO. The answer, everyone in the room slowly realizes, is Graham's own product lead. Graham turns the phone over.",
+   "thread": "People",
+   "who": [
+    "graham",
+    "N",
+    "worried"
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-207",
+   "label": "**Service Mode:** run the stream crisis yourself, on a clock.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-008 · SIGNAL original  Livestream Transport and Stems  The room sounded perfect. Four thousand people online heard a different show.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-008"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya's notebook: a new stream check for every show — read the tap point, test that a room mute kills the mic online, balance for headphones, clap test, a second listener on cellular for a whole song. Underlined: listen to the stream, not the room.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2626
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Dante and Maya pack up the desk.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "N",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "I changed your settings while you were in the wings. I shouldn't have."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "You found half the answer. Next time, tell me first — then we'd have found all of it together."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1211
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "warm",
+   "where": null,
+   "lines": [
+    {
+     "who": "dante",
+     "pose": "N",
+     "expr": "flat",
+     "text": "I changed your settings while you were in the wings."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "smile",
+     "text": "You found half the answer. Next time tell me first. Then we find all of it."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Graham, calm now — oddly calm — faces Leah across the tech desk.",
+   "characters": [
+    {
+     "id": "graham",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "leah",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Graham",
+     "kind": "speech",
+     "text": "Fine. Tonight's partner show, the CEO walks on live. You'll add my new product-reveal cue. Tonight."
+    },
+    {
+     "side": "R",
+     "who": "Leah",
+     "kind": "speech",
+     "text": "Tonight? The only hour we have is the pre-show checklist."
+    }
+   ],
+   "narration": [],
+   "caption": "Graham: “Then that's the hour.” Next: *Doors in Four Cues.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1214
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A stream is its own audience. Know where it listens: an input tap ignores the room's mutes; a post-fader tap inherits a balance built for a room. Tap pre-fader, post-mute, after processing, and balance for headphones. Measure sync with a clap and delay the audio to the picture. Prove it with a second listener on an independent path, for longer than a song."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Dante changed a setting to help, and Maya had accepted a template without asking what it cost. Neither was careless; both were alone. When was the last time a helpful change of yours landed on someone who wasn't in the room?  Boundary: this reflection proves nothing about the stream."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S02E07",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

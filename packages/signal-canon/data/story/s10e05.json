@@ -1,0 +1,919 @@
+{
+ "chapter": {
+  "id": "s10e05",
+  "kicker": "S10 · E05",
+  "title": "The Archive",
+  "pill": "S10E05 · The Archive",
+  "sub": "Ten years on: sessions that won't open, a drive that won't spin and two ‘finals’ that disagree.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S10E05",
+   "RV-176",
+   "RV-177",
+   "RV-179",
+   "RV-181",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#FB923C"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 10 · EPISODE 5 · DRAFT · CASE-054  Coldframe Sound, the tape and drive store · week three · Maya, Hollis, Esme, Corbin and Pim · Level L6 · Mastery support (reference only — choose the tool and say why)  Ten years ago Esme made her first album in this building. The label wants its multitracks back for a reissue. The building has thirty years of sessions and no idea which of them still open.  ⚑ RV-176, RV-179: reissue rights are the label’s to clear; the performances are the artists’. RV-177: figures illustrative. Some choices run on a clock — and some depend on your loadout."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "The Archive",
+   "kind": "STUDIO · ARCHIVE",
+   "level": "L6 · MASTERY",
+   "party": [
+    "maya",
+    "hollis",
+    "esme"
+   ],
+   "stakes": "The label wants Esme's first album's multitracks for a reissue — and nothing from 2016 will open.",
+   "clock": "By the first of the month.",
+   "reward": "An album anyone can open in ten years, and an honest list of what's gone.",
+   "objectives": [
+    {
+     "key": "BR-S10E05-01",
+     "text": "Decide the first move"
+    },
+    {
+     "key": "twist",
+     "text": "Count what's missing"
+    },
+    {
+     "key": "core",
+     "text": "Order the rescue"
+    },
+    {
+     "key": "BR-S10E05-02",
+     "text": "Decide what you deliver"
+    },
+    {
+     "key": "BR-S10E05-03",
+     "text": "Decide how archives survive"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "A recording you can't open is a recording you don't have."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Somewhere. On something.”",
+   "sub": "Monday · 10:00 a.m. · the store"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The tape and drive store: shelves of tape boxes and hard drives in cases; Hollis gestures at all of it; Maya, amused.",
+   "characters": [
+    {
+     "id": "hollis",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s10kit.bg_archive",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Hollis",
+     "kind": "speech",
+     "text": "Low Country. It's all here. Somewhere. On something."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then nobody opens anything until it's copied."
+    }
+   ],
+   "narration": [],
+   "caption": "Thirty years on the shelves.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6234
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "mystery",
+   "where": "the store · Monday 10:00",
+   "lines": [
+    {
+     "who": "hollis",
+     "pose": "N",
+     "expr": "flat",
+     "text": "It's all here. Somewhere. On something."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Then nobody opens anything until it's copied."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Twenty-four tracks, fifteen here”",
+   "sub": "Monday · 10:20 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S10E05-01",
+   "prompt": "10:20. The 2016 drive spins; its partner doesn't. The session files belong to a retired program. First move?",
+   "happening": "Old sessions, one dead drive.",
+   "clock": "Monday 10:20 · delivery by the first",
+   "known": [
+    "◉ Drive A spins",
+    "◉ Drive B doesn't"
+   ],
+   "unknown": [
+    "What each session needs",
+    "What the DVDs hold"
+   ],
+   "risk": "Damaging the only copy — or giving up on an album that's still there.",
+   "timer_s": 20,
+   "timeout": [
+    "Nobody decides.",
+    "Pim opens the old session to have a look."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What could opening an old session do to the drive it's on?"
+    }
+   ],
+   "note": "Draft decision (DR-S10E05).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Open the sessions on the old computer and start exporting from the original drive",
+     "result": "The program rebuilds its database — onto the only copy.",
+     "consequence": "Writes to the thing you're trying to save.",
+     "chips": [
+      "Risks originals"
+     ],
+     "badges": [
+      {
+       "kind": "erase",
+       "text": "ORIGINALS"
+      }
+     ],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Before opening anything, copy both drives read-only, record a checksum for every file, and work only on the copies",
+     "result": "Drive A images cleanly. Drive B won't spin. Every file on the copy has a fingerprint.",
+     "consequence": "Protect what exists, and prove what you started with.",
+     "chips": [
+      "Read-only",
+      "Checksums"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Team": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Send the dead drive to a recovery lab straight away",
+     "result": "A large bill before anyone checks what the DVDs hold.",
+     "consequence": "Maybe later — after you know what's missing.",
+     "chips": [
+      "Premature"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Tell Corbin the multitracks are lost",
+     "result": "Corbin cancels the reissue. On Wednesday the DVDs turn up.",
+     "consequence": "A verdict before a search.",
+     "chips": [
+      "Too soon"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Twenty-four tracks, fifteen here.",
+   "body": "On the copies, every song's session expects 24 tracks. Only 15 are on drive A; the other 9 lived on the scratch drive that won't spin. In a box behind the door: two sets of DVDs from 2016. From them, 96 of the 99 missing files come back. Three won't read — a tambourine and two backing-vocal passes.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S10E05-1",
+   "label": "Test: how much is lost — and how big was the hole?"
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Which one — and why?",
+   "sub": "Mastery · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Hollis and Maya beside a board. Ten years ago. Eleven songs, twenty-four tracks each. The label wants the multitracks for a reissue by the first. The session files won't open, nine of the twenty-four tracks aren't on this drive, and we can't prove the DVDs match anything. How much are we even looking for?",
+   "characters": [
+    {
+     "id": "hollis",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s10kit.bg_archive",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Hollis",
+     "kind": "speech",
+     "text": "Ten years ago. Eleven songs, twenty-four tracks each. The label wants the multitracks for a reissue by the first."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The session files won't open, nine of the twenty-four tracks aren't on this drive, and we can't prove the DVDs match anything."
+    },
+    {
+     "side": "L",
+     "who": "Hollis",
+     "kind": "speech",
+     "text": "How much are we even looking for?"
+    }
+   ],
+   "narration": [],
+   "caption": "Mastery: nobody hands you the tool. Pick it, and say why.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6677
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t4",
+   "text": "📕 WHEN & WHY · MASTERY  Terms   Session file   Broadcast WAV   Checksum   Media migration   The situation  Eleven songs, 24 tracks each, 48 kHz / 24-bit, about four minutes a song. You need to know how much storage the rescue needs, and how much is missing. Which relationships?   Which relationship do you reach for?  Time between sample slips  Round-trip latency  Size of uncompressed audio     Reference: the 📖 Glossary has every formula. At mastery, knowing  which  and  why  is the skill."
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "T5",
+   "label": "**Learn it now:** archives — formats, fixity and migration.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     What the room is telling you     The first step to networking, AV style     The OSI model applied to video and wireless"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "O-1005",
+   "label": "**Order it:** rescue a session.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A status sheet for Low Country (2016): session files won't open; drive A spins with 15 of 24 tracks per song; the scratch drive won't spin; two DVD sets, FINAL and FINAL 2, disagree; 96 of 99 files recovered and 3 unreadable; no checksums anywhere; pencil track sheets in the tape box.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The hole, measured.",
+   "flags": [
+    "RV-177"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "read-only copies"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3912
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S10-05a",
+   "teaser": "the tape box",
+   "title": "pencil · ‘LC · FINAL = comp B’",
+   "body": "Inside the Low Country tape box, under the lid: Hollis's pencil track sheets for all eleven songs, and on the last page, ‘FINAL = comp B. FINAL 2 = Esme's alt — NOT released.’ The only metadata that survived was a pencil.",
+   "thread": "Method",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "The new book that couldn't be read",
+   "body": "In 1986, to mark nine hundred years since the Domesday Book, the British public broadcaster gathered a new survey of the country onto two interactive laser discs, readable only with a special player and computer. Within about fifteen years almost nothing could read them, and rescuing the contents took a dedicated project. The nine-hundred-year-old original was still on its shelf, legible.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “FINAL and FINAL 2”",
+   "sub": "Tuesday · 11:00 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "FINAL and FINAL 2.",
+   "body": "The two DVD sets aren't the same. Several vocal files differ in length; nothing records which set was released, and there are no checksums to compare against. Hollis finds his pencil track sheets under the tape box lid: ‘FINAL = comp B. FINAL 2 = Esme's alt — NOT released.’ Esme listens to both and hears the line she changed on the last night. FINAL it is.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S10E05-2",
+   "label": "Test: what would have settled it in a minute — and whose call are the lost parts?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The store; Esme with headphones round her neck, smiling; Hollis holding a yellowed track sheet.",
+   "characters": [
+    {
+     "id": "esme",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "hollis",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s10kit.bg_archive",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Esme",
+     "kind": "speech",
+     "text": "That one. I changed ‘river’ to ‘rain’ on the last night."
+    },
+    {
+     "side": "R",
+     "who": "Hollis",
+     "kind": "speech",
+     "text": "And I wrote it down. In pencil. Ten years ago."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6235
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S10-05",
+   "who": "esme",
+   "prompt": "I changed that line on the last night. I'd forgotten until I heard it.",
+   "options": [
+    {
+     "label": "“Then you just did what no checksum could — you told us which one was real.”",
+     "who": "esme",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "Low Country's still in there, then. Good.",
+     "trust": {
+      "Esme": 2
+     }
+    },
+    {
+     "label": "“It would've been easier with notes.”",
+     "who": "esme",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "I was twenty-four. I didn't take notes. I took the train home.",
+     "trust": {
+      "Esme": 0
+     }
+    },
+    {
+     "label": "“Are you sure?”",
+     "who": "esme",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "I sang it. I'm sure.",
+     "trust": {
+      "Esme": 0
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S10E05-02",
+   "prompt": "FINAL is the released version. Three parts are lost. What goes to the label?",
+   "happening": "FINAL confirmed.",
+   "clock": "Tuesday 12:00",
+   "known": [
+    "◉ FINAL was released",
+    "◉ 3 parts lost"
+   ],
+   "unknown": [
+    "What Esme wants for the lost parts"
+   ],
+   "risk": "The wrong version reissued — or a quiet fake in a piece of history.",
+   "timer_s": 25,
+   "timeout": [
+    "Nobody decides.",
+    "Both sets sit on the table; Corbin's deadline moves closer."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What do you know, what don't you, and who decides the rest?"
+    }
+   ],
+   "note": "Draft decision (DR-S10E05).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Deliver FINAL 2 — it has the newer date",
+     "result": "The reissue would have carried the take Esme rejected.",
+     "consequence": "A date isn't provenance.",
+     "chips": [
+      "Guess"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Deliver FINAL, confirmed by the track sheets and Esme; list the three lost parts plainly; Esme decides whether they're re-recorded; Corbin clears the rights before anything goes to a remixer",
+     "result": "Corbin gets 261 files and a one-page list of what's gone. Esme decides to re-record the tambourine herself and leave the two harmonies out.",
+     "consequence": "The truth about what exists, and each decision with its owner.",
+     "chips": [
+      "Honest",
+      "Owners"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Esme": 2,
+       "Corbin": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Send both sets to the remixer and let them choose",
+     "result": "The remixer now has an unreleased version of her song.",
+     "consequence": "Unreleased performances out of the building without consent.",
+     "chips": [
+      "Consent"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "CONSENT"
+      }
+     ],
+     "canonical": false,
+     "fail": "Unreleased performances don't leave without the artist's say-so.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Team": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Rebuild the three lost parts from the stereo mix with separation software, and don't mention it",
+     "result": "Nobody would notice — until someone did.",
+     "consequence": "Passing off a reconstruction as the original.",
+     "chips": [
+      "Hidden"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "HONESTY"
+      }
+     ],
+     "canonical": false,
+     "fail": "Quietly replacing lost parts misrepresents the artist's recording.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Team": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #96 · AVERY'S LENS  Archive for the person who opens it in ten years  A session only survives if someone who wasn't there can open it: plain formats, the paperwork beside the audio, proof every copy is intact — and a date to check again.  Ten years on, the session files wouldn't open, a third of the tracks were on a dead drive, and two ‘final’ backups disagreed. A pencil track sheet decided it."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S10E05",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The status sheet after the rescue: session files kept but not relied on; every track exported as Broadcast WAV from bar 1, the same length; 261 of 264 tracks exported; 96 of 99 recovered and 3 lost, listed; FINAL confirmed by the track sheets and Esme; a checksum manifest of 261 files; three copies, one off-site, a yearly fixity check.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Openable by someone who wasn't there.",
+   "flags": [
+    "RV-177"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "opened on another computer"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3914
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S10-05b",
+   "teaser": "the program's retirement notice",
+   "title": "‘licence server closed’",
+   "body": "A printout pinned in the store: the recording program's maker announcing, years ago, that its licence server would close and the old version would stop opening. Somebody had pinned it. Nobody had acted on it.",
+   "thread": "Method",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S10E05-03",
+   "prompt": "Low Country is safe. What keeps the next thirty years of sessions openable?",
+   "happening": "Delivered.",
+   "clock": "Friday 16:00",
+   "known": [
+    "◉ 261 files, manifest, 3 copies"
+   ],
+   "unknown": [
+    "What's on the other shelves"
+   ],
+   "risk": "The next reissue request, and thirty years of unopenable sessions.",
+   "timer_s": 25,
+   "timeout": [
+    "Nothing changes.",
+    "The shelves stay as they are."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who will open these files in ten years — and what will they need?"
+    }
+   ],
+   "note": "Draft decision (DR-S10E05). Option B needs Documentation at LIMITED or better.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Archive the session files — they hold everything",
+     "result": "Until the program retires again.",
+     "consequence": "Instructions, not audio.",
+     "chips": [
+      "Fragile"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "A preservation standard in the studio runbook, owned by Pim: Broadcast WAV exports from bar 1, scanned track sheets and a readme, a checksum manifest, three copies with one off-site, a yearly fixity check and a five-year migration",
+     "result": "Pim writes it up and books the first fixity check. Hollis starts on the 1996 shelf.",
+     "consequence": "Written down, owned, and on the calendar.",
+     "chips": [
+      "Standard",
+      "Owner",
+      "Calendar"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": {
+      "docs": 1
+     },
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Hollis": 1,
+       "Pim": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Do this album properly; write the process up ‘when there's time’",
+     "result": "Low Country is safe. The next album goes on the shelf the old way.",
+     "consequence": "The best you can do without a runbook — and it saves one album.",
+     "chips": [
+      "One album"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Keep the old computer in a cupboard so the sessions can always be opened",
+     "result": "It won't start in five years.",
+     "consequence": "A museum, not an archive.",
+     "chips": [
+      "Obsolete"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-1005",
+   "label": "**Service Mode:** run the rescue yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-054 · SIGNAL original  The Archive  Ten years later, the sessions wouldn't open, a third of the tracks were on a dead drive, and two ‘finals’ disagreed.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-054"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Friday · 5:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The store; Pim holds a printed checksum manifest like a trophy; Maya beside the shelves.",
+   "characters": [
+    {
+     "id": "pim",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s10kit.bg_archive",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Pim",
+     "kind": "speech",
+     "text": "Two hundred and sixty-one files, and a date in the calendar to check them all."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Now there's someone in the building who knows how. That's the archive."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6232
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The control room; Corbin points at a playlist on his phone; Maya looks at the console's meters.",
+   "characters": [
+    {
+     "id": "corbin",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s10kit.bg_ctrl",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Corbin",
+     "kind": "speech",
+     "text": "The single needs to be as loud as everything else on this playlist. Louder."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "What do you think the playlist does to loud?"
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Louder Than Everything.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6293
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A session file is instructions, not audio. Archive for the person who opens it in ten years: copy read-only and checksum first; list what each session expects; recover and log every failure; settle conflicts with paperwork and the people who were there; export every track as Broadcast WAV from bar 1; keep a readme, a manifest and three copies; book the next fixity check. Say plainly what’s lost — the artist decides what happens to it."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · What of yours would be unreadable if the program that made it disappeared tomorrow?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S10E05",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

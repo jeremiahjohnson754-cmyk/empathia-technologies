@@ -1,0 +1,1564 @@
+{
+ "chapter": {
+  "id": "s02e04",
+  "kicker": "S02 · E04",
+  "title": "Opening Night",
+  "pill": "S02E04 · Opening Night",
+  "sub": "Press night. At 2 p.m. the console asked a question. At 7:52 p.m. it answers it in front of everyone.",
+  "status": "**DRAFT** · scripted from the season map (MS-08) ahead of its production-bible entry · CASE-012 is a SIGNAL adaptation (Q-004) · IDs provisional",
+  "flags": [
+   "DR-S02E04",
+   "RT-03",
+   "Q-004",
+   "RV-44",
+   "RV-45",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--magenta)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 2 · EPISODE 4 · DRAFT · MS-08 · CASE-012  Countdown · Maya and Sofia · Level L3  Press night at the Meridian. Critics in row H. At 2 p.m. the lighting console asked a question. At 7:52 p.m. it answers it in front of two thousand people.  ⚑ RV-44 / Q-004: the update mechanism is the SIGNAL adaptation. RV-45: the stage manager holds the show; fly and scenery cues are never improvised. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Lights Fourteen, GO",
+   "kind": "BOSS · PRESS NIGHT",
+   "level": "L3 · SYSTEMS TECH",
+   "party": [
+    "maya",
+    "sofia",
+    "rosa"
+   ],
+   "stakes": "Critics in row H. Cue 14 fires in half a second instead of eight. Sofia freezes — and she hasn't spoken to Maya in two days.",
+   "clock": "Forty seconds to cue 15. Fifteen minutes of intermission.",
+   "reward": "Act 2, lit by hand. A friendship, repaired — not forgotten.",
+   "objectives": [
+    {
+     "key": "BR-S02E04-01",
+     "text": "Get Sofia moving again — in forty seconds"
+    },
+    {
+     "key": "BR-S02E04-02",
+     "text": "Use forty minutes of Act 1 wisely"
+    },
+    {
+     "key": "twist",
+     "text": "Prove it isn't random"
+    },
+    {
+     "key": "BR-S02E04-03",
+     "text": "Give Rosa a recommendation at intermission"
+    },
+    {
+     "key": "BR-S02E04-04",
+     "text": "Decide what happens before tomorrow's audience"
+    },
+    {
+     "key": "disc:1",
+     "text": "Look closer: what the console asked at 2 p.m."
+    }
+   ],
+   "rumor": "At 2 p.m. the console asked a question. Somebody answered it."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Lights 14, GO”",
+   "sub": "The Meridian · city 4 · press night"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "7:25 p.m. The lighting booth. Sofia at the console on one side; Maya at the other end with her RF gear, facing away. Neither speaks.",
+   "characters": [
+    {
+     "id": "sofia",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": "7:25 p.m. Sofia and Maya haven't spoken since the Carroway. Tonight they share a booth.",
+   "flags": [
+    "RV-47",
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2975
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "awkward",
+   "where": "7:25 p.m. · the booth",
+   "lines": [
+    {
+     "who": "sofia",
+     "pose": "N",
+     "expr": "flat",
+     "text": "…"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "…"
+    },
+    {
+     "who": "rosa",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Booth, you two want to talk, or shall I get a mediator for the booth?"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "7:52 p.m. At the prompt desk in the wings, Rosa, the stage manager, calls the show on her headset. Center stage, the show's lantern set piece on its floor stand, dark before sunrise.",
+   "characters": [
+    {
+     "id": "rosa",
+     "pose": "N",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_theater",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Rosa",
+     "kind": "radio",
+     "text": "Stand by lights fourteen… Lights fourteen — GO."
+    }
+   ],
+   "narration": [],
+   "caption": "Cue 14 is Act 1's sunrise: eight slow seconds. The critics in row H have read about it.",
+   "flags": [
+    "RV-45",
+    "RT-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4607
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The stage slams to full in half a second. The moving-head beams from the side booms land low — on the proscenium edge and the front rows — instead of the lantern.",
+   "characters": [],
+   "location": "scenes.bg_theater",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Half a second, not eight. And the moving heads are lighting the front row instead of the lantern.",
+   "flags": [
+    "RV-44",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4599
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the booth, Sofia stands frozen over the console, hands up. Maya has turned around.",
+   "characters": [
+    {
+     "id": "sofia",
+     "pose": "S",
+     "expr": "surprised"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sofia",
+     "kind": "speech",
+     "text": "That's not my cue. That's not my cue."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Cue 15 is in forty seconds. Talk to me."
+    }
+   ],
+   "narration": [],
+   "caption": "Two days of silence end in one sentence.",
+   "flags": [
+    "RV-47"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3250
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "sofia",
+     "pose": "S",
+     "expr": "worried",
+     "text": "That's not my cue. That's not my cue."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(Two days of silence end in one sentence, and it isn't about them.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E04-01",
+   "prompt": "Cue 14 went wrong in front of two thousand people. Sofia has frozen. Cue 15 is in forty seconds. What do you do?",
+   "happening": "Cue 14 snapped and the moving heads aimed low. Sofia froze.",
+   "clock": "7:52:30 p.m. · cue 15 in 40 s",
+   "known": [
+    "◉ Cue 14: 0.5 s instead of 8 s",
+    "◉ Movers aimed low",
+    "◉ Rehearsal video on the tablet"
+   ],
+   "unknown": [
+    "Why"
+   ],
+   "risk": "Two thousand people, a cast mid-scene, and the critics.",
+   "timer_s": 20,
+   "timeout": [
+    "Cue 15 arrives with nobody on the desk. It snaps too, and Rosa's voice on the headset goes very quiet.",
+    "In a live show, the clock doesn't wait for the booth to feel ready."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who knows this show best? What would help them right now?"
+    }
+   ],
+   "note": "Draft decision (DR-S02E04). ⚑ RV-45.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Take over the console yourself",
+     "result": "You don't know the show, the desk or the next thirty cues. Cue 15 goes to the wrong look.",
+     "consequence": "Sofia is pushed out of her own show at its worst moment.",
+     "chips": [
+      "Wrong operator"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "It's her desk and her show. You'd be guessing in front of the critics.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Sofia": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Reboot the console to reload the show",
+     "result": "The stage goes to its no-data state mid-scene. Ninety seconds of boot. It comes back with the same file.",
+     "consequence": "A dark stage, a shaken cast, and the event log you'll need tomorrow has scrolled on.",
+     "chips": [
+      "Blackout"
+     ],
+     "badges": [
+      {
+       "kind": "erase",
+       "text": "MAY ERASE EVIDENCE"
+      }
+     ],
+     "canonical": false,
+     "fail": "A reboot mid-show is a blackout, and it wouldn't undo whatever changed.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Sofia": -2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Rehearsal video in front of Sofia; facts to Rosa; run by hand",
+     "result": "Maya puts the tablet by the faders: last night's dress rehearsal, cued to 15. Then, on the headset, the facts to Rosa.",
+     "consequence": "Sofia's hands find the faders.",
+     "chips": [
+      "Show keeps running",
+      "Record in hand",
+      "SM informed"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Sofia": 2,
+       "Rosa": 2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask the fly operator to hold the next drop until the lights catch up",
+     "result": "The fly operator stares at the headset. Rosa cuts in: “Nobody touches a line off my call.”",
+     "consequence": "You tried to improvise a move over people's heads to fix a lighting problem.",
+     "chips": [
+      "Boundary"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "Fly and scenery cues run only as rehearsed, on the stage manager's call. Never improvised. ⚑ RV-45",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Rosa": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya props the tablet by the console, showing last night's dress rehearsal paused at cue 15. Sofia looks at it.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "sofia",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "You know this show better than the file does. Take fifteen on the fader. Count it from the video."
+    },
+    {
+     "side": "R",
+     "who": "Sofia",
+     "kind": "speech",
+     "text": "…Eight counts. Okay. Eight counts."
+    }
+   ],
+   "narration": [],
+   "caption": "Nobody knows yet what's wrong with the file. Everybody knows what's right with Sofia.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3419
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Rosa at the prompt desk, one hand on her headset. Maya in the booth, on the same channel.",
+   "characters": [
+    {
+     "id": "rosa",
+     "pose": "L",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_theater",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Rosa",
+     "kind": "radio",
+     "text": "Booth. What is the house seeing?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "radio",
+     "text": "Fast fades, movers aimed low. We're running by hand from the dress video. Everything else is your call."
+    }
+   ],
+   "narration": [],
+   "caption": "Rosa holds the show. The booth never does. Fly cues run exactly as rehearsed, on her call.",
+   "flags": [
+    "RV-45"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4277
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “By hand”",
+   "sub": "7:55–8:40 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Sofia runs the show on the faders, eyes flicking between the stage and the dress-rehearsal video. The moving heads are parked dark.",
+   "characters": [
+    {
+     "id": "sofia",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Fades on the faders, counted from the video. Moving heads parked dark wherever they'd miss.",
+   "flags": [
+    "RV-44"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3189
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E04-02",
+   "prompt": "Sofia is carrying Act 1 by hand. You have forty minutes. What do you do with them?",
+   "happening": "Act 1 is running by hand.",
+   "clock": "8:00 p.m. · intermission ~8:40",
+   "known": [
+    "◉ Cue 14 fast",
+    "◉ Movers low",
+    "◉ Rehearsal video"
+   ],
+   "unknown": [
+    "Which cues are affected, and why"
+   ],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "Draft decision (DR-S02E04).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Reboot the lighting network switch — just in case",
+     "result": "Every fixture flickers to its no-data state mid-scene. A child in row C cries out. The cues are just as wrong afterwards.",
+     "consequence": "Rosa: “What was that?”",
+     "chips": [
+      "Blackout",
+      "Nothing learned"
+     ],
+     "badges": [
+      {
+       "kind": "erase",
+       "text": "MAY ERASE EVIDENCE"
+      }
+     ],
+     "canonical": false,
+     "fail": "Nothing pointed at the network, and you just proved that in the worst possible way.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Rosa": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Compare every cue with the rehearsal video and write down what differs — touch nothing",
+     "result": "Cue by cue in the notebook: which cues are wrong, how, and which aren't.",
+     "consequence": "By cue 30 the pattern is on the page.",
+     "chips": [
+      "Evidence",
+      "No risk to the show"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Sofia": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Go down and check the dimmer rack",
+     "result": "Ten minutes in the basement. Everything normal.",
+     "consequence": "True, useful, and away from the booth when Sofia needed a second pair of eyes.",
+     "chips": [
+      "One suspect cleared"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Tell Sofia she's late on her GOs",
+     "result": "Sofia's hands stop. “I'm on Rosa's calls.” She is — the video shows it.",
+     "consequence": "You rattled the only person holding the show together.",
+     "chips": [
+      "Trust lost"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The operator's timing was a red herring, and the video you're holding proves it.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Sofia": -1,
+       "Rosa": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya's notebook: cue 9, time set, OK; cue 12, time set, OK; cue 14, no time set, snaps; cue 17, no time set, fast; movers all low by the same amount; dimmers and network fine.",
+   "characters": [],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Not random. Every cue without its own fade time is fast. Every mover is off by the same amount.",
+   "flags": [
+    "VR-08",
+    "RV-44"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "30 cues vs dress video"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3328
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View comparison card. Different from rehearsal: cues with no fade time of their own all run fast; every moving head is low by the same angle. The same: cues with explicit times, every fixture on dimmers, the network with no errors, Sofia's GOs on Rosa's calls. Conclusion: a change that touches defaults and one fixture type.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Random faults don't sort themselves this neatly.",
+   "flags": [
+    "RV-44",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "It's not random",
+   "body": "The lighting network is clean — and the conventional fixtures on that same network are perfect. The dimmer rack is normal. Sofia's GOs land on Rosa's calls, on video. Only cues relying on the show's default fade time are wrong, and only one fixture type is off. Something changed both at once, after last night's dress rehearsal.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S02E04-1",
+   "label": "Test: three suspects cleared. Reason from the pattern that's left."
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Rosa and Maya beside a board. A VLAN keeps show traffic apart from everything else. Multicast is one video stream sent to many — and it floods every port unless someone manages it. How do I know a port's full? Utilization: traffic over link speed, times a hundred. Three hundred megabits on a thousand-megabit port: thirty percent. Fine. Nine hundred: trouble.",
+   "characters": [
+    {
+     "id": "rosa",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Rosa",
+     "kind": "speech",
+     "text": "A VLAN keeps show traffic apart from everything else. Multicast is one video stream sent to many — and it floods every port unless someone manages it."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "How do I know a port's full?"
+    },
+    {
+     "side": "L",
+     "who": "Rosa",
+     "kind": "speech",
+     "text": "Utilization: traffic over link speed, times a hundred. Three hundred megabits on a thousand-megabit port: thirty percent. Fine. Nine hundred: trouble."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1476
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    Link utilization   How full a link is, as a percentage of its capacity.   Multicast   Sending one stream to many receivers at once; floods a network unless managed.   VLAN   A virtual network: ports grouped so traffic stays separate on shared switches.   Formula, variables and a worked example   ƒ FORMULA · Link utilization  % = traffic ÷ link speed × 100   traffic  Mb/s on the link  link speed  Mb/s the port can carry    Worked example.  300 Mb/s on a 1,000 Mb/s port: 300 ÷ 1,000 × 100 = 30%."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 15 OF 31 · PP. 57, 141, 165  PART 4 DIGITAL CONSOLE OPERATION · PART 8 VIDEO ENGINEERING  Page 141, in Sofia's purple pen: “Change freeze = a love letter to future you.”"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB15",
+   "label": "**Fieldbook module 15 — Scenes, snapshots and the change freeze.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 15 · tap a plate to open it full size     Console scenes, monitoring and recording     Case study: an update the day of the event     Loose DMX: the phantom menace"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "💡 REACH IT · CHALLENGE · LEVEL 1  Run the lights, keep the crowd  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "reach-cues"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "N2",
+   "label": "**Learn it now:** show networks on the road — and how to clear one with evidence.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "C-12",
+   "label": "**Clue Board:** cue 14. Which clues separate the explanations?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Intermission — “Fifteen minutes”",
+   "sub": "8:41 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The console's event log, read-only: 14:06 update installed; fixture library replaced; show defaults reset; more lines below.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": "The 2 p.m. question, answered in the log. Read-only. Nothing touched.",
+   "flags": [
+    "RV-44",
+    "RV-49"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "event log · 14:06 update"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2151
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S2-04a",
+   "teaser": "the console's event log",
+   "title": "14:02:11 · INSTALL — user: SOFIA",
+   "body": "Just above it: *14:01:40 · update available (recommended)*, *14:01:52 · remind later*, *14:01:58 · update available (recommended)*. Three prompts in eighteen seconds. It asked until someone said yes.",
+   "thread": "The 2 p.m. question",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "When lighting got a memory",
+   "body": "For most of the twentieth century, a big show's lighting changes were run by operators on banks of levers, working from handwritten cue sheets. In the mid-1970s, computerized memory consoles reached Broadway: the 1975 production of A Chorus Line, lit by Tharon Musser, is often cited as the first Broadway musical run on one. A cue could now be recorded once and replayed exactly, night after night. The trade-off arrived with it: the show now lived in a file — and anything that changes the file changes the show.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Rosa has come up to the booth. Maya holds a laptop showing a show file saved at 11:40 — before today's notes.",
+   "characters": [
+    {
+     "id": "rosa",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Rosa",
+     "kind": "speech",
+     "text": "Fifteen minutes. What are my options, and what does each one cost me?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Roll back: about sixteen minutes. The 11:40 file: loses today's six notes, untested. Or Act 2 by hand, like Act 1."
+    }
+   ],
+   "narration": [],
+   "caption": "The interval is fifteen minutes. Rosa has eleven of them left.",
+   "flags": [
+    "RV-45",
+    "RV-44"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1688
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S2-04",
+   "who": "rosa",
+   "prompt": "Fifteen minutes. What are my options, and what does each one cost me? Booth voice, not panic voice.",
+   "options": [
+    {
+     "label": "Give her three options, a cost for each, and a recommendation.",
+     "who": "rosa",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Thank you. That's a booth voice.",
+     "trust": {
+      "Rosa": 2
+     }
+    },
+    {
+     "label": "“We should roll back, definitely.”",
+     "who": "rosa",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Definitely is a big word for sixteen minutes you don't have.",
+     "trust": {
+      "Rosa": -1
+     }
+    },
+    {
+     "label": "“Whatever you think.”",
+     "who": "rosa",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "I think I asked you.",
+     "trust": {
+      "Rosa": -2
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E04-03",
+   "prompt": "Intermission. Rosa needs a recommendation from the booth — now.",
+   "happening": "Intermission: the update is known; three ways forward.",
+   "clock": "8:44 p.m. · places at 8:52",
+   "known": [
+    "▮ 14:06 update",
+    "◉ Act 1 ran by hand, matching the video",
+    "◉ 11:40 file: before today's notes"
+   ],
+   "unknown": [
+    "What else the update changed"
+   ],
+   "risk": "Act 2, the cast, and two thousand people.",
+   "timer_s": 30,
+   "timeout": [
+    "Places is called while the booth is still arguing. Act 2 starts with nobody sure who's doing what.",
+    "Rosa asked for a recommendation. Silence isn't one."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Which option doesn't add a new, untested change in the middle of a show?"
+    }
+   ],
+   "note": "Draft decision (DR-S02E04). ⚑ RV-45.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Roll the software back during the interval",
+     "result": "Sixteen minutes of work in fifteen. At 8:57 the console is still verifying. Places is called on a dark desk.",
+     "consequence": "If anything surprises you, there's no Act 2.",
+     "chips": [
+      "Doesn't fit",
+      "No margin"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A fix that doesn't fit the window is a new risk, not a fix.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Rosa": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Load the 11:40 show file",
+     "result": "It loads. Today's six notes vanish, and the file has never been run with the updated software.",
+     "consequence": "Act 2 opens on a file nobody has tested tonight.",
+     "chips": [
+      "Untested",
+      "Notes lost"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You'd be swapping a known problem for an unknown one, mid-show.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Rosa": -2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Act 2 by hand; nothing touches the console until the house is empty",
+     "result": "Rosa: “By hand. Nothing touches that console till the house is empty. Places in five.”",
+     "consequence": "The same method that saved Act 1, with a known cost: Sofia's concentration.",
+     "chips": [
+      "Known risk",
+      "No changes mid-show"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Sofia": 2,
+       "Rosa": 2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Tell Rosa the show has to stop",
+     "result": "Rosa looks at you for a long second. “Is anything unsafe?” It isn't.",
+     "consequence": "Stopping is her call, and nothing tonight is unsafe — just wrong.",
+     "chips": [
+      "Not the booth's call"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "The booth reports; the stage manager decides. And nothing here justified it.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Rosa": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act 2",
+   "sub": "8:57 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Act 2's lantern moment. The lantern glows center stage, lit by the fixtures that still tell the truth. The audience is still.",
+   "characters": [],
+   "location": "scenes.bg_theater",
+   "bubbles": [],
+   "narration": [],
+   "caption": "The lantern moment, lit by hand, from memory and a video.",
+   "flags": [
+    "VR-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6390
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #15 · AVERY'S LENS  Don't change the interface on show day  People rely on learned behavior; change it at the worst moment and even experts fail.  An afternoon update changed how cues behaved. Sofia's muscle memory was right; the system was different."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S02E04",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the booth, Sofia and Maya side by side, working together — Sofia on the faders, Maya counting from the tablet.",
+   "characters": [
+    {
+     "id": "sofia",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sofia",
+     "kind": "speech",
+     "text": "Twenty-nine. Five count. Go."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Five… four… three…"
+    }
+   ],
+   "narration": [],
+   "caption": "Two days of silence. They don't need to talk about it now. They're counting.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2927
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "After the curtain",
+   "sub": "10:08 p.m. · the house is empty"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The event log, scrolled back: 14:05 prompt, recommended update; 14:06 update accepted, user Sofia; 14:06 installed. Sofia stares at her own name.",
+   "characters": [
+    {
+     "id": "sofia",
+     "pose": "S",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sofia",
+     "kind": "speech",
+     "text": "I clicked it. It said “recommended”. I was typing notes and it kept asking."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Sofia —"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-44",
+    "RV-47"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2081
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "warm",
+   "where": null,
+   "lines": [
+    {
+     "who": "sofia",
+     "pose": "N",
+     "expr": "worried",
+     "text": "I clicked it. It kept asking. I was typing notes."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "It asked at two o'clock on press night. That's not a Sofia problem."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Sofia clicked Install",
+   "body": "The log's next line names who accepted the update at 14:06: Sofia, alone at the console between notes, answering a pop-up that said “recommended”. The Carroway's last page showed her standing next to that question. Nobody had told her not to answer it on press night — because nobody had written a rule.",
+   "test_kind": "drill",
+   "test_id": "O-13",
+   "label": "Test: write the rule that would have kept that question off the screen. Put the freeze in order."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya faces Sofia across the booth.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "sofia",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "It asked you at two o'clock on press night. That's not a Sofia problem. That's a no-freeze problem."
+    },
+    {
+     "side": "R",
+     "who": "Sofia",
+     "kind": "speech",
+     "text": "You backed Ben."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-47"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1283
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya answers; Sofia's face softens.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "sofia",
+     "pose": "W",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "I did. I backed the number. Tonight I'm backing you. Same reason: you were right about what you knew."
+    },
+    {
+     "side": "R",
+     "who": "Sofia",
+     "kind": "speech",
+     "text": "You brought me the video. You didn't touch my desk."
+    }
+   ],
+   "narration": [],
+   "caption": "Repaired. Not forgotten — repaired.",
+   "flags": [
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1282
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E04-04",
+   "prompt": "Tomorrow night there's another audience. What happens before it?",
+   "happening": "The show got through. The file is still wrong.",
+   "clock": "10:15 p.m.",
+   "known": [],
+   "unknown": [],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "Draft decision (DR-S02E04).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Roll back now, at 10 p.m., and go to bed",
+     "result": "It installs. Nobody runs a single cue.",
+     "consequence": "Tomorrow's audience gets a second untested change.",
+     "chips": [
+      "Untested again"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You'd be repeating tonight's mistake with a different file.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -2,
+      "sev": 1,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Noon cue-to-cue against the rehearsal record; fix profile and default with Sofia; write the freeze and a pre-show check",
+     "result": "Rosa books 72 minutes. Sofia fixes the default fade and the mover profile; every cue is checked against the dress video.",
+     "consequence": "The file is proven before the doors open, and the rule exists.",
+     "chips": [
+      "Proof",
+      "A rule"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 2,
+      "sev": 1,
+      "trust": {
+       "Sofia": 1,
+       "Rosa": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Run every show by hand from now on",
+     "result": "Sofia can. For eleven more shows.",
+     "consequence": "The file stays wrong and the risk rides on one tired person.",
+     "chips": [
+      "Unsustainable"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask the vendor to push a hotfix tonight",
+     "result": "A reply at 1 a.m.: “Try this build.”",
+     "consequence": "Another update nobody has tested, on show day.",
+     "chips": [
+      "Another change"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The lesson of tonight is not “more updates, faster”.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -2,
+      "sev": 1,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Next day at noon: the cue-to-cue. The stage shows cue 14 correctly; beside it, the tablet shows the same cue from the dress rehearsal. Rosa checks it off.",
+   "characters": [
+    {
+     "id": "rosa",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Noon: 96 cues against the dress video. Cue 14: eight seconds, lantern lit. Checked.",
+   "flags": [
+    "RV-44",
+    "RV-45"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "cue-to-cue vs rehearsal record"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1548
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A yellow sign taped above the console: SHOW-DAY FREEZE. No updates. No new files. No new devices. Changes: SM plus LD plus log. Pre-show: cues vs rehearsal.",
+   "characters": [],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": "The rule that didn't exist at 2 p.m. yesterday.",
+   "flags": [
+    "RV-44"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3895
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-204",
+   "label": "**Service Mode:** cue 14, live, with thirty cues to go.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Sofia holds up her phone: a review of press night — the lighting is restrained, almost old-fashioned, and exactly right. Maya grins.",
+   "characters": [
+    {
+     "id": "sofia",
+     "pose": "N",
+     "expr": "grin"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The critic never knew. That's the job, too.",
+   "flags": [
+    "VR-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1262
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "rosa",
+     "pose": "N",
+     "expr": "grin",
+     "text": "The critic wrote “luminous.” About the part we lit by hand from a phone video."
+    },
+    {
+     "who": "sofia",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Don't tell her."
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-012 · SIGNAL original  Event-Day Control Update Disaster  A “recommended update” at 2 p.m. Press night at 7:30. Nobody tested the file in between.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-012"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Night on a loading dock. Maya reads a text from Dante: they put me on the presenter's in-ear mix at the festival, no rehearsal — you built the template, right?",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_dock",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Next weekend: a festival talk stage. Next: *Mix-Minus.*",
+   "flags": [
+    "RV-46",
+    "VR-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3686
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  On show day, the file is the show: freeze it. When something goes wrong mid-show, keep it running safely from the record — give the operator the rehearsal video, tell the stage manager the facts, and never improvise anything that moves over people. Consistent differences point at a change; read the change log without touching the show. Fix after the house empties, then prove it cue-to-cue against the record."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Sofia clicked a button that said “recommended”. Anyone would have. The failure wasn't her finger; it was a day with no rule. And the friendship came back the way trust usually does — not with a speech, but with someone handing you exactly what you needed and keeping their hands off your desk.  Boundary: this reflection doesn't prove anything about the console."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S02E04",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

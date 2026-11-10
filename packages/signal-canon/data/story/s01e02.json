@@ -1,0 +1,2296 @@
+{
+ "chapter": {
+  "id": "s01e02",
+  "kicker": "S01 · E02",
+  "title": "The Muddy Mix",
+  "pill": "S01E02 · The Muddy Mix",
+  "sub": "Cut before you boost — but first, match the level.",
+  "status": "**DRAFT** · scripted ahead of the production-bible entry · IDs provisional",
+  "flags": [
+   "DR-S01E02",
+   "RV-25",
+   "RV-17",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--amber)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 1 · EPISODE 2 · DRAFT  Teach-back · Maya and Dante · Level L1 (Foundation) · CASE-003 Mix Rescue (structure only)  Maya teaches a new volunteer to “cut the mud” — and discovers she can't explain why it worked last week."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "The Mix That Lied",
+   "kind": "MAIN QUEST",
+   "level": "L1 · OPERATOR",
+   "party": [
+    "maya",
+    "lily",
+    "dante",
+    "marisol"
+   ],
+   "stakes": "Maya's first solo mix — and Lily is watching every move, asking why.",
+   "clock": "One rehearsal. One Sunday.",
+   "reward": "A rule you can explain, not just perform. Lily's respect.",
+   "objectives": [
+    {
+     "key": "BR-S01E02-01",
+     "text": "Decide what to do first when the mix goes heavy again"
+    },
+    {
+     "key": "twist",
+     "text": "Survive the blind test"
+    },
+    {
+     "key": "BR-S01E02-02",
+     "text": "Find where the heaviness really starts"
+    },
+    {
+     "key": "core",
+     "text": "Fix it at the earliest stage"
+    },
+    {
+     "key": "BR-S01E02-03",
+     "text": "Tell Marisol about the mic without making it her fault"
+    }
+   ],
+   "rumor": "Maya's notebook says MUD = 250–500. CUT IT. WORKED. The word WORKED is underlined twice."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Underwater”",
+   "sub": "Sunday, week 4 · 10:20"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A wide, muted view of the sanctuary during a song. The worship leader, Marisol, sings; the band plays; the sound feels heavy.",
+   "characters": [
+    {
+     "id": "marisol",
+     "pose": "M",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [
+    "Something's off. The mix feels heavy — almost underwater. [COMIC Ch.05]"
+   ],
+   "caption": "Sunday, week 4. Dante is away. Maya mixes the band on her own for the first time.",
+   "flags": [
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1506
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya at the console with a tablet analyzer, clearly labeled ANALYZER, showing a broad bump shaded between 250 and 500 hertz.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Right there. Two-fifty to five hundred. That's mud."
+    }
+   ],
+   "narration": [],
+   "caption": "[COMIC Ch.05 line — now a heuristic to test, not a rule]",
+   "flags": [
+    "Q-010",
+    "VR-07",
+    "RV-25"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1928
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Close-up: Maya cuts a dip in the EQ between 250 and 500 hertz. Then, almost without thinking, her hand nudges the main fader up.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Cut. Then — without thinking — a little more main fader.",
+   "flags": [
+    "RV-25",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 953
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya grins: 'Better.' The congregation sings. In the corner of the panel, the channel 1 input meter's red clip light flickers on the chorus. Maya doesn't see it.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Better."
+    }
+   ],
+   "narration": [],
+   "caption": "In her notebook: *Mud = 250–500. Cut it. WORKED.*",
+   "flags": [
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2278
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": "Sunday · 11:40 a.m.",
+   "lines": [
+    {
+     "who": "maya",
+     "pose": "R",
+     "expr": "grin",
+     "text": "Look at that. Mud: gone. I am basically an engineer now."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(It was louder. She wouldn't know that for six more days.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Teach me”",
+   "sub": "Thursday, week 5 · rehearsal, 6:55 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Theo drops his sister Lily off at the booth. She has come to learn the board.",
+   "characters": [
+    {
+     "id": "theo",
+     "pose": "W",
+     "expr": "grin"
+    },
+    {
+     "id": "lily",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Theo",
+     "kind": "speech",
+     "text": "She wants to learn the board. I told her you're the one who asks questions."
+    },
+    {
+     "side": "R",
+     "who": "Lily",
+     "kind": "speech",
+     "text": "Hi. I'm the one who asks more."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1280
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya teaches Lily at the console, pointing at the input meters.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "talk"
+    },
+    {
+     "id": "lily",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "First rule: gain first. Green at the source. [COMIC Ch.03]"
+    },
+    {
+     "side": "R",
+     "who": "Lily",
+     "kind": "speech",
+     "text": "Why green?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1343
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya answers, a little too fast.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "…It means it's not too loud."
+    }
+   ],
+   "narration": [],
+   "caption": "A tiny gap. Lily notices.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1272
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "awkward",
+   "where": null,
+   "lines": [
+    {
+     "who": "lily",
+     "pose": "N",
+     "expr": "flat",
+     "text": "…You don't know why green."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "worried",
+     "text": "I know why green. I just don't know how to say why green."
+    },
+    {
+     "who": "lily",
+     "pose": "N",
+     "expr": "grin",
+     "text": "That's the same thing, but sadder."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The band starts. The sound is heavy again. Maya explains the mud; Lily asks why.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "talk"
+    },
+    {
+     "id": "lily",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Hear that? Heavy. That's mud — two-fifty to five hundred. You cut it."
+    },
+    {
+     "side": "R",
+     "who": "Lily",
+     "kind": "speech",
+     "text": "Why there?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1343
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya gives the rule. Lily keeps asking.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "lily",
+     "pose": "W",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Because that's where mud lives."
+    },
+    {
+     "side": "R",
+     "who": "Lily",
+     "kind": "speech",
+     "text": "Does it live there for every voice? And why is it back? You cut it Sunday."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1343
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya opens her mouth, then closes it. Her notebook: 'Mud = 250–500. Cut it. WORKED.' Below it she writes: 'WHY did it work?'",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "She can do it. She can't explain it.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1320
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S1-02",
+   "who": "lily",
+   "prompt": "Can I ask a rude question? Do you actually know how this works, or do you just know what to press?",
+   "options": [
+    {
+     "label": "“I know what to press. I'm learning the why. Learn it with me?”",
+     "who": "lily",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "Deal. I'll ask the questions. You find out.",
+     "trust": {
+      "Lily": 2
+     }
+    },
+    {
+     "label": "“Of course I know how it works.”",
+     "who": "lily",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Okay. Then why is it back?",
+     "trust": {
+      "Lily": -1
+     }
+    },
+    {
+     "label": "“That's not a rude question, it's a Ray question.”",
+     "who": "lily",
+     "pose": "N",
+     "expr": "grin",
+     "reply": "Who's Ray? Is he rude?",
+     "trust": {
+      "Lily": 1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E02-01",
+   "prompt": "The mix is heavy again, and Lily is watching. What do you do first?",
+   "happening": "The mix sounds heavy again, the same way it did on Sunday.",
+   "clock": "Rehearsal · 55 min left",
+   "known": [
+    "◉ Cutting 250–500 Hz “worked” on Sunday",
+    "◉ It's back tonight"
+   ],
+   "unknown": [
+    "Which channel it's in",
+    "Why Sunday's cut helped"
+   ],
+   "risk": "Sunday's service, and Lily's first lesson.",
+   "timer_s": 20,
+   "timeout": [
+    "The chorus hits, heavy again, with Lily watching you not move.",
+    "The first move — find which channel — takes seconds."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Before you change the sound, where is it coming from?"
+    },
+    {
+     "id": "H2",
+     "keep": 0.85,
+     "text": "A mix is made of channels. Listen to one at a time."
+    },
+    {
+     "id": "H3",
+     "keep": 0.7,
+     "text": "Headphones let you listen to one channel without changing what the room hears."
+    },
+    {
+     "id": "H4",
+     "keep": 0.5,
+     "text": "If one channel carries the heaviness, you've made the problem much smaller."
+    },
+    {
+     "id": "H5",
+     "keep": 0.25,
+     "text": "Walkthrough, then a variant: a choir that sounds heavy on one side."
+    }
+   ],
+   "note": "Draft decision: IDs and consequences are provisional until the S01E02 bible entry is frozen (DR-S01E02).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Cut the mud again",
+     "result": "Verses get thinner; choruses stay heavy. Lily: “Why is it different from Sunday?”",
+     "consequence": "Maya has to undo it and start over to find where the heaviness comes from.",
+     "chips": [
+      "A few minutes",
+      "Starting point lost"
+     ],
+     "badges": [
+      {
+       "kind": "erase",
+       "text": "May erase evidence"
+      }
+     ],
+     "canonical": false,
+     "fail": "Cutting mud again repeats last week's non-fix.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Lily": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Push the vocal up",
+     "result": "Louder — and heavier. The chorus clip light flashes more often. Dante, arriving: “Bring it down. Ears first.”",
+     "consequence": "Back to the choice.",
+     "chips": [
+      "Louder in the room"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "Hearing: keep levels moderate"
+      }
+     ],
+     "canonical": false,
+     "fail": "Louder isn't cleaner.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Dante": -2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Find which channel it's in",
+     "result": "Headphones, one channel at a time: drums fine, keys fine, guitar a little — the lead vocal, on the choruses, is heavy.",
+     "consequence": "She knows where before she changes anything.",
+     "chips": [
+      "About 10 minutes",
+      "Knows: test to tell ideas apart"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Lily": 2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask Dante",
+     "result": "Dante, just arriving: “Tell me what you hear, not what you expect.”",
+     "consequence": "Back to the choice.",
+     "chips": [
+      "Quick"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya listens in headphones to one channel at a time: drums fine, keys fine, guitar a little heavy, and the lead vocal, on the choruses, heavy.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "closed"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Headphones: listening to one channel doesn't change what the room hears.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "choruses"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2349
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Dante”",
+   "sub": "7:25 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Dante arrives: tall, bronze bomber jacket, short locs, in-ear protection visible. He holds out foam earplugs to Maya and Lily.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "W",
+     "expr": "grin"
+    },
+    {
+     "id": "lily",
+     "pose": "P",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "Rehearsal's loud. Earplugs, both of you — out only when you're judging tone."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-17",
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1353
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Dante listens with his head tilted, eyes closed, one hand cupped behind his ear. In System View, his listening is a focused cone on one frequency region.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "L",
+     "expr": "closed"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "Boxy. Smeared on the choruses."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1212
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Teach-back: Maya explains her recipe to Dante.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "dante",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Mud is two-fifty to five hundred. I cut it Sunday and it got better."
+    },
+    {
+     "side": "R",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "Better — or louder?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1345
+  },
+  {
+   "origin": "injected",
+   "type": "twist",
+   "title": "The EQ never fixed anything",
+   "body": "Level-matched and blind, nobody could pick last week's EQ cut. It 'worked' because it made the mix louder. The real problem is upstream: the preamp clips on every chorus.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S01E02-R",
+   "label": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Close-up: a worn sticker on Dante's audio interface reads MATCH FIRST.",
+   "characters": [],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "Let's find out. Blind."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 516
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II (cont.) — “Blind”",
+   "sub": "7:40 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya and Lily close their eyes and face away from the console while Dante switches between two versions of Sunday's recording: A is Maya's cut, B is flat.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "closed"
+    },
+    {
+     "id": "lily",
+     "pose": "N",
+     "expr": "closed"
+    },
+    {
+     "id": "dante",
+     "pose": "P",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Round one: Sunday's recording, two versions, levels as Maya left them.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1516
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Round one result card: Maya picks her cut 5 times out of 5. Dante reaches for his sound-level meter.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "See?"
+    }
+   ],
+   "narration": [],
+   "caption": "Dante: “Now we match.” He finds one version about 2 dB louder, and trims it. (illustrative)",
+   "flags": [
+    "RV-25",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1936
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Round two, with the loudness matched: Maya picks the cut 5 times out of 10, Lily 4 out of 10 — no better than chance.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "It wasn't the cut. It was the fader."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-25",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "CONTRADICTED",
+     "label": "“the cut fixed it”"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2202
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Round three: Dante tests his own favorite 'warm' setting on the acoustic guitar, blind and level-matched. He picks it 3 times out of 6. He laughs.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "S",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "My turn. My “warm” setting — I'd have bet my jacket on it."
+    }
+   ],
+   "narration": [],
+   "caption": "Dante: “Okay. Okay. My ears just lost an argument with a meter.”",
+   "flags": [
+    "RV-25"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1878
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "dante",
+     "pose": "N",
+     "expr": "grin",
+     "text": "My ears just lost an argument with a meter. Do not tell anyone at the monitor desk."
+    },
+    {
+     "who": "lily",
+     "pose": "R",
+     "expr": "smile",
+     "text": "I'm writing it down."
+    },
+    {
+     "who": "dante",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Of course you are."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Lily asks where the heaviness comes from, if not the EQ. Maya remembers a field note: fix problems at the earliest stage you can reach.",
+   "characters": [
+    {
+     "id": "lily",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Lily",
+     "kind": "speech",
+     "text": "So if it's not the EQ — where is the heaviness coming from?"
+    }
+   ],
+   "narration": [],
+   "caption": "[COMIC Ch.03 field note]",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2043
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E02-02",
+   "prompt": "The EQ wasn't the fix. Where do you look next?",
+   "happening": "Level-matched, the EQ cut makes no difference anyone can hear.",
+   "clock": "Rehearsal · 25 min left",
+   "known": [
+    "▮ Sunday's “better” was mostly louder",
+    "◉ The heaviness is in the lead vocal, on choruses"
+   ],
+   "unknown": [
+    "What happens before the EQ"
+   ],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Where does the voice enter the console?"
+    },
+    {
+     "id": "H2",
+     "keep": 0.85,
+     "text": "Fix problems at the earliest stage you can reach. [COMIC Ch.03]"
+    },
+    {
+     "id": "H3",
+     "keep": 0.7,
+     "text": "What does the input meter do on the loudest line of the song?"
+    },
+    {
+     "id": "H4",
+     "keep": 0.5,
+     "text": "The EQ comes after the preamp. It can't undo what happened before it."
+    },
+    {
+     "id": "H5",
+     "keep": 0.25,
+     "text": "Walkthrough, then a variant: a spoken-word mic that sounds harsh only when the speaker gets excited."
+    }
+   ],
+   "note": "Draft decision (DR-S01E02).",
+   "lab": "LAB-SF-03",
+   "lab_label": "set the gain structure yourself — preamp first, then fader.",
+   "options": [
+    {
+     "letter": "A",
+     "label": "Try a different EQ curve",
+     "result": "Different, not better. Still downstream.",
+     "consequence": "Rehearsal ends with nothing learned; Sunday sounds the same.",
+     "chips": [
+      "About 15 minutes"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "More EQ can't undo clipping upstream.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Watch the input meter",
+     "result": "Red on every chorus peak — before the sound ever reaches the EQ.",
+     "consequence": "The cause is found at the earliest stage.",
+     "chips": [
+      "A few minutes",
+      "Measured: clipping on choruses"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Crew": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Swap the vocal mic",
+     "result": "A different sound, still clipping — and now nobody knows which change did what.",
+     "consequence": "Dante: “Put it back. One change at a time.” Back to the choice.",
+     "chips": [
+      "Two things changed"
+     ],
+     "badges": [
+      {
+       "kind": "erase",
+       "text": "May erase evidence"
+      }
+     ],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask Marisol to sing softer",
+     "result": "She sings timidly: less heavy, less alive.",
+     "consequence": "The problem is hidden, not fixed, and Marisol stops trusting the booth.",
+     "chips": [
+      "Marisol trusts you less"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Handing your problem to the performer.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Marisol": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "physbreak",
+   "cls": "physbreak",
+   "text": "🔭 PHYSICS IN MOTION  Why a wedge starts to howl  The science under this episode’s problem — live."
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Ray and Maya beside a board. Gain is how much a stage adds, in decibels. Gain staging is setting every stage so the signal sits clear of the noise and clear of clipping. And how much gain do I add? Target minus what arrives. Arriving at minus thirty, you want minus eighteen: minus eighteen minus minus thirty — plus twelve. Headroom is what's left above your peaks.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Gain is how much a stage adds, in decibels. Gain staging is setting every stage so the signal sits clear of the noise and clear of clipping."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And how much gain do I add?"
+    },
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Target minus what arrives. Arriving at minus thirty, you want minus eighteen: minus eighteen minus minus thirty — plus twelve. Headroom is what's left above your peaks."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1796
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    Gain   How much a stage amplifies (positive dB) or reduces (negative dB) a signal.   Gain staging   Setting each stage's gain so the signal stays well above the noise and well below clipping all the way through.   Headroom   The space between normal peaks and the point of clipping.   Formula, variables and a worked example   ƒ FORMULA · Gain needed  G = L target  − L in    G  gain to add, dB (negative means cut)  L target   level you want, dB  L in   level arriving, dB    Worked example.  Arriving at −30 dB, target −18 dB: G = −18 − (−30) = +12 dB."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 03 OF 31 · PP. 65–68, 84–85  PART 5 DSP, MIXING & EAR TRAINING  Page 67. In the margin next to  Louder is not clearer , Ray had written: “Say this out loud the next time the band asks for more.”"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB3",
+   "label": "**Fieldbook module 3 — The frequency spectrum and EQ.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 3 · tap a plate to open it full size     EQ and the frequency spectrum     Audio effects deep dive     Gain, headroom and EQ     Hear it right — EQ it right (the ear)"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "demo-note",
+   "cls": "demo-note",
+   "text": "🎚 EQ and the analyser · HANDS-ON DEMO  Shape a voice, a kick drum or a ringing mic with a four-band EQ, and watch the analyser bars in the colours of the spectrum. Then listen.  Open the demo ▸",
+   "opens": {
+    "kind": "demo",
+    "id": "eq"
+   }
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "👂 HEAR IT · CHALLENGE · LEVEL 1  Undo the bad guitar EQ  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "hear-eq"
+   }
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lab",
+   "id": "PHY-S01E02",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III — “Earliest stage”",
+   "sub": "8:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya watches the channel 1 input meter while Marisol sings the chorus. The red clip light lights on every chorus peak.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "It's red before it ever gets to the EQ."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-25",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "clips on choruses"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1908
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View: the signal chain — mic, preamp, EQ, fader, room and stream. The preamp box is red: clipping happens there, before the EQ.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "P",
+     "expr": "talk"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "The EQ is downstream. It can't un-flatten what the preamp already flattened."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-25"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 119
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya asks who set the gain. Lily reads Sunday's line-check sheet.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "lily",
+     "pose": "R",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Who set the gain?"
+    },
+    {
+     "side": "R",
+     "who": "Lily",
+     "kind": "speech",
+     "text": "Line check says: “Marisol — spoke into mic, arm's length.”"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1343
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S1-02a",
+   "teaser": "the line-check sheet",
+   "title": "Twelve Sundays of line checks",
+   "body": "Every one says *spoke into mic, arm's length.* Nobody ever sang into anything. The form has a box for “level” and no box for “how”.",
+   "thread": "Temporary things",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya puts it together.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "She checked at a whisper and sings at full voice."
+    }
+   ],
+   "narration": [],
+   "caption": "A workflow cause: the line check was done at speaking level, from arm's length.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1272
+  },
+  {
+   "origin": "injected",
+   "type": "history",
+   "title": "Harold Black's feedback and Harry Nyquist's rule",
+   "body": "Harold Black invented the negative-feedback amplifier on a ferry in 1927. Five years later Harry Nyquist published the rule for when a feedback loop stays stable. Every howling wedge is a loop that broke Nyquist's rule.",
+   "flag": "RV-27",
+   "when": "1927 · 1932",
+   "lab": "PHY-S01E02"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "On stage, Marisol sings the chorus with her lips almost touching the mic grille, then backs away for the verse. Dante explains.",
+   "characters": [
+    {
+     "id": "marisol",
+     "pose": "M",
+     "expr": "talk"
+    },
+    {
+     "id": "dante",
+     "pose": "P",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "And the closer she gets to that mic, the more low end it picks up. Proximity effect."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 579
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View: two bar charts. Up close to the microphone, the low-frequency bar is much taller than the others; a hand's width back, the bars even out. Illustrative.",
+   "characters": [],
+   "location": "scenes.bg_stage",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Directional mics gain low end up close. (Illustrative bars.)",
+   "flags": [
+    "RV-25",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 434
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lab",
+   "id": "LAB-EQ-01",
+   "label": "**Fix-It Lab:** the wedge rings in rehearsal. Find it by the numbers and notch it.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya's notebook: 'Too much gain for how she really sings, so it clips on choruses. Close to the mic, extra lows. EQ comes after both.' Confidence: 70.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-25"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": 70,
+   "art_bytes": 1654
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III (cont.) — “One change, then the other”",
+   "sub": "8:20 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Dante asks for a prediction before Maya touches anything.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "Before you touch it — what do you expect?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Lower the preamp until chorus peaks stay out of the red, raise the fader to match — and the choruses stop sounding crushed."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1345
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Close-up: Maya turns the preamp gain knob down. The input meter now peaks below the red on the chorus. Dante matches the loudness with his sound-level meter.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "One change. Level matched. No red on the chorus.",
+   "flags": [
+    "RV-25",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "no clip, chorus"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 854
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya listens again. Better — but something is left.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Better. But the verses still boom when she leans in."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1272
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E02-03",
+   "prompt": "The rest is about how Marisol holds the mic. How do you bring it up?",
+   "happening": "The preamp is fixed. The verses still boom when Marisol leans in.",
+   "clock": null,
+   "known": [],
+   "unknown": [],
+   "risk": "Marisol's confidence on Sunday.",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "Draft decision (DR-S01E02).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "“You're singing too close”",
+     "result": "Marisol tenses and sings stiffly.",
+     "consequence": "The heaviness improves; the performance doesn't, and she avoids the booth.",
+     "chips": [
+      "Marisol trusts you less"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Show her the meter together",
+     "result": "Marisol: “Nobody ever told me the mic changes when I move.” She picks a hand's width.",
+     "consequence": "The line check is rewritten; the fix survives the next Sunday.",
+     "chips": [
+      "Marisol trusts you more",
+      "Line check rewritten"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 2,
+      "sev": 1,
+      "trust": {
+       "Marisol": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Just fix it on the desk",
+     "result": "Riding the fader helps tonight.",
+     "consequence": "Next Sunday the old line check sets the gain too high again.",
+     "chips": [
+      "Quick",
+      "Cause left in place"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Have Dante tell her",
+     "result": "She listens to Dante.",
+     "consequence": "Fixed — but Maya and Marisol never talk, and Lily learns “send the expert.”",
+     "chips": [
+      "Quick"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "On stage, Maya shows Marisol the input meter on a tablet while Lily watches.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "marisol",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "lily",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Can we try something together? Sing the chorus once close, once about a hand's width back — and watch this."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 651
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #3 · AVERY'S LENS  Recognition over recall  Put the answer where people can see it; don't make them remember it.  A clip light on the preamp showed the problem at a glance. A label on each channel beats a memory of which fader is whose."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S01E02",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Marisol watches the meter change as she moves and laughs.",
+   "characters": [
+    {
+     "id": "marisol",
+     "pose": "M",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Marisol",
+     "kind": "speech",
+     "text": "Nobody ever told me the mic changes when I move. A hand's width. I can do that."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-25"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 508
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "marisol",
+     "pose": "N",
+     "expr": "worried",
+     "text": "Nine years I've been singing here. Nine years I thought my voice was just… muddy."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "It was never your voice."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Lily rewrites the line-check sheet: 'Sing the loudest line, at the real distance.'",
+   "characters": [
+    {
+     "id": "lily",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": "The workflow fix: check at singing level, not speaking level.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2088
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Round four, blind and level-matched: tonight's version against Sunday's. Maya picks tonight's 9 of 10, Lily 9 of 10, Dante 10 of 10. Illustrative.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "S",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "Now that's a difference you can hear with the lights off."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-25",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2534
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act IV — Proof · “Sunday”",
+   "sub": "Sunday, week 5"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Sunday, during the service: through every chorus, channel 1's input meter stays out of the red. The clip log shows zero events. Illustrative.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Condition 2: a full room, a live service.",
+   "flags": [
+    "RV-25",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "condition 2 · live service"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1946
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya walks to the middle of the room during a song and listens. In row 8, Dolores sits back, singing.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "closed"
+    },
+    {
+     "id": "dolores",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Listen where the people are.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1577
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Adjacent checks: the pastor's mic is clear from the front, middle and back rows; the stream recording shows no clipping, and its level is close to last week's.",
+   "characters": [
+    {
+     "id": "lily",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Nothing next door broke.",
+   "flags": [
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 906
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "After the service, Dante plays last week's stream recording against this week's, loudness matched.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Last week I made it louder. This week I made it cleaner."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1345
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Teach it back",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya asks Lily to teach it back to her.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "lily",
+     "pose": "W",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Your turn. Teach it back to me."
+    },
+    {
+     "side": "R",
+     "who": "Lily",
+     "kind": "speech",
+     "text": "Set the gain for how they'll really sing. Match levels before you decide. EQ comes last."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1344
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya's notebook rewrites the old field note: '250 to 500 hertz is a place to look, not a rule — it depends on the voice and the room. Match the level before you judge. Fix it at the earliest stage you can reach.'",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "Q-010",
+    "RV-25"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1844
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Change log entry #3: 'Channel 1 (lead vocal) preamp gain lowered. Scene saved. Line check now at singing level, real distance. Blind A/B results attached.'",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1379
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray reads the entry and gives one principle.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Louder always wins the first listen. Don't let it vote."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1272
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-003 · from the Empathia Learn Fieldbook, pp. 84–85  Mix Rescue  A muddy mix that “got better” last week — because it got louder.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-003"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "lessonbreak",
+   "cls": "lessonbreak",
+   "text": "PRACTICE BREAK · S01 · E02  Your turn before the debrief  Work this episode's problem yourself: a drill, a lesson, and the live incident. Every one can be failed, and every failure explains itself."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "drill",
+   "id": "F-01",
+   "label": "**First failure point:** the heavy vocal.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "A1",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-09",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Dante notices a sticky note on the console with the password on it. He asks Ray about it. Ray pauses.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "Why does everybody know the console password?"
+    },
+    {
+     "side": "R",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "…Because I told them."
+    }
+   ],
+   "narration": [],
+   "caption": "(DEBT-002)",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1557
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S1-02b",
+   "teaser": "the console password",
+   "title": "Who knows it?",
+   "body": "Maya counts. Ray, Imani, Dante, Theo, two former youth leaders, a visiting engineer from 2019, and — according to the sticky note under the desk — *everyone*.",
+   "thread": "Ray's notebook · DEBT-002",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Imani passes the booth with news. Maya glances at the drawer of adapters.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "Guest speaker next Sunday. She's bringing her own laptop."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Hum at 9:14.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1539
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  250–500 Hz is a place to look, not a rule. Match the level before you judge — louder almost always sounds better at first. Fix it at the earliest stage you can reach: a problem born at the preamp can't be undone by the EQ after it."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Lily asked “why?” until Maya found out she didn't know. Humility in teaching is saying so — and finding out together.  Boundary: none of this explains or proves the mix."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S01E02",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

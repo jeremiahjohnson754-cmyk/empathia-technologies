@@ -1,0 +1,92 @@
+{
+ "chapter": {
+  "id": "pro08",
+  "kicker": "PROLOGUE · CH.08",
+  "title": "Capture to Display",
+  "pill": "Prologue · Ch.08",
+  "sub": "When two frame rates argue.",
+  "status": null,
+  "flags": [],
+  "accent": "var(--violet)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A camera points at the LED wall; on camera the wall shows pink rippling bands. Maya frowns at it.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The wall looks like it's… rippling on camera."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2823
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Two readouts side by side: the camera at 59.94 and the LED wall at 59.94 — matched. Ray points; Maya grins.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "P",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "grin"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Camera and wall speaking two different frame rates. That ripple's a math problem, not a broken panel."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Same rate, same language, no ripple."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1358
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Match frame rates end to end — camera, switcher, recorder, stream. Mismatches show up as artifacts, not crashes."
+  }
+ ]
+}

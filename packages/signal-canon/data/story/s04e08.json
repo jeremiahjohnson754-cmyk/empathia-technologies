@@ -1,0 +1,1165 @@
+{
+ "chapter": {
+  "id": "s04e08",
+  "kicker": "S04 · E08",
+  "title": "Locked Out",
+  "pill": "S04E08 · Locked Out",
+  "sub": "Every newsroom account is locked fifty minutes before the morning show. Security is right to say no.",
+  "status": "**DRAFT** · scripted from the owner's request to continue the story · IDs provisional",
+  "flags": [
+   "DR-S04E08",
+   "RT-03",
+   "RT-04",
+   "RV-82",
+   "RV-83",
+   "RV-85",
+   "RV-95",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--red)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 4 · EPISODE 8 · DRAFT  Security · Maya, Vera and Omar · Level L4  At 5:40 a.m., every newsroom account is locked. The morning show is at 6:30. The only person who can unlock anything is security — and she’s right to say no.  ⚑ RV-95: kept generic; security owns access. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Locked Out",
+   "kind": "SECURITY QUEST",
+   "level": "L4 · SYSTEMS",
+   "party": [
+    "maya",
+    "vera",
+    "omar",
+    "mei"
+   ],
+   "stakes": "Every newsroom account is locked. The morning show is in fifty minutes. The person who can unlock anything is security — and she's right not to.",
+   "clock": "Fifty minutes to air.",
+   "reward": "A show on paper. A newsroom with named accounts. Warning #11 crossed off.",
+   "objectives": [
+    {
+     "key": "BR-S04E08-01",
+     "text": "Answer Vera without crossing security's line"
+    },
+    {
+     "key": "twist",
+     "text": "Find the door twenty-two people shared"
+    },
+    {
+     "key": "BR-S04E08-02",
+     "text": "Get the rundown to the prompter safely"
+    },
+    {
+     "key": "core",
+     "text": "Keep the air chain out of the newsroom"
+    },
+    {
+     "key": "BR-S04E08-03",
+     "text": "Replace the shared login — everywhere"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two notes on two desks"
+    }
+   ],
+   "rumor": "The worst night is coming. Somewhere in the backup plan is a password on a sticky note."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “ACCOUNT LOCKED”",
+   "sub": "Wednesday · 5:40 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The newsroom before dawn. Vera, coat still on, stares at a screen: rundown, account locked, contact security. Every screen says the same.",
+   "characters": [
+    {
+     "id": "vera",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_newsroom",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Fifty minutes to the morning show. No rundown.",
+   "flags": [
+    "RV-95",
+    "RV-83"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7813
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": "5:41 a.m.",
+   "lines": [
+    {
+     "who": "vera",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Thirty years in news. I've been locked out of buildings, courthouses and one very angry mayor's office. Never my own rundown."
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #39 · AVERY'S LENS  A warning must not look like the attack  If the safe action and the dangerous one look the same, people will spread the danger while trying to help.  A producer forwarded the fake reset email to all staff to warn them. To everyone else, it looked like a real email from a colleague."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S04E08",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya on the phone with Quinn, the station's security contractor.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_newsroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "phone",
+     "text": "Everything's locked. Is it us?"
+    },
+    {
+     "side": "R",
+     "who": "Quinn",
+     "kind": "phone",
+     "text": "The shared newsdesk login was used from an unfamiliar place at 4:52. I locked the newsroom at 5:12. Nobody gets unlocked today."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-95"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7630
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S4-08",
+   "who": "vera",
+   "prompt": "You have admin on the playout side. Can't you just… let the producers back in? For the show?",
+   "options": [
+    {
+     "label": "“No. That's Quinn's call, and she's right. We'll do the show without the system.”",
+     "who": "vera",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "…Fine. Paper. God help us. I love paper.",
+     "trust": {
+      "Vera": 1,
+      "Quinn": 2
+     }
+    },
+    {
+     "label": "“Maybe for ten minutes.”",
+     "who": "worker:Quinn",
+     "pose": "H",
+     "expr": "flat",
+     "reply": "Nobody unlocks anything. Not for ten minutes, not for ten seconds.",
+     "trust": {
+      "Quinn": -2
+     }
+    },
+    {
+     "label": "“I'll ask Quinn nicely.”",
+     "who": "worker:Quinn",
+     "pose": "H",
+     "expr": "flat",
+     "reply": "Nicely is still no. What else do you need?",
+     "trust": {
+      "Quinn": 1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S04E08-01",
+   "prompt": "5:45. Vera: “Get the producers unlocked for the show. You have admin on something, don't you?”",
+   "happening": "All newsroom accounts locked by security.",
+   "clock": "5:45 · show at 6:30",
+   "known": [
+    "◉ Newsroom locked 05:12",
+    "◉ Playout on its own segment"
+   ],
+   "unknown": [
+    "How it happened",
+    "What else uses that login"
+   ],
+   "risk": "The morning show — and your standing with security.",
+   "timer_s": 20,
+   "timeout": [
+    "Vera calls Quinn herself and asks for an exception. Quinn says no, twice, and gets less patient.",
+    "In an incident, operations' job is to work around the lock — not to argue with it."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What does the air chain actually need?"
+    }
+   ],
+   "note": "Draft decision (DR-S04E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Ask Quinn to unlock just the producers",
+     "result": "Quinn: “They all use one login. Unlocking one unlocks the stolen one.”",
+     "consequence": "A request security has to refuse — and now has to worry about.",
+     "chips": [
+      "Refused"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Security owns access, and a shared login makes 'just the producers' impossible.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Quinn": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Use your playout admin account to reset their passwords",
+     "result": "Quinn sees it within a minute and pulls your access.",
+     "consequence": "You used privileges for one system on another during an incident.",
+     "chips": [
+      "Boundary"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "Privileges are for the job they were granted for. Crossing that line during an incident makes you part of it.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Quinn": -2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Confirm the air chain doesn't need newsroom logins, then run the show from paper and an approved offline copy",
+     "result": "Playout: own segment, own accounts — untouched. Vera: “Paper. Fine. I love paper.”",
+     "consequence": "The show goes on without the system security had to lock.",
+     "chips": [
+      "Air chain safe",
+      "Security respected"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Vera": 2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Cancel the morning show",
+     "result": "The valley wakes up to a slate.",
+     "consequence": "The one service that still worked, switched off.",
+     "chips": [
+      "Dark"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The air chain was fine. Only the rundown was locked.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Vera": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View at 5:45: the newsroom segment is locked; its rundown system needs the shared 'newsdesk' login used by 22 people, captured at 4:52. The playout segment — playout, master control, a standalone prompter with an approved offline copy — has its own named accounts and is walled off.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The show never needed a newsroom login.",
+   "flags": [
+    "RV-95",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S4-08a",
+   "teaser": "the newsdesk monitor",
+   "title": "A yellow sticky note, corner curled",
+   "body": "*newsdesk / pw:* — and twelve characters crossed out and rewritten four times over three years. Twenty-two people knew it. One fake web page learned it in four seconds.",
+   "thread": "Cal's fourteen warnings",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Twenty-two people, one door.",
+   "body": "The captured login wasn't a person's. It was 'newsdesk' — shared by twenty-two people, its password on a sticky note on the newsdesk monitor. That's why Quinn can't unlock 'just the producers': they're all the same user. It's warning #11 on Cal's list.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S04E08-1",
+   "label": "Test: why is the answer no?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The newsroom printer, the only thing still working, flashes PAPER JAM, TRAY 2. Vera glares at it. Tess kneels, ready to open the tray.",
+   "characters": [
+    {
+     "id": "vera",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "tess",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_newsroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Vera",
+     "kind": "speech",
+     "text": "Thirty years. This printer has never once been on my side."
+    },
+    {
+     "side": "R",
+     "who": "Tess",
+     "kind": "speech",
+     "text": "I think it's scared of you."
+    }
+   ],
+   "narration": [],
+   "caption": "The whole morning show, depending on tray 2.",
+   "flags": [
+    "RV-95"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7693
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S04E08-02",
+   "prompt": "6:05. The prompter needs the rundown. How does it get there?",
+   "happening": "Paper rundown printed. Prompter empty.",
+   "clock": "6:05",
+   "known": [
+    "◉ Last night's approved export exists",
+    "◉ Standalone laptop available"
+   ],
+   "unknown": [
+    "What Quinn will allow"
+   ],
+   "risk": "The show — and a second leak.",
+   "timer_s": 20,
+   "timeout": [
+    "Someone loads the rundown from a personal inbox 'just this once.' Quinn finds out at 7:10.",
+    "Under pressure, people take the path of least friction — offer a better one."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who approves data movement during an incident?"
+    }
+   ],
+   "note": "Draft decision (DR-S04E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Email the rundown to producers' personal accounts and load it from there",
+     "result": "Quinn: “Please don't move newsroom data to personal accounts during an incident.”",
+     "consequence": "A new leak to solve an old problem.",
+     "chips": [
+      "New leak"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Personal accounts are outside security's view — the opposite of what an incident needs.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Quinn": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Log in to the newsroom from your own account and copy it",
+     "result": "Your account is locked too — and trying looks like the attack.",
+     "consequence": "Every login attempt now gets investigated.",
+     "chips": [
+      "Suspicious"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "During a lockout, don't try doors.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Ask Quinn to approve last night's export as an offline copy on a standalone prompter laptop",
+     "result": "Quinn: “Approved. Standalone, off the newsroom network.”",
+     "consequence": "Security decides; operations runs.",
+     "chips": [
+      "Approved"
+     ],
+     "badges": [
+      {
+       "kind": "up",
+       "text": "ESCALATE"
+      }
+     ],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Quinn": 1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Omar ad-libs the whole show",
+     "result": "Omar: “I can. For about eleven minutes.”",
+     "consequence": "Brave, and not a plan.",
+     "chips": [
+      "Ad-lib"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "One program, thousands of computers",
+   "body": "On November 2, 1988, a self-spreading program began copying itself across the early internet. Within a day it had slowed or stopped thousands of computers — about one in ten of those connected — partly by guessing weak passwords from a short list. Nobody had planned for it. Within weeks, a coordination center for computer emergencies was set up so that the next time, someone would already own the response.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The news set at 6:30, on air. Omar reads from a printed rundown, sheets in hand.",
+   "characters": [
+    {
+     "id": "omar",
+     "pose": "R",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_newsset",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Omar",
+     "kind": "speech",
+     "text": "Good morning. If our graphics look a little old-fashioned today, that's because they're on paper. Here's what's happening in the valley."
+    }
+   ],
+   "narration": [],
+   "caption": "6:30:00. On air, on time, on paper.",
+   "flags": [
+    "RV-95"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2055
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "omar",
+     "pose": "R",
+     "expr": "grin",
+     "text": "I did the whole 1998 flood coverage from paper. Paper is very reliable. It never updates."
+    },
+    {
+     "who": "tess",
+     "pose": "N",
+     "expr": "worried",
+     "text": "What if you drop it?"
+    },
+    {
+     "who": "omar",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Then I pick it up, Tess. On air. With dignity."
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Field notes",
+   "sub": "Intermediate · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Maya and Tess beside a board. Entropy equals L times log-two of N. L is the length, N how many choices each position has. Five words from a seven-thousand-word list? Then L is five and N is the list. Work it out for the new accounts.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "tess",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_newsroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Entropy equals L times log-two of N. L is the length, N how many choices each position has."
+    },
+    {
+     "side": "R",
+     "who": "Tess",
+     "kind": "speech",
+     "text": "Five words from a seven-thousand-word list?"
+    },
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then L is five and N is the list. Work it out for the new accounts."
+    }
+   ],
+   "narration": [],
+   "caption": "Intermediate: the formula and what every letter means. The arithmetic is yours.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7766
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t2",
+   "text": "📗 FIELD NOTES · INTERMEDIATE  Terms   Password entropy   Named account   Phishing   Formula and variables   ƒ FORMULA · Password entropy  H = L × log 2 (N)   H  entropy, bits  L  length, characters  N  size of the symbol set"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "S3",
+   "label": "**Learn it now:** shared accounts, sessions and resets.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     AV systems and networking foundations     Stay locked in — roles during the service     Case study: when an expired license nearly ruined the show"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Don't click this”",
+   "sub": "8:00 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Quinn's timeline on a screen: a fake reset email at 4:28; at 4:31 a producer forwards it to all staff saying don't click this; eleven people opened the forward; at 4:52 the newsdesk login was entered on the fake page.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_newsroom",
+   "bubbles": [],
+   "narration": [],
+   "caption": "The warning went to everyone — with the link still in it.",
+   "flags": [
+    "RV-95",
+    "RV-83"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 8497
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S4-08b",
+   "teaser": "the producer's sent folder",
+   "title": "04:31 · To: all staff · “DON'T CLICK THIS”",
+   "body": "She meant it. She was up at four with a sick kid and saw the email and wanted to protect everyone. Her forward had the same link, with her name on top. Eleven people trusted her name.",
+   "thread": "People",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The warning was the delivery.",
+   "body": "A producer, up at four with a sick child, saw the fake email and forwarded it to all staff to warn them. Her name on top made it trustworthy; the link was still inside. And one more thing surfaces: the backup master control runbook, page 3, says 'log in as newsdesk'. On the worst night, the backup would have depended on a stolen door.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S04E08-2",
+   "label": "Test: why does the runbook matter?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A dark kitchen somewhere in the valley at 4:52 a.m. A phone glows on the counter, showing a sign-in page that looks exactly like the newsroom's.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [
+    "Somebody half-awake, reading their boss's warning, clicked to see what not to click. The page looked right. It had been built to."
+   ],
+   "caption": "Quinn never names them. 'It could have been any of the twenty-two,' she says. 'That's the problem.'",
+   "flags": [
+    "RV-95"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2304
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The producer who forwarded the email stands at Vera's desk, holding a child's drawing she forgot to put down, mortified.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "R",
+     "expr": "worried"
+    },
+    {
+     "id": "vera",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_newsroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Producer",
+     "kind": "speech",
+     "text": "I forwarded it. At four-thirty. I wanted to warn everyone. I've been sick about it all morning."
+    },
+    {
+     "side": "R",
+     "who": "Vera",
+     "kind": "speech",
+     "text": "You warned us. That's the part we're keeping. Next time, the report button — not 'reply all.'"
+    }
+   ],
+   "narration": [],
+   "caption": "The drawing is of a house with a very large sun. Nobody mentions it.",
+   "flags": [
+    "RV-95",
+    "RV-85"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7253
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lab",
+   "id": "LAB-NET-05",
+   "label": "**Fix it:** keep the air chain out of the newsroom.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya on the phone with Mei from Aldermoor, for advice.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "phone",
+     "text": "Twenty-two people, one login. Where do I even start?"
+    },
+    {
+     "side": "R",
+     "who": "Mei",
+     "kind": "phone",
+     "text": "Named accounts. Least privilege. A report button so nobody forwards a phish again. And Quinn decides — you just make it easy for her to say yes."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-95"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1547
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "mystery",
+   "where": null,
+   "lines": [
+    {
+     "who": "tess",
+     "pose": "N",
+     "expr": "flat",
+     "text": "'Make it easy for security to say yes.' Is that what you did with Quinn?"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Yes. It's also what Ray did with me for a whole year."
+    },
+    {
+     "who": "tess",
+     "pose": "N",
+     "expr": "worried",
+     "text": "Who's Ray?"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "…You're about to find out."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S04E08-03",
+   "prompt": "Noon. The newsroom comes back tomorrow. What replaces 'newsdesk'?",
+   "happening": "Accounts reset tomorrow.",
+   "clock": "12:00",
+   "known": [
+    "◉ 22-user login",
+    "◉ Runbook page 3 uses it",
+    "◉ The forward spread it"
+   ],
+   "unknown": [
+    "What else depends on shared logins"
+   ],
+   "risk": "The next incident — on a night you need the backup.",
+   "timer_s": 25,
+   "timeout": [
+    "A new shared password goes out on a sticky note by 3 p.m.",
+    "Without a better design, the old habit comes back."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Fix the account, the runbook and the way people warn each other."
+    }
+   ],
+   "note": "Draft decision (DR-S04E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "A new, stronger shared password",
+     "result": "Twenty-two people learn the new one by lunch.",
+     "consequence": "The same door with a better lock — still shared.",
+     "chips": [
+      "Still shared"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Shared is the problem, not strength.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Named accounts for all twenty-two with least privilege, the shared login removed from the backup runbook, and a 'report' button instead of forwarding",
+     "result": "Quinn: “That's the first plan this year I didn't have to write myself.”",
+     "consequence": "One person, one door — and the worst night no longer depends on it.",
+     "chips": [
+      "Named accounts",
+      "Runbook fixed"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Quinn": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Discipline the producer who forwarded it",
+     "result": "Nobody reports anything for a month.",
+     "consequence": "You punished the only person who tried to help.",
+     "chips": [
+      "Blame"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Punishing helpers teaches silence.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Disconnect the newsroom from the internet",
+     "result": "The newsroom can't file stories.",
+     "consequence": "Safe and useless.",
+     "chips": [
+      "Useless"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "M-52",
+   "label": "**Class match:** what kind of risk was that?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-408",
+   "label": "**Service Mode:** run the lockout morning yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "6:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The loading dock. Lena and Maya, arguing quietly.",
+   "characters": [
+    {
+     "id": "lena",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_parking",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Lena",
+     "kind": "speech",
+     "text": "A hub would have one login to lose, not twenty-two. One security team. One of everything."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And one building to lose, not two. And nobody who knows where the river goes."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-85"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 588
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Lena's phone buzzes between them: a calendar invite from the board. Hub decision, fifteen minutes, Friday. Engineering: optional.",
+   "characters": [],
+   "location": "scenes.bg_parking",
+   "bubbles": [],
+   "narration": [
+    "Neither of them says anything for a while. The phone buzzes again: a reminder for the invite it just sent."
+   ],
+   "caption": "Fifteen minutes to decide what forty years built. Engineering optional.",
+   "flags": [
+    "RV-85"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1384
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Cal's warnings on the wall; Vera crosses out number eleven.",
+   "characters": [
+    {
+     "id": "vera",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Warning #11: crossed off — by Vera, with some ceremony.",
+   "flags": [
+    "RV-85"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3858
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray in the doorway of master control, grey beard, glasses, holding a cardboard box. On top of it, a worn notebook.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "I'm retiring. This is yours."
+    }
+   ],
+   "narration": [],
+   "caption": "The notebook. Next: *The Notebook.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 8316
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  During a security incident, security owns access. Operations confirms what still works, runs the service without the locked systems, and asks security to approve anything that moves. Replace shared logins with named ones — especially in the runbook you'll need on your worst night."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · The producer's warning spread the danger. What helpful habit in your team could spread a problem faster than the problem itself?  Boundary: this reflection doesn't reset any password."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S04E08",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

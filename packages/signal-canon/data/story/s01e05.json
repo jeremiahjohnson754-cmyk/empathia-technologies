@@ -1,0 +1,1713 @@
+{
+ "chapter": {
+  "id": "s01e05",
+  "kicker": "S01 · E05",
+  "title": "Not Mine to Open",
+  "pill": "S01E05 · Not Mine to Open",
+  "sub": "Know the arithmetic. Know whose door it is.",
+  "status": "**DRAFT** · scripted from the season map ahead of its production-bible entry · IDs provisional",
+  "flags": [
+   "DR-S01E05",
+   "RV-26",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--amber)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 1 · EPISODE 5 · DRAFT  Countdown · Maya and Malik · Level L2 (Operator)  Sofia adds twelve fixtures for Easter, and a stage circuit trips during rehearsal. Maya can do the arithmetic. Only the electricians may open the panel."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Not Mine to Open",
+   "kind": "MAIN QUEST · BOUNDARY",
+   "level": "L1 · OPERATOR",
+   "party": [
+    "maya",
+    "sofia",
+    "andre",
+    "malik"
+   ],
+   "stakes": "Half the stage is dead fifteen hours before Easter. The breaker is behind a door that isn't yours.",
+   "clock": "Fifteen hours to Easter.",
+   "reward": "Easter at full brightness — and a call the electrician remembers for the right reasons.",
+   "objectives": [
+    {
+     "key": "BR-S01E05-01",
+     "text": "Make it safe before you make it work"
+    },
+    {
+     "key": "BR-S01E05-02",
+     "text": "Escalate with a load table, not a panic"
+    },
+    {
+     "key": "twist",
+     "text": "Do the arithmetic Andre will check"
+    },
+    {
+     "key": "BR-S01E05-03",
+     "text": "Tell Sofia what full brightness really costs"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: find two things behind the stage"
+    }
+   ],
+   "rumor": "The panel schedule is dated 1998. Circuit 3 is labeled STAGE (TEMP)."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Twelve more”",
+   "sub": "Saturday before Easter · 5:40 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Sofia unpacks new lighting fixtures on the stage while Theo carries boxes.",
+   "characters": [
+    {
+     "id": "sofia",
+     "pose": "P",
+     "expr": "grin"
+    },
+    {
+     "id": "theo",
+     "pose": "R",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sofia",
+     "kind": "speech",
+     "text": "Twelve more for Easter. Where's the nearest outlet?"
+    },
+    {
+     "side": "R",
+     "who": "Theo",
+     "kind": "speech",
+     "text": "Four right here, by the drums!"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1204
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the booth, Maya's radio crackles: Theo, reporting a change before he makes it.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Theo",
+     "kind": "radio",
+     "text": "Heads up — Sofia's plugging in twelve lights by the drums."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "radio",
+     "text": "Thanks for telling me first. Which outlets are those on?"
+    }
+   ],
+   "narration": [],
+   "caption": "Theo tells her before, not after. (Payoff: S01E00.)",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1272
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Theo looks at the wall outlets by the drums. There's no label on them at all.",
+   "characters": [
+    {
+     "id": "theo",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Theo",
+     "kind": "radio",
+     "text": "…On the wall?"
+    }
+   ],
+   "narration": [],
+   "caption": "Nobody knows which circuit they're on.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 972
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Thunk”",
+   "sub": "7:40 p.m. · Easter rehearsal"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Rehearsal. Sofia brings the Easter look up to full: every new fixture blazes. The band plays; Marisol sings.",
+   "characters": [
+    {
+     "id": "marisol",
+     "pose": "M",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Sofia brings the Easter look to full.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1723
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Half the stage goes dark. The keyboard and the stage-left monitors go silent too.",
+   "characters": [
+    {
+     "id": "marisol",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Half the stage goes dark. The keyboard dies. So do the stage-left monitors.",
+   "flags": [
+    "RV-26"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1405
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "theo",
+     "pose": "S",
+     "expr": "surprised",
+     "text": "Was that— was that us?"
+    },
+    {
+     "who": "sofia",
+     "pose": "N",
+     "expr": "worried",
+     "text": "That was twelve lights and a very large THUNK."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Pastor Jo, in the half-dark, deadpans.",
+   "characters": [
+    {
+     "id": "jo",
+     "pose": "W",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Pastor Jo",
+     "kind": "speech",
+     "text": "Is that the resurrection cue? Because it's early."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 670
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "awkward",
+   "where": null,
+   "lines": [
+    {
+     "who": "jo",
+     "pose": "N",
+     "expr": "grin",
+     "text": "Is that the resurrection cue? Because it's early."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(Nobody laughs. Then everybody does. Then the stage stays dark.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Imani hurries into the booth. Easter morning is fifteen hours away.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "The breaker's in the electrical room, right? Can we just flip it back on?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1614
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E05-01",
+   "prompt": "Half the stage is dead, fifteen hours before Easter. What do you do first?",
+   "happening": "The stage-left outlets are dead; everything else works.",
+   "clock": "15:20 to Easter",
+   "known": [
+    "◉ Twelve new fixtures went in today",
+    "◉ It tripped when the look went to full"
+   ],
+   "unknown": [
+    "What else shares that circuit",
+    "Whether anything is damaged"
+   ],
+   "risk": "Easter morning, and anyone near a circuit nobody understands.",
+   "timer_s": 20,
+   "timeout": [
+    "Sofia runs a cord across the stage while you decide.",
+    "Make safe first — it's the only move that can't make things worse."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What changed today, and when exactly did it fail?"
+    },
+    {
+     "id": "H2",
+     "keep": 0.85,
+     "text": "A breaker is designed to open when a circuit is asked for too much."
+    },
+    {
+     "id": "H3",
+     "keep": 0.7,
+     "text": "List everything plugged into the dead outlets and read each nameplate."
+    },
+    {
+     "id": "H4",
+     "keep": 0.5,
+     "text": "Power is volts times amps. Add the loads and compare."
+    },
+    {
+     "id": "H5",
+     "keep": 0.25,
+     "text": "Walkthrough, then a variant: a coffee urn and a heater on one fellowship-hall circuit."
+    }
+   ],
+   "note": "Draft decision (DR-S01E05). Options A and B are shown to be stopped or costly: the story never depicts resetting or re-routing building power as the team's job.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Reset the breaker",
+     "result": "The electrical room is locked, and it isn't the team's. Imani: “You're right. Not ours.” Back to the choice.",
+     "consequence": "If it tripped for a reason, resetting it just repeats the reason — or hides a worse one.",
+     "chips": [
+      "Not yours: building electrical"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "Not yours"
+      }
+     ],
+     "canonical": false,
+     "fail": "Resetting a breaker you don't own repeats the overload — or worse.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Imani": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Run a cord to another outlet",
+     "result": "Sofia likes it. A cord snakes across the stage to the far wall — and nobody knows what that circuit carries either.",
+     "consequence": "It could trip the second circuit too, and the cord is a trip hazard on a dark stage.",
+     "chips": [
+      "Cord across the stage",
+      "Unknown load"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "Trip hazard"
+      }
+     ],
+     "canonical": false,
+     "fail": "Moving an unknown load to an unknown circuit spreads the problem.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Sofia": -2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Make safe, then list the loads",
+     "result": "Lights to zero at the desk, people clear of stage-left gear, and a list of everything that was plugged in there.",
+     "consequence": "She arrives at the phone call with facts, not a guess.",
+     "chips": [
+      "About 15 minutes",
+      "Load table"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Crew": 2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask Sofia to use fewer lights",
+     "result": "Sofia, hurt: “Which ones? Half of Easter?”",
+     "consequence": "Nobody knows how many is too many, so any number is a guess.",
+     "chips": [
+      "Sofia trusts you less"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "twist",
+   "title": "The breaker isn't broken",
+   "body": "Everyone calls it a faulty breaker. The nameplates add up to about 22.5 A on a 20 A circuit. The breaker did its job perfectly; twelve fixtures were added without asking what the circuit could carry.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S01E05-R",
+   "label": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya takes charge calmly: lights to zero, people clear.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "sofia",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Sofia, take the lights to zero at the desk. Everyone off the stage-left gear. Nobody plugs anything anywhere."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 764
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya walks the paths. System View: the stage-left power lane is dark; the booth and the other stage outlets are fine. The lighting console still works; the keyboard is dead only because its power is.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [],
+   "narration": [
+    "Power: only stage left. Control: the lighting desk still answers. Signal: the keyboard is dead only because its power is."
+   ],
+   "caption": null,
+   "flags": [
+    "RV-26"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "only stage-left"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 887
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Close-up: the nameplate sticker on the back of a new fixture reads 150 W, 120 V — an example rating. Maya copies it without opening anything.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [],
+   "narration": [],
+   "caption": "She reads the label on the outside. She doesn't open anything.",
+   "flags": [
+    "RV-26",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 986
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S1-05a",
+   "teaser": "the electrical room door",
+   "title": "A second label, under the first",
+   "body": "The new sign says ELECTRICAL — AUTHORIZED ONLY. Under it, peeling: *R. has key.* Ray gave the key back years ago. The sign didn't get the message.",
+   "thread": "Ray's notebook · DEBT-002",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya's load table: 12 new fixtures, 1,800 watts; keyboard and amp, 400; two monitors, 400; pedalboard and miscellaneous, 100; total 2,700 watts. All example numbers from nameplates.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Nameplate numbers (example). What was on the stage-left outlets when it tripped.",
+   "flags": [
+    "RV-26",
+    "VR-06",
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2737
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "physbreak",
+   "cls": "physbreak",
+   "text": "🔭 PHYSICS IN MOTION  Current, heat and a 20 A breaker  The science under this episode’s problem — live."
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Ray and Maya beside a board. Current is watts divided by volts. A twelve-hundred-watt heater on a hundred-twenty volts draws ten amps. And the breaker? Plan to eighty percent: a fifteen-amp breaker gives a twelve-amp planning line. The panel is the electrician's. That's a boundary — we bring the numbers, not a screwdriver.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Current is watts divided by volts. A twelve-hundred-watt heater on a hundred-twenty volts draws ten amps."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And the breaker?"
+    },
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Plan to eighty percent: a fifteen-amp breaker gives a twelve-amp planning line. The panel is the electrician's. That's a boundary — we bring the numbers, not a screwdriver."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1018
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    Current   Flow of electricity, in amperes (A).   Breaker   A switch that trips when current is too high, protecting the wiring. Resetting it is the electrician's call.   Boundary   A line you don't cross because a system or decision belongs to someone else — power, rigging, towers, security, evacuations.   Formula, variables and a worked example   ƒ FORMULA · Current from power  I = P ÷ V   I  current, A  P  power, W  V  voltage, V    Worked example.  A 1,200 W heater on 120 V: 1,200 ÷ 120 = 10 A.    ƒ FORMULA · Continuous-load planning line  I plan  = 0.8 × I breaker    I breaker   breaker rating, A  0.8  80% planning line (illustrative; local code rules)    Worked example.  A 15 A breaker: 0.8 × 15 = 12 A planning line."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 06 OF 31 · PP. 9, 110, 114  PART 1 CORE TECHNOLOGY FOUNDATIONS · PART 7 RF, LOW VOLTAGE & ELECTRICAL  Page 110. Ray had boxed one sentence —  the electrician owns the panel  — and written underneath: “Your math starts the conversation. It doesn't open the door.”"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB6",
+   "label": "**Fieldbook module 6 — Electricity basics — and whose panel it is.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 6 · tap a plate to open it full size     AV math and physics basics     Power, grounding and electrical safety     Low-voltage electrical engineering and safety basics"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lab",
+   "id": "PHY-S01E05",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The booth whiteboard: P equals V times I. One example 20-amp circuit at 120 volts: 2,400 watts. They asked for 2,700 watts, which is 22.5 amps. The breaker did its job. Illustrative; the electrician has the real numbers.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-26",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1417
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya explains to Imani why they won't flip the breaker themselves.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "imani",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "It tripped because we asked too much of it. If we reset it and I'm wrong about why, we find out the hard way."
+    },
+    {
+     "side": "R",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "And it's not our room."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-26"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1281
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S1-05",
+   "who": "imani",
+   "prompt": "It's a switch, Maya. My dad reset breakers for forty years. Why are we standing here?",
+   "options": [
+    {
+     "label": "“Because if I'm wrong about why it tripped, we find out the hard way — and it's not our room.”",
+     "who": "imani",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "…Okay. I hate that you're right. Call Andre.",
+     "trust": {
+      "Imani": 1
+     }
+    },
+    {
+     "label": "“Your dad was probably lucky.”",
+     "who": "imani",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "My dad is sitting in row four on Sunday, Maya.",
+     "trust": {
+      "Imani": -2
+     }
+    },
+    {
+     "label": "“I'd rather not.”",
+     "who": "imani",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "That's not a reason. That's a mood.",
+     "trust": {
+      "Imani": -1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E05-02",
+   "prompt": "You have a load table and an estimate. How do you ask for help?",
+   "happening": "The circuit was asked for more than it's built to carry.",
+   "clock": "14:55 to Easter",
+   "known": [
+    "▮ About 2,700 W on stage left (example)",
+    "◉ Breaker tripped at full look",
+    "◉ Nothing opened, nothing reset"
+   ],
+   "unknown": [
+    "Which outlets share which circuit",
+    "Whether anything is damaged"
+   ],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "Draft decision (DR-S01E05).",
+   "lab": "LAB-PWR-01",
+   "lab_label": "build the load plan you'll read to Andre.",
+   "options": [
+    {
+     "letter": "A",
+     "label": "Text: “breaker tripped, help”",
+     "result": "Andre, driving: “Which breaker? What's on it?” He arrives without a plan.",
+     "consequence": "The first hour of his visit goes to finding out what Maya already knew.",
+     "chips": [
+      "Vague",
+      "Slower fix"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A vague escalation makes the expert rediscover what you knew.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Andre": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Call Andre with the table",
+     "result": "Maya: what happened, when, what's on the circuit, her estimate, and what she hasn't touched.",
+     "consequence": "Andre: “That's the most useful call I've had all week.” He comes with the right tools and a plan.",
+     "chips": [
+      "Escalation with evidence",
+      "Andre trusts you more"
+     ],
+     "badges": [
+      {
+       "kind": "up",
+       "text": "Escalate"
+      }
+     ],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Andre": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Wait until after Easter",
+     "result": "Easter runs with half the lights and a dead keyboard amp.",
+     "consequence": "Sofia's look is gone, and the unknown circuit is still unknown on Monday.",
+     "chips": [
+      "Half the look",
+      "Problem deferred"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask Gus — he knows electrical",
+     "result": "Gus: “I knew it forty years ago. It's not mine anymore, and it isn't yours.” Back to the choice.",
+     "consequence": "Knowing something once isn't the same as being qualified now.",
+     "chips": [
+      "Not yours"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "Not yours"
+      }
+     ],
+     "canonical": false,
+     "fail": "Knowing something once isn't being qualified now.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Gus": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya on the phone to Andre, the electrician, with her load table in hand.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "phone",
+     "text": "Stage-left breaker tripped at 7:41 when twelve new fixtures went to full. My estimate: about 2,700 watts on it. Nothing's been opened or reset."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-26"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2976
+  },
+  {
+   "origin": "injected",
+   "type": "history",
+   "title": "Ohm's law and Joule heating",
+   "body": "Georg Ohm published the relation between voltage, current and resistance in 1827. In 1841 James Joule showed that current heats a wire in proportion to the current squared — the heat a breaker is built to notice before the wire does.",
+   "flag": "RV-27",
+   "when": "1827 · 1841",
+   "lab": "PHY-S01E05"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Andre, on the phone at home.",
+   "characters": [
+    {
+     "id": "andre",
+     "pose": "H",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Andre",
+     "kind": "phone",
+     "text": "That's the most useful call I've had all week. Don't touch the panel. We'll be there at eight thirty. I'm bringing Malik."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 457
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III — “Not mine to open”",
+   "sub": "8:35 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Andre, a journeyman electrician, and Malik, his apprentice in a hi-vis vest, arrive at the locked electrical room.",
+   "characters": [
+    {
+     "id": "andre",
+     "pose": "R",
+     "expr": "smile"
+    },
+    {
+     "id": "malik",
+     "pose": "W",
+     "expr": "grin"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Andre",
+     "kind": "speech",
+     "text": "Maya? Andre. This is Malik — my apprentice."
+    },
+    {
+     "side": "R",
+     "who": "Malik",
+     "kind": "speech",
+     "text": "I've heard about your load table."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1247
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "malik",
+     "pose": "N",
+     "expr": "grin",
+     "text": "Heard about your load table. Andre read it to me in the van. Twice."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Was that good or bad?"
+    },
+    {
+     "who": "malik",
+     "pose": "N",
+     "expr": "flat",
+     "text": "He doesn't read things twice."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Andre unlocks the electrical room and works at the panel. Maya stays outside the taped line; Malik stands ready at the door with Andre's tester.",
+   "characters": [
+    {
+     "id": "andre",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "malik",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Andre opens the panel. Everyone else stays on this side of the tape.",
+   "flags": [
+    "RV-26",
+    "RV-14"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1362
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Malik traces the stage outlets with a circuit tracer under Andre's direction. He sticks small labels on them: C3 on the stage-left wall, C5 on the stage-right wall.",
+   "characters": [
+    {
+     "id": "malik",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Malik",
+     "kind": "speech",
+     "text": "Stage left is all circuit 3. Stage right is circuit 5 — and it's carrying almost nothing."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-26"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1618
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S1-05b",
+   "teaser": "the panel schedule",
+   "title": "Circuit 3: STAGE (TEMP) — 1998",
+   "body": "Temporary for twenty-seven years. Someone added a fixture list in biro in 2009 and a question mark in 2016. The question mark is the most recent maintenance on record.",
+   "thread": "Temporary things",
+   "who": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #6 · AVERY'S LENS  Make the safe path the easy path  When an action is dangerous, make the right next step obvious and fast.  A locked door with a phone number on it — call the electrician, here's what to say — is good design for a bad moment."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S01E05",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Andre compares Maya's table with what he found.",
+   "characters": [
+    {
+     "id": "andre",
+     "pose": "R",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Andre",
+     "kind": "speech",
+     "text": "Your math matches mine. I plan a circuit like this to about 80 percent — that's my call, and codes vary."
+    }
+   ],
+   "narration": [],
+   "caption": "80% of 2,400 W ≈ 1,920 W (example planning margin).",
+   "flags": [
+    "RV-26",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 513
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Malik and Maya talk while Andre finishes at the panel.",
+   "characters": [
+    {
+     "id": "malik",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Malik",
+     "kind": "speech",
+     "text": "You did the math. I can do the math and open that door — when Andre says. That's the difference."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Know versus do."
+    }
+   ],
+   "narration": [],
+   "caption": "Malik: “Know versus allowed.”",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 578
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E05-03",
+   "prompt": "Andre moves six fixtures to circuit 5 and resets the breaker. Sofia wants all twelve at full for the Easter opening. What do you tell her?",
+   "happening": "The load is split across two circuits and the breaker is reset — by the electrician.",
+   "clock": null,
+   "known": [
+    "▮ Circuit 3 ≈ 1,800 W planned · circuit 5 ≈ 1,200 W (example)",
+    "◉ Outlets now labeled C3 and C5"
+   ],
+   "unknown": [
+    "What the full look actually draws"
+   ],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "Draft decision (DR-S01E05).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "“It'll hold now”",
+     "result": "Sofia is thrilled.",
+     "consequence": "Nobody has seen the full look at full power since the fix. Maya promised before she proved.",
+     "chips": [
+      "Promised before proof"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "“Full-look test tonight”",
+     "result": "All twelve fixtures at full, the band playing, thirty minutes — while Andre reads the current on both circuits.",
+     "consequence": "Easter morning starts from a proof, not a hope.",
+     "chips": [
+      "About 45 minutes",
+      "Condition 1"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 2,
+      "sev": 1,
+      "trust": {
+       "Andre": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "“Keep them at 70 percent”",
+     "result": "Sofia frowns: “Why seventy?” Maya can't say.",
+     "consequence": "A guess dressed up as a rule.",
+     "chips": [
+      "Arbitrary"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "“No new fixtures this year”",
+     "result": "Sofia, quietly: “Okay.”",
+     "consequence": "Safe and sad. Sofia stops telling the booth about her plans.",
+     "chips": [
+      "Sofia trusts you less"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "10:00 p.m. The full-look test: all twelve fixtures at full and the band playing. Andre's clamp meter reads about 15 amps on circuit 3 — an illustrative reading. Nothing trips for thirty minutes.",
+   "characters": [
+    {
+     "id": "sofia",
+     "pose": "S",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Thirty minutes at full. No trip. (Readings illustrative; Andre measures.)",
+   "flags": [
+    "RV-26",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "condition 1 · full look, 30 min"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1793
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act IV — Proof · “Easter”",
+   "sub": "Easter morning · 9:00"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Easter morning. The opening look blazes; the room is full. Nothing trips.",
+   "characters": [
+    {
+     "id": "jo",
+     "pose": "W",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Easter. Full room, full look. Nothing trips.",
+   "flags": [
+    "RV-21"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "condition 2 · full room, Easter"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2251
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the booth, Lily checks the neighbors: the sound system's circuit is steady, the stream is clean, the keyboard and monitors on circuit 3 work.",
+   "characters": [
+    {
+     "id": "lily",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Adjacent checks: nothing next door broke.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1972
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "After the service, Sofia admits her blind spot.",
+   "characters": [
+    {
+     "id": "sofia",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sofia",
+     "kind": "speech",
+     "text": "I planned the look. I didn't plan the power."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Next time, bring me the look and I'll bring Andre the table."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 745
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "lessonbreak",
+   "cls": "lessonbreak",
+   "text": "PRACTICE BREAK · S01 · E05  Your turn before the debrief  Work this episode's problem yourself: a drill, a lesson, and the live incident. Every one can be failed, and every failure explains itself."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "drill",
+   "id": "O-01",
+   "label": "**Sequence:** service triage.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "L3",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-03",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Change log entry #6: '12 fixtures added (Sofia). C3 overloaded; breaker tripped — it worked as designed. Andre (licensed) moved 6 to C5, labeled stage outlets. Full-look test passed.'",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-08",
+    "RV-26"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1592
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Andre shows Imani the panel's paper schedule taped inside the door.",
+   "characters": [
+    {
+     "id": "andre",
+     "pose": "R",
+     "expr": "flat"
+    },
+    {
+     "id": "imani",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Andre",
+     "kind": "speech",
+     "text": "The stage is labeled now. The rest of this panel's labels are from 1998."
+    },
+    {
+     "side": "R",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "Put it on my list."
+    }
+   ],
+   "narration": [],
+   "caption": "DEBT-011 (draft): the building's panel schedule is out of date. Owner: Imani.",
+   "flags": [
+    "RV-26"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1250
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "warm",
+   "where": null,
+   "lines": [
+    {
+     "who": "andre",
+     "pose": "N",
+     "expr": "flat",
+     "text": "You know how most calls go? “It's broken, come now.” You told me what, when, what's on it, and what you didn't touch."
+    },
+    {
+     "who": "andre",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Do that again and I'll pick up on the first ring."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray reads the change-log entry and gives one principle.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "A breaker that trips is the building telling you the truth. Thank it — then call the person who's allowed to listen."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1209
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Dolores comes to the booth holding an assistive listening receiver.",
+   "characters": [
+    {
+     "id": "dolores",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dolores",
+     "kind": "speech",
+     "text": "I finally tried the little receiver, for the Easter reading. Nothing. Not a word."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Nobody Could Hear the Reading.*",
+   "flags": [
+    "RV-21"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1393
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Power is volts times amps; add the loads before you add the lights. A breaker that trips is doing its job. Know the arithmetic — and know whose door it is. The panel belongs to a licensed electrician, and a good escalation arrives with facts: what happened, when, what's on it, your estimate, and what you didn't touch."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Easter's light was the point of the morning; the circuit was only there to serve it. Stewardship includes knowing the limits of what you hold.  Boundary: none of this explains or proves the electrical fault."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S01E05",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

@@ -1,0 +1,856 @@
+{
+ "chapter": {
+  "id": "s06e05",
+  "kicker": "S06 · E05",
+  "title": "Spec vs Submittal",
+  "pill": "S06E05 · Submittal",
+  "sub": "An ‘equal’ amplifier with half the channels — and a spec that never said what equal means.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S06E05",
+   "RV-140",
+   "RV-141",
+   "RV-142",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#818CF8"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 6 · EPISODE 5 · DRAFT · CASE-034  Design studio · Maya, Anselm, Ruth and Kit · Level L4 · Intermediate support  An ‘equal’ amplifier: fewer channels, no fault relay — and a spec that never said what equal means.  ⚑ RV-142: every product invented. RV-141: figures illustrative. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Spec vs Submittal",
+   "kind": "DESIGN STUDIO · SUBMITTALS",
+   "level": "L4 · INTERMEDIATE",
+   "party": [
+    "maya",
+    "anselm",
+    "ruth"
+   ],
+   "stakes": "An ‘equal’ amplifier arrives with half the channels. The review clock is ten days and the lead time is eight weeks.",
+   "clock": "Before the review clock runs out.",
+   "reward": "An amplifier that carries the building. A spec that says what equal means.",
+   "objectives": [
+    {
+     "key": "BR-S06E05-01",
+     "text": "Decide how to review it"
+    },
+    {
+     "key": "twist",
+     "text": "Do the tap arithmetic"
+    },
+    {
+     "key": "core",
+     "text": "Balance the zones"
+    },
+    {
+     "key": "BR-S06E05-02",
+     "text": "Answer the contractor"
+    },
+    {
+     "key": "BR-S06E05-03",
+     "text": "Fix the spec"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two things about ‘equal’"
+    }
+   ],
+   "rumor": "It was equal to everything the spec said. The spec just didn't say enough."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Or equal”",
+   "sub": "Tuesday · 9:30 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Anselm at his desk with the contractor's amplifier submittal: two 240 W channels, offered as ‘equal’.",
+   "characters": [
+    {
+     "id": "anselm",
+     "pose": "R",
+     "expr": "worried"
+    }
+   ],
+   "location": "s6kit.bg_design",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Anselm",
+     "kind": "speech",
+     "text": "They say it's equal. Two channels, no fault relay."
+    }
+   ],
+   "narration": [],
+   "caption": "The review clock is ten days. The lead time is eight weeks.",
+   "flags": [
+    "RV-142"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3582
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "mystery",
+   "where": "Linden Row · Tuesday 9:40",
+   "lines": [
+    {
+     "who": "anselm",
+     "pose": "R",
+     "expr": "worried",
+     "text": "Two channels, no fault relay. ‘Equal.’ And our spec says ‘or equal’ and nothing else."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "So on paper, they're right."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Not equal”",
+   "sub": "Tuesday · 10:00 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S06E05-01",
+   "prompt": "10:00. How do you review the ‘equal’?",
+   "happening": "An ‘equal’ with half the channels.",
+   "clock": "Tuesday 10:00 · clock: 10 days",
+   "known": [
+    "◉ 2 × 240 W · no relay"
+   ],
+   "unknown": [
+    "What the building needs",
+    "What the spec actually says"
+   ],
+   "risk": "An amplifier that can't carry the building.",
+   "timer_s": 20,
+   "timeout": [
+    "The clock ticks on.",
+    "Silence on a submittal becomes an order."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What must the amplifier carry — in watts?"
+    }
+   ],
+   "note": "Draft decision (DR-S06E05).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Approve it — the spec allows ‘or equal’",
+     "result": "Eight weeks later every corridor announcement distorts.",
+     "consequence": "An approval without arithmetic.",
+     "chips": [
+      "Unchecked"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Review means checking, in numbers.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Add up the zone taps and compare them with what it can carry — and re-read our own spec",
+     "result": "526 W of taps; the ‘equal’ carries 384. And our spec never said what equal means.",
+     "consequence": "Numbers on both sides.",
+     "chips": [
+      "Arithmetic",
+      "Own spec first"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Reject it because it looks cheap",
+     "result": "Ruth: “On what grounds?”",
+     "consequence": "An opinion isn't a review.",
+     "chips": [
+      "No evidence"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ring the maker and ask if it's really equal",
+     "result": "The maker's sales line: “Absolutely equal.”",
+     "consequence": "The seller isn't the reviewer.",
+     "chips": [
+      "Wrong source"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Not equal.",
+   "body": "The tap schedule: seven 70 V zones, 526 W of taps. Two 240 W channels at an 80% margin carry 384 W. And no fault relay: a dead channel would tell nobody.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S06E05-1",
+   "label": "Test: what can the ‘equal’ carry — and what does the relay do?"
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Field notes",
+   "sub": "Intermediate · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Anselm and Maya beside a board. On a seventy-volt line, add up every loudspeaker's tap. Keep it under eighty percent of the channel. The ‘equal’ amp's channel is two-forty. Point eight of that is one-ninety-two. Twenty speakers at ten watts is two hundred. So ‘equal’ isn't. Write down why, in numbers, before anyone orders it.",
+   "characters": [
+    {
+     "id": "anselm",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s6kit.bg_design",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Anselm",
+     "kind": "speech",
+     "text": "On a seventy-volt line, add up every loudspeaker's tap. Keep it under eighty percent of the channel."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The ‘equal’ amp's channel is two-forty. Point eight of that is one-ninety-two. Twenty speakers at ten watts is two hundred."
+    },
+    {
+     "side": "L",
+     "who": "Anselm",
+     "kind": "speech",
+     "text": "So ‘equal’ isn't. Write down why, in numbers, before anyone orders it."
+    }
+   ],
+   "narration": [],
+   "caption": "Intermediate: the formula and what every letter means. The arithmetic is yours.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3341
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t2",
+   "text": "📗 FIELD NOTES · INTERMEDIATE  Terms   Submittal   Or equal   70 V line   Tap   Formula and variables   ƒ FORMULA · 70 V line loading  P taps  = Σ P tap  ≤ 0.8 × P amp    P tap   the tap setting on each loudspeaker transformer, W  P amp   the amplifier channel's rated power, W  0.8  a common design margin (20% headroom)     ƒ FORMULA · Percentage  % = part ÷ whole × 100   part  the piece you are measuring  whole  everything it is part of"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "D4",
+   "label": "**Learn it now:** specs, submittals and 70 V lines.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     What the room is telling you     The OSI model, AV style — an introduction     The OSI model applied to video and wireless"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A riser chart: the ‘equal’ amplifier's two channels loaded to 292 W and 234 W, both bars red past the dashed 192 W line.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Both channels over the margin before the building is even on.",
+   "flags": [
+    "RV-141"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "526 W vs 384 W"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1769
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S6-05",
+   "who": "ruth",
+   "prompt": "My supplier says it's the same amp in a smaller box. Are you going to hold up an eight-week order over a box?",
+   "options": [
+    {
+     "label": "“Here's the tap schedule: 526 watts, and the smaller box carries 384. Can your supplier resubmit the four-channel?”",
+     "who": "ruth",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "Numbers I can argue with my supplier. Friday.",
+     "trust": {
+      "Ruth": 2
+     }
+    },
+    {
+     "label": "“It's not equal. Rejected.”",
+     "who": "ruth",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "Show me where your spec says four channels.",
+     "trust": {
+      "Ruth": -1
+     }
+    },
+    {
+     "label": "“What else did your supplier change?”",
+     "who": "ruth",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "The relay. They said nobody uses it.",
+     "trust": {
+      "Ruth": 1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "Interchangeable parts",
+   "body": "From the 1780s, gunsmiths in France and then armories in the United States pursued interchangeable parts: any lock could fit any musket because every part was made to a gauge. The idea only worked because the gauges defined ‘the same’ precisely. ‘Or equal’ in a specification is the same idea — and needs the same gauges.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Our own spec”",
+   "sub": "Wednesday · 9:00 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Our own spec.",
+   "body": "Section 27 41 16, as issued: *Amplifier: Model 4-240 or equal.* No channels, no watts at 70 V, no relay. The contractor offered exactly what the words allowed. The gap was Linden Row's — in the template since 2014.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S06E05-2",
+   "label": "Test: was the contractor wrong — and what fixes the spec?"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S06E05-02",
+   "prompt": "Wednesday. What goes back to the contractor?",
+   "happening": "Submittal non-conforming — and our spec was vague.",
+   "clock": "Wednesday 09:30",
+   "known": [
+    "◉ 526 W needed · 384 W offered",
+    "◉ Spec: no criteria"
+   ],
+   "unknown": [
+    "What the resubmittal will be"
+   ],
+   "risk": "An eight-week order for the wrong amplifier.",
+   "timer_s": 25,
+   "timeout": [
+    "The clock runs out; the contractor orders by default.",
+    "Two channels arrive in eight weeks."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What would let everyone check ‘equal’ next time?"
+    }
+   ],
+   "note": "Draft decision (DR-S06E05).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "‘Revise and resubmit’ through Odile's office, with the tap arithmetic, and an addendum listing the salient characteristics",
+     "result": "Ruth: “Fair. Four-channel with the relay — Friday.”",
+     "consequence": "Reasons in numbers, through the chain, and our gap closed.",
+     "chips": [
+      "Numbers",
+      "Own gap fixed"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Odile": 2,
+       "Ruth": 2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "‘Rejected — cutting corners’",
+     "result": "Ruth: “Show me where your spec says four channels.”",
+     "consequence": "Blames them for our gap.",
+     "chips": [
+      "Blame"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Order the right amplifier ourselves to save time",
+     "result": "Anselm: “We don't buy. The contractor buys.”",
+     "consequence": "Not the designer's role.",
+     "chips": [
+      "Not yours"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "Designers review; contractors buy.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Anselm": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Approve as noted: ‘add a second amplifier on site’",
+     "result": "Nobody prices the second amplifier; it never arrives.",
+     "consequence": "A note isn't a product.",
+     "chips": [
+      "Deferred"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lab",
+   "id": "LAB-PWR-03",
+   "label": "**Fix it:** balance the zones on the resubmitted amplifier.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #56 · AVERY'S LENS  Say what ‘equal’ means  If a requirement can't be checked, it isn't a requirement — write the criteria people will be held to.  The spec said ‘or equal’. The contractor offered half the channels and no fault relay, and on paper nobody could say it wasn't equal."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S06E05",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The balanced riser: four channels at 162, 168, 100 and 96 W, all green and under the dashed 192 W line.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Four channels. All inside the margin.",
+   "flags": [
+    "RV-141"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "resubmittal · ≤ 80% per channel"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2457
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S6-05a",
+   "teaser": "the fault relay",
+   "title": "Silent failures",
+   "body": "The specified amplifier's fault relay closes a contact when a channel fails — the court's monitoring turns a tile red. Without it, a dead corridor zone is found by the next emergency announcement nobody hears.",
+   "thread": "Power",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S06E05-03",
+   "prompt": "Friday. How does the studio stop ‘or equal’ happening again?",
+   "happening": "Resubmittal approved.",
+   "clock": "Friday 16:00",
+   "known": [
+    "◉ Template vague since 2014"
+   ],
+   "unknown": [
+    "The Playhouse submittals"
+   ],
+   "risk": "The same ‘equal’ next month.",
+   "timer_s": 25,
+   "timeout": [
+    "The studio moves on.",
+    "The template stays vague."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Where does the vague line come from?"
+    }
+   ],
+   "note": "Draft decision (DR-S06E05).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Put salient characteristics in the spec template for every product family, and review every submittal with a conformance table",
+     "result": "Kit builds the conformance table template; Anselm rewrites the template's ‘or equal’ lines.",
+     "consequence": "Equal becomes checkable everywhere.",
+     "chips": [
+      "Process",
+      "Template"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Anselm": 1,
+       "Kit": 1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Name one brand only, no alternatives",
+     "result": "The owner's procurement rules require alternatives.",
+     "consequence": "Criteria, not brands.",
+     "chips": [
+      "Procurement rules"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Trust contractors less",
+     "result": "Ruth stops sending early drafts.",
+     "consequence": "Worse relationships, same gap.",
+     "chips": [
+      "Trust lost"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Nothing — this one's fixed",
+     "result": "The Playhouse spec has the same ‘or equal’ lines.",
+     "consequence": "The template survives.",
+     "chips": [
+      "Repeat"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Fix the template.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-605",
+   "label": "**Service Mode:** review the submittal yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-034 · SIGNAL original  Equal to What?  The contractor offered an ‘equal’ amplifier with half the channels. The spec never said what equal meant.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-034"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Friday · 4:30 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ruth and Anselm with the approved resubmittal and the new spec template open on a laptop.",
+   "characters": [
+    {
+     "id": "ruth",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "anselm",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "s6kit.bg_design",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ruth",
+     "kind": "speech",
+     "text": "First time a consultant told me our submittal was wrong and their spec was too."
+    },
+    {
+     "side": "R",
+     "who": "Anselm",
+     "kind": "speech",
+     "text": "Only the first time?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2829
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S6-05b",
+   "teaser": "the old spec template",
+   "title": "‘or equal’ since 2014",
+   "body": "Linden Row's spec template has said ‘or equal’ without criteria since 2014. Anselm laughs, then stops. He opens the template himself and starts typing salient characteristics.",
+   "thread": "Method",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the Playhouse: Odile, the architect, arms wide at bare plaster walls; Anselm with a sound-level meter.",
+   "characters": [
+    {
+     "id": "odile",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "anselm",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_theater",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Odile",
+     "kind": "speech",
+     "text": "Isn't the plaster beautiful?"
+    },
+    {
+     "side": "R",
+     "who": "Anselm",
+     "kind": "speech",
+     "text": "It is. It's also going to make every line of dialogue last two seconds."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Hard Walls.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4923
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  On a 70 V line, add the taps: P_taps = Σ P_tap ≤ 0.8 × P_amp. Write ‘or equal’ with its salient characteristics, review every submittal with the numbers, and send the response through the architect. Contractors buy; designers review."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · The gap was in Linden Row’s own template. When did you last find your own gap in an argument you were winning?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S06E05",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

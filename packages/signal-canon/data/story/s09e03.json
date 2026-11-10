@@ -1,0 +1,859 @@
+{
+ "chapter": {
+  "id": "s09e03",
+  "kicker": "S09 · E03",
+  "title": "Shared Admin",
+  "pill": "S09E03 · Shared Admin",
+  "sub": "The hearing loop was dead through a whole cabaret. The log says “admin”. Fourteen people are admin.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S09E03",
+   "RV-170",
+   "RV-171",
+   "RV-172",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#F472B6"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 9 · EPISODE 3 · DRAFT · CASE-047  The Wyndmere · Maya, Kit, Solveig and Tamsin · Level L5 · Advanced support (formulas on request)  The hearing loop was dead through Friday’s whole cabaret. The DSP log says “admin” did it. Fourteen people are admin.  ⚑ RV-170: security owns accounts. RV-171: governance only. RV-172: figures illustrative. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Shared Admin",
+   "kind": "LIVE VENUE · ACCESS",
+   "level": "L5 · ADVANCED",
+   "party": [
+    "maya",
+    "kit",
+    "solveig"
+   ],
+   "stakes": "The hearing loop was dead through a whole cabaret. The log says ‘admin’ — and fourteen people are admin.",
+   "clock": "Before tonight's show.",
+   "reward": "A loop that's checked before every show, and a name on every change.",
+   "objectives": [
+    {
+     "key": "BR-S09E03-01",
+     "text": "Decide what happens first"
+    },
+    {
+     "key": "twist",
+     "text": "Find how many people hold the key"
+    },
+    {
+     "key": "core",
+     "text": "Give each job its role"
+    },
+    {
+     "key": "BR-S09E03-02",
+     "text": "Decide how access changes"
+    },
+    {
+     "key": "BR-S09E03-03",
+     "text": "Decide what the operator panel needs"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "A borrowed password is a missing button."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Which admin?”",
+   "sub": "Monday · 10:00 a.m. · security office"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The security office; Kit holds up a patron's email and a printed DSP log; Maya reads them.",
+   "characters": [
+    {
+     "id": "kit",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s9kit.bg_soc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Kit",
+     "kind": "speech",
+     "text": "‘The loop was silent all evening. I missed the whole show.’ And the log just says ‘admin’."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then first we make sure it's working tonight."
+    }
+   ],
+   "narration": [],
+   "caption": "A loop that nobody checked.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2107
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "tension",
+   "where": "security office · Monday 10:00",
+   "lines": [
+    {
+     "who": "kit",
+     "pose": "N",
+     "expr": "worried",
+     "text": "The loop was off for two hours and nobody noticed but the people who needed it."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Then that's the first thing we fix. The log can wait ten minutes."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Fourteen people, one key”",
+   "sub": "Monday · 10:10 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S09E03-01",
+   "prompt": "10:10. The loop was dead on Friday; the log names nobody. What happens first?",
+   "happening": "Loop dead on Friday.",
+   "clock": "Monday 10:10 · show 19:30",
+   "known": [
+    "◉ ‘admin 19:42 recall Rehearsal’",
+    "◉ Loop off in that preset"
+   ],
+   "unknown": [
+    "Who knows the password"
+   ],
+   "risk": "Another silent evening for loop users — or a blame hunt.",
+   "timer_s": 20,
+   "timeout": [
+    "The loop isn't checked.",
+    "Tonight it's still off."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who is affected tonight — and who owns the access question?"
+    }
+   ],
+   "note": "Draft decision (DR-S09E03).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Email everyone who knows the password: who did it?",
+     "result": "Fourteen denials, one frightened stage manager, no answer.",
+     "consequence": "A hunt, not a fix.",
+     "chips": [
+      "Blame hunt"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Restore the loop and measure it from row M; then take the log and a count of who knows the password to Solveig",
+     "result": "The loop comes back thin; Solveig takes the access question.",
+     "consequence": "People who rely on it first; access to its owner.",
+     "chips": [
+      "Loop first",
+      "Security"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Solveig": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Change the admin password tonight and keep it to yourself",
+     "result": "Solveig: “Now you're the single point of failure — and the stage manager is locked out.”",
+     "consequence": "Hoards the key.",
+     "chips": [
+      "Single point"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "SECURITY'S"
+      }
+     ],
+     "canonical": false,
+     "fail": "Accounts are security's.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Solveig": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Nothing until the investigation is finished",
+     "result": "Tonight's loop users get the same silence.",
+     "consequence": "Evidence over people.",
+     "chips": [
+      "Loop still off"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Fourteen people, one key.",
+   "body": "Solveig counts with Kit: six venue technicians, four of the integrator's, two from a lighting crew whose contract ended in the spring, and two former venue staff. Fourteen people know the admin password; five of them no longer work here. The log's ‘admin’ could be any of them. Nobody can be accountable for any change on this system.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S09E03-1",
+   "label": "Test: how many have gone — and what can the log prove?"
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ask for it",
+   "sub": "Advanced · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Maya and Kit beside a board. Fourteen people know the DSP admin password. Five of them don't work here any more. Thirty-six percent. And the loop measured two hundred and eighty milliamps a metre after the fix — about three dB under the reference. Then the fix isn't finished either. Roles first; then the loop back to four hundred.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "kit",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s9kit.bg_soc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Fourteen people know the DSP admin password. Five of them don't work here any more."
+    },
+    {
+     "side": "R",
+     "who": "Kit",
+     "kind": "speech",
+     "text": "Thirty-six percent. And the loop measured two hundred and eighty milliamps a metre after the fix — about three dB under the reference."
+    },
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then the fix isn't finished either. Roles first; then the loop back to four hundred."
+    }
+   ],
+   "narration": [],
+   "caption": "Advanced: the formula is there if you ask. Try without it first.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2560
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t3",
+   "text": "📙 ON REQUEST · ADVANCED  Terms   Named account   Least privilege   Service account   If you need it   ƒ Ask for the formula · Percentage   ƒ FORMULA · Percentage  % = part ÷ whole × 100   part  the piece you are measuring  whole  everything it is part of      ƒ Ask for the formula · Hearing-loop field level   ƒ FORMULA · Hearing-loop field level  L = 20·log 10 (H ÷ H ref )   H  measured magnetic field strength, mA/m  H ref   reference field, 400 mA/m (illustrative target)  L  level relative to the reference, dB"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "G3",
+   "label": "**Learn it now:** roles and least privilege.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     What the room is telling you     Hear it right — EQ it right (the ear)     Sound pressure, room modes and the spectrum"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "An access sheet before the fix: one admin password known to fourteen people — six venue technicians, four integrator technicians, two from an ended lighting contract and two former staff, the last four greyed; the log line ‘admin 19:42 recall Rehearsal’ names nobody.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Everyone is admin, so nobody is.",
+   "flags": [
+    "RV-172"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "password count + log"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2596
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "M-903",
+   "label": "**Sort it:** which role?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “It was a preset”",
+   "sub": "Monday · 2:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "It was a preset.",
+   "body": "Tamsin asks the stage manager, no blame in the question. On Friday the resident company called a late rehearsal before the cabaret. ‘Rehearsal’ — god mic up, house quiet, loop off — lived only on the admin page, so a technician gave her the password. At 19:42 she recalled it. The operator panel had two buttons, ‘Show’ and ‘Off’, and neither of them turned the loop back on. Nobody broke in. A job was missing its button.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S09E03-2",
+   "label": "Test: the loop level after the fix — and why she had the password."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S09E03-02",
+   "prompt": "Monday. How does access change?",
+   "happening": "The stage manager's story.",
+   "clock": "Monday 14:30",
+   "known": [
+    "◉ 14 people",
+    "◉ A missing button"
+   ],
+   "unknown": [
+    "Which jobs need which functions"
+   ],
+   "risk": "The same shared key next month.",
+   "timer_s": 25,
+   "timeout": [
+    "Nothing changes this week.",
+    "The old password keeps circulating."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What does each job actually need to press?"
+    }
+   ],
+   "note": "Draft decision (DR-S09E03).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "A new admin password, shared with fewer people",
+     "result": "Six people now; still nobody's name in the log.",
+     "consequence": "A smaller crowd with one key.",
+     "chips": [
+      "Still shared"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Five roles — operator, technician, two named administrators, the integrator through security's jump host, and no access — designed by you, set up by Solveig as named accounts",
+     "result": "Solveig creates them by Wednesday; the old admin password stops working.",
+     "consequence": "A name on every change, a role for every job.",
+     "chips": [
+      "Roles",
+      "Named"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Solveig": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Everyone gets their own admin account",
+     "result": "Fourteen administrators with names.",
+     "consequence": "Named, but nobody is least-privileged.",
+     "chips": [
+      "Too much access"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Lock the DSP until the investigation ends",
+     "result": "Tonight's show can't recall ‘Show’.",
+     "consequence": "Stops the show to stop a mistake.",
+     "chips": [
+      "Overcorrection"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "The lazy keys",
+   "body": "During the Second World War, the codebreakers at Bletchley Park noticed that some German cipher operators chose predictable settings for their messages — three of the same letter, or letters next to each other on the keyboard. The codebreakers called these habits ‘cillies’, and they helped break the machine. The cipher was strong; the people using it took the easy way — usually because nobody had made the right way easy.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #84 · AVERY'S LENS  Give each role the button it needs  If a job needs a function, put it on that role's panel — or people will borrow a password to reach it.  The stage manager needed one button. The only way to reach it was the admin page, so the admin password went to her."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S09E03",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The access sheet after the fix: five roles in coloured bars — operator for show states, technician for levels, EQ and the loop, two named administrators for accounts and firmware approvals, the integrator only via security's jump host, and no access for everyone else; ‘Show’ always restores the room, loop at 400 mA/m.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "A role for every job, a name on every change.",
+   "flags": [
+    "RV-170"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "loop in row M"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2931
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S9-03",
+   "who": "kit",
+   "prompt": "The technician who gave her the password — is he in trouble?",
+   "options": [
+    {
+     "label": "“He solved a problem the design left him. We fix the design, and he helps us write the roles.”",
+     "who": "kit",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "He'll be relieved. He's been expecting a call all morning.",
+     "trust": {
+      "Kit": 2
+     }
+    },
+    {
+     "label": "“That's Solveig's call.”",
+     "who": "kit",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "It is. I was asking what you'd do.",
+     "trust": {
+      "Kit": 0
+     }
+    },
+    {
+     "label": "“He broke the rules.”",
+     "who": "kit",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "The rules said ‘admin’. Everybody was admin.",
+     "trust": {
+      "Kit": -1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S9-03a",
+   "teaser": "the DSP log",
+   "title": "19:42 · admin · recall Rehearsal",
+   "body": "The DSP log, exported by security: ‘Fri 19:42:10 admin recall preset Rehearsal (loop out: off)’. Nothing after it until Monday. The next event recalled ‘Show’ at 10:14 — Maya's check.",
+   "thread": "Audio",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S09E03-03",
+   "prompt": "Tuesday. What goes on the operator panel?",
+   "happening": "Roles agreed.",
+   "clock": "Tuesday 10:00",
+   "known": [
+    "◉ ‘Rehearsal’ turns the loop off"
+   ],
+   "unknown": [
+    "What other states people need"
+   ],
+   "risk": "Another silent show for the people who rely on the loop.",
+   "timer_s": 25,
+   "timeout": [
+    "The panel isn't changed.",
+    "The next late rehearsal needs the admin page again."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "How does the room always get back to a known state?"
+    }
+   ],
+   "note": "Draft decision (DR-S09E03).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Leave it as ‘Show’ and ‘Off’ — keep it simple",
+     "result": "Next late rehearsal, someone needs a password again.",
+     "consequence": "Simple for the designer, not the job.",
+     "chips": [
+      "Missing button"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "‘Show’, ‘Rehearsal’, ‘Talk’ and ‘Off’ — each one recalls a complete known state, ‘Show’ always restores the loop — and a loop check with a receiver in every pre-show list",
+     "result": "The stage manager tries it twice and asks for nothing else.",
+     "consequence": "The buttons the job needs, and a way back every time.",
+     "chips": [
+      "Role design",
+      "Pre-show check"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Put every DSP control on the operator panel",
+     "result": "Forty sliders and a volunteer.",
+     "consequence": "Too much power in the wrong role.",
+     "chips": [
+      "Too much"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "A sticky note: ‘turn the loop back on’",
+     "result": "Sticky notes fall off.",
+     "consequence": "Memory isn't a design.",
+     "chips": [
+      "Hope"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-903",
+   "label": "**Service Mode:** run the week yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-047 · SIGNAL original  Shared Admin  The log said ‘admin’. Fourteen people were admin. The real culprit was a missing button.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-047"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Friday · 7:15 p.m. · pre-show"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The main hall before Friday's show; Kit in row M holding a loop receiver and a meter; Tamsin at the side with the pre-show checklist.",
+   "characters": [
+    {
+     "id": "kit",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "tamsin",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s8kit.bg_hall",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Kit",
+     "kind": "speech",
+     "text": "Four hundred, flat across the seats. Loop checked."
+    },
+    {
+     "side": "R",
+     "who": "Tamsin",
+     "kind": "speech",
+     "text": "Ticked — with your name on it."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3878
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S9-03b",
+   "teaser": "the operator panel",
+   "title": "Show · Off",
+   "body": "The operator touch panel: two buttons, ‘Show’ and ‘Off’. ‘Rehearsal’, ‘Talk’ and the loop level live on the admin page. The commissioning notes: ‘operator panel per GM — keep it simple’.",
+   "thread": "Control",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The lobby during a live charity stream, crowded; Tamsin holds the paging microphone and points at a ceiling loudspeaker; broken words float from it; Maya looks up.",
+   "characters": [
+    {
+     "id": "tamsin",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s8kit.bg_foyer",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tamsin",
+     "kind": "speech",
+     "text": "‘Please take your seats’ came out in pieces. The whole lobby is on the guest Wi-Fi watching the stream."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Paging shares a network with the guests?"
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *The Paging Path.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1589
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A shared login names nobody (% = part ÷ whole × 100 of the people who shouldn’t still have it). Design roles — operator, technician, two named administrators, the integrator through security’s jump host, no access — and let security create the named accounts. When someone borrows a password, look for the button their job was missing. Measure what people rely on (L = 20·log10(H ÷ 400 mA/m)) and check it before every show."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Where have you seen a password shared because a job was missing a button?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S09E03",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

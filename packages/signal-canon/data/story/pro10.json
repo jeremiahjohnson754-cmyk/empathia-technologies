@@ -1,0 +1,70 @@
+{
+ "chapter": {
+  "id": "pro10",
+  "kicker": "PROLOGUE · CH.10",
+  "title": "Photons to Purpose",
+  "pill": "Prologue · Ch.10",
+  "sub": "Light speaks before a word is said.",
+  "status": null,
+  "flags": [],
+  "accent": "var(--amber)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Three fixtures cross their beams on the stage: warm key from one side, cool fill from the other, a pink back light from above.",
+   "characters": [],
+   "location": "scenes.bg_stage",
+   "bubbles": [],
+   "narration": [
+    "Key light. Fill light. Back light. Three lights, one feeling."
+   ],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 940
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A top-view diagram: the subject in the middle, a key light at 45 degrees, a fill light opposite, a back light behind. Maya explains.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "grin"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "We're not decorating. We're directing attention."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1837
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Color temperature and the key–fill–back triangle are the fastest tools for shaping mood, on any budget."
+  }
+ ]
+}

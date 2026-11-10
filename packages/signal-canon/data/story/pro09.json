@@ -1,0 +1,118 @@
+{
+ "chapter": {
+  "id": "pro09",
+  "kicker": "PROLOGUE · CH.09",
+  "title": "Going Live",
+  "pill": "Prologue · Ch.09",
+  "sub": "Test before trust.",
+  "status": null,
+  "flags": [],
+  "accent": "var(--magenta)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "9:58. Maya's finger hovers over a big pink GO LIVE button on the streaming laptop.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Here goes."
+    }
+   ],
+   "narration": [
+    "9:58 AM. Two minutes to air."
+   ],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 767
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray holds up the pre-stream checklist, every box ticked: audio, video, stream key, return feed, backup recording.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Test before trust. Every box, every week."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2265
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The sanctuary is full and the LIVE light is on. Maya and Ray stand in the booth doorway.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "grin"
+    },
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "We're live — to the room, and to everyone who couldn't be in it."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2311
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A livestream is a second congregation. Give its signal path the same care as the room's."
+  }
+ ]
+}

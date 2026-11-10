@@ -1,0 +1,1910 @@
+{
+ "RV-01": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Pilot network mechanism",
+  "detail": "Multicast video flooding an unmanaged switch that also carries networked audio. Rates and behavior are illustrative; the story keeps it 'supported, not proven' until the S01E01 tag.",
+  "reviewer": "Network / AV-over-IP engineer"
+ },
+ "RV-02": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Hum fix that never lifts protective earth",
+  "detail": "Any hum or ground story must show the fix isolating the signal path and leaving every safety ground intact.",
+  "reviewer": "Audio systems engineer and licensed electrician"
+ },
+ "SB-01": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Never defeat protective earth",
+  "detail": "The story shows the ground-pin 'old trick' only to refuse it. No panel may show a lifted or removed safety ground as a working fix, and building wiring stays with a licensed electrician.",
+  "reviewer": "Licensed electrician"
+ },
+ "RV-03": {
+  "type": "TECHNICAL REVIEW",
+  "title": "LED wall: moiré vs refresh banding",
+  "detail": "Two different effects that the prototype draws as one.",
+  "reviewer": "Video / LED engineer"
+ },
+ "RV-05": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Comb-filter worked example",
+  "detail": "Path lengths, delay and notch frequencies are illustrative geometry, not a measured room. Formula assumes two arrivals of similar level, no polarity inversion.",
+  "reviewer": "Acoustician"
+ },
+ "RV-14": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Overhead work and exclusion zones",
+  "detail": "Overhead loudspeaker work is shown only by a qualified crew with a lift and a roped exclusion zone. Depiction must match current practice.",
+  "reviewer": "Qualified rigger"
+ },
+ "RV-17": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Hearing exposure",
+  "detail": "Test signals and rehearsal levels are shown as moderate; earplugs offered. No level figures are given as guidance.",
+  "reviewer": "Occupational hearing specialist"
+ },
+ "RV-18": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Sanctuary kit topology",
+  "detail": "The booth, equipment room and overflow room layouts are invented; confirm they read as plausible.",
+  "reviewer": "AV systems engineer"
+ },
+ "RV-19": {
+  "type": "VISUAL REVIEW",
+  "title": "Color contrast",
+  "detail": "Chip, caption and bubble colors on panel washes need measured contrast in the final build.",
+  "reviewer": "Accessibility specialist"
+ },
+ "RV-21": {
+  "type": "REPRESENTATION REVIEW",
+  "title": "Representation: faith community, older adults, hearing-aid users",
+  "detail": "Worship, baptism, an 81-year-old hearing-aid user and characters of many backgrounds are depicted. Needs sensitivity reading and community consultation.",
+  "reviewer": "Sensitivity readers; community consultation"
+ },
+ "RV-24": {
+  "type": "VISUAL REVIEW",
+  "title": "Decision screens at phone width",
+  "detail": "The interactive choice cards need usability testing with target learners at 360 px.",
+  "reviewer": "UX researcher"
+ },
+ "RV-25": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Gain staging, proximity effect and level-matched listening (new)",
+  "detail": "S01E02's mechanism: preamp gain set at speaking level clips at singing level; a directional mic gains low end up close; a louder version usually wins an unmatched comparison. All numbers (dB, trial counts, 'a hand's width') are illustrative.",
+  "reviewer": "Live-sound / audio engineer"
+ },
+ "RV-26": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Electrical load arithmetic and circuit rules (new)",
+  "detail": "S01E05 shows a load estimate (P = V × I) with its assumptions stated. Wattages, voltages, breaker ratings and the 'don't run near the limit' planning rule are illustrative; the real rules are code- and site-specific and belong to a licensed electrician. Only the electrician opens the panel or resets the circuit.",
+  "reviewer": "Licensed electrician"
+ },
+ "RV-11": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Accessibility findings and obligations",
+  "detail": "S01E06 shows an assistive listening system failing during speech. No legal requirement, standard or coverage figure is stated as fact; obligations vary by place and belong to an accessibility specialist and legal reviewer.",
+  "reviewer": "Accessibility specialist; legal reviewer"
+ },
+ "RV-04": {
+  "type": "TECHNICAL REVIEW",
+  "title": "DMX physical-layer teaching",
+  "detail": "DMX addressing, termination, splitting and cable guidance are simplified for teaching.",
+  "reviewer": "Lighting control specialist"
+ },
+ "RV-15": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Emergency and life-safety boundaries",
+  "detail": "S01E10 shows a power event. Life-safety systems (emergency lighting, alarms, exits) belong to the building and its responsible people; the story never has the AV team operate them.",
+  "reviewer": "Emergency management professional; licensed electrician"
+ },
+ "RV-20": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Level and evidence thresholds",
+  "detail": "Mission Control's level thresholds (L0–L3) and E-levels are provisional scoring rules.",
+  "reviewer": "Curriculum owner"
+ },
+ "RV-27": {
+  "type": "TECHNICAL REVIEW",
+  "title": "History breaks need a fact check",
+  "detail": "Every history break is a short summary written from general knowledge. Dates and attributions need a citation check before release.",
+  "reviewer": "Curriculum owner; historian or subject expert"
+ },
+ "RV-28": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Fundamentals lessons and quizzes",
+  "detail": "Audio, video and lighting lessons use standard textbook values and simplified explanations. Needs a subject-matter review.",
+  "reviewer": "Audio, video and lighting SMEs"
+ },
+ "Q-004": {
+  "type": "RIGHTS REVIEW",
+  "title": "Case files are SIGNAL adaptations",
+  "detail": "The owner's Fieldbook (the Empathia Learn Fieldbook) has been supplied. Its case studies map to CASE-001, 002, 003, 004, 005, 006, 007, 008, 009, 010, 011 and 012; each case file tells the SIGNAL story version and keeps the Fieldbook's mechanism, with safety adaptations (FB-03) and formula corrections (FB-02). CASE-013 onward are SIGNAL originals. The owner should confirm each adaptation.",
+  "reviewer": "Owner"
+ },
+ "RV-29": {
+  "type": "TECHNICAL REVIEW",
+  "title": "LED wall on camera: timing, standards and moiré (S01E07)",
+  "detail": "Refresh and scan banding, shutter timing, frame-rate families (50 / 59.94 / 60) and moiré are simplified for teaching. Processor menus, refresh figures and shutter values are illustrative; real walls and cameras differ by model.",
+  "reviewer": "Video / LED engineer; broadcast engineer"
+ },
+ "RV-30": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Budget, cost and risk figures (S01E08)",
+  "detail": "Every dollar amount, hour estimate, likelihood and cost-of-doing-nothing figure is invented for the story. None is a price, quote or benchmark.",
+  "reviewer": "Owner; finance reviewer"
+ },
+ "RV-31": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Acceptance and commissioning practice (S01E09)",
+  "detail": "The acceptance workflow, test sheet, thresholds and sign-off are simplified from general commissioning practice. Not a standard or a contract form.",
+  "reviewer": "Commissioning agent; lighting control specialist"
+ },
+ "RV-32": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Power loss, UPS runtimes and emergency lighting (S01E10)",
+  "detail": "The blackout, UPS runtimes and emergency-lighting behavior are illustrative. Emergency lighting, alarms and exits belong to the building and its responsible people; the AV team never restores, bypasses or tests them. Crowd guidance comes from the building's plan, not the booth.",
+  "reviewer": "Life-safety / facilities specialist; electrician"
+ },
+ "RV-33": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Video transport, codecs and streaming numbers",
+  "detail": "Bitrates, cable-length limits, latency and codec behavior in lessons and incidents are typical teaching values, not specifications.",
+  "reviewer": "Video systems engineer"
+ },
+ "RV-34": {
+  "type": "REPRESENTATION REVIEW",
+  "title": "Board, budget and money conversations (S01E08)",
+  "detail": "A church owner board, a treasurer and a budget vote are depicted. Needs a reader familiar with volunteer-led organizations so the conflict is fair to every side.",
+  "reviewer": "Faith-community / nonprofit reader"
+ },
+ "RV-35": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Wireless microphone spectrum rules",
+  "detail": "Which radio bands wireless microphones may use differs by country and changes over time. The lessons never name a band as legal; a frequency coordinator and current local rules decide.",
+  "reviewer": "RF coordinator; regulatory reviewer"
+ },
+ "DR-S02E01": {
+  "type": "DRAFT",
+  "title": "S02E01 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. Scene, branch, evidence and incident IDs are provisional; case mechanisms once marked [pending Fieldbook] were checked against the supplied Fieldbook (FB-01).",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S02E02": {
+  "type": "DRAFT",
+  "title": "S02E02 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. Scene, branch, evidence and incident IDs are provisional; case mechanisms once marked [pending Fieldbook] were checked against the supplied Fieldbook (FB-01).",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S02E03": {
+  "type": "DRAFT",
+  "title": "S02E03 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. Scene, branch, evidence and incident IDs are provisional; case mechanisms once marked [pending Fieldbook] were checked against the supplied Fieldbook (FB-01).",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S02E04": {
+  "type": "DRAFT",
+  "title": "S02E04 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. Scene, branch, evidence and incident IDs are provisional; case mechanisms once marked [pending Fieldbook] were checked against the supplied Fieldbook (FB-01).",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S02E05": {
+  "type": "DRAFT",
+  "title": "S02E05 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. Scene, branch, evidence and incident IDs are provisional; case mechanisms once marked [pending Fieldbook] were checked against the supplied Fieldbook (FB-01).",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S02E06": {
+  "type": "DRAFT",
+  "title": "S02E06 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. Scene, branch, evidence and incident IDs are provisional; case mechanisms once marked [pending Fieldbook] were checked against the supplied Fieldbook (FB-01).",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S02E07": {
+  "type": "DRAFT",
+  "title": "S02E07 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. Scene, branch, evidence and incident IDs are provisional; case mechanisms once marked [pending Fieldbook] were checked against the supplied Fieldbook (FB-01).",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S02E08": {
+  "type": "DRAFT",
+  "title": "S02E08 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. Scene, branch, evidence and incident IDs are provisional; case mechanisms once marked [pending Fieldbook] were checked against the supplied Fieldbook (FB-01).",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S02E09": {
+  "type": "DRAFT",
+  "title": "S02E09 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. Scene, branch, evidence and incident IDs are provisional; case mechanisms once marked [pending Fieldbook] were checked against the supplied Fieldbook (FB-01).",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S02E10": {
+  "type": "DRAFT",
+  "title": "S02E10 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. Scene, branch, evidence and incident IDs are provisional; case mechanisms once marked [pending Fieldbook] were checked against the supplied Fieldbook (FB-01).",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S03E01": {
+  "type": "DRAFT",
+  "title": "S03E01 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. Scene, branch, evidence and incident IDs are provisional; case mechanisms once marked [pending Fieldbook] were checked against the supplied Fieldbook (FB-01).",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S03E02": {
+  "type": "DRAFT",
+  "title": "S03E02 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. Scene, branch, evidence and incident IDs are provisional; case mechanisms once marked [pending Fieldbook] were checked against the supplied Fieldbook (FB-01).",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S03E03": {
+  "type": "DRAFT",
+  "title": "S03E03 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. Scene, branch, evidence and incident IDs are provisional; case mechanisms once marked [pending Fieldbook] were checked against the supplied Fieldbook (FB-01).",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S03E04": {
+  "type": "DRAFT",
+  "title": "S03E04 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. Scene, branch, evidence and incident IDs are provisional; case mechanisms once marked [pending Fieldbook] were checked against the supplied Fieldbook (FB-01).",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S03E05": {
+  "type": "DRAFT",
+  "title": "S03E05 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. Scene, branch, evidence and incident IDs are provisional; case mechanisms once marked [pending Fieldbook] were checked against the supplied Fieldbook (FB-01).",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S03E06": {
+  "type": "DRAFT",
+  "title": "S03E06 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. Scene, branch, evidence and incident IDs are provisional; case mechanisms once marked [pending Fieldbook] were checked against the supplied Fieldbook (FB-01).",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S03E07": {
+  "type": "DRAFT",
+  "title": "S03E07 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. Scene, branch, evidence and incident IDs are provisional; case mechanisms once marked [pending Fieldbook] were checked against the supplied Fieldbook (FB-01).",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S03E08": {
+  "type": "DRAFT",
+  "title": "S03E08 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. Scene, branch, evidence and incident IDs are provisional; case mechanisms once marked [pending Fieldbook] were checked against the supplied Fieldbook (FB-01).",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S03E09": {
+  "type": "DRAFT",
+  "title": "S03E09 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. Scene, branch, evidence and incident IDs are provisional; case mechanisms once marked [pending Fieldbook] were checked against the supplied Fieldbook (FB-01).",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S03E10": {
+  "type": "DRAFT",
+  "title": "S03E10 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. Scene, branch, evidence and incident IDs are provisional; case mechanisms once marked [pending Fieldbook] were checked against the supplied Fieldbook (FB-01).",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S04E01": {
+  "type": "DRAFT",
+  "title": "S04E01 script is ahead of its bible entry",
+  "detail": "Season 4 was scripted for the novel from the owner's request to continue the story; it has no Phase 1 bible entry yet. Scene, branch, evidence and incident IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S04E02": {
+  "type": "DRAFT",
+  "title": "S04E02 script is ahead of its bible entry",
+  "detail": "Season 4 was scripted for the novel from the owner's request to continue the story; it has no Phase 1 bible entry yet. Scene, branch, evidence and incident IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S04E03": {
+  "type": "DRAFT",
+  "title": "S04E03 script is ahead of its bible entry",
+  "detail": "Season 4 was scripted for the novel from the owner's request to continue the story; it has no Phase 1 bible entry yet. Scene, branch, evidence and incident IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S04E04": {
+  "type": "DRAFT",
+  "title": "S04E04 script is ahead of its bible entry",
+  "detail": "Season 4 was scripted for the novel from the owner's request to continue the story; it has no Phase 1 bible entry yet. Scene, branch, evidence and incident IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S04E05": {
+  "type": "DRAFT",
+  "title": "S04E05 script is ahead of its bible entry",
+  "detail": "Season 4 was scripted for the novel from the owner's request to continue the story; it has no Phase 1 bible entry yet. Scene, branch, evidence and incident IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S04E06": {
+  "type": "DRAFT",
+  "title": "S04E06 script is ahead of its bible entry",
+  "detail": "Season 4 was scripted for the novel from the owner's request to continue the story; it has no Phase 1 bible entry yet. Scene, branch, evidence and incident IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S04E07": {
+  "type": "DRAFT",
+  "title": "S04E07 script is ahead of its bible entry",
+  "detail": "Season 4 was scripted for the novel from the owner's request to continue the story; it has no Phase 1 bible entry yet. Scene, branch, evidence and incident IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S04E08": {
+  "type": "DRAFT",
+  "title": "S04E08 script is ahead of its bible entry",
+  "detail": "Season 4 was scripted for the novel from the owner's request to continue the story; it has no Phase 1 bible entry yet. Scene, branch, evidence and incident IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S04E09": {
+  "type": "DRAFT",
+  "title": "S04E09 script is ahead of its bible entry",
+  "detail": "Season 4 was scripted for the novel from the owner's request to continue the story; it has no Phase 1 bible entry yet. Scene, branch, evidence and incident IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S04E10": {
+  "type": "DRAFT",
+  "title": "S04E10 script is ahead of its bible entry",
+  "detail": "Season 4 was scripted for the novel from the owner's request to continue the story; it has no Phase 1 bible entry yet. Scene, branch, evidence and incident IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "RT-04": {
+  "type": "RIGHTS REVIEW",
+  "title": "Broadcast practice is generic",
+  "detail": "Season 4 describes broadcast engineering (reference clocks, loudness targets, captions, STL links, bonded cellular, emergency relays) in generic terms with illustrative numbers. Real rules differ by country and regulator; a broadcast engineer and a regulatory reviewer should check every scene before release.",
+  "reviewer": "Broadcast engineer; regulatory reviewer"
+ },
+ "GT-01": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Story gate and reviewer mode",
+  "detail": "The story is gated selectively at the owner's request: story decisions and one core hands-on skill per chapter must be finished before the pages after them open, and each chapter opens once the previous chapter's gates are cleared; every other interaction is optional. Reviewer mode (Mission Control) opens every page for authors and SMEs. Check that the gate never traps a reader (every lab has a way to finish; incidents always end) and that it suits screen-reader and keyboard users.",
+  "reviewer": "UX / accessibility reviewer; author"
+ },
+ "SR-01": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Story ratings, Story Score and game over",
+  "detail": "Six ratings (Competence, Evidence discipline, Trust, Safety/authority, Technical debt, Leadership/readiness) are computed from first attempts: decisions (tagged by what they test), quizzes, drills, labs, live incidents, meltdowns and skipped checks. The Story Score is their weighted mean (22/18/15/20/12/13%). Every season finale ends with a review; below 65 the story ends and the reader retries the season or restarts. The Season 9 review locks a Seasons 10–12 loadout (budget, team, monitoring, redundancy, authority, documentation); weak ratings leave the bare minimum, and S10–12 options can require loadout levels. Weights and thresholds are design choices to tune with playtesting.",
+  "reviewer": "Learning designer; game designer"
+ },
+ "RT-05": {
+  "type": "RIGHTS REVIEW",
+  "title": "Empathia Learn name clearance",
+  "detail": "The product and company name Empathia Learn (SIGNAL: An Empathia Learn Story, Empathia Learn Labs, Ask Empathia Learn) replaced the earlier working names at the owner's request. Other organizations may already use the name Empathia Learn, so this matters. It needs a trademark and company-name clearance search before release.",
+  "reviewer": "Rights reviewer; legal"
+ },
+ "RT-03": {
+  "type": "RIGHTS REVIEW",
+  "title": "Invented company, venue and festival names",
+  "detail": "Halyard Live, the LANTERN tour, Riverbend Festival, Aldermoor Group, Kestrel Valley Media, the Kestrel River and every other organization, place or venue name in Seasons 2–4 is invented. Each needs a clearance search before release so it does not collide with a real company.",
+  "reviewer": "Rights reviewer"
+ },
+ "Q-014": {
+  "type": "RIGHTS REVIEW",
+  "title": "Season 3 case files are SIGNAL originals",
+  "detail": "CASE-013 to CASE-016 are proposed SIGNAL-original case files outside the twelve Fieldbook cases. IDs and content need the owner's approval before they join the case catalogue.",
+  "reviewer": "Owner; curriculum owner"
+ },
+ "RV-36": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Timers and fail states added to S01E00–E06",
+  "detail": "Countdown timers, fail labels and history breaks were added to the earlier chapters as a novel-layer overlay (retrofit). The frozen story text and branch outcomes are unchanged; the overlay needs the author's sign-off.",
+  "reviewer": "Author; curriculum owner"
+ },
+ "DR-S01E07": {
+  "type": "DRAFT",
+  "title": "S01E07 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S01E08": {
+  "type": "DRAFT",
+  "title": "S01E08 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S01E09": {
+  "type": "DRAFT",
+  "title": "S01E09 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S01E10": {
+  "type": "DRAFT",
+  "title": "S01E10 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. MS-01 mechanism is the SIGNAL adaptation. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S01E06": {
+  "type": "DRAFT",
+  "title": "S01E06 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S01E05": {
+  "type": "DRAFT",
+  "title": "S01E05 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. IDs and numbers are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "VR-01": {
+  "type": "VISUAL REVIEW",
+  "title": "Placeholder art",
+  "detail": "All illustrations are simple vector placeholders in the prototype's style, pending an illustrator and art direction. Character looks follow bible section E but are not final.",
+  "reviewer": "Art director; illustrator"
+ },
+ "VR-02": {
+  "type": "VISUAL REVIEW",
+  "title": "Character rendering: skin tones, hair, faces",
+  "detail": "Characters of many backgrounds are drawn with a minimal shape kit (e.g., Dante's locs, Pastor Jo's and Imani's hair). Must be reviewed so no figure reads as a caricature.",
+  "reviewer": "Art director; sensitivity reader"
+ },
+ "VR-03": {
+  "type": "RIGHTS REVIEW",
+  "title": "Phone and app screens are generic",
+  "detail": "Streaming, chat and text-message screens are invented. They must never resemble a real platform's interface or logo.",
+  "reviewer": "Rights reviewer"
+ },
+ "VR-04": {
+  "type": "VISUAL REVIEW",
+  "title": "Blinking switch lights",
+  "detail": "Busy-light animation stays under three flashes per second and stops under reduced motion (photosensitivity).",
+  "reviewer": "Accessibility specialist"
+ },
+ "VR-05": {
+  "type": "REPRESENTATION REVIEW",
+  "title": "Baptism shown with dignity",
+  "detail": "The baptism is drawn at a distance, in silhouette, without spectacle.",
+  "reviewer": "Faith-community reader"
+ },
+ "VR-06": {
+  "type": "VISUAL REVIEW",
+  "title": "Data graphics are illustrative",
+  "detail": "Meters, readouts, analyzer strips and trial counts show the idea, not measured data. Labeled 'illustrative' on the page.",
+  "reviewer": "Domain SME for each graphic"
+ },
+ "VR-07": {
+  "type": "VISUAL REVIEW",
+  "title": "Analyzer trace vs EQ curve",
+  "detail": "The prototype's Ch.05 curve could be read as either. New pages label every curve as ANALYZER (what the sound is doing) or EQ (what someone changed), never both.",
+  "reviewer": "Audio engineer; art director"
+ },
+ "VR-08": {
+  "type": "VISUAL REVIEW",
+  "title": "Handwriting font varies by device",
+  "detail": "Notebook pages use the device's handwriting-style font; the final build should ship one licensed hand font.",
+  "reviewer": "Art director"
+ },
+ "Q-006": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Prototype Ch.07 ground-loop panels",
+  "detail": "The prototype's 'one ground' fix must not be read as lifting a protective earth. Kept unedited here; S01E03 replaces it on-page.",
+  "reviewer": "See RV-02"
+ },
+ "Q-007": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Prototype Ch.08 LED ripple",
+  "detail": "Moiré and refresh banding are separate effects; the '59.94 = 59.94' fix only addresses one. Kept unedited; S01E07 replaces it.",
+  "reviewer": "See RV-03"
+ },
+ "Q-009": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Prototype Ch.06 reflection drawing",
+  "detail": "The drawn reflection path doesn't obey equal angles. S01E01 redraws it with the image-source method.",
+  "reviewer": "See RV-05"
+ },
+ "Q-010": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Prototype Ch.05 '250–500 Hz is mud'",
+  "detail": "Stated as fact in the prototype. It is a common listening heuristic that depends on the voice and the room; S01E02 reframes it as a hypothesis.",
+  "reviewer": "See RV-25"
+ },
+ "Q-011": {
+  "type": "RIGHTS REVIEW",
+  "title": "Prototype console label",
+  "detail": "The prototype's console art carries a third-party model designation. Kept unedited in the preserved prototype; every new page uses an unbranded console. Replace before any release.",
+  "reviewer": "Rights reviewer"
+ },
+ "Q-013": {
+  "type": "RIGHTS REVIEW",
+  "title": "CityLight Church name",
+  "detail": "The prototype credits CityLight Church. Whether the name may appear in commercial Empathia Learn material needs owner and legal confirmation.",
+  "reviewer": "Owner; legal reviewer"
+ },
+ "RT-01": {
+  "type": "RIGHTS REVIEW",
+  "title": "Web fonts",
+  "detail": "The display and body fonts load from a public font service, as in the prototype. Both are open-licensed; the product build should self-host them with their license files.",
+  "reviewer": "Build engineer"
+ },
+ "RT-02": {
+  "type": "RIGHTS REVIEW",
+  "title": "Scripture quotation",
+  "detail": "One line from 1 Corinthians 12 in a public-domain translation. Confirm the translation choice with the owner.",
+  "reviewer": "Owner"
+ },
+ "DR-S01E04": {
+  "type": "DRAFT",
+  "title": "S01E04 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. The patch, preset and channel numbers are invented for the story; CASE-006 is used for structure only and its Fieldbook mechanism stays UNKNOWN.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S01E03": {
+  "type": "DRAFT",
+  "title": "S01E03 script is ahead of its bible entry",
+  "detail": "Scripted for the novel from the Phase 1 season map before its production-bible entry. Scene, evidence and branch IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S01E02": {
+  "type": "DRAFT",
+  "title": "S01E02 script is ahead of its bible entry",
+  "detail": "This chapter was scripted for the novel before the S01E02 production-bible entry was frozen. Scene, evidence and branch IDs are provisional and may change at freeze.",
+  "reviewer": "Author (next bible session)"
+ },
+ "RV-80": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Broadcast boundaries (Season 4)",
+  "detail": "Only the licensed transmitter engineer (Felix) operates the transmitter; only a certified tower crew works on the tower and never in wind, ice or lightning; the building's power, generator and transfer switch belong to the facilities electrician and the power vendor; official alerts and forecasts belong to the agencies that issue them; evacuations belong to the county emergency manager; field pull-backs belong to the news director's field safety plan; access decisions belong to security. Crossing any of them is shown as a failure.",
+  "reviewer": "Broadcast engineer; safety reviewer"
+ },
+ "RV-81": {
+  "type": "REPRESENTATION REVIEW",
+  "title": "Deaf and hard-of-hearing representation (Season 4)",
+  "detail": "June, the station's live captioner, is hard of hearing; Dolores relies on captions. Needs review by Deaf and hard-of-hearing readers so access is shown as a right, never a favor.",
+  "reviewer": "Accessibility / Deaf community reviewer"
+ },
+ "RV-82": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Broadcast figures are illustrative (Season 4)",
+  "detail": "Clock errors (ppm), frame offsets, loudness targets and readings (LUFS), fade margins, bit rates, audience sizes, river levels and times are invented for the story. None is a standard or a benchmark.",
+  "reviewer": "Broadcast engineer"
+ },
+ "RV-83": {
+  "type": "RIGHTS REVIEW",
+  "title": "Generic broadcast screens (Season 4)",
+  "detail": "Reference-clock status pages, loudness meters, caption monitors, rundowns, alert crawls and dashboards are invented. They must not resemble a real product, broadcaster or alerting system.",
+  "reviewer": "Rights reviewer; art director"
+ },
+ "RV-84": {
+  "type": "REPRESENTATION REVIEW",
+  "title": "Emergency and flood sensitivity (Season 4)",
+  "detail": "The finale depicts a regional flood and evacuations without injury or death. Needs a sensitivity read for readers who have lived through floods, and a check that emergency information is shown as relayed, verified and accessible.",
+  "reviewer": "Sensitivity reader; emergency-communications reviewer"
+ },
+ "RV-85": {
+  "type": "REPRESENTATION REVIEW",
+  "title": "Workplace shame and burnout (Season 4)",
+  "detail": "Cal walks out and later admits a mistake; Tess fears she broke the station; Lena weighs jobs against budgets. Portray with care; no villains.",
+  "reviewer": "Sensitivity reader"
+ },
+ "DR-S05E01": {
+  "type": "DRAFT",
+  "title": "S05E01 script is ahead of its bible entry",
+  "detail": "Season 5 was scripted for the novel from the owner's series plan (SEASONS.md); it has no production-bible entry yet. Scene, branch, evidence and incident IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S05E02": {
+  "type": "DRAFT",
+  "title": "S05E02 script is ahead of its bible entry",
+  "detail": "Season 5 was scripted for the novel from the owner's series plan (SEASONS.md); it has no production-bible entry yet. Scene, branch, evidence and incident IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S05E03": {
+  "type": "DRAFT",
+  "title": "S05E03 script is ahead of its bible entry",
+  "detail": "Season 5 was scripted for the novel from the owner's series plan (SEASONS.md); it has no production-bible entry yet. Scene, branch, evidence and incident IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S05E04": {
+  "type": "DRAFT",
+  "title": "S05E04 script is ahead of its bible entry",
+  "detail": "Season 5 was scripted for the novel from the owner's series plan (SEASONS.md); it has no production-bible entry yet. Scene, branch, evidence and incident IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S05E05": {
+  "type": "DRAFT",
+  "title": "S05E05 script is ahead of its bible entry",
+  "detail": "Season 5 was scripted for the novel from the owner's series plan (SEASONS.md); it has no production-bible entry yet. Scene, branch, evidence and incident IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S05E06": {
+  "type": "DRAFT",
+  "title": "S05E06 script is ahead of its bible entry",
+  "detail": "Season 5 was scripted for the novel from the owner's series plan (SEASONS.md); it has no production-bible entry yet. Scene, branch, evidence and incident IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S05E07": {
+  "type": "DRAFT",
+  "title": "S05E07 script is ahead of its bible entry",
+  "detail": "Season 5 was scripted for the novel from the owner's series plan (SEASONS.md); it has no production-bible entry yet. Scene, branch, evidence and incident IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S05E08": {
+  "type": "DRAFT",
+  "title": "S05E08 script is ahead of its bible entry",
+  "detail": "Season 5 was scripted for the novel from the owner's series plan (SEASONS.md); it has no production-bible entry yet. Scene, branch, evidence and incident IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S05E09": {
+  "type": "DRAFT",
+  "title": "S05E09 script is ahead of its bible entry",
+  "detail": "Season 5 was scripted for the novel from the owner's series plan (SEASONS.md); it has no production-bible entry yet. Scene, branch, evidence and incident IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S05E10": {
+  "type": "DRAFT",
+  "title": "S05E10 script is ahead of its bible entry",
+  "detail": "Season 5 was scripted for the novel from the owner's series plan (SEASONS.md); it has no production-bible entry yet. Scene, branch, evidence and incident IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "RV-120": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Campus and clinical boundaries (Season 5)",
+  "detail": "The campus network belongs to network engineering (Tomas); electrical and building systems to facilities; access, cameras and emergency activation to campus security (Delgado) with the campus emergency manager; clinical rooms, patient data and recording policy to the hospital (Dr. Hale and the privacy officer). Maya never watches a live patient consult, never changes a switch herself and never writes an emergency message. Crossing any of these is shown as a failure.",
+  "reviewer": "Campus IT/AV lead; clinical privacy reviewer; safety reviewer"
+ },
+ "RV-121": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Campus figures are illustrative (Season 5)",
+  "detail": "Room counts, failure rates, PoE budgets, loop field strengths, latencies, clock errors, bit rates and costs are invented for the story. None is a standard, a benchmark or a product specification.",
+  "reviewer": "AV systems engineer"
+ },
+ "RV-122": {
+  "type": "RIGHTS REVIEW",
+  "title": "Generic campus systems (Season 5)",
+  "detail": "Lecture capture, room monitoring dashboards, signage, notification, telehealth carts, the managed hub and all screens are invented and must not resemble a real product or vendor.",
+  "reviewer": "Rights reviewer"
+ },
+ "RV-123": {
+  "type": "REPRESENTATION REVIEW",
+  "title": "Disability, access and teaching (Season 5)",
+  "detail": "Farah (disability services) and the students who rely on hearing loops, captions and accessible alerts need review by disabled readers, so access is shown as a right and a design requirement, never a favor.",
+  "reviewer": "Accessibility reviewers"
+ },
+ "RV-124": {
+  "type": "REPRESENTATION REVIEW",
+  "title": "Mentoring, mistakes and burnout (Season 5)",
+  "detail": "Wes's mistake, Grant's frustration and Nadia's burnout are shown with care; no villains. Maya's teaching mirrors Ray's without copying him.",
+  "reviewer": "Sensitivity reader"
+ },
+ "DR-S06E01": {
+  "type": "DRAFT",
+  "title": "S06E01 script is ahead of its bible entry",
+  "detail": "Season 6 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S06E02": {
+  "type": "DRAFT",
+  "title": "S06E02 script is ahead of its bible entry",
+  "detail": "Season 6 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S06E03": {
+  "type": "DRAFT",
+  "title": "S06E03 script is ahead of its bible entry",
+  "detail": "Season 6 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S06E04": {
+  "type": "DRAFT",
+  "title": "S06E04 script is ahead of its bible entry",
+  "detail": "Season 6 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S06E05": {
+  "type": "DRAFT",
+  "title": "S06E05 script is ahead of its bible entry",
+  "detail": "Season 6 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S06E06": {
+  "type": "DRAFT",
+  "title": "S06E06 script is ahead of its bible entry",
+  "detail": "Season 6 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S06E07": {
+  "type": "DRAFT",
+  "title": "S06E07 script is ahead of its bible entry",
+  "detail": "Season 6 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S06E08": {
+  "type": "DRAFT",
+  "title": "S06E08 script is ahead of its bible entry",
+  "detail": "Season 6 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S06E09": {
+  "type": "DRAFT",
+  "title": "S06E09 script is ahead of its bible entry",
+  "detail": "Season 6 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S06E10": {
+  "type": "DRAFT",
+  "title": "S06E10 script is ahead of its bible entry",
+  "detail": "Season 6 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "RV-140": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Who signs what in design (Season 6)",
+  "detail": "The architect of record owns the building design; the electrical engineer of record signs power, conduit and life-safety interfaces; the structural engineer owns anything that hangs; the contractor owns means and methods. An AV designer shows intent and coordinates — Maya never stamps another discipline's work, never designs structure or rigging, and never tells a trade how to build.",
+  "reviewer": "Licensed engineer of record; architect reviewer"
+ },
+ "RV-141": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Design figures are illustrative (Season 6)",
+  "detail": "Conduit sizes, fill percentages, throw ratios, reverberation targets, loudspeaker spacing, 70 V tap loads, availability figures and costs are invented or simplified for teaching. Real designs follow the applicable codes, the manufacturer's data and the engineer of record.",
+  "reviewer": "AV systems designer; acoustician"
+ },
+ "RV-142": {
+  "type": "RIGHTS REVIEW",
+  "title": "Generic products and firms (Season 6)",
+  "detail": "Linden Row Design, the courthouse, the Playhouse, every product in every submittal and every “or equal” are invented and must not resemble a real firm, product or model number.",
+  "reviewer": "Rights reviewer"
+ },
+ "RV-143": {
+  "type": "REPRESENTATION REVIEW",
+  "title": "Access in design review (Season 6)",
+  "detail": "Assisted listening, reach ranges, interpreter positions and sightlines are shown as requirements decided with disabled users and the accessibility reviewer, not favors. Code tables differ by jurisdiction.",
+  "reviewer": "Accessibility reviewers"
+ },
+ "RV-144": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Courts and the legal record (Season 6)",
+  "detail": "The court's recording is the official record; how it is kept, redundant and accessed is decided by the court administrator and the judge under court rules. Proceedings shown are invented.",
+  "reviewer": "Court technology reviewer"
+ },
+ "DR-S07E01": {
+  "type": "DRAFT",
+  "title": "S07E01 script is ahead of its bible entry",
+  "detail": "Season 7 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S07E02": {
+  "type": "DRAFT",
+  "title": "S07E02 script is ahead of its bible entry",
+  "detail": "Season 7 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S07E03": {
+  "type": "DRAFT",
+  "title": "S07E03 script is ahead of its bible entry",
+  "detail": "Season 7 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S07E04": {
+  "type": "DRAFT",
+  "title": "S07E04 script is ahead of its bible entry",
+  "detail": "Season 7 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S07E05": {
+  "type": "DRAFT",
+  "title": "S07E05 script is ahead of its bible entry",
+  "detail": "Season 7 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S07E06": {
+  "type": "DRAFT",
+  "title": "S07E06 script is ahead of its bible entry",
+  "detail": "Season 7 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S07E07": {
+  "type": "DRAFT",
+  "title": "S07E07 script is ahead of its bible entry",
+  "detail": "Season 7 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S07E08": {
+  "type": "DRAFT",
+  "title": "S07E08 script is ahead of its bible entry",
+  "detail": "Season 7 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S07E09": {
+  "type": "DRAFT",
+  "title": "S07E09 script is ahead of its bible entry",
+  "detail": "Season 7 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S07E10": {
+  "type": "DRAFT",
+  "title": "S07E10 script is ahead of its bible entry",
+  "detail": "Season 7 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "RV-150": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Who owns what across an estate (Season 7)",
+  "detail": "Each site's building power, UPS installations and electrical changes belong to that site's facilities team and licensed electrician; the corporate network belongs to the network team; credentials, remote access and risk acceptance belong to security; spending and contracts to finance and procurement; each region's room changes to its regional operations lead; accessibility policy to the accessibility lead; interpretation to the interpreters and the events team; evacuation messages to each building's fire alarm system. Maya writes the standard, measures, and asks — she never changes another owner's system on her own authority.",
+  "reviewer": "Enterprise IT governance reviewer; facilities manager"
+ },
+ "RV-151": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Estate figures are illustrative (Season 7)",
+  "detail": "Room counts, conformance percentages, device-days, licence prices, polling rates, time-zone offsets, heartbeat intervals, circuit ratings and UPS runtimes are invented or simplified for teaching. Real estates follow their own inventories, contracts and the manufacturers' data.",
+  "reviewer": "AV/IT estate manager"
+ },
+ "RV-152": {
+  "type": "RIGHTS REVIEW",
+  "title": "Invented company, countries, languages and firms (Season 7)",
+  "detail": "Corvane Group, Harrowmere, Valmera, Tahvara, the Valmeran and Tahvaran languages, Ferrant Systems and every product, licence and tool are invented and must not resemble a real firm, country or product.",
+  "reviewer": "Rights reviewer"
+ },
+ "RV-153": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Security at the governance level (Season 7)",
+  "detail": "Shared credentials, unpatched firmware and remote access are shown as ownership and risk problems — who holds the key, who decides, how it is fixed. The story contains no attack technique and no exploit detail; remediation steps are decided and approved by the security team.",
+  "reviewer": "Security reviewer"
+ },
+ "RV-154": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Mains power across regions (Season 7)",
+  "detail": "Voltage, frequency, plugs, transformers and UPS installations are the licensed electrician's. The story never shows adapters, transformers or improvised power as a fix; an overheating unit is made safe by the site's electrician, and anything showing smoke or flame is a fire-alarm matter. Circuit ratings and planning margins are illustrative and differ by country.",
+  "reviewer": "Licensed electrician; facilities safety reviewer"
+ },
+ "RV-155": {
+  "type": "REPRESENTATION REVIEW",
+  "title": "Interpretation and captions (Season 7)",
+  "detail": "Interpreters' working conditions (booths, clean floor feed, relay, breaks) follow their professional standards and are decided with them; captions for people who are deaf or hard of hearing are an access requirement owned by the accessibility lead. The languages shown are invented.",
+  "reviewer": "Conference interpreter; accessibility reviewer"
+ },
+ "DR-S08E01": {
+  "type": "DRAFT",
+  "title": "S08E01 script is ahead of its bible entry",
+  "detail": "Season 8 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S08E02": {
+  "type": "DRAFT",
+  "title": "S08E02 script is ahead of its bible entry",
+  "detail": "Season 8 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S08E03": {
+  "type": "DRAFT",
+  "title": "S08E03 script is ahead of its bible entry",
+  "detail": "Season 8 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S08E04": {
+  "type": "DRAFT",
+  "title": "S08E04 script is ahead of its bible entry",
+  "detail": "Season 8 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S08E05": {
+  "type": "DRAFT",
+  "title": "S08E05 script is ahead of its bible entry",
+  "detail": "Season 8 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S08E06": {
+  "type": "DRAFT",
+  "title": "S08E06 script is ahead of its bible entry",
+  "detail": "Season 8 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S08E07": {
+  "type": "DRAFT",
+  "title": "S08E07 script is ahead of its bible entry",
+  "detail": "Season 8 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S08E08": {
+  "type": "DRAFT",
+  "title": "S08E08 script is ahead of its bible entry",
+  "detail": "Season 8 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S08E09": {
+  "type": "DRAFT",
+  "title": "S08E09 script is ahead of its bible entry",
+  "detail": "Season 8 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S08E10": {
+  "type": "DRAFT",
+  "title": "S08E10 script is ahead of its bible entry",
+  "detail": "Season 8 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "RV-160": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Who owns what on a live build (Season 8)",
+  "detail": "The general contractor owns means, methods, sequence and site safety; each trade owns its own work; the electrical engineer of record signs power and the licensed electrician owns temporary and permanent power; the structural engineer and the rigging contractor own anything overhead; the fire alarm contractor and the fire marshal own life safety and occupancy; the commissioning agent verifies; the owner decides scope, cost and schedule. Maya asks through RFIs and the architect — she never directs a trade, never touches power, and never works at height or on an unfinished catwalk.",
+  "reviewer": "Construction manager; licensed electrician; fire protection engineer"
+ },
+ "RV-161": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Construction figures are illustrative (Season 8)",
+  "detail": "Fiber attenuation and connector allowances, loss budgets, circuit loads, inrush multiples, heat loads, cooling capacities, pulling tensions, punch-list counts and schedules are invented or simplified for teaching. Real projects follow the standards, the manufacturers' data and the engineers of record.",
+  "reviewer": "AV/IT systems designer; commissioning agent"
+ },
+ "RV-162": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Site safety in the pictures (Season 8)",
+  "detail": "Everyone on site wears a hard hat and high-visibility clothing; lifts and scaffolds appear parked or used by the trade that owns them; nobody is shown under a load, on an unfinished catwalk, or working at height as part of Maya's work. Rigging is never described as instructions.",
+  "reviewer": "Site safety reviewer"
+ },
+ "RV-163": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Life-safety interfaces (Season 8)",
+  "detail": "How AV systems respond to a fire alarm (muting, shutting down, handing over to voice evacuation) is set by the fire alarm designer's sequence of operations and accepted by the fire marshal. Nothing in a life-safety interface is ever bypassed, jumpered or ‘temporarily’ disabled to pass a test. Timings shown are illustrative.",
+  "reviewer": "Fire protection engineer; authority having jurisdiction"
+ },
+ "RV-164": {
+  "type": "RIGHTS REVIEW",
+  "title": "Invented building, firms and products (Season 8)",
+  "detail": "The Wyndmere Centre, its contractors, consultants and every product are invented and must not resemble a real building, firm or product.",
+  "reviewer": "Rights reviewer"
+ },
+ "DR-S09E01": {
+  "type": "DRAFT",
+  "title": "S09E01 script is ahead of its bible entry",
+  "detail": "Season 9 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S09E02": {
+  "type": "DRAFT",
+  "title": "S09E02 script is ahead of its bible entry",
+  "detail": "Season 9 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S09E03": {
+  "type": "DRAFT",
+  "title": "S09E03 script is ahead of its bible entry",
+  "detail": "Season 9 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S09E04": {
+  "type": "DRAFT",
+  "title": "S09E04 script is ahead of its bible entry",
+  "detail": "Season 9 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S09E05": {
+  "type": "DRAFT",
+  "title": "S09E05 script is ahead of its bible entry",
+  "detail": "Season 9 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S09E06": {
+  "type": "DRAFT",
+  "title": "S09E06 script is ahead of its bible entry",
+  "detail": "Season 9 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S09E07": {
+  "type": "DRAFT",
+  "title": "S09E07 script is ahead of its bible entry",
+  "detail": "Season 9 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S09E08": {
+  "type": "DRAFT",
+  "title": "S09E08 script is ahead of its bible entry",
+  "detail": "Season 9 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S09E09": {
+  "type": "DRAFT",
+  "title": "S09E09 script is ahead of its bible entry",
+  "detail": "Season 9 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S09E10": {
+  "type": "DRAFT",
+  "title": "S09E10 script is ahead of its bible entry",
+  "detail": "Season 9 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "RV-170": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Who owns what in a security incident (Season 9)",
+  "detail": "Security (Solveig) owns access, credentials, the investigation and the evidence; the network owner (Raffa) owns the network and every change to it; the duty manager is the incident commander and, with the venue's emergency plan, owns evacuation, crowd instructions and what is said on paging; the fire alarm system and the fire marshal own life safety; communications and legal own public statements; facilities own building power. Maya owns the facts about the AV systems and their design. She never wipes or reboots evidence, never uses someone else's credentials, never counter-messages on a compromised channel and never announces on her own authority.",
+  "reviewer": "Security manager; venue operations manager; fire protection engineer"
+ },
+ "RV-171": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Security at the governance level only (Season 9)",
+  "detail": "Accounts, roles, approvals, logs, time sources and segmentation are shown as governance and design. No attack technique, tool or exploit is described, and none is needed to follow the story. Product behaviours are invented and generic.",
+  "reviewer": "Security architect"
+ },
+ "RV-172": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Season 9 figures are illustrative",
+  "detail": "Account counts, exposure figures, log times and clock errors, bandwidths, retention sizes, response times, risk scores and budgets are invented for teaching.",
+  "reviewer": "Security architect; network engineer"
+ },
+ "RV-173": {
+  "type": "SAFETY BOUNDARY",
+  "title": "False evacuation messages are themselves dangerous (Season 9)",
+  "detail": "A false ‘evacuate’ message in a full venue can injure people on stairs and at exits. Only the incident commander, working to the venue's emergency plan, decides whether people move or stay; staff instructions and the fire alarm's own voice system carry that decision. Nothing in the story shows or recommends counter-messaging on a compromised channel.",
+  "reviewer": "Crowd safety adviser; venue operations manager"
+ },
+ "RV-174": {
+  "type": "RIGHTS REVIEW",
+  "title": "Invented venue, firms and products (Season 9)",
+  "detail": "The Wyndmere, its contractors, vendors and every product and account name are invented and must not resemble a real organisation or product.",
+  "reviewer": "Rights reviewer"
+ },
+ "RV-175": {
+  "type": "REPRESENTATION REVIEW",
+  "title": "Logs contain people (Season 9)",
+  "detail": "Access and system logs name staff and sometimes patrons. What is kept, for how long and who may read it are security's and the privacy owner's decisions; the story shows logs as evidence handled by security, not as material to share.",
+  "reviewer": "Privacy officer"
+ },
+ "DR-S10E01": {
+  "type": "DRAFT",
+  "title": "S10E01 script is ahead of its bible entry",
+  "detail": "Season 10 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S10E02": {
+  "type": "DRAFT",
+  "title": "S10E02 script is ahead of its bible entry",
+  "detail": "Season 10 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S10E03": {
+  "type": "DRAFT",
+  "title": "S10E03 script is ahead of its bible entry",
+  "detail": "Season 10 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S10E04": {
+  "type": "DRAFT",
+  "title": "S10E04 script is ahead of its bible entry",
+  "detail": "Season 10 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S10E05": {
+  "type": "DRAFT",
+  "title": "S10E05 script is ahead of its bible entry",
+  "detail": "Season 10 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S10E06": {
+  "type": "DRAFT",
+  "title": "S10E06 script is ahead of its bible entry",
+  "detail": "Season 10 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S10E07": {
+  "type": "DRAFT",
+  "title": "S10E07 script is ahead of its bible entry",
+  "detail": "Season 10 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S10E08": {
+  "type": "DRAFT",
+  "title": "S10E08 script is ahead of its bible entry",
+  "detail": "Season 10 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S10E09": {
+  "type": "DRAFT",
+  "title": "S10E09 script is ahead of its bible entry",
+  "detail": "Season 10 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S10E10": {
+  "type": "DRAFT",
+  "title": "S10E10 script is ahead of its bible entry",
+  "detail": "Season 10 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "RV-176": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Who owns what in a recording studio (Season 10)",
+  "detail": "The artist owns her performance and decides every use of it beyond what her contract already allows — stems, clips, copies, anything that leaves the building; the label owns the release, its schedule and its delivery specification under its contract with her; the studio's owner (Hollis) owns the studio, its rooms, its policies and its purchases; a licensed electrician owns the circuits and the earthing; a qualified technician repairs mains-powered instruments; the mastering engineer and the artist own the sound of the master. Maya owns the technical facts, the design and the custody of the files she is trusted with. She never copies or sends a performance without the artist's written OK, never defeats a protective earth and never overrules the artist's own call about her voice.",
+  "reviewer": "Studio owner; music-rights adviser; licensed electrician"
+ },
+ "RV-177": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Season 10 figures are illustrative",
+  "detail": "Clock tolerances and slip intervals, room dimensions and modes, microphone distances, buffer sizes and latencies, loudness figures, storage sizes, upload speeds and restore times are invented or simplified for teaching. Real rooms, devices and platforms differ — measure them.",
+  "reviewer": "Recording engineer; acoustician"
+ },
+ "RV-178": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Hum, earth and mains-powered instruments (Season 10)",
+  "detail": "A protective earth is never lifted, bypassed or adapted away to stop hum, and the story never shows how. A ground-lift switch on a DI box disconnects only the audio cable's shield at one end; it never touches the mains earth. An amplifier whose earth has failed is taken out of use and repaired by a qualified technician; the studio's circuits and earthing are a licensed electrician's.",
+  "reviewer": "Licensed electrician; electrical safety adviser"
+ },
+ "RV-179": {
+  "type": "RIGHTS REVIEW",
+  "title": "Consent and recordings — not legal advice (Season 10)",
+  "detail": "Who may copy, send, post or reuse a recording depends on contracts and laws that differ from country to country. The story shows a studio that asks the artist first and keeps a written record of her answer. Nothing here is legal advice.",
+  "reviewer": "Music-rights adviser"
+ },
+ "RV-180": {
+  "type": "REPRESENTATION REVIEW",
+  "title": "The artist's voice and wellbeing (Season 10)",
+  "detail": "Vocal fatigue and exhaustion are shown with care and without medical advice. The artist decides whether she keeps singing; the people around her make stopping easy and never make it cost her.",
+  "reviewer": "Voice teacher or speech-language pathologist; sensitivity reader"
+ },
+ "RV-181": {
+  "type": "RIGHTS REVIEW",
+  "title": "Invented studio, label, people and products (Season 10)",
+  "detail": "Coldframe Sound, the label, every person and every product, platform, plug-in and file format named in Season 10 are invented or generic, and must not resemble a real organisation or product.",
+  "reviewer": "Rights reviewer"
+ },
+ "DR-S11E01": {
+  "type": "DRAFT",
+  "title": "S11E01 script is ahead of its bible entry",
+  "detail": "Season 11 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S11E02": {
+  "type": "DRAFT",
+  "title": "S11E02 script is ahead of its bible entry",
+  "detail": "Season 11 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S11E03": {
+  "type": "DRAFT",
+  "title": "S11E03 script is ahead of its bible entry",
+  "detail": "Season 11 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S11E04": {
+  "type": "DRAFT",
+  "title": "S11E04 script is ahead of its bible entry",
+  "detail": "Season 11 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S11E05": {
+  "type": "DRAFT",
+  "title": "S11E05 script is ahead of its bible entry",
+  "detail": "Season 11 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S11E06": {
+  "type": "DRAFT",
+  "title": "S11E06 script is ahead of its bible entry",
+  "detail": "Season 11 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S11E07": {
+  "type": "DRAFT",
+  "title": "S11E07 script is ahead of its bible entry",
+  "detail": "Season 11 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S11E08": {
+  "type": "DRAFT",
+  "title": "S11E08 script is ahead of its bible entry",
+  "detail": "Season 11 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S11E09": {
+  "type": "DRAFT",
+  "title": "S11E09 script is ahead of its bible entry",
+  "detail": "Season 11 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S11E10": {
+  "type": "DRAFT",
+  "title": "S11E10 script is ahead of its bible entry",
+  "detail": "Season 11 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "RV-182": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Who owns what in an emergency operations center (Season 11)",
+  "detail": "The county's director of emergency management owns the operations center, evacuation decisions and what the county tells the public; the issuing agency owns every warning, which is relayed word for word; the public information officer owns the county's own messages, not the agencies'; facilities own the generator, the transfer switch and the UPS; the county's network owner owns the network and every change to it; the radio systems manager and each agency own the radio system, its licences and its talkgroups; the accessibility lead owns captions and interpretation; security owns access. Maya owns the technical facts and the design. She never paraphrases a warning, never relays an unconfirmed report, never touches the generator or the transfer switch, never lets an unknown device onto the operations network, and never skips a handover because she is the only one who knows.",
+  "reviewer": "Emergency manager; public information officer; radio systems manager"
+ },
+ "RV-183": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Season 11 figures are illustrative",
+  "detail": "Timers, failover and hold-down values, link availabilities, radio frequencies and intermodulation products, relay times, UPS runtimes, battery capacities, loudness and delay figures, shift lengths and budgets are invented or simplified for teaching. Real systems follow their owners' engineering and the regulators' rules.",
+  "reviewer": "Network engineer; radio engineer; emergency manager"
+ },
+ "RV-184": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Warnings, evacuations and rumours (Season 11)",
+  "detail": "Official warnings are relayed verbatim and attributed to the agency that issued them; evacuation orders come only from the emergency manager; unconfirmed reports are never relayed as fact — rumour control confirms with the owner (the dam's operator, the agency) and then says what is and isn't true. Nothing in the story tells a reader how to act in a real emergency; follow your own local officials.",
+  "reviewer": "Emergency manager; public information officer"
+ },
+ "RV-185": {
+  "type": "REPRESENTATION REVIEW",
+  "title": "Fatigue and people in the room (Season 11)",
+  "detail": "Long shifts in an operations room degrade judgment. The story shows fatigue as a risk managed by rosters and written handovers, without medical advice; nobody is praised for working past their limit.",
+  "reviewer": "Occupational-health reviewer; sensitivity reader"
+ },
+ "RV-186": {
+  "type": "RIGHTS REVIEW",
+  "title": "Invented county, agencies, firms and products (Season 11)",
+  "detail": "Brennock County, the Sable River, every agency, utility, carrier, vendor, person and product in Season 11 are invented and must not resemble a real organisation or product. Radio frequencies are illustrative, not assignments.",
+  "reviewer": "Rights reviewer"
+ },
+ "DR-S12E01": {
+  "type": "DRAFT",
+  "title": "S12E01 script is ahead of its bible entry",
+  "detail": "Season 12 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S12E02": {
+  "type": "DRAFT",
+  "title": "S12E02 script is ahead of its bible entry",
+  "detail": "Season 12 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S12E03": {
+  "type": "DRAFT",
+  "title": "S12E03 script is ahead of its bible entry",
+  "detail": "Season 12 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S12E04": {
+  "type": "DRAFT",
+  "title": "S12E04 script is ahead of its bible entry",
+  "detail": "Season 12 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S12E05": {
+  "type": "DRAFT",
+  "title": "S12E05 script is ahead of its bible entry",
+  "detail": "Season 12 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S12E06": {
+  "type": "DRAFT",
+  "title": "S12E06 script is ahead of its bible entry",
+  "detail": "Season 12 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S12E07": {
+  "type": "DRAFT",
+  "title": "S12E07 script is ahead of its bible entry",
+  "detail": "Season 12 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S12E08": {
+  "type": "DRAFT",
+  "title": "S12E08 script is ahead of its bible entry",
+  "detail": "Season 12 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S12E09": {
+  "type": "DRAFT",
+  "title": "S12E09 script is ahead of its bible entry",
+  "detail": "Season 12 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "DR-S12E10": {
+  "type": "DRAFT",
+  "title": "S12E10 script is ahead of its bible entry",
+  "detail": "Season 12 was scripted for the novel from the owner's series plan (SEASONS.md, S6–S12 production plan); it has no production-bible entry yet. IDs are provisional.",
+  "reviewer": "Author (next bible session)"
+ },
+ "RV-187": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Who owns what in a global estate (Season 12)",
+  "detail": "The CIO owns the room standard, the change board and every acceptance of risk; each regional head owns their region's approved variants; each site's facilities team owns its power, cooling and anything overhead; the network owner owns the WAN and its quality of service; security owns named accounts, the vault and remote access; procurement owns vendor selection and contracts; each technician owns the rooms they support and may refuse an unsafe or unapproved change. Maya owns the architecture, the drafts, the training and the evidence. She never makes herself the only admin, the only contact or the only person who understands a decision.",
+  "reviewer": "CIO; principal architect; HR/people reviewer"
+ },
+ "RV-188": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Season 12 figures are illustrative",
+  "detail": "Room counts, ages, costs, reserves, depreciation, failure rates, rollout stages, detection and restore times, flicker frequencies, vendor scores and budgets are invented or simplified for teaching. Real estates follow their owners' finance, engineering and procurement rules.",
+  "reviewer": "Finance reviewer; AV systems engineer"
+ },
+ "RV-189": {
+  "type": "REPRESENTATION REVIEW",
+  "title": "Juniors, refusals and blame (Season 12)",
+  "detail": "Juniors are shown as capable professionals who can stop unsafe or unapproved work and are backed for it in writing. Reviews are blameless; nobody is shamed for an honest mistake or for asking. Nothing in the story is HR or employment advice.",
+  "reviewer": "Sensitivity reader; HR/people reviewer"
+ },
+ "RV-190": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Accessibility in the standard (Season 12)",
+  "detail": "Captions, assistive listening and accessible controls are shown as requirements of the standard, not extras. The story is not legal advice on accessibility law; real obligations vary by country and are confirmed with the organisation's accessibility lead and counsel.",
+  "reviewer": "Accessibility lead; counsel"
+ },
+ "RV-191": {
+  "type": "RIGHTS REVIEW",
+  "title": "Invented firm, sites, vendors and products (Season 12)",
+  "detail": "Fenwright Group, its offices, regions, vendors, platforms and products, and every person in Season 12 are invented and must not resemble a real organisation or product.",
+  "reviewer": "Rights reviewer"
+ },
+ "FX-01": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Formula cards need a technical check",
+  "detail": "Every math and physics problem shows a formula card (name, equation, symbol legend) and a worked equation. The cards use textbook forms with simplified assumptions (free field, 343 m/s at about 20 °C, planning-level power figures). A subject-matter expert should check each card before release.",
+  "reviewer": "Audio / video / RF / network SMEs; curriculum owner"
+ },
+ "TL-01": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Skill ladder (Beginner → Mastery)",
+  "detail": "Three seasons per support level: Seasons 1–3 Beginner (term, definition, formula, variables, worked example), 4–6 Intermediate (formula and variables), 7–9 Advanced (formula on request) and 10–12 Mastery (reference only; the learner chooses the tool and says why). Beginner means more support, not lower stakes. Teaching scenes and notebook cards were added to every chapter; S1–S3 also carry the Empathia Learn Fieldbook modules (FB-01). Worked examples are illustrative. Readers can change the support level on Mission Control.",
+  "reviewer": "Learning designer; subject-matter reviewer"
+ },
+ "RV-37": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Fix-It Lab simulators are simplified models",
+  "detail": "Signal levels add as powers, EQ uses a textbook peaking filter, comb filtering assumes two arrivals, camera blur/moiré/banding use toy models, and network reachability ignores routing. Thresholds and every figure are illustrative and need a subject-matter review.",
+  "reviewer": "Audio, video, lighting and network SMEs"
+ },
+ "RV-38": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Labs never replace qualified people",
+  "detail": "Power and rigging labs are planning worksheets for the qualified person (electrician, rigger). Nothing in a lab is an instruction to open a panel, move a load or change someone else's network.",
+  "reviewer": "Safety reviewer"
+ },
+ "RV-39": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Physics simulations are toy models",
+  "detail": "The Physics in Motion simulations (interference, inverse square, diffraction, speed of sound, loop gain, Ohm's law, sampling, path loss, color mixing, Fourier series, Sabine, quantization, thin lens, beam reactions, password entropy) use textbook formulas with simplified geometry and illustrative numbers. Science-history notes need a citation check.",
+  "reviewer": "Physics / acoustics SME; curriculum owner"
+ },
+ "UX-01": {
+  "type": "TECHNICAL REVIEW",
+  "title": "UX rules are simplified design principles",
+  "detail": "Each episode's UX rule paraphrases a well-known usability principle (visibility of status, recognition over recall, error prevention, Fitts's law and others) in story terms. Needs a UX/accessibility review.",
+  "reviewer": "UX researcher; accessibility specialist"
+ },
+ "WT-01": {
+  "type": "REPRESENTATION REVIEW",
+  "title": "Decision weight and crew trust are story devices",
+  "detail": "Merit and crew-trust changes after each choice are simple heuristics that make consequences visible. They are not a judgment of real people or a competency score.",
+  "reviewer": "Curriculum owner; narrative lead"
+ },
+ "RP-01": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Role-playing layer needs an author pass",
+  "detail": "Quest cards, dialogue beats, dialogue choices and discoveries were added across Seasons 1–4 at the owner's request (game-style storytelling: humor, awkward moments, darker and mysterious turns). They sit between the existing panels and do not change them. The author should read each episode end to end for voice, continuity and tone.",
+  "reviewer": "Author; story editor"
+ },
+ "MD-01": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Meltdown simulations are illustrative",
+  "detail": "Meltdown boss fights model cascading failure with a toy dependency engine and invented timings (grace periods, dark-time budgets, story-clock rate). They teach order of operations — contain, fail over, verify, and stay inside boundaries — not real system behaviour.",
+  "reviewer": "Broadcast engineer; systems engineer"
+ },
+ "MD-02": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Boundaries inside meltdowns",
+  "detail": "Every meltdown includes actions that cross a safety or authority line (touching power gear, sending people onto towers or flood roads, staying against an evacuation order, airing unverified safety claims). Choosing one ends the mission immediately. Reviewers should confirm each boundary text matches the owner in the series rules.",
+  "reviewer": "Safety reviewer"
+ },
+ "GL-01": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Glossary definitions are teaching definitions",
+  "detail": "Glossary entries are simplified, plain-language definitions written for learners, not standards or legal definitions. Several are SIGNAL conventions (e.g. the evidence states). A subject-matter reviewer should confirm each domain's entries.",
+  "reviewer": "Broadcast / AV / network reviewer"
+ },
+ "PR-01": {
+  "type": "VISUAL REVIEW",
+  "title": "Prologue redrawn from the prototype",
+  "detail": "The prototype's eleven chapters are the novel's opening Prologue. Dialogue, narration and field notes are the owner's words unchanged (brand name updated to Empathia Learn); the drawings are redrawn in the novel's style so speech never covers a diagram. The original file is archived unchanged at the back. An illustrator pass is still pending (VR-01).",
+  "reviewer": "Owner; illustrator"
+ },
+ "FB-01": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Fieldbook curriculum (Seasons 1–3)",
+  "detail": "Seasons 1–3 teach the owner's Technical Fieldbook (renamed the Empathia Learn Fieldbook), one module per chapter, at Beginner support. Starting points (compressor settings, EQ ranges, level targets, lux ranges) are the Fieldbook's rules of thumb, labelled illustrative. Brand and product names in the source were replaced with generic descriptions.",
+  "reviewer": "AV subject-matter reviewer; learning designer"
+ },
+ "FB-02": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Fieldbook formula corrections",
+  "detail": "Corrected while adapting the Fieldbook: (1) a power ratio in decibels is 10·log₁₀(P₂/P₁); 20·log₁₀ applies to voltage or pressure. (2) P = 10^((L−30)/10) converts dBm (not dBu) to watts. (3) The stream loudness range '−12 to −6 LUFS' is louder than the typical platform normalization target (about −14 LUFS integrated, platform-dependent); lessons use −14 and say to check the platform. (4) Perceived brightness of a large screen does not follow the inverse-square law the way a small fixture's illuminance does. (5) Sound covers 1,000 ft in about 0.89 s. (6) The upward-center-fill example was recomputed (6 m extra path → about 17.5 ms → first notch near 29 Hz).",
+  "reviewer": "Acoustics / electrical / broadcast reviewer"
+ },
+ "FB-03": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Fieldbook safety adaptations",
+  "detail": "Where a Fieldbook story involves climbing, panels or overhead work, the novel keeps the lesson but not the act: nobody climbs during a live event, electricians own panels and breakers, riggers and structural engineers own anything overhead. Protective earth is never lifted to cure hum.",
+  "reviewer": "Safety reviewer"
+ },
+ "CH-01": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Challenge modes are teaching models",
+  "detail": "HEAR IT · SEE IT · REACH IT · BUILD IT · RECORD IT use standard physics — a log-domain feed-forward compressor (Giannoulis, Massberg & Reiss 2012), RBJ biquads, Karplus–Strong synthesis, thin-lens depth of field, exposure value, sinusoidal flicker integration, a defocus-disk MTF with an OLPF and Bayer sampling for moiré, WCAG 2 contrast and the Machado (2009) colour-vision simulation, uniform-cone photometry, Sabine/Eyring reverberation, bits-per-pixel and upload headroom, two- and three-transmitter intermodulation, mic sensitivity/EIN gain structure, the 3-to-1 rule and BS.1770 gated loudness. Targets are teaching windows: a professional may choose differently on purpose. Gear is generic; no product is modelled; the humorous wrong answers are jokes with a real explanation.",
+  "reviewer": "Audio engineer; video engineer; lighting designer; acoustician; RF coordinator"
+ },
+ "BOSS-01": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Boss-level alarm light and photosensitivity",
+  "detail": "The boss level tints the edge of the screen yellow, red or green as the owner asked. It pulses at most once per second with soft ramps and limited area, well inside the three-flashes-per-second guidance (WCAG 2.3.1); with reduced motion or ‘calm lights’ it is a steady tint. Strobe looks in the cue challenge are shown as a gentle 2 Hz pulse at low contrast. Review with an accessibility specialist before public release.",
+  "reviewer": "Accessibility specialist"
+ },
+ "BOSS-02": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Commission figures are illustrative (Episode 11, Seasons 8–12)",
+  "detail": "Unit prices, labour hours and rates, tax and contingency percentages, running costs, equipment power, weight, heat, PoE, bandwidth, latency, storage and support-hour figures in the boss commissions are invented for teaching. Real estimates come from quotations, site surveys and the engineers of record; power belongs to the electrician, loads overhead to the structural engineer and rigger, cooling to the mechanical engineer, the network to its owner, access to security.",
+  "reviewer": "Cost estimator; AV systems designer; electrical and mechanical engineers of record"
+ },
+ "DR-S01E11": {
+  "type": "DRAFT",
+  "title": "S01E11 boss level is a new draft",
+  "detail": "Written for the boss-level request ahead of any bible entry. Stakes, calls and stage choices are provisional; every figure inside the challenges is illustrative (CH-01).",
+  "reviewer": ""
+ },
+ "DR-S02E11": {
+  "type": "DRAFT",
+  "title": "S02E11 boss level is a new draft",
+  "detail": "Written for the boss-level request ahead of any bible entry. Stakes, calls and stage choices are provisional; every figure inside the challenges is illustrative (CH-01).",
+  "reviewer": ""
+ },
+ "DR-S03E11": {
+  "type": "DRAFT",
+  "title": "S03E11 boss level is a new draft",
+  "detail": "Written for the boss-level request ahead of any bible entry. Stakes, calls and stage choices are provisional; every figure inside the challenges is illustrative (CH-01).",
+  "reviewer": ""
+ },
+ "DR-S04E11": {
+  "type": "DRAFT",
+  "title": "S04E11 boss level is a new draft",
+  "detail": "Written for the boss-level request ahead of any bible entry. Stakes, calls and stage choices are provisional; every figure inside the challenges is illustrative (CH-01).",
+  "reviewer": ""
+ },
+ "DR-S05E11": {
+  "type": "DRAFT",
+  "title": "S05E11 boss level is a new draft",
+  "detail": "Written for the boss-level request ahead of any bible entry. Stakes, calls and stage choices are provisional; every figure inside the challenges is illustrative (CH-01).",
+  "reviewer": ""
+ },
+ "DR-S06E11": {
+  "type": "DRAFT",
+  "title": "S06E11 boss level is a new draft",
+  "detail": "Written for the boss-level request ahead of any bible entry. Stakes, calls and stage choices are provisional; every figure inside the challenges is illustrative (CH-01).",
+  "reviewer": ""
+ },
+ "DR-S07E11": {
+  "type": "DRAFT",
+  "title": "S07E11 boss level is a new draft",
+  "detail": "Written for the boss-level request ahead of any bible entry. Stakes, calls and stage choices are provisional; every figure inside the challenges is illustrative (CH-01).",
+  "reviewer": ""
+ },
+ "DR-S08E11": {
+  "type": "DRAFT",
+  "title": "S08E11 boss level is a new draft",
+  "detail": "Written for the boss-level request ahead of any bible entry. Stakes, calls and stage choices are provisional; every figure inside the challenges is illustrative (CH-01).",
+  "reviewer": ""
+ },
+ "DR-S09E11": {
+  "type": "DRAFT",
+  "title": "S09E11 boss level is a new draft",
+  "detail": "Written for the boss-level request ahead of any bible entry. Stakes, calls and stage choices are provisional; every figure inside the challenges is illustrative (CH-01).",
+  "reviewer": ""
+ },
+ "DR-S10E11": {
+  "type": "DRAFT",
+  "title": "S10E11 boss level is a new draft",
+  "detail": "Written for the boss-level request ahead of any bible entry. Stakes, calls and stage choices are provisional; every figure inside the challenges is illustrative (CH-01).",
+  "reviewer": ""
+ },
+ "DR-S11E11": {
+  "type": "DRAFT",
+  "title": "S11E11 boss level is a new draft",
+  "detail": "Written for the boss-level request ahead of any bible entry. Stakes, calls and stage choices are provisional; every figure inside the challenges is illustrative (CH-01).",
+  "reviewer": ""
+ },
+ "DR-S12E11": {
+  "type": "DRAFT",
+  "title": "S12E11 boss level is a new draft",
+  "detail": "Written for the boss-level request ahead of any bible entry. Stakes, calls and stage choices are provisional; every figure inside the challenges is illustrative (CH-01).",
+  "reviewer": ""
+ },
+ "RV-40": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Touring RF coordination (S02E01–E02)",
+  "detail": "Sixteen-channel plans, per-city scans, spare frequencies, 'local services' and every frequency, level and margin figure are illustrative. No band is named as legal; which frequencies a touring show may use depends on the country, the city and current rules.",
+  "reviewer": "RF coordinator; regulatory reviewer"
+ },
+ "RV-41": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Overhead work is shown only as plans, drawings and conversation (S02E01–E04)",
+  "detail": "Rigging points, beam ratings, ground-supported truss and load budgets are depicted only as people discussing documents and a video call. Nobody is shown under a load, climbing, or performing a rigging procedure, and no figure is guidance. Stop-work is shown as normal.",
+  "reviewer": "Qualified head rigger; structural engineer"
+ },
+ "RV-42": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Antennas, line of sight and body absorption (S02E02 · CASE-007)",
+  "detail": "The drop-out mechanism (antennas moved behind a steel LED frame, a performer's back turned, signal falling into the noise) is the SIGNAL adaptation. Signal levels, noise floors, dB losses and meter readings are illustrative.",
+  "reviewer": "RF engineer; wireless systems specialist"
+ },
+ "RV-43": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Temporary power interface (S02E01 · lesson P2)",
+  "detail": "Generators, distribution boxes and tie-ins are described only as who-does-what. The tie-in, any panel, generator earthing and anything wet belong to a qualified electrician or the power vendor. Nothing here is a connection procedure.",
+  "reviewer": "Licensed electrician; temporary-power specialist"
+ },
+ "RV-44": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Console update, fixture profiles and default fade times (S02E04 · CASE-012)",
+  "detail": "MS-08's mechanism in SIGNAL form: an update replaced one fixture type's profile and reset the show's default fade time. Pan/tilt ranges, fade times, file timestamps and the rollback arithmetic are illustrative; real consoles differ.",
+  "reviewer": "Lighting control specialist; lighting programmer"
+ },
+ "RV-45": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Stage management authority; fly and scenery cues (S02E04)",
+  "detail": "The stage manager holds and stops the show; fly and scenery cues run only as rehearsed, on the stage manager's call. The booth never improvises a fly move and never stops a show on its own.",
+  "reviewer": "Professional stage manager; theatre safety reviewer"
+ },
+ "RV-46": {
+  "type": "TECHNICAL REVIEW",
+  "title": "In-ear templates, mix-minus and delayed returns (S02E01, S02E05)",
+  "detail": "The IFB/in-ear routing, return delays (about a third of a second), and the delayed-auditory-feedback effect are simplified and illustrative. No level or delay figure is a specification.",
+  "reviewer": "Broadcast audio engineer; monitor engineer"
+ },
+ "RV-47": {
+  "type": "REPRESENTATION REVIEW",
+  "title": "Public blame, apology and workplace conflict (S02E03, S02E05)",
+  "detail": "A lighting director calls a rigger a coward in front of a crew; a festival organizer blames a monitor engineer online; Maya admits a mistake in public. Needs a reader who has worked touring crews so every side is fair and nobody reads as a villain.",
+  "reviewer": "Touring-crew reader; sensitivity reader"
+ },
+ "RV-48": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Show networks on the road (lesson N2, S02E04)",
+  "detail": "Cable-run limits, redundancy and switch behavior are typical teaching values. Real designs depend on the equipment and the venue.",
+  "reviewer": "Network engineer; lighting network specialist"
+ },
+ "RV-49": {
+  "type": "VISUAL REVIEW",
+  "title": "Screens, documents and drawings inside panels are generic",
+  "detail": "Advance packets, venue drawings, video calls, console screens, phone clips and plots are invented and schematic. None may resemble a real product interface, a real venue's drawing or a usable rigging document.",
+  "reviewer": "Art director; rights reviewer"
+ },
+ "RV-50": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Room combining, partition sensors and control states (S02E06 · lesson C1)",
+  "detail": "The house room-combine model (a partition sensor on the airwall track, an interlock, a COMBINED state that plays one room's inputs everywhere and ignores the other room's plates) is the SIGNAL adaptation. Real systems differ by design and programmer; the hotel's system, its sensor and any override belong to the hotel's AV team.",
+  "reviewer": "AV control programmer; hotel AV manager"
+ },
+ "RV-51": {
+  "type": "REPRESENTATION REVIEW",
+  "title": "Hotel banquet and housekeeping staff (S02E06)",
+  "detail": "The comedy cold open involves a banquet captain, a houseperson and a vacuum. The joke must land on the situation, never on hospitality workers: the wall crew did their job correctly, and the story says so.",
+  "reviewer": "Sensitivity reader with hospitality experience"
+ },
+ "RV-52": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Stream tap points, stems and A/V sync (S02E07 · CASE-008 · lesson V8)",
+  "detail": "Whether a pre-fader send also ignores the channel mute and processing differs by console and by setting; the 'input tap' template, the post-fader mistake, the frame latency of the video path and the 40 ms audio delay are illustrative. The case mechanism is SIGNAL's adaptation of the Fieldbook's livestream-recording case (p. 154) — owner to confirm (Q-004).",
+  "reviewer": "Broadcast audio engineer; live-stream engineer"
+ },
+ "RV-53": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Show control, cue lists, change freezes and pre-show checklists (S02E08 · lesson L8)",
+  "detail": "The four-cue opening, the freeze time, the split checklist hour and every checklist line are illustrative production practice, not a standard. Real productions set their own freeze and change rules; the stage manager calls the show.",
+  "reviewer": "Production manager; stage manager; show-control specialist"
+ },
+ "RV-54": {
+  "type": "SAFETY BOUNDARY",
+  "title": "SDI one-cable failure, floor pockets and cable paths (S02E08 · CASE-009)",
+  "detail": "The crushed connector, cable reach figures and the rerouted spare are illustrative (see RV-33). Floor pockets can also hold power outlets: the power side belongs to the venue's electrician and is never opened by the AV crew. Cable across a guest path is shown only as a refused option.",
+  "reviewer": "Video engineer; venue electrician; event safety reviewer"
+ },
+ "RV-55": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Addressing, DHCP and the 1 a.m. workaround (S02E09 · lesson N3)",
+  "detail": "Address ranges, pool sizes, gateway numbers, lease behavior (pools filling 'from the bottom') and the conflict symptoms are illustrative; real DHCP servers differ, and some check for conflicts. The workaround is deliberately flawed (DEBT-003) and must never read as a recommended design. The site network belongs to the site team.",
+  "reviewer": "Network engineer; event IT lead"
+ },
+ "RV-56": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Weather holds, lightning and flash-to-bang (S02E10)",
+  "detail": "Authority to hold or stop an outdoor show belongs to the production's written weather plan and the person it names (Ben, with production and the stage manager) — never FOH. Flash-to-bang distances, the hold trigger, the 30-minute all-clear and every time on the page are illustrative, never guidance. Nobody works on a structure, overhead, or at wet power during weather; shelter follows the event's own safety plan.",
+  "reviewer": "Event safety officer; meteorologist; production manager"
+ },
+ "RV-57": {
+  "type": "REPRESENTATION REVIEW",
+  "title": "Sensitivity: the 2011 stage-collapse history break (S02E10)",
+  "detail": "The history break describes a real event in which people died and many were injured. No imagery; plain, respectful wording; no blame beyond the published findings; dates, numbers and findings need a citation check (see RV-27). Consider whether to consult people connected to the event before release.",
+  "reviewer": "Sensitivity reader; historian; legal reviewer"
+ },
+ "RV-58": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Generators, distribution and wet outdoor power (S02E10)",
+  "detail": "Generators, distros and anything electrical near water belong to the power vendor's qualified technician (Hank) or an electrician. The alarm, its cause and the sign-off are illustrative and shown only as who-does-what, never as a procedure. Re-seating an energized connector in water is shown only as a refused, incident-ending choice.",
+  "reviewer": "Licensed electrician; temporary-power specialist"
+ },
+ "RV-59": {
+  "type": "TECHNICAL REVIEW",
+  "title": "In-ear monitoring, talkback and the local fallback mixer (S02E10 · lesson A10)",
+  "detail": "The in-ear, talkback and fallback-mixer arrangement is illustrative. No listening levels are given; hearing health belongs to the performer and their audiologist (see RV-17). Wireless-channel counts, antenna readings and the crushed-cable loss are illustrative (see RV-35).",
+  "reviewer": "Monitor engineer; RF coordinator; hearing specialist"
+ },
+ "RV-60": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Identity and room accounts (S03E01)",
+  "detail": "Room accounts, password-expiry policy, sign-in sessions, restarts and a 'room-account policy' with managed credentials are simplified and deliberately generic. Real identity systems differ in how sessions, expiry and device sign-in behave; no product or platform behavior is described.",
+  "reviewer": "Identity / security engineer"
+ },
+ "RV-65": {
+  "type": "REPRESENTATION REVIEW",
+  "title": "Workplace pressure, burnout and blame (Season 3)",
+  "detail": "Season 3 depicts a VP's pressure on support staff, an engineer's quiet burnout, a new manager who feels mocked by IT, and a reorganization announcement about people's jobs. Needs a sensitivity read so no role reads as a villain and distress is portrayed with care.",
+  "reviewer": "Sensitivity reader; workplace-wellbeing reviewer"
+ },
+ "RV-66": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Enterprise figures are illustrative (Season 3)",
+  "detail": "Room counts (about 300; 289 in the inventory), ring sizes, attendee numbers, ticket counts, percentages and deal sizes are invented for the story. None is a benchmark.",
+  "reviewer": "Owner"
+ },
+ "RV-67": {
+  "type": "RIGHTS REVIEW",
+  "title": "Generic workplace screens (Season 3)",
+  "detail": "Touch panels, change records, dashboards, ticket queues, sign-in errors and call screens are invented. They must not resemble a real conferencing, identity, ticketing or operating-system interface, wording or logo.",
+  "reviewer": "Rights reviewer; art director"
+ },
+ "RV-68": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Access and authority boundaries in the workplace",
+  "detail": "Security owns access decisions; the identity team owns accounts; the network owner owns ports and segments. The story never shows AV staff resetting, sharing or exempting credentials, or re-patching the network, as a working fix. Decisions that cross these lines are marked as failures.",
+  "reviewer": "Security professional; network owner"
+ },
+ "RV-69": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Early password history anecdotes (S03E01)",
+  "detail": "The 1960s time-sharing password stories (first passwords; a password file shown to every user) are retold from secondary accounts by people who worked there. Dates and details need a citation check.",
+  "reviewer": "Historian of computing"
+ },
+ "RV-61": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Acoustic echo cancellation, applied twice (S03E02)",
+  "detail": "Echo cancellers, references, re-adaptation, double-talk and the effect of two cancellers in series are simplified for teaching. Real behavior depends on the processor, the software and the room. Delays, levels and echo-reduction figures are illustrative.",
+  "reviewer": "Audio DSP / unified-communications engineer"
+ },
+ "RV-62": {
+  "type": "TECHNICAL REVIEW",
+  "title": "USB enumeration, power states and extenders (S03E03)",
+  "detail": "Selective suspend, re-enumeration as a new device instance, extender behavior, port power budgets and USB cable-length figures are simplified teaching values. Real behavior depends on the computer, the operating system's power policy, the extender and the software; no product is described.",
+  "reviewer": "Room-systems / endpoint engineer"
+ },
+ "RV-63": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Network segments and VLANs for AV (S03E04)",
+  "detail": "VLAN assignment, multicast audio staying inside its segment, control traffic crossing a firewall, addresses (10.80 / 10.40) and port names are simplified and invented. Real designs differ; the network owner decides and changes port assignments.",
+  "reviewer": "Network engineer (AV-over-IP)"
+ },
+ "RV-64": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Monitoring, telemetry and inventory (S03E05)",
+  "detail": "Polling by ping, last-known-state caching, staleness thresholds, inventory-driven dashboards and the 'meeting started clean within two minutes' outcome metric are simplified illustrations of monitoring practice. Percentages and counts are invented.",
+  "reviewer": "Observability / data engineer"
+ },
+ "RV-70": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Room control as a state machine; scheduling race (S03E06)",
+  "detail": "The Cedar Room's states, events, macros, the end-of-booking sweep, display warm-up behavior, codec standby refusal and calendar-push timing are invented and simplified for teaching. Real control platforms differ; timings are illustrative.",
+  "reviewer": "Control-systems programmer; unified-communications engineer"
+ },
+ "RV-76": {
+  "type": "REPRESENTATION REVIEW",
+  "title": "Workplace burnout and a colleague thinking of quitting (Sam, S03E06–E08)",
+  "detail": "Sam's exhaustion, self-criticism and a drafted resignation are shown with care and without a quick fix. Needs a reader with workplace-wellbeing experience so it neither trivializes burnout nor turns it into a lesson prop.",
+  "reviewer": "Workplace-wellbeing / sensitivity reader"
+ },
+ "RV-78": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Illustrative fleet figures and timings (S03E06–E10)",
+  "detail": "Room counts, ticket counts, timings, costs, test-ring sizes and every clock value in Season 3's second half are invented for the story. None is a benchmark.",
+  "reviewer": "Owner; AV/IT operations reviewer"
+ },
+ "RV-71": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Usability testing and meeting-room accessibility (S03E07)",
+  "detail": "Test method (five participants, think-aloud, no helping), reach zones, panel heights, feedback timing and listening-system feeds are simplified and illustrative. No legal requirement, standard clause or dimension is stated as fact; obligations vary by place and belong to an accessibility specialist and legal reviewer.",
+  "reviewer": "Accessibility specialist; UX researcher; legal reviewer"
+ },
+ "RV-72": {
+  "type": "REPRESENTATION REVIEW",
+  "title": "Representation in S03E07–E10: disabled colleagues; Ray and Mei in conflict",
+  "detail": "S03E07's wheelchair user and hearing-aid user are colleagues with expertise and humor, not problems to be solved; the seated figure and hearing-aid drawing are placeholder art. S03E09–E10's Ray and Mei disagree for good reasons: neither is a villain, Mei is never framed as cold, Ray never as careless or malicious. Needs disabled readers and a sensitivity read.",
+  "reviewer": "Disabled readers; disability-community consultation; sensitivity reader; security professional"
+ },
+ "RV-73": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Speech intelligibility and microphone coverage (A12, S03E07)",
+  "detail": "Coverage zones, the inverse-square estimate, speech-to-noise examples and listening-system feeds are simplified teaching values, not design targets.",
+  "reviewer": "Acoustician; conferencing audio engineer"
+ },
+ "RV-79": {
+  "type": "TECHNICAL REVIEW",
+  "title": "DEBT-003 inside the room standard (S03E07, S03E10)",
+  "detail": "Section 5.3 copies the Riverbend workaround: fixed addresses at the top of each automatic range, not excluded from automatic assignment. It is depicted as a flaw on purpose (dramatic irony). The network owner should confirm the failure it predicts (duplicate addresses as the automatic pool fills) is described accurately and non-instructionally.",
+  "reviewer": "Network engineer (network owner's reviewer)"
+ },
+ "RV-74": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Incident, problem and change practice (S03E08, M2, CASE-016)",
+  "detail": "Service-management terms (incident, problem, known error, standard/normal/emergency change, change board) follow common practice but are simplified and not tied to any published framework's wording. Legacy-scheduler behavior, addresses and timings are invented.",
+  "reviewer": "IT service-management practitioner; network engineer"
+ },
+ "RV-75": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Security content is generic and non-instructional (S03E09, S2)",
+  "detail": "Remote-access models, accounts, second factors, gateways and recordings are described only as ideas. No real tool, platform, operating system or vendor is named or depicted, and nothing is a procedure. Security owns access decisions; the story shows crossing that line as a failure.",
+  "reviewer": "Security architect; security awareness reviewer"
+ },
+ "RV-77": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Room computer content capture, update rings and exception registers (S03E10, MS-02, M3, CASE-015)",
+  "detail": "The overnight update, the 'first input detected' default, the two-input ingest box, ring sizes, the fleet query and the fallback card are invented and simplified. Real conferencing platforms and endpoint-management tools differ; no product behavior is claimed.",
+  "reviewer": "Unified-communications engineer; endpoint-management / change-management reviewer"
+ },
+ "RV-86": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Timing references simplified (S04E01)",
+  "detail": "Satellite-disciplined reference clocks, holdover, black burst, a gateway's lock range and a 20 ppm holdover drift are simplified and illustrative. Real plants use specific timing standards and redundancy designs; a broadcast engineer should check every line.",
+  "reviewer": "Broadcast / timing engineer"
+ },
+ "RV-87": {
+  "type": "TECHNICAL REVIEW",
+  "title": "A/V sync figures simplified (S04E02)",
+  "detail": "The 167 ms stream video latency, the acceptability window (sound no more than ~15 ms early, ~45 ms late) and the flash-and-beep method are simplified planning figures. Real tolerances come from broadcast recommendations and differ by service.",
+  "reviewer": "Broadcast engineer"
+ },
+ "RV-88": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Loudness targets and meters simplified (S04E03)",
+  "detail": "The −24 LUFS target, ±2 LU tolerance, segment readings and the 'perceived loudness doubles per 10 LU' rule of thumb are illustrative. Real targets differ by country, regulator and service.",
+  "reviewer": "Broadcast audio engineer; regulatory reviewer"
+ },
+ "RV-89": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Caption transport simplified (S04E04)",
+  "detail": "Caption data riding in a video signal's ancillary space, a transcoder profile that discards it, caption-present monitoring and data-rate figures are simplified. Real caption standards and regulations differ by country; a broadcast engineer and a captioning professional should review.",
+  "reviewer": "Broadcast engineer; professional captioner"
+ },
+ "RV-90": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Microwave link figures simplified (S04E05)",
+  "detail": "Rain fade (γ = k·R^α), fade margins, Fresnel clearance, the 18 km hop, 7 GHz and the other-carrier IP fallback are simplified and illustrative. Real link design uses regional rain statistics and licensed engineers.",
+  "reviewer": "RF / microwave link engineer"
+ },
+ "RV-91": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Tower and transmitter boundaries (S04E05)",
+  "detail": "Only the licensed transmitter engineer operates the transmitter. Tower work is by a certified tower crew only, never in wind, ice or lightning, and never depicted as a procedure. No character climbs or stands near the tower in the storm.",
+  "reviewer": "Tower-safety professional; broadcast engineer"
+ },
+ "RV-92": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Bonded cellular and capacity simplified (S04E06)",
+  "detail": "Bonded modems, a fixed 12 Mb/s preset, adaptive floors, 5 MHz per link, the crowd SNR and a 50% usable share are illustrative. Real kits and networks behave differently.",
+  "reviewer": "Broadcast contribution / RF engineer"
+ },
+ "RV-93": {
+  "type": "RIGHTS REVIEW",
+  "title": "Invented school sports event (S04E06)",
+  "detail": "The state semifinal, schools and stadium are invented; no real league, team or venue.",
+  "reviewer": "Rights reviewer"
+ },
+ "RV-94": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Addressing and DHCP simplified (S04E07)",
+  "detail": "The /24, the automatic range .10–.250, the reserved block and the conflict behaviour are simplified and invented. Real address management differs; the network owner decides.",
+  "reviewer": "Network engineer"
+ },
+ "RV-95": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Security incident kept generic (S04E08)",
+  "detail": "The phishing email, account lockout, resets and segmentation are described without techniques. Security (Quinn) owns every access decision; the story never shows AV staff unlocking, resetting or sharing credentials. A security professional should review.",
+  "reviewer": "Security professional"
+ },
+ "RV-96": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Failover drill and timecode simplified (S04E09)",
+  "detail": "The backup MCR, its reference and timecode generator, the two-frame overnight drift, rollback criteria and caption setup are simplified and illustrative. Real failover plans are specific to each plant.",
+  "reviewer": "Broadcast engineer"
+ },
+ "RV-97": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Emergency information boundaries (S04E10)",
+  "detail": "Forecasts and alerts belong to the agencies that issue them and are relayed word for word; evacuation orders belong to the county emergency manager; field pull-backs belong to the news director's field safety plan; the generator and transfer switch belong to the power vendor and the facilities electrician. Unverified reports are routed to officials, never aired. Nobody enters flood water on the page.",
+  "reviewer": "Emergency-communications reviewer; safety reviewer"
+ },
+ "RV-98": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Flood timeline and figures illustrative (S04E10)",
+  "detail": "River levels, the 1964 line, crest times, travel speeds, audience counts and shelter numbers are invented for the story.",
+  "reviewer": "Owner"
+ },
+ "RV-125": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Patient privacy in the story (S05E02)",
+  "detail": "Maya never views, joins or records a real consult and never enters a room during one. Testing uses the simulation lab's training manikin and a staff test account. Any recording or monitoring of clinical calls is decided by the hospital's privacy officer. Clinical workflows are simplified.",
+  "reviewer": "Clinical privacy officer; clinician reviewer"
+ },
+ "RV-126": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Hearing-loop figures simplified (S05E03)",
+  "detail": "Field strengths (mA/m), the 400 mA/m reference, the 12 dB metal loss and the supplementary loop are simplified and illustrative. Real loops are designed and commissioned to published standards by qualified installers, with a documented field-strength survey.",
+  "reviewer": "Assistive-listening installer; acoustician"
+ },
+ "RV-127": {
+  "type": "TECHNICAL REVIEW",
+  "title": "PoE figures simplified (S05E04)",
+  "detail": "Switch budgets, per-camera draw by day and night, shedding order and port priority are simplified and illustrative. Real PoE budgets, classes and priority behavior depend on the equipment and are set by the network owner.",
+  "reviewer": "Network engineer"
+ },
+ "RV-128": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Exam integrity and security cameras (S05E04)",
+  "detail": "Whether exam-room cameras record, and in what mode, is campus security's and the exams office's decision, under the university's privacy policy. AV never turns off, re-aims or re-schedules a security camera; the story shows Maya asking Delgado, who decides.",
+  "reviewer": "Campus security lead; privacy officer"
+ },
+ "RV-129": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Echo cancellation simplified (S05E05)",
+  "detail": "Acoustic echo cancellation, its reference signal, delays and the preset/snapshot system are simplified and illustrative; real DSP platforms differ. One-way and round-trip delays are story figures.",
+  "reviewer": "AV DSP engineer"
+ },
+ "RV-130": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Auto-mixer and coverage simplified (S05E06)",
+  "detail": "Ceiling-array lobes, gating thresholds, speech levels and the recording level check are simplified and illustrative; real arrays and auto-mixers behave differently by design.",
+  "reviewer": "AV DSP engineer; acoustician"
+ },
+ "RV-131": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Measuring recordings without listening (S05E06)",
+  "detail": "The new outcome check measures speech level in lecture recordings, with no one listening to content. What is measured, and who may see it, is agreed with the teaching office and faculty under the university's recording policy. Grant consents to Maya hearing his own recordings.",
+  "reviewer": "Privacy officer; faculty representative"
+ },
+ "RV-132": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Emergency alerts belong to the emergency manager (S05E07)",
+  "detail": "Only the campus emergency manager writes, approves and sends alerts; tests happen in her scheduled windows using her verbatim TEST template. AV and IT carry the message and measure the path — they never compose, edit, delay or add to it. Hold times and channel rules are the emergency manager's decisions.",
+  "reviewer": "Campus emergency manager; safety reviewer"
+ },
+ "RV-133": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Alert-path timings illustrative (S05E07)",
+  "detail": "Stage latencies, the polling interval, the hub's hold and the push gateway are simplified and invented for the story; they are not requirements or product behavior.",
+  "reviewer": "Notification systems engineer"
+ },
+ "RV-134": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Clock drift and time sources simplified (S05E08)",
+  "detail": "The hub's 50 ppm holdover drift, the offsets, the slewing behavior and the three-source vote are simplified and illustrative. Real time distribution uses specified protocols, oscillators and monitoring chosen by the network owner.",
+  "reviewer": "Timing / network engineer"
+ },
+ "RV-135": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Lifecycle figures illustrative (S05E09)",
+  "detail": "Failure counts, rates, warranty terms, prices and the budget are invented for the story; they are not product reliability data or a real vendor's terms.",
+  "reviewer": "AV operations manager; finance reviewer"
+ },
+ "RV-136": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Commencement stream figures illustrative (S05E10)",
+  "detail": "Bit rates, uplink capacity, viewer counts, the station's take and the direct contribution path are simplified and invented; they are not product settings or broadcast requirements.",
+  "reviewer": "Streaming engineer; broadcast engineer"
+ },
+ "RV-137": {
+  "type": "REPRESENTATION REVIEW",
+  "title": "Interpreters and captioners as professionals (S05E10)",
+  "detail": "The interpreter and the captioner are shown as skilled professionals with the right to the feeds they need; the story needs review by working interpreters and captioners.",
+  "reviewer": "Interpreter and captioner reviewers"
+ },
+ "RV-145": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Structure and projection mounts (Season 6)",
+  "detail": "Where a projector hangs, what carries it and whether a beam can be penetrated are decided by the structural engineer and the architect. The story shows the AV designer proposing a lens and a position with numbers, never designing a mount or altering structure.",
+  "reviewer": "Structural engineer; architect reviewer"
+ },
+ "RV-146": {
+  "type": "SAFETY BOUNDARY",
+  "title": "Clinical systems in record drawings (Season 6)",
+  "detail": "Nurse call and every clinical system are owned by the hospital's clinical engineering team; the story shows AV staff marking and avoiding clinical ports, never patching, testing or re-labelling them. Patient-safety details are illustrative.",
+  "reviewer": "Clinical engineering reviewer"
+ },
+ "RV-147": {
+  "type": "TECHNICAL REVIEW",
+  "title": "Multicast, IGMP snooping and queriers (Season 6)",
+  "detail": "What a switch does with multicast when snooping is on but no querier is present differs by make and firmware (some flood, some prune after membership times out). Stream rates, port speeds and lighting protocol rates are illustrative; real designs follow the audio and lighting manufacturers' network guides and the venue IT team's standards.",
+  "reviewer": "Network engineer; audio networking specialist"
+ },
+ "RV-156": {
+  "type": "TECHNICAL REVIEW",
+  "title": "UPS runtime and heartbeat figures (Season 7)",
+  "detail": "Runtime = battery energy × efficiency ÷ load is a first estimate; real runtime falls faster at high loads and with battery age, and facilities use the maker's runtime chart and live readings. Heartbeat intervals and timeouts differ by product and network; the figures are illustrative.",
+  "reviewer": "Facilities engineer; monitoring engineer"
+ }
+}

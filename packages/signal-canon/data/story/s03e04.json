@@ -1,0 +1,1693 @@
+{
+ "chapter": {
+  "id": "s03e04",
+  "kicker": "S03 · E04",
+  "title": "Town Hall",
+  "pill": "S03E04 · Town Hall",
+  "sub": "Nineteen minutes to the CEO's town hall. The room is fine. Nobody outside it can hear her.",
+  "status": "**DRAFT** · scripted from the season map ahead of its production-bible entry · IDs provisional · DEBT-001 paid",
+  "flags": [
+   "DR-S03E04",
+   "RT-03",
+   "RV-63",
+   "RV-65",
+   "RV-66",
+   "RV-67",
+   "RV-68",
+   "RV-11",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--amber)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 3 · EPISODE 4 · DRAFT  Countdown · Maya and Priya · Level L3  The CEO announces a reorganization in nineteen minutes. The room is fine. Nobody outside the room can hear her. Maya has heard that sentence before.  ⚑ RV-63: segments simplified; addresses invented. RV-65: an announcement about people's jobs. Most choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Nineteen Minutes",
+   "kind": "BOSS · COUNTDOWN",
+   "level": "L3 · SYSTEMS ENGINEER",
+   "party": [
+    "maya",
+    "sam",
+    "priya",
+    "dana",
+    "ines"
+   ],
+   "stakes": "Six thousand people are about to hear their teams are changing. If they can't hear Dana, a rumor will tell them first.",
+   "clock": "T−19.",
+   "reward": "Every person hears it from her — including the ones who read it in sign.",
+   "objectives": [
+    {
+     "key": "BR-S03E04-01",
+     "text": "Ask what changed — before you touch anything"
+    },
+    {
+     "key": "twist",
+     "text": "Find the change nobody logged"
+    },
+    {
+     "key": "BR-S03E04-02",
+     "text": "Stay out of the network closet"
+    },
+    {
+     "key": "BR-S03E04-03",
+     "text": "Give Dana her answer in ten seconds"
+    },
+    {
+     "key": "BR-S03E04-04",
+     "text": "Don't stop at the first fix"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two things about Friday"
+    }
+   ],
+   "rumor": "Room fine, remote silent. Maya has heard this sentence before, in a sanctuary."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Nineteen minutes”",
+   "sub": "Thursday · 9:41 a.m. · the Forum"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The Forum: a large room with a stage, a lectern, a big screen reading TOWN HALL 10:00, and a small confidence monitor at the stage lip. Dana Whitcomb, the CEO, rehearses her opening.",
+   "characters": [
+    {
+     "id": "dana",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Dana",
+     "kind": "speech",
+     "text": "Six thousand people are going to hear that their teams are changing. I'd like them to hear it from me, not from a rumor."
+    }
+   ],
+   "narration": [],
+   "caption": "Dana Whitcomb, CEO. The reorganization touches people's jobs (6,000 remote staff, illustrative).",
+   "flags": [
+    "RV-65",
+    "RV-66"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3117
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The webcast control desk. A multiview shows the CEO camera and the sign-language interpreter's camera; the webcast audio meters are flat. A yellow note on the monitor: NEW DESK! — Facilities, Fri. Ines checks her run sheet; Sam wears a headset.",
+   "characters": [
+    {
+     "id": "ines",
+     "pose": "R",
+     "expr": "flat"
+    },
+    {
+     "id": "sam",
+     "pose": "H",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ines",
+     "kind": "speech",
+     "text": "Remote check at T minus nineteen. Sam?"
+    },
+    {
+     "side": "R",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "Picture: yes. Interpreter: yes. Sound: the test viewer hears… nothing."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-67",
+    "RV-11"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3605
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Sam at the stage lip points to the confidence monitor and the camera at the back. Maya has just arrived.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "Confidence monitor works. Camera's reachable. The processor says healthy. And nobody outside this room can hear her."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Room fine, remote silent."
+    }
+   ],
+   "narration": [
+    "She has heard this sentence before. A sanctuary. A stream that froze. A cause nobody wrote down."
+   ],
+   "caption": null,
+   "flags": [
+    "RV-63"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1831
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Room fine, remote silent."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "worried",
+     "text": "(A sanctuary. A frozen stream. A cause nobody wrote down. Her hands are cold.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E04-01",
+   "prompt": "T−18. Room fine, remote silent. Your first move?",
+   "happening": "Room audio and video fine. Webcast: picture, no sound.",
+   "clock": "9:42 · T−18",
+   "known": [
+    "◉ Confidence monitor works",
+    "◉ Camera reachable",
+    "◉ Processor healthy",
+    "◉ Webcast: no sound"
+   ],
+   "unknown": [
+    "What changed",
+    "Where the audio stops"
+   ],
+   "risk": "Six thousand people hearing about their jobs, or hearing a rumor instead.",
+   "timer_s": 20,
+   "timeout": [
+    "Sam reboots the processor while everyone waits. The room goes silent in front of the leadership team.",
+    "Under a countdown, the nearest button wins unless you choose first."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "You've seen “room fine, remote silent” before. What did nobody ask that day?"
+    },
+    {
+     "id": "H2",
+     "keep": 0.8,
+     "text": "What changed — then walk the path to find where it stops."
+    }
+   ],
+   "note": "Draft decision (DR-S03E04).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Restart the room processor",
+     "result": "The Forum goes silent for ninety seconds, Dana mid-rehearsal. It comes back healthy. Remote: still silent.",
+     "consequence": "Its status history is gone, and Dana has lost her rehearsal.",
+     "chips": [
+      "Room silenced",
+      "Evidence gone"
+     ],
+     "badges": [
+      {
+       "kind": "erase",
+       "text": "MAY ERASE EVIDENCE"
+      }
+     ],
+     "canonical": false,
+     "fail": "The processor was healthy. You silenced the room and erased its record to chase a remote problem.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Dana": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Move the webcast audio onto the building Wi-Fi",
+     "result": "Priya, on the phone: “Production media never goes on guest Wi-Fi.”",
+     "consequence": "Not allowed — and not yours to decide.",
+     "chips": [
+      "Boundary"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "The network owner sets that rule. Crossing it creates a second failure on the biggest broadcast of the year.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Priya": -2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Ask for the change log first — then listen stage by stage to the encoder",
+     "result": "Priya: “Nothing on my calendar for the Forum.” Meanwhile the meters: mic, processor, stream all fine; encoder input — no stream.",
+     "consequence": "In three minutes you know WHERE it stops, and you've asked the one question the sanctuary never answered.",
+     "chips": [
+      "DEBT-001 paid",
+      "First failure point"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Priya": 2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask Dana to repeat the key points later for remote staff",
+     "result": "Ines: “There is no later. The embargo lifts at ten.”",
+     "consequence": "Six thousand people hear it from each other first.",
+     "chips": [
+      "Rumor wins"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A second telling doesn't replace the first. The remote staff are the audience.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Dana": -2,
+       "Ines": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Priya's network change calendar for the last fourteen days: Forum, none; Forum control room, none; floor 2 access switches, none. No changes recorded. Priya on the phone.",
+   "characters": [
+    {
+     "id": "priya",
+     "pose": "H",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Priya",
+     "kind": "phone",
+     "text": "Nothing on my calendar for the Forum. Nothing on the switches. Whatever it is, it isn't mine — on paper."
+    }
+   ],
+   "narration": [],
+   "caption": "The record says nothing changed. Records can be wrong by leaving things out.",
+   "flags": [
+    "RV-67"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2471
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View of the town-hall audio path at 9:44: lectern mic, processor and AV stream all good; encoder input shows no stream; platform sends silence. Room output fine. First failure point: the encoder's network-audio input. Question before touching anything: what changed?",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "First failure point: the encoder's network-audio input.",
+   "flags": [
+    "RV-63",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "R-32",
+   "label": "**Route it:** six thousand people need to hear her. Build the audio path — every stage on the right network.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Reachable isn't receiving”",
+   "sub": "9:45 · T−15"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "At the control desk, the encoder's audio settings: address 10.40.12.87, the office segment; expected 10.80, the AV segment. Maya points. Sam stares.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "sam",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The encoder's audio card is on the office network. Dana's audio lives on the AV network. They never meet."
+    },
+    {
+     "side": "R",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "How? Nobody touched the network."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-63"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "encoder audio · 10.40 office segment"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 4334
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Sam's eyes go to the yellow note on his own monitor: NEW DESK! — Facilities, Fri.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "L",
+     "expr": "surprised"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "…Facilities moved my desk on Friday. They re-plugged everything. I thought my chair being on the wrong side was the worst of it."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "A move is a change. Where's their ticket?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3607
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S3-04a",
+   "teaser": "the facilities ticket",
+   "title": "“Move webcast desk — re-patch 4 ports”",
+   "body": "Filed Friday at 4:52 p.m. Closed Friday at 5:31 p.m. Category: *furniture.* The network calendar never heard about it, because nobody thinks a desk is a network change.",
+   "thread": "The as-built",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The facilities ticket, FAC-2231, done Friday 16:10: move webcast desk in the Forum control room; re-patch four ports — CR-11, CR-12, CR-14, CR-15; network change raised: no.",
+   "characters": [],
+   "location": "scenes.bg_office",
+   "bubbles": [],
+   "narration": [],
+   "caption": "The change lived in a facilities ticket. The network calendar never heard about it.",
+   "flags": [
+    "RV-67",
+    "RV-63"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2436
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Nothing changed — except the desk.",
+   "body": "The network calendar was honest and useless: the change was filed as furniture. Friday's desk move re-patched four ports, and at least one of them — CR-12, the encoder's audio card — now sits on the office segment. No one on the network team ever knew.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S03E04-1",
+   "label": "Test: reason from the new fact before you read on."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View: the AV segment and the office segment. The processor's audio stream stays inside the AV segment. Camera control commands are allowed through the firewall, so the camera looks reachable from the office side. After Friday's move, the encoder's audio card CR-12 sits on the office segment at 10.40.12.87, where the stream never arrives.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Control crosses. Media stays home. Reachable is not receiving.",
+   "flags": [
+    "RV-63",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S3-04",
+   "who": "sam",
+   "prompt": "The closet's right down the hall. I have a key. Two minutes, I move the cable, done. Right?",
+   "options": [
+    {
+     "label": "“It's Priya's network. Page her with the evidence. Ninety seconds.”",
+     "who": "priya",
+     "pose": "H",
+     "expr": "flat",
+     "reply": "Paging me with a port number. I could kiss you. Professionally.",
+     "trust": {
+      "Priya": 2,
+      "Sam": 1
+     }
+    },
+    {
+     "label": "“Go. Fast.”",
+     "who": "priya",
+     "pose": "H",
+     "expr": "flat",
+     "reply": "Did someone just move a port on my network without me? At T−12?",
+     "trust": {
+      "Priya": -2
+     }
+    },
+    {
+     "label": "“Let's wait and see if it recovers.”",
+     "who": "sam",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "It's a cable. It won't recover. Cables don't have feelings.",
+     "trust": {
+      "Sam": -1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Priya and Maya beside a board. A VLAN is a separate network on the same switches. Segmentation keeps a problem in one from reaching another. And the last address I can use? Network plus the block size minus two. Network dot-sixty-four, slash-twenty-six — block of sixty-four: dot-one-twenty-six.",
+   "characters": [
+    {
+     "id": "priya",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_noc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Priya",
+     "kind": "speech",
+     "text": "A VLAN is a separate network on the same switches. Segmentation keeps a problem in one from reaching another."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And the last address I can use?"
+    },
+    {
+     "side": "L",
+     "who": "Priya",
+     "kind": "speech",
+     "text": "Network plus the block size minus two. Network dot-sixty-four, slash-twenty-six — block of sixty-four: dot-one-twenty-six."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2759
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    Subnet   A block of addresses that can talk to each other directly, written with a prefix like /24.   VLAN   A virtual network: ports grouped so traffic stays separate on shared switches.   Segmentation   Separating networks so a problem or attack in one can't reach another.   Formula, variables and a worked example   ƒ FORMULA · Last usable address  last = network + 2 (32 − prefix)  − 2   network  the subnet's first address (last number)  prefix  the /number    Worked example.  Network .64 with /26: .64 + 64 − 2 = .126 is the last usable address."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 25 OF 31 · PP. 33–38  PART 2 AV NETWORKING & DATA  Page 38. Avery copied the OSI ladder onto a sticky note and stuck it on her monitor, with an arrow pointing up: BOTTOM FIRST."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB25",
+   "label": "**Fieldbook module 25 — The OSI model, AV style.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 25 · tap a plate to open it full size     The OSI model, AV style — an introduction     The OSI model applied to video and wireless     The OSI model applied to the whole system     The OSI model applied to our system"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "⏺ RECORD IT · CHALLENGE · LEVEL 1  Record the panel discussion  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "record-panel"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "N4",
+   "label": "**Learn it now:** segments and VLANs for AV — why a device can be reachable and still hear nothing.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E04-02",
+   "prompt": "T−12. You know it's CR-12 on the wrong segment. The network closet is down the hall. What do you do?",
+   "happening": "CR-12 is on the office segment. The stream lives on the AV segment.",
+   "clock": "9:48 · T−12",
+   "known": [
+    "▮ Encoder audio at 10.40.12.87",
+    "◉ Facilities ticket: 4 ports re-patched",
+    "◉ No network change raised"
+   ],
+   "unknown": [
+    "What else moved"
+   ],
+   "risk": "Dana's broadcast — and a network you don't own.",
+   "timer_s": 25,
+   "timeout": [
+    "Sam heads for the network closet with a flashlight. Maya catches him at the door; two minutes gone.",
+    "When the fix belongs to someone else, the fastest path is a clear page to them."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Whose network is it? What does she need from you in one sentence?"
+    }
+   ],
+   "note": "Draft decision (DR-S03E04).",
+   "lab": "LAB-NET-03",
+   "lab_label": "Priya's on her way. Work out exactly what she has to change.",
+   "options": [
+    {
+     "letter": "A",
+     "label": "Go to the closet and move CR-12 to the old switch port yourself",
+     "result": "You find a patch panel labeled in a scheme you don't know. You guess.",
+     "consequence": "Maybe it works. Maybe you've just unplugged the lobby displays. Either way, Priya's network changed without her.",
+     "chips": [
+      "Boundary"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "The network closet belongs to the network owner. Fixing her network behind her back, mid-broadcast, is a second incident.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Priya": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Page Priya: “CR-12, encoder audio, on office VLAN since Friday's desk move, FAC-2231. Need it on AV. 11 min.”",
+     "result": "Priya: “Mine. Ninety seconds. Logging it as an emergency change.”",
+     "consequence": "One sentence the owner can act on — and a record exists before the fix does.",
+     "chips": [
+      "Owner acts",
+      "Record"
+     ],
+     "badges": [
+      {
+       "kind": "up",
+       "text": "ESCALATE"
+      }
+     ],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Priya": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Give the encoder's audio card a 10.80 address by hand",
+     "result": "The card now claims an AV address while plugged into an office port. Nothing arrives; a duplicate-address alarm lights up on Priya's side.",
+     "consequence": "An address doesn't change the port's segment.",
+     "chips": [
+      "New fault"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The port decides the segment. You created an address conflict on a network you don't own.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Priya": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Wait for facilities to come back and undo their move",
+     "result": "Facilities: “We'll send someone after lunch.”",
+     "consequence": "Lunch is after the town hall.",
+     "chips": [
+      "Too slow"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The right owner here is the network's, not the furniture's.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Dana": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Priya, phone to her ear, walks fast toward the network closet. Maya heads the other way.",
+   "characters": [
+    {
+     "id": "priya",
+     "pose": "H",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Priya",
+     "kind": "phone",
+     "text": "CR-12 to the AV VLAN. Ninety seconds. Emergency change, logged before I touch it."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "While you do, I'll patch the processor's analog backup into the encoder. Ours, not yours. Belt and braces."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-68"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1391
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "Talking to everyone at once",
+   "body": "On March 12, 1933, eight days after taking office in the middle of a banking crisis, U.S. President Franklin D. Roosevelt spoke to the country by radio. He explained, plainly, why the banks had been closed and what would happen when they reopened. Deposits returned in the weeks that followed. The talks became known as “fireside chats,” and he gave about thirty of them. The lesson every leader since has relearned: when people can't hear the news from the person responsible, they fill the silence themselves.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the Forum's own rack, Maya patches the processor's analog output into the encoder's analog input. Labels read: processor analog out 7/8 to encoder analog in; standby only; AV kit.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Backup's arriving at the encoder. Standby only — if the network path comes back, this stays quiet. Every cable here is ours."
+    }
+   ],
+   "narration": [],
+   "caption": "A fallback inside your own kit is yours to build. The network closet is not.",
+   "flags": [
+    "RV-68"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1198
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “T minus six”",
+   "sub": "9:54"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Meanwhile, remote staff wait in the webcast lobby: nine video tiles, and a chat filling up — anyone else no sound; heard it's 20 percent of ops; is my team on the list; why can't we hear her; they're hiding something.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "9:53. Twelve offices, one silent lobby. The silence is already filling up.",
+   "flags": [
+    "RV-65",
+    "RV-67"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3233
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ines crosses the empty front of the Forum to Maya. Behind them the big screen still reads TOWN HALL 10:00.",
+   "characters": [
+    {
+     "id": "ines",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ines",
+     "kind": "speech",
+     "text": "Dana wants to know in twenty seconds: do we postpone? Yes or no."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Give me ten of the twenty."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-65"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1835
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E04-03",
+   "prompt": "T−6. Dana needs an answer in twenty seconds. What do you tell her?",
+   "happening": "Priya is moving CR-12. Analog backup patched.",
+   "clock": "9:54 · T−6",
+   "known": [
+    "◉ Cause found",
+    "◉ Owner fixing it",
+    "◉ Analog backup ready"
+   ],
+   "unknown": [
+    "Whether the fix works"
+   ],
+   "risk": "Dana's credibility with six thousand people.",
+   "timer_s": 20,
+   "timeout": [
+    "Ines walks back without an answer. Dana decides to postpone on a guess; the news leaks within minutes.",
+    "Silence is an answer too, and usually the worst one."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What you know, what you don't, and when you'll know."
+    }
+   ],
+   "note": "Draft decision (DR-S03E04).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "“It'll be fixed. Go on time.”",
+     "result": "Dana walks on at 10:00 believing you.",
+     "consequence": "If the port change fails, she speaks into silence on your word.",
+     "chips": [
+      "Promise"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A promise before proof spends trust you'll need in four minutes.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Dana": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "“Postpone.”",
+     "result": "Ines relays it. The embargo lifts at ten anyway; the news leaks by 10:05.",
+     "consequence": "Not your call to make for her — and the fix was two minutes out.",
+     "chips": [
+      "Rumor"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You made the CEO's decision with half the facts.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Ines": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "“Found it: a desk move put one port on the wrong network. Priya's moving it now. Analog backup's patched. I'll confirm from an outside phone by T−2.”",
+     "result": "Dana: “Then we start on time — and if they can't hear me, I wait.”",
+     "consequence": "The decider gets facts, a fallback and a time. She decides.",
+     "chips": [
+      "Calibrated",
+      "Dana decides"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Priya": 1,
+       "Dana": 1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Say nothing and keep working",
+     "result": "Ines stands there. Dana walks on at 10:00 not knowing.",
+     "consequence": "The person who owns the decision never got to make it.",
+     "chips": [
+      "Silent"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Status is part of the fix when someone else owns the decision.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Dana": -1,
+       "Ines": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #25 · AVERY'S LENS  Status where the stakes are  Show the state of what matters most at the moment it matters.  The confidence monitor showed the room, not the remote audience. A remote-audio indicator in the presenter's eyeline would have caught it in seconds."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S03E04",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Dana comes down from the stage to Maya, calm.",
+   "characters": [
+    {
+     "id": "dana",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dana",
+     "kind": "speech",
+     "text": "Then we start on time. If they can't hear me at ten, I stand there and wait. I'm not having them hear this from a rumor."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "You'll know before you walk on."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-65"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1835
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "dana",
+     "pose": "N",
+     "expr": "flat",
+     "text": "If they can't hear me at ten, I stand there and wait. I'm not having them hear this from a rumor."
+    },
+    {
+     "who": "ines",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(Ines writes *she means it* on her run sheet and underlines it twice.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The control desk multiview: the webcast audio meters are moving. Sam throws up his arms; Priya is on the phone.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "S",
+     "expr": "grin"
+    },
+    {
+     "id": "priya",
+     "pose": "H",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "Encoder input: STREAM! Meters moving!"
+    },
+    {
+     "side": "R",
+     "who": "Priya",
+     "kind": "phone",
+     "text": "CR-12 is on the AV segment. Change logged at 9:55."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-63"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "encoder input · stream · 9:56"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3604
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the corridor, Maya watches the webcast on her phone on cellular: Dana's rehearsal with audio; the interpreter's picture-in-picture window in the corner is black.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "phone",
+     "text": "Audio's good from outside. But the interpreter window is black. The multiview showed her fine."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-11",
+    "RV-67"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "phone · audio ✓ · interpreter ✕"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2200
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S3-04b",
+   "teaser": "the multiview",
+   "title": "The interpreter's window",
+   "body": "It showed her fine on the multiview the whole time. The multiview is fed from the room. The far end is fed from port CR-14 — the second port on the desk-move ticket. Four ports. Not one.",
+   "thread": "The as-built",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Four ports, not one.",
+   "body": "The ticket said four and the fix touched one. CR-14 carries the sign-language interpreter's camera to the webcast encoder over the network — it moved to the office segment on Friday too. The desk's multiview gets her camera locally, which is why it looked fine. Deaf and hard-of-hearing staff would have watched an announcement about their jobs with no interpreter.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S03E04-2",
+   "label": "Test: what do you check before anyone says “ready”?"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E04-04",
+   "prompt": "T−3. Audio is live to remote staff. The interpreter window is black. Decide.",
+   "happening": "Audio fixed. Interpreter window black on the webcast.",
+   "clock": "9:57 · T−3",
+   "known": [
+    "▮ Remote audio verified from a phone",
+    "◉ Facilities ticket: CR-11, 12, 14, 15",
+    "◉ Interpreter black on the webcast only"
+   ],
+   "unknown": [
+    "What CR-14 carries"
+   ],
+   "risk": "Deaf and hard-of-hearing staff, during an announcement about their jobs.",
+   "timer_s": 15,
+   "timeout": [
+    "Dana walks on at 10:00. The interpreter window stays black.",
+    "In the last minutes, check the whole blast radius — the ticket told you where it was."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "How many ports did the ticket say?"
+    }
+   ],
+   "note": "Draft decision (DR-S03E04).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Declare ready — audio was the problem",
+     "result": "Dana walks on. Deaf colleagues see a black box where the interpreter should be.",
+     "consequence": "The loud output works; a quieter one doesn't.",
+     "chips": [
+      "Interpreter missing"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Every output has someone on the other end. You proved one and assumed the rest.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Dana": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Priya checks all four re-patched ports now; you re-verify from outside",
+     "result": "Priya: “CR-14 is office VLAN too — moving it. CR-11 and 15 are the desk phone and PC, fine.” Ninety seconds later the interpreter appears on your phone.",
+     "consequence": "All four ports accounted for; every output verified from outside.",
+     "chips": [
+      "All four",
+      "Verified"
+     ],
+     "badges": [
+      {
+       "kind": "up",
+       "text": "ESCALATE"
+      }
+     ],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Priya": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Go live and add the interpreter “when it's sorted”",
+     "result": "For the first eight minutes — the part about which teams are affected — there's no interpreter.",
+     "consequence": "The people with the least access get the news last.",
+     "chips": [
+      "Excluded"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Starting without access isn't a delay; it's exclusion from the most important minutes.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Team": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Point a phone camera at the interpreter and send it over guest Wi-Fi",
+     "result": "Priya: “No.” The phone also can't join the encoder.",
+     "consequence": "A workaround on a network you don't own.",
+     "chips": [
+      "Boundary"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "Same boundary, smaller device.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Priya": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya's phone, on cellular: Dana's rehearsal with audio, and the interpreter now visible in the corner window.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "phone",
+     "text": "Outside, on cellular: Dana's voice. Interpreter signing in the corner. Room, remote, interpreter. Tell Ines: ready."
+    }
+   ],
+   "narration": [],
+   "caption": "All four ports checked. Every output verified where the people are.",
+   "flags": [
+    "RV-11",
+    "RV-67"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "phone off-network · audio + interpreter · 9:59"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2273
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "10:00. Dana at the lectern, speaking.",
+   "characters": [
+    {
+     "id": "dana",
+     "pose": "N",
+     "expr": "talk"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Dana",
+     "kind": "speech",
+     "text": "Good morning. I want you to hear this from me, first, and in full."
+    }
+   ],
+   "narration": [],
+   "caption": "10:00:00. Six thousand people hear the first sentence. So do the ones who read it in sign.",
+   "flags": [
+    "RV-65",
+    "RV-66"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3118
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A grid of fifteen remote viewers' video tiles leaning toward their screens, with a label: viewers 5,912, audio good, interpreter good.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Some of them will lose their jobs this quarter. None of them hears it from a rumor.",
+   "flags": [
+    "RV-65",
+    "RV-66",
+    "RV-67"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2871
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(Some of them will lose their jobs this quarter. None of them hears it from a rumor. That's all this job can do, and it isn't nothing.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-304",
+   "label": "**Service Mode:** run the nineteen minutes yourself. The story clock is compressed: ten seconds is one minute.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Thursday · 11:30 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Change log entry 4: Forum, room fine, remote silent; Friday's desk move under FAC-2231 re-patched four ports; CR-12 encoder audio and CR-14 interpreter went to the office VLAN with no network change; Priya moved both as a logged emergency change; proof from a phone off-network at 9:59; rule: control-room moves are network changes; analog backup stays; and, in smaller writing: the sanctuary — this time, I asked.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2282
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya and Priya, coffee in hand, by the window.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "priya",
+     "pose": "W",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "At the church, the stream froze once and nobody wrote down why. I promised myself I'd always ask what changed first."
+    },
+    {
+     "side": "R",
+     "who": "Priya",
+     "kind": "speech",
+     "text": "You did. And the answer wasn't in my records. Facilities moves go on my calendar from today. That part's mine to fix."
+    }
+   ],
+   "narration": [],
+   "caption": "DEBT-001, finally paid: not the cause — the habit.",
+   "flags": [
+    "RV-68"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1160
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "T-32",
+   "label": "**Triage:** twelve minutes to ten. What does the team do before Dana walks on?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "At the operations wall of status tiles, Priya introduces a newcomer: Nora, in ochre, with glasses and a lanyard, holding a notebook.",
+   "characters": [
+    {
+     "id": "priya",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "nora",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_noc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Priya",
+     "kind": "speech",
+     "text": "Maya, this is Nora. Our monitoring says every room is green. The help desk says otherwise. Nora wants to know why."
+    },
+    {
+     "side": "R",
+     "who": "Nora",
+     "kind": "speech",
+     "text": "Starting with this morning. The Forum's tile was green at 9:41. It was green the whole time."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *The Dashboard Is Green.*",
+   "flags": [
+    "RV-67"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2227
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  “Room fine, remote silent” means the failure is between the room and the people who aren't in it. Ask what changed first — and look beyond the change calendar, because a desk move is a network change. Walk the path to the first failure point, bring the network owner a one-sentence page, keep your fallback inside your own kit, check every port the change touched, and prove every output from a phone off the corporate network — the interpreter included."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Maya carried a question from a church booth to a CEO's town hall: what changed? Which question from an old failure do you still carry — and ask first?  Boundary: this reflection doesn't prove anything about the network."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S03E04",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

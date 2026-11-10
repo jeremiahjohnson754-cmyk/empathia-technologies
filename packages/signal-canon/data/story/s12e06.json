@@ -1,0 +1,857 @@
+{
+ "chapter": {
+  "id": "s12e06",
+  "kicker": "S12 · E06",
+  "title": "Monitoring That Watches People",
+  "pill": "S12E06 · Monitoring That Watches People",
+  "sub": "Every device in the room was green for nineteen days. Nobody on the far end could hear it.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S12E06",
+   "RV-187",
+   "RV-188",
+   "RV-191",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#E5E7EB"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 12 · EPISODE 6 · DRAFT  Fenwright Group · month seven · Maya, Noor, Galen and Teodor (head of EMEA) · Level L6 · Mastery support (reference only — choose the tool and say why)  Every dot on the estate board has been green all year. Noor and Maya, visiting Lagos to stage firmware, walk into a meeting room and start a call. The far end can't hear a word.  ⚑ RV-187: the monitoring platform and the rota are the team's; the network is its owner's; the change board is the CIO's. RV-188: figures illustrative. Some choices run on a clock — and some depend on your loadout."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Monitoring That Watches People",
+   "kind": "ESTATE · MONITORING",
+   "level": "L6 · MASTERY",
+   "party": [
+    "maya",
+    "noor",
+    "galen"
+   ],
+   "stakes": "A room nobody could hear for nineteen days, on a dashboard that stayed green.",
+   "clock": "Before the next nineteen days.",
+   "reward": "Monitoring that tests what people experience, and alerts that reach someone who can act.",
+   "objectives": [
+    {
+     "key": "BR-S12E06-01",
+     "text": "Decide what to do in Room 3"
+    },
+    {
+     "key": "twist",
+     "text": "Count who noticed first"
+    },
+    {
+     "key": "core",
+     "text": "Find where it started"
+    },
+    {
+     "key": "BR-S12E06-02",
+     "text": "Decide what the monitoring checks"
+    },
+    {
+     "key": "BR-S12E06-03",
+     "text": "Decide who the alerts go to"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "Watch outcomes."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Who told us?”",
+   "sub": "Month seven · Tuesday · Lagos office, Room 3"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Room 3 in the Lagos office: the display shows a call with a red muted-microphone symbol; Noor points at it; Maya, visiting with her, stares.",
+   "characters": [
+    {
+     "id": "noor",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s12kit.bg_room",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Noor",
+     "kind": "speech",
+     "text": "Every device in Lagos has been green for nineteen days. The ceiling mics have been muted the whole time."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Nineteen days. Who told us?"
+    }
+   ],
+   "narration": [],
+   "caption": "Green, and silent.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1716
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": "Lagos office · month seven, Tuesday",
+   "lines": [
+    {
+     "who": "noor",
+     "pose": "N",
+     "expr": "worried",
+     "text": "Every device in Lagos has been green for nineteen days. The ceiling mics have been muted the whole time."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Nineteen days. Who told us?"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Green for nineteen days”",
+   "sub": "Month seven · Tuesday"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S12E06-01",
+   "prompt": "Room 3 has been unheard for nineteen days. What do you and Noor do first?",
+   "happening": "Room 3 unheard for 19 days.",
+   "clock": "Month seven · Tuesday",
+   "known": [
+    "◉ Every device green",
+    "◉ Ceiling mics muted"
+   ],
+   "unknown": [
+    "How many other rooms"
+   ],
+   "risk": "Fifty-nine more rooms with the same blind spot.",
+   "timer_s": 20,
+   "timeout": [
+    "Nobody decides.",
+    "Noor fixes Room 3 and flies home."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What was the monitoring actually checking?"
+    }
+   ],
+   "note": "Draft decision (DR-S12E06).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Recall the normal preset and move on",
+     "result": "Room 3 works. The same preset is in fifty-nine other rooms.",
+     "consequence": "Fixes one room, not the cause.",
+     "chips": [
+      "One room"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Fix Room 3 now, then find out why the mics were muted and why nothing saw it — and count how many incidents last quarter users found before the monitoring did",
+     "result": "A privacy preset that never clears; a panel that shows only the table mics; and sixty-one of eighty-four incidents found by users first.",
+     "consequence": "Fix, then find the cause and the blind spot.",
+     "chips": [
+      "Cause",
+      "Blind spot"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Noor": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Tell Lagos to report problems faster",
+     "result": "They didn't know it was a problem; they'd worked around it.",
+     "consequence": "Blames the people the system failed.",
+     "chips": [
+      "Blame"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Add more device checks to the dashboard",
+     "result": "More green.",
+     "consequence": "More of the wrong question.",
+     "chips": [
+      "Wrong question"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Green for nineteen days.",
+   "body": "For nineteen days the dashboard asked every device in Room 3 one question — are you there? — and every device said yes. Nothing asked whether anyone on the far end could hear the room. People in the room noticed something was off and quietly used a laptop microphone; nobody reported it. Maya pulls last quarter's incident log: of eighty-four incidents, sixty-one — 73% — were first reported by a user. The users were the monitoring.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S12E06-1",
+   "label": "Test: how many meetings — and why the dashboard stayed green."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A 21-day timeline for Lagos Room 3: ‘devices answer’ green every day; ‘room can be heard’ red for 19 days — ceiling mics muted; ‘synthetic test’ — none. Last quarter, 61 of 84 incidents (73%) were first reported by users.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The users were the monitoring.",
+   "flags": [
+    "RV-188"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "incident log"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3785
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S12-06a",
+   "teaser": "the privacy preset",
+   "title": "‘PRIVACY: ceiling mics off · recall: never’",
+   "body": "The DSP preset list for Room 3: ‘PRIVACY — ceiling mics off. Auto-recall of NORMAL: never.’ Somebody made it for one confidential meeting three years ago and every room inherited it.",
+   "thread": "Systems",
+   "who": null
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Which one — and why?",
+   "sub": "Mastery · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Noor and Maya beside a board. Every device in Lagos was green for nineteen days. The ceiling mics were muted the whole time. And sixty-one of last quarter's eighty-four incidents were reported by users first. So our monitoring is the users.",
+   "characters": [
+    {
+     "id": "noor",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s12kit.bg_room",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Noor",
+     "kind": "speech",
+     "text": "Every device in Lagos was green for nineteen days. The ceiling mics were muted the whole time."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And sixty-one of last quarter's eighty-four incidents were reported by users first."
+    },
+    {
+     "side": "L",
+     "who": "Noor",
+     "kind": "speech",
+     "text": "So our monitoring is the users."
+    }
+   ],
+   "narration": [],
+   "caption": "Mastery: nobody hands you the tool. Pick it, and say why.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2152
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t4",
+   "text": "📕 WHEN & WHY · MASTERY  Terms   Outcome monitoring   Synthetic test   The situation  Devices answer pings while the room is silent; 61 of 84 incidents were reported by users. If a synthetic call ran every 30 minutes, how long would a failure wait on average — which relationship tells you?   Which relationship do you reach for?  Average time to detect  Counting combinations  Difference     Reference: the 📖 Glossary has every formula. At mastery, knowing  which  and  why  is the skill."
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "W6",
+   "label": "**Learn it now:** outcome monitoring and synthetic tests.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     The first step to networking, AV style     What the room is telling you     Sound that brings people in"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "⏺ RECORD IT · CHALLENGE · LEVEL 4  Record the panel discussion  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "record-panel"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "F-1206",
+   "label": "**Find it:** nineteen days, from the start.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S12E06-02",
+   "prompt": "What should the monitoring check from now on?",
+   "happening": "Blind spot found.",
+   "clock": "Month seven · Wednesday",
+   "known": [
+    "◉ 73% user-reported",
+    "◉ Privacy preset never clears"
+   ],
+   "unknown": [
+    "What else is silently broken"
+   ],
+   "risk": "The next room nobody can hear.",
+   "timer_s": 25,
+   "timeout": [
+    "Nobody decides.",
+    "The dashboard stays green."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What would have noticed Room 3 on day one?"
+    }
+   ],
+   "note": "Draft decision (DR-S12E06). Option B needs Monitoring at LIMITED or better.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "The same device checks, more often",
+     "result": "Every device answers every minute. Room 3 would still have been green.",
+     "consequence": "Faster answers to the wrong question.",
+     "chips": [
+      "Devices"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "A synthetic test call in every empty room every 30 minutes — join, a tone out through the speakers and back through the mics, the far end, captions present — built on the monitoring platform, with a runbook for a failed test",
+     "result": "Galen builds it in two weeks. On day three it catches a dead amplifier in Oslo fourteen minutes after it fails.",
+     "consequence": "Test the outcome people experience.",
+     "chips": [
+      "Outcome",
+      "Synthetic"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": {
+      "monitoring": 1
+     },
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Galen": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "A QR code on every table: ‘Something wrong? Tell us’",
+     "result": "Reports arrive faster — when people bother.",
+     "consequence": "The best you can do without monitoring tools — the users are still the monitoring, just better connected.",
+     "chips": [
+      "Users"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask each office to test its rooms every Monday",
+     "result": "Some do. Room 3 would have been caught on day six.",
+     "consequence": "Manual, and it depends on memory.",
+     "chips": [
+      "Manual"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "The canary",
+   "body": "For most of the twentieth century, British coal miners carried canaries underground. The birds reacted to carbon monoxide long before the miners could, so a canary in distress was a warning to get out. The last pit canaries were retired in 1986, replaced by electronic detectors. The canary didn't measure the mine's machinery. It measured the one thing that mattered — whether the air could keep someone alive.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #117 · AVERY'S LENS  Monitor what people experience  A device that answers a ping can still be a room nobody can hear. Test the outcome — can a meeting start, can both ends hear, are captions on — and send the alert to a role that can act.  Every device in a room was green for nineteen days while nobody on the far end could hear it."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S12E06",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Every thirty minutes”",
+   "sub": "Month seven · two weeks later"
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Every thirty minutes.",
+   "body": "The tests run every thirty minutes in every room that isn't booked. A failure can start at any moment between two tests, so on average it waits half the interval: t̄ = T ÷ 2 = 15 minutes, and never more than 30. Room 3's nineteen days would have been fourteen minutes. And when a test fails at 2 a.m., it doesn't wake the architect: it goes to the EMEA on-call engineer on the rota, with a runbook for exactly that alert.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S12E06-2",
+   "label": "Test: the average wait — and the new user-reported share."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S12E06-03",
+   "prompt": "The tests work. When one fails, who finds out?",
+   "happening": "Tests live.",
+   "clock": "Month seven · Friday",
+   "known": [
+    "◉ First catch in 14 minutes"
+   ],
+   "unknown": [
+    "Who picks up at 2 a.m."
+   ],
+   "risk": "An alert nobody owns.",
+   "timer_s": 25,
+   "timeout": [
+    "Nobody decides.",
+    "The alerts go to a mailbox nobody reads."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who can actually fix Oslo at 2 a.m. — and will they still be there next year?"
+    }
+   ],
+   "note": "Draft decision (DR-S12E06).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Maya — she designed them",
+     "result": "Maya's phone rings at 2 a.m. for an amplifier in Oslo. She leaves in five months.",
+     "consequence": "The architect as the alarm clock.",
+     "chips": [
+      "Only you"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "The regional on-call role on the rota, with a runbook for each kind of failed test; the user-reported share reviewed weekly by the team lead",
+     "result": "EMEA on-call has the Oslo amplifier swapped before the next booking. The user-reported share falls from 73% to 22% in a month.",
+     "consequence": "Alerts to roles; one number that shows it working.",
+     "chips": [
+      "Roles",
+      "Measured"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "A shared mailbox everyone can read",
+     "result": "Everyone can read it. Nobody does at 2 a.m.",
+     "consequence": "Nobody's alert is everybody's.",
+     "chips": [
+      "Shared"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "The vendor's support desk",
+     "result": "They open a ticket for Monday.",
+     "consequence": "Someone who can't act on your rooms tonight.",
+     "chips": [
+      "Outsourced"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The same timeline with synthetic tests: the room muted on day one is caught fourteen minutes later; the test lane blue every 30 minutes. t̄ = T ÷ 2 = 15 minutes on average; alerts to the EMEA on-call role; the privacy preset now clears at the end of each booking.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Fourteen minutes.",
+   "flags": [
+    "RV-188"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "first catch"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3591
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-1206",
+   "label": "**Service Mode:** run the week yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Month eight"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The architecture office; Galen points at the estate board, now showing each room's last synthetic test; Noor with the weekly report.",
+   "characters": [
+    {
+     "id": "galen",
+     "pose": "P",
+     "expr": "smile"
+    },
+    {
+     "id": "noor",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "s12kit.bg_hq",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Galen",
+     "kind": "speech",
+     "text": "Twenty-two percent user-reported this month. It was seventy-three."
+    },
+    {
+     "side": "R",
+     "who": "Noor",
+     "kind": "speech",
+     "text": "And not one alert went to Maya."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3269
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S12-06",
+   "who": "noor",
+   "prompt": "When the synthetic test fails at 2 a.m., who does it wake up? Not you, I hope.",
+   "options": [
+    {
+     "label": "“The EMEA on-call engineer on the rota — with the runbook for a failed test. My name isn't in it anywhere.”",
+     "who": "noor",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "Good. Some weeks that's me. I'll write the runbook.",
+     "trust": {
+      "Noor": 2
+     }
+    },
+    {
+     "label": "“Me, until it's settled in.”",
+     "who": "noor",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "And after you've gone?",
+     "trust": {
+      "Noor": 0
+     }
+    },
+    {
+     "label": "“Nobody — it'll go in a report.”",
+     "who": "noor",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "So we'll find out in the morning. Like the users do.",
+     "trust": {
+      "Noor": -1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The architecture office; Teodor, head of EMEA, points firmly at the estate board's EMEA column; Maya holds the refresh schedule.",
+   "characters": [
+    {
+     "id": "teodor",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s12kit.bg_hq",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Teodor",
+     "kind": "speech",
+     "text": "EMEA has the most rooms and the most senior people. Our refresh goes first."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The CIO agreed the criteria on Monday — before anyone scored."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *The Loudest Region.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3268
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S12-06b",
+   "teaser": "last quarter's incident log",
+   "title": "‘source: user · user · user · monitor · user’",
+   "body": "The incident log's ‘first reported by’ column, scrolled end to end: user, user, user, monitor, user, user… Sixty-one of eighty-four. The monitoring had been thorough about the wrong question.",
+   "thread": "Method",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A green dashboard can hide a room nobody can hear. Monitor outcomes, not devices: a synthetic test call in every empty room — join, audio both ways, captions — on a schedule you choose knowing a failure waits on average half the interval (t̄ = T ÷ 2). Send each alert to the on-call role that can act, with a runbook, and track one number: the share of incidents users find first. When it falls, the monitoring is working."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · What does your monitoring check — and what do your users actually experience?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S12E06",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

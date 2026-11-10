@@ -1,0 +1,103 @@
+{
+ "chapter": {
+  "id": "pro01",
+  "kicker": "PROLOGUE · CH.01",
+  "title": "Think Like a Systems Engineer",
+  "pill": "Prologue · Ch.01",
+  "sub": "Signal. Power. Control. Network.",
+  "status": null,
+  "flags": [],
+  "accent": "var(--cyan)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The booth before dawn. Ray, the lead engineer, welcomes Maya — a new volunteer on her first Sunday on headset.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "P",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Welcome to the booth. First rule — forget everything you know about “gear.”"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "…Forget it?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3226
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Four colored lines — signal, power, control, network — flow through the booth between Ray and Maya.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "You're not fixing toys. You're reading a system — signal, power, control, network. Pull one thread and the rest feels it."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "So today I learn to think like an engineer."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1280
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Four paths run through every system: signal, power, control, and network. A confident tech always asks which one just broke, before touching a single cable."
+  }
+ ]
+}

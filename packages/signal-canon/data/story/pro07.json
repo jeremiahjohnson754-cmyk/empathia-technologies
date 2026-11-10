@@ -1,0 +1,102 @@
+{
+ "chapter": {
+  "id": "pro07",
+  "kicker": "PROLOGUE · CH.07",
+  "title": "Power, Grounding & the Hum",
+  "pill": "Prologue · Ch.07",
+  "sub": "Two paths to ground make an antenna.",
+  "status": null,
+  "flags": [],
+  "accent": "var(--red)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A mixer and a laptop connected by an audio cable. Each is plugged into a different outlet; a dashed red loop runs between their grounds. A low HMMMMM fills the room.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [
+    "60-cycle hum. The oldest ghost in the rack."
+   ],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1302
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The same diagram, labeled: two paths to ground make a loop. Ray explains from the side.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Two paths to ground is a loop. A loop becomes an antenna. An antenna becomes a hum."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1329
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Fixed: the mixer and the laptop now share one power strip — one ground, one system — with every safety earth left connected.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "grin"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "One ground. One system. Less noise."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "FB-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1288
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Startup and shutdown order matters too — faders down first, amplifiers on last and off first. Protect the speakers, protect the moment."
+  }
+ ]
+}

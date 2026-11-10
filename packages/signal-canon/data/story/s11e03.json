@@ -1,0 +1,925 @@
+{
+ "chapter": {
+  "id": "s11e03",
+  "kicker": "S11 · E03",
+  "title": "Radio Interop",
+  "pill": "S11E03 · Radio Interop",
+  "sub": "Two transmitters make a third, and the flood patch lived in a retired dispatcher's head.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S11E03",
+   "RV-182",
+   "RV-183",
+   "RV-186",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#EF4444"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 11 · EPISODE 3 · DRAFT · CASE-057  The Brennock County EOC radio room · Maya, Fitz (radio systems manager), Quino (dispatch liaison) and Director Oduya · Level L6 · Mastery support (reference only — choose the tool and say why)  Six agencies share one room. In the first crest, two of them couldn’t hear each other — and one receiver on the roof has been slowly going deaf.  ⚑ RV-182: radios, licences and the mast are Fitz’s; talkgroups are the agencies’; nobody climbs. RV-186: frequencies illustrative, not assignments. Some choices run on a clock — and some depend on your loadout."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Radio Interop",
+   "kind": "REGION · RADIO",
+   "level": "L6 · MASTERY",
+   "party": [
+    "maya",
+    "fitz",
+    "quino"
+   ],
+   "stakes": "Fire and public works couldn't hear each other in the first crest, and fire dispatch's receiver is going deaf.",
+   "clock": "Before the next crest, in 36 hours.",
+   "reward": "Agencies that hear each other on a plan — and a receiver that hears everyone.",
+   "objectives": [
+    {
+     "key": "BR-S11E03-01",
+     "text": "Decide how to find the hiss"
+    },
+    {
+     "key": "twist",
+     "text": "Find the frequency nobody sent"
+    },
+    {
+     "key": "core",
+     "text": "Sort whose is whose"
+    },
+    {
+     "key": "BR-S11E03-02",
+     "text": "Decide what happens to the loaner"
+    },
+    {
+     "key": "BR-S11E03-03",
+     "text": "Decide where the patch plan lives"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "Interoperability is a plan, not a patch."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Like a kettle”",
+   "sub": "Sunday · 9:00 a.m. · the radio room"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The radio room: three console positions, the gateway rack and a window onto the antenna mast; Fitz, the radio systems manager, a handheld on his belt, points at fire dispatch's console.",
+   "characters": [
+    {
+     "id": "fitz",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s11kit.bg_radio",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Fitz",
+     "kind": "speech",
+     "text": "Nobody's on fire's frequency, and it's hissing like a kettle."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then something is making it. What's on your mast?"
+    }
+   ],
+   "narration": [],
+   "caption": "Six agencies, one roof.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2968
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "mystery",
+   "where": "the radio room · Sunday 09:00",
+   "lines": [
+    {
+     "who": "fitz",
+     "pose": "N",
+     "expr": "worried",
+     "text": "Nobody's on fire's frequency, and it's hissing like a kettle."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Then something is making it. Let's find out what's on your mast."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “A frequency nobody transmitted”",
+   "sub": "Sunday · 9:10 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S11E03-01",
+   "prompt": "09:10. Fire dispatch's receiver hisses; the patch failed last night. How do you find the hiss?",
+   "happening": "Receiver desensed.",
+   "clock": "Sunday 09:10 · next crest in 36 h",
+   "known": [
+    "◉ Hiss with nobody talking",
+    "◉ Loaner added last month"
+   ],
+   "unknown": [
+    "What's making it"
+   ],
+   "risk": "Fire dispatch missing a crew's weak call in the next crest.",
+   "timer_s": 20,
+   "timeout": [
+    "Nobody decides.",
+    "Fire dispatch keeps listening through the hiss."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What changed on the mast — and what do two transmitters make together?"
+    }
+   ],
+   "note": "Draft decision (DR-S11E03).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Swap fire dispatch's radio for a spare",
+     "result": "The spare hisses too.",
+     "consequence": "Changes the victim, not the cause.",
+     "chips": [
+      "Guess"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "With Fitz, listen to fire's receiver with each transmitter on the mast keyed and unkeyed; then work out what they make together",
+     "result": "Hiss only when the EMS repeater and the loaner are both keyed. 2 × 155.340 − 154.980 = 155.700 — fire's receive.",
+     "consequence": "Evidence on the owner's system, then the arithmetic.",
+     "chips": [
+      "Measured",
+      "Owner"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Fitz": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Turn fire's receiver squelch up until the hiss stops",
+     "result": "The hiss stops — and so do the weak calls from crews in the valley.",
+     "consequence": "Deafens the receiver on purpose.",
+     "chips": [
+      "Deafer"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Go up the mast and look at the antennas",
+     "result": "Fitz: “Nobody climbs.”",
+     "consequence": "Work at height, on someone else's licence.",
+     "chips": [
+      "Never"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "MAST"
+      }
+     ],
+     "canonical": false,
+     "fail": "Nobody climbs; the mast is the radio systems manager's, with certified crews.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Fitz": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "A frequency nobody transmitted.",
+   "body": "The hiss comes only when two transmitters on the mast are keyed at once: the EMS repeater on 155.340 MHz and public works' loaner on 154.980, put up last month for the flood. Where strong signals meet something non-linear, they mix. Twice one, minus the other: 155.700 MHz — exactly where fire dispatch listens. Nobody is transmitting on fire's frequency. The mast is.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S11E03-1",
+   "label": "Test: find the product — and what fire hears."
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Which one — and why?",
+   "sub": "Mastery · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Fitz and Maya beside a board. Since public works' loaner repeater went on the mast, fire's receiver hisses. Nobody's transmitting on fire's frequency. Two transmitters on one mast: 155.340 and 154.980. Fire listens on 155.700. Then something is making 155.700 that nobody's transmitting.",
+   "characters": [
+    {
+     "id": "fitz",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s11kit.bg_radio",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Fitz",
+     "kind": "speech",
+     "text": "Since public works' loaner repeater went on the mast, fire's receiver hisses. Nobody's transmitting on fire's frequency."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Two transmitters on one mast: 155.340 and 154.980. Fire listens on 155.700."
+    },
+    {
+     "side": "L",
+     "who": "Fitz",
+     "kind": "speech",
+     "text": "Then something is making 155.700 that nobody's transmitting."
+    }
+   ],
+   "narration": [],
+   "caption": "Mastery: nobody hands you the tool. Pick it, and say why.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3409
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t4",
+   "text": "📕 WHEN & WHY · MASTERY  Terms   Interoperability   Talkgroup   Radio patch   Desense   The situation  Two transmitters share a mast at 155.340 and 154.980 MHz; a receiver on the same mast listens on 155.700 MHz and has lost sensitivity. Which relationship finds the frequency nobody is transmitting?   Which relationship do you reach for?  Third-order intermodulation  Shannon capacity  Links needed     Reference: the 📖 Glossary has every formula. At mastery, knowing  which  and  why  is the skill."
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "U3",
+   "label": "**Learn it now:** radio interoperability — patches, plans and intermod.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     One signal, two destinations     AV systems and networking foundations     Sound pressure, room modes and the spectrum"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "🧰 BUILD IT · CHALLENGE · LEVEL 4  Build a wireless mic frequency plan  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "build-rf"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "M-1103",
+   "label": "**Sort it:** whose is it?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A spectrum sheet from 154.4 to 156.0 MHz: two tall bars for the EMS repeater at 155.340 and the loaner at 154.980; two red intermodulation products at 154.620 and 155.700 — the second right on a dashed amber line marking fire dispatch's receive frequency.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "A signal nobody sent.",
+   "flags": [
+    "RV-183",
+    "RV-186"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "keyed and unkeyed"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3785
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S11-03a",
+   "teaser": "the mast's equipment list",
+   "title": "‘TEMP: PW loaner, 154.980’",
+   "body": "The mast's equipment list, updated in pencil last month: ‘TEMP — Public Works loaner repeater, 154.980 MHz.’ Nobody had run the intermod check that every other entry on the list had been through.",
+   "thread": "Radio",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S11E03-02",
+   "prompt": "The loaner's intermod lands on fire's receive. What happens to the loaner?",
+   "happening": "Intermod found.",
+   "clock": "Sunday 10:00",
+   "known": [
+    "◉ IM3 on 155.700",
+    "◉ Loaner is temporary"
+   ],
+   "unknown": [
+    "Another site the loaner can use"
+   ],
+   "risk": "Fire deaf in the next crest — or public works without its repeater.",
+   "timer_s": 25,
+   "timeout": [
+    "Nobody decides.",
+    "The hiss stays through the next crest."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Whose transmitter is it — and what else could it share a mast with?"
+    }
+   ],
+   "note": "Draft decision (DR-S11E03).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Switch the loaner off",
+     "result": "The hiss stops — and public works loses the repeater it needs in the flood.",
+     "consequence": "Fixes fire by breaking public works.",
+     "chips": [
+      "Breaks works"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Fitz moves the loaner to the water-tower site under the county's licence — a certified crew fits it in calm weather — and checks the mast for any other product on a receive frequency",
+     "result": "Tuesday, calm and dry, the crew moves it. The hiss is gone; nothing else lands on a receive frequency.",
+     "consequence": "The owner's transmitter, moved by the owner's people, checked.",
+     "chips": [
+      "Owner",
+      "Checked"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Fitz": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Ask public works to use the loaner only when fire isn't busy",
+     "result": "Floods don't take turns.",
+     "consequence": "A rule nobody can keep in an activation.",
+     "chips": [
+      "Unworkable"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Reprogram the loaner to a nearby frequency yourself",
+     "result": "Quino: “That's their radio and Fitz's licence.”",
+     "consequence": "Not yours — and not licensed.",
+     "chips": [
+      "Not yours"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "LICENCE"
+      }
+     ],
+     "canonical": false,
+     "fail": "Frequencies and licences are the radio systems manager's.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Quino": -2,
+       "Fitz": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "Three letters every ship could read",
+   "body": "In 1906 the nations at the International Radiotelegraph Convention in Berlin agreed a single distress call for every ship at sea, whatever its flag or its equipment: three dots, three dashes, three dots — SOS. It came into force in 1908. The radios were never the hard part. Agreeing, in writing, what they would all say was.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “The patch in one person's head”",
+   "sub": "Sunday · 2:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The patch in one person's head.",
+   "body": "Maya reads the gateway's patch against each agency's current talkgroups. It joins fire to WORKS-1 — a talkgroup public works retired in the spring when its radios were reprogrammed. Quino goes quiet. The flood patch lived with Marguerite, a dispatcher who retired in April; the binder on the shelf is four years old. Nobody wrote down what she knew because nobody needed to, until last night.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S11E03-2",
+   "label": "Test: how long was the plan wrong — and who agrees the fix?"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #104 · AVERY'S LENS  Interoperability is a plan, not a patch  Agencies hear each other because a written plan says which channels join, who runs them and how they're tested — and because every transmitter on a shared mast has been checked for what it makes together.  Two repeaters on one mast manufactured a signal on fire dispatch's frequency, and the flood patch lived in the head of a dispatcher who had retired."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S11E03",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The radio room; Quino holds an old binder open at a page of patch settings; Maya reads the gateway screen.",
+   "characters": [
+    {
+     "id": "quino",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s11kit.bg_radio",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Quino",
+     "kind": "speech",
+     "text": "Marguerite could set that patch up in her sleep. We never wrote it down because we had her."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then we write it now — with her name on the first page."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2969
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S11-03",
+   "who": "quino",
+   "prompt": "Marguerite could set that patch up in her sleep. We never wrote it down because we had her.",
+   "options": [
+    {
+     "label": "“Then the plan's the thank-you — write down what she knew, with her name on the first page.”",
+     "who": "quino",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "She'd like that. She'd also correct it in red pen.",
+     "trust": {
+      "Quino": 2
+     }
+    },
+    {
+     "label": "“That's how knowledge gets lost.”",
+     "who": "quino",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "I know how it gets lost. I watched it retire.",
+     "trust": {
+      "Quino": 0
+     }
+    },
+    {
+     "label": "“Can we call her?”",
+     "who": "quino",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "We can. Once. Then we write it down.",
+     "trust": {
+      "Quino": 1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S11E03-03",
+   "prompt": "The flood patch lived in one person's head. Where does it live now?",
+   "happening": "Patch on a retired talkgroup.",
+   "clock": "Sunday 15:00",
+   "known": [
+    "◉ Gateway on WORKS-1",
+    "◉ Binder 4 years old"
+   ],
+   "unknown": [
+    "Which talkgroups each agency wants joined"
+   ],
+   "risk": "The next patch failing the same way.",
+   "timer_s": 25,
+   "timeout": [
+    "Nothing changes.",
+    "The gateway is fixed and the binder stays four years old."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who owns each talkgroup — and who decides which ones join?"
+    }
+   ],
+   "note": "Draft decision (DR-S11E03). Option B needs Documentation at LIMITED or better.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Fix the gateway's patch and move on",
+     "result": "It works — until the next reprogramming.",
+     "consequence": "The same patch, still in nobody's binder.",
+     "chips": [
+      "Unwritten"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "The agencies agree a written flood patch plan — named talkgroups, net control on the county desk, a weekly test — signed by the director and each agency, printed in the radio room and put in the EOC plan",
+     "result": "Signed Monday. First Tuesday test: fire hears public works, one voice runs it.",
+     "consequence": "A plan the owners wrote, signed and test.",
+     "chips": [
+      "Written",
+      "Tested"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": {
+      "docs": 1
+     },
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Fitz updates the old binder himself",
+     "result": "Revision 5, in Fitz's handwriting — and nobody from the agencies has seen it.",
+     "consequence": "The best you can do without the plan process — written, but not agreed.",
+     "chips": [
+      "Unagreed"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask Marguerite to come back on call during floods",
+     "result": "She says yes, once. She's seventy-one.",
+     "consequence": "The same single point of failure, borrowed back.",
+     "chips": [
+      "One person"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A flood patch plan, revision 5: the patch joining fire, public works and EMS through the gateway; net control at the county dispatch desk, named each operational period; started on the director's word; talkgroup names confirmed by each agency quarterly; a test every Tuesday at 10:00; signed by the director, the radio systems manager and each agency.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "A plan, not a patch.",
+   "flags": [
+    "RV-186"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "Tuesday test"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3440
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S11-03b",
+   "teaser": "the old patch binder",
+   "title": "rev 4 · ‘WORKS-1’",
+   "body": "The flood patch binder, revision 4, four years old: ‘Patch FIRE-OPS 2 to WORKS-1.’ Public works retired WORKS-1 in the spring and moved to WORKS-FLOOD. The binder never heard.",
+   "thread": "Radio",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-1103",
+   "label": "**Service Mode:** run the Sunday yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-057 · SIGNAL original  Radio Interop  Two transmitters made a third, and the patch lived in a retired dispatcher's head.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-057"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Tuesday · 10:15 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The radio room after the first weekly test; Fitz with the signed plan; Quino, headset on, grinning.",
+   "characters": [
+    {
+     "id": "fitz",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "quino",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s11kit.bg_radio",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Fitz",
+     "kind": "speech",
+     "text": "Fire heard works, works heard fire, EMS got a word in. One voice ran it."
+    },
+    {
+     "side": "R",
+     "who": "Quino",
+     "kind": "speech",
+     "text": "Marguerite read the plan. Two corrections, in red pen."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2968
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The briefing room, the camera light red; Imogen, the public information officer, holds a printed warning; Maya looks from the paper to the stream monitor.",
+   "characters": [
+    {
+     "id": "imogen",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s11kit.bg_brief",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Imogen",
+     "kind": "speech",
+     "text": "The agency's warning said ‘move to higher ground now’. I posted ‘flooding possible, stay alert’."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "When?"
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Verbatim.*",
+   "flags": [
+    "RV-184"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1194
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Agencies hear each other because of a written plan — which talkgroups join, who is net control, how it’s tested — not because of a patch in someone’s head. Transmitters sharing a mast make new frequencies (f = 2f₁ − f₂); a product on a receive frequency is desense. Radios, licences and the mast are the radio systems manager’s, with certified crews for any climbing; talkgroups are the agencies’."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · What do you rely on that lives in one person’s head?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S11E03",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

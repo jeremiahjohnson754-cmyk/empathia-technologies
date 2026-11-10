@@ -1,0 +1,1617 @@
+{
+ "chapter": {
+  "id": "s01e10",
+  "kicker": "S01 · E10 · FINALE",
+  "title": "Sanctuary Blackout",
+  "pill": "S01E10 · Blackout",
+  "sub": "Mid-service, the power dips for two seconds and the sound system comes back silent.",
+  "status": "**DRAFT** · scripted from the season map ahead of its production-bible entry · IDs provisional",
+  "flags": [
+   "DR-S01E10",
+   "RV-15",
+   "RV-32",
+   "SB-01",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--red)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 1 · EPISODE 10 · DRAFT · SEASON FINALE  Countdown mystery · Maya · Level L2 (Operator)  Mid-service, the power dips for two seconds and the sound system comes back silent. Ray is in row 12 and can't say a word.  ⚑ RV-15 · RV-32: emergency lighting, alarms, exits and the electrical room belong to the building and its responsible people. The power event, UPS behavior and processor behavior are illustrative. Most choices in this episode run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Two Seconds of Dark",
+   "kind": "BOSS · SEASON FINALE",
+   "level": "L2 → L3",
+   "party": [
+    "maya",
+    "ray",
+    "lily",
+    "jo"
+   ],
+   "stakes": "Four hundred homes, one room, every receiver: silent. Ray is in row twelve with no voice.",
+   "clock": "Five minutes to the offering song.",
+   "reward": "The room back — and something Ray can't say out loud.",
+   "objectives": [
+    {
+     "key": "BR-S01E10-01",
+     "text": "Your first move after the dip — fast"
+    },
+    {
+     "key": "core",
+     "text": "Find what came back wrong"
+    },
+    {
+     "key": "BR-S01E10-03",
+     "text": "Get the password Ray can't say"
+    },
+    {
+     "key": "BR-S01E10-04",
+     "text": "Bring the room back in the right order"
+    },
+    {
+     "key": "disc:3",
+     "text": "Look closer: three things the dark revealed"
+    }
+   ],
+   "rumor": "The step-three card says *see R.* R. is sitting in row twelve with laryngitis."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Two seconds”",
+   "sub": "A Sunday in March · 10:41 a.m. · a storm outside"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Pastor Jo mid-sermon at the lectern. Rain streaks the high windows.",
+   "characters": [
+    {
+     "id": "jo",
+     "pose": "M",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Pastor Jo",
+     "kind": "speech",
+     "text": "…and that's the thing about light. You only notice it when—"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-21"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1437
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Darkness for two seconds. Only the emergency lights over the exits come on.",
+   "characters": [],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [
+    "Two seconds of dark."
+   ],
+   "caption": "The building's emergency lights do their job. They are not ours.",
+   "flags": [
+    "RV-15",
+    "RV-32"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1658
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The house lights come back. In the booth, Maya and Lily stare at the console. Its screen is on. The room is silent.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "surprised"
+    },
+    {
+     "id": "lily",
+     "pose": "W",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The console's up. Meters are moving."
+    },
+    {
+     "side": "R",
+     "who": "Lily",
+     "kind": "speech",
+     "text": "Then why can't anyone hear her?"
+    }
+   ],
+   "narration": [],
+   "caption": "Everything came back except the one thing everybody needs.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1522
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "lily",
+     "pose": "S",
+     "expr": "surprised",
+     "text": "Then why can't anyone hear her?"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(She doesn't know. For three seconds, nobody in the building knows. It is the longest three seconds of her life so far.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the pews: Dolores taps her silent receiver. In row 12, Ray half-rises, then remembers he has no voice.",
+   "characters": [
+    {
+     "id": "dolores",
+     "pose": "L",
+     "expr": "worried"
+    },
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Four hundred homes, one room, and every receiver: silent.",
+   "flags": [
+    "RV-21"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 950
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S1-10a",
+   "teaser": "the processor's front panel",
+   "title": "SAFE START · 10:41:07",
+   "body": "A power-on-muted preset. A good idea, built by someone careful, years ago — and written down nowhere. Careful people are sometimes the worst at telling anyone.",
+   "thread": "Ray's notebook · DEBT-002",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E10-01",
+   "prompt": "10:41. The room is silent after a power dip. Your first move — fast.",
+   "happening": "Power dipped for two seconds. Lights back, sound silent.",
+   "clock": "10:41:10 · offering song ~10:46",
+   "known": [
+    "◉ Console up, meters moving",
+    "◉ Room, stream, receivers silent",
+    "◉ Emergency lights came on"
+   ],
+   "unknown": [
+    "What didn't come back, and why"
+   ],
+   "risk": "Everyone in the room, everyone at home, and everyone on a receiver.",
+   "timer_s": 15,
+   "timeout": [
+    "Pastor Jo keeps talking into a dead mic for a full minute. People start checking their phones.",
+    "In the first seconds, the most valuable thing you have is a sentence to the person in charge."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "People first. Who is in charge of the room right now?"
+    }
+   ],
+   "note": "Draft decision (DR-S01E10).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Radio the head usher: “Power dip. Sound down. Working it. Pastor, go unamplified.”",
+     "result": "The usher nods to Pastor Jo, who steps off the platform toward the people.",
+     "consequence": "The room sees a plan. Nobody panics.",
+     "chips": [
+      "People first",
+      "Facts to the person in charge"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Pastor Jo": 2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Run to the electrical room",
+     "result": "The door is locked, and it isn't yours.",
+     "consequence": "Two minutes gone, nothing learned, a boundary tested.",
+     "chips": [
+      "Boundary"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "The electrical room belongs to the building and its electrician. A dip isn't yours to chase in there.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Crew": -2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Power-cycle everything in the booth",
+     "result": "The console — the one thing that rode through on its battery — goes dark for three minutes.",
+     "consequence": "Now the booth is down too.",
+     "chips": [
+      "3 min lost"
+     ],
+     "badges": [
+      {
+       "kind": "erase",
+       "text": "MAY ERASE EVIDENCE"
+      }
+     ],
+     "canonical": false,
+     "fail": "You rebooted the only part that was working.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Crew": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Shout from the booth: “Everyone stay calm!”",
+     "result": "Three hundred heads turn toward the booth. A child starts crying.",
+     "consequence": "Crowd guidance belongs to the building's plan and the person in charge.",
+     "chips": [
+      "Alarming"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Not your role, and it frightened the room more than the silence did.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Crew": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Pastor Jo steps down to the front row and raises her voice, smiling.",
+   "characters": [
+    {
+     "id": "jo",
+     "pose": "W",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Pastor Jo",
+     "kind": "speech",
+     "text": "Well. Let's see if my seminary voice still works."
+    }
+   ],
+   "narration": [],
+   "caption": "Laughter. Five minutes, maybe less, until the offering song.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1437
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "jo",
+     "pose": "M",
+     "expr": "grin",
+     "text": "Well. Let's see if my seminary voice still works."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(It does. It absolutely does. The back row hears every word. The four hundred homes hear nothing.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Read before you touch”",
+   "sub": "10:42"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The console's small UPS log: 10:41:05, dip 2.1 seconds, on battery, OK.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": "The console rode through. The failure is somewhere after it.",
+   "flags": [
+    "RV-32",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "UPS log · dip 2.1 s"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2033
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the equipment room, the loudspeaker processor's front panel: PRESET 00 SAFE START, every output muted.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "It rebooted. And it came back with everything muted — on purpose."
+    }
+   ],
+   "narration": [],
+   "caption": "A power-on safe preset: a good design, never written down.",
+   "flags": [
+    "RV-32"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "processor · 00 SAFE START · muted"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2473
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Lily has followed Maya into the equipment room.",
+   "characters": [
+    {
+     "id": "lily",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Lily",
+     "kind": "speech",
+     "text": "Can't we just turn it off and on again?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "It'll come back exactly the same. It's doing what it was built to do."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 747
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "F-05",
+   "label": "**First failure point:** the console is up and the room is silent. Where does the signal stop?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E10-02",
+   "prompt": "10:43. The processor is in SAFE START, muted. Three minutes to the offering song.",
+   "happening": "Processor in its power-on safe preset.",
+   "clock": "10:43:05",
+   "known": [
+    "▮ UPS log: dip 2.1 s",
+    "◉ Processor: 00 SAFE START, muted",
+    "◉ Amps powered, no input"
+   ],
+   "unknown": [],
+   "risk": "",
+   "timer_s": 20,
+   "timeout": [
+    "Lily, trying to help, power-cycles the processor while you're thinking.",
+    "Under pressure, an idle plan gets replaced by the nearest hunch."
+   ],
+   "hints": [],
+   "note": "Draft decision (DR-S01E10).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Power-cycle the processor",
+     "result": "Ninety seconds of boot. PRESET 00 SAFE START. Muted. Its event log from the dip is gone.",
+     "consequence": "Same place, less time, less evidence.",
+     "chips": [
+      "90 s lost"
+     ],
+     "badges": [
+      {
+       "kind": "erase",
+       "text": "MAY ERASE EVIDENCE"
+      }
+     ],
+     "canonical": false,
+     "fail": "It came back as designed. Rebooting just repeats the design.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Crew": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Pull the recovery card from the rack door",
+     "result": "Maya's card from January: keep amps muted; recall preset 04 SERVICE; password — see R.",
+     "consequence": "A plan written on a calm day, for a day like this.",
+     "chips": [
+      "Procedure"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Crew": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Turn the amplifiers up to full",
+     "result": "Nothing happens — they have no signal.",
+     "consequence": "When the processor unmutes, the room gets a full-level blast.",
+     "chips": [
+      "Blast risk"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You set up a dangerous return: full level into a room of people.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Crew": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Move the amps to another outlet",
+     "result": "Moving unknown loads to unknown circuits, in the dark, with a storm on.",
+     "consequence": "Power was never the remaining problem.",
+     "chips": [
+      "Wrong system"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Power is back. The problem is configuration.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Crew": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The recovery card, step 3 circled: 'Password: see R.'",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Step three still lives in one person's notebook. That person can't talk.",
+   "flags": [
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2658
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S1-10",
+   "who": "ray",
+   "prompt": "(Ray, voiceless, holds up his notebook. His eyes say: *you know which page.*)",
+   "options": [
+    {
+     "label": "Take it gently, read the page, hand it straight back.",
+     "who": "ray",
+     "pose": "N",
+     "expr": "closed",
+     "reply": "(He nods once. Later he'll say it was the proudest he'd been of anyone in years. Not today. Later.)",
+     "trust": {
+      "Ray": 2
+     }
+    },
+    {
+     "label": "Grab it and flip through fast.",
+     "who": "ray",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "(He winces. Some pages aren't about this building.)",
+     "trust": {
+      "Ray": -1
+     }
+    },
+    {
+     "label": "“Can you just mouth it?”",
+     "who": "ray",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "(He mouths it. You get two characters wrong. The clock doesn't care.)",
+     "trust": {}
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "twist",
+   "title": "The password lives in Ray's notebook — and Ray can't talk",
+   "body": "The recovery card works until step three: 'Password: see R.' Ray is in row 12 with laryngitis. Nine years of 'I'll write it down properly later' arrive at 10:44 on a Sunday.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S01E10-R",
+   "label": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “See R.”",
+   "sub": "10:44"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E10-03",
+   "prompt": "10:44. You need the processor password. Ray is in row 12 with no voice.",
+   "happening": "Password needed; the only copy is in Ray's notebook.",
+   "clock": "10:44:00",
+   "known": [],
+   "unknown": [],
+   "risk": "",
+   "timer_s": 20,
+   "timeout": [
+    "You stand at the rack reading “see R.” until the offering song is announced into silence.",
+    "The card told you where to go. Going was the whole decision."
+   ],
+   "hints": [],
+   "note": "Draft decision (DR-S01E10).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Try the passwords everyone guesses",
+     "result": "Three tries. LOCKED FOR 5 MINUTES.",
+     "consequence": "Now even the right password can't get you in until after the offering.",
+     "chips": [
+      "Locked out"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Guessing a credential under pressure turns a delay into a lockout.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Ray": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Go to row 12",
+     "result": "Forty seconds down the side aisle. Ray is already holding his notebook open.",
+     "consequence": "He taps one line. Under it, in older ink: “(tell Maya someday).”",
+     "chips": [
+      "40 s",
+      "Right person"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Ray": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Call the processor maker's support line",
+     "result": "It's Sunday. A recording offers business hours.",
+     "consequence": "Support is for Monday.",
+     "chips": [
+      "Too slow"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Get the battery PA from the youth room for the pastor",
+     "result": "Pastor Jo has a voice in the room again, a thin one.",
+     "consequence": "The stream and the receivers are still silent — but the room isn't. A real mitigation, not a fix.",
+     "chips": [
+      "Room partly back",
+      "Stream + receivers still down"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Row 12. Ray holds out his open notebook. One line: the processor password. Beneath it, in older ink: '(tell Maya someday).'",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "H",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Nine years of “someday.” (DEBT-002)",
+   "flags": [
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1800
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S1-10b",
+   "teaser": "the page after the password",
+   "title": "A page Maya wasn't meant to see",
+   "body": "A list of buildings. CityLight. A theater downtown. A hotel ballroom. *Kestrel Valley — see 2004.* A boardroom, thirty floors up, with no name — just *exception, don't tell them.* She turns back to the password page and doesn't ask.",
+   "thread": "Ray's notebook · DEBT-002",
+   "who": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "physbreak",
+   "cls": "physbreak",
+   "text": "🔭 PHYSICS IN MOTION  Counting the storm  The science under this episode’s problem — live."
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Ray and Maya beside a board. Sound travels about three hundred forty-three metres a second. Count from the flash to the thunder. Fifteen seconds? Three forty-three times fifteen: about five kilometres. That number goes to whoever owns the weather hold. We don't decide it — we make sure they have it.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Sound travels about three hundred forty-three metres a second. Count from the flash to the thunder."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Fifteen seconds?"
+    },
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Three forty-three times fifteen: about five kilometres. That number goes to whoever owns the weather hold. We don't decide it — we make sure they have it."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1803
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    Speed of sound   About 343 m/s in air at 20 °C; faster when warmer.   Weather hold   Stopping outdoor work or a show because of wind or lightning, called by the weather/safety lead.   Incident   An unplanned interruption or degradation of a service, run under a clock until it is restored and proven.   Formula, variables and a worked example   ƒ FORMULA · Flash-to-bang distance  d = c × t   t  seconds from flash to thunder  c  speed of sound, about 343 m/s in air at 20 °C  d  distance to the strike, m (÷ 1,000 for km)    Worked example.  15 s from flash to thunder: 343 × 15 ≈ 5,145 m ≈ 5.1 km."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 11 OF 31 · PP. 40, 172–175, 181  PART 2 AV NETWORKING & DATA · PART 11 OPERATIONS  Page 174 was the most worn page in the binder. Ray's last margin note: “Stay calm is step one because it's the hardest one. — R.”"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB11",
+   "label": "**Fieldbook module 11 — Something broke during the service — now what?.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 11 · tap a plate to open it full size     Trace energy, data and control     Operations create consistency     Roles and handoffs     The troubleshooting decision tree"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lab",
+   "id": "PHY-S01E10",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The processor now reads PRESET 04 SERVICE, its outputs armed. The amplifiers are still muted.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Configuration back. Gain still closed.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "processor · 04 SERVICE · amps muted"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2465
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "On stage, Dante looks up at the booth, hands over the keyboard, waiting to count in the offering song.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "P",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Dante",
+     "kind": "radio",
+     "text": "Booth? We're on in ninety seconds. Do we have anything?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 737
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E10-04",
+   "prompt": "10:45:30. Preset recalled, amps muted. Ninety seconds to the offering song. How do you bring the room back?",
+   "happening": "Preset recalled, amplifiers muted.",
+   "clock": "10:45:30 · offering at ~10:47",
+   "known": [],
+   "unknown": [],
+   "risk": "",
+   "timer_s": 15,
+   "timeout": [
+    "Dante counts in to a silent room. The band plays unamplified; the stream carries only the room mics' faint wash.",
+    "Every second you don't decide is a second the room stays dark."
+   ],
+   "hints": [],
+   "note": "Draft decision (DR-S01E10).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Unmute everything at the downbeat",
+     "result": "A thump through every loudspeaker, then a squeal from the pastor's still-open mic.",
+     "consequence": "It's back — loudly, and wrong.",
+     "chips": [
+      "Thump",
+      "Feedback"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Everything at once means every mistake at once, in front of everyone.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "One zone at a time, pastor's mic first, listening",
+     "result": "Mains up on the pastor's voice: clean. Fill: clean. Stream send: meters. Listening: on.",
+     "consequence": "Forty seconds. No thump. The room hears her mid-sentence.",
+     "chips": [
+      "40 s",
+      "No surprises"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Crew": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Wait for Ray to come up and check it",
+     "result": "Ray can't talk and shouldn't have to.",
+     "consequence": "It's your booth today.",
+     "chips": [
+      "Delay"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Just the stream first — the most people",
+     "result": "Four hundred homes hear the pastor. The room still can't.",
+     "consequence": "The room is the service; the stream is a window into it.",
+     "chips": [
+      "Room still silent"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You reversed the order that matters.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Pastor Jo's voice fills the room again, mid-sentence.",
+   "characters": [
+    {
+     "id": "jo",
+     "pose": "M",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Pastor Jo",
+     "kind": "speech",
+     "text": "—and that's the thing about light. You only notice it when it comes back."
+    }
+   ],
+   "narration": [],
+   "caption": "Five minutes and seven seconds of silence. Then light.",
+   "flags": [
+    "RV-21"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1671
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "warm",
+   "where": null,
+   "lines": [
+    {
+     "who": "jo",
+     "pose": "N",
+     "expr": "smile",
+     "text": "—and that's the thing about light. You only notice it when it comes back."
+    },
+    {
+     "who": "lily",
+     "pose": "N",
+     "expr": "grin",
+     "text": "Did she plan that?"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Nobody plans that. That's why it works."
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "history",
+   "title": "Measuring the speed of sound",
+   "body": "Marin Mersenne timed echoes and cannon fire in the 1630s. Newton calculated a speed in 1687 that came out too slow; in 1816 Pierre-Simon Laplace fixed it by realizing sound compresses air too fast for heat to escape. Warmer air carries sound faster.",
+   "flag": "RV-27",
+   "when": "1636 · 1816",
+   "lab": "PHY-S01E10"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III — “Where the people are”",
+   "sub": "10:46–10:52"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Row 8: Dolores gives the booth a thumbs-up, her receiver to her ear.",
+   "characters": [
+    {
+     "id": "dolores",
+     "pose": "L",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Listening system: verified by the person it's for.",
+   "flags": [
+    "RV-21"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "receivers · row 8"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 874
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Theo in the parking lot in the rain, on cellular: the stream has the offering song.",
+   "characters": [
+    {
+     "id": "theo",
+     "pose": "W",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_parking",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Theo",
+     "kind": "radio",
+     "text": "Stream's got it. Outside, cellular. Clean."
+    }
+   ],
+   "narration": [],
+   "caption": "Stream: verified on an independent path.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "stream · cellular · 10:48"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3405
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Back in the booth, Lily exhales.",
+   "characters": [
+    {
+     "id": "lily",
+     "pose": "N",
+     "expr": "grin"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Lily",
+     "kind": "speech",
+     "text": "Room, stream, receivers. All of them."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And nobody touched anything that wasn't ours."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1281
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "O-04",
+   "label": "**Sequence:** put the AV team's power-event moves in order.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-06",
+   "label": "**Service Mode:** run the two seconds of dark yourself, on the clock.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Aftermath",
+   "sub": "12:20 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Imani on the phone with Tasha; Maya beside her.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "H",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Imani",
+     "kind": "phone",
+     "text": "It happened, Tasha. Five minutes, room and stream. The card worked — except the password."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Tell her the dip was 2.1 seconds. The UPS log has it."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-30"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1281
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #11 · AVERY'S LENS  Design for the worst day  Safe defaults and a clear way back matter most when everything goes wrong.  The processor's SAFE START (muted on power-up) protected ears. Its password in one notebook nearly blocked recovery."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S01E10",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Imani relays Tasha's answer.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "Tasha says: UPS goes on April's agenda, first item. And: “Tell Maya she was right to say she didn't know.”"
+    }
+   ],
+   "narration": [],
+   "caption": "DEBT-011: the cost of doing nothing, measured. Five minutes and seven seconds.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1211
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Change log entry #10: '10:41:05 dip 2.1 s (UPS log). Processor to 00 SAFE START, muted. Recovered by card and Ray's password. Silent 5:07. No thump. Facilities to the utility and Andre. DEBT-011 to April. DEBT-002: open.'",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-32",
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1613
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray, still voiceless, holds out his old label maker to Maya.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "H",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [
+    "Ray can't say it. So he hands it over."
+   ],
+   "caption": "The label maker, handed on.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1609
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S1-10c",
+   "teaser": "the label maker's tape cassette",
+   "title": "Nearly empty",
+   "body": "Ray hands it over with a spare cassette taped to the back. On the spare, he's already printed the first label: *MAYA'S.*",
+   "thread": "The label maker",
+   "who": [
+    "ray",
+    "N",
+    "smile"
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray writes on a card: 'Label everything. Especially what only I know.'",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "W",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": "The notebook, he keeps — for now. The documentation day is on the calendar for June.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1903
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "mystery",
+   "where": "after the last service of the season",
+   "lines": [
+    {
+     "who": "ray",
+     "pose": "N",
+     "expr": "closed",
+     "text": "(The notebook goes back in his pocket. Not yet. June, he writes, and underlines it.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya prints her first label and sticks it on the processor: 'PROCESSOR · POWER-ON = 00 SAFE START.'",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The first label. The building remembers one more thing.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 724
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "M-02",
+   "label": "**Season review:** where did each cause really live?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S01-FINAL",
+   "label": "**Season 1 final check** — twelve questions across the whole season.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "End of Season 1",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Evening. The empty sanctuary. Maya alone in the aisle, the label maker in her hand.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [
+    "Ten episodes. One room. Every output has someone on the other end."
+   ],
+   "caption": "END OF SEASON 1 · One boss level stands between you and Season 2.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1442
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  In a power event: people first, and the building's life-safety systems are the building's. Then read the state without touching it, find the first failure point, follow the written procedure, keep the gain closed until the configuration is right, bring outputs back one at a time, verify where the people are, and log it. Anything only one person knows is an outage waiting for a day that person can't talk."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Ray didn't say a word all morning, and he still taught the whole lesson. Handing over knowledge is its own kind of care.  Boundary: none of this proves anything about the power event."
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Season 1 review",
+   "sub": "Six ratings, one Story Score. Below 65, the story ends here — and you can retry."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "review",
+   "id": "S1",
+   "label": "**Season 1 review.** Everything you did this season — first attempts, not retries — is scored on six ratings. Your Story Score must be **65 or higher** for the story to go on.",
+   "gate": "hard"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S01E10",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

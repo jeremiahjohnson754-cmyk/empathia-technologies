@@ -1,0 +1,860 @@
+{
+ "chapter": {
+  "id": "s06e08",
+  "kicker": "S06 · E08",
+  "title": "RFI",
+  "pill": "S06E08 · RFI",
+  "sub": "A ten-minute answer to the contractor — and three wireless mics under a TV signal.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S06E08",
+   "RV-35",
+   "RV-140",
+   "RV-141",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#818CF8"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 6 · EPISODE 8 · DRAFT  Design studio · Maya, Kit, Anselm and Ruth · Level L4 · Intermediate support  Kit answered the contractor’s question in ten minutes: “no change required.” The contractor’s RF scan says otherwise.  ⚑ RV-35: usable spectrum is the regulator’s and the venue coordinator’s. RV-141: figures illustrative. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "RFI",
+   "kind": "DESIGN STUDIO · RF",
+   "level": "L4 · INTERMEDIATE",
+   "party": [
+    "maya",
+    "kit",
+    "ruth"
+   ],
+   "stakes": "Kit answered the contractor's RFI in ten minutes. The contractor's RF scan says three channels are under a TV signal.",
+   "clock": "Before the revised answer is due.",
+   "reward": "Eight clean channels, a checked answer — and Kit still asking questions.",
+   "objectives": [
+    {
+     "key": "BR-S06E08-01",
+     "text": "Decide what to do with the RFI"
+    },
+    {
+     "key": "twist",
+     "text": "Find the carriers in the channel"
+    },
+    {
+     "key": "core",
+     "text": "Re-coordinate the plan"
+    },
+    {
+     "key": "BR-S06E08-02",
+     "text": "Choose how to fix it"
+    },
+    {
+     "key": "BR-S06E08-03",
+     "text": "Change how RFIs are answered"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two things about RFI 31"
+    }
+   ],
+   "rumor": "The fastest answer in the office was also the most expensive one."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Ten minutes”",
+   "sub": "Thursday · 9:50 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Kit at his desk, phone to ear; Maya beside him looking at an RFI response on his screen.",
+   "characters": [
+    {
+     "id": "kit",
+     "pose": "H",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s6kit.bg_design",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Kit",
+     "kind": "speech",
+     "text": "The contractor's asking about the Playhouse wireless plan. I answered that RFI… didn't I check it?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Let's find out before Ruth does."
+    }
+   ],
+   "narration": [],
+   "caption": "RFI 31: answered in ten minutes, a week ago.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2827
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "awkward",
+   "where": "Linden Row · Thursday 09:50",
+   "lines": [
+    {
+     "who": "kit",
+     "pose": "H",
+     "expr": "worried",
+     "text": "The contractor's asking about the Playhouse wireless plan. I answered that RFI… didn't I check it?"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Let's find out together before Ruth does."
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #59 · AVERY'S LENS  An answer is a design decision  Answering a question from site is designing — it deserves the same checks, the same numbers and a second pair of eyes.  Kit's ten-minute RFI answer would have put three wireless mics inside a TV transmitter's channel."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S06E08",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "RFI 31 on a sheet: the question about a new local transmitter at 546–552 MHz, and Kit's answer in red: ‘No change required’, answered in ten minutes, no calculation, no checker.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "No calculation. No checker.",
+   "flags": [
+    "RV-35"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "RFI 31 · unchecked"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1284
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S6-08",
+   "who": "kit",
+   "prompt": "I moved the three that were in the channel. Nearest gaps. That fixes it, right?",
+   "options": [
+    {
+     "label": "“Let's check what those moves did to every product first.”",
+     "who": "kit",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "…545 is two times 543 minus 541. Oh no.",
+     "trust": {
+      "Kit": 2
+     }
+    },
+    {
+     "label": "“You should have checked the first time.”",
+     "who": "kit",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "I know. I'm trying to fix it.",
+     "trust": {
+      "Kit": -1
+     }
+    },
+    {
+     "label": "“What did you check before you answered?”",
+     "who": "kit",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Honestly? Nothing. It was ten minutes before a meeting.",
+     "trust": {
+      "Kit": 1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Inside the channel”",
+   "sub": "Thursday · 10:00 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S06E08-01",
+   "prompt": "10:00. The contractor's scan disagrees with Kit's answer. What do you do with RFI 31?",
+   "happening": "RFI answer vs contractor's scan.",
+   "clock": "Thursday 10:00",
+   "known": [
+    "◉ Scan: strong carrier 546–552 MHz"
+   ],
+   "unknown": [
+    "Which carriers are hit"
+   ],
+   "risk": "Mics that die on opening night.",
+   "timer_s": 20,
+   "timeout": [
+    "The day goes by.",
+    "The contractor orders frequencies from a wrong answer."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What does the scan actually show against the plan?"
+    }
+   ],
+   "note": "Draft decision (DR-S06E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Stand by it — the RFI is closed",
+     "result": "Opening night: three mics hiss through Act One.",
+     "consequence": "A closed answer isn't a correct one.",
+     "chips": [
+      "Unchecked"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "An answer nobody checked.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Kit": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Reopen it: read the scan, check every carrier against the occupied range, and recompute",
+     "result": "V3, V4 and V5 are inside 546–552 MHz.",
+     "consequence": "Check first, answer second.",
+     "chips": [
+      "Evidence",
+      "Recompute"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Kit": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Tell the contractor to buy radios in another band",
+     "result": "Ruth: “For eight channels? On what evidence?”",
+     "consequence": "A purchase isn't a plan.",
+     "chips": [
+      "No evidence"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Tell Ruth it was Kit's answer",
+     "result": "Ruth: “It's Linden Row's answer.”",
+     "consequence": "The studio owns its answers.",
+     "chips": [
+      "Blame"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Inside the channel.",
+   "body": "The regulator's database: a new local digital TV service, licensed in March, on air last month across 546–552 MHz. The plan was drawn in January. V3 at 547.0, V4 at 548.5 and V5 at 550.0 MHz are all under it — and a TV transmitter is thousands of times stronger than a bodypack.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S06E08-1",
+   "label": "Test: what happens to those three — and what should the answer have started with?"
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Field notes",
+   "sub": "Intermediate · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Kit and Maya beside a board. Third-order products: two f one minus f two, and two f two minus f one. Five-forty-one and five-forty-three make five-thirty-nine and five-forty-five. Five-forty-five is where you moved V3. …I answered the RFI without doing that, didn't I.",
+   "characters": [
+    {
+     "id": "kit",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s6kit.bg_design",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Kit",
+     "kind": "speech",
+     "text": "Third-order products: two f one minus f two, and two f two minus f one."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Five-forty-one and five-forty-three make five-thirty-nine and five-forty-five. Five-forty-five is where you moved V3."
+    },
+    {
+     "side": "L",
+     "who": "Kit",
+     "kind": "speech",
+     "text": "…I answered the RFI without doing that, didn't I."
+    }
+   ],
+   "narration": [],
+   "caption": "Intermediate: the formula and what every letter means. The arithmetic is yours.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3337
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t2",
+   "text": "📗 FIELD NOTES · INTERMEDIATE  Terms   RFI   Intermodulation   Frequency coordination   Formula and variables   ƒ FORMULA · Third-order intermodulation  f IM3  = 2f 1  − f 2  and 2f 2  − f 1    f 1 , f 2   two transmitter frequencies, MHz"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "D6",
+   "label": "**Learn it now:** frequency coordination and RFIs.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     The OSI model applied to video and wireless     EQ and the frequency spectrum     Sound pressure, room modes and the spectrum"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "🧰 BUILD IT · CHALLENGE · LEVEL 2  Build a wireless mic frequency plan  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "build-rf"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Moved into a product”",
+   "sub": "Thursday · 11:30 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Moved into a product.",
+   "body": "Kit's quick fix: move the three to the nearest gaps — V3 to 545.0. But V1 is at 541.0 and V2 at 543.0, and 2 × 543.0 − 541.0 = 545.0. The ‘fixed’ V3 lands exactly on a third-order product of two mics nobody touched.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S06E08-2",
+   "label": "Test: where did the product land — and what's the lesson?"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lab",
+   "id": "LAB-RF-02",
+   "label": "**Fix it:** re-coordinate the Playhouse around the new transmitter.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S06E08-02",
+   "prompt": "11:45. How do you fix the plan?",
+   "happening": "Three carriers must move without making new hits.",
+   "clock": "Thursday 11:45",
+   "known": [
+    "◉ V3, V4, V5 in the channel",
+    "◉ 545.0 is a product"
+   ],
+   "unknown": [
+    "The on-site scan"
+   ],
+   "risk": "A plan that fixes one conflict and makes another.",
+   "timer_s": 25,
+   "timeout": [
+    "Kit's quick moves go to the contractor.",
+    "The duet hisses."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "After any move, what has to be rechecked?"
+    }
+   ],
+   "note": "Draft decision (DR-S06E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Recompute the whole plan — every product against every carrier, with a guard off the new channel — and ask the venue coordinator for an on-site scan",
+     "result": "V3 544.325, V4 555.325, V5 555.95 MHz: clean on paper, and clean on the coordinator's scan.",
+     "consequence": "The plan as a system, proved where it's used.",
+     "chips": [
+      "System",
+      "Scanned"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Keep Kit's three quick moves",
+     "result": "V3 hisses whenever V1 and V2 are both live — every duet.",
+     "consequence": "A move into a product.",
+     "chips": [
+      "Intermod hit"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Moving carriers moves products.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Kit": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Drop three mics",
+     "result": "The Playhouse's musical needs eight.",
+     "consequence": "Deleting a requirement.",
+     "chips": [
+      "Requirement lost"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Let the RF sub pick frequencies on the day",
+     "result": "They pick them with a scanner at 6 p.m. on opening night.",
+     "consequence": "The design left the design.",
+     "chips": [
+      "Deferred"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "The Radio Act of 1912",
+   "body": "After the Titanic sank in April 1912, investigators found wireless traffic had been crowded and uncoordinated: operators talked over each other, and some ships didn't keep a radio watch. That August, the United States passed the Radio Act of 1912, requiring licences and assigning frequencies. Coordination has been part of radio ever since.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The revised RFI answer: ‘YES. V3, V4, V5 re-coordinated; all products rechecked; coordinator scan attached. Checked: KB · MR.’",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "An answer with its arithmetic — and two sets of initials.",
+   "flags": [
+    "RV-35"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "coordinator's scan: clear"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1467
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S6-08a",
+   "teaser": "the regulator's database",
+   "title": "On air since last month",
+   "body": "The regulator's public database lists the new transmitter: licensed in March, on air last month. The RF plan was drawn in January. Spectrum changes; plans have dates.",
+   "thread": "RF",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S06E08-03",
+   "prompt": "Friday. How does the studio answer RFIs from now on?",
+   "happening": "RFI 31 revised.",
+   "clock": "Friday 09:00",
+   "known": [
+    "◉ 39 of 40 RFIs had a checker"
+   ],
+   "unknown": [
+    "The next quick answer"
+   ],
+   "risk": "Another ten-minute answer.",
+   "timer_s": 25,
+   "timeout": [
+    "The studio moves on.",
+    "The next quick answer goes out unchecked."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What was missing on RFI 31 that the other 39 had?"
+    }
+   ],
+   "note": "Draft decision (DR-S06E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Every RFI answer gets its check or calculation attached and a second person's initials, and RF plans are re-checked whenever the spectrum changes",
+     "result": "Kit writes the RFI template himself — with a ‘checked by’ box.",
+     "consequence": "Answers become designs, not favours.",
+     "chips": [
+      "Process",
+      "Second checker"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Kit": 1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Only Anselm answers RFIs",
+     "result": "RFIs queue for a week; site stops.",
+     "consequence": "A bottleneck isn't a process.",
+     "chips": [
+      "Single point"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Kit stops answering RFIs",
+     "result": "Kit stops asking questions too.",
+     "consequence": "Punishment isn't a process.",
+     "chips": [
+      "Blame"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Nothing — RFI 31 is fixed",
+     "result": "RFI 44 is answered in five minutes next month.",
+     "consequence": "The habit survives.",
+     "chips": [
+      "Repeat"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Fix the habit.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-608",
+   "label": "**Service Mode:** revise RFI 31 yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Friday · 4:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Kit showing Maya his new RFI template on screen, with a ‘checked by’ box.",
+   "characters": [
+    {
+     "id": "kit",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s6kit.bg_design",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Kit",
+     "kind": "speech",
+     "text": "I put a box on it. For the next person who's ten minutes from a meeting."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "That person is usually me."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2826
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S6-08b",
+   "teaser": "the RFI log",
+   "title": "Answered in 10 minutes",
+   "body": "The studio's RFI log shows forty answers this year. Thirty-nine have a checker's initials. RFI 31 has none — the one answered ten minutes before the Playhouse meeting.",
+   "thread": "Method",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Wes, from Brackenmoor, on a video call; Priya taking it at her desk.",
+   "characters": [
+    {
+     "id": "wes",
+     "pose": "H",
+     "expr": "worried"
+    },
+    {
+     "id": "priya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s6kit.bg_design",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Wes",
+     "kind": "speech",
+     "text": "Your East Wing record drawings say clinic room 4 has twelve network ports. It has six. One of them is the nurse-call panel."
+    },
+    {
+     "side": "R",
+     "who": "Priya",
+     "kind": "speech",
+     "text": "…Whose sheet was that?"
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Record Drawings.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2833
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Third-order products: 2f₁ − f₂ and 2f₂ − f₁. After any move, recompute every product against every carrier, keep a guard off occupied spectrum, and have the venue’s coordinator scan it. Answer RFIs like designs: with the arithmetic and a second checker."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Kit was ten minutes from a meeting. What’s the quick answer you give when you’re rushed — and who checks it?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S06E08",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

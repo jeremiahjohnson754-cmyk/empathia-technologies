@@ -1,0 +1,909 @@
+{
+ "chapter": {
+  "id": "s10e03",
+  "kicker": "S10 · E03",
+  "title": "Phase at the Drum Kit",
+  "pill": "S10E03 · Phase at the Drum Kit",
+  "sub": "Four good microphones on one drum, adding up to a cardboard box.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S10E03",
+   "RV-176",
+   "RV-177",
+   "RV-181",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#FB923C"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 10 · EPISODE 3 · DRAFT · CASE-052  Coldframe Sound, the live room · week two · Maya, Dez (the band’s drummer), Pim and Hollis · Level L6 · Mastery support (reference only — choose the tool and say why)  Dez fitted a new snare head. Now the snare sounds like a cardboard box, three songs of drums go down today, and the drummer, the assistant and the owner each have a different culprit.  ⚑ RV-176: the kit is Dez’s. RV-177: figures illustrative. Some choices run on a clock — and some depend on your loadout."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Phase at the Drum Kit",
+   "kind": "STUDIO · MICROPHONES",
+   "level": "L6 · MASTERY",
+   "party": [
+    "maya",
+    "dez",
+    "pim"
+   ],
+   "stakes": "Dez's snare sounds like a cardboard box, and three songs of drums go down today.",
+   "clock": "Before drum tracking at 13:00.",
+   "reward": "A snare with its body back — in stereo, in mono and in Dez's ears.",
+   "objectives": [
+    {
+     "key": "BR-S10E03-01",
+     "text": "Decide how to find it"
+    },
+    {
+     "key": "twist",
+     "text": "Find the flip"
+    },
+    {
+     "key": "core",
+     "text": "Line up the kit"
+    },
+    {
+     "key": "BR-S10E03-02",
+     "text": "Decide how to fix the distance"
+    },
+    {
+     "key": "BR-S10E03-03",
+     "text": "Decide who checks it next time"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "Four good mics can add up to a worse drum."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Cardboard”",
+   "sub": "Wednesday · 10:00 a.m. · the live room"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The live room: the drum kit in the middle under two overhead microphones; Dez points at the snare; Maya listens.",
+   "characters": [
+    {
+     "id": "dez",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s10kit.bg_live",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dez",
+     "kind": "speech",
+     "text": "Forty bucks on that head. Sounds like I'm hitting a parcel."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Hit it again. Just the top mic up, this time."
+    }
+   ],
+   "narration": [],
+   "caption": "Three songs of drums today.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3471
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": "live room · Wednesday 10:00",
+   "lines": [
+    {
+     "who": "dez",
+     "pose": "N",
+     "expr": "worried",
+     "text": "Forty bucks on that head. Sounds like I'm hitting a parcel."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Hit it for me. Then again, with just the top mic up."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Top and bottom”",
+   "sub": "Wednesday · 10:15 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S10E03-01",
+   "prompt": "10:15. Dez blames the new head, Pim the preamp. Drums at one. What first?",
+   "happening": "Snare thin.",
+   "clock": "Wednesday 10:15 · drums at 13:00",
+   "known": [
+    "◉ Thin with all mics up",
+    "◉ New head"
+   ],
+   "unknown": [
+    "Which mic takes the body away"
+   ],
+   "risk": "Three songs of drums with no snare.",
+   "timer_s": 20,
+   "timeout": [
+    "Nobody decides.",
+    "Drums go down at one with the snare as it is."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "If the fault were the drum, would the close mic alone sound thin?"
+    }
+   ],
+   "note": "Draft decision (DR-S10E03).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Swap the snare head back",
+     "result": "Forty minutes, and it still sounds like cardboard.",
+     "consequence": "Changes the instrument before listening to the microphones.",
+     "chips": [
+      "No evidence"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Listen to each snare mic alone, then add the others one at a time and hear where the body goes",
+     "result": "Close mic alone: full. Add the bottom — thinner. Add the overheads — thinner again.",
+     "consequence": "Find where the fault appears before you change anything.",
+     "chips": [
+      "Listen",
+      "One at a time"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Pim": 1,
+       "Dez": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Boost 200 Hz on the snare by 8 dB",
+     "result": "Louder cardboard.",
+     "consequence": "EQ on top of a cancellation.",
+     "chips": [
+      "EQ first"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Swap the preamp, as Pim suggests",
+     "result": "Same sound, different preamp.",
+     "consequence": "A guess, however kind.",
+     "chips": [
+      "Guess"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Top and bottom.",
+   "body": "The body drops out the moment the bottom mic comes up. The bottom mic faces up at the same skin the top mic faces down at: as the head moves toward one it moves away from the other. The template used to flip it. Two years ago the template was rebuilt for the new desk — routing checked, polarity not. Maya flips it, and most of the body comes back.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S10E03-1",
+   "label": "Test: why do the top and bottom mics start out opposed?"
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Which one — and why?",
+   "sub": "Mastery · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Dez and Maya beside a board. It's the new snare head. Has to be. It sounds like a cardboard box. Solo, the close mic sounds great. With the overheads in, the body goes. One overhead is one point two metres from the snare. So it's not my drum?",
+   "characters": [
+    {
+     "id": "dez",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s10kit.bg_live",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dez",
+     "kind": "speech",
+     "text": "It's the new snare head. Has to be. It sounds like a cardboard box."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Solo, the close mic sounds great. With the overheads in, the body goes. One overhead is one point two metres from the snare."
+    },
+    {
+     "side": "L",
+     "who": "Dez",
+     "kind": "speech",
+     "text": "So it's not my drum?"
+    }
+   ],
+   "narration": [],
+   "caption": "Mastery: nobody hands you the tool. Pick it, and say why.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3911
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t4",
+   "text": "📕 WHEN & WHY · MASTERY  Terms   Polarity   Time alignment   3:1 rule   Comb filter   The situation  The snare's close mic is 5 cm from the head; the overhead is 1.20 m away. Together they lose the snare's body. Which relationship tells you where the cancellation lands?   Which relationship do you reach for?  First comb-filter notch  Axial room mode  Sabine reverberation time     Reference: the 📖 Glossary has every formula. At mastery, knowing  which  and  why  is the skill."
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "T3",
+   "label": "**Learn it now:** phase and polarity at the drum kit.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     What the room is telling you     The five fundamentals of sound     Sound pressure, room modes and the spectrum"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "🧰 BUILD IT · CHALLENGE · LEVEL 4  Build a home recording studio  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "build-studio"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "O-1003",
+   "label": "**Order it:** line up a drum kit.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A sheet with two parts. Left: a schematic of the snare with its close mic 5 cm above it, the bottom mic below it marked polarity not flipped, and two overheads — left at 1.20 m, right at 0.95 m. Right: the close mic plus the left overhead, compared with the close mic alone, from 50 Hz to 1 kHz — a comb with notches at 149, 447 and 746 Hz.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Most of the body back — and a comb where the rest should be.",
+   "flags": [
+    "RV-177"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "tape and ears"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 9414
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S10-03a",
+   "teaser": "the template's change log",
+   "title": "2022 · ‘rebuilt for new desk’",
+   "body": "The session template's notes: ‘2022 — rebuilt for new desk. Routing checked.’ Routing, yes. Polarity isn't routing. Nobody checked it.",
+   "thread": "Audio",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "Two microphones in one place",
+   "body": "In 1931 Alan Blumlein, an engineer at a London record company, filed a patent for what he called binaural sound — stereo. One of his ideas was to put two figure-of-eight microphones at the same point, angled apart, so that every sound reaches both at the same instant. No time difference, no comb filter when the two are added. Engineers still set up a ‘Blumlein pair’ for the same reason.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “One point one five metres”",
+   "sub": "Wednesday · 11:20 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "One point one five metres.",
+   "body": "With the bottom flipped, the snare is fuller — until the overheads come up. Maya runs a tape from each overhead to the snare: 1.20 m on the left, 0.95 m on the right, 5 cm for the close mic. The same hit reaches the left overhead 3.35 ms after the close mic, and added together they cancel at 149 Hz, 447 Hz and 746 Hz — right where a snare's body lives. The overheads don't even agree with each other.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S10E03-2",
+   "label": "Test: how late is the overhead — and where is the first notch?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The live room; Pim holds a tape measure stretched toward the kit; Dez watches from behind the snare.",
+   "characters": [
+    {
+     "id": "pim",
+     "pose": "W",
+     "expr": "surprised"
+    },
+    {
+     "id": "dez",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s10kit.bg_live",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Pim",
+     "kind": "speech",
+     "text": "One-twenty on the left. Ninety-five on the right."
+    },
+    {
+     "side": "R",
+     "who": "Dez",
+     "kind": "speech",
+     "text": "So my snare's in two places at once?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3476
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S10-03",
+   "who": "dez",
+   "prompt": "So you're telling me my drum was fine the whole time?",
+   "options": [
+    {
+     "label": "“Your drum was fine. We were listening to it through four mics that disagreed about when it happened.”",
+     "who": "dez",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "Four mics arguing. That's every band I've been in.",
+     "trust": {
+      "Dez": 2
+     }
+    },
+    {
+     "label": "“Mostly. The head's a bit bright.”",
+     "who": "dez",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "…You're going to be one of those, aren't you.",
+     "trust": {
+      "Dez": 0
+     }
+    },
+    {
+     "label": "“You'll have to ask Pim.”",
+     "who": "dez",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Pim thinks it's the preamp.",
+     "trust": {
+      "Dez": -1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S10E03-02",
+   "prompt": "Bottom mic flipped. The overheads still take the body. What now?",
+   "happening": "Polarity fixed; overheads combing.",
+   "clock": "Wednesday 11:40 · drums at 13:00",
+   "known": [
+    "◉ Overheads 1.20 m / 0.95 m",
+    "◉ Close mic 0.05 m"
+   ],
+   "unknown": [
+    "How it sounds in mono"
+   ],
+   "risk": "Three songs of drums with a hollow snare.",
+   "timer_s": 25,
+   "timeout": [
+    "Nobody decides.",
+    "Drums go down with the comb in them."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Which part of this is a flip, and which part is a delay?"
+    }
+   ],
+   "note": "Draft decision (DR-S10E03).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Mute the overheads and use close mics only",
+     "result": "A snare with no room around it — and no cymbals.",
+     "consequence": "Removes the problem and half the kit's sound.",
+     "chips": [
+      "Loses the kit"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "With Dez's OK: set both overheads to 1.05 m from the snare, delay the close mics about 2.9 ms to line up with them, check in mono and ask Dez to listen",
+     "result": "The snare sits in the middle and keeps its body with everything up. Mono holds.",
+     "consequence": "Geometry first, then time, then the player's ears.",
+     "chips": [
+      "Equal",
+      "Aligned",
+      "Dez listens"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Dez": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Move the close mic further from the snare to ‘blend’",
+     "result": "More spill from the hi-hat and a new comb.",
+     "consequence": "Makes the distances worse.",
+     "chips": [
+      "Worse"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Flip the overheads' polarity as well",
+     "result": "The notches move; the body doesn't come back.",
+     "consequence": "A flip can't fix a delay.",
+     "chips": [
+      "Wrong tool"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #94 · AVERY'S LENS  Every mic on one source hears it at a different time  When two microphones hear the same drum, their sum depends on polarity and on distance. Check polarity first, then distance — then let the player judge the sound.  A snare lost its body because its bottom mic was in opposite polarity and its overhead was a metre and fifteen further away."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S10E03",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The same sheet after the fix: both overheads at 1.05 m, the bottom mic's polarity flipped, and on the right a flat green line — close mic and overhead aligned in time add evenly, 4.6 dB up at every frequency — over the old red comb.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "One drum, arriving once.",
+   "flags": [
+    "RV-177"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "mono and Dez"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 9538
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S10-03b",
+   "teaser": "Hollis's old miking sheet",
+   "title": "‘OH to snare: equal. MEASURE.’",
+   "body": "A laminated sheet from the nineties in Hollis's drawer: ‘Overheads to snare: EQUAL. MEASURE, don't guess. Flip the bottom.’ It had been in the drawer for twenty years.",
+   "thread": "Audio",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S10E03-03",
+   "prompt": "Tomorrow a session drummer comes in for two songs. Who makes sure this doesn't happen again?",
+   "happening": "Snare fixed.",
+   "clock": "Wednesday 17:00",
+   "known": [
+    "◉ Template fixed",
+    "◉ Pim learning"
+   ],
+   "unknown": [
+    "How Pim does alone"
+   ],
+   "risk": "The same comb, the next drummer.",
+   "timer_s": 25,
+   "timeout": [
+    "Nothing changes.",
+    "Tomorrow's drummer gets the same template and nobody checking it."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Would this still get done if you weren't here?"
+    }
+   ],
+   "note": "Draft decision (DR-S10E03). Option B needs Team at LIMITED or better.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Nobody — it was a one-off",
+     "result": "The session drummer's snare sounds thin by eleven.",
+     "consequence": "It wasn't a one-off; it was a template.",
+     "chips": [
+      "Repeat"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Put the kit sheet in the studio runbook — distances, polarity per channel, a mono check in the template — and teach Pim to run the phase check himself while you stay at the back",
+     "result": "Tomorrow Pim runs it, tape measure and all. Maya says nothing until he asks.",
+     "consequence": "Written down, and owned by someone who'll be here when you're not.",
+     "chips": [
+      "Runbook",
+      "Pim owns it"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": {
+      "team": 1
+     },
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Pim": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "You run the phase check yourself every drum day",
+     "result": "It works — while you're here. In four weeks you won't be.",
+     "consequence": "Good outcomes that depend on you being in the room.",
+     "chips": [
+      "Depends on you"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Buy a phase-alignment plug-in and leave it on every drum channel",
+     "result": "It aligns what it's told to — sometimes the wrong drum.",
+     "consequence": "A tool without a method.",
+     "chips": [
+      "Tool only"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-1003",
+   "label": "**Service Mode:** run the Wednesday yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-052 · SIGNAL original  Phase at the Drum Kit  Four good microphones on one drum — adding up to a cardboard box.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-052"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Wednesday · 5:30 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The live room after drum tracking; Dez twirls a stick, grinning; Pim holds up the tape measure.",
+   "characters": [
+    {
+     "id": "dez",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "pim",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s10kit.bg_live",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dez",
+     "kind": "speech",
+     "text": "Three songs. That's my drum."
+    },
+    {
+     "side": "R",
+     "who": "Pim",
+     "kind": "speech",
+     "text": "Tomorrow I'm doing the tape measure on my own."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3468
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The control room; Esme, headphones round her neck, points back toward the booth; Corbin from the label, in a black blazer, arms folded.",
+   "characters": [
+    {
+     "id": "esme",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "corbin",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": "s10kit.bg_ctrl",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Esme",
+     "kind": "speech",
+     "text": "I'm behind myself in there. Like I'm singing in a room I'm not in."
+    },
+    {
+     "side": "R",
+     "who": "Corbin",
+     "kind": "speech",
+     "text": "Or you're tired. Maybe we get a session singer for the ballad."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Latency You Can Feel.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6296
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  When a sound gets worse as mics are added, check the mics’ relationship before the instrument. Polarity is a flip: opposite-facing mics cancel until one is inverted. Distance is a delay: t = d ÷ c, and the comb’s first notch is at 1 ÷ 2Δt. Measure with a tape, equalise, keep spill down with the 3:1 rule, align last, check in mono — and let the player judge the sound."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · When something gets worse as more people work on it, what are they each hearing — and when?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S10E03",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

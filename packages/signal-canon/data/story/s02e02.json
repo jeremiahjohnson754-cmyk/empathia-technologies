@@ -1,0 +1,1556 @@
+{
+ "chapter": {
+  "id": "s02e02",
+  "kicker": "S02 · E02",
+  "title": "Drop-Outs",
+  "pill": "S02E02 · Drop-Outs",
+  "sub": "Same song, same bar, three shows running. Everyone has a theory.",
+  "status": "**DRAFT** · scripted from the season map ahead of its production-bible entry · CASE-007 is a SIGNAL adaptation (Q-004) · IDs provisional",
+  "flags": [
+   "DR-S02E02",
+   "RT-03",
+   "Q-004",
+   "RV-40",
+   "RV-42",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--cyan)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 2 · EPISODE 2 · DRAFT · CASE-007  Countdown · Maya · Level L3  One singer. One song. One bar. Three shows running, her voice vanishes for eleven seconds — and tonight, if it happens again, the song is cut.  ⚑ Q-004 / RV-42: the drop-out mechanism is SIGNAL’s adaptation of the Fieldbook’s wireless case (pp. 112–113) — owner to confirm. RF levels are illustrative. Every choice in this episode runs on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Same Song, Same Bar",
+   "kind": "MYSTERY · COUNTDOWN",
+   "level": "L3 · SYSTEMS TECH",
+   "party": [
+    "maya",
+    "dante",
+    "marisol",
+    "jordan"
+   ],
+   "stakes": "The show's heart goes silent every night at bar 32. The manager says the song goes — and so does Halyard.",
+   "clock": "One stage hour before the crew needs it.",
+   "reward": "Harbor Light, sung all the way through. Marisol believing it wasn't her body.",
+   "objectives": [
+    {
+     "key": "BR-S02E02-01",
+     "text": "Save the song mid-show"
+    },
+    {
+     "key": "twist",
+     "text": "Rule out the theories that sound right"
+    },
+    {
+     "key": "BR-S02E02-02",
+     "text": "Test the thing that actually moves"
+    },
+    {
+     "key": "core",
+     "text": "Read the evidence board"
+    },
+    {
+     "key": "BR-S02E02-03",
+     "text": "Refuse the two-minute fix"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two clues from three cities"
+    }
+   ],
+   "rumor": "It drops in bar 32 in every city. In every city, somebody blames something new."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Bar thirty-two”",
+   "sub": "Orchard Hall · city 2 · 9:12 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Orchard Hall. Marisol sings at the downstage-right lip, turned upstage toward an LED wall on a steel frame. Behind the frame, barely visible, a receiver antenna. Her voice has stopped coming out of the loudspeakers.",
+   "characters": [
+    {
+     "id": "marisol",
+     "pose": "M",
+     "expr": "closed"
+    }
+   ],
+   "location": "scenes.bg_theater",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Song eleven, “Harbor Light”. The show's heart. Four bars into the bridge, the voice vanishes.",
+   "flags": [
+    "RV-42",
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4809
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The monitor world in the wings. A row of channel meters: channel 7 red. Dante throws his hands up; Maya is at his shoulder.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "S",
+     "expr": "surprised"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dante",
+     "kind": "radio",
+     "text": "Seven's gone! Same bar as last night!"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Spare handheld's in the wings. Don't touch anything else — clock it."
+    }
+   ],
+   "narration": [],
+   "caption": "Eighteen hundred people are listening to a piano and nothing else.",
+   "flags": [
+    "RV-40"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2268
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E02-01",
+   "prompt": "Channel 7 is dead mid-song. You have seconds. What do you do?",
+   "happening": "Channel 7 dropped at bar 32 of song eleven.",
+   "clock": "9:12 p.m. · bridge ends in 40 s",
+   "known": [
+    "◉ Same bar as last night",
+    "◉ Spare handheld in the stage-right wing"
+   ],
+   "unknown": [
+    "Why"
+   ],
+   "risk": "The song, the singer's trust, and a critic in row F.",
+   "timer_s": 20,
+   "timeout": [
+    "Nobody moves. The bridge plays out as a piano solo. Marisol mouths the words to a silent hall.",
+    "The spare exists for exactly this second. Not using it is a choice with a price."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Which of these was planned before tonight?"
+    }
+   ],
+   "note": "Draft decision (DR-S02E02).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Spare handheld from the wings",
+     "result": "The stagehand at the wing is already holding it. Marisol sees it, takes it on the turn, and sings the last chorus into it.",
+     "consequence": "Eleven seconds of silence instead of two minutes. The spare's frequency is coordinated; the receiver is separate.",
+     "chips": [
+      "11 s lost",
+      "A plan made on a calm day"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Marisol": 1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Tell Dante to push her in-ears",
+     "result": "Her in-ears get louder. The audience still hears nothing.",
+     "consequence": "You fixed the wrong output.",
+     "chips": [
+      "Wrong world"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Her in-ears were never the problem; the audience's feed is.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Dante": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Do nothing and wait for it to come back",
+     "result": "It comes back after the bridge, on its own.",
+     "consequence": "Two minutes of silence in the quietest song of the night.",
+     "chips": [
+      "2 min lost"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Run onstage with a new pack",
+     "result": "You cross the stage in work blacks during the show's most delicate moment.",
+     "consequence": "The audience watches you, not her. Rosa is not amused.",
+     "chips": [
+      "Show broken"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The show is the thing you protect. Walking into it is the loudest failure there is.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Rosa": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A stagehand at the stage-right wing holds out the spare handheld; Marisol takes it on the turn and sings the last chorus.",
+   "characters": [
+    {
+     "id": "crew",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "marisol",
+     "pose": "M",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_theater",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Eleven seconds of silence. Then the last chorus, on a spare mic.",
+   "flags": [
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4337
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": "after the show · the truck",
+   "lines": [
+    {
+     "who": "dante",
+     "pose": "N",
+     "expr": "worried",
+     "text": "Eleven seconds of piano. Eighteen hundred people heard a woman stop existing mid-word."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "And then they heard her come back. Hold onto that part."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Same song, same spot”",
+   "sub": "The next morning · 10:00 a.m. · Orchard Hall, empty"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya's notebook: channel 7 drops — Wexley soundcheck, song 11, bar 32; Wexley show, bar 33; Orchard show, bar 32. Same song, same bar, three times.",
+   "characters": [],
+   "location": "scenes.bg_theater",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Three shows, two cities, one bar. That's not luck. That's a pattern.",
+   "flags": [
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "drop log · 3 of 3 shows"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3319
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Dante and Jordan in the empty house, each with a theory.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "jordan",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_theater",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "New batch of batteries went in at the Wexley. That's when it started."
+    },
+    {
+     "side": "R",
+     "who": "Jordan",
+     "kind": "speech",
+     "text": "Front row films song eleven every night. Phones. Oh — the new riser fits great. We just shuffled some stands."
+    }
+   ],
+   "narration": [],
+   "caption": "Two theories and one throwaway line.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1727
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S2-02a",
+   "teaser": "Jordan's throwaway line",
+   "title": "“We just shuffled some stands.”",
+   "body": "He said it while talking about the riser. Nobody wrote it down. It's the only sentence in three days that describes a change.",
+   "thread": "The as-built",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Sofia, the lighting director, leans on a seat back; Maya faces her.",
+   "characters": [
+    {
+     "id": "sofia",
+     "pose": "W",
+     "expr": "grin"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_theater",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sofia",
+     "kind": "speech",
+     "text": "It's the crowd. Eighteen hundred warm bodies soak up radio."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then why only in song eleven? They're warm for all twenty."
+    }
+   ],
+   "narration": [],
+   "caption": "Friends can disagree. Evidence settles it.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1724
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S2-02",
+   "who": "sofia",
+   "prompt": "It's the crowd, Maya. Eighteen hundred warm bodies eat radio. Everyone knows that.",
+   "options": [
+    {
+     "label": "“Then why only in song eleven? They're warm for all twenty.”",
+     "who": "sofia",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "…Rude. Correct, but rude.",
+     "trust": {
+      "Sofia": -1,
+      "Dante": 1
+     }
+    },
+    {
+     "label": "“Maybe. Let's test it and see.”",
+     "who": "sofia",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "See? Science agrees with me.",
+     "trust": {
+      "Sofia": 1
+     }
+    },
+    {
+     "label": "“You do lights, Sofia.”",
+     "who": "sofia",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "Wow. Okay. Noted.",
+     "trust": {
+      "Sofia": -2
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "An RF scan of the empty venue: a flat noise floor with a few existing carriers, channel 7's slot clear. A note: Orchard drop on pack 7 used an old-batch battery.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_theater",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Nothing new near channel 7. And last night's battery was from the old batch.",
+   "flags": [
+    "RV-40",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "scan · nothing new near ch 7"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 4254
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "It isn't interference — and it isn't the batteries",
+   "body": "The scan is clean: no phones, no local services, nothing new anywhere near channel 7. And city 2's drop happened on an old-batch battery, so the new batch is cleared too. If nothing is shouting over the channel, the channel itself must be getting too quiet to hear — at one moment, in one place.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S02E02-1",
+   "label": "Test: two suspects just walked free. Reason from what's left."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Leah holds her phone on speaker. The artist's manager is on the line. Maya stands close, listening.",
+   "characters": [
+    {
+     "id": "leah",
+     "pose": "H",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_theater",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Manager",
+     "kind": "phone",
+     "text": "If it happens tonight, the song's gone. And so are you. All of you."
+    }
+   ],
+   "narration": [],
+   "caption": "The song is the heart of the show. He means Halyard.",
+   "flags": [
+    "RV-47"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2186
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "dante",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Did he just threaten all of us?"
+    },
+    {
+     "who": "jordan",
+     "pose": "N",
+     "expr": "worried",
+     "text": "In fairness, he threatened all of us equally."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "That's not fairness. That's a group project."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya watches last night's show video on a tablet: at bar 30, Marisol walks to the downstage-right lip and turns upstage toward the LED wall.",
+   "characters": [
+    {
+     "id": "marisol",
+     "pose": "M",
+     "expr": "closed"
+    },
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_theater",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Bar 30. She walks to the lip and turns upstage. Every night. It's the blocking.",
+   "flags": [
+    "RV-49"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "show video · bar 30"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2582
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Leah and Maya beside a board. dBm is power compared with one milliwatt — received signals are negative. The noise floor is the hiss underneath. Margin is the gap between them. So how much room do I have? Received minus noise floor. Minus sixty-five dBm over a minus-ninety-five floor: thirty dB of margin. Every wall or steel frame eats some of it.",
+   "characters": [
+    {
+     "id": "leah",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_dock",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Leah",
+     "kind": "speech",
+     "text": "dBm is power compared with one milliwatt — received signals are negative. The noise floor is the hiss underneath. Margin is the gap between them."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "So how much room do I have?"
+    },
+    {
+     "side": "L",
+     "who": "Leah",
+     "kind": "speech",
+     "text": "Received minus noise floor. Minus sixty-five dBm over a minus-ninety-five floor: thirty dB of margin. Every wall or steel frame eats some of it."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2998
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    Fade margin   How many dB a link can lose before it drops.   dBm   Power in decibels relative to 1 milliwatt; received signals are usually negative dBm.   Noise floor   The level of background noise in a system or a radio channel; signals must sit above it.   Formula, variables and a worked example   ƒ FORMULA · Signal margin  M = P rx  − N floor    P rx   received level, dBm  N floor   noise floor, dBm  M  margin, dB    Worked example.  Received −65 dBm, noise floor −95 dBm: margin 30 dB."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 13 OF 31 · PP. 44, 62  PART 3 AUDIO FOUNDATIONS · PART 5 DSP, MIXING & EAR TRAINING  Page 44:  If it sounds thin, check phase.  Maya added underneath: “Radio too. Dead spots are phase.”"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB13",
+   "label": "**Fieldbook module 13 — Phase and time — when two copies meet.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 13 · tap a plate to open it full size     The five fundamentals of sound     Audio filters explained"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "🧰 BUILD IT · CHALLENGE · LEVEL 1  Build a wireless mic frequency plan  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "build-rf"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "A9",
+   "label": "**Learn it now:** antennas and diversity — and what two antennas can't fix.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E02-02",
+   "prompt": "You have the stage for one hour before the crew needs it. What do you test first?",
+   "happening": "One hour of stage. A pattern in place and time.",
+   "clock": "1:00 p.m. · crew needs the stage at 2:00",
+   "known": [
+    "◉ Same bar, three shows",
+    "▮ Scan: nothing new",
+    "◉ Bar 30: DSR lip, turned upstage"
+   ],
+   "unknown": [
+    "What the signal does at the lip"
+   ],
+   "risk": "",
+   "timer_s": 25,
+   "timeout": [
+    "The hour goes to arguing. The crew takes the stage at 2:00. You go into tonight with theories.",
+    "Stage time is the scarcest thing on a tour. An hour spent deciding is an hour not measuring."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Test where and how it fails, not where it works."
+    }
+   ],
+   "note": "Draft decision (DR-S02E02).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Walk her real path with an RF meter, facing the way she faces",
+     "result": "Maya wears pack 7 and walks the blocking. Steady — until the lip, turned upstage: the signal sinks into the noise.",
+     "consequence": "A measurement at the exact position that fails.",
+     "chips": [
+      "30 min",
+      "The fault, located"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Crew": 2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Bench-test the transmitter at the monitor desk",
+     "result": "Perfect signal, perfect audio.",
+     "consequence": "It works where it has always worked.",
+     "chips": [
+      "Tested where it works"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You tested the one place the fault doesn't happen.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Crew": -2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Swap the receiver for the spare",
+     "result": "Now you're comparing a different receiver across a different night.",
+     "consequence": "If it drops tonight, you've learned nothing — and lost the log history.",
+     "chips": [
+      "Evidence muddied"
+     ],
+     "badges": [
+      {
+       "kind": "erase",
+       "text": "MAY ERASE EVIDENCE"
+      }
+     ],
+     "canonical": false,
+     "fail": "Swapping parts by guess moves the problem and erases the pattern.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Crew": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask the director to change the blocking",
+     "result": "The director says maybe, after he sees the reason.",
+     "consequence": "The walk to the lip is the song's staging. It's not yours to cut.",
+     "chips": [
+      "Not your call"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The empty stage. Marisol walks her blocking to the lip and turns upstage; Maya, meter in hand, watches the reading fall.",
+   "characters": [
+    {
+     "id": "marisol",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Stay right there. Turn back toward me… and away again."
+    },
+    {
+     "side": "R",
+     "who": "Marisol",
+     "kind": "speech",
+     "text": "It dies when I turn?"
+    }
+   ],
+   "narration": [],
+   "caption": "Turned toward the house: fine. Turned upstage at the lip: into the noise.",
+   "flags": [
+    "RV-42",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "walk test · lip, turned upstage"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1442
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "physbreak",
+   "cls": "physbreak",
+   "text": "🔭 PHYSICS IN MOTION  Behind the steel frame  The science under this episode’s problem — live."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lab",
+   "id": "PHY-S02E02",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View graph: channel 7's received signal at six positions along Marisol's path. Everywhere well above the noise floor, except the downstage-right lip turned upstage, where it sinks to the noise floor.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "One position. One direction. That's where the song goes quiet.",
+   "flags": [
+    "RV-42",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View, top-down stage: the receiver antennas stand behind the LED wall's steel frame; the riser sits center; Marisol at the downstage-right lip turned upstage. The line from her to the antennas is crossed out: steel and her own body in the way. Both diversity antennas are blocked.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Diversity picks the better of two antennas. Both were behind the same steel.",
+   "flags": [
+    "RV-42",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E02-03",
+   "prompt": "Jordan, at the door: “Just change channel 7's frequency. Two minutes. Done.” The crew needs the stage.",
+   "happening": "Jordan wants the fast fix. The evidence points at antenna placement.",
+   "clock": "1:40 p.m. · crew at 2:00",
+   "known": [
+    "▮ Scan: no interference",
+    "▮ Walk test: noise at the lip",
+    "◉ Antennas behind the LED frame"
+   ],
+   "unknown": [
+    "Why the antennas are behind the frame"
+   ],
+   "risk": "",
+   "timer_s": 20,
+   "timeout": [
+    "Jordan changes the frequency himself while you're thinking. Tonight's show will be the test.",
+    "An idle decision gets replaced by the nearest fast fix."
+   ],
+   "hints": [],
+   "note": "Draft decision (DR-S02E02). ⚑ RV-41: the mount is Ben's.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Change the frequency",
+     "result": "Two minutes of menus. The walk test doesn't care: at the lip, turned upstage, the new frequency sinks into the noise too.",
+     "consequence": "Now nothing matches three shows of history, and nothing is fixed.",
+     "chips": [
+      "Nothing fixed",
+      "History broken"
+     ],
+     "badges": [
+      {
+       "kind": "erase",
+       "text": "MAY ERASE EVIDENCE"
+      }
+     ],
+     "canonical": false,
+     "fail": "No interference was measured. Changing frequency hides the evidence and leaves the steel where it is.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Jordan": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Move the antennas to line of sight — through Ben",
+     "result": "A weighted stand at the downstage wing, out of the walkway, clear of the frame. Ben's crew places it; Ben signs it.",
+     "consequence": "Then the same walk, with Marisol, before the crew takes the stage.",
+     "chips": [
+      "Fixes the path",
+      "Owner signs the mount"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Marisol": 2,
+       "Ben": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Turn the transmitter up to maximum power",
+     "result": "The pack runs hotter, the batteries shorter, and this city's coordination just changed without a plan.",
+     "consequence": "At the lip the extra power still meets the same steel.",
+     "chips": [
+      "Coordination broken"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Power levels are part of the RF plan, and power can't make steel transparent.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Jordan": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask the director to cut the walk to the lip",
+     "result": "He might. It's the song's staging.",
+     "consequence": "It would work, and it would cost the show its best moment.",
+     "chips": [
+      "Costly workaround"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "C-11",
+   "label": "**Clue Board:** same song, same spot. Which clues separate the explanations?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “The riser”",
+   "sub": "1:50 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Two images side by side on Jordan's tablet: the advance drawing with the antennas on a stand at the downstage wing, and the Wexley load-in photo with the antennas behind the LED frame and a new riser where the stand used to be.",
+   "characters": [
+    {
+     "id": "jordan",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_theater",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Advance drawing: antennas at the wing. Wexley load-in photo: behind the frame, to make room for the riser.",
+   "flags": [
+    "RV-49"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "load-in photo vs advance"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3456
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S2-02b",
+   "teaser": "the Wexley load-in photo",
+   "title": "Behind the LED frame",
+   "body": "The antenna stand, tucked behind steel. In the background, out of focus, somebody's coffee on the stand's base. The photo was taken to prove the riser fit. It proves something else.",
+   "thread": "The as-built",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The as-built photo became the plan",
+   "body": "Nobody moved the antennas on purpose. At the Wexley load-in the local crew shuffled a stand to fit Jordan's new riser; nobody told RF and nobody logged it. At Orchard Hall the crew built the stage from the Wexley photos — so the mistake traveled. Jordan's “we just shuffled some stands” was the whole story, said out loud on page one.",
+   "test_kind": "drill",
+   "test_id": "F-11",
+   "label": "Test: with the move in mind, find the first stage where channel 7's signal is lost."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Jordan, stricken, lowers the tablet. Maya answers gently.",
+   "characters": [
+    {
+     "id": "jordan",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_theater",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Jordan",
+     "kind": "speech",
+     "text": "That was my riser. Nobody told me the stand mattered."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Nobody told you because nobody wrote down why it was there. That's on the plan, not on you."
+    }
+   ],
+   "narration": [],
+   "caption": "The fix for the workflow: any load-in change that touches RF goes in the log, with a reason.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1728
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ben at the downstage wing, pointing at a spot on the deck clear of the walkway.",
+   "characters": [
+    {
+     "id": "ben",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_theater",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ben",
+     "kind": "speech",
+     "text": "Stand here at the wing, weighted, out of the walkway. That I'll sign. Nothing clipped to the LED frame."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Nothing on the frame. Your crew places it; I'll bring the meter."
+    }
+   ],
+   "narration": [],
+   "caption": "Anything on structure — even an antenna — goes through its owner.",
+   "flags": [
+    "RV-41"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1920
+  },
+  {
+   "origin": "injected",
+   "type": "history",
+   "title": "Hedy Lamarr and frequency hopping",
+   "body": "In 1942 actress and inventor Hedy Lamarr and composer George Antheil patented a frequency-hopping scheme to keep radio-guided torpedoes from being jammed. The idea resurfaced decades later in the radios that surround every stage.",
+   "flag": "RV-27",
+   "when": "1942",
+   "lab": "PHY-S02E02"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View, top-down stage after the move: the antennas now stand at the downstage wing on Ben's stand, with a clear line of sight to Marisol at the downstage-right lip.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Clear line of sight to the lip, from a stand Ben signed.",
+   "flags": [
+    "RV-42",
+    "RV-41",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View graph after the move: channel 7 solid at every position along Marisol's path, including the lip turned upstage.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Same walk, same singer, same bar. Before and after, logged.",
+   "flags": [
+    "RV-42",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Marisol, in rehearsal clothes, asks Maya a question at the lip.",
+   "characters": [
+    {
+     "id": "marisol",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Marisol",
+     "kind": "speech",
+     "text": "Can I still turn at the lip tonight? I thought it was me. My body, my fault."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Turn whichever way the song needs. The antennas moved for you — not the other way round."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 511
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "marisol",
+     "pose": "N",
+     "expr": "worried",
+     "text": "I thought it was my body. That I was — I don't know — wrong for it."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(Nobody should ever have to say that sentence about a radio.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-202",
+   "label": "**Service Mode:** one hour of stage, a pattern, and everyone's theory. Run it yourself.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III — “Harbor Light”",
+   "sub": "Orchard Hall · second night · 9:12 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Song eleven again. Marisol at the downstage-right lip, turned upstage, singing the bridge. The loudspeakers carry every word.",
+   "characters": [
+    {
+     "id": "marisol",
+     "pose": "M",
+     "expr": "closed"
+    }
+   ],
+   "location": "scenes.bg_theater",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Bar 30. The walk. The turn. Bar 32.",
+   "flags": [
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4316
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #13 · AVERY'S LENS  Feedback within a second  People need to know immediately that something happened — or stopped happening.  A performer can't see an RF meter. A dropout needs a fast, human signal: a spare handheld in the wings and a hand signal plan."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S02E02",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the monitor world, all channel meters green, channel 7 included. Dante grins; Maya closes her eyes.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "L",
+     "expr": "grin"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "closed"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dante",
+     "kind": "radio",
+     "text": "Thirty-two. Thirty-three. Thirty-four. Seven's solid."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Breathe out. Then log it."
+    }
+   ],
+   "narration": [],
+   "caption": "Nobody in the hall knows anything happened. That's the job.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2262
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya's phone: a text from Leah — the manager says the song stays; also, who fixed it?",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_theater",
+   "bubbles": [],
+   "narration": [],
+   "caption": "The song stays. So does Halyard.",
+   "flags": [
+    "VR-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2438
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "jordan",
+     "pose": "N",
+     "expr": "grin",
+     "text": "The manager said “fine.” Out loud. I'm getting it tattooed."
+    },
+    {
+     "who": "dante",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Get the bar number too."
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-007 · SIGNAL original  Wireless Drop-Outs  Same song, same bar, three shows running. Everyone blames the batteries.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-007"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "RF log, channel 7: drops at song 11, bar 32, three shows. Scan clean; batteries cleared. Cause: antennas behind the LED frame, moved for the riser, not logged. Fix: downstage wing stand, Ben signed. Walk test before and after: solid. Rule: load-in changes near RF go in the log.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-08",
+    "RV-42"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1833
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "On the loading dock, Ben reads an email on a tablet from the Carroway, city 3: “Your requested hang point: we have no structural data for that beam.” Sofia, beside him, looks stricken.",
+   "characters": [
+    {
+     "id": "ben",
+     "pose": "R",
+     "expr": "flat"
+    },
+    {
+     "id": "sofia",
+     "pose": "S",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_dock",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Next: *The Rigging Call.*",
+   "flags": [
+    "RV-41",
+    "RT-03",
+    "RV-49"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3525
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A drop that repeats at the same moment points at the path. Scan before you blame interference; clear suspects with evidence. Walk the performer's real path, facing their real way, with a meter. Diversity can't fix two blocked antennas — line of sight can, through whoever owns the mount. Prove it with the same walk, and log any load-in change that touches RF."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Marisol thought it was her body. Jordan thought it was his riser. It was a stand moved for a good reason by someone who didn't know the other reason. Most failures on a tour are two good reasons that never met.  Boundary: this reflection doesn't prove anything about the RF path."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S02E02",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

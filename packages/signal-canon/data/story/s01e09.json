@@ -1,0 +1,1405 @@
+{
+ "chapter": {
+  "id": "s01e09",
+  "kicker": "S01 · E09",
+  "title": "Pass",
+  "pill": "S01E09 · Pass",
+  "sub": "The new stage lighting works, and Elias still won't sign.",
+  "status": "**DRAFT** · scripted from the season map ahead of its production-bible entry · IDs provisional",
+  "flags": [
+   "DR-S01E09",
+   "RV-04",
+   "RV-31",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--cyan)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 1 · EPISODE 9 · DRAFT  Commissioning trial · Maya and Elias · Level L2 (Operator)  The new stage lighting works, and Elias still won't sign.  ⚑ RV-04 · RV-31: DMX and acceptance practice are simplified for teaching. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Working Isn't Accepted",
+   "kind": "MAIN QUEST · ACCEPTANCE",
+   "level": "L2 · OPERATOR",
+   "party": [
+    "maya",
+    "elias",
+    "nico",
+    "theo"
+   ],
+   "stakes": "The donor's lighting works every Sunday. Elias won't sign, and the last payment waits on his signature.",
+   "clock": "Elias leaves at 8:30.",
+   "reward": "A signature that means something. Nico's first acceptance sheet.",
+   "objectives": [
+    {
+     "key": "BR-S01E09-01",
+     "text": "Write a requirement Elias can sign against"
+    },
+    {
+     "key": "BR-S01E09-02",
+     "text": "Stop Nico swapping the wrong fixture"
+    },
+    {
+     "key": "core",
+     "text": "Find the first failure point"
+    },
+    {
+     "key": "BR-S01E09-03",
+     "text": "Decide the thirty minutes"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two things that “worked for months”"
+    }
+   ],
+   "rumor": "At minute eleven, fixtures three to eight flicker. One and two never do."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Now show me”",
+   "sub": "February · 6:40 p.m. · acceptance day"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The stage under the new rig: eight fixtures on a truss, warm beams across the band's gear.",
+   "characters": [],
+   "location": "scenes.bg_stage",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Donor-funded. Installed in October. Beautiful. Not yet accepted.",
+   "flags": [
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1618
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Nico, the vendor's installer in an orange polo, gestures proudly at the rig. Elias holds his clipboard.",
+   "characters": [
+    {
+     "id": "nico",
+     "pose": "P",
+     "expr": "smile"
+    },
+    {
+     "id": "elias",
+     "pose": "H",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Nico",
+     "kind": "speech",
+     "text": "It's been working since October. Every Sunday."
+    },
+    {
+     "side": "R",
+     "who": "Elias",
+     "kind": "speech",
+     "text": "Working and accepted aren't the same word. Where are the requirements?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-31",
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 578
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "elias",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Working and accepted aren't the same word."
+    },
+    {
+     "who": "nico",
+     "pose": "N",
+     "expr": "worried",
+     "text": "They're… pretty close words."
+    },
+    {
+     "who": "elias",
+     "pose": "N",
+     "expr": "flat",
+     "text": "So are “bridge” and “bridge collapse.”"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya checks the folder the vendor left.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "elias",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "There's a scope: “install eight fixtures, new DMX line, program looks.” That's it."
+    },
+    {
+     "side": "R",
+     "who": "Elias",
+     "kind": "speech",
+     "text": "Then that's what we're doing first. Nobody signs a scope."
+    }
+   ],
+   "narration": [],
+   "caption": "The last payment waits on his signature.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 580
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “What must be true?”",
+   "sub": "6:50 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E09-01",
+   "prompt": "Which of these is an acceptance requirement Elias can sign against?",
+   "happening": "Writing requirements with Elias.",
+   "clock": null,
+   "known": [
+    "◉ Vendor scope only",
+    "◉ Eight fixtures, one DMX line"
+   ],
+   "unknown": [
+    "What “done” means"
+   ],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "Draft decision (DR-S01E09).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "“The lights should look good.”",
+     "result": "Elias: “Good to whom? Measured how?”",
+     "consequence": "No condition, no method, no threshold.",
+     "chips": [
+      "Unmeasurable"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A requirement nobody can fail is one nobody can pass.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -2,
+      "sev": 1,
+      "trust": {
+       "Elias": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "“No visible flicker on any fixture during a 30-minute full-look run with the band playing, watched from FOH and on Cam 1 at 59.94p, 1/60. Pass = zero events.”",
+     "result": "Elias writes it down word for word.",
+     "consequence": "Requirement, condition, method, threshold — and it can fail.",
+     "chips": [
+      "Testable"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 2,
+      "sev": 1,
+      "trust": {
+       "Elias": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "“Fixtures must be high quality.”",
+     "result": "Elias: “Whose quality?”",
+     "consequence": "An opinion about the product, not a claim about this install.",
+     "chips": [
+      "Opinion"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "“It works every Sunday.”",
+     "result": "Elias: “So does a lot of broken equipment.”",
+     "consequence": "History isn't a test.",
+     "chips": [
+      "Not a test"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The acceptance sheet, blank results so far: R1 addresses no overlap; R2 looks recall; R3 no flicker for 30 minutes at full with the band; R4 load within rating (Andre with a clamp meter); R5 no flicker on camera; R6 labeled drawing handed over.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Six requirements. Each one can fail.",
+   "flags": [
+    "RV-31",
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4482
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "O-03",
+   "label": "**Sequence:** put the acceptance work in order before Elias does.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "R1 test: Maya checks each fixture's address and footprint with a tester while Elias ticks.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "flat"
+    },
+    {
+     "id": "elias",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Fixture 6 starts at 81 and uses eighteen channels. Fixture 7 starts at 95."
+    },
+    {
+     "side": "R",
+     "who": "Elias",
+     "kind": "speech",
+     "text": "Eighty-one to ninety-eight. So seven is sharing four of six's channels. Punch list, item one."
+    }
+   ],
+   "narration": [],
+   "caption": "R1 fails: an address overlap. Nobody noticed because the looks happened to hide it.",
+   "flags": [
+    "RV-04"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1761
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S1-09a",
+   "teaser": "the patch notes from October",
+   "title": "Nico's install notes",
+   "body": "*addr fixt 7 = 95 (ran out of time to check).* Six words. The most important four are in brackets.",
+   "thread": "Temporary things",
+   "who": [
+    "nico",
+    "N",
+    "worried"
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Ray and Maya beside a board. DMX is how the console talks to lights: five hundred twelve channels on one line — a universe. Each fixture starts at its start address. Where does a fixture end? Start plus channels minus one. At a hundred one using sixteen channels, it ends at a hundred sixteen. The next fixture starts at a hundred seventeen.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "DMX is how the console talks to lights: five hundred twelve channels on one line — a universe. Each fixture starts at its start address."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Where does a fixture end?"
+    },
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Start plus channels minus one. At a hundred one using sixteen channels, it ends at a hundred sixteen. The next fixture starts at a hundred seventeen."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1111
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    DMX   The control protocol for stage lighting: 512 channels per universe.   Universe   One DMX line of 512 channels.   Start address   The first DMX channel a fixture listens to.   Formula, variables and a worked example   ƒ FORMULA · Last channel a fixture uses  last = start + channels − 1   start  fixture start address  channels  channels the fixture uses    Worked example.  A fixture at 101 using 16 channels: 101 + 16 − 1 = 116.    ƒ FORMULA · Next free start address  next = start + channels   start  this fixture's start address  channels  channels it uses    Worked example.  A fixture at 101 using 16 channels: the next free address is 117."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 10 OF 31 · PP. 155–159, 164–165  PART 10 LIGHTING ENGINEERING  Page 165, in Ray's handwriting: “One loose connector — every fixture after it. Check the chain in order, not the fixture you're mad at.”"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB10",
+   "label": "**Fieldbook module 10 — Lighting basics and DMX addressing.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 10 · tap a plate to open it full size     Lighting basics     Lighting master terminology list     Lighting fixture types and optics     Stage lighting positions and coverage"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "demo-note",
+   "cls": "demo-note",
+   "text": "💡 Beam sizes and fixture types · HANDS-ON DEMO  Pick a PAR, a Fresnel, an ellipsoidal or a moving head; set the throw and see the pool of light — and the lux — change.  Open the demo ▸",
+   "opens": {
+    "kind": "demo",
+    "id": "beam"
+   }
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "💡 REACH IT · CHALLENGE · LEVEL 1  Pick the fixture for a moving close-up  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "reach-light"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "L7",
+   "label": "**Learn it now:** lighting control over networks — universes, nodes, RDM, and who owns the lighting network.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Minute eleven”",
+   "sub": "7:20 p.m. · the 30-minute full-look run"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The full-look run begins. Sofia, at the lighting console, brings every fixture to full while the band plays.",
+   "characters": [
+    {
+     "id": "sofia",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [],
+   "narration": [],
+   "caption": "R3 under the stated condition: full look, band playing, thirty minutes.",
+   "flags": [
+    "RV-17"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1960
+  },
+  {
+   "origin": "injected",
+   "type": "twist",
+   "title": "It isn't the fixture",
+   "body": "Nico was sure fixture 3 was bad. Fixtures 1 and 2 are steady; 3 through 8 flicker together. The fault is at the link into fixture 3 — a microphone cable standing in for data cable — and the line has no terminator.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S01E09-R",
+   "label": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Minute eleven: fixtures 3 through 8 start flickering at random. Fixtures 1 and 2 stay steady.",
+   "characters": [],
+   "location": "scenes.bg_stage",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Minute 11. Fixtures 3–8. Random.",
+   "flags": [
+    "VR-04"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2991
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Nico is already heading for the door.",
+   "characters": [
+    {
+     "id": "nico",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Nico",
+     "kind": "speech",
+     "text": "Fixture three's bad. I've got a spare in the van — ten minutes."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Wait. Three through eight all flicker. One and two don't."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 579
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S1-09",
+   "who": "nico",
+   "prompt": "It's fixture three. I've got a spare in the van. Ten minutes and we're done. Come on.",
+   "options": [
+    {
+     "label": "“Three to eight all flicker. One and two don't. What sits between two and three?”",
+     "who": "nico",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "…The cable change. Oh. Oh no.",
+     "trust": {
+      "Nico": 1,
+      "Elias": 1
+     }
+    },
+    {
+     "label": "“Swap it. Worth a try.”",
+     "who": "elias",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Then we'll know nothing in ten minutes instead of something in two.",
+     "trust": {
+      "Elias": -2
+     }
+    },
+    {
+     "label": "“Nico, you always guess.”",
+     "who": "nico",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "Wow. Okay.",
+     "trust": {
+      "Nico": -2
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E09-02",
+   "prompt": "Nico wants to swap fixture 3. Elias leaves at 8:30. Decide.",
+   "happening": "Fixtures 3–8 flicker at minute 11 of the run.",
+   "clock": "7:31 p.m. · Elias leaves at 8:30",
+   "known": [
+    "◉ 1 and 2 steady",
+    "◉ 3–8 flicker, random",
+    "◉ Started at minute 11"
+   ],
+   "unknown": [
+    "Where on the line the fault is"
+   ],
+   "risk": "",
+   "timer_s": 20,
+   "timeout": [
+    "Nico goes to the van anyway and swaps fixture 3 while you're still thinking.",
+    "When you hesitate, somebody else's hunch becomes the plan."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.9,
+     "text": "Everything downstream of a bad link inherits the fault."
+    },
+    {
+     "id": "H2",
+     "keep": 0.7,
+     "text": "Clear the source first."
+    }
+   ],
+   "note": "Draft decision (DR-S01E09).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Swap fixture 3",
+     "result": "Ten minutes later: a new fixture 3. At minute 9 of a new run, 3 through 8 flicker again.",
+     "consequence": "And the original fixture 3 is in the van, untested.",
+     "chips": [
+      "20 min lost",
+      "Evidence gone"
+     ],
+     "badges": [
+      {
+       "kind": "erase",
+       "text": "MAY ERASE EVIDENCE"
+      }
+     ],
+     "canonical": false,
+     "fail": "Swapping parts on a hunch moves the problem and erases the evidence.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Elias": -2,
+       "Nico": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Stop. Tester at the console, then walk the line",
+     "result": "Console output steady. Fixture 1 steady, 2 steady, 3 flickers. The fault is at or just upstream of fixture 3's input.",
+     "consequence": "Ten minutes to the first failure point, with nothing changed.",
+     "chips": [
+      "Evidence kept",
+      "First failure found"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Elias": 2,
+       "Nico": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Split the line with a Y-cable to “balance” it",
+     "result": "Now stage right flickers too.",
+     "consequence": "DMX is a line, not a tree.",
+     "chips": [
+      "Worse"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You added a second fault to the first one.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Elias": -2,
+       "Nico": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask Elias to sign now; fix next week",
+     "result": "Elias: “Sign what? I have a flicker and no cause.”",
+     "consequence": "The answer is no, and he trusts you less.",
+     "chips": [
+      "No"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A signature is a claim about evidence. You had none.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Elias": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "F-03",
+   "label": "**First failure point:** where on the line does the flicker start?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya gently flexes the cable between fixtures 2 and 3. Fixture 3 stutters with every flex.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Flex the link at the first failure point: fixture 3 stutters every time.",
+   "flags": [
+    "RV-04"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2582
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View: the DMX line from the console through fixtures 1 to 8. The link from 2 to 3 is marked red: a microphone-cable extension. Fixtures 3 to 8 flicker. Fixture 7's address overlaps fixture 6. There is no terminator at the end of the line.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Three punch-list items on one line: the wrong cable, a missing terminator, an address overlap.",
+   "flags": [
+    "RV-04",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "physbreak",
+   "cls": "physbreak",
+   "text": "🔭 PHYSICS IN MOTION  Mix Sofia's warm white  The science under this episode’s problem — live."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lab",
+   "id": "PHY-S01E09",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Nico, holding the offending short cable, admits it.",
+   "characters": [
+    {
+     "id": "nico",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "elias",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Nico",
+     "kind": "speech",
+     "text": "It was a short run. A mic cable fit, so I used it. It worked for months."
+    },
+    {
+     "side": "R",
+     "who": "Elias",
+     "kind": "speech",
+     "text": "It worked until it didn't. That's why we run thirty minutes, not three."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-04"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 580
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "nico",
+     "pose": "N",
+     "expr": "worried",
+     "text": "A mic cable fit, so I used it. It worked for months."
+    },
+    {
+     "who": "elias",
+     "pose": "N",
+     "expr": "flat",
+     "text": "It worked until it didn't. That's the whole history of engineering in one sentence."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E09-03",
+   "prompt": "8:02 p.m. Elias leaves at 8:30. The run takes thirty minutes. What now?",
+   "happening": "Three faults found, twenty-eight minutes left.",
+   "clock": "8:02 p.m.",
+   "known": [],
+   "unknown": [],
+   "risk": "",
+   "timer_s": 25,
+   "timeout": [
+    "8:30 arrives with the fixes half done. Elias leaves; acceptance is rescheduled.",
+    "You knew what to do. Deciding late cost the day."
+   ],
+   "hints": [],
+   "note": "Draft decision (DR-S01E09).",
+   "lab": "LAB-DMX-01",
+   "lab_label": "fix all three punch-list items before Elias leaves.",
+   "options": [
+    {
+     "letter": "A",
+     "label": "Fix all three, rerun the failed test — full thirty minutes",
+     "result": "Rated data cable on 2→3, a terminator at the end, fixture 7 readdressed to 99 and fixture 8 to 115. Rerun starts at 8:05.",
+     "consequence": "It ends at 8:35. Elias looks at his watch — and stays.",
+     "chips": [
+      "Fix the cause",
+      "Same condition"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Elias": 1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Fix them, rerun for five minutes",
+     "result": "Five clean minutes.",
+     "consequence": "The fault first showed at minute eleven. Five minutes proves nothing about it.",
+     "chips": [
+      "Too short"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A retest that ends before the original failure appeared isn't a retest.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Elias": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Ask Elias to sign on a promise",
+     "result": "“Sign now, we'll fix it Tuesday.”",
+     "consequence": "Elias closes his clipboard.",
+     "chips": [
+      "No"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A promise isn't evidence.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Elias": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Reschedule the whole acceptance",
+     "result": "Safe, slow. Elias can come back in three weeks.",
+     "consequence": "The donor payment slips a month. Nico's company is not pleased.",
+     "chips": [
+      "Slow",
+      "Honest"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "history",
+   "title": "Three colors make them all",
+   "body": "Thomas Young proposed in 1802 that the eye senses color with three receptors; Hermann von Helmholtz developed the idea. In 1861 James Clerk Maxwell used three filtered photographs — red, green, blue — to make the first color photograph, of a tartan ribbon.",
+   "flag": "RV-27",
+   "when": "1802 · 1861",
+   "lab": "PHY-S01E09"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View after the fix: rated data cable on every link, a terminator at the end of the line, fixture 7 readdressed to 99 and fixture 8 to 115. All eight fixtures green.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Rated cable, a terminator, no overlaps.",
+   "flags": [
+    "RV-04",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III — “Pass”",
+   "sub": "8:05 p.m. · the rerun"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Minute eleven of the rerun. Every fixture steady. Elias watches without looking at his watch.",
+   "characters": [
+    {
+     "id": "elias",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Minute eleven comes and goes.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "R3 · min 11 · 0 events"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1959
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #10 · AVERY'S LENS  Define done in the user's terms  Acceptance criteria should describe what people will experience, with a way to measure it.  “No visible flicker for 30 minutes with the band playing, from FOH and on camera” is a promise to the audience, not a spec for a fixture."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S01E09",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the booth, Theo shows Camera 1 at 59.94p, 1/60 shutter: no flicker on any fixture.",
+   "characters": [
+    {
+     "id": "theo",
+     "pose": "S",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Theo",
+     "kind": "radio",
+     "text": "Cam 1, 59.94, sixtieth. Clean."
+    }
+   ],
+   "narration": [],
+   "caption": "R5 on camera, the Christmas Eve settings.",
+   "flags": [
+    "RV-29"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1346
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Minute thirty. The band finishes. Zero flicker events.",
+   "characters": [
+    {
+     "id": "sofia",
+     "pose": "R",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Thirty minutes, full look, band playing: zero events.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "R3 · 30 min · 0 events"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1959
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The completed acceptance sheet: all six requirements ticked, with methods and conditions, signed 'E.'",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Requirement, condition, method, result — and where the evidence lives.",
+   "flags": [
+    "RV-31",
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4474
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S1-09b",
+   "teaser": "Elias's clipboard",
+   "title": "Old sign-offs, clipped behind the new one",
+   "body": "Other buildings, other years. One sheet is marked FAIL in red, then PASS six weeks later, then — in pencil, much later — *collapsed 2011, not our part.* He doesn't talk about that one.",
+   "thread": "People",
+   "who": [
+    "elias",
+    "N",
+    "closed"
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Elias signs and hands Maya a copy.",
+   "characters": [
+    {
+     "id": "elias",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Elias",
+     "kind": "speech",
+     "text": "Pass. Keep the evidence where the next person can find it."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Even the part where it failed?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 583
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Elias answers, and Nico nods.",
+   "characters": [
+    {
+     "id": "elias",
+     "pose": "P",
+     "expr": "talk"
+    },
+    {
+     "id": "nico",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Elias",
+     "kind": "speech",
+     "text": "Especially that. A pass that never failed tells you nothing about the test."
+    },
+    {
+     "side": "R",
+     "who": "Nico",
+     "kind": "speech",
+     "text": "Nobody ever asked me for a sheet before."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 578
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "warm",
+   "where": null,
+   "lines": [
+    {
+     "who": "nico",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Nobody ever asked me for a sheet before."
+    },
+    {
+     "who": "elias",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Now somebody has. It gets easier. It never gets optional."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-08",
+   "label": "**Service Mode:** Elias is leaving in three minutes. Run the phantom flicker yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-004 · from the Empathia Learn Fieldbook, pp. 164–165  Loose DMX: The Phantom Flicker  New stage lighting “works”. During acceptance, fixtures flicker at random.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-004"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Elias, leaving, gives one principle.",
+   "characters": [
+    {
+     "id": "elias",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Elias",
+     "kind": "speech",
+     "text": "A signature is a claim about evidence. Never sign anything you couldn't defend to a stranger."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1210
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "March. Ray, in row 12, voiceless with laryngitis, holds up a card: 'Laryngitis. Your booth today.'",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "W",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Next: *Sanctuary Blackout.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1367
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  “Works” is not “accepted.” Write requirements with a condition, a method and a threshold; test under the condition that matters; find the first failure point instead of swapping parts; rerun the failed test at least as long as it took to fail; record where the evidence lives."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Nico wasn't careless — nobody had ever asked him for proof. A good acceptance process is a kindness to the installer as well as the owner.  Boundary: this doesn't prove anything about the cable."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S01E09",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

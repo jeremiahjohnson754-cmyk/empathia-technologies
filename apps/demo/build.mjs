@@ -33,6 +33,8 @@ const buildId = crypto.createHash('sha256').update(String(Date.now())).digest('h
 if (process.argv.includes('--generate-only')) process.exit(0);
 // the SIGNAL library ships beside the bundle and is fetched on demand by Learn (2 MB; never inlined)
 fs.mkdirSync(dist, { recursive: true }); fs.copyFileSync(path.join(repo, 'packages/domain-data/data/SIGNAL_LIB.json'), path.join(dist, 'signal-lib.json'));
+// the SIGNAL story canon ships beside the bundle and is fetched one chapter at a time (build.signal.mjs)
+{ const { shipSignal } = await import('./build.signal.mjs'); const r = shipSignal(repo, dist); console.log(`SIGNAL canon: ${r.chapters} chapters, ${r.panels} panels`); }
 // static media (narration takes and captions): apps/demo/public/** ships as is beside the bundle
 if (fs.existsSync(path.join(app, 'public'))) fs.cpSync(path.join(app, 'public'), dist, { recursive: true });
 await esbuild.build({
@@ -51,7 +53,7 @@ await esbuild.build({
 // brand, Inter and the theme script from @empathia/design-tokens (D7, D9, D39): files copied into dist, the <head> decorated
 const { shipBrandAndType, tokenCss } = await import(path.join(repo, 'packages/design-tokens/brand.mjs'));
 const decorate = shipBrandAndType(dist, { preload: 'app', manifest: { name: 'Empathia Living Campus — investor demonstration', shortName: 'Empathia demo' } });
-const css = [tokenCss(), ...[path.join(repo, 'packages/ui/src/ui.css'), path.join(repo, 'packages/ui/src/kit.css'), path.join(app, 'src/styles/demo.css'), path.join(app, 'src/styles/shell.css'), path.join(app, 'src/hardening/ops.css'), path.join(app, 'src/spatial/spaces.css'), path.join(app, 'src/lite/lite.css'), path.join(app, 'src/spatial/core.css'), path.join(app, 'src/spatial/mission.css'), path.join(app, 'src/pages/workspaces.css'), path.join(app, 'src/pages/learn.css'), path.join(app, 'src/parity/parity.css'), path.join(app, 'src/proof/proof.css'), path.join(app, 'src/worlds/worlds.css'), path.join(app, 'src/estate/estate.css'), path.join(app, 'src/optimizer/optimizer.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`)].join('\n');
+const css = [tokenCss(), ...[path.join(repo, 'packages/ui/src/ui.css'), path.join(repo, 'packages/ui/src/kit.css'), path.join(app, 'src/styles/demo.css'), path.join(app, 'src/styles/shell.css'), path.join(app, 'src/hardening/ops.css'), path.join(app, 'src/spatial/spaces.css'), path.join(app, 'src/lite/lite.css'), path.join(app, 'src/spatial/core.css'), path.join(app, 'src/spatial/mission.css'), path.join(app, 'src/pages/workspaces.css'), path.join(app, 'src/pages/learn.css'), path.join(app, 'src/parity/parity.css'), path.join(app, 'src/proof/proof.css'), path.join(app, 'src/worlds/worlds.css'), path.join(app, 'src/estate/estate.css'), path.join(app, 'src/optimizer/optimizer.css'), path.join(app, 'src/signal/story.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`)].join('\n');
 fs.writeFileSync(path.join(dist, 'demo.css'), css);
 // the CSP rides in the page as <meta> too (assessment SA-01): served without render.yaml's headers, nothing still leaves the page
 const { injectMetaCsp } = await import(path.join(repo, 'scripts/security/policy.mjs'));

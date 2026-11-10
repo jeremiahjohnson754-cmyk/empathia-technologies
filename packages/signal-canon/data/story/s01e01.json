@@ -1,0 +1,2043 @@
+{
+ "chapter": {
+  "id": "s01e01",
+  "kicker": "S01 · E01",
+  "title": "Ten Seats",
+  "pill": "S01E01 · Ten Seats",
+  "sub": "A mystery, solved with geometry.",
+  "status": "Production-bible entry v1.0 · frozen 23 Sep 2026 · CASE-001",
+  "flags": [
+   "VR-01",
+   "RV-05",
+   "RV-14",
+   "RV-17",
+   "RV-21"
+  ],
+  "accent": "var(--red)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 1 · EPISODE 1  Cold case · Maya · Level L1 (Foundation) · CASE-001 The Upward Center Fill  For two years the same ten seats in the middle of the sanctuary have heard the pastor as if through a tin can. Dolores, eighty-one, has sat in one of them for thirty years, and she has quietly decided she is going deaf."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "The Hollow Seats",
+   "kind": "MAIN QUEST",
+   "level": "L1 · OPERATOR",
+   "party": [
+    "maya",
+    "ray",
+    "dolores",
+    "ana"
+   ],
+   "stakes": "Dolores thinks she's losing her hearing. She has stopped coming to evening service and won't say why.",
+   "clock": "Tuesday night to Sunday morning.",
+   "reward": "Dolores's seat back. A mechanism you can prove with geometry.",
+   "objectives": [
+    {
+     "key": "BR-S01E01-01",
+     "text": "Hear the hollowness before you change anything"
+    },
+    {
+     "key": "twist",
+     "text": "Prove it's two arrivals, not one bad seat"
+    },
+    {
+     "key": "BR-S01E01-02",
+     "text": "Plan Sunday — and who is allowed up the lift"
+    },
+    {
+     "key": "BR-S01E01-03",
+     "text": "Answer Ana without answering for Dolores's audiologist"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: find two clues the room left behind"
+    }
+   ],
+   "rumor": "Ten seats went hollow two years ago. The renovation photos are in a box nobody has opened."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Row eight”",
+   "sub": "Sunday, week 2 · 10:48"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "From Dolores's seat in row 8: Pastor Jo preaching at the front. The words arrive thin and doubled, like a voice down a hallway.",
+   "characters": [
+    {
+     "id": "jo",
+     "pose": "W",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Pastor Jo",
+     "kind": "hollow",
+     "text": "For the body is not one member, but many…"
+    }
+   ],
+   "narration": [],
+   "caption": "[voice sounds hollow and doubled]",
+   "flags": [
+    "RT-02",
+    "RV-21"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1562
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Dolores, 81, leans forward in her pew and adjusts her hearing aid. She leans further.",
+   "characters": [
+    {
+     "id": "dolores",
+     "pose": "L",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": "She adjusts her hearing aid. She leans further.",
+   "flags": [
+    "RV-21",
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 877
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "An usher kneels beside Dolores holding out an assistive listening receiver. She waves it away, too quickly, and looks at her hands.",
+   "characters": [
+    {
+     "id": "dolores",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "usher",
+     "pose": "P",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": "She waves it away — too quickly — and looks at her hands.",
+   "flags": [
+    "RV-21"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1049
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "awkward",
+   "where": null,
+   "lines": [
+    {
+     "who": "dolores",
+     "pose": "N",
+     "expr": "worried",
+     "text": "It's fine. It's me. It's been me for a while."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(It is very clearly not fine.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "After the service, in the aisle, Dolores's daughter Ana speaks quietly to Imani. Maya, coiling a cable nearby, stops.",
+   "characters": [
+    {
+     "id": "ana",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "imani",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ana",
+     "kind": "speech",
+     "text": "Mom thinks she's losing her hearing. She's stopped coming to the evening service. She won't say why."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1363
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya's notebook from last week, three words: 'center — kind of hollow.' Maya, under her breath.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "whisper",
+     "text": "She thinks it's her."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "EV-S01E01-03"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1115
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Tuesday night”",
+   "sub": "6:30 p.m. · empty sanctuary"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The empty sanctuary on Tuesday evening. Up in the booth, Priya photographs every cable for the network drawing she promised. Maya and Ray walk the center aisle while last Sunday's sermon recording plays.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "priya",
+     "pose": "P",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Priya photographs every cable for the drawing she promised (DEBT-009).",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1364
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S1-01a",
+   "teaser": "Priya's photos",
+   "title": "Photo 41 of 212",
+   "body": "A ceiling-mounted fill loudspeaker, pointed at the balcony. In the corner of the frame: a sticky note on the bracket — *AIM CHECK?* — in handwriting nobody claims.",
+   "thread": "The building remembers",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "At row 8 the voice goes hollow for Maya too. She steps one seat left; it changes. One more; it changes again.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "It's EQ. Something's building up in the mids. I can cut it."
+    }
+   ],
+   "narration": [],
+   "caption": "(Hold that thought for next week.)",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 812
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray sits in the back row with a cup of coffee, reading, like a man with nowhere to be.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Ray says nothing. This is his new stage: waiting.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1287
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E01-01",
+   "prompt": "The middle rows sound hollow, and Ray is just sitting there. What do you try first?",
+   "happening": "Ten seats sound hollow; everywhere else sounds fine.",
+   "clock": "Tuesday · 5 days to Sunday",
+   "known": [
+    "◉ Maya hears it herself in row 8",
+    "◉ It changes from one seat to the next"
+   ],
+   "unknown": [
+    "Why only these seats",
+    "When it started"
+   ],
+   "risk": "Ten seats · including Dolores, row 8.",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Before you change anything, what will you compare against?"
+    },
+    {
+     "id": "H2",
+     "keep": 0.85,
+     "text": "A problem that changes from seat to seat is telling you something about where it comes from."
+    },
+    {
+     "id": "H3",
+     "keep": 0.7,
+     "text": "Record every seat first, then change one thing and record again."
+    },
+    {
+     "id": "H4",
+     "keep": 0.5,
+     "text": "If you measure first, you'll see whether the pattern stays put or moves."
+    },
+    {
+     "id": "H5",
+     "keep": 0.25,
+     "text": "Walkthrough, then a variant: a balcony seat that sounds hollow."
+    }
+   ],
+   "note": "",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "EQ the fill",
+     "result": "Seat 13 better, seat 12 worse. Ray keeps reading.",
+     "consequence": "Maya has to undo the EQ and re-baseline; she learns the notches move the hard way.",
+     "chips": [
+      "About 20 minutes",
+      "Before-measurement lost"
+     ],
+     "badges": [
+      {
+       "kind": "erase",
+       "text": "May erase evidence"
+      }
+     ],
+     "canonical": false,
+     "fail": "EQ before a baseline destroyed the comparison you'd need later.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Ray": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Switch the fill off",
+     "result": "Center clear; side rows thin.",
+     "consequence": "One comparison, not a map: she still has to measure all ten seats.",
+     "chips": [
+      "About 5 minutes",
+      "Knows: test to tell ideas apart"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Measure all ten seats first",
+     "result": "A ten-seat map before touching anything.",
+     "consequence": "Every later comparison has a baseline; Thursday's proof is a clean before-and-after.",
+     "chips": [
+      "About 15 minutes",
+      "Ten-seat baseline",
+      "Knows: verify at the seats"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Ray": 1,
+       "Dolores": 1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Re-aim it from a ladder",
+     "result": "Ray: “Who's qualified to be under that?” Back to the choice.",
+     "consequence": "The overhead-work boundary. No credit.",
+     "chips": [
+      "Not yours: overhead mount"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "Not yours"
+      }
+     ],
+     "canonical": false,
+     "fail": "Overhead work from a ladder is never yours.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Ray": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya stops herself before touching anything.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Wait. If I change it now, I lose what it sounds like now."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 812
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya walks all ten seats with a measurement microphone taped to a broom handle, recording each seat before touching anything. Ray, still reading, doesn't look up.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "ray",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "That broom has done more acoustics than most consultants."
+    }
+   ],
+   "narration": [],
+   "caption": "Test signal at a moderate level. The choir across the hall was warned.",
+   "flags": [
+    "RV-17",
+    "RV-05"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "ten seats, before"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1973
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "ray",
+     "pose": "N",
+     "expr": "smile",
+     "text": "That broom has done more acoustics than most consultants."
+    },
+    {
+     "who": "maya",
+     "pose": "S",
+     "expr": "grin",
+     "text": "Are you going to let it sign the report?"
+    },
+    {
+     "who": "ray",
+     "pose": "N",
+     "expr": "flat",
+     "text": "It's more reliable than the last one who did."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I (cont.) — “The cards”",
+   "sub": "7:10 p.m. · booth"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Two years of comment cards from the usher drawer, spread on the booth desk. Maya marks each complaint on a seating chart. A tight cluster appears: rows 7 to 9, center. A few stray cards are about other things.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Puzzle: plot the cards. The first one is dated just after the renovation.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "EV-CASE001-01"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 9267
+  },
+  {
+   "origin": "injected",
+   "type": "twist",
+   "title": "It was never Dolores's hearing",
+   "body": "The seats that sound hollow sound hollow to everyone who sits in them. The fill loudspeaker was tilted at the ceiling during the renovation — and the ceiling is throwing a second copy into rows 7–9.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S01E01-R",
+   "label": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya pulls up the renovation photos from the shared drive: a new center-fill loudspeaker hung above the platform lip, tilted up toward the balcony front.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "surprised"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "What changed two years ago?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "EV-S01E01-04"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 718
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S1-01b",
+   "teaser": "the complaint cards",
+   "title": "Card nine, 2 years ago",
+   "body": "*Middle rows sound like the pastor is in a cupboard. — D.* Filed under MISC. Someone wrote *acoustics, can't fix* on the back and never came back to it.",
+   "thread": "The building remembers",
+   "who": [
+    "dolores",
+    "N",
+    "flat"
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Two arrivals”",
+   "sub": "7:40 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya lists four explanations out loud. Ray, still reading, turns a page.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "ray",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Okay. Four explanations. The mic. Dolores's hearing. The air handling. The room. What would tell them apart?"
+    }
+   ],
+   "narration": [],
+   "caption": "She hears herself say it. Ray turns a page.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 883
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Four small panels, one per test: the microphone — the same recording is clean in every other seat, contradicted; Dolores's hearing — Maya hears it too, so it isn't only Dolores, contradicted as the cause of the room problem; air handling — switched off and on, no change, contradicted; the room — fill alone clear, mains alone clear, both together hollow, suspected.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [
+    "She tests them one at a time. (Whether Dolores's hearing has changed is not Maya's to judge.)"
+   ],
+   "caption": null,
+   "flags": [
+    "RV-21"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "CONTRADICTED",
+     "label": "The Mic"
+    },
+    {
+     "state": "CONTRADICTED",
+     "label": "Her Hearing"
+    },
+    {
+     "state": "CONTRADICTED",
+     "label": "Air Handling"
+    },
+    {
+     "state": "SUSPECTED",
+     "label": "The Room"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2680
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View: for the first time, two lines to the same seat — a short solid line from the main loudspeakers and a longer dashed one from the fill that goes up to the ceiling and comes back down, each tagged with when it arrives: early, late.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Two arrivals. One seat.",
+   "flags": [
+    "RV-05",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1372
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Two analyzer strips, seat 12 and seat 13, labeled ANALYZER. Both show a row of notches, but the notches sit at different frequencies from one seat to the next.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "If they move when I move one seat, no EQ setting fixes all ten."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-06",
+    "VR-07",
+    "RV-05"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "EV-S01E01-07"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3306
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "physbreak",
+   "cls": "physbreak",
+   "text": "🔭 PHYSICS IN MOTION  Two speakers, one seat  The science under this episode’s problem — live."
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Ray and Maya beside a board. A comb filter is the same sound arriving twice, a hair apart. Some frequencies cancel. Each cancelled one is a notch. Where's the first notch? One over twice the gap. Arrivals one millisecond apart: one divided by two thousandths — five hundred hertz.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "A comb filter is the same sound arriving twice, a hair apart. Some frequencies cancel. Each cancelled one is a notch."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Where's the first notch?"
+    },
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "One over twice the gap. Arrivals one millisecond apart: one divided by two thousandths — five hundred hertz."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1810
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    Comb filter   A pattern of regularly spaced notches when the same sound arrives twice with a small delay — it sounds hollow.   Notch   A deep dip at one frequency — from a comb filter, or cut deliberately with EQ.   Wavelength   The length of one cycle of a wave in space.   Formula, variables and a worked example   ƒ FORMULA · First comb-filter notch  f 1  = 1 ÷ (2 × Δt) = c ÷ (2 × Δd)   Δt  time difference between arrivals, s  Δd  path difference, m  c  speed of sound, about 343 m/s in air at 20 °C    Worked example.  Two arrivals 1 ms apart: 1 ÷ (2 × 0.001) = 500 Hz is the first notch."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 02 OF 31 · PP. 41, 44, 86–88  PART 3 AUDIO FOUNDATIONS · PART 6 ROOM PHYSICS & COVERAGE  Page 90 of the binder. Ray had underlined one sentence twice —  Point it at people, not at the ceiling.  Beside it, in pencil: “Everybody learns this one the hard way. — R.”"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB2",
+   "label": "**Fieldbook module 2 — What sound is — and why it gets quieter.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 2 · tap a plate to open it full size     Audio basics     The five fundamentals of sound     Sound, rooms and signals — five views     The physics of sound — a five-part series"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "demo-note",
+   "cls": "demo-note",
+   "text": "👂 The ear — what we can hear · HANDS-ON DEMO  Slide through the audible range and see where hearing is most sensitive — then play the tone.  Open the demo ▸",
+   "opens": {
+    "kind": "demo",
+    "id": "ear"
+   }
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lab",
+   "id": "PHY-S01E01",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II (cont.) — “The mirror”",
+   "sub": "8:30 p.m. · the booth whiteboard"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya's whiteboard drawing: the fill, the ceiling, and a mirror image of the fill above the ceiling. A straight dotted line from the mirror image to seat 13 shows the reflection's true path; the red dashed reflected path is longer than the green direct path from the mains.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The image-source method: mirror the loudspeaker above the ceiling.",
+   "flags": [
+    "RV-05",
+    "Q-009"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1768
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The whiteboard numbers: delta L about 1.7 meters; delta t equals delta L over c, about 1.7 meters divided by 343 meters per second, about 4.96 milliseconds; first notch near 101 hertz, then every 202 hertz; seat 12, delta L about 1.4 meters, notches near 123 hertz and every 245 hertz. Illustrative geometry.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "talk"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Sound goes about 343 meters a second. So 1.7 over 343… about five milliseconds late. That's why it moves."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-05",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "INFERRED",
+     "label": "EV-CASE001-03"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1274
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "mystery",
+   "where": null,
+   "lines": [
+    {
+     "who": "ray",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Five milliseconds. The human ear doesn't hear that as an echo. It hears it as a bad day."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya states what would prove her wrong before she tests it.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "If it's the reflection, turning the fill down should make the notches shallower. If it doesn't, I'm wrong."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": 70,
+   "art_bytes": 1284
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Before and after: seat 13's analyzer strip with the fill turned down 6 decibels. The notches get shallower. The hollowness softens but doesn't vanish.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The notches get shallower. Not gone.",
+   "flags": [
+    "VR-06",
+    "RV-05"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "EV-S01E01-08"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3519
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray finally closes his book and asks Maya a question.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "R",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "What would you tell someone who wasn't here tonight?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "That the fill is pointed at the ceiling, and the ceiling is talking to ten seats."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1342
+  },
+  {
+   "origin": "injected",
+   "type": "history",
+   "title": "Thomas Young and interference",
+   "body": "In 1801 Thomas Young showed that light passing through two slits makes bands of bright and dark — waves adding and cancelling. Sound from two loudspeakers obeys the same arithmetic. The hollow seats are Young's fringes, in air.",
+   "flag": "RV-27",
+   "when": "1801",
+   "lab": "PHY-S01E01"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III — “Who climbs”",
+   "sub": "9:15 p.m. Tuesday, and Wednesday by phone"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The fill loudspeaker hangs three meters up on an overhead mount, tilted toward the ceiling. Maya looks up at it from the floor.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-14"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1538
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E01-02",
+   "prompt": "Now you know why. What goes in the plan for Sunday?",
+   "happening": "The fill is aimed at the ceiling, and the ceiling is talking to ten seats.",
+   "clock": "Tuesday · 5 days to Sunday",
+   "known": [
+    "▮ Notches move seat to seat",
+    "▮ Turning the fill down makes them shallower",
+    "◉ Renovation tilted the fill up"
+   ],
+   "unknown": [
+    "How much the balcony needs the fill",
+    "Fill-to-mains timing"
+   ],
+   "risk": "Ten seats now; the balcony front after any change.",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "",
+   "lab": "LAB-EQ-02",
+   "lab_label": "before the crew arrives, prove to yourself why a delay or EQ only fixes one seat.",
+   "options": [
+    {
+     "letter": "A",
+     "label": "EQ out the notches",
+     "result": "Sounds different, still hollow.",
+     "consequence": "Sunday is still hollow; Dolores leans forward again.",
+     "chips": [
+      "Overconfident"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Turn the fill off",
+     "result": "Center fixed; side rows and balcony thin.",
+     "consequence": "Complaint cards move to the side rows within a month.",
+     "chips": [
+      "Side rows trust you less"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Have Mateo's crew re-aim it",
+     "result": "Mateo books Thursday.",
+     "consequence": "The balcony front gets weaker; it goes to the budget meeting in S01E08 (DEBT-010).",
+     "chips": [
+      "Two days",
+      "Balcony tradeoff logged",
+      "Owner: Imani"
+     ],
+     "badges": [
+      {
+       "kind": "up",
+       "text": "Escalate"
+      }
+     ],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 2,
+      "sev": 1,
+      "trust": {
+       "Mateo": 1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask Dolores to move seats",
+     "result": "She agrees, politely.",
+     "consequence": "Nine other seats are still hollow; a new card from row 8 arrives within two weeks.",
+     "chips": [
+      "Dolores trusts you less"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya calls Mateo, who installed the fill. His voice on speaker.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Mateo",
+     "kind": "phone",
+     "text": "We aimed it up because the balcony was complaining. Nobody checked the middle after."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1219
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Mateo offers to bring a lift.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Mateo",
+     "kind": "phone",
+     "text": "I can bring the lift Thursday. Nobody under it but my crew."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-14"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1220
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Wednesday lunchtime. Maya's phone rings: it's Ana.",
+   "characters": [
+    {
+     "id": "ana",
+     "pose": "H",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Ana",
+     "kind": "phone",
+     "text": "Imani said you were looking at Mom's seat. Is it her hearing? Should I book the audiologist?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 527
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S1-01",
+   "who": "ana",
+   "prompt": "Be honest with me. Is Mom losing it? She won't tell me anything.",
+   "options": [
+    {
+     "label": "“It's the room. I'd bet on it.”",
+     "who": "ana",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "You'd bet. Would you bet her seat on it?",
+     "trust": {
+      "Ana": -1
+     }
+    },
+    {
+     "label": "“The room is doing something to everyone in those seats — me included. Her hearing is her audiologist's question.”",
+     "who": "ana",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "…Thank you for not guessing. Everyone else guesses.",
+     "trust": {
+      "Ana": 1,
+      "Dolores": 1
+     }
+    },
+    {
+     "label": "“Maybe book the audiologist anyway?”",
+     "who": "ana",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "So you do think it's her.",
+     "trust": {
+      "Ana": -1,
+      "Dolores": -1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E01-03",
+   "prompt": "Ana asks: “Is it Mom's hearing? Should I book the audiologist?”",
+   "happening": "",
+   "clock": null,
+   "known": [
+    "▮ The room makes ten seats hollow for anyone",
+    "↑ Mateo re-aims Thursday"
+   ],
+   "unknown": [
+    "Whether Dolores's hearing has changed — not Maya's to judge"
+   ],
+   "risk": "",
+   "timer_s": 25,
+   "timeout": [
+    "Ana books the audiologist on her own; Dolores is told it's her ears.",
+    "Silence to a worried family member is an answer too."
+   ],
+   "hints": [],
+   "note": "The drawer “What do you actually know?” lists Maya's evidence and marks Dolores's hearing as outside her competence.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "“Probably her hearing aids”",
+     "result": "Ana books the appointment.",
+     "consequence": "Dolores skips Sunday; the second proof happens without her.",
+     "chips": [
+      "Unfounded",
+      "Dolores's family trusts you less"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Blaming her hearing without evidence — and it wasn't her hearing.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Dolores": -1,
+       "Ana": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "“The room. It's fixed.”",
+     "result": "Ana is relieved.",
+     "consequence": "A calibration penalty. If the proof had failed, trust would have failed with it.",
+     "chips": [
+      "Promised before proof"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A promise before proof.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Ana": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "“We'll know by Sunday”",
+     "result": "Ana: “She'll want her seat back.”",
+     "consequence": "Dolores is in her seat on Sunday.",
+     "chips": [
+      "Calibrated",
+      "Ana trusts you more"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Dolores": 1,
+       "Ana": 1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "“Ask her audiologist”",
+     "result": "Ana is confused.",
+     "consequence": "Ana learns about the room from Imani, second-hand.",
+     "chips": [
+      "Withholds what you know"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya takes a breath and says only what she knows.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "talk"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Maya",
+     "kind": "phone",
+     "text": "We found something in the room that makes those ten seats sound hollow to anyone — I hear it too."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 455
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #2 · AVERY'S LENS  Speak the user's language  Use the words people use, then translate for the system — never the other way round.  Dolores said “hollow”. Maya heard “comb filtering” but answered in Dolores's word, and measured in hers."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S01E01",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya continues, and Ana is quiet, then answers.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "smile"
+    },
+    {
+     "id": "ana",
+     "pose": "H",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "phone",
+     "text": "We're changing it Thursday and we'll know Sunday. Her hearing is her audiologist's question, not mine."
+    },
+    {
+     "side": "R",
+     "who": "Ana",
+     "kind": "phone",
+     "text": "She'll want her seat back."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 526
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III (cont.) — “Thursday”",
+   "sub": "10:00 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Thursday. Mateo on the lift re-aiming the fill; a crew member below; yellow tape ropes off the area with a sign reading NO ONE UNDER THE LOAD. Maya stays outside the tape with her broom-handle microphone.",
+   "characters": [
+    {
+     "id": "mateo",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "usher",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Maya stays outside the tape.",
+   "flags": [
+    "RV-14",
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2077
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": "Thursday · the lift",
+   "lines": [
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "I don't go up the lift. I stand outside the tape and hold the clipboard like it's a very important clipboard."
+    },
+    {
+     "who": "mateo",
+     "pose": "N",
+     "expr": "grin",
+     "text": "It is. It's got my name on it."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The fill is re-aimed down at the middle rows, at ear height. Mateo photographs the new angle and signs the work record.",
+   "characters": [
+    {
+     "id": "mateo",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "EV-CASE001-04"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1650
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya's measurements after the re-aim: the ten seats' deep notches are gone; four side seats are still covered; the balcony front is noticeably weaker than before. She writes it down rather than hiding it.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The fill used to reach the balcony front. Now it doesn't. She writes it down.",
+   "flags": [
+    "RV-05",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "condition 1 · empty room"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 886
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act IV — Proof · “Every word”",
+   "sub": "Sunday, week 3 · 10:30"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "During the sermon Maya slips into an empty seat at the end of row 8 and listens: a full room and a live voice. No hollowness.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "closed"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Condition 2: a full room and a live voice. No hollowness.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "condition 2 · full room"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1502
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Dolores in her seat. Halfway through the sermon, she sits back.",
+   "characters": [
+    {
+     "id": "dolores",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Halfway through the sermon, she sits back.",
+   "flags": [
+    "RV-21"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 875
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "After the service Dolores finds Maya in the booth.",
+   "characters": [
+    {
+     "id": "dolores",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dolores",
+     "kind": "speech",
+     "text": "I could hear every word. I thought it was me."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "So did I, last week. It was the room."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1285
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "dolores",
+     "pose": "N",
+     "expr": "smile",
+     "text": "I stopped coming to evenings because I didn't want anyone to see me lean."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(She had been leaning for two years. Nobody asked why.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Change log entry #2: 'Center fill re-aimed (Mateo, Thursday). Trim back to 0 dB. Balcony front now weaker — owner decision needed.' Imani adds it to her budget list.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1376
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray reads the change-log entry.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Aim at people, not the ceiling. A commissioning engineer I learned from used to make me write it exactly like that."
+    }
+   ],
+   "narration": [],
+   "caption": "[COMIC Ch.06]",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1209
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-001 · from the Empathia Learn Fieldbook, pp. 90–96  The Upward Center Fill  Ten seats. Two years. One loudspeaker pointed at the ceiling.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-001"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "lessonbreak",
+   "cls": "lessonbreak",
+   "text": "PRACTICE BREAK · S01 · E01  Your turn before the debrief  Work this episode's problem yourself: a drill, a lesson, and the live incident. Every one can be failed, and every failure explains itself."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "drill",
+   "id": "C-01",
+   "label": "**Clue Board:** ten hollow seats.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "A3",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-07",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag — “Tuesday again”",
+   "sub": "a week later"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Late on a Tuesday, Priya and Maya run a controlled test: the overflow encoder, now on its own small switch, is plugged back into the old booth switch for sixty seconds. The receive rate jumps and the test stream drops audio; unplugged, it recovers.",
+   "characters": [
+    {
+     "id": "priya",
+     "pose": "P",
+     "expr": "grin"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Priya",
+     "kind": "speech",
+     "text": "There's your mechanism. Now it's not a theory."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-01",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "EV-S01E01-16"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1791
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya updates the pilot's incident note: the mechanism is verified by controlled reproduction; last Sunday's freeze is still unknown.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "today"
+    },
+    {
+     "state": "UNKNOWN",
+     "label": "last Sunday"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1642
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A notch that moves when you move one seat is geometry, not EQ. Verify at the seats people sit in — and when a fix for ten seats costs someone else, write that down too. [COMIC: \"Aim at people, not the ceiling.\"]"
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Dolores has sat in the same seat for thirty years. Faithfulness runs both ways: a community that asks people to keep showing up owes them a room where they can hear.  Boundary: none of this explains or proves the acoustics."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S01E01",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

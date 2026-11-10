@@ -1,0 +1,871 @@
+{
+ "chapter": {
+  "id": "s09e01",
+  "kicker": "S09 · E01",
+  "title": "The Remote Account",
+  "pill": "S09E01 · The Remote Account",
+  "sub": "A login meant to live for three weeks has lived for ninety days. Somebody used it on Sunday.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S09E01",
+   "RV-170",
+   "RV-171",
+   "RV-172",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#F472B6"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 9 · EPISODE 1 · DRAFT · CASE-045  The Wyndmere, three months after opening · Maya, Solveig (head of security), Dario and Kit · Level L5 · Advanced support (formulas on request)  Maya’s first access review finds a login that was meant to live for three weeks. It’s been ninety days — and somebody used it on Sunday.  ⚑ RV-170: security owns access and any investigation. RV-171: governance only — no attack detail. RV-172: figures illustrative. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "The Remote Account",
+   "kind": "LIVE VENUE · SECURITY",
+   "level": "L5 · ADVANCED",
+   "party": [
+    "maya",
+    "solveig",
+    "kit"
+   ],
+   "stakes": "An integrator's commissioning login is still live three months after handover — and someone used it at 03:12 on Sunday.",
+   "clock": "Before Friday's security review.",
+   "reward": "Support that's named, approved and recorded — and a shared login that no longer works.",
+   "objectives": [
+    {
+     "key": "BR-S09E01-01",
+     "text": "Decide what you do with what you found"
+    },
+    {
+     "key": "twist",
+     "text": "Find who knows the password"
+    },
+    {
+     "key": "core",
+     "text": "Sort the accounts"
+    },
+    {
+     "key": "BR-S09E01-02",
+     "text": "Decide how the old door closes"
+    },
+    {
+     "key": "BR-S09E01-03",
+     "text": "Decide what stops the next one"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "The most dangerous account is the one everyone forgot."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Eleven accounts”",
+   "sub": "Tuesday · 10:00 a.m. · security office"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The Wyndmere's small security office: a wall of camera tiles, an incident screen reading ALL CLEAR; Kit points at a printed account list; Maya reads it.",
+   "characters": [
+    {
+     "id": "kit",
+     "pose": "P",
+     "expr": "surprised"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s9kit.bg_soc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Kit",
+     "kind": "speech",
+     "text": "Eleven accounts on the control processors. I thought we had four."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And one of them logged in on Sunday at three in the morning."
+    }
+   ],
+   "narration": [],
+   "caption": "Three months after opening.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2109
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "tension",
+   "where": "security office · Tuesday 10:00",
+   "lines": [
+    {
+     "who": "kit",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Eleven accounts. I thought we had four."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "So did everybody. That's why we look."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Nine people, one password”",
+   "sub": "Tuesday · 10:10 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S09E01-01",
+   "prompt": "10:10. ‘ext-support’ is still live, and it was used from outside at 03:12. What do you do?",
+   "happening": "A commissioning login still live.",
+   "clock": "Tuesday 10:10 · security review Friday",
+   "known": [
+    "◉ ext-support live",
+    "◉ Login 03:12 from outside"
+   ],
+   "unknown": [
+    "Who used it"
+   ],
+   "risk": "Lost evidence — or a door anyone could walk through.",
+   "timer_s": 20,
+   "timeout": [
+    "Nobody decides.",
+    "The account stays live another week."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Whose decision is an account — and what must survive until they make it?"
+    }
+   ],
+   "note": "Draft decision (DR-S09E01).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Delete it now",
+     "result": "Solveig, later: “And the evidence of who used it went with it — and the integrator's only way to fix a show.”",
+     "consequence": "Destroys evidence and cuts support in one move.",
+     "chips": [
+      "Evidence lost"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "SECURITY'S"
+      }
+     ],
+     "canonical": false,
+     "fail": "Accounts are security's.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Solveig": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Take the account list and the login record to Solveig; change nothing until she decides",
+     "result": "Solveig exports the logs read-only, then asks Dario the questions with you.",
+     "consequence": "Security owns access and the evidence; you bring the facts.",
+     "chips": [
+      "Security",
+      "Evidence"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Dario": 2,
+       "Solveig": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Log in as ext-support to see what it can reach",
+     "result": "Solveig: “Never with someone else's credentials.”",
+     "consequence": "Makes you part of the log.",
+     "chips": [
+      "Not yours"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "CREDENTIALS"
+      }
+     ],
+     "canonical": false,
+     "fail": "Never use another person's credentials.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Solveig": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Message Dario: who's been using your login?",
+     "result": "He asks his team in a group chat; the answer gets fuzzier.",
+     "consequence": "The right question, asked by the wrong person, the wrong way.",
+     "chips": [
+      "Not the owner's route"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Nine people, one password.",
+   "body": "With Solveig in the room, Dario is straight with them. ext-support is his team's on-call login. Nine people know the password; two of them have left his firm. The 03:12 login was his current on-call technician fixing a stuck preset before a Sunday matinee — legitimate, and still untraceable to a person, unapproved and invisible to the venue.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S09E01-1",
+   "label": "Test: how much of the nine is gone — and was it an attack?"
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ask for it",
+   "sub": "Advanced · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Maya and Solveig beside a board. Nine people know the ext-support password. Two have left the integrator. It's been live ninety days since handover. Two of nine is twenty-two percent gone. Nine people for ninety days is eight hundred and ten person-days of exposure. And it's still the only way they can patch us. So we build the new door before we close the old one.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "solveig",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s9kit.bg_soc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Nine people know the ext-support password. Two have left the integrator. It's been live ninety days since handover."
+    },
+    {
+     "side": "R",
+     "who": "Solveig",
+     "kind": "speech",
+     "text": "Two of nine is twenty-two percent gone. Nine people for ninety days is eight hundred and ten person-days of exposure."
+    },
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And it's still the only way they can patch us. So we build the new door before we close the old one."
+    }
+   ],
+   "narration": [],
+   "caption": "Advanced: the formula is there if you ask. Try without it first.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2564
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t3",
+   "text": "📙 ON REQUEST · ADVANCED  Terms   Remote access account   Offboarding   Access review   If you need it   ƒ Ask for the formula · Percentage   ƒ FORMULA · Percentage  % = part ÷ whole × 100   part  the piece you are measuring  whole  everything it is part of      ƒ Ask for the formula · Exposure in device-days   ƒ FORMULA · Exposure in device-days  E = N × t   E  exposure, device-days  N  devices at risk  t  days they stay at risk"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "G1",
+   "label": "**Learn it now:** remote access — accounts, owners and offboarding.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     Point it at people, not at the ceiling     Sound that brings people in     Case study: when an expired license nearly ruined the show"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "M-901",
+   "label": "**Sort it:** named, shared, service or orphaned?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "An account-review sheet: seven of the eleven accounts. maya.k and k.okafor named; booking-svc a service account; ext-support shared by nine people, t.hallan and demo orphaned, and techs shared with its password on the wall — the last four highlighted, with nobody as owner; ext-support's last login 03:12 from outside.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Four accounts nobody owns.",
+   "flags": [
+    "RV-172"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "account list (read-only export)"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 4824
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “The handover said ‘removed’”",
+   "sub": "Wednesday · 2:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The handover said ‘removed’.",
+   "body": "Maya opens the handover checklist she helped write last season. Line 41: ‘Integrator remote access: removed.’ Ticked, initialled T.H. — the technician who left the integrator in the summer. No account list attached, nobody's second check. Fifty-nine other ticks look exactly the same.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S09E01-2",
+   "label": "Test: one false tick in sixty — and what would have made it true?"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S09E01-02",
+   "prompt": "Wednesday. Solveig wants ext-support gone by Friday. How does the old door close?",
+   "happening": "Shared login explained.",
+   "clock": "Wednesday 14:30",
+   "known": [
+    "◉ Nine people",
+    "◉ Handover tick false"
+   ],
+   "unknown": [
+    "Whether named sessions work with the integrator's tools"
+   ],
+   "risk": "A door anyone could walk through — or a show nobody can fix.",
+   "timer_s": 25,
+   "timeout": [
+    "Nothing changes this week.",
+    "ext-support stays live over the weekend."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What has to exist before the old login can go?"
+    }
+   ],
+   "note": "Draft decision (DR-S09E01).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Security disables it tonight",
+     "result": "Saturday a preset sticks and nobody can reach the processors until Monday.",
+     "consequence": "Closes the old door before there's a new one.",
+     "chips": [
+      "Support cut"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Named accounts for Dario's team through a jump host security runs — each session approved and recorded — then security disables ext-support once a named session has worked",
+     "result": "Thursday: six named logins, one test session recorded. Friday: ext-support refused.",
+     "consequence": "The new door first, then the old one closes.",
+     "chips": [
+      "Named",
+      "Jump host"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Dario": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Change the ext-support password and send it to the seven who still work there",
+     "result": "Seven people, one new password — the same problem with a new date on it.",
+     "consequence": "Shares the key again.",
+     "chips": [
+      "Still shared"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Leave it, but watch the logs",
+     "result": "Watching a shared login still can't tell you who.",
+     "consequence": "A camera on an unlocked door.",
+     "chips": [
+      "No owner"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "The first hijacked demonstration",
+   "body": "In June 1903 a physicist was about to demonstrate long-distance wireless telegraphy at the Royal Institution in London, as proof that the new system was private. Before it began, the receiver started tapping out Morse on its own — ‘Rats’, then a rude limerick about the inventor. A rival stage magician and wireless experimenter had tuned in from nearby to prove the opposite. The demonstration went ahead. So did the argument about who could get in.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #82 · AVERY'S LENS  Every account has an owner and an end date  An account nobody owns outlives the people who used it. Give each one a named owner, a reason and a date it ends — and check.  ‘ext-support’ was made for three weeks of commissioning. Ninety days later, nine people could still log in with it — two of them no longer worked for the integrator."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S09E01",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The account-review sheet after the fix: the named and service accounts remain; ext-support, t.hallan, demo and techs greyed out and marked disabled by security; named access via the jump host, reviewed every quarter.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Every account left has a name on it.",
+   "flags": [
+    "RV-170"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "old login refused"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 4590
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S9-01",
+   "who": "solveig",
+   "prompt": "You could have just deleted it. Why bring it to me?",
+   "options": [
+    {
+     "label": "“Because it's your call, and deleting it would have deleted your evidence and the integrator's only way to fix a show.”",
+     "who": "solveig",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "Then you'll do reviews with me. Every quarter.",
+     "trust": {
+      "Solveig": 2
+     }
+    },
+    {
+     "label": "“I didn't want to get in trouble.”",
+     "who": "solveig",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "That's a reason. It isn't the reason.",
+     "trust": {
+      "Solveig": 0
+     }
+    },
+    {
+     "label": "“I wasn't sure how.”",
+     "who": "solveig",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Good. People who are sure how are the ones I worry about.",
+     "trust": {
+      "Solveig": 1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S9-01a",
+   "teaser": "the account list",
+   "title": "ext-support · last login 03:12",
+   "body": "The control processors' account list, exported read-only by security: eleven accounts. ext-support — created during commissioning — last login Sunday 03:12, from the integrator's VPN range.",
+   "thread": "Network",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S09E01-03",
+   "prompt": "Friday's review. What stops the next forgotten account?",
+   "happening": "ext-support disabled.",
+   "clock": "Friday 09:00",
+   "known": [
+    "◉ Four orphaned or shared accounts found"
+   ],
+   "unknown": [
+    "What the signage and lighting systems hold"
+   ],
+   "risk": "The same finding next quarter, on a different system.",
+   "timer_s": 25,
+   "timeout": [
+    "No process changes.",
+    "Next quarter's review doesn't happen."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who would have noticed ext-support, and when?"
+    }
+   ],
+   "note": "Draft decision (DR-S09E01).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "A stronger password policy",
+     "result": "The next forgotten account will have a strong password.",
+     "consequence": "Solves the wrong problem.",
+     "chips": [
+      "Wrong fix"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Every account gets a named owner, a reason and an end date; security runs a quarterly access review; the integrator's contract requires offboarding notice within a day; handover ticks need evidence attached and a second check",
+     "result": "Solveig takes the review; Dario signs the clause; Nkechi adds ‘evidence attached’ to every handover template.",
+     "consequence": "Owner, end date, review — and ticks that prove themselves.",
+     "chips": [
+      "Owners",
+      "Review"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Nkechi": 1,
+       "Dario": 1,
+       "Solveig": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Ban remote access",
+     "result": "The integrator drives two hours for every stuck preset.",
+     "consequence": "Trades one risk for another.",
+     "chips": [
+      "Impractical"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Make Maya the only admin",
+     "result": "One person, one set of keys, one holiday away from nobody.",
+     "consequence": "A single point of failure.",
+     "chips": [
+      "Single point"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-901",
+   "label": "**Service Mode:** run the week yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-045 · SIGNAL original  Integrator's Remote Account  It was made for three weeks of commissioning. Ninety days later, nine people could still use it.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-045"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Friday · 11:00 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The security office on Friday; the incident screen reads ALL CLEAR; Solveig and Maya.",
+   "characters": [
+    {
+     "id": "solveig",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s9kit.bg_soc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Solveig",
+     "kind": "speech",
+     "text": "Six named logins, one refused old one, and a review in my calendar every quarter."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The control processors, anyway. Signage and lighting are next."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2110
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S9-01b",
+   "teaser": "the handover checklist",
+   "title": "line 41 · ‘removed’ ✓",
+   "body": "The S8 handover checklist, line 41: ‘Integrator remote access: removed.’ Ticked. Initials: T.H. — the technician who left the integrator in the summer. No evidence attached.",
+   "thread": "Method",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The lobby during a Saturday matinee interval: every screen on the wall reads EVACUATE in red; the fire alarm panel beside it reads NORMAL; Tamsin, the duty manager, points; Maya stares.",
+   "characters": [
+    {
+     "id": "tamsin",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s8kit.bg_foyer",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tamsin",
+     "kind": "speech",
+     "text": "Forty seconds of that in the interval. No fire. My ushers held the stairs."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Who sent it?"
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Signage Says Evacuate.*",
+   "flags": [
+    "RV-173"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3817
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Every account needs a named owner, a reason and an end date. Measure exposure (% = part ÷ whole × 100; E = N × t) and take findings to whoever owns access — security. Build named, approved, recorded access before the old shared login is disabled, so nobody loses the ability to fix a show. Never use someone else’s credentials; never delete the evidence."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Which login in your world was made for a few weeks and is still there?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S09E01",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

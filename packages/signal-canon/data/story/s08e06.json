@@ -1,0 +1,863 @@
+{
+ "chapter": {
+  "id": "s08e06",
+  "kicker": "S08 · E06",
+  "title": "Two Firmwares",
+  "pill": "S08E06 · Two Firmwares",
+  "sub": "The show configuration went out to the lobby wall. A hundred and eighty decoders said no.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S08E06",
+   "RV-160",
+   "RV-161",
+   "RV-164",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#FACC15"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 8 · EPISODE 6 · DRAFT  The lobby and the MER · Maya, Kit, Dario (the AV contractor’s project manager) and Odile · Level L5 · Advanced support (formulas on request)  The show configuration went out to the lobby video wall at six. Half of it said no.  ⚑ RV-160: each contractor changes its own systems; Maya specifies. RV-161: figures illustrative. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Two Firmwares",
+   "kind": "LIVE BUILD · COORDINATION",
+   "level": "L5 · ADVANCED",
+   "party": [
+    "maya_site",
+    "kit_site",
+    "dario_site"
+   ],
+   "stakes": "Half the lobby video wall is black three days before the donor preview. Two shipments of the same decoder, two firmwares.",
+   "clock": "Before Friday, 18:00.",
+   "reward": "One firmware, a network where the work can't touch the show — and a spec that names the version.",
+   "objectives": [
+    {
+     "key": "BR-S08E06-01",
+     "text": "Decide what happens tonight"
+    },
+    {
+     "key": "twist",
+     "text": "Find the split"
+    },
+    {
+     "key": "core",
+     "text": "Stage the update off the show network"
+    },
+    {
+     "key": "BR-S08E06-02",
+     "text": "Decide how the 180 get updated"
+    },
+    {
+     "key": "BR-S08E06-03",
+     "text": "Decide what the spec says now"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "‘Current’ is a moving target."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Which half?”",
+   "sub": "Tuesday · 7:10 p.m. · lobby"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The lobby: the video wall with every other display black; Dario, the AV contractor's project manager, points at it; Maya faces him.",
+   "characters": [
+    {
+     "id": "dario_site",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya_site",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "s8kit.bg_build",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dario",
+     "kind": "speech",
+     "text": "Two hundred and twenty took the config. A hundred and eighty said no."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Which hundred and eighty?"
+    }
+   ],
+   "narration": [],
+   "caption": "Donor preview on Friday.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 5629
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "tension",
+   "where": "lobby · Tuesday 19:10",
+   "lines": [
+    {
+     "who": "dario_site",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Two hundred and twenty took it. A hundred and eighty said no."
+    },
+    {
+     "who": "maya_site",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Then we find out why before anybody pushes anything else."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Two shipments, two firmwares”",
+   "sub": "Tuesday · 7:15 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S08E06-01",
+   "prompt": "19:15. Half the wall is black. The lighting contractor is programming the show on the same switches tonight. What now?",
+   "happening": "180 of 400 decoders reject the config.",
+   "clock": "Tuesday 19:15 · preview Friday 18:00",
+   "known": [
+    "◉ 180 black",
+    "◉ Lighting programming tonight"
+   ],
+   "unknown": [
+    "Why these 180"
+   ],
+   "risk": "A blind push beside the lighting programmer — or a black wall at the preview.",
+   "timer_s": 20,
+   "timeout": [
+    "Someone pushes the update anyway.",
+    "Lighting loses an evening's programming."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What do you need to know before anyone changes anything?"
+    }
+   ],
+   "note": "Draft decision (DR-S08E06).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Ask Dario to push 4.1 to all 180 right now from the production controller",
+     "result": "Odile: “Not while my programmer is on that network.”",
+     "consequence": "Changes production blind, next to someone else's work.",
+     "chips": [
+      "Blind change"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Find out before you push.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Odile": -1,
+       "Dario": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Stop pushing. Ask Dario for the controller's inventory — version and shipment per endpoint — and the network contractor for the switch and VLAN map. Nothing changes on production tonight",
+     "result": "By nine you know which 180, why, and what else is on VLAN 60.",
+     "consequence": "Know the split and the neighbours before touching anything.",
+     "chips": [
+      "Inventory",
+      "Map"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Dario": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Roll the 220 back to 3.8 so everything matches",
+     "result": "The show config needs 4.1. Now nothing takes it.",
+     "consequence": "Matches the wrong way.",
+     "chips": [
+      "Backwards"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Order 180 new decoders",
+     "result": "Six weeks' lead time. The preview is Friday.",
+     "consequence": "Expensive, and too late.",
+     "chips": [
+      "Too slow"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Two shipments, two firmwares.",
+   "body": "The inventory: 220 decoders from shipment 1 on firmware 4.1; 180 from shipment 2, packed fourteen months earlier from a distributor's stock, on 3.8 — 45% of the fabric. The spec said ‘current firmware at delivery’. No version, no check at receiving. And the switch map has the lighting console and its nodes on VLAN 60, the AV production network — ‘temporary’ since fit-out. The drawings put lighting on VLAN 70.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S08E06-1",
+   "label": "Test: how much of the fabric — and what let it through?"
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ask for it",
+   "sub": "Advanced · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Maya and Kit beside a board. A hundred and eighty of four hundred endpoints are on three-point-eight. How long to update them safely? Forty-five percent of the fabric. Twenty at a time, six minutes a batch — nine batches, fifty-four minutes. On a staging VLAN. Not tonight, on production, while lighting programs on the same switches.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "kit",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s8kit.bg_mer",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "A hundred and eighty of four hundred endpoints are on three-point-eight. How long to update them safely?"
+    },
+    {
+     "side": "R",
+     "who": "Kit",
+     "kind": "speech",
+     "text": "Forty-five percent of the fabric. Twenty at a time, six minutes a batch — nine batches, fifty-four minutes. On a staging VLAN."
+    },
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Not tonight, on production, while lighting programs on the same switches."
+    }
+   ],
+   "narration": [],
+   "caption": "Advanced: the formula is there if you ask. Try without it first.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3687
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t3",
+   "text": "📙 ON REQUEST · ADVANCED  Terms   Firmware   Staging VLAN   Update path   AV-over-IP   If you need it   ƒ Ask for the formula · Percentage   ƒ FORMULA · Percentage  % = part ÷ whole × 100   part  the piece you are measuring  whole  everything it is part of      ƒ Ask for the formula · Time budget   ƒ FORMULA · Time budget  T = Σ (count × time each)   count  how many of each task  time each  minutes or seconds per task — keep units the same"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "F6",
+   "label": "**Learn it now:** firmware at scale — versions, staging and update paths.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     The first step to networking, AV style     AV and production terminology guide     AV networking — the church network"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "🎥 SEE IT · CHALLENGE · LEVEL 3  Kill the moiré on the LED wall  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "see-moire"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A fabric sheet before the fix: VLAN 60 carries the controller, all 400 decoders and the lighting; VLAN 61 not built; VLAN 70 empty since fit-out; a bar of 400 decoders, 220 green on 4.1 and 180 red on 3.8, 45%; the spec line ‘current firmware at delivery’, no version named, nobody checked at receiving.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "One network, two firmwares, and a neighbour who shouldn't be there.",
+   "flags": [
+    "RV-161"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "inventory + switch map"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2758
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lab",
+   "id": "LAB-NET-10",
+   "label": "**Fix it:** stage the update off the show network.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “One hop too far”",
+   "sub": "Wednesday · 11:00 p.m. · MER"
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "One hop too far.",
+   "body": "The network contractor builds staging VLAN 61 and moves lighting to 70, as drawn. Dario's technician takes one decoder from 3.8 to 4.1 on staging. It reboots into recovery mode. Page 3 of the release notes: anything older than 4.0 must go to 4.0 first. The 220 never took this path — they left the factory on 4.1. One decoder on a bench, not 180 on the wall.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S08E06-2",
+   "label": "Test: how long with two hops — and why one first?"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S08E06-02",
+   "prompt": "23:20. The pilot is recovered on 4.0. How do the other 179 get updated?",
+   "happening": "Pilot recovered; the path known.",
+   "clock": "Wednesday 23:20",
+   "known": [
+    "◉ Path: 3.8 → 4.0 → 4.1",
+    "◉ Staging built"
+   ],
+   "unknown": [
+    "Whether every batch behaves"
+   ],
+   "risk": "A mass failure the night before the preview.",
+   "timer_s": 25,
+   "timeout": [
+    "Nobody decides; the update waits a night.",
+    "The preview is a day closer."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "How do you find a problem after twenty, not after 179?"
+    }
+   ],
+   "note": "Draft decision (DR-S08E06).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "All 179 at once, through both versions, tonight",
+     "result": "If one batch fails, it fails 179 times — the night before the preview.",
+     "consequence": "No way to stop halfway.",
+     "chips": [
+      "All at once"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Dario's team: 3.8 → 4.0 → 4.1 on staging, batches of 20, each batch checked for version, config and picture before the next — two nights, outside lighting's hours",
+     "result": "Nine batches, two hops, six minutes each: 108 minutes over two nights. Every batch checked.",
+     "consequence": "Staged, verified, on the maker's path.",
+     "chips": [
+      "Update path",
+      "Batches"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Dario": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Skip 4.0 — the 220 went straight to 4.1",
+     "result": "Twenty more decoders in recovery mode.",
+     "consequence": "The 220 never took that path.",
+     "chips": [
+      "Wrong path"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Follow the update path.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Leave them on 3.8 and write a second config",
+     "result": "Two configs to maintain for the life of the building.",
+     "consequence": "Makes the split permanent.",
+     "chips": [
+      "Drift"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "Two threads",
+   "body": "In February 1904 a fire burned through downtown Baltimore for more than a day. Engine companies came by train from Washington, Philadelphia and New York — and many of their hoses would not fit Baltimore's hydrants. The threads were different. More than 1,500 buildings were lost. A national standard for hose couplings followed within a couple of years; getting every city to adopt it took far longer.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #77 · AVERY'S LENS  A version is part of the design  If two versions of the same device behave differently, the version belongs in the specification — and gets checked when the boxes arrive.  The spec said ‘current firmware at delivery’. Two shipments arrived months apart, and ‘current’ meant two different things."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S08E06",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The fabric sheet after the fix: VLAN 60 with the controller and the decoders on 4.1; VLAN 61 with the update tool and one batch of 20; VLAN 70 with the lighting console and nodes, as drawn; all 400 decoders green on 4.1; the path 3.8 to 4.0 to 4.1, 9 batches times 2 hops times 6 minutes, 108 minutes; every batch verified and the firmware register signed.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "One firmware. Nothing else touched.",
+   "flags": [
+    "RV-161"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "400 of 400 · 4.1"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2565
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S8-06",
+   "who": "dario",
+   "prompt": "My guys can flash all hundred and eighty tonight. Two hours. You sign off, we go.",
+   "options": [
+    {
+     "label": "“Not on production, not tonight. Staging VLAN first, one endpoint first — your tools, your team. I'll get the network change scheduled.”",
+     "who": "dario",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "One first. Fine. It's cheaper than a hundred and eighty in recovery.",
+     "trust": {
+      "Dario": 2
+     }
+    },
+    {
+     "label": "“Go. We need the wall.”",
+     "who": "dario",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "…Your call. I'll want it in writing.",
+     "trust": {
+      "Dario": -1
+     }
+    },
+    {
+     "label": "“Your problem, Dario. Just fix it.”",
+     "who": "dario",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "The spec said ‘current’. That's your problem too.",
+     "trust": {
+      "Dario": 0
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S8-06a",
+   "teaser": "the controller's inventory",
+   "title": "fw 3.8 · 180 · ship 2",
+   "body": "The controller's inventory, sorted by version: 220 decoders on 4.1, serials from shipment 1; 180 on 3.8, serials from shipment 2 — packed fourteen months earlier, from a distributor's warehouse.",
+   "thread": "Network",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S08E06-03",
+   "prompt": "Friday morning. What does the specification say from now on?",
+   "happening": "The wall is whole.",
+   "clock": "Friday 10:00",
+   "known": [
+    "◉ Spec named no version"
+   ],
+   "unknown": [
+    "What else arrives on old stock"
+   ],
+   "risk": "The next shipment with a different ‘current’.",
+   "timer_s": 25,
+   "timeout": [
+    "The spec stays as it was.",
+    "The spare decoders arrive next month — on 3.9."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What would have caught shipment 2 at the loading dock?"
+    }
+   ],
+   "note": "Draft decision (DR-S08E06).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "‘Latest firmware’",
+     "result": "Latest on which day?",
+     "consequence": "Same words, same problem.",
+     "chips": [
+      "Moving target"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "A named version per device in the submittal; a version check on a sample of every shipment at receiving; a firmware register in the commissioning plan; updates pilot → batch → all, with the update path read first",
+     "result": "Dario adds the check to his receiving form; Nkechi adds the register.",
+     "consequence": "Name it, check it, record it.",
+     "chips": [
+      "Named version",
+      "Receiving check"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Nkechi": 1,
+       "Dario": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Ban updates until opening",
+     "result": "The next security fix waits for no one.",
+     "consequence": "Freezes the problem in place.",
+     "chips": [
+      "Frozen"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Blame the distributor",
+     "result": "True, and it'll happen again with the next one.",
+     "consequence": "Blame isn't a control.",
+     "chips": [
+      "Blame"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-806",
+   "label": "**Service Mode:** run the three days yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Friday · 6:00 p.m. · donor preview"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The lobby at the donor preview: every display on the wall lit; Kit and Maya at either side.",
+   "characters": [
+    {
+     "id": "kit_site",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya_site",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s8kit.bg_build",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Kit",
+     "kind": "speech",
+     "text": "Four hundred of four hundred. And lighting got their VLAN back."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And the spec has a number in it where it used to say ‘current’."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 5626
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S8-06b",
+   "teaser": "the 4.1 release notes",
+   "title": "Upgrade path · page 3",
+   "body": "The 4.1 release notes, page 3, in a box nobody read: ‘Devices on versions earlier than 4.0 must be updated to 4.0 before installing 4.1. Direct updates may leave the device in recovery mode.’",
+   "thread": "Network",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The main hall from the floor: the lighting catwalk overhead, one section unfinished behind barrier tape and a NO ACCESS sign; Odile points up at it; Maya beside her. Nobody is on the catwalk.",
+   "characters": [
+    {
+     "id": "odile_site",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya_site",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s8kit.bg_catwalk",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Odile",
+     "kind": "speech",
+     "text": "The band rehearses Thursday. The loudspeaker cluster isn't up — and somebody's already asking about that catwalk."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Nobody goes on that catwalk."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *The Catwalk.*",
+   "flags": [
+    "RV-162"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1864
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Count the split before you touch it (% = part ÷ whole × 100). Stage updates on their own VLAN, away from production and its neighbours. Read the release notes for the update path, update one device first, then batches you verify (T = Σ count × time each). Name firmware versions in the spec and check them when the boxes arrive. The contractor updates; the network contractor changes the switches; Maya specifies."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Where in your work does “current” or “latest” stand in for a number someone should have written down?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S08E06",
+   "label": null,
+   "gate": null
+  }
+ ]
+}
