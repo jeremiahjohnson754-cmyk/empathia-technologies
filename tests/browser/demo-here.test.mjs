@@ -94,7 +94,8 @@ const incidents = (p) => p.evaluate(() => { const w = JSON.parse(localStorage.ge
   await p.click('.hr-kind[data-kind=camera]'); await p.click('[data-testid=dev-A-0106]'); await p.waitForTimeout(120);
   const dev = await at(p, '[data-testid=here-device]').innerText();
   ok('H-31', 'an employee has five steps: no History step, no unit codes, no asset or position in what a device says (D44)', e.rail.length === 5 && !e.rail.some((r) => /History/.test(r)) && await p.locator('[data-testid=here-units]').count() === 0 && /Camera 1 — Shows the room/.test(dev) && !/A-0106|AS-0112|Position/.test(dev), JSON.stringify({ rail: e.rail, dev }));
-  ok('H-32', 'and is offered no link it could not open', !e.links.includes(`#/room/${REF}`) && e.links.every((h) => h.startsWith('#/search')), JSON.stringify(e.links));
+  // H-32 changed (10 Nov, Room Control): the employee may operate a room (V2.5.3 control.use), so the room's panel is now among the links; the room record still is not
+  ok('H-32', 'and is offered no link it could not open', !e.links.includes(`#/room/${REF}`) && e.links.every((h) => h.startsWith('#/search') || h === `#/control/${REF}`), JSON.stringify(e.links));
   await next(p); await p.click('[data-testid=here-sym-room-cant-hear]'); await p.waitForTimeout(150);
   const ew = await p.evaluate(() => ({ step: document.querySelector('[data-testid=here-page]').dataset.step, codes: [...document.querySelectorAll('.hr-chain li .ui-meta')].map((b) => b.textContent), known: document.querySelector('[data-testid=here-known]')?.textContent.replace(/\s+/g, ' ') || '' }));
   await p.click('[data-testid=here-sym-blank]'); await p.waitForTimeout(150);
@@ -148,6 +149,16 @@ const incidents = (p) => p.evaluate(() => { const w = JSON.parse(localStorage.ge
   ok('H-48', 'the Search Party bar finds the page by what a person would type', first === 'In this room', first);
   await p.keyboard.press('Enter'); await p.waitForTimeout(500);
   ok('H-49', 'and opens it', /#\/here$/.test(p.url()) && await step(p) === 'arrive', p.url()); await t.close(); }
+
+// ------------------------------------------------------------------ Tour E walks it, and the visitor acts inside the tour (the final directive, §12: a tour demonstrates real controls)
+{ const t = await open('#/tours/e?stop=9', { role: 'service' }); const p = t.page; await p.waitForSelector('[data-testid=here-record]', { timeout: 8000 }).catch(() => undefined); await p.waitForTimeout(300);
+  const head = await p.locator('[data-testid=guided] .tour__k').innerText().catch(() => '');
+  await p.click('[data-testid=here-add]'); await p.waitForSelector('[data-testid=here-done]');
+  const joined = await attr(p, '[data-testid=here-done]', 'data-outcome');
+  await p.click('[data-testid=guided] button:has-text("Next")'); await p.waitForSelector('[data-testid=seen-again]', { timeout: 8000 }).catch(() => undefined);
+  const seen = (await at(p, '[data-testid=seen-again]').innerText().catch(() => '')).replace(/\s+/g, ' ');
+  ok('H-53', 'inside Tour E the visitor presses the real control at “Write it down”, and the next stop shows what they wrote on the job in ServiceHands', /stop 9 of 12/.test(head) && joined === 'joined' && /Seen again in the room \(1\)/.test(seen) && /Service Engineer in the room/.test(seen), JSON.stringify({ head, joined, seen: seen.slice(0, 120) }));
+  ok('H-54', 'no console error in the tour', !t.errs.filter((e) => !/narration|ERR_FAILED|net::/.test(e)).length, t.errs.join(' | ')); await t.close(); }
 
 // ------------------------------------------------------------------ a phone, in the room: both themes, 44 px controls, nothing sideways
 for (const w of [390, 320]) { const t = await open(`#/here/${REF}`, { role: 'employee', w, h: 780 }); const p = t.page; await p.waitForSelector('[data-testid=here-look]');

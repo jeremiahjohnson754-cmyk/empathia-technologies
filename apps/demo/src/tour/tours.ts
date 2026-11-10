@@ -11,7 +11,7 @@ export interface Stop { id: string; title: string; text: string; href: string; s
   ask?: { q: string; a: string };
   /** searches a visitor can run from this stop with one press (tour D's "search anything" stop) */
   tries?: string[] }
-export interface Tour { key: 'a' | 'b' | 'c' | 'd'; title: string; audience: string; goal: string; stops: Stop[] }
+export interface Tour { key: 'a' | 'b' | 'c' | 'd' | 'e'; title: string; audience: string; goal: string; stops: Stop[] }
 
 const ROOM = `#/campus/ATL/4/${REFERENCE_ROOM_ID}`;
 export const TOURS: Tour[] = [
@@ -79,6 +79,35 @@ export const TOURS: Tour[] = [
       ask: { q: 'Is it finished?', a: 'The whole text and its drawings are here. Recorded voices and video are not made yet, and 318 passages are flagged for review.' } },
     { id: 'D14', title: 'What is real today', text: 'Everything you saw is synthetic and runs in this browser. Nothing is sold from here. From this page, explore freely or send an enquiry.', href: '#/investor',
       ask: { q: 'What can a customer buy today?', a: 'Nothing self-serve. Of 34 products, 22 are demonstrated on synthetic data, 6 are partly built, 1 is unverified code and 5 are specified only.' } },
+  ] },
+  // Tour E (founder, 10 November 2026, the signature demonstration; the final directive's Enterprise moment): someone walks into a room
+  // they do not know and one set of records carries them from its equipment to a written outcome and the evidence behind the room.
+  // Every stop is a working page: the visitor presses the controls themselves, and what they write down is really written.
+  { key: 'e', title: 'Tour E — Walk into a room', audience: 'Anyone; best seen as a Service Engineer', goal: 'Follow one room from “what is this?” to a written outcome, through Lite, Search Party, ServiceHands and Commissioning, without the room ever becoming a different record.', stops: [
+    { id: 'E1', title: 'Someone arrives', text: 'A technician is sent to a room they have never seen. Their start page has “In a room”; every door label opens the same page.', href: '#/home', spot: 'rh-jump',
+      ask: { q: 'Does it know which room I am standing in?', a: 'No. You say which room, or a phone reads the door label. Indoor positioning is not built.' } },
+    { id: 'E2', title: 'Which room?', text: 'A name, a number, or the code on the door. Type “4.218”, or press the reference room.', href: '#/here', spot: 'here-find',
+      ask: { q: 'What is on the door label?', a: 'Only the address of this page for that room. It is a real code: a phone camera pointed at it opens the room here.' } },
+    { id: 'E3', title: 'What is in the room', text: 'Atlas 4.218 in a sentence, then by kind. Press a kind and it is ringed on the plan; press 3D for the same room in three dimensions.', href: `#/here/${REFERENCE_ROOM_ID}?step=look`, spot: 'here-kinds',
+      ask: { q: 'Where does the equipment list come from?', a: 'From the room’s design record: eleven positions, each with the unit installed in it. No make, model or serial is invented, so identity stays unknown.' } },
+    { id: 'E4', title: 'The same room in Lite', text: 'Lite draws the same positions, with lenses for a visitor, an employee and an engineer, and the room as designed, commissioned, current and proposed.', href: `#/lite/room/${REFERENCE_ROOM_ID}`, spot: 'lite-3d',
+      ask: { q: 'Is it a copy made for the tour?', a: 'No. Both pages read one record, so a device has one position code wherever you meet it.' } },
+    { id: 'E5', title: 'What has happened here', text: 'An open sound job that came back after an earlier one was closed, a design finding, and a camera that was replaced. Newest and still-open first.', href: `#/here/${REFERENCE_ROOM_ID}?step=history`, spot: 'here-history',
+      ask: { q: 'Can everyone read a room’s history?', a: 'No. History follows the role table carried from V2.5.3: an employee or a visitor is not shown this step at all.' } },
+    { id: 'E6', title: 'Everything linked to it', text: 'Search Party opens on this room: its devices, its jobs, who supports it and what depends on what, each relationship with its source.', href: `#/search?focus=Room:${REFERENCE_ROOM_ID}`, spot: 'search-party',
+      ask: { q: 'Is a language model writing these answers?', a: 'No. Search Party walks recorded relationships and shows where each one comes from. Nothing is generated.' } },
+    { id: 'E7', title: 'What is wrong', text: '“The room can’t hear the call” becomes this room’s equipment in signal order: room compute, audio processor, loudspeakers, joined as the record connects them. And a job already describes it.', href: `#/here/${REFERENCE_ROOM_ID}?step=wrong&s=room-cant-hear`, spot: 'here-points',
+      ask: { q: 'Is that a diagnosis?', a: 'No. It is where the problem can sit, read from the room’s recorded connections. Finding the cause is the technician’s work.' } },
+    { id: 'E8', title: 'Try this', text: 'One step at a time, written for this room’s equipment. Answer each one yourself. Nothing asks anyone to open a cabinet or change a commissioned setting.', href: `#/here/${REFERENCE_ROOM_ID}?step=try&s=room-cant-hear`, spot: 'here-current',
+      ask: { q: 'Does it control the room?', a: 'No. No device is contacted from this page. A step asks a person to look, press a button meant for them, or say what they see.' } },
+    { id: 'E9', title: 'Write it down', text: 'Add what you saw to the job that already exists, or send a new one. Press the button: it is really written, in this browser.', href: `#/here/${REFERENCE_ROOM_ID}?step=record&s=room-cant-hear`, spot: 'here-record',
+      ask: { q: 'Where does it go?', a: 'Into the shared workspace of this demonstration, which ServiceHands, the room page and Mission Control all read. Nothing leaves the browser.' } },
+    { id: 'E10', title: 'The technician’s side', text: 'ServiceHands shows the job with who reported it, what was already tried in the room, and anyone who saw it again.', href: '#/servicehands?id=ISS-0417', spot: 'servicehands',
+      ask: { q: 'Are real technicians dispatched?', a: 'No. The people, clocks and windows are synthetic. The rules that decide who may be assigned are real code.' } },
+    { id: 'E11', title: 'The evidence behind the room', text: 'The room’s commissioning dossier: every test with its evidence. Acceptance needs two approvals from two roles and is held while a test is failed or pending.', href: '#/dossier', spot: 'dossier-signoff',
+      ask: { q: 'Could the person who did the work approve it?', a: 'Not through these rules. A role that recorded the work cannot approve it, and the second approval must come from a different role than the first.' } },
+    { id: 'E12', title: 'One room, one record', text: 'The room you walked into, drew in Lite, searched, reported on and inspected was the same record each time. From here, explore freely.', href: `#/room/${REFERENCE_ROOM_ID}`, spot: 'room-view',
+      ask: { q: 'Is any of this connected to a real building?', a: 'No. Every record is synthetic and runs in this browser. Connecting a customer’s estate is work that has not been done.' } },
   ] },
 ];
 

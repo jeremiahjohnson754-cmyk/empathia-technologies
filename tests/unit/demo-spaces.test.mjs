@@ -114,8 +114,9 @@ test('Search Party scenarios: accurate counts, synthetic labels, never “certif
 });
 
 // 10 Nov 2026: a fourth tour (D, "What investors ask", 14 stops) was added on the founder's instruction; A, B and C keep their 10 / 10 / 7.
-test('tours: 10 / 10 / 7 / 14 stops, honest copy, narration only from a shipped VERIFIED take whose file matches its hash', async () => {
-  assert.deepEqual(tours.TOURS.map((t) => t.stops.length), [10, 10, 7, 14]);
+// 10 Nov 2026, later: a fifth tour (E, "Walk into a room", 12 stops: the founder's signature demonstration) was added; A–D are unchanged.
+test('tours: 10 / 10 / 7 / 14 / 12 stops, honest copy, narration only from a shipped VERIFIED take whose file matches its hash', async () => {
+  assert.deepEqual(tours.TOURS.map((t) => t.stops.length), [10, 10, 7, 14, 12]);
   for (const t of tours.TOURS) for (const s of t.stops) { assert.doesNotMatch(`${s.title} ${s.text} ${s.ask?.q || ''} ${s.ask?.a || ''}`, tours.BANNED, s.id); assert.match(s.href, /^#\//, s.id); assert.ok(s.text.length < 320, s.id); }
   for (const [id, n] of Object.entries(tours.NARRATION)) {
     const f = path.join(repo, 'apps/demo/public', n.src); assert.ok(fs.existsSync(f), id);
@@ -134,6 +135,12 @@ test('tours: 10 / 10 / 7 / 14 stops, honest copy, narration only from a shipped 
   const sig = JSON.parse(fs.readFileSync(path.join(repo, 'packages/signal-canon/data/stats.json'), 'utf8')); const flagged = JSON.stringify(sig).match(/"(?:flags|reviewFlags|review_flags)"\s*:\s*(\d+)/);
   { const PR = await import(pathToFileURL(path.join(repo, 'packages/proof-registry/dist/src/index.js')).href); const tot = PR.replay(PR.DOSSIER_4218, []).totals; assert.match(stop('D10').text, new RegExp(`${tot.pass} tests passed, ${tot.pending} pending, ${tot.fail} failed`)); }
   assert.match(stop('D13').text, /Prologue and 133 chapters across twelve seasons/); if (flagged) assert.match(stop('D13').ask.a, new RegExp(`${flagged[1]} passages are flagged`));
+  // tour E: every stop opens a real address, carries its question, and what it says about the reference room is the room's own record
+  { const E = tours.TOURS.find((t) => t.key === 'e'); const es = (id) => E.stops.find((s) => s.id === id); const ref = design.roomRecord('R-ATL-4-218');
+    for (const s of E.stops) { assert.ok(s.ask && s.ask.q.endsWith('?') && s.ask.a.length > 30 && s.ask.a.length < 260, `${s.id} question and answer`); assert.ok(s.spot, `${s.id} points at something on the page`); }
+    assert.equal(ref.positions.filter((p) => !p.furniture).length, 11, 'E3 says eleven positions'); assert.match(es('E3').ask.a, /eleven positions/);
+    assert.ok(ref.installations.some((i) => i.removedAt && ref.positions.find((p) => p.code === i.position)?.cat === 'camera'), 'E5 says a camera was replaced');
+    assert.deepEqual(E.stops.filter((s) => s.href.startsWith('#/here')).map((s) => new URLSearchParams(s.href.split('?')[1] || '').get('step')), [null, 'look', 'history', 'wrong', 'try', 'record'], 'the walk-in steps in their order'); }
   const used = tours.TOURS.flatMap((t) => t.stops).filter((s) => s.narration); assert.ok(used.every((s) => tours.NARRATION[s.narration]));
   const bytes = Object.values(tours.NARRATION).reduce((n, x) => n + fs.statSync(path.join(repo, 'apps/demo/public', x.src)).size, 0);
   assert.ok(bytes < 2_000_000, `narration media ${bytes} bytes within the 2 MB budget`);
