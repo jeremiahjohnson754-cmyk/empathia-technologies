@@ -18,3 +18,17 @@ States: PLANNED, PICTURE_RECORDED, NARRATED, QC_AUTOMATED, HUMAN_REVIEWED, APPRO
 | 0:10.9 | Twenty-seven pass. Three are pending. Two fail. | 4.0 s |
 | 0:19.2 | So the answer is no. | 1.4 s |
 | 0:23.5 | Empathia. Proof, before acceptance. | 2.8 s |
+
+## QC record — scene 01 narrated master (9 November, 22:40)
+
+| Check | Result | How |
+|---|---|---|
+| Container and streams | PASS: 27.094 s, 1920 × 1080, two streams (picture and sound), 7.9 MB | Read from the file by the composing service's own metadata tool |
+| Picture content (ten checks) | PASS | `QC.json` from the recording script, on the silent picture |
+| Narration words, pronunciation, level | **NOT RUN** | The file cannot be brought into this workspace (the network gateway refuses the host), and the transcription connector accepts sound files only, not video. Plan: transcribe the five voice files with word timings and compare with the script |
+| Sync of each line to its picture | NOT RUN (placed by construction at 1.2, 5.3, 10.9, 19.2 and 23.5 s) | Needs eyes and ears, or the transcription above |
+| Frame-by-frame continuity of the joined file | NOT RUN | The five segments were re-encoded and joined by the service; cut points need viewing |
+| Human review | NOT DONE | Founder |
+
+Rule for every generated video from here on (founder, 9 November): no video is called done without this record filled in, and a row
+that could not be run says NOT RUN.
