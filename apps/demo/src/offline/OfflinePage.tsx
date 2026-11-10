@@ -11,6 +11,7 @@ import type { PageProps } from '../registry.types.js';
 import { Block, Rows } from '../worlds/kit.js';
 import { dropPack, keepPack, keptState, loadPacks, mib, storage, turnOff, turnOn, type Kept, type Pack } from './offline.js';
 import { useOffline } from './Strip.js';
+import { FieldQueueDemo } from './FieldQueueDemo.js';
 
 const PHASE_WORD = { unsupported: 'Cannot be saved in this browser', off: 'Not saved', saving: 'Saving the app on this device…', ready: 'Saved on this device', failed: 'Not saved: saving did not finish' } as const;
 /** What a field user can rely on without a connection once the app is saved. Each line names a page of this demonstration. */
@@ -70,8 +71,9 @@ export default function OfflinePage(_: PageProps) {
       </Block>
       <Block title="What works without a connection" sub="once the app is saved" testId="offline-works">
         <ul className="of-works">{WORKS.map((w) => <li key={w.name}><a href={w.href}>{w.name}</a><span>{w.what}</span></li>)}</ul>
-        <p className="ui-muted">What you do in these pages is written to this browser as you do it and is still there after a reload, connected or not. This demonstration sends nothing to a server, so there is nothing to synchronise. In the product, results recorded in the field without a connection wait in a queue and are sent when it returns; that queue is not part of this demonstration.</p>
+        <p className="ui-muted">What you do in these pages is written to this browser as you do it and is still there after a reload, connected or not. This demonstration sends nothing to a server, so there is nothing to synchronise. In the product, results recorded in the field without a connection wait in a queue and are sent when it returns. The rules of that queue are demonstrated below against a simulated server; no screen of this demonstration sends its work through it.</p>
       </Block>
+      <FieldQueueDemo online={s.online} />
       <Block title="Keep more on this device" sub="optional" testId="offline-packs">
         {packErr && <Notice tone="warn">The list of packs could not be fetched. It will load when the connection returns.</Notice>}
         {!ready && !packErr && <p className="ui-muted">Packs are served by the saved app, so the app is saved first.</p>}

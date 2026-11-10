@@ -20,3 +20,21 @@
   .of-works li { grid-template-columns: 1fr; gap: 2px; }
   .of-pack .ui-btn { flex: 1 1 100%; }
 }
+/* the field queue demonstration on #/offline */
+.fq-controls { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-4); align-items: center; padding: var(--sp-3); border: 1px dashed var(--line3); border-radius: var(--r-md); margin: var(--sp-2) 0 var(--sp-3); }
+.fq-switch { display: flex; gap: var(--sp-2); align-items: flex-start; min-height: var(--target-min, 44px); flex: 1 1 16rem; font-size: var(--fs-sm); }
+.fq-switch input { width: 20px; height: 20px; margin-top: 2px; flex: none; }
+.fq-switch .ui-meta { display: block; }
+.fq-controls .ui-btn, .fq-acts .ui-btn { min-height: var(--target-min, 44px); }
+.fq-grid { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--sp-4); align-items: start; }
+.fq-tests { list-style: none; margin: 0 0 var(--sp-3); padding: 0; display: grid; }
+.fq-tests li { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--line2); font-size: var(--fs-sm); }
+.fq-acts { display: flex; flex-wrap: wrap; gap: 6px; }
+.fq-count { margin: 0 0 var(--sp-2); padding: 10px 14px; border-left: 3px solid var(--accent); background: var(--panel2); border-radius: 0 var(--r-md) var(--r-md) 0; font-size: var(--fs-sm); }
+.fq-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.fq-list > li { display: grid; gap: 4px; padding: 10px 12px; border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--panel); }
+.fq-list > li[data-state="CONFLICT"], .fq-list > li[data-state="REJECTED"] { border-color: var(--bad); }
+.fq-list p { margin: 0; }
+.fq-entry__h { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; font-size: var(--fs-sm); }
+.fq-entry__h .ui-tag { margin-left: auto; }
+@media (max-width: 820px) { .fq-grid { grid-template-columns: 1fr; } .fq-tests .fq-acts { width: 100%; } .fq-tests .fq-acts .ui-btn { flex: 1 1 0; } }

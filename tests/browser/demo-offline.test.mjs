@@ -122,6 +122,41 @@ await e.ctx.setOffline(true); await e.page.evaluate(() => window.dispatchEvent(n
 ok('OF-30', 'offline without a saved app, the strip says plainly that unopened pages will not load', /not saved on this device yet/.test(await e.page.textContent('[data-testid=offline-strip]')), await e.page.textContent('[data-testid=offline-strip]'));
 await e.close();
 
+// ------------------------------------------------------------------------------------------------ the field queue, against a simulated server
+{ const s = await open('#/offline', { role: 'cxeng' }); const q = s.page; await ready(q);
+  const st = () => q.evaluate(() => { const n = (sel, a) => Number(document.querySelector(sel).getAttribute(a)); return { entries: Array.from(document.querySelectorAll('[data-testid=fq-entry]')).map((e) => e.getAttribute('data-state')), attempts: Array.from(document.querySelectorAll('[data-testid=fq-entry]')).map((e) => Number(e.getAttribute('data-attempts'))), counted: n('[data-testid=fq-counted]', 'data-counted'), recorded: n('[data-testid=fq-counted]', 'data-recorded'), applied: n('[data-testid=fq-server]', 'data-applied'), version: n('[data-testid=fq-server]', 'data-version'), mine: document.querySelectorAll('[data-testid=fq-applied][data-by="this device"]').length, text: document.querySelector('[data-testid=fq-device]').innerText }; });
+  const until = (f, arg) => q.waitForFunction(f, arg, { timeout: 12000 }).then(() => true, () => false);
+  const states = (want) => until((w) => JSON.stringify(Array.from(document.querySelectorAll('[data-testid=fq-entry]')).map((e) => e.getAttribute('data-state'))) === w, JSON.stringify(want));
+  await q.locator('[data-testid=fq-pass]').nth(0).click(); await q.locator('[data-testid=fq-fail]').nth(1).click(); let v = await st();
+  ok('OF-40', 'with no connection to the server, two results are recorded on the device and neither counts: 0 of 2, nothing on the server', JSON.stringify(v.entries) === '["WAITING","WAITING"]' && v.counted === 0 && v.recorded === 2 && v.applied === 0 && /Not sent yet/.test(v.text) && !/\b(saved|synced|passed and recorded)\b/i.test(v.text), JSON.stringify(v).slice(0, 300));
+  await q.reload(); await q.waitForSelector('[data-testid=fq-entry]', { timeout: 8000 }).catch(() => undefined); v = await st();
+  ok('OF-41', 'after a reload they are still waiting on the device', JSON.stringify(v.entries) === '["WAITING","WAITING"]' && v.applied === 0, JSON.stringify(v.entries));
+  await q.check('[data-testid=fq-link]'); const sent2 = await states(['SENT', 'SENT']); v = await st();
+  const order = await q.evaluate(() => Array.from(document.querySelectorAll('[data-testid=fq-applied]')).map((e) => e.innerText.split('\n')[0]));
+  ok('OF-42', 'when the connection returns both are sent in the order they were recorded, acknowledged, and only then counted: 2 of 2', sent2 && v.counted === 2 && v.applied === 2 && v.version === 5 && /^PASS · The display wakes/.test(order[0]) && /^FAIL · The far end hears/.test(order[1]), JSON.stringify({ v: v.entries, order }));
+  await q.check('[data-testid=fq-lose]'); await q.locator('[data-testid=fq-pass]').nth(2).click();
+  const lost = await until(() => document.querySelector('[data-testid=fq-server]').getAttribute('data-applied') === '3' && document.querySelectorAll('[data-testid=fq-entry]')[2]?.getAttribute('data-state') === 'WAITING' && document.querySelectorAll('[data-testid=fq-entry]')[2]?.getAttribute('data-attempts') === '1'); v = await st();
+  ok('OF-43', 'an answer lost on the way back: the server has applied the result, the device does not know, so it still does not count (2 of 3) and says it will try again', lost && v.counted === 2 && v.recorded === 3 && /answer was lost/.test(v.text) && /tried again/.test(v.text), JSON.stringify(v).slice(0, 300));
+  const again = await states(['SENT', 'SENT', 'SENT']); v = await st();
+  ok('OF-44', 'the retry uses the same key: the device now counts it (3 of 3) and the server has still applied it exactly once', again && v.counted === 3 && v.applied === 3 && v.mine === 3 && v.attempts[2] === 2 && v.version === 6, JSON.stringify(v).slice(0, 200));
+  await q.uncheck('[data-testid=fq-link]'); await q.locator('[data-testid=fq-pass]').nth(0).click(); await q.click('[data-testid=fq-other]'); await q.locator('[data-testid=fq-fail]').nth(1).click(); await q.check('[data-testid=fq-link]');
+  const conflict = await states(['SENT', 'SENT', 'SENT', 'CONFLICT', 'WAITING']); await q.waitForTimeout(1500); v = await st();
+  ok('OF-45', 'a colleague changed the record first: this device’s result is a conflict that needs a decision, the next result waits behind it, and nothing of either reached the server', conflict && JSON.stringify(v.entries) === '["SENT","SENT","SENT","CONFLICT","WAITING"]' && v.counted === 3 && v.recorded === 5 && v.mine === 3 && v.applied === 4 && /needs your decision/.test(v.text) && /Waiting behind the change above/.test(v.text) && /recorded against version 6/.test(v.text), JSON.stringify(v).slice(0, 400));
+  await q.click('[data-testid=fq-again]'); const resolved = await states(['SENT', 'SENT', 'SENT', 'DISCARDED', 'SENT', 'SENT']); v = await st();
+  ok('OF-46', 'choosing to send it again makes a new entry against the record as it is now; it and the result behind it are then applied, in order, once each', resolved && v.counted === 5 && v.recorded === 5 && v.mine === 5 && v.applied === 6 && v.version === 9 && /Sent again after a conflict/.test(v.text), JSON.stringify(v).slice(0, 300));
+  await q.uncheck('[data-testid=fq-link]'); await q.locator('[data-testid=fq-pass]').nth(2).click(); await q.click('[data-testid=fq-other]'); await q.check('[data-testid=fq-link]');
+  await until(() => Array.from(document.querySelectorAll('[data-testid=fq-entry]')).some((e) => e.getAttribute('data-state') === 'CONFLICT')); await q.click('[data-testid=fq-drop]'); await q.waitForTimeout(1500); v = await st();
+  ok('OF-47', 'choosing to discard keeps the entry as discarded, says it was not sent, and the server never receives it', v.entries[v.entries.length - 1] === 'DISCARDED' && v.mine === 5 && v.applied === 7 && v.counted === 5 && v.recorded === 5 && /It was not sent/.test(v.text) && /was discarded and was not sent/.test(await q.textContent('[data-testid=fq-said]')), JSON.stringify(v).slice(0, 300));
+  await s.ctx.setOffline(true); await q.waitForTimeout(400); await q.locator('[data-testid=fq-pass]').nth(1).click(); await q.waitForTimeout(1500); v = await st();
+  ok('OF-48', 'with the browser itself offline the connection reads off whatever the switch says, and a result recorded then waits', (await q.getAttribute('[data-testid=fq-device]', 'data-up')) === 'false' && /this browser is offline/.test(await q.textContent('[data-testid=fq]')) && v.entries[v.entries.length - 1] === 'WAITING' && v.mine === 5, JSON.stringify(v.entries));
+  await s.ctx.setOffline(false); await q.click('[data-testid=fq-reset]'); await q.waitForTimeout(200); v = await st();
+  ok('OF-49', 'Reset returns the simulation to its start; none of this logged an error or asked anything of another origin', v.entries.length === 0 && v.applied === 0 && v.version === 3 && s.errs.length === 0 && s.off.length === 0, [...s.errs, ...s.off].join(' | '));
+  await s.close(); }
+{ const s = await open('#/offline', { role: 'cxeng', w: 390, h: 844 }); const q = s.page; await ready(q); await q.locator('[data-testid=fq-pass]').nth(0).click(); await q.waitForTimeout(200);
+  const m = await q.evaluate(() => ({ over: document.documentElement.scrollWidth - document.documentElement.clientWidth, small: Array.from(document.querySelectorAll('[data-testid=fq] button')).filter((b) => b.getBoundingClientRect().height < 44).map((b) => b.textContent) }));
+  ok('OF-50', 'phone: the field-queue demonstration fits the screen and every button is at least 44 px tall', m.over <= 0 && m.small.length === 0, JSON.stringify(m));
+  await s.close(); }
+
 // ------------------------------------------------------------------------------------------------ reachable, in both themes
 const f = await open('#/investor', { role: 'technician', theme: 'dark' });
 ok('OF-31', 'the footer of every page links to "Offline use"', (await f.page.getAttribute('[data-testid=foot-offline]', 'href')) === '#/offline');
