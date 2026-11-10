@@ -43,7 +43,7 @@ export function GuidedPanel({ hash }: { hash: string }) {
         <p className="tour__text">{s.text}</p>
         {!native && <p className="ui-meta">This stop’s address has no page of its own; it lands on the address map instead of pretending.</p>}
         {s.tries && <ul className="tour__tries" aria-label="Searches to try" data-testid="tour-tries">{s.tries.map((q) => <li key={q}><a className="ui-btn ui-btn--sm" href={`#/search?q=${encodeURIComponent(q)}`}>{q}</a></li>)}</ul>}
-        {s.ask && <details className="tour__ask" data-testid="tour-ask"><summary>{s.ask.q}</summary><p>{s.ask.a}</p></details>}
+        {s.ask && <details key={s.id} className="tour__ask" data-testid="tour-ask"><summary>{s.ask.q}</summary><p>{s.ask.a}</p></details>}
         {take && <Narration id={s.narration!} />}
       </>}
       <div className="tour__acts">

@@ -132,7 +132,7 @@ await e.close();
   await q.reload(); await q.waitForSelector('[data-testid=fq-entry]', { timeout: 8000 }).catch(() => undefined); v = await st();
   ok('OF-41', 'after a reload they are still waiting on the device', JSON.stringify(v.entries) === '["WAITING","WAITING"]' && v.applied === 0, JSON.stringify(v.entries));
   await q.check('[data-testid=fq-link]'); const sent2 = await states(['SENT', 'SENT']); v = await st();
-  const order = await q.evaluate(() => Array.from(document.querySelectorAll('[data-testid=fq-applied]')).map((e) => e.innerText.split('\n')[0]));
+  const order = await q.evaluate(() => Array.from(document.querySelectorAll('[data-testid=fq-applied] .fq-entry__h')).map((e) => e.textContent));
   ok('OF-42', 'when the connection returns both are sent in the order they were recorded, acknowledged, and only then counted: 2 of 2', sent2 && v.counted === 2 && v.applied === 2 && v.version === 5 && /^PASS · The display wakes/.test(order[0]) && /^FAIL · The far end hears/.test(order[1]), JSON.stringify({ v: v.entries, order }));
   await q.check('[data-testid=fq-lose]'); await q.locator('[data-testid=fq-pass]').nth(2).click();
   const lost = await until(() => document.querySelector('[data-testid=fq-server]').getAttribute('data-applied') === '3' && document.querySelectorAll('[data-testid=fq-entry]')[2]?.getAttribute('data-state') === 'WAITING' && document.querySelectorAll('[data-testid=fq-entry]')[2]?.getAttribute('data-attempts') === '1'); v = await st();
