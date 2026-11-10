@@ -1,5 +1,5 @@
 {
- "at": "2026-10-31T21:30:11.321Z",
+ "at": "2026-11-10T12:45:13.608Z",
  "pass": 101,
  "fail": 0,
  "tests": 101,
@@ -8,19 +8,19 @@
    "id": "D-desktop-01",
    "name": "lands on the investor start with the synthetic banner and three start actions",
    "result": "PASS",
-   "detail": "{\"hash\":\"#/investor\",\"banner\":true,\"actions\":[{\"text\":\"Launch interactive room builder\",\"h\":103.09375},{\"text\":\"Watch a guided scenario\",\"h\":103.09375},{\"text\":\"What each workflow solves\",\"h\":103.09375}],\"note\":\"A perspective changes what the demonstration shows; it grants nothing. Real access is decided by the authenticated application's server.\",\"over\":0}"
+   "detail": "{\"hash\":\"#/investor\",\"banner\":true,\"actions\":[{\"text\":\"Launch interactive room builder\",\"h\":159.734375},{\"text\":\"Watch a guided scenario\",\"h\":159.734375},{\"text\":\"What each workflow solves\",\"h\":159.734375}],\"note\":\"Everything here is invented and connected to no real system; viewing as a role grants nothing.\",\"over\":0}"
   },
   {
    "id": "D-desktop-02",
    "name": "the launch action comes first and, on a phone, is the tallest",
    "result": "PASS",
-   "detail": "[{\"text\":\"Launch interactive room builder\",\"h\":103.09375},{\"text\":\"Watch a guided scenario\",\"h\":103.09375},{\"text\":\"What each workflow solves\",\"h\":103.09375}]"
+   "detail": "[{\"text\":\"Launch interactive room builder\",\"h\":159.734375},{\"text\":\"Watch a guided scenario\",\"h\":159.734375},{\"text\":\"What each workflow solves\",\"h\":159.734375}]"
   },
   {
    "id": "D-desktop-03",
    "name": "the perspective picker says it grants nothing",
    "result": "PASS",
-   "detail": "A perspective changes what the demonstration shows; it grants nothing. Real access is decided by the authenticated application's server."
+   "detail": "Everything here is invented and connected to no real system; viewing as a role grants nothing."
   },
   {
    "id": "D-04",
@@ -42,7 +42,7 @@
   },
   {
    "id": "B-01",
-   "name": "the builder opens from the launch address and says the visitor perspective cannot create a room",
+   "name": "the launch address is refused to the visitor with the owl access page, which names the designer among the roles whose work it is",
    "result": "PASS",
    "detail": ""
   },
@@ -188,7 +188,7 @@
    "id": "S-01",
    "name": "Search Party opens on the access switch with its neighbourhood graph and the downstream impact: three rooms and their networked devices",
    "result": "PASS",
-   "detail": "Search Party · demonstration\n\nAccess switch ATL-4A\n\nNative page of this interactive demonstration: the relationship engine the product ships, on a synthetic estate held in this page. Every edge says where it comes from; what is not modelled says so.\n\nSearch\nEvery type\nBuilding (2)\nCommissioning base"
+   "detail": "Search\n\nSearch Party · relationship intelligence\n\nAccess switch ATL-4A\n\nNetwork node · IDF 4 · 48 ports · PoE\n\nSearch\nEvery type\nBuilding (10)\nCommissioning baseline (1)\nNetwork node (2)\nPerson (2)\nRole (1)\nPlanned device (541)\nPower node (1)\nProject (1)\nRoom (45)\nRoom issue (1)\nSite (1)\nWork order "
   },
   {
    "id": "S-02",
@@ -290,13 +290,13 @@
    "id": "V-06b",
    "name": "the technician sees the context packet read from the model: the switch, its uplink, the rooms sharing it and the power",
    "result": "PASS",
-   "detail": "Context packet — read from the model, not polled\nDevices\nDisplay 1 (4.218), UC room compute (4.218), Audio processor (4.218), Ceiling microphone (4.218), Touch panel (4.218)\nAccess switch\nAccess switch ATL-4A\nUplink\nCore switch ATL-CORE\nRooms sharing the switch\nAtlas 4.220 Huddle, Atlas 4.231 Training\nPower\nPower panel ATL-4\nEvidence freshness\nedges carry their provenance and date (synthetic colle"
+   "detail": "Context packet — read from the model, not polled\nDevices\nDisplay 1 (4.218), UC room compute (4.218), Audio processor (4.218), Ceiling microphone (4.218), Touch panel (4.218), Camera 1 (4.218), Ceiling microphone 2 (4.218), Loudspeaker 1 (4.218), Loudspeaker 2 (4.218), Control processor 1 (4.218), Network switch 1 (4.218)\nAccess switch\nAccess switch ATL-4A\nUplink\nCore switch ATL-CORE\nRooms sharing "
   },
   {
    "id": "V-07",
    "name": "dispatch preflight on the record: the room is booked in the proposed window, the processor stock check is stale, tools unconfirmed — each named",
    "result": "PASS",
-   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-01T19:29 → 2026-11-01T21:29\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
+   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-11T10:44 → 2026-11-11T12:44\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
   },
   {
    "id": "V-08",
@@ -362,7 +362,7 @@
    "id": "A-03",
    "name": "A2 is a read-only comparison, honest when there is no accepted baseline for the room",
    "result": "PASS",
-   "detail": "COMPARED A2 H1 2026-10-31 21:29 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
+   "detail": "COMPARED A2 H1 2026-11-10 12:44 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
   },
   {
    "id": "A-04",
@@ -374,7 +374,7 @@
    "id": "A-05",
    "name": "with approval and a window, the real adapter state blocks it: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)",
    "result": "PASS",
-   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-10-31 21:29 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
+   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-11-10 12:44 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
   },
   {
    "id": "A-06",
@@ -396,7 +396,7 @@
   },
   {
    "id": "A-09",
-   "name": "a visitor cannot act on a case",
+   "name": "a visitor cannot act on a case: the screen is not shown to the visitor (owl access page), so no tier button exists",
    "result": "PASS",
    "detail": ""
   },
@@ -470,11 +470,11 @@
    "id": "M-03",
    "name": "a passport shows numerator, denominator, window, coverage, freshness, confidence with reasons, source, exclusions and drill-down",
    "result": "PASS",
-   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-02 21:29 → 2026-10-31 21:29\nCoverage\n4 of 4 eligible recor"
+   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-12 12:44 → 2026-11-10 12:44\nCoverage\n4 of 4 eligible recor"
   },
   {
    "id": "M-04",
-   "name": "a technician does not see executive passports",
+   "name": "a technician does not see executive passports: the screen is not shown (owl access page)",
    "result": "PASS",
    "detail": ""
   },
@@ -482,7 +482,7 @@
    "id": "M-05",
    "name": "the ledger filters to the refusals, each with actor, UTC and local time and the reason",
    "result": "PASS",
-   "detail": "When (UTC)\tLocal\tWho\tEvent\tRecord\tOutcome\tDetail\n2026-10-31 21:29:51\t10/31/2026, 16:29:51\tCommissioning Engineer\tlearn.sme_review\tLC-001\tDENIED\trefused: the proposer is not the subject-matter reviewer of their own case (separation of duties)\n2026-10-31 21:29:50\t10/31/2026, 16:29:50\tCommissioning Eng"
+   "detail": "When (UTC)\tLocal\tWho\tEvent\tRecord\tOutcome\tDetail\n2026-11-10 12:44:52\t11/10/2026, 06:44:52\tCommissioning Engineer\tlearn.sme_review\tLC-001\tDENIED\trefused: the proposer is not the subject-matter reviewer of their own case (separation of duties)\n2026-11-10 12:44:51\t11/10/2026, 06:44:51\tCommissioning Eng"
   },
   {
    "id": "M-06",
@@ -570,7 +570,7 @@
   },
   {
    "id": "F-14",
-   "name": "the town hall is not licensed at this site, and a visitor cannot change that",
+   "name": "a visitor cannot change the town hall licence: Physical Validation is not shown to the visitor (owl access page)",
    "result": "PASS",
    "detail": ""
   },
@@ -590,19 +590,19 @@
    "id": "D-phone-01",
    "name": "lands on the investor start with the synthetic banner and three start actions",
    "result": "PASS",
-   "detail": "{\"hash\":\"#/investor\",\"banner\":true,\"actions\":[{\"text\":\"Launch interactive room builder\",\"h\":107.734375},{\"text\":\"Watch a guided scenario\",\"h\":82.171875},{\"text\":\"What each workflow solves\",\"h\":82.171875}],\"note\":\"A perspective changes what the demonstration shows; it grants nothing. Real access is decided by the authenticated application's server.\",\"over\":0}"
+   "detail": "{\"hash\":\"#/investor\",\"banner\":true,\"actions\":[{\"text\":\"Launch interactive room builder\",\"h\":159.734375},{\"text\":\"Watch a guided scenario\",\"h\":138.8125},{\"text\":\"What each workflow solves\",\"h\":138.8125}],\"note\":\"Everything here is invented and connected to no real system; viewing as a role grants nothing.\",\"over\":0}"
   },
   {
    "id": "D-phone-02",
    "name": "the launch action comes first and, on a phone, is the tallest",
    "result": "PASS",
-   "detail": "[{\"text\":\"Launch interactive room builder\",\"h\":107.734375},{\"text\":\"Watch a guided scenario\",\"h\":82.171875},{\"text\":\"What each workflow solves\",\"h\":82.171875}]"
+   "detail": "[{\"text\":\"Launch interactive room builder\",\"h\":159.734375},{\"text\":\"Watch a guided scenario\",\"h\":138.8125},{\"text\":\"What each workflow solves\",\"h\":138.8125}]"
   },
   {
    "id": "D-phone-03",
    "name": "the perspective picker says it grants nothing",
    "result": "PASS",
-   "detail": "A perspective changes what the demonstration shows; it grants nothing. Real access is decided by the authenticated application's server."
+   "detail": "Everything here is invented and connected to no real system; viewing as a role grants nothing."
   },
   {
    "id": "D-phone-07",
