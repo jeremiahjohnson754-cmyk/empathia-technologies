@@ -74,6 +74,7 @@ suite('unit: demo worlds (four worlds, 52 role configurations, no-loss, no grant
 suite('unit: demo estates (one model, University 38 classrooms / 4 dormitories / 3 campuses, Stadium, Convention)', 'unit', node, ['--test', 'tests/unit/demo-estates.test.mjs'], tap);
 suite('unit: Space Optimizer engine (nine dimensions, options A/B/C, stated rules, every world)', 'unit', node, ['--test', 'tests/unit/demo-optimizer.test.mjs'], tap);
 suite('unit: SIGNAL canon (hash manifest, 133 chapters / 1,610 panels / 387 decisions, engine rules, every chapter readable)', 'unit', node, ['--test', 'tests/unit/signal-canon.test.mjs'], tap);
+suite('unit: game day state machine (phases, faults on estate records, holds, independent verification, public view)', 'unit', node, ['--test', 'tests/unit/demo-gameday.test.mjs'], tap);
 suite('unit: demo core screens (health, spine, campus aggregates)', 'unit', node, ['--test', 'tests/unit/demo-core-metrics.test.mjs'], tap);
 for (const s of ['demo-campus', 'demo-rooms', 'demo-lite', 'demo-tours', 'demo-searchbar', 'demo-search-scenarios', 'demo-core', 'demo-proof', 'demo-worlds', 'demo-estate', 'demo-optimizer', 'demo-story']) suite(`browser: ${s}`, 'browser', node, [`tests/browser/${s}.test.mjs`], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? { timeout: 1200000 } : { skip: 'demo not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
 const studio = fs.existsSync(path.join(root, 'apps/founder-studio/dist/index.html'));
