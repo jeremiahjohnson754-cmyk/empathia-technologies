@@ -6,6 +6,7 @@
  *   registry.ops.ts     Mission Control, Pro, ServiceHands, commissioning, APEX, Learn …     (owner: rebuild/demo-ops)
  *   registry.parity.ts  the V2.5.3 parity areas: records, sets, ledger, compare, ask, control, V1.4 … (owner: uplift/parity-areas)
  *   registry.worlds.ts  the world-first entry: choose a world, a world's journeys, a journey's screen (owner: v18/worlds)
+ *   registry.connect.ts the people directory and the meeting assistant                              (owner: agent/connect-people-actions)
  * See README-routes.md.
  */
 import type { PageDef } from './registry.types.js';

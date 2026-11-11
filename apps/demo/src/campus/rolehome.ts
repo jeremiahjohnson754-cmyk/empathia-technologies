@@ -21,6 +21,7 @@ import { attentionQueue, campusStats, roomHealth, roomIssues } from './metrics.j
 import { flow, priorities, prioritiesFor, type Priority } from './mission.js';
 import { programme } from './programme.js';
 import { techForPersona, type Workspace } from '../workspace/store.js';
+import { connectJumps } from '../connect/jumps.js';
 
 export type Tone = 'ok' | 'warn' | 'bad' | 'info' | 'muted';
 export interface Link { label: string; href: string }
@@ -76,7 +77,7 @@ const JUMPS: Record<RoleKey, Array<[key: string, label: string, href: string, su
   architect: [['c', 'Campus', '#/campus', 'Every building and its rooms'], ['s', 'Search', '#/search', 'Search Party'], ['r', 'The room', '#/room', 'Atlas 4.218'], ['w', 'Worlds', '#/worlds', 'Enterprise, Stadium, University, Convention'], ['t', 'Tours', '#/tours', 'Guided scenarios'], ['l', 'SIGNAL', '#/story', 'The story, chapter by chapter'], ['q', 'Ask for something', '#/request', 'A room, equipment, a replacement']],
 };
 export function jumpsFor(role: RoleKey, opens: (href: string) => boolean): Jump[] {
-  return JUMPS[role].filter(([, , href]) => opens(href)).map(([key, label, href, sub]) => ({ key, label, href, sub }));
+  return [...JUMPS[role], ...connectJumps(role, JUMPS[role])].filter(([, , href]) => opens(href)).map(([key, label, href, sub]) => ({ key, label, href, sub }));
 }
 
 export interface Inputs { role: RoleKey; w: Workspace | null; opens: (href: string) => boolean; recs?: RoomRecord[]; now?: number; draft?: { code: string; name: string } | null }

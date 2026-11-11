@@ -15,8 +15,8 @@ import { CAMPUS_ROOMS, buildingByKey, fullName, roomById, shortName } from '../c
 import { roomRecord, LAYERS, type Layer } from '../campus/design.js';
 import { Stage, PlanView } from '../spatial/Spatial.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
-import { availabilityLine, whoKnows } from '../connect/directory.js';
-import { maySeeContact } from '../connect/store.js';
+import { whoKnows } from '../connect/directory.js';
+import { mayKnowWho, maySeeDetails } from '../connect/access.js';
 import { roomGuide, type SectionId } from './roomGuide.js';
 
 const ALL_LAYERS = new Set<Layer>(LAYERS.map((l) => l.key));
@@ -48,7 +48,7 @@ export default function RoomGuidePage({ role, params }: PageProps) {
   const opens = (href: string) => { const x = resolve(href.split('?')[0]!); return !!x && canOpen(role, x); };
   const sec = g.sections.find((s) => s.id === active) || null; const uses = new Set((sec ? sec.steps : []).flatMap((s) => s.uses));
   const marked = new Set(r.positions.filter((p) => !p.furniture && uses.has(p.cat)).map((p) => p.code));
-  const champion = whoKnows(o.id, new Date(), w)[0]; const B = buildingByKey(o.building);
+  const champion = whoKnows(o.id, Date.now(), w)[0]; const B = buildingByKey(o.building); const named = mayKnowWho(role);   // who to contact is told to the roles Connect tells it to (never a visitor) const B = buildingByKey(o.building);
   return (
     <div className="pa gd" data-native="" data-testid="guide" data-room={o.id}>
       <PageHero compact eyebrow={`End User Success & Training Guide · ${B?.name || o.building}`} title={g.title} product="lite" icon="book" lede={g.summary}
@@ -78,9 +78,9 @@ export default function RoomGuidePage({ role, params }: PageProps) {
           </Stage>
           <p className="gd-caption" data-testid="guide-caption" aria-live="polite">{sec ? (marked.size ? `Ringed: what “${sec.title}” uses (${marked.size} ${marked.size === 1 ? 'piece' : 'pieces'} of equipment).` : `“${sec.title}” uses no equipment of the room.`) : 'The room from above. Choose “Show on the plan” beside a task to see what it uses.'}</p>
           {champion ? <section className="gd-champ" data-testid="guide-champion" aria-labelledby="gd-champ-h"><h2 id="gd-champ-h">Your site champion</h2>
-            <p><b>{role === 'visitor' ? 'A local colleague' : champion.person.name}</b><span>{champion.person.title}</span></p>
-            <p className="gd-note">{role === 'visitor' ? 'Ask your host or the front desk to reach them.' : availabilityLine(champion.person, new Date())}</p>
-            {role !== 'visitor' && opens('#/people') ? <p><a className="ui-btn ui-btn--sm" href={`#/people?room=${o.id}`} data-testid="guide-who">{maySeeContact(role, champion.person) ? 'Reach them, and who else knows this room' : 'Who knows this room'}</a></p> : null}
+            <p><b>{named ? champion.person.name : 'A local colleague'}</b><span>{champion.person.title}</span></p>
+            <p className="gd-note">{named ? `${champion.availability.words}.` : 'Ask your host or the front desk to reach them.'}</p>
+            {named && opens('#/people') ? <p><a className="ui-btn ui-btn--sm" href={`#/people?room=${o.id}`} data-testid="guide-who">{maySeeDetails(role, champion.person) ? 'Reach them, and who else knows this room' : 'Who knows this room'}</a></p> : null}
             <p className="gd-note">For what only someone local knows: where the adapters are, who has the key, which room is free.</p></section> : null}
           <section className="gd-meta" aria-label="About this guide"><dl><div><dt>Guide</dt><dd><code>{g.id}</code></dd></div><div><dt>Status</dt><dd>Draft, {g.revision}: generic wording, not yet reviewed by a person</dd></div><div><dt>Written from</dt><dd>{g.sources.join('; ')}</dd></div><div><dt>For</dt><dd>{g.audience}</dd></div></dl>
             <button type="button" className="ui-btn ui-btn--sm gd-print" onClick={() => window.print()} data-testid="guide-print">Print or save as PDF</button></section>
