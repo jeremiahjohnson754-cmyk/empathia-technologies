@@ -12,6 +12,9 @@ import { openIssues, DEMO_NOW } from '../campus/design.js';
 import { load as loadDecisions } from '../decisions/store.js';
 import { healthOf, busyAt, nextOf, hhmm, fmtUsd, plural, AGREEMENTS, VENDORS, type Core, type Rec } from './core.js';
 import { useCore, honest, Zone, RecList, visible } from './ui.js';
+// --- knowledge hook (agent/knowledge-fabric), 1 of 2: the import
+import { KnowledgeAnswer } from '../knowledge/hooks.js';
+// --- end knowledge hook
 
 interface Answer { lead: ReactNode; cites: Rec[]; more?: Array<[string, string]> }
 interface Q { id: string; group: 'Rooms' | 'The estate' | 'Design' | 'The workplace'; text: string; words: RegExp; needsRoom?: boolean; field?: 'ask.engineering' | 'ask.portfolio'; answer: (c: Core, room: RoomOutline | null, role: RoleKey) => Answer }
@@ -81,6 +84,9 @@ export default function AskPage({ role, query }: PageProps) {
         <button className="ui-btn ui-btn--primary" type="submit"><Icon name="search" size={16} /> Ask</button>
       </form>
       <div aria-live="polite" data-testid="ask-answer">
+        {/* --- knowledge hook (agent/knowledge-fabric), 2 of 2: a question Core has no prepared answer for is asked of the Knowledge Ledger, which answers from a source this reader may read, with its citation, or abstains (knowledge/ledger.ts › answerFor) */}
+        {asked && !(ans && result) ? <KnowledgeAnswer q={asked} role={role} /> : null}
+        {/* --- end knowledge hook */}
         {asked && ans && result ? (
           <section className="pa-answer" aria-label="Answer">
             <p className="pa-note">Answering “{result.q.text.replace(shortName(REF), result.room ? shortName(result.room) : shortName(REF))}”{result.room && !roomIn(asked) ? ` — no room was named, so the reference room ${shortName(REF)}` : ''}</p>
