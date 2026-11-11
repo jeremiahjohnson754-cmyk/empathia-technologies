@@ -52,6 +52,17 @@ No exception has been used. This is the rule if one is ever proposed:
 | Independent review of In this room and Room Control | The first reviewer never reported; to be re-run | — |
 | Founder page: Search Party story and the ten-second reveal | Waits for the website branch to merge | — |
 
+## Workers at 03:30 on 11 November (all stopped by the usage limit; resuming after 06:20)
+
+| Lane | Branch | Saved state | Next |
+|---|---|---|---|
+| Connect: people, contact actions, Graph adapter, scheduling | `agent/connect-people-actions-2` | nothing committed beyond the base | resume first; role key `sitechamp`; M365 guide exists |
+| Knowledge Fabric | `agent/knowledge-fabric` | WIP `bb25a42` (ledger and seed under way) | resume |
+| Stadium "The Critical Signal" | `agent/stadium-critical-signal` | merged with the integrator's branch at `30c9e4a`; browser suite not yet run | resume; then independent review |
+| Corporate website; then the founder page story and reveal | `agent/website-collabora-founder` | WIP `a33997a` | resume |
+| Engineering-manual source reader | scratch only | `INVENTORY.md` written; principles, outline and questions not yet | resume |
+| Guides, Phase 5, independent reviewer, University, Convention, instruments, films 1–4 | — | briefs written | queued, at most four builders at once |
+
 ## Work in hand (as written on 10 November)
 
 | Stream | Worker | Lane (files) | State | Evidence |
