@@ -88,7 +88,7 @@ const ledger = (p) => p.evaluate(() => { const w = JSON.parse(localStorage.getIt
 
 // the role matrix in a browser (founder, 10 Nov 13:39: room control respects roles and permissions). The expected sets are V2.5.3's tables
 // (control area, control.use, control.engineer), the same ones tests/unit/demo-control.test.mjs RC-08 derives from the policy.
-{ const ALL = ['visitor', 'employee', 'exec', 'service', 'svcmgr', 'syseng', 'designer', 'installer', 'cxeng', 'ipm', 'bpm', 'ops', 'steward', 'architect', 'qa'];
+{ const ALL = ['visitor', 'employee', 'sitechamp', 'exec', 'service', 'svcmgr', 'syseng', 'designer', 'installer', 'cxeng', 'ipm', 'bpm', 'ops', 'steward', 'architect', 'qa'];
   const OPEN = ALL.filter((r) => !['visitor', 'qa'].includes(r)); const ENG = ['service', 'svcmgr', 'syseng', 'installer', 'cxeng', 'ops', 'architect']; const bad = []; let leaked = 0;
   for (const role of ALL) {
     const t = await open(`#/control/${REF}`, { role }); const p = t.page; await p.waitForTimeout(250);
@@ -100,7 +100,8 @@ const ledger = (p) => p.evaluate(() => { const w = JSON.parse(localStorage.getIt
     const engPanel = await p.locator('[data-testid=rc-connection]').count() === 1; const engRefused = await p.locator('[data-testid=access-page]').count() === 1;
     if (engPanel !== ENG.includes(role) || engRefused === ENG.includes(role)) bad.push(`${role}: engineer address panel=${engPanel} refused=${engRefused}`);
     await t.close(); }
-  ok('C-30', 'all fifteen roles: thirteen open and operate a panel, the Visitor and the Document Reviewer get the access page; seven get Engineer mode and its address, the rest are refused it', !bad.length, bad.join(' | '));
+  // sixteen since the Site Champion became a dedicated role (founder, 11 Nov 2026): the champion operates a room's panel as the Employee does, and is never offered Engineer mode
+  ok('C-30', 'all sixteen roles: fourteen open and operate a panel, the Visitor and the Document Reviewer get the access page; seven get Engineer mode and its address, the rest are refused it', !bad.length, bad.join(' | '));
   ok('C-31', 'a role that is refused never downloads the panel’s code', leaked === 0, String(leaked)); }
 // a role changed while the panel is open: the page re-asks the policy, and the store refuses a press that the old page would have allowed
 { const t = await open(`#/control/${REF}`, { role: 'employee' }); const p = t.page; await p.waitForSelector('[data-testid=room-panel]');

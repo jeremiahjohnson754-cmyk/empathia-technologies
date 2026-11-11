@@ -14,6 +14,7 @@ import { roomById } from '../campus/canon.js';
 import { qrMatrix, qrPath } from '../lite/qr.js';
 import { useCore, canEntity, recHref, honest, Zone } from '../parity/ui.js';
 import { useDossier, nowIso } from './store.js';
+import { roomInSite } from '../champion/store.js';
 
 /** A room's label also opens In this room (#/here), for a role that page admits. */
 const hereOpens = (role: PageProps['role']) => { const r = resolve('#/here'); return !!r && canOpen(role, r); };
@@ -59,8 +60,8 @@ function Passport({ role, can, sees }: Pick<PageProps, 'role' | 'can' | 'sees'>)
       </dl>
       {mine.length ? <><h3 className="pf-h">What the {ROLES[role].label} can do here</h3><div className="pf-actions" data-testid="scan-actions">{mine.map(([id, label, href, primary]) => <a key={id} className={`ui-btn${primary ? ' ui-btn--primary' : ''}`} data-action={id} href={href}>{label}</a>)}</div></>
         : <p className="pf-note" data-testid="scan-actions-none">This label identifies a piece of room equipment. There is nothing for the {ROLES[role].label} to do with it; the room itself is the place to start.</p>}
-      {can('scan.attest') ? <form className="pf-attest-form" onSubmit={attest} noValidate data-testid="scan-attest">
-        <h3 className="pf-h" id="attest-form-h">Site champion: how is this room working for you?</h3>
+      {can('scan.attest') && roomInSite(D.room.id) ? <form className="pf-attest-form" onSubmit={attest} noValidate data-testid="scan-attest">
+        <h3 className="pf-h" id="attest-form-h">As this site’s champion: how is this room working for people?</h3>
         <p className="pf-note">Say what you have seen in the room. The people who approve it will read your words beside the tests. This is a local attestation: it does not approve the room and it replaces nobody’s approval.</p>
         <div className="ui-field"><label htmlFor="attest-word">What you saw</label><textarea id="attest-word" rows={3} maxLength={400} value={word} onChange={(e) => setWord(e.target.value)} aria-describedby="attest-form-h" data-testid="scan-attest-word" /></div>
         <div className="pf-actions"><button type="submit" className="ui-btn" data-testid="scan-attest-go">Add my attestation</button></div>

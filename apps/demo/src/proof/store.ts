@@ -21,7 +21,8 @@ function wellFormed(e: unknown): e is DossierEvent {
   if (x['kind'] === 'RETEST') return (x['result'] === 'PASS' || x['result'] === 'FAIL') && (x['evidence'] === null || str(x['evidence'], 40));
   if (x['kind'] === 'EVIDENCE') return str(x['evidence'], 40);
   if (x['kind'] === 'VERIFY') return true;
-  if (x['kind'] === 'WAIVE') return str(x['reason'], 600) && str(x['basis'], 200) && str(x['owner'], 60) && str(x['plan'], 400) && str(x['expires'], 10) && /^\d{4}-\d{2}-\d{2}$/.test(x['expires'] as string);
+  if (x['kind'] === 'REVIEW_WAIVER') return str(x['finding'], 400);
+  if (x['kind'] === 'WAIVE') return str(x['reason'], 600) && str(x['basis'], 200) && str(x['risk'], 400) && str(x['owner'], 60) && str(x['plan'], 400) && str(x['expires'], 10) && /^\d{4}-\d{2}-\d{2}$/.test(x['expires'] as string);
   if (x['kind'] === 'RAISE') return str(x['id'], 20) && str(x['statement'], 400);
   return false;
 }

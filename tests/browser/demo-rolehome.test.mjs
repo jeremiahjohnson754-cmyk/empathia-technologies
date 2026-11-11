@@ -3,8 +3,8 @@
 // no score, issue or money.   node tests/browser/demo-rolehome.test.mjs      (build first: node scripts/build.mjs)
 import { harness } from './demo-shell-lib.mjs';
 const t = await harness('demo-rolehome'); const { ok, open, base } = t;
-const ROLES = ['ops', 'svcmgr', 'service', 'syseng', 'designer', 'installer', 'cxeng', 'ipm', 'bpm', 'steward', 'exec', 'employee', 'visitor', 'architect', 'qa'];
-const HOME = { visitor: 'Welcome', employee: 'Today', exec: 'Briefing', service: 'Today’s work', syseng: 'Drawing board', steward: 'Ledger', ops: 'Mission Control', svcmgr: 'Service delivery', designer: 'Design desk', installer: 'Field package', cxeng: 'Proof board', ipm: 'Delivery timeline', bpm: 'Business delivery', architect: 'Mission Control', qa: 'Review desk' };
+const ROLES = ['ops', 'svcmgr', 'service', 'syseng', 'designer', 'installer', 'cxeng', 'ipm', 'bpm', 'steward', 'exec', 'employee', 'sitechamp', 'visitor', 'architect', 'qa'];   // sixteen since the Site Champion became a dedicated role (founder, 11 Nov 2026)
+const HOME = { visitor: 'Welcome', employee: 'Today', exec: 'Briefing', service: 'Today’s work', syseng: 'Drawing board', steward: 'Ledger', ops: 'Mission Control', svcmgr: 'Service delivery', designer: 'Design desk', installer: 'Field package', cxeng: 'Proof board', ipm: 'Delivery timeline', bpm: 'Business delivery', architect: 'Mission Control', qa: 'Review desk', sitechamp: 'My site' };
 const MISSION = ['ops', 'architect'];
 const settle = async (p) => { await p.waitForSelector('main h1', { timeout: 8000 }).catch(() => undefined); await p.waitForTimeout(250); };
 /** the page that is showing: refused (the owl page), failed to load, or a heading */
@@ -34,7 +34,7 @@ for (const role of ROLES) {
   ok(`RS-${role}-06`, `${role}: no console error on the start page or its jumps`, s.errs.length === 0, s.errs.slice(0, 3).join(' | '));
   await s.close();
 }
-ok('RS-16', 'the thirteen role pages do not all say the same thing: their headlines differ', new Set(ROLES.filter((r) => !MISSION.includes(r)).map((r) => heads[r])).size >= 12, JSON.stringify(heads));
+ok('RS-16', 'the fourteen role pages do not all say the same thing: their headlines differ', new Set(ROLES.filter((r) => !MISSION.includes(r)).map((r) => heads[r])).size >= 13, JSON.stringify(heads));
 
 // ---------------------------------------------------------------------------------------------------------- what a visitor is not shown
 { const s = await open('#/home', { role: 'visitor' }); await settle(s.page); const text = await t.main(s.page);

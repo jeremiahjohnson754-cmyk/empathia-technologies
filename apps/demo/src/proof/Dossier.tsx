@@ -7,7 +7,7 @@
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { PageHero, Chip, Card, StatTile, Segmented, EmptyState, Icon } from '@empathia/ui';
-import { DOSSIER_4218 as D, WAIVER_MAX_DAYS, type Authority, type DossierEvent, type WorkingTest, type WorkingWaiver } from '@empathia/proof-registry';
+import { DOSSIER_4218 as D, WAIVER_MAX_DAYS, waiverKind, type Authority, type DossierEvent, type WorkingTest, type WorkingWaiver } from '@empathia/proof-registry';
 import type { PageProps, RoleKey } from '../registry.types.js';
 import { ROLES, allows, roleTitle } from '../access/policy.js';
 import { useViewAs } from '../viewas/context.js';
@@ -18,12 +18,13 @@ import { make, download, type Artifact, type Redaction } from './exports.js';
 type Filter = 'attention' | 'all' | 'FAIL' | 'PENDING' | 'PASS';
 const RESULT_TONE = { PASS: 'ok', PENDING: 'warn', FAIL: 'bad' } as const;
 const RESULT_LABEL = { PASS: 'Pass', PENDING: 'Pending', FAIL: 'Fail' } as const;
-const FIRST: RoleKey[] = ['svcmgr', 'exec']; const SECOND: RoleKey[] = ['ops', 'syseng']; const RECORDERS: RoleKey[] = ['cxeng', 'syseng', 'architect']; const VERIFIERS: RoleKey[] = ['qa', 'svcmgr', 'ops', 'architect']; const WAIVERS: RoleKey[] = ['exec', 'ops']; const OWNERS: RoleKey[] = ['cxeng', 'syseng', 'installer', 'svcmgr'];
+const FIRST: RoleKey[] = ['svcmgr', 'exec']; const SECOND: RoleKey[] = ['ops', 'syseng']; const RECORDERS: RoleKey[] = ['cxeng', 'syseng', 'architect']; const VERIFIERS: RoleKey[] = ['qa', 'svcmgr', 'ops', 'architect']; const BUSINESS: RoleKey[] = ['exec']; const TECHNICAL: RoleKey[] = ['ops']; const REVIEWERS: RoleKey[] = ['architect']; const OWNERS: RoleKey[] = ['cxeng', 'syseng', 'installer', 'svcmgr'];
 const names = (r: RoleKey[]) => r.map((k) => ROLES[k].label).join(', ');
 const either = (r: RoleKey[]) => r.map((k) => roleTitle(k)).join(' or the ');
 const day = (d: string) => new Date(`${d}T12:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 const plusDays = (n: number) => new Date(Date.now() + n * 86400000).toISOString().slice(0, 10);
-const WAIVER_WORD: Record<WorkingWaiver['state'], string> = { STANDING: 'Standing', EXPIRED: 'Run out', MOOT: 'No longer needed', VOID: 'Covers nothing' };
+const WAIVER_WORD: Record<WorkingWaiver['state'], string> = { STANDING: 'Standing', AWAITING_REVIEW: 'Awaiting engineering review', EXPIRED: 'Run out', MOOT: 'No longer needed', VOID: 'Covers nothing' };
+const KIND_WORD = { technical: 'Technical deviation', business: 'Business-risk acceptance' } as const;
 const plural = (n: number, w: string) => `${n} ${w}${n === 1 ? '' : 's'}`;
 const when = (iso: string) => new Date(iso).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 
@@ -34,6 +35,7 @@ function describe(e: DossierEvent): string {
     case 'VERIFY': return `${e.by.label} verified ${e.test}`;
     case 'RAISE': return `${e.by.label} raised ${e.id} against ${e.test}`;
     case 'WAIVE': return `${e.by.label} waived ${e.test} until ${day(e.expires)}: ${e.reason}`;
+    case 'REVIEW_WAIVER': return `${e.by.label} gave the engineering review of the waiver on ${e.test}: ${e.finding}`;
     case 'ATTEST': return `${e.by.label}, as site champion, attested: ${e.statement}`;
     case 'ACCEPT': return `${e.by.label} gave the first approval of the final sign-off${e.waivers ? `, over ${plural(e.waivers, 'waiver')}` : ''}`;
     case 'COUNTERSIGN': return `${e.by.label} gave the second approval${e.waivers ? `, over ${plural(e.waivers, 'waiver')}` : ''}: final acceptance recorded`;
@@ -48,8 +50,8 @@ export default function Dossier({ role, params, query, can, sees }: PageProps) {
   const [made, setMade] = useState<Artifact[]>([]); const [busy, setBusy] = useState(false);
   const exportRef = useRef<HTMLDivElement>(null); const alertRef = useRef<HTMLDivElement>(null);
   const me = useMemo(() => ({ role, label: ROLES[role].label }), [role]);
-  const may: Authority = { record: can('dossier.record'), verify: can('dossier.verify'), raise: can('dossier.raise'), accept: can('dossier.accept'), countersign: can('dossier.countersign'), waive: can('dossier.waive') };
-  const [wTest, setWTest] = useState(''); const [wWhy, setWWhy] = useState(''); const [wBasis, setWBasis] = useState(''); const [wPlan, setWPlan] = useState(''); const [wOwner, setWOwner] = useState<RoleKey>('cxeng'); const [wUntil, setWUntil] = useState(() => plusDays(30));
+  const may: Authority = { record: can('dossier.record'), verify: can('dossier.verify'), raise: can('dossier.raise'), accept: can('dossier.accept'), countersign: can('dossier.countersign'), waiveBusiness: can('dossier.waive.business'), waiveTechnical: can('dossier.waive.technical'), reviewWaiver: can('dossier.waive.review') };
+  const [wTest, setWTest] = useState(''); const [wWhy, setWWhy] = useState(''); const [wBasis, setWBasis] = useState(''); const [wRisk, setWRisk] = useState(''); const [wFinding, setWFinding] = useState(''); const [wPlan, setWPlan] = useState(''); const [wOwner, setWOwner] = useState<RoleKey>('cxeng'); const [wUntil, setWUntil] = useState(() => plusDays(30));
   useEffect(() => { setRefusal(null); setDone(null); }, [role]);
   useEffect(() => { if (query.get('focus') === 'export') exportRef.current?.scrollIntoView({ block: 'start' }); }, [query]);
   useEffect(() => { if (refusal) alertRef.current?.focus(); }, [refusal]);
@@ -63,8 +65,10 @@ export default function Dossier({ role, params, query, can, sees }: PageProps) {
   const shown = w.tests.filter((t) => (filter === 'all' ? true : filter === 'attention' ? attention(t) : t.result === filter));
   const held = w.acceptance === 'HELD';
   const standing = w.waivers.filter((x) => x.state === 'STANDING'); const waiverOf = (id: string) => standing.find((x) => x.test === id);
-  // what the rules would let someone waive: an open item that is not a control, not an unraised failure, and has no open P1 against it
-  const waivable = [...new Set(w.blockers.filter((b) => b.test && b.reason !== 'fails with no deficiency raised' && !w.tests.find((t) => t.id === b.test)?.control && !w.deficiencies.some((x) => x.test === b.test && x.state !== 'CLOSED' && x.severity === 'P1')).map((b) => b.test as string))];
+  // what the rules would let THIS role waive: an open item that is not a control, not an unraised failure, not missing its evidence or
+  // verification, has no open P1 against it and no waiver already awaiting review, and whose kind this role may give
+  const kindOf = (id: string) => { const t = w.tests.find((x) => x.id === id); return t ? waiverKind(t) : 'technical'; };
+  const waivable = [...new Set(w.blockers.filter((b) => b.test && (kindOf(b.test) === 'business' ? may.waiveBusiness : may.waiveTechnical) && !w.waivers.some((x) => x.test === b.test && x.state === 'AWAITING_REVIEW') && b.reason !== 'fails with no deficiency raised' && b.reason !== 'passes with no evidence record' && b.reason !== 'awaits independent verification' && !w.tests.find((t) => t.id === b.test)?.control && !w.deficiencies.some((x) => x.test === b.test && x.state !== 'CLOSED' && x.severity === 'P1')).map((b) => b.test as string))];
   const pick = waivable.includes(wTest) ? wTest : (waivable[0] || '');
   const over = standing.length ? `, with ${plural(standing.length, 'waiver')}` : '';
   const redactions: Redaction[] = sees('dossier.evidence') ? ['engineering', 'executive'] : ['executive'];
@@ -107,14 +111,16 @@ export default function Dossier({ role, params, query, can, sees }: PageProps) {
         {held ? <>
           <h3 className="pf-h">{w.blockers.length} {w.blockers.length === 1 ? 'blocker' : 'blockers'} to acceptance</h3>
           {w.blockers.length ? <ul className="pf-blockers" data-testid="dossier-blockers">{w.blockers.map((b, i) => <li key={`${b.test}-${i}`}><a href={`#t-${b.test}`} onClick={(e) => { e.preventDefault(); setFilter('all'); setTimeout(() => document.getElementById(`t-${b.test}`)?.scrollIntoView({ block: 'center' }), 0); }}><code>{b.test}</code></a> {b.reason}</li>)}</ul> : <p className="pf-note">None. Acceptance can be recorded.</p>}
-          {may.waive && waivable.length ? <form className="pf-waive" data-testid="dossier-waive" aria-labelledby="waive-h" noValidate onSubmit={(e) => { e.preventDefault(); const t = pick; const r = act({ kind: 'WAIVE', test: t, reason: wWhy.trim(), basis: wBasis.trim(), owner: ROLES[wOwner].label, plan: wPlan.trim(), expires: wUntil, by: me, at: nowIso() }, may); setRefusal(r); setDone(r ? null : `${t} is waived until ${day(wUntil)}. It stays open and is listed as waived; the approvals are given over it by other roles.`); if (!r) { setWWhy(''); setWBasis(''); setWPlan(''); } }}>
+          {(may.waiveBusiness || may.waiveTechnical) && waivable.length ? <form className="pf-waive" data-testid="dossier-waive" aria-labelledby="waive-h" noValidate onSubmit={(e) => { e.preventDefault(); const t = pick; const r = act({ kind: 'WAIVE', test: t, reason: wWhy.trim(), basis: wBasis.trim(), risk: wRisk.trim(), owner: ROLES[wOwner].label, plan: wPlan.trim(), expires: wUntil, by: me, at: nowIso() }, may); setRefusal(r); setDone(r ? null : kindOf(t) === 'technical' ? `The waiver on ${t} is recorded. It is a technical deviation, so it covers nothing until the ${either(REVIEWERS)} has given an engineering review.` : `${t} is waived until ${day(wUntil)}. It stays open and is listed as waived; the approvals are given over it by other roles.`); if (!r) { setWWhy(''); setWBasis(''); setWPlan(''); setWRisk(''); } }}>
             <h3 className="pf-h" id="waive-h">Waive an open item</h3>
-            <p className="pf-note">A waiver lets the room be accepted with one item still open. It does not pass the test. It is a documented exception: a reason, what it relies on, an owner, how the item will be closed, and an end date. The {ROLES[role].label} who gives it does not also approve. Security, record-integrity and accessibility tests, P1 deficiencies and failures nobody has raised are never offered here: they are corrected.</p>
+            <p className="pf-note">A waiver lets the room be accepted with one item still open. It does not pass the test. It is a documented exception: the reason, the evidence it relies on, the risk, an owner, how the item will be closed, and an end date. The {ROLES[role].label} who gives it does not also approve. Security, authorisation, record-integrity, accessibility and safety tests, missing evidence, P1 deficiencies and failures nobody has raised are never offered here: they are corrected.</p>
+            {pick ? <p className="pf-waive__kind" data-testid="dossier-waive-kind" data-kind={kindOf(pick)}><b>{KIND_WORD[kindOf(pick)]}.</b> {kindOf(pick) === 'technical' ? `It will cover nothing until the ${either(REVIEWERS)} has given an engineering review.` : 'Late paperwork or handover, not a failing test: the business decision is yours.'}</p> : null}
             <div className="pf-waive__row">
               <div className="ui-field"><label htmlFor="waive-test">Item</label><select id="waive-test" value={pick} onChange={(e) => setWTest(e.target.value)} data-testid="dossier-waive-test">{waivable.map((id) => <option key={id} value={id}>{id} · {w.tests.find((t) => t.id === id)?.name}</option>)}</select></div>
               <div className="ui-field"><label htmlFor="waive-until">Stands until</label><input id="waive-until" type="date" value={wUntil} min={plusDays(1)} max={plusDays(WAIVER_MAX_DAYS)} onChange={(e) => setWUntil(e.target.value)} data-testid="dossier-waive-until" /><p className="ui-field__hint">At most {WAIVER_MAX_DAYS} days.</p></div>
             </div>
             <div className="ui-field"><label htmlFor="waive-why">Why the room can be accepted with this open</label><textarea id="waive-why" rows={2} maxLength={600} value={wWhy} onChange={(e) => setWWhy(e.target.value)} data-testid="dossier-waive-why" /></div>
+            <div className="ui-field"><label htmlFor="waive-risk">What could go wrong while it is open, and for whom</label><textarea id="waive-risk" rows={2} maxLength={400} value={wRisk} onChange={(e) => setWRisk(e.target.value)} data-testid="dossier-waive-risk" /></div>
             <div className="ui-field"><label htmlFor="waive-basis">What it relies on</label><input id="waive-basis" type="text" maxLength={200} value={wBasis} onChange={(e) => setWBasis(e.target.value)} data-testid="dossier-waive-basis" /><p className="ui-field__hint">A record someone else can read: the deficiency, an attestation, a booked visit.</p></div>
             <div className="pf-waive__row">
               <div className="ui-field"><label htmlFor="waive-plan">How it will be closed, and by when</label><textarea id="waive-plan" rows={2} maxLength={400} value={wPlan} onChange={(e) => setWPlan(e.target.value)} data-testid="dossier-waive-plan" /></div>
@@ -125,8 +131,12 @@ export default function Dossier({ role, params, query, can, sees }: PageProps) {
         </> : null}
         {w.waivers.length ? <><h3 className="pf-h" id="waivers-h">Waivers</h3>
           <ul className="pf-waivers" aria-labelledby="waivers-h" data-testid="dossier-waivers">{w.waivers.map((x) => <li key={x.test} data-waiver={x.test} data-state={x.state}>
-            <header><code>{x.test}</code><Chip small tone={x.state === 'STANDING' ? 'warn' : x.state === 'MOOT' ? 'ok' : 'bad'}>{WAIVER_WORD[x.state]}</Chip><span className="pf-note">{x.state === 'MOOT' ? 'the item was closed' : `until ${day(x.expires)}`} · given by the {x.by.label} on {when(x.at)}</span></header>
-            <p>{x.reason}</p><dl className="pf-waivers__facts"><div><dt>Relies on</dt><dd>{x.basis}</dd></div><div><dt>Closed by</dt><dd>{x.owner}</dd></div><div><dt>How</dt><dd>{x.plan}</dd></div></dl>{x.covers.length ? <p className="pf-note">Still open: {x.test} {x.covers.join('; ')}.{x.state === 'EXPIRED' ? ' The waiver has run out, so this stops acceptance again.' : x.state === 'VOID' ? ' A waiver cannot cover this.' : ''}</p> : null}
+            <header><code>{x.test}</code><Chip small tone="muted">{KIND_WORD[x.kind]}</Chip><Chip small tone={x.state === 'STANDING' || x.state === 'AWAITING_REVIEW' ? 'warn' : x.state === 'MOOT' ? 'ok' : 'bad'}>{WAIVER_WORD[x.state]}</Chip><span className="pf-note">{x.state === 'MOOT' ? 'the item was closed' : `until ${day(x.expires)}`} · given by the {x.by.label} on {when(x.at)}</span></header>
+            <p>{x.reason}</p><dl className="pf-waivers__facts"><div><dt>Risk</dt><dd>{x.risk}</dd></div><div><dt>Relies on</dt><dd>{x.basis}</dd></div><div><dt>Closed by</dt><dd>{x.owner}</dd></div><div><dt>How</dt><dd>{x.plan}</dd></div>{x.review ? <div><dt>Engineering</dt><dd>{x.review.finding} <span className="pf-note">· the {x.review.by.label}, {when(x.review.at)}</span></dd></div> : null}</dl>
+            {x.state === 'AWAITING_REVIEW' ? (may.reviewWaiver ? <form className="pf-review" data-testid="dossier-waive-review" noValidate onSubmit={(e) => { e.preventDefault(); const r = act({ kind: 'REVIEW_WAIVER', test: x.test, finding: wFinding.trim(), by: me, at: nowIso() }, may); setRefusal(r); setDone(r ? null : `Engineering review recorded. The waiver on ${x.test} now stands until ${day(x.expires)}.`); if (!r) setWFinding(''); }}>
+              <div className="ui-field"><label htmlFor={`rev-${x.test}`}>Engineering review: what the deviation means for the room, and any condition</label><textarea id={`rev-${x.test}`} rows={2} maxLength={400} value={wFinding} onChange={(e) => setWFinding(e.target.value)} data-testid="dossier-waive-finding" /></div>
+              <div className="pf-actions"><button type="submit" className="ui-btn" data-testid="dossier-waive-review-go">Record the engineering review</button></div>
+            </form> : <p className="pf-note">A technical deviation covers nothing until the {either(REVIEWERS)} has given an engineering review.</p>) : null}{x.covers.length ? <p className="pf-note">Still open: {x.test} {x.covers.join('; ')}.{x.state === 'EXPIRED' ? ' The waiver has run out, so this stops acceptance again.' : x.state === 'VOID' ? ' A waiver cannot cover this.' : ''}</p> : null}
           </li>)}</ul></> : null}
         <h3 className="pf-h" id="signoff-h">Phase 6 · Final sign-off</h3>
         <ol className="pf-signoff" aria-labelledby="signoff-h" data-testid="dossier-signoff" data-signoff={w.signoff}>
@@ -174,9 +184,10 @@ export default function Dossier({ role, params, query, can, sees }: PageProps) {
           <p><b>Verify a new result:</b> {names(VERIFIERS)}, and never the role that recorded it.</p>
           <p><b>Final sign-off, first approval:</b> the {either(FIRST)}; only when no blocker stands.</p>
           <p><b>Final sign-off, second approval:</b> the {either(SECOND)}; only after the first, from a different role. Neither approval comes from a role that recorded or verified a result here, and a new result withdraws an approval already given.</p>
-          <p><b>Waive an open item:</b> the {either(WAIVERS)}, as a documented exception: a reason, what it relies on, an owner, how the item will be closed, and an end date at most {WAIVER_MAX_DAYS} days on. A waived item stays open and is counted as open. A security, record-integrity or accessibility test, a failure with no deficiency raised and an item with a P1 deficiency are never waived, the role that waives does not approve, and each approval says how many waivers it is given over.</p>
+          <p><b>Waive an open item:</b> a business risk (late paperwork or handover) is the {either(BUSINESS)}’s to accept; a technical deviation is the {either(TECHNICAL)}’s and stands only after an engineering review by the {either(REVIEWERS)}. Every waiver records its reason, the evidence it relies on, the risk, an owner, how the item will be closed, and an end date at most {WAIVER_MAX_DAYS} days on. A waived item stays open and is counted as open.</p>
+          <p><b>Never waived:</b> a security, authorisation, record-integrity, accessibility or safety test; a pass with no evidence or awaiting verification; a failure with no deficiency raised; an item with a P1 deficiency. Nobody waives an exception they own or worked on, neither the giver nor the reviewer of a waiver approves, and each approval says how many waivers it is given over.</p>
           <p><b>Local attestation:</b> the room’s site champion, from the room’s label in the QR Hub. It is shown to the approvers and does not replace either of them.</p>
-          <div className="pf-actions" role="group" aria-label="View this dossier as another role">{(['cxeng', 'qa', 'svcmgr', 'exec', 'ops', 'syseng'] as RoleKey[]).filter((k) => k !== role).map((k) => <button key={k} type="button" className="ui-btn ui-btn--sm" data-viewas={k} onClick={() => va.switchTo(k)}>View as {roleTitle(k)}</button>)}</div>
+          <div className="pf-actions" role="group" aria-label="View this dossier as another role">{(['cxeng', 'qa', 'svcmgr', 'exec', 'ops', 'architect', 'syseng'] as RoleKey[]).filter((k) => k !== role).map((k) => <button key={k} type="button" className="ui-btn ui-btn--sm" data-viewas={k} onClick={() => va.switchTo(k)}>View as {roleTitle(k)}</button>)}</div>
         </div>
       </Zone>
 
