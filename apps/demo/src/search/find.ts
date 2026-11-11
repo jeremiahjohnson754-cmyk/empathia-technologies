@@ -37,6 +37,8 @@ const TOURS: Hit[] = [
   { id: 'tour:a', kind: 'tour', label: 'Tour A — The Living Campus', description: 'Campus → building → room → 3D → device → Search Party → Core Replay', href: '#/tours/a', terms: 'tour guided living campus a' },
   { id: 'tour:b', kind: 'tour', label: 'Tour B — Engineering Intelligence', description: 'Field Intelligence → commissioning → evidence → assurance → Search Party', href: '#/tours/b', terms: 'tour guided engineering intelligence b' },
   { id: 'tour:c', kind: 'tour', label: 'Tour C — Learn by Doing', description: 'SIGNAL scenario → lab → diagnosis → competency evidence → back to the room', href: '#/tours/c', terms: 'tour guided learn by doing c' },
+  { id: 'tour:d', kind: 'tour', label: 'Tour D — What investors ask', description: 'The strongest parts, each with the question it raises and a plain answer', href: '#/tours/d', terms: 'tour guided investors ask questions d' },
+  { id: 'tour:e', kind: 'tour', label: 'Tour E — Walk into a room', description: 'Arrive → equipment → Lite → history → Search Party → what is wrong → guided help → written outcome → ServiceHands → evidence', href: '#/tours/e', terms: 'tour guided walk into a room in this room signature e' },
 ];
 
 let index: Hit[] | null = null;

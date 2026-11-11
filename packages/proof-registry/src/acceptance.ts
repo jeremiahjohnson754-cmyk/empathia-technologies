@@ -14,19 +14,38 @@
  * Engineer. Which roles those are is the caller's policy (`accept` and `countersign`); the order, the independence of both from the
  * work, that the two come from two different roles, and that any new result withdraws an approval already given, are rules here.
  * The dossier is accepted, and closed, only when both stand.
+ *
+ * Waivers and attestations (founder's directive of 11 Nov 2026, §13). Acceptance is refused while a mandatory item is open "unless a
+ * properly authorized documented waiver exists". A waiver names one test, says why in a sentence, and ends on a date at most ninety
+ * days on; it never turns the test green (the totals and the open item stay as they are) and the dossier is then accepted WITH
+ * WAIVERS, which every reading of it says. A waiver is a documented exception (founder, 11 Nov 2026 01:42): it carries its reason,
+ * what it relies on, who owns closing the item, how the item will be closed, and its end date. Four things are never waived: a test
+ * that is a security, record-integrity or accessibility control; a failure nobody has raised a deficiency against; an item with an
+ * open P1 deficiency; and nothing at all by a role that did the work. The role that waives does not also approve, each
+ * approval states how many waivers it was given over, and a waiver that runs out before the second approval withdraws the first.
+ * A site champion's attestation is local evidence for the approvers to read: it is recorded and shown, and it approves nothing.
  */
 import type { Dossier, DossierTest, Deficiency, TestResult } from './seed.js';
 
 export interface Actor { role: string; label: string }
 /** What the caller's access policy lets this actor do. The rules below are applied on top of it, never instead of it. */
-export interface Authority { record: boolean; verify: boolean; raise: boolean; /** may give the first approval of the final sign-off */ accept: boolean; /** may give the second */ countersign: boolean }
+export interface Authority { record: boolean; verify: boolean; raise: boolean; /** may give the first approval of the final sign-off */ accept: boolean; /** may give the second */ countersign: boolean; /** may grant a documented, dated waiver of an open item */ waive?: boolean; /** may add a local attestation (the site champion) */ attest?: boolean }
 export type DossierEvent =
   | { kind: 'RETEST'; test: string; result: 'PASS' | 'FAIL'; evidence: string | null; by: Actor; at: string }
   | { kind: 'EVIDENCE'; test: string; evidence: string; by: Actor; at: string }
   | { kind: 'VERIFY'; test: string; by: Actor; at: string }
   | { kind: 'RAISE'; test: string; id: string; statement: string; by: Actor; at: string }
-  | { kind: 'ACCEPT'; by: Actor; at: string }
-  | { kind: 'COUNTERSIGN'; by: Actor; at: string };
+  | { kind: 'WAIVE'; test: string; /** why the room can be accepted with the item open */ reason: string; /** the record it relies on */ basis: string; /** who closes the item */ owner: string; /** how and when */ plan: string; /** the last day it stands, YYYY-MM-DD */ expires: string; by: Actor; at: string }
+  | { kind: 'ATTEST'; statement: string; by: Actor; at: string }
+  | { kind: 'ACCEPT'; by: Actor; at: string; /** how many waivers the approver was shown and approved over */ waivers?: number }
+  | { kind: 'COUNTERSIGN'; by: Actor; at: string; waivers?: number };
+
+export const WAIVER_MAX_DAYS = 90; export const WAIVER_MIN_REASON = 30; export const WAIVER_MIN_PLAN = 20; export const WAIVER_MIN_BASIS = 12;
+export const CONTROL_WORD = { security: 'security', integrity: 'record-integrity', accessibility: 'accessibility' } as const;
+export interface Approval { by: Actor; at: string; /** waivers standing when it was given */ waivers: number }
+/** STANDING: covers its item. EXPIRED: its date has passed and the item is open again. MOOT: the item was closed. VOID: it cannot cover what the item now is, or its role did the work. */
+export interface WorkingWaiver { test: string; reason: string; basis: string; owner: string; plan: string; expires: string; by: Actor; at: string; covers: string[]; state: 'STANDING' | 'EXPIRED' | 'MOOT' | 'VOID' }
+export interface Attestation { statement: string; by: Actor; at: string }
 
 export interface WorkingTest extends DossierTest { recordedBy: Actor | null; verifiedBy: Actor | null; changed: boolean }
 export interface WorkingDeficiency extends Omit<Deficiency, 'state'> { state: Deficiency['state'] | 'CLOSED'; raisedAfterSnapshot: boolean }
@@ -34,24 +53,34 @@ export interface Blocker { test: string | null; reason: string }
 export interface Working {
   tests: WorkingTest[]; deficiencies: WorkingDeficiency[];
   totals: { tests: number; pass: number; pending: number; fail: number; evidence: number; awaitingVerification: number };
-  blockers: Blocker[]; acceptance: 'HELD' | 'ACCEPTED'; acceptedBy: Actor | null; acceptedAt: string | null; changed: boolean;
+  /** what stops acceptance now: the open items no standing waiver covers */ blockers: Blocker[];
+  /** every open item, waived or not */ open: Blocker[]; waivers: WorkingWaiver[]; attestations: Attestation[];
+  acceptance: 'HELD' | 'ACCEPTED'; acceptedBy: Actor | null; acceptedAt: string | null; changed: boolean;
   /** Phase 6. TESTS_OPEN: blockers stand. AWAITING_FIRST: ready for the first approval. AWAITING_SECOND: first given. COMPLETE: both. */
-  signoff: 'TESTS_OPEN' | 'AWAITING_FIRST' | 'AWAITING_SECOND' | 'COMPLETE'; firstApproval: { by: Actor; at: string } | null; secondApproval: { by: Actor; at: string } | null;
+  signoff: 'TESTS_OPEN' | 'AWAITING_FIRST' | 'AWAITING_SECOND' | 'COMPLETE'; firstApproval: Approval | null; secondApproval: Approval | null;
 }
 
-export function replay(d: Dossier, events: readonly DossierEvent[]): Working {
+const endOf = (day: string) => Date.parse(`${day}T23:59:59.999Z`);
+const DAY = /^\d{4}-\d{2}-\d{2}$/;
+
+/** `asOf` is the moment the record is read (waivers are dated); without it, the time of the last event. */
+export function replay(d: Dossier, events: readonly DossierEvent[], asOf?: string): Working {
   const tests: WorkingTest[] = d.tests.map((t) => ({ ...t, recordedBy: null, verifiedBy: null, changed: false }));
   const defs: WorkingDeficiency[] = d.deficiencies.map((x) => ({ ...x, raisedAfterSnapshot: false }));
   const byId = (id: string) => tests.find((t) => t.id === id);
-  let first: { by: Actor; at: string } | null = null; let second: { by: Actor; at: string } | null = null;
+  let first: Approval | null = null; let second: Approval | null = null;
+  const granted = new Map<string, Extract<DossierEvent, { kind: 'WAIVE' }>>(); const attestations: Attestation[] = [];
+  const now = asOf ?? events[events.length - 1]?.at ?? d.generatedAt;
   for (const e of events) {
-    if (e.kind === 'ACCEPT') { first = { by: e.by, at: e.at }; second = null; continue; }
-    if (e.kind === 'COUNTERSIGN') { if (first && e.by.role !== first.by.role) second = { by: e.by, at: e.at }; continue; }   // a second approval with no first, or from the first's own role, is not one
+    if (e.kind === 'ATTEST') { if (attestations.length < 20) attestations.push({ statement: e.statement, by: e.by, at: e.at }); continue; }   // read by the approvers; changes nothing
+    if (e.kind === 'ACCEPT') { first = { by: e.by, at: e.at, waivers: e.waivers ?? 0 }; second = null; continue; }
+    if (e.kind === 'COUNTERSIGN') { if (first && e.by.role !== first.by.role) second = { by: e.by, at: e.at, waivers: e.waivers ?? 0 }; continue; }   // a second approval with no first, or from the first's own role, is not one
     const t = byId(e.test); if (!t) continue;
     first = null; second = null;                                                    // an approval covers the record as it stood: any later result, evidence, verification or deficiency withdraws it
     if (e.kind === 'RETEST') { t.result = e.result; t.evidence = e.evidence ?? t.evidence; t.recordedBy = e.by; t.verifiedBy = null; t.changed = true; delete t.note; }
     else if (e.kind === 'EVIDENCE') { t.evidence = e.evidence; t.recordedBy = e.by; t.verifiedBy = null; t.changed = true; }
     else if (e.kind === 'VERIFY') t.verifiedBy = e.by;
+    else if (e.kind === 'WAIVE') granted.set(e.test, e);
     else if (e.kind === 'RAISE') defs.push({ id: e.id, severity: 'P2', test: e.test, statement: e.statement, owner: e.by.label, action: `Correct, then retest ${e.test}.`, state: 'OPEN', raisedAfterSnapshot: true });
   }
   // a deficiency closes itself when its test passes and that pass is independently verified; nobody closes one by hand
@@ -67,16 +96,35 @@ export function replay(d: Dossier, events: readonly DossierEvent[]): Working {
   const n = (r: TestResult) => tests.filter((t) => t.result === r).length;
   // approvals stand only over a record with no blocker, and only from roles that did none of the work: a stored event cannot say otherwise
   const worked = (a: Actor) => tests.some((x) => x.recordedBy?.role === a.role || x.verifiedBy?.role === a.role);
-  if (blockers.length || (first && worked(first.by))) { first = null; second = null; } if (second && worked(second.by)) second = null;
+  // a waiver covers the open items of its test while its date has not passed; it never covers an unraised failure or an open P1
+  const open = blockers;
+  const unwaivable = (b: Blocker) => b.reason === 'fails with no deficiency raised' || !!byId(b.test || '')?.control || defs.some((x) => x.test === b.test && x.state !== 'CLOSED' && x.severity === 'P1');
+  const long = (v: unknown, n: number) => typeof v === 'string' && v.trim().length >= n;
+  const can = (g: Extract<DossierEvent, { kind: 'WAIVE' }>) => !worked(g.by) && DAY.test(g.expires) && long(g.reason, WAIVER_MIN_REASON) && long(g.basis, WAIVER_MIN_BASIS) && long(g.owner, 3) && long(g.plan, WAIVER_MIN_PLAN) && !open.some((b) => b.test === g.test && unwaivable(b));
+  const coveredAt = (b: Blocker, t: string) => { const g = b.test ? granted.get(b.test) : undefined; return !!g && can(g) && endOf(g.expires) >= Date.parse(t); };
+  const uncoveredAt = (t: string) => open.filter((b) => !coveredAt(b, t));
+  const standingAt = (t: string) => [...granted.values()].filter((g) => open.some((b) => b.test === g.test && coveredAt(b, t)));
+  // an approval stands only if, when it was given, nothing uncovered was open, its role did none of the work and granted none of the
+  // waivers it approved over, and it stated how many waivers there were: a stored event cannot say otherwise
+  const sound = (a: Approval) => !uncoveredAt(a.at).length && !worked(a.by) && !standingAt(a.at).some((g) => g.by.role === a.by.role) && a.waivers === standingAt(a.at).length;
+  if (first && !sound(first)) { first = null; second = null; } if (second && !sound(second)) second = null;
+  if (first && !second && uncoveredAt(now).length) first = null;                     // a waiver ran out before the second approval: the record is open again
   const accepted = !!first && !!second; const acceptedBy = first?.by ?? null; const acceptedAt = second?.at ?? null;
-  const signoff: Working['signoff'] = blockers.length ? 'TESTS_OPEN' : !first ? 'AWAITING_FIRST' : !second ? 'AWAITING_SECOND' : 'COMPLETE';
+  const ref = accepted ? second!.at : now;                                          // an acceptance covers the record as it stood when it was given
+  const waivers: WorkingWaiver[] = [...granted.values()].map((g) => { const covers = open.filter((b) => b.test === g.test).map((b) => b.reason);
+    return { test: g.test, reason: g.reason, basis: String(g.basis ?? ''), owner: String(g.owner ?? ''), plan: String(g.plan ?? ''), expires: g.expires, by: g.by, at: g.at, covers, state: !covers.length ? 'MOOT' as const : !can(g) ? 'VOID' as const : endOf(g.expires) >= Date.parse(ref) ? 'STANDING' as const : 'EXPIRED' as const }; });
+  const stops = accepted ? [] : uncoveredAt(now);
+  const signoff: Working['signoff'] = stops.length ? 'TESTS_OPEN' : !first ? 'AWAITING_FIRST' : !second ? 'AWAITING_SECOND' : 'COMPLETE';
   return { tests, deficiencies: defs, totals: { tests: tests.length, pass: n('PASS'), pending: n('PENDING'), fail: n('FAIL'), evidence: tests.filter((t) => t.evidence).length, awaitingVerification: tests.filter((t) => t.changed && t.result === 'PASS' && t.evidence && !t.verifiedBy).length },
-    blockers, acceptance: accepted ? 'ACCEPTED' : 'HELD', acceptedBy: accepted ? acceptedBy : null, acceptedAt: accepted ? acceptedAt : null, changed: events.length > 0, signoff, firstApproval: first, secondApproval: second };
+    blockers: stops, open, waivers, attestations, acceptance: accepted ? 'ACCEPTED' : 'HELD', acceptedBy: accepted ? acceptedBy : null, acceptedAt: accepted ? acceptedAt : null, changed: events.length > 0, signoff, firstApproval: first, secondApproval: second };
 }
 
 /** Try one step. Returns the new event list, or the reason it is refused; a refusal changes nothing. */
 export function attempt(d: Dossier, events: readonly DossierEvent[], e: DossierEvent, may: Authority): { events: DossierEvent[] } | { refused: string } {
-  const w = replay(d, events);
+  const w = replay(d, events, e.at); const standing = w.waivers.filter((x) => x.state === 'STANDING');
+  const acknowledged = (n: number | undefined): string | null => (n ?? 0) === standing.length ? null
+    : `This dossier carries ${standing.length} ${standing.length === 1 ? 'waiver' : 'waivers'}. An approval names how many it is given over: read ${standing.length === 1 ? 'it' : 'them'}, then approve with ${standing.length === 1 ? 'the waiver' : 'the waivers'}.`;
+  const waivedIt = (a: Actor) => standing.some((x) => x.by.role === a.role);
   if (w.acceptance === 'ACCEPTED') return { refused: 'The dossier is accepted and closed. A change after acceptance is a new commissioning cycle.' };
   if (e.kind === 'ACCEPT') {
     if (!may.accept) return { refused: 'This role cannot record acceptance.' };
@@ -84,6 +132,8 @@ export function attempt(d: Dossier, events: readonly DossierEvent[], e: DossierE
     // the policy's own description of an acceptor: someone who neither recorded nor verified what is being accepted
     if (w.tests.some((x) => x.recordedBy?.role === e.by.role || x.verifiedBy?.role === e.by.role)) return { refused: 'Acceptance is independent of the work it accepts: a role that recorded or verified a result in this dossier cannot also accept it.' };
     if (w.firstApproval) return { refused: `The first approval is already recorded, by the ${w.firstApproval.by.label}. The dossier now waits for the second.` };
+    if (waivedIt(e.by)) return { refused: 'A waiver and an approval come from different roles: the role that waived an item in this dossier does not also approve it.' };
+    const ack = acknowledged(e.waivers); if (ack) return { refused: ack };
     return { events: [...events, e] };
   }
   if (e.kind === 'COUNTERSIGN') {
@@ -92,6 +142,15 @@ export function attempt(d: Dossier, events: readonly DossierEvent[], e: DossierE
     if (!w.firstApproval) return { refused: 'The second approval follows the first, and the first has not been given.' };
     if (w.firstApproval.by.role === e.by.role) return { refused: 'The two approvals come from two different roles.' };
     if (w.tests.some((x) => x.recordedBy?.role === e.by.role || x.verifiedBy?.role === e.by.role)) return { refused: 'Acceptance is independent of the work it accepts: a role that recorded or verified a result in this dossier cannot also approve it.' };
+    if (waivedIt(e.by)) return { refused: 'A waiver and an approval come from different roles: the role that waived an item in this dossier does not also approve it.' };
+    const ack = acknowledged(e.waivers); if (ack) return { refused: ack };
+    return { events: [...events, e] };
+  }
+  if (e.kind === 'ATTEST') {
+    if (!may.attest) return { refused: 'This role cannot add a local attestation.' };
+    const s = e.statement.trim(); if (s.length < 12) return { refused: 'Say what you saw in the room in a sentence.' }; if (s.length > 400) return { refused: 'Keep the attestation to 400 characters.' };
+    if (w.attestations.some((x) => x.by.role === e.by.role && x.statement.trim() === s)) return { refused: 'That attestation is already recorded.' };
+    if (w.attestations.length >= 20) return { refused: 'This dossier already holds twenty attestations.' };
     return { events: [...events, e] };
   }
   const t = w.tests.find((x) => x.id === e.test); if (!t) return { refused: `No test ${e.test} in this dossier.` };
@@ -110,6 +169,23 @@ export function attempt(d: Dossier, events: readonly DossierEvent[], e: DossierE
     if (!t.evidence) return { refused: `${t.id} has no evidence record to verify against.` };
     if (t.verifiedBy) return { refused: `${t.id} is already verified.` };
     if (t.recordedBy && t.recordedBy.role === e.by.role) return { refused: 'Verification is independent: it cannot come from the role that recorded the result.' };
+  } else if (e.kind === 'WAIVE') {
+    if (!may.waive) return { refused: 'This role cannot waive an open item.' };
+    if (t.control) return { refused: `${t.id} is ${t.control === 'accessibility' ? 'an' : 'a'} ${CONTROL_WORD[t.control]} control. It is corrected and retested; it is never waived.` };
+    const mine = w.open.filter((b) => b.test === t.id); if (!mine.length) return { refused: `${t.id} has nothing open; there is nothing to waive.` };
+    if (mine.some((b) => b.reason === 'fails with no deficiency raised')) return { refused: `${t.id} fails and nobody has raised a deficiency against it. Raise the deficiency first, so the item that is waived is owned and tracked.` };
+    if (w.deficiencies.some((x) => x.test === t.id && x.state !== 'CLOSED' && x.severity === 'P1')) return { refused: `${t.id} has a P1 deficiency open. A P1 is corrected and retested; it is not waived.` };
+    if (w.tests.some((x) => x.recordedBy?.role === e.by.role || x.verifiedBy?.role === e.by.role)) return { refused: 'A waiver is independent of the work: a role that recorded or verified a result in this dossier cannot waive an item in it.' };
+    if (e.reason.trim().length < WAIVER_MIN_REASON) return { refused: 'A waiver is documented: say why the room can be accepted with this item open, and what happens next.' };
+    if (e.reason.length > 600) return { refused: 'Keep the reason to 600 characters.' };
+    if ((e.basis || '').trim().length < WAIVER_MIN_BASIS) return { refused: 'Name what the waiver relies on: a record someone else can read, such as the deficiency, an attestation or a booked visit.' };
+    if ((e.owner || '').trim().length < 3) return { refused: 'Name who owns closing the item.' };
+    if ((e.plan || '').trim().length < WAIVER_MIN_PLAN) return { refused: 'Say how the item will be closed, and by when.' };
+    if (e.basis.length > 200 || e.owner.length > 60 || e.plan.length > 400) return { refused: 'Keep what it relies on to 200 characters, the owner to 60 and the plan to 400.' };
+    if (!DAY.test(e.expires) || Number.isNaN(endOf(e.expires))) return { refused: 'Give the last day the waiver stands.' };
+    if (e.expires <= new Date(e.at).toISOString().slice(0, 10)) return { refused: 'The waiver must stand until a day after today.' };
+    if (endOf(e.expires) - Date.parse(e.at) > (WAIVER_MAX_DAYS + 1) * 86400000) return { refused: `A waiver stands for at most ${WAIVER_MAX_DAYS} days. The item is closed by then, or it is waived again and says why.` };
+    if (standing.some((x) => x.test === t.id)) return { refused: `${t.id} already has a waiver standing, until ${standing.find((x) => x.test === t.id)!.expires}.` };
   } else if (e.kind === 'RAISE') {
     if (!may.raise) return { refused: 'This role cannot raise a deficiency.' };
     if (t.result !== 'FAIL') return { refused: `${t.id} does not fail; a deficiency is raised against a failure.` };

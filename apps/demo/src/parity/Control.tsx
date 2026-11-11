@@ -4,12 +4,15 @@
  * #/scheduler/<room> (the panel at the door of each room). SIMULATED CONTROL: no command leaves the page; the sessions are generated from
  * the room id and the demonstration clock, never a real calendar.
  */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PageHero, Card, StatTile, Tag, EmptyState, Segmented, StatusDot, Icon, type IconName } from '@empathia/ui';
 import type { PageProps } from '../registry.types.js';
 import { allows } from '../access/policy.js';
 import { ROOMS, BUILDINGS, roomById, shortName, fullName, roomHref, type RoomOutline } from '../campus/canon.js';
-import { DEMO_NOW } from '../campus/design.js';
+import { DEMO_NOW, roomRecord, type RoomRecord } from '../campus/design.js';
+import { canOpen } from '../access/policy.js';
+import { resolve } from '../registry.pages.js';
+import { RoomPanel, useRoomSentence, type ModeKey } from '../control/Panel.js';
 import { sessionsOf, busyAt, nextOf, hhmm, SIGNAGE, plural } from './core.js';
 import { useCore, honest, Crumbs, Zone, FactsTable } from './ui.js';
 
@@ -22,10 +25,7 @@ const MODES: Array<{ key: string; label: string; sub: string; who: string; icon:
 ];
 const LIVE = ['TWN', 'TWR', 'CTL', 'AUD', 'STU'];
 const modesFor = (o: RoomOutline, eng: boolean) => MODES.filter((m) => m.key === 'room' || m.key === 'meet' || (m.key === 'present' && o.capacity >= 8) || (m.key === 'live' && LIVE.includes(o.archetype)) || (m.key === 'engineer' && eng));
-const DOCK: Array<{ key: string; label: string; icon: IconName; layer: string }> = [
-  { key: 'mic', label: 'Microphones', icon: 'pulse', layer: 'audio' }, { key: 'vol', label: 'Volume', icon: 'chart', layer: 'audio' }, { key: 'cam', label: 'Camera', icon: 'eye', layer: 'video' },
-  { key: 'share', label: 'Share', icon: 'external', layer: 'display' }, { key: 'session', label: 'Session', icon: 'clock', layer: 'control' },
-];
+
 
 export default function ControlPage(p: PageProps) {
   const seg = p.hash.replace(/^#\/?/, '').split(/[?~]/)[0]!.split('/').filter(Boolean);
@@ -59,37 +59,32 @@ function Language({ role }: PageProps) {
 }
 
 function RoomControl({ role, id, can, query }: PageProps & { id: string }) {
-  const core = useCore(); const o = roomById(id); const rec = o ? core.rooms.find((r) => r.outline.id === o.id) : null;
+  const o = roomById(id); const rec = o ? roomRecord(o.id) : null;
   const eng = allows({ field: 'control.engineer' }, role);
   const avail = o ? modesFor(o, eng) : [];
   const [mode, setMode] = useState(query.get('mode') && avail.some((m) => m.key === query.get('mode')) ? query.get('mode')! : 'room');
-  const [dock, setDock] = useState<Record<string, boolean>>({ mic: false, vol: true, cam: false, share: false, session: !!(o && busyAt(o.id)) });
-  const [said, setSaid] = useState('');
+  const [tick, setTick] = useState(0);
+  // a link to another mode of the same room (?mode=engineer) changes the mode; found by the role-matrix check, 10 Nov
+  const asked = query.get('mode'); useEffect(() => { if (asked && avail.some((m) => m.key === asked)) setMode(asked); }, [asked, id]);   // eslint-disable-line react-hooks/exhaustive-deps
   if (!o || !rec) return <EmptyState title="No room has this address" icon="room" action={<a className="ui-btn" href="#/control">Every room’s panel</a>}>Nothing in the campus records is called <code>{id}</code>.</EmptyState>;
-  const busy = busyAt(o.id); const next = nextOf(o.id); const use = can('control.use');
-  const has = (layer: string) => rec.positions.some((p) => p.layer === layer);
-  const sentence = dock.session ? `${shortName(o)} is in a session${busy ? ` (${busy.title})` : ''}${dock.share ? ', sharing a screen' : ''}${dock.mic ? '' : ', microphones muted'}.` : `${shortName(o)} is free${next ? ` until ${hhmm(next.from)}` : ' for the rest of the day'}.`;
-  const tap = (k: string) => { if (!use) return; setDock((d) => { const n = { ...d, [k]: !d[k] }; setSaid(`${DOCK.find((x) => x.key === k)!.label} ${n[k] ? 'on' : 'off'} (simulated: nothing was sent to the room)`); return n; }); };
+  return <RoomControlBody o={o} rec={rec} role={role} use={can('control.use')} eng={eng} mode={mode} setMode={setMode} avail={avail} tick={tick} bump={() => setTick((n) => n + 1)} />;
+}
+/** The room's page once the room is known: the sentence is the heading and follows every press. */
+function RoomControlBody({ o, rec, role, use, eng, mode, setMode, avail, tick, bump }: { o: RoomOutline; rec: RoomRecord; role: PageProps['role']; use: boolean; eng: boolean; mode: string; setMode: (m: string) => void; avail: typeof MODES; tick: number; bump: () => void }) {
+  const busy = busyAt(o.id); const next = nextOf(o.id); const sentence = useRoomSentence(rec, tick);
+  const opens = (href: string) => { const x = resolve(href.split('?')[0]!); return !!x && canOpen(role, x); };
   return (
     <>
       <Crumbs items={[['Empathia Control', '#/control'], [shortName(o)]]} />
-      <PageHero compact eyebrow={`${fullName(o)} · panel`} title={sentence} product="lite" icon="settings" lede={`${o.capacity} seats · ${rec.archetypeName} · ${plural(rec.positions.filter((p) => !p.furniture).length, 'device')} in the design`}
-        meta={honest(['Simulated control: nothing is sent', 'warn'])} actions={<><a className="ui-btn" href={roomHref(o)}>Room guide and 3D</a><a className="ui-btn ui-btn--quiet" href={`#/scheduler/${o.id}`}>Door panel</a></>} />
+      <PageHero compact eyebrow={`${fullName(o)} · panel`} title={<span data-testid="rc-sentence">{sentence}</span>} product="lite" icon="settings" lede={`${o.capacity} seats · ${rec.archetypeName} · ${plural(rec.positions.filter((p) => !p.furniture).length, 'device')} in the design · ${busy ? `in a session (${busy.title})` : next ? `free until ${hhmm(next.from)}` : 'free for the rest of the day'}`}
+        meta={honest(['Simulated control: nothing is sent', 'warn'])} actions={<><a className="ui-btn" href={roomHref(o)}>Room guide and 3D</a>{opens('#/here') && <a className="ui-btn" href={`#/here/${o.id}`}>I am in this room</a>}<a className="ui-btn ui-btn--quiet" href={`#/scheduler/${o.id}`}>Door panel</a></>} />
       <Segmented label="Mode" value={mode} onChange={setMode} options={avail.map((m) => ({ value: m.key, label: m.label, icon: m.icon }))} />
-      {mode === 'engineer' ? (
+      <p className="pa-note" data-testid="rc-mode">{MODES.find((m) => m.key === mode)!.sub}.</p>
+      <RoomPanel r={rec} role={role} use={use} mode={mode as ModeKey} onChange={bump} />
+      {mode === 'engineer' && eng && (
         <Card title="What the room is made of" icon="wrench" sub="Engineer mode: positions from the design, identity as the record keeps it">
           <div className="pa-table-wrap"><table className="pa-table"><thead><tr><th scope="col">Position</th><th scope="col">Class</th><th scope="col">Layer</th><th scope="col">Identity</th></tr></thead>
             <tbody>{rec.positions.filter((p) => !p.furniture).map((p) => <tr key={p.code}><th scope="row" className="pa-mono">{p.code}</th><td>{p.catLabel}</td><td>{p.layer}</td><td>{p.identity.toLowerCase()}</td></tr>)}</tbody></table></div>
-        </Card>
-      ) : (
-        <Card title={MODES.find((m) => m.key === mode)!.label} icon={MODES.find((m) => m.key === mode)!.icon} sub={MODES.find((m) => m.key === mode)!.sub}>
-          <div className="pa-dock" role="group" aria-label="The dock">
-            {DOCK.map((d) => { const here = has(d.layer) || d.key === 'session'; return (
-              <button key={d.key} type="button" className="pa-dock__btn" aria-pressed={here ? !!dock[d.key] : undefined} disabled={!here || !use} onClick={() => tap(d.key)} title={!here ? 'Not in this room' : !use ? 'Your role views the panel; it does not operate rooms' : undefined}>
-                <Icon name={d.icon} size={20} /><span>{d.label}</span><span className="pa-note">{!here ? 'not in this room' : dock[d.key] ? 'on' : 'off'}</span>
-              </button>); })}
-          </div>
-          <p className="pa-note" aria-live="polite">{said || (use ? 'Tap a control: the panel answers as the room would; nothing is sent.' : 'Your role may look at the panel; operating a room is for the people who use it.')}</p>
         </Card>
       )}
       <Card title="Today in this room" icon="calendar" sub="Generated sessions on the demonstration clock">

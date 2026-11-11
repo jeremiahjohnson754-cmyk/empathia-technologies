@@ -195,7 +195,7 @@ function Room({ id, role, query, sees, can }: { id: string } & Pick<PageProps, '
                 </button>
                 {technical && focusKind === k.cat && <ul className="hr-units" data-testid="here-units">{r.positions.filter((p) => p.cat === k.cat).map((p) => <li key={p.code}><button type="button" className="hr-unit" aria-pressed={sel === p.code} onClick={() => setSel(sel === p.code ? null : p.code)}>{p.label}</button><span className="ui-meta">{p.code} · {p.asset || 'no asset'} · {p.identity.toLowerCase()}</span></li>)}</ul>}
               </li>))}</ul>}
-            <p className="hr-links">{opens('#/room') && <a href={`#/room/${id}`}>Open the room’s record</a>}{opens('#/search') && <a href={`#/search?focus=Room:${id}`}>Everything linked to this room in Search Party</a>}</p>
+            <p className="hr-links">{life.built && opens('#/control') && <a href={`#/control/${id}`} data-testid="here-control">Operate the room’s panel</a>}{opens('#/room') && <a href={`#/room/${id}`}>Open the room’s record</a>}{opens('#/search') && <a href={`#/search?focus=Room:${id}`}>Everything linked to this room in Search Party</a>}</p>
           </div>}
 
           {step === 'history' && showHistory && <div data-testid="here-history" data-rows={hist.rows.length} data-open={hist.open}>

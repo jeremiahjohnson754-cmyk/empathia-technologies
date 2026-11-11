@@ -84,6 +84,98 @@ test('phase 6: stored events cannot forge it: a second approval with no first, f
   assert.equal(replay(D, [{ kind: 'ACCEPT', by: sm, at }, { kind: 'COUNTERSIGN', by: ops, at }]).acceptance, 'HELD', 'blockers stand');
   assert.equal(replay(D, [...ev, { kind: 'COUNTERSIGN', by: ops, at }, { kind: 'ACCEPT', by: sm, at }]).acceptance, 'HELD', 'out of order');
 });
+// ---- Waivers and attestations (founder's directive of 11 Nov 2026, §13) ----
+const W: Authority = { ...ALL, waive: true, attest: true }; const emp: Actor = { role: 'employee', label: 'Employee' };
+const why = 'The camera preset check needs the vendor on site; the room is usable without it and the visit is booked.';
+/** everything closed except T-SIM-016 (camera preset verification: pending, P2 deficiency open) and T-SIM-028 (operator guide acknowledgement: pending) */
+const twoOpen = (): DossierEvent[] => { const fix = (t: string, n: string): DossierEvent[] => [{ kind: 'RETEST', test: t, result: 'PASS', evidence: `EV-SIM-${n}`, by: cx, at }, { kind: 'VERIFY', test: t, by: qa, at }];
+  return run([{ kind: 'RAISE', test: 'T-SIM-032', id: 'DEF-SIM-003', statement: 'Assistive listening feed is below the specified level.', by: cx, at }, ...fix('T-SIM-008', '108'), ...fix('T-SIM-031', '131'), ...fix('T-SIM-032', '132'), { kind: 'EVIDENCE', test: 'T-SIM-030', evidence: 'EV-SIM-130', by: cx, at }, { kind: 'VERIFY', test: 'T-SIM-030', by: qa, at }]); };
+const waive = (t: string, by: Actor = ex, expires = '2026-12-09'): DossierEvent => ({ kind: 'WAIVE', test: t, reason: why, basis: 'DEF-SIM-002 and the vendor visit booking', owner: 'Commissioning Engineer', plan: 'Vendor attends on the booked day; the engineer retests and the reviewer verifies.', expires, by, at });
+
+test('waiver: an open item stops acceptance until it is waived; the waiver does not turn the test green', () => {
+  const ev = twoOpen(); const before = replay(D, ev, at);
+  assert.deepEqual(before.blockers.map((b) => b.test).sort(), ['T-SIM-016', 'T-SIM-028']); assert.equal(before.signoff, 'TESTS_OPEN');
+  assert.ok('refused' in attempt(D, ev, { kind: 'ACCEPT', by: sm, at }, W));
+  const waived = run([...ev, waive('T-SIM-016'), waive('T-SIM-028')], W); const w = replay(D, waived, at);
+  assert.equal(w.blockers.length, 0); assert.equal(w.open.length, 2, 'the items are still open'); assert.equal(w.signoff, 'AWAITING_FIRST');
+  assert.equal(w.totals.pending, before.totals.pending, 'a waived test still counts as pending'); assert.equal(w.totals.pass, before.totals.pass);
+  assert.deepEqual(w.waivers.map((x) => [x.test, x.state]), [['T-SIM-016', 'STANDING'], ['T-SIM-028', 'STANDING']]);
+  assert.ok(w.deficiencies.some((x) => x.test === 'T-SIM-016' && x.state !== 'CLOSED'), 'the deficiency stays open under the waiver');
+});
+test('waiver: each approval names how many waivers it is given over; acceptance is then recorded with them', () => {
+  const ev = run([...twoOpen(), waive('T-SIM-016'), waive('T-SIM-028')], W);
+  const silent = attempt(D, ev, { kind: 'ACCEPT', by: sm, at }, W); assert.ok('refused' in silent && /carries 2 waivers/.test(silent.refused));
+  const wrong = attempt(D, ev, { kind: 'ACCEPT', by: sm, at, waivers: 1 }, W); assert.ok('refused' in wrong);
+  const one = run([...ev, { kind: 'ACCEPT', by: sm, at, waivers: 2 }], W);
+  const silent2 = attempt(D, one, { kind: 'COUNTERSIGN', by: ops, at }, W); assert.ok('refused' in silent2 && /carries 2 waivers/.test(silent2.refused));
+  const w = replay(D, run([...one, { kind: 'COUNTERSIGN', by: ops, at, waivers: 2 }], W), at);
+  assert.equal(w.acceptance, 'ACCEPTED'); assert.equal(w.firstApproval!.waivers, 2); assert.equal(w.secondApproval!.waivers, 2);
+  assert.equal(w.waivers.filter((x) => x.state === 'STANDING').length, 2); assert.equal(w.open.length, 2); assert.equal(w.totals.pending, 2);
+});
+test('waiver: the role that waives does not also approve; a role that did the work cannot waive', () => {
+  const ev = run([...twoOpen(), waive('T-SIM-016', ex), waive('T-SIM-028', ops)], W);
+  const a = attempt(D, ev, { kind: 'ACCEPT', by: ex, at, waivers: 2 }, W); assert.ok('refused' in a && /different roles/.test(a.refused));
+  const one = run([...ev, { kind: 'ACCEPT', by: sm, at, waivers: 2 }], W);
+  const b = attempt(D, one, { kind: 'COUNTERSIGN', by: ops, at, waivers: 2 }, W); assert.ok('refused' in b && /different roles/.test(b.refused));
+  assert.equal(replay(D, run([...one, { kind: 'COUNTERSIGN', by: se, at, waivers: 2 }], W), at).acceptance, 'ACCEPTED', 'three parties: the Executive and Operations Lead waived, the Service Manager and Systems Engineer approved');
+  for (const who of [cx, qa]) { const r = attempt(D, twoOpen(), waive('T-SIM-016', who), W); assert.ok('refused' in r && /independent of the work/.test(r.refused), who.role); }
+  const none = attempt(D, twoOpen(), waive('T-SIM-016'), ALL); assert.ok('refused' in none && /cannot waive/.test(none.refused), 'the caller’s authority is needed too');
+});
+test('waiver: what cannot be waived, and what a waiver must say', () => {
+  const r = (ev: DossierEvent[], e: DossierEvent) => { const x = attempt(D, ev, e, W); return 'refused' in x ? x.refused : ''; };
+  assert.match(r([{ kind: 'RETEST', test: 'T-SIM-005', result: 'FAIL', evidence: null, by: cx, at }], waive('T-SIM-005')), /Raise the deficiency first/, 'an unraised failure');
+  assert.match(r([], waive('T-SIM-032')), /an accessibility control.*never waived/, 'the unraised accessibility failure of the snapshot');
+  assert.match(r([], waive('T-SIM-008')), /P1 .*not waived/, 'an open P1');
+  assert.match(r([], waive('T-SIM-001')), /nothing to waive/, 'a test with nothing open');
+  assert.match(r([], waive('T-SIM-031')), /accessibility control.*never waived/, 'an accessibility test, though it is only pending');
+  assert.match(r([{ kind: 'RETEST', test: 'T-SIM-019', result: 'FAIL', evidence: null, by: cx, at }, { kind: 'RAISE', test: 'T-SIM-019', id: 'DEF-SIM-009', statement: 'Management access is open to the whole building network.', by: cx, at }], waive('T-SIM-019')), /security control.*never waived/, 'a security control that now fails');
+  assert.match(r([{ kind: 'RETEST', test: 'T-SIM-026', result: 'FAIL', evidence: null, by: cx, at }, { kind: 'RAISE', test: 'T-SIM-026', id: 'DEF-SIM-009', statement: 'The stored backup does not match its checksum.', by: cx, at }], waive('T-SIM-026')), /record-integrity control.*never waived/, 'a record-integrity control that now fails');
+  assert.match(r([], { ...waive('T-SIM-016'), basis: 'trust me' } as DossierEvent), /relies on/);
+  assert.match(r([], { ...waive('T-SIM-016'), owner: '' } as DossierEvent), /who owns/);
+  assert.match(r([], { ...waive('T-SIM-016'), plan: 'later' } as DossierEvent), /how the item will be closed/);
+  assert.match(r([], waive('T-SIM-999')), /No test/);
+  assert.match(r([], { ...waive('T-SIM-016'), reason: 'Not needed.' } as DossierEvent), /documented/);
+  assert.match(r([], waive('T-SIM-016', ex, '2026-11-09')), /a day after today/);
+  assert.match(r([], waive('T-SIM-016', ex, 'soon')), /last day/);
+  assert.match(r([], waive('T-SIM-016', ex, '2027-03-01')), /at most 90 days/);
+  const once = run([waive('T-SIM-016')], W); assert.match(r(once, waive('T-SIM-016', ops)), /already has a waiver standing/);
+});
+test('waiver: it is dated. Run out before the second approval and the first is withdrawn; run out later and the acceptance stands, the waiver reads expired', () => {
+  const ev = run([...twoOpen(), waive('T-SIM-016'), waive('T-SIM-028'), { kind: 'ACCEPT', by: sm, at, waivers: 2 }], W);
+  assert.equal(replay(D, ev, '2026-12-09T20:00:00Z').signoff, 'AWAITING_SECOND', 'the last day counts');
+  const late = replay(D, ev, '2026-12-10T08:00:00Z'); assert.equal(late.firstApproval, null); assert.equal(late.signoff, 'TESTS_OPEN'); assert.equal(late.blockers.length, 2);
+  assert.deepEqual(late.waivers.map((x) => x.state), ['EXPIRED', 'EXPIRED']);
+  const lateSecond = attempt(D, ev, { kind: 'COUNTERSIGN', by: ops, at: '2026-12-10T08:00:00Z', waivers: 2 }, W); assert.ok('refused' in lateSecond, 'no second approval over an expired waiver');
+  const done = run([...ev, { kind: 'COUNTERSIGN', by: ops, at: '2026-11-10T09:00:00Z', waivers: 2 }], W);
+  const after = replay(D, done, '2027-01-15T08:00:00Z'); assert.equal(after.acceptance, 'ACCEPTED', 'an acceptance covers the record as it stood'); assert.equal(after.open.length, 2, 'and the items it left open are still listed');
+});
+test('waiver: closing the item makes it moot; a new waiver or result withdraws an approval', () => {
+  const ev = run([...twoOpen(), waive('T-SIM-016'), waive('T-SIM-028'), { kind: 'ACCEPT', by: sm, at, waivers: 2 }], W);
+  const closed = run([...ev, { kind: 'RETEST', test: 'T-SIM-028', result: 'PASS', evidence: 'EV-SIM-128', by: cx, at }, { kind: 'VERIFY', test: 'T-SIM-028', by: qa, at }], W); const w = replay(D, closed, at);
+  assert.equal(w.firstApproval, null, 'the record changed'); assert.deepEqual(w.waivers.map((x) => [x.test, x.state]), [['T-SIM-016', 'STANDING'], ['T-SIM-028', 'MOOT']]);
+  assert.ok('events' in attempt(D, closed, { kind: 'ACCEPT', by: sm, at, waivers: 1 }, W), 'one waiver now');
+});
+test('waiver: stored events cannot forge one', () => {
+  const base = twoOpen(); const acc: DossierEvent[] = [{ kind: 'ACCEPT', by: sm, at, waivers: 2 }, { kind: 'COUNTERSIGN', by: ops, at, waivers: 2 }];
+  const held = (ev: DossierEvent[], m: string) => assert.equal(replay(D, ev, at).acceptance, 'HELD', m);
+  held([...base, waive('T-SIM-016', cx), waive('T-SIM-028'), ...acc], 'a waiver from a role that did the work covers nothing');
+  held([...base, waive('T-SIM-016'), waive('T-SIM-028'), { kind: 'ACCEPT', by: sm, at }, { kind: 'COUNTERSIGN', by: ops, at }], 'approvals that do not name the waivers');
+  held([...base, waive('T-SIM-016'), waive('T-SIM-028'), { kind: 'ACCEPT', by: ex, at, waivers: 2 }, { kind: 'COUNTERSIGN', by: ops, at, waivers: 2 }], 'the first approver waived');
+  held([...base, waive('T-SIM-016', ex, '2026-11-01'), waive('T-SIM-028'), ...acc], 'a waiver already past its date');
+  held([...base, waive('T-SIM-016', ex, 'never'), waive('T-SIM-028'), ...acc], 'a waiver with no date');
+  held([waive('T-SIM-008'), waive('T-SIM-016'), waive('T-SIM-028'), waive('T-SIM-030'), waive('T-SIM-031'), waive('T-SIM-032'), { kind: 'ACCEPT', by: sm, at, waivers: 6 }, { kind: 'COUNTERSIGN', by: ops, at, waivers: 6 }], 'waiving a P1, an unraised failure and accessibility controls');
+  held([...base, { kind: 'WAIVE', test: 'T-SIM-016', reason: why, expires: '2026-12-09', by: ex, at } as unknown as DossierEvent, waive('T-SIM-028'), ...acc], 'a waiver with no owner, plan or basis');
+  held([...base, ...acc, waive('T-SIM-016'), waive('T-SIM-028')], 'waivers after the approvals');
+});
+test('attestation: the site champion’s word is recorded and read, and approves nothing', () => {
+  const say: DossierEvent = { kind: 'ATTEST', statement: 'We held three team meetings here this week; far end heard us clearly.', by: emp, at };
+  const ev = run([say], W); const w = replay(D, ev, at);
+  assert.equal(w.attestations.length, 1); assert.equal(w.acceptance, 'HELD'); assert.equal(w.blockers.length, replay(D, [], at).blockers.length, 'it clears no blocker');
+  assert.ok('refused' in attempt(D, ev, say, W), 'not twice'); assert.ok('refused' in attempt(D, [], { ...say, statement: 'ok' }, W)); assert.ok('refused' in attempt(D, [], say, ALL), 'needs the authority');
+  const one = run([...cleared(), { kind: 'ACCEPT', by: sm, at }], W); const withWord = run([...one, say], W);
+  assert.equal(replay(D, withWord, at).signoff, 'AWAITING_SECOND', 'an attestation does not withdraw an approval');
+  assert.equal(replay(D, [...cleared(), say, { kind: 'COUNTERSIGN', by: emp, at }], at).acceptance, 'HELD', 'and the champion is not an approver');
+});
 test('the caller’s authority is required as well as the rules', () => {
   for (const e of [{ kind: 'RETEST', test: 'T-SIM-008', result: 'FAIL', evidence: null, by: ex, at }, { kind: 'VERIFY', test: 'T-SIM-008', by: ex, at }, { kind: 'ACCEPT', by: cx, at }, { kind: 'EVIDENCE', test: 'T-SIM-030', evidence: 'EV-1', by: ex, at }] as DossierEvent[])
     assert.ok('refused' in attempt(D, [], e, NONE), e.kind);

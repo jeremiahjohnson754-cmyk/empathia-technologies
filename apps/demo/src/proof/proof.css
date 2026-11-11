@@ -77,3 +77,21 @@
 .pf-signoff li[data-state=done] { border-color: color-mix(in srgb, var(--ok) 50%, var(--line)); } .pf-signoff li[data-state=done]::before { content: '✓'; background: var(--ok); border-color: var(--ok); color: #06121f; }
 .pf-signoff li[data-state=next] { border-color: var(--accent); } .pf-signoff li[data-state=next]::before { border-color: var(--accent); color: var(--accent); }
 @media (max-width: 560px) { .pf-signoff li { grid-template-columns: auto minmax(0, 1fr); } .pf-signoff li > button { grid-column: 1 / -1; grid-row: auto; justify-self: start; } }
+
+/* Waivers and the site champion's attestation (11 Nov 2026) */
+.pf-waive { display: grid; gap: var(--sp-3); margin-block: var(--sp-3) 0; padding: 14px 16px; border: 1px dashed var(--line2); border-radius: var(--r-md); background: var(--bg2); max-inline-size: 86ch; }
+.pf-waive .pf-h { margin: 0; } .pf-waive .pf-actions { margin: 0; }
+.pf-waive__row { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--sp-3); align-items: start; }
+.pf-waive textarea, .pf-attest-form textarea { resize: vertical; min-block-size: 76px; }
+@media (max-width: 640px) { .pf-waive__row { grid-template-columns: minmax(0, 1fr); } }
+.pf-waivers, .pf-attest { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.pf-waivers li { padding: 12px 14px; border: 1px solid color-mix(in srgb, var(--warn) 45%, var(--line)); border-radius: var(--r-md); background: var(--panel); display: grid; gap: 6px; }
+.pf-waivers li[data-state=MOOT] { border-color: var(--line); } .pf-waivers li[data-state=EXPIRED], .pf-waivers li[data-state=VOID] { border-color: color-mix(in srgb, var(--bad) 50%, var(--line)); }
+.pf-waivers header { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; } .pf-waivers header code { font-weight: 650; } .pf-waivers header .pf-note { display: inline; }
+.pf-waivers p, .pf-attest p { margin: 0; color: var(--tx); line-height: 1.5; overflow-wrap: anywhere; }
+.pf-attest li { padding: 10px 14px; border-inline-start: 3px solid var(--line2); background: var(--bg2); border-radius: 0 var(--r-md) var(--r-md) 0; display: grid; gap: 4px; }
+.pf-attest-form { display: grid; gap: var(--sp-3); margin-block: var(--sp-3); padding-block-start: var(--sp-3); border-block-start: 1px solid var(--line); }
+.pf-attest-form .pf-h, .pf-attest-form .pf-actions { margin: 0; }
+.pf-waivers__facts { margin: 0; display: grid; gap: 2px; font-size: var(--fs-sm); } .pf-waivers__facts > div { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 8px; }
+.pf-waivers__facts dt { color: var(--tx3); } .pf-waivers__facts dd { margin: 0; color: var(--tx2); overflow-wrap: anywhere; }
+@media (max-width: 640px), (pointer: coarse) { .pf-waive select, .pf-waive input, .pf-waive .ui-btn, .pf-attest-form .ui-btn { min-block-size: 44px; } }
