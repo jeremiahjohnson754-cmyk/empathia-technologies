@@ -39,8 +39,11 @@
  * NOT BUILT: resolving which directory groups a signed-in reader belongs to; sites other than the one named; lists and pages;
  * document versions (`/versions`); change notifications; any real transport or token acquisition.
  */
-import type { HttpRequest, HttpResponse } from '../connect/graph.js';
-import { GRAPH_BASE } from '../connect/graph.js';
+// The request and response shapes and the base address are declared here, not imported from the calendar adapter: each Graph
+// source stands alone, so that nothing which ships can reach either by an import (tests/unit/demo-connect.test.mjs › CX-31).
+export interface HttpRequest { method: 'GET' | 'POST' | 'DELETE'; url: string; headers: Record<string, string>; body?: unknown }
+export interface HttpResponse { status: number; headers: Record<string, string>; body: unknown }
+export const GRAPH_BASE = 'https://graph.microsoft.com/v1.0';
 import { ALLOWED_TYPES, MAX_BYTES, applyDelta, folderOf, type Changes, type Index, type SourceDoc, type SourceProvenance, type SyncReport } from './ingest.js';
 
 export const GRAPH_DOC_READ = '2026-11-11';

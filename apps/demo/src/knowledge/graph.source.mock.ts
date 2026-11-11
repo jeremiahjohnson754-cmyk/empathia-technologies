@@ -11,9 +11,8 @@
  * ASSUMPTIONS of the mock, none taken from a page: the form of its tokens and links, its page size, the host of its download
  * address, and that an expired token answers 410 with `resyncChangesApplyDifferences`.
  */
-import { GRAPH_BASE, type HttpResponse } from '../connect/graph.js';
 import type { SourceState } from './ingest.js';
-import type { DocRequest, DocTransport } from './graph.source.js';
+import { GRAPH_BASE, type DocRequest, type DocTransport, type HttpResponse } from './graph.source.js';
 
 export interface Fixture { source: string; read: string; body: unknown }
 /** The pages' own examples, verbatim. */
