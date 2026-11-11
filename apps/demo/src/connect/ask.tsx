@@ -39,7 +39,7 @@ export const CONNECT_QUESTIONS: ConnectQuestion[] = [
       return { lead: first ? <>For {shortName(o!)}, start with <b>{name(first.person)}</b>: {first.reason.charAt(0).toLowerCase()}{first.reason.slice(1)}. {first.promoted ? `${first.promoted}. ` : ''}{list[1] && list[1].relation !== 'technician' ? <>If they cannot be reached, {name(list[1].person)} ({list[1].relation === 'backup' ? 'the backup' : 'the site champion'}). </> : null}{tech ? <>For a fault, {name(tech.person)}: {tech.reason.charAt(0).toLowerCase()}{tech.reason.slice(1)}. </> : null}Everyone named is synthetic.</> : <>Nobody is listed for {shortName(o!)}.</>,
         cites: roomRecs(c, o!), more: [['See them, with the ways to contact each', `#/people?about=room:${o!.id}`]] };
     } },
-  { id: 'meet', group: 'The workplace', text: `Book 30 minutes with the systems engineer about ${shortName(REF)}.`, words: /\b(book|schedule|arrange|set up)\b.*\bwith\b/, needsRoom: true,
+  { id: 'meet', group: 'The workplace', text: 'Book 30 minutes with the systems engineer.', words: /\b(book|schedule|arrange|set up)\b.*\bwith\b/, needsRoom: true,
     answer: (c, o, role, asked = '') => {
       const text = asked || `book 30 minutes with the systems engineer about ${shortName(REF)}`; const room = o!; const who = holderIn(text, room.building);
       const minutes = (DURATIONS as readonly number[]).find((d) => new RegExp(`\\b${d} ?min`).test(text.toLowerCase())) || (/\b(an|one|1) hour\b/.test(text.toLowerCase()) ? 60 : 30);

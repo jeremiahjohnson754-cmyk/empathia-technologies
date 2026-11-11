@@ -76,7 +76,7 @@ function Meet({ role, query, hash }: PageProps) {
     moved.current = true; setRefused(null); setAgain(out.again); setSaid(out.said); setDoneId(out.meeting.id); setStepRaw('done'); refresh();
   };
   const doCancel = (id: string) => { const out = cancelMeeting(role, id, reason, Date.now()); if ('why' in out) setRefused(out.why); else { setRefused(null); setReason(''); setSaid(`${out.id} is cancelled in this demonstration’s simulated calendar. No cancellation left this browser.`); } refresh(); };
-  const teamsForm = (m: Meeting) => { const others = m.parties.map((x) => personById(x.id)).filter((p): p is NonNullable<typeof p> => !!p); if (!others.length || !others.every((p) => mayReach(role, p))) return null; const b = build('teams.meeting', { to: others.map((p) => p.email), subject: m.subject, body: m.body, from: isoLocal(me.tz, m.from), until: isoLocal(me.tz, m.to) }); return b.ok ? { href: b.href, first: others[0]! } : null; };
+  const teamsForm = (m: Meeting) => { const others = m.parties.filter((x) => x.id !== me.id).map((x) => personById(x.id)).filter((p): p is NonNullable<typeof p> => !!p); if (!others.length || !others.every((p) => mayReach(role, p))) return null; const b = build('teams.meeting', { to: others.map((p) => p.email), subject: m.subject, body: m.body, from: isoLocal(me.tz, m.from), until: isoLocal(me.tz, m.to) }); return b.ok ? { href: b.href, first: others[0]! } : null; };
   const mine = meetingsOf(st, role);
 
   if (!maySchedule(role)) return null;

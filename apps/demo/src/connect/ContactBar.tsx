@@ -98,12 +98,12 @@ export function ContactBar({ role, person: p, about, seen, compact, onChange }: 
       </ul>
       <p className="cx-said" role="status" aria-live="polite" data-testid="cx-said">{said}</p>
       {fallback && <div className="cx-fallback" data-testid="cx-fallback"><label htmlFor={`cx-fb-${p.id}`}>{fallback.label.charAt(0).toUpperCase()}{fallback.label.slice(1)}</label><textarea id={`cx-fb-${p.id}`} ref={fb} readOnly rows={fallback.text.includes('\n') ? 6 : 1} value={fallback.text} /></div>}
-      {panel === 'avail' && <div className="cx-panel" data-testid="cx-availability">
+      {panel === 'avail' && <div className="cx-panel" data-testid="cx-avail-panel">
         <p><b>{first} works {(p.shift || p.hours).start}–{(p.shift || p.hours).end}{p.shift ? ` (${p.shift.name.toLowerCase()})` : ''}</b>, {zoneCity(p.tz)} time.</p>
         <ul>{days.map((d) => { const b = busy.filter((x) => x.from < d.to && x.to > d.from); return <li key={d.from}><b>{fmtDay(p.tz, d.from)}</b> {fmtTime(p.tz, d.from)}–{fmtTime(p.tz, d.to)}{b.length ? <> · busy {b.map((x) => `${fmtTime(p.tz, x.from)}–${fmtTime(p.tz, x.to)}`).join(', ')}</> : ' · nothing in the calendar'}</li>; })}</ul>
         <p className="ui-meta">Times are {first}’s own. Simulated calendar: generated for the demonstration, not read from anyone’s diary. Public holidays and leave are not modelled.</p>
       </div>}
-      {panel === 'backup' && backup && <div className="cx-panel" data-testid="cx-backup" data-person={backup.id}>
+      {panel === 'backup' && backup && <div className="cx-panel" data-testid="cx-backup-panel" data-person={backup.id}>
         <p><b>{backup.name}</b> <span className="ui-muted">{backup.title}</span></p>
         <p>{p.kind === 'role' ? `Another ${p.title.toLowerCase()} for the same building.` : p.kind === 'champion' ? `Stands in for ${first} at ${B?.name || p.home}.` : `The site champion ${first} stands in for.`} {availabilityAt(backup, now, busyOf(st, w, role, backup, now - DAY, now + DAY)).words}.</p>
         {opens(`#/people/${backup.id}`) && <p><a href={`#/people/${backup.id}`}>Open {backup.name.split(' ')[0]}’s profile and contact actions</a></p>}
