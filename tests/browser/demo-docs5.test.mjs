@@ -107,9 +107,9 @@ const attach = async (p) => { await p.setInputFiles('[data-testid=doc-file-input
   // a new as-built
   await as(p, 'designer', doc('as_built_drawings')); await fillFields(p); await attach(p); await p.click('[data-testid=doc-submit-go]'); await said(p);
   await as(p, 'qa', doc('as_built_drawings')); await p.click('[data-testid=doc-accept]'); await said(p);
-  await as(p, 'qa', LIST); await p.waitForSelector('[data-testid=docs]'); await p.click('.d5-list .kit-seg__opt:has-text("Open")');
+  await as(p, 'qa', LIST); await p.waitForSelector('[data-testid=docs]'); await p.click('.d5-list .kit-seg__opt:has-text("All required")');
   const out = await p.evaluate(() => [...document.querySelectorAll('[data-testid=docs-list] > li')].map((x) => `${x.dataset.doc}:${x.dataset.state}`).filter((x) => /OUTDATED/.test(x)).join(' '));
-  ok('D5B-45', 'a new as-built drawing makes the signal flow drawn from the old one outdated (the network diagram, just redrawn against it, is not)', out === 'signal_flow:OUTDATED', out);
+  ok('D5B-45', 'a new as-built drawing makes what was drawn from the old one outdated: the signal flow, and the network diagram redrawn a moment earlier against revision 1; the rack elevations do not apply to this room', out === 'signal_flow:OUTDATED network_diagram:OUTDATED' && await attr(p, '[data-testid=docs]', 'data-blockers') === '1', out);
   ok('D5B-46', 'and the finding says which revision it was written against and which is current', /was written against revision 1 of the as-built drawings, which is now at revision 2/.test(await main(p)));
   ok('D5B-47', 'no console error through the journey', clean(t), [...t.errs, ...t.off].join(' | ')); await t.close(); }
 
@@ -148,9 +148,11 @@ const attach = async (p) => { await p.setInputFiles('[data-testid=doc-file-input
   await p.selectOption('[data-testid=capture-frame]', 'reading'); ok('D5B-72', 'the guidance follows the kind of photograph', /The value and its unit readable/.test(await text(p, '[data-testid=capture-guide]')));
   const r0 = t.reqs.length; await p.setInputFiles('[data-testid=capture-file]', { name: 'caption-panel.png', mimeType: 'image/png', buffer: PNG }); await p.waitForFunction(() => document.querySelector('[data-testid=capture-stage]')?.dataset.hasImage === 'yes');
   ok('D5B-73', 'the photograph is shown with the framing guide over it; its name, size and checksum are noted; nothing was sent', /caption-panel\.png/.test(await text(p, '[data-testid=capture-photo-meta]')) && (await text(p, '[data-testid=capture-photo-meta]')).includes(crypto.createHash('sha256').update(PNG).digest('hex').slice(0, 16)) && t.reqs.length === r0 && t.off.length === 0);
-  await p.click('[data-testid=capture-mark-centre]'); const box = await p.locator('[data-testid=capture-stage]').boundingBox();
+  await p.click('[data-testid=capture-mark-centre]');
+  // the stage is brought to the middle of the screen first: on a phone the bottom navigation covers the lower edge of whatever is at the bottom
+  await p.evaluate(() => document.querySelector('[data-testid=capture-stage]').scrollIntoView({ block: 'center' })); await p.waitForTimeout(150); const box = await p.locator('[data-testid=capture-stage]').boundingBox();
   await p.click('[data-tool=box]'); await p.mouse.move(box.x + box.width * 0.2, box.y + box.height * 0.2); await p.mouse.down(); await p.mouse.move(box.x + box.width * 0.6, box.y + box.height * 0.6, { steps: 4 }); await p.mouse.up();
-  await p.click('[data-tool=label]'); await p.fill('[data-testid=capture-label-text]', 'Captions on'); await p.mouse.click(box.x + box.width * 0.5, box.y + box.height * 0.8);
+  await p.click('[data-tool=label]'); await p.fill('[data-testid=capture-label-text]', 'Captions on'); await p.evaluate(() => document.querySelector('[data-testid=capture-stage]').scrollIntoView({ block: 'center' })); await p.waitForTimeout(150); const b2 = await p.locator('[data-testid=capture-stage]').boundingBox(); await p.mouse.click(b2.x + b2.width * 0.5, b2.y + b2.height * 0.7);
   const marks3 = await attr(p, '[data-testid=capture-stage]', 'data-marks'); await p.click('[data-testid=capture-mark-undo]');
   ok('D5B-74', 'an arrow, a dragged box and a label are drawn on the photograph, and the last can be undone', marks3 === '3' && await attr(p, '[data-testid=capture-stage]', 'data-marks') === '2' && await p.locator('[data-testid=capture-stage] .d5-stage__mark').count() === 2, marks3);
   await p.fill('[data-testid=capture-note]', 'Captioning switched on from the touch panel; shown on the left display.');
@@ -169,7 +171,7 @@ const attach = async (p) => { await p.setInputFiles('[data-testid=doc-file-input
   ok('D5B-78', 'reopened, it has the photograph, both marks, the note, the measurement as typed and the kind of photograph', back.img === 'yes' && back.marks === '2' && /Captioning switched on/.test(back.note) && back.v === '2,4' && back.frame === 'reading', JSON.stringify(back));
   await t.ctx.setOffline(true); await p.waitForFunction(() => document.querySelector('[data-testid=capture]').dataset.online === 'no'); await p.click('[data-testid=capture-sync-go]'); const off = await said(p, 'capture');
   ok('D5B-79', 'offline, synchronising is refused in words and the draft stays', /^REFUSED This device is offline\. The draft is kept here/.test(off), off);
-  await t.ctx.setOffline(false); await p.waitForFunction(() => document.querySelector('[data-testid=capture]').dataset.online === 'yes'); await p.click('[data-testid=capture-sync-go]'); const s1 = await said(p, 'capture');
+  await t.ctx.setOffline(false); await p.waitForFunction(() => document.querySelector('[data-testid=capture]').dataset.online === 'yes'); await p.click('[data-testid=capture-sync-go]'); await p.waitForFunction(() => /Synchronised once/.test(document.querySelector('[data-testid=capture-done]')?.textContent || '')); const s1 = await text(p, '[data-testid=capture-done]');   // waits for the answer to this click, not the refusal still on screen from the offline attempt
   await p.click('[data-testid=capture-sync-go]'); await p.waitForFunction(() => /already synchronised/.test(document.querySelector('[data-testid=capture-done]')?.textContent || '')); const s2 = await text(p, '[data-testid=capture-done]');
   const stored = await p.evaluate(() => JSON.parse(localStorage.getItem('empathia.demo.docs5.captures.v1') || '[]'));
   ok('D5B-80', 'back online it synchronises once; a second synchronisation adds nothing', new RegExp(`Synchronised once\\. ${key} is on the record`).test(s1) && /was already synchronised\. Nothing was added/.test(s2) && stored.length === 1, `${s1} | ${s2} | ${stored.length}`);
