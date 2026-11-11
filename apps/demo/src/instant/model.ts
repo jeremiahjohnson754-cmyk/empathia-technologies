@@ -45,8 +45,8 @@ export const shotsFor = (scope: Scope): Shot[] => SHOTS.filter((s) => s.scopes.i
 // ------------------------------------------------------------------------------------------------------------ one photograph
 export type Verdict = 'ok' | 'blurry' | 'dark' | 'washed-out' | 'small' | 'upright';
 export interface Quality { verdict: Verdict; /** the variance of the picture's edges; higher is sharper */ sharpness: number; /** mean brightness, 0 to 255 */ light: number; say: string }
-/** Below this edge variance a photograph, reduced to SAMPLE_WIDTH pixels across, is treated as blurred. A threshold chosen on generated test pictures, not a measurement standard. */
-export const SHARP_MIN = 60; export const SAMPLE_WIDTH = 160; export const MIN_SIDE = 640;
+/** Below this edge variance a photograph, reduced to SAMPLE_WIDTH pixels across, is treated as blurred. A threshold chosen on generated test pictures, not a measurement standard: a plain, evenly lit wall has few edges and can read as blurred, which is why a person may keep a photograph the check did not pass. */
+export const SHARP_MIN = 60; export const SAMPLE_WIDTH = 640; export const MIN_SIDE = 640;
 const SAY: Record<Verdict, string> = {
   ok: 'This photo is sharp and well lit.', blurry: 'This photo is blurry. Please retake it.', dark: 'This photo is too dark to make out. Turn on the room lights, or move so the windows are behind you, and retake it.',
   'washed-out': 'This photo is washed out. Move so no window or lamp is in the frame, and retake it.', small: 'This photo is too small to show detail. Retake it with the camera, not a thumbnail.',

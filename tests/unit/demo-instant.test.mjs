@@ -9,9 +9,12 @@ import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
 const out = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'demo-instant-')), 'm.mjs');
-await esbuild.build({ stdin: { contents: `export * as M from './instant/model.ts'; export * as E from './optimizer/engine.ts';`, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' },
-  bundle: true, format: 'esm', platform: 'node', outfile: out, jsx: 'automatic', logLevel: 'error', nodePaths: [path.join(repo, 'node_modules')], alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') } });
-const { M, E } = await import(pathToFileURL(out).href);
+const mem = new Map(); globalThis.localStorage = { getItem: (k) => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => { mem.set(k, String(v)); }, removeItem: (k) => { mem.delete(k); } };
+globalThis.window = { dispatchEvent() {}, addEventListener() {}, removeEventListener() {} }; globalThis.Event = globalThis.Event || class { constructor(t) { this.type = t; } };
+await esbuild.build({ stdin: { contents: `export * as M from './instant/model.ts'; export * as E from './optimizer/engine.ts'; export * as S from './instant/store.ts'; export * as WS from './workspace/store.ts'; export * as P from './access/policy.ts'; export * as PG from './registry.pages.ts';`, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' },
+  bundle: true, format: 'esm', platform: 'node', outfile: out, jsx: 'automatic', logLevel: 'error', nodePaths: [path.join(repo, 'node_modules')], alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') },
+  plugins: [{ name: 'lazy', setup(b) { b.onResolve({ filter: /\.(js)$/ }, (a) => (a.kind === 'dynamic-import' ? { path: a.path, external: true } : undefined)); } }] });
+const { M, E, S, WS, P, PG } = await import(pathToFileURL(out).href);
 const W = 160, H = 120; const pic = (f) => { const a = new Uint8ClampedArray(W * H); for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) a[y * W + x] = f(x, y); return a; };
 const SHARP = pic((x, y) => ((x >> 3) + (y >> 3)) % 2 ? 200 : 60); const SOFT = pic((x, y) => 90 + Math.round(60 * (x / W))); const DARK = pic((x, y) => ((x >> 3) + (y >> 3)) % 2 ? 30 : 6); const WHITE = pic((x, y) => ((x >> 3) + (y >> 3)) % 2 ? 255 : 240);
 const OK = { verdict: 'ok', sharpness: 999, light: 120, say: 'This photo is sharp and well lit.' }; const BLUR = M.assess(SOFT, W, H, 4000, 3000, 'wide');
@@ -85,4 +88,30 @@ test('IR-07 a layout is studied only from what a person recorded, says what it a
   const s = M.studyInput(full()); assert.deepEqual(s.ok.dims, [6.2, 9.4, 2.9]); assert.equal(s.ok.capacity, 14); assert.deepEqual(s.assumed, ['Step-free access is assumed. Say if the room has steps.', 'The room is studied as a meeting room with seats at tables.']);
   assert.ok(M.studyInput(full({ height: null })).assumed.includes('No height was recorded: the study assumes a 3 m ceiling.'));
   const r = E.compare(s.ok); assert.equal(r.studies.length, 3); for (const st of r.studies) { assert.ok(st.scores.every((x) => x.basis === 'MODELED')); assert.ok(st.layout.seats.length > 0 && st.layout.screens.length > 0); assert.ok(Math.abs(st.layout.depth * st.layout.width - 6.2 * 9.4) < 0.01, 'the study is of the captured room'); }
+});
+
+test('IR-08 a proposal is saved only by the people the founder names, only when a plan can be drawn, and it changes nothing but its own list and the ledger', () => {
+  const fresh = () => { mem.clear(); return WS.seed(); }; const extra = { studyAssumed: ['Step-free access is assumed. Say if the room has steps.'], findings: ['You counted 16 seats; the record says 14.'] };
+  assert.deepEqual([...S.IR_ROLES], ['service', 'employee', 'sitechamp', 'designer', 'installer', 'cxeng', 'syseng', 'architect']);
+  for (const role of P.ROLE_KEYS) { const w = fresh(); const r = S.savePropose(w, role, full(), 'B', extra); assert.equal(!r.why, S.IR_ROLES.includes(role), role); if (r.why) assert.equal(w.events[0].outcome, 'DENIED', role); }
+  const w = fresh(); const before = JSON.stringify({ ...w, events: undefined, ir: undefined });
+  assert.deepEqual(S.savePropose(w, 'service', full({ width: null }), null, extra).why, ['Confirm the room width using an actual measurement.']); assert.match(S.savePropose(w, 'service', full({ name: ' ' }), null, extra).why[0], /Name the space/); assert.match(S.savePropose(w, 'service', full(), 'Z', extra).why[0], /one of the layouts/);
+  assert.deepEqual(S.proposalsOf(w), []); const p = S.savePropose(w, 'service', full(), 'B', extra); assert.equal(p.id, 'IR-0001'); assert.equal(p.state, 'PROPOSED'); assert.equal(p.option, 'B'); assert.equal(p.basis, 'MEASURED'); assert.equal(p.photos.length, 6);
+  assert.ok(p.assumptions.includes('Step-free access is assumed. Say if the room has steps.')); assert.deepEqual(p.findings, extra.findings); assert.ok(!JSON.stringify(p).includes('data:image'), 'no photograph is in the shared record');
+  const q = S.savePropose(w, 'employee', full(), null, extra); assert.equal(q.id, 'IR-0002'); assert.ok(!q.assumptions.includes(extra.studyAssumed[0]), 'no layout chosen, no study assumption');
+  assert.equal(JSON.stringify({ ...w, events: undefined, ir: undefined }), before, 'no room, job or record changed'); assert.match(w.events[0].detail, /IR-0002: a proposed design for .* A proposal: no record was changed/);
+  assert.deepEqual(S.proposalsFor('designer', w).map((x) => x.id), ['IR-0002', 'IR-0001']); assert.deepEqual(S.proposalsFor('service', w).map((x) => x.id), ['IR-0001']); assert.deepEqual(S.proposalsFor('employee', w).map((x) => x.id), ['IR-0002']); assert.deepEqual(S.proposalsFor('installer', w), []);
+  w.ir = { proposals: [{ id: 'IR-0009', name: 'Forged', at: 'x', state: 'ACCEPTED' }, null, 5] }; assert.deepEqual(S.proposalsOf(w), []); w.ir = 'broken'; assert.deepEqual(S.proposalsOf(w), []);
+  const page = PG.resolve('#/instant/R-ATL-4-218'); assert.ok(page); assert.deepEqual(P.ROLE_KEYS.filter((r) => P.canOpen(r, page)).sort(), [...S.IR_ROLES].sort(), 'the readers are among those who capture');
+});
+
+test('IR-09 a capture read back from the browser is untrusted: unknown shots, verdicts, places and categories are dropped, text is cleaned, and a kept-anyway mark cannot sit on a photograph that passed', () => {
+  const isCat = (c) => ['display', 'camera'].includes(c); const at = '2026-11-11T12:00:00Z'; const q = (verdict) => ({ verdict, sharpness: 1, light: 1, say: 'x' });
+  for (const bad of [null, 5, 'x', [], {}, { name: 'a', scope: 'everything' }]) assert.equal(S.readCapture(bad, isCat), null, JSON.stringify(bad));
+  const c = S.readCapture({ roomId: 'R-ATL-4-218; DROP', name: ' <b>Room</b>\u0000 ', scope: 'room', seats: 99999, width: { m: 6, how: 'measured' }, length: { m: -4, how: 'measured' }, height: { m: 3, how: 'guess' },
+    photos: [{ shot: 'front', key: 'IRP-ABCDEFGH', at, quality: q('ok'), keptAnyway: true }, { shot: 'nope', key: 'IRP-ABCDEFGH', at, quality: q('ok') }, { shot: 'left', key: '../etc', at, quality: q('ok') }, { shot: 'left', key: 'IRP-ABCDEFG2', at, quality: q('perfect') }, { shot: 'right', key: 'IRP-ABCDEFG3', at, quality: q('blurry'), keptAnyway: true }],
+    details: [{ id: 'a', category: 'display', place: 'front', label: '<img src=x onerror=alert(1)> Model 55' }, { id: 'b', category: 'reactor', place: 'front' }, { id: 'c', category: 'camera', place: 'roof' }] }, isCat);
+  assert.equal(c.roomId, null); assert.equal(c.name, 'b Room /b'); assert.equal(c.seats, null); assert.deepEqual(c.width, { m: 6, how: 'measured' }); assert.equal(c.length, null); assert.equal(c.height, null);
+  assert.deepEqual(c.photos.map((p) => `${p.shot}:${p.keptAnyway}`), ['front:false', 'right:true']); assert.deepEqual(c.details.map((d) => d.id), ['a']); assert.ok(!/[<>]/.test(c.details[0].label)); assert.match(c.details[0].label, /Model 55/);
+  mem.clear(); assert.equal(S.loadCapture(isCat), null); S.saveCapture(c); assert.deepEqual(S.loadCapture(isCat), c); mem.set('empathia.demo.instant.v1', '{not json'); assert.equal(S.loadCapture(isCat), null); S.clearCapture(); assert.equal(mem.has('empathia.demo.instant.v1'), false);
 });
