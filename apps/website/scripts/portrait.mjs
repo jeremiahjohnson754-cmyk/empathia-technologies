@@ -38,7 +38,8 @@ for (const s of SIZES) {
 }
 const record = {
   subject: 'Jeremiah Johnson, founder of Empathia Technologies',
-  rights: 'rights confirmed by the founder, 2026-11-10 (his own photograph, supplied for the website)',
+  rights: 'The founder confirmed on 10 Nov 2026 that he holds the necessary rights to the photographs, films, music and creative assets he supplied, for authorised use in Empathia. This photograph is one of them, supplied by him for the website.',
+  direction: 'Founder, 10 Nov 2026: "KEEP MY EXISTING FOUNDER PHOTOGRAPH. DO NOT REPLACE IT." His face, likeness and pose are preserved; grading, lighting, tonal balance and clarity only; no generated version; the original is kept as a recoverable source asset.',
   original: { kept: path.relative(repo, ORIGINAL), width: w, height: h, bytes: fs.statSync(source).size, sha256: sha(source), note: 'untouched; the recoverable source of every rendition' },
   treatment: graded
     ? 'whole picture only: white balance (R × 0.965, G × 1.02, B × 1.03), exposure (gamma 1.10), tonal balance (sigmoidal contrast 2.2 at 48 %), clarity (unsharp 0 × 1.4, amount 0.35, threshold 0.02); then resized (Lanczos), sRGB, metadata stripped. No crop, no mask, no local edit, no retouching, nothing generated, background unchanged.'

@@ -428,6 +428,13 @@ for (const [w, h] of [[1440, 900], [768, 1024], [390, 844]]) {
   }
   const founderFiles = fs.readdirSync(path.join(dist, 'media/founder')).sort();
   ok('WF-portrait-files', 'the site ships the three sizes of the picture in WebP and JPEG and none of the earlier portrait files; no alternative text on the site describes the founder beyond his name and role', founderFiles.join() === '320.jpg,320.webp,640.jpg,640.webp,960.jpg,960.webp' && pages.every((p) => { const html = fs.readFileSync(path.join(dist, p === '/' ? '' : p, 'index.html'), 'utf8'); return (html.match(/<img[^>]*media\/founder[^>]*>/g) || []).every((t) => t.includes(`alt="${ALT}"`)) && !/media\/founder\/(480|800|1200)\./.test(html); }), founderFiles.join());
+  // ADDED 2026-11-11 (a defect seen in the screenshots): in the founder page's closing band the button was stretched to the height of the
+  // disclosure beside it. The button keeps its own height and the disclosure sits under it, at desktop and phone width.
+  for (const w of [1440, 390]) {
+    const c = await newCtx({ viewport: { width: w, height: 900 } }); const pp = await c.newPage(); await pp.goto(base + '/founder', { waitUntil: 'load' });
+    const b = await pp.evaluate(() => { const band = document.querySelector('main .band'); const btn = band.querySelector('a[data-enquiry=founder]').getBoundingClientRect(); const d = band.querySelector('.disclosure').getBoundingClientRect(); return { h: Math.round(btn.height), under: d.top >= btn.bottom, left: Math.abs(d.left - btn.left) < 2 }; });
+    ok(`WF-band-${w}`, `/founder at ${w} px: the closing band's button keeps a button's height (44 to 72 px) and its disclosure sits under it, aligned with it`, b.h >= 44 && b.h <= 72 && b.under && b.left, JSON.stringify(b)); await c.close();
+  }
 }
 
 // ---- budgets (approved image-performance and weight budgets) ----

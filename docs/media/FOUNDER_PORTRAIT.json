@@ -1,6 +1,7 @@
 {
   "subject": "Jeremiah Johnson, founder of Empathia Technologies",
-  "rights": "rights confirmed by the founder, 2026-11-10 (his own photograph, supplied for the website)",
+  "rights": "The founder confirmed on 10 Nov 2026 that he holds the necessary rights to the photographs, films, music and creative assets he supplied, for authorised use in Empathia. This photograph is one of them, supplied by him for the website.",
+  "direction": "Founder, 10 Nov 2026: \"KEEP MY EXISTING FOUNDER PHOTOGRAPH. DO NOT REPLACE IT.\" His face, likeness and pose are preserved; grading, lighting, tonal balance and clarity only; no generated version; the original is kept as a recoverable source asset.",
   "original": {
     "kept": "apps/website/media-src/founder/founder-original.webp",
     "width": 1440,
@@ -48,5 +49,5 @@
       "sha256": "12df013f6d876082ecd7160243baa3d00153184aa5ac02b137f17713868a9ded"
     }
   },
-  "at": "2026-11-10T21:12:31.279Z"
+  "at": "2026-11-11T08:35:38.508Z"
 }

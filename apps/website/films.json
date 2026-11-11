@@ -79,7 +79,7 @@
         "basis": "rights confirmed by the founder, 2026-11-10; supplied for the Collabora-SING In Development section of the corporate website",
         "scope": "the Collabora-SING In Development section of the corporate website (/collabora-sing) only: no other page, product or channel",
         "evidence": [
-          "the founder confirmed on 2026-11-10 that he holds the rights to the photographs, films, music and creative assets he supplied, for use in Empathia (his statement, relayed by the integrator at 15:06 CT; no separate document is on file)",
+          "the founder confirmed on 10 Nov 2026 that he holds the necessary rights to the photographs, films, music and creative assets he supplied, for authorised use in Empathia (his statement, relayed by the integrator; no separate document is on file)",
           "the supplied file's SHA-256 is masterSha256, the same file catalogued as Collabora-sing-SyncLab-From-Hypothesis-to-Evidence-1080p in media/manifests/MEDIA_MANIFEST.json",
           "sound: the audio stream is digital silence (ffmpeg astats on 2026-11-10: peak -inf dB on both channels for the whole 35.0 s), so the film carries no narration, music or sound effect; the web rendition has no audio stream",
           "picture: a 3D animation with drawn figures and on-screen text; in the 35 one-per-second frames read on 2026-11-10 there is no photograph, no recording of a person and no third party's name, logo or mark"

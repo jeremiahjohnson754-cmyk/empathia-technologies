@@ -82,9 +82,9 @@ track. The page prints the description under the player and says that it describ
 - `status`: `VERIFIED`
 - `basis`: rights confirmed by the founder, 2026-11-10; supplied for the Collabora-SING In Development section of the corporate website
 - `scope`: that section only
-- `evidence`: the founder's confirmation that he holds the rights to the photographs, films, music and creative assets he supplied,
-  for use in Empathia (his statement, relayed by the integrator; no separate document on file); the file hash; the measured silence;
-  what the picture contains
+- `evidence`: the founder confirmed on 10 Nov 2026 that he holds the necessary rights to the photographs, films, music and creative
+  assets he supplied, for authorised use in Empathia (his statement, relayed by the integrator; no separate document on file); the
+  file hash; the measured silence; what the picture contains
 - `notEvidenced`: beyond that confirmation no licence or authorship document was supplied; the 3D library and typeface used to
   render the picture were not examined; the master is not in the media-rights ledger (`MEDIA_MANIFEST.json` still lists it as `NOT_IN_LEDGER`, owner `NOT ESTABLISHED`,
   `NOT_ELIGIBLE`)
@@ -92,22 +92,26 @@ track. The page prints the description under the player and says that it describ
 The manifest and the ledger were not changed by this work (they are outside the website). They should be brought into line with
 the founder's confirmation.
 
-## 4. Open: the renditions are not in the repository
+## 4. The renditions are in the repository
 
-`.gitignore` ignores `apps/website/media/*` except `founder/` and `product/`. The public site is built by Render from the repository
-(`render.yaml`), and the build stops when a film is `VERIFIED` but its renditions are missing. The five files above are therefore
-needed in the repository before this branch can be built from a clean checkout or deployed. They were **not** force-added. Options:
+`.gitignore` ignores `apps/website/media/*` except `founder/`, `product/` and, since 2026-11-11, `SYNCLAB/`. The public site is built
+from the repository, and the build stops when a film is `VERIFIED` but its renditions are missing, so the six files above are
+committed (about 4.0 MB; this follows the rule already written in `.gitignore`: only a film verified for the website is committed).
+`RENDITION.json` names the master by its catalogue path, not by the local path it was read from.
 
-1. Follow `WEBSITE_FILM_PLACEMENT.md` §3: add `!apps/website/media/SYNCLAB/` to `.gitignore` under the two existing exceptions and
-   commit the files (about 4.0 MB). `RENDITION.json` holds a local path and can be left out.
-2. Keep the page and hold the film: set `rights.website.status` back to `UNVERIFIED` (or build with `--films=off`). The section then
-   publishes without a player; nothing else changes.
-3. Host the film elsewhere. This needs new infrastructure and a change to the site's "loads nothing from third parties" policy.
+The script was run again on 2026-11-11 from the supplied file: `720.mp4`, both posters and both text tracks came out byte-identical
+to the first run, so the committed files are what the script in the repository produces.
+
+To hold the film without removing the page: set `rights.website.status` back to `UNVERIFIED` (or build with `--films=off`). The
+section then publishes without a player; nothing else changes.
 
 ## 5. The founder's photograph
 
-Supplied as a 1440×1440 WebP (SHA-256 `6b63e655f3f46d7d6ead1df9520a72ce1149b7bb3b395ff5f958458fc9aa0239`). It is the photograph the
-founder wants on the site, and the rights to it are his (confirmed 2026-11-10).
+Supplied as a 1440×1440 WebP (SHA-256 `6b63e655f3f46d7d6ead1df9520a72ce1149b7bb3b395ff5f958458fc9aa0239`). It is the founder's
+photograph, and it stays: "KEEP MY EXISTING FOUNDER PHOTOGRAPH. DO NOT REPLACE IT." (founder, 10 Nov 2026). His face, likeness and
+pose are preserved; grading, lighting, tonal balance and clarity only; no generated version. Rights basis, as recorded in
+`docs/media/FOUNDER_PORTRAIT.json`: the founder confirmed on 10 Nov 2026 that he holds the necessary rights to the photographs, films,
+music and creative assets he supplied, for authorised use in Empathia.
 
 - **The original is kept untouched** in the repository as the recoverable source:
   `apps/website/media-src/founder/founder-original.webp` (byte-identical to the supplied file; the script refuses to run if its hash
