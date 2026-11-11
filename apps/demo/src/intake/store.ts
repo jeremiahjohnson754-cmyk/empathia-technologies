@@ -16,7 +16,8 @@ export interface Request { id: string; kind: KindId; goes: Goes; title: string; 
 export type Refusal = { why: string[] };
 const KEY = 'empathia.demo.requests.v1';
 /** The roles the portal admits (registry: intake.request). A request is a request: who asked is recorded, and nothing is granted by asking. */
-export const PORTAL_ROLES: readonly RoleKey[] = ['employee', 'exec', 'bpm', 'ops', 'svcmgr', 'syseng', 'designer', 'architect'];
+/** `sitechamp` since 11 Nov 2026: a Site Champion is an employee who is also their site's champion, and asks as one. */
+export const PORTAL_ROLES: readonly RoleKey[] = ['employee', 'sitechamp', 'exec', 'bpm', 'ops', 'svcmgr', 'syseng', 'designer', 'architect'];
 export const mayRequest = (role: RoleKey) => PORTAL_ROLES.includes(role);
 
 export function loadRequests(): Request[] { try { const s = localStorage.getItem(KEY); const l = s ? (JSON.parse(s) as Request[]) : []; return Array.isArray(l) ? l.filter((r) => r && typeof r.id === 'string') : []; } catch { return []; } }

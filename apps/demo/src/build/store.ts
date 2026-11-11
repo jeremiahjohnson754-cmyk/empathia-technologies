@@ -13,10 +13,12 @@ import PERSONAS from '@empathia/domain-data/data/V25_PERSONAS.json' with { type:
 
 export const C = defaultCatalog;
 const P = PERSONAS as unknown as Record<string, { label: string; authority: string[] }>;
-/** The 14 demonstration perspectives map to the persona whose permissions they show (ADR-0006: a view, never authentication). */
-export const PERSPECTIVE_PERSONA: Record<string, string> = { visitor: 'requestor', employee: 'requestor', exec: 'exec', service: 'service', svcmgr: 'svcmgr', syseng: 'syseng', designer: 'designer', installer: 'installer', cxeng: 'cxeng', ipm: 'ipm', bpm: 'bpm', ops: 'opslead', steward: 'steward', architect: 'architect', qa: 'qa_reviewer' };
+/** The demonstration perspectives map to the persona whose permissions they show (ADR-0006: a view, never authentication). */
+export const PERSPECTIVE_PERSONA: Record<string, string> = { visitor: 'requestor', employee: 'requestor', exec: 'exec', service: 'service', svcmgr: 'svcmgr', syseng: 'syseng', designer: 'designer', installer: 'installer', cxeng: 'cxeng', ipm: 'ipm', bpm: 'bpm', ops: 'opslead', steward: 'steward', architect: 'architect', qa: 'qa_reviewer', sitechamp: 'sitechamp' };
 export const personaOf = (perspective: string) => PERSPECTIVE_PERSONA[perspective] || 'requestor';
-export const holds = (persona: string, authority: string) => persona === 'architect' || (P[persona]?.authority || []).includes(authority);
+/** A Site Champion is an employee who is also their site's champion (the persona's base is `employee`): they hold what the requestor
+ *  holds (asking and reporting) and the champion's own three authorities, and nothing more (founder, 11 Nov 2026). */
+export const holds = (persona: string, authority: string) => persona === 'architect' || (P[persona]?.authority || []).includes(authority) || (persona === 'sitechamp' && (P['requestor']?.authority || []).includes(authority));
 export const personaLabel = (persona: string) => P[persona]?.label || persona;
 
 export interface Draft {

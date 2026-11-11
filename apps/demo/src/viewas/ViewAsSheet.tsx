@@ -1,5 +1,5 @@
 /**
- * View as (D1): the fifteen roles, each with its avatar in its colour, its domain, what it is given and how much of the platform it
+ * View as (D1): the sixteen roles, each with its avatar in its colour, its domain, what it is given and how much of the platform it
  * reaches (V2.5.3 rolesPanel). A dialog: focus moves in, Tab stays inside, Escape and the close button return focus to the opener.
  * Switching is transparent and grants nothing (D1); the page and every button re-render from the policy for the new role (D44).
  */

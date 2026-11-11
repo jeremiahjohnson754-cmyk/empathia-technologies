@@ -14,8 +14,9 @@ import type { Authority, PageDef, RoleKey, SectionDef, ActionDef } from '../regi
 import * as V from './v253.js';
 
 // ------------------------------------------------------------------ roles
-/** V2.5.3's fourteen roles in its own role-list order (ROLE_KEYS), then the Document Reviewer the Phase 2 demonstration added. */
-export const ROLE_KEYS: readonly RoleKey[] = ['ops', 'svcmgr', 'service', 'syseng', 'designer', 'installer', 'cxeng', 'ipm', 'bpm', 'steward', 'exec', 'employee', 'visitor', 'architect', 'qa'];
+/** V2.5.3's fourteen roles in its own role-list order (ROLE_KEYS), with the Site Champion beside the Employee it is based on, then the
+ *  Document Reviewer the Phase 2 demonstration added. */
+export const ROLE_KEYS: readonly RoleKey[] = ['ops', 'svcmgr', 'service', 'syseng', 'designer', 'installer', 'cxeng', 'ipm', 'bpm', 'steward', 'exec', 'employee', 'sitechamp', 'visitor', 'architect', 'qa'];
 export const isRole = (r: unknown): r is RoleKey => typeof r === 'string' && (ROLE_KEYS as readonly string[]).includes(r);
 /** The role the demonstration opens as: V2.5.3's Product Architect, who sees the complete platform and can View as every role. */
 export const DEFAULT_ROLE: RoleKey = 'architect';
@@ -36,11 +37,28 @@ export interface RoleInfo {
   internal?: boolean;
 }
 const QA: RoleInfo = { key: 'qa', label: 'Document Reviewer', initials: 'QA', home: 'Review desk', domain: 'Quality', blurb: 'Accepts or returns evidence they neither recorded nor verified', work: 'commissioning records, evidence, baselines and the ledger, to accept or return what others recorded and verified (ADR-0005)' };
+/**
+ * The Site Champion (founder, 11 Nov 2026: "a distinct governed role with its own permission model … scoped access … must not inherit
+ * privileged engineering, administrative, or commissioning-signoff capabilities merely because of their title"). V2.5.3 has no such
+ * role; the platform has the persona (`sitechamp`: base employee, scope site, authority location.verify, access.coordinate,
+ * occupancy.confirm). So, exactly as that persona is defined: the champion is admitted wherever the Employee is, and to the few
+ * things named here that a person who knows a site's rooms and people needs: the room's history, who supports it and how it
+ * escalates, the people to call, the issues and visits at their site, and contributing what they know. Nothing else: no technical
+ * record, no engineering control, no commissioning step, no approval, no administration. What a champion does as a champion
+ * (attest, confirm access, verify a room's details) is granted where it is used, to this role by name, inside their own site only.
+ */
+const CHAMP: RoleInfo = { key: 'sitechamp', label: 'Site Champion', initials: 'SC', home: 'My site', domain: 'Site', blurb: 'The person on site who knows the rooms and the people: reports, confirms access, attests, and connects colleagues to the right support', work: 'the rooms, people, support paths, issues and visits of their own site: to report, verify a room’s details, coordinate access, confirm occupancy, attest locally and contribute what they know' };
+const CHAMP_AREAS = new Set(['search.people', 'search.support']);
+const CHAMP_ACTIONS = new Set(['social.contribute']);
+const CHAMP_FIELDS = new Set(['history', 'person.contact', 'support.chain']);
+const CHAMP_ENTITIES = new Set(['Issue', 'PersonRole', 'Contact', 'WorkOrder', 'KnowledgeAsset', 'Team', 'Site']);
+/** The sites a champion is the champion of. In the demonstration: one person, one building. Champion-only actions are refused outside it. */
+export const CHAMPION_SITES: readonly string[] = ['ATL'];
 /** Founder, 10 Nov 2026: the Systems Engineer is an internal role, and is shown as one. */
 export const INTERNAL_ROLES: readonly RoleKey[] = ['syseng'];
 export const ROLES: Readonly<Record<RoleKey, RoleInfo>> = Object.fromEntries([
   ...V.AZ_KEYS.map((k) => [k, { key: k, label: V.ROLE[k].label, initials: V.ROLE[k].ava, home: V.ROLE[k].home, domain: V.ROLE_UI[k].sub, blurb: V.ROLE[k].blurb, work: V.AZ_ROLE[k] } satisfies RoleInfo]),
-  ['qa', QA],
+  ['qa', QA], ['sitechamp', CHAMP],
 ].map(([k, r]) => [k, INTERNAL_ROLES.includes(k as RoleKey) ? { ...(r as RoleInfo), internal: true } : r])) as Record<RoleKey, RoleInfo>;
 /** The role's name where it matters that it is internal: "Systems Engineer (internal role)". */
 export const roleTitle = (k: RoleKey): string => `${ROLES[k].label}${ROLES[k].internal ? ' (internal role)' : ''}`;
@@ -55,19 +73,20 @@ const QA_FIELDS = new Set(['commissioning.record', 'assurance.evidence', 'histor
 type Table = Readonly<Record<string, readonly string[]>>;
 const areaRoles = (k: string): readonly string[] | undefined => (V.AZ_AREA as Record<string, readonly [readonly string[], string]>)[k]?.[0] ?? (V.AZ_AREA_V25 as Record<string, readonly [readonly string[], string]>)[k]?.[0];
 const from = (t: unknown, k: string) => (t as Table)[k];
-const withQa = (roles: readonly string[] | undefined, qa: boolean): RoleKey[] | undefined => roles && [...roles, ...(qa ? ['qa'] : [])].filter(isRole);
+/** The table's roles, plus the Document Reviewer where ADR-0005 names it, plus the Site Champion wherever the Employee is admitted (its base) or the champion's own short list names it. */
+const withQa = (roles: readonly string[] | undefined, qa: boolean, champ = false): RoleKey[] | undefined => roles && [...roles, ...(qa ? ['qa'] : []), ...((champ || roles.includes('employee')) && !roles.includes('sitechamp') ? ['sitechamp'] : [])].filter(isRole);
 
 /** The roles an authority admits. Anything unresolvable admits nobody. */
 export function rolesFor(a: Authority): RoleKey[] {
   if ('all' in a) return a.all.length ? a.all.map(rolesFor).reduce((x, y) => x.filter((r) => y.includes(r))) : [];
-  if ('roles' in a) return a.roles.filter(isRole);
-  if ('area' in a) return withQa(areaRoles(a.area), QA_AREAS.has(a.area)) ?? [];
-  if ('action' in a) return withQa(from(V.AZ_ACTION, a.action), QA_ACTIONS.has(a.action)) ?? [];
-  if ('field' in a) return withQa(from(V.AZ_FIELD, a.field), QA_FIELDS.has(a.field)) ?? [];
+  if ('roles' in a) return withQa(a.roles, false) ?? [];   // an explicit list that admits the Employee admits the champion; a champion-only action names it
+  if ('area' in a) return withQa(areaRoles(a.area), QA_AREAS.has(a.area), CHAMP_AREAS.has(a.area)) ?? [];
+  if ('action' in a) return withQa(from(V.AZ_ACTION, a.action), QA_ACTIONS.has(a.action), CHAMP_ACTIONS.has(a.action)) ?? [];
+  if ('field' in a) return withQa(from(V.AZ_FIELD, a.field), QA_FIELDS.has(a.field), CHAMP_FIELDS.has(a.field)) ?? [];
   if ('compare' in a) return withQa(from(V.AZ_COMPARE, a.compare), false) ?? [];
   if ('lens' in a) return withQa(from(V.AZ_LENS, a.lens), false) ?? [];
   if ('layer' in a) return withQa(from(V.AZ_LAYER, a.layer), false) ?? [];
-  if ('entity' in a) return withQa(from(V.AZ_ENTITY, a.entity), false) ?? [];
+  if ('entity' in a) return withQa(from(V.AZ_ENTITY, a.entity), false, CHAMP_ENTITIES.has(a.entity)) ?? [];
   return [];
 }
 /** Does the authority name something the tables know? (A registered surface whose authority is unknown is a defect: tests fail on it.) */
@@ -134,7 +153,9 @@ export interface HomeTab { key: string; label: string; icon: string; href: strin
  * (`open` answers that through the registry, so a tab never leads to a refusal), with V2.5.3's "View as" tab for the Product Architect.
  */
 export function tabsFor(role: RoleKey, open: (href: string) => boolean, translate: (legacyHref: string) => string = (h) => h): HomeTab[] {
-  const base = role === 'qa' ? [['home', 'Review', 'home', '#/home'], ['commissioning', 'Records', 'check', '#/commissioning'], ['search', 'Search', 'search', '#/search']] : (V.TABS as Record<string, readonly (readonly string[])[]>)[role] ?? [['home', 'Home', 'home', '#/home']];
+  const base = role === 'qa' ? [['home', 'Review', 'home', '#/home'], ['commissioning', 'Records', 'check', '#/commissioning'], ['search', 'Search', 'search', '#/search']]
+    : role === 'sitechamp' ? [['home', 'My day', 'home', '#/home'], ['site', 'My site', 'building', '#/site'], ['here', 'In a room', 'place', '#/here'], ['lite', 'Rooms', 'room', '#/lite'], ['search', 'Search', 'search', '#/search']]
+    : (V.TABS as Record<string, readonly (readonly string[])[]>)[role] ?? [['home', 'Home', 'home', '#/home']];
   const out: HomeTab[] = [];
   for (const [key, label, icon, href, act] of base) {
     if (act === 'roles') { out.push({ key: 'viewas', label: label!, icon: icon!, href: '', act: 'viewas' }); continue; }

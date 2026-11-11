@@ -61,6 +61,15 @@ cannot load the staging pages from this workspace.
 | §06–§12, §14–§28, §31–§34 | **Recorded** as tasks 78–81 | task list | Not started |
 | Release exceptions (01:42) | **Rule written**; none used | dashboard, "Release exceptions" | — |
 
+## Decisions of 11 November, 02:25, and what was done with each
+
+| Decision | What is true today | Evidence | Not done |
+|---|---|---|---|
+| 1. Waiver authority, approved with refinements | **Local** (`fbca06d`). Two kinds, decided by the item: a business-risk acceptance is the Executive's; a technical deviation is the Operations Lead's and stands only after an engineering review by another role. Every waiver records reason, affected requirement, evidence, risk, giver, date, end date (at most 90 days), owner and plan. Never waived: security, authorisation, record-integrity, accessibility and safety controls; missing evidence or verification; a P1; an unraised failure. Nobody waives what they own or worked on; neither giver nor reviewer approves. The two-stage acceptance is unchanged | proof-registry 23 of 23; `demo-proof` 93 of 93 light and dark | Assumption to confirm: the engineering review comes from the Product Architect (an authority outside both approval stages) |
+| 2. Site Champion as a dedicated first-class role | **Local** (`08cbc14`). Sixteenth role `sitechamp` (the platform's persona): what the Employee has plus a short named list; its own site (`#/site`), start page, colour, navigation and View-as entry; four scoped actions (confirm access, check a room against its record, say what was seen, add a note as a candidate); the attestation moved to it from the Employee | unit `demo-champion` 9 of 9; browser `demo-champion` 21 of 21 (light); full matrix running | Profile and "Who knows this room?" in Search Party; onboarding and training; review of notes into the Knowledge Ledger; End User guide link; Instant Connect and Harmony hooks |
+| 3. Microsoft 365: simulator now, real integrations prepared | **Guide written**: `docs/surpass/M365_DEPLOYMENT_AND_TEST_GUIDE.md` — formats and Graph calls read on the vendor's pages on 11 November, permissions, test accounts, devices, a twelve-step validation script, and every real-tenant item marked pending | the guide | The adapter, deep-link actions and scheduling are in the Connect lane, stopped by the usage limit until 06:20 |
+| 4. Keep building, about four workers | Four builders and a reader were started at 02:30 and stopped by the account's usage limit at about 02:39; their work is saved as commits on their branches; a reminder resumes them at 06:22. The integrator kept working alone meanwhile | branches `agent/*` | — |
+
 ### What this workspace cannot do, said once
 
 - **3D authoring tools.** Maya, Nuke, Unity and Unreal are not connected here and were not used. Rooms are drawn in SVG by the demo's own code. A real-time 3D engine, characters and animation are a build that has not started.
