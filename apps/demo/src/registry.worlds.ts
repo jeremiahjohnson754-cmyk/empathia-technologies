@@ -8,6 +8,7 @@
  */
 import type { PageDef } from './registry.types.js';
 import { ROLE_KEYS } from './access/policy.js';
+import { signalAuthority } from './gameday/signal/access.js';
 
 const OPEN = { roles: ROLE_KEYS, why: 'the world-first entry (v1.8 ADR-022): a public, synthetic presentation layer, shown to every role; choosing a world or a role configuration grants nothing' } as const;
 
@@ -50,6 +51,14 @@ export const WORLD_PAGES: readonly PageDef[] = [
     path: '/gameday', authority: OPEN,
     load: () => import('./gameday/GameDayPage.js'),
     search: { keywords: 'game day stadium event clock kick-off gates halftime broadcast fault incident readiness simulation', aliases: ['gameday', 'game day'] },
+  },
+  {
+    // Founder, 10 Nov 2026 ("The Critical Signal"): a lost camera feed worked on one page, on the game-day record. Like every world page it
+    // is open to each View-as role; which stadium role configuration may open it is asked of the address (?as=), and a configuration that
+    // may not, a fan above all, is refused here, before the page's code is fetched (gameday/signal/access.ts).
+    id: 'gameday.signal', title: 'Game-day incident', purpose: 'A lost camera feed, from the alert to an independent check. It opens for the stadium’s broadcast, engineering, production and operations role configurations; a guest or public configuration is shown gates, queues and advice only', product: 'pro',
+    path: '/gameday/incident/:fault', authority: OPEN, authorityFor: (_p, q) => signalAuthority(q.get('as')),
+    load: () => import('./gameday/signal/SignalPage.js'),
   },
   {
     id: 'offline', title: 'Offline and this device', purpose: 'Whether the app is saved on this device, what works without a connection, and the packs you can keep', product: 'shell',

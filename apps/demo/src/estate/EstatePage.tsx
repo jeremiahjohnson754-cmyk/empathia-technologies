@@ -91,7 +91,8 @@ function Overview({ world, config, ix, q: firstQ }: { world: World; config: Role
   );
 }
 
-function EstatePlan({ ix, world, config, lit }: { ix: Index; world: World; config: RoleConfig; lit?: string }) {
+/** Exported for the game-day incident page, which shows an incident's zone on this same drawing (gameday/signal). */
+export function EstatePlan({ ix, world, config, lit, caption }: { ix: Index; world: World; config: RoleConfig; lit?: string; caption?: ReactNode }) {
   const reader = readerOf(config); const zs = ix.estate.nodes.filter((n) => n.plan && n.kind !== 'world' && shown(ix, reader, n.id));
   const W = Math.max(...zs.map((n) => n.plan!.x + n.plan!.w)) + 20; const H = Math.max(...zs.map((n) => n.plan!.y + n.plan!.h)) + 20;
   const order = (n: EstateNode) => (n.kind === 'venue' || n.kind === 'campus' ? 0 : n.kind === 'space' ? 1 : 2);
@@ -105,7 +106,7 @@ function EstatePlan({ ix, world, config, lit }: { ix: Index; world: World; confi
             {frame ? <text x={p.x + 10} y={p.y + 16} textAnchor="start">{n.name}</text> : !small && <text x={p.x + p.w / 2} y={p.y + p.h / 2} textAnchor="middle" dominantBaseline="central">{n.name.length > p.w / 7.5 ? n.name.split(' ')[0] : n.name}</text>}
           </a>); })}
       </svg>
-      <figcaption className="stage__cap w-plan__cap">Each outline opens its record. The same places are listed under Browse.</figcaption>
+      <figcaption className="stage__cap w-plan__cap">{caption ?? 'Each outline opens its record. The same places are listed under Browse.'}</figcaption>
     </figure>
   );
 }
