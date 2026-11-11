@@ -19,7 +19,8 @@ const Q = { who: `Who do I contact about ${ROOM}?`, meet: `Book 30 minutes with 
 
 test('HM-01 each sentence is understood as one registered tool and the room it names', () => {
   for (const [id, q] of Object.entries(Q)) { const r = ask(q, 'architect'); assert.equal(r.tool, id, q); assert.match(r.understood, /Atlas|4\.218|accepted|documentation/i); }
-  assert.equal(H.TOOLS.length, 7); for (const t of H.TOOLS) assert.ok(t.words.test(t.example({ id: 'R-ATL-4-218', number: '4.218', name: 'Executive Boardroom', building: 'ATL', aliases: [] }).toLowerCase()) || true);
+  // was 7: an eighth tool reads a Site Champion's getting-started list (HM-08)
+  assert.equal(H.TOOLS.length, 8); for (const t of H.TOOLS) assert.ok(t.words.test(t.example({ id: 'R-ATL-4-218', number: '4.218', name: 'Executive Boardroom', building: 'ATL', aliases: [] }).toLowerCase()) || true);
   assert.equal(ask('Book 30 minutes with the systems engineer', 'ops').status, 'needs-room'); assert.match(ask('Who knows the room?', 'employee').said, /Which room\?/);
   const none = ask('zxqv plorb', 'employee'); assert.equal(none.tool, null); assert.equal(none.status, 'abstained'); assert.ok(none.said.startsWith(ABSTAIN));
   assert.equal(ask('  ', 'employee').status, 'abstained');
@@ -78,9 +79,23 @@ test('HM-06 what has no tool is answered from an approved, cited source or not a
 });
 
 test('HM-07 what Harmony may do is listed per role from the same authorities', () => {
-  for (const role of P.ROLE_KEYS) { const list = H.toolsFor(role); assert.equal(list.length, 7);
+  for (const role of P.ROLE_KEYS) { const list = H.toolsFor(role); assert.equal(list.length, 8);
     for (const t of list) { const ex = H.TOOLS.find((x) => x.id === t.id).example({ id: 'R-ATL-4-218', number: '4.218', name: 'Executive Boardroom', building: 'ATL', aliases: ['Atlas 4.218'] }); const r = ask(ex.replace(/Executive Boardroom|4\.218/, 'Atlas 4.218').includes('Atlas') ? ex.replace('Atlas Atlas', 'Atlas') : `${ex} Atlas 4.218`, role);
       if (!t.held) assert.ok(r.status === 'refused', `${role} ${t.id}: listed as not available, and refused when asked (${r.status})`); else assert.notEqual(r.authority && r.authority.held === false && r.status === 'refused' && /does not have “/.test(r.said), true, `${role} ${t.id}: listed as available but the page refused`); } }
   assert.deepEqual(H.toolsFor('visitor').filter((t) => t.held).map((t) => t.id).sort(), H.toolsFor('visitor').filter((t) => t.held).map((t) => t.id).sort());
   assert.ok(!H.toolsFor('visitor').find((t) => t.id === 'accept').held && !H.toolsFor('employee').find((t) => t.id === 'docs').held && !H.toolsFor('sitechamp').find((t) => t.id === 'docs').held);
+});
+
+test('HM-08 a champion asks what is left on their list: answered from the record, with nothing changed; every other role is refused before anything is read', async () => {
+  const esb = await import(path.join(repo, 'node_modules/esbuild/lib/main.js')); const o2 = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'demo-harmony-ch-')), 'm.mjs');
+  await esb.build({ stdin: { contents: `export * as H from './harmony/tools.ts'; export * as C from './champion/store.ts'; export * as T from './champion/start.ts'; export * as W from './workspace/store.ts'; export * as P from './access/policy.ts';`, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' },
+    bundle: true, format: 'esm', platform: 'node', outfile: o2, jsx: 'automatic', logLevel: 'error', nodePaths: [path.join(repo, 'node_modules')], alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') },
+    plugins: [{ name: 'lazy', setup(b) { b.onResolve({ filter: /\.(js)$/ }, (a) => (a.kind === 'dynamic-import' ? { path: a.path, external: true } : undefined)); } }] });
+  const X = await import(pathToFileURL(o2).href); const w = X.W.seed(); const Q = 'What is left on my getting-started list?'; const before = JSON.stringify(w);
+  const a = X.H.ask(Q, 'sitechamp', Date.now(), w); assert.equal(a.tool, 'start'); assert.equal(a.status, 'answered'); assert.match(a.said, /^0 of 6 done\. 6 are left\. It is a list, not a qualification\.$/); assert.equal(a.facts.length, 6);
+  assert.ok(a.facts.every((f) => /^Your list, (from the record|your own word)$/.test(f.source))); assert.deepEqual(a.next.map((n) => n.href), ['#/site/start']); assert.equal(JSON.stringify(w), before, 'asking changed nothing');
+  for (const l of X.T.LESSONS) X.C.markRead(w, 'sitechamp', l.id); X.C.answerCheck(w, 'sitechamp', X.T.CHECK.map((q) => q.answer));
+  const b = X.H.ask('how is my onboarding going', 'sitechamp', Date.now(), w); assert.match(b.said, /^2 of 6 done\. 4 are left/); assert.ok(!b.facts.some((f) => /lessons|Answer the check/.test(f.text)));
+  for (const role of X.P.ROLE_KEYS.filter((r) => r !== 'sitechamp')) { const r = X.H.ask(Q, role, Date.now(), w); if (r.tool !== 'start') continue; assert.equal(r.status, 'refused', role); assert.deepEqual(r.facts, []); assert.deepEqual(r.next, []); assert.match(r.said, /does not have “Getting started”/); }
+  assert.deepEqual(X.H.toolsFor('sitechamp').find((t) => t.id === 'start').held, true); assert.deepEqual(X.P.ROLE_KEYS.filter((r) => X.H.toolsFor(r).find((t) => t.id === 'start').held), ['sitechamp']);
 });

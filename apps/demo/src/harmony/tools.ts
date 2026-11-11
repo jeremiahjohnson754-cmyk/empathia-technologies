@@ -33,9 +33,13 @@ import { readDocs } from '../docs5/store.js';
 import { loadEvents as dossierEvents, withDocuments } from '../proof/store.js';
 import { DOSSIER_4218, replay } from '@empathia/proof-registry';
 import { ABSTAIN, answerFor, readerFor } from '../knowledge/ledger.js';
+import { CHAMPION_SITES } from '../access/policy.js';
+import { roomById, roomsIn } from '../campus/canon.js';
+import { championView } from '../champion/store.js';
+import { startView } from '../champion/start.js';
 import { allObjects, loadState as knowledgeState } from '../knowledge/store.js';
 
-export type ToolId = 'who' | 'meet' | 'guide' | 'docs' | 'accept' | 'report' | 'operate' | 'core' | 'knowledge';
+export type ToolId = 'who' | 'meet' | 'guide' | 'docs' | 'accept' | 'report' | 'operate' | 'start' | 'core' | 'knowledge';
 export type Status = 'answered' | 'prepared' | 'refused' | 'needs-room' | 'abstained';
 export interface Fact { text: string; /** the record or engine it was read from */ source: string; href?: string }
 export interface Next { label: string; href: string; primary?: boolean }
@@ -94,6 +98,17 @@ export const TOOLS: readonly Tool[] = [
       return done(`${state} Harmony cannot accept, verify or waive anything: those are decisions for named roles on the dossier.`,
         w.blockers.slice(0, SHOWN).map((b) => ({ text: `${b.test ? `${b.test} ` : ''}${b.reason}`, source: b.test ? 'Commissioning dossier: test record' : 'Phase 5: required document', href: b.test ? `#/dossier/${TRACKED_REPORT}?focus=${b.test}` : `#/docs/${TRACKED_REPORT}` })),
         [{ label: 'Open the dossier', href: `#/dossier/${TRACKED_REPORT}`, primary: true }]);
+    } },
+  { id: 'start', title: 'What is left on a champion’s list', does: 'say what is done and what is left of a Site Champion’s getting-started list', kind: 'answers', needsRoom: false, standsOn: 'Getting started', stands: () => '#/site/start',
+    words: /\b(getting[- ]started|onboarding|my (list|training|lessons?)|champion.?s? (list|training|check))\b/, example: () => 'What is left on my getting-started list?',
+    run: ({ role, w }) => {
+      if (!w) return { status: 'abstained', said: 'The record could not be read.', facts: [], next: [] };
+      const site = CHAMPION_SITES[0]!; const docsHref = `#/docs/${TRACKED_REPORT}`; const mayDocs = opens(role, docsHref);
+      const waiting = mayDocs && roomById(TRACKED_ROOM)?.building === site ? (readDocs()?.docs ?? []).filter((d) => d.acknowledgements.outstanding.some((a) => a.role === role)).length : mayDocs ? 0 : null;
+      const v = startView(championView(w), roomsIn(site).length, waiting, { site: '#/site', docs: mayDocs ? docsHref : null, profile: null }); const left = v.steps.filter((x) => !x.done);
+      return done(v.complete ? 'Everything on your list is done. It is a list, not a qualification, and it gives no new permission.' : `${v.done} of ${v.total} done. ${left.length === 1 ? 'One is' : `${left.length} are`} left. It is a list, not a qualification.`,
+        left.map((x) => ({ text: `${x.title}: ${x.evidence.charAt(0).toLowerCase()}${x.evidence.slice(1)}`, source: x.by === 'record' ? 'Your list, from the record' : 'Your list, your own word', ...(x.href && x.href.startsWith('#/') ? { href: x.href } : {}) })),
+        [{ label: 'Open your list', href: '#/site/start', primary: true }]);
     } },
   { id: 'docs', title: 'What documentation is missing', does: 'say which required documents are not complete, and what would correct each', kind: 'answers', needsRoom: false, standsOn: 'Documentation', stands: () => `#/docs/${TRACKED_REPORT}`,
     words: /\b(documents?|documentation|deliverables?|paperwork|as.?builts?|drawings?)\b.*\b(missing|outstanding|open|needed|late|overdue|incomplete|left)\b|\b(missing|outstanding|overdue|incomplete)\b.*\b(documents?|documentation|deliverables?|paperwork)\b/,
