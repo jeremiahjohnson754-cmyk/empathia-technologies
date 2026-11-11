@@ -47,7 +47,11 @@ test('CH-03 over every registered page, section and action: the champion is admi
   for (const id of emp) assert.ok(mine.includes(id), `the Employee has ${id}; the champion must too`);
   const more = mine.filter((id) => !emp.includes(id)).sort();
   for (const id of ['site', 'site.access', 'site.verify', 'site.occupancy', 'site.contribute', 'scan.attest', 'here.history']) assert.ok(more.includes(id), `${id} is the champion’s`);
-  for (const id of more) assert.ok(/^(site|scan\.attest|here\.history)/.test(id) || surfaces.some((s) => s.id === id && ('field' in s.a ? ['history', 'person.contact', 'support.chain'].includes(s.a.field) : 'area' in s.a ? ['search.people', 'search.support'].includes(s.a.area) : 'action' in s.a ? s.a.action === 'social.contribute' : 'entity' in s.a)), `unexpected surface for the champion: ${id}`);
+  // 11 Nov (Phase 5): the champion opens the documentation page to read and acknowledge the operator guide of a room at their site, and
+  // nothing else there: the page's engineering section and every other documentation step are asserted closed just below.
+  for (const id of ['docs', 'docs.acknowledge']) assert.ok(more.includes(id), `${id} is the champion’s`);
+  for (const id of ['engineering', 'docs.assign', 'docs.submit', 'docs.review', 'docs.vendor', 'docs.capture', 'docs.record', 'scan.docs']) assert.ok(!mine.includes(id), `the champion must not have ${id}`);
+  for (const id of more) assert.ok(/^(site|scan\.attest|here\.history|docs$|docs\.acknowledge$)/.test(id) || surfaces.some((s) => s.id === id && ('field' in s.a ? ['history', 'person.contact', 'support.chain'].includes(s.a.field) : 'area' in s.a ? ['search.people', 'search.support'].includes(s.a.area) : 'action' in s.a ? s.a.action === 'social.contribute' : 'entity' in s.a)), `unexpected surface for the champion: ${id}`);
   for (const id of ['dossier', 'dossier.record', 'dossier.raise', 'dossier.verify', 'dossier.accept', 'dossier.countersign', 'dossier.waive.business', 'dossier.waive.technical', 'dossier.waive.review', 'dossier.export', 'scan.attach', 'scan.openTest', 'scan.technical', 'scan.acceptance'])
     assert.ok(!mine.includes(id), `the champion must not have ${id}`);
   assert.ok(!emp.includes('scan.attest') && !emp.includes('site'), 'the Employee is not the champion: it neither attests nor has a site');
