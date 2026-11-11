@@ -126,3 +126,22 @@ music and creative assets he supplied, for authorised use in Empathia.
 - On the site it is rendered by one component, `FounderPortrait` (`apps/website/src/ui.tsx`), on the home page's founder section and
   on the founder page: whole (square), `width="960" height="960"`, responsive sources, alternative text "Jeremiah Johnson, founder of
   Empathia Technologies". The component adds no animation.
+
+## 6. Verification (2026-11-11)
+
+Run in this branch's own worktree on the build of `node scripts/build.mjs --public`:
+
+| Suite | Light | Dark |
+|---|---|---|
+| `tests/browser/website.test.mjs` | 216 passed, 0 failed | 216 passed, 0 failed |
+| `tests/browser/website-pilot.test.mjs` | 54 passed, 0 failed | 54 passed, 0 failed |
+| `tests/browser/public-security.test.mjs` | 13 passed, 0 failed | 13 passed, 0 failed |
+| `node scripts/test.mjs` (the non-browser matrix) | PASS 38 · FAIL 0 · NOT_RUN 78 | |
+
+The film's playback and its burned-in label were read from the decoded picture in the test browser (`WC-play`, `WC-label`: passed,
+not skipped). `tests/browser/brand.test.mjs` was NOT RUN to its end: it needs the enterprise application's build, which the
+public build does not make; its 48 checks on the website and the demonstration passed before it stopped there.
+
+Looked at, desktop and 390 px, light and dark: the Collabora-SING section (hero, film, plan, limits) and the founder page. One
+defect was seen and fixed: in the founder page's closing band the button was stretched to the height of the disclosure beside it;
+the button now keeps its own height with the disclosure under it (`WF-band-1440`, `WF-band-390`).
