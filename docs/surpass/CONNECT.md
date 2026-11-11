@@ -6,6 +6,9 @@ without the person's authorisation; no download address is ever guessed; opening
 
 **Status: Tested (simulated adapter).** The Microsoft Graph adapter is **mock-tested**. Nothing here is more than that.
 
+**One Connect.** Two implementations were written on 11 November 2026: this one, and a smaller one on the integrator's branch
+(`v18/continuation`). They were reconciled into this one the same day; §9 says what was kept from each.
+
 > **NOT CONNECTED.** This demonstration has no Microsoft 365 tenant, no test account and no credential. The calendar is simulated.
 > The Microsoft Graph adapter is written to the published contract and exercised only against a deterministic mock. It has never
 > been validated against a real calendar, a real Teams client or a real phone. What real validation needs is in
@@ -22,14 +25,16 @@ could not be read on an official page is listed as unverified and is not used.
 | Site champion | `directory.ts`, the profile page | A first-class record: the three permissions of the `sitechamp` persona, what the title does **not** grant, the rooms the champion knows (from records), the ordered escalation path, local knowledge, onboarding, availability, and contribution (confirming an entry, adding a local note) |
 | App Jump registry | `apps.ts` | One row per way out to another application, with the vendor's template, the page it was read on and the date. Unverified rows are kept on record and never offered |
 | Contact actions | `ContactBar.tsx`, `store.ts` | Message in Teams, Send email, Copy email, Copy contact card, Call, Call in Teams, Schedule a meeting, See availability, Open profile, Open location, Find a backup contact. Each says what will happen before it is pressed; afterwards the page says "Opened …", never that anything was sent |
-| "Who knows this room?" | `ContactBar.tsx › WhoKnows` | The site champion first (or the backup standing in, with the reason), then the technician role; the same for a building, a device and an issue. Hosted on the room page, the Lite room, the done step of In this room, a ServiceHands job and Search Party |
+| "Who knows this room?" | `ContactBar.tsx › WhoKnows` | The site champion first when at work (otherwise the backup first, with the reason), then the technician role, the service manager last; the same for a building, a device and an issue. Hosted on the room page, the Lite room, the done step of In this room, a ServiceHands job and Search Party; the room guide (`guides/RoomGuidePage.tsx`) names the champion from the same list |
 | Meeting assistant | `calendar.ts`, `MeetPage.tsx` at `#/meet` | Propose → review → explicit confirm. Working hours, shifts, time zones through `Intl` with IANA zones, busy time, the room's bookings. Re-checked at confirm; idempotent on a transaction key; cancellable |
 | Calendar adapter | `adapter.ts` (interface and the simulated calendar), `graph.ts` (Microsoft Graph), `graph.mock.ts` (mock transport and fixtures) | One interface, two implementations, one contract suite |
 
 Entity types that carry contact actions in this slice: **person, room, device, building, issue**. NOT BUILT: projects, vendors, work
 orders, documents and every other record type; leave and public holidays; presence; photographs.
 
-Addresses: `#/people` (the directory; `?q=` a search, `?about=room:<id>` who to contact about a record), `#/people/<id>` (a profile),
+Addresses: `#/people` (the directory; `?q=` a search, `?about=room:<id>` who to contact about a record, `?room=<id>` the short form
+for a room that the Lite room, In this room and the room guide link to, `?site=<building>` the people of one site, which the Site
+Champion's `#/site` page links to), `#/people/<id>` (a profile),
 `#/meet` (`?with=<ids>&opt=<ids>&room=<id>&about=<kind>:<id>&min=<minutes>&day=<YYYY-MM-DD>&step=who|when|review|done&slot=<instant>&id=<meeting>`).
 
 State: `localStorage['empathia.demo.connect.v1']` (recorded meetings, confirmations of directory entries, local notes) beside the shared
@@ -70,7 +75,8 @@ Stated assumptions of this directory (none comes from a record):
 Every rule is one of V2.5.3's own authorities, read through the policy (`connect/access.ts`): who to contact — entity `SupportPath`;
 a person's address and number — field `person.contact`, except that a site champion and their backup are the published contact of a
 site and are shown to everyone who may be told who to contact; opening an app for a person — their details and action
-`comms.compose`; scheduling — area `scheduler` and action `comms.compose`, with people whose details the role may see; browsing the
+`comms.compose`; scheduling — area `scheduler` and action `comms.compose` (in the policy as it stands that is exactly the roles that
+may compose: everyone but the Visitor and the Document Reviewer), with people whose details the role may see; browsing the
 whole directory — area `search.people`; confirming an entry or adding a note — persona authority `profile.publish` (the Data Steward).
 
 | Role | Told who to contact | Sees a champion's details | Sees a technician's details | Schedules | Browses everyone | Confirms entries, adds notes |
@@ -87,16 +93,20 @@ whole directory — area `search.people`; confirming an entry or adding a note �
 | Data Steward (`steward`) | yes | yes | yes | yes | yes | yes |
 | Executive (`exec`) | yes | yes | — | yes | — | — |
 | Employee (`employee`) | yes | yes | — | yes | — | — |
+| Site Champion (`sitechamp`) | yes | yes | own site only | yes | own site only | own site’s champion entries |
 | Visitor (`visitor`) | — | — | — | — | — | — |
 | Product Architect (`architect`) | yes | yes | yes | yes | yes | yes |
 | Document Reviewer (`qa`) | — | — | — | — | — | — |
 
-A visitor sees no name, address or number. The table is computed from `ROLE_KEYS` as it stands on this branch. The **Site Champion**
-role key is `sitechamp`; it is read from `ROLE_KEYS` at run time and is not on this branch (the integrator adds it). When the policy
-has it, a champion is told who to contact, reaches and schedules, and sees the details of the people of **their own site** only; they
-may confirm and annotate their own site's champion entries. Being a champion grants nothing else: the unit suite checks that the
-persona holds none of the engineering, administrative or sign-off authorities, and (once the role is in the policy) that the policy
-admits it to none of the corresponding actions.
+A visitor sees no name, address or number. The table is computed from `ROLE_KEYS` as it stands on this branch: sixteen roles since
+the merge, the sixteenth being the **Site Champion** (`sitechamp`), still read at run time and never counted by hand.
+
+**The Site Champion.** The policy grants the role the field `person.contact`; Connect narrows it to the champion's own site (the
+policy's `CHAMPION_SITES`, today Atlas HQ): a champion sees every site's champion and backup (the published contacts) and the role
+holders who cover **their own site** only, reaches and schedules with those people, and may confirm and annotate their own site's
+champion entries. Being a champion grants nothing else: the unit suite (CX-19) checks that the policy admits the role to none of the
+sign-off, acceptance, authoring, governance or triage actions, and that the people and meeting pages admit nobody who may not even
+compose a message; the browser suite (CB-101 to CB-113) checks the same from the page.
 
 ## 4. App Jump registry — every link format, its source and the date it was read
 
@@ -124,7 +134,8 @@ followed against a Microsoft 365 tenant, a Teams client or a telephone.
 Encoding (unit test CX-09, 400 random inputs with apostrophes, plus signs, ampersands, other alphabets, emoji and line breaks): every
 value is percent-encoded down to RFC 3986's unreserved characters, so a space is `%20` and a plus sign `%2B` (Teams' page: "Ensure
 your URI encoding code returns %20 for spaces"); line breaks in a mailto body are `%0D%0A` (RFC 6068); a telephone link holds "+",
-digits and hyphens only (RFC 3966). A link is never built with a missing or unfilled parameter: the builder refuses instead.
+digits and hyphens only (RFC 3966); an email link is to exactly one address. A link is never built with a missing or unfilled
+parameter: the builder refuses instead.
 
 **No download address exists anywhere in this slice.** Where an app is missing, the fallback is the web address the same vendor
 documents (the Teams links are themselves `https://teams.microsoft.com/…`), or copying the address or number by hand.
@@ -155,12 +166,17 @@ Booking is a two-step act: **propose → review → explicit confirm.**
 1. Proposing, asking Ask Empathia, or arriving from a link records nothing.
 2. Review shows who, when in every attendee's zone, where, and the text an invitation would carry.
 3. Confirm re-reads the calendar and the workspace from storage at that moment. If anything changed, it refuses, names who or what
-   conflicts, writes `meeting.refused` to the ledger and offers the times that work now.
+   conflicts, writes `meeting.refused` to the ledger and offers the times that work now. While a review is open the page also
+   listens for changes from other tabs: when the time is taken the review is **withdrawn** (Confirm is removed, and the page says
+   who or what is in the way) without waiting for a press.
 4. The confirmation carries a transaction key derived from the request and the slot. The same key always yields the same one meeting:
-   a double press, a reload and resubmit, and a second tab all end with one meeting and one ledger line.
+   a double press, a reload and resubmit, and a second tab all end with one meeting and one ledger line. A review of a request that
+   is already recorded offers no Confirm: it says so and links to the meeting.
 5. The result reads exactly: **"Recorded in this demonstration's simulated calendar. No invitation left this browser."**
 6. The room's booking is written to the shared workspace (`w.bookings[roomId]`), where ServiceHands' preflight and the Operations Hub
-   read it. Cancelling (the person who recorded it only) removes the booking, keeps the meeting as cancelled, and is logged.
+   read it. Cancelling (the role that recorded it, or the Product Architect) removes the booking, keeps the meeting as cancelled,
+   and is logged. A meeting with no room is marked online; through the Graph adapter that is `isOnlineMeeting: true` with
+   `onlineMeetingProvider: "teamsForBusiness"` (mock-tested).
 7. After recording, "Open Teams' scheduling form with this filled in" is offered (`teams.meeting`): it opens Teams' own form; nobody
    is invited until the person presses Send there. This is how a real invitation would be sent from this page today: by the person.
 
@@ -186,18 +202,18 @@ only transport that exists is `graph.mock.ts`.
 | Id | What | Signed-in user (delegated) | Application | Least-privileged delegated permission | Least-privileged application permission | Success | Source (read 2026-11-11) | Page's own date |
 |---|---|---|---|---|---|---|---|---|
 | `people` | Find a person by name (people lookup) | `GET /users` | `GET /users` | User.ReadBasic.All | User.Read.All | 200 | https://learn.microsoft.com/graph/api/user-list | 2025-07-23 |
-| `schedule` | Free/busy and working hours of people and rooms (schedule lookup) | `POST /me/calendar/getSchedule` | `POST /users/{id|userPrincipalName}/calendar/getSchedule` | Calendars.ReadBasic | Calendars.ReadBasic | 200 | https://learn.microsoft.com/en-us/graph/api/calendar-getschedule | 2025-07-23 |
+| `schedule` | Free/busy and working hours of people and rooms (schedule lookup) | `POST /me/calendar/getSchedule` | `POST /users/{id|userPrincipalName}/calendar/getSchedule` | Calendars.ReadBasic | Calendars.ReadBasic.All | 200 | https://learn.microsoft.com/en-us/graph/api/calendar-getschedule | 2025-07-23 |
 | `suggest` | Meeting-time suggestions (findMeetingTimes): a cross-check, not the primary path | `POST /me/findMeetingTimes` | Not supported | Calendars.Read.Shared | Not supported | 200 | https://learn.microsoft.com/graph/api/user-findmeetingtimes | 2024-04-04 |
 | `create` | Create the event (this is what sends invitations) | `POST /me/events` | `POST /users/{id | userPrincipalName}/events` | Calendars.ReadWrite | Calendars.ReadWrite | 201 | https://learn.microsoft.com/en-us/graph/api/user-post-events | not shown |
 | `cancel` | Cancel the event (the organiser only; sends a cancellation) | `POST /me/events/{id}/cancel` | `POST /users/{id | userPrincipalName}/events/{id}/cancel` | Calendars.ReadWrite | Calendars.ReadWrite | 202 | https://learn.microsoft.com/en-us/graph/api/event-cancel | 2024-06-21 |
-| `shifts` | Shifts of a Teams team (who is on shift when) | `GET /teams/{teamId}/schedule/shifts` | `GET /teams/{teamId}/schedule/shifts` | Schedule.Read.All | Schedule.Read.All | 200 | https://learn.microsoft.com/en-us/graph/api/resources/shift | 2025-02-04 |
+| `shifts` | Shifts of a Teams team (who is on shift when) | `GET /teams/{teamId}/schedule/shifts` | `GET /teams/{teamId}/schedule/shifts` | Schedule.Read.All | Schedule.Read.All | 200 | https://learn.microsoft.com/en-us/graph/api/schedule-list-shifts | 2025-07-23 |
 
 - **`people`**: $search="displayName:…" needs the header ConsistencyLevel: eventual and $count=true. Personal Microsoft accounts are not supported. Higher-privileged alternatives the page lists: User.Read.All, User.ReadWrite.All, Directory.Read.All, Directory.ReadWrite.All.
-- **`schedule`**: availabilityViewInterval: default 30 minutes, minimum 5, maximum 1440. Without Prefer: outlook.timezone the times come back in UTC. A slot holding more than 1000 entries is answered with error 5006. The page states no limit on the number of addresses: not chunked here; to observe in real validation. Higher-privileged alternatives the page lists: Calendars.Read, Calendars.ReadWrite.
+- **`schedule`**: availabilityViewInterval: default 30 minutes, minimum 5, maximum 1440. Without Prefer: outlook.timezone the times come back in UTC. A slot holding more than 1000 entries is answered with error 5006. The page states no limit on the number of addresses: not chunked here; to observe in real validation. TWO OFFICIAL PAGES DIFFER on the application permission: this call’s own table prints “Calendars.ReadBasic” in its Application row; the permissions reference (https://learn.microsoft.com/en-us/graph/permissions-reference, read 2026-11-11) has no application form of Calendars.ReadBasic and lists the application permission as Calendars.ReadBasic.All (“Read basic details of calendars in all mailboxes”). The name an administrator can grant is the one recorded here; to confirm in real validation. Higher-privileged alternatives the page lists: Calendars.Read, Calendars.ReadWrite.
 - **`suggest`**: Application permissions and personal accounts: Not supported. Works inside the mailbox’s work hours unless activityDomain says otherwise; knows nothing about Shifts. meetingDuration is ISO 8601 (PT30M); the default is 30 minutes. Higher-privileged alternatives the page lists: Calendars.ReadWrite.Shared.
-- **`create`**: transactionId: “A custom identifier specified by a client app for the server to avoid redundant POST operations in case of client retries to create the same event” (https://learn.microsoft.com/en-us/graph/api/resources/event). A room is invited as an attendee of type resource, with its mailbox address. NOT STATED on the pages read: what the server answers to a second POST with the same transactionId. The mock assumes the first event is returned; to observe in real validation.
+- **`create`**: A meeting without a room is created online: isOnlineMeeting true and onlineMeetingProvider “teamsForBusiness”. The event resource page (https://learn.microsoft.com/en-us/graph/api/resources/event, last updated 2025-05-15, read 2026-11-11): “After you set isOnlineMeeting to true, Microsoft Graph initializes onlineMeeting”; the provider’s possible values are “unknown, teamsForBusiness, skypeForBusiness, and skypeForConsumer”. Whether the event comes back with a join link is to observe in real validation. transactionId: “A custom identifier specified by a client app for the server to avoid redundant POST operations in case of client retries to create the same event” (https://learn.microsoft.com/en-us/graph/api/resources/event). A room is invited as an attendee of type resource, with its mailbox address. NOT STATED on the pages read: what the server answers to a second POST with the same transactionId. The mock assumes the first event is returned; to observe in real validation.
 - **`cancel`**: An attendee who calls it gets HTTP 400: “You need to be an organizer to cancel a meeting.”. Returns 202 Accepted and no body.
-- **`shifts`**: The v1.0 shift resource page lists the List method; its request line and example were read on the beta-version page of the same article (https://learn.microsoft.com/cs-cz/graph/api/schedule-list-shifts?view=graph-rest-beta, updated 2025-07-23). The v1.0 List page itself was not read. $filter may name a property once: sharedShift/startDateTime ge … and sharedShift/endDateTime le …. A shift is at most 24 hours; a shift identifies its person by userId (the directory object id). Higher-privileged alternatives the page lists: Schedule.ReadWrite.All, Group.Read.All, Group.ReadWrite.All.
+- **`shifts`**: Request line “GET /teams/{teamId}/schedule/shifts”; “If successful, this method returns a 200 OK response code and a collection of shift objects”. The shift resource is https://learn.microsoft.com/en-us/graph/api/resources/shift (updated 2025-02-04). “The $filter parameter doesn’t support the use of the same property more than once in a query”: the page’s own example names each once (sharedShift/startDateTime ge … and sharedShift/endDateTime le …), as this adapter does. A shift is at most 24 hours; a shift identifies its person by userId (the directory object id). Higher-privileged alternatives the page lists: Schedule.ReadWrite.All, Group.Read.All, Group.ReadWrite.All.
 
 How throttling and errors are answered:
 
@@ -260,21 +276,22 @@ Examples copied from the documentation, each with its page; the mock answers in 
 
 ### Not read, and therefore not used
 
-- The v1.0 "List shifts" page itself (its request line was read on the beta-version page of the same article; the v1.0 shift resource
-  lists the method).
-- Places / room lists (`/places`), the `dateTimeTimeZone` and `attendee` resource pages, the permissions reference, Teams presence,
-  online-meeting creation. A room is addressed by its mailbox in `schedules` and as an attendee of type `resource`, both of which are
+- Places / room lists (`/places`), the `dateTimeTimeZone` and `attendee` resource pages, Teams presence, the `onlineMeetings` API
+  (the two online-meeting properties of an event are on the event resource page, which was read), and the permissions reference
+  beyond the seven permissions this slice names. A room is addressed by its mailbox in `schedules` and as an attendee of type `resource`, both of which are
   on the pages read.
 - The limit on the number of addresses in one `getSchedule` call: the page states none; the adapter does not chunk.
 
 ## 7. Tests
 
-`tests/unit/demo-connect.test.mjs` (31 tests) and `tests/browser/demo-connect.test.mjs`. The unit suite recomputes every claim from
+`tests/unit/demo-connect.test.mjs` (33 tests, CX-01 to CX-32) and `tests/browser/demo-connect.test.mjs`. The unit suite recomputes every claim from
 the records with its own clock arithmetic: the directory against the estate and the policy; every link decoded again; 3,000 random
 scheduling requests checked slot by slot (and one in six by brute force for completeness); idempotent confirmation; injected conflicts
 always refused; random sequences of confirm, double-confirm, collide and cancel with the invariants checked after every step; the role
 matrix over `ROLE_KEYS`; and **one contract suite run against both adapters** (CX-24), then Graph-only tests for the request shapes,
-the documented example responses, permissions and consent errors, throttling, a lost answer and time zones. CX-31 checks that this
+the documented example responses, permissions and consent errors, throttling, a lost answer and time zones. CX-32 (the property the
+integrator's suite carried) checks that a person's simulated busy time is the same whatever window is asked; it found and fixed a
+case where two touching blocks came back as one or two depending on the window. CX-31 checks that this
 document and the guide name every call, permission and source in the registries, so they cannot drift apart.
 
 ## 8. Pending — not done, and not claimed
@@ -285,7 +302,53 @@ document and the guide name every call, permission and source in the registries,
 | Actual event creation | **Pending.** No event has ever been created in a real calendar |
 | Live Teams interactions | **Pending.** No Teams link has been followed in a real Teams client |
 | Physical mobile QA | **Pending.** No link has been followed on an Android phone or an iPhone, with or without the apps installed |
-| Site Champion role in the policy | With the integrator (role key `sitechamp`); this slice reads it at run time |
+| Site Champion role in the policy | Present since the merge (role key `sitechamp`); this slice reads it at run time |
 | Outlook on the web compose link | Unverified; not offered |
 | Entity types beyond person, room, device, building, issue | Not built |
 | Public holidays and leave | Not modelled |
+
+## 9. One Connect: what was kept from each side (11 November 2026)
+
+The integrator's branch `v18/continuation` carried a second, smaller Connect (a directory, a link registry, a scheduler, a store, a
+Graph adapter and `connect/ui.tsx`) with a unit suite CN-01 to CN-14. It was merged into this branch and reconciled to ONE.
+
+**Kept from this branch (the base):** `connect/{time,calendar,directory,apps,adapter,graph,graph.mock,access,store}.ts`,
+`ContactBar.tsx`, `PeoplePage.tsx`, `MeetPage.tsx`, `search.tsx`, `ask.tsx`, `jumps.ts`, `registry.connect.ts`, both test suites and
+both documents. There is one directory, one scheduler, one store, one `#/people` and one `#/meet`.
+
+**Removed:** the integrator's `connect/ui.tsx` (`ContactBar` and `WhoKnows` do that job).
+
+**Adopted from the integrator's side:**
+
+- the sixteenth role `sitechamp` and `CHAMPION_SITES`, from the policy; the champion's `#/site` page and its link `#/people?site=`;
+- `#/people?room=`, the address the Lite room (`lite-who`), In this room (`here-who`) and the room guide (`guide-who`) link to — one
+  link each, beside this slice's "Who knows this room?" block;
+- the service manager last in a room's contacts; the backup first whenever the champion is not at work;
+- a review withdrawn when another tab takes the time; an email to exactly one address; the Product Architect may cancel;
+- `isOnlineMeeting` / `teamsForBusiness` on a meeting with no room; Graph parsers that drop malformed entries instead of throwing;
+- the six-column status table, the twelve-step script, accounts A to E and the SharePoint row of the M365 guide.
+
+**Each CN property, asserted against the surviving code** (`tests/unit/demo-connect.test.mjs`):
+
+| Integrator's test | Property | Asserted here by |
+|---|---|---|
+| CN-01 | The directory is derived and wholly synthetic | CX-01, CX-02, CX-03 |
+| CN-02 | Who knows each of the 90 rooms, in order, with a reason | CX-06 |
+| CN-03 | Time zones from the platform's own data | CX-10 |
+| CN-04 | The link registry: formats, encoding, the unverified never built | CX-08, CX-09 |
+| CN-05 | The scheduler never breaks hours, shifts or busy time; the simulated calendar does not depend on the window asked | CX-11, CX-32 |
+| CN-06 | Across regions, and "no time" said with the reason | CX-12 |
+| CN-07 | Confirm once; the room is then taken | CX-13, CX-14 |
+| CN-08 | A time taken in between is refused | CX-15 |
+| CN-09 | The role matrix over all sixteen roles | CX-19 |
+| CN-10 | Cancel frees the people and the room; unreadable state starts clean | CX-17, CX-18 |
+| CN-11 | Graph requests as documented | CX-26 |
+| CN-12 | Graph responses read; malformed entries dropped, never thrown on | CX-27 |
+| CN-13 | Graph errors, throttling, one event | CX-29, CX-30 |
+| CN-14 | One scheduler behind either adapter | CX-24, CX-25 |
+
+**Where the surviving code differs from the integrator's on purpose:** line breaks in a `mailto:` body are `%0D%0A` (RFC 6068), where
+the integrator's sent `%0A`; a telephone link keeps its hyphens (RFC 3966 allows them as visual separators); a Site Champion sees
+the role holders of their own site only, which is narrower than the integrator's `maySeeContact` (founder: scoped access); the
+application permission for `getSchedule` is recorded as `Calendars.ReadBasic.All` (the permissions reference) where both earlier
+versions had `Calendars.ReadBasic` (the call's own page).

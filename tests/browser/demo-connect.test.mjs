@@ -5,6 +5,9 @@
 // (one meeting), reload (it is still there), resubmit (still one), see the room's booking where the rest of the product reads it,
 // cancel. Then who may: a visitor sees no name, address or number; an employee reaches the site champion and nobody else.
 // Then the hooks into Search Party, Ask Empathia, ServiceHands, In this room, Lite and the room page; phones; the keyboard.
+// After the merge with v18/continuation (11 Nov): a review that another tab overtakes is withdrawn without a press; the Site
+// Champion role sees and reaches the people of its own site; the links the site page, the room guide, Lite and In this room carry
+// (`#/people?site=`, `#/people?room=`) land on this directory.
 //   node tests/browser/demo-connect.test.mjs      (build first: node scripts/build.mjs --public)
 import { harness } from './demo-shell-lib.mjs';
 const { ok, open, done, base } = await harness('demo-connect');
@@ -104,10 +107,12 @@ const refused = (p) => p.evaluate(() => !!document.querySelector('[data-testid=a
   // ---- reload: still there. Resubmit the same review from its address: still one meeting.
   await p.reload(); await p.waitForSelector('[data-testid=meet-done]'); await wait(p, 400);
   ok('CB-34', 'after a reload the meeting is still recorded and listed', /Recorded as MTG-0001/.test(await txt(p, '[data-testid=meet-done] h2')) && await attr(p, '[data-testid=meet-mine]', 'data-live') === '1' && (await state(p)).meetings.length === 1);
-  await p.goto(`${base}#/meet?with=${CHAMP}&room=${REF}&step=review&slot=${slots2[0]}`); await p.reload(); await p.waitForSelector('[data-testid=meet-confirm]'); await wait(p, 400);
-  await p.click('[data-testid=meet-confirm]'); await p.waitForSelector('[data-testid=meet-done]'); await wait(p);
-  const again = await p.evaluate(() => ({ again: document.querySelector('[data-testid=meet-done]').dataset.again, text: document.querySelector('[data-testid=meet-done]').innerText })); const s4 = await state(p);
-  ok('CB-35', 'the same review confirmed again (a resubmission, or a second tab) is the same meeting: nothing is recorded twice, and the page says so', again.again === 'yes' && /already recorded\. Nothing was recorded a second time/.test(again.text) && s4.meetings.length === 1 && s4.booked.length === 1 && s4.events.filter((e) => e.type === 'meeting.recorded').length <= 1, again.text.slice(0, 200));
+  // CHANGED after the merge (11 Nov): this used to press Confirm a second time and expect the store to answer "already recorded"
+  // (that idempotency is still asserted, against the store, in tests/unit/demo-connect CX-14 and CX-16). The page is now stricter:
+  // a review of a request that is already recorded does not offer Confirm at all; it says so and links to the meeting.
+  await p.goto(`${base}#/meet?with=${CHAMP}&room=${REF}&step=review&slot=${slots2[0]}`); await p.reload(); await p.waitForSelector('[data-testid=meet-already]'); await wait(p, 400);
+  const again = await p.evaluate(() => ({ text: document.querySelector('[data-testid=meet-already]').innerText, href: document.querySelector('[data-testid=meet-already] a').getAttribute('href'), confirm: document.querySelectorAll('[data-testid=meet-confirm]').length })); const s4 = await state(p);
+  ok('CB-35', 'the same review opened again (a resubmission, or a second tab) is the same meeting: Confirm is not offered, the page says it is already recorded, and nothing is recorded twice', again.confirm === 0 && /already recorded as MTG-0001\.\s*Nothing will be recorded a second time/.test(again.text) && again.href === '#/meet?step=done&id=MTG-0001' && s4.meetings.length === 1 && s4.booked.length === 1 && s4.events.filter((e) => e.type === 'meeting.recorded').length <= 1, again.text.slice(0, 200));
   // ---- the rest of the product sees the room is taken
   await p.goto(`${base}#/pro/ops`); await p.waitForSelector('main h1'); await wait(p, 500);
   ok('CB-36', 'the Operations Hub lists the room’s booking from the shared workspace', /MTG-0001 · Meeting with Amara Dlomo/.test(await p.evaluate(() => document.querySelector('main').innerText)));
@@ -131,6 +136,58 @@ const refused = (p) => p.evaluate(() => !!document.querySelector('[data-testid=a
   ok('CB-43', 'the page says what it does not model, and that it is not connected', /Public holidays and leave are not modelled/.test(await txt(p, '[data-testid=meet-when]')) && /NOT CONNECTED\..*no Microsoft 365 tenant.*mock-tested.*never been validated against a real calendar/.test(await p.evaluate(() => document.querySelector('[data-testid=meet-truth]').textContent)));
   ok('CB-44', 'no console error', t.errs.length === 0, t.errs.join(' | ')); await t.close(); }
 
+// ------------------------------------------------------------------ two tabs: a review that is overtaken is withdrawn without a press
+{ const t = await start(`#/meet?with=${CHAMP}&room=${REF}&step=when`, { role: 'service' }); const p = t.page; await p.waitForSelector('[data-testid=meet-slots]'); await wait(p);
+  await at(p, '[data-testid=meet-slot]').first().click(); await wait(p); await p.click('[data-testid=meet-review]'); await p.waitForSelector('[data-testid=meet-confirm]'); await wait(p);
+  const slot = Number(await attr(p, '[data-testid=meet-page]', 'data-slot')); const review = await p.evaluate(() => location.href);
+  const p2 = await t.ctx.newPage(); const errs2 = []; p2.on('pageerror', (e) => errs2.push(String(e))); p2.on('console', (m) => { if (m.type() === 'error') errs2.push(m.text()); });
+  await p2.goto(`${base}#/lite/room/${REF}`); await p2.waitForSelector('main h1'); await wait(p2, 300);
+  // the second tab takes the room for that time, the way any page of the product would: one write to the shared workspace
+  await p2.evaluate((from) => { const k = 'empathia.demo.workspace.v1'; const w = JSON.parse(localStorage.getItem(k)); const iso = (ms) => new Date(ms).toISOString().slice(0, 16); (w.bookings['R-ATL-4-218'] = w.bookings['R-ATL-4-218'] || []).push({ from: iso(from), to: iso(from + 60 * 60000), title: 'Facilities walk-round' }); localStorage.setItem(k, JSON.stringify(w)); }, slot);
+  await p.waitForSelector('[data-testid=meet-withdrawn]', { timeout: 8000 }).catch(() => undefined); await wait(p);
+  const wd = await p.evaluate(() => ({ text: document.querySelector('[data-testid=meet-withdrawn]')?.innerText || '', confirm: document.querySelectorAll('[data-testid=meet-confirm]').length, step: document.querySelector('[data-testid=meet-page]').dataset.step }));
+  ok('CB-97', 'another tab takes the room while the review is open: with no press here the review is withdrawn — Confirm is gone, and the page says what is in the way', wd.confirm === 0 && wd.step === 'review' && /no longer free, so it is not offered for confirmation/.test(wd.text) && /Atlas 4\.218 is booked .*Facilities walk-round/.test(wd.text) && (await state(p)).meetings.length === 0, JSON.stringify(wd));
+  await p.click('[data-testid=meet-repropose]'); await p.waitForSelector('[data-testid=meet-slots]'); await wait(p);
+  const next = await p.evaluate(() => [...document.querySelectorAll('[data-testid=meet-slot]')].map((b) => Number(b.dataset.from)));
+  ok('CB-98', 'the times offered next leave that hour out', next.length >= 1 && next.every((f) => f + 30 * 60000 <= slot || f >= slot + 60 * 60000), JSON.stringify(next.map((f) => new Date(f).toISOString())));
+  // the same review open in both tabs; confirmed in the second
+  await at(p, '[data-testid=meet-slot]').first().click(); await wait(p); await p.click('[data-testid=meet-review]'); await p.waitForSelector('[data-testid=meet-confirm]'); await wait(p);
+  await p2.goto(await p.evaluate(() => location.href)); await p2.reload(); await p2.waitForSelector('[data-testid=meet-confirm]'); await wait(p2, 300);
+  await p2.click('[data-testid=meet-confirm]'); await p2.waitForSelector('[data-testid=meet-done]'); await wait(p2);
+  await p.waitForSelector('[data-testid=meet-already]', { timeout: 8000 }).catch(() => undefined); await wait(p);
+  const al = await p.evaluate(() => ({ text: document.querySelector('[data-testid=meet-already]')?.innerText || '', confirm: document.querySelectorAll('[data-testid=meet-confirm]').length })); const s = await state(p);
+  ok('CB-99', 'the same review open in two tabs and confirmed in one: the other says it is already recorded and offers no second Confirm; there is one meeting and one booking', al.confirm === 0 && /already recorded as MTG-0001/.test(al.text) && s.meetings.length === 1 && s.booked.join() === `${REF}:MTG-0001` && s.events.filter((e) => e.type === 'meeting.recorded').length === 1, JSON.stringify({ al, n: s.meetings.length, booked: s.booked }));
+  ok('CB-100', 'no console error in either tab', t.errs.length === 0 && errs2.length === 0 && review.includes('step=review'), [...t.errs, ...errs2].join(' | ')); await p2.close(); await t.close(); }
+
+// ------------------------------------------------------------------ the Site Champion (the sixteenth role): the people of their own site, and nothing more
+{ const t = await start('#/site', { role: 'sitechamp' }); const p = t.page; await p.waitForSelector('[data-testid=site-people]'); await wait(p);
+  ok('CB-101', 'the champion’s site page links to the people of the site', await attr(p, '[data-testid=site-people]', 'href') === '#/people?site=ATL');
+  await p.click('[data-testid=site-people]'); await p.waitForSelector('[data-testid=people-site]'); await wait(p);
+  const sp = await p.evaluate(() => ({ site: document.querySelector('[data-testid=people-site]').dataset.site, text: document.querySelector('[data-testid=people-site]').textContent, all: Number(document.querySelector('[data-testid=people-page]').dataset.all), ids: [...document.querySelectorAll('[data-testid=people-list] a')].map((a) => a.dataset.person), where: [...document.querySelectorAll('[data-testid=people-list] .cx-card__m')].map((x) => x.textContent), group: !!document.querySelector('[data-testid=people-group]') }));
+  ok('CB-102', 'it lists the ten people of Atlas HQ — the champion, the backup and the holder of each role who covers it — and nobody from another site', sp.site === 'ATL' && /The people of Atlas HQ/.test(sp.text) && sp.ids.length === 10 && sp.ids.includes('p-champ-ATL') && sp.ids.includes('p-backup-ATL') && sp.ids.includes('p-svcmgr-northstar') && sp.where.every((x) => /Atlas/.test(x)) && !sp.group, JSON.stringify(sp.ids));
+  ok('CB-103', 'a champion’s whole directory is every site’s champion and backup, and the role holders of their own site only (34 people)', sp.all === 34);
+  await p.goto(`${base}#/people/p-backup-ATL`); await p.reload(); await p.waitForSelector('[data-testid=person-page]'); await wait(p, 400);
+  const own = await p.evaluate(() => ({ acts: [...document.querySelectorAll('[data-testid=contact-bar] .cx-act')].map((a) => a.dataset.testid), confirm: !!document.querySelector('[data-testid=person-confirm]'), note: !!document.querySelector('[data-testid=champion-note-form]') }));
+  ok('CB-104', 'a champion reaches the backup of their own site (message, email, call, schedule) and keeps that entry: confirm it, add a local note', ['cx-teams.chat', 'cx-mail.compose', 'cx-phone.call', 'cx-schedule'].every((x) => own.acts.includes(x)) && own.confirm && own.note, JSON.stringify(own));
+  await p.goto(`${base}#/people/p-tech-ana`); await p.reload(); await p.waitForSelector('[data-testid=person-page]'); await wait(p, 400);
+  const tech = await p.evaluate(() => ({ acts: document.querySelectorAll('[data-testid=contact-bar] .cx-act').length, confirm: !!document.querySelector('[data-testid=person-confirm]'), note: !!document.querySelector('[data-testid=champion-note-form]') }));
+  ok('CB-105', 'a champion reaches the technician who covers their site, and is not offered the controls that keep a role holder’s entry (absent, not disabled)', tech.acts >= 6 && !tech.confirm && !tech.note, JSON.stringify(tech));
+  await p.goto(`${base}#/people/p-champ-MER`); await p.reload(); await p.waitForSelector('[data-testid=person-page]'); await wait(p, 400);
+  ok('CB-106', 'another site’s champion is a published contact, so their profile opens; keeping that entry is not offered', await at(p, '[data-testid=contact-bar]').count() === 1 && await at(p, '[data-testid=person-confirm], [data-testid=champion-note-form]').count() === 0);
+  for (const [id, hash, what] of [['CB-107', '#/people/p-syseng-forum', 'a role holder of another site'], ['CB-108', '#/people/p-tech-ben', 'a technician who does not cover the site']]) { await p.goto(base + hash); await p.reload(); await wait(p, 500); const text = await p.evaluate(() => document.body.innerText);
+    ok(id, `a champion is refused the profile of ${what}, and no address or number of theirs is on the page`, await refused(p) && await at(p, '[data-testid=contact-bar]').count() === 0 && !/@empathia\.example|555-01/.test(text), text.slice(0, 120)); }
+  await p.goto(`${base}#/meet?with=p-syseng-forum&step=when`); await p.reload(); await p.waitForSelector('[data-testid=meet-page]'); await wait(p, 400);
+  ok('CB-109', 'a link to schedule with somebody outside the site shows no calendar and no time', await at(p, '[data-testid=meet-slot]').count() === 0 && await attr(p, '[data-testid=meet-page]', 'data-step') !== 'review');
+  await p.goto(`${base}#/meet?with=p-backup-ATL&step=when`); await p.reload(); await p.waitForSelector('[data-testid=meet-slots]'); await wait(p, 400);
+  ok('CB-110', 'with their own backup, times are proposed', await at(p, '[data-testid=meet-slot]').count() >= 1);
+  await p.goto(`${base}#/lite/room/${REF}`); await p.reload(); await p.waitForSelector('[data-testid=connect-who]'); await wait(p, 400);
+  const rows = await p.evaluate(() => [...document.querySelectorAll('[data-testid=connect-who] .cx-people > li')].map((l) => [l.dataset.relation, !!l.querySelector('[data-testid=cx-open]')]));
+  ok('CB-111', 'on a room of their site a champion may contact everyone listed: backup, technician and service manager', rows.length === 4 && rows.every(([, open]) => open), JSON.stringify(rows));
+  // nothing engineering, administrative or to do with sign-off came with it: those pages stay refused
+  const shut = []; for (const hash of ['#/builder', '#/commissioning', '#/pro/ops', `#/room/${REF}`, '#/servicehands']) { await p.goto(base + hash); await p.reload(); await wait(p, 400); if (!(await refused(p))) shut.push(hash); }
+  ok('CB-112', 'the champion is still refused the engineering and administrative pages', shut.length === 0, shut.join(' '));
+  ok('CB-113', 'no console error as a Site Champion', t.errs.length === 0, t.errs.join(' | ')); await t.close(); }
+
 // ------------------------------------------------------------------ who may (D44)
 { const t = await start('#/people', { role: 'visitor' }); const p = t.page; await wait(p, 400);
   const v1 = { refused: await refused(p), page: await at(p, '[data-testid=people-page]').count(), text: await p.evaluate(() => document.body.innerText), chunk: t.reqs.filter((r) => /PeoplePage|MeetPage/.test(r)) };
@@ -143,11 +200,18 @@ const refused = (p) => p.evaluate(() => !!document.querySelector('[data-testid=a
 
 { const t = await start(`#/lite/room/${REF}`, { role: 'employee' }); const p = t.page; await p.waitForSelector('[data-testid=connect-who]'); await wait(p);
   const who = await p.evaluate(() => ({ h: document.querySelector('[data-testid=connect-who] h2').textContent, rows: [...document.querySelectorAll('[data-testid=connect-who] .cx-people > li')].map((l) => ({ id: l.dataset.person, rel: l.dataset.relation, why: l.querySelector('.cx-people__why').textContent, open: !!l.querySelector('[data-testid=cx-open]'), through: l.querySelector('[data-testid=cx-through]')?.textContent || '' })), text: document.querySelector('[data-testid=connect-who]').innerText }));
-  ok('CB-53', 'Lite, as an employee: "Who knows this room?" — the site champion first, the backup, then the technician, each with the reason', who.h === 'Who knows this room?' && who.rows.map((r) => r.rel).join() === 'champion,backup,technician' && who.rows[0].id === CHAMP && /based on floor 4, where this room is/.test(who.rows[0].why) && /Service Engineer for Atlas HQ/.test(who.rows[2].why), JSON.stringify(who.rows));
-  ok('CB-54', 'an employee may contact the champions; the technician is reached through ServiceHands, with no address or number shown', who.rows[0].open && who.rows[1].open && !who.rows[2].open && /reached through ServiceHands/.test(who.rows[2].through) && !/ana\.reyes@|555-0112/.test(who.text), who.rows[2].through);
+  // CHANGED after the merge (11 Nov): the list now ends with the service manager (the integrator's "who knows this room" had it),
+  // so four rows where there were three; the manager, like the technician, is reached through ServiceHands by an employee.
+  ok('CB-53', 'Lite, as an employee: "Who knows this room?" — the site champion first, the backup, then the technician, the service manager last, each with the reason', who.h === 'Who knows this room?' && who.rows.map((r) => r.rel).join() === 'champion,backup,technician,manager' && /triaged and escalated/.test(who.rows[3].why) && who.rows[0].id === CHAMP && /based on floor 4, where this room is/.test(who.rows[0].why) && /Service Engineer for Atlas HQ/.test(who.rows[2].why), JSON.stringify(who.rows));
+  ok('CB-54', 'an employee may contact the champions; the technician is reached through ServiceHands, with no address or number shown', who.rows[0].open && who.rows[1].open && !who.rows[2].open && /reached through ServiceHands/.test(who.rows[2].through) && !who.rows[3].open && /The service manager is reached through ServiceHands/.test(who.rows[3].through) && !/ana\.reyes@|555-0112|@empathia\.example/.test(who.text), `${who.rows[2].through} | ${who.rows[3].through}`);
   await at(p, '[data-testid=connect-who] [data-testid=cx-open]').first().click(); await wait(p);
   const bar = await p.evaluate(() => ({ expanded: document.querySelector('[data-testid=cx-open]').getAttribute('aria-expanded'), chat: document.querySelector('[data-testid="cx-teams.chat"]')?.getAttribute('href'), mail: document.querySelector('[data-testid="cx-mail.compose"]')?.getAttribute('href'), prof: !!document.querySelector('[data-testid=cx-profile]'), sched: document.querySelector('[data-testid=cx-schedule]')?.getAttribute('href') }));
   ok('CB-55', '"Contact the site champion" opens the action bar for that room: the message and the subject carry the room’s name', bar.expanded === 'true' && /message=Hello%20Amara%2C%0A%0AI%20am%20writing%20about%20Atlas%204\.218/.test(bar.chat || '') && /subject=About%20Atlas%204\.218%20%E2%80%94%20Executive%20Boardroom/.test(bar.mail || '') && bar.prof && bar.sched === `#/meet?with=${CHAMP}&about=room%3A${REF}&room=${REF}`, JSON.stringify(bar));
+  ok('CB-55b', 'Lite keeps one link to the directory for this room, and it lands on who knows the room', await attr(p, '[data-testid=lite-who]', 'href') === `#/people?room=${REF}` && await at(p, '[data-testid=lite-who]').count() === 1);
+  await p.click('[data-testid=lite-who]'); await p.waitForSelector('[data-testid=people-page] [data-testid=connect-who]'); await wait(p);
+  ok('CB-55c', 'that link opens the directory with the room’s people at the top', await attr(p, '[data-testid=people-page] [data-testid=connect-who]', 'data-id') === REF && await attr(p, '[data-testid=people-page] [data-testid=connect-who]', 'data-kind') === 'room');
+  await p.goto(`${base}#/guide/room/${REF}`); await p.reload(); await p.waitForSelector('[data-testid=guide-who]').catch(() => undefined); await wait(p, 400);
+  ok('CB-55d', 'the room guide names the champion from this directory and links to the same place', await attr(p, '[data-testid=guide-who]', 'href') === `#/people?room=${REF}` && /Amara Dlomo/.test(await p.evaluate(() => document.querySelector('main').innerText)), await attr(p, '[data-testid=guide-who]', 'href'));
   await p.goto(`${base}#/people`); await p.reload(); await p.waitForSelector('[data-testid=people-page]'); await wait(p, 400);
   const dir = await p.evaluate(() => ({ all: Number(document.querySelector('[data-testid=people-page]').dataset.all), kinds: [...new Set([...document.querySelectorAll('[data-testid=people-list] a')].map((a) => a.dataset.kind))].sort(), kindFilter: !!document.querySelector('[data-testid=people-kind]') }));
   ok('CB-56', 'an employee’s directory is the site champions and their backups: 26 people, no operational role', dir.all === 26 && dir.kinds.join() === 'backup,champion' && !dir.kindFilter, JSON.stringify(dir));
@@ -162,6 +226,7 @@ const refused = (p) => p.evaluate(() => !!document.querySelector('[data-testid=a
   ok('CB-60', 'In this room: nobody to contact is pushed at the person before they have written down what happened', await at(p, '[data-testid=connect-who]').count() === 0);
   await at(p, '[data-testid=here-add], [data-testid=here-send]').first().click(); await p.waitForSelector('[data-testid=here-done]'); await wait(p);
   const d = await p.evaluate(() => ({ h: document.querySelector('[data-testid=here-done] [data-testid=connect-who] h2')?.textContent, id: document.querySelector('[data-testid=here-done] [data-testid=connect-who]')?.dataset.id, first: document.querySelector('[data-testid=here-done] .cx-people > li')?.dataset.person }));
+  ok('CB-61b', 'and the page keeps one link to the directory for the room', await attr(p, '[data-testid=here-who]', 'href') === '#/people?room=R-ATL-4-220' && await at(p, '[data-testid=here-who]').count() === 1);
   ok('CB-61', 'once it is written down, "Contact the site champion" is offered for that room', d.h === 'Contact the site champion' && d.id === 'R-ATL-4-220' && /^p-(champ|backup)-ATL$/.test(d.first || ''), JSON.stringify(d));
   await at(p, '[data-testid=here-done] [data-testid=cx-open]').first().click(); await wait(p);
   ok('CB-62', 'and the message started for them carries what was seen in the room', /What%20I%20saw%3A%20People%20on%20the%20call%20can%E2%80%99t%20see%20the%20room/.test(await attr(p, '[data-testid=here-done] [data-testid="cx-teams.chat"]', 'href') || ''), await attr(p, '[data-testid=here-done] [data-testid="cx-teams.chat"]', 'href'));
