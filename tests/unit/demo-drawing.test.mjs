@@ -8,9 +8,12 @@ import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
 const out = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'demo-drawing-')), 'm.mjs');
-await esbuild.build({ stdin: { contents: `export * as R from './drawing/read.ts'; export * as V from './drawing/review.ts'; export * as S from './drawing/sample.ts';`, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' },
-  bundle: true, format: 'esm', platform: 'node', outfile: out, jsx: 'automatic', logLevel: 'error', nodePaths: [path.join(repo, 'node_modules')], alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') } });
-const { R, V, S } = await import(pathToFileURL(out).href);
+const mem = new Map(); globalThis.localStorage = { getItem: (k) => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => { mem.set(k, String(v)); }, removeItem: (k) => { mem.delete(k); } };
+globalThis.window = { dispatchEvent() {}, addEventListener() {}, removeEventListener() {} }; globalThis.Event = globalThis.Event || class { constructor(t) { this.type = t; } };
+await esbuild.build({ stdin: { contents: `export * as R from './drawing/read.ts'; export * as V from './drawing/review.ts'; export * as S from './drawing/sample.ts'; export * as T from './drawing/store.ts'; export * as WS from './workspace/store.ts'; export * as P from './access/policy.ts';`, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' },
+  bundle: true, format: 'esm', platform: 'node', outfile: out, jsx: 'automatic', logLevel: 'error', nodePaths: [path.join(repo, 'node_modules')], alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') },
+  plugins: [{ name: 'lazy', setup(b) { b.onResolve({ filter: /\.(js)$/ }, (a) => (a.kind === 'dynamic-import' ? { path: a.path, external: true } : undefined)); } }] });
+const { R, V, S, T, WS, P } = await import(pathToFileURL(out).href);
 const doc = (rev, kind) => S.SAMPLE[rev].find((d) => d.kind === kind); const planA = () => R.readPlan(doc('A', 'plan')); const with_ = (d, f) => ({ ...d, text: f(d.text) });
 const ex = (rev, edit = {}) => V.combine(edit.plan === null ? null : R.readPlan(edit.plan || doc(rev, 'plan')), edit.schedule === null ? null : R.readSchedule(edit.schedule || doc(rev, 'schedule')), edit.bom === null ? null : R.readBom(edit.bom || doc(rev, 'bom')));
 const kinds = (e) => e.findings.map((f) => f.kind).sort(); const one = (e, kind) => e.findings.filter((f) => f.kind === kind);
@@ -98,4 +101,28 @@ test('DI-09 what changed between revision A and revision B, by tag', () => {
   assert.deepEqual(ch, ['added: AMP-01 was added (P2).', 'added: SW-01 was added (N24-P).', 'moved: CAM-01 moved 0.42 m.', 'moved: MICC-02 moved 0.6 m.', 'removed: XYZ-01 was removed.']);
   assert.deepEqual(kinds(ex('B')), ['ports'], 'revision B answers every finding of A but the network ports'); assert.deepEqual(V.diff(ex('A'), ex('A')), []);
   const noScale = ex('B', { plan: with_(doc('B', 'plan'), (t) => t.replace('6200 mm', '').replace('9.40 m', '')) }); assert.ok(V.diff(ex('A'), noScale).some((c) => /CAM-01 moved on the drawing\. How far in metres is not known/.test(c.text)));
+});
+
+test('DI-10 the engineer’s part: a review is saved by design roles; a blocker is settled only by a written decision, which does not change the finding; approval needs every blocker decided and a different role', () => {
+  const fresh = () => { mem.clear(); return WS.seed(); }; const e = ex('A'); const d = V.toDesign(e, { template: 'boardroom', occupancy: 14, use: 'Board meetings' }).ok; const sr = V.standardsReview(e, d, 'BRD');
+  const input = { name: S.SAMPLE_NAME, revision: 'A', docs: S.SAMPLE.A, roomType: 'BRD', room: { width: 6.2, length: 9.4 }, scale: 'EXTRACTED', devices: e.devices.length, findings: [...e.findings, ...sr.findings], notReviewed: e.notReviewed, assumptions: sr.assumptions, checklist: sr.checklist };
+  const design = P.rolesFor(T.MAY_REVIEW); assert.deepEqual([...design].sort(), ['architect', 'designer', 'syseng']);
+  for (const role of P.ROLE_KEYS) { const w = fresh(); const r = T.saveReview(w, role, input); assert.equal(!r.why, design.includes(role), role); if (r.why) assert.equal(w.events[0].outcome, 'DENIED', role); }
+  const w = fresh(); const before = JSON.stringify({ ...w, events: undefined, di: undefined }); assert.ok(T.saveReview(w, 'designer', { ...input, name: ' ' }).why); assert.ok(T.saveReview(w, 'designer', { ...input, docs: [] }).why);
+  const r = T.saveReview(w, 'designer', input); assert.equal(r.id, 'DR-0001'); assert.equal(r.docs.length, 3); assert.ok(r.docs.every((x) => /^[0-9a-z]+-\d+$/.test(x.fingerprint))); assert.ok(!JSON.stringify(r).includes('<svg'), 'the documents are not kept in the shared record');
+  const get = () => T.reviewsOf(w)[0]; const blockers = T.openBlockers(get()); assert.deepEqual(blockers.map((f) => f.kind).sort(), ['overlap', 'quantity-contradiction', 'unknown-tag']); assert.equal(T.stateOf(get()), 'NEEDS_DECISIONS');
+  assert.match(T.approve(w, 'syseng', 'DR-0001').why[0], /3 findings still need an engineer’s decision/); assert.equal(w.events[0].outcome, 'DENIED');
+  for (const role of P.ROLE_KEYS.filter((x) => !design.includes(x))) assert.match(T.decide(w, role, 'DR-0001', blockers[0].id, 'Camera is mounted above the display.').why[0], /is an engineer’s/, role);
+  assert.ok(T.decide(w, 'syseng', 'DR-0001', blockers[0].id, 'ok').why); assert.ok(T.decide(w, 'syseng', 'DR-0001', 'nope', 'A long enough decision.').why); assert.ok(T.decide(w, 'syseng', 'DR-9999', blockers[0].id, 'A long enough decision.').why);
+  const q = blockers.find((f) => f.kind === 'quantity-contradiction'); const text = q.text; assert.deepEqual(T.decide(w, 'syseng', 'DR-0001', q.id, 'Two microphones are right; the bill of materials is to be corrected.'), { ok: true });
+  assert.equal(get().findings.find((f) => f.id === q.id).text, text, 'the finding still says what both documents said'); assert.equal(T.classOf(get(), get().findings.find((f) => f.id === q.id)), 'VERIFIED'); assert.equal(T.classOf(get(), get().findings.find((f) => f.kind === 'overlap')), 'MODELED');
+  for (const f of T.openBlockers(get())) T.decide(w, 'syseng', 'DR-0001', f.id, 'Checked on the elevation: as drawn is intended.'); assert.equal(T.stateOf(get()), 'READY_FOR_APPROVAL');
+  assert.match(T.approve(w, 'designer', 'DR-0001').why[0], /saved this review, so another engineering role approves it\. Nobody approves their own/); assert.match(T.approve(w, 'employee', 'DR-0001').why[0], /is an engineer’s/);
+  assert.deepEqual(T.approve(w, 'syseng', 'DR-0001'), { ok: true }); assert.equal(T.stateOf(get()), 'APPROVED'); assert.match(w.events[0].detail, /approved by the Systems Engineer, as read from 3 documents\. It is not a design release and changes no room’s record/);
+  assert.ok(T.decide(w, 'syseng', 'DR-0001', q.id, 'Changing my mind after approval.').why); assert.ok(T.approve(w, 'architect', 'DR-0001').why);
+  assert.equal(JSON.stringify({ ...w, events: undefined, di: undefined }), before, 'nothing but the review and the ledger changed');
+  // stored state is untrusted: a forged approval by the saver, or with a blocker open, is not an approval; a decision by a role that cannot decide is dropped
+  const w2 = fresh(); T.saveReview(w2, 'designer', input); w2.di.reviews[0].approval = { at: '2026-11-11T12:00:00Z', by: 'designer' }; assert.equal(T.reviewsOf(w2)[0].approval, null);
+  w2.di.reviews[0].approval = { at: '2026-11-11T12:00:00Z', by: 'syseng' }; assert.equal(T.reviewsOf(w2)[0].approval, null, 'blockers are open'); w2.di.reviews[0].decisions = T.openBlockers(T.reviewsOf(w2)[0]).map((f) => ({ finding: f.id, at: '2026-11-11T12:00:00Z', by: 'employee', note: 'I decided this myself.' })); assert.equal(T.reviewsOf(w2)[0].decisions.length, 0);
+  w2.di = 'broken'; assert.deepEqual(T.reviewsOf(w2), []);
 });
