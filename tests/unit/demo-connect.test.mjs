@@ -24,10 +24,13 @@ const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const mem = new Map(); globalThis.localStorage = { getItem: (k) => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => { mem.set(k, String(v)); }, removeItem: (k) => { mem.delete(k); } };
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
 const out = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'demo-connect-')), 'm.mjs');
-await esbuild.build({ stdin: { contents: `export * as D from './connect/directory.ts'; export * as A from './connect/apps.ts'; export * as C from './connect/calendar.ts'; export * as T from './connect/time.ts'; export * as X from './connect/access.ts'; export * as ST from './connect/store.ts'; export * as AD from './connect/adapter.ts'; export * as G from './connect/graph.ts'; export * as GM from './connect/graph.mock.ts'; export * as Q from './connect/ask.tsx'; export * as J from './connect/jumps.ts'; export * as W from './workspace/store.ts'; export * as P from './access/policy.ts'; export * as R from './registry.pages.ts'; export * as H from './campus/rolehome.ts'; export * as CN from './campus/canon.ts'; export * as DS from './campus/design.ts'; export * as K from './hardening/kit.tsx'; export * as PC from './parity/core.ts';`, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' },
+await esbuild.build({ stdin: { contents: `export * as D from './connect/directory.ts'; export * as A from './connect/apps.ts'; export * as AS from './connect/apps.sources.ts'; export * as C from './connect/calendar.ts'; export * as T from './connect/time.ts'; export * as X from './connect/access.ts'; export * as ST from './connect/store.ts'; export * as AD from './connect/adapter.ts'; export * as G from './connect/graph.ts'; export * as GM from './connect/graph.mock.ts'; export * as Q from './connect/ask.tsx'; export * as J from './connect/jumps.ts'; export * as W from './workspace/store.ts'; export * as P from './access/policy.ts'; export * as R from './registry.pages.ts'; export * as H from './campus/rolehome.ts'; export * as CN from './campus/canon.ts'; export * as DS from './campus/design.ts'; export * as K from './hardening/kit.tsx'; export * as PC from './parity/core.ts';`, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' },
   bundle: true, format: 'esm', platform: 'node', outfile: out, jsx: 'automatic', logLevel: 'error', nodePaths: [path.join(repo, 'node_modules')], alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') },
   plugins: [{ name: 'lazy', setup(b) { b.onResolve({ filter: /\.(js)$/ }, (a) => (a.kind === 'dynamic-import' ? { path: a.path, external: true } : undefined)); } }] });
-const { D, A, C, T, X, ST, AD, G, GM, Q, J, W, P, R, H, CN, DS, K, PC } = await import(pathToFileURL(out).href);
+const { D, A, AS, C, T, X, ST, AD, G, GM, Q, J, W, P, R, H, CN, DS, K, PC } = await import(pathToFileURL(out).href);
+// The registry that ships (apps.ts) names a source by a short key; the page addresses and the published templates are in
+// apps.sources.ts, which no page imports. The tests read them from there.
+const src = (j) => AS.JUMP_REGISTER.find((x) => x.id === j.id).source; const tpl = (j) => AS.JUMP_REGISTER.find((x) => x.id === j.id).template;
 const PERSONAS = JSON.parse(fs.readFileSync(path.join(repo, 'packages/domain-data/data/V25_PERSONAS.json'), 'utf8'));
 const rng = (seed) => () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
 const pick = (r, list) => list[Math.floor(r() * list.length)];
@@ -170,16 +173,17 @@ test('CX-07 finding a person: by name whatever the accents or apostrophes, by ro
 test('CX-08 every offered jump has an official source and the date it was read; what could not be found on an official page is recorded and never offered', () => {
   const offered = A.offered(); assert.deepEqual(offered.map((j) => j.id).sort(), ['mail.compose', 'phone.call', 'teams.call', 'teams.chat', 'teams.meeting']);
   for (const j of offered) {
-    assert.match(j.source, /^https:\/\/(learn\.microsoft\.com|www\.rfc-editor\.org)\//, j.id); assert.equal(j.validated, '2026-11-11'); assert.ok(j.pageUpdated, `${j.id}: the page’s own date`);
+    assert.ok(j.sourceKey && AS.SOURCE_URLS[j.sourceKey] === src(j), `${j.id}: the key names a page`); assert.match(src(j), /^https:\/\/(learn\.microsoft\.com|www\.rfc-editor\.org)\//, j.id); assert.equal(j.validated, '2026-11-11'); assert.ok(j.pageUpdated, `${j.id}: the page’s own date`);
     assert.ok(j.opens && j.then && j.platform && j.fallback && j.params.length && j.params.some((p) => p.required) !== undefined);
     assert.ok(!/sent|delivered|completed/i.test(`${j.opens} ${j.label}`), `${j.id}: opening is not described as completing`);
   }
   const not = A.APP_JUMPS.filter((j) => j.status === 'unverified'); assert.deepEqual(not.map((j) => j.id).sort(), ['outlook.web.compose', 'teams.protocol']);
-  for (const j of not) { assert.equal(j.source, null); assert.equal(j.validated, null); assert.ok(j.gap && j.gap.length > 40); const b = A.build(j.id, { to: ['a@empathia.example'], subject: 's', body: 'b' }); assert.equal(b.ok, false); assert.match(b.why, /not offered/); }
+  for (const j of not) { assert.equal(j.sourceKey, null); assert.equal(src(j), null); assert.equal(j.validated, null); assert.ok(j.gap && j.gap.length > 40); const b = A.build(j.id, { to: ['a@empathia.example'], subject: 's', body: 'b' }); assert.equal(b.ok, false); assert.match(b.why, /not offered/); }
   // no download address anywhere: a fallback is the vendor's documented web address or doing it by hand
-  for (const j of A.APP_JUMPS) { assert.ok(!/https?:\/\//.test(j.fallback), `${j.id}: no address is invented for a fallback`); assert.ok(!/download|store|aka\.ms|apps\.apple|play\.google/i.test(`${j.fallback} ${j.platform} ${j.template}`), j.id); }
+  for (const j of A.APP_JUMPS) { assert.ok(!/https?:\/\//.test(j.fallback), `${j.id}: no address is invented for a fallback`); assert.ok(!/download|store|aka\.ms|apps\.apple|play\.google/i.test(`${j.fallback} ${j.platform} ${tpl(j)}`), j.id); }
   assert.equal(new Set(A.APP_JUMPS.map((j) => j.id)).size, A.APP_JUMPS.length);
-  for (const j of offered) assert.match(j.template, /^(https:\/\/teams\.microsoft\.com\/l\/(chat|call)\/0\/0\?users=|https:\/\/teams\.microsoft\.com\/l\/meeting\/new\?subject=|mailto:|tel:)/, 'the template is the published one');
+  assert.deepEqual(Object.keys(AS.JUMP_TEMPLATES).sort(), A.APP_JUMPS.map((j) => j.id).sort());
+  for (const j of offered) assert.match(tpl(j), /^(https:\/\/teams\.microsoft\.com\/l\/(chat|call)\/0\/0\?users=|https:\/\/teams\.microsoft\.com\/l\/meeting\/new\?subject=|mailto:|tel:)/, 'the template is the published one');
 });
 
 test('CX-09 every link is built with every token filled and correctly percent-encoded: apostrophes, plus signs, ampersands, other alphabets, line breaks', () => {
@@ -681,8 +685,15 @@ test('CX-31 nothing is connected and nothing claims to be: no network call in th
   const dir = path.join(repo, 'apps/demo/src/connect'); const read = (f) => fs.readFileSync(path.join(dir, f), 'utf8'); const files = fs.readdirSync(dir).filter((f) => /\.(ts|tsx)$/.test(f));
   for (const f of ['graph.ts', 'graph.mock.ts']) assert.ok(!/\bfetch\s*\(|XMLHttpRequest|WebSocket|sendBeacon|navigator\.|import\s*\(/.test(read(f)), `${f} reaches nothing by itself`);
   for (const f of files.filter((x) => !/^graph/.test(x))) assert.ok(!/from '\.\/graph(\.mock)?\.js'/.test(read(f)), `${f} does not import the Graph adapter: the demonstration runs on the simulated calendar only`);
-  const src = path.join(repo, 'apps/demo/src'); const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : /\.(ts|tsx)$/.test(e.name) ? [path.join(d, e.name)] : []));
-  for (const f of walk(src).filter((f) => !f.startsWith(dir))) assert.ok(!/connect\/graph/.test(fs.readFileSync(f, 'utf8')), `${path.relative(repo, f)} imports the Graph adapter`);
+  const src0 = path.join(repo, 'apps/demo/src'); const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : /\.(ts|tsx)$/.test(e.name) ? [path.join(d, e.name)] : []));
+  for (const f of walk(src0).filter((f) => !f.startsWith(dir))) assert.ok(!/connect\/graph/.test(fs.readFileSync(f, 'utf8')), `${path.relative(repo, f)} imports the Graph adapter`);
+  // what ships carries no documentation address (the integrator, 11 Nov: the security suite refused learn.microsoft.com in a demo
+  // chunk): the files a page can import name a source by a short key; the one external host in them is the deep link a person
+  // chooses to open, and nothing is fetched from it
+  const SHIPPED = files.filter((f) => !/^(graph|graph\.mock|apps\.sources)\.ts$/.test(f));
+  for (const f of SHIPPED) { const hosts = [...read(f).replace(/\/\*[\s\S]*?\*\/|\/\/ .*$/gm, '').matchAll(/\bhttps?:\/\/[a-z0-9.-]+/gi)].map((m) => m[0]); assert.deepEqual([...new Set(hosts)].filter((h) => h !== 'https://teams.microsoft.com'), [], `${f} names a host`); if (hosts.length) assert.equal(f, 'apps.ts', 'the deep link is built in one place');
+    assert.ok(!/from '\.\/apps\.sources\.js'/.test(read(f)), `${f} imports the documentation sources`); assert.ok(!/\bfetch\s*\(|XMLHttpRequest|sendBeacon|EventSource|WebSocket|new Image\b|importScripts/.test(read(f)), `${f} requests something`); }
+  for (const f of walk(src0).filter((f) => !f.startsWith(dir))) assert.ok(!/connect\/apps\.sources/.test(fs.readFileSync(f, 'utf8')), `${path.relative(repo, f)} imports the documentation sources`);
   // words: nothing simulated or mock-tested is called verified, live or production; nothing says a message or an invitation was sent
   for (const f of files) { const text = read(f).replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, ''); const lits = [...text.matchAll(/'([^'\n]{12,})'|`([^`]{12,})`|>([^<>{}\n]{12,})</g)].map((m) => m[1] || m[2] || m[3]);
     for (const s of lits) { assert.ok(!/\b(verified|production[- ]ready|certified|real-time|proven)\b/i.test(s), `${f}: “${s.slice(0, 80)}”`); assert.ok(!/\b(message|invitation|invite|email) (was |has been |is )?sent\b/i.test(s.replace(/No invitation is sent|sends nothing|nobody is invited/gi, '')), `${f}: “${s.slice(0, 90)}”`); } }
@@ -692,7 +703,7 @@ test('CX-31 nothing is connected and nothing claims to be: no network call in th
   for (const c of G.GRAPH_CALLS) { assert.match(c.source, /^https:\/\/learn\.microsoft\.com\//); assert.equal(c.validated, '2026-11-11'); assert.ok(c.notes.length >= 1);
     for (const [f, text] of docs) { assert.ok(text.includes(c.source), `${f} cites ${c.source}`); for (const p of [c.delegatedPath, c.applicationPath].filter(Boolean)) assert.ok(text.includes(p), `${f} names ${p}`); for (const perm of [c.delegated, c.application].filter(Boolean)) assert.ok(text.includes(perm), `${f} names ${perm}`); } }
   for (const g of Object.values(G.GRAPH_GUIDANCE)) for (const [f, text] of docs) assert.ok(text.includes(g.source), `${f} cites ${g.source}`);
-  for (const j of A.APP_JUMPS) { const [f, text] = docs[0]; assert.ok(text.includes(j.id), `${f} lists ${j.id}`); if (j.source) assert.ok(text.includes(j.source), `${f} cites ${j.source}`); assert.ok(text.includes(j.template), `${f} gives the template of ${j.id}`); }
+  for (const j of A.APP_JUMPS) { const [f, text] = docs[0]; assert.ok(text.includes(j.id), `${f} lists ${j.id}`); if (src(j)) assert.ok(text.includes(src(j)), `${f} cites ${src(j)}`); assert.ok(text.includes(tpl(j)), `${f} gives the template of ${j.id}`); }
   for (const [f, text] of docs) { assert.match(text, /NOT CONNECTED/); assert.match(text, /2026-11-11/); for (const pending of ['Real tenant validation', 'Actual event creation', 'Live Teams interactions', 'Physical mobile QA']) assert.ok(text.includes(pending), `${f}: “${pending}” is pending`); assert.ok(!/\b(production-ready|certified|proven in production)\b/i.test(text)); }
   const guide = docs[1][1]; for (const need of ['Android', 'iPhone', 'room mailbox', 'WITHOUT', 'admin consent', 'Delegated', 'Application']) assert.ok(guide.includes(need), `the guide covers ${need}`);
   for (const a of GM.ASSUMPTIONS) assert.ok(docs[0][1].includes(a.slice(0, 60)), `CONNECT.md lists the mock’s assumption: ${a.slice(0, 60)}`);

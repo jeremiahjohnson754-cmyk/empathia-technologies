@@ -144,9 +144,9 @@ function Meet({ role, query, hash }: PageProps) {
 
       {step === 'review' && <div className="cx-step" data-testid="meet-review-step">
         <h2 className="build__h" tabIndex={-1} ref={head}>{STEP_TITLE.review[1]}</h2>
-        {refused && <div data-testid="meet-conflict"><Notice tone="bad"><b>Not recorded.</b> Something changed since this time was proposed:<ul>{refused.map((x) => <li key={x}>{x}</li>)}</ul></Notice><p><Button kind="primary" onClick={() => { setSlot(null); go('when'); }} testId="meet-repropose">See the times that work now</Button></p></div>}
-        {already && !refused && <div data-testid="meet-already"><Notice tone="info"><b>This meeting is already recorded as {already.id}.</b> Nothing will be recorded a second time.</Notice><p><a className="ui-btn ui-btn--primary" href={`#/meet?step=done&id=${already.id}`}>Open {already.id}</a></p></div>}
-        {taken.length > 0 && !refused && <div data-testid="meet-withdrawn"><Notice tone="warn"><b>This time is no longer free, so it is not offered for confirmation.</b> Since you chose it:<ul>{taken.map((c) => <li key={`${c.kind}:${c.id}`}>{c.detail}</li>)}</ul></Notice><p><Button kind="primary" onClick={() => { setSlot(null); go('when'); }} testId="meet-repropose">See the times that work now</Button></p></div>}
+        {refused && <div className="cx-turn" data-testid="meet-conflict"><Notice tone="bad"><b>Not recorded.</b> Something changed since this time was proposed:<ul>{refused.map((x) => <li key={x}>{x}</li>)}</ul></Notice><p><Button kind="primary" onClick={() => { setSlot(null); go('when'); }} testId="meet-repropose">See the times that work now</Button></p></div>}
+        {already && !refused && <div className="cx-turn" data-testid="meet-already"><Notice tone="info"><b>This meeting is already recorded as {already.id}.</b> Nothing will be recorded a second time.</Notice><p><a className="ui-btn ui-btn--primary" href={`#/meet?step=done&id=${already.id}`}>Open {already.id}</a></p></div>}
+        {taken.length > 0 && !refused && <div className="cx-turn" data-testid="meet-withdrawn"><Notice tone="warn"><b>This time is no longer free, so it is not offered for confirmation.</b> Since you chose it:<ul>{taken.map((c) => <li key={`${c.kind}:${c.id}`}>{c.detail}</li>)}</ul></Notice><p><Button kind="primary" onClick={() => { setSlot(null); go('when'); }} testId="meet-repropose">See the times that work now</Button></p></div>}
         {planOk && reviewSlot && !refused && !already && !taken.length && <>
           <dl className="hr-rec cx-review" data-testid="meet-summary">
             <div><dt>Subject</dt><dd>{planOk.subject}</dd></div>
@@ -176,7 +176,8 @@ function Meet({ role, query, hash }: PageProps) {
           <p className="hr-links">{done.about && (() => { const s = subjectOf(done.about.kind, done.about.id, w); return s?.href && opens(s.href) ? <a href={s.href}>Back to {s.label}</a> : null; })()}{done.room && opens('#/pro/ops') && <a href="#/pro/ops">See the room’s booking in the Operations Hub</a>}<a href="#/meet" data-testid="meet-another">Schedule another</a></p>
         </> : <p>It may have been made in another browser, or the demonstration was reset. <a href="#/meet">Schedule a meeting</a></p>}
       </div>}
-      <p className="cx-said" role="status" aria-live="polite" data-testid="meet-said">{said}</p>
+      {/* announced once; when it only repeats the statement already printed in the card above, it is not drawn a second time */}
+      <p className={`cx-said${step === 'done' && said === RECORDED_STATEMENT ? ' ui-visually-hidden' : ''}`} role="status" aria-live="polite" data-testid="meet-said">{said}</p>
 
       {mine.length > 0 && <section className="cx-mine" aria-labelledby="cx-mine-h" data-testid="meet-mine" data-count={mine.length} data-live={mine.filter((m) => m.state === 'RECORDED').length}><h2 className="build__h" id="cx-mine-h">Meetings you recorded here</h2>
         <ul>{mine.slice(0, 8).map((m) => <li key={m.id} data-id={m.id} data-state={m.state}><span><b>{m.subject}</b> <span className="ui-muted">{m.id} · {fmtRange(me.tz, m.from, m.to)} · {m.parties.filter((x) => x.id !== me.id).map((x) => x.name).join(', ')}{m.room ? ` · ${m.room.name}` : ''}</span></span> <Tag tone={m.state === 'RECORDED' ? 'ok' : 'muted'}>{m.state === 'RECORDED' ? 'Recorded' : 'Cancelled'}</Tag>

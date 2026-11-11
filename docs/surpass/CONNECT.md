@@ -137,6 +137,11 @@ your URI encoding code returns %20 for spaces"); line breaks in a mailto body ar
 digits and hyphens only (RFC 3966); an email link is to exactly one address. A link is never built with a missing or unfilled
 parameter: the builder refuses instead.
 
+**What ships.** The registry in the page (`apps.ts`) names each source by a short key. The page addresses and the published
+templates printed above are held in `apps.sources.ts`, which no page imports: the built site carries no documentation host. The one
+external host in the shipped code is the deep link a person chooses to open, `teams.microsoft.com`; nothing is fetched from it, and
+the content-security policy does not name it (`tests/security/public-sites.test.mjs` holds both).
+
 **No download address exists anywhere in this slice.** Where an app is missing, the fallback is the web address the same vendor
 documents (the Teams links are themselves `https://teams.microsoft.com/…`), or copying the address or number by hand.
 

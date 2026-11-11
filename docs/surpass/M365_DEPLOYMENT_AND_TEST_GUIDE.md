@@ -49,7 +49,8 @@ validated integration, and no row above may be moved to the right of "Tested" un
 
 ## 2. Microsoft Graph permissions — least privilege
 
-Request only the permissions in the first table. Each is the **least-privileged** permission the call's page lists.
+Request only the permissions in the first table. Each is the **least-privileged** permission the call's page lists (one name is
+taken from the permissions reference instead; the reason is below the tables).
 
 | Permission | Kind | Why it is needed | Administrator's consent required (permissions reference) | The call's official page (read 2026-11-11) |
 |---|---|---|---|---|
@@ -106,7 +107,7 @@ and cancel.
 Microsoft's permissions reference (https://learn.microsoft.com/en-us/graph/permissions-reference, read 2026-11-11 for these seven
 permissions only: `User.ReadBasic.All`, `User.Read.All`, `Calendars.ReadBasic`, `Calendars.ReadBasic.All`, `Calendars.Read.Shared`,
 `Calendars.ReadWrite`, `Schedule.Read.All`). "No" means a user may consent for themselves **unless the tenant has turned user consent
-off**, which many do; every application permission is granted by an administrator.
+off**; every application permission is granted by an administrator.
 
 **Knowledge from selected SharePoint sites** (kept from the integrator's guide; **not part of this slice**, which has no ingestion
 code; the page was read by the integrator on 2026-11-11 and not re-read by the Connect lane):
