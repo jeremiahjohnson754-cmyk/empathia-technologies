@@ -22,6 +22,7 @@ import { CONNECT_PAGES } from './registry.connect.js';
 import { GUIDE_PAGES } from './registry.guides.js';
 import { DOCS5_PAGES } from './registry.docs5.js';
 import { KNOWLEDGE_PAGES } from './registry.knowledge.js';
+import { HARMONY_PAGES } from './registry.harmony.js';
 
 export const PAGES: readonly PageDef[] = [
   ...SHELL_PAGES, ...SPACES_PAGES, ...OPS_PAGES, ...PARITY_PAGES, ...PROOF_PAGES, ...WORLD_PAGES, ...CHAMPION_PAGES,
@@ -29,6 +30,7 @@ export const PAGES: readonly PageDef[] = [
   ...GUIDE_PAGES,
   ...DOCS5_PAGES,
   ...KNOWLEDGE_PAGES,
+  ...HARMONY_PAGES,
 ];
 
 interface Compiled { page: PageDef; segs: string[]; rest: boolean; score: number }

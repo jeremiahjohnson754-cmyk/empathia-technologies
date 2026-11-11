@@ -106,7 +106,7 @@ export default function AskPage({ role, query }: PageProps) {
       </div>
       <Zone title="Questions it can answer" note={`${mine.length} prepared for this role`}>
         {groups.map((g) => { const qs = mine.filter((q) => q.group === g); return qs.length ? <div key={g} className="pa-zone"><h3 className="pa-zone__note">{g}</h3><div className="pa-chips">{qs.map((q) => <Chip key={q.id} onClick={() => { setText(q.text); setAsked(q.text); }} selected={asked === q.text}>{q.text}</Chip>)}</div></div> : null; })}
-        <p className="pa-note">Ask Empathia answers a fixed set of questions by reading Core. It does not generate text, and it says so when a question is not one of them.</p>
+        <p className="pa-note">Ask Empathia answers a fixed set of questions by reading Core. It does not generate text, and it says so when a question is not one of them. To ask across the products, or to have a step prepared, <a href="#/harmony" data-testid="ask-harmony">ask Harmony</a>.</p>
       </Zone>
     </div>
   );

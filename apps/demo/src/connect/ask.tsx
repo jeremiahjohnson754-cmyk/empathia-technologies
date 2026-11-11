@@ -21,14 +21,14 @@ export interface ConnectQuestion { id: string; group: 'The workplace'; text: str
 const REF = roomById(REFERENCE_ROOM_ID)!;
 const roomRecs = (c: Core, o: RoomOutline) => c.byType.Room.filter((x) => x.id === o.id);
 /** The role a sentence names: its label ("systems engineer"), the word "technician", or the site champion. */
-function holderIn(text: string, buildingKey: string): { person: Person | null; words: string } | null {
+export function holderIn(text: string, buildingKey: string): { person: Person | null; words: string } | null {
   const t = text.toLowerCase();
   if (/\bbackup\b/.test(t)) return { person: backupOf(buildingKey), words: 'backup site champion' };
   if (/\bchampion\b/.test(t)) return { person: championOf(buildingKey), words: 'site champion' };
   for (const r of operationalRoles()) { const label = ROLES[r].label.toLowerCase(); if (t.includes(label) || (r === 'service' && /\btechnician\b/.test(t))) return { person: holdersOf(r, buildingKey)[0] || null, words: label }; }
   return null;
 }
-const meetHref = (i: MeetInput, step: 'when' | 'review', slot?: number) => { const q = new URLSearchParams({ with: i.withIds.join(',') }); if (i.roomId) q.set('room', i.roomId); if (i.about) q.set('about', `${i.about.kind}:${i.about.id}`); if (i.minutes !== 30) q.set('min', String(i.minutes)); q.set('step', step); if (slot) q.set('slot', String(slot)); return `#/meet?${q}`; };
+export const meetHref = (i: MeetInput, step: 'when' | 'review', slot?: number) => { const q = new URLSearchParams({ with: i.withIds.join(',') }); if (i.roomId) q.set('room', i.roomId); if (i.about) q.set('about', `${i.about.kind}:${i.about.id}`); if (i.minutes !== 30) q.set('min', String(i.minutes)); q.set('step', step); if (slot) q.set('slot', String(slot)); return `#/meet?${q}`; };
 
 export const CONNECT_QUESTIONS: ConnectQuestion[] = [
   { id: 'contact', group: 'The workplace', text: `Who do I contact about ${shortName(REF)}?`, words: /\bwho\b.*\b(contact|ask|call|talk to|reach|knows?)\b|\bsite champion\b/, needsRoom: true,

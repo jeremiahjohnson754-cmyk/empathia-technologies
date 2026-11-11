@@ -1,0 +1,16 @@
+/* Harmony: ask across the products. Tokens only; both themes. */
+.hm { display: grid; gap: var(--sp-4); } .hm > * { min-width: 0; }
+.hm-ask { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: end; } .hm-ask .ui-field { margin: 0; } .hm-ask input { inline-size: 100%; }
+.hm-try { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; font-size: var(--fs-sm); color: var(--tx3); } .hm-try ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; } .hm-try .ui-btn { text-align: start; white-space: normal; }
+.hm-cols { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: var(--sp-4); align-items: start; } @media (max-width: 980px) { .hm-cols { grid-template-columns: minmax(0, 1fr); } }
+.hm-live { display: grid; gap: var(--sp-3); } .hm-live:focus { outline: none; }
+.hm-reply { display: grid; gap: 8px; padding: 14px 16px; border: 1px solid var(--line); border-inline-start: 3px solid var(--line2); border-radius: var(--r-md); background: var(--panel); min-width: 0; }
+.hm-reply[data-status=answered] { border-inline-start-color: var(--ok); } .hm-reply[data-status=prepared] { border-inline-start-color: var(--accent); } .hm-reply[data-status=refused] { border-inline-start-color: var(--bad); } .hm-reply[data-status=needs-room] { border-inline-start-color: var(--warn); }
+.hm-reply p { margin: 0; overflow-wrap: anywhere; } .hm-asked { color: var(--tx2); font-size: var(--fs-sm); } .hm-meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: var(--fs-sm); color: var(--tx3); }
+.hm-said { font-size: var(--fs-md, 1rem); line-height: 1.55; max-inline-size: 70ch; }
+.hm-facts { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; } .hm-facts li { display: grid; grid-template-columns: auto 1fr; gap: 8px; font-size: var(--fs-sm); line-height: 1.5; overflow-wrap: anywhere; } .hm-facts svg { margin-block-start: 3px; color: var(--ok); }
+.hm-src { display: block; color: var(--tx3); } .hm-next { display: flex; flex-wrap: wrap; gap: 8px; } .hm-foot, .hm-note { color: var(--tx3); font-size: var(--fs-sm); line-height: 1.5; margin: 0; }
+.hm-tools { list-style: none; margin: 0 0 var(--sp-3); padding: 0; display: grid; gap: 10px; } .hm-tools li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 8px; font-size: var(--fs-sm); line-height: 1.45; }
+.hm-tools li > span { display: grid; } .hm-tools li > span > span { color: var(--tx3); } .hm-tools li[data-held=yes] svg { color: var(--ok); } .hm-tools li[data-held=no] svg { color: var(--tx3); } .hm-tools li[data-held=no] b { color: var(--tx2); font-weight: 500; }
+@media (max-width: 640px) { .hm-ask { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 640px), (pointer: coarse) { .hm .ui-btn, .hm input[type=text] { min-block-size: 44px; } }
