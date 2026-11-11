@@ -7,7 +7,9 @@
 import type { ProofClaim } from './index.js';
 
 export type TestResult = 'PASS' | 'PENDING' | 'FAIL';
-export interface DossierTest { id: string; discipline: string; name: string; result: TestResult; evidence: string | null; note?: string }
+/** `control` marks a test that protects access, the record itself, or accessibility: such a test is corrected, never waived. */
+export type ControlClass = 'security' | 'integrity' | 'accessibility';
+export interface DossierTest { id: string; discipline: string; name: string; result: TestResult; evidence: string | null; note?: string; control?: ControlClass }
 export interface Deficiency { id: string; severity: 'P1' | 'P2'; test: string; statement: string; owner: string; action: string; state: 'OPEN' | 'CORRECTED_AWAITING_RETEST' }
 export interface Dossier {
   id: string; generatedAt: string; tenant: string; project: string; room: { id: string; name: string; site: string };
@@ -41,7 +43,11 @@ const ROWS: [string, string, TestResult, boolean, string?][] = [
   ['Accessibility', 'Assistive listening coverage walk test', 'PENDING', false, 'Not yet carried out'], ['Accessibility', 'Assistive listening feed at the specified level', 'FAIL', false, 'Feed level below the specified level; no evidence record attached'],
 ];
 const n3 = (i: number) => String(i + 1).padStart(3, '0');
-const TESTS: DossierTest[] = ROWS.map(([discipline, name, result, ev, note], i) => ({ id: `T-SIM-${n3(i)}`, discipline, name, result, evidence: ev ? `EV-SIM-${n3(i)}` : null, ...(note ? { note } : {}) }));
+/** which tests are controls (default policy, 11 Nov 2026): network segregation and management access (security); the configuration backup
+ *  with its checksum and the asset's identity against the register (integrity of the record); everything under Accessibility. */
+const CONTROLS: Record<string, ControlClass> = { 'Control VLAN and addressing as designed': 'security', 'Management access restricted to the service group': 'security', 'Configuration backup stored with its checksum': 'integrity', 'Asset label matches the register entry': 'integrity' };
+const controlOf = (discipline: string, name: string): ControlClass | undefined => CONTROLS[name] ?? (discipline === 'Accessibility' ? 'accessibility' : undefined);
+const TESTS: DossierTest[] = ROWS.map(([discipline, name, result, ev, note], i) => { const control = controlOf(discipline, name); return { id: `T-SIM-${n3(i)}`, discipline, name, result, evidence: ev ? `EV-SIM-${n3(i)}` : null, ...(note ? { note } : {}), ...(control ? { control } : {}) }; });
 const count = (r: TestResult) => TESTS.filter((t) => t.result === r).length;
 
 export const DOSSIER_4218: Dossier = {

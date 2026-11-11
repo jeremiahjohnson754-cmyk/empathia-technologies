@@ -7,7 +7,7 @@
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { PageHero, Chip, Card, StatTile, Segmented, EmptyState, Icon } from '@empathia/ui';
-import { DOSSIER_4218 as D, type Authority, type DossierEvent, type WorkingTest } from '@empathia/proof-registry';
+import { DOSSIER_4218 as D, WAIVER_MAX_DAYS, type Authority, type DossierEvent, type WorkingTest, type WorkingWaiver } from '@empathia/proof-registry';
 import type { PageProps, RoleKey } from '../registry.types.js';
 import { ROLES, allows, roleTitle } from '../access/policy.js';
 import { useViewAs } from '../viewas/context.js';
@@ -18,9 +18,13 @@ import { make, download, type Artifact, type Redaction } from './exports.js';
 type Filter = 'attention' | 'all' | 'FAIL' | 'PENDING' | 'PASS';
 const RESULT_TONE = { PASS: 'ok', PENDING: 'warn', FAIL: 'bad' } as const;
 const RESULT_LABEL = { PASS: 'Pass', PENDING: 'Pending', FAIL: 'Fail' } as const;
-const FIRST: RoleKey[] = ['svcmgr', 'exec']; const SECOND: RoleKey[] = ['ops', 'syseng']; const RECORDERS: RoleKey[] = ['cxeng', 'syseng', 'architect']; const VERIFIERS: RoleKey[] = ['qa', 'svcmgr', 'ops', 'architect'];
+const FIRST: RoleKey[] = ['svcmgr', 'exec']; const SECOND: RoleKey[] = ['ops', 'syseng']; const RECORDERS: RoleKey[] = ['cxeng', 'syseng', 'architect']; const VERIFIERS: RoleKey[] = ['qa', 'svcmgr', 'ops', 'architect']; const WAIVERS: RoleKey[] = ['exec', 'ops']; const OWNERS: RoleKey[] = ['cxeng', 'syseng', 'installer', 'svcmgr'];
 const names = (r: RoleKey[]) => r.map((k) => ROLES[k].label).join(', ');
 const either = (r: RoleKey[]) => r.map((k) => roleTitle(k)).join(' or the ');
+const day = (d: string) => new Date(`${d}T12:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const plusDays = (n: number) => new Date(Date.now() + n * 86400000).toISOString().slice(0, 10);
+const WAIVER_WORD: Record<WorkingWaiver['state'], string> = { STANDING: 'Standing', EXPIRED: 'Run out', MOOT: 'No longer needed', VOID: 'Covers nothing' };
+const plural = (n: number, w: string) => `${n} ${w}${n === 1 ? '' : 's'}`;
 const when = (iso: string) => new Date(iso).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 
 function describe(e: DossierEvent): string {
@@ -29,8 +33,10 @@ function describe(e: DossierEvent): string {
     case 'EVIDENCE': return `${e.by.label} attached evidence ${e.evidence} to ${e.test}`;
     case 'VERIFY': return `${e.by.label} verified ${e.test}`;
     case 'RAISE': return `${e.by.label} raised ${e.id} against ${e.test}`;
-    case 'ACCEPT': return `${e.by.label} gave the first approval of the final sign-off`;
-    case 'COUNTERSIGN': return `${e.by.label} gave the second approval: final acceptance recorded`;
+    case 'WAIVE': return `${e.by.label} waived ${e.test} until ${day(e.expires)}: ${e.reason}`;
+    case 'ATTEST': return `${e.by.label}, as site champion, attested: ${e.statement}`;
+    case 'ACCEPT': return `${e.by.label} gave the first approval of the final sign-off${e.waivers ? `, over ${plural(e.waivers, 'waiver')}` : ''}`;
+    case 'COUNTERSIGN': return `${e.by.label} gave the second approval${e.waivers ? `, over ${plural(e.waivers, 'waiver')}` : ''}: final acceptance recorded`;
   }
 }
 
@@ -42,7 +48,8 @@ export default function Dossier({ role, params, query, can, sees }: PageProps) {
   const [made, setMade] = useState<Artifact[]>([]); const [busy, setBusy] = useState(false);
   const exportRef = useRef<HTMLDivElement>(null); const alertRef = useRef<HTMLDivElement>(null);
   const me = useMemo(() => ({ role, label: ROLES[role].label }), [role]);
-  const may: Authority = { record: can('dossier.record'), verify: can('dossier.verify'), raise: can('dossier.raise'), accept: can('dossier.accept'), countersign: can('dossier.countersign') };
+  const may: Authority = { record: can('dossier.record'), verify: can('dossier.verify'), raise: can('dossier.raise'), accept: can('dossier.accept'), countersign: can('dossier.countersign'), waive: can('dossier.waive') };
+  const [wTest, setWTest] = useState(''); const [wWhy, setWWhy] = useState(''); const [wBasis, setWBasis] = useState(''); const [wPlan, setWPlan] = useState(''); const [wOwner, setWOwner] = useState<RoleKey>('cxeng'); const [wUntil, setWUntil] = useState(() => plusDays(30));
   useEffect(() => { setRefusal(null); setDone(null); }, [role]);
   useEffect(() => { if (query.get('focus') === 'export') exportRef.current?.scrollIntoView({ block: 'start' }); }, [query]);
   useEffect(() => { if (refusal) alertRef.current?.focus(); }, [refusal]);
@@ -55,6 +62,11 @@ export default function Dossier({ role, params, query, can, sees }: PageProps) {
   const attention = (t: WorkingTest) => t.result !== 'PASS' || !t.evidence || (t.changed && !t.verifiedBy);
   const shown = w.tests.filter((t) => (filter === 'all' ? true : filter === 'attention' ? attention(t) : t.result === filter));
   const held = w.acceptance === 'HELD';
+  const standing = w.waivers.filter((x) => x.state === 'STANDING'); const waiverOf = (id: string) => standing.find((x) => x.test === id);
+  // what the rules would let someone waive: an open item that is not a control, not an unraised failure, and has no open P1 against it
+  const waivable = [...new Set(w.blockers.filter((b) => b.test && b.reason !== 'fails with no deficiency raised' && !w.tests.find((t) => t.id === b.test)?.control && !w.deficiencies.some((x) => x.test === b.test && x.state !== 'CLOSED' && x.severity === 'P1')).map((b) => b.test as string))];
+  const pick = waivable.includes(wTest) ? wTest : (waivable[0] || '');
+  const over = standing.length ? `, with ${plural(standing.length, 'waiver')}` : '';
   const redactions: Redaction[] = sees('dossier.evidence') ? ['engineering', 'executive'] : ['executive'];
   const doExport = async (kind: 'json' | 'csv', r: Redaction) => { setBusy(true); try { const a = await make(kind, w, r, me.label); download(a); setMade((m) => [a, ...m].slice(0, 6)); } catch { setRefusal('The file could not be made in this browser. Nothing was exported.'); } finally { setBusy(false); } };
 
@@ -75,11 +87,11 @@ export default function Dossier({ role, params, query, can, sees }: PageProps) {
   const anyRowActions = may.record || may.raise || may.verify;
 
   return (
-    <div className="pa pf" data-native="" data-testid="dossier" data-acceptance={w.acceptance}>
+    <div className="pa pf" data-native="" data-testid="dossier" data-acceptance={w.acceptance} data-waivers={standing.length}>
       <Crumbs items={[['Commissioning & Assurance', allows({ area: 'commissioning' }, role) ? '#/commissioning' : undefined], [D.room.name, `#/room/${D.room.id}`], ['Dossier']]} />
-      <PageHero compact eyebrow={`${D.project} · commissioning`} title={held ? 'Acceptance held pending corrective action' : 'Final acceptance recorded'} product="commissioning" icon="shield"
+      <PageHero compact eyebrow={`${D.project} · commissioning`} title={held ? 'Acceptance held pending corrective action' : `Final acceptance recorded${over}`} product="commissioning" icon="shield"
         lede={`${D.scope}. Asset ${D.asset.id}, ${D.asset.kind.toLowerCase()}.`}
-        meta={[<Chip key="s" small tone={held ? 'bad' : 'ok'}>{held ? 'Held' : 'Accepted'}</Chip>, ...honest(['Synthetic data', 'warn'], [`Report ${D.id}`, 'muted'])]} />
+        meta={[<Chip key="s" small tone={held ? 'bad' : standing.length ? 'warn' : 'ok'}>{held ? 'Held' : standing.length ? `Accepted${over}` : 'Accepted'}</Chip>, ...honest(['Synthetic data', 'warn'], [`Report ${D.id}`, 'muted'])]} />
 
       <div className="kit-grid kit-grid--tiles" data-testid="dossier-totals">
         <StatTile testId="dossier-pass" label="Pass" value={w.totals.pass} tone="ok" hint={w.changed ? `snapshot ${D.totals.pass}` : `of ${w.totals.tests} tests`} />
@@ -89,21 +101,43 @@ export default function Dossier({ role, params, query, can, sees }: PageProps) {
       </div>
 
       <section className={`pf-decision${held ? ' pf-decision--held' : ''}`} aria-labelledby="dec-h" data-testid="dossier-decision">
-        <h2 id="dec-h">{held ? 'Decision required' : 'Accepted'}</h2>
-        {held ? <p>{w.blockers.length ? D.acceptanceReason : w.signoff === 'AWAITING_SECOND' ? 'Commissioning is complete and the first approval is given. Acceptance stays held until the second.' : 'Commissioning is complete. Acceptance stays held until both approvals of the final sign-off are given.'}</p>
-          : <p>First approval by the {w.firstApproval?.by.label}{w.firstApproval ? ` on ${when(w.firstApproval.at)}` : ''}; second by the {w.secondApproval?.by.label}{w.secondApproval ? ` on ${when(w.secondApproval.at)}` : ''}. Every test passes with evidence, and every result recorded after the snapshot was independently verified. The record is closed.</p>}
+        <h2 id="dec-h">{held ? 'Decision required' : standing.length ? `Accepted${over}` : 'Accepted'}</h2>
+        {held ? <p>{w.blockers.length ? D.acceptanceReason : w.signoff === 'AWAITING_SECOND' ? `${standing.length ? `Nothing stops acceptance: ${plural(standing.length, 'open item')} ${standing.length === 1 ? 'is' : 'are'} under a waiver` : 'Commissioning is complete'} and the first approval is given. Acceptance stays held until the second.` : `${standing.length ? `Nothing stops acceptance: ${plural(standing.length, 'open item')} ${standing.length === 1 ? 'is' : 'are'} under a waiver.` : 'Commissioning is complete.'} Acceptance stays held until both approvals of the final sign-off are given.`}</p>
+          : <p>First approval by the {w.firstApproval?.by.label}{w.firstApproval ? ` on ${when(w.firstApproval.at)}` : ''}; second by the {w.secondApproval?.by.label}{w.secondApproval ? ` on ${when(w.secondApproval.at)}` : ''}. {standing.length ? `${plural(standing.length, 'item')} stayed open under a documented waiver and ${standing.length === 1 ? 'is' : 'are'} listed below with ${standing.length === 1 ? 'its' : 'their'} end date; every other test passes with evidence, and every result recorded after the snapshot was independently verified.` : 'Every test passes with evidence, and every result recorded after the snapshot was independently verified.'} The record is closed.</p>}
         {held ? <>
           <h3 className="pf-h">{w.blockers.length} {w.blockers.length === 1 ? 'blocker' : 'blockers'} to acceptance</h3>
           {w.blockers.length ? <ul className="pf-blockers" data-testid="dossier-blockers">{w.blockers.map((b, i) => <li key={`${b.test}-${i}`}><a href={`#t-${b.test}`} onClick={(e) => { e.preventDefault(); setFilter('all'); setTimeout(() => document.getElementById(`t-${b.test}`)?.scrollIntoView({ block: 'center' }), 0); }}><code>{b.test}</code></a> {b.reason}</li>)}</ul> : <p className="pf-note">None. Acceptance can be recorded.</p>}
+          {may.waive && waivable.length ? <form className="pf-waive" data-testid="dossier-waive" aria-labelledby="waive-h" noValidate onSubmit={(e) => { e.preventDefault(); const t = pick; const r = act({ kind: 'WAIVE', test: t, reason: wWhy.trim(), basis: wBasis.trim(), owner: ROLES[wOwner].label, plan: wPlan.trim(), expires: wUntil, by: me, at: nowIso() }, may); setRefusal(r); setDone(r ? null : `${t} is waived until ${day(wUntil)}. It stays open and is listed as waived; the approvals are given over it by other roles.`); if (!r) { setWWhy(''); setWBasis(''); setWPlan(''); } }}>
+            <h3 className="pf-h" id="waive-h">Waive an open item</h3>
+            <p className="pf-note">A waiver lets the room be accepted with one item still open. It does not pass the test. It is a documented exception: a reason, what it relies on, an owner, how the item will be closed, and an end date. The {ROLES[role].label} who gives it does not also approve. Security, record-integrity and accessibility tests, P1 deficiencies and failures nobody has raised are never offered here: they are corrected.</p>
+            <div className="pf-waive__row">
+              <div className="ui-field"><label htmlFor="waive-test">Item</label><select id="waive-test" value={pick} onChange={(e) => setWTest(e.target.value)} data-testid="dossier-waive-test">{waivable.map((id) => <option key={id} value={id}>{id} · {w.tests.find((t) => t.id === id)?.name}</option>)}</select></div>
+              <div className="ui-field"><label htmlFor="waive-until">Stands until</label><input id="waive-until" type="date" value={wUntil} min={plusDays(1)} max={plusDays(WAIVER_MAX_DAYS)} onChange={(e) => setWUntil(e.target.value)} data-testid="dossier-waive-until" /><p className="ui-field__hint">At most {WAIVER_MAX_DAYS} days.</p></div>
+            </div>
+            <div className="ui-field"><label htmlFor="waive-why">Why the room can be accepted with this open</label><textarea id="waive-why" rows={2} maxLength={600} value={wWhy} onChange={(e) => setWWhy(e.target.value)} data-testid="dossier-waive-why" /></div>
+            <div className="ui-field"><label htmlFor="waive-basis">What it relies on</label><input id="waive-basis" type="text" maxLength={200} value={wBasis} onChange={(e) => setWBasis(e.target.value)} data-testid="dossier-waive-basis" /><p className="ui-field__hint">A record someone else can read: the deficiency, an attestation, a booked visit.</p></div>
+            <div className="pf-waive__row">
+              <div className="ui-field"><label htmlFor="waive-plan">How it will be closed, and by when</label><textarea id="waive-plan" rows={2} maxLength={400} value={wPlan} onChange={(e) => setWPlan(e.target.value)} data-testid="dossier-waive-plan" /></div>
+              <div className="ui-field"><label htmlFor="waive-owner">Who closes it</label><select id="waive-owner" value={wOwner} onChange={(e) => setWOwner(e.target.value as RoleKey)} data-testid="dossier-waive-owner">{OWNERS.map((k) => <option key={k} value={k}>{ROLES[k].label}</option>)}</select></div>
+            </div>
+            <div className="pf-actions"><button type="submit" className="ui-btn" data-testid="dossier-waive-go">Record the waiver</button></div>
+          </form> : null}
         </> : null}
+        {w.waivers.length ? <><h3 className="pf-h" id="waivers-h">Waivers</h3>
+          <ul className="pf-waivers" aria-labelledby="waivers-h" data-testid="dossier-waivers">{w.waivers.map((x) => <li key={x.test} data-waiver={x.test} data-state={x.state}>
+            <header><code>{x.test}</code><Chip small tone={x.state === 'STANDING' ? 'warn' : x.state === 'MOOT' ? 'ok' : 'bad'}>{WAIVER_WORD[x.state]}</Chip><span className="pf-note">{x.state === 'MOOT' ? 'the item was closed' : `until ${day(x.expires)}`} · given by the {x.by.label} on {when(x.at)}</span></header>
+            <p>{x.reason}</p><dl className="pf-waivers__facts"><div><dt>Relies on</dt><dd>{x.basis}</dd></div><div><dt>Closed by</dt><dd>{x.owner}</dd></div><div><dt>How</dt><dd>{x.plan}</dd></div></dl>{x.covers.length ? <p className="pf-note">Still open: {x.test} {x.covers.join('; ')}.{x.state === 'EXPIRED' ? ' The waiver has run out, so this stops acceptance again.' : x.state === 'VOID' ? ' A waiver cannot cover this.' : ''}</p> : null}
+          </li>)}</ul></> : null}
         <h3 className="pf-h" id="signoff-h">Phase 6 · Final sign-off</h3>
         <ol className="pf-signoff" aria-labelledby="signoff-h" data-testid="dossier-signoff" data-signoff={w.signoff}>
-          <li data-step="tests" data-state={w.blockers.length ? 'open' : 'done'}><b>Commissioning complete</b><span>{w.blockers.length ? `${w.blockers.length} ${w.blockers.length === 1 ? 'blocker stands' : 'blockers stand'}` : 'Every test passes with evidence, and every new result is verified'}</span></li>
+          <li data-step="tests" data-state={w.blockers.length ? 'open' : 'done'}><b>Commissioning complete</b><span>{w.blockers.length ? `${w.blockers.length} ${w.blockers.length === 1 ? 'blocker stands' : 'blockers stand'}` : standing.length ? `Nothing stops acceptance; ${plural(standing.length, 'item')} open under a waiver` : 'Every test passes with evidence, and every new result is verified'}</span></li>
           <li data-step="first" data-state={w.firstApproval ? 'done' : w.signoff === 'AWAITING_FIRST' ? 'next' : 'open'}><b>First approval</b><span>{w.firstApproval ? `Given by the ${w.firstApproval.by.label} on ${when(w.firstApproval.at)}` : `The ${either(FIRST)}`}</span>
-            {held && !w.firstApproval && may.accept ? <button type="button" className="ui-btn ui-btn--primary" data-testid="dossier-accept" onClick={() => step({ kind: 'ACCEPT', by: me, at: nowIso() }, `First approval recorded by the ${me.label}. The dossier now waits for the ${either(SECOND)}.`)}>Give the first approval</button> : null}</li>
+            {held && !w.firstApproval && may.accept ? <button type="button" className="ui-btn ui-btn--primary" data-testid="dossier-accept" onClick={() => step({ kind: 'ACCEPT', by: me, at: nowIso(), ...(standing.length ? { waivers: standing.length } : {}) }, `First approval recorded by the ${me.label}${over}. The dossier now waits for the ${either(SECOND)}.`)}>Give the first approval{over}</button> : null}</li>
           <li data-step="second" data-state={w.secondApproval ? 'done' : w.signoff === 'AWAITING_SECOND' ? 'next' : 'open'}><b>Second approval</b><span>{w.secondApproval ? `Given by the ${w.secondApproval.by.label} on ${when(w.secondApproval.at)}` : `The ${either(SECOND)}, after the first`}</span>
-            {held && may.countersign ? <button type="button" className="ui-btn ui-btn--primary" data-testid="dossier-countersign" onClick={() => step({ kind: 'COUNTERSIGN', by: me, at: nowIso() }, 'Second approval recorded. Final acceptance is recorded and the dossier is closed.')}>Give the second approval</button> : null}</li>
+            {held && may.countersign ? <button type="button" className="ui-btn ui-btn--primary" data-testid="dossier-countersign" onClick={() => step({ kind: 'COUNTERSIGN', by: me, at: nowIso(), ...(standing.length ? { waivers: standing.length } : {}) }, `Second approval recorded${over}. Final acceptance is recorded and the dossier is closed.`)}>Give the second approval{over}</button> : null}</li>
         </ol>
+        {w.attestations.length ? <><h3 className="pf-h" id="attest-h">From the room’s site champion</h3>
+          <ul className="pf-attest" aria-labelledby="attest-h" data-testid="dossier-attestations">{w.attestations.map((a, i) => <li key={i}><p>“{a.statement}”</p><span className="pf-note">{when(a.at)} · local attestation. It is read by the approvers and approves nothing.</span></li>)}</ul></> : null}
         {held && !may.accept && !may.countersign ? <p className="pf-note">The {ROLES[role].label} does not approve. The first approval is the {either(FIRST)}’s; the second is the {either(SECOND)}’s.</p> : null}
         {refusal ? <div ref={alertRef} tabIndex={-1} role="alert" className="pf-refusal" data-testid="dossier-refusal"><Icon name="alert" size={18} /><span>{refusal}</span></div> : null}
         {done && !refusal ? <p role="status" className="pf-done" data-testid="dossier-done"><Icon name="check" size={18} /><span>{done}</span></p> : null}
@@ -119,7 +153,7 @@ export default function Dossier({ role, params, query, can, sees }: PageProps) {
               <td>{t.discipline}</td>
               <td><Chip small tone={RESULT_TONE[t.result]}>{RESULT_LABEL[t.result]}</Chip></td>
               {sees('dossier.evidence') ? <td>{t.evidence ? <code>{t.evidence}</code> : <span className="pf-missing">None</span>}</td> : null}
-              <td>{t.result !== 'PASS' ? '—' : !t.evidence ? 'Cannot be verified' : !t.changed ? 'In the snapshot' : t.verifiedBy ? `Verified by ${t.verifiedBy.label}` : `Recorded by ${t.recordedBy?.label}; awaits verification`}</td>
+              <td>{waiverOf(t.id) ? <span data-waived={t.id}>Open · waived until {day(waiverOf(t.id)!.expires)}</span> : t.result !== 'PASS' ? '—' : !t.evidence ? 'Cannot be verified' : !t.changed ? 'In the snapshot' : t.verifiedBy ? `Verified by ${t.verifiedBy.label}` : `Recorded by ${t.recordedBy?.label}; awaits verification`}</td>
               {anyRowActions ? <td>{acts.length ? <div className="pa-row-actions">{acts}</div> : null}</td> : null}
             </tr>); })}</tbody>
         </table></div> : <EmptyState title="No test in this view" icon="check">Choose All to see every test.</EmptyState>}
@@ -140,6 +174,8 @@ export default function Dossier({ role, params, query, can, sees }: PageProps) {
           <p><b>Verify a new result:</b> {names(VERIFIERS)}, and never the role that recorded it.</p>
           <p><b>Final sign-off, first approval:</b> the {either(FIRST)}; only when no blocker stands.</p>
           <p><b>Final sign-off, second approval:</b> the {either(SECOND)}; only after the first, from a different role. Neither approval comes from a role that recorded or verified a result here, and a new result withdraws an approval already given.</p>
+          <p><b>Waive an open item:</b> the {either(WAIVERS)}, as a documented exception: a reason, what it relies on, an owner, how the item will be closed, and an end date at most {WAIVER_MAX_DAYS} days on. A waived item stays open and is counted as open. A security, record-integrity or accessibility test, a failure with no deficiency raised and an item with a P1 deficiency are never waived, the role that waives does not approve, and each approval says how many waivers it is given over.</p>
+          <p><b>Local attestation:</b> the room’s site champion, from the room’s label in the QR Hub. It is shown to the approvers and does not replace either of them.</p>
           <div className="pf-actions" role="group" aria-label="View this dossier as another role">{(['cxeng', 'qa', 'svcmgr', 'exec', 'ops', 'syseng'] as RoleKey[]).filter((k) => k !== role).map((k) => <button key={k} type="button" className="ui-btn ui-btn--sm" data-viewas={k} onClick={() => va.switchTo(k)}>View as {roleTitle(k)}</button>)}</div>
         </div>
       </Zone>

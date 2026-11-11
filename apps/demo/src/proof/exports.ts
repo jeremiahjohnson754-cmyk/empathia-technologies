@@ -17,10 +17,13 @@ const head = (w: Working, redaction: Redaction, role: string, at: string) => ({
 export function toJson(w: Working, redaction: Redaction, role: string, at: string): string {
   const eng = redaction === 'engineering';
   return JSON.stringify({ ...head(w, redaction, role, at), acceptance: w.acceptance,
-    final_signoff: { state: w.signoff, first_approval: w.firstApproval ? { by: w.firstApproval.by.label, at: w.firstApproval.at } : null, second_approval: w.secondApproval ? { by: w.secondApproval.by.label, at: w.secondApproval.at } : null }, totals: w.totals,
+    final_signoff: { state: w.signoff, first_approval: w.firstApproval ? { by: w.firstApproval.by.label, at: w.firstApproval.at, over_waivers: w.firstApproval.waivers } : null, second_approval: w.secondApproval ? { by: w.secondApproval.by.label, at: w.secondApproval.at, over_waivers: w.secondApproval.waivers } : null }, totals: w.totals,
+    open_items: w.open.map((b) => `${b.test} ${b.reason}`),
+    waivers: w.waivers.map((x) => ({ test: x.test, state: x.state, stands_until: x.expires, granted_by: x.by.label, granted_at: x.at, reason: x.reason, relies_on: x.basis, owner: x.owner, remediation_plan: x.plan, still_open: x.covers })),
+    site_champion_attestations: w.attestations.map((a) => ({ at: a.at, statement: a.statement, note: 'local attestation; not an approval' })),
     blockers: w.blockers.map((b) => `${b.test} ${b.reason}`),
     deficiencies: w.deficiencies.map((x) => ({ id: x.id, severity: x.severity, test: x.test, statement: x.statement, owner: x.owner, action: x.action, state: x.state })),
-    tests: w.tests.map((t) => ({ id: t.id, discipline: t.discipline, name: t.name, result: t.result, ...(eng ? { evidence: t.evidence, recorded_by: t.recordedBy?.label ?? null, verified_by: t.verifiedBy?.label ?? null } : { has_evidence: !!t.evidence }), changed_after_snapshot: t.changed })),
+    tests: w.tests.map((t) => ({ id: t.id, discipline: t.discipline, name: t.name, result: t.result, ...(t.control ? { control: t.control, never_waived: true } : {}), ...(eng ? { evidence: t.evidence, recorded_by: t.recordedBy?.label ?? null, verified_by: t.verifiedBy?.label ?? null } : { has_evidence: !!t.evidence }), changed_after_snapshot: t.changed })),
   }, null, 2) + '\n';
 }
 /** a cell a spreadsheet would run as a formula is neutralised (leading = + - @ tab CR), then quoted */
@@ -28,8 +31,8 @@ const cell = (v: string | number | boolean | null) => { let s = v === null ? '' 
 export function toCsv(w: Working, redaction: Redaction, role: string, at: string): string {
   const eng = redaction === 'engineering'; const h = head(w, redaction, role, at);
   const meta = Object.entries(h).map(([k, v]) => `# ${k}: ${String(v).replace(/[\r\n]/g, ' ')}`);
-  const cols = ['report', 'test_id', 'discipline', 'name', 'result', ...(eng ? ['evidence_id', 'verified_by'] : ['has_evidence']), 'changed_after_snapshot', 'source_class'];
-  const rows = w.tests.map((t) => [D.id, t.id, t.discipline, t.name, t.result, ...(eng ? [t.evidence, t.verifiedBy?.label ?? null] : [!!t.evidence]), t.changed, 'SYNTHETIC'].map(cell).join(','));
+  const cols = ['report', 'test_id', 'discipline', 'name', 'result', ...(eng ? ['evidence_id', 'verified_by'] : ['has_evidence']), 'changed_after_snapshot', 'waived_until', 'source_class'];
+  const rows = w.tests.map((t) => [D.id, t.id, t.discipline, t.name, t.result, ...(eng ? [t.evidence, t.verifiedBy?.label ?? null] : [!!t.evidence]), t.changed, w.waivers.find((x) => x.test === t.id && x.state === 'STANDING')?.expires ?? null, 'SYNTHETIC'].map(cell).join(','));
   return [...meta, cols.join(','), ...rows].join('\n') + '\n';
 }
 export async function sha256(text: string): Promise<string> {
