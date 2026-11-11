@@ -126,6 +126,10 @@ music and creative assets he supplied, for authorised use in Empathia.
 - On the site it is rendered by one component, `FounderPortrait` (`apps/website/src/ui.tsx`), on the home page's founder section and
   on the founder page: whole (square), `width="960" height="960"`, responsive sources, alternative text "Jeremiah Johnson, founder of
   Empathia Technologies". The component adds no animation.
+- Since 2026-11-11 the founder page shows it on a plate with a ten-second introduction (`FounderReveal` in
+  `apps/website/src/founderStory.tsx`). The plate holds this same component and this same file; the introduction's layers are light,
+  dust and lines around and above it, and the picture itself is never scaled, cropped or altered. See
+  `docs/media/FOUNDER_REVEAL_QA.md`.
 
 ## 6. Verification (2026-11-11)
 

@@ -204,9 +204,9 @@ export const EnquiryCard = ({ source, primary }: { source: Source; primary?: boo
 /** The founder: the person and the thinking behind the company, not a second product page (founder 2026-10-31 21:35 / 21:42 / 21:46).
  *  Two distinct calls to action: "About the founder" (this site, same tab) and "Connect with the founder" (the enquiry form, new tab,
  *  marked source=founder). Only the supplied portrait, only the three credentials, no invented biography. */
-export const FounderBlock = ({ page }: { page: 'home' | 'founder' }) => (
+export const FounderBlock = ({ page, portrait }: { page: 'home' | 'founder'; /** the founder page's plate (founderStory.tsx → FounderReveal), which holds the same FounderPortrait */ portrait?: React.ReactNode }) => (
   <div className="founder" data-founder={page}>
-    <FounderPortrait size={page === 'founder' ? 'lg' : 'sm'} />
+    {portrait ?? <FounderPortrait size={page === 'founder' ? 'lg' : 'sm'} />}
     <div className="founder__text">
       <p className="label">{page === 'founder' ? 'Founder' : 'The founder'}</p>
       {page === 'founder' ? <h1 className="founder__name">Jeremiah Johnson</h1> : <h2 className="founder__name">Jeremiah Johnson</h2>}
@@ -225,15 +225,7 @@ export const FounderBlock = ({ page }: { page: 'home' | 'founder' }) => (
 
 /** The home hero's composition: Mission Control as the screen, a room record layered over it (the evidence labels the product keeps),
  *  and the counts this site is built from (computed from the product list and the room mix, never typed). All synthetic, and labelled. */
-/** The founding story, in the founder's own words (2026-11-01 05:46 CT); its closing line stands alone with generous space, as he asked. */
-export const FoundingStory = () => (
-  <section className="section story" aria-labelledby="story-title" data-founding-story><div className="wrap story__wrap">
-    <h2 id="story-title">The Missing Piece</h2>
-    {FOUNDING_STORY.map((t, i) => <p key={i}>{t}</p>)}
-    <p className="story__close">{FOUNDING_STORY_CLOSE}</p>
-  </div></section>
-);
-
+// The founding story, in the founder's own words, is rendered by founderStory.tsx (FoundersWords), inside "How Search Party came to be".
 export const Stage = ({ p, cap, counts }: { p: Product; cap?: Capture; counts: { label: string; n: number }[] }) => (
   <div className="stage" data-p={p.id}>
     <span className="stage__glow" aria-hidden="true" />

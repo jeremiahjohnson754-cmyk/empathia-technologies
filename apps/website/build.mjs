@@ -15,6 +15,8 @@ const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js')
 fs.rmSync(dist, { recursive: true, force: true }); fs.mkdirSync(dist, { recursive: true });
 await esbuild.build({ entryPoints: [path.join(app, 'src/main.ts')], bundle: true, minify: true, sourcemap: 'external', format: 'iife', target: ['es2022'], jsx: 'automatic', outfile: path.join(dist, 'site.js'), define: { 'process.env.NODE_ENV': '"production"' }, legalComments: 'linked', logLevel: 'warning' });
 
+// the founder page's introduction is its own small script, loaded in <head> on /founder only (src/reveal.ts; site.js keeps its 8 KB budget)
+await esbuild.build({ entryPoints: [path.join(app, 'src/reveal.ts')], bundle: true, minify: true, sourcemap: 'external', format: 'iife', target: ['es2022'], outfile: path.join(dist, 'founder.js'), legalComments: 'linked', logLevel: 'warning' });
 // v18/pilot: the Pilot Readiness check is its own script, loaded on /pilots only (site.js keeps its 8 KB budget)
 await esbuild.build({ entryPoints: [path.join(app, 'src/pilot.ts')], bundle: true, minify: true, sourcemap: 'external', format: 'iife', target: ['es2022'], outfile: path.join(dist, 'pilot.js'), define: { 'process.env.NODE_ENV': '"production"' }, legalComments: 'linked', logLevel: 'warning' });
 
@@ -78,7 +80,7 @@ for (const r of rendered) { if (r.path === '/404') { fs.writeFileSync(path.join(
 // media: the founder portrait (owner-supplied for the website, metadata stripped) and the films built in
 for (const f of fs.readdirSync(path.join(mediaSrc, 'founder'))) copy(path.join(mediaSrc, 'founder', f), path.join(dist, 'media/founder', f));
 for (const f of films) for (const x of filesOf(f)) copy(path.join(mediaSrc, f.key, x), path.join(dist, 'media', f.key, x));
-const css = [tokenCss(), `/* apps/website/src/styles/site.css */\n${fs.readFileSync(path.join(app, 'src/styles/site.css'), 'utf8')}`].join('\n');
+const css = [tokenCss(), `/* apps/website/src/styles/site.css */\n${fs.readFileSync(path.join(app, 'src/styles/site.css'), 'utf8')}`, `/* apps/website/src/styles/founder.css */\n${fs.readFileSync(path.join(app, 'src/styles/founder.css'), 'utf8')}`].join('\n');
 fs.writeFileSync(path.join(dist, 'site.css'), css);
 // the Proof Registry's public projection, as data (v1.8 A): the same file the demonstration ships, so the two can be compared
 { const { SEED_CLAIMS, publicProjection } = await import('@empathia/proof-registry');
@@ -93,5 +95,6 @@ const home = manifest.files['index.html'].bytes, js = manifest.files['site.js'].
 const themeJs = manifest.files['theme-init.js'].bytes; const fonts = ['inter-400.woff2', 'inter-600.woff2', 'inter-display-800.woff2'].reduce((a, f) => a + manifest.files[`fonts/${f}`].bytes, 0);   // the three preloaded faces (D38)
 const capBytes = Object.entries(manifest.files).filter(([f]) => f.startsWith('media/product/')).reduce((a, [, v]) => a + v.bytes, 0);
 if (home > 48 * 1024 || js > 8 * 1024 || themeJs > 512 || fonts > 88 * 1024 || capBytes > 1400 * 1024) { console.error(`BUDGET EXCEEDED: index.html ${home} B (limit 49152), site.js ${js} B (limit 8192), theme-init.js ${themeJs} B (limit 512), fonts ${fonts} B (limit 90112, D38), captures ${capBytes} B (limit 1433600)`); process.exit(1); }
+{ const fj = manifest.files['founder.js'].bytes; if (fj > 4 * 1024) { console.error(`BUDGET EXCEEDED: founder.js ${fj} B (limit 4096)`); process.exit(1); } }   // the founder page's introduction
 { const pj = manifest.files['pilot.js'].bytes; if (pj > 16 * 1024) { console.error(`BUDGET EXCEEDED: pilot.js ${pj} B (limit 16384)`); process.exit(1); } }   // v18/pilot
 console.log(`website built: ${PATHS.length} pages, films ${filmsMode}: ${films.map((f) => f.key).join(', ') || 'none'} (excluded: ${excluded.map((e) => `${e.key} ${e.status}`).join(', ') || 'none'}), index.html ${(home / 1024).toFixed(1)} KiB, site.js ${(js / 1024).toFixed(1)} KiB, site.css ${(manifest.files['site.css'].bytes / 1024).toFixed(1)} KiB`);

@@ -5,12 +5,13 @@
 import { proofPage, LeadClaim } from './proof.js';
 import React from 'react';
 import { LeadForm, type LeadKind } from './form.js';
-import { Hero, Section, Cards, Steps, Note, Actions, Tag, EVIDENCE, EvidenceLine, FilmPlayer, Spectrum, Shot, ProductTiles, EnquiryCard, EnquiryLink, FounderBlock, FoundingStory, Stage, Chapters, RoomMix, GlassRail, Strip, RoomDrawing, FilmPending, PlanRecord, type StripItem, type Evidence, type Film, type Cue, type Capture, type ChapterItem } from './ui.js';
+import { Hero, Section, Cards, Steps, Note, Actions, Tag, EVIDENCE, EvidenceLine, FilmPlayer, Spectrum, Shot, ProductTiles, EnquiryCard, EnquiryLink, FounderBlock, Stage, Chapters, RoomMix, GlassRail, Strip, RoomDrawing, FilmPending, PlanRecord, type StripItem, type Evidence, type Film, type Cue, type Capture, type ChapterItem } from './ui.js';
 import { PRODUCTS, DEMO_STATE, ROOMS_SENTENCE, ROOM_MIX, ROOM_TOTAL } from './products.js';
 import { TALLY_FORM } from './enquiry.js';
-import { commercialPages } from './commercial.js';   // v18/pilot: /pricing and /pilots
+import { commercialPages } from './commercial.js';
+import { FounderReveal, SearchPartyStory, SearchPartyOrigin } from './founderStory.js';   // the founder page's plate and the Search Party founding story   // v18/pilot: /pricing and /pilots
 
-export interface Page { path: string; title: string; description: string; nav?: string; body: React.ReactNode; /** a page's own script in dist (e.g. 'pilot.js'), loaded after site.js on that page only */ script?: string; }
+export interface Page { path: string; title: string; description: string; nav?: string; body: React.ReactNode; /** a page's own script in dist (e.g. 'pilot.js'), loaded after site.js on that page only */ script?: string; /** a small script of the page's own loaded in <head>, before first paint (the founder page's introduction must start from its opening frame) */ headScript?: string; }
 export interface SiteContext { asOf?: string; films: Film[]; pendingFilms?: Pick<Film, 'key' | 'title' | 'runtime' | 'summary' | 'disclosure'>[]; transcripts: Record<string, string[]>; /** a silent film's description, cue by cue (build.mjs reads its descriptions.vtt) */ cues?: Record<string, Cue[]>; demoUrl: string; preview: boolean; captures: Record<string, Capture>; api?: boolean }
 
 const AUDIENCES = [
@@ -129,6 +130,7 @@ export function buildPages(ctx: SiteContext): Page[] {
           <Actions>{p.demo ? <a className="btn btn--primary" href={demo(p.demo.href)}>{p.demo.label}</a> : null}<a className="btn" href="/request-demo">Request a guided demonstration</a></Actions></div>
         <div className="facts__limits"><p className="eyebrow">Limits</p><h2>Limits, stated</h2><p>{p.limits}</p></div>
       </div></div></section>
+      {p.id === 'search-party' ? <SearchPartyOrigin /> : null}
       {p.id === 'lite' ? <section className="section" id="scouter" aria-labelledby="scouter-h"><div className="wrap"><div className="scouter">
         <div><p className="label">Part of Lite</p><h2 id="scouter-h">Scouter</h2><p>Ask Scouter whether a device suits a room before anyone buys it. It proposes equipment from comparable rooms and checks each proposal against the room’s recorded requirements, not against other products.</p><p>Every proposal states its limits and goes to the discipline engineer, who decides. Nothing is adopted by Scouter itself.</p></div>
         <div><ul className="ticks"><li>Proposals from comparable rooms, with the comparison stated</li><li>Each check against the requirement, with its source</li><li>Engineer review before anything is adopted</li></ul>
@@ -219,10 +221,10 @@ export function buildPages(ctx: SiteContext): Page[] {
         <Section title="This website" lead="The site loads nothing from third parties and runs under a strict content security policy. Enquiries open on Tally’s own site, in a new tab; nothing you type in them passes through this site."><Actions><a className="btn" href="/privacy">Privacy notice</a></Actions></Section>
       </>
     ) },
-    { path: '/founder', title: 'Jeremiah Johnson, founder — Empathia Technologies', description: 'Jeremiah Johnson founded Empathia Technologies. CTS (AVIXA), CAPM (PMI), CompTIA Network+.', nav: 'Founder', body: (
+    { path: '/founder', title: 'Jeremiah Johnson, founder — Empathia Technologies', description: 'Jeremiah Johnson founded Empathia Technologies. CTS (AVIXA), CAPM (PMI), CompTIA Network+.', nav: 'Founder', headScript: 'founder.js', body: (
       <>
-        <section className="hero hero--founder"><div className="wrap"><FounderBlock page="founder" /></div></section>
-        <FoundingStory />
+        <section className="hero hero--founder"><div className="wrap"><FounderBlock page="founder" portrait={<FounderReveal />} /></div></section>
+        <SearchPartyStory sp={byId('search-party')} cap={ctx.captures['search-party']} demoHref={demo(byId('search-party').demo?.href)} />
         <Section title="The thinking behind the company" lead="A workplace’s technology is designed, installed, tested, accepted and serviced by different people, and its record is usually scattered across suppliers, spreadsheets and memory. Empathia is built so that record stays whole, and stays honest about what is known." />
         <Section title="The principles Empathia is built on" tone="deep"><Cards cols={3} items={PRINCIPLES} /></Section>
         <section className="band"><div className="wrap"><h2>Talk with the founder.</h2><p>Investor conversations, pilots and partnerships go through Empathia’s enquiry form, marked for the founder.</p><div className="actions"><EnquiryLink source="founder" primary id="founder-band" /></div></div></section>
