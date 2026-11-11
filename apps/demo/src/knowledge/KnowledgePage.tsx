@@ -209,14 +209,14 @@ export default function KnowledgePage({ role, params, query, can, sees }: PagePr
         </div>
       </div>
       <p className="ui-muted" role="status" aria-live="polite" data-testid="kn-count" data-found={found.length}>{plural(found.length, 'object')} of the {view.list.length} you can read{q.trim() ? ` match “${q.trim()}”` : ''}.</p>
-      {found.length ? <ul className="kn-list" data-testid="kn-results">{found.slice(0, 80).map(({ object: x, snippet }) => (
+      {found.length ? <ul className="kn-list" data-testid="kn-results">{found.slice(0, 200).map(({ object: x, snippet }) => (
         <li key={x.id} data-id={x.id} data-zone={x.zone} data-state={x.state}><a className="kn-card" href={`${hrefOfObject(x.id)}${other ? '?as=other' : ''}`}>
           <span className="kn-card__top"><span className="kn-zonechip" data-zone={x.zone}>Zone {x.zone}</span><span>{TYPE_WORD[x.contentType] || x.contentType}</span><span>{x.domain}</span></span>
           <b>{x.title}</b><span className="kn-card__snip">{snippet}</span>
           <span className="kn-card__meta"><Tag tone={toneOf(x)}>{standingLabel(x)}</Tag>{(x.zone === 3 || x.zone === 5) && <span>Private to {tenantName(x.tenant)}</span>}{x.zone === 4 && <span>Shared with consent</span>}</span>
         </a></li>))}</ul>
         : <EmptyState title="Nothing you can read matches" icon="search">Try fewer words, or clear a filter. The ledger never says whether something you cannot read exists.</EmptyState>}
-      {found.length > 80 && <p className="ui-meta">Showing the first 80. Narrow the search to see the rest.</p>}
+      {found.length > 200 && <p className="ui-meta">Showing the first 200. Narrow the search to see the rest.</p>}
 
       {home && sees('knowledge.queue') && <Queue view={view} stored={stored} acts={acts} />}
     </section>

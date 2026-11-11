@@ -54,11 +54,17 @@ export default function IngestPage({ role, query, can }: PageProps) {
 
   useEffect(() => { try { history.replaceState(null, '', `#/knowledge/sources?step=${step}`); } catch { /* the address stays */ } }, [step]);
   useEffect(() => { if (moved.current) headRef.current?.focus(); }, [step]);
+  // a link to another step of this page (from the ledger, from Surface) moves there, when the journey has got that far
+  useEffect(() => { const q = query.get('step') as Step | null; if (q && STEPS.includes(q) && STEPS.indexOf(q) <= STEPS.indexOf(stepAt(s))) { moved.current = true; setStepRaw(q); } }, [query.get('step')]);   // eslint-disable-line react-hooks/exhaustive-deps
   /** Take an action through the one write path. `next`: the step to show when it succeeds. */
   const run = (a: IngestAction, next?: Step): boolean => {
     const out = apply((w) => act(w, role, { t: 'ingest', a }));
     if ('why' in out) { setRefused(out.why.join(' ')); setSaid(''); requestAnimationFrame(() => fbRef.current?.focus()); return false; }
-    setRefused(null); setSaid(out.said); setStored(out.state);
+    setStored(out.state);
+    // a sync the source refused is saved (the throttle was used up and the report is kept) but it is not a success, and is not said as one
+    const failed = (a.t === 'sync' || a.t === 'import') && out.state.ingest.reports[0]?.ok === false;
+    if (failed) { setRefused(out.state.ingest.reports[0]!.why || 'The source did not answer.'); setSaid(''); requestAnimationFrame(() => fbRef.current?.focus()); return false; }
+    setRefused(null); setSaid(out.said);
     if (next) { moved.current = true; setStepRaw(next); } else requestAnimationFrame(() => fbRef.current?.focus());
     return true;
   };
@@ -78,7 +84,7 @@ export default function IngestPage({ role, query, can }: PageProps) {
   const adminOnly = <p className="ui-muted" data-testid="ing-admin-only">This step is taken by {tenantName(HOME_TENANT)}’s administrator. You are the {ROLES[role].label}.</p>;
 
   return (
-    <section className="kn kn-ing" data-native="" data-testid="ing-page" data-step={step} data-frontier={frontier} data-stage={ix.stage} data-connected={s.connected ? 'yes' : 'no'} data-items={items.length}>
+    <section className="kn kn-ing" data-native="" data-testid="ing-page" data-step={step} data-frontier={frontier} data-pipeline={ix.stage} data-connected={s.connected ? 'yes' : 'no'} data-items={items.length}>
       <PageHero compact eyebrow={<a href="#/knowledge">Knowledge Ledger</a>} icon="link" product="search-party" title="Document sources"
         lede="How a customer’s own documents come into the ledger: under the customer’s authority, only the folders it chooses, only to the readers the source lists, and as candidates until a person approves them."
         meta={[<Tag key="m" tone="warn">Simulated source</Tag>, <Tag key="s" tone="warn">Synthetic data</Tag>, <span key="r">You are the {ROLES[role].label}</span>]} />

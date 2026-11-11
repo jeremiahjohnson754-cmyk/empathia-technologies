@@ -37,7 +37,7 @@ export const ZONE3: readonly LedgerObject[] = [
     authority: 4, doc: 'Room standard RS-02', version: 'issue 1', reviewer: NS_BOARD, reviewedOn: '2024-03-01', reviewBy: '2025-03-01', state: 'SUPERSEDED',
     body: ['Issue 1 allowed the farthest seat to be eight times the image height away in every room.', 'It was withdrawn when people in the far seats of boardrooms could not read financial tables. Issue 2 replaces it.'], related: ['cat:display'], tags: ['display', 'withdrawn'] }),
   t({ id: 'cd.std.network', tenant: HOME_TENANT, title: 'Northstar AV network standard NS-01: VLANs, multicast and marking', domain: 'Customer standards', type: 'standard', goal: 'Configure and check a Northstar switch that carries AV.',
-    authority: 4, doc: 'AV network standard NS-01', version: 'issue 3', reviewer: NS_BOARD, reviewedOn: '2026-08-01', reviewBy: '2027-08-01', readers: NETWORK,
+    authority: 4, doc: 'AV network standard NS-01', version: 'issue 3', reviewer: NS_BOARD, reviewedOn: '2026-08-01', reviewBy: '2027-08-01', readers: NETWORK, audience: 'Network and IT',
     body: ['AV devices are on dedicated VLANs for each building. UC room computes are on their own VLAN, with access to the meeting service only.',
       'IGMP snooping is on at every switch that carries an AV VLAN, and the building’s distribution switch is the querier.',
       'Clock traffic has the highest-priority queue and media the next. Switches trust markings on AV ports only.',
