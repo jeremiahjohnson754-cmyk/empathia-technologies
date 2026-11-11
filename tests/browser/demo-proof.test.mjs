@@ -152,6 +152,77 @@ for (const role of ['visitor', 'employee']) { const t = await open(`#/dossier/${
   ok('RC-09', 'the engineering CSV of the working record: provenance header, 32 rows, every test PASS with its evidence and verifier where one was needed', /^# report: SIM-REPORT/.test(lines[0]) && lines.some((l) => /^# basis: working record/.test(l)) && data.length === 33 && data.slice(1).every((l) => /,PASS,EV-SIM-\d{3},/.test(l)) && data.filter((l) => /Document Reviewer/.test(l)).length === 6 && clean(t), data.length + ' ' + t.errs.join('|'));
   await t.close(); }
 
+// ---- waivers and the site champion's attestation (founder's directive of 11 Nov 2026, §13) ----
+// "Prevent acceptance when mandatory items are missing, unless a properly authorized documented waiver exists." "Site Champions may
+// provide … attestation … but should not automatically replace the designated final approval authorities."
+{ const t = await open(`#/dossier/${REPORT}`, { role: 'cxeng' }); const p = t.page; const row = (id) => `[data-test=${id}]`;
+  const show = async () => { await p.locator('[role=radiogroup][aria-label="Which tests"] [role=radio]').nth(1).click(); await p.waitForTimeout(100); };
+  const refusal = async () => { await p.waitForSelector('[data-testid=dossier-refusal]'); return p.innerText('[data-testid=dossier-refusal]'); };
+  const signoff = () => p.getAttribute('[data-testid=dossier-signoff]', 'data-signoff'); const state = () => p.getAttribute('[data-testid=dossier]', 'data-acceptance');
+  await show();
+  await p.click(`${row('T-SIM-032')} [data-act=raise]`); await p.waitForTimeout(80);
+  for (const id of ['T-SIM-008', 'T-SIM-031', 'T-SIM-032']) { await p.click(`${row(id)} [data-act=pass]`); await p.waitForTimeout(60); }
+  await p.click(`${row('T-SIM-030')} [data-act=evidence]`); await p.waitForTimeout(120);
+  await viewAs(p, 'qa'); await show();
+  for (let i = 0; i < 4; i += 1) { await p.locator('[data-act=verify]').first().click(); await p.waitForTimeout(70); }
+  const two = await p.$$eval('[data-testid=dossier-blockers] li', (els) => els.map((e) => e.innerText.replace(/\s+/g, ' ')));
+  ok('WV-01', 'two items stay open (T-SIM-016, T-SIM-028): acceptance is held, and a role without the right is shown no waiver form', two.length === 2 && /T-SIM-016/.test(two.join()) && /T-SIM-028/.test(two.join()) && await p.locator('[data-testid=dossier-waive]').count() === 0 && await signoff() === 'TESTS_OPEN', JSON.stringify(two));
+  await viewAs(p, 'svcmgr'); await p.click('[data-testid=dossier-accept]');
+  ok('WV-02', 'the Service Manager cannot approve over the open items, and cannot waive them', /stays held: 2 blockers stand/.test(await refusal()) && await p.locator('[data-testid=dossier-waive]').count() === 0);
+  await viewAs(p, 'exec');
+  const opts = await p.$$eval('[data-testid=dossier-waive-test] option', (els) => els.map((e) => e.value));
+  ok('WV-03', 'the Executive is offered the waiver form, listing exactly the items the rules let anyone waive: not the P1, not the accessibility tests, not the unraised failure', JSON.stringify(opts) === JSON.stringify(['T-SIM-016', 'T-SIM-028']), JSON.stringify(opts));
+  await p.fill('[data-testid=dossier-waive-why]', 'Not needed.'); await p.click('[data-testid=dossier-waive-go]');
+  ok('WV-04', 'a waiver with no real reason is refused in words, and what was typed is kept', /A waiver is documented/.test(await refusal()) && await p.inputValue('[data-testid=dossier-waive-why]') === 'Not needed.' && await p.locator('[data-testid=dossier-waivers]').count() === 0);
+  const why = 'The preset check needs the vendor on site; the room is usable without it and the visit is booked for next week.';
+  await p.fill('[data-testid=dossier-waive-why]', why); await p.click('[data-testid=dossier-waive-go]');
+  ok('WV-04b', 'a reason alone is not enough: the waiver must name the record it relies on', /Name what the waiver relies on/.test(await refusal()));
+  await p.fill('[data-testid=dossier-waive-basis]', 'DEF-SIM-002 and the vendor visit booking'); await p.click('[data-testid=dossier-waive-go]');
+  ok('WV-04c', 'and how the item will be closed', /Say how the item will be closed/.test(await refusal()));
+  await p.fill('[data-testid=dossier-waive-plan]', 'The vendor attends on the booked day; the engineer retests and the reviewer verifies.'); await p.fill('[data-testid=dossier-waive-until]', '2099-01-01'); await p.click('[data-testid=dossier-waive-go]');
+  ok('WV-05', 'a waiver with no near end date is refused: at most ninety days', /at most 90 days/.test(await refusal()));
+  const until = new Date(Date.now() + 21 * 86400000).toISOString().slice(0, 10);
+  await p.fill('[data-testid=dossier-waive-until]', until); await p.click('[data-testid=dossier-waive-go]'); await p.waitForSelector('[data-waiver=T-SIM-016]');
+  let tt = await totals(p);
+  ok('WV-06', 'the waiver is recorded with its reason, giver and end date; the test is still pending and still counted as pending; one blocker is left', await p.getAttribute('[data-waiver=T-SIM-016]', 'data-state') === 'STANDING' && (await p.innerText('[data-waiver=T-SIM-016]')).includes(why) && /given by the Executive/.test(await p.innerText('[data-waiver=T-SIM-016]')) && /Relies on\s+DEF-SIM-002/.test(await p.innerText('[data-waiver=T-SIM-016]')) && /Closed by\s+Commissioning Engineer/.test(await p.innerText('[data-waiver=T-SIM-016]')) && /^Pending 2/.test(tt.pending) && await p.locator('[data-testid=dossier-blockers] li').count() === 1 && await p.inputValue('[data-testid=dossier-waive-why]') === '', JSON.stringify(tt));
+  await p.fill('[data-testid=dossier-waive-why]', 'The operator guide is issued; two of the five named operators are on leave and have not yet acknowledged it.'); await p.fill('[data-testid=dossier-waive-basis]', 'Guide issue record and the leave calendar'); await p.fill('[data-testid=dossier-waive-plan]', 'Both operators acknowledge the guide in their first week back.'); await p.selectOption('[data-testid=dossier-waive-owner]', 'svcmgr'); await p.click('[data-testid=dossier-waive-go]'); await p.waitForSelector('[data-waiver=T-SIM-028]');
+  ok('WV-07', 'with both items waived nothing stops acceptance, the sign-off is ready for its first approval, and the page says the items are open under a waiver', await p.locator('[data-testid=dossier-blockers]').count() === 0 && await signoff() === 'AWAITING_FIRST' && /2 items open under a waiver/.test(await p.innerText('[data-testid=dossier-signoff]')) && await p.locator('[data-testid=dossier-waive]').count() === 0 && await state() === 'HELD');
+  ok('WV-08', 'the approval the Executive is offered names the waivers', /Give the first approval, with 2 waivers/.test(await p.innerText('[data-testid=dossier-accept]')));
+  await p.click('[data-testid=dossier-accept]');
+  ok('WV-09', 'the role that waived does not also approve: refused', /A waiver and an approval come from different roles/.test(await refusal()) && await signoff() === 'AWAITING_FIRST');
+  await viewAs(p, 'svcmgr'); await p.click('[data-testid=dossier-accept]'); await p.waitForFunction(() => document.querySelector('[data-testid=dossier-signoff]')?.getAttribute('data-signoff') === 'AWAITING_SECOND', null, { timeout: 5000 }).catch(() => undefined);
+  ok('WV-10', 'the Service Manager gives the first approval over the two waivers', await signoff() === 'AWAITING_SECOND' && /with 2 waivers/.test(await p.innerText('[data-testid=dossier-done]')));
+  await viewAs(p, 'ops'); await p.click('[data-testid=dossier-countersign]'); await p.waitForFunction(() => document.querySelector('[data-testid=dossier]')?.getAttribute('data-acceptance') === 'ACCEPTED', null, { timeout: 5000 }).catch(() => undefined);
+  const m = await main(p); await show(); tt = await totals(p);
+  ok('WV-11', 'the Operations Lead gives the second: accepted WITH 2 WAIVERS, said in the title and the decision; the two tests still read pending and waived', await state() === 'ACCEPTED' && await p.getAttribute('[data-testid=dossier]', 'data-waivers') === '2' && /Final acceptance recorded, with 2 waivers/.test(m) && /2 items stayed open under a documented waiver/.test(m) && !/Every test passes with evidence, and every result recorded after the snapshot was independently verified\. The record/.test(m) && /^Pending 2/.test(tt.pending) && await p.locator('[data-waived]').count() === 2, JSON.stringify(tt));
+  const [dl] = await Promise.all([p.waitForEvent('download'), p.click('[data-export=json-engineering]')]); const file = path.join(repo, '.local/qa-dossier-waived.json'); await dl.saveAs(file); const j = JSON.parse(fs.readFileSync(file, 'utf8'));
+  ok('WV-12', 'the export carries it: accepted, two open items, two standing waivers with reason and end date, and each approval says it was given over two', j.acceptance === 'ACCEPTED' && j.open_items.length === 2 && j.waivers.length === 2 && j.waivers.every((x) => x.state === 'STANDING' && x.reason.length > 30 && x.relies_on.length > 11 && x.owner.length > 2 && x.remediation_plan.length > 19 && x.stands_until === until && x.granted_by === 'Executive') && j.tests.filter((x) => x.never_waived).length === 8 && j.final_signoff.first_approval.over_waivers === 2 && j.final_signoff.second_approval.over_waivers === 2 && j.totals.pending === 2, JSON.stringify(j.final_signoff));
+  await p.evaluate(() => { location.hash = '#/scan/SIM-AV-0042'; }); await p.waitForSelector('[data-testid=scan-passport]');
+  ok('WV-13', 'the asset passport says the same: accepted, with 2 waivers', /Accepted · with 2 waivers/.test(await p.innerText('[data-testid=scan-acceptance]')) && clean(t), t.errs.join('|'));
+  // stored state is not trusted: a waiver dated in the past, or given by the engineer who did the work, covers nothing
+  for (const [id, label, edit] of [['WV-14', 'a stored waiver whose date has passed', (ev) => ev.map((e) => (e.kind === 'WAIVE' ? { ...e, expires: '2026-01-01' } : e))], ['WV-15', 'a stored waiver rewritten as given by the engineer who recorded the results', (ev) => ev.map((e) => (e.kind === 'WAIVE' ? { ...e, by: { role: 'cxeng', label: 'Commissioning Engineer' } } : e))], ['WV-16', 'stored approvals that do not name the waivers', (ev) => ev.map((e) => (e.kind === 'ACCEPT' || e.kind === 'COUNTERSIGN' ? { kind: e.kind, by: e.by, at: e.at } : e))]]) {
+    await p.evaluate((fn) => { const k = 'empathia.demo.dossier.v1'; if (!window.__orig) window.__orig = localStorage.getItem(k); const ev = JSON.parse(window.__orig); localStorage.setItem(k, JSON.stringify(new Function('ev', `return (${fn})(ev)`)(ev))); }, edit.toString());
+    await p.evaluate((h) => { location.hash = h; }, `#/dossier/${REPORT}`); await p.reload(); await p.waitForSelector('[data-testid=dossier]');
+    ok(id, `${label} accepts nothing: the dossier reads held`, await state() === 'HELD' && await signoff() === 'TESTS_OPEN', `${await state()} ${await signoff()}`);
+  }
+  await t.close(); }
+{ const t = await open('#/scan/SIM-AV-0042', { role: 'employee' }); const p = t.page; await p.waitForSelector('[data-testid=scan-passport]');
+  ok('AT-01', 'the Employee, standing in for the room’s site champion, is offered the attestation and is not shown the acceptance state', await p.locator('[data-testid=scan-attest]').count() === 1 && await p.locator('[data-testid=scan-acceptance]').count() === 0 && /does not approve the room/.test(await p.innerText('[data-testid=scan-attest]')));
+  await p.fill('[data-testid=scan-attest-word]', 'ok'); await p.click('[data-testid=scan-attest-go]'); await p.waitForSelector('[data-testid=scan-attest-refused]');
+  ok('AT-02', 'a two-letter attestation is refused in words', /in a sentence/.test(await p.innerText('[data-testid=scan-attest-refused]')));
+  const word = 'We held three team meetings here this week and the far end heard everyone at the table.';
+  await p.fill('[data-testid=scan-attest-word]', word); await p.click('[data-testid=scan-attest-go]'); await p.waitForSelector('[data-testid=scan-attest-done]');
+  ok('AT-03', 'a sentence is recorded, shown back, and the page says it approves nothing by itself', (await p.innerText('[data-testid=scan-attest-mine]')).includes(word) && /does not approve anything by itself/.test(await p.innerText('[data-testid=scan-attest-done]')) && await p.inputValue('[data-testid=scan-attest-word]') === '');
+  await p.evaluate((h) => { localStorage.setItem('empathia.demo.perspective', 'svcmgr'); location.hash = h; }, `#/dossier/${REPORT}`); await p.reload(); await p.waitForSelector('[data-testid=dossier]');
+  ok('AT-04', 'the Service Manager reads the champion’s words on the dossier, marked as a local attestation; every blocker still stands and nothing is approved', (await p.innerText('[data-testid=dossier-attestations]')).includes(word) && /approves nothing/.test(await p.innerText('[data-testid=dossier-attestations]')) && await p.getAttribute('[data-testid=dossier]', 'data-acceptance') === 'HELD' && await p.locator('[data-testid=dossier-blockers] li').count() === 7 && clean(t), t.errs.join('|'));   // the snapshot's seven lines (T-SIM-032 is listed twice: it fails, and no deficiency is raised)
+  await t.close();
+  for (const role of ['visitor', 'exec', 'cxeng']) { const v = await open('#/scan/SIM-AV-0042', { role }); await v.page.waitForSelector('[data-testid=scan-passport]');
+    ok(`AT-05-${role}`, `the ${role} is not offered the attestation`, await v.page.locator('[data-testid=scan-attest]').count() === 0); await v.close(); }
+  const ph = await open(`#/dossier/${REPORT}`, { role: 'exec', w: 390, h: 844 }); await ph.page.waitForSelector('[data-testid=dossier-waive]');
+  const small = await ph.page.$$eval('[data-testid=dossier-waive] button, [data-testid=dossier-waive] select, [data-testid=dossier-waive] input', (els) => els.filter((e) => e.getBoundingClientRect().height < 44).length);
+  const offered = await ph.page.$$eval('[data-testid=dossier-waive-test] option', (els) => els.map((e) => e.value));
+  ok('WV-17', 'on a phone the waiver form fits the screen and every control is at least 44 px tall; from the snapshot only the two waivable items are offered', await over(ph.page) <= 0 && small === 0 && clean(ph) && JSON.stringify(offered) === JSON.stringify(['T-SIM-016', 'T-SIM-028']), `small=${small} ${offered}`); await ph.close(); }
+
 // ---- layout, both schemes, three widths ----
 for (const [w, h] of [[390, 844], [768, 1024], [1440, 900]]) for (const [name, hash, role] of [['proof', '#/proof', 'visitor'], ['scan', '#/scan/SIM-AV-0042', 'architect'], ['dossier', `#/dossier/${REPORT}`, 'cxeng']]) {
   const t = await open(hash, { role, w, h }); const o = await over(t.page);

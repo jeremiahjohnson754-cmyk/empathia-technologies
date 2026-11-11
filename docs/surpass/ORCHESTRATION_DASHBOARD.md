@@ -22,7 +22,37 @@ It records what happened, not what was planned: a row says "merged" only after t
 4. A worker's report is a claim until the integrator has merged its branch and run the suites on the merged tree.
 5. Findings that are enhancements, not defects, are recorded as tasks and not built on the spot.
 
-## Work in hand
+6. **A usage limit stops every worker at once.** On 10 November seven workers ran together and the account's five-hour limit
+   ended all of them mid-task (their work was safe, uncommitted, in their worktrees). From 11 November no more than four run at a
+   time, each is told to commit what works before it runs low, and a stopped worker is resumed with a message, not restarted.
+
+## Release exceptions (founder, 11 November 01:42)
+
+No exception has been used. This is the rule if one is ever proposed:
+
+- An exception is written down with its **reason, the evidence it rests on, an owner, and an end date or a remediation plan**.
+  It is listed in the release report next to the thing it excuses; it is never folded into a pass.
+- **Never excused:** a security failure, a tenant-isolation failure, a data-integrity failure. Those block the release.
+- A test that was not run is reported as NOT RUN with the reason (today: the `founder-studio` suite, which needs the studio build
+  that this workspace does not have). NOT RUN is not an exception and not a pass.
+- The product applies the same rule to itself: a commissioning waiver in Phase 6 carries the same five things and cannot be given
+  for a security, record-integrity or accessibility test (`packages/proof-registry/src/acceptance.ts`).
+
+## State on 11 November
+
+| Stream | State | Evidence |
+|---|---|---|
+| Staging | Both services live on `c19d970` (Room Control, Tour E, In this room) | full matrix on `c45ccd3`: light 43 suites pass, dark 43 pass, 0 failed checks; `founder-studio` NOT RUN in both; later commits are documents only |
+| Phase 6 waivers and the site champion's attestation | Built by the integrator; local | proof-registry acceptance 22 of 22; browser `demo-proof` 84 of 84 light and dark |
+| Corporate website (Collabora-SING, founder's picture) | Worker resumed after the usage limit | not merged |
+| Stadium "The Critical Signal" | Worker resumed after the usage limit | not merged |
+| Connect: people, contact actions, verified app links, schedule-aware meetings (11 Nov §02–§05) | New worker, worktree `agent/connect-people-actions` | not merged |
+| Engineering manual source (the 32-artifact archive) | Reader working in a private scratch folder; nothing from the archive enters the repository | inventory pending |
+| University, Convention, Commissioning instruments, films 1–4 | Stopped by the limit with little written; queued behind the four running | — |
+| Independent review of In this room and Room Control | The first reviewer never reported; to be re-run | — |
+| Founder page: Search Party story and the ten-second reveal | Waits for the website branch to merge | — |
+
+## Work in hand (as written on 10 November)
 
 | Stream | Worker | Lane (files) | State | Evidence |
 |---|---|---|---|---|

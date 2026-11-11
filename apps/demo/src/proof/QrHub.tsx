@@ -13,7 +13,7 @@ import { resolve } from '../registry.pages.js';
 import { roomById } from '../campus/canon.js';
 import { qrMatrix, qrPath } from '../lite/qr.js';
 import { useCore, canEntity, recHref, honest, Zone } from '../parity/ui.js';
-import { useDossier } from './store.js';
+import { useDossier, nowIso } from './store.js';
 
 /** A room's label also opens In this room (#/here), for a role that page admits. */
 const hereOpens = (role: PageProps['role']) => { const r = resolve('#/here'); return !!r && canOpen(role, r); };
@@ -34,7 +34,10 @@ function Label({ text, caption }: { text: string; caption: string }) {
 }
 
 function Passport({ role, can, sees }: Pick<PageProps, 'role' | 'can' | 'sees'>) {
-  const D = DOSSIER_4218; const { working: w } = useDossier();
+  const D = DOSSIER_4218; const { working: w, act } = useDossier();
+  const [word, setWord] = useState(''); const [said, setSaid] = useState<string | null>(null); const [no, setNo] = useState<string | null>(null);
+  const mineSaid = w.attestations.filter((a) => a.by.role === role);
+  const attest = (e: { preventDefault(): void }) => { e.preventDefault(); const r = act({ kind: 'ATTEST', statement: word.trim(), by: { role, label: ROLES[role].label }, at: nowIso() }, { record: false, verify: false, raise: false, accept: false, countersign: false, attest: can('scan.attest') }); setNo(r); setSaid(r ? null : 'Recorded. The people who approve this room will read it. It does not approve anything by itself.'); if (!r) setWord(''); };
   const actions: Array<[string, string, string, boolean]> = [
     ['scan.openTest', 'Open the tests', `#/dossier/${D.id}`, true],
     ['scan.attach', 'Attach evidence', `#/dossier/${D.id}?focus=evidence`, false],
@@ -52,10 +55,19 @@ function Passport({ role, can, sees }: Pick<PageProps, 'role' | 'can' | 'sees'>)
           <div><dt>Lifecycle</dt><dd>{D.asset.lifecycle[0]} <span aria-hidden="true">→</span><span className="ui-visually-hidden"> to </span> {D.asset.lifecycle[1]}</dd></div>
           <div><dt>Evidence records</dt><dd data-testid="scan-evidence">{w.totals.evidence} of {w.totals.tests}{w.changed ? <span className="pf-note"> · snapshot {D.totals.evidence} of {D.totals.tests}</span> : null}</dd></div>
         </> : null}
-        {sees('scan.acceptance') ? <div><dt>Acceptance</dt><dd data-testid="scan-acceptance" className={w.acceptance === 'HELD' ? 'pf-held' : 'pf-ok'}>{w.acceptance !== 'HELD' ? 'Accepted' : w.blockers.length ? `Held · ${w.blockers.length} ${w.blockers.length === 1 ? 'blocker' : 'blockers'}` : w.signoff === 'AWAITING_SECOND' ? 'Held · awaiting the second approval' : 'Held · awaiting final sign-off'}</dd></div> : null}
+        {sees('scan.acceptance') ? <div><dt>Acceptance</dt><dd data-testid="scan-acceptance" className={w.acceptance === 'HELD' ? 'pf-held' : 'pf-ok'}>{w.acceptance !== 'HELD' ? (w.waivers.some((x) => x.state === 'STANDING') ? `Accepted · with ${w.waivers.filter((x) => x.state === 'STANDING').length === 1 ? '1 waiver' : `${w.waivers.filter((x) => x.state === 'STANDING').length} waivers`}` : 'Accepted') : w.blockers.length ? `Held · ${w.blockers.length} ${w.blockers.length === 1 ? 'blocker' : 'blockers'}` : w.signoff === 'AWAITING_SECOND' ? 'Held · awaiting the second approval' : 'Held · awaiting final sign-off'}</dd></div> : null}
       </dl>
       {mine.length ? <><h3 className="pf-h">What the {ROLES[role].label} can do here</h3><div className="pf-actions" data-testid="scan-actions">{mine.map(([id, label, href, primary]) => <a key={id} className={`ui-btn${primary ? ' ui-btn--primary' : ''}`} data-action={id} href={href}>{label}</a>)}</div></>
         : <p className="pf-note" data-testid="scan-actions-none">This label identifies a piece of room equipment. There is nothing for the {ROLES[role].label} to do with it; the room itself is the place to start.</p>}
+      {can('scan.attest') ? <form className="pf-attest-form" onSubmit={attest} noValidate data-testid="scan-attest">
+        <h3 className="pf-h" id="attest-form-h">Site champion: how is this room working for you?</h3>
+        <p className="pf-note">Say what you have seen in the room. The people who approve it will read your words beside the tests. This is a local attestation: it does not approve the room and it replaces nobody’s approval.</p>
+        <div className="ui-field"><label htmlFor="attest-word">What you saw</label><textarea id="attest-word" rows={3} maxLength={400} value={word} onChange={(e) => setWord(e.target.value)} aria-describedby="attest-form-h" data-testid="scan-attest-word" /></div>
+        <div className="pf-actions"><button type="submit" className="ui-btn" data-testid="scan-attest-go">Add my attestation</button></div>
+        {no ? <p role="alert" className="pf-refusal" data-testid="scan-attest-refused"><Icon name="alert" size={18} /><span>{no}</span></p> : null}
+        {said && !no ? <p role="status" className="pf-done" data-testid="scan-attest-done"><Icon name="check" size={18} /><span>{said}</span></p> : null}
+        {mineSaid.length ? <ul className="pf-attest" data-testid="scan-attest-mine">{mineSaid.map((a, i) => <li key={i}><p>“{a.statement}”</p></li>)}</ul> : null}
+      </form> : null}
       <p className="pf-note">Not connected: this passport reads a synthetic record. No device is contacted when a label is read.</p>
     </Card>
   );

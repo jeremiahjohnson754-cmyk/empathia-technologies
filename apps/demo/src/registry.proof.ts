@@ -30,6 +30,7 @@ export const PROOF_PAGES: readonly PageDef[] = [
       { id: 'scan.openTest', label: 'Open the tests', authority: { roles: DOSSIER_READERS, why: 'the readers of the commissioning dossier' } },
       { id: 'scan.attach', label: 'Attach evidence', authority: { action: 'cx.tech' } },
       { id: 'scan.issue', label: 'Report a problem', authority: { action: 'issue.report' } },
+      { id: 'scan.attest', label: 'Add a local attestation', authority: { roles: ['employee'], why: 'Founder directive of 11 November 2026, §13: a site champion may attest locally and does not replace the approvers. The demonstration has no separate champion role, so the Employee view stands in for the room’s site champion' } },
       { id: 'scan.export', label: 'Export the report', authority: { roles: DOSSIER_READERS, why: 'the readers of the commissioning dossier' } },
     ],
     load: () => import('./proof/QrHub.js'),
@@ -46,6 +47,7 @@ export const PROOF_PAGES: readonly PageDef[] = [
       // Final sign-off is phase 6 and takes two approvals in order (founder, 10 November 2026). Until then V2.5.3's cx.accept decided one acceptance.
       { id: 'dossier.accept', label: 'Give the first approval of the final sign-off', authority: { roles: ['svcmgr', 'exec'], why: 'Founder, 10 November 2026: phase 6 is approved first by the Service Manager or the Executive, once everything in commissioning is done' } },
       { id: 'dossier.countersign', label: 'Give the second approval of the final sign-off', authority: { roles: ['ops', 'syseng'], why: 'Founder, 10 November 2026: then by the Operations Lead or the Systems Engineer, an internal role' } },
+      { id: 'dossier.waive', label: 'Waive an open item, with a reason and an end date', authority: { roles: ['exec', 'ops'], why: 'Founder directive of 11 November 2026, §13: acceptance with a mandatory item open needs a properly authorised, documented waiver. As the default policy here the Executive or the Operations Lead grants it, and the role that waives does not also approve' } },
       { id: 'dossier.export', label: 'Export', authority: { roles: DOSSIER_READERS, why: 'a reader may export what they can read' } },
     ],
     load: () => import('./proof/Dossier.js'),
