@@ -9,10 +9,10 @@ const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const mem = new Map(); globalThis.localStorage = { getItem: (k) => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => { mem.set(k, String(v)); }, removeItem: (k) => { mem.delete(k); } };
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
 const out = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'demo-champion-start-')), 'm.mjs');
-await esbuild.build({ stdin: { contents: `export * as C from './champion/store.ts'; export * as T from './champion/start.ts'; export * as N from './campus/canon.ts'; export * as W from './workspace/store.ts'; export * as P from './access/policy.ts'; export * as R from './registry.pages.ts'; export * as B from './build/store.ts';`, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' },
+await esbuild.build({ stdin: { contents: `export * as C from './champion/store.ts'; export * as T from './champion/start.ts'; export * as G from './champion/recognition.ts'; export * as N from './campus/canon.ts'; export * as W from './workspace/store.ts'; export * as P from './access/policy.ts'; export * as R from './registry.pages.ts'; export * as B from './build/store.ts';`, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' },
   bundle: true, format: 'esm', platform: 'node', outfile: out, jsx: 'automatic', logLevel: 'error', nodePaths: [path.join(repo, 'node_modules')], alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') },
   plugins: [{ name: 'lazy', setup(b) { b.onResolve({ filter: /\.(js)$/ }, (a) => (a.kind === 'dynamic-import' ? { path: a.path, external: true } : undefined)); } }] });
-const { C, T, N, W, P, R, B } = await import(pathToFileURL(out).href);
+const { C, T, G, N, W, P, R, B } = await import(pathToFileURL(out).href);
 const SC = 'sitechamp'; const SITE = P.CHAMPION_SITES[0]; const others = P.ROLE_KEYS.filter((k) => k !== SC); const rooms = N.roomsIn(SITE);
 const fresh = () => { mem.clear(); return W.seed(); };
 const right = T.CHECK.map((q) => q.answer); const lines = (w, type) => w.events.filter((e) => e.type === type);
@@ -85,4 +85,16 @@ test('CS-07 the page and both actions belong to the Site Champion alone, across 
   for (const r of P.ROLE_KEYS) assert.equal(P.canOpen(r, page), r === SC, r);
   assert.deepEqual(page.page.actions.map((a) => a.id), ['site.start.read', 'site.start.check']);
   for (const a of page.page.actions) for (const r of P.ROLE_KEYS) assert.equal(P.allows(a.authority, r), r === SC, `${a.id} ${r}`);
+});
+
+test('CS-08 recognition and handover are read from the record as counts and open things: no score, no rating, no check result, and nothing a role did not do', () => {
+  const w = fresh(); const zero = G.contributions(w, 0); assert.deepEqual(zero.map((x) => x.id), ['checked', 'access', 'reports', 'notes', 'approved']); const base = Object.fromEntries(zero.map((x) => [x.id, x.n])); assert.deepEqual([base.checked, base.notes, base.approved, base.reports], [0, 0, 0, 0]); assert.equal(base.access, 1, 'the seeded estate has one finished visit whose access the site champion confirmed'); assert.ok(zero.every((x) => x.from.length > 8));
+  C.verifyRoom(w, SC, rooms[0].id, ''); C.verifyRoom(w, SC, rooms[1].id, ''); C.contribute(w, SC, rooms[0].id, 'The blinds must be down after three or the camera is washed out.');
+  const wo = w.workOrders.find((x) => x.buildingKey === SITE && !['DONE', 'CANCELLED'].includes(x.state) && !x.access); if (wo) C.confirmAccess(w, SC, wo.id);
+  readAll(w); C.answerCheck(w, SC, T.CHECK.map(() => 0));
+  const by = Object.fromEntries(G.contributions(w, 5).map((x) => [x.id, x.n])); assert.equal(by.checked, 2); assert.equal(by.notes, 1); assert.equal(by.access, base.access + (wo ? 1 : 0)); assert.equal(by.approved, 1, 'never more approved than written');
+  assert.ok(!/score|rating|rank|passed|of 6/i.test(JSON.stringify(G.contributions(w, 1))), 'the check is not part of recognition');
+  const h = G.handover(w, SITE, 0); assert.equal(h.notesWaiting, 1); assert.equal(h.nothing, false); assert.ok(h.open.every((x) => /^INC-|^[A-Z]+-\d+: /.test(x))); assert.ok(!h.toConfirm.some((x) => wo && x.startsWith(wo.id)), 'a visit whose access was confirmed is not waiting');
+  const clear = fresh(); clear.workOrders = []; clear.incidents = []; assert.deepEqual(G.handover(clear, SITE, 0), { toConfirm: [], open: [], notesWaiting: 0, nothing: true });
+  assert.deepEqual(G.handover(w, 'NOPE', 1).open, [], 'another site’s open things are not this one’s');
 });

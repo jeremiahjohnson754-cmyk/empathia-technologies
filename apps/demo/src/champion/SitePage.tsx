@@ -20,6 +20,8 @@ import { roomIssues } from '../campus/metrics.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
 import { championView, confirmAccess, confirmOccupancy, contribute, verifyRoom } from './store.js';
 import { startView } from './start.js';
+import { contributions } from './recognition.js';
+import { approvedSiteNotes } from './approved.js';
 import { readDocs } from '../docs5/store.js';
 import { TRACKED_REPORT, TRACKED_ROOM } from '../docs5/model.js';
 
@@ -98,6 +100,10 @@ export default function SitePage({ role, can }: PageProps) {
           {c.notes.length ? <ul className="sc-notes" data-testid="site-note-list">{c.notes.slice(0, 6).map((n) => { const r = roomById(n.roomId); return <li key={n.id}><p>{n.text}</p><span>{r ? shortName(r) : n.roomId} · {when(n.at)} · <Chip small tone="muted">Awaiting review</Chip></span></li>; })}</ul> : null}
         </Card>
       </div>
+
+      <Card title="What you have done for this site" icon="check" sub="Counts from the record. Nobody is scored, rated or compared." testId="site-done-for">
+        <dl className="sc-counts">{contributions(w, approvedSiteNotes(w)).map((x) => <div key={x.id} data-count={x.id} data-n={x.n}><dt>{x.label}</dt><dd><b>{x.n}</b><span className="ui-meta"> · {x.from}</span></dd></div>)}</dl>
+      </Card>
 
       <section className="sc-rooms" aria-labelledby="sc-rooms-h">
         <header><h2 id="sc-rooms-h">The rooms of your site</h2>

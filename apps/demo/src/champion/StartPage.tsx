@@ -16,6 +16,8 @@ import { readDocs } from '../docs5/store.js';
 import { TRACKED_REPORT, TRACKED_ROOM } from '../docs5/model.js';
 import { answerCheck, championView, markRead } from './store.js';
 import { CHECK, LESSONS, PASS_MARK, startView, type CheckResult } from './start.js';
+import { handover } from './recognition.js';
+import { approvedSiteNotes } from './approved.js';
 
 const day = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
 const days = (d: readonly number[]) => (d.length === 5 && d.every((x, i) => x === i + 1) ? 'Monday to Friday' : d.map((x) => DAY_SHORT[x]).join(', '));
@@ -36,6 +38,7 @@ export default function StartPage({ role, can }: PageProps) {
     setNo(null); setResult({ score: r.score!, of: r.of!, passed: r.passed!, wrong: r.wrong! });
   };
   const k = c.start.check;
+  const hand = handover(w, site, approvedSiteNotes(w));
 
   return (
     <div className="pa sc st" data-native="" data-testid="start" data-done={v.done} data-complete={v.complete ? 'yes' : 'no'}>
@@ -99,6 +102,9 @@ export default function StartPage({ role, can }: PageProps) {
           <li><b>Your backup{backup ? `: ${backup.name}` : ''}</b><span>{backup ? 'Stands in for you when you are away. Tell them what is open before you go.' : 'Nobody is recorded. Ask the service manager who stands in for you.'}</span></li>
         </ol>
         <p className="sc-note">Names are synthetic. {opens('#/people') ? <a href={`#/people?site=${site}`}>The people of this site, and how to reach each</a> : null}</p>
+        <div className="st-hand" data-testid="start-handover" data-nothing={hand.nothing ? 'yes' : 'no'}><h3>If you are away today</h3>
+          {hand.nothing ? <p className="sc-note">Nothing is open at your site that a stand-in would need to pick up.</p> : <ul>{hand.toConfirm.map((x) => <li key={x}>Waiting for access to be confirmed: {x}</li>)}{hand.open.map((x) => <li key={x}>Being followed: {x}</li>)}{hand.notesWaiting ? <li>{hand.notesWaiting} of your notes {hand.notesWaiting === 1 ? 'is' : 'are'} not yet reviewed.</li> : null}</ul>}
+          <p className="sc-note">Read from the record when this page opens. Print it or read it to your backup; nothing is sent to anyone.</p></div>
         {c.start.read['support'] ? <p className="st-read"><Icon name="check" size={14} /> Read on {day(c.start.read['support'])}</p>
           : can('site.start.read') ? <button type="button" className="ui-btn ui-btn--sm" data-testid="support-read" onClick={() => read('support')}>I have read this</button> : null}
       </section>
