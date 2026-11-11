@@ -1,0 +1,103 @@
+/* The Critical Signal (#/gameday/incident/camera-feed): one step at a time, the picture beside it. On the worlds' tokens and classes
+   (worlds.css); both themes; 44 px targets; nothing moves, so reduced motion needs no exception. The game-day alert is here too. */
+.gd-alert { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding: 12px 14px; border: 1px solid var(--bad, #b42318); border-left-width: 4px; border-radius: var(--r-md); background: color-mix(in srgb, var(--bad, #b42318) 7%, var(--panel)); }
+.gd-alert[data-step="FIXED"] { border-color: var(--info, var(--accent)); background: color-mix(in srgb, var(--info, var(--accent)) 7%, var(--panel)); }
+.gd-alert p { margin: 0; flex: 1 1 280px; min-width: 0; } .gd-alert .ui-btn { min-height: 44px; }
+
+.cs { gap: var(--sp-4); grid-template-columns: minmax(0, 1fr); } .cs h1 { overflow-wrap: anywhere; max-width: none; }
+/* the event bar: who you are, where the incident stands, and the event clock with what it holds. Its edge takes the state's tone; the words carry the meaning. */
+.cs-as { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding: 10px 14px; border: 1px solid var(--line2); border-left: 4px solid var(--tone, var(--line3)); border-radius: var(--r-md); background: var(--panel); color: var(--tx2); font-size: var(--fs-sm); } .cs .cs-as { margin: 0; } .cs-as b { color: var(--tx); }
+.cs-as .ui-tag { padding: 0 8px; font-size: 12px; line-height: 24px; }
+.cs-clock { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-left: auto; color: var(--tx); font-weight: 600; font-variant-numeric: tabular-nums; } .cs-clock svg { flex: none; color: var(--tx2); } .cs-clock .cs-held { color: var(--bad, #b42318); }
+.cs-rail { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+/* position: relative keeps the button's screen-reader-only “(done)” inside the scrolling rail, so it cannot widen the page on a phone */
+.cs-rail li > button { position: relative; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 6px 14px 6px 8px; border: 1px solid var(--line2); border-radius: var(--r-pill, 999px); background: var(--panel); color: var(--tx2); font: inherit; font-size: var(--fs-sm); font-weight: 600; cursor: pointer; white-space: nowrap; }
+.cs-rail li > button:hover { border-color: var(--accent); } .cs-rail li > button:focus-visible { outline: 2px solid var(--focus, var(--accent)); outline-offset: 2px; }
+.cs-rail__n, .cs-chain__n { display: inline-grid; place-items: center; flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--bg2); color: var(--tx2); font-size: var(--fs-xs); font-weight: 700; font-variant-numeric: tabular-nums; }
+.cs-rail li.on > button { border-color: var(--accent); color: var(--tx); box-shadow: inset 0 0 0 1px var(--accent); } .cs-rail li.on .cs-rail__n { background: var(--accent); color: var(--accent-ink, #fff); }
+.cs-rail li.done .cs-rail__n { background: color-mix(in srgb, var(--ok, #1a7f4b) 18%, var(--panel)); color: var(--tx); }
+
+.cs-cols { display: grid; gap: var(--sp-4) var(--sp-5); grid-template-columns: minmax(0, 11fr) minmax(0, 9fr); grid-template-areas: "main side"; align-items: start; }
+.cs-main { grid-area: main; display: grid; gap: var(--sp-4); min-width: 0; } .cs-main > div { display: grid; gap: var(--sp-3); min-width: 0; }
+/* Back and Next sit on one line, at either end (the rule above made every child of the step a grid, this row included) */
+.cs-main > .cs-nav { display: flex; }
+.cs-side { grid-area: side; position: sticky; top: calc(var(--shell-top, 64px) + 12px); display: grid; gap: var(--sp-2); min-width: 0; } .cs-side .w-plan svg { max-height: min(52vh, 460px); }
+.cs .cs-h { margin: 0; font-size: var(--fs-xl, 1.375rem); letter-spacing: -.01em; } .cs-h:focus { outline: none; } .cs .cs-h3 { margin: var(--sp-2) 0 0; font-size: var(--fs-sm); font-weight: 650; color: var(--tx2); }
+.cs-main p, .cs-main li { line-height: 1.5; max-width: 68ch; } .cs code { font: 500 12px var(--font-mono); color: var(--tx2); overflow-wrap: anywhere; }
+.cs-acts { display: flex; flex-wrap: wrap; gap: 8px; } .cs .cs-acts { margin: 0; }
+.cs-link { display: inline-flex; align-items: center; min-height: 44px; padding: 0 4px; border: 0; background: none; color: var(--accent); font: inherit; font-weight: 600; text-decoration: underline; cursor: pointer; } .cs-link:focus-visible { outline: 2px solid var(--focus, var(--accent)); outline-offset: 2px; }
+.cs-why { margin: 4px 0 0; padding-left: 1.1em; display: grid; gap: 2px; }
+
+/* the alert */
+.cs-alert { display: grid; gap: var(--sp-2); padding: var(--sp-4); border: 1px solid var(--bad, #b42318); border-left-width: 4px; border-radius: var(--r-lg, 14px); background: color-mix(in srgb, var(--bad, #b42318) 6%, var(--panel)); }
+.cs-alert[data-step="FIXED"] { border-color: var(--info, var(--accent)); background: color-mix(in srgb, var(--info, var(--accent)) 6%, var(--panel)); } .cs-alert[data-step="VERIFIED"] { border-color: var(--ok, #1a7f4b); background: color-mix(in srgb, var(--ok, #1a7f4b) 6%, var(--panel)); }
+.cs-alert__t { display: flex; gap: 10px; align-items: flex-start; font-size: var(--fs-lg, 1.125rem); font-weight: 600; } .cs-alert__t svg { flex: none; margin-top: 3px; color: var(--bad, #b42318); } .cs .cs-alert p { margin: 0; }
+
+/* the plan beside the alert: the drawing is narrow here, so its names are set larger than on the estate page; the ring names the camera in words */
+.cs-side .w-plan__zone text { font-size: 19px; } .cs-side .es-plan__z[data-kind="ring"] text { font-size: 17px; }
+.w-plan__mark { pointer-events: none; } .w-plan__mark circle { fill: none; stroke: var(--tx); stroke-width: 3; }
+.w-plan__mark[data-tone="bad"] circle { stroke: var(--bad, #b42318); stroke-width: 4; stroke-dasharray: 7 5; } .w-plan__mark[data-tone="ok"] circle { stroke: var(--ok, #1a7f4b); stroke-width: 4; }
+.w-plan__mark text { font: 700 22px var(--font-sans); fill: var(--tx); paint-order: stroke; stroke: var(--bg2); stroke-width: 6px; stroke-linejoin: round; }
+
+/* the picture: the chain in the order the picture travels. A list, so it reads the same without the drawing. */
+.cs-fig { margin: 0; padding: var(--sp-3); border: 1px solid var(--line); border-radius: var(--r-lg, 14px); background: var(--panel); display: grid; gap: var(--sp-2); }
+.cs-chain { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.cs-chain li { position: relative; display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; padding: 8px 10px; border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--panel2); }
+.cs-chain li + li::before { content: ''; position: absolute; left: 22px; top: -15px; height: 14px; border-left: 2px solid var(--tx3); }
+.cs-chain li[data-reading="nothing"] + li::before, .cs-chain li[data-reading="stops"] + li::before { border-left-style: dotted; }
+.cs-chain__b { display: grid; gap: 1px; min-width: 0; } .cs-chain__b b { overflow-wrap: anywhere; } .cs-chain__b .ui-meta { font-size: var(--fs-xs); }
+.cs-chain__s, .cs-read { display: inline-flex; align-items: center; gap: 5px; font-size: var(--fs-xs); font-weight: 650; color: var(--tx2); white-space: nowrap; }
+.cs-chain li[data-reading="passes"] .cs-chain__s, .cs-read[data-reading="passes"] { color: var(--ok, #1a7f4b); }
+.cs-chain li[data-reading="nothing"] { border-style: dashed; } .cs-chain li[data-reading="nothing"] .cs-chain__b b { color: var(--tx2); }
+.cs-chain li[data-mark], .cs-hops li[data-mark], .cs-obs > li[data-mark] { border-color: var(--bad, #b42318); box-shadow: inset 0 0 0 1px var(--bad, #b42318); background: color-mix(in srgb, var(--bad, #b42318) 7%, var(--panel)); }
+.cs-chain li[data-mark] .cs-chain__s, .cs-read[data-reading="stops"] { color: var(--bad, #b42318); } .cs-chain li[data-mark] .cs-chain__n, .cs-hops li[data-mark] .cs-chain__n, .cs-obs > li[data-mark] .cs-chain__n { background: var(--bad, #b42318); color: var(--bg); }
+.cs-chain li[data-standby] { border-color: var(--info, var(--accent)); box-shadow: inset 0 0 0 1px var(--info, var(--accent)); }
+.cs-fig__cap { font-size: var(--fs-sm); color: var(--tx2); line-height: 1.45; }
+
+/* the steps' own lists */
+.cs-hops, .cs-obs, .cs-prior, .cs-places, .cs-people, .cs-ticks, .cs-roles, .cs-trail, .cs-ledger, .cs-now, .cs-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.cs-hops > li, .cs-obs > li, .cs-prior > li { display: grid; gap: 4px; padding: 10px 12px; border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--panel); } .cs .cs-hops p, .cs .cs-obs p, .cs .cs-prior p { margin: 0; }
+.cs-hops__t { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; } .cs-hops__t .cs-read { margin-left: auto; }
+.cs-obs ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; } .cs-obs ul li, .cs-now li { line-height: 1.5; } .cs-obs .ui-meta { display: block; }
+.cs-prior > li[data-same] { border-left: 3px solid var(--warn, #b7791f); }
+.cs-prov { display: inline-flex; align-items: center; gap: 5px; padding: 0 7px; border: 1px solid var(--line3); border-radius: var(--r-pill, 999px); font: 600 11px/20px var(--font-mono); color: var(--tx); white-space: nowrap; vertical-align: middle; }
+.cs-prov__m { width: 8px; height: 8px; border: 1.5px solid currentColor; } .cs-prov[data-prov="SIMULATED"] .cs-prov__m { border-radius: 2px; } .cs-prov[data-prov="INFERRED"] .cs-prov__m { border-radius: 50%; border-style: dashed; } .cs-prov[data-prov="KNOWN"] .cs-prov__m { border-radius: 50%; background: currentColor; }
+.cs-legend { margin: 0; display: grid; gap: 6px; font-size: var(--fs-sm); color: var(--tx2); } .cs-legend > div { display: grid; grid-template-columns: 108px minmax(0, 1fr); gap: 10px; align-items: start; } .cs-legend dd { margin: 0; line-height: 1.45; }
+.cs-sum { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; }
+.cs-people > li { padding: 8px 0; border-top: 1px solid var(--line); } .cs-people > li:first-child { border-top: 0; padding-top: 0; } .cs-people ul { margin: 4px 0 0; padding-left: 1.1em; display: grid; gap: 2px; color: var(--tx2); }
+.cs-people > li[data-owner] > b::after { content: ''; display: inline-block; width: 8px; height: 8px; margin-left: 8px; border-radius: 50%; background: var(--bad, #b42318); }
+.cs-places li { padding: 4px 0; } .cs-places a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+.cs-proc__t { font-size: var(--fs-lg, 1.125rem); font-weight: 650; line-height: 1.4; } .cs .cs-proc__t { margin: 0; }
+.cs-steps { counter-reset: cs; } .cs-steps li { counter-increment: cs; position: relative; display: grid; gap: 2px; padding: 10px 12px 10px 46px; border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--panel); }
+.cs-steps li::before { content: counter(cs); position: absolute; left: 10px; top: 10px; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--accent-ink, #fff); font-size: var(--fs-xs); font-weight: 700; }
+.cs-svc { display: grid; gap: 6px; padding: 12px 14px; border: 1px dashed var(--line3); border-radius: var(--r-md); } .cs .cs-svc p, .cs .cs-svc h3 { margin: 0; }
+.cs-tick { display: flex; align-items: flex-start; gap: 12px; min-height: 44px; padding: 10px 12px; border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--panel); cursor: pointer; line-height: 1.45; }
+.cs-tick input { flex: none; width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--accent); } .cs-tick:has(input:checked) { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 7%, var(--panel)); } .cs-tick:has(input:focus-visible) { outline: 2px solid var(--focus, var(--accent)); outline-offset: 2px; }
+.cs-field { display: grid; gap: 6px; margin: 0; padding: 0; border: 0; min-width: 0; font-weight: 600; font-size: var(--fs-sm); } .cs-field legend { padding: 0; margin-bottom: 6px; font-weight: 600; font-size: var(--fs-sm); } .cs-field .cs-tick { font-weight: 400; font-size: var(--fs-md, 1rem); } .cs-field .cs-ticks { font-weight: 400; font-size: var(--fs-md, 1rem); }
+.cs-field textarea { width: 100%; min-height: 64px; padding: 10px 12px; border: 1px solid var(--line3); border-radius: var(--r-md); background: var(--panel); color: var(--tx); font: inherit; font-weight: 400; resize: vertical; } .cs-field textarea:focus-visible { outline: 2px solid var(--focus, var(--accent)); outline-offset: 2px; }
+.cs-roles { display: flex; flex-wrap: wrap; gap: 8px; }
+.cs-done { display: grid; gap: 6px; padding: var(--sp-4); border: 1px solid var(--ok, #1a7f4b); border-radius: var(--r-lg, 14px); background: color-mix(in srgb, var(--ok, #1a7f4b) 7%, var(--panel)); } .cs .cs-done p { margin: 0; }
+.cs-trail li, .cs-ledger li { padding: 8px 0; border-top: 1px solid var(--line); line-height: 1.5; overflow-wrap: anywhere; } .cs-trail li:first-child, .cs-ledger li:first-child { border-top: 0; } .cs-ledger .ui-meta { display: block; }
+.cs-nav { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; padding-top: var(--sp-3); border-top: 1px solid var(--line); } .cs-nav > .ui-btn--primary:only-child { margin-inline-start: auto; }
+
+/* wide: the ten steps are one line, a numbered point each with its name under it, joined in order */
+@media (min-width: 1100px) {
+  .cs-rail { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 0; } .cs-rail li { position: relative; display: flex; }
+  .cs-rail li > button { flex: 1 1 auto; flex-direction: column; justify-content: flex-start; gap: 6px; padding: 6px 4px; border-color: transparent; border-radius: var(--r-md); background: none; font-size: var(--fs-xs); line-height: 1.25; text-align: center; white-space: normal; }
+  .cs-rail li + li::before { content: ''; position: absolute; top: 19px; right: calc(50% + 19px); width: calc(100% - 38px); border-top: 2px solid var(--line3); } .cs-rail li.done + li::before { border-top-color: var(--ok, #1a7f4b); }
+  .cs-rail li.on > button { border-color: transparent; box-shadow: none; } .cs-rail li.on .cs-rail__n { outline: 2px solid var(--accent); outline-offset: 2px; } .cs-rail li > button:hover { border-color: var(--line3); }
+}
+@media (max-width: 900px) {
+  .cs-cols { grid-template-columns: minmax(0, 1fr); grid-template-areas: "side" "main"; } .cs-side { position: static; scroll-margin-top: calc(var(--shell-top, 112px) + 8px); } .cs-side .w-plan svg { max-height: 240px; }
+  /* the alert is read before the plan, and the way back before the plan: on those two steps the drawing follows the words */
+  .cs[data-step="alert"] .cs-cols, .cs[data-step="return"] .cs-cols { grid-template-areas: "main" "side"; }
+  .cs-clock { margin-left: 0; }
+  .cs-rail { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-block: 2px; } .cs-rail::-webkit-scrollbar { display: none; } .cs-rail li { flex: none; }
+  .cs .cs-h { scroll-margin-top: calc(var(--shell-top, 112px) + 8px); }
+  /* the chain lies down: six numbered points in a row, and only the marked one is named */
+  .cs-chain { grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 10px; } .cs-chain li { grid-template-columns: minmax(0, 1fr); justify-items: center; padding: 6px 2px; }
+  .cs-chain li + li::before { left: -11px; top: 50%; height: 0; width: 10px; border-left: 0; border-top: 2px solid var(--tx3); } .cs-chain li[data-reading="nothing"] + li::before, .cs-chain li[data-reading="stops"] + li::before { border-top-style: dotted; }
+  .cs-chain__b { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; } .cs-chain__s { font-size: 0; gap: 0; min-height: 14px; }
+  .cs-legend > div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+}
+@media (max-width: 560px) { .cs-rail li > button { padding: 4px 10px 4px 6px; } .cs-acts .ui-btn, .cs-roles .ui-btn, .cs-nav .ui-btn { flex: 1 1 auto; justify-content: center; } .cs-roles li { flex: 1 1 100%; display: flex; } .cs-alert { padding: var(--sp-3); } }

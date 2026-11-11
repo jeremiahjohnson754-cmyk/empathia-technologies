@@ -1,9 +1,13 @@
-/* Game day (stadium event clock), on the worlds' tokens. */
+/* Game day (stadium event clock), on the worlds' tokens.
+   11 Nov 2026: the room guide's stylesheet (guides/guides.css) also names classes "gd-steps" and "gd-note" and comes later in the
+   bundle, so its rules restyled this page's incident steps (stacked instead of a row) and guest notes, and this page's rules took the
+   numbers off the guide's steps. The two rules below are therefore scoped to this page's own root (.w.gd; the guide's root is .pa.gd),
+   and the note restates the type it had, so neither page reaches the other. */
 .gd-phases { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; } .gd-phases li { padding: 6px 12px; border: 1px solid var(--line2); border-radius: var(--r-pill); color: var(--tx2); font-size: var(--fs-sm); }
 .gd-phases li[data-done="true"] { color: var(--tx); border-style: dashed; } .gd-phases li[aria-current="step"] { border-color: var(--accent); background: var(--accent-bg); color: var(--tx); font-weight: 700; }
 .gd-hold { padding: 10px 14px; border-left: 3px solid var(--bad, #b42318); background: var(--panel2); border-radius: 0 var(--r-md) var(--r-md) 0; }
 .gd-gates { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; } .gd-gates li { display: grid; gap: 2px; padding: 12px 14px; border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--panel2); }
-.gd-gates li[data-best="true"] { border-color: var(--accent); } .gd-note { margin: var(--sp-3) 0 0; padding: 10px 14px; border: 1px dashed var(--line3); border-radius: var(--r-md); }
+.gd-gates li[data-best="true"] { border-color: var(--accent); } .w.gd .gd-note { margin: var(--sp-3) 0 0; padding: 10px 14px; border: 1px dashed var(--line3); border-radius: var(--r-md); color: inherit; font-size: inherit; line-height: inherit; }
 .gd-inc { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; } .gd-inc > li { display: grid; gap: 8px; padding: 12px 14px; border: 1px solid var(--line2); border-radius: var(--r-md); } .gd-inc p { margin: 0; }
-.gd-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; font-size: var(--fs-sm); color: var(--tx2); } .gd-steps li { padding: 2px 10px; border: 1px solid var(--line2); border-radius: var(--r-pill); } .gd-steps li[data-done="true"] { color: var(--tx); border-color: var(--line3); font-weight: 600; }
+.w.gd .gd-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; font-size: var(--fs-sm); color: var(--tx2); } .w.gd .gd-steps li { padding: 2px 10px; border: 1px solid var(--line2); border-radius: var(--r-pill); } .w.gd .gd-steps li[data-done="true"] { color: var(--tx); border-color: var(--line3); font-weight: 600; }
 .gd-acts { display: flex; flex-wrap: wrap; gap: 8px; } .gd-acts .ui-btn { min-height: 44px; }

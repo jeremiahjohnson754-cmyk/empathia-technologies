@@ -91,21 +91,34 @@ function Overview({ world, config, ix, q: firstQ }: { world: World; config: Role
   );
 }
 
-function EstatePlan({ ix, world, config, lit }: { ix: Index; world: World; config: RoleConfig; lit?: string }) {
+/**
+ * Exported for the game-day incident page, which shows an incident's zone on this same drawing (gameday/signal). `mark` rings one
+ * zone and names it in words beside the ring (the incident's camera): a ring alone would be meaning by shape and colour only.
+ */
+export function EstatePlan({ ix, world, config, lit, caption, mark }: { ix: Index; world: World; config: RoleConfig; lit?: string; caption?: ReactNode; mark?: { id: string; lines: readonly string[]; tone: 'bad' | 'ok' | 'plain' } }) {
   const reader = readerOf(config); const zs = ix.estate.nodes.filter((n) => n.plan && n.kind !== 'world' && shown(ix, reader, n.id));
   const W = Math.max(...zs.map((n) => n.plan!.x + n.plan!.w)) + 20; const H = Math.max(...zs.map((n) => n.plan!.y + n.plan!.h)) + 20;
   const order = (n: EstateNode) => (n.kind === 'venue' || n.kind === 'campus' ? 0 : n.kind === 'space' ? 1 : 2);
   const litPath = lit ? new Set([...pathOf(ix, lit).map((n) => n.id), ...(ix.byId.get(lit)?.spans || [])]) : new Set<string>();
+  // a zone drawn around other zones is named along its top edge: three names at one shared centre were unreadable (the bowl, its concourse and the pitch)
+  const inside = (a: EstateNode, b: EstateNode) => a !== b && b.plan!.x >= a.plan!.x && b.plan!.y >= a.plan!.y && b.plan!.x + b.plan!.w <= a.plan!.x + a.plan!.w && b.plan!.y + b.plan!.h <= a.plan!.y + a.plan!.h;
+  const holds = new Set(zs.filter((a) => zs.some((b) => inside(a, b))).map((a) => a.id));
+  const m = mark ? zs.find((n) => n.id === mark.id) : undefined; const mr = m ? Math.max(m.plan!.w, m.plan!.h) / 2 + 12 : 0;
+  const mw = mark ? Math.max(...mark.lines.map((l) => l.length)) * 13 : 0; const mx = m ? Math.min(Math.max(m.plan!.x + m.plan!.w / 2, mw / 2 + 6), W - mw / 2 - 6) : 0;
   return (
     <figure className="w-plan stage es-plan" data-stage="" data-testid="estate-plan">
       <svg viewBox={`0 0 ${W} ${H}`} role="group" aria-label={`Plan of ${ix.estate.name}`} preserveAspectRatio="xMidYMid meet">
         {[...zs].sort((a, b) => order(a) - order(b)).map((n) => { const p = n.plan!; const frame = n.kind === 'venue' || n.kind === 'campus'; const small = p.w < 70 || p.h < 26;
           return (<a key={n.id} href={estateHref(world.key, n.id, config.id)} aria-label={n.name} className={`w-plan__zone es-plan__z${litPath.has(n.id) && !frame ? ' is-lit' : ''}`} data-kind={frame ? 'ring' : n.kind === 'space' ? 'green' : 'zone'} data-node={n.id}>
             <rect x={p.x} y={p.y} width={p.w} height={p.h} rx={Math.min(8, p.w / 6, p.h / 6)} />
-            {frame ? <text x={p.x + 10} y={p.y + 16} textAnchor="start">{n.name}</text> : !small && <text x={p.x + p.w / 2} y={p.y + p.h / 2} textAnchor="middle" dominantBaseline="central">{n.name.length > p.w / 7.5 ? n.name.split(' ')[0] : n.name}</text>}
+            {frame ? <text x={p.x + 10} y={p.y + 16} textAnchor="start">{n.name}</text> : !small && <text x={p.x + p.w / 2} y={holds.has(n.id) ? p.y + 20 : p.y + p.h / 2} textAnchor="middle" dominantBaseline="central">{n.name.length > p.w / 7.5 ? n.name.split(' ')[0] : n.name}</text>}
           </a>); })}
+        {m && mark && <g className="w-plan__mark" data-tone={mark.tone} data-testid="estate-plan-mark" data-node={m.id}>
+          <circle cx={m.plan!.x + m.plan!.w / 2} cy={m.plan!.y + m.plan!.h / 2} r={mr} />
+          <text x={mx} y={m.plan!.y + m.plan!.h / 2 - mr - 10 - (mark.lines.length - 1) * 25} textAnchor="middle">{mark.lines.map((l, i) => <tspan key={i} x={mx} dy={i ? 25 : 0}>{l}</tspan>)}</text>
+        </g>}
       </svg>
-      <figcaption className="stage__cap w-plan__cap">Each outline opens its record. The same places are listed under Browse.</figcaption>
+      <figcaption className="stage__cap w-plan__cap">{caption ?? 'Each outline opens its record. The same places are listed under Browse.'}</figcaption>
     </figure>
   );
 }

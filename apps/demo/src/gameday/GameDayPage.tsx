@@ -12,10 +12,10 @@ import { Block, Crumbs, Rows, Synthetic } from '../worlds/kit.js';
 import { readerOf, seesEquipment } from '../estate/reader.js';
 import { estateHref } from '../estate/EstatePage.js';
 import { FAULTS, PHASE, PHASES, STEPS, SYSTEM_LABEL, advance, gates, holds, inject, numbers, publicView, report, respond, start, systems, type FaultId, type GameDay, type Result, type Step, type SystemKey } from './engine.js';
+import { keep, load } from './store.js';
+// the camera feed incident is worked on a page of its own; this page only needs to know which fault that is, who may open it, and its address
+import { SIGNAL_FAULT, mayOpenSignal, signalHref } from './signal/access.js';
 
-const KEY = 'empathia.demo.gameday.v1';
-const load = (): GameDay => { try { const g = JSON.parse(localStorage.getItem(KEY) || 'null') as GameDay | null; if (g && (PHASES as readonly string[]).includes(g.phase) && Array.isArray(g.incidents)) return g; } catch { /* a blocked or corrupted store starts a fresh day */ } return start(); };
-const keep = (g: GameDay) => { try { localStorage.setItem(KEY, JSON.stringify(g)); } catch { /* the day still runs without storage */ } };
 const NEXT_WORD: Record<Step, string> = { OPEN: 'Acknowledge', ACKNOWLEDGED: 'Dispatch', DISPATCHED: 'Mark fixed', FIXED: 'Verify', VERIFIED: '' };
 const SYS_WORD = { OK: 'Working', DEGRADED: 'Degraded', AWAITING_CHECK: 'Restored, awaiting check' } as const;
 const nf = (n: number) => n.toLocaleString('en-GB');
@@ -39,13 +39,20 @@ export default function GameDayPage({ role, query }: PageProps) {
         <ul className="gd-gates">{v.gates.map((x) => <li key={x.gate} data-gate={x.gate} data-best={v.best?.gate === x.gate}><b>Gate {x.gate}</b><span>{x.open ? `About ${x.queueMin} minute${x.queueMin === 1 ? '' : 's'}` : 'Closed'}</span><span className="ui-meta">Step-free lane{v.best?.gate === x.gate ? ' · shortest queue now' : ''}</span></li>)}</ul>
         {v.notes.map((t, i) => <p key={i} className="gd-note" data-testid="gameday-note">{t}</p>)}
       </Block>
+      <p className="w-skip" data-testid="gameday-guest-links"><a className="ui-btn w-btn" href="#/world/stadium/attend-game?as=stadium.fan">Your seat and a step-free way to it</a><a className="ui-btn w-btn" href="#/world/stadium/find-amenities?as=stadium.fan">Food, restrooms and help near your seat</a></p>
       <p className="ui-meta">Simulated figures for a fictional event. Opening as another role in this demonstration grants nothing. <a href={worldHref('stadium', config.id, { panel: 'roles' })}>Change role</a></p>
     </div>); }
   const sys = systems(g); const rep = report(g);
+  const signal = g.incidents.filter((i) => i.fault === SIGNAL_FAULT && i.step !== 'VERIFIED').pop() || null;
   return (
     <div className="w gd" data-world="stadium" data-testid="gameday" data-phase={g.phase} data-held={h.length > 0}>
       {head}
       <p className="lead">You hold the event clock as the <b>{config.label}</b>. Moving the clock changes every figure below; a fault you inject has to be worked and independently verified.</p>
+      {signal && <div className="gd-alert" role="status" data-testid="gameday-alert" data-alert-incident={signal.id} data-step={signal.step}>
+        <p><b>{signal.step === 'FIXED' ? 'Waiting for an independent check' : 'Critical signal'}</b> · {signal.id}: {FAULTS[signal.fault].title}.{h.some((x) => x.startsWith(FAULTS[signal.fault].title)) && next ? ` ${PHASE[next].label} is held until it is fixed.` : ''}</p>
+        {mayOpenSignal(config.id) ? <a className="ui-btn ui-btn--primary" href={signalHref(config.id, signal.step === 'FIXED' ? 'verify' : 'alert')} data-testid="gameday-alert-open">Open the incident</a>
+          : <span className="ui-meta">Worked by the broadcast and engineering roles, and checked by the production or operations lead.</span>}
+      </div>}
       <ul className="es-totals" data-testid="gameday-numbers"><li><b>{nf(n.inside)}</b> inside of {nf(62200)}</li><li><b>{n.concoursePct}%</b> concourse load</li><li><b>{nf(n.staffTotal)}</b> staff on post</li><li>Programme feed <b>{n.program.toLowerCase()}</b></li><li><b>{n.openIncidents}</b> open incident{n.openIncidents === 1 ? '' : 's'}</li></ul>
       <p className="w-skip">
         {next && <button type="button" className="ui-btn ui-btn--primary w-btn" data-testid="gameday-advance" aria-describedby="gd-hold" onClick={() => apply(advance(g), `${PHASE[next].label}.`)}>Move to {PHASE[next].label.toLowerCase()}</button>}
@@ -63,8 +70,11 @@ export default function GameDayPage({ role, query }: PageProps) {
         {g.incidents.length === 0 ? <p>Nothing has failed. Inject a fault to see the venue respond.</p> : <ul className="gd-inc">{g.incidents.map((i) => { const f = FAULTS[i.fault]; const to = STEPS[STEPS.indexOf(i.step) + 1]; return (
           <li key={i.id} data-incident={i.id} data-step={i.step}><p><b>{i.id}</b> {f.title} <span className="ui-tag">{f.severity}</span></p>
             <ol className="gd-steps">{STEPS.map((s) => <li key={s} data-done={STEPS.indexOf(s) <= STEPS.indexOf(i.step)}>{s.toLowerCase()}{i.by[s] && s !== 'OPEN' ? ` · ${i.by[s]}` : ''}</li>)}</ol>
-            <p className="gd-acts"><a className="ui-btn" href={estateHref('stadium', f.room, config.id)}>Open the room</a>{to && <button type="button" className="ui-btn ui-btn--primary" data-respond={to} onClick={() => apply(respond(g, i.id, to, config.label), `${i.id} ${to.toLowerCase()}.`)}>{NEXT_WORD[i.step]}</button>}</p>
-            {i.step === 'FIXED' && i.by.FIXED === config.label && <p className="ui-meta">A fix is verified by someone else. <a href={worldHref('stadium', config.id, { panel: 'roles' })}>Open as another venue role</a>, then come back to this page.</p>}
+            {i.fault === SIGNAL_FAULT
+              // this fault has a guided incident with its own rule for who may work it: the steps are taken there, never by a bare button here
+              ? <p className="gd-acts"><a className="ui-btn" href={estateHref('stadium', f.room, config.id)}>Open the room</a>{mayOpenSignal(config.id) ? <a className="ui-btn ui-btn--primary" href={signalHref(config.id, i.step === 'VERIFIED' ? 'report' : i.step === 'FIXED' ? 'verify' : 'alert')} data-signal-open={i.id}>{i.step === 'VERIFIED' ? 'Read the incident record' : 'Open the incident'}</a> : <span className="ui-meta">Worked by the broadcast and engineering roles.</span>}</p>
+              : <p className="gd-acts"><a className="ui-btn" href={estateHref('stadium', f.room, config.id)}>Open the room</a>{to && <button type="button" className="ui-btn ui-btn--primary" data-respond={to} onClick={() => apply(respond(g, i.id, to, config.label), `${i.id} ${to.toLowerCase()}.`)}>{NEXT_WORD[i.step]}</button>}</p>}
+            {i.fault !== SIGNAL_FAULT && i.step === 'FIXED' && i.by.FIXED === config.label && <p className="ui-meta">A fix is verified by someone else. <a href={worldHref('stadium', config.id, { panel: 'roles' })}>Open as another venue role</a>, then come back to this page.</p>}
           </li>); })}</ul>}
       </Block>
       <Block title={rep.title} sub="Computed from the event state" testId="gameday-report"><ul className="w-notes">{rep.lines.map((l, i) => <li key={i}>{l}</li>)}</ul></Block>

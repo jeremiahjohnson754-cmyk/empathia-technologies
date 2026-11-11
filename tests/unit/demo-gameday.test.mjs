@@ -54,3 +54,17 @@ test('GD-09 the readiness report is computed from the state and says when the ne
   let g = must(G.inject(run(G.start(), 2), 'program-return')); const r = G.report(g); assert.match(r.title, /warm-up \(T-45 min\)/); assert.ok(r.lines.some((l) => /Broadcast programme chain: degraded/.test(l))); assert.ok(r.lines.some((l) => /^Next phase held/.test(l)));
   assert.ok(G.report(G.start()).lines.every((l) => !/held/.test(l)));
 });
+// Added 10 Nov 2026 with the camera feed incident (gameday/signal). Additive: every check above is unchanged.
+test('GD-10 the camera feed fault is a critical broadcast fault against the camera platform’s own estate record, holds kick-off, and tells guests nothing', () => {
+  const f = G.FAULTS['camera-feed']; assert.equal(f.severity, 'critical'); assert.equal(f.system, 'broadcast'); assert.equal(f.owner, 'broadcast'); assert.equal(f.publicNote, null);
+  const room = S.STADIUM.nodes.find((n) => n.id === f.room); assert.equal(room.type, 'camera-position'); assert.equal(room.access, 'staff'); assert.ok(S.STADIUM.assets.some((a) => a.room === f.room && a.kind === 'camera'));
+  const g = must(G.inject(run(G.start(), 2), 'camera-feed')); assert.equal(G.systems(g).broadcast, 'DEGRADED'); assert.equal(G.advance(g).ok, false); assert.match(G.holds(g).join(' '), /Camera 3/);
+  assert.deepEqual(G.publicView(g).notes, []); assert.ok(!/camera|STA-|GD-0/i.test(JSON.stringify(G.publicView(g))));
+});
+test('GD-11 a step can be recorded with words (what was done, the evidence named); a step without them leaves the record exactly as it was before', () => {
+  const g = must(G.inject(G.start(), 'ribbon-east')); const id = g.incidents[0].id;
+  const plain = must(G.respond(g, id, 'ACKNOWLEDGED', 'a')); assert.equal('notes' in plain.incidents[0], false); assert.equal(plain.log[plain.log.length - 1].text, `${id} acknowledged by a.`);
+  const noted = must(G.respond(plain, id, 'DISPATCHED', 'a', '  procedure:   swap the processor.  ')); assert.deepEqual(noted.incidents[0].notes, { DISPATCHED: 'procedure: swap the processor' }); assert.equal(noted.log[noted.log.length - 1].text, `${id} dispatched by a: procedure: swap the processor.`);
+  const next = must(G.respond(noted, id, 'FIXED', 'a')); assert.deepEqual(next.incidents[0].notes, { DISPATCHED: 'procedure: swap the processor' }, 'earlier words are kept');
+  assert.equal(must(G.respond(next, id, 'VERIFIED', 'b', 'x'.repeat(900))).incidents[0].notes.VERIFIED.length, 400);
+});

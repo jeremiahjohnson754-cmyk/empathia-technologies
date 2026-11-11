@@ -31,11 +31,15 @@ export const FAULTS = {
   'program-return': { title: 'Programme return to the commentary booths has dropped', room: 'STA-BCR', system: 'broadcast', severity: 'critical', effect: 'DEGRADED', publicNote: null, owner: 'broadcast' },
   'suite-9-display': { title: 'Suite 9 displays show no television picture', room: 'STA-STE-009', system: 'suites', severity: 'minor', effect: 'DEGRADED', publicNote: null, owner: 'technology' },
   'gate-c-scanners': { title: 'Ticket scanners at Gate C are offline', room: 'STA-GATE-C', system: 'gates', severity: 'major', effect: 'DEGRADED', publicNote: 'Gate C is slow. Gate D, next along, has a step-free lane and a shorter queue.', owner: 'gates' },
+  // The Critical Signal (founder, 10 Nov 2026): one camera feed lost in the broadcast chain. Its room is the camera platform's own estate
+  // record, and the chain behind it is read from the estate (gameday/signal/model.ts). Guests are told nothing: it never reaches them.
+  'camera-feed': { title: 'Camera 3 on the main platform shows no picture in the gallery', room: 'STA-CAM-MAIN', system: 'broadcast', severity: 'critical', effect: 'DEGRADED', publicNote: null, owner: 'broadcast' },
 } as const satisfies Record<string, { title: string; room: string; system: SystemKey; severity: Severity; effect: 'DEGRADED' | 'DOWN'; publicNote: string | null; owner: Team }>;
 export type FaultId = keyof typeof FAULTS;
 export type SystemKey = 'pa' | 'boards' | 'ribbons' | 'broadcast' | 'suites' | 'gates';
 export const SYSTEM_LABEL: Record<SystemKey, string> = { pa: 'Bowl public address', boards: 'Main video boards', ribbons: 'Ribbon boards', broadcast: 'Broadcast programme chain', suites: 'Suite television', gates: 'Gate ticket scanning' };
-export interface Incident { id: string; fault: FaultId; openedIn: Phase; step: Step; by: Partial<Record<Step, string>> }
+/** `notes` is present only when a step was recorded with words (what was done, the evidence a check named): a step taken without them leaves the record exactly as before. */
+export interface Incident { id: string; fault: FaultId; openedIn: Phase; step: Step; by: Partial<Record<Step, string>>; notes?: Partial<Record<Step, string>> }
 export interface Entry { phase: Phase; text: string }
 export interface GameDay { phase: Phase; incidents: Incident[]; log: Entry[]; seq: number }
 export const SEATS = 62200;
@@ -67,13 +71,14 @@ export function inject(g: GameDay, fault: FaultId): Result {
   if (open(g).some((i) => i.fault === fault)) return { ok: false, why: 'That fault is already open.' };
   const id = `GD-${String(g.seq + 1).padStart(3, '0')}`; return { ok: true, state: { ...g, seq: g.seq + 1, incidents: [...g.incidents, { id, fault, openedIn: g.phase, step: 'OPEN', by: { OPEN: 'simulation' } }], log: [...g.log, { phase: g.phase, text: `${id} opened: ${FAULTS[fault].title}.` }] } };
 }
-/** Move an incident one step. Steps cannot be skipped, and the person who verifies cannot be the person who fixed it. */
-export function respond(g: GameDay, id: string, to: Step, who: string): Result {
+/** Move an incident one step. Steps cannot be skipped, and the person who verifies cannot be the person who fixed it. `note` (optional) is kept on the incident and in the log. */
+export function respond(g: GameDay, id: string, to: Step, who: string, note?: string): Result {
   const i = g.incidents.find((x) => x.id === id); if (!i) return { ok: false, why: 'No such incident.' };
   if (STEPS.indexOf(to) !== STEPS.indexOf(i.step) + 1) return { ok: false, why: `${id} is ${i.step.toLowerCase()}; the next step is ${(STEPS[STEPS.indexOf(i.step) + 1] || 'none').toLowerCase()}.` };
   if (to === 'VERIFIED' && i.by.FIXED === who) return { ok: false, why: 'A fix is verified by someone other than the person who made it.' };
-  const n: Incident = { ...i, step: to, by: { ...i.by, [to]: who } };
-  return { ok: true, state: { ...g, incidents: g.incidents.map((x) => (x.id === id ? n : x)), log: [...g.log, { phase: g.phase, text: `${id} ${to.toLowerCase()} by ${who}.` }] } };
+  const words = (note || '').trim().replace(/\s+/g, ' ').replace(/[.\s]+$/, '').slice(0, 400);
+  const n: Incident = { ...i, step: to, by: { ...i.by, [to]: who }, ...(words ? { notes: { ...i.notes, [to]: words } } : {}) };
+  return { ok: true, state: { ...g, incidents: g.incidents.map((x) => (x.id === id ? n : x)), log: [...g.log, { phase: g.phase, text: `${id} ${to.toLowerCase()} by ${who}${words ? `: ${words}` : ''}.` }] } };
 }
 export interface GateView { gate: 'A' | 'B' | 'C' | 'D'; open: boolean; queueMin: number; stepFree: true }
 /** Queue minutes by gate: a function of the phase, and of a scanner fault at that gate. */
