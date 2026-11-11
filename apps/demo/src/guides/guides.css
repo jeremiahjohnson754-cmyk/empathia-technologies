@@ -1,0 +1,30 @@
+/* The room guide: a page of a reference book. Tokens only; both themes; a print layout. */
+.gd { display: grid; gap: var(--sp-5); } .gd > * { min-width: 0; }
+.gd-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 380px); gap: var(--sp-6); align-items: start; } .gd-cols > * { min-width: 0; }
+.gd-main { display: grid; gap: var(--sp-5); max-inline-size: 72ch; }
+.gd-side { position: sticky; inset-block-start: 84px; display: grid; gap: var(--sp-3); }
+@media (max-width: 980px) { .gd-cols { grid-template-columns: minmax(0, 1fr); } .gd-side { position: static; order: -1; } .gd-side .stage { max-block-size: 300px; } }
+.gd-block { display: grid; gap: 10px; } .gd-block h2, .gd-sec h2, .gd-champ h2 { margin: 0; font-size: var(--fs-lg); line-height: 1.25; text-wrap: balance; }
+.gd-block p { margin: 0; line-height: 1.65; color: var(--tx); }
+.gd-task { padding-block-start: var(--sp-4); border-block-start: 1px solid var(--line); } .gd-task[data-active=yes] { border-block-start-color: var(--accent); }
+.gd-task > header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; }
+.gd-num { display: inline-grid; place-items: center; min-inline-size: 1.7em; block-size: 1.7em; margin-inline-end: 6px; border-radius: 50%; border: 1px solid var(--line2); font-size: 0.8em; font-variant-numeric: tabular-nums; color: var(--tx2); }
+.gd-lead { color: var(--tx2) !important; }
+.gd-steps { margin: 0; padding-inline-start: 1.4em; display: grid; gap: 10px; } .gd-steps li::marker { color: var(--tx3); font-variant-numeric: tabular-nums; } .gd-steps li { padding-inline-start: 4px; }
+.gd-why, .gd-note, .gd-caption { margin: 0; color: var(--tx3); font-size: var(--fs-sm); line-height: 1.5; } .gd-why { margin-block-start: 2px !important; color: var(--tx3) !important; }
+.gd-link { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.gd-supports { inline-size: 100%; border-collapse: collapse; font-size: var(--fs-sm); } .gd-supports th, .gd-supports td { text-align: start; vertical-align: top; padding: 8px 10px 8px 0; border-block-end: 1px solid var(--line); line-height: 1.5; }
+.gd-supports thead th { color: var(--tx3); font-weight: 600; } .gd-supports tbody th { font-weight: 600; color: var(--tx); } .gd-supports td { color: var(--tx2); }
+.gd-yn { display: inline-flex; align-items: center; gap: 4px; font-weight: 650; white-space: nowrap; } tr[data-yes=yes] .gd-yn svg { color: var(--ok); } tr[data-yes=no] .gd-yn svg { color: var(--bad); }
+.gd-champ, .gd-meta { display: grid; gap: 6px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); }
+.gd-champ p { margin: 0; display: grid; gap: 2px; } .gd-champ p span { color: var(--tx2); font-size: var(--fs-sm); }
+.gd-meta dl { margin: 0; display: grid; gap: 6px; font-size: var(--fs-sm); } .gd-meta dl > div { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 8px; } .gd-meta dt { color: var(--tx3); } .gd-meta dd { margin: 0; color: var(--tx2); overflow-wrap: anywhere; }
+.gd-find { max-inline-size: 48ch; } .gd-sec { display: grid; gap: 8px; }
+.gd-rooms { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px; }
+.gd-rooms a { display: grid; gap: 2px; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); text-decoration: none; color: var(--tx); min-block-size: 44px; } .gd-rooms a:hover { border-color: var(--accent); } .gd-rooms span { color: var(--tx2); font-size: var(--fs-sm); }
+@media (max-width: 640px), (pointer: coarse) { .gd .ui-btn, .gd input { min-block-size: 44px; } }
+@media print {
+  .gd-show, .gd-print, .gd-link, .gd-foot, .gd-caption { display: none !important; }
+  .gd-cols { grid-template-columns: minmax(0, 1fr); } .gd-side { position: static; order: 2; } .gd-main { max-inline-size: none; }
+  .gd-task { break-inside: avoid; } .gd { gap: 12pt; }
+}

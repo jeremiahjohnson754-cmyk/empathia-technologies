@@ -18,8 +18,9 @@ import { PROOF_PAGES } from './registry.proof.js';
 import { WORLD_PAGES } from './registry.worlds.js';
 import { CHAMPION_PAGES } from './registry.champion.js';
 import { CONNECT_PAGES } from './registry.connect.js';
+import { GUIDE_PAGES } from './registry.guides.js';
 
-export const PAGES: readonly PageDef[] = [...SHELL_PAGES, ...SPACES_PAGES, ...OPS_PAGES, ...PARITY_PAGES, ...PROOF_PAGES, ...WORLD_PAGES, ...CHAMPION_PAGES, ...CONNECT_PAGES];
+export const PAGES: readonly PageDef[] = [...SHELL_PAGES, ...SPACES_PAGES, ...OPS_PAGES, ...PARITY_PAGES, ...PROOF_PAGES, ...WORLD_PAGES, ...CHAMPION_PAGES, ...CONNECT_PAGES, ...GUIDE_PAGES];
 
 interface Compiled { page: PageDef; segs: string[]; rest: boolean; score: number }
 const compile = (page: PageDef, path: string): Compiled => {
