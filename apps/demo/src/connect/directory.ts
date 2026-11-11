@@ -17,7 +17,7 @@
  */
 import PERSONAS from '@empathia/domain-data/data/V25_PERSONAS.json' with { type: 'json' };
 import type { RoleKey } from '../registry.types.js';
-import { ROLES, ROLE_KEYS, rolesFor } from '../access/policy.js';
+import { CHAMPION_SITES, ROLES, ROLE_KEYS, rolesFor } from '../access/policy.js';
 import { BUILDINGS, REGIONAL_SITES, ESTATE_GROUPS, CAMPUS_ROOMS, buildingByKey, roomById, roomsIn, shortName, roomHref, type Building, type RoomOutline } from '../campus/canon.js';
 import { DEMO_NOW, roomRecord } from '../campus/design.js';
 import { seed, techForPersona, type Workspace } from '../workspace/store.js';
@@ -27,7 +27,7 @@ import { DAY, fmtDay, fmtTime, overlaps, utcOffset, zoneCity } from './time.js';
 
 // ------------------------------------------------------------------------------------------------------------ the estate, as the directory reads it
 export const ALL_BUILDINGS: readonly Building[] = [...BUILDINGS, ...REGIONAL_SITES];
-/** The key the integrator gives the Site Champion role (docs/api/RBAC_MATRIX.md; arrives in ROLE_KEYS at merge). Read at run time, never assumed. */
+/** The key of the Site Champion role in the policy (docs/api/RBAC_MATRIX.md; the persona `sitechamp`). Read from ROLE_KEYS at run time, never assumed. */
 export const CHAMPION_ROLE = 'sitechamp';
 export const championRole = (keys: readonly string[] = ROLE_KEYS): RoleKey | null => (keys.includes(CHAMPION_ROLE) ? (CHAMPION_ROLE as RoleKey) : null);
 /**
@@ -137,7 +137,7 @@ export const backupOf = (buildingKey: string): Person | null => personById(`p-ba
 export const holdersOf = (role: RoleKey, buildingKey: string): Person[] => people().filter((p) => p.kind === 'role' && p.role === role && p.buildings.includes(buildingKey));
 /** The person a demonstration role stands for when it acts (a perspective, never a login): the same mapping the service workspace uses for technicians. */
 export function personaPerson(role: RoleKey): Person | null {
-  if (role === championRole()) return championOf(ALL_BUILDINGS[0]!.key);
+  if (role === championRole()) return championOf(CHAMPION_SITES[0] || ALL_BUILDINGS[0]!.key);   // the policy says which site the demonstration's champion is the champion of
   const tech = techForPersona(role); if (tech) return personById(`p-${tech}`);
   return people().find((p) => p.kind === 'role' && p.role === role && p.group === ESTATE_GROUPS[0]!.name) || null;
 }
@@ -272,9 +272,9 @@ export interface Contact { person: Person; relation: Relation; reason: string; a
 export const RELATION_WORD: Record<Relation, string> = { owner: 'Owner', champion: 'Site champion', backup: 'Backup', technician: 'Technician', manager: 'Service manager' };
 /**
  * Who to contact about a room, a device, a building or an issue, in order, each with the reason. For a room: who knows it (the site
- * champion) first, then the technician role assigned to it. For a device or an issue the owner comes first: the technician assigned
- * to the job, or the one who covers the building. A backup is listed ahead of the person it stands in for when that person is off
- * shift, out of hours or busy at `at`, and the entry says why.
+ * champion) first, then the technician role assigned to it, then the service manager, where a problem is escalated. For a device or
+ * an issue the owner comes first: the technician assigned to the job, or the one who covers the building. A backup is listed ahead
+ * of the champion whenever the champion is not at work at `at`, and when the champion is busy and the backup is not; the entry says why.
  */
 export function contactsFor(s: Subject, at: number, w: Workspace | null, busyOf: (p: Person) => Busy[] = () => []): Contact[] {
   const b = s.buildingKey; if (!b || s.kind === 'person') return [];
@@ -288,13 +288,13 @@ export function contactsFor(s: Subject, at: number, w: Workspace | null, busyOf:
   const wo = job?.workOrderId ? w?.workOrders.find((x) => x.id === job.workOrderId) : undefined; const assigned = wo?.techId ? personById(`p-${wo.techId}`) : null;
   const techReason = (t: Person) => (assigned && t.id === assigned.id ? `Assigned to ${wo!.id}${s.kind === 'issue' ? '' : ' in this room'}` : `${t.title} for ${bName}${t.shift ? `, ${t.shift.name.toLowerCase()}` : ''}${techs.length > 1 && onShift && t.id === onShift.id && onShift.id !== techs[0]!.id ? '; the first technician for the building is not on shift' : ''}`);
   const tech = assigned || onShift; const mgr = holdersOf('svcmgr' as RoleKey, b)[0] || null;
-  if (s.kind === 'room') { push(champ, 'champion', champReason); push(back, 'backup', `Backup site champion for ${bName}`); if (tech) push(tech, 'technician', techReason(tech)); }
+  if (s.kind === 'room') { push(champ, 'champion', champReason); push(back, 'backup', `Backup site champion for ${bName}`); if (tech) push(tech, 'technician', techReason(tech)); push(mgr, 'manager', `Service Manager for ${bName}: where a problem in any room is triaged and escalated`); }
   else if (s.kind === 'building') { push(champ, 'champion', champReason); push(back, 'backup', `Backup site champion for ${bName}`); push(mgr, 'manager', `Triages and dispatches the jobs of ${bName}`); }
   else if (s.kind === 'device') { if (tech) push(tech, 'owner', `${techReason(tech)}: equipment faults are the technician’s`); push(champ, 'champion', champReason); push(back, 'backup', `Backup site champion for ${bName}`); }
   else { if (assigned) push(assigned, 'owner', techReason(assigned)); else push(mgr, 'owner', `${job?.id || s.id} has no technician yet: the service manager triages and assigns it`); push(champ, 'champion', champReason); push(back, 'backup', `Backup site champion for ${bName}`); if (assigned) push(mgr, 'manager', `Triages and dispatches the jobs of ${bName}`); }
   // a backup moves ahead of the person it stands in for when that person cannot be reached now, and says why
   const ci = out.findIndex((c) => c.relation === 'champion'); const bi = out.findIndex((c) => c.relation === 'backup');
-  if (ci >= 0 && bi > ci && !out[ci]!.availability.available && out[bi]!.availability.available) {
+  if (ci >= 0 && bi > ci && !out[ci]!.availability.available && (out[bi]!.availability.available || out[ci]!.availability.state !== 'busy')) {
     const c = out[ci]!; const k = out.splice(bi, 1)[0]!; k.promoted = `Shown before ${c.person.name} because ${c.person.name.split(' ')[0]} is ${c.availability.state === 'busy' ? 'busy' : c.availability.state === 'off-shift' ? 'off shift' : 'outside working hours'} right now`; out.splice(ci, 0, k);
   }
   return out;

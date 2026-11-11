@@ -53,7 +53,7 @@ export const GRAPH_CALLS: readonly GraphCall[] = [
     notes: ['Application permissions and personal accounts: Not supported', 'Works inside the mailbox’s work hours unless activityDomain says otherwise; knows nothing about Shifts', 'meetingDuration is ISO 8601 (PT30M); the default is 30 minutes'] },
   { id: 'create', what: 'Create the event (this is what sends invitations)', method: 'POST', delegatedPath: '/me/events', applicationPath: '/users/{id | userPrincipalName}/events', delegated: 'Calendars.ReadWrite', application: 'Calendars.ReadWrite', higher: [], success: 201,
     source: 'https://learn.microsoft.com/en-us/graph/api/user-post-events', pageUpdated: null, validated: GRAPH_VALIDATED,
-    notes: ['transactionId: “A custom identifier specified by a client app for the server to avoid redundant POST operations in case of client retries to create the same event” (https://learn.microsoft.com/en-us/graph/api/resources/event)', 'A room is invited as an attendee of type resource, with its mailbox address', 'NOT STATED on the pages read: what the server answers to a second POST with the same transactionId. The mock assumes the first event is returned; to observe in real validation'] },
+    notes: ['An online meeting sets isOnlineMeeting: true and onlineMeetingProvider: "teamsForBusiness" (https://learn.microsoft.com/en-us/graph/api/resources/event)', 'transactionId: “A custom identifier specified by a client app for the server to avoid redundant POST operations in case of client retries to create the same event” (https://learn.microsoft.com/en-us/graph/api/resources/event)', 'A room is invited as an attendee of type resource, with its mailbox address', 'NOT STATED on the pages read: what the server answers to a second POST with the same transactionId. The mock assumes the first event is returned; to observe in real validation'] },
   { id: 'cancel', what: 'Cancel the event (the organiser only; sends a cancellation)', method: 'POST', delegatedPath: '/me/events/{id}/cancel', applicationPath: '/users/{id | userPrincipalName}/events/{id}/cancel', delegated: 'Calendars.ReadWrite', application: 'Calendars.ReadWrite', higher: [], success: 202,
     source: 'https://learn.microsoft.com/en-us/graph/api/event-cancel', pageUpdated: '2024-06-21', validated: GRAPH_VALIDATED,
     notes: ['An attendee who calls it gets HTTP 400: “You need to be an organizer to cancel a meeting.”', 'Returns 202 Accepted and no body'] },
@@ -106,19 +106,25 @@ export const reqFindMeetingTimes = (req: SuggestRequest, organizerMail: string):
 export const reqCreate = (m: GraphMode, req: CreateRequest): HttpRequest => ({ method: 'POST', url: `${GRAPH_BASE}${mailbox(m)}/events`, headers: { ...JSON_HEADERS },
   body: { subject: req.subject, body: { contentType: 'HTML', content: htmlOf(req.body) }, start: toGraphTime(req.from), end: toGraphTime(req.to),
     ...(req.room ? { location: { displayName: req.room.name, locationEmailAddress: req.room.mail } } : {}),
-    attendees: [...req.parties.filter((p) => p.mail !== m.organizer).map(attendeeOf), ...(req.room ? [resourceOf(req.room)] : [])], transactionId: req.transactionId } });
+    attendees: [...req.parties.filter((p) => p.mail !== m.organizer).map(attendeeOf), ...(req.room ? [resourceOf(req.room)] : [])],
+    // a Teams meeting when the request is for an online one (event resource: isOnlineMeeting, onlineMeetingProvider "teamsForBusiness"; read 2026-11-11)
+    ...(req.online ? { isOnlineMeeting: true, onlineMeetingProvider: 'teamsForBusiness' } : {}), transactionId: req.transactionId } });
 export const reqCancel = (m: GraphMode, eventId: string, comment: string): HttpRequest => ({ method: 'POST', url: `${GRAPH_BASE}${mailbox(m)}/events/${encodeURIComponent(eventId)}/cancel`, headers: { 'Content-Type': 'application/json' }, body: { comment: comment.slice(0, 300) } });
 
 // ------------------------------------------------------------------------------------------------------------ the responses, as documented
-/** getSchedule's `value`: one scheduleInformation per address. "free" and "workingElsewhere" are not busy; "tentative", "busy" and "oof" are. */
+/**
+ * getSchedule's `value`: one scheduleInformation per address. "free" and "workingElsewhere" are not busy; "tentative", "busy" and
+ * "oof" are. A subject is never carried over (a private one must not be repeated, and nobody needs the others to find a time).
+ * Anything that is not of the documented shape is dropped, never guessed at, and never throws.
+ */
 export function parseSchedule(body: unknown): ScheduleOf[] {
   const list = (body as { value?: unknown[] } | null)?.value; if (!Array.isArray(list)) return [];
-  return list.map((raw) => {
+  return list.filter((raw) => !!raw && typeof raw === 'object' && typeof (raw as { scheduleId?: unknown }).scheduleId === 'string').map((raw) => {
     const s = raw as { scheduleId?: string; scheduleItems?: Array<{ status?: string; start?: unknown; end?: unknown; subject?: string }>; workingHours?: { daysOfWeek?: string[]; startTime?: string; endTime?: string; timeZone?: { name?: string } }; error?: { message?: string } };
     const busy: Busy[] = []; let unread = 0;
-    for (const it of s.scheduleItems || []) { if (!['busy', 'oof', 'tentative'].includes(it.status || '')) continue; const a = fromGraphTime(it.start); const b = fromGraphTime(it.end); if (a == null || b == null) { unread += 1; continue; } busy.push({ from: a, to: b, title: it.status === 'busy' ? 'Busy' : it.status === 'oof' ? 'Out of office' : 'Tentative' }); }
-    const wh = s.workingHours; const tz = toIana(wh?.timeZone?.name); const start = (wh?.startTime || '').slice(0, 5); const end = (wh?.endTime || '').slice(0, 5);
-    const days = (wh?.daysOfWeek || []).map((d) => DAYS.indexOf(String(d).toLowerCase())).filter((n) => n >= 0);
+    for (const it of Array.isArray(s.scheduleItems) ? s.scheduleItems : []) { if (!it || typeof it !== 'object' || !['busy', 'oof', 'tentative'].includes(it.status || '')) continue; const a = fromGraphTime(it.start); const b = fromGraphTime(it.end); if (a == null || b == null) { unread += 1; continue; } busy.push({ from: a, to: b, title: it.status === 'busy' ? 'Busy' : it.status === 'oof' ? 'Out of office' : 'Tentative' }); }
+    const wh = s.workingHours && typeof s.workingHours === 'object' ? s.workingHours : undefined; const tz = toIana(wh?.timeZone?.name); const start = String(wh?.startTime || '').slice(0, 5); const end = String(wh?.endTime || '').slice(0, 5);
+    const days = (Array.isArray(wh?.daysOfWeek) ? wh!.daysOfWeek! : []).map((d) => DAYS.indexOf(String(d).toLowerCase())).filter((n) => n >= 0);
     const working: WorkingHours | null = wh && tz && isHm(start) && isHm(end) && days.length ? { days, start, end, tz } : null;
     const note = s.error?.message ? `the calendar answered with an error for this address: ${s.error.message}` : unread ? `${unread} busy block(s) came back in a time zone this adapter cannot read` : !wh ? undefined : !working ? `working hours came back in a time zone this adapter cannot read (“${wh.timeZone?.name || 'none'}”)` : undefined;
     return { mail: String(s.scheduleId || ''), busy: busy.sort((x, y) => x.from - y.from), working, ...(note ? { note } : {}) };
@@ -126,19 +132,19 @@ export function parseSchedule(body: unknown): ScheduleOf[] {
 }
 export function parsePeople(body: unknown): PersonRef[] {
   const list = (body as { value?: unknown[] } | null)?.value; if (!Array.isArray(list)) return [];
-  return list.map((raw) => { const u = raw as { id?: string; displayName?: string; mail?: string | null; userPrincipalName?: string; jobTitle?: string | null; businessPhones?: string[] }; return { id: String(u.id || ''), name: String(u.displayName || ''), mail: String(u.mail || u.userPrincipalName || '').toLowerCase(), title: u.jobTitle || null, phone: u.businessPhones?.[0] || null }; }).filter((p) => p.id && p.mail);
+  return list.filter((raw) => !!raw && typeof raw === 'object').map((raw) => { const u = raw as { id?: string; displayName?: string; mail?: string | null; userPrincipalName?: string; jobTitle?: string | null; businessPhones?: string[] }; return { id: String(u.id || ''), name: String(u.displayName || ''), mail: String(u.mail || u.userPrincipalName || '').toLowerCase(), title: u.jobTitle || null, phone: u.businessPhones?.[0] || null }; }).filter((p) => p.id && p.mail);
 }
 /** The shared (published) version of each shift; a shift that exists only as a manager's draft is not a fact yet and is left out. */
 export function parseShifts(body: unknown): ShiftOf[] {
   const list = (body as { value?: unknown[] } | null)?.value; if (!Array.isArray(list)) return [];
   const out: ShiftOf[] = [];
-  for (const raw of list) { const s = raw as { userId?: string; sharedShift?: { startDateTime?: string; endDateTime?: string; displayName?: string | null } | null }; const a = Date.parse(s.sharedShift?.startDateTime || ''); const b = Date.parse(s.sharedShift?.endDateTime || ''); if (s.userId && Number.isFinite(a) && Number.isFinite(b) && b > a) out.push({ personId: s.userId, from: a, to: b, name: s.sharedShift?.displayName || 'Shift' }); }
+  for (const raw of list) { if (!raw || typeof raw !== 'object') continue; const s = raw as { userId?: string; sharedShift?: { startDateTime?: string; endDateTime?: string; displayName?: string | null } | null }; const a = Date.parse(s.sharedShift?.startDateTime || ''); const b = Date.parse(s.sharedShift?.endDateTime || ''); if (s.userId && Number.isFinite(a) && Number.isFinite(b) && b > a) out.push({ personId: s.userId, from: a, to: b, name: s.sharedShift?.displayName || 'Shift' }); }
   return out.sort((x, y) => x.from - y.from || x.personId.localeCompare(y.personId));
 }
 export interface NativeSuggestion { from: number; to: number; confidence: number; reason: string; organizer: string; attendees: Array<{ mail: string; availability: string }> }
 export function parseFindMeetingTimes(body: unknown): { suggestions: NativeSuggestion[]; empty: string } {
   const b = body as { emptySuggestionsReason?: string; meetingTimeSuggestions?: unknown[] } | null; const out: NativeSuggestion[] = [];
-  for (const raw of b?.meetingTimeSuggestions || []) { const s = raw as { confidence?: number; suggestionReason?: string; organizerAvailability?: string; attendeeAvailability?: Array<{ availability?: string; attendee?: { emailAddress?: { address?: string } } }>; meetingTimeSlot?: { start?: unknown; end?: unknown } }; const a = fromGraphTime(s.meetingTimeSlot?.start); const z = fromGraphTime(s.meetingTimeSlot?.end); if (a != null && z != null) out.push({ from: a, to: z, confidence: Number(s.confidence ?? 0), reason: String(s.suggestionReason || ''), organizer: String(s.organizerAvailability || ''), attendees: (s.attendeeAvailability || []).map((x) => ({ mail: String(x.attendee?.emailAddress?.address || ''), availability: String(x.availability || '') })) }); }
+  for (const raw of Array.isArray(b?.meetingTimeSuggestions) ? b!.meetingTimeSuggestions! : []) { if (!raw || typeof raw !== 'object') continue; const s = raw as { confidence?: number; suggestionReason?: string; organizerAvailability?: string; attendeeAvailability?: Array<{ availability?: string; attendee?: { emailAddress?: { address?: string } } }>; meetingTimeSlot?: { start?: unknown; end?: unknown } }; const a = fromGraphTime(s.meetingTimeSlot?.start); const z = fromGraphTime(s.meetingTimeSlot?.end); if (a != null && z != null) out.push({ from: a, to: z, confidence: Number(s.confidence ?? 0), reason: String(s.suggestionReason || ''), organizer: String(s.organizerAvailability || ''), attendees: (s.attendeeAvailability || []).map((x) => ({ mail: String(x.attendee?.emailAddress?.address || ''), availability: String(x.availability || '') })) }); }
   return { suggestions: out, empty: String(b?.emptySuggestionsReason || '') };
 }
 export function parseEvent(body: unknown, req: CreateRequest): CalEvent | null {

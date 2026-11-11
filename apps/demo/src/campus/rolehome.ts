@@ -14,7 +14,7 @@
  *   - a role is shown only its own kind of figure: a visitor and an employee are never shown health scores, issues or money.
  */
 import type { RoleKey } from '../registry.types.js';
-import { ROLES } from '../access/policy.js';
+import { CHAMPION_SITES, ROLES } from '../access/policy.js';
 import { allRecords, PEOPLE, type RoomRecord } from './design.js';
 import { REFERENCE_ROOM_ID, SITE, buildingByKey, roomById, roomHref, shortName } from './canon.js';
 import { attentionQueue, campusStats, roomHealth, roomIssues } from './metrics.js';
@@ -61,6 +61,7 @@ const fromPriority = (p: Priority): Row => ({ id: p.id, title: p.title, sub: `${
 const JUMPS: Record<RoleKey, Array<[key: string, label: string, href: string, sub: string]>> = {
   visitor: [['w', 'Find the way', '#/lite/way', 'Step by step from where you are'], ['p', 'Places', '#/search', 'Reception, parking, somewhere to wait'], ['l', 'The campus', '#/lite', 'Buildings and public places'], ['e', 'In a room', '#/here', 'What is here, and what to try']],
   employee: [['r', 'My room', `#/lite/room/${REFERENCE_ROOM_ID}?mode=user`, 'How it works and whether it is ready'], ['f', 'Find a room', '#/lite', 'By building, floor and what you need'], ['p', 'Places', '#/lite/services', 'Help desk, coffee, post, quiet pods'], ['s', 'Search', '#/search', 'Rooms, places and guides'], ['n', 'Report a problem', '#/servicehands/new', 'In plain words, followed to closure'], ['q', 'Ask for something', '#/request', 'A room, equipment, a replacement'], ['e', 'In a room', '#/here', 'What is here, and what to try']],
+  sitechamp: [['m', 'My site', '#/site', 'Rooms, visits, problems and what you know'], ['e', 'In a room', '#/here', 'What is here, and what to try'], ['n', 'Report a problem', '#/servicehands/new', 'In plain words, followed to closure'], ['a', 'Attest for a room', '#/scan/SIM-AV-0042', 'Tell the approvers how it works for people'], ['f', 'Find a room', '#/lite', 'By building, floor and what you need'], ['s', 'Search', '#/search', 'Rooms, people and who supports what'], ['q', 'Ask for something', '#/request', 'A room, equipment, a replacement']],
   exec: [['p', 'Portfolio', '#/pro/exec', 'Risk, readiness and exposure'], ['c', 'Campus', '#/campus', 'Every building and its rooms'], ['b', 'Budget', '#/budget', 'Every figure a project has had'], ['d', 'Decisions', '#/decisions', 'What was decided, by whom, on what'], ['s', 'Search', '#/search', 'Ask about anything on record'], ['q', 'Ask for something', '#/request', 'A room, equipment, a replacement']],
   service: [['j', 'My jobs', '#/servicehands', 'Accept, start, record, hand back'], ['i', 'Issues', '#/pro/issues', 'Open in your coverage'], ['r', 'The room', '#/room', 'Atlas 4.218 as a technician sees it'], ['x', 'Known fixes', '#/service/fixes', 'What worked before'], ['s', 'Search', '#/search', 'A device, a room, a serial'], ['e', 'In a room', '#/here', 'What is here, and what to try']],
   svcmgr: [['d', 'Dispatch board', '#/service', 'Triage and assign'], ['c', 'Coverage', '#/search/coverage', 'Who supports what, and the gaps'], ['j', 'ServiceHands', '#/servicehands', 'Every job and its stage'], ['i', 'Issues', '#/pro/issues', 'Open across the campus'], ['x', 'Known fixes', '#/service/fixes', 'The fix library'], ['q', 'Ask for something', '#/request', 'A room, equipment, a replacement'], ['e', 'In a room', '#/here', 'What is here, and what to try']],
@@ -125,6 +126,28 @@ export function startFor(i: Inputs): Start {
           { id: 'near', title: 'Rooms near yours', hint: `${b?.name || ''}, nearest floor first`, rows: near.map(roomRow), empty: 'No other room is modelled in this building.', more: open('#/lite') ? { label: 'Every room', href: '#/lite' } : undefined },
           { id: 'asked', title: 'What you reported', hint: 'Followed to closure', rows: asked.slice(0, 4).map((x) => ({ id: x.id, title: x.title, sub: `${roomName(x.roomId, x.roomName)} · ${x.state.toLowerCase().replace(/_/g, ' ')}`, tone: LIVE.has(x.state) ? 'warn' : 'ok' })), empty: 'You have reported nothing. If something in a room is not working, say so in plain words.', more: open('#/servicehands/new') ? { label: 'Report a problem', href: '#/servicehands/new' } : undefined },
         ], basis: 'Rooms and problems are synthetic records; nothing here is a live booking or sensor.' };
+    }
+    case 'sitechamp': {
+      // The champion's Mission Control: their own site, computed from the same records every other role reads. No health scores, no money,
+      // no engineering figures: what is wrong here, who is coming, and what waits for the champion.
+      const site = CHAMPION_SITES[0]!; const b = buildingByKey(site); const mineRecs = recs.filter((r) => r.outline.building === site);
+      const withProblem = mineRecs.filter((r) => roomIssues(r, w).some((x) => x.state !== 'RESOLVED'));
+      const visits = wos.filter((x) => x.buildingKey === site); const toConfirm = visits.filter((x) => !x.access);
+      const here = live.filter((x) => x.buildingKey === site);
+      const first = toConfirm[0];
+      return { ...base, headline: toConfirm.length ? `${plural(toConfirm.length, 'visit')} to ${b?.short || site} wait${toConfirm.length === 1 ? 's' : ''} for you to confirm access.` : `${b?.name || site} is your site.`,
+        summary: `${plural(mineRecs.length, 'room')} here. ${withProblem.length ? `${plural(withProblem.length, 'room')} ${withProblem.length === 1 ? 'has' : 'have'} a problem on record` : 'No room has a problem on record'}; ${here.length ? `${plural(here.length, 'job')} ${here.length === 1 ? 'is' : 'are'} being followed` : 'no job is open'}. You report, confirm access, check rooms against their record and say what you know. You do not change settings, run tests or approve.`,
+        primary: open('#/site') ? { label: first ? `Confirm access for ${first.id}` : 'Open my site', href: '#/site', why: first ? `${first.title}` : 'Rooms, visits, problems and what you know' } : null,
+        strip: null,
+        tiles: [
+          { label: 'Rooms at my site', value: String(mineRecs.length), hint: b?.name || site, tone: 'info', href: link('#/site') },
+          { label: 'With a problem on record', value: String(withProblem.length), hint: withProblem.length ? 'being followed' : 'none', tone: withProblem.length ? 'warn' : 'ok', href: link('#/site') },
+          { label: 'Visits planned', value: String(visits.length), hint: toConfirm.length ? `${toConfirm.length} to confirm access` : 'access confirmed', tone: toConfirm.length ? 'warn' : 'ok', href: link('#/site') },
+        ],
+        zones: [
+          { id: 'visits', title: 'Visits to my site', hint: 'Say they can get in', rows: visits.slice(0, 5).map((x) => ({ id: x.id, title: x.title, sub: `${roomName(x.roomId)} · ${x.access ? `access confirmed by ${x.access.confirmedBy}` : 'access not yet confirmed'}`, href: link('#/site'), tone: x.access ? 'ok' as Tone : 'warn' as Tone, tag: x.access ? 'Confirmed' : 'To confirm' })), empty: 'No visit is planned for this site.' },
+          { id: 'problems', title: 'Problems on record here', hint: 'Walk in and add what you see', rows: here.slice(0, 5).map((x) => ({ id: x.id, title: x.title, sub: `${roomName(x.roomId, x.roomName)} · ${x.state.toLowerCase().replace(/_/g, ' ')}`, href: link(`#/here/${x.roomId}`), tone: 'warn' as Tone })), empty: 'No problem is being followed at this site.', more: open('#/here') ? { label: 'Walk into a room', href: '#/here' } : undefined },
+        ], basis: 'Rooms, jobs and visits are synthetic records of one site; nothing here is a live booking, sensor or schedule.' };
     }
     case 'exec': {
       const c = campusStats(w); const funded = P.funding.reduce((s, f) => s + f.amount, 0); const unfunded = P.projects.filter((p) => p.governance === 'APPROVED' && !P.funding.some((f) => f.projectId === p.id));

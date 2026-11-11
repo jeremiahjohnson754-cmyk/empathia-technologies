@@ -119,7 +119,7 @@ test('RC-07 operating a room: V2.5.3 decides who; every operation and every refu
 test('RC-08 the role matrix, all fifteen roles: who opens a panel, who operates it, who gets Engineer mode — each from V2.5.3’s tables, and the store agrees with the page', () => {
   const page = R.resolve(`#/control/${REF}`); const eng = R.resolve(`#/control/${REF}?mode=engineer`); assert.ok(page && eng);
   const rows = P.ROLE_KEYS.map((k) => ({ k, open: P.canOpen(k, page), operate: P.canDo ? P.canDo(k, page, 'control.use') : P.allows({ action: 'control.use' }, k), engineer: P.canOpen(k, eng) }));
-  assert.equal(rows.length, 15);
+  assert.equal(rows.length, 16);   // sixteen since the Site Champion became a dedicated role (founder, 11 Nov 2026)
   assert.deepEqual(rows.filter((r) => r.open).map((r) => r.k), P.ROLE_KEYS.filter((k) => P.allows({ area: 'control' }, k)));
   assert.deepEqual(rows.filter((r) => r.engineer).map((r) => r.k), P.ROLE_KEYS.filter((k) => P.allows({ area: 'control' }, k) && P.allows({ field: 'control.engineer' }, k)));
   assert.deepEqual(rows.filter((r) => !r.open).map((r) => r.k).sort(), ['qa', 'visitor'], 'the two roles with no control area never reach a panel');

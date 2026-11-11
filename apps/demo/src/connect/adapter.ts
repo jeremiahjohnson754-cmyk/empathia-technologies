@@ -27,7 +27,7 @@ export interface ShiftOf { personId: string; from: number; to: number; name: str
 export interface Party { id: string; name: string; mail: string; optional?: boolean }
 export interface RoomRef { id: string; name: string; mail: string }
 export interface SuggestRequest { parties: Party[]; room: RoomRef | null; minutes: number; from: number; to: number; max?: number }
-export interface CreateRequest { transactionId: string; subject: string; body: string; from: number; to: number; parties: Party[]; room: RoomRef | null }
+export interface CreateRequest { transactionId: string; subject: string; body: string; from: number; to: number; parties: Party[]; room: RoomRef | null; /** an online meeting: a connected calendar would attach its meeting link; the simulated one only notes it */ online?: boolean }
 export interface CalEvent { id: string; transactionId: string; subject: string; body: string; from: number; to: number; parties: Party[]; room: RoomRef | null; state: 'RECORDED' | 'CANCELLED'; createdAt: string; cancelledAt?: string; cancelReason?: string }
 export interface Created { event: CalEvent; /** true when this transaction id had already produced the event: nothing was created a second time */ again: boolean }
 export interface CalendarAdapter {

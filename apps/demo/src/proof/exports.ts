@@ -19,7 +19,7 @@ export function toJson(w: Working, redaction: Redaction, role: string, at: strin
   return JSON.stringify({ ...head(w, redaction, role, at), acceptance: w.acceptance,
     final_signoff: { state: w.signoff, first_approval: w.firstApproval ? { by: w.firstApproval.by.label, at: w.firstApproval.at, over_waivers: w.firstApproval.waivers } : null, second_approval: w.secondApproval ? { by: w.secondApproval.by.label, at: w.secondApproval.at, over_waivers: w.secondApproval.waivers } : null }, totals: w.totals,
     open_items: w.open.map((b) => `${b.test} ${b.reason}`),
-    waivers: w.waivers.map((x) => ({ test: x.test, state: x.state, stands_until: x.expires, granted_by: x.by.label, granted_at: x.at, reason: x.reason, relies_on: x.basis, owner: x.owner, remediation_plan: x.plan, still_open: x.covers })),
+    waivers: w.waivers.map((x) => ({ affected_requirement: x.test, kind: x.kind, state: x.state, risk: x.risk, engineering_review: x.review ? { by: x.review.by.label, at: x.review.at, finding: x.review.finding } : null, stands_until: x.expires, granted_by: x.by.label, granted_at: x.at, reason: x.reason, relies_on: x.basis, owner: x.owner, remediation_plan: x.plan, still_open: x.covers })),
     site_champion_attestations: w.attestations.map((a) => ({ at: a.at, statement: a.statement, note: 'local attestation; not an approval' })),
     blockers: w.blockers.map((b) => `${b.test} ${b.reason}`),
     deficiencies: w.deficiencies.map((x) => ({ id: x.id, severity: x.severity, test: x.test, statement: x.statement, owner: x.owner, action: x.action, state: x.state })),

@@ -40,8 +40,10 @@ function Unknown() {
 function Directory({ role, query, hash }: Pick<PageProps, 'role' | 'query' | 'hash'>) {
   const { st, w, now } = useConnect(); const all = useMemo(() => visibleTo(role, people()), [role]); const browse = mayBrowse(role);
   const [q, setQ] = useState(query.get('q') || ''); const [group, setGroup] = useState(''); const [kind, setKind] = useState<'' | 'champions' | 'roles'>('');
-  const about = (query.get('about') || '').split(':'); const aboutKind = (['room', 'building', 'device', 'issue'] as const).find((k) => k === about[0]); const aboutId = about.slice(1).join(':');
-  const found = useMemo(() => { const base = q.trim().length >= 2 ? findPeople(q, 200).filter((p) => all.includes(p)) : all; return base.filter((p) => (!group || p.group === group) && (!kind || (kind === 'champions' ? p.kind !== 'role' : p.kind === 'role'))); }, [q, group, kind, all]);
+  // what the page was opened about: `?about=<kind>:<id>`, or the short forms other pages use: `?room=<id>` and `?site=<building>`
+  const site = ALL_BUILDINGS.find((b) => b.key === query.get('site')) || null;
+  const about = (query.get('room') ? `room:${query.get('room')}` : query.get('about') || '').split(':'); const aboutKind = (['room', 'building', 'device', 'issue'] as const).find((k) => k === about[0]); const aboutId = about.slice(1).join(':');
+  const found = useMemo(() => { const base = q.trim().length >= 2 ? findPeople(q, 200).filter((p) => all.includes(p)) : all; return base.filter((p) => (!site || p.buildings.includes(site.key)) && (!group || p.group === group) && (!kind || (kind === 'champions' ? p.kind !== 'role' : p.kind === 'role'))); }, [q, group, kind, all, site]);
   const fresh = useMemo(() => { const n = { confirmed: 0, stale: 0, unknown: 0 }; for (const p of all) n[freshnessOf(p, st.confirmed).state] += 1; return n; }, [all, st]);
   const groups = ESTATE_GROUPS.filter((g) => all.some((p) => p.group === g.name));
   return (
@@ -50,9 +52,10 @@ function Directory({ role, query, hash }: Pick<PageProps, 'role' | 'query' | 'ha
         meta={[<Tag key="s" tone="warn">Synthetic people</Tag>, <span key="n" data-testid="people-count">{plural(all.length, 'person', 'people')} shown to the {ROLES[role].label}</span>, <span key="f">{fresh.confirmed} confirmed · {fresh.stale} stale · {fresh.unknown} never confirmed</span>]} />
       <ReturnBanner hash={hash} />
       {aboutKind && aboutId && <WhoKnows role={role} kind={aboutKind} id={aboutId} />}
+      {site && <p className="cx-about" data-testid="people-site" data-site={site.key}>The people of <b>{site.name}</b>: its site champion and backup{browse ? ', and the holder of each role who covers it' : ''}. <a href="#/people">Every site</a></p>}
       <div className="cx-filters">
         <Field label="Find a person" hint="A name, a role, a building, or a language.">{(fid, by) => <input id={fid} aria-describedby={by} type="search" autoComplete="off" value={q} maxLength={60} onChange={(e) => setQ(e.target.value)} data-testid="people-find" />}</Field>
-        <Field label="Part of the estate">{(fid) => <select id={fid} value={group} onChange={(e) => setGroup(e.target.value)} data-testid="people-group"><option value="">Every site</option>{groups.map((g) => <option key={g.name} value={g.name}>{g.name}</option>)}</select>}</Field>
+        {!site && <Field label="Part of the estate">{(fid) => <select id={fid} value={group} onChange={(e) => setGroup(e.target.value)} data-testid="people-group"><option value="">Every site</option>{groups.map((g) => <option key={g.name} value={g.name}>{g.name}</option>)}</select>}</Field>}
         {browse && <Field label="Kind">{(fid) => <select id={fid} value={kind} onChange={(e) => setKind(e.target.value as typeof kind)} data-testid="people-kind"><option value="">Everyone</option><option value="champions">Site champions and backups</option><option value="roles">Operational roles</option></select>}</Field>}
       </div>
       <p className="ui-muted" role="status" aria-live="polite" data-testid="people-status">{found.length ? `${plural(found.length, 'person', 'people')}${q.trim() ? ` matching “${q.trim()}”` : ''}` : `Nobody ${q.trim() ? `matches “${q.trim()}”` : 'is listed'}. Try a first name, a building such as “Atlas”, or “champion”.`}</p>

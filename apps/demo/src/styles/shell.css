@@ -6,24 +6,24 @@
 :root {
   --role-visitor: #e2b44a; --role-employee: #6ea8ff; --role-exec: #93a9ff; --role-service: #f08a4b; --role-svcmgr: #5ccf8a;
   --role-syseng: #4fc3f7; --role-designer: #ec716b; --role-installer: #b5d84a; --role-cxeng: #c18cff; --role-ipm: #ff86b0;
-  --role-bpm: #c9c24a; --role-ops: #e57ee6; --role-steward: #9d97ff; --role-architect: #d8cfb9; --role-qa: #a7b4c8;
+  --role-bpm: #c9c24a; --role-ops: #e57ee6; --role-steward: #9d97ff; --role-architect: #d8cfb9; --role-qa: #a7b4c8; --role-sitechamp: #ffb199;
 }
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
     --role-visitor: #855c00; --role-employee: #1d5cc0; --role-exec: #2f4a9a; --role-service: #a3480b; --role-svcmgr: #1f6a43;
     --role-syseng: #0a6390; --role-designer: #a51e24; --role-installer: #506b00; --role-cxeng: #6a3fb5; --role-ipm: #a3285c;
-    --role-bpm: #6b5d12; --role-ops: #8a2b8c; --role-steward: #4744b3; --role-architect: #6b604a; --role-qa: #4a5568;
+    --role-bpm: #6b5d12; --role-ops: #8a2b8c; --role-steward: #4744b3; --role-architect: #6b604a; --role-qa: #4a5568; --role-sitechamp: #96441f;
   }
 }
 :root[data-theme="light"] {
   --role-visitor: #855c00; --role-employee: #1d5cc0; --role-exec: #2f4a9a; --role-service: #a3480b; --role-svcmgr: #1f6a43;
   --role-syseng: #0a6390; --role-designer: #a51e24; --role-installer: #506b00; --role-cxeng: #6a3fb5; --role-ipm: #a3285c;
-  --role-bpm: #6b5d12; --role-ops: #8a2b8c; --role-steward: #4744b3; --role-architect: #6b604a; --role-qa: #4a5568;
+  --role-bpm: #6b5d12; --role-ops: #8a2b8c; --role-steward: #4744b3; --role-architect: #6b604a; --role-qa: #4a5568; --role-sitechamp: #96441f;
 }
 :root[data-theme="dark"] {
   --role-visitor: #e2b44a; --role-employee: #6ea8ff; --role-exec: #93a9ff; --role-service: #f08a4b; --role-svcmgr: #5ccf8a;
   --role-syseng: #4fc3f7; --role-designer: #ec716b; --role-installer: #b5d84a; --role-cxeng: #c18cff; --role-ipm: #ff86b0;
-  --role-bpm: #c9c24a; --role-ops: #e57ee6; --role-steward: #9d97ff; --role-architect: #d8cfb9; --role-qa: #a7b4c8;
+  --role-bpm: #c9c24a; --role-ops: #e57ee6; --role-steward: #9d97ff; --role-architect: #d8cfb9; --role-qa: #a7b4c8; --role-sitechamp: #ffb199;
 }
 /* the current role (<html data-role>) is --role; any element carrying data-r gets that role's colour as --rc */
 :root { --role: var(--role-architect); }
@@ -31,13 +31,13 @@
 :root[data-role="service"] { --role: var(--role-service); } :root[data-role="svcmgr"] { --role: var(--role-svcmgr); } :root[data-role="syseng"] { --role: var(--role-syseng); }
 :root[data-role="designer"] { --role: var(--role-designer); } :root[data-role="installer"] { --role: var(--role-installer); } :root[data-role="cxeng"] { --role: var(--role-cxeng); }
 :root[data-role="ipm"] { --role: var(--role-ipm); } :root[data-role="bpm"] { --role: var(--role-bpm); } :root[data-role="ops"] { --role: var(--role-ops); }
-:root[data-role="steward"] { --role: var(--role-steward); } :root[data-role="architect"] { --role: var(--role-architect); } :root[data-role="qa"] { --role: var(--role-qa); }
+:root[data-role="steward"] { --role: var(--role-steward); } :root[data-role="architect"] { --role: var(--role-architect); } :root[data-role="qa"] { --role: var(--role-qa); } :root[data-role="sitechamp"] { --role: var(--role-sitechamp); }
 [data-r] { --rc: var(--role); }
 [data-r="visitor"] { --rc: var(--role-visitor); } [data-r="employee"] { --rc: var(--role-employee); } [data-r="exec"] { --rc: var(--role-exec); }
 [data-r="service"] { --rc: var(--role-service); } [data-r="svcmgr"] { --rc: var(--role-svcmgr); } [data-r="syseng"] { --rc: var(--role-syseng); }
 [data-r="designer"] { --rc: var(--role-designer); } [data-r="installer"] { --rc: var(--role-installer); } [data-r="cxeng"] { --rc: var(--role-cxeng); }
 [data-r="ipm"] { --rc: var(--role-ipm); } [data-r="bpm"] { --rc: var(--role-bpm); } [data-r="ops"] { --rc: var(--role-ops); }
-[data-r="steward"] { --rc: var(--role-steward); } [data-r="architect"] { --rc: var(--role-architect); } [data-r="qa"] { --rc: var(--role-qa); }
+[data-r="steward"] { --rc: var(--role-steward); } [data-r="architect"] { --rc: var(--role-architect); } [data-r="qa"] { --rc: var(--role-qa); } [data-r="sitechamp"] { --rc: var(--role-sitechamp); }
 /* product colours by data-p (the tokens' --p-<id>) */
 [data-p] { --pc: var(--accent); }
 [data-p="mission-control"] { --pc: var(--p-mission-control); } [data-p="lite"] { --pc: var(--p-lite); } [data-p="pro"] { --pc: var(--p-pro); }

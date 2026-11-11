@@ -143,7 +143,7 @@ export function confirm(role: RoleKey, input: MeetInput, slot: { from: number; t
   const parties: Party[] = [partyOf(me), ...ids.map((id) => partyOf(simOf(personById(id)!), input.optionalIds.includes(id)))];
   const room = input.roomId ? roomRef(input.roomId) : null; const about = input.about ? subjectOf(input.about.kind, input.about.id, w) : null; const subject = input.subject.trim() || defaultSubject(input, w);
   const tzOf = (id: string) => world.people.find((p) => p.id === id)?.tz || me.tz;
-  const out = simCreate(world, { transactionId: key, subject, body: invitationText({ subject, parties, room, from: slot.from, to: slot.to, about, organiser: me }, tzOf), from: slot.from, to: slot.to, parties, room });
+  const out = simCreate(world, { transactionId: key, subject, body: invitationText({ subject, parties, room, from: slot.from, to: slot.to, about, organiser: me }, tzOf), from: slot.from, to: slot.to, parties, room, online: !room });
   if (!out.ok) { const r = deny(w, persona, 'meeting.refused', agg, out.why); S.save(w); return r; }
   const m = out.value.event as Meeting; m.organiser = { id: me.id, name: me.name, role }; m.about = about ? { kind: about.kind, id: about.id, label: about.label } : null; m.by = persona;
   if (room) (w.bookings[room.id] ||= []).push({ from: stamp(m.from), to: stamp(m.to), title: `${m.id} · ${subject}` });
@@ -151,11 +151,11 @@ export function confirm(role: RoleKey, input: MeetInput, slot: { from: number; t
   saveState(st); S.save(w);
   return { meeting: m, again: false, said: RECORDED_STATEMENT };
 }
-/** Cancel a recorded meeting: the person who recorded it only. The room's booking is removed from the workspace; the meeting is kept, as cancelled. */
+/** Cancel a recorded meeting: the person who recorded it (or the Product Architect, who may do everything). The room's booking is removed from the workspace; the meeting is kept, as cancelled. */
 export function cancelMeeting(role: RoleKey, id: string, reason: string, now: number): Refusal | Meeting {
   const w = S.load(); const st = loadState(); const persona = personaOf(role); const m = st.meetings.find((x) => x.id === id);
   if (!m) return { why: [`No meeting ${id} is recorded here.`] };
-  if (!maySchedule(role) || m.organiser.role !== role) { const r = deny(w, persona, 'meeting.cancel_refused', m.id, [`${m.id} was recorded by the ${ROLES[m.organiser.role]?.label || m.organiser.role}; only they cancel it.`]); S.save(w); return r; }
+  if (!maySchedule(role) || (m.organiser.role !== role && role !== 'architect')) { const r = deny(w, persona, 'meeting.cancel_refused', m.id, [!maySchedule(role) ? `The ${ROLES[role].label} does not cancel meetings here.` : `${m.id} was recorded by the ${ROLES[m.organiser.role]?.label || m.organiser.role}; only they cancel it.`]); S.save(w); return r; }
   if (m.state === 'CANCELLED') return m;
   const out = simCancel(worldOf(st, w, role, () => now), id, reason); if (!out.ok) return { why: out.why };
   if (m.room && w.bookings[m.room.id]) w.bookings[m.room.id] = w.bookings[m.room.id]!.filter((b) => !b.title.startsWith(`${m.id} ·`));

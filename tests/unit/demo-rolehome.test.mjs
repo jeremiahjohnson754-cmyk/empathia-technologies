@@ -18,7 +18,7 @@ const hrefs = (s) => [s.primary?.href, ...s.jumps.map((j) => j.href), ...s.tiles
 const text = (s) => [s.headline, s.summary, s.primary?.label, s.primary?.why, ...s.tiles.flatMap((t) => [t.label, t.value, t.unit, t.hint]), ...s.zones.flatMap((z) => [z.title, z.hint, z.empty, ...z.rows.flatMap((r) => [r.title, r.sub, r.tag])])].filter(Boolean).join(' | ');
 
 test('RH-01 all fifteen roles have a start page, named as V2.5.3 named each role’s home', () => {
-  assert.equal(ROLES.length, 15);
+  assert.equal(ROLES.length, 16);   // sixteen since the Site Champion became a dedicated role (founder, 11 Nov 2026); its home is the platform persona's "My site"
   for (const r of ROLES) { const s = start(r); assert.equal(s.role, r); assert.equal(s.name, P.ROLES[r].home, r); assert.ok(s.headline.length > 3 && s.summary.length > 20 && s.basis.length > 20, r); }
   assert.deepEqual([...H.MISSION_ROLES], ['ops', 'architect']);
   assert.equal(new Set(ROLES.map((r) => start(r).headline)).size >= 13, true, 'the start pages do not all say the same thing');

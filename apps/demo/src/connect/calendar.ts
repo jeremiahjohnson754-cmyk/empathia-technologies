@@ -59,9 +59,11 @@ export function seededBusy(c: Pick<Cal, 'id' | 'tz' | 'hours' | 'shift'>, from: 
     if (!h.days.includes(day.dow)) continue;
     const rng = seeded(`${c.id}|${day.y}-${day.m}-${day.d}`); const n = Math.floor(rng() * 3) + (rng() < 0.3 ? 1 : 0);
     const open = wallToUtc(c.tz, day.y, day.m, day.d, sh, sm);
-    for (let i = 0; i < n; i += 1) { const at = Math.floor(rng() * (slots - 1)); const len = 1 + Math.floor(rng() * 3); const a = open + at * 30 * MIN; const b = Math.min(open + slots * 30 * MIN, a + len * 30 * MIN); if (b > from && a < to) out.push({ from: a, to: b, title: 'Busy (simulated calendar)' }); }
+    for (let i = 0; i < n; i += 1) { const at = Math.floor(rng() * (slots - 1)); const len = 1 + Math.floor(rng() * 3); const a = open + at * 30 * MIN; const b = Math.min(open + slots * 30 * MIN, a + len * 30 * MIN); out.push({ from: a, to: b, title: 'Busy (simulated calendar)' }); }
   }
-  return merge(out).map((x) => ({ ...x, title: 'Busy (simulated calendar)' }));
+  // The window is applied AFTER the day's blocks are joined: a block is the same block whatever window was asked (asked narrowly,
+  // two blocks that touch must not come back as the first one alone).
+  return merge(out).filter((x) => x.to > from && x.from < to).map((x) => ({ ...x, title: 'Busy (simulated calendar)' }));
 }
 
 /** Everything that stops [from, to] for the required attendees and the room; empty when the slot stands. Optional attendees are not asked. */

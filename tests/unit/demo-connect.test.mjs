@@ -6,6 +6,17 @@
 // parts, decoded again; every proposed slot against each person's hours, shift and busy time using this file's own clock
 // arithmetic (Intl), not the scheduler's. Roles are taken from ROLE_KEYS, never counted by hand, so the matrix keeps passing when
 // the Site Champion role joins the policy. Nothing here contacts anything: the Graph adapter only ever sees the mock transport.
+//
+// One Connect, one suite. The integrator's smaller Connect core (v18/continuation, tests CN-01..CN-14) was merged into this one on
+// 11 Nov 2026; each CN property is asserted here against the surviving code:
+//   CN-01 derived directory, all synthetic ............ CX-01, CX-02, CX-03     CN-08 a time taken in between is refused ......... CX-15, CX-14
+//   CN-02 who knows each of the 90 rooms ............... CX-06                   CN-09 the role matrix, all sixteen ............... CX-19
+//   CN-03 the platform's own time-zone data ............ CX-10                   CN-10 cancel frees people and room; bad state .... CX-17, CX-18
+//   CN-04 link registry, encoding, unverified unbuilt .. CX-08, CX-09            CN-11 Graph requests as documented ............... CX-26
+//   CN-05 scheduler property test ...................... CX-11, CX-32            CN-12 Graph responses, malformed dropped ......... CX-27
+//   CN-06 across regions, and "no time" said ........... CX-12                   CN-13 Graph errors, throttling, one event ........ CX-29, CX-30
+//   CN-07 confirm once, the room is then taken ......... CX-13, CX-14            CN-14 one scheduler, either adapter .............. CX-24, CX-25
+// Where the surviving code differs from the integrator's on purpose, the assertion carries the reason in a comment.
 //   node --test tests/unit/demo-connect.test.mjs
 import test from 'node:test'; import assert from 'node:assert/strict';
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -63,6 +74,7 @@ test('CX-02 every person: a reserved address and number, a real time zone that i
     assert.ok(!/synthetic|\(|\d/.test(p.name), p.name); assert.ok(p.buildings.length && p.buildings.every((k) => CN.buildingByKey(k)) && p.buildings.includes(p.home));
     assert.ok(p.lastConfirmed === null || /^\d{4}-\d{2}-\d{2}$/.test(p.lastConfirmed));
   }
+  for (const p of people) assert.ok(!/\b(aon|kraft|heinz|stefanini|khc)\b/i.test(JSON.stringify(p)), `${p.id} names a real organisation`);   // CN-01 (word-bounded here: a fictional surname may contain the letters)
   for (const g of CN.ESTATE_GROUPS) assert.ok(T.isZone(D.ZONE_OF_GROUP[g.name]), `${g.name} has a zone`);
   assert.ok(!T.isZone('Mars/Olympus_Mons'));
   // no real organisation: the only organisation named is the workspace's own fictional partner
@@ -116,27 +128,31 @@ test('CX-05 a site champion is a first-class record: three permissions from the 
   for (const o of D.ONBOARDING) assert.ok(R.resolve(o.href(c).split('?')[0]), `${o.href(c)} is a real address`);
 });
 
-test('CX-06 who to contact: for every room the site champion (or the backup, with the reason) first, then the technician; owners for devices and issues; each with a reason', () => {
-  const w = W.seed(); let promoted = 0; let plain = 0;
-  for (const at of [NOW, NOW + 3.5 * 3_600_000, NOW + 9 * 3_600_000, NOW + 3 * DAY + 2 * 3_600_000]) for (const o of CN.CAMPUS_ROOMS) {
-    const list = D.whoKnows(o.id, at, w); assert.ok(list.length >= 3, o.id); const ids = list.map((c) => c.person.id); assert.equal(new Set(ids).size, ids.length);
+test('CX-06 who to contact: for every room the site champion first when at work, otherwise the backup and it says why; then the technician; the service manager last; owners for devices and issues; each with a reason', () => {
+  const w = W.seed(); let promoted = 0; let plain = 0; assert.equal(CN.CAMPUS_ROOMS.length, 90);
+  for (const at of [NOW, NOW + 3.5 * 3_600_000, NOW + 9 * 3_600_000, NOW + 3 * DAY + 2 * 3_600_000, Date.UTC(2026, 10, 16, 16), Date.UTC(2026, 10, 16, 23, 30), Date.UTC(2026, 10, 21, 15)]) for (const o of CN.CAMPUS_ROOMS) {
+    const list = D.whoKnows(o.id, at, w); assert.ok(list.length >= 4, o.id); const ids = list.map((c) => c.person.id); assert.equal(new Set(ids).size, ids.length);
     const champ = list.find((c) => c.relation === 'champion'); const back = list.find((c) => c.relation === 'backup'); const tech = list.find((c) => c.relation === 'technician');
     assert.equal(champ.person.id, `p-champ-${o.building}`); assert.equal(back.person.id, `p-backup-${o.building}`); assert.ok(tech && tech.person.buildings.includes(o.building) && tech.person.role === 'service');
-    assert.ok(list.indexOf(tech) > Math.min(list.indexOf(champ), list.indexOf(back)), 'who knows the room comes before the technician');
+    assert.ok(list.indexOf(tech) > Math.max(list.indexOf(champ), list.indexOf(back)), 'who knows the room comes before the technician');
+    const last = list[list.length - 1]; assert.equal(last.relation, 'manager'); assert.equal(last.person.role, 'svcmgr'); assert.ok(last.person.buildings.includes(o.building)); assert.match(last.reason, /triaged and escalated/);
     for (const c of list) { assert.ok(c.reason.length > 10, c.reason); assert.equal(c.availability.available, inside(c.person, at, at + 1), `${c.person.id} at ${new Date(at).toISOString()}: availability agrees with this file’s clock`); }
-    if (list[0].relation === 'backup') { promoted += 1; assert.ok(!champ.availability.available && back.availability.available); assert.match(back.promoted, new RegExp(`Shown before ${champ.person.name} because .* (outside working hours|busy|off shift) right now`)); }
-    else { plain += 1; assert.equal(list[0].relation, 'champion'); assert.equal(back.promoted, null); assert.ok(champ.availability.available || !back.availability.available, 'a backup who can be reached is never left behind a champion who cannot'); }
+    // CN-02: the champion first when at work; otherwise the backup first, saying why, with the champion next
+    if (inside(champ.person, at, at + 1)) { plain += 1; assert.equal(list[0].relation, 'champion'); assert.equal(back.promoted, null); assert.match(champ.reason, /^Site champion for .*; (based on floor|looks after the whole building|confirmed access|raised)/); }
+    else { promoted += 1; assert.equal(list[0].relation, 'backup'); assert.equal(list[1].relation, 'champion'); assert.match(back.promoted, new RegExp(`Shown before ${champ.person.name} because .* is (outside working hours|off shift) right now`)); }
   }
-  assert.ok(promoted > 0 && plain > 0, `both orders occur (${promoted} promoted, ${plain} not)`);
+  assert.ok(promoted > 0 && plain > 0, `both orders occur (${promoted} promoted, ${plain} not)`); assert.deepEqual(D.whoKnows('R-NO-SUCH', NOW, w), []);
   // a busy champion is also stood in for
-  { const at = Date.UTC(2026, 10, 12, 17, 0); const s = D.subjectOf('room', REF, w); const c = D.championOf('ATL'); const list = D.contactsFor(s, at, w, (p) => (p.id === c.id ? [{ from: at - MIN, to: at + 30 * MIN, title: 'x' }] : [])); assert.equal(list[0].relation, 'backup'); assert.match(list[0].promoted, /is busy right now/); }
+  { const at = Date.UTC(2026, 10, 12, 17, 0); const s = D.subjectOf('room', REF, w); const c = D.championOf('ATL'); const list = D.contactsFor(s, at, w, (p) => (p.id === c.id ? [{ from: at - MIN, to: at + 30 * MIN, title: 'x' }] : [])); assert.equal(list[0].relation, 'backup'); assert.match(list[0].promoted, /is busy right now/);
+    const none = D.contactsFor(s, at, w, (p) => (p.kind !== 'role' ? [{ from: at - MIN, to: at + 30 * MIN, title: 'x' }] : [])); assert.equal(none[0].relation, 'champion', 'when both are busy the champion stays first'); }
   // a device belongs to the technician; an issue to whoever is assigned, or to the manager who triages while nobody is
   const pos = DS.roomRecord(REF).positions.find((x) => !x.furniture); const dev = D.subjectOf('device', `${REF}/${pos.code}`, w); assert.ok(dev.label.includes(pos.label)); assert.equal(D.contactsFor(dev, NOW, w)[0].relation, 'owner'); assert.equal(D.contactsFor(dev, NOW, w)[0].person.role, 'service');
   const open = w.incidents.find((i) => i.id === 'ISS-0417'); const iss = D.subjectOf('issue', open.id, w); let own = D.contactsFor(iss, NOW, w)[0]; assert.equal(own.relation, 'owner'); assert.equal(own.person.role, 'svcmgr'); assert.match(own.reason, /no technician yet/);
   assert.equal(W.triage(w, 'svcmgr', open.id, 'High'), null); assert.equal(W.assign(w, 'svcmgr', open.id, 'tech-ana'), null);
   own = D.contactsFor(iss, NOW, w)[0]; assert.equal(own.person.id, 'p-tech-ana'); assert.match(own.reason, new RegExp(`Assigned to ${open.workOrderId}`));
   assert.equal(D.whoKnows(REF, NOW, w).find((c) => c.relation === 'technician').person.id, 'p-tech-ana', 'the technician assigned to the room’s open job is the room’s technician');
-  const bld = D.contactsFor(D.subjectOf('building', 'HZN', w), NOW, w); assert.deepEqual(bld.map((c) => c.relation).sort(), ['backup', 'champion', 'manager']);
+  const bld = D.contactsFor(D.subjectOf('building', 'HZN', w), NOW, w);   // (a room's list ends with the manager too, as CN-02 had it)
+   assert.deepEqual(bld.map((c) => c.relation).sort(), ['backup', 'champion', 'manager']);
   for (const [k, id] of [['room', 'R-NOPE'], ['device', `${REF}/NOPE`], ['issue', 'ISS-9999'], ['building', 'ZZZ'], ['person', 'p-nobody']]) assert.equal(D.subjectOf(k, id, w), null, `${k} ${id}`);
   assert.deepEqual([...D.ENTITY_KINDS].sort(), ['building', 'device', 'issue', 'person', 'room'], 'the five entity types of this slice');
 });
@@ -186,13 +202,13 @@ test('CX-09 every link is built with every token filled and correctly percent-en
       }
       if (id === 'mail.compose') {
         const m = /^mailto:([^?]+)\?subject=([^&]*)&body=([^&]*)$/.exec(b.href); assert.ok(m, b.href); assert.equal(decodeURIComponent(m[1]), to[0]); assert.ok(m[1].includes('@') && !m[1].includes('+') && !m[1].includes("'"));
-        assert.equal(decodeURIComponent(m[2]), subject.replace(/\s+/g, ' ').trim()); assert.equal(decodeURIComponent(m[3]), body.trim().replace(/\r?\n/g, '\r\n'), 'line breaks are CR LF (RFC 6068)'); assert.ok(!/%0A/.test(m[3].replace(/%0D%0A/g, '')), 'no bare line feed');
+        assert.equal(decodeURIComponent(m[2]), subject.replace(/\s+/g, ' ').trim()); assert.equal(decodeURIComponent(m[3]), body.trim().replace(/\r?\n/g, '\r\n'), 'line breaks are CR LF (RFC 6068: "line breaks in the body of a message MUST be encoded with %0D%0A"; the integrator’s version sent a bare %0A, which this replaces)'); assert.ok(!/%0A/.test(m[3].replace(/%0D%0A/g, '')), 'no bare line feed');
       }
       if (id === 'phone.call') assert.match(b.href, /^tel:\+[0-9-]+$/, 'RFC 3966 global number: "+", digits, hyphens, no spaces');
     }
   }
   // a link is never built with a hole in it
-  for (const [id, input, why] of [['teams.chat', {}, /needs at least one person/], ['teams.call', { to: [] }, /needs at least one person/], ['mail.compose', {}, /needs an address/], ['mail.compose', { to: ['not an address'] }, /not a valid email/], ['teams.chat', { to: ['a@b'] }, /not a valid email/], ['phone.call', { phone: '555 0100' }, /international form/], ['phone.call', {}, /international form/], ['teams.meeting', { to: ['a@empathia.example'], from: '2026-11-16T09:30:00' }, /UTC offset/], ['nope', {}, /No such/]])
+  for (const [id, input, why] of [['teams.chat', {}, /needs at least one person/], ['teams.call', { to: [] }, /needs at least one person/], ['mail.compose', {}, /needs an address/], ['mail.compose', { to: ['not an address'] }, /not a valid email/], ['mail.compose', { to: ['a@empathia.example', 'b@empathia.example'] }, /to one address/], ['teams.chat', { to: ['a@b'] }, /not a valid email/], ['phone.call', { phone: '555 0100' }, /international form/], ['phone.call', {}, /international form/], ['teams.meeting', { to: ['a@empathia.example'], from: '2026-11-16T09:30:00' }, /UTC offset/], ['nope', {}, /No such/]])
     { const b = A.build(id, input); assert.equal(b.ok, false, id); assert.match(b.why, why); }
   // every person of the directory gets a well-formed link of each kind
   for (const p of people) for (const id of ['teams.chat', 'teams.call', 'mail.compose', 'phone.call']) { const b = A.build(id, { to: [p.email], subject: `About ${p.name}`, body: `Hello ${p.name}`, phone: p.phone }); assert.ok(b.ok && !A.hasHole(b.href), `${p.id} ${id}`); }
@@ -271,6 +287,18 @@ test('CX-12 when no time exists the reason is said from the same facts, and ever
     for (const x of alts) { offered += 1; assert.equal(C.propose(x.ask).slots.length, x.slots); assert.ok(x.slots > 0, x.label); assert.ok(x.label.length > 8); if (x.kind === 'backup') assert.ok(x.ask.attendees.some((c) => c.id === bk.id) && !x.ask.attendees.some((c) => c.id === b.id)); if (x.kind === 'no-room') assert.equal(x.ask.room, null); if (x.kind === 'shorter') assert.ok(x.ask.minutes < 60); if (x.kind === 'later') assert.equal(x.ask.from, t); }
   }
   assert.ok(offered > 200, `${offered} alternatives re-run`);
+});
+
+test('CX-32 a person’s simulated busy time is the same whatever window is asked: a narrow question and a wide one agree where they overlap', () => {
+  const r = rng(4242); let blocks = 0;
+  for (let i = 0; i < 600; i += 1) {
+    const p = pick(r, people); const a = Date.UTC(2026, 0, 1) + Math.floor(r() * 500 * 96) * 15 * MIN; const b = a + (1 + Math.floor(r() * 96 * 6)) * 15 * MIN;
+    const wide = C.seededBusy(p, a - Math.floor(r() * 9) * DAY - Math.floor(r() * 96) * 15 * MIN, b + Math.floor(r() * 9) * DAY + Math.floor(r() * 96) * 15 * MIN); const narrow = C.seededBusy(p, a, b);
+    assert.deepEqual(narrow.map((x) => [x.from, x.to]), wide.filter((x) => x.to > a && x.from < b).map((x) => [x.from, x.to]), `${p.id} ${new Date(a).toISOString()}–${new Date(b).toISOString()}`);
+    for (const x of narrow) { blocks += 1; assert.ok(inside(p, x.from, x.to), 'a busy block lies inside the person’s own hours or shift'); assert.equal(x.from % (30 * MIN), 0); }
+    assert.deepEqual(C.seededBusy(p, a, b), narrow, 'and the same question has the same answer');
+  }
+  assert.ok(blocks > 1500, `${blocks} blocks compared`);
 });
 
 // ================================================================================================================ the store: confirm before create
@@ -356,13 +384,15 @@ test('CX-16 over random sequences of proposing, confirming twice, colliding and 
 test('CX-17 cancelling: the person who recorded it, once; the booking leaves the workspace, the meeting stays as cancelled, and the time is free again', () => {
   reset(); const i = input(); const s = ST.proposeFor('service', i, NOW).proposal.slots[0]; const key = ST.keyFor('service', i, s); const m = ST.confirm('service', i, s, key, NOW).meeting;
   const no = ST.cancelMeeting('svcmgr', m.id, 'not mine', NOW); assert.ok('why' in no); assert.match(no.why[0], /only they cancel it/); assert.equal(live().length, 1); assert.equal(W.load().events[0].type, 'meeting.cancel_refused'); assert.equal(W.load().events[0].outcome, 'DENIED');
-  assert.match(ST.cancelMeeting('service', 'MTG-9999', '', NOW).why[0], /No meeting MTG-9999/);
+  assert.match(ST.cancelMeeting('service', 'MTG-9999', '', NOW).why[0], /No meeting MTG-9999/); assert.match(ST.cancelMeeting('visitor', m.id, '', NOW).why[0], /Visitor does not cancel meetings here/); assert.equal(live().length, 1);
   const done = ST.cancelMeeting('service', m.id, 'The room is being refitted', NOW); assert.equal(done.state, 'CANCELLED'); assert.equal(live().length, 0); assert.equal(meetings().length, 1, 'the record is kept');
   const w = W.load(); assert.equal(w.bookings[REF].filter((b) => /^MTG-/.test(b.title)).length, 0); assert.equal(w.events[0].type, 'meeting.cancelled'); assert.match(w.events[0].detail, /The room is being refitted · simulated calendar; no cancellation left this browser$/);
   const n = w.events.length; assert.equal(ST.cancelMeeting('service', m.id, 'again', NOW).state, 'CANCELLED'); assert.equal(W.load().events.length, n, 'cancelling twice changes nothing');
   assert.ok(ST.proposeFor('service', i, NOW).proposal.slots.some((x) => x.from === s.from), 'the time is offered again');
   const re = ST.confirm('service', i, s, key, NOW); assert.equal(re.again, false); assert.equal(re.meeting.id, 'MTG-0002', 'the same request after a cancellation is a new meeting'); assert.equal(live().length, 1);
-  assert.deepEqual(ST.meetingsOf(ST.loadState(), 'service').map((x) => x.id).sort(), ['MTG-0001', 'MTG-0002']); assert.deepEqual(ST.meetingsOf(ST.loadState(), 'svcmgr'), []); assert.equal(ST.meetingsInRoom(ST.loadState(), REF, NOW).length, 1);
+  // CN-10: whoever recorded it, or the Product Architect
+  { const byArchitect = ST.cancelMeeting('architect', 'MTG-0002', 'tidying up', NOW); assert.equal(byArchitect.state, 'CANCELLED'); assert.equal(W.load().bookings[REF].filter((b) => /^MTG-/.test(b.title)).length, 0); const again2 = ST.confirm('service', i, s, key, NOW); assert.equal(again2.meeting.id, 'MTG-0003'); }
+  assert.deepEqual(ST.meetingsOf(ST.loadState(), 'service').map((x) => x.id).sort(), ['MTG-0001', 'MTG-0002', 'MTG-0003']); assert.deepEqual(ST.meetingsOf(ST.loadState(), 'svcmgr'), []); assert.equal(ST.meetingsInRoom(ST.loadState(), REF, NOW).length, 1);
 });
 
 test('CX-18 stored state that cannot be trusted starts clean, without an error; what is valid survives a reload', () => {
@@ -401,9 +431,24 @@ test('CX-19 the role matrix, over every role the policy has: who is told who to 
   // a visitor is told nothing and sees no address or number of anyone
   assert.ok(!X.mayKnowWho('visitor') && people.every((p) => !X.maySeeDetails('visitor', p) && !X.mayReach('visitor', p))); assert.ok(!X.maySchedule('visitor'));
   assert.ok(X.mayKnowWho('employee') && X.maySeeDetails('employee', champ) && !X.maySeeDetails('employee', tech) && X.maySchedule('employee'));
-  // the Site Champion role, as it will be when the policy has it: own site only, and nothing beyond contact and scheduling
-  const keys = [...ROLES, ...(ROLES.includes('sitechamp') ? [] : ['sitechamp'])]; assert.ok(X.mayKnowWho('sitechamp', keys) && X.maySchedule('sitechamp', keys) && X.mayBrowse('sitechamp', keys) && X.mayReach('sitechamp', champ, keys));
-  if (!ROLES.includes('sitechamp')) { assert.ok(!X.mayKnowWho('sitechamp') && !X.maySchedule('sitechamp'), 'until the policy has the role, the key alone opens nothing'); for (const p of people) assert.equal(X.maySeeDetails('sitechamp', p), false); }
+  // CN-09: scheduling is V2.5.3's comms.compose (everyone but the Visitor and the Document Reviewer); neither of those sees any contact detail
+  assert.ok(ROLES.includes('sitechamp') && ROLES.length >= 16, 'the policy has the Site Champion'); for (const k of ROLES) assert.equal(X.maySchedule(k), P.allows({ action: 'comms.compose' }, k), `${k}: schedules exactly when it may compose`);
+  assert.deepEqual(ROLES.filter((k) => !X.maySchedule(k)).sort(), ['qa', 'visitor']); for (const k of ['visitor', 'qa']) assert.ok(people.every((p) => !X.maySeeDetails(k, p)) && !X.mayKnowWho(k), `${k} sees nobody`);
+  // the Site Champion: told who to contact, reaches and schedules like the Employee it is based on, and sees the people of ITS OWN SITE only.
+  // The policy grants a champion the field person.contact for every person; Connect narrows it to the champion's site (founder, 11 Nov:
+  // "scoped access"), which is stricter than the integrator's maySeeContact was.
+  const sc = 'sitechamp'; const site = P.CHAMPION_SITES; assert.deepEqual(D.personaPerson(sc).buildings, [site[0]]); assert.equal(D.personaPerson(sc).kind, 'champion');
+  assert.ok(X.mayKnowWho(sc) && X.maySchedule(sc) && X.mayBrowse(sc) && P.allows({ field: 'person.contact' }, sc));
+  for (const p of people) assert.equal(X.maySeeDetails(sc, p), p.kind !== 'role' || p.buildings.some((b) => site.includes(b)), `${p.id}: a champion sees every site’s champions, and the role holders of their own site`);
+  const away = people.find((p) => p.kind === 'role' && !p.buildings.some((b) => site.includes(b))); assert.ok(away && !X.mayReach(sc, away) && !P.canOpen(sc, R.resolve(`#/people/${away.id}`)) && P.canOpen(sc, R.resolve('#/people/p-tech-ana')));
+  assert.match(ST.proposeFor(sc, input({ withIds: [away.id] }), NOW).why[0], /may not schedule with/); assert.ok('why' in ST.recordJump(sc, { jump: 'teams.chat', personId: away.id, about: null, from: '#/site' }));
+  assert.deepEqual(X.visibleTo(sc, people).filter((p) => p.kind === 'role').flatMap((p) => p.buildings.filter((b) => site.includes(b))).length > 0 && X.visibleTo(sc, people).every((p) => p.kind !== 'role' || p.buildings.some((b) => site.includes(b))), true);
+  // … and gains nothing engineering, administrative or to do with sign-off through Connect: it curates only its own site's champion entries
+  for (const p of people) assert.equal(X.mayCurate(sc, p), p.kind !== 'role' && p.buildings.some((b) => site.includes(b)), p.id);
+  for (const a of ['com.signoff', 'cx.accept', 'builder.edit', 'govern', 'sh.authorize', 'sh.triage', 'assure.approveBaseline', 'review.decide']) assert.ok(!P.allows({ action: a }, sc), a);
+  for (const pg of ['#/people', '#/meet', '#/people/p-champ-ATL']) assert.deepEqual(P.rolesFor(P.authorityAt(R.resolve(pg))).filter((k) => !P.allows({ action: 'comms.compose' }, k)), [], `${pg} admits nobody who may not even compose a message`);
+  // a role outside the list the policy has opens nothing, whatever it is called
+  assert.ok(!X.mayKnowWho('sitechamp', ['ops']) || P.allows({ entity: 'SupportPath' }, 'sitechamp'));
   for (const pg of ['#/people', '#/meet', '#/people/p-tech-ana']) assert.ok(P.known(P.authorityAt(R.resolve(pg))), `${pg}: its authority names roles the policy knows`);
   assert.equal(R.resolve('#/people/p-nobody').page.id, 'people');
 });
@@ -543,6 +588,9 @@ test('CX-26 [graph] every request is the documented one: method, path, headers a
   assert.deepEqual(ev.body.attendees, [{ emailAddress: { address: champ.email, name: champ.name }, type: 'required' }, { emailAddress: { address: roomOf().mail, name: roomOf().name }, type: 'resource' }], 'the organiser is not their own attendee; the room is a resource'); assert.deepEqual(ev.body.location, { displayName: roomOf().name, locationEmailAddress: roomOf().mail });
   { const doc = GM.FIXTURES.createEventRequest.body; for (const k of ['subject', 'body', 'start', 'end', 'location', 'attendees', 'transactionId']) assert.ok(k in doc && k in ev.body, k); assert.deepEqual(GM.sameShape({ body: doc.body, start: doc.start, end: doc.end, attendee: doc.attendees[0] }, { body: ev.body.body, start: ev.body.start, end: ev.body.end, attendee: ev.body.attendees[0] }), [], 'the same shape as the page’s example request'); }
   const fm = of(/\/me\/findMeetingTimes$/, 'POST'); assert.equal(fm.body.meetingDuration, 'PT45M'); assert.equal(fm.body.timeConstraint.activityDomain, 'work'); assert.deepEqual(fm.body.attendees, [{ type: 'required', emailAddress: { name: champ.name, address: champ.email } }]);
+  // CN-11: an online meeting is a Teams meeting; with a room it is not marked online by this slice
+  assert.ok(!('isOnlineMeeting' in ev.body)); { const on = G.reqCreate(graph.cfg, { transactionId: 'TX-ON', subject: 's', body: '', from: slot.from, to: slot.to, parties: [party(graph, ME), party(graph, champ)], room: null, online: true }).body; assert.equal(on.isOnlineMeeting, true); assert.equal(on.onlineMeetingProvider, 'teamsForBusiness'); assert.equal(on.transactionId, 'TX-ON'); assert.ok(!('location' in on)); }
+  assert.equal(G.reqCancel({ mode: 'application', organizer: 'p.organiser@empathia.example' }, 'AAMk=', 'x').url, 'https://graph.microsoft.com/v1.0/users/p.organiser%40empathia.example/events/AAMk%3D/cancel');
   const cx = of(/\/me\/events\/[^/]+\/cancel$/, 'POST'); assert.deepEqual(cx.body, { comment: 'done' }); assert.ok(cx.url.includes(encodeURIComponent(made.value.event.id)));
   // what the mock answers has the documented shape
   const raw = async (req) => (await t.transport({ ...req, headers: { ...req.headers, Authorization: 'Bearer x' } })).body;
@@ -568,6 +616,11 @@ test('CX-27 [graph] the documented example responses are read correctly, in the 
   assert.equal(G.parsePeople(GM.FIXTURES.users.body)[0].mail, 'example.person@empathia.example');
   const odd = G.parseSchedule({ value: [{ scheduleId: 'a@empathia.example', scheduleItems: [{ status: 'busy', start: { dateTime: '2026-11-16T09:00:00.0000000', timeZone: 'Lunar Standard Time' }, end: { dateTime: '2026-11-16T10:00:00.0000000', timeZone: 'Lunar Standard Time' } }], workingHours: { daysOfWeek: ['monday'], startTime: '08:00:00.0000000', endTime: '17:00:00.0000000', timeZone: { name: 'Lunar Standard Time' } } }] });
   assert.equal(odd[0].working, null); assert.deepEqual(odd[0].busy, []); assert.match(odd[0].note, /time zone this adapter cannot read/);
+  for (const bad of [null, 5, 'x', {}, { value: 'x' }, { value: [null, 3, 'x', { scheduleId: 7 }, { scheduleId: 'a@empathia.example', scheduleItems: [{ start: {}, end: {} }, 'x', null, { status: 'busy' }], workingHours: 'nine to five' }, { scheduleId: 'b@empathia.example', scheduleItems: 'none', workingHours: { daysOfWeek: 'monday' } }] }]) {
+    let got; assert.doesNotThrow(() => { got = G.parseSchedule(bad); }, JSON.stringify(bad)); assert.ok(Array.isArray(got)); for (const s of got) { assert.equal(typeof s.mail, 'string'); assert.equal(s.working, null); assert.deepEqual(s.busy, []); }
+    assert.doesNotThrow(() => { G.parsePeople(bad); G.parseShifts(bad); G.parseFindMeetingTimes(bad); G.parseEvent(bad, { transactionId: 'k', subject: '', body: '', from: 0, to: 1, parties: [], room: null }); }); }
+  assert.equal(G.parseSchedule({ value: [null, { scheduleId: 7 }] }).length, 0, 'an entry without an address is dropped');
+  { const priv = G.parseSchedule({ value: [{ scheduleId: 'a@empathia.example', scheduleItems: [{ isPrivate: true, status: 'busy', subject: 'Secret plan', start: { dateTime: '2026-11-16T15:00:00', timeZone: 'UTC' }, end: { dateTime: '2026-11-16T16:00:00', timeZone: 'UTC' } }] }] }); assert.deepEqual(priv[0].busy, [{ from: Date.UTC(2026, 10, 16, 15), to: Date.UTC(2026, 10, 16, 16), title: 'Busy' }]); assert.ok(!/Secret/.test(JSON.stringify(priv)), 'a subject, private or not, is never carried over'); }
   assert.equal(G.fromGraphTime({ dateTime: '2026-11-16T09:00:00', timeZone: 'Europe/London' }), Date.UTC(2026, 10, 16, 9)); assert.equal(G.fromGraphTime({ dateTime: '2026-07-16T09:00:00', timeZone: 'GMT Standard Time' }), Date.UTC(2026, 6, 16, 8)); assert.equal(G.fromGraphTime({ dateTime: 'x', timeZone: 'UTC' }), null); assert.equal(G.fromGraphTime(null), null);
   for (const tz of new Set(Object.values(D.ZONE_OF_GROUP))) assert.equal(G.toIana(G.toWindows(tz)), tz, `${tz} survives the trip through its Windows name`);
 });
@@ -591,6 +644,11 @@ test('CX-29 [graph] not authorised: 401 and 403 name the permission to ask an ad
   const g = worlds().graph; const a = g.adapter; const slot = (await a.suggest({ parties: [party(g, ME), party(g, champ)], room: null, minutes: 30, from: FROM, to: TO })).value[0]; const req = { transactionId: 'TX-NO', subject: 's', body: '', from: slot.from, to: slot.to, parties: [party(g, ME), party(g, champ)], room: null };
   g.tenant.deny('events', 403); const no = await a.create(req); assert.equal(no.kind, 'not-authorised'); assert.match(no.why[0], /ask your administrator for Calendars\.ReadWrite \(delegated permission, Microsoft Graph\) so that this app may create the event/); assert.equal(g.tenant.events.length, 0);
   g.tenant.deny(null); const yes = await a.create(req); assert.ok(yes.ok); g.tenant.deny('cancel', 403); assert.match((await a.cancel(yes.value.event.id, '')).why[0], /Calendars\.ReadWrite/); assert.equal(g.tenant.events.filter((e) => !e.cancelled).length, 1);
+  // CN-13: 401 and 403 are answered once, never retried; 409 and 500 on create say the event was not created, once
+  for (const status of [401, 403, 409, 500]) { let calls = 0; const gx = worlds().graph; const inner = gx.tenant.transport; const sl = (await gx.adapter.suggest({ parties: [party(gx, ME), party(gx, champ)], room: null, minutes: 30, from: FROM, to: TO })).value[0];
+    const ax = G.graphAdapter({ ...gx.cfg, transport: async (q) => { if (/\/events$/.test(q.url)) { calls += 1; return { status, headers: {}, body: { error: { code: 'x', message: 'server words' } } }; } return inner(q); } });
+    const out = await ax.create({ transactionId: `TX-${status}`, subject: 's', body: '', from: sl.from, to: sl.to, parties: [party(gx, ME), party(gx, champ)], room: null });
+    assert.equal(out.ok, false); assert.equal(calls, 1, `${status} is not retried`); assert.equal(out.kind, status < 404 ? 'not-authorised' : 'unavailable'); if (status >= 404) assert.match(out.why[0], new RegExp(`answered ${status} and did not create the event`)); assert.ok(!/server words/.test(out.why.join(' '))); assert.equal(ax.waits.length, 0); }
   // no token at all
   const bare = G.graphAdapter({ ...worlds().graph.cfg, token: async () => '' }); assert.equal((await bare.people('Amara')).kind, 'not-authorised');
   // somebody else's meeting cannot be cancelled: the page's own 400

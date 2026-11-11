@@ -108,7 +108,7 @@ export function build(id: string, input: JumpInput): Built {
     const iso = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/; if (!input.from || !input.until || !iso.test(input.from) || !iso.test(input.until)) return { ok: false, id, why: 'A meeting link needs a start and an end, each in ISO 8601 with its UTC offset.' };
     return { ok: true, id, external: true, href: `https://teams.microsoft.com/l/meeting/new?${q([['subject', enc(subject)], ['startTime', enc(input.from)], ['endTime', enc(input.until)], ['content', enc(body)], ['attendees', users]])}` };
   }
-  if (id === 'mail.compose') { if (!to.length) return { ok: false, id, why: 'An email needs an address.' }; const h = q([['subject', enc(subject)], ['body', enc(body.replace(/\r?\n/g, '\r\n'))]]); return { ok: true, id, external: false, href: `mailto:${to.join(',')}${h ? `?${h}` : ''}` }; }
+  if (id === 'mail.compose') { if (to.length !== 1) return { ok: false, id, why: to.length ? 'An email here is to one address.' : 'An email needs an address.' }; const h = q([['subject', enc(subject)], ['body', enc(body.replace(/\r?\n/g, '\r\n'))]]); return { ok: true, id, external: false, href: `mailto:${to.join(',')}${h ? `?${h}` : ''}` }; }
   if (id === 'phone.call') { const t = telOf(input.phone || ''); if (!t) return { ok: false, id, why: 'The telephone number is not in international form.' }; return { ok: true, id, external: false, href: `tel:${t}` }; }
   return { ok: false, id, why: 'No builder for this app jump.' };
 }

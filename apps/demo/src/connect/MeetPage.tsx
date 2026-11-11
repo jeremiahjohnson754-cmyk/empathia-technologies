@@ -14,7 +14,7 @@ import { ROLES, canOpen } from '../access/policy.js';
 import { resolve } from '../registry.pages.js';
 import { roomById, shortName } from '../campus/canon.js';
 import { findRooms } from '../here/model.js';
-import { DURATIONS, type Slot } from './calendar.js';
+import { DURATIONS, conflictsAt, type Slot } from './calendar.js';
 import { CONNECTION_STATEMENT } from './adapter.js';
 import { build, jumpById } from './apps.js';
 import { findPeople, people, personById, subjectOf, type EntityKind } from './directory.js';
@@ -69,6 +69,10 @@ function Meet({ role, query, hash }: PageProps) {
   const reviewSlot = slot ? { from: slot, to: slot + input.minutes * 60_000 } : null;
   const tzOf = (id: string) => planOk?.ask.attendees.find((c) => c.id === id)?.tz || me.tz;
   const done: Meeting | null = doneId ? st.meetings.find((m) => m.id === doneId) || null : null;
+  // While a review is open the calendar is still watched: if another tab (or anyone) takes the time, the review is withdrawn rather
+  // than left looking confirmable; if this very request was already recorded elsewhere, the page says so instead of offering it again.
+  const already = step === 'review' && reviewSlot ? st.meetings.find((m) => m.state === 'RECORDED' && m.transactionId === keyFor(role, input, reviewSlot)) || null : null;
+  const taken = step === 'review' && planOk && reviewSlot && !already ? conflictsAt(planOk.ask, reviewSlot.from, reviewSlot.to) : [];
 
   const doConfirm = () => {
     if (!reviewSlot) return; const out = confirm(role, input, reviewSlot, keyFor(role, input, reviewSlot), Date.now());
@@ -141,7 +145,9 @@ function Meet({ role, query, hash }: PageProps) {
       {step === 'review' && <div className="cx-step" data-testid="meet-review-step">
         <h2 className="build__h" tabIndex={-1} ref={head}>{STEP_TITLE.review[1]}</h2>
         {refused && <div data-testid="meet-conflict"><Notice tone="bad"><b>Not recorded.</b> Something changed since this time was proposed:<ul>{refused.map((x) => <li key={x}>{x}</li>)}</ul></Notice><p><Button kind="primary" onClick={() => { setSlot(null); go('when'); }} testId="meet-repropose">See the times that work now</Button></p></div>}
-        {planOk && reviewSlot && !refused && <>
+        {already && !refused && <div data-testid="meet-already"><Notice tone="info"><b>This meeting is already recorded as {already.id}.</b> Nothing will be recorded a second time.</Notice><p><a className="ui-btn ui-btn--primary" href={`#/meet?step=done&id=${already.id}`}>Open {already.id}</a></p></div>}
+        {taken.length > 0 && !refused && <div data-testid="meet-withdrawn"><Notice tone="warn"><b>This time is no longer free, so it is not offered for confirmation.</b> Since you chose it:<ul>{taken.map((c) => <li key={`${c.kind}:${c.id}`}>{c.detail}</li>)}</ul></Notice><p><Button kind="primary" onClick={() => { setSlot(null); go('when'); }} testId="meet-repropose">See the times that work now</Button></p></div>}
+        {planOk && reviewSlot && !refused && !already && !taken.length && <>
           <dl className="hr-rec cx-review" data-testid="meet-summary">
             <div><dt>Subject</dt><dd>{planOk.subject}</dd></div>
             <div><dt>Who</dt><dd><ul>{planOk.parties.map((x) => <li key={x.id}>{x.name}{x.id === me.id ? ' (organiser)' : ''}{x.optional ? ' (optional)' : ''}</li>)}</ul></dd></div>
