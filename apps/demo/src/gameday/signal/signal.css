@@ -4,8 +4,11 @@
 .gd-alert[data-step="FIXED"] { border-color: var(--info, var(--accent)); background: color-mix(in srgb, var(--info, var(--accent)) 7%, var(--panel)); }
 .gd-alert p { margin: 0; flex: 1 1 280px; min-width: 0; } .gd-alert .ui-btn { min-height: 44px; }
 
-.cs { gap: var(--sp-4); grid-template-columns: minmax(0, 1fr); } .cs h1 { overflow-wrap: anywhere; }
-.cs-as { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; color: var(--tx2); font-size: var(--fs-sm); } .cs-as b { color: var(--tx); }
+.cs { gap: var(--sp-4); grid-template-columns: minmax(0, 1fr); } .cs h1 { overflow-wrap: anywhere; max-width: none; }
+/* the event bar: who you are, where the incident stands, and the event clock with what it holds. Its edge takes the state's tone; the words carry the meaning. */
+.cs-as { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding: 10px 14px; border: 1px solid var(--line2); border-left: 4px solid var(--tone, var(--line3)); border-radius: var(--r-md); background: var(--panel); color: var(--tx2); font-size: var(--fs-sm); } .cs .cs-as { margin: 0; } .cs-as b { color: var(--tx); }
+.cs-as .ui-tag { padding: 0 8px; font-size: 12px; line-height: 24px; }
+.cs-clock { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-left: auto; color: var(--tx); font-weight: 600; font-variant-numeric: tabular-nums; } .cs-clock svg { flex: none; color: var(--tx2); } .cs-clock .cs-held { color: var(--bad, #b42318); }
 .cs-rail { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 /* position: relative keeps the button's screen-reader-only “(done)” inside the scrolling rail, so it cannot widen the page on a phone */
 .cs-rail li > button { position: relative; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 6px 14px 6px 8px; border: 1px solid var(--line2); border-radius: var(--r-pill, 999px); background: var(--panel); color: var(--tx2); font: inherit; font-size: var(--fs-sm); font-weight: 600; cursor: pointer; white-space: nowrap; }
@@ -16,6 +19,8 @@
 
 .cs-cols { display: grid; gap: var(--sp-4) var(--sp-5); grid-template-columns: minmax(0, 11fr) minmax(0, 9fr); grid-template-areas: "main side"; align-items: start; }
 .cs-main { grid-area: main; display: grid; gap: var(--sp-4); min-width: 0; } .cs-main > div { display: grid; gap: var(--sp-3); min-width: 0; }
+/* Back and Next sit on one line, at either end (the rule above made every child of the step a grid, this row included) */
+.cs-main > .cs-nav { display: flex; }
 .cs-side { grid-area: side; position: sticky; top: calc(var(--shell-top, 64px) + 12px); display: grid; gap: var(--sp-2); min-width: 0; } .cs-side .w-plan svg { max-height: min(52vh, 460px); }
 .cs .cs-h { margin: 0; font-size: var(--fs-xl, 1.375rem); letter-spacing: -.01em; } .cs-h:focus { outline: none; } .cs .cs-h3 { margin: var(--sp-2) 0 0; font-size: var(--fs-sm); font-weight: 650; color: var(--tx2); }
 .cs-main p, .cs-main li { line-height: 1.5; max-width: 68ch; } .cs code { font: 500 12px var(--font-mono); color: var(--tx2); overflow-wrap: anywhere; }
@@ -28,6 +33,12 @@
 .cs-alert[data-step="FIXED"] { border-color: var(--info, var(--accent)); background: color-mix(in srgb, var(--info, var(--accent)) 6%, var(--panel)); } .cs-alert[data-step="VERIFIED"] { border-color: var(--ok, #1a7f4b); background: color-mix(in srgb, var(--ok, #1a7f4b) 6%, var(--panel)); }
 .cs-alert__t { display: flex; gap: 10px; align-items: flex-start; font-size: var(--fs-lg, 1.125rem); font-weight: 600; } .cs-alert__t svg { flex: none; margin-top: 3px; color: var(--bad, #b42318); } .cs .cs-alert p { margin: 0; }
 
+/* the plan beside the alert: the drawing is narrow here, so its names are set larger than on the estate page; the ring names the camera in words */
+.cs-side .w-plan__zone text { font-size: 19px; } .cs-side .es-plan__z[data-kind="ring"] text { font-size: 17px; }
+.w-plan__mark { pointer-events: none; } .w-plan__mark circle { fill: none; stroke: var(--tx); stroke-width: 3; }
+.w-plan__mark[data-tone="bad"] circle { stroke: var(--bad, #b42318); stroke-width: 4; stroke-dasharray: 7 5; } .w-plan__mark[data-tone="ok"] circle { stroke: var(--ok, #1a7f4b); stroke-width: 4; }
+.w-plan__mark text { font: 700 22px var(--font-sans); fill: var(--tx); paint-order: stroke; stroke: var(--bg2); stroke-width: 6px; stroke-linejoin: round; }
+
 /* the picture: the chain in the order the picture travels. A list, so it reads the same without the drawing. */
 .cs-fig { margin: 0; padding: var(--sp-3); border: 1px solid var(--line); border-radius: var(--r-lg, 14px); background: var(--panel); display: grid; gap: var(--sp-2); }
 .cs-chain { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
@@ -39,7 +50,7 @@
 .cs-chain li[data-reading="passes"] .cs-chain__s, .cs-read[data-reading="passes"] { color: var(--ok, #1a7f4b); }
 .cs-chain li[data-reading="nothing"] { border-style: dashed; } .cs-chain li[data-reading="nothing"] .cs-chain__b b { color: var(--tx2); }
 .cs-chain li[data-mark], .cs-hops li[data-mark], .cs-obs > li[data-mark] { border-color: var(--bad, #b42318); box-shadow: inset 0 0 0 1px var(--bad, #b42318); background: color-mix(in srgb, var(--bad, #b42318) 7%, var(--panel)); }
-.cs-chain li[data-mark] .cs-chain__s, .cs-read[data-reading="stops"] { color: var(--bad, #b42318); } .cs-chain li[data-mark] .cs-chain__n, .cs-hops li[data-mark] .cs-chain__n, .cs-obs > li[data-mark] .cs-chain__n { background: var(--bad, #b42318); color: #fff; }
+.cs-chain li[data-mark] .cs-chain__s, .cs-read[data-reading="stops"] { color: var(--bad, #b42318); } .cs-chain li[data-mark] .cs-chain__n, .cs-hops li[data-mark] .cs-chain__n, .cs-obs > li[data-mark] .cs-chain__n { background: var(--bad, #b42318); color: var(--bg); }
 .cs-chain li[data-standby] { border-color: var(--info, var(--accent)); box-shadow: inset 0 0 0 1px var(--info, var(--accent)); }
 .cs-fig__cap { font-size: var(--fs-sm); color: var(--tx2); line-height: 1.45; }
 
@@ -67,10 +78,20 @@
 .cs-roles { display: flex; flex-wrap: wrap; gap: 8px; }
 .cs-done { display: grid; gap: 6px; padding: var(--sp-4); border: 1px solid var(--ok, #1a7f4b); border-radius: var(--r-lg, 14px); background: color-mix(in srgb, var(--ok, #1a7f4b) 7%, var(--panel)); } .cs .cs-done p { margin: 0; }
 .cs-trail li, .cs-ledger li { padding: 8px 0; border-top: 1px solid var(--line); line-height: 1.5; overflow-wrap: anywhere; } .cs-trail li:first-child, .cs-ledger li:first-child { border-top: 0; } .cs-ledger .ui-meta { display: block; }
-.cs-nav { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; padding-top: var(--sp-3); border-top: 1px solid var(--line); } .cs-nav > :only-child { margin-inline-start: auto; }
+.cs-nav { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; padding-top: var(--sp-3); border-top: 1px solid var(--line); } .cs-nav > .ui-btn--primary:only-child { margin-inline-start: auto; }
 
+/* wide: the ten steps are one line, a numbered point each with its name under it, joined in order */
+@media (min-width: 1100px) {
+  .cs-rail { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 0; } .cs-rail li { position: relative; display: flex; }
+  .cs-rail li > button { flex: 1 1 auto; flex-direction: column; justify-content: flex-start; gap: 6px; padding: 6px 4px; border-color: transparent; border-radius: var(--r-md); background: none; font-size: var(--fs-xs); line-height: 1.25; text-align: center; white-space: normal; }
+  .cs-rail li + li::before { content: ''; position: absolute; top: 19px; right: calc(50% + 19px); width: calc(100% - 38px); border-top: 2px solid var(--line3); } .cs-rail li.done + li::before { border-top-color: var(--ok, #1a7f4b); }
+  .cs-rail li.on > button { border-color: transparent; box-shadow: none; } .cs-rail li.on .cs-rail__n { outline: 2px solid var(--accent); outline-offset: 2px; } .cs-rail li > button:hover { border-color: var(--line3); }
+}
 @media (max-width: 900px) {
-  .cs-cols { grid-template-columns: minmax(0, 1fr); grid-template-areas: "side" "main"; } .cs-side { position: static; } .cs-side .w-plan svg { max-height: 240px; }
+  .cs-cols { grid-template-columns: minmax(0, 1fr); grid-template-areas: "side" "main"; } .cs-side { position: static; scroll-margin-top: calc(var(--shell-top, 112px) + 8px); } .cs-side .w-plan svg { max-height: 240px; }
+  /* the alert is read before the plan, and the way back before the plan: on those two steps the drawing follows the words */
+  .cs[data-step="alert"] .cs-cols, .cs[data-step="return"] .cs-cols { grid-template-areas: "main" "side"; }
+  .cs-clock { margin-left: 0; }
   .cs-rail { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-block: 2px; } .cs-rail::-webkit-scrollbar { display: none; } .cs-rail li { flex: none; }
   .cs .cs-h { scroll-margin-top: calc(var(--shell-top, 112px) + 8px); }
   /* the chain lies down: six numbered points in a row, and only the marked one is named */

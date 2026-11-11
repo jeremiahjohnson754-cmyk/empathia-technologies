@@ -72,7 +72,7 @@ function Incident({ role, config, query }: { role: PageProps['role']; config: Ro
   const inc = incidentOf(g);
   const [draft, setDraft] = useState<Draft>(() => restore(inc?.id || ''));
   const [said, setSaid] = useState(''); const [refused, setRefused] = useState<string[] | null>(null);
-  const headRef = useRef<HTMLHeadingElement>(null); const railRef = useRef<HTMLOListElement>(null); const moved = useRef(false);
+  const headRef = useRef<HTMLHeadingElement>(null); const railRef = useRef<HTMLOListElement>(null); const sideRef = useRef<HTMLElement>(null); const moved = useRef(false);
   const actor: Actor = { config: config.id, label: config.label }; const mayWork = mayWorkSignal(config.id); const mayVerify = mayVerifySignal(config.id);
   const reader = readerOf(config); const sees = (placeId: string) => shown(chain.index, reader, placeId);
   const opens = (href: string) => { const x = resolve(href); return !!x && canOpen(role, x); };
@@ -84,7 +84,8 @@ function Incident({ role, config, query }: { role: PageProps['role']; config: Ro
   useEffect(() => { const h = () => { const s = new URLSearchParams(location.hash.split('?')[1] || '').get('step'); setStep(isSignalStep(s) ? s : 'alert'); }; addEventListener('hashchange', h); return () => removeEventListener('hashchange', h); }, []);
   useEffect(() => {
     if (!moved.current) return; const narrow = typeof matchMedia === 'function' && matchMedia('(max-width: 900px)').matches;
-    headRef.current?.focus({ preventScroll: true }); headRef.current?.scrollIntoView?.({ block: narrow ? 'start' : 'nearest' });
+    // on a phone the picture sits above the step; "Where" is about the plan, so that step starts at the plan, and every other at its heading
+    headRef.current?.focus({ preventScroll: true }); (narrow && step === 'where' ? sideRef.current : headRef.current)?.scrollIntoView?.({ block: narrow ? 'start' : 'nearest' });
     railRef.current?.querySelector('[aria-current=step]')?.scrollIntoView?.({ block: 'nearest', inline: 'center' });
   }, [step]);
   // what is half-entered (ticks, a note, the evidence chosen) survives a reload, and belongs to one incident only
@@ -138,7 +139,7 @@ function Incident({ role, config, query }: { role: PageProps['role']; config: Ro
       <Crumbs items={[{ label: 'Worlds', href: '#/worlds' }, { label: world.name, href: worldHref('stadium', config.id) }, { label: 'Game day', href: gameday }, { label: 'Camera feed incident' }]} />
       <p className="kicker w-kicker">{world.place} (fictional) · simulated event <Synthetic /></p>
       <h1 tabIndex={-1}>{inc ? `${inc.id}: camera ${CAMERA} shows no picture` : `Camera ${CAMERA}: no feed is lost`}</h1>
-      <p className="cs-as" data-testid="signal-as"><span>You are the <b>{config.label}</b>.</span> <span className={`ui-tag ui-tone--${stateTone}`} data-testid="signal-state">{inc ? STATE_WORD[inc.step] : 'No incident open'}</span> <span className="ui-meta">{PHASE[g.phase].label}, {tMinus(PHASE[g.phase].at)}{heldByThis.length && next ? ` · ${PHASE[next].label.toLowerCase()} is held` : ''}</span></p>
+      <p className={`cs-as ui-tone--${stateTone}`} data-testid="signal-as"><span>You are the <b>{config.label}</b>.</span> <span className={`ui-tag ui-tone--${stateTone}`} data-testid="signal-state">{inc ? STATE_WORD[inc.step] : 'No incident open'}</span> <span className="cs-clock" data-testid="signal-clock" data-held={heldByThis.length > 0 && !!next}><Icon name="clock" size={14} /> {PHASE[g.phase].label}, {tMinus(PHASE[g.phase].at)}{heldByThis.length && next ? <> · <b className="cs-held">{PHASE[next].label.toLowerCase()} is held</b></> : ''}</span></p>
 
       <nav aria-label="Steps of this incident"><ol className="cs-rail" data-testid="signal-rail" ref={railRef}>
         {SIGNAL_STEPS.map((s, i) => { const d = isDone(s, i); return (
@@ -147,9 +148,10 @@ function Incident({ role, config, query }: { role: PageProps['role']; config: Ro
       <p className="ui-visually-hidden" role="status" aria-live="polite" data-testid="signal-said">{said}</p>
 
       <div className="cs-cols">
-        <aside className="cs-side" aria-label={showPlan ? 'The stadium plan' : 'The signal chain'}>
+        <aside className="cs-side" ref={sideRef} aria-label={showPlan ? 'The stadium plan' : 'The signal chain'}>
           {showPlan
-            ? <EstatePlan ix={chain.index} world={world} config={config} lit={zone.id} caption={<>The highlighted outline on the west side is {zone.name.toLowerCase()}, and the bowl it looks over. Each outline opens its record. Not to scale.</>} />
+            ? <EstatePlan ix={chain.index} world={world} config={config} lit={zone.id} mark={{ id: zone.id, lines: !inc ? [`Camera ${CAMERA}`] : [`Camera ${CAMERA}`, fixed ? 'picture back' : 'no picture'], tone: !inc ? 'plain' : fixed ? 'ok' : 'bad' }}
+                caption={<>The ring on the west side is camera {CAMERA}, on the {zone.name.toLowerCase()}. The highlighted bowl is what it looks over. Each outline opens its record. Not to scale.</>} />
             : <figure className="cs-fig" data-testid="signal-picture" data-marked={inc && !fixed ? iso.hop || '' : ''}>
                 <ol className="cs-chain" aria-label={`Signal chain for camera ${CAMERA}, in the order the picture travels`}>
                   {chain.hops.map((h) => { const r = inc ? readingOf(now, h.id) : null; return (

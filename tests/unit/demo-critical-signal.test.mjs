@@ -140,10 +140,32 @@ test('CS-13 the address is refused before the page is loaded: as a fan (or with 
   const who = (h) => { const at = R.resolve(h); assert.equal(at.page.id, 'gameday.signal', h); return P.whoCanOpen(at); };
   for (const as of ['stadium.fan', 'stadium.away_fan', 'stadium.visitor', 'stadium.premium_guest', 'stadium.guest_services', 'stadium.executive', 'nonsense']) assert.deepEqual(who(`#/gameday/incident/camera-feed?as=${as}`), [], as);
   assert.deepEqual(who('#/gameday/incident/camera-feed'), [], 'the default configuration is the visitor');
-  for (const as of A.SIGNAL_OPEN) assert.equal(who(`#/gameday/incident/camera-feed?as=${as}&step=verify`).length, 15, as);
+  // Changed 11 Nov 2026: was a literal 15. The integrator added a sixteenth View-as role (`sitechamp`, the Site Champion), so the count
+  // is read from the policy itself instead of typed. What a Site Champion gets in the stadium is asserted by CS-13b below.
+  for (const as of A.SIGNAL_OPEN) assert.deepEqual(who(`#/gameday/incident/camera-feed?as=${as}&step=verify`), [...P.ROLE_KEYS], as);
+  assert.equal(P.ROLE_KEYS.length, 16);
   assert.equal(R.resolve('#/gameday').page.id, 'gameday', 'the game-day page keeps its address');
   assert.equal(A.signalHref('stadium.broadcast_engineer'), '#/gameday/incident/camera-feed?as=stadium.broadcast_engineer'); assert.equal(A.signalHref('stadium.event_producer', 'verify'), '#/gameday/incident/camera-feed?as=stadium.event_producer&step=verify');
   assert.equal(A.SIGNAL_STEPS.length, 10); assert.ok(A.isSignalStep('observe') && !A.isSignalStep('nope') && !A.isSignalStep(null));
+});
+// Added 11 Nov 2026 with the sixteenth View-as role. Decided deliberately: the Site Champion is a role of the campus estate (it reports,
+// confirms access and attests for campus rooms). In the stadium it is one more View-as role and nothing else: what is shown there is
+// decided by the stadium role configuration in the address alone, exactly as for the other fifteen. So a Site Champion opens the
+// incident as a venue technical, production or operations configuration, is refused as a guest configuration or with none, and its
+// campus authority adds nothing: who may work or check the incident is asked of the configuration, never of the View-as role.
+test('CS-13b the Site Champion (sixteenth View-as role) is treated like every other View-as role: the stadium configuration decides, and its campus authority grants nothing here', () => {
+  assert.ok(P.ROLE_KEYS.includes('sitechamp'));
+  const open = (h) => P.canOpen('sitechamp', R.resolve(h));
+  for (const as of A.SIGNAL_OPEN) assert.equal(open(`#/gameday/incident/camera-feed?as=${as}`), true, as);
+  for (const as of ['stadium.fan', 'stadium.away_fan', 'stadium.visitor', 'stadium.premium_guest', 'stadium.guest_services', 'stadium.executive', 'stadium.venue_admin', 'stadium.security_safety_lead', 'university.av_it_engineer', 'sitechamp', 'nonsense']) assert.equal(open(`#/gameday/incident/camera-feed?as=${as}`), false, as);
+  assert.equal(open('#/gameday/incident/camera-feed'), false, 'no configuration: refused');
+  // there is no stadium configuration for it, and naming the View-as role as a configuration opens, works and checks nothing
+  assert.ok(!WR.ROLE_CONFIGS.some((c) => /champ/i.test(c.id)), 'no stadium (or other world) configuration is a site champion');
+  for (const id of ['sitechamp', 'stadium.sitechamp', 'stadium.site_champion']) { assert.equal(A.mayOpenSignal(id), false, id); assert.equal(A.mayWorkSignal(id), false, id); assert.equal(A.mayVerifySignal(id), false, id); }
+  // the store asks the configuration only: an actor that is not a venue configuration is refused, with the reason, and the refusal is in the ledger
+  const w = fresh(); const g = must(G.inject(run(G.start(), 2), 'camera-feed')); const champ = { config: 'sitechamp', label: 'Site Champion' };
+  for (const r of [T.simulateLoss(w, G.start(), champ), T.step(w, g, champ, 'GD-001', 'ACKNOWLEDGED'), T.step(w, g, champ, 'GD-001', 'VERIFIED'), T.notRestored(w, g, champ, 'GD-001', 'still dark after the changeover')]) { assert.equal(r.ok, false); assert.ok(r.why.join(' ').length > 10); }
+  assert.equal(w.events.filter((e) => e.outcome === 'DENIED' && e.by === 'Site Champion' && e.type.startsWith('gameday.incident.')).length, 4);
 });
 test('CS-14 a role is shown only the rooms its reader level reaches: the production lead checks the fix without being shown the equipment room’s records', () => {
   assert.equal(RD.readerOf(cfg('stadium.event_producer')), 'staff'); assert.equal(RD.readerOf(cfg('stadium.broadcast_engineer')), 'restricted');
