@@ -55,7 +55,9 @@ test('no loss: the 52 role configurations, 13 / 14 / 13 / 12, each with its exac
 });
 
 test('no loss: the fifteen View-as role keys and the old deep links are unchanged', () => {
-  assert.deepEqual([...P.ROLE_KEYS], FIFTEEN); assert.equal(P.DEFAULT_ROLE, 'architect');
+  // Changed 11 Nov 2026 (founder's decision): a sixteenth role, the Site Champion, sits beside the Employee. No loss still means the
+  // fifteen earlier keys are all there, in the same order.
+  assert.deepEqual(P.ROLE_KEYS.filter((k) => k !== 'sitechamp'), FIFTEEN); assert.equal(P.ROLE_KEYS.length, 16); assert.equal(P.ROLE_KEYS[P.ROLE_KEYS.indexOf('employee') + 1], 'sitechamp'); assert.equal(P.DEFAULT_ROLE, 'architect');
   for (const [href, id] of Object.entries(OLD_LINKS)) assert.equal(R.resolve(href)?.page.id, id, href);
   for (const href of OLD_OPEN) { const at = R.resolve(href); assert.ok(at, `${href} still resolves`); assert.ok(!at.page.id.startsWith('world'), `${href} is not shadowed by a world page`); assert.ok(P.canOpen('architect', at), href); }
   // the world pages claim only their own three patterns

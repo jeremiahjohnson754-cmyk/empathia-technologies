@@ -220,4 +220,5 @@ export const STATE_MEANING: Record<VerificationState, string> = {
 export const DATA_LABEL: Record<DataKind, string> = { SYNTHETIC: 'Synthetic data', MODELED: 'Modeled data', IMPORTED: 'Imported data', LAB_OBSERVED: 'Lab-observed data', CUSTOMER_OBSERVED: 'Customer-observed data' };
 
 export * from './acceptance.js';
+export * from './documentation.js';
 export { SEED_CLAIMS, DOSSIER_4218, QR_PAYLOAD_4218, type Dossier, type DossierTest, type Deficiency, type TestResult } from './seed.js';

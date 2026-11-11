@@ -95,3 +95,6 @@
 .pf-waivers__facts { margin: 0; display: grid; gap: 2px; font-size: var(--fs-sm); } .pf-waivers__facts > div { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 8px; }
 .pf-waivers__facts dt { color: var(--tx3); } .pf-waivers__facts dd { margin: 0; color: var(--tx2); overflow-wrap: anywhere; }
 @media (max-width: 640px), (pointer: coarse) { .pf-waive select, .pf-waive input, .pf-waive .ui-btn, .pf-attest-form .ui-btn { min-block-size: 44px; } }
+.pf-waive__kind { margin: 0; padding: 8px 12px; border-inline-start: 3px solid var(--warn); background: color-mix(in srgb, var(--warn) 10%, transparent); border-radius: 0 var(--r-md) var(--r-md) 0; font-size: var(--fs-sm); color: var(--tx2); } .pf-waive__kind b { color: var(--tx); }
+.pf-review { display: grid; gap: 8px; padding-block-start: 8px; border-block-start: 1px dashed var(--line2); } .pf-review .pf-actions { margin: 0; } .pf-review textarea { resize: vertical; min-block-size: 64px; }
+@media (max-width: 640px), (pointer: coarse) { .pf-review .ui-btn { min-block-size: 44px; } }
