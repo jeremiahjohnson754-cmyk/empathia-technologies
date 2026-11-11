@@ -14,28 +14,30 @@ agents.
 | Staging branch | `phase3/legendary-experience` — Render deploys it (demo `srv-dbl7hq0m7kps739gsgbg`, website `srv-dbl7hpm1egvs73e0uj0g`) |
 | Production | `main` at `219d75f`, untouched; needs the founder's word |
 
-## State (11 Nov 2026, afternoon)
+## State (11 Nov 2026, 15:30 CT)
 
 | | Commit | Evidence |
 |---|---|---|
 | Staging carries | `bc5489a` | full browser matrix, light and dark, 44 suites exit 0 each; `founder-studio` NOT RUN |
-| Working branch | `0c5c116` | type-check clean · build PASS · `node scripts/test.mjs` PASS 72 · FAIL 0 · NOT_RUN 55 · browser suites of the merge being run |
+| Candidate for staging | `62f3188` | type-check clean · build PASS · `node scripts/test.mjs` PASS 72 · FAIL 0 · NOT_RUN 56 · **full matrix running** (`.local/logs/matrix-62f/SUMMARY-{light,dark}.txt`); push to staging only if both end `DONE` with nothing failing but `founder-studio` |
+| Working branch | `59ba297` | adds Harmony: unit 7/7, type-check clean, **not built, not browser-tested** |
 
-Merged since staging (all on `v18/continuation`, none yet on staging):
+On `v18/continuation`, not yet on staging:
 
 | Slice | Where | Verified |
 |---|---|---|
-| Connect: people directory, contact actions, Teams deep links, scheduling with confirmation, Graph adapter | `apps/demo/src/connect/**`, `docs/surpass/CONNECT.md`, `M365_DEPLOYMENT_AND_TEST_GUIDE.md` | unit 42/42; browser on merged tree: see below |
-| Room guide ("How do I use this room?") for 90 rooms | `apps/demo/src/guides/**` | unit 6/6; **no browser suite yet** |
-| Phase 5: documentation tracking, deliverables, field capture; Phase 6 reads it | `packages/proof-registry/src/documentation.ts`, `apps/demo/src/docs5/**`, `docs/surpass/PHASE5_DOCUMENTATION.md` | package 43/43; unit 6/6; browser 68/68 light and dark |
-| Stadium: The Critical Signal | `apps/demo/src/gameday/signal/**` | worker's run: unit 22/22, browser 93/93 light and dark |
-| Knowledge Ledger and governed ingestion (simulated source) | `apps/demo/src/knowledge/**`, `docs/surpass/KNOWLEDGE_FABRIC.md` | worker's run: unit 13/13, browser 104/104 light and dark. Integrator read the single redaction point (`ledger.ts › viewFor`); a separate adversarial review was started and did not finish |
+| Connect: people, contact actions, Teams deep links, scheduling with confirmation, Graph adapter (mock) | `apps/demo/src/connect/**`, `docs/surpass/CONNECT.md`, `M365_DEPLOYMENT_AND_TEST_GUIDE.md` | unit 42/42; browser 119/119 light on the merged tree |
+| Room guide for 90 rooms | `apps/demo/src/guides/**` | unit 6/6; browser 17/17 light |
+| Phase 5 documentation; Phase 6 reads it | `packages/proof-registry/src/documentation.ts`, `apps/demo/src/docs5/**`, `docs/surpass/PHASE5_DOCUMENTATION.md` | package 43/43; unit 6/6; browser 68/68 light and dark |
+| Stadium: The Critical Signal | `apps/demo/src/gameday/signal/**` | unit 22/22; browser 93/93 light on the merged tree |
+| Knowledge Ledger and governed ingestion (simulated source) | `apps/demo/src/knowledge/**`, `docs/surpass/KNOWLEDGE_FABRIC.md` | unit 13/13; browser 104/104 light on the merged tree. One redaction point (`ledger.ts › viewFor`) read by the integrator; no separate adversarial review was completed |
+| Founder page: Search Party story verbatim, photograph kept, ten-second introduction; Collabora-SING section | `apps/website/src/founderStory.tsx`, `reveal.ts`, `docs/media/FOUNDER_REVEAL_QA.md` | website suite 246/246 light and dark |
+| Harmony: tool registry and page | `apps/demo/src/harmony/**` | unit 7/7; browser suite drafted at `…/scratchpad/demo-harmony.test.mjs.draft` (copy into `tests/browser` only when no matrix is running) |
 
 ## Not merged
 
 | Branch | State | Next |
 |---|---|---|
-| `agent/website-collabora-founder` (`84fa75e`, worktree `.claude/worktrees/agent-afe2350ec7847f8ba`) | Stage 1 done per its commits; founder-page story and photograph reveal half-written (`founderStory.tsx`, `reveal.ts`, `founder.css`), untested | finish directly, verify website suites, merge |
 | University `a0082db…`, Convention `a39a4d4…`, instruments, films 1–4 | early WIP on their branches | after the priorities below |
 | Engineering manual | private scratch only: `…/scratchpad/manual-source/INVENTORY.md` | PRINCIPLES, OUTLINE, OPEN_QUESTIONS, then a DRAFT in the product; nothing from the archive enters the repository |
 
@@ -57,12 +59,12 @@ Merged since staging (all on `v18/continuation`, none yet on staging):
 
 ## Next, in order (founder's priorities of 11 Nov 13:21)
 
-1. Browser suites on the merged tree → fix → full matrix light and dark → push to staging.
-2. Website: finish the founder page (story verbatim from `apps/website/src/founder.ts`, photograph kept, 10-second reveal), merge.
-3. Browser suite for the room guide.
+1. When the matrix on `62f3188` is clean: push it to staging and confirm Render.
+2. Harmony: build, copy the drafted browser suite in, run light and dark, look at the page at desktop and 390 px, fix, commit.
+3. Site Champion: profile and onboarding; notes into the Knowledge Ledger queue end to end.
 4. Search Party and contextual actions: "who knows this room" across Search, Ask, room, ServiceHands (check what Connect already covers).
 5. Site Champion: profile, onboarding and training, notes into the Knowledge Ledger queue (done in Knowledge; verify end to end).
-6. Harmony tool registry over the existing actions (same authority checks, never self-granting).
+6. Harmony: more tools as products gain actions (same authority checks, never self-granting).
 7. Instant Room on a phone and guided commissioning; Drawing Intelligence; Lite.
 8. Publications: IT Onboarding Success Guide (four editions), End User Success Guide chapters, the Engineering Standards Manual (DRAFT).
 9. Townhall; University; Convention; SIGNAL; corporate polish and films.
