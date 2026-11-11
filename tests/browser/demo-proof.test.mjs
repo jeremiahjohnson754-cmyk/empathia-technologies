@@ -48,7 +48,8 @@ const viewAs = async (p, role) => { await p.click(`[data-viewas=${role}]`); awai
 { const t = await open('#/scan/SIM-AV-0042', { role: 'architect' }); const m = await main(t.page);
   const acts = await t.page.$$eval('[data-testid=scan-actions] [data-action]', (e) => e.map((x) => x.dataset.action));
   ok('QR-01', 'the fixture identifier opens one passport: asset, room, serial, lifecycle, evidence and acceptance', await t.page.locator('[data-testid=scan-passport]').count() === 1 && /SIM-AV-0042/.test(m) && /DEMO-NOT-REAL/.test(m) && /29 of 32/.test(await t.page.innerText('[data-testid=scan-evidence]')) && /Held · 7 blockers/.test(await t.page.innerText('[data-testid=scan-acceptance]')) && clean(t), m.slice(0, 300));
-  ok('QR-02', 'the Product Architect is offered all four actions', JSON.stringify(acts) === JSON.stringify(['scan.openTest', 'scan.attach', 'scan.issue', 'scan.export']), JSON.stringify(acts));
+  // 11 Nov (Phase 5): the passport gained a fifth action, the room's documents, for the dossier's readers; the list is asserted exactly so a sixth cannot appear unnoticed
+  ok('QR-02', 'the Product Architect is offered all five actions', JSON.stringify(acts) === JSON.stringify(['scan.openTest', 'scan.attach', 'scan.issue', 'scan.docs', 'scan.export']), JSON.stringify(acts));
   ok('QR-03', 'the passport says it is synthetic and not connected', /Synthetic/.test(m) && /No device is contacted when a label is read/.test(m));
   // the drawn code is a real QR code of the fixture payload: screenshot it and decode it
   const png = path.join(repo, '.local/qa-scan-qr.png'); fs.mkdirSync(path.dirname(png), { recursive: true }); await t.page.locator('[data-testid=scan-qr]').screenshot({ path: png });

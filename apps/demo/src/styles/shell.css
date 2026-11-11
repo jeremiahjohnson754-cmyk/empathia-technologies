@@ -298,3 +298,11 @@ body.has-dialog { overflow: hidden; }
 .role-internal { display: inline-block; margin-inline-start: 8px; padding: 1px 8px; border: 1px solid var(--line2); border-radius: var(--r-pill, 999px); font-size: var(--fs-xs); font-weight: 600; color: var(--tx2); vertical-align: middle; white-space: nowrap; }
 .find__fix { margin: 6px 12px 2px; font-size: var(--fs-xs); color: var(--tx2); }
 .find__opt[data-kind=answer] { border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); background: color-mix(in srgb, var(--accent) 8%, transparent); }
+
+/* Printed, a page is its content alone: no bar, no navigation, no footer, no skip link, and the content takes the sheet's width.
+   (The room guide and the commissioning documents are printed; a page's own buttons are hidden by that page's stylesheet.) */
+@media print {
+  .shell__bar, .rail, .foot, .skip, .shell__pn { display: none !important; }
+  .shell, .demo-shell { display: block !important; }
+  .shell__main { padding: 0 !important; margin: 0 !important; max-inline-size: none !important; }
+}

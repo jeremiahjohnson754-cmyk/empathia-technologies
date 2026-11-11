@@ -47,6 +47,7 @@ export default function RoomGuidePage({ role, params }: PageProps) {
   if (!o || !r || !g) return <div className="pa gd" data-native="" data-testid="guide-missing"><h1 className="ui-visually-hidden">Room not found</h1><EmptyState title="No room with that identifier" icon="search" action={<a className="ui-btn" href="#/guide">Choose a room</a>}>The guide is written for rooms on record.</EmptyState></div>;
   const opens = (href: string) => { const x = resolve(href.split('?')[0]!); return !!x && canOpen(role, x); };
   const sec = g.sections.find((s) => s.id === active) || null; const uses = new Set((sec ? sec.steps : []).flatMap((s) => s.uses));
+  const hasPanel = r.positions.some((p) => p.cat === 'touch' || p.cat === 'control');   // a room with no panel is not offered one to practise on
   const marked = new Set(r.positions.filter((p) => !p.furniture && uses.has(p.cat)).map((p) => p.code));
   const champion = whoKnows(o.id, Date.now(), w)[0]; const B = buildingByKey(o.building); const named = mayKnowWho(role);   // who to contact is told to the roles Connect tells it to (never a visitor) const B = buildingByKey(o.building);
   return (
@@ -67,7 +68,7 @@ export default function RoomGuidePage({ role, params }: PageProps) {
                 {s.steps.some((x) => x.uses.length) ? <button type="button" className="ui-btn ui-btn--sm gd-show" aria-pressed={active === s.id} onClick={() => setActive(active === s.id ? null : s.id)} data-act="show">{active === s.id ? 'Shown on the plan' : 'Show on the plan'}</button> : null}</header>
               <p className="gd-lead">{s.lead}</p>
               <ol className="gd-steps">{s.steps.map((x, i) => <li key={i}><p>{x.do}</p>{x.why ? <p className="gd-why">{x.why}</p> : null}</li>)}</ol>
-              {s.id === 'controls' && opens(`#/control/${o.id}`) ? <p className="gd-link"><a className="ui-btn" href={`#/control/${o.id}`} data-testid="guide-practise">Practise on this room’s panel</a> <span className="gd-note">A simulated panel: nothing in a real room changes.</span></p> : null}
+              {s.id === 'controls' && hasPanel && opens(`#/control/${o.id}`) ? <p className="gd-link"><a className="ui-btn" href={`#/control/${o.id}`} data-testid="guide-practise">Practise on this room’s panel</a> <span className="gd-note">A simulated panel: nothing in a real room changes.</span></p> : null}
               {s.id === 'help' ? <p className="gd-link">{opens(`#/here/${o.id}`) ? <a className="ui-btn ui-btn--primary" href={`#/here/${o.id}?step=wrong`} data-testid="guide-help">Something is not working here</a> : null} {opens('#/request') ? <a className="ui-btn" href="#/request">Ask for something</a> : null}</p> : null}
             </section>))}
         </div>
