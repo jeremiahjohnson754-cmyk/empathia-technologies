@@ -72,8 +72,13 @@ export interface Working {
 const endOf = (day: string) => Date.parse(`${day}T23:59:59.999Z`);
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
 
+/** Open items that come from outside the tests (Phase 5: a required document that is not complete), as they stood at a moment. They
+ *  stop acceptance exactly like a test's open item, they name no test, and so no waiver here can cover them. */
+export type ExtraBlockers = (at: string) => readonly Blocker[];
+
 /** `asOf` is the moment the record is read (waivers are dated); without it, the time of the last event. */
-export function replay(d: Dossier, events: readonly DossierEvent[], asOf?: string): Working {
+export function replay(d: Dossier, events: readonly DossierEvent[], asOf?: string, extra?: ExtraBlockers): Working {
+  const outside = (t: string): Blocker[] => (extra ? extra(t).filter((b) => b && typeof b.reason === 'string').map((b) => ({ test: null, reason: b.reason })) : []);
   const tests: WorkingTest[] = d.tests.map((t) => ({ ...t, recordedBy: null, verifiedBy: null, changed: false }));
   const defs: WorkingDeficiency[] = d.deficiencies.map((x) => ({ ...x, raisedAfterSnapshot: false }));
   const byId = (id: string) => tests.find((t) => t.id === id);
@@ -116,7 +121,7 @@ export function replay(d: Dossier, events: readonly DossierEvent[], asOf?: strin
   const reviewOf = (g: { test: string; by: Actor }) => { const r = reviews.get(g.test); return r && r.by.role !== g.by.role && !worked(r.by) && long(r.finding, WAIVER_MIN_PLAN) ? r : null; };
   const reviewed = (g: { test: string; by: Actor }) => kindOf(g.test) === 'business' || !!reviewOf(g);
   const coveredAt = (b: Blocker, t: string) => { const g = b.test ? granted.get(b.test) : undefined; return !!g && can(g) && reviewed(g) && endOf(g.expires) >= Date.parse(t); };
-  const uncoveredAt = (t: string) => open.filter((b) => !coveredAt(b, t));
+  const uncoveredAt = (t: string) => [...open.filter((b) => !coveredAt(b, t)), ...outside(t)];
   const standingAt = (t: string) => [...granted.values()].filter((g) => open.some((b) => b.test === g.test && coveredAt(b, t)));
   // an approval stands only if, when it was given, nothing uncovered was open, its role did none of the work and granted none of the
   // waivers it approved over, and it stated how many waivers there were: a stored event cannot say otherwise
@@ -132,19 +137,19 @@ export function replay(d: Dossier, events: readonly DossierEvent[], asOf?: strin
   const stops = accepted ? [] : uncoveredAt(now);
   const signoff: Working['signoff'] = stops.length ? 'TESTS_OPEN' : !first ? 'AWAITING_FIRST' : !second ? 'AWAITING_SECOND' : 'COMPLETE';
   return { tests, deficiencies: defs, totals: { tests: tests.length, pass: n('PASS'), pending: n('PENDING'), fail: n('FAIL'), evidence: tests.filter((t) => t.evidence).length, awaitingVerification: tests.filter((t) => t.changed && t.result === 'PASS' && t.evidence && !t.verifiedBy).length },
-    blockers: stops, open, waivers, attestations, acceptance: accepted ? 'ACCEPTED' : 'HELD', acceptedBy: accepted ? acceptedBy : null, acceptedAt: accepted ? acceptedAt : null, changed: events.length > 0, signoff, firstApproval: first, secondApproval: second };
+    blockers: stops, open: [...open, ...outside(now)], waivers, attestations, acceptance: accepted ? 'ACCEPTED' : 'HELD', acceptedBy: accepted ? acceptedBy : null, acceptedAt: accepted ? acceptedAt : null, changed: events.length > 0, signoff, firstApproval: first, secondApproval: second };
 }
 
 /** Try one step. Returns the new event list, or the reason it is refused; a refusal changes nothing. */
-export function attempt(d: Dossier, events: readonly DossierEvent[], e: DossierEvent, may: Authority): { events: DossierEvent[] } | { refused: string } {
-  const w = replay(d, events, e.at); const standing = w.waivers.filter((x) => x.state === 'STANDING');
+export function attempt(d: Dossier, events: readonly DossierEvent[], e: DossierEvent, may: Authority, extra?: ExtraBlockers): { events: DossierEvent[] } | { refused: string } {
+  const w = replay(d, events, e.at, extra); const standing = w.waivers.filter((x) => x.state === 'STANDING');
   const acknowledged = (n: number | undefined): string | null => (n ?? 0) === standing.length ? null
     : `This dossier carries ${standing.length} ${standing.length === 1 ? 'waiver' : 'waivers'}. An approval names how many it is given over: read ${standing.length === 1 ? 'it' : 'them'}, then approve with ${standing.length === 1 ? 'the waiver' : 'the waivers'}.`;
   const waivedIt = (a: Actor) => standing.some((x) => x.by.role === a.role || x.review?.by.role === a.role);
   if (w.acceptance === 'ACCEPTED') return { refused: 'The dossier is accepted and closed. A change after acceptance is a new commissioning cycle.' };
   if (e.kind === 'ACCEPT') {
     if (!may.accept) return { refused: 'This role cannot record acceptance.' };
-    if (w.blockers.length) { const first = w.blockers.slice(0, 3).map((b) => `${b.test} ${b.reason}`).join('; '); return { refused: `Acceptance stays held: ${w.blockers.length} ${w.blockers.length === 1 ? 'blocker stands' : 'blockers stand'} (${first}${w.blockers.length > 3 ? '; and more' : ''}).` }; }
+    if (w.blockers.length) { const first = w.blockers.slice(0, 3).map((b) => `${b.test ? `${b.test} ` : ''}${b.reason}`).join('; '); return { refused: `Acceptance stays held: ${w.blockers.length} ${w.blockers.length === 1 ? 'blocker stands' : 'blockers stand'} (${first}${w.blockers.length > 3 ? '; and more' : ''}).` }; }
     // the policy's own description of an acceptor: someone who neither recorded nor verified what is being accepted
     if (w.tests.some((x) => x.recordedBy?.role === e.by.role || x.verifiedBy?.role === e.by.role)) return { refused: 'Acceptance is independent of the work it accepts: a role that recorded or verified a result in this dossier cannot also accept it.' };
     if (w.firstApproval) return { refused: `The first approval is already recorded, by the ${w.firstApproval.by.label}. The dossier now waits for the second.` };
