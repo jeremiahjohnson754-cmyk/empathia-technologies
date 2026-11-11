@@ -82,16 +82,17 @@ export const TOOLS: readonly Tool[] = [
       if (!mayKnowWho(role)) return refused(`The ${label(role)} is not shown who to contact here. Asking Harmony does not change that; your host or the front desk can reach the site’s champion.`);
       const list = whoKnows(o.id, now, w).slice(0, 3); const name = (p: (typeof list)[number]['person']) => (maySeeDetails(role, p) ? p.name : `the ${p.title.toLowerCase()}`);
       if (!list.length) return { status: 'abstained', said: `Nobody is on record for ${shortName(o)}.`, facts: [], next: [] };
-      return done(`For ${shortName(o)}, start with ${name(list[0]!.person)}.`, list.map((c) => ({ text: `${name(c.person)}: ${c.reason.charAt(0).toLowerCase()}${c.reason.slice(1)}. ${c.availability.words}.`, source: 'Connect directory (synthetic people)' })),
+      return done(`For ${shortName(o)}, start with ${name(list[0]!.person)}.`, list.map((c) => ({ text: `${maySeeDetails(role, c.person) ? `${c.person.name}: ${c.reason.charAt(0).toLowerCase()}${c.reason.slice(1)}` : c.reason}. ${c.availability.words}.`, source: 'Connect directory (synthetic people)' })),
         [{ label: 'See them, with the ways to reach each', href: `#/people?about=room:${o.id}`, primary: true }]);
     } },
   { id: 'accept', title: 'What stops a room being accepted', does: 'list what still stops the commissioning dossier’s acceptance', kind: 'answers', needsRoom: false, standsOn: 'Commissioning dossier', stands: () => `#/dossier/${TRACKED_REPORT}`,
     words: /\b(accept(ed|ance)?|sign.?off|countersign|hand(ed)? over|handover)\b|\bwhat (stops|blocks|is blocking|is holding)\b/, example: () => 'What stops Atlas 4.218 being accepted?',
     run: () => {
+      const SHOWN = 10;   // every item when there are ten or fewer; the sentence says so when there are more
       const ev = dossierEvents(); const w = replay(DOSSIER_4218, ev, new Date().toISOString(), withDocuments(ev)); const n = w.blockers.length;
-      const state = w.acceptance === 'ACCEPTED' ? `${DOSSIER_4218.room.name} is accepted.` : n ? `${DOSSIER_4218.room.name} cannot be accepted yet: ${n} open ${n === 1 ? 'item stops' : 'items stop'} it.` : `Nothing stops ${DOSSIER_4218.room.name} now. It waits for ${w.firstApproval ? 'the second approval' : 'the first approval'}.`;
+      const state = w.acceptance === 'ACCEPTED' ? `${DOSSIER_4218.room.name} is accepted.` : n ? `${DOSSIER_4218.room.name} cannot be accepted yet: ${n} open ${n === 1 ? 'item stops' : 'items stop'} it${n > SHOWN ? `; the first ${SHOWN} are listed here and the dossier has them all` : ''}.` : `Nothing stops ${DOSSIER_4218.room.name} now. It waits for ${w.firstApproval ? 'the second approval' : 'the first approval'}.`;
       return done(`${state} Harmony cannot accept, verify or waive anything: those are decisions for named roles on the dossier.`,
-        w.blockers.slice(0, 6).map((b) => ({ text: `${b.test ? `${b.test} ` : ''}${b.reason}`, source: b.test ? 'Commissioning dossier: test record' : 'Phase 5: required document', href: b.test ? `#/dossier/${TRACKED_REPORT}?focus=${b.test}` : `#/docs/${TRACKED_REPORT}` })),
+        w.blockers.slice(0, SHOWN).map((b) => ({ text: `${b.test ? `${b.test} ` : ''}${b.reason}`, source: b.test ? 'Commissioning dossier: test record' : 'Phase 5: required document', href: b.test ? `#/dossier/${TRACKED_REPORT}?focus=${b.test}` : `#/docs/${TRACKED_REPORT}` })),
         [{ label: 'Open the dossier', href: `#/dossier/${TRACKED_REPORT}`, primary: true }]);
     } },
   { id: 'docs', title: 'What documentation is missing', does: 'say which required documents are not complete, and what would correct each', kind: 'answers', needsRoom: false, standsOn: 'Documentation', stands: () => `#/docs/${TRACKED_REPORT}`,

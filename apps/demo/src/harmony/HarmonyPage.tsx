@@ -31,7 +31,7 @@ export default function HarmonyPage({ role, query }: PageProps) {
     requestAnimationFrame(() => liveRef.current?.focus());
   };
   useEffect(() => { if (first.current) return; first.current = true; const q = query.get('q'); if (q) put(q); }, []);   // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => { setTalk([]); }, [role]);   // another role's answers are not this role's
+  const was = useRef(role); useEffect(() => { if (was.current === role) return; was.current = role; setTalk([]); }, [role]);   // another role's answers are not this role's (not on arrival: that would clear the question asked in the address)
 
   return (
     <div className="pa hm" data-native="" data-testid="harmony">
@@ -53,7 +53,7 @@ export default function HarmonyPage({ role, query }: PageProps) {
                 <p className="hm-asked"><span className="ui-visually-hidden">You asked: </span>“{r.asked}”</p>
                 <p className="hm-meta"><Chip small tone={s.tone}>{s.label}</Chip> <span data-testid="harmony-understood">Understood as: {r.understood}</span></p>
                 <p className="hm-said" data-testid="harmony-said">{r.said}</p>
-                {r.facts.length ? <ul className="hm-facts">{r.facts.map((f, k) => <li key={k}><Icon name="check" size={16} /><span>{f.href ? <a href={f.href}>{f.text}</a> : f.text}<span className="hm-src">Source: {f.source}</span></span></li>)}</ul> : null}
+                {r.facts.length ? <ul className="hm-facts">{r.facts.map((f, k) => <li key={k}><span className="hm-dot" aria-hidden="true" /><span>{f.href ? <a href={f.href}>{f.text}</a> : f.text}<span className="hm-src">Source: {f.source}</span></span></li>)}</ul> : null}
                 {r.next.length ? <p className="hm-next">{r.next.map((n) => <a key={n.href} className={`ui-btn${n.primary ? ' ui-btn--primary' : ''}`} href={n.href}>{n.label}</a>)}</p> : null}
                 <p className="hm-foot">{r.authority ? <>{tool ? `Tool: ${tool.title}. ` : ''}Stands on “{r.authority.stands}”, which the {ROLES[role].label} {r.authority.held ? 'has' : 'does not have'}. </> : null}Harmony changed nothing.</p>
               </article>); })

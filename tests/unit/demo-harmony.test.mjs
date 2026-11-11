@@ -38,7 +38,8 @@ test('HM-02 asking does not grant: a role without the product’s authority is r
 
 test('HM-03 answers come from the records, each fact with its source', () => {
   const who = ask(Q.who, 'employee'); assert.equal(who.status, 'answered'); assert.ok(who.facts.length >= 1 && who.facts.every((f) => /Connect directory \(synthetic people\)/.test(f.source))); assert.equal(who.next[0].href, '#/people?about=room:R-ATL-4-218');
-  const acc = ask(Q.accept, 'svcmgr'); assert.equal(acc.status, 'answered'); assert.equal(acc.facts.length, 6); assert.ok(acc.facts.some((f) => /T-SIM-008/.test(f.text) && /test record/.test(f.source)));
+  const acc = ask(Q.accept, 'svcmgr'); assert.equal(acc.status, 'answered'); // was 6: the sentence said seven items stop acceptance and six were listed; the answer now lists every item it counts (up to ten)
+  assert.equal(acc.facts.length, 7); assert.match(acc.said, /7 open items stop it\./); assert.ok(acc.facts.some((f) => /T-SIM-008/.test(f.text) && /test record/.test(f.source)));
   const docs = ask(Q.docs, 'ipm'); assert.equal(docs.status, 'answered'); assert.match(docs.said, /13 of 16 required documents are complete/); assert.ok(docs.facts.some((f) => /EV-SIM-016/.test(f.text) && /Phase 5 finding \(evidence not in packet\)/.test(f.source)));
   const other = ask('Which documents are missing for Beacon 3.101?', 'ipm'); assert.equal(other.status, 'abstained'); assert.match(other.said, /Only the room of the commissioning dossier/); assert.equal(other.next[0].href, '#/docs/applies');
   const g = ask(Q.guide, 'employee'); assert.equal(g.status, 'answered'); assert.ok(g.facts.length >= 1 && g.facts.every((f) => /Room guide .*not yet reviewed/.test(f.source))); assert.equal(g.next[0].href, '#/guide/room/R-ATL-4-218');
