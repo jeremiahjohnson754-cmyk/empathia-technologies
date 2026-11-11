@@ -113,7 +113,7 @@ export function App() {
         <Shortcuts role={role} opens={(h) => opensNative(role, h)} />
         <p id="route-announcer" className="ui-sr" aria-live="polite" aria-atomic="true">{said}</p>
         {/* the ONE synthetic-data line (QUALITY_UPLIFT: no per-page banner; V2.5.3 shows a chip by the logo and one footer line) */}
-        <footer className="foot"><span className="ui-tag ui-tone--warn foot__tag">Synthetic data</span> <span id="persp-note">Everything here is invented and connected to no real system; viewing as a role grants nothing.</span><span className="foot__more"> The only way out is Empathia's enquiry form on {ENQUIRY.host}.</span> <a href="#/investor">Back to the start</a> <a href="#/offline" data-testid="foot-offline">Offline use</a><ContactLinks /></footer>
+        <footer className="foot"><span className="ui-tag ui-tone--warn foot__tag">Synthetic data</span> <span id="persp-note">Everything here is invented and connected to no real system; viewing as a role grants nothing.</span><span className="foot__more"> The only ways out are Empathia's enquiry form on {ENQUIRY.host} and the Teams, email and phone links a contact action opens when you press it.</span> <a href="#/investor">Back to the start</a> <a href="#/offline" data-testid="foot-offline">Offline use</a><ContactLinks /></footer>
       </div>
     </ViewAsContext.Provider>
   );
