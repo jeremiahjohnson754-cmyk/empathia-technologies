@@ -34,7 +34,7 @@ Counts and identifiers only. No dialogue or narrative text is reproduced here.
 | Optional conversations (talks) | 121 | 121, canon | RESTORED, tested |
 | Beats, twists, notes, history | 260 beats, 232 twists | canon | RESTORED, tested |
 | Lessons | 161 (657 cards, 501 plate references) | 161, library, **an earlier revision**: 111 lessons differ in their cards; no plate references; no review flags | PARTIAL |
-| Quizzes | **693** (2,105 questions) | **223**, library. Missing: 121 chapter quizzes, 121 chapter "UX" quizzes, 224 walkthrough quizzes, 4 season finals. 42 of the 223 differ | **470 MISSING** |
+| Quizzes | **693** (2,105 questions) | **223** in the library the pages read. Missing there: 121 chapter quizzes, 121 chapter "UX" quizzes, 224 twist quizzes, 4 season finals; 42 of the 223 differ. All 693 are now held, unedited, in `packages/signal-canon/data/app-data.json`, which no page reads yet | **470 not yet reachable** |
 | Labs | 91 in nine types | 91, library (earlier revision: about 30 differ). **Only the 26 signal-flow labs have a simulator**; the other 65 show their brief | PARTIAL: 65 of 91 not playable |
 | Drills | 146 in six types | 146, library (42 briefs differ). All six types run in Practice | RESTORED in an earlier revision; TO VERIFY each type against the source's behaviour |
 | Live incidents (Service Mode) | 121 | 121, library (41 briefings and 32 action lists differ; no plates; no notes) | PARTIAL; engine TO VERIFY |
@@ -51,22 +51,29 @@ Counts and identifiers only. No dialogue or narrative text is reproduced here.
 | Ask: offline answers and rules | 20 answers, 7 suggestions | Ask exists (`#/ask`); whether it carries these 20: TO VERIFY | TO VERIFY |
 | Roles on Mission Control | 5 (two playable, three previews) | not carried | TO VERIFY |
 
-## 3. Things mounted inside the chapters
+## 3. Interactive pieces inside the chapters
 
-In the source a chapter is not only read. **997 interactive pieces are mounted inside the 133 chapters**, and many gate the story:
+In the source a chapter is not only read. By the build package's own list of gates in reading order (`packages/signal-canon/data/gates.json`,
+1,366 gates: 537 hard, 488 soft, 341 optional), **979 interactive pieces sit inside the chapters** beside the 387 decisions.
+747 are mounted between panels; 232 are the tests that follow a twist.
 
-| Mounted in chapters | Count | In the product's story reader |
-|---|---:|---|
-| Quizzes | 470 | A card with a link to Learn. Not played in place. The 470 are the ones missing from the library |
-| Lessons | 149 | A card with a link to Learn. Not opened in place |
-| Drills | 136 | "Not yet playable from the story in this build" |
-| Live incidents | 122 | "Not yet playable from the story in this build" |
-| Labs | 89 | A link to the lab page; 26 have a simulator there |
-| Season reviews | 12 | "Not yet playable" |
-| Boss levels | 12 | "Not yet playable" |
-| Meltdowns | 7 | "Not yet playable" |
+| In the chapters | Count | Tier in the source | In the product's story reader |
+|---|---:|---|---|
+| Quizzes | 470 (246 mounted, 224 after a twist) | 224 soft, 246 optional | A card with a link to Learn; a twist shows its text. **None is played in place.** These are the 470 the earlier library lacked |
+| Lessons | 148 | 142 soft, 6 optional | A card with a link to Learn. Not opened in place |
+| Drills | 136 (128 mounted, 8 after a twist) | **79 hard**, 8 soft, 49 optional | "Not yet playable from the story in this build" |
+| Live incidents | 121 | 114 soft, 7 optional | "Not yet playable from the story in this build" |
+| Labs | 75 | **42 hard**, 33 optional | A link to the lab page; only the signal-flow labs have a simulator there |
+| Season reviews | 12 | **hard** | "Not yet playable" |
+| Boss levels | 12 | **hard** | "Not yet playable" |
+| Meltdowns | 5 | **hard** | "Not yet playable" |
 
-Verified in `apps/demo/src/signal/StoryPage.tsx` (the `mount` case). **This is the largest gap.**
+Verified in `apps/demo/src/signal/StoryPage.tsx` (the `mount` and `twist` cases). In the source, 150 of these pieces are hard gates
+(79 drills, 42 labs, 12 reviews, 12 bosses, 5 meltdowns): the story does not go on until they are passed. In the product only the 387
+decisions gate. **This is the largest gap.**
+
+(The first pass of this page counted 997 from the standalone's markup, which also counts pieces mounted in its other views. The
+gate list is the authority and gives 979.)
 
 ## 4. Engines and interactions
 
@@ -106,15 +113,22 @@ before any item is called working.
 
 ## 6. What restoration means here, in order
 
-1. Bring the library to the source's revision: all 693 quizzes, the lessons' current cards and plate references, the incidents' notes
-   and plates, bosses, meltdowns, timeline, system maps, plates. Held by hash, like the canon; nothing edited.
-2. Play every mounted piece in place in the story, with the gate it carries: quizzes and lessons first (619 of the 997), then drills
-   and incidents (258), then labs, reviews, bosses and meltdowns.
+1. Bring the library to the source's revision. **Done as data (11 Nov):** the build package's complete content bundle
+   (`app-data.json`, byte-for-byte what the reference build embeds: verified equal to the standalone's embedded data) and its gate list
+   are in `packages/signal-canon/data/`, held by hash, with `tests/unit/signal-library.test.mjs`. **Not done:** the Learn pages still
+   read the earlier library; the 160 fieldbook plate images are not in the repository (see §7).
+2. Play every piece in place in the story, with the tier of gate it carries: quizzes and lessons first (618 of the 979), then drills
+   and incidents (257), then labs, reviews, bosses and meltdowns.
 3. The eight missing lab simulators, the thirteen challenges and the six demos.
 4. Mission Control as the source has it: quest log, journal, ratings, trust, competency, evidence locker.
 5. Every line above marked TO VERIFY, verified against the source's behaviour, then a functional and a visual test for each.
 
 ## 7. Limits of this inventory
+
+- **Fieldbook plates.** The build package says the plates are the owner's own and are the one exception to the story's no-real-brands
+  rule. Their captions are in the content bundle; the 160 images are not in this repository, and they will not be added without the
+  founder's word, because a plate may show a real product or maker. Until then a plate shows a labelled card, which is also what
+  the source does when a plate cannot load.
 
 - The source was read, not run. Behaviour is inferred from its code and data; where that is uncertain the line says TO VERIFY.
 - "Differ" means the stored data is not byte-equal after parsing. It does not yet say which side is newer in every case; the library

@@ -16,4 +16,14 @@ SVG (`data/art/`), the cast and locations, the season list, the review-flag regi
   rather than block").
 - Story content names no real brand, product or company.
 
+- **The learning content, complete (added 11 November 2026).** `data/app-data.json` is the package's whole runtime content bundle, exactly
+  as the reference build embeds it (verified equal to the data inside `signal-standalone.html`): 161 lessons, 693 quizzes, 146 drills,
+  91 labs, 121 live incidents, 62 case files, 12 boss levels, 5 meltdowns, 125 formulas, 522 glossary terms, 250 discoveries, the
+  quests, timeline, system maps, plate captions and the orders they are shown in. `data/gates.json` is every gate in reading order with
+  its tier. `tests/unit/signal-library.test.mjs` holds the counts and proves that every piece a chapter mounts exists in the bundle.
+  The earlier, smaller library in `packages/domain-data/data/SIGNAL_LIB.json` is what the Learn pages still read; replacing it is
+  restoration work recorded in `docs/restoration/SIGNAL_INVENTORY.md`.
+- **The fieldbook plate images are not here.** The package calls them the owner's own and the one exception to the no-real-brands rule,
+  so they wait for the founder's word. Their captions are in the bundle.
+
 The application never bundles this data: `apps/demo/build.mjs` copies it to `dist/signal/` and the story player fetches one chapter at a time.

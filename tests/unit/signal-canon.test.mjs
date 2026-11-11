@@ -13,7 +13,9 @@ const index = J('story/index.json'); const stats = J('stats.json'); const chapte
 const all = chapters.flatMap((c) => c.items); const of = (t) => all.filter((i) => i.type === t);
 
 test('SC-01 every canon file matches its recorded hash: nothing edited, nothing missing, nothing added', () => {
-  const lines = fs.readFileSync(path.join(canon, 'MANIFEST.sha256'), 'utf8').trim().split('\n'); assert.equal(lines.length, 1764);
+  // 1,766 since 11 Nov 2026: the build package's complete content bundle (app-data.json) and its gate list (gates.json) were added,
+  // unedited, on the founder's instruction to restore SIGNAL in full. The 1,764 story and art files are unchanged.
+  const lines = fs.readFileSync(path.join(canon, 'MANIFEST.sha256'), 'utf8').trim().split('\n'); assert.equal(lines.length, 1766);
   const listed = new Set();
   for (const l of lines) { const [hash, , ...rest] = l.split('  '); const rel = rest.join('  '); listed.add(rel); assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(canon, 'data', rel))).digest('hex'), hash, rel); }
   const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.relative(path.join(canon, 'data'), path.join(d, e.name))]));
