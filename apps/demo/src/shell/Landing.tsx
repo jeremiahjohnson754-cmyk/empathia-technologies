@@ -21,7 +21,7 @@ import { PAGES } from '../registry.pages.js';
 import { reducedMotion } from '../viewas/role.js';
 
 /** A small drawing of what each role mostly looks at (a trend, a room, passports, a queue, a plan, a shield); decorative. */
-const ART: Record<string, number> = { exec: 0, bpm: 0, ops: 1, designer: 1, syseng: 1, service: 2, installer: 2, svcmgr: 3, ipm: 3, employee: 3, cxeng: 4, qa: 4, steward: 5, architect: 5, visitor: 1 };
+const ART: Record<string, number> = { exec: 0, bpm: 0, ops: 1, designer: 1, syseng: 1, service: 2, installer: 2, svcmgr: 3, ipm: 3, employee: 3, sitechamp: 3, cxeng: 4, qa: 4, steward: 5, architect: 5, visitor: 1 };
 function RoleArt({ k }: { k: string }) {
   const i = ART[k] ?? 0;
   return <svg className="shelf__art" viewBox="0 0 120 56" aria-hidden="true" focusable="false">

@@ -161,7 +161,7 @@ for (const scheme of SCHEMES) { // View as changes the work; D44; destructive in
 for (const scheme of SCHEMES) {
   const t = await open([1440, 900], scheme, { hash: '#/investor' }); await t.page.waitForTimeout(900);
   const sh = await t.page.evaluate(() => { const cards = Array.from(document.querySelectorAll('[data-testid="role-shelf"] .shelf__role')); return { n: cards.length, art: cards.filter((c) => c.querySelector('svg.shelf__art')).length, counts: cards.map((c) => c.querySelector('[data-testid="shelf-counts"]')?.textContent || ''), first: cards[0]?.getAttribute('aria-pressed') }; });
-  ok(`CORE-${scheme}-shelf-01`, 'Every role, one Core: a carousel of all 15 roles, each with an illustration and its records and surfaces counts; the viewed role first', sh.n === 15 && sh.art === 15 && sh.first === 'true' && sh.counts.every((c) => /\d[\d,]* of \d[\d,]* records · \d+ of \d+ surfaces/.test(c)), JSON.stringify(sh).slice(0, 300));
+  ok(`CORE-${scheme}-shelf-01`, 'Every role, one Core: a carousel of all 16 roles, each with an illustration and its records and surfaces counts; the viewed role first', sh.n === 16 && sh.art === 16 /* sixteen since the Site Champion became a dedicated role (founder, 11 Nov 2026) */ && sh.first === 'true' && sh.counts.every((c) => /\d[\d,]* of \d[\d,]* records · \d+ of \d+ surfaces/.test(c)), JSON.stringify(sh).slice(0, 300));
   const vis = sh.counts.find((c, i) => i > 0); const arch = sh.counts[sh.counts.length - 1];
   ok(`CORE-${scheme}-shelf-02`, 'the counts differ by role (the Product Architect sees every record and surface, a lesser role fewer)', vis !== arch, `${vis} | ${arch}`);
   await t.page.click('[data-testid="role-shelf"] [data-role-key="employee"]'); await t.page.waitForTimeout(1200);

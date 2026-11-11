@@ -30,7 +30,7 @@ export const PROOF_PAGES: readonly PageDef[] = [
       { id: 'scan.openTest', label: 'Open the tests', authority: { roles: DOSSIER_READERS, why: 'the readers of the commissioning dossier' } },
       { id: 'scan.attach', label: 'Attach evidence', authority: { action: 'cx.tech' } },
       { id: 'scan.issue', label: 'Report a problem', authority: { action: 'issue.report' } },
-      { id: 'scan.attest', label: 'Add a local attestation', authority: { roles: ['employee'], why: 'Founder directive of 11 November 2026, §13: a site champion may attest locally and does not replace the approvers. The demonstration has no separate champion role, so the Employee view stands in for the room’s site champion' } },
+      { id: 'scan.attest', label: 'Add a local attestation', authority: { roles: ['sitechamp'], why: 'Founder, 11 November 2026: a Site Champion may attest locally and does not replace the approvers; the champion is a dedicated role, and attests for rooms of their own site' } },
       { id: 'scan.export', label: 'Export the report', authority: { roles: DOSSIER_READERS, why: 'the readers of the commissioning dossier' } },
     ],
     load: () => import('./proof/QrHub.js'),

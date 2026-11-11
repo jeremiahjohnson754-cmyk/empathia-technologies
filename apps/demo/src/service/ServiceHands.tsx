@@ -160,7 +160,8 @@ function Job({ ops, inc, confirm, offerUndo }: { ops: Ops; inc: S.Incident; conf
               <dt>Escalate to</dt><dd>Service Manager (synthetic) — write an escalation note below; it reaches the dispatch board's ledger</dd></dl>
             {inc.state === 'ASSIGNED' && <button type="button" className="ui-btn ui-btn--primary" onClick={() => ops.apply((x) => S.accept(x, persona, inc.id))} data-testid="accept">Accept the job</button>}
             {inc.state === 'ACCEPTED' && preview && <div className="ops-form" data-testid="preflight"><h3>Before you start</h3>
-              <label className="check"><input type="checkbox" checked={pf.access} onChange={(e) => setPf({ ...pf, access: e.target.checked })} /> Site access confirmed by facilities or the site champion</label>
+              {wo.access ? <p className="check" data-testid="access-confirmed">Site access is already confirmed, by {wo.access.confirmedBy}.</p>
+                : <label className="check"><input type="checkbox" checked={pf.access} onChange={(e) => setPf({ ...pf, access: e.target.checked })} /> Site access confirmed by facilities or the site champion</label>}
               <label className="check"><input type="checkbox" checked={pf.safety} onChange={(e) => setPf({ ...pf, safety: e.target.checked })} /> Safety brief acknowledged</label>
               {needs.certs.includes('lic.working_at_height') && <label className="check"><input type="checkbox" checked={pf.heightPermit} onChange={(e) => setPf({ ...pf, heightPermit: e.target.checked })} /> Working-at-height permit</label>}
               {needs.tools.map((tl) => <label key={tl} className="check"><input type="checkbox" checked={pf.tools.includes(tl)} onChange={(e) => setPf({ ...pf, tools: e.target.checked ? [...pf.tools, tl] : pf.tools.filter((x) => x !== tl) })} /> Tool: {tl}</label>)}

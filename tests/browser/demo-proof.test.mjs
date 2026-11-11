@@ -226,8 +226,9 @@ for (const role of ['visitor', 'employee']) { const t = await open(`#/dossier/${
     ok(id, `${label} accepts nothing: the dossier reads held`, await state() === 'HELD' && await signoff() === 'TESTS_OPEN', `${await state()} ${await signoff()}`);
   }
   await t.close(); }
-{ const t = await open('#/scan/SIM-AV-0042', { role: 'employee' }); const p = t.page; await p.waitForSelector('[data-testid=scan-passport]');
-  ok('AT-01', 'the Employee, standing in for the room’s site champion, is offered the attestation and is not shown the acceptance state', await p.locator('[data-testid=scan-attest]').count() === 1 && await p.locator('[data-testid=scan-acceptance]').count() === 0 && /does not approve the room/.test(await p.innerText('[data-testid=scan-attest]')));
+// Changed 11 Nov 2026 (founder's decision 2): the Site Champion is a dedicated role; the Employee no longer stands in for it.
+{ const t = await open('#/scan/SIM-AV-0042', { role: 'sitechamp' }); const p = t.page; await p.waitForSelector('[data-testid=scan-passport]');
+  ok('AT-01', 'the Site Champion is offered the attestation for a room of their own site, and is not shown the acceptance state', await p.locator('[data-testid=scan-attest]').count() === 1 && await p.locator('[data-testid=scan-acceptance]').count() === 0 && /does not approve the room/.test(await p.innerText('[data-testid=scan-attest]')));
   await p.fill('[data-testid=scan-attest-word]', 'ok'); await p.click('[data-testid=scan-attest-go]'); await p.waitForSelector('[data-testid=scan-attest-refused]');
   ok('AT-02', 'a two-letter attestation is refused in words', /in a sentence/.test(await p.innerText('[data-testid=scan-attest-refused]')));
   const word = 'We held three team meetings here this week and the far end heard everyone at the table.';
@@ -236,7 +237,7 @@ for (const role of ['visitor', 'employee']) { const t = await open(`#/dossier/${
   await p.evaluate((h) => { localStorage.setItem('empathia.demo.perspective', 'svcmgr'); location.hash = h; }, `#/dossier/${REPORT}`); await p.reload(); await p.waitForSelector('[data-testid=dossier]');
   ok('AT-04', 'the Service Manager reads the champion’s words on the dossier, marked as a local attestation; every blocker still stands and nothing is approved', (await p.innerText('[data-testid=dossier-attestations]')).includes(word) && /approves nothing/.test(await p.innerText('[data-testid=dossier-attestations]')) && await p.getAttribute('[data-testid=dossier]', 'data-acceptance') === 'HELD' && await p.locator('[data-testid=dossier-blockers] li').count() === 7 && clean(t), t.errs.join('|'));   // the snapshot's seven lines (T-SIM-032 is listed twice: it fails, and no deficiency is raised)
   await t.close();
-  for (const role of ['visitor', 'exec', 'cxeng']) { const v = await open('#/scan/SIM-AV-0042', { role }); await v.page.waitForSelector('[data-testid=scan-passport]');
+  for (const role of ['visitor', 'employee', 'exec', 'cxeng']) { const v = await open('#/scan/SIM-AV-0042', { role }); await v.page.waitForSelector('[data-testid=scan-passport]');
     ok(`AT-05-${role}`, `the ${role} is not offered the attestation`, await v.page.locator('[data-testid=scan-attest]').count() === 0); await v.close(); }
   const ph = await open(`#/dossier/${REPORT}`, { role: 'exec', w: 390, h: 844 }); await ph.page.waitForSelector('[data-testid=dossier-waive]');
   const small = await ph.page.$$eval('[data-testid=dossier-waive] button, [data-testid=dossier-waive] select, [data-testid=dossier-waive] input', (els) => els.filter((e) => e.getBoundingClientRect().height < 44).length);
