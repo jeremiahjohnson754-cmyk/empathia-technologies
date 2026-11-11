@@ -75,7 +75,7 @@ export default function SitePage({ role, can }: PageProps) {
             <li><b>A Service Engineer visits</b><span>{cover.length ? `${plural(cover.length, 'engineer')} ${cover.length === 1 ? 'covers' : 'cover'} this site: ${cover.map((s) => s.name.replace(' (synthetic)', '')).join(', ')}.` : 'No engineer is recorded for this site.'}</span></li>
             <li><b>The Systems Engineer is brought in</b><span>Only when the fix needs a design or configuration change.</span></li>
           </ol>
-          <p className="sc-note">Names are synthetic. With a connected directory each step carries the person, their hours and a way to reach them.</p>
+          <p className="sc-note">Names are synthetic. {opens('#/people') ? <a href={`#/people?site=${site}`} data-testid="site-people">The people of this site, whether they are at work now, and how to reach them</a> : null}</p>
         </Card>
 
         <Card title="What you know about a room" icon="info" sub="Something only someone on site knows. It is kept as a note for review, never as fact." testId="site-notes">

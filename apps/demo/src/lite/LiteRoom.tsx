@@ -104,7 +104,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
       </Card>}
       {o.scenario && <Card title="This room’s scenario" icon="play" testId="lite-scenario"><p>{o.scenario}</p>{o.template?.note && <p className="ui-meta">Design basis: {o.template.note}.</p>}</Card>}
       {o.id === 'R-ATL-6-300' && <FleetWall />}
-      <p className="ui-meta lt-foot">Elsewhere: <a href={`#/here/${o.id}`} data-testid="lite-here">I am in this room</a>{allows({ area: 'control' }, role) && <> · <a href={`#/control/${o.id}`} data-testid="lite-control">operate this room</a></>} · <a href={`#/search?focus=Room:${o.id}`}>Search Party from this room</a>{allows({ area: 'room' }, role) && <> · <a href={roomHref(o)}>technical room view</a></>} · <a href={`#/lite/way?to=${o.id}`}>find the way</a>{allows({ area: 'scouter' }, role) && <> · <a href="#/lite/scouter">ask Scouter about a device</a></>}</p>
+      <p className="ui-meta lt-foot">Elsewhere: <a href={`#/here/${o.id}`} data-testid="lite-here">I am in this room</a>{role !== 'visitor' ? <> · <a href={`#/people?room=${o.id}`} data-testid="lite-who">who knows this room</a></> : null}{allows({ area: 'control' }, role) && <> · <a href={`#/control/${o.id}`} data-testid="lite-control">operate this room</a></>} · <a href={`#/search?focus=Room:${o.id}`}>Search Party from this room</a>{allows({ area: 'room' }, role) && <> · <a href={roomHref(o)}>technical room view</a></>} · <a href={`#/lite/way?to=${o.id}`}>find the way</a>{allows({ area: 'scouter' }, role) && <> · <a href="#/lite/scouter">ask Scouter about a device</a></>}</p>
     </section>
   );
 }
