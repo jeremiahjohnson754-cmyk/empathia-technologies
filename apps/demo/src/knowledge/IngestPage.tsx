@@ -48,12 +48,12 @@ export default function IngestPage({ role, query, can }: PageProps) {
   const [said, setSaid] = useState(''); const [refused, setRefused] = useState<string | null>(null); const [name, setNameRaw] = useState(() => { try { return sessionStorage.getItem(NAME_KEY) || ''; } catch { return ''; } });
   const [authName, setAuthName] = useState(''); const [folders, setFolders] = useState<string[]>(() => (ix.scope.length ? ix.scope : foldersOf(s.source).filter((f) => f !== '/People')));
   const [kinds, setKinds] = useState<Record<string, string>>(() => ({ ...GUESS, ...ix.kinds })); const [pick, setPick] = useState(''); const [group, setGroup] = useState(''); const [sure, setSure] = useState(false); const [why, setWhy] = useState(''); const [rejecting, setRejecting] = useState<string | null>(null);
-  const headRef = useRef<HTMLHeadingElement>(null); const fbRef = useRef<HTMLDivElement>(null); const moved = useRef(false);
+  const headRef = useRef<HTMLHeadingElement>(null); const fbRef = useRef<HTMLDivElement>(null); const railRef = useRef<HTMLOListElement>(null); const moved = useRef(false);
   const opens = (href: string) => { const x = resolve(href.split('?')[0]!); return !!x && canOpen(role, x); };
   const setName = (v: string) => { setNameRaw(v); try { sessionStorage.setItem(NAME_KEY, v); } catch { /* the name lasts the page */ } };
 
   useEffect(() => { try { history.replaceState(null, '', `#/knowledge/sources?step=${step}`); } catch { /* the address stays */ } }, [step]);
-  useEffect(() => { if (moved.current) headRef.current?.focus(); }, [step]);
+  useEffect(() => { if (moved.current) headRef.current?.focus(); railRef.current?.querySelector('[aria-current=step]')?.scrollIntoView?.({ block: 'nearest', inline: 'center' }); }, [step]);
   // a link to another step of this page (from the ledger, from Surface) moves there, when the journey has got that far
   useEffect(() => { const q = query.get('step') as Step | null; if (q && STEPS.includes(q) && STEPS.indexOf(q) <= STEPS.indexOf(stepAt(s))) { moved.current = true; setStepRaw(q); } }, [query.get('step')]);   // eslint-disable-line react-hooks/exhaustive-deps
   /** Take an action through the one write path. `next`: the step to show when it succeeds. */
@@ -90,7 +90,7 @@ export default function IngestPage({ role, query, can }: PageProps) {
         meta={[<Tag key="m" tone="warn">Simulated source</Tag>, <Tag key="s" tone="warn">Synthetic data</Tag>, <span key="r">You are the {ROLES[role].label}</span>]} />
       <div data-testid="ing-honest"><Notice tone="warn"><b>Simulated.</b> No document system is connected ({connected().length} real sources). The library on this page is synthetic and lives in this browser; nothing was validated against a real library. Malware scanning is not implemented, and no embeddings are built: search here is by words.</Notice></div>
 
-      <nav aria-label="Steps of bringing documents in"><ol className="hr-rail kn-rail" data-testid="ing-rail">{STEPS.map((x, i) => { const isDone = s.done.includes(x); return (
+      <nav aria-label="Steps of bringing documents in"><ol className="hr-rail kn-rail" data-testid="ing-rail" ref={railRef}>{STEPS.map((x, i) => { const isDone = s.done.includes(x); return (
         <li key={x} className={x === step ? 'on' : isDone ? 'done' : ''}><button type="button" aria-current={x === step ? 'step' : undefined} onClick={() => go(x)} data-testid={`ing-step-${x}`}><span className="hr-rail__n" aria-hidden="true">{isDone ? <Icon name="check" size={14} /> : i + 1}</span>{STEP_WORD[x][0]}{isDone && <span className="ui-visually-hidden"> (done)</span>}</button></li>); })}</ol></nav>
 
       <div className="kn-ing__cols">
