@@ -6,6 +6,7 @@
  *   registry.ops.ts     Mission Control, Pro, ServiceHands, commissioning, APEX, Learn …     (owner: rebuild/demo-ops)
  *   registry.parity.ts  the V2.5.3 parity areas: records, sets, ledger, compare, ask, control, V1.4 … (owner: uplift/parity-areas)
  *   registry.worlds.ts  the world-first entry: choose a world, a world's journeys, a journey's screen (owner: v18/worlds)
+ *   registry.connect.ts the people directory and the meeting assistant                              (owner: agent/connect-people-actions)
  * See README-routes.md.
  */
 import type { PageDef } from './registry.types.js';
@@ -19,8 +20,16 @@ import { WORLD_PAGES } from './registry.worlds.js';
 import { CHAMPION_PAGES } from './registry.champion.js';
 import { CONNECT_PAGES } from './registry.connect.js';
 import { GUIDE_PAGES } from './registry.guides.js';
+import { DOCS5_PAGES } from './registry.docs5.js';
+import { KNOWLEDGE_PAGES } from './registry.knowledge.js';
 
-export const PAGES: readonly PageDef[] = [...SHELL_PAGES, ...SPACES_PAGES, ...OPS_PAGES, ...PARITY_PAGES, ...PROOF_PAGES, ...WORLD_PAGES, ...CHAMPION_PAGES, ...CONNECT_PAGES, ...GUIDE_PAGES];
+export const PAGES: readonly PageDef[] = [
+  ...SHELL_PAGES, ...SPACES_PAGES, ...OPS_PAGES, ...PARITY_PAGES, ...PROOF_PAGES, ...WORLD_PAGES, ...CHAMPION_PAGES,
+  ...CONNECT_PAGES,
+  ...GUIDE_PAGES,
+  ...DOCS5_PAGES,
+  ...KNOWLEDGE_PAGES,
+];
 
 interface Compiled { page: PageDef; segs: string[]; rest: boolean; score: number }
 const compile = (page: PageDef, path: string): Compiled => {

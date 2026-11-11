@@ -12,9 +12,13 @@ import { openIssues, DEMO_NOW } from '../campus/design.js';
 import { load as loadDecisions } from '../decisions/store.js';
 import { healthOf, busyAt, nextOf, hhmm, fmtUsd, plural, AGREEMENTS, VENDORS, type Core, type Rec } from './core.js';
 import { useCore, honest, Zone, RecList, visible } from './ui.js';
+// --- knowledge hook (agent/knowledge-fabric), 1 of 2: the import
+import { KnowledgeAnswer } from '../knowledge/hooks.js';
+// --- end knowledge hook
+import { CONNECT_QUESTIONS } from '../connect/ask.js';
 
 interface Answer { lead: ReactNode; cites: Rec[]; more?: Array<[string, string]> }
-interface Q { id: string; group: 'Rooms' | 'The estate' | 'Design' | 'The workplace'; text: string; words: RegExp; needsRoom?: boolean; field?: 'ask.engineering' | 'ask.portfolio'; answer: (c: Core, room: RoomOutline | null, role: RoleKey) => Answer }
+interface Q { id: string; group: 'Rooms' | 'The estate' | 'Design' | 'The workplace'; text: string; words: RegExp; needsRoom?: boolean; field?: 'ask.engineering' | 'ask.portfolio'; answer: (c: Core, room: RoomOutline | null, role: RoleKey, asked?: string) => Answer }
 
 const REF = ROOMS[0]!;
 export function roomIn(q: string): RoomOutline | null {
@@ -26,6 +30,7 @@ const recOf = (c: Core, o: RoomOutline) => c.rooms.find((r) => r.outline.id === 
 const roomRec = (c: Core, o: RoomOutline) => c.byType.Room.filter((x) => x.id === o.id);
 
 export const QUESTIONS: Q[] = [
+  ...CONNECT_QUESTIONS,   // who to contact, and booking with a role: they end at the review step of #/meet (asking never books)
   { id: 'why', group: 'Rooms', text: `Why is ${shortName(REF)} degraded?`, words: /\bwhy\b.*\b(degraded|unhealthy|bad|wrong|health|monitor)\b|\bhealth of\b/, needsRoom: true, field: 'ask.engineering', answer: (c, o) => { const r = recOf(c, o!); const h = healthOf(r); const iss = openIssues(r);
     return { lead: <>{fullName(o!)} has a health of <b>{h} of 100</b> by this demonstration’s rule. {iss.length ? <>It has {plural(iss.length, 'open issue')}: {iss.map((i) => i.title.toLowerCase()).join('; ')}.</> : 'No issue is open.'} {r.counts.verified < r.counts.applicable ? `${r.counts.applicable - r.counts.verified} of ${r.counts.applicable} applicable tests have no verified result.` : 'Every applicable test is verified.'}</>, cites: [...roomRec(c, o!), ...c.byType.Issue.filter((x) => x.roomId === o!.id && x.state !== 'RESOLVED')], more: [['Open the room', roomHref(o!)], ['Its ledger entry', `#/ledger/rec/C-H-${o!.id.slice(2)}`]] }; } },
   { id: 'changed', group: 'Rooms', text: `What changed in ${shortName(REF)} since commissioning?`, words: /\b(changed|change|different|since)\b/, needsRoom: true, field: 'ask.engineering', answer: (c, o) => { const r = recOf(c, o!); const bl = r.baselines.find((b) => b.state === 'CURRENT'); const after = bl ? r.events.filter((e) => Date.parse(e.at) > Date.parse(bl.at)) : r.events;
@@ -68,7 +73,7 @@ export default function AskPage({ role, query }: PageProps) {
   const core = useCore(); const [text, setText] = useState(query.get('q') || ''); const [asked, setAsked] = useState(query.get('q') || '');
   const mine = QUESTIONS.filter((q) => mayAsk(q, role));
   const result = useMemo(() => (asked ? match(asked, role) : null), [asked, role]);
-  const ans = result ? result.q.answer(core, result.room, role) : null;
+  const ans = result ? result.q.answer(core, result.room, role, asked) : null;
   const submit = (e: { preventDefault(): void }) => { e.preventDefault(); setAsked(text.trim()); };
   const groups = ['Rooms', 'The estate', 'Design', 'The workplace'] as const;
   return (
@@ -81,6 +86,9 @@ export default function AskPage({ role, query }: PageProps) {
         <button className="ui-btn ui-btn--primary" type="submit"><Icon name="search" size={16} /> Ask</button>
       </form>
       <div aria-live="polite" data-testid="ask-answer">
+        {/* --- knowledge hook (agent/knowledge-fabric), 2 of 2: a question Core has no prepared answer for is asked of the Knowledge Ledger, which answers from a source this reader may read, with its citation, or abstains (knowledge/ledger.ts › answerFor) */}
+        {asked && !(ans && result) ? <KnowledgeAnswer q={asked} role={role} /> : null}
+        {/* --- end knowledge hook */}
         {asked && ans && result ? (
           <section className="pa-answer" aria-label="Answer">
             <p className="pa-note">Answering “{result.q.text.replace(shortName(REF), result.room ? shortName(result.room) : shortName(REF))}”{result.room && !roomIn(asked) ? ` — no room was named, so the reference room ${shortName(REF)}` : ''}</p>

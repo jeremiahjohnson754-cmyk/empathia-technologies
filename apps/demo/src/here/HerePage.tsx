@@ -24,6 +24,7 @@ import { useWorkspace } from '../workspace/useWorkspace.js';
 import * as S from '../workspace/store.js';
 import { SYMPTOMS, GROUP_WORD, WHAT_IT_DOES, RESULT_WORD, symptomOf, findRooms, labelFor, kindsOf, many, plainEquipment, historyOf, repeats, suspectsOf, stepsFor, jobWords, stageWord, worthAVisit, type SymptomId, type Visit, type Kind } from './model.js';
 import { loadVisits, record, outcomeProblems, type Outcome } from './store.js';
+import { WhoKnows } from '../connect/ContactBar.js';
 
 type StepId = 'look' | 'history' | 'wrong' | 'try' | 'record';
 type Result = 'fixed' | 'same' | 'skipped';
@@ -288,6 +289,7 @@ function Room({ id, role, query, sees, can }: { id: string } & Pick<PageProps, '
               {doneJob && <p><Tag tone={jobWords(doneJob.state)[1]}>{jobWords(doneJob.state)[0]}</Tag></p>}
               <p className="hr-links">{done.incidentId && opens('#/servicehands') && <a href={`#/servicehands?id=${done.incidentId}`} data-testid="here-follow">Open it in ServiceHands</a>}{opens('#/room') && <a href={`#/room/${id}?tab=history`}>Open the room’s history</a>}{opens('#/people') && <a href={`#/people?room=${id}`} data-testid="here-who">Who knows this room</a>}<a href="#/here">Help in another room</a></p>
               <p><Button onClick={restart} testId="here-again">Something else in this room</Button></p>
+              <WhoKnows role={role} kind="room" id={id} seen={sym.label} heading="Contact the site champion" />
             </div>}
           </div>}
 

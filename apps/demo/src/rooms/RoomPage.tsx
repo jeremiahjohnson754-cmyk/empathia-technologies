@@ -12,6 +12,7 @@ import { roomHealth } from '../campus/metrics.js';
 import { load as loadWorkspace } from '../workspace/store.js';
 import { RoomView } from './RoomView.js';
 import { StatusDot } from '../spatial/parts.js';
+import { WhoKnows } from '../connect/ContactBar.js';
 
 /** The room id at a V2.5.3 room address: '/room/<id>', '/room~<id>' or none (the reference room). */
 export function roomIdOf(hash: string, params: Record<string, string>): string {
@@ -25,7 +26,7 @@ export default function RoomPage({ role, hash, params, sees }: PageProps) {
   const opens = (href: string) => { const r = resolve(href); return !!r && canOpen(role, r); };
   const legacy = legacyView(hash);
   if (!roomById(id)) return <UnknownRoom id={id} context={legacy?.context} />;
-  return <RoomView id={id} hash={hash} sees={sees} opens={opens} base={legacy ? hash.split('?')[0]! : params.room ? `#/room/${encodeURIComponent(id)}` : '#/room'} context={legacy?.context} startTab={legacy?.tab} />;
+  return <><RoomView id={id} hash={hash} sees={sees} opens={opens} base={legacy ? hash.split('?')[0]! : params.room ? `#/room/${encodeURIComponent(id)}` : '#/room'} context={legacy?.context} startTab={legacy?.tab} /><WhoKnows role={role} kind="room" id={id} /></>;
 }
 
 /** V2.5.3 opened a room for one purpose at these addresses (#/commissioning/room/<id>, #/assurance/room/<id>/history, #/v25/tracker …).

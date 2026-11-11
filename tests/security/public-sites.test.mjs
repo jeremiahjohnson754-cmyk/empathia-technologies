@@ -71,11 +71,22 @@ test('SA-04/SA-08 dist: no source maps, no inline script or style or handler, ev
   // and never requests the address (public-security.test.mjs still fails any request that leaves the page). That one exact host is
   // allowed, in the demo only, and only as the text of a QR code; every other host is still refused.
   const QR_TEXT = /^https:\/\/northstar\.example\.com$/;
+  // 2026-11-11 (Connect): the demo's contact actions build the deep links Microsoft documents for Teams (a chat, a call, the
+  // scheduling form). Each is an address a person chooses to open in a new tab; the page requests nothing from that host, and the
+  // CSP (script-src 'self', connect-src 'self') is unchanged and does not name it. That ONE host is allowed, in the demo only, and
+  // only as the start of one of those three documented paths, as a string constant inside a script chunk. It is refused anywhere
+  // else: in a page's markup or a stylesheet (so no <img>, <script>, <link>, <iframe> or form can target it), with any other path,
+  // or beside a request API. Documentation addresses (learn.microsoft.com and the like) are NOT allowed: they stay out of the bundle.
+  const DEEP_LINK = /^https:\/\/teams\.microsoft\.com$/; const DEEP_PATH = /^https:\/\/teams\.microsoft\.com\/l\/(chat\/0\/0|call\/0\/0|meeting\/new)\?/;
+  const REQUESTS = /\bfetch\s*\(|XMLHttpRequest|sendBeacon|EventSource|WebSocket|importScripts|new Image\b|\.src\s*=|\bimport\s*\(/;
+  const deepLink = (rel, f, s, at) => { assert.ok(/\.js$/.test(f), `${rel}: the Teams deep link appears outside a script`); assert.match(s.slice(at, at + 60), DEEP_PATH, `${rel}: teams.microsoft.com with a path that is not a documented deep link`);
+    assert.match(s[at - 1] || '', /["'`]/, `${rel}: the deep link is not a plain string constant`); assert.doesNotMatch(s.slice(Math.max(0, at - 160), at), REQUESTS, `${rel}: a request API beside the Teams deep link`); return true; };
+  assert.doesNotMatch(cspHeader(), /teams\.microsoft|https?:/); assert.doesNotMatch(cspMeta(), /teams\.microsoft|https?:/);
   for (const [site, d] of Object.entries(DIST)) for (const f of walk(d)) {
     const rel = path.relative(repo, f); assert.ok(!f.endsWith('.map'), `${rel}: source map shipped`);
     if (!/\.(html|js|css|json|webmanifest|xml)$/.test(f) || f.endsWith('signal-lib.json')) continue;   // licence texts (OFL.txt, *.LEGAL.txt) name their upstream, which no page loads
     const s = fs.readFileSync(f, 'utf8');
-    for (const m of s.matchAll(/\bhttps?:\/\/[a-z0-9.-]+/gi)) if (!(site === 'website' && /sitemap\.xml|BUILD_MANIFEST/.test(f))) assert.ok(HOSTS.test(m[0]) || (site === 'demo' && QR_TEXT.test(m[0])), `${rel}: unexpected host ${m[0]}`);
+    for (const m of s.matchAll(/\bhttps?:\/\/[a-z0-9.-]+/gi)) if (!(site === 'website' && /sitemap\.xml|BUILD_MANIFEST/.test(f))) assert.ok(HOSTS.test(m[0]) || (site === 'demo' && QR_TEXT.test(m[0])) || (site === 'demo' && DEEP_LINK.test(m[0]) && deepLink(rel, f, s, m.index)), `${rel}: unexpected host ${m[0]}`);
     if (!f.endsWith('.html')) continue;
     for (const t of s.match(/<script\b[^>]*>/g) || []) assert.ok(/\bsrc="/.test(t) || /type="application\/ld\+json"/.test(t), `${rel}: inline script ${t}`);
     for (const ld of s.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) { JSON.parse(ld[1]); assert.doesNotMatch(ld[1], /<\//, `${rel}: JSON-LD may close its script`); }

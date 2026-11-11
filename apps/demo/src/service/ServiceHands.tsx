@@ -15,6 +15,7 @@ import { OpsHead, Refused, NotYours, holds, param, when, personaLabel, shView, h
 import { useOps } from '../hardening/useOps.js';
 import { opsPath } from '../hardening/path.js';
 import { useConfirm, useUndo } from '../safeguards/Safeguards.js';
+import { WhoForJob } from '../connect/ContactBar.js';
 import { ROOMS, roomOf, findingsOf, PROVENANCE_TEXT } from '../fi/rooms.js';
 import { CATEGORIES, ENTRY_POINTS, RESOLUTION_CODES, BAND_OF, ATTACH_PLACEHOLDERS, STAGES, stageOf, ROUTES, LANES, routeOf, type RouteKey, intakeErrors, submitRequest, addNote, clearBlocker, attachFinding, recordResolution, closeIncident, cancelWorkOrder, type IntakeInput } from './actions.js';
 
@@ -29,7 +30,7 @@ export default function ServiceHands({ perspective, hash }: WorkspaceProps) {
   else if (p[1] === 'wo' && p[2]) { const wo = S.workOrderOf(ops.w, p[2]); const inc = wo ? S.incidentOf(ops.w, wo.incidentId) : undefined; body = inc ? <Job ops={ops} inc={inc} confirm={confirm.ask} offerUndo={undo.offer} /> : <Missing what={`work order ${p[2]}`} />; }
   else if (param(hash, 'id')) { const inc = S.incidentOf(ops.w, param(hash, 'id')!); body = inc ? <Job ops={ops} inc={inc} confirm={confirm.ask} offerUndo={undo.offer} /> : <Missing what={`incident ${param(hash, 'id')}`} />; }
   else body = <Home ops={ops} />;
-  return <section className="ops" data-testid="servicehands">{body}{undo.bar}{confirm.dialog}</section>;
+  return <section className="ops" data-testid="servicehands">{body}<WhoForJob hash={hash} role={perspective} />{undo.bar}{confirm.dialog}</section>;
 }
 function Missing({ what }: { what: string }) { return <div className="ops-card" role="alert"><h1>Not found</h1><p>There is no {what} in this demonstration workspace. It may have been reset. <a href="#/servicehands">Back to ServiceHands</a></p></div>; }
 

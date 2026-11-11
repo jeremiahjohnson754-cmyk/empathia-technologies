@@ -5,7 +5,7 @@ import { DOSSIER_4218 as D, replay, attempt, DELIVERABLES, RULES, requiredFor, r
 
 const A = (role: string, label: string): Actor => ({ role, label });
 const cx = A('cxeng', 'Commissioning Engineer'); const qa = A('qa', 'Document Reviewer'); const ex = A('exec', 'Executive'); const ops = A('ops', 'AV Operations Lead'); const se = A('syseng', 'Systems Engineer');
-const sm = A('svcmgr', 'Service Manager'); const pm = A('ipm', 'Integration Project Manager'); const des = A('designer', 'System Designer'); const ins = A('installer', 'Installer'); const champ = A('sitechamp', 'Site Champion'); const arch = A('architect', 'Product Architect'); const emp = A('employee', 'Employee');
+const sm = A('svcmgr', 'Service Manager'); const pm = A('ipm', 'Integration PM'); const des = A('designer', 'Designer'); const ins = A('installer', 'Installation Engineer'); const champ = A('sitechamp', 'Site Champion'); const arch = A('architect', 'Product Architect'); const emp = A('employee', 'Employee');
 const NO: DocAuthority = { assign: false, submit: false, review: false, acknowledge: false, recordVendor: false };
 const POLICY: Record<string, DocAuthority> = { ipm: { ...NO, assign: true, submit: true, recordVendor: true }, designer: { ...NO, submit: true }, syseng: { ...NO, submit: true }, installer: { ...NO, submit: true }, cxeng: { ...NO, submit: true },
   svcmgr: { ...NO, submit: true, review: true, acknowledge: true }, qa: { ...NO, review: true }, architect: { ...NO, review: true }, ops: { ...NO, review: true, acknowledge: true }, sitechamp: { ...NO, acknowledge: true } };
@@ -113,7 +113,7 @@ test('independence and order: who may do what, and in which sequence', () => {
   assert.match(no(mine, { kind: 'REQUEST_CORRECTION', doc: 'support_contacts', comment: 'Escalation is missing.', by: sm, at: at(2) }), /different role/);
   assert.match(no(s2, { kind: 'ACCEPT', doc: 'bom_revision', revision: 1, by: qa, at: at(2) }), /current revision is 2/);
   assert.match(no(s2, submit('bom_revision', 4, des, 2)), /next revision of the bill of materials revision is 3/);
-  assert.match(no(s2, submit('bom_revision', 3, se, 2)), /assigned to the System Designer/);
+  assert.match(no(s2, submit('bom_revision', 3, se, 2)), /assigned to the Designer/);
   assert.match(no(s2, submit('bom_revision', 3, des, -5)), /dated before/);
   assert.match(no([], submit('vendor_signoff', 1, pm, 1)), /does not apply to this room: the room was not installed by a vendor/);
   assert.match(no([], submit('deficiency_closure', 1, cx, 1)), /read from the dossier/);

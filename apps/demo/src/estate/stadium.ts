@@ -145,7 +145,20 @@ const routes: Route[] = [
   R('STA-RT-09', 'STA-GATE-D', 'STA-PRS', 8, true, 'the media entrance at Gate D and the south-west lift', 'Accreditation is checked at the lift'), R('STA-RT-10', 'STA-GATE-D', 'STA-PCR', 6, true, 'the media entrance at Gate D and the service corridor', 'Accreditation is checked at the door'),
   R('STA-RT-11', 'STA-SEC-121', 'STA-GS-SW', 2, true, 'the lower concourse'), R('STA-RT-12', 'STA-SEC-102', 'STA-FA-NE', 3, true, 'the lower concourse'), R('STA-RT-13', 'STA-GATE-B', 'STA-CLUB-H', 5, true, 'Gate B and the north-east lift to the club level'), R('STA-RT-14', 'STA-ENT-VIP', 'STA-STE-009', 4, true, 'the premium entrance, its lifts and the club-level suite corridor'), R('STA-RT-15', 'STA-ENT-MEDIA', 'STA-MWR', 2, true, 'the media entrance'),
 ];
+/**
+ * The broadcast camera chain (added 10 Nov 2026 for the game-day "critical signal" incident; additive, canonical, SYNTHETIC). The camera
+ * platform, the Main Equipment Room and the Broadcast Control Room already held the cameras, the fibre patch, the router, the switcher
+ * and the multiviewer wall. What was not on record is what joins them: the fibre paths from the platform and the camera control units.
+ * They are recorded here once, with stable identifiers, as equipment classes (no make, model or serial). The three places also get a
+ * position on the plan, so the zone of an incident can be shown where it is. Existing identifiers and counts are unchanged.
+ */
+const chainAsset = (id: string, roomId: string, kind: AssetKind, label: string, cls: string, qty: number) => assets.push({ id, world: W, room: roomId, kind, label, cls, qty, installed: 2024, state: 'IN_SERVICE', provenance: S });
+chainAsset('STA-CAM-MAIN-A02', 'STA-CAM-MAIN', 'network', 'Camera fibre, primary path', 'Hybrid fibre camera cable', 3);
+chainAsset('STA-CAM-MAIN-A03', 'STA-CAM-MAIN', 'network', 'Camera fibre, backup path', 'Hybrid fibre camera cable', 3);
+chainAsset('STA-MER-A04', 'STA-MER', 'processor', 'Camera control units', 'Camera control unit', 12);
+chainAsset('STA-MER-A05', 'STA-MER', 'processor', 'Standby camera control unit', 'Camera control unit', 1);
+for (const [id, x, y] of [['STA-CAM-MAIN', 176, 278], ['STA-BCR', 98, 150], ['STA-MER', 98, 386]] as const) nodes.find((n) => n.id === id)!.plan = { x, y, w: 44, h: 44 };
 /** The venue's capacity is counted, never typed: every seat in a section, plus sixteen in each suite. */
 export const SEATS = nodes.filter((n) => n.type === 'seating-section' || n.type === 'suite').reduce((t, n) => t + (n.capacity || 0), 0);
 for (const id of ['STA-V', 'STA-BOWL']) nodes.find((n) => n.id === id)!.capacity = SEATS;
-export const STADIUM: Estate = { world: W, version: 'hls-2026.11.2', name: 'Harborlight Stadium', fictional: true, nodes, assets, routes };
+export const STADIUM: Estate = { world: W, version: 'hls-2026.11.3', name: 'Harborlight Stadium', fictional: true, nodes, assets, routes };

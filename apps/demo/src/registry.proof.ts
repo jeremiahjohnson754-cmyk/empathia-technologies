@@ -31,6 +31,7 @@ export const PROOF_PAGES: readonly PageDef[] = [
       { id: 'scan.attach', label: 'Attach evidence', authority: { action: 'cx.tech' } },
       { id: 'scan.issue', label: 'Report a problem', authority: { action: 'issue.report' } },
       { id: 'scan.attest', label: 'Add a local attestation', authority: { roles: ['sitechamp'], why: 'Founder, 11 November 2026: a Site Champion may attest locally and does not replace the approvers; the champion is a dedicated role, and attests for rooms of their own site' } },
+      { id: 'scan.docs', label: 'Open the room’s documentation', authority: { roles: DOSSIER_READERS, why: 'the readers of the commissioning dossier; Phase 5 documentation belongs to the same record' } },
       { id: 'scan.export', label: 'Export the report', authority: { roles: DOSSIER_READERS, why: 'the readers of the commissioning dossier' } },
     ],
     load: () => import('./proof/QrHub.js'),

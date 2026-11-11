@@ -43,6 +43,7 @@ function Passport({ role, can, sees }: Pick<PageProps, 'role' | 'can' | 'sees'>)
     ['scan.openTest', 'Open the tests', `#/dossier/${D.id}`, true],
     ['scan.attach', 'Attach evidence', `#/dossier/${D.id}?focus=evidence`, false],
     ['scan.issue', 'Report a problem', `#/servicehands/new?room=${D.room.id}`, false],
+    ['scan.docs', 'Documents', `#/docs/${D.id}`, false],
     ['scan.export', 'Export the report', `#/dossier/${D.id}?focus=export`, false],
   ];
   const mine = actions.filter(([id]) => can(id));
