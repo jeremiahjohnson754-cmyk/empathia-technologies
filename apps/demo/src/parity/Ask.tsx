@@ -12,6 +12,7 @@ import { openIssues, DEMO_NOW } from '../campus/design.js';
 import { load as loadDecisions } from '../decisions/store.js';
 import { healthOf, busyAt, nextOf, hhmm, fmtUsd, plural, AGREEMENTS, VENDORS, type Core, type Rec } from './core.js';
 import { useCore, honest, Zone, RecList, visible } from './ui.js';
+import { KnowledgeAnswer } from '../knowledge/hooks.js';   // a question Core has no prepared answer for is asked of the Knowledge Ledger: a cited source, or an abstention
 
 interface Answer { lead: ReactNode; cites: Rec[]; more?: Array<[string, string]> }
 interface Q { id: string; group: 'Rooms' | 'The estate' | 'Design' | 'The workplace'; text: string; words: RegExp; needsRoom?: boolean; field?: 'ask.engineering' | 'ask.portfolio'; answer: (c: Core, room: RoomOutline | null, role: RoleKey) => Answer }
@@ -88,13 +89,14 @@ export default function AskPage({ role, query }: PageProps) {
             {ans.more ? <div className="pa-chips">{ans.more.map(([l, h]) => <Chip key={h} href={h} icon="link" small>{l}</Chip>)}</div> : null}
             {visible(role, ans.cites).length ? <><h2 className="pa-zone__note">The records it stands on</h2><RecList recs={visible(role, ans.cites)} label="Cited records" step={6} /></> : <p className="pa-note">Counted from the room canon; no single record to cite.</p>}
           </section>
-        ) : asked ? (
+        ) : asked ? (<>
+          <KnowledgeAnswer q={asked} role={role} />
           <section className="pa-answer" aria-label="Not one of the prepared questions">
             <p className="pa-answer__lead"><Tag tone="warn">Not a prepared question</Tag> Ask Empathia answers a fixed set of questions by reading Core. It does not generate text, and “{asked.slice(0, 80)}” is not one of them.</p>
             <p className="pa-note">Try one of these:</p>
             <div className="pa-chips">{mine.slice(0, 4).map((q) => <Chip key={q.id} onClick={() => { setText(q.text); setAsked(q.text); }}>{q.text}</Chip>)}</div>
           </section>
-        ) : null}
+        </>) : null}
       </div>
       <Zone title="Questions it can answer" note={`${mine.length} prepared for this role`}>
         {groups.map((g) => { const qs = mine.filter((q) => q.group === g); return qs.length ? <div key={g} className="pa-zone"><h3 className="pa-zone__note">{g}</h3><div className="pa-chips">{qs.map((q) => <Chip key={q.id} onClick={() => { setText(q.text); setAsked(q.text); }} selected={asked === q.text}>{q.text}</Chip>)}</div></div> : null; })}

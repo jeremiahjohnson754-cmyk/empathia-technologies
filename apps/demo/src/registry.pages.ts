@@ -16,8 +16,9 @@ import { OPS_PAGES } from './registry.ops.js';
 import { PARITY_PAGES } from './registry.parity.js';
 import { PROOF_PAGES } from './registry.proof.js';
 import { WORLD_PAGES } from './registry.worlds.js';
+import { KNOWLEDGE_PAGES } from './registry.knowledge.js';
 
-export const PAGES: readonly PageDef[] = [...SHELL_PAGES, ...SPACES_PAGES, ...OPS_PAGES, ...PARITY_PAGES, ...PROOF_PAGES, ...WORLD_PAGES];
+export const PAGES: readonly PageDef[] = [...SHELL_PAGES, ...SPACES_PAGES, ...OPS_PAGES, ...PARITY_PAGES, ...PROOF_PAGES, ...WORLD_PAGES, ...KNOWLEDGE_PAGES];
 
 interface Compiled { page: PageDef; segs: string[]; rest: boolean; score: number }
 const compile = (page: PageDef, path: string): Compiled => {
