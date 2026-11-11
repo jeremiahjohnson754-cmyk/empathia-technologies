@@ -331,7 +331,7 @@ p { text-wrap: pretty; }
 .founder__role { margin: 10px 0 20px; color: var(--w-tx2); font-size: 18px; }
 .portrait { display: block; position: relative; isolation: isolate; }
 .portrait::before { content: ""; position: absolute; inset: 8% -10% -8% -10%; z-index: -1; background: radial-gradient(closest-side, var(--w-glow-a), transparent); pointer-events: none; }
-.portrait img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--w-r-media); box-shadow: var(--w-lift-hi); }
+.portrait img { width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover;   /* the picture is square and shown whole (2026-11-10) */ border-radius: var(--w-r-media); box-shadow: var(--w-lift-hi); }
 .portrait::after { content: ""; position: absolute; inset: auto -12px -12px auto; width: 46%; height: 46%; border-right: 3px solid var(--w-accent); border-bottom: 3px solid var(--w-accent); border-radius: 0 0 var(--w-r-media) 0; pointer-events: none; }
 .creds { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .creds li { display: inline-flex; align-items: baseline; gap: 8px; padding: 7px 14px; border: 1px solid var(--w-line2); border-radius: 999px; background: var(--w-card); box-shadow: var(--w-edge); }
@@ -358,6 +358,9 @@ p { text-wrap: pretty; }
 .band h2 { margin: 0; font-size: clamp(34px, 5vw, 64px); letter-spacing: -.035em; line-height: 1.02; }
 .band p { margin: 16px 0 0; color: var(--w-tx2); font-size: 19px; max-width: 56ch; }
 .band p.disclosure { font-size: 14px; }
+.band .actions { align-items: flex-start; }   /* a button keeps its own height beside whatever follows it (2026-11-11) */
+.band .actions:has(> .disclosure) { flex-direction: column; }   /* a button with a disclosure: the disclosure sits under it, not beside it */
+.band .actions .disclosure { margin: 0; }
 
 /* films */
 .film { margin: 0; }
@@ -575,6 +578,7 @@ p { text-wrap: pretty; }
   .portrait::after { inset: auto -8px -8px auto; }
   .founder__ctas .btn, .actions .btn, .enquire .btn { flex: 1 1 100%; justify-self: stretch; }
   .band .wrap { padding: 32px 22px; border-radius: var(--w-r-card); }
+  .band .actions:has(> .disclosure) { align-items: stretch; }
   .lost { grid-template-columns: 1fr; } .lost__owl { max-width: 180px; grid-row: 1; justify-self: start; }
   .leadform .row { grid-template-columns: 1fr; }
   .leadform button[type=submit] { justify-self: stretch; }
@@ -722,3 +726,41 @@ p { text-wrap: pretty; }
 .quote th small { display: block; font-weight: 400; color: var(--w-tx2); }
 .quote__total th, .quote__total td { border-top: 2px solid var(--w-line); font-weight: 650; }
 .quote td:last-child, .quote th:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Collabora-SING (in development; founder, 2026-11-10): its own section of the site, /collabora-sing. The two-tone rule under the name
+   echoes the film's two transports. The plan's labels are drawn dashed and unfilled: a label here says what kind of evidence a value
+   will be, never that the value exists. A silent film prints a description of what it shows under its player. */
+.hero--collabora { background: radial-gradient(820px 520px at 88% 6%, color-mix(in srgb, var(--w-ev-observed) var(--w-glow-k), transparent), transparent 64%), radial-gradient(760px 480px at 2% -8%, color-mix(in srgb, var(--w-warn) calc(var(--w-glow-k) * .6), transparent), transparent 62%), linear-gradient(180deg, var(--w-hero-1) 0%, var(--w-hero-2) 55%, var(--w-bg) 100%); }
+.hero--collabora h1::after { content: ""; display: block; width: 96px; height: 5px; margin-top: 24px; border-radius: 3px; background: linear-gradient(90deg, var(--w-warn) 0 50%, var(--w-ev-observed) 50% 100%); }
+.hero--collabora .status-line { margin-top: 20px; }
+.tag--measured { color: var(--w-ev-verified); } .tag--estimated { color: var(--w-ev-simulated); } .tag--subjective { color: var(--w-ev-modeled); } .tag--not-yet { color: var(--w-ev-unknown); }
+.plan .tag { border-style: dashed; background: transparent; }
+.plan .record__id { font-family: var(--w-sans); font-size: 16px; }
+.plan__table { width: 100%; border-collapse: collapse; }
+.plan__table th, .plan__table td { padding: 13px 22px; border-bottom: 1px solid var(--w-line); text-align: left; vertical-align: middle; font-size: 16px; font-weight: 400; }
+.plan__table thead th { padding-block: 11px; color: var(--w-tx2); font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.plan__table tbody th { color: var(--w-tx); font-weight: 600; }
+.plan__table td, .plan__table thead th:last-child { text-align: right; }
+.plan__table tbody tr:last-child > * { border-bottom: 0; }
+.plan__tags { display: inline-flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+.plan__foot { margin: 0; padding: 14px 22px 16px; border-top: 1px solid var(--w-line); color: var(--w-tx2); font-size: 14px; }
+.facts--plan { align-items: start; }
+.facts--plan .facts__limits p:not(.eyebrow) + p { margin-top: 14px; }
+.film--described { max-width: 1040px; }   /* the qualifier, the whole picture and its controls fit a laptop screen together */
+.film__qualifier { margin: 0 0 16px; padding: 14px 18px; border: 1px solid var(--w-line2); border-left: 3px solid var(--w-warn); border-radius: 0 var(--w-r-control) var(--w-r-control) 0; background: var(--w-card); color: var(--w-tx); font-size: 16px; font-weight: 600; line-height: 1.5; }
+.film--band .film__frame { aspect-ratio: 1280 / 776; }   /* a rendition with a 56 px label band above the 720p picture (scripts/media/prepare-web-films.mjs) */
+.film video:focus, .film video:focus-visible, .film video:focus-within { outline: 2px solid var(--w-accent); outline-offset: -4px; border-radius: var(--w-r-media); }   /* the frame clips what lies outside it, so the ring is drawn inside; :focus too, because the player's own controls take the focus inside it */
+.film__how { margin: 12px 0 0; max-width: 78ch; color: var(--w-tx2); font-size: 15px; }
+.film__transcript--described { margin-top: 14px; }
+.film__cues { list-style: none; margin: 0; padding: 0 0 8px; }
+.film__cues li { display: grid; grid-template-columns: 104px minmax(0, 1fr); gap: 4px 18px; padding: 12px 0; border-top: 1px solid var(--w-line); }
+.film__cues li:first-child { border-top: 0; padding-top: 4px; }
+.film__time { color: var(--w-tx2); font: 600 13px/1.75 var(--w-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.film__cues p { margin: 0; max-width: 78ch; color: var(--w-tx2); font-size: 15px; }
+@media (max-width: 720px) {
+  .film__cues li { grid-template-columns: 1fr; }
+  .plan__table th, .plan__table td { padding-inline: 16px; }
+  .plan__foot { padding-inline: 16px; }
+  .plan__table td, .plan__table thead th:last-child { width: 46%; }
+}
+@media (forced-colors: active) { .record.plan { border: 1px solid CanvasText; } .hero--collabora h1::after { forced-color-adjust: none; } }

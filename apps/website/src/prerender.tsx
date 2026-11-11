@@ -24,7 +24,7 @@ export function renderAll(ctx: SiteContext, opts: RenderOpts = {}): { path: stri
 ${notFound ? '<meta name="robots" content="noindex">\n' : `<link rel="canonical" href="${esc(canonical)}">\n`}<meta property="og:title" content="${esc(page.title)}"><meta property="og:description" content="${esc(page.description)}"><meta property="og:type" content="website">
 ${ctx.preview ? '<meta name="robots" content="noindex, nofollow">\n' : ''}<meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="stylesheet" href="/site.css">
-<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'Organization', name: 'Empathia Technologies', url: opts.base || undefined, founder: { '@type': 'Person', name: 'Jeremiah Johnson' }, description: 'Empathia Living Campus: an operating platform for enterprise AV, collaboration and workplace technology.' }).replace(/</g, '\\u003c')}</script>
+${page.headScript ? `<script src="/${esc(page.headScript)}"></script>\n` : ''}<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'Organization', name: 'Empathia Technologies', url: opts.base || undefined, founder: { '@type': 'Person', name: 'Jeremiah Johnson' }, description: 'Empathia Living Campus: an operating platform for enterprise AV, collaboration and workplace technology.' }).replace(/</g, '\\u003c')}</script>
 </head>
 <body>${body}<script src="/site.js" defer></script>${page.script ? `<script src="/${esc(page.script)}" defer></script>` : ''}</body>
 </html>
