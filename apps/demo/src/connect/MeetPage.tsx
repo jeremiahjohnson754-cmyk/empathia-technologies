@@ -32,6 +32,8 @@ export default function MeetPage({ role, query }: PageProps) {
   const [from] = useState(() => new Date());
   const res = useMemo(() => (attendees.length ? proposeFor(w, { attendees, roomId: roomId || null, minutes, from, days: 5 }) : null), [w, ids.join(','), roomId, minutes, from]);   // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { const q = new URLSearchParams(); if (ids.length) q.set('with', ids.join(',')); if (roomId) q.set('room', roomId); if (minutes !== 30) q.set('mins', String(minutes)); const h = `#/meet${q.toString() ? `?${q.toString().replace(/%2C/g, ',')}` : ''}`; if (location.hash !== h) history.replaceState(null, '', h); }, [ids, roomId, minutes]);
+  // the calendar changed under an open review (another tab, another person): withdraw the review and say so, before anyone confirms it
+  useEffect(() => { if (pick && res && (!res.ok || !res.proposals.some((p) => p.start === pick.start))) { setPick(null); setRefusal(['That time was taken while you were reviewing it. Nothing was recorded. Choose another time.']); } }, [res]);   // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { if (pick) reviewRef.current?.focus(); }, [pick]); useEffect(() => { if (refusal) alertRef.current?.focus(); }, [refusal]);
   const choose = (p: Proposal) => { setPick(p); setKey(newKey()); setRefusal(null); setDone(null); if (!subject) setSubject(room ? `About ${shortName(room)}` : `With ${attendees.map((a) => a.name.split(' ')[0]).join(' and ')}`); };
   const change = (fn: () => void) => { fn(); setPick(null); setRefusal(null); };
