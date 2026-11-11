@@ -8,6 +8,7 @@ import { useMemo } from 'react';
 import { Tag } from '@empathia/ui';
 import type { RoleKey } from '../registry.types.js';
 import { knowledgeHits, answerFor, readerFor, ABSTAIN, type KnowledgeHit } from './ledger.js';
+import { load as loadWorkspace } from '../workspace/store.js';
 import { loadState, allObjects } from './store.js';
 
 const tone = (h: KnowledgeHit): 'ok' | 'warn' | 'info' => (h.candidate ? 'warn' : h.fact ? 'ok' : 'info');
@@ -19,7 +20,7 @@ const Hit = ({ h }: { h: KnowledgeHit }) => (
 
 /** Search Party: knowledge that matches the search, under the records. Renders nothing when nothing this reader may read matches. */
 export function KnowledgeResults({ q, role }: { q: string; role?: RoleKey }) {
-  const hits = useMemo(() => (role && q.trim() ? knowledgeHits(allObjects(loadState()), readerFor(role), q) : []), [q, role]);
+  const hits = useMemo(() => (role && q.trim() ? knowledgeHits(allObjects(loadState(), loadWorkspace()), readerFor(role), q) : []), [q, role]);
   if (!hits.length) return null;
   return (
     <section className="kn-hits" aria-labelledby="kn-hits-h" data-testid="sp-knowledge" data-count={hits.length}>
@@ -32,7 +33,7 @@ export function KnowledgeResults({ q, role }: { q: string; role?: RoleKey }) {
 
 /** Ask Empathia: an answer from an approved source with its citation, or an abstention. */
 export function KnowledgeAnswer({ q, role }: { q: string; role: RoleKey }) {
-  const a = useMemo(() => answerFor(allObjects(loadState()), readerFor(role), q), [q, role]);
+  const a = useMemo(() => answerFor(allObjects(loadState(), loadWorkspace()), readerFor(role), q), [q, role]);
   return (
     <section className="pa-answer kn-answer" aria-label="From the Knowledge Ledger" data-testid="ask-knowledge" data-kind={a.kind}>
       {a.kind === 'answer' && <>

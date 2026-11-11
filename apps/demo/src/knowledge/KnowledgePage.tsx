@@ -147,9 +147,9 @@ function Queue({ view, stored, acts }: { view: View; stored: Stored; acts: Acts 
 }
 
 export default function KnowledgePage({ role, params, query, can, sees }: PageProps) {
-  const { apply } = useWorkspace(); const [stored, setStored] = useState<Stored>(() => loadState());
+  const { w, apply } = useWorkspace(); const [stored, setStored] = useState<Stored>(() => loadState());
   const other = query.get('as') === 'other' && role !== 'visitor'; const tenant = other ? OTHER_TENANT : HOME_TENANT; const home = !other;
-  const reader = useMemo(() => readerFor(role, tenant), [role, tenant]); const all = useMemo(() => allObjects(stored), [stored]); const view = useMemo(() => viewFor(all, reader), [all, reader]);
+  const reader = useMemo(() => readerFor(role, tenant), [role, tenant]); const all = useMemo(() => allObjects(stored, w), [stored, w]); const view = useMemo(() => viewFor(all, reader), [all, reader]);
   const [q, setQ] = useState(query.get('q') || ''); const [domain, setDomain] = useState(query.get('domain') || ''); const [type, setType] = useState(query.get('type') || ''); const [aud, setAud] = useState(query.get('aud') || ''); const [zone, setZone] = useState(Number(query.get('zone')) || 0);
   const [said, setSaid] = useState(''); const [refused, setRefused] = useState<string[] | null>(null); const [at, setAt] = useState<string | null>(null); const [name, setNameRaw] = useState(remembered);
   const id = params['id'] || ''; const o = id ? view.get(id) : null;

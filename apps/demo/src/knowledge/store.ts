@@ -10,7 +10,7 @@ import { log, deny, personaOf } from '../hardening/kit.js';
 import { ROLES } from '../access/policy.js';
 import type { RoleKey } from '../registry.types.js';
 import { mayRead, promote } from './contract.js';
-import { SEED, applyDecisions, noDecisions, readerFor, isReviewer, isTenantAdmin, anonymise, type Decisions } from './ledger.js';
+import { SEED, applyDecisions, noDecisions, readerFor, isReviewer, isTenantAdmin, anonymise, siteNoteObjects, isSiteNote, type Decisions } from './ledger.js';
 import { advance, freshState, objectsOf, STEPS, type IngestAction, type IngestState } from './ingest.js';
 import { HOME_TENANT, tenantName, type LedgerObject } from './types.js';
 
@@ -31,8 +31,11 @@ function sound(x: unknown): x is Stored {
 export function loadState(): Stored { try { const s = localStorage.getItem(KEY); const x: unknown = s ? JSON.parse(s) : null; return sound(x) ? x : fresh(); } catch { return fresh(); } }
 const keep = (s: Stored) => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch { /* the decisions last the page */ } };
 
-/** The whole ledger as it stands in this browser: the seed and what was imported, with every decision applied. Unredacted: readers get `viewFor`. */
-export const allObjects = (s: Stored): LedgerObject[] => [...applyDecisions(SEED, s.decisions), ...applyDecisions(objectsOf(s.ingest.index), { ...s.decisions, approved: {}, rejected: {} })];
+/**
+ * The whole ledger as it stands in this browser: the seed, the Site Champions' notes held in the shared workspace `w`, and what was
+ * imported, with every decision applied. Unredacted: a reader is given `viewFor(allObjects(…), reader)`, never this list.
+ */
+export const allObjects = (s: Stored, w: Workspace | null): LedgerObject[] => [...applyDecisions([...SEED, ...siteNoteObjects(w)], s.decisions), ...applyDecisions(objectsOf(s.ingest.index), { ...s.decisions, approved: {}, rejected: {} })];
 
 export type LedgerAction =
   | { t: 'review'; id: string; decision: 'approve' | 'reject'; name: string; why?: string; /** who claims to approve: a person (default), or a model or automation, which is always refused */ as?: 'ai' | 'system' }
@@ -55,8 +58,10 @@ export function act(w: Workspace, role: RoleKey, action: LedgerAction): Refusal 
     if (!isTenantAdmin(role)) return no('knowledge.undo', 'knowledge', `The ${who} does not administer the customer’s knowledge.`);
     return done({ ...s, decisions: noDecisions() }, 'knowledge.undo', 'knowledge', 'Every review and sharing decision made in this browser was undone');
   }
+  // a Site Champion's note is decided by someone else: the role that writes them can never approve or reject one, whatever else it holds
+  if (action.t === 'review' && isSiteNote(action.id) && role === 'sitechamp') return no('knowledge.review', action.id, 'A site champion’s note is approved by someone else. The person who wrote it cannot decide on it; a reviewer does.');
   // from here on the action is about one object, and it must be one this reader may read: an object they may not read does not exist for them
-  const o = allObjects(s).find((x) => x.id === action.id); if (!o || !mayRead(o, reader).ok) return { why: [NONE] };
+  const o = allObjects(s, w).find((x) => x.id === action.id); if (!o || !mayRead(o, reader).ok) return { why: [NONE] };
   const d = s.decisions;
   if (action.t === 'review') {
     if (o.id.startsWith('src.')) return { why: ['An imported document is reviewed on the document sources page, against the version that was read.'] };

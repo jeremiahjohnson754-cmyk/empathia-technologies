@@ -105,8 +105,8 @@ export function readDoc(doc: SourceDoc, prev: Item | undefined): Item {
   const facts: Fact[] = []; const relations: Relation[] = [];
   lines.forEach((l, i) => {
     if (INSTRUCTION.test(l)) return;   // an instruction-like line is quoted to the reviewer and mined for nothing
-    const kv = /^([A-Za-z][^:]{2,70}):\s+(.{1,160})$/.exec(l);
-    if (kv) { const num = /^(-?\d+(?:\.\d+)?)\s*(?:[x×]\s*)?(.*)$/.exec(kv[2]!.trim()); facts.push({ key: kv[1]!.toLowerCase().replace(/\s+/g, ' ').trim(), label: kv[1]!.trim(), value: kv[2]!.trim(), number: num ? Number(num[1]) : null, unit: num ? num[2]!.trim().toLowerCase() || null : null, line: i + 1, derivation: 'EXTRACTED', confidence: num ? 0.9 : 0.7, source: src }); }
+    const kv = /^([A-Za-z][^:]{2,70}):\s+(.{1,160})$/.exec(l);   // the first line is the title, not a stated value
+    if (kv && i > 0) { const num = /^(-?\d+(?:\.\d+)?)\s*(?:[x×]\s*)?(.*)$/.exec(kv[2]!.trim()); facts.push({ key: kv[1]!.toLowerCase().replace(/\s+/g, ' ').trim(), label: kv[1]!.trim(), value: kv[2]!.trim(), number: num ? Number(num[1]) : null, unit: num ? num[2]!.trim().toLowerCase() || null : null, line: i + 1, derivation: 'EXTRACTED', confidence: num ? 0.9 : 0.7, source: src }); }
     for (const id of l.match(/\bR-[A-Z]{3}-\d-\d{3}\b/g) || []) if (ROOM_IDS.has(id) && !relations.some((r) => r.to === id)) relations.push({ to: id, why: 'names the room', line: i + 1, derivation: 'EXTRACTED', confidence: 0.95, source: src });
     for (const [re, cat] of DEVICE_WORDS) if (re.test(l) && C.categories[cat.slice(4)] && !relations.some((r) => r.to === cat)) relations.push({ to: cat, why: 'mentions this kind of equipment', line: i + 1, derivation: 'INFERRED', confidence: 0.5, source: src });
   });

@@ -13,7 +13,9 @@ import { PeopleTab, SupportTab, MapTab, OrgsTab, ActivityTab, VaultTab } from '.
 import { resolve } from '../registry.pages.js';
 import { canOpen } from '../access/policy.js';
 import type { RoleKey } from '../registry.types.js';
-import { KnowledgeResults } from '../knowledge/hooks.js';   // knowledge objects join the results only through redactFor (knowledge/ledger.ts)
+// --- knowledge hook (agent/knowledge-fabric), 1 of 2: the import
+import { KnowledgeResults } from '../knowledge/hooks.js';
+// --- end knowledge hook
 
 /** V2.5.3's tab set, at its addresses; the panes beyond Search and Relationships live in Tabs.tsx. */
 const TABS: Array<[string, string]> = [['', 'Search'], ['graph', 'Relationships'], ['people', 'People and expertise'], ['support', 'Support coverage'], ['projects', 'Project map'], ['orgs', 'Organizations'], ['activity', 'Activity'], ['vault', 'Evidence and artifacts']];
@@ -95,7 +97,9 @@ export function SearchPartyDemo({ hash, role }: { hash: string; role?: RoleKey }
         {(q.trim() || !focus) && <div className="sp__results">
           <p className="ui-muted" role="status">{res.total} record{res.total === 1 ? '' : 's'}{type ? ` · ${NODE_TYPES[type]?.[0] || type}` : ''}</p>
           {!res.items.length ? <Notice tone="info">Nothing matches. Try “switch”, “4.218”, “ISS-0417” or a device category.</Notice> : <ul className="sp__list sp__rlist">{res.items.map((n) => <li key={nodeKey(n)} className={focus && nodeKey(focus) === nodeKey(n) ? 'on' : ''}><a href={`#/search?focus=${encodeURIComponent(nodeKey(n))}`} onClick={(e) => { e.preventDefault(); pick(n); }}><span className="sp__rtop"><span className="sp__type">{NODE_TYPES[n.type]?.[0] || n.type}</span><span className="sp__id mono">{n.id}</span></span><b>{n.label}</b>{n.subtitle && <span className="sp__sub">{n.subtitle}</span>}</a></li>)}</ul>}
+          {/* --- knowledge hook (agent/knowledge-fabric), 2 of 2: knowledge that matches the search, only through the contract's redactFor for this reader (knowledge/ledger.ts › knowledgeHits) */}
           <KnowledgeResults q={q} role={role} />
+          {/* --- end knowledge hook */}
           <details className="sp__coverage"><summary>Coverage · {est.coverage.edges} edges</summary><ul>{est.coverage.notes.map((x) => <li key={x}>{x}</li>)}</ul></details>
         </div>}
         <div className="sp__detail">

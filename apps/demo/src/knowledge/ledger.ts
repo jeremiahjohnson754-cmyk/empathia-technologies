@@ -10,9 +10,10 @@
  * Search Party and Ask Empathia use. No storage and no rendering; the demonstration clock is the only date.
  */
 import { DEMO_NOW, C } from '../campus/design.js';
-import { BUILDINGS, SITE, roomById, fullName, roomHref } from '../campus/canon.js';
+import { BUILDINGS, SITE, buildingByKey, roomById, fullName, shortName, roomHref } from '../campus/canon.js';
 import { SYMPTOMS } from '../here/model.js';
-import { seed as seedWorkspace } from '../workspace/store.js';
+import { seed as seedWorkspace, type Workspace } from '../workspace/store.js';
+import { championView } from '../champion/store.js';
 import { allows } from '../access/policy.js';
 import type { RoleKey } from '../registry.types.js';
 import { ZONES, AUTHORITIES, redactFor, mayRead, isFact, compareAuthority, authorityOf, freshness, cite, promote, type ContentType, type Reader, type TrustZone, type Freshness } from './contract.js';
@@ -33,7 +34,7 @@ export const DIRECTORY: Readonly<Record<string, Readonly<Record<string, readonly
     'grp-av-engineering': ['syseng', 'designer', 'cxeng', 'architect'],
     'grp-service-desk': ['service', 'svcmgr', 'ops', 'architect'],
     'grp-network': ['syseng', 'ops', 'installer', 'architect'],
-    'grp-workplace': ['employee', 'exec', 'steward', 'ipm', 'bpm', 'qa', 'architect'],
+    'grp-workplace': ['employee', 'exec', 'steward', 'ipm', 'bpm', 'qa', 'sitechamp', 'architect'],
   },
   [OTHER_TENANT]: { 'grp-studio-bench': ['service', 'svcmgr', 'syseng', 'architect'] },
 };
@@ -45,6 +46,31 @@ export const isTenantAdmin = (role: RoleKey) => allows({ action: 'govern' }, rol
 /** A visitor is a guest in the building, not a member of the customer: they read what everyone may read and nothing of the customer's own. */
 export const GUEST = 'guest';
 export const readerFor = (role: RoleKey, tenant: string = HOME_TENANT): Reader => (role === 'visitor' ? { tenant: GUEST, role, groups: [], reviewer: false } : { tenant, role, groups: groupsOf(role, tenant), reviewer: isReviewer(role) });
+
+// ------------------------------------------------------------------------------------------------------------ site champions' notes
+const djb2 = (t: string) => { let h = 5381; for (let i = 0; i < t.length; i++) h = ((h << 5) + h + t.charCodeAt(i)) >>> 0; return h.toString(36); };
+export const isSiteNote = (id: string) => id.startsWith('site.');
+/**
+ * The local notes Site Champions have written about rooms (champion/store.ts, read through its `championView`), as unverified
+ * candidates of the demonstration's customer: zone 5, read by its reviewers only, never shown as fact. A note becomes the customer's
+ * knowledge only when a named reviewer approves it through the contract's `promote`; the champion who wrote it cannot (store.ts).
+ * The id carries a hash of the room and the words, so a decision made about one note can never attach to a different one.
+ * The note's words are someone's typing: they are kept and shown as text.
+ */
+export function siteNoteObjects(w: Workspace | null): LedgerObject[] {
+  const seen = new Set<string>(); const out: LedgerObject[] = [];
+  for (const n of championView(w).notes) {
+    const room = roomById(n.roomId); const text = String(n.text).trim().slice(0, 400); if (!room || text.length < 1) continue;
+    const id = `site.${djb2(`${n.roomId}\n${text}`)}`; if (seen.has(id)) continue; seen.add(id); const b = buildingByKey(room.building)?.name || room.building;
+    out.push({
+      id, title: `Site note on ${shortName(room)}, from the site champion of ${b}`, topic: `Site note ${id}`, domain: 'Site notes', contentType: 'case-study', difficulty: 'foundation', audience: 'Technicians', roles: [],
+      objectives: ['Awaiting review: something a person on site noticed about this room. It is a candidate, not knowledge.'], zone: 5, tenant: HOME_TENANT, acl: { roles: [], groups: [] },
+      sources: [{ system: 'site-champion-note', title: `From the site champion of ${b}, unreviewed`, version: typeof n.at === 'string' ? n.at.slice(0, 10) : null, authority: 9, rights: 'tenant-owned', derivation: 'OBSERVED', confidence: 0.6 }],
+      state: 'DRAFT', reviewer: null, reviewedOn: null, reviewBy: null, body: [text], related: [room.id], tags: ['site-champion', 'observation'],
+    });
+  }
+  return out;
+}
 
 // ------------------------------------------------------------------------------------------------------------ decisions
 /** What people have decided in this browser, kept apart from the seed and applied to it on every read. */
@@ -169,7 +195,11 @@ export interface View {
 const count = <K extends string | number>(list: LedgerObject[], key: (o: LedgerObject) => K): Array<[K, number]> => { const m = new Map<K, number>(); for (const o of list) m.set(key(o), (m.get(key(o)) || 0) + 1); return [...m].sort((a, b) => String(a[0]).localeCompare(String(b[0]), undefined, { numeric: true })); };
 const refsOf = (o: LedgerObject) => [...(o.related || []), ...(o.relatedStandards || []), ...(o.prerequisites || []), ...(o.supersedes ? [o.supersedes] : [])];
 export function viewFor(all: readonly LedgerObject[], reader: Reader): View {
-  const list = redactFor(all, reader); const byId = new Map(list.map((o) => [o.id, o]));
+  // A readable object may point at one this reader may not read (an incident review that cites a standard kept from them). The pointer
+  // itself would say that the other exists, so it is dropped from the object the reader is given, not only from the page.
+  const readable = redactFor(all, reader); const mine = new Set(readable.map((o) => o.id)); const exists = new Set(all.map((o) => o.id)); const seen = (id: string) => mine.has(id) || !exists.has(id);
+  const list = readable.map((o): LedgerObject => { const { supersedes, ...rest } = o; return { ...rest, ...(o.related ? { related: o.related.filter(seen) } : {}), ...(o.relatedStandards ? { relatedStandards: o.relatedStandards.filter(seen) } : {}), ...(o.prerequisites ? { prerequisites: o.prerequisites.filter(seen) } : {}), ...(supersedes && seen(supersedes) ? { supersedes } : {}) }; });
+  const byId = new Map(list.map((o) => [o.id, o]));
   const standingOf = (o: LedgerObject, first: boolean): Standing => (o.zone === 5 ? 'candidate' : o.state === 'SUPERSEDED' || o.state === 'ARCHIVED' ? 'superseded' : first ? 'strongest' : isFact(o) ? 'weaker' : 'not-approved');
   return {
     reader, list,

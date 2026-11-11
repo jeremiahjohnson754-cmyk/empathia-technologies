@@ -2,6 +2,7 @@
 .kn { display: grid; gap: var(--sp-4); grid-template-columns: minmax(0, 1fr); } .kn > * { min-width: 0; }
 .kn .ui-field input, .kn .ui-field textarea, .kn select { min-height: var(--target-min, 44px); max-width: 100%; }
 .kn h2 { font-size: var(--fs-md); margin: 0; } .kn h3 { font-size: var(--fs-sm); margin: 0; }
+.kn .ui-btn { min-height: var(--target-min, 44px); }
 .kn-as { display: grid; gap: var(--sp-2); padding: var(--sp-3) var(--sp-4); border: 1px dashed var(--line2); border-radius: var(--r-lg, 14px); background: var(--panel); justify-items: start; }
 .kn-as__h { margin: 0; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; } .kn-as .ui-meta { margin: 0; max-width: 72ch; }
 
