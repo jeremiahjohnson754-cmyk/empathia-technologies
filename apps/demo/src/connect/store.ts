@@ -18,10 +18,10 @@ import { log, deny, personaOf } from '../hardening/kit.js';
 import { CAMPUS_ROOMS, roomById, shortName } from '../campus/canon.js';
 import { DURATIONS, alternatives, explain, propose, type Alternative, type Ask, type Busy, type Cal, type Proposal } from './calendar.js';
 import { simAsk, simBusy, simCancel, simCreate, type CalEvent, type Party, type RoomRef, type SimPerson, type SimWorld } from './adapter.js';
-import { ALL_BUILDINGS, EMAIL_DOMAIN, ZONE_OF_GROUP, backupFor, people, personById, personaPerson, subjectOf, zoneOfBuilding, type EntityKind, type Person, type Subject } from './directory.js';
+import { EMAIL_DOMAIN, ZONE_OF_GROUP, backupFor, people, personById, personaPerson, subjectOf, zoneOfBuilding, type EntityKind, type Person, type Subject } from './directory.js';
 import { mayCurate, mayReach, maySchedule, maySeeDetails } from './access.js';
-import { APP_JUMPS, jumpById } from './apps.js';
-import { DAY, HOUR, MIN, fmtRange, isoDay, utcOffset, wallToUtc, zoneCity } from './time.js';
+import { jumpById } from './apps.js';
+import { DAY, MIN, fmtRange, utcOffset, wallToUtc, zoneCity } from './time.js';
 
 const KEY = 'empathia.demo.connect.v1';
 export type Refusal = { why: string[] };
@@ -177,8 +177,8 @@ export function recordJump(role: RoleKey, r: JumpRecord): Refusal | { said: stri
   const j = jumpById(r.jump); const p = personById(r.personId); if (!j || !p) return { why: ['That contact action is not available.'] };
   const w = S.load(); const persona = personaOf(role); const about = r.about ? subjectOf(r.about.kind, r.about.id, w) : null; const agg = about ? `${about.kind}:${about.id}` : `person:${p.id}`;
   if (j.status !== 'documented' || !mayReach(role, p)) { const out = deny(w, persona, 'contact.refused', agg, [j.status !== 'documented' ? `${j.label} is not offered: its link format is not on an official page.` : `The ${ROLES[role].label} does not contact a ${p.title} from here.`]); S.save(w); return out; }
-  log(w, persona, 'contact.opened', agg, `${j.app} · ${j.label} · ${p.name} (${p.title})${about ? ` · about ${about.label}` : ''} · from ${r.from.slice(0, 80)} · opened only; nothing is known about what was sent`);
-  S.save(w); return { app: j.app, said: `Opened ${j.app}. ${j.then.charAt(0).toUpperCase()}${j.then.slice(1)}. Nothing was sent from here.` };
+  log(w, persona, 'contact.opened', agg, `${j.app} · ${j.label} · ${p.name} (${p.title})${about ? ` · about ${about.label}` : ''} · from ${r.from.slice(0, 80)} · opened only: what happened in the app is not known here`);
+  S.save(w); return { app: j.app, said: `Opened ${j.app}. ${j.then.charAt(0).toUpperCase()}${j.then.slice(1)}. This page only opened it.` };
 }
 export function recordCopy(role: RoleKey, personId: string, what: 'email' | 'card'): Refusal | null {
   const p = personById(personId); if (!p) return { why: ['That person is not in the directory.'] };
@@ -214,4 +214,3 @@ export function addNote(role: RoleKey, personId: string, text: string, now: numb
   const n: Note = { at: new Date(now).toISOString(), by: persona, role, text: t }; (st.notes[p.id] ||= []).unshift(n); st.notes[p.id] = st.notes[p.id]!.slice(0, 20);
   log(w, persona, 'directory.note', `person:${p.id}`, `local note added to the profile of ${p.name}: ${t.slice(0, 120)}`); saveState(st); S.save(w); return n;
 }
-export { APP_JUMPS, ALL_BUILDINGS, HOUR, isoDay };

@@ -13,6 +13,7 @@ import { PeopleTab, SupportTab, MapTab, OrgsTab, ActivityTab, VaultTab } from '.
 import { resolve } from '../registry.pages.js';
 import { canOpen } from '../access/policy.js';
 import type { RoleKey } from '../registry.types.js';
+import { ConnectSearch } from '../connect/search.js';
 
 /** V2.5.3's tab set, at its addresses; the panes beyond Search and Relationships live in Tabs.tsx. */
 const TABS: Array<[string, string]> = [['', 'Search'], ['graph', 'Relationships'], ['people', 'People and expertise'], ['support', 'Support coverage'], ['projects', 'Project map'], ['orgs', 'Organizations'], ['activity', 'Activity'], ['vault', 'Evidence and artifacts']];
@@ -79,6 +80,7 @@ export function SearchPartyDemo({ hash, role }: { hash: string; role?: RoleKey }
         <p className="ui-meta">{est.nodes.length} records and {est.coverage.edges} relationships of a synthetic estate held in this page. Every edge says where it comes from; what is not modelled says so.</p>
         </>}
       </header>
+      {role && !PANE[tab] && <ConnectSearch q={q} focus={focus} role={role} />}
       {PANE[tab] ? PANE[tab]!(opens) : browsing ? (
         <div className="room__two sp__browse">
           <Section title="Five ways in" aside="Each answered from recorded relationships, list first" id="sp-dir-h">

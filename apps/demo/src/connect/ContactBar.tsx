@@ -97,7 +97,7 @@ export function ContactBar({ role, person: p, about, seen, compact, onChange }: 
         {backup && maySeeDetails(role, backup) && row({ id: "backup", icon: "swap", label: "Find a backup contact", what: `Who to try when ${first} cannot be reached.`, pressed: panel === 'backup', onClick: () => setPanel(panel === 'backup' ? '' : 'backup') })}
       </ul>
       <p className="cx-said" role="status" aria-live="polite" data-testid="cx-said">{said}</p>
-      {fallback && <div className="cx-fallback" data-testid="cx-fallback"><label htmlFor={`cx-fb-${p.id}`}>{fallback.label.charAt(0).toUpperCase()}{fallback.label.slice(1)}</label><textarea id={`cx-fb-${p.id}`} ref={fb} readOnly rows={fallback.text.includes('\n') ? 6 : 1} value={fallback.text} onFocus={(e) => e.target.select()} /></div>}
+      {fallback && <div className="cx-fallback" data-testid="cx-fallback"><label htmlFor={`cx-fb-${p.id}`}>{fallback.label.charAt(0).toUpperCase()}{fallback.label.slice(1)}</label><textarea id={`cx-fb-${p.id}`} ref={fb} readOnly rows={fallback.text.includes('\n') ? 6 : 1} value={fallback.text} /></div>}
       {panel === 'avail' && <div className="cx-panel" data-testid="cx-availability">
         <p><b>{first} works {(p.shift || p.hours).start}–{(p.shift || p.hours).end}{p.shift ? ` (${p.shift.name.toLowerCase()})` : ''}</b>, {zoneCity(p.tz)} time.</p>
         <ul>{days.map((d) => { const b = busy.filter((x) => x.from < d.to && x.to > d.from); return <li key={d.from}><b>{fmtDay(p.tz, d.from)}</b> {fmtTime(p.tz, d.from)}–{fmtTime(p.tz, d.to)}{b.length ? <> · busy {b.map((x) => `${fmtTime(p.tz, x.from)}–${fmtTime(p.tz, x.to)}`).join(', ')}</> : ' · nothing in the calendar'}</li>; })}</ul>

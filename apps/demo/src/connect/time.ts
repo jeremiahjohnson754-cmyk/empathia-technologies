@@ -33,6 +33,12 @@ export function offsetMs(tz: string, ms: number): number { const w = wallOf(tz, 
  * instant just after the gap is returned; where they go back and it happens twice, the first of the two.
  */
 export function wallToUtc(tz: string, y: number, m: number, d: number, hh: number, mm: number): number {
+  const key = `${tz}|${y}|${m}|${d}|${hh}|${mm}`; const had = known.get(key); if (had !== undefined) return had;
+  const t = findInstant(tz, y, m, d, hh, mm); if (known.size > 20_000) known.clear(); known.set(key, t); return t;
+}
+/** The same wall times are asked for again and again (every attendee of a zone, every day of a window): each is worked out once. */
+const known = new Map<string, number>();
+function findInstant(tz: string, y: number, m: number, d: number, hh: number, mm: number): number {
   const guess = Date.UTC(y, m - 1, d, hh, mm); const a = guess - offsetMs(tz, guess); const b = guess - offsetMs(tz, a);
   const hit = (t: number) => { const w = wallOf(tz, t); return w.y === y && w.m === m && w.d === d && w.hh === hh && w.mm === mm; };
   if (a === b) return a;

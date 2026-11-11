@@ -100,7 +100,7 @@ export function simCancel(w: SimWorld, eventId: string, comment: string): Result
 }
 export function simSchedule(w: SimWorld, mails: string[], from: number, to: number): ScheduleOf[] {
   return mails.map((mail) => {
-    const p = w.people.find((x) => x.mail === mail); if (p) return { mail, busy: simBusy(w, p, from, to), working: { ...(p.shift || p.hours), tz: p.tz } };
+    const p = w.people.find((x) => x.mail === mail); if (p) { const h = p.shift || p.hours; return { mail, busy: simBusy(w, p, from, to), working: { days: h.days, start: h.start, end: h.end, tz: p.tz } }; }
     const r = w.rooms.find((x) => x.mail === mail); if (r) return { mail, busy: simRoomBusy(w, r.id, from, to), working: null, note: 'a room has no working hours' };
     return { mail, busy: [], working: null, note: 'not in this calendar' };
   });
