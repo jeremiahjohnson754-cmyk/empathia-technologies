@@ -10,18 +10,30 @@ import { CHAMPION_SITES, ROLES } from '../access/policy.js';
 import { roomById, shortName } from '../campus/canon.js';
 import type * as S from '../workspace/store.js';
 import { deny, holds, log, personaOf, type WX } from '../hardening/kit.js';
+import { CHECK, LESSONS, PASS_MARK, READABLE, mark, type CheckResult } from './start.js';
 
 export type Refusal = { why: string[] };
 export interface Note { id: string; roomId: string; text: string; at: string; by: string; /** a champion's note is a candidate until someone qualified reviews it; it is never shown as fact */ state: 'CANDIDATE' }
-export interface ChampionState { verified: Record<string, { at: string; by: string; note: string }>; occupancy: Record<string, { at: string; by: string; state: 'in-use' | 'free' }>; notes: Note[] }
-const EMPTY = (): ChampionState => ({ verified: {}, occupancy: {}, notes: [] });
+/** The champion's own first weeks: what they have marked as read (when), and the last try at the check. */
+export interface StartState { read: Record<string, string>; check: { at: string; score: number; of: number; passed: boolean } | null; tries: number }
+export interface ChampionState { verified: Record<string, { at: string; by: string; note: string }>; occupancy: Record<string, { at: string; by: string; state: 'in-use' | 'free' }>; notes: Note[]; start: StartState }
+const EMPTY_START = (): StartState => ({ read: {}, check: null, tries: 0 });
+const EMPTY = (): ChampionState => ({ verified: {}, occupancy: {}, notes: [], start: EMPTY_START() });
+/** Stored state is untrusted: only the ids a champion can mark, each with a date; a check only when its numbers agree with each other. */
+function startOf(v: unknown): StartState {
+  const o = (v && typeof v === 'object' && !Array.isArray(v) ? v : {}) as Partial<StartState>; const out = EMPTY_START();
+  for (const id of READABLE) { const at = (o.read as Record<string, unknown> | undefined)?.[id]; if (typeof at === 'string' && !Number.isNaN(Date.parse(at))) out.read[id] = at; }
+  const k = o.check; if (k && typeof k === 'object' && typeof k.at === 'string' && !Number.isNaN(Date.parse(k.at)) && Number.isInteger(k.score) && k.of === CHECK.length && k.score >= 0 && k.score <= k.of && typeof k.passed === 'boolean') out.check = { at: k.at, score: k.score, of: k.of, passed: k.passed && k.score >= PASS_MARK };
+  out.tries = Number.isInteger(o.tries) && (o.tries as number) > 0 ? Math.min(o.tries as number, 999) : out.check ? 1 : 0;
+  return out;
+}
 type WC = WX & { ch?: ChampionState };
-const ch = (w: S.Workspace): ChampionState => ((w as WC).ch ||= EMPTY());
+const ch = (w: S.Workspace): ChampionState => { const c = ((w as WC).ch ||= EMPTY()); c.start = startOf(c.start); return c; };
 /** Read without creating; stored state is untrusted, so anything that is not the right shape reads as empty. */
 export function championView(w: S.Workspace | null): ChampionState {
   const c = (w as WC | null)?.ch; if (!c || typeof c !== 'object') return EMPTY();
   const rec = (v: unknown) => (v && typeof v === 'object' && !Array.isArray(v) ? v : {}) as Record<string, never>;
-  return { verified: rec(c.verified), occupancy: rec(c.occupancy), notes: Array.isArray(c.notes) ? c.notes.filter((n) => n && typeof n.text === 'string' && typeof n.roomId === 'string').slice(0, 200) : [] };
+  return { verified: rec(c.verified), occupancy: rec(c.occupancy), notes: Array.isArray(c.notes) ? c.notes.filter((n) => n && typeof n.text === 'string' && typeof n.roomId === 'string').slice(0, 200) : [], start: startOf(c.start) };
 }
 
 export const isChampion = (role: RoleKey): boolean => role === 'sitechamp';
@@ -81,4 +93,28 @@ export function contribute(w: S.Workspace, role: RoleKey, roomId: string, text: 
   c.notes.unshift(n);
   log(w, persona, 'site.knowledge_contributed', roomId, `${shortName(room)}: a site note was added as a candidate, awaiting review (${n.id})`);
   return n;
+}
+
+// ------------------------------------------------------------------------------------------------------------ the champion's first weeks
+const TITLE_OF: Record<string, string> = { ...Object.fromEntries(LESSONS.map((l) => [l.id, `the lesson “${l.title}”`])), support: 'who supports the site' };
+/** The champion says they have read a lesson, or who supports the site. Their word, once; it grants nothing. */
+export function markRead(w: S.Workspace, role: RoleKey, id: string): Refusal | { ok: true } {
+  const persona = personaOf(role);
+  if (!isChampion(role)) return deny(w, persona, 'site.start_read', 'site:start', [`The ${ROLES[role].label} does not have a champion’s list. It is the Site Champion’s own.`]);
+  if (!READABLE.includes(id)) return { why: ['There is no such lesson.'] };
+  const c = ch(w); if (c.start.read[id]) return { ok: true };
+  c.start.read[id] = new Date().toISOString();
+  log(w, persona, 'site.start_read', 'site:start', `The Site Champion marked ${TITLE_OF[id]} as read (their own word; it grants nothing)`);
+  return { ok: true };
+}
+/** The check: marked here, never by the page. All six lessons are read first. The result is a count, not a qualification. */
+export function answerCheck(w: S.Workspace, role: RoleKey, answers: unknown): Refusal | ({ ok: true } & CheckResult) {
+  const persona = personaOf(role);
+  if (!isChampion(role)) return deny(w, persona, 'site.start_checked', 'site:start', [`The ${ROLES[role].label} does not take the champion’s check.`]);
+  const c = ch(w); const left = LESSONS.filter((l) => !c.start.read[l.id]);
+  if (left.length) return { why: [`Read the lessons first: ${left.length} of ${LESSONS.length} ${left.length === 1 ? 'is' : 'are'} not marked as read (${left.map((l) => `“${l.title}”`).join(', ')}).`] };
+  const r = mark(answers); if (!r) return { why: ['Answer every question, one choice each.'] };
+  c.start.check = { at: new Date().toISOString(), score: r.score, of: r.of, passed: r.passed }; c.start.tries = Math.min(c.start.tries + 1, 999);
+  log(w, persona, 'site.start_checked', 'site:start', `The champion’s check: ${r.score} of ${r.of}, ${r.passed ? 'passed' : 'not passed'} (try ${c.start.tries}; a check of understanding, not a qualification)`);
+  return { ok: true, ...r };
 }

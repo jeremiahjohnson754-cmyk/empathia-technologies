@@ -19,4 +19,14 @@ export const CHAMPION_PAGES: readonly PageDef[] = [
     load: () => import('./champion/SitePage.js'),
     search: { keywords: 'site champion my site rooms visits access confirm local knowledge who supports escalation', aliases: ['my site', 'site champion', 'champion'] },
   },
+  {
+    id: 'site.start', title: 'Getting started', purpose: 'A Site Champion’s first weeks: six short lessons, a check of understanding, and what the record shows they have done on their own site', product: 'lite',
+    path: '/site/start', authority: { roles: ['sitechamp'], why: `${WHY}; the founder asked for the role’s own onboarding and training` },
+    actions: [
+      { id: 'site.start.read', label: 'Say a lesson has been read', authority: { roles: ['sitechamp'], why: `${WHY}; a champion’s own word about their own list` } },
+      { id: 'site.start.check', label: 'Answer the champion’s check', authority: { roles: ['sitechamp'], why: `${WHY}; a check of understanding, not a qualification` } },
+    ],
+    load: () => import('./champion/StartPage.js'),
+    search: { keywords: 'site champion getting started onboarding training lessons check first weeks what a champion does', aliases: ['champion onboarding', 'champion training', 'getting started'] },
+  },
 ];

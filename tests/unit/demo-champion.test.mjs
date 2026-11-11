@@ -17,6 +17,7 @@ const { C, H, D, N, M, W, P, V, R, B } = await import(pathToFileURL(out).href);
 const SC = 'sitechamp'; const SITE = P.CHAMPION_SITES[0]; const others = P.ROLE_KEYS.filter((k) => k !== SC);
 const inRoom = N.roomsIn(SITE)[0].id; const outRoom = N.CAMPUS_ROOMS.find((r) => !P.CHAMPION_SITES.includes(r.building)).id;
 const fresh = () => { mem.clear(); return W.seed(); };
+const EMPTY = { verified: {}, occupancy: {}, notes: [], start: { read: {}, check: null, tries: 0 } };
 const strip = (w) => { const { ch, events, workOrders, ...rest } = structuredClone(w); return { rest, wos: workOrders.map(({ access, ...x }) => x) }; };
 
 test('CH-01 the role is the platform’s persona: Site Champion, home "My site", an employee who holds asking and reporting and exactly three authorities of its own', () => {
@@ -73,7 +74,8 @@ test('CH-05 scope: the same action on another site’s visit or room is refused,
   const r = C.confirmAccess(w, SC, wo.id); assert.match(r.why[0], /outside your site/); assert.equal(wo.access, null); assert.equal(w.events[0].outcome, 'DENIED');
   for (const f of [() => C.verifyRoom(w, SC, outRoom, ''), () => C.confirmOccupancy(w, SC, outRoom, 'free'), () => C.contribute(w, SC, outRoom, 'The door sticks; lift the handle.')]) {
     const x = f(); assert.match(x.why[0], /outside your site/); assert.equal(w.events[0].outcome, 'DENIED'); }
-  assert.deepEqual(C.championView(w), { verified: {}, occupancy: {}, notes: [] }, 'nothing was recorded');
+  // the empty state gained `start` (the champion's own first weeks, tests/unit/demo-champion-start.test.mjs); empty still means nothing recorded
+  assert.deepEqual(C.championView(w), EMPTY, 'nothing was recorded');
   assert.equal(C.roomInSite(inRoom), true); assert.equal(C.roomInSite(outRoom), false); assert.equal(C.roomInSite('R-NO-SUCH'), false);
 });
 test('CH-06 the role matrix: each of the four champion actions is refused to every one of the fifteen other roles, written down, and changes nothing', () => {
@@ -98,7 +100,7 @@ test('CH-07 a room checked on site, what was seen at the door, and a note: each 
 test('CH-08 stored champion state is untrusted: anything of the wrong shape reads as empty and nothing throws', () => {
   for (const bad of [null, 5, 'x', [], { verified: 7, occupancy: [], notes: 'no' }, { notes: [null, 3, { text: 5 }, { text: 'ok', roomId: inRoom }] }]) { const w = fresh(); w.ch = bad; const v = C.championView(w);
     assert.equal(typeof v.verified, 'object'); assert.ok(Array.isArray(v.notes)); assert.ok(v.notes.every((n) => typeof n.text === 'string')); }
-  assert.deepEqual(C.championView(null), { verified: {}, occupancy: {}, notes: [] });
+  assert.deepEqual(C.championView(null), EMPTY);
 });
 test('CH-09 the champion’s start page is their own site, computed from the records: no health score, no money, no link the policy did not grant', () => {
   const w = fresh(); const opens = (href) => { const at = R.resolve(href.split('?')[0]); return !!at && P.canOpen(SC, at); };

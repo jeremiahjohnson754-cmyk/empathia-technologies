@@ -26,3 +26,27 @@
 .sc-room__acts { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
 @media (max-width: 720px) { .sc-list li, .sc-roomlist li { grid-template-columns: minmax(0, 1fr); } .sc-room__acts { justify-content: flex-start; } }
 @media (max-width: 640px), (pointer: coarse) { .sc .ui-btn, .sc select { min-block-size: 44px; } }
+
+/* ------------------------------------------------------------------ #/site/start: the champion's first weeks */
+.sc-start { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; margin: 0; padding: 10px 12px; border-radius: var(--r-md); border: 1px solid var(--line); background: var(--bg2); font-size: var(--fs-sm); line-height: 1.5; } .sc-start svg { color: var(--tx3); }
+.st-top { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--sp-4); align-items: start; } .st-top > * { min-width: 0; }
+@media (max-width: 900px) { .st-top { grid-template-columns: minmax(0, 1fr); } }
+.st-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.st-steps li { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 4px 10px; align-items: start; padding-block-end: 10px; border-block-end: 1px solid var(--line); } .st-steps li:last-child { border: 0; padding-block-end: 0; }
+.st-steps li > div { display: grid; gap: 2px; min-width: 0; } .st-steps b { font-size: var(--fs-md); } .st-steps span { font-size: var(--fs-sm); color: var(--tx2); overflow-wrap: anywhere; }
+.st-mark { inline-size: 20px; block-size: 20px; border-radius: 50%; border: 1.5px solid var(--line2); display: grid; place-items: center; margin-block-start: 2px; } .st-steps li[data-done=yes] .st-mark { border-color: var(--ok); color: var(--ok); }
+.st-ev { color: var(--tx3) !important; }
+@media (max-width: 560px) { .st-steps li { grid-template-columns: 22px minmax(0, 1fr); } .st-steps li > a { grid-column: 2; justify-self: start; } }
+.st-facts { margin: 0; display: grid; gap: 8px; } .st-facts > div { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 10px; font-size: var(--fs-sm); line-height: 1.5; } .st-facts dt { color: var(--tx3); } .st-facts dd { margin: 0; overflow-wrap: anywhere; }
+.st-sec { display: grid; gap: var(--sp-3); scroll-margin-block-start: 80px; } .st-sec > .ui-btn, .st-sec > .st-read { justify-self: start; } .st-sec > header { display: grid; gap: 2px; } .st-sec h2 { margin: 0; font-size: var(--fs-lg); }
+.st-lessons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-3); } @media (max-width: 900px) { .st-lessons { grid-template-columns: minmax(0, 1fr); } }
+.st-lesson { display: grid; gap: 8px; align-content: start; justify-items: start; padding: var(--sp-4); border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--panel); min-width: 0; }
+.st-lesson h3 { margin: 0; font-size: var(--fs-md); } .st-lesson ul { margin: 0; padding-inline-start: 18px; display: grid; gap: 6px; font-size: var(--fs-sm); line-height: 1.55; max-inline-size: 68ch; }
+.st-lesson[data-read=yes] { border-color: color-mix(in srgb, var(--ok) 40%, var(--line)); }
+.st-read { margin: 0; display: inline-flex; gap: 6px; align-items: center; font-size: var(--fs-sm); color: var(--tx2); } .st-read svg { color: var(--ok); }
+.st-check { display: grid; gap: var(--sp-4); max-inline-size: 76ch; }
+.st-check fieldset { margin: 0; padding: 0; border: 0; display: grid; gap: 6px; min-width: 0; } .st-check legend { padding: 0; font-weight: 600; font-size: var(--fs-md); line-height: 1.45; margin-block-end: 4px; }
+.st-opt { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; align-items: center; min-block-size: 44px; padding: 6px 10px; border: 1px solid var(--line); border-radius: var(--r-md); font-size: var(--fs-sm); line-height: 1.45; cursor: pointer; }
+.st-opt:has(input:checked) { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent); } .st-opt:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; } .st-opt input { inline-size: 18px; block-size: 18px; margin: 0; accent-color: var(--accent); }
+.st-why { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 8px; font-size: var(--fs-sm); line-height: 1.5; color: var(--tx2); } .st-why svg { margin-block-start: 3px; } .st-why--ok svg { color: var(--ok); } .st-why--no svg { color: var(--bad); }
+@media print { .st-lesson button, .st-check .sc-actions, .st-sec > button, .st-steps a { display: none; } .st-lessons { grid-template-columns: minmax(0, 1fr); } }

@@ -19,6 +19,7 @@ import { allRecords } from '../campus/design.js';
 import { roomIssues } from '../campus/metrics.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
 import { championView, confirmAccess, confirmOccupancy, contribute, verifyRoom } from './store.js';
+import { startView } from './start.js';
 import { readDocs } from '../docs5/store.js';
 import { TRACKED_REPORT, TRACKED_ROOM } from '../docs5/model.js';
 
@@ -45,6 +46,8 @@ export default function SitePage({ role, can }: PageProps) {
   // Phase 5: a document of a room at this site that the champion is asked to acknowledge (the operator guide)
   const toRead = roomById(TRACKED_ROOM)?.building === site ? (readDocs()?.docs ?? []).filter((d) => d.acknowledgements.outstanding.some((a) => a.role === role)) : [];
 
+  const start = startView(c, rooms.length, opens(`#/docs/${TRACKED_REPORT}`) ? toRead.length : null, { site: '#/site', docs: null, profile: null });
+
   return (
     <div className="pa sc" data-native="" data-testid="site" data-site={site}>
       <PageHero eyebrow="Site Champion" title={`${B?.name || site}: your site`} product="lite" icon="map"
@@ -53,6 +56,8 @@ export default function SitePage({ role, can }: PageProps) {
 
       {no ? <div role="alert" className="sc-msg sc-msg--no" data-testid="site-refused"><Icon name="alert" size={18} /><span>{no}</span></div> : null}
       {said && !no ? <p role="status" className="sc-msg sc-msg--ok" data-testid="site-done"><Icon name="check" size={18} /><span>{said}</span></p> : null}
+
+      {opens('#/site/start') ? <p className="sc-start" data-testid="site-start" data-done={start.done}><Icon name="book" size={18} /><span>{start.complete ? 'Getting started: everything on your list is done.' : `Getting started: ${start.done} of ${start.total} done.`} <a href="#/site/start">{start.complete ? 'Read the lessons again' : 'Open your list'}</a></span></p> : null}
 
       {toRead.length && opens(`#/docs/${TRACKED_REPORT}`) ? <p role="status" className="sc-msg sc-msg--ok" data-testid="site-to-read"><Icon name="book" size={18} /><span>{toRead.map((d) => <span key={d.type}>The {d.title.toLowerCase()} of {roomById(TRACKED_ROOM) ? shortName(roomById(TRACKED_ROOM)!) : 'a room here'} is accepted and waiting for you to read and acknowledge it. <a href={`#/docs/${TRACKED_REPORT}/${d.type}`}>Open it</a></span>)}</span></p> : null}
 
