@@ -32,6 +32,17 @@ export function serve() {
     const head = { ...COMMON, 'content-type': TYPES[path.extname(f)] || 'application/octet-stream', 'cache-control': 'no-cache' };
     if (f.endsWith('.html')) head['content-security-policy'] = CSP;
     if (status === 404) { const html = fs.readFileSync(f); res.writeHead(404, { ...head, 'content-length': html.length }); res.end(req.method === 'HEAD' ? undefined : html); return; }
+    // films: byte ranges, as the static host serves them, so a viewer can seek (a film is the only file large enough to need it)
+    if (path.extname(f) === '.mp4') {
+      const size = fs.statSync(f).size; head['accept-ranges'] = 'bytes'; const m = /^bytes=(\d*)-(\d*)$/.exec(String(req.headers.range || ''));
+      if (m && (m[1] || m[2])) {
+        const start = m[1] ? Number(m[1]) : Math.max(0, size - Number(m[2])); const end = m[1] && m[2] ? Math.min(Number(m[2]), size - 1) : size - 1;
+        if (start >= size || start > end) { res.writeHead(416, { ...head, 'content-range': `bytes */${size}` }).end(); return; }
+        res.writeHead(206, { ...head, 'content-range': `bytes ${start}-${end}/${size}`, 'content-length': end - start + 1 }); if (req.method === 'HEAD') { res.end(); return; }
+        fs.createReadStream(f, { start, end }).on('error', () => res.destroy()).pipe(res); return;
+      }
+      head['content-length'] = size;
+    }
     res.writeHead(200, head); if (req.method === 'HEAD') { res.end(); return; }
     fs.createReadStream(f).on('error', () => res.destroy()).pipe(res);   // a file that vanishes mid-read ends this response, not the server (SA-05)
   });

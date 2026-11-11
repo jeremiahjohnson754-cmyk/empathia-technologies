@@ -47,7 +47,7 @@ export function Shell({ page, pages, demoUrl, preview }: { page: Page; pages: Pa
           <p>Empathia Technologies. Living Campus.</p><p>Demonstrations run on synthetic data; nothing shown is a live system.</p>
         </div>
         <div><h2>Products</h2><ul>{PRODUCTS.map((p) => <li key={p.id}><a href={`/products/${p.slug}`} data-p={p.id}><span className="dot" aria-hidden="true" />{p.name}</a></li>)}</ul></div>
-        <div><h2>Company</h2><ul><li><a href="/founder">Founder</a></li><li><a href="/about">About</a></li><li><a href="/pricing">Pricing</a></li><li><a href="/pilots">Pilot packages</a></li><li><a href="/pilot-partners">Pilots and partners</a></li><li><a href="/films">Films</a></li><li><a href="/contact">Contact</a></li></ul></div>
+        <div><h2>Company</h2><ul><li><a href="/founder">Founder</a></li><li><a href="/about">About</a></li><li><a href="/pricing">Pricing</a></li><li><a href="/pilots">Pilot packages</a></li><li><a href="/pilot-partners">Pilots and partners</a></li><li><a href="/films">Films</a></li><li><a href="/collabora-sing">Collabora-SING (In Development)</a></li><li><a href="/contact">Contact</a></li></ul></div>
         <div><h2>Policies</h2><ul><li><a href="/trust">Security and trust</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/legal">Legal and accessibility</a></li></ul></div>
       </div></footer>
     </>

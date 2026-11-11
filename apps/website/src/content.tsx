@@ -5,13 +5,13 @@
 import { proofPage, LeadClaim } from './proof.js';
 import React from 'react';
 import { LeadForm, type LeadKind } from './form.js';
-import { Hero, Section, Cards, Steps, Note, Actions, Tag, EVIDENCE, EvidenceLine, FilmPlayer, Spectrum, Shot, ProductTiles, EnquiryCard, EnquiryLink, FounderBlock, FoundingStory, Stage, Chapters, RoomMix, GlassRail, Strip, RoomDrawing, FilmPending, type StripItem, type Evidence, type Film, type Capture, type ChapterItem } from './ui.js';
+import { Hero, Section, Cards, Steps, Note, Actions, Tag, EVIDENCE, EvidenceLine, FilmPlayer, Spectrum, Shot, ProductTiles, EnquiryCard, EnquiryLink, FounderBlock, FoundingStory, Stage, Chapters, RoomMix, GlassRail, Strip, RoomDrawing, FilmPending, PlanRecord, type StripItem, type Evidence, type Film, type Cue, type Capture, type ChapterItem } from './ui.js';
 import { PRODUCTS, DEMO_STATE, ROOMS_SENTENCE, ROOM_MIX, ROOM_TOTAL } from './products.js';
 import { TALLY_FORM } from './enquiry.js';
 import { commercialPages } from './commercial.js';   // v18/pilot: /pricing and /pilots
 
 export interface Page { path: string; title: string; description: string; nav?: string; body: React.ReactNode; /** a page's own script in dist (e.g. 'pilot.js'), loaded after site.js on that page only */ script?: string; }
-export interface SiteContext { asOf?: string; films: Film[]; pendingFilms?: Pick<Film, 'key' | 'title' | 'runtime' | 'summary' | 'disclosure'>[]; transcripts: Record<string, string[]>; demoUrl: string; preview: boolean; captures: Record<string, Capture>; api?: boolean }
+export interface SiteContext { asOf?: string; films: Film[]; pendingFilms?: Pick<Film, 'key' | 'title' | 'runtime' | 'summary' | 'disclosure'>[]; transcripts: Record<string, string[]>; /** a silent film's description, cue by cue (build.mjs reads its descriptions.vtt) */ cues?: Record<string, Cue[]>; demoUrl: string; preview: boolean; captures: Record<string, Capture>; api?: boolean }
 
 const AUDIENCES = [
   { title: 'CIOs and CTOs', body: 'One accountable record for the technology estate: what was approved, funded, installed, proved and accepted.', href: '/solutions#enterprise', icon: 'exec' },
@@ -69,9 +69,11 @@ const STORY: ChapterItem[] = [
 ];
 
 export function buildPages(ctx: SiteContext): Page[] {
-  const film = (key: string, lead?: boolean) => { const f = ctx.films.find((x) => x.key === key); return f ? <FilmPlayer film={f} transcript={ctx.transcripts[key] || []} lead={lead} /> : null; };
+  const film = (key: string, lead?: boolean) => { const f = ctx.films.find((x) => x.key === key); return f ? <FilmPlayer film={f} transcript={ctx.transcripts[key] || []} cues={ctx.cues?.[key]} lead={lead} /> : null; };
   const demo = (href = '#/investor') => ctx.demoUrl + '/' + href;
-  const hasFilms = ctx.films.length > 0;
+  // /films lists the films of the Living Campus; a film marked `exclusive` (Collabora-SING's) belongs to its own section and is not listed there
+  const indexFilms = ctx.films.filter((f) => !f.exclusive);
+  const hasFilms = indexFilms.length > 0;
   const lead = (kind: LeadKind, source: Parameters<typeof EnquiryCard>[0]['source']) => ctx.api ? <LeadForm kind={kind} /> : <EnquiryCard source={source} primary />;
   const heroArt = <Stage p={byId('mission-control')} cap={ctx.captures['mission-control']} counts={[{ n: PRODUCTS.length, label: 'products' }, { n: ROOM_TOTAL, label: 'rooms' }, { n: 1, label: 'record' }]} />;
 
@@ -230,9 +232,64 @@ export function buildPages(ctx: SiteContext): Page[] {
       <>
         <Hero label="Company" title="About Empathia" lead="Empathia Technologies builds the Living Campus: software that keeps the technology of a workplace honest about its own state." />
         <Section title="Founder" lead="Empathia was founded by Jeremiah Johnson (CTS, CAPM, CompTIA Network+)."><Actions><a className="btn" href="/founder">About the founder</a></Actions></Section>
+        <Section id="in-development" title="In Development: Collabora-SING" lead="Collabora-SING is a product in development. Its page sets out a research plan; the pilot has not been run yet."><Actions><a className="btn" href="/collabora-sing">Collabora-SING</a></Actions></Section>
         <Section title="Principles" tone="deep"><Cards cols={3} items={PRINCIPLES} /></Section>
         <Section id="investors" title="Investor conversations" lead="The company, the platform and the demonstration, with the evidence behind each claim."><EnquiryCard source="website-investor" primary /></Section>
       </>
+    ) },
+    // Collabora-SING (founder, 2026-11-10): a product in development, with its own section of the corporate site, labelled "In Development". Its film plays here
+    // and nowhere else (films.json: exclusive). Every sentence below is taken from what the film shows on screen: it is a research plan.
+    // No result, measurement, latency figure, customer, partner, institution or date is stated, because the pilot has not been run.
+    { path: '/collabora-sing', title: 'Collabora-SING, In Development — Empathia Technologies', description: 'Collabora-SING is a product in development at Empathia Technologies. Its film sets out a research plan in eight scenes. The pilot has not been run yet.', body: (
+      <div data-collabora>
+        <section className="hero hero--split hero--collabora"><div className="wrap hero__grid">
+          <div className="hero__copy">
+            <p className="label">In Development</p>
+            <h1>Collabora-SING</h1>
+            <p className="hero__sub">“What if we transmitted the performance... instead of only the sound?”</p>
+            <p className="lede" data-collabora-status>Collabora-SING is a product in development at Empathia Technologies. Its film, Collabora-SING SyncLab, sets out a research plan in eight scenes. The pilot has not been run yet, so there is no result to report here.</p>
+            <Actions>{film('SYNCLAB') ? <a className="btn btn--primary" href="#film">Watch the 35-second film</a> : null}<a className="btn" href="#plan">Read the plan</a></Actions>
+            <p className="status-line"><Tag s="unknown">In Development · pilot not yet run</Tag></p>
+          </div>
+          <div className="hero__aside">
+            <PlanRecord id="evidence" title="From “not yet measured” to evidence" state="The pilot has not been run yet" cols={['What the plan looks at', 'The label it will carry']} rows={[
+              { name: 'A real keyboard', labels: ['measured'] },
+              { name: 'Real networks', labels: ['estimated', 'measured'] },
+              { name: 'Facilitator’s notes', labels: ['observed'] },
+              { name: 'What a player feels', labels: ['subjective'] },
+              { name: 'Loss and stuck notes', labels: ['measured', 'observed'] },
+              { name: 'Playing together', labels: ['not-yet'] },
+            ]} foot="Today every row is not yet measured. The labels are the plan’s, shown in the film’s last scene: they say what kind of evidence each will be, not that it exists." />
+          </div>
+        </div></section>
+        {film('SYNCLAB') ? <Section id="film" eyebrow="The film" title="The plan, in thirty-five seconds" lead="An animated explainer in eight scenes, with no sound. It shows a plan: what a pilot is designed to do, before any pilot has run.">{film('SYNCLAB')}</Section> : null}
+        <Section id="plan" eyebrow="The plan" title="Eight steps, from a hypothesis to evidence" lead="Each step follows one scene of the film, in plain words and as what it is: a plan. Together they describe what the pilot is designed to do. The pilot has not been run yet." tone="deep"><Steps steps={[
+          { title: 'Hypothesis', body: 'What if we transmitted the performance instead of only the sound? The plan’s aim is to test that on a real network, with a real instrument and a real musician. It is not yet measured.' },
+          { title: 'Bench', body: 'One performance, two ways to send it. In the plan, Mode A sends rendered audio through Opus and WebRTC and a jitter buffer, and Mode B sends MIDI events through a data channel to a software instrument. Both arrive at the same output.' },
+          { title: 'Network', body: 'Five network conditions are planned, one stage at a time: wired LAN, church Wi-Fi, hotspot or internet, a remote site, and controlled degradation.' },
+          { title: 'Musician', body: 'The plan puts a real player at a real keyboard, on wired headphones with the keyboard’s own sound off, so that the player hears only what crossed the network.' },
+          { title: 'Blind test', body: 'Twenty trials are planned with the transport hidden, so that nobody in the room knows which is which. In each one the player is to be asked how immediate it feels, from 1 to 5.' },
+          { title: 'Telemetry', body: 'Every note is to be stamped at five moments: device event, captured, sent, received and triggered. What one clock times will be labelled measured; what takes two clocks will be labelled estimated.' },
+          { title: 'Analyzer', body: 'Exports, ratings and worksheets are to flow into one place, each with its label: exports measured, ratings subjective, worksheets observed. Thresholds are to be fixed before the first session.' },
+          { title: 'Evidence', body: 'From “not yet measured” to evidence. This is the plan. The pilot has not been run yet.' },
+        ]} /></Section>
+        <section className="section" aria-labelledby="collabora-limits"><div className="wrap"><div className="facts facts--plan">
+          <PlanRecord id="analyzer" title="Pilot Analyzer" state="No pilot data yet" cols={['What the pilot records', 'The label it will carry']} rows={[
+            { name: 'Median / p95 latency', labels: ['estimated'] },
+            { name: 'Round-trip time', labels: ['measured'] },
+            { name: 'Jitter', labels: ['measured'] },
+            { name: 'Packet loss', labels: ['measured'] },
+            { name: 'A/B preference', labels: ['subjective'] },
+            { name: 'Musician ratings', labels: ['subjective'] },
+            { name: 'Network condition', labels: ['observed'] },
+          ]} foot="Thresholds fixed before the first session. The panel is drawn as the film shows it: every row has a label and no value." />
+          <div className="facts__limits"><p className="eyebrow">Limits</p><h2 id="collabora-limits">What this page does not claim</h2>
+            <p>The pilot has not been run yet. This page gives no result, no measurement, no latency figure, no customer, no partner and no date, because none exists to give.</p>
+            <p>The figures that appear in the film are marked on screen “DEMO DATA not a measurement”, and none of them is repeated here.</p>
+            <p>Collabora-SING is not one of the nine Living Campus products listed on this site.</p></div>
+        </div></div></section>
+        <section className="band"><div className="wrap"><h2>Questions about Collabora-SING?</h2><p>Write to us through the contact page and say that your message is about Collabora-SING.</p><div className="actions"><a className="btn btn--primary btn--lg" href="/contact">Contact</a></div></div></section>
+      </div>
     ) },
     { path: '/request-demo', title: 'Request a demonstration — Empathia Technologies', description: 'Request a guided demonstration of the Empathia Living Campus.', body: (
       <>
@@ -284,7 +341,7 @@ export function buildPages(ctx: SiteContext): Page[] {
         <Section title="Demonstrations" lead="All demonstrations run on synthetic data. Every person, organization, room, device, figure and approval in them is invented. Roles in the demonstration show a policy; real access is decided by the authenticated application's server." />
         <Section title="Names" lead="Product names of other companies, where they appear in the product, identify categories of equipment or systems; no affiliation, partnership or endorsement is implied, and no integration is claimed to work until verified." />
         <Section title="Intellectual property" lead="The Empathia Living Campus software, its engines, documentation, emblem and demonstrations are the property of Empathia Technologies." />
-        <Section title="Accessibility" lead="This site aims at WCAG 2.2 AA: keyboard navigation, visible focus, text contrast of at least 4.5:1 in the light and the dark theme, captions and transcripts for every film, and no motion for readers who ask for reduced motion. Tell us through the contact page if something does not work for you." />
+        <Section title="Accessibility" lead="This site aims at WCAG 2.2 AA: keyboard navigation, visible focus, text contrast of at least 4.5:1 in the light and the dark theme, captions and a transcript for every film with speech, a text description for a film without sound, and no motion for readers who ask for reduced motion. Tell us through the contact page if something does not work for you." />
       </>
     ) },
   ];
@@ -294,7 +351,7 @@ export function buildPages(ctx: SiteContext): Page[] {
   pages.splice(pages.findIndex((p) => p.path === '/technology'), 0, { path: '/films', title: 'Films — Empathia Technologies', description: 'Films of the Empathia Living Campus, with captions and transcripts.', nav: 'Films', body: (
     <>
       <Hero label="Films" title="Watch the record being made" lead="Each film is recorded from the demonstration or illustrates a scenario, and says which. Every one has captions and a transcript." />
-      {ctx.films.map((f) => <Section key={f.key} title={f.title} lead={f.summary}>{film(f.key)}</Section>)}
+      {indexFilms.map((f) => <Section key={f.key} title={f.title} lead={f.summary}>{film(f.key)}</Section>)}
       {pending.length ? <Section title={hasFilms ? 'Coming to this page' : 'The films'} lead="These films are made. Each is published here only once its rights for the website are confirmed; until then, the demonstration itself is the best way to see the product." tone={hasFilms ? 'deep' : undefined}>
         <div className="filmcards">{pending.map((f, i) => <FilmPending key={f.key} film={f} n={i + 1} />)}</div>
         <Actions><a className="btn btn--primary" href={demo()}>Explore the live demo</a><a className="btn" href="/request-demo">Request a guided demonstration</a></Actions>

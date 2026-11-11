@@ -1,0 +1,52 @@
+{
+  "subject": "Jeremiah Johnson, founder of Empathia Technologies",
+  "rights": "rights confirmed by the founder, 2026-11-10 (his own photograph, supplied for the website)",
+  "original": {
+    "kept": "apps/website/media-src/founder/founder-original.webp",
+    "width": 1440,
+    "height": 1440,
+    "bytes": 199958,
+    "sha256": "6b63e655f3f46d7d6ead1df9520a72ce1149b7bb3b395ff5f958458fc9aa0239",
+    "note": "untouched; the recoverable source of every rendition"
+  },
+  "treatment": "whole picture only: white balance (R × 0.965, G × 1.02, B × 1.03), exposure (gamma 1.10), tonal balance (sigmoidal contrast 2.2 at 48 %), clarity (unsharp 0 × 1.4, amount 0.35, threshold 0.02); then resized (Lanczos), sRGB, metadata stripped. No crop, no mask, no local edit, no retouching, nothing generated, background unchanged.",
+  "files": {
+    "320.webp": {
+      "width": 320,
+      "height": 320,
+      "bytes": 5184,
+      "sha256": "bc6e2dc0bf43495b06cd722811caf20688f31f5bed517e37d26dca0960ac466f"
+    },
+    "320.jpg": {
+      "width": 320,
+      "height": 320,
+      "bytes": 15068,
+      "sha256": "3b6a7144de6dae5770d69661af334a5743dcea2b3e318e860caf4c57d5a954e9"
+    },
+    "640.webp": {
+      "width": 640,
+      "height": 640,
+      "bytes": 16382,
+      "sha256": "2410d227d797b098ff043c0868fb7f1d56155b1c18cff4a4688fa561444525fc"
+    },
+    "640.jpg": {
+      "width": 640,
+      "height": 640,
+      "bytes": 51443,
+      "sha256": "1f51344a9be17aa5b01c61253d1564317d6df332520efd9de36e3ab71b20c61d"
+    },
+    "960.webp": {
+      "width": 960,
+      "height": 960,
+      "bytes": 31376,
+      "sha256": "b1870391feaf15f511300957315381626091e1c9b4c67ce62171610aa79a64b0"
+    },
+    "960.jpg": {
+      "width": 960,
+      "height": 960,
+      "bytes": 101742,
+      "sha256": "12df013f6d876082ecd7160243baa3d00153184aa5ac02b137f17713868a9ded"
+    }
+  },
+  "at": "2026-11-10T21:12:31.279Z"
+}

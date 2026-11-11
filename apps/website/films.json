@@ -55,6 +55,42 @@
       "renditionSource": "Empathia_Film_Campaign/10_Final_Masters/F01/Empathia_V141_F01_16x9_1920x1080_clean.mp4 (e26d6b28…) + .vtt",
       "disclosure": "Screen recordings of the V1.4.1 demonstration on synthetic data.",
       "rights": { "website": { "status": "UNVERIFIED", "blocking": ["narration: Kokoro local voice — output rights not documented", "not entered in the media-rights ledger"], "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)" } }
+    },
+    {
+      "$comment": "Collabora-SING is a product in development, not one of the nine. `exclusive` keeps this film to the pages in `placement` and off /films (the build fails if any other page carries it). `sound: none` and `textTrack: descriptions`: the film is silent, so captions.vtt holds one cue that says so, and descriptions.vtt describes what is shown and quotes the on-screen words (the page prints the same text under the player). `burnedLabel` is burned into the web rendition and its posters for the whole duration (founder, 2026-11-10: the labelling of figures must be in the film, not only beside it), on a 56 px band added above the picture so that it covers nothing and the player's controls never cover it: the rendition differs from the master by that band, the 720p scale and the absent silent audio stream, and by nothing else; the master is untouched. `frame` is the rendition's size with the band. `qualifier` is also printed directly above the player at all times, because the film's own disclaimers are on screen only briefly (its figures sit under a \"MEASURED\" chip, its last labels turn to \"MEASURED\", and its end card has no qualifier). `source.captions` and `source.descriptions` are those two files, kept in the repository; `source.video` is the master under the production root.",
+      "key": "SYNCLAB",
+      "title": "Collabora-SING SyncLab: from hypothesis to evidence",
+      "runtime": "0:35",
+      "placement": ["/collabora-sing"],
+      "exclusive": true,
+      "sound": "none",
+      "textTrack": "descriptions",
+      "posterAt": 3,
+      "burnedLabel": { "text": "IN DEVELOPMENT · DEMONSTRATION DATA · NO PILOT HAS BEEN RUN", "band": 56 },
+      "frame": [1280, 776],
+      "summary": "The research plan behind Collabora-SING, in eight short scenes: a hypothesis, two ways to send one performance, five network conditions, a player at a keyboard, a blind test, telemetry, an analyzer, and what is not yet measured.",
+      "masterSha256": "853f3436b21a500c8cb41f82b44d91d5c6a88b6dc99f1df2ace7533e094f15ff",
+      "renditionSource": "collabora-sing-synclab-3d/video/Collabora-sing-SyncLab-From-Hypothesis-to-Evidence-1080p.mp4 (853f3436…), the file the founder supplied on 2026-11-10; text tracks written from the picture (apps/website/films/SYNCLAB.captions.vtt and SYNCLAB.descriptions.vtt)",
+      "source": { "video": "collabora-sing-synclab-3d/video/Collabora-sing-SyncLab-From-Hypothesis-to-Evidence-1080p.mp4", "captions": "apps/website/films/SYNCLAB.captions.vtt", "descriptions": "apps/website/films/SYNCLAB.descriptions.vtt" },
+      "disclosure": "An animated explainer of a research plan. The pilot has not been run yet; the figures on screen are labelled demo data, not measurements.",
+      "qualifier": "Read this with the film. Every figure shown in it is demonstration data, not a measurement. The labels in it (measured, estimated, observed, subjective) show how results will be classified once a pilot runs. No pilot has been run.",
+      "rights": { "website": {
+        "status": "VERIFIED",
+        "basis": "rights confirmed by the founder, 2026-11-10; supplied for the Collabora-SING In Development section of the corporate website",
+        "scope": "the Collabora-SING In Development section of the corporate website (/collabora-sing) only: no other page, product or channel",
+        "evidence": [
+          "the founder confirmed on 2026-11-10 that he holds the rights to the photographs, films, music and creative assets he supplied, for use in Empathia (his statement, relayed by the integrator at 15:06 CT; no separate document is on file)",
+          "the supplied file's SHA-256 is masterSha256, the same file catalogued as Collabora-sing-SyncLab-From-Hypothesis-to-Evidence-1080p in media/manifests/MEDIA_MANIFEST.json",
+          "sound: the audio stream is digital silence (ffmpeg astats on 2026-11-10: peak -inf dB on both channels for the whole 35.0 s), so the film carries no narration, music or sound effect; the web rendition has no audio stream",
+          "picture: a 3D animation with drawn figures and on-screen text; in the 35 one-per-second frames read on 2026-11-10 there is no photograph, no recording of a person and no third party's name, logo or mark"
+        ],
+        "notEvidenced": [
+          "beyond the founder's confirmation, no licence or authorship document was supplied; music and sound rights are covered by that confirmation and not exercised here (the file is silent)",
+          "the 3D library and typeface used to render the picture were not examined",
+          "not entered in the media-rights ledger: MEDIA_MANIFEST.json still lists the master as NOT_IN_LEDGER, rights owner NOT ESTABLISHED, distribution NOT_ELIGIBLE"
+        ],
+        "ownerChannelAuthorization": "founder, 2026-11-10: \"The 35 second video with the piano player is for Collabora-SING, an in-development product, just for the corporate website section for Collabora-SING.\""
+      } }
     }
   ]
 }

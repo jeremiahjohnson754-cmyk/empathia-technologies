@@ -6,6 +6,7 @@
  * three preloaded faces 88 KB (D38), product captures 1.4 MB. The public site carries no demo data.
  *   node apps/website/build.mjs [--api=https://api.example] [--base=https://www.example] [--demo=https://demo.example] [--films=auto|preview|off]
  * Films enter the site only when VERIFIED for the website in films.json (auto); --films=preview is an owner-review build (noindex).
+ * A film marked `exclusive` in films.json plays only on the pages in its `placement` (never on /films): the build checks it.
  */
 import fs from 'node:fs'; import path from 'node:path'; import crypto from 'node:crypto'; import { fileURLToPath } from 'node:url';
 const app = path.dirname(fileURLToPath(import.meta.url)); const repo = path.resolve(app, '../..'); const dist = path.join(app, 'dist');
@@ -32,13 +33,19 @@ const demoUrl = arg('demo', process.env.WEBSITE_DEMO_URL || 'https://empathia-de
 // builds every film whose renditions exist, marks every page as a preview and keeps search engines out; it is for owner review only.
 const filmsMode = arg('films', process.env.WEBSITE_FILMS || 'auto'); if (!['auto', 'preview', 'off'].includes(filmsMode)) { console.error('--films is auto, preview or off'); process.exit(2); }
 const catalogue = JSON.parse(fs.readFileSync(path.join(app, 'films.json'), 'utf8')).films; const mediaSrc = path.join(app, 'media');
-const hasMedia = (k) => ['720.mp4', 'poster.webp', 'poster.jpg', 'captions.vtt'].every((f) => fs.existsSync(path.join(mediaSrc, k, f)));
-const films = filmsMode === 'off' ? [] : catalogue.filter((f) => filmsMode === 'preview' ? hasMedia(f.key) : f.rights?.website?.status === 'VERIFIED');
-for (const f of films) if (!hasMedia(f.key)) { console.error(`film ${f.key} is VERIFIED for the website but its renditions are missing in apps/website/media/${f.key} (node scripts/media/prepare-web-films.mjs)`); process.exit(1); }
-const excluded = catalogue.filter((f) => !films.includes(f)).map((f) => ({ key: f.key, status: f.rights?.website?.status || 'NONE', media: hasMedia(f.key) }));
+// a film's files: the rendition, two posters and its captions; a silent film (textTrack "descriptions") also carries the description of what it shows
+const filesOf = (f) => ['720.mp4', 'poster.webp', 'poster.jpg', 'captions.vtt', ...(f.textTrack === 'descriptions' ? ['descriptions.vtt'] : [])];
+const hasMedia = (f) => filesOf(f).every((x) => fs.existsSync(path.join(mediaSrc, f.key, x)));
+const films = filmsMode === 'off' ? [] : catalogue.filter((f) => filmsMode === 'preview' ? hasMedia(f) : f.rights?.website?.status === 'VERIFIED');
+for (const f of films) if (!hasMedia(f)) { console.error(`film ${f.key} is VERIFIED for the website but its renditions are missing in apps/website/media/${f.key} (node scripts/media/prepare-web-films.mjs)`); process.exit(1); }
+const excluded = catalogue.filter((f) => !films.includes(f)).map((f) => ({ key: f.key, status: f.rights?.website?.status || 'NONE', media: hasMedia(f) }));
 const copy = (from, to) => { fs.mkdirSync(path.dirname(to), { recursive: true }); fs.copyFileSync(from, to); };
-const vttText = (t) => { const lines = []; for (const block of t.replace(/\r/g, '').split(/\n\n+/)) { const l = block.split('\n').filter((x) => x && !/-->/.test(x) && !/^WEBVTT/.test(x) && !/^\d+$/.test(x) && !/^NOTE/.test(x)); if (l.length) lines.push(l.join(' ').replace(/<[^>]+>/g, '')); } return lines; };
+const vttText = (t) => { const lines = []; for (const block of t.replace(/\r/g, '').split(/\n\n+/)) { if (/^NOTE\b/.test(block)) continue; const l = block.split('\n').filter((x) => x && !/-->/.test(x) && !/^WEBVTT/.test(x) && !/^\d+$/.test(x) && !/^NOTE/.test(x)); if (l.length) lines.push(l.join(' ').replace(/<[^>]+>/g, '')); } return lines; };
 const transcripts = Object.fromEntries(films.map((f) => [f.key, vttText(fs.readFileSync(path.join(mediaSrc, f.key, 'captions.vtt'), 'utf8'))]));
+// a silent film's description, cue by cue with its times: printed under the player, and the same file is the film's descriptions track
+const clock = (t) => { const [h, m, s] = t.split(':').map(Number); const sec = Math.round(h * 3600 + m * 60 + s); return `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`; };
+const vttCues = (t) => t.replace(/\r/g, '').split(/\n\n+/).filter((b) => /-->/.test(b) && !/^NOTE\b/.test(b)).map((b) => { const l = b.split('\n'); const i = l.findIndex((x) => /-->/.test(x)); const [from, to] = l[i].split('-->').map((x) => clock(x.trim().split(' ')[0])); return { from, to, text: l.slice(i + 1).join(' ').replace(/<[^>]+>/g, '') }; });
+const cues = Object.fromEntries(films.filter((f) => f.textTrack === 'descriptions').map((f) => [f.key, vttCues(fs.readFileSync(path.join(mediaSrc, f.key, 'descriptions.vtt'), 'utf8'))]));
 // brand (D39): the shared helper when the tokens package carries it; otherwise the same files copied directly (small shield as favicon)
 // brand, Inter and the theme script from @empathia/design-tokens (D7, D9, D38, D39): brand/, fonts/ and theme-init.js copied into dist;
 // decorate() puts theme-init (blocking, before first paint), the three website preloads and the icon links into every page's <head>
@@ -53,16 +60,24 @@ for (const [id, c] of Object.entries(prov.captures || {})) {
   captures[id] = { w: c.width, h: c.height, route: c.route };
 }
 // films not yet cleared are listed on /films by title and summary only (no frame, no file): the page always exists and says why they do not play
-const pendingFilms = catalogue.filter((f) => !films.includes(f)).map(({ key, title, runtime, summary, disclosure }) => ({ key, title, runtime, summary, disclosure }));
+// (a film marked `exclusive` belongs to its own section and is never listed on /films, cleared or not)
+const pendingFilms = catalogue.filter((f) => !films.includes(f) && !f.exclusive).map(({ key, title, runtime, summary, disclosure }) => ({ key, title, runtime, summary, disclosure }));
 const asOf = new Date().toISOString();
-const rendered = renderAll({ asOf, films, pendingFilms, transcripts, demoUrl, preview: filmsMode === 'preview', captures }, { api: api || null, base });
+const rendered = renderAll({ asOf, films, pendingFilms, transcripts, cues, demoUrl, preview: filmsMode === 'preview', captures }, { api: api || null, base });
+// an `exclusive` film plays on the pages in its `placement` and nowhere else (founder, 2026-11-10: the Collabora-SING film is "just for"
+// its section). The build fails rather than ship it on another page, or ship its own page without it when the film is built in.
+for (const f of catalogue.filter((x) => x.exclusive)) {
+  const carries = rendered.filter((r) => r.html.includes(`/media/${f.key}/`) || r.html.includes(`film-${f.key}`)).map((r) => r.path);
+  const stray = carries.filter((p) => !f.placement.includes(p)); const absent = films.includes(f) ? f.placement.filter((p) => !carries.includes(p)) : [];
+  if (stray.length || absent.length) { console.error(`film ${f.key} is exclusive to ${f.placement.join(', ')}:${stray.length ? ` it also appears on ${stray.join(', ')}` : ''}${absent.length ? ` it is missing from ${absent.join(', ')}` : ''}`); process.exit(1); }
+}
 const PATHS = rendered.map((r) => r.path).filter((p) => p !== '/404');
 // every page carries its CSP as <meta> too (assessment SA-01): a host that drops render.yaml's headers still cannot load or send off-origin
 const { injectMetaCsp, originOf } = await import(path.join(repo, 'scripts/security/policy.mjs')); const page = (h) => injectMetaCsp(decorate(h), [originOf(api)].filter(Boolean));
 for (const r of rendered) { if (r.path === '/404') { fs.writeFileSync(path.join(dist, '404.html'), page(r.html)); continue; } const dir = path.join(dist, r.path === '/' ? '' : r.path); fs.mkdirSync(dir, { recursive: true }); fs.writeFileSync(path.join(dir, 'index.html'), page(r.html)); }
 // media: the founder portrait (owner-supplied for the website, metadata stripped) and the films built in
 for (const f of fs.readdirSync(path.join(mediaSrc, 'founder'))) copy(path.join(mediaSrc, 'founder', f), path.join(dist, 'media/founder', f));
-for (const f of films) for (const x of ['720.mp4', 'poster.webp', 'poster.jpg', 'captions.vtt']) copy(path.join(mediaSrc, f.key, x), path.join(dist, 'media', f.key, x));
+for (const f of films) for (const x of filesOf(f)) copy(path.join(mediaSrc, f.key, x), path.join(dist, 'media', f.key, x));
 const css = [tokenCss(), `/* apps/website/src/styles/site.css */\n${fs.readFileSync(path.join(app, 'src/styles/site.css'), 'utf8')}`].join('\n');
 fs.writeFileSync(path.join(dist, 'site.css'), css);
 // the Proof Registry's public projection, as data (v1.8 A): the same file the demonstration ships, so the two can be compared

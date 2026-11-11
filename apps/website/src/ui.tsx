@@ -79,21 +79,37 @@ export const RecordCard = () => (
   </figure>
 );
 
-export interface Film { key: string; title: string; runtime: string; summary: string; disclosure: string; placement: string[] }
+/** `exclusive`: the film plays only on the pages in `placement`, never on /films (the build checks it). `sound: 'none'`: the film is
+ *  silent and its rendition has no audio stream. `textTrack: 'descriptions'`: there is no speech to caption, so the film carries a
+ *  description of what it shows (descriptions.vtt), printed under the player cue by cue. */
+export interface Film { key: string; title: string; runtime: string; summary: string; disclosure: string; placement: string[]; exclusive?: boolean; sound?: 'none'; textTrack?: 'descriptions'; /** printed directly above the player, always visible: what a viewer must know to read the film honestly */ qualifier?: string; /** a label burned into the rendition for its whole length, on a band added above the picture */ burnedLabel?: { text: string; band: number }; /** the rendition's width and height when it is not 1280 × 720 (a band was added) */ frame?: [number, number] }
+export interface Cue { from: string; to: string; text: string }
 /** A film, if it was built into this site (rights cleared, or a preview build). Captions are a real WebVTT track; the transcript is the
- *  same text, readable without playing anything. No autoplay with sound; nothing downloads until the viewer presses play. */
-export const FilmPlayer = ({ film, transcript, lead }: { film: Film; transcript: string[]; lead?: boolean }) => (
-  <figure className={`film${lead ? ' film--lead' : ''}`} id={`film-${film.key}`}>
-    <div className="film__frame">
-      <video controls preload="none" playsInline poster={`/media/${film.key}/poster.webp`} aria-describedby={`film-${film.key}-cap`}>
-        <source src={`/media/${film.key}/720.mp4`} type="video/mp4" />
-        <track kind="captions" src={`/media/${film.key}/captions.vtt`} srcLang="en" label="English" default />
-      </video>
-    </div>
-    <figcaption id={`film-${film.key}-cap`} className="film__cap"><b>{film.title}</b><span>{film.runtime} · captions · transcript below</span><span className="film__disc">{film.disclosure}</span></figcaption>
-    <details className="film__transcript"><summary>Transcript</summary><div>{transcript.map((t, i) => <p key={i}>{t}</p>)}</div></details>
-  </figure>
-);
+ *  same text, readable without playing anything. No autoplay with sound; nothing downloads until the viewer presses play.
+ *  A silent film (`cues` given) has nothing to caption: its captions track holds one cue that says so, its descriptions track and the
+ *  text under the player say what is shown, with the on-screen words quoted. No spoken word is ever invented for it. */
+export const FilmPlayer = ({ film, transcript, cues, lead }: { film: Film; transcript: string[]; cues?: Cue[]; lead?: boolean }) => {
+  const described = film.textTrack === 'descriptions' && !!cues?.length;
+  return (
+    <figure className={`film${lead ? ' film--lead' : ''}${described ? ' film--described' : ''}${film.burnedLabel ? ' film--band' : ''}`} id={`film-${film.key}`} data-film={film.key}>
+      {film.qualifier ? <p className="film__qualifier" role="note" id={`film-${film.key}-q`} data-film-qualifier>{film.qualifier}</p> : null}
+      <div className="film__frame">
+        <video controls preload="none" playsInline poster={`/media/${film.key}/poster.webp`} width={film.frame?.[0]} height={film.frame?.[1]} aria-describedby={`${film.qualifier ? `film-${film.key}-q ` : ''}film-${film.key}-cap`}>
+          <source src={`/media/${film.key}/720.mp4`} type="video/mp4" />
+          {described ? <track kind="captions" src={`/media/${film.key}/captions.vtt`} srcLang="en" label="English (this film has no sound)" /> : <track kind="captions" src={`/media/${film.key}/captions.vtt`} srcLang="en" label="English" default />}
+          {described ? <track kind="descriptions" src={`/media/${film.key}/descriptions.vtt`} srcLang="en" label="Text description (English)" /> : null}
+        </video>
+      </div>
+      <figcaption id={`film-${film.key}-cap`} className="film__cap"><b>{film.title}</b><span>{described ? `${film.runtime} · no sound · text description below` : `${film.runtime} · captions · transcript below`}</span><span className="film__disc">{film.disclosure}</span></figcaption>
+      {described ? <>
+        <p className="film__how" data-film-how>This film has no sound and no narration: everything it says is written on screen. The description below is of what is shown, scene by scene, with the on-screen words in quotation marks and this page’s own notes in square brackets. Nothing in it was spoken.</p>
+        <details className="film__transcript film__transcript--described" data-film-description><summary>What the film shows: a text description</summary>
+          <ol className="film__cues">{cues!.map((c) => <li key={c.from}><span className="film__time"><span className="sr">From </span>{c.from}<span aria-hidden="true"> – </span><span className="sr"> to </span>{c.to}</span><p>{c.text}</p></li>)}</ol>
+        </details>
+      </> : <details className="film__transcript"><summary>Transcript</summary><div>{transcript.map((t, i) => <p key={i}>{t}</p>)}</div></details>}
+    </figure>
+  );
+};
 
 /** A film that is not yet cleared for publication: a drawn poster (no frame of the film), its title, runtime and summary, and the honest
  *  reason it does not play here. Nothing is downloaded. */
@@ -104,10 +120,35 @@ export const FilmPending = ({ film, n }: { film: Pick<Film, 'key' | 'title' | 'r
   </article>
 );
 
-export const Portrait =({ size }: { size: 'lg' | 'sm' }) => (
-  <picture className={`portrait portrait--${size}`}>
-    <source type="image/webp" srcSet="/media/founder/480.webp 480w, /media/founder/800.webp 800w, /media/founder/1200.webp 1200w" sizes="(max-width: 720px) 300px, (max-width: 1100px) 340px, 460px" />
-    <img src="/media/founder/800.jpg" srcSet="/media/founder/480.jpg 480w, /media/founder/800.jpg 800w, /media/founder/1200.jpg 1200w" sizes="(max-width: 720px) 300px, (max-width: 1100px) 340px, 460px" width={800} height={1000} loading={size === 'lg' ? 'eager' : 'lazy'} decoding="async" alt="Portrait of Jeremiah Johnson in a light hoodie, indoors." />
+/** The Collabora-SING film's own evidence words. They are that plan's labels, not this site's six (EVIDENCE above), and here a label
+ *  says what kind of evidence a value WILL be: it never says that the value exists. Drawn dashed for that reason (site.css, .plan). */
+export type PlanLabel = 'measured' | 'estimated' | 'observed' | 'subjective' | 'not-yet';
+const PLAN_LABEL: Record<PlanLabel, string> = { measured: 'Measured', estimated: 'Estimated', observed: 'Observed', subjective: 'Subjective', 'not-yet': 'Not yet measured' };
+export const PlanTag = ({ l }: { l: PlanLabel }) => <span className={`tag tag--${l}`}><i aria-hidden="true" />{PLAN_LABEL[l]}</span>;
+/** A table of a plan: what it will look at, and the label each will carry. `state` says, in the header, that nothing has a value yet. */
+export const PlanRecord = ({ id, title, state, cols, rows, foot }: { id: string; title: string; state: string; cols: [string, string]; rows: { name: string; labels: PlanLabel[] }[]; foot?: string }) => (
+  <figure className="record plan" data-plan={id}>
+    <figcaption className="record__top" id={`plan-${id}`}><span className="record__id">{title}</span><span className="record__syn">{state}</span></figcaption>
+    <table className="plan__table" aria-labelledby={`plan-${id}`}>
+      <thead><tr><th scope="col">{cols[0]}</th><th scope="col">{cols[1]}</th></tr></thead>
+      <tbody>{rows.map((r) => <tr key={r.name}><th scope="row">{r.name}</th><td><span className="plan__tags">{r.labels.map((l) => <PlanTag key={l} l={l} />)}</span></td></tr>)}</tbody>
+    </table>
+    {foot ? <p className="plan__foot">{foot}</p> : null}
+  </figure>
+);
+
+/** FounderPortrait: the one place the founder's photograph is rendered (the home page's founder section and the founder page).
+ *  It is the photograph he supplied on 2026-11-10 (1440 × 1440) and chose to keep, shown whole. The original is kept untouched at
+ *  apps/website/media-src/founder/founder-original.webp; the three sizes served here are made from it by
+ *  apps/website/scripts/portrait.mjs with a restrained, whole-picture grade (settings and hashes: docs/media/FOUNDER_PORTRAIT.json).
+ *  Responsive sources, the intrinsic size (so the page does not shift while it loads) and an alternative text that names him and his
+ *  role and describes nothing else. It has no animation of its own. */
+const PORTRAIT_SIZES = '(max-width: 720px) 300px, (max-width: 1100px) 340px, 480px';
+const portraitSet = (ext: 'webp' | 'jpg') => [320, 640, 960].map((w) => `/media/founder/${w}.${ext} ${w}w`).join(', ');
+export const FounderPortrait = ({ size }: { size: 'lg' | 'sm' }) => (
+  <picture className={`portrait portrait--${size}`} data-founder-portrait>
+    <source type="image/webp" srcSet={portraitSet('webp')} sizes={PORTRAIT_SIZES} />
+    <img src="/media/founder/640.jpg" srcSet={portraitSet('jpg')} sizes={PORTRAIT_SIZES} width={960} height={960} loading={size === 'lg' ? 'eager' : 'lazy'} decoding="async" alt="Jeremiah Johnson, founder of Empathia Technologies" />
   </picture>
 );
 export const CREDENTIALS = [{ abbr: 'CTS', full: 'Certified Technology Specialist', by: 'AVIXA' }, { abbr: 'CAPM', full: 'Certified Associate in Project Management', by: 'PMI' }, { abbr: 'Network+', full: 'CompTIA Network+', by: 'CompTIA' }];
@@ -165,7 +206,7 @@ export const EnquiryCard = ({ source, primary }: { source: Source; primary?: boo
  *  marked source=founder). Only the supplied portrait, only the three credentials, no invented biography. */
 export const FounderBlock = ({ page }: { page: 'home' | 'founder' }) => (
   <div className="founder" data-founder={page}>
-    <Portrait size={page === 'founder' ? 'lg' : 'sm'} />
+    <FounderPortrait size={page === 'founder' ? 'lg' : 'sm'} />
     <div className="founder__text">
       <p className="label">{page === 'founder' ? 'Founder' : 'The founder'}</p>
       {page === 'founder' ? <h1 className="founder__name">Jeremiah Johnson</h1> : <h2 className="founder__name">Jeremiah Johnson</h2>}

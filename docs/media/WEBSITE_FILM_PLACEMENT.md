@@ -19,6 +19,9 @@ document records:
 
 The `/films` page and its navigation entry exist only when at least one film is built in.
 
+A sixth film, supplied on 2026-11-10, is not in this table: the Collabora-SING film (`SYNCLAB`) belongs to the `/collabora-sing`
+section only and is never listed on `/films`. See `docs/media/COLLABORA_SING_FILM.md`.
+
 ## 2. What was produced, and how each film plays
 
 Renditions come from the **clean (caption-free) masters**. Captions therefore ship as a real WebVTT text track, which can be switched
