@@ -19,6 +19,8 @@ import { allRecords } from '../campus/design.js';
 import { roomIssues } from '../campus/metrics.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
 import { championView, confirmAccess, confirmOccupancy, contribute, verifyRoom } from './store.js';
+import { readDocs } from '../docs5/store.js';
+import { TRACKED_REPORT, TRACKED_ROOM } from '../docs5/model.js';
 
 const when = (iso: string) => new Date(iso).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 const LIVE = new Set(['OPEN', 'TRIAGED', 'ASSIGNED', 'ACCEPTED', 'IN_PROGRESS', 'RESTORED', 'PENDING_VERIFICATION']);
@@ -40,6 +42,8 @@ export default function SitePage({ role, can }: PageProps) {
   const withProblem = rooms.filter((r) => { const rec = recs.get(r.id); return rec ? roomIssues(rec, w).some((i) => i.state !== 'RESOLVED') : false; });
   const floors = [...new Set(rooms.map((r) => r.floor))]; const shown = rooms.filter((r) => floor === 'all' || r.floor === floor);
   const toConfirm = visits.filter((x) => !x.access);
+  // Phase 5: a document of a room at this site that the champion is asked to acknowledge (the operator guide)
+  const toRead = roomById(TRACKED_ROOM)?.building === site ? (readDocs()?.docs ?? []).filter((d) => d.acknowledgements.outstanding.some((a) => a.role === role)) : [];
 
   return (
     <div className="pa sc" data-native="" data-testid="site" data-site={site}>
@@ -49,6 +53,8 @@ export default function SitePage({ role, can }: PageProps) {
 
       {no ? <div role="alert" className="sc-msg sc-msg--no" data-testid="site-refused"><Icon name="alert" size={18} /><span>{no}</span></div> : null}
       {said && !no ? <p role="status" className="sc-msg sc-msg--ok" data-testid="site-done"><Icon name="check" size={18} /><span>{said}</span></p> : null}
+
+      {toRead.length && opens(`#/docs/${TRACKED_REPORT}`) ? <p role="status" className="sc-msg sc-msg--ok" data-testid="site-to-read"><Icon name="book" size={18} /><span>{toRead.map((d) => <span key={d.type}>The {d.title.toLowerCase()} of {roomById(TRACKED_ROOM) ? shortName(roomById(TRACKED_ROOM)!) : 'a room here'} is accepted and waiting for you to read and acknowledge it. <a href={`#/docs/${TRACKED_REPORT}/${d.type}`}>Open it</a></span>)}</span></p> : null}
 
       <div className="sc-grid">
         <Card title="Visits to your site" icon="calendar" sub="Someone is coming to work on a room. Say they can get in." testId="site-visits">

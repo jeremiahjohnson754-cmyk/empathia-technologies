@@ -68,19 +68,20 @@ const always = (why: string) => (): [boolean, string] => [true, why];
 const when = (test: (p: RoomProfile) => boolean, yes: string, no: string) => (p: RoomProfile): [boolean, string] => (test(p) ? [true, yes] : [false, no]);
 const SM: Actor = { role: 'svcmgr', label: 'Service Manager' }; const CH: Actor = { role: 'sitechamp', label: 'Site Champion' }; const OPS: Actor = { role: 'ops', label: 'AV Operations Lead' };
 
-/** The eighteen deliverables of §12, each with when it applies and why, who owns it, what it must state and what it must reference. */
+/** The eighteen deliverables of §12, each with when it applies and why, who owns it, what it must state and what it must reference.
+ *  Role names are the demonstration's own (V2.5.3): Designer, Systems Engineer, Installation Engineer, Commissioning Engineer, Service Manager, Integration PM. */
 export const RULES: Readonly<Record<DeliverableType, Rule>> = {
-  as_built_drawings: { title: 'As-built drawings', owner: 'designer', ownerLabel: 'System Designer', fields: [f('drawing_number', 'Drawing number'), f('sheets', 'Number of sheets')], attachment: true, equipment: 'none', evidence: 'none', dependsOn: [], acknowledgers: [],
+  as_built_drawings: { title: 'As-built drawings', owner: 'designer', ownerLabel: 'Designer', fields: [f('drawing_number', 'Drawing number'), f('sheets', 'Number of sheets')], attachment: true, equipment: 'none', evidence: 'none', dependsOn: [], acknowledgers: [],
     applies: always('Every commissioned room has a drawing of what was built') },
-  signal_flow: { title: 'Signal flow diagram', owner: 'designer', ownerLabel: 'System Designer', fields: [f('drawing_number', 'Drawing number')], attachment: true, equipment: 'none', evidence: 'none', dependsOn: ['as_built_drawings'], acknowledgers: [],
+  signal_flow: { title: 'Signal flow diagram', owner: 'designer', ownerLabel: 'Designer', fields: [f('drawing_number', 'Drawing number')], attachment: true, equipment: 'none', evidence: 'none', dependsOn: ['as_built_drawings'], acknowledgers: [],
     applies: when((p) => p.hasDsp || p.devices >= 5, 'The room routes signals through a processor or between five or more devices', 'A display and its sources: the as-built drawing shows the only connections') },
   network_diagram: { title: 'Network diagram', owner: 'syseng', ownerLabel: 'Systems Engineer', fields: [f('vlan_plan', 'VLANs and addressing shown'), f('switch_ports', 'Switch and ports')], attachment: true, equipment: 'none', evidence: 'none', dependsOn: ['as_built_drawings'], acknowledgers: [],
     applies: when((p) => p.hasNetwork, 'The room has devices on the network', 'Nothing in the room is on the network') },
-  rack_elevations: { title: 'Rack elevations', owner: 'designer', ownerLabel: 'System Designer', fields: [f('rack_id', 'Rack'), f('rack_units', 'Rack units used')], attachment: true, equipment: 'none', evidence: 'none', dependsOn: ['as_built_drawings'], acknowledgers: [],
+  rack_elevations: { title: 'Rack elevations', owner: 'designer', ownerLabel: 'Designer', fields: [f('rack_id', 'Rack'), f('rack_units', 'Rack units used')], attachment: true, equipment: 'none', evidence: 'none', dependsOn: ['as_built_drawings'], acknowledgers: [],
     applies: when((p) => p.hasRack, 'The room has an equipment rack', 'The room has no equipment rack') },
-  asset_list: { title: 'Asset list', owner: 'installer', ownerLabel: 'Installer', fields: [f('register_reference', 'Asset register reference')], attachment: false, equipment: 'all', evidence: 'none', dependsOn: ['bom_revision'], acknowledgers: [], counts: true,
+  asset_list: { title: 'Asset list', owner: 'installer', ownerLabel: 'Installation Engineer', fields: [f('register_reference', 'Asset register reference')], attachment: false, equipment: 'all', evidence: 'none', dependsOn: ['bom_revision'], acknowledgers: [], counts: true,
     applies: always('Every installed unit is on the asset register') },
-  bom_revision: { title: 'Bill of materials revision', owner: 'designer', ownerLabel: 'System Designer', fields: [f('bom_number', 'Bill of materials number'), f('change_summary', 'What changed in this revision')], attachment: true, equipment: 'none', evidence: 'none', dependsOn: [], acknowledgers: [],
+  bom_revision: { title: 'Bill of materials revision', owner: 'designer', ownerLabel: 'Designer', fields: [f('bom_number', 'Bill of materials number'), f('change_summary', 'What changed in this revision')], attachment: true, equipment: 'none', evidence: 'none', dependsOn: [], acknowledgers: [],
     applies: always('What was bought and installed is recorded for every room') },
   config_backup: { title: 'Software and configuration backup', owner: 'syseng', ownerLabel: 'Systems Engineer', fields: [f('software_version', 'Software or design version'), f('restore_tested', 'Restore tested (yes or no, and when)')], attachment: true, equipment: 'some', evidence: 'none', dependsOn: [], acknowledgers: [],
     applies: when((p) => p.hasProgrammable, 'The room has devices that hold a configuration', 'Nothing in the room holds a configuration') },
@@ -100,11 +101,11 @@ export const RULES: Readonly<Record<DeliverableType, Rule>> = {
     applies: when((p) => p.hasControl || p.size === 'large' || p.size === 'venue', 'The room has controls an operator has to learn', 'The room has no controls to learn: it is used as it is found') },
   support_contacts: { title: 'Support contacts', owner: 'svcmgr', ownerLabel: 'Service Manager', fields: [f('first_line', 'First line (a role, not a name)'), f('escalation', 'Escalation')], attachment: false, equipment: 'none', evidence: 'none', dependsOn: [], acknowledgers: [],
     applies: always('Whoever uses the room must be able to reach support') },
-  warranty_information: { title: 'Warranty information', owner: 'installer', ownerLabel: 'Installer', fields: [f('start_date', 'Start date'), f('term', 'Term'), f('provider', 'Provider')], attachment: false, equipment: 'none', evidence: 'none', dependsOn: [], acknowledgers: [],
+  warranty_information: { title: 'Warranty information', owner: 'installer', ownerLabel: 'Installation Engineer', fields: [f('start_date', 'Start date'), f('term', 'Term'), f('provider', 'Provider')], attachment: false, equipment: 'none', evidence: 'none', dependsOn: [], acknowledgers: [],
     applies: always('Every installed system has a warranty position, even if it is "none"') },
-  vendor_signoff: { title: 'Vendor sign-off', owner: 'ipm', ownerLabel: 'Integration Project Manager', fields: [f('signatory_role', 'Role of the person who signed')], attachment: true, equipment: 'none', evidence: 'none', dependsOn: [], acknowledgers: [], vendor: true,
+  vendor_signoff: { title: 'Vendor sign-off', owner: 'ipm', ownerLabel: 'Integration PM', fields: [f('signatory_role', 'Role of the person who signed')], attachment: true, equipment: 'none', evidence: 'none', dependsOn: [], acknowledgers: [], vendor: true,
     applies: when((p) => p.vendorInstalled, 'The room was installed by a vendor', 'The room was not installed by a vendor') },
-  operational_handoff: { title: 'Operational handoff', owner: 'ipm', ownerLabel: 'Integration Project Manager', fields: [f('summary', 'What is being handed over'), f('open_items', 'Open items carried into operation ("none" if none)')], attachment: false, equipment: 'none', evidence: 'none', dependsOn: [], acknowledgers: [SM, OPS],
+  operational_handoff: { title: 'Operational handoff', owner: 'ipm', ownerLabel: 'Integration PM', fields: [f('summary', 'What is being handed over'), f('open_items', 'Open items carried into operation ("none" if none)')], attachment: false, equipment: 'none', evidence: 'none', dependsOn: [], acknowledgers: [SM, OPS],
     applies: always('Operations takes the room over from the project') },
 };
 
@@ -251,6 +252,9 @@ const fold = (set: DocSet, events: readonly DocEvent[], ctx: DocContext, policy:
 };
 
 const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+/** a calendar day in words: 2026-11-01 → 1 November 2026 */
+const inWords = (d: string) => `${Number(d.slice(8, 10))} ${MONTHS[Number(d.slice(5, 7)) - 1]} ${d.slice(0, 4)}`;
 const some = (a: readonly string[], n = 4) => (a.length > n ? `${a.slice(0, n).join(', ')} and ${a.length - n} more` : a.join(', '));
 
 /**
@@ -295,7 +299,7 @@ export function replayDocs(set: DocSet, events: readonly DocEvent[], ctx: DocCon
     }
     const acksOut = s.accepted ? r.acknowledgers.filter((a) => !s.acks.some((h) => h.by.role === a.role)) : [];
     if (s.applies) {
-      if (!c) add('not_submitted', s.lastRevision ? `Revision ${s.lastRevision} was withdrawn and nothing has replaced it.` : 'Nothing has been submitted.', s.owner ? `The ${s.owner.label} submits it${s.due ? `, due ${s.due}` : ''}.` : `Assign it (it is normally the ${r.ownerLabel}’s) and set a due date.`, false);
+      if (!c) add('not_submitted', s.lastRevision ? `Revision ${s.lastRevision} was withdrawn and nothing has replaced it.` : 'Nothing has been submitted.', s.owner ? `The ${s.owner.label} submits it${s.due ? `, due ${inWords(s.due)}` : ''}.` : `Assign it (it is normally the ${r.ownerLabel}’s) and set a due date.`, false);
       if (!c && !s.owner) add('unassigned', 'It has no owner.', `Assign it; it is normally the ${r.ownerLabel}’s.`, false);
       if (c && s.correction) add('correction_requested', `The ${s.correction.by.label} asked for a correction of revision ${c.revision}: “${s.correction.comment}”`, 'Submit a new revision that answers it.', false);
       if (c && !s.correction && !s.accepted) add('awaiting_review', `Revision ${c.revision} is waiting for review by a role other than the ${c.by.label}.`, 'A reviewer accepts it or asks for a correction.', false);
@@ -309,7 +313,7 @@ export function replayDocs(set: DocSet, events: readonly DocEvent[], ctx: DocCon
       if (!satisfied && test.settled) add('dossier_ahead', `Test ${test.id} (“${test.name}”) is recorded as passed on the dossier, which this tracker does not yet bear out.`, 'Complete the document here so the two records agree.', false);
     }
     const overdue = s.applies && !!s.due && today > s.due && !satisfied;
-    if (overdue) add('overdue', `It was due on ${s.due}.`, s.owner ? `The ${s.owner.label} is its owner.` : 'Assign an owner.', false);
+    if (overdue) add('overdue', `It was due on ${inWords(s.due!)}.`, s.owner ? `The ${s.owner.label} is its owner.` : 'Assign an owner.', false);
     const stale = fs.some((x) => x.kind === 'outdated_room' || x.kind === 'outdated_reference');
     const state: DocState = !s.applies ? 'NOT_APPLICABLE' : !c ? (s.owner ? 'ASSIGNED' : 'NOT_STARTED') : s.correction ? 'CORRECTION_REQUESTED' : s.accepted ? (stale ? 'OUTDATED' : 'ACCEPTED') : 'SUBMITTED';
     return { type, title: r.title, applies: s.applies, why: s.why, ownerRole: r.owner, ownerLabel: r.ownerLabel, owner: s.owner, due: s.due, overdue, state, submission: c, lastRevision: s.lastRevision, accepted: s.accepted, correction: s.correction,
@@ -362,7 +366,7 @@ export function releaseControls(d: Working, docs: DocsWorking, approvers: { firs
     c('identity', 'Equipment identity', of('unknown_equipment', 'equipment_not_listed', 'contradiction_count').map(say), 'Every document names only the room’s own positions, and the asset list agrees with the room record'),
     c('revisions', 'Revision consistency', of('outdated_room', 'ahead_of_room', 'outdated_reference', 'reference_missing', 'contradiction_revision').map(say), `Documents are written against revision ${docs.docs.find((x) => x.submission)?.submission?.against.room ?? '—'} of the room record and the current revisions of each other`),
     c('signoff', 'Sign-off permissions', pair ? [] : [!first.length ? 'No role that may give the first approval is free of the work in this dossier.' : !second.length ? 'No role that may give the second approval is free of the work in this dossier.' : 'The only eligible first and second approvers are the same role.'],
-      `First approval: ${first.map((a) => a.label).join(' or ') || 'nobody eligible'}. Second: ${second.map((a) => a.label).join(' or ') || 'nobody eligible'}. A role that recorded, verified or waived anything here approves nothing.`),
+      `First approval: ${first.map((a) => a.label).join(' or ') || 'nobody eligible'}. Second: ${second.map((a) => a.label).join(' or ') || 'nobody eligible'}. A role that recorded, verified or waived anything here approves nothing`),
     c('retest', 'Retest status', [...awaiting.map((t) => `${t.id} was retested and awaits independent verification`), ...corrected.map((x) => `${x.id} is corrected and awaits its retest`)], 'A result recorded after the report counts once a different role has verified it'),
     c('handoff', 'Operational handoff', (['operational_handoff', 'training_materials', 'support_contacts'] as const).map(doc).filter((x): x is WorkingDoc => !!x && !x.met).map((x) => `${x.title}: ${x.gate === 'dossier' && x.test ? `test ${x.test} is open on the dossier` : x.findings[0]?.detail ?? 'not complete'}`), 'Operations has the handoff, the operator guide and the support contacts, each acknowledged where it must be'),
     c('baseline', 'Accepted baseline', base.filter((x) => !x.met || x.findings.some((y) => y.kind === 'outdated_room')).map((x) => `${x.title} is not accepted against the room record as it is now`), `The baseline that acceptance freezes is the ${base.map((x) => x.title.toLowerCase()).join(', the ')}`),
@@ -376,20 +380,22 @@ export function releaseControls(d: Working, docs: DocsWorking, approvers: { firs
  */
 export function fixtureHistory(p: RoomProfile, ctx: DocContext, o: { reviewer: Actor; assigner: Actor; actors: Readonly<Record<string, Actor>>; from: string; represents?: Partial<Record<DeliverableType, string>>;
   hold?: Partial<Record<DeliverableType, { packetWithout?: readonly string[]; correction?: string; acknowledgedBy?: readonly string[] }>> }): DocEvent[] {
-  const out: DocEvent[] = []; let n = 0; const t0 = Date.parse(o.from); const at = () => new Date(t0 + (n++) * 37 * 60000).toISOString(); const due = new Date(t0 + 12 * 86400000).toISOString().slice(0, 10);
+  // four passes, as a project runs: everything assigned on the first day; submitted from the ninth; reviewed from the fourteenth;
+  // acknowledged on the sixteenth. Due on the twelfth day. Times only ever move forward.
+  const t0 = Date.parse(o.from); const due = new Date(t0 + 12 * 86400000).toISOString().slice(0, 10); const DAYS = 86400000; const MIN = 60000;
   const sha = (s: string) => { let h = 2166136261; let hex = ''; for (let i = 0; i < 8; i++) { for (const ch of `${s}:${i}`) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; } hex += h.toString(16).padStart(8, '0'); } return hex; };   // a stand-in checksum for a file that does not exist: the fixture says so
-  for (const q of requiredFor(p, ctx.deficiencies.length)) {
-    if (!q.applies || q.derived) continue; const owner = o.actors[q.owner] ?? { role: q.owner, label: q.ownerLabel }; const hold = o.hold?.[q.type];
-    out.push({ kind: 'ASSIGN', doc: q.type, owner, due, by: o.assigner, at: at() });
+  const req = requiredFor(p, ctx.deficiencies.length).filter((q) => q.applies && !q.derived); const ownerOf = (q: Requirement) => o.actors[q.owner] ?? { role: q.owner, label: q.ownerLabel };
+  const assign: DocEvent[] = req.map((q, i) => ({ kind: 'ASSIGN', doc: q.type, owner: ownerOf(q), due, by: o.assigner, at: new Date(t0 + i * 4 * MIN).toISOString() }));
+  const submit: DocEvent[] = req.map((q, i) => { const hold = o.hold?.[q.type];
     const body: SubmitBody = { doc: q.type, revision: 1, fields: Object.fromEntries(q.fields.map((x) => [x.key, `Synthetic: ${x.label.toLowerCase()}`])), equipment: q.equipment === 'all' ? [...ctx.positions] : q.equipment === 'some' ? ctx.positions.slice(0, 1) : [],
       evidence: q.evidence === 'packet' ? ctx.evidence.filter((x) => !hold?.packetWithout?.includes(x)) : q.evidence === 'some' ? ctx.evidence.slice(0, 1) : [],
       attachment: q.attachment ? { name: `${p.roomId}-${q.type}-r1.pdf`, bytes: 180000 + q.type.length * 4096, sha256: sha(`${p.roomId}/${q.type}/1`) } : null,
-      against: { room: ctx.roomRevision, docs: Object.fromEntries(q.dependsOn.map((d) => [d, 1])) }, ...(q.type === 'asset_list' ? { counts: { ...ctx.counts } } : {}), by: owner, at: at() };
-    out.push(q.vendor ? { kind: 'VENDOR_SUBMISSION', vendor: 'Synthetic Integration Ltd (fictional)', ...body } : { kind: 'SUBMIT', ...body });
-    if (hold?.correction) { out.push({ kind: 'REQUEST_CORRECTION', doc: q.type, comment: hold.correction, by: o.reviewer, at: at() }); continue; }
-    if (hold?.packetWithout) continue;
-    out.push({ kind: 'ACCEPT', doc: q.type, revision: 1, by: o.reviewer, at: at() });
-    for (const a of q.acknowledgers) if (!hold?.acknowledgedBy || hold.acknowledgedBy.includes(a.role)) out.push({ kind: 'ACKNOWLEDGE', doc: q.type, revision: 1, by: a, at: at() });
-  }
+      against: { room: ctx.roomRevision, docs: Object.fromEntries(q.dependsOn.map((d) => [d, 1])) }, ...(q.type === 'asset_list' ? { counts: { ...ctx.counts } } : {}), by: ownerOf(q), at: new Date(t0 + 9 * DAYS + i * 170 * MIN).toISOString() };
+    return q.vendor ? { kind: 'VENDOR_SUBMISSION', vendor: 'Synthetic Integration Ltd (fictional)', ...body } : { kind: 'SUBMIT', ...body }; });
+  const review: DocEvent[] = req.flatMap((q, i): DocEvent[] => { const hold = o.hold?.[q.type]; const at = new Date(t0 + 14 * DAYS + i * 55 * MIN).toISOString();
+    return hold?.correction ? [{ kind: 'REQUEST_CORRECTION', doc: q.type, comment: hold.correction, by: o.reviewer, at }] : hold?.packetWithout ? [] : [{ kind: 'ACCEPT', doc: q.type, revision: 1, by: o.reviewer, at }]; });
+  const accepted = new Set(review.filter((e) => e.kind === 'ACCEPT').map((e) => e.doc)); let k = 0;
+  const acks: DocEvent[] = req.filter((q) => accepted.has(q.type)).flatMap((q) => q.acknowledgers.filter((a) => !o.hold?.[q.type]?.acknowledgedBy || o.hold[q.type]!.acknowledgedBy!.includes(a.role)).map((a): DocEvent => ({ kind: 'ACKNOWLEDGE', doc: q.type, revision: 1, by: a, at: new Date(t0 + 16 * DAYS + (k++) * 95 * MIN).toISOString() })));
+  const out = [...assign, ...submit, ...review, ...acks];
   return out;
 }

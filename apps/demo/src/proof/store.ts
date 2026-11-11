@@ -7,9 +7,10 @@
  */
 import { useCallback, useEffect, useState } from 'react';
 import { DOSSIER_4218, attempt, replay, type DossierEvent, type Authority, type Working } from '@empathia/proof-registry';
+import { docBlockersFor, DOCS_EVT } from '../docs5/store.js';
 
 const KEY = 'empathia.demo.dossier.v1';
-const EVT = 'empathia:dossier';
+export const EVT = 'empathia:dossier';
 const isActor = (a: unknown): boolean => !!a && typeof a === 'object' && typeof (a as { role?: unknown }).role === 'string' && typeof (a as { label?: unknown }).label === 'string' && (a as { role: string }).role.length <= 20 && (a as { label: string }).label.length <= 60;
 const str = (v: unknown, max: number): v is string => typeof v === 'string' && v.length > 0 && v.length <= max;
 function wellFormed(e: unknown): e is DossierEvent {
@@ -34,17 +35,23 @@ function saveEvents(ev: DossierEvent[]): void {
   try { window.dispatchEvent(new Event(EVT)); } catch { /* no listeners */ }
 }
 
+/** Phase 5: the required documents that are not complete, as they stood at a moment. The tests are replayed without them first (a
+ *  test's result does not depend on a document), and the documents are then read against those tests. */
+export const withDocuments = (events: readonly DossierEvent[]) => docBlockersFor(replay(DOSSIER_4218, events));
+
 export interface DossierStore { events: DossierEvent[]; working: Working; act: (e: DossierEvent, may: Authority) => string | null; reset: () => void }
 /** The working dossier and the one way to change it. `act` returns the refusal, or null when the step was recorded. */
 export function useDossier(): DossierStore {
   const [events, setEvents] = useState<DossierEvent[]>(loadEvents);
-  useEffect(() => { const on = () => setEvents(loadEvents()); window.addEventListener(EVT, on); window.addEventListener('storage', on); return () => { window.removeEventListener(EVT, on); window.removeEventListener('storage', on); }; }, []);
+  const [, setDocs] = useState(0);   // the documents changed (Phase 5): what stops acceptance is read again
+  useEffect(() => { const on = () => setEvents(loadEvents()); const docs = () => setDocs((n) => n + 1); window.addEventListener(EVT, on); window.addEventListener(DOCS_EVT, docs); window.addEventListener('storage', on); window.addEventListener('storage', docs);
+    return () => { window.removeEventListener(EVT, on); window.removeEventListener(DOCS_EVT, docs); window.removeEventListener('storage', on); window.removeEventListener('storage', docs); }; }, []);
   const act = useCallback((e: DossierEvent, may: Authority): string | null => {
-    const r = attempt(DOSSIER_4218, loadEvents(), e, may); if ('refused' in r) return r.refused;
+    const fresh = loadEvents(); const r = attempt(DOSSIER_4218, fresh, e, may, withDocuments(fresh)); if ('refused' in r) return r.refused;
     saveEvents(r.events); setEvents(r.events); return null;
   }, []);
   const reset = useCallback(() => { saveEvents([]); setEvents([]); }, []);
-  return { events, working: replay(DOSSIER_4218, events, nowIso()), act, reset };   // read as of now: a waiver is dated
+  return { events, working: replay(DOSSIER_4218, events, nowIso(), withDocuments(events)), act, reset };   // read as of now: a waiver is dated
 }
 
 /** The demonstration clock for new events: real time, since these are things the visitor does now. */
