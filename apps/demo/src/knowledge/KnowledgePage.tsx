@@ -22,6 +22,8 @@ import { staleness } from './ingest.js';
 import { HOME_TENANT, OTHER_TENANT, TENANTS, tenantName, type LedgerObject } from './types.js';
 
 const NAME_KEY = 'empathia.demo.knowledge.reviewer';
+/** how many results a list shows before it is asked for the rest: a phone is not handed ninety cards */
+const FIRST = 12;
 const RIGHTS_WORD: Record<string, string> = { 'empathia-original': 'Written by Empathia', 'founder-owned': 'Owned by the founder', 'licensed-reproduction': 'Reproduced under licence', 'metadata-only': 'Title and number only: the text is not held here', 'tenant-owned': 'Owned by the customer', 'tenant-shared-with-consent': 'Shared by a customer, with consent', unknown: 'Rights not known' };
 const toneOf = (o: LedgerObject): 'ok' | 'warn' | 'muted' | 'info' => (o.zone === 5 ? 'warn' : isFact(o) ? 'ok' : o.state === 'SUPERSEDED' || o.state === 'ARCHIVED' ? 'muted' : 'info');
 const plural = (n: number, one: string, more = `${one}s`) => `${n} ${n === 1 ? one : more}`;
@@ -151,7 +153,7 @@ export default function KnowledgePage({ role, params, query, can, sees }: PagePr
   const other = query.get('as') === 'other' && role !== 'visitor'; const tenant = other ? OTHER_TENANT : HOME_TENANT; const home = !other;
   const reader = useMemo(() => readerFor(role, tenant), [role, tenant]); const all = useMemo(() => allObjects(stored, w), [stored, w]); const view = useMemo(() => viewFor(all, reader), [all, reader]);
   const [q, setQ] = useState(query.get('q') || ''); const [domain, setDomain] = useState(query.get('domain') || ''); const [type, setType] = useState(query.get('type') || ''); const [aud, setAud] = useState(query.get('aud') || ''); const [zone, setZone] = useState(Number(query.get('zone')) || 0);
-  const [said, setSaid] = useState(''); const [refused, setRefused] = useState<string[] | null>(null); const [at, setAt] = useState<string | null>(null); const [name, setNameRaw] = useState(remembered);
+  const [said, setSaid] = useState(''); const [refused, setRefused] = useState<string[] | null>(null); const [at, setAt] = useState<string | null>(null); const [name, setNameRaw] = useState(remembered); const [every, setEvery] = useState(false);
   const id = params['id'] || ''; const o = id ? view.get(id) : null;
   const opens = (href: string) => { const x = resolve(href.split('?')[0]!); return !!x && canOpen(role, x); };
   const setName = (s: string) => { setNameRaw(s); try { sessionStorage.setItem(NAME_KEY, s); } catch { /* the name lasts the page */ } };
@@ -209,14 +211,14 @@ export default function KnowledgePage({ role, params, query, can, sees }: PagePr
         </div>
       </div>
       <p className="ui-muted" role="status" aria-live="polite" data-testid="kn-count" data-found={found.length}>{plural(found.length, 'object')} of the {view.list.length} you can read{q.trim() ? ` match “${q.trim()}”` : ''}.</p>
-      {found.length ? <ul className="kn-list" data-testid="kn-results">{found.slice(0, 200).map(({ object: x, snippet }) => (
+      {found.length ? <ul className="kn-list" data-testid="kn-results">{(every ? found.slice(0, 300) : found.slice(0, FIRST)).map(({ object: x, snippet }) => (
         <li key={x.id} data-id={x.id} data-zone={x.zone} data-state={x.state}><a className="kn-card" href={`${hrefOfObject(x.id)}${other ? '?as=other' : ''}`}>
           <span className="kn-card__top"><span className="kn-zonechip" data-zone={x.zone}>Zone {x.zone}</span><span>{TYPE_WORD[x.contentType] || x.contentType}</span><span>{x.domain}</span></span>
           <b>{x.title}</b><span className="kn-card__snip">{snippet}</span>
           <span className="kn-card__meta"><Tag tone={toneOf(x)}>{standingLabel(x)}</Tag>{(x.zone === 3 || x.zone === 5) && <span>Private to {tenantName(x.tenant)}</span>}{x.zone === 4 && <span>Shared with consent</span>}</span>
         </a></li>))}</ul>
         : <EmptyState title="Nothing you can read matches" icon="search">Try fewer words, or clear a filter. The ledger never says whether something you cannot read exists.</EmptyState>}
-      {found.length > 200 && <p className="ui-meta">Showing the first 200. Narrow the search to see the rest.</p>}
+      {!every && found.length > FIRST && <p><Button onClick={() => setEvery(true)} testId="kn-all">Show all {found.length}</Button> <span className="ui-meta">Showing the first {FIRST}.</span></p>}
 
       {home && sees('knowledge.queue') && <Queue view={view} stored={stored} acts={acts} />}
     </section>
