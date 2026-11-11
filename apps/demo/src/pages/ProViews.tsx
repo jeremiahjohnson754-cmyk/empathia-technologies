@@ -4,6 +4,8 @@
  * issues, applicable tests, design findings), the service workspace (incidents, work orders, people, certifications, stock, bookings)
  * and the engineering catalogue the rooms are designed from. Nothing is typed in; what is not known is said to be unknown.
  */
+import { readsManual } from '../manual/roles.js';
+import type { RoleKey } from '../registry.types.js';
 import { PageHero, StatTile, Card, Chip, Donut, List, ListRow, EmptyState, MeterRow, Icon, DataTable, ProgressBar, Tag, type Series } from '@empathia/ui';
 import { allRecords, openIssues, type RoomRecord } from '../campus/design.js';
 import { BUILDINGS, shortName, roomHref, ARCHETYPE_NAME, TEMPLATE_FOR } from '../campus/canon.js';
@@ -157,7 +159,7 @@ export function StandardsPage({ perspective }: { perspective: string }) {
       <PageHero product="pro" icon="book" eyebrow="Pro · Standards and Engineering" title="The standards every room is built to"
         lede={<><b>{plural(arch.length, 'archetype')}</b> across the campus, each designed from an engineering template; <b>{conform}</b> of {recs.length} rooms have every applicable test verified, and the design checks raised <b>{plural(findings.length, 'finding')}</b>.</>}
         meta={[<Chip key="m" small tone="muted">Class templates · modelled</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]}
-        actions={<a className="ui-btn" href="#/v25/build">Build a Room</a>} />
+        actions={<><a className="ui-btn" href="#/v25/build">Build a Room</a>{readsManual(perspective as RoleKey) ? <a className="ui-btn" href="#/manual" data-testid="eng-manual">Engineering standards manual</a> : null}</>} />
       <ProTabs role={perspective} current="#/pro/eng" />
       <div className="kit-grid kit-grid--tiles wk-tiles4" data-testid="tiles">
         <StatTile label="Archetypes in use" value={arch.length} icon="layers" tone="pro" />

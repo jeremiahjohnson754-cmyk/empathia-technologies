@@ -73,7 +73,8 @@ export function takeCheck(w: S.Workspace, role: RoleKey, id: string, answers: un
   if (!isStarter(role)) return deny(w, persona, 'onboard.check_taken', id, [`The check is the starter’s own. The ${ROLES[role].label} does not take it for them.`]);
   const r = markCheck(id, answers); if (!r) return { why: ['Answer every question, one choice each.'] };
   const s = ob(w); const tries = (s.checks[id]?.tries ?? 0) + 1; s.checks[id] = { at: new Date().toISOString(), score: r.score, of: r.of, passed: r.passed, tries: Math.min(tries, 999) }; (w as WO).ob = obView(w);
-  log(w, persona, 'onboard.check_taken', id, `Check “${c.title}”: ${r.score} of ${r.of}, ${r.passed ? 'passed' : 'not passed'} (try ${tries}; a count of right answers, not a qualification)`);
+  // a person's result is shown to them and their manager; the ledger, which other roles read, records only that the check was taken
+  log(w, persona, 'onboard.check_taken', id, `Check “${c.title}” was taken (try ${tries}). The result is shown to the starter and their manager and is not written here; it is a count of right answers, not a qualification`);
   return { ok: true, ...r };
 }
 /** A review: the manager's record of a conversation at the end of the first week, and at thirty, sixty and ninety days. */

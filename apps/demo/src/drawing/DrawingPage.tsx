@@ -79,7 +79,7 @@ export default function DrawingPage({ role, can }: PageProps) {
             <rect className="dr-room" x={X(b.x)} y={Y(b.y)} width={b.w * k} height={b.h * k} />
             <text className="dr-lab" x={X(b.x + b.w / 2)} y={24} textAnchor="middle">{ex.room ? `${ex.room.width} m` : `${Math.round(b.w)} units`}</text>
             {plan.ports.map((p) => <rect key={p.tag} className="dr-port" x={X(p.px) - 4} y={Y(p.py) - 4} width="8" height="8" />)}
-            {plan.devices.map((d, i) => <g key={`${d.tag}${i}`} className="dr-mark" data-cat={d.cat || 'unknown'}><circle cx={X(d.px)} cy={Y(d.py)} r="9" /><text x={X(d.px)} y={Y(d.py) + 4} textAnchor="middle">{i + 1}</text></g>)}
+            {plan.devices.map((d, i) => <g key={`${d.tag}${i}`} className="dr-mark" data-cat={d.cat || 'unknown'}><circle cx={X(d.px)} cy={Y(d.py)} r="14" /><text x={X(d.px)} y={Y(d.py) + 5} textAnchor="middle">{i + 1}</text></g>)}
           </svg><figcaption className="ui-meta">Drawn by this page from the numbers it read. Squares are network ports. {u ? 'Positions are computed from the scale; they are not a survey.' : 'Without a scale this shows arrangement only.'}</figcaption></figure> : null}
         {plan.notes.length || plan.doubts.length ? <ul className="dr-plain" data-testid="dr-reading">{plan.doubts.map((x) => <li key={x} data-doubt="yes"><Icon name="alert" size={14} /> {x}</li>)}{plan.notes.map((x) => <li key={x}>{x}</li>)}</ul> : null}
         {b && can('drawing.review') ? <form className="dr-cal" noValidate data-testid="dr-calibrate" onSubmit={(e) => { e.preventDefault(); const m = Number(calText.trim().replace(',', '.')); setCal({ edge: calEdge, metres: m }); }}>
@@ -105,6 +105,7 @@ export default function DrawingPage({ role, can }: PageProps) {
           <p><b>{f.text}</b></p><span className="dr-tags">{f.blocker ? <Chip small tone="bad">An engineer decides</Chip> : <Chip small tone="muted">To check</Chip>}<Chip small tone={CLS_TONE[f.cls]} title={CLS_WORD[f.cls]}>{clsShort(f.cls)}</Chip></span>
           <span className="dr-sub">From: {f.sources.join('; ') || 'the package as a whole'}. {f.ask}</span></li>)}</ul> : <p className="dr-note">Nothing was found.</p>}
         {std ? <div className="dr-assume" data-testid="dr-assumptions"><span>What the standards review assumed</span><ul className="dr-plain">{std.assumptions.map((a) => <li key={a}>{a}</li>)}</ul></div> : null}
+        <p className="dr-note">The reasons behind a room type’s standard are in the <a href="#/manual" data-testid="dr-manual">engineering standards manual</a>.</p>
         <div className="dr-assume" data-testid="dr-not-reviewed"><span>Not reviewed</span><ul className="dr-plain">{ex.notReviewed.map((a) => <li key={a}>{a}</li>)}</ul></div>
       </Card>
 

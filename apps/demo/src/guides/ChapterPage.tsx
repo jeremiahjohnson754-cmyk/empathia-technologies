@@ -15,7 +15,7 @@ export function ChapterList() {
   return (
     <section className="gd-sec gd-chapters" aria-labelledby="gd-ch-h" data-testid="guide-chapters"><h2 id="gd-ch-h">The rest of the guide</h2>
       <p className="gd-note">The parts that are the same in every room. A draft, not yet reviewed by a person who supports users for a living. Short videos are not built.</p>
-      <ul className="gd-rooms">{CHAPTERS.map((c) => <li key={c.id}><a href={`#/guide/topic/${c.id}`} data-chapter={c.id}><b>{c.title}</b><span>{c.summary}</span></a></li>)}</ul>
+      <ul className="gd-rooms">{CHAPTERS.map((c) => <li key={c.id}><a className="pa-own" href={`#/guide/topic/${c.id}`} data-chapter={c.id}><b>{c.title}</b><span>{c.summary}</span></a></li>)}</ul>
     </section>
   );
 }

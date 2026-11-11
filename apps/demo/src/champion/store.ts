@@ -115,6 +115,7 @@ export function answerCheck(w: S.Workspace, role: RoleKey, answers: unknown): Re
   if (left.length) return { why: [`Read the lessons first: ${left.length} of ${LESSONS.length} ${left.length === 1 ? 'is' : 'are'} not marked as read (${left.map((l) => `“${l.title}”`).join(', ')}).`] };
   const r = mark(answers); if (!r) return { why: ['Answer every question, one choice each.'] };
   c.start.check = { at: new Date().toISOString(), score: r.score, of: r.of, passed: r.passed }; c.start.tries = Math.min(c.start.tries + 1, 999);
-  log(w, persona, 'site.start_checked', 'site:start', `The champion’s check: ${r.score} of ${r.of}, ${r.passed ? 'passed' : 'not passed'} (try ${c.start.tries}; a check of understanding, not a qualification)`);
+  // the result is the champion's own: the ledger, which other roles read, records that the check was taken and nothing about how it went
+  log(w, persona, 'site.start_checked', 'site:start', `The champion’s check was taken (try ${c.start.tries}). The result is the champion’s own and is not written here; it is a check of understanding, not a qualification`);
   return { ok: true, ...r };
 }

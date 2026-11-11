@@ -93,7 +93,7 @@ export default function InstantPage({ role, params, query, can }: PageProps) {
         meta={[<Chip key="s" small tone="warn">Synthetic data</Chip>, <Chip key="p" small tone="muted">Photographs stay on this device</Chip>, <Chip key="n" small tone="muted">Nothing is recognised by a machine</Chip>]} />
 
       {!capturing ? <p className="ir-msg ir-msg--info" data-testid="ir-readonly"><Icon name="info" size={18} /><span>You read proposals here. Capturing a space is for the people in the room.</span></p> : <>
-        <nav className="ir-steps" aria-label="Steps" data-testid="ir-steps"><ol>{STEPS.map((s, i) => <li key={s.id}><a href={`${base}?step=${s.id}`} aria-current={s.id === step ? 'step' : undefined} data-step={s.id}><span aria-hidden="true">{i + 1}</span>{s.title}</a></li>)}</ol></nav>
+        <nav className="ir-steps" aria-label="Steps" data-testid="ir-steps"><ol>{STEPS.map((s, i) => <li key={s.id}><a className="pa-own" href={`${base}?step=${s.id}`} aria-current={s.id === step ? 'step' : undefined} data-step={s.id}><span aria-hidden="true">{i + 1}</span>{s.title}</a></li>)}</ol></nav>
         {no ? <div role="alert" className="ir-msg ir-msg--no" data-testid="ir-refused"><Icon name="alert" size={18} /><span>{no}</span></div> : null}
         {durable === false ? <p className="ir-msg ir-msg--info" data-testid="ir-volatile"><Icon name="info" size={18} /><span>This browser will not keep photographs after the page is closed. Finish and save in one sitting.</span></p> : null}
 

@@ -12,7 +12,7 @@
 .dr-bad { margin-block-start: var(--sp-3); color: var(--bad); } .dr-why { color: var(--bad); font-size: var(--fs-sm); }
 .dr-plan { margin: 0 0 var(--sp-3); display: grid; gap: 6px; } .dr-plan svg { inline-size: 100%; max-inline-size: 520px; block-size: auto; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); }
 .dr-room { fill: color-mix(in srgb, var(--accent) 6%, transparent); stroke: var(--tx2); stroke-width: 2; } .dr-lab { fill: var(--tx2); font-size: 13px; } .dr-port { fill: none; stroke: var(--tx2); stroke-width: 1.5; }
-.dr-mark circle { fill: var(--accent); stroke: var(--panel); stroke-width: 2; } .dr-mark[data-cat=unknown] circle { fill: var(--warn); } .dr-mark text { fill: var(--on-accent, #fff); font-size: 11px; font-weight: 700; }
+.dr-mark text { fill: var(--on-accent, #fff); font-size: 15px; font-weight: 700; } .dr-mark circle { fill: var(--accent); stroke: var(--panel); stroke-width: 2; } .dr-mark[data-cat=unknown] circle { fill: var(--panel); stroke: var(--warn); stroke-width: 3; } .dr-mark[data-cat=unknown] text { fill: var(--tx); } 
 .dr-cal, .dr-std { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; align-items: end; max-inline-size: 640px; margin-block-start: var(--sp-3); } .dr-cal .dr-row { grid-column: 1 / -1; } .dr-std { margin-block: 0 var(--sp-3); }
 @media (max-width: 560px) { .dr-cal, .dr-std { grid-template-columns: minmax(0, 1fr); } }
 .dr-scroll { overflow-x: auto; } .dr-table { inline-size: 100%; border-collapse: collapse; font-size: var(--fs-sm); line-height: 1.45; } .dr-table th, .dr-table td { text-align: start; padding: 8px 10px; border-block-end: 1px solid var(--line); vertical-align: top; } .dr-table thead th { color: var(--tx3); font-weight: 500; } .dr-table tbody th { font-weight: 600; white-space: nowrap; }
@@ -27,3 +27,6 @@
 .dr-review .dr-findings > li { background: var(--bg2); }
 .dr-decide { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: end; } @media (max-width: 560px) { .dr-decide { grid-template-columns: minmax(0, 1fr); } .dr-decide .ui-btn { justify-self: start; } }
 @media print { .dr button, .dr-file, .dr-cal, .dr-decide { display: none !important; } }
+
+/* a control is at least 44 px tall wherever it is used with a finger */
+.dr input[type=text], .dr input[type=number], .dr select { min-block-size: 44px; }

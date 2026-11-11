@@ -1,0 +1,66 @@
+#!/usr/bin/env node
+// Drawing Intelligence (#/drawings; apps/demo/src/drawing) against the built demo: the synthetic package in two revisions, a file
+// of a kind that is not read, a plan with no scale and its calibration, the standards review, and an engineer's decisions and
+// approval by a different role than the one that saved the review.
+//   PW_COLOR_SCHEME=dark node --import ./tests/browser/color-scheme.mjs tests/browser/demo-drawing.test.mjs
+import { harness } from './demo-shell-lib.mjs';
+const { ok, open, main, done, base } = await harness('demo-drawing');
+const clean = (t) => t.errs.length === 0 && t.off.length === 0;
+const over = (p) => p.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+const finds = (p) => p.evaluate(() => [...document.querySelectorAll('[data-testid=dr-findings] > li')].map((x) => `${x.dataset.kind}:${x.dataset.blocker}`).sort().join(' '));
+const as = async (p, role) => { await p.evaluate((r) => localStorage.setItem('empathia.demo.perspective', r), role); await p.goto(`${base}#/drawings`); await p.reload(); await p.waitForSelector('[data-testid=drawings]'); };
+const led = (p, type) => p.evaluate((ty) => (JSON.parse(localStorage.getItem('empathia.demo.workspace.v1') || '{}').events || []).filter((e) => e.type === ty).map((e) => `${e.outcome}:${e.detail}`), type);
+const PLAN_NO_SCALE = '<svg xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="500" height="800"/><text x="250" y="10">DISP-01</text><text x="250" y="400">MICC-01</text><script>window.__ran = 1</script></svg>';
+
+{ const t = await open('#/drawings', { role: 'designer' }); const p = t.page; await p.waitForSelector('[data-testid=drawings]'); const m = await main(p);
+  ok('DRB-01', 'the page says what it is: it reads SVG plans and CSV tables as text, is not an engineer, and approves nothing', /Reads SVG plans and CSV tables as text/.test(m) && /Not an engineer, and approves nothing/.test(m) && /PDF, Visio, CAD and image files are not read: that is not built/.test(m) && /does not hold or claim any engineering credential/.test(m));
+  const docs = await p.evaluate(() => [...document.querySelectorAll('[data-testid=dr-docs] li')].map((x) => x.innerText.replace(/\s+/g, ' ')));
+  ok('DRB-02', 'revision A is read: a plan with ten device tags, two ports and two dimensions, a schedule of ten rows, a bill of materials of eight', docs.length === 3 && /Room plan .* revision A · 10 device tags, 2 network ports, 2 dimensions/.test(docs[0]) && /Device schedule .* 10 rows/.test(docs[1]) && /Bill of materials .* 8 rows/.test(docs[2]), docs.join(' | '));
+  const plan = await p.evaluate(() => { const f = document.querySelector('[data-testid=dr-plan]'); return { scale: f.dataset.scale, devices: f.dataset.devices, aria: f.querySelector('svg').getAttribute('aria-label'), marks: f.querySelectorAll('.dr-mark').length, ports: f.querySelectorAll('.dr-port').length }; });
+  ok('DRB-03', 'the page draws the room itself from the numbers read, to the scale the drawing’s own dimensions give', plan.scale === 'EXTRACTED' && plan.devices === '10' && /6\.2 metres by 9\.4 metres, with 10 devices/.test(plan.aria) && plan.marks === 10 && plan.ports === 2 && /100 drawing units to a metre \(extracted\)/.test(await p.innerText('[data-testid=dr-plan-card]')), JSON.stringify(plan));
+  const rows = await p.evaluate(() => Object.fromEntries([...document.querySelectorAll('[data-testid=dr-devices] tbody tr')].map((r) => [r.dataset.tag, `${r.dataset.cls}|${r.innerText.replace(/\s+/g, ' ')}`])));
+  ok('DRB-04', 'each device says how it is known: the camera from the schedule’s words (extracted), the unreadable tag by convention (inferred), positions modelled', /^EXTRACTED\|.*Camera Extracted the schedule describes it as “PTZ camera” C12-P 3\.1 m across, 0\.18 m from the top wall Modelled/.test(rows['CAM-01']) && /^INFERRED\|.*Unknown Inferred the prefix “XYZ” is not one this reader knows/.test(rows['XYZ-01']), rows['CAM-01']);
+  const f = await finds(p);
+  ok('DRB-05', 'revision A’s findings: an overlap, an unreadable tag and a quantity two documents disagree on are for an engineer; the rest are to check', f === 'not-in-schedule:no not-on-plan:no overlap:yes ports:no quantity-contradiction:yes unknown-tag:yes' && await p.getAttribute('[data-testid=drawings]', 'data-blockers') === '3', f);
+  const q = await p.innerText('[data-finding="quantity-contradiction:M9-C"]');
+  ok('DRB-06', 'a contradiction keeps both documents, names where in each, and says an engineer decides', /The schedule lists 2 of model M9-C; the bill of materials lists 3\. Both are kept\./.test(q) && /From: AV-601-A: 2 rows; AV-701-A: row 4\. An engineer says which quantity is right\./.test(q) && /An engineer decides/.test(q), q.replace(/\s+/g, ' '));
+  const std = await p.innerText('[data-testid=dr-assumptions]'); const nr = await p.innerText('[data-testid=dr-not-reviewed]');
+  ok('DRB-07', 'the standards review says what it assumed and what it did not review, and drafts a checklist', /Reviewed as .*, the room type the reviewer named/.test(std) && /An organisation’s own approved standard would replace it/.test(std) && /Signal paths: the package has no signal flow diagram/.test(nr) && await p.locator('[data-testid=dr-checklist] li').count() >= 5);
+  await p.fill('[data-testid=dr-occ]', ''); await p.waitForSelector('[data-testid=dr-no-standard]');
+  ok('DRB-08', 'without the number of people the standards review is not run, and says so', /The standards review was not run: Say how many people the room is for/.test(await p.innerText('[data-testid=dr-no-standard]')) && await p.locator('[data-testid=dr-checklist]').count() === 0); await p.fill('[data-testid=dr-occ]', '14');
+
+  await p.click('[data-testid=dr-src-B]'); await p.waitForFunction(() => document.querySelector('[data-testid=drawings]').dataset.source === 'B');
+  const ch = await p.evaluate(() => [...document.querySelectorAll('[data-testid=dr-changes] li')].map((x) => x.textContent).sort());
+  ok('DRB-10', 'revision B: what changed since A is listed by tag, and only the network ports are left to check', ch.join(' | ') === 'AMP-01 was added (P2). | CAM-01 moved 0.42 m. | MICC-02 moved 0.6 m. | SW-01 was added (N24-P). | XYZ-01 was removed.' && await finds(p) === 'ports:no', ch.join(' | '));
+
+  // a file of a kind that is not read, and a plan with no scale and a script in it
+  await p.setInputFiles('[data-testid=dr-files]', [{ name: 'AV-301 rev C.pdf', mimeType: 'application/pdf', buffer: Buffer.from('%PDF-1.7 not read') }]); await p.waitForSelector('[data-testid=dr-not-read]');
+  ok('DRB-20', 'a PDF is refused with the reason, and the package on the page does not change', /“AV-301 rev C\.pdf” is a \.pdf file\. .* PDF, Visio, CAD and image files are not read: that is not built/.test(await p.innerText('[data-testid=dr-not-read]')) && await p.getAttribute('[data-testid=drawings]', 'data-source') === 'B');
+  await p.setInputFiles('[data-testid=dr-files]', [{ name: 'Studio plan rev C.svg', mimeType: 'image/svg+xml', buffer: Buffer.from(PLAN_NO_SCALE) }]); await p.waitForFunction(() => document.querySelector('[data-testid=drawings]').dataset.source === 'own');
+  const ns = await p.evaluate(() => ({ scale: document.querySelector('[data-testid=dr-plan]').dataset.scale, card: document.querySelector('[data-testid=dr-plan-card]').innerText.replace(/\s+/g, ' '), kinds: [...document.querySelectorAll('[data-testid=dr-findings] > li')].map((x) => x.dataset.kind).sort().join(' '), ran: window.__ran, pos: document.querySelector('[data-testid=dr-devices] tbody tr td:last-child').textContent, std: document.querySelector('[data-testid=dr-no-standard]')?.textContent }));
+  ok('DRB-21', 'a plan with no dimension on it is not to scale: nothing is in metres, a calibration is asked for, the standards review waits, and the script in the file never ran', ns.scale === 'none' && /Not to scale: the scale is unknown/.test(ns.card) && /contains script or embedded content\. It was ignored/.test(ns.card) && /scale-unknown/.test(ns.kinds) && ns.ran === undefined && /Unknown without a scale/.test(ns.pos) && /Calibrate the plan first/.test(ns.std || ''), JSON.stringify(ns).slice(0, 300));
+  await p.fill('[data-testid=dr-cal-m]', '5'); await p.click('[data-testid=dr-cal-go]'); await p.waitForFunction(() => document.querySelector('[data-testid=dr-plan]').dataset.scale === 'OBSERVED');
+  const cal = await p.evaluate(() => ({ aria: document.querySelector('[data-testid=dr-plan] svg').getAttribute('aria-label'), kinds: [...document.querySelectorAll('[data-testid=dr-findings] > li')].map((x) => x.dataset.kind).join(' '), reading: document.querySelector('[data-testid=dr-reading]').innerText }));
+  ok('DRB-22', 'a person’s calibration sets the scale as their own statement (observed), and the room then has a size', /5 metres by 8 metres/.test(cal.aria) && !/scale-unknown/.test(cal.kinds) && /The scale was set by a person: 500 drawing units are 5 m/.test(cal.reading) && /\(observed\)/.test(await p.innerText('[data-testid=dr-plan-card]')), cal.aria);
+
+  // save revision A as the designer; an engineer decides and approves
+  await p.click('[data-testid=dr-src-A]'); await p.waitForFunction(() => document.querySelector('[data-testid=drawings]').dataset.source === 'A'); await p.click('[data-testid=dr-save]'); await p.waitForSelector('[data-testid=dr-review-DR-0001]');
+  ok('DRB-30', 'saving records the review and approves nothing: it needs an engineer’s decisions', await p.getAttribute('[data-testid=dr-review-DR-0001]', 'data-state') === 'NEEDS_DECISIONS' && /Nothing was approved/.test((await led(p, 'drawing.review_saved'))[0]) && /3 documents · 10 devices · 6 findings · 6\.2 m by 9\.4 m/.test(await p.innerText('[data-testid=dr-review-DR-0001]')));
+  for (const id of ['overlap:DISP-01+CAM-01', 'unknown-tag:XYZ-01', 'quantity-contradiction:M9-C']) { await p.fill(`[data-testid="dr-note-${id}"]`, 'Checked against the elevation: as drawn is intended.'); await p.click(`[data-testid="dr-decide-${id}"]`); }
+  await p.waitForSelector('[data-testid=dr-review-DR-0001][data-state=READY_FOR_APPROVAL]'); const dec = await p.innerText('[data-testid=dr-review-DR-0001] [data-finding="quantity-contradiction:M9-C"]');
+  ok('DRB-31', 'each decision is written beside its finding, which still says what both documents said, and now reads as verified', /The schedule lists 2 of model M9-C; the bill of materials lists 3\. Both are kept\./.test(dec) && /Verified/.test(dec) && /Decided by the Designer, .*: “Checked against the elevation/.test(dec), dec.replace(/\s+/g, ' '));
+  await p.click('[data-testid=dr-approve-DR-0001]'); const own = await p.innerText('[data-testid=dr-refused]');
+  ok('DRB-32', 'the role that saved the review cannot approve it', /The Designer saved this review, so another engineering role approves it\. Nobody approves their own\./.test(own) && await p.getAttribute('[data-testid=dr-review-DR-0001]', 'data-state') === 'READY_FOR_APPROVAL' && /^DENIED/.test((await led(p, 'drawing.approved'))[0]), own);
+  await as(p, 'syseng'); await p.click('[data-testid=dr-approve-DR-0001]'); await p.waitForSelector('[data-testid=dr-review-DR-0001][data-state=APPROVED]');
+  ok('DRB-33', 'a Systems Engineer approves it; the record says by whom, and that it is not a design release', /approved .* by the Systems Engineer/.test(await p.innerText('[data-testid=dr-review-DR-0001]')) && /It is not a design release and changes no room’s record/.test((await led(p, 'drawing.approved'))[0]) && await p.locator('[data-testid=dr-approve-DR-0001], [data-testid^=dr-decide-]').count() === 0);
+  await as(p, 'cxeng'); const cx = await main(p);
+  ok('DRB-34', 'a Commissioning Engineer reads the approved review and its checklist, and is offered no step that is an engineer’s', /DR-0001/.test(cx) && await p.locator('[data-testid=dr-save], [data-testid=dr-files], [data-testid^=dr-approve-], [data-testid=dr-calibrate]').count() === 0 && await p.locator('[data-testid=dr-checklist] li').count() >= 5);
+  await p.evaluate(() => localStorage.setItem('empathia.demo.perspective', 'employee')); await p.goto(`${base}#/drawings`); await p.reload(); await p.waitForTimeout(700);
+  ok('DRB-35', 'Drawing Intelligence is not open to an employee', /is not open to the/.test(await main(p)) && await p.locator('[data-testid=drawings]').count() === 0);
+  ok('DRB-36', 'no console error and nothing requested off the origin', clean(t), [...t.errs, ...t.off].join(' | ')); await t.close(); }
+
+for (const w of [390, 320]) { const t = await open('#/drawings', { role: 'designer', w, h: 780 }); const p = t.page; await p.waitForSelector('[data-testid=drawings]');
+  const small = await p.evaluate(() => [...document.querySelectorAll('.dr .ui-btn, .dr select, .dr input[type=text]')].filter((b) => { const r = b.getBoundingClientRect(); return r.height > 0 && r.height < 43.5; }).length);
+  ok(`DRB-40-${w}`, `at ${w} px the page fits the screen (the device table scrolls inside itself), has one h1, and every control is at least 44 px tall`, await over(p) <= 0 && small === 0 && await p.locator('main h1').count() === 1 && clean(t), `over=${await over(p)} small=${small}`); await t.close(); }
+
+await done();

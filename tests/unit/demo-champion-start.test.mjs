@@ -55,7 +55,8 @@ test('CS-04 the check is marked in the store: refused until the six lessons are 
   const wrongSafety = right.map((a, i) => (T.CHECK[i].id === 'q-safety' ? 0 : a)); const a = C.answerCheck(w, SC, wrongSafety); assert.equal(a.passed, false); assert.equal(a.score, 5);
   const b = C.answerCheck(w, SC, right); assert.equal(b.passed, true); assert.equal(b.score, 6);
   const v = C.championView(w).start; assert.equal(v.tries, 2); assert.equal(v.check.passed, true);
-  const led = lines(w, 'site.start_checked'); assert.equal(led.length, 2); assert.match(led[0].detail + led[1].detail, /5 of 6, not passed \(try 1/); assert.match(led[0].detail + led[1].detail, /6 of 6, passed \(try 2; a check of understanding, not a qualification\)/);
+  const led = lines(w, 'site.start_checked'); assert.equal(led.length, 2); // was: the ledger line carried the score. A person's result is theirs: the ledger now says only that the check was taken (founder §15: no private performance information)
+  assert.ok(led.every((e) => /check was taken \(try [12]\)\. The result is the champion’s own and is not written here/.test(e.detail))); assert.ok(!led.some((e) => /\d of 6|passed/.test(e.detail)), 'no result in the ledger');
   for (const r of others) { const x = fresh(); assert.ok(C.answerCheck(x, r, right).why, r); assert.equal(lines(x, 'site.start_checked').at(-1)?.outcome, 'DENIED', r); }
 });
 

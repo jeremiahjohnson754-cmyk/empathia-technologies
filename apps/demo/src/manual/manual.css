@@ -1,0 +1,45 @@
+/* #/manual — the AV Engineering Standards & Design Manual */
+.mn { display: grid; gap: var(--sp-4); }
+.mn-nav { display: flex; flex-wrap: wrap; gap: 8px; } .mn-nav a { display: inline-flex; align-items: center; min-block-size: 44px; padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--panel); color: inherit; text-decoration: none; font-size: var(--fs-sm); }
+.mn-nav a[aria-current=page] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); font-weight: 600; } .mn-nav a:focus-visible, .mn-chapters a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.mn-msg { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; margin: 0; padding: 10px 12px; border-radius: var(--r-md); font-size: var(--fs-sm); line-height: 1.5; border: 1px solid var(--line); }
+.mn-msg--no { background: color-mix(in srgb, var(--bad) 12%, transparent); border-color: color-mix(in srgb, var(--bad) 45%, transparent); } .mn-msg--no svg { color: var(--bad); }
+.mn-msg--ok { background: color-mix(in srgb, var(--ok) 12%, transparent); border-color: color-mix(in srgb, var(--ok) 45%, transparent); } .mn-msg--ok svg { color: var(--ok); }
+.mn-note { margin: 0; font-size: var(--fs-sm); line-height: 1.55; color: var(--tx2); max-inline-size: 78ch; } .mn-note + .mn-note, .mn-form + .mn-note, .mn-note + .mn-form, .mn-scroll + .mn-form, .mn-plain + .mn-form, .mn-form + .mn-revs, .mn-note + .mn-revs, .mn-form + .mn-facts, .mn-note + .mn-assume { margin-block-start: var(--sp-3); }
+.mn-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; } .mn-links + .mn-row { margin-block-start: var(--sp-3); }
+.mn-sub { display: block; font-size: var(--fs-sm); font-weight: 400; line-height: 1.5; color: var(--tx3); overflow-wrap: anywhere; }
+.mn-plain { margin: 0; padding-inline-start: 18px; display: grid; gap: 6px; font-size: var(--fs-sm); line-height: 1.55; max-inline-size: 82ch; }
+.mn-q { max-inline-size: 520px; } .mn-hits { list-style: none; margin: var(--sp-3) 0 0; padding: 0; display: grid; gap: 8px; } .mn-hits li { display: grid; gap: 2px; font-size: var(--fs-sm); line-height: 1.5; } .mn-hits span { color: var(--tx2); max-inline-size: 82ch; } .mn-q + .mn-note { margin-block-start: var(--sp-3); }
+
+/* the contents: a numbered list, because the chapters are read in order */
+.mn-chapters { display: grid; gap: var(--sp-3); } .mn-chapters h2, .mn-exlist h2 { margin: 0; font-size: var(--fs-lg); }
+.mn-chapters ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 8px; }
+.mn-chapters a { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 4px 12px; align-items: start; block-size: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); color: inherit; text-decoration: none; }
+.mn-chapters a:hover { border-color: var(--line2); } .mn-num { grid-row: 1 / span 2; font-variant-numeric: tabular-nums; font-size: var(--fs-lg); font-weight: 600; color: var(--tx3); }
+.mn-ct { display: grid; gap: 2px; font-size: var(--fs-sm); line-height: 1.45; } .mn-ct b { font-size: var(--fs-md); } .mn-ct span { color: var(--tx2); } .mn-count { grid-column: 2; font-size: var(--fs-sm); color: var(--tx3); }
+.mn-links { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 10px 24px; font-size: var(--fs-sm); line-height: 1.5; } .mn-links li { display: grid; gap: 2px; } .mn-links span { color: var(--tx2); }
+.mn-revs { margin: 0; padding-inline-start: 22px; display: grid; gap: 10px; font-size: var(--fs-sm); line-height: 1.5; } .mn-revs li > span:not(.kit-chip) { display: block; color: var(--tx2); }
+
+/* a rule: its number, what it says, then why */
+.mn-chapter { display: grid; gap: var(--sp-3); } .mn-rules, .mn-reqs { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.mn-rules > li, .mn-reqs > li { display: grid; gap: 6px; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--r-md); border-inline-start: 3px solid var(--line2); background: var(--panel); scroll-margin-block-start: 90px; }
+.mn-rules > li[data-never=yes], .mn-reqs > li[data-never=yes] { border-inline-start-color: var(--bad); } .mn-reqs > li[data-state=MET] { border-inline-start-color: var(--ok); } .mn-reqs > li[data-state=EXCEPTED] { border-inline-start-color: var(--warn); } .mn-reqs > li[data-state=NOT_MET] { border-inline-start-color: var(--bad); }
+.mn-rules header, .mn-reqs header, .mn-ex header { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; } .mn-id { font-family: var(--font-mono, ui-monospace, monospace); font-size: var(--fs-sm); font-weight: 600; color: var(--tx2); }
+.mn-say { margin: 0; font-size: var(--fs-md); line-height: 1.55; max-inline-size: 76ch; } .mn-why { margin: 0; font-size: var(--fs-sm); line-height: 1.55; color: var(--tx2); max-inline-size: 82ch; } .mn-why b { color: var(--tx); font-weight: 600; }
+.mn-never { margin: 0; font-size: var(--fs-sm); line-height: 1.5; color: var(--bad); max-inline-size: 82ch; } .mn-ask { margin: 0; font-size: var(--fs-sm); } .mn-ask a { display: inline-flex; align-items: center; min-block-size: 44px; }
+.mn-vals { margin: 0; display: grid; gap: 6px; } .mn-vals > div { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 10px; padding: 8px 10px; border-radius: var(--r-md); background: var(--bg2); font-size: var(--fs-sm); line-height: 1.5; } .mn-vals dt { font-weight: 600; } .mn-vals dd { margin: 0; color: var(--tx2); } .mn-vals dd b { color: var(--tx); }
+.mn-pager { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; font-size: var(--fs-sm); } .mn-pager a { display: inline-flex; align-items: center; min-block-size: 44px; }
+
+/* forms, tables, records */
+.mn-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-items: end; max-inline-size: 860px; } .mn-wide { grid-column: 1 / -1; } .mn-form > .ui-btn { justify-self: start; }
+.mn input[type=text], .mn input[type=date], .mn select { min-block-size: 44px; } .mn textarea { min-block-size: 88px; font: inherit; }
+.mn-set { margin: 0; padding: 0; border: 0; display: grid; gap: 6px; min-inline-size: 0; } .mn-set legend { padding: 0; margin-block-end: 6px; font-size: var(--fs-sm); font-weight: 600; color: var(--tx2); }
+.mn-opt { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; align-items: center; min-block-size: 44px; padding: 6px 10px; border: 1px solid var(--line); border-radius: var(--r-md); font-size: var(--fs-sm); line-height: 1.45; cursor: pointer; }
+.mn-opt:has(input:checked) { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent); } .mn-opt:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; } .mn-opt input { inline-size: 18px; block-size: 18px; margin: 0; accent-color: var(--accent); }
+.mn-facts { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 10px 20px; font-size: var(--fs-sm); line-height: 1.5; } .mn-facts dt { color: var(--tx3); } .mn-facts dd { margin: 0; overflow-wrap: anywhere; }
+.mn-assume { margin-block-start: var(--sp-3); display: grid; gap: 4px; } .mn-assume > span { font-size: var(--fs-sm); font-weight: 600; }
+.mn-scroll { overflow-x: auto; } .mn-table { inline-size: 100%; border-collapse: collapse; font-size: var(--fs-sm); line-height: 1.45; } .mn-table th, .mn-table td { text-align: start; padding: 8px 10px; border-block-end: 1px solid var(--line); vertical-align: top; } .mn-table thead th { color: var(--tx3); font-weight: 500; white-space: nowrap; } .mn-table tbody th { font-weight: 600; min-inline-size: 180px; } .mn-table td { min-inline-size: 120px; }
+.mn-find { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: end; }
+.mn-exlist { display: grid; gap: var(--sp-3); } .mn-ex { display: grid; gap: 8px; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--panel); } .mn-ex h3 { margin: 0; font-size: var(--fs-md); } .mn-ex[data-state=LAPSED] { border-color: color-mix(in srgb, var(--bad) 55%, transparent); }
+@media (max-width: 640px) { .mn-form { grid-template-columns: minmax(0, 1fr); } .mn-vals > div { grid-template-columns: minmax(0, 1fr); gap: 2px; } .mn-find { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .mn-find .ui-field { grid-column: 1 / -1; } }
+@media print { .mn-nav, .mn button, .mn-form, .mn-find, .mn-ask, .mn-q, .mn-pager { display: none !important; } .mn-rules > li, .mn-reqs > li, .mn-ex { break-inside: avoid; } .mn-chapters ol { grid-template-columns: 1fr 1fr; } }

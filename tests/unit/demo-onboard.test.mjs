@@ -80,7 +80,8 @@ test('OB-06 a check is marked in the store, taken only by the starter, passed on
   const w = fresh(); for (const bad of [null, [], [0], [0, 9], ['0', '1'], [0.5, 1]]) assert.ok(O.takeCheck(w, 'service', 'security', bad).why, JSON.stringify(bad)); assert.ok(O.takeCheck(w, 'service', 'nope', [0, 0]).why);
   const right = rightFor('security'); const one = [right[0], (right[1] + 1) % 3]; const a = O.takeCheck(w, 'service', 'security', one); assert.equal(a.passed, false); assert.equal(a.score, 1); assert.deepEqual(a.wrong, [1]); assert.ok(!O.obView(w).done['d1-security']);
   const b = O.takeCheck(w, 'service', 'security', right); assert.equal(b.passed, true); assert.ok(O.obView(w).done['d1-security'], 'passing completes the item'); assert.equal(O.obView(w).checks.security.tries, 2);
-  assert.match(lines(w, 'onboard.check_taken')[0].detail, /2 of 2, passed \(try 2; a count of right answers, not a qualification\)/);
+  // was: the ledger line carried the score. A person's result is shown to them and their manager only
+  assert.match(lines(w, 'onboard.check_taken')[0].detail, /Check “Security basics” was taken \(try 2\)\. The result is shown to the starter and their manager and is not written here/); assert.ok(!lines(w, 'onboard.check_taken').some((e) => /\d of \d|passed/.test(e.detail)), 'no result in the ledger');
   O.takeCheck(w, 'service', 'security', one); assert.ok(!O.obView(w).done['d1-security'], 'a later failed try is the record: the item is open again');
 });
 

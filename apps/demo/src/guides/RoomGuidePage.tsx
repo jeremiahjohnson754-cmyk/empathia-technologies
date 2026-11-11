@@ -33,7 +33,7 @@ function Index({ role }: Pick<PageProps, 'role'>) {
       <div className="ui-field gd-find"><label htmlFor="gd-q">Room name, number or building</label><input id="gd-q" type="search" value={q} onChange={(e) => setQ(e.target.value)} autoComplete="off" data-testid="guide-q" /></div>
       {rooms.length ? ALL_BUILDINGS.filter((b) => rooms.some((r) => r.building === b.key)).map((b) => (
         <section key={b.key} className="gd-sec" aria-label={b.name}><h2>{b.name}</h2>
-          <ul className="gd-rooms" data-testid="guide-rooms">{rooms.filter((r) => r.building === b.key).map((r) => <li key={r.id}><a href={`#/guide/room/${r.id}`} data-room={r.id}><b>{shortName(r)}</b><span>{r.name} · seats {r.capacity}</span></a></li>)}</ul></section>))
+          <ul className="gd-rooms" data-testid="guide-rooms">{rooms.filter((r) => r.building === b.key).map((r) => <li key={r.id}><a className="pa-own" href={`#/guide/room/${r.id}`} data-room={r.id}><b>{shortName(r)}</b><span>{r.name} · seats {r.capacity}</span></a></li>)}</ul></section>))
         : <EmptyState title="No room matches" icon="search">Try a number such as 4.218, or a building.</EmptyState>}
       {!text ? <ChapterList /> : null}
     </div>

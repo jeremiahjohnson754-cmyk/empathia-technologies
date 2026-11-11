@@ -46,4 +46,24 @@ for (const w of [390, 320]) { const t = await open(`#/guide/room/${BOARD}`, { ro
   const small = await t.page.evaluate(() => [...document.querySelectorAll('.gd .ui-btn')].filter((b) => b.getBoundingClientRect().height > 0 && b.getBoundingClientRect().height < 43.5).length);
   ok(`GB-40-${w}`, `at ${w} px the guide fits the screen and its buttons are at least 44 px tall`, await over(t.page) <= 0 && small === 0 && clean(t), `over=${await over(t.page)} small=${small}`); await t.close(); }
 
+// the chapters that are the same in every room (apps/demo/src/guides/chapters.ts)
+{ const t = await open('#/guide', { role: 'employee' }); const p = t.page; await p.waitForSelector('[data-testid=guide-chapters]');
+  const list = await p.evaluate(() => [...document.querySelectorAll('[data-testid=guide-chapters] a')].map((a) => a.dataset.chapter).join(' '));
+  ok('GB-50', 'the guide’s first page lists its eleven chapters under the rooms, and says they are a draft and that videos are not built', list === 'meetings rooms sharing hybrid help finding accessibility remote security apps questions' && /A draft, not yet reviewed by a person who supports users for a living\. Short videos are not built\./.test(await p.innerText('[data-testid=guide-chapters]')), list);
+  await p.click('[data-testid=guide-chapters] a[data-chapter=help]'); await p.waitForSelector('[data-testid=guide-chapter][data-chapter=help]'); const m = await main(p);
+  ok('GB-51', '“When something does not work”: three things to try, then stop, then how to ask; it says not to open or unplug anything', /Three things anyone can try/.test(m) && /Then stop/.test(m) && /Do not open a cabinet, reach behind the screen, unplug the room’s equipment or restart things you did not start/.test(m) && /Report it from the room/.test(m) && /Draft/.test(m) && /Chapter 5 of 11/.test(m));
+  const links = await p.evaluate(() => [...document.querySelectorAll('[data-testid=chapter-links] a')].map((a) => a.getAttribute('href')).join(' '));
+  ok('GB-52', 'its links go to the product’s own pages, and it says what an organisation would add and that none is recorded', links === '#/here #/people' && /From your organisation\. The hours support is staffed, and what to do outside them\. None is recorded in this demonstration, and nothing is assumed in its place\./.test(await p.innerText('[data-testid=chapter-yours]')) && /covers, from the guide’s list of contents: common troubleshooting, how to request assistance, site-specific support, qr codes/.test(await p.innerText('[data-testid=chapter-covers]')), links);
+  await p.click('[data-testid=chapter-next]'); await p.waitForSelector('[data-testid=guide-chapter][data-chapter=finding]'); await p.click('[data-testid=chapter-prev]'); await p.waitForSelector('[data-testid=guide-chapter][data-chapter=help]');
+  await p.goto(`${base}#/guide/topic/apps`); await p.waitForSelector('[data-testid=guide-chapter][data-chapter=apps]'); const apps = await main(p);
+  ok('GB-53', 'the chapters follow one another, and the one on Microsoft’s applications says which is for what and that step-by-step instructions are not written here', /Teams is where you meet, call and chat/.test(apps) && /OneDrive is where your own work files are kept/.test(apps) && /Step-by-step instructions for these applications are not written here: they change, and your organisation has its own approved guidance/.test(apps));
+  await p.goto(`${base}#/guide/topic/nope`); await p.waitForSelector('[data-testid=guide-missing]');
+  ok('GB-54', 'an unknown chapter says so and offers the guide’s first page', /There is no such chapter/.test(await main(p)) && await p.getAttribute('[data-testid=guide-missing] a', 'href') === '#/guide' && clean(t), t.errs.join(' | ')); await t.close(); }
+{ const t = await open('#/guide/topic/help', { role: 'visitor' }); const p = t.page; await p.waitForSelector('[data-testid=guide-chapter]');
+  const links = await p.evaluate(() => [...document.querySelectorAll('[data-testid=chapter-links] a')].map((a) => a.getAttribute('href')).join(' '));
+  ok('GB-55', 'a visitor reads the same chapter, with only the links a visitor can open', links === '#/here' && /Three things anyone can try/.test(await main(p)), links); await t.close(); }
+for (const w of [390, 320]) { const t = await open('#/guide/topic/sharing', { role: 'employee', w, h: 780 }); await t.page.waitForSelector('[data-testid=guide-chapter]');
+  const small = await t.page.evaluate(() => [...document.querySelectorAll('.gd-chapter .ui-btn, .gd-links a')].filter((b) => b.getBoundingClientRect().height > 0 && b.getBoundingClientRect().height < 43.5).length);
+  ok(`GB-56-${w}`, `at ${w} px a chapter fits the screen, has one h1 and its links and buttons are at least 44 px tall`, await over(t.page) <= 0 && small === 0 && await t.page.locator('main h1').count() === 1 && clean(t), `over=${await over(t.page)} small=${small}`); await t.close(); }
+
 await done();

@@ -20,6 +20,9 @@ import { ContactBar, ReturnBanner, WhoKnows, useConnect, SYNTHETIC_NOTE } from '
 import { addNote, busyOf, confirmEntry } from './store.js';
 import { daysWords } from './calendar.js';
 import { DAY, utcOffset, zoneCity } from './time.js';
+import { CHAMPION_SITES } from '../access/policy.js';
+import { contributions } from '../champion/recognition.js';
+import { approvedSiteNotes } from '../champion/approved.js';
 
 const FRESH_TONE = { confirmed: 'ok', stale: 'warn', unknown: 'muted' } as const;
 const FRESH_WORD = { confirmed: 'Confirmed', stale: 'Stale', unknown: 'Never confirmed' } as const;
@@ -77,6 +80,8 @@ function Profile({ role, p, hash }: { role: RoleKey; p: Person; hash: string }) 
   const resp = useMemo(() => responsibleFor(p), [p]); const f = freshnessOf(p, st.confirmed); const B = buildingByKey(p.home); const g = groupOf(p.home);
   const champion = p.kind !== 'role'; const knows = useMemo(() => (champion ? roomsKnown(p, w) : []), [p, w, champion]); const esc = useMemo(() => (champion ? escalationOf(p) : []), [p, champion]);
   const notes = st.notes[p.id] || []; const curate = mayCurate(role, p); const h = p.shift || p.hours;
+  // the demonstration's workspace records what ONE champion did: the champion of the site the Site Champion role stands for
+  const demoChampion = p.kind === 'champion' && CHAMPION_SITES.includes(p.home);
   useEffect(() => { head.current?.focus({ preventScroll: true }); }, [p.id]);
   const confirmNow = () => { const out = confirmEntry(role, p.id, Date.now()); if ('why' in out) { setRefused(out.why); setSaid(''); } else { setRefused(null); setSaid(`Entry confirmed as current on ${out.on}.`); } refresh(); };
   const add = () => { const out = addNote(role, p.id, note, Date.now()); if ('why' in out) { setRefused(out.why); setSaid(''); } else { setRefused(null); setNote(''); setSaid('Note added to this profile. It stays in this browser and is never placed in a message.'); } refresh(); };
@@ -127,8 +132,13 @@ function Profile({ role, p, hash }: { role: RoleKey; p: Person; hash: string }) 
 
             <section aria-labelledby="cx-onb-h" data-testid="champion-onboarding"><h2 className="build__h" id="cx-onb-h">A champion’s first weeks</h2>
               <ol className="cx-esc">{ONBOARDING.map((o) => <li key={o.label}><b>{opens(o.href(p)) ? <a href={o.href(p)}>{o.label}</a> : o.label}</b><span className="ui-meta">{o.why}</span></li>)}</ol>
-              <p className="ui-meta">Not tracked: this demonstration does not record whether a champion has done these.</p>
+              <p className="ui-meta">Not tracked: this demonstration does not record whether a champion has done these.{demoChampion ? ' The champion’s own list, which is tracked, is on their getting-started page and is theirs to read.' : ''}</p>
             </section>
+
+            {demoChampion && w ? <section aria-labelledby="cx-done-h" data-testid="champion-done"><h2 className="build__h" id="cx-done-h">On record for this site</h2>
+              <ul className="cx-facts">{contributions(w, approvedSiteNotes(w)).map((x) => <li key={x.id} data-count={x.id} data-n={x.n}><b>{x.n}</b> · {x.label}</li>)}</ul>
+              <p className="ui-meta">Counts from the record, shown as thanks. Nobody is scored, rated or compared, and nothing about how a person did in training is shown here.</p>
+            </section> : null}
           </>}
         </div>
 

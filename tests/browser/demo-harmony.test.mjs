@@ -57,6 +57,11 @@ for (const role of ['visitor', 'qa']) { const t = await open('#/harmony?q=' + en
   const led = await t.page.evaluate(() => { const w = JSON.parse(localStorage.getItem('empathia.demo.workspace.v1') || '{}'); return (w.events || []).filter((e) => /^harmony\./.test(e.type)).map((e) => `${e.type}:${e.outcome}:${e.detail}`); });
   ok('HB-40', 'each question is one ledger line that says what was asked, what it stood on, and that nothing was changed', led.length === 1 && /^harmony\.asked:ALLOWED:answered: “What stops Atlas 4\.218 being accepted\?” · stands on Commissioning dossier · changed nothing$/.test(led[0]), led.join(' | ')); await t.close(); }
 
+{ const t = await open('#/harmony', { role: 'sitechamp' }); const p = t.page; await p.waitForSelector('[data-testid=harmony]'); const a = await say(p, 'What is left on my getting-started list?');
+  ok('HB-45', 'a Site Champion asks what is left on their list: answered from the record, each line saying who knows it, with the way to the list', a.status === 'answered' && a.tool === 'start' && /^0 of 6 done\. 6 are left\. It is a list, not a qualification\./.test(a.said) && a.facts.length === 6 && a.facts.every((f) => /Source: Your list, (from the record|your own word)/.test(f)) && a.next[0] === '#/site/start' && a.changed === 'nothing', a.said); await t.close(); }
+{ const t = await open('#/harmony', { role: 'employee' }); await t.page.waitForSelector('[data-testid=harmony]'); const a = await say(t.page, 'What is left on my getting-started list?');
+  ok('HB-46', 'the same question from an Employee is refused before anything is read', a.status === 'refused' && a.facts.length === 0 && /does not have “Getting started”/.test(a.said), a.said); await t.close(); }
+
 for (const w of [390, 320]) { const t = await open('#/harmony', { role: 'employee', w, h: 780 }); await t.page.waitForSelector('[data-testid=harmony]'); await say(t.page, 'Who do I contact about Atlas 4.218?');
   const small = await t.page.evaluate(() => [...document.querySelectorAll('.hm .ui-btn, .hm input')].filter((b) => b.getBoundingClientRect().height > 0 && b.getBoundingClientRect().height < 43.5).length);
   ok(`HB-50-${w}`, `at ${w} px the page and an answer fit the screen and every control is at least 44 px tall`, await over(t.page) <= 0 && small === 0 && clean(t), `over=${await over(t.page)} small=${small}`); await t.close(); }

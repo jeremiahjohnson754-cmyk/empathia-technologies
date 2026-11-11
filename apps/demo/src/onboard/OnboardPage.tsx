@@ -38,7 +38,7 @@ export default function OnboardPage({ role, params, can }: PageProps) {
         meta={[<Chip key="s" small tone="warn">Synthetic data</Chip>, <Chip key="d" small tone="muted">Draft: not yet reviewed by a practising IT manager</Chip>,
           <span key="f" data-testid="ob-fresh" data-state={fresh.state}><Chip small tone={fresh.state === 'CURRENT' ? 'muted' : fresh.state === 'DUE' ? 'warn' : 'bad'}>Revision {fresh.rev.rev}, published {day(fresh.rev.at)} · {fresh.state === 'CURRENT' ? `review by ${day(fresh.rev.reviewBy)}` : fresh.state === 'DUE' ? `review due in ${plural(fresh.days, 'day')}` : `past its review date by ${plural(-fresh.days, 'day')}`}</Chip></span>]} />
 
-      <nav className="ob-eds" aria-label="Editions" data-testid="ob-editions">{mine.map((e) => <a key={e} href={`#/onboard/${e}`} data-edition={e} aria-current={held && e === want ? 'page' : undefined}><b>{EDITIONS[e].title}</b><span>{EDITIONS[e].forWhom}</span></a>)}</nav>
+      <nav className="ob-eds" aria-label="Editions" data-testid="ob-editions">{mine.map((e) => <a key={e} className="pa-own" href={`#/onboard/${e}`} data-edition={e} aria-current={held && e === want ? 'page' : undefined}><b>{EDITIONS[e].title}</b><span>{EDITIONS[e].forWhom}</span></a>)}</nav>
 
       {no ? <div role="alert" className="ob-msg ob-msg--no" data-testid="ob-refused"><Icon name="alert" size={18} /><span>{no}</span></div> : null}
       {said && !no ? <p role="status" className="ob-msg ob-msg--ok" data-testid="ob-said"><Icon name="check" size={18} /><span>{said}</span></p> : null}
