@@ -79,6 +79,7 @@ suite('unit: search that reads the sentence (corrections, conditions, counted an
 suite('unit: request portal (the proposal is the design engine\'s output; sending, refusals, following; who may ask)', 'unit', node, ['--test', 'tests/unit/demo-intake.test.mjs'], tap);
 suite('unit: in this room (equipment, history, what a symptom points at, safe guidance, outcomes written to ServiceHands and the room; who may)', 'unit', node, ['--test', 'tests/unit/demo-here.test.mjs'], tap);
 suite('unit: room control (panel generated from each room record; no impossible state in 18,000 random presses; commands, simulated adapter, authority, ledger)', 'unit', node, ['--test', 'tests/unit/demo-control.test.mjs'], tap);
+suite('unit: knowledge contract (five trust zones; no cross-tenant read in 20,000 random cases; promotion and sharing need a named person and consent; source hierarchy; freshness)', 'unit', node, ['--test', 'tests/unit/demo-knowledge-contract.test.mjs'], tap);
 suite('unit: video QA (narration words, sync, captions, picture; the Film 13 scene record is what its measurements say)', 'unit', node, ['--test', 'tests/unit/media-qc.test.mjs'], tap);
 suite('unit: role start pages and keyboard shortcuts (15 roles against the real policy and records; every link opens for its role)', 'unit', node, ['--test', 'tests/unit/demo-rolehome.test.mjs'], tap);
 suite('unit: offline worker and its build step (atomic install, shells kept across builds, network-first with fallback, ranged answers, packs)', 'unit', node, ['--test', 'tests/unit/demo-offline.test.mjs'], tap);
