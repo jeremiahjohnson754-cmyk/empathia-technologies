@@ -18,6 +18,7 @@ import { useWorkspace } from '../workspace/useWorkspace.js';
 import { whoKnows } from '../connect/directory.js';
 import { mayKnowWho, maySeeDetails } from '../connect/access.js';
 import { roomGuide, type SectionId } from './roomGuide.js';
+import { ChapterList, ChapterPage } from './ChapterPage.js';
 
 const ALL_LAYERS = new Set<Layer>(LAYERS.map((l) => l.key));
 
@@ -34,6 +35,7 @@ function Index({ role }: Pick<PageProps, 'role'>) {
         <section key={b.key} className="gd-sec" aria-label={b.name}><h2>{b.name}</h2>
           <ul className="gd-rooms" data-testid="guide-rooms">{rooms.filter((r) => r.building === b.key).map((r) => <li key={r.id}><a href={`#/guide/room/${r.id}`} data-room={r.id}><b>{shortName(r)}</b><span>{r.name} · seats {r.capacity}</span></a></li>)}</ul></section>))
         : <EmptyState title="No room matches" icon="search">Try a number such as 4.218, or a building.</EmptyState>}
+      {!text ? <ChapterList /> : null}
     </div>
   );
 }
@@ -43,6 +45,7 @@ export default function RoomGuidePage({ role, params }: PageProps) {
   const [active, setActive] = useState<SectionId | null>(null);
   const r = useMemo(() => (o ? roomRecord(o.id) : undefined), [o]); const g = useMemo(() => (r ? roomGuide(r) : undefined), [r]);
   useEffect(() => { setActive(null); }, [id]);
+  if (params['topic']) return <ChapterPage role={role} id={params['topic']} />;
   if (!id) return <Index role={role} />;
   if (!o || !r || !g) return <div className="pa gd" data-native="" data-testid="guide-missing"><h1 className="ui-visually-hidden">Room not found</h1><EmptyState title="No room with that identifier" icon="search" action={<a className="ui-btn" href="#/guide">Choose a room</a>}>The guide is written for rooms on record.</EmptyState></div>;
   const opens = (href: string) => { const x = resolve(href.split('?')[0]!); return !!x && canOpen(role, x); };

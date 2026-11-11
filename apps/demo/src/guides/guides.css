@@ -28,3 +28,11 @@
   .gd-cols { grid-template-columns: minmax(0, 1fr); } .gd-side { position: static; order: 2; } .gd-main { max-inline-size: none; }
   .gd-task { break-inside: avoid; } .gd { gap: 12pt; }
 }
+
+/* chapters of the guide */
+.gd-chapters { margin-block-start: var(--sp-4); }
+.gd-ch-body { display: grid; gap: var(--sp-4); max-inline-size: 72ch; } .gd-ch-body h2 { margin: 0 0 6px; font-size: var(--fs-lg); } .gd-ch-body ul { margin: 0; padding-inline-start: 20px; display: grid; gap: 8px; font-size: var(--fs-md); line-height: 1.6; }
+.gd-links { list-style: none; padding: 0 !important; } .gd-links a { display: inline-flex; align-items: center; min-block-size: 44px; }
+.gd-yours { display: grid; grid-template-columns: auto 1fr; gap: 10px; margin: 0; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--bg2); font-size: var(--fs-sm); line-height: 1.55; } .gd-yours svg { color: var(--tx3); margin-block-start: 3px; }
+.gd-ch-nav { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; max-inline-size: 72ch; margin-block-start: var(--sp-4); }
+@media print { .gd-ch-nav { display: none; } }
