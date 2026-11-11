@@ -32,7 +32,7 @@ quotation was asked for word for word; where two official pages disagree, both a
 | Event creation with confirmation, re-check and idempotent retry | yes | yes, simulated: recorded in the browser's own storage | Tested (simulated adapter) | **PENDING** | no | no |
 | Graph adapter (request building, response parsing, errors, throttling) | yes | yes, against a mock transport only | Mock-tested | **PENDING** | no | no |
 | Shifts awareness | yes | yes: a simulated rota; the Graph Shifts request and response against the mock transport | Tested (simulated adapter); mock-tested | **PENDING** | no | no |
-| SharePoint knowledge ingestion (selected sites, delta, revocation) | yes | not in this slice: no ingestion code exists in `apps/demo/src/connect/` | not by this slice | **PENDING** | no | no |
+| SharePoint knowledge ingestion (selected folders, delta, rename, deletion, revocation) | yes | yes: the engine over a simulated library (`apps/demo/src/knowledge/ingest.ts`); a Microsoft Graph source for it against a mock transport only (`knowledge/graph.source.ts`), imported by no page | Tested (simulated library); the Graph source mock-tested (`tests/unit/demo-knowledge-graph.test.mjs`, 11 checks) | **PENDING** | no | no |
 | Real tenant validation, actual event creation, live Teams interaction, physical mobile QA | — | — | — | **PENDING: needs everything in §3–§7** | — | — |
 
 "Simulated" means a deterministic stand-in inside the demonstration. "Mock transport" (mock-tested) means the adapter's request is
@@ -109,8 +109,42 @@ permissions only: `User.ReadBasic.All`, `User.Read.All`, `Calendars.ReadBasic`, 
 `Calendars.ReadWrite`, `Schedule.Read.All`). "No" means a user may consent for themselves **unless the tenant has turned user consent
 off**; every application permission is granted by an administrator.
 
-**Knowledge from selected SharePoint sites** (kept from the integrator's guide; **not part of this slice**, which has no ingestion
-code; the page was read by the integrator on 2026-11-11 and not re-read by the Connect lane):
+**Knowledge from selected SharePoint sites.** Status: **mock-tested, not connected.** The ingestion engine runs over a simulated
+library; `apps/demo/src/knowledge/graph.source.ts` reads a site's document library through Microsoft Graph into the same engine and
+has only ever been answered by its mock (`graph.source.mock.ts`). No page imports it. The three calls, each read on its page on
+2026-11-11:
+
+| Call | Request | Least-privileged application permission the page lists | What the page says that the source depends on | Source |
+|---|---|---|---|---|
+| What changed | `GET /sites/{siteId}/drive/root/delta` | `Files.Read.All` | Pages end in `@odata.nextLink`, the last in `@odata.deltaLink`. `parentReference` carries no path and a renamed folder's descendants are not reported: track by id. Deleted items carry the `deleted` facet. The same item may appear twice: use the last. `410 Gone` gives a `Location` to start afresh | https://learn.microsoft.com/en-us/graph/api/driveitem-delta?view=graph-rest-1.0 |
+| Who may read one document | `GET /sites/{siteId}/drive/items/{itemId}/permissions` | `Files.Read.All` | Returns direct and inherited permissions; a caller who is not the owner sees only what applies to them. The permission page says SharePoint libraries do not return `inheritedFrom` | https://learn.microsoft.com/en-us/graph/api/driveitem-list-permissions?view=graph-rest-1.0 |
+| The text of one document | `GET /sites/{siteId}/drive/items/{item-id}/content` | `Files.Read.All` | `302 Found` to a preauthenticated address valid for minutes; no `Authorization` header is sent to it | https://learn.microsoft.com/en-us/graph/api/driveitem-get-content?view=graph-rest-1.0 |
+
+How the source behaves (each held by a test): only the folders an administrator selected are read, and nothing is asked about a
+document outside them; only `.md` and `.txt` are read as text (`.docx` and `.pdf` are refused with the reason: no text extraction
+is built); a file the service marks with the malware facet, and a file over 5 MB, is never downloaded; who may read a document is
+read again at every sync for every document in scope, so a removed reader is gone at the next sync whether or not the change feed
+mentioned it (cost: one request per document per sync); a named user or a directory group with `read`, `write` or `owner` is a
+reader, while a SharePoint site group and a sharing link with no named people grant nobody and are reported; a link is followed only
+on `https://graph.microsoft.com/v1.0/`; the tenant's token is never sent to a download address; `429` waits `Retry-After` and
+retries the same request; any refusal changes nothing.
+
+**Open questions only a tenant answers** (`GRAPH_DOC_OPEN` in the source; each is a step in §7):
+
+1. Whether an application granted `Sites.Selected` on one site may call delta, permissions and content there. The three pages list
+   `Files.Read.All` as the least-privileged application permission and do not mention `Sites.Selected`. If it may not, the choice
+   between a tenant-wide read permission and no ingestion is the customer's administrator's, not Empathia's.
+2. Whether the permissions call, made by an application, returns every permission on a document.
+3. Which member of `grantedToV2` carries a Microsoft 365 group and which a security group.
+4. How long a `deltaLink` stays valid before the service answers `410 Gone`.
+5. Whether a change of permissions alone appears in the change feed without the `Prefer` headers the delta page ties to
+   `Sites.FullControl.All` (the source does not rely on it either way).
+
+**Not built:** resolving which directory groups a signed-in reader belongs to (without it a real reader matches no imported
+document, which fails closed); text extraction from `.docx` and `.pdf`; lists and site pages; change notifications; token
+acquisition and any real transport.
+
+The permission model for selected sites (the page was read on 2026-11-11):
 
 | Purpose | Permission | How it is granted | Notes from the page | Source |
 |---|---|---|---|---|
@@ -235,9 +269,14 @@ To be run by a person; the expected result is beside each step, and the detailed
 9. Force a `429` (a burst of availability reads) → Empathia waits for `Retry-After`; no duplicate event. [16]
 10. Cancel the meeting from Empathia (`POST /users/{id}/events/{eventId}/cancel`, or `/me/events/{eventId}/cancel` signed in) →
     `202`; the event is cancelled for every attendee and the room. [17, 18]
-11. Ingestion (**not part of this slice**; kept from the integrator's guide for the lane that builds it): connect the test site with
-    `read`; import; remove a reader from one document in SharePoint; sync → that reader no longer finds the document, its snippets
-    or its citations in Empathia. Delete a document; sync → it is gone from search.
+11. Ingestion (the Graph source is mock-tested only; these steps are its first real run). Connect the test site with `read`; record
+    whether `Sites.Selected` alone is enough for delta, permissions and content (open question 1). Import two folders; confirm a
+    third folder's documents are never requested (network log). Rename a folder in SharePoint; sync → its documents move, none is
+    duplicated. Remove a reader from one document; sync → that reader no longer finds the document, its snippets or its citations
+    in Empathia; record whether the change feed reported the document (open question 5). Share one document with a site group
+    only; sync → it is refused as having no reader, and the report names the group. Delete a document; sync → it is gone from
+    search. Leave the connection idle until the service answers `410` (or record that it did not within the test window); sync →
+    a fresh read, nothing duplicated.
 12. Repeat 1–5 on the second phone platform. Record device, OS version, app versions and screenshots for each step. [19 to 25]
 
 A step counts as validated only when a person has run it on the named account and device and the evidence is filed. Until then every

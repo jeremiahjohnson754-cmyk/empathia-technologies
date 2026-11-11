@@ -28,7 +28,7 @@ export const PROVENANCE = 'SIMULATED' as const;
 export const connected = (): string[] => [];
 
 // ------------------------------------------------------------------------------------------------------------ the simulated source
-export interface SourceDoc { id: string; path: string; bytes: number; version: number; modified: string; text: string; /** directory groups the source lets read it */ groups: readonly string[]; /** the file cannot be read as text */ malformed?: boolean }
+export interface SourceDoc { id: string; path: string; bytes: number; version: number; modified: string; text: string; /** directory groups the source lets read it */ groups: readonly string[]; /** the file cannot be read as text */ malformed?: boolean; /** the source itself says this file must not be read, and why (set by a connected source; the simulated library never sets it) */ blocked?: string }
 export interface SourceState { site: string; library: string; docs: Record<string, SourceDoc>; /** the change log a delta is read from */ log: Array<{ seq: number; id: string }>; seq: number; /** how many of the next requests answer "slow down" */ throttle: number }
 export type SourceOp =
   | { op: 'add'; doc: Pick<SourceDoc, 'id' | 'path' | 'text' | 'groups'> & Partial<Pick<SourceDoc, 'bytes' | 'malformed'>> } | { op: 'rename'; id: string; path: string } | { op: 'update'; id: string; text: string }
@@ -51,7 +51,10 @@ export function applyOp(src: SourceState, o: SourceOp): SourceState {
   return { ...src, docs, seq, log: [...src.log, { seq, id: o.op === 'add' ? o.doc.id : o.id }].slice(-400) };
 }
 /** What one request to the source returns. */
-export type Delta = { provenance: typeof PROVENANCE; throttled: { retryAfterS: number } } | { provenance: typeof PROVENANCE; full: boolean; changes: Array<{ id: string; doc: SourceDoc | null }>; token: string };
+/** Where an answer came from. GRAPH_MOCK is the Microsoft Graph source (graph.source.ts) answering through its mock transport: no real library has ever answered. */
+export type SourceProvenance = typeof PROVENANCE | 'GRAPH_MOCK' | 'GRAPH';
+export interface Changes { provenance: SourceProvenance; full: boolean; changes: Array<{ id: string; doc: SourceDoc | null }>; token: string }
+export type Delta = { provenance: SourceProvenance; throttled: { retryAfterS: number } } | Changes;
 /**
  * Read changes since `token`, as the simulated source answers it. No token, or one the source no longer knows, enumerates everything
  * (`full`), so the caller can drop what is no longer there. A throttled source answers "slow down" and how long to wait.
@@ -96,6 +99,7 @@ export function readDoc(doc: SourceDoc, prev: Item | undefined): Item {
   const lines = doc.text.split(/\r?\n/).map((l) => l.replace(/[\u0001-\u0008\u000B-\u001F\u007F]/g, '').trim()).filter(Boolean).slice(0, MAX_LINES).map((l) => (l.length > MAX_LINE ? `${l.slice(0, MAX_LINE)}…` : l));
   const refusal = !ALLOWED_TYPES.includes(ext as typeof ALLOWED_TYPES[number]) ? `The file type ${ext ? `.${ext}` : '(none)'} is not on the allow-list (${ALLOWED_TYPES.map((x) => `.${x}`).join(', ')}).`
     : doc.bytes > MAX_BYTES ? `The file is ${mb(doc.bytes)}; the limit is ${mb(MAX_BYTES)}.`
+    : doc.blocked ? doc.blocked
     : doc.malformed || !lines.length || /[\u0000\uFFFD]/.test(doc.text) ? 'The file could not be read as text (it is empty, damaged or not what its name says).'
     : !doc.groups.length ? 'The source lists no reader for this document. Nothing is imported without one.' : null;
   const history = [...(prev?.history || [])]; if (!history.some((h) => h.version === doc.version && h.hash === hash)) history.push({ version: doc.version, modified: doc.modified, hash });
@@ -131,6 +135,14 @@ export function sync(index: Index, source: SourceState, at: string): { index: In
   let src = source; let delta: Delta | null = null;
   for (let n = 0; n < MAX_ATTEMPTS; n++) { const r = readDelta(src, index.token); src = r.src; if ('throttled' in r.delta) { report.attempts.push({ n: n + 1, waitS: Math.max(r.delta.throttled.retryAfterS, 2 ** n) }); continue; } delta = r.delta; break; }
   if (!delta || 'throttled' in delta) return { index, src, report: { ...report, why: `The source asked us to slow down ${MAX_ATTEMPTS} times in a row. Nothing was changed; try again later.` } };
+  return { ...applyDelta(index, delta, at, report), src };
+}
+/**
+ * Apply one answer of a source to the index. Pure, and the same for every source: the simulated library above and the Microsoft Graph
+ * source (graph.source.ts) both end here, so scope, refusals, flags, review state and removal behave identically whatever answered.
+ */
+export function applyDelta(index: Index, delta: Changes, at: string, base?: SyncReport): { index: Index; report: SyncReport } {
+  const report: SyncReport = base || { at, ok: false, why: null, full: false, added: [], updated: [], renamed: [], removed: [], refused: [], flagged: [], permissions: [], returnedToReview: [], attempts: [], token: index.token };
   const items = { ...index.items }; const seen = new Set<string>();
   for (const { id, doc } of delta.changes) {
     seen.add(id); const prev = items[id];
@@ -142,7 +154,7 @@ export function sync(index: Index, source: SourceState, at: string): { index: In
     if (next.flags.includes('INSTRUCTION_LIKE') && !prev?.flags.includes('INSTRUCTION_LIKE')) report.flagged.push(next.path);
   }
   if (delta.full) for (const id of Object.keys(items)) if (!seen.has(id)) { report.removed.push(items[id]!.path); delete items[id]; }
-  return { index: { ...index, items, token: delta.token, lastSync: at }, src, report: { ...report, ok: true, full: delta.full, token: delta.token } };
+  return { index: { ...index, items, token: delta.token, lastSync: at }, report: { ...report, ok: true, full: delta.full, token: delta.token } };
 }
 /** What a first import of this source would produce: the reference the property test holds every incremental index against. */
 export const fullImport = (source: SourceState, like: Pick<Index, 'tenant' | 'site' | 'library' | 'scope' | 'kinds' | 'stage'>, at: string) => sync({ ...like, token: null, items: {}, lastSync: null }, source, at);

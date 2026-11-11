@@ -73,6 +73,12 @@ The journey is ten steps with state and a rule each (`ingest.ts › advance`): C
 Import, Validate, Index, Approve, Surface. The source is a synthetic library of twelve documents held in the page. `connected()`
 returns `[]`.
 
+**A Microsoft Graph source exists and is MOCK-TESTED only** (`graph.source.ts`, `graph.source.mock.ts`,
+`tests/unit/demo-knowledge-graph.test.mjs`). It reads one SharePoint site's document library into the same engine through
+`applyDelta`, so scope, refusals, flags, review state and removal behave identically whatever answered. It has never been answered
+by a real library, no page imports it, and `connected()` still returns `[]`. Its calls, its fail-closed decisions, what is not
+built and the questions only a tenant answers are in [M365_DEPLOYMENT_AND_TEST_GUIDE.md](M365_DEPLOYMENT_AND_TEST_GUIDE.md).
+
 What the engine does, and tests hold it to:
 
 - **Initial import and incremental sync** from a delta token; a token the source no longer knows causes a full read.
