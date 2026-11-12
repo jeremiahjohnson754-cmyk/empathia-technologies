@@ -21,7 +21,7 @@ listened to anything listed below end to end; that is recorded, not hidden.
 | Media | Where | Verified playback | State |
 |---|---|---|---|
 | Generated sound: SIGNAL challenges (vocal, guitar, band) and the bench (tone, pink noise) | `packages/ui/src/challenges/*`, `Bench.tsx` | Scheduling and analysis checked in the browser: the band on the audio clock (BS-28), the analyser live and finite (BN-04), the guitar through its EQ (BS-*) | **WORKING (automated)**; heard through a loudspeaker: NOT RUN |
-| Guided tour narration, stop A5 (`media/narration/tour-a-05.mp3` + captions) | Demo, `#/tours` | Served with the right types, captions and transcript present, never autoplayed (TR-*-07, -08). Decoding and playing the file: **to add** to `demo-tours` | **INCOMPLETE** until the play check runs; labelled AI-generated voice |
+| Guided tour narration, stop A5 (`media/narration/tour-a-05.mp3` + captions) | Demo, `#/tours` | Served with the right types, captions and transcript present, never autoplayed (TR-*-07, -08); since 12 Nov the file decodes, has a duration and its clock moves when played muted in headless Chromium (TR-*-08b) | **WORKING (automated)**; heard through a loudspeaker: NOT RUN; labelled AI-generated voice |
 | SyncLab film (`media/SYNCLAB/720.mp4`, captions, descriptions, poster) | Corporate website, In Development section only | Plays, seeks to three points and shows the right frames (`website` suite) | **WORKING (automated)**; watched by a person: NOT RUN |
 | Film 13 scene 01 | `docs/surpass/MEDIA_MASTER_MANIFEST.md` | QC automated, 41 checks; loudness and tone NOT RUN | **INCOMPLETE** (not shipped on a page) |
 | Films 01–12, SIGNAL film, voice canon | As delivered 4 November | not inventoried against the media library index | **PROPOSED**: inventory first |
@@ -32,3 +32,4 @@ listened to anything listed below end to end; that is recorded, not hidden.
   narration text as captions. Voice would need a new recording or a generated voice labelled as such; ElevenLabs is blocked at this
   session's gateway (403) and is not retried.
 - No footage, voice or music is to be invented to fill a gap, and no real person's voice imitated.
+- Checked 12 Nov before carrying the SIGNAL opener (`n-opener`): its words describe Maya as "a new technician" in "a stone chapel", where the founder's canon opens with a volunteer at a sound desk. Because the canon governs, the opener is not carried word for word until the founder says which wording stands; the arc diagram it plays over can be carried without it.

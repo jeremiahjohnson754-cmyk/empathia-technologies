@@ -28,7 +28,7 @@ Key: ✓ matches the source · ◐ partial (the inventory says what is missing) 
 | Boss levels (12) | ✓ | ✓ | ✓ | ✓ | signal-boss unit; BS-01..28 |
 | Challenges (13 × 4 levels), sound on the audio clock | ✓ | ✓ | ✓ | ✓ | signal-challenges unit; BS-*; heard: NOT RUN |
 | The bench: six demos | ✓ | ✓ | ✓ | ✓ | BN-01..12; heard: NOT RUN |
-| Case files: Learn, Service, Engineer with calculator steps | ✓ | ✓ | ✓ 62 | ✓ | CF-01..04 |
+| Case files: Learn, Service, Engineer with calculator steps | ✓ | ✓ | ✓ 62 | ✓ | CF-01..06; Mastery gate (12 Nov) |
 | System explorers: Reality and System views, three levels | ✓ | ✓ | ✓ 4 | ✓ | EX-01..02; LN-36 |
 | Mission Control: level, evidence, journal, crew trust, systems map, roles, ratings, support | ✓ | ✓ | ✓ | ✓ | MC-01..08 |
 | Quick-facts timeline | ✓ | ✓ | ✓ 55 | ✓ | LR-02 |
@@ -45,14 +45,17 @@ Key: ✓ matches the source · ◐ partial (the inventory says what is missing) 
 | Room as a digital twin: orbit, layers, four states, divisible rooms | ✓ | ✓ | ✓ | ✓ | demo-lite |
 | Coverage overlays (camera, microphones, loudspeakers, accessibility, infrastructure) | ✓ | ✓ | ✓ catalogue | ✓ | demo-lite unit and browser |
 | X-ray: sightlines, signal flow, measurements panel | ◐ acoustic figures not modeled | ✓ | ◐ no measurements on record | ✓ | unit; LT-*-X1..X5 |
-| Object inspector | ◐ about 11 of 15 sections | ✓ | ✓ V2.5.3's cards | ✓ | LT-*-X6 |
+| Object inspector | ◐ about 14 of 15 sections | ✓ | ✓ V2.5.3's cards; catalogue, standard, commissioning rows | ✓ | LT-*-X6, X11 |
 | Optimize: change the room | ◐ moves and seats; no options A–C, no estimate | ✓ buttons | ✓ | ✓ | unit; LT-*-X8..X10 |
 | Wayfinding, visit, services, Commons, guides, QR | ✓ (step-free routing TO VERIFY) | ✓ | ✓ | ✓ | demo-lite |
 | Eight home storylines | — | — | ⊘ the rooms do not hold those states | — | — |
-| Drift from baseline, recommission | ✕ | ✕ | ✕ | ✕ | — |
-| Acoustics in Lite | ✕ | ✕ | ✕ no acoustic data | ✕ | — |
+| Drift from baseline (spatial), restore or review | ✓ (recommission not carried) | ✓ | ✓ the field report on R-MER-1-140 | ✓ | unit; LT-*-D1..D4 |
+| Acoustics in Lite | ◐ reverberation estimate only (Sabine, assumed finishes) | ✓ | ◐ no acoustic data | ✓ | unit; LT-*-X3 |
 | Lite studio (`#/v25/lite` models) | ◐ no models from requests; no Field Intelligence sync | ✓ | ✓ V2.5.3 recipes | ✓ | LS-01..04; LT-*-S1..S5 |
-| Room builders' missing functions; Design a Space; Scouter's anatomy and proposals | ✕ / ◐ | | | | see LITE_INVENTORY §6–7 |
+| Design a Space's verbs, versions, import, fixes, rehearsal, hand-offs | ◐ no measures panel, merge or image | ✓ | ✓ | ✓ | studio-concept unit; P checks |
+| Scouter anatomy | ✓ | ✓ | ✓ V2.5.3's seven classes | ✓ | LT-*-A1..A2 |
+| Scouter proposals (standard kits) | ✓ classes only | ✓ | ✓ | ✓ | scouter-profiles unit; S-20..S-22 |
+| Room builders' missing functions | ✕ / ◐ | | | | see LITE_INVENTORY §6 |
 | Scouter named makers and prices | — | — | ⊘ no real makers or prices | — | — |
 
 ## What this matrix does not claim
