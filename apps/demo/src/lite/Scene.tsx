@@ -110,6 +110,7 @@ export function RoomScene(props: RoomSceneProps) {
         {camOn && cov.cones.map((c) => { const n = 18; const arc: P3[] = [[c.x, c.y, 0.02]]; for (let i = 0; i <= n; i += 1) { const a = c.aim - c.half + (2 * c.half * i) / n; arc.push([c.x + c.range * Math.cos(a), c.y + c.range * Math.sin(a), 0.02]); } return <polygon key={`c${c.code}`} points={pts(arc)} className="lt-ov lt-ov--cam" />; })}
         {overlays.has('access') && route && <polyline points={pts([[cov.door.x, cov.door.y, 0.03], [cov.door.x, Math.max(route.y + 0.6, cov.door.y - 1.2), 0.03], [route.x, route.y + 0.6, 0.03], [route.x, route.y, 0.03]])} className="lt-route" />}
         {layers.has('wayfinding') && <polyline points={pts([[cov.door.x, l + 0.01, 0.03], [cov.door.x, l - 1.4, 0.03]])} className="lt-route lt-route--way" />}
+        {overlays.has('sight') && cov.sight.rays.map((r) => <polyline key={`ray${r.seat}`} points={pts([[r.sx, r.sy, 1.2], [r.dx, r.dy, r.dz]])} className={`lt-ray lt-ray--${r.cls.toLowerCase()}`} />)}
       </g>
       {partitions.map((x, i) => <polygon key={`p${i}`} points={pts([[x, 0, 0], [x, l, 0], [x, l, h * 0.92], [x, 0, h * 0.92]])} className="lt-partition" />)}
       <polygon points={pts([[cov.door.x - cov.door.width / 2, l, 0], [cov.door.x + cov.door.width / 2, l, 0], [cov.door.x + cov.door.width / 2, l, 2.1], [cov.door.x - cov.door.width / 2, l, 2.1]])} className="lt-door" />

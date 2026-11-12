@@ -63,7 +63,8 @@ test('lenses and layers follow the V2.5.3 tables: a visitor gets the visitor len
   assert.deepEqual(m.overlaysFor('visitor').map((o) => o.key), ['access']);
   assert.equal(m.lensFor('visitor', 'engineer'), 'visitor', 'an asked lens the role may not use falls back to one it may');
   assert.equal(m.defaultLens('service'), 'engineer');
-  assert.deepEqual(m.overlaysFor('syseng').map((o) => o.key), ['camera', 'mic', 'speaker', 'access', 'infra']);
+  // 12 Nov 2026: V2.5.3's Sightlines X-ray view restored as a sixth overlay on the AV layer
+  assert.deepEqual(m.overlaysFor('syseng').map((o) => o.key), ['camera', 'mic', 'speaker', 'sight', 'access', 'infra']);
   assert.ok(m.lensesFor('architect').length === 6);
   assert.deepEqual(m.lensesFor('qa'), [], 'the Document Reviewer has no Lite lens');
 });
@@ -117,4 +118,18 @@ test('the QR encoder produces a valid matrix (finder patterns, version by length
   assert.ok(finder(0, 0) && finder(0, q.size - 7) && finder(q.size - 7, 0));
   assert.equal(qr.qrMatrix('x'.repeat(200)), null);
   assert.match(qr.qrPath(q), /^M\d+ \d+h\d+v1h-\d+z/);
+});
+
+// 12 Nov 2026: V2.5.3's X-ray sightlines (metricsOf) restored to Lite.
+test('sightlines: V2.5.3’s classes (60° obstructed, 45° or six image heights marginal, a lectern in the way obstructed); each seat its best display; the box test', () => {
+  assert.equal(m.segHitsBox(0, 0, 4, 0, { x: 2, y: 0, w: 0.6, d: 0.5 }), true); assert.equal(m.segHitsBox(0, 1, 4, 1, { x: 2, y: 0, w: 0.6, d: 0.5 }), false); assert.equal(m.segHitsBox(0, 0, 1, 0, { x: 2, y: 0, w: 0.6, d: 0.5 }), false);
+  const disp = (x, y, extra = {}) => ({ code: `D${x}`, cat: 'display', catLabel: 'Display', label: 'Display', layer: 'display', x, y, z: 1.2, rot: 0, mount: 'wall', ...extra });
+  const seats = [{ x: 5, y: 3 }, { x: 5, y: 9 }, { x: 0.5, y: 0.4 }];
+  const s = m.sightlines(seats, [disp(5, 0)], 10);   // a 75-inch display: 0.93 m image, six heights = 5.6 m
+  assert.deepEqual(s.rays.map((r) => r.cls), ['CLEAR', 'MARGINAL', 'OBSTRUCTED']); assert.match(s.rays[1].why, /six image heights/); assert.match(s.rays[2].why, /60°/);
+  assert.equal(s.score, Math.round(((1 + 0.5) / 3) * 100)); assert.equal(s.na, false);
+  const b = m.sightlines([{ x: 5, y: 3 }], [disp(5, 0), { ...disp(5, 1.5), cat: 'lectern', code: 'L1', layer: 'furniture' }], 10);
+  assert.equal(b.rays[0].cls, 'OBSTRUCTED'); assert.match(b.rays[0].why, /blocked/);
+  assert.deepEqual(m.sightlines(seats, [], 10), { na: true, rays: [], clear: 0, marginal: 0, obstructed: 0, score: null });
+  for (const r of recs.slice(0, 90)) { const c = m.coverage(r); assert.equal(c.sight.rays.length, c.sight.na ? 0 : c.seats.length, r.outline.id); assert.ok(c.speakerSeats <= c.seats.length); }
 });

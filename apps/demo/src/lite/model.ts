@@ -53,11 +53,12 @@ export function defaultLayers(lens: Lens, role: RoleKey): LiteLayer[] {
   return want[lens].filter((k) => may.has(k));
 }
 
-export type Overlay = 'camera' | 'mic' | 'speaker' | 'access' | 'infra';
+export type Overlay = 'camera' | 'mic' | 'speaker' | 'sight' | 'access' | 'infra';
 export const OVERLAYS: Array<{ key: Overlay; label: string; basis: string; layer: LiteLayer }> = [
   { key: 'camera', label: 'Camera coverage', basis: 'Modeled from the catalogue field of view · not measured', layer: 'av' },
   { key: 'mic', label: 'Microphone pickup', basis: 'Modeled from the catalogue pickup radius · not measured', layer: 'av' },
   { key: 'speaker', label: 'Speaker zones', basis: 'Illustrative coverage model from the catalogue coverage radius', layer: 'av' },
+  { key: 'sight', label: 'Sightlines', basis: 'Modeled from display positions and image size (45° and 60° off axis, six image heights) · not measured', layer: 'av' },
   { key: 'access', label: 'Accessibility', basis: 'Planning reference (ADA 2010 tables 221.2.1.1 and 219.3) · to verify on site', layer: 'wayfinding' },
   { key: 'infra', label: 'Infrastructure fit', basis: 'Declared catalogue values (PoE, rack units, outlets) · not measured', layer: 'network' },
 ];
@@ -121,6 +122,46 @@ export interface CoverageModel {
   camera: { covered: number; of: number }; mic: { covered: number; of: number }; speaker: { pct: number };
   access: { wheelchair: number; required: number; receivers: number; routeClear: number; routeOk: boolean };
   infra: { poe: number; budget: number; units: number; unitsOf: number; outlets: number; outletsOf: number; networked: number; ports: number; fits: boolean };
+  /** display sightlines (V2.5.3 metricsOf, restored 12 Nov 2026): each seat's best view of a display, classed as V2.5.3 classes it */
+  sight: Sightlines;
+  /** seats inside a loudspeaker's coverage radius */
+  speakerSeats: number;
+}
+export type SightClass = 'CLEAR' | 'MARGINAL' | 'OBSTRUCTED';
+export interface SightRay { seat: number; sx: number; sy: number; dx: number; dy: number; dz: number; cls: SightClass; why: string; dist: number; off: number }
+export interface Sightlines { na: boolean; rays: SightRay[]; clear: number; marginal: number; obstructed: number; score: number | null }
+/** The displays a room's audience looks at: the image centre, its height and the way it faces (towards the seats; a planning assumption,
+ *  as is the size of a projected image: three tenths of the room's width at 16:9, at most 2.4 m tall, on the front wall). */
+export function displaysOf(positions: Position[], w: number, cx: number, cy: number) {
+  const prop = (p: Position, k: string, d: number) => Number(C.categories[p.cat]?.props?.[k]) || d;
+  return positions.filter((p) => ['display', 'ledwall', 'projector'].includes(p.cat)).map((p) => {
+    const H = p.cat === 'display' ? prop(p, 'diagonal_in', 65) * 0.0254 * 0.4903 : p.cat === 'ledwall' ? (prop(p, 'width_m', 4) * 9) / 16 : Math.min(2.4, (w * 0.3 * 9) / 16);
+    const x = p.x, y = p.cat === 'projector' ? 0 : p.y, z = p.cat === 'projector' ? 1.2 : p.z;
+    return { code: p.code, x, y, h: Math.round(H * 100) / 100, z: z + H / 2, face: Math.atan2(cy - y, cx - x) };
+  });
+}
+const angDiff = (a: number, b: number) => { let d = Math.abs(a - b) % (2 * Math.PI); if (d > Math.PI) d = 2 * Math.PI - d; return (d * 180) / Math.PI; };
+/** Does the segment from (x0,y0) to (x1,y1) cross the box? (Liang–Barsky) */
+export function segHitsBox(x0: number, y0: number, x1: number, y1: number, b: { x: number; y: number; w: number; d: number }): boolean {
+  let t0 = 0, t1 = 1; const dx = x1 - x0, dy = y1 - y0;
+  for (const [p, q] of [[-dx, x0 - (b.x - b.w / 2)], [dx, b.x + b.w / 2 - x0], [-dy, y0 - (b.y - b.d / 2)], [dy, b.y + b.d / 2 - y0]] as const) {
+    if (p === 0) { if (q < 0) return false; continue; } const t = q / p; if (p < 0) { if (t > t1) return false; if (t > t0) t0 = t; } else { if (t < t0) return false; if (t < t1) t1 = t; } }
+  return t0 <= t1;
+}
+/** V2.5.3's sightline classes: more than 60° off a display's centre line, or blocked by something tall (a lectern), is obstructed; more
+ *  than 45° off, or beyond six image heights, is marginal; otherwise clear. Each seat takes its best display. Score: clear + half marginal. */
+export function sightlines(seats: Seat[], positions: Position[], w: number): Sightlines {
+  const cx = seats.length ? seats.reduce((s, x) => s + x.x, 0) / seats.length : w / 2, cy = seats.length ? seats.reduce((s, x) => s + x.y, 0) / seats.length : 0;
+  const ds = displaysOf(positions, w, cx, cy); const blockers = positions.filter((p) => p.cat === 'lectern').map((p) => { const sz = C.categories[p.cat]?.size || [0.6, 0.5]; return { x: p.x, y: p.y, w: sz[0]!, d: sz[1]! }; });
+  const rays: SightRay[] = []; const rank = { CLEAR: 0, MARGINAL: 1, OBSTRUCTED: 2 } as const;
+  seats.forEach((s, i) => { let best: (SightRay & { r: number }) | null = null;
+    for (const d of ds) { const dist = Math.hypot(s.x - d.x, s.y - d.y), off = angDiff(Math.atan2(s.y - d.y, s.x - d.x), d.face); let cls: SightClass = 'CLEAR', why = '';
+      if (off > 60) { cls = 'OBSTRUCTED'; why = 'more than 60° off the centre line'; } else if (blockers.some((b) => segHitsBox(s.x, s.y, d.x, d.y, b))) { cls = 'OBSTRUCTED'; why = 'blocked by something in the room'; }
+      else if (off > 45) { cls = 'MARGINAL'; why = 'more than 45° off the centre line'; } else if (dist > 6 * d.h) { cls = 'MARGINAL'; why = `beyond six image heights (${(6 * d.h).toFixed(1)} m)`; }
+      const r = rank[cls] * 100 + dist; if (!best || r < best.r) best = { seat: i, sx: s.x, sy: s.y, dx: d.x, dy: d.y, dz: d.z, cls, why, dist: Math.round(dist * 10) / 10, off: Math.round(off), r }; }
+    if (best) { const { r, ...ray } = best; void r; rays.push(ray); } });
+  const clear = rays.filter((r) => r.cls === 'CLEAR').length, marginal = rays.filter((r) => r.cls === 'MARGINAL').length;
+  return { na: !ds.length, rays, clear, marginal, obstructed: rays.length - clear - marginal, score: ds.length && seats.length ? Math.round(((clear + marginal * 0.5) / seats.length) * 100) : null };
 }
 const inCone = (c: Cone, s: { x: number; y: number }) => { const d = Math.hypot(s.x - c.x, s.y - c.y); if (d > c.range || d < 0.01) return d < 0.01; let a = Math.atan2(s.y - c.y, s.x - c.x) - c.aim; while (a > Math.PI) a -= 2 * Math.PI; while (a < -Math.PI) a += 2 * Math.PI; return Math.abs(a) <= c.half; };
 const inDisc = (d: Disc, s: { x: number; y: number }) => Math.hypot(s.x - d.x, s.y - d.y) <= d.r;
@@ -162,6 +203,7 @@ export function coverage(r: RoomRecord, positions: Position[] = r.positions): Co
     camera: { covered: camCovered, of: seats.length }, mic: { covered: micCovered, of: targets.length }, speaker: { pct: cells ? Math.round((hit / cells) * 100) : 0 },
     access: { wheelchair, required, receivers: assistiveReceivers(r), routeClear: door.width, routeOk: door.width >= ROUTE_CLEAR_M && wheelchair >= required },
     infra: { poe, budget, units, unitsOf, outlets, outletsOf, networked, ports, fits },
+    sight: sightlines(seats, positions, w), speakerSeats: seats.filter((s) => speakers.some((d) => inDisc(d, s))).length,
   };
 }
 export const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);

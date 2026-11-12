@@ -76,6 +76,13 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
           {mayOv.length > 0 && <fieldset className="lt-switches" data-testid="lite-overlays"><legend>Overlays</legend>
             {mayOv.map((x) => { const on = overlays.has(x.key); return <button key={x.key} type="button" role="switch" aria-checked={on} className={`lt-switch lt-switch--${x.key}${on ? ' on' : ''}`} onClick={() => toggle('ov', x.key, overlays)} data-testid={`lite-ov-${x.key}`}><span className="lt-switch__name">{x.label}</span><span className="lt-switch__v">{ovValue(x.key, cov)}</span><span className="lt-switch__knob" aria-hidden="true" /></button>; })}
           </fieldset>}
+          {(() => { const sigKeys = (['av', 'network', 'control'] as LiteLayer[]).filter((k) => mayLayers.some((l) => l.key === k)); if (!sigKeys.length) return null; const sigOn = sigKeys.every((k) => layers.has(k)) && overlays.size === 0; const xm = query.get('xm') === '1';
+            const signal = () => { const n = new URLSearchParams(query); if (sigOn) n.set('ly', [...layers].filter((k) => k !== 'network' && k !== 'control').join(',') || ','); else { n.set('ly', [...new Set([...layers, ...sigKeys])].join(',')); n.set('ov', ','); } setQuery(base, n); };
+            return <fieldset className="lt-switches lt-switches--xray" data-testid="lite-xray"><legend>X-ray</legend>
+              <button type="button" role="switch" aria-checked={sigOn} className={`lt-switch${sigOn ? ' on' : ''}`} onClick={signal} data-testid="lite-x-signal" title="AV, network and control layers together, overlays off"><span className="lt-switch__name">Signal flow</span><span className="lt-switch__v">{sigOn ? 'on' : 'off'}</span><span className="lt-switch__knob" aria-hidden="true" /></button>
+              <button type="button" role="switch" aria-checked={xm} className={`lt-switch${xm ? ' on' : ''}`} onClick={() => upd('xm', xm ? null : '1')} data-testid="lite-x-meas" title="Modeled figures beside measured ones, never mixed"><span className="lt-switch__name">Measurements</span><span className="lt-switch__v">{xm ? 'shown' : 'hidden'}</span><span className="lt-switch__knob" aria-hidden="true" /></button>
+              {allows({ area: 'studio' }, role) && <a className="ui-btn ui-btn--quiet" href={`#/studio/room/${encodeURIComponent(id)}`} data-testid="lite-x-studio">Design a space with this room</a>}
+            </fieldset>; })()}
           <fieldset className="lt-switches lt-switches--layers" data-testid="lite-layers"><legend>Layers</legend>
             {mayLayers.map((x) => { const on = layers.has(x.key); return <button key={x.key} type="button" role="switch" aria-checked={on} className={`lt-switch${on ? ' on' : ''}`} onClick={() => toggle('ly', x.key, layers)} data-testid={`lite-ly-${x.key}`} title={x.says}><span className="lt-switch__name">{x.label}</span><span className="lt-switch__knob" aria-hidden="true" /></button>; })}
           </fieldset>
@@ -86,6 +93,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
           </div>
         </aside>
       </div>
+      {query.get('xm') === '1' && <Measurements cov={cov} w={o.dims[0]} l={o.dims[1]} />}
       <ul className="lt-metrics" aria-label="Room metrics, modeled">
         {overlaysFor(role).some((x) => x.key === 'camera') && <li><StatTile label="Camera coverage" value={pct(cov.camera.covered, cov.camera.of)} unit="%" icon="eye" tone="indigo" hint={`${cov.camera.covered} of ${cov.camera.of} seats in view · modeled`} testId="lite-m-camera" /></li>}
         {overlaysFor(role).some((x) => x.key === 'mic') && <li><StatTile label="Microphone pickup" value={pct(cov.mic.covered, cov.mic.of)} unit="%" icon="pulse" tone="ok" hint={`${cov.mic.covered} of ${cov.mic.of} ${cov.pickup.of}${cov.pickup.worn ? ` · ${cov.pickup.worn} worn channels` : ''} · modeled`} /></li>}
@@ -117,8 +125,28 @@ function ovValue(k: Overlay, cov: ReturnType<typeof roomState>['cov']): string {
   if (k === 'camera') return `${pct(cov.camera.covered, cov.camera.of)} %`;
   if (k === 'mic') return `${pct(cov.mic.covered, cov.mic.of)} %`;
   if (k === 'speaker') return cov.speakers.length ? `${cov.speaker.pct} %` : '—';
+  if (k === 'sight') return cov.sight.na ? '—' : `${cov.sight.clear}/${cov.seats.length}`;
   if (k === 'access') return `${cov.access.wheelchair}/${cov.access.required}`;
   return cov.infra.fits ? 'fits' : 'over';
+}
+
+/** The measurements panel (V2.5.3 liteXray, restored 12 Nov 2026): what the coverage model says for this state of the room, beside what was
+ *  measured. No acoustic or intelligibility measurement is on record for these synthetic rooms, and this build has no acoustic model, so those
+ *  rows say so instead of showing a number. */
+function Measurements({ cov, w, l }: { cov: ReturnType<typeof roomState>['cov']; w: number; l: number }) {
+  const n = cov.seats.length; const none = 'Not modeled here · no measurement on record';
+  const rows: Array<[string, string, string, string]> = [
+    [`${cov.pickup.of === 'seats' ? 'Seats' : 'Stage positions'} in primary microphone pickup`, cov.mics.length || cov.pickup.worn ? `${cov.mic.covered} of ${cov.mic.of}` : '—', '', 'Modeled · not measured'],
+    ['Rear-row speech intelligibility (lowest seat)', '—', 'STI', none], ['Reverberation time', '—', 's', none], ['Background noise', '—', 'dBA', none],
+    ['Seats inside a camera view', cov.cones.length ? `${pct(cov.camera.covered, cov.camera.of)}` : '—', '%', 'Modeled · not measured'],
+    ['Seats inside loudspeaker coverage', cov.speakers.length ? `${cov.speakerSeats} of ${n}` : '—', '', 'Modeled · not measured'],
+    ['Clear display sightlines', cov.sight.na ? '—' : `${cov.sight.clear} of ${n}`, '', cov.sight.na ? 'No display in this state' : `Modeled · ${cov.sight.marginal} marginal, ${cov.sight.obstructed} obstructed`],
+    ['Floor area', `${Math.round(w * l)}`, 'm²', 'From the room record'],
+  ];
+  return <section className="lt-meas" aria-label="Measurements" data-testid="lite-meas">
+    {rows.map(([label, v, unit, basis]) => <div key={label} className="lt-meas__m"><b>{v}{unit && v !== '—' ? <small> {unit}</small> : null}</b><span>{label}</span><i>{basis}</i></div>)}
+    <p className="ui-meta">A measured figure names its record and method; a modeled one is the coverage model’s estimate from catalogue radii and geometry. They are different kinds of knowledge and are never mixed in one number.</p>
+  </section>;
 }
 
 function Legend({ overlays, marks }: { overlays: Set<Overlay>; marks: Record<string, number> }) {
@@ -126,6 +154,7 @@ function Legend({ overlays, marks }: { overlays: Set<Overlay>; marks: Record<str
   if (overlays.has('camera')) items.push(['cam', 'Camera field of view · seat with a red ring is out of view']);
   if (overlays.has('mic')) items.push(['mic', 'Microphone pickup']);
   if (overlays.has('speaker')) items.push(['spk', 'Loudspeaker zone']);
+  if (overlays.has('sight')) items.push(['sight', 'Sightline from each seat to its best display: green clear, amber marginal, red obstructed']);
   if (overlays.has('access')) items.push(['acc', 'Accessible route and wheelchair places (blue squares)']);
   if (marks.added) items.push(['add', '+ proposed position']); if (marks.attention) items.push(['att', 'needs attention (open issue)']); if (marks.changed) items.push(['chg', 'unit replaced since acceptance']);
   if (!items.length) return null;
