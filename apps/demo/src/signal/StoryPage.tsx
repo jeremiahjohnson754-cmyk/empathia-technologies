@@ -17,6 +17,8 @@ import { BossRunner, Bosses, DrillRunner, IncidentRunner, LabRunner, MeltdownRun
 import { Block, Crumbs, Pick } from '../worlds/kit.js';
 import { Cinematic } from './CinematicPlayer.js';
 import { cinematicFor, sceneOf } from './cinematic.js';
+import { liteForChapter, liteForTerm, liteForText } from './lite.js';
+import { LiteTryCard } from './LiteTry.js';
 import { emptyProgress, BANDS, SEVERITY, TIMEOUT, answerTalk, chapterVerdict, choose, complete, echoes, emphasis, emptyChapter, find, load, nextOf, passed, prevOf, reached, replayDecision, resume, save, seconds, tally, timeOut, trustLine, weightLine, weightOf,
   type Chapter, type ChapterState, type Clock, type Item, type Option, type Outcome, type Progress, type StoryIndex, type Verdict,
   PLAYABLE, TIER_WORD, blocking, gateCleared, gateCount, gateKey, recordQuiz, recordDrillTry, recordIncidentRun, recordLabTry, recordChalTry, skip, chapterLocks, lockedBehind, type BossRecord, type Gate, type Pieces, type Quiz, type ReviewRecord, type MeltdownRecord } from './story.js';
@@ -75,7 +77,7 @@ function needOf(kind: string, id: string, pieces: Pieces): { text: string; f: st
 }
 const GlParas = ({ k, text }: { k: string; text: string }) => <>{text.split(/\n{2,}/).map((p, i) => <p key={i}><Gl k={`${k}${i}`} text={p} /></p>)}</>;
 /** The pop-over (ladder.js glPop): the term, its domain and definition, the first formula it names, where it is first met. */
-function GlPop({ g, at, gl, onClose }: { g: Term; at: HTMLElement; gl: GlossaryIndex; onClose: () => void }) {
+function GlPop({ g, at, gl, onClose, role }: { g: Term; at: HTMLElement; gl: GlossaryIndex; onClose: () => void; role: string }) {
   const ref = useRef<HTMLDivElement>(null); const x = useRef<HTMLButtonElement>(null); const [pos, setPos] = useState<{ left: number; top: number; width: number } | null>(null);
   useEffect(() => { const r = at.getBoundingClientRect(), w = Math.min(340, window.innerWidth - 24), left = Math.max(12, Math.min(window.innerWidth - w - 12, r.left)); const h = ref.current?.offsetHeight || 180, below = r.bottom + 8;
     setPos({ left, width: w, top: below + h < window.innerHeight - 8 ? below : Math.max(8, r.top - h - 8) }); x.current?.focus(); }, [g, at]);
@@ -89,12 +91,13 @@ function GlPop({ g, at, gl, onClose }: { g: Term; at: HTMLElement; gl: GlossaryI
     {F && <p className="sg-glpop__f"><span className="ui-meta">ƒ {F.name}</span> <span dangerouslySetInnerHTML={{ __html: F.eq }} /></p>}
     {g.first && <p className="ui-meta">First met: {g.first.toUpperCase()}{gl.titles[g.first] ? ` · ${gl.titles[g.first]}` : ''}</p>}
     <p><a className="ui-btn ui-btn--quiet" href="#/learn/fieldbook">📖 Open the glossary</a></p>
+    <LiteTryCard t={liteForTerm(g.term)} role={role} after="glossary term" compact />
   </div>;
 }
 export const Face = ({ id, pose, expr }: { id: string; pose: string; expr: string }) => <svg className="sg-face" viewBox="36 20 128 128" width="40" height="40" aria-hidden="true"><use href={`#f-${id}-${pose}-${expr}`} width="200" height="320" /></svg>;
 export const Draft = () => <span className="ui-tag" data-testid="story-draft">Draft · under review</span>;
 
-export default function StoryPage({ params }: PageProps) {
+export default function StoryPage({ params, role }: PageProps) {
   const ix = useLoaded(loadIndex, 'ix'); const [progress, setProgress] = useState<Progress>(load);
   const commit = (p: Progress) => { setProgress(p); save(p); };
   /** For pieces that record more than once from one action (a boss stage records its challenge try, then the run): each change builds on the last. */
@@ -103,7 +106,7 @@ export default function StoryPage({ params }: PageProps) {
   if (!ix.data) return <div className="sg" data-testid="story-loading" aria-busy="true"><h1 tabIndex={-1}>SIGNAL</h1><p className="lead">Opening the story…</p></div>;
   const id = params.chapter; const ref = id ? ix.data.chapters.find((c) => c.id === id) : null;
   if (id && !ref) return <div className="sg" data-testid="story-unknown"><h1 tabIndex={-1}>SIGNAL has no chapter at this address</h1><p><a className="ui-btn ui-btn--primary" href="#/story">Open the library</a></p></div>;
-  return ref ? <Reader key={ref.id} ix={ix.data} id={ref.id} progress={progress} commit={commit} update={update} /> : <Library ix={ix.data} progress={progress} commit={commit} />;
+  return ref ? <Reader role={role} key={ref.id} ix={ix.data} id={ref.id} progress={progress} commit={commit} update={update} /> : <Library ix={ix.data} progress={progress} commit={commit} />;
 }
 
 function Library({ ix, progress, commit }: { ix: StoryIndex; progress: Progress; commit: (p: Progress) => void }) {
@@ -138,7 +141,7 @@ function Library({ ix, progress, commit }: { ix: StoryIndex; progress: Progress;
   );
 }
 
-function Reader({ ix, id, progress, commit, update }: { ix: StoryIndex; id: string; progress: Progress; commit: (p: Progress) => void; update: (f: (p: Progress) => Progress) => void }) {
+function Reader({ ix, id, progress, commit, update, role }: { ix: StoryIndex; id: string; role: string; progress: Progress; commit: (p: Progress) => void; update: (f: (p: Progress) => Progress) => void }) {
   const ch = useLoaded(() => getJson<Chapter>(`signal/story/${id}.json`), id); const art = useLoaded(() => Promise.all([getJson<{ panels: string[]; closing: { alt: string; svg: string }[] }>(`signal/art/${id}.json`), loadDefs()]).then((r) => r[0]), `art-${id}`);
   const retry = (se: number) => { void loadRatings().then((X) => { commit({ ...RT.retrySeason(progress, X, se), last: null }); const first = ix.chapters.find((c) => c.season === se); location.hash = `#/story/${first ? first.id : 's01e00'}`; }); };
   const restart = () => { commit({ ...emptyProgress(), clock: progress.clock, gates: progress.gates }); location.hash = '#/story/pro01'; };
@@ -202,7 +205,7 @@ function Reader({ ix, id, progress, commit, update }: { ix: StoryIndex; id: stri
       {ch.data && <Echoes prev={prev?.title || null} e={before} />}
       {cine && cinematicFor(id) && ch.data && <Cinematic key={id} scene={sceneOf(id, items)} items={items} panels={art.data?.panels} cast={ix.cast} state={state} onChoose={(d, letter) => { const r = choose(state, d, letter, {}); set(r.state); setSaid(said1(r.outcome)); return r.outcome; }} onClose={() => setCine(false)} />}
       <QuestCtx.Provider value={questCtx}><GlCtx.Provider value={glCtx}><div className="sg-flow">
-        {items.slice(0, upTo).map((it, i) => { if (it.type === 'panel') panelNo += 1; return <ItemView key={i} it={it} n={i} svg={it.type === 'panel' ? art.data?.panels[panelNo] : undefined} cast={ix.cast} state={state} clock={progress.clock} gated={progress.gates}
+        {items.slice(0, upTo).map((it, i) => { if (it.type === 'panel') panelNo += 1; return <ItemView key={i} it={it} n={i} chapter={id} role={role} svg={it.type === 'panel' ? art.data?.panels[panelNo] : undefined} cast={ix.cast} state={state} clock={progress.clock} gated={progress.gates}
           onChoose={(d, letter, meta) => { const r = choose(state, d, letter, meta); set(r.state); setSaid(said1(r.outcome)); return r.outcome; }}
           pieces={pieces} progress={progress} onQuiz={(qid, r, n) => { commit({ ...recordQuiz(progress, qid, r, n), last: id }); setSaid(`Check recorded: ${r} of ${n}.`); }} onSkip={(g) => { commit({ ...skip(progress, g), last: id }); setSaid('Skipped for now. It stays here to come back to.'); }}
           onReview={(rid, rec) => { commit({ ...progress, reviews: { ...progress.reviews, [rid]: rec }, last: id }); setSaid(rec.pass ? `Season review passed: Story Score ${rec.score}.` : `Game over: Story Score ${rec.score}, below 65.`); }}
@@ -218,7 +221,7 @@ function Reader({ ix, id, progress, commit, update }: { ix: StoryIndex; id: stri
           onTalk={(tid, o) => set(answerTalk(state, tid, o))} onFind={(did) => set(find(state, did))} />; })}
         {ch.data && upTo >= items.length && art.data?.closing.map((c, i) => <figure key={i} className="sg-panel"><div className="sg-art" role="img" aria-label={c.alt} dangerouslySetInnerHTML={{ __html: c.svg }} /></figure>)}
       </div></GlCtx.Provider></QuestCtx.Provider>
-      {glOpen && gl.data && <GlPop g={glOpen.g} at={glOpen.at} gl={gl.data} onClose={glClose} />}
+      {glOpen && gl.data && <GlPop g={glOpen.g} at={glOpen.at} gl={gl.data} onClose={glClose} role={role} />}
       <p className="ui-visually-hidden" role="status" aria-live="polite" data-testid="story-said">{said}</p>
       {body && <GatePop body={body} go={head!.chapter ? (next ? 'Open the next chapter ▸' : 'Close') : 'Continue the story ▸'} onClose={closePop} />}
       {ch.data && upTo < items.length && <p className="sg-wait" data-testid="story-waiting" data-kind={hold?.kind || 'decision'}>{hold && hold.kind !== 'decision' ? `🔒 ${hold.kind === 'lesson' ? 'Finish the lesson check' : hold.kind === 'drill' ? 'Finish the drill' : hold.kind === 'incident' ? 'Run the live incident to its end' : hold.kind === 'lab' ? 'Fix it — or run out the clock' : hold.kind === 'meltdown' ? 'Survive the meltdown — or fail it' : hold.kind === 'boss' ? 'Clear the boss level — a failed run starts over from the top —' : hold.kind === 'review' ? 'The next season opens only with a Story Score of 65 or higher. Submit the season for review' : 'Answer every question'} to continue${hold.tier === 'soft' ? ', or skip it for now' : ''}.` : 'The story is waiting for your decision.'} {items.length - upTo} more moments follow.{gc ? ` ${gc.cleared} of ${gc.total} gates cleared in this chapter.` : ''}</p>}
@@ -245,8 +248,10 @@ function Reader({ ix, id, progress, commit, update }: { ix: StoryIndex; id: stri
   );
 }
 
-export interface ViewProps { it: Item; n: number; svg?: string; cast: Record<string, string>; state: ChapterState; clock: Clock; gated: boolean; onChoose: (d: Extract<Item, { type: 'decision' }>, letter: string, meta: { hints: number }) => Outcome; onTimeout?: (d: Extract<Item, { type: 'decision' }>, hints: number) => void; onReplay?: (id: string) => void; onTalk: (id: string, o: number) => void; onFind: (id: string) => void;
+export interface ViewProps { it: Item; n: number; /** the chapter and the reader's role, for the Lite links */ chapter?: string; role?: string; svg?: string; cast: Record<string, string>; state: ChapterState; clock: Clock; gated: boolean; onChoose: (d: Extract<Item, { type: 'decision' }>, letter: string, meta: { hints: number }) => Outcome; onTimeout?: (d: Extract<Item, { type: 'decision' }>, hints: number) => void; onReplay?: (id: string) => void; onTalk: (id: string, o: number) => void; onFind: (id: string) => void;
   /** the chapter's pieces and gates, and the reader's quiz records, when loaded */ pieces?: Pieces | null; progress?: Progress; onQuiz?: (id: string, right: number, total: number) => void; onSkip?: (g: Gate) => void; onDrill?: (id: string, passed: boolean) => void; onIncident?: (id: string, outcome: 'proven' | 'partial' | 'fail', why: 'declared' | 'clock' | 'boundary') => void; onLab?: (id: string, passed: boolean, final: boolean) => void; onReview?: (id: string, rec: ReviewRecord) => void; onRetrySeason?: (season: number) => void; onRestart?: () => void; onMeltdown?: (id: string, rec: MeltdownRecord) => void; onBoss?: (id: string, rec: BossRecord) => void; onChallenge?: (key: string, score: number, passed: boolean) => void }
+/** The interactives a "Try it in Lite" card follows (founder, 12 Nov 2026), and the words it uses for them. */
+const LITE_AFTER: Record<string, string> = { quiz: 'check', lesson: 'lesson check', lab: 'lab', boss: 'boss level', drill: 'drill', incident: 'live incident', meltdown: 'meltdown' };
 const MOUNT_WORD: Record<string, string> = { lesson: 'Lesson', lab: 'Lab', quiz: 'Quiz', drill: 'Drill', incident: 'Live incident', review: 'Season review', boss: 'Boss level', meltdown: 'Meltdown' };
 const gateOf = (p: ViewProps, kind: string, id: string): Gate | undefined => p.pieces?.gates.find((g) => g.index === p.n && g.kind === kind && g.id === id);
 /** Lesson cards carry a little markup (bold, italic, sub, sup, a formula span). Only those become elements; anything else is text. */
@@ -416,8 +421,8 @@ export function ItemView(p: ViewProps): JSX.Element | null {
       </section>); }
     case 'twist': return <section className="sg-twist" data-item="twist"><p className="sg-twist__k">Twist</p><h3>{it.title}</h3><GlParas k={`${p.n}:tw`} text={it.body} />{it.label && <p className="ui-meta">{it.label}</p>}
       <Piece p={p} kind={it.test_kind} id={it.test_id} n={p.n} /></section>;
-    case 'history': return <aside className="sg-hist" data-item="history"><p className="sg-hist__k">Then and now{it.when ? ` · ${it.when}` : ''}</p><h3>{it.title}</h3><GlParas k={`${p.n}:hi`} text={it.body} /><p className="ui-meta">Under review: {it.flag}. Dates and attributions are the author’s draft until that review closes.</p></aside>;
-    case 'mount': return (it.kind === 'quiz' || it.kind === 'lesson' || (it.kind === 'drill' && p.pieces?.drills?.[it.id]) || (it.kind === 'incident' && p.pieces?.incidents?.[it.id]) || (it.kind === 'lab' && LAB_KINDS_PLAYABLE.has(String(p.pieces?.labs?.[it.id]?.type))) || it.kind === 'review' || (it.kind === 'meltdown' && p.pieces?.meltdowns?.[it.id]) || (it.kind === 'boss' && p.pieces?.bosses?.[it.id])) && p.pieces ? <Piece p={p} kind={it.kind} id={it.id} n={p.n} label={it.label} /> : (
+    case 'history': return <aside className="sg-hist" data-item="history"><p className="sg-hist__k">Then and now{it.when ? ` · ${it.when}` : ''}</p><h3>{it.title}</h3><GlParas k={`${p.n}:hi`} text={it.body} /><p className="ui-meta">Under review: {it.flag}. Dates and attributions are the author’s draft until that review closes.</p>{p.role && <LiteTryCard t={liteForText(`${it.title} ${it.body}`) || liteForChapter(p.chapter || '')} role={p.role} after="history note" compact />}</aside>;
+    case 'mount': return (it.kind === 'quiz' || it.kind === 'lesson' || (it.kind === 'drill' && p.pieces?.drills?.[it.id]) || (it.kind === 'incident' && p.pieces?.incidents?.[it.id]) || (it.kind === 'lab' && LAB_KINDS_PLAYABLE.has(String(p.pieces?.labs?.[it.id]?.type))) || it.kind === 'review' || (it.kind === 'meltdown' && p.pieces?.meltdowns?.[it.id]) || (it.kind === 'boss' && p.pieces?.bosses?.[it.id])) && p.pieces ? <><Piece p={p} kind={it.kind} id={it.id} n={p.n} label={it.label} />{p.role && LITE_AFTER[it.kind] && <LiteTryCard t={liteForChapter(p.chapter || '') || liteForText(it.label || '')} role={p.role} after={LITE_AFTER[it.kind]!} />}</> : (
       <aside className="sg-mount" data-item="mount" data-kind={it.kind}>
         <span className="ui-tag">{MOUNT_WORD[it.kind] || it.kind}</span>
         <span>{it.label ? <Em text={it.label} /> : <code>{it.id}</code>}</span>

@@ -144,3 +144,7 @@
 .sg-cine__acts { margin-left: auto; display: inline-flex; gap: 6px; align-items: center; color: #a9b6be; }
 .sg-cine__acts select { min-height: 40px; max-width: 60vw; }
 .sg-cine__film { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* "Try it in Lite" after an interactive (signal/LiteTry.tsx): set apart by a left rule in the accent, like the other asides */
+.sg-lite { border: 1px solid var(--line2); border-left: 3px solid var(--accent); border-radius: var(--r-md); padding: 12px 16px; background: var(--panel); display: grid; gap: 6px; }
+.sg-lite p { margin: 0; } .sg-lite__k { font-size: 12px; letter-spacing: .04em; color: var(--tx2); }
+.sg-lite--compact { border: 0; padding: 0; background: transparent; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
