@@ -129,13 +129,11 @@ For SIGNAL and Lite these phases follow R1 to R5 above.
 
 ## Next, in order
 
-1. Restoration (founder, 17:06): SIGNAL in place: decisions, quizzes, lessons, drills, incidents, labs (physics without its animated
-   drawings), season reviews with ratings and loadout, meltdowns; since 12 Nov the thirteen challenges (`9db8350`), the 12 boss levels
-   (`a480890`, `537700c`) and chapter locks — every gate kind in the canon now plays and holds the story. Full matrix on that head, then
-   staging. Done since: the challenge catalogue, the guitar, Mission Control (`#/learn/mission`). Then: meltdowns in Learn's Service Mode; physics drawings; the band music and remaining challenge drawings. Then: verify the inventory's TO VERIFY lines; R3 Lite against V2.5.3 (72 `lite*`, 18 scouter,
-   Room Builder, optimiser and acoustics functions found in the source by a text scan; the scan scripts are in
-   `…/scratchpad/restore/`); R2 media with playback verified; R4 the one parity matrix; then R5, restoring in the order the SIGNAL
-   inventory gives (library to the source's revision, eight lab simulators, thirteen challenges).
+1. Full matrix light and dark on `9db85b6` (light running), then staging and the Render check. Then the same on the head after it
+   (Scouter anatomy, the media audit; their checks are drafted in the scratch folder: `anatomy-snippet.mjs`, `tours-play.txt`).
+2. Restoration still open (inventories and `docs/restoration/PARITY_MATRIX.md` say exactly what): Lite — drift from baseline (needs a
+   spatial assurance record), acoustics (no acoustic data or model), the room builders' missing functions, Design a Space's verbs, Scouter
+   proposals; SIGNAL — the V2.5.3 cinematics as captioned diagrams (proposed, R2); the case files' Mastery gate.
 3. 60/10 P0 (baseline) and P1; P2 corporate flagship pilot; then its other phases. For SIGNAL and Lite, after R5.
 4. Manual: its chapters in the Knowledge Ledger as a source awaiting review; a room's saved set linked from its commissioning page.
 5. Instant Room: real photographs for the sharpness threshold when a device is available; hand a proposal to Room Builder.
