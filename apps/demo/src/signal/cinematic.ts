@@ -17,7 +17,7 @@ export interface Scene { chapter: string; acts: Act[]; takes: Take[]; voices: Re
 /** Seasons whose chapters open as scenes (founder, 12 Nov 2026: "continue working to season 6"). */
 export const CINEMATIC_SEASONS = [1, 2, 3, 4, 5, 6];
 export const VOICES: Record<string, string> = { maya: 'Sarah', ray: 'Paul' };
-const M = 'media/signal/s01e01-act1/';
+const M = 'media/signal/s01e01-act1/'; const N = 'media/signal/s01e01/';
 /** Recorded takes by chapter; each speaks one canon line exactly (unit test signal-cinematic). */
 export const TAKES: Record<string, Take[]> = {
   s01e01: [
@@ -27,10 +27,38 @@ export const TAKES: Record<string, Take[]> = {
     { who: 'ray', text: 'That broom has done more acoustics than most consultants.', src: `${M}ray-1.mp3` },
     { who: 'ray', text: 'It’s more reliable than the last one who did.', src: `${M}ray-2.mp3` },
     { who: 'ray', text: 'Who’s qualified to be under that?', src: `${M}ray-3.mp3` },
+    // the rest of Maya's and Ray's lines in the episode (takes generated 12 Nov 2026, provided by the founder, split at their breaks)
+    { who: 'maya', text: '(It is very clearly not fine.)', src: `${N}maya-4.mp3` },
+    { who: 'maya', text: 'She thinks it\'s her.', src: `${N}maya-5.mp3` },
+    { who: 'maya', text: 'What changed two years ago?', src: `${N}maya-6.mp3` },
+    { who: 'maya', text: 'Okay. Four explanations. The mic. Dolores\'s hearing. The air handling. The room. What would tell them apart?', src: `${N}maya-7.mp3` },
+    { who: 'maya', text: 'If they move when I move one seat, no EQ setting fixes all ten.', src: `${N}maya-8.mp3` },
+    { who: 'maya', text: 'Where\'s the first notch?', src: `${N}maya-9.mp3` },
+    { who: 'maya', text: 'Sound goes about 343 meters a second. So 1.7 over 343… about five milliseconds late. That\'s why it moves.', src: `${N}maya-10.mp3` },
+    { who: 'maya', text: 'If it\'s the reflection, turning the fill down should make the notches shallower. If it doesn\'t, I\'m wrong.', src: `${N}maya-11.mp3` },
+    { who: 'maya', text: 'That the fill is pointed at the ceiling, and the ceiling is talking to ten seats.', src: `${N}maya-12.mp3` },
+    { who: 'maya', text: 'We found something in the room that makes those ten seats sound hollow to anyone — I hear it too.', src: `${N}maya-13.mp3` },
+    { who: 'maya', text: 'We\'re changing it Thursday and we\'ll know Sunday. Her hearing is her audiologist\'s question, not mine.', src: `${N}maya-14.mp3` },
+    { who: 'maya', text: 'I don\'t go up the lift. I stand outside the tape and hold the clipboard like it\'s a very important clipboard.', src: `${N}maya-15.mp3` },
+    { who: 'maya', text: 'So did I, last week. It was the room.', src: `${N}maya-16.mp3` },
+    { who: 'maya', text: '(She had been leaning for two years. Nobody asked why.)', src: `${N}maya-17.mp3` },
+    { who: 'ray', text: 'A comb filter is the same sound arriving twice, a hair apart. Some frequencies cancel. Each cancelled one is a notch.', src: `${N}ray-4.mp3` },
+    { who: 'ray', text: 'One over twice the gap. Arrivals one millisecond apart: one divided by two thousandths — five hundred hertz.', src: `${N}ray-5.mp3` },
+    { who: 'ray', text: 'Five milliseconds. The human ear doesn\'t hear that as an echo. It hears it as a bad day.', src: `${N}ray-6.mp3` },
+    { who: 'ray', text: 'What would you tell someone who wasn\'t here tonight?', src: `${N}ray-7.mp3` },
+    { who: 'ray', text: 'Aim at people, not the ceiling. A commissioning engineer I learned from used to make me write it exactly like that.', src: `${N}ray-8.mp3` },
   ],
 };
 /** Footage by chapter (filled as reviewed clips are imported). */
-export const FOOTAGE: Record<string, Footage[]> = {};
+export const FOOTAGE: Record<string, Footage[]> = {
+  s01e01: [
+    { before: 11, src: `${N}footage-sanctuary.mp4`, note: 'The sanctuary on a Tuesday evening. Generated footage of the setting, not a real venue.' },
+    { before: 17, src: `${N}footage-broom.mp4`, note: 'Every seat recorded before anything is touched. Generated footage of the setting.' },
+    { before: 20, src: `${N}footage-booth.mp4`, note: 'The booth. Generated footage of the setting.' },
+    // the fill-loudspeaker clip was not used: in it the loudspeaker points down and sideways, and the canon's point is that it is aimed
+    // at the ceiling; footage that teaches the wrong aim is worse than none (founder, 12 Nov: never teach the wrong thing)
+  ],
+};
 export const cinematicFor = (chapterId: string) => { const m = /^s(\d\d)e/.exec(chapterId); return !!m && CINEMATIC_SEASONS.includes(Number(m[1])); };
 /** The scene of a chapter: one act per canon heading (the opening act, before any heading, when the chapter starts without one). */
 export function sceneOf(chapterId: string, items: Item[]): Scene {

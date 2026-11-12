@@ -24,7 +24,8 @@ test('every take file exists; the option that sends the player back to the choic
   const d = ch.items.find((i) => i.type === 'decision'); const back = d.options.filter((o) => C.returnsToChoice(o.result));
   assert.deepEqual(back.map((o) => o.letter), ['D']); const q = C.quoted(back[0].result); assert.ok(q && C.takeFor(sc.takes, q.who, q.text), JSON.stringify(q));
 });
-test('every spoken line in Act I has its take', () => {
-  for (const s of sc.acts.find((a) => /Tuesday night/.test(a.title)).shots) { const it = ch.items[s.item]; const lines = s.kind === 'beat' ? it.lines.map((l) => [l.who, l.text]) : (it.bubbles || []).map((b) => [b.who.toLowerCase(), b.text]);
-    for (const [w, x] of lines) assert.ok(C.takeFor(sc.takes, w, x), `${w}: ${x}`); }
+test('every line Maya and Ray speak in the episode has its take, and every footage file exists', () => {
+  for (const f of C.FOOTAGE.s01e01 || []) assert.ok(fs.existsSync(path.join(repo, 'apps/demo/public', f.src)), f.src);
+  for (const s of sc.acts.flatMap((a) => a.shots).filter((x) => x.kind !== 'footage')) { const it = ch.items[s.item]; const lines = s.kind === 'beat' ? it.lines.map((l) => [l.who, l.text]) : (it.bubbles || []).map((b) => [b.who.toLowerCase(), b.text]);
+    for (const [w, x] of lines.filter(([w]) => w === 'maya' || w === 'ray')) assert.ok(C.takeFor(sc.takes, w, x), `${w}: ${x}`); }
 });

@@ -35,7 +35,9 @@ export function Cinematic({ scene, items, panels, cast, state, onChoose, onClose
   }), [scene, act, items, panels]);
   const [shot, setShot] = useState(0); const [line, setLine] = useState(0); const [playing, setPlaying] = useState(true);
   const [out, setOut] = useState<{ letter: string; result: string; consequence: string; ladder: boolean } | null>(null);
-  const audio = useRef<HTMLAudioElement>(null); const timer = useRef<number | null>(null);
+  const audio = useRef<HTMLAudioElement>(null); const timer = useRef<number | null>(null); const root = useRef<HTMLElement>(null);
+  // the player opens where the reader is looking (and a browser pauses muted footage it cannot see)
+  useEffect(() => { root.current?.scrollIntoView({ block: 'start' }); }, []);
   const cur = shots[shot]!; const ln = cur.lines[line] as Line | undefined; const dec = cur.kind === 'decision' ? (items[cur.item] as Decision) : null;
   const chosen = dec ? state.choices[dec.id] : undefined;
   const clear = () => { if (timer.current) { window.clearTimeout(timer.current); timer.current = null; } };
@@ -56,7 +58,7 @@ export function Cinematic({ scene, items, panels, cast, state, onChoose, onClose
     if (take && audio.current) { audio.current.src = take.src; audio.current.currentTime = 0; audio.current.play().catch(() => {}); }
   };
   const motion = typeof matchMedia === 'function' && !matchMedia('(prefers-reduced-motion: reduce)').matches;
-  return <section className="sg-cine" data-testid="sg-cine" data-scene={scene.chapter} data-act={act} aria-label={`Cinematic story: ${A.title}`}>
+  return <section ref={root} className="sg-cine" data-testid="sg-cine" data-scene={scene.chapter} data-act={act} aria-label={`Cinematic story: ${A.title}`}>
     <header className="sg-cine__bar"><b>{A.title}</b> {A.sub && <span className="ui-meta">{A.sub}</span>} <span className="ui-meta">· shot {shot + 1} of {shots.length} · {scene.takes.length ? `voices: Maya (${scene.voices.maya}), Ray (${scene.voices.ray}); lines without a recorded take are captions` : 'captions; this chapter’s voices are not recorded yet'}</span>
       <label className="sg-cine__acts">Act <select value={act} onChange={(e) => { clear(); audio.current?.pause(); setAct(Number(e.target.value)); setShot(0); setLine(0); setOut(null); setPlaying(true); }} data-testid="sg-cine-act">{scene.acts.map((a, i) => <option key={i} value={i}>{a.title}</option>)}</select></label></header>
     <div className="sg-cine__stage" data-testid="sg-cine-shot" data-shot={shot} data-item={cur.item} data-kind={cur.kind}>

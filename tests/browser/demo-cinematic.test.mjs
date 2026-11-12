@@ -13,6 +13,10 @@ for (const [w, tag] of [[1440, 'desktop'], [390, 'phone']]) {
   await p.getByTestId('story-cine').click(); await p.getByTestId('sg-cine').waitFor();
   const acts = await p.getByTestId('sg-cine-act').evaluate((e) => [...e.options].map((o) => o.textContent));
   await p.getByTestId('sg-cine-act').selectOption({ label: acts.find((a) => /Tuesday night/.test(a)) });
+  const f0 = await p.getByTestId('sg-cine-shot').evaluate((e) => ({ kind: e.dataset.kind, item: e.dataset.item, src: e.querySelector('video')?.getAttribute('src') || '', cap: e.querySelector('.sg-cine__cap')?.textContent || '' }));
+  await p.waitForTimeout(1500); const fv = await p.evaluate(() => { const v = document.querySelector('[data-testid=sg-cine-footage]'); return v ? { t: v.currentTime, w: v.videoWidth, muted: v.muted } : null; });
+  ok(`CN-${tag}-00`, 'the act opens on its establishing footage (generated, labelled as such, muted), which plays', f0.kind === 'footage' && f0.item === '11' && /footage-sanctuary\.mp4$/.test(f0.src) && /Generated footage of the setting, not a real venue/.test(f0.cap) && fv && fv.t > 0.3 && fv.w === 1344 && fv.muted, JSON.stringify({ f0, fv }));
+  await p.getByTestId('sg-cine-next').click();
   const s0 = await p.getByTestId('sg-cine-shot').evaluate((e) => ({ item: e.dataset.item, art: !!e.querySelector('.sg-cine__art svg'), cap: e.querySelector('.sg-cine__cap')?.textContent || '' }));
   ok(`CN-${tag}-01`, `${tag}: the scene's acts are the chapter's own headings; Act I opens on the canon's first shot with its panel art and caption`, acts.length >= 4 && /Cold open/.test(acts[0]) && s0.item === '11' && s0.art && /Priya photographs every cable/.test(s0.cap), JSON.stringify(s0));
   await p.getByTestId('sg-cine-next').click(); await p.waitForSelector('[data-testid=sg-cine-line][data-who=maya]');
@@ -34,11 +38,11 @@ for (const [w, tag] of [[1440, 'desktop'], [390, 'phone']]) {
   ok(`CN-${tag}-06`, 'no overflow, no console error, no request leaving the page', over <= 0 && !t.errs.length && !t.off.length, [over, ...t.errs, ...t.off].slice(0, 4).join(' | '));
   await t.close();
 }
-// captions-only fallback: the audio is refused, and the scene still plays its lines as captions
+// captions-only fallback: the audio (and the footage) is refused, and the scene still plays its lines as captions
 { const t = await open('#/story/s01e01', { init: unlockInit('s01e01'), w: 1440, h: 900 }); const p = t.page;
   await p.route('**/media/signal/**', (r) => r.abort()); await p.waitForSelector('.sg-dec'); await p.getByTestId('story-cine').click(); await p.getByTestId('sg-cine').waitFor();
   { const acts = await p.getByTestId('sg-cine-act').evaluate((e) => [...e.options].map((o) => o.textContent)); await p.getByTestId('sg-cine-act').selectOption({ label: acts.find((a) => /Tuesday night/.test(a)) }); }
-  await p.getByTestId('sg-cine-next').click(); await p.waitForSelector('[data-testid=sg-cine-line][data-who=maya]'); await p.waitForTimeout(7000);
+  await p.getByTestId('sg-cine-next').click(); await p.getByTestId('sg-cine-next').click(); await p.waitForSelector('[data-testid=sg-cine-line][data-who=maya]'); await p.waitForTimeout(7000);
   const s = await p.getByTestId('sg-cine-shot').evaluate((e) => e.dataset.item);
   ok('CN-fallback', 'with the audio refused, the line stays on screen as a caption for its reading time and the scene moves on by itself', s === '14', s);
   await t.close(); }
