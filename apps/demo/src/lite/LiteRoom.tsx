@@ -73,6 +73,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
         aside={<ScoreRing value={score} size={96} label="Readiness" caption="Verified tests and open issues on the record" />} />
       {o.nonOperational && <p className="lt-nonop" role="note" data-testid="lite-nonop"><Icon name="info" size={16} /> <b>Simulated · non-operational.</b> This is a demonstration of an operations room. Nothing here monitors, controls or alerts on a real system; every number is computed from the synthetic records.</p>}
       {lensesOpen.length > 1 && <div className="lt-lenses lt-lenses--sm" role="radiogroup" aria-label="Lite lens">{lensesOpen.map((l) => <button key={l.key} type="button" role="radio" aria-checked={lens === l.key} className={`lt-lens${lens === l.key ? ' on' : ''}`} onClick={() => pickLens(l.key)} data-testid={`lite-lens-${l.key}`}><b>{l.label}</b><span>{l.gives}</span></button>)}</div>}
+      <AdvancedModes role={role} id={id} lens={lens} query={query} base={base} />
       <div className="lt-states" role="radiogroup" aria-label="Room state" data-testid="lite-states">
         {STATES.map((s) => { const x = s.key === stateKey ? st : null; return <button key={s.key} type="button" role="radio" aria-checked={s.key === stateKey} className={`lt-state lt-state--${s.key}${s.key === stateKey ? ' on' : ''}`} onClick={() => upd('state', s.key === 'current' ? null : s.key)} data-testid={`lite-state-${s.key}`}><b>{s.label}</b><span>{s.says}</span>{x && !x.available ? <em>none on record</em> : null}</button>; })}
       </div>
@@ -320,4 +321,20 @@ function FleetWall() {
           <div className="lt-fleet__cells" role="list" aria-label={`${B.name} rooms`}>{rs.map((r) => { const sc = readiness(r); return <a role="listitem" key={r.outline.id} href={liteRoomHref(r.outline.id)} className={`lt-cell lt-cell--${bandOf(sc)}`} title={`${shortName(r.outline)} ${r.outline.name}: ${sc}`} aria-label={`${shortName(r.outline)} ${r.outline.name}: readiness ${sc}`} />; })}</div></li>); })}</ul>
     </Card>
   );
+}
+
+/** The five advanced modes (70/10 task 70-5): one place to choose what to do with the room, each a way into what Lite already does —
+ *  explore the space, explore its systems, validate it, compare its states, design it. Only the modes the role may use are offered. */
+function AdvancedModes({ role, id, lens, query, base }: { role: PageProps['role']; id: string; lens: Lens; query: URLSearchParams; base: string }) {
+  const lenses = lensesFor(role).map((l) => l.key); const has = (l: Lens) => lenses.includes(l);
+  const go = (patch: Record<string, string | null>) => { const n = new URLSearchParams(query); for (const [k, v] of Object.entries(patch)) { if (v == null) n.delete(k); else n.set(k, v); } setQuery(base, n); };
+  const xm = query.get('xm') === '1', st = query.get('state'); const sig = (query.get('ly') || '').split(',').includes('network') && query.get('ov') === ',';
+  const modes: Array<{ k: string; label: string; says: string; on: boolean; act: () => void; href?: string } | null> = [
+    has('employee') || has('visitor') ? { k: 'explore', label: 'Explore space', says: 'Walk it, find the way, see what it offers', on: (lens === 'employee' || lens === 'visitor') && !xm, act: () => go({ mode: has('employee') ? 'employee' : 'visitor', ly: null, ov: null, xm: null, state: null }) } : null,
+    has('engineer') ? { k: 'systems', label: 'Explore systems', says: 'Signal, network and control paths, layer by layer', on: lens === 'engineer' && sig, act: () => go({ mode: 'engineer', ly: 'av,network,control', ov: ',', xm: null }) } : null,
+    has('engineer') ? { k: 'validate', label: 'Validate space', says: 'Coverage, sightlines and the measurements on record', on: lens === 'engineer' && xm, act: () => go({ mode: 'engineer', ov: 'camera,mic,sight', ly: null, xm: '1', state: null }) } : null,
+    { k: 'compare', label: 'Compare states', says: 'Designed, commissioned, current and proposed', on: !!st && st !== 'current', act: () => go({ state: 'commissioned' }) },
+    allows({ area: 'studio' }, role) ? { k: 'design', label: 'Design space', says: 'Take this room into Design a Space', on: false, act: () => { location.hash = `#/studio/room/${encodeURIComponent(id)}`; } } : null,
+  ];
+  return <nav className="lt-modes" aria-label="What to do with this room" data-testid="lite-modes">{modes.filter(Boolean).map((m) => <button key={m!.k} type="button" className={`lt-mode${m!.on ? ' on' : ''}`} aria-pressed={m!.on} onClick={m!.act} data-testid={`lite-mode-${m!.k}`}><b>{m!.label}</b><span>{m!.says}</span></button>)}</nav>;
 }
