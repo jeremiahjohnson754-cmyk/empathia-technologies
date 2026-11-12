@@ -69,8 +69,8 @@ const STORY: Record<string, Story> = {
   },
   learn: {
     body: 'A case needs permission, de-identification, a subject-matter review and approval before it teaches anyone. Lessons, labs and the SIGNAL story link to competencies, and training never grants authority.',
-    showsAs: ['declared', 'declared'], shows: ['Reviewed cases linked to lessons and competencies', 'SIGNAL lessons, labs and drills'],
-    limits: 'The full SIGNAL corpus is not yet produced as playable media, and narration is not yet cleared for public use.', demoState: 'partial', demo: { href: '#/v25/learn', label: 'Open Learn' },
+    showsAs: ['declared', 'declared', 'modeled'], shows: ['Reviewed cases linked to lessons and competencies', 'SIGNAL lessons, labs and drills', 'Three flagship practice labs: mix a church live stream on a 32-channel desk, light the stage, shoot the service'],
+    limits: 'The full SIGNAL corpus is not yet produced as playable media, and narration is not yet cleared for public use. The flagship labs are models for practice: a passing score proves nothing about a real room.', demoState: 'partial', demo: { href: '#/v25/learn', label: 'Open Learn' },
   },
 };
 

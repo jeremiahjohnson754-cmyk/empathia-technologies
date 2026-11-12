@@ -315,3 +315,22 @@ folder until it ends.
 Lighting and video labs' S01 placement in their episodes (E05, E07) if the founder wants them embedded as E10's is.
 
 **Next**: matrices → staging → the two websites (90-1, 90-2, 90-3, 90-6).
+
+## 98 — Flagship labs in E05/E07; the websites: 90-3, 90-1, 90-6, 90-2 (12 Nov 2026, 15:54– CT)
+
+**Completed**
+- Light the Stage opens inside S01E05 and Shoot the Service inside S01E07, after each chapter's lab, as Mix the Stream does in E10
+  (`835079b`). Each check is a lab try; passed only when every look or cue reaches 75.
+- **90-3** (`0ff0a2e`): `docs/surpass/VENDOR_NAME_REGISTER.json` gives every vendor, product, standard or body named in either app its
+  evidence; `tests/unit/vendor-claims.test.mjs` fails on a new or stale name. The website's 83 catalogue entries read "(planned, not
+  connected)".
+- **90-1** (`30f5edd`): the home promise and both actions fit the first screen at 1440×900, 1366×768 and 390×844; each story page gains
+  one action. `docs/surpass/FIRST_SCREEN_AUDIT.md`; suite `website-fold` (fails 26 on the old build, 37/37 on the new, light and dark).
+- **90-6**: `docs/security/BOUNDARY_REVIEW.md` maps each boundary (role, denied address, QR and links, tenants and private documents,
+  equipment control, media and claims, reload/offline/slow) to the negative tests that hold it, and lists NOT RUN plainly (no third-party
+  penetration test, no real tenant or identity provider, no real control path, no load test). New suite `demo-boundaries` for the gaps:
+  role chosen by address, reload, `as=` granting nothing, slow network.
+- **90-2**: crawler suite `demo-deadends` presses every visible control on every fixed-address page and records its effect.
+
+**Lesson**: this machine has 2 cores and 7 GB. A browser suite run beside the matrix exhausted memory and the container restarted,
+taking the `835079b` light matrix with it. One heavy browser job at a time; the website was built and tested in a separate copy.
