@@ -112,3 +112,5 @@
 .sg-gl:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .sg-glpop { position: fixed; z-index: 230; display: grid; gap: 6px; background: var(--panel); color: var(--tx); border: 1px solid var(--accent); border-radius: var(--r-md); padding: 10px 12px; box-shadow: 0 10px 30px rgb(0 0 0 / .35); font-size: var(--fs-sm); line-height: 1.5; }
 .sg-glpop p { margin: 0; } .sg-glpop__h { display: flex; gap: 8px; align-items: center; } .sg-glpop__x { margin-left: auto; }
+/* "Still art" (reference t-still, 12 Nov 2026): no animation anywhere in the reader, its pop-ups included */
+.sg-read[data-still=true] *, .sg-read[data-still=true] ~ .sg-pop, .sg-read[data-still=true] .sg-pop__card { animation: none !important; transition: none !important; }

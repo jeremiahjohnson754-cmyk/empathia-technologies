@@ -130,6 +130,8 @@ function Reader({ ix, id, progress, commit, update }: { ix: StoryIndex; id: stri
   const before = useMemo(() => (prev && prevCh.data ? echoes(prevCh.data.items, progress.chapters[prev.id]) : null), [prev, prevCh.data, progress.chapters]);
   // Result pop-ups (gate.js): a card for each gate newly cleared by playing it, and one when the chapter is finished. The first look at a
   // chapter only notes what is already done; nothing pops for it. window.SIGNAL_NOPOP turns them off, as in the reference (its own QA).
+  // "Still art" (reference header toggle t-still): stops the story's animation, remembered in this browser
+  const [still, setStill] = useState(() => { try { return localStorage.getItem('signal-still') === '1'; } catch { return false; } });
   const gl = useLoaded(loadGlossary, 'glossary'); const glRx = useMemo(() => (gl.data ? buildRx(gl.data.terms) : null), [gl.data]);
   const glMarks = useMemo(() => (glRx && ch.data ? chapterMarks(ch.data.items, glRx) : null), [glRx, ch.data]); const [glOpen, setGlOpen] = useState<{ g: Term; at: HTMLElement } | null>(null);
   const glCtx = useMemo(() => ({ marks: glMarks, open: (g: Term, at: HTMLElement) => setGlOpen({ g, at }) }), [glMarks]); const glClose = useMemo(() => () => setGlOpen((o) => { o?.at.focus({ preventScroll: true }); return null; }), []);
@@ -152,7 +154,7 @@ function Reader({ ix, id, progress, commit, update }: { ix: StoryIndex; id: stri
   if (ch.error) return <div className="sg" data-testid="story-error"><h1 tabIndex={-1}>{ref.title} did not load</h1>{notKept() ? <p className="lead" data-testid="story-not-kept">You are offline and this chapter is not kept on this device. Chapters you have already opened, and seasons kept from <a href="#/offline">Offline and this device</a>, open without a connection. Your progress is untouched.</p> : <p className="lead">This chapter’s file could not be read ({ch.error}). Your progress is untouched.</p>}<p><a className="ui-btn ui-btn--primary" href="#/story">Back to the library</a></p></div>;
   let panelNo = -1;
   return (
-    <article className="sg sg-read" data-testid="story-reader" data-chapter={id} data-reached={upTo} data-items={items.length} aria-busy={!ch.data}>
+    <article className="sg sg-read" data-testid="story-reader" data-still={still} data-chapter={id} data-reached={upTo} data-items={items.length} aria-busy={!ch.data}>
       <Crumbs items={[{ label: 'Learn', href: '#/learn' }, { label: 'SIGNAL', href: '#/story' }, { label: ref.season ? `Season ${ref.season}` : 'Prologue', href: '#/story' }, { label: ref.title }]} />
       {failed != null && <div className="sg-banner" role="status" data-testid="story-gameover-banner"><b>✕ Game over · Season {failed} review failed (Story Score {progress.reviews[`S${failed}`]!.score}).</b> <button type="button" className="ui-btn" onClick={() => retry(failed)}>↺ Retry Season {failed}</button> <button type="button" className="ui-btn ui-btn--quiet" onClick={restart}>⟲ Restart</button></div>}
       <p className="kicker">{ref.kicker} <Draft /></p>
@@ -160,6 +162,7 @@ function Reader({ ix, id, progress, commit, update }: { ix: StoryIndex; id: stri
       {ref.sub && <p className="lead">{ref.sub}</p>}
       <div className="sg-bar">
         <Pick label="Decision clock" value={progress.clock} options={[['on', 'Clock on'], ['extended', 'Double time'], ['off', 'No clock']] as const} onChange={(c: Clock) => commit({ ...progress, clock: c })} />
+        <label className="sg-check"><input type="checkbox" checked={still} onChange={(e) => { setStill(e.target.checked); try { localStorage.setItem('signal-still', e.target.checked ? '1' : '0'); } catch { /* */ } }} data-testid="story-still" /> Still art</label>
         <label className="sg-check"><input type="checkbox" checked={!progress.gates} onChange={(e) => commit({ ...progress, gates: !e.target.checked })} data-testid="story-gates" /> Show the whole chapter without waiting for decisions</label>
       </div>
       {ch.data && ch.data.chapter.flags.length > 0 && (
