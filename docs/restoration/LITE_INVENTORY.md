@@ -23,7 +23,7 @@ end: what V2.5.3 does, function by function, and whether the product does it.
 |---|---|---|
 | Campus scene in 3D with the visitor's path from parking | `#/lite` campus scene, lenses | RESTORED (earlier inventory; `demo-lite` browser suite). TO VERIFY the visitor path |
 | Building and floor scenes: floor selector, lifts and stairs, "you are here", network closet, health from Core, simulated availability | `#/lite/b/<building>/<floor>` | RESTORED. TO VERIFY: lifts and stairs, "you are here", simulated booking on the floor |
-| Eight home storylines, one per room ("watch the cones swing between states", "follow the network layer to the shared switch" …) | Explore tiles on Lite home | TO VERIFY all eight and their wording |
+| Eight home storylines, one per room ("watch the cones swing between states", "follow the network layer to the shared switch" …) | Explore tiles on Lite home | **VERIFIED 12 Nov, NOT CARRIED, deliberately.** The eight are in V2.5.3's `viewLiteHome` (`STORY`), each a line about a state of one room's V2.5.3 data: presets moved after handover (R-ATL-4-218), heat and dust failing a display (R-FRG-1-104), three devices losing link at one switch (R-MER-2-305), firmware drift (R-HZN-2-215) and four more. The rebuilt records for those rooms do not hold those states, so the lines would describe what the rooms do not show. They can return with the states they describe |
 | Wayfinding: destination search, quick jumps, step-free or stairs or lifts, start of route | `#/lite/way` | RESTORED. TO VERIFY step-free routing |
 | Visitor check-in, ten steps, badge | `#/lite/visit` | RESTORED |
 | Services, spaces, the Commons in five scenes, guides, QR launch centre | `#/lite/services`, `/space`, `/commons`, `/guides`, `/qr` | RESTORED |
