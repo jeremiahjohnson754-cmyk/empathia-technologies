@@ -42,4 +42,15 @@ for (const a of ['#/scouter', '#/v25/scouter', '#/lite/scouter', '#/suite/scoute
   await t.page.focus('.scouter__field select'); await t.page.keyboard.press('ArrowDown'); await t.page.waitForTimeout(250);
   ok('S-15', 'keyboard: the room select works without a pointer', /room=small_conf/.test(t.page.url()), t.page.url());
   await t.close(); }
+// 12 Nov 2026: standard kits (V2.5.3 v25Scout*): draft, send, decided only by another role, published with a version, adopted into a concept
+{ const t = await open('#/campus/scouter?room=medium_conf', { role: 'designer' }); const p = t.page; await p.evaluate(() => localStorage.removeItem('empathia.demo.scouterProfiles.v1'));
+  await p.getByTestId('scouter-propose-kit').click(); const kit = p.locator('[data-profile]').first(); await kit.waitFor(); const items = await kit.locator('ul li').count();
+  await kit.getByTestId('scouter-pf-send').click(); await kit.getByTestId('scouter-pf-note').fill('looks right'); await kit.getByTestId('scouter-pf-approve').click(); const self = await p.getByTestId('scouter-pf-said').innerText();
+  ok('S-20', 'a designer drafts a kit of the classes that suit the room and sends it; the role that proposed it cannot approve it', items >= 1 && /cannot decide/.test(self) && await kit.getAttribute('data-state') === 'ENGINEERING_REVIEW', self);
+  await p.evaluate(() => localStorage.setItem('empathia.demo.perspective', 'syseng')); await p.reload(); await p.waitForSelector('[data-profile]');
+  const k2 = p.locator('[data-profile]').first(); await k2.getByTestId('scouter-pf-note').fill('kit matches the template'); await k2.getByTestId('scouter-pf-approve').click(); await k2.getByTestId('scouter-pf-publish').click();
+  const st = await k2.getAttribute('data-state'); const tag = await k2.innerText();
+  await k2.getByTestId('scouter-pf-adopt').click(); await p.waitForTimeout(400); const url = p.url(); const studio = await main(p);
+  ok('S-21', 'a systems engineer approves and publishes it as version 1; adopting it opens a Design a Space concept carrying the kit', st === 'PUBLISHED' && /v1/.test(tag) && /#\/studio\/new\/saved:S-sp-001-/.test(url) && /standard kit v1/.test(studio), `${st} ${url}`);
+  ok('S-22', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | ')); await t.close(); }
 await done();

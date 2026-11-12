@@ -97,11 +97,11 @@ function Profiles({ role, room, list }: { role: RoleKey; room: (typeof ROOMS)[nu
   const here = all.filter((p) => p.roomKey === room.key);
   const seq = Math.max(0, ...all.map((p) => Number(p.id.slice(3)) || 0)) + 1;
   return <Card title="Standard kits for this kind of room" sub="Proposed from Scouter’s evaluations; device classes only, no makes or models; nothing is bought or pushed to a device" icon="layers" testId="scouter-profiles">
-    {mayPropose ? <p><Button kind="primary" onClick={() => put(PF.propose(room.key, room, list, role, seq), 'Proposed. Send it to engineering review when it is ready.')} testId="scouter-propose-kit">Propose a standard kit for {room.label.toLowerCase()}</Button></p>
+    {mayPropose ? <p><Button kind="primary" onClick={() => put(PF.propose(room.key, room, list, role, seq), 'Proposed. Send it to engineering review when it is ready.')} testId="scouter-propose-kit">Draft a standard kit for {room.label.toLowerCase()}</Button></p>
       : <p className="ui-meta">{ROLES[role].label} reads the kits; proposing one is for the design roles.</p>}
     <p className="ui-meta" aria-live="polite" data-testid="scouter-pf-said">{said}</p>
     {here.length === 0 ? <p className="ui-meta">No kit proposed for this kind of room yet.</p> : <ul className="plain stack">{here.map((p) => { const st = PF.STATE_LABEL[p.state]; const pr = PF.problems(p); const n = note[p.id] || '';
-      return <li key={p.id} className="scouter__detail" data-profile={p.id} data-state={p.state}>
+      return <li key={p.id} className="scouter__kit" data-profile={p.id} data-state={p.state}>
         <p><b>{p.id} · {p.name}</b> <Tag tone={st.tone}>{st.label}{p.version ? ` · v${p.version}` : ''}</Tag> <span className="ui-meta">proposed by {ROLES[p.proposedBy]?.label || p.proposedBy}</span></p>
         <ul>{p.kit.map((k) => <li key={k.key}>{k.count} × {k.label}{k.condition ? <span className="ui-meta"> · condition: {k.condition}</span> : null}</li>)}</ul>
         <p className="ui-meta">{p.basis}. Expected tests: {p.expectedTests.join('; ')}.</p>
