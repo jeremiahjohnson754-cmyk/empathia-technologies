@@ -139,3 +139,10 @@ test('the Optimize lens’s seat count: fewer drops the last seats, more adds a 
   const more = m.adjustSeats(s, 2, 6, 5); assert.equal(more.length, 5); assert.ok(more.slice(3).every((x) => x.y === 3.9 && x.x > 0 && x.x < 6));
   const r = recs[0]; assert.equal(m.coverage(r, r.positions, 2).seats.length, m.coverage(r).seats.length + 2);
 });
+test('Scouter anatomy (V2.5.3 SCA_CLASSES): seven classes, every link names a block of its class, downstream walks to the outputs without loops', async () => {
+  const out = path.join(tmp, 'an.mjs'); await esbuild.build({ entryPoints: [path.join(repo, 'apps/demo/src/campus/anatomy.ts')], bundle: true, platform: 'node', format: 'esm', outfile: out, logLevel: 'error' });
+  const A = await import(pathToFileURL(out).href); assert.equal(Object.keys(A.SCA_CLASSES).length, 7);
+  for (const [k, C] of Object.entries(A.SCA_CLASSES)) { const ids = new Set(C.blocks.map((b) => b[0])); assert.ok(C.blocks.every((b) => b.length === 8 && A.SCA_LAYERS.some((l) => l[0] === b[2])), k);
+    for (const b of C.blocks) { const d = A.downstream(k, b[0]); assert.equal(new Set(d).size, d.length); assert.ok(!d.includes(b[0]), `${k} ${b[0]} loops`); } void ids; }
+  assert.deepEqual(A.downstream('camera', 'lens'), ['encoder', 'out']);
+});

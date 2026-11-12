@@ -37,6 +37,13 @@ export const SHELL_PAGES: readonly PageDef[] = [
     search: { keywords: 'scouter device evaluation compare candidates market watch standard profile shortlist', aliases: ['scouter', 'scout', 'evaluate a device', 'does this device suit', 'device evaluation', 'which camera', 'which display', 'which microphone'] },
   },
   {
+    // V2.5.3's Scouter anatomy, restored 12 Nov 2026: a device class opened into its blocks (an educational functional model)
+    id: 'scouter.anatomy', title: 'Scouter anatomy', purpose: 'A device class opened into its blocks: what each does, how it fails, the test that tells; break one to see where the symptom travels', product: 'lite',
+    path: '/scouter/anatomy', alias: ['/scouter/anatomy/:cls', '/lite/scouter/anatomy', '/lite/scouter/anatomy/:cls'], authority: { area: 'scouter' },
+    load: () => import('./campus/AnatomyPage.js'),
+    search: { keywords: 'anatomy device blocks layers signal power network control firmware mounting fault isolate', aliases: ['anatomy', 'device anatomy', 'inside a camera'] },
+  },
+  {
     id: 'access', title: 'Access policy', purpose: 'Who may open, see and do what: the demonstration’s access policy, from V2.5.3', product: 'shell',
     path: '/access', authority: { roles: ROLE_KEYS, why: 'the V2.5 Policy page: a demonstration of authorization, shown to every role' },
     load: entry('policy'),

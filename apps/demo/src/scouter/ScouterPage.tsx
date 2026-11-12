@@ -29,6 +29,7 @@ export default function ScouterPage({ role, params, query }: PageProps) {
       <h1 id="scouter-h">Does this device suit this room?</h1>
       <p className="lead">Ask Scouter before anyone buys. Each of the catalogue’s nine device classes is checked against the room’s own requirement — not against each other — and every check says where its figure comes from and whether it is published or modelled.</p>
       <p className="ui-meta">Acting as {ROLES[role].label}. Synthetic rooms; this build’s device catalogue.</p>
+      <p><a className="ui-btn ui-btn--quiet" href="#/scouter/anatomy" data-testid="scouter-anatomy">Anatomy: open a device class into its blocks</a></p>
       <label className="scouter__field">Room
         <select value={room.key} onChange={(e) => { location.hash = href(undefined, e.target.value); }}>{ROOMS.map((r) => <option key={r.key} value={r.key}>{r.label}</option>)}</select>
       </label>
