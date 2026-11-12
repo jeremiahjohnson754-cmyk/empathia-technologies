@@ -140,6 +140,43 @@ never replaces restored work: restoration (R1 to R5) stays first.
 | 70-5 | Lite advanced modes: Explore Space, Design Space, Explore Systems, Validate Space, Compare States | per-mode tests |
 | 70-6 | Cross-product room journey (journeys A to H) and the visual system extended product by product | one journey test per product touched |
 
+## The additive mandate of 12 Nov 06:23: Lite world intelligence, the Equipment Experience Engine, SIGNAL Story Mode
+
+- Received 12 Nov 2026, 06:23 CT, as a founder directive (held outside the repository: it names the former employer whose workplace
+  inspired the original Lite concept, and nothing from it that names that employer enters this repository). Added as later tasks; the
+  current work continues. It extends, never replaces: the two websites, the four worlds, the 90-room Enterprise estate, the role
+  configurations, prices and the SIGNAL canon stay as they are.
+- **The founder's ordering, kept as the first rule of this work:** produce the first *verified* equipment-training films and one
+  *playable* SIGNAL branching sequence before any bulk generation. A film that teaches the wrong control, or a scene that drifts from
+  the canon, is worse than no film. Every room, device, lesson, scene and piece of evidence uses one shared architecture (the same
+  room and asset identities, one content registry, one evidence model), so Lite, training and SIGNAL never disagree about a room.
+- Rules carried from it, in addition to the standing ones: a QR scan establishes a place, never authority; no live position where no
+  location source exists; a proposed design is never shown as the installation (DESIGNED / COMMISSIONED / CURRENT / PROPOSED);
+  every lesson names vendor, model, generation, OS and firmware, installed software, audience, source document, reviewer and review
+  date, and shows whether it applies to *this* room; a generated video is not a verified tutorial; no real device UI is imitated
+  without rights (otherwise the simulation is labelled generic); a passing simulation never proves a device passed commissioning;
+  SIGNAL keeps its canon (twelve seasons, four bands, Maya and Ray as written), and a branch without finished media keeps its working
+  Classic Story form; no paid generation, subscription, GPU capacity or public upload without the founder's word; no production
+  deployment; references to commercial interactive films and games are for pacing and choice design only, nothing copied.
+- Tasks (each to the definition of done in the mandate; status starts NOT STARTED):
+
+| # | What | Exit |
+|---|---|---|
+| 80-0 | Baseline and preservation record for this mandate: the starting SHA, the four worlds and role configurations re-verified, SIGNAL source counts re-derived from the held source (chapters, scenes, decisions, quests; definitions reconciled, canon untouched) | `CURRENT_BUILD_BASELINE_AUDIT.md`, `SIGNAL_CANON_AND_CHARACTER_AUDIT.md` |
+| 80-1 | The original Lite vision preserved as authority, without the employer: the 17 interactions and the supporting hotspots as a crosswalk to fictional reusable archetypes; Employee and Engineer modes; Explore, Learn, Engineer, Operate lenses derived from policy, not a role switch | `LITE_ORIGINAL_VISION_PRESERVATION.md`, `LITE_17_INTERACTION_CROSSWALK.csv`, `LITE_ARCHETYPE_CATALOG.json`; archetype unit tests |
+| 80-2 | Shared spatial contracts: the six questions (what is this place, where am I, what can I do, how do I use it, what is happening, who can help) answered from records; QR and deep links resolving to a canonical place with graceful fallback; route graph with accessible connectors and "take me back to my entrance" | `SPATIAL_EXPERIENCE_DATA_CONTRACTS.md`, `QR_WAYFINDING_AND_ACCESS_SPEC.md`; tests that a scan grants nothing |
+| 80-3 | Equipment Experience Engine records: the device training catalog (families only, no vendor treated as integrated), the lesson record with the verification states (not researched → documentation identified → script drafted → technically reviewed → storyboard approved → video generated → media QA passed → device/lab verified → released), and room-to-lesson matching from the asset record only, with "unconfirmed device" and a review task where content is missing | `EQUIPMENT_TRAINING_CATALOG.csv`, unit tests for matching and states |
+| 80-4 | Flagship training research: collaboration board and Surface Hub lesson matrices from the manufacturers' own published documentation, per model and software configuration; sign-in and saving behaviour stated exactly; every step cites its source | `MAXHUB_XBOARD_V7_TRAINING_MATRIX.md`, `SURFACE_HUB_TRAINING_MATRIX.md` |
+| 80-5 | Interactive training player (watch, pause, practise, decide, feedback, retry, complete) and a whiteboarding practice lab labelled a generic simulation; learning evidence recorded apart from equipment validation | browser tests; the lab works with no media |
+| 80-6 | Media connector matrix and production pipeline: what each creative connector actually does, rights, consent, cost, limits, test result (from the 70-0 probe record, extended per tool when used); the media metadata record and quality gates | `MEDIA_CONNECTOR_CAPABILITY_MATRIX.md`, `MEDIA_PRODUCTION_PIPELINE.md`, `EQUIPMENT_MEDIA_QA_REGISTER.csv` |
+| 80-7 | Pilots, in this order, each stopped at the founder's quality review before the next is scaled: (1) a generic-room meeting quick-start; (2) the collaboration-board lesson for an identified model; (3) the Surface Hub lesson for an identified model; (4) the Lite QR-to-room journey; (5) one SIGNAL scene. Script and storyboard first, technically reviewed against the source; media generated only after approval, with captions, transcript and loudness checked | playable files with QA rows; where a tool is unavailable, the scripts, storyboards, manifests and blockers instead, said so |
+| 80-8 | SIGNAL Story Mode: the branching graph read from the canon (chapter, scene, decision ids; prerequisites; consequences; trust and evidence state; save and resume); Classic, Cinematic and Hybrid modes over one state; one canon scene playable in Hybrid form with a real decision and consequence and the Classic fallback; character records from source evidence only, open details as founder decisions | `SIGNAL_BRANCHING_NARRATIVE_ENGINE.md`, `SIGNAL_CINEMATIC_SHOWRUNNER_BIBLE.md`, `SIGNAL_STORY_MODE_ACCEPTANCE_TESTS.csv`; a browser test of the branch |
+| 80-9 | Both websites tell the honest version (concept, simulation, verified, live kept apart) and the enterprise lifecycle proof carries the same room through Intake → … → APEX → export; rollback report | `TWO_WEBSITE_INTEGRATION_MAP.md`, `END_TO_END_ENTERPRISE_LIFECYCLE_PROOF.md`, `RELEASE_REGRESSION_AND_ROLLBACK_REPORT.md` |
+
+- Known limits stated now so no one is surprised later: there is no physical device or lab here, so no lesson can reach
+  "device/lab verified" from this session; real device interface footage needs rights the project does not hold; a UE5 or Pixel
+  Streaming layer needs assets and an approved GPU cost model that do not exist yet (the 2D and SVG paths stay the working path).
+
 ## Simulated, pending, blocked (say so everywhere)
 
 - Room Control, the calendar, the document source for knowledge ingestion: **simulated**.
@@ -178,6 +215,7 @@ never replaces restored work: restoration (R1 to R5) stays first.
 5. Instant Room: real photographs for the sharpness threshold when a device is available; hand a proposal to Room Builder.
 6. Townhall; University; Convention; corporate polish and films.
 7. 70/10 tasks 70-0 to 70-6 (above), after restoration; 70-2 (Drawing Intelligence slice) first among them.
+8. The 12 Nov 06:23 mandate, tasks 80-0 to 80-9 (above): verified pilots and one playable SIGNAL branch before any bulk media; enterprise lifecycle first.
 
 ## Commands
 
