@@ -258,6 +258,7 @@ body.has-dialog { overflow: hidden; }
 .scouter__dhead { display: flex; justify-content: space-between; align-items: center; gap: 8px; } .scouter__dhead h2 { margin: 0; }
 .scouter__gates { list-style: none; padding: 0; display: grid; gap: 6px; font-size: var(--fs-sm); }
 .scouter__gap { margin-top: var(--sp-6); } .scouter__gap h2 { font-size: var(--fs-md); } .scouter__field { margin-top: var(--sp-4); } .product-kicker a { color: inherit; text-decoration: underline; }
+.scouter__acts { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: end; } .scouter__field input { min-height: 44px; padding: 0 10px; background: var(--bg2); color: var(--tx); border: 1px solid var(--line2); border-radius: var(--r-sm); font: inherit; max-width: 100%; }
 @media (max-width: 640px) { .scouter__row { grid-template-columns: 1fr; } .scouter__score { text-align: left; } .scouter__tags { margin-left: 0; display: flex; margin-top: 4px; } }
 .policy-table th[scope="col"] abbr { text-decoration: none; } .policy-me { background: color-mix(in srgb, var(--role) 14%, transparent); }
 
