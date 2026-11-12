@@ -69,6 +69,36 @@ All control in the demonstration is simulated: nothing is sent to equipment, and
 | Arming a commissioning run without the local operator's consent | Only the consenting local operator can arm. The commissioning lead is refused. Arming needs two confirmations, and the run is labelled SIMULATION. | `demo` F-09; `enterprise-web` W-70, W-71 |
 | Treating training as permission | A completed check or drill is recorded as training. It never grants authority. | `demo-learn` LN-39; `enterprise-web` W-73 |
 
+## 5a. Training can never change a real record (founder, 12 Nov 2026)
+
+> "Ensuring that training simulations can't modify real ServiceHands incidents or tenant data."
+
+`demo-training-isolation` (12 checks) first lets the real stores exist (ServiceHands' shared workspace, the tenants' knowledge library, Here, Requests) and copies every stored record byte for byte. It then runs every kind of training as the technician, the architect, the steward and the visitor:
+
+- the three flagship labs (with the boss clock);
+- the same labs inside S01E05, S01E07 and S01E10;
+- Learn's instrument labs;
+- **Service Mode on a real room's case built from its service incident**, declared twice;
+- a SIGNAL incident;
+- a timed drill.
+
+It then compares the records with the copy.
+
+| What | Rule |
+|---|---|
+| Must be byte-identical | Incidents, work orders, APEX and Learn cases, staff, field sessions, licences, the tenants' knowledge, requests, field queue, control, connect, documents and decisions. |
+| Allowed to change | The training stores themselves, the workspace's `training` list, and new ledger lines of type `training.*` that each say they never grant a credential or authorization. |
+| Earlier ledger lines | Must still be there, unaltered. |
+
+Results:
+
+| Check | Result |
+|---|---|
+| TI-service, TI-architect, TI-steward, TI-visitor | No real record changed. |
+| TI-service-ledger | Training did write to the ledger, so the comparison was exercised. |
+| TI-visitor-refused | The visitor may practise but is refused Service Mode on a real case. |
+| TI-guard | The comparison itself catches a changed incident and a non-training ledger line. |
+
 ## 6. Media rights and claims
 
 | Attempt | Control | Negative tests |
