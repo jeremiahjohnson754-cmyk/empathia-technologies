@@ -88,6 +88,7 @@ suite('unit: SIGNAL Mission Control (points, the ladder, domain levels, crew tru
 suite('unit: SIGNAL result pop-ups (each gate cleared, the chapter complete, the quest objective and rating)', 'unit', node, ['--test', 'tests/unit/signal-pops.test.mjs'], tap);
 suite('unit: SIGNAL mentor channel, built-in answers (the twenty prepared answers and seven suggestions)', 'unit', node, ['--test', 'tests/unit/signal-mentor.test.mjs'], tap);
 suite('unit: Lite studio model (geometry with provenance, recipe, prediction, corrections, variants)', 'unit', node, ['--test', 'tests/unit/lite-studio.test.mjs'], tap);
+suite('unit: Design a Space concept (fixes, rehearsal, identity across versions, import guard)', 'unit', node, ['--test', 'tests/unit/studio-concept.test.mjs'], tap);
 suite('unit: SIGNAL glossary terms in the story (first use per chapter, the reference’s expressions)', 'unit', node, ['--test', 'tests/unit/signal-glossary.test.mjs'], tap);
 suite('unit: Engineering Manual (chapters, rules, workflow, exceptions)', 'unit', node, ['--test', 'tests/unit/demo-manual.test.mjs'], tap);
 suite('unit: generated documents are current (estate manifests, product census, workflow matrix)', 'unit', node, ['--test', 'tests/unit/docs-generated.test.mjs'], tap);

@@ -140,3 +140,4 @@ button.pa-card-link:focus-visible, button.pa-inc:focus-visible, a.pa-inc:focus-v
 .pa-toolbar > * { min-width: 0; max-inline-size: 100%; }
 .pa-crumbs li, .pa-crumbs span { overflow-wrap: anywhere; min-width: 0; }
 .pa-crumbs ol { max-inline-size: 100%; }
+.pa label.ui-btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
