@@ -98,7 +98,7 @@ gate list is the authority and gives 979.)
 | Formula calculators and "ask the calculator" |  | Boss stages: the formula card by tier, the Mastery gate (12 Nov); case files: the engineer's calculator steps (12 Nov) | RESTORED 12 Nov |
 | Glossary pop-overs on marked terms, with "first met in" |  | In the story (12 Nov): definition, first formula, "first met", a link to the glossary | RESTORED 12 Nov |
 | Explorers and the system map |  | Learn → Explore (12 Nov); the systems map on Mission Control (12 Nov) | RESTORED 12 Nov |
-| Review mode (shows the 318 review flags) and calm mode | | Flags are shown in the story. Calm mode: TO VERIFY | |
+| Review mode (shows the 318 review flags) and calm mode | | Flags are shown in the story; reviewer mode (Mission Control, two taps) opens every page. The reference's "Still art" toggle is in the reader since 12 Nov; the boss alarm's calm lights since 12 Nov; reduced motion respected throughout | RESTORED 12 Nov |
 | Keyboard: Space, Enter, Escape, Tab handled throughout | | Story reader: tested | TO VERIFY elsewhere |
 
 ## 5. Media in the SIGNAL source
