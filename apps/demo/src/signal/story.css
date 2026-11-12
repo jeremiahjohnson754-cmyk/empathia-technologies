@@ -120,3 +120,24 @@
 .sg-needs__h { margin: 0; font-size: var(--fs-sm); font-weight: 700; } .sg-needs__chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
 .sg-needs__dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; font-size: var(--fs-sm); } .sg-needs__dl dt { font-weight: 700; } .sg-needs__dl dd { margin: 0; }
 @media (max-width: 560px) { .sg-needs__dl { grid-template-columns: 1fr; } .sg-needs__dl dd { margin-bottom: 4px; } }
+
+/* Cinematic Story (A5, 12 Nov 2026): a dark stage over the canon panel art, lower-third captions, plain controls */
+.sg-cine { background: #0d1114; color: #eef2f4; border-radius: 16px; padding: 14px; display: grid; gap: 12px; margin-block: 12px; }
+.sg-cine__bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+.sg-cine__bar .ui-meta { color: #a9b6be; }
+.sg-cine__stage { position: relative; aspect-ratio: 16 / 9; max-width: 100%; border-radius: 12px; overflow: hidden; background: #050708; display: grid; place-items: center; }
+.sg-cine__art { position: absolute; inset: 0; display: grid; place-items: center; }
+.sg-cine__art svg { width: 100%; height: 100%; }
+.sg-cine__art--move { animation: sg-cine-push 9s ease-out both; }
+@keyframes sg-cine-push { from { transform: scale(1.0); } to { transform: scale(1.06); } }
+.sg-cine__caps { position: absolute; left: 4%; right: 4%; bottom: 5%; display: grid; gap: 6px; }
+.sg-cine__cap { margin: 0; justify-self: start; background: rgba(5, 7, 8, .72); padding: 6px 10px; border-radius: 8px; font-size: clamp(13px, 1.6vw, 17px); color: #d6dee3; font-style: italic; }
+.sg-cine__line { margin: 0; justify-self: center; text-align: center; background: rgba(5, 7, 8, .82); padding: 8px 14px; border-radius: 8px; font-size: clamp(15px, 2.1vw, 22px); line-height: 1.35; }
+.sg-cine__dec { position: relative; z-index: 1; max-width: 760px; padding: 18px; background: rgba(13, 17, 20, .94); border-radius: 12px; overflow: auto; max-height: 100%; }
+.sg-cine__opts { display: grid; gap: 8px; margin-top: 10px; }
+.sg-cine__opts .ui-btn { justify-content: flex-start; text-align: left; min-height: 44px; }
+.sg-cine__out { margin-top: 10px; border-left: 3px solid #e8b04a; padding-left: 10px; }
+.sg-cine__ctl { display: flex; flex-wrap: wrap; gap: 8px; }
+.sg-cine__ctl .ui-btn { min-height: 44px; }
+@media (max-width: 560px) { .sg-cine__stage { aspect-ratio: auto; min-height: 320px; } .sg-cine__dec { max-height: none; } }
+@media (prefers-reduced-motion: reduce) { .sg-cine__art--move { animation: none; } }
