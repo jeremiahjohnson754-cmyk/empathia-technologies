@@ -20,7 +20,7 @@ const sh = (cmd, args) => execFileSync(cmd, args, { encoding: 'utf8', stdio: ['i
 let starts = [], total = 0;
 if (hasAudio) {
   const dur = Number(sh('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', narration]).trim());
-  const log = spawnSync('ffmpeg', ['-hide_banner', '-i', narration, '-af', 'silencedetect=noise=-38dB:d=0.6', '-f', 'null', '-'], { encoding: 'utf8' }).stderr || '';
+  const log = spawnSync('ffmpeg', ['-hide_banner', '-i', narration, '-af', 'silencedetect=noise=-38dB:d=1.0', '-f', 'null', '-'], { encoding: 'utf8' }).stderr || '';
   const ends = [...log.matchAll(/silence_end: ([\d.]+)/g)].map((m) => Number(m[1])).filter((t) => t > 0.3 && t < dur - 0.3);
   if (ends.length !== beats.length - 1) throw new Error(`narration has ${ends.length + 1} spoken parts; the script has ${beats.length} beats: retime by hand`);
   starts = [0, ...ends.map((t) => t - 0.15)]; total = dur + 0.8;

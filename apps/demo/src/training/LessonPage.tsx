@@ -24,7 +24,7 @@ export default function LessonPage({ params }: PageProps) {
       <ul className="plain">{l.config.map((c) => <li key={c}>{c}</li>)}</ul>
       <p className="ui-meta" data-testid="lesson-room-check">No room in this demonstration records its meeting platform, so this lesson is not attached to a room automatically. In a real estate it appears only where the room’s asset record names this system; where the record is silent, the room’s owner confirms it.</p>
     </Card>
-    <Card title="Watch" sub={silent ? 'Captioned silent version (captions are part of the picture)' : 'With captions; the narration is added when its take is approved'} testId="lesson-film"
+    <Card title="Watch" sub={silent ? 'Captioned silent version (captions are part of the picture)' : l.media.narration === 'present' ? 'Narrated, with captions you can turn off' : 'With captions; the narration is added when its take is approved'} testId="lesson-film"
       action={<Button small onClick={() => setSilent(!silent)}>{silent ? 'Show the captioned film' : 'Show the silent captioned version'}</Button>}>
       <video key={silent ? 'silent' : 'film'} controls preload="metadata" playsInline poster={l.media.poster} src={silent ? l.media.captioned : l.media.video} style={{ width: '100%', maxWidth: 960, borderRadius: 12 }} data-testid="lesson-video" aria-label={`${l.title}, ${silent ? 'captioned silent version' : 'film'}`}>
         {!silent && <track kind="captions" src={l.media.captions} srcLang="en" label="English" default />}
