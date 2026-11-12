@@ -57,6 +57,10 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
       const n2 = await page.locator('.build__list li[data-dev]').count(); const at2 = await page.getByTestId('build-sel').innerText(); const ledger = await main();
       ok('B-03b', 'the designer selects a device, moves it 25 cm and duplicates it; undo walks both back', at1 !== at0 && n1 === n0 + 1 && n2 === n0 && at2 === at0 && (await page.getByTestId('build-undo').count()) === 0, JSON.stringify([at0.slice(0, 60), at1.slice(0, 60), n0, n1, n2])); void ledger;
       await page.locator('.build__list li[data-dev] button[aria-pressed=true]').first().click(); }
+    { await page.locator('[data-testid=build-outline] summary').click(); await page.fill('[aria-label="Outline corners"]', '0,0; 4,4; 4,0; 0,4'); await page.getByTestId('build-outline-go').click(); await page.waitForTimeout(120); const bow = await refusal();
+      await page.fill('[aria-label="Outline corners"]', '0,0; 6,0; 6,4; 3,4; 3,7; 0,7'); await page.getByTestId('build-outline-go').click(); await page.waitForTimeout(150); const t2 = await main();
+      ok('B-03c', 'an outline that crosses itself is refused; a valid one is drawn, its length and width DECLARED; undo puts the template outline back', /cross/.test(bow) && /outline DECLARED/.test(t2) && /7 × 6 ×/.test(t2), bow);
+      await page.getByTestId('build-undo').click(); await page.waitForTimeout(120); }
     await page.click('button:has-text("Approve the suggestion")'); await page.waitForTimeout(150);
     ok('B-04', 'the designer cannot approve the classification (authority)', /room\.classify\.approve/.test(await refusal()), await refusal());
     await page.fill('[aria-label="Revision reason"]', 'initial layout'); await page.click('button:has-text("Save revision")'); await page.waitForTimeout(150);

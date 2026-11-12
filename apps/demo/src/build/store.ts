@@ -5,7 +5,7 @@
  * The draft is kept in localStorage as a convenience for this viewer only (wrapped: storage may be unavailable) and can be reset.
  */
 import {
-  analyzeRoom, defaultCatalog, outlineFor, templateDevices, newDevice, proposeConnections, parseLength, lifecycleBlockers, LIFECYCLE_AUTHORITY,
+  analyzeRoom, defaultCatalog, outlineFor, templateDevices, newDevice, proposeConnections, parseLength, lifecycleBlockers, LIFECYCLE_AUTHORITY, area as polyArea,
   recordBlockers, buildResult, verifyBlockers, resultLabel, drawingInput, DRAWING_KINDS, type RoomAnalysis,
 } from '@empathia/commissioning-engine';
 import type { RoomDesignInput, PlannedDevice, Connection, RecordedResult, RoomLifecycle } from '@empathia/domain-types';
@@ -177,6 +177,48 @@ export function approveClassification(d: Draft, persona: string, override?: { ar
   d.design.classification.approved = { archetype: override ? override.archetype : s.archetype, override: !!override, reason: override ? override.reason : 'suggestion accepted', by: persona };
   log(d, persona, 'room.classification_approved', `${d.design.classification.approved.archetype}${override ? ' (override: ' + override.reason + ')' : ' (suggestion accepted)'}`);
   refreshDrawings(d); return d;
+}
+/** Segments cross (proper intersection), for the outline check. */
+function cross(a: [number, number], b: [number, number], c: [number, number], d: [number, number]): boolean {
+  const o = (p: [number, number], q: [number, number], r: [number, number]) => Math.sign((q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0]));
+  return o(a, b, c) * o(a, b, d) < 0 && o(c, d, a) * o(c, d, b) < 0;
+}
+/** Check an outline (V2.5.3 v25RoomPolyCheck): 3 to 24 corners, no edge crossing another, an area of at least 2 m²; moved to start at 0, 0. */
+export function checkOutline(points: Array<[number, number]>): { points: Array<[number, number]>; shift: [number, number]; area: number; w: number; l: number } | { why: string } {
+  if (points.length < 3 || points.length > 24) return { why: `an outline has 3 to 24 corners (this one has ${points.length})` };
+  if (points.some((p) => !p.every((v) => Number.isFinite(v) && Math.abs(v) < 200))) return { why: 'every corner is two numbers in metres, within 200 m' };
+  const n = points.length; for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) { if (j === i + 1 || (i === 0 && j === n - 1)) continue; if (cross(points[i]!, points[(i + 1) % n]!, points[j]!, points[(j + 1) % n]!)) return { why: `edges ${i + 1} and ${j + 1} cross: an outline goes round the room once` }; }
+  const minX = Math.min(...points.map((p) => p[0])), minY = Math.min(...points.map((p) => p[1]));
+  const pts = points.map(([x, y]) => [Math.round((x - minX) * 100) / 100, Math.round((y - minY) * 100) / 100] as [number, number]); const a = polyArea({ points: pts });
+  if (a < 2) return { why: `the outline encloses ${a} m²; a room needs at least 2 m²` };
+  return { points: pts, shift: [minX, minY], area: a, w: Math.max(...pts.map((p) => p[0])), l: Math.max(...pts.map((p) => p[1])) };
+}
+/** Parse "x,y; x,y; …" (metres or feet by the room's unit). */
+export function parseOutline(text: string, unit: 'm' | 'ft'): Array<[number, number]> | null {
+  const k = unit === 'ft' ? 0.3048 : 1; const parts = text.split(/[;\n]+/).map((x) => x.trim()).filter(Boolean);
+  const pts = parts.map((p) => p.split(/[,\s]+/).filter(Boolean).map(Number)); if (!pts.length || pts.some((p) => p.length !== 2 || p.some((v) => !Number.isFinite(v)))) return null;
+  return pts.map(([x, y]) => [Math.round(x! * k * 100) / 100, Math.round(y! * k * 100) / 100]);
+}
+/** Draw the room's outline (V2.5.3 v25RoomOutline): devices move with the outline's origin; length and width become DECLARED. */
+export function setOutline(d: Draft, persona: string, text: string): Draft | Refusal {
+  const no = editable(d, persona); if (no.length) return refused(no);
+  const pts = parseOutline(text, d.unit); if (!pts) return refused(['outline not readable: write corners as x,y separated by semicolons, for example 0,0; 6,0; 6,4; 0,4']);
+  const o = checkOutline(pts); if ('why' in o) return refused([`outline refused: ${o.why}`]);
+  for (const x of d.design.devices) { x.x = Math.round((x.x - o.shift[0]) * 100) / 100; x.y = Math.round((x.y - o.shift[1]) * 100) / 100; }
+  const prov = { ...(d.design.geometry.provenance as Record<string, string>), length: 'DECLARED', width: 'DECLARED', outline: 'DECLARED' };
+  d.design.geometry = { ...d.design.geometry, shape: 'custom', points: o.points, lengthM: o.l, widthM: o.w, provenance: prov as never, confidence: Object.values(prov).every((p) => p === 'DECLARED') ? 'declared' : 'modeled' };
+  log(d, persona, 'room.geometry_updated', `outline drawn: ${o.points.length} corners, ${o.area} m², ${o.w} × ${o.l} m`); touchDesign(d, persona); return d;
+}
+/** Confirm the scale (V2.5.3): one edge measured on site; the outline and the devices are scaled so that edge has that length. */
+export function confirmScale(d: Draft, persona: string, edge: number, measured: string): Draft | Refusal {
+  const no = editable(d, persona); if (no.length) return refused(no);
+  const P = d.design.geometry.points; const a = P[edge - 1], b = P[edge % P.length]; if (!a || !b) return refused([`the outline has ${P.length} edges; edge ${edge} does not exist`]);
+  const m = parseLength(measured, d.unit); if (!m) return refused(['the measured length is not readable']);
+  const was = Math.hypot(b[0] - a[0], b[1] - a[1]); const k = m / was; if (!(k > 0.25 && k < 4)) return refused([`a factor of ${k.toFixed(2)} is not a scale correction: check the edge and the measurement`]);
+  const sc = (v: number) => Math.round(v * k * 100) / 100;
+  d.design.geometry = { ...d.design.geometry, points: P.map(([x, y]) => [sc(x), sc(y)] as [number, number]), lengthM: sc(d.design.geometry.lengthM), widthM: sc(d.design.geometry.widthM), provenance: { ...(d.design.geometry.provenance as Record<string, string>), scale: 'DECLARED' } as never };
+  for (const x of d.design.devices) { x.x = sc(x.x); x.y = sc(x.y); }
+  log(d, persona, 'room.scale_confirmed', `edge ${edge} measured ${m} m (was ${was.toFixed(2)} m): scaled by ${k.toFixed(3)}`); touchDesign(d, persona); return d;
 }
 /** A redline on a drawing: text (at most 400 characters), the revision it was made against, its author. An approved drawing that is
  *  redlined goes back to REVIEW_REQUIRED. */

@@ -49,3 +49,14 @@ test('redlines: text required; an open one holds the drawing’s approval and se
   assert.ok('why' in B.resolveRedline(d, 'designer', 'RL-1', '')); assert.ok(!('why' in B.resolveRedline(d, 'designer', 'RL-1', 'moved to the front wall in rev 2')));
   assert.ok('why' in B.resolveRedline(d, 'designer', 'RL-1', 'again')); assert.ok(!('why' in B.approveDrawing(d, 'syseng', kind)));
 });
+test('outline: corners go round once, at least 2 m², moved to the origin with the devices; confirming the scale scales both', () => {
+  const d = draft(); assert.ok('why' in B.setOutline(d, 'designer', 'not numbers'));
+  const bow = B.setOutline(draft(), 'designer', '0,0; 4,4; 4,0; 0,4'); assert.ok('why' in bow); assert.match(bow.why[0], /cross/);
+  assert.match(B.setOutline(draft(), 'designer', '0,0; 1,0; 1,1').why[0], /2 m²/);
+  const dev = live(d)[0]; const x0 = dev.x, y0 = dev.y;
+  const r = B.setOutline(d, 'designer', '1,1; 7,1; 7,5; 4,5; 4,9; 1,9'); assert.ok(!('why' in r)); const g = r.design.geometry;
+  assert.deepEqual(g.points[0], [0, 0]); assert.equal(g.shape, 'custom'); assert.deepEqual([g.widthM, g.lengthM], [6, 8]); assert.equal(g.provenance.outline, 'DECLARED');
+  const moved = r.design.devices.find((x) => x.id === dev.id); assert.deepEqual([moved.x, moved.y], [Math.round((x0 - 1) * 100) / 100, Math.round((y0 - 1) * 100) / 100]);
+  assert.ok('why' in B.confirmScale(r, 'designer', 99, '6')); assert.ok('why' in B.confirmScale(r, 'designer', 1, '60'), 'a factor of 10 is not a correction');
+  const s = B.confirmScale(r, 'designer', 1, '6.6'); assert.ok(!('why' in s)); assert.deepEqual(s.design.geometry.points[1], [6.6, 0]); assert.equal(s.design.geometry.widthM, 6.6); assert.equal(s.design.geometry.provenance.scale, 'DECLARED');
+});

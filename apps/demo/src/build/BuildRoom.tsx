@@ -91,6 +91,7 @@ function Design({ d, persona, a, apply, undo }: { d: S.Draft; persona: string; a
   const [cat, setCat] = useState('micceil'); const [reason, setReason] = useState(''); const [sel, setSel] = useState<string | null>(null); const [swap, setSwap] = useState(''); const [why, setWhy] = useState(''); const [cmp, setCmp] = useState<[number, number] | null>(null);
   const step = (f: (x: S.Draft) => S.Draft | S.Refusal) => { const before = JSON.stringify(d); return apply(f(JSON.parse(before) as S.Draft), before); };
   const editable = ['PLANNED', 'COMMISSIONING'].includes(d.design.lifecycle);
+  const [outline, setOutline] = useState(() => d.design.geometry.points.map(([x, y]) => `${x},${y}`).join('; ')); const [edge, setEdge] = useState(1); const [meas, setMeas] = useState('');
   const g = d.design.geometry; const prov = g.provenance as Record<string, string>;
   const devs = S.live(d.design.devices) as typeof d.design.devices; const conns = S.live(d.design.connections) as typeof d.design.connections;
   const cls = a.classification; const ap = d.design.classification.approved;
@@ -99,6 +100,12 @@ function Design({ d, persona, a, apply, undo }: { d: S.Draft; persona: string; a
       <div>
         <Plan d={d} onPlace={['PLANNED', 'COMMISSIONING'].includes(d.design.lifecycle) ? (x, y) => apply(S.addDevice(d, persona, cat, { x, y })) : undefined} />
         <div className="build__row"><label className="ui-muted" htmlFor="b-cat">Add</label><select id="b-cat" value={cat} onChange={(e) => setCat(e.target.value)}>{CATS.map(([k, l, grp]) => <option key={k} value={k}>{grp} · {l}</option>)}</select><Button small onClick={() => apply(S.addDevice(d, persona, cat, { x: g.widthM / 2, y: g.lengthM / 2 }))}>Place at the centre</Button></div>
+        {editable && <details className="build__outline" data-testid="build-outline"><summary>Outline and scale</summary>
+          <p className="ui-muted">Corners in {d.unit === 'ft' ? 'feet' : 'metres'}, going round the room once: <code>x,y; x,y; …</code>. Devices move with the outline’s origin; length and width become DECLARED.</p>
+          <div className="build__row"><textarea aria-label="Outline corners" rows={2} value={outline} onChange={(e) => setOutline(e.target.value)} /><Button small onClick={() => step((y) => S.setOutline(y, persona, outline))} testId="build-outline-go">Draw the outline</Button></div>
+          <div className="build__row"><label className="ui-muted" htmlFor="b-edge">Edge</label><select id="b-edge" value={edge} onChange={(e) => setEdge(Number(e.target.value))}>{g.points.map((_, i) => { const p = g.points[i]!, q = g.points[(i + 1) % g.points.length]!; return <option key={i} value={i + 1}>{i + 1} · {Math.hypot(q[0] - p[0], q[1] - p[1]).toFixed(2)} m</option>; })}</select>
+            <input aria-label="Measured length of the edge" value={meas} onChange={(e) => setMeas(e.target.value)} placeholder={d.unit === 'ft' ? `e.g. 19' 8"` : 'measured, m'} inputMode="decimal" /><Button small onClick={() => step((y) => S.confirmScale(y, persona, edge, meas))} testId="build-scale">Confirm the scale</Button></div>
+        </details>}
         <Facts items={[['Dimensions', <>{g.lengthM} × {g.widthM} × {g.ceiling} m · {Object.entries(prov).map(([k, v]) => <Tag key={k} tone={TONE[v] || 'muted'}>{k} {v}</Tag>)}</>], ['Confidence', g.confidence], ['Template', S.C.templates[d.design.template]?.label || d.design.template], ['Occupancy', String(d.design.occupancy)]]} />
       </div>
       <div>
