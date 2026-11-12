@@ -102,6 +102,32 @@ For SIGNAL and Lite these phases follow R1 to R5 above.
 | P6 | Learn and SIGNAL | corpus parity report; playable tests |
 | P7, P8 | Motion and spatial polish; full QA at 320, 390, 768, 1200, 1440, 1920, both themes, roles, data modes | staging after a clean matrix; production only on the founder's word |
 
+## Later: Empathia Signature 70/10 (founder, 12 Nov 2026 03:14)
+
+"Continue working as you were, add these as tasks for you to do later." Nothing below has started. It builds on the 60/10 phases and
+never replaces restored work: restoration (R1 to R5) stays first.
+
+- Sources, private, never committed: the directive `/mnt/user-data/attachments/73b60a1b-854c-5a1e-99ae-d3ec61696e66/dfbdf490-attachment.txt`;
+  a Drawing Intelligence concept image `03e04f39-image.png` and sixteen 60/10 reference images in the same folder. The founder's note:
+  these were made by another AI tool as **references only** — layout and mood, never assets to ship, never evidence of a feature.
+  The re-attached SIGNAL standalone and V2.5.3 are byte-identical to the held copies (SHA-256 `80f8d992…`, `9d6e53ef…`).
+- Its rules kept here: no production deployment without the founder's word; no fabricated tests, media, deployments or integrations;
+  no implied AVIXA certification and no copied standards text (display-size analysis uses sourced, reproducible arithmetic and says
+  which method and which inputs; the published standard is cited by name, never reproduced); no multiplayer presence shown as live; the
+  stadium and every venue fictional, never shown as a customer installation; narration and films only when a playable asset with rights
+  exists; badges never imply accreditation.
+- Tasks, each in the list:
+
+| # | What | Exit |
+|---|---|---|
+| 70-0 | Repository and connector audit: a capability inventory of every connector (invoked successfully, failed, not tried) | `docs/surpass/CONNECTOR_INVENTORY.md` |
+| 70-1 | Four worlds on one shared core: Enterprise (exists), Stadium, University, Convention; tenant isolation tested | isolation tests, a negative case per world |
+| 70-2 | Drawing Intelligence first vertical slice: a drawing → scale and geometry with human calibration → display viewing analysis (screen size against farthest viewer, compare e.g. 98, 110, 125 inch) → Lite room → recommendation | one browser test end to end; every number labelled measured, modeled, assumption or unavailable |
+| 70-3 | Overlays with provenance labels (measured, modeled, simulation, assumption, proposed, unavailable); 2D and 3D kept in step; the nine-dimension Space Optimizer kept | overlay tests |
+| 70-4 | One cinematic SIGNAL chapter in Story Mode (Observe → Reason → Act → Consequence → Evidence → Repair → Verify → Reflect → Competency), canon unchanged; character continuity notes; world-linked missions | playable test; captions; no audio claimed without a file |
+| 70-5 | Lite advanced modes: Explore Space, Design Space, Explore Systems, Validate Space, Compare States | per-mode tests |
+| 70-6 | Cross-product room journey (journeys A to H) and the visual system extended product by product | one journey test per product touched |
+
 ## Simulated, pending, blocked (say so everywhere)
 
 - Room Control, the calendar, the document source for knowledge ingestion: **simulated**.
@@ -138,6 +164,7 @@ For SIGNAL and Lite these phases follow R1 to R5 above.
 4. Manual: its chapters in the Knowledge Ledger as a source awaiting review; a room's saved set linked from its commissioning page.
 5. Instant Room: real photographs for the sharpness threshold when a device is available; hand a proposal to Room Builder.
 6. Townhall; University; Convention; corporate polish and films.
+7. 70/10 tasks 70-0 to 70-6 (above), after restoration; 70-2 (Drawing Intelligence slice) first among them.
 
 ## Commands
 
