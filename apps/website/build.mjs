@@ -8,7 +8,7 @@
  * Films enter the site only when VERIFIED for the website in films.json (auto); --films=preview is an owner-review build (noindex).
  * A film marked `exclusive` in films.json plays only on the pages in its `placement` (never on /films): the build checks it.
  */
-import fs from 'node:fs'; import path from 'node:path'; import crypto from 'node:crypto'; import { fileURLToPath } from 'node:url';
+import fs from 'node:fs'; import { execFileSync } from 'node:child_process'; import path from 'node:path'; import crypto from 'node:crypto'; import { fileURLToPath } from 'node:url';
 const app = path.dirname(fileURLToPath(import.meta.url)); const repo = path.resolve(app, '../..'); const dist = path.join(app, 'dist');
 const arg = (k, d) => (process.argv.find((a) => a.startsWith(`--${k}=`)) || '').split('=').slice(1).join('=') || d;
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
@@ -89,7 +89,10 @@ fs.writeFileSync(path.join(dist, 'site.css'), css);
 fs.writeFileSync(path.join(dist, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${PATHS.map((p) => `  <url><loc>${base}${p}</loc></url>`).join('\n')}\n</urlset>\n`);
 fs.writeFileSync(path.join(dist, 'robots.txt'), filmsMode === 'preview' ? 'User-agent: *\nDisallow: /\n' : `User-agent: *\nAllow: /\nSitemap: ${base}/sitemap.xml\n`);
 const walk = (d) => fs.readdirSync(d).flatMap((f) => { const p = path.join(d, f); return fs.statSync(p).isDirectory() ? walk(p) : [p]; });
-const files = walk(dist); const manifest = { app: '@empathia/website', builtAt: new Date().toISOString(), base: base || null, api: api || null, demoUrl, films: { mode: filmsMode, included: films.map((f) => f.key), excluded }, pages: PATHS.length, files: Object.fromEntries(files.map((f) => [path.relative(dist, f), { bytes: fs.statSync(f).size, sha256: crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex') }])) };
+// the release this build is: Render sets RENDER_GIT_COMMIT; elsewhere git says (12 Nov 2026, so both sites can be checked to carry the same release)
+const sourceCommit = (() => { if (process.env.RENDER_GIT_COMMIT) return process.env.RENDER_GIT_COMMIT; try { return execFileSync('git', ['rev-parse', 'HEAD'], { cwd: path.dirname(fileURLToPath(import.meta.url)), stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim() || null; } catch { return null; } })();
+
+const files = walk(dist); const manifest = { app: '@empathia/website', sourceCommit, builtAt: new Date().toISOString(), base: base || null, api: api || null, demoUrl, films: { mode: filmsMode, included: films.map((f) => f.key), excluded }, pages: PATHS.length, files: Object.fromEntries(files.map((f) => [path.relative(dist, f), { bytes: fs.statSync(f).size, sha256: crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex') }])) };
 fs.writeFileSync(path.join(dist, 'BUILD_MANIFEST.json'), JSON.stringify(manifest, null, 2));
 const home = manifest.files['index.html'].bytes, js = manifest.files['site.js'].bytes;
 const themeJs = manifest.files['theme-init.js'].bytes; const fonts = ['inter-400.woff2', 'inter-600.woff2', 'inter-display-800.woff2'].reduce((a, f) => a + manifest.files[`fonts/${f}`].bytes, 0);   // the three preloaded faces (D38)

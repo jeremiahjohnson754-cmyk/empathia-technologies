@@ -4,7 +4,7 @@
  * @empathia/api-client from source), demo.css (design tokens + ui.css + demo.css), and a manifest with hashes.
  *   node apps/enterprise-web/build.mjs [--dev]
  */
-import fs from 'node:fs';
+import fs from 'node:fs'; import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
@@ -75,6 +75,9 @@ fs.copyFileSync(path.join(app, 'src/role-boot.js'), path.join(dist, 'role-boot.j
 const offline = (await import('./build.offline.mjs')).shipOffline(app, dist);
 console.log(`offline shell ${offline.version}: ${offline.files} files, ${(offline.bytes / 1024 / 1024).toFixed(1)} MiB; ${offline.packs} packs`);
 const files = (function walk(d, pre = '') { return fs.readdirSync(d).flatMap((f) => fs.statSync(path.join(d, f)).isDirectory() ? walk(path.join(d, f), `${pre}${f}/`) : [`${pre}${f}`]); })(dist);
-const manifest = { app: '@empathia/demo', builtAt: new Date().toISOString(), files: Object.fromEntries(files.map((f) => [f, { bytes: fs.statSync(path.join(dist, f)).size, sha256: crypto.createHash('sha256').update(fs.readFileSync(path.join(dist, f))).digest('hex') }])) };
+// the release this build is: Render sets RENDER_GIT_COMMIT; elsewhere git says (12 Nov 2026, so both sites can be checked to carry the same release)
+const sourceCommit = (() => { if (process.env.RENDER_GIT_COMMIT) return process.env.RENDER_GIT_COMMIT; try { return execFileSync('git', ['rev-parse', 'HEAD'], { cwd: path.dirname(fileURLToPath(import.meta.url)), stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim() || null; } catch { return null; } })();
+
+const manifest = { app: '@empathia/demo', sourceCommit, builtAt: new Date().toISOString(), files: Object.fromEntries(files.map((f) => [f, { bytes: fs.statSync(path.join(dist, f)).size, sha256: crypto.createHash('sha256').update(fs.readFileSync(path.join(dist, f))).digest('hex') }])) };
 fs.writeFileSync(path.join(dist, 'BUILD_MANIFEST.json'), JSON.stringify(manifest, null, 2));
 console.log(`demo built: ${files.map((f) => `${f} ${(manifest.files[f].bytes / 1024).toFixed(0)} KiB`).join(', ')}`);

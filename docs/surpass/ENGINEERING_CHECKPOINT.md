@@ -192,6 +192,18 @@ never replaces restored work: restoration (R1 to R5) stays first.
 | 90-6 | Security and reliability under serious testing | Role isolation, tenant boundaries, private documentation, media rights and equipment control: adversarial tests per boundary (forged role in storage, QR or link tampering, direct address of a denied page, cross-tenant search, simulated control without consent); reliability under reload, offline and slow network | a test suite per boundary with negative cases; a written threat review; NOT RUN listed honestly (no penetration test by a third party) |
 | 90-7 | Many industries multiply commercial execution | The architecture is shared; sales, support, localization, compliance and implementation are not. For each world and each future industry: what is shared, what is per-industry (regulation, buyer, support model, languages), and what the site may claim today | a written per-industry readiness note; the sites claim only what that note supports |
 
+## Next acceptance checkpoint (set by the founder, 12 Nov 07:12)
+
+Staging today is `b53515e`, not the later work. The checkpoint is met only when all five hold, each with its evidence:
+
+| # | Criterion | Evidence required | State |
+|---|---|---|---|
+| A1 | The latest commit passes the full light and dark matrices | `SUMMARY-light.txt` and `SUMMARY-dark.txt` for that commit, every suite exit 0 except `founder-studio` (covered by A4) | light matrix on `2c40f7f`'s build running |
+| A2 | Both websites deploy the same intended release | Render shows both static sites live on that commit, and each served `BUILD_MANIFEST.json` names it in `sourceCommit` (added 12 Nov: Render's `RENDER_GIT_COMMIT`, else `git rev-parse HEAD`) | the field ships with the next build |
+| A3 | A real browser completes an Enterprise room journey from Lite through an operational workflow, on staging | a recorded run against the staging URLs (Claude in Chrome when connected, otherwise a browser run with the founder's permission): one room opened in Lite, found in Search Party, its commissioning record, an issue raised and closed in ServiceHands with evidence, the same room identity throughout; steps and outcome recorded | not run |
+| A4 | Founder Studio verified privately from the correct source | a `--studio` build from the V2.5.4 Founder Edition and the films, its suite run and recorded, never deployed | waits for the source files (95-3) |
+| A5 | The first equipment-training video and one branching SIGNAL scene play and are tested | the file plays in the product with matching captions and transcript, measured loudness, its QA row; the SIGNAL scene's decision changes state and its Classic fallback works; both under browser tests | not started (80-7, 80-8, 95-5) |
+
 ## The founder's watch items of 12 Nov 06:38
 
 | # | What | State | Exit |
