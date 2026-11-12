@@ -21,7 +21,7 @@ agents.
 |---|---|---|
 | Staging (`phase3/legendary-experience`) | `1dced1e` | full matrix clean before it was pushed; Render demo and website live on it |
 | Light matrix on the working branch | `882dbdf` | 57 suites exit 0 except `demo-core` (one race in a role-shelf count, fixed in the test: it now waits for the async count) and `founder-studio` (NOT RUN in a public build) — `.local/matrix-882dbdf/` |
-| Working branch | HEAD | restorations since `882dbdf` are source and unit tested, **browser checks drafted, not yet run**: result pop-ups, quest objectives ticking, glossary marks and terms you'll need, Still art, the library at the source's revision, the timeline, the mentor channel, case files, explorers, Lite X-ray, inspector and change the room |
+| Working branch | `0627561` | restorations since `882dbdf` browser-checked on their own: `demo-story-more` 51/51 (pop-ups, quest ticks, glossary marks and terms you'll need, Still art, library at the source's revision, timeline, case files, explorers, mentor channel), `demo-lite` 288/288 (X-ray, inspector, change the room), `demo-learn` 50/50, `demo-core` 294/294, `learn-labs` 29/29. Full matrix light and dark on the final head before staging |
 
 Browser-tested on `v18/continuation` since `be010f1` (suites light and dark; every page looked at, desktop and 390 px):
 
