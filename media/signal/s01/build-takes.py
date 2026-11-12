@@ -19,6 +19,7 @@ if os.path.exists(sp):
 foot = {}
 for row in open(os.path.join(root, 'film/shots.tsv'), encoding='utf8').read().splitlines()[1:]:
     ch, before, slot, _job, note = row.split('\t')
+    if ch == 's01e01': continue  # Ten Seats keeps its own list in cinematic.ts
     src = f'media/signal/s01/film/{ch}-{slot}.mp4'
     if os.path.exists(os.path.join(pub, src)): foot.setdefault(ch, []).append({'before': int(before), 'src': src, 'note': note + ' Generated footage of the setting, not a real venue or real people.'})
 fbody = ',\n'.join(f'  {ch}: [\n' + ',\n'.join('    ' + json.dumps(x, ensure_ascii=False) for x in xs) + ',\n  ]' for ch, xs in sorted(foot.items()))

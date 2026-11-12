@@ -1,0 +1,98 @@
+[
+ {
+  "chapter": "s01e00",
+  "slot": "booth",
+  "job": "job_db532701-283a-48bb-afc8-e3e0e858c2d9",
+  "start": 0
+ },
+ {
+  "chapter": "s01e00",
+  "slot": "switch",
+  "job": "job_6efdb690-6bd2-4e61-8958-e79cb1b08e6d",
+  "start": 8
+ },
+ {
+  "chapter": "s01e00",
+  "slot": "lot",
+  "job": "job_9f2f0da1-6d37-4e26-9121-f45cb76b9065",
+  "start": 16
+ },
+ {
+  "chapter": "s01e02",
+  "slot": "teachme",
+  "job": "job_f75f8773-f365-40ba-a8b6-2ded4f493b02",
+  "start": 24
+ },
+ {
+  "chapter": "s01e02",
+  "slot": "clip",
+  "job": "job_5336c667-d447-4347-ab37-31e05aa65952",
+  "start": 32
+ },
+ {
+  "chapter": "s01e02",
+  "slot": "sunday",
+  "job": "job_fa25e8e8-8109-4a3d-92d1-904afd581fbd",
+  "start": 40
+ },
+ {
+  "chapter": "s01e03",
+  "slot": "laptop",
+  "job": "job_d1671bad-4e5e-4580-9cba-7581eee133a7",
+  "start": 48
+ },
+ {
+  "chapter": "s01e03",
+  "slot": "isolator",
+  "job": "job_52357c3b-8a08-4cba-8c65-c34080731643",
+  "start": 56
+ },
+ {
+  "chapter": "s01e03",
+  "slot": "video",
+  "job": "job_757f077f-088b-4a64-aec7-40954e4a7e3d",
+  "start": 64
+ },
+ {
+  "chapter": "s01e04",
+  "slot": "silent",
+  "job": "job_3f630a5a-61dd-430f-b80d-33c4442292c5",
+  "start": 72
+ },
+ {
+  "chapter": "s01e04",
+  "slot": "rack",
+  "job": "job_9eea9924-12e9-4d30-bbe8-a25fa865d58f",
+  "start": 80
+ },
+ {
+  "chapter": "s01e04",
+  "slot": "labels",
+  "job": "job_c609997a-211b-407b-a79d-0fe4558b036b",
+  "start": 88
+ },
+ {
+  "chapter": "s01e05",
+  "slot": "fixtures",
+  "job": "job_e4cedb9d-64a2-4b19-a033-21efd1827ee0",
+  "start": 96
+ },
+ {
+  "chapter": "s01e05",
+  "slot": "thunk",
+  "job": "job_d967a60c-a8e7-4797-bb1a-f3cf95628262",
+  "start": 104
+ },
+ {
+  "chapter": "s01e05",
+  "slot": "electrician",
+  "job": "job_417debd2-1b0b-4098-bbc9-a8a775681a4b",
+  "start": 112
+ },
+ {
+  "chapter": "s01e01",
+  "slot": "fill",
+  "job": "job_a87aaf54-cdae-4704-bbeb-d83bea6e7612",
+  "start": 120
+ }
+]
