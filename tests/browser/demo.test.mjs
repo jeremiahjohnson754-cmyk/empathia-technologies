@@ -113,6 +113,8 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     await page.fill('[aria-label="Redline text"]', 'the camera bracket is drawn on the wrong wall'); await page.getByTestId('build-redline').click(); await page.waitForTimeout(150);
     const rl = await page.getByTestId('build-redlines').innerText(); await page.fill('[aria-label="Resolution for RL-1"]', 'moved to the front wall'); await page.click('button:has-text("Resolve RL-1")'); await page.waitForTimeout(150);
     ok('B-15h', 'a redline needs text; it is recorded OPEN against the revision and resolved with what was done', /needs text/.test(empty) && /RL-1/.test(rl) && /OPEN/.test(rl) && /RESOLVED/.test(await page.getByTestId('build-redlines').innerText()) && /moved to the front wall/.test(await page.getByTestId('build-redlines').innerText()), `${empty} | ${rl.slice(0, 120)}`);
+    { const [dl] = await Promise.all([page.waitForEvent('download', { timeout: 5000 }).catch(() => null), page.getByTestId('build-workbook').click()]); const b = dl ? fs.readFileSync(await dl.path()) : Buffer.alloc(0);
+      ok('B-15i', 'the commissioning workbook downloads as an .xlsx (a zip) with its sheets; nothing leaves the page', !!dl && /\.xlsx$/.test(dl.suggestedFilename()) && b.subarray(0, 2).toString() === 'PK' && /Testing/.test(b.toString('latin1')) && !ext.length, `${dl?.suggestedFilename()} ${b.length}`); }
     await page.click('#tab-ledger'); await page.waitForTimeout(150);
     const led = await main();
     ok('B-16', 'the ledger records every refusal with its actor (DENIED rows) alongside the allowed changes', (led.match(/DENIED/g) || []).length >= 5 && (led.match(/ALLOWED/g) || []).length >= 10, `${(led.match(/DENIED/g) || []).length} denied`);

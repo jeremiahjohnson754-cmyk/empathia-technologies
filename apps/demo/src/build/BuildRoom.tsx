@@ -3,6 +3,7 @@ import { Button, Notice, Tag, Field, Tabs, Facts } from '@empathia/ui';
 import { ROOM_LIFECYCLE, type RoomLifecycle } from '@empathia/domain-types';
 import { DRAWING_KINDS, LIFECYCLE_AUTHORITY, resultLabel, resultWords } from '@empathia/commissioning-engine';
 import * as S from './store.js';
+import { buildXlsx } from './xlsx.js';
 
 const TEMPLATES = Object.entries(S.C.templates).map(([k, t]) => [k, t.label] as const);
 const CATS = Object.entries(S.C.categories).map(([k, c]) => [k, c.label, c.group] as const);
@@ -197,6 +198,7 @@ function Drawings({ d, persona, apply }: { d: S.Draft; persona: string; apply: (
     <div>
       <p className="ui-muted">Each drawing is generated from a canonical input; when that input changes after approval, the drawing becomes REVIEW_REQUIRED rather than silently staying approved.</p>
       <ul className="build__list">{Object.entries(DRAWING_KINDS).map(([k, label]) => { const dr = d.drawings[k]; return <li key={k}><b>{label}</b> <Tag tone={TONE[dr?.state || 'DRAFT']}>{dr?.state || 'DRAFT'}</Tag> <code>{dr?.input}</code> {dr?.by && <span className="ui-muted">approved by {S.personaLabel(dr.by)}</span>} <Button small onClick={() => apply(S.approveDrawing(d, persona, k))}>Approve as {S.personaLabel(persona)}</Button></li>; })}</ul>
+      <p className="build__row"><Button small onClick={() => { const bytes = buildXlsx(S.workbookSheets(d), `${d.name} · commissioning workbook`); const url = URL.createObjectURL(new Blob([bytes as Uint8Array<ArrayBuffer>], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" })); const el = document.createElement('a'); el.href = url; el.download = `${d.name.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}-workbook.xlsx`; document.body.appendChild(el); el.click(); el.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); }} testId="build-workbook">Download the commissioning workbook (.xlsx)</Button></p>
       <h2 className="build__h2">Redlines ({rls.filter((r) => r.state === 'OPEN').length} open)</h2>
       <div className="build__row"><select aria-label="Drawing to redline" value={kind} onChange={(e) => setKind(e.target.value)}>{Object.entries(DRAWING_KINDS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select>
         <input aria-label="Redline text" value={text} onChange={(e) => setText(e.target.value)} placeholder="what is wrong on the drawing" maxLength={400} /><Button small onClick={() => { if (apply(S.addRedline(d, persona, kind, text))) setText(''); }} testId="build-redline">Add redline</Button></div>

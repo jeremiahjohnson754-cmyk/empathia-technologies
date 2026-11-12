@@ -91,6 +91,7 @@ suite('unit: Lite studio model (geometry with provenance, recipe, prediction, co
 suite('unit: Design a Space concept (fixes, rehearsal, identity across versions, import guard)', 'unit', node, ['--test', 'tests/unit/studio-concept.test.mjs'], tap);
 suite('unit: Scouter standard kits (propose, review by another role, publish, stale, adopt)', 'unit', node, ['--test', 'tests/unit/scouter-profiles.test.mjs'], tap);
 suite('unit: Build a Room edits (move, duplicate, swap within a group, retire a connection, compare revisions)', 'unit', node, ['--test', 'tests/unit/build-room-edits.test.mjs'], tap);
+suite('unit: Build a Room commissioning workbook (a valid zip, seven sheets, formulas with cached counts, formula text kept as text)', 'unit', node, ['--test', 'tests/unit/build-workbook.test.mjs'], tap);
 suite('unit: SIGNAL glossary terms in the story (first use per chapter, the reference’s expressions)', 'unit', node, ['--test', 'tests/unit/signal-glossary.test.mjs'], tap);
 suite('unit: Engineering Manual (chapters, rules, workflow, exceptions)', 'unit', node, ['--test', 'tests/unit/demo-manual.test.mjs'], tap);
 suite('unit: generated documents are current (estate manifests, product census, workflow matrix)', 'unit', node, ['--test', 'tests/unit/docs-generated.test.mjs'], tap);

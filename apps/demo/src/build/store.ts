@@ -243,3 +243,24 @@ export function verify(d: Draft, persona: string, testId: string): Draft | Refus
 }
 export const results = (d: Draft) => d.design.results || ({} as Record<string, RecordedResult>);
 export const live = (xs: Array<PlannedDevice | Connection>) => xs.filter((x) => !x.removed);
+
+/** The commissioning workbook (V2.5.3 v25RoomWorkbook/v25RoomWorkbookSheets, restored 12 Nov 2026): Dashboard (its counts are
+ *  formulas over the Testing sheet), Project, Equipment, Testing (a list of result values), Design checks, Redlines, About. Results
+ *  typed into the file are not read back: a result counts only when it is recorded here with evidence and verified by someone else. */
+export function workbookSheets(d: Draft): import('./xlsx.js').Sheet[] {
+  const a = analysis(d); const res = results(d); const devs = live(d.design.devices) as PlannedDevice[];
+  const testing = a.applicability.rows.map((r) => { const R = res[r.id]; const lbl = r.applicable ? resultLabel(R) : 'N/A';
+    return [r.id, r.label, String(r.phase), r.domain || '', r.applicable ? 'YES' : 'NO', r.applicable ? r.why.join('; ') : (r as { justification?: string }).justification || '', ((r as { evidence?: string[] }).evidence || []).join('/'), lbl, R && r.applicable ? `${R.evidence.kind} ${R.evidence.ref}` : '', R && r.applicable ? R.by : '', R && r.applicable && R.verified ? R.verified.by : ''] as Array<string>; });
+  const n = testing.length + 1; const cnt = (c: number, v: string) => testing.filter((t) => t[c] === v).length;
+  return [
+    { name: 'Dashboard', header: ['field', 'value'], rows: [['room', d.name], ['canonical room id', d.code], ['revision', d.revisions.length], ['lifecycle', d.design.lifecycle], ['applicable (counted from the Testing sheet)', { f: `COUNTIF(Testing!E2:E${n},"YES")`, v: cnt(4, 'YES') }],
+      ['not yet tested (counted from the Testing sheet)', { f: `COUNTIF(Testing!H2:H${n},"NOT_TESTED")`, v: cnt(7, 'NOT_TESTED') }], ['passed and independently verified (counted)', { f: `COUNTIF(Testing!H2:H${n},"PASS_VERIFIED")`, v: cnt(7, 'PASS_VERIFIED') }],
+      ['results entered in this file', 'are not read back into the demonstrator: a result counts only when recorded there with evidence and independently verified']] },
+    { name: 'Project', header: ['field', 'value'], rows: [['template', C.templates[d.design.template]?.label || d.design.template], ['room type (approved)', d.design.classification.approved?.archetype || 'not approved'], ['room type (suggested)', a.classification.archetypeName], ['intended use', d.design.intendedUse], ['occupancy', d.design.occupancy], ['dimensions (m)', `${d.design.geometry.lengthM} × ${d.design.geometry.widthM} × ${d.design.geometry.ceiling}`], ['dimension provenance', Object.entries(d.design.geometry.provenance as Record<string, string>).map(([k, v]) => `${k} ${v}`).join(', ')]] },
+    { name: 'Equipment', header: ['asset_id', 'role', 'category', 'mount', 'x_m', 'y_m', 'provenance'], rows: devs.filter((x) => !x.furniture).map((x) => [x.id, x.label, C.categories[x.cat]?.label || x.cat, x.mount, x.x, x.y, 'DECLARED (design) · class template, no make or model']) },
+    { name: 'Testing', header: ['test_id', 'label', 'phase', 'domain', 'applicable', 'why', 'evidence_accepted', 'result', 'evidence_ref', 'recorded_by', 'verified_by'], rows: testing, validations: [{ col: 7, list: ['NOT_TESTED', 'PASS_UNVERIFIED', 'FAIL', 'NOT_SUPPORTED', 'INCONCLUSIVE', 'N/A'] }] },
+    { name: 'Design checks', header: ['key', 'severity', 'title', 'rationale', 'assets'], rows: a.checks.map((c) => [c.key, c.severity, c.title, c.rationale, c.assets.join(' ')]) },
+    { name: 'Redlines', header: ['id', 'drawing', 'revision', 'state', 'text', 'by', 'resolution'], rows: (d.redlines || []).map((r) => [r.id, DRAWING_KINDS[r.drawing] || r.drawing, r.revision, r.state, r.text, r.by, r.resolution || '']) },
+    { name: 'About', header: ['field', 'value'], rows: [['generated', now()], ['from', 'Empathia demonstrator, Build a Room (synthetic data)'], ['note', 'Nothing in this workbook is a measurement. Results come only from the record.']] },
+  ];
+}
