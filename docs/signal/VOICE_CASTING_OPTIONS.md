@@ -47,3 +47,18 @@ views in the conversation and choose one per character; nothing is locked until 
 
 All six are library voices: their current terms and notice periods are read and recorded before one is locked for twelve seasons. A
 regional accent is portrayed as the founder directs and never as a joke; lines stay the canon's words.
+
+## Locked (founder, 12 Nov 2026, 11:06 CT): "Paul and Sarah"
+
+| Character | Voice | Voice id | Model for dialogue | Founder decisions behind it |
+|---|---|---|---|---|
+| **Maya** | Sarah — warm engaging narrator (US Midwest) | `Q7yjSu9pVI6fMxiCGwMo` | `eleven_multilingual_v2` | a young woman from the Midwest |
+| **Ray** | Paul — Southern, Reassuring, Calm | `J3Ei0Lj6fAobhIqY5ySH` | `eleven_multilingual_v2` | from Alabama; a believable Southern accent |
+
+Every line either character speaks is the canon's words. Both are **library voices** shared by their owners: per ElevenLabs' Voice
+Library documentation, an owner may stop sharing a voice with a notice period of 30 days to 2 years (or none, which ends access at once),
+and accounts that have used the voice are notified. Each voice's own notice period is shown on its page in the ElevenLabs app and is not
+returned by this connector: **to record before production at scale** (rights register). Lines already generated are files we keep;
+future lines depend on the voice staying available, so the full SIGNAL script for a season is generated in one production pass once a
+scene is approved. Sources: [notice period](https://elevenlabs.io/docs/help-center/product/voices/voice-library/what-is-a-notice-period.md),
+[Voice Library](https://elevenlabs.io/docs/voice-library/overview).
