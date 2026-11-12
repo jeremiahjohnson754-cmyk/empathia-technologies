@@ -13,6 +13,9 @@ import { useWorkspace } from '../workspace/useWorkspace.js';
 import { CLS_WORD, calibrate, kindOf, readBom, readPlan, readSchedule, type Cls, type Doc, type PlanRead } from './read.js';
 import { combine, diff, standardsReview, toDesign, type Extraction, type Finding } from './review.js';
 import { SAMPLE, SAMPLE_NAME } from './sample.js';
+import { viewing } from './viewing.js';
+import { ProvenanceChip } from '@empathia/ui';
+import * as LS from '../lite/studio.js';
 import { MAY_DECIDE, approve, classOf, decide, openBlockers, reviewsOf, saveReview, stateOf, type SavedReview } from './store.js';
 
 const KIND_WORD: Record<Doc['kind'], string> = { plan: 'Room plan', schedule: 'Device schedule', bom: 'Bill of materials' };
@@ -89,6 +92,7 @@ export default function DrawingPage({ role, can }: PageProps) {
         </form> : null}
       </Card> : null}
 
+      <ViewingCard ex={ex} role={role} name={name} revision={revision} type={type} />
       {ex.devices.length ? <Card title="Devices" icon="layers" sub="Each with how it is known. A tag’s prefix is a convention; a schedule’s own words are stronger." testId="dr-devices-card">
         <div className="dr-scroll"><table className="dr-table" data-testid="dr-devices"><caption className="ui-sr">Devices read from the package</caption><thead><tr><th scope="col">Tag</th><th scope="col">What it is</th><th scope="col">Model</th><th scope="col">Position</th></tr></thead>
           <tbody>{ex.devices.map((d, i) => <tr key={`${d.tag}${i}`} data-tag={d.tag} data-cls={d.catCls}><th scope="row">{i + 1}. {d.tag}</th><td>{d.cat ? C.categories[d.cat]?.label || d.cat : 'Unknown'} <Chip small tone={CLS_TONE[d.catCls]} title={CLS_WORD[d.catCls]}>{clsShort(d.catCls)}</Chip><span className="dr-sub">{d.catWhy}</span></td><td>{d.model || 'Not given'}</td>
@@ -140,4 +144,29 @@ function ReviewCard({ r, role, mayDecide, act }: { r: SavedReview; role: PagePro
         <span className="ui-meta">{open.length ? `${plural(open.length, 'decision')} still needed.` : r.by === role ? `Saved by the ${ROLES[role].label}: another engineering role approves it.` : 'Every finding that needed a decision has one.'}</span></div> : null}
     </article>
   );
+}
+
+/** Display viewing analysis (70/10 task 70-2): the drawing's room, the farthest viewer, candidate display sizes against ST-VID-02 with the
+ *  arithmetic shown; then the room carried into the Lite studio as a conceptual model whose dimensions say they came from this drawing. */
+function ViewingCard({ ex, role, name, revision, type }: { ex: Extraction; role: PageProps['role']; name: string; revision: string; type: string }) {
+  const disp = ex.devices.find((d) => (d.cat === 'display' || d.cat === 'ledwall' || d.cat === 'projector') && d.x !== null && d.y !== null);
+  const v = useMemo(() => (ex.room ? viewing(ex.room, disp ? { x: disp.x!, y: disp.y! } : null) : null), [ex.room, disp?.x, disp?.y]);
+  const [said, setSaid] = useState<string | null>(null);
+  if (!ex.room) return <Card title="Display viewing analysis" icon="display" testId="dr-viewing"><p className="ui-meta" data-testid="dr-viewing-none">The room’s size is unknown until the plan has a scale. Calibrate one edge above, and the analysis appears here.</p></Card>;
+  if (!v) return null;
+  const toLite = () => { const KEY = 'empathia.demo.liteStudio.v1'; let list: LS.LiteModel[] = []; try { const x = JSON.parse(localStorage.getItem(KEY) || '[]'); list = Array.isArray(x) ? x : []; } catch { /* */ }
+    const id = `LM-${String(list.reduce((n, x) => Math.max(n, Number(String(x.id).slice(3)) || 0), 0) + 1).padStart(3, '0')}`; let m = LS.createModel(id, { archetype: type, roomName: name || 'Drawing room' });
+    const why = `Drawing Intelligence: ${name || 'drawing'} rev ${revision}, ${ex.room!.cls === 'OBSERVED' ? 'scale calibrated by a person' : 'scale from the drawing'}`;
+    for (const [dim, val] of [['width', ex.room!.width], ['length', ex.room!.length]] as Array<[LS.Dim, number]>) { const r = LS.correct(m, dim, val, why, '±0.1 m'); if (r.ok) m = r.model; }
+    try { localStorage.setItem(KEY, JSON.stringify([m, ...list])); location.hash = `#/v25/lite?m=${m.id}`; } catch { setSaid('This browser would not keep the model (storage is blocked).'); } };
+  return <Card title="Display viewing analysis" icon="display" sub="How large a display must be for the farthest viewer, across candidate sizes. Modeled from the drawing; a proposal for an engineer" testId="dr-viewing">
+    <ul className="plain stack" data-testid="dr-viewing-facts">{v.facts.map((f) => <li key={f.label}><b>{f.label}:</b> {f.value} <ProvenanceChip value={f.prov} source={f.basis} /></li>)}</ul>
+    <div className="dr-scroll"><table className="dr-table" data-testid="dr-viewing-sizes"><caption className="ui-sr">Candidate display sizes against ST-VID-02</caption>
+      <thead><tr><th scope="col">Proposed size</th><th scope="col">Image height × width</th><th scope="col">Farthest ÷ height</th><th scope="col">Verdict</th></tr></thead>
+      <tbody>{v.rows.map((r) => <tr key={r.inches} data-size={r.inches} data-meets={r.meets && r.fits} aria-current={v.recommend === r.inches ? 'true' : undefined}><th scope="row">{r.inches}″{v.recommend === r.inches ? ' · smallest that works' : ''}</th><td>{r.h} × {r.w} m</td><td>{r.ratio}</td><td>{r.verdict}</td></tr>)}</tbody></table></div>
+    <p data-testid="dr-viewing-rec"><b>Recommendation.</b> {v.recommendation}</p>
+    <details><summary className="ui-meta">The method, so anyone can repeat it</summary><ul className="ui-meta">{v.method.map((m) => <li key={m}>{m}</li>)}</ul></details>
+    {allows({ area: 'studio' }, role) && <p><button type="button" className="ui-btn" onClick={toLite} data-testid="dr-to-lite">Carry this room into the Lite studio</button> <span className="ui-meta">A conceptual model; its width and length marked as from this drawing, manually proposed, never verified.</span></p>}
+    {said && <p className="ui-meta" role="status">{said}</p>}
+  </Card>;
 }
