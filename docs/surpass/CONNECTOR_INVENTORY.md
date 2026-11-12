@@ -25,7 +25,7 @@ are listed, with their real state (NOT_CONFIGURED in this build), in the Living 
 | Canva | brand kits | responds (no brand kits) | none |
 | Mobbin | collections | **fails: the service requires a paid plan** | none; no purchase made |
 | vidIQ | credit balance | responds | called earlier in the session; the outcome is not in the surviving record, so nothing here depends on it; nothing published |
-| TinyFish | wallet | responds (billable service) | none; nothing run that charges |
+| TinyFish | wallet | responds (billable service) | 12 Nov 06:4x, with the founder's permission to visit the staging sites: three page fetches and one browser run against the two staging sites only, as a health check (metered at a few cents at most); nothing private sent |
 | Adobe (Express, fonts) | — | not probed today | called earlier in the session; the outcome is not in the surviving record, so nothing here depends on it; nothing published |
 | ElevenLabs (restricted creative connector) | — | not probed today | called earlier in the session; the outcome is not in the surviving record, so nothing here depends on it. Direct API calls from the workspace were refused by the network gateway (403) and, by the founder's instruction, not retried. The one shipped narration take (`tour-a-05`) is owner-approved and checked by its sha256 |
 | Firecrawl | — | not probed today (billable per request) | called earlier in the session; the outcome is not in the surviving record, so nothing here depends on it |
