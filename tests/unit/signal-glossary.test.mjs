@@ -30,3 +30,9 @@ test('GL-03 a real chapter: each term marked at most once, the text unchanged, a
     assert.equal(new Set(terms).size, terms.length, `${id}: a term marked twice`); assert.ok(terms.length >= 1, `${id}: ${terms.length}`); total += terms.length; }
   assert.ok(total >= 8, String(total));
 });
+test('GL-04 terms you’ll need (glNeeds): the text’s terms, then the formula’s, five for a beginner and seven otherwise', () => {
+  const terms = Array.from({ length: 9 }, (_, i) => ({ ...T(`T${i}`, [[`term${i}`, false]]), f: i === 8 ? ['ohm'] : [] }));
+  const r = G.buildRx(terms); const text = 'term0 term1 term2 term3 term4 term5 term6 term0';
+  assert.deepEqual(G.termsIn(text, r).map((g) => g.term), ['T0', 'T1', 'T2', 'T3', 'T4', 'T5', 'T6']);
+  assert.equal(G.needs(text, ['ohm'], 1, terms, r).length, 5); assert.deepEqual(G.needs('term0', ['ohm'], 2, terms, r).map((g) => g.term), ['T0', 'T8']);
+});
