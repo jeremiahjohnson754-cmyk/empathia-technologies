@@ -23,7 +23,7 @@ const word = (s: string) => s.replace(/_/g, ' ').toLowerCase();
 export default function LiteStudio({ role, query }: PageProps) {
   const [models, setModels] = useState<S.LiteModel[]>(load); const [say, setSay] = useState<string | null>(null);
   const edit = allows({ area: 'studio' }, role); const id = query.get('m'); const m = models.find((x) => x.id === id) || null;
-  const put = (next: S.LiteModel, msg: string) => { const ms = models.some((x) => x.id === next.id) ? models.map((x) => (x.id === next.id ? next : x)) : [next, ...models]; setModels(ms); save(ms); setSay(msg); };
+  const put = (next: S.LiteModel, msg: string) => { setModels((cur) => { const ms = cur.some((x) => x.id === next.id) ? cur.map((x) => (x.id === next.id ? next : x)) : [next, ...cur]; save(ms); return ms; }); if (msg) setSay(msg); };
   const open = (mid: string | null) => { const q = new URLSearchParams(); if (mid) q.set('m', mid); setQuery('#/v25/lite', q); };
   const nextId = () => `LM-${String(models.reduce((n, x) => Math.max(n, Number(x.id.slice(3)) || 0), 0) + 1).padStart(3, '0')}`;
   return (
