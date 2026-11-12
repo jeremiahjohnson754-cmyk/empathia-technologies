@@ -296,3 +296,22 @@ folder until it ends.
 - Pilot shot started for **S01** ("Start with a building. Find everything connected.", the 25 s vertical short): one 8 s 9:16 clip,
   minimax-h3 768p, an unbranded building whose meeting room's dependencies light up in turn; no people's faces, no text, no logos.
   **120 credits** of 6,398 (job `job_b26388a6-…`). The founder reviews the shot before any more are made.
+
+## 97 — Season 1 as a film, SIGNAL × Lite, and the flagship labs (12 Nov 2026, 12:53–15:30 CT)
+
+**Completed**
+- Season 1 voiced: 247 takes (Maya, Ray, Dolores, Imani, Priya, Theo, Lily) in the founder's chosen voices, split at their breaks and
+  checked audible; 32 reviewed generated shots across S01E00–E11; four shots rejected on review for teaching the wrong thing (an
+  unplugged power plug beside the isolator; hands on the console in "read before you touch"; twice, a fill that does not aim at the
+  ceiling). Records in `docs/signal/VOICE_CASTING_OPTIONS.md` and `media/signal/s01/film/README.md`.
+- SIGNAL × Lite: "Try it in Lite" after checks, labs, drills, incidents, meltdowns and boss levels; in history notes, glossary pop-overs
+  and mentor answers; only where the role may open Lite; always "a modeled room, not the story's church, never a measurement".
+- Flagship labs (open to every role; practice only, kept in the browser): **Mix the Stream** (#/labs/mix; in S01E10 after its lab, in
+  Learn labs, on ServiceHands), **Light the Stage** (#/labs/light), **Shoot the Service** (#/labs/video).
+
+**Verified**: unit 711/711; demo-mixlab 27/27, demo-signal-lite 9/9, demo-cinematic 17/17 (light) on the release build.
+
+**Outstanding**: full light and dark matrices on `ec22cd0`, then staging. Guest characters' voices (a casting decision). Seasons 2–6 film.
+Lighting and video labs' S01 placement in their episodes (E05, E07) if the founder wants them embedded as E10's is.
+
+**Next**: matrices → staging → the two websites (90-1, 90-2, 90-3, 90-6).
