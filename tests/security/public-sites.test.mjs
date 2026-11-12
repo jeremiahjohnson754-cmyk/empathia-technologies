@@ -65,7 +65,10 @@ test('SA-01 every built page carries the CSP as <meta>, first in <head>, before 
 });
 
 test('SA-04/SA-08 dist: no source maps, no inline script or style or handler, every new-tab link is noopener noreferrer, known hosts only', { skip: !built && 'not built' }, () => {
-  const HOSTS = /^https:\/\/(tally\.so|empathia-(website|demo)(-next)?\.onrender\.com|schema\.org|react\.dev)$|^http:\/\/www\.w3\.org$/;
+  // 12 Nov 2026: the commissioning workbook (apps/demo/src/build/xlsx.ts) writes Office Open XML, whose namespace identifiers are the
+  // http://schemas.openxmlformats.org and http://purl.org/dc URIs; like the SVG namespace on www.w3.org they are names, never fetched
+  // (and connect-src 'self' would refuse them).
+  const HOSTS = /^https:\/\/(tally\.so|empathia-(website|demo)(-next)?\.onrender\.com|schema\.org|react\.dev)$|^http:\/\/(www\.w3\.org|schemas\.openxmlformats\.org|purl\.org)$/;
   // 2026-11-09: Lite's QR codes (uplift/lite, merged after this assessment) encode V2.5.3's illustrative addresses under
   // northstar.example.com. example.com is reserved for documentation (RFC 2606) and the name does not resolve; the page draws the code
   // and never requests the address (public-security.test.mjs still fails any request that leaves the page). That one exact host is
