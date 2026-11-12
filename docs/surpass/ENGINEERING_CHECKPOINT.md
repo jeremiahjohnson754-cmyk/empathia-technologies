@@ -214,6 +214,16 @@ Staging today is `b53515e`, not the later work. The checkpoint is met only when 
 | 95-4 | Vendor training material and UI rights assessed, not assumed | For each vendor in the training catalogue: what official training materials exist (videos, quick-start guides, adoption kits, press imagery), their published terms of use, whether reuse, embedding, linking or adaptation is allowed and with what attribution; the safest correct use (link to the vendor's own material, embed where permitted, or an original generic simulation). No reuse until the terms are recorded and, where a licence or permission is needed, the founder has it | a rights register per vendor and asset, with the source and terms quoted by link; founder decisions listed |
 | 95-5 | Media delivered, not only prepared | Acceptance for task 80-7 is a playable file: video or audio that plays in the product, captions and transcript that match it, measured loudness, a working interactive choice where the lesson has one, and the QA row filled in. Scripts and storyboards are steps, never reported as delivery | per pilot, the file, its QA row and a browser test that it plays |
 
+## Founder Studio films via vidIQ (founder, 12 Nov 10:22): a later task
+
+The founder suggested making the 31 missing Founder Studio films with vidIQ. Recorded as task **96-1**, with the rules that keep it
+honest: a newly generated film is a **new** film, not the missing original (each curated record keeps its original SHA-256 and stays
+"not on this computer" until the original is supplied); a new film is listed beside it as a labelled new version only when the founder
+accepts it; scripts come from each original's recorded title and purpose, not invented claims; one film first, the founder reviews it,
+then the rest (no bulk generation before a reviewed pilot); vidIQ credits are spent within the existing plan, and any new purchase is
+asked first; rights and the generator are recorded per film; captions and transcript for each. vidIQ's own description of
+`vidiq_generate_video` and its limits are read before the first one.
+
 ## Simulated, pending, blocked (say so everywhere)
 
 - Room Control, the calendar, the document source for knowledge ingestion: **simulated**.

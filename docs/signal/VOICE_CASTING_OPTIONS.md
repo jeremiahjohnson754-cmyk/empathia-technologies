@@ -27,3 +27,23 @@ voice is cloned or imitated (standing rule).
 
 Next, after the choice: one short canon line per character as an audition take (a few hundred credits at most), the founder listens,
 then the voices are locked in the character records.
+
+## The founder's direction (12 Nov 2026, 10:25 CT) and the auditions
+
+"Maya can have a Midwest young lady voice; Ray is from Alabama, so a believable Southern accent." Recorded as canon-adjacent
+**founder decisions** (the story text never stated them): Maya is a young woman from the Midwest; Ray is from Alabama.
+
+Auditions generated, one take each, one canon line each (`eleven_multilingual_v2`; 324 credits in all). Listen in the ElevenLabs
+views in the conversation and choose one per character; nothing is locked until then.
+
+| For | Voice | Line (canon) | Why on the list |
+|---|---|---|---|
+| Maya | Anna — Young Female Conversational (`bl0TUn2b06BCzwDpiLlg`) | "So would I, without a reason next to it." | young, Midwestern, conversational |
+| Maya | Kelly Kween (`XlHDwyzsCODU3TfhB5es`) | same | 20s, Midwest-raised, soft and conversational |
+| Maya | Sarah — warm engaging narrator (`Q7yjSu9pVI6fMxiCGwMo`) | same | labelled US Midwest; warm, can carry authority later |
+| Ray | Dusty — Southern American Male (`FGpIILZk4JTBy7fhNIR4`) | "Whose network is that? It runs the door locks and the giving kiosks." | natural Mississippi/Southern, light gravel, not exaggerated; nearest to Alabama |
+| Ray | Jack — Southern without the fake drawl (`2IUN6IK1EIlX9cV9uPqw`) | same | down to earth, deliberately not over the top |
+| Ray | Paul — Southern, Reassuring, Calm (`J3Ei0Lj6fAobhIqY5ySH`) | same | mature, natural Southern, measured |
+
+All six are library voices: their current terms and notice periods are read and recorded before one is locked for twelve seasons. A
+regional accent is portrayed as the founder directs and never as a joke; lines stay the canon's words.
