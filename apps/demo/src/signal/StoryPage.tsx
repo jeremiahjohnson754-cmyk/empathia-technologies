@@ -371,7 +371,7 @@ export function ItemView(p: ViewProps): JSX.Element | null {
           {it.flags.length > 0 && <p className="ui-meta sg-flagline">Under review: {it.flags.join(', ')}</p>}
         </figcaption>
       </figure>);
-    case 'note': return <aside className="sg-note" data-item="note" data-role={it.role}><Paras text={it.text} />{it.case && <p className="ui-meta">Case file {it.case}</p>}</aside>;
+    case 'note': return <aside className="sg-note" data-item="note" data-role={it.role}><Paras text={it.text} />{it.case && <p className="ui-meta">📁 <a href="#/learn/cases">Case file {it.case}</a> · its Learn, Service and Engineer perspectives</p>}</aside>;
     case 'quest': return <QuestCard p={p} it={it} name={name} />;
     case 'beat': return (
       <section className="sg-beat" data-item="beat" data-mood={it.mood}>{it.where && <p className="ui-meta">{it.where}</p>}
