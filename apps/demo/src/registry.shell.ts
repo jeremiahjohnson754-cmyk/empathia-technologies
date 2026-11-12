@@ -44,6 +44,13 @@ export const SHELL_PAGES: readonly PageDef[] = [
     search: { keywords: 'anatomy device blocks layers signal power network control firmware mounting fault isolate', aliases: ['anatomy', 'device anatomy', 'inside a camera'] },
   },
   {
+    // A5 (12 Nov 2026): the first equipment lesson of the Equipment Experience Engine: applicability, sources, film, practice
+    id: 'learn.lesson', title: 'Equipment lesson', purpose: 'How to use the equipment in front of you: what the lesson applies to, its sources and state, the film with captions, and one practice decision', product: 'learn',
+    path: '/learn/lesson', alias: ['/learn/lesson/:id'], authority: { roles: ROLE_KEYS, why: 'training content about a room type, with no record in it: every role may learn from it, and learning grants nothing' },
+    load: () => import('./training/LessonPage.js'),
+    search: { keywords: 'lesson training teams rooms console join meeting share leave tutorial film how to use', aliases: ['lesson', 'how to join a meeting', 'teams rooms'] },
+  },
+  {
     // 60/10 P1 (12 Nov 2026): the five axes of the Experience Language, each shown in every value, both themes, at any width
     id: 'design.axes', title: 'Five axes', purpose: 'Condition, provenance, confidence, workflow and maturity: five separate things a screen can say about a value, never one colour', product: 'shell',
     path: '/design/axes', authority: { roles: ROLE_KEYS, why: 'a reference page of the design language: it shows no record, so every role may read it' },

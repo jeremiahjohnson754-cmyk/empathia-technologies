@@ -1,0 +1,14 @@
+Run a meeting from the room console
+Microsoft Teams Rooms on Windows with a touch console (sources: docs/training/TEAMS_ROOMS_PILOT1_SOURCES.md, read 12 Nov 2026)
+Illustration, not the actual screen
+
+Here's how to run your meeting from the console on the table.
+If your meeting invited this room, it's on the console. Tap Join.
+Not there? The room has to be invited. You can also use Join with an ID, or scan the room's QR code.
+Joining from your laptop too? Turn its audio off, so the room doesn't echo.
+No meeting booked? Tap Meet now, then add people by name.
+To share your screen, plug in the room's cable. In some rooms it shares by itself; if not, tap Share.
+When you're done, tap Stop sharing.
+Mute and volume are on the meeting controls.
+To finish, tap Leave.
+Something not working? Use this room's help card to reach support.

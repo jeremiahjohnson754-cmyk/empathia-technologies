@@ -1,0 +1,18 @@
+{
+  "id": "pilot1-teams-rooms-windows-quickstart",
+  "title": "Run a meeting from the room console",
+  "applies": "Microsoft Teams Rooms on Windows with a touch console (sources: docs/training/TEAMS_ROOMS_PILOT1_SOURCES.md, read 12 Nov 2026)",
+  "illustration": "Illustration, not the actual screen",
+  "beats": [
+    { "n": 1, "scene": "room", "tap": null, "text": "Here's how to run your meeting from the console on the table." },
+    { "n": 2, "scene": "home-meeting", "tap": "join", "text": "If your meeting invited this room, it's on the console. Tap Join." },
+    { "n": 3, "scene": "home-empty", "tap": "joinid", "text": "Not there? The room has to be invited. You can also use Join with an ID, or scan the room's QR code." },
+    { "n": 4, "scene": "laptop-audio", "tap": null, "text": "Joining from your laptop too? Turn its audio off, so the room doesn't echo." },
+    { "n": 5, "scene": "meetnow", "tap": "meetnow", "text": "No meeting booked? Tap Meet now, then add people by name." },
+    { "n": 6, "scene": "share", "tap": "share", "text": "To share your screen, plug in the room's cable. In some rooms it shares by itself; if not, tap Share." },
+    { "n": 7, "scene": "sharing", "tap": "stopshare", "text": "When you're done, tap Stop sharing." },
+    { "n": 8, "scene": "incall", "tap": "mic", "text": "Mute and volume are on the meeting controls." },
+    { "n": 9, "scene": "incall-leave", "tap": "leave", "text": "To finish, tap Leave." },
+    { "n": 10, "scene": "help", "tap": null, "text": "Something not working? Use this room's help card to reach support." }
+  ]
+}
