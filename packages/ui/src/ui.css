@@ -352,3 +352,12 @@ input.lab__input { width: 9em; } select.lab__input { min-width: 0; width: 100%; 
 .boss__alarm[data-state=r][data-calm=false], .boss__alarm[data-state=rf][data-calm=false] { animation: boss-pulse 1s ease-in-out infinite; }
 @keyframes boss-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
 @media (prefers-reduced-motion: reduce) { .boss__alarm { animation: none !important; transition: none; } }
+/* SIGNAL Mission Control (apps/demo LearnAreas MissionPage) */
+.mc__big { margin: 0; font-size: 1.4rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.mc__kv { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; } .mc__kv dt { color: var(--tx2, var(--tx)); } .mc__kv dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; }
+.mc__trust li, .mc__ratings li { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 2fr) auto; gap: 8px; align-items: center; padding: 4px 0; } .mc__trust li[data-sign=neg] b { color: var(--bad); }
+.mc__ratings li > span { min-width: 0; } .mc__ratings .ui-meta { display: block; }
+.mc__link { display: grid; gap: 4px; text-decoration: none; color: inherit; min-height: 44px; } .mc__link:hover b, .mc__link:focus-visible b { text-decoration: underline; }
+.mc__map { display: block; width: 100%; max-width: 640px; min-width: 520px; height: auto; margin: 0 auto; } .mc__bar { width: 100%; height: 8px; display: block; } .mc__trust li[data-sign=neg] .boss__mfill { fill: var(--bad); } .mc__node rect { fill: var(--bg2); stroke: var(--line2); stroke-width: 2; } .mc__node text { fill: var(--tx2, var(--tx)); font: 600 15px system-ui, sans-serif; }
+.mc__node.is-on rect { stroke: var(--accent); stroke-width: 3; } .mc__node.is-on text { fill: var(--tx); }
+@media (max-width: 560px) { .mc__trust li, .mc__ratings li { grid-template-columns: 1fr auto; } .mc__trust li > :nth-child(2), .mc__ratings li > :nth-child(2) { grid-column: 1 / -1; grid-row: 2; } }

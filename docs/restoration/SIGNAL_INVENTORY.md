@@ -94,7 +94,7 @@ gate list is the authority and gives 979.)
 | Meltdowns | A multi-turn crisis with threats, actors and a budget | in the story (above) | **RESTORED 11 Nov** |
 | Season run: loadout, forecast, game over, retry a season | | none found | **MISSING** (TO VERIFY) |
 | Season review | | none | **MISSING** |
-| Mission Control: continue the story, competency level, evidence locker, case journal, quest log, ratings, crew trust, support level | | Learn home shows progress of a different shape | PARTIAL, TO VERIFY line by line |
+| Mission Control: continue the story, competency level, evidence locker, case journal, quest log, ratings, crew trust, support level | | `#/learn/mission` since 12 Nov, on the story's own progress (`signal/mission.ts`, spec §14): the season's console, continue, the L0–L5 ladder (provisional, RV-20), the evidence locker (bosses and challenge levels added), role path, crew trust and merit from every choice and conversation, E0–E3 by domain, the twelve systems maps lit by chapters opened and incidents proven, the six ratings from first attempts, timers and support level (the support level now sets the boss formula tier), reviewer mode and reset (two taps each). `signal-mission` MC-01..05, `demo-boss` MC-01..06. **Gaps:** the quest log and case journal cards (quest.js) | **RESTORED except quest log and journal** |
 | Formula calculators and "ask the calculator" | | TO VERIFY | |
 | Glossary pop-overs on marked terms, with "first met in" | | TO VERIFY | |
 | Explorers and the system map | | An Explore page exists | TO VERIFY |

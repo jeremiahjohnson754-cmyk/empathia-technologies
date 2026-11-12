@@ -8,6 +8,7 @@
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import { pathToFileURL } from 'node:url';
 import { harness, repo } from './demo-shell-lib.mjs';
 import { recipes } from '../fixtures/signal-challenge-recipes.mjs';
+import { unlockInit } from './signal-unlock.mjs';
 const { ok, open, done } = await harness('demo-boss');
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js')); const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'boss-b-'));
 await esbuild.build({ entryPoints: [path.join(repo, 'packages/ui/src/challenges/index.ts')], bundle: true, format: 'esm', platform: 'node', outfile: path.join(tmp, 'c.mjs'), logLevel: 'error' });
@@ -142,4 +143,19 @@ for (const theme of ['light', 'dark']) { const t = await open('#/story/s05e11', 
   await c4.locator('[data-key=fx] [data-opt=lava]').click(); await c4.getByRole('button', { name: '✔ Check my work' }).click();
   ok('BS-26', 'joke gear is an instant fail with the joke and the physics', /INSTANT FAIL · A lava lamp/.test(await c4.getByTestId('chal-result').innerText()) && /about 3 lux/.test(await c4.getByTestId('chal-result').innerText()));
   ok('BS-27', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
+// Mission Control (reference renderHome), for a reader who has cleared Season 1: level, locker, crew, domains, the lit map, ratings, settings.
+for (const [theme, w] of [['light', 1440], ['dark', 390]]) { const t = await open('#/learn/mission', { role: 'technician', theme, w, h: 900, init: unlockInit('s02e01', { last: 's01e11' }) }); const p = t.page; await p.waitForSelector('[data-testid=mc-level]');
+  const txt = await p.locator('[data-testid=learn-mission]').innerText(); const pts = Number(await p.getByTestId('mc-points').innerText());
+  if (theme === 'light') {
+    ok('MC-01', 'Mission Control opens on the season’s console with continue, the competency level, the evidence locker, role path, crew trust, domains, the systems map, ratings, timers and support, reviewer mode and reset', /Citylight · operations console · Season 1/i.test(txt) && /Continue story/.test(txt) && /L[1-5] · /.test(await p.getByTestId('mc-level').innerText()) && pts > 100 && /Bosses cleared\s*1 \/ 12/.test(txt) && /Merit [+-]?\d+/.test(txt) && /Method\s*E3/.test(txt) && await p.locator('[data-testid=mc-ratings] li').count() === 6 && /Reset my progress/.test(txt), `${pts} ${txt.slice(0, 200)}`);
+    ok('MC-02', 'the Season 1 systems map lights the systems met in the story, and names them for a screen reader', await p.locator('.mc__node.is-on').count() >= 3 && /Lit systems: [A-Z]/.test(await p.locator('.mc__map').getAttribute('aria-label')));
+    await p.getByRole('button', { name: 'Open every page (reviewer mode)' }).click(); const armed = await p.getByRole('button', { name: /Tap again: open every page/ }).count(); await p.getByRole('button', { name: /Tap again: open every page/ }).click();
+    ok('MC-03', 'reviewer mode takes two taps, and is stored with the story’s progress', armed === 1 && (await p.evaluate(() => JSON.parse(localStorage.getItem('empathia.signal.story.v1')).gates)) === false && /Reviewer mode · on/.test(await p.getByTestId('mc-review').innerText()));
+    await p.getByTestId('mc-reset').click(); await p.getByTestId('mc-reset').click();
+    ok('MC-04', 'reset takes two taps and empties the record', Number(await p.getByTestId('mc-points').innerText()) === 0 && Object.keys(JSON.parse(await p.evaluate(() => localStorage.getItem('empathia.signal.story.v1'))).chapters).length === 0);
+  } else {
+    const small = await p.$$eval('[data-testid=learn-mission] button, [data-testid=learn-mission] select, [data-testid=learn-mission] a.ui-btn', (els) => els.filter((e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height < 43.5; }).map((e) => `${e.textContent.slice(0, 14)}:${Math.round(e.getBoundingClientRect().height)}`));
+    ok('MC-05', 'phone (390, dark): Mission Control has 44 px targets and no horizontal overflow (the map scrolls in its box)', await overflow(p) <= 0 && small.length === 0, `${await overflow(p)} ${small.slice(0, 5).join(',')}`);
+  }
+  ok(`MC-06 ${theme}`, 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
 await done();

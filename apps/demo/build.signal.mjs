@@ -28,6 +28,15 @@ export function shipSignal(repo, dist) {
     fs.mkdirSync(path.join(out, 'pieces'), { recursive: true });
     // the ratings engine's data (season reviews, the Story Score and the loadout), restored 11 Nov 2026
     fs.writeFileSync(path.join(out, 'ratings.json'), JSON.stringify(buildRatingsIndex(app)));
+    // Mission Control (restored 12 Nov 2026, reference app.js renderHome): what each decision and conversation weighs, every piece's domain,
+    // the role paths, the systems maps and their lanes, and the catalogue totals the evidence locker counts against.
+    { const dec = {}, talk = {}; for (const c of index) for (const it of JSON.parse(fs.readFileSync(path.join(src, 'story', `${c.id}.json`), 'utf8')).items) {
+        if (it.type === 'decision') dec[it.id] = { k: (it.hints || []).map((h) => h.keep ?? 1), o: Object.fromEntries(it.options.map((o) => [o.letter, { m: o.weight?.merit || 0, t: o.weight?.trust || {}, ...(o.canonical ? { c: 1 } : {}) }])) };
+        if (it.type === 'talk') talk[it.id] = it.options.map((o) => o.trust || {}); }
+      const domOf = (bag) => Object.fromEntries(Object.entries(bag || {}).map(([id, x]) => [id, x.domain || null]));
+      fs.writeFileSync(path.join(out, 'mission.json'), JSON.stringify({ dec, talk, roles: app.roles, domains: app.domains, lanes: app.lanes, sysmaps: app.sysmaps,
+        dom: { quiz: domOf(app.quizzes), drill: domOf(app.drills), incident: domOf(app.incidents), lab: domOf(app.labs), meltdown: domOf(app.meltdowns) },
+        totals: { drills: Object.keys(app.drills).length, incidents: Object.keys(app.incidents).length, labs: (app.labOrder || Object.keys(app.labs)).length, chapters: index.length, cases: (app.caseOrder || []).length } })); }
     for (const c of index) { const items = JSON.parse(fs.readFileSync(path.join(src, 'story', `${c.id}.json`), 'utf8')).items; const quizzes = {}; const lessons = {}; const drills = {}; const incidents = {}; const labs = {}; const meltdowns = {}; const bosses = {}; const formulas = {}; const tiers = {};
       const g = gates.filter((x) => x.chapter === c.id).map((x) => { const it = items[x.index]; const id = it && (it.type === 'decision' ? it.id : it.type === 'mount' ? it.id : it.type === 'twist' ? it.test_id : null);
         if (id !== x.id) throw new Error(`SIGNAL gates: ${c.id} item ${x.index} is not ${x.kind} ${x.id}`); return { index: x.index, kind: x.kind, id: x.id, tier: x.tier, twist: !!x.twist, core: !!x.core }; });

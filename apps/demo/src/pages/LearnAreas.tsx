@@ -12,6 +12,8 @@ import { V, fill, trainingCases, caseById, loadProgress, record, minutesOf, RESP
 import { loadLabs } from '../learn/store.js';
 import { ChallengeRunner, Challenges as CHX } from '@empathia/ui';
 import * as Story from '../signal/story.js';
+import * as MC from '../signal/mission.js';
+import * as RT from '../signal/ratings.js';
 import { loadLib } from './Learn.js';
 import { allRecords, roomRecord, type RoomRecord } from '../campus/design.js';
 import { shortName, fullName, roomHref } from '../campus/canon.js';
@@ -29,7 +31,7 @@ export const LEARN_AREAS: Array<{ href: string; label: string; icon: IconName }>
   { href: '#/learn', label: 'Learn home', icon: 'pulse' }, { href: '#/learn/signal', label: 'SIGNAL', icon: 'spark' }, { href: '#/learn/story', label: 'Room story', icon: 'play' },
   { href: '#/learn/labs', label: 'Labs', icon: 'layers' }, { href: '#/learn/servicehands', label: 'ServiceHands Academy', icon: 'wrench' }, { href: '#/learn/library', label: 'Library', icon: 'book' },
   { href: '#/learn/practice', label: 'Practice', icon: 'check' }, { href: '#/learn/design', label: 'Design clinic', icon: 'room' }, { href: '#/learn/service', label: 'Service Mode', icon: 'route' },
-  { href: '#/learn/cases', label: 'Case Files', icon: 'book' }, { href: '#/learn/fieldbook', label: 'Fieldbook', icon: 'book' }, { href: '#/learn/challenges', label: 'Challenges', icon: 'spark' }, { href: '#/learn/ask', label: 'Ask Empathia', icon: 'search' },
+  { href: '#/learn/cases', label: 'Case Files', icon: 'book' }, { href: '#/learn/fieldbook', label: 'Fieldbook', icon: 'book' }, { href: '#/learn/challenges', label: 'Challenges', icon: 'spark' }, { href: '#/learn/mission', label: 'Mission Control', icon: 'pulse' }, { href: '#/learn/ask', label: 'Ask Empathia', icon: 'search' },
 ];
 /** Learn's own navigation, on every Learn page: a chip only where the role may open that address (D44: absent, not disabled). */
 export function LearnNav({ role, current }: { role: string; current: string }) {
@@ -728,4 +730,66 @@ export function ChallengesPage({ perspective }: { perspective: string }) {
       <p className="ui-meta">Timers follow the story’s clock setting ({prog.clock === 'off' ? 'off: Mastery without the clock' : prog.clock === 'extended' ? 'double time' : 'on'}). Every attempt is kept in this browser with the story’s progress; it is practice, not a credential.</p>
     </section>
   );
+}
+
+// ------------------------------------------------------------------------------------------------------------ Mission Control (reference renderHome)
+const SEASON_HOME = ['', 'Citylight', 'Halyard Live', 'Aldermoor Group', 'Kestrel Valley Media', 'Brackenmoor University', 'Linden Row Design', 'Corvane Group', 'The Wyndmere Centre', 'The Wyndmere Centre', 'Lowfield Studio', 'Regional EOC', 'Principal review'];
+let missionCache: Promise<[MC.MissionIndex, RT.RatingsIndex, Story.StoryIndex]> | null = null;
+const loadMission = () => (missionCache ||= Promise.all(['signal/mission.json', 'signal/ratings.json', 'signal/index.json'].map((u) => fetch(u).then((r) => { if (!r.ok) throw new Error(`${u} ${r.status}`); return r.json(); }))).catch((e) => { missionCache = null; throw e; }) as Promise<[MC.MissionIndex, RT.RatingsIndex, Story.StoryIndex]>);
+/** SIGNAL Mission Control: continue the story, the competency level, the evidence locker, the role path, crew trust, competency by domain,
+ *  the systems map, the six ratings, timers and support, reviewer mode and reset — from the story's own stored progress. Restored 12 Nov 2026. */
+export function MissionPage({ perspective }: { perspective: string }) {
+  const [data, setData] = useState<[MC.MissionIndex, RT.RatingsIndex, Story.StoryIndex] | null>(null); const [err, setErr] = useState<string | null>(null);
+  const [P, setP] = useState(() => Story.load()); const [arm, setArm] = useState<string | null>(null); const [mapSe, setMapSe] = useState<number | null>(null);
+  useEffect(() => { let live = true; loadMission().then((d) => live && setData(d)).catch((e) => live && setErr(String(e))); return () => { live = false; }; }, []);
+  const commit = (n: Story.Progress) => { setP(n); Story.save(n); };
+  const head = <Head role={perspective} current="#/learn/mission" title="Mission Control" lede="Your station. Pick up the story, run a drill, take a live incident, or ask for a nudge. Every result lands in your evidence locker." meta={[FICTION]} />;
+  if (err) return <section className="wk ln" data-testid="learn-mission">{head}<Notice tone="bad">Mission Control did not load: {err}. <a href={location.hash}>Try again</a>.</Notice></section>;
+  if (!data) return <section className="wk ln" data-testid="learn-mission" aria-busy="true">{head}<p>Opening the console…</p></section>;
+  const [M, X, ix] = data; const pts = MC.points(P, M), lv = MC.level(pts.total), ev = MC.evidence(P, M), ct = MC.crew(P, M), se = MC.currentSeason(P), last = ix.chapters.find((c) => c.id === P.last) || ix.chapters.find((c) => c.id === 's01e00') || ix.chapters[0]!;
+  const names = Object.keys(ct.trust).sort((a, b) => Math.abs(ct.trust[b]!) - Math.abs(ct.trust[a]!)).slice(0, 8); const role = M.roles.find((r) => r.id === P.role) || M.roles[0]!;
+  const R = RT.ratingsFor(P, X, 99), shownSe = mapSe ?? (M.sysmaps[String(se)] ? se : 1), map = M.sysmaps[String(shownSe)]!;
+  const pct = lv.next ? Math.min(100, (100 * (pts.total - lv.floor)) / (lv.next[0] - lv.floor)) : 100;
+  const tap = (k: string, act: () => void) => { if (arm === k) { setArm(null); act(); } else setArm(k); };
+  return (
+    <section className="wk ln mc" data-testid="learn-mission">
+      {head}
+      <p className="ui-meta" data-testid="mc-console">{SEASON_HOME[se] || 'Empathia Learn'} · operations console · Season {se}</p>
+      <div className="wk-g2">
+        <Card title="Continue story" testId="mc-continue"><p className="mc__big">{last.title}</p><p className="ui-meta">Season {last.season} · {ix.seasons[String(last.season)] || 'Prologue'} · {Object.keys(P.chapters).length} of {M.totals.chapters} chapters opened</p><p><a className="ui-btn ui-btn--primary" href={`#/story/${last.id}`}>Resume ▸</a></p></Card>
+        <Card title="Competency level" testId="mc-level"><p className="mc__big">{lv.code} · {lv.name}</p><ProgressBar value={pct} label={`${Math.round(pct)}% of the way to the next level`} /><p>{lv.next ? `${lv.next[0] - pts.total} evidence points to ${lv.next[1]} · ${lv.next[2]}` : 'Top of the ladder.'}</p><p className="ui-meta">⚑ Level thresholds are provisional (RV-20).</p></Card>
+        <Card title="Evidence locker" testId="mc-locker"><p className="mc__big" data-testid="mc-points">{pts.total}</p><dl className="mc__kv"><dt>Drills passed</dt><dd>{ev.drills} / {ev.drillsOf}</dd><dt>Incidents proven</dt><dd>{ev.proven} / {ev.incidentsOf}</dd><dt>Labs fixed</dt><dd>{ev.labs} / {ev.labsOf}</dd><dt>Quizzes taken</dt><dd>{ev.quizzes}</dd><dt>Decisions logged</dt><dd>{ev.decisions}</dd><dt>Bosses cleared</dt><dd>{ev.bosses} / 12</dd><dt>Challenge levels passed</dt><dd>{ev.challenges} / 52</dd></dl></Card>
+        <Card title="Role path" testId="mc-role"><label className="ch__field"><span>Role path</span><select value={role.id} onChange={(e) => commit({ ...P, role: e.target.value })}>{M.roles.map((r) => <option key={r.id} value={r.id}>{r.id}</option>)}</select></label><p>{role.text}</p></Card>
+        <Card title="Crew trust · the weight of your choices" testId="mc-crew"><p className="mc__big">Merit {ct.merit > 0 ? '+' : ''}{ct.merit}</p>
+          {!names.length ? <p>No choices yet. Every decision card in the story moves somebody’s trust — up or down.</p> : <ul className="plain mc__trust">{names.map((n) => { const v = ct.trust[n]!; return <li key={n} data-sign={v < 0 ? 'neg' : 'pos'}><span>{n}</span><Bar v={Math.min(100, Math.abs(v) * 12)} /><b>{v > 0 ? '+' : ''}{v}</b></li>; })}</ul>}</Card>
+        <Card title="Competency by domain" testId="mc-domains"><dl className="mc__kv">{M.domains.map((d) => { const n = pts.dom[d] || 0; return [<dt key={`t${d}`}>{d}</dt>, <dd key={`d${d}`}>{MC.elevel(n)} · {n} pts</dd>]; })}</dl></Card>
+      </div>
+      <div className="wk-g2">{([['#/learn/practice', 'Practice', `${M.totals.labs} Fix-It Labs and Physics in Motion simulators, plus routing, first-failure hunts, clue boards and triage. Timed. Failable.`], ['#/learn/service', 'Service Mode', 'Live incidents on a running clock. Keep the evidence, keep the trust, prove the fix.'], ['#/learn/challenges', 'Challenges', 'Thirteen challenges in five modes, four levels each, scored with your best.'], ['#/learn/cases', 'Case Files', `${M.totals.cases} cases across every season, each from the Learn, Service and Engineer side.`], ['#/learn/ask', 'Ask Empathia Learn', 'A mentor that asks before it tells — and says whose job it is.']] as const).filter(([h]) => openable(perspective, h)).map(([h, t, d]) => <a key={h} className="card mc__link" href={h}><b>{t}</b><span className="ui-meta">{d}</span></a>)}</div>
+      <Card title="Systems map" sub="Systems light up as you meet them in the story or prove them in Service Mode." testId="mc-map">
+        <div className="ui-tabs" role="tablist" aria-label="Season maps">{Object.keys(M.sysmaps).map((k) => <button key={k} type="button" role="tab" className="ui-tab" aria-selected={Number(k) === shownSe} onClick={() => setMapSe(Number(k))}>S{k}{M.sysmaps[k]!.title ? ` · ${M.sysmaps[k]!.title}` : ''}</button>)}</div>
+        <SysMapView M={map} P={P} lanes={M.lanes} />
+      </Card>
+      <Card title="Ratings · from your first attempts" sub={`Story Score ${R.score} / 100 · ${R.seen} first attempts counted`} testId="mc-ratings">
+        <ul className="plain mc__ratings">{RT.DIMS.map(([k, name, q]) => <li key={k}><span><b>{name}</b> <span className="ui-meta">{q}</span></span><Bar v={R.dims[k].score} /><b>{R.dims[k].score}</b></li>)}</ul>
+        <p className="ui-meta">Each season ends with a review: below {RT.PASS} the story stops until you retry the season. Practice, not a credential.</p></Card>
+      <Card title="Timers and support" testId="mc-support">
+        <label className="ch__field"><span>Timers</span><select value={P.clock} onChange={(e) => commit({ ...P, clock: e.target.value as Story.Clock })}><option value="on">Normal</option><option value="extended">Relaxed — every allowance doubled</option><option value="off">Off — no countdowns</option></select></label>
+        <label className="ch__field"><span>Support level</span><select value={P.support || 'auto'} onChange={(e) => commit({ ...P, support: e.target.value as Story.Progress['support'] })}><option value="auto">By season (automatic)</option><option value="1">1 · Beginner — terms, formulas and worked examples</option><option value="2">2 · Intermediate — formulas and their variables</option><option value="3">3 · Advanced — formulas on request</option><option value="4">4 · Mastery — choose the tool yourself</option></select></label></Card>
+      <Card title={`Reviewer mode · ${P.gates ? 'off' : 'on'}`} testId="mc-review"><p>{P.gates ? 'The story is gated: your choices and the core skills in each chapter open the pages after them; everything marked optional can wait. Each chapter opens when the one before it is cleared. Reviewers can open everything.' : 'Every page and chapter is open for expert review. Readers see the story gated.'}</p><p className="ui-meta">⚑ GT-01 · reviewer mode is for authors and subject-matter reviewers.</p>
+        <p><Button onClick={() => (P.gates ? tap('review', () => commit({ ...P, gates: false })) : commit({ ...P, gates: true }))}>{!P.gates ? 'Turn reviewer mode off' : arm === 'review' ? 'Tap again: open every page for review' : 'Open every page (reviewer mode)'}</Button></p></Card>
+      <p><Button onClick={() => tap('reset', () => commit({ ...Story.emptyProgress(), clock: P.clock }))} testId="mc-reset">{arm === 'reset' ? 'Tap again to erase everything' : 'Reset my progress'}</Button></p>
+    </section>
+  );
+}
+/** A plain meter: the number beside it carries the value, so the bar is decoration for sighted readers. */
+const Bar = ({ v }: { v: number }) => <svg className="mc__bar" viewBox="0 0 100 8" preserveAspectRatio="none" aria-hidden="true"><rect className="boss__mtrack" width={100} height={8} rx={4} /><rect className="boss__mfill" width={Math.max(0, Math.min(100, v))} height={8} rx={4} /></svg>;
+/** The reference's label wrap: one line up to 14 characters, else two. */
+const wrap2 = (t: string) => { if (t.length <= 14) return [t]; let a = '', b = ''; for (const w of t.split(' ')) { if (!b && `${a} ${w}`.trim().length <= 14) a = `${a} ${w}`.trim(); else b = `${b} ${w}`.trim(); } return b ? [a, b] : [a]; };
+function SysMapView({ M, P, lanes }: { M: MC.SysMap; P: Story.Progress; lanes: Record<string, string> }) {
+  const vb = M.view || [800, 360], by = (id: string) => M.nodes.find((n) => n.id === id)!, lit = M.nodes.filter((n) => MC.nodeOn(n, P));
+  const dash: Record<string, string | undefined> = { NETWORK: '3 7', POWER: '18 6 4 6', CONTROL: '10 8' };
+  return <div className="lab__svgwrap"><svg className="mc__map" viewBox={`0 0 ${vb[0]} ${vb[1]}`} role="img" aria-label={`${M.title || 'Systems'} map. Lit systems: ${lit.map((n) => n.label).join(', ') || 'none yet'}.`}>
+    {M.links.map(([a, b, lane], i) => { const A = by(a), B = by(b), on = MC.nodeOn(A, P) && MC.nodeOn(B, P); return <line key={i} x1={A.x + A.w / 2} y1={A.y + A.h / 2} x2={B.x + B.w / 2} y2={B.y + B.h / 2} stroke={on ? lanes[lane] || 'currentColor' : 'var(--line2)'} strokeWidth={on ? 4 : 2} strokeDasharray={dash[lane]} />; })}
+    {M.nodes.map((n) => { const on = MC.nodeOn(n, P); return <g key={n.id} className={on ? 'mc__node is-on' : 'mc__node'}><rect x={n.x} y={n.y} width={n.w} height={n.h} rx={8} /><text x={n.x + n.w / 2} y={n.y + n.h / 2 + 6} textAnchor="middle">{wrap2(on ? n.label : '? ? ?').map((t, j, all) => <tspan key={j} x={n.x + n.w / 2} dy={all.length > 1 ? (j ? 22 : -10) : 0}>{t}</tspan>)}</text></g>; })}
+  </svg><p className="ui-meta">Lanes: {Object.keys(lanes).map((l) => l.toLowerCase()).join(', ')} (line pattern differs by lane). Unlit systems show as ? ? ?.</p></div>;
 }

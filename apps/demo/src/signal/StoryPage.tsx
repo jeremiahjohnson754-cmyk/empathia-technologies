@@ -291,7 +291,7 @@ function BossPiece({ p, id, g, label }: { p: ViewProps; id: string; g: Gate | nu
   return <section className={`sg-piece is-${g?.tier || 'hard'}`} data-item="piece" data-kind="boss" data-piece={id} data-tier={g?.tier || 'hard'} data-cleared={cleared} aria-label={`Boss level: ${B.title}`}>
     <p className="sg-tier" data-testid="story-tier">{TIER_WORD[g?.tier || 'hard']}</p>
     {label && <p className="ui-meta"><Em text={label} /></p>}
-    <BossRunner key={p.clock} id={id} B={B as unknown as Bosses.Boss} heading="h3" factor={FACTOR[p.clock] ?? 1} tier={p.pieces?.tiers?.[id] ?? 2} formulas={(p.pieces?.formulas || {}) as Record<string, Formula>} record={rec} onRecord={(r) => p.onBoss?.(id, r as BossRecord)} onChallenge={(key, score, pass) => p.onChallenge?.(key, score, pass)} />
+    <BossRunner key={p.clock} id={id} B={B as unknown as Bosses.Boss} heading="h3" factor={FACTOR[p.clock] ?? 1} tier={prog.support && prog.support !== 'auto' ? Number(prog.support) : p.pieces?.tiers?.[id] ?? 2} formulas={(p.pieces?.formulas || {}) as Record<string, Formula>} record={rec} onRecord={(r) => p.onBoss?.(id, r as BossRecord)} onChallenge={(key, score, pass) => p.onChallenge?.(key, score, pass)} />
   </section>;
 }
 export function ItemView(p: ViewProps): JSX.Element | null {
