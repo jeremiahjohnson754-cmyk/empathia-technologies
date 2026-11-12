@@ -11,5 +11,12 @@ beside the original only as a labelled new version, once the founder accepts it.
 - The clip carries a generated audio bed (−12.6 LUFS); its rights follow vidIQ's terms, so the finished film uses our own narration
   (ElevenLabs) and the bed is dropped unless the founder keeps it.
 - The glowing lines are an illustration of relationships, not a visualization of any real network; the film says so in its captions.
-- Next, after the founder's review: two more shots (about 240 credits), one narration line in the narrator voice, captions, a 9:16
+| 2 | `shot2` (awaiting the founder's download) | vidIQ, minimax-h3 | 8 s 9:16: from the network cabinet the lines travel to a second room's display, a corridor loudspeaker, a door's touch panel | 120 | — | pending |
+| 3 | `shot3` (awaiting the founder's download) | vidIQ, minimax-h3 | 8 s 9:16: night exterior pull-back, the connected rooms outlined across floors | 120 | — | pending |
+
+Narration (ElevenLabs, narrator voice Bella, 179 credits, awaiting import): "Start with a building. / Find everything connected:
+every room, every device, and what each one depends on. / One record you can search, before something breaks." (new copy for the
+new film, in the product's own claims: search across one record; nothing live is implied).
+
+- Before this, after the founder's review: two more shots (about 240 credits), one narration line in the narrator voice, captions, a 9:16
   render through the same pipeline as the training film.
