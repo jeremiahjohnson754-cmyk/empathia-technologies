@@ -36,7 +36,10 @@ export interface Draft {
   seq: { pa: number; cn: number };
   /** redlines on the drawings (V2.5.3 v25RoomRedline, restored 12 Nov 2026): an open one holds that drawing's approval */
   redlines?: Redline[];
+  /** commissioning deficiencies (V2.5.3 v25RoomCxIssue): one per failed test, resolved only by a verified retest */
+  issues?: CxIssue[];
 }
+export interface CxIssue { id: string; key: string; test: string; label: string; severity: 'High' | 'Medium'; state: 'OPEN' | 'RESOLVED'; owner: string | null; seen: number; evidence: Array<{ at: string; finding: string }>; resolution?: string }
 export interface Redline { id: string; drawing: string; text: string; by: string; at: string; revision: number; state: 'OPEN' | 'RESOLVED'; resolution?: string; resolvedBy?: string }
 export interface Baseline { version: number; at: string; by: string; revision: number | null; results: Record<string, string>; devices: Array<{ id: string; cat: string; label: string }>; state: 'CURRENT' | 'SUPERSEDED' }
 export type Refusal = { why: string[] };
@@ -274,14 +277,32 @@ export function record(d: Draft, persona: string, testId: string, input: { state
   if (why.length) { log(d, persona, 'test.recorded', `${testId} refused: ${why.join('; ')}`, 'DENIED'); return refused(why); }
   d.design.results = d.design.results || {};
   d.design.results[testId] = buildResult(d.design.results[testId], persona, { state: input.state, evidence: { kind: input.kind, ref: input.ref, instrument: input.instrument || null } }, now());
-  log(d, persona, 'test.recorded', `${testId} ${input.state} → ${resultLabel(d.design.results[testId])} (${input.kind}: ${input.ref})`); return d;
+  log(d, persona, 'test.recorded', `${testId} ${input.state} → ${resultLabel(d.design.results[testId])} (${input.kind}: ${input.ref})`);
+  if (input.state === 'FAIL' && row) {
+    const list = d.issues || (d.issues = []); const key = `test-failed:${testId}`; const i = list.find((x) => x.key === key);
+    const ev = { at: now(), finding: `FAIL recorded by ${personaLabel(persona)} (${input.kind} ${input.ref})` };
+    if (i) { i.state = 'OPEN'; i.seen += 1; i.evidence.push(ev); delete i.resolution; log(d, persona, 'room.issue_updated', `${i.id}: the test failed again`); }
+    else { const n: CxIssue = { id: `CXI-${list.length + 1}`, key, test: testId, label: `${row.label} failed`, severity: row.tier === 1 ? 'High' : 'Medium', state: 'OPEN', owner: null, seen: 1, evidence: [ev] }; list.push(n); log(d, persona, 'room.issue_created', `${n.id}: ${n.label} (${n.severity}); in the commissioning deficiency queue, unassigned`); }
+  }
+  return d;
+}
+/** Assign a commissioning deficiency (V2.5.3 v25RoomAssignIssue): only a role that assigns issues, only to a persona of this demonstration. */
+export function assignIssue(d: Draft, persona: string, id: string, owner: string): Draft | Refusal {
+  if (!holds(persona, 'issue.assign') && !holds(persona, 'route.internal')) return refused([`${personaLabel(persona)} cannot assign room issues (Service Manager, Operations Lead)`]);
+  const i = (d.issues || []).find((x) => x.id === id); if (!i) return refused([`no issue ${id}`]); if (i.state !== 'OPEN') return refused([`${id} is resolved`]);
+  if (!P[owner]) return refused(['assign to a persona of this demonstration']);
+  i.owner = owner; log(d, persona, 'room.issue_assigned', `${id} to ${personaLabel(owner)}`); return d;
 }
 export function verify(d: Draft, persona: string, testId: string): Draft | Refusal {
   if (!holds(persona, 'test.verify') && !holds(persona, 'tests.verify.all') && !holds(persona, 'customer.accept')) return refused([`${personaLabel(persona)} does not hold a verification authority`]);
   const r = d.design.results?.[testId]; const why = verifyBlockers(r, persona);
   if (why.length) { log(d, persona, 'test.verified', `${testId} refused: ${why.join('; ')}`, 'DENIED'); return refused(why); }
   r!.verified = { by: persona, at: now() };
-  log(d, persona, 'test.verified', `${testId} PASS_VERIFIED by ${personaLabel(persona)}`); return d;
+  log(d, persona, 'test.verified', `${testId} PASS_VERIFIED by ${personaLabel(persona)}`);
+  // a verified retest resolves the deficiency its failure opened (V2.5.3 v25RoomCxRetest)
+  const i = (d.issues || []).find((x) => x.key === `test-failed:${testId}` && x.state === 'OPEN');
+  if (i && r!.state === 'PASS') { i.state = 'RESOLVED'; i.resolution = `retest ${testId} PASS by ${personaLabel(r!.by)}, verified by ${personaLabel(persona)} (evidence ${r!.evidence.kind} ${r!.evidence.ref})`; log(d, persona, 'room.issue_resolved', `${i.id}: ${i.resolution}`); }
+  return d;
 }
 export const results = (d: Draft) => d.design.results || ({} as Record<string, RecordedResult>);
 export const live = (xs: Array<PlannedDevice | Connection>) => xs.filter((x) => !x.removed);

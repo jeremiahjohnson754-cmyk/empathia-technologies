@@ -60,3 +60,14 @@ test('outline: corners go round once, at least 2 m², moved to the origin with t
   assert.ok('why' in B.confirmScale(r, 'designer', 99, '6')); assert.ok('why' in B.confirmScale(r, 'designer', 1, '60'), 'a factor of 10 is not a correction');
   const s = B.confirmScale(r, 'designer', 1, '6.6'); assert.ok(!('why' in s)); assert.deepEqual(s.design.geometry.points[1], [6.6, 0]); assert.equal(s.design.geometry.widthM, 6.6); assert.equal(s.design.geometry.provenance.scale, 'DECLARED');
 });
+test('commissioning deficiencies: a failed test opens one, failing again reopens it, an assigner assigns it, only a verified retest resolves it', () => {
+  const d = draft(); d.design.lifecycle = 'COMMISSIONING';
+  const row = B.analysis(d).applicability.rows.find((r) => r.applicable && !r.instrument); const ev = { kind: row.evidence[0], ref: 'photo 12' };
+  const f1 = B.record(d, 'cxeng', row.id, { state: 'FAIL', ...ev }); assert.ok(!('why' in f1), JSON.stringify(f1.why)); assert.equal(d.issues.length, 1);
+  const i = d.issues[0]; assert.equal(i.state, 'OPEN'); assert.equal(i.owner, null); assert.equal(i.key, `test-failed:${row.id}`);
+  assert.ok('why' in B.assignIssue(d, 'cxeng', i.id, 'installer'), 'the commissioning engineer does not assign'); assert.ok('why' in B.assignIssue(d, 'svcmgr', i.id, 'nobody'));
+  assert.ok(!('why' in B.assignIssue(d, 'svcmgr', i.id, 'installer'))); assert.equal(i.owner, 'installer');
+  B.record(d, 'cxeng', row.id, { state: 'FAIL', ...ev }); assert.equal(d.issues.length, 1, 'the same failure reopens, never duplicates'); assert.equal(i.seen, 2);
+  B.record(d, 'cxeng', row.id, { state: 'PASS', ...ev }); assert.equal(i.state, 'OPEN', 'an unverified pass resolves nothing');
+  const v = B.verify(d, 'qa_reviewer', row.id); assert.ok(!('why' in v), JSON.stringify(v.why)); assert.equal(i.state, 'RESOLVED'); assert.match(i.resolution, /verified by/);
+});
