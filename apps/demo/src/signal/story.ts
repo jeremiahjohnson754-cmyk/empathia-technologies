@@ -39,11 +39,11 @@ export interface ChapterState { choices: Record<string, Choice>; talks: Record<s
 export type Clock = 'on' | 'extended' | 'off';
 /** A quiz's record, as the reference keeps it: best score, number of questions, and the first score (ratings read first attempts). */
 export interface QuizRecord { best: number; total: number; first: number }
-export interface Progress { v: 2; chapters: Record<string, ChapterState>; clock: Clock; gates: boolean; last: string | null; quizzes: Record<string, QuizRecord>; skips: Record<string, 1>; drills: Record<string, DrillRecord>; incidents: Record<string, IncidentRecord>; labs: Record<string, LabRecord>; reviews: Record<string, ReviewRecord>; meltdowns: Record<string, MeltdownRecord> }
+export interface Progress { v: 2; chapters: Record<string, ChapterState>; clock: Clock; gates: boolean; last: string | null; quizzes: Record<string, QuizRecord>; skips: Record<string, 1>; drills: Record<string, DrillRecord>; incidents: Record<string, IncidentRecord>; labs: Record<string, LabRecord>; reviews: Record<string, ReviewRecord>; meltdowns: Record<string, MeltdownRecord>; bosses: Record<string, BossRecord>; challenges: Record<string, ChalRecord> }
 /** One soft or hard gate tier as the reader sees it. */
 export const TIER_WORD: Record<Tier, string> = { hard: 'Core: the story goes on when you finish this', soft: 'Recommended: the pages wait for you, or skip it for now', opt: 'Optional: do it now or come back; it stays here' };
 export const emptyChapter = (): ChapterState => ({ choices: {}, talks: {}, found: [], done: false });
-export const emptyProgress = (): Progress => ({ v: 2, chapters: {}, clock: 'on', gates: true, last: null, quizzes: {}, skips: {}, drills: {}, incidents: {}, labs: {}, reviews: {}, meltdowns: {} });
+export const emptyProgress = (): Progress => ({ v: 2, chapters: {}, clock: 'on', gates: true, last: null, quizzes: {}, skips: {}, drills: {}, incidents: {}, labs: {}, reviews: {}, meltdowns: {}, bosses: {}, challenges: {} });
 const KEY = 'empathia.signal.story.v1';
 type OldChoice = { letter?: unknown; tries?: unknown; failed?: unknown; hints?: unknown; timedOut?: unknown; first?: unknown; changes?: unknown };
 /** Read one stored choice of either shape; anything else reads as no choice. */
@@ -71,7 +71,9 @@ export function load(): Progress {
       const labs: Record<string, LabRecord> = {}; for (const [id, r] of Object.entries((p as { labs?: unknown }).labs && typeof (p as { labs?: unknown }).labs === 'object' ? (p as { labs: Record<string, unknown> }).labs : {})) { const d = readLab(r); if (d && /^[\w.-]{1,40}$/.test(id)) labs[id] = d; }
       const reviews: Record<string, ReviewRecord> = {}; for (const [id, r] of Object.entries((p as { reviews?: unknown }).reviews && typeof (p as { reviews?: unknown }).reviews === 'object' ? (p as { reviews: Record<string, unknown> }).reviews : {})) { const d = readReview(r); if (d && /^S\d{1,2}$/.test(id)) reviews[id] = d; }
       const meltdowns: Record<string, MeltdownRecord> = {}; for (const [id, r] of Object.entries((p as { meltdowns?: unknown }).meltdowns && typeof (p as { meltdowns?: unknown }).meltdowns === 'object' ? (p as { meltdowns: Record<string, unknown> }).meltdowns : {})) { const d = readMeltdown(r); if (d && /^MD-S\d{2}$/.test(id)) meltdowns[id] = d; }
-      return { ...emptyProgress(), drills, incidents, labs, reviews, meltdowns, clock: p.clock === 'extended' || p.clock === 'off' ? p.clock : 'on', gates: p.gates !== false, last: typeof p.last === 'string' ? p.last : null, chapters, quizzes, skips }; } }
+      const bosses: Record<string, BossRecord> = {}; for (const [id, r] of Object.entries((p as { bosses?: unknown }).bosses && typeof (p as { bosses?: unknown }).bosses === 'object' ? (p as { bosses: Record<string, unknown> }).bosses : {})) { const d = readBoss(r); if (d && /^S\d{2}$/.test(id)) bosses[id] = d; }
+      const challenges: Record<string, ChalRecord> = {}; for (const [id, r] of Object.entries((p as { challenges?: unknown }).challenges && typeof (p as { challenges?: unknown }).challenges === 'object' ? (p as { challenges: Record<string, unknown> }).challenges : {})) { const d = readChal(r); if (d && /^[a-z]+-[a-z]+@[1-4]$/.test(id)) challenges[id] = d; }
+      return { ...emptyProgress(), drills, incidents, labs, reviews, meltdowns, bosses, challenges, clock: p.clock === 'extended' || p.clock === 'off' ? p.clock : 'on', gates: p.gates !== false, last: typeof p.last === 'string' ? p.last : null, chapters, quizzes, skips }; } }
   catch { /* a blocked or corrupted store reads as a fresh start */ }
   return emptyProgress();
 }
@@ -112,8 +114,20 @@ export function readReview(x: unknown): ReviewRecord | null { const r = (x && ty
 export interface MeltdownRecord { best: Ending; grade: 'S' | 'A' | 'B' | 'C' | 'D'; runs: number; last: Ending; first: Ending; firstGrade: 'S' | 'A' | 'B' | 'C' | 'D'; firstWhy: 'boundary' | 'mission' | 'end' }
 export function readMeltdown(x: unknown): MeltdownRecord | null { const r = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>; const o = (v: unknown): v is Ending => v === 'proven' || v === 'partial' || v === 'fail'; const g = (v: unknown) => typeof v === 'string' && /^[SABCD]$/.test(v);
   return o(r['best']) && o(r['last']) && o(r['first']) && g(r['grade']) && g(r['firstGrade']) && ['boundary', 'mission', 'end'].includes(r['firstWhy'] as string) && Number.isInteger(r['runs']) && (r['runs'] as number) >= 1 && (r['runs'] as number) <= 9999 ? (r as unknown as MeltdownRecord) : null; }
+/** A boss level's record, the reference's shape: runs, passed once stays passed, the furthest stage reached, and the run that first cleared it. */
+export interface BossRecord { tries: number; passed: boolean; best: number; at?: number; firstRun?: number }
+export function readBoss(x: unknown): BossRecord | null { const r = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>; const n = (v: unknown) => Number.isInteger(v) && (v as number) >= 0 && (v as number) <= 9999;
+  if (!n(r['tries']) || !n(r['best']) || typeof r['passed'] !== 'boolean' || (r['best'] as number) > 20) return null;
+  return { tries: r['tries'] as number, passed: r['passed'], best: r['best'] as number, ...(typeof r['at'] === 'number' ? { at: r['at'] } : {}), ...(n(r['firstRun']) ? { firstRun: r['firstRun'] as number } : {}) }; }
+/** A challenge's record per id@level, the reference's shape: tries, best, first, passed once stays passed, last, when. */
+export interface ChalRecord { tries: number; best: number; first: number; passed: boolean; last: number; at: number }
+export function readChal(x: unknown): ChalRecord | null { const r = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>; const sc = (v: unknown) => Number.isInteger(v) && (v as number) >= 0 && (v as number) <= 100;
+  return Number.isInteger(r['tries']) && (r['tries'] as number) >= 1 && (r['tries'] as number) <= 9999 && sc(r['best']) && sc(r['first']) && sc(r['last']) && typeof r['passed'] === 'boolean' && typeof r['at'] === 'number' && (r['first'] as number) <= (r['best'] as number) && (r['last'] as number) <= (r['best'] as number)
+    ? { tries: r['tries'] as number, best: r['best'] as number, first: r['first'] as number, passed: r['passed'], last: r['last'] as number, at: r['at'] as number } : null; }
+export function recordChalTry(p: Progress, key: string, score: number, pass: boolean, now: number): Progress { const prev = p.challenges[key];
+  return { ...p, challenges: { ...p.challenges, [key]: { tries: (prev?.tries || 0) + 1, best: Math.max(prev?.best || 0, score), first: prev ? prev.first : score, passed: !!(prev?.passed || pass), last: score, at: now } } }; }
 /** What gate checks read: quiz records, skips and drill records. */
-export type Done = Pick<Progress, 'quizzes' | 'skips'> & { drills?: Progress['drills']; incidents?: Progress['incidents']; labs?: Progress['labs']; reviews?: Progress['reviews']; meltdowns?: Progress['meltdowns'] };
+export type Done = Pick<Progress, 'quizzes' | 'skips'> & { drills?: Progress['drills']; incidents?: Progress['incidents']; labs?: Progress['labs']; reviews?: Progress['reviews']; meltdowns?: Progress['meltdowns']; bosses?: Progress['bosses'] };
 /** Record a finished quiz: the best score is kept and the first score never changes. */
 export function recordQuiz(p: Progress, id: string, right: number, total: number): Progress {
   const prev = p.quizzes[id]; const r = Math.max(0, Math.min(right, total)); return { ...p, quizzes: { ...p.quizzes, [id]: { best: Math.max(prev?.best ?? 0, r), total, first: prev ? prev.first : r } } };
@@ -125,9 +139,9 @@ export interface Quiz { title: string; domain?: string; qs: QuizQ[] }
 export interface Lesson { title: string; domain: string; sum?: string; cards: string[]; quiz: string; flag?: string; src?: string }
 export type Tier = 'hard' | 'soft' | 'opt';
 export interface Gate { index: number; kind: string; id: string; tier: Tier; twist: boolean; core: boolean }
-export interface Pieces { gates: Gate[]; quizzes: Record<string, Quiz>; lessons: Record<string, Lesson>; drills?: Record<string, { id: string; type: string; [k: string]: unknown }>; incidents?: Record<string, { id: string; title: string; [k: string]: unknown }>; labs?: Record<string, { id: string; type: string; title: string; [k: string]: unknown }>; meltdowns?: Record<string, { id: string; title: string; [k: string]: unknown }> }
+export interface Pieces { gates: Gate[]; quizzes: Record<string, Quiz>; lessons: Record<string, Lesson>; drills?: Record<string, { id: string; type: string; [k: string]: unknown }>; incidents?: Record<string, { id: string; title: string; [k: string]: unknown }>; labs?: Record<string, { id: string; type: string; title: string; [k: string]: unknown }>; meltdowns?: Record<string, { id: string; title: string; [k: string]: unknown }>; bosses?: Record<string, { se: number; lv: number; title: string; steps: unknown[]; [k: string]: unknown }>; formulas?: Record<string, { name: string; eq: string; [k: string]: unknown }>; tiers?: Record<string, number> }
 /** The kinds this build plays in place. A gate of any other kind is shown and does not hold the story, and the page says so. */
-export const PLAYABLE: ReadonlySet<string> = new Set(['decision', 'quiz', 'lesson', 'drill', 'incident', 'lab', 'review', 'meltdown']);   // labs: every kind is drawn now; physics labs (all optional) have controls and readouts, not yet the animated drawings
+export const PLAYABLE: ReadonlySet<string> = new Set(['decision', 'quiz', 'lesson', 'drill', 'incident', 'lab', 'review', 'meltdown', 'boss']);   // labs: every kind is drawn now; physics labs (all optional) have controls and readouts, not yet the animated drawings
 export const gateKey = (g: Pick<Gate, 'kind' | 'id'>) => `${g.kind}:${g.id}`;
 export function gateDone(g: Gate, s: ChapterState, p: Done, pieces: Pieces): boolean {
   if (g.kind === 'decision') return passed(s, g.id); if (g.kind === 'quiz') return !!p.quizzes[g.id];
@@ -136,6 +150,7 @@ export function gateDone(g: Gate, s: ChapterState, p: Done, pieces: Pieces): boo
   if (g.kind === 'incident') return !!p.incidents?.[g.id];   // gate.js: run to its end, whatever the outcome
   if (g.kind === 'lab') { const r = p.labs?.[g.id]; return !!(r && (r.passed || r.done)); }
   if (g.kind === 'review') return !!p.reviews?.[g.id]?.pass;
+  if (g.kind === 'boss') return !!p.bosses?.[g.id]?.passed;   // chal_boss.js: clearing the boss opens the next season; a failed run starts over
   if (g.kind === 'meltdown') return !!p.meltdowns?.[g.id];   // gate.js: survive it — or fail it — to continue   // gate.js: the next season opens only with a Story Score of 65 or more   // gate.js: fixed, or ended (clock out or the fix shown)   // reference gate.js: a drill gate is done once a try is recorded, passed or not
   return false;
 }

@@ -10,11 +10,11 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { PageProps } from '../registry.types.js';
 import * as RT from './ratings.js';
-import { DrillRunner, IncidentRunner, LabRunner, MeltdownRunner, LAB_KINDS_PLAYABLE, Meltdowns, type Drill, type Incidents, type LabData } from '@empathia/ui';
+import { BossRunner, Bosses, DrillRunner, IncidentRunner, LabRunner, MeltdownRunner, LAB_KINDS_PLAYABLE, Meltdowns, type Drill, type Formula, type Incidents, type LabData } from '@empathia/ui';
 import { Block, Crumbs, Pick } from '../worlds/kit.js';
 import { emptyProgress, BANDS, SEVERITY, TIMEOUT, answerTalk, chapterVerdict, choose, complete, echoes, emphasis, emptyChapter, find, load, nextOf, passed, prevOf, reached, replayDecision, resume, save, seconds, tally, timeOut, trustLine, weightLine, weightOf,
   type Chapter, type ChapterState, type Clock, type Item, type Option, type Outcome, type Progress, type StoryIndex, type Verdict,
-  PLAYABLE, TIER_WORD, blocking, gateCleared, gateCount, gateKey, recordQuiz, recordDrillTry, recordIncidentRun, recordLabTry, skip, type Gate, type Pieces, type Quiz, type ReviewRecord, type MeltdownRecord } from './story.js';
+  PLAYABLE, TIER_WORD, blocking, gateCleared, gateCount, gateKey, recordQuiz, recordDrillTry, recordIncidentRun, recordLabTry, recordChalTry, skip, type BossRecord, type Gate, type Pieces, type Quiz, type ReviewRecord, type MeltdownRecord } from './story.js';
 
 type Flags = Record<string, { type: string; title: string; detail?: string }>;
 let ixCache: Promise<StoryIndex> | null = null; let flagCache: Promise<Flags> | null = null; let defsReady: Promise<void> | null = null;
@@ -40,11 +40,13 @@ export const Draft = () => <span className="ui-tag" data-testid="story-draft">Dr
 export default function StoryPage({ params }: PageProps) {
   const ix = useLoaded(loadIndex, 'ix'); const [progress, setProgress] = useState<Progress>(load);
   const commit = (p: Progress) => { setProgress(p); save(p); };
+  /** For pieces that record more than once from one action (a boss stage records its challenge try, then the run): each change builds on the last. */
+  const update = (f: (p: Progress) => Progress) => setProgress((cur) => { const n = f(cur); save(n); return n; });
   if (ix.error) return <div className="sg" data-testid="story-error"><h1 tabIndex={-1}>The story did not load</h1><p className="lead">The story files could not be read ({ix.error}). Your progress is untouched.</p><p><a className="ui-btn ui-btn--primary" href="#/story" onClick={() => location.reload()}>Try again</a></p></div>;
   if (!ix.data) return <div className="sg" data-testid="story-loading" aria-busy="true"><h1 tabIndex={-1}>SIGNAL</h1><p className="lead">Opening the story…</p></div>;
   const id = params.chapter; const ref = id ? ix.data.chapters.find((c) => c.id === id) : null;
   if (id && !ref) return <div className="sg" data-testid="story-unknown"><h1 tabIndex={-1}>SIGNAL has no chapter at this address</h1><p><a className="ui-btn ui-btn--primary" href="#/story">Open the library</a></p></div>;
-  return ref ? <Reader key={ref.id} ix={ix.data} id={ref.id} progress={progress} commit={commit} /> : <Library ix={ix.data} progress={progress} commit={commit} />;
+  return ref ? <Reader key={ref.id} ix={ix.data} id={ref.id} progress={progress} commit={commit} update={update} /> : <Library ix={ix.data} progress={progress} commit={commit} />;
 }
 
 function Library({ ix, progress, commit }: { ix: StoryIndex; progress: Progress; commit: (p: Progress) => void }) {
@@ -79,7 +81,7 @@ function Library({ ix, progress, commit }: { ix: StoryIndex; progress: Progress;
   );
 }
 
-function Reader({ ix, id, progress, commit }: { ix: StoryIndex; id: string; progress: Progress; commit: (p: Progress) => void }) {
+function Reader({ ix, id, progress, commit, update }: { ix: StoryIndex; id: string; progress: Progress; commit: (p: Progress) => void; update: (f: (p: Progress) => Progress) => void }) {
   const ch = useLoaded(() => getJson<Chapter>(`signal/story/${id}.json`), id); const art = useLoaded(() => Promise.all([getJson<{ panels: string[]; closing: { alt: string; svg: string }[] }>(`signal/art/${id}.json`), loadDefs()]).then((r) => r[0]), `art-${id}`);
   const retry = (se: number) => { void loadRatings().then((X) => { commit({ ...RT.retrySeason(progress, X, se), last: null }); const first = ix.chapters.find((c) => c.season === se); location.hash = `#/story/${first ? first.id : 's01e00'}`; }); };
   const restart = () => { commit({ ...emptyProgress(), clock: progress.clock, gates: progress.gates }); location.hash = '#/story/pro01'; };
@@ -117,6 +119,8 @@ function Reader({ ix, id, progress, commit }: { ix: StoryIndex; id: string; prog
           pieces={pieces} progress={progress} onQuiz={(qid, r, n) => { commit({ ...recordQuiz(progress, qid, r, n), last: id }); setSaid(`Check recorded: ${r} of ${n}.`); }} onSkip={(g) => { commit({ ...skip(progress, g), last: id }); setSaid('Skipped for now. It stays here to come back to.'); }}
           onReview={(rid, rec) => { commit({ ...progress, reviews: { ...progress.reviews, [rid]: rec }, last: id }); setSaid(rec.pass ? `Season review passed: Story Score ${rec.score}.` : `Game over: Story Score ${rec.score}, below 65.`); }}
           onRetrySeason={retry} onRestart={restart}
+          onBoss={(bid, rec) => { update((cur) => ({ ...cur, bosses: { ...cur.bosses, [bid]: rec }, last: id })); if (rec.passed && rec.at && rec.best >= 1) setSaid(`Boss cleared in ${rec.tries} run${rec.tries === 1 ? '' : 's'}. The story goes on.`); }}
+          onChallenge={(key, score, pass) => update((cur) => recordChalTry(cur, key, score, pass, Date.now()))}
           onMeltdown={(mid, rec) => { commit({ ...progress, meltdowns: { ...progress.meltdowns, [mid]: rec }, last: id }); setSaid(rec.last === 'proven' ? `Meltdown contained and proven: rating ${rec.grade}.` : rec.last === 'partial' ? 'Meltdown survived, not proven. Recorded.' : 'Meltdown lost. Recorded; the after-action review shows where it turned.'); }}
           onLab={(lid, ok, fin) => { commit({ ...recordLabTry(progress, lid, ok, fin), last: id }); setSaid(ok ? 'Lab fixed and recorded.' : fin ? 'Lab ended, not passed. Recorded; the fix is shown in the lab.' : 'Not fixed yet. The lab stays open.'); }}
           onIncident={(iid, o, why) => { commit({ ...recordIncidentRun(progress, iid, o, why), last: id }); setSaid(o === 'proven' ? 'Incident closed: restored and proven. Recorded.' : o === 'partial' ? 'Incident closed: restored, not proven. Recorded.' : 'Incident closed as failed. Recorded; the debrief says why, and you can run it again.'); }}
@@ -127,8 +131,8 @@ function Reader({ ix, id, progress, commit }: { ix: StoryIndex; id: string; prog
         {ch.data && upTo >= items.length && art.data?.closing.map((c, i) => <figure key={i} className="sg-panel"><div className="sg-art" role="img" aria-label={c.alt} dangerouslySetInnerHTML={{ __html: c.svg }} /></figure>)}
       </div>
       <p className="ui-visually-hidden" role="status" aria-live="polite" data-testid="story-said">{said}</p>
-      {ch.data && upTo < items.length && <p className="sg-wait" data-testid="story-waiting" data-kind={hold?.kind || 'decision'}>{hold && hold.kind !== 'decision' ? `🔒 ${hold.kind === 'lesson' ? 'Finish the lesson check' : hold.kind === 'drill' ? 'Finish the drill' : hold.kind === 'incident' ? 'Run the live incident to its end' : hold.kind === 'lab' ? 'Fix it — or run out the clock' : hold.kind === 'meltdown' ? 'Survive the meltdown — or fail it' : hold.kind === 'review' ? 'The next season opens only with a Story Score of 65 or higher. Submit the season for review' : 'Answer every question'} to continue${hold.tier === 'soft' ? ', or skip it for now' : ''}.` : 'The story is waiting for your decision.'} {items.length - upTo} more moments follow.{gc ? ` ${gc.cleared} of ${gc.total} gates cleared in this chapter.` : ''}</p>}
-      {pieces && <p className="ui-meta" data-testid="story-gate-note">Played inside the story in this build: decisions, quizzes, lessons, drills, live incidents, Fix-It Labs, season reviews and meltdowns. Boss levels are shown and do not yet hold the story.</p>}
+      {ch.data && upTo < items.length && <p className="sg-wait" data-testid="story-waiting" data-kind={hold?.kind || 'decision'}>{hold && hold.kind !== 'decision' ? `🔒 ${hold.kind === 'lesson' ? 'Finish the lesson check' : hold.kind === 'drill' ? 'Finish the drill' : hold.kind === 'incident' ? 'Run the live incident to its end' : hold.kind === 'lab' ? 'Fix it — or run out the clock' : hold.kind === 'meltdown' ? 'Survive the meltdown — or fail it' : hold.kind === 'boss' ? 'Clear the boss level — a failed run starts over from the top —' : hold.kind === 'review' ? 'The next season opens only with a Story Score of 65 or higher. Submit the season for review' : 'Answer every question'} to continue${hold.tier === 'soft' ? ', or skip it for now' : ''}.` : 'The story is waiting for your decision.'} {items.length - upTo} more moments follow.{gc ? ` ${gc.cleared} of ${gc.total} gates cleared in this chapter.` : ''}</p>}
+      {pieces && <p className="ui-meta" data-testid="story-gate-note">Played inside the story in this build: decisions, quizzes, lessons, drills, live incidents, Fix-It Labs, season reviews, meltdowns and boss levels.</p>}
       {ch.data && finished && upTo >= items.length && (
         <Block title="Where this chapter leaves you" testId="story-summary">
           <ul className="sg-sum">
@@ -151,7 +155,7 @@ function Reader({ ix, id, progress, commit }: { ix: StoryIndex; id: string; prog
 }
 
 export interface ViewProps { it: Item; n: number; svg?: string; cast: Record<string, string>; state: ChapterState; clock: Clock; gated: boolean; onChoose: (d: Extract<Item, { type: 'decision' }>, letter: string, meta: { hints: number }) => Outcome; onTimeout?: (d: Extract<Item, { type: 'decision' }>, hints: number) => void; onReplay?: (id: string) => void; onTalk: (id: string, o: number) => void; onFind: (id: string) => void;
-  /** the chapter's pieces and gates, and the reader's quiz records, when loaded */ pieces?: Pieces | null; progress?: Progress; onQuiz?: (id: string, right: number, total: number) => void; onSkip?: (g: Gate) => void; onDrill?: (id: string, passed: boolean) => void; onIncident?: (id: string, outcome: 'proven' | 'partial' | 'fail', why: 'declared' | 'clock' | 'boundary') => void; onLab?: (id: string, passed: boolean, final: boolean) => void; onReview?: (id: string, rec: ReviewRecord) => void; onRetrySeason?: (season: number) => void; onRestart?: () => void; onMeltdown?: (id: string, rec: MeltdownRecord) => void }
+  /** the chapter's pieces and gates, and the reader's quiz records, when loaded */ pieces?: Pieces | null; progress?: Progress; onQuiz?: (id: string, right: number, total: number) => void; onSkip?: (g: Gate) => void; onDrill?: (id: string, passed: boolean) => void; onIncident?: (id: string, outcome: 'proven' | 'partial' | 'fail', why: 'declared' | 'clock' | 'boundary') => void; onLab?: (id: string, passed: boolean, final: boolean) => void; onReview?: (id: string, rec: ReviewRecord) => void; onRetrySeason?: (season: number) => void; onRestart?: () => void; onMeltdown?: (id: string, rec: MeltdownRecord) => void; onBoss?: (id: string, rec: BossRecord) => void; onChallenge?: (key: string, score: number, passed: boolean) => void }
 const MOUNT_WORD: Record<string, string> = { lesson: 'Lesson', lab: 'Lab', quiz: 'Quiz', drill: 'Drill', incident: 'Live incident', review: 'Season review', boss: 'Boss level', meltdown: 'Meltdown' };
 const gateOf = (p: ViewProps, kind: string, id: string): Gate | undefined => p.pieces?.gates.find((g) => g.index === p.n && g.kind === kind && g.id === id);
 /** Lesson cards carry a little markup (bold, italic, sub, sup, a formula span). Only those become elements; anything else is text. */
@@ -182,6 +186,7 @@ function Piece({ p, kind, id, n, label }: { p: ViewProps; kind: string; id: stri
   if (kind === 'lab') return <LabPiece p={p} id={id} g={g} label={label} />;
   if (kind === 'review') return <ReviewPiece p={p} id={id} g={g} />;
   if (kind === 'meltdown') return <MeltdownPiece p={p} id={id} g={g} label={label} />;
+  if (kind === 'boss') return <BossPiece p={p} id={id} g={g} label={label} />;
   const L = kind === 'lesson' ? pieces.lessons[id] : undefined; const qid = kind === 'lesson' ? L?.quiz : id; const q = qid ? pieces.quizzes[qid] : undefined; if (!q) return null;
   const cleared = g ? gateCleared(g, p.state, prog, pieces) : !!prog.quizzes[qid!]; const skipped = !!(g && prog.skips[gateKey(g)]) && !prog.quizzes[qid!];
   return <section className={`sg-piece is-${g?.tier || 'opt'}`} data-item="piece" data-kind={kind} data-piece={id} data-tier={g?.tier || 'opt'} data-cleared={cleared} aria-label={`${kind === 'lesson' ? 'Lesson' : 'Check'}: ${L?.title || q.title}`}>
@@ -276,6 +281,14 @@ function MeltdownPiece({ p, id, g, label }: { p: ViewProps; id: string; g: Gate 
     <MeltdownRunner key={p.clock} M={M as unknown as Meltdowns.Meltdown} heading="h4" factor={FACTOR[p.clock] ?? 1} resMet={(r) => RT.resMet(lo, r)} resWhy={(r) => RT.resWhy(lo, r)} onEnd={(S) => p.onMeltdown?.(id, Meltdowns.recordMeltdown(rec as Meltdowns.MeltdownRecord | undefined, S) as MeltdownRecord)} />
   </section>;
 }
+function BossPiece({ p, id, g, label }: { p: ViewProps; id: string; g: Gate | null | undefined; label?: string | null }) {
+  const B = p.pieces?.bosses?.[id]; const prog = p.progress; if (!B || !prog) return null; const rec = prog.bosses[id]; const cleared = g ? gateCleared(g, p.state, prog, p.pieces!) : !!rec?.passed;
+  return <section className={`sg-piece is-${g?.tier || 'hard'}`} data-item="piece" data-kind="boss" data-piece={id} data-tier={g?.tier || 'hard'} data-cleared={cleared} aria-label={`Boss level: ${B.title}`}>
+    <p className="sg-tier" data-testid="story-tier">{TIER_WORD[g?.tier || 'hard']}</p>
+    {label && <p className="ui-meta"><Em text={label} /></p>}
+    <BossRunner key={p.clock} id={id} B={B as unknown as Bosses.Boss} heading="h3" factor={FACTOR[p.clock] ?? 1} tier={p.pieces?.tiers?.[id] ?? 2} formulas={(p.pieces?.formulas || {}) as Record<string, Formula>} record={rec} onRecord={(r) => p.onBoss?.(id, r as BossRecord)} onChallenge={(key, score, pass) => p.onChallenge?.(key, score, pass)} />
+  </section>;
+}
 export function ItemView(p: ViewProps): JSX.Element | null {
   const { it, cast } = p; const name = (id: string) => cast[id] || id;
   switch (it.type) {
@@ -312,7 +325,7 @@ export function ItemView(p: ViewProps): JSX.Element | null {
     case 'twist': return <section className="sg-twist" data-item="twist"><p className="sg-twist__k">Twist</p><h3>{it.title}</h3><Paras text={it.body} />{it.label && <p className="ui-meta">{it.label}</p>}
       <Piece p={p} kind={it.test_kind} id={it.test_id} n={p.n} /></section>;
     case 'history': return <aside className="sg-hist" data-item="history"><p className="sg-hist__k">Then and now{it.when ? ` · ${it.when}` : ''}</p><h3>{it.title}</h3><Paras text={it.body} /><p className="ui-meta">Under review: {it.flag}. Dates and attributions are the author’s draft until that review closes.</p></aside>;
-    case 'mount': return (it.kind === 'quiz' || it.kind === 'lesson' || (it.kind === 'drill' && p.pieces?.drills?.[it.id]) || (it.kind === 'incident' && p.pieces?.incidents?.[it.id]) || (it.kind === 'lab' && LAB_KINDS_PLAYABLE.has(String(p.pieces?.labs?.[it.id]?.type))) || it.kind === 'review' || (it.kind === 'meltdown' && p.pieces?.meltdowns?.[it.id])) && p.pieces ? <Piece p={p} kind={it.kind} id={it.id} n={p.n} label={it.label} /> : (
+    case 'mount': return (it.kind === 'quiz' || it.kind === 'lesson' || (it.kind === 'drill' && p.pieces?.drills?.[it.id]) || (it.kind === 'incident' && p.pieces?.incidents?.[it.id]) || (it.kind === 'lab' && LAB_KINDS_PLAYABLE.has(String(p.pieces?.labs?.[it.id]?.type))) || it.kind === 'review' || (it.kind === 'meltdown' && p.pieces?.meltdowns?.[it.id]) || (it.kind === 'boss' && p.pieces?.bosses?.[it.id])) && p.pieces ? <Piece p={p} kind={it.kind} id={it.id} n={p.n} label={it.label} /> : (
       <aside className="sg-mount" data-item="mount" data-kind={it.kind}>
         <span className="ui-tag">{MOUNT_WORD[it.kind] || it.kind}</span>
         <span>{it.label ? <Em text={it.label} /> : <code>{it.id}</code>}</span>

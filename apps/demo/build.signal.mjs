@@ -28,7 +28,7 @@ export function shipSignal(repo, dist) {
     fs.mkdirSync(path.join(out, 'pieces'), { recursive: true });
     // the ratings engine's data (season reviews, the Story Score and the loadout), restored 11 Nov 2026
     fs.writeFileSync(path.join(out, 'ratings.json'), JSON.stringify(buildRatingsIndex(app)));
-    for (const c of index) { const items = JSON.parse(fs.readFileSync(path.join(src, 'story', `${c.id}.json`), 'utf8')).items; const quizzes = {}; const lessons = {}; const drills = {}; const incidents = {}; const labs = {}; const meltdowns = {};
+    for (const c of index) { const items = JSON.parse(fs.readFileSync(path.join(src, 'story', `${c.id}.json`), 'utf8')).items; const quizzes = {}; const lessons = {}; const drills = {}; const incidents = {}; const labs = {}; const meltdowns = {}; const bosses = {}; const formulas = {}; const tiers = {};
       const g = gates.filter((x) => x.chapter === c.id).map((x) => { const it = items[x.index]; const id = it && (it.type === 'decision' ? it.id : it.type === 'mount' ? it.id : it.type === 'twist' ? it.test_id : null);
         if (id !== x.id) throw new Error(`SIGNAL gates: ${c.id} item ${x.index} is not ${x.kind} ${x.id}`); return { index: x.index, kind: x.kind, id: x.id, tier: x.tier, twist: !!x.twist, core: !!x.core }; });
       const want = (kind, id) => { if (kind === 'quiz') { if (!app.quizzes[id]) throw new Error(`SIGNAL ${c.id}: quiz ${id} missing`); quizzes[id] = app.quizzes[id]; }
@@ -36,9 +36,13 @@ export function shipSignal(repo, dist) {
         if (kind === 'drill') { if (!app.drills[id]) throw new Error(`SIGNAL ${c.id}: drill ${id} missing`); drills[id] = { ...app.drills[id], id }; }
         if (kind === 'incident') { if (!app.incidents[id]) throw new Error(`SIGNAL ${c.id}: incident ${id} missing`); const { plates, ...rest } = app.incidents[id]; void plates; incidents[id] = { ...rest, id }; }
         if (kind === 'lab') { if (!app.labs[id]) throw new Error(`SIGNAL ${c.id}: lab ${id} missing`); labs[id] = { ...app.labs[id], id }; }
-        if (kind === 'meltdown') { if (!app.meltdowns[id]) throw new Error(`SIGNAL ${c.id}: meltdown ${id} missing`); meltdowns[id] = { ...app.meltdowns[id], id }; } };
+        if (kind === 'meltdown') { if (!app.meltdowns[id]) throw new Error(`SIGNAL ${c.id}: meltdown ${id} missing`); meltdowns[id] = { ...app.meltdowns[id], id }; }
+        // boss levels (restored 12 Nov 2026): the run as the package has it (minus its build-time self-check), the formulas its design and cost stages show, and its support tier
+        if (kind === 'boss') { const B = app.bosses[id]; if (!B) throw new Error(`SIGNAL ${c.id}: boss ${id} missing`); bosses[id] = { ...B, steps: B.steps.map(({ _check, ...st }) => { void _check; return st; }) }; tiers[id] = app.tierOf[`boss:${id}`] || 2;
+          const fx = (k) => { if (!k || formulas[k]) return; if (!app.formulas[k]) throw new Error(`SIGNAL ${c.id}: formula ${k} missing`); formulas[k] = app.formulas[k]; for (const o of app.formulas[k].opts || []) if (!formulas[o] && app.formulas[o]) formulas[o] = app.formulas[o]; };
+          for (const st of B.steps) { if (st.type === 'design') (st.f || []).forEach(fx); if (st.type === 'cost') fx(st.f); } } };
       for (const it of items) { if (it.type === 'mount') want(it.kind, it.id); if (it.type === 'twist') want(it.test_kind, it.test_id); }
-      fs.writeFileSync(path.join(out, 'pieces', `${c.id}.json`), JSON.stringify({ gates: g, quizzes, lessons, drills, incidents, labs, meltdowns })); } }
+      fs.writeFileSync(path.join(out, 'pieces', `${c.id}.json`), JSON.stringify({ gates: g, quizzes, lessons, drills, incidents, labs, meltdowns, bosses, formulas, tiers })); } }
   const defs = fs.readFileSync(path.join(src, 'art/defs.svg'), 'utf8'); if (/<script|<style|\son[a-z]+=|style="|href="(?!#)|<foreignObject/i.test(defs)) throw new Error('SIGNAL sprite sheet: content this site\'s policy does not allow');
   fs.writeFileSync(path.join(out, 'defs.svg'), defs); fs.copyFileSync(path.join(src, 'flags.json'), path.join(out, 'flags.json'));
   const cast = Object.fromEntries(JSON.parse(fs.readFileSync(path.join(src, 'cast/characters.json'), 'utf8')).map((p) => [p.id, p.name]));
