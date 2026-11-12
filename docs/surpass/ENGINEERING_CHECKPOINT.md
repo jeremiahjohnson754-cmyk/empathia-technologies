@@ -15,12 +15,13 @@ agents.
 | Production | `main` at `219d75f`, untouched; needs the founder's word |
 | The founder's directive of 11 Nov 01:22 | `/mnt/user-data/attachments/73b60a1b-854c-5a1e-99ae-d3ec61696e66/84a1e711-attachment.txt` (§00–§34; read the section before building it) |
 
-## State (12 Nov 2026, 02:00 CT)
+## State (12 Nov 2026, afternoon CT)
 
 | | Commit | Evidence |
 |---|---|---|
-| Staging carries | `bf4d023` | full browser matrix on `32940ef`, light and dark, 55 suites exit 0, `founder-studio` NOT RUN (`.local/logs/matrix-329/`). `bf4d023` adds only SIGNAL data, a unit suite and documents on top. Render: see the deploy check below |
-| Working branch and staging | `1dced1e` | SIGNAL restoration R1 played in place: decisions (`c96dab9`), quizzes and lessons (`e62d2f6`), drills (`c4c807a`), live incidents (`caae140`), labs, season reviews and meltdowns (`be6378a`, `8a90155`, `10fe70d`, `1dced1e`). Full matrix clean on `1dced1e` (55 suites each theme; founder-studio NOT RUN in a public build); pushed to staging 12 Nov |
+| Staging (`phase3/legendary-experience`) | `1dced1e` | full matrix clean before it was pushed; Render demo and website live on it |
+| Light matrix on the working branch | `882dbdf` | 57 suites exit 0 except `demo-core` (one race in a role-shelf count, fixed in the test: it now waits for the async count) and `founder-studio` (NOT RUN in a public build) — `.local/matrix-882dbdf/` |
+| Working branch | HEAD | restorations since `882dbdf` are source and unit tested, **browser checks drafted, not yet run**: result pop-ups, quest objectives ticking, glossary marks and terms you'll need, Still art, the library at the source's revision, the timeline, the mentor channel, case files, explorers, Lite X-ray, inspector and change the room |
 
 Browser-tested on `v18/continuation` since `be010f1` (suites light and dark; every page looked at, desktop and 390 px):
 
