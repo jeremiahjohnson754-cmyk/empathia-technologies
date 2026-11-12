@@ -61,14 +61,20 @@ await suite('demo-learn', 4489, async ({ ok, open, goto, over, text, smallTarget
       await page.click('button:has-text("Take it again")'); await page.click('.ln-act:has-text("Repair")'); await page.click('[data-testid=case-actions] .ln-choice >> nth=1'); await page.click('.ln-choice:has-text("Raise the microphone")'); await page.click('[data-testid=declare]'); await page.waitForSelector('[data-testid=case-score]');
       ok('LN-20', 'a second attempt keeps the first attempt on the record', /First attempt kept: \d+/.test(await text(page)));
       // SIGNAL incident on the library's rules
-      await goto(page, '#/learn/service/SM-01', 'service'); await page.waitForSelector('[data-testid=incident-actions]');
-      ok('LN-21', 'a SIGNAL incident shows its clock, status and empty evidence board', /245/.test(await text(page)) && /Nothing yet/.test(await text(page)));
-      await page.click('.ln-act:has-text("Move the encoder")');
-      ok('LN-22', 'an action that is not yours stops with the owner named and spends nothing', /Whose network is that/.test(await text(page)) && /245/.test(await text(page)));
-      await page.click('.ln-act:has-text("Walk the four paths")');
-      ok('LN-23', 'an action spends its cost and puts evidence on the board', /215/.test(await text(page)) && (await page.locator('[data-testid=learn-incident] .ln-ladder li').count()) === 2);
-      await page.click('.ln-act:has-text("Declare")'); await page.waitForSelector('[data-testid=incident-end]');
-      ok('LN-24', 'declaring without restoring the stream is an honest fail with the expert route', /Not restored/.test(await text(page)) && /expert route/.test(await text(page)));
+      // Changed 11 Nov 2026: the page now runs the shared runner on the build package's rules (packages/ui/src/incidents.ts): the
+      // briefing comes first and Start unlocks the actions; the clock runs in real time; a refusal spends its time (LN-22 said it
+      // spent nothing, which was this page's deviation from the reference); the headline is the reference's.
+      await goto(page, '#/learn/service/SM-01', 'service'); await page.waitForSelector('[data-testid=incident]');
+      const secs = async () => { const [m, x] = (await page.locator('[data-testid=incident-clock] b').innerText()).split(':').map(Number); return m * 60 + x; };
+      ok('LN-21', 'a SIGNAL incident opens on its briefing with its clock (4:05) and Start; Start shows the status and an empty evidence tray', /4:05/.test(await text(page)) && await page.locator('[data-testid=incident-actions]').count() === 0 && await page.getByRole('button', { name: /Start the incident/ }).count() === 1);
+      await page.getByRole('button', { name: /Start the incident/ }).click(); await page.waitForSelector('[data-testid=incident-actions]'); const s0 = await secs();
+      const startOk = /Nothing collected yet/.test(await text(page)) && /System state/.test(await text(page));
+      await page.click('[data-action=office]'); const s1 = await secs();
+      ok('LN-22', 'an action that is not yours is refused with the owner named, spends its time, and cannot be repeated', startOk && /Whose network is that/.test(await text(page)) && s0 - s1 >= 10 && await page.locator('[data-action=office]').isDisabled(), `${s0} → ${s1}`);
+      await page.click('[data-action=walk]'); const s2 = await secs();
+      ok('LN-23', 'an action spends its cost and puts evidence on the board', s1 - s2 >= 30 && (await page.locator('[data-testid=incident-evidence] li').count()) === 2, `${s1} → ${s2}`);
+      await page.click('[data-testid=incident-declare]'); await page.waitForSelector('[data-testid=incident-end]');
+      ok('LN-24', 'declaring without restoring the stream is an honest fail with an expert’s path', /declared resolved while still broken/i.test(await text(page)) && /An expert’s path/.test(await text(page)));
       // case files
       await goto(page, '#/learn/cases', 'service'); await page.waitForSelector('[data-testid=learn-cases]');
       // 2026-11-09: eleven room cases (see LN-02: the rooms plan added an open issue to the auditorium and the war room)

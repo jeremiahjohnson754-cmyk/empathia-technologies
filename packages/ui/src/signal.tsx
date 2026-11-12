@@ -2,8 +2,9 @@
  * SIGNAL runners shared by the demonstrator and the enterprise application: a lesson's check (QuizRunner) and the six interactive
  * drill kinds (DrillRunner). A completion is reported to the caller, who records it as training — training never grants authority.
  */
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as D from './drills.js';
+import * as I from './incidents.js';
 import { Button, Notice, Tag } from './components.js';
 
 export interface Quiz { title: string; domain: string; qs: Array<{ q: string; o: string[]; a: number; why: string }> }
@@ -83,4 +84,47 @@ function DrillBody({ d, done, finish }: { d: Drill; done: boolean; finish: (v: D
       <div className="dr__grid">{items.map((it, i) => { const on = picked.includes(i); return <button key={it.id} type="button" className="dr__btn" aria-pressed={on} disabled={done} onClick={() => setPicked(on ? picked.filter((x) => x !== i) : [...picked, i])}><b>{it.name}{it.must ? ' · commitment' : ''}</b><span className="ui-meta">{D.money(d, it.cost)} · L{it.L} × I{it.I} = {D.risk(it)}</span></button>; })}</div>
       <p className="dr__foot"><Button kind="primary" disabled={done} onClick={() => finish(D.gradeTriage(d, picked))}>Present the plan</Button></p></div>; }
   return <Notice tone="warn">Drill kind {d.type} is not interactive yet.</Notice>;
+}
+
+/**
+ * A live incident (Service Mode), to the reference's rules (incidents.ts): the briefing first, then "Start the incident"; the clock runs
+ * in real time and every action spends its seconds; a calculation gate opens before its action; "Declare the incident resolved" ends
+ * it; the debrief shows the score grid, why each move mattered and an expert's path. `factor`: 1 the incident's clock, 2 relaxed,
+ * 0 timer off (it counts, never ends). Each finished run is reported to `onEnd`.
+ */
+export function IncidentRunner({ inc, factor = 1, onEnd, heading = 'h2' }: { inc: I.Incident; factor?: number; onEnd?: (outcome: I.Outcome, why: I.EndWhy) => void; heading?: 'h2' | 'h4' }) {
+  const [st, setSt] = useState<I.State | null>(null); const [calc, setCalc] = useState<{ a: I.Action; v: string; tries: number; msg: string } | null>(null);
+  const reported = useRef<I.State | null>(null);
+  useEffect(() => { if (!st || st.over) return undefined; const id = setInterval(() => setSt((s) => (s ? I.tick(inc, s, 1) : s)), 1000); return () => clearInterval(id); }, [st === null, st?.over, inc]);
+  useEffect(() => { if (st?.end && reported.current !== st) { reported.current = st; onEnd?.(st.end.outcome, st.end.why); } });
+  const run = (a: I.Action) => { if (!st) return; if (a.calc) { setCalc({ a, v: '', tries: 0, msg: '' }); return; } setSt(I.act(inc, st, a)); };
+  const submit = () => { if (!st || !calc) return; const v = Number(calc.v.replace(',', '.')); if (calc.v.trim() === '' || !Number.isFinite(v)) { setCalc({ ...calc, msg: 'Enter a number.' }); return; }
+    const r = I.answerCalc(inc, st, calc.a, v); setSt(r.state); if (r.right) setCalc(null); else { const tries = calc.tries + 1; setCalc({ ...calc, tries, msg: `✕ Not right. ${tries >= 2 ? 'The equation is shown below.' : 'Put the numbers into the formula.'} That cost ${calc.a.calc!.penalty || 10} seconds.` }); } };
+  const H = heading === 'h2' ? 'h2' : 'h4'; const clock = st ? st.left : inc.clock * (factor || 1);
+  const head = <><span className="in__k">Incident {inc.id} · {inc.priority}</span>{H === 'h2' ? <h2 className="build__h">{inc.title}</h2> : <h4 className="build__h">{inc.title}</h4>}<p className="in__brief">{inc.brief}</p></>;
+  return (
+    <article className="stack in" data-testid="incident" data-incident={inc.id} data-state={!st ? 'ready' : st.end ? st.end.outcome : 'running'}>
+      <div className="in__head"><div>{head}</div><p className={`in__clock${st && !st.over && st.timed && st.left <= 20 ? ' is-hot' : ''}`} data-testid="incident-clock" role="timer" aria-live="off"><b>{I.fmtS(clock)}</b><span>{st && !st.timed ? `timer off · ${inc.deadline.toLowerCase()}` : `until ${inc.deadline.toLowerCase()}`}</span></p></div>
+      {!st && <div className="in__card"><p className="in__k">Briefing</p><p>{inc.briefing}</p>{inc.note && <p className="ui-meta">{inc.note}</p>}<p><Button kind="primary" onClick={() => setSt(I.begin(inc, factor))}>▶ Start the incident</Button></p><p className="ui-meta">Actions unlock when you start the incident.</p></div>}
+      {st && <>
+        <div className="in__grid">
+          <div className="in__card"><p className="in__k">System state</p><ul className="in__rows">{Object.entries(inc.status).map(([k, d]) => <li key={k}><span>{d.label}</span><b data-ok={st.status[k] === d.ok}>{st.status[k]}</b></li>)}</ul></div>
+          <div className="in__card"><p className="in__k">Trust</p><ul className="in__rows">{Object.entries(st.trust).map(([k, v]) => <li key={k}><span>{k}</span><b>{I.TRUST_WORDS[Math.max(0, Math.min(5, v))]}</b></li>)}</ul></div>
+          <div className="in__card" data-testid="incident-evidence"><p className="in__k">Evidence tray</p><ul className="in__tray">{Object.entries(inc.evidence).filter(([e]) => st.ev[e] || st.lost[e]).map(([e, d]) => <li key={e} data-lost={!!st.lost[e]}>{st.lost[e] ? `Lost · ${d.l}` : `${d.s} · ${d.l}`}</li>)}</ul>{!Object.keys(st.ev).length && !Object.keys(st.lost).length && <p className="ui-meta">Empty. Nothing collected yet.</p>}</div>
+        </div>
+        {!st.end && <div className="in__acts" data-testid="incident-actions" role="group" aria-label="Actions">{I.visible(inc, st).map((a) => <button key={a.id} type="button" className="in__act" data-action={a.id} disabled={!I.available(a, st)} onClick={() => run(a)}><span>{a.label}</span><span className="ui-meta">⏱ {I.costOf(a, st) ? `${I.costOf(a, st)} s` : 'instant'}{a.calc ? ' · calculate' : ''}{(a.badges || []).map((b) => ` · ${b[1]}`).join('')}</span></button>)}
+          <button type="button" className="in__act in__act--declare" data-testid="incident-declare" onClick={() => setSt(I.declare(inc, st))}><span>Declare the incident resolved</span><span className="ui-meta">ends the incident</span></button></div>}
+        {calc && !st.end && <div className="in__card" role="group" aria-label="Work it out" data-testid="incident-calc"><p className="in__k">🧮 {calc.a.label}</p><p>{calc.a.calc!.q}</p>
+          <p className="in__calc"><input className="in__input" inputMode="decimal" aria-label={calc.a.calc!.q} placeholder={calc.a.calc!.unit ? `… ${calc.a.calc!.unit}` : '…'} value={calc.v} onChange={(e) => setCalc({ ...calc, v: e.target.value })} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); submit(); } }} />{calc.a.calc!.unit && <span>{calc.a.calc!.unit}</span>}
+            <Button kind="primary" onClick={submit}>Submit</Button><Button onClick={() => setCalc(null)}>Cancel</Button></p>
+          {calc.msg && <p aria-live="polite">{calc.msg}</p>}{calc.tries >= 2 && calc.a.calc!.hint && <p className="in__eq">{calc.a.calc!.hint}</p>}</div>}
+        {st.end && (() => { const d = I.debrief(inc, st); return <div className="in__card in__end" data-testid="incident-end" data-outcome={st.end.outcome}><p className="in__out"><b>{st.end.head}</b></p><p>{st.end.text}</p>
+          <dl className="in__score"><div><dt>Service</dt><dd>{d.service}</dd></div><div><dt>Proof</dt><dd>{d.proof}</dd></div><div><dt>Evidence</dt><dd>{d.evidence}</dd></div><div><dt>Trust</dt><dd>{d.trust}</dd></div><div><dt>Boundaries</dt><dd>{d.boundaries}</dd></div><div><dt>Clock left</dt><dd>{d.clockLeft}</dd></div></dl>
+          {d.lessons.length > 0 && <><p className="in__k">Why your moves mattered</p><ul className="in__list">{d.lessons.map((l) => <li key={l}>{l}</li>)}</ul></>}
+          <p className="in__k">An expert’s path</p><ol className="in__list">{inc.expert.map((x) => <li key={x}>{x}</li>)}</ol>
+          <p><Button onClick={() => { setSt(null); setCalc(null); }}>Run it again</Button></p></div>; })()}
+        <div className="in__card"><p className="in__k">Incident log</p><ol className="in__log" aria-label="Incident log" reversed>{st.log.slice().reverse().map((l, i) => <li key={st.log.length - i} data-tone={l.tone}><span className="in__t">[{I.fmtS(l.t)}]</span> {l.text}</li>)}</ol></div>
+      </>}
+    </article>
+  );
 }

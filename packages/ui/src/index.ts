@@ -3,6 +3,7 @@ export * from './status.js';
 export * from './shell.js';
 export * from './signal.js';
 export * as Drills from './drills.js';
+export * as Incidents from './incidents.js';
 export * from './theme.js';
 export * from './products.js';
 export * from './kit.js';

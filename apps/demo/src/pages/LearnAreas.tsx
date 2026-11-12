@@ -7,7 +7,7 @@
  * from the records. Scores stay in this browser; a completion is a training line in the ledger, never an authorization to work.
  */
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { PageHero, StatTile, Card, Chip, List, ListRow, MeterRow, Icon, Notice, Button, Tag, ProgressBar, EmptyState, ScoreRing, QuizRunner, DrillRunner, DRILL_KINDS, type Quiz, type Drill, type IconName } from '@empathia/ui';
+import { PageHero, StatTile, Card, Chip, List, ListRow, MeterRow, Icon, Notice, Button, Tag, ProgressBar, EmptyState, ScoreRing, QuizRunner, DrillRunner, DRILL_KINDS, IncidentRunner, Incidents, type Quiz, type Drill, type IconName } from '@empathia/ui';
 import { V, fill, trainingCases, caseById, loadProgress, record, minutesOf, RESPONSES, RULES, score, readinessOf, competencyEvidence, roomsFor, archetypesIn, hopsOf, type TrainingCase, type Progress, type Episode, type Scene } from '../learn/model.js';
 import { loadLabs } from '../learn/store.js';
 import { loadLib } from './Learn.js';
@@ -385,42 +385,12 @@ function CaseRun({ perspective, c }: { perspective: string; c: TrainingCase }) {
 }
 /** A SIGNAL incident, run on its own rules (the library's actions: cost, requirements, evidence gained and lost, status and trust). */
 function IncidentRun({ perspective, inc }: { perspective: string; inc: SignalIncident }) {
-  const persona = personaOf(perspective); const [, setP] = useProgress();
-  const init = () => ({ t: inc.clock, flags: [] as string[], ev: [] as string[], status: Object.fromEntries(Object.entries(inc.status).map(([k, v]) => [k, v.v])), trust: { ...inc.trust }, log: [] as Array<{ a: SignalAction; text: string }>, end: null as null | 'proven' | 'partial' | 'fail', endText: '' });
-  const [st, setSt] = useState(init); const [calc, setCalc] = useState<{ a: SignalAction; v: string } | null>(null);
-  const visible = inc.actions.filter((a) => !(a.hideIf || []).some((f) => st.flags.includes(f)) && (a.hideUntil || []).every((f) => st.flags.includes(f)));
-  const costOf = (a: SignalAction) => a.costIf?.find(([f]) => st.flags.includes(f))?.[1] ?? a.cost;
-  const outcome = (s: typeof st) => { const restored = inc.win.restored.every((k) => s.status[k] === inc.status[k]!.ok); const proven = inc.win.proven.every((f) => s.flags.includes(f)); return restored && proven ? 'proven' : restored ? 'partial' : 'fail'; };
-  const finish = (s: typeof st, forced?: string) => { const o = forced ? 'fail' : outcome(s); const n = { ...s, end: o as 'proven' | 'partial' | 'fail', endText: forced || inc.outcomes[o] || '' }; setSt(n); setP(record(persona, 'training.signal_incident', inc.id, `SIGNAL incident ${inc.id} “${inc.title}”: ${o}`, (x) => { const prev = x.incidents[inc.id]; x.incidents[inc.id] = prev === 'proven' ? prev : (o as 'proven' | 'partial' | 'fail'); })); };
-  const run = (a: SignalAction, penalty = 0) => {
-    if (st.end) return; if ((a.req || []).some((f) => !st.flags.includes(f))) return;
-    const s = { ...st, flags: [...st.flags], ev: [...st.ev], status: { ...st.status }, trust: { ...st.trust }, log: [...st.log] };
-    if (a.stop) { s.log.push({ a, text: a.stop }); for (const [k, v] of Object.entries(a.trust || {})) s.trust[k] = (s.trust[k] || 0) + v; setSt(s); return; }
-    s.t -= costOf(a) + penalty; for (const f of a.set || []) if (!s.flags.includes(f)) s.flags.push(f); s.flags = s.flags.filter((f) => !(a.unset || []).includes(f));
-    for (const e of a.gain || []) if (!s.ev.includes(e)) s.ev.push(e); s.ev = s.ev.filter((e) => !(a.lose || []).includes(e));
-    Object.assign(s.status, a.status || {}); for (const [k, v] of Object.entries(a.trust || {})) s.trust[k] = (s.trust[k] || 0) + v;
-    s.log.push({ a, text: a.text }); if (a.end) return finish(s, a.end); if (s.t <= 0) return finish({ ...s, t: 0 }); setSt(s);
-  };
+  // Since 11 Nov 2026 the shared runner on the reference's rules (packages/ui/src/incidents.ts), as the story uses it.
+  const persona = personaOf(perspective); const [, setP] = useProgress(); const RANK = { fail: 0, partial: 1, proven: 2 } as const;
   return (
     <section className="wk ln" data-native="workspace" data-testid="learn-incident">
-      <Head role={perspective} current="#/learn/service" crumbs={[['Empathia Learn', '#/learn'], ['Service Mode', '#/learn/service'], [inc.id]]} title={inc.title} lede={inc.page} meta={[FICTION, <Chip key="p" small tone="warn">{inc.priority}</Chip>, <Chip key="d" small tone="muted">{inc.domain}</Chip>]}
-        aside={<ScoreRing value={Math.max(0, st.t)} max={inc.clock} label={`${st.t} of ${inc.clock} on the clock until ${inc.deadline.toLowerCase()}`} caption={<><b>{st.t}</b><br />until {inc.deadline.toLowerCase()}</>} band={st.t < inc.clock * 0.25 ? 'action' : 'healthy'} />} />
-      <div className="wk-g3">
-        <Card icon="bell" title="The briefing" sub={inc.brief}><p className="ln-p">{inc.briefing}</p><p className="ui-meta">{inc.opening}</p></Card>
-        <Card icon="pulse" title="Status" sub="What the people affected see"><List label="Status">{Object.entries(inc.status).map(([k, v]) => <ListRow key={k} title={v.label} trailing={<Chip small tone={st.status[k] === v.ok ? 'ok' : 'warn'}>{st.status[k]}</Chip>} />)}</List>
-          <p className="ui-meta">Trust: {Object.entries(st.trust).map(([k, v]) => `${k} ${v}`).join(' · ')}</p></Card>
-        <Card icon="search" title="Evidence" sub={`${st.ev.length} of ${Object.keys(inc.evidence).length} on the board`}><ul className="ln-ladder">{Object.entries(inc.evidence).filter(([k]) => st.ev.includes(k)).map(([k, e]) => <li key={k}><Tag tone={EV_TONE[e.s]}>{e.s}</Tag><span>{e.l}</span></li>)}</ul>{!st.ev.length ? <p className="ui-meta">Nothing yet. What you learn appears here; some actions erase it.</p> : null}</Card>
-      </div>
-      {!st.end ? <Card icon="route" title="What you can do" sub="Each action costs time; some are not yours, and some erase evidence" testId="incident-actions">
-        <div className="ln-actions">{visible.map((a) => { const blocked = (a.req || []).some((f) => !st.flags.includes(f)); return <button key={a.id} type="button" className="ln-act" disabled={blocked} onClick={() => (a.calc ? setCalc({ a, v: '' }) : run(a))}><b>{a.label}</b><span className="ui-meta">{costOf(a)} on the clock{blocked ? ' · not yet' : ''}</span>{(a.badges || []).map(([k, l]) => <Tag key={k} tone={k === 'erase' ? 'bad' : k === 'lock' ? 'warn' : 'info'}>{l}</Tag>)}</button>; })}
-          <button type="button" className="ln-act ln-act--declare" onClick={() => finish(st)}><b>Declare</b><span className="ui-meta">close the incident on what is true now</span></button></div>
-        {calc ? <div className="ln-dec" role="group" aria-label="Work it out"><p><b>{calc.a.calc!.q}</b></p><div className="ui-row"><input className="sp__input" inputMode="decimal" aria-label={`Answer in ${calc.a.calc!.unit}`} value={calc.v} onChange={(e) => setCalc({ ...calc, v: e.target.value })} /><span>{calc.a.calc!.unit}</span>
-          <Button small kind="primary" onClick={() => { const n = Number(calc.v.replace(',', '.')); const ok = Number.isFinite(n) && Math.abs(n - calc.a.calc!.answer) <= calc.a.calc!.tol; run(calc.a, ok ? 0 : calc.a.calc!.penalty); setCalc(null); }}>Answer</Button></div><p className="ui-meta">Hint: {calc.a.calc!.hint} A wrong answer costs {calc.a.calc!.penalty} more.</p></div> : null}
-      </Card> : <Card icon="chart" tone={st.end === 'proven' ? 'ok' : st.end === 'partial' ? 'warn' : 'bad'} title={st.end === 'proven' ? 'Proven' : st.end === 'partial' ? 'Restored, not proven' : 'Not restored'} sub={st.endText} testId="incident-end">
-        <p className="ui-meta">The expert route:</p><ol className="ln-log">{inc.expert.map((x) => <li key={x}>{x}</li>)}</ol>{inc.rv?.map((x) => <p key={x} className="ui-meta">{x}</p>)}
-        <Button onClick={() => setSt(init())}>Run it again</Button>
-      </Card>}
-      {st.log.length ? <Card icon="menu" title="What happened" sub={`${st.log.length} actions`}><ol className="ln-log">{st.log.map((x, i) => <li key={i}><b>{x.a.label}</b> — {x.text}{x.a.why ? <span className="wk-r__m">{x.a.good ? 'Good: ' : ''}{x.a.why}</span> : null}</li>)}</ol></Card> : null}
+      <Head role={perspective} current="#/learn/service" crumbs={[['Empathia Learn', '#/learn'], ['Service Mode', '#/learn/service'], [inc.id]]} title={inc.title} lede={inc.page} meta={[FICTION, <Chip key="p" small tone="warn">{inc.priority}</Chip>, <Chip key="d" small tone="muted">{inc.domain}</Chip>]} />
+      <IncidentRunner inc={{ ...inc } as unknown as Incidents.Incident} factor={1} onEnd={(o) => setP(record(persona, 'training.signal_incident', inc.id, `SIGNAL incident ${inc.id} “${inc.title}”: ${o}`, (x) => { const prev = x.incidents[inc.id]; x.incidents[inc.id] = prev && RANK[prev] > RANK[o] ? prev : o; }))} />
     </section>
   );
 }
