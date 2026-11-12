@@ -15,12 +15,12 @@ agents.
 | Production | `main` at `219d75f`, untouched; needs the founder's word |
 | The founder's directive of 11 Nov 01:22 | `/mnt/user-data/attachments/73b60a1b-854c-5a1e-99ae-d3ec61696e66/84a1e711-attachment.txt` (§00–§34; read the section before building it) |
 
-## State (11 Nov 2026, 18:00 CT)
+## State (11 Nov 2026, 17:40 CT)
 
 | | Commit | Evidence |
 |---|---|---|
-| Staging carries | `be010f1` | full browser matrix, light and dark, 51 suites exit 0, `founder-studio` NOT RUN (`.local/logs/matrix-be0/`); Render reports both services live on it (deploys of 23:02 UTC) |
-| Working branch | see `git log -1` | the slices below, each with its browser suite light and dark; the full matrix on that commit is the next gate before staging |
+| Staging carries | `bf4d023` | full browser matrix on `32940ef`, light and dark, 55 suites exit 0, `founder-studio` NOT RUN (`.local/logs/matrix-329/`). `bf4d023` adds only SIGNAL data, a unit suite and documents on top. Render: see the deploy check below |
+| Working branch | see `git log -1` | the restoration inventories (documents only) |
 
 Browser-tested on `v18/continuation` since `be010f1` (suites light and dark; every page looked at, desktop and 390 px):
 
@@ -60,7 +60,7 @@ plus anything a never-waived catalogue test checks). Its private source notes ne
 "Restoration first. Transformation second. Verification throughout." The 60/10 assets set the visual direction; they do not authorise
 removing a function or replacing an advanced experience with a simplified demonstration. **SIGNAL and Lite are not complete** until
 their inventories are reconciled against the source and every supported experience has passed functional and visual testing.
-R1’s first pass is written (`docs/restoration/SIGNAL_INVENTORY.md`); the rest has not started. Each line is a task in the list.
+R1’s first pass is written (`docs/restoration/SIGNAL_INVENTORY.md`), the SIGNAL content bundle and gate list are in the canon package (`bf4d023`, data only, read by no page yet), and R3's first pass is written (`docs/restoration/LITE_INVENTORY.md`); the rest has not started. Each line is a task in the list.
 
 | | What | Source |
 |---|---|---|

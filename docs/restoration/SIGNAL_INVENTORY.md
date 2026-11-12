@@ -79,7 +79,10 @@ gate list is the authority and gives 979.)
 
 | In the source | What it does | In the product | State |
 |---|---|---|---|
-| Story reader with decisions, a clock, hints, merit and trust, failure and retry | | `#/story` | RESTORED, tested |
+| Story reader with decisions, a clock, hints, merit and trust | | `#/story` | RESTORED as content, tested. **Behaviour differs**, next line |
+| What a decision does | The choice is recorded once. A failing option is a costly call: it is kept, with its negative merit and trust, and the story goes on. Only a timeout offers a replay. Ratings read first attempts | A failing option is shown with its reason and the reader chooses again until a passing one; the story does not go on with a failed call | **DIFFERS from the reference** (package `docs/04-engine-specs.md` §1; `reference/source/gate.js`). To restore: record the first choice, carry its consequence |
+| Echoes: the previous chapter's choices at the top of the next, and a verdict before the debrief | | not found | **MISSING** (TO VERIFY) |
+| Result pop-ups when a gate is done, and "Chapter complete" with the quest grade | | not found | **MISSING** (TO VERIFY) |
 | Story played as staged shots | (not in the source: added in this product) | `#/play/<chapter>` | ADDED, tested |
 | Chapter locks and gates (hard, soft, optional) | A chapter opens when what it requires is done | Decisions gate. Gates on mounted pieces cannot, since those are not playable | PARTIAL |
 | Nine lab simulators: signal flow; EQ and time alignment; camera against an LED wall; network and VLANs; power across circuits; RF; DMX; AV sync; physics (36 labs) | | Signal flow only. Three separate instrument labs exist in Learn (audio, camera, lighting), which are this product's own, not these | **8 of 9 MISSING** |
@@ -124,6 +127,13 @@ before any item is called working.
 5. Every line above marked TO VERIFY, verified against the source's behaviour, then a functional and a visual test for each.
 
 ## 7. Limits of this inventory
+
+- **The specification exists.** The founder's build package (`signal-build-package.zip`, SHA-256 `990cf805…`) carries the engine
+  specification (`docs/04-engine-specs.md`: decisions, gates, quizzes and the skill ladder, six drill types, labs, physics, Service
+  Mode, case files, meltdowns, ratings and reviews, the role-playing layer, boss levels, challenges, Mission Control, Ask), a QA plan
+  and logs, 54 reference screenshots (27 views at desktop and phone width) and the reference runtime's source. It says: where a
+  document and the reference build disagree, the reference build is the specification. Restoration follows it, engine by engine;
+  the screenshots are the visual reference for each view. The package is held outside the repository.
 
 - **Fieldbook plates.** The build package says the plates are the owner's own and are the one exception to the story's no-real-brands
   rule. Their captions are in the content bundle; the 160 images are not in this repository, and they will not be added without the
