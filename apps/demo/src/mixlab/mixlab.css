@@ -102,3 +102,13 @@
 @media (prefers-reduced-motion: reduce) { .mx-strip.ring, .mx-ring li.bad, .mx-btn--boss.on { animation: none; } .mx-roomcard, .mx-meter__fill, .mx-score__fg { transition: none; } }
 /* inside a story chapter */
 .mx--embedded { border: 2px solid transparent; border-radius: calc(var(--r-md) + 2px); padding: 12px; background: linear-gradient(var(--bg), var(--bg)) padding-box, linear-gradient(120deg, #f472b6, #f59e0b, #22d3ee, #8b5cf6) border-box; }
+/* Light the Stage and Shoot the Service share the mix lab's look */
+.lx-plot { width: 100%; background: #05070c; border-radius: var(--r-md); touch-action: none; } .lx-stagerect { fill: #141b2c; stroke: #334155; stroke-width: .3; } .lx-slot { fill: none; stroke: #475569; stroke-width: .3; stroke-dasharray: .8 .6; }
+.lx-fx { cursor: grab; } .lx-fx:focus-visible circle { stroke-width: 1.2; } .lx-fx.sel circle { filter: drop-shadow(0 0 1.5px #fff); }
+.lx-patch { display: grid; gap: 6px; } .lx-row { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; padding: 6px 8px; border-radius: 8px; background: var(--mx-panel); border: 1px solid var(--mx-line); }
+.lx-row.sel { border-color: #f59e0b; } .lx-row.bad { border-color: #ef4444; box-shadow: 0 0 0 1px #ef4444; } .lx-row > b { min-width: 170px; }
+.lx-sel { display: inline-grid; gap: 2px; font-size: 11px; } .lx-sel select { background: #0b1020; color: var(--mx-tx); border: 1px solid #2f3f60; border-radius: 6px; padding: 4px 6px; }
+.vx-mon { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 8px; } .vx-src { all: unset; box-sizing: border-box; cursor: pointer; display: grid; gap: 4px; border-radius: 8px; padding: 4px; border: 3px solid #1c2742; background: #05070c; min-width: 0; }
+.vx-src canvas { width: 100%; border-radius: 4px; display: block; } .vx-src span { font-size: 12px; color: var(--mx-tx2); padding: 0 4px 2px; } .vx-src.pgm { border-color: #ef4444; } .vx-src.pvw { border-color: #22c55e; } .vx-src:focus-visible { outline: 2px solid #fff; }
+.vx-bus { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; } .vx-bus b { font-size: 11px; color: var(--mx-tx2); width: 60px; }
+.vx-key { all: unset; cursor: pointer; padding: 8px 12px; border-radius: 6px; font-weight: 800; font-size: 12px; background: #1c2742; color: var(--mx-tx); } .vx-key.pgm { background: #ef4444; color: #fff; box-shadow: 0 0 12px #ef4444aa; } .vx-key.pvw { background: #22c55e; color: #052e16; } .vx-key:focus-visible { outline: 2px solid #fff; }

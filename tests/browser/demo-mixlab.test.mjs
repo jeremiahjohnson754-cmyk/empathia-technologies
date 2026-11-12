@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Mix the Stream (founder, 12 Nov 2026, 14:40 CT): the flagship lab boss is hands-on and reacts at once. Faders and knobs drag and step
+// The flagship labs: Mix the Stream (founder, 12 Nov 2026, 14:40 CT), Light the Stage and Shoot the Service. The mix lab boss is hands-on and reacts at once. Faders and knobs drag and step
 // with the keyboard and say their value; the layers flip; an EQ node drags; mute closes a channel; selecting a seat reads its level and
 // arrival times; checking a scene scores it; the mega church runs its boss level on a clock. It sits inside S01E10 after the lab, in
 // Learn labs and on the Service page. Desktop and phone; no console error, no request leaving the page.
@@ -46,4 +46,30 @@ for (const [w, tag] of [[1440, 'desktop'], [390, 'phone']]) {
 { const t = await open('#/service', { w: 1440, h: 900 }); const p = t.page; await p.waitForSelector('.svc');
   const href = await p.getByTestId('svc-practice').locator('a').getAttribute('href').catch(() => null);
   ok('MX-service', 'the Service page offers it as practice before a call, recording nothing on a job', href === '#/labs/mix', String(href)); await t.close(); }
+// Light the Stage: drag a fixture on the plot, re-patch it with the keyboard, and the goals answer
+for (const [w, tag] of [[1440, 'desktop'], [390, 'phone']]) {
+  const t = await open('#/labs/light', { w, h: 900 }); const p = t.page; await p.getByTestId('lightlab').waitFor();
+  const coll0 = await p.locator('[data-goal="patch"]').getAttribute('data-ok');
+  await p.getByTestId('lx-addr-2').focus(); for (let k = 0; k < 8; k++) await p.keyboard.press('ArrowUp'); await p.getByTestId('lx-addr-3').focus(); for (let k = 0; k < 10; k++) await p.keyboard.press('ArrowUp');
+  const coll1 = await p.locator('[data-goal="patch"]').getAttribute('data-ok');
+  const dot = p.getByTestId('lx-plot-1'); const before = await dot.getAttribute('aria-label'); const db = await dot.locator('circle').boundingBox(); const plot = await p.getByTestId('lx-plot').boundingBox();
+  await p.mouse.move(db.x + db.width / 2, db.y + db.height / 2); await p.mouse.down(); await p.mouse.move(plot.x + plot.width * (7.5 + 2) / 16, plot.y + plot.height * ((8 - 7) / 15), { steps: 8 }); await p.mouse.up();
+  const after = await dot.getAttribute('aria-label');
+  ok(`LX-${tag}-01`, 'the patch goal turns green once the addresses no longer overlap; a fixture drags to another truss position', coll0 === 'false' && coll1 === 'true' && before !== after, JSON.stringify({ coll0, coll1, before, after }));
+  const over = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  ok(`LX-${tag}-02`, 'no overflow, no console error, no request leaving the page', over <= 0 && !t.errs.length && !t.off.length, [over, ...t.errs, ...t.off].slice(0, 4).join(' | ')); await t.close();
+}
+// Shoot the Service: the canon's stripe at 1/50 clears at 1/60; CUT swaps program and preview
+for (const [w, tag] of [[1440, 'desktop'], [390, 'phone']]) {
+  const t = await open('#/labs/video', { w, h: 900 }); const p = t.page; await p.getByTestId('videolab').waitFor();
+  const band0 = await p.locator('[data-goal="wall0"]').getAttribute('data-ok'); await p.getByTestId('vx-shutter').focus(); await p.keyboard.press('ArrowUp'); await p.keyboard.press('ArrowUp'); await p.keyboard.press('ArrowUp');
+  const sh = await p.getByTestId('vx-shutter').getAttribute('aria-valuetext'); const band1 = await p.locator('[data-goal="wall0"]').getAttribute('data-ok');
+  const pgm0 = await p.getByTestId('vx-src-0').getAttribute('class'); await p.getByTestId('vx-cut').click(); const pgm1 = await p.getByTestId('vx-src-1').getAttribute('class');
+  ok(`VX-${tag}-01`, 'at 1/50 the LED wall bands; at 1/60 it is clean; CUT puts preview on program', band0 === 'false' && sh === '1/60' && band1 === 'true' && /pgm/.test(pgm0) && /pgm/.test(pgm1), JSON.stringify({ band0, sh, band1, pgm0, pgm1 }));
+  const over = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  ok(`VX-${tag}-02`, 'no overflow, no console error, no request leaving the page', over <= 0 && !t.errs.length && !t.off.length, [over, ...t.errs, ...t.off].slice(0, 4).join(' | ')); await t.close();
+}
+{ const t = await open('#/learn/labs', { w: 1440, h: 900 }); const p = t.page; await p.getByTestId('labs').waitFor();
+  const hrefs = await p.getByTestId('flagship-labs').locator('a').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+  ok('LAB-learn', 'Learn labs lists the three flagship labs', JSON.stringify(hrefs) === JSON.stringify(['#/labs/mix', '#/labs/light', '#/labs/video']), JSON.stringify(hrefs)); await t.close(); }
 await done();

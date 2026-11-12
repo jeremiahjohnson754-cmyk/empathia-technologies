@@ -48,6 +48,16 @@ export const WORLD_PAGES: readonly PageDef[] = [
     search: { keywords: 'mix stream church sound console 32 channel mixer faders eq compressor reverb delay feedback ring out wedges subs line array delay towers lufs boss lab basement mega church', aliases: ['mix the stream', 'mixing lab', 'sound lab'] },
   },
   {
+    id: 'labs.light', title: 'Light the Stage', purpose: 'SIGNAL’s lighting flagship lab: hang, patch (DMX), aim, zoom, colour and level fixtures for a sermon and a worship set', product: 'learn',
+    path: '/labs/light', authority: OPEN, load: () => import('./mixlab/LightLab.js'),
+    search: { keywords: 'lighting lab dmx patch address universe fixture profile fresnel par moving head batten beam angle lux key fill back light colour temperature kelvin spill screen', aliases: ['light the stage', 'lighting lab'] },
+  },
+  {
+    id: 'labs.video', title: 'Shoot the Service', purpose: 'SIGNAL’s video flagship lab: two cameras, an LED wall, a switcher and lip-sync for the stream', product: 'learn',
+    path: '/labs/video', authority: OPEN, load: () => import('./mixlab/VideoLab.js'),
+    search: { keywords: 'video lab camera shutter frame rate banding flicker led wall refresh iris iso nd white balance switcher program preview cut mix key lyrics lip sync stream', aliases: ['shoot the service', 'video lab', 'camera lab'] },
+  },
+  {
     id: 'play', title: 'SIGNAL played', purpose: 'A SIGNAL chapter performed as scenes: camera, timed lines, choices inside the frame and things to find', product: 'learn',
     path: '/play/:chapter', authority: OPEN,
     load: () => import('./signal/PlayPage.js'),
