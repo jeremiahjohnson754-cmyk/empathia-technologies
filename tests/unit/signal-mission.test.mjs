@@ -34,3 +34,17 @@ test('MC-04 a system lights up when a chapter that meets it is opened, or an inc
 });
 test('MC-05 the evidence locker counts passes only', () => { const e = MC.evidence(P({ drills: { R1: { passed: true }, R2: { passed: false } }, incidents: { I1: { best: 'proven' }, I2: { best: 'partial' } }, labs: { L1: { passed: false } }, bosses: { S01: { passed: true } }, challenges: { 'a@1': { passed: true }, 'a@2': { passed: false } } }), M);
   assert.deepEqual([e.drills, e.proven, e.labs, e.bosses, e.challenges], [1, 1, 0, 1, 1]); });
+test('MC-06 quest objectives and the quest rating, as quest.js counts them', () => {
+  const Q = { ...M, dec: { ...M.dec, D3: { k: [], o: { A: { m: 0, t: {}, f: 1 }, B: { m: 0, t: {} } } } }, discoveries: { X1: { ch: 'c1' }, X2: { ch: 'c1' }, Y: { ch: 'c2' } },
+    chq: { c1: { dec: ['D1', 'D2', 'D3'], core: ['drill', 'R1'], soft: [['incident', 'I1'], ['quiz', 'Q1']], twist: [['quiz', 'Q1']], md: [], disc: 2 } } };
+  const base = P({ chapters: { c1: { choices: { D1: { letter: 'A', hints: 0 }, D2: { letter: 'TIMEOUT', hints: 0 }, D3: { letter: 'B', hints: 0 } }, talks: {}, found: ['X1', 'Y'] } } });
+  const od = (p, k) => MC.objectiveDone(p, Q, 'c1', k, {});
+  assert.equal(od(base, 'D1'), false); assert.equal(od(base, 'BR-x'), false);
+  assert.equal(od(base, 'disc:1'), true); assert.equal(od(base, 'disc:2'), false, 'a discovery from another chapter does not count');
+  assert.equal(od(base, 'twist'), false); assert.equal(od({ ...base, quizzes: { Q1: { best: 1, total: 2, first: 1 } } }, 'twist'), true);
+  assert.equal(od(base, 'core'), false); assert.equal(od({ ...base, drills: { R1: { passed: false, tries: 1, first: false } } }, 'core'), true);
+  let r = MC.questRating(base, Q, 'c1', {}); assert.deepEqual([r.got, r.max], [2 - 1 + 1 + 0 + 0 + 0 + 1, 6 + 3 + 3 + 2 + 2]);
+  const full = { ...base, drills: { R1: { passed: true } }, incidents: { I1: { best: 'proven' } }, quizzes: { Q1: { best: 2, total: 2, first: 2 } }, chapters: { c1: { ...base.chapters.c1, choices: { D1: { letter: 'A' }, D2: { letter: 'A' }, D3: { letter: 'B' } }, found: ['X1', 'X2'] } } };
+  r = MC.questRating(full, Q, 'c1', {}); assert.deepEqual([r.got, r.max, r.grade], [2 + 2 + 1 + 3 + 3 + 2 + 2, 16, 'S']);
+  assert.equal(MC.questRating({ ...full, drills: { R1: { passed: false } } }, Q, 'c1', {}).got, 13, 'a core drill tried but not passed earns 1');
+});

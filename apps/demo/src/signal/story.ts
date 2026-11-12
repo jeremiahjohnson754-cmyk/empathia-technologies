@@ -272,10 +272,12 @@ export function chapterLocks(ix: Pick<StoryIndex, 'chapters' | 'lessonQuiz'>, p:
   for (const c of ix.chapters) {
     if (!p.gates) { out[c.id] = false; continue; }
     if (!prevDone) { out[c.id] = true; continue; }
-    out[c.id] = false; const s = p.chapters[c.id] || emptyChapter();
-    prevDone = (c.gates || []).every(([kind, id, tier], index) => gateCleared({ index, kind, id, tier, twist: false, core: false }, s, p, lite));
+    out[c.id] = false; prevDone = cleared(c, p, lite);
   }
   return out;
 }
+const cleared = (c: Pick<ChapterRef, 'id' | 'gates'>, p: Progress, lite: Pieces) => { const s = p.chapters[c.id] || emptyChapter(); return (c.gates || []).every(([kind, id, tier], index) => gateCleared({ index, kind, id, tier, twist: false, core: false }, s, p, lite)); };
+/** A chapter is done once every hard and soft gate in it is cleared (the reference's data-done). */
+export const chapterCleared = (c: Pick<ChapterRef, 'id' | 'gates'>, p: Progress, lessonQuiz: Record<string, string> = {}) => cleared(c, p, { gates: [], quizzes: {}, lessons: Object.fromEntries(Object.entries(lessonQuiz).map(([k, q]) => [k, { title: '', domain: '', cards: [], quiz: q }])) });
 /** The chapter a locked one waits on: the first locked chapter's predecessor (the last open one). */
 export function lockedBehind(ix: Pick<StoryIndex, 'chapters'>, locks: Record<string, boolean>): ChapterRef | null { const i = ix.chapters.findIndex((c) => locks[c.id]); return i > 0 ? ix.chapters[i - 1]! : null; }

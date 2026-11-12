@@ -131,8 +131,7 @@ For SIGNAL and Lite these phases follow R1 to R5 above.
 1. Restoration (founder, 17:06): SIGNAL in place: decisions, quizzes, lessons, drills, incidents, labs (physics without its animated
    drawings), season reviews with ratings and loadout, meltdowns; since 12 Nov the thirteen challenges (`9db8350`), the 12 boss levels
    (`a480890`, `537700c`) and chapter locks — every gate kind in the canon now plays and holds the story. Full matrix on that head, then
-   staging. Done since: the challenge catalogue, the guitar, Mission Control (`#/learn/mission`). Then: Mission Control's quest log and
-   journal (quest.js); meltdowns in Learn's Service Mode; physics drawings; the band music and remaining challenge drawings. Then: verify the inventory's TO VERIFY lines; R3 Lite against V2.5.3 (72 `lite*`, 18 scouter,
+   staging. Done since: the challenge catalogue, the guitar, Mission Control (`#/learn/mission`). Then: meltdowns in Learn's Service Mode; physics drawings; the band music and remaining challenge drawings. Then: verify the inventory's TO VERIFY lines; R3 Lite against V2.5.3 (72 `lite*`, 18 scouter,
    Room Builder, optimiser and acoustics functions found in the source by a text scan; the scan scripts are in
    `…/scratchpad/restore/`); R2 media with playback verified; R4 the one parity matrix; then R5, restoring in the order the SIGNAL
    inventory gives (library to the source's revision, eight lab simulators, thirteen challenges).

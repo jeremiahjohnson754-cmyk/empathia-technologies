@@ -775,11 +775,31 @@ export function MissionPage({ perspective }: { perspective: string }) {
       <Card title="Timers and support" testId="mc-support">
         <label className="ch__field"><span>Timers</span><select value={P.clock} onChange={(e) => commit({ ...P, clock: e.target.value as Story.Clock })}><option value="on">Normal</option><option value="extended">Relaxed — every allowance doubled</option><option value="off">Off — no countdowns</option></select></label>
         <label className="ch__field"><span>Support level</span><select value={P.support || 'auto'} onChange={(e) => commit({ ...P, support: e.target.value as Story.Progress['support'] })}><option value="auto">By season (automatic)</option><option value="1">1 · Beginner — terms, formulas and worked examples</option><option value="2">2 · Intermediate — formulas and their variables</option><option value="3">3 · Advanced — formulas on request</option><option value="4">4 · Mastery — choose the tool yourself</option></select></label></Card>
+      <QuestLog P={P} M={M} ix={ix} se={se} />
+      <Journal P={P} M={M} />
       <Card title={`Reviewer mode · ${P.gates ? 'off' : 'on'}`} testId="mc-review"><p>{P.gates ? 'The story is gated: your choices and the core skills in each chapter open the pages after them; everything marked optional can wait. Each chapter opens when the one before it is cleared. Reviewers can open everything.' : 'Every page and chapter is open for expert review. Readers see the story gated.'}</p><p className="ui-meta">⚑ GT-01 · reviewer mode is for authors and subject-matter reviewers.</p>
         <p><Button onClick={() => (P.gates ? tap('review', () => commit({ ...P, gates: false })) : commit({ ...P, gates: true }))}>{!P.gates ? 'Turn reviewer mode off' : arm === 'review' ? 'Tap again: open every page for review' : 'Open every page (reviewer mode)'}</Button></p></Card>
       <p><Button onClick={() => tap('reset', () => commit({ ...Story.emptyProgress(), clock: P.clock }))} testId="mc-reset">{arm === 'reset' ? 'Tap again to erase everything' : 'Reset my progress'}</Button></p>
     </section>
   );
+}
+function QuestLog({ P, M, ix, se }: { P: Story.Progress; M: MC.MissionIndex; ix: Story.StoryIndex; se: number }) {
+  const locks = useMemo(() => Story.chapterLocks(ix, P), [ix, P]); const LQ = ix.lessonQuiz || {};
+  const seasons = [...new Set(ix.chapters.filter((c) => M.quests[c.id]).map((c) => c.season))];
+  return <Card title="🗺 Quest log" sub="Every chapter’s quest: its objectives tick as you clear them, and a finished chapter earns a rating from S to D." testId="mc-quests">
+    {seasons.map((n) => <details key={n} className="mc__season" open={n === se}><summary>{n ? `Season ${n} · ${ix.seasons[String(n)] || ''}` : 'Prologue'}</summary>
+      <ul className="plain mc__quests">{ix.chapters.filter((c) => c.season === n && M.quests[c.id]).map((c) => { const q = M.quests[c.id]!, nDone = q.objectives.filter(([k]) => MC.objectiveDone(P, M, c.id, k, LQ)).length, fin = Story.chapterCleared(c, P, LQ), r = fin ? MC.questRating(P, M, c.id, LQ) : null;
+        return <li key={c.id} data-quest={c.id} data-done={fin}><a href={`#/story/${c.id}`}>{c.id.toUpperCase()} · {q.title}</a><span className="ui-meta">{locks[c.id] ? '🔒 Locked · ' : ''}{nDone}/{q.objectives.length} objectives{r ? ` · rating ${r.grade}` : ''}</span>
+          {r && <span className="ui-meta">{r.got} / {r.max} — {MC.GRADE_LINE[r.grade]}</span>}</li>; })}</ul></details>)}
+  </Card>;
+}
+function Journal({ P, M }: { P: Story.Progress; M: MC.MissionIndex }) {
+  const ids = Object.keys(M.discoveries); const got = new Set(Object.values(P.chapters).flatMap((c) => c.found)); const threads: Record<string, string[]> = {};
+  for (const k of ids) (threads[M.discoveries[k]!.thread || 'Loose ends'] ||= []).push(k);
+  return <Card title={`📓 Case journal · ${ids.filter((k) => got.has(k)).length} / ${ids.length} discoveries`} sub="Clues, side scenes and lore you found by looking closer. The threads run across seasons — some only make sense later." testId="mc-journal">
+    {Object.entries(threads).map(([t, ks]) => <details key={t} className="mc__season"><summary>{t} · {ks.filter((k) => got.has(k)).length} / {ks.length}</summary>
+      <ul className="plain mc__journal">{ks.map((k) => { const d = M.discoveries[k]!; return got.has(k) ? <li key={k} data-found="true"><span className="ui-meta">{d.ch.toUpperCase()}</span> <b>{d.title}</b><p dangerouslySetInnerHTML={html(d.body)} /></li> : <li key={k} data-found="false"><span className="ui-meta">{d.ch.toUpperCase()}</span> <b>??? — not found yet</b><p className="ui-meta">Somewhere in {d.ch.toUpperCase()}: {d.teaser}</p></li>; })}</ul></details>)}
+  </Card>;
 }
 /** A plain meter: the number beside it carries the value, so the bar is decoration for sighted readers. */
 const Bar = ({ v }: { v: number }) => <svg className="mc__bar" viewBox="0 0 100 8" preserveAspectRatio="none" aria-hidden="true"><rect className="boss__mtrack" width={100} height={8} rx={4} /><rect className="boss__mfill" width={Math.max(0, Math.min(100, v))} height={8} rx={4} /></svg>;

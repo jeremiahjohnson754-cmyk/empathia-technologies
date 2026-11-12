@@ -31,10 +31,14 @@ export function shipSignal(repo, dist) {
     // Mission Control (restored 12 Nov 2026, reference app.js renderHome): what each decision and conversation weighs, every piece's domain,
     // the role paths, the systems maps and their lanes, and the catalogue totals the evidence locker counts against.
     { const dec = {}, talk = {}; for (const c of index) for (const it of JSON.parse(fs.readFileSync(path.join(src, 'story', `${c.id}.json`), 'utf8')).items) {
-        if (it.type === 'decision') dec[it.id] = { k: (it.hints || []).map((h) => h.keep ?? 1), o: Object.fromEntries(it.options.map((o) => [o.letter, { m: o.weight?.merit || 0, t: o.weight?.trust || {}, ...(o.canonical ? { c: 1 } : {}) }])) };
+        if (it.type === 'decision') dec[it.id] = { k: (it.hints || []).map((h) => h.keep ?? 1), o: Object.fromEntries(it.options.map((o) => [o.letter, { m: o.weight?.merit || 0, t: o.weight?.trust || {}, ...(o.canonical ? { c: 1 } : {}), ...(o.fail ? { f: 1 } : {}) }])) };
         if (it.type === 'talk') talk[it.id] = it.options.map((o) => o.trust || {}); }
       const domOf = (bag) => Object.fromEntries(Object.entries(bag || {}).map(([id, x]) => [id, x.domain || null]));
-      fs.writeFileSync(path.join(out, 'mission.json'), JSON.stringify({ dec, talk, roles: app.roles, domains: app.domains, lanes: app.lanes, sysmaps: app.sysmaps,
+      // quest log and case journal (reference quest.js): each chapter's quest, and what its rating counts — decisions, the core skill, soft gates, meltdowns, discoveries
+      const chq = {}; for (const g of JSON.parse(fs.readFileSync(path.join(src, 'gates.json'), 'utf8'))) { const q = (chq[g.chapter] = chq[g.chapter] || { dec: [], core: null, soft: [], twist: [], md: [], disc: 0 });
+        if (g.kind === 'decision') q.dec.push(g.id); else if (g.core) q.core = [g.kind, g.id]; if (g.tier === 'soft') q.soft.push([g.kind, g.id]); if (g.twist) q.twist.push([g.kind, g.id]); if (g.kind === 'meltdown') q.md.push(g.id); }
+      for (const d of Object.values(app.discoveries || {})) { const q = (chq[d.ch] = chq[d.ch] || { dec: [], core: null, soft: [], twist: [], md: [], disc: 0 }); q.disc += 1; }
+      fs.writeFileSync(path.join(out, 'mission.json'), JSON.stringify({ quests: app.quests || {}, discoveries: app.discoveries || {}, chq, dec, talk, roles: app.roles, domains: app.domains, lanes: app.lanes, sysmaps: app.sysmaps,
         dom: { quiz: domOf(app.quizzes), drill: domOf(app.drills), incident: domOf(app.incidents), lab: domOf(app.labs), meltdown: domOf(app.meltdowns) },
         totals: { drills: Object.keys(app.drills).length, incidents: Object.keys(app.incidents).length, labs: (app.labOrder || Object.keys(app.labs)).length, chapters: index.length, cases: (app.caseOrder || []).length } })); }
     for (const c of index) { const items = JSON.parse(fs.readFileSync(path.join(src, 'story', `${c.id}.json`), 'utf8')).items; const quizzes = {}; const lessons = {}; const drills = {}; const incidents = {}; const labs = {}; const meltdowns = {}; const bosses = {}; const formulas = {}; const tiers = {};
