@@ -167,8 +167,13 @@ const inCone = (c: Cone, s: { x: number; y: number }) => { const d = Math.hypot(
 const inDisc = (d: Disc, s: { x: number; y: number }) => Math.hypot(s.x - d.x, s.y - d.y) <= d.r;
 
 /** The coverage model of a set of positions in a room (the room's current positions unless a state gives others). */
-export function coverage(r: RoomRecord, positions: Position[] = r.positions): CoverageModel {
-  const [w, l] = r.outline.dims; const seats = seatsOf(r); const door = doorOf(r);
+/** One seat more or fewer (the Optimize lens's seat count): fewer drops the last; more adds them in a row behind the last row. MODELED. */
+export function adjustSeats(seats: Seat[], delta: number, w: number, l: number): Seat[] {
+  if (delta <= 0) return seats.slice(0, Math.max(1, seats.length + delta));
+  const y = Math.min(l - 0.3, Math.max(...seats.map((s) => s.y), 0) + 0.9); return [...seats, ...Array.from({ length: delta }, (_, i) => ({ x: clamp(0.6 + ((w - 1.2) * (i + 0.5)) / delta, 0.3, w - 0.3), y }))];
+}
+export function coverage(r: RoomRecord, positions: Position[] = r.positions, seatDelta = 0): CoverageModel {
+  const [w, l] = r.outline.dims; const seats = seatDelta ? adjustSeats(seatsOf(r), seatDelta, w, l) : seatsOf(r); const door = doorOf(r);
   const cx = seats.length ? seats.reduce((s, x) => s + x.x, 0) / seats.length : w / 2, cy = seats.length ? seats.reduce((s, x) => s + x.y, 0) / seats.length : l / 2;
   const prop = (p: Position, k: string, d: number) => Number(C.categories[p.cat]?.props?.[k]) || d;
   const cones: Cone[] = positions.filter((p) => p.cat === 'camera' || p.cat === 'bar').map((p) => ({

@@ -15,7 +15,7 @@ import { roomRecord, openIssues, campusRecords, type RoomRecord } from '../campu
 import { shortName, buildingByKey, roomHref } from '../campus/canon.js';
 import { LIFE_TONE } from '../campus/CampusPage.js';
 import {
-  chapterById, lensesFor, layersFor, overlaysFor, defaultLayers, defaultOverlays, roomState, STATES, configsOf, configStatus, readiness, pct, occupancy, routeTo,
+  chapterById, coverage, lensesFor, layersFor, overlaysFor, defaultLayers, defaultOverlays, roomState, STATES, configsOf, configStatus, readiness, pct, occupancy, routeTo,
   ALL_SITES, buildingSummary, liteRoomHref, type Lens, type LiteLayer, type Overlay, type StateKey,
 } from './model.js';
 import { RoomScene, OrbitBar, useOrbit } from './Scene.js';
@@ -30,6 +30,9 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
   const dev = query.get('device');
   const [sel, setSel] = useState<string | null>(dev);
   useEffect(() => { setSel(dev); }, [id, dev]);
+  // the Optimize lens's "change the room" (V2.5.3, restored 12 Nov 2026): moves in 25 cm steps and a seat count, held in the page until sent
+  const [ed, setEd] = useState<{ mv: Record<string, [number, number]>; seats: number }>({ mv: {}, seats: 0 }); const [tool, setTool] = useState<string | null>(null);
+  useEffect(() => { setEd({ mv: {}, seats: 0 }); }, [id, query.get('state')]);
   if (!r) return <LiteMissing what={`room “${id}”`} />;
   const o = r.outline; const B = buildingByKey(o.building)!;
   const lens = storedLens(role, query.get('mode'));
@@ -45,7 +48,9 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
   const upd = (k: string, v: string | null) => { const n = new URLSearchParams(query); if (v == null || v === '') n.delete(k); else n.set(k, v); setQuery(base, n); };
   const toggle = (k: 'ly' | 'ov', key: string, cur: Set<string>) => { const n = new Set(cur); if (n.has(key)) n.delete(key); else n.add(key); upd(k, [...n].join(',') || ','); };
   const pickLens = (l: Lens) => { saveLens(l); const n = new URLSearchParams(query); n.set('mode', l); n.delete('ly'); n.delete('ov'); setQuery(base, n); };
-  const cov = st.cov; const p = st.positions.find((x) => x.code === sel) || null;
+  const edited = lens === 'optimize' && (Object.keys(ed.mv).length > 0 || ed.seats !== 0);
+  const positions = edited ? st.positions.map((x) => { const m = ed.mv[x.code]; return m ? { ...x, x: Math.min(o.dims[0] - 0.2, Math.max(0.2, x.x + m[0])), y: Math.min(o.dims[1] - 0.2, Math.max(0.2, x.y + m[1])), mark: x.mark === 'same' ? 'moved' as const : x.mark } : x; }) : st.positions;
+  const cov = edited ? coverage(r, positions, ed.seats) : st.cov; const p = positions.find((x) => x.code === sel) || null;
   const occ = layers.has('occupancy') ? occupancy(r, cov.seats) : undefined;
   const score = readiness(r); const issues = openIssues(r);
   const partitions = cfg && o.divisible ? o.divisible.sections.slice(1).map((_, i) => (o.dims[0] * (i + 1)) / o.divisible!.sections.length) : [];
@@ -67,7 +72,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
         <div className="lt-stagecol">
           <figure className="stage lt-stage" data-stage="">
             <div className="stage__bar"><OrbitBar orbit={orbit} /></div>
-            <RoomScene label={`${o.name} in 3D, ${st.title}`} w={o.dims[0]} l={o.dims[1]} h={o.dims[2]} view={orbit.view} positions={st.positions} connections={r.connections} layers={layers} overlays={overlays} cov={cov}
+            <RoomScene label={`${o.name} in 3D, ${st.title}`} w={o.dims[0]} l={o.dims[1]} h={o.dims[2]} view={orbit.view} positions={positions} connections={r.connections} layers={layers} overlays={overlays} cov={cov}
               selected={sel} onSelect={(c) => setSel(c === sel ? null : c)} occupied={occ} partitions={partitions} active={cfg && cfg.key !== 'combined' ? [cfg.x0, cfg.x1] : null} bind={orbit.bind} />
             <figcaption className="stage__cap"><b>{st.title}.</b> {st.summary} <span className="ui-meta">Basis: {st.basis}. Drag to orbit; the buttons do the same.</span></figcaption>
           </figure>
@@ -108,7 +113,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
           {([['Cameras', ['camera', 'bar']], ['Microphones', ['micceil', 'mictable', 'micwireless']], ['Loudspeakers', ['speaker']], ['Displays', ['display', 'ledwall', 'projector']], ['Control', ['control', 'touch', 'compute', 'scheduler']], ['Network', ['switch']]] as Array<[string, string[]]>).map(([label, cats]) => <li key={label}><span>{label}</span><b>{count(cats)}</b></li>)}
           <li><span>Network endpoints</span><b>{st.positions.filter((x) => !x.furniture && x.cat !== 'switch' && ['camera', 'bar', 'micceil', 'mictable', 'touch', 'scheduler', 'compute', 'control', 'dsp', 'encoder', 'occsensor', 'seccam', 'iot'].includes(x.cat)).length}</b></li>
         </ul>{st.marks.added + st.marks.changed + st.marks.attention + st.marks.moved > 0 && <p className="ui-meta">{[st.marks.added && `${st.marks.added} added`, st.marks.changed && `${st.marks.changed} replaced`, st.marks.attention && `${st.marks.attention} need attention`, st.marks.moved && `${st.marks.moved} moved`].filter(Boolean).join(' · ')}</p>}</Card>
-        <LensPanel lens={lens} r={r} role={role} />
+        {lens === 'optimize' ? <ChangeRoom positions={st.positions} base={st.cov} cov={cov} ed={ed} setEd={setEd} tool={tool} setTool={setTool} roomId={id} edited={edited} /> : <LensPanel lens={lens} r={r} role={role} />}
       </div>
       {cfg && <Card title="Configurations" sub="A divisible room: each configuration has its own requirements and its own commissioning." icon="layers" testId="lite-configs">
         <div className="lt-cfgs" role="radiogroup" aria-label="Configuration">{configs.map((c) => <button key={c.key} type="button" role="radio" aria-checked={c.key === cfg.key} className={`lt-chipbtn${c.key === cfg.key ? ' on' : ''}`} onClick={() => upd('cfg', c.key === 'combined' ? null : c.key)} data-testid={`lite-cfg-${c.key}`}>{c.label}</button>)}</div>
@@ -177,6 +182,32 @@ function ObjectCardView({ p, r, tech, cov }: { p: ReturnType<typeof roomState>['
     {tech && cover && <S h="Coverage" note="Modeled · not measured"><p>{cover}</p></S>}
     {tech && eng && <S h="Engineering reference"><p><a href={`#/lite/guides/${eng.g.id}/${eng.c[0]}`}>{eng.g.name}: {eng.c[1]}</a></p></S>}
   </div>;
+}
+
+/** "Change the room" (V2.5.3's Optimize panel, restored 12 Nov 2026): pick a movable thing and move it in 25 cm steps with buttons (no
+ *  dragging needed), change the seat count, and watch the modeled scores against the current layout (the tick). They are shown separately,
+ *  never added into one score. Turning a camera is not offered: in this model cameras aim at the seats on their own. */
+const MOVABLE = ['camera', 'bar', 'micceil', 'mictable', 'lectern', 'table', 'speaker'];
+function ChangeRoom({ positions, base, cov, ed, setEd, tool, setTool, roomId, edited }: { positions: ReturnType<typeof roomState>['positions']; base: ReturnType<typeof roomState>['cov']; cov: ReturnType<typeof roomState>['cov']; ed: { mv: Record<string, [number, number]>; seats: number }; setEd: (e: { mv: Record<string, [number, number]>; seats: number }) => void; tool: string | null; setTool: (t: string) => void; roomId: string; edited: boolean }) {
+  const movable = positions.filter((x) => MOVABLE.includes(x.cat)); const cur = movable.find((x) => x.code === tool) || movable[0] || null; const mv: [number, number] = (cur && ed.mv[cur.code]) || [0, 0];
+  const nudge = (dx: number, dy: number) => { if (!cur) return; const m = ed.mv[cur.code] || [0, 0]; setEd({ ...ed, mv: { ...ed.mv, [cur.code]: [Math.round((m[0] + dx) * 100) / 100, Math.round((m[1] + dy) * 100) / 100] } }); };
+  const dims: Array<[string, (c: typeof cov) => number | null, string]> = [
+    ['Camera coverage', (c) => (c.cones.length ? pct(c.camera.covered, c.camera.of) : null), '% of seats in view'], ['Microphone pickup', (c) => (c.mics.length || c.pickup.worn ? pct(c.mic.covered, c.mic.of) : null), `% of ${cov.pickup.of}`],
+    ['Speaker coverage', (c) => (c.speakers.length ? pct(c.speakerSeats, c.seats.length) : null), '% of seats'], ['Display sightlines', (c) => c.sight.score, 'clear, half for marginal'], ['Wheelchair places', (c) => (c.access.required ? Math.min(100, pct(c.access.wheelchair, c.access.required)) : null), '% of required']];
+  const fmt = (v: number) => `${v >= 0 ? '+' : ''}${v.toFixed(2)}`;
+  return <Card title={edited ? 'Your layout' : 'Change the room'} sub="Modeled · not measured · the scores react" icon="layers" testId="lite-change">
+    <div className="lt-scs">{dims.map(([label, f, unit]) => { const v = f(cov), b = f(base); return <div key={label} className="lt-sc" data-dim={label}><span className="lt-sc__l">{label}<span className="ui-meta"> · {unit}</span></span>
+      <span className="lt-sc__bar" aria-hidden="true"><i style={{ width: `${v ?? 0}%` }} />{edited && b != null && <s style={{ left: `${b}%` }} />}</span><b className="num">{v == null ? '—' : `${v}%`}{edited && v != null && b != null && v !== b ? <small> ({v > b ? '+' : '−'}{Math.abs(v - b)})</small> : null}</b></div>; })}</div>
+    <p className="ui-meta">Five measures, shown separately; they are never added into one score.{edited ? ' The tick on each bar is the current layout.' : ''}</p>
+    {cur && <div className="lt-tool"><label className="ch__field"><span>Move</span><select value={cur.code} onChange={(e) => setTool(e.target.value)} data-testid="lite-tool">{movable.map((x) => <option key={x.code} value={x.code}>{x.label} · {x.code}</option>)}</select></label>
+      <div className="lt-pad" role="group" aria-label="Move the selected item in steps of 25 centimetres">
+        <button type="button" className="ui-btn" aria-label="Move toward the display wall" onClick={() => nudge(0, -0.25)}>↑</button>
+        <span className="lt-pad__row"><button type="button" className="ui-btn" aria-label="Move left" onClick={() => nudge(-0.25, 0)}>←</button><span className="num" data-testid="lite-moved">{mv[0] || mv[1] ? `${fmt(mv[0])}, ${fmt(mv[1])} m` : '25 cm steps'}</span><button type="button" className="ui-btn" aria-label="Move right" onClick={() => nudge(0.25, 0)}>→</button></span>
+        <button type="button" className="ui-btn" aria-label="Move toward the back wall" onClick={() => nudge(0, 0.25)}>↓</button></div></div>}
+    <div className="lt-tool"><span>Seat count</span><span className="lt-stepper"><button type="button" className="ui-btn" aria-label="One seat fewer" onClick={() => setEd({ ...ed, seats: ed.seats - 1 })}>−</button><b className="num" aria-live="polite" data-testid="lite-seats">{cov.seats.length}</b><button type="button" className="ui-btn" aria-label="One seat more" onClick={() => setEd({ ...ed, seats: ed.seats + 1 })}>+</button></span></div>
+    {edited && <p className="lt-acts"><button type="button" className="ui-btn" onClick={() => setEd({ mv: {}, seats: 0 })} data-testid="lite-edits-reset">Back to the current layout</button> <a className="ui-btn ui-btn--primary" href={`#/request/change-room?room=${encodeURIComponent(roomId)}`} data-testid="lite-send">Send my layout to engineering</a></p>}
+    <p className="ui-meta">Every move has a button; dragging is not needed. A layout you send becomes a request for engineering review — nothing in the room changes until it is approved.</p>
+  </Card>;
 }
 
 function Legend({ overlays, marks }: { overlays: Set<Overlay>; marks: Record<string, number> }) {

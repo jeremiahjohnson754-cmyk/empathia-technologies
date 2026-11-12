@@ -133,3 +133,9 @@ test('sightlines: V2.5.3’s classes (60° obstructed, 45° or six image heights
   assert.deepEqual(m.sightlines(seats, [], 10), { na: true, rays: [], clear: 0, marginal: 0, obstructed: 0, score: null });
   for (const r of recs.slice(0, 90)) { const c = m.coverage(r); assert.equal(c.sight.rays.length, c.sight.na ? 0 : c.seats.length, r.outline.id); assert.ok(c.speakerSeats <= c.seats.length); }
 });
+test('the Optimize lens’s seat count: fewer drops the last seats, more adds a row behind, inside the room; coverage follows', () => {
+  const s = [{ x: 1, y: 2 }, { x: 2, y: 2 }, { x: 3, y: 3 }];
+  assert.deepEqual(m.adjustSeats(s, -1, 6, 5), s.slice(0, 2)); assert.equal(m.adjustSeats(s, -9, 6, 5).length, 1);
+  const more = m.adjustSeats(s, 2, 6, 5); assert.equal(more.length, 5); assert.ok(more.slice(3).every((x) => x.y === 3.9 && x.x > 0 && x.x < 6));
+  const r = recs[0]; assert.equal(m.coverage(r, r.positions, 2).seats.length, m.coverage(r).seats.length + 2);
+});

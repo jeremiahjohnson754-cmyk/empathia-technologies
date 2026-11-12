@@ -230,3 +230,11 @@
 .lt-card { display: grid; gap: 10px; margin-top: 10px; border-top: 1px solid var(--line); padding-top: 10px; }
 .lt-card__s { display: grid; gap: 4px; } .lt-card__s p, .lt-card__s ul, .lt-card__s ol { margin: 0; } .lt-card__s ul, .lt-card__s ol { padding-left: 18px; }
 .lt-card__h { margin: 0; font-size: var(--fs-sm); font-weight: 700; } .lt-card__open { list-style: none; padding-left: 0 !important; color: var(--bad); }
+/* "Change the room" (V2.5.3 Optimize panel, restored 12 Nov 2026): score bars with the current layout's tick, the move pad, the seat count */
+.lt-scs { display: grid; gap: 8px; } .lt-sc { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; align-items: center; }
+.lt-sc__bar { grid-column: 1 / -1; position: relative; height: 8px; border-radius: 4px; background: var(--bg2); border: 1px solid var(--line); }
+.lt-sc__bar i { position: absolute; inset: 0 auto 0 0; border-radius: 4px; background: var(--accent); } .lt-sc__bar s { position: absolute; top: -4px; bottom: -4px; width: 2px; margin-left: -1px; background: var(--tx); }
+.lt-sc b { grid-row: 1; grid-column: 2; font-variant-numeric: tabular-nums; } .lt-sc b small { font-weight: 600; color: var(--tx2); }
+.lt-tool { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 10px; }
+.lt-pad { display: grid; justify-items: center; gap: 4px; } .lt-pad__row { display: flex; gap: 6px; align-items: center; } .lt-pad .ui-btn, .lt-stepper .ui-btn { min-width: 44px; min-height: 44px; }
+.lt-stepper { display: inline-flex; gap: 8px; align-items: center; } .lt-acts { display: flex; flex-wrap: wrap; gap: 8px; }
