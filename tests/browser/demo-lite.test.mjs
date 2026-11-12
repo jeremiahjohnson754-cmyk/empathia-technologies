@@ -185,6 +185,13 @@ for (const scheme of SCHEMES) for (const vp of [VIEWPORTS[0], VIEWPORTS[VIEWPORT
   ok(`LT-${tag}-S3`, 'a device is placed on the plan and a device moves in 25 cm steps', await p.locator('[data-testid="studio-plan"] [data-placement]').count() === n0 + 1 && /moved/.test(await p.getByTestId('studio-history').innerText()));
   await p.fill('[data-testid="studio-vwhy"]', 'a second camera at the back'); await p.click('[data-testid="studio-variant-go"]'); await p.waitForTimeout(200);
   ok(`LT-${tag}-S4`, 'a variant is a copy at version 1 that says what it varies and why', /variant 1 · v1/.test(await p.getByTestId('studio-model').innerText()) && /variant of LM-001: a second camera at the back/.test(await p.getByTestId('studio-history').innerText()));
+  { const [dl] = await Promise.all([p.waitForEvent('download', { timeout: 5000 }).catch(() => null), p.click('[data-testid="studio-svg"]')]); const body = dl ? fs.readFileSync(await dl.path(), 'utf8') : '';
+    ok(`LT-${tag}-S4b`, 'the plan exports as an SVG file that says it is modeled, not measured', !!dl && /\.svg$/.test(dl.suggestedFilename()) && /^<svg[^>]+xmlns="http:\/\/www.w3.org\/2000\/svg"/.test(body) && /not measured/.test(body) && /data-placement/.test(body), dl?.suggestedFilename() || 'no download'); }
+  { const [dl] = await Promise.all([p.waitForEvent('download', { timeout: 5000 }).catch(() => null), p.click('[data-testid="studio-tofi"]')]); const pkg = dl ? JSON.parse(fs.readFileSync(await dl.path(), 'utf8')) : null;
+    await p.selectOption('[data-testid="studio-obs-dim"]', 'width'); await p.fill('[data-testid="studio-obs-val"]', '7.4'); await p.fill('[data-testid="studio-obs-src"]', 'laser survey'); await p.click('[data-testid="studio-obs-go"]'); await p.waitForTimeout(150);
+    const open1 = await p.locator('[data-testid="studio-recs"] [data-state="OPEN"]').count(); await p.fill('[aria-label="Reason for REC-1"]', 'calibrated meter'); await p.click('[data-testid="studio-rec-accept-REC-1"]'); await p.waitForTimeout(150);
+    const geo = await p.evaluate(() => document.querySelector('[data-testid="studio-geometry"] tr[data-dim="width"]')?.textContent || '');
+    ok(`LT-${tag}-S4c`, 'Field Intelligence: the package lists the four protocols and says nothing is measured; an observation waits for a decision, and accepted it makes the width a survey value', !!pkg && pkg.protocols.length === 4 && /nothing/.test(pkg.note) && open1 === 1 && /7\.4 m/.test(geo) && /SURVEY|survey|FIELD_OBSERVED|field observed/i.test(geo), geo); }
   const over = await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   ok(`LT-${tag}-S5`, 'no horizontal overflow, no page error, no request left the page', over <= 0 && !t.errs.length && !t.ext.length, [over, ...t.errs, ...t.ext].slice(0, 3).join(' | '));
   await t.close();
@@ -237,4 +244,21 @@ for (const scheme of SCHEMES) {
   await t.close();
 }
 
+// X8b (separate block): the sent layout arrives as the request text
+for (const scheme of SCHEMES) {
+  const t = await open(VIEWPORTS[0], scheme, { hash: '#/lite/room/R-ATL-4-218?mode=optimize' }); const c = t.page.locator('[data-testid="lite-change"]'); await c.waitFor();
+  await c.getByRole('button', { name: 'Move right' }).click(); await c.getByTestId('lite-send').click(); await t.page.waitForTimeout(600);
+  const need = await t.page.evaluate(() => (document.querySelector('[data-testid="rq-need"]') || {}).value || '');
+  ok(`LT-${scheme}-X8b`, 'a sent layout opens a change-room request whose text names the move and the modeled scores on both layouts', /Layout from Lite \(Optimize\)/.test(need) && /\+0\.25, \+0\.00 m/.test(need) && /Modeled, not measured/.test(need), need.slice(0, 160));
+  await t.close();
+}
+// Portfolio Optimize
+for (const scheme of SCHEMES) for (const vp of [VIEWPORTS[0], VIEWPORTS[VIEWPORTS.length - 1]]) {
+  const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/lite/optimize' }); const p = t.page; await p.waitForSelector('[data-testid="lite-portfolio"]');
+  const rows = await p.locator('[data-testid="lite-portfolio-table"] tbody tr').count(); const first = await p.locator('[data-testid="lite-portfolio-table"] tbody tr').first().innerText(); const m = await p.getByTestId('lite-portfolio').innerText();
+  await p.locator('[data-testid="lite-portfolio-table"] tbody tr a').first().click(); await p.waitForSelector('[data-testid="lite-room"]'); const st = await p.getByTestId('lite-room').getAttribute('data-state');
+  const over = await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  ok(`LT-${tag}-P1`, 'Portfolio Optimize ranks the rooms whose proposal changes something, says it is modeled, and opens the first in its proposed state; no overflow, no error', rows >= 10 && /Modeled · not measured/.test(m) && /→/.test(first) && st === 'proposed' && over <= 0 && !t.errs.length && !t.ext.length, `${rows} ${st} ${over} ${[...t.errs, ...t.ext].slice(0, 2).join(' | ')}`);
+  await t.close();
+}
 await done();
