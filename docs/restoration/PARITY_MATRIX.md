@@ -20,7 +20,7 @@ Key: ✓ matches the source · ◐ partial (the inventory says what is missing) 
 | Quest card, objectives ticking live, quest log and ratings | ✓ | ✓ | ✓ | ✓ | MC-07; PP-08 |
 | Quizzes and lessons in place; the skill ladder's formula scaffold | ✓ | ✓ | ✓ 693 quizzes | ✓ | demo-story |
 | Glossary marks at first use and the pop-over; terms you'll need | ✓ | ✓ | ✓ 522 terms | ✓ | GL-01..04; GP-01..05 |
-| Drills, six types | ◐ each type's rules TO VERIFY | ✓ | ✓ | ✓ | demo-story, Practice |
+| Drills, six types | ✓ (verified against spec §4) | ✓ | ✓ 146 | ✓ | signal-drills unit; demo-story, Practice |
 | Live incidents (Service Mode) | ✓ | ✓ | ✓ 121 | ✓ | demo-learn, demo-story |
 | Fix-It Labs, nine simulators, physics drawings | ✓ | ✓ | ✓ 91 | ✓ | learn-labs (LL-17), SP-07 |
 | Season reviews, ratings, forecast and loadout, game over, retry | ✓ | ✓ | ✓ | ✓ | signal-ratings unit; demo-story |
