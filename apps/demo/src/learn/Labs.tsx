@@ -96,7 +96,7 @@ function SharedLab({ lab, L }: { lab: LabData; L: ReturnType<typeof useLabs> }) 
   const [said, setSaid] = useState<string | null>(null);
   return (
     <section className="ops" data-testid="signal-lab">
-      <OpsHead product="learn" kicker={`Learn · labs · ${KIND[lab.type] || lab.type} · ${lab.domain}`} title={lab.title} persona={L.persona} lead={<>Illustrative models, not measurements.</>} actions={<a className="ui-btn ui-btn--quiet" href="#/learn/labs">All labs</a>} />
+      <OpsHead product="learn" kicker={`Learn · labs · ${KIND[lab.type] || lab.type} · ${lab.domain}`} title={lab.title} persona={L.persona} lead={<>{lab.brief} Illustrative models, not measurements. Here the clock is a guide, never a gate.</>} actions={<a className="ui-btn ui-btn--quiet" href="#/learn/labs">All labs</a>} />
       <LabRunner L={lab} factor={0} heading="h2" onRecord={(ok, fin) => { if (!ok && !fin) return; L.record({ lab: lab.id, title: lab.title, domain: lab.domain, passed: ok, mode: 'simulator' }); setSaid(ok ? 'Passed and recorded as competency evidence on your internal competency record.' : 'Recorded as an attempt, not passed.'); }} />
       <div className="ops-card" data-testid="lab-record"><div className="ops-row">{L.passed(lab.id) ? <Tag tone="ok">passed · competency evidence</Tag> : null}</div>
         <p className="ops-note" role="status" data-testid="lab-said">{said || 'Nothing is recorded until the lab is fixed or ends.'}</p>

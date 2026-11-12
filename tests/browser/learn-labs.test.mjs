@@ -39,19 +39,23 @@ await suite('learn-labs', 4488, async ({ ok, open, goto, over, text, smallTarget
       ok('LL-11', 'the Lighting Lab fault is fixable to every check (face level, key-to-fill, one colour, spill)', !(await page.locator('[data-testid=lab-checks] .ops-fail').count()), await page.locator('[data-testid=lab-checks]').innerText());
       // a signal-flow lab
       await goto(page, '#/learn/labs/LAB-SF-01', 'service'); await page.waitForSelector('[data-testid=signal-lab]');
-      // LAB-SF-01 as given: the room already reads within range; the stream encoder is empty (corrected expectation: the lab data, not the brief text, decides)
-      ok('LL-12', 'a signal-flow lab starts with a target failing (the stream encoder hears nothing)', (await page.locator('[data-testid=sf-targets] .ops-fail').count()) >= 1 && /Stream encoder/.test(await page.locator('[data-testid=sf-targets] .ops-fail').first().innerText()));
-      await page.selectOption('[data-testid=sf-from]', 'main'); await page.selectOption('[data-testid=sf-to]', 'pp'); await page.click('[data-testid=sf-patch]');
-      ok('LL-13', 'a backward patch (bus → processor) is refused with the reason', /signal runs from sources/.test(await text(page)));
-      for (const f of ['pp', 'lp', 'bp']) { await page.selectOption('[data-testid=sf-from]', f); await page.selectOption('[data-testid=sf-to]', 'strm'); await page.click('[data-testid=sf-patch]'); }
-      await page.fill('[data-testid=sf-gain-pp]', '32'); await page.fill('[data-testid=sf-math-0]', '32'); await page.fill('[data-testid=sf-math-1]', '-13.2');
-      ok('LL-14', 'patching the three sources into the stream bus, setting the preamp and doing the math meets every target', !(await page.locator('[data-testid=sf-targets] .ops-fail').count()) && /Right\./.test(await text(page)));
-      await page.click('[data-testid=lab-test]'); await page.waitForTimeout(100);
+      // Rewritten 11 Nov 2026: the page runs the shared Fix-It Lab runner on the build package's rules (packages/ui/src/labs.ts). Blocks are
+      // wired by tapping one then a block in a later column (the reference's rule, replacing this page's select-and-patch by block kind,
+      // which also could not remove a starting wire); every lab kind now has a simulator, so the calculation-only case (old LL-17) is gone.
+      await page.getByRole('button', { name: /Open the lab/ }).click(); await page.waitForSelector('[data-testid=lab-live]');
+      ok('LL-12', 'a signal-flow lab starts with a target failing (the stream encoder hears none of the sources)', (await page.locator('[data-testid=lab-live]').getAttribute('data-ok')) === 'false' && /Stream encoder is missing/.test(await page.locator('[data-testid=lab-live]').innerText()));
+      const wires0 = await page.locator('[data-testid=lab-wires] li').count(); await page.click('[data-node=main]'); await page.click('[data-node=pp]');
+      ok('LL-13', 'a backward connection (bus → processor) is not made: the tap only moves the selection', (await page.locator('[data-testid=lab-wires] li').count()) === wires0 && (await page.locator('[data-node=pp]').getAttribute('aria-pressed')) === 'true');
+      await page.click('[data-node=pp]');
+      for (const f of ['pp', 'lp', 'bp']) { await page.click(`[data-node=${f}]`); await page.click('[data-node=strm]'); }
+      await page.getByLabel('Pulpit preamp gain in dB').fill('32'); const steps = page.locator('.lab__step');
+      for (const [i, v] of [[0, '32'], [1, '-13.2']]) { await steps.nth(i).locator('input').fill(v); await steps.nth(i).getByRole('button', { name: 'Check' }).click(); }
+      ok('LL-14', 'wiring the three sources into the stream bus, setting the preamp and doing the math meets every target', (await page.locator('[data-testid=lab-live]').getAttribute('data-ok')) === 'true' && await page.locator('.lab__step[data-ok=true]').count() === 2);
+      await page.getByRole('button', { name: /Test the fix/ }).click(); await page.waitForSelector('[data-testid=lab-verdict][data-pass=true]');
       ok('LL-15', 'the solved lab is recorded as passed', /Passed and recorded/.test(await page.locator('[data-testid=lab-said]').innerText()));
-      ok('LL-16', 'the clock is a guide, never a gate', /a guide, never a gate/.test(await text(page)));
-      // another kind: calculation check, honestly labelled
-      await goto(page, '#/learn/labs/PHY-S01E01', 'service'); await page.waitForSelector('[data-testid=signal-lab]');
-      ok('LL-17', 'a lab whose simulator is not rebuilt says so and runs its calculation check', (await page.locator('[data-testid=calc-only]').count()) === 1);
+      ok('LL-16', 'the clock is a guide, never a gate: the lab runs untimed here', /a guide, never a gate/.test(await text(page)) && /untimed here/.test(await text(page)));
+      await goto(page, '#/learn/labs/PHY-S01E01', 'service'); await page.waitForSelector('[data-testid=signal-lab]'); await page.getByRole('button', { name: /Open the lab/ }).click();
+      ok('LL-17', 'a physics lab now has its controls and live readout (the animated drawing is not restored yet) and no calculation-only notice', (await page.locator('[data-testid=lab-readout] div').count()) >= 3 && (await page.locator('[data-testid=calc-only]').count()) === 0);
       // ledger + dispatch: lab evidence shows on the technician's competency state; it does not change any gate
       const ev = await page.evaluate(() => JSON.parse(localStorage.getItem('empathia.demo.workspace.v1')).events.filter((e) => e.type === 'training.lab_completed').map((e) => e.detail));
       ok('LL-18', 'each recorded result is in the ledger as competency evidence, never a credential or an authorization', ev.length >= 3 && ev.every((d) => /never a credential or an authorization/.test(d)), JSON.stringify(ev.slice(0, 2)));

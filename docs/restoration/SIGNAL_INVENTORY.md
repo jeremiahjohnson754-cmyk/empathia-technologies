@@ -44,8 +44,8 @@ Counts and identifiers only. No dialogue or narrative text is reproduced here.
 | Explorers (layered system views) | 4 | 4, library, not identical | TO VERIFY |
 | Fieldbook plates | 160 images with captions, in nine domains | Not in the library. The story's own art is in the canon | **MISSING from Learn** (TO VERIFY whether the canon's art covers them) |
 | Boss levels | 12, one per season | none | **MISSING** |
-| Meltdowns | 5 | none | **MISSING** |
-| Season reviews | 12 | none | **MISSING** |
+| Meltdowns | 5 | `packages/ui/src/meltdown.ts` + `MeltdownRunner` | **RESTORED 11 Nov** (in the story; not yet in Learn's Service Mode list) |
+| Season reviews | 12 | `apps/demo/src/signal/ratings.ts`, in the story | **RESTORED 11 Nov** |
 | System maps per season | 12 | none found | **MISSING** (TO VERIFY) |
 | Timeline | 55 entries | none found | **MISSING** (TO VERIFY) |
 | Ask: offline answers and rules | 20 answers, 7 suggestions | Ask exists (`#/ask`); whether it carries these 20: TO VERIFY | TO VERIFY |
@@ -63,14 +63,14 @@ In the source a chapter is not only read. By the build package's own list of gat
 | Lessons | 148 | 142 soft, 6 optional | **RESTORED 11 Nov:** opened in place with its cards (formulas as code, only the source's inline marks kept) and its review flag; done when its own check is recorded; soft ones hold or can be skipped. `demo-story` ST-38..39 |
 | Drills | 136 (128 mounted, 8 after a twist) | **79 hard**, 8 soft, 49 optional | **RESTORED 11 Nov:** played in place on the reference's rules for all six kinds (`packages/ui/src/drills.ts`, one runner for Learn, the enterprise app and the story): seeded order as the reference, "Start the clock" after the brief, the story's clock (doubled or off), a timeout fails the try, each failure explains itself, Try again; triage scored against the best affordable plan; the eight failure classes; record `{passed, tries, first}`. The 79 hard ones (core skills) now hold the story until a try is recorded, as `gate.js`. `signal-drills` SD-01..09, `demo-story` ST-43..52 |
 | Live incidents | 121 | 114 soft, 7 optional | **RESTORED 11 Nov:** played in place on the reference's rules (`packages/ui/src/incidents.ts`, one runner for Learn's Service Mode and the story): briefing, Start, a real-time clock that actions spend, refusals that cost time and count, boundary endings, lost evidence kept lost, trust 0–5, calculation gates with penalties, the reference's outcomes and debrief, record `{best, runs, first, firstWhy}`. Soft ones hold the story until a run ends or are skipped. All 121 of the package's solver paths replay to proven inside the clock (`signal-incidents` SI-01..07); `demo-story` ST-53..62 |
-| Labs | 75 | **42 hard**, 33 optional | A link to the lab page; only the signal-flow labs have a simulator there |
-| Season reviews | 12 | **hard** | "Not yet playable" |
+| Labs | 75 | **42 hard**, 33 optional | **RESTORED 11 Nov:** played in place on the reference's rules (`packages/ui/src/labs.ts`, `physics.ts`, `LabRunner`): all nine kinds have a simulator; every one of the 91 labs fails at its start and passes with its fix (51 fixes the package's own, 40 derived and marked so). Physics labs have controls and live readouts but **not** the reference's animated drawings. A lab gate clears when fixed or ended. Learn's lab page runs the same runner. `signal-labs`, `signal-physics`, `demo-story` ST-63..70, `learn-labs` LL-12..17 |
+| Season reviews | 12 | **hard** | **RESTORED 11 Nov:** six ratings from first attempts, Story Score, what pulled it down, the Seasons 10–12 forecast (loadout locked at Season 9); below 65 game over with Retry season / Restart / Look back, and a banner until retried. `signal-ratings` RT-01..08 (hand-worked figures), `demo-story` ST-71..76 |
 | Boss levels | 12 | **hard** | "Not yet playable" |
-| Meltdowns | 5 | **hard** | "Not yet playable" |
+| Meltdowns | 5 | **hard** | **RESTORED 11 Nov:** the cascade engine on the reference's rules, the map, dark time, objectives, holds, calculation card, real-time story clock (pauses off screen and on ⏸), Season 12's year and actors, the after-action review; loadout requirements read from the ratings. All five expert runs end proven with grade S. `signal-meltdown` MD-01..05, `demo-story` ST-77..82 |
 
 Verified in `apps/demo/src/signal/StoryPage.tsx` (the `mount` and `twist` cases). In the source, 150 of these pieces are hard gates
 (79 drills, 42 labs, 12 reviews, 12 bosses, 5 meltdowns): the story does not go on until they are passed. In the product only the 387
-decisions gate, and since 11 November the 366 soft quizzes and lessons, the 136 drills (79 of them hard) and the 121 live incidents. **The 71 hard gates still unplayed (42 labs, 12 reviews, 12 bosses, 5 meltdowns) are the largest gap**: they are shown and said not to hold the story yet, rather than holding it unplayably.
+decisions gate, and since 11 November the 366 soft quizzes and lessons, the 136 drills, the 121 live incidents, the 75 labs, the 12 season reviews and the 5 meltdowns. **The 12 boss levels (hard, built from the thirteen challenges) are the remaining gap**: they are shown and said not to hold the story yet, rather than holding it unplayably.
 
 (The first pass of this page counted 997 from the standalone's markup, which also counts pieces mounted in its other views. The
 gate list is the authority and gives 979.)
@@ -84,14 +84,14 @@ gate list is the authority and gives 979.)
 | Echoes: the previous chapter's choices at the top of the next, and a verdict before the debrief | | Both, in the reference's words | **RESTORED**, tested (ST-19, ST-19b) |
 | Result pop-ups when a gate is done, and "Chapter complete" with the quest grade | | not found | **MISSING** (TO VERIFY) |
 | Story played as staged shots | (not in the source: added in this product) | `#/play/<chapter>` | ADDED, tested |
-| Chapter locks and gates (hard, soft, optional) | A chapter opens when what it requires is done | Within a chapter: decisions (hard), quizzes and lessons (soft) gate, as in the reference's gate.js. Chapter locks are **deferred** until every hard kind is playable, since an unplayable hard gate would lock the rest of the story | PARTIAL |
+| Chapter locks and gates (hard, soft, optional) | A chapter opens when what it requires is done | Within a chapter: decisions (hard), quizzes and lessons (soft) gate, as in the reference's gate.js. Chapter locks are **deferred** until boss levels play (the last hard kind), since an unplayable hard gate would lock the rest of the story | PARTIAL |
 | Nine lab simulators: signal flow; EQ and time alignment; camera against an LED wall; network and VLANs; power across circuits; RF; DMX; AV sync; physics (36 labs) | | Signal flow only. Three separate instrument labs exist in Learn (audio, camera, lighting), which are this product's own, not these | **8 of 9 MISSING** |
 | Six drill types: route, first failure, clues, class match, order, triage | Timed, failable | All six in Practice | TO VERIFY behaviour |
 | Service Mode: an incident with a clock, evidence, actions that cost time, crew trust, outcomes | | Learn's Service Mode runs the 121 incidents on the shared runner above since 11 Nov; before that its runner departed from the source in eight ways (listed in `incidents.ts`) | RESTORED (incident rules); the Service Mode queue page's other content not yet compared |
 | Thirteen challenges in five modes, four levels each: Hear it (2), See it (3), Reach it (2), Build it (3), Record it (3). Web Audio synthesis, a song on the audio clock, cue timing | Scored, with records | none found | **MISSING** |
 | Six demos: EQ, beam, ear, compressor, shutter, colour | Small live illustrations inside lessons | none found | **MISSING** (TO VERIFY) |
-| Boss levels | Scope, estimate, design and cost a job against a clock | none | **MISSING** |
-| Meltdowns | A multi-turn crisis with threats, actors and a budget | none | **MISSING** |
+| Boss levels | Scope, estimate, design and cost a job against a clock | none (next, with the challenges) | **MISSING** |
+| Meltdowns | A multi-turn crisis with threats, actors and a budget | in the story (above) | **RESTORED 11 Nov** |
 | Season run: loadout, forecast, game over, retry a season | | none found | **MISSING** (TO VERIFY) |
 | Season review | | none | **MISSING** |
 | Mission Control: continue the story, competency level, evidence locker, case journal, quest log, ratings, crew trust, support level | | Learn home shows progress of a different shape | PARTIAL, TO VERIFY line by line |
@@ -121,7 +121,7 @@ before any item is called working.
    are in `packages/signal-canon/data/`, held by hash, with `tests/unit/signal-library.test.mjs`. **Not done:** the Learn pages still
    read the earlier library; the 160 fieldbook plate images are not in the repository (see §7).
 2. Play every piece in place in the story, with the tier of gate it carries: quizzes and lessons first (618 of the 979; **done 11 November**), then drills and incidents (257; **both done 11 November**),
-   then labs, reviews, bosses and meltdowns.
+   then labs, reviews and meltdowns (**done 11 November**), then boss levels.
 3. The eight missing lab simulators, the thirteen challenges and the six demos.
 4. Mission Control as the source has it: quest log, journal, ratings, trust, competency, evidence locker.
 5. Every line above marked TO VERIFY, verified against the source's behaviour, then a functional and a visual test for each.

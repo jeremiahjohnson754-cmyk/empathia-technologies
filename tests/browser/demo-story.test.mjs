@@ -51,7 +51,11 @@ const reader = (p) => p.evaluate(() => { const r = document.querySelector('[data
   // each soft gate it meets ("Skip for now"), which is what a reader who wants only the story does. ST-35..ST-41 play them instead.
   for (let i = 0; i < 24 && !(await p.locator('[data-testid=story-summary]').count()); i += 1) {
     const kind = await p.locator('[data-testid=story-waiting]').getAttribute('data-kind').catch(() => null);
-    if (kind && kind !== 'decision') await p.locator('.sg-piece[data-cleared=false] [data-testid=story-skip]').last().click();
+    // and since labs play (11 Nov 2026), the chapter's core lab is a hard gate with no skip: the walk ends it the shortest honest way, three
+    // tests and "Show me the fix", which the reference's gate counts as done (ST-63..68 fix it properly)
+    if (kind === 'lab') { const lab = p.locator('.sg-piece[data-cleared=false] [data-testid=lab]').last(); const o = lab.getByRole('button', { name: /Open the lab/ }); if (await o.count()) await o.click();
+      for (let k = 0; k < 3; k += 1) await lab.getByRole('button', { name: /Test the fix/ }).click(); await lab.getByRole('button', { name: /Show me the fix/ }).click(); }
+    else if (kind && kind !== 'decision') await p.locator('.sg-piece[data-cleared=false] [data-testid=story-skip]').last().click();
     else if (await p.locator('.sg-dec[data-done=false]').count()) await p.locator('.sg-dec[data-done=false]').first().locator('.sg-opt').first().click();
     await p.waitForTimeout(150); }
   await p.waitForSelector('[data-testid=story-summary]', { timeout: 15000 }); const e = await reader(p); const sum = await p.locator('[data-testid=story-summary]').innerText();
@@ -107,7 +111,7 @@ const reader = (p) => p.evaluate(() => { const r = document.querySelector('[data
   await L.locator('[data-testid=story-skip]').click(); await p.waitForFunction(() => document.querySelector('.sg-piece[data-piece=FB1]')?.dataset.cleared === 'true');
   ok('ST-39', '"Skip for now" clears a soft gate, is remembered, and the story goes on past it', JSON.parse(await p.evaluate(() => localStorage.getItem('empathia.signal.story.v1'))).skips['lesson:FB1'] === 1 && await p.locator('[data-testid=story-waiting][data-kind=lesson]').count() === 0 && await p.locator('[data-testid=story-skip]').count() === 0);
   const opt = p.locator('.sg-piece[data-piece=Q-UX-S01E00]');
-  ok('ST-40', 'pieces of other kinds are shown and said not to hold the story yet; optional checks are offered without holding; the note says which kinds play', /decisions, quizzes, lessons/.test(await p.locator('[data-testid=story-gate-note]').innerText()) /* note widened 11 Nov 2026 when drills joined: ST-45 */ && (await opt.count() === 0 || (await opt.getAttribute('data-tier')) === 'opt') && await p.locator('.sg-mount[data-kind=lab] a[href^="#/learn/labs/"]').count() >= 1);   // changed 11 Nov 2026: with incidents playable, this chapter's only unplayed piece is its lab, which links to Learn
+  ok('ST-40', 'every piece in the first chapter now plays (none is left unplayed); optional checks are offered without holding; the note says which kinds play', /decisions, quizzes, lessons/.test(await p.locator('[data-testid=story-gate-note]').innerText()) /* note widened 11 Nov 2026 when drills joined: ST-45 */ && (await opt.count() === 0 || (await opt.getAttribute('data-tier')) === 'opt') && await p.locator('[data-testid=story-not-playable], .sg-mount[data-kind=lab]').count() === 0);   // changed again 11 Nov 2026: with labs playable, nothing in this chapter is left unplayed
   ok('ST-41', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
 
 // Restored 11 Nov 2026: practice drills are played inside the story on the reference's rules (packages/ui/src/drills.ts), on the
@@ -179,8 +183,101 @@ const reader = (p) => p.evaluate(() => { const r = document.querySelector('[data
   ok('ST-59', 'the chapter’s live incident holds the story as a soft gate: "Run the live incident to its end", or skip it for now', /Run the live incident to its end/.test(w) && /skip/i.test(w) && (await p.locator('.sg-piece[data-piece=SM-05]').getAttribute('data-tier')) === 'soft', w);
   await p.locator('.sg-piece[data-piece=SM-05] [data-testid=incident]').getByRole('button', { name: /Start the incident/ }).click(); await p.locator('.sg-piece[data-piece=SM-05] [data-testid=incident-declare]').click();
   await p.waitForFunction(() => document.querySelector('.sg-piece[data-piece=SM-05]')?.dataset.cleared === 'true');
-  ok('ST-60', 'a run that ends, even failed, clears the incident’s gate, as the reference’s gate.js has it, and the story goes on', await p.locator('[data-testid=story-waiting][data-kind=incident]').count() === 0 && /decisions, quizzes, lessons, drills and live incidents/.test(await p.locator('[data-testid=story-gate-note]').innerText()));
+  ok('ST-60', 'a run that ends, even failed, clears the incident’s gate, as the reference’s gate.js has it, and the story goes on', await p.locator('[data-testid=story-waiting][data-kind=incident]').count() === 0 && /decisions, quizzes, lessons, drills, live incidents/.test(   /* note widened 11 Nov 2026 as labs, reviews and meltdowns joined */ await p.locator('[data-testid=story-gate-note]').innerText()));
   ok('ST-61', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
+
+// Restored 11 Nov 2026: Fix-It Labs play inside the story on the reference's rules (packages/ui/src/labs.ts, LabRunner). LAB-SF-01 is
+// s01e00's core skill: a hard gate. Its fix here is the one derived in tests/unit/signal-labs.test.mjs (the package's QA recorded none).
+const walkTo = async (p, kind) => { for (let i = 0; i < 20 && !(await p.locator(`[data-testid=story-waiting][data-kind=${kind}]`).count()); i += 1) {
+  const k = await p.locator('[data-testid=story-waiting]').getAttribute('data-kind').catch(() => null); if (!k) break;
+  if (k !== 'decision') await p.locator('.sg-piece[data-cleared=false] [data-testid=story-skip]').last().click(); else await p.locator('.sg-dec[data-done=false]').first().locator('.sg-opt').first().click();
+  await p.waitForTimeout(150); } };
+const labRec = async (p) => JSON.parse(await p.evaluate(() => localStorage.getItem('empathia.signal.story.v1'))).labs?.['LAB-SF-01'];
+{ const t = await open('#/story/s01e00'); const p = t.page; await p.waitForSelector('.sg-dec'); await walkTo(p, 'lab');
+  const box = p.locator('.sg-piece[data-piece=LAB-SF-01]'); const lab = box.locator('[data-testid=lab]'); const w = await p.locator('[data-testid=story-waiting]').innerText();
+  ok('ST-63', 'the chapter’s core lab holds the story as a hard gate: "Fix it — or run out the clock", no skip, and the brief comes before the clock', /Fix it — or run out the clock/.test(w) && !/skip/i.test(w) && (await box.getAttribute('data-tier')) === 'hard' && /core skill/.test(await box.locator('[data-testid=story-tier]').innerText()) && (await lab.getAttribute('data-state')) === 'ready' && await lab.getByRole('button', { name: /Open the lab \(5:25 on the clock\)/ }).count() === 1, w);
+  await lab.getByRole('button', { name: /Open the lab/ }).click(); await lab.getByRole('button', { name: /Test the fix/ }).click(); await lab.locator('[data-testid=lab-verdict]').waitFor();
+  const v1 = await lab.locator('[data-testid=lab-verdict]').innerText(); const r1 = await labRec(p);
+  ok('ST-64', 'testing too early is a miss: it names the unfinished math and what is still wrong, keeps the lab open, records the try, and the story still waits', /Not fixed yet/.test(v1) && /Math not finished/.test(v1) && /missing/.test(v1) && (await lab.getAttribute('data-state')) === 'open' && r1.tries === 1 && r1.done === false && await p.locator('[data-testid=story-waiting][data-kind=lab]').count() === 1, v1.slice(0, 200));
+  await lab.getByLabel('Pulpit preamp gain in dB').fill('32');
+  for (const [a, b] of [['pp', 'strm'], ['lp', 'strm'], ['bp', 'strm']]) { await lab.locator(`[data-node=${a}]`).click(); await lab.locator(`[data-node=${b}]`).click(); }
+  const steps = lab.locator('.lab__step'); for (const [i, v] of [[0, '32'], [1, '-13.2']]) { await steps.nth(i).locator('input').fill(v); await steps.nth(i).getByRole('button', { name: 'Check' }).click(); }
+  ok('ST-65', 'the simulator is live: with the fix wired the meters say every target is met, and each math step is marked right with its equation', (await lab.locator('[data-testid=lab-live]').getAttribute('data-ok')) === 'true' && await lab.locator('.lab__step[data-ok=true]').count() === 2 && await lab.locator('.lab__eq').count() === 2);
+  await lab.getByRole('button', { name: /Test the fix/ }).click(); await lab.locator('[data-testid=lab-verdict][data-pass=true]').waitFor(); const r2 = await labRec(p);
+  ok('ST-66', 'testing the fix passes, records it (passed on the second test), clears the hard gate, and the story goes on', /Fixed · proven on the simulator/.test(await lab.locator('[data-testid=lab-verdict]').innerText()) && r2.passed && r2.passTry === 2 && r2.tries === 2 && (await box.getAttribute('data-cleared')) === 'true' && await p.locator('[data-testid=story-waiting][data-kind=lab]').count() === 0, JSON.stringify(r2));
+  ok('ST-67', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
+
+{ const t = await open('#/story/s01e00'); const p = t.page; await p.waitForSelector('.sg-dec'); await walkTo(p, 'lab');
+  const box = p.locator('.sg-piece[data-piece=LAB-SF-01]'); const lab = box.locator('[data-testid=lab]'); await lab.getByRole('button', { name: /Open the lab/ }).click();
+  for (let i = 0; i < 3; i += 1) { await lab.getByRole('button', { name: /Test the fix/ }).click(); await p.waitForTimeout(60); }
+  const offer = lab.getByRole('button', { name: /Show me the fix/ }); const had = await offer.count(); await offer.click(); await lab.locator('[data-testid=lab-verdict][data-final=true]').waitFor(); const r = await labRec(p);
+  ok('ST-68', 'after three misses "Show me the fix" ends the lab as not passed, offers Try again, and — as the reference’s gate has it — lets the story go on', had === 1 && /here is the fix/.test(await lab.locator('[data-testid=lab-verdict]').innerText()) && await lab.getByRole('button', { name: 'Try again' }).count() === 1 && r.done && !r.passed && r.tries === 4 && (await box.getAttribute('data-cleared')) === 'true', JSON.stringify(r));
+  await t.close(); }
+
+{ const t = await open('#/story/s01e00'); const p = t.page; await p.waitForSelector('.sg-dec'); await p.check('[data-testid=story-gates]'); await p.clock.install(); await p.reload(); await p.waitForSelector('.sg-dec'); await p.check('[data-testid=story-gates]');
+  const lab = p.locator('.sg-piece[data-piece=LAB-SF-01] [data-testid=lab]'); await lab.getByRole('button', { name: /Open the lab/ }).click(); await p.clock.runFor(326000); await lab.locator('[data-testid=lab-verdict][data-final=true]').waitFor();
+  ok('ST-69', 'when the lab’s clock runs out it fails with the reference’s words and is recorded as ended', /clock ran out/.test(await lab.locator('[data-testid=lab-verdict]').innerText()) && (await labRec(p)).done === true);
+  await t.close(); }
+
+for (const theme of ['light', 'dark']) { const t = await open('#/story/s01e00', { w: 390, h: 844, theme }); const p = t.page; await p.waitForSelector('.sg-dec'); await p.check('[data-testid=story-gates]');
+  const lab = p.locator('.sg-piece[data-piece=LAB-SF-01] [data-testid=lab]'); await lab.getByRole('button', { name: /Open the lab/ }).click(); await lab.locator('[data-testid=lab-stage]').waitFor();
+  const small = await lab.evaluate((root) => [...root.querySelectorAll('button, input:not([type=checkbox]), select')].filter((e) => { const b = e.getBoundingClientRect(); return b.width > 0 && b.height < 43.5; }).map((e) => `${(e.textContent || e.getAttribute('aria-label') || '').slice(0, 16)}:${Math.round(e.getBoundingClientRect().height)}`));
+  const c = await lab.evaluate((root) => { const lum = (s) => { const m = s.match(/[\d.]+/g).map(Number).map((v) => (/^color\(/.test(s) ? v * 255 : v)); const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(m[0]) + 0.7152 * f(m[1]) + 0.0722 * f(m[2]); };
+    const bgOf = (el) => { for (let e = el; e; e = e.parentElement) { const b = getComputedStyle(e).backgroundColor; const al = b && /^rgba\(/.test(b) ? Number(b.match(/[\d.]+/g)[3]) : b && /\/\s*([\d.]+)\)$/.test(b) ? Number(b.match(/\/\s*([\d.]+)\)$/)[1]) : 1; if (b && b !== 'transparent' && al >= 0.6) return b; } return 'rgb(255,255,255)'; };
+    return [...root.querySelectorAll('h4, p, .lab__node b, .lab__node span, .lab__lvl, .lab__field > span, li > span')].filter((e) => e.getBoundingClientRect().width > 0 && e.textContent.trim()).map((el) => { const a = lum(getComputedStyle(el).color); const b = lum(bgOf(el)); return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05); }); });
+  ok(`ST-70 ${theme}`, `phone (390, ${theme}): a lab in the story has 44 px targets, the page does not overflow (the diagram scrolls inside its own box), text at 4.5:1, no console error`, await overflow(p) <= 0 && small.length === 0 && c.length >= 8 && Math.min(...c) >= 4.5 && !t.errs.length, `${await overflow(p)} ${small.slice(0, 4).join(',')} ${Math.min(...c).toFixed(2)} ${t.errs.join('|')}`); await t.close(); }
+
+// Restored 11 Nov 2026: the season review (ratings.ts on the reference's §10 rules). Shown here with the reviewer switch, as the review
+// sits at the end of each season's tenth chapter.
+{ const t = await open('#/story/s01e10'); const p = t.page; await p.waitForSelector('.sg-panel, .sg-dec'); await p.check('[data-testid=story-gates]');
+  const rv = p.locator('.sg-piece[data-piece=S1]'); await rv.locator('[data-testid=story-ratings]').waitFor();
+  ok('ST-71', 'the Season 1 review rates six ways from first attempts: with nothing done every rating is 72, the Story Score 72, and the forecast is limited throughout', await rv.locator('[data-testid=story-ratings] li').count() === 6 && /Story Score 72 \/ 100 · the story goes on/.test(await rv.locator('[data-testid=story-score]').innerText()) && await rv.locator('[data-testid=story-loadout] li[data-level="1"]').count() === 6 && (await rv.getAttribute('data-tier')) === 'hard');
+  await rv.getByTestId('story-review-submit').click(); await rv.locator('[data-testid=story-review-verdict][data-pass=true]').waitFor();
+  const rec = JSON.parse(await p.evaluate(() => localStorage.getItem('empathia.signal.story.v1'))).reviews.S1;
+  ok('ST-72', 'submitting records the review the reference keeps, says the season passed, and opens the next season’s gate', rec.score === 72 && rec.pass === true && Object.keys(rec.dims).length === 6 && (await rv.getAttribute('data-cleared')) === 'true');
+  await t.close(); }
+
+{ const t = await open('#/story/s01e00'); const p = t.page; await p.waitForSelector('.sg-dec'); await p.click('.sg-dec[data-decision=BR-S01E00-02] .sg-opt[data-option=A]'); await p.waitForSelector('[data-testid=story-result][data-verdict=costly]');
+  await p.goto(p.url().replace(/#.*/, '#/story/s01e10')); await p.waitForSelector('.sg-panel, .sg-dec'); await p.check('[data-testid=story-gates]');
+  const rv = p.locator('.sg-piece[data-piece=S1]'); await rv.locator('[data-testid=story-ratings]').waitFor();
+  const sc = await rv.locator('[data-testid=story-score]').innerText();
+  ok('ST-73', 'one failing first call (Season 1, severity 3) brings the Story Score to 49 and says what pulled it down', /Story Score 49 \/ 100 · below 65 — game over/.test(sc) && /A failing call/.test(await rv.locator('[data-testid=story-review-notes]').innerText()), sc);
+  await rv.getByTestId('story-review-submit').click(); await rv.locator('[data-testid=story-gameover]').waitFor();
+  ok('ST-74', 'below 65 is game over: the dialog offers Retry Season 1, Restart the whole story, or Look back first, a banner stays at the top, and the gate stays shut', /Season 1 ends the story/.test(await rv.locator('[data-testid=story-gameover]').innerText()) && await p.locator('[data-testid=story-gameover-banner]').count() === 1 && (await rv.getAttribute('data-cleared')) === 'false');
+  await rv.getByRole('button', { name: 'Retry Season 1' }).click(); await p.waitForFunction(() => /#\/story\/s01e00$/.test(location.hash)); await p.waitForSelector('.sg-dec');
+  const st = JSON.parse(await p.evaluate(() => localStorage.getItem('empathia.signal.story.v1')));
+  ok('ST-75', 'retrying the season clears its first attempts and its review, opens its first chapter, and the banner is gone', !st.chapters.s01e00?.choices?.['BR-S01E00-02'] && !st.reviews?.S1 && await p.locator('[data-testid=story-gameover-banner]').count() === 0 && await p.locator('.sg-dec[data-decision=BR-S01E00-02][data-done=false]').count() === 1);
+  ok('ST-76', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
+
+// Restored 11 Nov 2026: meltdowns in the story (meltdown.ts on the reference's §9 rules). MD-S04 closes Season 4; with the clock off the
+// story clock moves only with actions and holds, so the package's expert run (tests/fixtures/signal-meltdown-runs.json) is exact.
+{ const fs = await import('node:fs'); const RUN = JSON.parse(fs.readFileSync(new URL('../fixtures/signal-meltdown-runs.json', import.meta.url), 'utf8')).meltdowns['MD-S04'];
+  const t = await open('#/story/s04e10'); const p = t.page; await p.waitForSelector('.sg-panel, .sg-dec'); await p.check('[data-testid=story-gates]'); await p.click('.w-pick__b:has-text("No clock")');
+  const box = p.locator('.sg-piece[data-piece=MD-S04]'); const md = box.locator('[data-testid=meltdown]'); await md.waitFor();
+  ok('ST-77', 'the Season 4 meltdown opens on its mission and rules, as a hard gate, before anything runs', (await box.getAttribute('data-tier')) === 'hard' && /dark for more than/.test(await md.innerText()) && await md.getByRole('button', { name: /Start the meltdown/ }).count() === 1 && await md.locator('[data-testid=meltdown-map]').count() === 0);
+  await md.getByRole('button', { name: /Start the meltdown/ }).click(); await md.locator('[data-testid=meltdown-map]').waitFor();
+  ok('ST-78', 'started: the dependency map, the critical services’ dark time, the actions and both holds; with the clock off it says it moves only with actions', await md.locator('.md__node').count() >= 8 && await md.locator('[data-testid=meltdown-crits] li').count() >= 1 && await md.locator('[data-hold]').count() === 2 && /clock off/.test(await md.locator('[data-testid=meltdown-clock]').innerText()));
+  const done = new Set();
+  for (let guard = 0; guard < 400 && !(await md.locator('[data-testid=meltdown-end]').count()); guard += 1) {
+    let moved = false;
+    for (const e of RUN.expert) { if (done.has(e.label)) continue; const b = md.locator('[data-testid=meltdown-actions] [data-action]').filter({ hasText: e.label }).first(); if (!(await b.count()) || await b.isDisabled()) continue;
+      await b.click(); if (e.answer != null) { const c = md.locator('[data-testid=meltdown-calc]'); await c.locator('input').fill(String(e.answer)); await c.getByRole('button', { name: 'Submit' }).click(); }
+      done.add(e.label); moved = true; break; }
+    if (!moved) await md.locator('[data-hold="30"]').click(); }
+  const end = md.locator('[data-testid=meltdown-end]'); const rec = JSON.parse(await p.evaluate(() => localStorage.getItem('empathia.signal.story.v1'))).meltdowns['MD-S04'];
+  ok('ST-79', 'the package’s expert run contains it and proves it, rated S, with the after-action review; recorded, and the gate is cleared', (await end.getAttribute('data-outcome')) === 'proven' && (await end.getAttribute('data-grade')) === 'S' && /After-action review/.test(await end.innerText()) && rec.best === 'proven' && rec.firstGrade === 'S' && (await box.getAttribute('data-cleared')) === 'true', `${await end.innerText().then((x) => x.slice(0, 200))} ${JSON.stringify(rec)}`);
+  await md.getByRole('button', { name: /Run the meltdown again/ }).click(); await md.getByRole('button', { name: /Start the meltdown/ }).click(); await md.locator('[data-testid=meltdown-actions] [data-action]').filter({ hasText: RUN.boundary }).first().click();
+  const rec2 = JSON.parse(await p.evaluate(() => localStorage.getItem('empathia.signal.story.v1'))).meltdowns['MD-S04'];
+  ok('ST-80', 'a boundary action ends the mission at once; the record keeps the best run and the first, and counts two runs', /boundary crossed/.test(await md.locator('[data-testid=meltdown-end]').innerText()) && rec2.best === 'proven' && rec2.runs === 2 && rec2.last === 'fail' && rec2.first === 'proven');
+  ok('ST-81', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
+
+for (const theme of ['light', 'dark']) { const t = await open('#/story/s04e10', { w: 390, h: 844, theme }); const p = t.page; await p.waitForSelector('.sg-panel, .sg-dec'); await p.check('[data-testid=story-gates]'); await p.click('.w-pick__b:has-text("No clock")');
+  const md = p.locator('.sg-piece[data-piece=MD-S04] [data-testid=meltdown]'); await md.getByRole('button', { name: /Start the meltdown/ }).click(); await md.locator('[data-testid=meltdown-map]').waitFor();
+  const small = await md.evaluate((root) => [...root.querySelectorAll('button, input')].filter((e) => { const b = e.getBoundingClientRect(); return b.width > 0 && b.height < 43.5; }).map((e) => `${(e.textContent || '').slice(0, 16)}:${Math.round(e.getBoundingClientRect().height)}`));
+  const c = await md.evaluate((root) => { const lum = (s) => { const m = s.match(/[\d.]+/g).map(Number).map((v) => (/^color\(/.test(s) ? v * 255 : v)); const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(m[0]) + 0.7152 * f(m[1]) + 0.0722 * f(m[2]); };
+    const bgOf = (el) => { for (let e = el; e; e = e.parentElement) { const b = getComputedStyle(e).backgroundColor; const al = b && /^rgba\(/.test(b) ? Number(b.match(/[\d.]+/g)[3]) : b && /\/\s*([\d.]+)\)$/.test(b) ? Number(b.match(/\/\s*([\d.]+)\)$/)[1]) : 1; if (b && b !== 'transparent' && al >= 0.6) return b; } return 'rgb(255,255,255)'; };
+    return [...root.querySelectorAll('h4, p, li, .in__act span')].filter((e) => e.getBoundingClientRect().width > 0 && e.textContent.trim()).map((el) => { const a = lum(getComputedStyle(el).color); const b = lum(bgOf(el)); return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05); }); });
+  ok(`ST-82 ${theme}`, `phone (390, ${theme}): a meltdown in the story has 44 px targets, the page does not overflow (the map scrolls in its own box), text at 4.5:1, no console error`, await overflow(p) <= 0 && small.length === 0 && c.length >= 8 && Math.min(...c) >= 4.5 && !t.errs.length, `${await overflow(p)} ${small.slice(0, 4).join(',')} ${Math.min(...c).toFixed(2)} ${t.errs.join('|')}`); await t.close(); }
 
 for (const theme of ['light', 'dark']) { const t = await open('#/story/s01e00', { w: 390, h: 844, theme }); const p = t.page; await p.waitForSelector('.sg-dec'); await p.check('[data-testid=story-gates]');
   const r = p.locator('.sg-piece[data-piece=SM-01] [data-testid=incident]'); await r.waitFor(); await r.getByRole('button', { name: /Start the incident/ }).click(); await r.locator('[data-action=walk]').click(); await r.locator('[data-action=rx]').click();
