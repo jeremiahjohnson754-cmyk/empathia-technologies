@@ -6,7 +6,7 @@
  * The decision is the story engine's own, so a choice made here is the choice in Classic Story.
  */
 import type { Item } from './story.js';
-import { TAKES_S01 } from './takes-s01.js';
+import { TAKES_S01, FOOTAGE_S01 } from './takes-s01.js';
 
 export interface Take { who: string; text: string; src: string }
 export interface Shot { item: number; kind: 'panel' | 'decision' | 'beat' | 'footage'; src?: string; note?: string }
@@ -62,6 +62,8 @@ export const FOOTAGE: Record<string, Footage[]> = {
     // the fill-loudspeaker clip was not used: in it the loudspeaker points down and sideways, and the canon's point is that it is aimed
     // at the ceiling; footage that teaches the wrong aim is worse than none (founder, 12 Nov: never teach the wrong thing)
   ],
+  // Season 1 (founder, 12 Nov 12:53 CT: finish Season 1 as a film; characters kept alike by fixed descriptions, media/signal/s01/film)
+  ...FOOTAGE_S01,
 };
 export const cinematicFor = (chapterId: string) => { const m = /^s(\d\d)e/.exec(chapterId); return !!m && CINEMATIC_SEASONS.includes(Number(m[1])); };
 /** The scene of a chapter: one act per canon heading (the opening act, before any heading, when the chapter starts without one). */

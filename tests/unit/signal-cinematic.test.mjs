@@ -44,3 +44,12 @@ test('Season 1: every take is its chapter\'s canon line, in the canon speaker, w
   }
   assert.ok(n >= 80, `${n} takes`);
 });
+test('Season 1 footage: every clip exists, is labelled as generated, and opens on a shot the scene actually has', () => {
+  for (const [id, clips] of Object.entries(C.FOOTAGE).filter(([k]) => /^s01e/.test(k))) {
+    const items = JSON.parse(fs.readFileSync(path.join(repo, `packages/signal-canon/data/story/${id}.json`), 'utf8')).items; const scn = C.sceneOf(id, items);
+    for (const f of clips) {
+      assert.ok(fs.existsSync(path.join(repo, 'apps/demo/public', f.src)), f.src); assert.match(f.note, /Generated footage/);
+      assert.ok(['panel', 'beat', 'decision'].includes(items[f.before]?.type), `${id} before ${f.before}`);
+      assert.ok(scn.acts.some((a) => a.shots.some((s) => s.kind === 'footage' && s.src === f.src)), `${id} ${f.src} not placed`); }
+  }
+});
