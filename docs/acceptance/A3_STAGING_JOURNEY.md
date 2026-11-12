@@ -31,3 +31,28 @@ preflight. It could not go further, and that exposed two findings:
 ## Run 2 — after the next release reaches staging
 
 To do: the same steps carried on to IN_PROGRESS, evidence, independent verification and CLOSED, with the console captured.
+
+## Run 2 — 12 Nov 2026, 12:05–12:09 CT, against staging `14c35ca` (the release with the dispatch-planning fix)
+
+TinyFish run `e6246719-…` (a real browser, 40 steps, the founder's permission). Every step through the page; no storage edited.
+
+| Step | Observed |
+|---|---|
+| Lite, the room, as Product Architect | Executive Boardroom (Atlas 4.218) |
+| Commissioning record | "Atlas 4.218 — Executive Boardroom" |
+| ServiceHands as Service Manager: Triage, Assign | assigned to Ana Reyes |
+| As the technician: Accept the job | ACCEPTED |
+| As Service Manager: Dispatch planning (next free window; every stale stock check) | the planning card cleared |
+| As the technician: tools confirmed, Start the work | IN_PROGRESS |
+| Evidence (configuration snapshot, synthetic note), hand-over | VERIFYING |
+| As the commissioning engineer: Verify the repair | RESOLVED |
+| As Service Manager: requester confirmed, Close | **CLOSED** |
+| The incident's room | **R-ATL-4-218**, the same identity as in Lite and the commissioning record |
+| Errors at any point | **none seen** (the "ServiceHands stopped" panel did not appear) |
+
+Result: **A3 met** — a real browser carried one Enterprise room from Lite through the commissioning record and a governed ServiceHands
+workflow to an evidence-backed, independently verified, requester-confirmed closure on staging. The step-3 field reads ACCEPTED
+because the run reported it after the later steps; the order of states above is from the run's own step reports.
+
+F2 (the once-seen error panel): not seen in run 2 and not reproduced locally (two probes, sixteen roles × four states). Kept open as
+"observed once, not reproduced"; a console capture needs Claude in Chrome, which was not connected.
