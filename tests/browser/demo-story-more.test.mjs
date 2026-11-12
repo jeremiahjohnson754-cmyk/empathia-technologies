@@ -84,6 +84,19 @@ for (const [theme, w, h] of [['light', 1440, 900], ['dark', 390, 844]]) {
     await card.getByRole('tab', { name: 'Learn' }).click();
     ok(`CF-03 ${theme}`, 'the Learn perspective carries the case’s cards, its check and a way back to the episode', await card.locator('[data-pane=learn] .learn__card').count() === C.learn.length && await card.locator(`a[href="#/story/${C.chapter}"]`).count() === 1);
     ok(`CF-04 ${theme}`, 'no horizontal overflow; no console error, no request leaving the page', await overflow(p) <= 0 && !t.errs.length && !t.off.length, [await overflow(p), ...t.errs, ...t.off].join(' | ')); await t.close(); }
+  { const t = await open('#/learn/cases', { role: 'service', theme, w, h }); const p = t.page; const app = canon('app-data.json'); const cid = app.caseOrder[0], C = app.cases[cid], st = C.engineer.steps[0], F = app.formulas[st.f];
+    await p.evaluate(() => { localStorage.setItem('empathia.signal.story.v1', JSON.stringify({ v: 2, chapters: {}, support: '4' })); }); await p.reload();
+    const box = p.getByTestId('signal-casefiles'); await box.waitFor(); await box.locator('details').first().locator('summary').click();
+    const card = box.locator(`[data-case="${cid}"]`); await card.getByRole('tab', { name: 'Engineer' }).click(); const step = card.locator('.ln-calc').first();
+    const tier = await card.getByTestId('case-tier').getAttribute('data-tier'); const locked = await step.locator('input').isDisabled(); const shownF = await step.getByTestId('case-fx').count();
+    const wrongK = F.opts.find((k) => k !== st.f && app.formulas[k]); await step.locator(`[data-f="${wrongK}"]`).click(); const why1 = await step.getByTestId('case-fx-why').innerText(); const still = await step.locator('input').isDisabled();
+    await step.locator(`[data-f="${st.f}"]`).click(); const why2 = await step.getByTestId('case-fx-why').innerText(); const open1 = !(await step.locator('input').isDisabled());
+    await step.locator('input').fill(String(st.answer)); await step.locator('select').selectOption(st.unit); await step.getByRole('button', { name: 'Check' }).click(); const f3 = await step.locator('p[aria-live]').last().innerText();
+    ok(`CF-05 ${theme}`, 'Mastery in a case file (reference fxGate): no formula shown; the answer stays locked; a wrong relationship is refused with its own “when”; the right one unlocks it and the step can be solved', tier === '4' && locked && shownF === 0 && /^✕ Not this one/.test(why1) && still && why2.startsWith('✓') && open1 && f3.startsWith(`✓ Correct: ${st.answer} ${st.unit}.`), JSON.stringify([tier, locked, shownF, why1.slice(0, 40), still, why2.slice(0, 30), open1, f3.slice(0, 30)]));
+    await p.evaluate(() => { localStorage.setItem('empathia.signal.story.v1', JSON.stringify({ v: 2, chapters: {}, support: '3' })); }); await p.reload(); await box.waitFor(); await box.locator('details').first().locator('summary').click();
+    await card.getByRole('tab', { name: 'Engineer' }).click(); const ask = await card.locator('.ln-calc').first().locator('details.ln-calc__ask').count(); const en = !(await card.locator('.ln-calc').first().locator('input').isDisabled());
+    ok(`CF-06 ${theme}`, 'Advanced: the formula is there on request (collapsed) and the answer box is open', ask === 1 && en);
+    await p.evaluate(() => localStorage.removeItem('empathia.signal.story.v1')); await t.close(); }
   { const t = await open('#/learn/explore', { role: 'service', theme, w, h }); const p = t.page; const x = canon('app-data.json').explorers[0]; await p.getByTestId('learn-explore').waitFor();
     const pressed = await p.locator('.ln-layer[aria-pressed=true]').evaluateAll((b) => b.map((e) => e.dataset.layer)); const pts = await p.locator('.ln-log li').count();
     await p.getByRole('tab', { name: 'Reality view' }).click(); await p.locator('.ln-ex__hot').first().click(); const real = await p.getByTestId('explore-info').innerText(); const ptsR = await p.locator('.ln-log li').count();

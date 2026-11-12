@@ -190,4 +190,51 @@ for (const scheme of SCHEMES) for (const vp of [VIEWPORTS[0], VIEWPORTS[VIEWPORT
   await t.close();
 }
 
+// 12 Nov 2026: Scouter anatomy (V2.5.3 viewScouterAnatomy) restored: open a class, pick a block, break it, name the layer
+for (const scheme of SCHEMES) for (const vp of [VIEWPORTS[0], VIEWPORTS[VIEWPORTS.length - 1]]) {
+  const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/scouter/anatomy' }); const p = t.page; await p.waitForSelector('[data-testid="anatomy-index"]');
+  const classes = await p.locator('[data-class]').count(); await p.click('[data-class="camera"]'); await p.waitForSelector('[data-testid="anatomy"]');
+  await p.locator('[data-block="lens"]').dispatchEvent('click'); const blk = await p.getByTestId('anatomy-block').innerText();
+  await p.click('[data-testid="anatomy-break"]'); const fault = await p.getByTestId('anatomy-fault').innerText();
+  const affected = await p.locator('[data-block="encoder"] text').nth(1).textContent();
+  await p.click('[data-guess="power"]'); const wrong = await p.getByTestId('anatomy-verdict').getAttribute('data-right');
+  await p.click('[data-guess="signal"]'); const right = await p.getByTestId('anatomy-verdict').innerText(); await p.click('[data-testid="anatomy-record"]');
+  ok(`LT-${tag}-A1`, 'Scouter anatomy: seven classes; the PTZ camera’s lens block says what it does, how it fails and the test; breaking it shows the symptom and where it travels; the wrong layer is refused, the right one names the safe test', classes === 7 && /Gathers light/.test(blk) && /Point at a lit chart/.test(blk) && /Soft or dark picture/.test(fault) && /Downstream it looks like/.test(fault) && /affected/.test(affected || '') && wrong === 'false' && /Right: Signal/.test(right) && await p.getByTestId('anatomy-recorded').count() === 1, `${classes} ${affected} ${wrong}`);
+  const over = await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  ok(`LT-${tag}-A2`, 'no horizontal overflow, no page error, no request left the page', over <= 0 && !t.errs.length && !t.ext.length, [over, ...t.errs, ...t.ext].slice(0, 3).join(' | '));
+  await t.close();
+}
+// 12 Nov 2026: V2.5.3's spatial drift (AC-SD1) restored in the Optimize lens: the commissioned footprint dashed with an arrow, restore or
+// mark for review (kept on this device, simulated), undo; the model and the field report both shown
+for (const scheme of SCHEMES) for (const vp of [VIEWPORTS[0], VIEWPORTS[VIEWPORTS.length - 1]]) {
+  const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/lite/room/R-MER-1-140?mode=optimize' }); const p = t.page;
+  await p.evaluate(() => { try { localStorage.removeItem('empathia.demo.liteDrift.v1'); } catch { /* */ } }); await p.reload(); const d = p.getByTestId('lite-drift'); await d.waitFor();
+  const g0 = await p.locator('[data-testid="lite-ghosts"]').getAttribute('data-n'); const mv0 = await p.locator('.lt-furn--moved').count();
+  const now = await d.getByTestId('lite-drift-now').innerText(); const sum = await d.getByTestId('lite-drift-summary').innerText();
+  ok(`LT-${tag}-D1`, 'Spatial drift: the furniture moved since handover is outlined where it was commissioned, with an arrow; the card says what moved and both the field report and the model', Number(g0) >= 1 && mv0 >= 1 && /toward the door/.test(now) && /field report/i.test(sum) && /Drift from baseline/.test(await d.innerText()), JSON.stringify([g0, mv0, now]));
+  await d.getByTestId('lite-drift-restore').click(); await p.waitForTimeout(150);
+  const g1 = await p.locator('[data-testid="lite-ghosts"]').count(); const mv1 = await p.locator('.lt-furn--moved').count(); const said = await d.getByTestId('lite-drift-said').innerText();
+  ok(`LT-${tag}-D2`, 'Restore: the room is shown at the commissioned layout, the outline goes, and it says plainly this is simulated and the field report stays open', g1 === 0 && mv1 === 0 && /Restored/.test(await d.innerText()) && /Simulated/.test(said) && /stays open/.test(said), JSON.stringify([g1, mv1, said]));
+  await p.reload(); await d.waitFor(); const kept = await p.locator('.lt-furn--moved').count();
+  await d.getByTestId('lite-drift-undo').click(); await p.waitForTimeout(150); await d.getByTestId('lite-drift-review').click(); await p.waitForTimeout(150);
+  const req = await d.getByTestId('lite-drift-request').getAttribute('href'); const g2 = await p.locator('[data-testid="lite-ghosts"]').count();
+  ok(`LT-${tag}-D3`, 'the choice survives a reload; undo returns the drift; marking for review keeps the drift shown and links to the request, nothing sent', kept === 0 && g2 === 1 && req === '#/request/change-room?room=R-MER-1-140' && /Marked for engineering review/.test(await d.innerText()), JSON.stringify([kept, g2, req]));
+  await d.getByTestId('lite-drift-undo').click();
+  const over = await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  ok(`LT-${tag}-D4`, 'no horizontal overflow, no page error, no request left the page', over <= 0 && !t.errs.length && !t.ext.length, [over, ...t.errs, ...t.ext].slice(0, 3).join(' | '));
+  await t.close();
+}
+// 12 Nov 2026: the object card's catalogue figures, room standard and commissioning rows, and "Move this" in the Optimize lens (V2.5.3 liteCardHtml)
+for (const scheme of SCHEMES) {
+  const t = await open(VIEWPORTS[0], scheme, { hash: '#/lite/room/R-ATL-4-218?mode=optimize' }); const p = t.page; await p.waitForSelector('[data-testid="lite-change"]');
+  const cam = p.locator('.lt-dev[data-cat="camera"], .lt-dev[data-cat="bar"]').first(); const code = (await cam.getAttribute('data-testid')).replace('lt-dev-', '');
+  await cam.dispatchEvent('click'); await p.waitForSelector('[data-testid="lite-card"]');
+  const heads = await p.evaluate(() => Array.from(document.querySelectorAll('[data-testid="lite-card"] .lt-card__h')).map((h) => h.textContent));
+  const figs = await p.getByTestId('lite-card-figs').innerText(); const cx = await p.getByTestId('lite-card-cx').innerText();
+  await p.getByTestId('lite-card-move').click(); await p.waitForTimeout(200); const tool = await p.getByTestId('lite-tool').inputValue();
+  ok(`LT-${scheme}-X11`, 'the object card adds V2.5.3’s catalogue figures (declared, not a datasheet), the room standard and the commissioning row; “Move this” picks the device in “Change the room”', heads.some((h) => /^Catalogue figures/.test(h)) && heads.includes('Commissioning') && /networked|mount/.test(figs) && /Baseline v\d|No commissioning baseline/.test(cx) && tool === code, JSON.stringify([heads, figs, cx, tool, code]));
+  ok(`LT-${scheme}-X12`, 'no page error, no request left the page', !t.errs.length && !t.ext.length, [...t.errs, ...t.ext].slice(0, 3).join(' | '));
+  await t.close();
+}
+
 await done();
