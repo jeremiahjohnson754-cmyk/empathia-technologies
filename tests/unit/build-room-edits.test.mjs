@@ -39,3 +39,13 @@ test('a proposed connection is retired only with a reason; revisions compare by 
   const cmp = B.compareRevisions(e, 1, 2); assert.equal(cmp.added.length, 1); assert.equal(cmp.removed.length, 0); assert.equal(cmp.moved.length, 1); assert.match(cmp.moved[0], new RegExp(dev.id));
   const old = draft(); B.saveRevision(old, 'designer', 'a'); B.duplicateDevice(old, 'designer', live(old)[0].id); B.saveRevision(old, 'designer', 'b'); delete old.revisions[0].devices; assert.ok('why' in B.compareRevisions(old, 1, 2));
 });
+test('redlines: text required; an open one holds the drawing’s approval and sends an approved drawing back to review; resolving says what was done', () => {
+  const d = draft(); const kind = Object.keys(d.drawings)[0];
+  assert.ok('why' in B.addRedline(d, 'designer', kind, '  ')); assert.ok('why' in B.addRedline(d, 'requestor', kind, 'x'));
+  d.design.classification.approved = { archetype: 'HUD', by: 'syseng' };
+  const a = B.approveDrawing(d, 'syseng', kind); assert.ok(!('why' in a)); assert.equal(d.drawings[kind].state, 'APPROVED');
+  B.addRedline(d, 'designer', kind, 'camera bracket on the wrong wall'); assert.equal(d.drawings[kind].state, 'REVIEW_REQUIRED'); assert.equal(d.redlines[0].id, 'RL-1'); assert.equal(d.redlines[0].state, 'OPEN');
+  const held = B.approveDrawing(d, 'syseng', kind); assert.ok('why' in held); assert.match(held.why[0], /open redline/);
+  assert.ok('why' in B.resolveRedline(d, 'designer', 'RL-1', '')); assert.ok(!('why' in B.resolveRedline(d, 'designer', 'RL-1', 'moved to the front wall in rev 2')));
+  assert.ok('why' in B.resolveRedline(d, 'designer', 'RL-1', 'again')); assert.ok(!('why' in B.approveDrawing(d, 'syseng', kind)));
+});

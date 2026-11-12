@@ -191,10 +191,18 @@ function BaselineDiff({ a, b }: { a: S.Baseline; b: S.Baseline }) {
 }
 
 function Drawings({ d, persona, apply }: { d: S.Draft; persona: string; apply: (r: S.Draft | S.Refusal) => boolean }) {
+  const [kind, setKind] = useState(Object.keys(DRAWING_KINDS)[0]!); const [text, setText] = useState(''); const [res, setRes] = useState<Record<string, string>>({});
+  const rls = d.redlines || [];
   return (
     <div>
       <p className="ui-muted">Each drawing is generated from a canonical input; when that input changes after approval, the drawing becomes REVIEW_REQUIRED rather than silently staying approved.</p>
       <ul className="build__list">{Object.entries(DRAWING_KINDS).map(([k, label]) => { const dr = d.drawings[k]; return <li key={k}><b>{label}</b> <Tag tone={TONE[dr?.state || 'DRAFT']}>{dr?.state || 'DRAFT'}</Tag> <code>{dr?.input}</code> {dr?.by && <span className="ui-muted">approved by {S.personaLabel(dr.by)}</span>} <Button small onClick={() => apply(S.approveDrawing(d, persona, k))}>Approve as {S.personaLabel(persona)}</Button></li>; })}</ul>
+      <h2 className="build__h2">Redlines ({rls.filter((r) => r.state === 'OPEN').length} open)</h2>
+      <div className="build__row"><select aria-label="Drawing to redline" value={kind} onChange={(e) => setKind(e.target.value)}>{Object.entries(DRAWING_KINDS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select>
+        <input aria-label="Redline text" value={text} onChange={(e) => setText(e.target.value)} placeholder="what is wrong on the drawing" maxLength={400} /><Button small onClick={() => { if (apply(S.addRedline(d, persona, kind, text))) setText(''); }} testId="build-redline">Add redline</Button></div>
+      {rls.length > 0 && <ul className="build__list" data-testid="build-redlines">{rls.map((r) => <li key={r.id} data-state={r.state}><code>{r.id}</code> <Tag tone={r.state === 'OPEN' ? 'warn' : 'ok'}>{r.state}</Tag> {DRAWING_KINDS[r.drawing]} · rev {r.revision} · {S.personaLabel(r.by)}: {r.text}{r.state === 'RESOLVED' ? <span className="ui-muted"> · resolved by {S.personaLabel(r.resolvedBy || '')}: {r.resolution}</span>
+        : <> <input aria-label={`Resolution for ${r.id}`} value={res[r.id] || ''} onChange={(e) => setRes({ ...res, [r.id]: e.target.value })} placeholder="what was done" maxLength={400} /> <Button small onClick={() => apply(S.resolveRedline(d, persona, r.id, res[r.id] || ''))}>Resolve {r.id}</Button></>}</li>)}</ul>}
+      <p className="ui-muted">An open redline holds that drawing’s approval; redlining an approved drawing sends it back to review.</p>
     </div>
   );
 }

@@ -108,6 +108,11 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     ok('B-15f', 're-acceptance publishes baseline v2 (v1 superseded) and the lineage lists both', /ACCEPTED/.test(st2) && /baseline v2/.test(st2) && /v1/.test(await page.locator('[data-testid=lineage]').innerText()) && /v2/.test(await page.locator('[data-testid=lineage]').innerText()), (await refusal()) || st2);
     const diff = await page.locator('[data-testid=baseline-diff]').innerText();
     ok('B-15g', 'the comparison between v1 and v2 names the added device and the results that changed', /v1 and v2/.test(diff) && /1 added/.test(diff), diff.slice(0, 200));
+    // 12 Nov 2026: redlines on the drawings (V2.5.3 v25RoomRedline): text required, open until resolved with what was done
+    await persp('designer'); await page.click('#tab-drawings'); await page.waitForTimeout(150); await page.getByTestId('build-redline').click(); await page.waitForTimeout(100); const empty = await refusal();
+    await page.fill('[aria-label="Redline text"]', 'the camera bracket is drawn on the wrong wall'); await page.getByTestId('build-redline').click(); await page.waitForTimeout(150);
+    const rl = await page.getByTestId('build-redlines').innerText(); await page.fill('[aria-label="Resolution for RL-1"]', 'moved to the front wall'); await page.click('button:has-text("Resolve RL-1")'); await page.waitForTimeout(150);
+    ok('B-15h', 'a redline needs text; it is recorded OPEN against the revision and resolved with what was done', /needs text/.test(empty) && /RL-1/.test(rl) && /OPEN/.test(rl) && /RESOLVED/.test(await page.getByTestId('build-redlines').innerText()) && /moved to the front wall/.test(await page.getByTestId('build-redlines').innerText()), `${empty} | ${rl.slice(0, 120)}`);
     await page.click('#tab-ledger'); await page.waitForTimeout(150);
     const led = await main();
     ok('B-16', 'the ledger records every refusal with its actor (DENIED rows) alongside the allowed changes', (led.match(/DENIED/g) || []).length >= 5 && (led.match(/ALLOWED/g) || []).length >= 10, `${(led.match(/DENIED/g) || []).length} denied`);

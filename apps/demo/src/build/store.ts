@@ -34,7 +34,10 @@ export interface Draft {
   /** every published version (superseded ones included): a baseline is never overwritten */
   baselines: Baseline[];
   seq: { pa: number; cn: number };
+  /** redlines on the drawings (V2.5.3 v25RoomRedline, restored 12 Nov 2026): an open one holds that drawing's approval */
+  redlines?: Redline[];
 }
+export interface Redline { id: string; drawing: string; text: string; by: string; at: string; revision: number; state: 'OPEN' | 'RESOLVED'; resolution?: string; resolvedBy?: string }
 export interface Baseline { version: number; at: string; by: string; revision: number | null; results: Record<string, string>; devices: Array<{ id: string; cat: string; label: string }>; state: 'CURRENT' | 'SUPERSEDED' }
 export type Refusal = { why: string[] };
 export const refused = (why: string[]): Refusal => ({ why });
@@ -175,10 +178,28 @@ export function approveClassification(d: Draft, persona: string, override?: { ar
   log(d, persona, 'room.classification_approved', `${d.design.classification.approved.archetype}${override ? ' (override: ' + override.reason + ')' : ' (suggestion accepted)'}`);
   refreshDrawings(d); return d;
 }
+/** A redline on a drawing: text (at most 400 characters), the revision it was made against, its author. An approved drawing that is
+ *  redlined goes back to REVIEW_REQUIRED. */
+export function addRedline(d: Draft, persona: string, kind: string, text: string): Draft | Refusal {
+  if (!holds(persona, 'room.design') && !holds(persona, 'design.release')) return refused([`${personaLabel(persona)} does not hold room.design`]);
+  const dr = d.drawings[kind]; if (!dr) return refused([`no drawing ${kind}`]); if (!text.trim()) return refused(['a redline needs text']);
+  const list = d.redlines || (d.redlines = []); const r: Redline = { id: `RL-${list.length + 1}`, drawing: kind, text: text.trim().slice(0, 400), by: persona, at: now(), revision: d.revisions.length, state: 'OPEN' };
+  list.push(r); if (dr.state === 'APPROVED') d.drawings[kind] = { ...dr, state: 'REVIEW_REQUIRED' };
+  log(d, persona, 'room.redline_added', `${r.id} on ${DRAWING_KINDS[kind]} (rev ${r.revision}): ${r.text}`); return d;
+}
+/** Resolve a redline with what was done about it. */
+export function resolveRedline(d: Draft, persona: string, id: string, resolution: string): Draft | Refusal {
+  if (!holds(persona, 'room.design') && !holds(persona, 'design.release')) return refused([`${personaLabel(persona)} does not hold room.design`]);
+  const r = (d.redlines || []).find((x) => x.id === id); if (!r) return refused([`no redline ${id}`]); if (r.state !== 'OPEN') return refused([`${id} is already resolved`]);
+  if (!resolution.trim()) return refused(['resolving a redline says what was done']);
+  r.state = 'RESOLVED'; r.resolution = resolution.trim().slice(0, 400); r.resolvedBy = persona;
+  log(d, persona, 'room.redline_resolved', `${id}: ${r.resolution}`); return d;
+}
 export function approveDrawing(d: Draft, persona: string, kind: string): Draft | Refusal {
   if (!holds(persona, 'design.release') && !holds(persona, 'room.design.approve')) return refused([`${personaLabel(persona)} does not hold design.release`]);
   const dr = d.drawings[kind]; if (!dr) return refused([`no drawing ${kind}`]);
   if (!d.design.classification.approved || d.design.classification.approved.stale) return refused(['drawings are approved after the classification is approved (and still current)']);
+  const open = (d.redlines || []).filter((r) => r.drawing === kind && r.state === 'OPEN'); if (open.length) return refused([`${open.length} open redline${open.length === 1 ? '' : 's'} on ${DRAWING_KINDS[kind]}: resolve ${open.length === 1 ? 'it' : 'them'} first (${open.map((r) => r.id).join(', ')})`]);
   d.drawings[kind] = { ...dr, state: 'APPROVED', by: persona };
   log(d, persona, 'room.drawing_approved', `${DRAWING_KINDS[kind]} (input ${dr.input})`); return d;
 }
