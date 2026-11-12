@@ -32,6 +32,9 @@ export const TAKES_S01: Record<string, Take[]> = {
     {"who": "maya", "text": "We're live — to the room, and to everyone who couldn't be in it.", "src": "media/signal/s01/maya-s1g1-20.mp3"},
     {"who": "maya", "text": "Broke: stream audio. Cause — strongly supported, not proven: the overflow video flooding the booth switch. Priya and I test it Tuesday.", "src": "media/signal/s01/maya-s1g1-21.mp3"},
     {"who": "maya", "text": "Almost broke: we nearly put it on the office network. Fix: the overflow room needs a real design. And we need somewhere to write changes down.", "src": "media/signal/s01/maya-s1g1-22.mp3"},
+    {"who": "priya", "text": "That office switch runs the door locks and the giving kiosks. Not on a Sunday morning, and not without a plan.", "src": "media/signal/s01/priya-s1g1-1.mp3"},
+    {"who": "priya", "text": "No — pancakes are not a network protocol. Sorry. Go on. Which switch?", "src": "media/signal/s01/priya-s1g1-2.mp3"},
+    {"who": "priya", "text": "Unplug the encoder. Put the livestream on the lobby TV for the overflow room. I'll come Tuesday and we'll design it properly.", "src": "media/signal/s01/priya-s1g1-3.mp3"},
     {"who": "ray", "text": "You came back.", "src": "media/signal/s01/ray-s1g1-1.mp3"},
     {"who": "ray", "text": "Half of them don't come back after a freeze. The other half come back and click the update button.", "src": "media/signal/s01/ray-s1g1-2.mp3"},
     {"who": "ray", "text": "Ask me at eleven.", "src": "media/signal/s01/ray-s1g1-3.mp3"},
@@ -65,6 +68,7 @@ export const TAKES_S01: Record<string, Take[]> = {
     {"who": "dolores", "text": "It's fine. It's me. It's been me for a while.", "src": "media/signal/s01/dolores-s1g1-1.mp3"},
     {"who": "dolores", "text": "I could hear every word. I thought it was me.", "src": "media/signal/s01/dolores-s1g1-2.mp3"},
     {"who": "dolores", "text": "I stopped coming to evenings because I didn't want anyone to see me lean.", "src": "media/signal/s01/dolores-s1g1-3.mp3"},
+    {"who": "priya", "text": "There's your mechanism. Now it's not a theory.", "src": "media/signal/s01/priya-s1g1-4.mp3"},
   ],
   s01e02: [
     {"who": "imani", "text": "Guest speaker next Sunday. She's bringing her own laptop.", "src": "media/signal/s01/imani-s1g1-8.mp3"},
@@ -280,12 +284,49 @@ export const FOOTAGE_S01: Record<string, Footage[]> = {
   s01e02: [
     {"before": 10, "src": "media/signal/s01/film/s01e02-teachme.mp4", "note": "Thursday rehearsal: Theo brings his sister Lily to learn the board. Generated footage of the setting, not a real venue or real people."},
     {"before": 45, "src": "media/signal/s01/film/s01e02-clip.mp4", "note": "The earliest stage: the input clips on every chorus peak, and the gain comes down. Generated footage of the setting, not a real venue or real people."},
+    {"before": 68, "src": "media/signal/s01/film/s01e02-sunday.mp4", "note": "Sunday, a full room: Maya and Lily at the console. Generated footage of the setting, not a real venue or real people."},
   ],
   s01e03: [
     {"before": 4, "src": "media/signal/s01/film/s01e03-laptop.mp4", "note": "The guest speaker's laptop arrives at the booth. Generated footage of the setting, not a real venue or real people."},
+    {"before": 37, "src": "media/signal/s01/film/s01e03-isolator.mp4", "note": "Ray's isolator: in the audio line, signal only. Generated footage of the setting, not a real venue or real people."},
     {"before": 45, "src": "media/signal/s01/film/s01e03-video.mp4", "note": "The minute that matters: the video plays to a full room, no hum. Generated footage of the setting, not a real venue or real people."},
   ],
   s01e04: [
     {"before": 4, "src": "media/signal/s01/film/s01e04-silent.mp4", "note": "Sunday: the vocal mic is silent and the lectern mic is open. Generated footage of the setting, not a real venue or real people."},
+    {"before": 16, "src": "media/signal/s01/film/s01e04-rack.mp4", "note": "Tuesday, from Mateo's side: a neat new rack switch. Generated footage of the setting, not a real venue or real people."},
+    {"before": 55, "src": "media/signal/s01/film/s01e04-labels.mp4", "note": "Thursday: Mateo labels both ends of every cable. Generated footage of the setting, not a real venue or real people."},
+  ],
+  s01e05: [
+    {"before": 4, "src": "media/signal/s01/film/s01e05-fixtures.mp4", "note": "Twelve more fixtures arrive; Theo carries the boxes. Generated footage of the setting, not a real venue or real people."},
+    {"before": 8, "src": "media/signal/s01/film/s01e05-thunk.mp4", "note": "Full look, then dark on stage left: the breaker did its job. Generated footage of the setting, not a real venue or real people."},
+    {"before": 37, "src": "media/signal/s01/film/s01e05-electrician.mp4", "note": "Not mine to open: the licensed electrician arrives; the door stays closed until he opens it. Generated footage of the setting, not a real venue or real people."},
+  ],
+  s01e06: [
+    {"before": 4, "src": "media/signal/s01/film/s01e06-receiver.mp4", "note": "Dolores and the receiver that gave her nothing. Generated footage of the setting, not a real venue or real people."},
+    {"before": 31, "src": "media/signal/s01/film/s01e06-avery.mp4", "note": "Thursday with Avery: is it good, for the people it is for? Generated footage of the setting, not a real venue or real people."},
+    {"before": 42, "src": "media/signal/s01/film/s01e06-reading.mp4", "note": "The reading: Dolores hears it. Generated footage of the setting, not a real venue or real people."},
+  ],
+  s01e07: [
+    {"before": 4, "src": "media/signal/s01/film/s01e07-christmas.mp4", "note": "Christmas Eve: four hundred homes are about to watch that wall. Generated footage of the setting, not a real venue or real people."},
+    {"before": 10, "src": "media/signal/s01/film/s01e07-wall.mp4", "note": "The rental wall arrives; Imani introduces Lena. Generated footage of the setting, not a real venue or real people."},
+    {"before": 42, "src": "media/signal/s01/film/s01e07-settings.mp4", "note": "After the factory reset: the camera checked against the settings sheet, line by line. Generated footage of the setting, not a real venue or real people."},
+  ],
+  s01e08: [
+    {"before": 4, "src": "media/signal/s01/film/s01e08-board.mp4", "note": "Twelve minutes: the budget meeting. Generated footage of the setting, not a real venue or real people."},
+    {"before": 28, "src": "media/signal/s01/film/s01e08-pages.mp4", "note": "One page each: what happens if we don't. Generated footage of the setting, not a real venue or real people."},
+    {"before": 43, "src": "media/signal/s01/film/s01e08-card.mp4", "note": "A free mitigation, taped inside the rack door. Generated footage of the setting, not a real venue or real people."},
+  ],
+  s01e09: [
+    {"before": 4, "src": "media/signal/s01/film/s01e09-newsystem.mp4", "note": "Donor-funded, installed in October, not yet accepted. Generated footage of the setting, not a real venue or real people."},
+    {"before": 24, "src": "media/signal/s01/film/s01e09-fulllook.mp4", "note": "The thirty-minute full-look run. Generated footage of the setting, not a real venue or real people."},
+    {"before": 41, "src": "media/signal/s01/film/s01e09-pass.mp4", "note": "Pass: the last requirement ticked on the rerun. Generated footage of the setting, not a real venue or real people."},
+  ],
+  s01e10: [
+    {"before": 4, "src": "media/signal/s01/film/s01e10-storm.mp4", "note": "Two seconds: a storm, a sermon, a power dip. Generated footage of the setting, not a real venue or real people."},
+    {"before": 47, "src": "media/signal/s01/film/s01e10-call.mp4", "note": "Aftermath: Imani on the phone with Tasha, Maya beside her. Generated footage of the setting, not a real venue or real people."},
+  ],
+  s01e11: [
+    {"before": 3, "src": "media/signal/s01/film/s01e11-dawn.mp4", "note": "Easter at dawn: everything at once. Generated footage of the setting, not a real venue or real people."},
+    {"before": 11, "src": "media/signal/s01/film/s01e11-handover.mp4", "note": "Cleared. Written down. Handed over. Generated footage of the setting, not a real venue or real people."},
   ]
 };

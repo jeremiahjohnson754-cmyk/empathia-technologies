@@ -26,3 +26,16 @@ cords in frame (120 credits).
 
 The remaining 25 shots, the new isolator shot first among them, are joined in one composite (200 s, order in `compose-C.json`):
 https://assets.vidiq.com/compositions/e7ec6a97-bd7e-420a-ac60-5e9928295665/b335dds66mbmbfzvceij87sl.mp4
+
+## Import, 12 Nov 2026, 14:05 CT
+
+The founder attached composites A and B, the new isolator shot, and Priya's take. Priya's take is quieter than the others (about
+-37 LUFS) and Vicki paused inside "No, pancakes are not a network protocol. Sorry. Go on. … Which switch?", so it was cut by hand at its
+three measured two-second pauses and brought to -18 LUFS. All 25 remaining shots were reviewed frame by frame; 23 kept, two rejected:
+
+- **S01E10 "read before you touch"**: Maya's fingers rest on the console faders, in the scene whose lesson is to read before you touch.
+- **S01E01 centre fill**: the loudspeaker sits upright facing the seats and the camera then tilts to the ceiling; the canon's point is
+  that the loudspeaker itself is aimed at the ceiling, and this shot does not show that.
+
+Both were regenerated with the point stated outright (hands clasped behind her back; the grille facing the ceiling at about 45
+degrees), 240 credits. Season 1 now has 31 reviewed shots in place.

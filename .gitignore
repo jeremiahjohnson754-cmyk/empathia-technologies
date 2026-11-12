@@ -52,3 +52,5 @@ tests/evidence/
 
 # rendered new films are delivered, not committed (rebuild with media/films-new/*/render.sh)
 media/films-new/*/out/*.mp4
+media/signal/s01/film/composites/
+media/signal/s01/film/src/
