@@ -31,8 +31,15 @@ const WORKSPACES = { dispatch: 'dispatch/Dispatch.tsx', servicehands: 'service/S
 const buildId = crypto.createHash('sha256').update(String(Date.now())).digest('hex').slice(0, 10);
 // --generate-only: write the generated sources and stop (scripts/build.mjs runs this before type-checking, so a fresh checkout builds)
 if (process.argv.includes('--generate-only')) process.exit(0);
-// the SIGNAL library ships beside the bundle and is fetched on demand by Learn (2 MB; never inlined)
-fs.mkdirSync(dist, { recursive: true }); fs.copyFileSync(path.join(repo, 'packages/domain-data/data/SIGNAL_LIB.json'), path.join(dist, 'signal-lib.json'));
+// the SIGNAL library ships beside the bundle and is fetched on demand by Learn (never inlined). Since 12 Nov 2026 it is cut from the
+// founder's build package (packages/signal-canon/data/app-data.json, the source's own revision) instead of the earlier SIGNAL_LIB.json:
+// the same eighteen collections, in the same shapes, at the source's revision (all 693 quizzes; lesson, lab and incident text as the
+// story has it). The fieldbook plate references are left out (the plates are not shipped: founder, 11 Nov 2026).
+fs.mkdirSync(dist, { recursive: true });
+{ const app = JSON.parse(fs.readFileSync(path.join(repo, 'packages/signal-canon/data/app-data.json'), 'utf8')); const noPlates = (bag) => Object.fromEntries(Object.entries(bag).map(([k, v]) => { const { plates, ...rest } = v; void plates; return [k, rest]; }));
+  const KEYS = ['caseOrder', 'cases', 'drillOrder', 'drills', 'explorers', 'formulas', 'glossary', 'incidentOrder', 'incidents', 'labOrder', 'labs', 'layerColors', 'lessonDomains', 'lessonOrder', 'lessons', 'quizzes', 'seasonOf', 'tierOf'];
+  const lib = Object.fromEntries(KEYS.map((k) => [k, k === 'lessons' || k === 'incidents' ? noPlates(app[k]) : app[k]])); for (const k of KEYS) if (lib[k] == null) throw new Error(`SIGNAL library: ${k} missing from app-data.json`);
+  fs.writeFileSync(path.join(dist, 'signal-lib.json'), JSON.stringify(lib)); }
 // the SIGNAL story canon ships beside the bundle and is fetched one chapter at a time (build.signal.mjs)
 { const { shipSignal } = await import('./build.signal.mjs'); const r = shipSignal(repo, dist); console.log(`SIGNAL canon: ${r.chapters} chapters, ${r.panels} panels`); }
 // static media (narration takes and captions): apps/demo/public/** ships as is beside the bundle
