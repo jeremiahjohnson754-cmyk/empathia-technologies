@@ -29,8 +29,8 @@ export type Item =
   | { type: 'history'; title: string; body: string; flag: string; when: string | null; lab: string | null }
   | { type: 'mount'; kind: string; id: string; label: string | null; gate: string | null };
 export interface Chapter { chapter: { id: string; kicker: string; title: string; pill: string; sub: string; status: string; flags: string[]; accent: string }; items: Item[] }
-export interface ChapterRef { id: string; season: number; episode: number; title: string; kicker: string; sub: string; level: string | null; tier: string; flags: number; panels: number; decisions: number; timed: number; quest: string | null; boss: boolean; meltdown: boolean }
-export interface StoryIndex { stats: Record<string, number>; seasons: Record<string, string>; cast: Record<string, string>; chapters: ChapterRef[] }
+export interface ChapterRef { id: string; season: number; episode: number; title: string; kicker: string; sub: string; level: string | null; tier: string; flags: number; panels: number; decisions: number; timed: number; quest: string | null; boss: boolean; meltdown: boolean; /** hard and soft gates, [kind, id, tier], for chapter locks */ gates?: Array<[string, string, Tier]> }
+export interface StoryIndex { stats: Record<string, number>; seasons: Record<string, string>; cast: Record<string, string>; chapters: ChapterRef[]; lessonQuiz?: Record<string, string> }
 
 export const TIMEOUT = 'TIMEOUT';
 /** `letter` is the option recorded now, or TIMEOUT; `first` is the first one recorded; `changes` counts later replacements. */
@@ -261,3 +261,20 @@ export function emphasis(text: string): { t: string; b?: boolean; i?: boolean }[
   while ((m = re.exec(text))) { if (m.index > at) out.push({ t: text.slice(at, m.index) }); out.push(m[1] !== undefined ? { t: m[1], b: true } : { t: m[2]!, i: true }); at = m.index + m[0].length; }
   if (at < text.length) out.push({ t: text.slice(at) }); return out;
 }
+
+// ------------------------------------------------------------------------------------------------- chapter locks (reference gate.js)
+/** Every chapter's lock, in reading order: a chapter is locked unless every hard and soft gate of the chapter before is cleared (done, or a
+ *  soft gate skipped), and once one is locked every later one is too. Reviewer mode (gates off) removes every lock without touching progress. */
+export function chapterLocks(ix: Pick<StoryIndex, 'chapters' | 'lessonQuiz'>, p: Progress): Record<string, boolean> {
+  const out: Record<string, boolean> = {}; let prevDone = true;
+  const lite: Pieces = { gates: [], quizzes: {}, lessons: Object.fromEntries(Object.entries(ix.lessonQuiz || {}).map(([k, q]) => [k, { title: '', domain: '', cards: [], quiz: q }])) };
+  for (const c of ix.chapters) {
+    if (!p.gates) { out[c.id] = false; continue; }
+    if (!prevDone) { out[c.id] = true; continue; }
+    out[c.id] = false; const s = p.chapters[c.id] || emptyChapter();
+    prevDone = (c.gates || []).every(([kind, id, tier], index) => gateCleared({ index, kind, id, tier, twist: false, core: false }, s, p, lite));
+  }
+  return out;
+}
+/** The chapter a locked one waits on: the first locked chapter's predecessor (the last open one). */
+export function lockedBehind(ix: Pick<StoryIndex, 'chapters'>, locks: Record<string, boolean>): ChapterRef | null { const i = ix.chapters.findIndex((c) => locks[c.id]); return i > 0 ? ix.chapters[i - 1]! : null; }

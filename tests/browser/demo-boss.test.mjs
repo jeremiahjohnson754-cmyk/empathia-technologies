@@ -56,7 +56,7 @@ async function clearRun(p, id, check) {
 }
 
 // Season 1's boss, end to end, with the clock off (a person at this speed would beat it; the test does not race the wall clock).
-{ const t = await open('#/story/s01e11'); const p = t.page; await p.waitForSelector('.sg-panel, .sg-dec'); await p.check('[data-testid=story-gates]'); await p.click('.w-pick__b:has-text("No clock")');
+{ const t = await open('#/story/s01e11'); const p = t.page; await p.check('[data-testid=story-gates]'); await p.waitForSelector('.sg-panel, .sg-dec');   /* reviewer mode first: these chapters are locked for a new reader (chapter locks, 12 Nov) */ await p.click('.w-pick__b:has-text("No clock")');
   const box = p.locator('.sg-piece[data-piece=S01]'); const b = box.locator('[data-testid=boss]'); await b.waitFor();
   const intro = await b.innerText();
   ok('BS-01', 'the boss opens on its briefing as a hard gate: Season 1 · Beginner, its title, stakes, eight stage pips, the rules and calm lights, and nothing runs yet', (await box.getAttribute('data-tier')) === 'hard' && /Season 1 · Episode 11 · boss level · Beginner/i.test(intro) && intro.includes(BOSSES.S01.title) && await b.locator('.boss__pips li').count() === 8 && /Every challenge gets one check/.test(intro) && await b.getByLabel(/Calm lights/).count() === 1 && await b.getByTestId('boss-begin').count() === 1);
@@ -70,7 +70,7 @@ async function clearRun(p, id, check) {
   ok('BS-07', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
 
 // A wrong call ends the run; the run starts over from stage one; the clock runs on its own (25 s for a call at Beginner).
-{ const t = await open('#/story/s01e11'); const p = t.page; await p.waitForSelector('.sg-panel, .sg-dec'); await p.check('[data-testid=story-gates]');
+{ const t = await open('#/story/s01e11'); const p = t.page; await p.check('[data-testid=story-gates]'); await p.waitForSelector('.sg-panel, .sg-dec');   /* reviewer mode first: these chapters are locked for a new reader (chapter locks, 12 Nov) */
   const B = BOSSES.S01, b = p.locator('.sg-piece[data-piece=S01] [data-testid=boss]'); await b.getByTestId('boss-begin').click();
   const c0 = await b.getByTestId('boss-clock').innerText(); ok('BS-08', 'with the clock on, the trace runs on its own clock (60 s at Beginner) and the edge glows yellow', /⏱ 1:00|⏱ 0:5\d/.test(c0) && (await b.locator('.boss__alarm').getAttribute('data-state')) === 'y', c0);
   await b.locator('[data-testid=boss-trace] .dr__btn').filter({ hasText: B.steps[0].items[1] }).first().click(); await b.getByTestId('boss-fail').waitFor();
@@ -89,7 +89,7 @@ async function clearRun(p, id, check) {
   ok('BS-13', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
 
 // Season 8: the run adds the commission — ask, scope, design, cost — and clears.
-{ const t = await open('#/story/s08e11'); const p = t.page; await p.waitForSelector('.sg-panel, .sg-dec'); await p.check('[data-testid=story-gates]'); await p.click('.w-pick__b:has-text("No clock")');
+{ const t = await open('#/story/s08e11'); const p = t.page; await p.check('[data-testid=story-gates]'); await p.waitForSelector('.sg-panel, .sg-dec');   /* reviewer mode first: these chapters are locked for a new reader (chapter locks, 12 Nov) */ await p.click('.w-pick__b:has-text("No clock")');
   const b = p.locator('.sg-piece[data-piece=S08] [data-testid=boss]'); await b.waitFor();
   ok('BS-14', 'Season 8’s briefing names the commission and has twelve stages', /The commission/.test(await b.innerText()) && await b.locator('.boss__pips li').count() === 12);
   let why = ''; const cleared = await clearRun(p, 'S08', (_v, w) => { why = w; }); const st = await store(p);
@@ -97,7 +97,7 @@ async function clearRun(p, id, check) {
   ok('BS-16', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
 
 // The commission's failures, on the page: a trap question ends the meeting; a wrong estimate ends the run with the worked answer.
-{ const t = await open('#/story/s08e11'); const p = t.page; await p.waitForSelector('.sg-panel, .sg-dec'); await p.check('[data-testid=story-gates]'); await p.click('.w-pick__b:has-text("No clock")');
+{ const t = await open('#/story/s08e11'); const p = t.page; await p.check('[data-testid=story-gates]'); await p.waitForSelector('.sg-panel, .sg-dec');   /* reviewer mode first: these chapters are locked for a new reader (chapter locks, 12 Nov) */ await p.click('.w-pick__b:has-text("No clock")');
   const B = BOSSES.S08, b = p.locator('.sg-piece[data-piece=S08] [data-testid=boss]'); await b.waitFor();
   await b.getByTestId('boss-begin').click(); for (const [i, s] of B.steps.entries()) { if (s.type === 'ask') break; await p.locator(`[data-testid=boss][data-step="${i}"][data-phase=stage]`).waitFor(); await playStage(p, B, s); await b.getByTestId('boss-ok').waitFor(); await b.getByTestId('boss-next').click(); }
   const ask = B.steps.find((s) => s.type === 'ask'), trap = ask.qs.find((q) => q.kind === 'trap' && !q.after);
@@ -106,7 +106,7 @@ async function clearRun(p, id, check) {
   ok('BS-18', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
 
 // The lighting desk (reach-cues) plays live: keys 1–8 fire looks against the song's clock; stopping the show is a must-pass failure.
-{ const t = await open('#/story/s02e11'); const p = t.page; await p.waitForSelector('.sg-panel, .sg-dec'); await p.check('[data-testid=story-gates]'); await p.click('.w-pick__b:has-text("No clock")');
+{ const t = await open('#/story/s02e11'); const p = t.page; await p.check('[data-testid=story-gates]'); await p.waitForSelector('.sg-panel, .sg-dec');   /* reviewer mode first: these chapters are locked for a new reader (chapter locks, 12 Nov) */ await p.click('.w-pick__b:has-text("No clock")');
   const B = BOSSES.S02, b = p.locator('.sg-piece[data-piece=S02] [data-testid=boss]'); await b.getByTestId('boss-begin').click();
   for (const [i, s] of B.steps.entries()) { if (s.type === 'chal' && s.chal === 'reach-cues') break; await p.locator(`[data-testid=boss][data-step="${i}"][data-phase=stage]`).waitFor(); await playStage(p, B, s); await b.getByTestId('boss-ok').waitFor(); await b.getByTestId('boss-next').click(); }
   const desk = b.locator('[data-testid=cue-desk]'); await desk.waitFor(); await desk.getByRole('button', { name: /Start the song/ }).click(); await p.waitForSelector('[data-testid=cue-desk][data-running=true]');
@@ -117,7 +117,7 @@ async function clearRun(p, id, check) {
   ok('BS-20', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
 
 // Phone, both themes: the briefing and a challenge stage have 44 px targets, no horizontal overflow, text at 4.5:1.
-for (const theme of ['light', 'dark']) { const t = await open('#/story/s05e11', { w: 390, h: 844, theme }); const p = t.page; await p.waitForSelector('.sg-panel, .sg-dec'); await p.check('[data-testid=story-gates]'); await p.click('.w-pick__b:has-text("No clock")');
+for (const theme of ['light', 'dark']) { const t = await open('#/story/s05e11', { w: 390, h: 844, theme }); const p = t.page; await p.check('[data-testid=story-gates]'); await p.waitForSelector('.sg-panel, .sg-dec');   /* reviewer mode first: these chapters are locked for a new reader (chapter locks, 12 Nov) */ await p.click('.w-pick__b:has-text("No clock")');
   const B = BOSSES.S05, b = p.locator('.sg-piece[data-piece=S05] [data-testid=boss]'); await b.waitFor(); await b.getByTestId('boss-begin').click();
   for (const [i, s] of B.steps.entries()) { if (s.type === 'chal') break; await p.locator(`[data-testid=boss][data-step="${i}"][data-phase=stage]`).waitFor(); await playStage(p, B, s); await b.getByTestId('boss-ok').waitFor(); await b.getByTestId('boss-next').click(); }
   await b.locator('[data-testid=challenge]').waitFor();
@@ -127,4 +127,19 @@ for (const theme of ['light', 'dark']) { const t = await open('#/story/s05e11', 
     return [...root.querySelectorAll('p, h4, li, dt, dd, .dr__btn, label span')].filter((e) => e.getBoundingClientRect().width > 0 && e.textContent.trim()).map((el) => { const a = lum(getComputedStyle(el).color); const bb = lum(bgOf(el)); return [(Math.max(a, bb) + 0.05) / (Math.min(a, bb) + 0.05), el.className + ':' + el.textContent.trim().slice(0, 30)]; }).sort((x, y) => x[0] - y[0]); });
   ok(`BS-21 ${theme}`, `phone (390, ${theme}): a boss challenge stage has 44 px targets, no overflow, text at 4.5:1, no console error`, await overflow(p) <= 0 && small.length === 0 && c.length >= 10 && c[0][0] >= 4.5 && !t.errs.length, `${await overflow(p)} ${small.slice(0, 6).join(',')} ${c[0][0].toFixed(2)} ${c[0][1]} ${t.errs.join('|')}`);
   await t.close(); }
+// The challenge catalogue in Learn (the reference's chalCatalog): five mode tabs, a card per challenge with four levels and your best, one stage.
+{ const t = await open('#/learn/challenges', { role: 'technician' }); const p = t.page; await p.waitForSelector('[data-testid=learn-challenges]');
+  const tabs = await p.locator('[role=tab][data-mode]').allInnerTexts();
+  ok('BS-22', 'five mode tabs, Hear it first with its two challenges, each at four levels', tabs.length === 5 && /HEAR IT/.test(tabs[0]) && await p.locator('[data-testid^=chal-card-]').count() === 2 && await p.locator('[data-testid=chal-card-hear-eq] .ch__lv').count() === 4, tabs.join('|'));
+  await p.locator('[data-testid=chal-card-hear-eq] .ch__lv[data-lv="1"]').click(); const ch = p.locator('[data-testid=chal-stage] [data-testid=challenge]'); await ch.waitFor();
+  await ch.getByRole('button', { name: '✔ Check my work' }).click(); const r0 = await ch.getByTestId('chal-result').innerText();
+  ok('BS-23', 'the untouched guitar fails as the reference’s does, with each check, what you had and the target', /✖ NOT YET · 0\/100/.test(r0) && /you: /.test(r0) && /target: /.test(r0), r0.slice(0, 200));
+  await ch.getByRole('button', { name: '↺ Start over' }).click(); await dial(p.locator('[data-testid=chal-stage] [data-testid=challenge]'), 'hear-eq', 1); await p.locator('[data-testid=chal-stage] [data-testid=challenge]').getByRole('button', { name: '✔ Check my work' }).click();
+  const r1 = await p.locator('[data-testid=chal-stage] [data-testid=chal-result]').innerText(); const st = await store(p);
+  ok('BS-24', 'the cancelling EQ passes 100/100 and the record keeps the first and the best (one history with the boss levels)', /✔ PASSED · 100\/100 ★★★/.test(r1) && st.challenges?.['hear-eq@1']?.first === 0 && st.challenges['hear-eq@1'].best === 100 && st.challenges['hear-eq@1'].tries === 2 && /L1 ✔ 100/.test(await p.locator('[data-testid=chal-card-hear-eq] .ch__lv[data-lv="1"]').innerText()), r1.slice(0, 80));
+  await p.locator('[role=tab][data-mode=reach]').click(); await p.locator('[data-testid=chal-card-reach-light] .ch__lv[data-lv="4"]').click(); const c4 = p.locator('[data-testid=chal-stage] [data-testid=challenge]'); await c4.waitFor();
+  ok('BS-25', 'Mastery runs on the challenge’s own clock', /⏱ 2:[0-9]{2} — until the first verse/.test(await c4.getByTestId('chal-clock').innerText()));
+  await c4.locator('[data-key=fx] [data-opt=lava]').click(); await c4.getByRole('button', { name: '✔ Check my work' }).click();
+  ok('BS-26', 'joke gear is an instant fail with the joke and the physics', /INSTANT FAIL · A lava lamp/.test(await c4.getByTestId('chal-result').innerText()) && /about 3 lux/.test(await c4.getByTestId('chal-result').innerText()));
+  ok('BS-27', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
 await done();

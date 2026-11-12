@@ -46,6 +46,10 @@ export function shipSignal(repo, dist) {
   const defs = fs.readFileSync(path.join(src, 'art/defs.svg'), 'utf8'); if (/<script|<style|\son[a-z]+=|style="|href="(?!#)|<foreignObject/i.test(defs)) throw new Error('SIGNAL sprite sheet: content this site\'s policy does not allow');
   fs.writeFileSync(path.join(out, 'defs.svg'), defs); fs.copyFileSync(path.join(src, 'flags.json'), path.join(out, 'flags.json'));
   const cast = Object.fromEntries(JSON.parse(fs.readFileSync(path.join(src, 'cast/characters.json'), 'utf8')).map((p) => [p.id, p.name]));
-  fs.writeFileSync(path.join(out, 'index.json'), JSON.stringify({ stats, seasons, cast, chapters: index.map((c) => ({ id: c.id, season: c.season, episode: c.episode, title: c.title, kicker: c.kicker, sub: c.sub, level: c.level, tier: c.tier, flags: c.flags.length, panels: c.counts.panel || 0, decisions: c.decisions.length, timed: c.timed_decisions, quest: c.quest ? (c.quest.title || c.quest) : null, boss: !!c.boss, meltdown: !!c.meltdown })) }));
+    // chapter locks (restored 12 Nov 2026, reference gate.js): a chapter opens once every hard and soft gate of the one before is cleared, so the
+  // library carries each chapter's hard and soft gates, and which quiz clears each lesson.
+  const lockGates = {}; { const gl = JSON.parse(fs.readFileSync(path.join(src, 'gates.json'), 'utf8')); for (const x of gl) if (x.tier !== 'opt') (lockGates[x.chapter] = lockGates[x.chapter] || []).push([x.kind, x.id, x.tier]); }
+  const lessonQuiz = {}; { const app0 = JSON.parse(fs.readFileSync(path.join(src, 'app-data.json'), 'utf8')); for (const [k, L] of Object.entries(app0.lessons)) lessonQuiz[k] = L.quiz; }
+  fs.writeFileSync(path.join(out, 'index.json'), JSON.stringify({ stats, seasons, cast, lessonQuiz, chapters: index.map((c) => ({ gates: lockGates[c.id] || [], id: c.id, season: c.season, episode: c.episode, title: c.title, kicker: c.kicker, sub: c.sub, level: c.level, tier: c.tier, flags: c.flags.length, panels: c.counts.panel || 0, decisions: c.decisions.length, timed: c.timed_decisions, quest: c.quest ? (c.quest.title || c.quest) : null, boss: !!c.boss, meltdown: !!c.meltdown })) }));
   return { chapters: index.length, panels };
 }

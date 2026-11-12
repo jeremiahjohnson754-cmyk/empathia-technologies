@@ -10,6 +10,8 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { PageHero, StatTile, Card, Chip, List, ListRow, MeterRow, Icon, Notice, Button, Tag, ProgressBar, EmptyState, ScoreRing, QuizRunner, DrillRunner, DRILL_KINDS, IncidentRunner, Incidents, type Quiz, type Drill, type IconName } from '@empathia/ui';
 import { V, fill, trainingCases, caseById, loadProgress, record, minutesOf, RESPONSES, RULES, score, readinessOf, competencyEvidence, roomsFor, archetypesIn, hopsOf, type TrainingCase, type Progress, type Episode, type Scene } from '../learn/model.js';
 import { loadLabs } from '../learn/store.js';
+import { ChallengeRunner, Challenges as CHX } from '@empathia/ui';
+import * as Story from '../signal/story.js';
 import { loadLib } from './Learn.js';
 import { allRecords, roomRecord, type RoomRecord } from '../campus/design.js';
 import { shortName, fullName, roomHref } from '../campus/canon.js';
@@ -27,7 +29,7 @@ export const LEARN_AREAS: Array<{ href: string; label: string; icon: IconName }>
   { href: '#/learn', label: 'Learn home', icon: 'pulse' }, { href: '#/learn/signal', label: 'SIGNAL', icon: 'spark' }, { href: '#/learn/story', label: 'Room story', icon: 'play' },
   { href: '#/learn/labs', label: 'Labs', icon: 'layers' }, { href: '#/learn/servicehands', label: 'ServiceHands Academy', icon: 'wrench' }, { href: '#/learn/library', label: 'Library', icon: 'book' },
   { href: '#/learn/practice', label: 'Practice', icon: 'check' }, { href: '#/learn/design', label: 'Design clinic', icon: 'room' }, { href: '#/learn/service', label: 'Service Mode', icon: 'route' },
-  { href: '#/learn/cases', label: 'Case Files', icon: 'book' }, { href: '#/learn/fieldbook', label: 'Fieldbook', icon: 'book' }, { href: '#/learn/ask', label: 'Ask Empathia', icon: 'search' },
+  { href: '#/learn/cases', label: 'Case Files', icon: 'book' }, { href: '#/learn/fieldbook', label: 'Fieldbook', icon: 'book' }, { href: '#/learn/challenges', label: 'Challenges', icon: 'spark' }, { href: '#/learn/ask', label: 'Ask Empathia', icon: 'search' },
 ];
 /** Learn's own navigation, on every Learn page: a chip only where the role may open that address (D44: absent, not disabled). */
 export function LearnNav({ role, current }: { role: string; current: string }) {
@@ -703,6 +705,27 @@ export function AcademyPage({ perspective }: { perspective: string }) {
         {!stages.some(([k]) => waiting(k)) ? <p className="ui-meta">No live request is waiting on a job right now.</p> : null}
       </Card>
       <Card icon="route" title="How requests are routed" sub="Four routes, chosen by risk and scope"><List label="Routes">{Object.entries(V.SH_ROUTES).map(([k, [l, d]]) => <ListRow key={k} title={l} sub={d} />)}</List></Card>
+    </section>
+  );
+}
+
+// ------------------------------------------------------------------------------------------------------------ challenges (reference chalCatalog)
+/** The thirteen SIGNAL challenges by mode, each at four levels with your best score, one shared stage below (the reference's chalCatalog).
+ *  Records are the story's own (id@level), so a try here and a try inside a boss level are one history. Restored 12 Nov 2026. */
+export function ChallengesPage({ perspective }: { perspective: string }) {
+  const [mode, setMode] = useState<string>(CHX.MODES[0].id); const [pick, setPick] = useState<{ id: string; lv: number } | null>(null); const [prog, setProg] = useState(() => Story.load());
+  const factor = prog.clock === 'off' ? 0 : prog.clock === 'extended' ? 2 : 1; const M = CHX.MODES.find((m) => m.id === mode)!;
+  const record = (id: string, lv: number, score: number, passed: boolean) => setProg((cur) => { const n = Story.recordChalTry(cur, CHX.key(id, lv), score, passed, Date.now()); Story.save(n); return n; });
+  return (
+    <section className="wk ln" data-native="workspace" data-testid="learn-challenges">
+      <Head role={perspective} current="#/learn/challenges" title="Challenges" lede="Thirteen small physical models in five modes: fix the audio, the picture, the light, the build and the recording by the numbers a working engineer uses. Some of the gear is a joke. Level 4 runs on the clock." meta={[FICTION]} />
+      <div className="ui-tabs" role="tablist" aria-label="Challenge modes">{CHX.MODES.map((m) => <button key={m.id} type="button" role="tab" className="ui-tab" aria-selected={m.id === mode} onClick={() => setMode(m.id)} data-mode={m.id}>{m.icon} {m.name}</button>)}</div>
+      <p className="ln-lede">{M.blurb}</p>
+      <div className="wk-g2">{CHX.CHALLENGES.filter((c) => c.mode === mode).map((c) => <Card key={c.id} title={`${c.icon} ${c.title}`} sub={c.brief(1).split('. ')[0] + '.'} testId={`chal-card-${c.id}`}>
+        <div className="ch__lvrow" role="group" aria-label={`Choose a level for ${c.title}`}>{[1, 2, 3, 4].map((n) => { const r = prog.challenges[CHX.key(c.id, n)];
+          return <button key={n} type="button" className="ch__lv" aria-pressed={pick?.id === c.id && pick.lv === n} data-lv={n} onClick={() => setPick({ id: c.id, lv: n })}>L{n}{r ? `${r.passed ? ' ✔ ' : ' · '}${r.best}` : ''}</button>; })}</div></Card>)}</div>
+      {pick && <div className="card" data-testid="chal-stage"><ChallengeRunner id={pick.id} lv={pick.lv} factor={factor} heading="h2" records={prog.challenges} onLevel={(n) => setPick({ id: pick.id, lv: n })} onResult={(o) => record(pick.id, pick.lv, o.score, o.passed)} /></div>}
+      <p className="ui-meta">Timers follow the story’s clock setting ({prog.clock === 'off' ? 'off: Mastery without the clock' : prog.clock === 'extended' ? 'double time' : 'on'}). Every attempt is kept in this browser with the story’s progress; it is practice, not a credential.</p>
     </section>
   );
 }

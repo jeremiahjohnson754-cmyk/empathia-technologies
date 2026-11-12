@@ -15,7 +15,7 @@ agents.
 | Production | `main` at `219d75f`, untouched; needs the founder's word |
 | The founder's directive of 11 Nov 01:22 | `/mnt/user-data/attachments/73b60a1b-854c-5a1e-99ae-d3ec61696e66/84a1e711-attachment.txt` (§00–§34; read the section before building it) |
 
-## State (12 Nov 2026, 00:05 CT)
+## State (12 Nov 2026, 02:00 CT)
 
 | | Commit | Evidence |
 |---|---|---|
@@ -129,8 +129,10 @@ For SIGNAL and Lite these phases follow R1 to R5 above.
 ## Next, in order
 
 1. Restoration (founder, 17:06): SIGNAL in place: decisions, quizzes, lessons, drills, incidents, labs (physics without its animated
-   drawings), season reviews with ratings and loadout, meltdowns. Next: the thirteen challenges and the 12 boss levels built on them,
-   then chapter locks (only boss levels still keep them off); then Mission Control, meltdowns in Learn's Service Mode, physics drawings. Then: verify the inventory's TO VERIFY lines; R3 Lite against V2.5.3 (72 `lite*`, 18 scouter,
+   drawings), season reviews with ratings and loadout, meltdowns; since 12 Nov the thirteen challenges (`9db8350`), the 12 boss levels
+   (`a480890`, `537700c`) and chapter locks — every gate kind in the canon now plays and holds the story. Full matrix on that head, then
+   staging. Then: the challenge catalogue in Learn and the missing challenge drawings and sound (guitar, band); Mission Control;
+   meltdowns in Learn's Service Mode; physics drawings. Then: verify the inventory's TO VERIFY lines; R3 Lite against V2.5.3 (72 `lite*`, 18 scouter,
    Room Builder, optimiser and acoustics functions found in the source by a text scan; the scan scripts are in
    `…/scratchpad/restore/`); R2 media with playback verified; R4 the one parity matrix; then R5, restoring in the order the SIGNAL
    inventory gives (library to the source's revision, eight lab simulators, thirteen challenges).

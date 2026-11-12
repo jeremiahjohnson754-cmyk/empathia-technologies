@@ -3,6 +3,7 @@
 // there after an offline reload; SIGNAL chapters are kept by opening them or by keeping a season; everything saved can be removed.
 //   node tests/browser/demo-offline.test.mjs      (build first: node scripts/build.mjs)
 import { harness } from './demo-shell-lib.mjs';
+import { unlockInit } from './signal-unlock.mjs';
 const t = await harness('demo-offline'); const { ok, open, base } = t;
 const phase = (p) => p.getAttribute('[data-testid=offline-page]', 'data-phase');
 const ready = (p) => p.waitForFunction(() => document.querySelector('[data-testid=offline-page]')?.getAttribute('data-phase') === 'ready' && !!navigator.serviceWorker.controller, null, { timeout: 45000 }).then(() => true, () => false);
@@ -12,7 +13,7 @@ const over = (p) => p.evaluate(() => document.documentElement.scrollWidth - docu
 const cacheNames = (p) => p.evaluate(() => caches.keys());
 
 // ------------------------------------------------------------------------------------------------ saving the app
-const a = await open('#/offline', { role: 'technician' }); const p = a.page;
+const a = await open('#/offline', { role: 'technician', init: unlockInit('s01e01') }); const p = a.page;   // a reader who has cleared s01e00, so s01e01 is open (chapter locks, 12 Nov 2026)
 ok('OF-01', 'the app saves itself on this device after first paint and says so, with the build it holds', await ready(p) && /^[0-9a-f]{12}$/.test(await p.textContent('[data-testid=offline-version]')) && (await p.textContent('[data-testid=offline-phase]')) === 'Saved on this device', await p.textContent('[data-testid=offline-status]'));
 const files = Number(((await p.textContent('[data-testid=offline-status]')).match(/(\d+) files/) || [])[1] || 0);
 const shellCount = await p.evaluate(async () => { const k = (await caches.keys()).find((x) => x.startsWith('ed-shell-')); return k ? (await (await caches.open(k)).keys()).length : 0; });

@@ -6,6 +6,7 @@
 // progress survives a reload and can be replayed; the last season opens too; review flags are shown; phone, keyboard, both themes;
 // no console error and no request leaving the page.   node tests/browser/demo-story.test.mjs
 import { harness } from './demo-shell-lib.mjs';
+import { unlockInit } from './signal-unlock.mjs';   // chapter locks (12 Nov 2026): later chapters open for a reader who has cleared the ones before
 const { ok, open, main, done } = await harness('demo-story');
 const overflow = (p) => p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
 const reader = (p) => p.evaluate(() => { const r = document.querySelector('[data-testid=story-reader]'); return { reached: Number(r.dataset.reached), items: Number(r.dataset.items), panels: document.querySelectorAll('.sg-panel').length, drawn: [...document.querySelectorAll('.sg-art')].filter((a) => a.querySelector('svg use, svg rect')).length, missing: [...document.querySelectorAll('.sg-art use, .sg-face use')].filter((u) => !document.getElementById(u.getAttribute('href').slice(1))).length }; });
@@ -73,12 +74,12 @@ const reader = (p) => p.evaluate(() => { const r = document.querySelector('[data
   await p.click('.w-pick__b:has-text("No clock")'); ok('ST-23', 'the clock can be turned off, as the canon allows', await p.locator('[data-testid=story-clock]').count() === 0);
   ok('ST-24', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
 
-{ const t = await open('#/story/s12e11'); const p = t.page; await p.waitForFunction(() => document.querySelector('.sg-art svg')); const a = await reader(p);
+{ const t = await open('#/story/s12e11', { init: unlockInit('s12e11') }); const p = t.page; await p.waitForFunction(() => document.querySelector('.sg-art svg')); const a = await reader(p);
   ok('ST-25', 'the last chapter of Season 12 opens and draws', a.panels >= 1 && a.drawn === a.panels && a.missing === 0 && /The Inheritance, Live/.test(await p.locator('main h1').innerText()), JSON.stringify(a));
   await p.goto(p.url().replace(/#.*/, '#/story/nope')); await p.waitForSelector('[data-testid=story-unknown]'); ok('ST-26', 'an unknown chapter says so', true);
   ok('ST-27', 'the page has no inline style or script from the story (content policy holds)', await p.evaluate(() => document.querySelectorAll('main [style], main script, #sg-defs script, #sg-defs style').length === 0) && !t.errs.some((e) => /Content Security Policy/i.test(e)), t.errs.join('|')); await t.close(); }
 
-{ const t = await open('#/story/s06e03', { role: 'requestor' }); const p = t.page; await p.waitForFunction(() => document.querySelector('.sg-art svg') || document.querySelector('.sg-dec'));
+{ const t = await open('#/story/s06e03', { role: 'requestor', init: unlockInit('s06e03') }); const p = t.page; await p.waitForFunction(() => document.querySelector('.sg-art svg') || document.querySelector('.sg-dec'));
   ok('ST-28', 'the story is open to every perspective (here the Requestor), mid-canon', await p.locator('[data-testid=story-reader]').count() === 1 && (await reader(p)).missing === 0);
   await p.keyboard.press('Tab'); const dec = p.locator('.sg-dec .sg-opt').first(); await dec.focus(); await p.keyboard.press('Enter'); await p.waitForTimeout(300);
   ok('ST-29', 'options are buttons: the keyboard chooses', await p.locator('[data-testid=story-result]').count() >= 1); await t.close(); }
@@ -116,7 +117,7 @@ const reader = (p) => p.evaluate(() => { const r = document.querySelector('[data
 
 // Restored 11 Nov 2026: practice drills are played inside the story on the reference's rules (packages/ui/src/drills.ts), on the
 // story's clock. A hard drill (the chapter's core skill) holds the story until a try is recorded, passed or not, as gate.js has it.
-{ const t = await open('#/story/s01e01'); const p = t.page; await p.waitForSelector('.sg-dec');
+{ const t = await open('#/story/s01e01', { init: unlockInit('s01e01') }); const p = t.page; await p.waitForSelector('.sg-dec');
   const pc = await p.evaluate(async () => (await fetch('signal/pieces/s01e01.json')).json());
   for (let i = 0; i < 12 && !(await p.locator('[data-testid=story-waiting][data-kind=drill]').count()); i += 1) {
     const kind = await p.locator('[data-testid=story-waiting]').getAttribute('data-kind');
@@ -170,7 +171,7 @@ const reader = (p) => p.evaluate(() => { const r = document.querySelector('[data
   ok('ST-57', 'declaring at the start fails honestly; the record keeps the best (proven) and the first run, and counts the runs', /declared resolved while still broken/i.test(await r.locator('[data-testid=incident-end]').innerText()) && rec2.best === 'proven' && rec2.runs === 2 && rec2.first === 'proven' && /Best so far: restored and proven · 2 runs/.test(await box.locator('[data-testid=story-incident-rec]').innerText()), JSON.stringify(rec2));
   ok('ST-58', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
 
-{ const t = await open('#/story/s01e07'); const p = t.page; await p.waitForSelector('.sg-dec');
+{ const t = await open('#/story/s01e07', { init: unlockInit('s01e07') }); const p = t.page; await p.waitForSelector('.sg-dec');
   // the chapter's drills are played in ST-43..52; here a try is already on record for each, as for a reader who has tried them
   await p.evaluate(async () => { const pc = await (await fetch('signal/pieces/s01e07.json')).json(); const k = 'empathia.signal.story.v1'; const st = JSON.parse(localStorage.getItem(k) || '{"v":2,"chapters":{}}'); st.drills = Object.fromEntries(Object.keys(pc.drills).map((id) => [id, { passed: false, tries: 1, first: false }])); localStorage.setItem(k, JSON.stringify(st)); });
   await p.reload(); await p.waitForSelector('.sg-dec');
@@ -229,7 +230,7 @@ for (const theme of ['light', 'dark']) { const t = await open('#/story/s01e00', 
 
 // Restored 11 Nov 2026: the season review (ratings.ts on the reference's §10 rules). Shown here with the reviewer switch, as the review
 // sits at the end of each season's tenth chapter.
-{ const t = await open('#/story/s01e10'); const p = t.page; await p.waitForSelector('.sg-panel, .sg-dec'); await p.check('[data-testid=story-gates]');
+{ const t = await open('#/story/s01e10'); const p = t.page; await p.check('[data-testid=story-gates]'); await p.waitForSelector('.sg-panel, .sg-dec');   /* reviewer mode first: s01e10 is locked for a new reader (chapter locks, 12 Nov) */
   const rv = p.locator('.sg-piece[data-piece=S1]'); await rv.locator('[data-testid=story-ratings]').waitFor();
   ok('ST-71', 'the Season 1 review rates six ways from first attempts: with nothing done every rating is 72, the Story Score 72, and the forecast is limited throughout', await rv.locator('[data-testid=story-ratings] li').count() === 6 && /Story Score 72 \/ 100 · the story goes on/.test(await rv.locator('[data-testid=story-score]').innerText()) && await rv.locator('[data-testid=story-loadout] li[data-level="1"]').count() === 6 && (await rv.getAttribute('data-tier')) === 'hard');
   await rv.getByTestId('story-review-submit').click(); await rv.locator('[data-testid=story-review-verdict][data-pass=true]').waitFor();
@@ -238,7 +239,7 @@ for (const theme of ['light', 'dark']) { const t = await open('#/story/s01e00', 
   await t.close(); }
 
 { const t = await open('#/story/s01e00'); const p = t.page; await p.waitForSelector('.sg-dec'); await p.click('.sg-dec[data-decision=BR-S01E00-02] .sg-opt[data-option=A]'); await p.waitForSelector('[data-testid=story-result][data-verdict=costly]');
-  await p.goto(p.url().replace(/#.*/, '#/story/s01e10')); await p.waitForSelector('.sg-panel, .sg-dec'); await p.check('[data-testid=story-gates]');
+  await p.goto(p.url().replace(/#.*/, '#/story/s01e10')); await p.check('[data-testid=story-gates]'); await p.waitForSelector('.sg-panel, .sg-dec');   /* reviewer mode first (chapter locks) */
   const rv = p.locator('.sg-piece[data-piece=S1]'); await rv.locator('[data-testid=story-ratings]').waitFor();
   const sc = await rv.locator('[data-testid=story-score]').innerText();
   ok('ST-73', 'one failing first call (Season 1, severity 3) brings the Story Score to 49 and says what pulled it down', /Story Score 49 \/ 100 · below 65 — game over/.test(sc) && /A failing call/.test(await rv.locator('[data-testid=story-review-notes]').innerText()), sc);
@@ -252,7 +253,7 @@ for (const theme of ['light', 'dark']) { const t = await open('#/story/s01e00', 
 // Restored 11 Nov 2026: meltdowns in the story (meltdown.ts on the reference's §9 rules). MD-S04 closes Season 4; with the clock off the
 // story clock moves only with actions and holds, so the package's expert run (tests/fixtures/signal-meltdown-runs.json) is exact.
 { const fs = await import('node:fs'); const RUN = JSON.parse(fs.readFileSync(new URL('../fixtures/signal-meltdown-runs.json', import.meta.url), 'utf8')).meltdowns['MD-S04'];
-  const t = await open('#/story/s04e10'); const p = t.page; await p.waitForSelector('.sg-panel, .sg-dec'); await p.check('[data-testid=story-gates]'); await p.click('.w-pick__b:has-text("No clock")');
+  const t = await open('#/story/s04e10'); const p = t.page; await p.check('[data-testid=story-gates]'); await p.waitForSelector('.sg-panel, .sg-dec');   /* reviewer mode first (chapter locks) */ await p.click('.w-pick__b:has-text("No clock")');
   const box = p.locator('.sg-piece[data-piece=MD-S04]'); const md = box.locator('[data-testid=meltdown]'); await md.waitFor();
   ok('ST-77', 'the Season 4 meltdown opens on its mission and rules, as a hard gate, before anything runs', (await box.getAttribute('data-tier')) === 'hard' && /dark for more than/.test(await md.innerText()) && await md.getByRole('button', { name: /Start the meltdown/ }).count() === 1 && await md.locator('[data-testid=meltdown-map]').count() === 0);
   await md.getByRole('button', { name: /Start the meltdown/ }).click(); await md.locator('[data-testid=meltdown-map]').waitFor();
@@ -271,7 +272,7 @@ for (const theme of ['light', 'dark']) { const t = await open('#/story/s01e00', 
   ok('ST-80', 'a boundary action ends the mission at once; the record keeps the best run and the first, and counts two runs', /boundary crossed/.test(await md.locator('[data-testid=meltdown-end]').innerText()) && rec2.best === 'proven' && rec2.runs === 2 && rec2.last === 'fail' && rec2.first === 'proven');
   ok('ST-81', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
 
-for (const theme of ['light', 'dark']) { const t = await open('#/story/s04e10', { w: 390, h: 844, theme }); const p = t.page; await p.waitForSelector('.sg-panel, .sg-dec'); await p.check('[data-testid=story-gates]'); await p.click('.w-pick__b:has-text("No clock")');
+for (const theme of ['light', 'dark']) { const t = await open('#/story/s04e10', { w: 390, h: 844, theme }); const p = t.page; await p.check('[data-testid=story-gates]'); await p.waitForSelector('.sg-panel, .sg-dec');   /* reviewer mode first (chapter locks) */ await p.click('.w-pick__b:has-text("No clock")');
   const md = p.locator('.sg-piece[data-piece=MD-S04] [data-testid=meltdown]'); await md.getByRole('button', { name: /Start the meltdown/ }).click(); await md.locator('[data-testid=meltdown-map]').waitFor();
   const small = await md.evaluate((root) => [...root.querySelectorAll('button, input')].filter((e) => { const b = e.getBoundingClientRect(); return b.width > 0 && b.height < 43.5; }).map((e) => `${(e.textContent || '').slice(0, 16)}:${Math.round(e.getBoundingClientRect().height)}`));
   const c = await md.evaluate((root) => { const lum = (s) => { const m = s.match(/[\d.]+/g).map(Number).map((v) => (/^color\(/.test(s) ? v * 255 : v)); const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(m[0]) + 0.7152 * f(m[1]) + 0.0722 * f(m[2]); };
@@ -303,11 +304,25 @@ for (const theme of ['light', 'dark']) { const t = await open('#/story/s01e00', 
     return [...document.querySelectorAll('main .sg-piece h4, main .sg-piece p, main .sg-qopt, main .sg-tier, main .sg-wait')].filter((e) => e.getBoundingClientRect().width > 0).map((el) => { const a = lum(getComputedStyle(el).color); const b = lum(bgOf(el)); return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05); }); });
   ok(`ST-42 ${theme}`, `phone (390, ${theme}): the quiz has 44 px targets, no overflow, its text meets 4.5:1, no console error`, await overflow(p) <= 0 && small.length === 0 && c.length >= 4 && Math.min(...c) >= 4.5 && !t.errs.length, `${await overflow(p)} ${small.slice(0, 4).join(',')} ${Math.min(...c).toFixed(2)} ${t.errs.join('|')}`); await t.close(); }
 
-for (const theme of ['light', 'dark']) { const t = await open('#/story/s01e01', { w: 390, h: 844, theme }); const p = t.page; await p.waitForFunction(() => document.querySelector('.sg-art svg'));
+for (const theme of ['light', 'dark']) { const t = await open('#/story/s01e01', { w: 390, h: 844, theme, init: unlockInit('s01e01') }); const p = t.page; await p.waitForFunction(() => document.querySelector('.sg-art svg'));
   const small = await p.$$eval('main .sg-opt, main .ui-btn, main .w-pick__b, main .sg-check, main .sg-flags summary, main .w-crumbs a', (els) => els.filter((e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height < 43.5; }).map((e) => `${e.textContent.slice(0, 16)}:${Math.round(e.getBoundingClientRect().height)}`));
   ok(`ST-30 ${theme}`, `phone (390, ${theme}): no horizontal overflow, 44 px targets, no console error`, await overflow(p) <= 0 && small.length === 0 && !t.errs.length, `${await overflow(p)} ${small.slice(0, 4).join(',')} ${t.errs.join('|')}`);
   const c = await p.evaluate(() => { const lum = (s) => { const m = s.match(/[\d.]+/g).map(Number).map((v) => (/^color\(/.test(s) ? v * 255 : v)); const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(m[0]) + 0.7152 * f(m[1]) + 0.0722 * f(m[2]); };
     const bgOf = (el) => { for (let e = el; e; e = e.parentElement) { const b = getComputedStyle(e).backgroundColor; const al = b && /^rgba\(/.test(b) ? Number(b.match(/[\d.]+/g)[3]) : b && /\/\s*([\d.]+)\)$/.test(b) ? Number(b.match(/\/\s*([\d.]+)\)$/)[1]) : 1; if (b && b !== 'transparent' && al >= 0.6) return b; } return 'rgb(255,255,255)'; };
     return [...document.querySelectorAll('main .sg-bubble, main .sg-narr, main .sg-cap, main .sg-flagline, main .sg-note p, main .sg-dec p, main .sg-opt, main .sg-quest dd, main .sg-check')].map((el) => { const a = lum(getComputedStyle(el).color); const b = lum(bgOf(el)); return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05); }); });
   ok(`ST-31 ${theme}`, `${theme}: story text meets 4.5:1`, c.length > 10 && Math.min(...c) >= 4.5, Math.min(...c).toFixed(2)); await t.close(); }
+// Chapter locks (restored 12 Nov 2026, reference gate.js): a chapter opens once every core and recommended gate of the one before is cleared.
+{ const t = await open('#/story/s01e01'); const p = t.page; await p.waitForSelector('[data-testid=story-locked]');
+  const txt = await p.locator('[data-testid=story-reader]').innerText();
+  ok('ST-83', 'a new reader who links to s01e01 meets its heading, the review bar and a lock card that names the chapter to finish, and none of its pages', /Locked chapter/.test(txt) && /Clear the core \(★\) and recommended \(◐\) gates in/.test(txt) && await p.locator('.sg-panel, .sg-dec').count() === 0 && await p.locator('[data-testid=story-gates]').count() === 1 && (await p.locator('[data-testid=story-locked-back]').getAttribute('href')) === '#/story/s01e00');
+  await p.check('[data-testid=story-gates]'); await p.waitForSelector('.sg-panel, .sg-dec');
+  ok('ST-84', 'reviewer mode removes the lock without touching progress', await p.locator('[data-testid=story-locked]').count() === 0 && Object.keys(JSON.parse(await p.evaluate(() => localStorage.getItem('empathia.signal.story.v1'))).chapters).length === 0);
+  await p.uncheck('[data-testid=story-gates]'); await p.goto(p.url().replace(/#.*/, '#/story')); await p.waitForSelector('[data-testid=story-library]'); await p.click('.sg-season[data-season="1"]');
+  ok('ST-85', 'the library marks locked chapters, in words as well as by name: s01e00 open, s01e01 onward locked', (await p.locator('[data-chapter=s01e00]').getAttribute('data-locked')) === 'false' && (await p.locator('[data-chapter=s01e01]').getAttribute('data-locked')) === 'true' && /Locked/.test(await p.locator('[data-chapter=s01e01]').innerText()) && /\(locked\)/.test(await p.locator('[data-chapter=s01e11]').getAttribute('aria-label')));
+  ok('ST-86', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
+{ const t = await open('#/story/s02e00', { init: unlockInit('s02e00') }); const p = t.page; await p.waitForSelector('.sg-panel, .sg-dec');
+  ok('ST-87', 'a reader who has cleared everything before Season 2 — the Season 1 boss and review included — finds Season 2 open', await p.locator('[data-testid=story-locked]').count() === 0);
+  await p.evaluate(() => { const k = 'empathia.signal.story.v1'; const s = JSON.parse(localStorage.getItem(k)); delete s.bosses.S01; localStorage.setItem(k, JSON.stringify(s)); }); await p.reload(); await p.waitForSelector('[data-testid=story-locked]');
+  ok('ST-88', 'without the Season 1 boss cleared, Season 2 is locked behind s01e11', (await p.locator('[data-testid=story-locked-back]').getAttribute('href')) === '#/story/s01e11');
+  ok('ST-89', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
 await done();

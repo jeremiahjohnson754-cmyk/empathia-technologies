@@ -114,3 +114,36 @@ test('SS-11 a quiz record keeps the best score and never changes the first; malf
   assert.deepEqual(S.readQuiz({ best: 3, total: 4, first: 2 }), { best: 3, total: 4, first: 2 });
   for (const j of [null, {}, { best: 5, total: 4, first: 1 }, { best: 2, total: 4, first: 3 }, { best: -1, total: 4, first: 0 }, { best: 1, total: 0, first: 0 }, { best: 1.5, total: 4, first: 1 }]) assert.equal(S.readQuiz(j), null, JSON.stringify(j));
 });
+
+// Chapter locks (restored 12 Nov 2026, reference gate.js gateRefresh): the index is built from the canon exactly as build.signal.mjs builds it.
+const canon = (f) => JSON.parse(fs.readFileSync(path.join(repo, 'packages/signal-canon/data', f), 'utf8'));
+const IX = (() => { const gl = canon('gates.json'), lockGates = {}; for (const x of gl) if (x.tier !== 'opt') (lockGates[x.chapter] = lockGates[x.chapter] || []).push([x.kind, x.id, x.tier]);
+  const app = canon('app-data.json'); return { lessonQuiz: Object.fromEntries(Object.entries(app.lessons).map(([k, L]) => [k, L.quiz])), chapters: canon('story/index.json').map((c) => ({ id: c.id, title: c.title, gates: lockGates[c.id] || [] })) }; })();
+test('SS-12 a new reader: the Prologue and Season 1’s opening chapter are open, everything after is locked, and it waits on s01e00', () => {
+  const L = S.chapterLocks(IX, S.emptyProgress()), ids = IX.chapters.map((c) => c.id), at = ids.indexOf('s01e01');
+  assert.ok(ids.slice(0, at).every((id) => !L[id])); assert.ok(ids.slice(at).every((id) => L[id])); assert.equal(S.lockedBehind(IX, L).id, 's01e00');
+});
+test('SS-13 reviewer mode removes every lock without touching progress', () => { const p = { ...S.emptyProgress(), gates: false }; assert.ok(Object.values(S.chapterLocks(IX, p)).every((v) => !v)); assert.equal(S.lockedBehind(IX, S.chapterLocks(IX, p)), null); });
+test('SS-14 clearing every hard and soft gate of s01e00 opens s01e01 only; a soft gate may be skipped, a hard one may not', () => {
+  const gs = IX.chapters.find((c) => c.id === 's01e00').gates; let p = S.emptyProgress(); const st = S.emptyChapter();
+  for (const [kind, id, tier] of gs) { if (kind === 'decision') st.choices[id] = { letter: 'A', first: 'A', changes: 0, hints: 0 };
+    else if (tier === 'soft') p = S.skip(p, { kind, id, tier }); else if (kind === 'quiz') p = S.recordQuiz(p, id, 1, 1); else if (kind === 'lesson') p = S.recordQuiz(p, IX.lessonQuiz[id], 1, 1); else if (kind === 'lab') p = S.recordLabTry(p, id, true, true); else if (kind === 'drill') p = S.recordDrillTry(p, id, true); else throw new Error(`unexpected ${kind}`); }
+  p = { ...p, chapters: { s01e00: st } }; const L = S.chapterLocks(IX, p);
+  assert.equal(L.s01e01, false); assert.equal(L.s01e02, true); assert.equal(S.lockedBehind(IX, L).id, 's01e01');
+  const firstHard = gs.find(([k, , t]) => t === 'hard' && k === 'decision'); const st2 = { ...st, choices: { ...st.choices } }; delete st2.choices[firstHard[1]];
+  assert.equal(S.chapterLocks(IX, { ...p, chapters: { s01e00: st2 } }).s01e01, true, 'an open decision keeps the next chapter locked');
+});
+test('SS-15 a boss gate holds the next season until the boss is cleared', () => {
+  const i = IX.chapters.findIndex((c) => c.id === 's01e11'), lastS1 = IX.chapters[i], nextC = IX.chapters[i + 1];
+  assert.ok(lastS1.gates.some(([k]) => k === 'boss'));
+  const done = { gates: true }; // everything before s01e11 open: reviewer flag is per run, so test the boss rule on the chapter itself
+  const lite = { gates: [], quizzes: {}, lessons: {} }; const g = { index: 0, kind: 'boss', id: 'S01', tier: 'hard', twist: false, core: false };
+  assert.equal(S.gateCleared(g, S.emptyChapter(), { ...S.emptyProgress(), ...done }, lite), false);
+  assert.equal(S.gateCleared(g, S.emptyChapter(), { ...S.emptyProgress(), bosses: { S01: { tries: 3, passed: false, best: 7 } } }, lite), false);
+  assert.equal(S.gateCleared(g, S.emptyChapter(), { ...S.emptyProgress(), bosses: { S01: { tries: 4, passed: true, best: 8 } } }, lite), true); assert.ok(nextC.id.startsWith('s02'));
+});
+test('SS-16 boss and challenge records survive storage, and anything malformed is dropped', () => {
+  const p = { ...S.emptyProgress(), bosses: { S01: { tries: 2, passed: true, best: 8, at: 5, firstRun: 2 }, X: { tries: 1, passed: true, best: 1 }, S02: { tries: -1, passed: true, best: 1 } }, challenges: { 'hear-eq@2': { tries: 1, best: 90, first: 90, passed: true, last: 90, at: 1 }, 'hear-eq@9': { tries: 1, best: 1, first: 1, passed: false, last: 1, at: 1 }, 'see-moire@1': { tries: 1, best: 50, first: 60, passed: false, last: 50, at: 1 } } };
+  S.save(p); const r = S.load(); assert.deepEqual(r.bosses, { S01: { tries: 2, passed: true, best: 8, at: 5, firstRun: 2 } }); assert.deepEqual(Object.keys(r.challenges), ['hear-eq@2']);
+  const q = S.recordChalTry(S.recordChalTry(S.emptyProgress(), 'hear-eq@1', 40, false, 1), 'hear-eq@1', 100, true, 2); assert.deepEqual(q.challenges['hear-eq@1'], { tries: 2, best: 100, first: 40, passed: true, last: 100, at: 2 });
+});

@@ -67,6 +67,7 @@ export const OPS_PAGES: readonly PageDef[] = [
     ['learn.design', 'Design clinic', 'Eight lessons with figures worked on rooms in Core; rooms the rules flag', '/learn/design', 'DesignClinicPage', 'learn', 'design clinic acoustics microphones sightlines loudspeakers'],
     ['learn.design.lesson', 'Design lesson', 'One design-clinic lesson and its figures', '/learn/design/:lesson', 'DesignLessonPage', 'learn', 'design lesson figures'],
     ['learn.fieldbook', 'Fieldbook', 'The glossary and the formulas, by domain', '/learn/fieldbook', 'FieldbookPage', 'learn', 'fieldbook glossary formulas terms'],
+    ['learn.challenges', 'Challenges', 'Thirteen SIGNAL challenges in five modes, four levels each, scored with your best', '/learn/challenges', 'ChallengesPage', 'learn', 'challenges hear see reach build record eq compressor moire lighting wireless loudness'],
     ['learn.library', 'Learn library', 'SIGNAL lessons, thirteen kinds of knowledge, signal flows by kind of room', '/learn/library', 'LibraryPage', 'learn', 'library lessons knowledge signal flows'],
     ['learn.ask', 'Ask Empathia', 'Fifteen questions answered from Core, each with its sources', '/learn/ask', 'AskPage', 'ask', 'ask question answer'],
     ['learn.explore', 'System explorer', 'The SIGNAL venues, layer by layer', '/learn/explore', 'ExplorePage', 'learn', 'explore sanctuary layers'],

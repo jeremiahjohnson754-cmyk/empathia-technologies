@@ -14,7 +14,7 @@ import { BossRunner, Bosses, DrillRunner, IncidentRunner, LabRunner, MeltdownRun
 import { Block, Crumbs, Pick } from '../worlds/kit.js';
 import { emptyProgress, BANDS, SEVERITY, TIMEOUT, answerTalk, chapterVerdict, choose, complete, echoes, emphasis, emptyChapter, find, load, nextOf, passed, prevOf, reached, replayDecision, resume, save, seconds, tally, timeOut, trustLine, weightLine, weightOf,
   type Chapter, type ChapterState, type Clock, type Item, type Option, type Outcome, type Progress, type StoryIndex, type Verdict,
-  PLAYABLE, TIER_WORD, blocking, gateCleared, gateCount, gateKey, recordQuiz, recordDrillTry, recordIncidentRun, recordLabTry, recordChalTry, skip, type BossRecord, type Gate, type Pieces, type Quiz, type ReviewRecord, type MeltdownRecord } from './story.js';
+  PLAYABLE, TIER_WORD, blocking, gateCleared, gateCount, gateKey, recordQuiz, recordDrillTry, recordIncidentRun, recordLabTry, recordChalTry, skip, chapterLocks, lockedBehind, type BossRecord, type Gate, type Pieces, type Quiz, type ReviewRecord, type MeltdownRecord } from './story.js';
 
 type Flags = Record<string, { type: string; title: string; detail?: string }>;
 let ixCache: Promise<StoryIndex> | null = null; let flagCache: Promise<Flags> | null = null; let defsReady: Promise<void> | null = null;
@@ -52,7 +52,7 @@ export default function StoryPage({ params }: PageProps) {
 function Library({ ix, progress, commit }: { ix: StoryIndex; progress: Progress; commit: (p: Progress) => void }) {
   const next = resume(ix, progress); const started = Object.keys(progress.chapters).length > 0; const done = (s: number) => ix.chapters.filter((c) => c.season === s && progress.chapters[c.id]?.done).length;
   const [open, setOpen] = useState<number>(next.season); const st = ix.stats;
-  const seasonChapters = ix.chapters.filter((c) => c.season === open);
+  const seasonChapters = ix.chapters.filter((c) => c.season === open); const locks = useMemo(() => chapterLocks(ix, progress), [ix, progress]);
   return (
     <div className="sg" data-testid="story-library">
       <Crumbs items={[{ label: 'Learn', href: '#/learn' }, { label: 'SIGNAL' }]} />
@@ -71,10 +71,10 @@ function Library({ ix, progress, commit }: { ix: StoryIndex; progress: Progress;
       </nav>
 
       <Block title={open === 0 ? 'Prologue' : `Season ${open} · ${ix.seasons[String(open)]}`} sub={`${seasonChapters.length} chapters`} testId="story-chapters">
-        <ol className="sg-chapters">{seasonChapters.map((c) => { const s = progress.chapters[c.id]; return (
-          <li key={c.id}><a className="sg-chapter" href={`#/story/${c.id}`} data-chapter={c.id}>
+        <ol className="sg-chapters">{seasonChapters.map((c) => { const s = progress.chapters[c.id]; const lk = !!locks[c.id]; return (
+          <li key={c.id}><a className="sg-chapter" href={`#/story/${c.id}`} data-chapter={c.id} data-locked={lk} aria-label={lk ? `${c.kicker} ${c.title} (locked)` : undefined}>
             <span className="sg-chapter__k">{c.kicker}</span><b>{c.title}</b><span className="sg-chapter__s">{c.sub}</span>
-            <span className="ui-meta">{[`${c.panels} panels`, c.decisions ? `${c.decisions} decision${c.decisions === 1 ? '' : 's'}` : null, c.level, c.boss ? 'Boss level' : null, c.meltdown ? 'Meltdown' : null, s?.done ? 'Read' : s ? 'In progress' : null].filter(Boolean).join(' · ')}</span>
+            <span className="ui-meta">{[`${c.panels} panels`, c.decisions ? `${c.decisions} decision${c.decisions === 1 ? '' : 's'}` : null, c.level, c.boss ? 'Boss level' : null, c.meltdown ? 'Meltdown' : null, lk ? '🔒 Locked' : s?.done ? 'Read' : s ? 'In progress' : null].filter(Boolean).join(' · ')}</span>
           </a></li>); })}</ol>
       </Block>
     </div>
@@ -92,6 +92,7 @@ function Reader({ ix, id, progress, commit, update }: { ix: StoryIndex; id: stri
   const items = ch.data?.items || []; const upTo = reached(items, state, progress.gates, ctx); const finished = ch.data ? complete(items, state, ctx) : false; const hold = pieces && progress.gates ? blocking(state, progress, pieces) : null; const gc = pieces ? gateCount(state, progress, pieces) : null;
   useEffect(() => { if (ch.data && finished && !state.done) set({ ...state, done: true }); });   // a chapter is read once every decision in it is made
   const t = useMemo(() => tally(items, state), [items, state]); const next = nextOf(ix, id); const prev = prevOf(ix, id);
+  const locks = useMemo(() => chapterLocks(ix, progress), [ix, progress]); const locked = !!locks[id]; const behind = locked ? lockedBehind(ix, locks) : null;
   const prevCh = useLoaded(() => (prev ? getJson<Chapter>(`signal/story/${prev.id}.json`) : Promise.resolve(null)), `prev-${id}`);
   const before = useMemo(() => (prev && prevCh.data ? echoes(prevCh.data.items, progress.chapters[prev.id]) : null), [prev, prevCh.data, progress.chapters]);
   const said1 = (o: Outcome) => (o.kind === 'refused' ? o.why : o.verdict === 'costly' ? `Recorded: a costly call. ${o.option.fail || ''} The story goes on with it.` : o.verdict === 'canonical' ? 'Recorded: the professional call. The story continues.' : 'Recorded: it works, not the best. The story continues.');
@@ -111,6 +112,9 @@ function Reader({ ix, id, progress, commit, update }: { ix: StoryIndex; id: stri
       {ch.data && ch.data.chapter.flags.length > 0 && (
         <details className="sg-flags" data-testid="story-flags"><summary>{ch.data.chapter.flags.length} review point{ch.data.chapter.flags.length === 1 ? '' : 's'} open on this chapter</summary>
           <ul>{ch.data.chapter.flags.map((f) => <li key={f}><b>{f}</b> {flags.data?.[f] ? `· ${flags.data[f]!.type.toLowerCase()}: ${flags.data[f]!.title}` : ''}</li>)}</ul></details>)}
+      {locked ? <div className="sg-lock" role="note" data-testid="story-locked"><p className="sg-lock__k">🔒 Locked chapter</p>
+        <p>Clear the core (★) and recommended (◐) gates in {behind ? <b>{behind.title}</b> : 'the chapter before'} to open this one. Reviewer mode above shows every chapter without the gates and keeps your progress as it is.</p>
+        {behind && <p><a className="ui-btn ui-btn--primary" href={`#/story/${behind.id}`} data-testid="story-locked-back">◂ Back to {behind.title}</a> <a className="ui-btn" href="#/story">Library</a></p>}</div> : <>
       {!ch.data && <p data-testid="story-loading">Opening the chapter…</p>}
       {ch.data && <Echoes prev={prev?.title || null} e={before} />}
       <div className="sg-flow">
@@ -150,6 +154,7 @@ function Reader({ ix, id, progress, commit, update }: { ix: StoryIndex; id: stri
         <a className="ui-btn" href="#/story">Library</a>
         {(Object.keys(state.choices).length > 0 || state.found.length > 0 || Object.keys(state.talks).length > 0) && <button type="button" className="ui-btn ui-btn--quiet" data-testid="story-replay" onClick={() => { set(emptyChapter()); setSaid('Chapter reset. Your earlier choices in it are forgotten.'); }}>Replay this chapter</button>}
       </p>
+      </>}
     </article>
   );
 }

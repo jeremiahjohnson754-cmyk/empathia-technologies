@@ -95,3 +95,6 @@
 .sg-gameover { border: 2px solid var(--bad); border-radius: var(--r-sm); padding: 12px 14px; display: grid; gap: 8px; background: var(--bg); } .sg-gameover > * { margin: 0; }
 .sg-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .sg-banner { border: 2px solid var(--bad); border-radius: var(--r-sm); padding: 10px 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; background: var(--bg); }
+/* chapter locks (reference gate.js): a locked chapter shows its heading, the review bar and flags, then this card */
+.sg-lock { display: grid; gap: 8px; padding: 14px 16px; border: 2px dashed var(--line3); border-radius: var(--r-md); background: var(--panel); } .sg-lock > p { margin: 0; } .sg-lock__k { font-weight: 800; }
+.sg-chapter[data-locked=true] { opacity: .8; }
