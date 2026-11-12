@@ -37,7 +37,7 @@ export default function LessonPage({ params }: PageProps) {
     </Card>
     <Card title="Practise" sub="One decision from the lesson; your answer is training evidence only" testId="lesson-practice">
       <p><b>{l.practice.q}</b></p>
-      <div className="build__row" role="group" aria-label="Choices">{l.practice.choices.map((c) => <Button key={c.id} small onClick={() => { setLast(recordAttempt(l, c.id)); setN((x) => x + 1); }} data-choice={c.id}>{c.text}</Button>)}</div>
+      <div className="build__row" role="group" aria-label="Choices">{l.practice.choices.map((c) => <Button key={c.id} small onClick={() => { setLast(recordAttempt(l, c.id)); setN((x) => x + 1); }}>{c.text}</Button>)}</div>
       {last && <p role="status" data-testid="lesson-feedback" data-correct={String(last.correct)}>{last.correct ? <><b>Right.</b> {l.practice.why}</> : <><b>Not this one.</b> {l.practice.wrong[last.choice]} Try again.</>}</p>}
       <p className="ui-meta">{n} attempt{n === 1 ? '' : 's'} recorded on this computer for lesson version {l.version}. A practice answer never shows that a room or a device works.</p>
     </Card>
