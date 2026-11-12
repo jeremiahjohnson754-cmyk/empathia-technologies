@@ -83,6 +83,7 @@ suite('unit: SIGNAL Physics in Motion (24 models; all 36 physics labs fail at st
 suite('unit: SIGNAL ratings, season reviews and the loadout (six ratings from first attempts, Story Score, game over and retry)', 'unit', node, ['--test', 'tests/unit/signal-ratings.test.mjs'], tap);
 suite('unit: SIGNAL meltdowns (the cascade engine; the five expert runs end proven with grade S, boundaries and idling fail)', 'unit', node, ['--test', 'tests/unit/signal-meltdown.test.mjs'], tap);
 suite('unit: SIGNAL challenges (thirteen models in five modes; every start fails and every recipe passes as the reference QA logged)', 'unit', node, ['--test', 'tests/unit/signal-challenges.test.mjs'], tap);
+suite('unit: SIGNAL boss levels (all twelve clear on the intended run; every wrong tap, call, question, scope, design or estimate ends it)', 'unit', node, ['--test', 'tests/unit/signal-boss.test.mjs'], tap);
 suite('unit: Engineering Manual (chapters, rules, workflow, exceptions)', 'unit', node, ['--test', 'tests/unit/demo-manual.test.mjs'], tap);
 suite('unit: generated documents are current (estate manifests, product census, workflow matrix)', 'unit', node, ['--test', 'tests/unit/docs-generated.test.mjs'], tap);
 suite('unit: search that reads the sentence (corrections, conditions, counted answers, drop one condition; every count recomputed from the records)', 'unit', node, ['--test', 'tests/unit/demo-understand.test.mjs'], tap);

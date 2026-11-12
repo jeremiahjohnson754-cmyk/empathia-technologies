@@ -7,6 +7,8 @@ export * as Incidents from './incidents.js';
 export * as Labs from './labs.js';
 export * as Physics from './physics.js';
 export * as Meltdowns from './meltdown.js';
+export * as Challenges from './challenges/index.js';
+export * as Bosses from './boss.js';
 export * from './MeltdownRunner.js';
 export * from './LabRunner.js';
 export * from './theme.js';
