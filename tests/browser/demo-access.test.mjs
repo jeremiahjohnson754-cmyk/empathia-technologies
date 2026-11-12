@@ -86,4 +86,9 @@ for (const w of [390, 1440]) { const t = await open('#/search?q=switch', { role:
   const narrow = await t.page.evaluate(() => [...document.querySelectorAll('.sp__list b')].map((b) => Math.round(b.getBoundingClientRect().width)).filter((x) => x < 60));
   ok(`R1-02-${w}`, `Search Party at ${w}px: every result name keeps a readable width (≥ 60 px)`, (await t.page.locator('.sp__list b').count()) > 3 && narrow.length === 0, narrow.slice(0, 5).join(','));
   await t.close(); }
+// 12 Nov 2026: the five axes (60/10 P1) — a reference page every role may read; every value in words; no overflow on a phone
+for (const [role, w] of [['visitor', 390], ['architect', 1440]]) { const t = await open('#/design/axes', { role, w, h: 860 }); const p = t.page; await p.getByTestId('axes-page').waitFor();
+  const n = await p.locator('[data-testid=axes-page] .ax').count(); const axes = await p.$$eval('[data-testid=axes-page] .ax', (els) => [...new Set(els.map((e) => e.getAttribute('data-axis')))]);
+  const over = await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  ok(`AX-${role}`, `${role} at ${w} px: the five axes page shows every value of each axis apart, in words, with no overflow, no error and no request leaving the page`, n >= 30 && ['Condition', 'Provenance', 'Confidence', 'Workflow', 'Maturity'].every((a) => axes.includes(a)) && over <= 0 && !t.errs.length && !t.off.length, `${n} ${axes.join(',')} ${over} ${[...t.errs, ...t.off].slice(0, 2).join(' | ')}`); await t.close(); }
 await done();
