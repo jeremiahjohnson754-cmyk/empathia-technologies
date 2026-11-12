@@ -71,6 +71,16 @@ function Incident({ inc, w, apply, persona, me, est }: { inc: S.Incident; w: S.W
         <Facts items={[['Devices', packet.devices.length ? packet.devices.join(', ') : 'none recorded'], ['Access switch', packet.switch || 'none recorded'], ['Uplink', packet.uplink || 'none recorded'], ['Rooms sharing the switch', packet.sharing.length ? packet.sharing.join(', ') : 'none'], ['Power', packet.power || 'none recorded'], ['Evidence freshness', 'edges carry their provenance and date (synthetic collector export 2026-10-28)']]} />
         {me && <p className="ui-meta">Devices are listed minimised for a technician: no cost, no finance.</p>}
       </details>
+      {wo && (inc.state === 'ASSIGNED' || inc.state === 'ACCEPTED') && needs && (() => {
+        const pv = S.preflightFor(w, wo.id, pf); const booking = pv?.checks.find((c) => c.id === 'booking');
+        const stale = needs.parts.filter((pt) => S.stockOf(w, pt).stale); const canPlan = holds(persona, 'service.assign'); const canStock = canPlan || holds(persona, 'work.start');
+        if (booking?.ok && !stale.length) return null;
+        return <div className="card stack" data-testid="dispatch-plan"><h3 className="build__h">Dispatch planning</h3>
+          {!booking?.ok && <div className="build__row"><span>{booking?.why}</span>{canPlan ? <Button small onClick={() => apply((x) => S.replanWindow(x, persona, inc.id))}>Propose the next free window</Button> : <span className="ui-meta">a Service Manager re-plans the window (service.assign)</span>}</div>}
+          {stale.map((pt) => <div key={pt} className="build__row"><span>{pt}: stock check {S.stockOf(w, pt).ageDays} days old</span>{canStock ? <Button small onClick={() => apply((x) => S.recheckStock(x, persona, inc.id, pt))}>Recheck stock</Button> : <span className="ui-meta">the manager or the assigned technician rechecks it</span>}</div>)}
+          <p className="ui-meta">The calendar and the stock are synthetic records on this page; nothing is booked or counted anywhere else.</p>
+        </div>;
+      })()}
       <div className="card stack"><h3 className="build__h">Next governed step{next.length === 1 ? '' : 's'}</h3>
         {next.map((t) => <div key={t.to} className="svc__step"><b>{inc.state} → {t.to}</b> <span className="ui-meta">{t.authority} · guard {t.guard}</span>
           {!holds(persona, t.authority) ? <span className="ui-meta"> · not your authority</span> : (

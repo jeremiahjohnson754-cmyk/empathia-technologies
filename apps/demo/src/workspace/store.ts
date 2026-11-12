@@ -5,7 +5,7 @@
  * (@empathia/service-engine, @empathia/apex-engine); every outcome, refusals included, is an event in the ledger. Reset returns the
  * workspace to its seed so a demonstration replays identically.
  */
-import { SERVICE_TRANSITIONS, WORK_NEEDS, candidates, preflight, serviceBlockers, type Staff, type ServiceState, type Check } from '@empathia/service-engine';
+import { SERVICE_TRANSITIONS, WORK_NEEDS, candidates, preflight, serviceBlockers, overlaps, type Staff, type ServiceState, type Check } from '@empathia/service-engine';
 import { openCase, act, type Hypothesis, type Outcome, type Layer } from '@empathia/apex-engine';
 import * as FI from '@empathia/field-intelligence';
 import { holds, personaLabel } from '../build/store.js';
@@ -115,6 +115,29 @@ export function preflightFor(w: Workspace, woId: string, input: { access?: boole
   const needs = WORK_NEEDS[wo.workType] || WORK_NEEDS['break_fix']!;
   const parts = (wo.parts.length ? wo.parts : needs.parts.map((p) => ({ part: p, qty: 1 }))).map((p) => ({ ...p, stock: stockOf(w, p.part) }));
   return preflight({ window: wo.window, bookings: w.bookings[wo.roomId] || [], parts, access: input.access ? { confirmedBy: 'site champion (synthetic)' } : wo.access, safety: input.safety !== undefined ? { briefed: input.safety, heightPermit: input.heightPermit } : wo.safety, tools: needs.tools, toolsConfirmed: input.tools || wo.toolsConfirmed, needs, approval: { ok: true, why: 'break/fix on an operational room: no project authorization needed' } });
+}
+/** Re-plan the work window (12 Nov 2026: without it the seeded job could not pass its preflight through the page, a dead end found by the
+ *  staging journey). The service manager (service.assign) moves the window to the first three-hour slot, on the hour, at least a day
+ *  ahead, that the room's bookings leave free. The bookings are the synthetic calendar on the record; nothing is booked anywhere. */
+export function replanWindow(w: Workspace, persona: string, incidentId: string): Refusal | null {
+  const inc = incidentOf(w, incidentId); if (!inc) return refused(['no such incident']);
+  const n = need(w, persona, 'service.assign', 'service.replan', inc.id); if (n) return n;
+  const wo = workOrderOf(w, inc.workOrderId || ''); if (!wo) return deny(w, persona, 'service.replan', inc.id, ['no work order yet: assign first']);
+  const books = w.bookings[wo.roomId] || []; const t0 = new Date(Date.now() + DAY); t0.setUTCMinutes(0, 0, 0); t0.setUTCHours(t0.getUTCHours() + 1);
+  for (let h = 0; h < 24 * 14; h += 1) {
+    const from = new Date(t0.getTime() + h * 36e5), to = new Date(from.getTime() + 3 * 36e5);
+    const win = { from: from.toISOString().slice(0, 16), to: to.toISOString().slice(0, 16) };
+    if (!books.some((b) => overlaps(win, b))) { const was = wo.window; wo.window = win; log(w, persona, 'service.replan', wo.id, `window ${was ? `${was.from} → ${was.to}` : 'none'} re-planned to ${win.from} → ${win.to}, clear of the room's bookings (synthetic calendar)`); return null; }
+  }
+  return deny(w, persona, 'service.replan', wo.id, ['no free three-hour window in the next fourteen days']);
+}
+/** Recheck a part's stock (12 Nov 2026, same dead end): the count is confirmed as it stands on the synthetic record and its check date
+ *  becomes today. There is no inventory system behind it, and the ledger says so. The manager or the assigned technician may do it. */
+export function recheckStock(w: Workspace, persona: string, incidentId: string, part: string): Refusal | null {
+  const inc = incidentOf(w, incidentId); if (!inc) return refused(['no such incident']);
+  const n = need(w, persona, ['service.assign', 'work.start'], 'service.stock', inc.id); if (n) return n;
+  const s = w.stock[part]; if (!s) return deny(w, persona, 'service.stock', inc.id, [`${part} is not on the stock record`]);
+  s.checkedAt = now(); log(w, persona, 'service.stock', inc.id, `${part}: ${s.onHand} on hand at ${s.location}, rechecked (synthetic record; no inventory system)`); return null;
 }
 export function start(w: Workspace, persona: string, incidentId: string, input: { access: boolean; safety: boolean; heightPermit: boolean; tools: string[] }): Refusal | null {
   const inc = incidentOf(w, incidentId); if (!inc) return refused(['no such incident']);

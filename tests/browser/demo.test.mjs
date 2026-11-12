@@ -189,8 +189,13 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     ok('V-07', 'dispatch preflight on the record: the room is booked in the proposed window, the processor stock check is stale, tools unconfirmed — each named', /booked/.test(pf0) && /processor: stock check is 3[0-9] days old/.test(pf0) && /missing: audio analyser/.test(pf0), pf0.slice(0, 300));
     await page.click('[data-testid=preflight] button:has-text("Start the work")'); await page.waitForTimeout(250);
     ok('V-08', 'a failed preflight blocks IN_PROGRESS (guard preflight_passed) and the refusal is in the ledger', /preflight has a failed check/.test(await refusal()), await refusal());
-    // the manager re-plans the window outside the booking and the stock is rechecked; the technician confirms tools and starts
-    await page.evaluate(() => { const w = JSON.parse(localStorage.getItem('empathia.demo.workspace.v1')); const wo = w.workOrders.find((x) => x.id === 'WO-0088'); const d = new Date(Date.now() + 2 * 864e5); wo.window = { from: d.toISOString().slice(0, 16), to: new Date(d.getTime() + 3 * 36e5).toISOString().slice(0, 16) }; w.stock.processor.checkedAt = new Date().toISOString(); localStorage.setItem('empathia.demo.workspace.v1', JSON.stringify(w)); location.hash = '#/v25/service?id=ISS-0417'; }); await page.reload(); await page.waitForTimeout(600); await persp('service'); await page.waitForSelector('[data-testid=preflight]');
+    // the manager re-plans the window outside the booking and rechecks the stale stock through the page (12 Nov 2026: these were done by
+    // editing storage, which hid a dead end the staging journey found; the page now has the controls); the technician confirms tools and starts
+    await persp('svcmgr'); await page.waitForSelector('[data-testid=dispatch-plan]');
+    await page.click('[data-testid=dispatch-plan] button:has-text("Propose the next free window")'); await page.waitForTimeout(250);
+    while (await page.locator('[data-testid=dispatch-plan] button:has-text("Recheck stock")').count()) { await page.locator('[data-testid=dispatch-plan] button:has-text("Recheck stock")').first().click(); await page.waitForTimeout(200); }
+    ok('V-08b', 'the service manager re-plans the window clear of the room\u2019s bookings and rechecks the stale stock on the page; the plan card then goes away', (await page.locator('[data-testid=dispatch-plan]').count()) === 0, await refusal());
+    await persp('service'); await page.waitForSelector('[data-testid=preflight]');
     for (const t of ['audio analyser', 'laptop with the DSP tool']) await page.locator(`[data-testid=preflight] label:has-text("${t}") input`).check();
     await page.click('[data-testid=preflight] button:has-text("Start the work")'); await page.waitForTimeout(300);
     ok('V-09', 'with every check clear the technician starts the work (ACCEPTED → IN_PROGRESS)', /IN_PROGRESS/.test(await page.locator('[data-testid=incident] h2').innerText()), await refusal());
