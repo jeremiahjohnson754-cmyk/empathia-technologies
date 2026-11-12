@@ -98,3 +98,12 @@
 /* chapter locks (reference gate.js): a locked chapter shows its heading, the review bar and flags, then this card */
 .sg-lock { display: grid; gap: 8px; padding: 14px 16px; border: 2px dashed var(--line3); border-radius: var(--r-md); background: var(--panel); } .sg-lock > p { margin: 0; } .sg-lock__k { font-weight: 800; }
 .sg-chapter[data-locked=true] { opacity: .8; }
+/* Result pop-ups (gate.js, restored 12 Nov 2026): a modal card over a dimmed page; its border and title say how it went. */
+.sg-pop { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgb(3 6 12 / .62); animation: sg-pop-fade .18s ease-out; }
+.sg-pop__card { width: min(460px, 100%); max-height: 88vh; overflow: auto; border-radius: var(--r-md); padding: 18px 18px 16px; background: var(--panel); color: var(--tx); border: 2px solid var(--line3); box-shadow: 0 20px 60px rgb(0 0 0 / .45); display: grid; gap: 8px; animation: sg-pop-rise .22s ease-out; }
+.sg-pop__card.is-ok { border-color: var(--ok); } .sg-pop__card.is-bad { border-color: var(--bad); } .sg-pop__card.is-mid { border-color: var(--warn); }
+.sg-pop__k { font-size: var(--fs-xs); font-weight: 800; letter-spacing: .14em; color: var(--tx2); }
+.sg-pop__card h3 { margin: 0; font-size: var(--fs-xl); letter-spacing: .02em; }
+.sg-pop__card ul { margin: 0; padding-left: 18px; line-height: 1.5; } .sg-pop__card p { margin: 0; }
+@keyframes sg-pop-fade { from { opacity: 0; } } @keyframes sg-pop-rise { from { transform: translateY(8px); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .sg-pop, .sg-pop__card { animation: none; } }

@@ -10,6 +10,8 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { PageProps } from '../registry.types.js';
 import * as RT from './ratings.js';
+import { chapterPop, doneKeys, gatePop, type PopBody } from './pops.js';
+import type { MissionIndex } from './mission.js';
 import { BossRunner, Bosses, DrillRunner, IncidentRunner, LabRunner, MeltdownRunner, LAB_KINDS_PLAYABLE, Meltdowns, type Drill, type Formula, type Incidents, type LabData } from '@empathia/ui';
 import { Block, Crumbs, Pick } from '../worlds/kit.js';
 import { emptyProgress, BANDS, SEVERITY, TIMEOUT, answerTalk, chapterVerdict, choose, complete, echoes, emphasis, emptyChapter, find, load, nextOf, passed, prevOf, reached, replayDecision, resume, save, seconds, tally, timeOut, trustLine, weightLine, weightOf,
@@ -25,6 +27,8 @@ export const loadIndex = () => (ixCache ||= getJson<StoryIndex>('signal/index.js
 const loadFlags = () => (flagCache ||= getJson<Flags>('signal/flags.json').catch(() => ({} as Flags)));
 let ratingsCache: Promise<RT.RatingsIndex> | null = null;
 const loadRatings = () => (ratingsCache ||= getJson<RT.RatingsIndex>('signal/ratings.json').catch((e) => { ratingsCache = null; throw e; }));
+let missionCache: Promise<MissionIndex> | null = null;
+const loadMission = () => (missionCache ||= getJson<MissionIndex>('signal/mission.json').catch((e) => { missionCache = null; throw e; }));
 /** The shared sprite sheet (figures, props, backgrounds) is first-party art shipped with the build; it is put in the page once so panels can refer to it. */
 export const loadDefs = () => (defsReady ||= fetch('signal/defs.svg').then((r) => r.text()).then((svg) => { if (document.getElementById('sg-defs')) return; const d = document.createElement('div'); d.id = 'sg-defs'; d.className = 'sg-defs'; d.setAttribute('aria-hidden', 'true'); d.innerHTML = svg; document.body.appendChild(d); }).catch(() => { defsReady = null; }));
 export function useLoaded<T>(get: () => Promise<T>, key: string): { data: T | null; error: string | null } {
@@ -95,6 +99,23 @@ function Reader({ ix, id, progress, commit, update }: { ix: StoryIndex; id: stri
   const locks = useMemo(() => chapterLocks(ix, progress), [ix, progress]); const locked = !!locks[id]; const behind = locked ? lockedBehind(ix, locks) : null;
   const prevCh = useLoaded(() => (prev ? getJson<Chapter>(`signal/story/${prev.id}.json`) : Promise.resolve(null)), `prev-${id}`);
   const before = useMemo(() => (prev && prevCh.data ? echoes(prevCh.data.items, progress.chapters[prev.id]) : null), [prev, prevCh.data, progress.chapters]);
+  // Result pop-ups (gate.js): a card for each gate newly cleared by playing it, and one when the chapter is finished. The first look at a
+  // chapter only notes what is already done; nothing pops for it. window.SIGNAL_NOPOP turns them off, as in the reference (its own QA).
+  const mi = useLoaded(loadMission, 'mission'); const seen = useRef<Set<string> | null>(null); const doneSeen = useRef<boolean | null>(null);
+  const [pops, setPops] = useState<Array<{ g?: Gate; chapter?: true }>>([]); const [showing, setShowing] = useState(false); const closedOnce = useRef(false); const prevFocus = useRef<Element | null>(null);
+  useEffect(() => { if (!pieces || !ch.data || locked) return; const now = doneKeys(pieces, state, progress);
+    if (seen.current === null) { seen.current = now; doneSeen.current = finished; return; }
+    const fresh = pieces.gates.filter((g) => now.has(`${g.kind}:${g.id}`) && !seen.current!.has(`${g.kind}:${g.id}`)); seen.current = now;
+    const add: Array<{ g?: Gate; chapter?: true }> = fresh.map((g) => ({ g })); if (finished && !doneSeen.current) add.push({ chapter: true }); doneSeen.current = finished;
+    if (add.length && !(globalThis as { SIGNAL_NOPOP?: boolean }).SIGNAL_NOPOP) setPops((q) => [...q, ...add]); });
+  useEffect(() => { if (showing || !pops.length) return undefined; const t = setTimeout(() => { prevFocus.current = document.activeElement; setShowing(true); }, closedOnce.current ? 250 : 900); return () => clearTimeout(t); }, [showing, pops.length]);
+  const head = showing ? pops[0] : undefined; const lq = ix.lessonQuiz || {};
+  const body: PopBody | null = head && ch.data && pieces ? (head.chapter ? chapterPop(ref.title, items, state, progress, mi.data, id, lq, next) : gatePop(head.g!, items, state, progress, pieces, mi.data, id, lq)) : null;
+  const closePop = (move: boolean) => { const it = pops[0]; setPops((q) => q.slice(1)); setShowing(false); closedOnce.current = true;
+    if (move && it?.chapter && next) { location.hash = `#/story/${next.id}`; return; }
+    const at = move && it?.g ? document.querySelector(it.g.kind === 'decision' ? `[data-decision="${it.g.id}"]` : `[data-piece="${it.g.id}"]`)?.closest('.sg-flow > *')?.nextElementSibling as HTMLElement | null | undefined : null;
+    if (at) { at.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); at.setAttribute('tabindex', '-1'); at.focus({ preventScroll: true }); }
+    else (prevFocus.current as HTMLElement | null)?.focus?.({ preventScroll: true }); };
   const said1 = (o: Outcome) => (o.kind === 'refused' ? o.why : o.verdict === 'costly' ? `Recorded: a costly call. ${o.option.fail || ''} The story goes on with it.` : o.verdict === 'canonical' ? 'Recorded: the professional call. The story continues.' : 'Recorded: it works, not the best. The story continues.');
   if (ch.error) return <div className="sg" data-testid="story-error"><h1 tabIndex={-1}>{ref.title} did not load</h1>{notKept() ? <p className="lead" data-testid="story-not-kept">You are offline and this chapter is not kept on this device. Chapters you have already opened, and seasons kept from <a href="#/offline">Offline and this device</a>, open without a connection. Your progress is untouched.</p> : <p className="lead">This chapter’s file could not be read ({ch.error}). Your progress is untouched.</p>}<p><a className="ui-btn ui-btn--primary" href="#/story">Back to the library</a></p></div>;
   let panelNo = -1;
@@ -135,6 +156,7 @@ function Reader({ ix, id, progress, commit, update }: { ix: StoryIndex; id: stri
         {ch.data && upTo >= items.length && art.data?.closing.map((c, i) => <figure key={i} className="sg-panel"><div className="sg-art" role="img" aria-label={c.alt} dangerouslySetInnerHTML={{ __html: c.svg }} /></figure>)}
       </div>
       <p className="ui-visually-hidden" role="status" aria-live="polite" data-testid="story-said">{said}</p>
+      {body && <GatePop body={body} go={head!.chapter ? (next ? 'Open the next chapter ▸' : 'Close') : 'Continue the story ▸'} onClose={closePop} />}
       {ch.data && upTo < items.length && <p className="sg-wait" data-testid="story-waiting" data-kind={hold?.kind || 'decision'}>{hold && hold.kind !== 'decision' ? `🔒 ${hold.kind === 'lesson' ? 'Finish the lesson check' : hold.kind === 'drill' ? 'Finish the drill' : hold.kind === 'incident' ? 'Run the live incident to its end' : hold.kind === 'lab' ? 'Fix it — or run out the clock' : hold.kind === 'meltdown' ? 'Survive the meltdown — or fail it' : hold.kind === 'boss' ? 'Clear the boss level — a failed run starts over from the top —' : hold.kind === 'review' ? 'The next season opens only with a Story Score of 65 or higher. Submit the season for review' : 'Answer every question'} to continue${hold.tier === 'soft' ? ', or skip it for now' : ''}.` : 'The story is waiting for your decision.'} {items.length - upTo} more moments follow.{gc ? ` ${gc.cleared} of ${gc.total} gates cleared in this chapter.` : ''}</p>}
       {pieces && <p className="ui-meta" data-testid="story-gate-note">Played inside the story in this build: decisions, quizzes, lessons, drills, live incidents, Fix-It Labs, season reviews, meltdowns and boss levels.</p>}
       {ch.data && finished && upTo >= items.length && (
@@ -392,6 +414,17 @@ function Decision({ d, state, clock, onChoose, onTimeout, onReplay }: ViewProps 
       {missed && !peek && <Weight o={null} c={{ letter: TIMEOUT, hints: 0 }} d={d} review={false} />}
     </section>
   );
+}
+/** The result card (gate.js showPop): a modal dialog, focus on its first button, Tab moves between its two buttons, Escape or a tap
+ *  outside stays where you are. */
+function GatePop({ body, go, onClose }: { body: PopBody; go: string; onClose: (move: boolean) => void }) {
+  const a = useRef<HTMLButtonElement>(null); const b = useRef<HTMLButtonElement>(null); useEffect(() => { a.current?.focus(); }, [body.title, body.kicker]);
+  return <div className="sg-pop" role="dialog" aria-modal="true" aria-labelledby="sg-pop-h" data-testid="story-pop" data-tone={body.tone} onClick={(e) => { if (e.target === e.currentTarget) onClose(false); }}
+    onKeyDown={(e) => { if (e.key === 'Escape') { e.preventDefault(); onClose(false); } else if (e.key === 'Tab') { e.preventDefault(); (document.activeElement === a.current ? b : a).current?.focus(); } }}>
+    <div className={`sg-pop__card is-${body.tone}`}><span className="sg-pop__k">{body.kicker}</span><h3 id="sg-pop-h">{body.title}</h3>
+      <ul>{body.lines.map((t, i) => <li key={i}>{t}</li>)}</ul>
+      <p className="sg-row"><button ref={a} type="button" className="ui-btn ui-btn--primary" data-testid="story-pop-go" onClick={() => onClose(true)}>{go}</button><button ref={b} type="button" className="ui-btn" data-testid="story-pop-stay" onClick={() => onClose(false)}>Stay here</button></p></div>
+  </div>;
 }
 function Echoes({ prev, e }: { prev: string | null; e: ReturnType<typeof echoes> | null }) {
   if (!prev) return <p className="sg-echo" data-testid="story-echo" data-made="0">Your story starts here. Every choice you make is remembered, by you and by the crew.</p>;
