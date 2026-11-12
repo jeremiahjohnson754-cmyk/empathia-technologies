@@ -59,8 +59,8 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
       await page.locator('.build__list li[data-dev] button[aria-pressed=true]').first().click(); }
     { await page.locator('[data-testid=build-outline] summary').click(); await page.fill('[aria-label="Outline corners"]', '0,0; 4,4; 4,0; 0,4'); await page.getByTestId('build-outline-go').click(); await page.waitForTimeout(120); const bow = await refusal();
       await page.fill('[aria-label="Outline corners"]', '0,0; 6,0; 6,4; 3,4; 3,7; 0,7'); await page.getByTestId('build-outline-go').click(); await page.waitForTimeout(150); const t2 = await main();
-      ok('B-03c', 'an outline that crosses itself is refused; a valid one is drawn, its length and width DECLARED; undo puts the template outline back', /cross/.test(bow) && /outline DECLARED/.test(t2) && /7 × 6 ×/.test(t2), bow);
-      await page.getByTestId('build-undo').click(); await page.waitForTimeout(120); }
+      await page.getByTestId('build-undo').click(); await page.waitForTimeout(150); const t3 = await main();
+      ok('B-03c', 'an outline that crosses itself is refused; a valid one is drawn, its length and width DECLARED; undo puts the template outline back', /cross/.test(bow) && /outline DECLARED/.test(t2) && /2\.13 × 1\.83 ×/.test(t2) && /5\.99\d? × 3\.96\d? ×/.test(t3) /* the room was created in feet (B-02/B-03): 7 ft × 6 ft is 2.13 × 1.83 m */, `${bow.replace(/\n/g, ' ')} | ${(t2.match(/\d+(\.\d+)? × \d+(\.\d+)? × [^\n]*/) || [''])[0]}`); }
     await page.click('button:has-text("Approve the suggestion")'); await page.waitForTimeout(150);
     ok('B-04', 'the designer cannot approve the classification (authority)', /room\.classify\.approve/.test(await refusal()), await refusal());
     await page.fill('[aria-label="Revision reason"]', 'initial layout'); await page.click('button:has-text("Save revision")'); await page.waitForTimeout(150);
@@ -81,6 +81,11 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     await persp('cxeng'); await page.click('button:has-text("Record as")'); await page.waitForTimeout(150);
     ok('B-09', 'nothing passes from a design: recording before COMMISSIONING is refused', /COMMISSIONING/.test(await refusal()), await refusal());
     await persp('syseng'); await page.click('button:has-text("Move to COMMISSIONING")'); await page.waitForTimeout(150);
+    // 12 Nov 2026: commissioning deficiencies (V2.5.3 v25RoomCxIssue): a failed test opens one; a verified retest resolves it (checked after B-12)
+    await persp('cxeng'); await page.selectOption('#b-state', 'FAIL'); await page.fill('#b-ref', 'photo 7'); if (await page.locator('#b-inst').count()) await page.fill('#b-inst', 'meter M-1, calibrated 2026-06');
+    await page.click('button:has-text("Record as")'); await page.waitForTimeout(150); const iss1 = await page.getByTestId('build-issues').innerText().catch(() => '');
+    await page.selectOption('#b-state', 'PASS'); await page.click('button:has-text("Record as")'); await page.waitForTimeout(150);
+    ok('B-09b', 'a failed test opens a commissioning deficiency, OPEN and unassigned', /CXI-1/.test(iss1) && /OPEN/.test(iss1) && /unassigned/.test(iss1), iss1.slice(0, 160) || await refusal());
     await persp('cxeng'); await page.click('button:has-text("Record all untested as PASS")'); await page.waitForTimeout(400);
     const recorded = () => page.locator('.build__list').last().innerText();
     const rec = await recorded();
@@ -89,6 +94,7 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     ok('B-11', 'the recorder cannot verify their own results', /independent/.test(await refusal()), await refusal());
     await persp('architect'); await page.click('button:has-text("Verify all unverified")'); await page.waitForTimeout(400);
     ok('B-12', 'a different person verifies every PASS', (await recorded()).includes('PASS_VERIFIED') && !(await recorded()).includes('PASS_UNVERIFIED'));
+    { const iss2 = await page.getByTestId('build-issues').innerText().catch(() => ''); ok('B-12b', 'the deficiency is resolved by the retest once someone else verified it', /CXI-1/.test(iss2) && /RESOLVED/.test(iss2) && /verified by/.test(iss2), iss2.slice(0, 200)); }
     await page.click('button:has-text("Move to ACCEPTED")'); await page.waitForTimeout(200);
     ok('B-13', 'the verifier cannot accept the room (separation of duties)', /separation of duties/.test(await refusal()), await refusal());
     await persp('cxeng'); await page.click('button:has-text("Move to ACCEPTED")'); await page.waitForTimeout(200);
