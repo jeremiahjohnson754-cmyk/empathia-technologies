@@ -71,3 +71,10 @@ test('commissioning deficiencies: a failed test opens one, failing again reopens
   B.record(d, 'cxeng', row.id, { state: 'PASS', ...ev }); assert.equal(i.state, 'OPEN', 'an unverified pass resolves nothing');
   const v = B.verify(d, 'qa_reviewer', row.id); assert.ok(!('why' in v), JSON.stringify(v.why)); assert.equal(i.state, 'RESOLVED'); assert.match(i.resolution, /verified by/);
 });
+test('importing a record keeps its name, size and kind only, says what it supports and what is missing; CAD is not supported', () => {
+  const d = draft(); assert.equal(B.importKind('plan.SVG'), 'plan_image'); assert.equal(B.importKind('a.dwg'), 'cad'); assert.equal(B.importKind('room.jpeg'), 'photo'); assert.equal(B.importKind('x'), 'other');
+  assert.ok('why' in B.importRecord(d, 'requestor', { name: 'a.pdf', size: 10 })); assert.ok('why' in B.importRecord(d, 'designer', { name: 'big.pdf', size: 60 * 1024 * 1024 }));
+  B.importRecord(d, 'designer', { name: 'level4.dwg', size: 2048 }); const r = d.imports[0]; assert.equal(r.id, 'IMP-1'); assert.match(r.support, /NOT SUPPORTED/); assert.equal(r.confidence, 'low');
+  B.importRecord(d, 'designer', { name: 'plan.png', size: 2048 }); assert.equal(d.imports[1].confidence, 'scale not confirmed'); assert.ok(d.imports[1].missing.some((m) => /confirmed dimensions/.test(m)));
+  B.setOutline(d, 'designer', '0,0; 6,0; 6,4; 0,4'); B.confirmScale(d, 'designer', 1, '6'); B.importRecord(d, 'designer', { name: 'plan2.png', size: 2048 }); assert.equal(d.imports[2].confidence, 'scale confirmed');
+});

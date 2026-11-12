@@ -100,6 +100,11 @@ function Design({ d, persona, a, apply, undo }: { d: S.Draft; persona: string; a
       <div>
         <Plan d={d} onPlace={['PLANNED', 'COMMISSIONING'].includes(d.design.lifecycle) ? (x, y) => apply(S.addDevice(d, persona, cat, { x, y })) : undefined} />
         <div className="build__row"><label className="ui-muted" htmlFor="b-cat">Add</label><select id="b-cat" value={cat} onChange={(e) => setCat(e.target.value)}>{CATS.map(([k, l, grp]) => <option key={k} value={k}>{grp} · {l}</option>)}</select><Button small onClick={() => apply(S.addDevice(d, persona, cat, { x: g.widthM / 2, y: g.lengthM / 2 }))}>Place at the centre</Button></div>
+        <details className="build__outline" data-testid="build-imports"><summary>Files recorded against the room ({(d.imports || []).length})</summary>
+          <p className="ui-muted">A file is recorded by its name, size and kind; nothing is read from it here. Each says what it can support and what is still missing.</p>
+          <div className="build__row"><label className="ui-btn ui-btn--quiet">Record a file<input type="file" className="ui-sr" onChange={(e) => { const f = e.target.files?.[0]; if (f) step((y) => S.importRecord(y, persona, { name: f.name, size: f.size })); e.target.value = ''; }} data-testid="build-import" /></label></div>
+          {(d.imports || []).length > 0 && <ul className="build__list">{(d.imports || []).map((m) => <li key={m.id}><code>{m.id}</code> {m.name} <Tag tone={m.kind === 'cad' || m.kind === 'other' ? 'warn' : 'info'}>{m.kind.replace('_', ' ')}</Tag> <span className="ui-muted">{m.support} · confidence {m.confidence}{m.missing.length ? ` · still missing: ${m.missing.join('; ')}` : ''}</span></li>)}</ul>}
+        </details>
         {editable && <details className="build__outline" data-testid="build-outline"><summary>Outline and scale</summary>
           <p className="ui-muted">Corners in {d.unit === 'ft' ? 'feet' : 'metres'}, going round the room once: <code>x,y; x,y; …</code>. Devices move with the outline’s origin; length and width become DECLARED.</p>
           <div className="build__row"><textarea aria-label="Outline corners" rows={2} value={outline} onChange={(e) => setOutline(e.target.value)} /><Button small onClick={() => step((y) => S.setOutline(y, persona, outline))} testId="build-outline-go">Draw the outline</Button></div>

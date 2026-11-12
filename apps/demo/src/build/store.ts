@@ -38,7 +38,10 @@ export interface Draft {
   redlines?: Redline[];
   /** commissioning deficiencies (V2.5.3 v25RoomCxIssue): one per failed test, resolved only by a verified retest */
   issues?: CxIssue[];
+  /** files recorded against the room (V2.5.3 v25RoomImportRecord): what each can and cannot give; nothing is read from them here */
+  imports?: ImportRecord[];
 }
+export interface ImportRecord { id: string; name: string; kind: 'photo' | 'plan_image' | 'pdf' | 'cad' | 'other'; size: number; support: string; confidence: string; missing: string[]; by: string; at: string }
 export interface CxIssue { id: string; key: string; test: string; label: string; severity: 'High' | 'Medium'; state: 'OPEN' | 'RESOLVED'; owner: string | null; seen: number; evidence: Array<{ at: string; finding: string }>; resolution?: string }
 export interface Redline { id: string; drawing: string; text: string; by: string; at: string; revision: number; state: 'OPEN' | 'RESOLVED'; resolution?: string; resolvedBy?: string }
 export interface Baseline { version: number; at: string; by: string; revision: number | null; results: Record<string, string>; devices: Array<{ id: string; cat: string; label: string }>; state: 'CURRENT' | 'SUPERSEDED' }
@@ -326,4 +329,22 @@ export function workbookSheets(d: Draft): import('./xlsx.js').Sheet[] {
     { name: 'Redlines', header: ['id', 'drawing', 'revision', 'state', 'text', 'by', 'resolution'], rows: (d.redlines || []).map((r) => [r.id, DRAWING_KINDS[r.drawing] || r.drawing, r.revision, r.state, r.text, r.by, r.resolution || '']) },
     { name: 'About', header: ['field', 'value'], rows: [['generated', now()], ['from', 'Empathia demonstrator, Build a Room (synthetic data)'], ['note', 'Nothing in this workbook is a measurement. Results come only from the record.']] },
   ];
+}
+
+const IMPORT_SUPPORT: Record<ImportRecord['kind'], string> = {
+  photo: 'conceptual layout only: no dimensions are taken from a photograph',
+  plan_image: 'a scaled plan: its dimensions count only after the outline is drawn and the scale confirmed here',
+  pdf: 'stored as a reference: PDF pages are not rendered or measured here',
+  cad: 'NOT SUPPORTED here: DWG, RVT or IFC need engineering tools; record the file and enter the geometry',
+  other: 'NOT SUPPORTED',
+};
+export const importKind = (name: string): ImportRecord['kind'] => { const e = (/\.([a-z0-9]+)$/i.exec(name)?.[1] || '').toLowerCase(); return ['jpg', 'jpeg', 'heic', 'webp'].includes(e) ? 'photo' : ['png', 'svg', 'tif', 'tiff'].includes(e) ? 'plan_image' : e === 'pdf' ? 'pdf' : ['dwg', 'dxf', 'rvt', 'ifc'].includes(e) ? 'cad' : 'other'; };
+/** Record a file against the room: its name, size and kind only (its content is not read), what it can support and what is still missing. */
+export function importRecord(d: Draft, persona: string, file: { name: string; size: number }): Draft | Refusal {
+  if (!holds(persona, 'room.design')) return refused([`${personaLabel(persona)} does not hold room.design`]);
+  if (!file.name.trim()) return refused(['a file needs a name']); if (file.size > 50 * 1024 * 1024) return refused(['files over 50 MB are not recorded here']);
+  const kind = importKind(file.name); const g = d.design.geometry.provenance as Record<string, string>; const missing: string[] = [];
+  if (!(kind === 'plan_image' && g.scale === 'DECLARED')) missing.push('confirmed dimensions (draw the outline and confirm its scale)'); if (g.ceiling !== 'DECLARED') missing.push('ceiling height'); if (kind === 'photo') missing.push('a scaled plan or a survey');
+  const list = d.imports || (d.imports = []); const r: ImportRecord = { id: `IMP-${list.length + 1}`, name: file.name.slice(0, 120), kind, size: file.size, support: IMPORT_SUPPORT[kind], confidence: kind === 'plan_image' && g.scale === 'DECLARED' ? 'scale confirmed' : kind === 'plan_image' ? 'scale not confirmed' : 'low', missing, by: persona, at: now() };
+  list.push(r); log(d, persona, 'room.record_imported', `${r.id} ${r.name} (${kind}, ${Math.round(file.size / 1024)} KB): ${r.support}`); return d;
 }
