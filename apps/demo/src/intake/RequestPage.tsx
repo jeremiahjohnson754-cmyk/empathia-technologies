@@ -23,7 +23,7 @@ const KIND_ICON: Record<KindId, 'plus' | 'device' | 'undo' | 'room' | 'calendar'
 const plural = (n: number, one: string) => `${n} ${one}${n === 1 ? '' : 's'}`;
 const fromQuery = (q: URLSearchParams, kind?: string): Draft | null => {
   const k = KINDS.find((x) => x.id === (kind || q.get('kind'))); const room = q.get('room'); if (!k && !room) return null;
-  const d = blank(k?.id || 'add-devices'); if (room && roomById(room)) { d.roomId = room; d.building = roomById(room)!.building; } const pos = q.get('position'); if (pos) d.position = pos; return d;
+  const d = blank(k?.id || 'add-devices'); if (room && roomById(room)) { d.roomId = room; d.building = roomById(room)!.building; } const pos = q.get('position'); if (pos) d.position = pos; const need = q.get('need'); if (need) d.need = need.replace(/[\u0000-\u001f]/g, ' ').slice(0, 600); return d;
 };
 const restore = (): Draft | null => { try { const s = sessionStorage.getItem(DRAFT_KEY); const d = s ? (JSON.parse(s) as Draft) : null; return d && KINDS.some((k) => k.id === d.kind) && Array.isArray(d.adds) ? { ...blank(d.kind), ...d } : null; } catch { return null; } };
 

@@ -214,6 +214,13 @@ function ObjectCardView({ p, r, tech, cov, role, onMove }: { p: ReturnType<typeo
  *  dragging needed), change the seat count, and watch the modeled scores against the current layout (the tick). They are shown separately,
  *  never added into one score. Turning a camera is not offered: in this model cameras aim at the seats on their own. */
 const MOVABLE = ['camera', 'bar', 'micceil', 'mictable', 'lectern', 'table', 'speaker'];
+/** The request text a sent layout carries (V2.5.3's "reconfigure and send": the moves, the seats, and the model run on both layouts). */
+function layoutNeed(positions: ReturnType<typeof roomState>['positions'], ed: { mv: Record<string, [number, number]>; seats: number }, base: ReturnType<typeof roomState>['cov'], cov: ReturnType<typeof roomState>['cov']): string {
+  const f = (v: number) => `${v >= 0 ? '+' : ''}${v.toFixed(2)}`; const lab = (c: string) => positions.find((p) => p.code === c)?.label || c;
+  const moves = Object.entries(ed.mv).map(([c, [dx, dy]]) => `${lab(c)} (${c}) ${f(dx)}, ${f(dy)} m`);
+  return [`Layout from Lite (Optimize): ${moves.length ? moves.join('; ') : 'no device moved'}${ed.seats ? `; seats ${ed.seats > 0 ? '+' : ''}${ed.seats}` : ''}.`,
+    `Modeled, not measured: camera ${pct(base.camera.covered, base.camera.of)} % → ${pct(cov.camera.covered, cov.camera.of)} % of seats; microphone pickup ${pct(base.mic.covered, base.mic.of)} % → ${pct(cov.mic.covered, cov.mic.of)} %.`].join(' ');
+}
 function ChangeRoom({ positions, base, cov, ed, setEd, tool, setTool, roomId, edited }: { positions: ReturnType<typeof roomState>['positions']; base: ReturnType<typeof roomState>['cov']; cov: ReturnType<typeof roomState>['cov']; ed: { mv: Record<string, [number, number]>; seats: number }; setEd: (e: { mv: Record<string, [number, number]>; seats: number }) => void; tool: string | null; setTool: (t: string) => void; roomId: string; edited: boolean }) {
   const movable = positions.filter((x) => MOVABLE.includes(x.cat)).sort((a, b) => MOVABLE.indexOf(a.cat) - MOVABLE.indexOf(b.cat)); /* cameras first, as V2.5.3 lists them */ const cur = movable.find((x) => x.code === tool) || movable[0] || null; const mv: [number, number] = (cur && ed.mv[cur.code]) || [0, 0];
   const nudge = (dx: number, dy: number) => { if (!cur) return; const m = ed.mv[cur.code] || [0, 0]; setEd({ ...ed, mv: { ...ed.mv, [cur.code]: [Math.round((m[0] + dx) * 100) / 100, Math.round((m[1] + dy) * 100) / 100] } }); };
@@ -231,7 +238,7 @@ function ChangeRoom({ positions, base, cov, ed, setEd, tool, setTool, roomId, ed
         <span className="lt-pad__row"><button type="button" className="ui-btn" aria-label="Move left" onClick={() => nudge(-0.25, 0)}>←</button><span className="num" data-testid="lite-moved">{mv[0] || mv[1] ? `${fmt(mv[0])}, ${fmt(mv[1])} m` : '25 cm steps'}</span><button type="button" className="ui-btn" aria-label="Move right" onClick={() => nudge(0.25, 0)}>→</button></span>
         <button type="button" className="ui-btn" aria-label="Move toward the back wall" onClick={() => nudge(0, 0.25)}>↓</button></div></div>}
     <div className="lt-tool"><span>Seat count</span><span className="lt-stepper"><button type="button" className="ui-btn" aria-label="One seat fewer" onClick={() => setEd({ ...ed, seats: ed.seats - 1 })}>−</button><b className="num" aria-live="polite" data-testid="lite-seats">{cov.seats.length}</b><button type="button" className="ui-btn" aria-label="One seat more" onClick={() => setEd({ ...ed, seats: ed.seats + 1 })}>+</button></span></div>
-    {edited && <p className="lt-acts"><button type="button" className="ui-btn" onClick={() => setEd({ mv: {}, seats: 0 })} data-testid="lite-edits-reset">Back to the current layout</button> <a className="ui-btn ui-btn--primary" href={`#/request/change-room?room=${encodeURIComponent(roomId)}`} data-testid="lite-send">Send my layout to engineering</a></p>}
+    {edited && <p className="lt-acts"><button type="button" className="ui-btn" onClick={() => setEd({ mv: {}, seats: 0 })} data-testid="lite-edits-reset">Back to the current layout</button> <a className="ui-btn ui-btn--primary" href={`#/request/change-room?room=${encodeURIComponent(roomId)}&need=${encodeURIComponent(layoutNeed(positions, ed, base, cov))}`} data-testid="lite-send">Send my layout to engineering</a></p>}
     <p className="ui-meta">Every move has a button; dragging is not needed. A layout you send becomes a request for engineering review — nothing in the room changes until it is approved.</p>
   </Card>;
 }
