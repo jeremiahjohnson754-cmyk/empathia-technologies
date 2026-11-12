@@ -281,6 +281,24 @@ export function roomState(r: RoomRecord, key: StateKey): RoomState {
 // reverberation estimate: lite/acoustics.ts (kept small so Design a Space can use it without the campus model)
 export { ABSORB, RT60_ASSUMED, rt60Estimate } from './acoustics.js';
 
+// ------------------------------------------------------------------------------------------------ portfolio optimize
+/** Portfolio Optimize (V2.5.3, restored 12 Nov 2026): every room ranked by the size of its best small move — the proposed state's change
+ *  measured in seats newly framed by a camera and newly inside a microphone's pickup, per device added — with how certain the model is.
+ *  A move that adds nothing is "restore the layout" (furniture back to the commissioned positions). Modeled throughout. */
+export interface PortfolioRow { id: string; name: string; building: string; added: number; restore: boolean; camera: [number, number]; mic: [number, number]; gain: number; perDevice: number; certainty: string; move: string }
+export function portfolio(recs: RoomRecord[]): PortfolioRow[] {
+  const out: PortfolioRow[] = [];
+  for (const r of recs) {
+    const pro = roomState(r, 'proposed'); if (!pro.available) continue; const cur = roomState(r, 'current');
+    const cam = pro.cov.camera.covered - cur.cov.camera.covered, mic = pro.cov.mic.covered - cur.cov.mic.covered; const added = pro.marks.added; const restore = cur.marks.moved > 0;
+    const gain = Math.max(0, cam) + Math.max(0, mic); if (!gain && !restore) continue;
+    const certainty = /survey|declared|record/i.test(r.geometryProvenance) ? 'modeled from recorded geometry' : 'modeled from the class template';
+    out.push({ id: r.outline.id, name: r.outline.name, building: r.outline.building, added, restore, camera: [cur.cov.camera.covered, pro.cov.camera.covered], mic: [cur.cov.mic.covered, pro.cov.mic.covered], gain,
+      perDevice: added ? Math.round((gain / added) * 10) / 10 : gain, certainty, move: pro.positions.filter((p) => p.mark === 'added').map((p) => p.label).join(', ') || (restore ? 'Furniture back to the commissioned layout' : '—') });
+  }
+  return out.sort((a, b) => b.perDevice - a.perDevice || b.gain - a.gain || a.id.localeCompare(b.id));
+}
+
 // ------------------------------------------------------------------------------------------------ spatial drift
 /** Spatial drift from the commissioned layout (V2.5.3's "Spatial drift" panel and its assurance check AC-SD1, restored 12 Nov 2026).
  *  Exists only where the current state moves furniture away from the commissioned positions, i.e. a field report on the record says so.

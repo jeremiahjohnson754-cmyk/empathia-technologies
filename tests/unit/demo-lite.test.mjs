@@ -167,3 +167,11 @@ test('reverberation estimate (V2.5.3 rt60Of): Sabine from the volume and the ass
   assert.equal(a, Math.round((0.161 * V / A) * 100) / 100); assert.ok(m.rt60Estimate([6, 8, 2.8], 12, 12) < a); assert.ok(m.rt60Estimate([20, 30, 8], 12) > a);
   assert.match(m.RT60_ASSUMED, /assumed|carpet/);
 });
+
+test('Portfolio Optimize (V2.5.3): only rooms whose proposal changes something, ranked by gain per device; the drifted room is a restore', () => {
+  const rows = m.portfolio(recs); assert.ok(rows.length >= 10);
+  for (let i = 1; i < rows.length; i++) assert.ok(rows[i - 1].perDevice >= rows[i].perDevice, 'ranked');
+  for (const r of rows) { assert.ok(r.gain > 0 || r.restore); assert.ok(r.camera[1] >= r.camera[0] && r.mic[1] >= r.mic[0], `${r.id} never loses coverage`); assert.match(r.certainty, /^modeled/); }
+  const drift = rows.find((r) => r.id === 'R-MER-1-140'); if (drift) assert.ok(drift.restore);
+  assert.ok(!rows.some((r) => recs.find((x) => x.outline.id === r.id).outline.kind === 'earlier'), 'earlier records are never proposed on');
+});

@@ -17,6 +17,7 @@ import { LIFE_TONE } from '../campus/CampusPage.js';
 import { LITE_TAGLINE, SPACES, GUIDES, VISITOR_PATH, CAMPUS_PLAZA } from './data/v253.js';
 import { lensesFor, lensFor, ALL_SITES, roomsOf, buildingSummary, campusSummary, readiness, liteRoomHref, chapterCount, type Lens } from './model.js';
 import { LiteRoom } from './LiteRoom.js';
+import { LitePortfolio } from './LitePortfolio.js';
 import { SpacePage, ServicesPage, GuidesPage, WayPage, VisitPage, QrPage, CommonsPage } from './LitePlaces.js';
 
 const LENS_KEY = 'empathia.lite.lens';
@@ -42,6 +43,7 @@ export default function LiteApp(props: PageProps) {
   else if (a === 'visit') body = <VisitPage {...props} />;
   else if (a === 'qr') body = <QrPage {...props} />;
   else if (a === 'commons') body = <CommonsPage {...props} />;
+  else if (a === 'optimize') body = allows({ lens: 'optimize' }, props.role) ? <LitePortfolio {...props} /> : <LiteMissing what="Portfolio Optimize for this role" />;
   else body = <LiteMissing what={`the Lite address “${sub.join('/')}”`} />;
   return <div className="lt" data-native="" data-testid="lite">{body}</div>;
 }
@@ -58,6 +60,7 @@ const NAV: Array<[string, string, IconName, (r: RoleKey) => boolean]> = [
   ['visit', 'Visit', 'user', () => true],
   ['commons', 'Commons', 'users', () => true],
   ['qr', 'QR', 'grid', () => true],
+  ['optimize', 'Optimize', 'chart', (r) => allows({ lens: 'optimize' }, r)],
 ];
 /** Lite's own navigation (within the shell): every place a role may open, Scouter kept discoverable (D41). */
 export function LiteNav({ here, role }: { here: string; role: RoleKey | null }) {
