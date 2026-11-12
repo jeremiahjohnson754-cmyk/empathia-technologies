@@ -261,4 +261,16 @@ for (const scheme of SCHEMES) for (const vp of [VIEWPORTS[0], VIEWPORTS[VIEWPORT
   ok(`LT-${tag}-P1`, 'Portfolio Optimize ranks the rooms whose proposal changes something, says it is modeled, and opens the first in its proposed state; no overflow, no error', rows >= 10 && /Modeled · not measured/.test(m) && /→/.test(first) && st === 'proposed' && over <= 0 && !t.errs.length && !t.ext.length, `${rows} ${st} ${over} ${[...t.errs, ...t.ext].slice(0, 2).join(' | ')}`);
   await t.close();
 }
+// 70/10 task 70-5: the five advanced modes on the room page, each a way into what Lite already does
+for (const scheme of SCHEMES) {
+  const t = await open(VIEWPORTS[0], scheme, { hash: '#/lite/room/R-ATL-4-218' }); const p = t.page; await p.getByTestId('lite-modes').waitFor();
+  const n = await p.locator('[data-testid^="lite-mode-"]').count();
+  await p.getByTestId('lite-mode-systems').click(); await p.waitForTimeout(200); const h1 = await p.evaluate(() => location.hash); const sig = await p.getByTestId('lite-x-signal').getAttribute('aria-checked');
+  await p.getByTestId('lite-mode-validate').click(); await p.waitForTimeout(200); const meas = await p.getByTestId('lite-meas').count();
+  await p.getByTestId('lite-mode-compare').click(); await p.waitForTimeout(200); const st = await p.getByTestId('lite-room').getAttribute('data-state');
+  await p.getByTestId('lite-mode-design').click(); await p.waitForTimeout(500); const h2 = await p.evaluate(() => location.hash);
+  ok(`LT-${scheme}-M1`, 'five modes: explore systems turns on the signal flow, validate opens the measurements, compare goes to the commissioned state, design opens Design a Space with this room', n === 5 && /mode=engineer/.test(h1) && sig === 'true' && meas === 1 && st === 'commissioned' && h2 === '#/studio/room/R-ATL-4-218', JSON.stringify([n, h1, sig, meas, st, h2]));
+  ok(`LT-${scheme}-M2`, 'no page error, no request left the page', !t.errs.length && !t.ext.length, [...t.errs, ...t.ext].slice(0, 3).join(' | '));
+  await t.close();
+}
 await done();
