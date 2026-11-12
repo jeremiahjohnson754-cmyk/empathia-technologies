@@ -607,6 +607,7 @@ export function LibraryPage({ perspective }: { perspective: string }) {
           <div className="ln-kinds">{l.lessonDomains.map((d) => { const ids = l.lessonOrder.filter((id) => l.lessons[id]?.domain === d); return <details key={d} className="ln-dom"><summary><b>{d}</b> <span className="ui-meta">{plural(ids.length, 'lesson')}</span></summary><List label={`${d} lessons`}>{ids.map((id) => <ListRow key={id} title={l.lessons[id]!.title} sub={l.lessons[id]!.sum} onClick={() => setSel(id)} current={sel === id} />)}</List></details>; })}</div>
           {sel && l.lessons[sel] ? <article className="stack ln-lesson" data-testid="lesson"><h3>{l.lessons[sel]!.title}</h3>{l.lessons[sel]!.cards.map((c, i) => <p key={i} className="learn__card" dangerouslySetInnerHTML={html(c)} />)}{l.lessons[sel]!.quiz && l.quizzes[l.lessons[sel]!.quiz!] ? <QuizRunner q={l.quizzes[l.lessons[sel]!.quiz!]!} /> : null}</article> : null}
         </Card>)}</LibGate>
+      <Timeline />
       <Card icon="layers" title="Thirteen kinds of knowledge" sub="What each kind is, and how many this demonstration's records hold">
         <div className="ln-kk">{V.KNOWLEDGE_KINDS.map(([k, d]) => <div key={k} className="ln-kk__i"><b className="num">{held[k] ?? '—'}</b><span><b>{k}</b><span className="ui-meta">{d}</span></span></div>)}</div>
         <p className="wk-note">A dash is a kind V2.5.3’s knowledge graph holds that is not part of this demonstration’s records; nothing is invented to fill it.</p>
@@ -616,6 +617,23 @@ export function LibraryPage({ perspective }: { perspective: string }) {
       </Card>
     </section>
   );
+}
+
+/** The quick-facts timeline (restored 12 Nov 2026, reference app.js after the Fundamentals): the history notes spaced out of the story so
+ *  no chapter carries more than one, by season, each tied to the chapter it came from. Unchecked history (RV-27) and says so. */
+let tlCache: Promise<{ seasons: Record<string, string>; timeline: Array<{ ch: string; title: string; body: string }> }> | null = null;
+function Timeline() {
+  const [d, setD] = useState<Awaited<NonNullable<typeof tlCache>> | null>(null); const [err, setErr] = useState<string | null>(null);
+  useEffect(() => { let live = true; (tlCache ||= fetch('signal/timeline.json').then((r) => { if (!r.ok) throw new Error(`timeline ${r.status}`); return r.json(); }).catch((e) => { tlCache = null; throw e; }))
+    .then((x) => live && setD(x)).catch((e) => live && setErr(String(e))); return () => { live = false; }; }, []);
+  if (err) return <Notice tone="bad">The quick-facts timeline did not load: {err}.</Notice>; if (!d || !d.timeline.length) return null;
+  const seasons = [...new Set(d.timeline.map((t) => Number(t.ch.slice(1, 3))))].sort((a, b) => a - b);
+  return <Card icon="clock" title="Quick facts timeline" sub={`SIGNAL world · ${d.timeline.length} history notes spaced out of the story so no chapter carries more than one; each is tied to the chapter it came from`} testId="library-timeline">
+    <div className="ln-kinds">{seasons.map((n) => { const items = d.timeline.filter((t) => Number(t.ch.slice(1, 3)) === n);
+      return <details key={n} className="ln-dom" data-season={n}><summary><b>Season {n}{d.seasons[String(n)] ? ` · ${d.seasons[String(n)]}` : ''}</b> <span className="ui-meta">{plural(items.length, 'fact')}</span></summary>
+        <ul className="plain stack">{items.map((t) => <li key={`${t.ch}-${t.title}`} className="ln-fact"><span className="ui-meta">📜 {t.ch.toUpperCase()} · quick fact · <a href={`#/story/${t.ch}`}>open the chapter</a></span><b>{t.title}</b><p dangerouslySetInnerHTML={html(t.body)} /></li>)}</ul></details>; })}</div>
+    <p className="wk-note">⚑ RV-27: these history notes are short summaries written from general knowledge; dates and attributions need a citation check before release.</p>
+  </Card>;
 }
 
 // ------------------------------------------------------------------------------------------------------------ #/learn/ask
