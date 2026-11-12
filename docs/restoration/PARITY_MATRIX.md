@@ -51,7 +51,7 @@ Key: ✓ matches the source · ◐ partial (the inventory says what is missing) 
 | Eight home storylines | — | — | ⊘ the rooms do not hold those states | — | — |
 | Drift from baseline, recommission | ✕ | ✕ | ✕ | ✕ | — |
 | Acoustics in Lite | ✕ | ✕ | ✕ no acoustic data | ✕ | — |
-| Lite studio (`#/v25/lite` models) | ✕ | ✕ | ✕ | ✕ | — |
+| Lite studio (`#/v25/lite` models) | ◐ no models from requests; no Field Intelligence sync | ✓ | ✓ V2.5.3 recipes | ✓ | LS-01..04; LT-*-S1..S5 |
 | Room builders' missing functions; Design a Space; Scouter's anatomy and proposals | ✕ / ◐ | | | | see LITE_INVENTORY §6–7 |
 | Scouter named makers and prices | — | — | ⊘ no real makers or prices | — | — |
 
