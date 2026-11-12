@@ -245,6 +245,21 @@ export function echoes(items: readonly Item[], s: ChapterState | undefined): { m
     merit += w.merit; for (const [k, v] of Object.entries(w.trust)) trust[k] = (trust[k] || 0) + v; }
   return { made, merit, trust };
 }
+/**
+ * Callbacks (founder, 12 Nov 2026: "prove that a major decision changes something later in the episode, not just the next ten seconds"):
+ * at a later decision in the same chapter, the briefing recalls what an earlier significant or major call set in motion, in the canon's
+ * own words (that option's result and consequence; for a missed clock, the canon's timeout lines). Nothing is invented and no canon text
+ * is changed; what changes is what the reader knows when the next call comes, and it differs with what they chose. Latest first.
+ */
+export interface Callback { id: string; prompt: string; letter: string; label: string; result: string; consequence: string; verdict: Verdict; sev: number; timedOut: boolean; gap: number }
+export function callbacksBefore(items: readonly Item[], s: ChapterState | undefined, decisionId: string, max = 2): Callback[] {
+  const at = items.findIndex((i) => i.type === 'decision' && i.id === decisionId); if (at < 0 || !s) return [];
+  const out: Callback[] = [];
+  for (let k = at - 1; k >= 0 && out.length < max; k--) { const it = items[k]!; if (it.type !== 'decision') continue; const c = s.choices[it.id]; if (!c) continue; const w = weightOf(it, c); if (w.sev < 2) continue;
+    const timedOut = c.letter === TIMEOUT;
+    out.push({ id: it.id, prompt: it.prompt, letter: c.letter, label: timedOut ? 'The clock ran out' : w.option?.label || '', result: timedOut ? (it.timeout || ['Someone else decided for you.']).join(' ') : w.option?.result || '', consequence: timedOut ? '' : w.option?.consequence || '', verdict: w.verdict, sev: w.sev, timedOut, gap: at - k - 1 }); }
+  return out;
+}
 export const trustLine = (trust: Record<string, number>): string => Object.entries(trust).filter(([, v]) => v !== 0).map(([k, v]) => `${k} ${v > 0 ? `+${v}` : v}`).join(', ');
 export const seconds = (d: { timer_s: number }, clock: Clock): number | null => (clock === 'off' || !d.timer_s ? null : clock === 'extended' ? d.timer_s * 2 : d.timer_s);
 export const BANDS = [['Beginner', [1, 2, 3]], ['Intermediate', [4, 5, 6]], ['Advanced', [7, 8, 9]], ['Mastery', [10, 11, 12]]] as const;

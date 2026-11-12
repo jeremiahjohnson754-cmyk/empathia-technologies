@@ -6,6 +6,7 @@
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Item, ChapterState, Outcome } from './story.js';
+import { callbacksBefore } from './story.js';
 import { takeFor, readMs, quoted, returnsToChoice, type Scene } from './cinematic.js';
 
 type Decision = Extract<Item, { type: 'decision' }>;
@@ -66,6 +67,7 @@ export function Cinematic({ scene, items, panels, cast, state, onChoose, onClose
       {cur.art ? <div className={`sg-cine__art${motion ? ' sg-cine__art--move' : ''}`} role="img" aria-label={cur.alt} key={shot} dangerouslySetInnerHTML={{ __html: cur.art }} /> : null}
       {dec ? <div className="sg-cine__dec" data-testid="sg-cine-dec" data-decision={dec.id}>
         <p className="sg-dec__k">Decision</p><h3>{dec.prompt}</h3><p>{dec.happening}</p>
+        {(() => { const cb = callbacksBefore(items, state, dec.id, 1)[0]; return cb ? <p className="sg-cine__cb" data-testid="sg-cine-callback" data-from={cb.id} data-letter={cb.letter}><b>Because of an earlier call:</b> {cb.result}</p> : null; })()}
         {(!out || out.ladder) && <div className="sg-cine__opts" role="group" aria-label="Choices">{dec.options.filter((o) => !(out?.ladder && o.letter === out.letter)).map((o) => <button key={o.letter} type="button" className="ui-btn" onClick={() => choose(o.letter)}>{o.letter}. {o.label}</button>)}</div>}
         {out && <div className="sg-cine__out" role="status" data-testid="sg-cine-out" data-letter={out.letter} data-ladder={String(out.ladder)}><p><b>{out.result}</b></p><p>{out.consequence}</p>
           {out.ladder ? <p className="ui-meta">The choice is open again.</p> : shot + 1 < shots.length ? <button type="button" className="ui-btn ui-btn--primary" onClick={() => { setPlaying(true); go(1); }} data-testid="sg-cine-continue">Continue</button> : <p className="ui-meta">End of the act. Choose the next act, or go back to the written story.</p>}</div>}

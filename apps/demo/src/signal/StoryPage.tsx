@@ -20,7 +20,7 @@ import { cinematicFor, sceneOf } from './cinematic.js';
 import { liteForChapter, liteForTerm, liteForText } from './lite.js';
 import { LiteTryCard } from './LiteTry.js';
 import { Flagship, flagshipAfter } from './Flagship.js';
-import { emptyProgress, BANDS, SEVERITY, TIMEOUT, answerTalk, chapterVerdict, choose, complete, echoes, emphasis, emptyChapter, find, load, nextOf, passed, prevOf, reached, replayDecision, resume, save, seconds, tally, timeOut, trustLine, weightLine, weightOf,
+import { emptyProgress, BANDS, SEVERITY, TIMEOUT, answerTalk, callbacksBefore, chapterVerdict, choose, complete, echoes, emphasis, emptyChapter, find, load, nextOf, passed, prevOf, reached, replayDecision, resume, save, seconds, tally, timeOut, trustLine, weightLine, weightOf,
   type Chapter, type ChapterState, type Clock, type Item, type Option, type Outcome, type Progress, type StoryIndex, type Verdict,
   PLAYABLE, TIER_WORD, blocking, gateCleared, gateCount, gateKey, recordQuiz, recordDrillTry, recordIncidentRun, recordLabTry, recordChalTry, skip, chapterLocks, lockedBehind, type BossRecord, type Gate, type Pieces, type Quiz, type ReviewRecord, type MeltdownRecord } from './story.js';
 
@@ -206,7 +206,7 @@ function Reader({ ix, id, progress, commit, update, role }: { ix: StoryIndex; id
       {ch.data && <Echoes prev={prev?.title || null} e={before} />}
       {cine && cinematicFor(id) && ch.data && <Cinematic key={id} scene={sceneOf(id, items)} items={items} panels={art.data?.panels} cast={ix.cast} state={state} onChoose={(d, letter) => { const r = choose(state, d, letter, {}); set(r.state); setSaid(said1(r.outcome)); return r.outcome; }} onClose={() => setCine(false)} />}
       <QuestCtx.Provider value={questCtx}><GlCtx.Provider value={glCtx}><div className="sg-flow">
-        {items.slice(0, upTo).map((it, i) => { if (it.type === 'panel') panelNo += 1; return <Fragment key={i}><ItemView it={it} n={i} chapter={id} role={role} svg={it.type === 'panel' ? art.data?.panels[panelNo] : undefined} cast={ix.cast} state={state} clock={progress.clock} gated={progress.gates}
+        {items.slice(0, upTo).map((it, i) => { if (it.type === 'panel') panelNo += 1; return <Fragment key={i}><ItemView it={it} n={i} items={items} chapter={id} role={role} svg={it.type === 'panel' ? art.data?.panels[panelNo] : undefined} cast={ix.cast} state={state} clock={progress.clock} gated={progress.gates}
           onChoose={(d, letter, meta) => { const r = choose(state, d, letter, meta); set(r.state); setSaid(said1(r.outcome)); return r.outcome; }}
           pieces={pieces} progress={progress} onQuiz={(qid, r, n) => { commit({ ...recordQuiz(progress, qid, r, n), last: id }); setSaid(`Check recorded: ${r} of ${n}.`); }} onSkip={(g) => { commit({ ...skip(progress, g), last: id }); setSaid('Skipped for now. It stays here to come back to.'); }}
           onReview={(rid, rec) => { commit({ ...progress, reviews: { ...progress.reviews, [rid]: rec }, last: id }); setSaid(rec.pass ? `Season review passed: Story Score ${rec.score}.` : `Game over: Story Score ${rec.score}, below 65.`); }}
@@ -232,6 +232,7 @@ function Reader({ ix, id, progress, commit, update, role }: { ix: StoryIndex; id
           <ul className="sg-sum">
             {t.decisions > 0 && <li><b>{t.made} of {t.decisions}</b> decisions made: <span data-testid="story-counts" data-canonical={t.canonical} data-costly={t.costly} data-neutral={t.neutral}>★ {t.canonical} professional, ◦ {t.neutral} workable, ✕ {t.costly} costly</span>{t.timedOut ? `, ${t.timedOut} past the clock` : ''}{t.changed ? `, ${t.changed} changed after the first choice` : ''}{t.hints ? `, ${t.hints} hint${t.hints === 1 ? '' : 's'} used` : ''}</li>}
             {t.decisions > 0 && <li data-testid="story-verdict">{chapterVerdict(t)}</li>}
+            {echoes(items, state).made.length > 0 && <li data-testid="story-set-in-motion">What your calls set in motion:<ul>{echoes(items, state).made.map((m) => <li key={m.id} data-from={m.id} data-verdict={m.verdict}>{m.timedOut ? <>⏱ “{m.prompt}”: the clock decided.</> : <><b>{m.label}.</b> {m.consequence}</>}</li>)}</ul></li>}
             {t.decisions > 0 && <li>Merit from this chapter’s choices: <b data-testid="story-merit">{t.merit > 0 ? `+${t.merit}` : t.merit}</b></li>}
             {Object.keys(t.trust).length > 0 && <li>Trust moved: {Object.entries(t.trust).filter(([, v]) => v !== 0).map(([k, v]) => `${k} ${v > 0 ? `+${v}` : v}`).join(', ') || 'nowhere, on balance'}</li>}
             {t.discoveries > 0 && <li><b>{t.found} of {t.discoveries}</b> discoveries found</li>}
@@ -249,7 +250,7 @@ function Reader({ ix, id, progress, commit, update, role }: { ix: StoryIndex; id
   );
 }
 
-export interface ViewProps { it: Item; n: number; /** the chapter and the reader's role, for the Lite links */ chapter?: string; role?: string; svg?: string; cast: Record<string, string>; state: ChapterState; clock: Clock; gated: boolean; onChoose: (d: Extract<Item, { type: 'decision' }>, letter: string, meta: { hints: number }) => Outcome; onTimeout?: (d: Extract<Item, { type: 'decision' }>, hints: number) => void; onReplay?: (id: string) => void; onTalk: (id: string, o: number) => void; onFind: (id: string) => void;
+export interface ViewProps { it: Item; n: number; /** the chapter's items, for callbacks to earlier decisions */ items?: readonly Item[]; /** the chapter and the reader's role, for the Lite links */ chapter?: string; role?: string; svg?: string; cast: Record<string, string>; state: ChapterState; clock: Clock; gated: boolean; onChoose: (d: Extract<Item, { type: 'decision' }>, letter: string, meta: { hints: number }) => Outcome; onTimeout?: (d: Extract<Item, { type: 'decision' }>, hints: number) => void; onReplay?: (id: string) => void; onTalk: (id: string, o: number) => void; onFind: (id: string) => void;
   /** the chapter's pieces and gates, and the reader's quiz records, when loaded */ pieces?: Pieces | null; progress?: Progress; onQuiz?: (id: string, right: number, total: number) => void; onSkip?: (g: Gate) => void; onDrill?: (id: string, passed: boolean) => void; onIncident?: (id: string, outcome: 'proven' | 'partial' | 'fail', why: 'declared' | 'clock' | 'boundary') => void; onLab?: (id: string, passed: boolean, final: boolean) => void; onReview?: (id: string, rec: ReviewRecord) => void; onRetrySeason?: (season: number) => void; onRestart?: () => void; onMeltdown?: (id: string, rec: MeltdownRecord) => void; onBoss?: (id: string, rec: BossRecord) => void; onChallenge?: (key: string, score: number, passed: boolean) => void }
 /** The interactives a "Try it in Lite" card follows (founder, 12 Nov 2026), and the words it uses for them. */
 const LITE_AFTER: Record<string, string> = { quiz: 'check', lesson: 'lesson check', lab: 'lab', boss: 'boss level', drill: 'drill', incident: 'live incident', meltdown: 'meltdown' };
@@ -459,7 +460,16 @@ function Weight({ o, c, d, review }: { o: Option | null; c: { letter: string; hi
     <p>{review ? 'After the clock: this is what it would have meant. It doesn’t count. Replay to decide for real.' : weightLine(w.verdict, w.sev)}</p>{o?.fail && <p className="sg-weight__why"><b>Why it costs.</b> {o.fail}</p>}</div>;
 }
 const MARK: Record<Verdict, string> = { canonical: '★ The professional call', neutral: '◦ It works, not the best', costly: '✕ A costly call' };
-function Decision({ d, n, state, clock, onChoose, onTimeout, onReplay }: ViewProps & { d: Extract<Item, { type: 'decision' }> }) {
+/** What an earlier significant or major call in this chapter set in motion, recalled at a later decision (story.ts › callbacksBefore). */
+function Callbacks({ items, state, id }: { items?: readonly Item[]; state: ChapterState; id: string }) {
+  const cbs = items ? callbacksBefore(items, state, id) : []; if (!cbs.length) return null;
+  return <div className="sg-callback" data-testid="story-callback" data-from={cbs.map((c) => `${c.id}:${c.letter}`).join(' ')}>
+    <p className="sg-callback__k">Because of an earlier call</p>
+    {cbs.map((c) => <div key={c.id} className={`sg-callback__i is-${c.verdict}`} data-callback={c.id} data-letter={c.letter}><p className="sg-callback__q">{c.prompt}</p>
+      <p><b>{c.timedOut ? c.label : `You chose ${c.letter}: ${c.label}`}</b></p><p>{c.result}</p>{c.consequence && <p className="sg-callback__c">{c.consequence}</p>}</div>)}
+  </div>;
+}
+function Decision({ d, n, state, clock, onChoose, onTimeout, onReplay, items: p_items }: ViewProps & { d: Extract<Item, { type: 'decision' }> }) {
   const c = state.choices[d.id]; const recorded = passed(state, d.id); const missed = c?.letter === TIMEOUT; const total = seconds(d, clock);
   const [left, setLeft] = useState<number | null>(total); const [running, setRunning] = useState(false); const [hints, setHints] = useState(c?.hints || 0); const [peek, setPeek] = useState<string | null>(null); const ref = useRef<HTMLElement>(null);
   useEffect(() => { setLeft(total); setRunning(false); }, [total, recorded]);
@@ -475,6 +485,7 @@ function Decision({ d, n, state, clock, onChoose, onTimeout, onReplay }: ViewPro
       <p className="sg-dec__k">Decision{d.clock ? ` · ${d.clock}` : ''}</p>
       <h3 id={`${d.id}-h`}>{d.prompt}</h3>
       <p><Gl k={`${n}:hap`} text={d.happening} plain /></p>
+      <Callbacks items={p_items} state={state} id={d.id} />
       <div className="sg-facts"><div><h4>Known</h4><ul>{d.known.map((k, i) => <li key={i}>{k}</li>)}</ul></div><div><h4>Not known</h4><ul>{d.unknown.map((k, i) => <li key={i}>{k}</li>)}</ul></div></div>
       <p className="sg-risk"><b>At risk.</b> {d.risk}</p>
       {!recorded && total !== null && <p className="sg-clock" data-testid="story-clock" data-left={left ?? ''} data-running={running}>{running ? <>Time to decide: <b>{left}</b> s</> : <>{total} s to decide. The clock starts when this card is in view, and restarts if it leaves the screen.</>}</p>}
