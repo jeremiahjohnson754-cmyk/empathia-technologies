@@ -126,7 +126,7 @@ never replaces restored work: restoration (R1 to R5) stays first.
 - Started 12 Nov, after the restorations: 70-1 verified on paper (`docs/surpass/FOUR_WORLDS_VERIFICATION.md`); 70-2 first slice
   (display viewing analysis in `#/drawings`, carried into the Lite studio; unit `drawing-viewing`, browser DRB-50..52 to run); 70-3 the
   viewing overlay with labelled marks; 70-5 the five modes on the room page (LT-M1, M2 to run); 70-6 the first cross-product journey
-  (`demo-journey`, 10/10 on the `b53515e` build). 70-0 waits for a connector record this session can show; 70-4 waits for the founder's
+  (`demo-journey`, 10/10 on the `b53515e` build). 70-0 done as a read-only probe record (`docs/surpass/CONNECTOR_INVENTORY.md`, unit `connector-claims`); 70-4 waits for the founder's
   content (a beat map over canon chapters is authorship, not engineering).
 - Tasks, each in the list:
 
