@@ -13,3 +13,4 @@
 | 12 Nov 2026 | `7a64c75` | full matrix, light | 59 of 59 exit 0 | no FAIL line; `founder-studio` ran against the private V2.5.3 build present on this machine (A4) and passed |
 | 12 Nov 2026 | `9a29466` | `demo-lesson` light and dark; `scripts/test.mjs` security; unit | 10/10 each; 10/10; 693/693 | the release candidate's full light matrix started |
 | 12 Nov 2026 | `14c35ca` | full matrix light and dark | 60 of 60 exit 0 each | founder-studio against the private V2.5.3 build; pushed to staging; A3 run 2 on staging: closed, same room, no error |
+| 12 Nov 2026 | `3f7519d` | full matrix light and dark | light 62 of 62 exit 0 (2,622 checks, 0 failed); dark 53 of 62 exit 0 (2,066 checks, 0 failed), 9 suites NOT RUN (the run hit its two-hour limit: demo-worlds, demo, enterprise-web, founder-studio, learn-labs, public-security, tokens, website-pilot, website) | not staged: superseded by the Season 1 voice and film import |
