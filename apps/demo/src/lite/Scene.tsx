@@ -71,6 +71,8 @@ export interface RoomSceneProps {
   positions: StatePosition[]; connections: Connection[]; layers: Set<LiteLayer>; overlays: Set<Overlay>; cov: CoverageModel;
   selected: string | null; onSelect: (code: string) => void; occupied?: boolean[];
   partitions?: number[]; active?: [number, number] | null; bind?: Record<string, unknown>;
+  /** spatial drift: where furniture was commissioned (a dashed footprint) and the arrow to where it is now */
+  ghosts?: Array<{ code: string; cat: string; from: [number, number]; to: [number, number]; rot: number }>;
 }
 
 /** One room in 3D with its layers and overlays. */
@@ -96,7 +98,7 @@ export function RoomScene(props: RoomSceneProps) {
         return <g key={`seat${i}`} transform={`translate(${x.toFixed(1)} ${y.toFixed(1)})`} className={`lt-seat${miss ? ' lt-seat--miss' : ''}${occ ? ' lt-seat--occ' : ''}${s.wheelchair && overlays.has('access') ? ' lt-seat--wc' : ''}`} aria-hidden="true">{s.wheelchair && overlays.has('access') ? <rect x={-6} y={-6} width={12} height={12} rx={3} /> : <circle r={cov.seats.length > 120 ? 2.6 : 4.2} />}</g>; });
   return (
     <svg className="lt-svg" viewBox={`${minX.toFixed(0)} ${minY.toFixed(0)} ${(maxX - minX).toFixed(0)} ${(maxY - minY).toFixed(0)}`} role="group" aria-label={props.label} data-testid="lite-3d" data-yaw={Math.round(view.yaw)} data-pitch={Math.round(view.pitch)} {...bind}>
-      <defs><clipPath id={clipId}><polygon points={pts(corners.map(([x, y]) => [x, y, 0]))} /></clipPath></defs>
+      <defs><marker id="lt-ghost-head" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" className="lt-ghost__head" /></marker><clipPath id={clipId}><polygon points={pts(corners.map(([x, y]) => [x, y, 0]))} /></clipPath></defs>
       <polygon points={pts(corners.map(([x, y]) => [x, y, 0]))} className="lt-floorpoly" />
       {Array.from({ length: Math.floor(w) }, (_, i) => <polyline key={`gx${i}`} points={pts([[i + 1, 0, 0], [i + 1, l, 0]])} className="lt-grid" />)}
       {Array.from({ length: Math.floor(l) }, (_, i) => <polyline key={`gy${i}`} points={pts([[0, i + 1, 0], [w, i + 1, 0]])} className="lt-grid" />)}
@@ -112,6 +114,9 @@ export function RoomScene(props: RoomSceneProps) {
         {layers.has('wayfinding') && <polyline points={pts([[cov.door.x, l + 0.01, 0.03], [cov.door.x, l - 1.4, 0.03]])} className="lt-route lt-route--way" />}
         {overlays.has('sight') && cov.sight.rays.map((r) => <polyline key={`ray${r.seat}`} points={pts([[r.sx, r.sy, 1.2], [r.dx, r.dy, r.dz]])} className={`lt-ray lt-ray--${r.cls.toLowerCase()}`} />)}
       </g>
+      {props.ghosts && props.ghosts.length > 0 && <g className="lt-ghosts" data-testid="lite-ghosts" data-n={props.ghosts.length} aria-hidden="true">{props.ghosts.map((g) => { const K = C.categories[g.cat]; const [bw, bd] = K?.size || [1, 0.6]; const r = ((g.rot || 0) * Math.PI) / 180, c = Math.cos(r), s = Math.sin(r);
+        const foot = ([[-1, -1], [1, -1], [1, 1], [-1, 1]] as Array<[number, number]>).map(([u, v]): P3 => [g.from[0] + (u * bw) / 2 * c - (v * bd) / 2 * s, g.from[1] + (u * bw) / 2 * s + (v * bd) / 2 * c, 0.02]);
+        return <g key={`gh${g.code}`}><polygon points={pts(foot)} className="lt-ghost" />{g.cat === 'table' && <polyline points={pts([[g.from[0], g.from[1], 0.03], [g.to[0], g.to[1], 0.03]])} className="lt-ghost__arrow" markerEnd="url(#lt-ghost-head)" />}</g>; })}</g>}
       {partitions.map((x, i) => <polygon key={`p${i}`} points={pts([[x, 0, 0], [x, l, 0], [x, l, h * 0.92], [x, 0, h * 0.92]])} className="lt-partition" />)}
       <polygon points={pts([[cov.door.x - cov.door.width / 2, l, 0], [cov.door.x + cov.door.width / 2, l, 0], [cov.door.x + cov.door.width / 2, l, 2.1], [cov.door.x - cov.door.width / 2, l, 2.1]])} className="lt-door" />
       {linkKinds.size > 0 && connections.filter((c) => !c.removed && linkKinds.has(c.kind)).map((c) => { const a = at.get(c.from), b = at.get(c.to); if (!a || !b || !vis.includes(a) || !vis.includes(b)) return null; const [x1, y1] = P(a.x, a.y, a.z), [x2, y2] = P(b.x, b.y, b.z); return <line key={c.id} x1={x1} y1={y1} x2={x2} y2={y2} className={`lt-link lt-link--${c.kind}`} />; })}

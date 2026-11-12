@@ -16,8 +16,9 @@ import { shortName, buildingByKey, roomHref } from '../campus/canon.js';
 import { LIFE_TONE } from '../campus/CampusPage.js';
 import {
   chapterById, coverage, lensesFor, layersFor, overlaysFor, defaultLayers, defaultOverlays, roomState, STATES, configsOf, configStatus, readiness, pct, occupancy, routeTo,
-  ALL_SITES, buildingSummary, liteRoomHref, type Lens, type LiteLayer, type Overlay, type StateKey,
+  ALL_SITES, buildingSummary, liteRoomHref, spatialDrift, type Lens, type LiteLayer, type Overlay, type StateKey, type SpatialDrift,
 } from './model.js';
+import { driftOf, setDrift, type DriftDecision } from './drift.js';
 import { RoomScene, OrbitBar, useOrbit } from './Scene.js';
 import { LiteNav, LiteMissing, storedLens, saveLens, setQuery } from './LiteApp.js';
 import { WhoKnows } from '../connect/ContactBar.js';
@@ -33,6 +34,9 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
   // the Optimize lens's "change the room" (V2.5.3, restored 12 Nov 2026): moves in 25 cm steps and a seat count, held in the page until sent
   const [ed, setEd] = useState<{ mv: Record<string, [number, number]>; seats: number }>({ mv: {}, seats: 0 }); const [tool, setTool] = useState<string | null>(null);
   useEffect(() => { setEd({ mv: {}, seats: 0 }); }, [id, query.get('state')]);
+  // spatial drift (V2.5.3, restored 12 Nov 2026): the room's choice, kept on this device
+  const drift = useMemo(() => (r ? spatialDrift(r) : null), [r]); const [dv, setDv] = useState<DriftDecision | null>(() => driftOf(id));
+  useEffect(() => { setDv(driftOf(id)); }, [id]);
   if (!r) return <LiteMissing what={`room “${id}”`} />;
   const o = r.outline; const B = buildingByKey(o.building)!;
   const lens = storedLens(role, query.get('mode'));
@@ -42,7 +46,11 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
   const layers = new Set<LiteLayer>((asked ?? defaultLayers(lens, role)).filter((k) => mayLayers.some((l) => l.key === k)) as LiteLayer[]);
   const overlays = new Set<Overlay>((askedOv ?? defaultOverlays(lens)).filter((k) => mayOv.some((x) => x.key === k)) as Overlay[]);
   const stateKey = (STATES.find((s) => s.key === query.get('state'))?.key || 'current') as StateKey;
-  const st = roomState(r, stateKey);
+  const st0 = roomState(r, stateKey);
+  const restored = stateKey === 'current' && !!drift && dv?.v === 'restore';
+  const st = restored ? (() => { const back = new Map(drift!.moved.map((m) => [m.code, m.from])); const ps = st0.positions.map((x) => { const f = back.get(x.code); return f ? { ...x, x: f[0], y: f[1], mark: 'same' as const, note: 'restored to the commissioned layout (simulated, on this device)' } : x; });
+    return { ...st0, positions: ps, cov: coverage(r, ps), marks: { ...st0.marks, moved: 0, same: st0.marks.same + st0.marks.moved }, summary: `${st0.summary} Shown restored to the commissioned layout (simulated, on this device).` }; })() : st0;
+  const ghosts = stateKey === 'current' && drift && !restored ? drift.moved : undefined;
   const configs = configsOf(o); const cfg = configs.find((c) => c.key === query.get('cfg')) || configs[0] || null;
   const base = liteRoomHref(id);
   const upd = (k: string, v: string | null) => { const n = new URLSearchParams(query); if (v == null || v === '') n.delete(k); else n.set(k, v); setQuery(base, n); };
@@ -73,7 +81,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
           <figure className="stage lt-stage" data-stage="">
             <div className="stage__bar"><OrbitBar orbit={orbit} /></div>
             <RoomScene label={`${o.name} in 3D, ${st.title}`} w={o.dims[0]} l={o.dims[1]} h={o.dims[2]} view={orbit.view} positions={positions} connections={r.connections} layers={layers} overlays={overlays} cov={cov}
-              selected={sel} onSelect={(c) => setSel(c === sel ? null : c)} occupied={occ} partitions={partitions} active={cfg && cfg.key !== 'combined' ? [cfg.x0, cfg.x1] : null} bind={orbit.bind} />
+              selected={sel} onSelect={(c) => setSel(c === sel ? null : c)} occupied={occ} partitions={partitions} active={cfg && cfg.key !== 'combined' ? [cfg.x0, cfg.x1] : null} bind={orbit.bind} ghosts={ghosts} />
             <figcaption className="stage__cap"><b>{st.title}.</b> {st.summary} <span className="ui-meta">Basis: {st.basis}. Drag to orbit; the buttons do the same.</span></figcaption>
           </figure>
           <Legend overlays={overlays} marks={st.marks} />
@@ -115,6 +123,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
         </ul>{st.marks.added + st.marks.changed + st.marks.attention + st.marks.moved > 0 && <p className="ui-meta">{[st.marks.added && `${st.marks.added} added`, st.marks.changed && `${st.marks.changed} replaced`, st.marks.attention && `${st.marks.attention} need attention`, st.marks.moved && `${st.marks.moved} moved`].filter(Boolean).join(' · ')}</p>}</Card>
         <LensPanel lens={lens} r={r} role={role} />
       </div>
+      {lens === 'optimize' && drift && stateKey === 'current' && <DriftCard d={drift} dv={dv} onChoose={(v) => { setDrift(id, v, role); setDv(driftOf(id)); }} roomId={id} techHref={allows({ area: 'room' }, role) ? roomHref(o) : null} />}
       {lens === 'optimize' && <ChangeRoom positions={st.positions} base={st.cov} cov={cov} ed={ed} setEd={setEd} tool={tool} setTool={setTool} roomId={id} edited={edited} />}
       {cfg && <Card title="Configurations" sub="A divisible room: each configuration has its own requirements and its own commissioning." icon="layers" testId="lite-configs">
         <div className="lt-cfgs" role="radiogroup" aria-label="Configuration">{configs.map((c) => <button key={c.key} type="button" role="radio" aria-checked={c.key === cfg.key} className={`lt-chipbtn${c.key === cfg.key ? ' on' : ''}`} onClick={() => upd('cfg', c.key === 'combined' ? null : c.key)} data-testid={`lite-cfg-${c.key}`}>{c.label}</button>)}</div>
@@ -208,6 +217,23 @@ function ChangeRoom({ positions, base, cov, ed, setEd, tool, setTool, roomId, ed
     <div className="lt-tool"><span>Seat count</span><span className="lt-stepper"><button type="button" className="ui-btn" aria-label="One seat fewer" onClick={() => setEd({ ...ed, seats: ed.seats - 1 })}>−</button><b className="num" aria-live="polite" data-testid="lite-seats">{cov.seats.length}</b><button type="button" className="ui-btn" aria-label="One seat more" onClick={() => setEd({ ...ed, seats: ed.seats + 1 })}>+</button></span></div>
     {edited && <p className="lt-acts"><button type="button" className="ui-btn" onClick={() => setEd({ mv: {}, seats: 0 })} data-testid="lite-edits-reset">Back to the current layout</button> <a className="ui-btn ui-btn--primary" href={`#/request/change-room?room=${encodeURIComponent(roomId)}`} data-testid="lite-send">Send my layout to engineering</a></p>}
     <p className="ui-meta">Every move has a button; dragging is not needed. A layout you send becomes a request for engineering review — nothing in the room changes until it is approved.</p>
+  </Card>;
+}
+
+function DriftCard({ d, dv, onChoose, roomId, techHref }: { d: SpatialDrift; dv: DriftDecision | null; onChoose: (v: 'restore' | 'review' | null) => void; roomId: string; techHref: string | null }) {
+  const chip = dv?.v === 'restore' ? <Chip small tone="ok">Restored · simulated</Chip> : dv?.v === 'review' ? <Chip small tone="info">Marked for engineering review</Chip> : <Chip small tone="warn">Drift from baseline</Chip>;
+  const row = (label: string, a: [number, number], b: [number, number]) => <tr><th scope="row">{label}</th><td className="num">{a[0]} of {a[1]}</td><td className="num">{b[0]} of {b[1]}</td></tr>;
+  return <Card title="Spatial drift" sub={`${d.check} · ${d.evidence}`} icon="alert" testId="lite-drift" action={chip}>
+    <dl className="lt-dl"><dt>Commissioned</dt><dd>{d.baseline}</dd><dt>Now</dt><dd data-testid="lite-drift-now">{d.current}</dd><dt>Method</dt><dd>{d.method}</dd></dl>
+    <p data-testid="lite-drift-summary">{d.summary}</p>
+    <div className="table-wrap"><table className="lt-table"><caption className="ui-meta">Modeled for both layouts, not measured</caption><thead><tr><th scope="col">Measure</th><th scope="col">Commissioned layout</th><th scope="col">Layout now</th></tr></thead>
+      <tbody>{row('Seats a camera frames', d.before.camera, d.after.camera)}{row('Microphone pickup', d.before.mic, d.after.mic)}</tbody></table></div>
+    <p className="ui-meta">The dashed outline is where the table was commissioned; the solid table is where it is now; the arrow is the difference.</p>
+    <p className="lt-acts">{dv ? <button type="button" className="ui-btn" onClick={() => onChoose(null)} data-testid="lite-drift-undo">Undo my choice</button>
+      : <><button type="button" className="ui-btn ui-btn--primary" onClick={() => onChoose('restore')} data-testid="lite-drift-restore">Restore the commissioned layout</button><button type="button" className="ui-btn" onClick={() => onChoose('review')} data-testid="lite-drift-review">Mark the new layout for engineering review</button></>}
+      {techHref && <a className="ui-btn ui-btn--quiet" href={techHref}>The field report in the technical room view</a>}</p>
+    <p aria-live="polite" className="ui-meta" data-testid="lite-drift-said">{dv?.v === 'restore' ? 'Recorded on this device: the room is shown restored to the commissioning seat map. Simulated: nothing moved in a real room, and the field report stays open until a verification visit closes it.'
+      : dv?.v === 'review' ? <>Recorded on this device: the new layout is marked for engineering review. Simulated: nothing is sent until you <a href={`#/request/change-room?room=${encodeURIComponent(roomId)}`} data-testid="lite-drift-request">file the request</a>.</> : null}</p>
   </Card>;
 }
 

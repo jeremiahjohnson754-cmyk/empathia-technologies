@@ -88,6 +88,10 @@
 .lt-furn polygon { fill: #4a5a78; stroke: rgba(10, 18, 34, .6); stroke-width: .8; }
 .lt-furn .lt-furn__top { fill: #7f8fb0; }
 .lt-furn--moved polygon { stroke: #e8a93c; stroke-width: 2; stroke-dasharray: 4 3; }
+/* spatial drift: the commissioned footprint, dashed, and the arrow to where the table is now */
+.lt-ghost { fill: rgba(232, 169, 60, .08); stroke: #e8a93c; stroke-width: 1.6; stroke-dasharray: 6 4; }
+.lt-ghost__arrow { fill: none; stroke: #e8a93c; stroke-width: 2; }
+.lt-ghost__head { fill: #e8a93c; }
 .lt-link { stroke-width: 1.6; opacity: .75; }
 .lt-link--signal { stroke: #3fd8ff; } .lt-link--network { stroke: #f5b942; stroke-dasharray: 5 4; } .lt-link--power { stroke: #f0e7d2; stroke-dasharray: 2 4; } .lt-link--control { stroke: #a68cff; }
 .lt-dev { cursor: pointer; outline: none; }

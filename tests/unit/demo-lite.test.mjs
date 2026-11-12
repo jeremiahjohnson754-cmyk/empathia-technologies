@@ -146,3 +146,18 @@ test('Scouter anatomy (V2.5.3 SCA_CLASSES): seven classes, every link names a bl
     for (const b of C.blocks) { const d = A.downstream(k, b[0]); assert.equal(new Set(d).size, d.length); assert.ok(!d.includes(b[0]), `${k} ${b[0]} loops`); } void ids; }
   assert.deepEqual(A.downstream('camera', 'lens'), ['encoder', 'out']);
 });
+
+test('spatial drift (V2.5.3 AC-SD1): only where furniture moved since handover; seats follow the moved seating; the report and the model are both shown', () => {
+  const withDrift = recs.filter((r) => m.spatialDrift(r)); assert.deepEqual(withDrift.map((r) => r.outline.id), ['R-MER-1-140']);
+  const r = withDrift[0]; const d = m.spatialDrift(r);
+  assert.ok(d.moved.length >= 1 && d.moved.some((x) => x.cat === 'table')); assert.ok(d.distance > 0);
+  assert.match(d.baseline, /commissioning seat map/); assert.match(d.current, /toward the door/); assert.ok(d.report && /moved/i.test(d.report));
+  // the seats are derived from the seating blocks of the layout modeled, so the current layout's seats sit where its chairs are
+  const cur = m.roomState(r, 'current'), com = m.roomState(r, 'commissioned');
+  assert.equal(cur.cov.seats.length, com.cov.seats.length); assert.notDeepEqual(cur.cov.seats.map((s) => [s.x, s.y]), com.cov.seats.map((s) => [s.x, s.y]));
+  assert.deepEqual(d.before.camera, [com.cov.camera.covered, com.cov.camera.of]); assert.deepEqual(d.after.mic, [cur.cov.mic.covered, cur.cov.mic.of]);
+  // no loss modeled at this offset: the summary says the model and the report disagree, never that coverage was lost
+  if (d.after.camera[0] >= d.before.camera[0] && d.after.mic[0] >= d.before.mic[0]) assert.match(d.summary, /disagree/);
+  // a room whose record has no moved furniture has no drift, even with other open issues
+  assert.equal(m.spatialDrift(recs.find((x) => x.outline.id === 'R-ATL-7-112')), null);
+});

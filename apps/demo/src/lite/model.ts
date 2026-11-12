@@ -72,9 +72,10 @@ export interface Door { x: number; y: number; width: number }
 export const ROUTE_CLEAR_M = 0.815;   // ADA 404.2.3 minimum clear opening (32 in), planning reference
 
 /** Seats: each catalogue seating block spread into its declared seat count; an assembly room without blocks gets rows. MODELED. */
-export function seatsOf(r: RoomRecord): Seat[] {
+export function seatsOf(r: RoomRecord, positions: Position[] = r.positions): Seat[] {
+  // seats follow the seating blocks of the layout being modeled, so furniture moved since handover moves its seats too (12 Nov 2026)
   const [w, l] = r.outline.dims; const out: Seat[] = [];
-  for (const p of r.positions.filter((x) => x.cat === 'chairs')) {
+  for (const p of positions.filter((x) => x.cat === 'chairs')) {
     const K = C.categories.chairs!; const n = Number(K.props?.['seats']) || 6; const [sw, sd] = K.size || [2.4, 1];
     const rows = sd >= 0.9 ? 2 : 1; const cols = Math.ceil(n / rows);
     for (let i = 0; i < n; i += 1) { const c = i % cols, rr = Math.floor(i / cols); out.push({ x: clamp(p.x - sw / 2 + (sw * (c + 0.5)) / cols, 0.3, w - 0.3), y: clamp(p.y - sd / 2 + (sd * (rr + 0.5)) / rows, 0.3, l - 0.3) }); }
@@ -173,7 +174,7 @@ export function adjustSeats(seats: Seat[], delta: number, w: number, l: number):
   const y = Math.min(l - 0.3, Math.max(...seats.map((s) => s.y), 0) + 0.9); return [...seats, ...Array.from({ length: delta }, (_, i) => ({ x: clamp(0.6 + ((w - 1.2) * (i + 0.5)) / delta, 0.3, w - 0.3), y }))];
 }
 export function coverage(r: RoomRecord, positions: Position[] = r.positions, seatDelta = 0): CoverageModel {
-  const [w, l] = r.outline.dims; const seats = seatDelta ? adjustSeats(seatsOf(r), seatDelta, w, l) : seatsOf(r); const door = doorOf(r);
+  const [w, l] = r.outline.dims; const seats = seatDelta ? adjustSeats(seatsOf(r, positions), seatDelta, w, l) : seatsOf(r, positions); const door = doorOf(r);
   const cx = seats.length ? seats.reduce((s, x) => s + x.x, 0) / seats.length : w / 2, cy = seats.length ? seats.reduce((s, x) => s + x.y, 0) / seats.length : l / 2;
   const prop = (p: Position, k: string, d: number) => Number(C.categories[p.cat]?.props?.[k]) || d;
   const cones: Cone[] = positions.filter((p) => p.cat === 'camera' || p.cat === 'bar').map((p) => ({
@@ -275,6 +276,39 @@ export function roomState(r: RoomRecord, key: StateKey): RoomState {
   const ps = [...cur.positions.map((p) => (p.mark === 'moved' ? { ...p, x: p.x - 0.6, y: p.y - 0.4, mark: 'moved' as Mark, note: 'proposed: back to the commissioned layout' } : { ...p })), ...add];
   if (!add.length && !cur.marks.moved) return mk('No change proposed', 'The coverage model finds no gap to close in this room, so nothing is proposed.', 'Proposal · modeled from the current state', cur.positions.map((p) => ({ ...p, mark: p.mark === 'attention' ? 'attention' : 'same' })), false);
   return mk('A proposed change (not approved)', `${add.length} position${add.length === 1 ? '' : 's'} added${cur.marks.moved ? ', furniture back to the commissioned layout' : ''}: ${add.map((a) => a.note).join(' · ') || 'restore the layout'}. A proposal changes nothing until it is approved, re-commissioned and accepted.`, 'Proposal · modeled from the coverage gaps of the current state · not approved', ps);
+}
+
+// ------------------------------------------------------------------------------------------------ spatial drift
+/** Spatial drift from the commissioned layout (V2.5.3's "Spatial drift" panel and its assurance check AC-SD1, restored 12 Nov 2026).
+ *  Exists only where the current state moves furniture away from the commissioned positions, i.e. a field report on the record says so.
+ *  Seats, camera framing and microphone pickup are re-modeled for both layouts; nothing here is measured. */
+export interface SpatialDrift {
+  check: string; baseline: string; current: string; method: string; evidence: string; summary: string; report: string | null;
+  moved: Array<{ code: string; label: string; from: [number, number]; to: [number, number]; rot: number; cat: string }>;
+  distance: number; before: { camera: [number, number]; mic: [number, number] }; after: { camera: [number, number]; mic: [number, number] };
+}
+export function spatialDrift(r: RoomRecord): SpatialDrift | null {
+  const cur = roomState(r, 'current'); const mv = cur.positions.filter((p) => p.furniture && p.mark === 'moved');
+  if (!mv.length) return null;
+  const com = roomState(r, 'commissioned'); const ref = com.available ? com : roomState(r, 'designed');
+  const at = new Map(ref.positions.map((p) => [p.code, p]));
+  const moved = mv.map((p) => { const b = at.get(p.code)!; return { code: p.code, label: p.label, from: [b.x, b.y] as [number, number], to: [p.x, p.y] as [number, number], rot: p.rot || 0, cat: p.cat }; });
+  const t = moved[0]!; const distance = Math.round(Math.hypot(t.to[0] - t.from[0], t.to[1] - t.from[1]) * 10) / 10;
+  const door = doorOf(r); const toward = Math.hypot(t.to[0] - door.x, t.to[1] - door.y) < Math.hypot(t.from[0] - door.x, t.from[1] - door.y);
+  const before = { camera: [ref.cov.camera.covered, ref.cov.camera.of] as [number, number], mic: [ref.cov.mic.covered, ref.cov.mic.of] as [number, number] };
+  const after = { camera: [cur.cov.camera.covered, cur.cov.camera.of] as [number, number], mic: [cur.cov.mic.covered, cur.cov.mic.of] as [number, number] };
+  const lost = [after.camera[0] < before.camera[0] && `camera framing ${after.camera[0]} of ${after.camera[1]} seats, was ${before.camera[0]}`, after.mic[0] < before.mic[0] && `microphone pickup ${after.mic[0]} of ${after.mic[1]} ${cur.cov.pickup.of}, was ${before.mic[0]}`].filter(Boolean) as string[];
+  const tables = moved.filter((m) => m.cat === 'table').length; const report = openIssues(r).find((i) => /moved/i.test(i.title))?.title || null;
+  const what = tables > 1 ? 'Tables' : tables ? 'Table' : 'Furniture';
+  return {
+    check: 'Spatial layout', moved, distance, before, after,
+    baseline: `${what} as on the ${com.available ? 'commissioning seat map' : 'approved design'}`,
+    current: `${what} moved ${distance} m${toward ? ' toward the door' : ''}; ${moved.length} furniture item${moved.length === 1 ? '' : 's'} off ${moved.length === 1 ? 'its' : 'their'} ${com.available ? 'commissioned' : 'designed'} position${moved.length === 1 ? '' : 's'}`,
+    method: 'Seat map compared with the field report on the record', evidence: 'Field report · positions modeled, not surveyed',
+    summary: lost.length ? `Furniture has moved since handover, so the room no longer performs as commissioned: ${lost.join('; ')} (modeled).`
+      : `${report ? `The field report says: “${report}”. ` : ''}At the modeled offset (${distance} m) the coverage model still frames and picks up every seat, so the model and the report disagree; only a survey of the room settles it. The layout still differs from the one commissioning proved.`,
+    report,
+  };
 }
 
 // ------------------------------------------------------------------------------------------------ divisible rooms
