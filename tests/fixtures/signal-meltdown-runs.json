@@ -1,0 +1,299 @@
+{
+ "_source": "Meltdown runs recorded by the founder's SIGNAL build package QA (reference/source/tools/meltdowntest.py), extracted as data on 11 Nov 2026. expert: actions by the start of their label, in order of preference; when none is open the test holds steady. answer: the calculation entered. boundary: an action that ends the mission. year: the Season 12 choices locked before the clock.",
+ "meltdowns": {
+  "MD-S04": {
+   "expert": [
+    {
+     "label": "Read the map",
+     "answer": null
+    },
+    {
+     "label": "Radio Hank",
+     "answer": null
+    },
+    {
+     "label": "Check the backup",
+     "answer": null
+    },
+    {
+     "label": "Tess: take program",
+     "answer": null
+    },
+    {
+     "label": "Evacuate the main MCR",
+     "answer": null
+    },
+    {
+     "label": "Work out whether the microwave STL",
+     "answer": "13.2"
+    },
+    {
+     "label": "Radio Felix",
+     "answer": null
+    },
+    {
+     "label": "Size the IP link",
+     "answer": "1.35"
+    },
+    {
+     "label": "Route the interpreter",
+     "answer": null
+    },
+    {
+     "label": "Verify off-air",
+     "answer": null
+    },
+    {
+     "label": "June checks captions",
+     "answer": null
+    },
+    {
+     "label": "Call the county EM",
+     "answer": null
+    },
+    {
+     "label": "June: switch to the landline",
+     "answer": null
+    },
+    {
+     "label": "Drop the stream",
+     "answer": null
+    },
+    {
+     "label": "Route the caller",
+     "answer": null
+    },
+    {
+     "label": "Air the official alert now",
+     "answer": null
+    }
+   ],
+   "boundary": "Go down and restart the transfer switch"
+  },
+  "MD-S08": {
+   "expert": [
+    {
+     "label": "Read the map",
+     "answer": null
+    },
+    {
+     "label": "Radio Tove: what is TP-2",
+     "answer": null
+    },
+    {
+     "label": "Work out one preheat group",
+     "answer": "14.4"
+    },
+    {
+     "label": "Ask Tove to stagger",
+     "answer": null
+    },
+    {
+     "label": "Check Dario's receiving log",
+     "answer": null
+    },
+    {
+     "label": "Ask the network contractor to move the 60",
+     "answer": null
+    },
+    {
+     "label": "Check the spare south pair",
+     "answer": "1.92"
+    },
+    {
+     "label": "Ask the network contractor to bring the core",
+     "answer": null
+    },
+    {
+     "label": "Call the fire alarm contractor",
+     "answer": null
+    },
+    {
+     "label": "Walk the fire alarm tech",
+     "answer": null
+    },
+    {
+     "label": "The fire alarm contractor repairs",
+     "answer": null
+    },
+    {
+     "label": "Retest end-to-end",
+     "answer": "0.65"
+    },
+    {
+     "label": "Tell Bram no",
+     "answer": null
+    },
+    {
+     "label": "Check the core uplink",
+     "answer": "77"
+    },
+    {
+     "label": "Dario's crew patches",
+     "answer": null
+    },
+    {
+     "label": "Ask the truck what",
+     "answer": null
+    },
+    {
+     "label": "Tell the programmer: nobody",
+     "answer": null
+    },
+    {
+     "label": "Marshal Lindqvist's test",
+     "answer": null
+    },
+    {
+     "label": "Walk the house before doors",
+     "answer": null
+    }
+   ],
+   "boundary": "Move the DSP rack onto the permanent panel"
+  },
+  "MD-S09": {
+   "expert": [
+    {
+     "label": "Read the map",
+     "answer": null
+    },
+    {
+     "label": "Tell Tamsin what she can trust",
+     "answer": null
+    },
+    {
+     "label": "Tamsin pages the house",
+     "answer": null
+    },
+    {
+     "label": "Call Solveig",
+     "answer": null
+    },
+    {
+     "label": "Facilities cut power",
+     "answer": null
+    },
+    {
+     "label": "Solveig preserves",
+     "answer": null
+    },
+    {
+     "label": "Ask Raffa to block",
+     "answer": null
+    },
+    {
+     "label": "Brief communications",
+     "answer": null
+    },
+    {
+     "label": "Solveig disables",
+     "answer": null
+    },
+    {
+     "label": "Walk the lobby",
+     "answer": null
+    },
+    {
+     "label": "Before curtain",
+     "answer": null
+    },
+    {
+     "label": "Open the post-incident",
+     "answer": null
+    },
+    {
+     "label": "Through Tamsin, answer",
+     "answer": null
+    }
+   ],
+   "boundary": "Put the fire panel in test mode"
+  },
+  "MD-S11": {
+   "expert": [
+    {
+     "label": "Read the map",
+     "answer": null
+    },
+    {
+     "label": "Tell Director Oduya",
+     "answer": null
+    },
+    {
+     "label": "Ask Wendell to bring the hilltop",
+     "answer": null
+    },
+    {
+     "label": "Work out how long the UPS",
+     "answer": "20"
+    },
+    {
+     "label": "Write the handover brief",
+     "answer": null
+    },
+    {
+     "label": "Hand over to Kit",
+     "answer": null
+    },
+    {
+     "label": "Get the dam operator",
+     "answer": null
+    },
+    {
+     "label": "Imogen posts rumour control",
+     "answer": null
+    },
+    {
+     "label": "Imogen relays the agency",
+     "answer": null
+    },
+    {
+     "label": "Give the director the facts for her lower-valley",
+     "answer": null
+    },
+    {
+     "label": "Add PW-FLOOD-2",
+     "answer": null
+    },
+    {
+     "label": "Give the director the facts for load-shedding",
+     "answer": null
+    },
+    {
+     "label": "Ask Wendell to restart the wall",
+     "answer": null
+    },
+    {
+     "label": "Point him to the PARTNER",
+     "answer": null
+    },
+    {
+     "label": "Prove it where",
+     "answer": null
+    },
+    {
+     "label": "Start the after-action",
+     "answer": null
+    }
+   ],
+   "boundary": "Tell the director you're staying"
+  },
+  "MD-S12": {
+   "expert": [
+    {
+     "label": "Read the map from the seat-back",
+     "answer": null
+    }
+   ],
+   "boundary": "From the plane, log in with the admin password",
+   "year": [
+    "drills",
+    "warm",
+    "mon",
+    "pairs",
+    "adr",
+    "stop",
+    "lifecycle"
+   ]
+  }
+ }
+}
