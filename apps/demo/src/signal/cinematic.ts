@@ -50,9 +50,10 @@ export const TAKES: Record<string, Take[]> = {
     { who: 'ray', text: 'What would you tell someone who wasn\'t here tonight?', src: `${N}ray-7.mp3` },
     { who: 'ray', text: 'Aim at people, not the ceiling. A commissioning engineer I learned from used to make me write it exactly like that.', src: `${N}ray-8.mp3` },
   ],
-  // Season 1 (generated 12 Nov 2026 in grouped takes, provided by the founder, split at their breaks): media/signal/s01/build-takes.py
-  ...TAKES_S01,
 };
+// Season 1 (generated 12 Nov 2026 in grouped takes, provided by the founder, split at their breaks): media/signal/s01/build-takes.py.
+// Added to a chapter's own takes, never in place of them (Ten Seats has both).
+for (const [ch, ts] of Object.entries(TAKES_S01)) TAKES[ch] = [...(TAKES[ch] || []), ...ts];
 /** Footage by chapter (filled as reviewed clips are imported). */
 export const FOOTAGE: Record<string, Footage[]> = {
   s01e01: [
@@ -62,9 +63,9 @@ export const FOOTAGE: Record<string, Footage[]> = {
     // the fill-loudspeaker clip was not used: in it the loudspeaker points down and sideways, and the canon's point is that it is aimed
     // at the ceiling; footage that teaches the wrong aim is worse than none (founder, 12 Nov: never teach the wrong thing)
   ],
-  // Season 1 (founder, 12 Nov 12:53 CT: finish Season 1 as a film; characters kept alike by fixed descriptions, media/signal/s01/film)
-  ...FOOTAGE_S01,
 };
+// Season 1 (founder, 12 Nov 12:53 CT: finish Season 1 as a film; characters kept alike by fixed descriptions, media/signal/s01/film)
+for (const [ch, fs] of Object.entries(FOOTAGE_S01)) FOOTAGE[ch] = [...(FOOTAGE[ch] || []), ...fs];
 export const cinematicFor = (chapterId: string) => { const m = /^s(\d\d)e/.exec(chapterId); return !!m && CINEMATIC_SEASONS.includes(Number(m[1])); };
 /** The scene of a chapter: one act per canon heading (the opening act, before any heading, when the chapter starts without one). */
 export function sceneOf(chapterId: string, items: Item[]): Scene {
