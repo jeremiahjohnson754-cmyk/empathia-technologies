@@ -90,9 +90,9 @@ V2.5.3 has three: Build a Room on the commissioning engine (`#/v25/build`), the 
 |---|---|---|
 | Camera coverage and field of view; who covers a seat; coverage map | Lite coverage overlays (camera cones from the catalogue's field of view; microphone discs; loudspeaker zones over a grid; accessibility; infrastructure) | RESTORED, unit-tested (`demo-lite`) |
 | Acoustics: reverberation time, an intelligibility path, the acoustic effect, an acoustic zone | Since 12 Nov the measurements panel carries V2.5.3’s reverberation estimate (`rt60Of`: Sabine from the volume, the seats and assumed finishes, because the records hold none), labelled an estimate, not measured. Intelligibility (STI), the acoustic effect in the scene and acoustic zones: not carried (no acoustic data or model) | **PARTIAL 12 Nov** (unit `demo-lite`; LT-X3) |
-| Four states and switching between them; comparing two states; geometry and layout differences | States in Lite; `#/compare` | RESTORED. TO VERIFY geometry and layout difference views |
+| Four states and switching between them; comparing two states; geometry and layout differences | States in Lite (positions marked same, changed, attention, added, moved; the drifted room’s dashed footprint since 12 Nov); `#/compare` has current against commissioned, current against proposed, before and after a change, and old against new baseline (checked by reading `parity/Compare.tsx`, 12 Nov) | RESTORED. Layout differences are drawn in Lite; `#/compare` lists them |
 | Baselines: snapshot, versions, propose, accept, compare | Build a Room baselines and their difference; Assurance | TO VERIFY proposal and acceptance |
-| Rough-order-of-magnitude comparison | `#/compare` carries the wording | TO VERIFY |
+| Rough-order-of-magnitude comparison | `#/compare/budget`: every figure a project has had, from the initial ROM at its brief revision to the approved amount, labelled “ROM estimate · not a quote” (checked by reading `parity/Compare.tsx`, 12 Nov) | RESTORED |
 
 ## 9. What restoration means here, in order
 
