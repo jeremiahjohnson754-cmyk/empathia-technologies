@@ -140,7 +140,7 @@ function Shutter() {
   return <>
     <Stage w={800} h={420} label="Shutter and frame rate: six captured frames of a moving ball showing motion blur, a timeline of when the shutter is open, and a frame lit by a flickering light showing rolling bands.">
       <T x={20} y={24} s={`SIX FRAMES · a ball crossing the frame at ${s.speed} frame-widths per second`} size={14} weight={800} />
-      {Array.from({ length: 6 }, (_x, k) => { const fx = 20 + k * 128, fy = 36, fw = 120, fh = 80, pos = (s.speed * k * frameT) % 1, blur = s.speed * tExp * fw; return <g key={k}><rect x={fx} y={fy} width={fw} height={fh} fill="#111827" stroke="#334155" /><rect x={fx + pos * fw - 7} y={fy + 33} width={Math.min(fw, 14 + blur)} height={14} rx={7} fill="#FBBF24" opacity={Math.max(0.35, Math.min(1, 14 / (14 + blur)))} /><T x={fx + 4} y={fy + fh + 16} s={`frame ${k + 1}`} size={12} fill="#94A3B8" /></g>; })}
+      {Array.from({ length: 6 }, (_x, k) => { const fx = 20 + k * 128, fy = 36, fw = 120, fh = 80, pos = (s.speed * k * frameT) % 1, blur = s.speed * tExp * fw; return <g key={k}><rect x={fx} y={fy} width={fw} height={fh} fill="#111827" stroke="#334155" /><rect x={fx + Math.min(Math.max(0, pos * fw - 7), fw - Math.min(fw, 14 + blur))} y={fy + 33} width={Math.min(fw, 14 + blur)} height={14} rx={7} fill="#FBBF24" opacity={Math.max(0.35, Math.min(1, 14 / (14 + blur)))} /><T x={fx + 4} y={fy + fh + 16} s={`frame ${k + 1}`} size={12} fill="#94A3B8" /></g>; })}
       <T x={lx} y={ly - 6} s={`TIMELINE · frame period ${round(frameT * 1000, 2)} ms · shutter open ${round(tExp * 1000, 2)} ms (≈ 1/${Math.round(1 / tExp)} s)`} size={14} weight={800} />
       {[0, 1, 2, 3].map((j) => { const a = lx + ((j * frameT) / span) * lw; return <g key={j}><rect x={a} y={ly} width={(frameT / span) * lw - 2} height={24} fill="#1E293B" /><rect x={a} y={ly} width={(tExp / span) * lw} height={24} fill="#22D3EE" opacity={0.8} /></g>; })}
       <path d={dd} fill="none" stroke="#F472B6" strokeWidth={2} /><T x={lx + lw} y={ly + 76} s={`light output flickering at ${s.flick} Hz`} size={12} fill="#F9A8D4" anchor="end" />
@@ -174,7 +174,7 @@ function Beam() {
   const f = FIXTURES.find((x) => x.id === s.fx)!, field = Math.max(s.field, s.beam), rad = (a: number) => (a * Math.PI) / 180;
   const Db = 2 * s.d * Math.tan(rad(s.beam / 2)), Df = 2 * s.d * Math.tan(rad(field / 2)), sr = 2 * Math.PI * (1 - Math.cos(rad(field / 2))), I = s.lm / sr, E = I / (s.d * s.d);
   const sx = 40, fy = 160, L = Math.min(300, 125 / Math.tan(rad(Math.max(field, 1) / 2))), ex = sx + L, h = (a: number) => Math.tan(rad(a / 2)) * (ex - sx), hf = h(field), hb = h(s.beam);
-  const py = 330, pc = 400, psc = Math.min(22, 300 / Math.max(1, s.n * s.gap + Df)), even = s.gap <= Db * 1.05 && s.gap >= Db * 0.6;
+  const py = 314, pc = 400, psc = Math.min(22, 300 / Math.max(1, s.n * s.gap + Df), 84 / Math.max(0.1, Df))   /* the pools stay on the floor strip, above the footnote */, even = s.gap <= Db * 1.05 && s.gap >= Db * 0.6;
   return <>
     <Stage w={800} h={420} label="Beam geometry: a fixture’s cone reaching a stage at the throw distance, with the beam and field diameters, the illuminance at the centre, and several fixtures overlapping on the floor.">
       <T x={20} y={26} s={`SIDE VIEW · throw ${s.d} m (angles true, length not to scale)`} size={14} weight={800} />

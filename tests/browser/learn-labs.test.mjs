@@ -55,7 +55,9 @@ await suite('learn-labs', 4488, async ({ ok, open, goto, over, text, smallTarget
       ok('LL-15', 'the solved lab is recorded as passed', /Passed and recorded/.test(await page.locator('[data-testid=lab-said]').innerText()));
       ok('LL-16', 'the clock is a guide, never a gate: the lab runs untimed here', /a guide, never a gate/.test(await text(page)) && /untimed here/.test(await text(page)));
       await goto(page, '#/learn/labs/PHY-S01E01', 'service'); await page.waitForSelector('[data-testid=signal-lab]'); await page.getByRole('button', { name: /Open the lab/ }).click();
-      ok('LL-17', 'a physics lab now has its controls and live readout (the animated drawing is not restored yet) and no calculation-only notice', (await page.locator('[data-testid=lab-readout] div').count()) >= 3 && (await page.locator('[data-testid=calc-only]').count()) === 0);
+      // LL-17 updated 12 Nov 2026: the reference's animated drawing is restored (ed083da), so the check now asserts the canvas is drawn too.
+      const ink = await page.locator('[data-testid=phys-canvas]').evaluate((c) => { const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data, seen = new Set(); for (let i = 0; i < d.length; i += 4 * 97) seen.add(`${d[i]},${d[i + 1]},${d[i + 2]}`); return seen.size; }).catch(() => 0);
+      ok('LL-17', 'a physics lab has its controls, live readout and the reference’s animated drawing on a canvas (drawn, not blank), and no calculation-only notice', (await page.locator('[data-testid=lab-readout] div').count()) >= 3 && (await page.locator('[data-testid=calc-only]').count()) === 0 && ink >= 4, String(ink));
       // ledger + dispatch: lab evidence shows on the technician's competency state; it does not change any gate
       const ev = await page.evaluate(() => JSON.parse(localStorage.getItem('empathia.demo.workspace.v1')).events.filter((e) => e.type === 'training.lab_completed').map((e) => e.detail));
       ok('LL-18', 'each recorded result is in the ledger as competency evidence, never a credential or an authorization', ev.length >= 3 && ev.every((d) => /never a credential or an authorization/.test(d)), JSON.stringify(ev.slice(0, 2)));
