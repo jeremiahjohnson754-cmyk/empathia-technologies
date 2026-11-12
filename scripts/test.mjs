@@ -80,6 +80,8 @@ suite('unit: SIGNAL drills (six kinds on the reference rules, all 146 drills)', 
 suite('unit: SIGNAL live incidents (the reference rules; all 121 solver paths end proven inside the clock)', 'unit', node, ['--test', 'tests/unit/signal-incidents.test.mjs'], tap);
 suite('unit: SIGNAL Fix-It Labs (shell rules; signal flow, network, power, fill, EQ, camera, DMX, RF: every lab fails at start, its fix passes)', 'unit', node, ['--test', 'tests/unit/signal-labs.test.mjs'], tap);
 suite('unit: SIGNAL Physics in Motion (24 models; all 36 physics labs fail at start and pass with their setting)', 'unit', node, ['--test', 'tests/unit/signal-physics.test.mjs'], tap);
+suite('unit: SIGNAL ratings, season reviews and the loadout (six ratings from first attempts, Story Score, game over and retry)', 'unit', node, ['--test', 'tests/unit/signal-ratings.test.mjs'], tap);
+suite('unit: SIGNAL meltdowns (the cascade engine; the five expert runs end proven with grade S, boundaries and idling fail)', 'unit', node, ['--test', 'tests/unit/signal-meltdown.test.mjs'], tap);
 suite('unit: Engineering Manual (chapters, rules, workflow, exceptions)', 'unit', node, ['--test', 'tests/unit/demo-manual.test.mjs'], tap);
 suite('unit: generated documents are current (estate manifests, product census, workflow matrix)', 'unit', node, ['--test', 'tests/unit/docs-generated.test.mjs'], tap);
 suite('unit: search that reads the sentence (corrections, conditions, counted answers, drop one condition; every count recomputed from the records)', 'unit', node, ['--test', 'tests/unit/demo-understand.test.mjs'], tap);

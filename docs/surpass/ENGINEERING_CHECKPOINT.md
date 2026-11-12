@@ -15,12 +15,12 @@ agents.
 | Production | `main` at `219d75f`, untouched; needs the founder's word |
 | The founder's directive of 11 Nov 01:22 | `/mnt/user-data/attachments/73b60a1b-854c-5a1e-99ae-d3ec61696e66/84a1e711-attachment.txt` (§00–§34; read the section before building it) |
 
-## State (11 Nov 2026, 17:40 CT)
+## State (11 Nov 2026, 21:10 CT)
 
 | | Commit | Evidence |
 |---|---|---|
 | Staging carries | `bf4d023` | full browser matrix on `32940ef`, light and dark, 55 suites exit 0, `founder-studio` NOT RUN (`.local/logs/matrix-329/`). `bf4d023` adds only SIGNAL data, a unit suite and documents on top. Render: see the deploy check below |
-| Working branch | see `git log -1` | the restoration inventories (documents only) |
+| Working branch | `caae140` (see `git log -1`) | SIGNAL restoration R1, played in place: decisions as the reference records them (`c96dab9`), quizzes and lessons with gate tiers (`e62d2f6`), drills (`c4c807a`), live incidents (`caae140`). Full matrix running on `caae140` before staging |
 
 Browser-tested on `v18/continuation` since `be010f1` (suites light and dark; every page looked at, desktop and 390 px):
 
@@ -60,7 +60,7 @@ plus anything a never-waived catalogue test checks). Its private source notes ne
 "Restoration first. Transformation second. Verification throughout." The 60/10 assets set the visual direction; they do not authorise
 removing a function or replacing an advanced experience with a simplified demonstration. **SIGNAL and Lite are not complete** until
 their inventories are reconciled against the source and every supported experience has passed functional and visual testing.
-R1’s first pass is written (`docs/restoration/SIGNAL_INVENTORY.md`), the SIGNAL content bundle and gate list are in the canon package (`bf4d023`, data only, read by no page yet), and R3's first pass is written (`docs/restoration/LITE_INVENTORY.md`); the rest has not started. Each line is a task in the list.
+R1’s first pass is written (`docs/restoration/SIGNAL_INVENTORY.md`) and the content bundle is in the canon package. Restored and tested since, inside the story with the reference's gate tiers: decisions recorded as the reference does (costly calls kept, timeouts, echoes); 470 quizzes and 148 lessons; 136 drills on the reference's six-kind rules (one runner for Learn, the enterprise app and the story); 121 live incidents on the reference's Service Mode rules (Learn's page too), every solver path replayed to proven. **Not yet:** labs (75), season reviews, boss levels and meltdowns in the story (71 hard gates still unplayed, so chapter locks stay off); ratings, loadout and Mission Control; eight lab simulators, thirteen challenges, six demos; Learn's pages reading the full bundle. R3's first pass is written (`docs/restoration/LITE_INVENTORY.md`); R2, R4, R5-Lite not started. Each line is a task in the list.
 
 | | What | Source |
 |---|---|---|
@@ -128,12 +128,13 @@ For SIGNAL and Lite these phases follow R1 to R5 above.
 
 ## Next, in order
 
-1. Full matrix on the working commit; if clean, push it to staging and confirm Render.
-2. Restoration (founder, 17:06): R1 SIGNAL inventory is written (`docs/restoration/SIGNAL_INVENTORY.md`, first pass: the source is
-   fully counted; many product lines still say TO VERIFY). Next: verify those lines; R3 Lite against V2.5.3 (72 `lite*`, 18 scouter,
+1. Full matrix on `caae140` (running); if clean, push it to staging and confirm Render.
+2. Restoration (founder, 17:06): SIGNAL in place so far: decisions, quizzes, lessons, drills, incidents. Next in the story: labs (the
+   signal-flow simulator exists; eight kinds missing), then season reviews, boss levels and meltdowns, then chapter locks; then
+   ratings, loadout and Mission Control. Then: verify the inventory's TO VERIFY lines; R3 Lite against V2.5.3 (72 `lite*`, 18 scouter,
    Room Builder, optimiser and acoustics functions found in the source by a text scan; the scan scripts are in
    `…/scratchpad/restore/`); R2 media with playback verified; R4 the one parity matrix; then R5, restoring in the order the SIGNAL
-   inventory gives (library to the source's revision, the 997 pieces mounted in chapters, eight lab simulators, thirteen challenges).
+   inventory gives (library to the source's revision, eight lab simulators, thirteen challenges).
 3. 60/10 P0 (baseline) and P1; P2 corporate flagship pilot; then its other phases. For SIGNAL and Lite, after R5.
 4. Manual: its chapters in the Knowledge Ledger as a source awaiting review; a room's saved set linked from its commissioning page.
 5. Instant Room: real photographs for the sharpness threshold when a device is available; hand a proposal to Room Builder.

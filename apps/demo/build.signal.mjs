@@ -5,6 +5,7 @@
  * because the player inlines the sprite sheet once. Nothing else in the art is touched; a panel with anything unexpected stops the build.
  */
 import fs from 'node:fs'; import path from 'node:path';
+import { buildRatingsIndex } from './signal-ratings-index.mjs';
 export function shipSignal(repo, dist) {
   const src = path.join(repo, 'packages/signal-canon/data'); const out = path.join(dist, 'signal'); fs.mkdirSync(path.join(out, 'story'), { recursive: true }); fs.mkdirSync(path.join(out, 'art'), { recursive: true });
   const index = JSON.parse(fs.readFileSync(path.join(src, 'story/index.json'), 'utf8')); const stats = JSON.parse(fs.readFileSync(path.join(src, 'stats.json'), 'utf8')); const seasons = JSON.parse(fs.readFileSync(path.join(src, 'seasons.json'), 'utf8'));
@@ -22,18 +23,22 @@ export function shipSignal(repo, dist) {
     fs.writeFileSync(path.join(out, 'art', `${c.id}.json`), JSON.stringify({ panels: art, closing: extra }));
   }
   // each chapter's playable pieces beside it (restoration, 11 Nov 2026): its gates in reading order with their tier, and the quizzes
-  // lessons, drills and live incidents it carries (incident plates not shipped either), taken unchanged from the build package's content bundle. Lesson plates are not shipped (founder's ruling).
+  // lessons, drills, live incidents and labs it carries (incident plates not shipped either), taken unchanged from the build package's content bundle. Lesson plates are not shipped (founder's ruling).
   { const app = JSON.parse(fs.readFileSync(path.join(src, 'app-data.json'), 'utf8')); const gates = JSON.parse(fs.readFileSync(path.join(src, 'gates.json'), 'utf8'));
     fs.mkdirSync(path.join(out, 'pieces'), { recursive: true });
-    for (const c of index) { const items = JSON.parse(fs.readFileSync(path.join(src, 'story', `${c.id}.json`), 'utf8')).items; const quizzes = {}; const lessons = {}; const drills = {}; const incidents = {};
+    // the ratings engine's data (season reviews, the Story Score and the loadout), restored 11 Nov 2026
+    fs.writeFileSync(path.join(out, 'ratings.json'), JSON.stringify(buildRatingsIndex(app)));
+    for (const c of index) { const items = JSON.parse(fs.readFileSync(path.join(src, 'story', `${c.id}.json`), 'utf8')).items; const quizzes = {}; const lessons = {}; const drills = {}; const incidents = {}; const labs = {}; const meltdowns = {};
       const g = gates.filter((x) => x.chapter === c.id).map((x) => { const it = items[x.index]; const id = it && (it.type === 'decision' ? it.id : it.type === 'mount' ? it.id : it.type === 'twist' ? it.test_id : null);
         if (id !== x.id) throw new Error(`SIGNAL gates: ${c.id} item ${x.index} is not ${x.kind} ${x.id}`); return { index: x.index, kind: x.kind, id: x.id, tier: x.tier, twist: !!x.twist, core: !!x.core }; });
       const want = (kind, id) => { if (kind === 'quiz') { if (!app.quizzes[id]) throw new Error(`SIGNAL ${c.id}: quiz ${id} missing`); quizzes[id] = app.quizzes[id]; }
         if (kind === 'lesson') { const L = app.lessons[id]; if (!L) throw new Error(`SIGNAL ${c.id}: lesson ${id} missing`); const { plates, ...rest } = L; void plates; lessons[id] = rest; want('quiz', L.quiz); }
         if (kind === 'drill') { if (!app.drills[id]) throw new Error(`SIGNAL ${c.id}: drill ${id} missing`); drills[id] = { ...app.drills[id], id }; }
-        if (kind === 'incident') { if (!app.incidents[id]) throw new Error(`SIGNAL ${c.id}: incident ${id} missing`); const { plates, ...rest } = app.incidents[id]; void plates; incidents[id] = { ...rest, id }; } };
+        if (kind === 'incident') { if (!app.incidents[id]) throw new Error(`SIGNAL ${c.id}: incident ${id} missing`); const { plates, ...rest } = app.incidents[id]; void plates; incidents[id] = { ...rest, id }; }
+        if (kind === 'lab') { if (!app.labs[id]) throw new Error(`SIGNAL ${c.id}: lab ${id} missing`); labs[id] = { ...app.labs[id], id }; }
+        if (kind === 'meltdown') { if (!app.meltdowns[id]) throw new Error(`SIGNAL ${c.id}: meltdown ${id} missing`); meltdowns[id] = { ...app.meltdowns[id], id }; } };
       for (const it of items) { if (it.type === 'mount') want(it.kind, it.id); if (it.type === 'twist') want(it.test_kind, it.test_id); }
-      fs.writeFileSync(path.join(out, 'pieces', `${c.id}.json`), JSON.stringify({ gates: g, quizzes, lessons, drills, incidents })); } }
+      fs.writeFileSync(path.join(out, 'pieces', `${c.id}.json`), JSON.stringify({ gates: g, quizzes, lessons, drills, incidents, labs, meltdowns })); } }
   const defs = fs.readFileSync(path.join(src, 'art/defs.svg'), 'utf8'); if (/<script|<style|\son[a-z]+=|style="|href="(?!#)|<foreignObject/i.test(defs)) throw new Error('SIGNAL sprite sheet: content this site\'s policy does not allow');
   fs.writeFileSync(path.join(out, 'defs.svg'), defs); fs.copyFileSync(path.join(src, 'flags.json'), path.join(out, 'flags.json'));
   const cast = Object.fromEntries(JSON.parse(fs.readFileSync(path.join(src, 'cast/characters.json'), 'utf8')).map((p) => [p.id, p.name]));

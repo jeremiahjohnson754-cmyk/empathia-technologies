@@ -9,11 +9,12 @@
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { PageProps } from '../registry.types.js';
-import { DrillRunner, IncidentRunner, type Drill, type Incidents } from '@empathia/ui';
+import * as RT from './ratings.js';
+import { DrillRunner, IncidentRunner, LabRunner, MeltdownRunner, LAB_KINDS_PLAYABLE, Meltdowns, type Drill, type Incidents, type LabData } from '@empathia/ui';
 import { Block, Crumbs, Pick } from '../worlds/kit.js';
-import { BANDS, SEVERITY, TIMEOUT, answerTalk, chapterVerdict, choose, complete, echoes, emphasis, emptyChapter, find, load, nextOf, passed, prevOf, reached, replayDecision, resume, save, seconds, tally, timeOut, trustLine, weightLine, weightOf,
+import { emptyProgress, BANDS, SEVERITY, TIMEOUT, answerTalk, chapterVerdict, choose, complete, echoes, emphasis, emptyChapter, find, load, nextOf, passed, prevOf, reached, replayDecision, resume, save, seconds, tally, timeOut, trustLine, weightLine, weightOf,
   type Chapter, type ChapterState, type Clock, type Item, type Option, type Outcome, type Progress, type StoryIndex, type Verdict,
-  PLAYABLE, TIER_WORD, blocking, gateCleared, gateCount, gateKey, recordQuiz, recordDrillTry, recordIncidentRun, skip, type Gate, type Pieces, type Quiz } from './story.js';
+  PLAYABLE, TIER_WORD, blocking, gateCleared, gateCount, gateKey, recordQuiz, recordDrillTry, recordIncidentRun, recordLabTry, skip, type Gate, type Pieces, type Quiz, type ReviewRecord, type MeltdownRecord } from './story.js';
 
 type Flags = Record<string, { type: string; title: string; detail?: string }>;
 let ixCache: Promise<StoryIndex> | null = null; let flagCache: Promise<Flags> | null = null; let defsReady: Promise<void> | null = null;
@@ -22,6 +23,8 @@ export const getJson = <T,>(url: string): Promise<T> => fetch(url).then((r) => {
 export const notKept = () => typeof navigator !== 'undefined' && navigator.onLine === false;
 export const loadIndex = () => (ixCache ||= getJson<StoryIndex>('signal/index.json').catch((e) => { ixCache = null; throw e; }));
 const loadFlags = () => (flagCache ||= getJson<Flags>('signal/flags.json').catch(() => ({} as Flags)));
+let ratingsCache: Promise<RT.RatingsIndex> | null = null;
+const loadRatings = () => (ratingsCache ||= getJson<RT.RatingsIndex>('signal/ratings.json').catch((e) => { ratingsCache = null; throw e; }));
 /** The shared sprite sheet (figures, props, backgrounds) is first-party art shipped with the build; it is put in the page once so panels can refer to it. */
 export const loadDefs = () => (defsReady ||= fetch('signal/defs.svg').then((r) => r.text()).then((svg) => { if (document.getElementById('sg-defs')) return; const d = document.createElement('div'); d.id = 'sg-defs'; d.className = 'sg-defs'; d.setAttribute('aria-hidden', 'true'); d.innerHTML = svg; document.body.appendChild(d); }).catch(() => { defsReady = null; }));
 export function useLoaded<T>(get: () => Promise<T>, key: string): { data: T | null; error: string | null } {
@@ -78,6 +81,9 @@ function Library({ ix, progress, commit }: { ix: StoryIndex; progress: Progress;
 
 function Reader({ ix, id, progress, commit }: { ix: StoryIndex; id: string; progress: Progress; commit: (p: Progress) => void }) {
   const ch = useLoaded(() => getJson<Chapter>(`signal/story/${id}.json`), id); const art = useLoaded(() => Promise.all([getJson<{ panels: string[]; closing: { alt: string; svg: string }[] }>(`signal/art/${id}.json`), loadDefs()]).then((r) => r[0]), `art-${id}`);
+  const retry = (se: number) => { void loadRatings().then((X) => { commit({ ...RT.retrySeason(progress, X, se), last: null }); const first = ix.chapters.find((c) => c.season === se); location.hash = `#/story/${first ? first.id : 's01e00'}`; }); };
+  const restart = () => { commit({ ...emptyProgress(), clock: progress.clock, gates: progress.gates }); location.hash = '#/story/pro01'; };
+  const failed = Object.entries(progress.reviews).filter(([, r]) => !r.pass).map(([k]) => Number(k.slice(1))).sort((a, b) => a - b)[0];
   const flags = useLoaded(loadFlags, 'flags'); const ref = ix.chapters.find((c) => c.id === id)!; const state = progress.chapters[id] || emptyChapter(); const [said, setSaid] = useState('');
   const set = (s: ChapterState, extra: Partial<Progress> = {}) => commit({ ...progress, ...extra, last: id, chapters: { ...progress.chapters, [id]: s } });
   const pc = useLoaded(() => getJson<Pieces>(`signal/pieces/${id}.json`), `pieces-${id}`); const pieces = pc.data; const ctx = pieces ? { pieces, progress } : undefined;
@@ -92,6 +98,7 @@ function Reader({ ix, id, progress, commit }: { ix: StoryIndex; id: string; prog
   return (
     <article className="sg sg-read" data-testid="story-reader" data-chapter={id} data-reached={upTo} data-items={items.length} aria-busy={!ch.data}>
       <Crumbs items={[{ label: 'Learn', href: '#/learn' }, { label: 'SIGNAL', href: '#/story' }, { label: ref.season ? `Season ${ref.season}` : 'Prologue', href: '#/story' }, { label: ref.title }]} />
+      {failed != null && <div className="sg-banner" role="status" data-testid="story-gameover-banner"><b>✕ Game over · Season {failed} review failed (Story Score {progress.reviews[`S${failed}`]!.score}).</b> <button type="button" className="ui-btn" onClick={() => retry(failed)}>↺ Retry Season {failed}</button> <button type="button" className="ui-btn ui-btn--quiet" onClick={restart}>⟲ Restart</button></div>}
       <p className="kicker">{ref.kicker} <Draft /></p>
       <h1 tabIndex={-1}>{ref.title}</h1>
       {ref.sub && <p className="lead">{ref.sub}</p>}
@@ -108,6 +115,10 @@ function Reader({ ix, id, progress, commit }: { ix: StoryIndex; id: string; prog
         {items.slice(0, upTo).map((it, i) => { if (it.type === 'panel') panelNo += 1; return <ItemView key={i} it={it} n={i} svg={it.type === 'panel' ? art.data?.panels[panelNo] : undefined} cast={ix.cast} state={state} clock={progress.clock} gated={progress.gates}
           onChoose={(d, letter, meta) => { const r = choose(state, d, letter, meta); set(r.state); setSaid(said1(r.outcome)); return r.outcome; }}
           pieces={pieces} progress={progress} onQuiz={(qid, r, n) => { commit({ ...recordQuiz(progress, qid, r, n), last: id }); setSaid(`Check recorded: ${r} of ${n}.`); }} onSkip={(g) => { commit({ ...skip(progress, g), last: id }); setSaid('Skipped for now. It stays here to come back to.'); }}
+          onReview={(rid, rec) => { commit({ ...progress, reviews: { ...progress.reviews, [rid]: rec }, last: id }); setSaid(rec.pass ? `Season review passed: Story Score ${rec.score}.` : `Game over: Story Score ${rec.score}, below 65.`); }}
+          onRetrySeason={retry} onRestart={restart}
+          onMeltdown={(mid, rec) => { commit({ ...progress, meltdowns: { ...progress.meltdowns, [mid]: rec }, last: id }); setSaid(rec.last === 'proven' ? `Meltdown contained and proven: rating ${rec.grade}.` : rec.last === 'partial' ? 'Meltdown survived, not proven. Recorded.' : 'Meltdown lost. Recorded; the after-action review shows where it turned.'); }}
+          onLab={(lid, ok, fin) => { commit({ ...recordLabTry(progress, lid, ok, fin), last: id }); setSaid(ok ? 'Lab fixed and recorded.' : fin ? 'Lab ended, not passed. Recorded; the fix is shown in the lab.' : 'Not fixed yet. The lab stays open.'); }}
           onIncident={(iid, o, why) => { commit({ ...recordIncidentRun(progress, iid, o, why), last: id }); setSaid(o === 'proven' ? 'Incident closed: restored and proven. Recorded.' : o === 'partial' ? 'Incident closed: restored, not proven. Recorded.' : 'Incident closed as failed. Recorded; the debrief says why, and you can run it again.'); }}
           onDrill={(did, ok) => { commit({ ...recordDrillTry(progress, did, ok), last: id }); setSaid(ok ? 'Drill passed and recorded.' : 'Drill recorded as not passed. The story goes on; you can try it again here.'); }}
           onTimeout={(d, h) => { set(timeOut(state, d, h)); setSaid('Time ran out. The decision is recorded as missed. Tap an option to see what it would have done, or replay it to make it count.'); }}
@@ -116,8 +127,8 @@ function Reader({ ix, id, progress, commit }: { ix: StoryIndex; id: string; prog
         {ch.data && upTo >= items.length && art.data?.closing.map((c, i) => <figure key={i} className="sg-panel"><div className="sg-art" role="img" aria-label={c.alt} dangerouslySetInnerHTML={{ __html: c.svg }} /></figure>)}
       </div>
       <p className="ui-visually-hidden" role="status" aria-live="polite" data-testid="story-said">{said}</p>
-      {ch.data && upTo < items.length && <p className="sg-wait" data-testid="story-waiting" data-kind={hold?.kind || 'decision'}>{hold && hold.kind !== 'decision' ? `🔒 ${hold.kind === 'lesson' ? 'Finish the lesson check' : hold.kind === 'drill' ? 'Finish the drill' : hold.kind === 'incident' ? 'Run the live incident to its end' : 'Answer every question'} to continue${hold.tier === 'soft' ? ', or skip it for now' : ''}.` : 'The story is waiting for your decision.'} {items.length - upTo} more moments follow.{gc ? ` ${gc.cleared} of ${gc.total} gates cleared in this chapter.` : ''}</p>}
-      {pieces && <p className="ui-meta" data-testid="story-gate-note">Played inside the story in this build: decisions, quizzes, lessons, drills and live incidents. Labs, season reviews, boss levels and meltdowns are shown and do not yet hold the story.</p>}
+      {ch.data && upTo < items.length && <p className="sg-wait" data-testid="story-waiting" data-kind={hold?.kind || 'decision'}>{hold && hold.kind !== 'decision' ? `🔒 ${hold.kind === 'lesson' ? 'Finish the lesson check' : hold.kind === 'drill' ? 'Finish the drill' : hold.kind === 'incident' ? 'Run the live incident to its end' : hold.kind === 'lab' ? 'Fix it — or run out the clock' : hold.kind === 'meltdown' ? 'Survive the meltdown — or fail it' : hold.kind === 'review' ? 'The next season opens only with a Story Score of 65 or higher. Submit the season for review' : 'Answer every question'} to continue${hold.tier === 'soft' ? ', or skip it for now' : ''}.` : 'The story is waiting for your decision.'} {items.length - upTo} more moments follow.{gc ? ` ${gc.cleared} of ${gc.total} gates cleared in this chapter.` : ''}</p>}
+      {pieces && <p className="ui-meta" data-testid="story-gate-note">Played inside the story in this build: decisions, quizzes, lessons, drills, live incidents, Fix-It Labs, season reviews and meltdowns. Boss levels are shown and do not yet hold the story.</p>}
       {ch.data && finished && upTo >= items.length && (
         <Block title="Where this chapter leaves you" testId="story-summary">
           <ul className="sg-sum">
@@ -140,7 +151,7 @@ function Reader({ ix, id, progress, commit }: { ix: StoryIndex; id: string; prog
 }
 
 export interface ViewProps { it: Item; n: number; svg?: string; cast: Record<string, string>; state: ChapterState; clock: Clock; gated: boolean; onChoose: (d: Extract<Item, { type: 'decision' }>, letter: string, meta: { hints: number }) => Outcome; onTimeout?: (d: Extract<Item, { type: 'decision' }>, hints: number) => void; onReplay?: (id: string) => void; onTalk: (id: string, o: number) => void; onFind: (id: string) => void;
-  /** the chapter's pieces and gates, and the reader's quiz records, when loaded */ pieces?: Pieces | null; progress?: Progress; onQuiz?: (id: string, right: number, total: number) => void; onSkip?: (g: Gate) => void; onDrill?: (id: string, passed: boolean) => void; onIncident?: (id: string, outcome: 'proven' | 'partial' | 'fail', why: 'declared' | 'clock' | 'boundary') => void }
+  /** the chapter's pieces and gates, and the reader's quiz records, when loaded */ pieces?: Pieces | null; progress?: Progress; onQuiz?: (id: string, right: number, total: number) => void; onSkip?: (g: Gate) => void; onDrill?: (id: string, passed: boolean) => void; onIncident?: (id: string, outcome: 'proven' | 'partial' | 'fail', why: 'declared' | 'clock' | 'boundary') => void; onLab?: (id: string, passed: boolean, final: boolean) => void; onReview?: (id: string, rec: ReviewRecord) => void; onRetrySeason?: (season: number) => void; onRestart?: () => void; onMeltdown?: (id: string, rec: MeltdownRecord) => void }
 const MOUNT_WORD: Record<string, string> = { lesson: 'Lesson', lab: 'Lab', quiz: 'Quiz', drill: 'Drill', incident: 'Live incident', review: 'Season review', boss: 'Boss level', meltdown: 'Meltdown' };
 const gateOf = (p: ViewProps, kind: string, id: string): Gate | undefined => p.pieces?.gates.find((g) => g.index === p.n && g.kind === kind && g.id === id);
 /** Lesson cards carry a little markup (bold, italic, sub, sup, a formula span). Only those become elements; anything else is text. */
@@ -168,6 +179,9 @@ function Piece({ p, kind, id, n, label }: { p: ViewProps; kind: string; id: stri
   const g = gateOf(p, kind, id); const pieces = p.pieces; const prog = p.progress; if (!pieces || !prog) return null; void n;
   if (kind === 'drill') return <DrillPiece p={p} id={id} g={g} label={label} />;
   if (kind === 'incident') return <IncidentPiece p={p} id={id} g={g} label={label} />;
+  if (kind === 'lab') return <LabPiece p={p} id={id} g={g} label={label} />;
+  if (kind === 'review') return <ReviewPiece p={p} id={id} g={g} />;
+  if (kind === 'meltdown') return <MeltdownPiece p={p} id={id} g={g} label={label} />;
   const L = kind === 'lesson' ? pieces.lessons[id] : undefined; const qid = kind === 'lesson' ? L?.quiz : id; const q = qid ? pieces.quizzes[qid] : undefined; if (!q) return null;
   const cleared = g ? gateCleared(g, p.state, prog, pieces) : !!prog.quizzes[qid!]; const skipped = !!(g && prog.skips[gateKey(g)]) && !prog.quizzes[qid!];
   return <section className={`sg-piece is-${g?.tier || 'opt'}`} data-item="piece" data-kind={kind} data-piece={id} data-tier={g?.tier || 'opt'} data-cleared={cleared} aria-label={`${kind === 'lesson' ? 'Lesson' : 'Check'}: ${L?.title || q.title}`}>
@@ -206,6 +220,62 @@ function IncidentPiece({ p, id, g, label }: { p: ViewProps; id: string; g: Gate 
     {g?.tier === 'soft' && !cleared && <p><button type="button" className="ui-btn ui-btn--quiet" data-testid="story-skip" onClick={() => p.onSkip?.(g)}>Skip for now</button></p>}
   </section>;
 }
+/** A Fix-It Lab inside the chapter (restored 11 Nov 2026): the shared runner on the reference's rules, on the story's clock. Its gate
+ *  is done when the lab is fixed, or ends (the clock, or "Show me the fix"), as gate.js has it; a miss keeps it open. */
+function LabPiece({ p, id, g, label }: { p: ViewProps; id: string; g: Gate | null | undefined; label?: string | null }) {
+  const L = p.pieces?.labs?.[id]; const prog = p.progress; if (!L || !prog) return null;
+  const rec = prog.labs[id]; const cleared = g ? gateCleared(g, p.state, prog, p.pieces!) : !!(rec && (rec.passed || rec.done)); const skipped = !!(g && prog.skips[gateKey(g)]) && !rec;
+  return <section className={`sg-piece is-${g?.tier || 'opt'}`} data-item="piece" data-kind="lab" data-piece={id} data-tier={g?.tier || 'opt'} data-cleared={cleared} aria-label={`Fix-It Lab: ${L.title}`}>
+    <p className="sg-tier" data-testid="story-tier">{TIER_WORD[g?.tier || 'opt']}{g?.core ? ' · the chapter’s core skill' : ''}{skipped ? ' · skipped for now' : ''}</p>
+    {label && <p className="ui-meta"><Em text={label} /></p>}
+    {rec && <p className="ui-meta" data-testid="story-lab-rec">{rec.passed ? `Fixed (on try ${rec.passTry})` : rec.done ? 'Ended, not passed' : 'Not fixed yet'} · {rec.tries} {rec.tries === 1 ? 'test' : 'tests'}.</p>}
+    <LabRunner key={p.clock} L={L as unknown as LabData} heading="h4" factor={FACTOR[p.clock] ?? 1} onRecord={(ok, fin) => p.onLab?.(id, ok, fin)} />
+    {g?.tier === 'soft' && !cleared && <p><button type="button" className="ui-btn ui-btn--quiet" data-testid="story-skip" onClick={() => p.onSkip?.(g)}>Skip for now</button></p>}
+  </section>;
+}
+/** A season review inside the season finale (restored 11 Nov 2026): the six ratings from first attempts, the Story Score, what pulled it
+ *  down, the Seasons 10–12 forecast (the loadout, locked at Season 9). Submitting records it; below 65 is game over: retry the season,
+ *  restart the story, or look back first. The gate opens only on a pass, as the reference's gate.js has it. */
+function ReviewPiece({ p, id, g }: { p: ViewProps; id: string; g: Gate | null | undefined }) {
+  const X = useLoaded(loadRatings, 'ratings'); const prog = p.progress; const [look, setLook] = useState(false); if (!prog) return null;
+  const se = Number(id.slice(1)); const rec = prog.reviews[id];
+  if (!X.data) return <section className="sg-piece is-hard" data-item="piece" data-kind="review" data-piece={id}><p className="ui-meta">{X.error ? `The ratings did not load: ${X.error}` : 'Gathering your first attempts…'}</p></section>;
+  const r = RT.ratingsFor(prog, X.data, se); const lo = se >= 9 && rec?.loadout ? rec.loadout : RT.loadoutOf(r);
+  const bars = (rr: RT.Ratings) => <ul className="sg-bars" data-testid="story-ratings">{RT.DIMS.map(([k, label, q]) => { const v = rr.dims[k].score; return <li key={k} data-band={RT.band(v)}><span><b>{label}</b><span className="ui-meta">{q}</span></span><svg className="sg-meter" viewBox="0 0 100 8" role="meter" aria-valuemin={0} aria-valuemax={100} aria-valuenow={v} aria-label={label}><rect className="sg-meter__bg" x="0" y="0" width="100" height="8" rx="3" /><rect className="sg-meter__fg" x="0" y="0" width={v} height="8" rx="3" /><line className="sg-meter__pass" x1={RT.PASS} x2={RT.PASS} y1="0" y2="8" /></svg><b className="num">{v}</b></li>; })}</ul>;
+  return <section className="sg-piece is-hard sg-review" data-item="piece" data-kind="review" data-piece={id} data-tier={g?.tier || 'hard'} data-cleared={!!rec?.pass}>
+    <p className="sg-tier" data-testid="story-tier">{TIER_WORD.hard}</p>
+    <h3>Season {se} review · six ratings</h3>
+    <p>Everything you did through Season {se} — first attempts, not retries — is rated six ways. The Story Score must be {RT.PASS} or higher for the story to go on.</p>
+    {bars(r)}
+    <p className="sg-score" data-testid="story-score" data-pass={r.pass}>Story Score {r.score} / 100 · {r.pass ? 'the story goes on' : `below ${RT.PASS} — game over`}</p>
+    <p className="ui-meta">{r.debt} unresolved shortcut{r.debt === 1 ? '' : 's'} on the books · {r.seen} first attempt{r.seen === 1 ? '' : 's'} counted.</p>
+    {r.notes.length > 0 && <><p className="sg-dec__k">What pulled your score down</p><ul className="sg-notes" data-testid="story-review-notes">{r.notes.map((n) => <li key={n.t}>{n.t}</li>)}</ul></>}
+    <p className="sg-dec__k">{se >= 9 && rec?.loadout ? 'Seasons 10–12 · your loadout' : 'Forecast · if this holds, Seasons 10–12 look like this'}</p>
+    <ul className="sg-loadout" data-testid="story-loadout">{Object.entries(lo).map(([k, o]) => <li key={k} data-level={o.lvl}><span className="sg-tag">{RT.LEVEL[o.lvl]}</span> <b>{o.label}</b> <span>{o.text}</span></li>)}</ul>
+    <p className="ui-meta">Levels come from your ratings (80 and above full, 65 and above limited, below that the bare minimum).</p>
+    {!rec && <p><button type="button" className="ui-btn ui-btn--primary" data-testid="story-review-submit" onClick={() => p.onReview?.(id, RT.submitReview(prog, X.data!, se, Date.now()) as ReviewRecord)}>▶ Submit Season {se} for review</button></p>}
+    {rec && rec.pass && <p className="sg-verdict" data-testid="story-review-verdict" data-pass="true">✓ Season {se} passed · Story Score {rec.score}</p>}
+    {rec && !rec.pass && !look && <div className="sg-gameover" role="alertdialog" aria-labelledby={`go-${id}`} data-testid="story-gameover"><p className="sg-dec__k">✕ Game over · story failure</p><h4 id={`go-${id}`}>Season {se} ends the story</h4>
+      <p>Your Story Score is {rec.score}. The story needs {RT.PASS}. The people who counted on Maya stopped counting on her — and the next season doesn’t happen.</p>
+      <p className="sg-row"><button type="button" className="ui-btn ui-btn--primary" onClick={() => p.onRetrySeason?.(se)}>↺ Retry Season {se}</button><button type="button" className="ui-btn" onClick={() => p.onRestart?.()}>⟲ Restart the whole story</button><button type="button" className="ui-btn ui-btn--quiet" onClick={() => setLook(true)}>Look back first</button></p>
+      <p className="ui-meta">Retrying a season clears that season’s first attempts so they can be earned again. Earlier seasons keep their record.</p></div>}
+    {rec && !rec.pass && look && <p className="sg-verdict" data-testid="story-review-verdict" data-pass="false">✕ Game over · Season {se} was submitted at {rec.score}. <button type="button" className="ui-btn" onClick={() => p.onRetrySeason?.(se)}>↺ Retry Season {se}</button></p>}
+  </section>;
+}
+/** A meltdown inside the season finale (restored 11 Nov 2026): the shared runner on the reference's rules, on the story's clock, with
+ *  the loadout (Season 9's, or the forecast) deciding which nodes and moves are affordable in Seasons 10–12. Its gate clears when a run
+ *  ends, survived or failed, as gate.js has it; the record keeps the best and the first. */
+function MeltdownPiece({ p, id, g, label }: { p: ViewProps; id: string; g: Gate | null | undefined; label?: string | null }) {
+  const M = p.pieces?.meltdowns?.[id]; const prog = p.progress; const X = useLoaded(loadRatings, 'ratings'); if (!M || !prog) return null;
+  const lo = X.data ? RT.currentLoadout(prog, X.data) : null; const rec = prog.meltdowns[id]; const cleared = g ? gateCleared(g, p.state, prog, p.pieces!) : !!rec;
+  if (!lo) return <section className="sg-piece is-hard" data-item="piece" data-kind="meltdown" data-piece={id}><p className="ui-meta">{X.error ? `The ratings did not load: ${X.error}` : 'Reading your loadout…'}</p></section>;
+  return <section className={`sg-piece is-${g?.tier || 'hard'}`} data-item="piece" data-kind="meltdown" data-piece={id} data-tier={g?.tier || 'hard'} data-cleared={cleared} aria-label={`Meltdown: ${M.title}`}>
+    <p className="sg-tier" data-testid="story-tier">{TIER_WORD[g?.tier || 'hard']}</p>
+    {label && <p className="ui-meta"><Em text={label} /></p>}
+    {rec && <p className="ui-meta" data-testid="story-meltdown-rec">Best so far: {rec.best === 'proven' ? 'contained and proven' : rec.best === 'partial' ? 'survived, not proven' : 'mission failed'}, rating {rec.grade} · {rec.runs} {rec.runs === 1 ? 'run' : 'runs'} · first run rated {rec.firstGrade}.</p>}
+    <MeltdownRunner key={p.clock} M={M as unknown as Meltdowns.Meltdown} heading="h4" factor={FACTOR[p.clock] ?? 1} resMet={(r) => RT.resMet(lo, r)} resWhy={(r) => RT.resWhy(lo, r)} onEnd={(S) => p.onMeltdown?.(id, Meltdowns.recordMeltdown(rec as Meltdowns.MeltdownRecord | undefined, S) as MeltdownRecord)} />
+  </section>;
+}
 export function ItemView(p: ViewProps): JSX.Element | null {
   const { it, cast } = p; const name = (id: string) => cast[id] || id;
   switch (it.type) {
@@ -242,7 +312,7 @@ export function ItemView(p: ViewProps): JSX.Element | null {
     case 'twist': return <section className="sg-twist" data-item="twist"><p className="sg-twist__k">Twist</p><h3>{it.title}</h3><Paras text={it.body} />{it.label && <p className="ui-meta">{it.label}</p>}
       <Piece p={p} kind={it.test_kind} id={it.test_id} n={p.n} /></section>;
     case 'history': return <aside className="sg-hist" data-item="history"><p className="sg-hist__k">Then and now{it.when ? ` · ${it.when}` : ''}</p><h3>{it.title}</h3><Paras text={it.body} /><p className="ui-meta">Under review: {it.flag}. Dates and attributions are the author’s draft until that review closes.</p></aside>;
-    case 'mount': return (it.kind === 'quiz' || it.kind === 'lesson' || (it.kind === 'drill' && p.pieces?.drills?.[it.id]) || (it.kind === 'incident' && p.pieces?.incidents?.[it.id])) && p.pieces ? <Piece p={p} kind={it.kind} id={it.id} n={p.n} label={it.label} /> : (
+    case 'mount': return (it.kind === 'quiz' || it.kind === 'lesson' || (it.kind === 'drill' && p.pieces?.drills?.[it.id]) || (it.kind === 'incident' && p.pieces?.incidents?.[it.id]) || (it.kind === 'lab' && LAB_KINDS_PLAYABLE.has(String(p.pieces?.labs?.[it.id]?.type))) || it.kind === 'review' || (it.kind === 'meltdown' && p.pieces?.meltdowns?.[it.id])) && p.pieces ? <Piece p={p} kind={it.kind} id={it.id} n={p.n} label={it.label} /> : (
       <aside className="sg-mount" data-item="mount" data-kind={it.kind}>
         <span className="ui-tag">{MOUNT_WORD[it.kind] || it.kind}</span>
         <span>{it.label ? <Em text={it.label} /> : <code>{it.id}</code>}</span>

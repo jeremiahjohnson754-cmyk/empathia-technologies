@@ -5,7 +5,7 @@
  * demonstration's own files on demand.
  */
 import { useEffect, useState } from 'react';
-import { Tag } from '@empathia/ui';
+import { Tag, LabRunner, LAB_KINDS_PLAYABLE, type LabData } from '@empathia/ui';
 import type { WorkspaceProps } from '../hardening/lazy.js';
 import { OpsHead, param, personaOf } from '../hardening/kit.js';
 import { opsPath } from '../hardening/path.js';
@@ -37,7 +37,7 @@ export default function Labs({ perspective, hash }: WorkspaceProps) {
   if (inst) return <Instrument key={inst.id} inst={inst} L={L} />;
   if (err) return <section className="ops"><OpsHead product="learn" kicker="Learn · labs" title="Labs" persona={persona} /><div role="alert" className="ops-refused" data-testid="lib-error"><b>The SIGNAL library could not load.</b> {err}. The Audio, Camera and Lighting labs below work without it. <button type="button" className="ui-btn ui-btn--sm" onClick={() => setN((x) => x + 1)}>Try again</button></div><InstrumentList L={L} /></section>;
   if (id) { if (!lib) return <section className="ops"><OpsHead product="learn" kicker="Learn · labs" title="Loading the lab" persona={persona} /><p role="status" className="ops-note">Loading the SIGNAL library…</p></section>;
-    const lab = lib.labs[id]; return lab ? <SignalLab key={id} lab={lab} L={L} /> : <section className="ops"><OpsHead product="learn" kicker="Learn · labs" title="Lab not found" persona={persona} lead={<>There is no lab {id}. <a href="#/learn/labs">All labs</a></>} /></section>; }
+    const lab = lib.labs[id]; return lab ? (LAB_KINDS_PLAYABLE.has(lab.type) ? <SharedLab key={id} lab={lab as unknown as LabData} L={L} /> : <SignalLab key={id} lab={lab} L={L} />) : <section className="ops"><OpsHead product="learn" kicker="Learn · labs" title="Lab not found" persona={persona} lead={<>There is no lab {id}. <a href="#/learn/labs">All labs</a></>} /></section>; }
   return <LabList lib={lib} L={L} type={param(hash, 'type')} />;
 }
 
@@ -86,6 +86,21 @@ function Instrument({ inst, L }: { inst: typeof INSTRUMENTS[number]; L: ReturnTy
       <Lab onState={setChecks} />
       <section className="ops-card" aria-labelledby="ck-h"><h2 id="ck-h">The fix · {checks.filter((c) => c.ok).length} of {checks.length}</h2><Checks checks={checks} /></section>
       <Record L={L} lab={inst.id} title={inst.title} domain={inst.domain} ok={checks.length > 0 && checks.every((c) => c.ok)} mode="simulator" />
+    </section>
+  );
+}
+
+/** Since 11 Nov 2026 every SIGNAL lab with a simulator runs on the shared runner and the reference's rules (packages/ui/src/labs.ts),
+ *  untimed here because on this page the clock is a guide, never a gate. A pass, or a lab that ends, is recorded as before. */
+function SharedLab({ lab, L }: { lab: LabData; L: ReturnType<typeof useLabs> }) {
+  const [said, setSaid] = useState<string | null>(null);
+  return (
+    <section className="ops" data-testid="signal-lab">
+      <OpsHead product="learn" kicker={`Learn · labs · ${KIND[lab.type] || lab.type} · ${lab.domain}`} title={lab.title} persona={L.persona} lead={<>Illustrative models, not measurements.</>} actions={<a className="ui-btn ui-btn--quiet" href="#/learn/labs">All labs</a>} />
+      <LabRunner L={lab} factor={0} heading="h2" onRecord={(ok, fin) => { if (!ok && !fin) return; L.record({ lab: lab.id, title: lab.title, domain: lab.domain, passed: ok, mode: 'simulator' }); setSaid(ok ? 'Passed and recorded as competency evidence on your internal competency record.' : 'Recorded as an attempt, not passed.'); }} />
+      <div className="ops-card" data-testid="lab-record"><div className="ops-row">{L.passed(lab.id) ? <Tag tone="ok">passed · competency evidence</Tag> : null}</div>
+        <p className="ops-note" role="status" data-testid="lab-said">{said || 'Nothing is recorded until the lab is fixed or ends.'}</p>
+        <p className="ops-meta">Competency evidence for the perspective you are using, in this browser. It is not a credential and never authorizes work: dispatch gates read the competency record, not lab results.</p></div>
     </section>
   );
 }

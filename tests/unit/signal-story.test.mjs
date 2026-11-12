@@ -95,12 +95,17 @@ test('SS-09 the story waits at each hard decision, then at the soft twist test; 
   const skipped = S.skip(pr, tw); assert.equal(skipped.skips['quiz:Q-TW-S01E00-R'], 1); assert.equal(S.blocking(s, skipped, pieces).id, d3.id);
 });
 
-test('SS-10 a lesson is done when its own check is recorded; hard gates cannot be skipped; optional and unplayable kinds never hold', () => {
+test('SS-10 a lesson is done when its own check is recorded; hard gates cannot be skipped; a lab holds until fixed or ended; optional pieces never hold', () => {
   let s = S.emptyChapter(); for (const d of D) s = S.choose(s, d, 'B').state; const pr = S.recordQuiz(S.emptyProgress(), 'Q-TW-S01E00-R', 1, 1);
   const L = S.blocking(s, pr, pieces); assert.deepEqual([L.kind, L.id, L.tier], ['lesson', 'FB1', 'soft']);
-  assert.ok(lessons.FB1 && lessons.FB1.quiz, 'the lesson names its check'); assert.equal(S.blocking(s, S.recordQuiz(pr, lessons.FB1.quiz, 0, 4), pieces), null, 'the lab (hard, not yet playable) and the optional pieces after it do not hold');
+  assert.ok(lessons.FB1 && lessons.FB1.quiz, 'the lesson names its check'); // changed 11 Nov 2026 when labs became playable: the chapter's core lab (hard) now holds after the lesson; a miss does not clear it,
+  // a pass or an ending does (gate.js); then the optional pieces after it never hold
+  const done = S.recordQuiz(pr, lessons.FB1.quiz, 0, 4); const lab = S.blocking(s, done, pieces); assert.deepEqual([lab.kind, lab.id, lab.tier], ['lab', 'LAB-SF-01', 'hard']);
+  assert.equal(S.blocking(s, S.recordLabTry(done, 'LAB-SF-01', false, false), pieces).id, 'LAB-SF-01', 'a miss keeps it holding');
+  assert.equal(S.blocking(s, S.recordLabTry(done, 'LAB-SF-01', false, true), pieces), null, 'an ending (clock, or the fix shown) clears it, as gate.js has it');
+  assert.equal(S.blocking(s, S.recordLabTry(S.recordLabTry(done, 'LAB-SF-01', false, true), 'LAB-SF-01', false, false), pieces), null, 'trying again after it ended does not close the story again');
   const hard = pieces.gates.find((g) => g.tier === 'hard'); assert.equal(S.skip(pr, hard), pr); assert.equal(S.gateCleared(hard, S.emptyChapter(), { quizzes: {}, skips: { [S.gateKey(hard)]: 1 } }, pieces), false, 'a forged skip of a hard gate clears nothing'); const opt = pieces.gates.find((g) => g.tier === 'opt'); assert.equal(S.skip(pr, opt), pr);
-  assert.deepEqual(S.gateCount(s, pr, pieces), { cleared: 4, total: 5 }); assert.equal(S.complete(ch.items, s, ctx(s, pr)), false); assert.equal(S.complete(ch.items, s, ctx(s, S.skip(pr, L))), true);
+  assert.deepEqual(S.gateCount(s, pr, pieces), { cleared: 4, total: 6 }); assert.equal(S.complete(ch.items, s, ctx(s, pr)), false); assert.equal(S.complete(ch.items, s, ctx(s, S.skip(pr, L))), false, 'the lab still holds'); assert.equal(S.complete(ch.items, s, ctx(s, S.recordLabTry(S.skip(pr, L), 'LAB-SF-01', true, true))), true);   // total 5 → 6 on 11 Nov 2026: the lab counts now
 });
 
 test('SS-11 a quiz record keeps the best score and never changes the first; malformed records read as none', () => {

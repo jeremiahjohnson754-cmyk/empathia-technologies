@@ -80,3 +80,18 @@
 .sg-quiz { display: grid; gap: 10px; } .sg-qs { margin: 0; padding-left: 20px; display: grid; gap: 14px; } .sg-q { margin: 0 0 6px; font-weight: 600; } .sg-qopts { display: grid; gap: 6px; }
 .sg-qopt[data-state="right"] { border-color: var(--ok); box-shadow: inset 0 0 0 1px var(--ok); opacity: 1; } .sg-qopt[data-state="wrong"] { border-color: var(--bad); box-shadow: inset 0 0 0 1px var(--bad); opacity: 1; }
 .sg-why { margin: 6px 0 0; font-size: var(--fs-sm); color: var(--tx2); } .sg-score { margin: 0; font-weight: 600; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+
+/* Season review (restored 11 Nov 2026): six ratings, the Story Score, the loadout, game over */
+.sg-bars, .sg-notes, .sg-loadout { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.sg-bars li { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 2fr) 3ch; gap: 10px; align-items: center; }
+.sg-bars li > span { display: grid; gap: 2px; min-width: 0; } .sg-bars .num { text-align: right; font-variant-numeric: tabular-nums; }
+@media (max-width: 560px) { .sg-bars li { grid-template-columns: minmax(0, 1fr) 3ch; } .sg-bars .sg-meter { grid-column: 1 / -1; grid-row: 2; } }
+.sg-meter { width: 100%; height: 10px; display: block; } .sg-meter__bg { fill: var(--bg2); stroke: var(--line2); stroke-width: .4; } .sg-meter__fg { fill: var(--ok); } .sg-meter__pass { stroke: var(--tx); stroke-width: 1.2; }
+.sg-bars li[data-band=mid] .sg-meter__fg { fill: var(--accent); } .sg-bars li[data-band=low] .sg-meter__fg { fill: var(--bad); } .sg-bars li[data-band=low] .num { color: var(--bad); }
+.sg-notes { list-style: disc; padding-left: 20px; gap: 4px; }
+.sg-loadout li { display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline; } .sg-tag { font-size: .78rem; font-weight: 700; border: 1px solid var(--line2); border-radius: 999px; padding: 1px 8px; }
+.sg-loadout li[data-level="2"] .sg-tag { border-color: var(--ok); color: var(--ok); } .sg-loadout li[data-level="0"] .sg-tag { border-color: var(--bad); color: var(--bad); }
+.sg-score[data-pass=false] { color: var(--bad); } .sg-verdict { font-weight: 700; } .sg-verdict[data-pass=true] { color: var(--ok); } .sg-verdict[data-pass=false] { color: var(--bad); }
+.sg-gameover { border: 2px solid var(--bad); border-radius: var(--r-sm); padding: 12px 14px; display: grid; gap: 8px; background: var(--bg); } .sg-gameover > * { margin: 0; }
+.sg-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.sg-banner { border: 2px solid var(--bad); border-radius: var(--r-sm); padding: 10px 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; background: var(--bg); }
