@@ -34,3 +34,14 @@ test('LS-04 correct, add, move, variant: each needs what V2.5.3 needs and bumps 
   const mv = s.movePlacement(m, 'PL1', -5, 1); assert.ok(mv.ok); assert.equal(mv.model.placements[0].x, 0); assert.equal(mv.model.placements[0].source, 'designer');
   assert.equal(s.variantOf(m, 'LM-2', ' ').ok, false); const v = s.variantOf(m, 'LM-2', 'second camera'); assert.ok(v.ok); assert.equal(v.model.variantOf, 'LM-1'); assert.equal(v.model.version, 1); assert.match(v.model.name, /variant 1 · v1$/);
 });
+test('Field Intelligence (V2.5.3 v25LiteToFi, v25LiteReconcile): the package says nothing is measured; an observation changes the model only when accepted, with a reason', () => {
+  const m = s.createModel('LM-001', { room: d.roomRecord('R-ATL-4-218') }); const pkg = s.toFi(m);
+  assert.equal(pkg.schemaVersion, 'empathia.lite-fi.sync.v2.5'); assert.deepEqual(pkg.protocols.map((p) => p.id), ['PROTO-LAEQ-SEATS', 'PROTO-STIPA', 'PROTO-RT60', 'PROTO-FOV']);
+  assert.ok(Object.values(pkg.dims).every((x) => x.verified === false)); assert.match(pkg.note, /nothing .* is a measurement/);
+  assert.equal(s.observe(m, 'length', 9.9, ' ').ok, false); assert.equal(s.observe(m, 'length', -1, 'survey').ok, false);
+  const o = s.observe(m, 'length', 9.92, 'laser survey'); assert.ok(o.ok); assert.equal(o.model.version, m.version, 'an observation alone changes nothing'); assert.equal(o.model.geometry.length, m.geometry.length);
+  assert.equal(s.observe(o.model, 'length', 9.5, 'again').ok, false, 'one open reconciliation per dimension');
+  assert.equal(s.reconcile(o.model, 'REC-1', 'accept', '', 'syseng').ok, false);
+  const k = s.reconcile(o.model, 'REC-1', 'keep', 'the survey missed the alcove', 'syseng'); assert.ok(k.ok); assert.equal(k.model.geometry.length, m.geometry.length); assert.equal(k.model.reconciliations[0].state, 'KEPT_MODEL');
+  const a = s.reconcile(o.model, 'REC-1', 'accept', 'survey with a calibrated meter', 'syseng'); assert.ok(a.ok); assert.equal(a.model.geometry.length, 9.92); assert.equal(a.model.dims.length.source, 'SURVEY'); assert.equal(a.model.dims.length.state, 'FIELD_OBSERVED'); assert.equal(a.model.version, m.version + 1);
+});

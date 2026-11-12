@@ -32,7 +32,7 @@ export default function LiteStudio({ role, query }: PageProps) {
       <PageHero product="lite" icon="room" compact eyebrow="Empathia Lite · studio" title="Lite studio" lede="Conceptual geometry with its uncertainty, placements, zones, proposed test points and modeled coverage — separate from anything measured."
         meta={[<Chip key="m" small tone="muted">Modeled · never measured here</Chip>, <Chip key="b" small tone="muted">Kept in this browser</Chip>]} />
       {say && <p className="ui-meta" role="status" data-testid="studio-said">{say}</p>}
-      {m ? <ModelView m={m} edit={edit} put={put} nextId={nextId} back={() => open(null)} openId={open} /> : <>
+      {m ? <ModelView m={m} edit={edit} put={put} nextId={nextId} back={() => open(null)} openId={open} role={role} /> : <>
         <Card title="Models" sub={`${models.length} model${models.length === 1 ? '' : 's'}`} icon="layers" testId="studio-models">
           {models.length ? <ul className="plain stack">{models.map((x) => <li key={x.id}><button type="button" className="lt-studio__row" onClick={() => open(x.id)} data-model={x.id}>
             <b>{x.name}</b><span className="ui-meta">{x.roomName || ARCHETYPE_NAME[x.archetype] || x.archetype} · {x.seats.length} seats · geometry {word(x.confidence)} v{x.version}{x.variantOf ? ` · variant of ${x.variantOf}` : ''}</span></button></li>)}</ul> : <EmptyState title="No Lite models yet">{edit ? 'Build one from a room below.' : 'A designer or engineer builds them.'}</EmptyState>}
@@ -57,7 +57,7 @@ function NewModel({ onBuild }: { onBuild: (room: string | null, arch: string, na
   </Card>;
 }
 
-function ModelView({ m, edit, put, nextId, back, openId }: { m: S.LiteModel; edit: boolean; put: (m: S.LiteModel, msg: string) => void; nextId: () => string; back: () => void; openId: (id: string) => void }) {
+function ModelView({ m, edit, put, nextId, back, openId, role }: { m: S.LiteModel; edit: boolean; put: (m: S.LiteModel, msg: string) => void; nextId: () => string; back: () => void; openId: (id: string) => void; role: PageProps['role'] }) {
   const P = useMemo(() => S.predict(m), [m]); const [err, setErr] = useState<string | null>(null);
   const done = (r: S.Result, msg: string) => { if (r.ok) { setErr(null); put(r.model, msg); } else setErr(r.why); };
   const [dim, setDim] = useState<S.Dim>('length'); const [val, setVal] = useState(''); const [unc, setUnc] = useState(''); const [why, setWhy] = useState('');
@@ -103,6 +103,7 @@ function ModelView({ m, edit, put, nextId, back, openId }: { m: S.LiteModel; edi
     </div>}
     {edit && <Card title="Design variant" sub="A copy at version 1 that remembers what it varies and why" icon="layers" testId="studio-variant"><form className="lt-studio__form" onSubmit={(e) => { e.preventDefault(); const r = S.variantOf(m, nextId(), vwhy); if (!r.ok) { setErr(r.why); return; } put({ ...m, variants: [...m.variants, r.model.id] }, ''); put(r.model, `${r.model.name} made.`); openId(r.model.id); }}>
       <label className="ch__field"><span>Reason</span><input value={vwhy} onChange={(e) => setVwhy(e.target.value)} placeholder="e.g. a second camera at the back" data-testid="studio-vwhy" /></label><p><Button type="submit" testId="studio-variant-go">Make the variant</Button></p></form></Card>}
+    <FieldCard m={m} edit={edit} put={put} role={role} />
     <Card title="History" sub={`Version ${m.version}`} icon="clock" testId="studio-history"><ol className="lt-studio__hist">{m.history.map((h, i) => <li key={i}><b>v{h.v}</b> {h.what}</li>)}</ol>{m.variants.length > 0 && <p className="ui-meta">Variants: {m.variants.join(', ')}</p>}</Card>
   </>;
 }
@@ -122,4 +123,26 @@ function Plan({ m }: { m: S.LiteModel }) {
     {m.placements.map((p) => <g key={p.id} data-placement={p.id}><rect x={X(p.x) - 6} y={Y(p.y) - 6} width={12} height={12} rx={2} fill={col[p.kind]} stroke="#05070C" /><text x={X(p.x) + 9} y={Y(p.y) - 7} fontSize={11} fill="#F8FAFC">{p.label}</text></g>)}
     <text x={8} y={vh - 8} fontSize={11} fill="#94A3B8">{W} × {L} m · front wall at the top · modeled</text>
   </svg></div>;
+}
+
+/** Field Intelligence (V2.5.3 v25LiteToFi and v25LiteReconcile, restored 12 Nov 2026): the protocols the model asks for, the package that
+ *  carries them, and field observations reconciled against the model, one decision at a time, with a reason. */
+function FieldCard({ m, edit, put, role }: { m: S.LiteModel; edit: boolean; put: (m: S.LiteModel, msg: string) => void; role: PageProps['role'] }) {
+  const [dim, setDim] = useState<S.Dim>('length'); const [val, setVal] = useState(''); const [src, setSrc] = useState(''); const [err, setErr] = useState<string | null>(null); const [why, setWhy] = useState<Record<string, string>>({});
+  const done = (r: S.Result, msg: string) => { if (r.ok) { setErr(null); put(r.model, msg); } else setErr(r.why); };
+  const recs = m.reconciliations || [];
+  const pkg = () => { const url = URL.createObjectURL(new Blob([JSON.stringify(S.toFi(m), null, 2)], { type: 'application/json' })); const a = document.createElement('a'); a.href = url; a.download = `${m.id}-v${m.version}-to-field-intelligence.json`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); };
+  return <Card title="Field Intelligence" sub="What the model asks to be measured, and what the field says back" icon="pulse" testId="studio-fi">
+    <ul className="plain stack" data-testid="studio-protocols">{S.PROTOCOLS.map((p) => <li key={p.id}><b>{p.metric}</b> <span className="ui-meta">{p.id} · {p.how} · {p.instrument} · {p.condition}</span></li>)}</ul>
+    <p className="lt-acts"><button type="button" className="ui-btn ui-btn--quiet" onClick={pkg} data-testid="studio-tofi">Download the package for Field Intelligence</button>{m.roomId && allows({ area: 'agent' }, role) && <a className="ui-btn ui-btn--quiet" href={`#/v25/fi/scan/${encodeURIComponent(m.roomId)}`}>A Field Intelligence scan of this room</a>}</p>
+    <p className="ui-meta">Proposed protocols, {m.testPoints.length} proposed test points: nothing in the package is a measurement. Each field observation opens a reconciliation; the model changes only when someone accepts it.</p>
+    {edit && <form className="lt-studio__form" onSubmit={(e) => { e.preventDefault(); done(S.observe(m, dim, Number(val), src), `Observation recorded for ${dim}; awaiting a decision.`); }}>
+      <label className="ch__field"><span>Observed dimension</span><select value={dim} onChange={(e) => setDim(e.target.value as S.Dim)} data-testid="studio-obs-dim"><option value="length">Length</option><option value="width">Width</option><option value="height">Height</option></select></label>
+      <label className="ch__field"><span>Observed, m</span><input inputMode="decimal" value={val} onChange={(e) => setVal(e.target.value)} data-testid="studio-obs-val" /></label>
+      <label className="ch__field"><span>From</span><input value={src} onChange={(e) => setSrc(e.target.value)} placeholder="e.g. laser survey on the site visit" data-testid="studio-obs-src" /></label>
+      <p><Button type="submit" testId="studio-obs-go">Record the observation</Button></p></form>}
+    {err && <p className="ui-meta" role="alert">{err}</p>}
+    {recs.length > 0 && <ul className="plain stack" data-testid="studio-recs">{recs.map((r) => <li key={r.id} data-rec={r.id} data-state={r.state}><b>{r.id}</b> {r.dimension}: observed {r.observed} m, modeled {r.modeled} m <span className="ui-meta">· {r.source} · {r.state.replace('_', ' ').toLowerCase()}{r.reason ? ` · ${r.reason}` : ''}</span>
+      {r.state === 'OPEN' && edit && <span className="lt-acts"><input aria-label={`Reason for ${r.id}`} value={why[r.id] || ''} onChange={(e) => setWhy({ ...why, [r.id]: e.target.value })} placeholder="why" /><Button small onClick={() => done(S.reconcile(m, r.id, 'accept', why[r.id] || '', role), `${r.id} accepted: geometry v${m.version + 1}.`)} testId={`studio-rec-accept-${r.id}`}>Accept the observation</Button><Button small kind="quiet" onClick={() => done(S.reconcile(m, r.id, 'keep', why[r.id] || '', role), `${r.id}: the model is kept.`)}>Keep the model</Button></span>}</li>)}</ul>}
+  </Card>;
 }

@@ -29,7 +29,10 @@ export interface LiteModel {
   geometry: Record<Dim, number>; dims: Record<Dim, DimValue>; confidence: string; worstSource: GeoSource;
   zones: Zone[]; seats: Seat[]; placements: Placement[]; testPoints: TestPoint[]; variants: string[]; variantOf?: string; variantReason?: string;
   history: Array<{ v: number; what: string }>; state: 'CONCEPTUAL';
+  /** field observations awaiting a decision (V2.5.3 reconciliations): accept one and the geometry advances by survey */
+  reconciliations?: Reconciliation[];
 }
+export interface Reconciliation { id: string; dimension: Dim; observed: number; modeled: number; source: string; state: 'OPEN' | 'ACCEPTED' | 'KEPT_MODEL'; reason?: string; by?: string }
 type Frac = [number, number];
 interface Recipe { stage: [number, number, number, number] | null; seating: [number, number, number, number]; mic: number; spk: number; display?: Frac[]; camera?: Frac[]; micceil?: Frac[]; micwireless?: Frac[]; speaker?: Frac[]; touch?: Frac[]; sensor?: Frac[] }
 /** V25_LITE_RECIPE, word for word: where each kind goes, as fractions of width and length; microphone and loudspeaker reach in metres. */
@@ -114,4 +117,36 @@ export function variantOf(m: LiteModel, newId: string, reason: string): Result {
   if (!reason.trim()) return { ok: false, why: 'A variant needs its reason.' };
   const copy: LiteModel = { ...JSON.parse(JSON.stringify(m)) as LiteModel, id: newId, name: `${m.name.replace(/ · v\d+$/, '')} · variant ${m.variants.length + 1} · v1`, version: 1, variantOf: m.id, variantReason: reason.trim(), variants: [], history: [{ v: 1, what: `variant of ${m.id}: ${reason.trim()}` }] };
   return { ok: true, model: copy };
+}
+
+/** The test protocols a model asks Field Intelligence to run (V2.5.3 v25LiteToFi, word for word). Proposed only: nothing is measured here. */
+export const PROTOCOLS = [
+  { id: 'PROTO-LAEQ-SEATS', metric: 'LAeq', how: '30 s per point', instrument: 'class 1 or 2 sound level meter with current calibration', condition: 'unoccupied' },
+  { id: 'PROTO-STIPA', metric: 'STIPA', how: 'validated STIPA protocol and instrument', instrument: 'STIPA signal source and analyser', condition: 'unoccupied, HVAC on' },
+  { id: 'PROTO-RT60', metric: 'T20/T30', how: 'validated impulse or interrupted-noise protocol', instrument: 'sound source and analyser', condition: 'unoccupied' },
+  { id: 'PROTO-FOV', metric: 'camera FOV', how: 'calibration target scan at known distance', instrument: 'calibration target', condition: 'presets recalled' },
+] as const;
+/** The package sent to Field Intelligence: geometry with what is verified, the device coordinates, the proposed test points, the protocols. */
+export function toFi(m: LiteModel) {
+  return { schemaVersion: 'empathia.lite-fi.sync.v2.5', liteId: m.id, roomId: m.roomId || `PROVISIONAL:${m.roomName || m.name}`, geometryVersion: m.version, geometry: m.geometry,
+    dims: Object.fromEntries((Object.keys(m.dims) as Dim[]).map((k) => [k, { value: m.dims[k].value, verified: m.dims[k].source === 'SURVEY', state: m.dims[k].state, uncertainty: m.dims[k].uncertainty }])),
+    geometryConfidence: m.confidence, seats: m.seats.length, deviceCoordinates: m.placements.map((p) => ({ id: p.id, kind: p.kind, x: p.x, y: p.y, z: p.z, state: p.state })),
+    proposedTestPoints: m.testPoints, protocols: PROTOCOLS, note: 'proposed protocols: nothing in this package is a measurement' };
+}
+/** A field observation of one dimension opens a reconciliation; the model does not change until someone decides. */
+export function observe(m: LiteModel, dim: Dim, observed: number, source: string): Result {
+  if (!(['length', 'width', 'height'] as Dim[]).includes(dim) || !(observed > 0 && observed < 200)) return { ok: false, why: 'A dimension and a positive observed value are required.' };
+  if (!source.trim()) return { ok: false, why: 'Name where the observation comes from (the scan, the survey, the visit).' };
+  const list = m.reconciliations || []; if (list.some((r) => r.dimension === dim && r.state === 'OPEN')) return { ok: false, why: `${dim} already has an open reconciliation.` };
+  const rec: Reconciliation = { id: `REC-${list.length + 1}`, dimension: dim, observed: r2(observed), modeled: m.geometry[dim], source: source.trim().slice(0, 120), state: 'OPEN' };
+  return { ok: true, model: { ...m, reconciliations: [...list, rec] } };
+}
+/** v25LiteReconcile: accept (the dimension becomes SURVEY, FIELD_OBSERVED, ±0.05 m, and the version moves) or keep the model; a reason either way. */
+export function reconcile(m: LiteModel, recId: string, decision: 'accept' | 'keep', reason: string, by: string): Result {
+  const r = (m.reconciliations || []).find((x) => x.id === recId); if (!r || r.state !== 'OPEN') return { ok: false, why: 'No open reconciliation.' };
+  if (!reason.trim()) return { ok: false, why: 'A reason is required.' };
+  const recs = (m.reconciliations || []).map((x) => (x.id === recId ? { ...x, state: decision === 'accept' ? 'ACCEPTED' as const : 'KEPT_MODEL' as const, reason: reason.trim(), by } : x));
+  if (decision === 'keep') return { ok: true, model: { ...m, reconciliations: recs } };
+  const dims = { ...m.dims, [r.dimension]: { value: r.observed, source: 'SURVEY' as GeoSource, state: 'FIELD_OBSERVED', uncertainty: '±0.05 m', basis: `${r.source} · ${recId}` } }; const worst = worstOf(dims);
+  return { ok: true, model: bump(m, { dims, geometry: { ...m.geometry, [r.dimension]: r.observed }, worstSource: worst, confidence: confidenceOf(worst), reconciliations: recs }, `${r.dimension} ${r.observed} m from ${recId} (survey): ${reason.trim()}`) };
 }
