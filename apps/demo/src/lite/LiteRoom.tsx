@@ -16,7 +16,7 @@ import { shortName, buildingByKey, roomHref } from '../campus/canon.js';
 import { LIFE_TONE } from '../campus/CampusPage.js';
 import {
   chapterById, coverage, lensesFor, layersFor, overlaysFor, defaultLayers, defaultOverlays, roomState, STATES, configsOf, configStatus, readiness, pct, occupancy, routeTo,
-  ALL_SITES, buildingSummary, liteRoomHref, spatialDrift, type Lens, type LiteLayer, type Overlay, type StateKey, type SpatialDrift,
+  ALL_SITES, buildingSummary, liteRoomHref, spatialDrift, rt60Estimate, RT60_ASSUMED, type Lens, type LiteLayer, type Overlay, type StateKey, type SpatialDrift,
 } from './model.js';
 import { driftOf, setDrift, type DriftDecision } from './drift.js';
 import { RoomScene, OrbitBar, useOrbit } from './Scene.js';
@@ -108,7 +108,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
           </div>
         </aside>
       </div>
-      {query.get('xm') === '1' && <Measurements cov={cov} w={o.dims[0]} l={o.dims[1]} />}
+      {query.get('xm') === '1' && <Measurements cov={cov} w={o.dims[0]} l={o.dims[1]} h={o.dims[2]} />}
       <ul className="lt-metrics" aria-label="Room metrics, modeled">
         {overlaysFor(role).some((x) => x.key === 'camera') && <li><StatTile label="Camera coverage" value={pct(cov.camera.covered, cov.camera.of)} unit="%" icon="eye" tone="indigo" hint={`${cov.camera.covered} of ${cov.camera.of} seats in view · modeled`} testId="lite-m-camera" /></li>}
         {overlaysFor(role).some((x) => x.key === 'mic') && <li><StatTile label="Microphone pickup" value={pct(cov.mic.covered, cov.mic.of)} unit="%" icon="pulse" tone="ok" hint={`${cov.mic.covered} of ${cov.mic.of} ${cov.pickup.of}${cov.pickup.worn ? ` · ${cov.pickup.worn} worn channels` : ''} · modeled`} /></li>}
@@ -150,11 +150,11 @@ function ovValue(k: Overlay, cov: ReturnType<typeof roomState>['cov']): string {
 /** The measurements panel (V2.5.3 liteXray, restored 12 Nov 2026): what the coverage model says for this state of the room, beside what was
  *  measured. No acoustic or intelligibility measurement is on record for these synthetic rooms, and this build has no acoustic model, so those
  *  rows say so instead of showing a number. */
-function Measurements({ cov, w, l }: { cov: ReturnType<typeof roomState>['cov']; w: number; l: number }) {
-  const n = cov.seats.length; const none = 'Not modeled here · no measurement on record';
+function Measurements({ cov, w, l, h }: { cov: ReturnType<typeof roomState>['cov']; w: number; l: number; h: number }) {
+  const n = cov.seats.length; const none = 'Not modeled here · no measurement on record'; const rt = rt60Estimate([w, l, h], n);
   const rows: Array<[string, string, string, string]> = [
     [`${cov.pickup.of === 'seats' ? 'Seats' : 'Stage positions'} in primary microphone pickup`, cov.mics.length || cov.pickup.worn ? `${cov.mic.covered} of ${cov.mic.of}` : '—', '', 'Modeled · not measured'],
-    ['Rear-row speech intelligibility (lowest seat)', '—', 'STI', none], ['Reverberation time', '—', 's', none], ['Background noise', '—', 'dBA', none],
+    ['Rear-row speech intelligibility (lowest seat)', '—', 'STI', none], [`Reverberation time (RT60) at 1 kHz, empty`, rt.toFixed(2), 's', `Estimate · Sabine from the volume and assumed finishes (${RT60_ASSUMED}) · not measured`], ['Background noise', '—', 'dBA', none],
     ['Seats inside a camera view', cov.cones.length ? `${pct(cov.camera.covered, cov.camera.of)}` : '—', '%', 'Modeled · not measured'],
     ['Seats inside loudspeaker coverage', cov.speakers.length ? `${cov.speakerSeats} of ${n}` : '—', '', 'Modeled · not measured'],
     ['Clear display sightlines', cov.sight.na ? '—' : `${cov.sight.clear} of ${n}`, '', cov.sight.na ? 'No display in this state' : `Modeled · ${cov.sight.marginal} marginal, ${cov.sight.obstructed} obstructed`],

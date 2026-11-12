@@ -161,3 +161,9 @@ test('spatial drift (V2.5.3 AC-SD1): only where furniture moved since handover; 
   // a room whose record has no moved furniture has no drift, even with other open issues
   assert.equal(m.spatialDrift(recs.find((x) => x.outline.id === 'R-ATL-7-112')), null);
 });
+
+test('reverberation estimate (V2.5.3 rt60Of): Sabine from the volume and the assumed finishes; people shorten it; a larger room rings longer', () => {
+  const a = m.rt60Estimate([6, 8, 2.8], 12); const V = 6 * 8 * 2.8, A = 48 * 0.3 + 48 * 0.7 + 2 * 2.8 * 14 * (0.1 * 0.04 + 0.9 * 0.08) + 12 * 0.22;
+  assert.equal(a, Math.round((0.161 * V / A) * 100) / 100); assert.ok(m.rt60Estimate([6, 8, 2.8], 12, 12) < a); assert.ok(m.rt60Estimate([20, 30, 8], 12) > a);
+  assert.match(m.RT60_ASSUMED, /assumed|carpet/);
+});
