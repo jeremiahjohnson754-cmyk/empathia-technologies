@@ -233,7 +233,8 @@ function CueDesk({ lv, factor, done, onFinish }: { lv: number; factor: number; d
   const start = () => { const r = Q.cueStart(S); ref.current = r; useAC.current = false;
     if (click) { try { const AC = (globalThis as { AudioContext?: typeof AudioContext }).AudioContext; if (AC) ac.current = ac.current || new AC(); } catch { ac.current = null; } }
     const a = click ? ac.current : null;
-    if (a) { useAC.current = true; t0.current = a.currentTime + 0.15; const m = a.createGain(); m.gain.value = 0.22; m.connect(a.destination); master.current = m; const step = band(a, m, S), six = S.beat / 4; let next = 0;
+    if (a && a.state === 'suspended') void a.resume().catch(() => undefined);
+    if (a && a.state !== 'closed') { useAC.current = true; t0.current = a.currentTime + 0.15; const m = a.createGain(); m.gain.value = 0.22; m.connect(a.destination); master.current = m; const step = band(a, m, S), six = S.beat / 4; let next = 0;
       sch.current = setInterval(() => { while (ref.current && t0.current + next * six < a.currentTime + 0.15) { if (next * six < S.len) step(next, t0.current + next * six); next += 1; } }, 25); }
     else t0.current = performance.now() / 1000 + 0.15;
     setRun(r); };
