@@ -11,7 +11,7 @@ import { PageHero, Card, Chip, ScoreRing, StatTile, Icon, bandOf, HEALTH } from 
 import type { PageProps } from '../registry.types.js';
 import { allows } from '../access/policy.js';
 import { mayCapture } from '../instant/store.js';
-import { roomRecord, openIssues, campusRecords, type RoomRecord } from '../campus/design.js';
+import { roomRecord, openIssues, campusRecords, C, type RoomRecord } from '../campus/design.js';
 import { shortName, buildingByKey, roomHref } from '../campus/canon.js';
 import { LIFE_TONE } from '../campus/CampusPage.js';
 import {
@@ -102,7 +102,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
           </fieldset>
           <div className="lt-device" aria-live="polite" data-testid="lite-device">
             {p ? <><h2 className="lt-h3">{p.label}</h2><dl className="lt-dl"><dt>Position</dt><dd className="mono">{p.code}</dd><dt>Asset</dt><dd className="mono">{p.asset || '—'}</dd><dt>Identity</dt><dd>{p.identity}</dd><dt>Device</dt><dd>{p.device}</dd><dt>Height</dt><dd>{p.z} m</dd>{p.note && <><dt>State</dt><dd>{p.note}</dd></>}</dl>
-              <ObjectCardView p={p} r={r} tech={lens === 'engineer' || lens === 'optimize'} cov={cov} />
+              <ObjectCardView p={p} r={r} tech={lens === 'engineer' || lens === 'optimize'} cov={cov} role={role} onMove={lens === 'optimize' && MOVABLE.includes(p.cat) ? () => { setTool(p.code); document.querySelector('[data-testid="lite-change"]')?.scrollIntoView({ block: 'start', behavior: 'smooth' }); } : undefined} />
               {allows({ area: 'room' }, role) && <a href={`${roomHref(o)}?device=${encodeURIComponent(p.code)}`}>Open in the technical room view →</a>}</>
               : <p className="ui-muted">Choose a device in the 3D view to see its position, asset and identity.</p>}
           </div>
@@ -170,7 +170,21 @@ function Measurements({ cov, w, l }: { cov: ReturnType<typeof roomState>['cov'];
  *  any open one on this position, where to get help and what to read; for the engineer and optimize lenses also its technical purpose, its
  *  signal and data flow, its modeled coverage and the engineering chapter. Words from V2.5.3's object cards (lite/data/objectCards.ts). */
 const CARD_OF: Record<string, string> = { display: 'display', ledwall: 'ledwall', projector: 'display', camera: 'camera', bar: 'bar', micceil: 'micceil', micwireless: 'micwireless', speaker: 'speaker', touch: 'touch', scheduler: 'scheduler', rack: 'rack', occsensor: 'sensor', iot: 'sensor', lectern: 'lectern', table: 'table', chairs: 'seat' };
-function ObjectCardView({ p, r, tech, cov }: { p: ReturnType<typeof roomState>['positions'][number]; r: RoomRecord; tech: boolean; cov: ReturnType<typeof roomState>['cov'] }) {
+const PROP_LABEL: Record<string, [string, string]> = { fov_deg: ['Field of view', '°'], pickup_m: ['Pickup range', 'm'], coverage_m: ['Coverage radius', 'm'], channels: ['Channels', ''], ports: ['Ports', ''], poe_budget_w: ['PoE budget', 'W'], seats: ['Seats', ''], zoom: ['Zoom', '×'], size_in: ['Size', 'in'], lumens: ['Brightness', 'lm'], nits: ['Brightness', 'nits'] };
+/** V2.5.3's catalogue figures, room standard and commissioning rows of the object card (restored 12 Nov 2026), from this product's records:
+ *  the class template's declared figures (never a datasheet), the standards page for the room, the baseline and the installation. */
+function CardRecordRows({ p, r, role, S }: { p: ReturnType<typeof roomState>['positions'][number]; r: RoomRecord; role: PageProps['role']; S: (x: { h: string; children: ReactNode; note?: string }) => ReactNode }) {
+  const K = C.categories[p.cat]; const bl = r.baselines.find((b) => b.state === 'CURRENT') || null;
+  const ins = r.installations.filter((i) => i.position === p.code).sort((a, b) => b.installedAt.localeCompare(a.installedAt)); const now = ins.find((i) => !i.removedAt);
+  const figs = K ? [K.poe ? `PoE ${K.poe} W` : null, K.net ? 'networked' : 'not networked', `${K.mount} mount`, ...Object.entries(K.props || {}).filter(([, v]) => typeof v === 'number' || typeof v === 'string').map(([k, v]) => { const L = PROP_LABEL[k]; return L ? `${L[0]} ${v}${L[1] ? ` ${L[1]}` : ''}` : `${k.replace(/_/g, ' ')} ${v}`; })].filter(Boolean) as string[] : [];
+  return <>
+    {K && S({ h: 'Catalogue figures', note: 'Class template · declared, not from a datasheet', children: <p data-testid="lite-card-figs"><b>{K.label}.</b> {figs.join(' · ')}.</p> })}
+    {readsManual(role) && S({ h: 'Room standard', children: <p><a href={`#/manual/build?room=${encodeURIComponent(r.outline.id)}`}>The standards {r.outline.name} is held to</a></p> })}
+    {S({ h: 'Commissioning', children: <p data-testid="lite-card-cx">{bl ? `Baseline v${bl.version} (${bl.at.slice(0, 10)}).` : 'No commissioning baseline on record yet.'}{now ? ` Installed ${now.installedAt.slice(0, 10)} as ${now.asset}${bl ? (now.installedAt <= bl.at ? ', accepted with that baseline' : ', after that baseline: not yet re-commissioned') : ''}.` : ' Nothing installed at this position on record.'}{ins.length > 1 ? ` ${ins.length - 1} earlier unit${ins.length === 2 ? '' : 's'} at this position.` : ''}
+      {allows({ area: 'commissioning.room' }, role) && <> <a href={`#/commissioning/room/${encodeURIComponent(r.outline.id)}`}>The commissioning record</a></>}</p> })}
+  </>;
+}
+function ObjectCardView({ p, r, tech, cov, role, onMove }: { p: ReturnType<typeof roomState>['positions'][number]; r: RoomRecord; tech: boolean; cov: ReturnType<typeof roomState>['cov']; role: PageProps['role']; onMove?: () => void }) {
   const k = CARD_OF[p.cat]; const C = k ? OBJECT_CARDS[k] : undefined; if (!C) return null;
   const iss = openIssues(r).filter((i) => i.positions?.includes(p.code)); const ch = C.chapter ? chapterById(C.chapter) : null; const eng = C.eng ? chapterById(C.eng) : null;
   const near = (x: number, y: number) => Math.abs(x - p.x) < 0.01 && Math.abs(y - p.y) < 0.01;
@@ -191,6 +205,8 @@ function ObjectCardView({ p, r, tech, cov }: { p: ReturnType<typeof roomState>['
     {tech && C.flow && <S h="Signal and data flow"><p>{C.flow}</p></S>}
     {tech && cover && <S h="Coverage" note="Modeled · not measured"><p>{cover}</p></S>}
     {tech && eng && <S h="Engineering reference"><p><a href={`#/lite/guides/${eng.g.id}/${eng.c[0]}`}>{eng.g.name}: {eng.c[1]}</a></p></S>}
+    {tech && <CardRecordRows p={p} r={r} role={role} S={(x) => <S h={x.h} note={x.note}>{x.children}</S>} />}
+    {onMove && <p className="lt-acts"><button type="button" className="ui-btn" onClick={onMove} data-testid="lite-card-move">Move this</button></p>}
   </div>;
 }
 
