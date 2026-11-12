@@ -124,7 +124,7 @@ export function RoomScene(props: RoomSceneProps) {
         }
         const [px, py] = P(p.x, p.y, p.z); const [fx, fy] = P(p.x, p.y, 0); const on = selected === p.code;
         return (
-          <g key={p.code} className={`lt-dev lt-dev--${p.mark}${on ? ' on' : ''}`} role="button" tabIndex={0} aria-pressed={on}
+          <g key={p.code} className={`lt-dev lt-dev--${p.mark}${on ? ' on' : ''}`} role="button" tabIndex={0} aria-pressed={on} data-cat={p.cat}
             aria-label={`${p.label}, position ${p.code}${p.asset ? `, asset ${p.asset}` : ''}${p.mark !== 'same' ? `, ${p.mark}${p.note ? `: ${p.note}` : ''}` : ''}`}
             data-testid={`lt-dev-${p.code}`} onClick={() => onSelect(p.code)} onKeyDown={keyAct(() => onSelect(p.code))}>
             {p.z > 0.05 && <line x1={fx} y1={fy} x2={px} y2={py} className="lt-drop" />}
