@@ -1,0 +1,20 @@
+{
+  "id": "s01e01-act1",
+  "chapter": "s01e01",
+  "title": "Ten Seats — Act I, \"Tuesday night\"",
+  "source": "packages/signal-canon/data/story/s01e01.json, items 10–18 (canon, frozen 23 Sep 2026); every word below is the canon's",
+  "voices": { "maya": { "voice": "Sarah", "id": "Q7yjSu9pVI6fMxiCGwMo" }, "ray": { "voice": "Paul", "id": "J3Ei0Lj6fAobhIqY5ySH" } },
+  "takes": {
+    "maya": { "file": "maya.mp3", "lines": ["It's EQ. Something's building up in the mids. I can cut it.", "Wait. If I change it now, I lose what it sounds like now.", "Are you going to let it sign the report?"], "status": "generated 12 Nov 2026 (180 credits), awaiting import" },
+    "ray": { "file": "ray.mp3", "lines": ["That broom has done more acoustics than most consultants.", "It's more reliable than the last one who did.", "Who's qualified to be under that?"], "status": "generated 12 Nov 2026 (159 credits), awaiting import" }
+  },
+  "shots": [
+    { "item": 11, "panel": 11, "caption": "Priya photographs every cable for the drawing she promised (DEBT-009)." },
+    { "item": 13, "panel": 13, "line": ["maya", 0], "caption": "(Hold that thought for next week.)" },
+    { "item": 14, "panel": 14, "caption": "Ray says nothing. This is his new stage: waiting." },
+    { "item": 15, "decision": "BR-S01E01-01", "note": "the story's own decision and state: the choice made here is the choice in Classic Story; option D plays Ray's line ['ray', 2] and returns to the choice, as the canon says" },
+    { "item": 16, "panel": 16, "line": ["maya", 1] },
+    { "item": 17, "panel": 17, "caption": "Test signal at a moderate level. The choir across the hall was warned." },
+    { "item": 18, "beat": true, "lines": [["ray", 0], ["maya", 2], ["ray", 1]] }
+  ]
+}
