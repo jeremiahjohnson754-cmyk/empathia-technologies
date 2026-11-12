@@ -141,3 +141,5 @@
 .sg-cine__ctl .ui-btn { min-height: 44px; }
 @media (max-width: 560px) { .sg-cine__stage { aspect-ratio: auto; min-height: 320px; } .sg-cine__dec { max-height: none; } }
 @media (prefers-reduced-motion: reduce) { .sg-cine__art--move { animation: none; } }
+.sg-cine__acts { margin-left: auto; display: inline-flex; gap: 6px; align-items: center; color: #a9b6be; }
+.sg-cine__acts select { min-height: 40px; max-width: 60vw; }

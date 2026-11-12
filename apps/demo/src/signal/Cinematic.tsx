@@ -6,23 +6,24 @@
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Item, ChapterState, Outcome } from './story.js';
-import { takeFor, readMs, type Scene } from './cinematic.js';
+import { takeFor, readMs, quoted, returnsToChoice, type Scene } from './cinematic.js';
 
 type Decision = Extract<Item, { type: 'decision' }>;
 interface Line { who: string; name: string; text: string; src: string | null }
 interface Props { scene: Scene; items: Item[]; panels: string[] | undefined; cast: Record<string, string>; state: ChapterState; onChoose: (d: Decision, letter: string) => Outcome; onClose: () => void }
 
 export function Cinematic({ scene, items, panels, cast, state, onChoose, onClose }: Props) {
+  const [act, setAct] = useState(0); const A = scene.acts[act]!;
   const panelOf = useMemo(() => { const m = new Map<number, number>(); let n = -1; items.forEach((it, i) => { if (it.type === 'panel') { n += 1; m.set(i, n); } }); return m; }, [items]);
   const nameOf = (who: string) => cast[who.toLowerCase()] || who;
-  const shots = useMemo(() => scene.shots.map((s) => {
+  const shots = useMemo(() => A.shots.map((s) => {
     const it = items[s.item] as Item & Record<string, unknown>;
     if (s.kind === 'panel' && it?.type === 'panel') {
-      const bubbles = ((it as unknown as { bubbles?: { who: string; text: string }[] }).bubbles || []).map((b) => { const who = b.who.toLowerCase(); return { who, name: nameOf(who), text: b.text, src: takeFor(scene, who, b.text)?.src || null }; });
+      const bubbles = ((it as unknown as { bubbles?: { who: string; text: string }[] }).bubbles || []).map((b) => { const who = b.who.toLowerCase(); return { who, name: nameOf(who), text: b.text, src: takeFor(scene.takes, who, b.text)?.src || null }; });
       return { ...s, art: panels?.[panelOf.get(s.item) ?? -1] || '', alt: String((it as unknown as { alt?: string }).alt || ''), caption: String((it as unknown as { caption?: string }).caption || ''), lines: bubbles as Line[] };
     }
     if (s.kind === 'beat' && it?.type === 'beat') {
-      const lines = ((it as unknown as { lines: { who: string; text: string }[] }).lines).map((l) => ({ who: l.who, name: nameOf(l.who), text: l.text, src: takeFor(scene, l.who, l.text)?.src || null }));
+      const lines = ((it as unknown as { lines: { who: string; text: string }[] }).lines).map((l) => ({ who: l.who, name: nameOf(l.who), text: l.text, src: takeFor(scene.takes, l.who, l.text)?.src || null }));
       return { ...s, art: '', alt: '', caption: '', lines };
     }
     return { ...s, art: '', alt: '', caption: '', lines: [] as Line[] };
@@ -30,7 +31,7 @@ export function Cinematic({ scene, items, panels, cast, state, onChoose, onClose
     // the canon repeats a panel's bubble as the first line of the beat that follows it (the beat is the exchange); it is spoken once, in the beat
     const nx = all[i + 1]; if (sh.kind === 'panel' && nx?.kind === 'beat' && sh.lines.length && nx.lines[0] && sh.lines[sh.lines.length - 1]!.text === nx.lines[0].text) return { ...sh, lines: sh.lines.slice(0, -1) };
     return sh;
-  }), [scene, items, panels]);
+  }), [scene, act, items, panels]);
   const [shot, setShot] = useState(0); const [line, setLine] = useState(0); const [playing, setPlaying] = useState(true);
   const [out, setOut] = useState<{ letter: string; result: string; consequence: string; ladder: boolean } | null>(null);
   const audio = useRef<HTMLAudioElement>(null); const timer = useRef<number | null>(null);
@@ -47,19 +48,22 @@ export function Cinematic({ scene, items, panels, cast, state, onChoose, onClose
   const go = (d: number) => { clear(); audio.current?.pause(); const n = Math.max(0, Math.min(shots.length - 1, shot + d)); setShot(n); setLine(0); setOut(null); };
   const choose = (letter: string) => {
     if (!dec) return; const o = onChoose(dec, letter); if (o.kind !== 'recorded') return;
-    const ladder = letter === scene.ladder.letter; setOut({ letter, result: o.option.result, consequence: o.option.consequence, ladder });
-    if (ladder && audio.current) { audio.current.src = scene.ladder.take; audio.current.currentTime = 0; audio.current.play().catch(() => {}); }
+    // an option whose canon result sends the player back to the choice keeps the decision open (it is still recorded, as in Classic)
+    const ladder = returnsToChoice(o.option.result); setOut({ letter, result: o.option.result, consequence: o.option.consequence, ladder });
+    const q = quoted(o.option.result); const take = q ? takeFor(scene.takes, q.who, q.text) : null;
+    if (take && audio.current) { audio.current.src = take.src; audio.current.currentTime = 0; audio.current.play().catch(() => {}); }
   };
   const motion = typeof matchMedia === 'function' && !matchMedia('(prefers-reduced-motion: reduce)').matches;
-  return <section className="sg-cine" data-testid="sg-cine" data-scene={scene.id} aria-label={`Cinematic story: ${scene.title}`}>
-    <header className="sg-cine__bar"><b>{scene.title}</b> <span className="ui-meta">Cinematic · voices: Maya ({scene.voices.maya}), Ray ({scene.voices.ray}) · shot {shot + 1} of {shots.length}</span></header>
+  return <section className="sg-cine" data-testid="sg-cine" data-scene={scene.chapter} data-act={act} aria-label={`Cinematic story: ${A.title}`}>
+    <header className="sg-cine__bar"><b>{A.title}</b> {A.sub && <span className="ui-meta">{A.sub}</span>} <span className="ui-meta">· shot {shot + 1} of {shots.length} · {scene.takes.length ? `voices: Maya (${scene.voices.maya}), Ray (${scene.voices.ray}); lines without a recorded take are captions` : 'captions; this chapter’s voices are not recorded yet'}</span>
+      <label className="sg-cine__acts">Act <select value={act} onChange={(e) => { clear(); audio.current?.pause(); setAct(Number(e.target.value)); setShot(0); setLine(0); setOut(null); setPlaying(true); }} data-testid="sg-cine-act">{scene.acts.map((a, i) => <option key={i} value={i}>{a.title}</option>)}</select></label></header>
     <div className="sg-cine__stage" data-testid="sg-cine-shot" data-shot={shot} data-item={cur.item} data-kind={cur.kind}>
       {cur.art ? <div className={`sg-cine__art${motion ? ' sg-cine__art--move' : ''}`} role="img" aria-label={cur.alt} key={shot} dangerouslySetInnerHTML={{ __html: cur.art }} /> : null}
       {dec ? <div className="sg-cine__dec" data-testid="sg-cine-dec" data-decision={dec.id}>
         <p className="sg-dec__k">Decision</p><h3>{dec.prompt}</h3><p>{dec.happening}</p>
         {(!out || out.ladder) && <div className="sg-cine__opts" role="group" aria-label="Choices">{dec.options.filter((o) => !(out?.ladder && o.letter === out.letter)).map((o) => <button key={o.letter} type="button" className="ui-btn" onClick={() => choose(o.letter)}>{o.letter}. {o.label}</button>)}</div>}
         {out && <div className="sg-cine__out" role="status" data-testid="sg-cine-out" data-letter={out.letter} data-ladder={String(out.ladder)}><p><b>{out.result}</b></p><p>{out.consequence}</p>
-          {out.ladder ? <p className="ui-meta">The choice is open again.</p> : <button type="button" className="ui-btn ui-btn--primary" onClick={() => { setPlaying(true); go(1); }} data-testid="sg-cine-continue">Continue</button>}</div>}
+          {out.ladder ? <p className="ui-meta">The choice is open again.</p> : shot + 1 < shots.length ? <button type="button" className="ui-btn ui-btn--primary" onClick={() => { setPlaying(true); go(1); }} data-testid="sg-cine-continue">Continue</button> : <p className="ui-meta">End of the act. Choose the next act, or go back to the written story.</p>}</div>}
         {!out && chosen && <p className="ui-meta">Chosen before: {chosen.letter}. Choosing again changes it, as in the written story.</p>}
       </div> : <div className="sg-cine__caps">
         {cur.caption && <p className="sg-cine__cap">{cur.caption}</p>}
@@ -71,6 +75,7 @@ export function Cinematic({ scene, items, panels, cast, state, onChoose, onClose
       <button type="button" className="ui-btn" onClick={() => go(-1)} disabled={shot === 0}>◂ Back</button>
       <button type="button" className="ui-btn" onClick={() => setPlaying(!playing)} data-testid="sg-cine-play" aria-pressed={!playing}>{playing ? 'Pause' : 'Play'}</button>
       <button type="button" className="ui-btn" onClick={() => go(1)} disabled={shot === shots.length - 1 || (!!dec && !out)} data-testid="sg-cine-next">Next ▸</button>
+      {shot === shots.length - 1 && act + 1 < scene.acts.length && <button type="button" className="ui-btn" onClick={() => { clear(); audio.current?.pause(); setAct(act + 1); setShot(0); setLine(0); setOut(null); setPlaying(true); }} data-testid="sg-cine-nextact">Next act: {scene.acts[act + 1]!.title} ▸</button>}
       <button type="button" className="ui-btn" onClick={() => { audio.current?.pause(); clear(); onClose(); }} data-testid="sg-cine-close">Back to the written story</button>
     </div>
   </section>;

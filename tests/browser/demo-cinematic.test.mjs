@@ -11,8 +11,10 @@ const { ok, open, done } = await harness('demo-cinematic');
 for (const [w, tag] of [[1440, 'desktop'], [390, 'phone']]) {
   const t = await open('#/story/s01e01', { init: unlockInit('s01e01'), w, h: 900 }); const p = t.page; await p.waitForSelector('.sg-dec');
   await p.getByTestId('story-cine').click(); await p.getByTestId('sg-cine').waitFor();
+  const acts = await p.getByTestId('sg-cine-act').evaluate((e) => [...e.options].map((o) => o.textContent));
+  await p.getByTestId('sg-cine-act').selectOption({ label: acts.find((a) => /Tuesday night/.test(a)) });
   const s0 = await p.getByTestId('sg-cine-shot').evaluate((e) => ({ item: e.dataset.item, art: !!e.querySelector('.sg-cine__art svg'), cap: e.querySelector('.sg-cine__cap')?.textContent || '' }));
-  ok(`CN-${tag}-01`, `${tag}: the scene opens on the canon's first shot of Act I with its panel art and caption`, s0.item === '11' && s0.art && /Priya photographs every cable/.test(s0.cap), JSON.stringify(s0));
+  ok(`CN-${tag}-01`, `${tag}: the scene's acts are the chapter's own headings; Act I opens on the canon's first shot with its panel art and caption`, acts.length >= 4 && /Cold open/.test(acts[0]) && s0.item === '11' && s0.art && /Priya photographs every cable/.test(s0.cap), JSON.stringify(s0));
   await p.getByTestId('sg-cine-next').click(); await p.waitForSelector('[data-testid=sg-cine-line][data-who=maya]');
   const l1 = await p.getByTestId('sg-cine-line').innerText(); await p.waitForTimeout(1200);
   const a1 = await p.evaluate(() => { const a = document.querySelector('.sg-cine audio'); return { src: a.currentSrc.split('/').pop(), t: a.currentTime, d: a.duration }; });
@@ -35,6 +37,7 @@ for (const [w, tag] of [[1440, 'desktop'], [390, 'phone']]) {
 // captions-only fallback: the audio is refused, and the scene still plays its lines as captions
 { const t = await open('#/story/s01e01', { init: unlockInit('s01e01'), w: 1440, h: 900 }); const p = t.page;
   await p.route('**/media/signal/**', (r) => r.abort()); await p.waitForSelector('.sg-dec'); await p.getByTestId('story-cine').click(); await p.getByTestId('sg-cine').waitFor();
+  { const acts = await p.getByTestId('sg-cine-act').evaluate((e) => [...e.options].map((o) => o.textContent)); await p.getByTestId('sg-cine-act').selectOption({ label: acts.find((a) => /Tuesday night/.test(a)) }); }
   await p.getByTestId('sg-cine-next').click(); await p.waitForSelector('[data-testid=sg-cine-line][data-who=maya]'); await p.waitForTimeout(7000);
   const s = await p.getByTestId('sg-cine-shot').evaluate((e) => e.dataset.item);
   ok('CN-fallback', 'with the audio refused, the line stays on screen as a caption for its reading time and the scene moves on by itself', s === '14', s);
