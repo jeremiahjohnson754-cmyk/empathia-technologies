@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Split a SIGNAL take into its canon lines at the generation's 1.5 s breaks (silences of 1.3 s or more; a shorter pause is a breath
 inside a line), normalise each to -18 LUFS (linear, from the whole take's measurement) and write <out>/<who>-<n>.mp3. Refuses when the
-number of parts differs from the number of lines the take was generated from.   python3 -I split.py take.mp3 lines.json who first_n outdir"""
+number of parts differs from the number of lines the take was generated from.   python3 -I split.py take.mp3 lines.json who first_n outdir [min_gap_s]
+(min_gap_s, default 1.3, is raised for a take whose speaker paused longer than 1.3 s inside a line; every real break is 1.5 s or more)"""
 import json, re, subprocess, sys
 src, lines_f, who, first, out = sys.argv[1], sys.argv[2], sys.argv[3], int(sys.argv[4]), sys.argv[5]
+gap = float(sys.argv[6]) if len(sys.argv) > 6 else 1.3
 lines = json.load(open(lines_f, encoding='utf8'))
-log = subprocess.run(['ffmpeg', '-hide_banner', '-i', src, '-af', 'silencedetect=noise=-38dB:d=1.3', '-f', 'null', '-'], capture_output=True, text=True).stderr
+log = subprocess.run(['ffmpeg', '-hide_banner', '-i', src, '-af', f'silencedetect=noise=-38dB:d={gap}', '-f', 'null', '-'], capture_output=True, text=True).stderr
 st = [float(x) for x in re.findall(r'silence_start: ([\d.]+)', log)]; en = [float(x) for x in re.findall(r'silence_end: ([\d.]+)', log)]
 dur = float(subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', src], capture_output=True, text=True).stdout)
 pairs = [(s, e) for s, e in zip(st, en) if 0.3 < s and e < dur - 0.3]

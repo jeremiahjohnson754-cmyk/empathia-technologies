@@ -46,4 +46,18 @@ for (const [w, tag] of [[1440, 'desktop'], [390, 'phone']]) {
   const s = await p.getByTestId('sg-cine-shot').evaluate((e) => e.dataset.item);
   ok('CN-fallback', 'with the audio refused, the line stays on screen as a caption for its reading time and the scene moves on by itself', s === '14', s);
   await t.close(); }
+// Season 1 beyond Ten Seats (12 Nov 2026): S01E08 opens as a scene; the bar names the voices heard; the first recorded Season 1 line
+// plays its take from media/signal/s01 with the canon text on screen
+{ const t = await open('#/story/s01e08', { init: unlockInit('s01e08'), w: 1440, h: 900 }); const p = t.page; await p.waitForSelector('.sg-story, .sg-dec, [data-testid=story-cine]');
+  await p.getByTestId('story-cine').click(); await p.getByTestId('sg-cine').waitFor();
+  const bar = await p.locator('.sg-cine__bar').innerText(); let a = null, line = '';
+  for (let i = 0; i < 60 && !a; i++) {
+    const src = await p.evaluate(() => document.querySelector('.sg-cine audio')?.currentSrc || '');
+    if (/media\/signal\/s01\//.test(src)) { line = await p.getByTestId('sg-cine-line').innerText(); await p.waitForTimeout(1200); a = await p.evaluate(() => { const x = document.querySelector('.sg-cine audio'); return { src: x.currentSrc.split('/').pop(), t: x.currentTime, d: x.duration }; }); break; }
+    const nx = p.getByTestId('sg-cine-next'); if (await nx.isDisabled()) { await p.locator('[data-testid=sg-cine-dec] button').first().click(); await p.waitForTimeout(300); continue; }
+    await nx.click(); await p.waitForTimeout(250);
+  }
+  ok('CN-S1-08', 'S01E08 plays as a scene: the bar names the voices heard (Maya, Sarah; Ray, Paul) and a Season 1 take plays its canon line', /Maya \(Sarah\)/.test(bar) && /Ray \(Paul\)/.test(bar) && a && /^(maya|ray)-s1g\d-\d+\.mp3$/.test(a.src) && a.t > 0.3 && /^(Maya|Ray):/.test(line), JSON.stringify({ bar: bar.slice(0, 160), a, line: line.slice(0, 80) }));
+  ok('CN-S1-08b', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 4).join(' | '));
+  await t.close(); }
 await done();

@@ -29,3 +29,18 @@ test('every line Maya and Ray speak in the episode has its take, and every foota
   for (const s of sc.acts.flatMap((a) => a.shots).filter((x) => x.kind !== 'footage')) { const it = ch.items[s.item]; const lines = s.kind === 'beat' ? it.lines.map((l) => [l.who, l.text]) : (it.bubbles || []).map((b) => [b.who.toLowerCase(), b.text]);
     for (const [w, x] of lines.filter(([w]) => w === 'maya' || w === 'ray')) assert.ok(C.takeFor(sc.takes, w, x), `${w}: ${x}`); }
 });
+// Season 1 (12 Nov 2026): every take of every chapter speaks a line its chapter gives that speaker, word for word, and its file exists;
+// every voice heard is one the founder chose.
+test('Season 1: every take is its chapter\'s canon line, in the canon speaker, with its file, in a chosen voice', () => {
+  const chapters = Object.keys(C.TAKES).filter((k) => /^s01e/.test(k)); assert.ok(chapters.length >= 10, chapters.join());
+  let n = 0;
+  for (const id of chapters) {
+    const it = JSON.parse(fs.readFileSync(path.join(repo, `packages/signal-canon/data/story/${id}.json`), 'utf8')).items;
+    const lines = it.flatMap((i) => [...(i.bubbles || []).map((b) => [b.who.toLowerCase(), b.text]), ...(i.type === 'beat' ? i.lines.map((l) => [l.who.toLowerCase(), l.text]) : []), ...(i.type === 'decision' ? i.options.map((o) => C.quoted(o.result)).filter(Boolean).map((q) => [q.who, q.text]) : [])]);
+    for (const t of C.TAKES[id]) { n++;
+      assert.ok(lines.some(([w, x]) => w === t.who && C.norm(x) === C.norm(t.text)), `${id} ${t.who}: ${t.text}`);
+      assert.ok(fs.existsSync(path.join(repo, 'apps/demo/public', t.src)), t.src);
+      assert.ok(C.VOICES[t.who], `${t.who} has no chosen voice`); }
+  }
+  assert.ok(n >= 80, `${n} takes`);
+});

@@ -6,17 +6,19 @@
  * The decision is the story engine's own, so a choice made here is the choice in Classic Story.
  */
 import type { Item } from './story.js';
+import { TAKES_S01 } from './takes-s01.js';
 
 export interface Take { who: string; text: string; src: string }
 export interface Shot { item: number; kind: 'panel' | 'decision' | 'beat' | 'footage'; src?: string; note?: string }
-/** Establishing footage (generated with vidIQ; settings and equipment only, no faces, no text), placed before the canon item it sets up. */
+/** Establishing footage (generated video; settings and equipment only, no faces, no text), placed before the canon item it sets up. */
 export interface Footage { before: number; src: string; note: string }
 export interface Act { title: string; sub: string | null; shots: Shot[] }
 export interface Scene { chapter: string; acts: Act[]; takes: Take[]; voices: Record<string, string> }
 
 /** Seasons whose chapters open as scenes (founder, 12 Nov 2026: "continue working to season 6"). */
 export const CINEMATIC_SEASONS = [1, 2, 3, 4, 5, 6];
-export const VOICES: Record<string, string> = { maya: 'Sarah', ray: 'Paul' };
+/** Voices chosen by the founder: Maya and Ray 12 Nov 11:06 CT; Dolores, Imani, Priya and Theo from their auditions 12 Nov 12:29 CT; Lily (27) 12:35 CT. */
+export const VOICES: Record<string, string> = { maya: 'Sarah', ray: 'Paul', dolores: 'Nan', imani: 'Courtney', priya: 'Vicki M Rodriguez', theo: 'Ilya', lily: 'Jessica' };
 const M = 'media/signal/s01e01-act1/'; const N = 'media/signal/s01e01/';
 /** Recorded takes by chapter; each speaks one canon line exactly (unit test signal-cinematic). */
 export const TAKES: Record<string, Take[]> = {
@@ -48,6 +50,8 @@ export const TAKES: Record<string, Take[]> = {
     { who: 'ray', text: 'What would you tell someone who wasn\'t here tonight?', src: `${N}ray-7.mp3` },
     { who: 'ray', text: 'Aim at people, not the ceiling. A commissioning engineer I learned from used to make me write it exactly like that.', src: `${N}ray-8.mp3` },
   ],
+  // Season 1 (generated 12 Nov 2026 in grouped takes, provided by the founder, split at their breaks): media/signal/s01/build-takes.py
+  ...TAKES_S01,
 };
 /** Footage by chapter (filled as reviewed clips are imported). */
 export const FOOTAGE: Record<string, Footage[]> = {
