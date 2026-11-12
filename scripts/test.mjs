@@ -87,6 +87,7 @@ suite('unit: SIGNAL boss levels (all twelve clear on the intended run; every wro
 suite('unit: SIGNAL Mission Control (points, the ladder, domain levels, crew trust, the systems map)', 'unit', node, ['--test', 'tests/unit/signal-mission.test.mjs'], tap);
 suite('unit: SIGNAL result pop-ups (each gate cleared, the chapter complete, the quest objective and rating)', 'unit', node, ['--test', 'tests/unit/signal-pops.test.mjs'], tap);
 suite('unit: SIGNAL mentor channel, built-in answers (the twenty prepared answers and seven suggestions)', 'unit', node, ['--test', 'tests/unit/signal-mentor.test.mjs'], tap);
+suite('unit: SIGNAL glossary terms in the story (first use per chapter, the reference’s expressions)', 'unit', node, ['--test', 'tests/unit/signal-glossary.test.mjs'], tap);
 suite('unit: Engineering Manual (chapters, rules, workflow, exceptions)', 'unit', node, ['--test', 'tests/unit/demo-manual.test.mjs'], tap);
 suite('unit: generated documents are current (estate manifests, product census, workflow matrix)', 'unit', node, ['--test', 'tests/unit/docs-generated.test.mjs'], tap);
 suite('unit: search that reads the sentence (corrections, conditions, counted answers, drop one condition; every count recomputed from the records)', 'unit', node, ['--test', 'tests/unit/demo-understand.test.mjs'], tap);

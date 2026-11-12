@@ -7,11 +7,12 @@
  * move trust, discoveries are found by looking, and a chapter can be replayed. The canon is a draft and says so: every open review flag
  * is shown where it applies (the package's rule: keep all content; flag rather than block). Nothing here is a credential.
  */
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { PageProps } from '../registry.types.js';
 import * as RT from './ratings.js';
 import { chapterPop, doneKeys, gatePop, type PopBody } from './pops.js';
 import type { MissionIndex } from './mission.js';
+import { buildRx, chapterMarks, type GlossaryIndex, type Seg, type Term } from './glossary.js';
 import { BossRunner, Bosses, DrillRunner, IncidentRunner, LabRunner, MeltdownRunner, LAB_KINDS_PLAYABLE, Meltdowns, type Drill, type Formula, type Incidents, type LabData } from '@empathia/ui';
 import { Block, Crumbs, Pick } from '../worlds/kit.js';
 import { emptyProgress, BANDS, SEVERITY, TIMEOUT, answerTalk, chapterVerdict, choose, complete, echoes, emphasis, emptyChapter, find, load, nextOf, passed, prevOf, reached, replayDecision, resume, save, seconds, tally, timeOut, trustLine, weightLine, weightOf,
@@ -27,6 +28,8 @@ export const loadIndex = () => (ixCache ||= getJson<StoryIndex>('signal/index.js
 const loadFlags = () => (flagCache ||= getJson<Flags>('signal/flags.json').catch(() => ({} as Flags)));
 let ratingsCache: Promise<RT.RatingsIndex> | null = null;
 const loadRatings = () => (ratingsCache ||= getJson<RT.RatingsIndex>('signal/ratings.json').catch((e) => { ratingsCache = null; throw e; }));
+let glCache: Promise<GlossaryIndex> | null = null;
+const loadGlossary = () => (glCache ||= getJson<GlossaryIndex>('signal/glossary.json').catch((e) => { glCache = null; throw e; }));
 let missionCache: Promise<MissionIndex> | null = null;
 const loadMission = () => (missionCache ||= getJson<MissionIndex>('signal/mission.json').catch((e) => { missionCache = null; throw e; }));
 /** The shared sprite sheet (figures, props, backgrounds) is first-party art shipped with the build; it is put in the page once so panels can refer to it. */
@@ -38,6 +41,32 @@ export function useLoaded<T>(get: () => Promise<T>, key: string): { data: T | nu
 }
 const Em = ({ text }: { text: string }) => <>{emphasis(text).map((p, i) => (p.b ? <b key={i}>{p.t}</b> : p.i ? <i key={i}>{p.t}</i> : <span key={i}>{p.t}</span>))}</>;
 const Paras = ({ text }: { text: string }) => <>{text.split(/\n{2,}/).map((p, i) => <p key={i}><Em text={p} /></p>)}</>;
+/** Glossary terms in the reading text (restored 12 Nov 2026, reference ladder.js): the chapter's marks, worked out once (glossary.ts), and
+ *  the pop-over to open. Text without a mark, or before the glossary loads, is drawn exactly as before. */
+const GlCtx = createContext<{ marks: Map<string, Seg[]> | null; open: (g: Term, el: HTMLElement) => void } | null>(null);
+function Gl({ k, text, plain }: { k: string; text: string; plain?: boolean }) {
+  const c = useContext(GlCtx); const segs = c?.marks?.get(k); if (!segs) return plain ? <>{text}</> : <Em text={text} />;
+  return <>{segs.map((x, i) => { const t = x.g ? <span className="sg-gl" role="button" tabIndex={0} data-gl={x.g.term} aria-label={`${x.t} — glossary`} onClick={(e) => c!.open(x.g!, e.currentTarget)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); c!.open(x.g!, e.currentTarget); } }}>{x.t}</span> : x.t;
+    return x.b ? <b key={i}>{t}</b> : x.i ? <i key={i}>{t}</i> : <span key={i}>{t}</span>; })}</>;
+}
+const GlParas = ({ k, text }: { k: string; text: string }) => <>{text.split(/\n{2,}/).map((p, i) => <p key={i}><Gl k={`${k}${i}`} text={p} /></p>)}</>;
+/** The pop-over (ladder.js glPop): the term, its domain and definition, the first formula it names, where it is first met. */
+function GlPop({ g, at, gl, onClose }: { g: Term; at: HTMLElement; gl: GlossaryIndex; onClose: () => void }) {
+  const ref = useRef<HTMLDivElement>(null); const x = useRef<HTMLButtonElement>(null); const [pos, setPos] = useState<{ left: number; top: number; width: number } | null>(null);
+  useEffect(() => { const r = at.getBoundingClientRect(), w = Math.min(340, window.innerWidth - 24), left = Math.max(12, Math.min(window.innerWidth - w - 12, r.left)); const h = ref.current?.offsetHeight || 180, below = r.bottom + 8;
+    setPos({ left, width: w, top: below + h < window.innerHeight - 8 ? below : Math.max(8, r.top - h - 8) }); x.current?.focus(); }, [g, at]);
+  useEffect(() => { const down = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node) && e.target !== at) onClose(); }; const key = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    const away = () => onClose(); document.addEventListener('mousedown', down); document.addEventListener('keydown', key); window.addEventListener('hashchange', away);
+    return () => { document.removeEventListener('mousedown', down); document.removeEventListener('keydown', key); window.removeEventListener('hashchange', away); }; }, [at, onClose]);
+  const F = g.f[0] ? gl.formulas[g.f[0]] : undefined;
+  return <div ref={ref} className="sg-glpop" role="dialog" aria-label={`Glossary: ${g.term}`} data-testid="story-glpop" style={pos ? { left: pos.left, top: pos.top, width: pos.width } : { left: 12, top: -9999 }}>
+    <p className="sg-glpop__h"><b>{g.term}</b> <span className="ui-tag">{g.dom}</span><button ref={x} type="button" className="ui-btn ui-btn--quiet sg-glpop__x" aria-label="Close" onClick={onClose}>✕</button></p>
+    <p>{g.d}</p>
+    {F && <p className="sg-glpop__f"><span className="ui-meta">ƒ {F.name}</span> <span dangerouslySetInnerHTML={{ __html: F.eq }} /></p>}
+    {g.first && <p className="ui-meta">First met: {g.first.toUpperCase()}{gl.titles[g.first] ? ` · ${gl.titles[g.first]}` : ''}</p>}
+    <p><a className="ui-btn ui-btn--quiet" href="#/learn/fieldbook">📖 Open the glossary</a></p>
+  </div>;
+}
 export const Face = ({ id, pose, expr }: { id: string; pose: string; expr: string }) => <svg className="sg-face" viewBox="36 20 128 128" width="40" height="40" aria-hidden="true"><use href={`#f-${id}-${pose}-${expr}`} width="200" height="320" /></svg>;
 export const Draft = () => <span className="ui-tag" data-testid="story-draft">Draft · under review</span>;
 
@@ -101,6 +130,9 @@ function Reader({ ix, id, progress, commit, update }: { ix: StoryIndex; id: stri
   const before = useMemo(() => (prev && prevCh.data ? echoes(prevCh.data.items, progress.chapters[prev.id]) : null), [prev, prevCh.data, progress.chapters]);
   // Result pop-ups (gate.js): a card for each gate newly cleared by playing it, and one when the chapter is finished. The first look at a
   // chapter only notes what is already done; nothing pops for it. window.SIGNAL_NOPOP turns them off, as in the reference (its own QA).
+  const gl = useLoaded(loadGlossary, 'glossary'); const glRx = useMemo(() => (gl.data ? buildRx(gl.data.terms) : null), [gl.data]);
+  const glMarks = useMemo(() => (glRx && ch.data ? chapterMarks(ch.data.items, glRx) : null), [glRx, ch.data]); const [glOpen, setGlOpen] = useState<{ g: Term; at: HTMLElement } | null>(null);
+  const glCtx = useMemo(() => ({ marks: glMarks, open: (g: Term, at: HTMLElement) => setGlOpen({ g, at }) }), [glMarks]); const glClose = useMemo(() => () => setGlOpen((o) => { o?.at.focus({ preventScroll: true }); return null; }), []);
   const mi = useLoaded(loadMission, 'mission'); const seen = useRef<Set<string> | null>(null); const doneSeen = useRef<boolean | null>(null);
   const [pops, setPops] = useState<Array<{ g?: Gate; chapter?: true }>>([]); const [showing, setShowing] = useState(false); const closedOnce = useRef(false); const prevFocus = useRef<Element | null>(null);
   useEffect(() => { if (!pieces || !ch.data || locked) return; const now = doneKeys(pieces, state, progress);
@@ -138,7 +170,7 @@ function Reader({ ix, id, progress, commit, update }: { ix: StoryIndex; id: stri
         {behind && <p><a className="ui-btn ui-btn--primary" href={`#/story/${behind.id}`} data-testid="story-locked-back">◂ Back to {behind.title}</a> <a className="ui-btn" href="#/story">Library</a></p>}</div> : <>
       {!ch.data && <p data-testid="story-loading">Opening the chapter…</p>}
       {ch.data && <Echoes prev={prev?.title || null} e={before} />}
-      <div className="sg-flow">
+      <GlCtx.Provider value={glCtx}><div className="sg-flow">
         {items.slice(0, upTo).map((it, i) => { if (it.type === 'panel') panelNo += 1; return <ItemView key={i} it={it} n={i} svg={it.type === 'panel' ? art.data?.panels[panelNo] : undefined} cast={ix.cast} state={state} clock={progress.clock} gated={progress.gates}
           onChoose={(d, letter, meta) => { const r = choose(state, d, letter, meta); set(r.state); setSaid(said1(r.outcome)); return r.outcome; }}
           pieces={pieces} progress={progress} onQuiz={(qid, r, n) => { commit({ ...recordQuiz(progress, qid, r, n), last: id }); setSaid(`Check recorded: ${r} of ${n}.`); }} onSkip={(g) => { commit({ ...skip(progress, g), last: id }); setSaid('Skipped for now. It stays here to come back to.'); }}
@@ -154,7 +186,8 @@ function Reader({ ix, id, progress, commit, update }: { ix: StoryIndex; id: stri
           onReplay={(did) => { set(replayDecision(state, did)); setSaid('The decision is open again and the clock restarts.'); }}
           onTalk={(tid, o) => set(answerTalk(state, tid, o))} onFind={(did) => set(find(state, did))} />; })}
         {ch.data && upTo >= items.length && art.data?.closing.map((c, i) => <figure key={i} className="sg-panel"><div className="sg-art" role="img" aria-label={c.alt} dangerouslySetInnerHTML={{ __html: c.svg }} /></figure>)}
-      </div>
+      </div></GlCtx.Provider>
+      {glOpen && gl.data && <GlPop g={glOpen.g} at={glOpen.at} gl={gl.data} onClose={glClose} />}
       <p className="ui-visually-hidden" role="status" aria-live="polite" data-testid="story-said">{said}</p>
       {body && <GatePop body={body} go={head!.chapter ? (next ? 'Open the next chapter ▸' : 'Close') : 'Continue the story ▸'} onClose={closePop} />}
       {ch.data && upTo < items.length && <p className="sg-wait" data-testid="story-waiting" data-kind={hold?.kind || 'decision'}>{hold && hold.kind !== 'decision' ? `🔒 ${hold.kind === 'lesson' ? 'Finish the lesson check' : hold.kind === 'drill' ? 'Finish the drill' : hold.kind === 'incident' ? 'Run the live incident to its end' : hold.kind === 'lab' ? 'Fix it — or run out the clock' : hold.kind === 'meltdown' ? 'Survive the meltdown — or fail it' : hold.kind === 'boss' ? 'Clear the boss level — a failed run starts over from the top —' : hold.kind === 'review' ? 'The next season opens only with a Story Score of 65 or higher. Submit the season for review' : 'Answer every question'} to continue${hold.tier === 'soft' ? ', or skip it for now' : ''}.` : 'The story is waiting for your decision.'} {items.length - upTo} more moments follow.{gc ? ` ${gc.cleared} of ${gc.total} gates cleared in this chapter.` : ''}</p>}
@@ -325,9 +358,9 @@ export function ItemView(p: ViewProps): JSX.Element | null {
         {it.tab && <p className="sg-tab">{it.tab}</p>}
         <div className="sg-art" role="img" aria-label={it.alt} {...(p.svg ? { dangerouslySetInnerHTML: { __html: p.svg } } : {})} />
         <figcaption>
-          {it.narration.map((n, i) => <p key={i} className="sg-narr">{n.replace(/\s*\[COMIC\]\s*$/, '')}</p>)}
-          {it.bubbles.length > 0 && <ul className="sg-bubbles">{it.bubbles.map((b, i) => <li key={i} className="sg-bubble" data-side={b.side} data-kind={b.kind}><b>{b.who}{b.kind === 'radio' ? ' (radio)' : b.kind === 'phone' ? ' (phone)' : b.kind === 'whisper' ? ' (whisper)' : ''}</b> <Em text={b.text} /></li>)}</ul>}
-          {it.caption && <p className="sg-cap">{it.caption}</p>}
+          {it.narration.map((n, i) => <p key={i} className="sg-narr"><Gl k={`${p.n}:n${i}`} text={n.replace(/\s*\[COMIC\]\s*$/, '')} plain /></p>)}
+          {it.bubbles.length > 0 && <ul className="sg-bubbles">{it.bubbles.map((b, i) => <li key={i} className="sg-bubble" data-side={b.side} data-kind={b.kind}><b>{b.who}{b.kind === 'radio' ? ' (radio)' : b.kind === 'phone' ? ' (phone)' : b.kind === 'whisper' ? ' (whisper)' : ''}</b> <Gl k={`${p.n}:b${i}`} text={b.text} /></li>)}</ul>}
+          {it.caption && <p className="sg-cap"><Gl k={`${p.n}:cap`} text={it.caption} plain /></p>}
           {it.evidence.length > 0 && <p className="sg-ev">{it.evidence.map((e, i) => <span key={i} className="ui-tag">{e.label}: {e.state.toLowerCase()}</span>)}{it.confidence !== null && <span className="ui-meta"> Confidence {it.confidence}%</span>}</p>}
           {it.flags.length > 0 && <p className="ui-meta sg-flagline">Under review: {it.flags.join(', ')}</p>}
         </figcaption>
@@ -343,15 +376,15 @@ export function ItemView(p: ViewProps): JSX.Element | null {
       </section>);
     case 'beat': return (
       <section className="sg-beat" data-item="beat" data-mood={it.mood}>{it.where && <p className="ui-meta">{it.where}</p>}
-        <ul>{it.lines.map((l, i) => <li key={i}><Face id={l.who} pose={l.pose} expr={l.expr} /><span><b>{name(l.who)}</b> <Em text={l.text} /></span></li>)}</ul></section>);
+        <ul>{it.lines.map((l, i) => <li key={i}><Face id={l.who} pose={l.pose} expr={l.expr} /><span><b>{name(l.who)}</b> <Gl k={`${p.n}:l${i}`} text={l.text} /></span></li>)}</ul></section>);
     case 'discovery': { const found = p.state.found.includes(it.id); return (
       <section className="sg-disc" data-item="discovery" data-found={found}>
-        {found ? <><p className="sg-disc__k">Discovery · {it.thread}</p><h3>{it.title}</h3><Paras text={it.body} /></>
+        {found ? <><p className="sg-disc__k">Discovery · {it.thread}</p><h3>{it.title}</h3><GlParas k={`${p.n}:di`} text={it.body} /></>
           : <button type="button" className="ui-btn" onClick={() => p.onFind(it.id)} data-discovery={it.id}>Look closer: {it.teaser}</button>}
       </section>); }
-    case 'twist': return <section className="sg-twist" data-item="twist"><p className="sg-twist__k">Twist</p><h3>{it.title}</h3><Paras text={it.body} />{it.label && <p className="ui-meta">{it.label}</p>}
+    case 'twist': return <section className="sg-twist" data-item="twist"><p className="sg-twist__k">Twist</p><h3>{it.title}</h3><GlParas k={`${p.n}:tw`} text={it.body} />{it.label && <p className="ui-meta">{it.label}</p>}
       <Piece p={p} kind={it.test_kind} id={it.test_id} n={p.n} /></section>;
-    case 'history': return <aside className="sg-hist" data-item="history"><p className="sg-hist__k">Then and now{it.when ? ` · ${it.when}` : ''}</p><h3>{it.title}</h3><Paras text={it.body} /><p className="ui-meta">Under review: {it.flag}. Dates and attributions are the author’s draft until that review closes.</p></aside>;
+    case 'history': return <aside className="sg-hist" data-item="history"><p className="sg-hist__k">Then and now{it.when ? ` · ${it.when}` : ''}</p><h3>{it.title}</h3><GlParas k={`${p.n}:hi`} text={it.body} /><p className="ui-meta">Under review: {it.flag}. Dates and attributions are the author’s draft until that review closes.</p></aside>;
     case 'mount': return (it.kind === 'quiz' || it.kind === 'lesson' || (it.kind === 'drill' && p.pieces?.drills?.[it.id]) || (it.kind === 'incident' && p.pieces?.incidents?.[it.id]) || (it.kind === 'lab' && LAB_KINDS_PLAYABLE.has(String(p.pieces?.labs?.[it.id]?.type))) || it.kind === 'review' || (it.kind === 'meltdown' && p.pieces?.meltdowns?.[it.id]) || (it.kind === 'boss' && p.pieces?.bosses?.[it.id])) && p.pieces ? <Piece p={p} kind={it.kind} id={it.id} n={p.n} label={it.label} /> : (
       <aside className="sg-mount" data-item="mount" data-kind={it.kind}>
         <span className="ui-tag">{MOUNT_WORD[it.kind] || it.kind}</span>
@@ -377,7 +410,7 @@ function Weight({ o, c, d, review }: { o: Option | null; c: { letter: string; hi
     <p>{review ? 'After the clock: this is what it would have meant. It doesn’t count. Replay to decide for real.' : weightLine(w.verdict, w.sev)}</p>{o?.fail && <p className="sg-weight__why"><b>Why it costs.</b> {o.fail}</p>}</div>;
 }
 const MARK: Record<Verdict, string> = { canonical: '★ The professional call', neutral: '◦ It works, not the best', costly: '✕ A costly call' };
-function Decision({ d, state, clock, onChoose, onTimeout, onReplay }: ViewProps & { d: Extract<Item, { type: 'decision' }> }) {
+function Decision({ d, n, state, clock, onChoose, onTimeout, onReplay }: ViewProps & { d: Extract<Item, { type: 'decision' }> }) {
   const c = state.choices[d.id]; const recorded = passed(state, d.id); const missed = c?.letter === TIMEOUT; const total = seconds(d, clock);
   const [left, setLeft] = useState<number | null>(total); const [running, setRunning] = useState(false); const [hints, setHints] = useState(c?.hints || 0); const [peek, setPeek] = useState<string | null>(null); const ref = useRef<HTMLElement>(null);
   useEffect(() => { setLeft(total); setRunning(false); }, [total, recorded]);
@@ -392,7 +425,7 @@ function Decision({ d, state, clock, onChoose, onTimeout, onReplay }: ViewProps 
     <section className="sg-dec" data-item="decision" data-decision={d.id} data-done={recorded} data-missed={missed} ref={ref} aria-labelledby={`${d.id}-h`}>
       <p className="sg-dec__k">Decision{d.clock ? ` · ${d.clock}` : ''}</p>
       <h3 id={`${d.id}-h`}>{d.prompt}</h3>
-      <p>{d.happening}</p>
+      <p><Gl k={`${n}:hap`} text={d.happening} plain /></p>
       <div className="sg-facts"><div><h4>Known</h4><ul>{d.known.map((k, i) => <li key={i}>{k}</li>)}</ul></div><div><h4>Not known</h4><ul>{d.unknown.map((k, i) => <li key={i}>{k}</li>)}</ul></div></div>
       <p className="sg-risk"><b>At risk.</b> {d.risk}</p>
       {!recorded && total !== null && <p className="sg-clock" data-testid="story-clock" data-left={left ?? ''} data-running={running}>{running ? <>Time to decide: <b>{left}</b> s</> : <>{total} s to decide. The clock starts when this card is in view, and restarts if it leaves the screen.</>}</p>}

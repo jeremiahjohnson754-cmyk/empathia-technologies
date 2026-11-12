@@ -31,6 +31,9 @@ export function shipSignal(repo, dist) {
     // the five meltdowns for Learn's Service Mode (reference meltdownList), the same records as the story's
     // the quick-facts timeline (reference app.js, Fundamentals): history notes spaced out of the story, each tied to its chapter (RV-27: unchecked)
     fs.writeFileSync(path.join(out, 'timeline.json'), JSON.stringify({ seasons: app.seasons, timeline: (app.timeline || []).map((t) => ({ ch: t.ch, title: t.title, body: t.body })) }));
+    // glossary terms marked in the story (reference ladder.js): each term, its definition, its marks, the first formula it names, where it is first met
+    { const used = new Set(); const terms = (app.glossary || []).map((g) => { (g.f || []).slice(0, 1).forEach((k) => used.add(k)); return { id: g.id, term: g.term, d: g.d, dom: g.dom, f: (g.f || []).slice(0, 1), first: g.first || null, marks: g.marks || [] }; });
+      fs.writeFileSync(path.join(out, 'glossary.json'), JSON.stringify({ terms, formulas: Object.fromEntries([...used].filter((k) => app.formulas[k]).map((k) => [k, { name: app.formulas[k].name, eq: app.formulas[k].eq }])), titles: Object.fromEntries(index.map((c) => [c.id, c.title])) })); }
     // the mentor channel's built-in answers and suggestions (reference app.js offline(); the live-model prompt is not shipped)
     fs.writeFileSync(path.join(out, 'ask.json'), JSON.stringify({ offline: (app.askOffline || []).map((x) => ({ k: x.k, a: x.a })), suggest: app.askSuggest || [] }));
     fs.writeFileSync(path.join(out, 'meltdowns.json'), JSON.stringify({ order: app.meltdownOrder, meltdowns: Object.fromEntries(app.meltdownOrder.map((id) => [id, { ...app.meltdowns[id], id }])) }));
