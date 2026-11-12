@@ -9,6 +9,7 @@ import type { PageProps } from '../registry.types.js';
 import { ROOMS, roomById, shortName, fullName } from '../campus/canon.js';
 import { roomRecord } from '../campus/design.js';
 import { honest, Crumbs, Zone, FactsTable } from './ui.js';
+import { rt60Estimate, RT60_ASSUMED } from '../lite/acoustics.js';
 
 type Kind = 'display' | 'camera' | 'micceil' | 'speaker' | 'table' | 'seat';
 /** an object of the concept; `rot` is a camera's aim in degrees (0 faces into the room, away from the front wall) */
@@ -186,6 +187,15 @@ function Editor({ initial }: { initial: Concept }) {
       </div>
       <Card title="What the planning rules say" icon="check" sub="Modeled from the concept’s own dimensions; a room is judged for real only by its design and its tests" testId="studio-rules">
         <FactsTable facts={verdict.map((v) => [v.rule, <><Tag tone={v.ok === null ? 'info' : v.ok ? 'ok' : 'warn'}>{v.ok === null ? 'decided at design' : v.ok ? 'meets the rule' : 'does not meet it'}</Tag> {v.why}{v.fix && <> <Button small onClick={() => commit(v.fix!.apply, `${v.fix!.label}: done in the concept.`)} testId="studio-fix">{v.fix.label}</Button></>}</>] as [string, ReactElement])} />
+      </Card>
+      <Card title="What the model says" icon="pulse" sub="Before anything is built. Commissioning replaces these with measurements" testId="studio-measures">
+        {(() => { const rt = rt60Estimate([c.w, c.l, c.h], c.seats); const far = Math.hypot(c.w / 2, c.l - 0.6); const net = c.items.filter((i) => i.k === 'camera' || i.k === 'micceil' || i.k === 'display').length;
+          return <FactsTable facts={[
+            ['Reverberation time (RT60) at 1 kHz, empty', <><b data-testid="studio-rt60">{rt.toFixed(2)} s</b> <span className="ui-meta">Estimate · Sabine from the volume and assumed finishes ({RT60_ASSUMED}) · not measured{rt > 0.8 ? ' · above 0.8 s speech gets harder to follow; treatment is decided at design' : ''}</span></>],
+            ['Farthest seat from the front wall', <>{far.toFixed(1)} m <span className="ui-meta">Geometry · assumes the back row 0.6 m from the back wall</span></>],
+            ['Floor area', <>{Math.round(c.w * c.l)} m² <span className="ui-meta">Geometry</span></>],
+            ['Networked endpoints', <>{net} <span className="ui-meta">Count of cameras, ceiling microphones and displays · the switch and its PoE budget are not modeled here</span></>],
+          ]} />; })()}
       </Card>
       <Card title="Versions" icon="clock" sub="Saved states of this concept: compare one with now, or go back to it" testId="studio-versions">
         <div className="pa-row-actions"><label className="pa-field">Name<input className="pa-select" type="text" value={vname} maxLength={60} placeholder={`Version ${vs.length + 1}`} onChange={(e) => setVname(e.target.value)} data-testid="studio-vname" /></label>

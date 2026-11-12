@@ -155,11 +155,12 @@ never replaces restored work: restoration (R1 to R5) stays first.
 
 ## Next, in order
 
-1. Full matrix light and dark on `9db85b6` (light running), then staging and the Render check. Then the same on the head after it
-   (Scouter anatomy, the media audit; their checks are drafted in the scratch folder: `anatomy-snippet.mjs`, `tours-play.txt`).
-2. Restoration still open (inventories and `docs/restoration/PARITY_MATRIX.md` say exactly what): Lite — drift from baseline (needs a
-   spatial assurance record), acoustics (no acoustic data or model), the room builders' missing functions, Design a Space's verbs, Scouter
-   proposals; SIGNAL — the V2.5.3 cinematics as captioned diagrams (proposed, R2); the case files' Mastery gate.
+1. Full matrix light and dark on the head (the light matrix on `9db85b6` found one failure, demo D-04: the restored Lite studio lacked
+   `data-native`; fixed in `af32ce9`, so `9db85b6` was not pushed). Then staging and the Render check.
+2. Restoration still open (`docs/restoration/PARITY_MATRIX.md` says exactly what): Build a Room's remaining verbs (join rooms, outlines and
+   scale, import a record, redline, workbook export, issues and retests, faults, APEX hand-off); the Optimize options A–C and estimate (an
+   estimate needs a costing basis the founder accepts); acoustics beyond the reverberation estimate; Design a Space's measures panel;
+   the SIGNAL opener (its words differ from the canon: the founder decides which stand).
 3. 60/10 P0 (baseline) and P1; P2 corporate flagship pilot; then its other phases. For SIGNAL and Lite, after R5.
 4. Manual: its chapters in the Knowledge Ledger as a source awaiting review; a room's saved set linked from its commissioning page.
 5. Instant Room: real photographs for the sharpness threshold when a device is available; hand a proposal to Room Builder.
