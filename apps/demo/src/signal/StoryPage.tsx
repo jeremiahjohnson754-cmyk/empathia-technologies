@@ -19,6 +19,7 @@ import { Cinematic } from './CinematicPlayer.js';
 import { cinematicFor, sceneOf } from './cinematic.js';
 import { liteForChapter, liteForTerm, liteForText } from './lite.js';
 import { LiteTryCard } from './LiteTry.js';
+import { Flagship, flagshipAfter } from './Flagship.js';
 import { emptyProgress, BANDS, SEVERITY, TIMEOUT, answerTalk, chapterVerdict, choose, complete, echoes, emphasis, emptyChapter, find, load, nextOf, passed, prevOf, reached, replayDecision, resume, save, seconds, tally, timeOut, trustLine, weightLine, weightOf,
   type Chapter, type ChapterState, type Clock, type Item, type Option, type Outcome, type Progress, type StoryIndex, type Verdict,
   PLAYABLE, TIER_WORD, blocking, gateCleared, gateCount, gateKey, recordQuiz, recordDrillTry, recordIncidentRun, recordLabTry, recordChalTry, skip, chapterLocks, lockedBehind, type BossRecord, type Gate, type Pieces, type Quiz, type ReviewRecord, type MeltdownRecord } from './story.js';
@@ -205,7 +206,7 @@ function Reader({ ix, id, progress, commit, update, role }: { ix: StoryIndex; id
       {ch.data && <Echoes prev={prev?.title || null} e={before} />}
       {cine && cinematicFor(id) && ch.data && <Cinematic key={id} scene={sceneOf(id, items)} items={items} panels={art.data?.panels} cast={ix.cast} state={state} onChoose={(d, letter) => { const r = choose(state, d, letter, {}); set(r.state); setSaid(said1(r.outcome)); return r.outcome; }} onClose={() => setCine(false)} />}
       <QuestCtx.Provider value={questCtx}><GlCtx.Provider value={glCtx}><div className="sg-flow">
-        {items.slice(0, upTo).map((it, i) => { if (it.type === 'panel') panelNo += 1; return <ItemView key={i} it={it} n={i} chapter={id} role={role} svg={it.type === 'panel' ? art.data?.panels[panelNo] : undefined} cast={ix.cast} state={state} clock={progress.clock} gated={progress.gates}
+        {items.slice(0, upTo).map((it, i) => { if (it.type === 'panel') panelNo += 1; return <Fragment key={i}><ItemView it={it} n={i} chapter={id} role={role} svg={it.type === 'panel' ? art.data?.panels[panelNo] : undefined} cast={ix.cast} state={state} clock={progress.clock} gated={progress.gates}
           onChoose={(d, letter, meta) => { const r = choose(state, d, letter, meta); set(r.state); setSaid(said1(r.outcome)); return r.outcome; }}
           pieces={pieces} progress={progress} onQuiz={(qid, r, n) => { commit({ ...recordQuiz(progress, qid, r, n), last: id }); setSaid(`Check recorded: ${r} of ${n}.`); }} onSkip={(g) => { commit({ ...skip(progress, g), last: id }); setSaid('Skipped for now. It stays here to come back to.'); }}
           onReview={(rid, rec) => { commit({ ...progress, reviews: { ...progress.reviews, [rid]: rec }, last: id }); setSaid(rec.pass ? `Season review passed: Story Score ${rec.score}.` : `Game over: Story Score ${rec.score}, below 65.`); }}
@@ -218,7 +219,7 @@ function Reader({ ix, id, progress, commit, update, role }: { ix: StoryIndex; id
           onDrill={(did, ok) => { commit({ ...recordDrillTry(progress, did, ok), last: id }); setSaid(ok ? 'Drill passed and recorded.' : 'Drill recorded as not passed. The story goes on; you can try it again here.'); }}
           onTimeout={(d, h) => { set(timeOut(state, d, h)); setSaid('Time ran out. The decision is recorded as missed. Tap an option to see what it would have done, or replay it to make it count.'); }}
           onReplay={(did) => { set(replayDecision(state, did)); setSaid('The decision is open again and the clock restarts.'); }}
-          onTalk={(tid, o) => set(answerTalk(state, tid, o))} onFind={(did) => set(find(state, did))} />; })}
+          onTalk={(tid, o) => set(answerTalk(state, tid, o))} onFind={(did) => set(find(state, did))} />{flagshipAfter(id, it) && <Flagship onResult={(lid, ok) => { commit({ ...recordLabTry(progress, lid, ok, true), last: id }); setSaid(ok ? 'Flagship lab passed for that room and recorded.' : 'Flagship lab attempt recorded.'); }} />}</Fragment>; })}
         {ch.data && upTo >= items.length && art.data?.closing.map((c, i) => <figure key={i} className="sg-panel"><div className="sg-art" role="img" aria-label={c.alt} dangerouslySetInnerHTML={{ __html: c.svg }} /></figure>)}
       </div></GlCtx.Provider></QuestCtx.Provider>
       {glOpen && gl.data && <GlPop g={glOpen.g} at={glOpen.at} gl={gl.data} onClose={glClose} role={role} />}

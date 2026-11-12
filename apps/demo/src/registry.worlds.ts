@@ -42,6 +42,12 @@ export const WORLD_PAGES: readonly PageDef[] = [
     search: { keywords: 'signal story graphic novel maya ray seasons chapters episodes decisions quests sanctuary load-in workplace on air campus drawing set estate topping out breach take mission room principal', aliases: ['signal', 'story'] },
   },
   {
+    id: 'labs.mix', title: 'Mix the Stream', purpose: 'SIGNAL’s flagship lab boss: mix a church’s room and live stream on a 32-channel console in five rooms, from a basement to a mega church', product: 'learn',
+    path: '/labs/mix', alias: ['/labs/mix/:room'], authority: OPEN,
+    load: () => import('./mixlab/MixLab.js'),
+    search: { keywords: 'mix stream church sound console 32 channel mixer faders eq compressor reverb delay feedback ring out wedges subs line array delay towers lufs boss lab basement mega church', aliases: ['mix the stream', 'mixing lab', 'sound lab'] },
+  },
+  {
     id: 'play', title: 'SIGNAL played', purpose: 'A SIGNAL chapter performed as scenes: camera, timed lines, choices inside the frame and things to find', product: 'learn',
     path: '/play/:chapter', authority: OPEN,
     load: () => import('./signal/PlayPage.js'),

@@ -36,6 +36,7 @@ export function ServicePage({ perspective, hash }: { perspective: string; hash: 
           <p className="ui-muted">Acting as <b>{personaLabel(persona)}</b>{me ? <> ({S.techOf(w, me)?.name})</> : null}. {isTech ? 'Field evidence is yours to record; acceptance is someone else’s.' : 'People are hard-gated (certifications valid, experience, licences, site access, availability, capacity, vendor coverage) before any ranking, and the ranking explains itself.'}</p></div>
         <div className="build__state"><Tag tone="muted">{open.length} open</Tag><Button small kind="quiet" onClick={reset} title="Returns every incident, job and case of this browser to the seed">Reset workspace</Button></div>
       </header>
+      <p className="svc__practice" data-testid="svc-practice">Practise before the call: <a href="#/labs/mix">Mix the Stream</a>, SIGNAL’s flagship mixing lab (a 32-channel console, five church rooms, wedges, fills and a live stream). Practice only: it records nothing on a job.</p>
       {refusal && <div role="alert"><Notice tone="bad"><b>Refused.</b><ul className="build__why">{refusal.why.map((x) => <li key={x}>{x}</li>)}</ul></Notice></div>}
       <Tabs label="Service views" active={tab} onChange={setTab} tabs={[...(isTech ? [{ key: 'mine', label: 'Assigned to me', count: mine.length }] : []), { key: 'queue', label: 'Queue', count: open.length }, { key: 'closed', label: 'Closed', count: w.incidents.length - open.length }]} />
       <div className="svc__grid">

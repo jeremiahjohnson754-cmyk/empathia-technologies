@@ -20,6 +20,13 @@ const INSTRUMENTS = [
   { id: 'see', title: 'Camera Lab: see the settings', domain: 'Camera', kind: 'Instrument', brief: 'The picture bands under the room lights and the presenter’s hand smears. Fix the shutter, exposure, gain and white balance together.' },
   { id: 'light', title: 'Lighting Lab: shape the light', domain: 'Lighting', kind: 'Instrument', brief: 'The presenter is over-lit and two-coloured and the display behind washes out. Balance key and fill, match the colour, keep spill off the screen.' },
 ] as const;
+/** The flagship labs (founder, 12 Nov 2026): hands-on, scored, and part of SIGNAL; open to every role, results kept in this browser. */
+export const FLAGSHIPS = [
+  { href: '#/labs/mix', title: 'Mix the Stream', domain: 'Audio', brief: 'SIGNAL Episode 10’s lab boss: a 32-channel console, five rooms from a basement to a mega church, wedges, subs, fills, arrays and delay towers, and a live stream to keep at −16 LUFS.' },
+];
+function FlagshipList() {
+  return <ul className="ops-board" data-testid="flagship-labs">{FLAGSHIPS.map((x) => <li key={x.href} className="ops-col"><a className="ops-job" href={x.href}><b>{x.title}</b><span className="ops-meta">{x.domain} · flagship lab boss</span><span className="ops-note">{x.brief}</span></a></li>)}</ul>;
+}
 const KIND: Record<string, string> = { signalflow: 'Signal flow', physics: 'Physics', network: 'Network', power: 'Power', eq: 'EQ', camera: 'Camera', rf: 'RF', dmx: 'DMX', fill: 'Fill' };
 type Lib = { labs: Record<string, SfLab & { type: string }>; labOrder: string[] };
 
@@ -55,6 +62,7 @@ function LabList({ lib, L, type }: { lib: Lib | null; L: ReturnType<typeof useLa
         actions={<button type="button" className="ui-btn ui-btn--quiet" disabled={!mine} data-testid="labs-reset" onClick={() => confirm.ask({ key: 'labs.reset', title: 'Clear your lab results?', object: 'clear results', actionLabel: 'Clear the results', consequence: <>Your {mine} passed lab result(s) in this browser are removed, and with them the lab evidence on your internal competency record.</>, onConfirm: () => { const prev = structuredClone(L.d); L.restore({ v: 1, results: Object.fromEntries(Object.entries(L.d.results).filter(([, r]) => r.persona !== L.persona)) }); undo.offer({ label: 'your lab results were cleared', undo: () => L.restore(prev) }); } })}>Clear my results</button>} />
       {undo.bar}
       <p className="ops-note"><b>{mine}</b> lab(s) passed as {L.persona}.</p>
+      <h2>Flagship labs</h2><FlagshipList />
       <h2>Instrument labs</h2><InstrumentList L={L} />
       <h2>SIGNAL fault labs{lib ? ` · ${lib.labOrder.length}` : ''}</h2>
       {!lib ? <p role="status" className="ops-note">Loading the SIGNAL library…</p> : <>
