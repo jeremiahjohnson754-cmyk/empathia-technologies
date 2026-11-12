@@ -84,7 +84,7 @@ async function clearRun(p, id, check) {
   ok('BS-10', 'run 2: the stages before it cleared, the call has its own 25 s clock, and a wrong call ends the run with its reason', /⏱ 0:2[45]/.test(cc) && /Run over · Wrong call/i.test(f2) && f2.includes(wrong.why) && st.bosses.S01.tries === 2 && st.bosses.S01.best === callAt && st.bosses.S01.passed === false, `${cc} ${JSON.stringify(st.bosses)}`);
   await b.getByRole('button', { name: 'Back to the briefing' }).click(); const again = await b.innerText();
   ok('BS-11', 'back at the briefing it shows the runs so far and the furthest stage, and the gate still holds the story', new RegExp(`Runs so far: 2 · furthest: stage ${B.steps.findIndex((x) => x.type === 'call')} of 8`).test(again) && (await p.locator('.sg-piece[data-piece=S01]').getAttribute('data-cleared')) === 'false');
-  await p.uncheck('[data-testid=story-gates]'); await b.getByLabel(/Calm lights/).check();
+  await b.getByLabel(/Calm lights/).check();
   ok('BS-12', 'calm lights is remembered for this viewer', await p.evaluate(() => localStorage.getItem('signal-calm')) === '1');
   ok('BS-13', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
 

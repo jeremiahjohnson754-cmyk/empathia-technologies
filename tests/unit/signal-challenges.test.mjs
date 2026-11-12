@@ -79,3 +79,8 @@ test('record-loud: the relative gate drops segments 10 LU under the ungated aver
   const kept = prog.filter((s) => s.L > E(prog) - 10); assert.ok(kept.length < prog.length); assert.equal(+R.I.toFixed(6), +E(kept).toFixed(6));
 });
 test('record-loud L3: more than 4 dB of limiting is squashing', () => { assert.equal(chk('record-loud', 3, full('record-loud', 3, { g6: 5 }), 'Not squashed').ok, true); assert.equal(chk('record-loud', 3, full('record-loud', 3, { g6: 6 }), 'Not squashed').ok, false); });
+test('hear-eq: the strummed guitar is the reference’s (3.4 s at 48 kHz, peak at −6 dBFS) and its analyser outline peaks at 0 dB with energy across the guitar’s range', () => {
+  const g = C.Hear.guitar(); assert.equal(g.length, Math.round(48000 * 3.4)); assert.ok(Math.abs(g.reduce((m, v) => Math.max(m, Math.abs(v)), 0) - 0.5) < 1e-6); assert.equal(C.Hear.guitar(), g);
+  const r = C.Hear.guitarThirds(); assert.equal(r.length, C.Hear.THIRDS.length); assert.equal(Math.max(...r), 0); const at = (f) => r[C.Hear.THIRDS.indexOf(f)];
+  assert.ok(at(100) > -20 && at(250) > -20, 'the low strings are there'); assert.ok(at(20) < at(100) - 10, 'nothing much below the low E');
+});

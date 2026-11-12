@@ -44,7 +44,7 @@ function Inner({ id, lv, factor = 1, boss = false, where, heading = 'h3', record
         <Drawing C={C} st={st} lv={lv} />
         <Readout rows={C.readout(st, lv)} />
         <Controls C={C} st={st} lv={lv} disabled={done} set={set} />
-        {C.id === 'hear-comp' && <Listen st={st} />}
+        {C.id === 'hear-comp' && <Listen st={st} />}{C.id === 'hear-eq' && <GuitarPlay st={st} lv={lv} />}
         {C.note && <p className="ui-meta">{C.note}</p>}
         {!done && <p className="lab__row"><Button kind="primary" onClick={() => check()}>{boss ? '✔ Check my work — one shot' : '✔ Check my work'}</Button>{!boss && <Button onClick={again}>↺ Start over</Button>}</p>}
       </>}
@@ -120,14 +120,39 @@ function Drawing({ C, st, lv }: { C: Challenge; st: CState; lv: number }): React
 }
 const Svg = ({ label, h = 200, children }: { label: string; h?: number; children: ReactNode }) => <div className="lab__svgwrap"><svg className="ch__svg" viewBox={`0 0 600 ${h}`} role="img" aria-label={label}>{children}</svg></div>;
 function EqCurve({ st, lv }: { st: CState; lv: number }) {
-  const S = CH.Hear.guitarNet(st, lv), X = (f: number) => 40 + (Math.log10(f / 20) / 3) * 540, Y = (d: number) => 100 - CH.clamp(d, -15, 15) * 5.5, tol = [0, 4, 3, 2, 1.5][lv]!;
+  const S = CH.Hear.guitarNet(st, lv), ref = useMemo(() => CH.Hear.guitarThirds(), []), X = (f: number) => 40 + (Math.log10(f / 20) / 3) * 540, Y = (d: number) => 180 - ((CH.clamp(d, -42, 18) + 42) / 60) * 160, tol = [0, 4, 3, 2, 1.5][lv]!, byp = !!st['byp'];
   const path = (fn: (f: number) => number) => Array.from({ length: 121 }, (_x, i) => { const f = 20 * 1000 ** (i / 120); return `${i ? 'L' : 'M'}${X(f).toFixed(1)} ${Y(fn(f)).toFixed(1)}`; }).join('');
-  return <Svg label="EQ curves from 20 Hz to 20 kHz: their EQ, yours, and the sum the guitar actually gets, with the tolerance band.">
-    <rect className="ch__band" x={X(100)} y={Y(tol)} width={X(10000) - X(100)} height={Y(-tol) - Y(tol)} />
-    {[-12, -6, 0, 6, 12].map((d) => <g key={d}><line className="ch__grid" x1={40} x2={580} y1={Y(d)} y2={Y(d)} /><text className="ch__t" x={34} y={Y(d) + 4} textAnchor="end">{d}</text></g>)}
-    {[100, 1000, 10000].map((f) => <text key={f} className="ch__t" x={X(f)} y={196} textAnchor="middle">{CH.fmtHz(f)}Hz</text>)}
-    {lv === 1 && <path className="ch__bad" d={path(S.bf)} />}<path className="ch__yours" d={path(S.yf)} /><path className="ch__net" d={path((f) => S.bf(f) + S.yf(f))} />
-    <text className="ch__t" x={44} y={14}>{lv === 1 ? 'their EQ (dashed) · yours (thin) · the sum (thick) · band = tolerance' : 'yours (thin) · the sum (thick) · band = tolerance'}</text></Svg>;
+  const bw = 540 / CH.Hear.THIRDS.length - 3;
+  const outline = CH.Hear.THIRDS.map((f, i) => `${i ? 'L' : 'M'}${(X(f) - bw / 2).toFixed(1)} ${Y(ref[i]!).toFixed(1)}L${(X(f) + bw / 2).toFixed(1)} ${Y(ref[i]!).toFixed(1)}`).join('');
+  return <Svg h={214} label={`A ⅓-octave analyser of the guitar through the channel${byp ? ' with your EQ bypassed' : ''}, the untouched guitar's outline, and the EQ curves; judged ±${tol} dB from 100 Hz to 10 kHz.`}>
+    <rect className="ch__band" x={X(100)} y={10} width={X(10000) - X(100)} height={170} />
+    {[-36, -24, -12, 0, 12].map((d) => <g key={d}><line className="ch__grid" x1={40} x2={580} y1={Y(d)} y2={Y(d)} /><text className="ch__t" x={34} y={Y(d) + 4} textAnchor="end">{d > 0 ? '+' : ''}{d}</text></g>)}
+    {CH.Hear.THIRDS.map((f, i) => { const v = ref[i]! + S.bf(f) + (byp ? 0 : S.yf(f)); return <rect key={f} className="ch__bar" x={X(f) - bw / 2} y={Y(v)} width={bw} height={Math.max(0, Y(-42) - Y(v))} />; })}
+    <path className="ch__ref" d={outline} />
+    {lv === 1 && <path className="ch__bad" d={path(S.bf)} />}<path className="ch__yours" d={path(S.yf)} />{lv === 1 && <path className="ch__net" d={path((f) => S.bf(f) + S.yf(f))} />}
+    {[100, 1000, 10000].map((f) => <text key={f} className="ch__t" x={X(f)} y={206} textAnchor="middle">{CH.fmtHz(f)}Hz</text>)}
+    <text className="ch__t" x={44} y={22}>{lv === 1 ? 'bars: the guitar via the channel · outline: untouched · dashed: their EQ · thin: yours · thick: the sum' : 'bars: the guitar via the channel · outline: untouched · thin: your EQ'}</text></Svg>;
+}
+/** The guitar through their EQ and yours, live on Web Audio biquads; the bypass box switches yours out. Sound starts only from the button. */
+function GuitarPlay({ st, lv }: { st: CState; lv: number }) {
+  const ref = useRef<{ ac: AudioContext; src: AudioBufferSourceNode; U: BiquadFilterNode[]; you: GainNode; by: GainNode } | null>(null); const [on, setOn] = useState(false);
+  const stop = () => { try { ref.current?.src.stop(); } catch { /* already stopped */ } ref.current = null; setOn(false); };
+  useEffect(() => () => { stop(); }, []);
+  useEffect(() => { const r = ref.current; if (!r) return; const n = (k: string) => Number(st[k]), t = r.ac.currentTime, lvx = Math.min(3, lv), U = r.U;
+    U[0]!.frequency.setTargetAtTime(Math.max(20, n('hp')), t, 0.02); U[1]!.frequency.setTargetAtTime(n('lsf'), t, 0.02); U[1]!.gain.setTargetAtTime(lvx >= 3 ? n('ls') : 0, t, 0.02);
+    [['p1f', 'p1g', 'p1q'], ['p2f', 'p2g', 'p2q'], ['p3f', 'p3g', 'p3q']].forEach(([f, g, q], j) => { const nd = U[2 + j]!; nd.frequency.setTargetAtTime(n(f!), t, 0.02); nd.gain.setTargetAtTime(j === 2 && lvx < 2 ? 0 : n(g!), t, 0.02); nd.Q.setTargetAtTime(n(q!), t, 0.02); });
+    U[5]!.frequency.setTargetAtTime(n('hsf'), t, 0.02); U[5]!.gain.setTargetAtTime(n('hs'), t, 0.02); r.you.gain.setTargetAtTime(st['byp'] ? 0 : 1, t, 0.01); r.by.gain.setTargetAtTime(st['byp'] ? 1 : 0, t, 0.01); });
+  const play = () => { try {
+    const AC = (globalThis as { AudioContext?: typeof AudioContext }).AudioContext; if (!AC) return; const ac = new AC(), x = CH.Hear.guitar(), b = ac.createBuffer(1, x.length, 48000); b.getChannelData(0).set(x);
+    const src = ac.createBufferSource(); src.buffer = b; src.loop = true;
+    const chain = CH.Hear.guitarBad(lv).map((bd) => { const f = ac.createBiquadFilter(); f.type = bd[0] === 'peak' ? 'peaking' : 'highshelf'; f.frequency.value = bd[1]; f.gain.value = bd[2]; if (bd[0] === 'peak') f.Q.value = bd[3] || 0.7071; return f; });
+    const U = (['highpass', 'lowshelf', 'peaking', 'peaking', 'peaking', 'highshelf'] as BiquadFilterType[]).map((ty) => { const f = ac.createBiquadFilter(); f.type = ty; if (ty === 'highpass') f.Q.value = -3.0103; return f; });   // Web Audio's high-pass Q is in dB: −3.01 dB = Butterworth
+    const gIn = ac.createGain(), you = ac.createGain(), by = ac.createGain(), out = ac.createGain(); out.gain.value = 0.3;
+    src.connect(chain[0]!); for (let i = 1; i < chain.length; i += 1) chain[i - 1]!.connect(chain[i]!); chain[chain.length - 1]!.connect(gIn);
+    gIn.connect(U[0]!); for (let i = 1; i < U.length; i += 1) U[i - 1]!.connect(U[i]!); U[U.length - 1]!.connect(you); gIn.connect(by); you.connect(out); by.connect(out); out.connect(ac.destination);
+    ref.current = { ac, src, U, you, by }; src.start(); setOn(true);
+  } catch { stop(); } };
+  return <p className="lab__row"><Button onClick={on ? stop : play}>{on ? '■ Stop' : '▶ Play the guitar through the channel'}</Button>{on && <span className="ui-meta" aria-live="polite">Playing{st['byp'] ? ', your EQ bypassed' : ', through your EQ'}…</span>}</p>;
 }
 function WordLevels({ st }: { st: CState }) {
   const s = CH.Hear.vocalStats(st), lo = -40, Y = (v: number) => 170 - ((CH.clamp(v, lo, 0) - lo) / -lo) * 150;

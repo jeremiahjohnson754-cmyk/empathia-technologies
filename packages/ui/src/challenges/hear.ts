@@ -4,7 +4,7 @@
  * compressor is a log-domain feed-forward design (Giannoulis, Massberg & Reiss, JAES 2012); every figure is measured from the audio.
  * The guitar is Karplus–Strong; its ⅓-octave analyser is drawn by the runner. Seeds are the reference's, so the audio is identical.
  */
-import { biq, clamp, db, fmtHz, regionOf, round, type Challenge, type CheckItem, type CState } from './core.js';
+import { biq, clamp, db, fmtHz, regionOf, round, thirds, THIRDS, type Challenge, type CheckItem, type CState } from './core.js';
 
 // ------------------------------------------------------------------------------------------------------------------- the vocal
 export const VFS = 24000;
@@ -77,6 +77,28 @@ export const HEAR_COMP: Challenge = {
 };
 
 // ------------------------------------------------------------------------------------------------------------------- the guitar
+/** A strummed open G chord (320003) by Karplus–Strong plucked-string synthesis with an all-pass tuning filter and a pick-position comb,
+ *  down then up, normalised to −6 dBFS; the reference's seed, so the strum is the same. */
+let guitarCache: Float32Array | null = null;
+export function guitar(): Float32Array {
+  if (guitarCache) return guitarCache; const fs = 48000, n = Math.round(fs * 3.4), x = new Float32Array(n), notes = [98.0, 123.47, 146.83, 196.0, 246.94, 392.0]; let seed = 777;
+  const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 1073741823.5 - 1; };
+  const pluck = (f: number, t0: number, amp: number, bright: number) => {
+    const d = fs / f - 0.5; let N = Math.floor(d), fr = d - N; if (fr < 0.1) { N -= 1; fr += 1; }
+    const C = (1 - fr) / (1 + fr), buf = new Float32Array(N), rho = 10 ** (-3 / (f * 3.2)); let lp = 0;
+    for (let i = 0; i < N; i += 1) { lp += bright * (rnd() - lp); buf[i] = lp; }
+    const beta = Math.max(1, Math.round(0.13 * N)), tmp = Float32Array.from(buf); for (let i = 0; i < N; i += 1) buf[i] = tmp[i]! - tmp[(i - beta + N) % N]!;
+    let idx = 0, prev = 0, ax = 0, ay = 0; const s0 = Math.round(t0 * fs);
+    for (let i = s0; i < n; i += 1) { const o = buf[idx]!, avg = 0.5 * (o + prev); prev = o; const ap = C * avg + ax - C * ay; ax = avg; ay = ap; buf[idx] = ap * rho; idx = (idx + 1) % N; x[i] = x[i]! + amp * o; }
+  };
+  notes.forEach((f, i) => pluck(f, 0.05 + i * 0.016, 0.22, 0.55)); [...notes].reverse().forEach((f, i) => pluck(f, 1.7 + i * 0.011, 0.15, 0.7));
+  let pk = 0; for (let i = 0; i < n; i += 1) pk = Math.max(pk, Math.abs(x[i]!)); for (let i = 0; i < n; i += 1) x[i] = x[i]! * (0.5 / pk);
+  return (guitarCache = x);
+}
+let refCache: number[] | null = null;
+/** The untouched guitar's ⅓-octave spectrum (Welch), dB re its loudest band: the analyser's reference outline. */
+export function guitarThirds(): number[] { if (refCache) return refCache; const r = thirds(guitar(), 48000), m = Math.max(...r); return (refCache = r.map((v) => v - m)); }
+export { THIRDS };
 const G_BAD: Array<Array<['peak' | 'hs', number, number, number?]>> = [[], [['peak', 400, 9, 1.2], ['hs', 7000, -6]], [['peak', 400, 9, 1.2], ['peak', 3200, 8, 2], ['hs', 7000, -6]], [['peak', 110, 7, 1.5], ['peak', 400, 9, 1.2], ['peak', 3200, 8, 2], ['hs', 7000, -9]]];
 const G_WHAT: Record<number, string> = { 110: 'boom (BASS)', 400: 'boxiness (LOW-MIDS)', 3200: 'honk and harshness (UPPER-MIDS)', 7000: 'a dull, blanket-over-it top (BRILLIANCE)' };
 export const guitarBad = (lv: number) => G_BAD[Math.min(3, lv)]!;
@@ -99,7 +121,7 @@ export const HEAR_EQ: Challenge = {
     S.push(['Band 1 freq', 'p1f', 40, 16000, 1, 'Hz', true], ['Band 1 gain', 'p1g', -15, 15, 0.5, 'dB'], ['Band 1 Q', 'p1q', 0.3, 8, 0.1, '', true], ['Band 2 freq', 'p2f', 40, 16000, 1, 'Hz', true], ['Band 2 gain', 'p2g', -15, 15, 0.5, 'dB'], ['Band 2 Q', 'p2q', 0.3, 8, 0.1, '', true]);
     if (lvx >= 2) S.push(['Band 3 freq', 'p3f', 40, 16000, 1, 'Hz', true], ['Band 3 gain', 'p3g', -15, 15, 0.5, 'dB'], ['Band 3 Q', 'p3q', 0.3, 8, 0.1, '', true]);
     S.push(['High shelf freq', 'hsf', 2000, 16000, 1, 'Hz', true], ['High shelf gain', 'hs', -12, 12, 0.5, 'dB']);
-    return S.map(([label, key, min, max, step, unit, log]) => ({ kind: 'slider' as const, key, label, min, max, step, unit, log })); },
+    return [...S.map(([label, key, min, max, step, unit, log]) => ({ kind: 'slider' as const, key, label, min, max, step, unit, log })), { kind: 'check' as const, key: 'byp', label: 'A/B: bypass my EQ (the analyser and the sound)' }]; },
   readout: (st, lv) => { const S = guitarNet(st, lv); return [['tolerance', `±${TOL[lv]} dB`], lv <= 2 ? ['biggest error now', `${S.worst > 0 ? '+' : ''}${round(S.worst, 1)} dB at ${fmtHz(S.wf)}Hz — ${regionOf(S.wf).name}`] : ['listen', 'A/B with the bypass'], ['your EQ', st['byp'] ? 'BYPASSED' : 'in']]; },
   note: 'Sweep to find it: boost a narrow band, sweep until the problem jumps out, then turn that boost into a cut. Boxy lives around 300–500 Hz, honk and harshness around 1–4 kHz, air above 7 kHz.',
   evaluate: (st, lv) => {

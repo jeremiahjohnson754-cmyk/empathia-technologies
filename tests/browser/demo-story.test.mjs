@@ -173,7 +173,7 @@ const reader = (p) => p.evaluate(() => { const r = document.querySelector('[data
 
 { const t = await open('#/story/s01e07', { init: unlockInit('s01e07') }); const p = t.page; await p.waitForSelector('.sg-dec');
   // the chapter's drills are played in ST-43..52; here a try is already on record for each, as for a reader who has tried them
-  await p.evaluate(async () => { const pc = await (await fetch('signal/pieces/s01e07.json')).json(); const k = 'empathia.signal.story.v1'; const st = JSON.parse(localStorage.getItem(k) || '{"v":2,"chapters":{}}'); st.drills = Object.fromEntries(Object.keys(pc.drills).map((id) => [id, { passed: false, tries: 1, first: false }])); localStorage.setItem(k, JSON.stringify(st)); });
+  await p.evaluate(async () => { const pc = await (await fetch('signal/pieces/s01e07.json')).json(); const k = 'empathia.signal.story.v1'; const st = JSON.parse(localStorage.getItem(k) || '{"v":2,"chapters":{}}'); st.drills = { ...(st.drills || {}), ...Object.fromEntries(Object.keys(pc.drills).map((id) => [id, { passed: false, tries: 1, first: false }])) };   /* merged, not replaced: the earlier chapters' drills keep s01e07 open (chapter locks, 12 Nov) */ localStorage.setItem(k, JSON.stringify(st)); });
   await p.reload(); await p.waitForSelector('.sg-dec');
   for (let i = 0; i < 20 && !(await p.locator('[data-testid=story-waiting][data-kind=incident]').count()); i += 1) {
     const kind = await p.locator('[data-testid=story-waiting]').getAttribute('data-kind').catch(() => null); if (!kind) break;
