@@ -30,26 +30,26 @@ Counts and identifiers only. No dialogue or narrative text is reproduced here.
 | Panels with art | 1,610 | 1,610, canon | RESTORED, tested |
 | Decisions (350 timed) | 387 | 387, canon; they gate the story and can fail | RESTORED, tested |
 | Discoveries | 250 | 250, canon | RESTORED, tested |
-| Quests / objectives | 121 / 720 | 121 quests in the canon stream | RESTORED as content. Quest log and ratings on Mission Control: TO VERIFY |
+| Quests / objectives | 121 / 720 | 121 quests in the canon stream | RESTORED: content in the story; the quest log, objectives and S–D ratings on Mission Control (12 Nov, MC-07); objective lines in the result pop-ups (12 Nov) |
 | Optional conversations (talks) | 121 | 121, canon | RESTORED, tested |
 | Beats, twists, notes, history | 260 beats, 232 twists | canon | RESTORED, tested |
-| Lessons | 161 (657 cards, 501 plate references) | 161, library, **an earlier revision**: 111 lessons differ in their cards; no plate references; no review flags | PARTIAL |
+| Lessons | 161 (657 cards, 501 plate references) | Since 12 Nov Learn reads the library cut from the build package (`signal-lib.json` from `app-data.json`): the source's revision of all 161, without the plate references (the plates are not shipped, founder 11 Nov) | RESTORED 12 Nov (LR-01) |
 | Quizzes | **693** (2,105 questions) | **223** in the library the pages read. Missing there: 121 chapter quizzes, 121 chapter "UX" quizzes, 224 twist quizzes, 4 season finals; 42 of the 223 differ. All 693 are now held, unedited, in `packages/signal-canon/data/app-data.json`, which no page reads yet | **470 not yet reachable** |
-| Labs | 91 in nine types | 91, library (earlier revision: about 30 differ). **Only the 26 signal-flow labs have a simulator**; the other 65 show their brief | PARTIAL: 65 of 91 not playable |
-| Drills | 146 in six types | 146, library (42 briefs differ). All six types run in Practice | RESTORED in an earlier revision; TO VERIFY each type against the source's behaviour |
-| Live incidents (Service Mode) | 121 | 121, library (41 briefings and 32 action lists differ; no plates; no notes) | PARTIAL; engine TO VERIFY |
-| Case files | 62 | 62, library (60 differ in two fields) | PARTIAL |
-| Formulas with calculators | 125 | 125, library (11 notes differ) | Content present. The calculators (step-by-step working): TO VERIFY |
-| Glossary | 522 terms | 522, library (15 definitions differ; first-use chapter and season not carried) | PARTIAL. In-story term pop-overs (738 marked uses): TO VERIFY |
-| Explorers (layered system views) | 4 | 4, library, not identical | TO VERIFY |
+| Labs | 91 in nine types | All 91 at the source's revision; all nine types have a simulator (11 Nov), physics drawings (12 Nov) | RESTORED |
+| Drills | 146 in six types | All 146 at the source's revision (12 Nov). All six types run in Practice and in the story | RESTORED; each type's behaviour TO VERIFY against the source |
+| Live incidents (Service Mode) | 121 | All 121 at the source's revision (12 Nov), without plates; the shared runner (11 Nov) | RESTORED |
+| Case files | 62 | Learn → Case Files: each SIGNAL case with its Learn, Service and Engineer perspectives, its check, the live incident, and the engineer's arithmetic step by step (reference renderCases / calcStep, 12 Nov) | RESTORED 12 Nov (CF-01..04) |
+| Formulas with calculators | 125 | 125 at the source's revision; the formula card in boss stages by support tier (12 Nov); in case files the step's formula is shown with it | RESTORED, except the Mastery "choose the relationship" gate in case files (the boss stages have it) |
+| Glossary | 522 terms | 522 at the source's revision in the Fieldbook; marked at first use in the story's reading text with the reference's pop-over (12 Nov): 460 marks across the story | RESTORED 12 Nov (GL-01..03, GP-01..04). Not carried: marks inside lesson cards and meltdown briefs |
+| Explorers (layered system views) | 4 | All four; Reality and System views, three named levels, layer colours, each "?" answered for the view (12 Nov) | RESTORED 12 Nov (EX-01..02) |
 | Fieldbook plates | 160 images with captions, in nine domains | Not in the library. The story's own art is in the canon | **MISSING from Learn** (TO VERIFY whether the canon's art covers them) |
 | Boss levels | 12, one per season | 12, in the story (`BossRunner`) | **RESTORED 12 Nov** |
 | Meltdowns | 5 | `packages/ui/src/meltdown.ts` + `MeltdownRunner` | **RESTORED 11 Nov** (in the story); listed and playable in Learn's Service Mode since 12 Nov (`a8d7732`, BN-10) |
 | Season reviews | 12 | `apps/demo/src/signal/ratings.ts`, in the story | **RESTORED 11 Nov** |
-| System maps per season | 12 | none found | **MISSING** (TO VERIFY) |
-| Timeline | 55 entries | none found | **MISSING** (TO VERIFY) |
-| Ask: offline answers and rules | 20 answers, 7 suggestions | Ask exists (`#/ask`); whether it carries these 20: TO VERIFY | TO VERIFY |
-| Roles on Mission Control | 5 (two playable, three previews) | not carried | TO VERIFY |
+| System maps per season | 12 | Mission Control's systems map, one per season, lit by chapters opened and incidents proven (12 Nov) | RESTORED 12 Nov (MC-02) |
+| Timeline | 55 entries | Learn library → Quick facts timeline, by season, each tied to its chapter, RV-27 shown (12 Nov) | RESTORED 12 Nov (LR-02) |
+| Ask: offline answers and rules | 20 answers, 7 suggestions | Ask → SIGNAL mentor channel on the 20 built-in answers and 7 suggestions (12 Nov). The live-model path and its rules prompt are not carried: no model is used here, and the page says so | RESTORED 12 Nov (MN-01..03, MC-11..13) |
+| Roles on Mission Control | 5 (two playable, three previews) | Mission Control's role path (12 Nov) | RESTORED 12 Nov (MC-01) |
 
 ## 3. Interactive pieces inside the chapters
 
@@ -82,7 +82,7 @@ gate list is the authority and gives 979.)
 | Story reader with decisions, a clock, hints, merit and trust | | `#/story` | RESTORED as content, tested. **Behaviour differs**, next line |
 | What a decision does | The choice is recorded. A failing option is a costly call: it is kept, with its negative merit and trust, and the story goes on. Tapping another replaces it. A timeout is recorded (merit −2) and the card turns to review; Replay reopens it. The clock starts when the card is in view | Same, since 11 Nov (`signal/story.ts`). Hint credit is applied to merit, where the reference's own open issue OI-ENG-02 leaves it unapplied | **RESTORED**, tested (`signal-story` unit 8/8, 7 mutations caught; `demo-story` 38, `demo-play` 24, light and dark) |
 | Echoes: the previous chapter's choices at the top of the next, and a verdict before the debrief | | Both, in the reference's words | **RESTORED**, tested (ST-19, ST-19b) |
-| Result pop-ups when a gate is done, and "Chapter complete" with the quest grade | | not found | **MISSING** (TO VERIFY) |
+| Result pop-ups when a gate is done, and "Chapter complete" with the quest grade |  | A card for each gate cleared by playing it and CHAPTER COMPLETE with the quest rating, discoveries and the chapter unlocked; focus and keys as the reference (12 Nov). `window.SIGNAL_NOPOP` turns them off, as in the reference's own QA | RESTORED 12 Nov (PO-01..05, PP-01..07) |
 | Story played as staged shots | (not in the source: added in this product) | `#/play/<chapter>` | ADDED, tested |
 | Chapter locks and gates (hard, soft, optional) | A chapter opens when what it requires is done | Every gate kind plays and gates within its chapter as the reference's gate.js has it. Since 12 Nov a chapter is **locked** until every hard and soft gate of the one before is cleared (done, or a soft one skipped); a locked chapter shows its heading, the review bar and flags and a card back to the chapter to finish; the library marks locked chapters in words; reviewer mode removes every lock without touching progress (`story.ts chapterLocks`, `signal-story` SS-12..16, `demo-story` ST-83..89) | **RESTORED** |
 | Nine lab simulators: signal flow; EQ and time alignment; camera against an LED wall; network and VLANs; power across circuits; RF; DMX; AV sync; physics (36 labs) | | All nine, since 11 Nov (`labs.ts`, `physics.ts`, `LabRunner`; above); the physics drawings since 12 Nov. Learn's own three instrument labs (audio, camera, lighting) remain this product's own | **RESTORED** |
@@ -93,11 +93,11 @@ gate list is the authority and gives 979.)
 | Boss levels | Scope, estimate, design and cost a job against a clock | In the story since 12 Nov (above) | **RESTORED** |
 | Meltdowns | A multi-turn crisis with threats, actors and a budget | in the story (above) | **RESTORED 11 Nov** |
 | Season run: loadout, forecast, game over, retry a season | | none found | **MISSING** (TO VERIFY) |
-| Season review | | none | **MISSING** |
+| Season review |  | Season reviews in the story: six ratings, Story Score, game over and retry (11 Nov) | RESTORED 11 Nov |
 | Mission Control: continue the story, competency level, evidence locker, case journal, quest log, ratings, crew trust, support level | | `#/learn/mission` since 12 Nov, on the story's own progress (`signal/mission.ts`, spec §14): the season's console, continue, the L0–L5 ladder (provisional, RV-20), the evidence locker (bosses and challenge levels added), role path, crew trust and merit from every choice and conversation, E0–E3 by domain, the twelve systems maps lit by chapters opened and incidents proven, the six ratings from first attempts, timers and support level (the support level now sets the boss formula tier), reviewer mode and reset (two taps each), the quest log (each chapter's objectives ticked as gates clear, the S–D quest rating with the reference's lines) and the case journal (250 discoveries by thread, with where to look for the ones not found). `signal-mission` MC-01..06, `demo-boss` MC-01..08 | **RESTORED** |
-| Formula calculators and "ask the calculator" | | TO VERIFY | |
-| Glossary pop-overs on marked terms, with "first met in" | | TO VERIFY | |
-| Explorers and the system map | | An Explore page exists | TO VERIFY |
+| Formula calculators and "ask the calculator" |  | Boss stages: the formula card by tier, the Mastery gate (12 Nov); case files: the engineer's calculator steps (12 Nov) | RESTORED 12 Nov |
+| Glossary pop-overs on marked terms, with "first met in" |  | In the story (12 Nov): definition, first formula, "first met", a link to the glossary | RESTORED 12 Nov |
+| Explorers and the system map |  | Learn → Explore (12 Nov); the systems map on Mission Control (12 Nov) | RESTORED 12 Nov |
 | Review mode (shows the 318 review flags) and calm mode | | Flags are shown in the story. Calm mode: TO VERIFY | |
 | Keyboard: Space, Enter, Escape, Tab handled throughout | | Story reader: tested | TO VERIFY elsewhere |
 
