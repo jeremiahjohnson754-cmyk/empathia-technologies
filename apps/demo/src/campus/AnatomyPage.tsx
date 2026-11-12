@@ -14,7 +14,7 @@ export default function AnatomyPage({ params }: PageProps) {
   const cls = SCA_CAT[params.cls || ''] || (SCA_CLASSES[params.cls || ''] ? params.cls! : null);
   const [layer, setLayer] = useState('signal'); const [sel, setSel] = useState<string | null>(null); const [broken, setBroken] = useState<string | null>(null); const [guess, setGuess] = useState<string | null>(null); const [rec, setRec] = useState(false);
   useEffect(() => { setLayer('signal'); setSel(null); setBroken(null); setGuess(null); setRec(false); }, [cls]);
-  if (!cls) return <section className="lt-page" data-testid="anatomy-index">
+  if (!cls) return <section className="lt-page" data-native="" data-testid="anatomy-index">
     <PageHero product="lite" icon="device" compact eyebrow="Scouter · anatomy" title="Open a device class into its blocks" lede="Signal, power, network, control, firmware and mounting, for the classes a room is made of. An educational functional model, never a maker’s instructions." />
     <ul className="lt-tiles">{Object.entries(SCA_CLASSES).map(([k, v]) => <li key={k}><a className="lt-tile" href={`#/scouter/anatomy/${k}`} data-class={k}><b>{v.label}</b><span className="ui-muted">{v.blocks.length} blocks · {new Set(v.blocks.map((b) => b[2])).size} layers</span></a></li>)}</ul>
   </section>;
@@ -22,7 +22,7 @@ export default function AnatomyPage({ params }: PageProps) {
   const W = 760, H = 380, n = C.blocks.length, cols = Math.min(4, n), bw = 160, bh = 64, gx = (W - cols * bw) / (cols + 1), rows = Math.ceil(n / cols), gy = (H - rows * bh) / (rows + 1);
   const pos: Record<string, [number, number]> = {}; C.blocks.forEach((b, i) => { pos[b[0]] = [gx + (i % cols) * (bw + gx), gy + Math.floor(i / cols) * (bh + gy)]; });
   const name = (id: string) => C.blocks.find((b) => b[0] === id)?.[1] || '—';
-  return <section className="lt-page lt-anatomy" data-testid="anatomy" data-class={cls}>
+  return <section className="lt-page lt-anatomy" data-native="" data-testid="anatomy" data-class={cls}>
     <nav aria-label="Breadcrumb" className="crumbs"><ol><li><a href="#/scouter">Scouter</a></li><li><a href="#/scouter/anatomy">Anatomy</a></li><li><span aria-current="page">{C.label}</span></li></ol></nav>
     <PageHero product="lite" icon="device" compact eyebrow="Scouter · anatomy" title={`${C.label}, opened into its blocks`} lede="What each block does, how it fails, the test that tells, and what sits upstream and downstream. Break one to see where the symptom travels."
       meta={[<Chip key="a" small tone="info">Educational functional model</Chip>, <Chip key="b" small tone="muted">Not a maker’s disassembly instructions</Chip>, <Chip key="c" small tone="muted">Nothing here opens a housing or touches mains</Chip>]} />

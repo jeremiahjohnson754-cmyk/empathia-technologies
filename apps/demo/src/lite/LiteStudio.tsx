@@ -27,7 +27,7 @@ export default function LiteStudio({ role, query }: PageProps) {
   const open = (mid: string | null) => { const q = new URLSearchParams(); if (mid) q.set('m', mid); setQuery('#/v25/lite', q); };
   const nextId = () => `LM-${String(models.reduce((n, x) => Math.max(n, Number(x.id.slice(3)) || 0), 0) + 1).padStart(3, '0')}`;
   return (
-    <section className="lt-page lt-studio" data-testid="lite-studio">
+    <section className="lt-page lt-studio" data-native="" data-testid="lite-studio">
       <LiteNav here="" role={role} />
       <PageHero product="lite" icon="room" compact eyebrow="Empathia Lite · studio" title="Lite studio" lede="Conceptual geometry with its uncertainty, placements, zones, proposed test points and modeled coverage — separate from anything measured."
         meta={[<Chip key="m" small tone="muted">Modeled · never measured here</Chip>, <Chip key="b" small tone="muted">Kept in this browser</Chip>]} />
