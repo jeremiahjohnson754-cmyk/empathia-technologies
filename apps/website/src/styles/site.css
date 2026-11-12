@@ -137,7 +137,9 @@ abbr[title] { text-decoration: none; }
 h1, h2, h3 { text-wrap: balance; color: var(--w-tx); }
 h1, h2 { font-family: var(--w-display); font-weight: 800; }
 h1 { margin: 0; font-size: clamp(40px, 5.6vw, 76px); line-height: 1.02; letter-spacing: -.035em; max-width: 18ch; }
-h1.display { font-size: clamp(44px, 5.4vw, 80px); line-height: .98; letter-spacing: -.042em; max-width: none; }
+h1.display { font-size: clamp(44px, 4.3vw, 72px); line-height: .98; letter-spacing: -.042em; max-width: none; }
+/* 90-1: the home promise and both actions sit inside a 1366×768 first screen; the spectrum and padding give up the height */
+.hero--home .spectrum { margin-bottom: clamp(28px, 3.4vw, 48px); }
 h1.display span { display: block; } h1.display span:last-child { color: var(--w-accent); }   /* DIRECTION.md frame 13: the last line in teal */
 .lede { margin: 26px 0 0; max-width: 56ch; color: var(--w-tx2); font-size: clamp(18px, 1.6vw, 21px); line-height: 1.6; text-wrap: pretty; }
 p { text-wrap: pretty; }
@@ -148,6 +150,7 @@ p { text-wrap: pretty; }
 .hero::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background-image: linear-gradient(var(--w-grid) 1px, transparent 1px), linear-gradient(90deg, var(--w-grid) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(70% 60% at 50% 0%, #000 10%, transparent 75%); -webkit-mask-image: radial-gradient(70% 60% at 50% 0%, #000 10%, transparent 75%); }
 .spectrum { display: grid; grid-template-columns: repeat(9, 1fr); gap: 3px; height: 4px; margin: 0 0 clamp(36px, 5vw, 64px); border-radius: 2px; overflow: hidden; }
 .spectrum i { background: var(--pc); }
+.hero.hero--home { padding-top: clamp(32px, 4vw, 64px); }
 .hero__grid { position: relative; display: grid; gap: 48px; }
 .hero--home .hero__grid, .hero--split .hero__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); align-items: center; gap: clamp(40px, 5vw, 72px); }
 .hero__copy, .hero__aside { min-width: 0; }
@@ -764,3 +767,4 @@ p { text-wrap: pretty; }
   .plan__table td, .plan__table thead th:last-child { width: 46%; }
 }
 @media (forced-colors: active) { .record.plan { border: 1px solid CanvasText; } .hero--collabora h1::after { forced-color-adjust: none; } }
+.hero__action { margin-top: 28px; }

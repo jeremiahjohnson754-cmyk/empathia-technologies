@@ -16,7 +16,7 @@ if (root) {
     const sku = checked('sku'); const sel = root!.querySelector<HTMLSelectElement>('select[name=connector]')!; const o = sel.selectedOptions[0];
     let connector: ReadinessInput['connector'] = 'NONE';
     if (sel.value === 'NOT_LISTED') connector = 'NOT_LISTED';
-    else if (sel.value !== 'NONE' && o) connector = { key: sel.value, label: o.textContent || sel.value, model: (o.dataset.model || 'CLOUD_API') as ConnectorChoice['model'], maturity: o.dataset.maturity === 'VERIFIED' ? 'VERIFIED' : 'CATALOGUE_ONLY' };
+    else if (sel.value !== 'NONE' && o) connector = { key: sel.value, label: o.dataset.label || o.textContent || sel.value, model: (o.dataset.model || 'CLOUD_API') as ConnectorChoice['model'], maturity: o.dataset.maturity === 'VERIFIED' ? 'VERIFIED' : 'CATALOGUE_ONLY' };
     const a = checked('approver') as Approver;
     return { sku: isPilotSku(sku) ? sku : 'PILOT-DISCOVERY', connector, rooms: whole('rooms', 999), sites: whole('sites', 99), approver: APPROVERS.includes(a) ? a : 'UNKNOWN' };
   }

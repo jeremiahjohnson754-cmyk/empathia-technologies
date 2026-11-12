@@ -15,9 +15,10 @@ export const EVIDENCE: Record<Evidence, { label: string; meaning: string }> = {
 };
 export const Tag = ({ s, children }: { s: Evidence; children?: React.ReactNode }) => <span className={`tag tag--${s}`}><i aria-hidden="true" />{children || EVIDENCE[s].label}</span>;
 
-export const Hero = ({ label, title, lead, children, aside }: { label?: string; title: string; lead: string; children?: React.ReactNode; aside?: React.ReactNode }) => (
+/** A page's first screen (90-1): one promise (the title), one sentence of lead, and, on a page that tells the story, one action. */
+export const Hero = ({ label, title, lead, children, aside, action }: { label?: string; title: string; lead: string; children?: React.ReactNode; aside?: React.ReactNode; action?: { href: string; label: string } }) => (
   <section className={`hero${aside ? ' hero--split' : ''}`}><div className="wrap hero__grid">
-    <div className="hero__copy">{label ? <p className="label">{label}</p> : null}<h1>{title}</h1><p className="lede">{lead}</p>{children}</div>
+    <div className="hero__copy">{label ? <p className="label">{label}</p> : null}<h1>{title}</h1><p className="lede">{lead}</p>{action ? <div className="actions hero__action"><a className="btn btn--primary btn--lg" href={action.href} data-hero-action>{action.label}</a></div> : null}{children}</div>
     {aside ? <div className="hero__aside">{aside}</div> : null}
   </div></section>
 );

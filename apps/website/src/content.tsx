@@ -145,7 +145,7 @@ export function buildPages(ctx: SiteContext): Page[] {
     home,
     { path: '/platform', title: 'Platform — Empathia Technologies', description: 'The Empathia Living Campus platform: one identity for every room, device, person and project; one governed lifecycle; one audit record.', nav: 'Platform', body: (
       <>
-        <Hero label="Platform" title="One record. One governed lifecycle." lead="One canonical identity for every room, device, person, project and standard; one governed lifecycle that every product reads from and writes to; one audit record of who did what, with which evidence." />
+        <Hero label="Platform" action={{ href: demo(), label: 'See the record in the live demo' }} title="One record. One governed lifecycle." lead="One canonical identity for every room, device, person, project and standard; one governed lifecycle that every product reads from and writes to; one audit record of who did what, with which evidence." />
         {film('FA') ? <Section title="The platform in two minutes">{film('FA')}</Section> : null}
         <Section title="The lifecycle"><EvidenceLine /></Section>
         <Strip id="flow" eyebrow="The workflow" title="Five moves of one record" items={FLOW} flow />
@@ -159,14 +159,14 @@ export function buildPages(ctx: SiteContext): Page[] {
     ) },
     { path: '/products', title: 'Products — Empathia Technologies', description: `The nine Empathia products: ${PRODUCTS.map((p) => p.name).join(', ')}.`, body: (
       <>
-        <section className="hero"><div className="wrap"><Spectrum /><p className="label">Products</p><h1>Nine products, one record</h1><p className="lede">Each product is a stage of the same lifecycle. Each page states what the public demonstration shows today, and what it does not. Scouter is part of Lite.</p></div></section>
+        <section className="hero"><div className="wrap"><Spectrum /><p className="label">Products</p><h1>Nine products, one record</h1><p className="lede">Each product is a stage of the same lifecycle. Each page states what the public demonstration shows today, and what it does not. Scouter is part of Lite.</p><div className="actions hero__action"><a className="btn btn--primary btn--lg" href={demo()} data-hero-action>Explore the live demo</a></div></div></section>
         <Section title="All nine, in lifecycle order"><ProductTiles captures={ctx.captures} /></Section>
       </>
     ) },
     ...productPages,
     { path: '/solutions', title: 'Solutions — Empathia Technologies', description: 'Empathia for enterprise IT and AV teams, systems integrators, managed service providers and facilities teams.', body: (
       <>
-        <Hero label="Solutions" title="The same record, read by each team" lead="The same platform, read through the responsibilities of each team." />
+        <Hero label="Solutions" action={{ href: '/request-demo', label: 'Request a demonstration for your team' }} title="The same record, read by each team" lead="The same platform, read through the responsibilities of each team." />
         <Section id="enterprise" title="Enterprise IT and AV" lead="Standards, approvals and funding decisions with their rationale; the commissioning record and the accepted baseline of every room; executive measures that show their denominators." />
         <Section id="integrators" title="Systems integrators" lead="Design revisions with change-impact traceability, an adaptive commissioning plan with the reason for each test, field evidence captured as the work is done, and a documentation packet that is complete when the applicable requirements are met, not when files are uploaded." />
         <Section id="msp" title="Managed service providers" lead="Who covers each room and in what order; work orders with hard gates before dispatch and verified completion; recommissioning as a new baseline version rather than a replaced record." />
@@ -177,7 +177,7 @@ export function buildPages(ctx: SiteContext): Page[] {
     ) },
     { path: '/how-it-works', title: 'How it works — Empathia Technologies', description: 'The governed lifecycle from request to assurance baseline.', nav: 'How it works', body: (
       <>
-        <Hero label="How it works" title="From request to accepted baseline" lead="The governed lifecycle the platform is built around, as the demonstration shows it: every transition with an authorized role, the required evidence, a guard, an event and an audit record." />
+        <Hero label="How it works" action={{ href: demo(), label: 'Walk the lifecycle in the live demo' }} title="From request to accepted baseline" lead="The governed lifecycle the platform is built around, as the demonstration shows it: every transition with an authorized role, the required evidence, a guard, an event and an audit record." />
         <Strip id="flow" eyebrow="In five moves" title="Design, prove, operate, repair, learn" items={FLOW} flow />
         <Section title="Nine steps, one record"><Steps steps={[
           { title: 'Request', body: 'A requestor describes the room, with photos, plans, known dimensions and constraints. Photos follow a stated privacy policy.' },
@@ -195,7 +195,7 @@ export function buildPages(ctx: SiteContext): Page[] {
     ) },
     { path: '/technology', title: 'Technology — Empathia Technologies', description: 'Architecture of the Empathia platform: modular monolith, PostgreSQL with row-level security, append-only evidence, transactional outbox, typed contracts.', nav: 'Technology', body: (
       <>
-        <Hero label="Technology" title="Built for correctness first" lead="A modular monolith with clear boundaries: the database enforces who may see what, evidence is append-only, and every engine is a deterministic rule system with published test cases." />
+        <Hero label="Technology" action={{ href: '/proof', label: 'See what is proven, and what is not' }} title="Built for correctness first" lead="A modular monolith with clear boundaries: the database enforces who may see what, evidence is append-only, and every engine is a deterministic rule system with published test cases." />
         <Section title="Architecture"><Cards cols={3} items={[
           { icon: 'model', title: 'One canonical data model', body: 'One record for every room, device, person and project, with stable identifiers and revisioned room designs. A room position and the physical unit installed in it are separate records, linked by dated installations.' },
           { icon: 'db', title: 'Authorization in the database', body: 'Tenant and site scope enforced with PostgreSQL row-level security as well as in the API; deny by default. A perspective switch in the demonstration grants nothing.' },
@@ -210,7 +210,7 @@ export function buildPages(ctx: SiteContext): Page[] {
     proofPage(ctx.demoUrl, ctx.asOf || new Date().toISOString()),
     { path: '/trust', title: 'Security and trust — Empathia Technologies', description: 'What Empathia does and does not claim about security, privacy and compliance.', nav: 'Trust', body: (
       <>
-        <Hero label="Trust" title="Security and trust" lead="What is in place, what is planned, and what we do not claim." />
+        <Hero label="Trust" action={{ href: '/proof', label: 'Open the Proof Center' }} title="Security and trust" lead="What is in place, what is planned, and what we do not claim." />
         <Section title="In place in the product"><Cards cols={3} items={[
           { icon: 'key', title: 'Server-side authorization', body: 'Every API operation, search, file read and background job checks the actor, the tenant, the site and the role. Negative tests cover cross-tenant and cross-site access.' },
           { icon: 'lock', title: 'Private evidence storage', body: 'Evidence files are stored privately, hashed on upload and re-verified on every read; a download is authorized against the caller\'s tenant and site scope.' },
@@ -301,7 +301,7 @@ export function buildPages(ctx: SiteContext): Page[] {
     ) },
     { path: '/pilot-partners', title: 'Pilots and partnerships — Empathia Technologies', description: 'Pilot the Empathia Living Campus on a bounded scope with your own rooms and people, or partner with Empathia.', body: (
       <>
-        <Hero label="Pilots and partnerships" title="A bounded pilot, with a factual report" lead="An agreed set of rooms and people, the authenticated application, your standards, your evidence, and a readiness report at the end that states what was verified and what was not." />
+        <Hero label="Pilots and partnerships" action={{ href: '/pilots', label: 'Check which pilot fits' }} title="A bounded pilot, with a factual report" lead="An agreed set of rooms and people, the authenticated application, your standards, your evidence, and a readiness report at the end that states what was verified and what was not." />
         <Section title="What a pilot includes"><Cards cols={3} items={[
           { icon: 'scope', title: 'Scope', body: 'A site or a building, the roles involved, the lifecycle stages in scope.' },
           { icon: 'data', title: 'Data', body: 'Your rooms, devices and standards entered through the product; no customer data leaves your tenant.' },
@@ -352,7 +352,7 @@ export function buildPages(ctx: SiteContext): Page[] {
   const pending = ctx.pendingFilms || [];
   pages.splice(pages.findIndex((p) => p.path === '/technology'), 0, { path: '/films', title: 'Films — Empathia Technologies', description: 'Films of the Empathia Living Campus, with captions and transcripts.', nav: 'Films', body: (
     <>
-      <Hero label="Films" title="Watch the record being made" lead="Each film is recorded from the demonstration or illustrates a scenario, and says which. Every one has captions and a transcript." />
+      <Hero label="Films" action={{ href: demo(), label: 'Explore the live demo' }} title="Watch the record being made" lead="Each film is recorded from the demonstration or illustrates a scenario, and says which. Every one has captions and a transcript." />
       {indexFilms.map((f) => <Section key={f.key} title={f.title} lead={f.summary}>{film(f.key)}</Section>)}
       {pending.length ? <Section title={hasFilms ? 'Coming to this page' : 'The films'} lead="These films are made. Each is published here only once its rights for the website are confirmed; until then, the demonstration itself is the best way to see the product." tone={hasFilms ? 'deep' : undefined}>
         <div className="filmcards">{pending.map((f, i) => <FilmPending key={f.key} film={f} n={i + 1} />)}</div>
