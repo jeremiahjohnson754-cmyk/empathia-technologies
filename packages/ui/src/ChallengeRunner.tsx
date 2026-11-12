@@ -9,6 +9,7 @@ import { useEffect, useMemo, useRef, useState, type ReactElement, type ReactNode
 import { Button } from './components.js';
 import * as CH from './challenges/index.js';
 import type { Challenge, Control, CState, Result } from './challenges/core.js';
+import { band } from './challenges/band.js';
 
 const fmt = (s: number) => { const t = Math.max(0, Math.ceil(s)); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`; };
 const LV_NAME = ['', 'Level 1 · Beginner', 'Level 2 · Intermediate', 'Level 3 · Advanced', 'Level 4 · Mastery (on the clock)'];
@@ -226,19 +227,24 @@ function Listen({ st }: { st: CState }) {
 function CueDesk({ lv, factor, done, onFinish }: { lv: number; factor: number; done: boolean; onFinish: (r: Result) => void }) {
   const Q = CH.Reach, S = useMemo(() => Q.song(lv), [lv]), W = useMemo(() => Q.windows(factor), [factor]);
   const [run, setRun] = useState<CH.Reach.CueRun | null>(null); const [t, setT] = useState(0); const t0 = useRef(0); const ref = useRef<CH.Reach.CueRun | null>(null); const [click, setClick] = useState(true);
-  const ac = useRef<AudioContext | null>(null); const beatN = useRef(-1);
-  const now = () => performance.now() / 1000 - t0.current;
-  const start = () => { const r = Q.cueStart(S); ref.current = r; setRun(r); t0.current = performance.now() / 1000 + 0.15; beatN.current = -1;
-    if (click) { try { const AC = (globalThis as { AudioContext?: typeof AudioContext }).AudioContext; if (AC) ac.current = ac.current || new AC(); } catch { ac.current = null; } } };
-  const stop = (abort: boolean) => { const r = ref.current; if (!r) return; ref.current = null; setRun(null); onFinish(Q.cueFinish(S, r, lv, W, abort)); };
+  const ac = useRef<AudioContext | null>(null); const sch = useRef<ReturnType<typeof setInterval> | null>(null); const master = useRef<GainNode | null>(null); const useAC = useRef(false);
+  const now = () => (useAC.current && ac.current ? ac.current.currentTime - t0.current : performance.now() / 1000 - t0.current);
+  const silence = () => { if (sch.current) clearInterval(sch.current); sch.current = null; try { master.current?.disconnect(); } catch { /* gone */ } master.current = null; };
+  const start = () => { const r = Q.cueStart(S); ref.current = r; useAC.current = false;
+    if (click) { try { const AC = (globalThis as { AudioContext?: typeof AudioContext }).AudioContext; if (AC) ac.current = ac.current || new AC(); } catch { ac.current = null; } }
+    const a = click ? ac.current : null;
+    if (a) { useAC.current = true; t0.current = a.currentTime + 0.15; const m = a.createGain(); m.gain.value = 0.22; m.connect(a.destination); master.current = m; const step = band(a, m, S), six = S.beat / 4; let next = 0;
+      sch.current = setInterval(() => { while (ref.current && t0.current + next * six < a.currentTime + 0.15) { if (next * six < S.len) step(next, t0.current + next * six); next += 1; } }, 25); }
+    else t0.current = performance.now() / 1000 + 0.15;
+    setRun(r); };
+  const stop = (abort: boolean) => { const r = ref.current; silence(); if (!r) return; ref.current = null; setRun(null); onFinish(Q.cueFinish(S, r, lv, W, abort)); };
   const fire = (k: number) => { const r = ref.current; if (!r) return; const n = Q.cueFire(S, r, k, now(), lv, W); ref.current = n; setRun(n); };
   useEffect(() => { if (!run) return undefined; let raf = 0;
     const loop = () => { const r = ref.current; if (!r) return; const tt = now(); const n = Q.cueTick(S, r, tt, W); if (n !== r) { ref.current = n; setRun(n); } setT(tt);
-      const b = Math.floor(tt / S.beat); if (click && ac.current && b > beatN.current && tt >= 0) { beatN.current = b; try { const a = ac.current, o = a.createOscillator(), g = a.createGain(); o.frequency.value = b % 4 === 0 ? 1320 : 880; g.gain.setValueAtTime(0.05, a.currentTime); g.gain.exponentialRampToValueAtTime(0.0008, a.currentTime + 0.05); o.connect(g); g.connect(a.destination); o.start(); o.stop(a.currentTime + 0.06); } catch { /* sound is optional */ } }
       if (tt >= S.len) { stop(false); return; } raf = requestAnimationFrame(loop); };
     raf = requestAnimationFrame(loop); return () => cancelAnimationFrame(raf); }, [run === null]);
   useEffect(() => { if (!run) return undefined; const onKey = (e: KeyboardEvent) => { const k = Number(e.key); if (k >= 1 && k <= 8) { e.preventDefault(); fire(k); } }; window.addEventListener('keydown', onKey); return () => window.removeEventListener('keydown', onKey); }, [run === null]);
-  useEffect(() => () => { void ac.current?.close(); }, []);
+  useEffect(() => () => { silence(); void ac.current?.close(); }, []);
   const X = (s: number) => 10 + CH.clamp(s / S.len, 0, 1) * 580, next = run ? S.cues.find((c, i) => !run.hits[i] && c.t > t - W[2]) : null;
   return <div className="stack ch__cues" data-testid="cue-desk" data-running={!!run}>
     <div className="lab__svgwrap"><svg className="ch__svg" viewBox="0 0 600 120" role="img" aria-label="The song’s timeline with its sections, the cue points and the playhead.">
@@ -251,6 +257,6 @@ function CueDesk({ lv, factor, done, onFinish }: { lv: number; factor: number; d
     <div className="ch__keys" role="group" aria-label="Lighting looks, keys 1 to 8">{[1, 2, 3, 4, 5, 6, 7, 8].map((k) => <button key={k} type="button" className="dr__btn ch__key" aria-pressed={run?.look === k} disabled={!run} onClick={() => fire(k)}><b>{k}</b><span>{Q.LOOKS[k]!.n}</span></button>)}</div>
     <p className="ch__msgs" aria-live="polite">{(run?.msg || []).filter((m) => t - m.at < 2.2).map((m, i) => <span key={i} data-tone={m.tone}>{m.txt}</span>)}</p>
     {!done && <p className="lab__row">{run ? <Button onClick={() => stop(true)}>■ Stop (counts as a fail)</Button> : <Button kind="primary" onClick={start}>▶ Start the song</Button>}
-      {!run && <label className="ch__check"><input type="checkbox" checked={click} onChange={(e) => setClick(e.target.checked)} /> <span>Play a quiet click on the beat</span></label>}</p>}
+      {!run && <label className="ch__check"><input type="checkbox" checked={click} onChange={(e) => setClick(e.target.checked)} /> <span>Play the music (keep it quiet)</span></label>}</p>}
   </div>;
 }
