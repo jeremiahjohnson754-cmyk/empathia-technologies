@@ -7,12 +7,12 @@
  * move trust, discoveries are found by looking, and a chapter can be replayed. The canon is a draft and says so: every open review flag
  * is shown where it applies (the package's rule: keep all content; flag rather than block). Nothing here is a credential.
  */
-import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { Fragment, createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { PageProps } from '../registry.types.js';
 import * as RT from './ratings.js';
 import { chapterPop, doneKeys, gatePop, type PopBody } from './pops.js';
 import { objectiveDone, type MissionIndex } from './mission.js';
-import { buildRx, chapterMarks, type GlossaryIndex, type Seg, type Term } from './glossary.js';
+import { buildRx, chapterMarks, needs, type GlossaryIndex, type GlRx, type Seg, type Term } from './glossary.js';
 import { BossRunner, Bosses, DrillRunner, IncidentRunner, LabRunner, MeltdownRunner, LAB_KINDS_PLAYABLE, Meltdowns, type Drill, type Formula, type Incidents, type LabData } from '@empathia/ui';
 import { Block, Crumbs, Pick } from '../worlds/kit.js';
 import { emptyProgress, BANDS, SEVERITY, TIMEOUT, answerTalk, chapterVerdict, choose, complete, echoes, emphasis, emptyChapter, find, load, nextOf, passed, prevOf, reached, replayDecision, resume, save, seconds, tally, timeOut, trustLine, weightLine, weightOf,
@@ -45,11 +45,31 @@ const Paras = ({ text }: { text: string }) => <>{text.split(/\n{2,}/).map((p, i)
  *  the pop-over to open. Text without a mark, or before the glossary loads, is drawn exactly as before. */
 /** The quest card's objectives tick live (engine spec §11): the chapter, its mission index and the lesson → quiz map. */
 const QuestCtx = createContext<{ cid: string; M: MissionIndex | null; lq: Record<string, string> } | null>(null);
-const GlCtx = createContext<{ marks: Map<string, Seg[]> | null; open: (g: Term, el: HTMLElement) => void } | null>(null);
+const GlCtx = createContext<{ marks: Map<string, Seg[]> | null; open: (g: Term, el: HTMLElement) => void; R?: GlRx | null; terms?: Term[] } | null>(null);
 function Gl({ k, text, plain }: { k: string; text: string; plain?: boolean }) {
   const c = useContext(GlCtx); const segs = c?.marks?.get(k); if (!segs) return plain ? <>{text}</> : <Em text={text} />;
   return <>{segs.map((x, i) => { const t = x.g ? <span className="sg-gl" role="button" tabIndex={0} data-gl={x.g.term} aria-label={`${x.t} — glossary`} onClick={(e) => c!.open(x.g!, e.currentTarget)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); c!.open(x.g!, e.currentTarget); } }}>{x.t}</span> : x.t;
     return x.b ? <b key={i}>{t}</b> : x.i ? <i key={i}>{t}</i> : <span key={i}>{t}</span>; })}</>;
+}
+/** "Terms you'll need" (ladder.js glNeeds): the glossary terms an interactive uses, before it — with their definitions for a beginner,
+ *  as chips that open the pop-over otherwise. */
+function Needs({ text, f, tier }: { text: string; f: string[]; tier: number }) {
+  const c = useContext(GlCtx); const gs = useMemo(() => (c?.R && c.terms ? needs(text, f, tier, c.terms, c.R) : []), [c?.R, c?.terms, text, f.join(), tier]); if (!gs.length) return null;
+  return <div className="sg-needs" data-tier={tier} data-testid="story-needs"><p className="sg-needs__h">{tier <= 1 ? '📖 New words for this — read these first' : '📖 Terms you’ll need · tap for the definition'}</p>
+    {tier <= 1 ? <dl className="sg-needs__dl">{gs.map((g) => <Fragment key={g.term}><dt>{g.term}</dt><dd>{g.d}</dd></Fragment>)}</dl>
+      : <p className="sg-needs__chips">{gs.map((g) => <button key={g.term} type="button" className="ui-btn ui-btn--quiet sg-glchip" data-gl={g.term} onClick={(e) => c!.open(g, e.currentTarget)}>{g.term}</button>)}</p>}</div>;
+}
+const strip = (h: string) => h.replace(/<[^>]+>/g, ' ');
+/** What each interactive's strip reads (app.js, labs.js): its title, brief and questions, and the formulas it names. */
+function needOf(kind: string, id: string, pieces: Pieces): { text: string; f: string[] } {
+  const P = pieces as unknown as Record<string, Record<string, Record<string, unknown>> | undefined>; const x = P[`${kind}s`]?.[id] || (kind === 'lesson' ? (pieces.lessons[id] as unknown as Record<string, unknown>) : undefined);
+  if (kind === 'quiz') { const q = pieces.quizzes[id]; return { text: (q?.qs || []).map((z) => z.q).join(' '), f: (q?.qs || []).map((z) => (z as { f?: string }).f).filter(Boolean) as string[] }; }
+  if (!x) return { text: '', f: [] }; const s = (k: string) => (typeof x[k] === 'string' ? (x[k] as string) : '');
+  if (kind === 'lesson') return { text: `${s('title')} ${strip(((x.cards as string[]) || []).join(' '))}`, f: (x.fx as string[]) || [] };
+  if (kind === 'drill') return { text: `${s('title')} ${s('brief')} ${JSON.stringify(x.items || x.stages || x.cards || '')}`, f: [] };
+  if (kind === 'incident') return { text: `${s('title')} ${s('brief')} ${s('briefing')} ${((x.actions as Array<{ label: string }>) || []).map((a) => a.label).join(' ')}`, f: ((x.actions as Array<{ calc?: { f?: string } }>) || []).map((a) => a.calc?.f).filter(Boolean) as string[] };
+  if (kind === 'lab') return { text: `${s('title')} ${s('brief')} ${((x.math as Array<{ q: string }>) || []).map((m) => m.q).join(' ')}`, f: ((x.math as Array<{ f?: string }>) || []).map((m) => m.f).filter(Boolean) as string[] };
+  return { text: '', f: [] };
 }
 const GlParas = ({ k, text }: { k: string; text: string }) => <>{text.split(/\n{2,}/).map((p, i) => <p key={i}><Gl k={`${k}${i}`} text={p} /></p>)}</>;
 /** The pop-over (ladder.js glPop): the term, its domain and definition, the first formula it names, where it is first met. */
@@ -136,7 +156,7 @@ function Reader({ ix, id, progress, commit, update }: { ix: StoryIndex; id: stri
   const [still, setStill] = useState(() => { try { return localStorage.getItem('signal-still') === '1'; } catch { return false; } });
   const gl = useLoaded(loadGlossary, 'glossary'); const glRx = useMemo(() => (gl.data ? buildRx(gl.data.terms) : null), [gl.data]);
   const glMarks = useMemo(() => (glRx && ch.data ? chapterMarks(ch.data.items, glRx) : null), [glRx, ch.data]); const [glOpen, setGlOpen] = useState<{ g: Term; at: HTMLElement } | null>(null);
-  const glCtx = useMemo(() => ({ marks: glMarks, open: (g: Term, at: HTMLElement) => setGlOpen({ g, at }) }), [glMarks]); const glClose = useMemo(() => () => setGlOpen((o) => { o?.at.focus({ preventScroll: true }); return null; }), []);
+  const glCtx = useMemo(() => ({ marks: glMarks, open: (g: Term, at: HTMLElement) => setGlOpen({ g, at }), R: glRx, terms: gl.data?.terms }), [glMarks, glRx, gl.data]); const glClose = useMemo(() => () => setGlOpen((o) => { o?.at.focus({ preventScroll: true }); return null; }), []);
   const mi = useLoaded(loadMission, 'mission'); const seen = useRef<Set<string> | null>(null); const doneSeen = useRef<boolean | null>(null);
   const [pops, setPops] = useState<Array<{ g?: Gate; chapter?: true }>>([]); const [showing, setShowing] = useState(false); const closedOnce = useRef(false); const prevFocus = useRef<Element | null>(null);
   useEffect(() => { if (!pieces || !ch.data || locked) return; const now = doneKeys(pieces, state, progress);
@@ -247,6 +267,13 @@ function QuizView({ q, id, rec, onDone }: { q: Quiz; id: string; rec?: { best: n
 /** A quiz or a lesson inside the chapter, with the tier of its gate and what clears it. */
 function Piece({ p, kind, id, n, label }: { p: ViewProps; kind: string; id: string; n: number; label?: string | null }) {
   const g = gateOf(p, kind, id); const pieces = p.pieces; const prog = p.progress; if (!pieces || !prog) return null; void n;
+  const tier = prog.support && prog.support !== 'auto' ? Number(prog.support) : pieces.tiers?.[id] ?? 2; const nd = ['quiz', 'lesson', 'drill', 'incident', 'lab'].includes(kind) ? needOf(kind, id, pieces) : null;
+  const need = nd && nd.text.trim() ? <Needs text={nd.text} f={nd.f} tier={tier} /> : null;
+  if (need && kind !== 'quiz' && kind !== 'lesson') return <>{need}<Piece2 p={p} kind={kind} id={id} g={g} label={label} /></>;
+  return <Piece2 p={p} kind={kind} id={id} g={g} label={label} need={need} />;
+}
+function Piece2({ p, kind, id, g, label, need }: { p: ViewProps; kind: string; id: string; g: Gate | undefined; label?: string | null; need?: ReactNode }) {
+  const pieces = p.pieces!; const prog = p.progress!;
   if (kind === 'drill') return <DrillPiece p={p} id={id} g={g} label={label} />;
   if (kind === 'incident') return <IncidentPiece p={p} id={id} g={g} label={label} />;
   if (kind === 'lab') return <LabPiece p={p} id={id} g={g} label={label} />;
@@ -257,6 +284,7 @@ function Piece({ p, kind, id, n, label }: { p: ViewProps; kind: string; id: stri
   const cleared = g ? gateCleared(g, p.state, prog, pieces) : !!prog.quizzes[qid!]; const skipped = !!(g && prog.skips[gateKey(g)]) && !prog.quizzes[qid!];
   return <section className={`sg-piece is-${g?.tier || 'opt'}`} data-item="piece" data-kind={kind} data-piece={id} data-tier={g?.tier || 'opt'} data-cleared={cleared} aria-label={`${kind === 'lesson' ? 'Lesson' : 'Check'}: ${L?.title || q.title}`}>
     <p className="sg-tier" data-testid="story-tier">{TIER_WORD[g?.tier || 'opt']}{skipped ? ' · skipped for now' : ''}</p>
+    {need}
     {L && <><p className="sg-dec__k">Lesson {id} · {L.domain}</p><h3>{L.title}</h3>{L.sum && <p className="lead">{L.sum}</p>}<div className="sg-cards">{L.cards.map((c, i) => <p key={i} className="sg-card"><Rich html={c} /></p>)}</div>{L.flag && <p className="ui-meta">⚑ {L.flag}</p>}</>}
     {label && !L && <p className="ui-meta"><Em text={label} /></p>}
     <QuizView q={q} id={qid!} rec={prog.quizzes[qid!]} onDone={(r, t) => p.onQuiz?.(qid!, r, t)} />

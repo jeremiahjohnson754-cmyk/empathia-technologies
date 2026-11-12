@@ -59,3 +59,19 @@ export function chapterMarks(items: Item[], R: GlRx): Map<string, Seg[]> {
   items.forEach((it, n) => { for (const [k, s, plain] of readingText(it, n)) { const segs = markText(s, R, used, plain); if (segs.some((x) => x.g)) out.set(k, segs); } });
   return out;
 }
+/** glTermsIn: every distinct term in a text, in the order the expressions find them (case-sensitive marks first, as the reference). */
+export function termsIn(text: string, R: GlRx): Term[] {
+  const out: Term[] = [], seen = new Set<string>();
+  for (const [re, map, lower] of [[R.cs, R.mapCs, false], [R.ci, R.mapCi, true]] as const) {
+    if (!re) continue; re.lastIndex = 0; let m: RegExpExecArray | null;
+    while ((m = re.exec(text))) { const g = map[lower ? m[2]!.toLowerCase() : m[2]!]; if (g && !seen.has(g.term)) { seen.add(g.term); out.push(g); } }
+  }
+  return out;
+}
+/** glNeeds: the terms an interactive needs — those in its text, then those tied to its formulas — five for a beginner (with their
+ *  definitions), seven otherwise (as chips that open the pop-over). */
+export function needs(text: string, fkeys: string[], tier: number, terms: Term[], R: GlRx): Term[] {
+  const gs = termsIn(text, R), seen = new Set(gs.map((g) => g.term));
+  for (const k of fkeys) for (const g of terms) if (g.f.includes(k) && !seen.has(g.term)) { seen.add(g.term); gs.push(g); }
+  return gs.slice(0, tier <= 1 ? 5 : 7);
+}
