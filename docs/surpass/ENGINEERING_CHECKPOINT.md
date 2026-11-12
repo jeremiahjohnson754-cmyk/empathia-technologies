@@ -174,7 +174,7 @@ never replaces restored work: restoration (R1 to R5) stays first.
 | 80-9 | Both websites tell the honest version (concept, simulation, verified, live kept apart) and the enterprise lifecycle proof carries the same room through Intake → … → APEX → export; rollback report | `TWO_WEBSITE_INTEGRATION_MAP.md`, `END_TO_END_ENTERPRISE_LIFECYCLE_PROOF.md`, `RELEASE_REGRESSION_AND_ROLLBACK_REPORT.md` |
 
 - Known limits stated now so no one is surprised later: there is no physical device or lab here, so no lesson can reach
-  "device/lab verified" from this session; real device interface footage needs rights the project does not hold; a UE5 or Pixel
+  "device/lab verified" from this session; real device interface imagery and footage may be used only where a vendor's published training materials or licence allow it, which is assessed per vendor (task 95-4), not assumed either way; a UE5 or Pixel
   Streaming layer needs assets and an approved GPU cost model that do not exist yet (the 2D and SVG paths stay the working path).
 
 ## Risk review of 12 Nov 06:35: what would stop the two sites reaching the top grade
@@ -191,6 +191,16 @@ never replaces restored work: restoration (R1 to R5) stays first.
 | 90-5 | Feature catalogue instead of commercial clarity | Pricing understandable in one read (published prices only, unchanged); pilot outcomes stated as what a pilot measures, never results that did not happen; customer economics only as a model with its assumptions shown and the founder's approval before anything public (unit economics stay out of the repository) | a written finding; founder decisions listed |
 | 90-6 | Security and reliability under serious testing | Role isolation, tenant boundaries, private documentation, media rights and equipment control: adversarial tests per boundary (forged role in storage, QR or link tampering, direct address of a denied page, cross-tenant search, simulated control without consent); reliability under reload, offline and slow network | a test suite per boundary with negative cases; a written threat review; NOT RUN listed honestly (no penetration test by a third party) |
 | 90-7 | Many industries multiply commercial execution | The architecture is shared; sales, support, localization, compliance and implementation are not. For each world and each future industry: what is shared, what is per-industry (regulation, buyer, support model, languages), and what the site may claim today | a written per-industry readiness note; the sites claim only what that note supports |
+
+## The founder's watch items of 12 Nov 06:38
+
+| # | What | State | Exit |
+|---|---|---|---|
+| 95-1 | Staging healthy after `b53515e` | **Checked 12 Nov 06:43 CT.** Render: both static sites (`empathia-demo-next`, `empathia-website-next`) report the `b53515e` deploy **live** (finished 12:29 UTC). Fetched over the internet with the founder's permission (TinyFish, a real browser): the website's home page is served in full; the demo's `BUILD_MANIFEST.json` carries the 12:29 build time and `demo.js` is served; in a real browser `#/investor` finished loading, with its heading, the synthetic-data banner and its three start actions. Not checked: every route on staging (the full matrix runs against the identical local build) | done; repeat after each staging push |
+| 95-2 | The six suites changed since `b53515e`, against `803bd89` | demo-lite (354 checks, no failure), demo-journey 10/10, demo-access 31/31, demo 107/107, demo-parity-areas 115/115 passed; demo-drawing 23/24: DRB-50's own check was wrong (closed `<details>`, hidden chip mark), corrected in `5267c81`, then 24/24 light and dark | done; the full matrix on the next head follows |
+| 95-3 | The Founder Studio suite run in a private environment instead of NOT RUN | Needs `node scripts/build.mjs --studio --founder-edition=<the V2.5.4 Founder Edition HTML>` and the film files, neither held in this workspace (only V2.5.3 copies and the f51229b studio manifest, whose HTML and JS are not kept). In a private environment: build with `--studio`, run `tests/browser/founder-studio.test.mjs`, record the result; the studio is INTERNAL_ONLY and is never deployed publicly | the founder supplies the Founder Edition file and films (or confirms V2.5.3 stands in); then a recorded run |
+| 95-4 | Vendor training material and UI rights assessed, not assumed | For each vendor in the training catalogue: what official training materials exist (videos, quick-start guides, adoption kits, press imagery), their published terms of use, whether reuse, embedding, linking or adaptation is allowed and with what attribution; the safest correct use (link to the vendor's own material, embed where permitted, or an original generic simulation). No reuse until the terms are recorded and, where a licence or permission is needed, the founder has it | a rights register per vendor and asset, with the source and terms quoted by link; founder decisions listed |
+| 95-5 | Media delivered, not only prepared | Acceptance for task 80-7 is a playable file: video or audio that plays in the product, captions and transcript that match it, measured loudness, a working interactive choice where the lesson has one, and the QA row filled in. Scripts and storyboards are steps, never reported as delivery | per pilot, the file, its QA row and a browser test that it plays |
 
 ## Simulated, pending, blocked (say so everywhere)
 
@@ -232,6 +242,7 @@ never replaces restored work: restoration (R1 to R5) stays first.
 7. 70/10 tasks 70-0 to 70-6 (above), after restoration; 70-2 (Drawing Intelligence slice) first among them.
 8. The 12 Nov 06:23 mandate, tasks 80-0 to 80-9 (above): verified pilots and one playable SIGNAL branch before any bulk media; enterprise lifecycle first.
 9. The 06:35 risk review, checks 90-1 to 90-7 (above); 90-2, 90-3 and 90-6 first, as they protect what already exists.
+10. The 06:38 watch items 95-3 to 95-5 (above): the studio run when its source files arrive; vendor rights assessed before any media pilot that shows a real device.
 
 ## Commands
 

@@ -7,3 +7,5 @@
 | 12 Nov 2026 | `b53515e` | unit: `node --test tests/unit/*.test.mjs` | 0 | 680 pass |
 | 12 Nov 2026 | `b53515e` | `.local/run-matrix.sh .local/matrix-b53515e light` (59 suites) | 58 exit 0 | no FAIL line in any log; 2,562 checks counted where a suite prints a count; `founder-studio` NOT RUN in a public build |
 | 12 Nov 2026 | `b53515e` | `.local/run-matrix.sh .local/matrix-b53515e dark` (59 suites, the b53515e test files) | 58 exit 0 | no FAIL line; 2,572 checks counted; `founder-studio` NOT RUN. b53515e pushed to `phase3/legendary-experience` (staging) after both schemes |
+| 12 Nov 2026 | `803bd89` | `.local/run-matrix.sh .local/matrix-803bd89 light demo-drawing demo-lite demo-journey demo-access demo demo-parity-areas` | 5 of 6 exit 0 | demo-drawing DRB-50: the check was wrong (closed `<details>`, hidden chip mark); corrected in `5267c81`, 24/24 light and dark |
+| 12 Nov 2026 | staging `b53515e` | Render deploy list; TinyFish fetch and one browser run (founder's permission) | live | both static sites live; website home served in full; demo `#/investor` renders in a real browser with the synthetic banner |
