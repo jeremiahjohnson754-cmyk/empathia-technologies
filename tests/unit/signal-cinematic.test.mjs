@@ -14,7 +14,7 @@ const canonLines = ch.items.flatMap((it) => [...(it.bubbles || []).map((b) => [b
 
 test('the scene is the chapter: one act per canon heading, each shot the canon item of its kind, in order', () => {
   const headings = ch.items.filter((i) => i.type === 'heading').map((h) => h.text); assert.ok(sc.acts.length >= 4); for (const a of sc.acts) assert.ok(headings.includes(a.title), a.title);
-  const all = sc.acts.flatMap((a) => a.shots); for (const s of all) assert.equal(ch.items[s.item].type, s.kind, `item ${s.item}`);
+  const all = sc.acts.flatMap((a) => a.shots).filter((s) => s.kind !== 'footage'); for (const s of all) assert.equal(ch.items[s.item].type, s.kind, `item ${s.item}`);
   assert.deepEqual(all.map((s) => s.item), [...all.map((s) => s.item)].sort((a, b) => a - b));
   assert.ok(C.cinematicFor('s06e01') && !C.cinematicFor('s07e01'));
 });

@@ -26,6 +26,7 @@ export function Cinematic({ scene, items, panels, cast, state, onChoose, onClose
       const lines = ((it as unknown as { lines: { who: string; text: string }[] }).lines).map((l) => ({ who: l.who, name: nameOf(l.who), text: l.text, src: takeFor(scene.takes, l.who, l.text)?.src || null }));
       return { ...s, art: '', alt: '', caption: '', lines };
     }
+    if (s.kind === 'footage') return { ...s, art: '', alt: s.note || '', caption: s.note || '', lines: [] as Line[] };
     return { ...s, art: '', alt: '', caption: '', lines: [] as Line[] };
   }).map((sh, i, all) => {
     // the canon repeats a panel's bubble as the first line of the beat that follows it (the beat is the exchange); it is spoken once, in the beat
@@ -42,6 +43,7 @@ export function Cinematic({ scene, items, panels, cast, state, onChoose, onClose
   // play the current line (or hold a caption-only shot for its reading time); a decision waits for the viewer
   useEffect(() => {
     clear(); const a = audio.current; if (!playing || dec) { a?.pause(); return undefined; }
+    if (cur.kind === 'footage') { a?.pause(); timer.current = window.setTimeout(advance, 9000); return clear; }
     if (ln?.src && a) { a.src = ln.src; a.currentTime = 0; a.play().catch(() => { timer.current = window.setTimeout(advance, readMs(ln.text)); }); return () => { a.pause(); clear(); }; }
     timer.current = window.setTimeout(advance, readMs(ln?.text || cur.caption || cur.alt || '')); return clear;
   }, [shot, line, playing, dec]);
@@ -58,6 +60,7 @@ export function Cinematic({ scene, items, panels, cast, state, onChoose, onClose
     <header className="sg-cine__bar"><b>{A.title}</b> {A.sub && <span className="ui-meta">{A.sub}</span>} <span className="ui-meta">· shot {shot + 1} of {shots.length} · {scene.takes.length ? `voices: Maya (${scene.voices.maya}), Ray (${scene.voices.ray}); lines without a recorded take are captions` : 'captions; this chapter’s voices are not recorded yet'}</span>
       <label className="sg-cine__acts">Act <select value={act} onChange={(e) => { clear(); audio.current?.pause(); setAct(Number(e.target.value)); setShot(0); setLine(0); setOut(null); setPlaying(true); }} data-testid="sg-cine-act">{scene.acts.map((a, i) => <option key={i} value={i}>{a.title}</option>)}</select></label></header>
     <div className="sg-cine__stage" data-testid="sg-cine-shot" data-shot={shot} data-item={cur.item} data-kind={cur.kind}>
+      {cur.kind === 'footage' && cur.src ? <video className="sg-cine__film" key={`f${shot}`} src={cur.src} muted autoPlay playsInline aria-label={cur.note} onEnded={() => { if (playing) advance(); }} data-testid="sg-cine-footage" /> : null}
       {cur.art ? <div className={`sg-cine__art${motion ? ' sg-cine__art--move' : ''}`} role="img" aria-label={cur.alt} key={shot} dangerouslySetInnerHTML={{ __html: cur.art }} /> : null}
       {dec ? <div className="sg-cine__dec" data-testid="sg-cine-dec" data-decision={dec.id}>
         <p className="sg-dec__k">Decision</p><h3>{dec.prompt}</h3><p>{dec.happening}</p>

@@ -143,3 +143,4 @@
 @media (prefers-reduced-motion: reduce) { .sg-cine__art--move { animation: none; } }
 .sg-cine__acts { margin-left: auto; display: inline-flex; gap: 6px; align-items: center; color: #a9b6be; }
 .sg-cine__acts select { min-height: 40px; max-width: 60vw; }
+.sg-cine__film { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
