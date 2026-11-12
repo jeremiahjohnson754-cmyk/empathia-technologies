@@ -177,6 +177,21 @@ never replaces restored work: restoration (R1 to R5) stays first.
   "device/lab verified" from this session; real device interface footage needs rights the project does not hold; a UE5 or Pixel
   Streaming layer needs assets and an approved GPU cost model that do not exist yet (the 2D and SVG paths stay the working path).
 
+## Risk review of 12 Nov 06:35: what would stop the two sites reaching the top grade
+
+- Received 12 Nov 2026, 06:35 CT (the founder relaying an outside review). Added as later checks; current work continues. Each item is a
+  check to run against what exists, with a test or a written finding as its exit, never a rewrite.
+
+| # | Risk | Check | Exit |
+|---|---|---|---|
+| 90-1 | The corporate site explains too much in its first minute | Progressive disclosure audit of the home page and each product page: what a buyer learns in the first screen and the first minute (the immediate value), and where depth starts (products, industries, AI, integrations, vision one click or one scroll further, never removed). Measure first-screen word count and the number of products, industries and capabilities named above the fold | a written finding with before/after screenshots; a website test that the first screen names one promise and one action |
+| 90-2 | Dead ends in the Living Campus | Every control on every native page either changes application state or changes a state clearly labelled simulated; a crawler presses each and records which. No screen that only looks like it works | a browser suite listing every control and its effect; failures fixed or labelled |
+| 90-3 | Integrations read as proven when they are not | Every vendor or product name on either site is checked against evidence: a working, authorized, currently observed connector, or a label saying sample, planned or not connected. No logo wall | extend `connector-claims` and the claims tests to vendor names; a register of each name and its evidence |
+| 90-4 | 3D and immersive work slows everyday tasks | Time-to-task on a mid-range phone profile with network throttling: find a room, open a room by QR link, scan an asset, read the room guide. 3D, films and any streamed layer load only when asked | performance budget tests (transfer size, time to interactive, time to task) in both apps; failures fixed |
+| 90-5 | Feature catalogue instead of commercial clarity | Pricing understandable in one read (published prices only, unchanged); pilot outcomes stated as what a pilot measures, never results that did not happen; customer economics only as a model with its assumptions shown and the founder's approval before anything public (unit economics stay out of the repository) | a written finding; founder decisions listed |
+| 90-6 | Security and reliability under serious testing | Role isolation, tenant boundaries, private documentation, media rights and equipment control: adversarial tests per boundary (forged role in storage, QR or link tampering, direct address of a denied page, cross-tenant search, simulated control without consent); reliability under reload, offline and slow network | a test suite per boundary with negative cases; a written threat review; NOT RUN listed honestly (no penetration test by a third party) |
+| 90-7 | Many industries multiply commercial execution | The architecture is shared; sales, support, localization, compliance and implementation are not. For each world and each future industry: what is shared, what is per-industry (regulation, buyer, support model, languages), and what the site may claim today | a written per-industry readiness note; the sites claim only what that note supports |
+
 ## Simulated, pending, blocked (say so everywhere)
 
 - Room Control, the calendar, the document source for knowledge ingestion: **simulated**.
@@ -216,6 +231,7 @@ never replaces restored work: restoration (R1 to R5) stays first.
 6. Townhall; University; Convention; corporate polish and films.
 7. 70/10 tasks 70-0 to 70-6 (above), after restoration; 70-2 (Drawing Intelligence slice) first among them.
 8. The 12 Nov 06:23 mandate, tasks 80-0 to 80-9 (above): verified pilots and one playable SIGNAL branch before any bulk media; enterprise lifecycle first.
+9. The 06:35 risk review, checks 90-1 to 90-7 (above); 90-2, 90-3 and 90-6 first, as they protect what already exists.
 
 ## Commands
 
