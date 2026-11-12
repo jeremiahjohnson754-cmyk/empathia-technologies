@@ -15,7 +15,7 @@ import { objectiveDone, type MissionIndex } from './mission.js';
 import { buildRx, chapterMarks, needs, type GlossaryIndex, type GlRx, type Seg, type Term } from './glossary.js';
 import { BossRunner, Bosses, DrillRunner, IncidentRunner, LabRunner, MeltdownRunner, LAB_KINDS_PLAYABLE, Meltdowns, type Drill, type Formula, type Incidents, type LabData } from '@empathia/ui';
 import { Block, Crumbs, Pick } from '../worlds/kit.js';
-import { Cinematic } from './Cinematic.js';
+import { Cinematic } from './CinematicPlayer.js';
 import { cinematicFor, sceneOf } from './cinematic.js';
 import { emptyProgress, BANDS, SEVERITY, TIMEOUT, answerTalk, chapterVerdict, choose, complete, echoes, emphasis, emptyChapter, find, load, nextOf, passed, prevOf, reached, replayDecision, resume, save, seconds, tally, timeOut, trustLine, weightLine, weightOf,
   type Chapter, type ChapterState, type Clock, type Item, type Option, type Outcome, type Progress, type StoryIndex, type Verdict,
