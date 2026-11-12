@@ -63,7 +63,10 @@ const GROUP = (p) => {
   return 'Start here';
 };
 const walk = (d, out = []) => { for (const n of fs.readdirSync(d, { withFileTypes: true })) { if (['node_modules', 'dist', '.git', 'generated'].includes(n.name)) continue; const p = path.join(d, n.name); if (n.isDirectory()) walk(p, out); else if (n.name.endsWith('.md')) out.push(p); } return out; };
-const docFiles = walk(repo).filter((p) => !rel(p).startsWith('apps/') && !rel(p).startsWith('packages/domain-data'));
+// 12 Nov 2026: only Markdown the repository tracks. Walking the disk also swept in untracked folders (.claude caches, .local, which
+// holds private material), bloating the studio to 49 MB and pulling in what was never meant to be bundled.
+const tracked = (() => { try { return new Set(execFileSync('git', ['-C', repo, 'ls-files', '*.md'], { encoding: 'utf8' }).split('\n').filter(Boolean)); } catch { return null; } })();
+const docFiles = walk(repo).filter((p) => !rel(p).startsWith('apps/') && !rel(p).startsWith('packages/domain-data') && !rel(p).startsWith('.') && (!tracked || tracked.has(rel(p))));
 const docs = docFiles.map((p) => {
   const md = fs.readFileSync(p, 'utf8'); const r = rel(p);
   const title = (md.match(/^#\s+(.+)$/m) || [null, path.basename(p, '.md')])[1].replace(/[*`]/g, '');
