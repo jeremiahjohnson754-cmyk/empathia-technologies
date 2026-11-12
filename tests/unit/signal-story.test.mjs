@@ -76,3 +76,36 @@ test('SS-08 the clock: canon seconds, doubled when extended, none when off or un
   assert.equal(S.weightLine('costly', 3), 'This will cost you — and people saw it.'); assert.equal(S.weightLine('canonical', 2), 'People noticed.'); assert.match(S.weightLine('neutral', 1), /^Not wrong, not the best/);
   assert.deepEqual(Object.keys(S.SEVERITY), ['1', '2', '3']);
 });
+
+// Quizzes and lessons inside the story (restored 11 Nov 2026 from the reference gate.js): tiers hard, soft and optional; a soft gate
+// holds until it is done or skipped; optional pieces never hold. Run on s01e00's own gates and pieces as the build writes them.
+const gates = JSON.parse(fs.readFileSync(path.join(repo, 'packages/signal-canon/data/gates.json'), 'utf8')).filter((g) => g.chapter === 's01e00');
+const app = JSON.parse(fs.readFileSync(path.join(repo, 'packages/signal-canon/data/app-data.json'), 'utf8'));
+const pick = (o, ks) => Object.fromEntries(ks.filter((k) => o[k]).map((k) => [k, o[k]]));
+const lessonIds = gates.filter((g) => g.kind === 'lesson').map((g) => g.id); const lessons = pick(app.lessons || app.LESSONS || {}, lessonIds);
+const pieces = { gates: gates.map(({ index, kind, id, tier, twist, core }) => ({ index, kind, id, tier, twist, core })), quizzes: {}, lessons };
+const ctx = (state, progress) => ({ pieces, progress });
+
+test('SS-09 the story waits at each hard decision, then at the soft twist test; answering or skipping it lets the story go on', () => {
+  let s = S.emptyChapter(); let pr = S.emptyProgress();
+  assert.equal(S.reached(ch.items, s, true, ctx(s, pr)), 28, 'held at the first decision (index 27)');
+  s = S.choose(s, d2, 'C').state; const tw = S.blocking(s, pr, pieces); assert.deepEqual([tw.kind, tw.id, tw.tier], ['quiz', 'Q-TW-S01E00-R', 'soft']);
+  assert.equal(S.reached(ch.items, s, true, ctx(s, pr)), 30);
+  const answered = S.recordQuiz(pr, 'Q-TW-S01E00-R', 2, 3); assert.equal(S.blocking(s, answered, pieces).id, d3.id, 'any finished score clears it');
+  const skipped = S.skip(pr, tw); assert.equal(skipped.skips['quiz:Q-TW-S01E00-R'], 1); assert.equal(S.blocking(s, skipped, pieces).id, d3.id);
+});
+
+test('SS-10 a lesson is done when its own check is recorded; hard gates cannot be skipped; optional and unplayable kinds never hold', () => {
+  let s = S.emptyChapter(); for (const d of D) s = S.choose(s, d, 'B').state; const pr = S.recordQuiz(S.emptyProgress(), 'Q-TW-S01E00-R', 1, 1);
+  const L = S.blocking(s, pr, pieces); assert.deepEqual([L.kind, L.id, L.tier], ['lesson', 'FB1', 'soft']);
+  assert.ok(lessons.FB1 && lessons.FB1.quiz, 'the lesson names its check'); assert.equal(S.blocking(s, S.recordQuiz(pr, lessons.FB1.quiz, 0, 4), pieces), null, 'the lab (hard, not yet playable) and the optional pieces after it do not hold');
+  const hard = pieces.gates.find((g) => g.tier === 'hard'); assert.equal(S.skip(pr, hard), pr); assert.equal(S.gateCleared(hard, S.emptyChapter(), { quizzes: {}, skips: { [S.gateKey(hard)]: 1 } }, pieces), false, 'a forged skip of a hard gate clears nothing'); const opt = pieces.gates.find((g) => g.tier === 'opt'); assert.equal(S.skip(pr, opt), pr);
+  assert.deepEqual(S.gateCount(s, pr, pieces), { cleared: 4, total: 5 }); assert.equal(S.complete(ch.items, s, ctx(s, pr)), false); assert.equal(S.complete(ch.items, s, ctx(s, S.skip(pr, L))), true);
+});
+
+test('SS-11 a quiz record keeps the best score and never changes the first; malformed records read as none', () => {
+  let p = S.recordQuiz(S.emptyProgress(), 'Q', 2, 5); p = S.recordQuiz(p, 'Q', 4, 5); p = S.recordQuiz(p, 'Q', 1, 5); p = S.recordQuiz(p, 'Q', 9, 5);
+  assert.deepEqual(p.quizzes.Q, { best: 5, total: 5, first: 2 });
+  assert.deepEqual(S.readQuiz({ best: 3, total: 4, first: 2 }), { best: 3, total: 4, first: 2 });
+  for (const j of [null, {}, { best: 5, total: 4, first: 1 }, { best: 2, total: 4, first: 3 }, { best: -1, total: 4, first: 0 }, { best: 1, total: 0, first: 0 }, { best: 1.5, total: 4, first: 1 }]) assert.equal(S.readQuiz(j), null, JSON.stringify(j));
+});

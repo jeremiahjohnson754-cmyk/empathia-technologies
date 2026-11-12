@@ -11,7 +11,8 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { PageProps } from '../registry.types.js';
 import { Block, Crumbs, Pick } from '../worlds/kit.js';
 import { BANDS, SEVERITY, TIMEOUT, answerTalk, chapterVerdict, choose, complete, echoes, emphasis, emptyChapter, find, load, nextOf, passed, prevOf, reached, replayDecision, resume, save, seconds, tally, timeOut, trustLine, weightLine, weightOf,
-  type Chapter, type ChapterState, type Clock, type Item, type Option, type Outcome, type Progress, type StoryIndex, type Verdict } from './story.js';
+  type Chapter, type ChapterState, type Clock, type Item, type Option, type Outcome, type Progress, type StoryIndex, type Verdict,
+  PLAYABLE, TIER_WORD, blocking, gateCleared, gateCount, gateKey, recordQuiz, skip, type Gate, type Pieces, type Quiz } from './story.js';
 
 type Flags = Record<string, { type: string; title: string; detail?: string }>;
 let ixCache: Promise<StoryIndex> | null = null; let flagCache: Promise<Flags> | null = null; let defsReady: Promise<void> | null = null;
@@ -78,7 +79,8 @@ function Reader({ ix, id, progress, commit }: { ix: StoryIndex; id: string; prog
   const ch = useLoaded(() => getJson<Chapter>(`signal/story/${id}.json`), id); const art = useLoaded(() => Promise.all([getJson<{ panels: string[]; closing: { alt: string; svg: string }[] }>(`signal/art/${id}.json`), loadDefs()]).then((r) => r[0]), `art-${id}`);
   const flags = useLoaded(loadFlags, 'flags'); const ref = ix.chapters.find((c) => c.id === id)!; const state = progress.chapters[id] || emptyChapter(); const [said, setSaid] = useState('');
   const set = (s: ChapterState, extra: Partial<Progress> = {}) => commit({ ...progress, ...extra, last: id, chapters: { ...progress.chapters, [id]: s } });
-  const items = ch.data?.items || []; const upTo = reached(items, state, progress.gates); const finished = ch.data ? complete(items, state) : false;
+  const pc = useLoaded(() => getJson<Pieces>(`signal/pieces/${id}.json`), `pieces-${id}`); const pieces = pc.data; const ctx = pieces ? { pieces, progress } : undefined;
+  const items = ch.data?.items || []; const upTo = reached(items, state, progress.gates, ctx); const finished = ch.data ? complete(items, state, ctx) : false; const hold = pieces && progress.gates ? blocking(state, progress, pieces) : null; const gc = pieces ? gateCount(state, progress, pieces) : null;
   useEffect(() => { if (ch.data && finished && !state.done) set({ ...state, done: true }); });   // a chapter is read once every decision in it is made
   const t = useMemo(() => tally(items, state), [items, state]); const next = nextOf(ix, id); const prev = prevOf(ix, id);
   const prevCh = useLoaded(() => (prev ? getJson<Chapter>(`signal/story/${prev.id}.json`) : Promise.resolve(null)), `prev-${id}`);
@@ -104,13 +106,15 @@ function Reader({ ix, id, progress, commit }: { ix: StoryIndex; id: string; prog
       <div className="sg-flow">
         {items.slice(0, upTo).map((it, i) => { if (it.type === 'panel') panelNo += 1; return <ItemView key={i} it={it} n={i} svg={it.type === 'panel' ? art.data?.panels[panelNo] : undefined} cast={ix.cast} state={state} clock={progress.clock} gated={progress.gates}
           onChoose={(d, letter, meta) => { const r = choose(state, d, letter, meta); set(r.state); setSaid(said1(r.outcome)); return r.outcome; }}
+          pieces={pieces} progress={progress} onQuiz={(qid, r, n) => { commit({ ...recordQuiz(progress, qid, r, n), last: id }); setSaid(`Check recorded: ${r} of ${n}.`); }} onSkip={(g) => { commit({ ...skip(progress, g), last: id }); setSaid('Skipped for now. It stays here to come back to.'); }}
           onTimeout={(d, h) => { set(timeOut(state, d, h)); setSaid('Time ran out. The decision is recorded as missed. Tap an option to see what it would have done, or replay it to make it count.'); }}
           onReplay={(did) => { set(replayDecision(state, did)); setSaid('The decision is open again and the clock restarts.'); }}
           onTalk={(tid, o) => set(answerTalk(state, tid, o))} onFind={(did) => set(find(state, did))} />; })}
         {ch.data && upTo >= items.length && art.data?.closing.map((c, i) => <figure key={i} className="sg-panel"><div className="sg-art" role="img" aria-label={c.alt} dangerouslySetInnerHTML={{ __html: c.svg }} /></figure>)}
       </div>
       <p className="ui-visually-hidden" role="status" aria-live="polite" data-testid="story-said">{said}</p>
-      {ch.data && upTo < items.length && <p className="sg-wait" data-testid="story-waiting">The story is waiting for your decision. {items.length - upTo} more moments follow.</p>}
+      {ch.data && upTo < items.length && <p className="sg-wait" data-testid="story-waiting" data-kind={hold?.kind || 'decision'}>{hold && hold.kind !== 'decision' ? `🔒 ${hold.kind === 'lesson' ? 'Finish the lesson check' : 'Answer every question'} to continue${hold.tier === 'soft' ? ', or skip it for now' : ''}.` : 'The story is waiting for your decision.'} {items.length - upTo} more moments follow.{gc ? ` ${gc.cleared} of ${gc.total} gates cleared in this chapter.` : ''}</p>}
+      {pieces && <p className="ui-meta" data-testid="story-gate-note">Played inside the story in this build: decisions, quizzes and lessons. Drills, live incidents, labs, season reviews, boss levels and meltdowns are shown and do not yet hold the story.</p>}
       {ch.data && finished && upTo >= items.length && (
         <Block title="Where this chapter leaves you" testId="story-summary">
           <ul className="sg-sum">
@@ -132,8 +136,43 @@ function Reader({ ix, id, progress, commit }: { ix: StoryIndex; id: string; prog
   );
 }
 
-export interface ViewProps { it: Item; n: number; svg?: string; cast: Record<string, string>; state: ChapterState; clock: Clock; gated: boolean; onChoose: (d: Extract<Item, { type: 'decision' }>, letter: string, meta: { hints: number }) => Outcome; onTimeout?: (d: Extract<Item, { type: 'decision' }>, hints: number) => void; onReplay?: (id: string) => void; onTalk: (id: string, o: number) => void; onFind: (id: string) => void }
+export interface ViewProps { it: Item; n: number; svg?: string; cast: Record<string, string>; state: ChapterState; clock: Clock; gated: boolean; onChoose: (d: Extract<Item, { type: 'decision' }>, letter: string, meta: { hints: number }) => Outcome; onTimeout?: (d: Extract<Item, { type: 'decision' }>, hints: number) => void; onReplay?: (id: string) => void; onTalk: (id: string, o: number) => void; onFind: (id: string) => void;
+  /** the chapter's pieces and gates, and the reader's quiz records, when loaded */ pieces?: Pieces | null; progress?: Progress; onQuiz?: (id: string, right: number, total: number) => void; onSkip?: (g: Gate) => void }
 const MOUNT_WORD: Record<string, string> = { lesson: 'Lesson', lab: 'Lab', quiz: 'Quiz', drill: 'Drill', incident: 'Live incident', review: 'Season review', boss: 'Boss level', meltdown: 'Meltdown' };
+const gateOf = (p: ViewProps, kind: string, id: string): Gate | undefined => p.pieces?.gates.find((g) => g.index === p.n && g.kind === kind && g.id === id);
+/** Lesson cards carry a little markup (bold, italic, sub, sup, a formula span). Only those become elements; anything else is text. */
+function Rich({ html }: { html: string }) {
+  const out: ReactNode[] = []; const stack: { tag: string; kids: ReactNode[] }[] = [{ tag: '', kids: out }]; const re = /<(\/?)(b|i|sub|sup|span)(?:\s+class="formula")?\s*>/g; let at = 0; let m: RegExpExecArray | null; let k = 0;
+  const text = (t: string) => t.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+  while ((m = re.exec(html))) { if (m.index > at) stack[stack.length - 1]!.kids.push(text(html.slice(at, m.index))); at = m.index + m[0].length;
+    if (!m[1]) stack.push({ tag: m[2]!, kids: [] }); else if (stack.length > 1 && stack[stack.length - 1]!.tag === m[2]) { const f = stack.pop()!; const key = k++; const el = f.tag === 'span' ? <code key={key} className="sg-formula">{f.kids}</code> : f.tag === 'b' ? <b key={key}>{f.kids}</b> : f.tag === 'i' ? <i key={key}>{f.kids}</i> : f.tag === 'sub' ? <sub key={key}>{f.kids}</sub> : <sup key={key}>{f.kids}</sup>; stack[stack.length - 1]!.kids.push(el); } }
+  if (at < html.length) stack[stack.length - 1]!.kids.push(text(html.slice(at))); while (stack.length > 1) { const f = stack.pop()!; stack[stack.length - 1]!.kids.push(...f.kids); }
+  return <>{out}</>;
+}
+function QuizView({ q, id, rec, onDone }: { q: Quiz; id: string; rec?: { best: number; total: number; first: number }; onDone: (right: number, total: number) => void }) {
+  const [picked, setPicked] = useState<Record<number, number>>({}); const [round, setRound] = useState(0); const n = Object.keys(picked).length; const right = q.qs.filter((x, i) => picked[i] === x.a).length;
+  useEffect(() => { if (n === q.qs.length && n > 0) onDone(right, q.qs.length); }, [n]);
+  return <div className="sg-quiz" data-testid="story-quiz" data-quiz={id} data-answered={n} data-of={q.qs.length} key={round}>
+    <h4>✎ {q.title}</h4>{rec && n === 0 && <p className="ui-meta" data-testid="story-quiz-rec">Done before: best {rec.best} of {rec.total}, first {rec.first}. Answer again to practise; the first score stays.</p>}
+    <ol className="sg-qs">{q.qs.map((x, i) => { const got = picked[i]; const done = got !== undefined; return <li key={i} data-done={done}><p className="sg-q">{x.q}</p>
+      <div className="sg-qopts" role="group" aria-label={`Question ${i + 1}`}>{x.o.map((o, j) => <button key={j} type="button" className="sg-opt sg-qopt" disabled={done} data-state={!done ? '' : j === x.a ? 'right' : j === got ? 'wrong' : ''} onClick={() => setPicked({ ...picked, [i]: j })}>{o}{done && j === x.a ? <span className="sg-mark"> ✓ right answer</span> : done && j === got ? <span className="sg-mark"> ✕ your answer</span> : null}</button>)}</div>
+      {done && <p className="sg-why" role="status">{got === x.a ? '✓ Right. ' : '✕ Not quite. '}{x.why}</p>}</li>; })}</ol>
+    {n === q.qs.length && <p className="sg-score" data-testid="story-quiz-score">Score {right} of {q.qs.length}{right === q.qs.length ? ' · clean sheet' : ' · review the explanations above'} <button type="button" className="ui-btn ui-btn--quiet" onClick={() => { setPicked({}); setRound(round + 1); }}>Retake</button></p>}
+  </div>;
+}
+/** A quiz or a lesson inside the chapter, with the tier of its gate and what clears it. */
+function Piece({ p, kind, id, n, label }: { p: ViewProps; kind: string; id: string; n: number; label?: string | null }) {
+  const g = gateOf(p, kind, id); const pieces = p.pieces; const prog = p.progress; if (!pieces || !prog) return null; void n;
+  const L = kind === 'lesson' ? pieces.lessons[id] : undefined; const qid = kind === 'lesson' ? L?.quiz : id; const q = qid ? pieces.quizzes[qid] : undefined; if (!q) return null;
+  const cleared = g ? gateCleared(g, p.state, prog, pieces) : !!prog.quizzes[qid!]; const skipped = !!(g && prog.skips[gateKey(g)]) && !prog.quizzes[qid!];
+  return <section className={`sg-piece is-${g?.tier || 'opt'}`} data-item="piece" data-kind={kind} data-piece={id} data-tier={g?.tier || 'opt'} data-cleared={cleared} aria-label={`${kind === 'lesson' ? 'Lesson' : 'Check'}: ${L?.title || q.title}`}>
+    <p className="sg-tier" data-testid="story-tier">{TIER_WORD[g?.tier || 'opt']}{skipped ? ' · skipped for now' : ''}</p>
+    {L && <><p className="sg-dec__k">Lesson {id} · {L.domain}</p><h3>{L.title}</h3>{L.sum && <p className="lead">{L.sum}</p>}<div className="sg-cards">{L.cards.map((c, i) => <p key={i} className="sg-card"><Rich html={c} /></p>)}</div>{L.flag && <p className="ui-meta">⚑ {L.flag}</p>}</>}
+    {label && !L && <p className="ui-meta"><Em text={label} /></p>}
+    <QuizView q={q} id={qid!} rec={prog.quizzes[qid!]} onDone={(r, t) => p.onQuiz?.(qid!, r, t)} />
+    {g?.tier === 'soft' && !cleared && <p><button type="button" className="ui-btn ui-btn--quiet" data-testid="story-skip" onClick={() => p.onSkip?.(g)}>Skip for now</button></p>}
+  </section>;
+}
 export function ItemView(p: ViewProps): JSX.Element | null {
   const { it, cast } = p; const name = (id: string) => cast[id] || id;
   switch (it.type) {
@@ -167,13 +206,14 @@ export function ItemView(p: ViewProps): JSX.Element | null {
         {found ? <><p className="sg-disc__k">Discovery · {it.thread}</p><h3>{it.title}</h3><Paras text={it.body} /></>
           : <button type="button" className="ui-btn" onClick={() => p.onFind(it.id)} data-discovery={it.id}>Look closer: {it.teaser}</button>}
       </section>); }
-    case 'twist': return <section className="sg-twist" data-item="twist"><p className="sg-twist__k">Twist</p><h3>{it.title}</h3><Paras text={it.body} />{it.label && <p className="ui-meta">{it.label}</p>}</section>;
+    case 'twist': return <section className="sg-twist" data-item="twist"><p className="sg-twist__k">Twist</p><h3>{it.title}</h3><Paras text={it.body} />{it.label && <p className="ui-meta">{it.label}</p>}
+      <Piece p={p} kind={it.test_kind} id={it.test_id} n={p.n} /></section>;
     case 'history': return <aside className="sg-hist" data-item="history"><p className="sg-hist__k">Then and now{it.when ? ` · ${it.when}` : ''}</p><h3>{it.title}</h3><Paras text={it.body} /><p className="ui-meta">Under review: {it.flag}. Dates and attributions are the author’s draft until that review closes.</p></aside>;
-    case 'mount': return (
+    case 'mount': return (it.kind === 'quiz' || it.kind === 'lesson') && p.pieces ? <Piece p={p} kind={it.kind} id={it.id} n={p.n} label={it.label} /> : (
       <aside className="sg-mount" data-item="mount" data-kind={it.kind}>
-        <span className="ui-tag">{MOUNT_WORD[it.kind] || it.kind}{it.gate === 'hard' ? ' · required in the product' : ''}</span>
+        <span className="ui-tag">{MOUNT_WORD[it.kind] || it.kind}</span>
         <span>{it.label ? <Em text={it.label} /> : <code>{it.id}</code>}</span>
-        {it.kind === 'lab' ? <a className="ui-btn" href={`#/learn/labs/${encodeURIComponent(it.id)}`}>Open the lab</a> : it.kind === 'lesson' || it.kind === 'quiz' ? <a className="ui-btn" href="#/learn">Open Learn</a> : <span className="ui-meta">Not yet playable from the story in this build.</span>}
+        {it.kind === 'lab' ? <a className="ui-btn" href={`#/learn/labs/${encodeURIComponent(it.id)}`}>Open the lab</a> : it.kind === 'lesson' || it.kind === 'quiz' ? <span className="ui-meta">Opening…</span> : <span className="ui-meta" data-testid="story-not-playable">Not yet playable inside the story in this build{gateOf(p, it.kind, it.id)?.tier === 'hard' ? '. In the source the story waits for it; here it does not, because it cannot be played yet' : ''}.</span>}
       </aside>);
     case 'talk': { const a = p.state.talks[it.id]; return (
       <section className="sg-talk" data-item="talk" data-answered={a !== undefined}>

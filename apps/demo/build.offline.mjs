@@ -26,8 +26,8 @@ export function shipOffline(app, dist) {
   const core = ['signal/defs.svg'];   // the drawings every chapter's art refers to
   const seasons = [...new Set(index.chapters.map((c) => c.season))].sort((a, b) => a - b);
   const packs = [
-    ...seasons.map((s) => { const own = index.chapters.filter((c) => c.season === s).flatMap((c) => [`signal/story/${c.id}.json`, `signal/art/${c.id}.json`]);
-      return { id: `story-${s}`, kind: 'story', label: s === 0 ? 'SIGNAL story: Prologue' : `SIGNAL story: Season ${s}, ${index.seasons[String(s)]}`, chapters: own.length / 2, files: [...core, ...own], bytes: sum(own), sharedBytes: sum(core) }; }),
+    ...seasons.map((s) => { const own = index.chapters.filter((c) => c.season === s).flatMap((c) => [`signal/story/${c.id}.json`, `signal/art/${c.id}.json`, `signal/pieces/${c.id}.json`]);
+      return { id: `story-${s}`, kind: 'story', label: s === 0 ? 'SIGNAL story: Prologue' : `SIGNAL story: Season ${s}, ${index.seasons[String(s)]}`, chapters: own.length / 3, files: [...core, ...own], bytes: sum(own), sharedBytes: sum(core) }; }),
     { id: 'library', kind: 'library', label: 'SIGNAL library (the reference lessons behind Learn)', files: ['signal-lib.json'], bytes: size('signal-lib.json'), sharedBytes: 0 },
   ];
   const media = walk(dist).filter((f) => f.startsWith('media/'));

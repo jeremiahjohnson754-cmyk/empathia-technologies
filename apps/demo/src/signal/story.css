@@ -71,3 +71,12 @@
 .sg-echo { margin: 0 0 16px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); font-size: var(--fs-sm); line-height: 1.55; }
 .sg-echo__h { margin: 0 0 6px; font-size: var(--fs-md); } .sg-echo ul { list-style: none; margin: 0 0 6px; padding: 0; display: grid; gap: 6px; } .sg-echo li { padding-left: 1.4em; text-indent: -1.4em; } .sg-echo p { margin: 0; }
 .sg-echo li[data-verdict=costly] { color: var(--tx); } 
+
+/* quizzes and lessons played inside the chapter, with the tier of their gate (restoration, 11 Nov 2026) */
+.sg-piece { display: grid; gap: 10px; padding: 14px 16px; border: 1px solid var(--line); border-left: 3px solid var(--line3); border-radius: var(--r-md); background: var(--panel); }
+.sg-piece.is-hard { border-left-color: var(--accent); } .sg-piece.is-soft { border-left-color: var(--warn); } .sg-piece[data-cleared="true"] { border-left-color: var(--ok); }
+.sg-piece h3, .sg-quiz h4 { margin: 0; } .sg-tier { margin: 0; font-size: var(--fs-sm); font-weight: 600; color: var(--tx2); }
+.sg-cards { display: grid; gap: 8px; } .sg-card { margin: 0; line-height: 1.6; max-width: 72ch; } .sg-formula { font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.95em; padding: 0 3px; border-radius: 3px; background: var(--panel2); }
+.sg-quiz { display: grid; gap: 10px; } .sg-qs { margin: 0; padding-left: 20px; display: grid; gap: 14px; } .sg-q { margin: 0 0 6px; font-weight: 600; } .sg-qopts { display: grid; gap: 6px; }
+.sg-qopt[data-state="right"] { border-color: var(--ok); box-shadow: inset 0 0 0 1px var(--ok); opacity: 1; } .sg-qopt[data-state="wrong"] { border-color: var(--bad); box-shadow: inset 0 0 0 1px var(--bad); opacity: 1; }
+.sg-why { margin: 6px 0 0; font-size: var(--fs-sm); color: var(--tx2); } .sg-score { margin: 0; font-weight: 600; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }

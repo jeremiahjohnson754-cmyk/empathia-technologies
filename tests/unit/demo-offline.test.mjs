@@ -151,7 +151,9 @@ function fixture(extra = {}) {
   const files = { 'index.html': '<html>', 'demo.js': 'js', 'demo.css': 'css', 'manifest.webmanifest': '{}', 'demo.js.LEGAL.txt': 'legal', 'BUILD_MANIFEST.json': '{}', 'chunks/Lite-AAAA1111.js': 'lite', 'ws/dispatch.js': 'ws', 'fonts/inter-400.woff2': 'font',
     'signal-lib.json': '{"lib":1}', 'signal/defs.svg': '<svg/>', 'signal/flags.json': '{}', 'media/narration/tour.mp3': 'audio', 'media/narration/tour.vtt': 'WEBVTT',
     'signal/index.json': JSON.stringify({ seasons: { 1: 'The Sanctuary' }, chapters: [{ id: 'pro01', season: 0 }, { id: 's01e01', season: 1 }, { id: 's01e02', season: 1 }] }),
-    'signal/story/pro01.json': '{}', 'signal/art/pro01.json': '{}', 'signal/story/s01e01.json': '{"a":1}', 'signal/art/s01e01.json': '{}', 'signal/story/s01e02.json': '{}', 'signal/art/s01e02.json': '{}', ...extra };
+    'signal/story/pro01.json': '{}', 'signal/art/pro01.json': '{}', 'signal/story/s01e01.json': '{"a":1}', 'signal/art/s01e01.json': '{}', 'signal/story/s01e02.json': '{}', 'signal/art/s01e02.json': '{}',
+    // Added 11 Nov 2026: each chapter's quizzes, lessons and gates (signal/pieces/<id>.json) are kept with its season since they play in the story.
+    'signal/pieces/pro01.json': '{}', 'signal/pieces/s01e01.json': '{}', 'signal/pieces/s01e02.json': '{}', ...extra };
   for (const [f, body] of Object.entries(files)) { if (body === null) continue; fs.mkdirSync(path.dirname(path.join(dist, f)), { recursive: true }); fs.writeFileSync(path.join(dist, f), body); }
   return dist;
 }
@@ -174,8 +176,8 @@ test('OFU-15 packs: one per season with its chapters and the shared drawings, th
   const dist = fixture(); shipOffline(app, dist); const { packs } = JSON.parse(fs.readFileSync(path.join(dist, 'offline-packs.json'), 'utf8'));
   assert.deepEqual(packs.map((p) => p.id), ['story-0', 'story-1', 'library', 'narration']);
   const s1 = packs[1]; assert.equal(s1.chapters, 2); assert.equal(s1.label, 'SIGNAL story: Season 1, The Sanctuary'); assert.equal(packs[0].label, 'SIGNAL story: Prologue');
-  assert.deepEqual(s1.files, ['signal/defs.svg', 'signal/story/s01e01.json', 'signal/art/s01e01.json', 'signal/story/s01e02.json', 'signal/art/s01e02.json']);
-  assert.equal(s1.bytes, '{"a":1}'.length + 2 + 2 + 2); assert.equal(s1.sharedBytes, '<svg/>'.length);
+  assert.deepEqual(s1.files, ['signal/defs.svg', 'signal/story/s01e01.json', 'signal/art/s01e01.json', 'signal/pieces/s01e01.json', 'signal/story/s01e02.json', 'signal/art/s01e02.json', 'signal/pieces/s01e02.json'] /* pieces added 11 Nov 2026, as above */);
+  assert.equal(s1.bytes, '{"a":1}'.length + 2 + 2 + 2 + 2 + 2); /* + the two pieces files, 11 Nov 2026 */ assert.equal(s1.sharedBytes, '<svg/>'.length);
   for (const p of packs) for (const f of p.files) assert.ok(fs.existsSync(path.join(dist, f)), `${p.id} → ${f}`);
   assert.deepEqual(packs[3].files.sort(), ['media/narration/tour.mp3', 'media/narration/tour.vtt']);
 });
