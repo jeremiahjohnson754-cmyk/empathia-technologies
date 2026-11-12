@@ -24,7 +24,7 @@ import { personaOf, personaLabel } from '../build/store.js';
 import { openable } from './V25Nav.js';
 import { plural, pct } from './viz.js';
 
-type Lib = Awaited<ReturnType<typeof loadLib>> & { labs?: Record<string, { title: string; domain: string }>; incidents?: Record<string, SignalIncident>; incidentOrder?: string[]; explorers?: Explorer[]; seasonOf?: Record<string, number> };
+type Lib = Awaited<ReturnType<typeof loadLib>> & { labs?: Record<string, { title: string; domain: string }>; incidents?: Record<string, SignalIncident>; incidentOrder?: string[]; explorers?: Explorer[]; seasonOf?: Record<string, number>; layerColors?: Record<string, string> };
 const html = (s: string) => ({ __html: s });   // first-party content shipped with the build (V2.5.3 lesson cards, SIGNAL library), never user input
 
 // ------------------------------------------------------------------------------------------------------------ shared frame
@@ -706,20 +706,29 @@ function MentorChannel() {
 
 // ------------------------------------------------------------------------------------------------------------ #/learn/explore: the system explorers
 interface Explorer { id: string; title: string; intro: string; layers: string[]; base: string; els: Array<{ layer: string; level: number; note: string; x: number; y: number; d: string | null; dash: string }>; hot: Array<{ x: number; y: number; label: string; real: string; sys: string; level: number }> }
+/** The system explorers, restored 12 Nov 2026 to the founder's build package (reference app.js explorer()): a Reality view (the place as
+ *  it looks, every "?" answered as it looks) and a System view (the layers drawn over it, every "?" answered as the system sees it); three
+ *  levels — L0 paths, L1 adds measurements, L2 adds evidence and requirements; the first two layers on to start, each in its own colour. */
 export function ExplorePage({ perspective, params }: { perspective: string; params: Record<string, string> }) {
-  const { lib, err } = useLib(); const [layers, setLayers] = useState<string[]>(['Signal']); const [level, setLevel] = useState(0); const [hot, setHot] = useState<number | null>(null);
-  return <LibGate lib={lib} err={err}>{(l) => { const xs = l.explorers || []; const x = xs.find((e) => e.id === params.id) || xs[0]; if (!x) return <EmptyState title="No explorer in the library" />; const els = x.els.filter((e) => layers.includes(e.layer) && e.level <= level);
+  const { lib, err } = useLib(); const [layers, setLayers] = useState<string[] | null>(null); const [level, setLevel] = useState(0); const [hot, setHot] = useState<number | null>(null); const [mode, setMode] = useState<'reality' | 'system'>('system');
+  useEffect(() => { setLayers(null); setHot(null); setLevel(0); setMode('system'); }, [params.id]);
+  return <LibGate lib={lib} err={err}>{(l) => { const xs = l.explorers || []; const x = xs.find((e) => e.id === params.id) || xs[0]; if (!x) return <EmptyState title="No explorer in the library" />;
+    const on = layers ?? x.layers.slice(0, 2); const els = mode === 'system' ? x.els.filter((e) => on.includes(e.layer) && e.level <= level) : []; const col = (k: string) => l.layerColors?.[k] || 'currentColor';
+    const LEVELS = ['L0 · Paths', 'L1 · + Measurements', 'L2 · + Evidence and requirements'];
     return (
-      <section className="wk ln" data-native="workspace" data-testid="learn-explore">
+      <section className="wk ln" data-native="workspace" data-testid="learn-explore" data-mode={mode} data-level={level}>
         <Head role={perspective} current="#/learn" title={x.title} lede={x.intro} meta={[FICTION, <Chip key="i" small tone="muted">Illustrative</Chip>]} />
         <nav className="wk-v25nav" aria-label="System explorers">{xs.map((e) => <Chip key={e.id} small href={`#/learn/explore/${e.id}`} selected={e.id === x.id}>{e.title}</Chip>)}</nav>
-        <div className="ln-tags" role="group" aria-label="Layers">{x.layers.map((k) => <Chip key={k} small selected={layers.includes(k)} onClick={() => setLayers(layers.includes(k) ? layers.filter((y) => y !== k) : [...layers, k])}>{k}</Chip>)}<Chip small onClick={() => setLevel((level + 1) % 3)}>{`Level ${level + 1} of 3`}</Chip></div>
-        <figure className="ln-explore"><svg viewBox="0 0 800 480" role="img" aria-label={`${x.title}: ${layers.join(', ')} layers, level ${level + 1}`}><g dangerouslySetInnerHTML={html(x.base)} />
-          {els.map((e, i) => <g key={i}>{e.d ? <path d={e.d} className={`ln-ex__p ln-ex--${e.layer.toLowerCase()}`} fill="none" /> : null}<circle cx={e.x} cy={e.y} r="13" className="ln-ex__n" /><text x={e.x} y={e.y + 4} textAnchor="middle" className="ln-ex__t">{i + 1}</text></g>)}
-          {x.hot.filter((h) => h.level <= level).map((h, i) => <g key={`h${i}`} className="ln-ex__hot" role="button" tabIndex={0} aria-label={`What is the ${h.label}?`} onClick={() => setHot(i)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setHot(i); } }}><circle cx={h.x} cy={h.y} r="14" /><text x={h.x} y={h.y + 5} textAnchor="middle">?</text></g>)}
+        <div className="ln-tabs" role="tablist" aria-label="View">{([['reality', 'Reality view'], ['system', 'System view']] as const).map(([k, t]) => <button key={k} type="button" role="tab" aria-selected={mode === k} className="ui-btn ui-btn--quiet" onClick={() => setMode(k)} data-view={k}>{t}</button>)}</div>
+        <div className="ln-tabs" role="tablist" aria-label="Level">{LEVELS.map((t, i) => <button key={t} type="button" role="tab" aria-selected={level === i} className="ui-btn ui-btn--quiet" onClick={() => setLevel(i)} disabled={mode === 'reality'} data-level={i}>{t}</button>)}</div>
+        <div className="ln-tags" role="group" aria-label="Layers">{x.layers.map((k) => { const sel = on.includes(k); return <button key={k} type="button" aria-pressed={sel} className="ln-layer" style={{ borderColor: col(k), background: sel ? col(k) : 'transparent', color: sel ? '#05070C' : undefined }} onClick={() => setLayers(sel ? on.filter((y) => y !== k) : [...on, k])} disabled={mode === 'reality'} data-layer={k}>{k}</button>; })}</div>
+        <figure className="ln-explore"><svg viewBox="0 0 800 480" role="img" aria-label={`${x.title}: ${mode === 'reality' ? 'Reality view' : `System view, level ${level}, ${on.join(', ')} layers. ${els.length} items listed below the picture.`}`}><g className={mode === 'system' ? 'ln-ex__real is-dim' : 'ln-ex__real'} dangerouslySetInnerHTML={html(x.base)} />
+          {els.map((e, i) => e.d ? <path key={`p${i}`} d={e.d} fill="none" stroke={col(e.layer)} strokeWidth={7} strokeLinecap="round" strokeDasharray={/stroke-dasharray="([^"]+)"/.exec(e.dash)?.[1]} /> : null)}
+          {els.map((e, i) => <g key={i}><circle cx={e.x} cy={e.y} r="17" fill="#05070C" stroke={col(e.layer)} strokeWidth={4} /><text x={e.x} y={e.y + 7} textAnchor="middle" className="ln-ex__t" fill="#F8FAFC">{i + 1}</text></g>)}
+          {x.hot.filter((h) => h.level <= level).map((h, i) => <g key={`h${i}`} className="ln-ex__hot" role="button" tabIndex={0} aria-label={`What is this: ${h.label}`} onClick={() => setHot(i)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setHot(i); } }}><circle cx={h.x} cy={h.y} r="17" /><text x={h.x} y={h.y + 7} textAnchor="middle">?</text></g>)}
         </svg></figure>
-        {hot !== null && x.hot[hot] ? <Card icon="search" title={x.hot[hot]!.label}><p className="ln-p">{x.hot[hot]!.real}</p><p className="ui-meta">In the system: {x.hot[hot]!.sys}</p></Card> : null}
-        <Card icon="menu" title="Numbered points" sub="What each is, and what it does in the system">{els.length ? <ol className="ln-log">{els.map((e, i) => <li key={i}><Tag tone="muted">{e.layer}</Tag> {e.note}</li>)}</ol> : <p className="ui-meta">Choose a layer to see its points.</p>}</Card>
+        <p className="ln-p" aria-live="polite" data-testid="explore-info">{hot !== null && x.hot[hot] ? <><b>{x.hot[hot]!.label}</b> — {mode === 'reality' ? x.hot[hot]!.real : x.hot[hot]!.sys}</> : x.intro}</p>
+        {mode === 'system' && <Card icon="menu" title="Numbered points" sub="What each is, and what it does in the system">{els.length ? <ol className="ln-log">{els.map((e, i) => <li key={i}><Tag tone="muted">{e.layer}</Tag> {e.note}</li>)}</ol> : <p className="ui-meta">Choose a layer to see its points.</p>}</Card>}
       </section>); }}</LibGate>;
 }
 

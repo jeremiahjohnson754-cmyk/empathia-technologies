@@ -81,3 +81,7 @@
 .ln-suggest { display: flex; flex-wrap: wrap; gap: 6px; }
 .ln-askform { display: flex; gap: 8px; align-items: stretch; flex-wrap: wrap; } .ln-askform textarea { flex: 1 1 260px; min-height: 44px; font: inherit; color: var(--tx); background: var(--bg); border: 1px solid var(--line2); border-radius: var(--r-sm); padding: 8px 10px; }
 .ln-askform textarea[data-nudge=true] { border-color: var(--warn); }
+/* System explorers (reference explorer(), restored 12 Nov 2026): view and level tabs, coloured layer chips, the place dimmed under the system */
+.ln-tabs { display: flex; flex-wrap: wrap; gap: 6px; } .ln-tabs [aria-selected=true] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.ln-layer { font: inherit; font-weight: 700; font-size: var(--fs-xs); letter-spacing: .06em; text-transform: uppercase; min-height: 44px; padding: 6px 12px; border: 2px solid; border-radius: 999px; color: var(--tx); cursor: pointer; }
+.ln-layer:disabled { opacity: .5; cursor: default; } .ln-ex__real.is-dim { opacity: .45; } .ln-ex__t { font-size: 17px; font-weight: 800; }
