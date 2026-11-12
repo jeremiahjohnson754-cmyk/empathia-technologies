@@ -230,7 +230,7 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     await page.click('[data-testid=drills] li >> nth=3 >> a'); await page.waitForSelector('[data-testid=drill]');
     await page.click('[data-testid=drill] .learn__stages li >> nth=3 >> button'); await page.waitForTimeout(300);
     const drill = await page.locator('[data-testid=drill]').innerText();
-    ok('L-08', 'a first-failure drill (No picture on input 3) is interactive and scores the tap; the completion is recorded as training only', /No picture on input 3/.test(drill) && /Right\./.test(drill) && /one-cable failure/.test(drill), drill.slice(0, 200));
+    ok('L-08', 'a first-failure drill (No picture on input 3) is interactive and scores the tap; the completion is recorded as training only', /No picture on input 3/.test(drill) && /Passed · first failure found/.test(drill) /* was “Right.”: changed 11 Nov 2026 when the runner took the reference’s verdict words (packages/ui/src/drills.ts) */ && /one-cable failure/.test(drill), drill.slice(0, 200));
     await page.evaluate(() => { location.hash = '#/v25/ledger'; }); await page.waitForTimeout(500);
     ok('L-09', 'the ledger carries the training completion with the note that it never grants authorization', /training\.drill_completed/.test(await page.locator('[data-testid=ledger]').innerText()) && /never grants work authorization/.test(await page.locator('[data-testid=ledger]').innerText()));
 

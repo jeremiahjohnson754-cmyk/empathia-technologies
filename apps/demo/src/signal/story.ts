@@ -39,11 +39,11 @@ export interface ChapterState { choices: Record<string, Choice>; talks: Record<s
 export type Clock = 'on' | 'extended' | 'off';
 /** A quiz's record, as the reference keeps it: best score, number of questions, and the first score (ratings read first attempts). */
 export interface QuizRecord { best: number; total: number; first: number }
-export interface Progress { v: 2; chapters: Record<string, ChapterState>; clock: Clock; gates: boolean; last: string | null; quizzes: Record<string, QuizRecord>; skips: Record<string, 1> }
+export interface Progress { v: 2; chapters: Record<string, ChapterState>; clock: Clock; gates: boolean; last: string | null; quizzes: Record<string, QuizRecord>; skips: Record<string, 1>; drills: Record<string, DrillRecord> }
 /** One soft or hard gate tier as the reader sees it. */
 export const TIER_WORD: Record<Tier, string> = { hard: 'Core: the story goes on when you finish this', soft: 'Recommended: the pages wait for you, or skip it for now', opt: 'Optional: do it now or come back; it stays here' };
 export const emptyChapter = (): ChapterState => ({ choices: {}, talks: {}, found: [], done: false });
-export const emptyProgress = (): Progress => ({ v: 2, chapters: {}, clock: 'on', gates: true, last: null, quizzes: {}, skips: {} });
+export const emptyProgress = (): Progress => ({ v: 2, chapters: {}, clock: 'on', gates: true, last: null, quizzes: {}, skips: {}, drills: {} });
 const KEY = 'empathia.signal.story.v1';
 type OldChoice = { letter?: unknown; tries?: unknown; failed?: unknown; hints?: unknown; timedOut?: unknown; first?: unknown; changes?: unknown };
 /** Read one stored choice of either shape; anything else reads as no choice. */
@@ -66,7 +66,8 @@ export function load(): Progress {
         chapters[id] = { choices, talks: c.talks && typeof c.talks === 'object' ? c.talks : {}, found: Array.isArray(c.found) ? c.found : [], done: !!c.done }; }
       const quizzes: Record<string, QuizRecord> = {}; for (const [id, r] of Object.entries((p as { quizzes?: unknown }).quizzes && typeof (p as { quizzes?: unknown }).quizzes === 'object' ? (p as { quizzes: Record<string, unknown> }).quizzes : {})) { const q = readQuiz(r); if (q) quizzes[id] = q; }
       const skips: Record<string, 1> = {}; for (const k of Object.keys((p as { skips?: Record<string, unknown> }).skips || {})) if (/^(quiz|lesson|drill|incident|lab):[\w.-]{1,40}$/.test(k)) skips[k] = 1;
-      return { ...emptyProgress(), clock: p.clock === 'extended' || p.clock === 'off' ? p.clock : 'on', gates: p.gates !== false, last: typeof p.last === 'string' ? p.last : null, chapters, quizzes, skips }; } }
+      const drills: Record<string, DrillRecord> = {}; for (const [id, r] of Object.entries((p as { drills?: unknown }).drills && typeof (p as { drills?: unknown }).drills === 'object' ? (p as { drills: Record<string, unknown> }).drills : {})) { const d = readDrill(r); if (d && /^[\w.-]{1,40}$/.test(id)) drills[id] = d; }
+      return { ...emptyProgress(), drills, clock: p.clock === 'extended' || p.clock === 'off' ? p.clock : 'on', gates: p.gates !== false, last: typeof p.last === 'string' ? p.last : null, chapters, quizzes, skips }; } }
   catch { /* a blocked or corrupted store reads as a fresh start */ }
   return emptyProgress();
 }
@@ -74,6 +75,13 @@ export function save(p: Progress): void { try { localStorage.setItem(KEY, JSON.s
 
 export function readQuiz(x: unknown): QuizRecord | null { const r = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>; const n = (v: unknown) => (Number.isInteger(v) && (v as number) >= 0 ? (v as number) : -1);
   const total = n(r['total']), best = n(r['best']), first = n(r['first']); return total >= 1 && total <= 50 && best >= 0 && best <= total && first >= 0 && first <= best ? { best, total, first } : null; }
+/** A drill's record in the story, the reference's shape (recordDrill): passed once stays passed, tries count, the first never changes.
+ *  The same rule as packages/ui/src/drills.ts recordDrill, kept here so the story's stored progress has one reader. */
+export interface DrillRecord { passed: boolean; tries: number; first: boolean }
+export function readDrill(x: unknown): DrillRecord | null { const r = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>; return typeof r['passed'] === 'boolean' && typeof r['first'] === 'boolean' && Number.isInteger(r['tries']) && (r['tries'] as number) >= 1 && (r['tries'] as number) <= 9999 ? { passed: r['passed'], tries: r['tries'] as number, first: r['first'] } : null; }
+export function recordDrillTry(p: Progress, id: string, pass: boolean): Progress { const prev = p.drills[id]; return { ...p, drills: { ...p.drills, [id]: { passed: !!(prev?.passed || pass), tries: (prev?.tries || 0) + 1, first: prev ? prev.first : !!pass } } }; }
+/** What gate checks read: quiz records, skips and drill records. */
+export type Done = Pick<Progress, 'quizzes' | 'skips'> & { drills?: Progress['drills'] };
 /** Record a finished quiz: the best score is kept and the first score never changes. */
 export function recordQuiz(p: Progress, id: string, right: number, total: number): Progress {
   const prev = p.quizzes[id]; const r = Math.max(0, Math.min(right, total)); return { ...p, quizzes: { ...p.quizzes, [id]: { best: Math.max(prev?.best ?? 0, r), total, first: prev ? prev.first : r } } };
@@ -85,23 +93,25 @@ export interface Quiz { title: string; domain?: string; qs: QuizQ[] }
 export interface Lesson { title: string; domain: string; sum?: string; cards: string[]; quiz: string; flag?: string; src?: string }
 export type Tier = 'hard' | 'soft' | 'opt';
 export interface Gate { index: number; kind: string; id: string; tier: Tier; twist: boolean; core: boolean }
-export interface Pieces { gates: Gate[]; quizzes: Record<string, Quiz>; lessons: Record<string, Lesson> }
+export interface Pieces { gates: Gate[]; quizzes: Record<string, Quiz>; lessons: Record<string, Lesson>; drills?: Record<string, { id: string; type: string; [k: string]: unknown }> }
 /** The kinds this build plays in place. A gate of any other kind is shown and does not hold the story, and the page says so. */
-export const PLAYABLE: ReadonlySet<string> = new Set(['decision', 'quiz', 'lesson']);
+export const PLAYABLE: ReadonlySet<string> = new Set(['decision', 'quiz', 'lesson', 'drill']);
 export const gateKey = (g: Pick<Gate, 'kind' | 'id'>) => `${g.kind}:${g.id}`;
-export function gateDone(g: Gate, s: ChapterState, p: Pick<Progress, 'quizzes'>, pieces: Pieces): boolean {
+export function gateDone(g: Gate, s: ChapterState, p: Done, pieces: Pieces): boolean {
   if (g.kind === 'decision') return passed(s, g.id); if (g.kind === 'quiz') return !!p.quizzes[g.id];
-  if (g.kind === 'lesson') { const L = pieces.lessons[g.id]; return !!(L && p.quizzes[L.quiz]); } return false;
+  if (g.kind === 'lesson') { const L = pieces.lessons[g.id]; return !!(L && p.quizzes[L.quiz]); }
+  if (g.kind === 'drill') return !!p.drills?.[g.id];   // reference gate.js: a drill gate is done once a try is recorded, passed or not
+  return false;
 }
 /** Cleared: done, or a soft gate skipped. */
-export const gateCleared = (g: Gate, s: ChapterState, p: Pick<Progress, 'quizzes' | 'skips'>, pieces: Pieces) => gateDone(g, s, p, pieces) || (g.tier === 'soft' && !!p.skips[gateKey(g)]);
+export const gateCleared = (g: Gate, s: ChapterState, p: Done, pieces: Pieces) => gateDone(g, s, p, pieces) || (g.tier === 'soft' && !!p.skips[gateKey(g)]);
 /** The first gate that holds the story: hard or soft, playable here, not cleared. */
-export function blocking(s: ChapterState, p: Pick<Progress, 'quizzes' | 'skips'>, pieces: Pieces): Gate | null {
+export function blocking(s: ChapterState, p: Done, pieces: Pieces): Gate | null {
   return [...pieces.gates].sort((a, b) => a.index - b.index).find((g) => g.tier !== 'opt' && PLAYABLE.has(g.kind) && !gateCleared(g, s, p, pieces)) || null;
 }
 export function skip(p: Progress, g: Gate): Progress { return g.tier === 'soft' ? { ...p, skips: { ...p.skips, [gateKey(g)]: 1 } } : p; }
 /** Gates that count toward a chapter: hard and soft, of the kinds played here. */
-export function gateCount(s: ChapterState, p: Pick<Progress, 'quizzes' | 'skips'>, pieces: Pieces): { cleared: number; total: number } {
+export function gateCount(s: ChapterState, p: Done, pieces: Pieces): { cleared: number; total: number } {
   const gs = pieces.gates.filter((g) => g.tier !== 'opt' && PLAYABLE.has(g.kind)); return { cleared: gs.filter((g) => gateCleared(g, s, p, pieces)).length, total: gs.length };
 }
 
@@ -109,7 +119,7 @@ export function gateCount(s: ChapterState, p: Pick<Progress, 'quizzes' | 'skips'
 export const passed = (s: ChapterState, id: string): boolean => !!s.choices[id]?.letter;
 /** How many items the reader has reached: everything up to and including the first gate that holds the story. Without the chapter's
  *  gate list (still loading, or offline), the decisions alone hold it. */
-export function reached(items: readonly Item[], s: ChapterState, gates: boolean, ctx?: { pieces: Pieces; progress: Pick<Progress, 'quizzes' | 'skips'> }): number {
+export function reached(items: readonly Item[], s: ChapterState, gates: boolean, ctx?: { pieces: Pieces; progress: Done }): number {
   if (!gates) return items.length;
   if (ctx) { const b = blocking(s, ctx.progress, ctx.pieces); return b ? b.index + 1 : items.length; }
   for (let i = 0; i < items.length; i += 1) { const it = items[i]!; if (it.type === 'decision' && !passed(s, it.id)) return i + 1; }
@@ -165,7 +175,7 @@ export function tally(items: readonly Item[], s: ChapterState): Tally {
   }
   return t;
 }
-export const complete = (items: readonly Item[], s: ChapterState, ctx?: { pieces: Pieces; progress: Pick<Progress, 'quizzes' | 'skips'> }): boolean =>
+export const complete = (items: readonly Item[], s: ChapterState, ctx?: { pieces: Pieces; progress: Done }): boolean =>
   items.every((it) => it.type !== 'decision' || passed(s, it.id)) && (!ctx || !blocking(s, ctx.progress, ctx.pieces));
 /** The reference's verdict on a chapter's choices, said before the debrief. */
 export function chapterVerdict(t: Pick<Tally, 'decisions' | 'made' | 'canonical' | 'costly'>): string {

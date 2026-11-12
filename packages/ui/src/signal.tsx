@@ -2,7 +2,8 @@
  * SIGNAL runners shared by the demonstrator and the enterprise application: a lesson's check (QuizRunner) and the six interactive
  * drill kinds (DrillRunner). A completion is reported to the caller, who records it as training — training never grants authority.
  */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import * as D from './drills.js';
 import { Button, Notice, Tag } from './components.js';
 
 export interface Quiz { title: string; domain: string; qs: Array<{ q: string; o: string[]; a: number; why: string }> }
@@ -23,24 +24,63 @@ export function QuizRunner({ q, onComplete }: { q: Quiz; onComplete?: (score: nu
   );
 }
 
-export function DrillRunner({ d, onDone }: { d: Drill; onDone: (correct: boolean, elapsedS: number) => void }) {
-  const [started] = useState(() => Date.now());
-  const [result, setResult] = useState<{ correct: boolean; text: string } | null>(null);
-  const finish = (correct: boolean, text: string) => { setResult({ correct, text }); onDone(correct, Math.round((Date.now() - started) / 1000)); };
+/**
+ * A practice drill, to the reference's rules (drills.ts). `factor` is the clock: 0 untimed (the default, as Learn has always run them),
+ * 1 the drill's own time, 2 relaxed. With a clock the brief is read first and "Start the clock" starts it; running out fails the try.
+ * Every try is reported to `onDone`; a failure explains itself and offers "Try again".
+ */
+export function DrillRunner({ d, onDone, factor = 0, heading = 'h2' }: { d: Drill; onDone: (correct: boolean, elapsedS: number) => void; factor?: number; heading?: 'h2' | 'h4' }) {
+  const [round, setRound] = useState(0); const secs = D.clockFor(d, factor);
+  const [started, setStarted] = useState<number | null>(secs ? null : Date.now()); const [left, setLeft] = useState(secs || 0);
+  const [v, setV] = useState<D.Verdict | null>(null);
+  const finish = (x: D.Verdict) => { if (v) return; setV(x); onDone(x.pass, Math.round((Date.now() - (started || Date.now())) / 1000)); };
+  useEffect(() => { if (!secs || started === null || v) return undefined; const id = setInterval(() => setLeft((l) => l - 1), 1000); return () => clearInterval(id); }, [secs, started, v]);
+  useEffect(() => { if (secs && started !== null && !v && left <= 0) finish(D.timeoutVerdict(d)); });
+  const again = () => { setV(null); setLeft(secs || 0); setStarted(secs ? null : Date.now()); setRound(round + 1); };
+  const title = <>{d.title} <Tag tone="muted">{d.domain} · {D.KIND_LABEL[d.type] || d.type}</Tag></>;
   return (
-    <article className="stack" data-testid="drill"><h2 className="build__h">{d.title} <Tag tone="muted">{d.domain} · {d.type}</Tag></h2><p>{d.brief}</p>
-      {!result ? <DrillBody d={d} finish={finish} /> : <Notice tone={result.correct ? 'ok' : 'warn'}><b>{result.correct ? 'Right.' : 'Not this time.'}</b> {result.text}</Notice>}
+    <article className="stack dr" data-testid="drill" data-drill={d.id} data-kind={d.type} data-state={v ? (v.pass ? 'passed' : 'failed') : started === null ? 'ready' : 'running'}>
+      {heading === 'h2' ? <h2 className="build__h">{title}</h2> : <h4 className="build__h">{title}</h4>}
+      <p className="dr__brief">{d.brief}</p>
+      {secs ? <p className={`dr__clock${left <= 10 && started !== null && !v ? ' is-hot' : ''}`} data-testid="drill-clock" aria-live="off">⏱ {started === null ? D.fmt(secs) : D.fmt(left)}</p> : d.time ? <p className="ui-meta">Untimed here (the drill’s own clock is {D.fmt(d.time)}).</p> : null}
+      {started === null ? <p className="dr__start"><span className="ui-meta">Read the brief. The clock starts when you press Start.</span> <Button kind="primary" onClick={() => setStarted(Date.now())}>▶ Start the clock ({D.fmt(secs || 0)})</Button></p>
+        : <DrillBody key={round} d={d} done={!!v} finish={finish} />}
+      {v && <div data-testid="drill-verdict" data-pass={v.pass}><Notice tone={v.pass ? 'ok' : 'warn'}><b>{v.head}</b><ul className="dr__lines">{v.lines.filter(Boolean).map((l, i) => <li key={i}>{l}</li>)}</ul></Notice>
+        {!v.pass && <p><Button onClick={again}>Try again</Button></p>}</div>}
     </article>
   );
 }
 
-function DrillBody({ d, finish }: { d: Drill; finish: (c: boolean, t: string) => void }) {
-  const [picked, setPicked] = useState<number[]>([]); const [order, setOrder] = useState<number[] | null>(null); const [cls, setCls] = useState<Record<number, string>>({}); const [slots, setSlots] = useState<Record<number, string>>({});
-  if (d.type === 'firstfail') { const st = d['stages'] as Array<{ name: string; reading: string; why: string }>; const ans = d['answer'] as number; return <ol className="learn__stages">{st.map((s, i) => <li key={i}><button type="button" onClick={() => finish(i === ans, i === ans ? String(d.success) : `${s.why} The first failure is at ${st[ans]!.name}: ${st[ans]!.why}`)}><b>{s.name}</b><span className="ui-meta">{s.reading}</span></button></li>)}</ol>; }
-  if (d.type === 'clues') { const cl = d['clues'] as Array<{ t: string; k: string; why: string }>; const need = d['need'] as number; const pick = d['pick'] as number; return <div className="stack"><p className="ui-meta">Hypotheses: {(d['hypotheses'] as string[]).join(' · ')}. Pick the {pick} clues that separate them.</p><ul className="plain">{cl.map((c, i) => <li key={i}><label className="check"><input type="checkbox" checked={picked.includes(i)} onChange={(e) => setPicked(e.target.checked ? [...picked, i] : picked.filter((x) => x !== i))} /> {c.t}</label></li>)}</ul><Button small kind="primary" disabled={picked.length !== pick} onClick={() => { const keys = picked.filter((i) => cl[i]!.k === 'key').length; const destroyed = picked.some((i) => cl[i]!.k === 'destroys'); const ok = keys >= need && !destroyed; finish(ok, ok ? String(d.success) : picked.map((i) => `${cl[i]!.t}: ${cl[i]!.why}`).join(' ')); }}>Check ({picked.length}/{pick})</Button></div>; }
-  if (d.type === 'order') { const items = d['items'] as string[]; const cur = order || items.map((_, i) => i).sort(() => Math.random() - 0.5); const move = (i: number, dir: number) => { const n = [...cur]; const j = i + dir; if (j < 0 || j >= n.length) return; [n[i], n[j]] = [n[j]!, n[i]!]; setOrder(n); }; return <div className="stack"><ol className="learn__order">{cur.map((idx, i) => <li key={idx}><span>{items[idx]}</span><span className="row-actions"><Button small kind="quiet" onClick={() => move(i, -1)}>↑</Button><Button small kind="quiet" onClick={() => move(i, 1)}>↓</Button></span></li>)}</ol><Button small kind="primary" onClick={() => { const ok = cur.every((idx, i) => idx === i); finish(ok, ok ? String(d.success) : (d['why'] as string[]).map((w, i) => `${i + 1}. ${items[i]} — ${w}`).join(' ')); }}>Check the order</Button></div>; }
-  if (d.type === 'classmatch') { const items = d['items'] as Array<{ s: string; c: string; why: string }>; const classes = [...new Set(items.map((x) => x.c))]; return <div className="stack">{items.map((it, i) => <div key={i} className="build__row"><span>{it.s}</span><select aria-label="Class" value={cls[i] || ''} onChange={(e) => setCls({ ...cls, [i]: e.target.value })}><option value="">—</option>{classes.map((c) => <option key={c}>{c}</option>)}</select></div>)}<Button small kind="primary" disabled={Object.keys(cls).length !== items.length} onClick={() => { const wrong = items.filter((it, i) => cls[i] !== it.c); const ok = wrong.length <= ((d['allow'] as number) || 0); finish(ok, ok ? String(d.success) : wrong.map((it) => `${it.s} → ${it.c}: ${it.why}`).join(' ')); }}>Check</Button></div>; }
-  if (d.type === 'route') { const sl = d['slots'] as Array<{ label: string; answer: string }>; const pool = d['pool'] as string[]; const why = d['why'] as Record<string, string>; return <div className="stack">{sl.map((s, i) => <div key={i} className="build__row"><b>{s.label}</b><select aria-label={s.label} value={slots[i] || ''} onChange={(e) => setSlots({ ...slots, [i]: e.target.value })}><option value="">—</option>{pool.map((p) => <option key={p}>{p}</option>)}</select></div>)}<Button small kind="primary" disabled={Object.keys(slots).length !== sl.length} onClick={() => { const wrong = sl.filter((s, i) => slots[i] !== s.answer); const ok = !wrong.length; finish(ok, ok ? String(d.success) : wrong.map((s, i) => `${s.label}: ${why[slots[sl.indexOf(s)] || ''] || ''} The stage is ${s.answer}.`).join(' ')); }}>Check the path</Button></div>; }
-  if (d.type === 'triage') { const items = d['items'] as Array<{ id: string; name: string; cost: number; L: number; I: number; must?: boolean; why: string }>; const budget = d['budget'] as number; const spent = picked.reduce((n, i) => n + items[i]!.cost, 0); const risk = (it: { L: number; I: number }) => it.L * it.I; const total = items.reduce((n, it) => n + risk(it), 0); const retired = picked.reduce((n, i) => n + risk(items[i]!), 0); return <div className="stack"><p className="ui-meta">Budget {budget.toLocaleString()} {String(d['unit'])} · spent {spent.toLocaleString()} · risk retired {retired}/{total} (likelihood × impact)</p><ul className="plain">{items.map((it, i) => <li key={it.id}><label className="check"><input type="checkbox" checked={picked.includes(i)} onChange={(e) => setPicked(e.target.checked ? [...picked, i] : picked.filter((x) => x !== i))} /> <b>{it.name}</b> {it.cost.toLocaleString()} · L{it.L} I{it.I}{it.must ? ' · commitment' : ''}</label></li>)}</ul><Button small kind="primary" onClick={() => { const musts = items.every((it, i) => !it.must || picked.includes(i)); const ok = spent <= budget && musts && retired / total >= (d['target'] as number); finish(ok, ok ? String(d.success) : `${spent > budget ? 'Over budget. ' : ''}${!musts ? 'A commitment was skipped. ' : ''}${retired / total < (d['target'] as number) ? `Only ${Math.round((retired / total) * 100)}% of the risk retired. ` : ''}${items.map((it) => `${it.name}: ${it.why}`).join(' ')}`); }}>Fund the plan</Button></div>; }
+function DrillBody({ d, done, finish }: { d: Drill; done: boolean; finish: (v: D.Verdict) => void }) {
+  const [picked, setPicked] = useState<number[]>([]); const [order, setOrder] = useState<number[]>(() => (d.type === 'order' ? D.orderStart(d) : []));
+  const [cls, setCls] = useState<Record<number, string>>({}); const [slots, setSlots] = useState<Record<number, string>>({}); const [sel, setSel] = useState<string | null>(null);
+  const [ff, setFf] = useState<number | null>(null);
+  if (d.type === 'firstfail') { const st = d['stages'] as D.Stage[]; const ans = d['answer'] as number;
+    return <div className="stack"><p className="ui-meta">{(d['ask'] as string) || 'Tap the earliest stage where the evidence shows the failure. Upstream of it, everything reads normal.'}</p>
+      <ol className="learn__stages">{st.map((s, i) => <li key={i}><button type="button" disabled={done} data-state={ff === null ? '' : i === ans ? 'right' : i === ff ? 'wrong' : ''} onClick={() => { setFf(i); finish(D.gradeFirstfail(d, i)); }}><b>{i + 1} · {s.name}</b><span className="ui-meta">{s.reading}</span></button></li>)}</ol></div>; }
+  if (d.type === 'clues') { const cl = d['clues'] as D.Clue[]; const pick = d['pick'] as number;
+    return <div className="stack"><p className="ui-meta">Pick exactly {pick} clues that best separate the explanations. Some cards are red herrings; some are actions that would destroy evidence.</p>
+      {Array.isArray(d['hypotheses']) && <p className="ui-meta">Explanations on the board: {(d['hypotheses'] as string[]).join(' · ')}</p>}
+      <div className="dr__grid">{D.clueOrder(d).map((i) => { const on = picked.includes(i); return <button key={i} type="button" className="dr__btn" aria-pressed={on} disabled={done || (!on && picked.length >= pick)} data-state={!done ? '' : cl[i]!.k === 'key' ? 'right' : on ? 'wrong' : ''} onClick={() => setPicked(on ? picked.filter((x) => x !== i) : [...picked, i])}>{cl[i]!.t}</button>; })}</div>
+      <p className="dr__foot"><span className="ui-meta">{picked.length} of {pick} picked</span> <Button kind="primary" disabled={done || picked.length !== pick} onClick={() => finish(D.gradeClues(d, picked))}>Submit clues</Button></p></div>; }
+  if (d.type === 'order') { const items = d['items'] as string[];
+    return <div className="stack"><p className="ui-meta">Put the steps in the order a professional would take them. Use ▲ ▼.</p>
+      <ol className="dr__order">{order.map((idx, pos) => <li key={idx} data-state={!done ? '' : idx === pos ? 'right' : 'wrong'}><span>{items[idx]}</span><span className="dr__moves"><button type="button" className="dr__mv" aria-label={`Move up: ${items[idx]}`} disabled={done || pos === 0} onClick={() => setOrder(D.move(order, pos, -1))}>▲</button><button type="button" className="dr__mv" aria-label={`Move down: ${items[idx]}`} disabled={done || pos === order.length - 1} onClick={() => setOrder(D.move(order, pos, 1))}>▼</button></span></li>)}</ol>
+      <p className="dr__foot"><Button kind="primary" disabled={done} onClick={() => finish(D.gradeOrder(d, order))}>Check the order</Button></p></div>; }
+  if (d.type === 'classmatch') { const items = d['items'] as D.ClassItem[]; const { list, custom } = D.classesFor(d);
+    return <div className="stack"><p className="ui-meta">{custom ? `Sort each one into the right group: ${list.join(' · ')}.` : 'For each symptom, choose the failure class of the CAUSE described. Symptoms and causes are often in different classes.'}</p>
+      {items.map((it, i) => <div key={i} className="dr__cm"><p className="dr__sym">{it.s}</p><div className="dr__chips" role="group" aria-label={custom ? 'Group' : 'Failure class'}>{list.map((c) => <button key={c} type="button" className="dr__chip" aria-pressed={cls[i] === c} disabled={done} data-state={!done ? '' : c === it.c ? 'right' : c === cls[i] ? 'wrong' : ''} onClick={() => setCls({ ...cls, [i]: c })}>{c}</button>)}</div></div>)}
+      <p className="dr__foot"><Button kind="primary" disabled={done} onClick={() => finish(D.gradeClassmatch(d, cls))}>Check the classes</Button></p></div>; }
+  if (d.type === 'route') { const sl = d['slots'] as D.Slot[]; const used = new Set(Object.values(slots));
+    const place = (i: number) => { if (done) return; if (sel) { const n: Record<number, string> = {}; for (const [k, v] of Object.entries(slots)) if (v !== sel) n[Number(k)] = v; n[i] = sel; setSlots(n); setSel(null); } else if (slots[i]) { const n = { ...slots }; delete n[i]; setSlots(n); } };
+    return <div className="stack"><p className="ui-meta">Tap a part, then tap the slot it belongs in. Tap a filled slot to empty it.</p>
+      <ol className="dr__slots">{sl.map((s, i) => <li key={i}><button type="button" className="dr__slot" disabled={done} data-state={!done ? '' : slots[i] === s.answer ? 'right' : 'wrong'} aria-label={`${s.label}: ${slots[i] || 'empty'}`} onClick={() => place(i)}><b>{s.label}</b><span>{slots[i] || (sel ? 'place it here' : 'empty')}</span></button></li>)}</ol>
+      <div className="dr__chips" role="group" aria-label="Parts">{D.routePool(d).map((c) => <button key={c} type="button" className="dr__chip" aria-pressed={sel === c} disabled={done} data-used={used.has(c)} onClick={() => setSel(sel === c ? null : c)}>{c}</button>)}</div>
+      <p className="dr__foot"><Button kind="primary" disabled={done} onClick={() => finish(D.gradeRoute(d, slots))}>Check the path</Button></p></div>; }
+  if (d.type === 'triage') { const items = d['items'] as D.TriageItem[]; const budget = d['budget'] as number; const t = D.triageTotals(d, picked);
+    return <div className="stack"><p className="ui-meta">Budget {D.money(d, budget)}. Risk = likelihood (1–5) × impact (1–5). Tap items to fund them. Every figure is illustrative.</p>
+      <p className="dr__meter" data-over={t.cost > budget}><b>Spent {D.money(d, t.cost)} of {D.money(d, budget)}</b> · risk retired {t.risk}</p>
+      <div className="dr__grid">{items.map((it, i) => { const on = picked.includes(i); return <button key={it.id} type="button" className="dr__btn" aria-pressed={on} disabled={done} onClick={() => setPicked(on ? picked.filter((x) => x !== i) : [...picked, i])}><b>{it.name}{it.must ? ' · commitment' : ''}</b><span className="ui-meta">{D.money(d, it.cost)} · L{it.L} × I{it.I} = {D.risk(it)}</span></button>; })}</div>
+      <p className="dr__foot"><Button kind="primary" disabled={done} onClick={() => finish(D.gradeTriage(d, picked))}>Present the plan</Button></p></div>; }
   return <Notice tone="warn">Drill kind {d.type} is not interactive yet.</Notice>;
 }

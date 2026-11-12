@@ -187,6 +187,20 @@
 .learn__doms { display: flex; flex-wrap: wrap; gap: 6px; } .learn__card { line-height: 1.55; } .learn__card .formula, .learn__eq { font-family: var(--font-mono, ui-monospace, monospace); font-size: .95em; }
 .learn__opts { display: flex; flex-wrap: wrap; gap: 6px; } .sp__chip.ok { border-color: var(--ok, var(--accent)); } .sp__chip.bad { border-color: var(--bad); }
 .learn__stages { margin: 0; padding-left: 20px; display: grid; gap: 6px; } .learn__stages button { all: unset; cursor: pointer; display: grid; gap: 2px; padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--r-sm); width: 100%; box-sizing: border-box; } .learn__stages button:hover { border-color: var(--accent); }
+.dr__brief { margin: 0; } .dr__lines { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 4px; } .dr__foot, .dr__start { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0; }
+.dr__clock { margin: 0; font-variant-numeric: tabular-nums; font-weight: 600; } .dr__clock.is-hot { color: var(--bad); }
+.dr__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 8px; }
+.dr__btn, .dr__chip, .dr__slot, .dr__mv { font: inherit; color: var(--tx); background: var(--bg2); border: 1px solid var(--line2); border-radius: var(--r-sm); min-height: 44px; padding: 8px 12px; cursor: pointer; text-align: left; display: grid; gap: 2px; }
+.dr__chip { display: inline-flex; align-items: center; } .dr__mv { min-width: 44px; justify-content: center; text-align: center; display: inline-grid; place-items: center; }
+.dr__btn[aria-pressed=true], .dr__chip[aria-pressed=true] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.dr__chip[data-used=true] { opacity: .7; } .dr__btn:disabled, .dr__chip:disabled, .dr__slot:disabled, .dr__mv:disabled { cursor: default; }
+[data-state=right].dr__btn, [data-state=right].dr__chip, [data-state=right].dr__slot, .dr__order li[data-state=right], .learn__stages button[data-state=right] { border-color: var(--ok); box-shadow: inset 0 0 0 1px var(--ok); }
+[data-state=wrong].dr__btn, [data-state=wrong].dr__chip, [data-state=wrong].dr__slot, .dr__order li[data-state=wrong], .learn__stages button[data-state=wrong] { border-color: var(--bad); box-shadow: inset 0 0 0 1px var(--bad); }
+.dr__chips { display: flex; flex-wrap: wrap; gap: 6px; } .dr__cm { display: grid; gap: 6px; padding: 8px 0; border-bottom: 1px solid var(--line); } .dr__sym { margin: 0; }
+.dr__slots { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; } .dr__slot { width: 100%; box-sizing: border-box; }
+.dr__order { margin: 0; padding-left: 22px; display: grid; gap: 6px; } .dr__order li { display: flex; justify-content: space-between; gap: 8px; align-items: center; padding: 4px 8px; border: 1px solid var(--line); border-radius: var(--r-sm); } .dr__moves { display: flex; gap: 4px; flex: none; }
+.dr__meter { margin: 0; } .dr__meter[data-over=true] b { color: var(--bad); }
+.learn__stages button { min-height: 44px; } .learn__stages button:disabled { cursor: default; }
 .learn__order { margin: 0; padding-left: 20px; display: grid; gap: 4px; } .learn__order li { display: flex; justify-content: space-between; gap: 8px; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--line); }
 .build__row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: var(--sp-2) 0; } .build__row input, .build__row select { width: auto; flex: 1 1 200px; min-height: 36px; padding: 0 10px; background: var(--bg2); color: var(--tx); border: 1px solid var(--line2); border-radius: var(--r-sm); font: inherit; }
 

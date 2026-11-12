@@ -22,16 +22,17 @@ export function shipSignal(repo, dist) {
     fs.writeFileSync(path.join(out, 'art', `${c.id}.json`), JSON.stringify({ panels: art, closing: extra }));
   }
   // each chapter's playable pieces beside it (restoration, 11 Nov 2026): its gates in reading order with their tier, and the quizzes
-  // and lessons it carries, taken unchanged from the build package's content bundle. Lesson plates are not shipped (founder's ruling).
+  // lessons and drills it carries, taken unchanged from the build package's content bundle. Lesson plates are not shipped (founder's ruling).
   { const app = JSON.parse(fs.readFileSync(path.join(src, 'app-data.json'), 'utf8')); const gates = JSON.parse(fs.readFileSync(path.join(src, 'gates.json'), 'utf8'));
     fs.mkdirSync(path.join(out, 'pieces'), { recursive: true });
-    for (const c of index) { const items = JSON.parse(fs.readFileSync(path.join(src, 'story', `${c.id}.json`), 'utf8')).items; const quizzes = {}; const lessons = {};
+    for (const c of index) { const items = JSON.parse(fs.readFileSync(path.join(src, 'story', `${c.id}.json`), 'utf8')).items; const quizzes = {}; const lessons = {}; const drills = {};
       const g = gates.filter((x) => x.chapter === c.id).map((x) => { const it = items[x.index]; const id = it && (it.type === 'decision' ? it.id : it.type === 'mount' ? it.id : it.type === 'twist' ? it.test_id : null);
         if (id !== x.id) throw new Error(`SIGNAL gates: ${c.id} item ${x.index} is not ${x.kind} ${x.id}`); return { index: x.index, kind: x.kind, id: x.id, tier: x.tier, twist: !!x.twist, core: !!x.core }; });
       const want = (kind, id) => { if (kind === 'quiz') { if (!app.quizzes[id]) throw new Error(`SIGNAL ${c.id}: quiz ${id} missing`); quizzes[id] = app.quizzes[id]; }
-        if (kind === 'lesson') { const L = app.lessons[id]; if (!L) throw new Error(`SIGNAL ${c.id}: lesson ${id} missing`); const { plates, ...rest } = L; void plates; lessons[id] = rest; want('quiz', L.quiz); } };
+        if (kind === 'lesson') { const L = app.lessons[id]; if (!L) throw new Error(`SIGNAL ${c.id}: lesson ${id} missing`); const { plates, ...rest } = L; void plates; lessons[id] = rest; want('quiz', L.quiz); }
+        if (kind === 'drill') { if (!app.drills[id]) throw new Error(`SIGNAL ${c.id}: drill ${id} missing`); drills[id] = { ...app.drills[id], id }; } };
       for (const it of items) { if (it.type === 'mount') want(it.kind, it.id); if (it.type === 'twist') want(it.test_kind, it.test_id); }
-      fs.writeFileSync(path.join(out, 'pieces', `${c.id}.json`), JSON.stringify({ gates: g, quizzes, lessons })); } }
+      fs.writeFileSync(path.join(out, 'pieces', `${c.id}.json`), JSON.stringify({ gates: g, quizzes, lessons, drills })); } }
   const defs = fs.readFileSync(path.join(src, 'art/defs.svg'), 'utf8'); if (/<script|<style|\son[a-z]+=|style="|href="(?!#)|<foreignObject/i.test(defs)) throw new Error('SIGNAL sprite sheet: content this site\'s policy does not allow');
   fs.writeFileSync(path.join(out, 'defs.svg'), defs); fs.copyFileSync(path.join(src, 'flags.json'), path.join(out, 'flags.json'));
   const cast = Object.fromEntries(JSON.parse(fs.readFileSync(path.join(src, 'cast/characters.json'), 'utf8')).map((p) => [p.id, p.name]));

@@ -107,8 +107,48 @@ const reader = (p) => p.evaluate(() => { const r = document.querySelector('[data
   await L.locator('[data-testid=story-skip]').click(); await p.waitForFunction(() => document.querySelector('.sg-piece[data-piece=FB1]')?.dataset.cleared === 'true');
   ok('ST-39', '"Skip for now" clears a soft gate, is remembered, and the story goes on past it', JSON.parse(await p.evaluate(() => localStorage.getItem('empathia.signal.story.v1'))).skips['lesson:FB1'] === 1 && await p.locator('[data-testid=story-waiting][data-kind=lesson]').count() === 0 && await p.locator('[data-testid=story-skip]').count() === 0);
   const opt = p.locator('.sg-piece[data-piece=Q-UX-S01E00]');
-  ok('ST-40', 'pieces of other kinds are shown and said not to hold the story yet; optional checks are offered without holding; the note says which kinds play', /decisions, quizzes and lessons/.test(await p.locator('[data-testid=story-gate-note]').innerText()) && (await opt.count() === 0 || (await opt.getAttribute('data-tier')) === 'opt') && await p.locator('[data-testid=story-not-playable]').count() >= 1);
+  ok('ST-40', 'pieces of other kinds are shown and said not to hold the story yet; optional checks are offered without holding; the note says which kinds play', /decisions, quizzes, lessons/.test(await p.locator('[data-testid=story-gate-note]').innerText()) /* note widened 11 Nov 2026 when drills joined: ST-45 */ && (await opt.count() === 0 || (await opt.getAttribute('data-tier')) === 'opt') && await p.locator('[data-testid=story-not-playable]').count() >= 1);
   ok('ST-41', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
+
+// Restored 11 Nov 2026: practice drills are played inside the story on the reference's rules (packages/ui/src/drills.ts), on the
+// story's clock. A hard drill (the chapter's core skill) holds the story until a try is recorded, passed or not, as gate.js has it.
+{ const t = await open('#/story/s01e01'); const p = t.page; await p.waitForSelector('.sg-dec');
+  const pc = await p.evaluate(async () => (await fetch('signal/pieces/s01e01.json')).json());
+  for (let i = 0; i < 12 && !(await p.locator('[data-testid=story-waiting][data-kind=drill]').count()); i += 1) {
+    const kind = await p.locator('[data-testid=story-waiting]').getAttribute('data-kind');
+    if (kind && kind !== 'decision') await p.locator('.sg-piece[data-cleared=false] [data-testid=story-skip]').last().click();
+    else await p.locator('.sg-dec[data-done=false]').first().locator('.sg-opt').first().click();
+    await p.waitForTimeout(150); }
+  const dr = p.locator('.sg-piece[data-piece=C-01]'); const w = await p.locator('[data-testid=story-waiting]').innerText();
+  ok('ST-43', 'the chapter’s core drill holds the story as a hard gate: no skip, "Finish the drill", and the brief is read before the clock starts', /Finish the drill/.test(w) && !/skip/i.test(w) && (await dr.getAttribute('data-tier')) === 'hard' && await dr.locator('[data-testid=story-skip]').count() === 0 && /core skill/.test(await dr.locator('[data-testid=story-tier]').innerText()) && (await dr.locator('[data-testid=drill]').getAttribute('data-state')) === 'ready' && /Start the clock \(1:20\)/.test(await dr.innerText()), w);
+  await dr.getByRole('button', { name: /Start the clock/ }).click(); await dr.locator('[data-testid=drill][data-state=running]').waitFor();
+  const d = pc.drills['C-01']; for (const c of d.clues.filter((x) => x.k === 'key').slice(0, d.pick)) await dr.getByRole('button', { name: c.t, exact: true }).click();
+  await dr.getByRole('button', { name: 'Submit clues' }).click(); await dr.locator('[data-testid=drill-verdict]').waitFor(); const v = await dr.locator('[data-testid=drill-verdict]').innerText();
+  const st = JSON.parse(await p.evaluate(() => localStorage.getItem('empathia.signal.story.v1')));
+  ok('ST-44', 'picking the key clues passes: each picked card is marked and explained, the try is recorded as passed, and the story goes on', /Passed · 3 discriminating clues/.test(v) && (await dr.locator('.dr__lines li').allInnerTexts()).filter((x) => /^✓ /.test(x)).length === 3 && await dr.locator('.dr__btn[data-state=right]').count() === 3 && st.drills['C-01'].passed === true && st.drills['C-01'].first === true && (await dr.getAttribute('data-cleared')) === 'true' && await p.locator('[data-testid=story-waiting][data-kind=drill]').count() === 0, v.slice(0, 200));
+  ok('ST-45', 'the gate note now names drills among what plays in the story', /decisions, quizzes, lessons and drills/.test(await p.locator('[data-testid=story-gate-note]').innerText()));
+  ok('ST-46', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
+
+{ const t = await open('#/story/s01e00'); const p = t.page; await p.waitForSelector('.sg-dec'); await p.check('[data-testid=story-gates]'); await p.click('.w-pick__b:has-text("No clock")');
+  const ff = p.locator('.sg-piece[data-piece=F-02]'); await ff.waitFor(); const pc = await p.evaluate(async () => (await fetch('signal/pieces/s01e00.json')).json()); const ans = pc.drills['F-02'].answer;
+  ok('ST-47', 'with the clock off a drill opens straight away, untimed; an optional drill never holds the story', (await ff.locator('[data-testid=drill]').getAttribute('data-state')) === 'running' && await ff.locator('[data-testid=drill-clock]').count() === 0 && (await ff.getAttribute('data-tier')) === 'opt');
+  await ff.locator('.learn__stages button').nth((ans + 1) % 3).click(); await ff.locator('[data-testid=drill-verdict][data-pass=false]').waitFor(); const v1 = await ff.locator('[data-testid=drill-verdict]').innerText();
+  ok('ST-48', 'a wrong stage fails the try, says why and where the first failure really is, marks both, and offers Try again', /Failed · wrong stage/.test(v1) && /The first failure is at /.test(v1) && await ff.locator('.learn__stages button[data-state=right]').count() === 1 && await ff.locator('.learn__stages button[data-state=wrong]').count() === 1 && await ff.getByRole('button', { name: 'Try again' }).count() === 1, v1.slice(0, 200));
+  await ff.getByRole('button', { name: 'Try again' }).click(); await ff.locator('.learn__stages button').nth(ans).click(); await ff.locator('[data-testid=drill-verdict][data-pass=true]').waitFor();
+  const r = JSON.parse(await p.evaluate(() => localStorage.getItem('empathia.signal.story.v1'))).drills['F-02'];
+  ok('ST-49', 'trying again and passing records it as the reference does: passed, two tries, the first try kept as not passed', r.passed === true && r.tries === 2 && r.first === false && /Passed · 2 tries · first try not passed/.test(await ff.locator('[data-testid=story-drill-rec]').innerText()), JSON.stringify(r));
+  await p.click('.w-pick__b:has-text("Clock on")'); const c2 = p.locator('.sg-piece[data-piece=C-02]'); await p.clock.install(); await c2.getByRole('button', { name: /Start the clock/ }).click();
+  await p.clock.runFor(81000); await c2.locator('[data-testid=drill-verdict][data-pass=false]').waitFor(); const v2 = await c2.locator('[data-testid=drill-verdict]').innerText();
+  ok('ST-50', 'when the drill’s clock runs out the try fails with the reference’s words and is recorded', /the clock ran out/i.test(v2) && /not deciding is still a decision/.test(v2) && JSON.parse(await p.evaluate(() => localStorage.getItem('empathia.signal.story.v1'))).drills['C-02'].passed === false, v2.slice(0, 200));
+  ok('ST-51', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
+
+for (const theme of ['light', 'dark']) { const t = await open('#/story/s01e00', { w: 390, h: 844, theme }); const p = t.page; await p.waitForSelector('.sg-dec'); await p.check('[data-testid=story-gates]');
+  const c2 = p.locator('.sg-piece[data-piece=C-02]'); await c2.waitFor(); await c2.getByRole('button', { name: /Start the clock/ }).click(); await c2.locator('.dr__btn').first().waitFor();
+  const small = await c2.evaluate((root) => [...root.querySelectorAll('button')].filter((e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height < 43.5; }).map((e) => `${e.textContent.slice(0, 16)}:${Math.round(e.getBoundingClientRect().height)}`));
+  const c = await c2.evaluate((root) => { const lum = (s) => { const m = s.match(/[\d.]+/g).map(Number).map((v) => (/^color\(/.test(s) ? v * 255 : v)); const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(m[0]) + 0.7152 * f(m[1]) + 0.0722 * f(m[2]); };
+    const bgOf = (el) => { for (let e = el; e; e = e.parentElement) { const b = getComputedStyle(e).backgroundColor; const al = b && /^rgba\(/.test(b) ? Number(b.match(/[\d.]+/g)[3]) : b && /\/\s*([\d.]+)\)$/.test(b) ? Number(b.match(/\/\s*([\d.]+)\)$/)[1]) : 1; if (b && b !== 'transparent' && al >= 0.6) return b; } return 'rgb(255,255,255)'; };
+    return [...root.querySelectorAll('h4, p, .dr__btn')].filter((e) => e.getBoundingClientRect().width > 0).map((el) => { const a = lum(getComputedStyle(el).color); const b = lum(bgOf(el)); return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05); }); });
+  ok(`ST-52 ${theme}`, `phone (390, ${theme}): a drill in the story has 44 px targets, no overflow, text at 4.5:1, no console error`, await overflow(p) <= 0 && small.length === 0 && c.length >= 4 && Math.min(...c) >= 4.5 && !t.errs.length, `${await overflow(p)} ${small.slice(0, 4).join(',')} ${Math.min(...c).toFixed(2)} ${t.errs.join('|')}`); await t.close(); }
 
 for (const theme of ['light', 'dark']) { const t = await open('#/story/s01e00', { w: 390, h: 844, theme }); const p = t.page; await p.waitForSelector('.sg-dec[data-decision=BR-S01E00-02]');
   await p.click('.sg-dec[data-decision=BR-S01E00-02] .sg-opt[data-option=C]'); await p.waitForSelector('[data-testid=story-quiz]');
