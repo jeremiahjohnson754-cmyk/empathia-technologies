@@ -44,7 +44,7 @@ Counts and identifiers only. No dialogue or narrative text is reproduced here.
 | Explorers (layered system views) | 4 | 4, library, not identical | TO VERIFY |
 | Fieldbook plates | 160 images with captions, in nine domains | Not in the library. The story's own art is in the canon | **MISSING from Learn** (TO VERIFY whether the canon's art covers them) |
 | Boss levels | 12, one per season | 12, in the story (`BossRunner`) | **RESTORED 12 Nov** |
-| Meltdowns | 5 | `packages/ui/src/meltdown.ts` + `MeltdownRunner` | **RESTORED 11 Nov** (in the story; not yet in Learn's Service Mode list) |
+| Meltdowns | 5 | `packages/ui/src/meltdown.ts` + `MeltdownRunner` | **RESTORED 11 Nov** (in the story); listed and playable in Learn's Service Mode since 12 Nov (`a8d7732`, BN-10) |
 | Season reviews | 12 | `apps/demo/src/signal/ratings.ts`, in the story | **RESTORED 11 Nov** |
 | System maps per season | 12 | none found | **MISSING** (TO VERIFY) |
 | Timeline | 55 entries | none found | **MISSING** (TO VERIFY) |
@@ -89,7 +89,7 @@ gate list is the authority and gives 979.)
 | Six drill types: route, first failure, clues, class match, order, triage | Timed, failable | All six in Practice | TO VERIFY behaviour |
 | Service Mode: an incident with a clock, evidence, actions that cost time, crew trust, outcomes | | Learn's Service Mode runs the 121 incidents on the shared runner above since 11 Nov; before that its runner departed from the source in eight ways (listed in `incidents.ts`) | RESTORED (incident rules); the Service Mode queue page's other content not yet compared |
 | Thirteen challenges in five modes, four levels each: Hear it (2), See it (3), Reach it (2), Build it (3), Record it (3). Web Audio synthesis, a song on the audio clock, cue timing | Scored, with records | `packages/ui/src/challenges/*` and `ChallengeRunner`, played inside the boss levels: every model, check and wording ported; every start fails and every recipe passes 100/100 at all four levels as the reference QA log records (`signal-challenges` 130 tests, 21 mutations killed). Drawings for eight of thirteen (EQ curves, word levels, the moiré sensor crop computed pixel by pixel, the promo slide with colour-blind and greyscale previews, lux across the walk, RT60, the RF plan, loudness); the vocal plays through your compressor; the strummed guitar (Karplus–Strong, the reference's seed) plays live through their EQ and yours with A/B bypass, under a ⅓-octave analyser against the untouched outline. The catalogue is in Learn at `#/learn/challenges` (mode tabs, four levels with your best, one stage). **Gaps:** the animated stage drawings for see-focus, record-take, record-panel, build-stream and reach-cues are not restored | **RESTORED (engines, in bosses); PARTIAL (catalogue, some drawings and sound)** |
-| Six demos: EQ, beam, ear, compressor, shutter, colour | Small live illustrations inside lessons | none found | **MISSING** (TO VERIFY) |
+| Six demos: EQ, beam, ear, compressor, shutter, colour | The reference's bench, "HEAR IT, SEE IT", after the meltdowns in Service Mode (`demos.js`) | Learn → Service Mode → The bench (`packages/ui/src/Bench.tsx`, 12 Nov): the ear and Terhardt's threshold, EQ with pink noise and a live ⅓-octave analyser, the compressor's transfer curve and two seconds of gain, shutter angle and rolling-shutter flicker bands, beam and field geometry with E = I ÷ d², colour temperature with mireds and additive mixing. Browser suite `demo-bench` 23/23 | **RESTORED 12 Nov** |
 | Boss levels | Scope, estimate, design and cost a job against a clock | In the story since 12 Nov (above) | **RESTORED** |
 | Meltdowns | A multi-turn crisis with threats, actors and a budget | in the story (above) | **RESTORED 11 Nov** |
 | Season run: loadout, forecast, game over, retry a season | | none found | **MISSING** (TO VERIFY) |
@@ -107,8 +107,8 @@ gate list is the authority and gives 979.)
 |---|---|---|
 | Narration audio | **None.** The standalone has no recorded or synthesised speech | Nothing to restore from this file |
 | Video | **None** | Nothing to restore from this file |
-| Sound | Generated in the browser (Web Audio) by the challenges and demos; no audio file | PARTIAL: the synthesised vocal (hear-comp) plays untouched and through your compressor; the guitar (hear-eq) plays live through the EQ chain; the lighting desk plays the reference's band on the audio clock (cues judged against it). The demos' sound is still to restore |
-| Images | 160 fieldbook plates (WebP) and the chapter art | Chapter art RESTORED (canon). Plates: TO VERIFY |
+| Sound | Generated in the browser (Web Audio) by the challenges and demos; no audio file | **RESTORED 12 Nov:** the synthesised vocal (hear-comp) plays untouched and through your compressor; the guitar (hear-eq) plays live through the EQ chain; the lighting desk plays the reference's band on the audio clock (cues judged against it). The bench plays a quiet tone (the ear) and pink noise through the five EQ filters into a live analyser (BN-04); the cue desk's band is checked on the audio clock (BS-28). Sound starts only from a button. Heard through a loudspeaker: NOT RUN (headless runs check scheduling and analysis only) |
+| Images | 160 fieldbook plates (WebP) and the chapter art | Chapter art RESTORED (canon). Plates: not added, by the founder's decision (11 Nov, 19:32) |
 
 Narration and films belong to the V2.5.3 application and the produced films, audited separately (`docs/parity/MEDIA_RESTORATION_STATUS.md`,
 `docs/surpass/MEDIA_MASTER_MANIFEST.md`); that audit is to be redone under the same instruction, with playback verified in a browser
@@ -121,9 +121,9 @@ before any item is called working.
    are in `packages/signal-canon/data/`, held by hash, with `tests/unit/signal-library.test.mjs`. **Not done:** the Learn pages still
    read the earlier library; the 160 fieldbook plate images are not in the repository (see §7).
 2. Play every piece in place in the story, with the tier of gate it carries: quizzes and lessons first (618 of the 979; **done 11 November**), then drills and incidents (257; **both done 11 November**),
-   then labs, reviews and meltdowns (**done 11 November**), then boss levels.
-3. The eight missing lab simulators, the thirteen challenges and the six demos.
-4. Mission Control as the source has it: quest log, journal, ratings, trust, competency, evidence locker.
+   then labs, reviews and meltdowns (**done 11 November**), then boss levels (**done 12 November**).
+3. The eight missing lab simulators, the thirteen challenges and the six demos (**all done**: simulators 11 Nov; challenges and the bench 12 Nov).
+4. Mission Control as the source has it: quest log, journal, ratings, trust, competency, evidence locker (**done 12 Nov**, `#/learn/mission`).
 5. Every line above marked TO VERIFY, verified against the source's behaviour, then a functional and a visual test for each.
 
 ## 7. Limits of this inventory
