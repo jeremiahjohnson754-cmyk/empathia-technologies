@@ -15,13 +15,20 @@ agents.
 | Production | `main` at `219d75f`, untouched; needs the founder's word |
 | The founder's directive of 11 Nov 01:22 | `/mnt/user-data/attachments/73b60a1b-854c-5a1e-99ae-d3ec61696e66/84a1e711-attachment.txt` (§00–§34; read the section before building it) |
 
-## State (12 Nov 2026, afternoon CT)
+## State (12 Nov 2026, morning CT)
 
 | | Commit | Evidence |
 |---|---|---|
 | Staging (`phase3/legendary-experience`) | `1dced1e` | full matrix clean before it was pushed; Render demo and website live on it |
-| Light matrix on the working branch | `882dbdf` | 57 suites exit 0 except `demo-core` (one race in a role-shelf count, fixed in the test: it now waits for the async count) and `founder-studio` (NOT RUN in a public build) — `.local/matrix-882dbdf/` |
-| Working branch | `0627561` | restorations since `882dbdf` browser-checked on their own: `demo-story-more` 51/51 (pop-ups, quest ticks, glossary marks and terms you'll need, Still art, library at the source's revision, timeline, case files, explorers, mentor channel), `demo-lite` 288/288 (X-ray, inspector, change the room), `demo-learn` 50/50, `demo-core` 294/294, `learn-labs` 29/29. Full matrix light and dark on the final head before staging |
+| Light matrix on `9db85b6` | `9db85b6` | 59 suites; one failure (demo D-04: the Lite studio lacked `data-native`, fixed in `af32ce9`), `founder-studio` NOT RUN in a public build — so `9db85b6` was not pushed |
+| Light matrix on `6c8932a` | `6c8932a` | running (`.local/matrix-6c8932a/`) |
+| Working branch | head of `v18/continuation` | restorations since `6c8932a` unit-tested; their browser checks run on the next build |
+
+Restored 12 Nov (unit and browser checks named in `docs/restoration/`): Lite spatial drift, inspector rows, reverberation estimate,
+reconfigure and send, Portfolio Optimize, the studio's Field Intelligence and SVG export; Scouter anatomy and standard kits; Design a
+Space's verbs, versions, fixes, measures, rehearsal and hand-offs; Build a Room's edit verbs, outline and scale, redlines, workbook,
+recorded files, commissioning deficiencies and the APEX hand-off; SIGNAL case files' Mastery gate; the A5 take's play check. 60/10 P0
+baseline and ledgers started (`docs/design-transformation/`).
 
 Browser-tested on `v18/continuation` since `be010f1` (suites light and dark; every page looked at, desktop and 390 px):
 
