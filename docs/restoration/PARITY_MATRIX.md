@@ -55,7 +55,7 @@ Key: ✓ matches the source · ◐ partial (the inventory says what is missing) 
 | Design a Space's verbs, versions, import, fixes, rehearsal, hand-offs | ◐ no measures panel, merge or image | ✓ | ✓ | ✓ | studio-concept unit; P checks |
 | Scouter anatomy | ✓ | ✓ | ✓ V2.5.3's seven classes | ✓ | LT-*-A1..A2 |
 | Scouter proposals (standard kits) | ✓ classes only | ✓ | ✓ | ✓ | scouter-profiles unit; S-20..S-22 |
-| Room builders' missing functions | ✕ / ◐ | | | | see LITE_INVENTORY §6 |
+| Build a Room's verbs (edit, outline and scale, redlines, workbook, files, deficiencies and retests, APEX hand-off) | ✓ except joining into the campus; fault injection ⊘ (V2.5.3 refuses it outside the engineer edition) | ✓ | ✓ | ✓ | build-room-edits, build-workbook units; B-03b, B-03c, B-15h, B-15i |
 | Scouter named makers and prices | — | — | ⊘ no real makers or prices | — | — |
 
 ## What this matrix does not claim
