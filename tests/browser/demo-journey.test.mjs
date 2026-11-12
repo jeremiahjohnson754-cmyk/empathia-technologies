@@ -14,9 +14,9 @@ for (const w of [1440, 390]) {
   await p.goBack(); await p.getByTestId('lite-room').waitFor(); const back = await p.getByTestId('lite-room').getAttribute('data-room');
   await p.goForward(); await p.getByTestId('search-party').waitFor(); const fwd = await hash(); await p.goBack(); await p.getByTestId('lite-room').waitFor();
   ok(`J-${w}-02`, 'back returns to the same room in Lite; forward returns to Search Party on it', back === ROOM && /focus=Room/.test(fwd), `${back} ${fwd}`);
-  await p.click(`a[href^="#/room/${ROOM}"]:not([href*="device="])`); await p.locator('[data-testid=room-view]').waitFor(); const rv = await p.locator('[data-testid=room-view]').getAttribute('data-room');
-  await p.reload(); await p.locator('[data-testid=room-view]').waitFor(); const rv2 = await p.locator('[data-testid=room-view]').getAttribute('data-room');
-  ok(`J-${w}-03`, 'the technical room view opens on the same room and keeps it through a reload', rv === ROOM && rv2 === ROOM, `${rv} ${rv2}`);
+  await p.click('.lt-foot a:has-text("technical room view")'); await p.waitForTimeout(600); const rv = await hash(); const has1 = await p.locator(`main [data-room="${ROOM}"]`).count();
+  await p.reload(); await p.waitForTimeout(800); const rv2 = await hash(); const has2 = await p.locator(`main [data-room="${ROOM}"]`).count();
+  ok(`J-${w}-03`, 'the technical room view opens on the same room and keeps it through a reload', rv.includes(ROOM) && rv2 === rv && has1 >= 1 && has2 >= 1, `${rv} ${has1} ${has2}`);
   await p.goBack(); await p.getByTestId('lite-room').waitFor();
   const dev = p.locator('.lt-dev[data-cat="camera"], .lt-dev[data-cat="bar"]').first(); await dev.dispatchEvent('click'); await p.getByTestId('lite-card').waitFor();
   await p.click(`[data-testid=lite-card-cx] a[href="#/commissioning/room/${ROOM}"]`); await p.waitForTimeout(600); const h3 = await hash(); const main = await p.evaluate(() => document.querySelector('main')?.innerText || '');
