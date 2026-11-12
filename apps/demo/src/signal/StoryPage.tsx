@@ -11,7 +11,7 @@ import { createContext, useContext, useEffect, useMemo, useRef, useState, type R
 import type { PageProps } from '../registry.types.js';
 import * as RT from './ratings.js';
 import { chapterPop, doneKeys, gatePop, type PopBody } from './pops.js';
-import type { MissionIndex } from './mission.js';
+import { objectiveDone, type MissionIndex } from './mission.js';
 import { buildRx, chapterMarks, type GlossaryIndex, type Seg, type Term } from './glossary.js';
 import { BossRunner, Bosses, DrillRunner, IncidentRunner, LabRunner, MeltdownRunner, LAB_KINDS_PLAYABLE, Meltdowns, type Drill, type Formula, type Incidents, type LabData } from '@empathia/ui';
 import { Block, Crumbs, Pick } from '../worlds/kit.js';
@@ -43,6 +43,8 @@ const Em = ({ text }: { text: string }) => <>{emphasis(text).map((p, i) => (p.b 
 const Paras = ({ text }: { text: string }) => <>{text.split(/\n{2,}/).map((p, i) => <p key={i}><Em text={p} /></p>)}</>;
 /** Glossary terms in the reading text (restored 12 Nov 2026, reference ladder.js): the chapter's marks, worked out once (glossary.ts), and
  *  the pop-over to open. Text without a mark, or before the glossary loads, is drawn exactly as before. */
+/** The quest card's objectives tick live (engine spec §11): the chapter, its mission index and the lesson → quiz map. */
+const QuestCtx = createContext<{ cid: string; M: MissionIndex | null; lq: Record<string, string> } | null>(null);
 const GlCtx = createContext<{ marks: Map<string, Seg[]> | null; open: (g: Term, el: HTMLElement) => void } | null>(null);
 function Gl({ k, text, plain }: { k: string; text: string; plain?: boolean }) {
   const c = useContext(GlCtx); const segs = c?.marks?.get(k); if (!segs) return plain ? <>{text}</> : <Em text={text} />;
@@ -144,6 +146,7 @@ function Reader({ ix, id, progress, commit, update }: { ix: StoryIndex; id: stri
     if (add.length && !(globalThis as { SIGNAL_NOPOP?: boolean }).SIGNAL_NOPOP) setPops((q) => [...q, ...add]); });
   useEffect(() => { if (showing || !pops.length) return undefined; const t = setTimeout(() => { prevFocus.current = document.activeElement; setShowing(true); }, closedOnce.current ? 250 : 900); return () => clearTimeout(t); }, [showing, pops.length]);
   const head = showing ? pops[0] : undefined; const lq = ix.lessonQuiz || {};
+  const questCtx = useMemo(() => ({ cid: id, M: mi.data, lq }), [id, mi.data, lq]);
   const body: PopBody | null = head && ch.data && pieces ? (head.chapter ? chapterPop(ref.title, items, state, progress, mi.data, id, lq, next) : gatePop(head.g!, items, state, progress, pieces, mi.data, id, lq)) : null;
   const closePop = (move: boolean) => { const it = pops[0]; setPops((q) => q.slice(1)); setShowing(false); closedOnce.current = true;
     if (move && it?.chapter && next) { location.hash = `#/story/${next.id}`; return; }
@@ -173,7 +176,7 @@ function Reader({ ix, id, progress, commit, update }: { ix: StoryIndex; id: stri
         {behind && <p><a className="ui-btn ui-btn--primary" href={`#/story/${behind.id}`} data-testid="story-locked-back">◂ Back to {behind.title}</a> <a className="ui-btn" href="#/story">Library</a></p>}</div> : <>
       {!ch.data && <p data-testid="story-loading">Opening the chapter…</p>}
       {ch.data && <Echoes prev={prev?.title || null} e={before} />}
-      <GlCtx.Provider value={glCtx}><div className="sg-flow">
+      <QuestCtx.Provider value={questCtx}><GlCtx.Provider value={glCtx}><div className="sg-flow">
         {items.slice(0, upTo).map((it, i) => { if (it.type === 'panel') panelNo += 1; return <ItemView key={i} it={it} n={i} svg={it.type === 'panel' ? art.data?.panels[panelNo] : undefined} cast={ix.cast} state={state} clock={progress.clock} gated={progress.gates}
           onChoose={(d, letter, meta) => { const r = choose(state, d, letter, meta); set(r.state); setSaid(said1(r.outcome)); return r.outcome; }}
           pieces={pieces} progress={progress} onQuiz={(qid, r, n) => { commit({ ...recordQuiz(progress, qid, r, n), last: id }); setSaid(`Check recorded: ${r} of ${n}.`); }} onSkip={(g) => { commit({ ...skip(progress, g), last: id }); setSaid('Skipped for now. It stays here to come back to.'); }}
@@ -189,7 +192,7 @@ function Reader({ ix, id, progress, commit, update }: { ix: StoryIndex; id: stri
           onReplay={(did) => { set(replayDecision(state, did)); setSaid('The decision is open again and the clock restarts.'); }}
           onTalk={(tid, o) => set(answerTalk(state, tid, o))} onFind={(did) => set(find(state, did))} />; })}
         {ch.data && upTo >= items.length && art.data?.closing.map((c, i) => <figure key={i} className="sg-panel"><div className="sg-art" role="img" aria-label={c.alt} dangerouslySetInnerHTML={{ __html: c.svg }} /></figure>)}
-      </div></GlCtx.Provider>
+      </div></GlCtx.Provider></QuestCtx.Provider>
       {glOpen && gl.data && <GlPop g={glOpen.g} at={glOpen.at} gl={gl.data} onClose={glClose} />}
       <p className="ui-visually-hidden" role="status" aria-live="polite" data-testid="story-said">{said}</p>
       {body && <GatePop body={body} go={head!.chapter ? (next ? 'Open the next chapter ▸' : 'Close') : 'Continue the story ▸'} onClose={closePop} />}
@@ -369,14 +372,7 @@ export function ItemView(p: ViewProps): JSX.Element | null {
         </figcaption>
       </figure>);
     case 'note': return <aside className="sg-note" data-item="note" data-role={it.role}><Paras text={it.text} />{it.case && <p className="ui-meta">Case file {it.case}</p>}</aside>;
-    case 'quest': return (
-      <section className="sg-quest" data-item="quest" aria-label={`Quest: ${it.title}`}>
-        <p className="sg-quest__k">{it.kind} · {it.level}</p><h3>{it.title}</h3>
-        <p className="sg-party">{it.party.map((id) => <span key={id} className="sg-who"><Face id={id} pose="N" expr="smile" />{name(id)}</span>)}</p>
-        <dl className="sg-dl"><div><dt>At stake</dt><dd>{it.stakes}</dd></div><div><dt>Clock</dt><dd>{it.clock}</dd></div><div><dt>Reward</dt><dd>{it.reward}</dd></div></dl>
-        <ul className="sg-obj">{it.objectives.map((o) => <li key={o.key}>{o.text}</li>)}</ul>
-        {it.rumor && <p className="sg-rumor"><b>Rumour.</b> {it.rumor}</p>}
-      </section>);
+    case 'quest': return <QuestCard p={p} it={it} name={name} />;
     case 'beat': return (
       <section className="sg-beat" data-item="beat" data-mood={it.mood}>{it.where && <p className="ui-meta">{it.where}</p>}
         <ul>{it.lines.map((l, i) => <li key={i}><Face id={l.who} pose={l.pose} expr={l.expr} /><span><b>{name(l.who)}</b> <Gl k={`${p.n}:l${i}`} text={l.text} /></span></li>)}</ul></section>);
@@ -406,6 +402,17 @@ export function ItemView(p: ViewProps): JSX.Element | null {
   }
 }
 
+function QuestCard({ p, it, name }: { p: ViewProps; it: Extract<Item, { type: 'quest' }>; name: (id: string) => string }) {
+  const q = useContext(QuestCtx); const prog = p.progress; const done = (k: string) => !!(q?.M && prog && objectiveDone({ ...prog, chapters: { ...prog.chapters, [q.cid]: p.state } }, q.M, q.cid, k, q.lq));
+  const n = it.objectives.filter((o) => done(o.key)).length;
+  return <section className="sg-quest" data-item="quest" aria-label={`Quest: ${it.title}`} data-done={n} data-of={it.objectives.length}>
+    <p className="sg-quest__k">{it.kind} · {it.level}</p><h3>{it.title}</h3>
+    <p className="sg-party">{it.party.map((id) => <span key={id} className="sg-who"><Face id={id} pose="N" expr="smile" />{name(id)}</span>)}</p>
+    <dl className="sg-dl"><div><dt>At stake</dt><dd>{it.stakes}</dd></div><div><dt>Clock</dt><dd>{it.clock}</dd></div><div><dt>Reward</dt><dd>{it.reward}</dd></div></dl>
+    <ul className="sg-obj" aria-label={`Objectives, ${n} of ${it.objectives.length} done`}>{it.objectives.map((o) => { const d = done(o.key); return <li key={o.key} data-obj={o.key} data-done={d}><span aria-hidden="true">{d ? '✓' : '○'}</span> {o.text}{d ? <span className="ui-visually-hidden"> (done)</span> : null}</li>; })}</ul>
+    {it.rumor && <p className="sg-rumor"><b>Rumour.</b> {it.rumor}</p>}
+  </section>;
+}
 function Weight({ o, c, d, review }: { o: Option | null; c: { letter: string; hints: number } | null; d: Extract<Item, { type: 'decision' }>; review: boolean }) {
   const w = c ? weightOf(d, { letter: c.letter, first: c.letter, changes: 0, hints: c.hints }) : null; if (!w) return null; const tl = trustLine(w.trust);
   return <div className={`sg-weight is-${w.verdict}`} data-testid="story-weight" data-verdict={w.verdict} data-sev={w.sev}>
