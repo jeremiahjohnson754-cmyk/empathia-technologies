@@ -90,9 +90,9 @@ function StageView({ rig, a, t, sel }: { rig: L.Rig; a: L.LightAnalysis; t: numb
       const ang = Math.atan2(y1 - y0, x1 - x0) + Math.PI / 2; g.fillStyle = grd; g.beginPath(); g.moveTo(x0 - 3 * Math.cos(ang), y0 - 3 * Math.sin(ang)); g.lineTo(x1 - r * Math.cos(ang), y1 - r * Math.sin(ang)); g.lineTo(x1 + r * Math.cos(ang), y1 + r * Math.sin(ang)); g.lineTo(x0 + 3 * Math.cos(ang), y0 + 3 * Math.sin(ang)); g.closePath(); g.fill();
       g.fillStyle = `rgba(${cr},${cg},${cb},${al * 1.6})`; g.beginPath(); g.ellipse(x1, Z(0, s.y), r, r * 0.22, 0, 0, Math.PI * 2); g.fill(); }
     g.globalCompositeOperation = 'source-over';
-    for (const s of L.SUBJECTS) { const lx = a.at[s.key] || 0; const v = Math.max(0.12, Math.min(1, Math.log10(1 + lx) / 3.2)); const x = X(s.x, s.y), y = Z(0, s.y), hh = (s.z + 0.2) * (ch / 9.5);
+    L.SUBJECTS.forEach((s, si) => { const lx = a.at[s.key] || 0; const v = Math.max(0.12, Math.min(1, Math.log10(1 + lx) / 3.2)); const x = X(s.x, s.y), y = Z(0, s.y), hh = (s.z + 0.2) * (ch / 9.5);
       g.fillStyle = `rgba(${Math.round(240 * v)},${Math.round(200 * v)},${Math.round(170 * v)},1)`; g.beginPath(); g.arc(x, y - hh + 9, 9, 0, Math.PI * 2); g.fill(); g.fillRect(x - 10, y - hh + 18, 20, hh - 18);
-      g.fillStyle = '#cbd5e1'; g.font = '11px system-ui'; g.fillText(`${s.label.split(' ')[0]} ${lx} lx`, x - 30, y + 14); }
+      g.fillStyle = '#cbd5e1'; g.font = '11px system-ui'; g.fillText(`${s.label.split(' ')[0]} ${lx} lx`, x - 30, Math.min(ch - 4, y + 14 + si * 13)); });
     for (const p of L.POSITIONS) { g.fillStyle = rig.hung.some((h) => h.pos === p.key) ? '#f8fafc' : '#334155'; g.fillRect(X(p.x, p.y) - 4, Z(p.z, p.y) - 4, 8, 8); }
   }, [rig, a, t, sel]);
   return <canvas ref={cv} className="mx-room" data-testid="lx-stage" role="img" aria-label={`The stage from the house: ${L.SUBJECTS.map((s) => `${s.label} ${a.at[s.key]} lux`).join(', ')}${a.spill.length ? '; light is landing on the screen' : ''}.`} />;

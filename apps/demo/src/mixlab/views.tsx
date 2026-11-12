@@ -29,7 +29,7 @@ export function RoomView({ r, m, a, t, seat, onSeat, solo }: { r: Room; m: Mix; 
       cells.push(dbSum(r.groups.filter((g) => g.kind !== 'wedge' && (!solo || g.key === solo)).map((g) => dbSum(BANDS.map((_, b) => (b >= g.bands[0] && b <= g.bands[1] ? (g.kind === 'sub' ? a.main[b]! + m.sub : a.main[b]!) + g.ref + spread(g, x, y, L) + A_WEIGHT[b]! : -200)))))); }
     return { nx, ny, cells }; }, [r, m, a, solo, ratio, W, L]);
   useEffect(() => {
-    const c = cv.current; if (!c) return; const dpr = Math.min(2, window.devicePixelRatio || 1); const cw = c.clientWidth || 600, ch = cw * Math.min(1.3, ratio);
+    const c = cv.current; if (!c) return; const dpr = Math.min(2, window.devicePixelRatio || 1); const avail = c.parentElement?.clientWidth || c.clientWidth || 600; const cw = Math.min(avail, 580 / ratio), ch = cw * ratio; c.style.width = `${cw}px`;
     if (c.width !== Math.round(cw * dpr)) { c.width = Math.round(cw * dpr); c.height = Math.round(ch * dpr); } c.style.height = `${ch}px`;
     const g = c.getContext('2d'); if (!g) return; g.setTransform(dpr, 0, 0, dpr, 0, 0); const sx = cw / W, sy = ch / L;
     g.fillStyle = '#05070c'; g.fillRect(0, 0, cw, ch);

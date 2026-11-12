@@ -32,7 +32,7 @@
 .mx-said { min-height: 1.4em; font-weight: 500; }
 .mx-stage { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 12px; align-items: start; }
 @media (max-width: 860px) { .mx-stage { grid-template-columns: minmax(0, 1fr); } }
-.mx-roomwrap { display: grid; gap: 8px; min-width: 0; } .mx-room { width: 100%; border-radius: var(--r-md); cursor: crosshair; touch-action: none; display: block; background: #05070c; }
+.mx-roomwrap { display: grid; gap: 8px; min-width: 0; } .mx-room { width: 100%; max-width: 100%; border-radius: var(--r-md); cursor: crosshair; touch-action: none; display: block; margin: 0 auto; background: #05070c; }
 .mx-legend { display: flex; flex-wrap: wrap; gap: 6px; }
 .mx-chip { all: unset; box-sizing: border-box; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 99px; border: 1px solid var(--line2); font-size: 12px; background: var(--panel); color: var(--tx); }
 .mx-chip i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; } .mx-chip.on { background: var(--tx); color: var(--bg); } .mx-chip--k { cursor: default; }
