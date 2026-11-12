@@ -16,7 +16,7 @@ import { shortName, buildingByKey, roomHref } from '../campus/canon.js';
 import { LIFE_TONE } from '../campus/CampusPage.js';
 import {
   chapterById, coverage, lensesFor, layersFor, overlaysFor, defaultLayers, defaultOverlays, roomState, STATES, configsOf, configStatus, readiness, pct, occupancy, routeTo,
-  ALL_SITES, buildingSummary, liteRoomHref, spatialDrift, rt60Estimate, RT60_ASSUMED, type Lens, type LiteLayer, type Overlay, type StateKey, type SpatialDrift,
+  ALL_SITES, buildingSummary, liteRoomHref, spatialDrift, rt60Estimate, RT60_ASSUMED, criticalDistance, Q_TALKER, type Lens, type LiteLayer, type Overlay, type StateKey, type SpatialDrift,
 } from './model.js';
 import { driftOf, setDrift, type DriftDecision } from './drift.js';
 import { RoomScene, OrbitBar, useOrbit } from './Scene.js';
@@ -152,10 +152,12 @@ function ovValue(k: Overlay, cov: ReturnType<typeof roomState>['cov']): string {
  *  measured. No acoustic or intelligibility measurement is on record for these synthetic rooms, and this build has no acoustic model, so those
  *  rows say so instead of showing a number. */
 function Measurements({ cov, w, l, h }: { cov: ReturnType<typeof roomState>['cov']; w: number; l: number; h: number }) {
-  const n = cov.seats.length; const none = 'Not modeled here · no measurement on record'; const rt = rt60Estimate([w, l, h], n);
+  const n = cov.seats.length; const none = 'Not modeled here · no measurement on record'; const rt = rt60Estimate([w, l, h], n); const dc = criticalDistance([w, l, h], rt);
+  const beyond = cov.seats.filter((s) => Math.hypot(s.x - w / 2, s.y) > dc).length;
   const rows: Array<[string, string, string, string]> = [
     [`${cov.pickup.of === 'seats' ? 'Seats' : 'Stage positions'} in primary microphone pickup`, cov.mics.length || cov.pickup.worn ? `${cov.mic.covered} of ${cov.mic.of}` : '—', '', 'Modeled · not measured'],
-    ['Rear-row speech intelligibility (lowest seat)', '—', 'STI', none], [`Reverberation time (RT60) at 1 kHz, empty`, rt.toFixed(2), 's', `Estimate · Sabine from the volume and assumed finishes (${RT60_ASSUMED}) · not measured`], ['Background noise', '—', 'dBA', none],
+    ['Rear-row speech intelligibility (lowest seat)', '—', 'STI', none], [`Reverberation time (RT60) at 1 kHz, empty`, rt.toFixed(2), 's', `Estimate · Sabine from the volume and assumed finishes (${RT60_ASSUMED}) · not measured`],
+    ['Critical distance for a talker at the front', dc.toFixed(2), 'm', `Estimate · 0.057 √(Q·V ÷ RT60), Q ${Q_TALKER} assumed, from the RT60 estimate · ${beyond} of ${n} seats beyond it hear more room than talker · not measured`], ['Background noise', '—', 'dBA', none],
     ['Seats inside a camera view', cov.cones.length ? `${pct(cov.camera.covered, cov.camera.of)}` : '—', '%', 'Modeled · not measured'],
     ['Seats inside loudspeaker coverage', cov.speakers.length ? `${cov.speakerSeats} of ${n}` : '—', '', 'Modeled · not measured'],
     ['Clear display sightlines', cov.sight.na ? '—' : `${cov.sight.clear} of ${n}`, '', cov.sight.na ? 'No display in this state' : `Modeled · ${cov.sight.marginal} marginal, ${cov.sight.obstructed} obstructed`],

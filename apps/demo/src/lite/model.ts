@@ -279,7 +279,7 @@ export function roomState(r: RoomRecord, key: StateKey): RoomState {
 }
 
 // reverberation estimate: lite/acoustics.ts (kept small so Design a Space can use it without the campus model)
-export { ABSORB, RT60_ASSUMED, rt60Estimate } from './acoustics.js';
+export { ABSORB, RT60_ASSUMED, rt60Estimate, criticalDistance, Q_TALKER } from './acoustics.js';
 
 // ------------------------------------------------------------------------------------------------ portfolio optimize
 /** Portfolio Optimize (V2.5.3, restored 12 Nov 2026): every room ranked by the size of its best small move — the proposed state's change

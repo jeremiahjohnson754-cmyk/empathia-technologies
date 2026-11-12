@@ -168,6 +168,12 @@ test('reverberation estimate (V2.5.3 rt60Of): Sabine from the volume and the ass
   assert.match(m.RT60_ASSUMED, /assumed|carpet/);
 });
 
+test('critical distance (beyond RT60): 0.057 √(Q·V ÷ RT60) with a talker\'s Q of 2; a deader room carries the talker further; no RT60, no figure', () => {
+  const rt = m.rt60Estimate([6, 8, 2.8], 12); const dc = m.criticalDistance([6, 8, 2.8], rt);
+  assert.equal(m.Q_TALKER, 2); assert.equal(dc, Math.round(0.057 * Math.sqrt((2 * 6 * 8 * 2.8) / rt) * 100) / 100);
+  assert.ok(m.criticalDistance([6, 8, 2.8], rt / 2) > dc); assert.ok(Number.isNaN(m.criticalDistance([6, 8, 2.8], 0)));
+});
+
 test('Portfolio Optimize (V2.5.3): only rooms whose proposal changes something, ranked by gain per device; the drifted room is a restore', () => {
   const rows = m.portfolio(recs); assert.ok(rows.length >= 10);
   for (let i = 1; i < rows.length; i++) assert.ok(rows[i - 1].perDevice >= rows[i].perDevice, 'ranked');
