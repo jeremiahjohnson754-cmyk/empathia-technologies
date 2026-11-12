@@ -10,7 +10,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { PageHero, StatTile, Card, Chip, List, ListRow, MeterRow, Icon, Notice, Button, Tag, ProgressBar, EmptyState, ScoreRing, QuizRunner, DrillRunner, DRILL_KINDS, IncidentRunner, Incidents, type Quiz, type Drill, type IconName } from '@empathia/ui';
 import { V, fill, trainingCases, caseById, loadProgress, record, minutesOf, RESPONSES, RULES, score, readinessOf, competencyEvidence, roomsFor, archetypesIn, hopsOf, type TrainingCase, type Progress, type Episode, type Scene } from '../learn/model.js';
 import { loadLabs } from '../learn/store.js';
-import { ChallengeRunner, Challenges as CHX, MeltdownRunner, Meltdowns as MDX } from '@empathia/ui';
+import { ChallengeRunner, Challenges as CHX, MeltdownRunner, Meltdowns as MDX, Bench } from '@empathia/ui';
 import * as Story from '../signal/story.js';
 import * as MC from '../signal/mission.js';
 import * as RT from '../signal/ratings.js';
@@ -313,6 +313,7 @@ export function ServiceModePage({ perspective }: { perspective: string }) {
           <p className="wk-note">Work an incident the way the service desk does: symptoms, evidence, the first thing to try, and an escalation with facts.</p>
         </Card>); }}</LibGate>
       <MeltdownList />
+      <Card icon="speaker" title="The bench · hear it, see it" sub="Six demos to try before you touch a live room: the ear, EQ and the analyser, compression, shutter and flicker, beams, colour temperature. Illustrative models — sound only when you press play, quietly." testId="service-bench"><Bench /></Card>
       <div className="wk-g2">
         <Card icon="menu" title="Ten actions" sub="Look, test, measure, escalate and six more: what each one does and what it costs on the clock">
           <ul className="ln-verbs">{V.SERVICE_VERBS.map(([k, l, wd]) => <li key={k}><b>{l}</b><span>{wd}</span><span className="ui-meta">{V.VERB_MIN[k]} min</span></li>)}</ul>

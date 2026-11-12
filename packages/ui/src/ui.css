@@ -365,3 +365,5 @@ input.lab__input { width: 9em; } select.lab__input { min-width: 0; width: 100%; 
 .mc__quests li, .mc__journal li { display: grid; gap: 2px; padding: 6px 0; border-bottom: 1px solid var(--line); } .mc__quests li a { min-height: 44px; display: inline-flex; align-items: center; } .mc__quests li[data-done=true] a::after { content: ' ✓'; color: var(--ok); }
 .mc__journal li p { margin: 0; }
 .lab__canvas { display: block; width: 100%; min-width: 480px; height: auto; }
+/* The bench (restored 12 Nov): dark drawing stages in either theme; the three RGB lights add (screen blend) the way light does. */
+.bench__stage svg { min-width: 560px; } .bench__screen { isolation: isolate; } .bench__light { mix-blend-mode: screen; }
