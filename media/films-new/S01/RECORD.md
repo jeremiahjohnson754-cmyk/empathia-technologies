@@ -20,3 +20,11 @@ new film, in the product's own claims: search across one record; nothing live is
 
 - Before this, after the founder's review: two more shots (about 240 credits), one narration line in the narrator voice, captions, a 9:16
   render through the same pipeline as the training film.
+
+## Assembled (12 Nov 2026)
+
+`render.sh` → `out/S01-new.mp4` and `out/S01-new-captioned.mp4` (not committed; rebuilt from the shots and the narration): 22.8 s,
+1080×1920, h264 + aac, the three shots cross-faded, vidIQ's generated audio dropped, the narration's three lines placed on the shots they
+describe, −18.0 LUFS integrated; captions are the narration word for word plus "Illustration. Synthetic demonstration data." (WebVTT
+`out/S01-new.vtt`, and burned into the captioned version). Founder review pending; then it is listed in the Founder Studio as a new
+version of S01, beside the missing original.
