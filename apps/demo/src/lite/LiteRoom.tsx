@@ -49,7 +49,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
   const toggle = (k: 'ly' | 'ov', key: string, cur: Set<string>) => { const n = new Set(cur); if (n.has(key)) n.delete(key); else n.add(key); upd(k, [...n].join(',') || ','); };
   const pickLens = (l: Lens) => { saveLens(l); const n = new URLSearchParams(query); n.set('mode', l); n.delete('ly'); n.delete('ov'); setQuery(base, n); };
   const edited = lens === 'optimize' && (Object.keys(ed.mv).length > 0 || ed.seats !== 0);
-  const positions = edited ? st.positions.map((x) => { const m = ed.mv[x.code]; return m ? { ...x, x: Math.min(o.dims[0] - 0.2, Math.max(0.2, x.x + m[0])), y: Math.min(o.dims[1] - 0.2, Math.max(0.2, x.y + m[1])), mark: x.mark === 'same' ? 'moved' as const : x.mark } : x; }) : st.positions;
+  const positions = edited ? st.positions.map((x) => { const m = ed.mv[x.code]; return m ? { ...x, x: Math.min(o.dims[0] - 0.2, Math.max(0.2, x.x + m[0])), y: Math.min(o.dims[1] - 0.2, Math.max(0.2, x.y + m[1])), mark: 'moved' as const, note: `moved by you ${m[0] >= 0 ? '+' : ''}${m[0]}, ${m[1] >= 0 ? '+' : ''}${m[1]} m${x.mark !== 'same' ? `; was ${x.mark}` : ''}` } : x; }) : st.positions;
   const cov = edited ? coverage(r, positions, ed.seats) : st.cov; const p = positions.find((x) => x.code === sel) || null;
   const occ = layers.has('occupancy') ? occupancy(r, cov.seats) : undefined;
   const score = readiness(r); const issues = openIssues(r);
@@ -190,7 +190,7 @@ function ObjectCardView({ p, r, tech, cov }: { p: ReturnType<typeof roomState>['
  *  never added into one score. Turning a camera is not offered: in this model cameras aim at the seats on their own. */
 const MOVABLE = ['camera', 'bar', 'micceil', 'mictable', 'lectern', 'table', 'speaker'];
 function ChangeRoom({ positions, base, cov, ed, setEd, tool, setTool, roomId, edited }: { positions: ReturnType<typeof roomState>['positions']; base: ReturnType<typeof roomState>['cov']; cov: ReturnType<typeof roomState>['cov']; ed: { mv: Record<string, [number, number]>; seats: number }; setEd: (e: { mv: Record<string, [number, number]>; seats: number }) => void; tool: string | null; setTool: (t: string) => void; roomId: string; edited: boolean }) {
-  const movable = positions.filter((x) => MOVABLE.includes(x.cat)); const cur = movable.find((x) => x.code === tool) || movable[0] || null; const mv: [number, number] = (cur && ed.mv[cur.code]) || [0, 0];
+  const movable = positions.filter((x) => MOVABLE.includes(x.cat)).sort((a, b) => MOVABLE.indexOf(a.cat) - MOVABLE.indexOf(b.cat)); /* cameras first, as V2.5.3 lists them */ const cur = movable.find((x) => x.code === tool) || movable[0] || null; const mv: [number, number] = (cur && ed.mv[cur.code]) || [0, 0];
   const nudge = (dx: number, dy: number) => { if (!cur) return; const m = ed.mv[cur.code] || [0, 0]; setEd({ ...ed, mv: { ...ed.mv, [cur.code]: [Math.round((m[0] + dx) * 100) / 100, Math.round((m[1] + dy) * 100) / 100] } }); };
   const dims: Array<[string, (c: typeof cov) => number | null, string]> = [
     ['Camera coverage', (c) => (c.cones.length ? pct(c.camera.covered, c.camera.of) : null), '% of seats in view'], ['Microphone pickup', (c) => (c.mics.length || c.pickup.worn ? pct(c.mic.covered, c.mic.of) : null), `% of ${cov.pickup.of}`],

@@ -36,9 +36,10 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   for (const id of list) {
     await t.go(`#/lite/room/${id}`, 260);
     const v = await t.page.evaluate(() => ({ room: document.querySelector('[data-testid="lite-room"]')?.getAttribute('data-room'), stage: !!document.querySelector('[data-testid="lite-3d"]'), states: document.querySelectorAll('[data-testid^="lite-state-"]').length, ov: document.querySelectorAll('[data-testid^="lite-ov-"]').length, over: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
-    if (v.room !== id || !v.stage || v.states !== 4 || v.ov !== 5 || v.over > 0) bad.push(`${id} ${JSON.stringify(v)}`);
+    // 12 Nov 2026: six overlays, since V2.5.3's Sightlines X-ray view was restored as an overlay
+    if (v.room !== id || !v.stage || v.states !== 4 || v.ov !== 6 || v.over > 0) bad.push(`${id} ${JSON.stringify(v)}`);
   }
-  ok(`LT-${tag}-07`, `${list.length === 90 ? 'all 90 rooms' : `a sample of ${list.length} rooms`} open in Lite with a 3D stage, four states and five overlays, no overflow`, !bad.length && (vp[2] !== 'desktop' || list.length === 90), bad.slice(0, 3).join(' | '));
+  ok(`LT-${tag}-07`, `${list.length === 90 ? 'all 90 rooms' : `a sample of ${list.length} rooms`} open in Lite with a 3D stage, four states and six overlays, no overflow`, !bad.length && (vp[2] !== 'desktop' || list.length === 90), bad.slice(0, 3).join(' | '));
   // states, overlays, layers, orbit and the device panel on the reference room
   await t.go('#/lite/room/R-ATL-4-218?mode=engineer', 300);
   ok(`LT-${tag}-08`, 'the room stage stays dark in either theme (D36)', (await lum(t.page, '[data-testid="lite-room"] .stage')) < 0.25);
@@ -126,4 +127,46 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   ok('LT-D44-06', 'no page error and no request left the page as a visitor', !t.errs.length && !t.ext.length, [...t.errs, ...t.ext].slice(0, 3).join(' | '));
   await t.close();
 }
+// 12 Nov 2026: V2.5.3's X-ray in the room restored (liteXray / metricsOf): Sightlines, Signal flow, the Measurements panel, Design a space
+for (const scheme of SCHEMES) for (const vp of [VIEWPORTS[0], VIEWPORTS[VIEWPORTS.length - 1]]) {
+  const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/lite/room/R-ATL-4-218?mode=engineer' }); await t.page.waitForSelector('[data-testid="lite-xray"]');
+  await t.page.click('[data-testid="lite-ov-sight"]'); await t.page.waitForTimeout(250);
+  const sg = await t.page.evaluate(() => ({ rays: document.querySelectorAll('.lt-ray').length, seats: document.querySelectorAll('.lt-seat').length, v: document.querySelector('[data-testid="lite-ov-sight"] .lt-switch__v')?.textContent || '', legend: document.querySelector('.lt-legend')?.textContent || '' }));
+  ok(`LT-${tag}-X1`, 'Sightlines draws one ray per seat to its best display, counts the clear ones on its switch and names the classes in the legend', sg.rays >= 1 && sg.rays === sg.seats && /^\d+\/\d+$/.test(sg.v) && /green clear, amber marginal, red obstructed/.test(sg.legend), JSON.stringify(sg));
+  const flow = () => t.page.evaluate(() => ({ on: document.querySelector('[data-testid="lite-x-signal"]')?.getAttribute('aria-checked'), ly: ['av', 'network', 'control'].map((k) => document.querySelector(`[data-testid="lite-ly-${k}"]`)?.getAttribute('aria-checked')), ov: document.querySelectorAll('[data-testid^="lite-ov-"][aria-checked="true"]').length }));
+  await t.page.click('[data-testid="lite-x-signal"]'); await t.page.waitForTimeout(250); const f1 = await flow();
+  await t.page.click('[data-testid="lite-x-signal"]'); await t.page.waitForTimeout(250); const f2 = await flow();
+  ok(`LT-${tag}-X2`, 'Signal flow turns the AV, network and control layers on together with the overlays off; again, it turns network and control off', f1.on === 'true' && f1.ly.every((x) => x === 'true') && f1.ov === 0 && f2.on === 'false' && f2.ly[0] === 'true' && f2.ly[1] === 'false' && f2.ly[2] === 'false', JSON.stringify([f1, f2]));
+  await t.page.click('[data-testid="lite-x-meas"]'); await t.page.waitForSelector('[data-testid="lite-meas"]');
+  const ms = await t.page.evaluate(() => ({ rows: document.querySelectorAll('[data-testid="lite-meas"] .lt-meas__m').length, txt: document.querySelector('[data-testid="lite-meas"]')?.textContent || '', hash: location.hash, studio: document.querySelector('[data-testid="lite-x-studio"]')?.getAttribute('href') ?? null }));
+  ok(`LT-${tag}-X3`, 'the Measurements panel: eight rows, modeled figures labelled modeled, the acoustic rows say they are not modeled and not measured, never mixed; the address keeps it', ms.rows === 8 && (ms.txt.match(/Not modeled here · no measurement on record/g) || []).length === 3 && /Clear display sightlines/.test(ms.txt) && /Modeled · not measured/.test(ms.txt) && /never mixed in one number/.test(ms.txt) && /xm=1/.test(ms.hash), ms.txt.slice(0, 200));
+  ok(`LT-${tag}-X4`, 'Design a space opens this room in the studio, where the role may', ms.studio === null || ms.studio === '#/studio/room/R-ATL-4-218', String(ms.studio));
+  ok(`LT-${tag}-X5`, 'no page error, no request left the page', !t.errs.length && !t.ext.length, [...t.errs, ...t.ext].slice(0, 3).join(' | '));
+  await t.close();
+}
+// 12 Nov 2026: V2.5.3's object inspector (liteCardHtml) restored: a device's card in the room
+for (const scheme of SCHEMES) {
+  const t = await open(VIEWPORTS[VIEWPORTS.length - 1], scheme, { hash: '#/lite/room/R-ATL-4-218?mode=engineer' }); await t.page.waitForSelector('[data-testid="lite-3d"]');
+  const cam = t.page.locator('.lt-dev[data-cat="camera"], .lt-dev[data-cat="bar"]').first(); const want = await cam.getAttribute('data-cat');
+  await cam.dispatchEvent('click'); await t.page.waitForSelector('[data-testid="lite-card"]', { timeout: 4000 }).catch(() => {});
+  const card = await t.page.evaluate(() => ({ kind: document.querySelector('[data-testid="lite-card"]')?.getAttribute('data-kind'), heads: Array.from(document.querySelectorAll('[data-testid="lite-card"] .lt-card__h')).map((h) => h.textContent) }));
+  ok(`LT-${scheme}-X6`, 'tapping a camera opens V2.5.3’s object card: what it is, who it is for, how to use it, common issues, support, learn more; for the engineer lens its purpose, flow, modeled coverage and engineering chapter', card.kind === want && ['What this is', 'Who this is for', 'How to use it', 'Common issues', 'Support path', 'Learn more', 'Technical purpose', 'Signal and data flow', 'Coverage · Modeled · not measured', 'Engineering reference'].every((h) => card.heads.includes(h)), JSON.stringify([want, card]));
+  ok(`LT-${scheme}-X7`, 'no page error, no request left the page', !t.errs.length && !t.ext.length, [...t.errs, ...t.ext].slice(0, 3).join(' | '));
+  await t.close();
+}
+// 12 Nov 2026: V2.5.3's Optimize panel in the room ("change the room") restored: moves by button in 25 cm steps, seat count, scores against the current layout
+for (const scheme of SCHEMES) {
+  const t = await open(VIEWPORTS[0], scheme, { hash: '#/lite/room/R-ATL-4-218?mode=optimize' }); const c = t.page.locator('[data-testid="lite-change"]'); await c.waitFor();
+  const seats0 = Number(await c.getByTestId('lite-seats').innerText());
+  await c.getByRole('button', { name: 'Move right' }).click(); await c.getByRole('button', { name: 'Move right' }).click(); await c.getByRole('button', { name: 'Move toward the display wall' }).click();
+  await c.getByRole('button', { name: 'One seat more' }).click(); await t.page.waitForTimeout(150);
+  const st = await t.page.evaluate(() => ({ moved: document.querySelector('[data-testid="lite-moved"]')?.textContent, title: document.querySelector('[data-testid="lite-change"] h2, [data-testid="lite-change"] h3')?.textContent || document.querySelector('[data-testid="lite-change"]')?.textContent?.slice(0, 40), ticks: document.querySelectorAll('[data-testid="lite-change"] .lt-sc__bar s').length, send: document.querySelector('[data-testid="lite-send"]')?.getAttribute('href'), movedMarks: document.querySelectorAll('.lt-dev--moved').length }));
+  const seats1 = Number(await c.getByTestId('lite-seats').innerText());
+  ok(`LT-${scheme}-X8`, 'Optimize: buttons move the chosen item in 25 cm steps, a seat is added, the scores show the current layout’s tick, the item is marked moved in 3D, and the layout can be sent to engineering', st.moved === '+0.50, -0.25 m' && seats1 === seats0 + 1 && st.ticks >= 1 && st.movedMarks >= 1 && /Your layout/.test(st.title) && st.send === '#/request/change-room?room=R-ATL-4-218', JSON.stringify({ ...st, seats0, seats1 }));
+  await c.getByTestId('lite-edits-reset').click(); await t.page.waitForTimeout(150);
+  ok(`LT-${scheme}-X9`, '“Back to the current layout” undoes every change', (await c.getByTestId('lite-moved').innerText()) === '25 cm steps' && Number(await c.getByTestId('lite-seats').innerText()) === seats0 && await t.page.locator('.lt-dev--moved').count() === 0);
+  ok(`LT-${scheme}-X10`, 'no page error, no request left the page', !t.errs.length && !t.ext.length, [...t.errs, ...t.ext].slice(0, 3).join(' | '));
+  await t.close();
+}
+
 await done();

@@ -160,6 +160,8 @@ for (const scheme of SCHEMES) { // View as changes the work; D44; destructive in
 // ---------------------------------------------------------------------------------------------------------------- investor start, room facts, divisible rooms, campus list
 for (const scheme of SCHEMES) {
   const t = await open([1440, 900], scheme, { hash: '#/investor' }); await t.page.waitForTimeout(900);
+  // 12 Nov 2026: the records count on each role card arrives asynchronously; under load it can land after 900 ms (seen once in a matrix), so wait for it
+  await t.page.waitForFunction(() => { const c = Array.from(document.querySelectorAll('[data-testid="shelf-counts"]')); return c.length > 0 && c.every((e) => /records/.test(e.textContent || '')); }, null, { timeout: 10000 }).catch(() => {});
   const sh = await t.page.evaluate(() => { const cards = Array.from(document.querySelectorAll('[data-testid="role-shelf"] .shelf__role')); return { n: cards.length, art: cards.filter((c) => c.querySelector('svg.shelf__art')).length, counts: cards.map((c) => c.querySelector('[data-testid="shelf-counts"]')?.textContent || ''), first: cards[0]?.getAttribute('aria-pressed') }; });
   ok(`CORE-${scheme}-shelf-01`, 'Every role, one Core: a carousel of all 16 roles, each with an illustration and its records and surfaces counts; the viewed role first', sh.n === 16 && sh.art === 16 /* sixteen since the Site Champion became a dedicated role (founder, 11 Nov 2026) */ && sh.first === 'true' && sh.counts.every((c) => /\d[\d,]* of \d[\d,]* records · \d+ of \d+ surfaces/.test(c)), JSON.stringify(sh).slice(0, 300));
   const vis = sh.counts.find((c, i) => i > 0); const arch = sh.counts[sh.counts.length - 1];

@@ -17,8 +17,11 @@ export async function harness(name) {
   // The offline worker (dist/sw.js) registers in every context, as it does for a visitor, so each suite runs with the worker in control
   // once it has installed. A suite can open a context without it (`sw: false`); PW_SERVICE_WORKER=block runs a whole suite without it.
   const swDefault = process.env.PW_SERVICE_WORKER !== 'block';
-  async function open(hash, { role = 'architect', w = 1440, h = 900, theme, reduced, colorScheme, sw = swDefault, init } = {}) {
+  // SIGNAL result pop-ups (12 Nov 2026) are modal; suites that are not about them open with the reference's own QA switch,
+  // window.SIGNAL_NOPOP, set (`pops: true` leaves it unset). demo-story-more tests the pop-ups themselves.
+  async function open(hash, { role = 'architect', w = 1440, h = 900, theme, reduced, colorScheme, sw = swDefault, init, pops = false } = {}) {
     const ctx = await browser.newContext({ viewport: { width: w, height: h }, reducedMotion: reduced ? 'reduce' : 'no-preference', serviceWorkers: sw ? 'allow' : 'block', ...(colorScheme ? { colorScheme } : {}) });
+    if (!pops) await ctx.addInitScript(() => { window.SIGNAL_NOPOP = true; });
     if (init) await ctx.addInitScript(init);
     await ctx.addInitScript(([r, t]) => { try { if (!sessionStorage.getItem('__seeded')) { localStorage.setItem('empathia.demo.perspective', r); if (t) localStorage.setItem('empathia.theme', t); else localStorage.removeItem('empathia.theme'); sessionStorage.setItem('__seeded', '1'); } } catch { /* */ } }, [role, theme || '']);
     const page = await ctx.newPage(); const errs = []; const reqs = []; const off = [];

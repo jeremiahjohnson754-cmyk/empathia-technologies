@@ -104,7 +104,8 @@ await suite('demo-learn', 4489, async ({ ok, open, goto, over, text, smallTarget
       ok('LN-35', 'a prepared question outside the records says so rather than inventing', /not part of this demonstration’s records/.test(await text(page)));
       await goto(page, '#/learn/explore', 'service'); await page.waitForSelector('[data-testid=learn-explore]');
       await page.click('.ln-ex__hot >> nth=0');
-      ok('LN-36', 'the explorer draws the venue with hotspots that explain themselves', (await page.locator('.ln-ex__hot').count()) >= 3 && /In the system:/.test(await text(page)));
+      // LN-36 updated 12 Nov 2026: the explorer is restored to the reference (System view answers a "?" as the system sees it, "label — text")
+      ok('LN-36', 'the explorer draws the venue with hotspots that explain themselves', (await page.locator('.ln-ex__hot').count()) >= 3 && / — /.test(await page.getByTestId('explore-info').innerText()));
       await goto(page, '#/learn/servicehands', 'service'); await page.waitForSelector('[data-testid=academy-now]');
       ok('LN-37', 'the ServiceHands Academy lists fifteen jobs in five groups and the live requests waiting on each', (await page.locator('.ln-academy .kit-row').count()) === 15 && /requests? waiting on this job/.test(await text(page)));
       await page.click('.ln-academy .kit-row >> nth=0'); await page.waitForSelector('[data-testid=academy-job]');
