@@ -219,7 +219,7 @@ function Reader({ ix, id, progress, commit, update, role }: { ix: StoryIndex; id
           onDrill={(did, ok) => { commit({ ...recordDrillTry(progress, did, ok), last: id }); setSaid(ok ? 'Drill passed and recorded.' : 'Drill recorded as not passed. The story goes on; you can try it again here.'); }}
           onTimeout={(d, h) => { set(timeOut(state, d, h)); setSaid('Time ran out. The decision is recorded as missed. Tap an option to see what it would have done, or replay it to make it count.'); }}
           onReplay={(did) => { set(replayDecision(state, did)); setSaid('The decision is open again and the clock restarts.'); }}
-          onTalk={(tid, o) => set(answerTalk(state, tid, o))} onFind={(did) => set(find(state, did))} />{flagshipAfter(id, it) && <Flagship onResult={(lid, ok) => { commit({ ...recordLabTry(progress, lid, ok, true), last: id }); setSaid(ok ? 'Flagship lab passed for that room and recorded.' : 'Flagship lab attempt recorded.'); }} />}</Fragment>; })}
+          onTalk={(tid, o) => set(answerTalk(state, tid, o))} onFind={(did) => set(find(state, did))} />{flagshipAfter(id, it) && <Flagship chapter={id} onResult={(lid, ok) => { commit({ ...recordLabTry(progress, lid, ok, true), last: id }); setSaid(ok ? 'Flagship lab passed and recorded.' : 'Flagship lab attempt recorded.'); }} />}</Fragment>; })}
         {ch.data && upTo >= items.length && art.data?.closing.map((c, i) => <figure key={i} className="sg-panel"><div className="sg-art" role="img" aria-label={c.alt} dangerouslySetInnerHTML={{ __html: c.svg }} /></figure>)}
       </div></GlCtx.Provider></QuestCtx.Provider>
       {glOpen && gl.data && <GlPop g={glOpen.g} at={glOpen.at} gl={gl.data} onClose={glClose} role={role} />}

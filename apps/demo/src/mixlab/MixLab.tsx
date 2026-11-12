@@ -77,7 +77,7 @@ export function MixLab({ initialRoom, embedded, onResult }: { initialRoom?: stri
 
   return <div className={`mx${embedded ? ' mx--embedded' : ''}`} data-testid="mixlab" data-room={roomKey} data-scene={scene} data-score={sc}>
     <header className="mx-head">
-      <div><p className="mx-kicker">SIGNAL flagship lab boss · Episode 10</p><h2 className="mx-title">Mix the Stream</h2>
+      <div><p className="mx-kicker">SIGNAL flagship lab boss · Season 1, Episode 10</p><h2 className="mx-title">Mix the Stream</h2>
         <p className="mx-lede">Mix the room and its live stream on a 32-channel console, in five rooms from a basement to a 4,000-seat mega church. Drag the faders and knobs, flip the layers, shape the EQ, ring out the wedges, line up the delays, and keep it right through every scene of the service.</p>
         <p className="mx-note">A teaching model in octave bands, built from textbook formulas (all shown below). It is not a measurement, not a real room, and not any maker’s console. Results stay in this browser: practice, never a credential.</p></div>
       <div className="mx-score" data-testid="mx-score" aria-label={`Scene score ${sc} of 100`}><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" className="mx-score__bg" /><circle cx="18" cy="18" r="15.5" className="mx-score__fg" style={{ strokeDasharray: `${sc * 0.974} 100`, stroke: sc >= M.PASS ? '#22c55e' : sc >= 60 ? '#f59e0b' : '#ef4444' }} /></svg><b>{sc}</b><span>scene score</span></div>

@@ -40,6 +40,16 @@ for (const [w, tag] of [[1440, 'desktop'], [390, 'phone']]) {
   await p.getByTestId('story-flagship-open').click(); await p.getByTestId('mixlab').waitFor({ timeout: 20000 });
   ok('MX-story', 'S01E10 offers the flagship lab right after its lab, and it opens inside the chapter', /lab/.test(prev || '') && (await p.locator('[data-testid="story-flagship"] [data-testid="mixlab"]').count()) === 1, String(prev));
   ok('MX-story-clean', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 4).join(' | ')); await t.close(); }
+// The lighting and video flagship labs sit in their own chapters the same way (founder, 12 Nov 2026): Episode 5 after its lab, Episode 7 after its lab.
+for (const [ch, unlock, lab, tid] of [['s01e05', 's01e06', 'light', 'lightlab'], ['s01e07', 's01e08', 'video', 'videolab']]) {
+  const t = await open(`#/story/${ch}`, { init: unlockInit(unlock), w: 1440, h: 900 }); const p = t.page; await p.getByTestId('story-flagship').waitFor({ timeout: 20000 });
+  const info = await p.evaluate(() => { const f = document.querySelector('[data-testid="story-flagship"]'); let it = f?.previousElementSibling; while (it && !it.getAttribute('data-item')) it = it.previousElementSibling; return { lab: f?.getAttribute('data-lab'), n: document.querySelectorAll('[data-testid="story-flagship"]').length, prev: it ? `${it.getAttribute('data-item')}:${it.getAttribute('data-kind')}` : null }; });
+  await p.getByTestId('story-flagship-open').click(); await p.getByTestId(tid).waitFor({ timeout: 20000 });
+  const inside = await p.locator(`[data-testid="story-flagship"] [data-testid="${tid}"]`).count();
+  const check = tid === 'lightlab' ? 'lx-check' : 'vx-next'; await p.getByTestId(check).scrollIntoViewIfNeeded(); await p.getByTestId(check).click();
+  await p.waitForTimeout(300); const said = await p.locator('[data-testid="story-said"]').allTextContents();
+  ok(`MX-story-${lab}`, `${ch.toUpperCase()} offers ${lab === 'light' ? 'Light the Stage' : 'Shoot the Service'} once, right after its lab; it opens inside the chapter and a check is recorded`, info.lab === lab && info.n === 1 && /lab/.test(info.prev || '') && inside === 1 && said.some((x) => /Flagship lab (passed|attempt)/.test(x)), JSON.stringify({ ...info, inside, said: said.slice(0, 3) }));
+  ok(`MX-story-${lab}-clean`, 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 4).join(' | ')); await t.close(); }
 { const t = await open('#/learn/labs', { w: 1440, h: 900 }); const p = t.page; await p.getByTestId('labs').waitFor();
   const href = await p.getByTestId('flagship-labs').locator('a').first().getAttribute('href');
   ok('MX-learn', 'Learn labs lists the flagship lab first', href === '#/labs/mix', String(href)); await t.close(); }

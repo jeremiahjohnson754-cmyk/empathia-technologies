@@ -28,7 +28,7 @@ const HELP: Record<string, [string, string]> = {
 };
 
 export default function LightLabPage(_p: PageProps) { return <section className="stack" data-native="" data-testid="lightlab-page"><LightLab /></section>; }
-export function LightLab() {
+export function LightLab({ embedded, onResult }: { embedded?: boolean; onResult?: (key: string, score: number, passed: boolean) => void } = {}) {
   const [st, setSt] = useState<State>(read); const [look, setLook] = useState<L.Look>('sermon'); const [sel, setSel] = useState<number>(st.hung[0]?.id ?? 0); const [help, setHelp] = useState('plot'); const [said, setSaid] = useState('');
   const save = (n: State) => { setSt(n); try { localStorage.setItem(KEY, JSON.stringify(n)); } catch { /* the lab still works without storage */ } };
   const rig: L.Rig = useMemo(() => ({ hung: st.hung.map((h) => ({ ...h, level: st.levels[look][h.id] ?? h.level })) }), [st, look]);
@@ -39,10 +39,10 @@ export function LightLab() {
     const id = Math.max(0, ...st.hung.map((h) => h.id)) + 1; const h: L.Hung = { id, kind, pos: free.key, addr: 1, target: free.y < 0 ? 'band' : 'pastor', level: 60, cct: 4300, hue: kind === 'par' || kind === 'batten' ? 200 : 0, zoom: L.FIXTURES[kind].zoom ? L.FIXTURES[kind].beam : L.FIXTURES[kind].beam };
     save({ ...st, hung: [...st.hung, h], levels: { sermon: { ...st.levels.sermon, [id]: 60 }, worship: { ...st.levels.worship, [id]: 60 } } }); setSel(id); setSaid(`#${id} ${L.FIXTURES[kind].label} hung at ${free.label}, patched at 1: give it its own address.`); setHelp('addr'); };
   const t = useClock(12); const h = rig.hung.find((x) => x.id === sel) || null;
-  const check = () => { const best = { ...st.best, [look]: Math.max(st.best[look] || 0, sc) }; save({ ...st, best }); setSaid(`${look === 'sermon' ? 'Sermon' : 'Worship'} look: ${sc} of 100${sc >= 75 ? ' — passed.' : '. 75 passes; the goals in red say what is left.'}`); };
+  const check = () => { const best = { ...st.best, [look]: Math.max(st.best[look] || 0, sc) }; save({ ...st, best }); setSaid(`${look === 'sermon' ? 'Sermon' : 'Worship'} look: ${sc} of 100${sc >= 75 ? ' — passed.' : '. 75 passes; the goals in red say what is left.'}`); onResult?.('rig', Math.round(L.LOOKS.reduce((p, x) => p + (best[x.key] || 0), 0) / L.LOOKS.length), L.LOOKS.every((x) => (best[x.key] || 0) >= 75)); };
   const P = rig.hung.find((x) => x === a.key); const Pd = P ? Math.hypot(...(['x', 'y', 'z'] as const).map((k) => L.POSITIONS.find((p) => p.key === P.pos)![k] - L.SUBJECTS[0]![k])) : 0;
-  return <div className="mx lx" data-testid="lightlab" data-look={look} data-score={sc}>
-    <header className="mx-head"><div><p className="mx-kicker">SIGNAL flagship lab · Lighting</p><h2 className="mx-title">Light the Stage</h2>
+  return <div className={`mx lx${embedded ? ' mx--embedded' : ''}`} data-testid="lightlab" data-look={look} data-score={sc}>
+    <header className="mx-head"><div><p className="mx-kicker">SIGNAL flagship lab · Lighting · Season 1, Episode 5</p><h2 className="mx-title">Light the Stage</h2>
       <p className="mx-lede">Hang the fixtures, patch them in one DMX universe, aim and zoom them, set the colour and the level, and light a sermon and a worship set for the room and the camera. Drag fixtures on the plot; the beams, the faces and the screen answer at once.</p>
       <p className="mx-note">A teaching model: inverse-square and cosine laws, beam angles and colour temperature in mireds. Not a measurement, not any maker’s fixture. Results stay in this browser.</p></div>
       <div className="mx-score" data-testid="lx-score"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" className="mx-score__bg" /><circle cx="18" cy="18" r="15.5" className="mx-score__fg" style={{ strokeDasharray: `${sc * 0.974} 100`, stroke: sc >= 75 ? '#22c55e' : sc >= 50 ? '#f59e0b' : '#ef4444' }} /></svg><b>{sc}</b><span>look score</span></div></header>

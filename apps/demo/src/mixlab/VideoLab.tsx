@@ -24,7 +24,7 @@ const HELP: Record<string, [string, string]> = {
 };
 
 export default function VideoLabPage(_p: PageProps) { return <section className="stack" data-native="" data-testid="videolab-page"><VideoLab /></section>; }
-export function VideoLab() {
+export function VideoLab({ embedded, onResult }: { embedded?: boolean; onResult?: (key: string, score: number, passed: boolean) => void } = {}) {
   const [st, setSt] = useState<State>(read); const [cam, setCam] = useState(0); const [help, setHelp] = useState('shutter'); const [said, setSaid] = useState(''); const [mix, setMix] = useState<{ from: number; at: number } | null>(null);
   const save = (n: State) => { setSt(n); try { localStorage.setItem(KEY, JSON.stringify(n)); } catch { /* the lab still works without storage */ } };
   const r = st.rig; const gs = useMemo(() => V.videoGoals(r, st.cue), [r, st.cue]); const sc = V.videoScore(gs); const t = useClock(20);
@@ -32,9 +32,9 @@ export function VideoLab() {
   const c = r.cams[cam]!; const C = V.CUES[st.cue]!;
   useEffect(() => { if (!mix) return; const id = setTimeout(() => setMix(null), 1000); return () => clearTimeout(id); }, [mix]);
   const take = (dissolve: boolean) => { if (dissolve) setMix({ from: r.pgm, at: Date.now() }); setRig({ pgm: r.pvw, pvw: r.pgm }); setHelp('switcher'); };
-  const next = () => { const best = { ...st.best, [C.key]: Math.max(st.best[C.key] || 0, sc) }; const n = (st.cue + 1) % V.CUES.length; save({ ...st, best, cue: n }); setSaid(`${C.label}: ${sc} of 100${sc >= 75 ? ' — passed.' : '. 75 passes.'} Next: ${V.CUES[n]!.label}. ${V.CUES[n]!.says}`); };
-  return <div className="mx vx" data-testid="videolab" data-score={sc} data-cue={C.key}>
-    <header className="mx-head"><div><p className="mx-kicker">SIGNAL flagship lab · Video</p><h2 className="mx-title">Shoot the Service</h2>
+  const next = () => { const best = { ...st.best, [C.key]: Math.max(st.best[C.key] || 0, sc) }; const n = (st.cue + 1) % V.CUES.length; save({ ...st, best, cue: n }); setSaid(`${C.label}: ${sc} of 100${sc >= 75 ? ' — passed.' : '. 75 passes.'} Next: ${V.CUES[n]!.label}. ${V.CUES[n]!.says}`); onResult?.('service', Math.round(V.CUES.reduce((p, x) => p + (best[x.key] || 0), 0) / V.CUES.length), V.CUES.every((x) => (best[x.key] || 0) >= 75)); };
+  return <div className={`mx vx${embedded ? ' mx--embedded' : ''}`} data-testid="videolab" data-score={sc} data-cue={C.key}>
+    <header className="mx-head"><div><p className="mx-kicker">SIGNAL flagship lab · Video · Season 1, Episode 7</p><h2 className="mx-title">Shoot the Service</h2>
       <p className="mx-lede">Two cameras, an LED wall, house lights on the mains, a switcher and a stream. Set the format, shutter, iris, ISO, ND and white balance until the viewfinders are clean; cut the service on cue; and make the sound wait for the picture.</p>
       <p className="mx-note">A teaching model: banding from the wall’s refresh and the lights’ flicker over the shutter time, exposure from the incident-meter equation, lip-sync from frame times. Not a real camera or switcher. Results stay in this browser.</p></div>
       <div className="mx-score" data-testid="vx-score"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" className="mx-score__bg" /><circle cx="18" cy="18" r="15.5" className="mx-score__fg" style={{ strokeDasharray: `${sc * 0.974} 100`, stroke: sc >= 75 ? '#22c55e' : sc >= 50 ? '#f59e0b' : '#ef4444' }} /></svg><b>{sc}</b><span>cue score</span></div></header>
