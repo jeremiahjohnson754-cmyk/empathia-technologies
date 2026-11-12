@@ -165,7 +165,7 @@ function pilotsPage(): Page {
             <label className="wiz__field" htmlFor="wiz-connector">The system the pilot would read from</label>
             <select id="wiz-connector" name="connector" defaultValue="NONE" aria-describedby="wiz-connector-note">
               <option value="NONE">No live source (a synthetic tenant only)</option>
-              {cats.map((cat) => <optgroup key={cat} label={cat}>{CONNECTORS.filter((c) => c.category === cat).map((c) => { const ch = choiceOf(c); return <option key={c.key} value={c.key} data-model={ch.model} data-maturity={ch.maturity}>{ch.label}</option>; })}</optgroup>)}
+              {cats.map((cat) => <optgroup key={cat} label={cat}>{CONNECTORS.filter((c) => c.category === cat).map((c) => { const ch = choiceOf(c); return <option key={c.key} value={c.key} data-model={ch.model} data-maturity={ch.maturity}>{ch.maturity === 'VERIFIED' ? ch.label : `${ch.label} (planned, not connected)`}</option>; })}</optgroup>)}
               <option value="NOT_LISTED">A platform that is not listed</option>
             </select>
             <p className="wiz__note" id="wiz-connector-note">The {CONNECTORS.length} entries are the connector catalogue: target platforms named for interface planning. No entry implies a partnership, a certification or a working connection, and none has a verified connector today.</p>

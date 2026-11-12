@@ -1,0 +1,370 @@
+{
+ "_about": "90-3: every vendor, product, standard or body named in either public app's source, with the evidence that allows it. tests/unit/vendor-claims.test.mjs fails on a new name or file until it is entered here with its evidence, and on an entry that no longer occurs. Names checked: every vendor in the connector catalogue plus the list in that test.",
+ "evidence": {
+  "catalogue-planned": "An entry of the connector catalogue (integrations/contracts/INTEGRATION_REGISTRY.csv): a target platform named for interface planning. Planned, not connected; no adapter code, no partnership, no certification.",
+  "disclosed-processor": "A service the site really uses, named where its use is disclosed (the enquiry form's processor). Not a product integration.",
+  "mock-tested-not-connected": "Adapter or link code written to the vendor's published contract and exercised only against a deterministic mock. Never run against a real tenant; the page says NOT CONNECTED.",
+  "documented-link-not-followed": "A web address the vendor documents, offered for the user to open in the vendor's own app. Not followed against a real tenant here; the page says so.",
+  "training-subject-cited": "A product taught as a subject in training. Steps paraphrased from the vendor's public help, which is linked and dated; no screen, logo or text reproduced.",
+  "standard-cited": "A published standard named by its number and body so a reader can find it. Its text is not reproduced and conformity is not claimed.",
+  "credential-issuer": "The body that issues one of the founder's three credentials (CTS, CAPM, Network+). No sponsorship or endorsement is implied.",
+  "file-format": "A file format named to say whether it is supported.",
+  "ordinary-word": "The word is used in its ordinary sense (zoom in, sports teams, a keyboard), or names our own SIGNAL Teams plan, not the vendor.",
+  "code-identifier": "A name inside code (a type or a comment), not shown as a claim.",
+  "simulated-generic": "Names a kind of system inside a simulated step on synthetic data; nothing is connected, called or observed."
+ },
+ "catalogue": {
+  "source": "integrations/contracts/INTEGRATION_REGISTRY.csv",
+  "generated": "packages/commercial/src/generated/connectors.ts",
+  "shownAt": "apps/website/src/commercial.tsx: the pilot enquiry's source-platform list, each entry labelled (planned, not connected), with a note that no entry implies a partnership, certification or working connection",
+  "evidence": "catalogue-planned"
+ },
+ "names": {
+  "AES": [
+   {
+    "file": "apps/demo/src/knowledge/seed.universal.ts",
+    "evidence": "standard-cited",
+    "note": "AES67 named in the standards map"
+   }
+  ],
+  "AVIXA": [
+   {
+    "file": "apps/website/src/content.tsx",
+    "evidence": "credential-issuer",
+    "note": "founder page: CTS (AVIXA)"
+   },
+   {
+    "file": "apps/website/src/ui.tsx",
+    "evidence": "credential-issuer",
+    "note": "credential list"
+   },
+   {
+    "file": "apps/demo/src/lite/data/v253.ts",
+    "evidence": "credential-issuer",
+    "note": "onboarding guide pathway example"
+   },
+   {
+    "file": "apps/demo/src/drawing/viewing.ts",
+    "evidence": "standard-cited",
+    "note": "says it is NOT the AVIXA DISCAS method"
+   },
+   {
+    "file": "apps/demo/src/knowledge/seed.universal.ts",
+    "evidence": "standard-cited",
+    "note": "ANSI/AVIXA V202.01 and 10:2013 named by number"
+   },
+   {
+    "file": "apps/demo/src/onboard/program.ts",
+    "evidence": "credential-issuer",
+    "note": "pathway examples"
+   }
+  ],
+  "Android": [
+   {
+    "file": "apps/demo/src/training/lessons.ts",
+    "evidence": "training-subject-cited",
+    "note": "Teams Rooms on Android: said to be not covered"
+   }
+  ],
+  "Apple": [
+   {
+    "file": "apps/demo/src/shell/Shell.tsx",
+    "evidence": "ordinary-word",
+    "note": "⌘K on Apple keyboards"
+   }
+  ],
+  "CompTIA": [
+   {
+    "file": "apps/website/src/content.tsx",
+    "evidence": "credential-issuer",
+    "note": "founder page"
+   },
+   {
+    "file": "apps/website/src/ui.tsx",
+    "evidence": "credential-issuer",
+    "note": "credential list"
+   },
+   {
+    "file": "apps/demo/src/onboard/program.ts",
+    "evidence": "credential-issuer",
+    "note": "pathway examples"
+   }
+  ],
+  "Entra": [
+   {
+    "file": "apps/demo/src/connect/apps.ts",
+    "evidence": "documented-link-not-followed",
+    "note": "sign-in address parameter of the documented Teams link"
+   }
+  ],
+  "Google": [
+   {
+    "file": "apps/website/src/content.tsx",
+    "evidence": "disclosed-processor",
+    "note": "Tally's own statement of where it stores form data"
+   }
+  ],
+  "IEEE": [
+   {
+    "file": "apps/demo/src/knowledge/seed.universal.ts",
+    "evidence": "standard-cited",
+    "note": "IEEE 802.3, 802.1Q, 1588 named by number"
+   }
+  ],
+  "IFC": [
+   {
+    "file": "apps/demo/src/build/store.ts",
+    "evidence": "file-format",
+    "note": "IFC is NOT SUPPORTED here"
+   }
+  ],
+  "Microsoft": [
+   {
+    "file": "apps/demo/src/training/lessons.ts",
+    "evidence": "training-subject-cited",
+    "note": "Teams Rooms pilot lesson, sources linked and dated"
+   },
+   {
+    "file": "apps/demo/src/connect/graph.mock.ts",
+    "evidence": "mock-tested-not-connected",
+    "note": "the mock itself"
+   },
+   {
+    "file": "apps/demo/src/connect/graph.ts",
+    "evidence": "mock-tested-not-connected",
+    "note": "Graph calendar adapter"
+   },
+   {
+    "file": "apps/demo/src/connect/adapter.ts",
+    "evidence": "mock-tested-not-connected",
+    "note": "CONNECTION_STATEMENT: NOT CONNECTED"
+   },
+   {
+    "file": "apps/demo/src/connect/MeetPage.tsx",
+    "evidence": "mock-tested-not-connected",
+    "note": "'Is this connected to Microsoft 365?' answer"
+   },
+   {
+    "file": "apps/demo/src/connect/apps.ts",
+    "evidence": "documented-link-not-followed",
+    "note": "Teams and Outlook links"
+   },
+   {
+    "file": "apps/demo/src/guides/chapters.ts",
+    "evidence": "training-subject-cited",
+    "note": "which app is for what"
+   },
+   {
+    "file": "apps/demo/src/knowledge/graph.source.ts",
+    "evidence": "mock-tested-not-connected",
+    "note": "SharePoint document source"
+   },
+   {
+    "file": "apps/demo/src/knowledge/graph.source.mock.ts",
+    "evidence": "mock-tested-not-connected",
+    "note": "the mock itself"
+   },
+   {
+    "file": "apps/demo/src/knowledge/ingest.ts",
+    "evidence": "mock-tested-not-connected",
+    "note": "GRAPH_MOCK: no real library has answered"
+   }
+  ],
+  "OneDrive": [
+   {
+    "file": "apps/demo/src/guides/chapters.ts",
+    "evidence": "training-subject-cited",
+    "note": "which app is for what"
+   },
+   {
+    "file": "apps/demo/src/knowledge/graph.source.mock.ts",
+    "evidence": "mock-tested-not-connected",
+    "note": "the mock itself"
+   }
+  ],
+  "Outlook": [
+   {
+    "file": "apps/demo/src/connect/apps.ts",
+    "evidence": "documented-link-not-followed",
+    "note": "Outlook link"
+   },
+   {
+    "file": "apps/demo/src/guides/chapters.ts",
+    "evidence": "training-subject-cited",
+    "note": "which app is for what"
+   }
+  ],
+  "PMI": [
+   {
+    "file": "apps/website/src/content.tsx",
+    "evidence": "credential-issuer",
+    "note": "founder page"
+   },
+   {
+    "file": "apps/website/src/ui.tsx",
+    "evidence": "credential-issuer",
+    "note": "credential list"
+   },
+   {
+    "file": "apps/demo/src/onboard/program.ts",
+    "evidence": "credential-issuer",
+    "note": "pathway examples"
+   }
+  ],
+  "SharePoint": [
+   {
+    "file": "apps/demo/src/guides/chapters.ts",
+    "evidence": "training-subject-cited",
+    "note": "which app is for what"
+   },
+   {
+    "file": "apps/demo/src/knowledge/graph.source.ts",
+    "evidence": "mock-tested-not-connected",
+    "note": "document source"
+   },
+   {
+    "file": "apps/demo/src/knowledge/graph.source.mock.ts",
+    "evidence": "mock-tested-not-connected",
+    "note": "the mock itself"
+   }
+  ],
+  "Tally": [
+   {
+    "file": "apps/website/src/enquiry.ts",
+    "evidence": "disclosed-processor",
+    "note": "hosted enquiry form"
+   },
+   {
+    "file": "apps/website/src/content.tsx",
+    "evidence": "disclosed-processor",
+    "note": "privacy note names the processor"
+   },
+   {
+    "file": "apps/website/src/styles/site.css",
+    "evidence": "code-identifier",
+    "note": "comment"
+   },
+   {
+    "file": "apps/demo/src/enquiry.ts",
+    "evidence": "disclosed-processor",
+    "note": "hosted enquiry form"
+   },
+   {
+    "file": "apps/demo/src/signal/story.ts",
+    "evidence": "code-identifier",
+    "note": "the story's score type, not the vendor"
+   },
+   {
+    "file": "apps/demo/src/enquiry/WorkWith.tsx",
+    "evidence": "disclosed-processor",
+    "note": "enquiry page discloses the form"
+   }
+  ],
+  "Teams": [
+   {
+    "file": "apps/website/src/commercial.tsx",
+    "evidence": "ordinary-word",
+    "note": "our SIGNAL Teams plan"
+   },
+   {
+    "file": "apps/demo/src/App.tsx",
+    "evidence": "documented-link-not-followed",
+    "note": "footer: the links a contact action opens"
+   },
+   {
+    "file": "apps/demo/src/training/lessons.ts",
+    "evidence": "training-subject-cited",
+    "note": "Teams Rooms pilot lesson"
+   },
+   {
+    "file": "apps/demo/src/connect/graph.ts",
+    "evidence": "mock-tested-not-connected",
+    "note": "Graph adapter"
+   },
+   {
+    "file": "apps/demo/src/connect/access.ts",
+    "evidence": "documented-link-not-followed",
+    "note": "who may open a Teams link"
+   },
+   {
+    "file": "apps/demo/src/connect/adapter.ts",
+    "evidence": "mock-tested-not-connected",
+    "note": "adapter notes"
+   },
+   {
+    "file": "apps/demo/src/connect/ContactBar.tsx",
+    "evidence": "documented-link-not-followed",
+    "note": "Message or call in Teams: you act there"
+   },
+   {
+    "file": "apps/demo/src/connect/MeetPage.tsx",
+    "evidence": "documented-link-not-followed",
+    "note": "Teams scheduling form link"
+   },
+   {
+    "file": "apps/demo/src/connect/PeoplePage.tsx",
+    "evidence": "documented-link-not-followed",
+    "note": "preferred channel word"
+   },
+   {
+    "file": "apps/demo/src/connect/apps.ts",
+    "evidence": "documented-link-not-followed",
+    "note": "the documented links"
+   },
+   {
+    "file": "apps/demo/src/worlds/stadium/data.pro.ts",
+    "evidence": "ordinary-word",
+    "note": "sports teams enter"
+   },
+   {
+    "file": "apps/demo/src/worlds/stadium/data.public.ts",
+    "evidence": "ordinary-word",
+    "note": "sports teams warm up"
+   },
+   {
+    "file": "apps/demo/src/guides/chapters.ts",
+    "evidence": "training-subject-cited",
+    "note": "which app is for what"
+   }
+  ],
+  "Windows": [
+   {
+    "file": "apps/demo/src/training/lessons.ts",
+    "evidence": "training-subject-cited",
+    "note": "Teams Rooms on Windows"
+   },
+   {
+    "file": "apps/demo/src/parity/v14Model.ts",
+    "evidence": "simulated-generic",
+    "note": "a simulated diagnostic step: on-box collection on a Windows room system"
+   },
+   {
+    "file": "apps/demo/src/parity/V14.tsx",
+    "evidence": "code-identifier",
+    "note": "pattern in simulated diagnostics"
+   },
+   {
+    "file": "apps/demo/src/connect/graph.mock.ts",
+    "evidence": "mock-tested-not-connected",
+    "note": "Windows time-zone names Graph returns"
+   },
+   {
+    "file": "apps/demo/src/connect/graph.ts",
+    "evidence": "mock-tested-not-connected",
+    "note": "Windows time-zone names Graph returns"
+   }
+  ],
+  "Zoom": [
+   {
+    "file": "apps/demo/src/lite/Scene.tsx",
+    "evidence": "ordinary-word",
+    "note": "zoom in and out"
+   },
+   {
+    "file": "apps/demo/src/lite/LiteRoom.tsx",
+    "evidence": "ordinary-word",
+    "note": "zoom control"
+   }
+  ]
+ }
+}
