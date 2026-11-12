@@ -44,6 +44,13 @@ export const SHELL_PAGES: readonly PageDef[] = [
     search: { keywords: 'anatomy device blocks layers signal power network control firmware mounting fault isolate', aliases: ['anatomy', 'device anatomy', 'inside a camera'] },
   },
   {
+    // 60/10 P1 (12 Nov 2026): the five axes of the Experience Language, each shown in every value, both themes, at any width
+    id: 'design.axes', title: 'Five axes', purpose: 'Condition, provenance, confidence, workflow and maturity: five separate things a screen can say about a value, never one colour', product: 'shell',
+    path: '/design/axes', authority: { roles: ROLE_KEYS, why: 'a reference page of the design language: it shows no record, so every role may read it' },
+    load: () => import('./pages/AxesPage.js'),
+    search: { keywords: 'design language axes condition provenance confidence workflow maturity measured modeled simulated assumed', aliases: ['axes', 'design language'] },
+  },
+  {
     id: 'access', title: 'Access policy', purpose: 'Who may open, see and do what: the demonstration’s access policy, from V2.5.3', product: 'shell',
     path: '/access', authority: { roles: ROLE_KEYS, why: 'the V2.5 Policy page: a demonstration of authorization, shown to every role' },
     load: entry('policy'),

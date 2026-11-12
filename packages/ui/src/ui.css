@@ -367,3 +367,20 @@ input.lab__input { width: 9em; } select.lab__input { min-width: 0; width: 100%; 
 .lab__canvas { display: block; width: 100%; min-width: 480px; height: auto; }
 /* The bench (restored 12 Nov): dark drawing stages in either theme; the three RGB lights add (screen blend) the way light does. */
 .bench__stage svg { min-width: 560px; } .bench__screen { isolation: isolate; } .bench__light { mix-blend-mode: screen; }
+
+/* The five axes (Axes.tsx, 60/10 P1): each its own shape, its value always in words */
+.ax { display: inline-flex; align-items: center; gap: 6px; min-height: 26px; padding: 2px 9px; font-size: var(--fs-xs); font-weight: 600; line-height: 1.2; color: var(--tx); vertical-align: middle; max-width: 100%; }
+.ax__src { font-weight: 500; color: var(--tx2); }
+.ax--cond { border-radius: 999px; background: color-mix(in srgb, var(--tone, var(--tx3)) 16%, transparent); border: 1px solid color-mix(in srgb, var(--tone, var(--tx3)) 55%, transparent); }
+.ax--cond .ax__glyph { color: var(--tone, var(--tx3)); font-size: 11px; }
+.ax--cond-nominal { --tone: var(--ok); } .ax--cond-warning { --tone: var(--warn); } .ax--cond-critical { --tone: var(--bad); } .ax--cond-escalated { --tone: var(--violet, var(--bad)); } .ax--cond-unknown { --tone: var(--tx3); }
+.ax--prov { border-radius: 3px; border: 1px solid var(--line2); background: var(--bg2); }
+.ax--prov .ax__mark { display: inline-grid; place-items: center; min-width: 20px; height: 18px; padding: 0 3px; border-radius: 2px; font-size: 10px; font-weight: 800; letter-spacing: .02em; background: var(--tx); color: var(--bg); }
+.ax--prov-modeled .ax__mark { background: var(--info, var(--accent)); } .ax--prov-simulated .ax__mark { background: var(--violet, var(--accent)); } .ax--prov-assumed .ax__mark { background: var(--tx3); } .ax--prov-unavailable .ax__mark { background: transparent; color: var(--tx2); border: 1px dashed var(--tx3); }
+.ax--conf { border-radius: 6px; border: 1px dashed var(--line2); font-weight: 500; color: var(--tx2); }
+.ax--flow { border-radius: 6px; border: 1px solid var(--line2); }
+.ax__steps { display: inline-flex; gap: 2px; } .ax__steps i { inline-size: 6px; block-size: 6px; border-radius: 1px; background: var(--line2); } .ax__steps i[data-on=true] { background: var(--accent); }
+.ax--flow-rejected, .ax--flow-blocked { border-color: var(--bad); } .ax--flow-superseded { color: var(--tx2); text-decoration: line-through; text-decoration-color: var(--tx3); }
+.ax--mat { padding: 2px 4px; color: var(--tx2); font-weight: 600; letter-spacing: .01em; } .ax--mat-tested, .ax--mat-implemented { color: var(--tx); } .ax--mat-not-run { color: var(--tx3); }
+@media (forced-colors: active) { .ax { border: 1px solid CanvasText; } .ax--prov .ax__mark { forced-color-adjust: none; background: CanvasText; color: Canvas; } }
+.ax-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; }
