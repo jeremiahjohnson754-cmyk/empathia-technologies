@@ -27,12 +27,14 @@ const at = (p) => p.evaluate(() => { const r = document.querySelector('[data-tes
   for (let i = 0; i < 80 && (await at(p)).kind !== 'choice'; i += 1) { const s = await at(p); if (s.kind === 'card') await p.click('[data-testid=play-continue]'); else if (s.kind === 'reply') { await p.locator('[data-testid=play-over] .sg-opt').first().click(); await p.click('[data-testid=play-continue]'); } else await p.click('[data-testid=play-next]'); }
   const d = await at(p);
   ok('PL-07', 'the first decision appears inside the frame and holds the scene: Next is disabled', d.kind === 'choice' && d.frontier === d.shot && await p.locator('[data-testid=play-next]').isDisabled() && await p.locator('[data-testid=play-over] .sg-dec').count() === 1, JSON.stringify(d));
-  await p.click('[data-testid=play-over] .sg-opt[data-option=A]'); await p.waitForSelector('[data-testid=story-fail]');
-  ok('PL-08', 'a failing option fails with the canon’s reason and the scene stays held', (await at(p)).frontier === d.shot && /That path fails/.test(await p.locator('[data-testid=play-said]').innerText()));
-  await p.click('[data-testid=play-over] .sg-opt[data-option=C]'); await p.waitForSelector('[data-testid=play-continue]'); await p.click('[data-testid=play-continue]');
-  ok('PL-09', 'a passing option releases the scene', (await at(p)).shot === d.shot + 1 && (await at(p)).frontier > d.shot);
+  // Changed 11 Nov 2026 (restoration to the reference build): a failing option is recorded as a costly call and the scene goes on with
+  // it; it used to be refused and hold the scene. Tapping another option replaces the choice and keeps the first.
+  await p.click('[data-testid=play-over] .sg-opt[data-option=A]'); await p.waitForSelector('[data-testid=play-over] [data-testid=story-result][data-verdict=costly]');
+  ok('PL-08', 'a failing option is recorded as a costly call, with the canon’s reason, and the scene may go on', /a costly call/.test(await p.locator('[data-testid=play-said]').innerText()) && await p.locator('[data-testid=play-continue]').count() === 1 && /erased the receive history/.test(await p.locator('[data-testid=play-over]').innerText()));
+  await p.click('[data-testid=play-over] .sg-opt[data-option=C]'); await p.waitForSelector('[data-testid=play-over] [data-testid=story-result][data-letter=C]'); await p.click('[data-testid=play-continue]');
+  ok('PL-09', 'the choice can be changed before going on; the scene is released', (await at(p)).shot === d.shot + 1 && (await at(p)).frontier > d.shot);
   await p.goto(p.url().replace(/#.*/, '#/story/s01e00')); await p.waitForSelector('[data-testid=story-result]');
-  ok('PL-10', 'the reader shows the same decision as made: one record, two ways of reading', (await p.locator('[data-testid=story-result]').first().getAttribute('data-letter')) === 'C' && /2 attempts/.test(await p.locator('[data-testid=story-result]').first().innerText()));
+  ok('PL-10', 'the reader shows the same decision as made: one record, two ways of reading', (await p.locator('[data-testid=story-result]').first().getAttribute('data-letter')) === 'C' && /First choice A, changed once/.test(await p.locator('[data-testid=story-result]').first().innerText()));
   await p.click('[data-testid=story-play]'); await p.waitForSelector('[data-testid=play]');
   ok('PL-11', 'coming back, the player is where it was left', (await at(p)).shot === d.shot + 1);
   ok('PL-12', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }

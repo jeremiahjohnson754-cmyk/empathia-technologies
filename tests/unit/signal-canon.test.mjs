@@ -43,15 +43,18 @@ test('SC-05 the canon keeps its ground rules: every decision can be passed, revi
   assert.ok(of('panel').filter((p) => p.flags.length).length > 1000, 'flags stay on their panels');
 });
 const s01 = chapters[index.findIndex((c) => c.id === 's01e00')].items; const dec = s01.find((i) => i.type === 'decision'); const failing = dec.options.find((o) => o.fail); const passing = dec.options.find((o) => !o.fail);
-test('SC-06 a decision gates the story: nothing after it is reached until an option that does not fail is chosen', () => {
+// SC-06 and SC-07 changed 11 Nov 2026: restored to the founder's build package (docs/04-engine-specs.md §1 and its reference runtime).
+// A failing option used to be refused while the story waited; in the canon it is recorded as a costly call, costs its weight, and the
+// story goes on. The engine's own suite (signal-story.test.mjs) holds the rest of the rules.
+test('SC-06 a decision gates the story until a choice is recorded; a failing option records, costs, and lets the story go on', () => {
   const at = s01.indexOf(dec); let s = E.emptyChapter(); assert.equal(E.reached(s01, s, true), at + 1); assert.equal(E.reached(s01, s, false), s01.length);
-  const f = E.choose(s, dec, failing.letter); assert.equal(f.outcome.kind, 'failed'); assert.equal(f.outcome.reason, failing.fail); assert.equal(E.reached(s01, f.state, true), at + 1); assert.equal(E.passed(f.state, dec.id), false);
-  const p = E.choose(f.state, dec, passing.letter); assert.equal(p.outcome.kind, 'passed'); assert.ok(E.reached(s01, p.state, true) > at + 1); assert.equal(p.state.choices[dec.id].tries, 2); assert.deepEqual(p.state.choices[dec.id].failed, [failing.letter]);
-  assert.equal(E.choose(p.state, dec, passing.letter).outcome.kind, 'refused'); assert.equal(E.choose(s, dec, 'Z').outcome.kind, 'refused');
+  const f = E.choose(s, dec, failing.letter); assert.equal(f.outcome.kind, 'recorded'); assert.equal(f.outcome.verdict, 'costly'); assert.equal(f.outcome.option.fail, failing.fail); assert.ok(E.reached(s01, f.state, true) > at + 1); assert.equal(E.passed(f.state, dec.id), true);
+  const p = E.choose(f.state, dec, passing.letter); assert.equal(p.outcome.kind, 'recorded'); assert.equal(p.outcome.changed, true); assert.deepEqual(p.state.choices[dec.id], { letter: passing.letter, first: failing.letter, changes: 1, hints: 0 });
+  assert.equal(E.choose(s, dec, 'Z').outcome.kind, 'refused');
 });
-test('SC-07 merit and trust come from the canon’s weights; failed attempts and hints cost what the canon says', () => {
-  const clean = E.choose(E.emptyChapter(), dec, passing.letter).state; const t0 = E.tally(s01, clean); assert.equal(t0.merit, passing.weight.merit || 0); assert.equal(t0.firstTry, 1);
-  const messy = E.choose(E.choose(E.emptyChapter(), dec, failing.letter).state, dec, passing.letter).state; assert.equal(E.tally(s01, messy).merit, (passing.weight.merit || 0) + (failing.weight.merit || 0)); assert.equal(E.tally(s01, messy).failedAttempts, 1);
+test('SC-07 merit and trust come from the canon’s weights for the choice recorded; hints keep what the canon says', () => {
+  const clean = E.choose(E.emptyChapter(), dec, passing.letter).state; const t0 = E.tally(s01, clean); assert.equal(t0.merit, passing.weight.merit || 0); assert.equal(t0.made, 1);
+  const costly = E.choose(E.emptyChapter(), dec, failing.letter).state; assert.equal(E.tally(s01, costly).merit, failing.weight.merit || 0); assert.equal(E.tally(s01, costly).costly, 1);
   if ((passing.weight.merit || 0) > 0 && dec.hints.length) { const hinted = E.choose(E.emptyChapter(), dec, passing.letter, { hints: 2 }).state; assert.equal(E.tally(s01, hinted).merit, Math.round(passing.weight.merit * dec.hints[1].keep)); }
   const talk = s01.find((i) => i.type === 'talk'); const tk = E.answerTalk(E.emptyChapter(), talk.id, 0); assert.deepEqual(E.tally(s01, tk).trust, talk.options[0].trust); assert.equal(E.answerTalk(tk, talk.id, 1), tk, 'a reply cannot be taken back');
 });

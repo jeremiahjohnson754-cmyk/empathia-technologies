@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 // SIGNAL story (Surpass §13, W14): the founder's canon read in the product. The library shows the canon's own counts; a chapter draws
-// its panels from the canon's art; a decision gates the story, can fail, and is remembered; hints, conversations and discoveries work;
+// its panels from the canon's art; a decision gates the story until a choice is recorded, and every choice counts, a costly one too
+// (restored 11 Nov 2026 to the founder's build package: ST-13, ST-14, ST-18 changed with it); a missed clock is recorded and can be
+// replayed; the previous chapter's choices open the next; hints, conversations and discoveries work;
 // progress survives a reload and can be replayed; the last season opens too; review flags are shown; phone, keyboard, both themes;
 // no console error and no request leaving the page.   node tests/browser/demo-story.test.mjs
 import { harness } from './demo-shell-lib.mjs';
@@ -24,26 +26,34 @@ const reader = (p) => p.evaluate(() => { const r = document.querySelector('[data
   ok('ST-08', 'the story stops at the first decision: later moments are not in the page', a.reached < a.items && await p.locator('.sg-dec').count() === 1 && await p.locator('[data-testid=story-waiting]').count() === 1 && !/The computer isn't broken/.test(text), `${a.reached}/${a.items}`);
   ok('ST-09', 'the pictures have text equivalents and the dialogue is real text', (await p.$$eval('.sg-art', (e) => e.every((x) => x.getAttribute('role') === 'img' && x.getAttribute('aria-label').length > 20))) && await p.locator('.sg-bubble').count() >= 3);
   ok('ST-10', 'review flags are shown, not hidden: on the chapter and on its panels', await p.locator('[data-testid=story-flags]').count() === 1 && await p.locator('.sg-flagline').count() >= 1);
+  // Changed 11 Nov 2026 (reference build): the clock starts only when the card is in view, and restarts if it leaves the screen.
+  await p.evaluate(() => scrollTo(0, 0)); await p.waitForTimeout(300); const idle = await p.locator('[data-testid=story-clock]').getAttribute('data-running');
+  await p.locator('.sg-dec').first().scrollIntoViewIfNeeded(); await p.waitForSelector('[data-testid=story-clock][data-running=true]');
   const clock0 = Number(await p.locator('[data-testid=story-clock]').getAttribute('data-left')); await p.waitForTimeout(2200); const clock1 = Number(await p.locator('[data-testid=story-clock]').getAttribute('data-left'));
-  ok('ST-11', 'the decision clock counts down', clock0 > 0 && clock1 < clock0 && clock1 >= clock0 - 4, `${clock0} → ${clock1}`);
+  ok('ST-11', 'the decision clock waits until the card is in view, then counts down', idle === 'false' && clock0 > 0 && clock1 < clock0 && clock1 >= clock0 - 4, `${idle} ${clock0} → ${clock1}`);
   await p.click('[data-testid=story-hint]'); ok('ST-12', 'a hint can be taken and says what it costs', await p.locator('.sg-hint').count() === 1 && /keeps 85% of the merit/.test(await p.locator('[data-testid=story-hint]').innerText()));
-  await p.click('.sg-opt[data-option=A]'); await p.waitForSelector('[data-testid=story-fail]');
-  const f = await reader(p);
-  ok('ST-13', 'a failing option says why it fails, is remembered as tried, and the story still waits', /erased the receive history/.test(await p.locator('[data-testid=story-fail]').innerText()) && f.reached === a.reached && await p.locator('.sg-opt[data-option=A]').isDisabled() && /That path fails/.test(await p.locator('[data-testid=story-said]').innerText()));
-  await p.click('.sg-opt[data-option=C]'); await p.waitForSelector('[data-testid=story-result]');
-  const b = await reader(p);
-  ok('ST-14', 'a passing option shows its result and consequence, and the story moves on to the next decision', b.reached > a.reached && (await p.locator('[data-testid=story-result]').getAttribute('data-letter')) === 'C' && /2 attempts · 1 hint/.test(await p.locator('[data-testid=story-result]').innerText()) && b.missing === 0, `${a.reached} → ${b.reached}`);
+  // Changed 11 Nov 2026 (restoration to the reference build, docs/04-engine-specs.md §1): a failing option used to be refused while the
+  // story waited; in the canon it is recorded as a costly call, with its merit and trust, and the story goes on with it.
+  await p.click('.sg-opt[data-option=A]'); await p.waitForSelector('[data-testid=story-result][data-verdict=costly]');
+  const f = await reader(p); const fw = await p.locator('[data-testid=story-weight]').first().innerText();
+  ok('ST-13', 'a failing option is recorded as a costly call: it says why it costs, what it weighs (merit −4, Walter’s trust down), and the story goes on with it', /erased the receive history/.test(await p.locator('[data-testid=story-result]').innerText()) && /Merit -4/.test(fw) && /Walter -2/.test(fw) && /This will cost you/.test(fw) && f.reached > a.reached && /a costly call/.test(await p.locator('[data-testid=story-said]').innerText()), `${a.reached} → ${f.reached} ${fw}`);
+  await p.click('.sg-dec[data-decision=BR-S01E00-02] .sg-opt[data-option=C]'); await p.waitForSelector('[data-testid=story-result][data-letter=C]');
+  const b = await reader(p); const bt = await p.locator('[data-testid=story-result][data-letter=C]').innerText();
+  ok('ST-14', 'tapping another option replaces the choice and keeps the first: the professional call is marked, with its weight', b.reached === f.reached && /The professional call/.test(bt) && /Merit \+4/.test(bt) && /First choice A, changed once · 1 hint/.test(bt) && b.missing === 0, `${bt.slice(-200)}`);
   const tk = p.locator('.sg-talk[data-answered=false]').first(); if (await tk.count()) { await tk.locator('.sg-opt').first().click(); }
   ok('ST-15', 'a conversation reply is answered in character and moves trust', await p.locator('.sg-talk[data-answered=true] .sg-reply').count() >= 1 || await p.locator('.sg-talk').count() === 0);
   const dz = p.locator('.sg-disc[data-found=false] button').first(); const had = await dz.count(); if (had) await dz.click();
   ok('ST-16', 'a discovery is found by looking', !had || await p.locator('.sg-disc[data-found=true]').count() >= 1);
-  await p.reload(); await p.waitForSelector('[data-testid=story-result]'); const c = await reader(p);
+  await p.reload(); await p.waitForSelector('[data-testid=story-result][data-letter=C]'); const c = await reader(p);
   ok('ST-17', 'progress survives a reload: the decision stays made and the reader is where they were', c.reached === b.reached && await p.locator('[data-testid=story-result]').count() >= 1, `${c.reached}`);
-  for (let i = 0; i < 12 && await p.locator('.sg-dec[data-done=false]').count(); i += 1) { const d = p.locator('.sg-dec[data-done=false]').first(); const opts = d.locator('.sg-opt:not([disabled])'); const n = await opts.count(); let moved = false;
-    for (let k = 0; k < n && !moved; k += 1) { await d.locator('.sg-opt:not([disabled])').first().click(); await p.waitForTimeout(150); moved = (await d.getAttribute('data-done').catch(() => 'true')) === 'true'; } }
-  await p.waitForSelector('[data-testid=story-summary]', { timeout: 15000 }); const e = await reader(p);
-  ok('ST-18', 'the chapter can be played to its end by trying options until each decision passes', e.reached === e.items && await p.locator('.sg-dec[data-done=false]').count() === 0, `${e.reached}/${e.items}`);
-  ok('ST-19', 'the end of the chapter says what the choices added up to, from the canon’s weights, and offers the next chapter', /decisions made/.test(await p.locator('[data-testid=story-summary]').innerText()) && /^[+-]?\d+$/.test(await p.locator('[data-testid=story-merit]').innerText()) && (await p.locator('[data-testid=story-next]').getAttribute('href')) === '#/story/s01e01');
+  // Changed 11 Nov 2026 with ST-13: one choice per decision plays the chapter through, whatever it is. Here the first option each time.
+  for (let i = 0; i < 12 && await p.locator('.sg-dec[data-done=false]').count(); i += 1) { await p.locator('.sg-dec[data-done=false]').first().locator('.sg-opt').first().click(); await p.waitForTimeout(150); }
+  await p.waitForSelector('[data-testid=story-summary]', { timeout: 15000 }); const e = await reader(p); const sum = await p.locator('[data-testid=story-summary]').innerText();
+  ok('ST-18', 'the chapter plays to its end on one choice per decision, costly ones included', e.reached === e.items && await p.locator('.sg-dec[data-done=false]').count() === 0, `${e.reached}/${e.items}`);
+  ok('ST-19', 'the end of the chapter says what the choices added up to, from the canon’s weights, gives the reference’s verdict, and offers the next chapter', /3 of 3 decisions made/.test(sum) && await p.locator('[data-testid=story-counts]').getAttribute('data-costly') === '1' && /Mostly steady, one costly call/.test(await p.locator('[data-testid=story-verdict]').innerText()) && /^[+-]?\d+$/.test(await p.locator('[data-testid=story-merit]').innerText()) && (await p.locator('[data-testid=story-next]').getAttribute('href')) === '#/story/s01e01', sum);
+  await p.click('[data-testid=story-next]'); await p.waitForSelector('[data-testid=story-echo][data-made="3"]'); const echo = await p.locator('[data-testid=story-echo]').innerText();
+  ok('ST-19b', 'the next chapter opens with the previous one’s choices, each marked, and the merit and trust carried in (the reference’s echoes)', /Previously: your choices in /.test(echo) && (echo.match(/^[★✕◦⏱]/gm) || []).length === 3 && /Merit carried in: [+-]?\d+/.test(echo), echo.slice(0, 300));
+  await p.goto(p.url().replace(/#.*/, '#/story/s01e00')); await p.waitForSelector('[data-testid=story-echo]');
   await p.goto(p.url().replace(/#.*/, '#/story')); await p.waitForSelector('[data-testid=story-library]');
   ok('ST-20', 'the library remembers: it offers to continue, and marks the chapter read', /^Continue/.test(await p.locator('[data-testid=story-continue]').innerText()) && /Read/.test(await p.locator('[data-chapter=s01e00]').innerText()));
   await p.goto(p.url().replace(/#.*/, '#/story/s01e00')); await p.waitForSelector('[data-testid=story-replay]'); await p.click('[data-testid=story-replay]'); await p.waitForSelector('[data-testid=story-waiting]');
@@ -61,7 +71,16 @@ const reader = (p) => p.evaluate(() => { const r = document.querySelector('[data
 { const t = await open('#/story/s06e03', { role: 'requestor' }); const p = t.page; await p.waitForFunction(() => document.querySelector('.sg-art svg') || document.querySelector('.sg-dec'));
   ok('ST-28', 'the story is open to every perspective (here the Requestor), mid-canon', await p.locator('[data-testid=story-reader]').count() === 1 && (await reader(p)).missing === 0);
   await p.keyboard.press('Tab'); const dec = p.locator('.sg-dec .sg-opt').first(); await dec.focus(); await p.keyboard.press('Enter'); await p.waitForTimeout(300);
-  ok('ST-29', 'options are buttons: the keyboard chooses', await p.locator('[data-testid=story-result], [data-testid=story-fail]').count() >= 1); await t.close(); }
+  ok('ST-29', 'options are buttons: the keyboard chooses', await p.locator('[data-testid=story-result]').count() >= 1); await t.close(); }
+
+{ const t = await open('#/story/s01e00'); const p = t.page; await p.clock.install(); await p.reload(); await p.waitForSelector('[data-testid=story-clock]'); await p.locator('.sg-dec').first().scrollIntoViewIfNeeded(); await p.clock.runFor(200); await p.waitForSelector('[data-testid=story-clock][data-running=true]');
+  await p.clock.runFor(31000); await p.waitForSelector('[data-testid=story-timeout]'); const r = await reader(p); const tw = await p.locator('.sg-dec[data-decision=BR-S01E00-02] [data-testid=story-weight]').innerText();
+  ok('ST-31', 'when the clock runs out the decision is recorded as missed (merit −2), the story goes on, and the canon’s timeout words are shown', /Time ran out/.test(await p.locator('[data-testid=story-timeout]').innerText()) && /Merit -2/.test(tw) && (await p.locator('.sg-dec[data-decision=BR-S01E00-02]').getAttribute('data-done')) === 'true' && r.reached > 0 && await p.locator('.sg-dec').count() >= 2, tw);
+  await p.click('.sg-dec[data-decision=BR-S01E00-02] .sg-opt[data-option=C]'); const rv = await p.locator('[data-testid=story-result][data-review=true]').innerText();
+  ok('ST-32', 'after the clock an option shows what it would have meant, and does not count', /would have been/.test(rv) && /It doesn’t count/.test(rv) && JSON.parse(await p.evaluate(() => localStorage.getItem('empathia.signal.story.v1'))).chapters.s01e00.choices['BR-S01E00-02'].letter === 'TIMEOUT');
+  await p.click('[data-testid=story-replay-decision]'); await p.waitForSelector('.sg-dec[data-decision=BR-S01E00-02][data-done=false] [data-testid=story-clock]'); await p.click('.sg-dec[data-decision=BR-S01E00-02] .sg-opt[data-option=C]'); await p.waitForSelector('[data-testid=story-result][data-letter=C][data-review=false]');
+  ok('ST-33', 'Replay reopens the decision with its clock, and a choice then counts', JSON.parse(await p.evaluate(() => localStorage.getItem('empathia.signal.story.v1'))).chapters.s01e00.choices['BR-S01E00-02'].letter === 'C');
+  ok('ST-34', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
 
 for (const theme of ['light', 'dark']) { const t = await open('#/story/s01e01', { w: 390, h: 844, theme }); const p = t.page; await p.waitForFunction(() => document.querySelector('.sg-art svg'));
   const small = await p.$$eval('main .sg-opt, main .ui-btn, main .w-pick__b, main .sg-check, main .sg-flags summary, main .w-crumbs a', (els) => els.filter((e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height < 43.5; }).map((e) => `${e.textContent.slice(0, 16)}:${Math.round(e.getBoundingClientRect().height)}`));

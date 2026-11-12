@@ -60,3 +60,14 @@
 .pl-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; } .pl-bar .ui-btn { min-height: 44px; } .pl-inv { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; } .pl-inv .ui-btn, .pl-script .ui-btn { min-height: 44px; }
 .pl-script ol { margin: 0 0 12px; padding-left: 1.2em; display: grid; gap: 4px; }
 @media (max-width: 700px) { .pl-stage { aspect-ratio: 4 / 5; } .pl-art svg { object-fit: cover; } }
+
+/* the weight of a choice, the missed clock, and the previous chapter's choices (the reference's echoes) */
+.sg-opt[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.sg-mark { display: inline-block; margin-left: 6px; font-weight: 600; color: var(--tx); }
+.sg-weight { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; padding: 8px 12px; border-left: 3px solid var(--line3); background: var(--panel2); border-radius: 0 var(--r-md) var(--r-md) 0; font-size: var(--fs-sm); }
+.sg-weight.is-canonical { border-left-color: var(--ok); } .sg-weight.is-costly { border-left-color: var(--bad); } .sg-weight.is-neutral { border-left-color: var(--warn); }
+.sg-weight__k { font-weight: 700; } .sg-weight p { flex-basis: 100%; margin: 0; color: var(--tx2); } .sg-weight__why { color: var(--tx); }
+.sg-missed { border-left: 3px solid var(--bad); padding: 8px 12px; background: var(--panel2); border-radius: 0 var(--r-md) var(--r-md) 0; display: grid; gap: 4px; } .sg-missed p { margin: 0; }
+.sg-echo { margin: 0 0 16px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); font-size: var(--fs-sm); line-height: 1.55; }
+.sg-echo__h { margin: 0 0 6px; font-size: var(--fs-md); } .sg-echo ul { list-style: none; margin: 0 0 6px; padding: 0; display: grid; gap: 6px; } .sg-echo li { padding-left: 1.4em; text-indent: -1.4em; } .sg-echo p { margin: 0; }
+.sg-echo li[data-verdict=costly] { color: var(--tx); } 

@@ -2,15 +2,16 @@
  * SIGNAL · An Empathia Learn Story (#/story is the library; #/story/<chapter id> reads one chapter). The founder's canon, unchanged:
  * the Prologue and all 133 chapters of twelve seasons, fetched one chapter at a time from this demonstration's own files.
  *
- * What the reader does is real and remembered in this browser: decisions gate the story and can fail, hints cost merit, conversations
+ * What the reader does is real and remembered in this browser: a decision gates the story until a choice is recorded, and every choice
+ * counts, a costly one too (story.ts states the rules); hints cost merit; the previous chapter's choices open the next; conversations
  * move trust, discoveries are found by looking, and a chapter can be replayed. The canon is a draft and says so: every open review flag
  * is shown where it applies (the package's rule: keep all content; flag rather than block). Nothing here is a credential.
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { PageProps } from '../registry.types.js';
 import { Block, Crumbs, Pick } from '../worlds/kit.js';
-import { BANDS, answerTalk, choose, complete, emphasis, emptyChapter, find, load, nextOf, passed, reached, resume, save, seconds, tally,
-  type Chapter, type ChapterState, type Clock, type Item, type Outcome, type Progress, type StoryIndex } from './story.js';
+import { BANDS, SEVERITY, TIMEOUT, answerTalk, chapterVerdict, choose, complete, echoes, emphasis, emptyChapter, find, load, nextOf, passed, prevOf, reached, replayDecision, resume, save, seconds, tally, timeOut, trustLine, weightLine, weightOf,
+  type Chapter, type ChapterState, type Clock, type Item, type Option, type Outcome, type Progress, type StoryIndex, type Verdict } from './story.js';
 
 type Flags = Record<string, { type: string; title: string; detail?: string }>;
 let ixCache: Promise<StoryIndex> | null = null; let flagCache: Promise<Flags> | null = null; let defsReady: Promise<void> | null = null;
@@ -79,7 +80,10 @@ function Reader({ ix, id, progress, commit }: { ix: StoryIndex; id: string; prog
   const set = (s: ChapterState, extra: Partial<Progress> = {}) => commit({ ...progress, ...extra, last: id, chapters: { ...progress.chapters, [id]: s } });
   const items = ch.data?.items || []; const upTo = reached(items, state, progress.gates); const finished = ch.data ? complete(items, state) : false;
   useEffect(() => { if (ch.data && finished && !state.done) set({ ...state, done: true }); });   // a chapter is read once every decision in it is made
-  const t = useMemo(() => tally(items, state), [items, state]); const next = nextOf(ix, id);
+  const t = useMemo(() => tally(items, state), [items, state]); const next = nextOf(ix, id); const prev = prevOf(ix, id);
+  const prevCh = useLoaded(() => (prev ? getJson<Chapter>(`signal/story/${prev.id}.json`) : Promise.resolve(null)), `prev-${id}`);
+  const before = useMemo(() => (prev && prevCh.data ? echoes(prevCh.data.items, progress.chapters[prev.id]) : null), [prev, prevCh.data, progress.chapters]);
+  const said1 = (o: Outcome) => (o.kind === 'refused' ? o.why : o.verdict === 'costly' ? `Recorded: a costly call. ${o.option.fail || ''} The story goes on with it.` : o.verdict === 'canonical' ? 'Recorded: the professional call. The story continues.' : 'Recorded: it works, not the best. The story continues.');
   if (ch.error) return <div className="sg" data-testid="story-error"><h1 tabIndex={-1}>{ref.title} did not load</h1>{notKept() ? <p className="lead" data-testid="story-not-kept">You are offline and this chapter is not kept on this device. Chapters you have already opened, and seasons kept from <a href="#/offline">Offline and this device</a>, open without a connection. Your progress is untouched.</p> : <p className="lead">This chapter’s file could not be read ({ch.error}). Your progress is untouched.</p>}<p><a className="ui-btn ui-btn--primary" href="#/story">Back to the library</a></p></div>;
   let panelNo = -1;
   return (
@@ -96,9 +100,12 @@ function Reader({ ix, id, progress, commit }: { ix: StoryIndex; id: string; prog
         <details className="sg-flags" data-testid="story-flags"><summary>{ch.data.chapter.flags.length} review point{ch.data.chapter.flags.length === 1 ? '' : 's'} open on this chapter</summary>
           <ul>{ch.data.chapter.flags.map((f) => <li key={f}><b>{f}</b> {flags.data?.[f] ? `· ${flags.data[f]!.type.toLowerCase()}: ${flags.data[f]!.title}` : ''}</li>)}</ul></details>)}
       {!ch.data && <p data-testid="story-loading">Opening the chapter…</p>}
+      {ch.data && <Echoes prev={prev?.title || null} e={before} />}
       <div className="sg-flow">
         {items.slice(0, upTo).map((it, i) => { if (it.type === 'panel') panelNo += 1; return <ItemView key={i} it={it} n={i} svg={it.type === 'panel' ? art.data?.panels[panelNo] : undefined} cast={ix.cast} state={state} clock={progress.clock} gated={progress.gates}
-          onChoose={(d, letter, meta) => { const r = choose(state, d, letter, meta); set(r.state); setSaid(r.outcome.kind === 'failed' ? `That path fails: ${r.outcome.reason}` : r.outcome.kind === 'passed' ? 'Decision made. The story continues.' : r.outcome.why); return r.outcome; }}
+          onChoose={(d, letter, meta) => { const r = choose(state, d, letter, meta); set(r.state); setSaid(said1(r.outcome)); return r.outcome; }}
+          onTimeout={(d, h) => { set(timeOut(state, d, h)); setSaid('Time ran out. The decision is recorded as missed. Tap an option to see what it would have done, or replay it to make it count.'); }}
+          onReplay={(did) => { set(replayDecision(state, did)); setSaid('The decision is open again and the clock restarts.'); }}
           onTalk={(tid, o) => set(answerTalk(state, tid, o))} onFind={(did) => set(find(state, did))} />; })}
         {ch.data && upTo >= items.length && art.data?.closing.map((c, i) => <figure key={i} className="sg-panel"><div className="sg-art" role="img" aria-label={c.alt} dangerouslySetInnerHTML={{ __html: c.svg }} /></figure>)}
       </div>
@@ -107,7 +114,8 @@ function Reader({ ix, id, progress, commit }: { ix: StoryIndex; id: string; prog
       {ch.data && finished && upTo >= items.length && (
         <Block title="Where this chapter leaves you" testId="story-summary">
           <ul className="sg-sum">
-            {t.decisions > 0 && <li><b>{t.made} of {t.decisions}</b> decisions made, {t.firstTry} at the first attempt{t.failedAttempts ? `, ${t.failedAttempts} failed attempt${t.failedAttempts === 1 ? '' : 's'}` : ''}{t.hints ? `, ${t.hints} hint${t.hints === 1 ? '' : 's'} used` : ''}{t.timedOut ? `, ${t.timedOut} past the clock` : ''}</li>}
+            {t.decisions > 0 && <li><b>{t.made} of {t.decisions}</b> decisions made: <span data-testid="story-counts" data-canonical={t.canonical} data-costly={t.costly} data-neutral={t.neutral}>★ {t.canonical} professional, ◦ {t.neutral} workable, ✕ {t.costly} costly</span>{t.timedOut ? `, ${t.timedOut} past the clock` : ''}{t.changed ? `, ${t.changed} changed after the first choice` : ''}{t.hints ? `, ${t.hints} hint${t.hints === 1 ? '' : 's'} used` : ''}</li>}
+            {t.decisions > 0 && <li data-testid="story-verdict">{chapterVerdict(t)}</li>}
             {t.decisions > 0 && <li>Merit from this chapter’s choices: <b data-testid="story-merit">{t.merit > 0 ? `+${t.merit}` : t.merit}</b></li>}
             {Object.keys(t.trust).length > 0 && <li>Trust moved: {Object.entries(t.trust).filter(([, v]) => v !== 0).map(([k, v]) => `${k} ${v > 0 ? `+${v}` : v}`).join(', ') || 'nowhere, on balance'}</li>}
             {t.discoveries > 0 && <li><b>{t.found} of {t.discoveries}</b> discoveries found</li>}
@@ -124,7 +132,7 @@ function Reader({ ix, id, progress, commit }: { ix: StoryIndex; id: string; prog
   );
 }
 
-export interface ViewProps { it: Item; n: number; svg?: string; cast: Record<string, string>; state: ChapterState; clock: Clock; gated: boolean; onChoose: (d: Extract<Item, { type: 'decision' }>, letter: string, meta: { hints: number; timedOut: boolean }) => Outcome; onTalk: (id: string, o: number) => void; onFind: (id: string) => void }
+export interface ViewProps { it: Item; n: number; svg?: string; cast: Record<string, string>; state: ChapterState; clock: Clock; gated: boolean; onChoose: (d: Extract<Item, { type: 'decision' }>, letter: string, meta: { hints: number }) => Outcome; onTimeout?: (d: Extract<Item, { type: 'decision' }>, hints: number) => void; onReplay?: (id: string) => void; onTalk: (id: string, o: number) => void; onFind: (id: string) => void }
 const MOUNT_WORD: Record<string, string> = { lesson: 'Lesson', lab: 'Lab', quiz: 'Quiz', drill: 'Drill', incident: 'Live incident', review: 'Season review', boss: 'Boss level', meltdown: 'Meltdown' };
 export function ItemView(p: ViewProps): JSX.Element | null {
   const { it, cast } = p; const name = (id: string) => cast[id] || id;
@@ -179,36 +187,56 @@ export function ItemView(p: ViewProps): JSX.Element | null {
   }
 }
 
-function Decision({ d, state, clock, onChoose }: ViewProps & { d: Extract<Item, { type: 'decision' }> }) {
-  const c = state.choices[d.id]; const done = passed(state, d.id); const total = seconds(d, clock); const [left, setLeft] = useState<number | null>(total); const [hints, setHints] = useState(c?.hints || 0); const [last, setLast] = useState<Outcome | null>(null);
-  const timedOut = useRef(!!c?.timedOut); const ref = useRef<HTMLElement>(null);
-  useEffect(() => { setLeft(total); }, [total]);
-  useEffect(() => { if (done || left === null || left <= 0) return undefined; const t = setTimeout(() => setLeft((x) => (x === null ? x : x - 1)), 1000); return () => clearTimeout(t); }, [left, done]);
-  if (left === 0) timedOut.current = true;
-  const chosen = done ? d.options.find((o) => o.letter === c!.letter)! : null;
+function Weight({ o, c, d, review }: { o: Option | null; c: { letter: string; hints: number } | null; d: Extract<Item, { type: 'decision' }>; review: boolean }) {
+  const w = c ? weightOf(d, { letter: c.letter, first: c.letter, changes: 0, hints: c.hints }) : null; if (!w) return null; const tl = trustLine(w.trust);
+  return <div className={`sg-weight is-${w.verdict}`} data-testid="story-weight" data-verdict={w.verdict} data-sev={w.sev}>
+    <span className="sg-weight__k">{SEVERITY[w.sev] || SEVERITY[1]}</span><span>Merit {w.merit > 0 ? `+${w.merit}` : w.merit}</span>{tl && <span>Trust {tl}</span>}
+    <p>{review ? 'After the clock: this is what it would have meant. It doesn’t count. Replay to decide for real.' : weightLine(w.verdict, w.sev)}</p>{o?.fail && <p className="sg-weight__why"><b>Why it costs.</b> {o.fail}</p>}</div>;
+}
+const MARK: Record<Verdict, string> = { canonical: '★ The professional call', neutral: '◦ It works, not the best', costly: '✕ A costly call' };
+function Decision({ d, state, clock, onChoose, onTimeout, onReplay }: ViewProps & { d: Extract<Item, { type: 'decision' }> }) {
+  const c = state.choices[d.id]; const recorded = passed(state, d.id); const missed = c?.letter === TIMEOUT; const total = seconds(d, clock);
+  const [left, setLeft] = useState<number | null>(total); const [running, setRunning] = useState(false); const [hints, setHints] = useState(c?.hints || 0); const [peek, setPeek] = useState<string | null>(null); const ref = useRef<HTMLElement>(null);
+  useEffect(() => { setLeft(total); setRunning(false); }, [total, recorded]);
+  // the reference starts the clock when most of the card is in view, and stops and resets it if the card leaves the screen before a choice
+  useEffect(() => { if (recorded || total === null) return undefined; const el = ref.current; if (!el || typeof IntersectionObserver === 'undefined') { setRunning(true); return undefined; }
+    // "in view" is 60% of the card, or 60% of the screen when the card is taller than the screen (a card on a phone often is)
+    const io = new IntersectionObserver((es) => { for (const e of es) { const need = 0.6 * Math.min(e.boundingClientRect.height, e.rootBounds?.height || window.innerHeight); if (e.isIntersecting && e.intersectionRect.height >= need) setRunning(true); else if (!e.isIntersecting) { setRunning(false); setLeft(total); } } },
+      { threshold: Array.from({ length: 21 }, (_, i) => i / 20) }); io.observe(el); return () => io.disconnect(); }, [recorded, total]);
+  useEffect(() => { if (recorded || !running || left === null) return undefined; if (left <= 0) { onTimeout?.(d, hints); return undefined; } const t = setTimeout(() => setLeft((x) => (x === null ? x : x - 1)), 1000); return () => clearTimeout(t); }, [left, running, recorded]);
+  const shown = missed ? (peek ? d.options.find((o) => o.letter === peek) || null : null) : recorded ? d.options.find((o) => o.letter === c!.letter) || null : null;
   return (
-    <section className="sg-dec" data-item="decision" data-decision={d.id} data-done={done} ref={ref} aria-labelledby={`${d.id}-h`}>
+    <section className="sg-dec" data-item="decision" data-decision={d.id} data-done={recorded} data-missed={missed} ref={ref} aria-labelledby={`${d.id}-h`}>
       <p className="sg-dec__k">Decision{d.clock ? ` · ${d.clock}` : ''}</p>
       <h3 id={`${d.id}-h`}>{d.prompt}</h3>
       <p>{d.happening}</p>
       <div className="sg-facts"><div><h4>Known</h4><ul>{d.known.map((k, i) => <li key={i}>{k}</li>)}</ul></div><div><h4>Not known</h4><ul>{d.unknown.map((k, i) => <li key={i}>{k}</li>)}</ul></div></div>
       <p className="sg-risk"><b>At risk.</b> {d.risk}</p>
-      {!done && total !== null && <p className="sg-clock" data-testid="story-clock" data-left={left ?? ''}>{left !== null && left > 0 ? <>Time to decide: <b>{left}</b> s</> : <span data-testid="story-timeout">{(d.timeout || ['The clock has run out.']).join(' ')} You can still choose.</span>}</p>}
-      {!done && (<>
-        <div className="sg-opts" role="group" aria-label="Options">{d.options.map((o) => { const failed = c?.failed.includes(o.letter); return (
-          <button key={o.letter} type="button" className="sg-opt" disabled={failed} onClick={() => setLast(onChoose(d, o.letter, { hints, timedOut: timedOut.current }))} data-option={o.letter}>
-            <b>{o.letter}</b> <span>{o.label}{o.badges.length > 0 && <span className="sg-badges">{o.badges.map((b, i) => <span key={i} className="ui-tag">{b.text}</span>)}</span>}{failed && <span className="ui-meta"> Tried: it fails</span>}</span></button>); })}</div>
-        {last?.kind === 'failed' && <div className="sg-fail" role="alert" data-testid="story-fail"><p><b>That path fails.</b> {last.reason}</p><p>{last.option.result} {last.option.consequence}</p><p className="ui-meta">Choose again. The failed attempt is remembered.</p></div>}
-        {d.hints.length > 0 && <div className="sg-hints">{d.hints.slice(0, hints).map((h) => <p key={h.id} className="sg-hint"><b>Hint {h.id.slice(1)}.</b> {h.text}</p>)}
-          {hints < d.hints.length && <button type="button" className="ui-btn ui-btn--quiet" onClick={() => setHints(hints + 1)} data-testid="story-hint">Take a hint (keeps {Math.round(d.hints[hints]!.keep * 100)}% of the merit)</button>}</div>}
-        {d.note && <p className="ui-meta">{d.note}</p>}
-      </>)}
-      {chosen && (<div className="sg-result" data-testid="story-result" data-letter={chosen.letter}>
-        <p className="sg-said">You chose {chosen.letter}: {chosen.label}</p><p><b>{chosen.result}</b></p><p>{chosen.consequence}</p>
-        {chosen.chips.length > 0 && <p className="sg-chips">{chosen.chips.map((x, i) => <span key={i} className="ui-tag">{x}</span>)}</p>}
-        <p className="ui-meta">{[c!.tries > 1 ? `${c!.tries} attempts` : 'First attempt', c!.hints ? `${c!.hints} hint${c!.hints === 1 ? '' : 's'}` : null, c!.timedOut ? 'past the clock' : null].filter(Boolean).join(' · ')}</p>
-        {d.lab && <p><a className="ui-btn" href={`#/learn/labs/${encodeURIComponent(d.lab)}`}>{d.lab_label || 'Open the lab'}</a></p>}
+      {!recorded && total !== null && <p className="sg-clock" data-testid="story-clock" data-left={left ?? ''} data-running={running}>{running ? <>Time to decide: <b>{left}</b> s</> : <>{total} s to decide. The clock starts when this card is in view, and restarts if it leaves the screen.</>}</p>}
+      {missed && <div className="sg-missed" role="alert" data-testid="story-timeout"><p><b>Time ran out.</b> {(d.timeout || ['Someone else decided for you.']).join(' ')}</p><p>Tap any option to see what it would have done, or replay the decision to make it count.</p>
+        <p><button type="button" className="ui-btn" data-testid="story-replay-decision" onClick={() => { setPeek(null); setHints(0); onReplay?.(d.id); }}>Replay this decision</button></p></div>}
+      <div className="sg-opts" role="group" aria-label="Options">{d.options.map((o) => (
+        <button key={o.letter} type="button" className="sg-opt" aria-pressed={missed ? peek === o.letter : c?.letter === o.letter} onClick={() => { if (missed) setPeek(o.letter); else onChoose(d, o.letter, { hints }); }} data-option={o.letter}>
+          <b>{o.letter}</b> <span>{o.label}{o.badges.length > 0 && <span className="sg-badges">{o.badges.map((b, i) => <span key={i} className="ui-tag">{b.text}</span>)}</span>}</span></button>))}</div>
+      {!recorded && d.hints.length > 0 && <div className="sg-hints">{d.hints.slice(0, hints).map((h) => <p key={h.id} className="sg-hint"><b>Hint {h.id.slice(1)}.</b> {h.text}</p>)}
+        {hints < d.hints.length && <button type="button" className="ui-btn ui-btn--quiet" onClick={() => setHints(hints + 1)} data-testid="story-hint">Take a hint (keeps {Math.round(d.hints[hints]!.keep * 100)}% of the merit)</button>}</div>}
+      {!recorded && d.note && <p className="ui-meta">{d.note}</p>}
+      {shown && (<div className="sg-result" data-testid="story-result" data-letter={shown.letter} data-verdict={shown.fail ? 'costly' : shown.canonical ? 'canonical' : 'neutral'} data-review={missed}>
+        <p className="sg-said">{missed ? `Option ${shown.letter} would have been` : `You chose ${shown.letter}`}: {shown.label} <span className="sg-mark">{MARK[shown.fail ? 'costly' : shown.canonical ? 'canonical' : 'neutral']}</span></p><p><b>{shown.result}</b></p><p>{shown.consequence}</p>
+        {shown.chips.length > 0 && <p className="sg-chips">{shown.chips.map((x, i) => <span key={i} className="ui-tag">{x}</span>)}</p>}
+        <Weight o={shown} c={{ letter: shown.letter, hints: missed ? 0 : c!.hints }} d={d} review={missed} />
+        {!missed && <p className="ui-meta">{[c!.changes ? `First choice ${c!.first}, changed ${c!.changes === 1 ? 'once' : `${c!.changes} times`}` : 'First choice', c!.hints ? `${c!.hints} hint${c!.hints === 1 ? '' : 's'}` : null].filter(Boolean).join(' · ')}. Tap another option to change it; the first choice is kept.</p>}
+        {!missed && shown.canonical && d.lab && <p><a className="ui-btn" href={`#/learn/labs/${encodeURIComponent(d.lab)}`}>{d.lab_label || 'Open the lab'}</a></p>}
       </div>)}
+      {missed && !peek && <Weight o={null} c={{ letter: TIMEOUT, hints: 0 }} d={d} review={false} />}
     </section>
   );
+}
+function Echoes({ prev, e }: { prev: string | null; e: ReturnType<typeof echoes> | null }) {
+  if (!prev) return <p className="sg-echo" data-testid="story-echo" data-made="0">Your story starts here. Every choice you make is remembered, by you and by the crew.</p>;
+  if (!e) return null; const tl = trustLine(e.trust);
+  return <section className="sg-echo" data-testid="story-echo" data-made={e.made.length} aria-label={`Previously: your choices in ${prev}`}><h2 className="sg-echo__h">Previously: your choices in {prev}</h2>
+    {e.made.length === 0 ? <p>You haven’t made choices in that chapter yet. The story is following the ★ path. Go back and choose, and this page will remember what you did.</p>
+      : <><ul>{e.made.map((m) => <li key={m.id} data-verdict={m.verdict}>{m.timedOut ? <>⏱ You ran out of time on “{m.prompt}”, and someone else decided for you.</> : <>{m.verdict === 'canonical' ? '★' : m.verdict === 'costly' ? '✕' : '◦'} You chose {/^["“].*["”]$/.test(m.label.trim()) ? m.label.trim() : `“${m.label}”`}. {m.consequence}</>}</li>)}</ul>
+        <p className="ui-meta">Merit carried in: {e.merit > 0 ? `+${e.merit}` : e.merit}{tl ? `. The crew remembers: ${tl}` : ''}</p></>}</section>;
 }

@@ -8,7 +8,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { PageProps } from '../registry.types.js';
 import { Block, Crumbs } from '../worlds/kit.js';
-import { answerTalk, choose, emptyChapter, find, load, nextOf, save, tally, type Chapter, type ChapterState, type Item, type Progress, type StoryIndex } from './story.js';
+import { answerTalk, chapterVerdict, choose, emptyChapter, find, load, nextOf, replayDecision, save, tally, timeOut, type Chapter, type ChapterState, type Item, type Progress, type StoryIndex } from './story.js';
 import { buildScene, frontier, hotspotsAt, lineAt, mayPass, recap, type Shot } from './scene.js';
 import { Draft, Face, ItemView, getJson, loadDefs, loadIndex, notKept, useLoaded } from './StoryPage.js';
 
@@ -54,7 +54,8 @@ function Player({ ix, id }: { ix: StoryIndex; id: string }) {
         {!staged && <div className="pl-over" data-testid="play-over">
           {shot.kind === 'card' && <div className="pl-cards">{shot.cards.map((k) => <ItemView key={k} it={items[k]!} n={k} cast={ix.cast} state={state} clock={progress.clock} gated onChoose={() => ({ kind: 'refused', why: '' })} onTalk={() => undefined} onFind={() => undefined} />)}</div>}
           {(shot.kind === 'choice' || shot.kind === 'reply') && <ItemView it={items[shot.item]!} n={shot.item} cast={ix.cast} state={state} clock={progress.clock} gated
-            onChoose={(d, letter, meta) => { const res = choose(state, d, letter, meta); set(res.state); setSaid(res.outcome.kind === 'failed' ? `That path fails: ${res.outcome.reason}` : res.outcome.kind === 'passed' ? 'Decision made.' : res.outcome.why); return res.outcome; }}
+            onChoose={(d, letter, meta) => { const res = choose(state, d, letter, meta); set(res.state); setSaid(res.outcome.kind === 'refused' ? res.outcome.why : res.outcome.verdict === 'costly' ? 'Recorded: a costly call. The scene goes on with it.' : 'Decision recorded.'); return res.outcome; }}
+            onTimeout={(d, h) => { set(timeOut(state, d, h)); setSaid('Time ran out. The decision is recorded as missed.'); }} onReplay={(did) => { set(replayDecision(state, did)); setSaid('The decision is open again.'); }}
             onTalk={(tid, o) => set(answerTalk(state, tid, o))} onFind={() => undefined} />}
           {mayPass(shot, state) && n < scene.shots.length - 1 && <p><button type="button" className="ui-btn ui-btn--primary" data-testid="play-continue" onClick={() => go(n + 1)}>Continue</button></p>}
         </div>}
@@ -72,7 +73,7 @@ function Player({ ix, id }: { ix: StoryIndex; id: string }) {
         {state.found.length === 0 ? <p>Nothing yet. Some shots hide things worth a closer look: move over the picture, or open “The words of this shot”.</p> : <ul className="pl-inv">{state.found.map((f) => { const d = items.find((x) => x.type === 'discovery' && x.id === f) as Extract<Item, { type: 'discovery' }> | undefined; return d ? <li key={f}><button type="button" className="ui-btn" onClick={() => setOpen(f)} data-carried={f}>{d.title}</button></li> : null; })}</ul>}
       </Block>
       {finished && <Block title="End of the chapter" testId="play-recap">
-        <ul className="sg-sum"><li><b>{tl.made} of {tl.decisions}</b> decisions made{tl.failedAttempts ? `, ${tl.failedAttempts} failed attempt${tl.failedAttempts === 1 ? '' : 's'}` : ''}</li><li><b>{r.found} of {r.hidden}</b> things found{r.missed.length ? `. Walked past: ${r.missed.join('; ')}` : ''}</li></ul>
+        <ul className="sg-sum"><li><b>{tl.made} of {tl.decisions}</b> decisions made: ★ {tl.canonical}, ◦ {tl.neutral}, ✕ {tl.costly}. {chapterVerdict(tl)}</li><li><b>{r.found} of {r.hidden}</b> things found{r.missed.length ? `. Walked past: ${r.missed.join('; ')}` : ''}</li></ul>
         <p className="sg-acts">{next && <a className="ui-btn ui-btn--primary" href={`#/play/${next.id}`} data-testid="play-nextchapter">Play the next chapter: {next.title}</a>}<button type="button" className="ui-btn" onClick={() => go(0)}>Play it again from the start</button></p>
       </Block>}
       <p className="sg-acts"><a className="ui-btn" href={`#/story/${id}`}>Read this chapter as panels</a><a className="ui-btn" href="#/story">Library</a></p>

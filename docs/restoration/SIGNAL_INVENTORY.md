@@ -80,8 +80,8 @@ gate list is the authority and gives 979.)
 | In the source | What it does | In the product | State |
 |---|---|---|---|
 | Story reader with decisions, a clock, hints, merit and trust | | `#/story` | RESTORED as content, tested. **Behaviour differs**, next line |
-| What a decision does | The choice is recorded once. A failing option is a costly call: it is kept, with its negative merit and trust, and the story goes on. Only a timeout offers a replay. Ratings read first attempts | A failing option is shown with its reason and the reader chooses again until a passing one; the story does not go on with a failed call | **DIFFERS from the reference** (package `docs/04-engine-specs.md` §1; `reference/source/gate.js`). To restore: record the first choice, carry its consequence |
-| Echoes: the previous chapter's choices at the top of the next, and a verdict before the debrief | | not found | **MISSING** (TO VERIFY) |
+| What a decision does | The choice is recorded. A failing option is a costly call: it is kept, with its negative merit and trust, and the story goes on. Tapping another replaces it. A timeout is recorded (merit −2) and the card turns to review; Replay reopens it. The clock starts when the card is in view | Same, since 11 Nov (`signal/story.ts`). Hint credit is applied to merit, where the reference's own open issue OI-ENG-02 leaves it unapplied | **RESTORED**, tested (`signal-story` unit 8/8, 7 mutations caught; `demo-story` 38, `demo-play` 24, light and dark) |
+| Echoes: the previous chapter's choices at the top of the next, and a verdict before the debrief | | Both, in the reference's words | **RESTORED**, tested (ST-19, ST-19b) |
 | Result pop-ups when a gate is done, and "Chapter complete" with the quest grade | | not found | **MISSING** (TO VERIFY) |
 | Story played as staged shots | (not in the source: added in this product) | `#/play/<chapter>` | ADDED, tested |
 | Chapter locks and gates (hard, soft, optional) | A chapter opens when what it requires is done | Decisions gate. Gates on mounted pieces cannot, since those are not playable | PARTIAL |
