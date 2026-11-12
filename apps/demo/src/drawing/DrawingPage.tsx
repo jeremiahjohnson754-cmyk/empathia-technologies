@@ -160,6 +160,7 @@ function ViewingCard({ ex, role, name, revision, type }: { ex: Extraction; role:
     for (const [dim, val] of [['width', ex.room!.width], ['length', ex.room!.length]] as Array<[LS.Dim, number]>) { const r = LS.correct(m, dim, val, why, '±0.1 m'); if (r.ok) m = r.model; }
     try { localStorage.setItem(KEY, JSON.stringify([m, ...list])); location.hash = `#/v25/lite?m=${m.id}`; } catch { setSaid('This browser would not keep the model (storage is blocked).'); } };
   return <Card title="Display viewing analysis" icon="display" sub="How large a display must be for the farthest viewer, across candidate sizes. Modeled from the drawing; a proposal for an engineer" testId="dr-viewing">
+    <ViewingOverlay v={v} />
     <ul className="plain stack" data-testid="dr-viewing-facts">{v.facts.map((f) => <li key={f.label}><b>{f.label}:</b> {f.value} <ProvenanceChip value={f.prov} source={f.basis} /></li>)}</ul>
     <div className="dr-scroll"><table className="dr-table" data-testid="dr-viewing-sizes"><caption className="ui-sr">Candidate display sizes against ST-VID-02</caption>
       <thead><tr><th scope="col">Proposed size</th><th scope="col">Image height × width</th><th scope="col">Farthest ÷ height</th><th scope="col">Verdict</th></tr></thead>
@@ -169,4 +170,21 @@ function ViewingCard({ ex, role, name, revision, type }: { ex: Extraction; role:
     {allows({ area: 'studio' }, role) && <p><button type="button" className="ui-btn" onClick={toLite} data-testid="dr-to-lite">Carry this room into the Lite studio</button> <span className="ui-meta">A conceptual model; its width and length marked as from this drawing, manually proposed, never verified.</span></p>}
     {said && <p className="ui-meta" role="status">{said}</p>}
   </Card>;
+}
+
+/** The overlay (70/10 task 70-3): the room from the drawing, the display, the seating band assumed where the plan has no seats, the line to
+ *  the farthest viewer and the outermost seat's angle; each mark labelled with how it is known. */
+function ViewingOverlay({ v }: { v: NonNullable<ReturnType<typeof viewing>> }) {
+  const g = v.geom; const k = Math.min(420 / g.W, 300 / g.L); const pad = 30; const X = (x: number) => pad + x * k, Y = (y: number) => pad + y * k;
+  return <figure className="dr-plan" data-testid="dr-viewing-overlay"><svg viewBox={`0 0 ${Math.round(g.W * k + 2 * pad + 120)} ${Math.round(g.L * k + 2 * pad)}`} role="img" aria-label={`Overlay: a ${g.W} by ${g.L} metre room; the farthest viewer ${v.far} metres from the display; the outermost seat ${v.outerAngle} degrees off axis`}>
+    <rect className="dr-room" x={X(0)} y={Y(0)} width={g.W * k} height={g.L * k} />
+    <rect x={X(0.6)} y={Y(g.frontRow)} width={(g.W - 1.2) * k} height={(g.backRow - g.frontRow) * k} fill="none" stroke="currentColor" strokeOpacity={0.45} strokeDasharray="5 4" />
+    <text className="dr-lab" x={X(g.W) + 6} y={Y((g.frontRow + g.backRow) / 2)}>seating · assumed</text>
+    <line x1={X(g.display.x)} y1={Y(g.display.y)} x2={X(g.far[0])} y2={Y(g.far[1])} stroke="currentColor" strokeWidth={2} />
+    <text className="dr-lab" x={X(g.W) + 6} y={Y(g.far[1])}>{v.far} m · modeled</text>
+    <line x1={X(g.display.x)} y1={Y(g.display.y)} x2={X(g.front[0])} y2={Y(g.front[1])} stroke="currentColor" strokeOpacity={0.6} strokeDasharray="2 3" />
+    <text className="dr-lab" x={X(g.W) + 6} y={Y(g.front[1])}>{v.outerAngle}° · {v.outerClass.toLowerCase()}</text>
+    <rect x={X(g.display.x) - 18} y={Y(g.display.y) - 4} width={36} height={8} fill="currentColor" />
+    <text className="dr-lab" x={X(g.W) + 6} y={Y(0) + 10}>display · {g.display.assumed ? 'assumed' : 'from the plan'}</text>
+  </svg><figcaption className="ui-meta">Drawn from the analysis above: the dashed band is the seating this page assumes, the solid line the farthest viewer, the dotted line the outermost seat’s angle. Modeled, not measured.</figcaption></figure>;
 }
