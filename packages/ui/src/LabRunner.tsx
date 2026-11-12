@@ -1,14 +1,15 @@
 /**
  * A SIGNAL Fix-It Lab, to the reference's rules (labs.ts): the brief and the flag first, then "Open the lab" (and its clock); the math
  * box; the simulator; "Test the fix" and "Reset lab"; three misses offer "Show me the fix". Kinds drawn here: signal flow, network,
- * power, conduit fill, EQ and timing, camera, DMX, RF, and physics (controls and the live readout; the reference's animated canvas
- * drawings for physics are not restored yet).
+ * power, conduit fill, EQ and timing, camera, DMX, RF, and physics (controls, the live readout, and since 12 Nov the reference's
+ * animated canvas drawings, held still under reduced motion).
  * Meters and diagrams are SVG attributes, never inline styles, so the page keeps its content policy.
  */
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Button, Notice } from './components.js';
 import * as X from './labs.js';
 import * as PH from './physics.js';
+import { drawPhysics, physHas, physHeight } from './physicsDraw.js';
 
 export const LAB_KINDS_PLAYABLE: ReadonlySet<string> = new Set(['signalflow', 'network', 'power', 'fill', 'eq', 'camera', 'dmx', 'rf', 'physics']);
 export const LAB_KIND_WORD: Record<string, string> = { physics: 'Physics in motion', signalflow: 'Signal flow', eq: 'EQ and time', camera: 'Camera', network: 'Network and VLANs', dmx: 'DMX', power: 'Power', rf: 'RF coordination', fill: 'Conduit fill' };
@@ -175,9 +176,19 @@ function useRf(L: X.RfLab): Sim {
 }
 
 
+/** The simulation drawn live on a canvas (the reference's drawing); one frame per animation frame, a still frame under reduced motion. */
+function PhysCanvas({ L, s, label }: { L: PH.PhysLab; s: PH.PState; label: string }) {
+  const ref = useRef<HTMLCanvasElement>(null); const st = useRef(s); st.current = s;
+  useEffect(() => { const c = ref.current?.getContext('2d'); if (!c) return undefined; const reduced = !!globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches, t0 = performance.now(); let raf = 0;
+    const frame = () => { try { drawPhysics(c, L.sim, st.current, L, (performance.now() - t0) / 1000, reduced); } catch { /* a drawing never breaks the lab */ } if (!reduced) raf = requestAnimationFrame(frame); };
+    frame(); return () => cancelAnimationFrame(raf); }, [L]);
+  useEffect(() => { const c = ref.current?.getContext('2d'); if (c && globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches) try { drawPhysics(c, L.sim, s, L, 0, true); } catch { /* still */ } }, [s, L]);
+  return <div className="lab__svgwrap"><canvas ref={ref} className="lab__canvas" width={800} height={physHeight(L.sim)} role="img" aria-label={label} data-testid="phys-canvas" /></div>;
+}
 function usePhy(L: PH.PhysLab): Sim {
   const [s, set] = useState(() => PH.phyInit(L)); const S = PH.SIMS[L.sim];
   const view = !S ? <p>Unknown simulation {L.sim}.</p> : <>
+    {physHas(L.sim) && <PhysCanvas L={L} s={s} label={S.aria} />}
     <p className="ui-meta">{S.aria} Illustrative textbook model (RV-39).</p>
     <dl className="lab__read" data-testid="lab-readout">{PH.phyRead(L, s).map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
     <div className="lab__ctl">{S.controls(L).map((c) => c.kind === 'toggle' ? <label key={c.key} className="lab__check"><input type="checkbox" checked={!!s[c.key]} aria-label={c.label} onChange={(e) => set(PH.phySet(L, s, c.key, e.target.checked))} /> {c.label}</label>

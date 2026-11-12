@@ -74,3 +74,18 @@ test('SP-06 the guard rules each fire on the labs’ own data: a shutter longer 
   const Q = one('poll'); assert.match(why(Q, P.phySet(Q, P.phyInit(Q), 'T', 1)), /more than the monitoring server’s budget/);
   const G = one('ceiling'); assert.ok(G.minS > 1.5, 'the lab sets a density floor'); assert.match(why(G, P.phySet(G, P.phyInit(G), 's', 1.5)), /Much denser than needed/);
 });
+
+// The animated drawings (packages/ui/src/physicsDraw.ts, the reference's draw code; restored 12 Nov 2026): every physics lab draws at its
+// start state and at its intended setting, at t = 0 and mid-animation, onto a recording 2D context, without throwing and with text in it.
+const outD = path.join(path.dirname(out), 'd.mjs');
+await esbuild.build({ entryPoints: [path.join(repo, 'packages/ui/src/physicsDraw.ts')], bundle: true, format: 'esm', platform: 'node', outfile: outD, logLevel: 'error' });
+const D = await import(pathToFileURL(outD).href);
+function recorder() { const calls = []; const h = { get(_t, k) { if (k === '__calls') return calls; if (k === 'measureText') return (s) => ({ width: String(s).length * 7 }); return (...a) => { calls.push([k, ...a]); return new Proxy({}, h); }; }, set(_t, k, v) { calls.push(['set', k, v]); return true; } }; return new Proxy({}, h); }
+test('SP-07 every physics lab draws (the reference’s drawings), at the start and moving, with its labels', () => {
+  const phys = Object.entries(labs).filter(([, L]) => L.type === 'physics'); assert.ok(phys.length >= 26);
+  const sims = new Set();
+  for (const [id, L] of phys) { const lab = { ...L, id }; sims.add(L.sim); assert.ok(D.physHas(L.sim), `${id}: no drawing for ${L.sim}`); assert.ok(D.physHeight(L.sim) >= 150);
+    for (const t of [0, 1.7]) for (const reduced of [false, true]) { const ctx = recorder(); D.drawPhysics(ctx, L.sim, P.phyInit(lab), lab, t, reduced); const calls = ctx.__calls;
+      assert.ok(calls.some((c) => c[0] === 'fillRect') && calls.some((c) => c[0] === 'fillText'), `${id}: drew nothing at t=${t}`); } }
+  assert.ok(sims.size >= 24, String(sims.size));   // 24 simulations are mounted by the canon's physics labs
+});

@@ -364,3 +364,4 @@ input.lab__input { width: 9em; } select.lab__input { min-width: 0; width: 100%; 
 .mc__season { border-top: 1px solid var(--line); padding: 6px 0; } .mc__season > summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 700; }
 .mc__quests li, .mc__journal li { display: grid; gap: 2px; padding: 6px 0; border-bottom: 1px solid var(--line); } .mc__quests li a { min-height: 44px; display: inline-flex; align-items: center; } .mc__quests li[data-done=true] a::after { content: ' ✓'; color: var(--ok); }
 .mc__journal li p { margin: 0; }
+.lab__canvas { display: block; width: 100%; min-width: 480px; height: auto; }
