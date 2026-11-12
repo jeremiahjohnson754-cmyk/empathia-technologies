@@ -14,7 +14,7 @@ log = subprocess.run(['ffmpeg', '-hide_banner', '-i', src, '-vf', "select='gt(sc
 cuts = [float(x) for x in re.findall(r'pts_time:([\d.]+)', log)]
 missing = [8 * k for k in range(1, len(order)) if not any(abs(c - 8 * k) < 0.25 for c in cuts)]
 print('scene changes found at', [round(c, 2) for c in cuts]); print('boundaries without a detected cut (similar adjacent shots):', missing)
-REJECTED = {'job_52357c3b-8a08-4cba-8c65-c34080731643', 'job_9da44509-9042-4ca0-99d7-fd1a2ff3f695', 'job_a87aaf54-cdae-4704-bbeb-d83bea6e7612'}  # see README: rejected on review
+REJECTED = {'job_52357c3b-8a08-4cba-8c65-c34080731643', 'job_9da44509-9042-4ca0-99d7-fd1a2ff3f695', 'job_a87aaf54-cdae-4704-bbeb-d83bea6e7612', 'job_c3d6d694-9189-439a-83c1-f6519916e02a'}  # see README: rejected on review
 for k, r in enumerate(order):
     if r['job'] in REJECTED: print('skip (rejected)', r['chapter'], r['slot']); continue
     if r['chapter'] == 's01e01': dst = os.path.join(repo, f"apps/demo/public/media/signal/s01e01/footage-{r['slot']}.mp4")

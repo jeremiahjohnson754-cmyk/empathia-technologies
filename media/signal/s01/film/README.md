@@ -39,3 +39,13 @@ three measured two-second pauses and brought to -18 LUFS. All 25 remaining shots
 
 Both were regenerated with the point stated outright (hands clasped behind her back; the grille facing the ceiling at about 45
 degrees), 240 credits. Season 1 now has 31 reviewed shots in place.
+
+## 14:22 CT
+
+- **S01E10 "read" (regenerated): kept.** Maya leans in to read with her hands clasped behind her back; Ray, also hands-off, turns to the equipment room.
+- **S01E01 centre fill (regenerated): rejected again.** Seen from below, the loudspeaker's grille faces down and out, toward where the
+  seats would be, before the camera tilts to the ceiling. The canon's point is the opposite (aimed at the ceiling), and two attempts have
+  not shown it, so Ten Seats keeps its three reviewed clips and no fill shot. Not regenerated a third time: the video model does not
+  reliably follow an aim, and a wrong aim teaches the wrong thing.
+
+Season 1 now has 32 reviewed shots in place.

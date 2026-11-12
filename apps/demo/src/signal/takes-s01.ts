@@ -323,6 +323,7 @@ export const FOOTAGE_S01: Record<string, Footage[]> = {
   ],
   s01e10: [
     {"before": 4, "src": "media/signal/s01/film/s01e10-storm.mp4", "note": "Two seconds: a storm, a sermon, a power dip. Generated footage of the setting, not a real venue or real people."},
+    {"before": 14, "src": "media/signal/s01/film/s01e10-read.mp4", "note": "Read before you touch: the console rode through; the failure is after it. Generated footage of the setting, not a real venue or real people."},
     {"before": 47, "src": "media/signal/s01/film/s01e10-call.mp4", "note": "Aftermath: Imani on the phone with Tasha, Maya beside her. Generated footage of the setting, not a real venue or real people."},
   ],
   s01e11: [
