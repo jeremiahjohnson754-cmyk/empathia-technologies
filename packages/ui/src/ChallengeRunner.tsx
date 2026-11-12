@@ -227,16 +227,16 @@ function Listen({ st }: { st: CState }) {
 function CueDesk({ lv, factor, done, onFinish }: { lv: number; factor: number; done: boolean; onFinish: (r: Result) => void }) {
   const Q = CH.Reach, S = useMemo(() => Q.song(lv), [lv]), W = useMemo(() => Q.windows(factor), [factor]);
   const [run, setRun] = useState<CH.Reach.CueRun | null>(null); const [t, setT] = useState(0); const t0 = useRef(0); const ref = useRef<CH.Reach.CueRun | null>(null); const [click, setClick] = useState(true);
-  const ac = useRef<AudioContext | null>(null); const sch = useRef<ReturnType<typeof setInterval> | null>(null); const master = useRef<GainNode | null>(null); const useAC = useRef(false);
+  const steps = useRef(0); const ac = useRef<AudioContext | null>(null); const sch = useRef<ReturnType<typeof setInterval> | null>(null); const master = useRef<GainNode | null>(null); const useAC = useRef(false);
   const now = () => (useAC.current && ac.current ? ac.current.currentTime - t0.current : performance.now() / 1000 - t0.current);
   const silence = () => { if (sch.current) clearInterval(sch.current); sch.current = null; try { master.current?.disconnect(); } catch { /* gone */ } master.current = null; };
   const wall0 = useRef(0);
-  const start = () => { const r = Q.cueStart(S); ref.current = r; useAC.current = false; wall0.current = performance.now() / 1000;
+  const start = () => { const r = Q.cueStart(S); ref.current = r; useAC.current = false; steps.current = 0; wall0.current = performance.now() / 1000;
     if (click) { try { const AC = (globalThis as { AudioContext?: typeof AudioContext }).AudioContext; if (AC) ac.current = ac.current || new AC(); } catch { ac.current = null; } }
     const a = click ? ac.current : null;
     if (a && a.state === 'suspended') void a.resume().catch(() => undefined);
     if (a && a.state !== 'closed') { useAC.current = true; t0.current = a.currentTime + 0.15; const m = a.createGain(); m.gain.value = 0.22; m.connect(a.destination); master.current = m; const step = band(a, m, S), six = S.beat / 4; let next = 0;
-      sch.current = setInterval(() => { while (ref.current && t0.current + next * six < a.currentTime + 0.15) { if (next * six < S.len) step(next, t0.current + next * six); next += 1; } }, 25); }
+      sch.current = setInterval(() => { while (ref.current && t0.current + next * six < a.currentTime + 0.15) { if (next * six < S.len) { step(next, t0.current + next * six); steps.current += 1; } next += 1; } }, 25); }
     else t0.current = performance.now() / 1000 + 0.15;
     setRun(r); };
   const stop = (abort: boolean) => { const r = ref.current; silence(); if (!r) return; ref.current = null; setRun(null); onFinish(Q.cueFinish(S, r, lv, W, abort)); };
@@ -251,7 +251,7 @@ function CueDesk({ lv, factor, done, onFinish }: { lv: number; factor: number; d
   useEffect(() => { if (!run) return undefined; const onKey = (e: KeyboardEvent) => { const k = Number(e.key); if (k >= 1 && k <= 8) { e.preventDefault(); fire(k); } }; window.addEventListener('keydown', onKey); return () => window.removeEventListener('keydown', onKey); }, [run === null]);
   useEffect(() => () => { silence(); void ac.current?.close(); }, []);
   const X = (s: number) => 10 + CH.clamp(s / S.len, 0, 1) * 580, next = run ? S.cues.find((c, i) => !run.hits[i] && c.t > t - W[2]) : null;
-  return <div className="stack ch__cues" data-testid="cue-desk" data-running={!!run}>
+  return <div className="stack ch__cues" data-testid="cue-desk" data-running={!!run} data-clock={run ? (useAC.current ? 'audio' : 'wall') : undefined} data-steps={steps.current}>
     <div className="lab__svgwrap"><svg className="ch__svg" viewBox="0 0 600 120" role="img" aria-label="The song’s timeline with its sections, the cue points and the playhead.">
       {S.secs.map((s, j) => { const show = lv < 4 || t >= s.t; return <g key={j}><rect className={show ? 'ch__sec' : 'ch__sec is-hidden'} x={X(s.t)} y={40} width={Math.max(1, X(s.t + s.bars * S.bar) - X(s.t) - 2)} height={22} />{show && X(s.t + s.bars * S.bar) - X(s.t) > 44 && <text className="ch__t" x={X(s.t) + 4} y={56}>{s.name.replace('chorus2', 'chorus+').toUpperCase()}</text>}</g>; })}
       {S.cues.map((c, i) => { const h = run?.hits[i]; return <g key={i}><path className={h ? (h.ok && (h.g === 'perfect' || h.g === 'good') ? 'ch__cue is-ok' : 'ch__cue is-bad') : 'ch__cue'} d={`M${X(c.t)} 64 l-5 9 h10 Z`} />{lv === 1 && <text className="ch__t" x={X(c.t)} y={88} textAnchor="middle">{Q.CUE_HINT[c.sec]!.split(' ')[0]}</text>}</g>; })}

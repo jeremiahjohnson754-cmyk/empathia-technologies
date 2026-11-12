@@ -112,6 +112,8 @@ async function clearRun(p, id, check) {
   for (const [i, s] of B.steps.entries()) { if (s.type === 'chal' && s.chal === 'reach-cues') break; await p.locator(`[data-testid=boss][data-step="${i}"][data-phase=stage]`).waitFor(); await playStage(p, B, s); await b.getByTestId('boss-ok').waitFor(); await b.getByTestId('boss-next').click(); }
   const desk = b.locator('[data-testid=cue-desk]'); await desk.waitFor(); await desk.getByRole('button', { name: /Start the song/ }).click(); await p.waitForSelector('[data-testid=cue-desk][data-running=true]');
   await p.waitForTimeout(600); await p.keyboard.press('3'); await p.waitForTimeout(150);
+  await p.waitForTimeout(1000); const clock = await desk.getAttribute('data-clock'), sixteenths = Number(await desk.getAttribute('data-steps'));
+  ok('BS-28', 'the song plays: the Web Audio band is scheduled on the audio clock, sixteenth by sixteenth, while the show runs', clock === 'audio' && sixteenths >= 8, `${clock} ${sixteenths}`);
   const lit = await desk.locator('.ch__key[aria-pressed=true]').innerText(); const msgs = await desk.locator('.ch__msgs').innerText();
   await desk.getByRole('button', { name: /Stop \(counts as a fail\)/ }).click(); await b.getByTestId('boss-fail').waitFor();
   ok('BS-19', 'the desk runs: key 3 fires Deep blue (a press between cues costs the crowd), and stopping the show ends the run as a must-pass failure', /Deep blue/.test(lit) && /mid-phrase|BOO|CHEER|nice|late|early/.test(msgs) && /Finished the song/.test(await b.innerText()), `${lit} | ${msgs}`);
