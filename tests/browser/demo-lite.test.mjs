@@ -169,4 +169,25 @@ for (const scheme of SCHEMES) {
   await t.close();
 }
 
+// 12 Nov 2026: the Lite studio (V2.5.3 #/v25/lite) restored: build a model from a room, read its geometry and predictions, correct, place, move, vary
+for (const scheme of SCHEMES) for (const vp of [VIEWPORTS[0], VIEWPORTS[VIEWPORTS.length - 1]]) {
+  const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/v25/lite' }); const p = t.page; await p.waitForSelector('[data-testid="lite-studio"]');
+  await p.evaluate(() => { try { localStorage.removeItem('empathia.demo.liteStudio.v1'); } catch { /* */ } }); await p.reload(); await p.waitForSelector('[data-testid="studio-new"]');
+  await p.selectOption('[data-testid="studio-room"]', 'R-ATL-4-218'); await p.click('[data-testid="studio-build"]'); await p.waitForSelector('[data-testid="studio-model"]');
+  const g = await p.evaluate(() => ({ len: document.querySelector('[data-testid="studio-geometry"] tr[data-dim="length"]')?.textContent || '', plan: document.querySelectorAll('[data-testid="studio-plan"] [data-placement]').length, pred: document.querySelector('[data-testid="studio-predict"]')?.textContent || '', hash: location.hash }));
+  ok(`LT-${tag}-S1`, 'the studio builds a conceptual model from a room: the campus model’s dimensions with their basis and uncertainty, the recipe’s devices on the plan, predicted coverage labelled a prediction', /9\.8 m/.test(g.len) && /not a survey/.test(g.len) && /±2\.9 m/.test(g.len) && g.plan >= 5 && /prediction, not a measurement/.test(g.pred) && /m=LM-001/.test(g.hash), JSON.stringify(g).slice(0, 300));
+  await p.fill('[data-testid="studio-val"]', '10.2'); await p.click('[data-testid="studio-correct-go"]'); const refused = await p.locator('text=Say why').count();
+  await p.fill('[data-testid="studio-why"]', 'tape measurement'); await p.click('[data-testid="studio-correct-go"]'); await p.waitForTimeout(150);
+  const c = await p.evaluate(() => document.querySelector('[data-testid="studio-geometry"] tr[data-dim="length"]')?.textContent || '');
+  ok(`LT-${tag}-S2`, 'a correction needs a reason; recorded, it is manually proposed, never verified, and the version moves on', refused === 1 && /10\.2 m/.test(c) && /manually proposed/.test(c) && /tape measurement/.test(c) && /Version 2/.test(await p.getByTestId('studio-history').innerText()), c);
+  const n0 = await p.locator('[data-testid="studio-plan"] [data-placement]').count(); await p.fill('[data-testid="studio-x"]', '1'); await p.fill('[data-testid="studio-y"]', '1'); await p.click('[data-testid="studio-place-go"]');
+  await p.getByRole('button', { name: 'Move right' }).first().click(); await p.waitForTimeout(150);
+  ok(`LT-${tag}-S3`, 'a device is placed on the plan and a device moves in 25 cm steps', await p.locator('[data-testid="studio-plan"] [data-placement]').count() === n0 + 1 && /moved/.test(await p.getByTestId('studio-history').innerText()));
+  await p.fill('[data-testid="studio-vwhy"]', 'a second camera at the back'); await p.click('[data-testid="studio-variant-go"]'); await p.waitForTimeout(200);
+  ok(`LT-${tag}-S4`, 'a variant is a copy at version 1 that says what it varies and why', /variant 1 · v1/.test(await p.getByTestId('studio-model').innerText()) && /variant of LM-001: a second camera at the back/.test(await p.getByTestId('studio-history').innerText()));
+  const over = await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  ok(`LT-${tag}-S5`, 'no horizontal overflow, no page error, no request left the page', over <= 0 && !t.errs.length && !t.ext.length, [over, ...t.errs, ...t.ext].slice(0, 3).join(' | '));
+  await t.close();
+}
+
 await done();
