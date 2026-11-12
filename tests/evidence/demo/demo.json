@@ -1,5 +1,5 @@
 {
- "at": "2026-11-10T12:45:13.608Z",
+ "at": "2026-11-12T08:11:23.615Z",
  "pass": 101,
  "fail": 0,
  "tests": 101,
@@ -188,7 +188,7 @@
    "id": "S-01",
    "name": "Search Party opens on the access switch with its neighbourhood graph and the downstream impact: three rooms and their networked devices",
    "result": "PASS",
-   "detail": "Search\n\nSearch Party · relationship intelligence\n\nAccess switch ATL-4A\n\nNetwork node · IDF 4 · 48 ports · PoE\n\nSearch\nEvery type\nBuilding (10)\nCommissioning baseline (1)\nNetwork node (2)\nPerson (2)\nRole (1)\nPlanned device (541)\nPower node (1)\nProject (1)\nRoom (45)\nRoom issue (1)\nSite (1)\nWork order "
+   "detail": "Search\n\nSearch Party · relationship intelligence\n\nAccess switch ATL-4A\n\nNetwork node · IDF 4 · 48 ports · PoE\n\nSearch\nEvery type\nBuilding (20)\nCommissioning baseline (1)\nNetwork node (2)\nPerson (2)\nRole (1)\nPlanned device (1148)\nPower node (1)\nProject (1)\nRoom (90)\nRoom issue (1)\nSite (1)\nWork order"
   },
   {
    "id": "S-02",
@@ -296,7 +296,7 @@
    "id": "V-07",
    "name": "dispatch preflight on the record: the room is booked in the proposed window, the processor stock check is stale, tools unconfirmed — each named",
    "result": "PASS",
-   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-11T10:44 → 2026-11-11T12:44\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
+   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-13T06:10 → 2026-11-13T08:10\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
   },
   {
    "id": "V-08",
@@ -362,7 +362,7 @@
    "id": "A-03",
    "name": "A2 is a read-only comparison, honest when there is no accepted baseline for the room",
    "result": "PASS",
-   "detail": "COMPARED A2 H1 2026-11-10 12:44 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
+   "detail": "COMPARED A2 H1 2026-11-12 08:10 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
   },
   {
    "id": "A-04",
@@ -374,7 +374,7 @@
    "id": "A-05",
    "name": "with approval and a window, the real adapter state blocks it: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)",
    "result": "PASS",
-   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-11-10 12:44 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
+   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-11-12 08:10 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
   },
   {
    "id": "A-06",
@@ -446,7 +446,7 @@
    "id": "L-08",
    "name": "a first-failure drill (No picture on input 3) is interactive and scores the tap; the completion is recorded as training only",
    "result": "PASS",
-   "detail": "No picture on input 3 Video · firstfail\n\nCamera 3 shows black on the switcher. You carry a small field monitor and check each point.\n\nRight. The fault sits between the last good reading and the first "
+   "detail": "No picture on input 3 Video · First failure point\n\nCamera 3 shows black on the switcher. You carry a small field monitor and check each point.\n\nUntimed here (the drill’s own clock is 0:55).\n\nTap the e"
   },
   {
    "id": "L-09",
@@ -470,7 +470,7 @@
    "id": "M-03",
    "name": "a passport shows numerator, denominator, window, coverage, freshness, confidence with reasons, source, exclusions and drill-down",
    "result": "PASS",
-   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-12 12:44 → 2026-11-10 12:44\nCoverage\n4 of 4 eligible recor"
+   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-14 08:11 → 2026-11-12 08:11\nCoverage\n4 of 4 eligible recor"
   },
   {
    "id": "M-04",
@@ -482,7 +482,7 @@
    "id": "M-05",
    "name": "the ledger filters to the refusals, each with actor, UTC and local time and the reason",
    "result": "PASS",
-   "detail": "When (UTC)\tLocal\tWho\tEvent\tRecord\tOutcome\tDetail\n2026-11-10 12:44:52\t11/10/2026, 06:44:52\tCommissioning Engineer\tlearn.sme_review\tLC-001\tDENIED\trefused: the proposer is not the subject-matter reviewer of their own case (separation of duties)\n2026-11-10 12:44:51\t11/10/2026, 06:44:51\tCommissioning Eng"
+   "detail": "When (UTC)\tLocal\tWho\tEvent\tRecord\tOutcome\tDetail\n2026-11-12 08:11:02\t11/12/2026, 02:11:02\tCommissioning Engineer\tlearn.sme_review\tLC-001\tDENIED\trefused: the proposer is not the subject-matter reviewer of their own case (separation of duties)\n2026-11-12 08:11:01\t11/12/2026, 02:11:01\tCommissioning Eng"
   },
   {
    "id": "M-06",
