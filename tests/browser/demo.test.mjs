@@ -49,6 +49,14 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     await page.fill('#b-length', "19' 8\""); await page.fill('#b-width', '4'); await page.selectOption('#b-unit', 'ft'); await page.fill('#b-width', '13'); await page.click('button:has-text("Create the room")'); await page.waitForTimeout(400);
     const t1 = await main();
     ok('B-03', 'the room is created from the template with declared and modeled dimensions labelled, devices placed and connections proposed', /PLANNED/.test(t1) && /length DECLARED/.test(t1) && /ceiling MODELED/.test(t1) && /Devices \(\d+\) and proposed connections \(\d+\)/.test(t1) && /Huddle Room/.test(t1), t1.slice(0, 200));
+    // 12 Nov 2026: V2.5.3's editing verbs restored in Build a Room: select, move in 25 cm steps, duplicate, undo (state is left as it was)
+    { const n0 = await page.locator('.build__list li[data-dev]').count(); await page.locator('.build__list li[data-dev] button[aria-pressed]').first().click();
+      const at0 = await page.getByTestId('build-sel').innerText(); await page.getByTestId('build-move-right').click(); await page.waitForTimeout(120); const at1 = await page.getByTestId('build-sel').innerText();
+      await page.getByTestId('build-dup').click(); await page.waitForTimeout(120); const n1 = await page.locator('.build__list li[data-dev]').count();
+      await page.getByTestId('build-undo').click(); await page.waitForTimeout(120); await page.getByTestId('build-undo').click(); await page.waitForTimeout(120);
+      const n2 = await page.locator('.build__list li[data-dev]').count(); const at2 = await page.getByTestId('build-sel').innerText(); const ledger = await main();
+      ok('B-03b', 'the designer selects a device, moves it 25 cm and duplicates it; undo walks both back', at1 !== at0 && n1 === n0 + 1 && n2 === n0 && at2 === at0 && (await page.getByTestId('build-undo').count()) === 0, JSON.stringify([at0.slice(0, 60), at1.slice(0, 60), n0, n1, n2])); void ledger;
+      await page.locator('.build__list li[data-dev] button[aria-pressed=true]').first().click(); }
     await page.click('button:has-text("Approve the suggestion")'); await page.waitForTimeout(150);
     ok('B-04', 'the designer cannot approve the classification (authority)', /room\.classify\.approve/.test(await refusal()), await refusal());
     await page.fill('[aria-label="Revision reason"]', 'initial layout'); await page.click('button:has-text("Save revision")'); await page.waitForTimeout(150);

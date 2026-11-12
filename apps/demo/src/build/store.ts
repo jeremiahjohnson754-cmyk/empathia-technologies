@@ -26,7 +26,7 @@ export interface Draft {
   design: RoomDesignInput;
   /** who saved the latest design change (separation of duties: that person does not approve it) */
   lastEditedBy: string;
-  revisions: Array<{ n: number; by: string; at: string; hash: string; reason: string }>;
+  revisions: Array<{ n: number; by: string; at: string; hash: string; reason: string; devices?: Array<{ id: string; label: string; cat: string; x: number; y: number }> }>;
   approvedRevision: number | null;
   drawings: Record<string, { state: 'DRAFT' | 'GENERATED' | 'APPROVED' | 'REVIEW_REQUIRED'; input: string; by?: string }>;
   events: Array<{ at: string; by: string; type: string; detail: string; outcome: 'ALLOWED' | 'DENIED' }>;
@@ -114,12 +114,54 @@ export function removeDevice(d: Draft, persona: string, id: string): Draft | Ref
   log(d, persona, 'room.device_removed', `${dev.label} (${dev.cat}) and its connections`);
   touchDesign(d, persona); return d;
 }
+const editable = (d: Draft, persona: string): string[] => !holds(persona, 'room.design') ? [`${personaLabel(persona)} does not hold room.design`] : d.design.lifecycle !== 'PLANNED' && d.design.lifecycle !== 'COMMISSIONING' ? [`devices are planned while the room is PLANNED, or changed during (re)commissioning (this one is ${d.design.lifecycle})`] : [];
+const clampIn = (v: number, hi: number) => Math.round(Math.min(hi, Math.max(0, v)) * 100) / 100;
+/** Move a device (V2.5.3 Build a Room's move, restored 12 Nov 2026): inside the room's outline box, logged; connections follow the device. */
+export function moveDevice(d: Draft, persona: string, id: string, dx: number, dy: number): Draft | Refusal {
+  const no = editable(d, persona); if (no.length) return refused(no);
+  const dev = d.design.devices.find((x) => x.id === id && !x.removed); if (!dev) return refused([`no device ${id}`]);
+  const x = clampIn(dev.x + dx, d.design.geometry.widthM), y = clampIn(dev.y + dy, d.design.geometry.lengthM);
+  if (x === dev.x && y === dev.y) return refused([`${dev.label} is already at the edge of the room`]);
+  log(d, persona, 'room.device_moved', `${dev.label} from ${dev.x.toFixed(2)}, ${dev.y.toFixed(2)} to ${x.toFixed(2)}, ${y.toFixed(2)} m`); dev.x = x; dev.y = y;
+  touchDesign(d, persona); return d;
+}
+/** Duplicate a device: a new identity of the same class beside it, with its own proposed connections. */
+export function duplicateDevice(d: Draft, persona: string, id: string): Draft | Refusal {
+  const dev = d.design.devices.find((x) => x.id === id && !x.removed); if (!dev) return refused([`no device ${id}`]);
+  const r = addDevice(d, persona, dev.cat, { x: clampIn(dev.x + 0.5, d.design.geometry.widthM), y: dev.y }); if ('why' in r) return r;
+  r.events[0]!.detail += ` (a duplicate of ${dev.id})`; return r;
+}
+/** Swap a device for another class of the same group: the old identity is retired (never rewritten) and a new one takes its place. */
+export function swapDevice(d: Draft, persona: string, id: string, cat: string): Draft | Refusal {
+  const no = editable(d, persona); if (no.length) return refused(no);
+  const dev = d.design.devices.find((x) => x.id === id && !x.removed); if (!dev) return refused([`no device ${id}`]);
+  const K = C.categories[cat], K0 = C.categories[dev.cat]; if (!K || !K0) return refused([`unknown equipment category ${cat}`]);
+  if (cat === dev.cat) return refused([`${dev.label} is already a ${K.label.toLowerCase()}`]);
+  if (K.group !== K0.group) return refused([`a ${K0.label.toLowerCase()} swaps only within its group (${K0.group}); ${K.label.toLowerCase()} is ${K.group}`]);
+  const at = { x: dev.x, y: dev.y }; const r = removeDevice(d, persona, id); if ('why' in r) return r;
+  const r2 = addDevice(r, persona, cat, at); if ('why' in r2) return r2; r2.events[0]!.detail += ` (swapped for ${dev.id}, ${dev.label})`; return r2;
+}
+/** Remove one proposed connection, with a reason (editing a connection, V2.5.3): the proposal is retired, never deleted. */
+export function removeConnection(d: Draft, persona: string, cid: string, reason: string): Draft | Refusal {
+  const no = editable(d, persona); if (no.length) return refused(no);
+  const c = d.design.connections.find((x) => x.id === cid && !x.removed); if (!c) return refused([`no connection ${cid}`]);
+  if (!reason.trim()) return refused(['removing a proposed connection says why']);
+  c.removed = true; log(d, persona, 'room.connection_removed', `${c.id} ${c.from} → ${c.to} (${c.kind}): ${reason.trim()}`); touchDesign(d, persona); return d;
+}
+/** Compare two saved revisions by device identity (revisions saved before 12 Nov carry no snapshot and cannot be compared). */
+export function compareRevisions(d: Draft, a: number, b: number): { added: string[]; removed: string[]; moved: string[] } | Refusal {
+  const A = d.revisions.find((r) => r.n === a), B = d.revisions.find((r) => r.n === b);
+  if (!A?.devices || !B?.devices) return refused(['one of these revisions was saved without a device snapshot']);
+  const ma = new Map(A.devices.map((x) => [x.id, x])), mb = new Map(B.devices.map((x) => [x.id, x]));
+  return { added: B.devices.filter((x) => !ma.has(x.id)).map((x) => `${x.id} ${x.label}`), removed: A.devices.filter((x) => !mb.has(x.id)).map((x) => `${x.id} ${x.label}`),
+    moved: B.devices.filter((x) => { const o = ma.get(x.id); return o && (Math.abs(o.x - x.x) > 0.005 || Math.abs(o.y - x.y) > 0.005); }).map((x) => `${x.id} ${x.label}`) };
+}
 export function saveRevision(d: Draft, persona: string, reason: string): Draft | Refusal {
   if (!holds(persona, 'room.design')) return refused([`${personaLabel(persona)} does not hold room.design`]);
   const h = hash(JSON.stringify([d.design.geometry, d.design.devices.filter((x) => !x.removed), d.design.connections.filter((c) => !c.removed)]));
   const last = d.revisions[d.revisions.length - 1];
   if (last && last.hash === h) return refused(['nothing changed since the last revision']);
-  d.revisions.push({ n: d.revisions.length + 1, by: persona, at: now(), hash: h, reason: reason.trim() || 'design change' });
+  d.revisions.push({ n: d.revisions.length + 1, by: persona, at: now(), hash: h, reason: reason.trim() || 'design change', devices: d.design.devices.filter((x) => !x.removed).map((x) => ({ id: x.id, label: x.label, cat: x.cat, x: x.x, y: x.y })) });
   d.lastEditedBy = persona;
   log(d, persona, 'room.design_revision_saved', `revision ${d.revisions.length} (${h})`); return d;
 }

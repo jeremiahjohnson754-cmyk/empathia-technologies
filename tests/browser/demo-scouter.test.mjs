@@ -29,7 +29,7 @@ for (const a of ['#/scouter', '#/v25/scouter', '#/lite/scouter', '#/suite/scoute
 { const t = await open('#/investor', { role: 'designer' }); const p = t.page;
   ok('S-08', 'discoverable from the designer’s home tabs (V2.5.3 tabsFor)', await p.locator('[data-testid=hometabs] a', { hasText: 'Scouter' }).count() === 1);
   await p.click('[data-testid=menu-open]');
-  ok('S-09', 'discoverable in the menu, by name under Lite', await p.locator('[data-testid=menu] .drawer__product[data-p=lite] .drawer__pages a', { hasText: 'Scouter' }).count() === 1); await p.keyboard.press('Escape');
+  ok('S-09', 'discoverable in the menu, by name under Lite', await p.locator('[data-testid=menu] .drawer__product[data-p=lite] .drawer__pages a b', { hasText: /^Scouter$/ }).count() === 1 /* 12 Nov 2026: exact title, since “Scouter anatomy” (restored) is also listed under Lite */); await p.keyboard.press('Escape');
   for (const q of ['scouter', 'evaluate a device', 'does this device suit', 'which camera']) { await p.fill('#find-in', q); await p.waitForTimeout(120); ok(`S-10 ${q}`, `find answers “${q}” with Scouter first`, /Scouter/.test(await p.locator('#find-list [role=option]').first().innerText().catch(() => ''))); }
   await p.fill('#find-in', 'scouter'); await p.keyboard.press('Enter'); await p.waitForTimeout(400);
   ok('S-11', 'Enter on the first result opens it, inside Lite (breadcrumb)', /#\/campus\/scouter/.test(p.url()) && /Lite · Scouter/.test(await p.locator('.product-kicker').innerText())); await t.close(); }
