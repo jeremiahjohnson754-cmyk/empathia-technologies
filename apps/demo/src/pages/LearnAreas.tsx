@@ -10,7 +10,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { PageHero, StatTile, Card, Chip, List, ListRow, MeterRow, Icon, Notice, Button, Tag, ProgressBar, EmptyState, ScoreRing, QuizRunner, DrillRunner, DRILL_KINDS, IncidentRunner, Incidents, type Quiz, type Drill, type IconName } from '@empathia/ui';
 import { V, fill, trainingCases, caseById, loadProgress, record, minutesOf, RESPONSES, RULES, score, readinessOf, competencyEvidence, roomsFor, archetypesIn, hopsOf, type TrainingCase, type Progress, type Episode, type Scene } from '../learn/model.js';
 import { loadLabs } from '../learn/store.js';
-import { ChallengeRunner, Challenges as CHX } from '@empathia/ui';
+import { ChallengeRunner, Challenges as CHX, MeltdownRunner, Meltdowns as MDX } from '@empathia/ui';
 import * as Story from '../signal/story.js';
 import * as MC from '../signal/mission.js';
 import * as RT from '../signal/ratings.js';
@@ -312,6 +312,7 @@ export function ServiceModePage({ perspective }: { perspective: string }) {
           <div className="ln-kinds">{doms.map((d) => { const ids = order.filter((id) => inc[id]!.domain === d); return <details key={d} className="ln-dom"><summary><b>{d}</b> <span className="ui-meta">{plural(ids.length, 'incident')} · {ids.filter((id) => p.incidents[id] === 'proven').length} proven</span></summary><List label={`${d} incidents`}>{ids.map((id) => <ListRow key={id} title={inc[id]!.title} sub={`${inc[id]!.priority} · ${inc[id]!.source}`} href={`#/learn/service/${id}`} chevron trailing={p.incidents[id] ? <Chip small tone={p.incidents[id] === 'proven' ? 'ok' : p.incidents[id] === 'partial' ? 'warn' : 'bad'}>{p.incidents[id]}</Chip> : undefined} />)}</List></details>; })}</div>
           <p className="wk-note">Work an incident the way the service desk does: symptoms, evidence, the first thing to try, and an escalation with facts.</p>
         </Card>); }}</LibGate>
+      <MeltdownList />
       <div className="wk-g2">
         <Card icon="menu" title="Ten actions" sub="Look, test, measure, escalate and six more: what each one does and what it costs on the clock">
           <ul className="ln-verbs">{V.SERVICE_VERBS.map(([k, l, wd]) => <li key={k}><b>{l}</b><span>{wd}</span><span className="ui-meta">{V.VERB_MIN[k]} min</span></li>)}</ul>
@@ -812,4 +813,23 @@ function SysMapView({ M, P, lanes }: { M: MC.SysMap; P: Story.Progress; lanes: R
     {M.links.map(([a, b, lane], i) => { const A = by(a), B = by(b), on = MC.nodeOn(A, P) && MC.nodeOn(B, P); return <line key={i} x1={A.x + A.w / 2} y1={A.y + A.h / 2} x2={B.x + B.w / 2} y2={B.y + B.h / 2} stroke={on ? lanes[lane] || 'currentColor' : 'var(--line2)'} strokeWidth={on ? 4 : 2} strokeDasharray={dash[lane]} />; })}
     {M.nodes.map((n) => { const on = MC.nodeOn(n, P); return <g key={n.id} className={on ? 'mc__node is-on' : 'mc__node'}><rect x={n.x} y={n.y} width={n.w} height={n.h} rx={8} /><text x={n.x + n.w / 2} y={n.y + n.h / 2 + 6} textAnchor="middle">{wrap2(on ? n.label : '? ? ?').map((t, j, all) => <tspan key={j} x={n.x + n.w / 2} dy={all.length > 1 ? (j ? 22 : -10) : 0}>{t}</tspan>)}</text></g>; })}
   </svg><p className="ui-meta">Lanes: {Object.keys(lanes).map((l) => l.toLowerCase()).join(', ')} (line pattern differs by lane). Unlit systems show as ? ? ?.</p></div>;
+}
+
+// ------------------------------------------------------------------------------------------------------------ meltdowns in Service Mode (reference meltdownList)
+type MdLib = [{ order: string[]; meltdowns: Record<string, MDX.Meltdown & { kicker?: string; source?: string; brief?: string; title: string }> }, RT.RatingsIndex];
+let mdCache: Promise<MdLib> | null = null;
+const loadMeltdowns = (): Promise<MdLib> => (mdCache ||= (Promise.all(['signal/meltdowns.json', 'signal/ratings.json'].map((u) => fetch(u).then((r) => { if (!r.ok) throw new Error(`${u} ${r.status}`); return r.json(); }))) as Promise<MdLib>).catch((e) => { mdCache = null; throw e; }));
+/** The end-of-season boss fights, takeable here as in the reference's Service Mode; records are the story's own. Restored 12 Nov 2026. */
+function MeltdownList() {
+  const [d, setD] = useState<MdLib | null>(null); const [err, setErr] = useState<string | null>(null); const [P, setP] = useState(() => Story.load()); const [open, setOpen] = useState<string | null>(null);
+  useEffect(() => { let live = true; loadMeltdowns().then((x) => live && setD(x)).catch((e) => live && setErr(String(e))); return () => { live = false; }; }, []);
+  if (err) return <Notice tone="bad">The meltdowns did not load: {err}.</Notice>; if (!d) return null;
+  const [L, X] = d, lo = RT.currentLoadout(P, X), factor = P.clock === 'off' ? 0 : P.clock === 'extended' ? 2 : 1;
+  return <Card icon="spark" tone="violet" title={`☢ Meltdowns · mission-critical boss fights · ${L.order.length}`} sub="The end-of-season boss fights. Everything fails at once, and every failure touches the next. Contain, fail over, prove — without touching what isn’t yours." testId="service-meltdowns">
+    <ul className="plain mc__quests">{L.order.map((id) => { const M = L.meltdowns[id]!, r = P.meltdowns[id];
+      return <li key={id} data-meltdown={id}>{open === id ? <MeltdownRunner M={M} heading="h4" factor={factor} resMet={(q) => RT.resMet(lo, q)} resWhy={(q) => RT.resWhy(lo, q)} onEnd={(S) => setP((cur) => { const n = { ...cur, meltdowns: { ...cur.meltdowns, [id]: MDX.recordMeltdown(cur.meltdowns[id] as MDX.MeltdownRecord | undefined, S) as Story.MeltdownRecord } }; Story.save(n); return n; })} />
+        : <><span className="ui-meta">☢ {id}{M.kicker ? ` · ${M.kicker}` : ''} · {r ? `${r.best === 'proven' ? 'Contained' : r.best === 'partial' ? 'Survived' : 'Failed'} · rating ${r.grade}` : 'Open'}</span><b>{M.title}</b>{M.brief && <span>{M.brief}</span>}{M.source && <span className="ui-meta">From {M.source}</span>}
+          <span><Button onClick={() => setOpen(id)}>Take the meltdown</Button></span></>}</li>; })}</ul>
+    <p className="wk-note">Meltdown loadouts come from your story ratings, as in the story. SIGNAL world · fiction.</p>
+  </Card>;
 }

@@ -28,6 +28,8 @@ export function shipSignal(repo, dist) {
     fs.mkdirSync(path.join(out, 'pieces'), { recursive: true });
     // the ratings engine's data (season reviews, the Story Score and the loadout), restored 11 Nov 2026
     fs.writeFileSync(path.join(out, 'ratings.json'), JSON.stringify(buildRatingsIndex(app)));
+    // the five meltdowns for Learn's Service Mode (reference meltdownList), the same records as the story's
+    fs.writeFileSync(path.join(out, 'meltdowns.json'), JSON.stringify({ order: app.meltdownOrder, meltdowns: Object.fromEntries(app.meltdownOrder.map((id) => [id, { ...app.meltdowns[id], id }])) }));
     // Mission Control (restored 12 Nov 2026, reference app.js renderHome): what each decision and conversation weighs, every piece's domain,
     // the role paths, the systems maps and their lanes, and the catalogue totals the evidence locker counts against.
     { const dec = {}, talk = {}; for (const c of index) for (const it of JSON.parse(fs.readFileSync(path.join(src, 'story', `${c.id}.json`), 'utf8')).items) {
