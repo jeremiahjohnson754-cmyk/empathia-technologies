@@ -424,10 +424,53 @@ export function CaseFilesPage({ perspective }: { perspective: string }) {
       </Card>
       <LibGate lib={lib} err={err}>{(l) => { const bySeason = new Map<number, string[]>(); for (const id of l.caseOrder) { const s = Number(/S(\d+)/.exec(l.cases[id]!.episode)?.[1] || 0); bySeason.set(s, [...(bySeason.get(s) || []), id]); } return (
         <Card icon="spark" tone="violet" title="SIGNAL case files" sub={`SIGNAL world · fiction · ${l.caseOrder.length} cases: what happened, why, how it was proven`} testId="signal-casefiles">
-          {[...bySeason.entries()].sort((a, b) => a[0] - b[0]).map(([s, ids]) => <details key={s} className="ln-dom"><summary><b>Season {s}</b> <span className="ui-meta">{plural(ids.length, 'case')}</span></summary>{ids.map((id) => <article key={id} className="ln-canon"><b>{l.cases[id]!.title}</b> <span className="ui-meta">{l.cases[id]!.episode} · {l.cases[id]!.hook}</span>{l.cases[id]!.learn.map((x, i) => <p key={i} dangerouslySetInnerHTML={html(x)} />)}</article>)}</details>)}
+          {[...bySeason.entries()].sort((a, b) => a[0] - b[0]).map(([s, ids]) => <details key={s} className="ln-dom"><summary><b>Season {s}</b> <span className="ui-meta">{plural(ids.length, 'case')}</span></summary>{ids.map((id) => <SignalCase key={id} id={id} l={l} />)}</details>)}
         </Card>); }}</LibGate>
     </section>
   );
+}
+/** One SIGNAL case file, restored 12 Nov 2026 to the founder's build package (reference app.js renderCases / casePane / calcStep): one
+ *  failure pattern seen three ways — Learn (what happened and why, with its check), Service (the live incident and drill), Engineer (the
+ *  arithmetic behind the fix, step by step: a number and its unit, a hint, then the equation). */
+interface CaseStep { prompt: string; answer: number; unit: string; units: string[]; tol?: number; hint: string; hint2?: string; why: string; unitWhy?: string; f?: string }
+interface SignalCaseData { title: string; episode: string; chapter?: string; canon: boolean; incident?: string; hook: string; learn: string[]; quiz?: string; service: string; serviceDrill?: string; engineer: { intro: string; flag?: string; steps: CaseStep[]; drill?: string }; fb?: string }
+function SignalCase({ id, l }: { id: string; l: Lib }) {
+  const c = (l.cases as unknown as Record<string, SignalCaseData>)[id]!; const [tab, setTab] = useState<'learn' | 'service' | 'engineer'>('learn');
+  const inc = c.incident ? l.incidents?.[c.incident] : undefined; const q = c.quiz ? l.quizzes[c.quiz] : undefined; const F = (l as unknown as { formulas?: Record<string, { name: string; eq: string }> }).formulas;
+  const ch = c.chapter ? (/^s\d\de\d\d$/i.test(c.chapter) ? c.chapter.toLowerCase() : null) : null;
+  return <article className="ln-canon ln-case" data-case={id}>
+    <p className="ln-case__pills"><Chip small tone="warn">{id}</Chip> <Chip small tone="muted">{c.episode}</Chip> <Chip small tone={c.canon ? 'ok' : 'muted'}>{c.canon ? 'Canonical' : 'SIGNAL adaptation'}</Chip></p>
+    <b className="ln-case__t">{c.title}</b><p>{c.hook}</p>
+    <div className="ln-tabs" role="tablist" aria-label={`${c.title}: perspective`}>{(['learn', 'service', 'engineer'] as const).map((k) => <button key={k} type="button" role="tab" aria-selected={tab === k} className="ui-btn ui-btn--quiet" onClick={() => setTab(k)} data-tab={k}>{k === 'learn' ? 'Learn' : k === 'service' ? 'Service' : 'Engineer'}</button>)}</div>
+    {tab === 'learn' && <div className="stack" data-pane="learn">{c.learn.map((x, i) => <p key={i} className="learn__card" dangerouslySetInnerHTML={html(x)} />)}
+      {c.fb && <p className="ui-meta">📒 From the Empathia Learn Fieldbook case study, {c.fb}. SIGNAL tells it as a story; the mechanism is the Fieldbook’s.</p>}
+      {!c.canon && <p className="ui-meta">⚑ Q-004: {c.fb ? 'SIGNAL adaptation of a Fieldbook case — the owner should confirm it. Safety changes: FB-03.' : 'a SIGNAL original case (not from the Fieldbook) — subject-matter review before release.'}</p>}
+      {q && <QuizRunner key={`${id}-q`} q={q} />}{ch && <p><a className="ui-btn ui-btn--quiet" href={`#/story/${ch}`}>Read the episode</a></p>}</div>}
+    {tab === 'service' && <div className="stack" data-pane="service"><p className="learn__card"><b>Service perspective.</b> <span dangerouslySetInnerHTML={html(c.service)} /></p>
+      {inc && <p>Incident {c.incident}: {inc.title} · clock {Math.floor(inc.clock / 60)}:{String(Math.ceil(inc.clock) % 60).padStart(2, '0')} <a className="ui-btn" href={`#/learn/service/${c.incident}`}>▶ Take the live incident</a></p>}
+      {c.serviceDrill && <p className="ui-meta">Drill {c.serviceDrill} · <a href="#/learn/practice">run it in Practice</a></p>}</div>}
+    {tab === 'engineer' && <div className="stack" data-pane="engineer"><p className="learn__card"><b>Engineer perspective.</b> <span dangerouslySetInnerHTML={html(c.engineer.intro)} /></p>
+      {c.engineer.flag && <p className="ui-meta">⚑ {c.engineer.flag}</p>}
+      {c.engineer.steps.map((st, i) => <CalcStep key={`${id}-${i}`} id={`${id}-${i}`} s={st} f={st.f ? F?.[st.f] : undefined} />)}
+      {c.engineer.drill && <p className="ui-meta">Drill {c.engineer.drill} · <a href="#/learn/practice">run it in Practice</a></p>}</div>}
+  </article>;
+}
+/** One step of the arithmetic (reference calcStep): the number and its unit are both checked; the second miss shows the equation. */
+function CalcStep({ id, s, f }: { id: string; s: CaseStep; f?: { name: string; eq: string } }) {
+  const [v, setV] = useState(''); const [u, setU] = useState(s.units[0]!); const [tries, setTries] = useState(0); const [fb, setFb] = useState<{ ok: boolean; t: string } | null>(null); const [work, setWork] = useState(false);
+  const check = () => { const n = parseFloat(v.replace(',', '.')); if (Number.isNaN(n)) { setFb({ ok: false, t: 'Enter a number first.' }); return; } const t = tries + 1; setTries(t);
+    const okN = Math.abs(n - s.answer) <= (s.tol ?? Math.abs(s.answer) * 0.03 + 1e-9), okU = u === s.unit;
+    setFb(okN && okU ? { ok: true, t: `✓ Correct: ${s.answer} ${s.unit}. ${s.why}` } : okN ? { ok: false, t: `✕ Right number, wrong unit. A number without the right unit is a different quantity. ${s.unitWhy || ''}` } : { ok: false, t: `✕ Not yet. ${t >= 2 ? (s.hint2 ? 'The equation is shown below.' : s.hint) : s.hint}` });
+    if ((okN && okU) || t >= 2) setWork(true); };
+  return <div className="ln-calc" data-step={id} data-ok={fb?.ok ?? ''}>
+    <label htmlFor={`calc-${id}`}>{s.prompt}</label>
+    {f && <p className="ln-calc__f"><span className="ui-meta">ƒ {f.name}</span> <span dangerouslySetInnerHTML={html(f.eq)} /></p>}
+    <div className="ln-calc__row"><input id={`calc-${id}`} inputMode="decimal" autoComplete="off" placeholder="number" value={v} onChange={(e) => setV(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') check(); }} />
+      <select aria-label="Unit" value={u} onChange={(e) => setU(e.target.value)}>{s.units.map((x) => <option key={x} value={x}>{x}</option>)}</select>
+      <Button onClick={check}>Check</Button><Button kind="quiet" onClick={() => setWork(!work)}>{work ? 'Hide the equation' : 'Show the equation'}</Button></div>
+    <p aria-live="polite" className={fb ? (fb.ok ? 'ln-calc__ok' : 'ln-calc__no') : undefined}>{fb?.t}</p>
+    {work && <p className="ui-meta ln-calc__w">{s.hint2 || s.hint}</p>}
+  </div>;
 }
 export function CaseFilePage({ perspective, params }: { perspective: string; params: Record<string, string> }) {
   const { w } = useWorkspace(); const [p] = useProgress(); const c = caseById(w, params.id || '');

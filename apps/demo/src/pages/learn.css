@@ -85,3 +85,8 @@
 .ln-tabs { display: flex; flex-wrap: wrap; gap: 6px; } .ln-tabs [aria-selected=true] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
 .ln-layer { font: inherit; font-weight: 700; font-size: var(--fs-xs); letter-spacing: .06em; text-transform: uppercase; min-height: 44px; padding: 6px 12px; border: 2px solid; border-radius: 999px; color: var(--tx); cursor: pointer; }
 .ln-layer:disabled { opacity: .5; cursor: default; } .ln-ex__real.is-dim { opacity: .45; } .ln-ex__t { font-size: 17px; font-weight: 800; }
+/* SIGNAL case files (reference renderCases / calcStep, restored 12 Nov 2026): three perspectives, the arithmetic step by step */
+.ln-case { display: grid; gap: 8px; } .ln-case__pills { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; } .ln-case__t { font-size: var(--fs-lg); }
+.ln-calc { display: grid; gap: 6px; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--bg2); }
+.ln-calc__row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; } .ln-calc__row input, .ln-calc__row select { min-height: 44px; font: inherit; color: var(--tx); background: var(--bg); border: 1px solid var(--line2); border-radius: var(--r-sm); padding: 6px 10px; }
+.ln-calc__row input { width: 9em; } .ln-calc p { margin: 0; } .ln-calc__ok { color: var(--ok); } .ln-calc__no { color: var(--bad); } .ln-calc__f { font-size: var(--fs-sm); }
