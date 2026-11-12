@@ -66,10 +66,10 @@ for (const w of [390, 320]) { const t = await open('#/drawings', { role: 'design
 // 12 Nov 2026 (70/10 task 70-2): display viewing analysis from the drawing, then the room carried into the Lite studio
 { const t = await open('#/drawings', { role: 'architect', w: 1440 }); const p = t.page; await p.waitForSelector('[data-testid=drawings]'); await p.getByTestId('dr-viewing').waitFor();
   const none = await p.getByTestId('dr-viewing-none').count(); const rows = await p.locator('[data-testid=dr-viewing-sizes] tbody tr').count();
-  const facts = await p.getByTestId('dr-viewing-facts').innerText(); const rec = await p.getByTestId('dr-viewing-rec').innerText(); const card = await p.getByTestId('dr-viewing').innerText();
+  const facts = await p.getByTestId('dr-viewing-facts').innerText(); const rec = await p.getByTestId('dr-viewing-rec').innerText(); const card = await p.getByTestId('dr-viewing').innerText(); const ovl = await p.getByTestId('dr-viewing-overlay').evaluate((e) => e.textContent || '');
   ok('DRB-50', 'the drawing’s room gets a display viewing analysis: five proposed sizes against ST-VID-02 with the arithmetic, every input with its provenance, a recommendation that selects nothing, and not the AVIXA method', none === 0 && rows === 5 && /Farthest viewer/.test(facts) && /Provenance: Assumed/.test(facts) && /Provenance: Unavailable/.test(facts) && /Recommendation\./.test(rec) && /proposal|None of these|second display/.test(rec) && /Not the AVIXA DISCAS method/.test(card), rec.slice(0, 160));
   await p.getByTestId('dr-to-lite').click(); await p.waitForSelector('[data-testid=lite-studio] [data-testid=studio-model]'); const geo = await p.getByTestId('studio-geometry').innerText();
   ok('DRB-51', 'carried into the Lite studio, the room keeps the drawing’s width and length as manually proposed, saying they came from Drawing Intelligence', /Drawing Intelligence/.test(geo) && /manually proposed/i.test(geo), geo.slice(0, 200));
-  ok('DRB-52', 'no console error, no request leaving the page; the overlay is drawn with its marks labelled', clean(t) && /seating · assumed/.test(card) && /modeled/.test(card), [...t.errs, ...t.off].slice(0, 3).join(' | ')); await t.close(); }
+  ok('DRB-52', 'no console error, no request leaving the page; the overlay is drawn with its marks labelled', clean(t) && /seating · assumed/.test(ovl) && /m · modeled/.test(ovl), [...t.errs, ...t.off].slice(0, 3).join(' | ')); await t.close(); }
 
 await done();
