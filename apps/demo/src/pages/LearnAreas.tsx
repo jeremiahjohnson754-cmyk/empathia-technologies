@@ -6,7 +6,7 @@
  * the Sanctuary explorer and the ServiceHands Academy. Content: learn/model.ts (V2.5.3's, extracted) and the SIGNAL library; every count
  * from the records. Scores stay in this browser; a completion is a training line in the ledger, never an authorization to work.
  */
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { Fragment, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { PageHero, StatTile, Card, Chip, List, ListRow, MeterRow, Icon, Notice, Button, Tag, ProgressBar, EmptyState, ScoreRing, QuizRunner, DrillRunner, DRILL_KINDS, IncidentRunner, Incidents, type Quiz, type Drill, type IconName } from '@empathia/ui';
 import { V, fill, trainingCases, caseById, loadProgress, record, minutesOf, RESPONSES, RULES, score, readinessOf, competencyEvidence, roomsFor, archetypesIn, hopsOf, type TrainingCase, type Progress, type Episode, type Scene } from '../learn/model.js';
 import { loadLabs } from '../learn/store.js';
@@ -436,7 +436,10 @@ interface CaseStep { prompt: string; answer: number; unit: string; units: string
 interface SignalCaseData { title: string; episode: string; chapter?: string; canon: boolean; incident?: string; hook: string; learn: string[]; quiz?: string; service: string; serviceDrill?: string; engineer: { intro: string; flag?: string; steps: CaseStep[]; drill?: string }; fb?: string }
 function SignalCase({ id, l }: { id: string; l: Lib }) {
   const c = (l.cases as unknown as Record<string, SignalCaseData>)[id]!; const [tab, setTab] = useState<'learn' | 'service' | 'engineer'>('learn');
-  const inc = c.incident ? l.incidents?.[c.incident] : undefined; const q = c.quiz ? l.quizzes[c.quiz] : undefined; const F = (l as unknown as { formulas?: Record<string, { name: string; eq: string }> }).formulas;
+  const inc = c.incident ? l.incidents?.[c.incident] : undefined; const q = c.quiz ? l.quizzes[c.quiz] : undefined; const F = (l as unknown as { formulas?: Record<string, Fx> }).formulas;
+  // the support ladder (reference ladder.js tierFor): the reader's setting, else the case's own tier, else Intermediate
+  const [sp] = useState(() => Story.load().support); const tier = sp && sp !== 'auto' ? Number(sp) : (l as unknown as { tierOf?: Record<string, number> }).tierOf?.[`case:${id}`] ?? 2;
+  const GLF = (l as unknown as { glossary?: Array<{ term: string; d: string; f?: string[] }> }).glossary || [];
   const ch = c.chapter ? (/^s\d\de\d\d$/i.test(c.chapter) ? c.chapter.toLowerCase() : null) : null;
   return <article className="ln-canon ln-case" data-case={id}>
     <p className="ln-case__pills"><Chip small tone="warn">{id}</Chip> <Chip small tone="muted">{c.episode}</Chip> <Chip small tone={c.canon ? 'ok' : 'muted'}>{c.canon ? 'Canonical' : 'SIGNAL adaptation'}</Chip></p>
@@ -451,12 +454,28 @@ function SignalCase({ id, l }: { id: string; l: Lib }) {
       {c.serviceDrill && <p className="ui-meta">Drill {c.serviceDrill} · <a href="#/learn/practice">run it in Practice</a></p>}</div>}
     {tab === 'engineer' && <div className="stack" data-pane="engineer"><p className="learn__card"><b>Engineer perspective.</b> <span dangerouslySetInnerHTML={html(c.engineer.intro)} /></p>
       {c.engineer.flag && <p className="ui-meta">⚑ {c.engineer.flag}</p>}
-      {c.engineer.steps.map((st, i) => <CalcStep key={`${id}-${i}`} id={`${id}-${i}`} s={st} f={st.f ? F?.[st.f] : undefined} />)}
+      <p className="ui-meta" data-testid="case-tier" data-tier={tier}>Support: {TIER_NAME[tier] || 'Intermediate'}{sp && sp !== 'auto' ? ' (your setting in Mission Control)' : ' (this case’s level)'}</p>
+      {c.engineer.steps.map((st, i) => <CalcStep key={`${id}-${i}-${tier}`} id={`${id}-${i}`} s={st} fk={st.f} F={F || {}} tier={tier} terms={st.f ? GLF.filter((g) => g.f?.includes(st.f!)).slice(0, 2) : []} />)}
       {c.engineer.drill && <p className="ui-meta">Drill {c.engineer.drill} · <a href="#/learn/practice">run it in Practice</a></p>}</div>}
   </article>;
 }
-/** One step of the arithmetic (reference calcStep): the number and its unit are both checked; the second miss shows the equation. */
-function CalcStep({ id, s, f }: { id: string; s: CaseStep; f?: { name: string; eq: string } }) {
+const TIER_NAME = ['', 'Beginner', 'Intermediate', 'Advanced', 'Mastery'];
+interface Fx { name: string; eq: string; where?: Array<[string, string]>; note?: string; ex?: string; when?: string; opts?: string[] }
+/** The formula scaffold by tier (reference ladder.js fxTier): Beginner the card, two terms and the worked example; Intermediate the card;
+ *  Advanced the card on request; Mastery none. */
+function FxScaffold({ F, tier, terms }: { F: Fx; tier: number; terms: Array<{ term: string; d: string }> }) {
+  if (tier >= 4) return <p className="ui-meta" data-testid="case-fx-mastery">🎯 Mastery: nobody hands you the formula. The Fieldbook has the reference.</p>;
+  const card = <div className="ln-calc__f" data-testid="case-fx"><p><span className="ui-meta">ƒ {F.name}</span> <span dangerouslySetInnerHTML={html(F.eq)} /></p>
+    {tier <= 1 && terms.length > 0 && <dl className="lt-dl">{terms.map((g) => <Fragment key={g.term}><dt>{g.term}</dt><dd>{g.d}</dd></Fragment>)}</dl>}
+    {F.where && F.where.length > 0 && <p className="ui-meta" dangerouslySetInnerHTML={html(F.where.map(([k, v]) => `${k}: ${v}`).join(' · '))} />}
+    {tier <= 1 && F.ex && <p className="ui-meta"><b>Worked example.</b> {F.ex}</p>}</div>;
+  return tier === 3 ? <details className="ln-calc__ask"><summary>ƒ Formula available — ask for it</summary>{card}</details> : card;
+}
+/** One step of the arithmetic (reference calcStep): the number and its unit are both checked; the second miss shows the equation. A step
+ *  with a formula follows the support ladder; at Mastery the answer stays locked until the right relationship is chosen (reference fxGate). */
+function CalcStep({ id, s, fk, F, tier, terms }: { id: string; s: CaseStep; fk?: string; F: Record<string, Fx>; tier: number; terms: Array<{ term: string; d: string }> }) {
+  const f = fk ? F[fk] : undefined; const gate = tier >= 4 && !!f?.opts && f.opts.filter((k) => F[k]).length >= 2;
+  const [chose, setChose] = useState(false); const [wrong, setWrong] = useState<string[]>([]); const ready = !gate || chose;
   const [v, setV] = useState(''); const [u, setU] = useState(s.units[0]!); const [tries, setTries] = useState(0); const [fb, setFb] = useState<{ ok: boolean; t: string } | null>(null); const [work, setWork] = useState(false);
   const check = () => { const n = parseFloat(v.replace(',', '.')); if (Number.isNaN(n)) { setFb({ ok: false, t: 'Enter a number first.' }); return; } const t = tries + 1; setTries(t);
     const okN = Math.abs(n - s.answer) <= (s.tol ?? Math.abs(s.answer) * 0.03 + 1e-9), okU = u === s.unit;
@@ -464,10 +483,13 @@ function CalcStep({ id, s, f }: { id: string; s: CaseStep; f?: { name: string; e
     if ((okN && okU) || t >= 2) setWork(true); };
   return <div className="ln-calc" data-step={id} data-ok={fb?.ok ?? ''}>
     <label htmlFor={`calc-${id}`}>{s.prompt}</label>
-    {f && <p className="ln-calc__f"><span className="ui-meta">ƒ {f.name}</span> <span dangerouslySetInnerHTML={html(f.eq)} /></p>}
-    <div className="ln-calc__row"><input id={`calc-${id}`} inputMode="decimal" autoComplete="off" placeholder="number" value={v} onChange={(e) => setV(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') check(); }} />
-      <select aria-label="Unit" value={u} onChange={(e) => setU(e.target.value)}>{s.units.map((x) => <option key={x} value={x}>{x}</option>)}</select>
-      <Button onClick={check}>Check</Button><Button kind="quiet" onClick={() => setWork(!work)}>{work ? 'Hide the equation' : 'Show the equation'}</Button></div>
+    {f && !gate && <FxScaffold F={f} tier={tier} terms={terms} />}
+    {gate && f && <div className="stack" data-testid="case-fx-choose"><p className="lab__k">🎯 Mastery · which relationship do you need? Choose it, then solve.</p>
+      <div className="dr__chips" role="group" aria-label="Which relationship">{f.opts!.filter((k) => F[k]).map((k) => <button key={k} type="button" className="dr__chip" data-f={k} data-right={k === fk ? (chose ? 'true' : undefined) : wrong.includes(k) ? 'false' : undefined} aria-pressed={chose && k === fk} disabled={chose || wrong.includes(k)} onClick={() => { if (k === fk) setChose(true); else setWrong([...wrong, k]); }}>{F[k]!.name}</button>)}</div>
+      <p className="ui-meta" aria-live="polite" data-testid="case-fx-why">{chose ? `✓ ${f.when || 'That’s the one.'}` : wrong.length ? `✕ Not this one — ${F[wrong[wrong.length - 1]!]?.when || ''} Think about what the problem gives you and what it asks for.` : ''}</p></div>}
+    <div className="ln-calc__row"><input id={`calc-${id}`} inputMode="decimal" autoComplete="off" placeholder={ready ? 'number' : 'choose the relationship first'} disabled={!ready} value={v} onChange={(e) => setV(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && ready) check(); }} />
+      <select aria-label="Unit" value={u} disabled={!ready} onChange={(e) => setU(e.target.value)}>{s.units.map((x) => <option key={x} value={x}>{x}</option>)}</select>
+      <Button onClick={check} disabled={!ready}>Check</Button><Button kind="quiet" onClick={() => setWork(!work)}>{work ? 'Hide the equation' : 'Show the equation'}</Button></div>
     <p aria-live="polite" className={fb ? (fb.ok ? 'ln-calc__ok' : 'ln-calc__no') : undefined}>{fb?.t}</p>
     {work && <p className="ui-meta ln-calc__w">{s.hint2 || s.hint}</p>}
   </div>;
