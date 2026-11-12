@@ -31,6 +31,8 @@ export function shipSignal(repo, dist) {
     // the five meltdowns for Learn's Service Mode (reference meltdownList), the same records as the story's
     // the quick-facts timeline (reference app.js, Fundamentals): history notes spaced out of the story, each tied to its chapter (RV-27: unchecked)
     fs.writeFileSync(path.join(out, 'timeline.json'), JSON.stringify({ seasons: app.seasons, timeline: (app.timeline || []).map((t) => ({ ch: t.ch, title: t.title, body: t.body })) }));
+    // the mentor channel's built-in answers and suggestions (reference app.js offline(); the live-model prompt is not shipped)
+    fs.writeFileSync(path.join(out, 'ask.json'), JSON.stringify({ offline: (app.askOffline || []).map((x) => ({ k: x.k, a: x.a })), suggest: app.askSuggest || [] }));
     fs.writeFileSync(path.join(out, 'meltdowns.json'), JSON.stringify({ order: app.meltdownOrder, meltdowns: Object.fromEntries(app.meltdownOrder.map((id) => [id, { ...app.meltdowns[id], id }])) }));
     // Mission Control (restored 12 Nov 2026, reference app.js renderHome): what each decision and conversation weighs, every piece's domain,
     // the role paths, the systems maps and their lanes, and the catalogue totals the evidence locker counts against.

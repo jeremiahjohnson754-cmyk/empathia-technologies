@@ -13,6 +13,7 @@ import { loadLabs } from '../learn/store.js';
 import { ChallengeRunner, Challenges as CHX, MeltdownRunner, Meltdowns as MDX, Bench } from '@empathia/ui';
 import * as Story from '../signal/story.js';
 import * as MC from '../signal/mission.js';
+import * as Mentor from '../signal/mentor.js';
 import * as RT from '../signal/ratings.js';
 import { loadLib } from './Learn.js';
 import { allRecords, roomRecord, type RoomRecord } from '../campus/design.js';
@@ -676,8 +677,31 @@ export function AskPage({ perspective }: { perspective: string }) {
         <div className="wk-g2">{GROUPS.map(([g, ids]) => <div key={g}><h3 className="ln-h3">{g}</h3><List label={g}>{ids.map((i) => <ListRow key={i} title={V.ASK_QUESTIONS[i]!} onClick={() => { setN(i); setQ(V.ASK_QUESTIONS[i]!); setMiss(false); }} current={n === i} chevron />)}</List></div>)}</div>
         <p className="wk-note">Ask Empathia answers a fixed set of questions by reading Core. It does not generate text, and it says so when a question is not one it knows.</p>
       </Card>
+      <MentorChannel />
     </section>
   );
+}
+
+/** SIGNAL's mentor channel (restored 12 Nov 2026, reference app.js renderAsk, built-in answers): it asks before it tells and names the
+ *  concept. No live model here: each question is matched to the source's twenty prepared answers, and the page says so. */
+let askCache: Promise<{ offline: Mentor.MentorAnswer[]; suggest: string[] }> | null = null;
+function MentorChannel() {
+  const [d, setD] = useState<{ offline: Mentor.MentorAnswer[]; suggest: string[] } | null>(null); const [err, setErr] = useState<string | null>(null);
+  const [log, setLog] = useState<Array<{ me: boolean; t: string }>>([{ me: false, t: Mentor.MENTOR_OPEN }]); const [q, setQ] = useState(''); const [nudge, setNudge] = useState(false);
+  useEffect(() => { let live = true; (askCache ||= fetch('signal/ask.json').then((r) => { if (!r.ok) throw new Error(`ask ${r.status}`); return r.json(); }).catch((e) => { askCache = null; throw e; }))
+    .then((x) => live && setD(x)).catch((e) => live && setErr(String(e))); return () => { live = false; }; }, []);
+  if (err) return <Notice tone="bad">The mentor channel did not load: {err}.</Notice>; if (!d) return null;
+  const send = (text: string) => { const t = text.trim(); if (!t) { setNudge(true); return; } setNudge(false); setQ(''); setLog((l) => [...l, { me: true, t }, { me: false, t: Mentor.mentorAnswer(t, d.offline).text }]); };
+  return <Card icon="spark" tone="violet" title="SIGNAL mentor channel" sub="SIGNAL world · ask about a concept, a drill or an incident; it asks before it tells, names the concept, and says who a job belongs to" testId="ask-mentor">
+    <p className="wk-note" data-testid="ask-mentor-note">Built-in answers only: your question is matched to {d.offline.length} prepared answers from the SIGNAL source. No AI model is used and nothing leaves this page.</p>
+    <div className="ln-chat" aria-live="polite" data-testid="ask-mentor-log">{log.map((m, i) => <p key={i} className={`ln-msg${m.me ? ' is-me' : ''}`}>{m.t}</p>)}</div>
+    <div className="ln-suggest" role="group" aria-label="Suggested questions">{d.suggest.map((x) => <button key={x} type="button" className="ui-btn ui-btn--quiet" onClick={() => send(x)}>{x}</button>)}</div>
+    <form className="ln-askform" onSubmit={(e) => { e.preventDefault(); send(q); }}>
+      <textarea aria-label="Your question to the mentor" maxLength={400} rows={2} value={q} placeholder={nudge ? 'Type a question first — for example: why does my stream drop every 40 seconds?' : 'e.g. Why does EQ not fix a notch that moves between seats?'} data-nudge={nudge}
+        onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(q); } }} />
+      <Button type="submit">Send</Button>
+    </form>
+  </Card>;
 }
 
 // ------------------------------------------------------------------------------------------------------------ #/learn/explore: the system explorers

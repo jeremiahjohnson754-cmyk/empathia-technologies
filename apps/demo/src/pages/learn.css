@@ -74,3 +74,10 @@
 @media (max-width: 600px) { .ln-ladder li { grid-template-columns: minmax(0, 1fr) auto; } .ln-ladder li > span:nth-child(2) { grid-column: 1 / -1; grid-row: 2; } .ln-lessons a { grid-template-columns: auto minmax(0, 1fr); } .ln-lessons a > :last-child { grid-column: 2; justify-self: start; } .ln-ask { flex-wrap: wrap; } }
 @media (prefers-reduced-motion: reduce) { .ln-choice { transition: none; } }
 .ln-fact { display: grid; gap: 2px; padding-block: var(--sp-2); border-top: 1px solid var(--line); } .ln-fact p { margin: 0; } /* the quick-facts timeline (12 Nov) */
+/* SIGNAL mentor channel (12 Nov): the conversation, suggested questions, the question box */
+.ln-chat { display: grid; gap: 8px; max-height: 60vh; overflow: auto; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--bg2); padding: var(--sp-3); }
+.ln-msg { margin: 0; max-width: 88%; padding: 9px 12px; border-radius: var(--r-md); line-height: 1.5; white-space: pre-wrap; justify-self: start; background: var(--panel); border: 1px solid var(--line); }
+.ln-msg.is-me { justify-self: end; background: var(--panel2); border-color: var(--line2); }
+.ln-suggest { display: flex; flex-wrap: wrap; gap: 6px; }
+.ln-askform { display: flex; gap: 8px; align-items: stretch; flex-wrap: wrap; } .ln-askform textarea { flex: 1 1 260px; min-height: 44px; font: inherit; color: var(--tx); background: var(--bg); border: 1px solid var(--line2); border-radius: var(--r-sm); padding: 8px 10px; }
+.ln-askform textarea[data-nudge=true] { border-color: var(--warn); }
