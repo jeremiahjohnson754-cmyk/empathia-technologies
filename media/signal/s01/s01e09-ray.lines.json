@@ -1,0 +1,4 @@
+[
+"DMX is how the console talks to lights: five hundred twelve channels on one line — a universe. Each fixture starts at its start address.",
+"Start plus channels minus one. At a hundred one using sixteen channels, it ends at a hundred sixteen. The next fixture starts at a hundred seventeen."
+]

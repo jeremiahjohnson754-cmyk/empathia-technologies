@@ -62,3 +62,50 @@ returned by this connector: **to record before production at scale** (rights reg
 future lines depend on the voice staying available, so the full SIGNAL script for a season is generated in one production pass once a
 scene is approved. Sources: [notice period](https://elevenlabs.io/docs/help-center/product/voices/voice-library/what-is-a-notice-period.md),
 [Voice Library](https://elevenlabs.io/docs/voice-library/overview).
+
+## Season 1 production pass (founder, 12 Nov 2026, 12:16 CT: "Yes")
+
+Every Maya and Ray line in S01E00 and S01E02–E11 (S01E01 was voiced earlier) was generated in seven grouped takes, one generation
+each, lines in canon order separated by 2-second breaks so `media/signal/split.py` can cut them back into one file per line. The
+take maps (`media/signal/s01/<group>.take.json`) list each line with its chapter.
+
+| Group | Voice | Chapters | Lines | Credits |
+|---|---|---|---|---|
+| maya-s1g1 | Sarah | e00, e02 | 44 | 2,627 |
+| maya-s1g2 | Sarah | e03–e05 | 23 | 1,525 |
+| maya-s1g3 | Sarah | e06–e08 | 26 | 1,505 |
+| maya-s1g4 | Sarah | e09–e11 | 18 | 1,310 |
+| ray-s1g1 | Paul | e00 | 23 | 1,378 |
+| ray-s1g2 | Paul | e02–e06 | 22 | 2,216 |
+| ray-s1g3 | Paul | e07–e10 | 15 | 1,612 |
+| **Total** | | | **171** | **12,173** |
+
+The quote given before approval was about 10,000 credits (estimated from characters); the actual charge was 12,173, about 20 % more,
+because the break tags are billed as well. Future quotes use 1.17 credits per character of prompt including breaks.
+
+Three canon "lines" attributed to Ray are not spoken and were left as captions: "…" (a silence, S01E00), the notebook entry nobody
+hears (S01E00), and the narration "The notebook goes back in his pocket…" (S01E10). They are listed under `captionOnly` in the take maps.
+
+## Recurring Season 1 voices: auditions (founder, 12:16: "three auditions each")
+
+One take of one canon line per voice; 1,020 credits in all. Nothing is locked until the founder chooses.
+
+| For | Voice (library unless marked) | Voice id | Line (canon) | Credits |
+|---|---|---|---|---|
+| Dolores | Maria Moody | `wGcFBfKz5yUQqhqr0mVy` | "It's fine. It's me. It's been me for a while." | 45 |
+| Dolores | Nana Margaret | `xIzR6egd3S3LJZbVW0c1` | same | 45 |
+| Dolores | Nan | `jVMsZEw3hfmEAe9OUUtS` | same | 45 |
+| Imani | Courtney | `xd8j2LFPw16XKmJ5qeBK` | "Online gets the service. The overflow room gets the stream on the TV, a little behind — and I'll tell them why." | 111 |
+| Imani | Tiff's Voice | `NMbEhOPNJop9OLjdn7UU` | same | 111 |
+| Imani | Billie | `puJYvK3avsWRTxWzoVJJ` | same | 111 |
+| Priya | Clara | `cuTixVvCOWFxeH3oGE9m` | "That office switch runs the door locks and the giving kiosks. Not on a Sunday morning, and not without a plan." | 110 |
+| Priya | Vicki M Rodriguez | `VmWxtEYGgb6QIzh7Bnik` | same | 110 |
+| Priya | Ava | `W6QQpE0tIPOUkyt8U1TY` | same | 110 |
+| Theo | Will (premade) | `bIHbv24MWmeRgasZH58o` | "Morning! Big day! Don't look in the fellowship hall yet — it's a surprise!" | 74 |
+| Theo | Arthur | `3LPKEa2TICTsITcoxL7H` | same | 74 |
+| Theo | Ilya | `NOdSYGdYEzpRRVv0qKcA` | same | 74 |
+
+**Lily: not auditioned.** The voice library search returned no voice described as a teen or a child. Her age is a founder decision;
+until a voice fits it, her lines stay captions.
+
+Season 1 voicing so far: 12,173 + 1,020 = 13,193 credits this pass.

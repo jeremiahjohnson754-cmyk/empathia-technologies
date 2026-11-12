@@ -73,7 +73,7 @@ export function sceneOf(chapterId: string, items: Item[]): Scene {
   return { chapter: chapterId, acts: acts.filter((a) => a.shots.length > 0), takes: TAKES[chapterId] || [], voices: VOICES };
 }
 /** Canon text and recorded takes are compared with straight quotes and collapsed spaces, so a typographic apostrophe never breaks a match. */
-export const norm = (s: string) => s.replace(/[’‘]/g, "'").replace(/[“”]/g, '"').replace(/\s+/g, ' ').trim().replace(/^\((.*)\)$/, '$1');  // a thought, "(…)", is spoken without its parentheses
+export const norm = (s: string) => s.replace(/[’‘]/g, "'").replace(/[“”]/g, '"').replace(/\s+/g, ' ').replace(/\s*\[COMIC[^\]]*\]/g, '').trim().replace(/^\((.*)\)$/, '$1');  // a thought, "(…)", is spoken without its parentheses; the canon's [COMIC …] art tags are not spoken
 export const takeFor = (takes: Take[], who: string, text: string) => takes.find((t) => t.who === who && norm(t.text) === norm(text)) || null;
 /** A line the canon gives inside an option's result ("Ray: “…”"), for the option that sends the player back to the choice. */
 export const quoted = (result: string) => { const m = /^([A-Z][a-z]+): “([^”]+)”/.exec(result); return m ? { who: m[1]!.toLowerCase(), text: m[2]! } : null; };

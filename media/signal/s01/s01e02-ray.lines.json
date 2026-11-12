@@ -1,0 +1,6 @@
+[
+"Gain is how much a stage adds, in decibels. Gain staging is setting every stage so the signal sits clear of the noise and clear of clipping.",
+"Target minus what arrives. Arriving at minus thirty, you want minus eighteen: minus eighteen minus minus thirty — plus twelve. Headroom is what's left above your peaks.",
+"Louder always wins the first listen. Don't let it vote.",
+"…Because I told them."
+]
