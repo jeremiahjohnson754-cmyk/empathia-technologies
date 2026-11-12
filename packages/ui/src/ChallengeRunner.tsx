@@ -230,7 +230,8 @@ function CueDesk({ lv, factor, done, onFinish }: { lv: number; factor: number; d
   const ac = useRef<AudioContext | null>(null); const sch = useRef<ReturnType<typeof setInterval> | null>(null); const master = useRef<GainNode | null>(null); const useAC = useRef(false);
   const now = () => (useAC.current && ac.current ? ac.current.currentTime - t0.current : performance.now() / 1000 - t0.current);
   const silence = () => { if (sch.current) clearInterval(sch.current); sch.current = null; try { master.current?.disconnect(); } catch { /* gone */ } master.current = null; };
-  const start = () => { const r = Q.cueStart(S); ref.current = r; useAC.current = false;
+  const wall0 = useRef(0);
+  const start = () => { const r = Q.cueStart(S); ref.current = r; useAC.current = false; wall0.current = performance.now() / 1000;
     if (click) { try { const AC = (globalThis as { AudioContext?: typeof AudioContext }).AudioContext; if (AC) ac.current = ac.current || new AC(); } catch { ac.current = null; } }
     const a = click ? ac.current : null;
     if (a && a.state === 'suspended') void a.resume().catch(() => undefined);
@@ -241,7 +242,10 @@ function CueDesk({ lv, factor, done, onFinish }: { lv: number; factor: number; d
   const stop = (abort: boolean) => { const r = ref.current; silence(); if (!r) return; ref.current = null; setRun(null); onFinish(Q.cueFinish(S, r, lv, W, abort)); };
   const fire = (k: number) => { const r = ref.current; if (!r) return; const n = Q.cueFire(S, r, k, now(), lv, W); ref.current = n; setRun(n); };
   useEffect(() => { if (!run) return undefined; let raf = 0;
-    const loop = () => { const r = ref.current; if (!r) return; const tt = now(); const n = Q.cueTick(S, r, tt, W); if (n !== r) { ref.current = n; setRun(n); } setT(tt);
+    const loop = () => { const r = ref.current; if (!r) return;
+      // an audio clock that never starts (no output device, or blocked) must not freeze the show: fall back to the wall clock
+      if (useAC.current && ac.current && performance.now() / 1000 - wall0.current > 0.8 && ac.current.currentTime - t0.current < -0.1) { silence(); useAC.current = false; t0.current = wall0.current + 0.15; }
+      const tt = now(); const n = Q.cueTick(S, r, tt, W); if (n !== r) { ref.current = n; setRun(n); } setT(tt);
       if (tt >= S.len) { stop(false); return; } raf = requestAnimationFrame(loop); };
     raf = requestAnimationFrame(loop); return () => cancelAnimationFrame(raf); }, [run === null]);
   useEffect(() => { if (!run) return undefined; const onKey = (e: KeyboardEvent) => { const k = Number(e.key); if (k >= 1 && k <= 8) { e.preventDefault(); fire(k); } }; window.addEventListener('keydown', onKey); return () => window.removeEventListener('keydown', onKey); }, [run === null]);
