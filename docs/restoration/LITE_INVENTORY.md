@@ -55,12 +55,12 @@ end: what V2.5.3 does, function by function, and whether the product does it.
 
 | V2.5.3 | In the product | State |
 |---|---|---|
-| **Lite models**: a new model from a campus room, from a project request with its photographs and dimensions, or from an archetype for a room that does not exist yet | none: `#/v25/lite` opens Lite's home | **MISSING** (verified in `registry.parity.ts`) |
-| Geometry with provenance: each dimension with its source (archetype, extracted from a model, inferred from a photograph, observed in the field, an engineer's approved target), its state and its uncertainty | Instant Room (`#/instant`, built 11 November) records how each dimension was found. It is a separate tool, not this one | **MISSING as built; a partial analogue exists** |
-| Predicted coverage from the plan, labelled a prediction | | **MISSING** |
-| Add, move and correct objects; variants of a model | | **MISSING** |
+| **Lite models**: a new model from a campus room, from a project request with its photographs and dimensions, or from an archetype for a room that does not exist yet | `#/v25/lite` is the Lite studio since 12 Nov (`lite/LiteStudio.tsx`, `lite/studio.ts`): a model from a campus room or from an archetype with a provisional name, kept in this browser. From a project request: not carried (requests carry no photographs or dimensions here) | **RESTORED 12 Nov, except from a request** (unit LS-01..04; browser LT-*-S1..S5) |
+| Geometry with provenance: each dimension with its source (archetype, extracted from a model, inferred from a photograph, observed in the field, an engineer's approved target), its state and its uncertainty | Each dimension with its source, state, uncertainty and basis, on V2.5.3's source ladder (survey … archetype); the model never verifies itself. Instant Room stays the tool for a room you stand in, and the studio links to it | **RESTORED 12 Nov** |
+| Predicted coverage from the plan, labelled a prediction | Each camera's design field of view on the plan, microphone and loudspeaker reach circles, "a prediction, not a measurement" | **RESTORED 12 Nov** |
+| Add, move and correct objects; variants of a model | Place a device (designed, not modeled), move one in 25 cm steps, correct a dimension with a reason (manually proposed), make a variant with its reason; every change moves the version and is in the history | **RESTORED 12 Nov** |
 | Reconcile a model with Field Intelligence observations; send test protocols to Field Intelligence (noise at the seats, intelligibility, reverberation, field of view); what is and is not claimed about device capabilities | | **MISSING** |
-| Export the plan as SVG; review states | | **MISSING** |
+| Export the plan as SVG; review states | The plan is drawn (zones, seats, devices, wedges, rings, test points). Export and review states: not carried | **PARTIAL** |
 
 ## 6. Room builders
 
