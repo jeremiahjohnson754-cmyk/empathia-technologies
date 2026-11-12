@@ -42,7 +42,8 @@ export interface Draft {
   imports?: ImportRecord[];
 }
 export interface ImportRecord { id: string; name: string; kind: 'photo' | 'plan_image' | 'pdf' | 'cad' | 'other'; size: number; support: string; confidence: string; missing: string[]; by: string; at: string }
-export interface CxIssue { id: string; key: string; test: string; label: string; severity: 'High' | 'Medium'; state: 'OPEN' | 'RESOLVED'; owner: string | null; seen: number; evidence: Array<{ at: string; finding: string }>; resolution?: string }
+export interface CxIssue { id: string; key: string; test: string; label: string; severity: 'High' | 'Medium'; state: 'OPEN' | 'RESOLVED'; owner: string | null; seen: number; evidence: Array<{ at: string; finding: string }>; resolution?: string; hypotheses?: Hypothesis[] }
+export interface Hypothesis { cause: string; basis: string; state: 'HYPOTHESIS' }
 export interface Redline { id: string; drawing: string; text: string; by: string; at: string; revision: number; state: 'OPEN' | 'RESOLVED'; resolution?: string; resolvedBy?: string }
 export interface Baseline { version: number; at: string; by: string; revision: number | null; results: Record<string, string>; devices: Array<{ id: string; cat: string; label: string }>; state: 'CURRENT' | 'SUPERSEDED' }
 export type Refusal = { why: string[] };
@@ -148,7 +149,7 @@ export function swapDevice(d: Draft, persona: string, id: string, cat: string): 
   if (cat === dev.cat) return refused([`${dev.label} is already a ${K.label.toLowerCase()}`]);
   if (K.group !== K0.group) return refused([`a ${K0.label.toLowerCase()} swaps only within its group (${K0.group}); ${K.label.toLowerCase()} is ${K.group}`]);
   const at = { x: dev.x, y: dev.y }; const r = removeDevice(d, persona, id); if ('why' in r) return r;
-  const r2 = addDevice(r, persona, cat, at); if ('why' in r2) return r2; r2.events[0]!.detail += ` (swapped for ${dev.id}, ${dev.label})`; return r2;
+  const r2 = addDevice(r, persona, cat, at); if ('why' in r2) return r2; const nid = r2.design.devices[r2.design.devices.length - 1]!.id; r2.events[0]!.detail += ` (swapped for ${dev.id}, ${dev.label}; now ${nid})`; return r2;
 }
 /** Remove one proposed connection, with a reason (editing a connection, V2.5.3): the proposal is retired, never deleted. */
 export function removeConnection(d: Draft, persona: string, cid: string, reason: string): Draft | Refusal {
@@ -347,4 +348,19 @@ export function importRecord(d: Draft, persona: string, file: { name: string; si
   if (!(kind === 'plan_image' && g.scale === 'DECLARED')) missing.push('confirmed dimensions (draw the outline and confirm its scale)'); if (g.ceiling !== 'DECLARED') missing.push('ceiling height'); if (kind === 'photo') missing.push('a scaled plan or a survey');
   const list = d.imports || (d.imports = []); const r: ImportRecord = { id: `IMP-${list.length + 1}`, name: file.name.slice(0, 120), kind, size: file.size, support: IMPORT_SUPPORT[kind], confidence: kind === 'plan_image' && g.scale === 'DECLARED' ? 'scale confirmed' : kind === 'plan_image' ? 'scale not confirmed' : 'low', missing, by: persona, at: now() };
   list.push(r); log(d, persona, 'room.record_imported', `${r.id} ${r.name} (${kind}, ${Math.round(file.size / 1024)} KB): ${r.support}`); return d;
+}
+
+/** The APEX hand-off for a deficiency (V2.5.3 v25RoomApex): design-side hypotheses from the records — a design check on the same
+ *  devices, a device swapped after review, a device still a class template — each recorded as a HYPOTHESIS, never as a verified fault. */
+export function apex(d: Draft, persona: string, issueId: string): Draft | Refusal {
+  if (!['test.verify', 'tests.verify.all', 'rfi.resolve', 'design.release'].some((a) => holds(persona, a))) return refused([`${personaLabel(persona)} cannot run APEX analysis`]);
+  const i = (d.issues || []).find((x) => x.id === issueId); if (!i) return refused([`no issue ${issueId}`]);
+  const row = analysis(d).applicability.rows.find((r) => r.id === i.test) as { devices?: string[] } | undefined; const assets = new Set(row?.devices || []);
+  const hyps: Hypothesis[] = [];
+  for (const c of analysis(d).checks) { const shared = c.assets.filter((a) => assets.has(a)); if (shared.length) hyps.push({ cause: `design check ${c.key}: ${c.title}`, basis: `shares ${shared.join(', ')} with this deficiency`, state: 'HYPOTHESIS' }); }
+  for (const e of d.events) { const m = /\(swapped for (PA-\d+), ([^;]+); now (PA-\d+)\)/.exec(e.detail); if (m && e.type === 'room.device_added' && assets.has(m[3]!)) hyps.push({ cause: `${m[2]} (${m[1]}) was swapped after the design was reviewed`, basis: e.detail, state: 'HYPOTHESIS' }); }
+  const tpl = [...assets].map((a) => d.design.devices.find((x) => x.id === a && !x.removed)).filter(Boolean) as PlannedDevice[];
+  if (tpl.length) hyps.push({ cause: `${tpl.map((x) => x.label).join(', ')} ${tpl.length === 1 ? 'is' : 'are'} still a class template`, basis: 'the installed model was never recorded in the design', state: 'HYPOTHESIS' });
+  if (!hyps.length) hyps.push({ cause: 'no design-side cause found in the records', basis: 'only physical inspection can tell', state: 'HYPOTHESIS' });
+  i.hypotheses = hyps; log(d, persona, 'room.hypothesis_recorded', `${i.id}: ${hyps.length} APEX hypotheses recorded (not verified faults)`); return d;
 }

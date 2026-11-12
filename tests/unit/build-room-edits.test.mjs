@@ -78,3 +78,11 @@ test('importing a record keeps its name, size and kind only, says what it suppor
   B.importRecord(d, 'designer', { name: 'plan.png', size: 2048 }); assert.equal(d.imports[1].confidence, 'scale not confirmed'); assert.ok(d.imports[1].missing.some((m) => /confirmed dimensions/.test(m)));
   B.setOutline(d, 'designer', '0,0; 6,0; 6,4; 0,4'); B.confirmScale(d, 'designer', 1, '6'); B.importRecord(d, 'designer', { name: 'plan2.png', size: 2048 }); assert.equal(d.imports[2].confidence, 'scale confirmed');
 });
+test('APEX hand-off: hypotheses from the records only, each a HYPOTHESIS; a swap on the failed test’s device is one; an unauthorised role is refused', () => {
+  const d = draft(); d.design.lifecycle = 'COMMISSIONING'; const rows = B.analysis(d).applicability.rows.filter((r) => r.applicable && !r.instrument && (r.devices || []).length);
+  const row = rows[0]; assert.ok(row, 'a test bound to devices'); const rec = B.record(d, 'cxeng', row.id, { state: 'FAIL', kind: row.evidence[0], ref: 'photo 14' }); assert.ok(!('why' in rec), JSON.stringify(rec.why)); const i = d.issues[0];
+  assert.ok('why' in B.apex(d, 'requestor', i.id)); assert.ok(!('why' in B.apex(d, 'cxeng', i.id)));
+  assert.ok(i.hypotheses.length >= 1 && i.hypotheses.every((h) => h.state === 'HYPOTHESIS')); assert.ok(i.hypotheses.some((h) => /class template/.test(h.cause)));
+  const target = d.design.devices.find((x) => x.id === row.devices[0]); const other = Object.entries(B.C.categories).find(([k, c]) => k !== target.cat && c.group === B.C.categories[target.cat].group);
+  if (other) { const s = B.swapDevice(d, 'designer', target.id, other[0]); assert.ok(!('why' in s)); assert.match(s.events[0].detail, /now PA-\d+\)/); }
+});
