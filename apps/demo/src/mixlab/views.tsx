@@ -46,7 +46,7 @@ export function RoomView({ r, m, a, t, seat, onSeat, solo }: { r: Room; m: Mix; 
       const drive = sp.kind === 'wedge' ? Math.max(OFF, ...m.strips.map((s) => (s.mute ? OFF : s.wedge[Number(sp.key.slice(1)) - 1] ?? OFF))) + 20 : dbSum(a.main.slice(sp.bands[0], sp.bands[1] + 1)) + 20 + (sp.kind === 'sub' ? m.sub : 0);
       const lvl = Math.max(0, Math.min(1, (drive + 20) / 30)); const col = GROUP_COLOR[sp.kind]; const px = sp.x * sx, py = sp.y * sy; const maxR = Math.hypot(cw, ch) * (sp.kind === 'wedge' ? 0.12 : 0.9);
       if (lvl > 0.02) { const rate = sp.kind === 'sub' ? 0.35 : sp.kind === 'wedge' ? 0.9 : 0.6; const n = 5;
-        for (let k = 0; k < n; k++) { const ph = motion ? (t * rate + k / n) % 1 : (k + 0.5) / n; const rad = ph * maxR;
+        for (let k = 0; k < n; k++) { const ph = motion ? (((t * rate + k / n) % 1) + 1) % 1 : (k + 0.5) / n; const rad = ph * maxR;
           g.strokeStyle = col; g.globalAlpha = (1 - ph) * lvl * 0.9; g.lineWidth = sp.kind === 'sub' ? 4 : 2;
           g.beginPath(); g.arc(px, py, rad, sp.aim - sp.spread - 0.2, sp.aim + sp.spread + 0.2); g.stroke(); } g.globalAlpha = 1; }
       g.fillStyle = col; g.strokeStyle = '#05070c'; g.lineWidth = 1.5; const s = sp.kind === 'sub' ? 9 : sp.kind === 'array' ? 8 : 6;

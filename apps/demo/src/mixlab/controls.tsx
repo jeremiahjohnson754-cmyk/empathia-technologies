@@ -9,7 +9,7 @@ export const reducedMotion = () => typeof matchMedia === 'function' && matchMedi
 export function useClock(fps = 15) {
   const [t, setT] = useState(0);
   useEffect(() => { if (reducedMotion()) return; let raf = 0, last = 0; const t0 = performance.now();
-    const loop = (now: number) => { if (now - last > 1000 / fps) { last = now; setT((now - t0) / 1000); } raf = requestAnimationFrame(loop); }; raf = requestAnimationFrame(loop); return () => cancelAnimationFrame(raf); }, [fps]);
+    const loop = (now: number) => { if (now - last > 1000 / fps) { last = now; setT(Math.max(0, (now - t0) / 1000)); } raf = requestAnimationFrame(loop); }; raf = requestAnimationFrame(loop); return () => cancelAnimationFrame(raf); }, [fps]);
   return t;
 }
 const snap = (v: number, min: number, max: number, step: number) => Math.min(max, Math.max(min, Math.round(v / step) * step));

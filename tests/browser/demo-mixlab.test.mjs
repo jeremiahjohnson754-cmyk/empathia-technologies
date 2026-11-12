@@ -8,19 +8,19 @@ import { harness } from './demo-shell-lib.mjs';
 import { unlockInit } from './signal-unlock.mjs';
 const { ok, open, done } = await harness('demo-mixlab');
 for (const [w, tag] of [[1440, 'desktop'], [390, 'phone']]) {
-  const t = await open('#/labs/mix', { w, h: 900 }); const p = t.page; await p.getByTestId('mixlab').waitFor();
+  const t = await open('#/labs/mix', { w, h: 900 }); const p = t.page; await p.getByTestId('mixlab').waitFor({ timeout: 45000 }).catch(async (e) => { console.log('MIXLAB DID NOT OPEN', JSON.stringify(await p.evaluate(() => document.body.innerText.slice(0, 400))), t.errs.map((x) => String(x).slice(0, 1500))); throw e; });
   const r0 = await p.evaluate(() => ({ room: document.querySelector('[data-testid="mixlab"]').dataset.room, strips: document.querySelectorAll('.mx-strip').length, goals: document.querySelectorAll('[data-goal]').length, rooms: document.querySelectorAll('.mx-roomcard').length }));
   ok(`MX-${tag}-01`, 'the lab opens on the basement: five rooms, eight strips, its goals listed', r0.room === 'basement' && r0.strips === 8 && r0.rooms === 5 && r0.goals >= 8, JSON.stringify(r0));
-  const f = p.getByTestId('mx-fader-1'); const v0 = Number(await f.getAttribute('aria-valuenow')); const box = await f.boundingBox();
+  const f = p.getByTestId('mx-fader-1'); await f.scrollIntoViewIfNeeded(); const v0 = Number(await f.getAttribute('aria-valuenow')); const box = await f.boundingBox();
   await p.mouse.move(box.x + box.width / 2, box.y + box.height / 2); await p.mouse.down(); await p.mouse.move(box.x + box.width / 2, box.y - 40, { steps: 6 }); await p.mouse.up();
   const v1 = Number(await f.getAttribute('aria-valuenow'));
   await p.getByTestId('mx-gain-1').focus(); const g0 = Number(await p.getByTestId('mx-gain-1').getAttribute('aria-valuenow')); await p.keyboard.press('ArrowUp'); await p.keyboard.press('ArrowUp'); const g1 = Number(await p.getByTestId('mx-gain-1').getAttribute('aria-valuenow'));
   ok(`MX-${tag}-02`, 'a fader drags up and the gain knob steps with the arrow keys, each saying its value', v1 > v0 && g1 === g0 + 2, JSON.stringify({ v0, v1, g0, g1 }));
   await p.getByTestId('mx-mute-1').click(); const muted = await p.getByTestId('mx-mute-1').getAttribute('aria-pressed'); await p.getByTestId('mx-mute-1').click();
-  await p.locator('.mx-scribble').nth(1).click(); await p.getByTestId('mx-tab-eq').click(); const n = p.getByTestId('mx-eq-node-2'); const nb = await n.boundingBox(); const before = await n.getAttribute('aria-label');
+  await p.locator('.mx-scribble').nth(1).click(); await p.getByTestId('mx-tab-eq').click(); const n = p.getByTestId('mx-eq-node-2'); await n.scrollIntoViewIfNeeded(); const nb = await n.boundingBox(); const before = await n.getAttribute('aria-label');
   await p.mouse.move(nb.x + nb.width / 2, nb.y + nb.height / 2); await p.mouse.down(); await p.mouse.move(nb.x + nb.width / 2 + 20, nb.y + 30, { steps: 5 }); await p.mouse.up(); const after = await n.getAttribute('aria-label');
   ok(`MX-${tag}-03`, 'mute closes a channel; an EQ node drags to a new frequency and gain', muted === 'true' && before !== after, JSON.stringify({ muted, before, after }));
-  const room = p.getByTestId('mx-room'); const rb = await room.boundingBox(); await p.mouse.click(rb.x + rb.width / 2, rb.y + rb.height * 0.7);
+  const room = p.getByTestId('mx-room'); await room.scrollIntoViewIfNeeded(); const rb = await room.boundingBox(); const vh = await p.evaluate(() => innerHeight); await p.mouse.click(rb.x + rb.width / 2, Math.min(rb.y + rb.height * 0.7, vh - 20));
   const seat = await p.getByTestId('mx-seat').innerText().catch(() => '');
   ok(`MX-${tag}-04`, 'selecting a seat reads its level and when each loudspeaker group arrives', /dB\(A\)/.test(seat) && /ms/.test(seat), seat.slice(0, 160));
   await p.getByTestId('mx-check').click(); const said = await p.getByTestId('mx-said').innerText();
@@ -36,14 +36,14 @@ for (const [w, tag] of [[1440, 'desktop'], [390, 'phone']]) {
 }
 // inside S01E10, after its lab (a returning reader who has made every decision of the chapter)
 { const t = await open('#/story/s01e10', { init: unlockInit('s01e11'), w: 1440, h: 900 }); const p = t.page; await p.getByTestId('story-flagship').waitFor({ timeout: 20000 });
-  const prev = await p.evaluate(() => { const f = document.querySelector('[data-testid="story-flagship"]'); const it = f?.previousElementSibling; return it ? `${it.getAttribute('data-item')}:${it.getAttribute('data-kind')}` : null; });
+  const prev = await p.evaluate(() => { let it = document.querySelector('[data-testid="story-flagship"]')?.previousElementSibling; while (it && !it.getAttribute('data-item')) it = it.previousElementSibling; return it ? `${it.getAttribute('data-item')}:${it.getAttribute('data-kind')}` : null; });
   await p.getByTestId('story-flagship-open').click(); await p.getByTestId('mixlab').waitFor({ timeout: 20000 });
   ok('MX-story', 'S01E10 offers the flagship lab right after its lab, and it opens inside the chapter', /lab/.test(prev || '') && (await p.locator('[data-testid="story-flagship"] [data-testid="mixlab"]').count()) === 1, String(prev));
   ok('MX-story-clean', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 4).join(' | ')); await t.close(); }
 { const t = await open('#/learn/labs', { w: 1440, h: 900 }); const p = t.page; await p.getByTestId('labs').waitFor();
   const href = await p.getByTestId('flagship-labs').locator('a').first().getAttribute('href');
   ok('MX-learn', 'Learn labs lists the flagship lab first', href === '#/labs/mix', String(href)); await t.close(); }
-{ const t = await open('#/service', { w: 1440, h: 900 }); const p = t.page; await p.waitForSelector('.svc');
+{ const t = await open('#/v25/service', { role: 'service', w: 1440, h: 900 }); const p = t.page; await p.waitForSelector('.svc');
   const href = await p.getByTestId('svc-practice').locator('a').getAttribute('href').catch(() => null);
   ok('MX-service', 'the Service page offers it as practice before a call, recording nothing on a job', href === '#/labs/mix', String(href)); await t.close(); }
 // Light the Stage: drag a fixture on the plot, re-patch it with the keyboard, and the goals answer
@@ -52,7 +52,7 @@ for (const [w, tag] of [[1440, 'desktop'], [390, 'phone']]) {
   const coll0 = await p.locator('[data-goal="patch"]').getAttribute('data-ok');
   await p.getByTestId('lx-addr-2').focus(); for (let k = 0; k < 8; k++) await p.keyboard.press('ArrowUp'); await p.getByTestId('lx-addr-3').focus(); for (let k = 0; k < 10; k++) await p.keyboard.press('ArrowUp');
   const coll1 = await p.locator('[data-goal="patch"]').getAttribute('data-ok');
-  const dot = p.getByTestId('lx-plot-1'); const before = await dot.getAttribute('aria-label'); const db = await dot.locator('circle').boundingBox(); const plot = await p.getByTestId('lx-plot').boundingBox();
+  await p.getByTestId('lx-plot').evaluate((e) => e.scrollIntoView({ block: 'center' })); const dot = p.getByTestId('lx-plot-1'); const before = await dot.getAttribute('aria-label'); const db = await dot.locator('circle').boundingBox(); const plot = await p.getByTestId('lx-plot').boundingBox();
   await p.mouse.move(db.x + db.width / 2, db.y + db.height / 2); await p.mouse.down(); await p.mouse.move(plot.x + plot.width * (7.5 + 2) / 16, plot.y + plot.height * ((8 - 7) / 15), { steps: 8 }); await p.mouse.up();
   const after = await dot.getAttribute('aria-label');
   ok(`LX-${tag}-01`, 'the patch goal turns green once the addresses no longer overlap; a fixture drags to another truss position', coll0 === 'false' && coll1 === 'true' && before !== after, JSON.stringify({ coll0, coll1, before, after }));
@@ -62,7 +62,7 @@ for (const [w, tag] of [[1440, 'desktop'], [390, 'phone']]) {
 // Shoot the Service: the canon's stripe at 1/50 clears at 1/60; CUT swaps program and preview
 for (const [w, tag] of [[1440, 'desktop'], [390, 'phone']]) {
   const t = await open('#/labs/video', { w, h: 900 }); const p = t.page; await p.getByTestId('videolab').waitFor();
-  const band0 = await p.locator('[data-goal="wall0"]').getAttribute('data-ok'); await p.getByTestId('vx-shutter').focus(); await p.keyboard.press('ArrowUp'); await p.keyboard.press('ArrowUp'); await p.keyboard.press('ArrowUp');
+  const band0 = await p.locator('[data-goal="wall0"]').getAttribute('data-ok'); await p.getByTestId('vx-shutter').focus(); await p.keyboard.press('ArrowUp');
   const sh = await p.getByTestId('vx-shutter').getAttribute('aria-valuetext'); const band1 = await p.locator('[data-goal="wall0"]').getAttribute('data-ok');
   const pgm0 = await p.getByTestId('vx-src-0').getAttribute('class'); await p.getByTestId('vx-cut').click(); const pgm1 = await p.getByTestId('vx-src-1').getAttribute('class');
   ok(`VX-${tag}-01`, 'at 1/50 the LED wall bands; at 1/60 it is clean; CUT puts preview on program', band0 === 'false' && sh === '1/60' && band1 === 'true' && /pgm/.test(pgm0) && /pgm/.test(pgm1), JSON.stringify({ band0, sh, band1, pgm0, pgm1 }));

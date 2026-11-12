@@ -21,9 +21,9 @@ for (const [w, tag] of [[1440, 'desktop'], [390, 'phone']]) {
   await t.close();
 }
 // a glossary term with a Lite place: S01E00, before its first decision
-{ const t = await open('#/story/s01e00', { init: unlockInit('s01e00'), w: 1440, h: 900 }); const p = t.page; await p.waitForSelector('.sg-dec');
-  const mapped = ['Signal flow', 'Switch', 'Link utilization', 'Bandwidth', 'Gain', 'Hum', 'Evidence', 'Encoder', 'Latency', 'Source', 'Destination'];
-  const term = await p.evaluate((ts) => { const el = [...document.querySelectorAll('.sg-gl')].find((e) => ts.includes(e.getAttribute('data-gl'))); if (!el) return null; el.scrollIntoView(); el.click(); return el.getAttribute('data-gl'); }, mapped);
+{ const t = await open('#/story/s01e00', { w: 1440, h: 900 }); const p = t.page; await p.check('[data-testid=story-gates]'); await p.waitForSelector('.sg-panel'); await p.waitForSelector('.sg-gl', { timeout: 8000 }).catch(() => {});
+  const mapped = ['Signal flow', 'Switch', 'Link utilization', 'Bandwidth', 'Gain', 'Hum', 'Evidence', 'Encoder', 'Latency', 'Source', 'Destination', 'Multicast', 'VLAN', 'Segmentation', 'Verified', 'Observed', 'Measured', 'Change record', 'Runbook', 'Technical debt', 'Decibel'];
+  const term = await p.evaluate((ts) => { const el = [...document.querySelectorAll('.sg-gl')].find((e) => ts.includes(e.getAttribute('data-gl'))); if (!el) return null; el.scrollIntoView({ block: 'center' }); el.click(); return el.getAttribute('data-gl'); }, mapped);
   await p.waitForTimeout(400);
   const pop = await p.evaluate(() => { const d = document.querySelector('[data-testid="story-glpop"]'); const l = d?.querySelector('[data-testid="story-lite"]'); return d ? { lite: !!l, href: l?.querySelector('a')?.getAttribute('href') || '' } : null; });
   ok('SL-gloss', `the glossary pop-over for a term with a Lite place (${term}) offers it`, !!term && !!pop && pop.lite && /^#\/lite\/room\/R-/.test(pop.href), JSON.stringify({ term, pop }));
