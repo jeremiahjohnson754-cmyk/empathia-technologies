@@ -287,3 +287,12 @@ Rules that bite: never rebuild or edit `tests/browser` while a matrix runs; a ch
 commit attribution lines are required; no credentials in chat, logs or commits; nothing from the private archive enters the repository.
 A full matrix takes about ninety minutes: write source and unit tests while it runs, and keep drafted browser suites in the scratch
 folder until it ends.
+
+### 96-1 progress (12 Nov 2026, 11:2x CT)
+
+- vidIQ `generate_video` makes short clips (minimax-h3 4–15 s; wan-3 up to 30 s), not finished multi-minute films with narration and
+  captions; a new film is therefore a composition of clips plus narration (ElevenLabs) plus captions (our pipeline), and its delivery
+  follows the narration's path (the founder downloads, attaches; the workspace gateway refuses the download).
+- Pilot shot started for **S01** ("Start with a building. Find everything connected.", the 25 s vertical short): one 8 s 9:16 clip,
+  minimax-h3 768p, an unbranded building whose meeting room's dependencies light up in turn; no people's faces, no text, no logos.
+  **120 credits** of 6,398 (job `job_b26388a6-…`). The founder reviews the shot before any more are made.
