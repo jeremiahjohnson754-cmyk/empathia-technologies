@@ -27,3 +27,9 @@ test('confidence shows the method and only the bounds it is given; no invented p
   const t = text(render(h(A.ConfidenceChip, { method: 'Class template radius' }))); assert.equal(t, 'Confidence: Class template radius'); assert.ok(!/%|\d/.test(t));
   assert.match(text(render(h(A.ConfidenceChip, { method: 'Calibrated meter', bounds: '±0.7 dB' }))), /±0\.7 dB/);
 });
+test('the provenance marks (text in the page ground on the mark colour) reach 4.5:1 in both themes', () => {
+  const T = JSON.parse(fs.readFileSync(path.join(repo, 'packages/design-tokens/tokens.json'), 'utf8')).color;
+  const rgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+  const lum = (h) => { const [r, g, b] = rgb(h); return 0.2126 * r + 0.7152 * g + 0.0722 * b; }; const cr = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+  for (const m of ['dark', 'light']) for (const k of ['tx', 'info', 'violet', 'tx3']) assert.ok(cr(T.bg[m], T[k][m]) >= 4.5, `--bg on --${k} (${m}): ${cr(T.bg[m], T[k][m]).toFixed(2)}`);
+});
