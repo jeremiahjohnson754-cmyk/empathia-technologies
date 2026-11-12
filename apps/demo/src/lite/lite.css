@@ -226,3 +226,7 @@
 .lt-meas__m { display: grid; gap: 2px; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--bg2); }
 .lt-meas__m b { font-size: var(--fs-lg); font-variant-numeric: tabular-nums; } .lt-meas__m small { font-size: var(--fs-xs); font-weight: 600; } .lt-meas__m i { font-style: normal; font-size: var(--fs-xs); color: var(--tx2); }
 .lt-meas > p { grid-column: 1 / -1; margin: 0; }
+/* The object inspector (V2.5.3 liteCardHtml, restored 12 Nov 2026) */
+.lt-card { display: grid; gap: 10px; margin-top: 10px; border-top: 1px solid var(--line); padding-top: 10px; }
+.lt-card__s { display: grid; gap: 4px; } .lt-card__s p, .lt-card__s ul, .lt-card__s ol { margin: 0; } .lt-card__s ul, .lt-card__s ol { padding-left: 18px; }
+.lt-card__h { margin: 0; font-size: var(--fs-sm); font-weight: 700; } .lt-card__open { list-style: none; padding-left: 0 !important; color: var(--bad); }

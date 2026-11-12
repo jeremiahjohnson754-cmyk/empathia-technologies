@@ -4,17 +4,18 @@
  * the non-operational label. Address: #/lite/room/<id>?mode=<lens>&state=<state>&ov=<a,b>&ly=<a,b>&cfg=<config>&device=<code>.
  * Everything shown is computed by model.ts from the room's record; every figure names its basis.
  */
+import { OBJECT_CARDS, DEVICE_PURPOSE } from './data/objectCards.js';
 import { readsManual } from '../manual/roles.js';
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, type ReactNode } from 'react';
 import { PageHero, Card, Chip, ScoreRing, StatTile, Icon, bandOf, HEALTH } from '@empathia/ui';
 import type { PageProps } from '../registry.types.js';
 import { allows } from '../access/policy.js';
 import { mayCapture } from '../instant/store.js';
-import { roomRecord, openIssues, campusRecords } from '../campus/design.js';
+import { roomRecord, openIssues, campusRecords, type RoomRecord } from '../campus/design.js';
 import { shortName, buildingByKey, roomHref } from '../campus/canon.js';
 import { LIFE_TONE } from '../campus/CampusPage.js';
 import {
-  lensesFor, layersFor, overlaysFor, defaultLayers, defaultOverlays, roomState, STATES, configsOf, configStatus, readiness, pct, occupancy, routeTo,
+  chapterById, lensesFor, layersFor, overlaysFor, defaultLayers, defaultOverlays, roomState, STATES, configsOf, configStatus, readiness, pct, occupancy, routeTo,
   ALL_SITES, buildingSummary, liteRoomHref, type Lens, type LiteLayer, type Overlay, type StateKey,
 } from './model.js';
 import { RoomScene, OrbitBar, useOrbit } from './Scene.js';
@@ -88,6 +89,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
           </fieldset>
           <div className="lt-device" aria-live="polite" data-testid="lite-device">
             {p ? <><h2 className="lt-h3">{p.label}</h2><dl className="lt-dl"><dt>Position</dt><dd className="mono">{p.code}</dd><dt>Asset</dt><dd className="mono">{p.asset || '—'}</dd><dt>Identity</dt><dd>{p.identity}</dd><dt>Device</dt><dd>{p.device}</dd><dt>Height</dt><dd>{p.z} m</dd>{p.note && <><dt>State</dt><dd>{p.note}</dd></>}</dl>
+              <ObjectCardView p={p} r={r} tech={lens === 'engineer' || lens === 'optimize'} cov={cov} />
               {allows({ area: 'room' }, role) && <a href={`${roomHref(o)}?device=${encodeURIComponent(p.code)}`}>Open in the technical room view →</a>}</>
               : <p className="ui-muted">Choose a device in the 3D view to see its position, asset and identity.</p>}
           </div>
@@ -147,6 +149,34 @@ function Measurements({ cov, w, l }: { cov: ReturnType<typeof roomState>['cov'];
     {rows.map(([label, v, unit, basis]) => <div key={label} className="lt-meas__m"><b>{v}{unit && v !== '—' ? <small> {unit}</small> : null}</b><span>{label}</span><i>{basis}</i></div>)}
     <p className="ui-meta">A measured figure names its record and method; a modeled one is the coverage model’s estimate from catalogue radii and geometry. They are different kinds of knowledge and are never mixed in one number.</p>
   </section>;
+}
+
+/** The object inspector (V2.5.3 liteCardHtml, restored 12 Nov 2026): what the thing is, who it is for, how to use it, its common issues and
+ *  any open one on this position, where to get help and what to read; for the engineer and optimize lenses also its technical purpose, its
+ *  signal and data flow, its modeled coverage and the engineering chapter. Words from V2.5.3's object cards (lite/data/objectCards.ts). */
+const CARD_OF: Record<string, string> = { display: 'display', ledwall: 'ledwall', projector: 'display', camera: 'camera', bar: 'bar', micceil: 'micceil', micwireless: 'micwireless', speaker: 'speaker', touch: 'touch', scheduler: 'scheduler', rack: 'rack', occsensor: 'sensor', iot: 'sensor', lectern: 'lectern', table: 'table', chairs: 'seat' };
+function ObjectCardView({ p, r, tech, cov }: { p: ReturnType<typeof roomState>['positions'][number]; r: RoomRecord; tech: boolean; cov: ReturnType<typeof roomState>['cov'] }) {
+  const k = CARD_OF[p.cat]; const C = k ? OBJECT_CARDS[k] : undefined; if (!C) return null;
+  const iss = openIssues(r).filter((i) => i.positions?.includes(p.code)); const ch = C.chapter ? chapterById(C.chapter) : null; const eng = C.eng ? chapterById(C.eng) : null;
+  const near = (x: number, y: number) => Math.abs(x - p.x) < 0.01 && Math.abs(y - p.y) < 0.01;
+  const cover = (() => { const cone = cov.cones.find((c) => c.code === p.code), mic = cov.mics.find((m) => m.code === p.code), spk = cov.speakers.find((m) => m.code === p.code);
+    if (cone) return `${cov.seats.filter((s) => { const d = Math.hypot(s.x - cone.x, s.y - cone.y); let a = Math.atan2(s.y - cone.y, s.x - cone.x) - cone.aim; while (a > Math.PI) a -= 2 * Math.PI; while (a < -Math.PI) a += 2 * Math.PI; return d <= cone.range && Math.abs(a) <= cone.half; }).length} of ${cov.seats.length} seats inside its field of view (${Math.round((cone.half * 360) / Math.PI)}°).`;
+    if (mic) return `Pickup radius ${mic.r.toFixed(1)} m from the catalogue.`;
+    if (spk) return `Coverage radius ${spk.r.toFixed(1)} m at ear height from the catalogue.`;
+    const mine = cov.sight.rays.filter((x) => near(x.dx, x.dy)); if (['display', 'ledwall', 'projector'].includes(p.cat)) return `Best display for ${mine.length} ${mine.length === 1 ? 'seat' : 'seats'}: ${mine.filter((x) => x.cls === 'CLEAR').length} clear, ${mine.filter((x) => x.cls === 'MARGINAL').length} marginal, ${mine.filter((x) => x.cls === 'OBSTRUCTED').length} obstructed.`;
+    return ''; })();
+  const S = ({ h, children, note }: { h: string; children: ReactNode; note?: string }) => <section className="lt-card__s"><h3 className="lt-card__h">{h}{note && <span className="ui-meta"> · {note}</span>}</h3>{children}</section>;
+  return <div className="lt-card" data-testid="lite-card" data-kind={k}>
+    <S h="What this is"><p>{C.what}</p></S><S h="Who this is for"><p>{C.who}</p></S>
+    <S h="How to use it"><ol className="lt-card__steps">{C.how.map((x) => <li key={x}>{x}</li>)}</ol></S>
+    <S h="Common issues">{iss.length > 0 && <ul className="lt-card__open">{iss.map((i) => <li key={i.id}><b>Open on this position:</b> {i.title}</li>)}</ul>}{C.issues.length ? <ul>{C.issues.map((x) => <li key={x}>{x}</li>)}</ul> : <p>None recorded for this kind of thing.</p>}</S>
+    <S h="Support path"><p><a href={`#/here/${r.outline.id}`}>Report a problem from this room</a></p></S>
+    {ch && <S h="Learn more"><p><a href={`#/lite/guides/${ch.g.id}/${ch.c[0]}`}>{ch.g.name}: {ch.c[1]}</a></p></S>}
+    {tech && DEVICE_PURPOSE[p.cat === 'projector' ? 'display' : p.cat] && <S h="Technical purpose"><p>{DEVICE_PURPOSE[p.cat === 'projector' ? 'display' : p.cat]}</p></S>}
+    {tech && C.flow && <S h="Signal and data flow"><p>{C.flow}</p></S>}
+    {tech && cover && <S h="Coverage" note="Modeled · not measured"><p>{cover}</p></S>}
+    {tech && eng && <S h="Engineering reference"><p><a href={`#/lite/guides/${eng.g.id}/${eng.c[0]}`}>{eng.g.name}: {eng.c[1]}</a></p></S>}
+  </div>;
 }
 
 function Legend({ overlays, marks }: { overlays: Set<Overlay>; marks: Record<string, number> }) {
