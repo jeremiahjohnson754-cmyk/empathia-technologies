@@ -89,3 +89,12 @@ The furniture, equipment and arrangement match room for room. The differences:
 - Today's page puts the lens and view switches above the room.
 - On a phone the controls sit in a row under the scene, not over it.
 - V2.5.3's in-stage "Layers" button and compass are not carried. The layer switches sit beside or below the stage.
+
+## 13 Nov 2026 — Empathia's room renderer (founder: "don't have my rooms or experiences looking like this")
+
+- Every room of the four worlds is now drawn by Empathia's renderer (`apps/demo/src/lite/rooms`): V2.5.3's own layouts keep every
+  object in place (source fidelity) and are drawn with materials and light; "Drawn by: V2.5.3 original" keeps V2.5.3's drawing one tap away.
+- Rooms V2.5.3 drew with the wrong type (stadium suites as boardrooms; clubs, press box, commentary booths, mix position, green rooms,
+  speaker preparation, VIP lounge) have Empathia programs of their own; the rest by Empathia's fixture rules.
+- Each world has its own materials. The counts are in `docs/restoration/SPATIAL_GATE.md` (`node scripts/spatial-gate.mjs --write`);
+  looks are judged by the founder from screenshots, and nothing is surveyed.

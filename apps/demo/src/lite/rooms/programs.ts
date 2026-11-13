@@ -188,7 +188,7 @@ function mixPosition(r: RoomRecord): Program {
     { id: 'rack', kind: 'rack', label: 'Equipment rack', x: 0.5, y: d - 0.9, rot: 90, w: 0.6, d: 0.8, h: 1.2 },
   ];
   return { key: 'mix-position', title: 'Front-of-house mix position', summary: 'An open position at the back of the lower bowl: the console on its desk facing the stage end, chairs, a rack.', w, d, H, floor: 'concrete', walls: { N: { none: true }, E: { parapet: 1.1 }, S: { door: { at: w - 0.75, w: 0.95, hinge: 'hi' } }, W: { parapet: 1.1 } },
-    pieces, lights: [], speakers: [], outside: 'open', hero: { yaw: 24, pitch: 44, zoom: 1.15 },
+    pieces, lights: [[w * 0.3, d * 0.5], [w * 0.7, d * 0.5]], speakers: [], outside: 'open', hero: { yaw: 24, pitch: 44, zoom: 1.15 },
     eyes: [eye('seat', 'At the console', 'seated at the console, eyes at 1.25 m', w / 2 - 0.5, 2.3, 1.25, w / 2 - 0.5, -30, 54), eye('stand', 'Standing behind', 'standing behind the console, eyes at 1.65 m', w / 2, d - 0.5, 1.65, w / 2, -30, 52),
       eye('wheel', 'Wheelchair place', 'beside the console, eyes at 1.1 m', w / 2 + 1.35, 2.0, 1.1, w / 2 + 1.35, -30, 54)] };
 }
