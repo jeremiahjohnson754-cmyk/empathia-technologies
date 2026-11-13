@@ -4,6 +4,7 @@
  * baseline). Every value is read from the Core records; a value the records do not hold is "—", never 0. V2.5.3 AZ_COMPARE decides who
  * may open each kind.
  */
+import { RoomJumps, opensFor } from '../rooms/RoomJumps.js';
 import { useState, type ReactNode } from 'react';
 import { PageHero, Segmented, EmptyState, Tag } from '@empathia/ui';
 import type { PageProps } from '../registry.types.js';
@@ -28,7 +29,7 @@ export const KINDS: Kind[] = [
 ];
 const s = (v: unknown) => (v === null || v === undefined || v === '' ? '—' : String(v));
 
-export default function ComparePage({ role, params }: PageProps) {
+export default function ComparePage({ role, params, query }: PageProps) {
   const core = useCore(); const kind = KINDS.find((k) => k.key === params['kind']);
   const mine = KINDS.filter((k) => allows({ compare: k.key }, role));
   if (params['kind'] && !kind) return <div className="pa"><EmptyState title={`Core Compare has no comparison called “${params['kind']}”`} icon="search" action={<a className="ui-btn" href="#/compare">Every comparison</a>} /></div>;
@@ -38,7 +39,7 @@ export default function ComparePage({ role, params }: PageProps) {
       <div className="kit-grid">{mine.map((k) => { const ex = example(core, k.key); return <a key={k.key} className="pa-card-link" href={`#/compare/${k.key}`}><h3>{k.title}</h3><p>{k.sub}</p><span className="pa-card-link__meta">{ex ? `${ex.label} · ${ex.diff} of ${ex.total} differ` : 'nothing on record to compare yet'}</span></a>; })}</div>
     </div>
   );
-  return <div className="pa" data-native="" data-testid="parity-compare"><Crumbs items={[['Core Compare', '#/compare'], [kind.title]]} /><Pills label="Comparisons" items={mine.map((k) => ({ label: k.title, href: `#/compare/${k.key}`, on: k.key === kind.key }))} /><Kinded key={kind.key} core={core} kind={kind} /></div>;
+  return <div className="pa" data-native="" data-testid="parity-compare"><Crumbs items={[['Core Compare', '#/compare'], [kind.title]]} /><Pills label="Comparisons" items={mine.map((k) => ({ label: k.title, href: `#/compare/${k.key}`, on: k.key === kind.key }))} />{query.get('a') && roomById(query.get('a')!) ? <RoomJumps roomId={query.get('a')!} here="compare" opens={opensFor(role)} /> : null}<Kinded key={`${kind.key}:${query.get('a') || ''}`} core={core} kind={kind} start={query.get('a')} /></div>;
 }
 
 function example(core: Core, k: string) { const pairs = options(core, k); if (pairs.length < 1) return null; const [a, b] = defaults(core, k, pairs); const rows = rowsFor(core, k, a, b); return { label: `${labelOf(pairs, a)}${k === 'rooms' || k === 'devices' || k === 'standards' ? ` and ${labelOf(pairs, b)}` : ''}`, diff: rows.filter(differs).length, total: rows.length }; }
@@ -86,8 +87,9 @@ function rowsFor(core: Core, k: string, a: string, b: string): Row[] {
   return [];
 }
 
-function Kinded({ core, kind }: { core: Core; kind: Kind }) {
-  const opts = options(core, kind.key); const [d0, d1] = opts.length ? defaults(core, kind.key, opts) : ['', ''];
+// V2.5.3's #/compare/<kind>?a=<room>: a room's own links open its comparison on that room (when it is one of the subjects on record)
+function Kinded({ core, kind, start }: { core: Core; kind: Kind; start?: string | null }) {
+  const opts = options(core, kind.key); const [dd0, d1] = opts.length ? defaults(core, kind.key, opts) : ['', '']; const d0 = start && opts.some(([id]) => id === start) ? start : dd0;
   const [a, setA] = useState(d0); const [b, setB] = useState(d1); const [only, setOnly] = useState<'all' | 'diff'>('all');
   if (!opts.length) return <EmptyState title={`Nothing on record to compare as “${kind.title}”`} icon="layers">The records hold no subject for this comparison yet.</EmptyState>;
   const rows = rowsFor(core, kind.key, a, b); const diff = rows.filter(differs).length; const shown = only === 'diff' ? rows.filter(differs) : rows;

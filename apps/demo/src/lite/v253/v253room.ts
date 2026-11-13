@@ -55,6 +55,64 @@ function engDesignFor(id: string) {
   return add.length ? { design: { edits: { add } } } : null;
 }
 
+/**
+ * The founder's choice (13 Nov 2026): the town halls and control rooms V2.5.3 never drew are drawn from V2.5.3's own layout for their type,
+ * scaled to the room. Town halls take V2.5.3's townhall (Horizon 1.400, 26 × 32 m); control rooms take its control room (Horizon 2.215,
+ * 7.6 × 6.4 m). Positions scale with the room; large furniture (stage, desks, seating blocks, LED wall) stretches with it; equipment and
+ * chairs keep their size; seating blocks hold about the room's capacity. Only V2.5.3's design is borrowed, never its story: the source
+ * is laid out as designed (no dropped wireless channels, no proposed antennas), and this room's own records then mark its states.
+ * The layout says where it came from (scaledFrom), and the page says it is scaled.
+ */
+const SCALE_SRC: Record<string, { id: string; dims: [number, number, number]; name: string }> = {
+  TWN: { id: 'R-HZN-1-400', dims: [26, 32, 7.5], name: 'V2.5.3’s townhall (Horizon 1.400)' },
+  CTL: { id: 'R-HZN-2-215', dims: [7.6, 6.4, 3], name: 'V2.5.3’s control room (Horizon 2.215)' },
+};
+type Obj = Record<string, unknown> & { kind: string; x: number; y: number; z?: number; w: number; d: number; h: number; rot?: number };
+const STRETCH = new Set(['stage', 'desk', 'ledwall', 'table', 'seatblock', 'divider']);
+function scaleLayout(L0: Record<string, unknown>, from: [number, number, number], to: { w: number; d: number; h: number }, capacity: number) {
+  const sx = to.w / from[0], sy = to.d / from[1], sz = to.h / from[2], sr = Math.sqrt(sx * sy);
+  const L = { ...L0, w: to.w, d: to.d, h: to.h } as Record<string, unknown>;
+  const door = (dr: unknown) => { const o = dr as { wall: string; at: number; width: number } | undefined; return o ? { ...o, at: o.at * (o.wall === 'S' || o.wall === 'N' ? sx : sy) } : o; };
+  L.door = door(L0.door); if (L0.door2) L.door2 = door(L0.door2);
+  L.zones = ((L0.zones as Array<{ pts: number[][] }>) || []).map((z) => ({ ...z, pts: z.pts.map(([x, y]) => [x! * sx, y! * sy]) }));
+  const blocks = ((L0.objs as Obj[]) || []).filter((o) => o.kind === 'seatblock').length || 1; const per = Math.max(4, Math.ceil(capacity / blocks));
+  L.objs = ((L0.objs as Obj[]) || []).map((o0) => {
+    const o: Obj = { ...o0, x: o0.x * sx, y: o0.y * sy };
+    if (o.z && o.z > 0) o.z = Math.min(to.h - 0.1, o.z * sz);
+    if (STRETCH.has(o.kind)) { o.w = o0.w * sx; o.d = o0.d * sy; }
+    // a seating block keeps V2.5.3's seat width; rows close up to 0.9 m (no closer) so the block holds about its share of the capacity
+    if (o.kind === 'seatblock') { const px = Number(o0.px) || 0.6, py0 = Number(o0.py) || 1.1; const cols = Math.max(2, Math.floor((o.w - 0.3) / px));
+      const rows = Math.max(2, Math.min(Math.ceil(per / cols), Math.floor(o.d / 0.9) + 1)); const py = Math.min(py0, o.d / Math.max(1, rows - 1));
+      Object.assign(o, { x0: Number(o0.x0) * sx, y0: Number(o0.y0) * sy, rows, cols, px, py }); }
+    if (Array.isArray(o0.presets)) o.presets = (o0.presets as Array<Record<string, number>>).map((p) => ({ ...p, range: (p.range || 0) * sr }));
+    if (typeof o0.range === 'number') o.range = (o0.range as number) * sr;
+    if (typeof o0.capX === 'number') { o.capX = (o0.capX as number) * sx; o.capY = (o0.capY as number) * sy; }
+    return o;
+  });
+  // V2.5.3's townhall told a wireless story of its own (two channels dropping at stage right): not this room's, so none is carried
+  if (L0.wireless) L.wireless = { drop: false, fixed: false, zone: null, note: 'Wireless microphones as V2.5.3’s townhall layout places them' };
+  L.ghost = null; L.drift = null;
+  return L;
+}
+const SCALED = new Map<string, string>();
+function addScaledRooms(E: V253) {
+  const H = E.HERO_LAYOUT as Record<string, (room: unknown, st: string, o?: unknown) => Record<string, unknown>>;
+  for (const o of CAMPUS_ROOMS) {
+    const src = SCALE_SRC[o.archetype as string]; if (!src || H[o.id]) continue;
+    const room = roomEnt(o.id); if (!room) continue;
+    // only rooms V2.5.3's general layout cannot draw (it has no general layout for these types)
+    let fine = false; try { const g = (E.genericLayout as (r: unknown) => { objs: Obj[] })(room); fine = g.objs.length > 0 && g.objs.every((x) => [x.x, x.y, x.w, x.d].every(Number.isFinite)); } catch { fine = false; }
+    if (fine) continue;
+    const make = H[src.id]!;
+    H[o.id] = (r: unknown, _st: string, opts?: unknown) => { const rr = r as { dims: { w: number; d: number; h: number }; capacity: number };
+      const L0 = make({ ...(r as object), id: src.id, dims: { w: src.dims[0], d: src.dims[1], h: src.dims[2] } }, 'designed', opts);
+      return { ...scaleLayout(L0, src.dims, rr.dims, rr.capacity), scaledFrom: src.name }; };
+    SCALED.set(o.id, src.name);
+  }
+}
+/** Which of V2.5.3's layouts a room was scaled from, when it was (the founder's choice for the rooms V2.5.3 never drew). */
+export const v253ScaledFrom = (roomId: string): string | null => { engine(); return SCALED.get(roomId) ?? null; };
+
 let V: V253 | null = null;
 const S = { role: 'architect', lite: { drift: {} as Record<string, unknown> }, assure: {}, com: {}, eng: {} };
 function engine(): V253 {
@@ -62,6 +120,7 @@ function engine(): V253 {
   V = makeV253({ get, all, outs, ins: none, out1: nothing, in1: nothing, LV: {}, S, metricsOf, stateOf: () => ({}), assuranceOf: () => null, engDesignFor, azFindings: none,
     userBaselineOf: nothing, implementedFor: none, comBuiltFix: nothing, gearOf: nothing, esc: (x: unknown) => String(x ?? ''), chip: () => '', plural: (n: number, w: string) => `${n} ${w}${n === 1 ? '' : 's'}`,
     canViewEntity: () => true, canViewField: () => true, plainAside: () => '', plainRole: () => '', plainSub: () => '', subOf: () => '', iconFor: () => '', DB: { e: ents, t: new Map() }, OBJECT_CARDS: {}, nav: () => undefined });
+  addScaledRooms(V);
   return V;
 }
 

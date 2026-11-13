@@ -21,7 +21,8 @@ import {
 import { driftOf, setDrift, type DriftDecision } from './drift.js';
 import { RoomScene, OrbitBar, useOrbit } from './Scene.js';
 import { V253RoomStage, v253ObjFor, type V253Pick } from './V253Room.js';
-import { v253Drawable } from './v253/v253room.js';
+import { RoomJumps, opensFor } from '../rooms/RoomJumps.js';
+import { v253Drawable, v253ScaledFrom, v253Layout } from './v253/v253room.js';
 import { LiteNav, LiteMissing, storedLens, saveLens, setQuery } from './LiteApp.js';
 import { WhoKnows } from '../connect/ContactBar.js';
 
@@ -71,13 +72,14 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
   // V2.5.3's "Show sound in the room" (cover "acoustic"): first reflections from the presenter to the farthest seat, hard walls in red
   const ac = query.get('ac') === '1' && lens !== 'visitor';
   // Optimize works on the recorded positions (moves, drift), so it opens on the technical overlay; every other lens opens on the furnished room
-  const furnishable = v253Drawable(id);
+  const furnishable = v253Drawable(id); const scaledFrom = v253ScaledFrom(id);
   const viewHome = lens === 'optimize' || !furnishable ? 'tech' : 'room'; const vq = query.get('view');
   const view = (lens === 'optimize' && edited) || !furnishable ? 'tech' : vq === 'tech' || vq === 'room' ? vq : viewHome;
   return (
     <section className="lt-page lt-roompage lt-page--scene" data-testid="lite-room" data-room={id} data-state={stateKey} data-lens={lens}>
       <nav aria-label="Breadcrumb" className="crumbs"><ol><li><a href="#/lite">Lite</a></li><li><a href={`#/lite/b/${o.building}`}>{B.name}</a></li><li><a href={`#/lite/b/${o.building}/${o.floor}`}>Floor {o.floor}</a></li><li><span aria-current="page">{o.number}</span></li></ol></nav>
       <PageHero product="lite" icon="room" plain eyebrow={`${shortName(o)} · ${r.archetypeName} · ${o.capacity} seats`} title={o.name} />
+      <RoomJumps roomId={id} here="lite" opens={opensFor(role)} device={sel} />
       {o.nonOperational && <p className="lt-nonop" role="note" data-testid="lite-nonop"><Icon name="info" size={16} /> <b>Simulated · non-operational.</b> This is a demonstration of an operations room. Nothing here monitors, controls or alerts on a real system; every number is computed from the synthetic records.</p>}
       {lensesOpen.length > 1 && <div className="lt-lenses lt-lenses--sm" role="radiogroup" aria-label="Lite lens">{lensesOpen.map((l) => <button key={l.key} type="button" role="radio" aria-checked={lens === l.key} className={`lt-lens${lens === l.key ? ' on' : ''}`} onClick={() => pickLens(l.key)} data-testid={`lite-lens-${l.key}`}><b>{l.label}</b><span title={l.says}>sees {l.gives.toLowerCase()}</span></button>)}</div>}
       <div className="lt-roomgrid">
@@ -89,7 +91,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
           {view === 'room' ? <figure className="stage lt-stage lt-stage--room" data-stage="">
             <V253RoomStage roomId={id} lens={lens} state={stateKey} layers={layers} overlays={overlays} acoustic={ac} role={role} label={`${o.name}, furnished, in 3D, ${st.title}. Turn, tilt and zoom with the buttons, the arrow keys or a drag; each piece of equipment is a button that opens its card.`}
               sel={furn ? furn.obj.id : v253ObjFor(id, stateKey, lens, sel)} onPick={(pk) => { setFurn(pk && !pk.code ? pk : null); setSel(pk?.code ?? null); }} />
-            <figcaption className="stage__cap"><b>{st.title}.</b> {st.summary} <span className="ui-meta">The room as V2.5.3 drew it for this room type: walls, door, glazing, furniture and equipment, with coverage drawn from its own cameras, microphones and loudspeakers. Modelled, not surveyed. Basis: {st.basis}.</span>{ac && <span className="ui-meta lt-acnote" data-testid="lite-acoustic-note"> Sound in the room: a training and engineering model of first reflections, not a certified acoustic simulation.</span>}</figcaption>
+            <figcaption className="stage__cap"><b>{st.title}.</b> {st.summary} <span className="ui-meta">The room as V2.5.3 drew it for this room type: walls, door, glazing, furniture and equipment, with coverage drawn from its own cameras, microphones and loudspeakers. Modelled, not surveyed. Basis: {st.basis}.</span>{scaledFrom && <span className="ui-meta lt-scalednote" data-testid="lite-scaled-note"> {`V2.5.3 never drew this room: it is drawn from ${scaledFrom}, scaled to its ${o.dims[0]} × ${o.dims[1]} m (founder’s choice, 13 Nov 2026). Positions are illustrative; ${(v253Layout(id, stateKey === 'proposed' ? 'current' : stateKey)?.seats.length ?? 0)} of its ${o.capacity} seats are drawn.`}</span>}{ac && <span className="ui-meta lt-acnote" data-testid="lite-acoustic-note"> Sound in the room: a training and engineering model of first reflections, not a certified acoustic simulation.</span>}</figcaption>
           </figure> : <figure className="stage lt-stage" data-stage="">
             <div className="stage__bar"><OrbitBar orbit={orbit} /></div>
             <RoomScene label={`${o.name} in 3D, ${st.title}`} w={o.dims[0]} l={o.dims[1]} h={o.dims[2]} view={orbit.view} positions={positions} connections={r.connections} layers={layers} overlays={overlays} cov={cov}

@@ -3,6 +3,8 @@
  * never write the workspace or the ledger (the position is kept in the address with replaceState, so it is not a history entry per
  * step). Changing the room is a separate, named step: "Apply a scenario", which opens a real ServiceHands job and can be undone.
  */
+import type { RoleKey } from '../registry.types.js';
+import { RoomJumps, opensFor } from '../rooms/RoomJumps.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Tag } from '@empathia/ui';
 import type { WorkspaceProps } from '../hardening/lazy.js';
@@ -21,7 +23,7 @@ export default function Replay({ perspective, hash }: WorkspaceProps) {
   const ops = useOps(perspective); const room = roomOf(opsPath(hash)[1] || '');
   if (!opsPath(hash)[1]) return <Home persona={ops.persona} w={ops.w} />;
   if (!room) return <section className="ops"><OpsHead kicker="Core Replay" title="Room not found" persona={ops.persona} lead={<>There is no room {opsPath(hash)[1]} in this demonstration. <a href="#/replay">Choose a room</a></>} /></section>;
-  return <RoomReplay key={room.id} room={room} ops={ops} hash={hash} />;
+  return <RoomReplay key={room.id} room={room} ops={ops} hash={hash} role={perspective} />;
 }
 
 function Home({ persona, w }: { persona: string; w: WX }) {
@@ -36,7 +38,7 @@ function Home({ persona, w }: { persona: string; w: WX }) {
   );
 }
 
-function RoomReplay({ room, ops, hash }: { room: RoomRec; ops: ReturnType<typeof useOps>; hash: string }) {
+function RoomReplay({ room, ops, hash, role }: { room: RoomRec; ops: ReturnType<typeof useOps>; hash: string; role: string }) {
   const { w, persona } = ops; const stages = useMemo(() => stagesOf(room.id, w), [room.id, w]);
   const start = Math.max(0, stages.findIndex((s) => s.key === param(hash, 'at')));
   const [i, setI] = useState(start); const [playing, setPlaying] = useState(false); const [cmp, setCmp] = useState<[number, number]>([0, stages.length - 1]);
@@ -60,6 +62,7 @@ function RoomReplay({ room, ops, hash }: { room: RoomRec; ops: ReturnType<typeof
       <OpsHead product="mission" kicker="Mission Control · Core Replay" title={`Replay: ${room.name}`} persona={persona}
         lead={<>{stages.length} stages in lifecycle order; each stands on a record and says how sure it is. <b>Watching or scrubbing never changes the room.</b></>}
         actions={<a className="ui-btn ui-btn--quiet" href="#/replay">All rooms</a>} />
+      <RoomJumps roomId={room.id} here="replay" opens={opensFor(role as RoleKey)} />
       {undo.bar}
       {ops.refusal && <div role="alert" className="ops-refused" data-testid="refusal"><b>Refused.</b> {ops.refusal.why.join('; ')}</div>}
       <div className="ops-grid ops-grid--2b">

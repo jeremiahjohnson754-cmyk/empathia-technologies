@@ -4,6 +4,7 @@
  * #/scheduler/<room> (the panel at the door of each room). SIMULATED CONTROL: no command leaves the page; the sessions are generated from
  * the room id and the demonstration clock, never a real calendar.
  */
+import { RoomJumps, opensFor } from '../rooms/RoomJumps.js';
 import { useEffect, useState } from 'react';
 import { PageHero, Card, StatTile, Tag, EmptyState, Segmented, StatusDot, Icon, type IconName } from '@empathia/ui';
 import type { PageProps } from '../registry.types.js';
@@ -78,6 +79,7 @@ function RoomControlBody({ o, rec, role, use, eng, mode, setMode, avail, tick, b
       <Crumbs items={[['Empathia Control', '#/control'], [shortName(o)]]} />
       <PageHero compact eyebrow={`${fullName(o)} · panel`} title={<span data-testid="rc-sentence">{sentence}</span>} product="lite" icon="settings" lede={`${o.capacity} seats · ${rec.archetypeName} · ${plural(rec.positions.filter((p) => !p.furniture).length, 'device')} in the design · ${busy ? `in a session (${busy.title})` : next ? `free until ${hhmm(next.from)}` : 'free for the rest of the day'}`}
         meta={honest(['Simulated control: nothing is sent', 'warn'])} actions={<><a className="ui-btn" href={roomHref(o)}>Room guide and 3D</a>{opens('#/here') && <a className="ui-btn" href={`#/here/${o.id}`}>I am in this room</a>}<a className="ui-btn ui-btn--quiet" href={`#/scheduler/${o.id}`}>Door panel</a></>} />
+      <RoomJumps roomId={o.id} here="control" opens={opensFor(role)} />
       <Segmented label="Mode" value={mode} onChange={setMode} options={avail.map((m) => ({ value: m.key, label: m.label, icon: m.icon }))} />
       <p className="pa-note" data-testid="rc-mode">{MODES.find((m) => m.key === mode)!.sub}.</p>
       <RoomPanel r={rec} role={role} use={use} mode={mode as ModeKey} onChange={bump} />

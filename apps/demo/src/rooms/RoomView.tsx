@@ -13,6 +13,7 @@ import { roomRecord, LAYERS, PEOPLE, type Layer, type RoomRecord, type Position 
 import { roomHealth, roomIssues, spine, moves, featuredRooms, roomFacts, BAND_LABEL, type Stage as SpineStage } from '../campus/metrics.js';
 import { load as loadWorkspace, type Workspace } from '../workspace/store.js';
 import { Stage, PlanView, IsoView, LAYER_COLOR } from '../spatial/Spatial.js';
+import { RoomJumps } from './RoomJumps.js';
 import { StatusDot, Chip, StatTile, Icon, Section, List, ListRow, EmptyState } from '../spatial/parts.js';
 
 export const LIFE_TONE: Record<string, 'ok' | 'warn' | 'info' | 'muted' | 'bad'> = { OPERATIONAL: 'ok', ACCEPTED: 'ok', COMMISSIONING: 'warn', INSTALLED_UNVERIFIED: 'info', PLANNED: 'muted', DESIGN_APPROVED: 'info', INSTALLATION_PENDING: 'info' };
@@ -78,6 +79,7 @@ export function RoomView({ id, hash, sees = () => true, opens = () => true, base
       <header className="room__hero">
         <p className="kicker">{context ? <span data-testid="room-context">{context} · </span> : null}{B.name} · floor {o.floor} · {r.archetypeName} · {o.capacity} seats</p>
         <h1>{shortName(o)} — {o.name}</h1>
+        <RoomJumps roomId={o.id} here={/^#?\/?assurance/.test(hash) ? 'assurance' : /^#?\/?commissioning/.test(hash) ? 'commissioning' : 'campus'} opens={opens} device={sel} />
         <p className="room__intent">{o.intent}</p>
         <div className="room__chips" data-testid="room-chips">
           <StatusDot band={h.band} />

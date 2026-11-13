@@ -20,18 +20,32 @@ const finite = (it) => (it.p || [it.at]).every((q) => q.every((n) => Number.isFi
 // the town halls and control rooms V2.5.3 had no general layout for (it drew those types only as its own named hero rooms)
 const NOT_DRAWN = ['R-NST-2-101', 'R-BCN-3-236', 'R-ATL-1-150', 'R-HZN-1-500', 'R-HZN-2-220', 'R-HZN-2-410', 'R-HZN-2-420', 'R-HZN-1-420', 'R-NST-1-410', 'R-WMR-1-130', 'R-HFD-1-110', 'R-HFD-1-140', 'R-FRG-1-410', 'R-EGT-1-110'];
 
-test('76 of the 90 rooms are drawn by V2.5.3; the 14 it never drew are exactly the town halls and control rooms without a hero layout', () => {
+// 13 Nov 2026: the founder chose to draw these 14 from V2.5.3's own townhall and control-room layouts, scaled to each room (was: left undrawn)
+test('all 90 rooms are drawn; the 14 V2.5.3 never drew are exactly the town halls and control rooms, each scaled from V2.5.3’s layout for its type', () => {
   const ids = M.v253RoomIds(); assert.equal(ids.length, 90);
-  const off = ids.filter((id) => !M.v253Drawable(id)); assert.deepEqual(off.sort(), [...NOT_DRAWN].sort());
+  assert.deepEqual(ids.filter((id) => !M.v253Drawable(id)), []);
+  assert.deepEqual(ids.filter((id) => M.v253ScaledFrom(id)).sort(), [...NOT_DRAWN].sort());
 });
 
-test('every drawable room, in every state and lens, with no layers or with every layer and coverage on, from four sides: finite geometry, never empty', () => {
+test('a scaled room keeps inside its own walls, borrows V2.5.3’s design but not its story, and seats about its capacity within V2.5.3’s blocks', () => {
+  for (const id of NOT_DRAWN) {
+    const L = M.v253Layout(id, 'current'); const src = M.v253ScaledFrom(id);
+    assert.ok(L.objs.every((o) => o.x >= -0.01 && o.y >= -0.01 && o.x <= L.w + 0.01 && o.y <= L.d + 0.01), `${id}: an object outside the room`);
+    if (/townhall/.test(src)) {
+      assert.ok(L.objs.some((o) => o.kind === 'stage') && L.objs.filter((o) => o.kind === 'seatblock').length === 4, `${id}: stage and four seating blocks`);
+      assert.ok(!L.wireless || (!L.wireless.drop && !L.wireless.zone), `${id}: Horizon 1.400's dropped-channel story is not carried`);
+      assert.ok(L.seats.length >= 40, `${id}: ${L.seats.length} seats`);
+    } else assert.ok(L.objs.filter((o) => o.kind === 'display').length === 4 && L.objs.filter((o) => o.kind === 'desk').length === 2, `${id}: the control room's wall and two desks`);
+  }
+});
+
+test('every room, in every state and lens, with no layers or with every layer and coverage on, from four sides: finite geometry, never empty', () => {
   const bad = []; let n = 0;
-  for (const id of M.v253RoomIds().filter((x) => M.v253Drawable(x))) for (const state of STATES) for (const mode of LENSES) for (const [layers, cover] of [[[], []], [ALL_LAYERS, ALL_COVER]]) for (const yaw of [30, 120, 210, 300]) {
+  for (const id of M.v253RoomIds()) for (const state of STATES) for (const mode of LENSES) for (const [layers, cover] of [[[], []], [ALL_LAYERS, ALL_COVER]]) for (const yaw of [30, 120, 210, 300]) {
     const r = M.v253Room(id, { mode, state, layers, cover }, { yaw, small: false }); n += 1;
     if (!r || !r.sc.items.length || !r.sc.items.every(finite)) bad.push(`${id} ${state} ${mode} ${yaw}`);
   }
-  assert.equal(n, 76 * 4 * 6 * 2 * 4); assert.deepEqual(bad.slice(0, 5), []);
+  assert.equal(n, 90 * 4 * 6 * 2 * 4); assert.deepEqual(bad.slice(0, 5), []);
 });
 
 test('Atlas 4.218 keeps V2.5.3’s own hero arrangement: one table for fourteen, two 86-inch displays, two cameras, two ceiling arrays, four loudspeakers, rack, touch panel, lectern', () => {
@@ -79,6 +93,6 @@ test('no figure V2.5.3’s acoustic engine computed is shown without that engine
 });
 
 test('all nine of V2.5.3’s hero rooms are on this campus and drawn with their own arrangements, not a template', () => {
-  const heroes = M.v253RoomIds().filter((id) => M.v253Layout(id, 'current')?.hero).sort();
+  const heroes = M.v253RoomIds().filter((id) => M.v253Layout(id, 'current')?.hero && !M.v253ScaledFrom(id)).sort();
   assert.deepEqual(heroes, ['R-ATL-4-218', 'R-ATL-7-112', 'R-BCN-3-101', 'R-FRG-1-104', 'R-FRG-2-220', 'R-HZN-1-400', 'R-HZN-2-215', 'R-MER-1-140', 'R-MER-2-305']);
 });

@@ -116,8 +116,12 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [412, 915, 'phone']]) {
   await t.close();
 }
 // a room type V2.5.3 never drew opens on the technical overlay and says why; a visitor sees the furnished room but opens no cards (V2.5.3)
-{ const t = await open('#/lite/room/R-HZN-1-500', { role: 'architect', sw: false }); const p = t.page; await p.waitForSelector('[data-testid=lite-3d]');
-  ok('LS-R11', 'a town hall V2.5.3 never drew opens on the technical overlay, the furnished choice is disabled and the page says why', (await p.getByTestId('lite-view-room').isDisabled()) && /never|only as its own named rooms/.test(await p.getByTestId('lite-view-note').innerText()) && !t.errs.length);
+// 13 Nov 2026 (founder: "second option"): a town hall V2.5.3 never drew is drawn from V2.5.3's townhall, scaled to it, and says so
+{ const t = await open('#/lite/room/R-HZN-1-500', { role: 'architect', sw: false }); const p = t.page; const st = p.locator('[data-testid=lite-room-3d]'); await st.waitFor();
+  const kinds = await st.getAttribute('data-kinds'); const note = await p.getByTestId('lite-scaled-note').innerText();
+  ok('LS-R11', 'a town hall V2.5.3 never drew is furnished from V2.5.3’s townhall scaled to its 32 × 28 m: stage, four seating blocks, LED wall, cameras; the page says it is scaled and how many of its seats are drawn', /stage:1/.test(kinds) && /seatblock:4/.test(kinds) && /ledwall:1/.test(kinds) && /camera:3/.test(kinds) && /townhall \(Horizon 1\.400\), scaled to its 32 × 28 m/.test(note) && /of its 400 seats are drawn/.test(note) && !t.errs.length, `${kinds} | ${note}`);
+  await p.goto(p.url().split('#')[0] + '#/lite/room/R-FRG-1-410'); await st.waitFor(); const k2 = await st.getAttribute('data-kinds');
+  ok('LS-R11b', 'a control room V2.5.3 never drew is furnished from V2.5.3’s control room: the display wall and two desks', /display:4/.test(k2) && /desk:2/.test(k2) && /control room \(Horizon 2\.215\)/.test(await p.getByTestId('lite-scaled-note').innerText()), k2);
   await t.close(); }
 { const t = await open('#/lite/room/R-ATL-4-218', { role: 'visitor', sw: false }); const p = t.page; await p.waitForSelector('[data-testid=lite-room-3d]');
   ok('LS-R12', 'a visitor sees the furnished room, with the way in, and no object buttons (V2.5.3: a visitor opens no cards)', (await p.locator('[data-testid=lite-room-3d] .l3-hitbtn').count()) === 0 && Number(await p.getByTestId('lite-room-3d').getAttribute('data-objects')) > 0 && !t.errs.length);
