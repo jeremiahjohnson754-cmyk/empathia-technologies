@@ -77,3 +77,8 @@ test('no figure V2.5.3’s acoustic engine computed is shown without that engine
     assert.ok(!r.sc.items.some((i) => i.t === 'x' && /STI/.test(i.text)), `${id} ${state}`);
   }
 });
+
+test('all nine of V2.5.3’s hero rooms are on this campus and drawn with their own arrangements, not a template', () => {
+  const heroes = M.v253RoomIds().filter((id) => M.v253Layout(id, 'current')?.hero).sort();
+  assert.deepEqual(heroes, ['R-ATL-4-218', 'R-ATL-7-112', 'R-BCN-3-101', 'R-FRG-1-104', 'R-FRG-2-220', 'R-HZN-1-400', 'R-HZN-2-215', 'R-MER-1-140', 'R-MER-2-305']);
+});

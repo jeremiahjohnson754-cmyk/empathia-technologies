@@ -323,9 +323,14 @@ polygon.l3-go:hover { filter: brightness(1.18); }
 .l3-obj { cursor: pointer; }
 .l3-tag--obj { pointer-events: auto; cursor: pointer; }
 .l3-hitbtn.on { box-shadow: 0 0 0 2px var(--l3-teal) inset; }
-.l3-route { animation: l3route 1.6s linear infinite; stroke-dasharray: 6 5; }
-@keyframes l3route { to { stroke-dashoffset: -22; } }
-@media (prefers-reduced-motion: reduce) { .l3-route { animation: none; } }
+/* V2.5.3's route and status marks: the way in marches (l3dash), a drawn route draws itself (l3draw) */
+.l3-route { stroke-dasharray: 2.4 2; animation: l3dash 1.4s linear infinite; }
+.l3-route[pathLength] { stroke-dasharray: 100; stroke-dashoffset: 100; animation: l3draw 1.6s ease .25s forwards; }
+@keyframes l3dash { to { stroke-dashoffset: -8.8; } } @keyframes l3draw { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) { .l3-route, .l3-route[pathLength] { animation: none; stroke-dashoffset: 0; } }
+.l3-dot--ok { background: #62c684; } .l3-dot--warn { background: #e8b04a; } .l3-dot--bad { background: #f0655a; } .l3-dot--info { background: #6aa5f2; } .l3-dot--teal { background: #45cfc1; } .l3-dot--mute { background: #8a8478; }
+/* seven controls do not fit one column on a phone's stage: two columns, each button still a full 44 px target */
+@media (max-width: 560px) { .l3-ctl { grid-template-columns: repeat(2, 44px); } }
 .lt-roomabout { display: grid; gap: 10px; margin-top: 14px; }
 .lt-intent { margin: 0; max-width: 66ch; color: var(--tx2); font-size: var(--fs-md, 16px); line-height: 1.5; }
 .lt-roommeta { display: flex; flex-wrap: wrap; gap: 6px; }
