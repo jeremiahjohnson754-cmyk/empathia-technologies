@@ -182,7 +182,7 @@ export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, 
     const shapes = sc.items.filter((i): i is L3Poly | L3Line => i.t === 'p' || i.t === 'l').map((i) => ({ i: ex && i.t === 'p' ? { ...i, p: ex.clip(i.p) } : i, d: depth(i.c || mean(i.p)), q: (i as unknown as { q: number }).q }))
       .filter((x) => !ex || (x.i.t === 'p' ? x.i.p.length >= 3 : x.i.p.every(ex.front)));
     // from an eye, the room is painted far to near, whatever its layer (the outside-view layers assume a camera outside the room)
-    if (ex) { shapes.sort((a, b) => (a.i.L >= 6 ? 1 : 0) - (b.i.L >= 6 ? 1 : 0) || a.d - b.d); return shapes; }
+    if (ex) { const g = (L: number) => (L >= 6 ? 2 : L >= 3 ? 1 : 0); shapes.sort((a, b) => g(a.i.L) - g(b.i.L) || a.d - b.d); return shapes; }   // the room's shell first (its big walls would otherwise cover what stands in front of them), then what is in it, then the overlays
     const solid = (L: number) => !v253 || (L >= 3 && L < 4) || L === 5;
     shapes.sort((a, b) => a.i.L - b.i.L || (solid(a.i.L) ? (a.i.pri || 0) - (b.i.pri || 0) || a.d - b.d || ((a.i as L3Poly).sub || 0) - ((b.i as L3Poly).sub || 0) : 0) || a.q - b.q);
     return shapes;
