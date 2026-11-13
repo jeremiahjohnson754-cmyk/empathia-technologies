@@ -8,7 +8,7 @@ import { harness, VIEWPORTS, SCHEMES, repo } from './demo-spaces-lib.mjs';
 const { ok, open, done, out } = await harness('demo-rooms');
 // 10 Nov 2026: the estate is the founder's 90 rooms (docs/surpass/ENTERPRISE_90_ROOMS.md); rows 46–90 are the X(...) rows of canon.ts
 const ids = [...fs.readFileSync(path.join(repo, 'apps/demo/src/campus/canon.ts'), 'utf8').matchAll(/^ {2}[RPX]\((?:\d+, )?'(R-[A-Z]+-\d+-\d+)'/gm)].map((m) => m[1]);
-if (ids.length !== 90) { console.error(`expected 90 room ids in canon.ts, read ${ids.length}`); process.exit(1); }
+if (ids.length !== 140) { console.error(`expected 140 room ids in canon.ts, read ${ids.length}`); process.exit(1); }   // 13 Nov 2026: + V2.5.3's 50 rooms (founder): 90 → 140
 const href = (id) => { const [, b, f] = /^R-([A-Z]+)-(\d+)-/.exec(id); return `#/campus/${b}/${Number(f)}/${id}`; };
 const SAMPLE = ['R-ATL-4-218', 'R-NST-2-101', 'R-HZN-1-400', 'R-BCN-3-225', 'R-MER-1-130'];
 
@@ -20,7 +20,7 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
     const v = await t.page.evaluate(() => ({ room: document.querySelector('[data-testid="room-view"]')?.getAttribute('data-room'), stage: !!document.querySelector('[data-testid="room-3d"]'), over: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
     if (v.room !== id || !v.stage || v.over > 0) bad.push(`${id} ${JSON.stringify(v)}`);
   }
-  ok(`RM-${tag}-01`, `${list.length === ids.length ? `all ${ids.length} rooms open` : `a sample of ${list.length} rooms opens`} in the room view with a 3D stage and no overflow`, list.length >= 5 && !bad.length && (vp[2] !== 'desktop' || (list.length === ids.length && ids.length === 90)), bad.slice(0, 3).join(' | '));
+  ok(`RM-${tag}-01`, `${list.length === ids.length ? `all ${ids.length} rooms open` : `a sample of ${list.length} rooms opens`} in the room view with a 3D stage and no overflow`, list.length >= 5 && !bad.length && (vp[2] !== 'desktop' || (list.length === ids.length && ids.length === 140)), bad.slice(0, 3).join(' | '));   // 13 Nov 2026: 90 → 140 (V2.5.3's 50 rooms)
   await t.go(href('R-ATL-4-218'), 300);
   const lum = await t.page.evaluate(() => { const m = getComputedStyle(document.querySelector('[data-testid="room-stage"]')).backgroundColor.match(/\d+/g).map(Number); return (0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]) / 255; });
   ok(`RM-${tag}-02`, 'the room stage stays dark in either theme (D36)', lum < 0.25, lum);

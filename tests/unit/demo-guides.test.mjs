@@ -20,8 +20,8 @@ const texts = (g) => [g.summary, ...g.supports.map((s) => s.because), ...g.secti
 // a sentence that says the room does NOT have something is not an instruction for it; nor is one about the person's own laptop
 const positive = (t) => t.replace(/\bno (touch panel|camera|microphones of its own|microphones|room system|screen)\b/gi, '').replace(/has no touch panel and no room system/gi, '').replace(/your laptop’s own microphone and camera/gi, '');
 
-test('RG-01 a guide for every one of the 90 rooms: its own id, a draft, always how to adjust, finish and get help', () => {
-  assert.equal(guides.length, 90); assert.equal(new Set(guides.map(([, g]) => g.id)).size, 90);
+test('RG-01 a guide for every one of the 140 rooms: its own id, a draft, always how to adjust, finish and get help', () => {
+  assert.equal(guides.length, 140); assert.equal(new Set(guides.map(([, g]) => g.id)).size, 140);   // 13 Nov 2026: + V2.5.3's 50 rooms the estate lacked (founder: "use as many of v2.5.3's rooms as you can"): 90 → 140
   for (const [r, g] of guides) { assert.equal(g.roomId, r.outline.id); assert.equal(g.status, 'DRAFT'); assert.ok(g.summary.includes(r.outline.name)); assert.ok(g.objectives.length >= 3 && g.sources.length >= 1);
     for (const id of ['controls', 'end', 'help']) assert.ok(g.sections.some((s) => s.id === id), `${r.outline.id} ${id}`);
     for (const s of g.sections) { assert.ok(s.steps.length >= 1 && s.lead.length > 10, `${r.outline.id} ${s.id}`); for (const x of s.steps) assert.ok(x.do.length > 15 && /[.”]$/.test(x.do), x.do); }

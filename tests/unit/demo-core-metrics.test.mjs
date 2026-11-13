@@ -39,7 +39,8 @@ test('building and campus aggregates add up from the rooms', () => {
   const c = M.campusStats(w);
   // 10 Nov 2026: 45 → 90 and 2 → 7 sites. The Enterprise estate now holds the founder's 90 rooms (docs/surpass/ENTERPRISE_90_ROOMS.md): the 45
   // of the plan unchanged, then rows 46–90 on the campus and five more fictional sites. Every screen shows all of them.
-  const N = canon.CAMPUS_ROOMS.length; assert.equal(N, 90); assert.equal(c.rooms, N); assert.equal(c.buildings.length, 6); assert.equal(c.sites.length, 7);
+  const N = canon.CAMPUS_ROOMS.length; assert.equal(N, 140);   // 13 Nov 2026: + V2.5.3's 50 rooms the estate lacked (founder: "use as many of v2.5.3's rooms as you can"): 90 → 140
+  assert.equal(c.rooms, N); assert.equal(c.buildings.length, 6); assert.equal(c.sites.length, 7);
   const all = [...c.buildings, ...c.sites];
   assert.equal(all.reduce((s, b) => s + b.rooms, 0), N);
   assert.equal(all.reduce((s, b) => s + b.open, 0), c.open);

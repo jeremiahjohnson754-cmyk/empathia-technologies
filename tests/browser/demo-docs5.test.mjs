@@ -136,7 +136,7 @@ const attach = async (p) => { await p.setInputFiles('[data-testid=doc-file-input
   ok('D5B-60', 'three contrasting rooms side by side, each considered for the same eighteen deliverables: the smallest is asked for least, and the tracked room is one of them', c.length === 3 && c.every((x) => x.rows === 18) && c[0].n < c[1].n && c[1].room === 'R-ATL-4-218' && c[1].n === 16 && c[1].rack === 'no' && c[2].rack === 'yes', JSON.stringify(c));
   const firstOther = await p.evaluate(() => [...document.querySelectorAll('[data-testid=applies-room-0] option')].map((o) => o.value).find((v) => v !== document.querySelector('[data-testid=applies-room-0]').value));
   await p.selectOption('[data-testid=applies-room-0]', firstOther); await p.waitForFunction((v) => document.querySelector('.d5-applies__col')?.dataset.room === v, firstOther);
-  ok('D5B-61', 'any of the 90 rooms can be put in a column, and every row gives its reason', await p.locator('[data-testid=applies-room-0] option').count() === 90 && await p.evaluate(() => [...document.querySelectorAll('.d5-applies__col li > span > span')].every((x) => x.textContent.length > 12)));
+  ok('D5B-61', 'any of the 140 rooms can be put in a column, and every row gives its reason', await p.locator('[data-testid=applies-room-0] option').count() === 140 && await p.evaluate(() => [...document.querySelectorAll('.d5-applies__col li > span > span')].every((x) => x.textContent.length > 12)));   // 13 Nov 2026: + V2.5.3's 50 rooms (founder: "use as many of v2.5.3's rooms as you can"): 90 → 140
   ok('D5B-62', 'no console error', clean(t), [...t.errs, ...t.off].join(' | ')); await t.close(); }
 
 // ── field capture on a phone ──
