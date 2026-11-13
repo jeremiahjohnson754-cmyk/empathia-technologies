@@ -20,6 +20,7 @@ import {
 } from './model.js';
 import { driftOf, setDrift, type DriftDecision } from './drift.js';
 import { RoomScene, OrbitBar, useOrbit } from './Scene.js';
+import { StageLayers } from './StageLayers.js';
 import { V253RoomStage, v253ObjFor, EYE_SPOTS, type V253Pick, type EyeKey } from './V253Room.js';
 import { RoomJumps, opensFor } from '../rooms/RoomJumps.js';
 import { v253Drawable, v253ScaledFrom, v253Layout } from './v253/v253room.js';
@@ -104,7 +105,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
             {([['room', 'Furnished room', 'walls, furniture and equipment'], ['tech', 'Technical overlay', 'positions, signal and coverage']] as const).map(([k, t, d]) => <button key={k} type="button" role="radio" aria-checked={view === k} disabled={k === 'room' && !furnishable} className={`lt-view${view === k ? ' on' : ''}`} onClick={() => upd('view', k === viewHome ? null : k)} data-testid={`lite-view-${k}`}><b>{t}</b><span>{k === 'room' && !furnishable ? 'not drawn for this room type' : d}</span></button>)}
           </div>
           {!furnishable && <p className="ui-meta lt-viewnote" data-testid="lite-view-note">V2.5.3 drew town halls and control rooms only as its own named rooms, so this one opens on the technical overlay: every position, path and coverage figure is here; the furnished drawing is not.</p>}
-          {view === 'room' ? <figure className="stage lt-stage lt-stage--room" data-stage="">
+          {view === 'room' ? <figure className="stage lt-stage lt-stage--room" data-stage=""><div className="lt-stagewrap">
             <V253RoomStage look={look} roomId={id} lens={lens} state={stateKey} layers={layers} overlays={overlays} acoustic={ac} role={role} label={`${o.name}, furnished, in 3D, ${st.title}. Turn, tilt and zoom with the buttons, the arrow keys or a drag; each piece of equipment is a button that opens its card.`}
               eyeKey={eyeKey} plan={planView} onEyeKey={(k) => upd('eye', k)}
               sel={arranging ? arrSel : furn ? furn.obj.id : v253ObjFor(id, stateKey, lens, sel)} edits={lens === 'optimize' ? withPreview(ar.e, dragP) : null}
@@ -113,6 +114,11 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
                 if (phase === 'move') { raf.current = requestAnimationFrame(() => setDragP({ id: oid, dx, dy })); return; }
                 setDragP(null); const ob = v253Arranged(id, ar.e)?.L.objs.find((x) => x.id === oid); if (ob && movable(ob) && (snap(dx) || snap(dy))) ar.move(ob, snap(dx), snap(dy), 0, `Dragged ${Math.round(Math.hypot(snap(dx), snap(dy)) * 100)} cm.`); } : undefined}
               onPick={(pk) => { setFurn(pk && !pk.code ? pk : null); setSel(pk?.code ?? null); if (arranging) setArrSel(pk?.obj.id ?? null); }} />
+            {/* 13 Nov 2026 (founder: coverage toggles "much closer to the action"): coverage chips and V2.5.3's Layers sheet on the room itself */}
+            {!planView && !eyeKey && <StageLayers coverage={mayOv.map((x) => ({ key: x.key, label: x.label, on: overlays.has(x.key), value: ovValue(x.key, cov), onToggle: () => toggle('ov', x.key, overlays) }))}
+              states={STATES.map((s) => ({ key: s.key, label: s.label, on: s.key === stateKey, onPick: () => upd('state', s.key === 'current' ? null : s.key) }))}
+              xray={[{ key: 'acoustic', label: 'Sound in the room', on: ac, says: 'first reflections to the farthest seat: a training model, not a certified simulation', onToggle: () => upd('ac', ac ? null : '1') }]}
+              layers={mayLayers.map((x) => ({ key: x.key, label: x.label, on: layers.has(x.key), says: x.says, onToggle: () => toggle('ly', x.key, layers) }))} />}</div>
             <figcaption className="stage__cap"><b>{st.title}.</b> {st.summary} <span className="ui-meta">{look === 'v253' ? 'The room as V2.5.3 drew it for this room type' : 'V2.5.3’s arrangement for this room type, drawn by Empathia with materials and light'}: walls, door, glazing, furniture and equipment, with coverage drawn from its own cameras, microphones and loudspeakers. Modelled, not surveyed. Basis: {st.basis}.</span>{scaledFrom && <span className="ui-meta lt-scalednote" data-testid="lite-scaled-note"> {`V2.5.3 never drew this room: it is drawn from ${scaledFrom}, scaled to its ${o.dims[0]} × ${o.dims[1]} m (founder’s choice, 13 Nov 2026). Positions are illustrative; ${(v253Layout(id, stateKey === 'proposed' ? 'current' : stateKey)?.seats.length ?? 0)} of its ${o.capacity} seats are drawn.`}</span>}{ac && <span className="ui-meta lt-acnote" data-testid="lite-acoustic-note"> Sound in the room: a training and engineering model of first reflections, not a certified acoustic simulation.</span>}</figcaption>
           </figure> : <figure className="stage lt-stage" data-stage="">
             <div className="stage__bar"><OrbitBar orbit={orbit} /></div>

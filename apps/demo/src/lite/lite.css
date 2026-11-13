@@ -431,3 +431,34 @@ g.pl-piece > .pl-floor, g.pl-piece .pl-floor { fill: rgba(140,130,115,.16); stro
 .rm-legend { display: inline-flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: .85em; }
 .rm-legend i { display: inline-block; width: 18px; height: 3px; margin-right: 5px; vertical-align: middle; border-radius: 2px; }
 .rm-legend em { opacity: .75; }
+/* the room's controls on the room (V2.5.3's Layers on the stage): coverage chips top-left, the Layers button bottom-left, its sheet over the room */
+.lt-stage--room { position: relative; } .lt-stagewrap { position: relative; }
+.sl-chips { position: absolute; top: 10px; left: 10px; right: 64px; z-index: 3; display: flex; flex-wrap: wrap; gap: 6px; pointer-events: none; }
+.sl-chip { pointer-events: auto; display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 4px 11px; border-radius: 999px; border: 1px solid rgba(255,255,255,.18); background: rgba(16,18,22,.78); color: #e9ecef; font: inherit; font-size: .84rem; cursor: pointer; backdrop-filter: blur(6px); }
+.sl-chip i { width: 9px; height: 9px; border-radius: 50%; background: #7d858d; }
+.sl-chip--camera i { background: #6aa5f2; } .sl-chip--mic i { background: #62c684; } .sl-chip--speaker i { background: #e8b04a; } .sl-chip--display i { background: #b98cf0; } .sl-chip--wifi i { background: #45cfc1; }
+.sl-chip.on { background: rgba(32,92,90,.92); border-color: #45cfc1; color: #fff; }
+.sl-chip b { font-weight: 700; font-variant-numeric: tabular-nums; }
+.sl-chip:focus-visible, .sl-open:focus-visible, .sl-sw:focus-visible, .sl-state:focus-visible { outline: 2px solid #f0c060; outline-offset: 2px; }
+.sl-open { position: absolute; left: 10px; bottom: 12px; z-index: 3; display: inline-flex; align-items: center; gap: 7px; min-height: 40px; padding: 6px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,.22); background: rgba(16,18,22,.86); color: #f2f4f6; font: inherit; font-weight: 600; cursor: pointer; backdrop-filter: blur(6px); }
+.sl-open b { min-width: 20px; padding: 0 6px; border-radius: 10px; background: #2f8f8a; font-size: .78rem; text-align: center; }
+.sl-open.on { border-color: #45cfc1; }
+.sl-sheet { position: absolute; left: 8px; right: 8px; bottom: 8px; max-height: 72%; z-index: 4; overflow: auto; padding: 12px 14px 14px; border-radius: 16px; border: 1px solid rgba(255,255,255,.14); background: rgba(14,16,20,.95); color: #e9ecef; box-shadow: 0 18px 40px rgba(0,0,0,.45); backdrop-filter: blur(10px); }
+@media (min-width: 900px) { .sl-sheet { right: auto; width: 360px; top: 56px; max-height: none; } }
+.sl-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.sl-x { width: 36px; height: 36px; border-radius: 50%; border: 0; background: rgba(255,255,255,.08); color: inherit; font-size: 1.3rem; cursor: pointer; }
+.sl-states { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; padding: 3px; border-radius: 12px; background: rgba(255,255,255,.06); }
+.sl-state { min-height: 36px; border: 0; border-radius: 9px; background: transparent; color: #c9ced3; font: inherit; font-size: .84rem; cursor: pointer; }
+.sl-state.on { background: #2f6b6c; color: #fff; font-weight: 600; }
+.sl-l { margin: 12px 0 4px; font-size: .74rem; letter-spacing: .06em; text-transform: uppercase; color: #9aa1a8; }
+.sl-list { display: grid; gap: 2px; }
+.sl-sw { display: grid; grid-template-columns: 40px 1fr auto; grid-template-rows: auto auto; align-items: center; column-gap: 10px; min-height: 44px; padding: 6px 4px; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; border-radius: 8px; }
+.sl-sw:hover { background: rgba(255,255,255,.05); }
+.sl-sw__k { grid-row: 1 / span 2; width: 36px; height: 20px; border-radius: 10px; background: #4a5056; position: relative; }
+.sl-sw__k::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #e9ecef; transition: transform .15s ease; }
+.sl-sw.on .sl-sw__k { background: #2f9f97; } .sl-sw.on .sl-sw__k::after { transform: translateX(16px); }
+.sl-sw__n { font-weight: 600; } .sl-sw__v { font-variant-numeric: tabular-nums; color: #9fe3d8; } .sl-sw__s { grid-column: 2 / span 2; font-size: .8rem; color: #9aa1a8; }
+@media (prefers-reduced-motion: reduce) { .sl-sw__k::after { transition: none; } }
+/* on a phone the orbit buttons wrap under the room, so the Layers button sits top right, under the chips, clear of them */
+@media (max-width: 640px) { .sl-open { left: auto; right: 10px; bottom: auto; top: 50px; } }
+@media (max-width: 640px) { .sl-chips { flex-wrap: nowrap; overflow-x: auto; pointer-events: auto; scrollbar-width: none; padding-bottom: 2px; } .sl-chips::-webkit-scrollbar { display: none; } .sl-chip { flex: none; } }

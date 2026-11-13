@@ -42,6 +42,22 @@ const { ok, open, done } = await harness('demo-lite-views');
   ok('VW-campus-back', 'Above returns to the 3D', (await p.getByTestId('lite-room-3d').getAttribute('data-look')) === 'empathia' && (await p.getByTestId('rm-plan').count()) === 0 && !t.errs.length, t.errs.slice(0, 2).join(' | '));
   await t.close(); }
 
+// the coverage toggles on the room itself and V2.5.3's Layers sheet (13 Nov 2026, founder: "the toggles for coverages in lite much closer to
+// the action so it's easy for an engineer to use"): a chip on the stage turns a coverage on and the URL and the panel agree; the Layers
+// button opens a sheet with the four states, the coverages, the X-ray and the layers; Escape closes it and gives focus back to the button
+{ const t = await open('#/lite/room/R-ATL-4-218?mode=engineer', { role: 'architect', sw: false }); const p = t.page; await p.getByTestId('lite-room-3d').waitFor();
+  const chip = p.getByTestId('stage-ov-speaker'); const was = (await chip.getAttribute('aria-checked')) === 'true'; await chip.click(); await p.waitForTimeout(300);
+  const now = (await chip.getAttribute('aria-checked')) === 'true'; const inUrl = /[?&]ov=[^&]*speaker/.test(decodeURIComponent(p.url()));
+  ok('VW-stage-chip', 'a coverage chip on the stage turns that coverage on, says its figure, and the address records it', now !== was && now && inUrl && /\d/.test(await chip.innerText()), `${was}→${now} ${p.url().split('?')[1]}`);
+  await p.getByTestId('stage-layers-open').click(); const sh = p.getByTestId('stage-layers'); await sh.waitFor();
+  const parts = { states: await sh.locator('[data-testid^=stage-state-]').count(), cov: await sh.locator('[data-testid^=stage-sw-ov-]').count(), x: await sh.locator('[data-testid^=stage-sw-x-]').count(), ly: await sh.locator('[data-testid^=stage-sw-ly-]').count(), chips: await p.getByTestId('stage-coverage').count() };
+  ok('VW-stage-sheet', 'Layers opens a sheet on the room with the four states, every coverage, the X-ray and the layers; the chips step aside under it', parts.states === 4 && parts.cov >= 4 && parts.x === 1 && parts.ly >= 3 && parts.chips === 0 && (await sh.getByTestId('stage-sw-ov-speaker').getAttribute('aria-checked')) === 'true', JSON.stringify(parts));
+  await sh.getByTestId('stage-state-designed').click(); await p.waitForTimeout(300);
+  ok('VW-stage-state', 'a state picked in the sheet changes the room to that state', /[?&]state=designed/.test(p.url()) && (await sh.getByTestId('stage-state-designed').getAttribute('aria-checked')) === 'true', p.url().split('?')[1]);
+  await p.keyboard.press('Escape'); await p.waitForTimeout(200);
+  ok('VW-stage-close', 'Escape closes the sheet and focus returns to the Layers button', (await p.getByTestId('stage-layers').count()) === 0 && (await p.evaluate(() => document.activeElement?.getAttribute('data-testid'))) === 'stage-layers-open' && !t.errs.length, t.errs.slice(0, 2).join(' | '));
+  await t.close(); }
+
 // all 140 campus rooms: each opens on its plan to scale with every object of its layout a button on it, with no console error. The room ids
 // come from the same code the demonstration draws them with.
 { const fs = await import('node:fs'); const os = await import('node:os'); const path = await import('node:path'); const { pathToFileURL, fileURLToPath } = await import('node:url');
