@@ -93,6 +93,30 @@ function Passport({ role, type, id }: PageProps & { type: string; id: string }) 
   );
 }
 
+/** The passport's body without the page around it: what the record says and its linked records. The Lite room opens it as a sheet over
+ *  the room (V2.5.3 opened the room passport over the room, 13 Nov 2026 founder: "without losing the current room, camera view, or spatial
+ *  context"). */
+export function PassportBody({ role: role0, type, id, headingId }: { role: string; type: string; id: string; headingId?: string }) {
+  const core = useCore(); const role = role0 as PageProps['role'];
+  const r = isType(type) ? core.byType[type].find((x) => x.id === id) : undefined;
+  if (!r) return <p className="pa-note">No record with this address.</p>;
+  const links = r.links.map((l) => ({ l, to: core.byType[l.type]?.find((x) => x.id === l.id) })).filter((x) => x.to && canEntity(role, x.to.type));
+  const back = core.all.filter((x) => x.links.some((l) => l.id === r.id && l.type === r.type) && canEntity(role, x.type));
+  const byType = TYPE_KEYS.map((t) => [t, back.filter((x) => x.type === t)] as const).filter(([, l]) => l.length);
+  return <div className="pa-sheetbody" data-testid="passport-body">
+    <p className="pa-sheet__eyebrow">{TYPES[r.type].label} passport</p>
+    <h2 id={headingId} tabIndex={-1} className="pa-sheet__h">{r.name}</h2>
+    <p className="pa-note">{r.sub}</p>
+    <div className="wk-chips"><ProvTag prov={r.prov} />{r.state ? <Tag tone={toneOf(r.tone)}>{r.state.replace(/_/g, ' ').toLowerCase()}</Tag> : null}<Chip small tone="muted">{r.id}</Chip></div>
+    <Card title="What the record says" icon="book" sub={PROV_TEXT[r.prov]}><FactsTable facts={r.facts} caption="Facts" /><p className="pa-note">Source: {r.source}</p></Card>
+    <Card title="Linked records" icon="link" sub={`${links.length + back.length} relationships on record`}>
+      {links.length ? <RecList recs={links.map((x) => x.to!)} label="This record points to" trailing={(x) => <Tag tone="muted">{r.links.find((l) => l.id === x.id)?.rel}</Tag>} /> : null}
+      {byType.map(([t, l]) => <div key={t} className="pa-zone"><h3 className="pa-zone__note">{TYPES[t].plural} that point here</h3><RecList recs={l} label={`${TYPES[t].plural} that point here`} step={6} /></div>)}
+      {!links.length && !back.length ? <p className="pa-note">No other record links to this one.</p> : null}
+    </Card>
+  </div>;
+}
+
 function Sets({ role, k: raw }: PageProps & { k: string }) {
   const k = LEGACY_FAMILY[raw] ?? raw;
   const core = useCore();

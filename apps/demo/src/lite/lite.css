@@ -349,3 +349,15 @@ polygon.l3-go:hover { filter: brightness(1.18); }
 .lt-rlist li, .lt-findings li { min-width: 0; overflow-wrap: anywhere; }
 .lt-sysdev { white-space: nowrap; display: inline-flex; gap: 4px; align-items: center; margin: 2px 8px 2px 0; }
 .lt-rlist .lt-chipbtn, .lt-sysdev .lt-chipbtn { white-space: nowrap; flex: 0 0 auto; }
+
+/* the room passport as a sheet over the room (V2.5.3), 13 Nov 2026 */
+.lt-sheet { position: fixed; inset: 0; z-index: 60; display: flex; justify-content: flex-end; }
+.lt-sheet__scrim { position: absolute; inset: 0; border: 0; padding: 0; background: rgba(8, 12, 20, .38); cursor: pointer; }
+.lt-sheet__panel { position: relative; width: min(560px, 100%); height: 100%; overflow-y: auto; background: var(--bg, var(--panel)); color: var(--tx); box-shadow: -12px 0 40px rgba(0,0,0,.25); padding: calc(env(safe-area-inset-top, 0px) + 14px) 16px calc(env(safe-area-inset-bottom, 0px) + 20px); display: grid; gap: 12px; align-content: start; }
+.lt-sheet__bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; position: sticky; top: calc(-14px - env(safe-area-inset-top, 0px)); background: inherit; padding-block: 6px; z-index: 1; }
+.lt-sheet__bar .ui-meta { flex: 1 1 12em; min-width: 0; }
+.lt-ready { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+@media (max-width: 640px) { .lt-sheet { align-items: flex-end; } .lt-sheet__panel { height: 88%; border-radius: 16px 16px 0 0; box-shadow: 0 -12px 40px rgba(0,0,0,.25); } }
+.pa-sheet__eyebrow { margin: 0; font-size: .78rem; letter-spacing: .04em; color: var(--tx2, inherit); }
+.pa-sheet__h { margin: 0; font-size: 1.35rem; }
+.pa-sheetbody { display: grid; gap: 12px; min-width: 0; }

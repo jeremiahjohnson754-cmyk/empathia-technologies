@@ -26,6 +26,7 @@ import { v253Drawable, v253ScaledFrom, v253Layout } from './v253/v253room.js';
 import { LiteNav, LiteMissing, storedLens, saveLens, setQuery } from './LiteApp.js';
 import { WhoKnows } from '../connect/ContactBar.js';
 import { RoomTabBar, RoomTabPanel, tabOf } from './RoomTabs.js';
+import { PassportSheet } from './PassportSheet.js';
 
 const list = (s: string | null) => (s == null ? null : s.split(',').filter(Boolean));
 
@@ -76,6 +77,9 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
   const furnishable = v253Drawable(id); const scaledFrom = v253ScaledFrom(id);
   const viewHome = lens === 'optimize' || !furnishable ? 'tech' : 'room'; const vq = query.get('view');
   const tab = lens === 'visitor' ? 'overview' : tabOf(query.get('tab'));
+  // the room passport, as a sheet over the room (V2.5.3); only for a role that may open the room's record
+  const mayPassport = lens !== 'visitor' && opensFor(role)(`#/list/Room/${id}`); const sheet = mayPassport && query.get('sheet') === 'passport';
+  const openPassport = () => upd('sheet', 'passport');
   const view = (lens === 'optimize' && edited) || !furnishable ? 'tech' : vq === 'tech' || vq === 'room' ? vq : viewHome;
   return (
     <section className="lt-page lt-roompage lt-page--scene" data-testid="lite-room" data-room={id} data-state={stateKey} data-lens={lens}>
@@ -108,7 +112,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
           <div className="lt-roomabout" data-testid="lite-room-about"><p className="lt-intent">{o.intent}</p><div className="lt-roommeta">{[<Chip key="l" small tone={LIFE_TONE[r.lifecycle] || 'muted'}>{r.lifecycle.toLowerCase().replace(/_/g, ' ')}</Chip>, <Chip key="s" small tone="muted">Class templates · spec to verify</Chip>, <Chip key="g" small tone="muted">Geometry {r.geometryProvenance.toLowerCase()}</Chip>, ...(o.planRow ? [<Chip key="p" small tone="info">{o.roster ? `90-room estate · row ${o.planRow} · ${o.sector}` : `Rooms plan · row ${o.planRow}`}</Chip>] : []), ...(issues.length ? [<Chip key="i" small tone="warn" icon="alert">{issues.length} open issue{issues.length === 1 ? '' : 's'}</Chip>] : [])]}</div></div>
         </div>
         <aside className="lt-panel" aria-label="Layers, overlays and the selected device">
-          <div className="lt-ready" data-testid="lite-room-ready"><ScoreRing value={score} size={72} label="Readiness" caption="Verified tests and open issues on the record" /></div>
+          <div className="lt-ready" data-testid="lite-room-ready"><ScoreRing value={score} size={72} label="Readiness" caption="Verified tests and open issues on the record" />{mayPassport && <button type="button" className="ui-btn ui-btn--small" onClick={openPassport} aria-haspopup="dialog" data-testid="lite-passport-open"><Icon name="book" size={16} /> Room passport</button>}</div>
           {mayOv.length > 0 && <fieldset className="lt-switches" data-testid="lite-overlays"><legend>Overlays</legend>
             {mayOv.map((x) => { const on = overlays.has(x.key); return <button key={x.key} type="button" role="switch" aria-checked={on} className={`lt-switch lt-switch--${x.key}${on ? ' on' : ''}`} onClick={() => toggle('ov', x.key, overlays)} data-testid={`lite-ov-${x.key}`}><span className="lt-switch__name">{x.label}</span><span className="lt-switch__v">{ovValue(x.key, cov)}</span><span className="lt-switch__knob" aria-hidden="true" /></button>; })}
           </fieldset>}
@@ -134,7 +138,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
       </div>
       <AdvancedModes role={role} id={id} lens={lens} query={query} base={base} />
       {lens !== 'visitor' && <RoomTabBar tab={tab} onTab={(t) => upd('tab', t === 'overview' ? null : t)} />}
-      {tab !== 'overview' ? <RoomTabPanel tab={tab} r={r} stateKey={stateKey} role={role} opens={opensFor(role)} sel={sel} onSel={(c) => { setSel(c); upd('device', c); }} measurements={<Measurements cov={st.cov} w={o.dims[0]} l={o.dims[1]} h={o.dims[2]} />} /> : <>
+      {tab !== 'overview' ? <RoomTabPanel tab={tab} r={r} stateKey={stateKey} role={role} opens={opensFor(role)} onPassport={mayPassport ? openPassport : null} sel={sel} onSel={(c) => { setSel(c); upd('device', c); }} measurements={<Measurements cov={st.cov} w={o.dims[0]} l={o.dims[1]} h={o.dims[2]} />} /> : <>
       {query.get('xm') === '1' && <Measurements cov={cov} w={o.dims[0]} l={o.dims[1]} h={o.dims[2]} />}
       <ul className="lt-metrics" aria-label="Room metrics, modeled">
         {overlaysFor(role).some((x) => x.key === 'camera') && <li><StatTile label="Camera coverage" value={pct(cov.camera.covered, cov.camera.of)} unit="%" icon="eye" tone="indigo" hint={`${cov.camera.covered} of ${cov.camera.of} seats in view · modeled`} testId="lite-m-camera" /></li>}
@@ -163,6 +167,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
       <WhoKnows role={role} kind="room" id={o.id} />
       <p className="ui-meta lt-foot">Elsewhere: <a href={`#/guide/room/${o.id}`} data-testid="lite-guide">how to use this room</a> · <a href={`#/here/${o.id}`} data-testid="lite-here">I am in this room</a>{role !== 'visitor' ? <> · <a href={`#/people?room=${o.id}`} data-testid="lite-who">who knows this room</a></> : null}{mayCapture(role) ? <> · <a href={`#/instant/${o.id}`} data-testid="lite-capture">capture this room</a></> : null}{readsManual(role) ? <> · <a href={`#/manual/build?room=${o.id}`} data-testid="lite-standards">the standards this room is held to</a></> : null}{allows({ area: 'control' }, role) && <> · <a href={`#/control/${o.id}`} data-testid="lite-control">operate this room</a></>} · <a href={`#/search?focus=Room:${o.id}`}>Search Party from this room</a>{allows({ area: 'room' }, role) && <> · <a href={roomHref(o)}>technical room view</a></>} · <a href={`#/lite/way?to=${o.id}`}>find the way</a>{allows({ area: 'scouter' }, role) && <> · <a href="#/lite/scouter">ask Scouter about a device</a></>}</p>
       <LiteNav here="" role={role} />
+      {sheet && <PassportSheet role={role} roomId={id} name={`${shortName(o)} ${o.name}`} onClose={() => upd('sheet', null)} />}
     </section>
   );
 }

@@ -32,7 +32,7 @@ export function RoomTabBar({ tab, onTab }: { tab: RoomTab; onTab: (t: RoomTab) =
 const DL = ({ rows }: { rows: Array<[string, ReactNode]> }) => <dl className="lt-dl">{rows.map(([k, v]) => [<dt key={`${k}t`}>{k}</dt>, <dd key={`${k}d`}>{v}</dd>])}</dl>;
 const CAT_GROUPS: Array<[string, string[]]> = [['Displays', ['display', 'ledwall', 'projector']], ['Cameras', ['camera', 'bar']], ['Microphones', ['micceil', 'mictable', 'micwireless']], ['Loudspeakers and amplifiers', ['speaker', 'amp']], ['Audio processing', ['dsp']], ['Compute and video', ['compute', 'switcher', 'encoder']], ['Control', ['control', 'touch', 'scheduler']], ['Network', ['switch']], ['Rack and power', ['rack', 'pdu']]];
 
-export function RoomTabPanel({ tab, r, stateKey, role, opens, sel, onSel, measurements }: { tab: RoomTab; r: RoomRecord; stateKey: StateKey; role: string; opens: (href: string) => boolean; sel: string | null; onSel: (code: string) => void; measurements: ReactNode }) {
+export function RoomTabPanel({ tab, r, stateKey, role, opens, onPassport, sel, onSel, measurements }: { tab: RoomTab; r: RoomRecord; stateKey: StateKey; role: string; opens: (href: string) => boolean; onPassport: (() => void) | null; sel: string | null; onSel: (code: string) => void; measurements: ReactNode }) {
   const o = r.outline; const st = roomState(r, stateKey); const cov = st.cov; const [w, l, h] = o.dims; const n = cov.seats.length;
   const devs = st.positions.filter((p) => !p.furniture);
   const pick = (code: string) => <button type="button" className={`lt-chipbtn${sel === code ? ' on' : ''}`} aria-pressed={sel === code} onClick={() => onSel(code)}>{code}</button>;
@@ -83,7 +83,7 @@ export function RoomTabPanel({ tab, r, stateKey, role, opens, sel, onSel, measur
       const iss = openIssues(r); const cur = r.baselines.find((b) => b.state === 'CURRENT');
       return <Card title="Records" sub="Baseline, assurance and issues" icon="shield" testId="lite-rt-records">
         <DL rows={[['Lifecycle', r.lifecycle.toLowerCase().replace(/_/g, ' ')], ['Baseline', cur ? `v${cur.version} since ${cur.at.slice(0, 10)}` : 'none on record'], ['Tests', `${r.counts.verified} of ${r.counts.applicable} applicable verified · ${r.counts.failed} failed · ${r.counts.notTested} not yet tested`], ['Open issues', iss.length ? iss.map((i) => `${i.title} (${i.severity.toLowerCase()})`).join('; ') : 'none'], ['Baselines on record', r.baselines.map((b) => `v${b.version} ${b.state.toLowerCase().replace(/_/g, ' ')}`).join(' · ') || '—']]} />
-        {opens(`#/list/Room/${o.id}`) ? <p><a className="ui-btn ui-btn--small" href={`#/list/Room/${o.id}`} data-testid="lite-rt-passport">Room passport</a> <span className="ui-meta">Every fact on record and every linked record: devices, people, projects, documents, baselines.</span></p> : null}
+        {onPassport ? <p><button type="button" className="ui-btn ui-btn--small" onClick={onPassport} aria-haspopup="dialog" data-testid="lite-rt-passport">Room passport</button> <span className="ui-meta">Every fact on record and every linked record: devices, people, projects, documents, baselines.</span></p> : null}
         <RoomJumps roomId={o.id} here="lite" opens={opens} /></Card>;
     }
     return null;

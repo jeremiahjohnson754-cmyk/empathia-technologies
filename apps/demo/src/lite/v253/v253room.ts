@@ -11,7 +11,9 @@ import { CAMPUS_ROOMS, buildingByKey } from '../../campus/canon.js';
 import { roomState } from '../model.js';
 
 export type V253State = 'designed' | 'commissioned' | 'current' | 'proposed';
-export interface V253View { mode: string; state: V253State; layers: string[]; cover: string[]; sel?: string | null; cam?: string | null }
+export interface V253View { mode: string; state: V253State; layers: string[]; cover: string[]; sel?: string | null; cam?: string | null; edits?: V253Edits | null }
+/** V2.5.3's own edit model (applyEdits): moves and turns by object id, objects added by kind, objects removed. Applied in the Optimize lens. */
+export interface V253Edits { mv: Record<string, [number, number, number]>; add: Array<{ kind: 'micceil' | 'spk' | 'display' | 'camera'; x: number; y: number; aim?: number; face?: number }>; remove: string[] }
 
 const RACK = new Set(['dsp', 'compute', 'switch', 'amp', 'encoder', 'switcher', 'control']);
 type Ent = Record<string, unknown> & { id: string; type: string };
@@ -131,7 +133,7 @@ export function v253Layout(roomId: string, state: V253State = 'current'): V253La
   return E.layoutOf(room, state);
 }
 function lv(roomId: string, v: V253View) {
-  return { roomId, mode: v.mode, state: v.state, layers: new Set(v.layers), cover: new Set(v.cover), sel: v.sel ?? null, cam: v.cam ?? null, focus: null, edits: null, preview: null, builder: null, replay: null, tween: null, split: null, assure: false, assurePage: null, acSrc: null, defs: null, hall: null, M: null, L: null };
+  return { roomId, mode: v.mode, state: v.state, layers: new Set(v.layers), cover: new Set(v.cover), sel: v.sel ?? null, cam: v.cam ?? null, focus: null, edits: v.edits ?? null, preview: null, builder: null, replay: null, tween: null, split: null, assure: false, assurePage: null, acSrc: null, defs: null, hall: null, M: null, L: null };
 }
 /** V2.5.3's room scene (liteRoomScene) for a camera and a view: shell, furniture, equipment, coverage and labels, as L3 items. */
 export function v253RoomScene(roomId: string, view: V253View, cam: { yaw: number; small: boolean }) {
@@ -150,6 +152,14 @@ export function v253Room(roomId: string, view: V253View, cam: { yaw: number; sma
   // figure would read 0.00, a number nobody computed. The label is left out rather than shown wrong (the Measurements panel says what is modelled).
   sc.items = sc.items.filter((i) => !(i.t === 'x' && /^Rear rows · STI/.test(i.text || '')));
   return { sc, L: v.L as unknown as V253Layout };
+}
+/** The room as arranged: V2.5.3's layout with the edits applied (Optimize), and what its cameras and microphones now reach (modelled). */
+export function v253Arranged(roomId: string, edits: V253Edits | null) {
+  const room = roomEnt(roomId); if (!room) return null; const E = engine();
+  E.setLV(lv(roomId, { mode: 'optimize', state: 'current', layers: [], cover: [], edits })); (globalThis as unknown as { __v253room?: string }).__v253room = roomId;
+  const L = (E.liteLayoutNow as () => V253Layout)(); const M = metricsOf(room, L); const n = (L.seats || []).length;
+  const primary = [...M.capture.cls.values()].filter((c) => c === 'primary').length;
+  return { L, seats: n, cam: M.video.covered.size, mic: primary };
 }
 export const v253Defs = () => engine().L3_DEFS;
 /** who is looking, as V2.5.3's S.role: a visitor sees the room but opens no cards; everyone else may */

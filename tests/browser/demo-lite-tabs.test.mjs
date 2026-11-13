@@ -27,9 +27,17 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   ok(`RT-${tag}-06`, 'a camera chosen in the Cameras tab is selected in the room, and its card opens', /device=A-0/.test(dev) && /Camera|PTZ|camera/i.test(card) && (await p.locator('[data-testid=lite-rt-cam] .lt-rlist button[aria-pressed=true]').count()) === 1, `${dev} ${card.slice(0, 80)}`);
   await p.getByTestId('lite-rtab-records').click(); const rec = await p.getByTestId('lite-rt-records').innerText();
   ok(`RT-${tag}-07`, 'Records gives the lifecycle, baselines, tests and open issues, and the room’s places in the other products', /Baseline/.test(rec) && /applicable verified/.test(rec) && (await p.locator('[data-testid=lite-rt-records] [data-testid=room-jump-assurance]').count()) === 1);
-  await p.getByTestId('lite-rt-passport').click(); await p.getByTestId('parity-records').waitFor(); const pass = await p.locator('main').innerText();
-  ok(`RT-${tag}-07b`, 'Records opens the room passport: what the record says and its linked records', /room passport/i.test(pass) && /linked records/i.test(pass) && /#\/list\/Room\/R-ATL-4-218/.test(p.url()));
-  await p.goBack(); await p.getByTestId('lite-rt-records').waitFor();
+  // the room passport opens as a sheet over the room (V2.5.3; founder 13 Nov 07:30): the room, its camera, tab and selection stay as they were
+  const svg = p.locator('[data-testid=lite-room-3d] .l3-svg'); const yaw = async () => svg.getAttribute('data-yaw');
+  await p.locator('[data-testid=lite-room-3d]').getByRole('button', { name: 'Turn right' }).click(); await p.waitForTimeout(350); const y0 = await yaw(); const dev0 = new URL(p.url()).hash.match(/device=[^&]+/)?.[0];
+  await p.getByTestId('lite-rt-passport').click(); const sheet = p.getByTestId('lite-passport-sheet'); await sheet.getByTestId('passport-body').waitFor(); await p.waitForTimeout(200);
+  const pass = await sheet.innerText(); const inDialog = await p.evaluate(() => !!document.activeElement?.closest('[role=dialog]'));
+  ok(`RT-${tag}-07b`, 'Records opens the room passport as a sheet over the room: what the record says and its linked records, the room still there underneath, focus inside', /room passport/i.test(pass) && /linked records/i.test(pass) && (await p.getByRole('dialog').count()) === 1 && (await p.getByTestId('lite-room-3d').count()) === 1 && /sheet=passport/.test(p.url()) && inDialog, pass.slice(0, 120));
+  await p.keyboard.press('Tab'); await p.keyboard.press('Shift+Tab'); await p.keyboard.press('Shift+Tab'); const trapped = await p.evaluate(() => !!document.activeElement?.closest('[role=dialog]'));
+  await p.keyboard.press('Escape'); await p.waitForTimeout(250); const ret = await p.evaluate(() => document.activeElement?.getAttribute('data-testid'));
+  ok(`RT-${tag}-07c`, 'Tab stays in the sheet; Escape closes it; the camera, the tab and the selected device are as they were, and focus returns to the button', trapped && (await sheet.count()) === 0 && (await yaw()) === y0 && (await p.getByTestId('lite-rtab-records').getAttribute('aria-selected')) === 'true' && new URL(p.url()).hash.match(/device=[^&]+/)?.[0] === dev0 && ret === 'lite-rt-passport', `${trapped} ${y0} ${await yaw()} ${ret}`);
+  await p.getByTestId('lite-passport-open').click(); await sheet.getByTestId('passport-body').waitFor(); await sheet.getByTestId('lite-passport-close').click(); await p.waitForTimeout(200);
+  ok(`RT-${tag}-07d`, 'the room’s own Room passport button opens the same sheet, and Close closes it', (await sheet.count()) === 0 && !/sheet=passport/.test(p.url()));
   await p.reload(); await p.getByTestId('lite-rt-records').waitFor();
   ok(`RT-${tag}-08`, 'the chosen tab survives a reload', (await p.getByTestId('lite-rtab-records').getAttribute('aria-selected')) === 'true');
   await p.getByTestId('lite-rtab-records').focus(); await p.keyboard.press('ArrowRight'); await p.waitForTimeout(150); const wrap = await p.evaluate(() => document.activeElement?.getAttribute('data-testid'));
@@ -46,6 +54,12 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   const n1 = await p.locator('[data-testid=studio-plan] [data-kind=mictable]').count(); const rule = await p.locator('main').innerText();
   await p.getByTestId('studio-undo').click(); const n0 = await p.locator('[data-testid=studio-plan] [data-kind=mictable]').count(); await p.getByTestId('studio-redo').click(); const n2 = await p.locator('[data-testid=studio-plan] [data-kind=mictable]').count();
   ok('RT-studio', 'the add palette has the table microphone; it counts toward the microphone rule; undo and redo take it back and forth', n1 === 1 && /1 table microphone for \d+ seats/.test(rule) && n0 === 0 && n2 === 1, `${n1} ${n0} ${n2}`);
+  await t.close(); }
+{ const t = await open('#/lite/room/R-MER-1-140?mode=engineer&sheet=passport', { role: 'architect', sw: false }); const p = t.page; await p.getByTestId('passport-body').waitFor();
+  ok('RT-passport-link', 'a link with the passport open opens the room with the sheet over it', /Meridian 1\.140|Design Review Studio/.test(await p.getByTestId('passport-body').innerText()) && (await p.getByTestId('lite-room-3d').count()) === 1);
+  await t.close(); }
+{ const t = await open('#/lite/room/R-ATL-4-218?sheet=passport', { role: 'visitor', sw: false }); const p = t.page; await p.getByTestId('lite-room').waitFor(); await p.waitForTimeout(400);
+  ok('RT-passport-visitor', 'a visitor has no passport button, and a link with the passport open does not open it', (await p.getByTestId('lite-passport-open').count()) === 0 && (await p.getByTestId('lite-passport-sheet').count()) === 0);
   await t.close(); }
 { const t = await open('#/lite/room/R-ATL-4-218?tab=systems', { role: 'visitor', sw: false }); const p = t.page; await p.getByTestId('lite-room').waitFor(); await p.waitForTimeout(300);
   ok('RT-visitor', 'a visitor sees the room without the tabs, and a tab in the address does not open the systems record', (await p.getByTestId('lite-rtabs').count()) === 0 && (await p.getByTestId('lite-rt-systems').count()) === 0);
