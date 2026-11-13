@@ -1,3 +1,4 @@
+import { equipProgram } from './equipment.js';
 /**
  * Room programs (13 Nov 2026): what a room of a given type actually holds, laid out as a designer would, from the estate's record (size,
  * places, equipment classes). A program replaces "the nearest V2.5.3 type" where that type was wrong for the room — a stadium suite is a
@@ -6,12 +7,14 @@
  */
 export type Side = 'N' | 'E' | 'S' | 'W';
 export interface WallSpec { glass?: boolean; door?: { at: number; w: number; hinge: 'lo' | 'hi' }; slide?: { at: number; w: number }; finish?: string; /** a low wall of this height (an open position) */ parapet?: number; /** no wall (open to the bowl) */ none?: boolean }
-export interface Piece { id: string; kind: string; label: string; x: number; y: number; rot?: number; w: number; d: number; h: number; z?: number; at?: Array<[number, number]>; note?: string; device?: string; /** how many (monitors on a desk run, seats in a row) */ n?: number }
+export interface Piece { id: string; kind: string; label: string; x: number; y: number; rot?: number; w: number; d: number; h: number; z?: number; at?: Array<[number, number]>; note?: string; device?: string; /** how many (monitors on a desk run, seats in a row) */ n?: number;
+  /** for equipment: its connections, in words ("network → room switch, port 12 · proposed") */ net?: string[]; /** shown only with equipment (rack internals, wall boxes, access points) */ eqOnly?: boolean }
 /** `pitch` follows the L3 camera: 36 is level, higher looks down (3° for every step of 9 above 36), lower looks up */
 export interface EyeSpot { key: string; label: string; says: string; x: number; y: number; z: number; yaw: number; pitch: number }
 export interface Program {
   key: string; title: string; summary: string; w: number; d: number; H: number; floor: 'oak' | 'carpet' | 'concrete' | 'vinyl'; walls: Record<Side, WallSpec>;
-  pieces: Piece[]; eyes: EyeSpot[]; lights: Array<[number, number]>; speakers: Array<[number, number]>; /** whose character the room takes (materials) */ world?: 'enterprise' | 'university' | 'stadium' | 'convention'; outside: 'suite' | 'club' | 'window' | 'open' | null; hero: { yaw: number; pitch: number; zoom?: number };
+  pieces: Piece[]; eyes: EyeSpot[]; lights: Array<[number, number]>; speakers: Array<[number, number]>; /** cable runs between equipment, shown with equipment: kind, what it carries, the path in metres */ runs?: Array<{ kind: 'network' | 'signal' | 'control' | 'power' | 'audio'; label: string; pts: Array<[number, number, number]> }>;
+  /** whose character the room takes (materials) */ world?: 'enterprise' | 'university' | 'stadium' | 'convention'; outside: 'suite' | 'club' | 'window' | 'open' | null; hero: { yaw: number; pitch: number; zoom?: number };
 }
 export interface RoomRecord { id: string; type: string; name: string; dims?: [number, number, number]; capacity?: number; assets?: Array<{ kind: string; label: string; cls: string; qty: number; state: string }> }
 
@@ -220,7 +223,7 @@ function club(r: RoomRecord): Program {
 }
 
 const WORLD_OF: Record<string, Program['world']> = { suite: 'stadium', 'press-box': 'stadium', 'commentary-booth': 'stadium', 'mix-position': 'stadium', club: 'stadium', 'green-room': 'convention', 'speaker-prep': 'convention', 'vip-lounge': 'convention' };
-export function programFor(r: RoomRecord): Program | null { const P = programOf(r); if (P) P.world = WORLD_OF[r.type] ?? (r.id.startsWith('STA-') ? 'stadium' : r.id.startsWith('CNV-') ? 'convention' : 'university'); return P; }
+export function programFor(r: RoomRecord): Program | null { const P0 = programOf(r); if (!P0) return null; const P = equipProgram(P0); P.world = WORLD_OF[r.type] ?? (r.id.startsWith('STA-') ? 'stadium' : r.id.startsWith('CNV-') ? 'convention' : 'university'); return P; }
 function programOf(r: RoomRecord): Program | null {
   switch (r.type) {
     case 'suite': return suite(r); case 'green-room': return greenRoom(r); case 'speaker-prep': return speakerPrep(r); case 'vip-lounge': return vipLounge(r);

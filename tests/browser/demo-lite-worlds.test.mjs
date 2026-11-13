@@ -43,7 +43,8 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   // 13 Nov 2026: the fixture room is drawn by Empathia's room renderer, whose line under the stage says what a tapped piece is (rm-says;
   // was lw-fixture-sel); the button is pressed as the keyboard would, so another target over it on the stage cannot take the tap
   await fx.locator('.l3-hitbtn').first().focus(); await p.keyboard.press('Enter'); await p.waitForTimeout(200);
-  ok('LW-empathia-inspect', 'tapping a fixture says what it is and its size', /m high · illustrative/.test(await p.getByTestId('rm-says').innerText()));
+  // 13 Nov 2026: the line now also gives the piece's position in the room ("· at 4.2, 0.5 m"); the check reads size, height and position
+  ok('LW-empathia-inspect', 'tapping a fixture says what it is, its size, height and position', /m high · at [\d.]+, [\d.]+ m · illustrative/.test(await p.getByTestId('rm-says').innerText()));
   await t.close(); }
 { const t = await open('#/lite', { role: 'architect', sw: false }); const p = t.page; await p.getByTestId('lite-worlds').waitFor(); const tiles = await p.locator('[data-testid=lite-worlds] a').count();
   await p.getByTestId('lite-worlds').getByRole('link', { name: /Harborlight Stadium/ }).click(); await p.getByTestId('lw-world-3d').waitFor();

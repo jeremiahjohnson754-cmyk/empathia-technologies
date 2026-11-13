@@ -11,6 +11,9 @@ import { L3View, useCam, type Eye } from './l3.js';
 import type { L3Scene } from './l3.js';
 import { v253Room, v253Defs, setV253Role, type V253State, type V253Edits } from './v253/v253room.js';
 import { programFromV253 } from './rooms/fromV253.js';
+import { equipFromRecord } from './rooms/equipment.js';
+import { PlanView } from './rooms/PlanView.js';
+import { roomRecord } from '../campus/design.js';
 import { roomScene, roomDefs } from './rooms/build.js';
 import type { L3Item } from './l3.js';
 
@@ -49,12 +52,13 @@ export function eyeSpot(L: LayoutLike, key: EyeKey): (Eye & { yaw: number }) | n
   return at(x, y, 1.6, cx, Math.min(cy, L.d / 2));
 }
 
-export function V253RoomStage({ roomId, lens, state, layers, overlays, acoustic, sel, onPick, label, role, edits, onDrag, eyeKey, look = 'empathia' }: {
+export function V253RoomStage({ roomId, lens, state, layers, overlays, acoustic, sel, onPick, label, role, edits, onDrag, eyeKey, look = 'empathia', plan = false, onEyeKey }: {
   roomId: string; lens: Lens; state: V253State; layers: Set<LiteLayer>; overlays: Set<Overlay>; acoustic?: boolean; sel: string | null; onPick: (p: V253Pick | null) => void; label: string; role: string;
   /** V2.5.3's edits (Optimize lens): the room as arranged in 3D */ edits?: V253Edits | null;
   /** dragging the selected object across the floor, in metres */ onDrag?: (id: string, dx: number, dy: number, phase: 'move' | 'end') => void;
   /** seen from where a person would be, at eye level */ eyeKey?: EyeKey | null;
   /** Empathia's look on V2.5.3's layout, or V2.5.3's own drawing */ look?: RoomLook;
+  /** the floor plan to scale instead of the 3D */ plan?: boolean; /** a person marker on the plan was chosen */ onEyeKey?: (k: EyeKey) => void;
 }) {
   const [small, setSmall] = useState(() => typeof window !== 'undefined' && window.innerWidth < 560);
   useEffect(() => { const up = () => setSmall(window.innerWidth < 560); window.addEventListener('resize', up); return () => window.removeEventListener('resize', up); }, []);
@@ -73,17 +77,27 @@ export function V253RoomStage({ roomId, lens, state, layers, overlays, acoustic,
   // 13 Nov 2026 (founder: "don't have my rooms or experiences looking like this"): V2.5.3's layout drawn by Empathia's renderer, with
   // V2.5.3's coverage and status marks on it; V2.5.3's own drawing when asked for
   const showDev = layers.has('av') && lens !== 'visitor';
-  const prog = useMemo(() => (look === 'empathia' && res ? programFromV253(res.L, { devices: showDev }) : null), [res, look, showDev]);
-  const mine = useMemo(() => { if (!prog || !res) return null; const sc = roomScene(prog, { cam: { ...c.cam, yaw: yawStep }, eye: spot ? { x: spot.x, y: spot.y, z: spot.z } : null }, { sel, names: false });
+  // the room's design record (campus rooms): every position, its asset and identity, and the connections the design rules propose
+  const rec = useMemo(() => { try { return roomRecord(roomId); } catch { return null; } }, [roomId]);
+  const prog = useMemo(() => { if ((look !== 'empathia' && !plan) || !res) return null; const P = programFromV253(res.L, { devices: showDev });
+    if (!rec) return P; const objDevice: Record<string, string> = {}; for (const o of res.L.objs) if (o.deviceId) objDevice[o.id] = String(o.deviceId).split(':').pop()!;
+    return equipFromRecord(P, rec as never, objDevice); }, [res, look, showDev, rec, plan]);
+  const mine = useMemo(() => { if (!prog || !res) return null; const sc = roomScene(prog, { cam: { ...c.cam, yaw: yawStep }, eye: spot ? { x: spot.x, y: spot.y, z: spot.z } : null }, { sel, names: false, equip: showDev });
     for (const it of res.sc.items as unknown as L3Item[]) if (overlayOf(it)) { (it as unknown as { q: number }).q = sc.seq++; sc.items.push(it); }
     if (role === 'visitor') sc.items = sc.items.filter((it) => it.t !== 'h');   // as in V2.5.3, a visitor opens no cards
     return sc; }, [prog, res, yawStep, sk, sel, role]);   // eslint-disable-line react-hooks/exhaustive-deps
   if (!res) return null;
   const L = res.L; const objs = L.objs || [];
-  const pick = (id: string) => { const obj = objs.find((o) => o.id === id); if (!obj) return; if (id === sel) { onPick(null); return; } const code = obj.deviceId ? String(obj.deviceId).split(':').slice(1).join(':') : null; onPick({ obj, code }); };
+  const pick = (id: string) => { let obj = objs.find((o) => o.id === id);
+    // a device Empathia added from the room's record (what sits in the rack): picked as an object of V2.5.3's kind with its asset code
+    if (!obj && prog) { const p = prog.pieces.find((q) => q.id === id); if (p && id.startsWith('rec-')) obj = { id, kind: 'rack', label: p.label, x: p.x, y: p.y, z: p.z || 0, w: p.w, d: p.d, h: p.h, rot: 0, deviceId: `${roomId}:${id.slice(4)}` } as unknown as typeof objs[number]; }
+    if (!obj) return; if (id === sel) { onPick(null); return; } const code = obj.deviceId ? String(obj.deviceId).split(':').slice(1).join(':') : null; onPick({ obj, code }); };
   const counts = objs.reduce((m, o) => { m[o.kind] = (m[o.kind] || 0) + 1; return m; }, {} as Record<string, number>);
   return <div className={mine ? 'rm-stage' : undefined} data-look={mine ? 'empathia' : 'v253'} data-testid="lite-room-3d" data-objects={objs.length} data-edits={ek ? 'yes' : 'no'} data-hero={L.hero ? 'yes' : 'no'} data-kinds={Object.entries(counts).map(([k, n]) => `${k}:${n}`).join(' ')} data-state={state} data-sel={sel || ''} data-eye={eyeKey || ''} data-eye-at={spot ? `${spot.x.toFixed(2)},${spot.y.toFixed(2)},${spot.z}` : ''} data-room-wd={`${L.w},${L.d}`}>
-    {mine ? <L3View sc={mine} c={c} label={label} onNav={() => undefined} S={62} defs={`${roomDefs()}${v253Defs()}`} tidy eyePri sel={sel} onObj={pick} onObjDrag={spot ? undefined : onDrag} eye={spot} tall />
+    {plan && prog ? <div className="rm-stage rm-stage--plan"><div className="l3-stage rm-planbox"><PlanView P={showDev ? prog : { ...prog, pieces: prog.pieces.filter((p) => !p.eqOnly) }} sel={sel} onSel={(id) => pick(id)} names={false} runs={showDev ? prog.runs : null}
+      eyes={EYE_SPOTS.map((e) => { const q = eyeSpot(L as never, e.key); return q ? { key: e.key, label: e.label, says: e.says, x: q.x, y: q.y, z: q.z, yaw: q.yaw, pitch: 36 } : null; }).filter((e): e is NonNullable<typeof e> => !!e)}
+      onEye={(k) => onEyeKey?.(k as EyeKey)} label={`${label} The plan, to scale.`} /></div></div>
+    : mine ? <L3View sc={mine} c={c} label={label} onNav={() => undefined} S={62} defs={`${roomDefs()}${v253Defs()}`} tidy eyePri sel={sel} onObj={pick} onObjDrag={spot ? undefined : onDrag} eye={spot} tall />
       : <L3View sc={res.sc as unknown as L3Scene} c={c} label={label} onNav={() => undefined} S={62} defs={v253Defs()} v253 sel={sel} onObj={pick} onObjDrag={spot ? undefined : onDrag} eye={spot} tall />}
   </div>;
 }

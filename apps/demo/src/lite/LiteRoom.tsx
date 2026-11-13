@@ -88,6 +88,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
   const view = (lens === 'optimize' && edited) || !furnishable ? 'tech' : vq === 'tech' || vq === 'room' ? vq : viewHome;
   const look = query.get('look') === 'v253' ? 'v253' : 'empathia';   // 13 Nov 2026: Empathia's look on V2.5.3's layout by default; V2.5.3's own drawing one switch away
   const eyeKey = (view === 'room' ? (EYE_SPOTS.find((e) => e.key === query.get('eye'))?.key ?? null) : null) as EyeKey | null;
+  const planView = view === 'room' && query.get('eye') === 'plan';   // 13 Nov 2026: the plan to scale, beside the overview and eye level
   const arranging = lens === 'optimize' && view === 'room' && stateKey === 'current' && !eyeKey;
   const arrL = arranging ? v253Arranged(id, ar.e)?.L ?? null : null; const arrObj = arrL?.objs.find((x) => x.id === arrSel) ?? null;
   return (
@@ -105,7 +106,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
           {!furnishable && <p className="ui-meta lt-viewnote" data-testid="lite-view-note">V2.5.3 drew town halls and control rooms only as its own named rooms, so this one opens on the technical overlay: every position, path and coverage figure is here; the furnished drawing is not.</p>}
           {view === 'room' ? <figure className="stage lt-stage lt-stage--room" data-stage="">
             <V253RoomStage look={look} roomId={id} lens={lens} state={stateKey} layers={layers} overlays={overlays} acoustic={ac} role={role} label={`${o.name}, furnished, in 3D, ${st.title}. Turn, tilt and zoom with the buttons, the arrow keys or a drag; each piece of equipment is a button that opens its card.`}
-              eyeKey={eyeKey}
+              eyeKey={eyeKey} plan={planView} onEyeKey={(k) => upd('eye', k)}
               sel={arranging ? arrSel : furn ? furn.obj.id : v253ObjFor(id, stateKey, lens, sel)} edits={lens === 'optimize' ? withPreview(ar.e, dragP) : null}
               onDrag={arranging ? (oid, dx, dy, phase) => { cancelAnimationFrame(raf.current);
                 if (!movable(arrL?.objs.find((x) => x.id === oid))) return;
@@ -122,7 +123,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
           {view === 'room' && <div className="lt-look" role="radiogroup" aria-label="How the room is drawn" data-testid="lite-look"><span className="lt-eyes__l">Drawn by</span>
             {([['empathia', 'Empathia', 'V2.5.3’s layout, drawn with materials and light'], ['v253', 'V2.5.3 original', 'the room exactly as V2.5.3 drew it']] as const).map(([k, t, d]) => <button key={k} type="button" role="radio" aria-checked={look === k} title={d} className={`lt-chipbtn${look === k ? ' on' : ''}`} onClick={() => upd('look', k === 'empathia' ? null : k)} data-testid={`lite-look-${k}`}>{t}</button>)}</div>}
           {view === 'room' && <div className="lt-eyes" role="radiogroup" aria-label="See the room from" data-testid="lite-eyes"><span className="lt-eyes__l">See it from</span>
-            {[{ key: null, label: 'Above', says: 'the whole room' }, ...EYE_SPOTS].map((e) => <button key={e.key || 'above'} type="button" role="radio" aria-checked={eyeKey === e.key} className={`lt-chipbtn${eyeKey === e.key ? ' on' : ''}`} title={e.says} onClick={() => upd('eye', e.key)} data-testid={`lite-eye-${e.key || 'above'}`}>{e.label}</button>)}
+            {[{ key: null, label: 'Above', says: 'the whole room' }, { key: 'plan', label: 'Plan', says: 'the floor plan, to scale' }, ...EYE_SPOTS].map((e) => <button key={e.key || 'above'} type="button" role="radio" aria-checked={e.key === 'plan' ? planView : !planView && eyeKey === e.key} className={`lt-chipbtn${(e.key === 'plan' ? planView : !planView && eyeKey === e.key) ? ' on' : ''}`} title={e.says} onClick={() => upd('eye', e.key)} data-testid={`lite-eye-${e.key || 'above'}`}>{e.label}</button>)}
             {eyeKey && <span className="ui-meta">At eye level, in perspective: drag or use the arrows to look around. Modelled from the layout, not a photograph.</span>}</div>}
           {arranging && arrL && <ArrangeBar ar={ar} L={arrL} sel={arrObj} onAdded={setArrSel} />}
           {arranging && <PrecisionPlan ar={ar} roomId={id} sel={arrSel} onSel={setArrSel} />}

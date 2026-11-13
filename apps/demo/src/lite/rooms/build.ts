@@ -9,6 +9,7 @@ import { scene, poly, line, label, hit, type L3Scene, type P3 } from '../l3.js';
 import { solid, lathe, flat, shadow, pool, chair, stool, sofa, table, lowTable, counter, shelves, display, plant, pendant, stadiumSeat, taskChair, monitor, mirror, mixConsole, rack, glassWall, platform, sees, tint, frame, M, PRI, type View, type RGB } from './kit.js';
 import type { Program, Piece, Side } from './programs.js';
 import { bowlOutside } from './stadium.js';
+import { RUN_COLOUR } from './PlanView.js';
 
 const TW = 0.14, CUT = 0.34, POCHE = 'rgb(58,54,50)';
 /** Each world's own character (13 Nov 2026, the spatial gate's "four-world differentiation"): the Enterprise campus in blue-grey carpet,
@@ -149,6 +150,16 @@ function piece(sc: L3Scene, v: View, P: Program, p: Piece) {
     case 'ceildev': if (p.label.toLowerCase().includes('microphone')) solid(sc, v, { x: p.x, y: p.y, z: Math.min(p.z || P.H - 0.05, P.H - 0.04), w: p.w, d: p.d, h: 0.035 }, [238, 236, 231], { ...st, bevel: 0.05 });
       else lathe(sc, v, p.x, p.y, Math.min(p.z || P.H - 0.05, P.H - 0.04), Math.max(0.08, p.w / 2), 0.03, [244, 242, 237], { ...st, n: 14 }); break;
     case 'ceildev-hidden': break;
+    // ---- equipment (./equipment.ts): drawn in front of what holds it when equipment is shown, as an x-ray of the cabinet
+    case 'rackdev': solid(sc, v, { x: p.x, y: p.y, z: p.z, w: p.w, d: p.d, h: p.h, rot }, M.black, { ...st, L: 4.5, face: { N: 'url(#rm-rackface)', S: 'url(#rm-rackface)' }, edge: 'rgba(120,200,190,.7)' }); break;
+    // a device's position on the record, wall- or rack-mounted: an enclosure with the unit's front
+    case 'rackpos': solid(sc, v, { x: p.x, y: p.y, z: p.z, w: p.w, d: p.d, h: p.h, rot }, M.charcoal, { ...st, face: { N: 'url(#rm-rackface)', S: 'url(#rm-rackface)', E: 'url(#rm-rackface)', W: 'url(#rm-rackface)' }, bevel: 0.02 }); break;
+    case 'headset': { lathe(sc, v, p.x - 0.06, p.y, p.z || 0, 0.045, 0.04, M.black, { ...st, n: 10 }); lathe(sc, v, p.x + 0.06, p.y, p.z || 0, 0.045, 0.04, M.black, { ...st, n: 10 }); solid(sc, v, { x: p.x, y: p.y, z: (p.z || 0) + 0.04, w: 0.16, d: 0.02, h: 0.02 }, M.charcoal, { ...st, edge: null }); solid(sc, v, { x: p.x + 0.08, y: p.y - 0.06, z: (p.z || 0) + 0.02, w: 0.012, d: 0.12, h: 0.012 }, M.black, { ...st, edge: null }); break; }
+    case 'lipmic': solid(sc, v, { x: p.x, y: p.y, z: p.z || 0, w: p.w, d: p.d, h: p.h, rot }, M.black, { ...st, bevel: 0.01 }); break;
+    case 'intercom': solid(sc, v, { x: p.x, y: p.y, z: p.z || 0, w: p.w, d: p.d, h: p.h, rot }, M.charcoal, { ...st, top: 'url(#rm-keys)' }); break;
+    case 'floorbox': solid(sc, v, { x: p.x, y: p.y, z: p.z || 0, w: p.w, d: p.d, h: Math.max(0.02, p.h), rot }, M.steel, { ...st, top: 'url(#rm-floorbox)' }); break;
+    case 'speakerbox': solid(sc, v, { x: p.x, y: p.y, z: p.z || 0, w: p.w, d: p.d, h: p.h, rot: rot || 180 }, M.black, { ...st, face: { N: 'url(#rm-woofer)' }, bevel: 0.01 }); break;
+    case 'wap': lathe(sc, v, p.x, p.y, (p.z || P.H - 0.05) - 0.03, 0.11, 0.03, [246, 246, 243], { ...st, n: 14 }); break;
     case 'box': solid(sc, v, { x: p.x, y: p.y, z: p.z, w: p.w, d: p.d, h: p.h, rot }, M.stone, st); break;
     // ---- Empathia's fixture rules (./fromFixtures.ts); fixtures are axis-aligned boxes, `rot` says which way they face
     case 'fx-stall': { shadow(sc, 1, p.x, p.y, p.w, p.d, 0, 0.003, 0.6); for (const sx of [-1, 1]) solid(sc, v, { x: p.x + sx * (p.w / 2 - 0.015), y: p.y, z: 0.15, w: 0.03, d: p.d, h: 1.85 }, [214, 210, 202], { ...st, edge: 'rgba(120,110,100,.4)' });
@@ -188,7 +199,7 @@ function piece(sc: L3Scene, v: View, P: Program, p: Piece) {
 }
 
 /** The room scene: shell, light, pieces, outside; a button on each piece; names when asked for (and always on the selected piece). */
-export function roomScene(P: Program, v: View, o: { sel: string | null; names: boolean }): L3Scene {
+export function roomScene(P: Program, v: View, o: { sel: string | null; names: boolean; equip?: boolean }): L3Scene {
   T = THEMES[P.world || 'enterprise'];
   const full = !!v.eye; const yMin = P.outside === 'suite' ? -2.3 : -0.3;
   const sc = scene(P.w / 2, (P.d + yMin) / 2, Math.hypot(P.w + 0.6, P.d - yMin + 0.6) / 2, P.H);
@@ -219,8 +230,10 @@ export function roomScene(P: Program, v: View, o: { sel: string | null; names: b
   for (const s of ['N', 'E', 'S', 'W'] as Side[]) wall(sc, v, P, s);
   shell.push([s0, sc.items.length]);
   const ok = P.outside; if (ok) track(outside, () => bowlOutside(sc, v, P.w, full, ok));
-  const shown = P.pieces.filter((p) => { const m = mountOf(p, P); return !m || !cutWall(P, v, m); });
+  const shown = P.pieces.filter((p) => { const m = mountOf(p, P); return (!p.eqOnly || o.equip) && (!m || !cutWall(P, v, m)); });
   for (const p of shown) { if (p.y < 0) track(outside, () => piece(sc, v, P, p)); else piece(sc, v, P, p); }
+  // with equipment shown: the cable runs, by kind, along their routes (in the ceiling void, down the walls, in the floor boxes)
+  if (o.equip) for (const r of P.runs || []) line(sc, 3, r.pts, { s: RUN_COLOUR[r.kind], sw: 2.2, c: r.pts[Math.floor(r.pts.length / 2)], pri: 0.5 });
   if (v.eye) for (const [a, b] of inside ? outside : shell) for (let i = a; i < b; i++) { const it = sc.items[i] as { pri?: number }; it.pri = (it.pri || 0) - 20; }
   // buttons for big things first and small ones (a camera on a credenza, a panel on a table) last, so the small one is on top where they overlap
   for (const p of [...shown].sort((a, b) => b.w * b.d - a.w * a.d)) { if (p.kind === 'rug' || p.kind === 'ceildev-hidden') continue;
@@ -263,5 +276,8 @@ export function roomDefs(): string {
 <pattern id="rm-carpet-ent" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#7b8189"/><path d="M0 6h12" stroke="#757b83" stroke-width=".8"/><circle cx="3" cy="3" r=".7" fill="#858b93"/></pattern>
 <pattern id="rm-carpet-uni" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#7f8a76"/><path d="M6 0v12" stroke="#78836f" stroke-width=".8"/><circle cx="9" cy="3" r=".7" fill="#89947f"/></pattern>
 <pattern id="rm-carpet-cnv" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#4d5870"/><path d="M0 0l12 12" stroke="#56627a" stroke-width=".8"/><circle cx="3" cy="9" r=".7" fill="#5f6b83"/></pattern>
+<pattern id="rm-keys" width="1" height="1" patternContentUnits="objectBoundingBox"><rect width="1" height="1" fill="#2a2d31"/><g fill="#5fb6ad"><rect x=".06" y=".2" width=".1" height=".25"/><rect x=".2" y=".2" width=".1" height=".25"/><rect x=".34" y=".2" width=".1" height=".25"/><rect x=".48" y=".2" width=".1" height=".25"/></g><g fill="#c9a64a"><rect x=".62" y=".2" width=".1" height=".25"/><rect x=".76" y=".2" width=".1" height=".25"/></g><rect x=".06" y=".6" width=".8" height=".2" fill="#15171a"/></pattern>
+<pattern id="rm-floorbox" width="1" height="1" patternContentUnits="objectBoundingBox"><rect width="1" height="1" fill="#9aa0a6"/><rect x=".1" y=".1" width=".8" height=".8" fill="#80868c"/><rect x=".2" y=".2" width=".25" height=".25" fill="#2f6b6c"/><rect x=".55" y=".2" width=".25" height=".25" fill="#2f6b6c"/><rect x=".2" y=".55" width=".25" height=".25" fill="#e8e8e8"/><rect x=".55" y=".55" width=".25" height=".25" fill="#e8e8e8"/></pattern>
+<pattern id="rm-woofer" width="1" height="1" patternContentUnits="objectBoundingBox"><rect width="1" height="1" fill="#1b1d20"/><circle cx=".5" cy=".62" r=".3" fill="#3a3d42"/><circle cx=".5" cy=".62" r=".12" fill="#15171a"/><circle cx=".5" cy=".2" r=".09" fill="#3a3d42"/></pattern>
 <linearGradient id="rm-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6d84a3"/><stop offset=".55" stop-color="#a9b8c6"/><stop offset="1" stop-color="#e3d1b6"/></linearGradient>`;
 }
