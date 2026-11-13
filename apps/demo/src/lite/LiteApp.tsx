@@ -16,6 +16,7 @@ import { roomRecord, openIssues } from '../campus/design.js';
 import { LIFE_TONE } from '../campus/CampusPage.js';
 import { LITE_TAGLINE, SPACES, GUIDES, VISITOR_PATH, CAMPUS_PLAZA } from './data/v253.js';
 import { lensesFor, lensFor, ALL_SITES, roomsOf, buildingSummary, campusSummary, readiness, liteRoomHref, chapterCount, type Lens } from './model.js';
+import { LiteWorldPage } from './LiteWorlds.js';
 import { LiteRoom } from './LiteRoom.js';
 import { BuildingStage, FloorStage, CampusStage, floorPlan } from './BuildingScenes.js';
 import { bandOf as metricBand } from '../campus/metrics.js';
@@ -38,6 +39,7 @@ export default function LiteApp(props: PageProps) {
   if (!a) body = <LiteHome {...props} />;
   else if (a === 'b' && b) body = <LiteBuilding {...props} b={b} f={c} />;
   else if (a === 'room' && b) body = <LiteRoom {...props} id={b} />;
+  else if (a === 'w' && b) body = <LiteWorldPage {...props} world={b} rest={sub.slice(2)} />;   // 13 Nov 2026: the other three worlds in Lite
   else if (a === 'space' && b) body = <SpacePage {...props} id={b} />;
   else if (a === 'services' || a === 'spaces') body = <ServicesPage {...props} />;
   else if (a === 'guides') body = <GuidesPage {...props} g={b} ch={c} />;
@@ -123,6 +125,13 @@ function LiteHome({ role }: PageProps) {
         <Tile href="#/lite/visit" icon="user" title="Visit" sub="Arrive, check in, meet your host, sign out" />
         <Tile href="#/lite/commons" icon="users" title="The Commons" sub="Lunch, quiet work, busy day, events" />
         <Tile href="#/lite/qr" icon="grid" title="QR codes" sub="What each code on campus opens" />
+      </ul>
+      <h2 className="lt-h2">The other three worlds</h2>
+      <p className="ui-muted lt-lede">The same walk, from the whole place down to one room, for the university, the stadium and the convention centre. Fictional and synthetic.</p>
+      <ul className="lt-tiles" data-testid="lite-worlds">
+        <Tile href="#/lite/w/university" icon="building" title="Kestrel Valley University" sub="Buildings, levels and rooms; classrooms, labs and theatres furnished" />
+        <Tile href="#/lite/w/stadium" icon="map" title="Harborlight Stadium" sub="Five levels; suites, broadcast and team rooms furnished" />
+        <Tile href="#/lite/w/convention" icon="grid" title="The convention centre" sub="Halls, ballrooms, breakout and meeting rooms furnished" />
       </ul>
       <h2 className="lt-h2">Fifteen rooms of the plan</h2>
       <p className="ui-muted lt-lede">Town halls, an auditorium, war rooms, operations centres and the Global Operations Control Tower — each with one scenario. Operations rooms are simulated and non-operational.</p>

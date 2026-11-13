@@ -158,7 +158,7 @@ export function Glyph({ x, y, tone, r = 5 }: { x: number; y: number; tone: strin
  * order drawn), its label placement (lift a label clear of another, drop a minor one that still collides), and object selection: a shape
  * or hit that belongs to an object (`o`) selects it, and the selected object is outlined.
  */
-export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, defs, v253, sel, onObj }: { sc: L3Scene; c: ReturnType<typeof useCam>; label: string; onNav: (to: string) => void; testId?: string; tall?: boolean; over?: ReactNode; S?: number; defs?: string; v253?: boolean; sel?: string | null; onObj?: (id: string) => void }) {
+export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, defs, v253, sel, onObj, onObjDrag }: { sc: L3Scene; c: ReturnType<typeof useCam>; label: string; onNav: (to: string) => void; testId?: string; tall?: boolean; over?: ReactNode; S?: number; defs?: string; v253?: boolean; sel?: string | null; onObjDrag?: (id: string, dx: number, dy: number, phase: 'move' | 'end') => void; onObj?: (id: string) => void }) {
   const { P, depth } = projector(sc, c.cam, S);
   const drawn = useMemo(() => {
     const shapes = sc.items.filter((i): i is L3Poly | L3Line => i.t === 'p' || i.t === 'l').map((i) => ({ i, d: depth(i.c || mean(i.p)), q: (i as unknown as { q: number }).q }));
@@ -173,7 +173,21 @@ export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, 
   const x0 = cxv - fw / 2, x1 = cxv + fw / 2, y0 = cyv - fh / 2 - 10 / c.cam.zoom, y1 = cyv + fh / 2;
   const fmt = (pts: P3[]) => pts.map((p) => P(p).map((n) => n.toFixed(1)).join(',')).join(' ');
   const go = (to?: string) => { if (to && !c.wasDrag()) onNav(to); };
-  const pick = (o?: string) => { if (o && onObj && !c.wasDrag()) onObj(o); };
+  // dragging the selected object across the floor (arranging in 3D, 13 Nov 2026): the screen movement is turned back into metres on the
+  // floor through the camera's own projection, so the object follows the pointer whatever the angle; the camera does not move meanwhile
+  const od = useRef<{ id: string; x: number; y: number; k: number; moved: boolean } | null>(null); const odJust = useRef(0);
+  const floorDelta = (du: number, dv: number) => { const a = c.cam.yaw * Math.PI / 180, ca = Math.cos(a), sa = Math.sin(a), spp = Math.max(0.2, Math.sin(c.cam.pitch * Math.PI / 180)); const A = du / S, B = dv / (S * spp); return [A * ca + B * sa, -A * sa + B * ca] as const; };
+  const objDrag = onObjDrag ? {
+    onPointerDownCapture: (e: { target: unknown; clientX: number; clientY: number; pointerId: number; stopPropagation: () => void; currentTarget: unknown }) => {
+      const t = (e.target as Element).closest?.('[data-o]') as HTMLElement | SVGElement | null; const id = t?.getAttribute('data-o'); if (!id || id !== sel) return;   // only the selected object is picked up; anything else still orbits the camera
+      const svg = stage.current?.querySelector('svg.l3-svg') as SVGSVGElement | null; const w = svg?.getBoundingClientRect().width || 1;
+      od.current = { id, x: e.clientX, y: e.clientY, k: (x1 - x0) / w, moved: false }; e.stopPropagation(); try { (stage.current as HTMLElement | null)?.setPointerCapture?.(e.pointerId); } catch { /* */ } },
+    onPointerMoveCapture: (e: { clientX: number; clientY: number; stopPropagation: () => void }) => { const d = od.current; if (!d) return; e.stopPropagation();
+      const du = (e.clientX - d.x) * d.k, dv = (e.clientY - d.y) * d.k; if (!d.moved && Math.hypot(e.clientX - d.x, e.clientY - d.y) < 5) return; d.moved = true; const [dx, dy] = floorDelta(du, dv); onObjDrag(d.id, dx, dy, 'move'); },
+    onPointerUpCapture: (e: { clientX: number; clientY: number; stopPropagation: () => void }) => { const d = od.current; if (!d) return; od.current = null; e.stopPropagation();
+      if (!d.moved) return; odJust.current = Date.now(); const [dx, dy] = floorDelta((e.clientX - d.x) * d.k, (e.clientY - d.y) * d.k); onObjDrag(d.id, dx, dy, 'end'); },
+  } : {};
+  const pick = (o?: string) => { if (Date.now() - odJust.current < 400) return; if (o && onObj && !c.wasDrag()) onObj(o); };
   // two 44 px targets can overlap on a small screen: a tap goes to the target whose centre is nearest the finger, as V2.5.3 did (l3Bind);
   // a keyboard press (no pointer position) goes to the focused one
   const hits = sc.items.filter((i): i is L3Hit => i.t === 'h');
@@ -200,7 +214,7 @@ export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, 
     }
     return out;
   }, [sc, c.cam, px, v253]);   // eslint-disable-line
-  return <div className={`l3-stage${tall ? ' l3-stage--tall' : ''}${v253 ? ' l3-stage--v253' : ''}`} data-stage="" data-testid={testId} ref={stage} {...pointer}>
+  return <div className={`l3-stage${tall ? ' l3-stage--tall' : ''}${v253 ? ' l3-stage--v253' : ''}`} data-stage="" data-testid={testId} ref={stage} {...pointer} {...objDrag}>
     <div className="l3-frame">
     <svg className="l3-svg" style={{ aspectRatio: `${(x1 - x0).toFixed(0)} / ${(y1 - y0).toFixed(0)}` }} viewBox={`${x0.toFixed(0)} ${y0.toFixed(0)} ${(x1 - x0).toFixed(0)} ${(y1 - y0).toFixed(0)}`} role="group" aria-label={aria} tabIndex={0} onKeyDown={onKeyDown} data-yaw={Math.round(c.goal.yaw)} data-pitch={Math.round(c.goal.pitch)} data-zoom={c.goal.zoom} data-pan={`${c.goal.px || 0},${c.goal.py || 0}`} data-moving={c.goal === c.cam ? undefined : ''}>
       {defs ? <g dangerouslySetInnerHTML={{ __html: defs }} /> : <defs>

@@ -6,7 +6,7 @@
  */
 import { OBJECT_CARDS, DEVICE_PURPOSE } from './data/objectCards.js';
 import { readsManual } from '../manual/roles.js';
-import { useMemo, useState, useEffect, type ReactNode } from 'react';
+import { useMemo, useState, useEffect, useRef, type ReactNode } from 'react';
 import { PageHero, Card, Chip, ScoreRing, StatTile, Icon, bandOf, HEALTH } from '@empathia/ui';
 import type { PageProps } from '../registry.types.js';
 import { allows } from '../access/policy.js';
@@ -27,7 +27,7 @@ import { LiteNav, LiteMissing, storedLens, saveLens, setQuery } from './LiteApp.
 import { WhoKnows } from '../connect/ContactBar.js';
 import { RoomTabBar, RoomTabPanel, tabOf } from './RoomTabs.js';
 import { PassportSheet } from './PassportSheet.js';
-import { useArrange, ArrangeBar, PrecisionPlan } from './Arrange.js';
+import { useArrange, ArrangeBar, PrecisionPlan, withPreview, snap, movable } from './Arrange.js';
 import { v253Arranged } from './v253/v253room.js';
 
 const list = (s: string | null) => (s == null ? null : s.split(',').filter(Boolean));
@@ -48,6 +48,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
   useEffect(() => { setDv(driftOf(id)); }, [id]);
   // arranging the furnished room in 3D (founder 13 Nov 07:30), with the 2D precision plan kept in step; Optimize lens only
   const ar = useArrange(id); const [arrSel, setArrSel] = useState<string | null>(null); useEffect(() => { setArrSel(null); }, [id]);
+  const [dragP, setDragP] = useState<{ id: string; dx: number; dy: number } | null>(null); const raf = useRef(0);
   if (!r) return <LiteMissing what={`room “${id}”`} />;
   const o = r.outline; const B = buildingByKey(o.building)!;
   const lens = storedLens(role, query.get('mode'));
@@ -102,7 +103,11 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
           {!furnishable && <p className="ui-meta lt-viewnote" data-testid="lite-view-note">V2.5.3 drew town halls and control rooms only as its own named rooms, so this one opens on the technical overlay: every position, path and coverage figure is here; the furnished drawing is not.</p>}
           {view === 'room' ? <figure className="stage lt-stage lt-stage--room" data-stage="">
             <V253RoomStage roomId={id} lens={lens} state={stateKey} layers={layers} overlays={overlays} acoustic={ac} role={role} label={`${o.name}, furnished, in 3D, ${st.title}. Turn, tilt and zoom with the buttons, the arrow keys or a drag; each piece of equipment is a button that opens its card.`}
-              sel={arranging ? arrSel : furn ? furn.obj.id : v253ObjFor(id, stateKey, lens, sel)} edits={lens === 'optimize' ? ar.e : null}
+              sel={arranging ? arrSel : furn ? furn.obj.id : v253ObjFor(id, stateKey, lens, sel)} edits={lens === 'optimize' ? withPreview(ar.e, dragP) : null}
+              onDrag={arranging ? (oid, dx, dy, phase) => { cancelAnimationFrame(raf.current);
+                if (!movable(arrL?.objs.find((x) => x.id === oid))) return;
+                if (phase === 'move') { raf.current = requestAnimationFrame(() => setDragP({ id: oid, dx, dy })); return; }
+                setDragP(null); const ob = v253Arranged(id, ar.e)?.L.objs.find((x) => x.id === oid); if (ob && movable(ob) && (snap(dx) || snap(dy))) ar.move(ob, snap(dx), snap(dy), 0, `Dragged ${Math.round(Math.hypot(snap(dx), snap(dy)) * 100)} cm.`); } : undefined}
               onPick={(pk) => { setFurn(pk && !pk.code ? pk : null); setSel(pk?.code ?? null); if (arranging) setArrSel(pk?.obj.id ?? null); }} />
             <figcaption className="stage__cap"><b>{st.title}.</b> {st.summary} <span className="ui-meta">The room as V2.5.3 drew it for this room type: walls, door, glazing, furniture and equipment, with coverage drawn from its own cameras, microphones and loudspeakers. Modelled, not surveyed. Basis: {st.basis}.</span>{scaledFrom && <span className="ui-meta lt-scalednote" data-testid="lite-scaled-note"> {`V2.5.3 never drew this room: it is drawn from ${scaledFrom}, scaled to its ${o.dims[0]} × ${o.dims[1]} m (founder’s choice, 13 Nov 2026). Positions are illustrative; ${(v253Layout(id, stateKey === 'proposed' ? 'current' : stateKey)?.seats.length ?? 0)} of its ${o.capacity} seats are drawn.`}</span>}{ac && <span className="ui-meta lt-acnote" data-testid="lite-acoustic-note"> Sound in the room: a training and engineering model of first reflections, not a certified acoustic simulation.</span>}</figcaption>
           </figure> : <figure className="stage lt-stage" data-stage="">

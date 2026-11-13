@@ -17,9 +17,10 @@ const COVER: Partial<Record<Overlay, string>> = { camera: 'fov', mic: 'mic', spe
 
 export interface V253Pick { obj: V253Object; code: string | null }
 
-export function V253RoomStage({ roomId, lens, state, layers, overlays, acoustic, sel, onPick, label, role, edits }: {
+export function V253RoomStage({ roomId, lens, state, layers, overlays, acoustic, sel, onPick, label, role, edits, onDrag }: {
   roomId: string; lens: Lens; state: V253State; layers: Set<LiteLayer>; overlays: Set<Overlay>; acoustic?: boolean; sel: string | null; onPick: (p: V253Pick | null) => void; label: string; role: string;
   /** V2.5.3's edits (Optimize lens): the room as arranged in 3D */ edits?: V253Edits | null;
+  /** dragging the selected object across the floor, in metres */ onDrag?: (id: string, dx: number, dy: number, phase: 'move' | 'end') => void;
 }) {
   const [small, setSmall] = useState(() => typeof window !== 'undefined' && window.innerWidth < 560);
   useEffect(() => { const up = () => setSmall(window.innerWidth < 560); window.addEventListener('resize', up); return () => window.removeEventListener('resize', up); }, []);
@@ -37,7 +38,7 @@ export function V253RoomStage({ roomId, lens, state, layers, overlays, acoustic,
   const pick = (id: string) => { const obj = objs.find((o) => o.id === id); if (!obj) return; if (id === sel) { onPick(null); return; } const code = obj.deviceId ? String(obj.deviceId).split(':').slice(1).join(':') : null; onPick({ obj, code }); };
   const counts = objs.reduce((m, o) => { m[o.kind] = (m[o.kind] || 0) + 1; return m; }, {} as Record<string, number>);
   return <div data-testid="lite-room-3d" data-objects={objs.length} data-edits={ek ? 'yes' : 'no'} data-hero={L.hero ? 'yes' : 'no'} data-kinds={Object.entries(counts).map(([k, n]) => `${k}:${n}`).join(' ')} data-state={state} data-sel={sel || ''}>
-    <L3View sc={res.sc as unknown as L3Scene} c={c} label={label} onNav={() => undefined} S={62} defs={v253Defs()} v253 sel={sel} onObj={pick} tall />
+    <L3View sc={res.sc as unknown as L3Scene} c={c} label={label} onNav={() => undefined} S={62} defs={v253Defs()} v253 sel={sel} onObj={pick} onObjDrag={onDrag} tall />
   </div>;
 }
 

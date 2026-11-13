@@ -57,6 +57,10 @@ export function useArrange(roomId: string) {
   };
 }
 const round = (v: number) => Math.round(v * 100) / 100;
+/** a drag in progress, drawn but not yet a step of undo: the object's move so far plus the pointer's */
+export const withPreview = (e: Edits, p: { id: string; dx: number; dy: number } | null): Edits => { if (!p) return e; const m = e.mv[p.id] || [0, 0, 0]; return { ...e, mv: { ...e.mv, [p.id]: [m[0] + p.dx, m[1] + p.dy, m[2]] } }; };
+/** a dragged distance, to the nearest 5 cm */
+export const snap = (v: number) => Math.round(v * 20) / 20;
 /** which way a thing faces: a camera by its first preset's aim (what turning it changes), anything else by its rotation */
 const angleOf = (o: V253Object) => { const p = (o as { presets?: Array<{ aim: number }> }).presets; return Math.round(Array.isArray(p) && p[0] ? p[0].aim : o.added && o.face !== undefined && o.kind === 'display' ? Number(o.face) : o.rot || 0); };
 export type Arrange = ReturnType<typeof useArrange>;

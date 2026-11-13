@@ -25,6 +25,15 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   await p.getByTestId('lite-arr-turnr').click(); await p.waitForTimeout(150); const r1 = Number(await p.getByTestId('lite-arr-rot').inputValue());
   await p.getByTestId('lite-arr-y').fill('3.5'); await p.getByTestId('lite-arr-y').press('Tab'); await p.waitForTimeout(200);
   ok(`LA-${tag}-04`, 'turning shows in the plan; a position typed in the plan places it, to the centimetre', r1 === 15 && Math.abs(Number(await p.getByTestId('lite-arr-y').inputValue()) - 3.5) < 0.011, `${r1}`);
+  // drag it across the floor in 3D: it follows the pointer, the camera stays still, and the drag is one step of undo
+  const yaw0 = await p.locator('[data-testid=lite-room-3d] .l3-svg').getAttribute('data-yaw'); const xy0 = [Number(await p.getByTestId('lite-arr-x').inputValue()), Number(await p.getByTestId('lite-arr-y').inputValue())];
+  const hb = await p.locator(`[data-testid=lite-room-3d] .l3-hitbtn[data-o="${selId}"]`).boundingBox();
+  await p.mouse.move(hb.x + hb.width / 2, hb.y + hb.height / 2); await p.mouse.down(); for (let k = 1; k <= 6; k++) await p.mouse.move(hb.x + hb.width / 2 + k * 12, hb.y + hb.height / 2 + k * 4); await p.mouse.up(); await p.waitForTimeout(300);
+  const xy1 = [Number(await p.getByTestId('lite-arr-x').inputValue()), Number(await p.getByTestId('lite-arr-y').inputValue())];
+  const movedBy = Math.hypot(xy1[0] - xy0[0], xy1[1] - xy0[1]);
+  ok(`LA-${tag}-04b`, 'dragging the selected table across the floor in 3D moves it (in 5 cm steps), keeps it selected and leaves the camera where it was', movedBy >= 0.05 && (await stage.getAttribute('data-sel')) === selId && (await p.locator('[data-testid=lite-room-3d] .l3-svg').getAttribute('data-yaw')) === yaw0 && /Dragged \d+ cm/.test(await p.getByTestId('lite-arr-said').innerText()), `${xy0} → ${xy1}`);
+  await p.getByTestId('lite-arr-undo').click(); await p.waitForTimeout(200);
+  ok(`LA-${tag}-04c`, 'undo puts the dragged table back where it was', Math.abs(Number(await p.getByTestId('lite-arr-x').inputValue()) - xy0[0]) < 0.011 && Math.abs(Number(await p.getByTestId('lite-arr-y').inputValue()) - xy0[1]) < 0.011);
   // keyboard on the toolbar
   await p.getByTestId('lite-arr-left').focus(); await p.keyboard.press('ArrowLeft'); await p.waitForTimeout(150); const x2 = Number(await p.getByTestId('lite-arr-x').inputValue());
   ok(`LA-${tag}-05`, 'with the toolbar focused, an arrow key moves it 25 cm', Math.abs(x1 - 0.25 - x2) < 0.011, `${x1} → ${x2}`);

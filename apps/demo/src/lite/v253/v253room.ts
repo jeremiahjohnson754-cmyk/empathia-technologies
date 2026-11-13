@@ -18,8 +18,21 @@ export interface V253Edits { mv: Record<string, [number, number, number]>; add: 
 const RACK = new Set(['dsp', 'compute', 'switch', 'amp', 'encoder', 'switcher', 'control']);
 type Ent = Record<string, unknown> & { id: string; type: string };
 const ents = new Map<string, Ent>(); const devicesOf = new Map<string, Ent[]>();
+/** A room of another world (University, Stadium, Convention), drawn by V2.5.3's own layout for its type from the estate's record: its
+ *  size, seats, the room type it maps to and its equipment classes (13 Nov 2026: the other three worlds made spatial). */
+export interface ExtRoom { id: string; name: string; short: string; archetype: string; capacity: number; dims: [number, number, number]; devices: Array<{ cat: string; label: string; n: number }> }
+const EXT = new Map<string, ExtRoom>();
+export function registerRooms(rs: ExtRoom[]) { for (const r of rs) if (!EXT.has(r.id)) EXT.set(r.id, r); }
+function extEnt(x: ExtRoom): Ent {
+  const devs: Ent[] = x.devices.flatMap((d, i) => Array.from({ length: d.n }, (_, k) => ({ id: `${x.id}:X${i + 1}-${k + 1}`, type: 'Device', category: d.cat, name: d.n > 1 ? `${d.label} ${k + 1}` : d.label, model: d.label, state: 'Online', stage: 'In service', roomId: x.id, status: 'Online' } as Ent)));
+  for (const d of devs) ents.set(d.id, d); devicesOf.set(x.id, devs);
+  const e: Ent = { id: x.id, type: 'Room', key: x.id, name: x.name, short: x.short, number: x.short, buildingKey: '', floorN: 1, archetype: x.archetype, capacity: x.capacity,
+    criticality: 'Standard', dims: { w: x.dims[0], d: x.dims[1], h: x.dims[2] }, templateName: x.archetype, availableNow: true, seatsNow: x.capacity, healthState: 'Healthy', docState: '' };
+  ents.set(x.id, e); return e;
+}
 function roomEnt(id: string): Ent | undefined {
   const hit = ents.get(id); if (hit) return hit;
+  const x = EXT.get(id); if (x) return extEnt(x);
   const r = roomRecord(id); if (!r) return undefined; const o = r.outline; const B = buildingByKey(o.building);
   // a device with an open issue on the record is not "Online" in the current state, so V2.5.3 marks it (its warning glyph) as it did
   const attention = new Set(roomState(r, 'current').positions.filter((p) => p.mark === 'attention').map((p) => p.code));
@@ -31,7 +44,7 @@ function roomEnt(id: string): Ent | undefined {
 }
 const get = (id: string): Ent | undefined => {
   if (id.startsWith('B-')) { const B = buildingByKey(id.slice(2)); return B ? { id, type: 'Building', key: B.key, name: B.name, short: B.short, floors: B.floors } : undefined; }
-  return ents.get(id) || (id.startsWith('R-') ? roomEnt(id) : undefined);
+  return ents.get(id) || (id.startsWith('R-') || EXT.has(id) ? roomEnt(id) : undefined);
 };
 const all = (type: string) => (type === 'Room' ? CAMPUS_ROOMS.map((o) => roomEnt(o.id)!).filter(Boolean) : []);
 const outs = (id: string, rel: string) => (rel === 'HAS_DEVICE' ? (roomEnt(id), devicesOf.get(id) || []) : []);
