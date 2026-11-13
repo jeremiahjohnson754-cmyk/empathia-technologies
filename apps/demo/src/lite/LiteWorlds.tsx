@@ -9,11 +9,13 @@ import type { PageProps } from '../registry.types.js';
 import { scene, poly, line, label, hit, box, useCam, L3View, type Cam, type RGB, type L3Scene } from './l3.js';
 import { V253RoomStage } from './V253Room.js';
 import { v253Drawable } from './v253/v253room.js';
-import { LiteMissing, LiteNav, storedLens } from './LiteApp.js';
-import { isLiteWorld, WORLD_NAME, worldIndex, topOf, levelsOf, levelPlan, roomsUnder, kids, upOf, archOf, worldRoomHref, worldLevelHref, worldPlaceHref, type LiteWorld } from './worlds.js';
+import { LiteMissing, LiteNav, storedLens, setQuery } from './LiteApp.js';
+import { isLiteWorld, WORLD_NAME, worldIndex, topOf, levelsOf, levelPlan, roomsUnder, kids, upOf, archOf, furnishOf, worldRoomHref, worldLevelHref, worldPlaceHref, type LiteWorld } from './worlds.js';
 import type { Overlay } from './model.js';
 import type { EstateNode } from '../estate/model.js';
 import { fixturesFor, type FixtureLayout } from './fixtures.js';
+import { programFor, hasProgram, REDESIGN_TYPES } from './rooms/programs.js';
+import { EmpathiaRoomStage } from './rooms/RoomStage.js';
 
 const go = (to: string) => { location.hash = to.replace(/^#/, ''); };
 const ROOM: RGB = [62, 60, 54], FURN: RGB = [70, 104, 88], LVL: RGB = [70, 67, 60], BLD: RGB = [74, 71, 64];
@@ -68,10 +70,10 @@ function worldScene(cam: Cam, w: LiteWorld): L3Scene {
 }
 function WorldHome({ w }: PageProps & { w: LiteWorld }) {
   const c = useCam({ yaw: -30, pitch: w === 'university' ? 44 : 24, zoom: 1 }); const sc = useMemo(() => worldScene(c.cam, w), [c.cam, w]);
-  const ix = worldIndex(w); const tops = topOf(w); const rooms = ix.estate.nodes.filter((n) => n.kind === 'room'); const furn = rooms.filter((r) => archOf(r) && r.dims);
+  const ix = worldIndex(w); const tops = topOf(w); const rooms = ix.estate.nodes.filter((n) => n.kind === 'room'); const by = (k: string) => rooms.filter((r) => furnishOf(r) === k).length;
   return <section className="lt-page lt-page--scene" data-testid="lw-home" data-world={w}>
     <Crumbs w={w} trail={[]} />
-    <PageHero product="lite" plain eyebrow="Empathia Lite · another world" title={WORLD_NAME[w]} lede={`${tops.length} ${w === 'university' ? 'buildings' : 'levels'}, ${rooms.length} rooms, every one furnished: ${furn.length} by V2.5.3’s layouts for their type, ${rooms.length - furn.length} by Empathia’s own layouts for the types V2.5.3 never drew. Fictional and synthetic.`} />
+    <PageHero product="lite" plain eyebrow="Empathia Lite · another world" title={WORLD_NAME[w]} lede={`${tops.length} ${w === 'university' ? 'buildings' : 'levels'}, ${rooms.length} rooms: ${by('designed') ? `${by('designed')} designed room by room by Empathia, ` : ''}${by('v253')} drawn by V2.5.3’s layouts for their type, ${by('fixtures')} furnished by Empathia’s fixture layouts${by('redesign') ? `, ${by('redesign')} being redesigned` : ''}${by('none') ? `, ${by('none')} not furnished` : ''}. Fictional and synthetic.`} />
     <figure className="stage lt-stage lt-stage--hero" data-stage=""><L3View sc={sc} c={c} onNav={go} label={`${WORLD_NAME[w]} in 3D. Each ${w === 'university' ? 'building' : 'level'} is a button.`} testId="lw-world-3d" tall S={w === 'university' ? 7 : 4} v253 />
       <figcaption className="stage__cap">Tap a {w === 'university' ? 'building' : 'level'} to go inside: {w === 'university' ? 'building, level, room' : 'level, room'}. Laid out by a stated rule from the estate’s records; not a surveyed plan.</figcaption></figure>
     <Card title={w === 'university' ? 'Buildings' : 'Levels'} icon="building" testId="lw-tops"><ul className="lt-wlist">{tops.map((t) => <li key={t.id}><a href={w === 'university' ? worldPlaceHref(w, t.id) : worldLevelHref(w, t.id)} data-testid={`lw-top-${t.id}`}><b>{t.name}</b><span className="ui-meta">{roomsUnder(ix, t.id).length} rooms{t.group ? ` · ${t.group}` : ''}</span></a></li>)}</ul></Card>
@@ -121,7 +123,7 @@ function levelScene(cam: Cam, w: LiteWorld, l: EstateNode, mark?: string | null)
 function WorldLevel({ w, n }: PageProps & { w: LiteWorld; n: EstateNode }) {
   const c = useCam({ yaw: -30, pitch: 52, zoom: 1 }); const sc = useMemo(() => levelScene(c.cam, w, n), [c.cam, w, n]);
   const ix = worldIndex(w); const { building } = upOf(ix, n.id); const P = levelPlan(w, n.id); const [all, setAll] = useState(false);
-  const rank = (x: (typeof P.items)[number]) => (archOf(x.node) ? 0 : x.furnished ? 1 : 2);   // the rooms people meet in first, then the rest
+  const rank = (x: (typeof P.items)[number]) => { const f = furnishOf(x.node); return f === 'designed' || f === 'v253' ? 0 : f === 'fixtures' ? 1 : 2; };   // the rooms people meet in first, then the rest
   const list = [...P.items].sort((a, b) => rank(a) - rank(b) || a.label.localeCompare(b.label, 'en', { numeric: true }));
   return <section className="lt-page lt-page--scene" data-testid="lw-level" data-level={n.id}>
     <Crumbs w={w} trail={[...(building ? [[building.name, worldPlaceHref(w, building.id)] as [string, string]] : []), [n.name, null]]} />
@@ -137,15 +139,25 @@ function WorldLevel({ w, n }: PageProps & { w: LiteWorld; n: EstateNode }) {
 // ------------------------------------------------------------------------------------------------ a room
 function WorldRoom({ w, n, role, query }: PageProps & { w: LiteWorld; n: EstateNode }) {
   const ix = worldIndex(w); const { level, building } = upOf(ix, n.id); const assets = ix.assetsOf.get(n.id) || [];
-  const lens = storedLens(role, query.get('mode')) || 'visitor'; const furnished = !!archOf(n) && !!n.dims && v253Drawable(n.id);
-  const fixtures = useMemo(() => (!furnished && n.dims ? fixturesFor(n.type, Math.max(n.dims[0], n.dims[1]), Math.min(n.dims[0], n.dims[1]), n.capacity) : null), [n, furnished]);
+  const lens = storedLens(role, query.get('mode')) || 'visitor';
+  // 13 Nov 2026 (founder, on a stadium suite drawn as V2.5.3's boardroom: "This looks terrible … don't have my rooms or experiences looking
+  // like this"): a room with an Empathia program is drawn by Empathia's renderer; a type whose nearest V2.5.3 layout is wrong for it says it
+  // is being redesigned rather than show the wrong room; the rest as before
+  const prog = useMemo(() => (n.dims && hasProgram(n.type) ? programFor({ id: n.id, type: n.type, name: n.name, dims: n.dims, capacity: n.capacity, assets }) : null), [n]);   // eslint-disable-line react-hooks/exhaustive-deps
+  const redesign = !prog && REDESIGN_TYPES.has(n.type);
+  const furnished = !prog && !redesign && !!archOf(n) && !!n.dims && v253Drawable(n.id);
+  const fixtures = useMemo(() => (!prog && !redesign && !furnished && n.dims ? fixturesFor(n.type, Math.max(n.dims[0], n.dims[1]), Math.min(n.dims[0], n.dims[1]), n.capacity) : null), [n, furnished, prog, redesign]);
+  const base = `#/lite/w/${w}/r/${encodeURIComponent(n.id)}`;
   const [ov, setOv] = useState<Set<Overlay>>(new Set()); const [pick, setPick] = useState<string | null>(null);
   const tog = (k: Overlay) => setOv((s) => { const x = new Set(s); if (x.has(k)) x.delete(k); else x.add(k); return x; });
   const [L, Wd, H] = n.dims || [0, 0, 0];
-  return <section className="lt-page lt-roompage lt-page--scene" data-testid="lw-room" data-room={n.id} data-furnished={furnished ? 'yes' : fixtures ? 'empathia' : 'no'}>
+  return <section className="lt-page lt-roompage lt-page--scene" data-testid="lw-room" data-room={n.id} data-furnished={prog ? 'designed' : redesign ? 'redesign' : furnished ? 'yes' : fixtures ? 'empathia' : 'no'}>
     <Crumbs w={w} trail={[...(building ? [[building.name, worldPlaceHref(w, building.id)] as [string, string]] : []), ...(level ? [[level.name, worldLevelHref(w, level.id)] as [string, string]] : []), [n.name, null]]} />
     <PageHero product="lite" icon="room" plain eyebrow={`${WORLD_NAME[w]} · ${n.type.replace(/-/g, ' ')}${n.capacity ? ` · ${n.capacity} places` : ''}`} title={n.name} />
-    {furnished ? <figure className="stage lt-stage lt-stage--room" data-stage="">
+    {prog ? <figure className="stage lt-stage lt-stage--room" data-stage=""><EmpathiaRoomStage P={prog} label={`${n.name}, furnished, in 3D. Turn, tilt and zoom with the buttons, the arrow keys or a drag; each piece is a button.`} initialEye={query.get('eye')} onEye={(k) => { const q = new URLSearchParams(query); if (k) q.set('eye', k); else q.delete('eye'); setQuery(base, q); }} />
+      <figcaption className="stage__cap">{prog.title}, designed by Empathia from the estate’s record: {L} × {Wd} m, {H} m high{n.capacity ? `, ${n.capacity} places` : ''}, and its equipment. {prog.summary} Modelled, not surveyed.</figcaption></figure>
+      : redesign ? <EmptyState title="Being redesigned" icon="room">A {n.type.replace(/-/g, ' ')} is being given its own Empathia layout; the nearest V2.5.3 room type was not a fair picture of it, so it is not drawn until the new one is ready. {level ? <a href={worldLevelHref(w, level.id)}>See it on {level.name}</a> : null}</EmptyState>
+      : furnished ? <figure className="stage lt-stage lt-stage--room" data-stage="">
       <V253RoomStage roomId={n.id} lens={lens} state="current" layers={new Set(['furniture', 'av'])} overlays={ov} role={role} sel={pick} onPick={(p) => setPick(p ? p.obj.id : null)} label={`${n.name}, furnished, in 3D. Turn, tilt and zoom with the buttons, the arrow keys or a drag.`} />
       <figcaption className="stage__cap">Drawn by V2.5.3’s layout for this type of room, from the estate’s record: {L} × {Wd} m, {H} m high{n.capacity ? `, ${n.capacity} places` : ''}, and its equipment classes. Modelled, not surveyed.</figcaption></figure>
       : fixtures ? <figure className="stage lt-stage lt-stage--room" data-stage=""><FixtureStage n={n} F={fixtures} />

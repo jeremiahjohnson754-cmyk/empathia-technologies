@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // The other three worlds in Lite (13 Nov 2026): every room of University, Stadium and Convention sits on a level plan inside its floor,
-// without overlapping another; every room of a type V2.5.3 had a layout for is drawn by V2.5.3's own room code from the estate's record,
-// with finite geometry, and none of another type is furnished.
+// without overlapping another; every room of a type V2.5.3 had a fitting layout for is drawn by V2.5.3's own room code from the estate's
+// record, with finite geometry; a type with an Empathia program is drawn from it; the rest by Empathia's fixture rules or marked as being
+// redesigned.
 //   node --test tests/unit/lite-worlds.test.mjs
 import test from 'node:test'; import assert from 'node:assert/strict';
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -9,7 +10,7 @@ const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 globalThis.localStorage = { getItem: () => null, setItem() {}, removeItem() {} };
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'lite-worlds-'));
-fs.writeFileSync(path.join(tmp, 'entry.ts'), `export * from '${repo}/apps/demo/src/lite/worlds.ts';\nexport * from '${repo}/apps/demo/src/lite/fixtures.ts';\nexport { v253Room, v253Drawable } from '${repo}/apps/demo/src/lite/v253/v253room.ts';\n`);
+fs.writeFileSync(path.join(tmp, 'entry.ts'), `export * from '${repo}/apps/demo/src/lite/worlds.ts';\nexport * from '${repo}/apps/demo/src/lite/fixtures.ts';\nexport { v253Room, v253Drawable } from '${repo}/apps/demo/src/lite/v253/v253room.ts';\nexport * from '${repo}/apps/demo/src/lite/rooms/programs.ts';\n`);
 await esbuild.build({ entryPoints: [path.join(tmp, 'entry.ts')], bundle: true, platform: 'node', format: 'esm', outfile: path.join(tmp, 'out.mjs'), logLevel: 'error' });
 const M = await import(pathToFileURL(path.join(tmp, 'out.mjs')).href);
 process.on('exit', () => fs.rmSync(tmp, { recursive: true, force: true }));
@@ -30,6 +31,12 @@ for (const w of M.LITE_WORLDS) {
     for (const r of ix.estate.nodes.filter((n) => n.kind === 'room' && n.dims)) {
       if (!M.archOf(r)) {
         assert.equal(M.v253Drawable(r.id), false, `${r.id} (${r.type}) should not be drawn as a V2.5.3 room`);
+        // 13 Nov 2026 (founder, on a stadium suite drawn as V2.5.3's boardroom: "This looks terrible"): a type with an Empathia program is
+        // drawn from it, every piece inside the room or on its balcony; a type whose nearest V2.5.3 layout was wrong is marked as being
+        // redesigned instead of being drawn wrongly. (Changed from "every room of a type V2.5.3 had a layout for is drawn by V2.5.3".)
+        if (M.hasProgram(r.type)) { const P = M.programFor({ ...r, assets: [] }); assert.ok(P && P.pieces.length >= 10, `${r.id} program`);
+          assert.ok(P.pieces.every((q) => q.x >= 0 && q.x <= P.w && (q.y >= 0 ? q.y <= P.d : q.kind === 'seats' && q.y > -2.1)), `${r.id}: a piece outside the room`); continue; }
+        if (M.REDESIGN_TYPES.has(r.type)) continue;
         // 13 Nov 2026 (founder: "furnish every environment"): every other room is furnished by Empathia's own rule, inside its walls
         const [L, W] = r.dims; const w0 = Math.max(L, W), d0 = Math.min(L, W); const F = M.fixturesFor(r.type, w0, d0, r.capacity);
         assert.ok(F && F.items.length >= 1, `${r.id} (${r.type}) has no furnishing rule`);

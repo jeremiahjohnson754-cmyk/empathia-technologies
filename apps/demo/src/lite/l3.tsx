@@ -176,13 +176,14 @@ export function Glyph({ x, y, tone, r = 5 }: { x: number; y: number; tone: strin
  * order drawn), its label placement (lift a label clear of another, drop a minor one that still collides), and object selection: a shape
  * or hit that belongs to an object (`o`) selects it, and the selected object is outlined.
  */
-export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, defs, v253, sel, onObj, onObjDrag, eye }: { sc: L3Scene; c: ReturnType<typeof useCam>; label: string; onNav: (to: string) => void; testId?: string; tall?: boolean; over?: ReactNode; S?: number; defs?: string; v253?: boolean; sel?: string | null; onObjDrag?: (id: string, dx: number, dy: number, phase: 'move' | 'end') => void; /** an occupant's eye position: the room seen from there, in perspective */ eye?: Eye | null; onObj?: (id: string) => void }) {
+export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, defs, v253, sel, onObj, onObjDrag, eye, eyePri, bg, tidy }: { sc: L3Scene; c: ReturnType<typeof useCam>; label: string; onNav: (to: string) => void; testId?: string; tall?: boolean; over?: ReactNode; S?: number; defs?: string; v253?: boolean; sel?: string | null; onObjDrag?: (id: string, dx: number, dy: number, phase: 'move' | 'end') => void; /** an occupant's eye position: the room seen from there, in perspective */ eye?: Eye | null; onObj?: (id: string) => void;
+  /** from an eye, order the room's shell by each shape's tier (floor, rug, shadow, terrain, solid) before distance (Empathia's rooms, ./rooms) */ eyePri?: boolean; /** a paint behind the scene (a sky, from an eye) */ bg?: string; /** keep labels clear of each other, as for V2.5.3's scenes */ tidy?: boolean }) {
   const ex = eye ? eyeProjector(eye, c.cam, S) : null; const { P, depth } = ex || projector(sc, c.cam, S);
   const drawn = useMemo(() => {
     const shapes = sc.items.filter((i): i is L3Poly | L3Line => i.t === 'p' || i.t === 'l').map((i) => ({ i: ex && i.t === 'p' ? { ...i, p: ex.clip(i.p) } : i, d: depth(i.c || mean(i.p)), q: (i as unknown as { q: number }).q }))
       .filter((x) => !ex || (x.i.t === 'p' ? x.i.p.length >= 3 : x.i.p.every(ex.front)));
     // from an eye, the room is painted far to near, whatever its layer (the outside-view layers assume a camera outside the room)
-    if (ex) { const g = (L: number) => (L >= 6 ? 2 : L >= 3 ? 1 : 0); shapes.sort((a, b) => g(a.i.L) - g(b.i.L) || a.d - b.d); return shapes; }   // the room's shell first (its big walls would otherwise cover what stands in front of them), then what is in it, then the overlays
+    if (ex) { const g = (L: number) => (L >= 6 ? 2 : L >= 3 ? 1 : 0); shapes.sort((a, b) => g(a.i.L) - g(b.i.L) || (eyePri && g(a.i.L) === 0 ? (a.i.pri || 0) - (b.i.pri || 0) : 0) || a.d - b.d); return shapes; }   // the room's shell first (its big walls would otherwise cover what stands in front of them), then what is in it, then the overlays
     const solid = (L: number) => !v253 || (L >= 3 && L < 4) || L === 5;
     shapes.sort((a, b) => a.i.L - b.i.L || (solid(a.i.L) ? (a.i.pri || 0) - (b.i.pri || 0) || a.d - b.d || ((a.i as L3Poly).sub || 0) - ((b.i as L3Poly).sub || 0) : 0) || a.q - b.q);
     return shapes;
@@ -223,11 +224,11 @@ export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, 
   const { onKeyDown, ...pointer } = c.bind;
   // the stage's width on screen, so labels can be kept clear of each other in screen pixels (V2.5.3 l3Svg did this on its canvas)
   const stage = useRef<HTMLDivElement | null>(null); const [px, setPx] = useState(0);
-  useEffect(() => { if (!v253) return; const el = stage.current; if (!el) return; const up = () => setPx(el.clientWidth); up(); const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(up) : null; ro?.observe(el); return () => ro?.disconnect(); }, [v253]);
+  useEffect(() => { if (!v253 && !tidy) return; const el = stage.current; if (!el) return; const up = () => setPx(el.clientWidth); up(); const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(up) : null; ro?.observe(el); return () => ro?.disconnect(); }, [v253]);
   useEffect(() => { const el = stage.current; if (!el) return; const w = (e: WheelEvent) => c.wheel(e); el.addEventListener('wheel', w, { passive: false }); return () => el.removeEventListener('wheel', w); }, [c.wheel]);   // eslint-disable-line
   const labels = sc.items.filter((i): i is L3Label => i.t === 'x' && (!ex || ex.front(i.at)));
   const placed = useMemo(() => {
-    const out = new Map<L3Label, { lift: number; skip: boolean }>(); if (!v253 || !px) return out;
+    const out = new Map<L3Label, { lift: number; skip: boolean }>(); if ((!v253 && !tidy) || !px) return out;
     const k = px / (x1 - x0); const boxes: number[][] = [];
     const meas = labels.map((it) => { const [x, y] = P(it.at); return { it, sx: (x - x0) * k, sy: (y - y0) * k, k: depth(it.at), w: Math.max(18, it.text.length * (it.big ? 6.1 : 5.4) + (it.tone ? 22 : 12) + (it.sub ? it.sub.length * 4.6 + 6 : 0)), hh: it.big ? 19 : 16, rank: it.on ? 0 : it.keep ? 1 : it.cls === 'soft' ? 2 : 1 }; });
     for (const m of meas.slice().sort((a, b) => a.rank - b.rank || b.k - a.k)) {
@@ -238,7 +239,7 @@ export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, 
       boxes.push(bx); out.set(m.it, { lift, skip: false });
     }
     return out;
-  }, [sc, c.cam, px, v253]);   // eslint-disable-line
+  }, [sc, c.cam, px, v253, tidy]);   // eslint-disable-line
   return <div className={`l3-stage${tall ? ' l3-stage--tall' : ''}${v253 ? ' l3-stage--v253' : ''}`} data-stage="" data-testid={testId} ref={stage} {...pointer} {...objDrag}>
     <div className="l3-frame">
     <svg className="l3-svg" style={{ aspectRatio: `${(x1 - x0).toFixed(0)} / ${(y1 - y0).toFixed(0)}` }} viewBox={`${x0.toFixed(0)} ${y0.toFixed(0)} ${(x1 - x0).toFixed(0)} ${(y1 - y0).toFixed(0)}`} role="group" aria-label={aria} tabIndex={0} onKeyDown={onKeyDown} data-yaw={Math.round(c.goal.yaw)} data-pitch={Math.round(c.goal.pitch)} data-zoom={c.goal.zoom} data-pan={`${c.goal.px || 0},${c.goal.py || 0}`} data-moving={c.goal === c.cam ? undefined : ''}>
@@ -246,7 +247,8 @@ export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, 
         <linearGradient id="l3slab" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#4a463f" /><stop offset="1" stopColor="#36332e" /></linearGradient>
         <pattern id="l3hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#4b3a2c" /><line x1="0" y1="0" x2="0" y2="6" stroke="#c98a3a" strokeWidth="1.5" /></pattern>
       </defs>}
-      {v253 && <rect x={x0} y={y0} width={x1 - x0} height={y1 - y0} fill="url(#l3glow)" />}
+      {v253 && !bg && <rect x={x0} y={y0} width={x1 - x0} height={y1 - y0} fill="url(#l3glow)" />}
+      {bg && <rect x={x0} y={y0} width={x1 - x0} height={y1 - y0} fill={bg} />}
       {drawn.map(({ i }, k) => { const obj = typeof i.o === 'string' ? i.o : undefined; const on = !!obj && obj === sel; const op = typeof i.o === 'number' ? i.o : i.a;
         return i.t === 'p'
           ? <polygon key={k} points={fmt(i.p)} fill={i.f || 'none'} stroke={on ? 'var(--teal)' : i.s || 'none'} strokeWidth={on ? 1.6 : i.sw ?? 0.6} strokeDasharray={i.da} opacity={op} data-o={obj} className={`${i.cls || ''}${i.nav ? ' l3-go' : ''}${obj && onObj ? ' l3-obj' : ''}`} onClick={i.nav ? () => go(i.nav) : obj && onObj ? () => pick(obj) : undefined} />

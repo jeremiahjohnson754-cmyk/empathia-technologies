@@ -19,10 +19,13 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     await p.getByTestId('lw-level-3d').waitFor(); const lv = await at(p);
     ok(`LW-${tag}-${world}-02`, 'tapping the scene goes down to a level drawn in 3D, each room a button', /\/f\//.test(lv) && (await p.locator('[data-testid=lw-level-3d] .l3-hitbtn').count()) >= 1, `${h1} ${lv}`);
     await p.locator('[data-testid=lw-rooms] a').first().click(); await p.getByTestId('lw-room').waitFor();
-    const furn = await p.getByTestId('lw-room').getAttribute('data-furnished'); const objs = Number(await p.locator('[data-testid=lite-room-3d]').getAttribute('data-objects').catch(() => '0'));
-    ok(`LW-${tag}-${world}-03`, 'the first room of the level is furnished, drawn by V2.5.3’s layout for its type, with its equipment record beside it', furn === 'yes' && objs > 5 && (await p.getByTestId('lw-equipment').count()) === 1, `${furn} ${objs}`);
-    await p.getByTestId('lw-ov-camera').click(); await p.waitForTimeout(200);
-    ok(`LW-${tag}-${world}-04`, 'coverage switches draw on the furnished room', (await p.getByTestId('lw-ov-camera').getAttribute('aria-checked')) === 'true');
+    // 13 Nov 2026: a room may now be drawn by Empathia's own program (a stadium suite) rather than V2.5.3's layout for the nearest type; either
+    // counts as furnished here (changed from "drawn by V2.5.3's layout" only)
+    const furn = await p.getByTestId('lw-room').getAttribute('data-furnished'); const stage = furn === 'designed' ? 'rm-room-3d' : 'lite-room-3d'; const objs = Number(await p.locator(`[data-testid=${stage}]`).getAttribute('data-objects').catch(() => '0'));
+    ok(`LW-${tag}-${world}-03`, 'the first room of the level is furnished — by V2.5.3’s layout for its type or Empathia’s program — with its equipment record beside it', (furn === 'yes' || furn === 'designed') && objs > 5 && (await p.getByTestId('lw-equipment').count()) === 1, `${furn} ${objs}`);
+    if (furn === 'designed') { await p.getByTestId('rm-eye-door').click(); await p.waitForTimeout(300); ok(`LW-${tag}-${world}-04`, 'the designed room can be seen from the doorway', (await p.getByTestId('rm-room-3d').getAttribute('data-eye')) === 'door'); }
+    else { await p.getByTestId('lw-ov-camera').click(); await p.waitForTimeout(200);
+      ok(`LW-${tag}-${world}-04`, 'coverage switches draw on the furnished room', (await p.getByTestId('lw-ov-camera').getAttribute('aria-checked')) === 'true'); }
     const room = await at(p); await p.reload(); await p.getByTestId('lw-room').waitFor();
     ok(`LW-${tag}-${world}-05`, 'a room’s address survives a reload', (await at(p)) === room);
     await p.goBack(); await p.getByTestId('lw-level-3d').waitFor();

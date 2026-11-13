@@ -389,3 +389,17 @@ polygon.l3-go:hover { filter: brightness(1.18); }
 .lt-eyes { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 8px 0; }
 .lt-eyes__l { font-weight: 600; margin-right: 4px; }
 .lt-eyes .ui-meta { flex: 1 1 100%; }
+
+/* Empathia's rooms (13 Nov 2026): the room on a studio backdrop — warm and light in a light theme, slate in a dark one — so its timber,
+   stone and fabric read as materials; from an occupant's eyes the sky is part of the drawing */
+:root { --rm-bg: radial-gradient(120% 95% at 50% 0%, #3f454b 0%, #2c3135 58%, #1f2326 100%); --rm-line: rgba(255,255,255,.08); }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) { --rm-bg: radial-gradient(120% 95% at 50% 0%, #f3efe8 0%, #e2dbd0 60%, #d2cabd 100%); --rm-line: rgba(60,50,40,.14); } }
+:root[data-theme="light"] { --rm-bg: radial-gradient(120% 95% at 50% 0%, #f3efe8 0%, #e2dbd0 60%, #d2cabd 100%); --rm-line: rgba(60,50,40,.14); }
+:root[data-theme="dark"] { --rm-bg: radial-gradient(120% 95% at 50% 0%, #3f454b 0%, #2c3135 58%, #1f2326 100%); --rm-line: rgba(255,255,255,.08); }
+.rm-room { display: grid; gap: 4px; min-width: 0; }
+.rm-stage .l3-stage { background: var(--rm-bg); border-color: var(--rm-line); }
+.rm-stage .l3-svg { min-height: 300px; }
+.rm-stage polygon { stroke-linejoin: round; }
+.rm-names { margin-left: auto; }
+.rm-says { margin: 0 2px; min-height: 1.5em; }
+@media (max-width: 560px) { .rm-names { margin-left: 0; } }

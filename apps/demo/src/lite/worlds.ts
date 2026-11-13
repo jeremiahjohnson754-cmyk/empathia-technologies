@@ -9,6 +9,7 @@ import { ESTATES, indexOf, type EstateNode, type Index } from '../estate/index.j
 import type { WorldKey } from '../estate/model.js';
 import { registerRooms, type ExtRoom } from './v253/v253room.js';
 import { fixtureRuleOf } from './fixtures.js';
+import { hasProgram, REDESIGN_TYPES } from './rooms/programs.js';
 
 export const LITE_WORLDS = ['university', 'stadium', 'convention'] as const;
 export type LiteWorld = (typeof LITE_WORLDS)[number];
@@ -31,7 +32,13 @@ const CAP: Record<string, number> = { display: 4, ledwall: 1, camera: 3, micceil
 
 const IDX = new Map<LiteWorld, Index>();
 export function worldIndex(w: LiteWorld): Index { let i = IDX.get(w); if (!i) { i = indexOf(ESTATES[w as WorldKey]!); IDX.set(w, i); registerWorldRooms(w, i); } return i; }
-export const archOf = (n: EstateNode) => (n.kind === 'room' ? TYPE_ARCH[n.type] ?? null : null);
+/** the V2.5.3 room type that draws a room, if one does: not for a type Empathia has its own program for (./rooms/programs.ts), nor for one
+ *  whose nearest V2.5.3 type was wrong for it and is being redesigned (13 Nov 2026, founder on a suite drawn as a boardroom) */
+export const archOf = (n: EstateNode) => (n.kind === 'room' && !hasProgram(n.type) && !REDESIGN_TYPES.has(n.type) ? TYPE_ARCH[n.type] ?? null : null);
+/** how a room of the other worlds is furnished: Empathia's program, V2.5.3's layout for its type, Empathia's fixture rule, or not yet */
+export function furnishOf(n: EstateNode): 'designed' | 'v253' | 'fixtures' | 'redesign' | 'none' {
+  if (hasProgram(n.type) && n.dims) return 'designed'; if (REDESIGN_TYPES.has(n.type)) return 'redesign'; if (archOf(n) && n.dims) return 'v253'; return fixtureRuleOf(n.type) && n.dims ? 'fixtures' : 'none';
+}
 function registerWorldRooms(w: LiteWorld, ix: Index) {
   const out: ExtRoom[] = [];
   for (const n of ix.estate.nodes) {
@@ -70,8 +77,8 @@ export function levelPlan(w: LiteWorld, levelId: string): WPlan {
     const rows: Array<typeof sz> = [[], []];
     for (const side of [0, 1]) { let len = 0; while (i < sz.length && (len + sz[i]!.w <= maxRow || !rows[side]!.length)) { rows[side]!.push(sz[i]!); len += sz[i]!.w + 0.4; i += 1; } }
     const dN = Math.max(4, ...rows[0]!.map((x) => x.d)), dS = Math.max(4, ...rows[1]!.map((x) => x.d)); const cy = y0 + dN + 0.2;
-    let x = 0; for (const s of rows[0]!) { items.push({ id: s.r.id, w: s.w, d: s.d, x, y: cy - s.d, label: s.r.name, furnished: !!archOf(s.r) || !!fixtureRuleOf(s.r.type), node: s.r }); x += s.w + 0.4; } const endN = x;
-    x = 0; for (const s of rows[1]!) { items.push({ id: s.r.id, w: s.w, d: s.d, x, y: cy + COR, label: s.r.name, furnished: !!archOf(s.r) || !!fixtureRuleOf(s.r.type), node: s.r }); x += s.w + 0.4; }
+    let x = 0; for (const s of rows[0]!) { items.push({ id: s.r.id, w: s.w, d: s.d, x, y: cy - s.d, label: s.r.name, furnished: ['designed', 'v253', 'fixtures'].includes(furnishOf(s.r)), node: s.r }); x += s.w + 0.4; } const endN = x;
+    x = 0; for (const s of rows[1]!) { items.push({ id: s.r.id, w: s.w, d: s.d, x, y: cy + COR, label: s.r.name, furnished: ['designed', 'v253', 'fixtures'].includes(furnishOf(s.r)), node: s.r }); x += s.w + 0.4; }
     const rowW = Math.max(endN, x); Wmax = Math.max(Wmax, rowW); corridors.push({ x: 0, y: cy, w: rowW, d: COR }); y0 = cy + COR + dS + 2.5;
   }
   const P: WPlan = { W: Math.max(Wmax, 10), D: Math.max(y0 - 2.5, 10), items, corridors };
