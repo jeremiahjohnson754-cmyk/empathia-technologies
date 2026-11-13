@@ -121,12 +121,13 @@ function levelScene(cam: Cam, w: LiteWorld, l: EstateNode, mark?: string | null)
 function WorldLevel({ w, n }: PageProps & { w: LiteWorld; n: EstateNode }) {
   const c = useCam({ yaw: -30, pitch: 52, zoom: 1 }); const sc = useMemo(() => levelScene(c.cam, w, n), [c.cam, w, n]);
   const ix = worldIndex(w); const { building } = upOf(ix, n.id); const P = levelPlan(w, n.id); const [all, setAll] = useState(false);
-  const list = [...P.items].sort((a, b) => Number(b.furnished) - Number(a.furnished) || a.label.localeCompare(b.label, 'en', { numeric: true }));
+  const rank = (x: (typeof P.items)[number]) => (archOf(x.node) ? 0 : x.furnished ? 1 : 2);   // the rooms people meet in first, then the rest
+  const list = [...P.items].sort((a, b) => rank(a) - rank(b) || a.label.localeCompare(b.label, 'en', { numeric: true }));
   return <section className="lt-page lt-page--scene" data-testid="lw-level" data-level={n.id}>
     <Crumbs w={w} trail={[...(building ? [[building.name, worldPlaceHref(w, building.id)] as [string, string]] : []), [n.name, null]]} />
     <PageHero product="lite" plain eyebrow={`${WORLD_NAME[w]}${building ? ` · ${building.name}` : ''}`} title={n.name} lede={`${P.items.length} rooms, ${P.items.filter((i) => i.furnished).length} furnished. Rooms along corridors in name order, each at its recorded size; illustrative.`} />
     <figure className="stage lt-stage" data-stage=""><L3View sc={sc} c={c} onNav={go} label={`${n.name} in 3D. Each room is a button.`} testId="lw-level-3d" tall S={P.W > 120 ? 6 : 14} /></figure>
-    <Card title="Rooms on this level" icon="room" testId="lw-rooms"><ul className="lt-wlist">{(all ? list : list.slice(0, 24)).map((it) => <li key={it.id}><a href={worldRoomHref(w, it.id)} data-testid={`lw-room-${it.id}`}><b>{it.label}</b><span className="ui-meta">{it.node.type.replace(/-/g, ' ')}{it.node.capacity ? ` · ${it.node.capacity} places` : ''}{it.furnished ? ' · furnished' : ''}</span></a></li>)}</ul>
+    <Card title="Rooms on this level" icon="room" testId="lw-rooms"><ul className="lt-wlist">{(all ? list : list.slice(0, 24)).map((it) => <li key={it.id}><a href={worldRoomHref(w, it.id)} data-testid={`lw-room-${it.id}`}><b>{it.label}</b><span className="ui-meta">{it.node.type.replace(/-/g, ' ')}{it.node.capacity ? ` · ${it.node.capacity} places` : ''}</span></a></li>)}</ul>
       {list.length > 24 && !all ? <button type="button" className="ui-btn ui-btn--small" onClick={() => setAll(true)} data-testid="lw-rooms-all">All {list.length} rooms</button> : null}</Card>
     <p className="lt-acts">{building ? <a className="ui-btn" href={worldPlaceHref(w, building.id)} data-testid="lw-up-place">All levels of {building.name}</a> : null}<a className="ui-btn" href={`#/lite/w/${w}`} data-testid="lw-up-world">All of {WORLD_NAME[w]}</a></p>
     <LiteNav here="" role={null} />
