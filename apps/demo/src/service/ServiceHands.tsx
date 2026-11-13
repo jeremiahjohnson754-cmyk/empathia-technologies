@@ -58,7 +58,7 @@ function Home({ ops }: { ops: Ops }) {
       <span className="wk-card__n">{i.title}</span><span className="wk-card__p">{i.roomName} · {i.severity}</span>
       <span className="wk-card__x"><Tag tone={TONE[i.state]}>{i.state}</Tag> next: {DONE.includes(i.state) ? 'nothing — the record is kept' : STAGES[Math.min(11, st(i) + (i.state === 'RESOLVED' ? 1 : 0))]}</span></a>; };
   return (<>
-    <PageHero product="servicehands" icon="wrench" eyebrow="ServiceHands · incident to service" title="ServiceHands"
+    <PageHero product="servicehands" plain icon="wrench" eyebrow="ServiceHands · incident to service" title="ServiceHands"
       lede={<>Every job moves through twelve stages, one governed step at a time; the person who did the work never verifies it. <b>{plural(open.length, 'job')}</b> open{mine.length ? <>, <b>{mine.length}</b> assigned to you</> : null}. Acting as <b>{personaLabel(persona)}</b>.</>}
       meta={[<Chip key="sim" small tone="muted">Simulated service · synthetic people</Chip>, <Chip key="r" small tone="accent">{plural(w.incidents.length, 'job')} on record</Chip>]}
       actions={<>{canReport && <a className="ui-btn ui-btn--primary" href="#/servicehands/new" data-testid="report">Report a problem</a>}{holds(persona, 'service.assign') && <a className="ui-btn" href="#/service">Dispatch board</a>}</>} />

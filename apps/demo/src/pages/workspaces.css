@@ -38,6 +38,9 @@ a.wk-card:hover { border-color: var(--accent); } a.wk-card:focus-visible { outli
 .wk-filters { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-4); align-items: center; }
 .wk-foot { margin: 0; color: var(--tx3); font-size: var(--fs-xs); text-align: center; }
 .wk-v25nav, .wk-chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+/* V2.5.3's tab row: on a phone the page's tabs stay one row that scrolls sideways, first on the page, instead of a block of wrapped chips */
+.wk-v25nav { margin-bottom: var(--sp-3); }
+@media (max-width: 720px) { .wk-v25nav { position: relative; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; } .wk-v25nav::-webkit-scrollbar { display: none; } .wk-v25nav > * { flex: 0 0 auto; } }
 .wk-score { display: grid; justify-items: center; gap: 4px; text-align: center; min-width: 170px; }
 .wk-score__v { font-size: 3rem; font-weight: 700; line-height: 1; letter-spacing: var(--track-tight); font-variant-numeric: tabular-nums; } .wk-score__v small { font-size: 1.2rem; color: var(--tx3); }
 .wk-score__l { font-size: var(--fs-sm); font-weight: 600; } .wk-score__s { font-size: var(--fs-xs); color: var(--tx3); }

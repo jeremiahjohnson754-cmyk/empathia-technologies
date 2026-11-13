@@ -190,11 +190,11 @@ export function ProPage({ perspective }: { perspective: string }) {
     ...roomIssues.map(({ r, i }) => ({ key: `${r.outline.id}:${i.id}`, title: i.title, sub: `${roomName(r)} · ${i.severity} · ${i.source}`, href: roomHref(r.outline), tone: (i.severity === 'High' ? 'bad' : i.severity === 'Medium' ? 'warn' : 'info') as Series, chip: i.severity, rank: i.severity === 'High' ? 1 : i.severity === 'Medium' ? 2 : 3 }))].sort((a, b) => a.rank - b.rank);
   return (
     <section className="wk" data-native="workspace" data-testid="pro">
-      <PageHero product="pro" icon="chart" eyebrow="Pro · command center" title="Command center"
+      <ProTabs role={perspective} current="#/pro" />
+      <PageHero product="pro" plain icon="chart" eyebrow="Pro · command center" title="Command center"
         lede={<>What is open right now, how it stands against its target, and where to look next. <b>{plural(working.length, 'issue')}</b> open across <b>{plural(needRooms.size, 'room')}</b>; <b>{inc.filter(late).length}</b> service {inc.filter(late).length === 1 ? 'job is' : 'jobs are'} past target.</>}
         meta={[<Chip key="s" small tone="muted">Modelled · not production monitoring</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]}
         actions={<><a className="ui-btn ui-btn--primary" href="#/v25/exec">Executive passports</a><a className="ui-btn" href="#/service">Dispatch board</a></>} />
-      <ProTabs role={perspective} current="#/pro" />
       <div className="kit-grid kit-grid--tiles wk-tiles4" data-testid="tiles">
         <StatTile label="Open issues" value={working.length} icon="alert" tone="pro" hint={`${inc.length} service jobs · ${roomIssues.length} room deficiencies`} />
         <StatTile label="Past their target" value={inc.filter(late).length} unit={`of ${inc.length}`} icon="clock" tone="bad" spark={backlog} delta={deltaOf(backlog, 'down', 'open vs 4 wk ago', { level: true })} />

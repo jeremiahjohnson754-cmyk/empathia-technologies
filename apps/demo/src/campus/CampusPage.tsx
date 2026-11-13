@@ -92,20 +92,20 @@ function SitePage() {
   const shown = c.buildings.find((s) => s.b.key === (peek?.key || 'ATL'))!;
   return (
     <section className="campus" data-native="" data-testid="campus-site">
-      <header className="room__hero campus__hero">
+      <header className="room__hero campus__hero campus__hero--plain">
         <div className="campus__herot">
           <p className="kicker">The living campus · synthetic</p>
           <h1>{SITE.name}</h1>
           <p className="room__intent">{BUILDINGS.length} buildings and {REGIONAL_SITES.length} regional sites, {c.rooms} rooms, {c.devices} device positions. Select a building to go inside.</p>
           <p className="ui-meta">One complete reference room, three that keep this demonstration’s earlier records, and {ROOMS.filter((r) => r.kind === 'designed').length} designed from their archetypes ({ROOMS.filter((r) => r.planRow && !r.roster).length} added by the rooms plan and {ROOMS.filter((r) => r.roster).length} by the 90-room estate) — modelled layouts and devices, never surveyed.</p>
         </div>
-        <div className="campus__score"><ScoreRing score={c.score} band={c.band} size={104} label="Campus health" caption={`mean of ${c.scored} scored rooms`} /></div>
       </header>
       <div className="seg campus__view" role="group" aria-label="Campus view"><button type="button" aria-pressed={view === 'map'} onClick={() => setView('map')}>3D map</button><button type="button" aria-pressed={view === 'list'} onClick={() => setView('list')}>List</button></div>
       {view === 'map' ? <div className="campus__stagewrap">
         <Stage label="Campus in 3D" testId="campus-stage"><CampusMap tiles={tilesOf(c.buildings)} onOpen={(B) => go(`#/campus/${B.key}`)} onPreview={setPeek} /><Legend /></Stage>
         <Preview s={shown} />
       </div> : <Section title="Every building and site" aside="The list alternative to the 3D map · health, rooms, issues, tests verified" id="campus-list-h" testId="campus-list"><BuildingRows stats={[...c.buildings, ...c.sites]} testId="campus-list-rows" /></Section>}
+      <div className="campus__score campus__score--below"><ScoreRing score={c.score} band={c.band} size={104} label="Campus health" caption={`mean of ${c.scored} scored rooms`} /></div>
       <nav className="campus__pills" aria-label="Buildings" data-testid="building-pills">{[...c.buildings, ...c.sites].map((s) => <a key={s.b.key} href={`#/campus/${s.b.key}`} className={`bpill bpill--${s.band}`}><StatusDot band={s.band} label={s.score == null ? 'not scored' : String(s.score)} /><b>{s.b.short}</b><span className="ui-meta">{s.rooms} {s.rooms === 1 ? 'room' : 'rooms'}{s.open ? ` · ${s.open} open` : ''}</span></a>)}</nav>
       <div className="tiles">
         <StatTile label="Healthy rooms" value={c.healthy} unit={`of ${c.rooms}`} sub={`${c.monitor} to monitor · ${c.action} need action · ${c.unscored} not scored`} icon="heart" />

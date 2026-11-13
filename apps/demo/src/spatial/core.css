@@ -250,3 +250,14 @@ main h1[tabindex="-1"]:focus { outline: none; box-shadow: none; }
 .shelf__art-l { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; } .shelf__art-f { fill: color-mix(in srgb, var(--tx3) 45%, transparent); } .shelf__art-d { fill: var(--accent); }
 .shelf__n { display: block; font-size: var(--fs-xs); color: var(--tx3); }
 .lnd .shelf__list { grid-template-columns: repeat(auto-fill, minmax(min(100%, 170px), 1fr)); }
+/* V2.5.3 Search Party head (founder 12 Nov 2026, "transform Search Party"): the page head is plain text, not a card, so the directory
+   and the results come first; the record-type chips are one row that scrolls sideways on a phone */
+.sp__hero { background: none; border: 0; padding: var(--sp-1) 0 0; margin-bottom: var(--sp-3); box-shadow: none; }
+.sp__hero::before, .sp__hero::after { display: none; }
+@media (max-width: 760px) { .sp__types { position: relative; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; } .sp__types::-webkit-scrollbar { display: none; } .sp__types > * { flex: 0 0 auto; } }
+/* V2.5.3 campus head: plain text, the 3D map straight after it; the campus health ring sits below the map */
+.campus__hero--plain { background: none; border: 0; padding: var(--sp-1) 0 0; margin-bottom: var(--sp-3); box-shadow: none; grid-template-columns: minmax(0, 1fr); }
+.campus__hero--plain::before, .campus__hero--plain::after { display: none; }
+.campus__score--below { display: flex; justify-content: flex-start; margin: var(--sp-3) 0; }
+.sp__lead { display: block; font-weight: 600; color: var(--tx); } .sp__leadmore { display: block; margin-top: 4px; font-size: var(--fs-sm); color: var(--tx2); }
+@media (max-width: 720px) { .ops-strip.wk-strip { position: relative; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; } .ops-strip.wk-strip::-webkit-scrollbar { display: none; } .ops-strip.wk-strip > li { flex: 0 0 auto; } }

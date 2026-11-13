@@ -35,10 +35,10 @@ export function AssetsPage({ perspective }: { perspective: string }) {
   const rows = recs.map((r) => ({ r, n: r.positions.filter((p) => !p.furniture).length, net: r.positions.filter((p) => !p.furniture && p.layer === 'network').length, verified: r.positions.filter((p) => p.identity === 'VERIFIED').length }));
   return (
     <section className="wk" data-native="workspace" data-testid="pro-assets">
-      <PageHero product="pro" icon="device" eyebrow="Pro · Asset Intelligence" title="What the organization owns"
+      <ProTabs role={perspective} current="#/pro/assets" />
+      <PageHero product="pro" plain icon="device" eyebrow="Pro · Asset Intelligence" title="What the organization owns"
         lede={<>Every device position across the campus, its identity and where it is installed. <b>{plural(pos.length, 'position')}</b> in {plural(recs.length, 'room')}; <b>{ident[3]!.value}</b> carry no verified make, model or serial — a class template, never an invented one.</>}
         meta={[<Chip key="m" small tone="muted">Modelled positions</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]} />
-      <ProTabs role={perspective} current="#/pro/assets" />
       <div className="kit-grid kit-grid--tiles wk-tiles4" data-testid="tiles">
         <StatTile label="Device positions" value={pos.length} icon="device" tone="pro" hint={`${byCat.length} kinds · furniture excluded`} />
         <StatTile label="Identity verified" value={ident[0]!.value} unit={`of ${pos.length}`} icon="check" tone="ok" hint="A person other than the installer confirmed it" />
@@ -74,10 +74,10 @@ export function IssuesPage({ perspective }: { perspective: string }) {
   const rooms = count(open, (x) => x.r.outline.id).length;
   return (
     <section className="wk" data-native="workspace" data-testid="pro-issues">
-      <PageHero product="pro" icon="alert" eyebrow="Pro · Issue Intelligence" title="How and where it fails"
+      <ProTabs role={perspective} current="#/pro/issues" />
+      <PageHero product="pro" plain icon="alert" eyebrow="Pro · Issue Intelligence" title="How and where it fails"
         lede={<><b>{plural(open.length, 'room issue')}</b> open in <b>{plural(rooms, 'room')}</b>, beside <b>{plural(w.incidents.filter((i) => !DONE.includes(i.state)).length, 'service job')}</b>; <b>{rec.length}</b> {rec.length === 1 ? 'job is a recurrence' : 'jobs are recurrences'} of an earlier one in the same room.</>}
         meta={[<Chip key="m" small tone="muted">Synthetic records</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]} />
-      <ProTabs role={perspective} current="#/pro/issues" />
       <div className="kit-grid kit-grid--tiles wk-tiles4" data-testid="tiles">
         <StatTile label="Open room issues" value={open.length} unit={`of ${room.length}`} icon="alert" tone="pro" />
         <StatTile label="High severity open" value={sev[0]!.value} icon="alert" tone="bad" />
@@ -115,11 +115,11 @@ export function OpsHubPage({ perspective }: { perspective: string }) {
   const bookings = Object.entries(w.bookings).flatMap(([room, bs]) => bs.map((b) => ({ room, ...b })));
   return (
     <section className="wk" data-native="workspace" data-testid="pro-ops">
-      <PageHero product="pro" icon="wrench" eyebrow="Pro · Operations Hub" title="The people, parts and windows behind the work"
+      <ProTabs role={perspective} current="#/pro/ops" />
+      <PageHero product="pro" plain icon="wrench" eyebrow="Pro · Operations Hub" title="The people, parts and windows behind the work"
         lede={<><b>{plural(openWo.length, 'work order')}</b> open; <b>{plural(certs.filter((c) => c.days < 0).length, 'certification')}</b> expired and <b>{certs.filter((c) => c.days >= 0 && c.days <= 60).length}</b> due within 60 days; <b>{plural(stale.length, 'stock check')}</b> older than {S.STALE_STOCK_DAYS} days.</>}
         meta={[<Chip key="m" small tone="muted">Synthetic people and stock</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]}
         actions={<a className="ui-btn" href="#/service">Dispatch board</a>} />
-      <ProTabs role={perspective} current="#/pro/ops" />
       <div className="kit-grid kit-grid--tiles wk-tiles4" data-testid="tiles">
         <StatTile label="Work orders open" value={openWo.length} unit={`of ${wos.length}`} icon="ticket" tone="pro" href="#/service" />
         <StatTile label="People in the pool" value={w.staff.length} icon="users" tone="info" hint={`${w.staff.filter((s) => s.leave).length} on leave · ${w.staff.filter((s) => !s.internal).length} from a partner`} />
@@ -156,11 +156,11 @@ export function StandardsPage({ perspective }: { perspective: string }) {
   const conform = recs.filter((r) => r.counts.applicable && r.counts.verified === r.counts.applicable).length;
   return (
     <section className="wk" data-native="workspace" data-testid="pro-eng">
-      <PageHero product="pro" icon="book" eyebrow="Pro · Standards and Engineering" title="The standards every room is built to"
+      <ProTabs role={perspective} current="#/pro/eng" />
+      <PageHero product="pro" plain icon="book" eyebrow="Pro · Standards and Engineering" title="The standards every room is built to"
         lede={<><b>{plural(arch.length, 'archetype')}</b> across the campus, each designed from an engineering template; <b>{conform}</b> of {recs.length} rooms have every applicable test verified, and the design checks raised <b>{plural(findings.length, 'finding')}</b>.</>}
         meta={[<Chip key="m" small tone="muted">Class templates · modelled</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]}
         actions={<><a className="ui-btn" href="#/v25/build">Build a Room</a>{readsManual(perspective as RoleKey) ? <a className="ui-btn" href="#/manual" data-testid="eng-manual">Engineering standards manual</a> : null}</>} />
-      <ProTabs role={perspective} current="#/pro/eng" />
       <div className="kit-grid kit-grid--tiles wk-tiles4" data-testid="tiles">
         <StatTile label="Archetypes in use" value={arch.length} icon="layers" tone="pro" />
         <StatTile label="Rooms fully verified" value={conform} unit={`of ${recs.length}`} icon="check" tone="ok" />

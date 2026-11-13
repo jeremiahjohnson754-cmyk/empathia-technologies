@@ -55,7 +55,7 @@ export const WORLD_PAGES: readonly PageDef[] = [
   {
     id: 'labs.video', title: 'Shoot the Service', purpose: 'SIGNAL’s video flagship lab: two cameras, an LED wall, a switcher and lip-sync for the stream', product: 'learn',
     path: '/labs/video', authority: OPEN, load: () => import('./mixlab/VideoLab.js'),
-    search: { keywords: 'video lab camera shutter frame rate banding flicker led wall refresh iris iso nd white balance switcher program preview cut mix key lyrics lip sync stream', aliases: ['shoot the service', 'video lab', 'camera lab'] },
+    search: { keywords: 'video lab camera shutter frame rate banding flicker led wall refresh iris iso nd white balance switcher program preview cut mix key lyrics lip sync stream', aliases: ['shoot the service', 'video lab'] },
   },
   {
     id: 'play', title: 'SIGNAL played', purpose: 'A SIGNAL chapter performed as scenes: camera, timed lines, choices inside the frame and things to find', product: 'learn',
