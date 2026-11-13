@@ -18,7 +18,8 @@ for (const w of [1440, 390]) {
   await p.reload(); await p.waitForTimeout(800); const rv2 = await hash(); const has2 = await p.locator(`main [data-room="${ROOM}"]`).count();
   ok(`J-${w}-03`, 'the technical room view opens on the same room and keeps it through a reload', rv.includes(ROOM) && rv2 === rv && has1 >= 1 && has2 >= 1, `${rv} ${has1} ${has2}`);
   await p.goBack(); await p.getByTestId('lite-room').waitFor();
-  const dev = p.locator('.lt-dev[data-cat="camera"], .lt-dev[data-cat="bar"]').first(); await dev.dispatchEvent('click'); await p.getByTestId('lite-card').waitFor();
+  // 13 Nov 2026: the room opens on V2.5.3's furnished drawing, so the camera is tapped there (its named button), as a person would
+  const dev = p.locator('[data-testid=lite-room-3d] .l3-hitbtn[aria-label^="Cam"]').first(); await dev.click(); await p.getByTestId('lite-card').waitFor();
   await p.click(`[data-testid=lite-card-cx] a[href="#/commissioning/room/${ROOM}"]`); await p.waitForTimeout(600); const h3 = await hash(); const main = await p.evaluate(() => document.querySelector('main')?.innerText || '');
   ok(`J-${w}-04`, 'from a device’s card, the commissioning record opens on the same room', h3 === `#/commissioning/room/${ROOM}` && /4\.218|R-ATL-4-218/.test(main), h3);
   await p.goBack(); await p.getByTestId('lite-room').waitFor(); const last = await p.getByTestId('lite-room').getAttribute('data-room');
