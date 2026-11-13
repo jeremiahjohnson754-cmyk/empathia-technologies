@@ -22,7 +22,7 @@ export function ApexPage({ perspective, hash }: { perspective: string; hash: str
   const { w, apply, refusal } = useWorkspace();
   const est = useMemo(() => buildEstate(), []);
   const wantInc = /[?&]incident=([A-Z0-9-]+)/.exec(hash)?.[1]; const wantCase = /[?&]case=([A-Z0-9-]+)/.exec(hash)?.[1];
-  const [sel, setSel] = useState<string | null>(wantCase || (wantInc ? w.incidents.find((i) => i.id === wantInc)?.apexId || null : null) || w.apexCases[0]?.id || null);
+  const [sel, setSel] = useState<string | null>(wantCase || (wantInc ? w.incidents.find((i) => i.id === wantInc)?.apexId || null : w.apexCases[0]?.id || null))   // an incident asked for without a case opens on its button, not on another case;
   const H = w.apexCases.find((c) => c.id === sel) || null;
   const open = w.incidents.filter((i) => !i.apexId && !['CLOSED', 'CANCELLED'].includes(i.state));
   const cite = (roomId: string) => (layer: Layer) => {
@@ -50,6 +50,10 @@ export function ApexPage({ perspective, hash }: { perspective: string; hash: str
         </div>
         <div className="svc__detail">{H ? <Case H={H} w={w} apply={apply} persona={persona} baseline={baselineOf(H.roomId)} /> : <div className="empty" data-testid="apex-empty"><b>No case open</b><p>Open a case from an incident on the left. A case gathers the seven layers of evidence for its room, ranks hypotheses with the reasons they are not proven, and bounds every action by tier — nothing runs without the preflight.</p></div>}</div>
       </div>
+      <div className="card stack" data-testid="apex-tiers"><h2 className="build__h">Action tiers <span className="ui-meta">what each class may do</span></h2>
+        <div className="pa-table-wrap"><table className="pa-table"><caption className="ui-sr">APEX action tiers</caption><thead><tr><th scope="col">Tier</th><th scope="col">Meaning</th><th scope="col">Boundary</th></tr></thead>
+          <tbody>{(Object.keys(TIERS) as Tier[]).map((t) => <tr key={t}><th scope="row">{t}</th><td>{TIERS[t].label}</td><td>{TIERS[t].bound}</td></tr>)}</tbody></table></div>
+        <p className="ui-meta">A case may move only up to the tier its hypothesis carries. Every attempt is logged, including the ones that are blocked; nothing in this build reaches real equipment.</p></div>
     </section>
   );
 }
@@ -67,7 +71,7 @@ function Case({ H, w, apply, persona, baseline }: { H: S.ApexCase; w: S.Workspac
       <Facts items={[['Incident', `${inc.id} · ${inc.state}`], ['Room', inc.roomName], ['Baseline to compare', baseline ? `v${baseline.version} (${baseline.evidence} evidence items)` : 'none accepted — nothing to compare'], ['Adapters', Object.entries(w.adapters).map(([k, v]) => `${k} ${v}`).join(' · ')]]} />
       <div className="apex__layers" data-testid="layers">{H.layers.map((l) => <div key={l.layer} className={`apex__layer${l.observations.length ? ' has' : ''}`}><b>{l.label}</b>{l.observations.length ? <ul>{l.observations.map((o) => <li key={o}>{o}</li>)}</ul> : <span className="ui-meta">nothing recorded</span>}{l.cites.length > 0 && <span className="ui-meta">cites {l.cites.join(', ')}</span>}</div>)}</div>
       <h3 className="build__h">Hypotheses, ranked</h3>
-      <ol className="apex__hyps">{H.hypotheses.map((x) => <li key={x.id} className={x.id === h.id ? 'on' : ''}><button type="button" onClick={() => setHyp(x.id)}><Tag tone={CONF[x.confidence]}>{x.confidence}</Tag> <b>{x.text}</b> <span className="ui-meta">{x.layer} · {x.action.tier}{x.action.runbook ? ` · ${x.action.runbook}` : ''}</span></button></li>)}</ol>
+      <div role="group" aria-label="Hypotheses, ranked: choose one"><ol className="apex__hyps">{H.hypotheses.map((x) => <li key={x.id} className={x.id === h.id ? 'on' : ''}><button type="button" aria-pressed={x.id === h.id} onClick={() => setHyp(x.id)}><Tag tone={CONF[x.confidence]}>{x.confidence}</Tag> <b>{x.text}</b> <span className="ui-meta">{x.layer} · {x.action.tier}{x.action.runbook ? ` · ${x.action.runbook}` : ''}</span></button></li>)}</ol></div>
       <div className="card stack" data-testid="hypothesis">
         <p><b>{h.text}</b></p>
         <Facts items={[['Why it is not proven', h.caveat], ['Evidence cited', h.evidence.length ? h.evidence.join('; ') : 'none'], ['Against it', h.negative.length ? h.negative.join('; ') : '—'], ['Next', h.next.length ? h.next.join('; ') : '—']]} />

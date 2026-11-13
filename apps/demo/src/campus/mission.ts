@@ -138,7 +138,7 @@ export interface Saved { id: string; title: string; sub: string; href: string; i
 export function savedWork(w: Workspace | null, draft: { code: string; name: string; createdAt: string; design?: { lifecycle?: string } } | null): Saved[] {
   const out: Saved[] = [];
   if (draft) out.push({ id: draft.code, title: `${draft.name || draft.code} — Build a Room draft`, sub: `${draft.code} · ${(draft.design?.lifecycle || 'PLANNED').replace(/_/g, ' ').toLowerCase()}`, href: '#/v25/build', icon: 'cube', at: draft.createdAt });
-  for (const a of w?.apexCases || []) if (!a.reviewed) out.push({ id: a.id, title: `APEX diagnosis ${a.id}`, sub: `${a.hypotheses.length} hypotheses · not yet reviewed`, href: `#/v25/apex?id=${a.id}`, icon: 'pulse', at: a.openedAt });
+  for (const a of w?.apexCases || []) if (!a.reviewed && !a.seeded) out.push({ id: a.id, title: `APEX diagnosis ${a.id}`, sub: `${a.hypotheses.length} hypotheses · not yet reviewed`, href: `#/v25/apex?case=${a.id}`, icon: 'pulse', at: a.openedAt });
   for (const l of w?.learnCases || []) if (l.state !== 'APPROVED' && l.state !== 'REJECTED') out.push({ id: l.id, title: `Lesson ${l.id}: ${l.title}`, sub: `${l.state.toLowerCase().replace(/_/g, ' ')}`, href: '#/v25/learn', icon: 'book', at: l.proposedAt });
   for (const s of w?.fiSessions || []) if (!s.terminal) { const o = roomById(s.roomId); out.push({ id: s.id, title: `Field scan ${s.id}`, sub: `${o ? fullName(o) : s.roomId} · ${s.state.toLowerCase().replace(/_/g, ' ')} · simulated`, href: `#/v25/fi/scan/${s.roomId}`, icon: 'search', at: s.log[0]?.at }); }
   return out;

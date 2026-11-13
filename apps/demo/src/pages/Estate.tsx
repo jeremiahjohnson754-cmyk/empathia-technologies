@@ -15,6 +15,8 @@ import { Foot, Stack, plural, pct, weekCounts, weekBacklog, deltaOf } from './vi
 import { V25Nav } from './V25Nav.js';
 import { ProTabs } from './ProViews.js';
 import { AssuranceTabs, CxTabs } from './AssuranceViews.js';
+import { AssuranceInsights } from './AssuranceHome.js';
+import { readyList } from '../assurance/model.js';
 
 const DONE = ['CLOSED', 'CANCELLED'];
 const DAY = 864e5;
@@ -136,14 +138,13 @@ export function AssurancePage({ perspective }: { perspective: string }) {
   const persona = personaOf(perspective); const { w, recs } = useEstate();
   const st = recs.map((r) => ({ r, ...asState(r, w.incidents) }));
   const n = (k: AsState) => st.filter((x) => x.state === k).length;
-  const rd = recs.filter((r) => ready(r, w.incidents)); const eligible = recs.filter((r) => accepted(r));
   const attention = st.filter((x) => x.state === 'failed' || x.state === 'drift').sort((a, b) => (a.state === 'failed' ? 0 : 1) - (b.state === 'failed' ? 0 : 1));
   const first = attention[0];
-  const opened = weekCounts(w.incidents, (i) => i.openedAt);
+  const rl = readyList(w.incidents, recs); const nAtt = rl.filter((x) => x.out === 'attention').length;
   return (
     <section className="wk" data-native="workspace" data-testid="assurance">
       <PageHero product="commissioning" icon="pulse" eyebrow="Assurance · command center" title="Assurance"
-        lede={<>Is the estate still behaving the way it was designed and commissioned to behave? <b>{plural(n('failed'), 'room')}</b> failed a check and <b>{n('drift')}</b> drifted from their baseline{first ? <>; <b>{roomName(first.r)}</b> comes first: {first.why}</> : null}. <b>{plural(eligible.length - rd.length, 'room')}</b> {eligible.length - rd.length === 1 ? 'is' : 'are'} not ready for the next session.</>}
+        lede={<>Is the estate still behaving the way it was designed and commissioned to behave? <b>{plural(n('failed'), 'room')}</b> failed a check and <b>{n('drift')}</b> drifted from their baseline{first ? <>; <b>{roomName(first.r)}</b> comes first: {first.why}</> : null}. {nAtt ? <><b>{plural(nAtt, 'high or mission-critical room')}</b> {nAtt === 1 ? 'needs' : 'need'} attention before the next session.</> : <>Every high and mission-critical room is ready for its next session.</>}</>}
         meta={[<Chip key="s" small tone="muted">Modelled · not live monitoring</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]}
         aside={<ScoreBlock value={n('matched')} max={recs.length} label="Rooms that match their baseline" />} />
       <V25Nav role={perspective} current="#/assurance" />
@@ -153,7 +154,7 @@ export function AssurancePage({ perspective }: { perspective: string }) {
         <StatTile label="Drifted" value={n('drift')} icon="filter" tone="warn" hint="An issue open or a change waiting" />
         <StatTile label="Failed a check" value={n('failed')} icon="alert" tone="bad" hint="A failed test or a high issue" />
         <StatTile label="No baseline" value={n('none')} icon="inbox" tone="muted" hint="Nothing to compare with" />
-        <StatTile label="Ready for the next session" value={rd.length} unit={`of ${eligible.length}`} icon="calendar" tone="commissioning" spark={weekBacklog(w.incidents, (i) => i.openedAt, (i) => i.closedAt)} delta={deltaOf(opened, 'down', 'jobs raised vs prior 4 wk')} />
+        <StatTile label="Ready for the next session" value={rl.filter((x) => x.out === 'ready').length} unit={`of ${rl.length}`} icon="calendar" tone="commissioning" href="#/assurance/ready" hint={`${rl.filter((x) => x.out === 'note').length} with a note · ${rl.filter((x) => x.out === 'attention').length} need attention · high and mission-critical rooms`} />
       </div>
       <div className="wk-g2 wk-g2--wide">
         <Card icon="alert" tone="commissioning" title="Needs attention" sub="Failed first, then drift · open a room for its record" testId="as-attention">
@@ -168,6 +169,7 @@ export function AssurancePage({ perspective }: { perspective: string }) {
         <Legend items={(Object.keys(AS) as AsState[]).map((k) => ({ key: k, label: AS[k].label, tone: AS[k].tone }))} />
         <ul className="wk-bars" data-testid="as-buildings">{byBuilding(recs, (r) => asState(r, w.incidents).state).map(({ b, vals }) => <li key={b.key}><span>{b.short}</span><Stack label={b.name} parts={(Object.keys(AS) as AsState[]).map((k) => ({ key: k, label: AS[k].label, value: vals.filter((v) => v === k).length, tone: AS[k].tone }))} /><b>{vals.length}</b></li>)}</ul>
       </Card>
+      <AssuranceInsights role={perspective} w={w} />
       <Foot>Assurance here is modelled from synthetic records; nothing is monitored live, and no claim of operational health is made without live evidence.</Foot>
     </section>
   );

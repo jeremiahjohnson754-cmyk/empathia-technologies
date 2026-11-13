@@ -124,7 +124,7 @@ export const OPS_PAGES: readonly PageDef[] = [
     search: { keywords: 'assurance drift baseline ready next session', aliases: ['assurance command center', 'drift'] },
   },
   {
-    id: 'assurance.ready', title: 'Ready checks', purpose: 'Five checks before a room is trusted with its next session', product: 'commissioning',
+    id: 'assurance.ready', title: 'Ready checks', purpose: 'Eleven checks before a high or mission-critical room is trusted with its next session', product: 'commissioning',
     path: '/assurance/ready', authority: { area: 'assurance.ready' },
     load: adapt(() => import('./pages/AssuranceViews.js'), (m, p) => h(m.ReadyPage, { perspective: p.role })),
     search: { keywords: 'ready checks next session', aliases: ['ready checks'] },

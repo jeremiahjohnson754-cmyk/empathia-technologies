@@ -19,7 +19,8 @@ import { useWorkspace } from '../workspace/useWorkspace.js';
 import * as S from '../workspace/store.js';
 import { personaOf, personaLabel, holds } from '../build/store.js';
 import { openable } from './V25Nav.js';
-import { AssuranceTabs, CxTabs, readyChecks } from './AssuranceViews.js';
+import { AssuranceTabs, CxTabs } from './AssuranceViews.js';
+import { readyCheckOf, nextSession, READY_OUT } from '../assurance/model.js';
 import { cxState, CX, asState, AS } from './Estate.js';
 import { V } from '../learn/model.js';
 import { plural, pct, weekCounts, Foot } from './viz.js';
@@ -234,7 +235,7 @@ export function AsRoomPage({ perspective, params, hash }: { perspective: string;
           </List>
         </Card>
       </> : null}
-      {view === 'ready' ? <Card icon="check" title="Room ready check" sub="Five checks before the next session" testId="as-ready"><List label="Ready checks">{readyChecks(r, w.incidents).map((c) => <ListRow key={c.id} title={c.label} sub={c.why} trailing={<Tag tone={c.ok ? 'ok' : 'bad'}>{c.ok ? 'Ready' : 'Not ready'}</Tag>} />)}</List></Card> : null}
+      {view === 'ready' ? (() => { const rc = readyCheckOf(r, w.incidents); const s = nextSession(r, w); return <Card icon="check" title="Room ready check" sub={`Eleven checks before the next session · ${s.title} at ${s.at}${s.generated ? ' (generated)' : ' (booked)'}`} testId="as-ready" action={<Chip small tone={READY_OUT[rc.out].tone}>{READY_OUT[rc.out].label}</Chip>}><List label="Ready checks">{rc.checks.map((c) => <ListRow key={c.key} title={c.label} sub={c.why} trailing={<Tag tone={c.out === 'na' ? 'muted' : READY_OUT[c.out].tone}>{c.out === 'na' ? 'Not in this room' : READY_OUT[c.out].label}</Tag>} />)}</List><p className="wk-note">{rc.evidence}% of this room’s applicable tests are verified · {rc.crit.toLowerCase()} room. {READY_OUT[rc.out].rule}</p></Card>; })() : null}
       {view === 'recommission' ? <Recommission r={r} /> : null}
       {view === 'history' ? <Card icon="book" title="Baseline history" sub={plural(r.baselines.length, 'version')} testId="as-history"><List label="Baselines">{r.baselines.map((b) => <ListRow key={b.version} title={`Baseline v${b.version} · ${b.state.toLowerCase().replace('_', ' ')}`} sub={`${ymd(b.at)} · design revision ${b.revision} · ${b.by?.replace(/_/g, ' ') || 'unsigned'} · ${b.note}`} trailing={<Tag tone={b.state === 'CURRENT' ? 'ok' : b.state === 'PENDING_ACCEPTANCE' ? 'warn' : 'muted'}>{b.state === 'CURRENT' ? 'Current' : b.state === 'PENDING_ACCEPTANCE' ? 'Pending' : 'Superseded'}</Tag>} />)}</List>
         <h3 className="ln-h3">Runs in this demo</h3><ul className="ln-log">{w.events.filter((e) => e.type === 'assurance.run' && e.aggregate === r.outline.id).slice(0, 10).map((e, i) => <li key={i}>{ymd(e.at)} · {personaLabel(e.by)} · {e.detail}</li>)}</ul>{!w.events.some((e) => e.type === 'assurance.run' && e.aggregate === r.outline.id) ? <p className="ui-meta">No run recorded in this browser.</p> : null}</Card> : null}

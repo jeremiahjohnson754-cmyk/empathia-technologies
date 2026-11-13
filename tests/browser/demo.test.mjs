@@ -328,7 +328,7 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
 
     // changed for D44: ServiceHands is not the visitor's (the owl page would show), so the reset is done as the service manager
     await persp('svcmgr'); await page.evaluate(() => { location.hash = '#/v25/service'; }); await page.waitForTimeout(400); await page.click('button:has-text("Reset workspace")'); await page.waitForTimeout(300);
-    ok('M-07', 'Reset returns the workspace to its seed: ISS-0417 is OPEN again and the cases are gone', /OPEN[\s\S]*ISS-0417/.test(await page.locator('[data-testid=incidents]').innerText()) && !/APX-/.test(await page.locator('main').innerText()));
+    ok('M-07', 'Reset returns the workspace to its seed: ISS-0417 is OPEN again and the cases are gone', /OPEN[\s\S]*ISS-0417/.test(await page.locator('[data-testid=incidents]').innerText()) && !/APX-0(0[2-9]|[1-9]\d)/.test(await page.locator('main').innerText()));   // 13 Nov 2026: the seed holds V2.5.3's worked case APX-001; the cases this run opened (APX-002 on) are gone
   }
   ok(`D-${tag}-07`, 'no page error, no console error, no request outside the page', !errs.length && !ext.length, [...errs, ...ext].slice(0, 3).join(' | '));
   await ctx.close();
