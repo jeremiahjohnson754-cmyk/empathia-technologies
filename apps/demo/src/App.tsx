@@ -81,7 +81,7 @@ export function App() {
       // a field inside the page that changed the address (a room select, a search box) keeps the focus: the person is still using it
       // — and so does the Search Party bar in the header when the person has already gone back to it (choosing a result blurs it, so a
       // focused bar here was focused after the navigation; taking it away would drop the words being typed)
-      const a = document.activeElement; const inField = !!a && ((!!m && m.contains(a) && /^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName)) || a.id === 'find-in');
+      const a = document.activeElement; const inField = !!a && ((!!m && m.contains(a) && (/^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName) || a.getAttribute('role') === 'tab')) || a.id === 'find-in');   // a tab moved to by the arrow keys keeps the focus too (13 Nov 2026)
       if (inField) { /* announce only */ } else if (h1) toHeading(h1); else {
         m?.focus();
         if (m && typeof MutationObserver !== 'undefined') {

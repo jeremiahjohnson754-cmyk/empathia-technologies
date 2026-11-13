@@ -3,7 +3,7 @@
  * the Lite 50/10 directive. Overview is the room page as it was; each other tab gathers one subject from the room's record, computed by
  * model.ts and the commissioning engine. The tab travels in the address (?tab=), so a link opens the same tab. A visitor sees Overview only.
  */
-import type { ReactNode, KeyboardEvent as RKE } from 'react';
+import { useEffect, type ReactNode, type KeyboardEvent as RKE } from 'react';
 import { Card, Chip, StatTile, Tag } from '@empathia/ui';
 import { openIssues, type RoomRecord } from '../campus/design.js';
 import { STATES, roomState, pct, rt60Estimate, criticalDistance, RT60_ASSUMED, Q_TALKER, type StateKey } from './model.js';
@@ -14,10 +14,13 @@ export const ROOM_TABS = [['overview', 'Overview'], ['states', 'Room states'], [
 export type RoomTab = (typeof ROOM_TABS)[number][0];
 export const tabOf = (q: string | null): RoomTab => (ROOM_TABS.find(([k]) => k === q)?.[0] || 'overview');
 
+let focusNext: RoomTab | null = null;
 export function RoomTabBar({ tab, onTab }: { tab: RoomTab; onTab: (t: RoomTab) => void }) {
   // the tab pattern: arrow keys move between tabs, Home and End go to the ends; only the chosen tab is in the Tab order
   const key = (e: RKE, i: number) => { const n = ROOM_TABS.length; const j = e.key === 'ArrowRight' ? (i + 1) % n : e.key === 'ArrowLeft' ? (i + n - 1) % n : e.key === 'Home' ? 0 : e.key === 'End' ? n - 1 : -1;
-    if (j < 0) return; e.preventDefault(); onTab(ROOM_TABS[j]![0]); requestAnimationFrame(() => document.getElementById(`lite-rtab-${ROOM_TABS[j]![0]}`)?.focus()); };
+    if (j < 0) return; e.preventDefault(); focusNext = ROOM_TABS[j]![0]; onTab(ROOM_TABS[j]![0]); };
+  // the address changes with the tab and the page may draw again: the tab moved to keeps the focus
+  useEffect(() => { if (focusNext === tab) { focusNext = null; document.getElementById(`lite-rtab-${tab}`)?.focus(); } }, [tab]);
   return <div className="lt-rtabs" role="tablist" aria-label="About this room" data-testid="lite-rtabs">
     {ROOM_TABS.map(([k, l], i) => <button key={k} type="button" role="tab" id={`lite-rtab-${k}`} aria-selected={tab === k} aria-controls="lite-rtab-panel" tabIndex={tab === k ? 0 : -1} onKeyDown={(e) => key(e, i)} className={`lt-rtab${tab === k ? ' on' : ''}`} onClick={() => onTab(k)} data-testid={`lite-rtab-${k}`}>{l}</button>)}
   </div>;
