@@ -179,7 +179,10 @@ export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, 
   const floorDelta = (du: number, dv: number) => { const a = c.cam.yaw * Math.PI / 180, ca = Math.cos(a), sa = Math.sin(a), spp = Math.max(0.2, Math.sin(c.cam.pitch * Math.PI / 180)); const A = du / S, B = dv / (S * spp); return [A * ca + B * sa, -A * sa + B * ca] as const; };
   const objDrag = onObjDrag ? {
     onPointerDownCapture: (e: { target: unknown; clientX: number; clientY: number; pointerId: number; stopPropagation: () => void; currentTarget: unknown }) => {
-      const t = (e.target as Element).closest?.('[data-o]') as HTMLElement | SVGElement | null; const id = t?.getAttribute('data-o'); if (!id || id !== sel) return;   // only the selected object is picked up; anything else still orbits the camera
+      // the selected object is picked up when the pointer is on it, even where another target overlaps it on a small screen
+      const t = (e.target as Element).closest?.('[data-o]') as HTMLElement | SVGElement | null; let id = t?.getAttribute('data-o') || null;
+      if (sel && id !== sel) { const own = stage.current?.querySelector(`.l3-hitbtn[data-o="${CSS.escape(sel)}"]`)?.getBoundingClientRect(); if (own && e.clientX >= own.left && e.clientX <= own.right && e.clientY >= own.top && e.clientY <= own.bottom) id = sel; }
+      if (!id || id !== sel) return;   // only the selected object is picked up; anything else still orbits the camera
       const svg = stage.current?.querySelector('svg.l3-svg') as SVGSVGElement | null; const w = svg?.getBoundingClientRect().width || 1;
       od.current = { id, x: e.clientX, y: e.clientY, k: (x1 - x0) / w, moved: false }; e.stopPropagation(); try { (stage.current as HTMLElement | null)?.setPointerCapture?.(e.pointerId); } catch { /* */ } },
     onPointerMoveCapture: (e: { clientX: number; clientY: number; stopPropagation: () => void }) => { const d = od.current; if (!d) return; e.stopPropagation();

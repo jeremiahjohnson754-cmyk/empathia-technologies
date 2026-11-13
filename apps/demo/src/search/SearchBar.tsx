@@ -6,6 +6,7 @@
  */
 import { useId, useMemo, useRef, useState, type RefObject } from 'react';
 import { type Hit } from './find.js';
+import { CAMPUS_ROOMS } from '../campus/canon.js';   // the full answer lists every room, however many the campus holds (it read 90 until 13 Nov 2026)
 import { understand, canonical, type Reading } from './understand.js';
 import { allows } from '../access/policy.js';
 import type { RoleKey } from '../registry.types.js';
@@ -74,7 +75,7 @@ function Answer({ r }: { r: Reading }) {
 
 export function FindPage({ hash, role }: { hash: string; role?: RoleKey }) {
   const q = new URLSearchParams(/\?(.*)$/.exec(hash)?.[1] || '').get('q') || '';
-  const r = useMemo(() => understand(q, { limit: 90, may: mayFor(role) }), [q, role]); const hits = r.hits; const answer = r.mode === 'answer';
+  const r = useMemo(() => understand(q, { limit: CAMPUS_ROOMS.length, may: mayFor(role) }), [q, role]); const hits = r.hits; const answer = r.mode === 'answer';
   const groups = (['room', 'product', 'tour', 'building', 'device', 'page'] as const).map((k) => [k, hits.filter((h) => h.kind === k)] as const).filter(([, l]) => l.length);
   return (
     <section className="fnd" data-native="" data-testid="find-page" data-mode={q ? r.mode : 'start'}>

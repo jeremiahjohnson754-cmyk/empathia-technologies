@@ -27,7 +27,7 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   ok(`LA-${tag}-04`, 'turning shows in the plan; a position typed in the plan places it, to the centimetre', r1 === 15 && Math.abs(Number(await p.getByTestId('lite-arr-y').inputValue()) - 3.5) < 0.011, `${r1}`);
   // drag it across the floor in 3D: it follows the pointer, the camera stays still, and the drag is one step of undo
   const yaw0 = await p.locator('[data-testid=lite-room-3d] .l3-svg').getAttribute('data-yaw'); const xy0 = [Number(await p.getByTestId('lite-arr-x').inputValue()), Number(await p.getByTestId('lite-arr-y').inputValue())];
-  const hb = await p.locator(`[data-testid=lite-room-3d] .l3-hitbtn[data-o="${selId}"]`).boundingBox();
+  const hl = p.locator(`[data-testid=lite-room-3d] .l3-hitbtn[data-o="${selId}"]`); await hl.scrollIntoViewIfNeeded(); await p.waitForTimeout(150); const hb = await hl.boundingBox();   // the plan's fields were last in use, below the room
   await p.mouse.move(hb.x + hb.width / 2, hb.y + hb.height / 2); await p.mouse.down(); for (let k = 1; k <= 6; k++) await p.mouse.move(hb.x + hb.width / 2 + k * 12, hb.y + hb.height / 2 + k * 4); await p.mouse.up(); await p.waitForTimeout(300);
   const xy1 = [Number(await p.getByTestId('lite-arr-x').inputValue()), Number(await p.getByTestId('lite-arr-y').inputValue())];
   const movedBy = Math.hypot(xy1[0] - xy0[0], xy1[1] - xy0[1]);

@@ -51,16 +51,17 @@ function worldScene(cam: Cam, w: LiteWorld): L3Scene {
   }
   // University: each building at the scale of its largest level, the campuses side by side
   const groups = new Map<string, EstateNode[]>(); for (const b of tops) { const c = b.parent || ''; groups.set(c, [...(groups.get(c) || []), b]); }
-  const placed: Array<{ b: EstateNode; x: number; y: number; w: number; d: number; levels: number }> = []; let gx = 0; let maxY = 0;
-  for (const [, bs] of groups) { let x = gx, y = 0, rowD = 0; const width = 140;
-    for (const b of bs) { const ls = levelsOf(ix, b); const ps = ls.map((l) => levelPlan(w, l.id)); const bw = Math.min(70, Math.max(16, ...ps.map((p) => p.W)) * 0.55), bd = Math.min(40, Math.max(12, ...ps.map((p) => p.D)) * 0.55);
-      if (x + bw > gx + width) { x = gx; y += rowD + 14; rowD = 0; } placed.push({ b, x, y, w: bw, d: bd, levels: Math.max(1, ls.length) }); x += bw + 14; rowD = Math.max(rowD, bd); maxY = Math.max(maxY, y + bd); }
-    gx += width + 30; }
-  const W = gx - 30, D = maxY; const sc = scene(W / 2, D / 2, Math.hypot(W, D) / 2, 10);
+  // each campus is a block of buildings in rows; the blocks sit one behind the other, so the whole university fits one view
+  const placed: Array<{ b: EstateNode; x: number; y: number; w: number; d: number; levels: number }> = []; let gy = 0; let maxX = 0; const width = 120;
+  for (const [, bs] of groups) { let x = 0, y = gy, rowD = 0;
+    for (const b of bs) { const ls = levelsOf(ix, b); const ps = ls.map((l) => levelPlan(w, l.id)); const bw = Math.min(46, Math.max(18, ...ps.map((p) => p.W)) * 0.8), bd = Math.min(30, Math.max(14, ...ps.map((p) => p.D)) * 0.8);
+      if (x + bw > width) { x = 0; y += rowD + 12; rowD = 0; } placed.push({ b, x, y, w: bw, d: bd, levels: Math.max(1, ls.length) }); x += bw + 12; rowD = Math.max(rowD, bd); maxX = Math.max(maxX, x - 12); }
+    gy = y + rowD + 26; }
+  const W = maxX, D = gy - 26; const sc = scene(W / 2, D / 2, Math.hypot(W, D) / 2, 10);
   poly(sc, 0, [[-10, -10, -0.05], [W + 10, -10, -0.05], [W + 10, D + 10, -0.05], [-10, D + 10, -0.05]], { f: 'rgba(30,44,36,.9)', s: 'none' });
   for (const p of placed) { const to = worldPlaceHref(w, p.b.id); const n = roomsUnder(ix, p.b.id).length;
     box(sc, cam, { x: p.x + p.w / 2, y: p.y + p.d / 2, w: p.w, d: p.d, h: 3.6 * p.levels }, BLD, { stroke: 'rgba(255,246,232,.3)', nav: to });
-    label(sc, [p.x + p.w / 2, p.y + p.d / 2, 3.6 * p.levels + 0.5], short(p.b.name, 22), { sub: `${n} rooms`, nav: to, testId: `lw-bld-label-${p.b.id}` });
+    label(sc, [p.x + p.w / 2, p.y + p.d / 2, 3.6 * p.levels + 0.5], short(p.b.name.replace(/ (Building|Centre|Hall|House)$/, ''), 16), { cls: 'soft', nav: to, testId: `lw-bld-label-${p.b.id}` });
     hit(sc, [p.x + p.w / 2, p.y + p.d / 2, 1.8 * p.levels], { nav: to, r: 20, label: `${p.b.name}: ${n} rooms. Opens the building.`, testId: `lw-bld-${p.b.id}` }); }
   return sc;
 }
@@ -70,7 +71,7 @@ function WorldHome({ w }: PageProps & { w: LiteWorld }) {
   return <section className="lt-page lt-page--scene" data-testid="lw-home" data-world={w}>
     <Crumbs w={w} trail={[]} />
     <PageHero product="lite" plain eyebrow="Empathia Lite · another world" title={WORLD_NAME[w]} lede={`${tops.length} ${w === 'university' ? 'buildings' : 'levels'}, ${rooms.length} rooms. ${furn.length} are furnished from V2.5.3’s layouts for their type; the rest are shown on their floor. Fictional and synthetic.`} />
-    <figure className="stage lt-stage lt-stage--hero" data-stage=""><L3View sc={sc} c={c} onNav={go} label={`${WORLD_NAME[w]} in 3D. Each ${w === 'university' ? 'building' : 'level'} is a button.`} testId="lw-world-3d" tall S={w === 'university' ? 6 : 4} />
+    <figure className="stage lt-stage lt-stage--hero" data-stage=""><L3View sc={sc} c={c} onNav={go} label={`${WORLD_NAME[w]} in 3D. Each ${w === 'university' ? 'building' : 'level'} is a button.`} testId="lw-world-3d" tall S={w === 'university' ? 7 : 4} v253 />
       <figcaption className="stage__cap">Tap a {w === 'university' ? 'building' : 'level'} to go inside: {w === 'university' ? 'building, level, room' : 'level, room'}. Laid out by a stated rule from the estate’s records; not a surveyed plan.</figcaption></figure>
     <Card title={w === 'university' ? 'Buildings' : 'Levels'} icon="building" testId="lw-tops"><ul className="lt-wlist">{tops.map((t) => <li key={t.id}><a href={w === 'university' ? worldPlaceHref(w, t.id) : worldLevelHref(w, t.id)} data-testid={`lw-top-${t.id}`}><b>{t.name}</b><span className="ui-meta">{roomsUnder(ix, t.id).length} rooms{t.group ? ` · ${t.group}` : ''}</span></a></li>)}</ul></Card>
     <p className="ui-meta">Also: <a href={`#/estate/${w}`}>{WORLD_NAME[w]} estate</a> · <a href="#/lite">the Enterprise campus in Lite</a></p>
