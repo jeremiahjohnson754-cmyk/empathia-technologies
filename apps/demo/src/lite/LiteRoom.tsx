@@ -65,18 +65,13 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
   const count = (cats: string[]) => st.positions.filter((x) => cats.includes(x.cat)).length;
   const lensesOpen = lensesFor(role);
   return (
-    <section className="lt-page lt-roompage" data-testid="lite-room" data-room={id} data-state={stateKey} data-lens={lens}>
-      <LiteNav here="" role={role} />
+    <section className="lt-page lt-roompage lt-page--scene" data-testid="lite-room" data-room={id} data-state={stateKey} data-lens={lens}>
       <nav aria-label="Breadcrumb" className="crumbs"><ol><li><a href="#/lite">Lite</a></li><li><a href={`#/lite/b/${o.building}`}>{B.name}</a></li><li><a href={`#/lite/b/${o.building}/${o.floor}`}>Floor {o.floor}</a></li><li><span aria-current="page">{o.number}</span></li></ol></nav>
-      <PageHero product="lite" icon="room" compact eyebrow={`${shortName(o)} · ${r.archetypeName} · ${o.capacity} seats`} title={o.name} lede={o.intent}
+      <PageHero product="lite" icon="room" plain eyebrow={`${shortName(o)} · ${r.archetypeName} · ${o.capacity} seats`} title={o.name} lede={o.intent}
         meta={[<Chip key="l" small tone={LIFE_TONE[r.lifecycle] || 'muted'}>{r.lifecycle.toLowerCase().replace(/_/g, ' ')}</Chip>, <Chip key="s" small tone="muted">Class templates · spec to verify</Chip>, <Chip key="g" small tone="muted">Geometry {r.geometryProvenance.toLowerCase()}</Chip>, ...(o.planRow ? [<Chip key="p" small tone="info">{o.roster ? `90-room estate · row ${o.planRow} · ${o.sector}` : `Rooms plan · row ${o.planRow}`}</Chip>] : []), ...(issues.length ? [<Chip key="i" small tone="warn" icon="alert">{issues.length} open issue{issues.length === 1 ? '' : 's'}</Chip>] : [])]}
-        aside={<ScoreRing value={score} size={96} label="Readiness" caption="Verified tests and open issues on the record" />} />
+        />
       {o.nonOperational && <p className="lt-nonop" role="note" data-testid="lite-nonop"><Icon name="info" size={16} /> <b>Simulated · non-operational.</b> This is a demonstration of an operations room. Nothing here monitors, controls or alerts on a real system; every number is computed from the synthetic records.</p>}
-      {lensesOpen.length > 1 && <div className="lt-lenses lt-lenses--sm" role="radiogroup" aria-label="Lite lens">{lensesOpen.map((l) => <button key={l.key} type="button" role="radio" aria-checked={lens === l.key} className={`lt-lens${lens === l.key ? ' on' : ''}`} onClick={() => pickLens(l.key)} data-testid={`lite-lens-${l.key}`}><b>{l.label}</b><span>{l.gives}</span></button>)}</div>}
-      <AdvancedModes role={role} id={id} lens={lens} query={query} base={base} />
-      <div className="lt-states" role="radiogroup" aria-label="Room state" data-testid="lite-states">
-        {STATES.map((s) => { const x = s.key === stateKey ? st : null; return <button key={s.key} type="button" role="radio" aria-checked={s.key === stateKey} className={`lt-state lt-state--${s.key}${s.key === stateKey ? ' on' : ''}`} onClick={() => upd('state', s.key === 'current' ? null : s.key)} data-testid={`lite-state-${s.key}`}><b>{s.label}</b><span>{s.says}</span>{x && !x.available ? <em>none on record</em> : null}</button>; })}
-      </div>
+      {lensesOpen.length > 1 && <div className="lt-lenses lt-lenses--sm" role="radiogroup" aria-label="Lite lens">{lensesOpen.map((l) => <button key={l.key} type="button" role="radio" aria-checked={lens === l.key} className={`lt-lens${lens === l.key ? ' on' : ''}`} onClick={() => pickLens(l.key)} data-testid={`lite-lens-${l.key}`}><b>{l.label}</b><span title={l.says}>sees {l.gives.toLowerCase()}</span></button>)}</div>}
       <div className="lt-roomgrid">
         <div className="lt-stagecol">
           <figure className="stage lt-stage" data-stage="">
@@ -85,9 +80,13 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
               selected={sel} onSelect={(c) => setSel(c === sel ? null : c)} occupied={occ} partitions={partitions} active={cfg && cfg.key !== 'combined' ? [cfg.x0, cfg.x1] : null} bind={orbit.bind} ghosts={ghosts} />
             <figcaption className="stage__cap"><b>{st.title}.</b> {st.summary} <span className="ui-meta">Basis: {st.basis}. Drag to orbit; the buttons do the same.</span></figcaption>
           </figure>
+          <div className="lt-states" role="radiogroup" aria-label="Room state" data-testid="lite-states">
+            {STATES.map((s) => { const x = s.key === stateKey ? st : null; return <button key={s.key} type="button" role="radio" aria-checked={s.key === stateKey} className={`lt-state lt-state--${s.key}${s.key === stateKey ? ' on' : ''}`} onClick={() => upd('state', s.key === 'current' ? null : s.key)} data-testid={`lite-state-${s.key}`}><b>{s.label}</b><span>{s.says}</span>{x && !x.available ? <em>none on record</em> : null}</button>; })}
+          </div>
           <Legend overlays={overlays} marks={st.marks} />
         </div>
         <aside className="lt-panel" aria-label="Layers, overlays and the selected device">
+          <div className="lt-ready" data-testid="lite-room-ready"><ScoreRing value={score} size={72} label="Readiness" caption="Verified tests and open issues on the record" /></div>
           {mayOv.length > 0 && <fieldset className="lt-switches" data-testid="lite-overlays"><legend>Overlays</legend>
             {mayOv.map((x) => { const on = overlays.has(x.key); return <button key={x.key} type="button" role="switch" aria-checked={on} className={`lt-switch lt-switch--${x.key}${on ? ' on' : ''}`} onClick={() => toggle('ov', x.key, overlays)} data-testid={`lite-ov-${x.key}`}><span className="lt-switch__name">{x.label}</span><span className="lt-switch__v">{ovValue(x.key, cov)}</span><span className="lt-switch__knob" aria-hidden="true" /></button>; })}
           </fieldset>}
@@ -109,6 +108,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
           </div>
         </aside>
       </div>
+      <AdvancedModes role={role} id={id} lens={lens} query={query} base={base} />
       {query.get('xm') === '1' && <Measurements cov={cov} w={o.dims[0]} l={o.dims[1]} h={o.dims[2]} />}
       <ul className="lt-metrics" aria-label="Room metrics, modeled">
         {overlaysFor(role).some((x) => x.key === 'camera') && <li><StatTile label="Camera coverage" value={pct(cov.camera.covered, cov.camera.of)} unit="%" icon="eye" tone="indigo" hint={`${cov.camera.covered} of ${cov.camera.of} seats in view · modeled`} testId="lite-m-camera" /></li>}
@@ -135,6 +135,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
       {o.id === 'R-ATL-6-300' && <FleetWall />}
       <WhoKnows role={role} kind="room" id={o.id} />
       <p className="ui-meta lt-foot">Elsewhere: <a href={`#/guide/room/${o.id}`} data-testid="lite-guide">how to use this room</a> · <a href={`#/here/${o.id}`} data-testid="lite-here">I am in this room</a>{role !== 'visitor' ? <> · <a href={`#/people?room=${o.id}`} data-testid="lite-who">who knows this room</a></> : null}{mayCapture(role) ? <> · <a href={`#/instant/${o.id}`} data-testid="lite-capture">capture this room</a></> : null}{readsManual(role) ? <> · <a href={`#/manual/build?room=${o.id}`} data-testid="lite-standards">the standards this room is held to</a></> : null}{allows({ area: 'control' }, role) && <> · <a href={`#/control/${o.id}`} data-testid="lite-control">operate this room</a></>} · <a href={`#/search?focus=Room:${o.id}`}>Search Party from this room</a>{allows({ area: 'room' }, role) && <> · <a href={roomHref(o)}>technical room view</a></>} · <a href={`#/lite/way?to=${o.id}`}>find the way</a>{allows({ area: 'scouter' }, role) && <> · <a href="#/lite/scouter">ask Scouter about a device</a></>}</p>
+      <LiteNav here="" role={role} />
     </section>
   );
 }

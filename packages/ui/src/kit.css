@@ -31,6 +31,12 @@
 .kit-hero__actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-top: var(--sp-4); }
 .kit-hero__aside { display: flex; gap: var(--sp-4); align-items: center; flex-wrap: wrap; }
 @media (max-width: 720px) { .kit-hero { padding: 20px 18px 18px; border-radius: 16px; } .kit-hero--aside { grid-template-columns: minmax(0, 1fr); } }
+/* the plain head (V2.5.3 liteHead): eyebrow, title and one line, no card; the scene or the work below it is the hero */
+.kit-hero--plain, .kit-hero--plain.kit-hero--compact { background: none; border: 0; box-shadow: none; padding: 4px 0 0; margin-bottom: var(--sp-3); border-radius: 0; gap: var(--sp-3); }
+.kit-hero--plain::after { display: none; }
+.kit-hero--plain .kit-hero__title { font-size: clamp(26px, 3vw, 34px); max-width: none; }
+.kit-hero--plain .kit-hero__lede { margin-top: 6px; }
+@media (max-width: 720px) { .kit-hero--plain, .kit-hero--plain.kit-hero--compact { padding: 2px 0 0; } }
 
 /* ---------------------------------------------------------------- chips and status dots */
 .kit-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 3px 10px; border-radius: var(--r-pill); border: 1px solid var(--line2);

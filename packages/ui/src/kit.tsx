@@ -65,11 +65,11 @@ export function Chip({ children, tone, icon, selected, onClick, href, small, tit
  * a lede, actions, meta chips and an optional aside (a ScoreRing, StatTiles…). The h1 carries tabIndex=-1 so route focus can land on it
  * without drawing a ring (kit.css shows outlines on :focus-visible only).
  */
-export function PageHero({ eyebrow, title, lede, actions, meta, aside, product, icon, id, level = 1, compact, className }: { eyebrow?: ReactNode; title: ReactNode; lede?: ReactNode; actions?: ReactNode; meta?: ReactNode[]; aside?: ReactNode; product?: string; icon?: IconName; id?: string; level?: 1 | 2; compact?: boolean; className?: string }) {
+export function PageHero({ eyebrow, title, lede, actions, meta, aside, product, icon, id, level = 1, compact, plain, className }: { eyebrow?: ReactNode; title: ReactNode; lede?: ReactNode; actions?: ReactNode; meta?: ReactNode[]; aside?: ReactNode; product?: string; icon?: IconName; id?: string; level?: 1 | 2; compact?: boolean; /** V2.5.3's page head: no card, the content below is the hero (founder 12 Nov 2026: "the room should be the hero of the screen") */ plain?: boolean; className?: string }) {
   const auto = useId(); const hid = id || `hero-${auto.replace(/:/g, '')}`;
   const H = level === 1 ? 'h1' : 'h2';
   return (
-    <header className={cx('kit-hero', product && `ui-p--${product}`, product && 'kit-hero--p', compact && 'kit-hero--compact', !!aside && 'kit-hero--aside', className)} aria-labelledby={hid} data-testid="page-hero">
+    <header className={cx('kit-hero', product && `ui-p--${product}`, product && 'kit-hero--p', compact && 'kit-hero--compact', plain && 'kit-hero--plain', !!aside && 'kit-hero--aside', className)} aria-labelledby={hid} data-testid="page-hero">
       <div className="kit-hero__main">
         {eyebrow ? <p className="kit-hero__eyebrow">{icon ? <Icon name={icon} size={16} /> : null}<span>{eyebrow}</span></p> : null}
         <H id={hid} className="kit-hero__title" tabIndex={-1}>{title}</H>

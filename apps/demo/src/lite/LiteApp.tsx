@@ -17,6 +17,8 @@ import { LIFE_TONE } from '../campus/CampusPage.js';
 import { LITE_TAGLINE, SPACES, GUIDES, VISITOR_PATH, CAMPUS_PLAZA } from './data/v253.js';
 import { lensesFor, lensFor, ALL_SITES, roomsOf, buildingSummary, campusSummary, readiness, liteRoomHref, chapterCount, type Lens } from './model.js';
 import { LiteRoom } from './LiteRoom.js';
+import { BuildingStage, FloorStage, CampusStage, floorPlan } from './BuildingScenes.js';
+import { bandOf as metricBand } from '../campus/metrics.js';
 import { LitePortfolio } from './LitePortfolio.js';
 import { SpacePage, ServicesPage, GuidesPage, WayPage, VisitPage, QrPage, CommonsPage } from './LitePlaces.js';
 
@@ -80,7 +82,7 @@ function LensPicker({ role, lens, onPick }: { role: RoleKey; lens: Lens | null; 
   if (open.length < 2) return null;
   return (
     <div className="lt-lenses" role="radiogroup" aria-label="Lite lens">
-      {open.map((l) => <button key={l.key} type="button" role="radio" aria-checked={lens === l.key} className={`lt-lens${lens === l.key ? ' on' : ''}`} onClick={() => onPick(l.key)} data-testid={`lite-lens-${l.key}`}><b>{l.label}</b><span>{l.gives} · {l.says}</span></button>)}
+      {open.map((l) => <button key={l.key} type="button" role="radio" aria-checked={lens === l.key} className={`lt-lens${lens === l.key ? ' on' : ''}`} onClick={() => onPick(l.key)} data-testid={`lite-lens-${l.key}`}><b>{l.label}</b><span title={l.says}>sees {l.gives.replace(/^A /, 'a ').replace(/^An /, 'an ').toLowerCase()}</span><span className="ui-visually-hidden"> · {l.says}</span></button>)}
     </div>
   );
 }
@@ -92,16 +94,17 @@ function LiteHome({ role }: PageProps) {
   const scouter = allows({ area: 'scouter' }, role); const services = allows({ area: 'lite.services' }, role);
   const pick = (l: Lens) => { saveLens(l); setLens(l); };
   return (
-    <section className="lt-page" data-testid="lite-home">
-      <LiteNav here="" role={role} />
-      <PageHero product="lite" icon="campus" eyebrow="Empathia Lite · Living campus experience" title={SITE.name}
-        lede={<>{LITE_TAGLINE} {BUILDINGS.length} buildings on the campus and {REGIONAL_SITES.length} fictional sites beyond it, {s.rooms} rooms — {s.plan} added by the rooms plan and {ESTATE_ROOMS.length} by the 90-room estate — {SPACES.length} workplace spaces and {GUIDES.length} guides of {chapterCount()} chapters. Synthetic, modeled, never surveyed.</>}
-        meta={[<Chip key="a" small tone="ok" icon="check">{s.accepted} accepted</Chip>, <Chip key="c" small tone="warn" icon="clock">{s.commissioning} commissioning</Chip>, <Chip key="i" small tone={s.issues ? 'warn' : 'ok'} icon="alert">{s.issues} open issue{s.issues === 1 ? '' : 's'}</Chip>, <Chip key="s" small tone="muted">Synthetic campus · seed 20261020</Chip>]}
-        aside={<ScoreRing value={s.score} label="Campus readiness" caption="Computed from the room records: verified tests and open issues" />} />
+    <section className="lt-page lt-page--scene" data-testid="lite-home">
+      <PageHero product="lite" plain eyebrow="Empathia Lite" title={SITE.name} lede={LITE_TAGLINE} />
       <LensPicker role={role} lens={lens} onPick={pick} />
+      <div className="lt-hero-stage" data-testid="lite-campus-card"><figure className="stage lt-stage lt-stage--hero" data-stage=""><CampusStage buildings={CAMPUS_BLDGS} lens={lens} tone={campusTone} plaza={CAMPUS_PLAZA} visitorPath={VISITOR_PATH} onNav={(to) => { location.hash = to; }} />
+        <figcaption className="stage__cap lt-capchips"><Chip small tone="muted" icon="moon">Stage stays dark (D36)</Chip><Chip small tone="ok">green · healthy</Chip><Chip small tone="warn">amber · monitor</Chip><Chip small tone="bad">red · action</Chip><span>Footprints from V2.5.3 BUILDINGS · readiness computed from the room records</span></figcaption></figure></div>
+      <p className="lt-gnote">Tap a building to go inside: campus, building, floor, room. The same places appear in every lens; the lens decides what is drawn on them.</p>
+      <LiteNav here="" role={role} />
       <div className="lt-home">
-        <Card title="The campus" sub="Choose a building. Height is floors; colour is readiness from the record." icon="campus" pad={false} testId="lite-campus-card">
-          <figure className="stage lt-stage" data-stage=""><CampusScene onOpen={(k) => { location.hash = `#/lite/b/${k}`; }} /><figcaption className="stage__cap lt-capchips"><Chip small tone="muted" icon="moon">Stage stays dark (D36)</Chip><Chip small tone="ok">green · healthy</Chip><Chip small tone="warn">amber · monitor</Chip><Chip small tone="bad">red · action</Chip><span>Footprints from V2.5.3 BUILDINGS · readiness computed from the room records</span></figcaption></figure>
+        <Card title="The campus in numbers" icon="campus" testId="lite-campus-sum">
+          <div className="lt-sum"><ScoreRing value={s.score} size={96} label="Campus readiness" caption="Computed from the room records: verified tests and open issues" />
+            <div><p className="ui-muted">{LITE_TAGLINE} {BUILDINGS.length} buildings on the campus and {REGIONAL_SITES.length} fictional sites beyond it, {s.rooms} rooms — {s.plan} added by the rooms plan and {ESTATE_ROOMS.length} by the 90-room estate — {SPACES.length} workplace spaces and {GUIDES.length} guides of {chapterCount()} chapters. Synthetic, modeled, never surveyed.</p><ul className="lt-sum__chips">{[<Chip key="a" small tone="ok" icon="check">{s.accepted} accepted</Chip>, <Chip key="c" small tone="warn" icon="clock">{s.commissioning} commissioning</Chip>, <Chip key="i" small tone={s.issues ? 'warn' : 'ok'} icon="alert">{s.issues} open issue{s.issues === 1 ? '' : 's'}</Chip>, <Chip key="s" small tone="muted">Synthetic campus · seed 20261020</Chip>].map((c, i) => <li key={i}>{c}</li>)}</ul></div></div>
         </Card>
         <div className="lt-side">
           {scouter && <Card title="Scouter in Lite" sub="Does this device suit this room?" icon="spark" tone="lite" testId="lite-scouter-card">
@@ -129,6 +132,9 @@ function LiteHome({ role }: PageProps) {
   );
 }
 
+/** the campus map's own six buildings (every other site is listed, not drawn), and each one's readiness band for the technical lenses */
+const CAMPUS_BLDGS = ALL_SITES.filter((b) => !REGIONAL_SITES.some((x) => x.key === b.key));
+const campusTone = (k: string) => metricBand(buildingSummary(k).score);
 function Tile({ href, icon, title, sub }: { href: string; icon: IconName; title: string; sub: string }) {
   return <li><a className="lt-tile" href={href}><span className="lt-tile__icon" aria-hidden="true"><Icon name={icon} size={20} /></span><b>{title}</b><span className="ui-muted">{sub}</span></a></li>;
 }
@@ -199,20 +205,37 @@ function LiteBuilding({ role, b, f }: PageProps & { b: string; f?: string }) {
   const s = buildingSummary(b); const floors = Array.from({ length: B.floors }, (_, i) => i + 1);
   const rooms = roomsOf(b, floor ?? undefined);
   const regional = REGIONAL_SITES.some((x) => x.key === B.key);
+  const [lens, setLens] = useState<Lens | null>(() => storedLens(role));
+  const go = (to: string) => { location.hash = to; };
+  const plan = floor != null ? floorPlan(b, floor) : null; const spaces = plan ? plan.items.filter((x) => x.type === 'space') : [];
   return (
-    <section className="lt-page" data-testid="lite-building">
-      <LiteNav here="" role={role} />
+    <section className="lt-page lt-page--scene" data-testid="lite-building">
       <nav aria-label="Breadcrumb" className="crumbs"><ol><li><a href="#/lite">Lite</a></li><li>{floor == null ? <span aria-current="page">{B.name}</span> : <a href={`#/lite/b/${b}`}>{B.name}</a>}</li>{floor != null && <li><span aria-current="page">Floor {floor}</span></li>}</ol></nav>
-      <PageHero product="lite" icon="building" compact eyebrow={regional ? 'Fictional regional site' : `${B.short} · opened ${B.opened}`} title={floor == null ? B.name : `${B.name} · floor ${floor}`}
-        lede={`${B.purpose}. ${s.rooms} room${s.rooms === 1 ? '' : 's'} in the campus model${regional ? '; not on the Northstar campus map' : ''}.`}
-        aside={<ScoreRing value={s.score} size={96} label="Readiness" caption="Average of its rooms" />} />
+      <PageHero product="lite" plain eyebrow={regional ? 'Fictional regional site' : `${B.short} · opened ${B.opened}`} title={floor == null ? B.name : `${B.name} · floor ${floor}`}
+        lede={floor == null ? `${B.purpose}. ${B.floors} floor${B.floors === 1 ? '' : 's'}, ${s.rooms} room${s.rooms === 1 ? '' : 's'} in the campus model${regional ? '; not on the Northstar campus map' : ''}.`
+          : `${rooms.length} room${rooms.length === 1 ? '' : 's'}${spaces.length ? `, ${spaces.map((x) => x.label).join(', ')}` : ''}.`} />
+      <LensPicker role={role} lens={lens} onPick={(l) => { saveLens(l); setLens(l); }} />
+      {floor == null
+        ? <><BuildingStage bKey={b} onNav={go} /><p className="lt-gnote">Each plate is one floor, drawn to scale from the room sizes in the record (modelled, not surveyed). Tap a floor to open it; drag to turn, pinch or scroll to zoom.</p></>
+        : <><FloorStage bKey={b} fN={floor} onNav={go} /><p className="lt-gnote">Rooms sit either side of the corridor, lifts and stairs in the core, in V2.5.3’s arrangement from each room’s modelled size. Tap a room to go in.</p></>}
       <div className="lt-floors" role="list" aria-label="Floors">
         <a role="listitem" className={`lt-floor${floor == null ? ' on' : ''}`} href={`#/lite/b/${b}`} aria-current={floor == null ? 'page' : undefined}><b>All</b><span>{s.rooms}</span></a>
         {floors.reverse().map((n) => { const c = roomsOf(b, n).length; return <a role="listitem" key={n} className={`lt-floor${floor === n ? ' on' : ''}${c ? '' : ' empty'}`} href={`#/lite/b/${b}/${n}`} aria-current={floor === n ? 'page' : undefined} aria-label={`Floor ${n}: ${c} room${c === 1 ? '' : 's'}`} data-testid={`lite-floor-${n}`}><b>{n}</b><span>{c}</span></a>; })}
       </div>
-      {floor != null && rooms.length > 0 && <FloorPlan rooms={rooms.map((o) => o.id)} />}
-      {rooms.length ? <ul className="lt-rooms">{rooms.map((o) => <li key={o.id}><RoomCard id={o.id} extra={o.scenario} /></li>)}</ul>
-        : <EmptyState title="No modelled room on this floor" icon="building">The campus model has {s.rooms} rooms in {B.name}; none is on floor {floor}. Try another floor.</EmptyState>}
+      <div className="lt-below">
+        <div className="lt-below__main">
+          {floor != null && rooms.length > 0 && <Card title="The floor as a 2D plan" sub="Footprints at scale; the same rooms as the 3D floor" icon="grid" pad={false}><FloorPlan rooms={rooms.map((o) => o.id)} /></Card>}
+          {rooms.length ? <ul className="lt-rooms">{rooms.map((o) => <li key={o.id}><RoomCard id={o.id} extra={o.scenario} /></li>)}</ul>
+            : <EmptyState title="No modelled room on this floor" icon="building">The campus model has {s.rooms} rooms in {B.name}; none is on floor {floor}. Try another floor.</EmptyState>}
+        </div>
+        <aside className="lt-below__side">
+          <Card title="Readiness" icon="check"><ScoreRing value={s.score} size={96} label="Readiness" caption="Average of its rooms" /></Card>
+          <Card title="Go" icon="route"><p className="lt-acts">
+            {floor != null && <a className="ui-btn" href={`#/lite/b/${b}`} data-testid="lite-up-building">All floors of {B.short}</a>}
+            <a className="ui-btn" href="#/lite" data-testid="lite-up-campus">Back to the campus</a>
+            {b === 'ATL' && <a className="ui-btn ui-btn--quiet" href="#/lite/space/SP-ATL-LOBBY">Back to the lobby</a>}</p></Card>
+        </aside>
+      </div>
     </section>
   );
 }
