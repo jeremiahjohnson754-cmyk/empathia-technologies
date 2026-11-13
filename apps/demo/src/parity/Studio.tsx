@@ -11,12 +11,12 @@ import { roomRecord } from '../campus/design.js';
 import { honest, Crumbs, Zone, FactsTable } from './ui.js';
 import { rt60Estimate, RT60_ASSUMED } from '../lite/acoustics.js';
 
-type Kind = 'display' | 'camera' | 'micceil' | 'speaker' | 'table' | 'seat';
+type Kind = 'display' | 'camera' | 'micceil' | 'mictable' | 'speaker' | 'table' | 'seat';
 /** an object of the concept; `rot` is a camera's aim in degrees (0 faces into the room, away from the front wall) */
 interface Item { k: Kind; x: number; y: number; rot?: number; id?: string }
 interface Version { name: string; at: string; w: number; l: number; h: number; seats: number; items: Item[] }
 interface Concept { v: 1; id: string; name: string; from: string; w: number; l: number; h: number; seats: number; items: Item[]; versions?: Version[] }
-const KIND: Record<Kind, string> = { display: 'Display', camera: 'Camera', micceil: 'Ceiling microphone', speaker: 'Loudspeaker', table: 'Table', seat: 'Seat' };
+const KIND: Record<Kind, string> = { display: 'Display', camera: 'Camera', micceil: 'Ceiling microphone', mictable: 'Table microphone', speaker: 'Loudspeaker', table: 'Table', seat: 'Seat' };
 const TPL: Array<{ key: string; name: string; sub: string; dims: [number, number, number]; seats: number; recipe: Partial<Record<Kind, number>> }> = [
   { key: 'hybrid', name: 'Hybrid conference', sub: 'A table for ten, one display, a camera, a ceiling array and two loudspeakers.', dims: [8, 6, 2.8], seats: 10, recipe: { display: 1, camera: 1, micceil: 1, speaker: 2, table: 1 } },
   { key: 'boardroom', name: 'Executive boardroom', sub: 'Eighteen seats, two displays, two cameras, two ceiling arrays.', dims: [10.5, 7, 3.1], seats: 18, recipe: { display: 2, camera: 2, micceil: 2, speaker: 4, table: 1 } },
@@ -34,7 +34,7 @@ function place(w: number, l: number, recipe: Partial<Record<Kind, number>>): Ite
   return out;
 }
 function fromRoom(id: string): Concept | null {
-  const r = roomRecord(id); if (!r) return null; const [w, l, h] = r.outline.dims; const map: Record<string, Kind> = { display: 'display', ledwall: 'display', projector: 'display', camera: 'camera', bar: 'camera', micceil: 'micceil', speaker: 'speaker', table: 'table' };
+  const r = roomRecord(id); if (!r) return null; const [w, l, h] = r.outline.dims; const map: Record<string, Kind> = { display: 'display', ledwall: 'display', projector: 'display', camera: 'camera', bar: 'camera', micceil: 'micceil', mictable: 'mictable', speaker: 'speaker', table: 'table' };
   const xs = r.positions.map((p) => p.x), ys = r.positions.map((p) => p.y); const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys);
   const items = r.positions.filter((p) => map[p.cat]).map((p) => ({ k: map[p.cat]!, x: maxX > minX ? ((p.x - minX) / (maxX - minX)) * w * 0.9 + w * 0.05 : w / 2, y: maxY > minY ? ((p.y - minY) / (maxY - minY)) * l * 0.9 + l * 0.05 : l / 2 }));
   return { v: 1, id: `C-${id}`, name: `Concept on ${shortName(r.outline)}`, from: id, w, l, h, seats: r.outline.capacity, items };
@@ -50,11 +50,11 @@ export interface Verdict { rule: string; ok: boolean | null; why: string; fix?: 
 export const seatsAt = (c: Concept): [number, number] => { const t = c.items.filter((i) => i.k === 'table'); return t.length ? [t.reduce((a, i) => a + i.x, 0) / t.length, t.reduce((a, i) => a + i.y, 0) / t.length] : [c.w / 2, c.l * 0.55]; };
 export function judge(c: Concept): Verdict[] {
   const disp = c.items.filter((i) => i.k === 'display'); const far = Math.hypot(c.w / 2, c.l - 0.15);
-  const needH = far / 6; const area = c.w * c.l; const mics = c.items.filter((i) => i.k === 'micceil').length; const cams = c.items.filter((i) => i.k === 'camera').length; const seatArea = area / Math.max(1, c.seats);
+  const needH = far / 6; const area = c.w * c.l; const mics = c.items.filter((i) => i.k === 'micceil').length; const tmics = c.items.filter((i) => i.k === 'mictable').length; const cams = c.items.filter((i) => i.k === 'camera').length; const seatArea = area / Math.max(1, c.seats);
   const [sx, sy] = seatsAt(c); const add = (k: Kind, x: number, y: number) => (x0: Concept): Concept => ({ ...x0, items: withIds([...x0.items, { k, x, y }]) });
   return [
     { rule: 'Display size for the farthest viewer (ST-VID-02)', ok: disp.length ? null : false, why: disp.length ? `The farthest seat is about ${far.toFixed(1)} m from the wall: an image at least ${needH.toFixed(2)} m tall is needed for detailed content. The display size is chosen at design; the studio does not invent one.` : 'No display is placed.', fix: disp.length ? undefined : { label: 'Add a display on the front wall', apply: add('display', c.w / 2, 0.15) } },
-    { rule: 'Microphone coverage (ST-AUD-01, planning rule)', ok: mics * 30 >= area || (area <= 25 && cams > 0), why: `${mics} ceiling microphone${mics === 1 ? '' : 's'} for ${area.toFixed(0)} m²: the planning rule allows about 30 m² per array${area <= 25 ? '; a small room may rely on a video bar' : ''}.`, fix: mics * 30 >= area || (area <= 25 && cams > 0) ? undefined : { label: 'Add a ceiling array over the seats', apply: add('micceil', sx, sy) } },
+    { rule: 'Microphone coverage (ST-AUD-01, planning rule)', ok: mics * 30 >= area || tmics * 2 >= c.seats || (area <= 25 && cams > 0), why: `${mics} ceiling microphone${mics === 1 ? '' : 's'} for ${area.toFixed(0)} m²: the planning rule allows about 30 m² per array${tmics ? `; ${tmics} table microphone${tmics === 1 ? '' : 's'} for ${c.seats} seats, about two seats each` : ''}${area <= 25 ? '; a small room may rely on a video bar' : ''}.`, fix: mics * 30 >= area || tmics * 2 >= c.seats || (area <= 25 && cams > 0) ? undefined : { label: 'Add a ceiling array over the seats', apply: add('micceil', sx, sy) } },
     { rule: 'Camera coverage of every seat (ST-VID-01)', ok: cams > 0 ? (c.seats <= 12 * cams) : false, why: cams ? `${cams} camera${cams === 1 ? '' : 's'} for ${c.seats} seats: about twelve seats per camera preset set.` : 'No camera is placed.', fix: cams > 0 && c.seats <= 12 * cams ? undefined : { label: 'Add a camera on the front wall', apply: add('camera', cams ? c.w * (cams % 2 ? 0.25 : 0.75) : c.w / 2, 0.35) } },
     { rule: 'Space per seat', ok: seatArea >= 1.8, why: `${seatArea.toFixed(1)} m² per seat; under 1.8 m² is cramped for a meeting room.`, fix: seatArea >= 1.8 ? undefined : { label: `Seat ${Math.max(1, Math.floor(area / 1.8))} instead`, apply: (x0) => ({ ...x0, seats: Math.max(1, Math.floor((x0.w * x0.l) / 1.8)) }) } },
   ];
@@ -62,7 +62,7 @@ export function judge(c: Concept): Verdict[] {
 /** the commissioning rehearsal (V2.5.3 stRehearsal): the tests this design would need. Expected, never evidence. */
 export function rehearsal(c: Concept): string[] {
   const n = (k: Kind) => c.items.filter((i) => i.k === k).length; const t: string[] = [];
-  if (n('micceil')) t.push(`Speech intelligibility (STIPA) at the ${Math.min(4, c.seats)} farthest seats, read at the far-end send`, 'Echo-canceller convergence with the loudspeakers at reference level');
+  if (n('micceil') || n('mictable')) t.push(`Speech intelligibility (STIPA) at the ${Math.min(4, c.seats)} farthest seats, read at the far-end send`, 'Echo-canceller convergence with the loudspeakers at reference level');
   if (n('speaker')) t.push('Loudspeaker level map at seat height, ±3 dB across the seats', 'A line check on every loudspeaker circuit');
   if (n('camera')) t.push(`Framing check per preset (${n('camera')} camera${n('camera') === 1 ? '' : 's'}) with people in the seats`);
   if (n('display')) t.push('Display brightness and uniformity against the commissioned value', 'Sightline check from the marginal seats');

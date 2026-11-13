@@ -36,6 +36,14 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   ok(`RT-${tag}-10`, 'no sideways scroll; no console error; nothing requested off the page', sw <= 0 && !t.errs.length && !t.off.length, `${sw} ${[...t.errs, ...t.off].slice(0, 3).join(' | ')}`);
   await t.close();
 }
+// V2.5.3's add palette lives in Design a Space (opened from the room's X-ray): a table microphone joins the display, camera, ceiling
+// array and loudspeaker, counts toward the microphone rule, and undo and redo take it back and forth
+{ const t = await open('#/studio/new/empty', { role: 'architect', sw: false }); const p = t.page; await p.getByTestId('studio-plan').waitFor();
+  const row = p.locator('tr', { has: p.locator('th', { hasText: /^Table microphone$/ }) }); await row.getByRole('button', { name: 'Add' }).click();
+  const n1 = await p.locator('[data-testid=studio-plan] [data-kind=mictable]').count(); const rule = await p.locator('main').innerText();
+  await p.getByTestId('studio-undo').click(); const n0 = await p.locator('[data-testid=studio-plan] [data-kind=mictable]').count(); await p.getByTestId('studio-redo').click(); const n2 = await p.locator('[data-testid=studio-plan] [data-kind=mictable]').count();
+  ok('RT-studio', 'the add palette has the table microphone; it counts toward the microphone rule; undo and redo take it back and forth', n1 === 1 && /1 table microphone for \d+ seats/.test(rule) && n0 === 0 && n2 === 1, `${n1} ${n0} ${n2}`);
+  await t.close(); }
 { const t = await open('#/lite/room/R-ATL-4-218?tab=systems', { role: 'visitor', sw: false }); const p = t.page; await p.getByTestId('lite-room').waitFor(); await p.waitForTimeout(300);
   ok('RT-visitor', 'a visitor sees the room without the tabs, and a tab in the address does not open the systems record', (await p.getByTestId('lite-rtabs').count()) === 0 && (await p.getByTestId('lite-rt-systems').count()) === 0);
   await t.close(); }
