@@ -34,7 +34,7 @@ for (const w of M.LITE_WORLDS) {
         // 13 Nov 2026 (founder, on a stadium suite drawn as V2.5.3's boardroom: "This looks terrible"): a type with an Empathia program is
         // drawn from it, every piece inside the room or on its balcony; a type whose nearest V2.5.3 layout was wrong is marked as being
         // redesigned instead of being drawn wrongly. (Changed from "every room of a type V2.5.3 had a layout for is drawn by V2.5.3".)
-        if (M.hasProgram(r.type)) { const P = M.programFor({ ...r, assets: [] }); assert.ok(P && P.pieces.length >= 10, `${r.id} program`);
+        if (M.hasProgram(r.type)) { const P = M.programFor({ ...r, assets: [] }); assert.ok(P && P.pieces.length >= 3, `${r.id} program`);   // a commentary booth holds a desk, a unit and a planter (was ≥ 10, when only the suite had a program)
           assert.ok(P.pieces.every((q) => q.x >= 0 && q.x <= P.w && (q.y >= 0 ? q.y <= P.d : q.kind === 'seats' && q.y > -2.1)), `${r.id}: a piece outside the room`); continue; }
         if (M.REDESIGN_TYPES.has(r.type)) continue;
         // 13 Nov 2026 (founder: "furnish every environment"): every other room is furnished by Empathia's own rule, inside its walls
