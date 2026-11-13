@@ -10,7 +10,19 @@ import { solid, lathe, flat, shadow, pool, chair, stool, sofa, table, lowTable, 
 import type { Program, Piece, Side } from './programs.js';
 import { bowlOutside } from './stadium.js';
 
-const T = 0.14, CUT = 0.34, POCHE = 'rgb(58,54,50)';
+const TW = 0.14, CUT = 0.34, POCHE = 'rgb(58,54,50)';
+/** Each world's own character (13 Nov 2026, the spatial gate's "four-world differentiation"): the Enterprise campus in blue-grey carpet,
+ *  warm white walls and teal; the University in sage carpet, cream walls, forest-green and oak; Harborlight Stadium in charcoal carpet, cool
+ *  white and the club's harbour teal; the convention centre in navy carpet, pale grey and slate blue. Furniture, glass and timber are shared. */
+export type World = 'enterprise' | 'university' | 'stadium' | 'convention';
+interface Theme { carpet: string; wall: RGB; chair: RGB; sofa: RGB }
+const THEMES: Record<World, Theme> = {
+  enterprise: { carpet: 'url(#rm-carpet-ent)', wall: [235, 231, 224], chair: [185, 142, 94], sofa: [47, 107, 108] },
+  university: { carpet: 'url(#rm-carpet-uni)', wall: [238, 232, 216], chair: [160, 120, 78], sofa: [62, 98, 70] },
+  stadium: { carpet: 'url(#rm-carpet2)', wall: [232, 233, 232], chair: [168, 117, 75], sofa: [47, 107, 108] },
+  convention: { carpet: 'url(#rm-carpet-cnv)', wall: [228, 230, 232], chair: [120, 132, 150], sofa: [56, 74, 104] },
+};
+let T: Theme = THEMES.enterprise;
 const NORMAL: Record<Side, [number, number]> = { N: [0, -1], S: [0, 1], W: [-1, 0], E: [1, 0] };
 const INNER: Record<Side, 'N' | 'S' | 'E' | 'W'> = { N: 'S', S: 'N', W: 'E', E: 'W' };
 
@@ -22,9 +34,9 @@ export function cutWall(P: Program, v: View, s: Side): boolean { if (v.eye) retu
 
 function wall(sc: L3Scene, v: View, P: Program, s: Side) {
   const spec = P.walls[s]; if (spec.none) return; const cut = cutWall(P, v, s); const H = spec.parapet ? (cut ? Math.min(CUT, spec.parapet) : spec.parapet) : cut ? CUT : P.H; const L = cut ? 4 : 2; const along = s === 'N' || s === 'S';
-  const len = along ? P.w + 2 * T : P.d, a0 = along ? -T : 0; const pos = s === 'N' ? -T / 2 : s === 'S' ? P.d + T / 2 : s === 'W' ? -T / 2 : P.w + T / 2;
+  const len = along ? P.w + 2 * TW : P.d, a0 = along ? -TW : 0; const pos = s === 'N' ? -TW / 2 : s === 'S' ? P.d + TW / 2 : s === 'W' ? -TW / 2 : P.w + TW / 2;
   const seg = (u0: number, u1: number, z: number, h: number, col: RGB, st: Parameters<typeof solid>[4] = {}) => { if (u1 - u0 < 0.005 || h < 0.005) return;
-    solid(sc, v, along ? { x: (u0 + u1) / 2, y: pos, z, w: u1 - u0, d: T, h } : { x: pos, y: (u0 + u1) / 2, z, w: T, d: u1 - u0, h }, col, { L, top: POCHE, edge: 'rgba(60,52,44,.35)', ...st }); };
+    solid(sc, v, along ? { x: (u0 + u1) / 2, y: pos, z, w: u1 - u0, d: TW, h } : { x: pos, y: (u0 + u1) / 2, z, w: TW, d: u1 - u0, h }, col, { L, top: POCHE, edge: 'rgba(60,52,44,.35)', ...st }); };
   const inner = INNER[s]; const finish = spec.finish && !cut ? { face: { [inner]: spec.finish } } : {};
   if (spec.glass) {
     // sill, head, mullions; a pane in each bay; the sliding door's handle
@@ -39,9 +51,9 @@ function wall(sc: L3Scene, v: View, P: Program, s: Side) {
     return;
   }
   const dr = spec.door; const gaps: Array<[number, number]> = dr ? [[dr.at - dr.w / 2, dr.at + dr.w / 2]] : [];
-  let u = a0; for (const [g0, g1] of gaps) { seg(u, g0, 0, H, M.plaster, finish); if (H > 2.1) seg(g0, g1, 2.1, H - 2.1, M.plaster, finish); u = g1; } seg(u, a0 + len, 0, H, M.plaster, finish);
+  let u = a0; for (const [g0, g1] of gaps) { seg(u, g0, 0, H, T.wall, finish); if (H > 2.1) seg(g0, g1, 2.1, H - 2.1, T.wall, finish); u = g1; } seg(u, a0 + len, 0, H, T.wall, finish);
   // skirting on the room side
-  const off = s === 'N' ? 0.008 : s === 'S' ? -0.008 : s === 'W' ? 0.008 : -0.008; const ip = s === 'N' || s === 'W' ? pos + T / 2 + off : pos - T / 2 + off; u = along ? 0 : 0;
+  const off = s === 'N' ? 0.008 : s === 'S' ? -0.008 : s === 'W' ? 0.008 : -0.008; const ip = s === 'N' || s === 'W' ? pos + TW / 2 + off : pos - TW / 2 + off; u = along ? 0 : 0;
   const end = along ? P.w : P.d; for (const [g0, g1] of [...gaps, [end, end] as [number, number]]) { if (g0 - u > 0.02) solid(sc, v, along ? { x: (u + g0) / 2, y: ip, w: g0 - u, d: 0.016, h: Math.min(0.08, H) } : { x: ip, y: (u + g0) / 2, w: 0.016, d: g0 - u, h: Math.min(0.08, H) }, M.walnut, { L, edge: null }); u = g1; }
   if (dr) { // the door, on whichever wall it is: (u along the wall, n into the room) to the room's x, y
     const hingeAtHi = dr.hinge === 'hi'; const hu = hingeAtHi ? dr.at + dr.w / 2 - 0.03 : dr.at - dr.w / 2 + 0.03; const base = s === 'N' ? 0 : s === 'S' ? P.d : s === 'W' ? 0 : P.w; const inward = s === 'S' || s === 'E' ? -1 : 1;
@@ -61,7 +73,7 @@ function taskChairAt(sc: L3Scene, v: View, x: number, y: number, z: number, st: 
 function monitorAt(sc: L3Scene, v: View, x: number, y: number, z: number, st: { o: string }, small = false) { monitor(sc, v, x, y, z, small ? 0.48 : 0.62, small ? 0.28 : 0.36, small ? 160 : 180, st); }
 /** a dining chair drawn simply (seat and back), where a room has many */
 function simpleChair(sc: L3Scene, v: View, x: number, y: number, rot: number, st: { o: string }) {
-  const [bx, by] = frame(x, y, rot)(0, 0.21); solid(sc, v, { x, y, z: 0.42, w: 0.46, d: 0.46, h: 0.06, rot }, M.camel, { ...st, edge: null }); solid(sc, v, { x: bx, y: by, z: 0.48, w: 0.44, d: 0.05, h: 0.4, rot }, M.camel, { ...st, edge: null, k: 0.95 });
+  const [bx, by] = frame(x, y, rot)(0, 0.21); solid(sc, v, { x, y, z: 0.42, w: 0.46, d: 0.46, h: 0.06, rot }, T.chair, { ...st, edge: null }); solid(sc, v, { x: bx, y: by, z: 0.48, w: 0.44, d: 0.05, h: 0.4, rot }, T.chair, { ...st, edge: null, k: 0.95 });
 }
 
 function piece(sc: L3Scene, v: View, P: Program, p: Piece) {
@@ -80,12 +92,12 @@ function piece(sc: L3Scene, v: View, P: Program, p: Piece) {
     case 'shelves': shelves(sc, v, p.x, p.y, p.w, rot, p.z || 1.4, (p.z || 1.4) + p.h, 3, st); break;
     case 'rug': { const r = (x: number, y: number, w: number, d: number): Array<[number, number]> => [[x - w / 2, y - d / 2], [x + w / 2, y - d / 2], [x + w / 2, y + d / 2], [x - w / 2, y + d / 2]];
       flat(sc, 1, r(p.x, p.y, p.w, p.d), 0.004, '#6f7c80', { pri: PRI.rug, o: p.id }); flat(sc, 1, r(p.x, p.y, p.w - 0.2, p.d - 0.2), 0.005, '#a9b3b2', { pri: PRI.rug + 0.05, o: p.id }); flat(sc, 1, r(p.x, p.y, p.w - 0.34, p.d - 0.34), 0.0055, '#b9c1bf', { pri: PRI.rug + 0.06, o: p.id }); break; }
-    case 'sofa': sofa(sc, v, p.x, p.y, rot, p.w, M.teal, st, 3); break;
-    case 'armchair': sofa(sc, v, p.x, p.y, rot, p.w, M.camel, st, 1); break;
+    case 'sofa': sofa(sc, v, p.x, p.y, rot, p.w, T.sofa, st, 3); break;
+    case 'armchair': sofa(sc, v, p.x, p.y, rot, p.w, T.chair, st, 1); break;
     case 'lowtable': lowTable(sc, v, p.x, p.y, p.w, p.d, st, rot); break;
     case 'hightable': table(sc, v, p.x, p.y, p.w, p.d, p.h, M.quartz, M.black, st, true);
       for (const [x, y] of p.at || []) stool(sc, v, x, y, 0.76, M.leather, st, true, (Math.atan2(p.x - x, -(p.y - y)) * 180) / Math.PI); break;
-    case 'table': table(sc, v, p.x, p.y, p.w, p.d, p.h, M.oak, M.walnut, st); for (const [x, y] of p.at || []) chair(sc, v, x, y, (Math.atan2(p.x - x, -(p.y - y)) * 180) / Math.PI, M.camel, st); break;
+    case 'table': table(sc, v, p.x, p.y, p.w, p.d, p.h, M.oak, M.walnut, st); for (const [x, y] of p.at || []) chair(sc, v, x, y, (Math.atan2(p.x - x, -(p.y - y)) * 180) / Math.PI, T.chair, st); break;
     case 'pendants': for (const s of [-1, 1]) pendant(sc, v, p.x + s * 0.2, p.y, p.z || 1.9, P.H, st); break;
     case 'plant': plant(sc, v, p.x, p.y, p.h, st); break;
     case 'display': display(sc, v, p.x, p.y, p.z || 1.35, p.w, p.h, rot, st); break;
@@ -93,7 +105,7 @@ function piece(sc: L3Scene, v: View, P: Program, p: Piece) {
     case 'seats': { const n = p.n ?? 6, sp = n > 6 ? p.w / n : 0.62; for (let i = 0; i < n; i++) { const x = p.x + (i - (n - 1) / 2) * sp;
       if (n <= 12) stadiumSeat(sc, v, x, p.y, p.z || 0, 0, M.charcoal, { ...st, L: 1.5 });
       else { solid(sc, v, { x, y: p.y, z: (p.z || 0) + 0.36, w: 0.48, d: 0.44, h: 0.08 }, M.charcoal, { ...st, L: 1.5, edge: null }); solid(sc, v, { x, y: p.y + 0.22, z: (p.z || 0) + 0.42, w: 0.48, d: 0.07, h: 0.5 }, M.charcoal, { ...st, L: 1.5, edge: null, k: 0.94 }); } } break; }
-    case 'chairs': for (const [x, y] of p.at || []) chair(sc, v, x, y, rot, M.camel, st); break;
+    case 'chairs': for (const [x, y] of p.at || []) chair(sc, v, x, y, rot, T.chair, st); break;
     case 'taskchairs': for (const [x, y] of p.at || []) taskChair(sc, v, x, y, rot, M.charcoal, st); break;
     case 'vanity': counter(sc, v, p.x, p.y, p.w, p.d, p.h, 180, M.walnut, M.quartz, { ...st, doors: Math.max(2, Math.round(p.w / 0.5)) }); mirror(sc, v, p.x, 0.03, 1.05, p.w - 0.1, 0.8, 180, st, true); break;
     case 'mirror': mirror(sc, v, p.x, p.y, p.z || 0.3, p.w, p.h, rot, st); break;
@@ -113,15 +125,15 @@ function piece(sc: L3Scene, v: View, P: Program, p: Piece) {
     case 'rack': rack(sc, v, p.x, p.y, p.h, rot, st); break;
     case 'pod': { const x0 = p.x - p.w / 2, x1 = p.x + p.w / 2, y0 = p.y - p.d / 2, y1 = p.y + p.d / 2;
       glassWall(sc, v, x0, y0, x1, y0, p.h, st); glassWall(sc, v, x0, y1, x1, y1, p.h, st); glassWall(sc, v, x0, y0, x0, y1, p.h, st, 0.9);
-      table(sc, v, p.x + 0.2, p.y, 1.8, 0.9, 0.74, M.oak, M.walnut, st); for (const [dx, dy] of [[-0.55, -0.72], [0.15, -0.72], [0.85, -0.72], [-0.55, 0.72], [0.15, 0.72], [0.85, 0.72]] as const) chair(sc, v, p.x + 0.2 + dx, p.y + dy, dy < 0 ? 0 : 180, M.camel, st); break; }
+      table(sc, v, p.x + 0.2, p.y, 1.8, 0.9, 0.74, M.oak, M.walnut, st); for (const [dx, dy] of [[-0.55, -0.72], [0.15, -0.72], [0.85, -0.72], [-0.55, 0.72], [0.15, 0.72], [0.85, 0.72]] as const) chair(sc, v, p.x + 0.2 + dx, p.y + dy, dy < 0 ? 0 : 180, T.chair, st); break; }
     case 'tables4': { const many = (p.at || []).length > 12; for (const [x, y] of p.at || []) { table(sc, v, x, y, 0.9, 0.9, p.h, M.oak, M.walnut, st, true);
-      for (const [dx, dy, r] of [[0, -0.66, 180], [0, 0.66, 0], [-0.66, 0, -90], [0.66, 0, 90]] as const) { if (many) simpleChair(sc, v, x + dx, y + dy, r, st); else chair(sc, v, x + dx, y + dy, r, M.camel, st); } } break; }
+      for (const [dx, dy, r] of [[0, -0.66, 180], [0, 0.66, 0], [-0.66, 0, -90], [0.66, 0, 90]] as const) { if (many) simpleChair(sc, v, x + dx, y + dy, r, st); else chair(sc, v, x + dx, y + dy, r, T.chair, st); } } break; }
     case 'island': { const P2 = frame(p.x, p.y, 0); counter(sc, v, p.x, p.y - p.d / 2 + 0.33, p.w, 0.66, p.h, 0, M.walnut, M.quartz, st); counter(sc, v, p.x, p.y + p.d / 2 - 0.33, p.w, 0.66, 0.92, 180, M.walnut, M.quartz, { ...st, glass: [[-p.w / 2 + 0.1, -p.w / 2 + 1.3]] });
       shelves(sc, v, p.x, p.y + 0.05, p.w - 1.2, 0, 1.2, 1.9, 3, st); const n = Math.max(3, Math.floor((p.w - 0.6) / 0.7)); for (let i = 0; i < n; i++) { const [sx, sy] = P2(-p.w / 2 + 0.6 + (i * (p.w - 1.2)) / Math.max(1, n - 1), -p.d / 2 - 0.25); stool(sc, v, sx, sy, 0.76, M.leather, st, true); } break; }
     case 'column': { solid(sc, v, { x: p.x, y: p.y, w: p.w, d: p.d, h: p.h }, M.plaster, { ...st, top: 'rgb(58,54,50)' }); display(sc, v, p.x, p.y - p.d / 2 - 0.03, 2.1, 1.43, 0.82, 0, st); display(sc, v, p.x, p.y + p.d / 2 + 0.03, 2.1, 1.43, 0.82, 180, st); break; }
     case 'ledwall': solid(sc, v, { x: p.x, y: p.y, z: p.z || 1, w: p.w, d: p.d, h: p.h, rot: 180 }, M.black, { ...st, face: { N: 'url(#rm-board)' } }); break;
     // ---- V2.5.3's objects, drawn with the kit (./fromV253.ts)
-    case 'chair1': chair(sc, v, p.x, p.y, rot, M.camel, st); break;
+    case 'chair1': chair(sc, v, p.x, p.y, rot, T.chair, st); break;
     case 'table0': table(sc, v, p.x, p.y, p.w, p.d, p.h, M.oak, M.walnut, st, false, rot); break;
     case 'credenza': counter(sc, v, p.x, p.y, Math.max(p.w, p.d), Math.min(p.w, p.d), p.h, rot, M.walnut, M.quartz, st); break;
     case 'controldesk': { table(sc, v, p.x, p.y, p.w, p.d, p.h, M.oak, M.black, st, false, rot); const n = Math.max(1, Math.min(4, Math.floor(p.w / 0.9)));
@@ -133,7 +145,7 @@ function piece(sc: L3Scene, v: View, P: Program, p: Piece) {
     case 'stage': platform(sc, v, p.x, p.y, p.w, p.d, p.h, [96, 74, 56], st); break;
     case 'divider': solid(sc, v, { x: p.x, y: p.y, w: p.w, d: p.d, h: p.h }, [176, 170, 160], { ...st, bevel: 0.02 }); break;
     case 'wireless': lathe(sc, v, p.x, p.y, p.z || 0, 0.03, Math.max(0.15, p.h), M.black, { ...st, n: 8 }); break;
-    case 'seatblock': { const many = (p.at || []).length > 40; for (const [x, y] of p.at || []) { if (many) simpleChair(sc, v, x, y, rot, st); else chair(sc, v, x, y, rot, M.camel, st); } break; }
+    case 'seatblock': { const many = (p.at || []).length > 40; for (const [x, y] of p.at || []) { if (many) simpleChair(sc, v, x, y, rot, st); else chair(sc, v, x, y, rot, T.chair, st); } break; }
     case 'ceildev': if (p.label.toLowerCase().includes('microphone')) solid(sc, v, { x: p.x, y: p.y, z: Math.min(p.z || P.H - 0.05, P.H - 0.04), w: p.w, d: p.d, h: 0.035 }, [238, 236, 231], { ...st, bevel: 0.05 });
       else lathe(sc, v, p.x, p.y, Math.min(p.z || P.H - 0.05, P.H - 0.04), Math.max(0.08, p.w / 2), 0.03, [244, 242, 237], { ...st, n: 14 }); break;
     case 'ceildev-hidden': break;
@@ -156,8 +168,8 @@ function piece(sc: L3Scene, v: View, P: Program, p: Piece) {
         if (i < nb - 1 && (i * 3 + j) % 4 !== 0) solid(sc, v, { x: bx, y: p.y, z: z + 0.025, w: Math.min(0.36, bw - 0.06), d: Math.min(0.38, p.d - 0.06), h: 0.26 + ((i + j) % 3) * 0.04 }, [176, 142, 102], { ...st, edge: 'rgba(110,84,56,.5)', k: 0.94 + ((i + j) % 3) * 0.03 }); } } break; }
     case 'fx-kiosk': { shadow(sc, 1, p.x, p.y, p.w, p.d); solid(sc, v, { x: p.x, y: p.y, w: p.w, d: p.d, h: p.h, rot }, M.charcoal, { ...st, face: { N: 'url(#rm-panel)' }, bevel: 0.02 }); break; }
     case 'fx-table': table(sc, v, p.x, p.y, p.w, p.d, p.h, M.oak, M.walnut, st, p.w < 1.2 && p.d < 1.2); break;
-    case 'fx-chair': chair(sc, v, p.x, p.y, rot, M.camel, st); break;
-    case 'fx-sofa': sofa(sc, v, p.x, p.y, rot, Math.max(p.w, p.d), p.w > 1.4 || p.d > 1.4 ? M.teal : M.camel, st, p.w > 1.4 || p.d > 1.4 ? 3 : 1); break;
+    case 'fx-chair': chair(sc, v, p.x, p.y, rot, T.chair, st); break;
+    case 'fx-sofa': sofa(sc, v, p.x, p.y, rot, Math.max(p.w, p.d), p.w > 1.4 || p.d > 1.4 ? T.sofa : T.chair, st, p.w > 1.4 || p.d > 1.4 ? 3 : 1); break;
     case 'fx-machine': { shadow(sc, 1, p.x, p.y, p.w, p.d); solid(sc, v, { x: p.x, y: p.y, w: p.w, d: p.d, h: p.h, rot }, [236, 236, 232], { ...st, face: { N: 'url(#rm-washer)' }, bevel: 0.03 }); break; }
     case 'fx-rack': rack(sc, v, p.x, p.y, p.h, rot, st); break;
     case 'fx-cabinet': { shadow(sc, 1, p.x, p.y, p.w, p.d); solid(sc, v, { x: p.x, y: p.y, w: p.w, d: p.d, h: p.h, rot }, /board|panel/i.test(p.label) ? [150, 64, 58] : M.steel, { ...st, bevel: 0.02 }); break; }
@@ -177,6 +189,7 @@ function piece(sc: L3Scene, v: View, P: Program, p: Piece) {
 
 /** The room scene: shell, light, pieces, outside; a button on each piece; names when asked for (and always on the selected piece). */
 export function roomScene(P: Program, v: View, o: { sel: string | null; names: boolean }): L3Scene {
+  T = THEMES[P.world || 'enterprise'];
   const full = !!v.eye; const yMin = P.outside === 'suite' ? -2.3 : -0.3;
   const sc = scene(P.w / 2, (P.d + yMin) / 2, Math.hypot(P.w + 0.6, P.d - yMin + 0.6) / 2, P.H);
   // From an eye, shapes are painted by tier, then distance; but the room's floor must cover the bowl below it and its walls must cover
@@ -185,10 +198,10 @@ export function roomScene(P: Program, v: View, o: { sel: string | null; names: b
   const outside: Array<[number, number]> = [], shell: Array<[number, number]> = []; const track = (into: Array<[number, number]>, f: () => void) => { const a = sc.items.length; f(); into.push([a, sc.items.length]); };
   const inside = !!v.eye && v.eye.x >= 0 && v.eye.x <= P.w && v.eye.y >= 0 && v.eye.y <= P.d;
   // the members' corridor outside the door
-  track(outside, () => flat(sc, 0.5, [[-T, P.d + T], [P.w + T, P.d + T], [P.w + T, P.d + T + 1.6], [-T, P.d + T + 1.6]], 0, 'url(#rm-carpet)', { pri: PRI.ground }));
+  track(outside, () => flat(sc, 0.5, [[-TW, P.d + TW], [P.w + TW, P.d + TW], [P.w + TW, P.d + TW + 1.6], [-TW, P.d + TW + 1.6]], 0, 'url(#rm-carpet)', { pri: PRI.ground }));
   const s0 = sc.items.length;
   // the floor in oak boards running along the glass, three tones
-  if (P.floor === 'carpet') flat(sc, 1, [[0, 0], [P.w, 0], [P.w, P.d], [0, P.d]], 0, 'url(#rm-carpet2)', { pri: PRI.ground });
+  if (P.floor === 'carpet') flat(sc, 1, [[0, 0], [P.w, 0], [P.w, P.d], [0, P.d]], 0, T.carpet, { pri: PRI.ground });
   if (P.floor === 'vinyl') flat(sc, 1, [[0, 0], [P.w, 0], [P.w, P.d], [0, P.d]], 0, 'url(#rm-vinyl)', { pri: PRI.ground });
   if (P.floor === 'concrete') flat(sc, 1, [[0, 0], [P.w, 0], [P.w, P.d], [0, P.d]], 0, '#aaa59d', { pri: PRI.ground, s: 'rgba(80,76,70,.3)', sw: 0.4 });
   const nb = P.floor === 'oak' ? Math.ceil(P.d / 0.2) : 0; const tones = [M.oak, M.oak2, [204, 172, 133] as RGB];
@@ -247,5 +260,8 @@ export function roomDefs(): string {
 <pattern id="rm-washer" width="1" height="1" patternContentUnits="objectBoundingBox"><rect width="1" height="1" fill="#ecece8"/><rect y=".05" width="1" height=".14" fill="#d8d8d3"/><circle cx=".5" cy=".58" r=".27" fill="#9aa3a8"/><circle cx=".5" cy=".58" r=".19" fill="#4d5a61"/></pattern>
 <pattern id="rm-lockers" width="9" height="40" patternUnits="userSpaceOnUse"><rect width="9" height="40" fill="#7d939f"/><rect x="8.2" width=".8" height="40" fill="#5b6e78"/><rect x="5.5" y="17" width="1.6" height=".7" fill="#d9dfe2"/><rect x="1.5" y="3" width="4" height=".5" fill="#6a7f8a"/><rect x="1.5" y="4.4" width="4" height=".5" fill="#6a7f8a"/></pattern>
 <pattern id="rm-grille" width="6" height="4" patternUnits="userSpaceOnUse"><rect width="6" height="4" fill="#99a0a6"/><rect y="2.6" width="6" height="1" fill="#7c838a"/></pattern>
+<pattern id="rm-carpet-ent" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#7b8189"/><path d="M0 6h12" stroke="#757b83" stroke-width=".8"/><circle cx="3" cy="3" r=".7" fill="#858b93"/></pattern>
+<pattern id="rm-carpet-uni" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#7f8a76"/><path d="M6 0v12" stroke="#78836f" stroke-width=".8"/><circle cx="9" cy="3" r=".7" fill="#89947f"/></pattern>
+<pattern id="rm-carpet-cnv" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#4d5870"/><path d="M0 0l12 12" stroke="#56627a" stroke-width=".8"/><circle cx="3" cy="9" r=".7" fill="#5f6b83"/></pattern>
 <linearGradient id="rm-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6d84a3"/><stop offset=".55" stop-color="#a9b8c6"/><stop offset="1" stop-color="#e3d1b6"/></linearGradient>`;
 }

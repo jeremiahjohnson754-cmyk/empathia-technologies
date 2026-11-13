@@ -10,7 +10,7 @@ import type { Piece, Program } from './programs.js';
 const FLOOR: Record<string, Program['floor']> = { restroom: 'vinyl', 'restroom-accessible': 'vinyl', kitchen: 'vinyl', storage: 'concrete', laundry: 'vinyl', racks: 'concrete', plant: 'concrete', clinic: 'vinyl', lockers: 'vinyl', expo: 'concrete', open: 'vinyl', dining: 'oak', lounge: 'carpet', library: 'carpet', counter: 'oak' };
 const KIND: Record<string, string> = { stall: 'fx-stall', counter: 'fx-counter', dryer: 'fx-small', fridge: 'fx-fridge', shelf: 'fx-shelf', kiosk: 'fx-kiosk', table: 'fx-table', chair: 'fx-chair', sofa: 'fx-sofa', machine: 'fx-machine', rack: 'fx-rack', cabinet: 'fx-cabinet', plant: 'fx-plant', bed: 'fx-bed', desk: 'fx-table', locker: 'fx-locker', bench: 'fx-bench', booth: 'fx-booth', mat: 'fx-mat' };
 
-export function programFromFixtures(name: string, type: string, dims: [number, number, number], F: FixtureLayout): Program {
+export function programFromFixtures(name: string, type: string, dims: [number, number, number], F: FixtureLayout, world: Program['world'] = 'enterprise'): Program {
   const [L, Wd, H0] = dims; const w = Math.max(L, Wd), d = Math.min(L, Wd), H = Math.min(H0 || 3, 6); const doorX = Math.min(w - 0.7, Math.max(0.7, w / 2));
   // which way a fixture faces: a chair or a sofa towards the nearest table; a unit on a wall into the room; the rest towards the way in
   const tables = F.items.filter((f) => f.kind === 'table' || f.kind === 'desk');
@@ -24,7 +24,7 @@ export function programFromFixtures(name: string, type: string, dims: [number, n
   const lights: Array<[number, number]> = []; const s = Math.max(1.8, Math.min(w, d) / 3); for (let y = s / 2; y < d && lights.length < 60; y += s) for (let x = s / 2; x < w && lights.length < 60; x += s) lights.push([x, y]);
   const yawTo = (x: number, y: number, tx: number, ty: number) => Math.round((Math.atan2(-(tx - x), -(ty - y)) * 180) / Math.PI);
   return { key: `fixtures-${F.rule}`, title: name, summary: `Furnished by Empathia’s own layout for a ${type.replace(/-/g, ' ')}.`, w, d, H, floor: FLOOR[F.rule] || 'vinyl',
-    walls: { N: { door: { at: doorX, w: w > 12 ? 1.8 : 0.95, hinge: 'hi' } }, E: {}, S: {}, W: {} }, pieces, lights, speakers: [], outside: null, hero: { yaw: 208, pitch: w > 30 ? 46 : 40, zoom: w > 30 ? 1 : 1.1 },   // the rules put the way in on the front wall (y = 0); the camera looks in from there
+    world, walls: { N: { door: { at: doorX, w: w > 12 ? 1.8 : 0.95, hinge: 'hi' } }, E: {}, S: {}, W: {} }, pieces, lights, speakers: [], outside: null, hero: { yaw: 208, pitch: w > 30 ? 46 : 40, zoom: w > 30 ? 1 : 1.1 },   // the rules put the way in on the front wall (y = 0); the camera looks in from there
     eyes: [
       { key: 'door', label: 'Doorway', says: 'just inside the door, standing, eyes at 1.6 m', x: doorX - 0.25, y: Math.min(1.2, d * 0.3), z: 1.6, yaw: yawTo(doorX - 0.25, Math.min(1.2, d * 0.3), w / 2, d), pitch: 42 },
       { key: 'middle', label: 'Middle of the room', says: 'standing in the middle, eyes at 1.6 m', x: w / 2, y: d / 2, z: 1.6, yaw: 180, pitch: 42 },

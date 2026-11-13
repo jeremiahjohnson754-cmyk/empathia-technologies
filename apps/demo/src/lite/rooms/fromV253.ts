@@ -39,7 +39,7 @@ function pieceOf(o: V253Object): Piece | Piece[] | null {
 
 /** A program from V2.5.3's layout of a room. `devices`: ceiling devices (loudspeakers, microphones, sensors) are shown floating at the
  *  ceiling from above, as V2.5.3 showed them, when the lens shows equipment. */
-export function programFromV253(L: V253Layout, o: { devices: boolean }): Program {
+export function programFromV253(L: V253Layout, o: { devices: boolean; world?: Program['world'] }): Program {
   const glass = new Set((L.glass as Side[] | undefined) || []); const door = L.door as { wall: Side; at: number; width: number } | undefined;
   const walls = {} as Record<Side, WallSpec>;
   for (const s of ['N', 'E', 'S', 'W'] as Side[]) { const w: WallSpec = {}; if (glass.has(s)) w.glass = true; if (door && door.wall === s) { if (w.glass) w.slide = { at: door.at, w: door.width }; else w.door = { at: door.at, w: door.width, hinge: 'hi' }; } walls[s] = w; }
@@ -49,5 +49,5 @@ export function programFromV253(L: V253Layout, o: { devices: boolean }): Program
   const lights: Array<[number, number]> = []; const sx = Math.max(1.6, L.w / Math.max(2, Math.round(L.w / 2.2))), sy = Math.max(1.6, L.d / Math.max(2, Math.round(L.d / 2.2)));
   for (let y = sy / 2; y < L.d; y += sy) for (let x = sx / 2; x < L.w; x += sx) lights.push([x, y]);
   return { key: 'v253', title: 'V2.5.3’s layout', summary: 'V2.5.3’s arrangement of this room, drawn by Empathia.', w: L.w, d: L.d, H: Math.min(L.h || 3, 6), floor: FLOOR[surf.floor || ''] || 'carpet',
-    walls, pieces, eyes: [], lights: lights.slice(0, 60), speakers: spks, outside: null, hero: { yaw: 30, pitch: 36 } };
+    world: o.world ?? (/^(STA|CNV)-/.test(String(L.roomId)) ? (String(L.roomId).startsWith('STA') ? 'stadium' : 'convention') : String(L.roomId).startsWith('R-') ? 'enterprise' : 'university'), walls, pieces, eyes: [], lights: lights.slice(0, 60), speakers: spks, outside: null, hero: { yaw: 30, pitch: 36 } };
 }

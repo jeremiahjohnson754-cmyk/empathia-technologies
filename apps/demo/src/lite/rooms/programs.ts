@@ -11,7 +11,7 @@ export interface Piece { id: string; kind: string; label: string; x: number; y: 
 export interface EyeSpot { key: string; label: string; says: string; x: number; y: number; z: number; yaw: number; pitch: number }
 export interface Program {
   key: string; title: string; summary: string; w: number; d: number; H: number; floor: 'oak' | 'carpet' | 'concrete' | 'vinyl'; walls: Record<Side, WallSpec>;
-  pieces: Piece[]; eyes: EyeSpot[]; lights: Array<[number, number]>; speakers: Array<[number, number]>; outside: 'suite' | 'club' | 'window' | 'open' | null; hero: { yaw: number; pitch: number; zoom?: number };
+  pieces: Piece[]; eyes: EyeSpot[]; lights: Array<[number, number]>; speakers: Array<[number, number]>; /** whose character the room takes (materials) */ world?: 'enterprise' | 'university' | 'stadium' | 'convention'; outside: 'suite' | 'club' | 'window' | 'open' | null; hero: { yaw: number; pitch: number; zoom?: number };
 }
 export interface RoomRecord { id: string; type: string; name: string; dims?: [number, number, number]; capacity?: number; assets?: Array<{ kind: string; label: string; cls: string; qty: number; state: string }> }
 
@@ -219,7 +219,9 @@ function club(r: RoomRecord): Program {
       eye('wheel', 'Wheelchair place', 'at the end of a dining row, eyes at 1.1 m', 1.0, t0[1], 1.1, w * 0.4, 0, 42)] };
 }
 
-export function programFor(r: RoomRecord): Program | null {
+const WORLD_OF: Record<string, Program['world']> = { suite: 'stadium', 'press-box': 'stadium', 'commentary-booth': 'stadium', 'mix-position': 'stadium', club: 'stadium', 'green-room': 'convention', 'speaker-prep': 'convention', 'vip-lounge': 'convention' };
+export function programFor(r: RoomRecord): Program | null { const P = programOf(r); if (P) P.world = WORLD_OF[r.type] ?? (r.id.startsWith('STA-') ? 'stadium' : r.id.startsWith('CNV-') ? 'convention' : 'university'); return P; }
+function programOf(r: RoomRecord): Program | null {
   switch (r.type) {
     case 'suite': return suite(r); case 'green-room': return greenRoom(r); case 'speaker-prep': return speakerPrep(r); case 'vip-lounge': return vipLounge(r);
     case 'press-box': return pressBox(r); case 'commentary-booth': return commentaryBooth(r); case 'mix-position': return mixPosition(r); case 'club': return club(r);

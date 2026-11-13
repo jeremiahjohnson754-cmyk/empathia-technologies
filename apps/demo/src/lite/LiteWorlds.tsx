@@ -198,7 +198,7 @@ function fixtureScene(cam: Cam, dims: [number, number, number], F: FixtureLayout
 }
 /** 13 Nov 2026: the fixture rooms drawn by Empathia's renderer, like every other room (the earlier box drawing is kept below, unused) */
 function FixtureRoom({ n, F, eye, onEye }: { n: EstateNode; F: FixtureLayout; eye: string | null; onEye: (k: string | null) => void }) {
-  const P = useMemo(() => programFromFixtures(n.name, n.type, n.dims!, F), [n, F]);
+  const P = useMemo(() => programFromFixtures(n.name, n.type, n.dims!, F, n.id.startsWith('STA-') ? 'stadium' : n.id.startsWith('CNV-') ? 'convention' : 'university'), [n, F]);
   return <div data-testid="lw-fixture-3d" data-objects={F.items.length} data-rule={F.rule}><EmpathiaRoomStage P={P} label={`${n.name}, furnished by Empathia’s layout for a ${n.type.replace(/-/g, ' ')}, in 3D. Each fixture is a button.`} initialEye={eye} onEye={onEye} /></div>;
 }
 export function FixtureStage({ n, F }: { n: EstateNode; F: FixtureLayout }) {
