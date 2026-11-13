@@ -27,6 +27,9 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   ok(`RT-${tag}-06`, 'a camera chosen in the Cameras tab is selected in the room, and its card opens', /device=A-0/.test(dev) && /Camera|PTZ|camera/i.test(card) && (await p.locator('[data-testid=lite-rt-cam] .lt-rlist button[aria-pressed=true]').count()) === 1, `${dev} ${card.slice(0, 80)}`);
   await p.getByTestId('lite-rtab-records').click(); const rec = await p.getByTestId('lite-rt-records').innerText();
   ok(`RT-${tag}-07`, 'Records gives the lifecycle, baselines, tests and open issues, and the room’s places in the other products', /Baseline/.test(rec) && /applicable verified/.test(rec) && (await p.locator('[data-testid=lite-rt-records] [data-testid=room-jump-assurance]').count()) === 1);
+  await p.getByTestId('lite-rt-passport').click(); await p.getByTestId('parity-records').waitFor(); const pass = await p.locator('main').innerText();
+  ok(`RT-${tag}-07b`, 'Records opens the room passport: what the record says and its linked records', /room passport/i.test(pass) && /linked records/i.test(pass) && /#\/list\/Room\/R-ATL-4-218/.test(p.url()));
+  await p.goBack(); await p.getByTestId('lite-rt-records').waitFor();
   await p.reload(); await p.getByTestId('lite-rt-records').waitFor();
   ok(`RT-${tag}-08`, 'the chosen tab survives a reload', (await p.getByTestId('lite-rtab-records').getAttribute('aria-selected')) === 'true');
   await p.getByTestId('lite-rtab-records').focus(); await p.keyboard.press('ArrowRight'); await p.waitForTimeout(150); const wrap = await p.evaluate(() => document.activeElement?.getAttribute('data-testid'));

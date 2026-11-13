@@ -83,6 +83,7 @@ export function RoomTabPanel({ tab, r, stateKey, role, opens, sel, onSel, measur
       const iss = openIssues(r); const cur = r.baselines.find((b) => b.state === 'CURRENT');
       return <Card title="Records" sub="Baseline, assurance and issues" icon="shield" testId="lite-rt-records">
         <DL rows={[['Lifecycle', r.lifecycle.toLowerCase().replace(/_/g, ' ')], ['Baseline', cur ? `v${cur.version} since ${cur.at.slice(0, 10)}` : 'none on record'], ['Tests', `${r.counts.verified} of ${r.counts.applicable} applicable verified · ${r.counts.failed} failed · ${r.counts.notTested} not yet tested`], ['Open issues', iss.length ? iss.map((i) => `${i.title} (${i.severity.toLowerCase()})`).join('; ') : 'none'], ['Baselines on record', r.baselines.map((b) => `v${b.version} ${b.state.toLowerCase().replace(/_/g, ' ')}`).join(' · ') || '—']]} />
+        {opens(`#/list/Room/${o.id}`) ? <p><a className="ui-btn ui-btn--small" href={`#/list/Room/${o.id}`} data-testid="lite-rt-passport">Room passport</a> <span className="ui-meta">Every fact on record and every linked record: devices, people, projects, documents, baselines.</span></p> : null}
         <RoomJumps roomId={o.id} here="lite" opens={opens} /></Card>;
     }
     return null;
