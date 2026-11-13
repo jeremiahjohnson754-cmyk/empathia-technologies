@@ -19,9 +19,9 @@ by `scripts/legacy/vendor-v253-room.mjs`. They run on this campus's room records
 | § | Requirement | State | Evidence or gap |
 |---|---|---|---|
 | 3 | Hierarchy: campus → building → floor → room → equipment, and back up | **RESTORED** for the Enterprise campus | Down by tapping the scene; up by the page's links and Back; deep links and reload (`demo-lite-spatial` LS-01…13, LS-all: every building and floor) |
-| 4 | Furnished room interiors; the room is the hero | **RESTORED** for 76 of 90 rooms | V2.5.3's hero layouts (4.218, 7.112, MER 2.305, FRG 1.104, FRG 2.220, BCN 3.101, HZN 1.400, HZN 2.215, MER 1.140) are kept as V2.5.3 arranged them. Every other room uses V2.5.3's own layout for its type (LS-R1, unit `lite-v253-room`). The room sits right under its name on a phone, as in V2.5.3 (see the gallery, §5). |
-| 4 | The other 14 rooms | **PARTIAL** | They are 10 town halls and 4 control rooms from the 90-room estate. V2.5.3 drew those types only as its own named rooms. They open on the technical overlay and say why (LS-R11); no furniture is invented for them. Drawing them needs either a layout per room or a decision to scale V2.5.3's town-hall and control-room layouts. |
-| 4 | Atlas as V2.5.3 had it | **PARTIAL** | V2.5.3's Atlas holds 31 rooms; this campus holds 20. The 11 missing rooms are not restored. |
+| 4 | Furnished room interiors; the room is the hero | **RESTORED** for all 140 rooms | V2.5.3's hero layouts (4.218, 7.112, MER 2.305, FRG 1.104, FRG 2.220, BCN 3.101, HZN 1.400, HZN 2.215, MER 1.140) are kept as V2.5.3 arranged them. Every other room uses V2.5.3's own layout for its type (LS-R1, unit `lite-v253-room`). The room sits right under its name on a phone, as in V2.5.3 (see the gallery, §5). |
+| 4 | The 14 town halls and control rooms V2.5.3 never drew | **RESTORED** on the founder's choice (13 Nov) | Each is drawn from V2.5.3's own town-hall (Horizon 1.400) or control-room (Horizon 2.215) layout, scaled to the room. It keeps inside its walls and seats about its capacity. Horizon 1.400's dropped-channel story is not carried over. The page says the layout is scaled and from which room (unit `lite-v253-room`). |
+| 4 | V2.5.3's rooms | **RESTORED**, except 5 | The 50 rooms V2.5.3 had that this campus lacked were added on 13 Nov (90 → 140; Atlas now 43). The 5 floor-0 voice zones of Forge are not added, because the campus has no floor 0 yet. |
 | 5 | 2D plan, 3D, isometric, technical overlay | **RESTORED** | Plan from above on every scene; 3D orbit; the default oblique view; "Technical overlay" on the room (LS-R8, R9). The building page also keeps its 2D plan card. |
 | 5 | Camera: orbit, zoom, pan, reset, plan, fit, touch, keyboard | **RESTORED** | Buttons, arrows, drag, Shift-drag pan, Shift+arrow pan, Ctrl+wheel, Fit, double-click reset (LS-10…12f). On touch, pinch zooms, two fingers pan, and a vertical swipe scrolls the page, as in V2.5.3. |
 | 5 | Camera transitions (V2.5.3 eased its moves, `l3ViewTo`) | **RESTORED** | Buttons and keys ease the camera over about a quarter of a second; drags stay immediate; nothing moves when reduced motion is asked for (LS-R7c) |
@@ -44,14 +44,14 @@ by `scripts/legacy/vendor-v253-room.mjs`. They run on this campus's room records
 | | Area | State | Tests |
 |---|---|---|---|
 | A | Navigation (down, up, Back and Forward, reload, deep link) | RESTORED for the Enterprise campus. World → campus is NOT RESTORED for the other three worlds | LS-01…13, LS-all, R8–R9; `demo-lite` LT-33 |
-| B | Physical rendering, selection, nothing dropped across lenses and states | RESTORED | LS-R1, R4, R6, R7; unit `lite-v253-room`: 14,592 scenes across 76 rooms × 4 states × 6 lenses × 2 layer sets × 4 sides, all finite and non-empty |
+| B | Physical rendering, selection, nothing dropped across lenses and states | RESTORED | LS-R1, R4, R6, R7; unit `lite-v253-room`: 26,880 scenes across 140 rooms × 4 states × 6 lenses × 2 layer sets × 4 sides, all finite and non-empty |
 | C | Orbit, zoom, pan, top-down, reset, selection, pinch, touch drag, fit, transitions | RESTORED | LS-10…12f, R5, R6, R7c. Touch is not driven by a real touch device: NOT RUN |
 | D | Layers and modelled or verified labels | RESTORED in the furnished room for coverage and sound; layers as switches | `demo-lite` LT-11, 12, X1–X3, LS-R3, R7b |
 | E | Four states with their differences | RESTORED | LS-R4, R4b; unit |
 | F | Four worlds | **NOT RESTORED** | — |
 | G | Roles, including negative authorisation | RESTORED for Lite | `demo-lite` D44 (a visitor asking for the engineer lens is refused); LS-R12 (a visitor opens no cards); unit |
 | H | Desktop, tablet and phone; light and dark; slow network; reduced motion; direct URLs | PARTIAL | Desktop and phone in `demo-lite-spatial`; all three viewports and both schemes in `demo-lite`. The slow-network and reduced-motion runs for the new stage are NOT RUN |
-| I | Room and device ids stable across products; the 4.218 cross-product journey | RESTORED for Lite → technical room view → Search Party → wayfinding and Back | LS-J1…J6: a camera tapped in the furnished 4.218 opens the technical room view with the same device selected; Search Party opens on the same room; wayfinding takes it as the destination; each Back returns to 4.218. Opening a ServiceHands case or a Pro work order from the room is not in this journey |
+| I | Room and device ids stable across products; the 4.218 cross-product journey | RESTORED for Lite → technical room view → Search Party → wayfinding and Back; V2.5.3's "Atlas 4.218 in" row of links (Lite, Assurance, Commissioning, Control, Replay, Compare, campus) restored 13 Nov (`demo-room-jumps`) | LS-J1…J6: a camera tapped in the furnished 4.218 opens the technical room view with the same device selected; Search Party opens on the same room; wayfinding takes it as the destination; each Back returns to 4.218. Opening a ServiceHands case or a Pro work order from the room is not in this journey |
 | J | Full regression on the exact release commit | **NOT RUN** | Required before staging (founder, 16:38) |
 
 ## 3. Release-blocking defects (§18)
@@ -59,7 +59,7 @@ by `scripts/legacy/vendor-v253-room.mjs`. They run on this campus's room records
 | Defect | Now |
 |---|---|
 | Campus hierarchy, drill-down or drill-up broken | Not present: LS suite |
-| Known furnished rooms appearing empty | Not present: 76 drawn, and the 14 V2.5.3 never drew say so |
+| Known furnished rooms appearing empty | Not present: all 140 are drawn |
 | Rooms rendering incorrect generic layouts | Not present: hero rooms keep their own layouts; the rest use V2.5.3's layout for their type |
 | 2D or 3D, camera controls, object interaction, states | Working: tests above |
 | Required overlays silently absent | Not present: "Sound in the room" restored 13 Nov |
@@ -72,12 +72,11 @@ by `scripts/legacy/vendor-v253-room.mjs`. They run on this campus's room records
 ## 4. What stands between this and Lite parity
 
 1. Spatial hierarchy for Stadium, University and Convention (F).
-2. The 11 Atlas rooms V2.5.3 had and this campus does not.
-3. Furnished drawings for the 14 town halls and control rooms. This needs a founder choice: a layout per room, or V2.5.3's layouts scaled to them.
-4. Room tabs, the Add palette with undo and redo, the room passport.
-5. V2.5.3's animated sound field (the static first reflections are back).
-6. A real-touch run, slow-network and reduced-motion runs, and performance profiling (all NOT RUN).
-7. The full regression on the release commit (J).
+2. Forge's 5 floor-0 voice zones (they need a floor 0).
+3. Room tabs, the Add palette with undo and redo, the room passport.
+4. V2.5.3's animated sound field (the static first reflections are back).
+5. A real-touch run, slow-network and reduced-motion runs, and performance profiling (all NOT RUN).
+6. The full regression on the release commit (J).
 
 ## 5. Gallery
 

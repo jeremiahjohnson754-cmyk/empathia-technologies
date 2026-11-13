@@ -25,6 +25,7 @@ import { RoomJumps, opensFor } from '../rooms/RoomJumps.js';
 import { v253Drawable, v253ScaledFrom, v253Layout } from './v253/v253room.js';
 import { LiteNav, LiteMissing, storedLens, saveLens, setQuery } from './LiteApp.js';
 import { WhoKnows } from '../connect/ContactBar.js';
+import { RoomTabBar, RoomTabPanel, tabOf } from './RoomTabs.js';
 
 const list = (s: string | null) => (s == null ? null : s.split(',').filter(Boolean));
 
@@ -74,6 +75,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
   // Optimize works on the recorded positions (moves, drift), so it opens on the technical overlay; every other lens opens on the furnished room
   const furnishable = v253Drawable(id); const scaledFrom = v253ScaledFrom(id);
   const viewHome = lens === 'optimize' || !furnishable ? 'tech' : 'room'; const vq = query.get('view');
+  const tab = lens === 'visitor' ? 'overview' : tabOf(query.get('tab'));
   const view = (lens === 'optimize' && edited) || !furnishable ? 'tech' : vq === 'tech' || vq === 'room' ? vq : viewHome;
   return (
     <section className="lt-page lt-roompage lt-page--scene" data-testid="lite-room" data-room={id} data-state={stateKey} data-lens={lens}>
@@ -131,6 +133,8 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
         </aside>
       </div>
       <AdvancedModes role={role} id={id} lens={lens} query={query} base={base} />
+      {lens !== 'visitor' && <RoomTabBar tab={tab} onTab={(t) => upd('tab', t === 'overview' ? null : t)} />}
+      {tab !== 'overview' ? <RoomTabPanel tab={tab} r={r} stateKey={stateKey} role={role} opens={opensFor(role)} sel={sel} onSel={(c) => { setSel(c); upd('device', c); }} measurements={<Measurements cov={st.cov} w={o.dims[0]} l={o.dims[1]} h={o.dims[2]} />} /> : <>
       {query.get('xm') === '1' && <Measurements cov={cov} w={o.dims[0]} l={o.dims[1]} h={o.dims[2]} />}
       <ul className="lt-metrics" aria-label="Room metrics, modeled">
         {overlaysFor(role).some((x) => x.key === 'camera') && <li><StatTile label="Camera coverage" value={pct(cov.camera.covered, cov.camera.of)} unit="%" icon="eye" tone="indigo" hint={`${cov.camera.covered} of ${cov.camera.of} seats in view · modeled`} testId="lite-m-camera" /></li>}
@@ -155,6 +159,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
       </Card>}
       {o.scenario && <Card title="This room’s scenario" icon="play" testId="lite-scenario"><p>{o.scenario}</p>{o.template?.note && <p className="ui-meta">Design basis: {o.template.note}.</p>}</Card>}
       {o.id === 'R-ATL-6-300' && <FleetWall />}
+      </>}
       <WhoKnows role={role} kind="room" id={o.id} />
       <p className="ui-meta lt-foot">Elsewhere: <a href={`#/guide/room/${o.id}`} data-testid="lite-guide">how to use this room</a> · <a href={`#/here/${o.id}`} data-testid="lite-here">I am in this room</a>{role !== 'visitor' ? <> · <a href={`#/people?room=${o.id}`} data-testid="lite-who">who knows this room</a></> : null}{mayCapture(role) ? <> · <a href={`#/instant/${o.id}`} data-testid="lite-capture">capture this room</a></> : null}{readsManual(role) ? <> · <a href={`#/manual/build?room=${o.id}`} data-testid="lite-standards">the standards this room is held to</a></> : null}{allows({ area: 'control' }, role) && <> · <a href={`#/control/${o.id}`} data-testid="lite-control">operate this room</a></>} · <a href={`#/search?focus=Room:${o.id}`}>Search Party from this room</a>{allows({ area: 'room' }, role) && <> · <a href={roomHref(o)}>technical room view</a></>} · <a href={`#/lite/way?to=${o.id}`}>find the way</a>{allows({ area: 'scouter' }, role) && <> · <a href="#/lite/scouter">ask Scouter about a device</a></>}</p>
       <LiteNav here="" role={role} />
@@ -174,7 +179,7 @@ function ovValue(k: Overlay, cov: ReturnType<typeof roomState>['cov']): string {
 /** The measurements panel (V2.5.3 liteXray, restored 12 Nov 2026): what the coverage model says for this state of the room, beside what was
  *  measured. No acoustic or intelligibility measurement is on record for these synthetic rooms, and this build has no acoustic model, so those
  *  rows say so instead of showing a number. */
-function Measurements({ cov, w, l, h }: { cov: ReturnType<typeof roomState>['cov']; w: number; l: number; h: number }) {
+export function Measurements({ cov, w, l, h }: { cov: ReturnType<typeof roomState>['cov']; w: number; l: number; h: number }) {
   const n = cov.seats.length; const none = 'Not modeled here · no measurement on record'; const rt = rt60Estimate([w, l, h], n); const dc = criticalDistance([w, l, h], rt);
   const beyond = cov.seats.filter((s) => Math.hypot(s.x - w / 2, s.y) > dc).length;
   const rows: Array<[string, string, string, string]> = [
