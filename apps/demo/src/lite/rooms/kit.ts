@@ -29,7 +29,7 @@ export function sees(v: View, nx: number, ny: number, px: number, py: number): b
 const lam = (nx: number, ny: number) => nx * LIGHT[0] + ny * LIGHT[1];
 
 export interface Solid { x: number; y: number; z?: number; w: number; d: number; h: number; rot?: number }
-export interface Style { L?: number; pri?: number; o?: string; a?: number; edge?: string | null; top?: string; face?: Partial<Record<'N' | 'E' | 'S' | 'W', string>>; k?: number; noTop?: boolean; sw?: number }
+export interface Style { L?: number; pri?: number; o?: string; a?: number; edge?: string | null; top?: string; face?: Partial<Record<'N' | 'E' | 'S' | 'W', string>>; k?: number; noTop?: boolean; sw?: number; /** a soft rounded top: a darker rim and a lighter crown, inset by this many metres */ bevel?: number }
 const FACES: Array<[number, number, 'N' | 'E' | 'S' | 'W']> = [[0, -1, 'N'], [1, 0, 'E'], [0, 1, 'S'], [-1, 0, 'W']];
 /** A box lit from the fixed light: its sides as the viewer sees them, its top, and from below (an eye under it) its underside. */
 export function solid(sc: L3Scene, v: View, b: Solid, col: RGB, st: Style = {}) {
@@ -42,7 +42,10 @@ export function solid(sc: L3Scene, v: View, b: Solid, col: RGB, st: Style = {}) 
     const k = (0.8 + 0.14 * lam(nx, ny)) * k0;
     poly(sc, L, [[a[0], a[1], z0], [e[0], e[1], z0], [e[0], e[1], z1], [a[0], a[1], z1]], { c, f: st.face?.[nm] ?? rgb(col, k, st.a), s: edge ?? 'none', sw, o: st.o, a: st.a == null ? undefined : 1, pri: st.pri });
   }
-  if (!st.noTop && (!v.eye || v.eye.z > z1)) poly(sc, L, cs.map(([px, py]) => [px, py, z1] as P3), { c, f: st.top ?? rgb(col, k0, st.a), s: edge ?? 'none', sw, o: st.o, pri: st.pri });
+  if (!st.noTop && (!v.eye || v.eye.z > z1)) {
+    poly(sc, L, cs.map(([px, py]) => [px, py, z1] as P3), { c, f: st.top ?? rgb(col, st.bevel ? 0.94 * k0 : k0, st.a), s: edge ?? 'none', sw, o: st.o, pri: st.pri });
+    if (st.bevel) { const bi = Math.min(st.bevel, hw * 0.45, hd * 0.45); const ins = ([[-hw + bi, -hd + bi], [hw - bi, -hd + bi], [hw - bi, hd - bi], [-hw + bi, hd - bi]] as Array<[number, number]>).map(([px, py]) => [b.x + px * rc - py * rs, b.y + px * rs + py * rc, z1 + 0.004] as P3);
+      poly(sc, L, ins, { c: [c[0], c[1], c[2] + 0.001], f: rgb(col, 1.07 * k0, st.a), s: 'none', o: st.o, pri: st.pri }); } }
   if (v.eye && v.eye.z < z0) poly(sc, L, cs.map(([px, py]) => [px, py, z0] as P3), { c, f: rgb(col, 0.6 * k0, st.a), s: edge ?? 'none', sw, o: st.o, pri: st.pri });
 }
 /** A lathed shape (a stool's seat, a pot, a shade, a column): an n-sided prism, its sides lit like a solid's. */
@@ -92,7 +95,7 @@ export interface PieceStyle { o: string; L?: number }
 export function chair(sc: L3Scene, v: View, x: number, y: number, rot: number, col: RGB, st: PieceStyle, legs: RGB = M.walnut) {
   const P = frame(x, y, rot); shadow(sc, 1, x, y, 0.5, 0.5, rot);
   for (const [lx, ly] of [[-0.19, -0.18], [0.19, -0.18], [-0.19, 0.18], [0.19, 0.18]] as const) { const [px, py] = P(lx, ly); solid(sc, v, { x: px, y: py, w: 0.035, d: 0.035, h: 0.42, rot }, legs, { o: st.o, edge: null }); }
-  solid(sc, v, { x, y, z: 0.42, w: 0.47, d: 0.46, h: 0.06, rot }, col, { o: st.o }); const [bx, by] = P(0, 0.21); solid(sc, v, { x: bx, y: by, z: 0.48, w: 0.45, d: 0.05, h: 0.4, rot }, col, { o: st.o, k: 0.95 });
+  solid(sc, v, { x, y, z: 0.42, w: 0.47, d: 0.46, h: 0.06, rot }, col, { o: st.o, bevel: 0.04 }); const [bx, by] = P(0, 0.21); solid(sc, v, { x: bx, y: by, z: 0.48, w: 0.45, d: 0.05, h: 0.4, rot }, col, { o: st.o, k: 0.95 });
 }
 /** a bar or counter stool: a foot, a column, a footrest ring and a round seat */
 export function stool(sc: L3Scene, v: View, x: number, y: number, seat: number, col: RGB, st: PieceStyle, back = false, rot = 0) {
@@ -107,21 +110,21 @@ export function sofa(sc: L3Scene, v: View, x: number, y: number, rot: number, w:
   const P = frame(x, y, rot); const d = 0.88; shadow(sc, 1, x, y, w, d, rot);
   solid(sc, v, { x, y, w: w - 0.06, d: d - 0.06, h: 0.1, rot }, M.black, { o: st.o, edge: null });
   solid(sc, v, { x, y, z: 0.1, w, d, h: 0.3, rot }, col, { o: st.o });
-  const cw = (w - 0.4) / seats; for (let i = 0; i < seats; i++) { const [cx, cy] = P(-w / 2 + 0.2 + cw * (i + 0.5), -0.08); solid(sc, v, { x: cx, y: cy, z: 0.4, w: cw - 0.025, d: 0.62, h: 0.11, rot }, col, { o: st.o, k: 1.08 }); }
-  const [bx, by] = P(0, 0.33); solid(sc, v, { x: bx, y: by, z: 0.4, w: w - 0.06, d: 0.22, h: 0.42, rot }, col, { o: st.o, k: 0.96 });
-  for (const s of [-1, 1]) { const [ax, ay] = P(s * (w / 2 - 0.09), 0); solid(sc, v, { x: ax, y: ay, z: 0.4, w: 0.18, d: d, h: 0.22, rot }, col, { o: st.o, k: 0.98 }); }
-  if (seats >= 2) for (const s of [-1, 1]) { const [px, py] = P(s * (w / 2 - 0.42), 0.15); solid(sc, v, { x: px, y: py, z: 0.52, w: 0.4, d: 0.12, h: 0.36, rot: rot + s * 8 }, M.linen, { o: st.o }); }
+  const cw = (w - 0.4) / seats; for (let i = 0; i < seats; i++) { const [cx, cy] = P(-w / 2 + 0.2 + cw * (i + 0.5), -0.08); solid(sc, v, { x: cx, y: cy, z: 0.4, w: cw - 0.025, d: 0.62, h: 0.11, rot }, col, { o: st.o, k: 1.06, bevel: 0.05, edge: rgb(col, 0.6, 0.6) }); }
+  const [bx, by] = P(0, 0.33); solid(sc, v, { x: bx, y: by, z: 0.4, w: w - 0.06, d: 0.22, h: 0.42, rot }, col, { o: st.o, k: 0.96, bevel: 0.05 });
+  for (const s of [-1, 1]) { const [ax, ay] = P(s * (w / 2 - 0.09), 0); solid(sc, v, { x: ax, y: ay, z: 0.4, w: 0.18, d: d, h: 0.22, rot }, col, { o: st.o, k: 0.98, bevel: 0.04 }); }
+  if (seats >= 2) for (const s of [-1, 1]) { const [px, py] = P(s * (w / 2 - 0.42), 0.15); solid(sc, v, { x: px, y: py, z: 0.52, w: 0.4, d: 0.12, h: 0.36, rot: rot + s * 8 }, M.linen, { o: st.o, bevel: 0.03 }); }
 }
 /** a table: a top on four legs, or on a pedestal */
 export function table(sc: L3Scene, v: View, x: number, y: number, w: number, d: number, h: number, top: RGB, base: RGB, st: PieceStyle, pedestal = false, rot = 0) {
   shadow(sc, 1, x, y, w, d, rot, 0.003, 0.9);
   if (pedestal) { lathe(sc, v, x, y, 0, Math.min(w, d) * 0.32, 0.03, base, { o: st.o }); solid(sc, v, { x, y, z: 0.03, w: 0.08, d: 0.08, h: h - 0.07, rot }, base, { o: st.o, edge: null }); }
   else { const P = frame(x, y, rot); for (const [lx, ly] of [[-1, -1], [1, -1], [-1, 1], [1, 1]] as const) { const [px, py] = P(lx * (w / 2 - 0.06), ly * (d / 2 - 0.06)); solid(sc, v, { x: px, y: py, w: 0.045, d: 0.045, h: h - 0.04, rot }, base, { o: st.o, edge: null }); } }
-  solid(sc, v, { x, y, z: h - 0.04, w, d, h: 0.04, rot }, top, { o: st.o });
+  solid(sc, v, { x, y, z: h - 0.04, w, d, h: 0.04, rot }, top, { o: st.o, top: top === M.quartz ? 'url(#rm-stone)' : undefined });
 }
 /** a low table: a stone top on a solid timber base */
 export function lowTable(sc: L3Scene, v: View, x: number, y: number, w: number, d: number, st: PieceStyle, rot = 0) {
-  shadow(sc, 1, x, y, w, d, rot); solid(sc, v, { x, y, w: w - 0.16, d: d - 0.16, h: 0.34, rot }, M.walnut, { o: st.o }); solid(sc, v, { x, y, z: 0.34, w, d, h: 0.04, rot }, M.quartz, { o: st.o });
+  shadow(sc, 1, x, y, w, d, rot); solid(sc, v, { x, y, w: w - 0.16, d: d - 0.16, h: 0.34, rot }, M.walnut, { o: st.o }); solid(sc, v, { x, y, z: 0.34, w, d, h: 0.04, rot }, M.quartz, { o: st.o, top: 'url(#rm-stone)' });
 }
 /** A run of base units against a wall: recessed plinth, carcass with door joints, a stone top with a small overhang. `front` is where the
  *  person stands (the unit's −y side when rot is 0). */
@@ -129,7 +132,7 @@ export function counter(sc: L3Scene, v: View, x: number, y: number, len: number,
   const P = frame(x, y, rot); shadow(sc, 1, x, y, len, dep, rot, 0.003, 0.7);
   const [px, py] = P(0, 0.04); solid(sc, v, { x: px, y: py, w: len - 0.02, d: dep - 0.08, h: 0.1, rot }, M.poche, { o: st.o, edge: null });
   solid(sc, v, { x, y, z: 0.1, w: len, d: dep, h: h - 0.13, rot }, body, { o: st.o });
-  const [tx, ty] = P(0, -0.02); solid(sc, v, { x: tx, y: ty, z: h - 0.03, w: len + 0.02, d: dep + 0.04, h: 0.03, rot }, top, { o: st.o });
+  const [tx, ty] = P(0, -0.02); solid(sc, v, { x: tx, y: ty, z: h - 0.03, w: len + 0.02, d: dep + 0.04, h: 0.03, rot }, top, { o: st.o, top: top === M.quartz ? 'url(#rm-stone)' : undefined });
   // door joints and glazed fronts on the front face, if the front is seen
   const [fx, fy] = P(0, -dep / 2), [nx0, ny0] = P(0, -1); const nx = nx0 - x, ny = ny0 - y; if (!sees(v, nx, ny, fx, fy)) return;
   const n = st.doors ?? Math.max(1, Math.round(len / 0.6)); const off = (lx: number, z: number): P3 => { const [qx, qy] = P(lx, -dep / 2 - 0.004); return [qx, qy, z]; };
@@ -151,8 +154,9 @@ export function display(sc: L3Scene, v: View, x: number, y: number, z: number, w
 export function plant(sc: L3Scene, v: View, x: number, y: number, h: number, st: PieceStyle) {
   shadow(sc, 1, x, y, 0.5, 0.5, 0); lathe(sc, v, x, y, 0, 0.2, 0.42, M.cream, { o: st.o, r1: 0.24, n: 16 }); lathe(sc, v, x, y, 0.42, 0.22, 0.02, hex('#5b4434'), { o: st.o, n: 16 });
   const G = [M.leaf3, M.leaf, M.leaf2]; const tiers = Math.max(2, Math.round((h - 0.45) / 0.32));
-  for (let i = 0; i < tiers; i++) { const t = i / Math.max(1, tiers - 1); const r = 0.36 - 0.18 * t + (i % 2 ? 0.04 : 0); const z = 0.45 + i * ((h - 0.6) / tiers);
-    lathe(sc, v, x + (i % 2 ? 0.05 : -0.04), y + (i % 3 ? 0.03 : -0.04), z, r, (h - 0.5) / tiers + 0.08, G[i % 3]!, { o: st.o, r1: r * 0.7, n: 9, edge: null }); }
+  for (let i = 0; i < tiers; i++) { const t = i / Math.max(1, tiers - 1); const r = 0.34 - 0.16 * t + (i % 2 ? 0.04 : 0); const z = 0.45 + i * ((h - 0.6) / tiers);
+    for (let j = 0; j < 3; j++) { const a = (i * 2.1 + j * 2.09); const ox = Math.cos(a) * r * 0.45, oy = Math.sin(a) * r * 0.45;
+      lathe(sc, v, x + ox, y + oy, z + j * 0.04, r * 0.62, (h - 0.5) / tiers + 0.1, G[(i + j) % 3]!, { o: st.o, r1: r * 0.3, n: 8, edge: null, k: 0.92 + 0.06 * j }); } }
 }
 /** a pendant light hanging on its cord, with a glow under the shade */
 export function pendant(sc: L3Scene, v: View, x: number, y: number, z: number, ceil: number, st: PieceStyle) {
@@ -163,7 +167,7 @@ export function pendant(sc: L3Scene, v: View, x: number, y: number, z: number, c
 /** a padded stadium seat on a pedestal, with arms (a suite's balcony seat) */
 export function stadiumSeat(sc: L3Scene, v: View, x: number, y: number, z: number, rot: number, col: RGB, st: PieceStyle & { L?: number }) {
   const L = st.L ?? 3, P = frame(x, y, rot); solid(sc, v, { x, y, z, w: 0.12, d: 0.3, h: 0.36, rot }, M.steelD, { o: st.o, L, edge: null });
-  solid(sc, v, { x, y, z: z + 0.36, w: 0.48, d: 0.44, h: 0.08, rot }, col, { o: st.o, L });
+  solid(sc, v, { x, y, z: z + 0.36, w: 0.48, d: 0.44, h: 0.08, rot }, col, { o: st.o, L, bevel: 0.05 });
   const [bx, by] = P(0, 0.22); solid(sc, v, { x: bx, y: by, z: z + 0.42, w: 0.48, d: 0.07, h: 0.5, rot }, col, { o: st.o, L, k: 0.94 });
   for (const s of [-1, 1]) { const [ax, ay] = P(s * 0.27, 0.02); solid(sc, v, { x: ax, y: ay, z: z + 0.36, w: 0.05, d: 0.42, h: 0.24, rot }, M.steelD, { o: st.o, L, edge: null }); }
 }

@@ -31,7 +31,8 @@ function wall(sc: L3Scene, v: View, P: Program, s: Side) {
     const nb = Math.max(2, Math.round(P.w / 1.25)); const xs = Array.from({ length: nb + 1 }, (_, i) => (P.w * i) / nb);
     for (const x of xs) solid(sc, v, along ? { x, y: pos, z: 0.06, w: 0.045, d: 0.1, h: H - 0.06 } : { x: pos, y: x, z: 0.06, w: 0.1, d: 0.045, h: H - 0.06 }, M.bronze, { L, edge: null });
     for (let i = 0; i < nb; i++) { const u0 = xs[i]! + 0.03, u1 = xs[i + 1]! - 0.03, z1 = cut ? H : H - 0.1; const pt = (u: number, z: number): P3 => (along ? [u, pos, z] : [pos, u, z]);
-      poly(sc, L, [pt(u0, 0.06), pt(u1, 0.06), pt(u1, z1), pt(u0, z1)], { f: 'url(#rm-glass)', s: M.glassEdge, sw: 0.4, c: pt((u0 + u1) / 2, z1 / 2), pri: PRI.solid }); }
+      poly(sc, L, [pt(u0, 0.06), pt(u1, 0.06), pt(u1, z1), pt(u0, z1)], { f: 'url(#rm-glass)', s: M.glassEdge, sw: 0.4, c: pt((u0 + u1) / 2, z1 / 2), pri: PRI.solid });
+      if (!cut && !v.eye) { const du = u1 - u0; poly(sc, L, [pt(u0 + du * 0.18, 0.06), pt(u0 + du * 0.34, 0.06), pt(u0 + du * 0.62, z1), pt(u0 + du * 0.46, z1)], { f: 'rgba(255,255,255,.10)', s: 'none', c: pt((u0 + u1) / 2, z1 / 2 + 0.01), pri: PRI.solid + 0.01 }); } }
     if (spec.slide && !cut) { const hx = spec.slide.at - spec.slide.w / 2 + 0.12; solid(sc, v, along ? { x: hx, y: pos + (s === 'N' ? 0.09 : -0.09), z: 0.85, w: 0.03, d: 0.03, h: 0.55 } : { x: pos, y: hx, z: 0.85, w: 0.03, d: 0.03, h: 0.55 }, M.steel, { L, edge: null });
       line(sc, 1, [[spec.slide.at - spec.slide.w / 2, 0.02, 0.004], [spec.slide.at + spec.slide.w / 2, 0.02, 0.004]], { s: 'rgba(60,52,44,.5)', sw: 0.8, pri: PRI.mark }); }
     return;
@@ -54,7 +55,7 @@ function piece(sc: L3Scene, v: View, P: Program, p: Piece) {
     case 'rail': { shadow(sc, 1, p.x, p.y, p.w, p.d, 0, 0.003, 0.6);
       for (const s of [-1, 1]) solid(sc, v, { x: p.x + s * (p.w / 2 - 0.12), y: p.y + 0.06, w: 0.06, d: 0.2, h: p.h - 0.04 }, M.black, { ...st, edge: null });
       solid(sc, v, { x: p.x, y: p.y + 0.12, z: p.h - 0.18, w: p.w - 0.04, d: 0.06, h: 0.14 }, M.walnut, st);
-      solid(sc, v, { x: p.x, y: p.y, z: p.h - 0.04, w: p.w, d: p.d, h: 0.04 }, M.quartz, st);
+      solid(sc, v, { x: p.x, y: p.y, z: p.h - 0.04, w: p.w, d: p.d, h: 0.04 }, M.quartz, { ...st, top: 'url(#rm-stone)' });
       // what is on it: a few glasses and a bowl, so it reads as in use
       if (p.w > 2) for (let i = 0; i < 3; i++) { const gx = p.x - p.w / 2 + p.w * (0.22 + i * 0.29); lathe(sc, v, gx, p.y + 0.04, p.h, 0.035, 0.12, [205, 222, 226], { o: p.id, r1: 0.04, n: 10, a: 0.55, edge: 'rgba(120,140,150,.6)' });
         if (i === 1) lathe(sc, v, gx + 0.32, p.y - 0.02, p.h, 0.07, 0.05, M.cream, { o: p.id, r1: 0.1, n: 14 }); }
@@ -93,7 +94,12 @@ export function roomScene(P: Program, v: View, o: { sel: string | null; names: b
   const s0 = sc.items.length;
   // the floor in oak boards running along the glass, three tones
   const nb = Math.ceil(P.d / 0.2); const tones = [M.oak, M.oak2, [204, 172, 133] as RGB];
-  for (let i = 0; i < nb; i++) { const y0 = (P.d * i) / nb, y1 = (P.d * (i + 1)) / nb; flat(sc, 1, [[0, y0], [P.w, y0], [P.w, y1], [0, y1]], 0, tint(tones[(i * 7) % 3]!, 1), { pri: PRI.ground, s: 'rgba(150,118,84,.35)', sw: 0.3 }); }
+  for (let i = 0; i < nb; i++) { const y0 = (P.d * i) / nb, y1 = (P.d * (i + 1)) / nb; let x = -((i * 0.73) % 1.4); let j = 0;
+    while (x < P.w) { const len = 1.2 + ((i * 37 + j * 53) % 7) * 0.12; const a = Math.max(0, x), b = Math.min(P.w, x + len);
+      if (b - a > 0.01) flat(sc, 1, [[a, y0], [b, y0], [b, y1], [a, y1]], 0, tint(tones[(i * 7 + j * 5) % 3]!, 0.97 + ((i * 13 + j * 29) % 7) * 0.01), { pri: PRI.ground, s: 'rgba(140,108,76,.35)', sw: 0.3 }); x += len; j++; } }
+  // where the floor meets the walls it is a little darker (light reaches the corners less)
+  for (const [a, b, c2, d2] of [[0, 0, P.w, 0.26], [0, P.d - 0.26, P.w, P.d], [0, 0, 0.26, P.d], [P.w - 0.26, 0, P.w, P.d]] as const) flat(sc, 1, [[a, b], [c2, b], [c2, d2], [a, d2]], 0.001, 'rgba(70,50,30,.07)', { pri: PRI.rug - 0.3 });
+  for (const [a, b, c2, d2] of [[0, 0, P.w, 0.1], [0, P.d - 0.1, P.w, P.d], [0, 0, 0.1, P.d], [P.w - 0.1, 0, P.w, P.d]] as const) flat(sc, 1, [[a, b], [c2, b], [c2, d2], [a, d2]], 0.0012, 'rgba(70,50,30,.08)', { pri: PRI.rug - 0.29 });
   for (const [x, y] of P.lights) pool(sc, 1, x, y, 0.75);
   if (full) { // the ceiling, its downlights and loudspeakers
     flat(sc, 2, [[0, 0], [P.w, 0], [P.w, P.d], [0, P.d]], P.H, tint(M.plaster, 0.97), { pri: PRI.ground });
@@ -117,7 +123,10 @@ export function roomScene(P: Program, v: View, o: { sel: string | null; names: b
 export function roomDefs(): string {
   return `<linearGradient id="rm-glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="rgb(222,238,245)" stop-opacity=".34"/><stop offset=".5" stop-color="rgb(176,208,224)" stop-opacity=".12"/><stop offset="1" stop-color="rgb(230,242,247)" stop-opacity=".26"/></linearGradient>
 <radialGradient id="rm-pool"><stop offset="0" stop-color="#fff1d2" stop-opacity=".55"/><stop offset=".6" stop-color="#ffecc6" stop-opacity=".18"/><stop offset="1" stop-color="#ffe9c0" stop-opacity="0"/></radialGradient>
-<linearGradient id="rm-screen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1f4652"/><stop offset=".45" stop-color="#3a8a7c"/><stop offset=".55" stop-color="#4f9d58"/><stop offset="1" stop-color="#173a2a"/></linearGradient>
+<linearGradient id="rm-scr-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#20434f"/><stop offset="1" stop-color="#2f7470"/></linearGradient>
+<linearGradient id="rm-scr-grass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3f8a45"/><stop offset=".5" stop-color="#5aa553"/><stop offset="1" stop-color="#3f8a45"/></linearGradient>
+<pattern id="rm-screen" width="1" height="1" patternContentUnits="objectBoundingBox"><rect width="1" height="1" fill="url(#rm-scr-sky)"/><rect y=".42" width="1" height=".58" fill="url(#rm-scr-grass)"/><rect y=".34" width="1" height=".08" fill="#2c6d6c"/><rect x=".06" y=".08" width=".34" height=".09" fill="#101417" opacity=".85"/><rect x=".07" y=".1" width=".1" height=".05" fill="#45c1b4"/><rect x="0" y=".72" width="1" height=".006" fill="#eef" opacity=".7"/></pattern>
+<linearGradient id="rm-stone" x1="0" y1="0" x2="1" y2=".6"><stop offset="0" stop-color="#f4f1ec"/><stop offset=".35" stop-color="#ebe7e0"/><stop offset=".42" stop-color="#dcd7cf"/><stop offset=".5" stop-color="#efebe5"/><stop offset=".78" stop-color="#e6e1d9"/><stop offset="1" stop-color="#f2efe9"/></linearGradient>
 <linearGradient id="rm-panel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#244a52"/><stop offset="1" stop-color="#3f8f93"/></linearGradient>
 <linearGradient id="rm-fridge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b4a50" stop-opacity=".92"/><stop offset=".5" stop-color="#6f8a8f" stop-opacity=".85"/><stop offset="1" stop-color="#2e3a3f" stop-opacity=".92"/></linearGradient>
 <pattern id="rm-slats" width="7" height="12" patternUnits="userSpaceOnUse"><rect width="7" height="12" fill="#7a573f"/><rect x="5" width="2" height="12" fill="#563c2b"/></pattern>
@@ -125,5 +134,7 @@ export function roomDefs(): string {
 <linearGradient id="rm-led" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1c6d6c"/><stop offset=".3" stop-color="#43c1b4"/><stop offset=".5" stop-color="#e9f6f2"/><stop offset=".7" stop-color="#43c1b4"/><stop offset="1" stop-color="#1c6d6c"/></linearGradient>
 <pattern id="rm-suites" width="14" height="10" patternUnits="userSpaceOnUse"><rect width="14" height="10" fill="#2a3036"/><rect x="1.5" y="2" width="10" height="6" fill="#d9b884" opacity=".85"/></pattern>
 <linearGradient id="rm-board" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#173b46"/><stop offset=".5" stop-color="#2b8f86"/><stop offset="1" stop-color="#0f2a33"/></linearGradient>
+<pattern id="rm-seats" width="5" height="4" patternUnits="userSpaceOnUse"><rect width="5" height="4" fill="#27706f"/><rect x=".6" y=".5" width="3.6" height="1.8" rx=".6" fill="#2f8584"/><rect y="3.3" width="5" height=".7" fill="#1f5958"/></pattern>
+<pattern id="rm-seats-l" width="5" height="4" patternUnits="userSpaceOnUse"><rect width="5" height="4" fill="#2c7a7b"/><rect x=".6" y=".5" width="3.6" height="1.8" rx=".6" fill="#3a9192"/><rect y="3.3" width="5" height=".7" fill="#236364"/></pattern>
 <linearGradient id="rm-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6d84a3"/><stop offset=".55" stop-color="#a9b8c6"/><stop offset="1" stop-color="#e3d1b6"/></linearGradient>`;
 }

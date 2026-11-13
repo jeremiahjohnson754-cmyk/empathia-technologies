@@ -66,7 +66,7 @@ export function suiteOutside(sc: L3Scene, v: View, w: number, full: boolean) {
     q(sc, 0, [[g, ym - 3.66, zp + 2.44], [g + s * 2, ym - 3.66, zp + 1.4], [g + s * 2, ym + 3.66, zp + 1.4], [g, ym + 3.66, zp + 2.44]], 'rgba(235,235,230,.35)', PRI.mark); }
   // the far stand: a lower tier, a level of suites (lit glass), an upper tier, the roof with its lights
   const S0 = cx - 66, S1 = cx + 66; let y = yf, z = zp + 1.0;
-  const band = (y0: number, z0: number, dy: number, dz: number, i: number, x0 = S0, x1 = S1) => q(sc, 0.5, [[x0, y0, z0], [x1, y0, z0], [x1, y0 - dy, z0 + dz], [x0, y0 - dy, z0 + dz]], i % 2 ? tint(M.seatL, 0.9) : tint(M.seat, 0.92), PRI.terrain);
+  const band = (y0: number, z0: number, dy: number, dz: number, i: number, x0 = S0, x1 = S1) => q(sc, 0.5, [[x0, y0, z0], [x1, y0, z0], [x1, y0 - dy, z0 + dz], [x0, y0 - dy, z0 + dz]], i % 2 ? 'url(#rm-seats-l)' : 'url(#rm-seats)', PRI.terrain);
   q(sc, 0.5, [[S0, yf + 0.4, zp], [S1, yf + 0.4, zp], [S1, yf + 0.4, zp + 1.0], [S0, yf + 0.4, zp + 1.0]], 'url(#rm-led)', PRI.terrain + 0.1);
   for (let i = 0; i < 7; i++) { band(y, z, 2.6, 1.25, i); y -= 2.6; z += 1.25; }
   q(sc, 0.5, [[S0, y, z], [S1, y, z], [S1, y, z + 3.6], [S0, y, z + 3.6]], 'url(#rm-suites)', PRI.terrain + 0.1); z += 3.6; y -= 1.5;
@@ -80,7 +80,7 @@ export function suiteOutside(sc: L3Scene, v: View, w: number, full: boolean) {
   // the end stands, raking up from each goal line, and a video board on one of them
   for (const s of [-1, 1]) { const xe = s < 0 ? xa - 8 : xb + 8; let x = xe, ze = zp + 1.0; const Y0 = yt + 3, Y1 = yt - PW - 3;
     q(sc, 0.5, [[x - s * 0.4, Y0, zp], [x - s * 0.4, Y1, zp], [x - s * 0.4, Y1, zp + 1], [x - s * 0.4, Y0, zp + 1]], 'url(#rm-led)', PRI.terrain + 0.1);
-    for (let i = 0; i < 12; i++) { q(sc, 0.5, [[x, Y0, ze], [x, Y1, ze], [x + s * 2.6, Y1, ze + 1.3], [x + s * 2.6, Y0, ze + 1.3]], i % 2 ? tint(M.seatL, 0.88) : tint(M.seat, 0.9), PRI.terrain); x += s * 2.6; ze += 1.3; }
+    for (let i = 0; i < 12; i++) { q(sc, 0.5, [[x, Y0, ze], [x, Y1, ze], [x + s * 2.6, Y1, ze + 1.3], [x + s * 2.6, Y0, ze + 1.3]], i % 2 ? 'url(#rm-seats-l)' : 'url(#rm-seats)', PRI.terrain); x += s * 2.6; ze += 1.3; }
     q(sc, 0.5, [[x + s * 2, Y0 + 4, ze + 5], [x + s * 2, Y1 - 4, ze + 5], [x - s * 14, Y1 - 4, ze + 5], [x - s * 14, Y0 + 4, ze + 5]], '#3a3d42', PRI.solid);
     q(sc, 0.5, [[x, Y0 + 4, ze - 1], [x, Y1 - 4, ze - 1], [x, Y1 - 4, ze + 5], [x, Y0 + 4, ze + 5]], '#45484d', PRI.terrain + 0.08);
     if (s < 0) q(sc, 0.5, [[x - s * 13.9, ym - 8, ze + 4.4], [x - s * 13.9, ym + 8, ze + 4.4], [x - s * 13.9, ym + 8, ze - 0.4], [x - s * 13.9, ym - 8, ze - 0.4]], 'url(#rm-board)', PRI.solid + 0.05, { s: '#16181b', sw: 4 }); }
