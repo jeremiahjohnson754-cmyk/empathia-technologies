@@ -16,6 +16,7 @@ import type { EstateNode } from '../estate/model.js';
 import { fixturesFor, type FixtureLayout } from './fixtures.js';
 import { programFor, hasProgram, REDESIGN_TYPES } from './rooms/programs.js';
 import { EmpathiaRoomStage } from './rooms/RoomStage.js';
+import { programFromFixtures } from './rooms/fromFixtures.js';
 
 const go = (to: string) => { location.hash = to.replace(/^#/, ''); };
 const ROOM: RGB = [62, 60, 54], FURN: RGB = [70, 104, 88], LVL: RGB = [70, 67, 60], BLD: RGB = [74, 71, 64];
@@ -160,7 +161,7 @@ function WorldRoom({ w, n, role, query }: PageProps & { w: LiteWorld; n: EstateN
       : furnished ? <figure className="stage lt-stage lt-stage--room" data-stage="">
       <V253RoomStage roomId={n.id} lens={lens} state="current" layers={new Set(['furniture', 'av'])} overlays={ov} role={role} sel={pick} onPick={(p) => setPick(p ? p.obj.id : null)} label={`${n.name}, furnished, in 3D. Turn, tilt and zoom with the buttons, the arrow keys or a drag.`} />
       <figcaption className="stage__cap">Drawn by V2.5.3’s layout for this type of room, from the estate’s record: {L} × {Wd} m, {H} m high{n.capacity ? `, ${n.capacity} places` : ''}, and its equipment classes. Modelled, not surveyed.</figcaption></figure>
-      : fixtures ? <figure className="stage lt-stage lt-stage--room" data-stage=""><FixtureStage n={n} F={fixtures} />
+      : fixtures ? <figure className="stage lt-stage lt-stage--room" data-stage=""><FixtureRoom n={n} F={fixtures} eye={query.get('eye')} onEye={(k) => { const q = new URLSearchParams(query); if (k) q.set('eye', k); else q.delete('eye'); setQuery(base, q); }} />
         <figcaption className="stage__cap">Furnished by Empathia’s own layout for a {n.type.replace(/-/g, ' ')} (V2.5.3 never drew one), from the record’s size{n.capacity ? ` and ${n.capacity} places` : ''}. Illustrative: no fixture here is a surveyed or verified asset.</figcaption></figure>
       : <EmptyState title="Shown on its floor, not furnished" icon="room">A {n.type.replace(/-/g, ' ')} is not one of the room types V2.5.3 drew, so nothing is invented for it. {level ? <a href={worldLevelHref(w, level.id)}>See it on {level.name}</a> : null}</EmptyState>}
     {furnished && lens !== 'visitor' && <fieldset className="lt-switches" data-testid="lw-overlays"><legend>Coverage</legend>{([['camera', 'Camera view'], ['mic', 'Microphone pickup'], ['speaker', 'Loudspeakers'], ['sight', 'Sightlines']] as Array<[Overlay, string]>).map(([k, t]) => <button key={k} type="button" role="switch" aria-checked={ov.has(k)} className={`lt-switch${ov.has(k) ? ' on' : ''}`} onClick={() => tog(k)} data-testid={`lw-ov-${k}`}><span className="lt-switch__name">{t}</span><span className="lt-switch__knob" aria-hidden="true" /></button>)}</fieldset>}
@@ -195,7 +196,12 @@ function fixtureScene(cam: Cam, dims: [number, number, number], F: FixtureLayout
     hit(sc, [f.x, f.y, (f.z || 0) + f.h / 2], { o: id, r: 12, label: `${f.label}. Shows what it is.` }); });
   return sc;
 }
-function FixtureStage({ n, F }: { n: EstateNode; F: FixtureLayout }) {
+/** 13 Nov 2026: the fixture rooms drawn by Empathia's renderer, like every other room (the earlier box drawing is kept below, unused) */
+function FixtureRoom({ n, F, eye, onEye }: { n: EstateNode; F: FixtureLayout; eye: string | null; onEye: (k: string | null) => void }) {
+  const P = useMemo(() => programFromFixtures(n.name, n.type, n.dims!, F), [n, F]);
+  return <div data-testid="lw-fixture-3d" data-objects={F.items.length} data-rule={F.rule}><EmpathiaRoomStage P={P} label={`${n.name}, furnished by Empathia’s layout for a ${n.type.replace(/-/g, ' ')}, in 3D. Each fixture is a button.`} initialEye={eye} onEye={onEye} /></div>;
+}
+export function FixtureStage({ n, F }: { n: EstateNode; F: FixtureLayout }) {
   const [L, Wd, H] = n.dims!; const w = Math.max(L, Wd), d = Math.min(L, Wd); const big = w > 30;
   const c = useCam({ yaw: 30, pitch: big ? 46 : 36, zoom: 1 }); const [sel, setSel] = useState<string | null>(null);
   const sc = useMemo(() => fixtureScene(c.cam, [w, d, H], F, sel), [c.cam, w, d, H, F, sel]);

@@ -10,7 +10,7 @@ export interface Piece { id: string; kind: string; label: string; x: number; y: 
 /** `pitch` follows the L3 camera: 36 is level, higher looks down (3° for every step of 9 above 36), lower looks up */
 export interface EyeSpot { key: string; label: string; says: string; x: number; y: number; z: number; yaw: number; pitch: number }
 export interface Program {
-  key: string; title: string; summary: string; w: number; d: number; H: number; floor: 'oak' | 'carpet' | 'concrete'; walls: Record<Side, WallSpec>;
+  key: string; title: string; summary: string; w: number; d: number; H: number; floor: 'oak' | 'carpet' | 'concrete' | 'vinyl'; walls: Record<Side, WallSpec>;
   pieces: Piece[]; eyes: EyeSpot[]; lights: Array<[number, number]>; speakers: Array<[number, number]>; outside: 'suite' | 'club' | 'window' | 'open' | null; hero: { yaw: number; pitch: number; zoom?: number };
 }
 export interface RoomRecord { id: string; type: string; name: string; dims?: [number, number, number]; capacity?: number; assets?: Array<{ kind: string; label: string; cls: string; qty: number; state: string }> }

@@ -10,7 +10,7 @@ const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 globalThis.localStorage = { getItem: () => null, setItem() {}, removeItem() {} };
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'lite-rooms-'));
-fs.writeFileSync(path.join(tmp, 'entry.ts'), `export * from '${repo}/apps/demo/src/lite/rooms/programs.ts';\nexport { roomScene } from '${repo}/apps/demo/src/lite/rooms/build.ts';\nexport { worldIndex } from '${repo}/apps/demo/src/lite/worlds.ts';\n`);
+fs.writeFileSync(path.join(tmp, 'entry.ts'), `export * from '${repo}/apps/demo/src/lite/rooms/programs.ts';\nexport { roomScene } from '${repo}/apps/demo/src/lite/rooms/build.ts';\nexport { worldIndex } from '${repo}/apps/demo/src/lite/worlds.ts';\nexport { programFromFixtures } from '${repo}/apps/demo/src/lite/rooms/fromFixtures.ts';\nexport { fixturesFor } from '${repo}/apps/demo/src/lite/fixtures.ts';\n`);
 await esbuild.build({ entryPoints: [path.join(tmp, 'entry.ts')], bundle: true, platform: 'node', format: 'esm', outfile: path.join(tmp, 'out.mjs'), logLevel: 'error', jsx: 'automatic' });
 const M = await import(pathToFileURL(path.join(tmp, 'out.mjs')).href);
 process.on('exit', () => fs.rmSync(tmp, { recursive: true, force: true }));
@@ -74,3 +74,16 @@ for (const [world, type] of [['convention', 'green-room'], ['convention', 'speak
   });
 }
 test('no room type is left "being redesigned"', () => { assert.equal(M.REDESIGN_TYPES.size, 0); });
+
+// 13 Nov 2026: the rooms furnished by Empathia's fixture rules are drawn by the same renderer
+test('every fixture room of the three worlds is drawn by the room renderer: each fixture a piece in its place, finite from two sides and from each eye', () => {
+  const finite = (it) => (it.p || [it.at]).every((q) => q.every((v) => Number.isFinite(v))); const done = new Set(); let n = 0;
+  for (const world of ['university', 'stadium', 'convention']) { const wx = M.worldIndex(world);
+    for (const r of wx.estate.nodes.filter((x) => x.kind === 'room' && x.dims)) { const [L, W] = r.dims; const F = M.fixturesFor(r.type, Math.max(L, W), Math.min(L, W), r.capacity); if (!F || M.hasProgram(r.type)) continue;
+      const P = M.programFromFixtures(r.name, r.type, r.dims, F); n++;
+      assert.equal(P.pieces.length, F.items.length, r.id); assert.ok(P.pieces.every((p, i) => p.x === F.items[i].x && p.y === F.items[i].y), `${r.id} moved`);
+      if (done.has(F.rule)) continue; done.add(F.rule);
+      for (const yaw of [208, 28]) assert.ok(M.roomScene(P, { cam: { yaw, pitch: 40, zoom: 1 }, eye: null }, { sel: null, names: true }).items.every(finite), `${r.id} ${yaw}`);
+      for (const e of P.eyes) { assert.ok(e.x > 0 && e.x < P.w && e.y > 0 && e.y < P.d, `${r.id} ${e.key} inside`); assert.ok(M.roomScene(P, { cam: { yaw: e.yaw, pitch: e.pitch, zoom: 1 }, eye: e }, { sel: null, names: false }).items.every(finite), `${r.id} ${e.key}`); } } }
+  assert.ok(n > 50 && done.size >= 8, `${n} rooms, ${done.size} rules`);
+});

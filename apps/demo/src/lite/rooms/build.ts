@@ -43,11 +43,13 @@ function wall(sc: L3Scene, v: View, P: Program, s: Side) {
   // skirting on the room side
   const off = s === 'N' ? 0.008 : s === 'S' ? -0.008 : s === 'W' ? 0.008 : -0.008; const ip = s === 'N' || s === 'W' ? pos + T / 2 + off : pos - T / 2 + off; u = along ? 0 : 0;
   const end = along ? P.w : P.d; for (const [g0, g1] of [...gaps, [end, end] as [number, number]]) { if (g0 - u > 0.02) solid(sc, v, along ? { x: (u + g0) / 2, y: ip, w: g0 - u, d: 0.016, h: Math.min(0.08, H) } : { x: ip, y: (u + g0) / 2, w: 0.016, d: g0 - u, h: Math.min(0.08, H) }, M.walnut, { L, edge: null }); u = g1; }
-  if (dr) { const hingeAtHi = dr.hinge === 'hi'; const hx = hingeAtHi ? dr.at + dr.w / 2 - 0.03 : dr.at - dr.w / 2 + 0.03; const inward = s === 'S' ? -1 : 1;
+  if (dr) { // the door, on whichever wall it is: (u along the wall, n into the room) to the room's x, y
+    const hingeAtHi = dr.hinge === 'hi'; const hu = hingeAtHi ? dr.at + dr.w / 2 - 0.03 : dr.at - dr.w / 2 + 0.03; const base = s === 'N' ? 0 : s === 'S' ? P.d : s === 'W' ? 0 : P.w; const inward = s === 'S' || s === 'E' ? -1 : 1;
+    const at = (uu: number, n: number, z: number): P3 => (along ? [uu, base + inward * n, z] : [base + inward * n, uu, z]);
     if (cut) { // the door's swing, drawn on the floor as on a plan
-      line(sc, 1, Array.from({ length: 13 }, (_, i) => { const t = (i / 12) * (Math.PI / 2); const r = dr.w - 0.05; const dx = (hingeAtHi ? -1 : 1) * Math.cos(t) * r, dy = inward * Math.sin(t) * r; return [hx + dx, P.d + dy, 0.006] as P3; }), { s: 'rgba(70,60,50,.55)', sw: 0.8, da: '4 3', pri: PRI.mark });
-      line(sc, 1, [[hx, P.d, 0.006], [hx, P.d + inward * (dr.w - 0.05), 0.006]], { s: 'rgba(70,60,50,.7)', sw: 1.2, pri: PRI.mark }); }
-    else solid(sc, v, { x: hx, y: P.d + inward * (dr.w / 2 - 0.02), w: 0.045, d: dr.w - 0.04, h: 2.08 }, M.walnutL, { L: 3, o: 'door' }); }
+      const r = dr.w - 0.05; line(sc, 1, Array.from({ length: 13 }, (_, i) => { const t = (i / 12) * (Math.PI / 2); return at(hu + (hingeAtHi ? -1 : 1) * Math.cos(t) * r, Math.sin(t) * r, 0.006); }), { s: 'rgba(70,60,50,.55)', sw: 0.8, da: '4 3', pri: PRI.mark });
+      line(sc, 1, [at(hu, 0, 0.006), at(hu, r, 0.006)], { s: 'rgba(70,60,50,.7)', sw: 1.2, pri: PRI.mark }); }
+    else { const [lx, ly] = at(hu, dr.w / 2 - 0.02, 0); solid(sc, v, along ? { x: lx, y: ly, w: 0.045, d: dr.w - 0.04, h: 2.08 } : { x: lx, y: ly, w: dr.w - 0.04, d: 0.045, h: 2.08 }, M.walnutL, { L: 3, o: 'door' }); } }
 }
 
 /** a task chair at a desk run, raised with the tier it stands on; simple at a distance where there are many */
@@ -118,6 +120,57 @@ function piece(sc: L3Scene, v: View, P: Program, p: Piece) {
       shelves(sc, v, p.x, p.y + 0.05, p.w - 1.2, 0, 1.2, 1.9, 3, st); const n = Math.max(3, Math.floor((p.w - 0.6) / 0.7)); for (let i = 0; i < n; i++) { const [sx, sy] = P2(-p.w / 2 + 0.6 + (i * (p.w - 1.2)) / Math.max(1, n - 1), -p.d / 2 - 0.25); stool(sc, v, sx, sy, 0.76, M.leather, st, true); } break; }
     case 'column': { solid(sc, v, { x: p.x, y: p.y, w: p.w, d: p.d, h: p.h }, M.plaster, { ...st, top: 'rgb(58,54,50)' }); display(sc, v, p.x, p.y - p.d / 2 - 0.03, 2.1, 1.43, 0.82, 0, st); display(sc, v, p.x, p.y + p.d / 2 + 0.03, 2.1, 1.43, 0.82, 180, st); break; }
     case 'ledwall': solid(sc, v, { x: p.x, y: p.y, z: p.z || 1, w: p.w, d: p.d, h: p.h, rot: 180 }, M.black, { ...st, face: { N: 'url(#rm-board)' } }); break;
+    // ---- V2.5.3's objects, drawn with the kit (./fromV253.ts)
+    case 'chair1': chair(sc, v, p.x, p.y, rot, M.camel, st); break;
+    case 'table0': table(sc, v, p.x, p.y, p.w, p.d, p.h, M.oak, M.walnut, st, false, rot); break;
+    case 'credenza': counter(sc, v, p.x, p.y, Math.max(p.w, p.d), Math.min(p.w, p.d), p.h, rot, M.walnut, M.quartz, st); break;
+    case 'controldesk': { table(sc, v, p.x, p.y, p.w, p.d, p.h, M.oak, M.black, st, false, rot); const n = Math.max(1, Math.min(4, Math.floor(p.w / 0.9)));
+      for (let i = 0; i < n; i++) monitor(sc, v, p.x - p.w / 2 + (p.w * (i + 0.5)) / n, p.y - p.d / 4, p.h, 0.55, 0.32, 180, st); break; }
+    case 'lectern': { solid(sc, v, { x: p.x, y: p.y, w: p.w * 0.9, d: p.d * 0.8, h: p.h - 0.08, rot }, M.walnut, st); solid(sc, v, { x: p.x, y: p.y, z: p.h - 0.08, w: p.w, d: p.d, h: 0.05, rot }, M.walnutL, { ...st, bevel: 0.03 }); break; }
+    case 'touch': solid(sc, v, { x: p.x, y: p.y, z: p.z, w: Math.max(0.2, p.w), d: Math.max(0.14, p.d), h: 0.04 }, M.black, { ...st, top: 'url(#rm-panel)' }); break;
+    case 'videobar': solid(sc, v, { x: p.x, y: p.y, z: p.z, w: p.w, d: Math.max(0.08, p.d), h: Math.max(0.08, p.h), rot }, M.charcoal, { ...st, bevel: 0.02 }); break;
+    case 'camera': { solid(sc, v, { x: p.x, y: p.y, z: p.z, w: Math.max(0.16, p.w), d: Math.max(0.14, p.d), h: Math.max(0.12, p.h), rot }, M.charcoal, { ...st, bevel: 0.03 }); const [lx, ly] = frame(p.x, p.y, rot)(0, -Math.max(0.14, p.d) / 2); lathe(sc, v, lx, ly, (p.z || 0) + 0.02, 0.04, 0.08, M.black, { ...st, n: 10 }); break; }
+    case 'stage': platform(sc, v, p.x, p.y, p.w, p.d, p.h, [96, 74, 56], st); break;
+    case 'divider': solid(sc, v, { x: p.x, y: p.y, w: p.w, d: p.d, h: p.h }, [176, 170, 160], { ...st, bevel: 0.02 }); break;
+    case 'wireless': lathe(sc, v, p.x, p.y, p.z || 0, 0.03, Math.max(0.15, p.h), M.black, { ...st, n: 8 }); break;
+    case 'seatblock': { const many = (p.at || []).length > 40; for (const [x, y] of p.at || []) { if (many) simpleChair(sc, v, x, y, rot, st); else chair(sc, v, x, y, rot, M.camel, st); } break; }
+    case 'ceildev': if (p.label.toLowerCase().includes('microphone')) solid(sc, v, { x: p.x, y: p.y, z: Math.min(p.z || P.H - 0.05, P.H - 0.04), w: p.w, d: p.d, h: 0.035 }, [238, 236, 231], { ...st, bevel: 0.05 });
+      else lathe(sc, v, p.x, p.y, Math.min(p.z || P.H - 0.05, P.H - 0.04), Math.max(0.08, p.w / 2), 0.03, [244, 242, 237], { ...st, n: 14 }); break;
+    case 'ceildev-hidden': break;
+    case 'box': solid(sc, v, { x: p.x, y: p.y, z: p.z, w: p.w, d: p.d, h: p.h, rot }, M.stone, st); break;
+    // ---- Empathia's fixture rules (./fromFixtures.ts); fixtures are axis-aligned boxes, `rot` says which way they face
+    case 'fx-stall': { shadow(sc, 1, p.x, p.y, p.w, p.d, 0, 0.003, 0.6); for (const sx of [-1, 1]) solid(sc, v, { x: p.x + sx * (p.w / 2 - 0.015), y: p.y, z: 0.15, w: 0.03, d: p.d, h: 1.85 }, [214, 210, 202], { ...st, edge: 'rgba(120,110,100,.4)' });
+      solid(sc, v, { x: p.x, y: p.y - p.d / 2 + 0.015, z: 0.15, w: p.w - 0.06, d: 0.03, h: 1.85 }, [96, 128, 132], { ...st, edge: 'rgba(60,70,72,.6)' });
+      lathe(sc, v, p.x, p.y + p.d / 4, 0, 0.19, 0.4, [246, 246, 243], { ...st, r1: 0.21, n: 14 }); solid(sc, v, { x: p.x, y: p.y + p.d / 2 - 0.1, z: 0.4, w: 0.42, d: 0.16, h: 0.38 }, [246, 246, 243], { ...st, bevel: 0.02 }); break; }
+    case 'fx-counter': { const side = Math.abs(rot) === 90; const len = side ? p.d : p.w, dep = side ? p.w : p.d; const steel = /cooking|prep|island|back counter/i.test(p.label);
+      counter(sc, v, p.x, p.y, len, dep, p.h, rot, steel ? M.steel : M.walnut, steel ? M.steel : M.quartz, { ...st, doors: Math.max(1, Math.round(len / 0.6)) });
+      const m = /(\d+) basin/.exec(p.label); if (m) { const n = Number(m[1]); for (let i = 0; i < n; i++) lathe(sc, v, p.x - len / 2 + (len * (i + 0.5)) / n, p.y, p.h - 0.02, 0.17, 0.03, [250, 250, 248], { ...st, n: 14 });
+        if (p.y < 1) mirror(sc, v, p.x, 0.03, 1.15, len - 0.1, 0.85, 180, st); } break; }
+    case 'fx-small': solid(sc, v, { x: p.x, y: p.y, z: 1.0, w: p.w, d: p.d, h: Math.min(0.35, p.h), rot }, M.steel, { ...st, bevel: 0.02 }); break;
+    case 'fx-fridge': { shadow(sc, 1, p.x, p.y, p.w, p.d); solid(sc, v, { x: p.x, y: p.y, w: p.w, d: p.d, h: p.h }, M.steel, { ...st, face: { [rot === 90 ? 'E' : rot === -90 ? 'W' : rot === 180 ? 'S' : 'N']: 'url(#rm-fridge)' } }); break; }
+    case 'fx-shelf': { shadow(sc, 1, p.x, p.y, p.w, p.d, 0, 0.003, 0.6); const steel = M.steelD; for (const [ux, uy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]] as const) solid(sc, v, { x: p.x + ux * (p.w / 2 - 0.02), y: p.y + uy * (p.d / 2 - 0.02), w: 0.035, d: 0.035, h: p.h }, steel, { ...st, edge: null });
+      // the boards are drawn in bays, each with what stands on it, so a long run sorts correctly against the cartons on it
+      const nb = Math.max(3, Math.round(p.h / 0.5)); const nbx = Math.max(1, Math.floor(p.w / 0.45)); const bw = p.w / nbx;
+      for (let i = 0; i < nb; i++) { const z = 0.1 + ((p.h - 0.15) * i) / (nb - 1); for (let j = 0; j < nbx; j++) { const bx = p.x - p.w / 2 + bw * (j + 0.5);
+        solid(sc, v, { x: bx, y: p.y, z, w: bw, d: p.d, h: 0.025 }, M.steel, { ...st, edge: null });
+        if (i < nb - 1 && (i * 3 + j) % 4 !== 0) solid(sc, v, { x: bx, y: p.y, z: z + 0.025, w: Math.min(0.36, bw - 0.06), d: Math.min(0.38, p.d - 0.06), h: 0.26 + ((i + j) % 3) * 0.04 }, [176, 142, 102], { ...st, edge: 'rgba(110,84,56,.5)', k: 0.94 + ((i + j) % 3) * 0.03 }); } } break; }
+    case 'fx-kiosk': { shadow(sc, 1, p.x, p.y, p.w, p.d); solid(sc, v, { x: p.x, y: p.y, w: p.w, d: p.d, h: p.h, rot }, M.charcoal, { ...st, face: { N: 'url(#rm-panel)' }, bevel: 0.02 }); break; }
+    case 'fx-table': table(sc, v, p.x, p.y, p.w, p.d, p.h, M.oak, M.walnut, st, p.w < 1.2 && p.d < 1.2); break;
+    case 'fx-chair': chair(sc, v, p.x, p.y, rot, M.camel, st); break;
+    case 'fx-sofa': sofa(sc, v, p.x, p.y, rot, Math.max(p.w, p.d), p.w > 1.4 || p.d > 1.4 ? M.teal : M.camel, st, p.w > 1.4 || p.d > 1.4 ? 3 : 1); break;
+    case 'fx-machine': { shadow(sc, 1, p.x, p.y, p.w, p.d); solid(sc, v, { x: p.x, y: p.y, w: p.w, d: p.d, h: p.h, rot }, [236, 236, 232], { ...st, face: { N: 'url(#rm-washer)' }, bevel: 0.03 }); break; }
+    case 'fx-rack': rack(sc, v, p.x, p.y, p.h, rot, st); break;
+    case 'fx-cabinet': { shadow(sc, 1, p.x, p.y, p.w, p.d); solid(sc, v, { x: p.x, y: p.y, w: p.w, d: p.d, h: p.h, rot }, /board|panel/i.test(p.label) ? [150, 64, 58] : M.steel, { ...st, bevel: 0.02 }); break; }
+    case 'fx-plant': { shadow(sc, 1, p.x, p.y, p.w, p.d); solid(sc, v, { x: p.x, y: p.y, w: p.w, d: p.d, h: p.h }, /pump/i.test(p.label) ? [88, 128, 104] : M.steel, { ...st, face: { N: 'url(#rm-grille)', S: 'url(#rm-grille)' }, bevel: 0.03 });
+      lathe(sc, v, p.x + p.w / 2 - 0.15, p.y, p.h, 0.09, 0.6, M.steelD, { ...st, n: 10 }); break; }
+    case 'fx-bed': { shadow(sc, 1, p.x, p.y, p.w, p.d); for (const [ux, uy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]] as const) solid(sc, v, { x: p.x + ux * (p.w / 2 - 0.06), y: p.y + uy * (p.d / 2 - 0.06), w: 0.04, d: 0.04, h: 0.55 }, M.steel, { ...st, edge: null });
+      solid(sc, v, { x: p.x, y: p.y, z: 0.55, w: p.w, d: p.d, h: 0.12 }, [214, 222, 226], { ...st, bevel: 0.05 }); solid(sc, v, { x: p.x, y: p.y + p.d / 2 - 0.22, z: 0.67, w: p.w - 0.2, d: 0.3, h: 0.08 }, [244, 244, 240], { ...st, bevel: 0.04 }); break; }
+    case 'fx-locker': { shadow(sc, 1, p.x, p.y, p.w, p.d, 0, 0.003, 0.6); solid(sc, v, { x: p.x, y: p.y, w: p.w, d: p.d, h: p.h, rot }, [118, 140, 152], { ...st, face: { N: 'url(#rm-lockers)' } }); break; }
+    case 'fx-bench': { solid(sc, v, { x: p.x, y: p.y, z: p.h - 0.04, w: p.w, d: p.d, h: 0.04 }, M.oak, st); for (const ux of [-1, 1]) solid(sc, v, { x: p.x + ux * (p.w / 2 - 0.1), y: p.y, w: 0.05, d: p.d - 0.06, h: p.h - 0.04 }, M.steelD, { ...st, edge: null }); break; }
+    case 'fx-booth': { flat(sc, 1, [[p.x - p.w / 2, p.y - p.d / 2], [p.x + p.w / 2, p.y - p.d / 2], [p.x + p.w / 2, p.y + p.d / 2], [p.x - p.w / 2, p.y + p.d / 2]], 0.006, '#5d6f7d', { pri: PRI.rug, o: p.id });
+      solid(sc, v, { x: p.x, y: p.y + p.d / 2 - 0.04, w: p.w, d: 0.08, h: p.h }, [236, 232, 226], { ...st, face: { N: 'url(#rm-board)' } }); solid(sc, v, { x: p.x - p.w / 2 + 0.04, y: p.y + p.d / 4, w: 0.08, d: p.d / 2, h: p.h }, [236, 232, 226], st);
+      counter(sc, v, p.x + p.w / 4, p.y - p.d / 2 + 0.4, 1.2, 0.5, 1.0, 0, [236, 232, 226], M.quartz, { ...st, doors: 1 }); break; }
+    case 'fx-mat': flat(sc, 1, [[p.x - p.w / 2, p.y - p.d / 2], [p.x + p.w / 2, p.y - p.d / 2], [p.x + p.w / 2, p.y + p.d / 2], [p.x - p.w / 2, p.y + p.d / 2]], 0.01, '#4f7d64', { pri: PRI.rug, o: p.id, s: 'rgba(30,50,40,.5)', sw: 0.6 }); break;
     default: solid(sc, v, { x: p.x, y: p.y, z: p.z, w: p.w, d: p.d, h: p.h, rot }, M.stone, st);
   }
 }
@@ -136,6 +189,7 @@ export function roomScene(P: Program, v: View, o: { sel: string | null; names: b
   const s0 = sc.items.length;
   // the floor in oak boards running along the glass, three tones
   if (P.floor === 'carpet') flat(sc, 1, [[0, 0], [P.w, 0], [P.w, P.d], [0, P.d]], 0, 'url(#rm-carpet2)', { pri: PRI.ground });
+  if (P.floor === 'vinyl') flat(sc, 1, [[0, 0], [P.w, 0], [P.w, P.d], [0, P.d]], 0, 'url(#rm-vinyl)', { pri: PRI.ground });
   if (P.floor === 'concrete') flat(sc, 1, [[0, 0], [P.w, 0], [P.w, P.d], [0, P.d]], 0, '#aaa59d', { pri: PRI.ground, s: 'rgba(80,76,70,.3)', sw: 0.4 });
   const nb = P.floor === 'oak' ? Math.ceil(P.d / 0.2) : 0; const tones = [M.oak, M.oak2, [204, 172, 133] as RGB];
   for (let i = 0; i < nb; i++) { const y0 = (P.d * i) / nb, y1 = (P.d * (i + 1)) / nb; let x = -((i * 0.73) % 1.4); let j = 0;
@@ -155,9 +209,12 @@ export function roomScene(P: Program, v: View, o: { sel: string | null; names: b
   const shown = P.pieces.filter((p) => { const m = mountOf(p, P); return !m || !cutWall(P, v, m); });
   for (const p of shown) { if (p.y < 0) track(outside, () => piece(sc, v, P, p)); else piece(sc, v, P, p); }
   if (v.eye) for (const [a, b] of inside ? outside : shell) for (let i = a; i < b; i++) { const it = sc.items[i] as { pri?: number }; it.pri = (it.pri || 0) - 20; }
-  for (const p of shown) { if (p.kind === 'rug') continue; const at: P3 = p.kind === 'stools' || p.kind === 'seats' ? [p.x, p.y, (p.z || 0) + p.h * 0.7] : [p.x, p.y, (p.z || 0) + p.h * 0.7];
+  // buttons for big things first and small ones (a camera on a credenza, a panel on a table) last, so the small one is on top where they overlap
+  for (const p of [...shown].sort((a, b) => b.w * b.d - a.w * a.d)) { if (p.kind === 'rug' || p.kind === 'ceildev-hidden') continue;
+    // V2.5.3's chairs and seat blocks are picked by tapping them, as in V2.5.3, not by a button each (a button per chair covers the equipment)
+    const tapOnly = p.kind === 'chair1' || p.kind === 'seatblock'; const at: P3 = p.kind === 'stools' || p.kind === 'seats' ? [p.x, p.y, (p.z || 0) + p.h * 0.7] : [p.x, p.y, (p.z || 0) + p.h * 0.7];
     if (o.names || o.sel === p.id) label(sc, [p.x, p.y, (p.z || 0) + p.h + 0.12], p.label.replace(/ \(\d+\)$/, ''), { cls: o.sel === p.id ? undefined : 'soft', on: o.sel === p.id, o: p.id, keep: o.sel === p.id });
-    hit(sc, at, { o: p.id, r: 12, label: `${p.label}. Shows what it is.`, testId: `rm-piece-${p.id}` }); }
+    if (!tapOnly) hit(sc, at, { o: p.id, r: 12, label: `${p.label}. Shows what it is.`, testId: `rm-piece-${p.id}` }); }
   if (full) { if (o.names || o.sel === 'speakers') for (const [x, y] of P.speakers) label(sc, [x, y, P.H - 0.05], 'Ceiling loudspeaker', { cls: 'soft', o: 'speakers' }); for (const [x, y] of P.speakers.slice(0, 1)) hit(sc, [x, y, P.H - 0.05], { o: 'speakers', r: 12, label: 'Ceiling loudspeakers. Shows what they are.', testId: 'rm-piece-speakers' }); }
   return sc;
 }
@@ -186,5 +243,9 @@ export function roomDefs(): string {
 <pattern id="rm-faders" width="14" height="22" patternUnits="userSpaceOnUse"><rect width="14" height="22" fill="#2a2d31"/><rect x="1" y="1" width="12" height="7" fill="#33373c"/><circle cx="4" cy="3" r="1.3" fill="#8b9096"/><circle cx="10" cy="3" r="1.3" fill="#8b9096"/><circle cx="7" cy="6" r="1.1" fill="#c9a64a"/><rect x="6.4" y="10" width="1.2" height="11" fill="#15171a"/><rect x="5" y="14" width="4" height="2.2" rx=".5" fill="#e3e3e3"/></pattern>
 <pattern id="rm-meters" width="1" height="1" patternContentUnits="objectBoundingBox"><rect width="1" height="1" fill="#15171a"/><rect x=".05" y=".25" width=".9" height=".5" fill="#2b6f74"/><rect x=".05" y=".55" width=".9" height=".12" fill="#7ecf6a"/></pattern>
 <pattern id="rm-rackface" width="1" height="1" patternContentUnits="objectBoundingBox"><rect width="1" height="1" fill="#1b1d20"/><rect x=".08" y=".08" width=".84" height=".14" fill="#2c2f33"/><rect x=".08" y=".28" width=".84" height=".14" fill="#2c2f33"/><rect x=".08" y=".48" width=".84" height=".14" fill="#2c2f33"/><circle cx=".82" cy=".15" r=".02" fill="#4fd17a"/><circle cx=".82" cy=".35" r=".02" fill="#4fd17a"/></pattern>
+<pattern id="rm-vinyl" width="20" height="20" patternUnits="userSpaceOnUse"><rect width="20" height="20" fill="#c9c3b8"/><rect width="10" height="10" fill="#c4beb2"/><rect x="10" y="10" width="10" height="10" fill="#c4beb2"/></pattern>
+<pattern id="rm-washer" width="1" height="1" patternContentUnits="objectBoundingBox"><rect width="1" height="1" fill="#ecece8"/><rect y=".05" width="1" height=".14" fill="#d8d8d3"/><circle cx=".5" cy=".58" r=".27" fill="#9aa3a8"/><circle cx=".5" cy=".58" r=".19" fill="#4d5a61"/></pattern>
+<pattern id="rm-lockers" width="9" height="40" patternUnits="userSpaceOnUse"><rect width="9" height="40" fill="#7d939f"/><rect x="8.2" width=".8" height="40" fill="#5b6e78"/><rect x="5.5" y="17" width="1.6" height=".7" fill="#d9dfe2"/><rect x="1.5" y="3" width="4" height=".5" fill="#6a7f8a"/><rect x="1.5" y="4.4" width="4" height=".5" fill="#6a7f8a"/></pattern>
+<pattern id="rm-grille" width="6" height="4" patternUnits="userSpaceOnUse"><rect width="6" height="4" fill="#99a0a6"/><rect y="2.6" width="6" height="1" fill="#7c838a"/></pattern>
 <linearGradient id="rm-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6d84a3"/><stop offset=".55" stop-color="#a9b8c6"/><stop offset="1" stop-color="#e3d1b6"/></linearGradient>`;
 }

@@ -397,9 +397,12 @@ polygon.l3-go:hover { filter: brightness(1.18); }
 :root[data-theme="light"] { --rm-bg: radial-gradient(120% 95% at 50% 0%, #f3efe8 0%, #e2dbd0 60%, #d2cabd 100%); --rm-line: rgba(60,50,40,.14); }
 :root[data-theme="dark"] { --rm-bg: radial-gradient(120% 95% at 50% 0%, #3f454b 0%, #2c3135 58%, #1f2326 100%); --rm-line: rgba(255,255,255,.08); }
 .rm-room { display: grid; gap: 4px; min-width: 0; }
-.rm-stage .l3-stage { background: var(--rm-bg); border-color: var(--rm-line); }
+.rm-stage .l3-stage { background: var(--rm-bg); border-color: var(--rm-line); --ok: #62c684; --warn: #e8b04a; --bad: #f0655a; --info: #6aa5f2; --teal: #45cfc1; --tx3: #8a8478; }
 .rm-stage .l3-svg { min-height: 300px; }
 .rm-stage polygon { stroke-linejoin: round; }
 .rm-names { margin-left: auto; }
 .rm-says { margin: 0 2px; min-height: 1.5em; }
 @media (max-width: 560px) { .rm-names { margin-left: 0; } }
+/* the drawing switch on a V2.5.3 room: Empathia's look (default) or V2.5.3's own drawing */
+.lt-look { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 8px; }
+.lt-look .lt-eyes__l { font-weight: 600; }
