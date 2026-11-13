@@ -364,6 +364,11 @@
     "file": "apps/demo/src/lite/LiteRoom.tsx",
     "evidence": "ordinary-word",
     "note": "zoom control"
+   },
+   {
+    "file": "apps/demo/src/lite/l3.tsx",
+    "evidence": "ordinary-word",
+    "note": "zoom in and out on the spatial stage"
    }
   ]
  }
