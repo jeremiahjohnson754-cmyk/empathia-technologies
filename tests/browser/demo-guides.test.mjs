@@ -39,7 +39,7 @@ const BOARD = 'R-ATL-4-218'; const BARE = 'R-ATL-4-220';
 
 { const t = await open('#/guide', { role: 'employee' }); const p = t.page; await p.waitForSelector('[data-testid=guide-index]');
   const n = await p.locator('[data-testid=guide-rooms] a').count(); await p.fill('[data-testid=guide-q]', '4.218'); await p.waitForTimeout(200); const f = await p.locator('[data-testid=guide-rooms] a').count();
-  ok('GB-30', 'the index lists a guide for every one of the 140 rooms and finds one by its number', n === 140 && f >= 1 && f < 10, `${n} ${f}`);   // 13 Nov 2026: + V2.5.3's 50 rooms (founder: "use as many of v2.5.3's rooms as you can"): 90 → 140
+  ok('GB-30', 'the index lists a guide for every one of the 90 rooms and finds one by its number', n === 90 && f >= 1 && f < 10, `${n} ${f}`);
   await p.goto(`${base}#/guide/room/R-NOPE-0-000`); await p.waitForSelector('[data-testid=guide-missing]'); ok('GB-31', 'an unknown room says so and offers the index', (await p.getAttribute('[data-testid=guide-missing] a', 'href')) === '#/guide'); await t.close(); }
 
 for (const w of [390, 320]) { const t = await open(`#/guide/room/${BOARD}`, { role: 'employee', w, h: 780 }); await t.page.waitForSelector('[data-testid=guide]');

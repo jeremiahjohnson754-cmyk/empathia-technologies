@@ -21,8 +21,8 @@ const finite = (it) => (it.p || [it.at]).every((q) => q.every((n) => Number.isFi
 const NOT_DRAWN = ['R-NST-2-101', 'R-BCN-3-236', 'R-ATL-1-150', 'R-HZN-1-500', 'R-HZN-2-220', 'R-HZN-2-410', 'R-HZN-2-420', 'R-HZN-1-420', 'R-NST-1-410', 'R-WMR-1-130', 'R-HFD-1-110', 'R-HFD-1-140', 'R-FRG-1-410', 'R-EGT-1-110'];
 
 // 13 Nov 2026: the founder chose to draw these 14 from V2.5.3's own townhall and control-room layouts, scaled to each room (was: left undrawn)
-test('every room is drawn (the founder’s 90 and V2.5.3’s 50); the 14 V2.5.3 never drew are exactly the town halls and control rooms, each scaled from V2.5.3’s layout for its type', () => {
-  const ids = M.v253RoomIds(); assert.equal(ids.length, 140);   // 13 Nov 2026: + V2.5.3's 50 rooms
+test('all 90 rooms are drawn; the 14 V2.5.3 never drew are exactly the town halls and control rooms, each scaled from V2.5.3’s layout for its type', () => {
+  const ids = M.v253RoomIds(); assert.equal(ids.length, 90);
   assert.deepEqual(ids.filter((id) => !M.v253Drawable(id)), []);
   assert.deepEqual(ids.filter((id) => M.v253ScaledFrom(id)).sort(), [...NOT_DRAWN].sort());
 });
@@ -45,7 +45,7 @@ test('every room, in every state and lens, with no layers or with every layer an
     const r = M.v253Room(id, { mode, state, layers, cover }, { yaw, small: false }); n += 1;
     if (!r || !r.sc.items.length || !r.sc.items.every(finite)) bad.push(`${id} ${state} ${mode} ${yaw}`);
   }
-  assert.equal(n, 140 * 4 * 6 * 2 * 4); assert.deepEqual(bad.slice(0, 5), []);
+  assert.equal(n, 90 * 4 * 6 * 2 * 4); assert.deepEqual(bad.slice(0, 5), []);
 });
 
 test('Atlas 4.218 keeps V2.5.3’s own hero arrangement: one table for fourteen, two 86-inch displays, two cameras, two ceiling arrays, four loudspeakers, rack, touch panel, lectern', () => {

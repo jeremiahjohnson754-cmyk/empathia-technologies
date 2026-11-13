@@ -128,7 +128,7 @@ test('tours: 10 / 10 / 7 / 14 / 12 stops, honest copy, narration only from a shi
   const D = tours.TOURS.find((t) => t.key === 'd'); const stop = (id) => D.stops.find((s) => s.id === id);
   for (const s of D.stops) { assert.ok(s.ask && s.ask.q.endsWith('?') && s.ask.a.length > 30 && s.ask.a.length < 260, `${s.id} question and answer`); assert.doesNotMatch(s.ask.a, /\b(customers? (use|trust|rely)|proven|guarantee|best in|world.class|#1)\b/i, s.id); }
   assert.equal(new Set(D.stops.map((s) => s.id)).size, 14); assert.ok(stop('D5').tries.length >= 4, 'the search stop offers searches to try');
-  assert.match(stop('D2').text, /Six buildings on the map and seven more sites: 140 rooms/); assert.equal(canon.BUILDINGS.length, 6); assert.equal(canon.REGIONAL_SITES.length, 7); assert.equal(canon.CAMPUS_ROOMS.length, 140);   // 13 Nov 2026: + V2.5.3's 50 rooms
+  assert.match(stop('D2').text, /Six buildings on the map and seven more sites: ninety rooms/); assert.equal(canon.BUILDINGS.length, 6); assert.equal(canon.REGIONAL_SITES.length, 7); assert.equal(canon.CAMPUS_ROOMS.length, 90);
   assert.ok(canon.roomById('R-EGT-1-140')?.divisible?.sections.length === 4, 'D3 opens a room that divides in four');
   const census = fs.readFileSync(path.join(repo, 'docs/surpass/PRODUCT_CENSUS.md'), 'utf8').match(/\*\*(\d+) products in \d+ families, \d+ bundles\.\*\* By status: (\d+) SYNTHETIC_DEMO, (\d+) PARTIAL, (\d+) IMPLEMENTED_NOT_VERIFIED, (\d+) SPECIFIED/);
   assert.ok(census, 'the census states its totals'); assert.equal(stop('D14').ask.a, `Nothing self-serve. Of ${census[1]} products, ${census[2]} are demonstrated on synthetic data, ${census[3]} are partly built, ${census[4]} is unverified code and ${census[5]} are specified only.`);

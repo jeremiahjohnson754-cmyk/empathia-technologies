@@ -17,8 +17,8 @@ const { H, T, D, K, W, P, R, M } = await import(pathToFileURL(out).href);
 const recs = D.allRecords(); const REF = 'R-ATL-4-218'; const ref = D.roomRecord(REF);
 const hw = (r) => r.positions.filter((p) => !p.furniture); const fresh = () => { mem.clear(); return W.seed(); };
 
-test('HR-01 the room in words is the room in its record: every kind counted, nothing invented, in all 140 rooms', () => {
-  assert.equal(recs.length, 140);   // 13 Nov 2026: + V2.5.3's 50 rooms the estate lacked (founder: "use as many of v2.5.3's rooms as you can"): 90 → 140
+test('HR-01 the room in words is the room in its record: every kind counted, nothing invented, in all 90 rooms', () => {
+  assert.equal(recs.length, 90);
   for (const r of recs) {
     const kinds = H.kindsOf(r); assert.equal(kinds.reduce((n, k) => n + k.count, 0), hw(r).length, r.outline.id);
     for (const k of kinds) { assert.deepEqual(k.codes, r.positions.filter((p) => p.cat === k.cat).map((p) => p.code)); assert.ok(H.WHAT_IT_DOES[k.cat], `a plain description for ${k.cat}`); }

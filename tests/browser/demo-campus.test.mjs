@@ -44,7 +44,7 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   // the rooms index filters, with an empty state
   await t.go('#/rooms'); const all = await t.page.locator('[data-testid="room-list"] tbody tr').count();
   // 45 since 2026-11-04 (every screen shows the rooms plan); 90 since 2026-11-10 (the founder's 90-room estate, docs/surpass/ENTERPRISE_90_ROOMS.md)
-  ok(`CA-${tag}-12`, 'the rooms index lists the 140 rooms', all === 140, all);   // 13 Nov 2026: + V2.5.3's 50 rooms (founder: "use as many of v2.5.3's rooms as you can"): 90 → 140
+  ok(`CA-${tag}-12`, 'the rooms index lists the 90 rooms', all === 90, all);
   await t.go('#/rooms?state=OPERATIONAL&building=HZN');
   ok(`CA-${tag}-13`, 'a filter with no match shows an empty state, not a blank', /No room matches/.test(await t.text()));
   // D36 under an explicit Light choice (the shell's switch sets data-theme="light"): the stage keeps the dark tokens

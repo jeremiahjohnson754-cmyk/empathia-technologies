@@ -16,7 +16,7 @@ test('UN-01 a sentence becomes conditions, and the answer is the count the recor
   const r = U.understand('boardrooms over 12 seats at atlas with a camera');
   assert.equal(r.mode, 'answer'); assert.deepEqual(labels(r), ['Boardroom', 'Atlas HQ', 'more than 12 seats', 'has a camera']);
   const want = n((x) => x.outline.archetype === 'BRD' && x.outline.building === 'ATL' && x.outline.capacity > 12 && has(x, 'camera'));
-  assert.equal(r.total, want); assert.ok(want > 0); assert.equal(r.lead, `${want} rooms of 140.`);   // 13 Nov 2026: + V2.5.3's 50 rooms (founder): 90 → 140 assert.equal(r.rows.length, want);
+  assert.equal(r.total, want); assert.ok(want > 0); assert.equal(r.lead, `${want} rooms of 90.`); assert.equal(r.rows.length, want);
   for (const row of r.rows) { assert.ok(K.roomById(row.id), row.id); assert.match(row.href, /^#\//); assert.match(row.detail, /camera/); }
 });
 
@@ -51,7 +51,7 @@ test('UN-04 typing mistakes are corrected, and the reading says which words it c
 
 test('UN-05 counting equipment: "how many cameras" counts positions and the rooms they are in', () => {
   const r = U.understand('how many cameras'); const positions = recs.reduce((s, x) => s + x.positions.filter((p) => p.cat === 'camera').length, 0); const rooms = n((x) => has(x, 'camera'));
-  assert.equal(r.subject, 'devices'); assert.equal(r.total, positions); assert.equal(r.lead, `${positions} camera positions in ${rooms} rooms of 140.`);   // 13 Nov 2026: + V2.5.3's 50 rooms (founder): 90 → 140
+  assert.equal(r.subject, 'devices'); assert.equal(r.total, positions); assert.equal(r.lead, `${positions} camera positions in ${rooms} rooms of 90.`);
   const a = U.understand('how many displays in atlas'); assert.equal(a.total, recs.filter((x) => x.outline.building === 'ATL').reduce((s, x) => s + x.positions.filter((p) => p.cat === 'display').length, 0));
   const h = U.understand('how many rooms have a tv'); assert.equal(h.subject, 'rooms'); assert.equal(h.total, n((x) => has(x, 'display')));
 });
@@ -99,8 +99,8 @@ test('UN-11 words the conditions cannot use are named, never silently dropped; l
 
 test('UN-12 every row opens a room that exists, and no reading invents a room, a count or an organisation', () => {
   const seen = new Set();
-  for (const q of ['rooms', 'rooms held', 'largest room', 'how many cameras', 'rooms with a display', 'accepted rooms', 'rooms at highfield', 'labs', 'rooms for 12 people']) { const r = U.understand(q, { limit: 140 }); assert.ok(r.total <= 140 || r.subject === 'devices'); for (const row of r.rows) { const o = K.roomById(row.id); assert.ok(o, row.id); assert.equal(row.href, K.roomHref(o)); assert.equal(row.label, K.fullName(o)); seen.add(row.id); } }   // 13 Nov 2026: 90 → 140 rooms
-  assert.ok(seen.size > 60, 'between them these readings reach most of the estate'); assert.equal(recs.length, 140);   // 13 Nov 2026: + V2.5.3's 50 rooms
+  for (const q of ['rooms', 'rooms held', 'largest room', 'how many cameras', 'rooms with a display', 'accepted rooms', 'rooms at highfield', 'labs', 'rooms for 12 people']) { const r = U.understand(q, { limit: 90 }); assert.ok(r.total <= 90 || r.subject === 'devices'); for (const row of r.rows) { const o = K.roomById(row.id); assert.ok(o, row.id); assert.equal(row.href, K.roomHref(o)); assert.equal(row.label, K.fullName(o)); seen.add(row.id); } }
+  assert.ok(seen.size > 60, 'between them these readings reach most of the estate'); assert.equal(recs.length, 90);
 });
 
 test('UN-13 a question leads the search bar with its answer; a name leads with the thing named', () => {

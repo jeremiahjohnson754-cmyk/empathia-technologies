@@ -18,8 +18,8 @@ const can = (role) => (id) => { const a = page.actions.find((x) => x.id === id);
 const DOSSIER_KEY = 'empathia.demo.dossier.v1'; const DOCS_KEY = 'empathia.demo.docs5.v1';
 const fresh = () => { mem.clear(); };
 
-test('D5-01 a profile for every one of the 140 rooms, from its own record; no room is asked for what it has nothing to show', () => {
-  assert.equal(recs.length, 140);   // 13 Nov 2026: + V2.5.3's 50 rooms the estate lacked (founder: "use as many of v2.5.3's rooms as you can"): 90 → 140
+test('D5-01 a profile for every one of the 90 rooms, from its own record; no room is asked for what it has nothing to show', () => {
+  assert.equal(recs.length, 90);
   for (const r of recs) {
     const p = M.profileOf(r); const cats = new Set(r.positions.filter((x) => !x.furniture).map((x) => x.cat)); const q = E.requiredFor(p); const need = new Set(q.filter((x) => x.applies).map((x) => x.type));
     assert.equal(p.roomId, r.outline.id); assert.equal(p.devices, r.positions.filter((x) => !x.furniture).length);

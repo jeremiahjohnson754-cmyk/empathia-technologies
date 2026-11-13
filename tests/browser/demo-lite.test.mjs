@@ -41,7 +41,7 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
     // for the 14 town halls and control rooms V2.5.3 never drew, the technical stage with the note that says why
     if (v.room !== id || !v.stage || v.states !== 4 || v.ov !== 6 || v.over > 0) bad.push(`${id} ${JSON.stringify(v)}`);
   }
-  ok(`LT-${tag}-07`, `${list.length === ids.length ? `all ${ids.length} rooms` : `a sample of ${list.length} rooms`} open in Lite with a 3D stage, four states and six overlays, no overflow`, !bad.length && (vp[2] !== 'desktop' || (list.length === ids.length && ids.length === 140))   /* 13 Nov 2026: + V2.5.3's 50 rooms */, bad.slice(0, 3).join(' | '));
+  ok(`LT-${tag}-07`, `${list.length === 90 ? 'all 90 rooms' : `a sample of ${list.length} rooms`} open in Lite with a 3D stage, four states and six overlays, no overflow`, !bad.length && (vp[2] !== 'desktop' || list.length === 90), bad.slice(0, 3).join(' | '));
   // states, overlays, layers, orbit and the device panel on the reference room
   await t.go('#/lite/room/R-ATL-4-218?mode=engineer', 300);
   ok(`LT-${tag}-08`, 'the room stage stays dark in either theme (D36)', (await lum(t.page, '[data-testid="lite-room"] .stage')) < 0.25);
@@ -73,7 +73,7 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   ok(`LT-${tag}-17`, 'a divisible room offers combined and split configurations, draws the partitions and highlights the chosen section', div.cfgs === 4 && div.on === 'true' && div.parts === 2 && div.active === 1, JSON.stringify(div));
   await t.go('#/lite/room/R-ATL-6-300', 300);
   const tower = await t.page.evaluate(() => ({ nonop: /non-operational/i.test(document.querySelector('[data-testid="lite-nonop"]')?.textContent || ''), cells: document.querySelectorAll('[data-testid="lite-fleet"] .lt-cell').length }));
-  ok(`LT-${tag}-18`, 'the Global Operations Control Tower is labelled non-operational and its fleet wall shows the 140 rooms', tower.nonop && tower.cells === 140, JSON.stringify(tower));   // 13 Nov 2026: + V2.5.3's 50 rooms (founder: "use as many of v2.5.3's rooms as you can"): 90 → 140
+  ok(`LT-${tag}-18`, 'the Global Operations Control Tower is labelled non-operational and its fleet wall shows the 90 rooms', tower.nonop && tower.cells === 90, JSON.stringify(tower));
   // places, guides, wayfinding, visit, QR, Commons
   await t.go('#/lite/services'); ok(`LT-${tag}-19`, 'Places lists the fourteen spaces', (await t.page.locator('[data-testid^="lite-space-"]').count()) === 14);
   await t.go('#/lite/space/SP-ATL-TECHZONE', 300);

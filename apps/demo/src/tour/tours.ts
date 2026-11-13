@@ -17,7 +17,7 @@ const ROOM = `#/campus/ATL/4/${REFERENCE_ROOM_ID}`;
 export const TOURS: Tour[] = [
   { key: 'a', title: 'Tour A — The Living Campus', audience: 'Anyone', goal: 'Understand the concept in a few minutes.', stops: [
     { id: 'A1', title: 'From the company site to the product', text: 'This is the investor demonstration. Everything in it is synthetic and runs in this browser; nothing is connected to a real building.', href: '#/tours' },
-    { id: 'A2', title: 'An explorable campus', text: 'Six buildings on the campus map, and 140 rooms across the estate with its other sites. The glyph on a building counts its open issues, taken from the room records.', href: '#/campus', spot: 'campus-stage' },
+    { id: 'A2', title: 'An explorable campus', text: 'Six buildings on the campus map, and ninety rooms across the estate with its other sites. The glyph on a building counts its open issues, taken from the room records.', href: '#/campus', spot: 'campus-stage' },
     { id: 'A3', title: 'A building', text: 'Atlas HQ, the headquarters. Pick a floor; the floors without a modelled room say so.', href: '#/campus/ATL', spot: 'floor-ATL-4' },
     { id: 'A4', title: 'A floor', text: 'Floor 4: the room footprints are their modelled dimensions, not a survey.', href: '#/campus/ATL/4', spot: 'floor-stage' },
     { id: 'A5', title: 'The reference room in 3D', text: 'Atlas 4.218. Every device has a position, a history and evidence behind it. Rotate the view, switch to the plan, turn layers off.', href: ROOM, spot: 'room-stage', narration: 'tour-a-05' },
@@ -53,8 +53,8 @@ export const TOURS: Tour[] = [
   { key: 'd', title: 'Tour D — What investors ask', audience: 'Investors and partners', goal: 'See the strongest parts in fifteen minutes, with a plain answer to the question each one raises.', stops: [
     { id: 'D1', title: 'Everyone starts where their work is', text: 'This is Mission Control, where the people who run the estate start. Every other role has its own start page: View as shows all fifteen. Press g and a letter to jump.', href: '#/home', spot: 'rh-jump',
       ask: { q: 'Is this monitoring real rooms?', a: 'No. Every figure is computed from synthetic records when the page opens. Nothing is monitored, and the page says so.' } },
-    { id: 'D2', title: '140 rooms, one estate', text: 'Six buildings on the map and seven more sites: 140 rooms, each with its devices, tests, baselines and history. Open any building.', href: '#/campus', spot: 'campus-stage',
-      ask: { q: 'Whose rooms are these?', a: 'Nobody’s. A fictional enterprise with 140 designed rooms, fifty of them as V2.5.3 generated them. No customer data is in the demonstration.' } },
+    { id: 'D2', title: 'Ninety rooms, one estate', text: 'Six buildings on the map and seven more sites: ninety rooms, each with its devices, tests, baselines and history. Open any building.', href: '#/campus', spot: 'campus-stage',
+      ask: { q: 'Whose rooms are these?', a: 'Nobody’s. A fictional enterprise with ninety designed rooms. No customer data is in the demonstration.' } },
     { id: 'D3', title: 'A room you can walk around', text: 'A ballroom that divides in four. Turn it, switch the lens from visitor to engineer, and compare what was designed, commissioned, current and proposed.', href: '#/lite/room/R-EGT-1-140', spot: 'lite-3d',
       ask: { q: 'Are the coverage figures measured?', a: 'No. They are modelled from the room’s geometry and device classes. A measured figure would need reviewed evidence, and there is none here.' } },
     { id: 'D4', title: 'Find the way', text: 'Choose where you are going: the route is step by step, with a step-free choice. A site away from the campus says so first.', href: '#/lite/way', spot: 'lite-way',
