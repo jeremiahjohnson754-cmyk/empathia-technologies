@@ -8,6 +8,7 @@
 import { ESTATES, indexOf, type EstateNode, type Index } from '../estate/index.js';
 import type { WorldKey } from '../estate/model.js';
 import { registerRooms, type ExtRoom } from './v253/v253room.js';
+import { fixtureRuleOf } from './fixtures.js';
 
 export const LITE_WORLDS = ['university', 'stadium', 'convention'] as const;
 export type LiteWorld = (typeof LITE_WORLDS)[number];
@@ -21,7 +22,7 @@ const TYPE_ARCH: Record<string, string> = {
   'study-room': 'COL', 'team-meeting': 'COL', 'meeting-room': 'COL', 'breakout-room': 'COL', 'exhibitor-meeting': 'COL', 'coaches-room': 'COL', 'media-workroom': 'COL',
   office: 'HUD', administration: 'HUD', 'staff-room': 'HUD', 'speaker-prep': 'HUD', 'green-room': 'HUD', 'quiet-room': 'FOC', 'press-box': 'FOC', 'commentary-booth': 'FOC',
   studio: 'STU', 'media-room': 'STU', 'interview-studio': 'STU', streaming: 'STU',
-  'broadcast-control': 'OPS', 'production-gallery': 'OPS', 'production-control': 'OPS', replay: 'OPS', 'audio-control': 'OPS', 'display-control': 'OPS', graphics: 'OPS', 'mix-position': 'OPS', security: 'OPS',
+  'operations-centre': 'OPS', 'broadcast-control': 'OPS', 'production-gallery': 'OPS', 'production-control': 'OPS', replay: 'OPS', 'audio-control': 'OPS', 'display-control': 'OPS', graphics: 'OPS', 'mix-position': 'OPS', security: 'OPS',
   suite: 'EXE', 'executive-suite': 'EXE', 'vip-lounge': 'EXE', club: 'EXE',
 };
 /** the estate's equipment kinds, by the device category V2.5.3 draws */
@@ -69,8 +70,8 @@ export function levelPlan(w: LiteWorld, levelId: string): WPlan {
     const rows: Array<typeof sz> = [[], []];
     for (const side of [0, 1]) { let len = 0; while (i < sz.length && (len + sz[i]!.w <= maxRow || !rows[side]!.length)) { rows[side]!.push(sz[i]!); len += sz[i]!.w + 0.4; i += 1; } }
     const dN = Math.max(4, ...rows[0]!.map((x) => x.d)), dS = Math.max(4, ...rows[1]!.map((x) => x.d)); const cy = y0 + dN + 0.2;
-    let x = 0; for (const s of rows[0]!) { items.push({ id: s.r.id, w: s.w, d: s.d, x, y: cy - s.d, label: s.r.name, furnished: !!archOf(s.r), node: s.r }); x += s.w + 0.4; } const endN = x;
-    x = 0; for (const s of rows[1]!) { items.push({ id: s.r.id, w: s.w, d: s.d, x, y: cy + COR, label: s.r.name, furnished: !!archOf(s.r), node: s.r }); x += s.w + 0.4; }
+    let x = 0; for (const s of rows[0]!) { items.push({ id: s.r.id, w: s.w, d: s.d, x, y: cy - s.d, label: s.r.name, furnished: !!archOf(s.r) || !!fixtureRuleOf(s.r.type), node: s.r }); x += s.w + 0.4; } const endN = x;
+    x = 0; for (const s of rows[1]!) { items.push({ id: s.r.id, w: s.w, d: s.d, x, y: cy + COR, label: s.r.name, furnished: !!archOf(s.r) || !!fixtureRuleOf(s.r.type), node: s.r }); x += s.w + 0.4; }
     const rowW = Math.max(endN, x); Wmax = Math.max(Wmax, rowW); corridors.push({ x: 0, y: cy, w: rowW, d: COR }); y0 = cy + COR + dS + 2.5;
   }
   const P: WPlan = { W: Math.max(Wmax, 10), D: Math.max(y0 - 2.5, 10), items, corridors };

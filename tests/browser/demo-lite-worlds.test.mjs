@@ -34,7 +34,11 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   }
 }
 { const t = await open('#/lite/w/stadium/r/STA-FB-N', { role: 'architect', sw: false }); const p = t.page; await p.getByTestId('lw-room').waitFor();
-  ok('LW-not-furnished', 'a kitchen is not one of V2.5.3’s room types: it is shown with its equipment and its floor, and nothing is invented for it', (await p.getByTestId('lw-room').getAttribute('data-furnished')) === 'no' && /not furnished/i.test(await p.locator('main').innerText()) && (await p.locator('[data-testid=lite-room-3d]').count()) === 0);
+  // 13 Nov 2026 (founder: "furnish every environment"): a kitchen, which V2.5.3 never drew, is furnished by Empathia's own rule, said so
+  const fx = p.getByTestId('lw-fixture-3d'); const n = Number(await fx.getAttribute('data-objects'));
+  ok('LW-empathia-furnished', 'a kitchen is furnished by Empathia’s own layout (counters, cooking line, refrigeration, serving counter), labelled as such and as illustrative', (await p.getByTestId('lw-room').getAttribute('data-furnished')) === 'empathia' && n >= 4 && (await fx.getAttribute('data-rule')) === 'kitchen' && /Empathia’s own layout/.test(await p.locator('main').innerText()) && /Illustrative/.test(await p.locator('main').innerText()) && (await p.locator('[data-testid=lite-room-3d]').count()) === 0, String(n));
+  await fx.locator('.l3-hitbtn').first().click({ force: true }); await p.waitForTimeout(200);
+  ok('LW-empathia-inspect', 'tapping a fixture says what it is and its size', /m high · illustrative/.test(await p.getByTestId('lw-fixture-sel').innerText()));
   await t.close(); }
 { const t = await open('#/lite', { role: 'architect', sw: false }); const p = t.page; await p.getByTestId('lite-worlds').waitFor(); const tiles = await p.locator('[data-testid=lite-worlds] a').count();
   await p.getByTestId('lite-worlds').getByRole('link', { name: /Harborlight Stadium/ }).click(); await p.getByTestId('lw-world-3d').waitFor();

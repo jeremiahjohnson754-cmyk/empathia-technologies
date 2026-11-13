@@ -13,6 +13,7 @@ import { LiteMissing, LiteNav, storedLens } from './LiteApp.js';
 import { isLiteWorld, WORLD_NAME, worldIndex, topOf, levelsOf, levelPlan, roomsUnder, kids, upOf, archOf, worldRoomHref, worldLevelHref, worldPlaceHref, type LiteWorld } from './worlds.js';
 import type { Overlay } from './model.js';
 import type { EstateNode } from '../estate/model.js';
+import { fixturesFor, type FixtureLayout } from './fixtures.js';
 
 const go = (to: string) => { location.hash = to.replace(/^#/, ''); };
 const ROOM: RGB = [62, 60, 54], FURN: RGB = [70, 104, 88], LVL: RGB = [70, 67, 60], BLD: RGB = [74, 71, 64];
@@ -70,7 +71,7 @@ function WorldHome({ w }: PageProps & { w: LiteWorld }) {
   const ix = worldIndex(w); const tops = topOf(w); const rooms = ix.estate.nodes.filter((n) => n.kind === 'room'); const furn = rooms.filter((r) => archOf(r) && r.dims);
   return <section className="lt-page lt-page--scene" data-testid="lw-home" data-world={w}>
     <Crumbs w={w} trail={[]} />
-    <PageHero product="lite" plain eyebrow="Empathia Lite · another world" title={WORLD_NAME[w]} lede={`${tops.length} ${w === 'university' ? 'buildings' : 'levels'}, ${rooms.length} rooms. ${furn.length} are furnished from V2.5.3’s layouts for their type; the rest are shown on their floor. Fictional and synthetic.`} />
+    <PageHero product="lite" plain eyebrow="Empathia Lite · another world" title={WORLD_NAME[w]} lede={`${tops.length} ${w === 'university' ? 'buildings' : 'levels'}, ${rooms.length} rooms, every one furnished: ${furn.length} by V2.5.3’s layouts for their type, ${rooms.length - furn.length} by Empathia’s own layouts for the types V2.5.3 never drew. Fictional and synthetic.`} />
     <figure className="stage lt-stage lt-stage--hero" data-stage=""><L3View sc={sc} c={c} onNav={go} label={`${WORLD_NAME[w]} in 3D. Each ${w === 'university' ? 'building' : 'level'} is a button.`} testId="lw-world-3d" tall S={w === 'university' ? 7 : 4} v253 />
       <figcaption className="stage__cap">Tap a {w === 'university' ? 'building' : 'level'} to go inside: {w === 'university' ? 'building, level, room' : 'level, room'}. Laid out by a stated rule from the estate’s records; not a surveyed plan.</figcaption></figure>
     <Card title={w === 'university' ? 'Buildings' : 'Levels'} icon="building" testId="lw-tops"><ul className="lt-wlist">{tops.map((t) => <li key={t.id}><a href={w === 'university' ? worldPlaceHref(w, t.id) : worldLevelHref(w, t.id)} data-testid={`lw-top-${t.id}`}><b>{t.name}</b><span className="ui-meta">{roomsUnder(ix, t.id).length} rooms{t.group ? ` · ${t.group}` : ''}</span></a></li>)}</ul></Card>
@@ -136,15 +137,18 @@ function WorldLevel({ w, n }: PageProps & { w: LiteWorld; n: EstateNode }) {
 function WorldRoom({ w, n, role, query }: PageProps & { w: LiteWorld; n: EstateNode }) {
   const ix = worldIndex(w); const { level, building } = upOf(ix, n.id); const assets = ix.assetsOf.get(n.id) || [];
   const lens = storedLens(role, query.get('mode')) || 'visitor'; const furnished = !!archOf(n) && !!n.dims && v253Drawable(n.id);
+  const fixtures = useMemo(() => (!furnished && n.dims ? fixturesFor(n.type, Math.max(n.dims[0], n.dims[1]), Math.min(n.dims[0], n.dims[1]), n.capacity) : null), [n, furnished]);
   const [ov, setOv] = useState<Set<Overlay>>(new Set()); const [pick, setPick] = useState<string | null>(null);
   const tog = (k: Overlay) => setOv((s) => { const x = new Set(s); if (x.has(k)) x.delete(k); else x.add(k); return x; });
   const [L, Wd, H] = n.dims || [0, 0, 0];
-  return <section className="lt-page lt-roompage lt-page--scene" data-testid="lw-room" data-room={n.id} data-furnished={furnished ? 'yes' : 'no'}>
+  return <section className="lt-page lt-roompage lt-page--scene" data-testid="lw-room" data-room={n.id} data-furnished={furnished ? 'yes' : fixtures ? 'empathia' : 'no'}>
     <Crumbs w={w} trail={[...(building ? [[building.name, worldPlaceHref(w, building.id)] as [string, string]] : []), ...(level ? [[level.name, worldLevelHref(w, level.id)] as [string, string]] : []), [n.name, null]]} />
     <PageHero product="lite" icon="room" plain eyebrow={`${WORLD_NAME[w]} · ${n.type.replace(/-/g, ' ')}${n.capacity ? ` · ${n.capacity} places` : ''}`} title={n.name} />
     {furnished ? <figure className="stage lt-stage lt-stage--room" data-stage="">
       <V253RoomStage roomId={n.id} lens={lens} state="current" layers={new Set(['furniture', 'av'])} overlays={ov} role={role} sel={pick} onPick={(p) => setPick(p ? p.obj.id : null)} label={`${n.name}, furnished, in 3D. Turn, tilt and zoom with the buttons, the arrow keys or a drag.`} />
       <figcaption className="stage__cap">Drawn by V2.5.3’s layout for this type of room, from the estate’s record: {L} × {Wd} m, {H} m high{n.capacity ? `, ${n.capacity} places` : ''}, and its equipment classes. Modelled, not surveyed.</figcaption></figure>
+      : fixtures ? <figure className="stage lt-stage lt-stage--room" data-stage=""><FixtureStage n={n} F={fixtures} />
+        <figcaption className="stage__cap">Furnished by Empathia’s own layout for a {n.type.replace(/-/g, ' ')} (V2.5.3 never drew one), from the record’s size{n.capacity ? ` and ${n.capacity} places` : ''}. Illustrative: no fixture here is a surveyed or verified asset.</figcaption></figure>
       : <EmptyState title="Shown on its floor, not furnished" icon="room">A {n.type.replace(/-/g, ' ')} is not one of the room types V2.5.3 drew, so nothing is invented for it. {level ? <a href={worldLevelHref(w, level.id)}>See it on {level.name}</a> : null}</EmptyState>}
     {furnished && lens !== 'visitor' && <fieldset className="lt-switches" data-testid="lw-overlays"><legend>Coverage</legend>{([['camera', 'Camera view'], ['mic', 'Microphone pickup'], ['speaker', 'Loudspeakers'], ['sight', 'Sightlines']] as Array<[Overlay, string]>).map(([k, t]) => <button key={k} type="button" role="switch" aria-checked={ov.has(k)} className={`lt-switch${ov.has(k) ? ' on' : ''}`} onClick={() => tog(k)} data-testid={`lw-ov-${k}`}><span className="lt-switch__name">{t}</span><span className="lt-switch__knob" aria-hidden="true" /></button>)}</fieldset>}
     <div className="kit-grid kit-grid--tiles wk-tiles3">
@@ -159,3 +163,30 @@ function WorldRoom({ w, n, role, query }: PageProps & { w: LiteWorld; n: EstateN
   </section>;
 }
 export { kids };
+
+// ------------------------------------------------------------------------------------------------ a room furnished by Empathia's own rule
+/** The room's shell and fixtures from ./fixtures.ts: floor, walls (the front wall open at the door), each fixture a box at its height,
+ *  each one a button that names it. */
+function fixtureScene(cam: Cam, dims: [number, number, number], F: FixtureLayout, sel: string | null): L3Scene {
+  const [w, d, hh] = dims; const H = Math.min(hh, 3.2); const sc = scene(w / 2, d / 2, Math.hypot(w, d) / 2 * 1.03, H * 0.9);
+  poly(sc, 0, [[-0.3, -0.3, -0.02], [w + 0.3, -0.3, -0.02], [w + 0.3, d + 0.3, -0.02], [-0.3, d + 0.3, -0.02]], { f: 'rgba(0,0,0,.35)', s: 'none' });
+  poly(sc, 0, [[0, 0, 0], [w, 0, 0], [w, d, 0], [0, d, 0]], { f: 'url(#l3slab)', s: 'rgba(255,246,232,.3)' });
+  const WALL: RGB = [112, 106, 96], t = 0.12;
+  box(sc, cam, { x: w / 2, y: d - t / 2, w, d: t, h: H }, WALL, { pri: -1 }); box(sc, cam, { x: t / 2, y: d / 2, w: t, d, h: H }, WALL, { pri: -1 }); box(sc, cam, { x: w - t / 2, y: d / 2, w: t, d, h: H }, WALL, { pri: -1 });
+  const door = Math.min(1.2, w * 0.3); box(sc, cam, { x: (w - door) / 4, y: t / 2, w: (w - door) / 2, d: t, h: 0.9 }, WALL, {}); box(sc, cam, { x: w - (w - door) / 4, y: t / 2, w: (w - door) / 2, d: t, h: 0.9 }, WALL, {});
+  label(sc, [w / 2, -0.2, 0.05], 'Way in', { cls: 'soft', tone: 'here' });
+  const named = new Set<string>();
+  F.items.forEach((f, i) => { const id = `fx${i}`; const on = sel === id;
+    box(sc, cam, { x: f.x, y: f.y, z: f.z || 0, w: f.w, d: f.d, h: f.h }, f.col, { stroke: on ? 'var(--l3-teal)' : 'rgba(0,0,0,.25)', sw: on ? 1.6 : 0.5 });
+    if (on || (!named.has(f.kind) && F.items.length < 60)) { named.add(f.kind); label(sc, [f.x, f.y, (f.z || 0) + f.h + 0.1], f.label.replace(/ \d+$/, ''), { cls: on ? undefined : 'soft', on, lift: 8 }); }
+    hit(sc, [f.x, f.y, (f.z || 0) + f.h / 2], { o: id, r: 12, label: `${f.label}. Shows what it is.` }); });
+  return sc;
+}
+function FixtureStage({ n, F }: { n: EstateNode; F: FixtureLayout }) {
+  const [L, Wd, H] = n.dims!; const w = Math.max(L, Wd), d = Math.min(L, Wd); const big = w > 30;
+  const c = useCam({ yaw: 30, pitch: big ? 46 : 36, zoom: 1 }); const [sel, setSel] = useState<string | null>(null);
+  const sc = useMemo(() => fixtureScene(c.cam, [w, d, H], F, sel), [c.cam, w, d, H, F, sel]);
+  const f = sel ? F.items[Number(sel.slice(2))] : null;
+  return <><div data-testid="lw-fixture-3d" data-objects={F.items.length} data-rule={F.rule}><L3View sc={sc} c={c} onNav={go} label={`${n.name}, furnished by Empathia’s layout for a ${n.type.replace(/-/g, ' ')}, in 3D. Each fixture is a button.`} S={big ? 14 : 44} tall v253 sel={sel} onObj={(id) => setSel(sel === id ? null : id)} /></div>
+    <p className="ui-meta" aria-live="polite" data-testid="lw-fixture-sel">{f ? `${f.label}: ${f.w.toFixed(1)} × ${f.d.toFixed(1)} m, ${f.h.toFixed(1)} m high · illustrative` : 'Tap a fixture to see what it is.'}</p></>;
+}
