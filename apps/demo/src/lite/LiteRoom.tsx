@@ -20,7 +20,7 @@ import {
 } from './model.js';
 import { driftOf, setDrift, type DriftDecision } from './drift.js';
 import { RoomScene, OrbitBar, useOrbit } from './Scene.js';
-import { V253RoomStage, v253ObjFor, type V253Pick } from './V253Room.js';
+import { V253RoomStage, v253ObjFor, EYE_SPOTS, type V253Pick, type EyeKey } from './V253Room.js';
 import { RoomJumps, opensFor } from '../rooms/RoomJumps.js';
 import { v253Drawable, v253ScaledFrom, v253Layout } from './v253/v253room.js';
 import { LiteNav, LiteMissing, storedLens, saveLens, setQuery } from './LiteApp.js';
@@ -86,7 +86,8 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
   const mayPassport = lens !== 'visitor' && opensFor(role)(`#/list/Room/${id}`); const sheet = mayPassport && query.get('sheet') === 'passport';
   const openPassport = () => upd('sheet', 'passport');
   const view = (lens === 'optimize' && edited) || !furnishable ? 'tech' : vq === 'tech' || vq === 'room' ? vq : viewHome;
-  const arranging = lens === 'optimize' && view === 'room' && stateKey === 'current';
+  const eyeKey = (view === 'room' ? (EYE_SPOTS.find((e) => e.key === query.get('eye'))?.key ?? null) : null) as EyeKey | null;
+  const arranging = lens === 'optimize' && view === 'room' && stateKey === 'current' && !eyeKey;
   const arrL = arranging ? v253Arranged(id, ar.e)?.L ?? null : null; const arrObj = arrL?.objs.find((x) => x.id === arrSel) ?? null;
   return (
     <section className="lt-page lt-roompage lt-page--scene" data-testid="lite-room" data-room={id} data-state={stateKey} data-lens={lens}>
@@ -103,6 +104,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
           {!furnishable && <p className="ui-meta lt-viewnote" data-testid="lite-view-note">V2.5.3 drew town halls and control rooms only as its own named rooms, so this one opens on the technical overlay: every position, path and coverage figure is here; the furnished drawing is not.</p>}
           {view === 'room' ? <figure className="stage lt-stage lt-stage--room" data-stage="">
             <V253RoomStage roomId={id} lens={lens} state={stateKey} layers={layers} overlays={overlays} acoustic={ac} role={role} label={`${o.name}, furnished, in 3D, ${st.title}. Turn, tilt and zoom with the buttons, the arrow keys or a drag; each piece of equipment is a button that opens its card.`}
+              eyeKey={eyeKey}
               sel={arranging ? arrSel : furn ? furn.obj.id : v253ObjFor(id, stateKey, lens, sel)} edits={lens === 'optimize' ? withPreview(ar.e, dragP) : null}
               onDrag={arranging ? (oid, dx, dy, phase) => { cancelAnimationFrame(raf.current);
                 if (!movable(arrL?.objs.find((x) => x.id === oid))) return;
@@ -116,6 +118,9 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
               selected={sel} onSelect={(c) => setSel(c === sel ? null : c)} occupied={occ} partitions={partitions} active={cfg && cfg.key !== 'combined' ? [cfg.x0, cfg.x1] : null} bind={orbit.bind} ghosts={ghosts} />
             <figcaption className="stage__cap"><b>{st.title}.</b> {st.summary} <span className="ui-meta">Basis: {st.basis}. Drag to orbit; the buttons do the same.</span></figcaption>
           </figure>}
+          {view === 'room' && <div className="lt-eyes" role="radiogroup" aria-label="See the room from" data-testid="lite-eyes"><span className="lt-eyes__l">See it from</span>
+            {[{ key: null, label: 'Above', says: 'the whole room' }, ...EYE_SPOTS].map((e) => <button key={e.key || 'above'} type="button" role="radio" aria-checked={eyeKey === e.key} className={`lt-chipbtn${eyeKey === e.key ? ' on' : ''}`} title={e.says} onClick={() => upd('eye', e.key)} data-testid={`lite-eye-${e.key || 'above'}`}>{e.label}</button>)}
+            {eyeKey && <span className="ui-meta">At eye level, in perspective: drag or use the arrows to look around. Modelled from the layout, not a photograph.</span>}</div>}
           {arranging && arrL && <ArrangeBar ar={ar} L={arrL} sel={arrObj} onAdded={setArrSel} />}
           {arranging && <PrecisionPlan ar={ar} roomId={id} sel={arrSel} onSel={setArrSel} />}
           <div className="lt-states" role="radiogroup" aria-label="Room state" data-testid="lite-states">

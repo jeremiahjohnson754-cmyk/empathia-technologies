@@ -56,6 +56,24 @@ export function disc(sc: L3Scene, cam: Cam, x: number, y: number, z: number, r: 
   poly(sc, L, ring(x, y, z + h, r, 18), { c: ctr, sub: 1, f: rgb(col, 1), s: rgb(col, 1.15), sw: 0.5, nav: st.nav, cls: st.cls });
 }
 
+/** Where an occupant's eyes are (13 Nov 2026, founder: "eye-level views from realistic occupant positions"): a point in the room, in
+ *  metres; the camera's yaw is the way they face (looking along the opposite of the yaw's toward-the-viewer direction), its pitch tilts the
+ *  head, its zoom narrows the field of view. Drawn in perspective from there. */
+export interface Eye { x: number; y: number; z: number }
+const NEAR = 0.12;
+/** perspective from an eye: screen units from a horizontal field of view of 74°, depth as "nearer is larger" for painter's order */
+export function eyeProjector(eye: Eye, cam: Cam, S = 30) {
+  const a = cam.yaw * RAD, ca = Math.cos(a), sa = Math.sin(a), t = Math.max(-12, Math.min(28, (cam.pitch - 36) / 3)) * RAD, ct = Math.cos(t), st = Math.sin(t);
+  const F: P3 = [-sa * ct, -ca * ct, -st], R: P3 = [ca, -sa, 0], U: P3 = [-sa * st, -ca * st, ct]; const f = (S * 16) / Math.tan(37 * RAD) * (cam.zoom || 1);
+  const cam3 = ([x, y, z]: P3): P3 => { const rx = x - eye.x, ry = y - eye.y, rz = z - eye.z; return [rx * R[0] + ry * R[1], rx * U[0] + ry * U[1] + rz * U[2], rx * F[0] + ry * F[1] + rz * F[2]]; };
+  const P = (p: P3): [number, number] => { const [u, v, dz] = cam3(p); const d = Math.max(NEAR, dz); return [(f * u) / d, (-f * v) / d]; };
+  const depth = (p: P3) => -Math.hypot(p[0] - eye.x, p[1] - eye.y, p[2] - eye.z);
+  /** a polygon clipped to what is in front of the eye (Sutherland–Hodgman against the near plane) */
+  const clip = (pts: P3[]): P3[] => { const out: P3[] = []; for (let i = 0; i < pts.length; i++) { const A = pts[i]!, B = pts[(i + 1) % pts.length]!; const da = cam3(A)[2] - NEAR, db = cam3(B)[2] - NEAR;
+    if (da >= 0) out.push(A); if ((da >= 0) !== (db >= 0)) { const k = da / (da - db); out.push([A[0] + (B[0] - A[0]) * k, A[1] + (B[1] - A[1]) * k, A[2] + (B[2] - A[2]) * k]); } } return out; };
+  const front = (p: P3) => cam3(p)[2] > NEAR;
+  return { P, depth, clip, front, f };
+}
 /** The camera's projection: metres to screen units, and depth towards the viewer for painter's order. */
 export function projector(sc: L3Scene, cam: Cam, S = 30) {
   const a = cam.yaw * RAD, p = cam.pitch * RAD, ca = Math.cos(a), sa = Math.sin(a), sp = Math.sin(p), cp = Math.cos(p);
@@ -158,19 +176,23 @@ export function Glyph({ x, y, tone, r = 5 }: { x: number; y: number; tone: strin
  * order drawn), its label placement (lift a label clear of another, drop a minor one that still collides), and object selection: a shape
  * or hit that belongs to an object (`o`) selects it, and the selected object is outlined.
  */
-export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, defs, v253, sel, onObj, onObjDrag }: { sc: L3Scene; c: ReturnType<typeof useCam>; label: string; onNav: (to: string) => void; testId?: string; tall?: boolean; over?: ReactNode; S?: number; defs?: string; v253?: boolean; sel?: string | null; onObjDrag?: (id: string, dx: number, dy: number, phase: 'move' | 'end') => void; onObj?: (id: string) => void }) {
-  const { P, depth } = projector(sc, c.cam, S);
+export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, defs, v253, sel, onObj, onObjDrag, eye }: { sc: L3Scene; c: ReturnType<typeof useCam>; label: string; onNav: (to: string) => void; testId?: string; tall?: boolean; over?: ReactNode; S?: number; defs?: string; v253?: boolean; sel?: string | null; onObjDrag?: (id: string, dx: number, dy: number, phase: 'move' | 'end') => void; /** an occupant's eye position: the room seen from there, in perspective */ eye?: Eye | null; onObj?: (id: string) => void }) {
+  const ex = eye ? eyeProjector(eye, c.cam, S) : null; const { P, depth } = ex || projector(sc, c.cam, S);
   const drawn = useMemo(() => {
-    const shapes = sc.items.filter((i): i is L3Poly | L3Line => i.t === 'p' || i.t === 'l').map((i) => ({ i, d: depth(i.c || mean(i.p)), q: (i as unknown as { q: number }).q }));
+    const shapes = sc.items.filter((i): i is L3Poly | L3Line => i.t === 'p' || i.t === 'l').map((i) => ({ i: ex && i.t === 'p' ? { ...i, p: ex.clip(i.p) } : i, d: depth(i.c || mean(i.p)), q: (i as unknown as { q: number }).q }))
+      .filter((x) => !ex || (x.i.t === 'p' ? x.i.p.length >= 3 : x.i.p.every(ex.front)));
+    // from an eye, the room is painted far to near, whatever its layer (the outside-view layers assume a camera outside the room)
+    if (ex) { shapes.sort((a, b) => (a.i.L >= 6 ? 1 : 0) - (b.i.L >= 6 ? 1 : 0) || a.d - b.d); return shapes; }
     const solid = (L: number) => !v253 || (L >= 3 && L < 4) || L === 5;
     shapes.sort((a, b) => a.i.L - b.i.L || (solid(a.i.L) ? (a.i.pri || 0) - (b.i.pri || 0) || a.d - b.d || ((a.i as L3Poly).sub || 0) - ((b.i as L3Poly).sub || 0) : 0) || a.q - b.q);
     return shapes;
-  }, [sc, c.cam]);   // eslint-disable-line
+  }, [sc, c.cam, eye?.x, eye?.y, eye?.z]);   // eslint-disable-line
   // framing from the scene's radius and height (V2.5.3 l3Scene R and top), so the view does not jump as it turns; zoom narrows the frame
   const sp = Math.sin(c.cam.pitch * Math.PI / 180), cp = Math.cos(c.cam.pitch * Math.PI / 180);
   const hw = sc.R * S * 1.08 + 30, top = sc.top * cp * S, hh = sc.R * sp * S + 24;
   const fw = (2 * hw) / c.cam.zoom, fh = (2 * hh + top + 60) / c.cam.zoom; const cxv = 14 - (c.cam.px || 0) * fw, cyv = -top / 2 - (c.cam.py || 0) * fh;
-  const x0 = cxv - fw / 2, x1 = cxv + fw / 2, y0 = cyv - fh / 2 - 10 / c.cam.zoom, y1 = cyv + fh / 2;
+  let x0 = cxv - fw / 2, x1 = cxv + fw / 2, y0 = cyv - fh / 2 - 10 / c.cam.zoom, y1 = cyv + fh / 2;
+  if (ex) { const hw2 = S * 16; x0 = -hw2; x1 = hw2; y0 = -hw2 * 0.62; y1 = hw2 * 0.62; }   // an eye sees a fixed frame, wider than tall
   const fmt = (pts: P3[]) => pts.map((p) => P(p).map((n) => n.toFixed(1)).join(',')).join(' ');
   const go = (to?: string) => { if (to && !c.wasDrag()) onNav(to); };
   // dragging the selected object across the floor (arranging in 3D, 13 Nov 2026): the screen movement is turned back into metres on the
@@ -193,7 +215,7 @@ export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, 
   const pick = (o?: string) => { if (Date.now() - odJust.current < 400) return; if (o && onObj && !c.wasDrag()) onObj(o); };
   // two 44 px targets can overlap on a small screen: a tap goes to the target whose centre is nearest the finger, as V2.5.3 did (l3Bind);
   // a keyboard press (no pointer position) goes to the focused one
-  const hits = sc.items.filter((i): i is L3Hit => i.t === 'h');
+  const hits = sc.items.filter((i): i is L3Hit => i.t === 'h' && (!ex || ex.front(i.at)));
   const nearest = (ev: unknown): L3Hit | null => { const e = ev as { clientX: number; clientY: number; detail?: number; currentTarget: EventTarget };
     if (!e.detail) return null; const root = (e.currentTarget as HTMLElement).closest('.l3-marks'); if (!root) return null; let best: L3Hit | null = null, bd = Infinity;
     root.querySelectorAll<HTMLElement>('.l3-hitbtn').forEach((b) => { const r = b.getBoundingClientRect(); const d = Math.hypot(r.left + r.width / 2 - e.clientX, r.top + r.height / 2 - e.clientY); const it = hits[Number(b.dataset.k)]; if (it && d < bd) { bd = d; best = it; } });
@@ -203,7 +225,7 @@ export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, 
   const stage = useRef<HTMLDivElement | null>(null); const [px, setPx] = useState(0);
   useEffect(() => { if (!v253) return; const el = stage.current; if (!el) return; const up = () => setPx(el.clientWidth); up(); const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(up) : null; ro?.observe(el); return () => ro?.disconnect(); }, [v253]);
   useEffect(() => { const el = stage.current; if (!el) return; const w = (e: WheelEvent) => c.wheel(e); el.addEventListener('wheel', w, { passive: false }); return () => el.removeEventListener('wheel', w); }, [c.wheel]);   // eslint-disable-line
-  const labels = sc.items.filter((i): i is L3Label => i.t === 'x');
+  const labels = sc.items.filter((i): i is L3Label => i.t === 'x' && (!ex || ex.front(i.at)));
   const placed = useMemo(() => {
     const out = new Map<L3Label, { lift: number; skip: boolean }>(); if (!v253 || !px) return out;
     const k = px / (x1 - x0); const boxes: number[][] = [];
@@ -229,7 +251,7 @@ export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, 
         return i.t === 'p'
           ? <polygon key={k} points={fmt(i.p)} fill={i.f || 'none'} stroke={on ? 'var(--teal)' : i.s || 'none'} strokeWidth={on ? 1.6 : i.sw ?? 0.6} strokeDasharray={i.da} opacity={op} data-o={obj} className={`${i.cls || ''}${i.nav ? ' l3-go' : ''}${obj && onObj ? ' l3-obj' : ''}`} onClick={i.nav ? () => go(i.nav) : obj && onObj ? () => pick(obj) : undefined} />
           : <polyline key={k} points={fmt(i.p)} fill="none" stroke={i.s || '#fff'} strokeWidth={i.sw ?? 1} strokeDasharray={i.da} opacity={op} strokeLinecap={v253 ? 'round' : undefined} strokeLinejoin={v253 ? 'round' : undefined} pathLength={i.len ? 100 : undefined} className={i.cls} />; })}
-      {sc.items.filter((i): i is L3Glyph => i.t === 'g').map((i, k) => { const [x, y] = P(i.at); return <g key={`g${k}`} opacity={i.a} data-o={i.o} className={i.o && onObj ? 'l3-obj' : undefined} onClick={i.o ? () => pick(i.o) : undefined}><Glyph x={x} y={y - (i.lift || 0)} tone={i.tone} r={i.r} /></g>; })}
+      {sc.items.filter((i): i is L3Glyph => i.t === 'g' && (!ex || ex.front(i.at))).map((i, k) => { const [x, y] = P(i.at); return <g key={`g${k}`} opacity={i.a} data-o={i.o} className={i.o && onObj ? 'l3-obj' : undefined} onClick={i.o ? () => pick(i.o) : undefined}><Glyph x={x} y={y - (i.lift || 0)} tone={i.tone} r={i.r} /></g>; })}
     </svg>
     {/* labels and the places you can go sit over the drawing at a constant, readable size (V2.5.3 drew them as HTML over its SVG too) */}
     <div className="l3-marks">
