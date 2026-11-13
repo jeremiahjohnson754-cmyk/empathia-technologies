@@ -311,3 +311,23 @@ polygon.l3-go:hover { filter: brightness(1.18); }
 @media (max-width: 560px) { .lt-sum { grid-template-columns: minmax(0, 1fr); } }
 .lt-page--scene .lt-nav { margin-top: var(--sp-4); }
 .lt-ready { display: flex; justify-content: center; }
+
+/* the furnished room (V2.5.3's drawing) and the technical overlay: one switch above the stage */
+.lt-views { display: flex; gap: 8px; margin-bottom: 10px; overflow-x: auto; position: relative; scrollbar-width: none; }
+.lt-view { flex: 1 1 0; min-width: 150px; display: grid; gap: 2px; text-align: left; padding: 9px 14px; border-radius: 14px; border: 1px solid var(--line2); background: var(--panel); color: var(--tx); font: inherit; cursor: pointer; min-height: var(--target-min); }
+.lt-view b { font-size: var(--fs-sm, 14px); font-weight: 700; } .lt-view span { font-size: var(--fs-xs, 12px); color: var(--tx2, inherit); opacity: .8; }
+.lt-view.on { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); background: linear-gradient(180deg, var(--accent-bg), transparent); }
+.lt-view:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.l3-stage--v253 { --ok: #62c684; --warn: #e8b04a; --bad: #f0655a; --info: #6aa5f2; --teal: #45cfc1; --tx3: #8a8478; }
+.l3-stage--v253 .l3-svg { min-height: 300px; }
+.l3-obj { cursor: pointer; }
+.l3-tag--obj { pointer-events: auto; cursor: pointer; }
+.l3-hitbtn.on { box-shadow: 0 0 0 2px var(--l3-teal) inset; }
+.l3-route { animation: l3route 1.6s linear infinite; stroke-dasharray: 6 5; }
+@keyframes l3route { to { stroke-dashoffset: -22; } }
+@media (prefers-reduced-motion: reduce) { .l3-route { animation: none; } }
+.lt-roomabout { display: grid; gap: 10px; margin-top: 14px; }
+.lt-intent { margin: 0; max-width: 66ch; color: var(--tx2); font-size: var(--fs-md, 16px); line-height: 1.5; }
+.lt-roommeta { display: flex; flex-wrap: wrap; gap: 6px; }
+@media (max-width: 560px) { .lt-view { min-width: 0; padding: 7px 12px; } .lt-view span { display: none; } }
+.lt-view:disabled { opacity: .55; cursor: not-allowed; } .lt-viewnote { margin: -2px 0 10px; }

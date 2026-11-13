@@ -164,38 +164,6 @@ function RoomCard({ id, extra }: { id: string; extra?: string }) {
   );
 }
 
-/** The campus in isometric 3D: buildings as extruded blocks at their footprints, height by floors, tone by readiness. */
-function CampusScene({ onOpen, current }: { onOpen: (k: string) => void; current?: string }) {
-  const S = 70; const cos = Math.cos(Math.PI / 6), sin = Math.sin(Math.PI / 6); const FH = 0.36;
-  const P = (x: number, y: number, z: number): [number, number] => [(x - y) * cos * S, ((x + y) * sin - z) * S];
-  const pts = (a: Array<[number, number, number]>) => a.map(([x, y, z]) => P(x, y, z).map((v) => v.toFixed(1)).join(',')).join(' ');
-  const campus = ALL_SITES.filter((b) => !REGIONAL_SITES.some((x) => x.key === b.key));   // the campus map draws its own six buildings; every other site is listed, not drawn
-  const order = [...campus].sort((a, b) => a.map.x + a.map.y - (b.map.x + b.map.y));
-  const W = 10, D = 8.4; const minX = P(0, D, 0)[0] - 20, maxX = P(W, 0, 0)[0] + 20, maxY = P(W, D, 0)[1] + 20;
-  const minY = Math.min(P(0, 0, 0)[1], ...campus.map((b) => P(b.map.x, b.map.y, b.floors * FH)[1])) - 70;
-  return (
-    <svg className="lt-svg lt-svg--campus" viewBox={`${minX.toFixed(0)} ${minY.toFixed(0)} ${(maxX - minX).toFixed(0)} ${(maxY - minY).toFixed(0)}`} role="group" aria-label="Campus in 3D: six buildings" data-testid="lite-campus-3d">
-      <polygon points={pts([[0, 0, 0], [W, 0, 0], [W, D, 0], [0, D, 0]])} className="lt-ground" />
-      <polyline points={pts(VISITOR_PATH.map(([x, y]) => [x, y, 0.01] as [number, number, number]))} className="lt-route lt-route--way" />
-      <polygon points={pts([[CAMPUS_PLAZA[0] - 0.5, CAMPUS_PLAZA[1] - 0.5, 0], [CAMPUS_PLAZA[0] + 0.5, CAMPUS_PLAZA[1] - 0.5, 0], [CAMPUS_PLAZA[0] + 0.5, CAMPUS_PLAZA[1] + 0.5, 0], [CAMPUS_PLAZA[0] - 0.5, CAMPUS_PLAZA[1] + 0.5, 0]])} className="lt-plaza" />
-      {order.map((B) => {
-        const { x, y, w, d } = B.map; const z = B.floors * FH; const s = buildingSummary(B.key); const band = bandOf(s.score);
-        const [lx, ly] = P(x + w / 2, y + d / 2, z);
-        return (
-          <g key={B.key} className={`lt-bld lt-bld--${band}${current === B.key ? ' on' : ''}`} role="button" tabIndex={0} aria-label={`${B.name}: ${s.rooms} rooms, readiness ${s.score ?? 'not scored'}, ${s.issues} open issue${s.issues === 1 ? '' : 's'}`}
-            data-testid={`lite-bld-${B.key}`} onClick={() => onOpen(B.key)} onKeyDown={(e: { key: string; preventDefault: () => void }) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(B.key); } }}>
-            <polygon points={pts([[x, y + d, 0], [x + w, y + d, 0], [x + w, y + d, z], [x, y + d, z]])} className="lt-bld__s1" />
-            <polygon points={pts([[x + w, y, 0], [x + w, y + d, 0], [x + w, y + d, z], [x + w, y, z]])} className="lt-bld__s2" />
-            <polygon points={pts([[x, y, z], [x + w, y, z], [x + w, y + d, z], [x, y + d, z]])} className="lt-bld__top" />
-            {Array.from({ length: B.floors - 1 }, (_, i) => <polyline key={i} points={pts([[x, y + d, (i + 1) * FH], [x + w, y + d, (i + 1) * FH], [x + w, y, (i + 1) * FH]])} className="lt-bld__floor" />)}
-            <g transform={`translate(${lx.toFixed(1)} ${(ly - 18).toFixed(1)})`} className="lt-pill"><rect x={-58} y={-19} width={116} height={38} rx={12} /><text y={-2} textAnchor="middle">{B.short}</text><text y={13} textAnchor="middle" className="lt-pill__fl">{B.floors} floors · {s.rooms} rooms</text>{s.issues > 0 && <g transform="translate(58 -12)" className="lt-pill__n"><circle r={12} /><text y={4} textAnchor="middle">{s.issues}</text></g>}</g>
-          </g>
-        );
-      })}
-    </svg>
-  );
-}
-
 // ------------------------------------------------------------------------------------------------ buildings and floors
 function LiteBuilding({ role, b, f }: PageProps & { b: string; f?: string }) {
   const B = buildingByKey(b);

@@ -35,8 +35,10 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   const list = vp[2] === 'desktop' ? ids : SAMPLE; const bad = [];
   for (const id of list) {
     await t.go(`#/lite/room/${id}`, 260);
-    const v = await t.page.evaluate(() => ({ room: document.querySelector('[data-testid="lite-room"]')?.getAttribute('data-room'), stage: !!document.querySelector('[data-testid="lite-3d"]'), states: document.querySelectorAll('[data-testid^="lite-state-"]').length, ov: document.querySelectorAll('[data-testid^="lite-ov-"]').length, over: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
+    const v = await t.page.evaluate(() => ({ room: document.querySelector('[data-testid="lite-room"]')?.getAttribute('data-room'), stage: Number(document.querySelector('[data-testid="lite-room-3d"]')?.getAttribute('data-objects') || 0) > 0 || (!!document.querySelector('[data-testid="lite-3d"]') && !!document.querySelector('[data-testid="lite-view-note"]')), states: document.querySelectorAll('[data-testid^="lite-state-"]').length, ov: document.querySelectorAll('[data-testid^="lite-ov-"]').length, over: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
     // 12 Nov 2026: six overlays, since V2.5.3's Sightlines X-ray view was restored as an overlay
+    // 13 Nov 2026: the stage a room opens on is now V2.5.3's furnished room (founder 50/10 directive), so "a 3D stage" means that one, drawn with objects;
+    // for the 14 town halls and control rooms V2.5.3 never drew, the technical stage with the note that says why
     if (v.room !== id || !v.stage || v.states !== 4 || v.ov !== 6 || v.over > 0) bad.push(`${id} ${JSON.stringify(v)}`);
   }
   ok(`LT-${tag}-07`, `${list.length === 90 ? 'all 90 rooms' : `a sample of ${list.length} rooms`} open in Lite with a 3D stage, four states and six overlays, no overflow`, !bad.length && (vp[2] !== 'desktop' || list.length === 90), bad.slice(0, 3).join(' | '));
@@ -44,10 +46,11 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   await t.go('#/lite/room/R-ATL-4-218?mode=engineer', 300);
   ok(`LT-${tag}-08`, 'the room stage stays dark in either theme (D36)', (await lum(t.page, '[data-testid="lite-room"] .stage')) < 0.25);
   const m0 = await t.page.evaluate(() => document.querySelector('[data-testid="lite-m-camera"]')?.textContent || '');
-  await t.go('#/lite/room/R-HZN-1-400?mode=engineer&state=proposed', 300);
+  // 13 Nov 2026: the technical overlay (positions, marks, orbit bar) is now one tap from the furnished room, so these checks open it by address (view=tech)
+  await t.go('#/lite/room/R-HZN-1-400?mode=engineer&state=proposed&view=tech', 300);
   const prop = await t.page.evaluate(() => ({ state: document.querySelector('[data-testid="lite-room"]')?.getAttribute('data-state'), added: document.querySelectorAll('.lt-dev--added').length, cap: document.querySelector('.stage__cap')?.textContent || '' }));
   ok(`LT-${tag}-09`, 'the Proposed state marks added positions and says it is not approved', prop.state === 'proposed' && prop.added >= 1 && /not approved/i.test(prop.cap), JSON.stringify(prop));
-  await t.go('#/lite/room/R-ATL-4-218?mode=engineer', 300); await t.page.click('[data-testid="lite-state-commissioned"]'); await t.page.waitForTimeout(300);
+  await t.go('#/lite/room/R-ATL-4-218?mode=engineer&view=tech', 300); await t.page.click('[data-testid="lite-state-commissioned"]'); await t.page.waitForTimeout(300);
   ok(`LT-${tag}-10`, 'the Commissioned state names the baseline', /Baseline v1/.test(await t.page.evaluate(() => document.querySelector('.stage__cap')?.textContent || '')));
   await t.page.click('[data-testid="lite-ov-speaker"]'); await t.page.waitForTimeout(200);
   const ov = await t.page.evaluate(() => ({ on: document.querySelector('[data-testid="lite-ov-speaker"]')?.getAttribute('aria-checked'), spk: document.querySelectorAll('.lt-ov--spk').length, hash: location.hash }));
@@ -65,7 +68,7 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   ok(`LT-${tag}-15`, 'a device selected with the keyboard shows position, asset and identity', /A-0101/.test(dev) && /AS-0101/.test(dev) && /Identity/.test(dev), dev.slice(0, 120));
   ok(`LT-${tag}-16`, 'the camera metric is computed and did not change with the view', /\d+/.test(m0) && m0 === (await t.page.evaluate(() => document.querySelector('[data-testid="lite-m-camera"]')?.textContent || '')));
   // divisible room: configurations; control tower: non-operational and the fleet wall
-  await t.go('#/lite/room/R-BCN-1-300?cfg=B', 300);
+  await t.go('#/lite/room/R-BCN-1-300?cfg=B&view=tech', 300);   // 13 Nov 2026: partitions are drawn on the technical overlay
   const div = await t.page.evaluate(() => ({ cfgs: document.querySelectorAll('[data-testid^="lite-cfg-"]').length, on: document.querySelector('[data-testid="lite-cfg-B"]')?.getAttribute('aria-checked'), parts: document.querySelectorAll('.lt-partition').length, active: document.querySelectorAll('.lt-active').length }));
   ok(`LT-${tag}-17`, 'a divisible room offers combined and split configurations, draws the partitions and highlights the chosen section', div.cfgs === 4 && div.on === 'true' && div.parts === 2 && div.active === 1, JSON.stringify(div));
   await t.go('#/lite/room/R-ATL-6-300', 300);
@@ -129,7 +132,7 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
 }
 // 12 Nov 2026: V2.5.3's X-ray in the room restored (liteXray / metricsOf): Sightlines, Signal flow, the Measurements panel, Design a space
 for (const scheme of SCHEMES) for (const vp of [VIEWPORTS[0], VIEWPORTS[VIEWPORTS.length - 1]]) {
-  const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/lite/room/R-ATL-4-218?mode=engineer' }); await t.page.waitForSelector('[data-testid="lite-xray"]');
+  const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/lite/room/R-ATL-4-218?mode=engineer&view=tech' }); await t.page.waitForSelector('[data-testid="lite-xray"]');   // 13 Nov 2026: rays are counted on the technical overlay
   await t.page.click('[data-testid="lite-ov-sight"]'); await t.page.waitForTimeout(250);
   const sg = await t.page.evaluate(() => ({ rays: document.querySelectorAll('.lt-ray').length, seats: document.querySelectorAll('.lt-seat').length, v: document.querySelector('[data-testid="lite-ov-sight"] .lt-switch__v')?.textContent || '', legend: document.querySelector('.lt-legend')?.textContent || '' }));
   ok(`LT-${tag}-X1`, 'Sightlines draws one ray per seat to its best display, counts the clear ones on its switch and names the classes in the legend', sg.rays >= 1 && sg.rays === sg.seats && /^\d+\/\d+$/.test(sg.v) && /green clear, amber marginal, red obstructed/.test(sg.legend), JSON.stringify(sg));
@@ -146,7 +149,7 @@ for (const scheme of SCHEMES) for (const vp of [VIEWPORTS[0], VIEWPORTS[VIEWPORT
 }
 // 12 Nov 2026: V2.5.3's object inspector (liteCardHtml) restored: a device's card in the room
 for (const scheme of SCHEMES) {
-  const t = await open(VIEWPORTS[VIEWPORTS.length - 1], scheme, { hash: '#/lite/room/R-ATL-4-218?mode=engineer' }); await t.page.waitForSelector('[data-testid="lite-3d"]');
+  const t = await open(VIEWPORTS[VIEWPORTS.length - 1], scheme, { hash: '#/lite/room/R-ATL-4-218?mode=engineer&view=tech' }); await t.page.waitForSelector('[data-testid="lite-3d"]');   // 13 Nov 2026: technical overlay by address (the furnished room is the default)
   const cam = t.page.locator('.lt-dev[data-cat="camera"], .lt-dev[data-cat="bar"]').first(); const want = await cam.getAttribute('data-cat');
   await cam.dispatchEvent('click'); await t.page.waitForSelector('[data-testid="lite-card"]', { timeout: 4000 }).catch(() => {});
   const card = await t.page.evaluate(() => ({ kind: document.querySelector('[data-testid="lite-card"]')?.getAttribute('data-kind'), heads: Array.from(document.querySelectorAll('[data-testid="lite-card"] .lt-card__h')).map((h) => h.textContent) }));

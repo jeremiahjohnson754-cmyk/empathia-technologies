@@ -20,6 +20,8 @@ import {
 } from './model.js';
 import { driftOf, setDrift, type DriftDecision } from './drift.js';
 import { RoomScene, OrbitBar, useOrbit } from './Scene.js';
+import { V253RoomStage, v253ObjFor, type V253Pick } from './V253Room.js';
+import { v253Drawable } from './v253/v253room.js';
 import { LiteNav, LiteMissing, storedLens, saveLens, setQuery } from './LiteApp.js';
 import { WhoKnows } from '../connect/ContactBar.js';
 
@@ -31,6 +33,8 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
   const dev = query.get('device');
   const [sel, setSel] = useState<string | null>(dev);
   useEffect(() => { setSel(dev); }, [id, dev]);
+  // the furnished room (V2.5.3's drawing) is the hero; the technical overlay (positions, signal paths, drift, edits) is one tap away
+  const [furn, setFurn] = useState<V253Pick | null>(null); useEffect(() => { setFurn(null); }, [id]);
   // the Optimize lens's "change the room" (V2.5.3, restored 12 Nov 2026): moves in 25 cm steps and a seat count, held in the page until sent
   const [ed, setEd] = useState<{ mv: Record<string, [number, number]>; seats: number }>({ mv: {}, seats: 0 }); const [tool, setTool] = useState<string | null>(null);
   useEffect(() => { setEd({ mv: {}, seats: 0 }); }, [id, query.get('state')]);
@@ -64,26 +68,38 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
   const partitions = cfg && o.divisible ? o.divisible.sections.slice(1).map((_, i) => (o.dims[0] * (i + 1)) / o.divisible!.sections.length) : [];
   const count = (cats: string[]) => st.positions.filter((x) => cats.includes(x.cat)).length;
   const lensesOpen = lensesFor(role);
+  // Optimize works on the recorded positions (moves, drift), so it opens on the technical overlay; every other lens opens on the furnished room
+  const furnishable = v253Drawable(id);
+  const viewHome = lens === 'optimize' || !furnishable ? 'tech' : 'room'; const vq = query.get('view');
+  const view = (lens === 'optimize' && edited) || !furnishable ? 'tech' : vq === 'tech' || vq === 'room' ? vq : viewHome;
   return (
     <section className="lt-page lt-roompage lt-page--scene" data-testid="lite-room" data-room={id} data-state={stateKey} data-lens={lens}>
       <nav aria-label="Breadcrumb" className="crumbs"><ol><li><a href="#/lite">Lite</a></li><li><a href={`#/lite/b/${o.building}`}>{B.name}</a></li><li><a href={`#/lite/b/${o.building}/${o.floor}`}>Floor {o.floor}</a></li><li><span aria-current="page">{o.number}</span></li></ol></nav>
-      <PageHero product="lite" icon="room" plain eyebrow={`${shortName(o)} · ${r.archetypeName} · ${o.capacity} seats`} title={o.name} lede={o.intent}
-        meta={[<Chip key="l" small tone={LIFE_TONE[r.lifecycle] || 'muted'}>{r.lifecycle.toLowerCase().replace(/_/g, ' ')}</Chip>, <Chip key="s" small tone="muted">Class templates · spec to verify</Chip>, <Chip key="g" small tone="muted">Geometry {r.geometryProvenance.toLowerCase()}</Chip>, ...(o.planRow ? [<Chip key="p" small tone="info">{o.roster ? `90-room estate · row ${o.planRow} · ${o.sector}` : `Rooms plan · row ${o.planRow}`}</Chip>] : []), ...(issues.length ? [<Chip key="i" small tone="warn" icon="alert">{issues.length} open issue{issues.length === 1 ? '' : 's'}</Chip>] : [])]}
-        />
+      <PageHero product="lite" icon="room" plain eyebrow={`${shortName(o)} · ${r.archetypeName} · ${o.capacity} seats`} title={o.name} />
       {o.nonOperational && <p className="lt-nonop" role="note" data-testid="lite-nonop"><Icon name="info" size={16} /> <b>Simulated · non-operational.</b> This is a demonstration of an operations room. Nothing here monitors, controls or alerts on a real system; every number is computed from the synthetic records.</p>}
       {lensesOpen.length > 1 && <div className="lt-lenses lt-lenses--sm" role="radiogroup" aria-label="Lite lens">{lensesOpen.map((l) => <button key={l.key} type="button" role="radio" aria-checked={lens === l.key} className={`lt-lens${lens === l.key ? ' on' : ''}`} onClick={() => pickLens(l.key)} data-testid={`lite-lens-${l.key}`}><b>{l.label}</b><span title={l.says}>sees {l.gives.toLowerCase()}</span></button>)}</div>}
       <div className="lt-roomgrid">
         <div className="lt-stagecol">
-          <figure className="stage lt-stage" data-stage="">
+          <div className="lt-views" role="radiogroup" aria-label="How to see the room" data-testid="lite-views">
+            {([['room', 'Furnished room', 'walls, furniture and equipment'], ['tech', 'Technical overlay', 'positions, signal and coverage']] as const).map(([k, t, d]) => <button key={k} type="button" role="radio" aria-checked={view === k} disabled={k === 'room' && !furnishable} className={`lt-view${view === k ? ' on' : ''}`} onClick={() => upd('view', k === viewHome ? null : k)} data-testid={`lite-view-${k}`}><b>{t}</b><span>{k === 'room' && !furnishable ? 'not drawn for this room type' : d}</span></button>)}
+          </div>
+          {!furnishable && <p className="ui-meta lt-viewnote" data-testid="lite-view-note">V2.5.3 drew town halls and control rooms only as its own named rooms, so this one opens on the technical overlay: every position, path and coverage figure is here; the furnished drawing is not.</p>}
+          {view === 'room' ? <figure className="stage lt-stage lt-stage--room" data-stage="">
+            <V253RoomStage roomId={id} lens={lens} state={stateKey} layers={layers} overlays={overlays} role={role} label={`${o.name}, furnished, in 3D, ${st.title}. Turn, tilt and zoom with the buttons, the arrow keys or a drag; each piece of equipment is a button that opens its card.`}
+              sel={furn ? furn.obj.id : v253ObjFor(id, stateKey, lens, sel)} onPick={(pk) => { setFurn(pk && !pk.code ? pk : null); setSel(pk?.code ?? null); }} />
+            <figcaption className="stage__cap"><b>{st.title}.</b> {st.summary} <span className="ui-meta">The room as V2.5.3 drew it for this room type: walls, door, glazing, furniture and equipment, with coverage drawn from its own cameras, microphones and loudspeakers. Modelled, not surveyed. Basis: {st.basis}.</span></figcaption>
+          </figure> : <figure className="stage lt-stage" data-stage="">
             <div className="stage__bar"><OrbitBar orbit={orbit} /></div>
             <RoomScene label={`${o.name} in 3D, ${st.title}`} w={o.dims[0]} l={o.dims[1]} h={o.dims[2]} view={orbit.view} positions={positions} connections={r.connections} layers={layers} overlays={overlays} cov={cov}
               selected={sel} onSelect={(c) => setSel(c === sel ? null : c)} occupied={occ} partitions={partitions} active={cfg && cfg.key !== 'combined' ? [cfg.x0, cfg.x1] : null} bind={orbit.bind} ghosts={ghosts} />
             <figcaption className="stage__cap"><b>{st.title}.</b> {st.summary} <span className="ui-meta">Basis: {st.basis}. Drag to orbit; the buttons do the same.</span></figcaption>
-          </figure>
+          </figure>}
           <div className="lt-states" role="radiogroup" aria-label="Room state" data-testid="lite-states">
             {STATES.map((s) => { const x = s.key === stateKey ? st : null; return <button key={s.key} type="button" role="radio" aria-checked={s.key === stateKey} className={`lt-state lt-state--${s.key}${s.key === stateKey ? ' on' : ''}`} onClick={() => upd('state', s.key === 'current' ? null : s.key)} data-testid={`lite-state-${s.key}`}><b>{s.label}</b><span>{s.says}</span>{x && !x.available ? <em>none on record</em> : null}</button>; })}
           </div>
           <Legend overlays={overlays} marks={st.marks} />
+          {/* the room leads the page (V2.5.3 put the room right under its name); what it is for and its record follow it */}
+          <div className="lt-roomabout" data-testid="lite-room-about"><p className="lt-intent">{o.intent}</p><div className="lt-roommeta">{[<Chip key="l" small tone={LIFE_TONE[r.lifecycle] || 'muted'}>{r.lifecycle.toLowerCase().replace(/_/g, ' ')}</Chip>, <Chip key="s" small tone="muted">Class templates · spec to verify</Chip>, <Chip key="g" small tone="muted">Geometry {r.geometryProvenance.toLowerCase()}</Chip>, ...(o.planRow ? [<Chip key="p" small tone="info">{o.roster ? `90-room estate · row ${o.planRow} · ${o.sector}` : `Rooms plan · row ${o.planRow}`}</Chip>] : []), ...(issues.length ? [<Chip key="i" small tone="warn" icon="alert">{issues.length} open issue{issues.length === 1 ? '' : 's'}</Chip>] : [])]}</div></div>
         </div>
         <aside className="lt-panel" aria-label="Layers, overlays and the selected device">
           <div className="lt-ready" data-testid="lite-room-ready"><ScoreRing value={score} size={72} label="Readiness" caption="Verified tests and open issues on the record" /></div>
@@ -104,6 +120,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
             {p ? <><h2 className="lt-h3">{p.label}</h2><dl className="lt-dl"><dt>Position</dt><dd className="mono">{p.code}</dd><dt>Asset</dt><dd className="mono">{p.asset || '—'}</dd><dt>Identity</dt><dd>{p.identity}</dd><dt>Device</dt><dd>{p.device}</dd><dt>Height</dt><dd>{p.z} m</dd>{p.note && <><dt>State</dt><dd>{p.note}</dd></>}</dl>
               <ObjectCardView p={p} r={r} tech={lens === 'engineer' || lens === 'optimize'} cov={cov} role={role} onMove={lens === 'optimize' && MOVABLE.includes(p.cat) ? () => { setTool(p.code); document.querySelector('[data-testid="lite-change"]')?.scrollIntoView({ block: 'start', behavior: 'smooth' }); } : undefined} />
               {allows({ area: 'room' }, role) && <a href={`${roomHref(o)}?device=${encodeURIComponent(p.code)}`}>Open in the technical room view →</a>}</>
+              : furn ? <><h2 className="lt-h3" data-testid="lite-furn-card">{furnTitle(furn.obj)}</h2><dl className="lt-dl"><dt>Size</dt><dd>{furn.obj.w.toFixed(2)} × {furn.obj.d.toFixed(2)} m{furn.obj.h ? `, ${furn.obj.h.toFixed(2)} m high` : ''}</dd><dt>Where</dt><dd>{furn.obj.x.toFixed(1)} m across, {furn.obj.y.toFixed(1)} m in from the front wall</dd><dt>Basis</dt><dd>From the room type’s layout (V2.5.3), modelled</dd></dl></>
               : <p className="ui-muted">Choose a device in the 3D view to see its position, asset and identity.</p>}
           </div>
         </aside>
@@ -341,3 +358,6 @@ function AdvancedModes({ role, id, lens, query, base }: { role: PageProps['role'
   ];
   return <nav className="lt-modes" aria-label="What to do with this room" data-testid="lite-modes">{modes.filter(Boolean).map((m) => <button key={m!.k} type="button" className={`lt-mode${m!.on ? ' on' : ''}`} aria-pressed={m!.on} onClick={m!.act} data-testid={`lite-mode-${m!.k}`}><b>{m!.label}</b><span>{m!.says}</span></button>)}</nav>;
 }
+
+const FURN: Record<string, string> = { table: 'Table', desk: 'Desk', chair: 'Seat', seatblock: 'Seating block', lectern: 'Lectern', stage: 'Stage', divider: 'Divider', door: 'Door', person: 'Person' };
+function furnTitle(o: { kind: string; label?: string }) { return o.label || FURN[o.kind] || o.kind.replace(/^./, (c) => c.toUpperCase()); }

@@ -57,4 +57,46 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [412, 915, 'phone']]) {
     await p.goto(p.url().split('#')[0] + `#/lite/b/${b}${f}`); const sel = f ? '[data-testid=lite-floor-3d]' : '[data-testid=lite-building-3d]';
     if (!(await p.waitForSelector(sel, { timeout: 8000 }).then(() => true).catch(() => false))) bad.push(`${b}${f}`); }
   ok('LS-all', 'every campus building and each of its floors opens in 3D', !bad.length && !t.errs.length, [...bad, ...t.errs].slice(0, 6).join(' | ')); await t.close(); }
+// the furnished room (13 Nov 2026): V2.5.3's own room drawing is the hero; the technical overlay is one tap away; objects open their cards
+for (const [w, h, tag] of [[1440, 900, 'desktop'], [412, 915, 'phone']]) {
+  const t = await open('#/lite/room/R-ATL-4-218?mode=engineer', { role: 'architect', w, h, sw: false }); const p = t.page; p.setDefaultTimeout(10000);
+  const st = p.locator('[data-testid=lite-room-3d]'); await st.waitFor();
+  const kinds = await st.getAttribute('data-kinds'); const top = await st.evaluate((e) => Math.round(e.getBoundingClientRect().top));
+  ok(`LS-${tag}-R1`, '4.218 opens on the furnished room: V2.5.3’s own layout for it (a table, 14 chairs, two displays, two cameras, ceiling microphones, loudspeakers, the rack, the touch panel, the lectern)', (await st.getAttribute('data-hero')) === 'yes' && /table:1/.test(kinds) && /chair:14/.test(kinds) && /display:2/.test(kinds) && /camera:2/.test(kinds) && /micceil:2/.test(kinds) && /rack:1/.test(kinds) && /touch:1/.test(kinds) && /lectern:1/.test(kinds), kinds);
+  ok(`LS-${tag}-R2`, 'the room is high on the page (right under its name and the lenses)', top < h * 0.62, String(top));
+  const svgOf = () => st.locator('svg.l3-svg').innerHTML(); const polys = () => st.locator('svg.l3-svg polygon').count();
+  const camOv = p.getByTestId('lite-ov-camera'); if ((await camOv.getAttribute('aria-checked')) === 'true') { await camOv.click(); await p.waitForTimeout(200); }
+  const p0 = await polys(); await camOv.click(); await p.waitForTimeout(200); const p1 = await polys();
+  ok(`LS-${tag}-R3`, 'switching camera coverage on draws the cameras’ views in the furnished room', p1 > p0 && (await camOv.getAttribute('aria-checked')) === 'true' && /ov=[^&]*camera/.test(await p.evaluate(() => location.hash)), `${p0} → ${p1}`);
+  const seen = new Set(); for (const k of ['designed', 'commissioned', 'current', 'proposed']) { await p.getByTestId(`lite-state-${k}`).click(); await p.waitForTimeout(200); seen.add((await st.getAttribute('data-state')) + ':' + (await svgOf()).length); }
+  ok(`LS-${tag}-R4`, 'the states draw the room differently: the current state marks the device with an open issue, the proposed state adds what the proposal adds (designed and commissioned may match, as they did in V2.5.3)', new Set([...seen].map((x) => x.split(':')[1])).size >= 2 && seen.size === 4, [...seen].join(' '));
+  // a proposal that adds equipment draws it, marked as added (Horizon's townhall: the proposal adds positions the coverage model asks for)
+  { const q = await open('#/lite/room/R-HZN-1-400?mode=engineer', { role: 'architect', w, h, sw: false }); const s2 = q.page.locator('[data-testid=lite-room-3d]'); await s2.waitFor(); const n0 = Number(await s2.getAttribute('data-objects'));
+    await q.page.getByTestId('lite-state-proposed').click(); await q.page.waitForTimeout(250); const n1 = Number(await s2.getAttribute('data-objects'));
+    ok(`LS-${tag}-R4b`, 'the proposed state draws what the proposal adds, as added objects', n1 > n0, `${n0} → ${n1}`); await q.close(); }
+  await p.getByTestId('lite-state-current').click(); await p.waitForTimeout(150);
+  const s0 = await svgOf(); await st.getByRole('button', { name: 'Turn right' }).click(); await p.waitForTimeout(150); const s1 = await svgOf();
+  ok(`LS-${tag}-R5`, 'turning the room redraws it from the new side (faces turn towards or away)', s0 !== s1 && Number(await st.locator('svg.l3-svg').getAttribute('data-yaw')) === 75);
+  const cam = st.locator('.l3-hitbtn[aria-label^="Cam"], .l3-hitbtn[aria-label*="camera" i]').first(); const camN = await st.locator('.l3-hitbtn[aria-label^="Cam"], .l3-hitbtn[aria-label*="camera" i]').count();
+  if (camN) { await cam.click(); await p.waitForTimeout(250); }
+  const dev = await p.getByTestId('lite-device').innerText();
+  ok(`LS-${tag}-R6`, 'each piece of equipment is a named button; tapping a camera opens its card beside the room, and the camera is outlined', camN >= 1 && /Position/.test(dev) && /Identity/.test(dev) && (await st.getAttribute('data-sel')) !== '' && (await p.locator('[data-testid=lite-card]').count()) === 1, `${camN} ${dev.slice(0, 80)}`);
+  const table = st.locator('.l3-hitbtn[aria-label^="Table"]').first(); if (await table.count()) { await table.click(); await p.waitForTimeout(200); }
+  ok(`LS-${tag}-R7`, 'tapping the table shows what it is, its size and where it stands, from the room type’s layout (modelled)', /Table/.test(await p.getByTestId('lite-furn-card').innerText().catch(() => '')) && /× /.test(await p.getByTestId('lite-device').innerText()));
+  await p.getByTestId('lite-view-tech').click(); await p.waitForSelector('[data-testid=lite-3d]');
+  ok(`LS-${tag}-R8`, '“Technical overlay” swaps to the positions-and-signal drawing, and the address keeps it (view=tech)', /view=tech/.test(await p.evaluate(() => location.hash)) && (await p.locator('[data-testid=lite-room-3d]').count()) === 0);
+  // the view is a setting of the page, like the overlays: it is kept in the address (a reload keeps it) without adding a history step
+  await p.reload(); await p.waitForSelector('[data-testid=lite-3d]'); await p.getByTestId('lite-view-room').click(); await st.waitFor();
+  ok(`LS-${tag}-R9`, 'a reload keeps the technical overlay; “Furnished room” returns to the room and drops view=tech from the address', (await p.locator('[data-testid=lite-3d]').count()) === 0 && !/view=/.test(await p.evaluate(() => location.hash)));
+  const sw = await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  ok(`LS-${tag}-R10`, 'no sideways scroll; no console error; nothing requested off the page', sw <= 0 && !t.errs.length && !t.off.length, `${sw} ${[...t.errs, ...t.off].slice(0, 3).join(' | ')}`);
+  await t.close();
+}
+// a room type V2.5.3 never drew opens on the technical overlay and says why; a visitor sees the furnished room but opens no cards (V2.5.3)
+{ const t = await open('#/lite/room/R-HZN-1-500', { role: 'architect', sw: false }); const p = t.page; await p.waitForSelector('[data-testid=lite-3d]');
+  ok('LS-R11', 'a town hall V2.5.3 never drew opens on the technical overlay, the furnished choice is disabled and the page says why', (await p.getByTestId('lite-view-room').isDisabled()) && /never|only as its own named rooms/.test(await p.getByTestId('lite-view-note').innerText()) && !t.errs.length);
+  await t.close(); }
+{ const t = await open('#/lite/room/R-ATL-4-218', { role: 'visitor', sw: false }); const p = t.page; await p.waitForSelector('[data-testid=lite-room-3d]');
+  ok('LS-R12', 'a visitor sees the furnished room, with the way in, and no object buttons (V2.5.3: a visitor opens no cards)', (await p.locator('[data-testid=lite-room-3d] .l3-hitbtn').count()) === 0 && Number(await p.getByTestId('lite-room-3d').getAttribute('data-objects')) > 0 && !t.errs.length);
+  await t.close(); }
 await done();

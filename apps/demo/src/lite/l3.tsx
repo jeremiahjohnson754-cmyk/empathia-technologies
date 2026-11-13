@@ -6,15 +6,18 @@
  * it, as V2.5.3's l3Box did; labels sit on top; every place you can go is a keyboard-reachable button with an accessible name.
  * Geometry here is illustrative (modelled from room sizes in the record), never surveyed.
  */
-import { useMemo, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 
 export type P3 = [number, number, number];
 export type RGB = [number, number, number];
-export interface L3Poly { t: 'p'; L: number; p: P3[]; f?: string; s?: string; sw?: number; da?: string; o?: number; c?: P3; sub?: number; cls?: string; nav?: string; pri?: number }
-export interface L3Line { t: 'l'; L: number; p: P3[]; s?: string; sw?: number; da?: string; cls?: string; c?: P3; pri?: number }
-export interface L3Label { t: 'x'; L: number; at: P3; text: string; sub?: string; big?: boolean; on?: boolean; anchor?: 'start' | 'middle'; cls?: string; lift?: number; nav?: string; tone?: string; testId?: string }
-export interface L3Hit { t: 'h'; L: number; at: P3; label: string; nav?: string; r?: number; testId?: string; act?: string }
-export type L3Item = L3Poly | L3Line | L3Label | L3Hit;
+// V2.5.3's own scenes (the room interiors, vendored in ./v253) use `o` for the object a shape belongs to and `a` for its opacity; our scenes use `o` for opacity
+export interface L3Poly { t: 'p'; L: number; p: P3[]; f?: string; s?: string; sw?: number; da?: string; o?: number | string; a?: number; c?: P3; sub?: number; cls?: string; nav?: string; pri?: number }
+export interface L3Line { t: 'l'; L: number; p: P3[]; s?: string; sw?: number; da?: string; cls?: string; c?: P3; pri?: number; a?: number; len?: boolean; o?: string }
+export interface L3Label { t: 'x'; L: number; at: P3; text: string; sub?: string; big?: boolean; on?: boolean; anchor?: 'start' | 'middle'; cls?: string; lift?: number; nav?: string; tone?: string; testId?: string; keep?: boolean; o?: string; a?: number }
+export interface L3Hit { t: 'h'; L: number; at: P3; label: string; nav?: string; r?: number; testId?: string; act?: string; o?: string; lift?: number }
+/** a status mark (V2.5.3 l3Glyph): a circle, a triangle (warn), a diamond (bad) or a square (info), drawn in the scene */
+export interface L3Glyph { t: 'g'; L: number; at: P3; tone: string; r?: number; lift?: number; o?: string; a?: number }
+export type L3Item = L3Poly | L3Line | L3Label | L3Hit | L3Glyph;
 export interface L3Scene { cx: number; cy: number; R: number; top: number; items: L3Item[]; seq: number }
 
 export const scene = (cx: number, cy: number, R: number, top = 3): L3Scene => ({ cx, cy, R, top, items: [], seq: 0 });
@@ -99,12 +102,28 @@ export function CamBar({ c, extra }: { c: ReturnType<typeof useCam>; extra?: Rea
   </div>;
 }
 
-/** Draw a scene: painter-sorted polygons and lines, then labels and the places you can go. */
-export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30 }: { sc: L3Scene; c: ReturnType<typeof useCam>; label: string; onNav: (to: string) => void; testId?: string; tall?: boolean; over?: ReactNode; S?: number }) {
+/** V2.5.3's status marks (l3Glyphs): shape as well as colour, so a warning reads without colour. */
+const TONE: Record<string, string> = { ok: 'var(--ok)', warn: 'var(--warn)', bad: 'var(--bad)', info: 'var(--info)', teal: 'var(--teal)', mute: 'var(--tx3, #8a8478)' };
+export function Glyph({ x, y, tone, r = 5 }: { x: number; y: number; tone: string; r?: number }) {
+  const c = TONE[tone] || TONE.mute!; const k = r; const st = { fill: c, stroke: '#0e1012', strokeWidth: 1 };
+  if (tone === 'warn') return <path d={`M${x} ${y - k}L${x + k} ${y + k * 0.8}H${x - k}Z`} {...st} />;
+  if (tone === 'bad') return <path d={`M${x} ${y - k}L${x + k} ${y}L${x} ${y + k}L${x - k} ${y}Z`} {...st} />;
+  if (tone === 'info') return <rect x={x - k * 0.8} y={y - k * 0.8} width={k * 1.6} height={k * 1.6} rx={1.5} {...st} />;
+  return <circle cx={x} cy={y} r={k * 0.85} {...st} />;
+}
+
+/**
+ * Draw a scene: painter-sorted polygons and lines, then labels and the places you can go.
+ * For V2.5.3's own scenes (`v253`): its fill patterns (`defs`), its draw order (depth only among solids, layers 3 and 5; overlays in the
+ * order drawn), its label placement (lift a label clear of another, drop a minor one that still collides), and object selection: a shape
+ * or hit that belongs to an object (`o`) selects it, and the selected object is outlined.
+ */
+export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, defs, v253, sel, onObj }: { sc: L3Scene; c: ReturnType<typeof useCam>; label: string; onNav: (to: string) => void; testId?: string; tall?: boolean; over?: ReactNode; S?: number; defs?: string; v253?: boolean; sel?: string | null; onObj?: (id: string) => void }) {
   const { P, depth } = projector(sc, c.cam, S);
   const drawn = useMemo(() => {
     const shapes = sc.items.filter((i): i is L3Poly | L3Line => i.t === 'p' || i.t === 'l').map((i) => ({ i, d: depth(i.c || mean(i.p)), q: (i as unknown as { q: number }).q }));
-    shapes.sort((a, b) => a.i.L - b.i.L || (a.i.pri || 0) - (b.i.pri || 0) || a.d - b.d || ((a.i as L3Poly).sub || 0) - ((b.i as L3Poly).sub || 0) || a.q - b.q);
+    const solid = (L: number) => !v253 || (L >= 3 && L < 4) || L === 5;
+    shapes.sort((a, b) => a.i.L - b.i.L || (solid(a.i.L) ? (a.i.pri || 0) - (b.i.pri || 0) || a.d - b.d || ((a.i as L3Poly).sub || 0) - ((b.i as L3Poly).sub || 0) : 0) || a.q - b.q);
     return shapes;
   }, [sc, c.cam]);   // eslint-disable-line
   // framing from the scene's radius and height (V2.5.3 l3Scene R and top), so the view does not jump as it turns; zoom narrows the frame
@@ -114,27 +133,47 @@ export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30 }
   const x0 = cxv - fw / 2, x1 = cxv + fw / 2, y0 = cyv - fh / 2 - 10 / c.cam.zoom, y1 = cyv + fh / 2;
   const fmt = (pts: P3[]) => pts.map((p) => P(p).map((n) => n.toFixed(1)).join(',')).join(' ');
   const go = (to?: string) => { if (to && !c.wasDrag()) onNav(to); };
-  const key = (to?: string) => (e: { key: string; preventDefault: () => void }) => { if (to && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onNav(to); } };
+  const pick = (o?: string) => { if (o && onObj && !c.wasDrag()) onObj(o); };
   const { onKeyDown, ...pointer } = c.bind;
-  return <div className={`l3-stage${tall ? ' l3-stage--tall' : ''}`} data-stage="" data-testid={testId} {...pointer}>
+  // the stage's width on screen, so labels can be kept clear of each other in screen pixels (V2.5.3 l3Svg did this on its canvas)
+  const stage = useRef<HTMLDivElement | null>(null); const [px, setPx] = useState(0);
+  useEffect(() => { if (!v253) return; const el = stage.current; if (!el) return; const up = () => setPx(el.clientWidth); up(); const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(up) : null; ro?.observe(el); return () => ro?.disconnect(); }, [v253]);
+  const labels = sc.items.filter((i): i is L3Label => i.t === 'x');
+  const placed = useMemo(() => {
+    const out = new Map<L3Label, { lift: number; skip: boolean }>(); if (!v253 || !px) return out;
+    const k = px / (x1 - x0); const boxes: number[][] = [];
+    const meas = labels.map((it) => { const [x, y] = P(it.at); return { it, sx: (x - x0) * k, sy: (y - y0) * k, k: depth(it.at), w: Math.max(18, it.text.length * (it.big ? 6.1 : 5.4) + (it.tone ? 22 : 12) + (it.sub ? it.sub.length * 4.6 + 6 : 0)), hh: it.big ? 19 : 16, rank: it.on ? 0 : it.keep ? 1 : it.cls === 'soft' ? 2 : 1 }; });
+    for (const m of meas.slice().sort((a, b) => a.rank - b.rank || b.k - a.k)) {
+      let lift = m.it.lift || 0, tries = 0; const box = () => { const x = m.sx - (m.it.anchor === 'start' ? 0 : m.w / 2), y = m.sy - lift - 8; return [x, y, x + m.w, y + m.hh]; };
+      let bx = box(); const hits = () => boxes.some((p) => bx[0]! < p[2]! + 2 && p[0]! < bx[2]! + 2 && bx[1]! < p[3]! + 2 && p[1]! < bx[3]! + 2);
+      while (hits() && tries < (m.rank === 2 ? 0 : 3)) { lift += m.hh + 3; bx = box(); tries++; }
+      if (hits() && m.rank > 0) { out.set(m.it, { lift, skip: true }); continue; }
+      boxes.push(bx); out.set(m.it, { lift, skip: false });
+    }
+    return out;
+  }, [sc, c.cam, px, v253]);   // eslint-disable-line
+  return <div className={`l3-stage${tall ? ' l3-stage--tall' : ''}${v253 ? ' l3-stage--v253' : ''}`} data-stage="" data-testid={testId} ref={stage} {...pointer}>
     <svg className="l3-svg" style={{ aspectRatio: `${(x1 - x0).toFixed(0)} / ${(y1 - y0).toFixed(0)}` }} viewBox={`${x0.toFixed(0)} ${y0.toFixed(0)} ${(x1 - x0).toFixed(0)} ${(y1 - y0).toFixed(0)}`} role="group" aria-label={aria} tabIndex={0} onKeyDown={onKeyDown} data-yaw={Math.round(c.cam.yaw)} data-pitch={Math.round(c.cam.pitch)} data-zoom={c.cam.zoom}>
-      <defs>
+      {defs ? <g dangerouslySetInnerHTML={{ __html: defs }} /> : <defs>
         <linearGradient id="l3slab" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#4a463f" /><stop offset="1" stopColor="#36332e" /></linearGradient>
         <pattern id="l3hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#4b3a2c" /><line x1="0" y1="0" x2="0" y2="6" stroke="#c98a3a" strokeWidth="1.5" /></pattern>
-      </defs>
-      {drawn.map(({ i }, k) => i.t === 'p'
-        ? <polygon key={k} points={fmt(i.p)} fill={i.f || 'none'} stroke={i.s || 'none'} strokeWidth={i.sw ?? 0.6} strokeDasharray={i.da} opacity={i.o} className={`${i.cls || ''}${i.nav ? ' l3-go' : ''}`} onClick={i.nav ? () => go(i.nav) : undefined} />
-        : <polyline key={k} points={fmt(i.p)} fill="none" stroke={i.s || '#fff'} strokeWidth={i.sw ?? 1} strokeDasharray={i.da} className={i.cls} />)}
+      </defs>}
+      {v253 && <rect x={x0} y={y0} width={x1 - x0} height={y1 - y0} fill="url(#l3glow)" />}
+      {drawn.map(({ i }, k) => { const obj = typeof i.o === 'string' ? i.o : undefined; const on = !!obj && obj === sel; const op = typeof i.o === 'number' ? i.o : i.a;
+        return i.t === 'p'
+          ? <polygon key={k} points={fmt(i.p)} fill={i.f || 'none'} stroke={on ? 'var(--teal)' : i.s || 'none'} strokeWidth={on ? 1.6 : i.sw ?? 0.6} strokeDasharray={i.da} opacity={op} data-o={obj} className={`${i.cls || ''}${i.nav ? ' l3-go' : ''}${obj && onObj ? ' l3-obj' : ''}`} onClick={i.nav ? () => go(i.nav) : obj && onObj ? () => pick(obj) : undefined} />
+          : <polyline key={k} points={fmt(i.p)} fill="none" stroke={i.s || '#fff'} strokeWidth={i.sw ?? 1} strokeDasharray={i.da} opacity={op} strokeLinecap={v253 ? 'round' : undefined} strokeLinejoin={v253 ? 'round' : undefined} pathLength={i.len ? 100 : undefined} className={i.cls} />; })}
+      {sc.items.filter((i): i is L3Glyph => i.t === 'g').map((i, k) => { const [x, y] = P(i.at); return <g key={`g${k}`} opacity={i.a} data-o={i.o} className={i.o && onObj ? 'l3-obj' : undefined} onClick={i.o ? () => pick(i.o) : undefined}><Glyph x={x} y={y - (i.lift || 0)} tone={i.tone} r={i.r} /></g>; })}
     </svg>
     {/* labels and the places you can go sit over the drawing at a constant, readable size (V2.5.3 drew them as HTML over its SVG too) */}
     <div className="l3-marks">
-      {sc.items.filter((i): i is L3Label => i.t === 'x').map((i, k) => { const [x, y] = P(i.at); const left = ((x - x0) / (x1 - x0)) * 100, top = ((y - y0) / (y1 - y0)) * 100;
-        const cls = `l3-tag${i.big ? ' l3-tag--big' : ''}${i.on ? ' on' : ''}${i.cls ? ` ${i.cls}` : ''}${i.anchor === 'start' ? ' l3-tag--start' : ''}`;
+      {labels.map((i, k) => { const pl = placed.get(i); if (pl?.skip) return null; const [x, y] = P(i.at); const left = ((x - x0) / (x1 - x0)) * 100, top = ((y - y0) / (y1 - y0)) * 100; const lift = pl ? pl.lift : i.lift;
+        const cls = `l3-tag${i.big ? ' l3-tag--big' : ''}${i.on ? ' on' : ''}${i.cls ? ` ${i.cls}` : ''}${i.anchor === 'start' ? ' l3-tag--start' : ''}${i.o && i.o === sel ? ' on' : ''}`;
         const body = <>{i.tone && <i className={`l3-dot l3-dot--${i.tone}`} aria-hidden="true" />}<b>{i.text}</b>{i.sub && <span>{i.sub}</span>}</>;
-        const style = { left: `${left.toFixed(2)}%`, top: `${top.toFixed(2)}%`, marginTop: i.lift ? -i.lift : undefined };
+        const style = { left: `${left.toFixed(2)}%`, top: `${top.toFixed(2)}%`, marginTop: lift ? -lift : undefined, opacity: i.a };
         return i.nav ? <a key={`x${k}`} className={cls} style={style} href={i.nav} onClick={(e) => { e.preventDefault(); go(i.nav); }} data-testid={i.testId} tabIndex={-1} aria-hidden="true">{body}</a>
-          : <span key={`x${k}`} className={cls} style={style} data-testid={i.testId} aria-hidden="true">{body}</span>; })}
-      {sc.items.filter((i): i is L3Hit => i.t === 'h').map((i, k) => { const [x, y] = P(i.at); return <button key={`h${k}`} type="button" className="l3-hitbtn" style={{ left: `${(((x - x0) / (x1 - x0)) * 100).toFixed(2)}%`, top: `${(((y - y0) / (y1 - y0)) * 100).toFixed(2)}%` }} aria-label={i.label} data-testid={i.testId} onClick={() => go(i.nav)} />; })}
+          : <span key={`x${k}`} className={`${cls}${i.o && onObj ? ' l3-tag--obj' : ''}`} style={style} data-testid={i.testId} aria-hidden="true" onClick={i.o && onObj ? () => pick(i.o) : undefined}>{body}</span>; })}
+      {sc.items.filter((i): i is L3Hit => i.t === 'h').map((i, k) => { const [x, y] = P(i.at); return <button key={`h${k}`} type="button" className={`l3-hitbtn${i.o && i.o === sel ? ' on' : ''}`} style={{ left: `${(((x - x0) / (x1 - x0)) * 100).toFixed(2)}%`, top: `${(((y - (i.lift || 0) - y0) / (y1 - y0)) * 100).toFixed(2)}%` }} aria-label={i.label} aria-pressed={i.o ? i.o === sel : undefined} data-testid={i.testId} data-o={i.o} onClick={() => (i.o ? pick(i.o) : go(i.nav))} />; })}
     </div>
     <CamBar c={c} />
     {over}
