@@ -128,6 +128,10 @@ function RoleShelf({ role }: { role: RoleKey }) {
   const [types, setTypes] = useState<Record<string, number> | null>(null);
   useEffect(() => { let on = true; typeCounts().then((t) => { if (on) setTypes(t); }).catch(() => { /* counts stay — */ }); return () => { on = false; }; }, []);
   const track = useRef<HTMLUListElement>(null);
+  // 90-2: the shelf's arrows say when there is nothing further that way (disabled at either end), instead of doing nothing
+  const [ends, setEnds] = useState<[boolean, boolean]>([true, false]);
+  useEffect(() => { const el = track.current; if (!el) return; const up = () => setEnds([el.scrollLeft <= 2, el.scrollLeft + el.clientWidth >= el.scrollWidth - 2]); up();
+    el.addEventListener('scroll', up, { passive: true }); window.addEventListener('resize', up); return () => { el.removeEventListener('scroll', up); window.removeEventListener('resize', up); }; }, [list.length]);
   const step = (dir: 1 | -1) => { const el = track.current; if (!el) return; const card = el.querySelector('li'); const w = card ? card.getBoundingClientRect().width + 10 : 220; el.scrollBy({ left: dir * w * 2, behavior: reducedMotion() ? 'auto' : 'smooth' }); };
   return (
     <section className="shelf" aria-labelledby="shelf-h" data-testid="role-shelf">
@@ -136,7 +140,7 @@ function RoleShelf({ role }: { role: RoleKey }) {
         <h2 id="shelf-h">Every role, one Core</h2>
         <p className="ui-meta">Each role is given its own share of the same records. View as switches this demonstration to that perspective and opens the page the role starts from — announced, with the way back. A perspective grants nothing.</p>
       </div>
-        <div className="shelf__nav"><span className="ui-meta">{list.length} roles</span><button type="button" className="shelf__btn" onClick={() => step(-1)} aria-label="Earlier roles"><Icon name="chevron-left" size={16} /></button><button type="button" className="shelf__btn" onClick={() => step(1)} aria-label="Later roles"><Icon name="chevron-right" size={16} /></button></div>
+        <div className="shelf__nav"><span className="ui-meta">{list.length} roles</span><button type="button" className="shelf__btn" onClick={() => step(-1)} disabled={ends[0]} aria-label="Earlier roles"><Icon name="chevron-left" size={16} /></button><button type="button" className="shelf__btn" onClick={() => step(1)} disabled={ends[1]} aria-label="Later roles"><Icon name="chevron-right" size={16} /></button></div>
       </div>
       <ul className="shelf__list shelf__track" ref={track}>
         {list.map((k) => { const r = ROLES[k]; const pages = openPages(k).length; const rec = types ? recordsFor(k, types) : null; const here = k === role; return (

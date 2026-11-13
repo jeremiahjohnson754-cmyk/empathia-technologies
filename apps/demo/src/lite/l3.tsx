@@ -72,7 +72,22 @@ const mean = (pts: P3[]): P3 => { const n = pts.length || 1; return [pts.reduce(
  * the focused scene: arrows turn and tilt, Shift with the arrows pans, + and − zoom, P goes to plan, F fits, 0 resets.
  */
 export function useCam(initial: Cam = CAM0) {
-  const [cam, setCam] = useState<Cam>(initial); const start = useRef(initial);
+  // `goal` is where the camera is set; `cam` is what is drawn. A drag or pinch moves both at once; a button or key eases the drawn camera to
+  // the goal over about a quarter of a second, as V2.5.3's l3ViewTo did (none when reduced motion is asked for).
+  const [goal, setGoal] = useState<Cam>(initial); const [cam, setShown] = useState<Cam>(initial); const start = useRef(initial);
+  const anim = useRef(false); const shown = useRef(initial); const raf = useRef(0);
+  const setCam = (u: Cam | ((c: Cam) => Cam)) => { anim.current = false; setGoal(u); };
+  const ease = (u: Cam | ((c: Cam) => Cam)) => { anim.current = true; setGoal(u); };
+  useEffect(() => {
+    cancelAnimationFrame(raf.current); const from = shown.current, to = goal;
+    const still = !anim.current || typeof window === 'undefined' || !window.requestAnimationFrame || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    if (still) { shown.current = to; setShown(to); return; }
+    const t0 = performance.now(), ms = 260; const lerp = (a: number, b: number, k: number) => a + (b - a) * k;
+    const tick = (now: number) => { const t = Math.min(1, (now - t0) / ms), k = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      const c: Cam = { yaw: lerp(from.yaw, to.yaw, k), pitch: lerp(from.pitch, to.pitch, k), zoom: lerp(from.zoom, to.zoom, k), px: lerp(from.px || 0, to.px || 0, k), py: lerp(from.py || 0, to.py || 0, k) };
+      shown.current = t < 1 ? c : to; setShown(shown.current); if (t < 1) raf.current = requestAnimationFrame(tick); };
+    raf.current = requestAnimationFrame(tick); return () => cancelAnimationFrame(raf.current);
+  }, [goal]);
   const drag = useRef<{ x: number; y: number; c: Cam; moved: boolean; el: { setPointerCapture?: (id: number) => void }; id: number; pan: boolean; touch: boolean; w: number; h: number } | null>(null);
   const pts = useRef(new Map<number, [number, number]>()); const pinch = useRef<{ d: number; mx: number; my: number; c: Cam } | null>(null);
   const clampP = (p: number) => Math.max(18, Math.min(90, p)); const clampZ = (z: number) => Math.max(0.6, Math.min(3, Math.round(z * 100) / 100));
@@ -81,8 +96,8 @@ export function useCam(initial: Cam = CAM0) {
   const bind = {
     onPointerDown: (e: PE) => {
       pts.current.set(e.pointerId, [e.clientX, e.clientY]); const r = e.currentTarget.getBoundingClientRect?.() || { width: 800, height: 600 };
-      drag.current = { x: e.clientX, y: e.clientY, c: cam, moved: false, el: e.currentTarget, id: e.pointerId, pan: !!e.shiftKey || e.button === 1 || e.button === 2, touch: e.pointerType === 'touch', w: r.width || 800, h: r.height || 600 };
-      if (pts.current.size === 2) { const [p1, p2] = [...pts.current.values()] as [[number, number], [number, number]]; pinch.current = { d: Math.hypot(p1[0] - p2[0], p1[1] - p2[1]) || 1, mx: (p1[0] + p2[0]) / 2, my: (p1[1] + p2[1]) / 2, c: cam }; }
+      drag.current = { x: e.clientX, y: e.clientY, c: goal, moved: false, el: e.currentTarget, id: e.pointerId, pan: !!e.shiftKey || e.button === 1 || e.button === 2, touch: e.pointerType === 'touch', w: r.width || 800, h: r.height || 600 };
+      if (pts.current.size === 2) { const [p1, p2] = [...pts.current.values()] as [[number, number], [number, number]]; pinch.current = { d: Math.hypot(p1[0] - p2[0], p1[1] - p2[1]) || 1, mx: (p1[0] + p2[0]) / 2, my: (p1[1] + p2[1]) / 2, c: goal }; }
     },
     onPointerMove: (e: { clientX: number; clientY: number; pointerId: number }) => {
       if (!pts.current.has(e.pointerId)) return; pts.current.set(e.pointerId, [e.clientX, e.clientY]); const d = drag.current;
@@ -100,17 +115,17 @@ export function useCam(initial: Cam = CAM0) {
     onPointerUp: (e: { pointerId: number }) => { pts.current.delete(e.pointerId); if (pts.current.size < 2) pinch.current = null; setTimeout(() => { if (!pts.current.size) drag.current = null; }, 0); },   // the click that follows a drag still sees it; a later tap or key does not
     onPointerCancel: (e: { pointerId: number }) => { pts.current.delete(e.pointerId); pinch.current = null; drag.current = null; },
     onContextMenu: (e: { preventDefault: () => void; shiftKey?: boolean }) => { if (drag.current?.pan) e.preventDefault(); },
-    onDoubleClick: (e: { target: unknown }) => { const t = e.target as { closest?: (s: string) => unknown }; if (!t.closest?.('button, a, .l3-ctl')) setCam(start.current); },
+    onDoubleClick: (e: { target: unknown }) => { const t = e.target as { closest?: (s: string) => unknown }; if (!t.closest?.('button, a, .l3-ctl')) ease(start.current); },
     onKeyDown: (e: { key: string; shiftKey?: boolean; preventDefault: () => void; target: unknown; currentTarget: unknown }) => {
       if (e.target !== e.currentTarget) return;
       const pan: Record<string, (c: Cam) => Cam> = { ArrowLeft: (c) => ({ ...c, px: clampXY((c.px || 0) - 0.05) }), ArrowRight: (c) => ({ ...c, px: clampXY((c.px || 0) + 0.05) }), ArrowUp: (c) => ({ ...c, py: clampXY((c.py || 0) - 0.05) }), ArrowDown: (c) => ({ ...c, py: clampXY((c.py || 0) + 0.05) }) };
       const m: Record<string, (c: Cam) => Cam> = { ArrowLeft: (c) => ({ ...c, yaw: c.yaw - 15 }), ArrowRight: (c) => ({ ...c, yaw: c.yaw + 15 }), ArrowUp: (c) => ({ ...c, pitch: clampP(c.pitch + 8) }), ArrowDown: (c) => ({ ...c, pitch: clampP(c.pitch - 8) }), '+': (c) => ({ ...c, zoom: clampZ(c.zoom * 1.15) }), '=': (c) => ({ ...c, zoom: clampZ(c.zoom * 1.15) }), '-': (c) => ({ ...c, zoom: clampZ(c.zoom / 1.15) }), '0': () => start.current, p: (c) => ({ ...c, pitch: 90, yaw: 0 }), P: (c) => ({ ...c, pitch: 90, yaw: 0 }), f: (c) => ({ ...c, zoom: 1, px: 0, py: 0 }), F: (c) => ({ ...c, zoom: 1, px: 0, py: 0 }) };
-      const f = (e.shiftKey && pan[e.key]) || m[e.key]; if (f) { e.preventDefault(); setCam(f); } },
+      const f = (e.shiftKey && pan[e.key]) || m[e.key]; if (f) { e.preventDefault(); ease(f); } },
   };
   const wasDrag = () => !!drag.current?.moved;
   /** Ctrl or ⌘ with the wheel (and a trackpad pinch, which browsers send that way) zooms; the plain wheel is left to scroll the page */
   const wheel = (e: WheelEvent) => { if (!(e.ctrlKey || e.metaKey)) return; e.preventDefault(); setCam((c) => ({ ...c, zoom: clampZ(c.zoom * (e.deltaY < 0 ? 1.08 : 1 / 1.08)) })); };
-  return { cam, setCam, bind, wasDrag, wheel, reset: () => setCam(start.current), fit: () => setCam((c) => ({ ...c, zoom: 1, px: 0, py: 0 })), turn: (d: number) => setCam((c) => ({ ...c, yaw: c.yaw + d })), tilt: (d: number) => setCam((c) => ({ ...c, pitch: clampP(c.pitch + d) })), zoomBy: (k: number) => setCam((c) => ({ ...c, zoom: clampZ(c.zoom * k) })), plan: () => setCam((c) => ({ ...c, pitch: 90, yaw: 0 })) };
+  return { cam, goal, setCam, bind, wasDrag, wheel, reset: () => ease(start.current), fit: () => ease((c) => ({ ...c, zoom: 1, px: 0, py: 0 })), turn: (d: number) => ease((c) => ({ ...c, yaw: c.yaw + d })), tilt: (d: number) => ease((c) => ({ ...c, pitch: clampP(c.pitch + d) })), zoomBy: (k: number) => ease((c) => ({ ...c, zoom: clampZ(c.zoom * k) })), plan: () => ease((c) => ({ ...c, pitch: 90, yaw: 0 })) };
 }
 
 /** The stage's controls, in V2.5.3's column: turn right, turn left, zoom in, zoom out, plan, fit, reset (and a slot for more). */
@@ -120,8 +135,8 @@ export function CamBar({ c, extra }: { c: ReturnType<typeof useCam>; extra?: Rea
     <button type="button" className="l3-btn" onClick={() => c.turn(-45)} aria-label="Turn left" title="Turn left"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 15a7 7 0 0 0-12-5l-2 2M5 6v6h6" /></svg></button>
     <button type="button" className="l3-btn" onClick={() => c.zoomBy(1.2)} aria-label="Zoom in" title="Zoom in"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg></button>
     <button type="button" className="l3-btn" onClick={() => c.zoomBy(1 / 1.2)} aria-label="Zoom out" title="Zoom out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" /></svg></button>
-    <button type="button" className="l3-btn" onClick={c.plan} aria-pressed={c.cam.pitch === 90} aria-label="Plan view from above" title="Plan"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="2" /><path d="M5 12h7V5" /></svg></button>
-    <button type="button" className="l3-btn" onClick={c.fit} aria-label="Fit to the view" title="Fit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" /></svg></button>
+    <button type="button" className="l3-btn" onClick={c.plan} aria-pressed={c.goal.pitch === 90} aria-label="Plan view from above" title="Plan"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="2" /><path d="M5 12h7V5" /></svg></button>
+    <button type="button" className="l3-btn" onClick={c.fit} disabled={c.goal.zoom === 1 && !c.goal.px && !c.goal.py} aria-label="Fit to the view" title="Fit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" /></svg></button>
     <button type="button" className="l3-btn" onClick={c.reset} aria-label="Reset the view" title="Reset"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12a7 7 0 1 0 2-5M5 4v4h4" /></svg></button>
     {extra}
   </div>;
@@ -179,7 +194,8 @@ export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, 
     return out;
   }, [sc, c.cam, px, v253]);   // eslint-disable-line
   return <div className={`l3-stage${tall ? ' l3-stage--tall' : ''}${v253 ? ' l3-stage--v253' : ''}`} data-stage="" data-testid={testId} ref={stage} {...pointer}>
-    <svg className="l3-svg" style={{ aspectRatio: `${(x1 - x0).toFixed(0)} / ${(y1 - y0).toFixed(0)}` }} viewBox={`${x0.toFixed(0)} ${y0.toFixed(0)} ${(x1 - x0).toFixed(0)} ${(y1 - y0).toFixed(0)}`} role="group" aria-label={aria} tabIndex={0} onKeyDown={onKeyDown} data-yaw={Math.round(c.cam.yaw)} data-pitch={Math.round(c.cam.pitch)} data-zoom={c.cam.zoom} data-pan={`${c.cam.px || 0},${c.cam.py || 0}`}>
+    <div className="l3-frame">
+    <svg className="l3-svg" style={{ aspectRatio: `${(x1 - x0).toFixed(0)} / ${(y1 - y0).toFixed(0)}` }} viewBox={`${x0.toFixed(0)} ${y0.toFixed(0)} ${(x1 - x0).toFixed(0)} ${(y1 - y0).toFixed(0)}`} role="group" aria-label={aria} tabIndex={0} onKeyDown={onKeyDown} data-yaw={Math.round(c.goal.yaw)} data-pitch={Math.round(c.goal.pitch)} data-zoom={c.goal.zoom} data-pan={`${c.goal.px || 0},${c.goal.py || 0}`} data-moving={c.goal === c.cam ? undefined : ''}>
       {defs ? <g dangerouslySetInnerHTML={{ __html: defs }} /> : <defs>
         <linearGradient id="l3slab" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#4a463f" /><stop offset="1" stopColor="#36332e" /></linearGradient>
         <pattern id="l3hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#4b3a2c" /><line x1="0" y1="0" x2="0" y2="6" stroke="#c98a3a" strokeWidth="1.5" /></pattern>
@@ -201,6 +217,8 @@ export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, 
           : <span key={`x${k}`} className={`${cls}${i.o && onObj ? ' l3-tag--obj' : ''}`} style={style} data-testid={i.testId} aria-hidden="true" onClick={i.o && onObj ? () => pick(i.o) : undefined}>{body}</span>; })}
       {sc.items.filter((i): i is L3Hit => i.t === 'h').map((i, k) => { const [x, y] = P(i.at); return <button key={`h${k}`} type="button" className={`l3-hitbtn${i.o && i.o === sel ? ' on' : ''}`} style={{ left: `${(((x - x0) / (x1 - x0)) * 100).toFixed(2)}%`, top: `${(((y - (i.lift || 0) - y0) / (y1 - y0)) * 100).toFixed(2)}%` }} aria-label={i.label} aria-pressed={i.o ? i.o === sel : undefined} data-testid={i.testId} data-o={i.o} onClick={() => (i.o ? pick(i.o) : go(i.nav))} />; })}
     </div>
+    </div>
+    {/* on a phone the controls sit under the scene, so they never cover a piece of equipment you mean to tap */}
     <CamBar c={c} />
     {over}
   </div>;

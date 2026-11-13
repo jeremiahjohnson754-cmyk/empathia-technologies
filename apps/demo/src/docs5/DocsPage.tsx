@@ -75,7 +75,7 @@ function Checklist({ role, can, sees }: PageProps) {
 
       <section className="d5-list" aria-labelledby="d5-list-h">
         <header><h2 id="d5-list-h">{narrow ? 'For you' : 'Checklist'}</h2>
-          {narrow ? null : <Segmented<Filter> label="Which documents" small value={eff} onChange={setFilter} options={[{ value: 'mine', label: 'Needs me', count: mine.length }, { value: 'open', label: 'Open', count: open.length }, { value: 'all', label: 'All required', count: req.length }, { value: 'na', label: 'Does not apply', count: docs.length - req.length }]} />}</header>
+          {narrow ? null : <Segmented<Filter> label="Which documents" small value={eff} onChange={setFilter} options={[{ value: 'mine', label: 'Needs me', count: mine.length, disabled: !mine.length }, { value: 'open', label: 'Open', count: open.length }, { value: 'all', label: 'All required', count: req.length }, { value: 'na', label: 'Does not apply', count: docs.length - req.length }]} />}</header>
         {filter === 'mine' && !mine.length && !narrow ? <p className="d5-note" data-testid="docs-nothing-mine">Nothing is waiting for the {ROLES[role].label}. Showing what is open.</p> : null}
         {shown.length ? <ul data-testid="docs-list">{shown.map((d) => { const first = d.findings.find((f) => f.blocking) ?? d.findings[0]; const s = d.submission; return (
           narrow ? <li key={d.type} data-doc={d.type} data-state={d.state} data-met={d.acknowledgements.outstanding.length ? 'no' : 'yes'} data-mine={needsMe(d, role, can) ? 'yes' : 'no'}>

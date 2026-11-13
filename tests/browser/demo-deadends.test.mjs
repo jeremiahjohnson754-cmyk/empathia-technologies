@@ -19,7 +19,7 @@ const only = arg('only', ''); const PAGES = only ? only.split(',') : paths;
 const evidence = []; const dead = []; let pressed = 0;
 
 for (const p of PAGES) {
-  const t = await open(`#${p}`, { role: 'architect', sw: false, init: () => { window.SIGNAL_NOPOP = true; } });
+  const t = await open(`#${p}`, { role: 'architect', sw: false, init: () => { window.SIGNAL_NOPOP = true; window.print = () => { window.__printed = (window.__printed || 0) + 1; }; } });   // 13 Nov 2026: a print dialog cannot be seen headless, so print() is counted instead
   const page = t.page; page.on('dialog', (d) => d.dismiss().catch(() => undefined));
   const access = await page.locator('[data-testid=access-page]').count();
   if (access) { evidence.push({ page: p, skipped: 'not open to the architect' }); await t.close(); continue; }
@@ -33,20 +33,27 @@ for (const p of PAGES) {
   for (let i = 0; i < count; i++) {
     const before = await page.evaluate(() => location.hash);
     const loc = page.locator(`[data-crawl="${i}"]`);
+    // 13 Nov 2026: the option already chosen in a single-choice group (a segmented control, radio group or tab list) is a legitimate no-op
+    // when pressed again; it is recorded as "already chosen", never as an effect. A toggle on its own (not in a group) must still change.
+    const chosen = await loc.evaluate((el) => { const on = ['aria-pressed', 'aria-checked', 'aria-selected'].some((a) => el.getAttribute(a) === 'true') || el.hasAttribute('aria-current') || (el.type === 'radio' && el.checked);
+      const g = el.closest('[role=group],[role=radiogroup],[role=tablist],[role=toolbar],fieldset,nav[aria-label]'); return !!on && !!g && g.querySelectorAll('button,[role=radio],[role=tab],input[type=radio]').length >= 2; }).catch(() => false);
     if (!(await loc.count()) || !(await loc.isVisible().catch(() => false))) continue;
     const info = await loc.evaluate((el) => ({ tag: el.tagName.toLowerCase(), type: el.getAttribute('type') || el.getAttribute('role') || '', name: (el.getAttribute('aria-label') || el.textContent || el.getAttribute('title') || el.getAttribute('name') || '').trim().replace(/\s+/g, ' ').slice(0, 80) }));
     // destructive-looking controls are still pressed: the page was opened fresh and is reopened afterwards
     await page.evaluate(() => { window.__mut = 0; window.__mo?.disconnect(); window.__mo = new MutationObserver((r) => { window.__mut += r.length; }); window.__mo.observe(document.documentElement, { subtree: true, childList: true, attributes: true, characterData: true }); });
+    const printed0 = await page.evaluate(() => window.__printed || 0);
     const popup = page.context().waitForEvent('page', { timeout: 600 }).then(() => true).catch(() => false);
     const dl = page.waitForEvent('download', { timeout: 600 }).then(() => true).catch(() => false);
+    let value0 = null;
     try {
+      if (info.tag === 'select') value0 = await loc.inputValue();
       if (info.tag === 'select') { const vals = await loc.evaluate((s) => [...s.options].map((o) => o.value)); const cur = await loc.inputValue(); const next = vals.find((v) => v !== cur); if (next != null) await loc.selectOption(next, { timeout: 1500 }); }
       else await loc.click({ timeout: 1500 });
     } catch (e) { evidence.push({ page: p, ...info, effect: 'could not press', why: String(e.message).split('\n')[0] }); continue; }
     await page.waitForTimeout(250);
     const [opened, downloaded] = await Promise.all([popup, dl]);
-    const after = await page.evaluate(() => ({ hash: location.hash, mut: window.__mut || 0, dialog: !!document.activeElement?.closest('dialog,[role=dialog],[role=alertdialog]') })).catch(() => ({ hash: '?', mut: 1, dialog: false }));
-    const effect = after.hash !== before ? 'navigated' : opened ? 'opened a tab' : downloaded ? 'downloaded' : after.dialog ? 'opened a dialog' : after.mut > 0 ? 'changed the page' : 'nothing';
+    const after = await page.evaluate(() => ({ hash: location.hash, mut: window.__mut || 0, printed: window.__printed || 0, dialog: !!document.activeElement?.closest('dialog,[role=dialog],[role=alertdialog]') })).catch(() => ({ hash: '?', mut: 1, dialog: false }));
+    const effect = after.hash !== before ? 'navigated' : opened ? 'opened a tab' : downloaded ? 'downloaded' : after.dialog ? 'opened a dialog' : after.printed > printed0 ? 'opened the print dialog' : after.mut > 0 ? 'changed the page' : chosen ? 'already chosen' : (info.tag === 'select' && value0 !== null && (await loc.inputValue().catch(() => value0)) !== value0) ? 'chose a value' : 'nothing';   // 13 Nov 2026: a form field that now holds the new value has done its job
     evidence.push({ page: p, ...info, effect }); pressed += 1;
     if (effect === 'nothing') dead.push(`${p} › ${info.tag}${info.type ? `[${info.type}]` : ''} “${info.name}”`);
     if (after.hash !== before) { await page.goto(page.url().split('#')[0] + `#${p}`); await page.waitForSelector('main h1', { timeout: 8000 }).catch(() => undefined); await page.waitForTimeout(200);
@@ -55,8 +62,11 @@ for (const p of PAGES) {
         const vis = (el) => { const r = el.getBoundingClientRect(); const cs = getComputedStyle(el); return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && !el.closest('[hidden],[inert]'); };
         [...document.querySelectorAll(sel)].filter((el) => vis(el) && !el.disabled && el.getAttribute('aria-disabled') !== 'true').slice(0, MAX).forEach((el, j) => el.setAttribute('data-crawl', String(j))); }, MAX); }
   }
-  if (t.errs.length) evidence.push({ page: p, errors: t.errs.slice(0, 3) });
-  ok(`DE-${p}`, `${p}: every control pressed does something (${evidence.filter((e) => e.page === p && e.effect).length} pressed)`, !dead.some((d) => d.startsWith(`${p} ›`)) && !t.errs.length, [...dead.filter((d) => d.startsWith(`${p} ›`)), ...t.errs.slice(0, 2)].join(' | '));
+  // 13 Nov 2026: /hardening has a button that throws on purpose to show the workspace guard catching a drawing failure; that one
+  // announced error is the page working. Any other error still fails the page.
+  const errs = t.errs.filter((e) => !(p === '/hardening' && /demonstration: a drawing failure, caught by the workspace guard/.test(e)));
+  if (errs.length) evidence.push({ page: p, errors: errs.slice(0, 3) });
+  ok(`DE-${p}`, `${p}: every control pressed does something (${evidence.filter((e) => e.page === p && e.effect).length} pressed)`, !dead.some((d) => d.startsWith(`${p} ›`)) && !errs.length, [...dead.filter((d) => d.startsWith(`${p} ›`)), ...errs.slice(0, 2)].join(' | '));
   await t.close();
 }
 const out = path.join(repo, 'tests/evidence'); fs.mkdirSync(out, { recursive: true });

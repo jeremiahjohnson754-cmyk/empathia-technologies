@@ -68,6 +68,8 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
   const partitions = cfg && o.divisible ? o.divisible.sections.slice(1).map((_, i) => (o.dims[0] * (i + 1)) / o.divisible!.sections.length) : [];
   const count = (cats: string[]) => st.positions.filter((x) => cats.includes(x.cat)).length;
   const lensesOpen = lensesFor(role);
+  // V2.5.3's "Show sound in the room" (cover "acoustic"): first reflections from the presenter to the farthest seat, hard walls in red
+  const ac = query.get('ac') === '1' && lens !== 'visitor';
   // Optimize works on the recorded positions (moves, drift), so it opens on the technical overlay; every other lens opens on the furnished room
   const furnishable = v253Drawable(id);
   const viewHome = lens === 'optimize' || !furnishable ? 'tech' : 'room'; const vq = query.get('view');
@@ -85,9 +87,9 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
           </div>
           {!furnishable && <p className="ui-meta lt-viewnote" data-testid="lite-view-note">V2.5.3 drew town halls and control rooms only as its own named rooms, so this one opens on the technical overlay: every position, path and coverage figure is here; the furnished drawing is not.</p>}
           {view === 'room' ? <figure className="stage lt-stage lt-stage--room" data-stage="">
-            <V253RoomStage roomId={id} lens={lens} state={stateKey} layers={layers} overlays={overlays} role={role} label={`${o.name}, furnished, in 3D, ${st.title}. Turn, tilt and zoom with the buttons, the arrow keys or a drag; each piece of equipment is a button that opens its card.`}
+            <V253RoomStage roomId={id} lens={lens} state={stateKey} layers={layers} overlays={overlays} acoustic={ac} role={role} label={`${o.name}, furnished, in 3D, ${st.title}. Turn, tilt and zoom with the buttons, the arrow keys or a drag; each piece of equipment is a button that opens its card.`}
               sel={furn ? furn.obj.id : v253ObjFor(id, stateKey, lens, sel)} onPick={(pk) => { setFurn(pk && !pk.code ? pk : null); setSel(pk?.code ?? null); }} />
-            <figcaption className="stage__cap"><b>{st.title}.</b> {st.summary} <span className="ui-meta">The room as V2.5.3 drew it for this room type: walls, door, glazing, furniture and equipment, with coverage drawn from its own cameras, microphones and loudspeakers. Modelled, not surveyed. Basis: {st.basis}.</span></figcaption>
+            <figcaption className="stage__cap"><b>{st.title}.</b> {st.summary} <span className="ui-meta">The room as V2.5.3 drew it for this room type: walls, door, glazing, furniture and equipment, with coverage drawn from its own cameras, microphones and loudspeakers. Modelled, not surveyed. Basis: {st.basis}.</span>{ac && <span className="ui-meta lt-acnote" data-testid="lite-acoustic-note"> Sound in the room: a training and engineering model of first reflections, not a certified acoustic simulation.</span>}</figcaption>
           </figure> : <figure className="stage lt-stage" data-stage="">
             <div className="stage__bar"><OrbitBar orbit={orbit} /></div>
             <RoomScene label={`${o.name} in 3D, ${st.title}`} w={o.dims[0]} l={o.dims[1]} h={o.dims[2]} view={orbit.view} positions={positions} connections={r.connections} layers={layers} overlays={overlays} cov={cov}
@@ -110,6 +112,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
             const signal = () => { const n = new URLSearchParams(query); if (sigOn) n.set('ly', [...layers].filter((k) => k !== 'network' && k !== 'control').join(',') || ','); else { n.set('ly', [...new Set([...layers, ...sigKeys])].join(',')); n.set('ov', ','); } setQuery(base, n); };
             return <fieldset className="lt-switches lt-switches--xray" data-testid="lite-xray"><legend>X-ray</legend>
               <button type="button" role="switch" aria-checked={sigOn} className={`lt-switch${sigOn ? ' on' : ''}`} onClick={signal} data-testid="lite-x-signal" title="AV, network and control layers together, overlays off"><span className="lt-switch__name">Signal flow</span><span className="lt-switch__v">{sigOn ? 'on' : 'off'}</span><span className="lt-switch__knob" aria-hidden="true" /></button>
+              {view === 'room' && <button type="button" role="switch" aria-checked={ac} className={`lt-switch${ac ? ' on' : ''}`} onClick={() => upd('ac', ac ? null : '1')} data-testid="lite-x-acoustic" title="First reflections off the walls to the farthest seat: a training and engineering model, not a certified acoustic simulation"><span className="lt-switch__name">Sound in the room</span><span className="lt-switch__v">{ac ? 'shown' : 'hidden'}</span><span className="lt-switch__knob" aria-hidden="true" /></button>}
               <button type="button" role="switch" aria-checked={xm} className={`lt-switch${xm ? ' on' : ''}`} onClick={() => upd('xm', xm ? null : '1')} data-testid="lite-x-meas" title="Modeled figures beside measured ones, never mixed"><span className="lt-switch__name">Measurements</span><span className="lt-switch__v">{xm ? 'shown' : 'hidden'}</span><span className="lt-switch__knob" aria-hidden="true" /></button>
               {allows({ area: 'studio' }, role) && <a className="ui-btn ui-btn--quiet" href={`#/studio/room/${encodeURIComponent(id)}`} data-testid="lite-x-studio">Design a space with this room</a>}
             </fieldset>; })()}

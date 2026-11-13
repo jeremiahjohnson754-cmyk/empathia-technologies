@@ -249,7 +249,7 @@ export function ProgressBar({ value, max = 100, label, tone = 'accent', showValu
 
 // ================================================================================================ segmented control and tabs
 /** A single choice among a few (radio semantics, roving focus, arrows/Home/End). For page sections use Tabs. */
-export function Segmented<T extends string>({ options, value, onChange, label, small }: { options: Array<{ value: T; label: string; icon?: IconName; count?: number }>; value: T; onChange: (v: T) => void; label: string; small?: boolean }) {
+export function Segmented<T extends string>({ options, value, onChange, label, small }: { options: Array<{ value: T; label: string; icon?: IconName; count?: number; disabled?: boolean }>; value: T; onChange: (v: T) => void; label: string; small?: boolean }) {
   const refs = useRef<Array<HTMLButtonElement | null>>([]);
   const key = (e: RKE, i: number) => {
     const n = options.length; let j = -1;
@@ -260,7 +260,7 @@ export function Segmented<T extends string>({ options, value, onChange, label, s
     <div className={cx('kit-seg', small && 'kit-seg--sm')} role="radiogroup" aria-label={label}>
       {options.map((o, i) => (
         <button key={o.value} ref={(el: HTMLButtonElement | null) => { refs.current[i] = el; }} type="button" role="radio" aria-checked={o.value === value} tabIndex={o.value === value ? 0 : -1}
-          className={cx('kit-seg__opt', o.value === value && 'kit-seg__opt--on')} onClick={() => onChange(o.value)} onKeyDown={(e) => key(e, i)}>
+          className={cx('kit-seg__opt', o.value === value && 'kit-seg__opt--on')} disabled={o.disabled && o.value !== value} onClick={() => onChange(o.value)} onKeyDown={(e) => key(e, i)}>
           {o.icon ? <Icon name={o.icon} size={16} /> : null}<span>{o.label}</span>{o.count !== undefined ? <span className="kit-seg__n">{o.count}</span> : null}
         </button>))}
     </div>

@@ -107,6 +107,7 @@
 .shelf__nav { display: inline-flex; align-items: center; gap: 6px; }
 .shelf__btn { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line2); background: var(--panel); color: var(--tx); cursor: pointer; }
 .shelf__btn:hover { border-color: var(--accent); color: var(--accent); }
+.shelf__btn:disabled { opacity: .4; cursor: default; border-color: var(--line2); color: var(--tx); }
 .lnd .shelf__track { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 4px; padding: 4px 4px 10px; margin: var(--sp-3) -4px 0; scrollbar-width: thin; }
 .lnd .shelf__track > li { flex: 0 0 min(78%, 224px); scroll-snap-align: start; display: flex; }
 .lnd .shelf__track .shelf__role { height: 100%; display: grid; grid-template-rows: auto 1fr; gap: 8px; align-content: start; padding: 10px 10px 12px; }

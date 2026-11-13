@@ -51,12 +51,14 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [412, 915, 'phone']]) {
   ok(`LS-${tag}-12b`, 'Shift-drag pans the scene without turning it', pn[0] > 0 && pn[1] > 0 && yp.yaw === d.yaw, JSON.stringify([pn, yp]));
   await svg.focus(); await p.keyboard.press('Shift+ArrowLeft'); const pk = await pan();
   ok(`LS-${tag}-12c`, 'Shift with an arrow key pans too', pk[0] < pn[0], JSON.stringify(pk));
-  const z0 = (await cam()).zoom; await p.mouse.move(bb.x + bb.width * 0.5, bb.y + bb.height * 0.5); await p.mouse.wheel(0, -200); await p.waitForTimeout(100); const z1 = (await cam()).zoom;
-  await p.keyboard.down('Control'); await p.mouse.wheel(0, -200); await p.keyboard.up('Control'); await p.waitForTimeout(100); const z2 = (await cam()).zoom;
+  // the plain wheel scrolls the page, so the stage is measured again before each pointer action (13 Nov 2026)
+  const fresh = async () => { await svg.scrollIntoViewIfNeeded(); return svg.boundingBox(); };
+  let fb = await fresh(); const z0 = (await cam()).zoom; await p.mouse.move(fb.x + fb.width * 0.5, fb.y + fb.height * 0.5); await p.mouse.wheel(0, -200); await p.waitForTimeout(100); const z1 = (await cam()).zoom;
+  fb = await fresh(); await p.mouse.move(fb.x + fb.width * 0.5, fb.y + fb.height * 0.5); await p.keyboard.down('Control'); await p.mouse.wheel(0, -200); await p.keyboard.up('Control'); await p.waitForTimeout(100); const z2 = (await cam()).zoom;
   ok(`LS-${tag}-12d`, 'the plain wheel does not zoom (the page scrolls); Ctrl with the wheel zooms', z1 === z0 && z2 > z1, JSON.stringify([z0, z1, z2]));
   await p.locator('[data-testid=lite-building-3d]').getByRole('button', { name: 'Fit to the view' }).click(); const ft = await cam(); const pf = await pan();
   ok(`LS-${tag}-12e`, '“Fit to the view” brings the whole scene back (zoom 1, no pan) and keeps the angle', ft.zoom === 1 && pf[0] === 0 && pf[1] === 0 && ft.yaw === yp.yaw, JSON.stringify([ft, pf]));
-  await p.mouse.dblclick(bb.x + bb.width * 0.15, bb.y + bb.height * 0.85); await p.waitForTimeout(100); const rs = await cam();
+  fb = await fresh(); await p.mouse.dblclick(fb.x + fb.width * 0.04, fb.y + fb.height * 0.04); await p.waitForTimeout(100); const rs = await cam();   // an empty corner, not a floor (a floor is a link)
   ok(`LS-${tag}-12f`, 'a double click resets the view (V2.5.3)', rs.yaw === c0.yaw && rs.pitch === c0.pitch && rs.zoom === c0.zoom && (await at(p)) === '#/lite/b/ATL', JSON.stringify(rs));
   // deep link and reload
   await p.goto(p.url().split('#')[0] + '#/lite/b/MER/2'); await wait(p, '[data-testid=lite-floor-3d]'); await p.reload(); await wait(p, '[data-testid=lite-floor-3d]');
@@ -97,6 +99,13 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [412, 915, 'phone']]) {
   ok(`LS-${tag}-R6`, 'each piece of equipment is a named button; tapping a camera opens its card beside the room, and the camera is outlined', camN >= 1 && /Position/.test(dev) && /Identity/.test(dev) && (await st.getAttribute('data-sel')) !== '' && (await p.locator('[data-testid=lite-card]').count()) === 1, `${camN} ${dev.slice(0, 80)}`);
   const table = st.locator('.l3-hitbtn[aria-label^="Table"]').first(); if (await table.count()) { await table.click(); await p.waitForTimeout(200); }
   ok(`LS-${tag}-R7`, 'tapping the table shows what it is, its size and where it stands, from the room type’s layout (modelled)', /Table/.test(await p.getByTestId('lite-furn-card').innerText().catch(() => '')) && /× /.test(await p.getByTestId('lite-device').innerText()));
+  // V2.5.3's "Show sound in the room": first reflections drawn in the furnished room, labelled as a model (13 Nov 2026)
+  const l0 = await st.locator('svg.l3-svg polyline').count(); await p.getByTestId('lite-x-acoustic').click(); await p.waitForTimeout(200); const l1 = await st.locator('svg.l3-svg polyline').count();
+  ok(`LS-${tag}-R7b`, '“Sound in the room” draws first reflections to the farthest seat and says it is a training and engineering model, not a certified simulation', l1 > l0 && /not a certified acoustic simulation/.test(await p.getByTestId('lite-acoustic-note').innerText()) && /ac=1/.test(await p.evaluate(() => location.hash)), `${l0} → ${l1}`);
+  await p.getByTestId('lite-x-acoustic').click(); await p.waitForTimeout(100);
+  // a button eases the camera there (V2.5.3 l3ViewTo); the scene marks itself moving until it arrives
+  await st.getByRole('button', { name: 'Turn left' }).click(); const mv = await st.locator('svg.l3-svg[data-moving]').count(); await p.waitForTimeout(400); const mv2 = await st.locator('svg.l3-svg[data-moving]').count();
+  ok(`LS-${tag}-R7c`, 'a turn by the button is eased and then settles', mv === 1 && mv2 === 0, `${mv} ${mv2}`);
   await p.getByTestId('lite-view-tech').click(); await p.waitForSelector('[data-testid=lite-3d]');
   ok(`LS-${tag}-R8`, '“Technical overlay” swaps to the positions-and-signal drawing, and the address keeps it (view=tech)', /view=tech/.test(await p.evaluate(() => location.hash)) && (await p.locator('[data-testid=lite-room-3d]').count()) === 0);
   // the view is a setting of the page, like the overlays: it is kept in the address (a reload keeps it) without adding a history step
@@ -112,5 +121,23 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [412, 915, 'phone']]) {
   await t.close(); }
 { const t = await open('#/lite/room/R-ATL-4-218', { role: 'visitor', sw: false }); const p = t.page; await p.waitForSelector('[data-testid=lite-room-3d]');
   ok('LS-R12', 'a visitor sees the furnished room, with the way in, and no object buttons (V2.5.3: a visitor opens no cards)', (await p.locator('[data-testid=lite-room-3d] .l3-hitbtn').count()) === 0 && Number(await p.getByTestId('lite-room-3d').getAttribute('data-objects')) > 0 && !t.errs.length);
+  await t.close(); }
+// 50/10 I: the flagship room journey across products, as a person walks it. The room and device ids must survive every hop and Back.
+{ const t = await open('#/lite/room/R-ATL-4-218?mode=engineer', { role: 'architect', sw: false }); const p = t.page; p.setDefaultTimeout(10000); const st = p.locator('[data-testid=lite-room-3d]'); await st.waitFor();
+  const camBtn = st.locator('.l3-hitbtn[aria-label^="Cam"], .l3-hitbtn[aria-label*="camera" i]').first(); await camBtn.click(); await p.waitForTimeout(200);
+  const code = (await p.locator('[data-testid=lite-device] dd.mono').first().innerText()).trim();
+  ok('LS-J1', '4.218 in Lite: tapping a camera in the furnished room names its position', /^[A-Z]-\d{4}$/.test(code), code);
+  await p.getByRole('link', { name: /Open in the technical room view/ }).click(); await p.waitForSelector('[data-testid=room-view]');
+  const h1 = await p.evaluate(() => location.hash); const panel = await p.getByTestId('device-panel').innerText();
+  ok('LS-J2', 'the technical room view opens on the same room with the same device selected', h1 === `#/campus/ATL/4/R-ATL-4-218?device=${encodeURIComponent(code)}` && (await p.getByTestId('room-view').getAttribute('data-room')) === 'R-ATL-4-218' && panel.includes(code), `${h1} ${panel.slice(0, 80)}`);
+  await p.goBack(); await st.waitFor();
+  ok('LS-J3', 'Back returns to 4.218 in Lite, furnished', (await p.evaluate(() => location.hash)).startsWith('#/lite/room/R-ATL-4-218') && (await p.getByTestId('lite-room').getAttribute('data-room')) === 'R-ATL-4-218');
+  await p.getByRole('link', { name: 'Search Party from this room' }).click(); await p.waitForFunction(() => location.hash.startsWith('#/search')); await p.waitForTimeout(400);
+  ok('LS-J4', 'Search Party opens focused on the same room', (await p.evaluate(() => location.hash)) === '#/search?focus=Room:R-ATL-4-218' && /4\.218/.test(await p.locator('main').innerText()));
+  await p.goBack(); await st.waitFor();
+  await p.getByRole('link', { name: 'find the way' }).click(); await p.waitForFunction(() => location.hash.startsWith('#/lite/way')); await p.waitForTimeout(300);
+  ok('LS-J5', 'Wayfinding opens with 4.218 as the destination', (await p.evaluate(() => location.hash)) === '#/lite/way?to=R-ATL-4-218' && /4\.218/.test(await p.locator('main').innerText()));
+  await p.goBack(); await st.waitFor();
+  ok('LS-J6', 'back in Lite, still 4.218; no console error and nothing requested off the page on the whole journey', (await p.getByTestId('lite-room').getAttribute('data-room')) === 'R-ATL-4-218' && !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
   await t.close(); }
 await done();

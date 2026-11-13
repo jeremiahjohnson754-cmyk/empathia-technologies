@@ -192,3 +192,4 @@
   .kit-dot__ring, .kit-spark__line, .kit-ring__arc, .kit-donut__seg { stroke: CanvasText; }
   .kit-legend__sw { background: CanvasText; }
 }
+.kit-seg__opt:disabled { opacity: .5; cursor: default; }

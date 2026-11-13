@@ -74,7 +74,9 @@ export default function AskPage({ role, query }: PageProps) {
   const mine = QUESTIONS.filter((q) => mayAsk(q, role));
   const result = useMemo(() => (asked ? match(asked, role) : null), [asked, role]);
   const ans = result ? result.q.answer(core, result.room, role, asked) : null;
-  const submit = (e: { preventDefault(): void }) => { e.preventDefault(); setAsked(text.trim()); };
+  // 90-2: an empty question says what to do instead of doing nothing
+  const [nudge, setNudge] = useState(false);
+  const submit = (e: { preventDefault(): void }) => { e.preventDefault(); if (!text.trim()) { setNudge(true); document.getElementById('pa-ask-q')?.focus(); return; } setNudge(false); setAsked(text.trim()); };
   const groups = ['Rooms', 'The estate', 'Design', 'The workplace'] as const;
   return (
     <div className="pa" data-native="" data-testid="parity-ask">
@@ -85,6 +87,7 @@ export default function AskPage({ role, query }: PageProps) {
         <input id="pa-ask-q" value={text} maxLength={160} onChange={(e) => setText(e.target.value)} placeholder={mine[2]?.text || 'Ask about a room'} autoComplete="off" />
         <button className="ui-btn ui-btn--primary" type="submit"><Icon name="search" size={16} /> Ask</button>
       </form>
+      {nudge && <p className="ui-meta ask-nudge" role="status" data-testid="ask-nudge">Type a question first.</p>}
       <div aria-live="polite" data-testid="ask-answer">
         {/* --- knowledge hook (agent/knowledge-fabric), 2 of 2: a question Core has no prepared answer for is asked of the Knowledge Ledger, which answers from a source this reader may read, with its citation, or abstains (knowledge/ledger.ts › answerFor) */}
         {asked && !(ans && result) ? <KnowledgeAnswer q={asked} role={role} /> : null}

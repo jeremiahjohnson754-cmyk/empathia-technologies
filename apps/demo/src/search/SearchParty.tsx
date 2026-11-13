@@ -61,7 +61,8 @@ export function SearchPartyDemo({ hash, role }: { hash: string; role?: RoleKey }
   const layout = useMemo(() => radialLayout(nb, 900, 560, 150), [nb]);
   const pos = useMemo(() => new Map(layout.map((p) => [nodeKey(p.node), p])), [layout]);
   const imp = useMemo(() => (focus ? impact(est.graph, focus, ['FEEDS', 'CONNECTS_TO', 'PLANS_DEVICE', 'HAS_DEVICE', 'UPLINKS_TO', 'POWERED_BY', 'CONTROLS']) : []), [est, focus]);
-  const askNow = (text: string) => { if (!text.trim()) return; setQuestion(text); setAnswer(ask({ graph: est.graph, nodes: byKey, facts: {} }, text, focus)); };
+  const [nudge, setNudge] = useState(false);   // 90-2: an empty question says what to do instead of doing nothing
+  const askNow = (text: string) => { if (!text.trim()) { setNudge(true); return; } setNudge(false); setQuestion(text); setAnswer(ask({ graph: est.graph, nodes: byKey, facts: {} }, text, focus)); };
   const label = (n: NodeRef) => byKey.get(nodeKey(n))?.label || n.id;
   const selected = sel ? byKey.get(sel) : null;
   const tab = tabOf(hash);
@@ -120,7 +121,7 @@ export function SearchPartyDemo({ hash, role }: { hash: string; role?: RoleKey }
             </div>)}
           <div className="sp__intent"><h2>Ask a relationship question</h2><p className="ui-muted">{focus ? <>About <b>{label(focus)}</b>. </> : 'Pick a record first. '}Answered from recorded relationships only.</p>
             <div className="sp__chips">{INTENTS.map((i) => <button key={i.id} type="button" className="sp__chip" onClick={() => askNow(i.examples[0] || i.label)}>{i.label}</button>)}</div>
-            <form className="sp__ask" onSubmit={(e) => { e.preventDefault(); askNow(question); }}><input aria-label="Question" value={question} onChange={(e) => setQuestion(e.target.value)} placeholder="If this switch fails, what is affected?" /><Button kind="primary" type="submit">Ask</Button></form>
+            <form className="sp__ask" onSubmit={(e) => { e.preventDefault(); askNow(question); }}><input aria-label="Question" value={question} onChange={(e) => setQuestion(e.target.value)} placeholder="If this switch fails, what is affected?" /><Button kind="primary" type="submit">Ask</Button></form>{nudge && <p className="ui-meta ask-nudge" role="status" data-testid="ask-nudge">Type a question first.</p>}
             {answer && <div className="sp__answer" role="status"><p><Tag tone={TONE[answer.status]}>{answer.status}</Tag> <Tag tone={TONE[answer.confidence] || 'muted'}>{answer.confidence}</Tag> <span className="ui-muted">{answer.intent}</span></p><p className="sp__summary">{answer.summary}</p>{answer.items.length > 0 && <ul className="sp__edges">{answer.items.map((i, n) => <li key={n}><b>{i.label}</b>{i.via && <> <span className="sp__rel">{i.via}</span></>} <span className="ui-meta">{i.provenance}</span></li>)}</ul>}{answer.uncertainty.length > 0 && <Notice tone="warn"><b>What this answer cannot claim.</b><ul className="sp__why">{answer.uncertainty.map((u) => <li key={u}>{u}</li>)}</ul></Notice>}</div>}
           </div>
         </div>

@@ -1,6 +1,6 @@
 # Lite spatial restoration: matrix against the founder's 50/10 directive
 
-**State on 13 November 2026, commit after `604714f`: in progress. Lite parity is NOT achieved.** The open items are listed in §4.
+**State on 13 November 2026: in progress. Lite parity is NOT achieved.** The open items are listed in §4.
 Each line of the directive is marked with one of these:
 
 - **RESTORED**: present and covered by a named test.
@@ -24,11 +24,11 @@ by `scripts/legacy/vendor-v253-room.mjs`. They run on this campus's room records
 | 4 | Atlas as V2.5.3 had it | **PARTIAL** | V2.5.3's Atlas holds 31 rooms; this campus holds 20. The 11 missing rooms are not restored. |
 | 5 | 2D plan, 3D, isometric, technical overlay | **RESTORED** | Plan from above on every scene; 3D orbit; the default oblique view; "Technical overlay" on the room (LS-R8, R9). The building page also keeps its 2D plan card. |
 | 5 | Camera: orbit, zoom, pan, reset, plan, fit, touch, keyboard | **RESTORED** | Buttons, arrows, drag, Shift-drag pan, Shift+arrow pan, Ctrl+wheel, Fit, double-click reset (LS-10…12f). On touch, pinch zooms, two fingers pan, and a vertical swipe scrolls the page, as in V2.5.3. |
-| 5 | Camera transitions (V2.5.3 eased its moves, `l3ViewTo`) | **NOT RESTORED** | Moves are instant |
+| 5 | Camera transitions (V2.5.3 eased its moves, `l3ViewTo`) | **RESTORED** | Buttons and keys ease the camera over about a quarter of a second; drags stay immediate; nothing moves when reduced motion is asked for (LS-R7c) |
 | 6 | Realism without losing accuracy | **RESTORED** as V2.5.3 drew it | V2.5.3's fill patterns (wall, carpet, wood, fabric, screen glass), shading by face and lit displays. Every figure is labelled modelled. The rear-row speech-intelligibility label is left out, because V2.5.3's acoustic engine is not carried over and the figure would read 0.00 (unit test). |
 | 7 | Six lenses and the advanced modes | **RESTORED** | `demo-lite` (lenses, D44 visitor, M1 five modes) |
 | 8 | Four states | **RESTORED** | Each state is drawn from the records (LS-R4, R4b, unit). An open issue marks its device in Current. Proposed draws what the proposal adds, marked as added. Designed and Commissioned match where the records do not differ, as in V2.5.3. |
-| 9 | Eight layers and coverage | **PARTIAL** | All eight layers are switches. In the furnished room V2.5.3 draws AV, network, power and control paths for the technical lenses. Camera, microphone, loudspeaker and sightline coverage are drawn by V2.5.3 (LS-R3). V2.5.3's acoustic reflections have no switch yet. Accessibility and infrastructure fit appear in the technical overlay only. |
+| 9 | Eight layers and coverage | **PARTIAL** | All eight layers are switches. In the furnished room V2.5.3 draws AV, network, power and control paths for the technical lenses. Camera, microphone, loudspeaker and sightline coverage are drawn by V2.5.3 (LS-R3). "Sound in the room" draws V2.5.3's first reflections and labels them a training and engineering model, not a certified simulation (LS-R7b). V2.5.3's animated sound field is not carried. Accessibility and infrastructure fit appear in the technical overlay only. |
 | 10 | Object inspection | **RESTORED** | Every piece of equipment is a named button that opens its device card; furniture shows its size and place (LS-R6, R7; `demo-lite` X6). |
 | 10 | Room tabs (Overview, Design, Calculations, Systems) | **NOT RESTORED** | The content exists in panels: Measurements, Signal flow, lens panel. V2.5.3's tabbed layout does not. |
 | 10 | Add palette (display, camera, ceiling array, table microphone; undo, redo, fit the room) | **NOT RESTORED** | Optimize moves items in 25 cm steps and changes the seat count; it adds nothing |
@@ -45,13 +45,13 @@ by `scripts/legacy/vendor-v253-room.mjs`. They run on this campus's room records
 |---|---|---|---|
 | A | Navigation (down, up, Back and Forward, reload, deep link) | RESTORED for the Enterprise campus. World → campus is NOT RESTORED for the other three worlds | LS-01…13, LS-all, R8–R9; `demo-lite` LT-33 |
 | B | Physical rendering, selection, nothing dropped across lenses and states | RESTORED | LS-R1, R4, R6, R7; unit `lite-v253-room`: 14,592 scenes across 76 rooms × 4 states × 6 lenses × 2 layer sets × 4 sides, all finite and non-empty |
-| C | Orbit, zoom, pan, top-down, reset, selection, pinch, touch drag, fit | RESTORED, except camera transitions | LS-10…12f, R5, R6. Touch is not driven by a real touch device: NOT RUN |
-| D | Layers and modelled or verified labels | PARTIAL | `demo-lite` LT-11, 12, X1–X3, LS-R3; acoustic switch missing |
+| C | Orbit, zoom, pan, top-down, reset, selection, pinch, touch drag, fit, transitions | RESTORED | LS-10…12f, R5, R6, R7c. Touch is not driven by a real touch device: NOT RUN |
+| D | Layers and modelled or verified labels | RESTORED in the furnished room for coverage and sound; layers as switches | `demo-lite` LT-11, 12, X1–X3, LS-R3, R7b |
 | E | Four states with their differences | RESTORED | LS-R4, R4b; unit |
 | F | Four worlds | **NOT RESTORED** | — |
 | G | Roles, including negative authorisation | RESTORED for Lite | `demo-lite` D44 (a visitor asking for the engineer lens is refused); LS-R12 (a visitor opens no cards); unit |
 | H | Desktop, tablet and phone; light and dark; slow network; reduced motion; direct URLs | PARTIAL | Desktop and phone in `demo-lite-spatial`; all three viewports and both schemes in `demo-lite`. The slow-network and reduced-motion runs for the new stage are NOT RUN |
-| I | Room and device ids stable across products; the 4.218 cross-product journey | PARTIAL | `?device=` selects in both views. The full 4.218 journey across Lite → Search Party → ServiceHands → Pro as one test is NOT RUN |
+| I | Room and device ids stable across products; the 4.218 cross-product journey | RESTORED for Lite → technical room view → Search Party → wayfinding and Back | LS-J1…J6: a camera tapped in the furnished 4.218 opens the technical room view with the same device selected; Search Party opens on the same room; wayfinding takes it as the destination; each Back returns to 4.218. Opening a ServiceHands case or a Pro work order from the room is not in this journey |
 | J | Full regression on the exact release commit | **NOT RUN** | Required before staging (founder, 16:38) |
 
 ## 3. Release-blocking defects (§18)
@@ -62,11 +62,11 @@ by `scripts/legacy/vendor-v253-room.mjs`. They run on this campus's room records
 | Known furnished rooms appearing empty | Not present: 76 drawn, and the 14 V2.5.3 never drew say so |
 | Rooms rendering incorrect generic layouts | Not present: hero rooms keep their own layouts; the rest use V2.5.3's layout for their type |
 | 2D or 3D, camera controls, object interaction, states | Working: tests above |
-| Required overlays silently absent | **Acoustic reflections have no switch.** Recorded here, so not silent; still a gap |
+| Required overlays silently absent | Not present: "Sound in the room" restored 13 Nov |
 | Four worlds falsely advertised as spatially complete | Not present: no such claim |
 | A role exposing restricted infrastructure data | Not present: D44, R12 |
 | Demo and tenant state mixed | Not present: `demo-training-isolation` (12 checks) |
-| Severe mobile clipping | Fixed 13 Nov: seven controls did not fit one column on a phone; they now sit in two columns of 44 px targets |
+| Severe mobile clipping | Fixed 13 Nov. Seven controls did not fit one column on a phone, and a column covered the far wall's cameras. On a phone the controls now sit in a row under the scene, each a 44 px target (LS-phone-R6) |
 | Routes changing room identity | Not present: deep-link tests |
 
 ## 4. What stands between this and Lite parity
@@ -75,8 +75,8 @@ by `scripts/legacy/vendor-v253-room.mjs`. They run on this campus's room records
 2. The 11 Atlas rooms V2.5.3 had and this campus does not.
 3. Furnished drawings for the 14 town halls and control rooms. This needs a founder choice: a layout per room, or V2.5.3's layouts scaled to them.
 4. Room tabs, the Add palette with undo and redo, the room passport.
-5. The acoustic reflections switch; eased camera transitions.
-6. A real-touch run, slow-network and reduced-motion runs, performance profiling (NOT RUN), and the 4.218 cross-product journey test.
+5. V2.5.3's animated sound field (the static first reflections are back).
+6. A real-touch run, slow-network and reduced-motion runs, and performance profiling (all NOT RUN).
 7. The full regression on the release commit (J).
 
 ## 5. Gallery
@@ -89,5 +89,5 @@ The images contain V2.5.3's screens, so they are kept with the private baseline:
 
 The furniture, equipment and arrangement match room for room. The differences:
 - Today's page puts the lens and view switches above the room.
-- The controls sit in two columns on a phone.
+- On a phone the controls sit in a row under the scene, not over it.
 - V2.5.3's in-stage "Layers" button and compass are not carried. The layer switches sit beside or below the stage.

@@ -24,7 +24,9 @@ const WORD: Record<Status, { label: string; tone: 'ok' | 'info' | 'bad' | 'warn'
 export default function HarmonyPage({ role, query }: PageProps) {
   const { w, apply } = useWorkspace(); const [text, setText] = useState(query.get('q') || ''); const [talk, setTalk] = useState<Reply[]>([]); const first = useRef(false); const liveRef = useRef<HTMLDivElement>(null);
   const room = roomById(REFERENCE_ROOM_ID)!; const tools = useMemo(() => toolsFor(role), [role]); const examples = useMemo(() => examplesFor(role, room), [role, room]);
+  const [nudge, setNudge] = useState(false);   // 90-2: an empty question says what to do instead of doing nothing
   const put = (q: string) => {
+    if (!q.trim()) { setNudge(true); document.getElementById('hm-q')?.focus(); return; } setNudge(false);
     const r = ask(q, role, Date.now(), w); if (!r.asked) return;
     setTalk((t) => [r, ...t].slice(0, 12)); setText('');
     apply((x) => { log(x, ROLES[role].label, r.status === 'refused' ? 'harmony.refused' : 'harmony.asked', r.tool ? `harmony:${r.tool}` : 'harmony', `${r.status}: “${r.asked.slice(0, 120)}”${r.authority ? ` · stands on ${r.authority.stands}` : ''} · changed nothing`, r.status === 'refused' ? 'DENIED' : 'ALLOWED'); return { ok: true }; });
@@ -43,6 +45,7 @@ export default function HarmonyPage({ role, query }: PageProps) {
         <div className="ui-field"><label htmlFor="hm-q">Ask Harmony</label><input id="hm-q" type="text" maxLength={300} value={text} onChange={(e) => setText(e.target.value)} autoComplete="off" placeholder={examples[0]} data-testid="harmony-q" /></div>
         <button type="submit" className="ui-btn ui-btn--primary" data-testid="harmony-go">Ask</button>
       </form>
+      {nudge && <p className="ui-meta ask-nudge" role="status" data-testid="ask-nudge">Type a question first.</p>}
       <div className="hm-try" data-testid="harmony-examples"><span id="hm-try-l">Try</span><ul aria-labelledby="hm-try-l">{examples.map((x) => <li key={x}><button type="button" className="ui-btn ui-btn--sm" onClick={() => put(x)}>{x}</button></li>)}</ul></div>
 
       <div className="hm-cols">

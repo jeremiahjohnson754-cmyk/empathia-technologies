@@ -68,7 +68,7 @@ export default function IngestPage({ role, query, can }: PageProps) {
     if (next) { moved.current = true; setStepRaw(next); } else requestAnimationFrame(() => fbRef.current?.focus());
     return true;
   };
-  const go = (to: Step) => { moved.current = true; if (STEPS.indexOf(to) > STEPS.indexOf(frontier)) { setRefused(`${STEP_WORD[frontier][0]} comes first.`); setSaid(''); setStepRaw(frontier); return; } setRefused(null); setSaid(''); setStepRaw(to); };
+  const go = (to: Step) => { moved.current = true; if (STEPS.indexOf(to) > STEPS.indexOf(frontier)) { setRefused(`${STEP_WORD[to][0]} is not open yet. ${STEP_WORD[frontier][0]} comes first.`); setSaid(''); setStepRaw(frontier); return; } setRefused(null); setSaid(''); setStepRaw(to); };
   const nextOf = (x: Step) => STEPS[STEPS.indexOf(x) + 1] || 'surface';
 
   const items = Object.values(ix.items).sort((a, b) => a.path.localeCompare(b.path)); const docs = Object.values(s.source.docs).sort((a, b) => a.path.localeCompare(b.path));
