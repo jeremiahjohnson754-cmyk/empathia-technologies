@@ -20,7 +20,10 @@ export function RoomTabBar({ tab, onTab }: { tab: RoomTab; onTab: (t: RoomTab) =
   const key = (e: RKE, i: number) => { const n = ROOM_TABS.length; const j = e.key === 'ArrowRight' ? (i + 1) % n : e.key === 'ArrowLeft' ? (i + n - 1) % n : e.key === 'Home' ? 0 : e.key === 'End' ? n - 1 : -1;
     if (j < 0) return; e.preventDefault(); focusNext = ROOM_TABS[j]![0]; onTab(ROOM_TABS[j]![0]); };
   // the address changes with the tab and the page may draw again: the tab moved to keeps the focus
-  useEffect(() => { if (focusNext === tab) { focusNext = null; document.getElementById(`lite-rtab-${tab}`)?.focus(); } }, [tab]);
+  useEffect(() => { const el = document.getElementById(`lite-rtab-${tab}`); if (!el) return;
+    // the chosen tab is scrolled into the row's view (a phone shows three or four of the eight), without moving the page
+    const row = el.parentElement!; const l = el.offsetLeft - row.offsetLeft; if (l < row.scrollLeft || l + el.offsetWidth > row.scrollLeft + row.clientWidth) row.scrollLeft = Math.max(0, l - 24);
+    if (focusNext === tab) { focusNext = null; el.focus({ preventScroll: true }); } }, [tab]);
   return <div className="lt-rtabs" role="tablist" aria-label="About this room" data-testid="lite-rtabs">
     {ROOM_TABS.map(([k, l], i) => <button key={k} type="button" role="tab" id={`lite-rtab-${k}`} aria-selected={tab === k} aria-controls="lite-rtab-panel" tabIndex={tab === k ? 0 : -1} onKeyDown={(e) => key(e, i)} className={`lt-rtab${tab === k ? ' on' : ''}`} onClick={() => onTab(k)} data-testid={`lite-rtab-${k}`}>{l}</button>)}
   </div>;

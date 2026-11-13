@@ -348,3 +348,4 @@ polygon.l3-go:hover { filter: brightness(1.18); }
 .lt-rlist, .lt-findings { list-style: none; margin: 8px 0; padding: 0; display: grid; gap: 6px; }
 .lt-rlist li, .lt-findings li { min-width: 0; overflow-wrap: anywhere; }
 .lt-sysdev { white-space: nowrap; display: inline-flex; gap: 4px; align-items: center; margin: 2px 8px 2px 0; }
+.lt-rlist .lt-chipbtn, .lt-sysdev .lt-chipbtn { white-space: nowrap; flex: 0 0 auto; }
