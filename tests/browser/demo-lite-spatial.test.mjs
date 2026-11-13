@@ -58,8 +58,10 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [412, 915, 'phone']]) {
   ok(`LS-${tag}-12d`, 'the plain wheel does not zoom (the page scrolls); Ctrl with the wheel zooms', z1 === z0 && z2 > z1, JSON.stringify([z0, z1, z2]));
   await p.locator('[data-testid=lite-building-3d]').getByRole('button', { name: 'Fit to the view' }).click(); const ft = await cam(); const pf = await pan();
   ok(`LS-${tag}-12e`, '“Fit to the view” brings the whole scene back (zoom 1, no pan) and keeps the angle', ft.zoom === 1 && pf[0] === 0 && pf[1] === 0 && ft.yaw === yp.yaw, JSON.stringify([ft, pf]));
-  fb = await fresh(); await p.mouse.dblclick(fb.x + fb.width * 0.04, fb.y + fb.height * 0.04); await p.waitForTimeout(100); const rs = await cam();   // an empty corner, not a floor (a floor is a link)
-  ok(`LS-${tag}-12f`, 'a double click resets the view (V2.5.3)', rs.yaw === c0.yaw && rs.pitch === c0.pitch && rs.zoom === c0.zoom && (await at(p)) === '#/lite/b/ATL', JSON.stringify(rs));
+  fb = await fresh();   // 13 Nov 2026: the empty spot is found, not assumed: with 140 rooms Atlas's floors reach the top-left corner in plan view on a phone
+  const empty = await p.evaluate(([x0, y0, w0, h0]) => { for (const [fx, fy] of [[0.04, 0.04], [0.96, 0.04], [0.04, 0.96], [0.96, 0.96], [0.5, 0.03], [0.5, 0.97]]) { const x = x0 + w0 * fx, y = y0 + h0 * fy; const e = document.elementFromPoint(x, y); if (e && e.closest('.l3-svg') && !e.closest('a, button, .l3-hitbtn, [role=button], [role=link]')) return [x, y]; } return null; }, [fb.x, fb.y, fb.width, fb.height]);
+  if (empty) await p.mouse.dblclick(empty[0], empty[1]); await p.waitForTimeout(100); const rs = await cam();   // an empty spot, not a floor (a floor is a link)
+  ok(`LS-${tag}-12f`, 'a double click resets the view (V2.5.3)', !!empty && rs.yaw === c0.yaw && rs.pitch === c0.pitch && rs.zoom === c0.zoom && (await at(p)) === '#/lite/b/ATL', JSON.stringify(rs));
   // deep link and reload
   await p.goto(p.url().split('#')[0] + '#/lite/b/MER/2'); await wait(p, '[data-testid=lite-floor-3d]'); await p.reload(); await wait(p, '[data-testid=lite-floor-3d]');
   ok(`LS-${tag}-13`, 'a floor’s address opens it directly and survives a reload', (await at(p)) === '#/lite/b/MER/2');

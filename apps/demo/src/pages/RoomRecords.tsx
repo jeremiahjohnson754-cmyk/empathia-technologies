@@ -6,8 +6,13 @@
  * requirement to evidence and the seventeen dimensions are V2.5.3's compositions computed here, never typed in. A "simulated run" is
  * refused by the rules the page shows: nothing here measures a room or contacts a device.
  */
+import { V253RoomStage, type V253Pick } from '../lite/V253Room.js';
+import type { V253State } from '../lite/v253/v253room.js';
+import { roomState, type Lens } from '../lite/model.js';
+import { RoomJumps, opensFor } from '../rooms/RoomJumps.js';
+import type { RoleKey } from '../registry.types.js';
 import { useState, type ReactNode } from 'react';
-import { PageHero, StatTile, Card, Chip, List, ListRow, Tag, Notice, EmptyState, ProgressBar, Icon, ScoreRing, Donut, type Tone, type Series } from '@empathia/ui';
+import { Segmented, PageHero, StatTile, Card, Chip, List, ListRow, Tag, Notice, EmptyState, ProgressBar, Icon, ScoreRing, Donut, type Tone, type Series } from '@empathia/ui';
 import { allRecords, roomRecord, openIssues, type RoomRecord } from '../campus/design.js';
 import { shortName, fullName, roomHref, buildingByKey } from '../campus/canon.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
@@ -41,13 +46,13 @@ function blockers(r: RoomRecord) {
 function Head({ r, kind, perspective, tab }: { r: RoomRecord; kind: 'cx' | 'as'; perspective: string; tab: ReactNode }) {
   const { w } = useWorkspace(); const b = buildingByKey(r.outline.building); const cur = r.baselines.find((x) => x.state === 'CURRENT'); const pend = r.baselines.find((x) => x.state === 'PENDING_ACCEPTANCE');
   const st = kind === 'cx' ? cxState(r) : asState(r, w.incidents); const T = kind === 'cx' ? CX[st.state as keyof typeof CX] : AS[st.state as keyof typeof AS];
-  const links: Array<[string, string]> = kind === 'cx' ? [['Assurance', `#/assurance/room/${r.outline.id}`], ['Room', roomHref(r.outline)], ['Replay', `#/replay/${r.outline.id}`], ['Learn', `#/learn/cases/TC-${r.outline.id}`]] : [['Commissioning', `#/commissioning/room/${r.outline.id}`], ['Room', roomHref(r.outline)], ['Replay', `#/replay/${r.outline.id}`], ['Learn', `#/learn/cases/TC-${r.outline.id}`]];
   return <>
     <nav className="ln-crumbs" aria-label="Where you are"><a href={kind === 'cx' ? '#/commissioning' : '#/assurance'}>{kind === 'cx' ? 'Commissioning' : 'Assurance'}</a> › <a href={`#/campus/${r.outline.building}`}>{b?.name}</a> › <b aria-current="page">{shortName(r.outline)}</b></nav>
     <PageHero product="commissioning" icon="shield" compact eyebrow={kind === 'cx' ? 'Commissioning record' : 'Assurance comparison'} title={`${kind === 'cx' ? 'Commissioning' : 'Assurance'}: ${fullName(r.outline)}`}
       lede={<>{r.archetypeName} · seats {r.outline.capacity} · {r.outline.dims.join(' × ')} m ({r.outline.kind === 'reference' ? 'design record' : 'modelled'}). {st.why}. Acting as <b>{personaLabel(personaOf(perspective))}</b>.</>}
       meta={[<Chip key="s" small tone={T.tone as Tone}>{T.label}</Chip>, <Chip key="b" small tone="muted">{cur ? `Baseline v${cur.version} · ${ymd(cur.at)}` : 'No baseline on record'}{pend ? ` · v${pend.version} pending` : ''}</Chip>, <Chip key="r" small tone="muted">Synthetic records</Chip>, <Chip key="m" small tone="warn">Modelled · not measured</Chip>, <Chip key="p" small tone="muted">Prototype · not production monitoring</Chip>]}
-      actions={<nav className="wk-v25nav" aria-label={`${shortName(r.outline)} in`}>{links.filter(([, h]) => openable(perspective, h)).map(([l, h]) => <Chip key={l} href={h} small icon="arrow-right">{l}</Chip>)}</nav>} />
+ />
+    <RoomJumps roomId={r.outline.id} here={kind === 'cx' ? 'commissioning' : 'assurance'} opens={opensFor(perspective as RoleKey)} />
     {tab}
   </>;
 }
@@ -56,8 +61,10 @@ function RoomTabs({ r, kind, current }: { r: RoomRecord; kind: 'cx' | 'as'; curr
   const tabs: Array<[string, string]> = kind === 'cx' ? [['Checks', base], ['Traceability', `${base}/trace`], ['Deficiencies', `${base}/deficiencies`], ['Sign-off', `${base}/signoff`]] : [['Assurance', base], ['Ready check', `${base}/ready`], ['Recommission', `${base}/recommission`], ['History', `${base}/history`]];
   return <nav className="wk-v25nav" aria-label={kind === 'cx' ? 'The commissioning record' : 'The assurance comparison'}>{tabs.map(([l, h]) => <Chip key={h} href={h} small selected={h === current}>{l}</Chip>)}</nav>;
 }
-function NoRoom({ perspective, id, kind }: { perspective: string; id: string; kind: 'cx' | 'as' }) {
-  return <section className="wk" data-testid="room-missing"><PageHero product="commissioning" icon="shield" compact eyebrow={kind === 'cx' ? 'Commissioning' : 'Assurance'} title="No such room on record" lede={`“${id}” is not one of the thirty rooms of this demonstration. Acting as ${personaLabel(personaOf(perspective))}.`} />
+const VIEW_NAME: Array<[RegExp, string]> = [[/\/history\b/, 'baseline history'], [/\/ready\b/, 'ready check'], [/\/recommission\b/, 'recommission'], [/\/trace\b/, 'traceability'], [/\/signoff\b/, 'sign-off'], [/\/deficiencies\b/, 'deficiencies']];
+function NoRoom({ perspective, id, kind, hash = '' }: { perspective: string; id: string; kind: 'cx' | 'as'; hash?: string }) {
+  const what = VIEW_NAME.find(([re]) => re.test(hash))?.[1];
+  return <section className="wk" data-testid="room-missing"><PageHero product="commissioning" icon="shield" compact eyebrow={`${kind === 'cx' ? 'Commissioning' : 'Assurance'}${what ? ` · ${what}` : ''}`} title="No such room on record" lede={`“${id}” is not one of the rooms of this demonstration. Acting as ${personaLabel(personaOf(perspective))}.`} />
     <Card icon="room" title="Rooms with a record"><List label="Rooms">{allRecords().map((r) => <ListRow key={r.outline.id} title={shortName(r.outline)} sub={r.outline.name} href={`#/${kind === 'cx' ? 'commissioning' : 'assurance'}/room/${r.outline.id}`} chevron />)}</List></Card></section>;
 }
 
@@ -79,14 +86,14 @@ const SPINE = (r: RoomRecord, inc: S.Incident[]) => {
 };
 export function CxRoomPage({ perspective, params, hash }: { perspective: string; params: Record<string, string>; hash: string }) {
   const r = roomRecord(params.room || ''); const { w, apply, refusal } = useWorkspace(); const persona = personaOf(perspective);
-  if (!r) return <NoRoom perspective={perspective} id={params.room || ''} kind="cx" />;
+  if (!r) return <NoRoom perspective={perspective} id={params.room || ''} kind="cx" hash={hash} />;
   const view = /\/trace\b/.test(hash) ? 'trace' : /\/signoff\b/.test(hash) ? 'signoff' : /\/deficiencies\b/.test(hash) ? 'def' : 'checks';
   const ph = phaseStats(r); const bl = blockers(r); const rows = rowsOf(r); const inc = w.incidents.filter((i) => i.roomId === r.outline.id);
   const spine = SPINE(r, inc); const base = `#/commissioning/room/${r.outline.id}`;
   const canRun = holds(persona, 'tests.record') || holds(persona, 'tests.verify.all');
   const run = () => apply((x) => { x.events.unshift({ at: new Date().toISOString(), by: persona, type: 'commission.run_refused', aggregate: r.outline.id, detail: `simulated run of ${plural(bl.missing.length, 'check')} refused: this demonstration never measures a room or contacts a device; a check is recorded only with its evidence (${rows.find((t) => !t.result || t.result === 'NOT_TESTED')?.evidence?.join(', ') || 'instrument or field observation'})`, outcome: 'DENIED' }); return S.refused([`A simulated run is refused: nothing here measures a room or contacts a device. ${plural(bl.missing.length, 'check')} stay not run until their evidence is recorded.`]); });
   return (
-    <section className="wk cx" data-native="workspace" data-testid="cx-room">
+    <section className="wk cx" data-native="workspace" data-testid="cx-room" data-room={r.outline.id}>
       <Head r={r} kind="cx" perspective={perspective} tab={<RoomTabs r={r} kind="cx" current={view === 'checks' ? base : view === 'trace' ? `${base}/trace` : view === 'signoff' ? `${base}/signoff` : `${base}/deficiencies`} />} />
       <div className="kit-grid kit-grid--tiles wk-tiles5" data-testid="cx-phases">{ph.map((p) => <StatTile key={p.n} label={`${p.n} · ${p.name}`} value={p.verdict === 'none' ? '—' : p.verdict === 'pass' ? 'Pass' : p.verdict === 'fail' ? 'Fail' : p.verdict === 'notrun' ? 'Not run' : 'Partial'} unit={p.rows.length ? `${p.pass} of ${p.rows.length}` : undefined} tone={p.verdict === 'pass' ? 'ok' : p.verdict === 'fail' ? 'bad' : p.verdict === 'partial' ? 'warn' : 'muted'} icon="shield" hint={p.q} />)}</div>
       {bl.blocked && r.lifecycle === 'COMMISSIONING' ? <Notice tone="bad"><b>Why acceptance is blocked.</b> {[bl.critical.length ? `A critical deficiency is open (${bl.critical.length})` : '', bl.missing.length ? `Required evidence is missing (${bl.missing.length})` : '', bl.must.length ? `A must-have requirement is not met (${bl.must.length})` : ''].filter(Boolean).join(' · ')} — <a href={`${base}/trace`}>trace the requirement</a> · <a href={`${base}/signoff`}>what sign-off needs</a></Notice> : null}
@@ -184,7 +191,7 @@ const DIM_TONE: Record<string, Tone> = { match: 'ok', drift: 'warn', failed: 'ba
 export function AsRoomPage({ perspective, params, hash }: { perspective: string; params: Record<string, string>; hash: string }) {
   const r = roomRecord(params.room || ''); const { w, apply, refusal } = useWorkspace(); const persona = personaOf(perspective);
   const [ran, setRan] = useState(false);
-  if (!r) return <NoRoom perspective={perspective} id={params.room || ''} kind="as" />;
+  if (!r) return <NoRoom perspective={perspective} id={params.room || ''} kind="as" hash={hash} />;
   const view = /\/recommission\b/.test(hash) ? 'recommission' : /\/ready\b/.test(hash) ? 'ready' : /\/history\b/.test(hash) ? 'history' : 'assurance';
   const inc = w.incidents.filter((i) => i.roomId === r.outline.id); const base = `#/assurance/room/${r.outline.id}`;
   const dims = DIMS.map(([layer, name, what, f]) => ({ layer, name, what, ...f(r, inc) }));
@@ -192,7 +199,7 @@ export function AsRoomPage({ perspective, params, hash }: { perspective: string;
   const cur = r.baselines.find((b) => b.state === 'CURRENT');
   const runIt = () => { setRan(true); apply((x) => { x.events.unshift({ at: new Date().toISOString(), by: persona, type: 'assurance.run', aggregate: r.outline.id, detail: `simulated discovery over 17 dimensions from the records: ${n.match} match, ${n.drift} drift, ${n.failed} failed, ${n.reported} reported — nothing measured, no device contacted`, outcome: 'ALLOWED' }); return null; }); };
   return (
-    <section className="wk cx" data-native="workspace" data-testid="as-room">
+    <section className="wk cx" data-native="workspace" data-testid="as-room" data-room={r.outline.id}>
       <Head r={r} kind="as" perspective={perspective} tab={<RoomTabs r={r} kind="as" current={view === 'assurance' ? base : `${base}/${view}`} />} />
       {refusal ? <div role="alert"><Notice tone="bad"><b>Refused.</b> {refusal.why.join(' ')}</Notice></div> : null}
       {view === 'assurance' ? <>
@@ -203,15 +210,8 @@ export function AsRoomPage({ perspective, params, hash }: { perspective: string;
           <StatTile label="Accepted" value={cur ? `v${cur.version}` : 'Never'} icon="check" tone={cur ? 'ok' : 'muted'} hint={cur ? ymd(cur.at) : 'no baseline'} />
         </div>
         <div className="wk-g2 wk-g2--wide">
-          <Card icon="layers" title="The room in four states" sub={`${r.archetypeName} · ${r.outline.dims[0]} × ${r.outline.dims[1]} m`} testId="as-states">
-            <div className="ln-tags">{['Designed', 'Commissioned', 'Current', 'Proposed'].map((s) => <Chip key={s} small tone={s === 'Current' ? 'accent' : 'muted'}>{s}</Chip>)}</div>
-            <List label="Four states">
-              <ListRow title="Designed" sub={`${r.positions.filter((p) => !p.furniture).length} positions, ${r.connections.length} proposed connections · design revision ${cur?.revision ?? '—'}`} />
-              <ListRow title="Commissioned" sub={cur ? `baseline v${cur.version}, ${r.counts.verified} of ${r.counts.applicable} checks verified` : 'never commissioned to a baseline'} />
-              <ListRow title="Current" sub={`${n.match} of 17 dimensions match · ${openIssues(r).length} open issues · ${inc.filter((i) => !['CLOSED', 'CANCELLED'].includes(i.state)).length} open requests`} />
-              <ListRow title="Proposed" sub={r.baselines.find((b) => b.state === 'PENDING_ACCEPTANCE') ? `baseline v${r.baselines.find((b) => b.state === 'PENDING_ACCEPTANCE')!.version} pending acceptance` : 'nothing proposed'} />
-            </List>
-            {openable(perspective, roomHref(r.outline)) ? <a className="ui-btn" href={`${roomHref(r.outline)}?view=devices`}>Open the room in 3D</a> : null}
+          <Card icon="layers" title="The room in four states" sub={`${r.archetypeName} · ${r.outline.dims[0]} × ${r.outline.dims[1]} m · furnished as V2.5.3 drew it`} testId="as-states">
+            <FourStates r={r} perspective={perspective} />
           </Card>
           <Card icon="pulse" tone="commissioning" title="Run Assurance" sub="Simulated discovery from the records · nothing measured" testId="as-run">
             <Donut label="Seventeen dimensions" segments={[{ key: 'm', label: 'Match', value: n.match, tone: 'ok' }, { key: 'd', label: 'Drift', value: n.drift, tone: 'warn' }, { key: 'f', label: 'Failed', value: n.failed, tone: 'bad' }, { key: 'r', label: 'Reported', value: n.reported, tone: 'info' }]} total="dimensions" />
@@ -219,7 +219,8 @@ export function AsRoomPage({ perspective, params, hash }: { perspective: string;
             {holds(persona, 'assure.run') || holds(persona, 'tests.verify.all') ? <button type="button" className="ui-btn ui-btn--primary" onClick={runIt} data-testid="as-run-btn" disabled={ran}>{ran ? 'Run recorded' : 'Run Assurance'}</button> : null}
           </Card>
         </div>
-        <Card icon="chart" title="Commissioned ↔ current" sub={n.drift + n.failed ? `${plural(n.drift + n.failed, 'dimension')} differ from the commissioned state` : 'Nothing changed: the current state reads the same as the commissioned one in every value Assurance compares.'} testId="as-dims">
+        <ChangeCards r={r} perspective={perspective} />
+        <Card icon="chart" title="Seventeen dimensions, seven layers" sub={n.drift + n.failed ? `${n.match} match · ${n.drift} drift · ${n.failed} failed · ${n.reported} reported: ${plural(n.drift + n.failed, 'dimension')} differ from the commissioned state` : 'Nothing changed: the current state reads the same as the commissioned one in every value Assurance compares.'} testId="as-dims">
           <div className="cx-dims">{LAYERS.map((L) => { const ds = dims.filter((d) => d.layer === L); const off = ds.filter((d) => d.state !== 'match'); return <Card key={L} level={3} title={L} sub={ds[0]?.what && L !== 'Functional' ? ds[0].what : `${ds.length} dimensions`}>
             {off.length ? <List label={`${L} dimensions`}>{off.map((d) => <ListRow key={d.name} title={d.name} sub={d.note} trailing={<Tag tone={DIM_TONE[d.state]}>{d.state === 'match' ? 'Matches baseline' : d.state === 'drift' ? 'Drift' : d.state === 'failed' ? 'Offline or failed' : 'Reported by people'}</Tag>} />)}</List> : <p className="ui-meta">All match their baseline: {ds.map((d) => d.name).join(', ')}</p>}
             {off.length && off.length < ds.length ? <p className="ui-meta">{ds.length - off.length} more match their baseline</p> : null}</Card>; })}</div>
@@ -289,3 +290,38 @@ export function KnownFixesPage({ perspective }: { perspective: string }) {
   );
 }
 void pct; void ProgressBar; void Icon; void ScoreRing; void AssuranceTabs; void CxTabs;
+
+// ------------------------------------------------------------------------------------------------------------ V2.5.3's four states and its change cards
+/** The furnished room (V2.5.3's own drawing) in the four states, chosen here; a tapped piece of equipment opens in Lite. */
+function FourStates({ r, perspective }: { r: RoomRecord; perspective: string }) {
+  const [st, setSt] = useState<V253State>('current'); const [pick, setPick] = useState<V253Pick | null>(null);
+  const role = perspective as RoleKey; const lens: Lens = 'engineer'; const lite = `#/lite/room/${r.outline.id}?mode=engineer${st !== 'current' ? `&state=${st}` : ''}`;
+  return <div data-testid="as-four-states" data-state={st}>
+    <Segmented small label="Which state" value={st} onChange={(v) => { setSt(v); setPick(null); }} options={[{ value: 'designed', label: 'Designed' }, { value: 'commissioned', label: 'Commissioned' }, { value: 'current', label: 'Current' }, { value: 'proposed', label: 'Proposed' }]} />
+    <div className="as-stage"><V253RoomStage roomId={r.outline.id} lens={lens} state={st} layers={new Set(['furniture', 'av'])} overlays={new Set(['camera', 'mic'])} role={role} label={`${fullName(r.outline)} in 3D, ${st}`} sel={pick?.obj.id ?? null} onPick={setPick} /></div>
+    <p className="ui-meta" data-testid="as-four-note">{st === 'current' ? 'What exists now: a device with an open issue is marked where it stands.' : st === 'commissioned' ? 'What was proven at handover.' : st === 'designed' ? 'What was planned.' : 'What is being proposed: added positions are marked.'} Modelled, not measured. {pick ? <>Selected: <b>{pick.obj.label || pick.obj.kind}</b>{opensFor(role)(lite) ? <> · <a href={`${lite}${pick.code ? `&device=${encodeURIComponent(pick.code)}` : ''}`} data-testid="as-open-lite">open it in Lite</a></> : null}</> : opensFor(role)(lite) ? <a href={lite}>Open this state in Lite</a> : null}</p>
+  </div>;
+}
+/**
+ * V2.5.3's "Commissioned ↔ current": one card per value that changed since handover, with what it was, what it is, what the change does
+ * and what is recommended, read from the record (a moved layout, a replaced unit, an open issue). Restoring is simulated: it is noted in
+ * the ledger as a request, and nothing in the room changes.
+ */
+function ChangeCards({ r, perspective }: { r: RoomRecord; perspective: string }) {
+  const { apply } = useWorkspace(); const persona = personaOf(perspective); const [done, setDone] = useState<Record<string, boolean>>({});
+  const cur = roomState(r, 'current'); const com = roomState(r, 'commissioned'); const cards: Array<{ id: string; what: string; dim: string; before: string; now: string; diff: string; rec: string }> = [];
+  const moved = cur.positions.filter((p) => p.mark === 'moved');
+  if (moved.length) { const was = com.cov, is = cur.cov; cards.push({ id: 'layout', what: `Layout · ${plural(moved.length, 'piece')} of furniture`, dim: 'Spatial layout', before: 'Where commissioning left it', now: moved[0]!.note || 'moved since handover',
+    diff: `Camera coverage ${is.camera.covered} of ${is.camera.of} seats (was ${was.camera.covered}); microphone pickup ${is.mic.covered} of ${is.mic.of} (was ${was.mic.covered})`, rec: 'Restore the commissioned layout' }); }
+  for (const i of r.installations.filter((x) => x.removedAt)) { const now = r.installations.find((x) => x.position === i.position && !x.removedAt); const p = r.positions.find((x) => x.code === i.position);
+    cards.push({ id: `unit-${i.position}`, what: `${p?.label || i.position} · unit`, dim: 'Device presence', before: i.asset, now: now ? now.asset : 'removed', diff: r.reopened.length ? `${plural(r.reopened.length, 'test')} reopened by the replacement: ${r.reopened[0]!.reasons[0]}` : 'the replacement has not been retested', rec: 'Re-run the reopened tests' }); }
+  for (const i of openIssues(r)) cards.push({ id: `iss-${i.id}`, what: i.title, dim: i.positions.length ? `${i.positions.join(', ')}` : 'the room', before: 'Passed at handover', now: `${i.severity} · ${i.state.toLowerCase().replace(/_/g, ' ')}`, diff: i.source, rec: i.severity === 'High' ? 'Raise a service request' : 'Inspect at the next visit' });
+  return <Card icon="layers" title="Commissioned ↔ current" sub={cards.length ? `${plural(cards.length, 'value')} changed since handover` : 'Nothing changed since handover'} testId="as-changes">
+    {cards.length ? <div className="as-dcs">{cards.map((c) => <article key={c.id} className="as-dc" data-testid="as-change">
+      <h3>{c.what} <Tag tone="muted">{c.dim}</Tag></h3>
+      <div className="as-dc__ba"><div><span>Commissioned</span><b>{c.before}</b></div><div className="now"><span>Current</span><b>{c.now}</b></div></div>
+      <p className="ui-meta"><b>Difference.</b> {c.diff}</p>
+      <div className="ui-row"><span className="ui-meta"><b>Recommendation.</b> {c.rec}</span>{holds(persona, 'assure.run') || holds(persona, 'tests.verify.all') ? <button type="button" className="ui-btn ui-btn--sm" disabled={done[c.id]} data-testid={`as-restore-${c.id}`} onClick={() => { setDone((d) => ({ ...d, [c.id]: true })); apply((x) => { x.events.unshift({ at: new Date().toISOString(), by: persona, type: 'assurance.restore_requested', aggregate: r.outline.id, detail: `${c.rec.toLowerCase()} (${c.what}) requested from Assurance · simulated, nothing in the room changed`, outcome: 'ALLOWED' }); }); }}>{done[c.id] ? 'Requested · simulated' : `${c.rec} · simulated`}</button> : null}</div>
+    </article>)}</div> : <p className="ln-p">The current state reads the same as the commissioned one in every value compared here: layout, units and issues.</p>}
+  </Card>;
+}

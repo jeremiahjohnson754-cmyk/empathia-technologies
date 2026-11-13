@@ -269,3 +269,14 @@ main h1[tabindex="-1"]:focus { outline: none; box-shadow: none; }
 .room-jumps a, .room-jumps__copy { flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: var(--target-min, 44px); padding: 0 14px; border-radius: var(--r-pill, 999px); border: 1px solid var(--line2); background: var(--panel); color: var(--tx); font: inherit; font-size: var(--fs-sm, 14px); text-decoration: none; white-space: nowrap; cursor: pointer; }
 .room-jumps a:hover, .room-jumps__copy:hover { border-color: var(--accent); }
 .room-jumps a:focus-visible, .room-jumps__copy:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* Assurance room (V2.5.3 viewAssureRoom): the furnished room in four states, and one card per value that changed since handover */
+[data-testid="as-four-states"] { display: grid; gap: 10px; min-width: 0; }
+.as-stage { min-width: 0; }
+.as-dcs { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+.as-dc { border: 1px solid var(--line2); border-radius: 14px; padding: 12px 14px; display: grid; gap: 8px; background: var(--panel); min-width: 0; }
+.as-dc h3 { margin: 0; font-size: var(--fs-md, 16px); display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline; }
+.as-dc__ba { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.as-dc__ba > div { display: grid; gap: 2px; padding: 8px 10px; border-radius: 10px; background: var(--bg2, rgba(127,127,127,.08)); min-width: 0; }
+.as-dc__ba span { font-size: var(--fs-xs, 12px); color: var(--tx2); } .as-dc__ba .now { box-shadow: inset 3px 0 0 var(--warn); }
+.as-dc p { margin: 0; }
