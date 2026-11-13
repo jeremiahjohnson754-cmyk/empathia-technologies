@@ -8,7 +8,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../dist');
+const root = process.env.DEMO_DIST ? path.resolve(process.env.DEMO_DIST) : path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../dist');   // a preview build elsewhere (DEMO_DIST)
 const arg = (k, d) => (process.argv.find((a) => a.startsWith(`--${k}=`)) || '').split('=').slice(1).join('=') || d;
 const port = Number(arg('port', process.env.DEMO_PORT || 4310));
 const host = arg('host', process.env.DEMO_HOST || '127.0.0.1');   // 0.0.0.0 only inside a container, published on 127.0.0.1 by compose

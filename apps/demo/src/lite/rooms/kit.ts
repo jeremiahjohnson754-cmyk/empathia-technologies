@@ -171,3 +171,44 @@ export function stadiumSeat(sc: L3Scene, v: View, x: number, y: number, z: numbe
   const [bx, by] = P(0, 0.22); solid(sc, v, { x: bx, y: by, z: z + 0.42, w: 0.48, d: 0.07, h: 0.5, rot }, col, { o: st.o, L, k: 0.94 });
   for (const s of [-1, 1]) { const [ax, ay] = P(s * 0.27, 0.02); solid(sc, v, { x: ax, y: ay, z: z + 0.36, w: 0.05, d: 0.42, h: 0.24, rot }, M.steelD, { o: st.o, L, edge: null }); }
 }
+
+// ---------------------------------------------------------------------------------------------------------------- work, broadcast and hosting
+/** a task chair: a five-star base, a column, a padded seat and back */
+export function taskChair(sc: L3Scene, v: View, x: number, y: number, rot: number, col: RGB, st: PieceStyle, simple = false) {
+  const P = frame(x, y, rot); if (!simple) { shadow(sc, 1, x, y, 0.55, 0.55, 0, 0.003, 0.7); lathe(sc, v, x, y, 0.05, 0.3, 0.03, M.black, { o: st.o, n: 10 }); solid(sc, v, { x, y, z: 0.08, w: 0.05, d: 0.05, h: 0.36, rot }, M.steelD, { o: st.o, edge: null }); }
+  solid(sc, v, { x, y, z: 0.44, w: 0.48, d: 0.46, h: 0.08, rot }, col, { o: st.o, bevel: simple ? undefined : 0.04 });
+  const [bx, by] = P(0, 0.22); solid(sc, v, { x: bx, y: by, z: 0.54, w: 0.44, d: 0.06, h: 0.5, rot }, col, { o: st.o, k: 0.94, bevel: simple ? undefined : 0.02 });
+}
+/** a monitor on a desk stand */
+export function monitor(sc: L3Scene, v: View, x: number, y: number, z: number, w: number, h: number, rot: number, st: PieceStyle) {
+  const P = frame(x, y, rot); const [sx, sy] = P(0, 0.06); solid(sc, v, { x: sx, y: sy, z, w: 0.22, d: 0.18, h: 0.015, rot }, M.black, { o: st.o, edge: null });
+  solid(sc, v, { x: sx, y: sy, z: z + 0.015, w: 0.04, d: 0.03, h: 0.12, rot }, M.black, { o: st.o, edge: null }); display(sc, v, x, y, z + 0.1, w, h, rot, st);
+}
+/** a mirror on a wall, with a row of lamps over it (a dressing mirror when `lamps`) */
+export function mirror(sc: L3Scene, v: View, x: number, y: number, z: number, w: number, h: number, rot: number, st: PieceStyle, lamps = false) {
+  solid(sc, v, { x, y, z, w, d: 0.03, h, rot }, M.bronze, { o: st.o, face: { N: 'url(#rm-mirror)' } });
+  if (lamps) { const P = frame(x, y, rot); const n = Math.max(3, Math.round(w / 0.25)); for (let i = 0; i < n; i++) { const [lx, ly] = P(-w / 2 + (w * (i + 0.5)) / n, -0.05); lathe(sc, v, lx, ly, z + h + 0.02, 0.04, 0.07, [255, 236, 196], { o: st.o, n: 8, edge: null }); } }
+}
+/** a mixing console on its desk: the desk, a worktop with faders, a meter bridge at the back */
+export function mixConsole(sc: L3Scene, v: View, x: number, y: number, w: number, d: number, rot: number, st: PieceStyle) {
+  const P = frame(x, y, rot); shadow(sc, 1, x, y, w, d, rot); solid(sc, v, { x, y, w, d, h: 0.72, rot }, M.charcoal, { o: st.o });
+  solid(sc, v, { x, y, z: 0.72, w: w - 0.04, d: d - 0.06, h: 0.06, rot }, M.black, { o: st.o, top: 'url(#rm-faders)' });
+  const [mx, my] = P(0, -(d / 2 - 0.12)); solid(sc, v, { x: mx, y: my, z: 0.78, w: w - 0.1, d: 0.2, h: 0.22, rot }, M.black, { o: st.o, face: { S: 'url(#rm-meters)' } });
+}
+/** an equipment rack with its fronts */
+export function rack(sc: L3Scene, v: View, x: number, y: number, h: number, rot: number, st: PieceStyle) {
+  shadow(sc, 1, x, y, 0.6, 0.8, rot); solid(sc, v, { x, y, w: 0.6, d: 0.8, h, rot }, M.black, { o: st.o, face: { N: 'url(#rm-rackface)' } });
+}
+/** a glass partition between two points, with a slim frame (a meeting pod's walls); a gap of `door` metres is left at its middle */
+export function glassWall(sc: L3Scene, v: View, x0: number, y0: number, x1: number, y1: number, h: number, st: PieceStyle, door = 0) {
+  const len = Math.hypot(x1 - x0, y1 - y0); const ux = (x1 - x0) / len, uy = (y1 - y0) / len; const segs: Array<[number, number]> = door ? [[0, (len - door) / 2], [(len + door) / 2, len]] : [[0, len]];
+  for (const [a, b] of segs) { const p = (t: number, z: number): P3 => [x0 + ux * t, y0 + uy * t, z]; const c: P3 = [x0 + ux * (a + b) / 2, y0 + uy * (a + b) / 2, h / 2];
+    poly(sc, 3, [p(a, 0), p(b, 0), p(b, h), p(a, h)], { c, f: 'url(#rm-glass)', s: M.glassEdge, sw: 0.5, o: st.o });
+    for (const t of [a, b]) solid(sc, v, { x: x0 + ux * t, y: y0 + uy * t, w: 0.04, d: 0.04, h }, M.bronze, { o: st.o, edge: null }); }
+  solid(sc, v, { x: (x0 + x1) / 2, y: (y0 + y1) / 2, z: h - 0.04, w: Math.abs(ux) > 0.5 ? len : 0.05, d: Math.abs(ux) > 0.5 ? 0.05 : len, h: 0.04 }, M.bronze, { o: st.o, edge: null });
+}
+/** a raised floor (a tier in a press box, a platform) with its nosing */
+export function platform(sc: L3Scene, v: View, x: number, y: number, w: number, d: number, h: number, top: RGB, st: PieceStyle) {
+  solid(sc, v, { x, y, w, d, h, rot: 0 }, top, { o: st.o, L: 2.5, face: { N: rgb(top, 0.72), S: rgb(top, 0.8) }, top: rgb(top, 1) });
+  solid(sc, v, { x, y: y - d / 2 + 0.03, z: h - 0.02, w, d: 0.06, h: 0.025 }, [200, 170, 90], { o: st.o, L: 2.5, edge: null });
+}

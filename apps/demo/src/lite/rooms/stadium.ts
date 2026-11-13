@@ -17,41 +17,54 @@ function farSeat(sc: L3Scene, v: View, x: number, y: number, z: number) {
 }
 
 /** The balcony and, when `full` (seen from someone's eyes), the bowl. `w` is the suite's width along the glass. */
-export function suiteOutside(sc: L3Scene, v: View, w: number, full: boolean) {
-  const cx = w / 2, ext = full ? 3 * w : Math.min(2.4, w * 0.32); const X0 = -ext, X1 = w + ext; const L = 1.5;
-  // the balcony: a tread a step down from the room, a second one lower, the parapet with a glass balustrade and a handrail
-  q(sc, L, [[X0, 0, -0.12], [X1, 0, -0.12], [X1, -1.05, -0.12], [X0, -1.05, -0.12]], TILE, PRI.terrain - 0.2);
-  q(sc, L, [[X0, -1.05, -0.12], [X1, -1.05, -0.12], [X1, -1.05, -0.52], [X0, -1.05, -0.52]], tint(M.stone, 0.86), PRI.terrain - 0.15);
-  q(sc, L, [[X0, -1.05, -0.52], [X1, -1.05, -0.52], [X1, -2.0, -0.52], [X0, -2.0, -0.52]], tint([201, 195, 184], 0.95), PRI.terrain - 0.2);
-  q(sc, L, [[X0, 0, 0], [X1, 0, 0], [X1, 0, -0.12], [X0, 0, -0.12]], tint(M.stone, 0.8), PRI.terrain - 0.15);
-  solid(sc, v, { x: (X0 + X1) / 2, y: -2.1, z: -0.52, w: X1 - X0, d: 0.2, h: 0.3 }, M.concrete, { L, pri: PRI.terrain });
-  q(sc, L, [[X0, -2.08, -0.22], [X1, -2.08, -0.22], [X1, -2.08, 0.55], [X0, -2.08, 0.55]], 'url(#rm-glass)', PRI.solid, { s: M.glassEdge, sw: 0.5 });
-  solid(sc, v, { x: (X0 + X1) / 2, y: -2.08, z: 0.55, w: X1 - X0, d: 0.06, h: 0.045 }, M.bronze, { L, edge: null });
-  // glass partitions between the suites' balconies
-  for (let k = Math.ceil(X0 / w); k * w <= X1 + 0.01; k++) { const x = k * w;
-    poly(sc, L, [[x, 0, 1.25], [x, 0, -0.12], [x, -1.05, -0.12], [x, -1.05, -0.52], [x, -2.0, -0.52], [x, -2.0, 1.25]], { f: 'url(#rm-glass)', s: M.glassEdge, sw: 0.5, pri: PRI.solid }); }
-  // the neighbours' seats (ours are the room's own pieces, selectable)
-  for (let k = Math.ceil(X0 / w); k * w < X1; k++) { if (k === 0) continue;
-    for (const [y, z] of [[-0.55, -0.12], [-1.5, -0.52]] as const) for (let i = 0; i < 6; i++) { const x = k * w + w / 2 + (i - 2.5) * 0.62; if (x > X0 + 0.3 && x < X1 - 0.3) farSeat(sc, v, x, y, z); } }
-  if (!full) {
-    // from outside the room, a hint of the lower tier below the balcony
-    for (let r = 0; r < 4; r++) { const y0 = -2.45 - r * 0.8, z = -2.4 - r * 0.4;
-      q(sc, 0.5, [[X0, y0, z], [X1, y0, z], [X1, y0 - 0.8, z], [X0, y0 - 0.8, z]], CONC, PRI.terrain - 0.3);
-      q(sc, 0.5, [[X0, y0 - 0.2, z], [X1, y0 - 0.2, z], [X1, y0 - 0.2, z + 0.42], [X0, y0 - 0.2, z + 0.42]], tint(r % 2 ? M.seatL : M.seat, 1), PRI.terrain); }
-    return;
+export type BowlView = 'suite' | 'club' | 'window' | 'open';
+/** where the seating in front of a room begins, and how many rows run down to the pitch, by the kind of room: a suite or club looks over
+ *  its own balcony to the lower tier; a press box or commentary booth looks through glass from the top of the upper tier; a mix position
+ *  is open, at the back of the lower bowl */
+const START: Record<BowlView, { y: number; z: number; rows: number }> = { suite: { y: -2.45, z: -2.4, rows: 26 }, club: { y: -2.45, z: -2.4, rows: 26 }, window: { y: -0.8, z: -1.8, rows: 42 }, open: { y: -0.25, z: -0.5, rows: 22 } };
+
+/** Kept for the suite: its balcony and the bowl. */
+export const suiteOutside = (sc: L3Scene, v: View, w: number, full: boolean) => bowlOutside(sc, v, w, full, 'suite');
+/** What a room on the bowl looks out on. `w` is the room's width along its front; when `full` (from someone's eyes), the whole bowl. */
+export function bowlOutside(sc: L3Scene, v: View, w: number, full: boolean, kind: BowlView) {
+  const cx = w / 2, ext = kind !== 'suite' ? 0 : full ? 3 * w : Math.min(2.4, w * 0.32); const X0 = -ext, X1 = w + ext; const L = 1.5; const S = START[kind];
+  if (kind === 'suite' || kind === 'club') {
+    // the balcony: a tread a step down from the room, a second one lower, the parapet with a glass balustrade and a handrail
+    q(sc, L, [[X0, 0, -0.12], [X1, 0, -0.12], [X1, -1.05, -0.12], [X0, -1.05, -0.12]], TILE, PRI.terrain - 0.2);
+    q(sc, L, [[X0, -1.05, -0.12], [X1, -1.05, -0.12], [X1, -1.05, -0.52], [X0, -1.05, -0.52]], tint(M.stone, 0.86), PRI.terrain - 0.15);
+    q(sc, L, [[X0, -1.05, -0.52], [X1, -1.05, -0.52], [X1, -2.0, -0.52], [X0, -2.0, -0.52]], tint([201, 195, 184], 0.95), PRI.terrain - 0.2);
+    q(sc, L, [[X0, 0, 0], [X1, 0, 0], [X1, 0, -0.12], [X0, 0, -0.12]], tint(M.stone, 0.8), PRI.terrain - 0.15);
+    solid(sc, v, { x: (X0 + X1) / 2, y: -2.1, z: -0.52, w: X1 - X0, d: 0.2, h: 0.3 }, M.concrete, { L, pri: PRI.terrain });
+    q(sc, L, [[X0, -2.08, -0.22], [X1, -2.08, -0.22], [X1, -2.08, 0.55], [X0, -2.08, 0.55]], 'url(#rm-glass)', PRI.solid, { s: M.glassEdge, sw: 0.5 });
+    solid(sc, v, { x: (X0 + X1) / 2, y: -2.08, z: 0.55, w: X1 - X0, d: 0.06, h: 0.045 }, M.bronze, { L, edge: null });
   }
-  // ---- the bowl, seen from inside
-  // the floor above overhangs the balcony
-  q(sc, L, [[X0, 0.2, 3.05], [X1, 0.2, 3.05], [X1, -2.35, 3.05], [X0, -2.35, 3.05]], '#d8d3cb', PRI.terrain);
-  for (let x = X0 + 1.2; x < X1; x += 2.5) flat(sc, L, Array.from({ length: 10 }, (_, i) => { const t = (i / 10) * Math.PI * 2; return [x + Math.cos(t) * 0.07, -1.1 + Math.sin(t) * 0.07] as [number, number]; }), 3.04, '#fff3d6', { pri: PRI.terrain + 0.05 });
-  // the lower tier, raking down to the pitch: treads, then the seat backs (seen from behind) in blocks between the aisles
-  const rows = 26, B0 = cx - 62, B1 = cx + 62;
-  for (let r = 0; r < rows; r++) { const y0 = -2.45 - r * 0.8, z = -2.4 - r * 0.4;
+  if (kind === 'suite') {
+    // glass partitions between the suites' balconies
+    for (let k = Math.ceil(X0 / w); k * w <= X1 + 0.01; k++) { const x = k * w;
+      poly(sc, L, [[x, 0, 1.25], [x, 0, -0.12], [x, -1.05, -0.12], [x, -1.05, -0.52], [x, -2.0, -0.52], [x, -2.0, 1.25]], { f: 'url(#rm-glass)', s: M.glassEdge, sw: 0.5, pri: PRI.solid }); }
+    // the neighbours' seats (ours are the room's own pieces, selectable)
+    for (let k = Math.ceil(X0 / w); k * w < X1; k++) { if (k === 0) continue;
+      for (const [y, z] of [[-0.55, -0.12], [-1.5, -0.52]] as const) for (let i = 0; i < 6; i++) { const x = k * w + w / 2 + (i - 2.5) * 0.62; if (x > X0 + 0.3 && x < X1 - 0.3) farSeat(sc, v, x, y, z); } }
+  }
+  if (kind === 'window') { // a concrete ledge outside the glass, then the top of the upper tier
+    q(sc, L, [[-0.2, 0, -0.25], [w + 0.2, 0, -0.25], [w + 0.2, -0.7, -0.25], [-0.2, -0.7, -0.25]], tint(M.concrete, 1.05), PRI.terrain - 0.2);
+    q(sc, L, [[-0.2, -0.7, -0.25], [w + 0.2, -0.7, -0.25], [w + 0.2, -0.7, -1.7], [-0.2, -0.7, -1.7]], tint(M.concrete, 0.8), PRI.terrain - 0.15); }
+  if (kind === 'open') { // the low wall in front of the position
+    solid(sc, v, { x: w / 2, y: -0.1, z: -0.5, w: w + 0.3, d: 0.2, h: 1.55 }, M.concrete, { L, pri: PRI.terrain }); }
+  const rows = full ? S.rows : 4, B0 = full ? cx - 62 : X0, B1 = full ? cx + 62 : X1;
+  if (full && kind !== 'window') { // the floor above overhangs the front
+    const zo = kind === 'open' ? 3.0 : 3.05, yo = kind === 'open' ? -4.5 : -2.35;
+    q(sc, L, [[B0, 0.2, zo], [B1, 0.2, zo], [B1, yo, zo], [B0, yo, zo]], '#d8d3cb', PRI.terrain);
+    for (let x = Math.max(X0, B0) + 1.2; x < Math.min(B1, X1 + 20); x += 2.5) flat(sc, L, Array.from({ length: 10 }, (_, i) => { const t = (i / 10) * Math.PI * 2; return [x + Math.cos(t) * 0.07, yo / 2 + Math.sin(t) * 0.07] as [number, number]; }), zo - 0.01, '#fff3d6', { pri: PRI.terrain + 0.05 }); }
+  // the tier in front, raking down to the pitch: treads, then the seat backs (seen from behind) in blocks between the aisles
+  for (let r = 0; r < rows; r++) { const y0 = S.y - r * 0.8, z = S.z - r * 0.4;
     q(sc, 0.5, [[B0, y0, z], [B1, y0, z], [B1, y0 - 0.8, z], [B0, y0 - 0.8, z]], r % 2 ? '#928d86' : CONC, PRI.terrain - 0.2);
-    const col = tint(r % 2 ? M.seatL : M.seat, 1 - r * 0.004);
+    const col = tint(r % 2 ? M.seatL : M.seat, 1 - r * 0.003);
+    if (!full) { q(sc, 0.5, [[B0, y0 - 0.2, z], [B1, y0 - 0.2, z], [B1, y0 - 0.2, z + 0.42], [B0, y0 - 0.2, z + 0.42]], col, PRI.terrain); continue; }
     for (let a = -4; a <= 4; a++) { const s0 = Math.max(B0, cx + a * 14 - 6.45), s1 = Math.min(B1, cx + a * 14 + 6.45);
       q(sc, 0.5, [[s0, y0 - 0.22, z], [s1, y0 - 0.22, z], [s1, y0 - 0.22, z + 0.44], [s0, y0 - 0.22, z + 0.44]], col, PRI.terrain); } }
-  const zp = -2.4 - rows * 0.4 - 0.9, yb = -2.45 - rows * 0.8 - 1.2, yt = yb - 6.5, yf = yt - 68 - 7, PL = 105, PW = 68;
+  if (!full) return;
+  const zp = S.z - rows * 0.4 - 0.9, yb = S.y - rows * 0.8 - 1.2, yt = yb - 6.5, yf = yt - 68 - 7, PL = 105, PW = 68;
   // perimeter LED boards facing the stand, the grass, the pitch in mown stripes, its markings and goals
   q(sc, 0.5, [[cx - 60, yb, zp + 0.9], [cx + 60, yb, zp + 0.9], [cx + 60, yb, zp], [cx - 60, yb, zp]], 'url(#rm-led)', PRI.terrain + 0.1);
   q(sc, 0, [[cx - 70, yb, zp], [cx + 70, yb, zp], [cx + 70, yf, zp], [cx - 70, yf, zp]], '#4f8446', PRI.ground - 0.5);

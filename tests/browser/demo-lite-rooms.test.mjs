@@ -3,7 +3,7 @@
 // don't have my rooms or experiences looking like this"). A Harborlight suite is drawn as a suite — glass front on the bowl, balcony seats,
 // drink rail, lounge, bar — with no boardroom table, lectern or presenter zone; every piece says what it is when tapped, equipment names its
 // record; it can be seen from where people really are, in perspective, with the bowl beyond the glass; names appear only when asked for;
-// a deep link opens an eye position; a type whose nearest V2.5.3 layout was wrong says it is being redesigned instead of drawing it wrongly.
+// a deep link opens an eye position; the seven types whose nearest V2.5.3 layout was wrong are each drawn from their own program.
 //   node tests/browser/demo-lite-rooms.test.mjs
 import { harness } from './demo-shell-lib.mjs';
 const { ok, open, done } = await harness('demo-lite-rooms');
@@ -38,10 +38,17 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   ok('RM-reload', 'the eye position survives a reload', (await p.getByTestId('rm-room-3d').getAttribute('data-eye')) === 'balcony');
   await t.close(); }
 { const t = await open('#/lite/w/stadium', { role: 'architect', sw: false }); const p = t.page; await p.getByTestId('lw-home').waitFor(); const lede = await p.locator('main').innerText();
-  ok('RM-counts', 'the stadium says how many rooms are designed room by room, drawn by V2.5.3, furnished by fixture layouts and being redesigned', /\d+ designed room by room by Empathia/.test(lede) && /\d+ being redesigned/.test(lede), lede.slice(0, 300));
+  // 13 Nov 2026: the seven types that were "being redesigned" now have programs, so none is left being redesigned (changed from expecting some)
+  ok('RM-counts', 'the stadium says how many rooms are designed room by room by Empathia and how many are drawn by V2.5.3 or fixture layouts; none is left being redesigned', /\d+ designed room by room by Empathia/.test(lede) && !/being redesigned/.test(lede), lede.slice(0, 300));
   await t.close(); }
-{ const t = await open('#/lite/w/stadium/r/STA-PRS', { role: 'architect', sw: false }); const p = t.page; await p.getByTestId('lw-room').waitFor(); const txt = await p.locator('main').innerText();
-  const furn = await p.getByTestId('lw-room').getAttribute('data-furnished');
-  ok('RM-redesign', 'a type whose nearest V2.5.3 layout was wrong (a press box) says it is being redesigned, and draws no V2.5.3 room', furn === 'redesign' && /Being redesigned/.test(txt) && (await p.locator('[data-testid=lite-room-3d]').count()) === 0, `${furn}`);
+// 13 Nov 2026: the press box, commentary booths, mix position, clubs (stadium) and green rooms, speaker preparation and the VIP lounge
+// (convention) were "being redesigned"; each now has its own program (changed from expecting the press box to say "Being redesigned")
+for (const [w, id, prog, eye, must] of [['stadium', 'STA-PRS', 'press-box', 'front', /Writing positions, row 1/], ['stadium', 'STA-CMT-1', 'commentary-booth', 'seat', /Commentary desk/], ['stadium', 'STA-FOH', 'mix-position', 'seat', /Mixing console/], ['stadium', 'STA-CLUB-N', 'club', 'glass', /Island bar/],
+  ['convention', 'CNV-GRN-1', 'green-room', 'mirror', /Dressing counter/], ['convention', 'CNV-SPK', 'speaker-prep', 'mark', /Slide-check station/], ['convention', 'CNV-VIP', 'vip-lounge', 'pod', /meeting pod/]]) {
+  const t = await open(`#/lite/w/${w}/r/${id}`, { role: 'visitor', sw: false }); const p = t.page; const st = p.getByTestId('rm-room-3d'); await st.waitFor();
+  const kinds = await st.evaluate((el) => [...el.querySelectorAll('.l3-hitbtn')].map((b) => b.getAttribute('aria-label')).join(' | '));
+  await p.getByTestId(`rm-eye-${eye}`).click(); await p.waitForTimeout(350); const polys = await st.locator('svg.l3-svg polygon').count();
+  const bad = await st.evaluate((el) => [...el.querySelectorAll('svg.l3-svg polygon')].some((q) => /NaN|Infinity/.test(q.getAttribute('points') || '')));
+  ok(`RM-${prog}`, `${id} is drawn from the ${prog} program, its own pieces named, and can be seen from inside without a console error`, (await p.getByTestId('lw-room').getAttribute('data-furnished')) === 'designed' && (await st.getAttribute('data-program')) === prog && must.test(kinds) && (await st.getAttribute('data-eye')) === eye && polys > 60 && !bad && !t.errs.length, `${polys} ${kinds.slice(0, 120)} ${t.errs.slice(0, 2).join(' | ')}`);
   await t.close(); }
 await done();

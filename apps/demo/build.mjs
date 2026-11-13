@@ -10,7 +10,7 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 const app = path.dirname(fileURLToPath(import.meta.url));
 const repo = path.resolve(app, '../..');
-const dist = path.join(app, 'dist');
+const dist = process.env.DEMO_DIST ? path.resolve(process.env.DEMO_DIST) : path.join(app, 'dist');   // a preview build elsewhere, so a test run on dist is never disturbed
 const dev = process.argv.includes('--dev');
 // the corporate website the demonstration links to (founder page, privacy notice): --website=<url>, DEMO_WEBSITE_URL, or the public site
 const website = ((process.argv.find((a) => a.startsWith('--website=')) || '').slice(10) || process.env.DEMO_WEBSITE_URL || 'https://empathia-website.onrender.com').replace(/\/$/, '');

@@ -58,6 +58,19 @@ test('the suite is drawn with finite geometry from above at every side and from 
     assert.ok(sc.items.length > 500 && sc.items.every(finite), e.key);
     const inRoom = e.x > 0 && e.x < P.w && e.y > 0 && e.y < P.d, onBalcony = e.y < 0 && e.y > -2.0; assert.ok(inRoom || onBalcony, `${e.key} is in the room or on its balcony`); }
 });
-test('the types being redesigned are not drawn by a V2.5.3 layout and none has a program yet', () => {
-  for (const t of M.REDESIGN_TYPES) assert.equal(M.hasProgram(t), false, t);
-});
+// 13 Nov 2026: the seven types that were "being redesigned" now have programs of their own
+for (const [world, type] of [['convention', 'green-room'], ['convention', 'speaker-prep'], ['convention', 'vip-lounge'], ['stadium', 'press-box'], ['stadium', 'commentary-booth'], ['stadium', 'mix-position'], ['stadium', 'club']]) {
+  test(`every ${type} (${world}) is drawn from its program: pieces inside the room, finite from above and from each occupant's eyes`, () => {
+    const wx = M.worldIndex(world); const rooms = wx.estate.nodes.filter((n) => n.kind === 'room' && n.type === type); assert.ok(rooms.length >= 1, type);
+    const finite = (it) => (it.p || [it.at]).every((q) => q.every((v) => Number.isFinite(v)));
+    for (const n of rooms) { const P = M.programFor({ id: n.id, type: n.type, name: n.name, dims: n.dims, capacity: n.capacity, assets: wx.assetsOf.get(n.id) || [] });
+      assert.ok(P && P.key === type && P.pieces.length >= 3, n.id);
+      for (const q of P.pieces) assert.ok(q.x >= 0 && q.x <= P.w + 0.01 && (q.y >= 0 ? q.y <= P.d + 0.01 : q.kind === 'seats' && q.y > -2.0), `${n.id} ${q.id} at ${q.x},${q.y}`);
+      assert.ok(P.eyes.length >= 3, `${n.id} eyes`);
+      for (const e of P.eyes) { assert.ok(e.x >= 0 && e.x <= P.w && e.y >= -2 && e.y <= P.d && e.z > 0.9 && e.z < 2.2, `${n.id} ${e.key}`); }
+      if (n !== rooms[0]) continue;
+      for (const yaw of [24, 204]) { const sc = M.roomScene(P, { cam: { yaw, pitch: 40, zoom: 1 }, eye: null }, { sel: null, names: true }); assert.ok(sc.items.length > 60 && sc.items.every(finite), `${n.id} yaw ${yaw}`); }
+      for (const e of P.eyes) { const sc = M.roomScene(P, { cam: { yaw: e.yaw, pitch: e.pitch, zoom: 1 }, eye: e }, { sel: null, names: false }); assert.ok(sc.items.length > 60 && sc.items.every(finite), `${n.id} ${e.key}`); } }
+  });
+}
+test('no room type is left "being redesigned"', () => { assert.equal(M.REDESIGN_TYPES.size, 0); });
