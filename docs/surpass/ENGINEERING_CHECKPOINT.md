@@ -334,3 +334,52 @@ Lighting and video labs' S01 placement in their episodes (E05, E07) if the found
 
 **Lesson**: this machine has 2 cores and 7 GB. A browser suite run beside the matrix exhausted memory and the container restarted,
 taking the `835079b` light matrix with it. One heavy browser job at a time; the website was built and tested in a separate copy.
+
+## 99 — Lite: the furnished room is the hero; 90-2 no dead ends; release candidate `7d5bce0` (13 Nov 2026, 00:45– CT)
+
+**Completed**
+- **Lite 50/10, room interiors** (`ef5b5c3`).
+  - The room page opens on V2.5.3's own room drawing: walls, door, glazing, table, chairs, displays, cameras, microphones,
+    loudspeakers, rack, touch panel, lectern.
+  - `apps/demo/src/lite/v253/vendor.js` holds 125 of V2.5.3's definitions verbatim. `scripts/legacy/vendor-v253-room.mjs`
+    regenerates them byte for byte, and `--check` compares.
+  - They run on this campus's room records through `v253room.ts`:
+    - an open issue marks its device in Current;
+    - a proposal's added positions are drawn as added;
+    - a visitor opens no cards.
+  - All nine V2.5.3 hero rooms keep their own arrangements. 76 of 90 rooms are drawn. The other 14 are town halls and control
+    rooms V2.5.3 never drew; they open on the technical overlay and say why.
+- **Camera and controls** (`604714f`, `cde7539`, `7d5bce0`).
+  - Pan by Shift-drag, two fingers or Shift+arrows. Fit to the view. Double-tap resets.
+  - Ctrl or ⌘ with the wheel zooms; the plain wheel and vertical swipes scroll the page again.
+  - Buttons and keys ease the camera; nothing moves under reduced motion.
+  - On a phone the controls sit under the scene.
+  - An overlapped tap goes to the nearest equipment, as V2.5.3 did.
+- **Room additions.** "Sound in the room" shows V2.5.3's first reflections, labelled a model. The 4.218 cross-product journey has
+  its own test.
+- **Restoration matrix.** `docs/restoration/LITE_RESTORATION_MATRIX.md` marks every directive section and acceptance area. Lite
+  parity is **not** achieved; the open items are listed there.
+- **90-2.** The crawler pressed controls on all 101 fixed-address pages. The 48 controls that did nothing were fixed in the product
+  or, where the press was correct by design, recognised by the crawler with the reason recorded (`cde7539`).
+
+**Verified on `7d5bce0`, the exact release candidate**
+- Build PASS.
+- Unit 732/732.
+- Light matrix: all 69 browser suites PASS (`.local/matrix-7d5bce0/SUMMARY-light.txt`).
+- Dark matrix: all 69 browser suites PASS (`.local/matrix-7d5bce0/SUMMARY-dark.txt`).
+- **Staged.** `7d5bce0` was pushed to `phase3/legendary-experience`. Render deployed both services live at 04:54 UTC, 13 Nov:
+  - `empathia-demo-next`: `dep-dbr9frh42hec73bboofg`;
+  - `empathia-website-next`: `dep-dbr9frh42hec73bbooig`.
+  Both `BUILD_MANIFEST.json` files read `sourceCommit 7d5bce0458367b632b8e621fa566b0d6d5aade89`. `main` is untouched.
+- NOT RUN: a real-browser walk on the staging URLs. This container's proxy refuses onrender.com, so the walk needs a browser on the
+  founder's side or a linked computer.
+- Dead-end crawl: 101/101 pages across the full crawl and re-crawls of the fixed pages, on the code before the last stage change.
+  It was not re-run on `7d5bce0`: the last change was the tap-nearest rule in the Lite stage, covered by `demo-lite-spatial` and
+  `demo-journey`.
+
+**Outstanding**
+- Stadium, University and Convention have no spatial hierarchy.
+- The 11 Atlas rooms V2.5.3 had and this campus does not.
+- The 14 town halls and control rooms (a founder choice).
+- Room tabs, the Add palette, the passport.
+- Real-touch, slow-network and performance runs.
