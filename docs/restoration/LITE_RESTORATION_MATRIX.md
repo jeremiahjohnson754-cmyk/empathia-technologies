@@ -31,7 +31,7 @@ by `scripts/legacy/vendor-v253-room.mjs`. They run on this campus's room records
 | 9 | Eight layers and coverage | **PARTIAL** | All eight layers are switches. In the furnished room V2.5.3 draws AV, network, power and control paths for the technical lenses. Camera, microphone, loudspeaker and sightline coverage are drawn by V2.5.3 (LS-R3). "Sound in the room" draws V2.5.3's first reflections and labels them a training and engineering model, not a certified simulation (LS-R7b). V2.5.3's animated sound field is not carried. Accessibility and infrastructure fit appear in the technical overlay only. |
 | 10 | Object inspection | **RESTORED** | Every piece of equipment is a named button that opens its device card; furniture shows its size and place (LS-R6, R7; `demo-lite` X6). |
 | 10 | Room tabs (Overview, Room states, Design, Calculations, Sound, Cameras, Systems, Records) | **RESTORED** | V2.5.3's eight tabs on the room page, in the address (`?tab=`), with the tab keyboard pattern; a device chosen in a tab is selected in the room; a visitor sees Overview only (`demo-lite-tabs`, 21 checks) |
-| 10 | Add palette (display, camera, ceiling array, table microphone; undo, redo, fit the room) | **PARTIAL** | As in V2.5.3, the palette lives in Design a Space, opened from the room's X-ray ("Design a space with this room"). It adds a display, camera, ceiling microphone, table microphone (added 13 Nov), loudspeaker, table or seat, with undo and redo (`demo-lite-tabs` RT-studio, `demo-parity-areas`). The plan is 2D and always shows the whole room, so there is no separate "Fit the room". |
+| 10 | Placement in the 3D room: add, select, move, turn, remove; undo, redo; 2D for precision | **RESTORED** 13 Nov, beyond V2.5.3 | In the Optimize lens the furnished room has an arrange toolbar. It adds a display, camera, ceiling microphone or loudspeaker; something tapped in 3D is moved in 25 cm steps or by the arrow keys, turned 15° or by R, and removed. Undo, redo and "back to the room as recorded" are there. A 2D precision plan under it shows the same arrangement and places to the centimetre by typed position or angle; the coverage it reaches is recomputed (modelled). The edits are V2.5.3's own edit model (applyEdits), kept in this browser. Design a Space keeps the 2D studio with the table microphone (`demo-lite-arrange`, 24 checks; `demo-lite-tabs` RT-studio) |
 | 10 | Room passport | **RESTORED** as a page | The Records tab opens the room's passport (`#/list/Room/<id>`): every fact on record and every linked record (`demo-lite-tabs` RT-07b). V2.5.3 opened it as a sheet over the page. |
 | 11 | Archetypes and flagship rooms | **PARTIAL** | Flagship hero rooms: see §4 above. The archetype layouts are V2.5.3's. |
 | 12 | All four worlds | **NOT RESTORED** | Only the Enterprise campus has the spatial hierarchy. Stadium, University and Convention have their estate pages (`#/estate/<world>`) but no 3D campus, building, floor or room. No page claims otherwise (checked 13 Nov). |
@@ -73,10 +73,9 @@ by `scripts/legacy/vendor-v253-room.mjs`. They run on this campus's room records
 
 1. Spatial hierarchy for Stadium, University and Convention (F).
 2. Forge's 5 floor-0 voice zones (they need a floor 0).
-3. A 3D add palette inside the Lite room (today it is in Design a Space, in 2D).
-4. V2.5.3's animated sound field (the static first reflections are back).
-5. A real-touch run, slow-network and reduced-motion runs, and performance profiling (all NOT RUN).
-6. The full regression on the release commit (J).
+3. V2.5.3's animated sound field (the static first reflections are back).
+4. A real-touch run, slow-network and reduced-motion runs, and performance profiling (all NOT RUN).
+5. The full regression on the release commit (J).
 
 ## 5. Gallery
 

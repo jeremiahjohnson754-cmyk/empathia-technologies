@@ -27,6 +27,8 @@ import { LiteNav, LiteMissing, storedLens, saveLens, setQuery } from './LiteApp.
 import { WhoKnows } from '../connect/ContactBar.js';
 import { RoomTabBar, RoomTabPanel, tabOf } from './RoomTabs.js';
 import { PassportSheet } from './PassportSheet.js';
+import { useArrange, ArrangeBar, PrecisionPlan } from './Arrange.js';
+import { v253Arranged } from './v253/v253room.js';
 
 const list = (s: string | null) => (s == null ? null : s.split(',').filter(Boolean));
 
@@ -44,6 +46,8 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
   // spatial drift (V2.5.3, restored 12 Nov 2026): the room's choice, kept on this device
   const drift = useMemo(() => (r ? spatialDrift(r) : null), [r]); const [dv, setDv] = useState<DriftDecision | null>(() => driftOf(id));
   useEffect(() => { setDv(driftOf(id)); }, [id]);
+  // arranging the furnished room in 3D (founder 13 Nov 07:30), with the 2D precision plan kept in step; Optimize lens only
+  const ar = useArrange(id); const [arrSel, setArrSel] = useState<string | null>(null); useEffect(() => { setArrSel(null); }, [id]);
   if (!r) return <LiteMissing what={`room “${id}”`} />;
   const o = r.outline; const B = buildingByKey(o.building)!;
   const lens = storedLens(role, query.get('mode'));
@@ -75,12 +79,14 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
   const ac = query.get('ac') === '1' && lens !== 'visitor';
   // Optimize works on the recorded positions (moves, drift), so it opens on the technical overlay; every other lens opens on the furnished room
   const furnishable = v253Drawable(id); const scaledFrom = v253ScaledFrom(id);
-  const viewHome = lens === 'optimize' || !furnishable ? 'tech' : 'room'; const vq = query.get('view');
+  const viewHome = !furnishable ? 'tech' : 'room'; const vq = query.get('view');   // 13 Nov 2026: Optimize opens in the furnished room too, where things are arranged in 3D
   const tab = lens === 'visitor' ? 'overview' : tabOf(query.get('tab'));
   // the room passport, as a sheet over the room (V2.5.3); only for a role that may open the room's record
   const mayPassport = lens !== 'visitor' && opensFor(role)(`#/list/Room/${id}`); const sheet = mayPassport && query.get('sheet') === 'passport';
   const openPassport = () => upd('sheet', 'passport');
   const view = (lens === 'optimize' && edited) || !furnishable ? 'tech' : vq === 'tech' || vq === 'room' ? vq : viewHome;
+  const arranging = lens === 'optimize' && view === 'room' && stateKey === 'current';
+  const arrL = arranging ? v253Arranged(id, ar.e)?.L ?? null : null; const arrObj = arrL?.objs.find((x) => x.id === arrSel) ?? null;
   return (
     <section className="lt-page lt-roompage lt-page--scene" data-testid="lite-room" data-room={id} data-state={stateKey} data-lens={lens}>
       <nav aria-label="Breadcrumb" className="crumbs"><ol><li><a href="#/lite">Lite</a></li><li><a href={`#/lite/b/${o.building}`}>{B.name}</a></li><li><a href={`#/lite/b/${o.building}/${o.floor}`}>Floor {o.floor}</a></li><li><span aria-current="page">{o.number}</span></li></ol></nav>
@@ -96,7 +102,8 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
           {!furnishable && <p className="ui-meta lt-viewnote" data-testid="lite-view-note">V2.5.3 drew town halls and control rooms only as its own named rooms, so this one opens on the technical overlay: every position, path and coverage figure is here; the furnished drawing is not.</p>}
           {view === 'room' ? <figure className="stage lt-stage lt-stage--room" data-stage="">
             <V253RoomStage roomId={id} lens={lens} state={stateKey} layers={layers} overlays={overlays} acoustic={ac} role={role} label={`${o.name}, furnished, in 3D, ${st.title}. Turn, tilt and zoom with the buttons, the arrow keys or a drag; each piece of equipment is a button that opens its card.`}
-              sel={furn ? furn.obj.id : v253ObjFor(id, stateKey, lens, sel)} onPick={(pk) => { setFurn(pk && !pk.code ? pk : null); setSel(pk?.code ?? null); }} />
+              sel={arranging ? arrSel : furn ? furn.obj.id : v253ObjFor(id, stateKey, lens, sel)} edits={lens === 'optimize' ? ar.e : null}
+              onPick={(pk) => { setFurn(pk && !pk.code ? pk : null); setSel(pk?.code ?? null); if (arranging) setArrSel(pk?.obj.id ?? null); }} />
             <figcaption className="stage__cap"><b>{st.title}.</b> {st.summary} <span className="ui-meta">The room as V2.5.3 drew it for this room type: walls, door, glazing, furniture and equipment, with coverage drawn from its own cameras, microphones and loudspeakers. Modelled, not surveyed. Basis: {st.basis}.</span>{scaledFrom && <span className="ui-meta lt-scalednote" data-testid="lite-scaled-note"> {`V2.5.3 never drew this room: it is drawn from ${scaledFrom}, scaled to its ${o.dims[0]} × ${o.dims[1]} m (founder’s choice, 13 Nov 2026). Positions are illustrative; ${(v253Layout(id, stateKey === 'proposed' ? 'current' : stateKey)?.seats.length ?? 0)} of its ${o.capacity} seats are drawn.`}</span>}{ac && <span className="ui-meta lt-acnote" data-testid="lite-acoustic-note"> Sound in the room: a training and engineering model of first reflections, not a certified acoustic simulation.</span>}</figcaption>
           </figure> : <figure className="stage lt-stage" data-stage="">
             <div className="stage__bar"><OrbitBar orbit={orbit} /></div>
@@ -104,6 +111,8 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
               selected={sel} onSelect={(c) => setSel(c === sel ? null : c)} occupied={occ} partitions={partitions} active={cfg && cfg.key !== 'combined' ? [cfg.x0, cfg.x1] : null} bind={orbit.bind} ghosts={ghosts} />
             <figcaption className="stage__cap"><b>{st.title}.</b> {st.summary} <span className="ui-meta">Basis: {st.basis}. Drag to orbit; the buttons do the same.</span></figcaption>
           </figure>}
+          {arranging && arrL && <ArrangeBar ar={ar} L={arrL} sel={arrObj} onAdded={setArrSel} />}
+          {arranging && <PrecisionPlan ar={ar} roomId={id} sel={arrSel} onSel={setArrSel} />}
           <div className="lt-states" role="radiogroup" aria-label="Room state" data-testid="lite-states">
             {STATES.map((s) => { const x = s.key === stateKey ? st : null; return <button key={s.key} type="button" role="radio" aria-checked={s.key === stateKey} className={`lt-state lt-state--${s.key}${s.key === stateKey ? ' on' : ''}`} onClick={() => upd('state', s.key === 'current' ? null : s.key)} data-testid={`lite-state-${s.key}`}><b>{s.label}</b><span>{s.says}</span>{x && !x.available ? <em>none on record</em> : null}</button>; })}
           </div>

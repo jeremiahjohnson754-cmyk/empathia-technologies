@@ -217,7 +217,7 @@ for (const scheme of SCHEMES) for (const vp of [VIEWPORTS[0], VIEWPORTS[VIEWPORT
 // 12 Nov 2026: V2.5.3's spatial drift (AC-SD1) restored in the Optimize lens: the commissioned footprint dashed with an arrow, restore or
 // mark for review (kept on this device, simulated), undo; the model and the field report both shown
 for (const scheme of SCHEMES) for (const vp of [VIEWPORTS[0], VIEWPORTS[VIEWPORTS.length - 1]]) {
-  const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/lite/room/R-MER-1-140?mode=optimize' }); const p = t.page;
+  const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/lite/room/R-MER-1-140?mode=optimize&view=tech' }); const p = t.page;   // 13 Nov 2026: Optimize now opens in the furnished room (arranging in 3D); the drift outline is the technical overlay's, so the test asks for it
   await p.evaluate(() => { try { localStorage.removeItem('empathia.demo.liteDrift.v1'); } catch { /* */ } }); await p.reload(); const d = p.getByTestId('lite-drift'); await d.waitFor();
   const g0 = await p.locator('[data-testid="lite-ghosts"]').getAttribute('data-n'); const mv0 = await p.locator('.lt-furn--moved').count();
   const now = await d.getByTestId('lite-drift-now').innerText(); const sum = await d.getByTestId('lite-drift-summary').innerText();
@@ -236,7 +236,7 @@ for (const scheme of SCHEMES) for (const vp of [VIEWPORTS[0], VIEWPORTS[VIEWPORT
 }
 // 12 Nov 2026: the object card's catalogue figures, room standard and commissioning rows, and "Move this" in the Optimize lens (V2.5.3 liteCardHtml)
 for (const scheme of SCHEMES) {
-  const t = await open(VIEWPORTS[0], scheme, { hash: '#/lite/room/R-ATL-4-218?mode=optimize' }); const p = t.page; await p.waitForSelector('[data-testid="lite-change"]');
+  const t = await open(VIEWPORTS[0], scheme, { hash: '#/lite/room/R-ATL-4-218?mode=optimize&view=tech' }); const p = t.page; await p.waitForSelector('[data-testid="lite-change"]');   // 13 Nov 2026: Optimize opens in the furnished room now; the device marks this test taps are the technical overlay's
   const cam = p.locator('.lt-dev[data-cat="camera"], .lt-dev[data-cat="bar"]').first(); const code = (await cam.getAttribute('data-testid')).replace('lt-dev-', '');
   await cam.dispatchEvent('click'); await p.waitForSelector('[data-testid="lite-card"]');
   const heads = await p.evaluate(() => Array.from(document.querySelectorAll('[data-testid="lite-card"] .lt-card__h')).map((h) => h.textContent));

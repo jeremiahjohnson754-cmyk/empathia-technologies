@@ -8,7 +8,7 @@
 import { useMemo, useState, useEffect } from 'react';
 import { L3View, useCam } from './l3.js';
 import type { L3Scene } from './l3.js';
-import { v253Room, v253Defs, setV253Role, type V253State } from './v253/v253room.js';
+import { v253Room, v253Defs, setV253Role, type V253State, type V253Edits } from './v253/v253room.js';
 import type { V253Object } from './v253/vendor.js';
 import type { LiteLayer, Overlay, Lens } from './model.js';
 
@@ -17,8 +17,9 @@ const COVER: Partial<Record<Overlay, string>> = { camera: 'fov', mic: 'mic', spe
 
 export interface V253Pick { obj: V253Object; code: string | null }
 
-export function V253RoomStage({ roomId, lens, state, layers, overlays, acoustic, sel, onPick, label, role }: {
+export function V253RoomStage({ roomId, lens, state, layers, overlays, acoustic, sel, onPick, label, role, edits }: {
   roomId: string; lens: Lens; state: V253State; layers: Set<LiteLayer>; overlays: Set<Overlay>; acoustic?: boolean; sel: string | null; onPick: (p: V253Pick | null) => void; label: string; role: string;
+  /** V2.5.3's edits (Optimize lens): the room as arranged in 3D */ edits?: V253Edits | null;
 }) {
   const [small, setSmall] = useState(() => typeof window !== 'undefined' && window.innerWidth < 560);
   useEffect(() => { const up = () => setSmall(window.innerWidth < 560); window.addEventListener('resize', up); return () => window.removeEventListener('resize', up); }, []);
@@ -29,12 +30,13 @@ export function V253RoomStage({ roomId, lens, state, layers, overlays, acoustic,
   const lk = [...layers].sort().join(','), ck = cover.join(',');
   const yawStep = Math.round(c.cam.yaw);   // the scene changes with the yaw (faces turning towards or away); pitch and zoom only move the camera
   // the selected object, by V2.5.3's object id; a device code from the address (?device=) is found through the layout's device ids
-  const res = useMemo(() => { setV253Role(role); return v253Room(roomId, { mode: lens, state, layers: lk ? lk.split(',') : [], cover, sel }, { yaw: yawStep, small }); }, [roomId, lens, state, lk, ck, sel, yawStep, small, role]);   // eslint-disable-line
+  const ek = edits ? JSON.stringify(edits) : '';
+  const res = useMemo(() => { setV253Role(role); return v253Room(roomId, { mode: lens, state, layers: lk ? lk.split(',') : [], cover, sel, edits: edits ?? null }, { yaw: yawStep, small }); }, [roomId, lens, state, lk, ck, sel, yawStep, small, role, ek]);   // eslint-disable-line
   if (!res) return null;
   const L = res.L; const objs = L.objs || [];
   const pick = (id: string) => { const obj = objs.find((o) => o.id === id); if (!obj) return; if (id === sel) { onPick(null); return; } const code = obj.deviceId ? String(obj.deviceId).split(':').slice(1).join(':') : null; onPick({ obj, code }); };
   const counts = objs.reduce((m, o) => { m[o.kind] = (m[o.kind] || 0) + 1; return m; }, {} as Record<string, number>);
-  return <div data-testid="lite-room-3d" data-objects={objs.length} data-hero={L.hero ? 'yes' : 'no'} data-kinds={Object.entries(counts).map(([k, n]) => `${k}:${n}`).join(' ')} data-state={state} data-sel={sel || ''}>
+  return <div data-testid="lite-room-3d" data-objects={objs.length} data-edits={ek ? 'yes' : 'no'} data-hero={L.hero ? 'yes' : 'no'} data-kinds={Object.entries(counts).map(([k, n]) => `${k}:${n}`).join(' ')} data-state={state} data-sel={sel || ''}>
     <L3View sc={res.sc as unknown as L3Scene} c={c} label={label} onNav={() => undefined} S={62} defs={v253Defs()} v253 sel={sel} onObj={pick} tall />
   </div>;
 }

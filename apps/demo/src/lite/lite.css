@@ -361,3 +361,22 @@ polygon.l3-go:hover { filter: brightness(1.18); }
 .pa-sheet__eyebrow { margin: 0; font-size: .78rem; letter-spacing: .04em; color: var(--tx2, inherit); }
 .pa-sheet__h { margin: 0; font-size: 1.35rem; }
 .pa-sheetbody { display: grid; gap: 12px; min-width: 0; }
+
+/* arranging the room in 3D, with the 2D precision plan (13 Nov 2026) */
+.lt-arr { display: grid; gap: 8px; margin: 10px 0; padding: 10px 12px; border: 1px solid var(--line2); border-radius: 14px; background: var(--panel); }
+.lt-arr__row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.lt-arr__l { font-weight: 600; margin-right: 4px; min-width: 0; overflow-wrap: anywhere; }
+.lt-arr__keys { margin: 0; }
+.lt-plan2 { margin: 6px 0 12px; padding: 10px 12px; border: 1px solid var(--line2); border-radius: 14px; background: var(--panel); display: grid; gap: 8px; }
+.lt-plan2__svg { width: 100%; max-width: 520px; height: auto; display: block; }
+.lt-plan2__room { fill: var(--accent-bg); stroke: var(--line2); stroke-width: 1.5; }
+.lt-plan2__o rect { fill: var(--panel); stroke: var(--tx2, currentColor); stroke-width: 1; }
+.lt-plan2__o[role=button] { cursor: pointer; }
+.lt-plan2__o--chair rect { stroke-opacity: .45; }
+.lt-plan2__o--table rect, .lt-plan2__o--desk rect { fill: var(--accent-bg); }
+.lt-plan2__o.added rect { stroke-dasharray: 3 2; stroke: var(--accent); }
+.lt-plan2__o.on rect { stroke: var(--accent); stroke-width: 2.5; }
+.lt-plan2__o[role=button]:focus-visible rect { stroke: var(--accent); stroke-width: 3; }
+.lt-plan2__fields { display: flex; flex-wrap: wrap; gap: 10px; }
+.lt-plan2__fields label { display: grid; gap: 2px; font-size: .9em; }
+.lt-plan2__fields input { width: 8em; min-height: 40px; font: inherit; padding: 0 8px; border: 1px solid var(--line2); border-radius: 8px; background: var(--bg, var(--panel)); color: var(--tx); }
