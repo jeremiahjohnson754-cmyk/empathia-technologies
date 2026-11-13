@@ -196,6 +196,7 @@ p { text-wrap: pretty; }
 .stage__chip li { display: inline-flex; align-items: baseline; gap: 6px; padding: 4px 12px; border-radius: 999px; color: var(--w-tx2); font-size: 13px; font-weight: 600; }
 .stage__chip li + li { box-shadow: inset 1px 0 0 var(--w-line2); border-radius: 0; }
 .stage__chip b { color: var(--w-tx); font: 800 18px/1 var(--w-display); letter-spacing: -.02em; }
+.stage__chip--under { position: relative; left: auto; top: auto; width: max-content; max-width: 100%; margin: 14px 0 0; }
 
 /* the evidence line, on a glass panel under the hero */
 .eline { list-style: none; margin: clamp(48px, 6vw, 80px) 0 0; padding: 26px 28px; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); position: relative; border: 1px solid var(--w-line2); border-radius: var(--w-r-card); background: var(--w-glass); box-shadow: var(--w-edge), var(--w-lift); }

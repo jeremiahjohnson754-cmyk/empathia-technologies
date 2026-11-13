@@ -393,7 +393,9 @@ for (const [w, h] of [[1440, 900], [768, 1024], [390, 844]]) {
   ok('WC-only-here', `no page other than ${HOME} (${pages.length - 1} pages and the not-found page checked), and no script or stylesheet, references the film's key or files; films.json keeps it exclusive to this section`, !elsewhere.length && film.exclusive === true && film.placement.join() === HOME, elsewhere.join(' '));
   await page.goto(base + '/'); await page.waitForTimeout(150); const homeVideos = await page.evaluate((k) => document.querySelectorAll(`[data-film="${k}"], video source[src*="/media/${k}/"]`).length, KEY);
   await page.goto(base + '/films'); const filmsPage = await page.evaluate((k) => ({ text: document.querySelector('main').textContent, videos: document.querySelectorAll(`[data-film="${k}"], video source[src*="/media/${k}/"]`).length }), KEY);
-  ok('WC-not-elsewhere', 'the home page has no player for this film, and the films page neither plays nor lists it', homeVideos === 0 && !/collabora|synclab/i.test(filmsPage.text) && filmsPage.videos === 0, JSON.stringify({ homeVideos, films: filmsPage.videos }));
+  // 13 Nov 2026: the name is matched as a name (Collabora-SING, SynClab), no longer as the bare stem "collabora": the home film M2, now cleared
+  // and listed on /films with its transcript, says "collaboration requirements", which the stem matched although the page names no other film.
+  ok('WC-not-elsewhere', 'the home page has no player for this film, and the films page neither plays nor lists it', homeVideos === 0 && !/collabora[\s-]*sing|synclab/i.test(filmsPage.text) && filmsPage.videos === 0, JSON.stringify({ homeVideos, films: filmsPage.videos }));
   ok('WC-clean', 'no page error, no console error and no request outside the site on the section, before, during and after playing the film', !errs.length && !ext.length, [...errs, ...ext].slice(0, 3).join(' | '));
   await ctx.close();
   // phone and narrow phone: nothing past the edge, the player and the tables inside the page, controls tall enough, focus visible by keyboard

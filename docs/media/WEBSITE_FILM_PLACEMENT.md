@@ -32,7 +32,7 @@ on or off, searched and read by assistive technology, instead of burned-in pixel
 
 | Key | 720p size | Captions | Transcript |
 |---|---|---|---|
-| M2 | 15.0 MB | WebVTT (from `master.srt`) | rendered under the player, from the same cues |
+| M2 | 15.4 MB | WebVTT (`apps/website/films/M2.captions.vtt`: the 29 captions burned into the master, read from its frames); offered, not switched on, so captions never show twice | rendered under the player, from the same cues |
 | FA | 10.3 MB | WebVTT | yes |
 | F02P | 11.8 MB | WebVTT | yes |
 | IE | 13.0 MB | WebVTT | yes |
@@ -53,15 +53,23 @@ The site audit (rule A10) fails any film without a captions track and any video 
 then carries a "Preview build — not for publication" banner and `noindex`, and robots.txt disallows everything. The dist-hygiene gate
 refuses any unverified film in a build that is not a preview. Screenshots of the preview are in the handoff.
 
-## 3. Why none is on the public site yet
+## 3. Rights: M2 is cleared; the others are not yet
+
+**M2 — VERIFIED for the website, 2026-11-13 16:34 CT ("M2 verified").** The owner, as rights owner, accepted vidIQ's Terms of Service
+section 14 (read 2026-11-13: generated content, voice included, may be used commercially, including in promotional content, with no
+active subscription needed) as the licence basis for the narration. Accepted caveats, on record in `apps/website/films.json`: the terms in
+force on 2026-10-05 were not archived, the grant is subject to the voice vendor's terms, and vidIQ gives no warranty against third-party
+claims. The rendition is made from the master the owner attached that day (sha256 matches `masterSha256`; captions are burned in), with
+the poster at 1:12, and it plays in the home hero with the demonstration's counts under it.
+
 
 The owner's rule, kept unchanged: *only VERIFIED assets authorized for the intended distribution channel may enter externally
 distributed builds.* The owner's request now covers **channel authorization** for the website, and it is recorded in
-`apps/website/films.json`. **Licence evidence** is still missing:
+`apps/website/films.json`. For the other films, **licence evidence** is still missing:
 
 | Key | Narration | Picture | What would make it VERIFIED |
 |---|---|---|---|
-| M2 | vidIQ "Brian" (an ElevenLabs premade voice through vidIQ), recorded 2026-10-05 | 3D renders made in this programme | Proof of a vidIQ paid plan or invoice covering 2026-10-05, plus vidIQ's written confirmation that its grant covers commercial use of ElevenLabs-voiced output. **Or** re-voice the film (below). |
+| M2 | vidIQ "Brian" (an ElevenLabs premade voice through vidIQ), recorded 2026-10-05 | 3D renders made in this programme | **Done: VERIFIED 2026-11-13** on vidIQ's terms §14, accepted by the owner (above). |
 | F02P | vidIQ "Brian", 2026-10-10/11 | product screens, simulated processor | the same as M2 |
 | FA | Kokoro v1.0 local TTS (the model is Apache-2.0; output rights are not documented) | demonstration screen recordings | Owner acceptance of Kokoro output for promotional use, filed with the model card, licence and voice hashes. **Or** re-voice the film. |
 | F01 | Kokoro local TTS | V1.4.1 screen recordings | the same as FA |

@@ -9,8 +9,11 @@
       "summary": "A building becomes rooms, a request becomes a design, and the same record follows the room into commissioning, operation, support and learning.",
       "masterSha256": "4578aadab522076830c2ed72eccccd0b98f88cd4d0a480beeff8acae670e782e",
       "renditionSource": "empathia-film/out/Empathia_Master_2m00_1080p_voice_no-captions.mp4 (575d8381…), captions from audio/cuts/master.srt",
+      "source": { "video": "owner upload 2026-11-13 (1000039170.mp4: the master, captions burned in)", "captions": "apps/website/films/M2.captions.vtt" },
+      "burnedCaptions": true,
+      "posterAt": 72,
       "disclosure": "Illustrative 3D scenes; figures on screen are demonstration data.",
-      "rights": { "website": { "status": "UNVERIFIED", "blocking": ["narration: vidIQ \"Brian\" voice (ElevenLabs premade) — vidIQ plan/invoice for 2026-10-05 and vidIQ's written position on commercial use of ElevenLabs-voiced output not on file", "rights owner of record not established"], "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)" } }
+      "rights": { "website": { "status": "VERIFIED", "verifiedBy": "owner, 2026-11-13 16:34 CT: \"M2 verified\" — accepting vidIQ's Terms of Service section 14 (evidence below) as the licence basis for the narration, as rights owner", "acceptedCaveats": ["narration: vidIQ \"Brian\" voice (ElevenLabs premade) — vidIQ plan/invoice for 2026-10-05 not on file; vidIQ's current terms (evidence below) grant commercial use of voice made through vidIQ, but the terms in force on 2026-10-05 are not archived and carry no warranty against third-party (voice vendor) claims", "rights owner of record not established"], "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT), and again for the start page (2026-11-13 16:22 CT: \"Add that 2 minute to the start page of the corporate website\"), with the master attached (its sha256 matches masterSha256)", "evidence": ["vidIQ Terms of Service, https://vidiq.com/terms/, read 2026-11-13, section 14: \"As between you and vidIQ, you may use Content Artifacts you create through the Services for personal or commercial purposes, including in monetized and promotional content\"; Content Artifacts include voice; \"vidIQ does not require attribution or an active subscription for continued use of Content Artifacts already generated\". Subject to third-party, platform and vendor terms."] } }
     },
     {
       "key": "FA",

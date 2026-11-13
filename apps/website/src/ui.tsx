@@ -83,7 +83,7 @@ export const RecordCard = () => (
 /** `exclusive`: the film plays only on the pages in `placement`, never on /films (the build checks it). `sound: 'none'`: the film is
  *  silent and its rendition has no audio stream. `textTrack: 'descriptions'`: there is no speech to caption, so the film carries a
  *  description of what it shows (descriptions.vtt), printed under the player cue by cue. */
-export interface Film { key: string; title: string; runtime: string; summary: string; disclosure: string; placement: string[]; exclusive?: boolean; sound?: 'none'; textTrack?: 'descriptions'; /** printed directly above the player, always visible: what a viewer must know to read the film honestly */ qualifier?: string; /** a label burned into the rendition for its whole length, on a band added above the picture */ burnedLabel?: { text: string; band: number }; /** the rendition's width and height when it is not 1280 × 720 (a band was added) */ frame?: [number, number] }
+export interface Film { key: string; title: string; runtime: string; summary: string; disclosure: string; placement: string[]; exclusive?: boolean; sound?: 'none'; textTrack?: 'descriptions'; /** printed directly above the player, always visible: what a viewer must know to read the film honestly */ qualifier?: string; /** a label burned into the rendition for its whole length, on a band added above the picture */ burnedLabel?: { text: string; band: number }; /** the rendition's width and height when it is not 1280 × 720 (a band was added) */ frame?: [number, number]; /** the captions are also in the picture: the track is offered, not switched on, so they never show twice */ burnedCaptions?: boolean }
 export interface Cue { from: string; to: string; text: string }
 /** A film, if it was built into this site (rights cleared, or a preview build). Captions are a real WebVTT track; the transcript is the
  *  same text, readable without playing anything. No autoplay with sound; nothing downloads until the viewer presses play.
@@ -97,11 +97,11 @@ export const FilmPlayer = ({ film, transcript, cues, lead }: { film: Film; trans
       <div className="film__frame">
         <video controls preload="none" playsInline poster={`/media/${film.key}/poster.webp`} width={film.frame?.[0]} height={film.frame?.[1]} aria-describedby={`${film.qualifier ? `film-${film.key}-q ` : ''}film-${film.key}-cap`}>
           <source src={`/media/${film.key}/720.mp4`} type="video/mp4" />
-          {described ? <track kind="captions" src={`/media/${film.key}/captions.vtt`} srcLang="en" label="English (this film has no sound)" /> : <track kind="captions" src={`/media/${film.key}/captions.vtt`} srcLang="en" label="English" default />}
+          {described ? <track kind="captions" src={`/media/${film.key}/captions.vtt`} srcLang="en" label="English (this film has no sound)" /> : film.burnedCaptions ? <track kind="captions" src={`/media/${film.key}/captions.vtt`} srcLang="en" label="English (also in the picture)" /> : <track kind="captions" src={`/media/${film.key}/captions.vtt`} srcLang="en" label="English" default />}
           {described ? <track kind="descriptions" src={`/media/${film.key}/descriptions.vtt`} srcLang="en" label="Text description (English)" /> : null}
         </video>
       </div>
-      <figcaption id={`film-${film.key}-cap`} className="film__cap"><b>{film.title}</b><span>{described ? `${film.runtime} · no sound · text description below` : `${film.runtime} · captions · transcript below`}</span><span className="film__disc">{film.disclosure}</span></figcaption>
+      <figcaption id={`film-${film.key}-cap`} className="film__cap"><b>{film.title}</b><span>{described ? `${film.runtime} · no sound · text description below` : `${film.runtime} · captions${film.burnedCaptions ? ' in the picture' : ''} · transcript below`}</span><span className="film__disc">{film.disclosure}</span></figcaption>
       {described ? <>
         <p className="film__how" data-film-how>This film has no sound and no narration: everything it says is written on screen. The description below is of what is shown, scene by scene, with the on-screen words in quotation marks and this page’s own notes in square brackets. Nothing in it was spoken.</p>
         <details className="film__transcript film__transcript--described" data-film-description><summary>What the film shows: a text description</summary>
@@ -239,8 +239,12 @@ export const Stage = ({ p, cap, counts }: { p: Product; cap?: Capture; counts: {
         <li><span>Occupancy sensor</span><Tag s="unknown" /></li>
       </ul>
     </figure> : null}
-    <ul className="stage__chip" aria-label="The demonstration in numbers">{counts.map((c) => <li key={c.label}><b>{c.n}</b><span>{c.label}</span></li>)}</ul>
+    <Counts counts={counts} />
   </div>
+);
+/** the demonstration in numbers, counted from the records: over the stage, or under a film that takes the stage's place (`under`) */
+export const Counts = ({ counts, under }: { counts: { n: number; label: string }[]; under?: boolean }) => (
+  <ul className={`stage__chip${under ? ' stage__chip--under' : ''}`} aria-label="The demonstration in numbers">{counts.map((c) => <li key={c.label}><b>{c.n}</b><span>{c.label}</span></li>)}</ul>
 );
 
 /** shot: another capture than the product's own (the room record), with its own description */

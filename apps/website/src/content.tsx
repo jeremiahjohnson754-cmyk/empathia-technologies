@@ -5,7 +5,7 @@
 import { proofPage, LeadClaim } from './proof.js';
 import React from 'react';
 import { LeadForm, type LeadKind } from './form.js';
-import { Hero, Section, Cards, Steps, Note, Actions, Tag, EVIDENCE, EvidenceLine, FilmPlayer, Spectrum, Shot, ProductTiles, EnquiryCard, EnquiryLink, FounderBlock, Stage, Chapters, RoomMix, GlassRail, Strip, RoomDrawing, FilmPending, PlanRecord, type StripItem, type Evidence, type Film, type Cue, type Capture, type ChapterItem } from './ui.js';
+import { Hero, Section, Cards, Steps, Note, Actions, Tag, EVIDENCE, EvidenceLine, FilmPlayer, Spectrum, Shot, ProductTiles, EnquiryCard, EnquiryLink, FounderBlock, Stage, Counts, Chapters, RoomMix, GlassRail, Strip, RoomDrawing, FilmPending, PlanRecord, type StripItem, type Evidence, type Film, type Cue, type Capture, type ChapterItem } from './ui.js';
 import { PRODUCTS, DEMO_STATE, ROOMS_SENTENCE, ROOM_MIX, ROOM_TOTAL } from './products.js';
 import { TALLY_FORM } from './enquiry.js';
 import { commercialPages } from './commercial.js';
@@ -76,7 +76,10 @@ export function buildPages(ctx: SiteContext): Page[] {
   const indexFilms = ctx.films.filter((f) => !f.exclusive);
   const hasFilms = indexFilms.length > 0;
   const lead = (kind: LeadKind, source: Parameters<typeof EnquiryCard>[0]['source']) => ctx.api ? <LeadForm kind={kind} /> : <EnquiryCard source={source} primary />;
-  const heroArt = <Stage p={byId('mission-control')} cap={ctx.captures['mission-control']} counts={[{ n: PRODUCTS.length, label: 'products' }, { n: ROOM_TOTAL, label: 'rooms' }, { n: 1, label: 'record' }]} />;
+  const heroCounts = [{ n: PRODUCTS.length, label: 'products' }, { n: ROOM_TOTAL, label: 'rooms' }, { n: 1, label: 'record' }];
+  const heroArt = <Stage p={byId('mission-control')} cap={ctx.captures['mission-control']} counts={heroCounts} />;
+  // the home film (M2) takes the stage's place when it is cleared for the website; the counts stay, under it
+  const heroFilm = film('M2', true);
 
   const home: Page = { path: '/', title: 'Empathia Technologies — every room, every device, every decision, with its evidence', description: 'Empathia Living Campus connects the request, design, commissioning, service and assurance of every room into one record of what actually happened, and labels what is declared, modeled, observed and verified.', nav: 'Home', body: (
     <>
@@ -89,7 +92,7 @@ export function buildPages(ctx: SiteContext): Page[] {
             <p className="lede">The request, the design, the commissioning tests, the service work and the accepted baseline of every room, connected in one record of what actually happened, and honest about what is only declared or modeled.</p>
             <Actions><a className="btn btn--primary btn--lg" href="/request-demo">Request a demonstration</a><a className="btn btn--lg" href={demo()}>Explore the live demo</a></Actions>
           </div>
-          <div className="hero__aside">{film('M2', true) || heroArt}</div>
+          <div className="hero__aside">{heroFilm ? <>{heroFilm}<Counts counts={heroCounts} under /></> : heroArt}</div>
         </div>
         <EvidenceLine />
         <GlassRail />
