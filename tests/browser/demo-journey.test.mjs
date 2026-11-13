@@ -19,9 +19,12 @@ for (const w of [1440, 390]) {
   ok(`J-${w}-03`, 'the technical room view opens on the same room and keeps it through a reload', rv.includes(ROOM) && rv2 === rv && has1 >= 1 && has2 >= 1, `${rv} ${has1} ${has2}`);
   await p.goBack(); await p.getByTestId('lite-room').waitFor();
   // 13 Nov 2026: the room opens on V2.5.3's furnished drawing, so the camera is tapped there (its named button), as a person would
-  const dev = p.locator('[data-testid=lite-room-3d] .l3-hitbtn[aria-label^="Cam"]').first(); await dev.click(); await p.getByTestId('lite-card').waitFor();
+  // on a phone two 44 px targets overlap; the tap lands at the camera's own position and goes to the nearest target (force: the position
+  // is what a finger presses, whichever button is on top there)
+  await p.getByTestId('lite-room-3d').evaluate((el) => el.scrollIntoView({ block: 'center' }));
+  const dev = p.locator('[data-testid=lite-room-3d] .l3-hitbtn[aria-label^="Cam"]').first(); await dev.click({ force: true }); await p.getByTestId('lite-card').waitFor(); const kind = await p.getByTestId('lite-card').getAttribute('data-kind');
   await p.click(`[data-testid=lite-card-cx] a[href="#/commissioning/room/${ROOM}"]`); await p.waitForTimeout(600); const h3 = await hash(); const main = await p.evaluate(() => document.querySelector('main')?.innerText || '');
-  ok(`J-${w}-04`, 'from a device’s card, the commissioning record opens on the same room', h3 === `#/commissioning/room/${ROOM}` && /4\.218|R-ATL-4-218/.test(main), h3);
+  ok(`J-${w}-04`, 'from a device’s card, the commissioning record opens on the same room', h3 === `#/commissioning/room/${ROOM}` && /4\.218|R-ATL-4-218/.test(main) && kind === 'camera', `${h3} ${kind}`);   // 13 Nov 2026: and the tap chose the camera, not a target overlapping it
   await p.goBack(); await p.getByTestId('lite-room').waitFor(); const last = await p.getByTestId('lite-room').getAttribute('data-room');
   const over = await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   ok(`J-${w}-05`, 'back again lands on the room in Lite; no overflow, no console error, no request leaving the page', last === ROOM && over <= 0 && !t.errs.length && !t.off.length, [last, over, ...t.errs, ...t.off].slice(0, 4).join(' | '));

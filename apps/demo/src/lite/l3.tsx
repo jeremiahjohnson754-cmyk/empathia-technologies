@@ -174,6 +174,13 @@ export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, 
   const fmt = (pts: P3[]) => pts.map((p) => P(p).map((n) => n.toFixed(1)).join(',')).join(' ');
   const go = (to?: string) => { if (to && !c.wasDrag()) onNav(to); };
   const pick = (o?: string) => { if (o && onObj && !c.wasDrag()) onObj(o); };
+  // two 44 px targets can overlap on a small screen: a tap goes to the target whose centre is nearest the finger, as V2.5.3 did (l3Bind);
+  // a keyboard press (no pointer position) goes to the focused one
+  const hits = sc.items.filter((i): i is L3Hit => i.t === 'h');
+  const nearest = (ev: unknown): L3Hit | null => { const e = ev as { clientX: number; clientY: number; detail?: number; currentTarget: EventTarget };
+    if (!e.detail) return null; const root = (e.currentTarget as HTMLElement).closest('.l3-marks'); if (!root) return null; let best: L3Hit | null = null, bd = Infinity;
+    root.querySelectorAll<HTMLElement>('.l3-hitbtn').forEach((b) => { const r = b.getBoundingClientRect(); const d = Math.hypot(r.left + r.width / 2 - e.clientX, r.top + r.height / 2 - e.clientY); const it = hits[Number(b.dataset.k)]; if (it && d < bd) { bd = d; best = it; } });
+    return best; };
   const { onKeyDown, ...pointer } = c.bind;
   // the stage's width on screen, so labels can be kept clear of each other in screen pixels (V2.5.3 l3Svg did this on its canvas)
   const stage = useRef<HTMLDivElement | null>(null); const [px, setPx] = useState(0);
@@ -215,7 +222,7 @@ export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, 
         const style = { left: `${left.toFixed(2)}%`, top: `${top.toFixed(2)}%`, marginTop: lift ? -lift : undefined, opacity: i.a };
         return i.nav ? <a key={`x${k}`} className={cls} style={style} href={i.nav} onClick={(e) => { e.preventDefault(); go(i.nav); }} data-testid={i.testId} tabIndex={-1} aria-hidden="true">{body}</a>
           : <span key={`x${k}`} className={`${cls}${i.o && onObj ? ' l3-tag--obj' : ''}`} style={style} data-testid={i.testId} aria-hidden="true" onClick={i.o && onObj ? () => pick(i.o) : undefined}>{body}</span>; })}
-      {sc.items.filter((i): i is L3Hit => i.t === 'h').map((i, k) => { const [x, y] = P(i.at); return <button key={`h${k}`} type="button" className={`l3-hitbtn${i.o && i.o === sel ? ' on' : ''}`} style={{ left: `${(((x - x0) / (x1 - x0)) * 100).toFixed(2)}%`, top: `${(((y - (i.lift || 0) - y0) / (y1 - y0)) * 100).toFixed(2)}%` }} aria-label={i.label} aria-pressed={i.o ? i.o === sel : undefined} data-testid={i.testId} data-o={i.o} onClick={() => (i.o ? pick(i.o) : go(i.nav))} />; })}
+      {hits.map((i, k) => { const [x, y] = P(i.at); return <button key={`h${k}`} type="button" className={`l3-hitbtn${i.o && i.o === sel ? ' on' : ''}`} style={{ left: `${(((x - x0) / (x1 - x0)) * 100).toFixed(2)}%`, top: `${(((y - (i.lift || 0) - y0) / (y1 - y0)) * 100).toFixed(2)}%` }} aria-label={i.label} aria-pressed={i.o ? i.o === sel : undefined} data-testid={i.testId} data-o={i.o} data-k={k} onClick={(e) => { const it = nearest(e) || i; if (it.o) pick(it.o); else go(it.nav); }} />; })}
     </div>
     </div>
     {/* on a phone the controls sit under the scene, so they never cover a piece of equipment you mean to tap */}
