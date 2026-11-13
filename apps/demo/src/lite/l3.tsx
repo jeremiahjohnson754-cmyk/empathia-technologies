@@ -28,7 +28,8 @@ export const label = (sc: L3Scene, at: P3, text: string, o: Omit<L3Label, 't' | 
 export const hit = (sc: L3Scene, at: P3, o: Omit<L3Hit, 't' | 'L' | 'at'>) => push(sc, { t: 'h', L: 8, at, ...o });
 export const rgb = (c: RGB, k = 1, a?: number) => { const v = c.map((x) => Math.max(0, Math.min(255, Math.round(x * k)))); return a == null ? `rgb(${v.join(',')})` : `rgba(${v.join(',')},${a})`; };
 
-export interface Cam { yaw: number; pitch: number; zoom: number }
+/** the camera: yaw and pitch in degrees, zoom as a factor, pan (px, py) as a fraction of the frame */
+export interface Cam { yaw: number; pitch: number; zoom: number; px?: number; py?: number }
 export const CAM0: Cam = { yaw: -32, pitch: 48, zoom: 1 };
 const RAD = Math.PI / 180;
 /** the horizontal direction towards the viewer (V2.5.3 cam.sy / cam.cy) */
@@ -64,32 +65,55 @@ export function projector(sc: L3Scene, cam: Cam, S = 30) {
 }
 const mean = (pts: P3[]): P3 => { const n = pts.length || 1; return [pts.reduce((s, q) => s + q[0], 0) / n, pts.reduce((s, q) => s + q[1], 0) / n, pts.reduce((s, q) => s + q[2], 0) / n]; };
 
-/** Orbit, tilt and zoom: pointer drag and wheel or pinch on the stage, plus buttons and the arrow keys (keyboard and touch equivalents). */
+/**
+ * Orbit, tilt, zoom and pan, as V2.5.3's l3Bind did and a little more. Mouse: drag orbits and tilts; Shift-drag (or the middle or right
+ * button) pans; Ctrl or ⌘ with the wheel zooms, so the plain wheel still scrolls the page. Touch: a sideways drag orbits and an upward or
+ * downward one scrolls the page (touch-action: pan-y), two fingers pinch to zoom and move together to pan; a double tap resets. Keyboard on
+ * the focused scene: arrows turn and tilt, Shift with the arrows pans, + and − zoom, P goes to plan, F fits, 0 resets.
+ */
 export function useCam(initial: Cam = CAM0) {
   const [cam, setCam] = useState<Cam>(initial); const start = useRef(initial);
-  const drag = useRef<{ x: number; y: number; c: Cam; moved: boolean; el: { setPointerCapture?: (id: number) => void }; id: number } | null>(null); const pts = useRef(new Map<number, [number, number]>()); const pinch = useRef<number | null>(null);
+  const drag = useRef<{ x: number; y: number; c: Cam; moved: boolean; el: { setPointerCapture?: (id: number) => void }; id: number; pan: boolean; touch: boolean; w: number; h: number } | null>(null);
+  const pts = useRef(new Map<number, [number, number]>()); const pinch = useRef<{ d: number; mx: number; my: number; c: Cam } | null>(null);
   const clampP = (p: number) => Math.max(18, Math.min(90, p)); const clampZ = (z: number) => Math.max(0.6, Math.min(3, Math.round(z * 100) / 100));
+  const clampXY = (v: number) => Math.max(-0.6, Math.min(0.6, Math.round(v * 1000) / 1000));
+  type PE = { clientX: number; clientY: number; pointerId: number; pointerType?: string; shiftKey?: boolean; button?: number; currentTarget: { setPointerCapture?: (id: number) => void; getBoundingClientRect?: () => { width: number; height: number } } };
   const bind = {
-    onPointerDown: (e: { clientX: number; clientY: number; pointerId: number; currentTarget: { setPointerCapture?: (id: number) => void } }) => { pts.current.set(e.pointerId, [e.clientX, e.clientY]); drag.current = { x: e.clientX, y: e.clientY, c: cam, moved: false, el: e.currentTarget, id: e.pointerId }; },
+    onPointerDown: (e: PE) => {
+      pts.current.set(e.pointerId, [e.clientX, e.clientY]); const r = e.currentTarget.getBoundingClientRect?.() || { width: 800, height: 600 };
+      drag.current = { x: e.clientX, y: e.clientY, c: cam, moved: false, el: e.currentTarget, id: e.pointerId, pan: !!e.shiftKey || e.button === 1 || e.button === 2, touch: e.pointerType === 'touch', w: r.width || 800, h: r.height || 600 };
+      if (pts.current.size === 2) { const [p1, p2] = [...pts.current.values()] as [[number, number], [number, number]]; pinch.current = { d: Math.hypot(p1[0] - p2[0], p1[1] - p2[1]) || 1, mx: (p1[0] + p2[0]) / 2, my: (p1[1] + p2[1]) / 2, c: cam }; }
+    },
     onPointerMove: (e: { clientX: number; clientY: number; pointerId: number }) => {
-      if (!pts.current.has(e.pointerId)) return; pts.current.set(e.pointerId, [e.clientX, e.clientY]);
-      if (pts.current.size === 2) { const [p1, p2] = [...pts.current.values()] as [[number, number], [number, number]]; const dist = Math.hypot(p1[0] - p2[0], p1[1] - p2[1]); if (pinch.current) setCam((c) => ({ ...c, zoom: clampZ(c.zoom * dist / pinch.current!) })); pinch.current = dist; return; }
-      const d = drag.current; if (!d) return; if (!d.moved && Math.abs(e.clientX - d.x) + Math.abs(e.clientY - d.y) > 4) { d.moved = true; try { d.el.setPointerCapture?.(d.id); } catch { /* not every target captures */ } }   // capture only once it is a drag, so a tap still reaches the button under it
-      if (!d.moved) return;
-      setCam({ ...d.c, yaw: d.c.yaw + (e.clientX - d.x) * 0.4, pitch: clampP(d.c.pitch - (e.clientY - d.y) * 0.25) });
+      if (!pts.current.has(e.pointerId)) return; pts.current.set(e.pointerId, [e.clientX, e.clientY]); const d = drag.current;
+      if (pts.current.size === 2 && pinch.current) { const [p1, p2] = [...pts.current.values()] as [[number, number], [number, number]]; const P0 = pinch.current; const dist = Math.hypot(p1[0] - p2[0], p1[1] - p2[1]); const mx = (p1[0] + p2[0]) / 2, my = (p1[1] + p2[1]) / 2;
+        if (d) d.moved = true; setCam({ ...P0.c, zoom: clampZ(P0.c.zoom * dist / P0.d), px: clampXY((P0.c.px || 0) + (mx - P0.mx) / (d?.w || 800)), py: clampXY((P0.c.py || 0) + (my - P0.my) / (d?.h || 600)) }); return; }
+      if (!d) return; const dx = e.clientX - d.x, dy = e.clientY - d.y;
+      if (!d.moved) {
+        if (Math.abs(dx) + Math.abs(dy) <= 4) return;
+        if (d.touch && !d.pan && Math.abs(dy) > Math.abs(dx) * 1.2) { drag.current = null; return; }   // an upward or downward swipe is the page scrolling (V2.5.3)
+        d.moved = true; try { d.el.setPointerCapture?.(d.id); } catch { /* not every target captures */ }   // capture only once it is a drag, so a tap still reaches the button under it
+      }
+      if (d.pan) { setCam({ ...d.c, px: clampXY((d.c.px || 0) + dx / d.w), py: clampXY((d.c.py || 0) + dy / d.h) }); return; }
+      setCam({ ...d.c, yaw: d.c.yaw + dx * 0.4, pitch: d.touch ? d.c.pitch : clampP(d.c.pitch - dy * 0.25) });
     },
     onPointerUp: (e: { pointerId: number }) => { pts.current.delete(e.pointerId); if (pts.current.size < 2) pinch.current = null; setTimeout(() => { if (!pts.current.size) drag.current = null; }, 0); },   // the click that follows a drag still sees it; a later tap or key does not
     onPointerCancel: (e: { pointerId: number }) => { pts.current.delete(e.pointerId); pinch.current = null; drag.current = null; },
-    onWheel: (e: { deltaY: number }) => setCam((c) => ({ ...c, zoom: clampZ(c.zoom * (e.deltaY < 0 ? 1.1 : 1 / 1.1)) })),
-    onKeyDown: (e: { key: string; preventDefault: () => void; target: unknown; currentTarget: unknown }) => {
-      if (e.target !== e.currentTarget) return; const m: Record<string, (c: Cam) => Cam> = { ArrowLeft: (c) => ({ ...c, yaw: c.yaw - 15 }), ArrowRight: (c) => ({ ...c, yaw: c.yaw + 15 }), ArrowUp: (c) => ({ ...c, pitch: clampP(c.pitch + 8) }), ArrowDown: (c) => ({ ...c, pitch: clampP(c.pitch - 8) }), '+': (c) => ({ ...c, zoom: clampZ(c.zoom * 1.15) }), '=': (c) => ({ ...c, zoom: clampZ(c.zoom * 1.15) }), '-': (c) => ({ ...c, zoom: clampZ(c.zoom / 1.15) }), '0': () => start.current };
-      const f = m[e.key]; if (f) { e.preventDefault(); setCam(f); } },
+    onContextMenu: (e: { preventDefault: () => void; shiftKey?: boolean }) => { if (drag.current?.pan) e.preventDefault(); },
+    onDoubleClick: (e: { target: unknown }) => { const t = e.target as { closest?: (s: string) => unknown }; if (!t.closest?.('button, a, .l3-ctl')) setCam(start.current); },
+    onKeyDown: (e: { key: string; shiftKey?: boolean; preventDefault: () => void; target: unknown; currentTarget: unknown }) => {
+      if (e.target !== e.currentTarget) return;
+      const pan: Record<string, (c: Cam) => Cam> = { ArrowLeft: (c) => ({ ...c, px: clampXY((c.px || 0) - 0.05) }), ArrowRight: (c) => ({ ...c, px: clampXY((c.px || 0) + 0.05) }), ArrowUp: (c) => ({ ...c, py: clampXY((c.py || 0) - 0.05) }), ArrowDown: (c) => ({ ...c, py: clampXY((c.py || 0) + 0.05) }) };
+      const m: Record<string, (c: Cam) => Cam> = { ArrowLeft: (c) => ({ ...c, yaw: c.yaw - 15 }), ArrowRight: (c) => ({ ...c, yaw: c.yaw + 15 }), ArrowUp: (c) => ({ ...c, pitch: clampP(c.pitch + 8) }), ArrowDown: (c) => ({ ...c, pitch: clampP(c.pitch - 8) }), '+': (c) => ({ ...c, zoom: clampZ(c.zoom * 1.15) }), '=': (c) => ({ ...c, zoom: clampZ(c.zoom * 1.15) }), '-': (c) => ({ ...c, zoom: clampZ(c.zoom / 1.15) }), '0': () => start.current, p: (c) => ({ ...c, pitch: 90, yaw: 0 }), P: (c) => ({ ...c, pitch: 90, yaw: 0 }), f: (c) => ({ ...c, zoom: 1, px: 0, py: 0 }), F: (c) => ({ ...c, zoom: 1, px: 0, py: 0 }) };
+      const f = (e.shiftKey && pan[e.key]) || m[e.key]; if (f) { e.preventDefault(); setCam(f); } },
   };
   const wasDrag = () => !!drag.current?.moved;
-  return { cam, setCam, bind, wasDrag, reset: () => setCam(start.current), turn: (d: number) => setCam((c) => ({ ...c, yaw: c.yaw + d })), tilt: (d: number) => setCam((c) => ({ ...c, pitch: clampP(c.pitch + d) })), zoomBy: (k: number) => setCam((c) => ({ ...c, zoom: clampZ(c.zoom * k) })), plan: () => setCam((c) => ({ ...c, pitch: 90, yaw: 0 })) };
+  /** Ctrl or ⌘ with the wheel (and a trackpad pinch, which browsers send that way) zooms; the plain wheel is left to scroll the page */
+  const wheel = (e: WheelEvent) => { if (!(e.ctrlKey || e.metaKey)) return; e.preventDefault(); setCam((c) => ({ ...c, zoom: clampZ(c.zoom * (e.deltaY < 0 ? 1.08 : 1 / 1.08)) })); };
+  return { cam, setCam, bind, wasDrag, wheel, reset: () => setCam(start.current), fit: () => setCam((c) => ({ ...c, zoom: 1, px: 0, py: 0 })), turn: (d: number) => setCam((c) => ({ ...c, yaw: c.yaw + d })), tilt: (d: number) => setCam((c) => ({ ...c, pitch: clampP(c.pitch + d) })), zoomBy: (k: number) => setCam((c) => ({ ...c, zoom: clampZ(c.zoom * k) })), plan: () => setCam((c) => ({ ...c, pitch: 90, yaw: 0 })) };
 }
 
-/** The stage's controls, in V2.5.3's column: turn right, turn left, zoom in, zoom out, plan, reset (and a slot for more). */
+/** The stage's controls, in V2.5.3's column: turn right, turn left, zoom in, zoom out, plan, fit, reset (and a slot for more). */
 export function CamBar({ c, extra }: { c: ReturnType<typeof useCam>; extra?: ReactNode }) {
   return <div className="l3-ctl" role="toolbar" aria-label="View controls">
     <button type="button" className="l3-btn" onClick={() => c.turn(45)} aria-label="Turn right" title="Turn right"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 15a7 7 0 0 1 12-5l2 2M19 6v6h-6" /></svg></button>
@@ -97,6 +121,7 @@ export function CamBar({ c, extra }: { c: ReturnType<typeof useCam>; extra?: Rea
     <button type="button" className="l3-btn" onClick={() => c.zoomBy(1.2)} aria-label="Zoom in" title="Zoom in"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg></button>
     <button type="button" className="l3-btn" onClick={() => c.zoomBy(1 / 1.2)} aria-label="Zoom out" title="Zoom out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" /></svg></button>
     <button type="button" className="l3-btn" onClick={c.plan} aria-pressed={c.cam.pitch === 90} aria-label="Plan view from above" title="Plan"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="2" /><path d="M5 12h7V5" /></svg></button>
+    <button type="button" className="l3-btn" onClick={c.fit} aria-label="Fit to the view" title="Fit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" /></svg></button>
     <button type="button" className="l3-btn" onClick={c.reset} aria-label="Reset the view" title="Reset"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12a7 7 0 1 0 2-5M5 4v4h4" /></svg></button>
     {extra}
   </div>;
@@ -129,7 +154,7 @@ export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, 
   // framing from the scene's radius and height (V2.5.3 l3Scene R and top), so the view does not jump as it turns; zoom narrows the frame
   const sp = Math.sin(c.cam.pitch * Math.PI / 180), cp = Math.cos(c.cam.pitch * Math.PI / 180);
   const hw = sc.R * S * 1.08 + 30, top = sc.top * cp * S, hh = sc.R * sp * S + 24;
-  const cxv = 14, cyv = -top / 2, fw = (2 * hw) / c.cam.zoom, fh = (2 * hh + top + 60) / c.cam.zoom;
+  const fw = (2 * hw) / c.cam.zoom, fh = (2 * hh + top + 60) / c.cam.zoom; const cxv = 14 - (c.cam.px || 0) * fw, cyv = -top / 2 - (c.cam.py || 0) * fh;
   const x0 = cxv - fw / 2, x1 = cxv + fw / 2, y0 = cyv - fh / 2 - 10 / c.cam.zoom, y1 = cyv + fh / 2;
   const fmt = (pts: P3[]) => pts.map((p) => P(p).map((n) => n.toFixed(1)).join(',')).join(' ');
   const go = (to?: string) => { if (to && !c.wasDrag()) onNav(to); };
@@ -138,6 +163,7 @@ export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, 
   // the stage's width on screen, so labels can be kept clear of each other in screen pixels (V2.5.3 l3Svg did this on its canvas)
   const stage = useRef<HTMLDivElement | null>(null); const [px, setPx] = useState(0);
   useEffect(() => { if (!v253) return; const el = stage.current; if (!el) return; const up = () => setPx(el.clientWidth); up(); const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(up) : null; ro?.observe(el); return () => ro?.disconnect(); }, [v253]);
+  useEffect(() => { const el = stage.current; if (!el) return; const w = (e: WheelEvent) => c.wheel(e); el.addEventListener('wheel', w, { passive: false }); return () => el.removeEventListener('wheel', w); }, [c.wheel]);   // eslint-disable-line
   const labels = sc.items.filter((i): i is L3Label => i.t === 'x');
   const placed = useMemo(() => {
     const out = new Map<L3Label, { lift: number; skip: boolean }>(); if (!v253 || !px) return out;
@@ -153,7 +179,7 @@ export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, 
     return out;
   }, [sc, c.cam, px, v253]);   // eslint-disable-line
   return <div className={`l3-stage${tall ? ' l3-stage--tall' : ''}${v253 ? ' l3-stage--v253' : ''}`} data-stage="" data-testid={testId} ref={stage} {...pointer}>
-    <svg className="l3-svg" style={{ aspectRatio: `${(x1 - x0).toFixed(0)} / ${(y1 - y0).toFixed(0)}` }} viewBox={`${x0.toFixed(0)} ${y0.toFixed(0)} ${(x1 - x0).toFixed(0)} ${(y1 - y0).toFixed(0)}`} role="group" aria-label={aria} tabIndex={0} onKeyDown={onKeyDown} data-yaw={Math.round(c.cam.yaw)} data-pitch={Math.round(c.cam.pitch)} data-zoom={c.cam.zoom}>
+    <svg className="l3-svg" style={{ aspectRatio: `${(x1 - x0).toFixed(0)} / ${(y1 - y0).toFixed(0)}` }} viewBox={`${x0.toFixed(0)} ${y0.toFixed(0)} ${(x1 - x0).toFixed(0)} ${(y1 - y0).toFixed(0)}`} role="group" aria-label={aria} tabIndex={0} onKeyDown={onKeyDown} data-yaw={Math.round(c.cam.yaw)} data-pitch={Math.round(c.cam.pitch)} data-zoom={c.cam.zoom} data-pan={`${c.cam.px || 0},${c.cam.py || 0}`}>
       {defs ? <g dangerouslySetInnerHTML={{ __html: defs }} /> : <defs>
         <linearGradient id="l3slab" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#4a463f" /><stop offset="1" stopColor="#36332e" /></linearGradient>
         <pattern id="l3hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#4b3a2c" /><line x1="0" y1="0" x2="0" y2="6" stroke="#c98a3a" strokeWidth="1.5" /></pattern>

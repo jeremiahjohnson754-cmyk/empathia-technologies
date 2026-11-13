@@ -44,6 +44,20 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [412, 915, 'phone']]) {
   ok(`LS-${tag}-11`, 'the arrow keys turn and tilt the focused scene', k.yaw === c0.yaw + 15 && k.pitch > c0.pitch, JSON.stringify(k));
   const bb = await svg.boundingBox(); await p.mouse.move(bb.x + bb.width * 0.3, bb.y + bb.height * 0.5); await p.mouse.down(); await p.mouse.move(bb.x + bb.width * 0.3 + 120, bb.y + bb.height * 0.5, { steps: 6 }); await p.mouse.up(); const d = await cam();
   ok(`LS-${tag}-12`, 'dragging the scene orbits it, and a drag is not taken as a tap', d.yaw !== k.yaw && (await at(p)) === '#/lite/b/ATL', JSON.stringify(d));
+  // pan, fit, wheel and double-click (13 Nov 2026, 50/10 C: pan and fit-to-screen); the plain wheel is left to scroll the page, as in V2.5.3
+  const pan = async () => (await svg.getAttribute('data-pan')).split(',').map(Number);
+  await p.mouse.move(bb.x + bb.width * 0.4, bb.y + bb.height * 0.5); await p.keyboard.down('Shift'); await p.mouse.down(); await p.mouse.move(bb.x + bb.width * 0.4 + 90, bb.y + bb.height * 0.5 + 40, { steps: 6 }); await p.mouse.up(); await p.keyboard.up('Shift');
+  const pn = await pan(); const yp = await cam();
+  ok(`LS-${tag}-12b`, 'Shift-drag pans the scene without turning it', pn[0] > 0 && pn[1] > 0 && yp.yaw === d.yaw, JSON.stringify([pn, yp]));
+  await svg.focus(); await p.keyboard.press('Shift+ArrowLeft'); const pk = await pan();
+  ok(`LS-${tag}-12c`, 'Shift with an arrow key pans too', pk[0] < pn[0], JSON.stringify(pk));
+  const z0 = (await cam()).zoom; await p.mouse.move(bb.x + bb.width * 0.5, bb.y + bb.height * 0.5); await p.mouse.wheel(0, -200); await p.waitForTimeout(100); const z1 = (await cam()).zoom;
+  await p.keyboard.down('Control'); await p.mouse.wheel(0, -200); await p.keyboard.up('Control'); await p.waitForTimeout(100); const z2 = (await cam()).zoom;
+  ok(`LS-${tag}-12d`, 'the plain wheel does not zoom (the page scrolls); Ctrl with the wheel zooms', z1 === z0 && z2 > z1, JSON.stringify([z0, z1, z2]));
+  await p.locator('[data-testid=lite-building-3d]').getByRole('button', { name: 'Fit to the view' }).click(); const ft = await cam(); const pf = await pan();
+  ok(`LS-${tag}-12e`, '“Fit to the view” brings the whole scene back (zoom 1, no pan) and keeps the angle', ft.zoom === 1 && pf[0] === 0 && pf[1] === 0 && ft.yaw === yp.yaw, JSON.stringify([ft, pf]));
+  await p.mouse.dblclick(bb.x + bb.width * 0.15, bb.y + bb.height * 0.85); await p.waitForTimeout(100); const rs = await cam();
+  ok(`LS-${tag}-12f`, 'a double click resets the view (V2.5.3)', rs.yaw === c0.yaw && rs.pitch === c0.pitch && rs.zoom === c0.zoom && (await at(p)) === '#/lite/b/ATL', JSON.stringify(rs));
   // deep link and reload
   await p.goto(p.url().split('#')[0] + '#/lite/b/MER/2'); await wait(p, '[data-testid=lite-floor-3d]'); await p.reload(); await wait(p, '[data-testid=lite-floor-3d]');
   ok(`LS-${tag}-13`, 'a floor’s address opens it directly and survives a reload', (await at(p)) === '#/lite/b/MER/2');

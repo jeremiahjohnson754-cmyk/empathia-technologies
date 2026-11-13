@@ -262,7 +262,7 @@
 /* ---- L3 stage (V2.5.3's spatial stage, ported): always dark (D36), the scene fills it, controls in a column on the right ---- */
 .l3-stage { --l3-teal: #45cfc1; position: relative; min-width: 0; border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,246,232,.08);
   background: radial-gradient(120% 90% at 30% 10%, #2a2925 0%, #1a1916 55%, #121110 100%); color: #f2ede4; }
-.l3-svg { display: block; width: 100%; height: auto; max-height: 70vh; min-height: 260px; touch-action: none; cursor: grab; user-select: none; }
+.l3-svg { display: block; width: 100%; height: auto; max-height: 70vh; min-height: 260px; touch-action: pan-y; cursor: grab; user-select: none; }
 .l3-stage--tall .l3-svg { max-height: 76vh; }
 .l3-marks { position: absolute; inset: 0; pointer-events: none; }
 .l3-tag { position: absolute; transform: translate(-50%, -100%); display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; padding: 4px 10px; border-radius: 999px;
