@@ -132,7 +132,7 @@ test('CX-05 a site champion is a first-class record: three permissions from the 
 });
 
 test('CX-06 who to contact: for every room the site champion first when at work, otherwise the backup and it says why; then the technician; the service manager last; owners for devices and issues; each with a reason', () => {
-  const w = W.seed(); let promoted = 0; let plain = 0; assert.equal(CN.CAMPUS_ROOMS.length, 90);
+  const w = W.seed(); let promoted = 0; let plain = 0; assert.equal(CN.CAMPUS_ROOMS.length, 140);   // 13 Nov 2026: + V2.5.3's 50 rooms the estate lacked (founder: "use as many of v2.5.3's rooms as you can"): 90 → 140
   for (const at of [NOW, NOW + 3.5 * 3_600_000, NOW + 9 * 3_600_000, NOW + 3 * DAY + 2 * 3_600_000, Date.UTC(2026, 10, 16, 16), Date.UTC(2026, 10, 16, 23, 30), Date.UTC(2026, 10, 21, 15)]) for (const o of CN.CAMPUS_ROOMS) {
     const list = D.whoKnows(o.id, at, w); assert.ok(list.length >= 4, o.id); const ids = list.map((c) => c.person.id); assert.equal(new Set(ids).size, ids.length);
     const champ = list.find((c) => c.relation === 'champion'); const back = list.find((c) => c.relation === 'backup'); const tech = list.find((c) => c.relation === 'technician');

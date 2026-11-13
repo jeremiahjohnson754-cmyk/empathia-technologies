@@ -19,7 +19,7 @@ const rng = (seed) => () => { seed = (seed * 1664525 + 1013904223) >>> 0; return
 const ok = (x) => { assert.ok(!('why' in x), JSON.stringify(x)); return x; };
 
 test('RC-01 a panel is the room’s own equipment: its screens, its cameras, sources its equipment can show; nothing for what it lacks', () => {
-  assert.equal(recs.length, 90);
+  assert.equal(recs.length, 140);   // 13 Nov 2026: + V2.5.3's 50 rooms the estate lacked (founder: "use as many of v2.5.3's rooms as you can"): 90 → 140
   for (const r of recs) { const p = C.panelOf(r); const cats = new Set(hw(r).map((x) => x.cat)); const codes = new Set(r.positions.map((x) => x.code));
     assert.deepEqual(p.displays.map((d) => d.code), hw(r).filter((x) => ['display', 'projector', 'ledwall'].includes(x.cat)).map((x) => x.code), r.outline.id);
     assert.deepEqual(p.cameras.map((c) => c.code), hw(r).filter((x) => ['camera', 'bar'].includes(x.cat)).map((x) => x.code));
