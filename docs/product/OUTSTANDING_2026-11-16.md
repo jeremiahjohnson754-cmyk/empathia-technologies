@@ -17,6 +17,13 @@ product screenshots.
 - **Browser, dark** (7b212a4): all four batches pass, except `founder-studio` in the worktree (same reason). Rerun in the main tree on
   7b212a4: 19/0.
 - **Production (`main`)** is unchanged. It waits for the founder's word.
+- **Cross-links between the staging sites** (founder, 14 Nov 2026, 09:22: "the corporate website … is still going to the old demo
+  site"):
+  - The two sites build their links to each other from environment variables. Unset, they default to the production sites.
+  - Set on Render on 14 Nov:
+    - `empathia-website-next`: `WEBSITE_DEMO_URL=https://empathia-demo-next.onrender.com`.
+    - `empathia-demo-next`: `DEMO_WEBSITE_URL=https://empathia-website-next.onrender.com`.
+  - Each service then redeployed `7b212a4`. No code changed. Production keeps its defaults.
 
 ## Built since the candidate
 
