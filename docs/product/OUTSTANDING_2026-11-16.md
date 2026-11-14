@@ -2,14 +2,21 @@
 
 Pause: the founder returns on 16 Nov 2026. Everything below is committed on `v18/continuation`.
 
-## The staging candidate
+## Staging (14 Nov 2026, 09:14 CT)
 
-- **What is on staging.** `phase3/legendary-experience`, served by both `-next` sites, is still at `1d5dcfe`. The founder's rule of
-  12 Nov holds: a commit is staged only after a full regression of that commit.
-- **Candidate `59acf12`:** build ok; unit, integration and security tests PASS 115, FAIL 0; browser matrix light-00, light-01 and
-  light-02 ok. Light-03 and dark-00…03 are **NOT RUN**, so the candidate is not staged.
-- **Current head** (the register gate and refresh planning): unit, integration and security tests PASS 115, FAIL 0 on the gate change.
-  The changed browser suites `demo.test` (110/0) and the e2e checkpoint (102/0) pass. The full browser matrix is **NOT RUN**.
+Both `-next` sites serve **`7b212a4`**. Render reports the `empathia-demo-next` and `empathia-website-next` deploys `live` on that
+commit. Its regression ran on 553ff0a and then on 7b212a4. The two commits differ only in the generated API schemas and the website's
+product screenshots.
+
+- **Build, and the unit, integration and security tests** (7b212a4): build ok; PASS 116, FAIL 0.
+- **Browser, light** (553ff0a): all four batches pass, with two exceptions:
+  - `demo-room-jumps` timed out once under load. Rerun on its own on 7b212a4: 11/0.
+  - `founder-studio` fails in the regression worktree, which lacks local, engineer-private assets. Rerun in the main tree on 7b212a4:
+    19/0.
+- **Browser, light, the website suites** (rerun on 7b212a4): website 250/0, fold 37/0, pilot 54/0, brand ok.
+- **Browser, dark** (7b212a4): all four batches pass, except `founder-studio` in the worktree (same reason). Rerun in the main tree on
+  7b212a4: 19/0.
+- **Production (`main`)** is unchanged. It waits for the founder's word.
 
 ## Built since the candidate
 
