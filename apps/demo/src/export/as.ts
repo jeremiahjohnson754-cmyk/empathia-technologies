@@ -45,7 +45,7 @@ export function asPackage(r: RoomRecord, incidents: S.Incident[], by: MadeBy): R
       { label: 'Identified units', value: `${fw.filter((p) => p.identity !== 'UNKNOWN').length} of ${fw.length}`, note: 'no make, model or serial is invented' },
       { label: 'Baseline', value: cur ? `v${cur.version}` : '—', note: cur ? `accepted ${ymd(cur.at)}` : 'never accepted: nothing to compare with' },
     ],
-    chart: { title: 'Dimensions by layer', categories: LAYERS, series: (['match', 'failed', 'drift', 'reported'] as const).map((k) => ({ name: DIM_LABEL[k], values: LAYERS.map((Ly) => dims.filter((d) => d.layer === Ly && d.state === k).length) })) },
+    chart: { title: 'Dimensions by layer', categories: LAYERS, series: (['match', 'failed', 'drift', 'reported'] as const).map((k) => ({ name: DIM_LABEL[k], tone: ({ match: 'ok', failed: 'bad', drift: 'warn', reported: 'info' } as const)[k], values: LAYERS.map((Ly) => dims.filter((d) => d.layer === Ly && d.state === k).length) })) },
     sections: [
       { id: 'finding', heading: 'What Assurance found', text: [`${L.label}: ${st.why}.`],
         bullets: off.length ? off.map((d) => `${d.layer} · ${d.name}: ${DIM_LABEL[d.state].toLowerCase()} — ${d.note}`) : ['Every value Assurance compares reads the same as the commissioned state.'] },

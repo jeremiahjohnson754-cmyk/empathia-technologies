@@ -92,9 +92,9 @@ export function cxPackage(r: RoomRecord, by: MadeBy): Report {
       { label: 'Baseline', value: cur ? `v${cur.version}` : '—', note: cur ? `${ymd(cur.at)}${pend ? ` · v${pend.version} pending` : ''}` : pend ? `v${pend.version} pending acceptance` : 'none: never accepted' },
     ],
     chart: { title: 'Checks by phase', categories: ph.map((p) => p.name), series: [
-      { name: 'Pass', values: ph.map((p) => p.pass) }, { name: 'Fail', values: ph.map((p) => p.fail) },
-      { name: 'Awaiting', values: ph.map((p) => p.rows.filter((x) => x.result === 'PASS_UNVERIFIED' || x.result === 'INCONCLUSIVE').length) },
-      { name: 'Not run', values: ph.map((p) => p.rows.filter((x) => !x.result || x.result === 'NOT_TESTED' || x.result === 'NOT_SUPPORTED').length) }] },
+      { name: 'Pass', tone: 'ok', values: ph.map((p) => p.pass) }, { name: 'Fail', tone: 'bad', values: ph.map((p) => p.fail) },
+      { name: 'Awaiting', tone: 'warn', values: ph.map((p) => p.rows.filter((x) => x.result === 'PASS_UNVERIFIED' || x.result === 'INCONCLUSIVE').length) },
+      { name: 'Not run', tone: 'muted', values: ph.map((p) => p.rows.filter((x) => !x.result || x.result === 'NOT_TESTED' || x.result === 'NOT_SUPPORTED').length) }] },
     sections, primary: 'Test register',
     dossier: {
       room: { id: o.id, building: o.building, floor: o.floor, number: o.number, archetype: o.archetype, kind: o.kind, capacity: o.capacity, dims: o.dims },

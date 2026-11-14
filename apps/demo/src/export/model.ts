@@ -27,7 +27,7 @@ export interface Report {
   headline: string;
   kpis: Array<{ label: string; value: string; note?: string }>;
   /** a small chart a report may carry: categories and named series of counts */
-  chart?: { title: string; categories: string[]; series: Array<{ name: string; values: number[] }> };
+  chart?: { title: string; categories: string[]; series: Array<{ name: string; values: number[]; tone?: Tone | 'info' }> };
   sections: Section[];
   /** the table the CSV carries (by title); the largest table when absent */
   primary?: string;

@@ -45,7 +45,7 @@ export function apexPackage(c: S.ApexCase, w: S.Workspace, by: MadeBy): Report {
       { label: 'Commissioning', value: cx ? CX_LABEL[cx.state].label : '—', note: cx?.why || '' },
       { label: 'Assurance', value: as ? AS_LABEL[as.state].label : '—', note: as?.why || '' },
     ],
-    chart: { title: 'Hypotheses by layer and confidence', categories: [...new Set(c.hypotheses.map((h) => h.layer))], series: (['high', 'medium', 'low', 'none'] as const).map((k) => ({ name: CONF_WORD[k]!, values: [...new Set(c.hypotheses.map((h) => h.layer))].map((L) => c.hypotheses.filter((h) => h.layer === L && h.confidence === k).length) })) },
+    chart: { title: 'Hypotheses by layer and confidence', categories: [...new Set(c.hypotheses.map((h) => h.layer))], series: (['high', 'medium', 'low', 'none'] as const).map((k) => ({ name: CONF_WORD[k]!, tone: ({ high: 'ok', medium: 'info', low: 'warn', none: 'muted' } as const)[k], values: [...new Set(c.hypotheses.map((h) => h.layer))].map((L) => c.hypotheses.filter((h) => h.layer === L && h.confidence === k).length) })) },
     sections: [
       { id: 'thread', heading: 'The thread', text: ['From the room’s commissioning record, through Assurance, to the service request this case explains.'],
         bullets: [

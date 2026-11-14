@@ -32,6 +32,7 @@ export { cxPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export
 export { asPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/as.ts'))};
 export { seed, openApex, apexAct } from ${JSON.stringify(path.join(repo, 'apps/demo/src/workspace/store.ts'))};
 export { apexPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/apex.ts'))};
+export { estatePackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/estate.ts'))};
 export * as R from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/render.ts'))};
 export { FORMATS } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/model.ts'))};
 export { roomRecord, allRecords } from ${JSON.stringify(path.join(repo, 'apps/demo/src/campus/design.ts'))};
@@ -64,6 +65,9 @@ const reports = [...pick.values()].map(({ r, why }) => ({ why, rep: M.cxPackage(
 const ws = M.seed(); const asRooms = new Map([['R-ATL-4-218', 'reference room: a replaced unit reopened tests'], ['R-MER-1-140', 'drift: furniture moved since handover'], ['R-BCN-3-225', 'failed: never accepted']]);
 for (const i of ws.incidents) if (!asRooms.has(i.roomId) && asRooms.size < 5) asRooms.set(i.roomId, `a service request is open (${i.id})`);
 for (const [id, why] of asRooms) { const r = M.roomRecord(id); if (r) reports.push({ why: `assurance · ${why}`, rep: M.asPackage(r, ws.incidents, made) }); }
+// the portfolio brief: the whole estate (every room record) and one building of it
+reports.push({ why: 'portfolio · the whole estate', rep: M.estatePackage(all, ws.incidents, made) });
+reports.push({ why: 'portfolio · one building (Beacon)', rep: M.estatePackage(all, ws.incidents, made, 'BCN') });
 // APEX: the seeded case, and one opened here and acted on at every tier (the A4 preflight is blocked by the adapter state, as built)
 for (const c of ws.apexCases) reports.push({ why: `apex · seeded case ${c.id}`, rep: M.apexPackage(c, ws, made) });
 { const inc = ws.incidents.find((i) => !i.apexId && !['CLOSED', 'CANCELLED'].includes(i.state));

@@ -87,6 +87,22 @@ const sha = (b) => crypto.createHash('sha256').update(b).digest('hex');
   await t.close();
 }
 {
+  // the portfolio brief: the estate drilled up (buildings, room types) and down (every room); the building filter scopes it
+  const t = await open('#/commissioning', { role: 'architect', sw: false }); const p = t.page; p.setDefaultTimeout(20000);
+  const card = p.getByTestId('estate-export'); await card.waitFor();
+  const [d1] = await Promise.all([p.waitForEvent('download'), card.locator('button[data-format=json]').click()]);
+  const all = JSON.parse(fs.readFileSync(await d1.path(), 'utf8'));
+  await p.getByRole('radio', { name: 'Beacon', exact: true }).click(); await p.waitForTimeout(200);
+  const [d2] = await Promise.all([p.waitForEvent('download'), card.locator('button[data-format=json]').click()]);
+  const one = JSON.parse(fs.readFileSync(await d2.path(), 'utf8'));
+  const [d3] = await Promise.all([p.waitForEvent('download'), card.locator('button[data-format=pptx]').click()]);
+  const pz = await JSZip.loadAsync(fs.readFileSync(await d3.path())); const chart = Object.keys(pz.files).some((n) => /^ppt\/charts\/chart\d+\.xml$/.test(n));
+  const tiles = await p.getByTestId('tiles').innerText();
+  ok('XP-EST', 'the portfolio brief counts what the command centre counts: every room for the campus, only Beacon’s once Beacon is chosen, with a deck that carries a native chart', d1.suggestedFilename() === 'EST-CAMPUS-portfolio-brief.json' && all.entities.rooms.length === all.tables.Rooms.rows.length && all.entities.rooms.length >= 100
+    && d2.suggestedFilename() === 'EST-BCN-portfolio-brief.json' && one.entities.rooms.length > 0 && one.entities.rooms.every((r) => r.building === 'BCN') && tiles.includes(`of ${one.entities.rooms.length}`) && chart && !t.errs.length && !t.off.length, `${all.entities.rooms.length} / ${one.entities.rooms.length} · ${tiles.replace(/\s+/g, ' ').slice(0, 60)}`);
+  await t.close();
+}
+{
   const t = await open(`#/commissioning/room/R-ATL-4-218`, { role: 'architect', w: 390, h: 844, sw: false }); const p = t.page; p.setDefaultTimeout(20000);
   const card = p.getByTestId('cx-export'); await card.scrollIntoViewIfNeeded();
   const [dl] = await Promise.all([p.waitForEvent('download'), card.locator('button[data-format=pdf]').click()]);
