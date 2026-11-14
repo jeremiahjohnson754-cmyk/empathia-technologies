@@ -4,7 +4,7 @@
  *
  * 1. Bundles the demo's own export code (apps/demo/src/export: cx.ts builds the report from a room record, render.ts writes it) for
  *    Node with esbuild, so the files checked here are written by exactly the code the page runs.
- * 2. Writes the commissioning completion package of several rooms (the reference room, a blocked room, an accepted room with an open
+ * 2. Writes the commissioning completion package (cx.ts) and the assurance report (as.ts) of several rooms (the reference room, a blocked room, an accepted room with an open
  *    deficiency, a room with an exception, the earlier record with no device positions) in all six formats, plus one hostile report
  *    (formula-like cells, characters outside every font's range, an empty table, a 600-row table, unbroken long words).
  * 3. Reopens every file with independent readers (scripts/verify/export-formats-check.py: openpyxl, python-docx, python-pptx,
@@ -29,6 +29,8 @@ const cache = path.join(repo, 'node_modules/.cache/export-verify'); fs.mkdirSync
 const entry = path.join(cache, 'entry.ts');
 fs.writeFileSync(entry, `
 export { cxPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/cx.ts'))};
+export { asPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/as.ts'))};
+export { seed } from ${JSON.stringify(path.join(repo, 'apps/demo/src/workspace/store.ts'))};
 export * as R from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/render.ts'))};
 export { FORMATS } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/model.ts'))};
 export { roomRecord, allRecords } from ${JSON.stringify(path.join(repo, 'apps/demo/src/campus/design.ts'))};
@@ -57,6 +59,10 @@ const big = [...all].sort((a, b) => b.positions.length - a.positions.length)[0];
 
 const made = { role: 'Commissioning Engineer (synthetic)', at: '2026-11-13T21:00:00.000Z', build: 'verify' };
 const reports = [...pick.values()].map(({ r, why }) => ({ why, rep: M.cxPackage(r, made) }));
+// the assurance report: the seeded workspace's service requests are the people's reports Assurance reads
+const ws = M.seed(); const asRooms = new Map([['R-ATL-4-218', 'reference room: a replaced unit reopened tests'], ['R-MER-1-140', 'drift: furniture moved since handover'], ['R-BCN-3-225', 'failed: never accepted']]);
+for (const i of ws.incidents) if (!asRooms.has(i.roomId) && asRooms.size < 5) asRooms.set(i.roomId, `a service request is open (${i.id})`);
+for (const [id, why] of asRooms) { const r = M.roomRecord(id); if (r) reports.push({ why: `assurance · ${why}`, rep: M.asPackage(r, ws.incidents, made) }); }
 const longWord = 'Supercalifragilisticexpialidocious'.repeat(6);
 reports.push({ why: 'hostile input', rep: {
   schema: 'empathia.report/1', id: 'EDGE-001', kind: 'edge-cases', title: 'Edge cases — “quotes”, ≥ ≤ → ✓ 会议室 😀', subtitle: `Long ${longWord}`, scope: { tenant: 'Tenant (synthetic)', site: 'Site', building: 'Building', floor: 'Floor 1', room: 'Room', roomId: 'R-EDGE' },

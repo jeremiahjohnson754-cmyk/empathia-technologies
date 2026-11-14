@@ -3,7 +3,9 @@
  * requests about it: whether the current state agrees with the commissioned one. Shared by the page (pages/RoomRecords.tsx) and the
  * assurance report (export/as.ts). Nothing is measured: a dimension with no record to differ reads as commissioned, and says so.
  */
-import type { RoomRecord } from './design.js';
+import { openIssues, type RoomRecord } from './design.js';
+import { roomState } from '../lite/model.js';
+import type { CxTone } from './cxRecord.js';
 import type * as S from '../workspace/store.js';
 
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
@@ -30,3 +32,28 @@ export const DIMS: Array<[string, string, string, (r: RoomRecord, inc: S.Inciden
 export const LAYERS = ['Physical', 'Spatial', 'Infrastructure', 'Configuration', 'Functional', 'Operational', 'Experience'];
 export const DIM_LABEL: Record<DimState, string> = { match: 'Matches baseline', drift: 'Drift', failed: 'Offline or failed', reported: 'Reported by people' };
 export const assuranceDims = (r: RoomRecord, inc: S.Incident[]) => DIMS.map(([layer, name, what, f]) => ({ layer, name, what, ...f(r, inc) }));
+export interface ChangeCard { id: string; what: string; dim: string; before: string; now: string; diff: string; rec: string }
+/** V2.5.3's Commissioned ↔ current cards: one per value that changed since handover (layout, a replaced unit, an open issue). */
+export function changeCards(r: RoomRecord): ChangeCard[] {
+  const cur = roomState(r, 'current'); const com = roomState(r, 'commissioned'); const cards: ChangeCard[] = [];
+  const moved = cur.positions.filter((p) => p.mark === 'moved');
+  if (moved.length) { const was = com.cov, is = cur.cov; cards.push({ id: 'layout', what: `Layout · ${plural(moved.length, 'piece')} of furniture`, dim: 'Spatial layout', before: 'Where commissioning left it', now: moved[0]!.note || 'moved since handover',
+    diff: `Camera coverage ${is.camera.covered} of ${is.camera.of} seats (was ${was.camera.covered}); microphone pickup ${is.mic.covered} of ${is.mic.of} (was ${was.mic.covered})`, rec: 'Restore the commissioned layout' }); }
+  for (const i of r.installations.filter((x) => x.removedAt)) { const now = r.installations.find((x) => x.position === i.position && !x.removedAt); const p = r.positions.find((x) => x.code === i.position);
+    cards.push({ id: `unit-${i.position}`, what: `${p?.label || i.position} · unit`, dim: 'Device presence', before: i.asset, now: now ? now.asset : 'removed', diff: r.reopened.length ? `${plural(r.reopened.length, 'test')} reopened by the replacement: ${r.reopened[0]!.reasons[0]}` : 'the replacement has not been retested', rec: 'Re-run the reopened tests' }); }
+  for (const i of openIssues(r)) cards.push({ id: `iss-${i.id}`, what: i.title, dim: i.positions.length ? `${i.positions.join(', ')}` : 'the room', before: 'Passed at handover', now: `${i.severity} · ${i.state.toLowerCase().replace(/_/g, ' ')}`, diff: i.source, rec: i.severity === 'High' ? 'Raise a service request' : 'Inspect at the next visit' });
+  return cards;
+}
+const DONE = ['CLOSED', 'CANCELLED'];
+export type AsState = 'matched' | 'drift' | 'failed' | 'none';
+export const AS_LABEL: Record<AsState, { label: string; tone: CxTone }> = { matched: { label: 'Matches its baseline', tone: 'ok' }, drift: { label: 'Drifted', tone: 'warn' }, failed: { label: 'Failed a check', tone: 'bad' }, none: { label: 'No baseline', tone: 'muted' } };
+/** The estate's assurance state of a room (pages/Estate.tsx shows it; the assurance report states it). */
+export function asState(r: RoomRecord, incidents: S.Incident[]): { state: AsState; why: string } {
+  const current = r.baselines.find((b) => b.state === 'CURRENT'); const pending = r.baselines.find((b) => b.state === 'PENDING_ACCEPTANCE');
+  const open = openIssues(r); const inc = incidents.filter((i) => i.roomId === r.outline.id && !DONE.includes(i.state));
+  if (r.counts.failed || open.some((i) => i.severity === 'High')) return { state: 'failed', why: r.counts.failed ? `${plural(r.counts.failed, 'test')} failed` : open.find((i) => i.severity === 'High')!.title };
+  if (!current) return { state: 'none', why: 'no accepted baseline' };
+  if (pending) return { state: 'drift', why: `baseline v${pending.version} recorded, waiting for acceptance (${pending.note})` };
+  if (open.length || inc.length) return { state: 'drift', why: inc.length ? `${inc[0]!.id} open: ${inc[0]!.title}` : open[0]!.title };
+  return { state: 'matched', why: `baseline v${current.version} since ${current.at.slice(0, 10)}` };
+}

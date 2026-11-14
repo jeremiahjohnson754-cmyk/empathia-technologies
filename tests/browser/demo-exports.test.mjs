@@ -63,6 +63,18 @@ const sha = (b) => crypto.createHash('sha256').update(b).digest('hex');
   await t.close();
 }
 {
+  // the assurance report: the next step of the flagship journey (commissioning → assurance → APEX)
+  const t = await open('#/assurance/room/R-ATL-4-218', { role: 'architect', sw: false }); const p = t.page; p.setDefaultTimeout(20000);
+  const card = p.getByTestId('as-export'); await card.waitFor();
+  const [dx] = await Promise.all([p.waitForEvent('download'), card.locator('button[data-format=xlsx]').click()]);
+  const xz = await JSZip.loadAsync(fs.readFileSync(await dx.path())); const wb = await xz.file('xl/workbook.xml').async('string');
+  const dims = await xz.file('xl/worksheets/sheet2.xml').async('string'); const shared = xz.file('xl/sharedStrings.xml') ? await xz.file('xl/sharedStrings.xml').async('string') : '';
+  const [dp] = await Promise.all([p.waitForEvent('download'), card.locator('button[data-format=pdf]').click()]);
+  const txt = spawnSync('pdftotext', [await dp.path(), '-'], { encoding: 'utf8' }).stdout || '';
+  ok('XP-AS', 'the assurance page exports its report: seventeen dimensions, the changes since handover, the ready check, as the page shows them', dx.suggestedFilename() === 'AS-R-ATL-4-218-assurance-report.xlsx' && /Dimensions/.test(wb) && /Ready check/.test(wb) && (dims.match(/<row /g) || []).length === 18 && /Assurance report/.test(txt) && /Seventeen dimensions/.test(txt) && /nothing was measured/.test(txt.replace(/\s+/g, ' ')) && !t.errs.length && !t.off.length, `${(dims.match(/<row /g) || []).length} rows ${shared.length}`);
+  await t.close();
+}
+{
   const t = await open(`#/commissioning/room/R-ATL-4-218`, { role: 'architect', w: 390, h: 844, sw: false }); const p = t.page; p.setDefaultTimeout(20000);
   const card = p.getByTestId('cx-export'); await card.scrollIntoViewIfNeeded();
   const [dl] = await Promise.all([p.waitForEvent('download'), card.locator('button[data-format=pdf]').click()]);

@@ -13,6 +13,7 @@ One format-neutral report, six native files, so the files cannot disagree with o
 | Report model | `apps/demo/src/export/model.ts` | `empathia.report/1`: scope, status and why, role made as, build, provenance lines, KPIs, an optional chart, sections (text, facts, bullets, tables), the dossier entities |
 | Writers | `apps/demo/src/export/render.ts` | `toPdf` (pdf-lib), `toDocx` (docx), `toXlsx` (the demo's own OOXML writer), `toPptx` (pptxgenjs, re-deflated with JSZip), `toJson`, `toCsv` |
 | Commissioning package | `apps/demo/src/export/cx.ts` | builds the report from a room record through `campus/cxRecord.ts`, the same rules the page uses |
+| Assurance report | `apps/demo/src/export/as.ts` | the seventeen dimensions, Commissioned ↔ current changes, the ready check, the room's service requests, baselines (`campus/asRecord.ts`, `assurance/model.ts`); on `#/assurance/room/:id` |
 | Shared rules | `apps/demo/src/campus/cxRecord.ts` | five phases, the three acceptance blockers, traceability, the commissioning state (moved here from the pages so the page and the files share one rule) |
 | UI | `apps/demo/src/export/ExportMenu.tsx` | six buttons on `#/commissioning/room/:id`; a Blob download; the file's SHA-256 shown and written to the audit trail |
 | Shield | `apps/demo/src/export/mark.ts` | the page's own `brand/emblem.svg` drawn to a 256 px PNG; without it, files are written without a shield, never with a substitute |
@@ -50,10 +51,10 @@ unbroken long words), then reopens every file with independent readers (`export-
 - PDF: pdfinfo/pdftotext; pages, title metadata, real text, "page n of N" on every page; page images for review.
 - LibreOffice converts the DOCX, XLSX and PPTX of the first room to PDF.
 
-13 Nov 2026, 21:5x CT: 183 checks pass, 0 fail (6 reports × 6 formats, LibreOffice included).
+13 Nov 2026, 22:3x CT: 333 checks pass, 0 fail (11 reports × 6 formats: 5 commissioning packages, 5 assurance reports, the hostile report; LibreOffice included).
 
-`tests/browser/demo-exports.test.mjs` downloads all six from the page as a person would and opens the bytes (12 checks, desktop and
-phone): file names, PDF pages and text, the Office packages' main parts, the JSON schema and SHA-256, the CSV header, the SHA-256
+`tests/browser/demo-exports.test.mjs` downloads all six from the page as a person would and opens the bytes (13 checks, desktop and
+phone, commissioning and assurance): file names, PDF pages and text, the Office packages' main parts, the JSON schema and SHA-256, the CSV header, the SHA-256
 shown on the page equals the downloaded file's, six audit-trail events, no console error and no off-page request.
 
 ## Known limits (not hidden)
@@ -62,6 +63,6 @@ shown on the page equals the downloaded file's, six audit-trail events, no conso
   equivalents (`->`, `>=`) or `?`, and counted; the Word, Excel, PowerPoint and JSON files keep them.
 - The XLSX writer stores its parts uncompressed (about 240 KB for a full package).
 - A PowerPoint slide shows at most seven columns and twelve rows; longer tables run to three slides and point to the workbook.
-- Only the commissioning completion package is built. Assurance, APEX, Search Party, ServiceHands and Learn reports are next on the
+- The commissioning completion package and the assurance report are built. APEX, Search Party, ServiceHands and Learn reports are next on the
   same model (task #144); the Proof dossier (`#/dossier/…`) still offers JSON and CSV only and says so.
 - Not tested in Microsoft Office itself (not available here); LibreOffice, openpyxl, python-docx, python-pptx and poppler are.

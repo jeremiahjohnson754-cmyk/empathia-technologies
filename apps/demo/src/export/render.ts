@@ -151,7 +151,7 @@ export async function toPdf(r: Report, mark?: Uint8Array): Promise<FileOut> {
   const need = (h: number) => { if (y - h < M + 20) newPage(); };
   const text = (s: string, o: { font?: typeof F; size?: number; color?: string; gap?: number; x?: number; width?: number } = {}) => { const size = o.size || 10; const font = o.font || F; const lines = wrap(s, font, size, o.width || CW);
     for (const ln of lines) { need(size * 1.35); page.drawText(ln, { x: o.x ?? M, y: y - size, size, font, color: hex(o.color || '1F2937') }); y -= size * 1.35; } y -= o.gap ?? 6; };
-  const heading = (s: string) => { need(40); y -= 8; page.drawRectangle({ x: M, y: y - 18, width: 3, height: 16, color: hex(BRAND.teal) }); text(s, { font: B, size: 14, color: BRAND.ink, x: M + 10, width: CW - 10, gap: 6 }); };
+  const heading = (s: string) => { need(96); /* a heading never ends a page alone: room for it and the first lines under it */ y -= 8; page.drawRectangle({ x: M, y: y - 18, width: 3, height: 16, color: hex(BRAND.teal) }); text(s, { font: B, size: 14, color: BRAND.ink, x: M + 10, width: CW - 10, gap: 6 }); };
   const table = (t: { cols: Array<{ label: string; kind?: string }>; rows: string[][] }, widths?: number[]) => {
     const n = t.cols.length; const wts = widths || t.cols.map((_, i) => Math.max(1, Math.min(4, Math.max(t.cols[i]!.label.length, ...t.rows.slice(0, 60).map((rw) => (rw[i] || '').length)) / 12)));
     const sum = wts.reduce((a, b) => a + b, 0); const cw = wts.map((w0) => (w0 / sum) * CW); const size = n > 6 ? 7.5 : 8.5; const pad = 3;

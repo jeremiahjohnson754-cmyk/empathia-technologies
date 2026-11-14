@@ -8,6 +8,7 @@ import { useMemo, useState } from 'react';
 import { PageHero, StatTile, Card, Chip, Donut, List, ListRow, EmptyState, MeterRow, Segmented, Icon, ProgressBar, StatusDot, Tag, type Series, type HealthState } from '@empathia/ui';
 import { allRecords, openIssues, type RoomRecord } from '../campus/design.js';
 import { cxState, type CxState } from '../campus/cxRecord.js';
+import { asState, type AsState } from '../campus/asRecord.js';
 import { BUILDINGS, shortName, roomHref } from '../campus/canon.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
 import { personaLabel, personaOf } from '../build/store.js';
@@ -36,21 +37,14 @@ export const CX: Record<CxState, { label: string; tone: Series; rule: string }> 
   notstarted: { label: 'Not started', tone: 'muted', rule: 'Planned, design-approved or installing: no tests recorded yet.' },
 };
 export { cxState };
-export type AsState = 'matched' | 'drift' | 'failed' | 'none';
+export type { AsState };
 export const AS: Record<AsState, { label: string; tone: Series; rule: string }> = {
   matched: { label: 'Matches its baseline', tone: 'ok', rule: 'A current baseline, no open issue and no change waiting: the room behaves as it was commissioned.' },
   drift: { label: 'Drifted', tone: 'warn', rule: 'A current baseline, but an issue is open in the room or a changed configuration waits for a new baseline.' },
   failed: { label: 'Failed a check', tone: 'bad', rule: 'A recorded test failed, or a high-severity issue is open.' },
   none: { label: 'No baseline', tone: 'muted', rule: 'Never accepted against a baseline: there is nothing to compare it with.' },
 };
-export function asState(r: RoomRecord, incidents: S.Incident[]): { state: AsState; why: string } {
-  const open = openIssues(r); const inc = incidents.filter((i) => i.roomId === r.outline.id && !DONE.includes(i.state));
-  if (r.counts.failed || open.some((i) => i.severity === 'High')) return { state: 'failed', why: r.counts.failed ? `${plural(r.counts.failed, 'test')} failed` : open.find((i) => i.severity === 'High')!.title };
-  if (!current(r)) return { state: 'none', why: 'no accepted baseline' };
-  if (pending(r)) return { state: 'drift', why: `baseline v${pending(r)!.version} recorded, waiting for acceptance (${pending(r)!.note})` };
-  if (open.length || inc.length) return { state: 'drift', why: inc.length ? `${inc[0]!.id} open: ${inc[0]!.title}` : open[0]!.title };
-  return { state: 'matched', why: `baseline v${current(r)!.version} since ${current(r)!.at.slice(0, 10)}` };
-}
+export { asState };
 /** Ready for its next session: matches (or drifted without a high issue), accepted, and no service job open in the room. */
 const ready = (r: RoomRecord, incidents: S.Incident[]) => accepted(r) && !!current(r) && !openIssues(r).some((i) => i.severity === 'High') && !incidents.some((i) => i.roomId === r.outline.id && !DONE.includes(i.state));
 

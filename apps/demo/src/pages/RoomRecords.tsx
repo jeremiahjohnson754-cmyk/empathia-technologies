@@ -27,8 +27,9 @@ import { plural, pct, weekCounts, Foot } from './viz.js';
 
 import { rowsOf, PHASES, RES, res, ymd, phaseStats, blockers } from '../campus/cxRecord.js';
 import { ExportMenu } from '../export/ExportMenu.js';
-import { DIMS, LAYERS, assuranceDims } from '../campus/asRecord.js';
+import { LAYERS, assuranceDims, changeCards } from '../campus/asRecord.js';
 import { cxPackage } from '../export/cx.js';
+import { asPackage } from '../export/as.js';
 type Row = ReturnType<typeof rowsOf>[number];
 function Head({ r, kind, perspective, tab }: { r: RoomRecord; kind: 'cx' | 'as'; perspective: string; tab: ReactNode }) {
   const { w } = useWorkspace(); const b = buildingByKey(r.outline.building); const cur = r.baselines.find((x) => x.state === 'CURRENT'); const pend = r.baselines.find((x) => x.state === 'PENDING_ACCEPTANCE');
@@ -207,6 +208,8 @@ export function AsRoomPage({ perspective, params, hash }: { perspective: string;
       {view === 'recommission' ? <Recommission r={r} /> : null}
       {view === 'history' ? <Card icon="book" title="Baseline history" sub={plural(r.baselines.length, 'version')} testId="as-history"><List label="Baselines">{r.baselines.map((b) => <ListRow key={b.version} title={`Baseline v${b.version} · ${b.state.toLowerCase().replace('_', ' ')}`} sub={`${ymd(b.at)} · design revision ${b.revision} · ${b.by?.replace(/_/g, ' ') || 'unsigned'} · ${b.note}`} trailing={<Tag tone={b.state === 'CURRENT' ? 'ok' : b.state === 'PENDING_ACCEPTANCE' ? 'warn' : 'muted'}>{b.state === 'CURRENT' ? 'Current' : b.state === 'PENDING_ACCEPTANCE' ? 'Pending' : 'Superseded'}</Tag>} />)}</List>
         <h3 className="ln-h3">Runs in this demo</h3><ul className="ln-log">{w.events.filter((e) => e.type === 'assurance.run' && e.aggregate === r.outline.id).slice(0, 10).map((e, i) => <li key={i}>{ymd(e.at)} · {personaLabel(e.by)} · {e.detail}</li>)}</ul>{!w.events.some((e) => e.type === 'assurance.run' && e.aggregate === r.outline.id) ? <p className="ui-meta">No run recorded in this browser.</p> : null}</Card> : null}
+      <ExportMenu testId="as-export" title="Assurance report" sub={`${shortName(r.outline)} against its commissioned baseline, as six files`} by={persona}
+        make={() => asPackage(r, w.incidents, { role: personaLabel(persona), at: new Date().toISOString(), build: process.env.DEMO_BUILD_ID || 'dev' })} />
       <Foot>Simulated discovery, modelled, not measured; a prototype, not production monitoring.</Foot>
     </section>
   );
@@ -278,13 +281,7 @@ function FourStates({ r, perspective }: { r: RoomRecord; perspective: string }) 
  */
 function ChangeCards({ r, perspective }: { r: RoomRecord; perspective: string }) {
   const { apply } = useWorkspace(); const persona = personaOf(perspective); const [done, setDone] = useState<Record<string, boolean>>({});
-  const cur = roomState(r, 'current'); const com = roomState(r, 'commissioned'); const cards: Array<{ id: string; what: string; dim: string; before: string; now: string; diff: string; rec: string }> = [];
-  const moved = cur.positions.filter((p) => p.mark === 'moved');
-  if (moved.length) { const was = com.cov, is = cur.cov; cards.push({ id: 'layout', what: `Layout · ${plural(moved.length, 'piece')} of furniture`, dim: 'Spatial layout', before: 'Where commissioning left it', now: moved[0]!.note || 'moved since handover',
-    diff: `Camera coverage ${is.camera.covered} of ${is.camera.of} seats (was ${was.camera.covered}); microphone pickup ${is.mic.covered} of ${is.mic.of} (was ${was.mic.covered})`, rec: 'Restore the commissioned layout' }); }
-  for (const i of r.installations.filter((x) => x.removedAt)) { const now = r.installations.find((x) => x.position === i.position && !x.removedAt); const p = r.positions.find((x) => x.code === i.position);
-    cards.push({ id: `unit-${i.position}`, what: `${p?.label || i.position} · unit`, dim: 'Device presence', before: i.asset, now: now ? now.asset : 'removed', diff: r.reopened.length ? `${plural(r.reopened.length, 'test')} reopened by the replacement: ${r.reopened[0]!.reasons[0]}` : 'the replacement has not been retested', rec: 'Re-run the reopened tests' }); }
-  for (const i of openIssues(r)) cards.push({ id: `iss-${i.id}`, what: i.title, dim: i.positions.length ? `${i.positions.join(', ')}` : 'the room', before: 'Passed at handover', now: `${i.severity} · ${i.state.toLowerCase().replace(/_/g, ' ')}`, diff: i.source, rec: i.severity === 'High' ? 'Raise a service request' : 'Inspect at the next visit' });
+  const cards = changeCards(r);
   return <Card icon="layers" title="Commissioned ↔ current" sub={cards.length ? `${plural(cards.length, 'value')} changed since handover` : 'Nothing changed since handover'} testId="as-changes">
     {cards.length ? <div className="as-dcs">{cards.map((c) => <article key={c.id} className="as-dc" data-testid="as-change">
       <h3>{c.what} <Tag tone="muted">{c.dim}</Tag></h3>
