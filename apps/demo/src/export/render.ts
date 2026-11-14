@@ -153,8 +153,19 @@ export async function toPdf(r: Report, mark?: Uint8Array): Promise<FileOut> {
     for (const ln of lines) { need(size * 1.35); page.drawText(ln, { x: o.x ?? M, y: y - size, size, font, color: hex(o.color || '1F2937') }); y -= size * 1.35; } y -= o.gap ?? 6; };
   const heading = (s: string) => { need(96); /* a heading never ends a page alone: room for it and the first lines under it */ y -= 8; page.drawRectangle({ x: M, y: y - 18, width: 3, height: 16, color: hex(BRAND.teal) }); text(s, { font: B, size: 14, color: BRAND.ink, x: M + 10, width: CW - 10, gap: 6 }); };
   const table = (t: { cols: Array<{ label: string; kind?: string }>; rows: string[][] }, widths?: number[]) => {
-    const n = t.cols.length; const wts = widths || t.cols.map((_, i) => Math.max(1, Math.min(4, Math.max(t.cols[i]!.label.length, ...t.rows.slice(0, 60).map((rw) => (rw[i] || '').length)) / 12)));
-    const sum = wts.reduce((a, b) => a + b, 0); const cw = wts.map((w0) => (w0 / sum) * CW); const size = n > 6 ? 7.5 : 8.5; const pad = 3;
+    const n = t.cols.length; const size = n > 6 ? 7.5 : 8.5; const pad = 3;
+    // column widths: every column at least as wide as its longest word (so "Confidence" or "Medium" never breaks mid-word), the rest
+    // of the line shared by how much text each column carries; given widths (fact tables) are proportions
+    const cw = widths ? widths.map((w0) => (w0 / widths.reduce((a, b) => a + b, 0)) * CW) : (() => {
+      const sample = t.rows.slice(0, 80);
+      const longest = (v: string, f: typeof F) => Math.max(0, ...winAnsi(v).split(/\s+/).map((wd) => f.widthOfTextAtSize(wd, size)));
+      const minW = t.cols.map((c, i) => Math.min(CW / 3, Math.max(longest(c.label, B), ...sample.map((rw) => longest(rw[i] || '', c.kind === 'status' ? B : F))) + 2 * pad + 1));
+      const want = t.cols.map((c, i) => Math.max(minW[i]!, Math.min(46, Math.max(c.label.length, ...sample.map((rw) => (rw[i] || '').length)) * 0.7 + sample.reduce((a, rw) => a + (rw[i] || '').length, 0) / Math.max(1, sample.length) * 0.6) * size * 0.5));
+      const base = minW.reduce((a, b) => a + b, 0);
+      if (base >= CW) return minW.map((m) => (m / base) * CW);
+      const extra = want.map((x, i) => x - minW[i]!); const ex = extra.reduce((a, b) => a + b, 0);
+      return minW.map((m, i) => m + (ex > 0 ? (extra[i]! / ex) * Math.min(ex, CW - base) : 0)).map((x, _i, all) => x * (CW / all.reduce((a, b) => a + b, 0)));
+    })();
     const drawHead = () => { const lines = t.cols.map((c, i) => wrap(c.label, B, size, cw[i]! - 2 * pad)); const h = Math.max(...lines.map((l) => l.length)) * size * 1.25 + 2 * pad; need(h + size * 2);
       let x = M; page.drawRectangle({ x: M, y: y - h, width: CW, height: h, color: hex(BRAND.teal) });
       lines.forEach((ls, i) => { ls.forEach((ln, k) => page.drawText(ln, { x: x + pad, y: y - pad - size - k * size * 1.25, size, font: B, color: rgb(1, 1, 1) })); x += cw[i]!; }); y -= h; };

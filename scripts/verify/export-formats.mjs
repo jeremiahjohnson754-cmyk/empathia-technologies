@@ -4,7 +4,7 @@
  *
  * 1. Bundles the demo's own export code (apps/demo/src/export: cx.ts builds the report from a room record, render.ts writes it) for
  *    Node with esbuild, so the files checked here are written by exactly the code the page runs.
- * 2. Writes the commissioning completion package (cx.ts) and the assurance report (as.ts) of several rooms (the reference room, a blocked room, an accepted room with an open
+ * 2. Writes the commissioning completion package (cx.ts), the assurance report (as.ts) and the APEX case report (apex.ts) (the reference room, a blocked room, an accepted room with an open
  *    deficiency, a room with an exception, the earlier record with no device positions) in all six formats, plus one hostile report
  *    (formula-like cells, characters outside every font's range, an empty table, a 600-row table, unbroken long words).
  * 3. Reopens every file with independent readers (scripts/verify/export-formats-check.py: openpyxl, python-docx, python-pptx,
@@ -30,7 +30,8 @@ const entry = path.join(cache, 'entry.ts');
 fs.writeFileSync(entry, `
 export { cxPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/cx.ts'))};
 export { asPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/as.ts'))};
-export { seed } from ${JSON.stringify(path.join(repo, 'apps/demo/src/workspace/store.ts'))};
+export { seed, openApex, apexAct } from ${JSON.stringify(path.join(repo, 'apps/demo/src/workspace/store.ts'))};
+export { apexPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/apex.ts'))};
 export * as R from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/render.ts'))};
 export { FORMATS } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/model.ts'))};
 export { roomRecord, allRecords } from ${JSON.stringify(path.join(repo, 'apps/demo/src/campus/design.ts'))};
@@ -63,6 +64,12 @@ const reports = [...pick.values()].map(({ r, why }) => ({ why, rep: M.cxPackage(
 const ws = M.seed(); const asRooms = new Map([['R-ATL-4-218', 'reference room: a replaced unit reopened tests'], ['R-MER-1-140', 'drift: furniture moved since handover'], ['R-BCN-3-225', 'failed: never accepted']]);
 for (const i of ws.incidents) if (!asRooms.has(i.roomId) && asRooms.size < 5) asRooms.set(i.roomId, `a service request is open (${i.id})`);
 for (const [id, why] of asRooms) { const r = M.roomRecord(id); if (r) reports.push({ why: `assurance · ${why}`, rep: M.asPackage(r, ws.incidents, made) }); }
+// APEX: the seeded case, and one opened here and acted on at every tier (the A4 preflight is blocked by the adapter state, as built)
+for (const c of ws.apexCases) reports.push({ why: `apex · seeded case ${c.id}`, rep: M.apexPackage(c, ws, made) });
+{ const inc = ws.incidents.find((i) => !i.apexId && !['CLOSED', 'CANCELLED'].includes(i.state));
+  if (inc) { const o = M.openApex(ws, 'syseng', inc.id, () => []); if (o && o.id) { const c = ws.apexCases.find((x) => x.id === o.id);
+    for (const t of ['A0', 'A1', 'A2', 'A3', 'A4', 'A5']) M.apexAct(ws, 'syseng', c.id, c.hypotheses[0].id, { tier: t }, null);
+    reports.push({ why: `apex · opened here, acted on at every tier (${c.actions.length} actions)`, rep: M.apexPackage(c, ws, made) }); } } }
 const longWord = 'Supercalifragilisticexpialidocious'.repeat(6);
 reports.push({ why: 'hostile input', rep: {
   schema: 'empathia.report/1', id: 'EDGE-001', kind: 'edge-cases', title: 'Edge cases — “quotes”, ≥ ≤ → ✓ 会议室 😀', subtitle: `Long ${longWord}`, scope: { tenant: 'Tenant (synthetic)', site: 'Site', building: 'Building', floor: 'Floor 1', room: 'Room', roomId: 'R-EDGE' },

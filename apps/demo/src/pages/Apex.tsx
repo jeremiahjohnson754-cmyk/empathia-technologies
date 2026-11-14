@@ -12,6 +12,8 @@ import { buildEstate } from '../search/estate.js';
 import * as S from '../workspace/store.js';
 import { useWorkspace, isRefusal } from '../workspace/useWorkspace.js';
 import { personaOf, personaLabel, holds, loadDraft } from '../build/store.js';
+import { ExportMenu } from '../export/ExportMenu.js';
+import { apexPackage } from '../export/apex.js';
 
 const CONF: Record<string, 'ok' | 'warn' | 'bad' | 'muted' | 'info'> = { high: 'ok', medium: 'info', low: 'warn', none: 'muted' };
 const OUT: Record<string, 'ok' | 'warn' | 'bad' | 'muted' | 'info'> = { EXPLAINED: 'ok', PROPOSED: 'info', COMPARED: 'ok', DRAFT_STAGED: 'info', EXECUTED_SIMULATED: 'ok', DRY_RUN: 'info', BLOCKED: 'bad', HUMAN_LED: 'warn', ABSTAINED: 'muted', ROLLED_BACK: 'warn', ABORTED: 'warn', REFUSED: 'bad' };
@@ -91,6 +93,8 @@ function Case({ H, w, apply, persona, baseline }: { H: S.ApexCase; w: S.Workspac
       </div>
       <h3 className="build__h">Action log ({H.actions.length})</h3>
       <ul className="apex__log" data-testid="apex-log">{H.actions.map((a, i) => <li key={i}><Tag tone={OUT[a.outcome] || 'muted'}>{a.outcome}</Tag> <b>{a.tier}</b> {a.hypothesisId}{a.runbook ? ` · ${a.runbook}` : ''}{a.simulated ? ' · SIMULATED' : ''} <span className="ui-meta">{when(a.at)} · {personaLabel(a.by)}</span><div className="ui-meta">{a.detail}</div>{a.verification && <div className="ui-meta">post-repair verification: {a.verification}</div>}</li>)}{!H.actions.length && <li className="ui-meta">No action yet.</li>}</ul>
+      <ExportMenu testId="apex-export" title="Case report" sub={`${H.id}: the layers, the ranked hypotheses, every action and the thread back to commissioning, as six files`} by={persona}
+        make={() => apexPackage(H, w, { role: personaLabel(persona), at: new Date().toISOString(), build: process.env.DEMO_BUILD_ID || 'dev' })} />
       <div className="svc__links"><a href={`#/v25/service?id=${inc.id}`}>ServiceHands {inc.id}</a> · <a href={`#/search?focus=Room:${inc.roomId}`}>Search Party</a></div>
     </div>
   );

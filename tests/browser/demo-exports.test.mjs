@@ -75,6 +75,18 @@ const sha = (b) => crypto.createHash('sha256').update(b).digest('hex');
   await t.close();
 }
 {
+  // the APEX case report: the end of the journey, with the thread back to commissioning and assurance
+  const t = await open('#/v25/apex?case=APX-001', { role: 'cxeng', sw: false }); const p = t.page; p.setDefaultTimeout(20000);
+  const card = p.getByTestId('apex-export'); await card.waitFor();
+  const [dd] = await Promise.all([p.waitForEvent('download'), card.locator('button[data-format=docx]').click()]);
+  const doc = await (await JSZip.loadAsync(fs.readFileSync(await dd.path()))).file('word/document.xml').async('string');
+  const [dj] = await Promise.all([p.waitForEvent('download'), card.locator('button[data-format=json]').click()]);
+  const j = JSON.parse(fs.readFileSync(await dj.path(), 'utf8'));
+  ok('XP-APEX', 'the APEX case exports its report: seven layers, ranked hypotheses with why each is not proven, the action tiers, and the thread to commissioning and assurance', dd.suggestedFilename() === 'APX-001-apex-case.docx' && /Seven layers of evidence/.test(doc) && /Hypotheses, ranked/.test(doc) && /Why it is not proven/.test(doc) && /The thread/.test(doc)
+    && j.kind === 'apex-case' && j.entities.layers.length === 7 && j.entities.thread.commissioning && j.entities.thread.assurance && Array.isArray(j.entities.hypotheses) && !t.errs.length && !t.off.length, `${dd.suggestedFilename()} ${j.kind}`);
+  await t.close();
+}
+{
   const t = await open(`#/commissioning/room/R-ATL-4-218`, { role: 'architect', w: 390, h: 844, sw: false }); const p = t.page; p.setDefaultTimeout(20000);
   const card = p.getByTestId('cx-export'); await card.scrollIntoViewIfNeeded();
   const [dl] = await Promise.all([p.waitForEvent('download'), card.locator('button[data-format=pdf]').click()]);
