@@ -14,6 +14,7 @@ import { useWorkspace } from '../workspace/useWorkspace.js';
 import { personaOf, personaLabel, holds } from '../build/store.js';
 import { ExportMenu } from '../export/ExportMenu.js';
 import { openable } from './V25Nav.js';
+import { ImportCard } from '../service/ImportCard.js';
 import { serviceQueuePackage, serviceRecordPackage } from '../export/service.js';
 const made = (persona: string) => ({ role: personaLabel(persona), at: new Date().toISOString(), build: process.env.DEMO_BUILD_ID || 'dev' });
 
@@ -52,6 +53,7 @@ export function ServicePage({ perspective, hash }: { perspective: string; hash: 
         <div className="svc__detail">{inc ? <Incident inc={inc} w={w} apply={apply} persona={persona} me={me} est={est} /> : <Notice tone="info">Pick an incident.</Notice>}</div>
       </div>
       {inc ? <ExportMenu testId="sh-record-export" title="Service record" by={personaLabel(persona)} sub={`${inc.id}: its history, the work order, the preflight, the field evidence and where it went next`} make={() => serviceRecordPackage(w, inc.id, made(persona))!} /> : null}
+      {holds(persona, 'service.triage') ? <ImportCard w={w} persona={persona} apply={apply} /> : null}
       <ExportMenu testId="sh-export" title="Service queue report" by={personaLabel(persona)} sub="Every request and work order, drilled up by building and severity, as six files" make={() => serviceQueuePackage(w, made(persona))} />
       <RaiseIncident persona={persona} apply={apply} />
     </section>

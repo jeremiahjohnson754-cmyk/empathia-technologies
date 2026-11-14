@@ -244,8 +244,10 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     ok('L-01', 'a case needs permission, de-identification and no names: the refusal names all three', /customer permission/.test(lr) && /de-identified/.test(lr) && /still names a building, room or person/.test(lr), lr);
     await page.fill('[data-testid=propose] input', 'Echo after a configuration change'); await page.locator('[data-testid=propose] label:has-text("permission") input').check(); await page.locator('[data-testid=propose] label:has-text("De-identified") input').check(); await page.click('[data-testid=propose] button:has-text("Propose")'); await page.waitForTimeout(300);
     ok('L-02', 'the case is PROPOSED from the resolved incident', /PROPOSED/.test(await page.locator('[data-testid=learn-case]').innerText()) && /from ISS-0417/.test(await page.locator('[data-testid=learn-cases]').innerText()), await refusal());
-    await page.click('[data-testid=learn-case] button:has-text("SME review: approve")'); await page.waitForTimeout(250);
-    ok('L-03', 'the proposer cannot be the SME reviewer of their own case', /separation of duties/.test(await refusal()), await refusal());
+    // 14 Nov 2026: the page no longer offers the proposer a review the rule refuses; it says why instead (the store still refuses it:
+    // tests/browser/demo-workflows.test.mjs W4 and the unit suite)
+    const offered = await page.locator('[data-testid=learn-case] button:has-text("SME review: approve")').count(); const own = await page.locator('[data-testid=learn-own]').innerText().catch(() => '');
+    ok('L-03', 'the proposer cannot be the SME reviewer of their own case: the review is not offered to them, and the page says why', offered === 0 && /separation of duties/.test(own), own);
     await persp('syseng'); await page.waitForTimeout(200); await page.click('[data-testid=learn-case] button:has-text("SME review: approve")'); await page.waitForTimeout(250);
     ok('L-04', 'a different subject-matter reviewer records the SME review', /SME_REVIEWED/.test(await page.locator('[data-testid=learn-case]').innerText()), await refusal());
     await persp('steward'); await page.waitForTimeout(200); await page.click('[data-testid=learn-case] button:has-text("Approve for Learn")'); await page.waitForTimeout(250);
@@ -279,7 +281,9 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     await page.evaluate(() => { location.hash = '#/v25/ledger'; }); await page.waitForTimeout(400); await persp('steward'); await page.waitForTimeout(200);
     await page.click('button:has-text("DENIED")'); await page.waitForTimeout(150);
     const led = await page.locator('[data-testid=ledger]').innerText();
-    ok('M-05', 'the ledger filters to the refusals, each with actor, UTC and local time and the reason', /DENIED/.test(led) && /hard gate/.test(led) && /preflight has a failed check/.test(led) && /separation of duties/.test(led) && (led.match(/ALLOWED/g) || []).length === 0, led.slice(0, 300));
+    // changed 14 Nov 2026: the separation-of-duties refusal in this ledger came only from L-03, where the proposer clicked an SME review the
+    // page now no longer offers; the store's refusal and its DENIED ledger event are kept under test in tests/unit/learn-separation.test.mjs
+    ok('M-05', 'the ledger filters to the refusals, each with actor, UTC and local time and the reason', /DENIED/.test(led) && /hard gate/.test(led) && /preflight has a failed check/.test(led) && /no field evidence recorded/.test(led) && (led.match(/ALLOWED/g) || []).length === 0, [['DENIED', /DENIED/], ['hard gate', /hard gate/], ['preflight', /preflight has a failed check/], ['evidence', /no field evidence recorded/]].filter(([, r]) => !r.test(led)).map(([n]) => `missing ${n}`).join(', ') + ` · ALLOWED×${(led.match(/ALLOWED/g) || []).length} · ${led.length} chars`);
     await page.evaluate(() => { location.hash = '#/v25/policy'; }); await page.waitForTimeout(400);
     ok('M-06', 'the policy page shows what each native page checks and the demonstrator’s role × area matrix verbatim (86 areas × 14 roles)', (await page.locator('[data-testid=policy-gates] tbody tr').count()) === 6 && (await page.locator('[data-testid=policy-matrix] tbody tr').count()) === 86 && (await page.locator('[data-testid=policy-matrix] thead th').count()) === 15);
     // ---------------------------------------------------------------- Field Intelligence v1.3 plan and v1.4 Physical Validation session

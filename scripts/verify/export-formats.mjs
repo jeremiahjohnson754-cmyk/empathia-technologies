@@ -38,6 +38,8 @@ export { serviceAnalyticsPackage } from ${JSON.stringify(path.join(repo, 'apps/d
 export * as SAN from ${JSON.stringify(path.join(repo, 'apps/demo/src/service/analytics.ts'))};
 export * as SHH from ${JSON.stringify(path.join(repo, 'apps/demo/src/service/history.ts'))};
 export { learnPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/learn.ts'))};
+export { reverbPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/reverb.ts'))};
+export * as RV from ${JSON.stringify(path.join(repo, 'apps/demo/src/bench/reverb.ts'))};
 export { dossierPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/dossier.ts'))};
 export { replay, DOSSIER_4218 } from ${JSON.stringify(path.join(repo, 'packages/proof-registry/src/index.ts'))};
 export { prepareMedia, imageSize } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/media.ts'))};
@@ -123,6 +125,10 @@ reports.push({ why: 'servicehands · the whole queue', rep: M.serviceQueuePackag
   const w2 = { ...ws, training: [...ws.training, ...tr] };
   const labs = [{ lab: 'audio', title: 'Audio: gain structure', domain: 'Audio', passed: true, at: '2026-11-13T11:00:00Z', persona: 'syseng', attempts: 2, mode: 'simulator' }, { lab: 'cam', title: 'Camera: framing', domain: 'Video', passed: true, at: '2026-11-13T11:00:00Z', persona: 'installer', attempts: 1, mode: 'simulator' }];
   reports.push({ why: 'learn · cases and one perspective’s practice', mustNot: ['D-OTHER-99', 'Camera: framing'], mustHave: ['D-AUD-01', 'Audio: gain structure'], mustHaveIn: ['pdf', 'docx', 'xlsx', 'json'], rep: M.learnPackage(w2, { persona: 'syseng', personaLabel: (k) => ({ syseng: 'Systems Engineer', installer: 'Installer' })[k] || k, labs, readiness: { points: 15, level: 'Started', drills: 1, cases: 0, next: { name: 'Practised', need: 15 } } }, made) }); }
+// the reverberation instrument: two synthetic references and a short-range response (T30 refused), with a target; a phone chain
+// (the refusal text sits in a narrow PDF table cell and wraps, so the phrase check runs on the formats that keep a cell's text whole)
+{ const pos = [[0.7, -85, 101], [0.7, -85, 102], [0.9, -40, 103]].map(([rt, fl, seed], i) => ({ name: i < 2 ? `Synthetic reference, 0.70 s (seed ${seed})` : 'P3-lectern.wav', bytes: 96000, sha: String(seed).padStart(64, '0'), rate: 48000, bits: i < 2 ? 64 : 16, channels: 1, seconds: 1.8, format: i < 2 ? 'csv' : 'wav', synthetic: i < 2, bands: M.RV.analyseBands(M.RV.syntheticIR(rt, { floorDb: fl, seed, seconds: 1.8 })) }));
+  reports.push({ why: 'reverberation · 3 positions, T30 refused on one, a target, a phone chain', mustHave: ['SYNTHETIC REFERENCE', 'T30 needs 45 dB', 'not commissioning evidence'], mustHaveIn: ['docx', 'xlsx', 'json'], rep: M.reverbPackage({ positions: pos, chain: 'consumer', target: { seconds: 0.7, tolPct: 10 } }, made) }); }
 // the commissioning dossier, in both redactions: the reference snapshot, and the working record after a retest, a verification and a
 // new deficiency; the executive files must carry no evidence reference and no recorder or verifier (mustNot, checked in every format)
 { const D = M.DOSSIER_4218; const snap = M.replay(D, []); const at = '2026-11-13T12:00:00Z';

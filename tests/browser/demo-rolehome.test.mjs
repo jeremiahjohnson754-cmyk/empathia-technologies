@@ -85,7 +85,8 @@ for (const [role, scope] of [['visitor', 'own'], ['employee', 'own'], ['exec', '
   ok('RS-29', 'switching from Product Architect to Service Engineer replaces Mission Control with “Today’s work”', a.start === 'service' && !a.mc && /Today’s work/.test(a.kicker || ''), JSON.stringify(a));
   await p.click('[data-testid=viewas-open]'); await p.click('[data-testid=viewas-sheet] [data-role-key=exec]'); await p.waitForTimeout(700);
   const b = await p.evaluate(() => ({ start: document.querySelector('[data-testid=home]')?.getAttribute('data-start'), jobs: document.querySelectorAll('[data-zone=jobs]').length, tiles: document.querySelectorAll('[data-testid=rh-tiles] li').length }));
-  ok('RS-30', 'switching again to Executive leaves nothing of the engineer’s page behind: the briefing, four figures, no job list', b.start === 'exec' && b.jobs === 0 && b.tiles === 4, JSON.stringify(b));
+  // five figures since 14 Nov 2026: the vendors needing attention joined the executive's briefing (founder: vendors kept accountable)
+  ok('RS-30', 'switching again to Executive leaves nothing of the engineer’s page behind: the briefing, five figures, no job list', b.start === 'exec' && b.jobs === 0 && b.tiles === 5, JSON.stringify(b));
   ok('RS-31', 'the switches logged no error', s.errs.length === 0, s.errs.join(' | '));
   await s.close(); }
 

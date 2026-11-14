@@ -161,3 +161,30 @@
 .san__defs { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; }
 .san__defs > div { display: contents; } .san__defs dt { font-weight: 600; } .san__defs dd { margin: 0; }
 @media (max-width: 520px) { .san__defs { grid-template-columns: 1fr; } }
+
+/* Pro in V2.5.3's vocabulary: pill tabs and a joined strip of figures (one panel, cells divided by rules) */
+.pro-tabs { gap: 10px; margin-bottom: 18px; }
+.pro-tabs .kit-chip { min-height: 38px; padding: 6px 16px; font-size: .95rem; }
+.kit-grid.pro-strip { gap: 0; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--panel); }
+.kit-grid.pro-strip > * { border-radius: 0; border: 0; box-shadow: none; background: transparent; border-right: 1px solid var(--line); }
+.kit-grid.pro-strip > *:last-child { border-right: 0; }
+@media (max-width: 760px) { .kit-grid.pro-strip > * { border-right: 0; border-bottom: 1px solid var(--line); } .kit-grid.pro-strip > *:last-child { border-bottom: 0; } }
+.kit-grid.pro-strip + .kit-grid.pro-strip { margin-top: -1px; border-top-left-radius: 0; border-top-right-radius: 0; }
+.kit-grid.pro-strip:has(+ .kit-grid.pro-strip) { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.kit-grid.pro-strip { margin-bottom: 0; }
+.kit-grid.pro-strip:not(:has(+ .kit-grid.pro-strip)) { margin-bottom: var(--sp-5, 20px); }
+
+/* the reverberation instrument (pages/ReverbBench.tsx) */
+.rv-field { display: grid; gap: 4px; max-width: 28rem; }
+.rv-field > span { font-weight: 600; font-size: 0.875rem; }
+.rv-field select, .rv-field input { min-height: 40px; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg2); color: inherit; font: inherit; }
+.rv-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.rv-target { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; }
+.rv-fig { margin: 12px 0 0; max-width: 100%; }
+.rv-fig svg { width: 100%; height: auto; display: block; }
+.rv-grid { stroke: var(--line2); stroke-width: 1; }
+.rv-tick { fill: var(--tx3); font-size: 11px; font-variant-numeric: tabular-nums; }
+.rv-curve { stroke: var(--accent); stroke-width: 2; }
+.rv-fit { stroke: var(--tx); stroke-width: 1.5; stroke-dasharray: 6 4; }
+.rv-range { fill: var(--accent); opacity: 0.08; }
+.rv tr.on > th, .rv tr.on > td { background: color-mix(in srgb, var(--accent) 8%, transparent); }

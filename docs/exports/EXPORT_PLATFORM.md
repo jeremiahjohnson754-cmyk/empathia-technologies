@@ -18,6 +18,7 @@ One format-neutral report, six native files, so the files cannot disagree with o
 | Assurance report | `apps/demo/src/export/as.ts` | the seventeen dimensions, Commissioned ↔ current changes, the ready check, the room's service requests, baselines (`campus/asRecord.ts`, `assurance/model.ts`); on `#/assurance/room/:id` |
 | ServiceHands | `apps/demo/src/export/service.ts` | on `#/v25/service`: the service queue (every request and work order, drilled up by building and severity; the SLA each is held to, never reported as met or missed) and the selected request's service record (history, hours in each state from that history, work order, dispatch preflight, field evidence, the thread to APEX and Learn) |
 | Learn | `apps/demo/src/export/learn.ts` | on `#/v25/learn`: the governed cases (permission, de-identification, SME review, steward approval; a case not de-identified is withheld) and the readiness, drills and labs of the person it is made for, nobody else's |
+| Reverberation | `apps/demo/src/export/reverb.ts` | on `#/commissioning/instruments/reverb`: each position with its file's SHA-256, every band and fit with its refusal, the quality notes, the mean over positions, the comparison with a project target (never a commissioning result), the declared measurement chain and the method; synthetic references labelled |
 | Commissioning dossier | `apps/demo/src/export/dossier.ts` | the proof dossier (`#/dossier/…`) replayed as the page shows it, in two redactions: engineering (evidence references, who recorded and verified) and executive (only whether evidence exists); the engineering report is offered only to a role that sees `dossier.evidence` |
 | Shared rules | `apps/demo/src/campus/cxRecord.ts` | five phases, the three acceptance blockers, traceability, the commissioning state (moved here from the pages so the page and the files share one rule) |
 | UI | `apps/demo/src/export/ExportMenu.tsx` | six buttons on `#/commissioning/room/:id`; a Blob download; the file's SHA-256 shown and written to the audit trail |
@@ -62,6 +63,8 @@ unbroken long words), then reopens every file with independent readers (`export-
   searched for every evidence reference and for "Recorded" and "Verified"; none may appear. As the control, the engineering files must
   carry them (the slide deck excepted: a slide table keeps at most seven columns).
 
+14 Nov 2026 (02:10 CT): 882 checks pass, 0 fail (27 reports × 6 formats): adds the two service-analytics views, the register-bearing commissioning package and the reverberation report (two synthetic references and a 40 dB response whose T30 is refused; its files must carry the synthetic label, the refusal and the phone-chain warning).
+
 14 Nov 2026 (00:27 CT): 789 checks pass, 0 fail (24 reports × 6 formats, LibreOffice included): adds the ServiceHands queue, two service records and the Learn record, whose files must not carry another person's drill or lab.
 
 14 Nov 2026 (00:05 CT): 660 checks pass, 0 fail (20 reports × 6 formats, LibreOffice included; the four added reports are the dossier's
@@ -82,3 +85,25 @@ shown on the page equals the downloaded file's, six audit-trail events, no conso
 - The commissioning completion package, the assurance report and the APEX case report are built (the Commissioning → Assurance → APEX journey). The estate's portfolio brief is built too. ServiceHands' queue and service record and the Learn record are built. Search Party and imports are next on the
   same model (task #144); the Proof dossier (`#/dossier/…`) is built in both redactions; its zipped evidence package is not built and the page says so.
 - Not tested in Microsoft Office itself (not available here); LibreOffice, openpyxl, python-docx, python-pptx and poppler are.
+
+## Import (ServiceHands, 14 Nov 2026)
+
+`apps/demo/src/service/importer.ts` and `ImportCard.tsx` on `#/v25/service`, for roles that triage. It reads a CSV (a header with Room
+and Title, plus optional Summary, Severity and State columns; `#` provenance lines are skipped) or Empathia's own JSON dossier of the queue,
+with at most 200 rows and 1 MB.
+
+It shows a dry run row by row before anything is written:
+- **ready**;
+- **refused**, with the reason: an unknown room, no title, a bad severity, or a formula-looking cell (never evaluated);
+- **already open**, a duplicate;
+- **closed in the file**, which is not raised again.
+
+Import then raises the ready rows through the same rule as a hand-raised request. A requested severity is written into the request for
+triage to decide, never applied. The file's name, size, SHA-256 and the counts go to the audit trail. Empathia's own CSV and JSON exports of
+the queue round-trip (each open request is recognised as already open).
+
+Tests:
+- `tests/unit/service-import.test.mjs` (SI-01…05): the parser, hostile rows, the commit rule, the round-trip and the limits;
+- `tests/browser/demo-service-import.test.mjs` (SIB-01…04).
+
+Commissioning, Assurance and APEX imports are not built yet.

@@ -14,12 +14,18 @@ import { personaLabel, personaOf } from '../build/store.js';
 import * as S from '../workspace/store.js';
 import { Foot, Stack, plural, pct } from './viz.js';
 import { openable } from './V25Nav.js';
+import { TrendChart } from './TrendChart.js';
+import { syntheticHistory, monthKey } from '../service/history.js';
+import { months, stats, LAYER_LABEL } from '../service/analytics.js';
+import { campusStats } from '../campus/metrics.js';
+import { readRegister } from '../campus/registerStore.js';
+import { deviceRegister, retiredRegister } from '../campus/registers.js';
 
 const DAY = 864e5; const DONE = ['CLOSED', 'CANCELLED'];
 const roomName = (r: RoomRecord) => `${shortName(r.outline)} — ${r.outline.name}`;
 const PRO_TABS = [['#/pro', 'Command center', 'pulse'], ['#/pro/assets', 'Assets', 'device'], ['#/pro/issues', 'Issues', 'alert'], ['#/pro/ops', 'Operations', 'wrench'], ['#/pro/eng', 'Standards', 'book'], ['#/v25/exec', 'Executive', 'chart']] as const;
 export function ProTabs({ role, current }: { role: string; current: string }) {
-  return <nav className="wk-v25nav" aria-label="Pro pages">{PRO_TABS.filter(([h]) => openable(role, h)).map(([h, l, i]) => <Chip key={h} href={h} small icon={i} selected={h === current}>{l}</Chip>)}</nav>;
+  return <nav className="wk-v25nav pro-tabs" aria-label="Pro pages">{PRO_TABS.filter(([h]) => openable(role, h)).map(([h, l, i]) => <Chip key={h} href={h} icon={i} selected={h === current}>{l}</Chip>)}</nav>;
 }
 const count = <T,>(xs: T[], f: (x: T) => string) => { const m = new Map<string, number>(); for (const x of xs) m.set(f(x), (m.get(f(x)) || 0) + 1); return [...m.entries()].sort((a, b) => b[1] - a[1]); };
 const TONES: Series[] = ['accent', 'indigo', 'violet', 'info', 'warn', 'ok', 'muted'];
@@ -36,15 +42,37 @@ export function AssetsPage({ perspective }: { perspective: string }) {
   return (
     <section className="wk" data-native="workspace" data-testid="pro-assets">
       <ProTabs role={perspective} current="#/pro/assets" />
-      <PageHero product="pro" plain icon="device" eyebrow="Pro · Asset Intelligence" title="What the organization owns"
+      <PageHero product="pro" plain icon="device" eyebrow="Pro · what the organization owns" title="Asset Intelligence"
         lede={<>Every device position across the campus, its identity and where it is installed. <b>{plural(pos.length, 'position')}</b> in {plural(recs.length, 'room')}; <b>{ident[3]!.value}</b> carry no verified make, model or serial — a class template, never an invented one.</>}
         meta={[<Chip key="m" small tone="muted">Modelled positions</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]} />
-      <div className="kit-grid kit-grid--tiles wk-tiles4" data-testid="tiles">
+      <div className="kit-grid kit-grid--tiles wk-tiles4 pro-strip" data-testid="tiles">
         <StatTile label="Device positions" value={pos.length} icon="device" tone="pro" hint={`${byCat.length} kinds · furniture excluded`} />
         <StatTile label="Identity verified" value={ident[0]!.value} unit={`of ${pos.length}`} icon="check" tone="ok" hint="A person other than the installer confirmed it" />
         <StatTile label="Installations on record" value={installed} icon="link" tone="info" hint={`${removed} removed and kept in the history`} />
         <StatTile label="Networked positions" value={rows.reduce((a, x) => a + x.net, 0)} icon="route" tone="indigo" hint="On the room network layer" />
       </div>
+      {(() => { const reg = recs.map((r) => deviceRegister(r, readRegister(r.outline.id).entries)).flat(); const done = reg.filter((x) => x.complete).length;
+        const retired = recs.reduce((a, r) => a + retiredRegister(r).length, 0); const hist = syntheticHistory(); const ms = months(12);
+        const onUnits = hist.filter((j) => j.asset && Date.parse(j.openedAt) >= ms[ms.length - 3]!.from).length;
+        const docs = recs.filter((r) => r.coverage.length && r.coverage.every((c) => c.state === 'complete' || c.state === 'recorded')).length;
+        const cs = campusStats(); const units = new Set(hist.filter((j) => j.asset).map((j) => j.asset));
+        return <>
+          <div className="kit-grid kit-grid--tiles wk-tiles4 pro-strip" data-testid="tiles-2">
+            <StatTile label="Device register" value={pct(done, reg.length)} unit="%" icon="device" tone="info" hint={`${done} of ${reg.length} registered by installation teams in this browser`} />
+            <StatTile label="Retired units" value={retired} icon="undo" tone="muted" hint="Out of the inventory; codes never reused" />
+            <StatTile label="Service on units, 3 months" value={onUnits} icon="ticket" tone="servicehands" hint={`jobs naming a unit · ${units.size} units ever serviced (synthetic history)`} href="#/v25/service/analytics?m=6" />
+            <StatTile label="Documentation complete" value={docs} unit={`of ${recs.length}`} icon="book" tone="ok" hint="rooms whose every document area is recorded" />
+          </div>
+          <div className="wk-g2">
+            <Card icon="building" title="Buildings" sub="Campus, building, room, device: health is modelled from the records">
+              <List label="Buildings">{cs.buildings.filter((b) => b.rooms).map((b) => <ListRow key={b.b.key} title={b.b.name} sub={`${plural(b.rooms, 'room')} · ${plural(b.devices, 'device position')} · ${b.open} open issue${b.open === 1 ? '' : 's'}${b.verifiedPct != null ? ` · ${b.verifiedPct}% of tests verified` : ''}`} href={`#/commissioning?b=${b.b.key}`} trailing={<Tag tone={b.band === 'healthy' ? 'ok' : b.band === 'monitor' ? 'warn' : 'bad'}>{b.score ?? '—'}</Tag>} />)}</List>
+            </Card>
+            <Card icon="chart" title="Service on units, by month" sub="Jobs that named a unit, by layer · synthetic service history">
+              <TrendChart testId="pro-assets-trend" title="Jobs naming a unit, by month (synthetic history)" labels={ms.map((m) => m.label)} unit=""
+                series={(['audio', 'video', 'display', 'control'] as const).map((l, k) => ({ name: LAYER_LABEL[l], tone: (['info', 'violet', 'warn', 'indigo'] as const)[k]!, values: ms.map((m) => hist.filter((j) => j.asset && j.layer === l && monthKey(j.openedAt) === m.key).length) }))} />
+            </Card>
+          </div>
+        </>; })()}
       <div className="wk-g2">
         <Card icon="layers" title="Positions by kind"><Donut label="Device positions by kind" total="positions" segments={byCat} /></Card>
         <Card icon="shield" title="How well each unit is known" sub="Identity states, from verified to unknown"><Donut label="Positions by identity state" total="positions" segments={ident} /></Card>
@@ -75,10 +103,10 @@ export function IssuesPage({ perspective }: { perspective: string }) {
   return (
     <section className="wk" data-native="workspace" data-testid="pro-issues">
       <ProTabs role={perspective} current="#/pro/issues" />
-      <PageHero product="pro" plain icon="alert" eyebrow="Pro · Issue Intelligence" title="How and where it fails"
+      <PageHero product="pro" plain icon="alert" eyebrow="Pro · how and where it fails" title="Issue Intelligence"
         lede={<><b>{plural(open.length, 'room issue')}</b> open in <b>{plural(rooms, 'room')}</b>, beside <b>{plural(w.incidents.filter((i) => !DONE.includes(i.state)).length, 'service job')}</b>; <b>{rec.length}</b> {rec.length === 1 ? 'job is a recurrence' : 'jobs are recurrences'} of an earlier one in the same room.</>}
         meta={[<Chip key="m" small tone="muted">Synthetic records</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]} />
-      <div className="kit-grid kit-grid--tiles wk-tiles4" data-testid="tiles">
+      <div className="kit-grid kit-grid--tiles wk-tiles4 pro-strip" data-testid="tiles">
         <StatTile label="Open room issues" value={open.length} unit={`of ${room.length}`} icon="alert" tone="pro" />
         <StatTile label="High severity open" value={sev[0]!.value} icon="alert" tone="bad" />
         <StatTile label="Service jobs open" value={w.incidents.filter((i) => !DONE.includes(i.state)).length} icon="ticket" tone="servicehands" href="#/servicehands" />
@@ -88,6 +116,18 @@ export function IssuesPage({ perspective }: { perspective: string }) {
         <Card icon="pulse" title="Open by severity"><Donut label="Open room issues by severity" total="open" segments={sev} /></Card>
         <Card icon="filter" title="Where issues come from" sub="Every room issue, by the check that found it"><Donut label="Room issues by source" total="issues" segments={bySource} /></Card>
       </div>
+      {(() => { const hist = syntheticHistory(); const ms = months(12); const ser = ms.map((m) => stats(hist, m.from, m.to));
+        const repeat = [...hist.reduce((m, j) => m.set(j.roomId, [...(m.get(j.roomId) || []), j]), new Map<string, typeof hist>()).entries()].map(([id, js]) => ({ id, name: js[0]!.roomName, n: js.length, layers: [...new Set(js.map((j) => j.layer))] })).sort((a, b) => b.n - a.n).slice(0, 6);
+        return <div className="wk-g2" data-testid="pro-issues-trends">
+          <Card icon="chart" title="Issues by month and layer" sub="Opened in the synthetic service history · click through to Service analytics">
+            <TrendChart testId="pro-issues-trend" title="Jobs opened by layer, by month (synthetic history)" labels={ms.map((m) => m.label)} unit=""
+              series={(['audio', 'video', 'display', 'control', 'network'] as const).map((l, k) => ({ name: LAYER_LABEL[l], tone: (['info', 'violet', 'warn', 'indigo', 'ok'] as const)[k]!, values: ms.map((m) => hist.filter((j) => j.layer === l && monthKey(j.openedAt) === m.key).length) }))} />
+            <p className="wk-note">Reopened after closure: {ser.reduce((a, x) => a + Math.round(((x.reopen ?? 0) * x.closed) / 100), 0)} jobs in twelve months. <a href="#/v25/service/analytics">Service analytics</a></p>
+          </Card>
+          <Card icon="undo" title="Rooms that keep coming back" sub="Most service jobs in fifteen months · synthetic history">
+            <List label="Rooms with the most service jobs">{repeat.map((r) => <ListRow key={r.id} title={r.name} sub={`${r.layers.map((l) => LAYER_LABEL[l]).join(', ')}`} href={`#/commissioning/room/${r.id}`} trailing={<Tag tone="warn">{r.n}</Tag>} />)}</List>
+          </Card>
+        </div>; })()}
       <Card icon="building" title="Open issues by building">
         <ul className="wk-bars">{BUILDINGS.map((b) => { const xs = open.filter((x) => x.r.outline.building === b.key); const svc = w.incidents.filter((i) => i.buildingKey === b.key && !DONE.includes(i.state)).length;
           return <li key={b.key}><span>{b.short}</span><Stack label={b.name} total={Math.max(1, ...BUILDINGS.map((bb) => open.filter((x) => x.r.outline.building === bb.key).length + w.incidents.filter((i) => i.buildingKey === bb.key && !DONE.includes(i.state)).length))} parts={[{ key: 'h', label: 'high', value: xs.filter((x) => x.i.severity === 'High').length, tone: 'bad' }, { key: 'm', label: 'medium', value: xs.filter((x) => x.i.severity === 'Medium').length, tone: 'warn' }, { key: 'l', label: 'low', value: xs.filter((x) => x.i.severity === 'Low').length, tone: 'info' }, { key: 's', label: 'service jobs', value: svc, tone: 'servicehands' }]} /><b>{xs.length + svc}</b></li>; })}</ul>
@@ -116,16 +156,22 @@ export function OpsHubPage({ perspective }: { perspective: string }) {
   return (
     <section className="wk" data-native="workspace" data-testid="pro-ops">
       <ProTabs role={perspective} current="#/pro/ops" />
-      <PageHero product="pro" plain icon="wrench" eyebrow="Pro · Operations Hub" title="The people, parts and windows behind the work"
+      <PageHero product="pro" plain icon="wrench" eyebrow="Pro · the people, parts and windows behind the work" title="Operations Hub"
         lede={<><b>{plural(openWo.length, 'work order')}</b> open; <b>{plural(certs.filter((c) => c.days < 0).length, 'certification')}</b> expired and <b>{certs.filter((c) => c.days >= 0 && c.days <= 60).length}</b> due within 60 days; <b>{plural(stale.length, 'stock check')}</b> older than {S.STALE_STOCK_DAYS} days.</>}
         meta={[<Chip key="m" small tone="muted">Synthetic people and stock</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]}
         actions={<a className="ui-btn" href="#/service">Dispatch board</a>} />
-      <div className="kit-grid kit-grid--tiles wk-tiles4" data-testid="tiles">
+      <div className="kit-grid kit-grid--tiles wk-tiles4 pro-strip" data-testid="tiles">
         <StatTile label="Work orders open" value={openWo.length} unit={`of ${wos.length}`} icon="ticket" tone="pro" href="#/service" />
         <StatTile label="People in the pool" value={w.staff.length} icon="users" tone="info" hint={`${w.staff.filter((s) => s.leave).length} on leave · ${w.staff.filter((s) => !s.internal).length} from a partner`} />
         <StatTile label="Certifications due" value={certs.filter((c) => c.days <= 60).length} icon="calendar" tone="warn" hint="Expired or within 60 days" />
         <StatTile label="Stale stock checks" value={stale.length} unit={`of ${stock.length}`} icon="clock" tone={stale.length ? 'bad' : 'ok'} />
       </div>
+      {(() => { const hist = syntheticHistory(); const ms = months(12); const ser = ms.map((m) => stats(hist, m.from, m.to));
+        return <Card icon="chart" title="Service against its targets, by month" sub="Response and restore within SLA · synthetic service history" testId="pro-ops-trend">
+          <TrendChart testId="pro-ops-sla" title="SLA attainment by month (synthetic history)" labels={ms.map((m) => m.label)} unit="%" max={100} band={{ at: 90, label: 'target 90%' }}
+            series={[{ name: 'Response within SLA', tone: 'info', values: ser.map((x) => x.respondSla) }, { name: 'Restore within SLA', tone: 'violet', values: ser.map((x) => x.restoreSla) }]} />
+          <p className="wk-note">Each vendor against its agreement: <a href="#/v25/service/analytics">the vendor scorecard</a>.</p>
+        </Card>; })()}
       <div className="wk-g2">
         <Card icon="users" title="Capacity this period" sub="Hours left for each person">
           <div className="wk-lifebars">{w.staff.map((s) => <ProgressBar key={s.id} small label={`${s.name}${s.leave ? ' · on leave' : ''}`} value={s.capacity.remaining} max={Math.max(...w.staff.map((x) => x.capacity.remaining))} valueText={`${s.capacity.remaining} h`} tone={s.leave ? 'muted' : 'info'} />)}</div>
@@ -161,7 +207,7 @@ export function StandardsPage({ perspective }: { perspective: string }) {
         lede={<><b>{plural(arch.length, 'archetype')}</b> across the campus, each designed from an engineering template; <b>{conform}</b> of {recs.length} rooms have every applicable test verified, and the design checks raised <b>{plural(findings.length, 'finding')}</b>.</>}
         meta={[<Chip key="m" small tone="muted">Class templates · modelled</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]}
         actions={<><a className="ui-btn" href="#/v25/build">Build a Room</a>{readsManual(perspective as RoleKey) ? <a className="ui-btn" href="#/manual" data-testid="eng-manual">Engineering standards manual</a> : null}</>} />
-      <div className="kit-grid kit-grid--tiles wk-tiles4" data-testid="tiles">
+      <div className="kit-grid kit-grid--tiles wk-tiles4 pro-strip" data-testid="tiles">
         <StatTile label="Archetypes in use" value={arch.length} icon="layers" tone="pro" />
         <StatTile label="Rooms fully verified" value={conform} unit={`of ${recs.length}`} icon="check" tone="ok" />
         <StatTile label="Design findings" value={findings.length} icon="alert" tone="warn" hint={bySev.map(([k, n]) => `${n} ${k.toLowerCase()}`).join(' · ')} />

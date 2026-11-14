@@ -22,6 +22,10 @@ import { flow, priorities, prioritiesFor, type Priority } from './mission.js';
 import { programme } from './programme.js';
 import { techForPersona, type Workspace } from '../workspace/store.js';
 import { connectJumps } from '../connect/jumps.js';
+import { syntheticHistory } from '../service/history.js';
+import { vendorScorecard, months } from '../service/analytics.js';
+import { deviceRegister, registerStats } from './registers.js';
+import { readRegister } from './registerStore.js';
 
 export type Tone = 'ok' | 'warn' | 'bad' | 'info' | 'muted';
 export interface Link { label: string; href: string }
@@ -92,7 +96,7 @@ function stripFor(i: Inputs, mine: Priority[], cols: Strip['cols']): Strip {
   return { changed, matters, decide, cols };
 }
 
-export function startFor(i: Inputs): Start {
+function startCore(i: Inputs): Start {
   const { role, w, opens } = i; const recs = i.recs || allRecords(); const now = i.now ?? Date.now();
   const open = (href: string) => opens(href.split('?')[0]!);
   const link = (href: string | undefined) => (href && open(href) ? href : undefined);
@@ -289,4 +293,34 @@ export function startFor(i: Inputs): Start {
         strip: stripFor(i, mine, ['changed', 'matters', 'decide']), tiles: [], zones: [], basis: 'MODELED from the records; not live monitoring.' };
     }
   }
+}
+
+/**
+ * The work each role holds, added to its home (founder, 14 Nov 2026: "make the mission control of every role much much better … center
+ * it around the work needing to be done"):
+ *   - service manager and executive: the vendors that fall short of their agreements (the synthetic service history's scorecard, last six
+ *     months), each opening its own drill on Service analytics;
+ *   - installer and commissioning engineer: the rooms whose device register is not complete (phase 1 cannot start), with the count and
+ *     the install photographs, each opening the room's registers.
+ * Offered only where the role may open the page it leads to (D44). Rows are records; the history is labelled synthetic where it is used.
+ */
+export function startFor(i: Inputs): Start {
+  const s = startCore(i); const open = (href: string) => i.opens(href.split('?')[0]!);
+  const recs = i.recs || allRecords();
+  if ((i.role === 'svcmgr' || i.role === 'exec') && open('#/v25/service/analytics')) {
+    const card = vendorScorecard(syntheticHistory(), months(6)); const short = card.filter((v) => v.flags.length);
+    s.zones = [...s.zones, { id: 'vendors', title: 'Vendors against their agreements', hint: `${short.length} need attention · last six months, synthetic service history`,
+      rows: card.map((v) => ({ id: v.vendor, title: v.name, sub: v.flags.length ? v.flags[0]! : `within targets · restore within SLA ${v.s.restoreSla ?? '—'}% · ${v.jobs} jobs`, tone: v.flags.length ? 'warn' as const : 'ok' as const, tag: v.flags.length ? `${v.flags.length}` : undefined, href: `#/v25/service/analytics?m=6&v=${encodeURIComponent(v.vendor)}` })),
+      empty: 'No vendor has service on record.', more: { label: 'Service analytics', href: '#/v25/service/analytics' } }];
+    s.tiles = [...s.tiles, { label: 'Vendors needing attention', value: String(short.length), unit: ` of ${card.length}`, hint: 'below the SLA targets, or worsening (synthetic history)', tone: short.length ? 'warn' : 'ok', href: '#/v25/service/analytics?m=6' }];
+  }
+  if ((i.role === 'installer' || i.role === 'cxeng') && open('#/commissioning/room/x')) {
+    const rooms = recs.filter((r) => ['INSTALLATION_PENDING', 'INSTALLED_UNVERIFIED', 'COMMISSIONING'].includes(r.lifecycle));
+    const rows = rooms.map((r) => { const st = readRegister(r.outline.id); const reg = registerStats(deviceRegister(r, st.entries)); const photos = (st.photos.before ? 1 : 0) + (st.photos.after ? 1 : 0);
+      return { r, reg, row: { id: r.outline.id, title: `${shortName(r.outline)} · ${r.outline.name}`, sub: `${reg.done} of ${reg.total} devices registered · ${photos} of 2 install photographs`, tone: reg.done < reg.total ? 'warn' as const : 'ok' as const, tag: `${reg.pct}%`, href: `#/commissioning/room/${r.outline.id}` } }; })
+      .sort((a, b) => a.reg.pct - b.reg.pct);
+    const todo = rows.filter((x) => x.reg.done < x.reg.total).length;
+    s.zones = [...s.zones, { id: 'register', title: i.role === 'installer' ? 'Devices to register' : 'Registers before phase 1', hint: `${todo} room${todo === 1 ? '' : 's'} not complete · every device’s serial; hostname and address when networked`, rows: rows.map((x) => x.row), empty: 'No room is being installed or commissioned.' }];
+  }
+  return s;
 }

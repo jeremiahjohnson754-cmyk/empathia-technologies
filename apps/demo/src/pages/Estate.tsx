@@ -193,7 +193,7 @@ export function ProPage({ perspective, hash = '' }: { perspective: string; hash?
         lede={<>What is open right now, how it stands against its target, and where to look next. <b>{plural(working.length, 'issue')}</b> open across <b>{plural(needRooms.size, 'room')}</b>; <b>{inc.filter(late).length}</b> service {inc.filter(late).length === 1 ? 'job is' : 'jobs are'} past target.</>}
         meta={[<Chip key="s" small tone="muted">Modelled · not production monitoring</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]}
         actions={<><a className="ui-btn ui-btn--primary" href="#/v25/exec">Executive passports</a><a className="ui-btn" href="#/service">Dispatch board</a></>} />
-      <div className="kit-grid kit-grid--tiles wk-tiles4" data-testid="tiles">
+      <div className="kit-grid kit-grid--tiles wk-tiles4 pro-strip" data-testid="tiles">
         <StatTile label="Open issues" value={working.length} icon="alert" tone="pro" hint={`${inc.length} service jobs · ${roomIssues.length} room deficiencies`} />
         <StatTile label="Past their target" value={inc.filter(late).length} unit={`of ${inc.length}`} icon="clock" tone="bad" spark={backlog} delta={deltaOf(backlog, 'down', 'open vs 4 wk ago', { level: true })} />
         <StatTile label="Rooms that need action" value={needRooms.size} unit={`of ${recs.length}`} icon="room" tone="warn" href="#/assurance" hint="An issue open or commissioning blocked" />

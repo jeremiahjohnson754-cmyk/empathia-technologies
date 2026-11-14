@@ -147,6 +147,12 @@ export const OPS_PAGES: readonly PageDef[] = [
     load: adapt(() => import('./pages/AssuranceViews.js'), (m, p) => h(m.DeficienciesPage, { perspective: p.role })),
     search: { keywords: 'deficiencies punch list open', aliases: ['open deficiencies'] },
   },
+  {
+    id: 'commissioning.reverb', title: 'Reverberation instrument', purpose: 'EDT, T20 and T30 by octave band from measured impulse responses, with refusals, quality notes and the mean over positions', product: 'commissioning',
+    path: '/commissioning/instruments/reverb', authority: { area: 'commissioning' },
+    load: adapt(() => import('./pages/ReverbBench.js'), (m, p) => h(m.ReverbBenchPage, { perspective: p.role })),
+    search: { keywords: 'reverberation rt60 t20 t30 edt impulse response decay acoustic instrument bench schroeder octave', aliases: ['rt60', 'reverb time', 'impulse response'] },
+  },
   // ---- the operational workspaces (rebuild/demo-ops): each loads its own file (ws/<name>.js) only once the role is admitted
   {
     id: 'servicehands.analytics', title: 'Service analytics', purpose: 'Service by month and quarter, by building and project, and a scorecard that holds each vendor to its agreement', product: 'servicehands',
