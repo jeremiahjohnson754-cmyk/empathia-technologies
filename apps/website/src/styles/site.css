@@ -304,11 +304,11 @@ p { text-wrap: pretty; }
 .campus__text { min-width: 0; }
 .campus__text > p { margin: 0; font-size: clamp(19px, 2vw, 24px); line-height: 1.45; color: var(--w-tx); max-width: 46ch; }
 .mix { margin-top: 28px; }
-.mix__cells { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(15, minmax(0, 1fr)); gap: 6px; max-width: 560px; }
+.mix__cells { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 5px; max-width: 600px; }
 .mix__cells li { aspect-ratio: 1; border-radius: 5px; background: color-mix(in srgb, var(--w-tx) 10%, transparent); box-shadow: inset 0 0 0 1px var(--w-line2); }
-.mix [data-k=reference] { --k: var(--w-accent); } .mix [data-k=earlier] { --k: var(--w-ev-observed); } .mix [data-k=archetype] { --k: var(--w-ev-modeled); }
+.mix [data-k=r] { --k: var(--w-accent); } .mix [data-k=e] { --k: var(--w-ev-observed); } .mix [data-k=a] { --k: var(--w-ev-modeled); } .mix [data-k=v] { --k: var(--w-ev-verified); }
 .mix__cells li[data-k] { background: color-mix(in srgb, var(--k) 70%, transparent); box-shadow: inset 0 0 0 1px var(--k); }
-.mix__cells li[data-k=archetype] { background: color-mix(in srgb, var(--k) 22%, transparent); }
+.mix__cells li[data-k=a] { background: color-mix(in srgb, var(--k) 22%, transparent); }
 .mix__key { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 22px; color: var(--w-tx2); font-size: 14px; }
 .mix__key li { display: inline-flex; align-items: center; gap: 8px; }
 .mix__key i { width: 12px; height: 12px; border-radius: 3px; background: var(--k); }
@@ -769,3 +769,13 @@ p { text-wrap: pretty; }
 }
 @media (forced-colors: active) { .record.plan { border: 1px solid CanvasText; } .hero--collabora h1::after { forced-color-adjust: none; } }
 .hero__action { margin-top: 28px; }
+
+/* short scenes on /films: every clip shown 16:9 (a portrait clip shows its middle) */
+.scenes { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 18px; }
+.scene figure { margin: 0; display: grid; gap: 8px; }
+.scene video { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; background: var(--w-line2); display: block; }
+.scene figcaption { display: grid; gap: 2px; font-size: 14px; color: var(--w-tx); }
+.scene figcaption small { color: var(--w-tx2); font-size: 12px; }
+
+/* a vertical film (orientation: portrait) keeps a phone's proportions, centred, never taller than the screen */
+.film--portrait .film__frame { aspect-ratio: 9 / 16; width: min(420px, 100%, 44vh); margin-inline: auto; }

@@ -83,7 +83,7 @@ export const RecordCard = () => (
 /** `exclusive`: the film plays only on the pages in `placement`, never on /films (the build checks it). `sound: 'none'`: the film is
  *  silent and its rendition has no audio stream. `textTrack: 'descriptions'`: there is no speech to caption, so the film carries a
  *  description of what it shows (descriptions.vtt), printed under the player cue by cue. */
-export interface Film { key: string; title: string; runtime: string; summary: string; disclosure: string; placement: string[]; exclusive?: boolean; sound?: 'none'; textTrack?: 'descriptions'; /** printed directly above the player, always visible: what a viewer must know to read the film honestly */ qualifier?: string; /** a label burned into the rendition for its whole length, on a band added above the picture */ burnedLabel?: { text: string; band: number }; /** the rendition's width and height when it is not 1280 × 720 (a band was added) */ frame?: [number, number]; /** the captions are also in the picture: the track is offered, not switched on, so they never show twice */ burnedCaptions?: boolean }
+export interface Film { key: string; title: string; runtime: string; summary: string; disclosure: string; placement: string[]; exclusive?: boolean; sound?: 'none'; textTrack?: 'descriptions'; /** printed directly above the player, always visible: what a viewer must know to read the film honestly */ qualifier?: string; /** a label burned into the rendition for its whole length, on a band added above the picture */ burnedLabel?: { text: string; band: number }; /** the rendition's width and height when it is not 1280 × 720 (a band was added) */ frame?: [number, number]; /** the captions are also in the picture: the track is offered, not switched on, so they never show twice */ burnedCaptions?: boolean; /** a vertical film: shown at a phone's proportions, centred */ orientation?: 'portrait' }
 export interface Cue { from: string; to: string; text: string }
 /** A film, if it was built into this site (rights cleared, or a preview build). Captions are a real WebVTT track; the transcript is the
  *  same text, readable without playing anything. No autoplay with sound; nothing downloads until the viewer presses play.
@@ -92,7 +92,7 @@ export interface Cue { from: string; to: string; text: string }
 export const FilmPlayer = ({ film, transcript, cues, lead }: { film: Film; transcript: string[]; cues?: Cue[]; lead?: boolean }) => {
   const described = film.textTrack === 'descriptions' && !!cues?.length;
   return (
-    <figure className={`film${lead ? ' film--lead' : ''}${described ? ' film--described' : ''}${film.burnedLabel ? ' film--band' : ''}`} id={`film-${film.key}`} data-film={film.key}>
+    <figure className={`film${lead ? ' film--lead' : ''}${described ? ' film--described' : ''}${film.burnedLabel ? ' film--band' : ''}${film.orientation === 'portrait' ? ' film--portrait' : ''}`} id={`film-${film.key}`} data-film={film.key}>
       {film.qualifier ? <p className="film__qualifier" role="note" id={`film-${film.key}-q`} data-film-qualifier>{film.qualifier}</p> : null}
       <div className="film__frame">
         <video controls preload="none" playsInline poster={`/media/${film.key}/poster.webp`} width={film.frame?.[0]} height={film.frame?.[1]} aria-describedby={`${film.qualifier ? `film-${film.key}-q ` : ''}film-${film.key}-cap`}>
@@ -324,10 +324,20 @@ export const RoomDrawing = () => (
   </svg>
 );
 
-/** The thirty demonstration rooms as thirty cells, one per room, marked by how each was made; the approved wording stays beside it. */
-export const RoomMix = ({ mix }: { mix: { n: number; label: string; k: string }[] }) => (
+/** The demonstration rooms as cells, one per room, marked by how each was made; the approved wording stays beside it. */
+export const RoomMix = ({ mix }: { mix: { n: number; label: string; k: string; c: string }[] }) => (
   <div className="mix">
-    <ul className="mix__cells" aria-hidden="true">{mix.flatMap((m) => Array.from({ length: m.n }, (_, i) => <li key={m.k + i} data-k={m.k} />))}</ul>
-    <ul className="mix__key">{mix.map((m) => <li key={m.k} data-k={m.k}><i aria-hidden="true" /><b>{m.n}</b><span>{m.label}</span></li>)}</ul>
+    {/* one cell per room, marked by a one-letter code (the home page carries 140 of them, inside its size budget) */}
+    <ul className="mix__cells" aria-hidden="true">{mix.flatMap((m) => Array.from({ length: m.n }, (_, i) => <li key={m.k + i} data-k={m.c} />))}</ul>
+    <ul className="mix__key">{mix.map((m) => <li key={m.k} data-k={m.c}><i aria-hidden="true" /><b>{m.n}</b><span>{m.label}</span></li>)}</ul>
   </div>
+);
+
+/** Short silent scenes (broll.json): a grid of looping clips, each with its title and what it is. The video is decorative (hidden from
+ *  assistive technology; the caption says what it shows), has no sound, never autoplays by itself: the site script plays a clip only while
+ *  it is in view and only when the reader has not asked for reduced motion. Nothing downloads before that (preload none, poster only). */
+export const Scenes = ({ clips }: { clips: { key: string; title: string }[] }) => (
+  <ul className="scenes" data-scenes>{clips.map((c) => <li key={c.key} className="scene"><figure>
+    <video muted loop playsInline preload="none" poster={`/media/broll/${c.key}/poster.webp`} aria-hidden="true" data-scene><source src={`/media/broll/${c.key}/720.mp4`} type="video/mp4" /></video>
+    <figcaption><span>{c.title}</span><small>AI-generated scene · fictional people and places</small></figcaption></figure></li>)}</ul>
 );

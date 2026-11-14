@@ -55,7 +55,7 @@ for (const f of films.filter((x) => !only || only.includes(x.key))) {
     // a label burned into the rendition for its whole length (founder, 2026-11-10: what qualifies a film's figures must be IN the film).
     // It is drawn on a band added ABOVE the picture, so it covers nothing of the film and the player's own controls (which sit over the
     // bottom of a video) never cover it; the picture itself is not altered.
-    let picture = 'scale=-2:720:flags=lanczos';
+    let picture = f.orientation === 'portrait' ? 'scale=720:-2:flags=lanczos' : 'scale=-2:720:flags=lanczos';   // a portrait film keeps 720 px across
     if (f.burnedLabel) {
       const font = arg('font') || '/usr/share/fonts/opentype/inter/Inter-SemiBold.otf'; const band = f.burnedLabel.band;
       if (!fs.existsSync(font)) { console.error(`${f.key}: the label needs a font file (Inter SemiBold); ${font} is missing. Pass --font=/path/to/Inter-SemiBold.otf`); process.exit(1); }

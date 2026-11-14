@@ -53,7 +53,20 @@ The site audit (rule A10) fails any film without a captions track and any video 
 then carries a "Preview build — not for publication" banner and `noindex`, and robots.txt disallows everything. The dist-hygiene gate
 refuses any unverified film in a build that is not a preview. Screenshots of the preview are in the handoff.
 
-## 3. Rights: M2 is cleared; the others are not yet
+## 3. Rights
+
+**2026-11-13 17:20 CT, the owner: "All Verified".** After M2 (below), the owner accepted, as rights owner, the narration and picture
+sources of every film in that day's inventory: FA, F02P, IE and F01 (all four uploads match their catalogued masters), the vertical V1.4.1
+reel (`V141R`), the silent worship film (`W2`) and twenty short scenes (`apps/website/broll.json`). Each film's caveats stay on record in
+`apps/website/films.json` (`acceptedCaveats`). Every master has its captions burned in; each WebVTT track was read from the frames and
+checked by eye at every gap, and is offered without being switched on so captions never show twice. The silent W2 carries a one-cue
+captions track saying so and a shot-by-shot text description. Not published:
+- a second worship film (`rbko18tnimfuoh5oh2wgpxjt.mp4`, 2:08): the upload is damaged (about 13 % of it blank, over 3,000 decode errors);
+  it goes on once a clean copy is supplied;
+- two phone recordings of V2.5.3 (`1000039855.mp4`, `1000044924.mp4`): V2.5.3 is engineer-private by the owner's rule; they are the
+  reference Lite is measured against, not website material.
+
+### M2 (cleared first)
 
 **M2 — VERIFIED for the website, 2026-11-13 16:34 CT ("M2 verified").** The owner, as rights owner, accepted vidIQ's Terms of Service
 section 14 (read 2026-11-13: generated content, voice included, may be used commercially, including in promotional content, with no
@@ -65,7 +78,7 @@ the poster at 1:12, and it plays in the home hero with the demonstration's count
 
 The owner's rule, kept unchanged: *only VERIFIED assets authorized for the intended distribution channel may enter externally
 distributed builds.* The owner's request now covers **channel authorization** for the website, and it is recorded in
-`apps/website/films.json`. For the other films, **licence evidence** is still missing:
+`apps/website/films.json`. Before 2026-11-13 the other films lacked this **licence evidence**; it is kept as their accepted caveats:
 
 | Key | Narration | Picture | What would make it VERIFIED |
 |---|---|---|---|

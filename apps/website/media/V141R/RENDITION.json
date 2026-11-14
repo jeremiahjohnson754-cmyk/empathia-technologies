@@ -1,0 +1,30 @@
+{
+  "key": "V141R",
+  "title": "The V1.4.1 demonstration, in three minutes",
+  "master": "c0e09e432168214d14711c96f8d921fadb26deae64ac36fe5aeda193f0916a1f",
+  "source": {
+    "path": "owner upload (1000041382.mp4: the master, captions burned in)",
+    "sha256": "c0e09e432168214d14711c96f8d921fadb26deae64ac36fe5aeda193f0916a1f"
+  },
+  "settings": "H.264 High CRF 24 maxrate 2200k, 720p, AAC 96k stereo, faststart; posters 1600 px",
+  "files": {
+    "720.mp4": {
+      "bytes": 16066552,
+      "sha256": "4defcca6c91fa7df552ebf04b91bfd66b01c98d00e668ff3bf937a854ba808b3"
+    },
+    "poster.webp": {
+      "bytes": 68148,
+      "sha256": "4c514b3ebf68b6f0cfdd8f321c918eb60d3b9a4314806377c6c60c26b29e2a27"
+    },
+    "poster.jpg": {
+      "bytes": 153006,
+      "sha256": "43a4556e49d6afcdad91246a44582e6b5964fe46a08ea71e903f05bd70d91229"
+    },
+    "captions.vtt": {
+      "bytes": 3359,
+      "sha256": "02e86bf293216f1aea2d4513312c8a8f114f01f04344e4488bc23b7541365a5a"
+    }
+  },
+  "at": "2026-11-13T23:48:36.762Z",
+  "rightsWebsite": "VERIFIED"
+}

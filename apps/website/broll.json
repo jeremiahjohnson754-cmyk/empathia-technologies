@@ -1,0 +1,265 @@
+{
+ "$comment": "Short scenes (8 s each) supplied by the founder; web renditions are silent loops (the source audio is not used) at 720 px on the short side, with a poster. Rights: VERIFIED for the website by the owner, 2026-11-13 17:20 CT (\"All Verified\"), covering the clips the inventory of that day called group F (19 MiniMax-generated clips and one further generated clip). AI-generated scenes of fictional people and places; the page says so under every clip. sourceSha256 is the supplied file.",
+ "clips": [
+  {
+   "key": "B01",
+   "title": "A loudspeaker on a timber beam, under a vaulted ceiling",
+   "sourceSha256": "21622e7ca9ab41d188d1e7e530f6b91adc2ddf32f699e914eae84877f2e35d13",
+   "source": "04353d5a-4538b600-5f4b-45a4-af51-156a6c407562_minimax-462655…",
+   "generator": "MiniMax (from the file name)",
+   "rights": {
+    "website": {
+     "status": "VERIFIED",
+     "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\""
+    }
+   }
+  },
+  {
+   "key": "B02",
+   "title": "A technician reads the visit on her phone in the car park",
+   "sourceSha256": "af97eb4aafa93126201dcaff9d98322dcfbc4f45fd21ab6a423ac09338b08324",
+   "source": "09b31bf8-5778ca7e-23f2-40ed-85bc-d54518ba8879_minimax-462667…",
+   "generator": "MiniMax (from the file name)",
+   "rights": {
+    "website": {
+     "status": "VERIFIED",
+     "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\""
+    }
+   }
+  },
+  {
+   "key": "B03",
+   "title": "A reader steps up to the microphone at the lectern",
+   "sourceSha256": "6275a4ae65623bb919371a864a302e8a5b5c5fe99d7eb563a68a9c7431d8c3e6",
+   "source": "103667f8-f9a5eb48-281e-4e6e-9f5f-efc6fdaf289c_minimax-462668…",
+   "generator": "MiniMax (from the file name)",
+   "rights": {
+    "website": {
+     "status": "VERIFIED",
+     "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\""
+    }
+   }
+  },
+  {
+   "key": "B04",
+   "title": "The mixing console before the service, coffee beside it",
+   "sourceSha256": "dfb3f0b6b243a6866f8a53f8fda8dbbe3fbe4a4c7ffb469adc3379f9d1750ead",
+   "source": "28a122b5-c96adaf1-e6b4-405d-b907-b394262c7ed6_minimax-462656…",
+   "generator": "MiniMax (from the file name)",
+   "rights": {
+    "website": {
+     "status": "VERIFIED",
+     "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\""
+    }
+   }
+  },
+  {
+   "key": "B05",
+   "title": "The sanctuary, empty, before anyone arrives",
+   "sourceSha256": "1f7b58eb341892c3273ed4c93a021c4f5c4082f9a501cdd5e375c995e3fe7b19",
+   "source": "30923e0b-655649a1-8fec-414a-9a17-c2862409d328_minimax-462656…",
+   "generator": "MiniMax (from the file name)",
+   "rights": {
+    "website": {
+     "status": "VERIFIED",
+     "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\""
+    }
+   }
+  },
+  {
+   "key": "B06",
+   "title": "At the rack: the technician notes what the equipment reports",
+   "sourceSha256": "856f7815536c209fd446d30b0ee219bbf82d39bb6571ca2eb95cc9d00045ba79",
+   "source": "31663836-11daa4d7-a880-4db4-affd-1a86e3efcf2f_minimax-462667…",
+   "generator": "MiniMax (from the file name)",
+   "rights": {
+    "website": {
+     "status": "VERIFIED",
+     "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\""
+    }
+   }
+  },
+  {
+   "key": "B07",
+   "title": "Service in progress, the desk at the back of the room",
+   "sourceSha256": "cb91a855ce03778e9c2c7fec41a8ee498719ac669e7abc200ce6054ca791cd3c",
+   "source": "3752c193-b795ecbe-c14b-4770-9b8d-dbf24ca9ad6f_minimax-462671…",
+   "generator": "MiniMax (from the file name)",
+   "rights": {
+    "website": {
+     "status": "VERIFIED",
+     "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\""
+    }
+   }
+  },
+  {
+   "key": "B08",
+   "title": "Stained glass and panelled wood, the room as people see it",
+   "sourceSha256": "3aacdda683e75793d01b97f4d6e7ec1ffa7a3bba3a00a5f66337be5388c5b340",
+   "source": "4012738d-a3461b23-4415-40c1-b8cb-982015dcbc65_minimax-462689…",
+   "generator": "MiniMax (from the file name)",
+   "rights": {
+    "website": {
+     "status": "VERIFIED",
+     "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\""
+    }
+   }
+  },
+  {
+   "key": "B09",
+   "title": "At the desk, a question from the room answered in place",
+   "sourceSha256": "b2c19af2c8e309d99179525d5274a4688aba63be36df80b0e246dbed20b464c2",
+   "source": "4037e676-80850ddc-5388-429e-9675-3968c688d278_minimax-462668…",
+   "generator": "MiniMax (from the file name)",
+   "rights": {
+    "website": {
+     "status": "VERIFIED",
+     "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\""
+    }
+   }
+  },
+  {
+   "key": "B10",
+   "title": "A microphone boom raised over the pews",
+   "sourceSha256": "fd4874de7f62797411d26273b30199223e0dd459f0d38d97c237d9c0c4766786",
+   "source": "530f0f9b-ffaee1ff-885c-4c7b-b949-9c53b8610953_minimax-462654…",
+   "generator": "MiniMax (from the file name)",
+   "rights": {
+    "website": {
+     "status": "VERIFIED",
+     "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\""
+    }
+   }
+  },
+  {
+   "key": "B11",
+   "title": "A meeting room high in a glass tower at dusk",
+   "sourceSha256": "732f7d45e3dc480f1c66469894a64c9934f193edf2a6171e79ae810cb3192715",
+   "source": "7d61bcca-8673d410-1989-4a65-8a65-ee10019465ce_minimax-462644…",
+   "generator": "MiniMax (from the file name)",
+   "rights": {
+    "website": {
+     "status": "VERIFIED",
+     "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\""
+    }
+   }
+  },
+  {
+   "key": "B12",
+   "title": "A fader moves; the meters answer",
+   "sourceSha256": "8663a5f676fd50959a727a9157bd22f5f0ddd707bf426ae3a2a44f095a8e412f",
+   "source": "8045acf9-c883d03e-b509-4165-b0b0-cde3e88c5c11_minimax-462668…",
+   "generator": "MiniMax (from the file name)",
+   "rights": {
+    "website": {
+     "status": "VERIFIED",
+     "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\""
+    }
+   }
+  },
+  {
+   "key": "B13",
+   "title": "A small device handed over across the desk",
+   "sourceSha256": "968dbe0a85c39c3281f8ef65c00e0afb1b48fd1765c3b26e7dcd51bc12fa9f9b",
+   "source": "a321e1f3-7d78d696-0f6d-4b84-9298-1a217fca103e_minimax-462669…",
+   "generator": "MiniMax (from the file name)",
+   "rights": {
+    "website": {
+     "status": "VERIFIED",
+     "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\""
+    }
+   }
+  },
+  {
+   "key": "B14",
+   "title": "A wireless microphone handed to a guest at the desk",
+   "sourceSha256": "3fe0b5d26715b7b5576781fc1017367b068736263d9bf3df018b14a53380616b",
+   "source": "bd8aa597-aedcb6e7-0fc2-4153-b985-a75add6eba7c_minimax-462668…",
+   "generator": "MiniMax (from the file name)",
+   "rights": {
+    "website": {
+     "status": "VERIFIED",
+     "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\""
+    }
+   }
+  },
+  {
+   "key": "B15",
+   "title": "The tower at night, one lit path through every floor",
+   "sourceSha256": "1f649df9f6d3bbcd7952178a418de7fc4acefd5309d7140df6b4a8d24495c9f9",
+   "source": "be5acb2f-effcc1f4-6772-4a43-b85f-e8c0e9077fd4_minimax-462648…",
+   "generator": "MiniMax (from the file name)",
+   "rights": {
+    "website": {
+     "status": "VERIFIED",
+     "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\""
+    }
+   }
+  },
+  {
+   "key": "B16",
+   "title": "A connection made at the desk, laptop open",
+   "sourceSha256": "17f64b9ef5fe0690935d632feec5f4e646b588dff119400f7bbd7b226603dfe8",
+   "source": "c64f48da-f1f84e47-2f54-4563-9284-481752e98e12_minimax-462687…",
+   "generator": "MiniMax (from the file name)",
+   "rights": {
+    "website": {
+     "status": "VERIFIED",
+     "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\""
+    }
+   }
+  },
+  {
+   "key": "B17",
+   "title": "A corridor at night, a lit line leads the way",
+   "sourceSha256": "a145090d44ce0b1b0a37b484eef6f640e21347d0c5e5757aadc991dda6556eed",
+   "source": "e849e3ab-85dea3f6-7bee-4111-bcb1-cf12f32920b0_minimax-462648…",
+   "generator": "MiniMax (from the file name)",
+   "rights": {
+    "website": {
+     "status": "VERIFIED",
+     "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\""
+    }
+   }
+  },
+  {
+   "key": "B18",
+   "title": "Two visitors brought to the sound desk",
+   "sourceSha256": "b213b28ab48b134ff8a330806dd77e68c1b5ffb9bb60849a211abb9c05d4c4e4",
+   "source": "f66da385-a9ed1fa6-91c9-4382-8d4c-3b3aa73a50b2_minimax-462668…",
+   "generator": "MiniMax (from the file name)",
+   "rights": {
+    "website": {
+     "status": "VERIFIED",
+     "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\""
+    }
+   }
+  },
+  {
+   "key": "B19",
+   "title": "At the console, a second pair of eyes",
+   "sourceSha256": "fb12f1482357aa3ce658d39b2be386bd44def8203e2c4f9b06ae079787ecd81d",
+   "source": "fac41433-549a44c6-e5a9-4e1c-bc85-dfe7f94e459b_minimax-462688…",
+   "generator": "MiniMax (from the file name)",
+   "rights": {
+    "website": {
+     "status": "VERIFIED",
+     "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\""
+    }
+   }
+  },
+  {
+   "key": "B20",
+   "title": "A training room, set and empty, morning light",
+   "sourceSha256": "8ee92e4ca3bea5e22f0e78ce7cb63739b995aa6f3c0e3e5ed7245d748b8548f6",
+   "source": "d11fdc1a-a16f0f09-bc95-4c6f-8221-bacccb83db7c_bc211a11-6fe1-…",
+   "generator": "not recorded",
+   "rights": {
+    "website": {
+     "status": "VERIFIED",
+     "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\""
+    }
+   }
+  }
+ ]
+}

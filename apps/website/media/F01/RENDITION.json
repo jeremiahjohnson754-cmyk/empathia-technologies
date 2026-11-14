@@ -1,0 +1,30 @@
+{
+  "key": "F01",
+  "title": "The living system: one environment, one engineering language",
+  "master": "4d31db34fb218bed53c22b9991c253f6dfd0072efdd2bdeb81553905c8adcfc2",
+  "source": {
+    "path": "owner upload 2026-11-13 (1000042623.mp4: the master, captions burned in)",
+    "sha256": "4d31db34fb218bed53c22b9991c253f6dfd0072efdd2bdeb81553905c8adcfc2"
+  },
+  "settings": "H.264 High CRF 24 maxrate 2200k, 720p, AAC 96k stereo, faststart; posters 1600 px",
+  "files": {
+    "720.mp4": {
+      "bytes": 25843088,
+      "sha256": "d91be1d89dbf0538e6e46658d252b89750d6683b7568add8fb5e91acc2ad8eaa"
+    },
+    "poster.webp": {
+      "bytes": 49760,
+      "sha256": "1276322ea21164a9e716e6e93c5643bd39d49db3ca00b30831918de9fd57951d"
+    },
+    "poster.jpg": {
+      "bytes": 99492,
+      "sha256": "6268e81ffb90a1dc92ff9aa903ca2bee38c479845bae528f8b0ddd9c5e92b593"
+    },
+    "captions.vtt": {
+      "bytes": 3627,
+      "sha256": "dbc6366fe7b36951e9f5e6d5a383b68cc4fd0b17d59c9833d5ddef0c574f12c1"
+    }
+  },
+  "at": "2026-11-14T00:06:20.897Z",
+  "rightsWebsite": "VERIFIED"
+}

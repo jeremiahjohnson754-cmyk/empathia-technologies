@@ -5,14 +5,14 @@
 import { proofPage, LeadClaim } from './proof.js';
 import React from 'react';
 import { LeadForm, type LeadKind } from './form.js';
-import { Hero, Section, Cards, Steps, Note, Actions, Tag, EVIDENCE, EvidenceLine, FilmPlayer, Spectrum, Shot, ProductTiles, EnquiryCard, EnquiryLink, FounderBlock, Stage, Counts, Chapters, RoomMix, GlassRail, Strip, RoomDrawing, FilmPending, PlanRecord, type StripItem, type Evidence, type Film, type Cue, type Capture, type ChapterItem } from './ui.js';
+import { Hero, Section, Cards, Steps, Note, Actions, Tag, EVIDENCE, EvidenceLine, FilmPlayer, Spectrum, Shot, ProductTiles, EnquiryCard, EnquiryLink, FounderBlock, Stage, Counts, Scenes, Chapters, RoomMix, GlassRail, Strip, RoomDrawing, FilmPending, PlanRecord, type StripItem, type Evidence, type Film, type Cue, type Capture, type ChapterItem } from './ui.js';
 import { PRODUCTS, DEMO_STATE, ROOMS_SENTENCE, ROOM_MIX, ROOM_TOTAL } from './products.js';
 import { TALLY_FORM } from './enquiry.js';
 import { commercialPages } from './commercial.js';
 import { FounderReveal, SearchPartyStory, SearchPartyOrigin } from './founderStory.js';   // the founder page's plate and the Search Party founding story   // v18/pilot: /pricing and /pilots
 
 export interface Page { path: string; title: string; description: string; nav?: string; body: React.ReactNode; /** a page's own script in dist (e.g. 'pilot.js'), loaded after site.js on that page only */ script?: string; /** a small script of the page's own loaded in <head>, before first paint (the founder page's introduction must start from its opening frame) */ headScript?: string; }
-export interface SiteContext { asOf?: string; films: Film[]; pendingFilms?: Pick<Film, 'key' | 'title' | 'runtime' | 'summary' | 'disclosure'>[]; transcripts: Record<string, string[]>; /** a silent film's description, cue by cue (build.mjs reads its descriptions.vtt) */ cues?: Record<string, Cue[]>; demoUrl: string; preview: boolean; captures: Record<string, Capture>; api?: boolean }
+export interface SiteContext { asOf?: string; films: Film[]; pendingFilms?: Pick<Film, 'key' | 'title' | 'runtime' | 'summary' | 'disclosure'>[]; transcripts: Record<string, string[]>; /** a silent film's description, cue by cue (build.mjs reads its descriptions.vtt) */ cues?: Record<string, Cue[]>; demoUrl: string; preview: boolean; captures: Record<string, Capture>; api?: boolean; /** short silent scenes cleared for the website (broll.json) */ broll?: { key: string; title: string }[] }
 
 const AUDIENCES = [
   { title: 'CIOs and CTOs', body: 'One accountable record for the technology estate: what was approved, funded, installed, proved and accepted.', href: '/solutions#enterprise', icon: 'exec' },
@@ -27,7 +27,7 @@ const PRINCIPLES = [
 ];
 const Campus = () => (
   <div className="campus" data-rooms><p className="campus__n">{ROOM_TOTAL}<small>demonstration rooms</small></p>
-    <div className="campus__text"><p>The demonstration campus has thirty rooms: {ROOMS_SENTENCE}</p><RoomMix mix={ROOM_MIX} /></div></div>
+    <div className="campus__text"><p>The demonstration campus has {ROOM_TOTAL} rooms: {ROOMS_SENTENCE}</p><RoomMix mix={ROOM_MIX} /></div></div>
 );
 const byId = (id: string) => PRODUCTS.find((p) => p.id === id)!;
 /** The estates whose rooms the demonstration models (the concept's industries strip). No customer is named and no deployment is claimed. */
@@ -104,7 +104,7 @@ export function buildPages(ctx: SiteContext): Page[] {
         <ProductTiles captures={ctx.captures} />
       </Section>
       <Strip id="flow" eyebrow="The workflow" title="From request to a proven room" items={FLOW} flow />
-      <Section eyebrow="The demonstration campus" title="Thirty rooms, each with its record"><Campus /></Section>
+      <Section eyebrow="The demonstration campus" title={`${ROOM_TOTAL} rooms, each with its record`}><Campus /></Section>
       <Strip id="estates" eyebrow="Where it fits" title="Built for the rooms of every estate" items={ESTATES} foot={estatesFoot} />
       <Section eyebrow="Evidence" title="Six words the product will not blur" lead="Every value on every screen carries one of these labels. Most tools collapse them; Empathia keeps them apart so a decision can be traced to what was actually known." tone="deep">
         <dl className="states">{(Object.keys(EVIDENCE) as Evidence[]).map((s) => <div key={s} data-s={s}><dt><Tag s={s} /></dt><dd>{EVIDENCE[s].meaning}</dd></div>)}</dl>
@@ -127,6 +127,7 @@ export function buildPages(ctx: SiteContext): Page[] {
         <div className="hero__aside"><Shot p={p} cap={ctx.captures[p.id]} eager cta={p.demo ? { href: demo(p.demo.href), label: 'Open the interactive demonstration' } : undefined} />
           <ul className="claims" aria-label="What the demonstration shows, with its evidence label">{p.shows.map((t, i) => <li key={t}><Tag s={p.showsAs[i] || 'declared'} /><span>{t}</span></li>)}</ul></div>
       </div></section>
+      {film(`P-${p.id}`) ? <Section title="See it work" lead="Recorded from the demonstration itself: every step in it was checked before its words appeared.">{film(`P-${p.id}`)}</Section> : null}
       {p.film && film(p.film) ? <Section title="Watch it">{film(p.film)}</Section> : null}
       <section className="section"><div className="wrap"><div className="facts">
         <div className="facts__shows"><p className="eyebrow">Try it</p><h2>Open it in the demonstration</h2><p>{DEMO_STATE[p.demoState].text}, on synthetic data in your browser. Every value on its screens carries its evidence label; nothing is connected to a live system.</p>
@@ -357,6 +358,7 @@ export function buildPages(ctx: SiteContext): Page[] {
     <>
       <Hero label="Films" action={{ href: demo(), label: 'Explore the live demo' }} title="Watch the record being made" lead="Each film is recorded from the demonstration or illustrates a scenario, and says which. Every one has captions and a transcript." />
       {indexFilms.map((f) => <Section key={f.key} title={f.title} lead={f.summary}>{film(f.key)}</Section>)}
+      {ctx.broll?.length ? <Section title="Scenes from the rooms we serve" lead="Short scenes, eight seconds each, of the places and the people the platform is for: sanctuaries and sound desks, training rooms, towers at night. They play silently when they come into view, unless your device asks for reduced motion." tone="deep"><Scenes clips={ctx.broll} /></Section> : null}
       {pending.length ? <Section title={hasFilms ? 'Coming to this page' : 'The films'} lead="These films are made. Each is published here only once its rights for the website are confirmed; until then, the demonstration itself is the best way to see the product." tone={hasFilms ? 'deep' : undefined}>
         <div className="filmcards">{pending.map((f, i) => <FilmPending key={f.key} film={f} n={i + 1} />)}</div>
         <Actions><a className="btn btn--primary" href={demo()}>Explore the live demo</a><a className="btn" href="/request-demo">Request a guided demonstration</a></Actions>

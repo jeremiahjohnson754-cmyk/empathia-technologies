@@ -66,3 +66,10 @@ for (const form of Array.from(document.querySelectorAll<HTMLFormElement>('form[d
     } catch { say('warn', 'Not sent: the service could not be reached. Nothing was stored; please try again later.'); send.disabled = false; }
   });
 }
+
+// short scenes: play a silent clip only while it is in view, never when the reader asks for reduced motion (the poster stays)
+const scenes = document.querySelectorAll<HTMLVideoElement>('video[data-scene]');
+if (scenes.length && !matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+  const io = new IntersectionObserver((es) => es.forEach((e) => { const v = e.target as HTMLVideoElement; if (e.isIntersecting) { v.muted = true; v.play().catch(() => undefined); } else v.pause(); }), { threshold: 0.35 });
+  scenes.forEach((v) => io.observe(v));
+}

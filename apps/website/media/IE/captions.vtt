@@ -1,0 +1,290 @@
+WEBVTT
+
+NOTE
+Captions of "Field Intelligence: a technician's day" (IE, 5:00). The cues are the captions burned into the master (sha256 6ee94d40ce86…),
+which sit at the foot, the top or the middle of the picture by scene; read from its frames on 2026-11-13 in four passes and checked by
+eye at every gap and every cut-off line. On-screen labels and interface text are not captioned.
+
+1
+00:00:06.750 --> 00:00:11.750
+Eight in the morning. An experienced AV engineer begins his rounds.
+
+2
+00:00:12.000 --> 00:00:17.500
+Floor by floor: touch panels, displays, microphones, the room PC, the network.
+
+3
+00:00:18.250 --> 00:00:21.250
+On a campus like this, the round can take two hours.
+
+4
+00:00:21.250 --> 00:00:24.250
+Most mornings, almost everything is fine.
+
+5
+00:00:25.000 --> 00:00:29.250
+That is real expertise, spent confirming that nothing has changed.
+
+6
+00:00:32.000 --> 00:00:36.500
+Empathia Field Intelligence is built to run on the room's own Windows PC:
+
+7
+00:00:36.500 --> 00:00:39.250
+a scheduled, read-only collector.
+
+8
+00:00:39.500 --> 00:00:43.250
+By default, four times an hour, it checks what the room depends on:
+
+9
+00:00:43.250 --> 00:00:48.000
+compute health, cameras, microphones, speakers, displays, the network, and only
+
+10
+00:00:48.000 --> 00:00:50.250
+the endpoints it is allowed to reach.
+
+11
+00:00:50.750 --> 00:00:54.250
+It compares what is expected with what it observes.
+
+12
+00:00:54.500 --> 00:00:57.000
+Each result becomes a structured evidence record:
+
+13
+00:00:57.250 --> 00:01:00.750
+what was seen, how sure it is, and what it does not prove.
+
+14
+00:01:01.250 --> 00:01:05.750
+A device that answers a check has not proved that the room works in a call.
+
+15
+00:01:01.500 --> 00:01:06.500
+Reachable is not the same as working.
+
+16
+00:01:06.500 --> 00:01:11.500
+In the proposed architecture, those records feed the wider Empathia platform.
+
+17
+00:01:14.000 --> 00:01:18.500
+Now, engineering the space. Each room becomes a transparent model, built from
+
+18
+00:01:18.500 --> 00:01:23.000
+declared inputs: dimensions, positions, mounting heights and lenses.
+
+19
+00:01:24.000 --> 00:01:28.250
+In a four-seat huddle room, one wide camera reaches every seat from a single
+
+20
+00:01:28.250 --> 00:01:29.750
+preset.
+
+21
+00:01:30.500 --> 00:01:34.000
+In the boardroom, a far corner seat is 8.5 metres away:
+
+22
+00:01:34.000 --> 00:01:38.250
+pan, plus 6.8 degrees; tilt, minus 4.7.
+
+23
+00:01:39.750 --> 00:01:43.500
+In the divisible training room, four corner seats sit only at the edge of each
+
+24
+00:01:43.750 --> 00:01:47.500
+camera's reach, so the plan calls for more than one preset.
+
+25
+00:01:49.000 --> 00:01:53.000
+And in the town hall, the model finds the gap before anyone climbs a ladder.
+
+26
+00:01:53.000 --> 00:01:57.750
+The overflow seats are out of reach. Add one camera, run the plan again, and it is
+
+27
+00:01:57.750 --> 00:01:58.750
+valid.
+
+28
+00:02:00.000 --> 00:02:03.750
+Modeled, not measured: a plan is only as good as its inputs.
+
+29
+00:02:06.750 --> 00:02:09.500
+Acoustic commissioning is a future capability.
+
+30
+00:02:09.500 --> 00:02:12.000
+What follows is a simulation.
+
+31
+00:02:12.500 --> 00:02:17.000
+Before any sound could play, the work must be authorized, the room verified empty,
+
+32
+00:02:17.000 --> 00:02:21.500
+paging and emergency systems protected, the equipment calibrated, and safe levels
+
+33
+00:02:21.750 --> 00:02:24.500
+approved. Even then, the collector plays nothing.
+
+34
+00:02:24.500 --> 00:02:26.500
+It reports readiness.
+
+35
+00:02:27.250 --> 00:02:31.000
+A controlled sweep. Measurement microphones in each zone.
+
+36
+00:02:31.000 --> 00:02:34.250
+From each recording, an impulse response.
+
+37
+00:02:35.250 --> 00:02:38.750
+Direct sound first, then reflections, then the decaying tail.
+
+38
+00:02:38.750 --> 00:02:42.250
+Early energy supports speech; late energy blurs it.
+
+39
+00:02:43.250 --> 00:02:47.250
+From the decay, a hypothetical reverberation time, band by band, from the
+
+40
+00:02:47.250 --> 00:02:49.500
+front row to the overflow.
+
+41
+00:02:50.500 --> 00:02:54.500
+Then a proposal: a delay line of loudspeakers that brings the rear and
+
+42
+00:02:54.500 --> 00:02:57.000
+overflow close to the level at the front.
+
+43
+00:02:58.000 --> 00:03:02.500
+Microphone beam coverage would be its own workflow, supported by the manufacturer.
+
+44
+00:03:02.500 --> 00:03:06.000
+A microphone that is simply present measures nothing.
+
+45
+00:03:08.750 --> 00:03:13.000
+Ten a.m. A meeting is under way. The collector only ever reads:
+
+46
+00:03:13.250 --> 00:03:16.500
+no test tones, no camera moves, no recordings.
+
+47
+00:03:17.500 --> 00:03:19.500
+Ten fifteen. Healthy.
+
+48
+00:03:20.250 --> 00:03:24.250
+Ten thirty: the touch panel stops answering on its control port.
+
+49
+00:03:25.000 --> 00:03:29.000
+The finding arrives with its evidence, the likely causes, and the checks to run
+
+50
+00:03:29.000 --> 00:03:33.500
+first. The cause stays unconfirmed until a person confirms it.
+
+51
+00:03:34.500 --> 00:03:39.250
+Ten forty-five: still down. The engineer checks the switch port, restores power to
+
+52
+00:03:39.250 --> 00:03:41.250
+the panel, and makes the call.
+
+53
+00:03:42.250 --> 00:03:45.750
+Eleven o'clock: the panel answers, but one check could not complete.
+
+54
+00:03:45.750 --> 00:03:48.000
+Unverified, not healthy.
+
+55
+00:03:48.750 --> 00:03:52.250
+Eleven fifteen: every required check is conclusive.
+
+56
+00:03:52.250 --> 00:03:54.750
+Resolved, with the evidence to show it.
+
+57
+00:03:57.250 --> 00:04:02.250
+Now the scenario. Even if the whole two-hour round were freed, that is at most 500
+
+58
+00:04:02.250 --> 00:04:06.500
+hours a year for one engineer, before alerts and upkeep are counted.
+
+59
+00:04:07.000 --> 00:04:12.000
+It is an illustration, not a result. A pilot will measure the real number.
+
+60
+00:04:12.750 --> 00:04:15.500
+The point is not to replace engineers.
+
+61
+00:04:15.500 --> 00:04:19.750
+It is to give their judgment the time it deserves.
+
+62
+00:04:21.000 --> 00:04:24.250
+Across the campus, Field Intelligence could become a source of evidence for
+
+63
+00:04:24.250 --> 00:04:27.750
+Empathia Pro, Lite, Search Party and Learn.
+
+64
+00:04:28.500 --> 00:04:32.750
+The ticket closes with its evidence. And there is time to teach.
+
+65
+00:04:34.250 --> 00:04:38.000
+The room has a story. Every device. Every signal.
+
+66
+00:04:38.000 --> 00:04:41.000
+Every failure. Every improvement.
+
+67
+00:04:41.500 --> 00:04:45.750
+For too long, engineers have spent their days searching for the evidence.
+
+68
+00:04:46.000 --> 00:04:48.500
+What if the evidence could come to them?
+
+69
+00:04:49.250 --> 00:04:51.750
+Empathia Field Intelligence.
+
+70
+00:04:52.250 --> 00:04:54.750
+Know the room. Understand the evidence.
+
+71
+00:04:55.000 --> 00:04:57.250
+Give engineers their time back.

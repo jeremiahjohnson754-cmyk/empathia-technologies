@@ -212,8 +212,10 @@ for (const [w, h] of [[1440, 900], [768, 1024], [390, 844]]) {
 // ---- content the founder fixed: the thirty rooms; captures dark only (D43); reduced motion; no-script products menu ----
 {
   const ctx = await newCtx({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' }); const page = await ctx.newPage();
-  const ROOMS = /one is the complete reference room, three keep the demonstration[’']s earlier records and twenty-six are designed from their archetypes: modelled layouts and devices, never surveyed\./;
-  for (const p of ['/', '/platform']) { await page.goto(base + p); ok(`W-rooms-${p}`, `${p} states the thirty demonstration rooms in the approved wording`, ROOMS.test(await page.evaluate(() => document.body.innerText))); }
+  // 13 Nov 2026: the campus is 140 rooms (founder, 07:24 CT). The approved wording of the thirty is kept and extended by the same terms with
+  // the eighty-six designed rooms and the earlier release's fifty; the check follows the sentence the site now states.
+  const ROOMS = /one is the complete reference room, three keep the demonstration[’']s earlier records, eighty-six are designed from their archetypes and fifty are the earlier release[’']s own rooms, laid out by its room types: modelled layouts and devices, never surveyed\./;
+  for (const p of ['/', '/platform']) { await page.goto(base + p); ok(`W-rooms-${p}`, `${p} states the 140 demonstration rooms in the approved wording`, ROOMS.test(await page.evaluate(() => document.body.innerText))); }
   await page.goto(base + '/'); const anim = await page.evaluate(() => getComputedStyle(document.querySelector('.spectrum i')).animationName);
   ok('W-reduced-motion', 'nothing animates for readers who ask for reduced motion', anim === 'none', anim);
   const prov = JSON.parse(fs.readFileSync(path.join(repo, 'apps/website/media/product/PROVENANCE.json'), 'utf8')).captures;
@@ -255,9 +257,9 @@ for (const [w, h] of [[1440, 900], [768, 1024], [390, 844]]) {
   });
   // the story follows the lifecycle (design, prove, run, learn), not the product order: the products' own order is checked above (W-canon)
   const inOrder = home.chapters.map((c) => c.p).join('|') === 'lite|commissioning|servicehands|apex';
-  ok('W-uplift-hero', 'the home hero is a gradient panel with a glow, and its counts come from the records (9 products, 30 rooms, 1 record)', /radial-gradient/.test(home.bg) && /linear-gradient/.test(home.bg) && home.chip.join('|') === '9products|30rooms|1record', JSON.stringify({ bg: home.bg.slice(0, 80), chip: home.chip }));
+  ok('W-uplift-hero', 'the home hero is a gradient panel with a glow, and its counts come from the records (9 products, 140 rooms, 1 record)', /radial-gradient/.test(home.bg) && /linear-gradient/.test(home.bg) && home.chip.join('|') === '9products|140rooms|1record', JSON.stringify({ bg: home.bg.slice(0, 80), chip: home.chip }));
   ok('W-uplift-story', 'the home page tells the lifecycle in four chapters, in lifecycle order, each with its product’s own dark capture (when captured; the acceptance chapter shows the room record) and a link to its product page', home.chapters.length === 4 && inOrder && home.chapters.every((c) => c.h.length > 10 && c.links.every((l) => /^\/products\//.test(l)) && (!prov[c.p] || c.img === `/media/product/${c.p}-1280.webp` || (c.p === 'commissioning' && prov.room && c.img === '/media/product/room-1280.webp'))), JSON.stringify(home.chapters));
-  ok('W-uplift-rooms', 'the thirty rooms are drawn as thirty cells whose key adds up to thirty, and the number is display-sized', home.cells === 30 && home.key === 30 && home.n === '30' && home.nSize >= 80, JSON.stringify({ cells: home.cells, key: home.key, n: home.n, size: home.nSize }));
+  ok('W-uplift-rooms', 'the 140 rooms are drawn as 140 cells whose key adds up to 140, and the number is display-sized', home.cells === 140 && home.key === 140 && home.n === '140' && home.nSize >= 80, JSON.stringify({ cells: home.cells, key: home.key, n: home.n, size: home.nSize }));
   ok('W-uplift-layered', 'every card, tile and evidence card is a layered surface (it carries a shadow) in this scheme', home.cardCount >= 18 && home.flat === 0, JSON.stringify({ cards: home.cardCount, flat: home.flat }));
   // The founder page carries the founder's own words verbatim (2026-11-01 05:42 and 05:46 CT): the overview beneath his name, the founding
   // story as its own section, and "My Cinderella shoe." as its own final line with generous space.
@@ -300,13 +302,25 @@ for (const [w, h] of [[1440, 900], [768, 1024], [390, 844]]) {
   ok('W-concept-arch', 'the architecture strip claims only what the product enforces (no SOC 2 / ISO / certification) and links the trust page', h.arch && h.arch.n === 5 && !/SOC|ISO|certif|complian|real-time|live telemetry/i.test(h.arch.text) && h.arch.links.includes('/trust'), h.arch?.text.slice(0, 160));
   ok('W-concept-band', 'the closing band carries a drawn room (decorative svg), never a photograph', h.band && h.drawingHidden && h.bandImgs === 0, JSON.stringify({ band: h.band, hidden: h.drawingHidden, imgs: h.bandImgs }));
   const f = await page.goto(base + '/films'); await page.waitForTimeout(100);
-  const fm = await page.evaluate(() => ({ h1: document.querySelector('h1')?.textContent, pending: document.querySelectorAll('[data-film-pending]').length, videos: document.querySelectorAll('video').length, srcs: Array.from(document.querySelectorAll('video source')).map((s) => s.getAttribute('src')), why: /once its rights for the website are confirmed/.test(document.body.textContent), foot: !!document.querySelector('.foot a[href="/films"]') }));
+  const fm = await page.evaluate(() => ({ h1: document.querySelector('h1')?.textContent, pending: document.querySelectorAll('[data-film-pending]').length, videos: document.querySelectorAll('[data-film] video').length, srcs: Array.from(document.querySelectorAll('[data-film] video source')).map((s) => s.getAttribute('src')), scenes: Array.from(document.querySelectorAll('video[data-scene]')).map((v) => ({ key: v.querySelector('source')?.getAttribute('src')?.split('/')[3], hidden: v.getAttribute('aria-hidden') === 'true', muted: v.muted, auto: v.autoplay, controls: v.controls })), why: /once its rights for the website are confirmed/.test(document.body.textContent), foot: !!document.querySelector('.foot a[href="/films"]') }));
   // CHANGED 2026-11-10 (founder: the Collabora-SING film is "just for the corporate website section for Collabora-SING"): a film marked
   // `exclusive` in films.json belongs to its own section and must NOT be on /films, cleared or not. So the count on /films is now taken
   // over the films that belong there (`listed`), and a new condition requires that no exclusive film appears on the page at all. The
   // last condition (no uncleared film is shipped) still runs over the whole catalogue; nothing is relaxed for the films listed here.
   const catalogue = JSON.parse(fs.readFileSync(path.join(repo, 'apps/website/films.json'), 'utf8')).films; const listed = catalogue.filter((x) => !x.exclusive); const cleared = listed.filter((x) => x.rights?.website?.status === 'VERIFIED').length;
   const strays = catalogue.filter((x) => x.exclusive && (fm.srcs.some((s) => s.includes(`/media/${x.key}/`)) || fs.readFileSync(path.join(dist, 'films/index.html'), 'utf8').includes(x.key)));
+  // 13 Nov 2026: /films also carries the short silent scenes (apps/website/broll.json), which are not films of the catalogue: the film count
+  // above is taken over the film players only ([data-film]); the scenes get their own check — every one cleared, silent, decorative, never
+  // autoplaying by itself and offering no controls (the site script plays one only while it is in view, and never for reduced motion)
+  { const cat = JSON.parse(fs.readFileSync(path.join(repo, 'apps/website/broll.json'), 'utf8')).clips; const cleared = cat.filter((c) => c.rights?.website?.status === 'VERIFIED').map((c) => c.key);
+    ok('W-films-scenes', '/films shows every cleared short scene, each silent, decorative and never autoplaying by itself, and no scene that is not cleared', fm.scenes.length === cleared.length && fm.scenes.every((v) => cleared.includes(v.key) && v.hidden && v.muted && !v.auto && !v.controls), JSON.stringify(fm.scenes.slice(0, 2))); }
+  // product demonstration films (founder, 13 Nov 2026: 30–45 s on each product page, "verified"): each cleared one plays on its own product
+  // page only, with its captions, and its recording says that every step met its proof and that it lasts 30–45 s
+  { const pf = JSON.parse(fs.readFileSync(path.join(repo, 'apps/website/films.json'), 'utf8')).films.filter((f) => f.productFilm && f.rights?.website?.status === 'VERIFIED'); const bad = [];
+    for (const f of pf) { const rec = JSON.parse(fs.readFileSync(path.join(repo, 'apps/website/media', f.key, 'RECORDING.json'), 'utf8'));
+      await page.goto(base + f.placement[0]); const v = await page.evaluate((k) => ({ n: document.querySelectorAll(`[data-film="${k}"] video`).length, cap: !!document.querySelector(`[data-film="${k}"] track[kind=captions]`) }), f.key);
+      if (v.n !== 1 || !v.cap || !(rec.duration >= 30 && rec.duration <= 45) || !rec.steps.length || rec.steps.some((st) => !st.proof) || fm.srcs.some((x) => x.includes(`/media/${f.key}/`))) bad.push(`${f.key} ${JSON.stringify(v)} ${rec.duration}`); }
+    ok('W-product-films', `every cleared product film (${pf.length}) plays on its product page with captions, is 30–45 s long, every step of its recording had a proof, and it is not on /films`, pf.length >= 1 && !bad.length, bad.join(' | ')); }
   ok('W-films-page', '/films exists in every build: cleared films play, every other film is listed by title only with the reason, no uncleared film is shipped, and a film exclusive to another section is not here', f.status() === 200 && fm.h1 && pages.includes('/films') && fm.pending + fm.videos === listed.length && fm.videos >= cleared && !strays.length && (!fm.pending || fm.why) && fm.foot && !fs.readdirSync(path.join(dist, 'media')).some((d) => catalogue.some((c) => c.key === d && c.rights?.website?.status !== 'VERIFIED')), JSON.stringify(fm));
   for (const w of [320, 390]) {
     await page.setViewportSize({ width: w, height: 800 });

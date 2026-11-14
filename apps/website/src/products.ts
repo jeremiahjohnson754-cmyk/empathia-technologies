@@ -86,12 +86,14 @@ export const DEMO_STATE: Record<DemoState, { text: string; s: 'observed' | 'decl
  *  the website's own server) and explained on the not-found page. */
 export { default as MOVED } from '../redirects.json';
 
-/** How the thirty demonstration rooms were made (the counts of the approved wording below; the total is their sum, never typed). */
+/** How the 140 demonstration rooms were made (the counts of the wording below; the total is their sum, never typed). Founder, 13 Nov 2026
+ *  07:24 CT: "140 is a better size to show for a corporate enterprise". The thirty, rows 31–90 and the earlier release's fifty (canon.ts). */
 export const ROOM_MIX = [
-  { k: 'reference', n: 1, label: 'complete reference room' },
-  { k: 'earlier', n: 3, label: 'with the demonstration’s earlier records' },
-  { k: 'archetype', n: 26, label: 'designed from their archetypes' },
+  { k: 'reference', c: 'r', n: 1, label: 'complete reference room' },
+  { k: 'earlier', c: 'e', n: 3, label: 'with the demonstration’s earlier records' },
+  { k: 'archetype', c: 'a', n: 86, label: 'designed from their archetypes' },
+  { k: 'release', c: 'v', n: 50, label: 'the earlier release’s own rooms' },
 ];
 export const ROOM_TOTAL = ROOM_MIX.reduce((a, m) => a + m.n, 0);
-/** The thirty demonstration rooms, in the founder-approved wording. */
-export const ROOMS_SENTENCE = 'one is the complete reference room, three keep the demonstration’s earlier records and twenty-six are designed from their archetypes: modelled layouts and devices, never surveyed.';
+/** The demonstration rooms, in the founder-approved wording of the thirty, extended to the 140 by the same terms. */
+export const ROOMS_SENTENCE = 'one is the complete reference room, three keep the demonstration’s earlier records, eighty-six are designed from their archetypes and fifty are the earlier release’s own rooms, laid out by its room types: modelled layouts and devices, never surveyed.';

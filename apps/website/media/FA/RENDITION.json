@@ -1,0 +1,30 @@
+{
+  "key": "FA",
+  "title": "The platform vision",
+  "master": "a136a65cb919dcf1ecf6a01674ede82a8f06715e6462c9ceb9c5c73e89c53393",
+  "source": {
+    "path": "owner upload 2026-11-13 (1000042621.mp4: the master, captions burned in)",
+    "sha256": "a136a65cb919dcf1ecf6a01674ede82a8f06715e6462c9ceb9c5c73e89c53393"
+  },
+  "settings": "H.264 High CRF 24 maxrate 2200k, 720p, AAC 96k stereo, faststart; posters 1600 px",
+  "files": {
+    "720.mp4": {
+      "bytes": 11146809,
+      "sha256": "754c129a4e3668885820732c54c1e15f66e33480fae01698f9570f404f6a7377"
+    },
+    "poster.webp": {
+      "bytes": 56014,
+      "sha256": "eae95813ac88c7477f0ef854c2555ba0a095d13a117d10ced211b9c38b7a459c"
+    },
+    "poster.jpg": {
+      "bytes": 109923,
+      "sha256": "cb6a304c35e03b9b429d083836fa0c7f8c8932e540f052bfc902f1f455788258"
+    },
+    "captions.vtt": {
+      "bytes": 1752,
+      "sha256": "7f97872469f1fb2295ef7964dbf19e8b5721947d20021eba4e3fa906402bd3a7"
+    }
+  },
+  "at": "2026-11-13T23:49:37.754Z",
+  "rightsWebsite": "VERIFIED"
+}

@@ -23,8 +23,10 @@
       "summary": "Mission Control, Search Party, Lite, Field Intelligence, Commissioning, ServiceHands and Learn, recorded from the synthetic demonstration.",
       "masterSha256": "a136a65cb919dcf1ecf6a01674ede82a8f06715e6462c9ceb9c5c73e89c53393",
       "renditionSource": "Empathia_Film_Campaign/10_Final_Masters/FA/Empathia_V25_FA_16x9_1920x1080_clean.mp4 (362d6deb…) + FA.vtt",
+      "source": { "video": "owner upload 2026-11-13 (1000042621.mp4: the master, captions burned in)", "captions": "apps/website/films/FA.captions.vtt" },
+      "burnedCaptions": true,
       "disclosure": "Screen recordings of the demonstration on synthetic data.",
-      "rights": { "website": { "status": "UNVERIFIED", "blocking": ["narration: Kokoro local voice (model licence Apache-2.0 documented; output rights and upstream training data not documented)", "not entered in the media-rights ledger", "rights owner of record not established"], "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)" } }
+      "rights": { "website": { "status": "VERIFIED", "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\" — accepting, as rights owner, the narration and picture sources of every film then listed (the inventory of that day), with the caveats below", "acceptedCaveats": ["narration: Kokoro local voice (model licence Apache-2.0 documented; output rights and upstream training data not documented)", "not entered in the media-rights ledger", "rights owner of record not established"], "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)" } }
     },
     {
       "key": "F02P",
@@ -34,8 +36,10 @@
       "summary": "A divisible hall designed as states, its loudspeaker loads calculated, every state and transition tested on a simulated processor, then proven.",
       "masterSha256": "46ee50741ad42d845f72c30bfec3ed2c3ba7122590e45220e9def1787a0e54f1",
       "renditionSource": "empathia-campaign/out/F02P/Empathia_F02_The-Living-System_3m00_1080p_clean.mp4 (80a4fbaa…) + .vtt",
+      "source": { "video": "owner upload 2026-11-13 (1000042618.mp4: the master, captions burned in)", "captions": "apps/website/films/F02P.captions.vtt" },
+      "burnedCaptions": true,
       "disclosure": "Product demonstration on synthetic data; the processor is simulated.",
-      "rights": { "website": { "status": "UNVERIFIED", "blocking": ["narration: vidIQ \"Brian\" voice (campaign 2026-10-10) — same evidence gap as M2", "ledger entry X048 UNVERIFIED"], "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)" } }
+      "rights": { "website": { "status": "VERIFIED", "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\" — accepting, as rights owner, the narration and picture sources of every film then listed (the inventory of that day), with the caveats below", "acceptedCaveats": ["narration: vidIQ \"Brian\" voice (campaign 2026-10-10) — same evidence gap as M2", "ledger entry X048 UNVERIFIED"], "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)" } }
     },
     {
       "key": "IE",
@@ -45,8 +49,10 @@
       "summary": "What a collector declares, what a test observes, and what an engineer verifies — through one illustrative shift.",
       "masterSha256": "6ee94d40ce8615f8584091cceb74adfab39f1a3faab925255b4e011dbff5fd55",
       "renditionSource": "Empathia_FI_Film/out/IE-film-4k.mp4 (4387b1cb…, clean) + captions/IE-film.vtt, downscaled to 1080p/720p",
+      "source": { "video": "owner upload 2026-11-13 (1000042624.mp4: the master, captions burned in)", "captions": "apps/website/films/IE.captions.vtt" },
+      "burnedCaptions": true,
       "disclosure": "Illustrative scenario; AI-generated images of fictional people; simulated rooms and data.",
-      "rights": { "website": { "status": "UNVERIFIED", "blocking": ["narration provenance not ledgered", "AI-generated photographic images: generator, terms and plan at creation not on file", "not entered in the media-rights ledger"], "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)" } }
+      "rights": { "website": { "status": "VERIFIED", "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\" — accepting, as rights owner, the narration and picture sources of every film then listed (the inventory of that day), with the caveats below", "acceptedCaveats": ["narration provenance not ledgered", "AI-generated photographic images: generator, terms and plan at creation not on file", "not entered in the media-rights ledger"], "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)" } }
     },
     {
       "key": "F01",
@@ -56,8 +62,53 @@
       "summary": "The estate, Search Party relationships, a device replaced with its history kept, remote diagnostics, operations readiness and Learn, from the V1.4.1 demonstration.",
       "masterSha256": "4d31db34fb218bed53c22b9991c253f6dfd0072efdd2bdeb81553905c8adcfc2",
       "renditionSource": "Empathia_Film_Campaign/10_Final_Masters/F01/Empathia_V141_F01_16x9_1920x1080_clean.mp4 (e26d6b28…) + .vtt",
+      "source": { "video": "owner upload 2026-11-13 (1000042623.mp4: the master, captions burned in)", "captions": "apps/website/films/F01.captions.vtt" },
+      "burnedCaptions": true,
       "disclosure": "Screen recordings of the V1.4.1 demonstration on synthetic data.",
-      "rights": { "website": { "status": "UNVERIFIED", "blocking": ["narration: Kokoro local voice — output rights not documented", "not entered in the media-rights ledger"], "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)" } }
+      "rights": { "website": { "status": "VERIFIED", "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\" — accepting, as rights owner, the narration and picture sources of every film then listed (the inventory of that day), with the caveats below", "acceptedCaveats": ["narration: Kokoro local voice — output rights not documented", "not entered in the media-rights ledger"], "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)" } }
+    },
+    {
+      "key": "V141R",
+      "title": "The V1.4.1 demonstration, in three minutes",
+      "runtime": "3:18",
+      "placement": ["/films"],
+      "orientation": "portrait",
+      "frame": [720, 1280],
+      "posterAt": 40,
+      "summary": "A vertical tour of the V1.4.1 demonstration: a room concept checked against its rules, a visitor's way in, a room in Engineer mode, a room's life replayed, who supports what, who knows how, and the audio lab.",
+      "masterSha256": "c0e09e432168214d14711c96f8d921fadb26deae64ac36fe5aeda193f0916a1f",
+      "source": { "video": "owner upload (1000041382.mp4: the master, captions burned in)", "captions": "apps/website/films/V141R.captions.vtt" },
+      "burnedCaptions": true,
+      "disclosure": "Screen recordings of the V1.4.1 demonstration on synthetic data.",
+      "rights": { "website": { "status": "VERIFIED", "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\" — accepting, as rights owner, the narration and picture sources of every film then listed (the inventory of that day), with the caveats below", "acceptedCaveats": ["narration source not recorded", "not entered in the media-rights ledger"] } }
+    },
+    {
+      "key": "W2",
+      "title": "Behind the sound of a congregation",
+      "runtime": "2:16",
+      "placement": ["/films"],
+      "sound": "none",
+      "textTrack": "descriptions",
+      "posterAt": 84,
+      "summary": "A church's sound volunteer at work: a microphone fitted for a reader, the room checked, a rehearsal timed, a meeting briefed, a service run, and the logbook written up after.",
+      "masterSha256": "5d933a431ab7b05940bc8f9e8f21a1899b1115c0ac2be2303b27f1f779c76c25",
+      "source": { "video": "owner upload (i6o9serm574emwshsupqvyps.mp4)", "captions": "apps/website/films/W2.captions.vtt", "descriptions": "apps/website/films/W2.descriptions.vtt" },
+      "disclosure": "An AI-generated film: every person and place in it is fictional. It has no sound.",
+      "rights": { "website": { "status": "VERIFIED", "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\" — accepting, as rights owner, the narration and picture sources of every film then listed (the inventory of that day), with the caveats below", "acceptedCaveats": ["AI-generated photographic people: the generator, its terms and the plan at creation are not on file", "not entered in the media-rights ledger"] } }
+    },
+    {
+      "key": "P-lite",
+      "title": "Lite: from the campus to one seat, and back",
+      "runtime": "0:43",
+      "placement": ["/products/lite"],
+      "exclusive": true,
+      "productFilm": true,
+      "sound": "none",
+      "burnedCaptions": true,
+      "summary": "Recorded from the demonstration: the campus in 3D, down through Atlas HQ and floor 4 to room 4.218, Engineer mode, coverage on the room, the layers, the plan to scale, the back row at eye level, and back up to the campus.",
+      "source": { "video": "recorded by scripts/media/record-product-film.mjs (scripts/media/product-films.mjs, P-lite); apps/website/media/P-lite/RECORDING.json holds every step, its proof and the hashes" },
+      "disclosure": "Recorded from the demonstration on synthetic data; every step was checked before its words appeared. No sound.",
+      "rights": { "website": { "status": "VERIFIED", "verifiedBy": "Empathia's own demonstration, recorded on 2026-11-13 with synthetic data; no third-party voice, music or imagery (founder, 2026-11-13 17:14 CT, asked for these films)" } }
     },
     {
       "$comment": "Collabora-SING is a product in development, not one of the nine. `exclusive` keeps this film to the pages in `placement` and off /films (the build fails if any other page carries it). `sound: none` and `textTrack: descriptions`: the film is silent, so captions.vtt holds one cue that says so, and descriptions.vtt describes what is shown and quotes the on-screen words (the page prints the same text under the player). `burnedLabel` is burned into the web rendition and its posters for the whole duration (founder, 2026-11-10: the labelling of figures must be in the film, not only beside it), on a 56 px band added above the picture so that it covers nothing and the player's controls never cover it: the rendition differs from the master by that band, the 720p scale and the absent silent audio stream, and by nothing else; the master is untouched. `frame` is the rendition's size with the band. `qualifier` is also printed directly above the player at all times, because the film's own disclaimers are on screen only briefly (its figures sit under a \"MEASURED\" chip, its last labels turn to \"MEASURED\", and its end card has no qualifier). `source.captions` and `source.descriptions` are those two files, kept in the repository; `source.video` is the master under the production root.",

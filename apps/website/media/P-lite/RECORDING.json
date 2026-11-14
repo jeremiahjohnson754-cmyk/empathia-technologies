@@ -1,0 +1,127 @@
+{
+  "key": "P-lite",
+  "title": "Lite: from the campus to one seat, and back",
+  "product": "lite",
+  "recordedAt": "2026-11-14T00:34:47.603Z",
+  "duration": 42.83,
+  "viewport": "1280x720",
+  "colorScheme": "dark",
+  "data": "synthetic demonstration data",
+  "role": "architect",
+  "demoBuild": {
+    "commit": null,
+    "builtAt": "2026-11-14T00:12:14.240Z"
+  },
+  "git": "683ea66",
+  "steps": [
+    {
+      "at": 0,
+      "until": 3.21,
+      "say": "Lite opens on the campus, in 3D. Every building is a button.",
+      "proof": "[data-testid=lite-campus-3d] .l3-hitbtn",
+      "url": "/#/lite"
+    },
+    {
+      "at": 3.21,
+      "until": 6.26,
+      "say": "Drill down: Atlas HQ, its floors drawn apart.",
+      "proof": "[data-testid=lite-building-3d]",
+      "url": "/#/lite/b/ATL"
+    },
+    {
+      "at": 6.26,
+      "until": 9.24,
+      "say": "Floor 4: corridor, lifts, stairs, and every room.",
+      "proof": "[data-testid=lite-floor-3d]",
+      "url": "/#/lite/b/ATL/4"
+    },
+    {
+      "at": 9.24,
+      "until": 14.02,
+      "say": "Room 4.218, furnished, in 3D.",
+      "proof": "[data-testid=lite-room-3d]",
+      "url": "/#/lite/room/R-ATL-4-218"
+    },
+    {
+      "at": 14.02,
+      "until": 17.76,
+      "say": "Engineer mode: the same room, with its equipment.",
+      "proof": "[data-testid=stage-ov-camera][aria-checked=false]",
+      "url": "/#/lite/room/R-ATL-4-218?mode=engineer&ov=,"
+    },
+    {
+      "at": 17.76,
+      "until": 20.73,
+      "say": "Coverage, right on the room: camera views.",
+      "proof": "[data-testid=stage-ov-camera][aria-checked=true]",
+      "url": "/#/lite/room/R-ATL-4-218?mode=engineer&ov=camera"
+    },
+    {
+      "at": 20.73,
+      "until": 23.69,
+      "say": "Microphone pickup, with its figure.",
+      "proof": "[data-testid=stage-ov-mic][aria-checked=true]",
+      "url": "/#/lite/room/R-ATL-4-218?mode=engineer&ov=camera%2Cmic"
+    },
+    {
+      "at": 23.69,
+      "until": 27.15,
+      "say": "Layers: designed, commissioned, current, proposed.",
+      "proof": "[data-testid=stage-layers]",
+      "url": "/#/lite/room/R-ATL-4-218?mode=engineer&ov=camera%2Cmic"
+    },
+    {
+      "at": 27.15,
+      "until": 30.89,
+      "say": "The floor plan, to scale.",
+      "proof": "[data-testid=rm-plan], [data-testid=lite-eye-plan][aria-checked=true]",
+      "url": "/#/lite/room/R-ATL-4-218?mode=engineer&ov=camera%2Cmic&eye=plan"
+    },
+    {
+      "at": 30.89,
+      "until": 34.61,
+      "say": "Eye level, from the back row.",
+      "proof": "[data-testid=lite-eye-back][aria-checked=true]",
+      "url": "/#/lite/room/R-ATL-4-218?mode=engineer&ov=camera%2Cmic&eye=back"
+    },
+    {
+      "at": 34.61,
+      "until": 37.05,
+      "say": "Drill back up: the floor,",
+      "proof": "[data-testid=lite-floor-3d]",
+      "url": "/#/lite/b/ATL/4"
+    },
+    {
+      "at": 37.05,
+      "until": 39.34,
+      "say": "the building,",
+      "proof": "[data-testid=lite-building-3d]",
+      "url": "/#/lite/b/ATL"
+    },
+    {
+      "at": 39.34,
+      "until": 42.83,
+      "say": "and the campus. One record, every level.",
+      "proof": "[data-testid=lite-campus-3d]",
+      "url": "/#/lite"
+    }
+  ],
+  "files": {
+    "720.mp4": {
+      "bytes": 1760076,
+      "sha256": "fb158b61e76d835ee5f6f8d41c87d1abf345adb6804d6d798ebf17cd6fb52141"
+    },
+    "poster.webp": {
+      "bytes": 61408,
+      "sha256": "ea53fab29baa4856096e3fdf9a97ccb6e6d3b1a5450c2236fb2e5f78ae7fdde7"
+    },
+    "poster.jpg": {
+      "bytes": 115372,
+      "sha256": "6e6a4211c2dcb319f41cca642cf45a3a0587214ac3b3733bcb4678e766da30da"
+    },
+    "captions.vtt": {
+      "bytes": 1232,
+      "sha256": "ec216f6cf6f377817f6b484000dc9118999fb8101ba6f5236c6abc58d10b1185"
+    }
+  }
+}

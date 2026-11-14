@@ -64,8 +64,13 @@ for (const [id, c] of Object.entries(prov.captures || {})) {
 // films not yet cleared are listed on /films by title and summary only (no frame, no file): the page always exists and says why they do not play
 // (a film marked `exclusive` belongs to its own section and is never listed on /films, cleared or not)
 const pendingFilms = catalogue.filter((f) => !films.includes(f) && !f.exclusive).map(({ key, title, runtime, summary, disclosure }) => ({ key, title, runtime, summary, disclosure }));
+// short scenes (apps/website/broll.json): silent loops, only those VERIFIED for the website and only when their files exist; the page
+// says under each that it is an AI-generated scene of fictional people and places
+const brollCat = fs.existsSync(path.join(app, 'broll.json')) ? JSON.parse(fs.readFileSync(path.join(app, 'broll.json'), 'utf8')).clips : [];
+const broll = filmsMode === 'off' ? [] : brollCat.filter((c) => c.rights?.website?.status === 'VERIFIED' && ['720.mp4', 'poster.webp'].every((x) => fs.existsSync(path.join(mediaSrc, 'broll', c.key, x)))).map(({ key, title }) => ({ key, title }));
+for (const c of broll) for (const x of ['720.mp4', 'poster.webp']) copy(path.join(mediaSrc, 'broll', c.key, x), path.join(dist, 'media/broll', c.key, x));
 const asOf = new Date().toISOString();
-const rendered = renderAll({ asOf, films, pendingFilms, transcripts, cues, demoUrl, preview: filmsMode === 'preview', captures }, { api: api || null, base });
+const rendered = renderAll({ asOf, films, pendingFilms, transcripts, cues, demoUrl, preview: filmsMode === 'preview', captures, broll }, { api: api || null, base });
 // an `exclusive` film plays on the pages in its `placement` and nowhere else (founder, 2026-11-10: the Collabora-SING film is "just for"
 // its section). The build fails rather than ship it on another page, or ship its own page without it when the film is built in.
 for (const f of catalogue.filter((x) => x.exclusive)) {

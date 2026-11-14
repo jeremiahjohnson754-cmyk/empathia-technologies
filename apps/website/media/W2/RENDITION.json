@@ -1,0 +1,35 @@
+{
+  "key": "W2",
+  "title": "Behind the sound of a congregation",
+  "master": "5d933a431ab7b05940bc8f9e8f21a1899b1115c0ac2be2303b27f1f779c76c25",
+  "source": {
+    "path": "owner upload (i6o9serm574emwshsupqvyps.mp4)",
+    "sha256": "5d933a431ab7b05940bc8f9e8f21a1899b1115c0ac2be2303b27f1f779c76c25"
+  },
+  "settings": "H.264 High CRF 24 maxrate 2200k, 720p, no audio stream (source audio measured silent (max -91 dB)), faststart; posters 1600 px",
+  "textTracks": "captions.vtt: one cue saying the film is silent; descriptions.vtt: what is shown, with the on-screen words quoted",
+  "files": {
+    "720.mp4": {
+      "bytes": 13947696,
+      "sha256": "0052cc3dca543ede47e215ddf95a8425aca310ac2dfff4bb046077ca8eaaff1a"
+    },
+    "poster.webp": {
+      "bytes": 33302,
+      "sha256": "b5e8d1ed260009de2099028269d909302f09f5c7c63db000cddd2cdb39fc7751"
+    },
+    "poster.jpg": {
+      "bytes": 66531,
+      "sha256": "ba9543697a05285ccf0cf93e66081f78eb522b1526cbeb537c7125f530efb6d5"
+    },
+    "captions.vtt": {
+      "bytes": 443,
+      "sha256": "4aef4981fa4feaf6a2d81a06dc7e3c7b15d479ae986f1a113181d3b13a818633"
+    },
+    "descriptions.vtt": {
+      "bytes": 4070,
+      "sha256": "4c3f2b64639f62ee93004faead644d92ce1c57fee043dde570da93214d4e7a1f"
+    }
+  },
+  "at": "2026-11-13T23:46:44.917Z",
+  "rightsWebsite": "VERIFIED"
+}
