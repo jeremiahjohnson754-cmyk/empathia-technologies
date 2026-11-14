@@ -111,3 +111,9 @@
 .fnd-ans__next a:hover { border-color: var(--accent); } .fnd-ans__next .build__h { margin: 0; }
 .fnd__also { margin-top: var(--sp-5); }
 .sbar__list li.sbar__answer { border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); background: color-mix(in srgb, var(--accent) 8%, transparent); }
+/* search/SearchBar.tsx: V2.5.3's facets with counts, the marked match, and the directory before a word is typed */
+.fnd__facets { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 14px; }
+.fnd__facets .chip { display: inline-flex; gap: 6px; align-items: center; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--line2); background: var(--bg2); color: var(--tx); font: inherit; font-size: var(--fs-sm); cursor: pointer; }
+.fnd__facets .chip.on { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); color: var(--accent); }
+.sbar__list mark, .fnd__list mark { background: color-mix(in srgb, var(--accent) 22%, transparent); color: inherit; border-radius: 2px; padding: 0 1px; }
+.sbar__list li[data-option-kind="Recent"] .sbar__kind, .sbar__list li[data-option-kind="Try"] .sbar__kind { opacity: .8; }

@@ -7,8 +7,11 @@
 import DEST from './v253-destinations.json';
 import { BUILDINGS, CAMPUS_ROOMS as ROOMS, fullName, roomHref, ARCHETYPE_NAME } from '../campus/canon.js';
 import { allRecords, C } from '../campus/design.js';
+import { shortName, buildingByKey } from '../campus/canon.js';
+import { people } from '../connect/directory.js';
+import { seed as deskSeed } from '../decisions/store.js';
 
-export interface Hit { id: string; kind: 'room' | 'building' | 'device' | 'product' | 'page' | 'tour'; label: string; description: string; href: string; terms: string; score?: number; why?: string }
+export interface Hit { id: string; kind: 'room' | 'building' | 'device' | 'product' | 'page' | 'tour' | 'issue' | 'person' | 'project'; label: string; description: string; href: string; terms: string; score?: number; why?: string }
 
 /** Words people type → the words the index uses. */
 export const ALIASES: Record<string, string[]> = {
@@ -52,12 +55,17 @@ export function searchIndex(): Hit[] {
   const byCat = new Map<string, string[]>();
   for (const rec of allRecords()) for (const p of rec.positions) if (!p.furniture) { const l = byCat.get(p.cat) || []; if (!l.includes(rec.outline.id)) l.push(rec.outline.id); byCat.set(p.cat, l); }
   const devices: Hit[] = [...byCat].map(([cat, ids]) => { const K = C.categories[cat]; const first = ROOMS.find((r) => r.id === ids[0])!; return { id: `device:${cat}`, kind: 'device', label: `${K?.label || cat}`, description: `in ${ids.length} room${ids.length === 1 ? '' : 's'} — first: ${fullName(first)}`, href: `${roomHref(first)}?tab=devices`, terms: `${K?.label || cat} ${cat}`.toLowerCase() }; });
-  index = [...PRODUCTS, ...TOURS, ...buildings, ...rooms, ...devices, ...pages];
+  // V2.5.3's Search Party also found issues, people and projects (its facets: Issues, People, Projects). Issues are the room records' own
+  // deficiencies; people the synthetic directory; projects the decision desk's. Who may see each is decided where results are shown.
+  const issues: Hit[] = allRecords().flatMap((rec) => rec.issues.map((i) => ({ id: `issue:${rec.outline.id}:${i.id}`, kind: 'issue' as const, label: i.title, description: `${shortName(rec.outline)} · ${i.severity} · ${i.state === 'RESOLVED' ? 'closed' : 'open'} · ${i.id}`, href: `#/commissioning/room/${rec.outline.id}/deficiencies`, terms: `${i.title} ${i.id} ${i.severity} ${shortName(rec.outline)} ${rec.outline.name} issue deficiency ${i.state === 'RESOLVED' ? 'closed' : 'open'}`.toLowerCase() })));
+  const persons: Hit[] = people().map((p) => ({ id: `person:${p.id}`, kind: 'person' as const, label: p.name, description: `${p.title}${p.org ? ` · ${p.org}` : ''} · ${buildingByKey(p.home)?.name || p.home}`, href: `#/people/${p.id}`, terms: `${p.name} ${p.title} ${p.org || ''} ${buildingByKey(p.home)?.name || ''} person people who contact`.toLowerCase() }));
+  const projects: Hit[] = deskSeed().projects.map((p) => ({ id: `project:${p.id}`, kind: 'project' as const, label: p.name, description: `${p.state.replace(/_/g, ' ').toLowerCase()} · ${p.summary}`.slice(0, 140), href: '#/decisions', terms: `${p.name} ${p.id} ${p.summary} project`.toLowerCase() }));
+  index = [...PRODUCTS, ...TOURS, ...buildings, ...rooms, ...devices, ...pages, ...issues, ...persons, ...projects];
   return index;
 }
 
 const norm = (s: string) => s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9.\- ]+/g, ' ').trim();
-const KIND_WEIGHT: Record<Hit['kind'], number> = { room: 3, product: 3, building: 2, tour: 2, device: 2, page: 1 };
+const KIND_WEIGHT: Record<Hit['kind'], number> = { room: 3, product: 3, building: 2, tour: 2, device: 2, page: 1, issue: 1, person: 1, project: 1 };
 
 /** Rank the index for a query. Every token (or one of its aliases) must match; label hits outrank description hits. */
 export function find(query: string, limit = 12): Hit[] {

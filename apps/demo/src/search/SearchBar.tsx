@@ -9,10 +9,25 @@ import { type Hit } from './find.js';
 import { CAMPUS_ROOMS } from '../campus/canon.js';   // the full answer lists every room, however many the campus holds (it read 90 until 13 Nov 2026)
 import { understand, canonical, type Reading } from './understand.js';
 import { allows } from '../access/policy.js';
+import { openable } from '../pages/V25Nav.js';
 import type { RoleKey } from '../registry.types.js';
 import { Notice } from '@empathia/ui';
 
-const KIND: Record<Hit['kind'], string> = { room: 'Room', building: 'Building', device: 'Device', product: 'Product', page: 'Page', tour: 'Tour' };
+const KIND: Record<Hit['kind'], string> = { room: 'Room', building: 'Building', device: 'Device', product: 'Product', page: 'Page', tour: 'Tour', issue: 'Issue', person: 'Person', project: 'Project' };
+/** V2.5.3's facets, in its order, for the kinds this index holds */
+const FACETS: Array<[Hit['kind'] | 'all', string]> = [['all', 'All'], ['page', 'Workspaces'], ['room', 'Spaces'], ['building', 'Buildings'], ['device', 'Devices'], ['person', 'People'], ['project', 'Projects'], ['issue', 'Issues'], ['product', 'Products'], ['tour', 'Tours']];
+/** a person, an issue or a project is shown only to a role that may open its page (V2.5.3: canViewRoute), so the bar never discloses more than the page would */
+const GATED = new Set<Hit['kind']>(['issue', 'person', 'project']);
+const visible = (role: RoleKey | undefined) => (h: { kind: string; href: string }) => !role || !GATED.has(h.kind as Hit['kind']) || openable(role, h.href);
+// the bar's recents (V2.5.3 "Continue where you left off"): the last pages opened from it, in this browser only
+const RECENT_KEY = 'empathia.search.recents';
+const recents = (): Array<{ href: string; label: string }> => { try { const v = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); return Array.isArray(v) ? v.filter((x) => x && typeof x.href === 'string' && x.href.startsWith('#/') && typeof x.label === 'string').slice(0, 6) : []; } catch { return []; } };
+const remember = (href: string, label: string) => { try { localStorage.setItem(RECENT_KEY, JSON.stringify([{ href, label: label.slice(0, 100) }, ...recents().filter((x) => x.href !== href)].slice(0, 6))); } catch { /* the bar works without */ } };
+/** the label with the first word of the query marked, as V2.5.3 marked it */
+function Marked({ text, q }: { text: string; q: string }) {
+  const t = q.trim().toLowerCase().split(/\s+/).filter((x) => x.length > 1)[0]; const i = t ? text.toLowerCase().indexOf(t) : -1;
+  return i < 0 ? <>{text}</> : <>{text.slice(0, i)}<mark>{text.slice(i, i + t!.length)}</mark>{text.slice(i + t!.length)}</>;
+}
 /** what the viewing role may be told: open issues are engineering information (the same field Ask Empathia checks) */
 const mayFor = (role?: RoleKey) => (field: string) => !role || allows({ field } as Parameters<typeof allows>[0], role);
 const findHref = (q: string) => `#/find?q=${encodeURIComponent(q.trim().slice(0, 80))}`;
@@ -23,15 +38,20 @@ export function SearchBar({ hero, placeholder, label = 'Search the demonstration
   const id = useId(); const [q, setQ] = useState(initial); const [open, setOpen] = useState(false); const [act, setAct] = useState(-1);
   const reading = useMemo<Reading | null>(() => (q.trim() ? understand(q, { limit: 8, may: mayFor(role) }) : null), [q, role]);
   const hits = useMemo<Opt[]>(() => {
-    if (!reading) return []; const list: Opt[] = reading.hits.map((h) => ({ id: h.id, kind: KIND[h.kind], label: h.label, description: h.description, href: h.href }));
+    if (!reading) {   // nothing typed yet: V2.5.3's directory, where to go next before a word is typed
+      const rec = recents().filter((x) => !role || openable(role, x.href)).map((x, i) => ({ id: `recent-${i}`, kind: 'Recent', label: x.label, description: 'Continue where you left off', href: x.href }));
+      const tries = understand('', { limit: 4, may: mayFor(role) }).next.slice(0, 4).map((x, i) => ({ id: `try-${i}`, kind: 'Try', label: x.label, description: 'A question the records answer', href: findHref(x.q) }));
+      return [...rec, ...tries];
+    }
+    const list: Opt[] = reading.hits.filter(visible(role)).map((h) => ({ id: h.id, kind: KIND[h.kind], label: h.label, description: h.description, href: h.href }));
     // a counted answer leads: it is what was asked, and the results page shows the rooms behind the count
     return reading.mode === 'answer' && reading.question && answers ? [{ id: 'answer', kind: 'Answer', label: reading.lead, description: reading.said, href: findHref(q) }, ...list.slice(0, 7)] : list;
   }, [reading, answers, q]);
   const fixed = reading && reading.fixes.length ? `Searching for ${reading.corrected}. ` : '';
   const own = useRef<HTMLInputElement>(null); const box = inputRef || own;
-  const go = (href: string) => { setOpen(false); setAct(-1); setQ(''); location.hash = href; box.current?.blur(); };
+  const go = (href: string, label?: string) => { if (label && !href.startsWith('#/find')) remember(href, label); setOpen(false); setAct(-1); setQ(''); location.hash = href; box.current?.blur(); };
   // Enter with nothing highlighted: a sentence that has a counted answer opens that answer; otherwise the hero bar asks Search Party
-  const submit = () => { if (act >= 0 && hits[act]) go(hits[act]!.href); else if (q.trim()) go(hero && !(reading?.mode === 'answer' && reading.question && answers) ? `#/search?q=${encodeURIComponent(q.trim().slice(0, 80))}` : findHref(q)); };
+  const submit = () => { if (act >= 0 && hits[act]) go(hits[act]!.href, hits[act]!.label); else if (q.trim()) go(hero && !(reading?.mode === 'answer' && reading.question && answers) ? `#/search?q=${encodeURIComponent(q.trim().slice(0, 80))}` : findHref(q)); };
   return (
     <div className={`sbar${hero ? ' sbar--hero' : ''}`} role="search" data-testid={hero ? 'hero-search' : 'searchbar'}>
       <label htmlFor={`${id}-q`} className="ui-visually-hidden">{label}</label>
@@ -45,9 +65,9 @@ export function SearchBar({ hero, placeholder, label = 'Search the demonstration
           else if (e.key === 'Escape') { if (open) { e.preventDefault(); setOpen(false); setAct(-1); } else setQ(''); }
         }} />
       <ul id={`${id}-list`} role="listbox" aria-label="Suggestions" className="sbar__list" hidden={!open || !hits.length}>
-        {hits.map((h, i) => <li key={h.id} id={`${id}-o${i}`} role="option" aria-selected={i === act} className={`${i === act ? 'on' : ''}${h.id === 'answer' ? ' sbar__answer' : ''}`} data-kind={h.id === 'answer' ? 'answer' : undefined} onMouseDown={(e) => { e.preventDefault(); go(h.href); }}><span className="sbar__kind">{h.kind}</span><b>{h.label}</b><span className="ui-meta">{h.description}</span></li>)}
+        {hits.map((h, i) => <li key={h.id} id={`${id}-o${i}`} role="option" aria-selected={i === act} className={`${i === act ? 'on' : ''}${h.id === 'answer' ? ' sbar__answer' : ''}`} data-kind={h.id === 'answer' ? 'answer' : undefined} onMouseDown={(e) => { e.preventDefault(); go(h.href, h.label); }} data-option-kind={h.kind}><span className="sbar__kind">{h.kind}</span><b><Marked text={h.label} q={q} /></b><span className="ui-meta">{h.description}</span></li>)}
       </ul>
-      <span className="ui-visually-hidden" role="status" aria-live="polite">{open && q.trim() ? `${fixed}${hits.length ? `${hits.length} suggestion${hits.length === 1 ? '' : 's'}` : 'No suggestion'}` : ''}</span>
+      <span className="ui-visually-hidden" role="status" aria-live="polite">{open && !q.trim() && hits.length ? `${hits.length} places to start` : ''}{open && q.trim() ? `${fixed}${hits.length ? `${hits.length} suggestion${hits.length === 1 ? '' : 's'}` : 'No suggestion'}` : ''}</span>
     </div>
   );
 }
@@ -76,12 +96,14 @@ function Answer({ r }: { r: Reading }) {
 export function FindPage({ hash, role }: { hash: string; role?: RoleKey }) {
   const q = new URLSearchParams(/\?(.*)$/.exec(hash)?.[1] || '').get('q') || '';
   const r = useMemo(() => understand(q, { limit: CAMPUS_ROOMS.length, may: mayFor(role) }), [q, role]); const hits = r.hits; const answer = r.mode === 'answer';
-  const groups = (['room', 'product', 'tour', 'building', 'device', 'page'] as const).map((k) => [k, hits.filter((h) => h.kind === k)] as const).filter(([, l]) => l.length);
+  const shown = hits.filter(visible(role)); const [facet, setFacet] = useState<Hit['kind'] | 'all'>('all');
+  const counts = Object.fromEntries(FACETS.map(([k]) => [k, k === 'all' ? shown.length : shown.filter((h) => h.kind === k).length])); const on = counts[facet] ? facet : 'all';
+  const groups = (['room', 'product', 'tour', 'building', 'device', 'person', 'project', 'issue', 'page'] as const).filter((k) => on === 'all' || k === on).map((k) => [k, shown.filter((h) => h.kind === k)] as const).filter(([, l]) => l.length);
   return (
     <section className="fnd" data-native="" data-testid="find-page" data-mode={q ? r.mode : 'start'}>
       <header className="room__hero"><p className="kicker">Search</p><h1>{q ? <>Results for “{q}”</> : 'Search the demonstration'}</h1>
       <div className="fnd__bar"><SearchBar key={q} role={role} initial={q.slice(0, 80)} /></div></header>
-      <p className="ui-muted" role="status">{q ? (answer ? `Answered from the room records${hits.length ? `; ${hits.length} page${hits.length === 1 ? '' : 's'} or record${hits.length === 1 ? '' : 's'} also match the words` : ''}.` : `${hits.length} result${hits.length === 1 ? '' : 's'}`) : 'Type in the search bar: a room (“4.218”, “boardroom”), a device (“tv”, “mic”), a product, or a sentence (“boardrooms over 12 seats with a camera”, “how many cameras”, “rooms held”).'}</p>
+      <p className="ui-muted" role="status">{q ? (answer ? `Answered from the room records${shown.length ? `; ${shown.length} page${shown.length === 1 ? '' : 's'} or record${shown.length === 1 ? '' : 's'} also match the words` : ''}.` : `${shown.length} result${shown.length === 1 ? '' : 's'}`) : 'Type in the search bar: a room (“4.218”, “boardroom”), a device (“tv”, “mic”), a product, or a sentence (“boardrooms over 12 seats with a camera”, “how many cameras”, “rooms held”).'}</p>
       {q && r.fixes.length > 0 && <p data-testid="find-fixes">Showing results for <b>{r.corrected}</b>. {r.fixes.map((f) => `“${f.from}” was read as “${f.to}”`).join('; ')}.</p>}
       {answer && <Answer key={q} r={r} />}
       {q && !answer && r.withheld && <Notice tone="info">{r.withheld}</Notice>}
@@ -89,8 +111,9 @@ export function FindPage({ hash, role }: { hash: string; role?: RoleKey }) {
       {q && r.mode === 'empty' && <><Notice tone="info">Nothing matches “{q}”. Try a room number such as 4.218, a device such as “camera”, or a product such as “Search Party”. For relationships, open <a href={`#/search?q=${encodeURIComponent(q)}`}>Search Party with this text</a>.</Notice>
         <div className="fnd-ans__next" data-testid="find-starters"><h2 className="build__h">Searches that have an answer</h2><ul>{r.next.map((s) => <li key={s.q}><a href={findHref(s.q)}>{s.label}</a></li>)}</ul></div></>}
       {!q && <div className="fnd-ans__next" data-testid="find-starters"><h2 className="build__h">Try one</h2><ul>{r.next.map((s) => <li key={s.q}><a href={findHref(s.q)}>{s.label}</a></li>)}</ul></div>}
+      {q && shown.length > 0 && <div className="fnd__facets" role="group" aria-label="Narrow the results" data-testid="find-facets">{FACETS.filter(([k]) => k === 'all' || counts[k]).map(([k, l]) => <button key={k} type="button" className={`chip${on === k ? ' on' : ''}`} aria-pressed={on === k} onClick={() => setFacet(k)} data-facet={k}>{l} <span className="ui-meta">{counts[k]}</span></button>)}</div>}
       {answer && groups.length > 0 && <h2 className="build__h fnd__also">Pages and records that match the words</h2>}
-      {groups.map(([k, l]) => <div key={k} className="fnd__group"><h2 className="build__h">{KIND[k]}s ({l.length})</h2><ul className="fnd__list">{l.map((h) => <li key={h.id}><a href={h.href}><b>{h.label}</b><span className="ui-muted">{h.description}</span>{h.why && <span className="ui-meta">alias {h.why}</span>}</a></li>)}</ul></div>)}
+      {groups.map(([k, l]) => <div key={k} className="fnd__group"><h2 className="build__h">{k === 'person' ? 'People' : `${KIND[k]}s`} ({l.length})</h2><ul className="fnd__list">{l.map((h) => <li key={h.id}><a href={h.href} onClick={() => remember(h.href, h.label)}><b><Marked text={h.label} q={q} /></b><span className="ui-muted">{h.description}</span>{h.why && <span className="ui-meta">alias {h.why}</span>}</a></li>)}</ul></div>)}
     </section>
   );
 }
