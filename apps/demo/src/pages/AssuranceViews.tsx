@@ -13,6 +13,7 @@ import type * as S from '../workspace/store.js';
 import { Foot, plural, pct } from './viz.js';
 import { openable } from './V25Nav.js';
 import { asState, cxState, AS, CX } from './Estate.js';
+import { DeficiencyBench } from './DeficiencyBench.js';
 export { AssurancePage } from './Estate.js';
 
 const DONE = ['CLOSED', 'CANCELLED'];
@@ -219,6 +220,7 @@ export function DeficienciesPage({ perspective }: { perspective: string }) {
         </Card>
         <Card icon="pulse" title="By severity"><Donut label="Open deficiencies by severity" total="open" segments={sev} /></Card>
       </div>
+      <DeficiencyBench persona={persona} items={[...open].sort((a, b) => ['High', 'Medium', 'Low'].indexOf(a.i.severity) - ['High', 'Medium', 'Low'].indexOf(b.i.severity)).slice(0, 80).map((x) => ({ r: x.r, i: x.i, found: x.m.found }))} />
       <Foot>Deficiencies are synthetic and come from the engine's design checks and the simulated commissioning.</Foot>
     </section>
   );

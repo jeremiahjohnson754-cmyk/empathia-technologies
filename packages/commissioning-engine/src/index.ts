@@ -30,6 +30,7 @@ export * from './substitution.js';
 export * from './installations.js';
 export * from './binding.js';
 export * from './edits.js';
+export * from './deficiencies.js';
 
 export const ENGINE_VERSION = '2.5.4-port.1';
 

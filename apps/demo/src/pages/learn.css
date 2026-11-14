@@ -200,3 +200,13 @@
 .al-tl__i--info { border-left-color: var(--accent); }
 .al-tl__when { color: var(--tx3); font-variant-numeric: tabular-nums; }
 @media (max-width: 520px) { .al-tl__i { grid-template-columns: 1fr; gap: 2px; } }
+
+/* the deficiency workbench (pages/DeficiencyBench.tsx) */
+.df-states { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 12px 0; }
+.df-states li { padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--tx2); font-size: var(--fs-sm); }
+.df-states li.on { border-color: var(--accent); color: var(--tx); font-weight: 600; background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.df-facts { margin-block: 8px; }
+.df-steps { display: grid; gap: 12px; margin-block: 12px; }
+.df-step { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; padding: 10px 12px; border: 1px solid var(--line2); border-radius: var(--r-md); }
+.df-step > b { flex-basis: 100%; }
+.df-step[data-allowed="false"] { opacity: 0.75; }
