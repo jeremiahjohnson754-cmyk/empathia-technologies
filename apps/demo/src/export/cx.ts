@@ -17,6 +17,7 @@ import { profileOf } from '../docs5/model.js';
 import { roomHref } from '../campus/canon.js';
 import { liteRoomHref } from '../lite/model.js';
 import { planSvg } from './plan.js';
+import { lifecycleSections, type LifecycleInput } from './lifecycle.js';
 
 const who = (k?: string | null) => (k ? PEOPLE[k] || k.replace(/_/g, ' ') : '—');
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
@@ -29,6 +30,8 @@ export interface CxExtras {
   captures?: Array<{ key: string; target: { kind: 'test' | 'doc'; id: string }; note: string; measurements: Array<{ quantity: string; value: number; unit: string; instrument: string; method: string }>; photo: { name: string; bytes: number; sha256: string; annotated: boolean } | null; by: { label: string }; at: string }>;
   photos?: Array<{ key: string; name: string; mime: 'image/png' | 'image/jpeg'; bytes: Uint8Array; width: number; height: number; note: string; target: string; at: string; by: string }>;
   baseUrl?: string;
+  /** the request, the decision desk and the workspace: the project from intake to service (export/lifecycle.ts) */
+  lifecycle?: LifecycleInput;
 }
 
 export function cxPackage(r: RoomRecord, by: MadeBy, x: CxExtras = {}): Report {
@@ -84,6 +87,10 @@ export function cxPackage(r: RoomRecord, by: MadeBy, x: CxExtras = {}): Report {
       table: { title: 'Audit trail', cols: [{ key: 'at', label: 'When (UTC)', kind: 'date' }, { key: 'by', label: 'Who' }, { key: 'type', label: 'Event' }, { key: 'detail', label: 'Detail' }, { key: 'outcome', label: 'Outcome', kind: 'status' }], rows: r.events.map((e) => ({ at: e.at.slice(0, 16).replace('T', ' '), by: who(e.by), type: e.type, detail: e.detail, outcome: e.outcome === 'DENIED' ? 'Refused' : e.outcome === 'ALLOWED' ? 'Allowed' : 'Recorded' })) } },
   ];
 
+  // the whole project: from the request to service (export/lifecycle.ts)
+  const life = lifecycleSections(r, x.lifecycle || {}, (h: string) => (x.baseUrl ? `${x.baseUrl}${h}` : h));
+  const early = life.sections.filter((z) => z.id !== 'intelligence'); const late = life.sections.filter((z) => z.id === 'intelligence');
+  sections.splice(sections.findIndex((z) => z.id === 'scope') + 1, 0, ...early); sections.push(...late);
   // documentation: what this room requires and why (a pure function of its record), and, for the room with a tracker, where each stands
   const reqs = requiredFor(profileOf(r), open.length); const tracked = new Map((x.docs?.docs || []).map((d) => [d.type, d]));
   const base = x.baseUrl || ''; const abs = (h: string) => (base ? `${base}${h}` : h);
@@ -107,6 +114,7 @@ export function cxPackage(r: RoomRecord, by: MadeBy, x: CxExtras = {}): Report {
     { label: 'Assurance comparison', url: abs(`#/assurance/room/${o.id}`) }, { label: 'The room in 3D (Lite)', url: abs(liteRoomHref(o.id)) }, { label: 'The room on the campus', url: abs(roomHref(o)) },
     ...(x.report ? [{ label: `Commissioning dossier ${x.report}`, url: abs(`#/dossier/${x.report}`) }, { label: 'Documentation tracker', url: abs(`#/docs/${x.report}`) }] : []),
     ...reqs.filter((q) => tracked.has(q.type)).map((q) => ({ label: `Document: ${q.title}`, url: docHref(q.type) })),
+    ...life.links,
   ];
   return {
     media, links,
@@ -128,6 +136,7 @@ export function cxPackage(r: RoomRecord, by: MadeBy, x: CxExtras = {}): Report {
       { label: 'Devices', value: String(fw.length), note: `${fw.filter((p) => p.identity === 'VERIFIED').length} with a verified identity` },
       { label: 'Requirements proven', value: `${tr.filter((t) => t.result === 'PROVEN').length} of ${tr.length}`, note: tr.some((t) => t.result !== 'PROVEN') ? `not yet: ${tr.filter((t) => t.result !== 'PROVEN').map((t) => t.domain).join(', ')}` : 'every requirement' },
       { label: 'Baseline', value: cur ? `v${cur.version}` : '—', note: cur ? `${ymd(cur.at)}${pend ? ` · v${pend.version} pending` : ''}` : pend ? `v${pend.version} pending acceptance` : 'none: never accepted' },
+      ...(x.lifecycle?.workspace ? life.kpis : []),
     ],
     chart: { title: 'Checks by phase', categories: ph.map((p) => p.name), series: [
       { name: 'Pass', tone: 'ok', values: ph.map((p) => p.pass) }, { name: 'Fail', tone: 'bad', values: ph.map((p) => p.fail) },
@@ -146,6 +155,7 @@ export function cxPackage(r: RoomRecord, by: MadeBy, x: CxExtras = {}): Report {
       baselines: r.baselines.map((x) => ({ version: x.version, state: x.state, revision: x.revision, at: x.at })),
       exception: r.exception ? { id: r.exception.id, state: r.exception.state, requirement: r.exception.requirement } : null,
       documentation: reqs.map((q) => ({ type: q.type, required: q.applies, state: tracked.get(q.type)?.state || null, met: tracked.get(q.type)?.met ?? null })),
+      requests: (x.lifecycle?.requests || []).map((q) => ({ id: q.id, kind: q.kind, goes: q.goes, standing: q.standing })),
       captures: (x.captures || []).map((c) => ({ key: c.key, target: c.target, at: c.at, photoSha256: c.photo?.sha256 || null })),
       counts: r.counts,
     },

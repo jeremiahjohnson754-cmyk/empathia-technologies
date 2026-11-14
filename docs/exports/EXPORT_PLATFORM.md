@@ -19,6 +19,7 @@ One format-neutral report, six native files, so the files cannot disagree with o
 | Shared rules | `apps/demo/src/campus/cxRecord.ts` | five phases, the three acceptance blockers, traceability, the commissioning state (moved here from the pages so the page and the files share one rule) |
 | UI | `apps/demo/src/export/ExportMenu.tsx` | six buttons on `#/commissioning/room/:id`; a Blob download; the file's SHA-256 shown and written to the audit trail |
 | Documentation, pictures, links | `apps/demo/src/export/cxExtras.ts`, `plan.ts`, `media.ts` | the commissioning package adds every document the room requires and why (`requiredFor` over its record); for the dossier's room, the tracker's state, revision and file fingerprint, its findings, the field captures synchronised into it, and the photographs this browser still holds for them; the room's plan drawn from its record (SVG, rasterised in the browser; captioned as a drawing, never a photograph); live links back to the record's pages and documents |
+| The whole project | `apps/demo/src/export/lifecycle.ts` | in the commissioning package: the record's stated purpose; intake requests for the room in the asker's own words beside Empathia's translation (title, summary, size with basis, equipment and tests) and where each went; the decision desk's business case (brief, synthetic rough order, decisions); the decision memory; the lifecycle timeline with days at each stage; service and issue intelligence (requests, time to restore, recurrence, APEX leading hypotheses, lessons, deficiencies by source, the room against rooms of its type) |
 | Shield | `apps/demo/src/export/mark.ts` | the page's own `brand/emblem.svg` drawn to a 256 px PNG; without it, files are written without a shield, never with a substitute |
 | JSON schema | `apps/demo/src/export/dossier.schema.json` | `empathia.dossier/1` (draft 2020-12) |
 
@@ -57,7 +58,7 @@ unbroken long words), then reopens every file with independent readers (`export-
 13 Nov 2026 (22:40 CT): 518 checks pass, 0 fail (16 reports × 6 formats, LibreOffice included; the reference room's package carries its tracker, a test-fixture capture photograph (generated, labelled as a fixture) and 27 links, checked as embedded images, hyperlinks and PDF link annotations).
 
 `tests/browser/demo-exports.test.mjs` downloads all six from the page as a person would and opens the bytes (16 checks, desktop and
-phone: the reference room's documentation, plan and links; commissioning, assurance, APEX and the portfolio brief with its building filter): file names, PDF pages and text, the Office packages' main parts, the JSON schema and SHA-256, the CSV header, the SHA-256
+phone: the reference room's whole project, documentation, plan and links; commissioning, assurance, APEX and the portfolio brief with its building filter): file names, PDF pages and text, the Office packages' main parts, the JSON schema and SHA-256, the CSV header, the SHA-256
 shown on the page equals the downloaded file's, six audit-trail events, no console error and no off-page request.
 
 ## Known limits (not hidden)

@@ -12,7 +12,9 @@ import type { RoleKey } from '../registry.types.js';
 import { ROLES } from '../access/policy.js';
 import { kindOf, problems, propose, summarise, type Draft, type Goes, type KindId } from './model.js';
 
-export interface Request { id: string; kind: KindId; goes: Goes; title: string; summary: string; role: RoleKey; at: string; roomId: string | null; projectId: string | null; incidentId: string | null; equipment: Array<{ label: string; count: number; added: number }>; tests: number; date: string | null }
+export interface Request { id: string; kind: KindId; goes: Goes; title: string; summary: string; role: RoleKey; at: string; roomId: string | null; projectId: string | null; incidentId: string | null; equipment: Array<{ label: string; count: number; added: number }>; tests: number; date: string | null;
+  /** the person's own words, kept as written (requests raised before 13 Nov 2026 carry them only inside the summary) */ need?: string;
+  /** the size Empathia proposed, with its basis (a new room) */ size?: { w: number; l: number; h: number; basis: string } | null }
 export type Refusal = { why: string[] };
 const KEY = 'empathia.demo.requests.v1';
 /** The roles the portal admits (registry: intake.request). A request is a request: who asked is recorded, and nothing is granted by asking. */
@@ -33,7 +35,7 @@ export function send(w: Workspace, role: RoleKey, d: Draft, desk: DecisionState 
   const errs = Object.values(problems(d)); if (errs.length) return { why: errs };
   const p = propose(d); const { title, summary } = summarise(d, p); const all = loadRequests(); const n = all.reduce((m, r) => Math.max(m, Number(r.id.slice(4)) || 0), 0) + 1; const id = `REQ-${String(n).padStart(4, '0')}`;
   const o = roomById(d.roomId); const who = `Asked by the ${ROLES[role].label} through the request portal (${id}).`;
-  const req: Request = { id, kind: d.kind, goes: k.goes, title, summary, role, at: new Date().toISOString(), roomId: o?.id || null, projectId: null, incidentId: null, equipment: (p?.equipment || []).map((e) => ({ label: e.label, count: e.count, added: e.added })), tests: p?.tests.added || 0, date: d.kind === 'event' ? d.date : null };
+  const req: Request = { id, kind: d.kind, goes: k.goes, title, summary, role, at: new Date().toISOString(), roomId: o?.id || null, projectId: null, incidentId: null, equipment: (p?.equipment || []).map((e) => ({ label: e.label, count: e.count, added: e.added })), tests: p?.tests.added || 0, date: d.kind === 'event' ? d.date : null , need: d.need.trim(), size: p && d.kind === 'new-room' ? { w: p.w, l: p.l, h: p.h, basis: p.basis[0] || 'from rooms of the same kind on record' } : null };
   if (k.goes === 'desk') {
     const pid = `PRJ-${id}`; desk.projects.push({ id: pid, name: title, roomId: o?.id || null, state: 'SUBMITTED', scopeRev: 1, pitchRev: 0, brief: { rev: 0, scopeRev: 1, authorId: 'requestor' }, approverId: 'exec', romUsd: 0, summary: `${summary} ${who}` });
     desk.events.unshift({ at: req.at, by: 'requestor', type: 'request.submitted', aggregate: pid, detail: `${title} · ${who}`, outcome: 'ALLOWED' }); saveDesk(desk); req.projectId = pid;

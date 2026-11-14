@@ -36,6 +36,9 @@ export { estatePackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/ex
 export { prepareMedia, imageSize } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/media.ts'))};
 export { readDocs } from ${JSON.stringify(path.join(repo, 'apps/demo/src/docs5/store.ts'))};
 export { TRACKED_ROOM, TRACKED_REPORT } from ${JSON.stringify(path.join(repo, 'apps/demo/src/docs5/model.ts'))};
+export * as INTAKE from ${JSON.stringify(path.join(repo, 'apps/demo/src/intake/store.ts'))};
+export { blank as intakeBlank } from ${JSON.stringify(path.join(repo, 'apps/demo/src/intake/model.ts'))};
+export { seed as deskSeed } from ${JSON.stringify(path.join(repo, 'apps/demo/src/decisions/store.ts'))};
 export * as R from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/render.ts'))};
 export { FORMATS } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/model.ts'))};
 export { roomRecord, allRecords } from ${JSON.stringify(path.join(repo, 'apps/demo/src/campus/design.ts'))};
@@ -69,7 +72,12 @@ let fixturePhoto = null;
 try { const sharp = createRequire(import.meta.url)(process.env.SHARP_PATH || '/opt/npm-tools/node_modules/sharp');
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><rect width="800" height="600" fill="#D0D5DD"/><rect x="120" y="140" width="560" height="320" fill="#475467"/><text x="400" y="320" font-family="Helvetica" font-size="34" fill="#fff" text-anchor="middle">TEST FIXTURE · not a photograph</text></svg>`;
   fixturePhoto = new Uint8Array(await sharp(Buffer.from(svg)).jpeg({ quality: 80 }).toBuffer()); } catch { /* without sharp the photograph path is not exercised */ }
-const extrasFor = (id) => id !== M.TRACKED_ROOM ? { baseUrl: 'https://demo.example.invalid/' } : {
+// the project from intake to service: the seeded decision desk and workspace, and one request raised through the portal's own send()
+const wsL = M.seed(); const desk = M.deskSeed();
+const req = M.INTAKE.send(wsL, 'employee', { ...M.intakeBlank('add-devices'), need: 'We cannot see the far-end people when they share; please add a second display (test fixture)', roomId: 'R-ATL-4-218', adds: [{ cat: 'display', qty: 1 }] }, desk);
+if (!req || !req.id) throw new Error(`intake fixture refused: ${JSON.stringify(req)}`);
+const lifecycleFor = (id) => ({ requests: [req].filter((q) => q.roomId === id).map((q) => { const st = M.INTAKE.standing(q, wsL, desk); return { id: q.id, kind: q.kind, at: q.at, role: q.role, need: q.need ?? null, title: q.title, summary: q.summary, size: q.size ?? null, equipment: q.equipment, tests: q.tests, goes: q.goes, where: st.where, standing: st.words }; }), projects: desk.projects, decisions: desk.decisions, memory: desk.memory, workspace: wsL });
+const extrasFor = (id) => id !== M.TRACKED_ROOM ? { baseUrl: 'https://demo.example.invalid/', lifecycle: lifecycleFor(id) } : { lifecycle: lifecycleFor(id),
   docs: M.readDocs([]), report: M.TRACKED_REPORT, baseUrl: 'https://demo.example.invalid/',
   captures: [{ key: 'CAP-FIXTURE01', target: { kind: 'test', id: 'T-SIM-001' }, note: 'Test fixture capture (synthetic)', measurements: [{ quantity: 'Sound level', value: 71.5, unit: 'dB(A)', instrument: 'SYN-METER-01 (synthetic)', method: 'Seat 3, pink noise' }], photo: fixturePhoto ? { name: 'fixture.jpg', bytes: fixturePhoto.length, sha256: 'a'.repeat(64), annotated: false } : null, by: { label: 'Commissioning Engineer (synthetic)' }, at: '2026-11-12T15:00:00.000Z' }],
   photos: fixturePhoto ? [{ key: 'CAP-FIXTURE01', name: 'fixture.jpg', mime: 'image/jpeg', bytes: fixturePhoto, ...M.imageSize(fixturePhoto), note: 'Test fixture capture (synthetic)', target: 'check T-SIM-001', at: '2026-11-12T15:00:00.000Z', by: 'Commissioning Engineer (synthetic)' }] : [] };

@@ -104,7 +104,7 @@ export function CxRoomPage({ perspective, params, hash }: { perspective: string;
       </Card> : null}
       {view === 'signoff' ? <Signoff r={r} bl={bl} /> : null}
       <ExportMenu testId="cx-export" title="Completion package" sub={`The whole record of ${shortName(r.outline)} as six files: the report, the register, the deck and the dossier`} by={persona}
-        make={async () => cxPackage(r, { role: personaLabel(persona), at: new Date().toISOString(), build: process.env.DEMO_BUILD_ID || 'dev' }, await (await import('../export/cxExtras.js')).cxExtras(r.outline.id))} />
+        make={async () => cxPackage(r, { role: personaLabel(persona), at: new Date().toISOString(), build: process.env.DEMO_BUILD_ID || 'dev' }, await (await import('../export/cxExtras.js')).cxExtras(r.outline.id, w))} />
       <Foot>Synthetic records: a simulated test reads the room as Core holds it; nothing is measured and no device is contacted.</Foot>
     </section>
   );

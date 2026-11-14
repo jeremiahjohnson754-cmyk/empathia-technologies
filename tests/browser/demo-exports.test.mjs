@@ -71,9 +71,10 @@ const sha = (b) => crypto.createHash('sha256').update(b).digest('hex');
   const [dd] = await Promise.all([p.waitForEvent('download'), card.locator('button[data-format=docx]').click()]);
   const dz = await JSZip.loadAsync(fs.readFileSync(await dd.path())); const doc = await dz.file('word/document.xml').async('string'); const rels = await dz.file('word/_rels/document.xml.rels').async('string');
   const plan = (j.media || []).find((m) => m.id === 'plan'); const origin = new URL(p.url()).origin;
-  ok('XP-DOCS', 'the reference room’s package holds the documentation tracker, the plan drawn from its record (a real PNG in the files), and links back to the record’s own pages', !!plan && plan.kind === 'drawing' && plan.bytes > 2000 && /^[0-9a-f]{64}$/.test(plan.sha256)
+  ok('XP-DOCS', 'the reference room’s package holds the whole project (the request, the business case on the desk, the lifecycle timeline, service and issue intelligence), the documentation tracker, the plan drawn from its record (a real PNG in the files), and links back to the record’s own pages', !!plan && plan.kind === 'drawing' && plan.bytes > 2000 && /^[0-9a-f]{64}$/.test(plan.sha256)
     && j.tables.Documents?.rows.some((r) => r.state === 'Met') && j.links.length >= 10 && j.links.every((l) => l.url.startsWith(origin)) && j.links.some((l) => /#\/docs\//.test(l.url))
-    && integrity.value === sha(Buffer.from(JSON.stringify(body))) && /Documentation/.test(doc) && /Drawings and photographs/.test(doc) && Object.keys(dz.files).filter((n) => n.startsWith('word/media/')).length >= 2 && (rels.match(/hyperlink/g) || []).length >= 10 && !t.errs.length && !t.off.length,
+    && integrity.value === sha(Buffer.from(JSON.stringify(body))) && /Documentation/.test(doc)
+    && /From the request/.test(doc) && /Lifecycle timeline/.test(doc) && /Service and issue intelligence/.test(doc) && j.tables.Projects?.rows.some((r) => r.id === 'PRJ-ATLAS-AV') && j.tables.Lifecycle?.rows.length >= 5 && j.tables['Service requests']?.rows.length >= 1 && /Drawings and photographs/.test(doc) && Object.keys(dz.files).filter((n) => n.startsWith('word/media/')).length >= 2 && (rels.match(/hyperlink/g) || []).length >= 10 && !t.errs.length && !t.off.length,
     `${plan?.bytes} ${j.links?.length} ${t.errs.join('|')}`);
   await t.close();
 }
