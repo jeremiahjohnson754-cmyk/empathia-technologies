@@ -2,6 +2,15 @@
 
 Pause: the founder returns on 16 Nov 2026. Everything below is committed on `v18/continuation`.
 
+## Staging update (14 Nov 2026, afternoon): `bfdda7b`
+
+`bfdda7b` adds the Phase 1 field record and redlines, and the refresh-planning browser suite. Its full regression ran on `bfdda7b` itself:
+
+- Build ok. Unit, integration and security tests: PASS 117, FAIL 0.
+- Every light and dark browser batch passes, the new `demo-refresh` (5/0) and `demo-field-redline` (7/0) included. The one exception
+  is `founder-studio` in the worktree (missing private assets); in the main tree on `bfdda7b` it passes in light and dark, 19/0 each.
+- Pushed to `phase3/legendary-experience` for both `-next` sites.
+
 ## Staging (14 Nov 2026, 09:14 CT)
 
 Both `-next` sites serve **`7b212a4`**. Render reports the `empathia-demo-next` and `empathia-website-next` deploys `live` on that
@@ -34,7 +43,7 @@ product screenshots.
 
 ## To do
 
-- **Phase 1 installation documentation** (founder, 14 Nov, 06:25): how every device is mounted, and the Lite design used as a redlining
+- **Phase 1 installation documentation** (founder, 14 Nov, 06:25). **Built** in `bfdda7b` (`FIELD_RECORD_AND_REDLINES.md`); the server-side record is still to do: how every device is mounted, and the Lite design used as a redlining
   document. Field changes are marked on the plan: a device moved during installation or commissioning because of a sprinkler or another
   site condition, with the reason, a photograph and who approved it. What each device is hooked up to is recorded, and so is whatever
   else a technician needs. Not started.
