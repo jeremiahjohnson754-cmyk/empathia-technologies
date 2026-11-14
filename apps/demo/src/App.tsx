@@ -53,6 +53,9 @@ export function App() {
     const h = () => setHash(location.hash || START); addEventListener('hashchange', h); return () => removeEventListener('hashchange', h);
   }, []);
   const route = routeOf(hash);
+  // the page is the address without its query: a toggle, a lens or a view inside the page changes only the query (13 Nov 2026: in a Lite
+  // room every coverage switch scrolled the page back to the top, because the heading was focused again on each one)
+  const page = route.split('?')[0];
   const d = decide(role, route);
 
   const switchTo = useCallback((r: RoleKey, o: { tour?: boolean } = {}) => {
@@ -92,7 +95,7 @@ export function App() {
       setSaid(pending.current || h1?.textContent || d.title); pending.current = '';
     }, 60);
     return () => { clearTimeout(t); if (stop) clearTimeout(stop); obs?.disconnect(); };
-  }, [route, role]);   // eslint-disable-line react-hooks/exhaustive-deps
+  }, [page, role]);   // eslint-disable-line react-hooks/exhaustive-deps
 
   const home = homeOf(role);
   let body: ReactNode;
