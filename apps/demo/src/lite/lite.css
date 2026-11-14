@@ -462,3 +462,11 @@ g.pl-piece > .pl-floor, g.pl-piece .pl-floor { fill: rgba(140,130,115,.16); stro
 /* on a phone the orbit buttons wrap under the room, so the Layers button sits top right, under the chips, clear of them */
 @media (max-width: 640px) { .sl-open { left: auto; right: 10px; bottom: auto; top: 50px; } }
 @media (max-width: 640px) { .sl-chips { flex-wrap: nowrap; overflow-x: auto; pointer-events: auto; scrollbar-width: none; padding-bottom: 2px; } .sl-chips::-webkit-scrollbar { display: none; } .sl-chip { flex: none; } }
+/* two QR codes per room (lite/RoomQr.tsx) */
+.lt-qr2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px; }
+.lt-qr2__item { margin: 0; display: flex; gap: 14px; align-items: flex-start; min-width: 0; }
+.lt-qr2__item svg { flex: none; border-radius: 6px; }
+.lt-qr2__item figcaption { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.lt-qr2__item .ui-btn { align-self: flex-start; margin-top: 4px; }
+.lt-pubnote { margin: 8px 0; padding: 8px 12px; border-left: 3px solid var(--info); background: color-mix(in srgb, var(--info) 8%, transparent); border-radius: 6px; }
+.lt-ask { margin: 8px 0; }

@@ -47,7 +47,9 @@ export const SPACES_PAGES: readonly PageDef[] = [
       const sub = (params['*'] || '').split('/')[0];
       if (sub === 'services' || sub === 'spaces') return { area: 'lite.services' };
       if (sub === 'guides') return { area: 'lite.guides' };
-      if (sub === 'room' && query.get('mode')) return { lens: query.get('mode')! };
+      // a room's public code (?qr=public) is the page's own restriction to the employee and room-user modes (lite/LiteRoom.tsx): it asks for
+      // no lens of its own, so a role without those modes reaches the page and is told so there; every other ?mode= is its lens
+      if (sub === 'room' && query.get('mode') && query.get('qr') !== 'public') return { lens: query.get('mode')! };
       return undefined;
     },
     load: () => import('./lite/LiteApp.js'),

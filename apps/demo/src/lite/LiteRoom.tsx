@@ -26,12 +26,15 @@ import { RoomJumps, opensFor } from '../rooms/RoomJumps.js';
 import { v253Drawable, v253ScaledFrom, v253Layout } from './v253/v253room.js';
 import { LiteNav, LiteMissing, storedLens, saveLens, setQuery } from './LiteApp.js';
 import { WhoKnows } from '../connect/ContactBar.js';
+import { RoomQrCodes } from './RoomQr.js';
 import { RoomTabBar, RoomTabPanel, tabOf } from './RoomTabs.js';
 import { PassportSheet } from './PassportSheet.js';
 import { useArrange, ArrangeBar, PrecisionPlan, withPreview, snap, movable } from './Arrange.js';
 import { v253Arranged } from './v253/v253room.js';
 
 const list = (s: string | null) => (s == null ? null : s.split(',').filter(Boolean));
+
+const PUBLIC_LENSES: Lens[] = ['employee', 'user'];
 
 export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
   const r = useMemo(() => roomRecord(id), [id]);
@@ -52,7 +55,13 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
   const [dragP, setDragP] = useState<{ id: string; dx: number; dy: number } | null>(null); const raf = useRef(0);
   if (!r) return <LiteMissing what={`room “${id}”`} />;
   const o = r.outline; const B = buildingByKey(o.building)!;
-  const lens = storedLens(role, query.get('mode'));
+  // a room's PUBLIC code (founder, 14 Nov 2026) opens the employee and room-user modes only: whatever the role may otherwise use, the page
+  // offers no other mode while it was opened from that code. It grants nothing: a role without those lenses is told so.
+  const pub = query.get('qr') === 'public';
+  const lens0 = storedLens(role, query.get('mode'));
+  const pubLenses = lensesFor(role).filter((l) => PUBLIC_LENSES.includes(l.key));
+  const lens = pub ? (lens0 && PUBLIC_LENSES.includes(lens0) ? lens0 : pubLenses.find((l) => l.key === 'user')?.key ?? pubLenses[0]?.key ?? null) : lens0;
+  if (pub && !lens) return <section className="lt-page" data-testid="lite-qr-public-refused"><Card title="This code is for employees and room users" icon="lock"><p>The code on this room opens it in the employee and room-user modes. Viewing as {role}, neither is open to you. <a href={`#/here/${encodeURIComponent(id)}`}>Get help with this room</a> instead.</p></Card></section>;
   if (!lens) return <LiteMissing what="lens for this role" />;
   const mayLayers = layersFor(role); const mayOv = overlaysFor(role);
   const asked = list(query.get('ly')); const askedOv = list(query.get('ov'));
@@ -76,7 +85,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
   const score = readiness(r); const issues = openIssues(r);
   const partitions = cfg && o.divisible ? o.divisible.sections.slice(1).map((_, i) => (o.dims[0] * (i + 1)) / o.divisible!.sections.length) : [];
   const count = (cats: string[]) => st.positions.filter((x) => cats.includes(x.cat)).length;
-  const lensesOpen = lensesFor(role);
+  const lensesOpen = pub ? pubLenses : lensesFor(role);
   // V2.5.3's "Show sound in the room" (cover "acoustic"): first reflections from the presenter to the farthest seat, hard walls in red
   const ac = query.get('ac') === '1' && lens !== 'visitor';
   // Optimize works on the recorded positions (moves, drift), so it opens on the technical overlay; every other lens opens on the furnished room
@@ -97,6 +106,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
       <nav aria-label="Breadcrumb" className="crumbs"><ol><li><a href="#/lite">Lite</a></li><li><a href={`#/lite/b/${o.building}`}>{B.name}</a></li><li><a href={`#/lite/b/${o.building}/${o.floor}`}>Floor {o.floor}</a></li><li><span aria-current="page">{o.number}</span></li></ol></nav>
       <PageHero product="lite" icon="room" plain eyebrow={`${shortName(o)} · ${r.archetypeName} · ${o.capacity} seats`} title={o.name} />
       <RoomJumps roomId={id} here="lite" opens={opensFor(role)} device={sel} />
+      {role !== 'visitor' ? <p className="lt-ask"><a className="ui-btn" href={`#/request?room=${encodeURIComponent(id)}${sel ? `&kind=replace-device&position=${encodeURIComponent(sel)}` : ''}`} data-testid="lite-ask-room">{sel ? 'Ask for work on the selected device' : 'Ask for work in this room'}</a></p> : null}
       {o.nonOperational && <p className="lt-nonop" role="note" data-testid="lite-nonop"><Icon name="info" size={16} /> <b>Simulated · non-operational.</b> This is a demonstration of an operations room. Nothing here monitors, controls or alerts on a real system; every number is computed from the synthetic records.</p>}
       {lensesOpen.length > 1 && <div className="lt-lenses lt-lenses--sm" role="radiogroup" aria-label="Lite lens">{lensesOpen.map((l) => <button key={l.key} type="button" role="radio" aria-checked={lens === l.key} className={`lt-lens${lens === l.key ? ' on' : ''}`} onClick={() => pickLens(l.key)} data-testid={`lite-lens-${l.key}`}><b>{l.label}</b><span title={l.says}>sees {l.gives.toLowerCase()}</span></button>)}</div>}
       <div className="lt-roomgrid">
@@ -159,13 +169,14 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
           <div className="lt-device" aria-live="polite" data-testid="lite-device">
             {p ? <><h2 className="lt-h3">{p.label}</h2><dl className="lt-dl"><dt>Position</dt><dd className="mono">{p.code}</dd><dt>Asset</dt><dd className="mono">{p.asset || '—'}</dd><dt>Identity</dt><dd>{p.identity}</dd><dt>Device</dt><dd>{p.device}</dd><dt>Height</dt><dd>{p.z} m</dd>{p.note && <><dt>State</dt><dd>{p.note}</dd></>}</dl>
               <ObjectCardView p={p} r={r} tech={lens === 'engineer' || lens === 'optimize'} cov={cov} role={role} onMove={lens === 'optimize' && MOVABLE.includes(p.cat) ? () => { setTool(p.code); document.querySelector('[data-testid="lite-change"]')?.scrollIntoView({ block: 'start', behavior: 'smooth' }); } : undefined} />
+              <p className="lt-ask"><a className="ui-btn ui-btn--primary" href={`#/request?kind=replace-device&room=${encodeURIComponent(o.id)}&position=${encodeURIComponent(p.code)}`} data-testid="lite-ask-device">Ask for work on this device</a></p>
               {allows({ area: 'room' }, role) && <a href={`${roomHref(o)}?device=${encodeURIComponent(p.code)}`}>Open in the technical room view →</a>}</>
               : furn ? <><h2 className="lt-h3" data-testid="lite-furn-card">{furnTitle(furn.obj)}</h2><dl className="lt-dl"><dt>Size</dt><dd>{furn.obj.w.toFixed(2)} × {furn.obj.d.toFixed(2)} m{furn.obj.h ? `, ${furn.obj.h.toFixed(2)} m high` : ''}</dd><dt>Where</dt><dd>{furn.obj.x.toFixed(1)} m across, {furn.obj.y.toFixed(1)} m in from the front wall</dd><dt>Basis</dt><dd>From the room type’s layout (V2.5.3), modelled</dd></dl></>
               : <p className="ui-muted">Choose a device in the 3D view to see its position, asset and identity.</p>}
           </div>
         </aside>
       </div>
-      <AdvancedModes role={role} id={id} lens={lens} query={query} base={base} />
+      {pub ? <p className="lt-pubnote" data-testid="lite-qr-public">Opened from this room’s public code: the employee and room-user modes only.</p> : <AdvancedModes role={role} id={id} lens={lens} query={query} base={base} />}
       {lens !== 'visitor' && <RoomTabBar tab={tab} onTab={(t) => upd('tab', t === 'overview' ? null : t)} />}
       {tab !== 'overview' ? <RoomTabPanel tab={tab} r={r} stateKey={stateKey} role={role} opens={opensFor(role)} onPassport={mayPassport ? openPassport : null} sel={sel} onSel={(c) => { setSel(c); upd('device', c); }} measurements={<Measurements cov={st.cov} w={o.dims[0]} l={o.dims[1]} h={o.dims[2]} />} /> : <>
       {query.get('xm') === '1' && <Measurements cov={cov} w={o.dims[0]} l={o.dims[1]} h={o.dims[2]} />}
@@ -193,6 +204,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
       {o.scenario && <Card title="This room’s scenario" icon="play" testId="lite-scenario"><p>{o.scenario}</p>{o.template?.note && <p className="ui-meta">Design basis: {o.template.note}.</p>}</Card>}
       {o.id === 'R-ATL-6-300' && <FleetWall />}
       </>}
+      {!pub && lensesFor(role).some((l) => l.key === 'engineer') ? <RoomQrCodes roomId={o.id} name={`${shortName(o)} ${o.name}`} /> : null}
       <WhoKnows role={role} kind="room" id={o.id} />
       <p className="ui-meta lt-foot">Elsewhere: <a href={`#/guide/room/${o.id}`} data-testid="lite-guide">how to use this room</a> · <a href={`#/here/${o.id}`} data-testid="lite-here">I am in this room</a>{role !== 'visitor' ? <> · <a href={`#/people?room=${o.id}`} data-testid="lite-who">who knows this room</a></> : null}{mayCapture(role) ? <> · <a href={`#/instant/${o.id}`} data-testid="lite-capture">capture this room</a></> : null}{readsManual(role) ? <> · <a href={`#/manual/build?room=${o.id}`} data-testid="lite-standards">the standards this room is held to</a></> : null}{allows({ area: 'control' }, role) && <> · <a href={`#/control/${o.id}`} data-testid="lite-control">operate this room</a></>} · <a href={`#/search?focus=Room:${o.id}`}>Search Party from this room</a>{allows({ area: 'room' }, role) && <> · <a href={roomHref(o)}>technical room view</a></>} · <a href={`#/lite/way?to=${o.id}`}>find the way</a>{allows({ area: 'scouter' }, role) && <> · <a href="#/lite/scouter">ask Scouter about a device</a></>}</p>
       <LiteNav here="" role={role} />
