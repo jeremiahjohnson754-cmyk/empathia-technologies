@@ -61,13 +61,22 @@ The steps worked in the demonstration are kept in this browser. Each deficiency 
 
 **Tested by:** `tests/browser/demo-deficiencies.test.mjs`. It works one deficiency from Open to Closed by four different perspectives and checks the refusals for authority, for an action without words and for separation of duties. It also checks the audit trail.
 
+## On the server (migration 0032)
+
+- **Routes.** `GET /v1/issues/{issue}/deficiency` returns the workflow and every step taken. `POST /v1/issues/{issue}/deficiency` takes one step through the engine's `step()`. Each step is checked against its own authority, the same mapping as the demonstration. Refusals are audited as DENIED with the engine's reasons. Every step is written to `app.issue_event` (kind `workflow`) and to the audit trail.
+- **Stricter than the engine, by design.** A High or Critical deficiency is never deferred on the server. The role that owns a deficiency does not approve its deferral.
+- **Database guard.** The guard trigger `room_issue_workflow_guard` holds the machine for every writer, the runtime role included. It refuses:
+  - a skipped step;
+  - a close without a passing retest;
+  - a close by the fixer or by the retest's recorder;
+  - an exception approved by its requester;
+  - a deferral of a High deficiency.
+
+  `workflow = CLOSED` exactly when `state = RESOLVED`. The system's own resolution paths, a verified retest and a design check that stops firing, name themselves in the transaction-local setting `app.issue_resolution`. Any other write of RESOLVED is refused.
+- **Tests.** `tests/security/deficiency-workflow.test.mjs` (DW-01..07) runs against real HTTP and a private PostgreSQL database. It covers a designer refused (403, audited), a past target date, a one-word action, the retest recorder refused as verifier, the installer refused as verifier, a close by a third person, the database guard as the runtime role, a High deficiency not deferred, an exception not approved by its requester and final once accepted, and another tenant getting 404. The full unit, integration and security run on 14 Nov 2026: 111 PASS, 0 FAIL.
+
 ## Not built yet
 
-- **Server-side enforcement through the API.** The database has issues and work orders (`0003_commissioning_evidence.sql`), but has no deficiency state column yet, and no route for these steps. That needs:
-  - a migration with a guard trigger mirroring the machine;
-  - API routes that call `step()`;
-  - negative authorization tests in `tests/security`.
 
-  This is the next slice. Until it lands, the machine is enforced in the engine and the demonstration only.
 - **Evidence as first-class data.** Today the retest references evidence by ID. Linking that ID to a stored file with its SHA-256, as the reverberation instrument's exports already carry, is not built.
 - **The intelligibility exception record.**

@@ -146,6 +146,7 @@ export async function verifyResult(ctx: RequestContext, ref: string, testId: str
     const i = (await q.query<{ id: string; code: string }>(`SELECT id, code FROM app.room_issue WHERE room_id = $1 AND key = $2 AND state = 'OPEN'`, [room.id, `test-failed:${testId}`])).rows[0];
     if (i) {
       const resolution = { at: new Date().toISOString(), by: ctx.p.personId, byRole: ctx.p.role, how: `retest ${testId} PASS by ${cur!.recorded_by}, verified by ${ctx.p.personId}`, evidenceId: cur!.evidence_id };
+      await q.query("SELECT set_config('app.issue_resolution', 'verified_retest', true)");
       await q.query(`UPDATE app.room_issue SET state = 'RESOLVED', resolution = $2 WHERE id = $1`, [i.id, resolution]);
       await q.query('INSERT INTO app.issue_event (tenant_id, issue_id, kind, detail, actor_id) VALUES ($1,$2,$3,$4,$5)', [ctx.p.tenantId, i.id, 'resolved', resolution, ctx.p.personId]);
       const planId = (await q.query<{ id: string }>('SELECT id FROM app.cx_plan WHERE room_id = $1 ORDER BY compiled_at DESC, id DESC LIMIT 1', [room.id])).rows[0]?.id || '';

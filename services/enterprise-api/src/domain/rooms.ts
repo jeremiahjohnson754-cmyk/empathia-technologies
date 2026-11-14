@@ -119,6 +119,7 @@ export async function analyze(ctx: RequestContext, q: Queryable, roomId: string,
   for (const i of existing) {
     if (i.state === 'OPEN' && i.category === 'DESIGN_DEFICIENCY' && !live.has(i.key)) {
       const resolution = { at: new Date().toISOString(), by: ctx.p.personId, byRole: ctx.p.role, revision: revNo, how: `the design check no longer fires after: ${trigger}`, verification: 'design re-analysis on every change; an engineer reviews the next saved revision' };
+      await q.query("SELECT set_config('app.issue_resolution', 'design_check', true)");
       await q.query(`UPDATE app.room_issue SET state = 'RESOLVED', resolution = $2 WHERE id = $1`, [i.id, resolution]);
       await q.query('INSERT INTO app.issue_event (tenant_id, issue_id, kind, detail, actor_id) VALUES ($1,$2,$3,$4,$5)', [ctx.p.tenantId, i.id, 'resolved', resolution, ctx.p.personId]);
       await ctx.emit(q, 'issue.created_or_updated', { type: 'RoomIssue', id: i.code, rev: 2 }, { issueId: i.code, status: 'RESOLVED', change: 'resolved', roomId: L.room.code });

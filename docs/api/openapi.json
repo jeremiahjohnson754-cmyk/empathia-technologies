@@ -4310,6 +4310,260 @@
         }
       }
     },
+    "/v1/issues/{issue}/deficiency": {
+      "get": {
+        "tags": [
+          "issues"
+        ],
+        "summary": "Where a deficiency is in its workflow (Open, In progress, Pending retest, Closed, Accepted exception, Deferred): owner, target date, root cause, corrective action, retest, exception or deferral, and every step taken",
+        "operationId": "getV1IssuesIssueDeficiency",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "issue",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "deficiency"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "issues"
+        ],
+        "summary": "Take one step of the deficiency workflow through the engine (start · fixed · retest · verify · except · defer · resume · reopen), each by its own authority; refused with reasons when the step does not follow, rests on nothing, or the actor fixed it or recorded its retest (separation of duties); a High or Critical deficiency is never deferred; the database guard (0032) holds the same rules for every writer",
+        "operationId": "postV1IssuesIssueDeficiency",
+        "x-authority": [
+          "deficiency.open",
+          "issue.assign",
+          "work.evidence",
+          "deviation.raise",
+          "tests.verify.all",
+          "test.verify",
+          "test.verify.audio",
+          "test.verify.video",
+          "test.verify.control",
+          "baseline.approve",
+          "service.reopen"
+        ],
+        "x-authority-enforced": [
+          "deficiency.open",
+          "issue.assign",
+          "work.evidence",
+          "deviation.raise",
+          "tests.verify.all",
+          "test.verify",
+          "test.verify.audio",
+          "test.verify.video",
+          "test.verify.control",
+          "baseline.approve",
+          "service.reopen"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "issue",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "step"
+                ],
+                "properties": {
+                  "step": {
+                    "type": "string",
+                    "enum": [
+                      "start",
+                      "fixed",
+                      "retest",
+                      "verify",
+                      "except",
+                      "defer",
+                      "resume",
+                      "reopen"
+                    ]
+                  },
+                  "ownerRole": {
+                    "type": "string",
+                    "pattern": "^[a-z_]{2,40}$"
+                  },
+                  "targetDate": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                  },
+                  "rootCause": {
+                    "type": "string",
+                    "maxLength": 40
+                  },
+                  "action": {
+                    "type": "string",
+                    "maxLength": 2000
+                  },
+                  "result": {
+                    "type": "string",
+                    "enum": [
+                      "PASS",
+                      "FAIL"
+                    ]
+                  },
+                  "evidence": {
+                    "type": "string",
+                    "maxLength": 120
+                  },
+                  "exceptionRef": {
+                    "type": "string",
+                    "maxLength": 80
+                  },
+                  "requestedBy": {
+                    "type": "string",
+                    "maxLength": 40
+                  },
+                  "reason": {
+                    "type": "string",
+                    "maxLength": 1000
+                  },
+                  "until": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "deficiency"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/issues/{issue}/work-orders": {
       "post": {
         "tags": [
