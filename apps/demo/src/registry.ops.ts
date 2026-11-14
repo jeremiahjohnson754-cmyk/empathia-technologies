@@ -153,6 +153,12 @@ export const OPS_PAGES: readonly PageDef[] = [
     load: adapt(() => import('./pages/ReverbBench.js'), (m, p) => h(m.ReverbBenchPage, { perspective: p.role })),
     search: { keywords: 'reverberation rt60 t20 t30 edt impulse response decay acoustic instrument bench schroeder octave', aliases: ['rt60', 'reverb time', 'impulse response'] },
   },
+  {
+    id: 'assets.life', title: 'Asset life', purpose: 'One asset’s whole life by its asset ID: installation, register, baselines, service, retirement and what replaced it', product: 'commissioning',
+    path: '/v25/asset', authority: { roles: ['installer', 'cxeng', 'syseng', 'designer', 'service', 'svcmgr', 'ops', 'ipm', 'bpm', 'architect', 'exec', 'qa', 'steward'], why: 'the asset record: the people who install, commission, serve and manage the estate (founder, 14 Nov 2026: the asset ID connects everything end to end)' },
+    load: adapt(() => import('./pages/AssetLife.js'), (m, p) => h(m.AssetLifePage, { perspective: p.role, hash: p.hash })),
+    search: { keywords: 'asset id unit history lifecycle replaced retired serial inventory', aliases: ['asset history', 'asset id', 'unit history'] },
+  },
   // ---- the operational workspaces (rebuild/demo-ops): each loads its own file (ws/<name>.js) only once the role is admitted
   {
     id: 'servicehands.analytics', title: 'Service analytics', purpose: 'Service by month and quarter, by building and project, and a scorecard that holds each vendor to its agreement', product: 'servicehands',

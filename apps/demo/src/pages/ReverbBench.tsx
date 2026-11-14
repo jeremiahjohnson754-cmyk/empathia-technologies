@@ -26,7 +26,7 @@ function Decay({ a, testId }: { a: Analysis; testId: string }) {
   const W = 640, H = 240, L = 44, R = 12, T = 12, B = 30; const tMax = Math.max(0.2, a.edcDb.length * a.dt); const yMin = -70;
   const x = (t: number) => L + ((W - L - R) * t) / tMax; const y = (db: number) => T + ((H - T - B) * Math.min(0, Math.max(yMin, db))) / yMin;
   const step = Math.max(1, Math.floor(a.edcDb.length / 400)); let d = '';
-  for (let i = 0; i < a.edcDb.length; i += step) d += `${i ? 'L' : 'M'}${x(i * a.dt).toFixed(1)},${y(a.edcDb[i]!).toFixed(1)}`;
+  for (let i = 0; i < a.edcDb.length; i += step) { if (a.edcDb[i]! < yMin) break; d += `${i ? 'L' : 'M'}${x(i * a.dt).toFixed(1)},${y(a.edcDb[i]!).toFixed(1)}`; }
   const fit = a.fits.find((f) => f.name === 'T20' && f.seconds !== null) || a.fits.find((f) => f.name === 'EDT' && f.seconds !== null);
   const line = fit && fit.slope !== null && fit.intercept !== null ? (() => { const t0 = (fit.from - fit.intercept!) / fit.slope!; const t1 = (-60 - fit.intercept!) / fit.slope!; return { x0: x(Math.max(0, t0)), y0: y(fit.from), x1: x(Math.min(tMax, t1)), y1: y(fit.intercept! + fit.slope! * Math.min(tMax, t1)) }; })() : null;
   const ticks = [0, -10, -20, -30, -40, -50, -60]; const tt = Array.from({ length: 6 }, (_, i) => (tMax * i) / 5);
@@ -34,8 +34,8 @@ function Decay({ a, testId }: { a: Analysis; testId: string }) {
     <figure className="rv-fig" data-testid={testId}>
       <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Energy decay curve, ${a.band}: falls to the noise at ${a.truncatedAt} s${fit ? `; the ${fit.name} fit gives ${fit.seconds} s` : ''}`}>
         {ticks.map((v) => <g key={v}><line x1={L} x2={W - R} y1={y(v)} y2={y(v)} className="rv-grid" /><text x={L - 6} y={y(v) + 4} className="rv-tick" textAnchor="end">{v}</text></g>)}
-        {tt.map((t) => <text key={t} x={x(t)} y={H - 10} className="rv-tick" textAnchor="middle">{t.toFixed(2)}</text>)}
-        <text x={W - R} y={H - 10} className="rv-tick" textAnchor="end">s</text><text x={4} y={T + 4} className="rv-tick">dB</text>
+        {tt.map((t, i) => <text key={t} x={x(t)} y={H - 10} className="rv-tick" textAnchor={i === tt.length - 1 ? 'end' : 'middle'}>{t.toFixed(2)}{i === tt.length - 1 ? ' s' : ''}</text>)}
+        <text x={4} y={T + 4} className="rv-tick">dB</text>
         {fit ? <rect x={L} width={W - L - R} y={y(fit.from)} height={y(fit.to) - y(fit.from)} className="rv-range" /> : null}
         <path d={d} className="rv-curve" fill="none" />
         {line ? <line {...{ x1: line.x0, y1: line.y0, x2: line.x1, y2: line.y1 }} className="rv-fit" /> : null}
