@@ -17,7 +17,8 @@ function save(name: string, mime: string, bytes: Uint8Array) {
   const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1500);
 }
 
-export function ExportMenu({ make, by, title = 'Export', sub, testId = 'export-menu' }: { make: () => Report | Promise<Report>; by: string; title?: string; sub?: string; testId?: string }) {
+export interface Picture { name: string; label: string; svg: string; width: number; height: number; aggregate: string }
+export function ExportMenu({ make, by, title = 'Export', sub, testId = 'export-menu', pictures }: { make: () => Report | Promise<Report>; by: string; title?: string; sub?: string; testId?: string; /** drawings offered as PNG and JPEG beside the six files */ pictures?: Picture[] }) {
   const { apply } = useWorkspace();
   const [busy, setBusy] = useState<Format | null>(null); const [last, setLast] = useState<Made | null>(null); const [err, setErr] = useState<string | null>(null);
   const go = async (f: Format) => {
@@ -38,6 +39,14 @@ export function ExportMenu({ make, by, title = 'Export', sub, testId = 'export-m
         <Icon name="download" size={16} /><span className="xp-btn__t"><b>{x.label}</b><span className="ui-meta">{busy === x.f ? 'Writing…' : x.what}</span></span>
       </button>)}
     </div>
+    {pictures?.length ? <div className="xp-grid xp-grid--pics" role="group" aria-label="Pictures">{pictures.flatMap((pic) => (['png', 'jpeg'] as const).map((k) => <button key={`${pic.name}-${k}`} type="button" className="ui-btn xp-btn" disabled={!!busy} data-testid={`export-pic-${k}`} data-format={`pic-${k}`}
+      onClick={async () => { setBusy('csv'); setErr(null); try { const { canvasRaster, canvasJpeg } = await import('./media.js'); const { sha256Hex } = await import('./render.js'); const t0 = performance.now();
+        const bytes = k === 'png' ? await canvasRaster(pic.svg, pic.width, pic.height) : await canvasJpeg(pic.svg, pic.width, pic.height); if (!bytes) throw new Error('This browser could not draw the picture.');
+        const name = `${pic.name}.${k === 'png' ? 'png' : 'jpg'}`; save(name, k === 'png' ? 'image/png' : 'image/jpeg', bytes); const sha = await sha256Hex(bytes);
+        setLast({ name, format: 'csv', bytes: bytes.length, sha, ms: Math.round(performance.now() - t0) });
+        apply((w) => { w.events.unshift({ at: new Date().toISOString(), by, type: 'export.created', aggregate: pic.aggregate, detail: `${name} · ${bytes.length.toLocaleString('en-US')} bytes · SHA-256 ${sha}`, outcome: 'ALLOWED' }); return null; });
+      } catch (e) { setErr(e instanceof Error ? e.message : String(e)); } finally { setBusy(null); } }}>
+      <Icon name="download" size={16} /><span className="xp-btn__t"><b>{pic.label} · {k.toUpperCase()}</b><span className="ui-meta">{k === 'png' ? 'a sharp picture for a document' : 'a small picture for a message'}</span></span></button>))}</div> : null}
     {last ? <p className="wk-note" role="status" data-testid="export-last"><Tag tone="ok">Saved</Tag> {last.name} · {(last.bytes / 1024).toFixed(1)} KB · SHA-256 <code title={last.sha}>{last.sha.slice(0, 16)}…</code> · recorded in the audit trail</p> : null}
     {err ? <div role="alert"><Notice tone="bad"><b>The file was not written.</b> {err}</Notice></div> : null}
     <p className="wk-note">Every file says what it is: synthetic records, results as recorded (nothing measured), devices as classes, connections proposed, and the role it was made as, which grants nothing.</p>

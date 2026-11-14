@@ -24,7 +24,7 @@ const sha = (b) => crypto.createHash('sha256').update(b).digest('hex');
 {
   const t = await open(`#/commissioning/room/${ROOM}`, { role: 'architect', sw: false }); const p = t.page; p.setDefaultTimeout(20000);
   const card = p.getByTestId('cx-export'); await card.waitFor();
-  ok('XP-01', 'the commissioning record offers its completion package in six formats', (await card.locator('button[data-format]').count()) === 6 && /Completion package/.test(await card.innerText()));
+  ok('XP-01', 'the commissioning record offers its completion package in six formats (and its plan as two pictures)', (await card.locator('button[data-format]:not([data-format^=pic-])').count()) === 6 && (await card.locator('button[data-format^=pic-]').count()) === 2 && /Completion package/.test(await card.innerText()));
   const got = {};
   for (const f of ['pdf', 'docx', 'xlsx', 'pptx', 'json', 'csv']) {
     const [dl] = await Promise.all([p.waitForEvent('download'), card.locator(`button[data-format=${f}]`).click()]);
@@ -59,6 +59,9 @@ const sha = (b) => crypto.createHash('sha256').update(b).digest('hex');
   ok('XP-09', 'the page shows the SHA-256 of the file it saved (the same bytes the browser received)', got.csv.shown.includes(sha(got.csv.bytes).slice(0, 16)) && got.pdf.shown.includes(sha(got.pdf.bytes).slice(0, 16)));
   const trail = await p.evaluate(() => JSON.parse(localStorage.getItem('empathia.demo.workspace.v1') || '{}').events?.filter((e) => e.type === 'export.created') || []);
   ok('XP-10', 'each export is written to the audit trail with its name, size and SHA-256', trail.length === 6 && trail.every((e) => e.aggregate === ROOM && /SHA-256 [0-9a-f]{64}/.test(e.detail)) && trail.some((e) => e.detail.includes(sha(got.xlsx.bytes))), `${trail.length}`);
+  const [pp] = await Promise.all([p.waitForEvent('download'), card.locator('button[data-format=pic-png]').click()]); const png = fs.readFileSync(await pp.path());
+  const [pj] = await Promise.all([p.waitForEvent('download'), card.locator('button[data-format=pic-jpeg]').click()]); const jpg = fs.readFileSync(await pj.path());
+  ok('XP-PIC', 'the room’s plan also downloads as a PNG and a JPEG, drawn in the browser at twice its size', pp.suggestedFilename() === `${ROOM}-plan.png` && png.subarray(1, 4).toString() === 'PNG' && png.readUInt32BE(16) > 1000 && pj.suggestedFilename() === `${ROOM}-plan.jpg` && jpg[0] === 0xff && jpg[1] === 0xd8 && jpg.length > 10000, `${png.length} ${jpg.length} ${png.readUInt32BE(16)}`);
   ok('XP-11', 'no console error; nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
   await t.close();
 }

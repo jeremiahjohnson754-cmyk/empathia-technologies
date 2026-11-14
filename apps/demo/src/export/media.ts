@@ -29,6 +29,12 @@ export async function prepareMedia(r: Report, raster: Raster): Promise<Report> {
   return { ...r, media };
 }
 /** the browser's rasteriser: the SVG drawn on a canvas at twice its size, as PNG */
+/** the browser's rasteriser as JPEG (white ground: JPEG has no transparency) */
+export async function canvasJpeg(svg: string, width: number, height: number): Promise<Uint8Array | undefined> {
+  try { const img = new Image(); img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`; await img.decode();
+    const c = document.createElement('canvas'); c.width = width * 2; c.height = height * 2; const g = c.getContext('2d'); if (!g) return undefined; g.fillStyle = '#ffffff'; g.fillRect(0, 0, c.width, c.height);
+    g.drawImage(img, 0, 0, c.width, c.height); const blob = await new Promise<Blob | null>((ok) => c.toBlob(ok, 'image/jpeg', 0.9)); return blob ? new Uint8Array(await blob.arrayBuffer()) : undefined; } catch { return undefined; }
+}
 export const canvasRaster: Raster = async (svg, width, height) => {
   try {
     // a data: URL, which the page's CSP allows for images (img-src 'self' data:); blob: is not allowed and is not needed

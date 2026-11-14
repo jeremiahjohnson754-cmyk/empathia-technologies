@@ -30,6 +30,7 @@ import { ExportMenu } from '../export/ExportMenu.js';
 import { LAYERS, assuranceDims, changeCards } from '../campus/asRecord.js';
 import { cxPackage } from '../export/cx.js';
 import { asPackage } from '../export/as.js';
+import { planSvg } from '../export/plan.js';
 type Row = ReturnType<typeof rowsOf>[number];
 function Head({ r, kind, perspective, tab }: { r: RoomRecord; kind: 'cx' | 'as'; perspective: string; tab: ReactNode }) {
   const { w } = useWorkspace(); const b = buildingByKey(r.outline.building); const cur = r.baselines.find((x) => x.state === 'CURRENT'); const pend = r.baselines.find((x) => x.state === 'PENDING_ACCEPTANCE');
@@ -103,7 +104,7 @@ export function CxRoomPage({ perspective, params, hash }: { perspective: string;
         {r.exception ? <Notice tone="warn"><b>{r.exception.id}</b> · exception requested ({r.exception.waivability}) for {r.exception.requirement}: {r.exception.rationale} Pending approval by an independent reviewer; expires {ymd(r.exception.expiry)}.</Notice> : null}
       </Card> : null}
       {view === 'signoff' ? <Signoff r={r} bl={bl} /> : null}
-      <ExportMenu testId="cx-export" title="Completion package" sub={`The whole record of ${shortName(r.outline)} as six files: the report, the register, the deck and the dossier`} by={persona}
+      <ExportMenu testId="cx-export" pictures={[{ name: `${r.outline.id}-plan`, label: 'Plan', aggregate: r.outline.id, ...planSvg(r) }]} title="Completion package" sub={`The whole record of ${shortName(r.outline)} as six files: the report, the register, the deck and the dossier`} by={persona}
         make={async () => cxPackage(r, { role: personaLabel(persona), at: new Date().toISOString(), build: process.env.DEMO_BUILD_ID || 'dev' }, await (await import('../export/cxExtras.js')).cxExtras(r.outline.id, w))} />
       <Foot>Synthetic records: a simulated test reads the room as Core holds it; nothing is measured and no device is contacted.</Foot>
     </section>

@@ -108,3 +108,4 @@
 .dr-rooms li a { display: inline-flex; flex-wrap: wrap; gap: 2px 6px; align-items: center; min-width: 0; color: var(--tx); text-decoration: none; } .dr-rooms li a:hover b { text-decoration: underline; }
 .dr-rooms .dr-why { min-width: 0; overflow-wrap: anywhere; color: var(--tx2); }
 @media (max-width: 640px) { .dr-rooms li { grid-template-columns: minmax(0, 1fr) auto; } .dr-rooms li .dr-why { grid-column: 1 / -1; } }
+.xp-grid--pics { margin-top: var(--sp-2); }
