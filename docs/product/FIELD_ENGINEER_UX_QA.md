@@ -1,6 +1,6 @@
 # Field engineer UX: quality assurance
 
-Status, 14 Nov 2026. This is a deliverable of the 40/10 directive. It covers the pages a field engineer uses on site, tested on a phone at 390 × 844 by `tests/browser/demo-field-ux.test.mjs`. The evidence is in `tests/evidence/demo-field-ux.json`.
+Status, 14 Nov 2026. This is a deliverable of the 40/10 directive. It covers the pages a field engineer uses on site, tested on a phone at 390 × 844 by `tests/browser/demo-field-ux.test.mjs`. The evidence is in `tests/evidence/demo-field-ux.json`, which each run rewrites and which is not committed.
 
 ## The checks
 
