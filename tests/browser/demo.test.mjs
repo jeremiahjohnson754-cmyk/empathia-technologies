@@ -25,7 +25,10 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   ok(`D-${tag}-03`, 'the perspective picker says it grants nothing', /grants nothing/.test(land.note), land.note);
   await page.screenshot({ path: path.join(out, `${tag}-start.png`) });
   if (tag === 'desktop') {
-    let bad = []; for (const a of areas.filter((x) => x.key !== 'investor')) { const hash = '#/' + (a.key === 'none' ? 'no-such-area' : a.key.replace('.', '/')); await page.evaluate((x) => { location.hash = x; }, hash); await page.waitForTimeout(120);
+    let bad = []; for (const a of areas.filter((x) => x.key !== 'investor')) { const hash = '#/' + (a.key === 'none' ? 'no-such-area' : a.key.replace('.', '/')); const prevH1 = await page.evaluate(() => (document.querySelector('main h1') || {}).textContent || ''); await page.evaluate((x) => { location.hash = x; }, hash); await page.waitForTimeout(120);
+      // 14 Nov 2026: a page's code loads on first use; under a busy machine 120 ms was not always enough, so wait (up to 3 s) for a new
+      // heading before reading it (two areas with the same heading simply wait out the 3 s). What a page must show is unchanged.
+      await page.waitForFunction((prev) => { const t = (document.querySelector('main h1') || {}).textContent || ''; return t.length > 2 && t !== prev; }, prevH1, { timeout: 3000 }).catch(() => undefined);
       const v = await page.evaluate(() => ({ h1: (document.querySelector('main h1') || {}).textContent || '', text: document.querySelector('main').innerText, native: !!document.querySelector('main [data-native]') })); if (!(v.h1.length > 2 && (v.native || /(Not migrated yet|Native page|Unknown address|interactive demonstration|Acting as)/.test(v.text)))) bad.push(`${hash}: ${v.h1}`); }   // rebuild/demo-spaces: the campus and tours pages are native and declare it with data-native (assertion unchanged otherwise)
     ok('D-04', `every one of the ${areas.length} legacy areas resolves to a native page or one that states its migration status`, !bad.length, bad.slice(0, 5).join(' | '));
     await page.evaluate(() => { location.hash = '#/assurance/room/R-1/history'; }); await page.waitForTimeout(150);

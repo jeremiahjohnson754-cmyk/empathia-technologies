@@ -11,6 +11,10 @@ import { buildEstate } from '../search/estate.js';
 import * as S from '../workspace/store.js';
 import { useWorkspace, isRefusal } from '../workspace/useWorkspace.js';
 import { personaOf, personaLabel, holds, loadDraft } from '../build/store.js';
+import { syntheticHistory, workspaceJobs, type ServiceJob } from '../service/history.js';
+import { months, stats } from '../service/analytics.js';
+import { roomById } from '../campus/canon.js';
+import { TrendChart } from './TrendChart.js';
 
 const TONE: Record<string, 'ok' | 'warn' | 'bad' | 'muted' | 'info'> = { DECLARED: 'muted', UNKNOWN: 'muted', OBSERVED: 'info', VERIFIED: 'ok', NOT_TESTED: 'muted', NOT_RUN: 'muted', PLAN_ONLY: 'info', SUPPORTED_VERIFIED: 'ok', READ_ONLY: 'info', PLAN_ONLY_: 'muted', NOT_SUPPORTED: 'bad', NOT_CONFIGURED: 'warn', ARMED: 'warn', RUNNING: 'warn', ACQUIRED: 'ok', APPROVAL_PENDING: 'info', DRY_RUN: 'info', SAFETY_PREFLIGHT: 'info', DRAFT: 'muted' };
 const tone = (s: string): 'ok' | 'warn' | 'bad' | 'muted' | 'info' => TONE[s] || ((FIPV.exits as readonly string[]).includes(s) ? 'bad' : 'muted');
@@ -33,6 +37,7 @@ export function FieldIntelligencePage({ perspective, pv, hash }: { perspective: 
         <div className="build__state"><label className="ui-muted" htmlFor="fi-room">Room</label><select id="fi-room" value={roomId} onChange={(e) => setRoomId(e.target.value)}>{[...ROOMS, ...(draft ? [[draft.code, draft.name, 'HUD'] as [string, string, string]] : [])].map(([id, n]) => <option key={id} value={id}>{n}</option>)}</select></div></header>
       {refusal && <div role="alert"><Notice tone="bad"><b>Refused.</b><ul className="build__why">{refusal.why.map((x) => <li key={x}>{x}</li>)}</ul></Notice></div>}
       <Tabs label="Field Intelligence" active={pv ? 'pv' : 'plan'} onChange={(k) => { location.hash = k === 'pv' ? `#/v25/fipv?room=${roomId}` : `#/v25/fi?room=${roomId}`; }} tabs={[{ key: 'plan', label: 'v1.3 declarations and plan' }, { key: 'pv', label: 'v1.4 Physical Validation', count: w.fiSessions.length }]} />
+      <FieldTrends w={w} />
       {!pv ? <PlanView plan={plan} /> : <PvView w={w} apply={apply} persona={persona} roomId={roomId} archetype={([...ROOMS].find((r) => r[0] === roomId)?.[2]) || 'HUD'} />}
     </section>
   );
@@ -106,5 +111,23 @@ function PvView({ w, apply, persona, roomId, archetype }: { w: S.Workspace; appl
           <details><summary>Session log ({s.log.length})</summary><ul className="plain">{s.log.map((l, i) => <li key={i}><Tag tone={tone(l.state)}>{l.state}</Tag> {l.text} <span className="ui-meta">{when(l.at)} · {personaLabel(l.by)}</span></li>)}</ul></details>
         </div>)}</div>
     </div>
+  );
+}
+
+/** Field work over the last twelve months (founder, 14 Nov 2026: trend analysis for field intelligence): visits restored on site, first-time
+ *  fix, and the rooms that keep needing a visit. From the synthetic service history plus this browser's own jobs; labelled. */
+function FieldTrends({ w }: { w: S.Workspace }) {
+  const jobs = useMemo<ServiceJob[]>(() => [...syntheticHistory(), ...workspaceJobs(w)], [w]);
+  const ms = months(12); const per = ms.map((m) => ({ m, s: stats(jobs, m.from, m.to), visits: jobs.filter((j) => j.restoredAt && Date.parse(j.restoredAt) >= m.from && Date.parse(j.restoredAt) < m.to).length }));
+  const from6 = ms[6]!.from; const rep = new Map<string, number>(); for (const j of jobs) if (Date.parse(j.openedAt) >= from6) rep.set(j.roomId, (rep.get(j.roomId) || 0) + 1);
+  const repeat = [...rep].filter(([, n]) => n >= 3).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  return (
+    <details className="ln-dom" data-testid="fi-trends"><summary><b>Field work, twelve months</b> <span className="ui-meta">visits restored on site, first-time fix and repeat rooms · synthetic service history</span></summary>
+      <div className="wk-g2">
+        <TrendChart testId="fi-trend-visits" title="Visits restored on site, by month (synthetic history)" labels={per.map((x) => x.m.label)} unit="" kind="bar" series={[{ name: 'Visits', tone: 'info', values: per.map((x) => x.visits) }]} />
+        <TrendChart testId="fi-trend-ftf" title="First-time fix, by month (synthetic history)" labels={per.map((x) => x.m.label)} unit="%" max={100} series={[{ name: 'First-time fix', tone: 'ok', values: per.map((x) => x.s.ftf) }]} />
+      </div>
+      <p className="ui-meta" data-testid="fi-repeat">Rooms with three or more jobs in the last six months: {repeat.length ? repeat.map(([id, n]) => `${roomById(id) ? roomById(id)!.number : id} (${n})`).join(' · ') : 'none'}.</p>
+    </details>
   );
 }
