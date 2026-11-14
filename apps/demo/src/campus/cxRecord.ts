@@ -6,7 +6,7 @@
 import { openIssues, type RoomRecord } from './design.js';
 import { runPhases, type PhaseItem } from '../phases/universal.js';
 
-export interface CxRow { id: string; label: string; pack: string | null; domain: string; phase: number; tier: number; applicable: boolean; result?: string; evidence?: string[]; verifier?: string; instrument?: boolean; devices?: string[]; justification?: string[] }
+export interface CxRow { id: string; label: string; pack: string | null; domain: string; phase: number; tier: number; applicable: boolean; result?: string; evidence?: string[]; verifier?: string; instrument?: boolean; devices?: string[]; justification?: string[] | string; why?: string[] }
 export const rowsOf = (r: RoomRecord): CxRow[] => ((r.analysis.applicability as unknown as { rows?: CxRow[] }).rows || []);
 export const PHASES: Array<[number, string, string]> = [[1, 'Readiness', 'Is everything in place to start?'], [2, 'Physical QA', 'Is it installed where and how the design says?'], [3, 'Infrastructure and platform', 'Is it connected, registered and on the validated versions?'], [4, 'Functional', 'Does each function work, end to end?'], [5, 'Operational and experience', 'Can people use the room for what it is for?']];
 export type CxTone = 'ok' | 'warn' | 'bad' | 'muted';
