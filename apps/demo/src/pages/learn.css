@@ -90,3 +90,9 @@
 .ln-calc { display: grid; gap: 6px; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--bg2); }
 .ln-calc__row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; } .ln-calc__row input, .ln-calc__row select { min-height: 44px; font: inherit; color: var(--tx); background: var(--bg); border: 1px solid var(--line2); border-radius: var(--r-sm); padding: 6px 10px; }
 .ln-calc__row input { width: 9em; } .ln-calc p { margin: 0; } .ln-calc__ok { color: var(--ok); } .ln-calc__no { color: var(--bad); } .ln-calc__f { font-size: var(--fs-sm); }
+/* export/ExportMenu.tsx: six formats, each a button that says what the file is for */
+.xp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: var(--sp-2); }
+.xp-btn { justify-content: flex-start; align-items: flex-start; text-align: left; gap: 10px; min-height: 56px; padding: 10px 12px; white-space: normal; }
+.xp-btn > svg { flex: none; margin-top: 2px; }
+.xp-btn__t { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.xp-btn[aria-busy="true"] { border-color: var(--accent); }

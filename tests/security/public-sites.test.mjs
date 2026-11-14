@@ -69,7 +69,10 @@ test('SA-04/SA-08 dist: no source maps, no inline script or style or handler, ev
   // http://schemas.openxmlformats.org and http://purl.org/dc URIs; like the SVG namespace on www.w3.org they are names, never fetched
   // (and connect-src 'self' would refuse them). The first equipment lesson (A5) links out to the vendor's own help, which it paraphrases
   // and cites (support.microsoft.com, learn.microsoft.com): links a person opens in a new tab, never fetched by the page.
-  const HOSTS = /^https:\/\/(tally\.so|empathia-(website|demo)(-next)?\.onrender\.com|schema\.org|react\.dev|support\.microsoft\.com|learn\.microsoft\.com)$|^http:\/\/(www\.w3\.org|schemas\.openxmlformats\.org|purl\.org)$/;
+  // 13 Nov 2026: the export writers (apps/demo/src/export: the Word file) declare the Office 2010+ namespaces Word expects (w14, wp14,
+  // wps …), whose identifiers are http://schemas.microsoft.com URIs: names in the XML, never fetched, exactly like the openxmlformats
+  // ones above. Only the plain-http namespace form is allowed; https://schemas.microsoft.com, or any path a page could load, is not.
+  const HOSTS = /^https:\/\/(tally\.so|empathia-(website|demo)(-next)?\.onrender\.com|schema\.org|react\.dev|support\.microsoft\.com|learn\.microsoft\.com)$|^http:\/\/(www\.w3\.org|schemas\.openxmlformats\.org|schemas\.microsoft\.com|purl\.org)$/;
   // 2026-11-09: Lite's QR codes (uplift/lite, merged after this assessment) encode V2.5.3's illustrative addresses under
   // northstar.example.com. example.com is reserved for documentation (RFC 2606) and the name does not resolve; the page draws the code
   // and never requests the address (public-security.test.mjs still fails any request that leaves the page). That one exact host is

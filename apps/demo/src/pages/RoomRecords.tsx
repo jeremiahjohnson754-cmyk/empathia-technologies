@@ -25,25 +25,11 @@ import { cxState, CX, asState, AS } from './Estate.js';
 import { V } from '../learn/model.js';
 import { plural, pct, weekCounts, Foot } from './viz.js';
 
-interface Row { id: string; label: string; pack: string | null; domain: string; phase: number; tier: number; applicable: boolean; result?: string; evidence?: string[]; verifier?: string; instrument?: boolean; devices?: string[]; justification?: string[] }
-const rowsOf = (r: RoomRecord): Row[] => ((r.analysis.applicability as unknown as { rows?: Row[] }).rows || []);
-const PHASES: Array<[number, string, string]> = [[1, 'Readiness', 'Is everything in place to start?'], [2, 'Physical QA', 'Is it installed where and how the design says?'], [3, 'Infrastructure and platform', 'Is it connected, registered and on the validated versions?'], [4, 'Functional', 'Does each function work, end to end?'], [5, 'Operational and experience', 'Can people use the room for what it is for?']];
-const RES: Record<string, { label: string; tone: Tone }> = { PASS_VERIFIED: { label: 'Pass', tone: 'ok' }, PASS_UNVERIFIED: { label: 'Pass · awaiting verification', tone: 'warn' }, FAIL: { label: 'Fail', tone: 'bad' }, NOT_SUPPORTED: { label: 'Not supported', tone: 'muted' }, INCONCLUSIVE: { label: 'Inconclusive', tone: 'warn' }, NOT_TESTED: { label: 'Not run', tone: 'muted' } };
-const res = (x?: string) => RES[x || 'NOT_TESTED'] || RES.NOT_TESTED!;
-const ymd = (s?: string | null) => (s ? s.slice(0, 10) : '—');
-
-function phaseStats(r: RoomRecord) {
-  const rows = rowsOf(r).filter((x) => x.applicable);
-  return PHASES.map(([n, name, q]) => { const ps = rows.filter((x) => x.phase === n); const pass = ps.filter((x) => x.result === 'PASS_VERIFIED').length; const fail = ps.filter((x) => x.result === 'FAIL').length; const run = ps.filter((x) => x.result && x.result !== 'NOT_TESTED').length;
-    return { n, name, q, rows: ps, pass, fail, run, verdict: !ps.length ? 'none' : fail ? 'fail' : run < ps.length ? (run ? 'partial' : 'notrun') : 'pass' }; });
-}
-/** Why acceptance is blocked (V2.5.3's three reasons), from the record. */
-function blockers(r: RoomRecord) {
-  const rows = rowsOf(r).filter((x) => x.applicable); const open = openIssues(r);
-  const critical = open.filter((i) => i.severity === 'High'); const missing = rows.filter((x) => !x.result || x.result === 'NOT_TESTED' || x.result === 'PASS_UNVERIFIED'); const must = rows.filter((x) => x.result === 'FAIL');
-  const exceptions = open.filter((i) => i.severity !== 'High');
-  return { critical, missing, must, exceptions, blocked: !!(critical.length || missing.length || must.length) };
-}
+import { rowsOf, PHASES, RES, res, ymd, phaseStats, blockers } from '../campus/cxRecord.js';
+import { ExportMenu } from '../export/ExportMenu.js';
+import { DIMS, LAYERS, assuranceDims } from '../campus/asRecord.js';
+import { cxPackage } from '../export/cx.js';
+type Row = ReturnType<typeof rowsOf>[number];
 function Head({ r, kind, perspective, tab }: { r: RoomRecord; kind: 'cx' | 'as'; perspective: string; tab: ReactNode }) {
   const { w } = useWorkspace(); const b = buildingByKey(r.outline.building); const cur = r.baselines.find((x) => x.state === 'CURRENT'); const pend = r.baselines.find((x) => x.state === 'PENDING_ACCEPTANCE');
   const st = kind === 'cx' ? cxState(r) : asState(r, w.incidents); const T = kind === 'cx' ? CX[st.state as keyof typeof CX] : AS[st.state as keyof typeof AS];
@@ -116,6 +102,8 @@ export function CxRoomPage({ perspective, params, hash }: { perspective: string;
         {r.exception ? <Notice tone="warn"><b>{r.exception.id}</b> · exception requested ({r.exception.waivability}) for {r.exception.requirement}: {r.exception.rationale} Pending approval by an independent reviewer; expires {ymd(r.exception.expiry)}.</Notice> : null}
       </Card> : null}
       {view === 'signoff' ? <Signoff r={r} bl={bl} /> : null}
+      <ExportMenu testId="cx-export" title="Completion package" sub={`The whole record of ${shortName(r.outline)} as six files: the report, the register, the deck and the dossier`} by={persona}
+        make={() => cxPackage(r, { role: personaLabel(persona), at: new Date().toISOString(), build: process.env.DEMO_BUILD_ID || 'dev' })} />
       <Foot>Synthetic records: a simulated test reads the room as Core holds it; nothing is measured and no device is contacted.</Foot>
     </section>
   );
@@ -168,26 +156,6 @@ function Signoff({ r, bl }: { r: RoomRecord; bl: ReturnType<typeof blockers> }) 
 }
 
 // ------------------------------------------------------------------------------------------------------------ assurance comparison
-const DIMS: Array<[string, string, string, (r: RoomRecord, inc: S.Incident[]) => { state: 'match' | 'drift' | 'failed' | 'reported'; note: string }]> = [
-  ['Physical', 'Device presence', 'What is installed, and whether it is there', (r) => { const rm = r.installations.filter((i) => i.removedAt && !r.installations.some((j) => j.position === i.position && !j.removedAt)); return rm.length ? { state: 'drift', note: `${plural(rm.length, 'position')} without a unit since removal` } : { state: 'match', note: `${r.installations.filter((i) => !i.removedAt).length} units in place` }; }],
-  ['Physical', 'Environment', 'Temperature and humidity', () => ({ state: 'match', note: 'no environmental telemetry in a synthetic record: read as commissioned' })],
-  ['Spatial', 'Spatial layout', 'Where things are', (r) => r.issues.some((i) => i.state !== 'RESOLVED' && /moved/i.test(i.title)) ? { state: 'drift', note: r.issues.find((i) => /moved/i.test(i.title))!.title } : { state: 'match', note: `${r.positions.filter((p) => !p.furniture).length} positions as designed` }],
-  ['Spatial', 'Room purpose', 'What the room is used for', (r) => ({ state: 'match', note: r.archetypeName })],
-  ['Infrastructure', 'Network', 'The switches the room depends on', (r, inc) => inc.some((i) => /switch|network|call/i.test(i.title) && !['CLOSED', 'RESOLVED'].includes(i.state)) ? { state: 'failed', note: inc.find((i) => /switch|network|call/i.test(i.title))!.title } : { state: 'match', note: `${r.connections.filter((c) => c.kind === 'network').length} network connections proposed` }],
-  ['Infrastructure', 'Power', 'Protected power', (r, inc) => inc.some((i) => /power|outlet/i.test(i.title) && !['CLOSED', 'RESOLVED'].includes(i.state)) ? { state: 'failed', note: inc.find((i) => /power|outlet/i.test(i.title))!.title } : { state: 'match', note: 'no power event on record' }],
-  ['Configuration', 'Firmware', 'Validated versions', (r) => r.issues.some((i) => i.state !== 'RESOLVED' && /firmware/i.test(i.title)) ? { state: 'drift', note: r.issues.find((i) => /firmware/i.test(i.title))!.title } : { state: 'match', note: 'no firmware record differs from the baseline' }],
-  ['Configuration', 'Configuration', 'Settings against the commissioned signature', (r) => { const rp = r.reopened.length; return rp ? { state: 'drift', note: `${plural(rp, 'test')} reopened by a replacement: ${r.reopened[0]!.reasons[0]}` } : r.issues.some((i) => i.state !== 'RESOLVED' && /drift|baseline/i.test(i.title)) ? { state: 'drift', note: r.issues.find((i) => /drift|baseline/i.test(i.title))!.title } : { state: 'match', note: 'as commissioned' }; }],
-  ['Functional', 'Audio', 'Pickup and playback', (r, inc) => { const a = [...r.issues.filter((i) => i.state !== 'RESOLVED'), ...inc.filter((i) => !['CLOSED', 'RESOLVED'].includes(i.state))].find((i) => /audio|speech|echo|hear|microphone/i.test(i.title)); return a ? { state: r.counts.failed ? 'failed' : 'reported', note: a.title } : { state: 'match', note: `${r.positions.filter((p) => /mic/.test(p.cat)).length} microphone positions` }; }],
-  ['Functional', 'Camera', 'Presets and coverage', (r, inc) => { const a = [...r.issues.filter((i) => i.state !== 'RESOLVED'), ...inc.filter((i) => !['CLOSED', 'RESOLVED'].includes(i.state))].find((i) => /camera|framed|preset/i.test(i.title)); return a ? { state: 'drift', note: a.title } : { state: 'match', note: `${r.positions.filter((p) => p.cat === 'camera' || p.cat === 'bar').length} camera positions` }; }],
-  ['Functional', 'Display', 'Routes, brightness, sightlines', (r, inc) => { const a = [...r.issues.filter((i) => i.state !== 'RESOLVED'), ...inc.filter((i) => !['CLOSED', 'RESOLVED'].includes(i.state))].find((i) => /display|sightline|projector|seats/i.test(i.title)); return a ? { state: /sightline|seats/i.test(a.title) ? 'reported' : 'failed', note: a.title } : { state: 'match', note: `${r.positions.filter((p) => /display|ledwall|projector/.test(p.cat)).length} displays` }; }],
-  ['Functional', 'Control', 'The room program', (r, inc) => inc.some((i) => /control|touch/i.test(i.title) && !['CLOSED', 'RESOLVED'].includes(i.state)) ? { state: 'failed', note: inc.find((i) => /control|touch/i.test(i.title))!.title } : { state: 'match', note: `${r.positions.filter((p) => /control|touch/.test(p.cat)).length} control positions` }],
-  ['Functional', 'Signal path', 'End to end', (r) => ({ state: 'match', note: `${r.connections.length} connections proposed by the engine` })],
-  ['Functional', 'Application', 'The meeting platform', (r, inc) => inc.some((i) => /meeting|platform|restart/i.test(i.title) && !['CLOSED', 'RESOLVED'].includes(i.state)) ? { state: 'failed', note: inc.find((i) => /meeting|platform|restart/i.test(i.title))!.title } : { state: 'match', note: 'no application fault on record' }],
-  ['Operational', 'Scheduling', 'Booking and the panel', (r, inc) => inc.some((i) => /booking|schedul/i.test(i.title) && !['CLOSED', 'RESOLVED'].includes(i.state)) ? { state: 'failed', note: inc.find((i) => /booking|schedul/i.test(i.title))!.title } : { state: 'match', note: `${r.positions.filter((p) => p.cat === 'scheduler').length} scheduling panels` }],
-  ['Operational', 'Documentation', 'What the record holds', (r) => { const gaps = r.coverage.filter((c) => c.state === 'gap').length; return { state: 'match', note: `${r.coverage.length - gaps} of ${r.coverage.length} coverage areas held; ${gaps} stated gaps` }; }],
-  ['Experience', 'User experience readiness', 'What people report', (r, inc) => { const n = inc.filter((i) => i.roomId === r.outline.id).length; return n ? { state: 'reported', note: `${plural(n, 'service request')} from people in this room` } : { state: 'match', note: 'nothing reported' }; }],
-];
-const LAYERS = ['Physical', 'Spatial', 'Infrastructure', 'Configuration', 'Functional', 'Operational', 'Experience'];
 const DIM_TONE: Record<string, Tone> = { match: 'ok', drift: 'warn', failed: 'bad', reported: 'info' };
 export function AsRoomPage({ perspective, params, hash }: { perspective: string; params: Record<string, string>; hash: string }) {
   const r = roomRecord(params.room || ''); const { w, apply, refusal } = useWorkspace(); const persona = personaOf(perspective);
@@ -195,7 +163,7 @@ export function AsRoomPage({ perspective, params, hash }: { perspective: string;
   if (!r) return <NoRoom perspective={perspective} id={params.room || ''} kind="as" hash={hash} />;
   const view = /\/recommission\b/.test(hash) ? 'recommission' : /\/ready\b/.test(hash) ? 'ready' : /\/history\b/.test(hash) ? 'history' : 'assurance';
   const inc = w.incidents.filter((i) => i.roomId === r.outline.id); const base = `#/assurance/room/${r.outline.id}`;
-  const dims = DIMS.map(([layer, name, what, f]) => ({ layer, name, what, ...f(r, inc) }));
+  const dims = assuranceDims(r, inc);
   const n = { match: dims.filter((d) => d.state === 'match').length, drift: dims.filter((d) => d.state === 'drift').length, failed: dims.filter((d) => d.state === 'failed').length, reported: dims.filter((d) => d.state === 'reported').length };
   const cur = r.baselines.find((b) => b.state === 'CURRENT');
   const runIt = () => { setRan(true); apply((x) => { x.events.unshift({ at: new Date().toISOString(), by: persona, type: 'assurance.run', aggregate: r.outline.id, detail: `simulated discovery over 17 dimensions from the records: ${n.match} match, ${n.drift} drift, ${n.failed} failed, ${n.reported} reported — nothing measured, no device contacted`, outcome: 'ALLOWED' }); return null; }); };

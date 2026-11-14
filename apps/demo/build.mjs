@@ -51,6 +51,15 @@ await esbuild.build({
   outdir: dist, entryNames: '[dir]/[name]', chunkNames: 'chunks/[name]-[hash]', define: { 'process.env.NODE_ENV': dev ? '"development"' : '"production"', 'process.env.EMPATHIA_WEBSITE_URL': JSON.stringify(website), 'process.env.DEMO_BUILD_ID': JSON.stringify(buildId) }, legalComments: 'linked', logLevel: 'warning',
   // the operational workspaces are entries with stable names (ws/<name>.js): a failed load is retried at a fresh URL (src/hardening/lazy.tsx)
   alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') },
+  // the export libraries (docx, pptxgenjs, pdf-lib, jszip: src/export/render.ts) carry documentation addresses inside their error
+  // messages and one producer string. The page never requests them (connect-src 'self'), but the public bundle names no host it does not
+  // need (tests/security/public-sites.test.mjs SA-08), so each is written as plain words at build time; licences stay in *.LEGAL.txt.
+  plugins: [{ name: 'vendor-doc-links', setup(b) {
+    b.onLoad({ filter: /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(docx|pptxgenjs|pdf-lib|jszip)[\\/].*\.(m?js|cjs)$/ }, (a) => {
+      const src = fs.readFileSync(a.path, 'utf8');
+      return { contents: src.replace(/\bhttps?:\/\/(?:stuk\.github\.io|answers\.microsoft\.com|rolldown\.rs|github\.com|gitbrent\.github\.io)\b[^\s"'`)\\]*/g, 'the library documentation'), loader: 'js' };
+    });
+  } }],
 });
 
 // source maps never ship (red-team RT-20): moved out of dist, kept for an error tracker under .local/sourcemaps/<app>/

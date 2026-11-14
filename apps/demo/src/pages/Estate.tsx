@@ -7,6 +7,7 @@
 import { useMemo, useState } from 'react';
 import { PageHero, StatTile, Card, Chip, Donut, List, ListRow, EmptyState, MeterRow, Segmented, Icon, ProgressBar, StatusDot, Tag, type Series, type HealthState } from '@empathia/ui';
 import { allRecords, openIssues, type RoomRecord } from '../campus/design.js';
+import { cxState, type CxState } from '../campus/cxRecord.js';
 import { BUILDINGS, shortName, roomHref } from '../campus/canon.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
 import { personaLabel, personaOf } from '../build/store.js';
@@ -26,7 +27,7 @@ const current = (r: RoomRecord) => r.baselines.find((b) => b.state === 'CURRENT'
 const pending = (r: RoomRecord) => r.baselines.find((b) => b.state === 'PENDING_ACCEPTANCE') || null;
 
 // ------------------------------------------------------------------------------------------------------------ the rules
-export type CxState = 'accepted' | 'conditions' | 'blocked' | 'progress' | 'notstarted';
+export type { CxState };
 export const CX: Record<CxState, { label: string; tone: Series; rule: string }> = {
   accepted: { label: 'Accepted', tone: 'ok', rule: 'Accepted or operational, with a current baseline and no open deficiency.' },
   conditions: { label: 'Accepted with conditions', tone: 'warn', rule: 'Accepted, but a deficiency is open or no baseline is on record: usable, with something still owed.' },
@@ -34,17 +35,7 @@ export const CX: Record<CxState, { label: string; tone: Series; rule: string }> 
   progress: { label: 'In commissioning', tone: 'info', rule: 'Tests are being recorded and verified; nothing has failed.' },
   notstarted: { label: 'Not started', tone: 'muted', rule: 'Planned, design-approved or installing: no tests recorded yet.' },
 };
-export function cxState(r: RoomRecord): { state: CxState; why: string } {
-  const open = openIssues(r); const high = open.filter((i) => i.severity === 'High');
-  if (accepted(r)) return open.length ? { state: 'conditions', why: `${plural(open.length, 'open deficiency', 'open deficiencies')}: ${open[0]!.title}` } : !current(r) ? { state: 'conditions', why: 'no baseline on record (earlier record)' } : { state: 'accepted', why: `baseline v${current(r)!.version} current` };
-  if (r.lifecycle === 'COMMISSIONING') {
-    if (r.counts.failed) return { state: 'blocked', why: `${plural(r.counts.failed, 'test')} failed${high.length ? `; ${high[0]!.title}` : ''}` };
-    if (high.length) return { state: 'blocked', why: high[0]!.title };
-    if (r.exception) return { state: 'blocked', why: `${r.exception.id} waits for an independent reviewer` };
-    return { state: 'progress', why: r.counts.notTested ? `${r.counts.notTested} of ${r.counts.applicable} tests still to record` : r.nextStep?.blockers[0] || 'awaiting acceptance' };
-  }
-  return { state: 'notstarted', why: r.nextStep?.blockers[0] || r.lifecycle.replace(/_/g, ' ').toLowerCase() };
-}
+export { cxState };
 export type AsState = 'matched' | 'drift' | 'failed' | 'none';
 export const AS: Record<AsState, { label: string; tone: Series; rule: string }> = {
   matched: { label: 'Matches its baseline', tone: 'ok', rule: 'A current baseline, no open issue and no change waiting: the room behaves as it was commissioned.' },
