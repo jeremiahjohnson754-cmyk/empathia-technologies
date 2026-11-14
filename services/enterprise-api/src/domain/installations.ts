@@ -11,8 +11,8 @@
  */
 import crypto from 'node:crypto';
 import {
-  planInstall, planReplacement, planIdentity, identityOf, installationSentence, reopenedBySubstitution, IDENTITY_STATES,
-  type AssetFact, type InstallationFact, type IdentityState, type IncomingUnit, type PositionFact, type ReplacementPlan, type DeviceIdentity, type UnitChange,
+  planInstall, planReplacement, planIdentity, planRetirement, inventoryOf, identityOf, installationSentence, reopenedBySubstitution, IDENTITY_STATES,
+  type AssetFact, type InstallationFact, type Disposition, type RetirementReason, type IdentityState, type IncomingUnit, type PositionFact, type ReplacementPlan, type DeviceIdentity, type UnitChange,
 } from '@empathia/commissioning-engine';
 import type { Queryable } from '../db/pg.js';
 import type { RequestContext } from '../auth/context.js';
@@ -38,7 +38,7 @@ export function failpoint(name: string): void {
 
 // ------------------------------------------------------------------------------------------------ reading
 interface PositionRow { id: string; code: string; room_id: string; category: string; label: string; role: string; model: string; generic: boolean; furniture: boolean; mount: string; x: string; y: string; z: string; rot: string; lifecycle: string; model_history: Array<{ model: string; generic?: boolean; until: string; by: string }>; removed_at: string | null }
-interface AssetRow { id: string; code: string; category: string; manufacturer: string | null; model: string; serial: string | null; identity_state: IdentityState; identity_evidence_id: string | null; identity_by: string | null; identity_at: string | null; origin: string; created_by: string | null; created_at: string }
+interface AssetRow { id: string; code: string; category: string; manufacturer: string | null; model: string; serial: string | null; identity_state: IdentityState; identity_evidence_id: string | null; identity_by: string | null; identity_at: string | null; origin: string; created_by: string | null; created_at: string; disposition?: Disposition; retired_at?: string | null; retired_by?: string | null; retired_role?: string | null; retirement_reason?: RetirementReason | null; retirement_note?: string | null }
 export interface InstallationRow {
   id: string; position: string; position_id: string; room: string; room_name: string; asset: string; asset_id: string; model: string; manufacturer: string | null; serial: string | null; identity_state: IdentityState;
   installed_at: string; effective_basis: InstallationFact['basis']; install_reason: InstallationFact['installReason']; installed_by: string | null; installed_role: string | null; install_note: string | null; install_evidence_id: string | null; install_event_id: string | null; correlation_id: string;
@@ -49,7 +49,8 @@ const INSTALLATION_SELECT = `SELECT i.id, pa.code AS position, pa.id AS position
   i.removed_at, i.removal_reason, i.removed_by, i.removed_role, i.removal_note, i.removal_evidence_id, i.removal_event_id, i.removal_correlation_id
   FROM app.asset_installation i JOIN app.planned_asset pa ON pa.id = i.position_id AND pa.tenant_id = i.tenant_id JOIN app.room r ON r.id = pa.room_id AND r.tenant_id = pa.tenant_id JOIN app.physical_asset a ON a.id = i.asset_id AND a.tenant_id = i.tenant_id`;
 export const fact = (r: InstallationRow): InstallationFact => ({ id: r.id, position: r.position, asset: r.asset, installedAt: r.installed_at, removedAt: r.removed_at, basis: r.effective_basis, installReason: r.install_reason, removalReason: r.removal_reason, installedBy: r.installed_by, removedBy: r.removed_by });
-const assetFact = (a: Pick<AssetRow, 'code' | 'category' | 'manufacturer' | 'model' | 'serial' | 'identity_state'>): AssetFact => ({ code: a.code, category: a.category, manufacturer: a.manufacturer, model: a.model, serial: a.serial, identityState: a.identity_state });
+const assetFact = (a: Pick<AssetRow, 'code' | 'category' | 'manufacturer' | 'model' | 'serial' | 'identity_state'> & Partial<AssetRow>): AssetFact => ({ code: a.code, category: a.category, manufacturer: a.manufacturer, model: a.model, serial: a.serial, identityState: a.identity_state,
+  disposition: a.disposition || 'IN_SERVICE', retired: a.retired_at ? { at: a.retired_at, by: a.retired_by ?? null, reason: a.retirement_reason!, note: a.retirement_note ?? null } : null });
 
 /** Every installation record of a room's positions (open and closed), oldest first, with the unit each names. */
 export async function roomInstallations(q: Queryable, roomId: string): Promise<{ rows: InstallationRow[]; facts: InstallationFact[]; assets: Map<string, AssetFact> }> {
@@ -149,9 +150,17 @@ export async function applyReplacement(ctx: RequestContext, q: Queryable, pos: {
   const closed = (await q.query<{ id: string }>(`UPDATE app.asset_installation SET removed_at = now(), removal_reason = $2, removed_by = $3, removed_role = $4, removal_note = $5, removal_evidence_id = $6, removal_event_id = $7, removal_correlation_id = $8 WHERE id = $1 AND removed_at IS NULL RETURNING id`,
     [plan.close.installation, plan.close.reason, ctx.p.personId, ctx.p.role, opts.note, opts.evidenceId, opts.eventId, ctx.correlationId])).rows[0];
   if (!closed) throw new ApiError('conflict', `the installation ${plan.close.installation} was closed by someone else meanwhile`);
+  if (plan.outgoing === 'RETIRE') await retireRow(ctx, q, plan.close.asset, plan.close.reason === 'REPLACED' ? 'REPLACED' : 'DISPOSED', opts.note);
   const id = opts.installationId || crypto.randomUUID();
   await openRow(ctx, q, id, pos.id, unit.id, plan.open.installReason, opts.note, opts.evidenceId, opts.eventId);
   return { closed: { installation: plan.close.installation, asset: plan.close.asset, reason: plan.close.reason }, opened: { installation: id, asset: unit.code } };
+}
+
+/** Retire a unit inside the caller's transaction (its installation already closed): out of the inventory for good, code reserved. */
+async function retireRow(ctx: RequestContext, q: Queryable, code: string, reason: RetirementReason, note: string | null): Promise<void> {
+  const r = await q.query("UPDATE app.physical_asset SET disposition = 'RETIRED', retired_at = now(), retired_by = $2, retired_role = $3, retirement_reason = $4, retirement_note = $5, retirement_correlation_id = $6 WHERE code = $1 AND disposition = 'IN_SERVICE'",
+    [code, ctx.p.personId, ctx.p.role, reason, note ? note.slice(0, 500) : null, ctx.correlationId]);
+  if (!r.rowCount) throw new ApiError('conflict', `${code} was retired by someone else meanwhile`);
 }
 
 // ------------------------------------------------------------------------------------------------ the endpoints
@@ -177,7 +186,7 @@ export async function install(ctx: RequestContext, ref: string, positionCode: st
   });
 }
 
-export interface ReplaceBody { expectedInstallation: string; reason: string; asset?: string; manufacturer?: string; serial?: string; evidenceId?: string }
+export interface ReplaceBody { expectedInstallation: string; reason: string; asset?: string; manufacturer?: string; serial?: string; evidenceId?: string; /** the unit taken out: RETIRE (default) or SPARE */ outgoing?: 'RETIRE' | 'SPARE' }
 /**
  * Replace the unit at a position like for like (another unit of the same model), atomically: lock the room and the position, close the
  * old installation, open the new one, write the outbox event and the audit row. The tests the change reopens follow from the
@@ -192,7 +201,7 @@ export async function replace(ctx: RequestContext, ref: string, positionCode: st
     const open = await openInstallation(q, pos.id);
     const inc = await incoming(ctx, q, body);
     const recom = await recommissioning(q, room);
-    const plan = planReplacement({ lifecycle: room.lifecycle, recommissioning: !!recom, position: positionFact(pos), open: open ? fact(open) : null, expected: body.expectedInstallation, model: inc.row ? inc.row.model : pos.model, incoming: inc.unit });
+    const plan = planReplacement({ lifecycle: room.lifecycle, recommissioning: !!recom, position: positionFact(pos), open: open ? fact(open) : null, expected: body.expectedInstallation, model: inc.row ? inc.row.model : pos.model, incoming: inc.unit, outgoing: body.outgoing });
     if (!plan.ok) return refuse(ctx, 'commission.asset_replaced', room, plan, { position: positionCode, expected: body.expectedInstallation, asset: body.asset ?? null });
     if (plan.plan.kind !== 'REPLACEMENT') return refuse(ctx, 'commission.asset_replaced', room, { conflict: false, why: [`${inc.row?.code} is a ${inc.row?.model}; ${pos.code} is designed for a ${pos.model}: a different model is a design change — substitute it with PATCH /v1/rooms/${room.code}/devices/${pos.code} (room.design)`] }, { position: positionCode });
     const evidenceId = await evidenceRef(q, body.evidenceId);
@@ -214,11 +223,11 @@ export async function replace(ctx: RequestContext, ref: string, positionCode: st
 }
 
 /** Plan a model substitution of a position's unit inside rooms.changeDevice (the PATCH), under the same rules as a replacement. */
-export async function planSubstitution(ctx: RequestContext, q: Queryable, room: RoomRow, positionCode: string, model: string, body: { expectedInstallation?: string; asset?: string }) {
+export async function planSubstitution(ctx: RequestContext, q: Queryable, room: RoomRow, positionCode: string, model: string, body: { expectedInstallation?: string; asset?: string; outgoing?: 'RETIRE' | 'SPARE' }) {
   const pos = await lockPosition(q, room, positionCode);
   const open = await openInstallation(q, pos.id);
   const inc = await incoming(ctx, q, { asset: body.asset });
-  const plan = planReplacement({ lifecycle: room.lifecycle, recommissioning: true, position: positionFact(pos), open: open ? fact(open) : null, expected: body.expectedInstallation ?? null, model, incoming: inc.unit });
+  const plan = planReplacement({ lifecycle: room.lifecycle, recommissioning: true, position: positionFact(pos), open: open ? fact(open) : null, expected: body.expectedInstallation ?? null, model, incoming: inc.unit, outgoing: body.outgoing });
   if (!plan.ok) return refuse(ctx, 'room.device_swapped', room, plan, { position: positionCode, model });
   return { pos, open: open!, plan: plan.plan, spare: inc.row };
 }
@@ -263,7 +272,8 @@ export async function assetHistory(ctx: RequestContext, code: string) {
     const ev = (await q.query<Record<string, unknown>>('SELECT from_state, to_state, manufacturer, serial, evidence_id, note, actor_id, actor_role, correlation_id, at FROM app.asset_identity_event WHERE asset_id = $1 ORDER BY id', [a.id])).rows;
     const cur = rows.find((r) => !r.removed_at);
     return {
-      asset: { code: a.code, category: a.category, manufacturer: a.manufacturer, model: a.model, serial: a.serial, identityState: a.identity_state, identityEvidenceId: a.identity_evidence_id, origin: a.origin, createdAt: a.created_at, createdBy: a.created_by },
+      asset: { code: a.code, category: a.category, manufacturer: a.manufacturer, model: a.model, serial: a.serial, identityState: a.identity_state, identityEvidenceId: a.identity_evidence_id, origin: a.origin, createdAt: a.created_at, createdBy: a.created_by,
+        disposition: a.disposition || 'IN_SERVICE', retired: a.retired_at ? { at: a.retired_at, by: a.retired_by, byRole: a.retired_role, reason: a.retirement_reason, note: a.retirement_note } : null },
       identity: ev.map((e) => ({ from: e['from_state'], to: e['to_state'], serial: e['serial'], manufacturer: e['manufacturer'], evidenceId: e['evidence_id'], note: e['note'], by: e['actor_id'], byRole: e['actor_role'], correlationId: e['correlation_id'], at: e['at'] })),
       installations: rows.map((r) => ({ ...installationView(r), roomName: r.room_name, sentence: installationSentence(fact(r)) })),
       current: cur ? { position: cur.position, room: cur.room, installation: cur.id, since: cur.installed_at } : null,
@@ -295,6 +305,39 @@ export async function recordIdentity(ctx: RequestContext, code: string, body: Id
     }
     await ctx.audit(q, 'asset.identity_recorded', 'ALLOWED', { type: 'PhysicalAsset', id: a.code }, { from: plan.plan.from, to: plan.plan.to, serial: plan.plan.serial, manufacturer: plan.plan.manufacturer, evidenceId, position: cur?.position ?? null, room: cur?.room ?? null });
     return { asset: a.code, from: plan.plan.from, identityState: plan.plan.to, serial: plan.plan.serial, manufacturer: plan.plan.manufacturer, evidenceId };
+  });
+}
+
+export interface RetireBody { reason: string; note?: string }
+/** Retire a unit that is not installed (a spare that failed, was disposed of or returned): out of the inventory for good. Its code is
+ *  never issued again and its history (identity, every installation, the retirement) stays readable. */
+export async function retire(ctx: RequestContext, code: string, body: RetireBody) {
+  await ctx.require(INSTALL_AUTHORITY, 'retire a unit', { type: 'PhysicalAsset', id: code });
+  return ctx.tx(async (q) => {
+    const { asset: a, rows } = await visibleAsset(ctx, q, code, true);
+    const cur = rows.find((r) => !r.removed_at);
+    const plan = planRetirement(assetFact(a), cur ? fact(cur) : null, body?.reason, body?.note);
+    if (!plan.ok) { if (plan.conflict) throw new ApiError('conflict', plan.why[0]!, plan.why); return ctx.refuse('asset.retired', { type: 'PhysicalAsset', id: a.code }, plan.why, { reason: body?.reason ?? null }); }
+    await retireRow(ctx, q, a.code, plan.plan.reason, plan.plan.note);
+    await ctx.audit(q, 'asset.retired', 'ALLOWED', { type: 'PhysicalAsset', id: a.code }, { reason: plan.plan.reason, note: plan.plan.note, model: a.model, serial: a.serial });
+    return { asset: a.code, disposition: 'RETIRED', reason: plan.plan.reason, note: plan.plan.note, codeReserved: true };
+  });
+}
+
+/** The inventory the caller may see: units in service (installed), spares, and the retired register — every code on record, none reused. */
+export async function inventory(ctx: RequestContext) {
+  return ctx.tx(async (q) => {
+    const s = ctx.p.siteScope;
+    const assets = (await q.query<AssetRow>('SELECT * FROM app.physical_asset ORDER BY code')).rows;
+    const rows = (await q.query<InstallationRow & { site_id: string }>(`${INSTALLATION_SELECT.replace('SELECT i.id,', 'SELECT b.site_id, i.id,')} JOIN app.building b ON b.id = r.building_id ORDER BY i.installed_at, i.id`)).rows;
+    // a site-scoped caller sees a unit only through a room in their scope (as everywhere): units never installed in scope are not listed
+    const seen = s && s.length ? new Set(rows.filter((r) => s.includes(r.site_id)).map((r) => r.asset)) : null;
+    const visible = assets.filter((a) => !seen || seen.has(a.code));
+    const inv = inventoryOf(visible.map(assetFact), rows.filter((r) => !seen || seen.has(r.asset)).map(fact));
+    const view = (r: (typeof inv.inService)[number]) => ({ asset: r.asset.code, category: r.asset.category, model: r.asset.model, manufacturer: r.asset.manufacturer, serial: r.asset.serial, identityState: r.asset.identityState, position: r.position, installedAt: r.installedAt, placements: r.placements, retired: r.asset.retired ?? null });
+    return { inService: inv.inService.map(view), spares: inv.spares.map(view), retired: inv.retired.map(view),
+      counts: { inService: inv.inService.length, spares: inv.spares.length, retired: inv.retired.length },
+      note: 'a retired unit is out of the inventory for good: it is never installed again, and its code is never issued to another unit; its history stays readable (GET /v1/assets/{asset}/history)' };
   });
 }
 

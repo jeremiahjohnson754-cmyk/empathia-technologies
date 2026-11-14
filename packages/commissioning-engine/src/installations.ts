@@ -26,7 +26,14 @@ export const INSTALL_STATES = ['INSTALLATION_PENDING', 'INSTALLED_UNVERIFIED'] a
 export const REPLACE_STATES = ['INSTALLED_UNVERIFIED', 'COMMISSIONING'] as const;
 
 export interface PositionFact { code: string; category: string; label: string; model: string; furniture?: boolean }
-export interface AssetFact { code: string; category: string; manufacturer: string | null; model: string; serial: string | null; identityState: IdentityState }
+/** A unit's disposition (migration 0030): IN_SERVICE (installed, or a spare that may be installed) or RETIRED (out of the inventory for
+ *  good: never installed again, its code never reused, its whole history kept). Absent = IN_SERVICE (records written before 0030). */
+export const DISPOSITIONS = ['IN_SERVICE', 'RETIRED'] as const;
+export type Disposition = (typeof DISPOSITIONS)[number];
+export const RETIREMENT_REASONS = ['REPLACED', 'FAILED', 'DISPOSED', 'RETURNED_TO_VENDOR', 'LOST'] as const;
+export type RetirementReason = (typeof RETIREMENT_REASONS)[number];
+export interface Retirement { at: string; by: string | null; reason: RetirementReason; note?: string | null }
+export interface AssetFact { code: string; category: string; manufacturer: string | null; model: string; serial: string | null; identityState: IdentityState; disposition?: Disposition; retired?: Retirement | null }
 export interface InstallationFact {
   id: string; position: string; asset: string; installedAt: string; removedAt: string | null; basis: EffectiveBasis;
   installReason: InstallReason; removalReason: RemovalReason | null; installedBy: string | null; removedBy: string | null;
@@ -67,6 +74,9 @@ export interface ReplacementPlan {
   /** REPLACEMENT: another unit of the same model (field work); SUBSTITUTION: a unit of a different model (a design change). */
   kind: 'REPLACEMENT' | 'SUBSTITUTION'; change: ChangeKind; designChange: boolean;
   close: { installation: string; asset: string; reason: 'REPLACED' | 'SUBSTITUTED' };
+  /** what becomes of the unit taken out: RETIRE (the default: it leaves the inventory and its code is never used again) or SPARE (the
+   *  person replacing it says it goes back to the spares, still in service) */
+  outgoing: 'RETIRE' | 'SPARE';
   open: { position: string; asset: string | null; model: string; manufacturer: string | null; serial: string | null; identityState: IdentityState; installReason: 'REPLACEMENT' | 'SUBSTITUTION' };
 }
 /**
@@ -75,7 +85,7 @@ export interface ReplacementPlan {
  * accepted room is recommissioned, and approved as a revision). `expected` is the installation the caller last read: a different one
  * means someone changed the position since, and the plan is refused as a conflict.
  */
-export function planReplacement(i: { lifecycle: string; recommissioning: boolean; position: PositionFact; open: InstallationFact | null; expected?: string | null; model?: string | null; incoming: IncomingUnit }): Planned<ReplacementPlan> {
+export function planReplacement(i: { lifecycle: string; recommissioning: boolean; position: PositionFact; open: InstallationFact | null; expected?: string | null; model?: string | null; incoming: IncomingUnit; outgoing?: 'RETIRE' | 'SPARE' }): Planned<ReplacementPlan> {
   const model = i.model || i.position.model;
   const kind = model === i.position.model ? 'REPLACEMENT' : 'SUBSTITUTION';
   if (kind === 'REPLACEMENT' && !(REPLACE_STATES as readonly string[]).includes(i.lifecycle)) return no(`a unit is replaced while the room is ${REPLACE_STATES.join(' or ')} (this one is ${i.lifecycle})${['ACCEPTED', 'OPERATIONAL'].includes(i.lifecycle) ? ': an accepted room is recommissioned first (ACCEPTED → COMMISSIONING, plan.compile)' : ''}`);
@@ -85,13 +95,14 @@ export function planReplacement(i: { lifecycle: string; recommissioning: boolean
   if ('existing' in i.incoming && i.incoming.existing.code === i.open.asset) return no(`${i.open.asset} is already the unit at ${i.position.code}`);
   const unit = incomingUnit(i.position, model, i.incoming); if ('ok' in unit) return unit;
   return { ok: true, plan: { kind, change: kind === 'REPLACEMENT' ? 'REPLACED' : 'SUBSTITUTED', designChange: kind === 'SUBSTITUTION',
-    close: { installation: i.open.id, asset: i.open.asset, reason: kind === 'REPLACEMENT' ? 'REPLACED' : 'SUBSTITUTED' },
+    close: { installation: i.open.id, asset: i.open.asset, reason: kind === 'REPLACEMENT' ? 'REPLACED' : 'SUBSTITUTED' }, outgoing: i.outgoing === 'SPARE' ? 'SPARE' : 'RETIRE',
     open: { position: i.position.code, installReason: kind, ...unit } } };
 }
 
 function incomingUnit(p: PositionFact, model: string, u: IncomingUnit): { asset: string | null; model: string; manufacturer: string | null; serial: string | null; identityState: IdentityState } | { ok: false; conflict: boolean; why: string[] } {
   if ('existing' in u) {
     const a = u.existing;
+    if (a.disposition === 'RETIRED') return no(`${a.code} was retired${a.retired ? ` (${a.retired.reason.toLowerCase().replace(/_/g, ' ')}, ${a.retired.at.slice(0, 10)})` : ''}: a retired unit is never installed again, and its code is never reused — register the incoming unit as a new asset`);
     if (u.openElsewhere) return no(`${a.code} is installed at ${u.openElsewhere.position} since ${u.openElsewhere.installedAt}: a unit occupies one position at a time — replace or remove it there first`, true);
     if (a.category !== p.category) return no(`${a.code} is a ${a.category}; ${p.code} is a ${p.category} position`);
     if (a.model !== model) return no(`${a.code} is a ${a.model}; ${p.code} needs a ${model}${model === p.model ? ' (a different model is a design change: substitute the model of the position instead)' : ''}`);
@@ -109,6 +120,7 @@ export interface IdentityPlan { from: IdentityState; to: IdentityState; serial: 
  */
 export function planIdentity(a: AssetFact, to: string, input: { serial?: string | null; manufacturer?: string | null; evidence?: string | null; actor: string; priorActors: readonly string[] }): Planned<IdentityPlan> {
   if (!(IDENTITY_STATES as readonly string[]).includes(to) || to === 'UNKNOWN') return no('the identity is recorded as DECLARED, OBSERVED or VERIFIED');
+  if (a.disposition === 'RETIRED') return no(`${a.code} is retired: its identity is final, as it was when it left the inventory`);
   const rank = (s: string) => IDENTITY_STATES.indexOf(s as IdentityState);
   if (rank(to) <= rank(a.identityState)) return no(`${a.code} is ${a.identityState}: ${to} is not a step forward (an identity is never downgraded or recorded twice)`);
   const serial = input.serial?.trim() || null; const maker = input.manufacturer?.trim() || null;
@@ -120,6 +132,31 @@ export function planIdentity(a: AssetFact, to: string, input: { serial?: string 
   if (to === 'VERIFIED' && input.priorActors.includes(input.actor)) return no('separation of duties: an identity is verified by someone other than the person who declared or observed it');
   return { ok: true, plan: { from: a.identityState, to: to as IdentityState, serial: s, manufacturer: a.manufacturer || maker, evidence: input.evidence || null } };
 }
+
+export interface RetirementPlan { asset: string; reason: RetirementReason; note: string | null }
+/**
+ * Retire a unit: it leaves the active inventory for good. Only a unit that is not installed anywhere (close its installation first:
+ * a replacement does both at once), and only once — a retired unit never returns, and its code is never issued to another unit.
+ */
+export function planRetirement(a: AssetFact, open: InstallationFact | null, reason: string, note?: string | null): Planned<RetirementPlan> {
+  if (!(RETIREMENT_REASONS as readonly string[]).includes(reason)) return no(`a retirement gives its reason: ${RETIREMENT_REASONS.join(', ')}`);
+  if (a.disposition === 'RETIRED') return no(`${a.code} is already retired${a.retired ? ` (${a.retired.at.slice(0, 10)})` : ''}: a retirement is recorded once and is final`);
+  if (open) return no(`${a.code} is installed at ${open.position} since ${open.installedAt}: replace or remove it there first`, true);
+  const n = note?.trim() || null;
+  if (n && n.length > 500) return no('the note is at most 500 characters');
+  return { ok: true, plan: { asset: a.code, reason: reason as RetirementReason, note: n } };
+}
+
+/** The inventory: units in service (installed, or spare) and the retired register (out of service for good, their codes reserved). */
+export interface InventoryRow { asset: AssetFact; installedAt: string | null; position: string | null; placements: number }
+export function inventoryOf(assets: readonly AssetFact[], installations: readonly InstallationFact[]): { inService: InventoryRow[]; spares: InventoryRow[]; retired: InventoryRow[] } {
+  const rows = assets.map((a) => { const open = installations.find((i) => i.asset === a.code && !i.removedAt) || null; return { asset: a, installedAt: open?.installedAt ?? null, position: open?.position ?? null, placements: installations.filter((i) => i.asset === a.code).length }; });
+  const retired = rows.filter((r) => r.asset.disposition === 'RETIRED');
+  const live = rows.filter((r) => r.asset.disposition !== 'RETIRED');
+  return { inService: live.filter((r) => r.position), spares: live.filter((r) => !r.position), retired };
+}
+/** A code is never reused: true when `code` names any unit on record, retired or not. */
+export const codeTaken = (code: string, assets: readonly Pick<AssetFact, 'code'>[]) => assets.some((a) => a.code === code);
 
 // ------------------------------------------------------------------------------------------------ changes of unit and history
 /** One change of unit at a position, in the terms the reverification rule takes (`reopenedBySubstitution`). */

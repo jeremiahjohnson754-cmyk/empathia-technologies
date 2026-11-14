@@ -102,7 +102,9 @@ test('RN-02 — changed device models and replacements in an accepted room that 
 
 test('RN-03 — duplicate actions: an Idempotency-Key replay of a replacement returns the same response and writes nothing twice; a reused key with another body is refused', async () => {
   const cur = await current(A, P); units.firstInstallation = cur.id;
-  const body = { expectedInstallation: cur.id, reason: 'synthetic: like-for-like replacement of the video bar' };
+  // outgoing SPARE: the scenario moves this unit to room B later (RN-1x); since migration 0030 a replaced unit is retired unless the
+  // person replacing it says it goes back to the spares (founder, 14 Nov 2026) — the retiring default is proven in asset-retirement.test.mjs
+  const body = { expectedInstallation: cur.id, reason: 'synthetic: like-for-like replacement of the video bar', outgoing: 'SPARE' };
   const r1 = await call('installer', 'POST', `/v1/rooms/${A}/positions/${P}/replace`, { body, headers: { 'idempotency-key': 'rn-replace-0001' } });
   assert.equal(r1.status, 200, J(r1.body)); assert.equal(r1.body.kind, 'REPLACEMENT'); units.replacement = r1.body;
   const r2 = await call('installer', 'POST', `/v1/rooms/${A}/positions/${P}/replace`, { body, headers: { 'idempotency-key': 'rn-replace-0001' } });
@@ -121,6 +123,7 @@ test('RN-04 — a like-for-like replacement keeps the position and its design; t
   const ha = (await call('syseng', 'GET', `/v1/assets/${units.original}/history`)).body;
   assert.equal(ha.current, null); assert.equal(ha.asset.identityState, 'UNKNOWN'); assert.equal(ha.installations.length, 1); assert.equal(ha.installations[0].position, P);
   assert.equal(J(JSON.parse(units.originalHistory).asset), J(ha.asset), 'the replaced unit’s identity is not overwritten');
+  assert.equal(ha.asset.disposition, 'IN_SERVICE', 'kept as a spare, as the replacement asked (outgoing SPARE)');
   const rd = await ready(A);
   assert.equal(rd.recommissioning.changes.length, 1); assert.deepEqual([rd.recommissioning.changes[0].kind, rd.recommissioning.changes[0].fromAsset, rd.recommissioning.changes[0].toAsset], ['REPLACED', units.original, now.asset]);
   assert.deepEqual(rd.recommissioning.substitutions, [], 'no model substitution');
@@ -187,7 +190,7 @@ test('RN-06 — reopened tests need new execution and independent verification: 
 
 test('RN-07 — concurrent replacements of one position: exactly one wins, the other gets 409; one new unit on record', async () => {
   const cur = await current(A, P); const n0 = count.installations(P);
-  const go = (persona, key) => call(persona, 'POST', `/v1/rooms/${A}/positions/${P}/replace`, { body: { expectedInstallation: cur.id, reason: `synthetic: concurrent ${key}` }, headers: { 'idempotency-key': key } });
+  const go = (persona, key) => call(persona, 'POST', `/v1/rooms/${A}/positions/${P}/replace`, { body: { expectedInstallation: cur.id, reason: `synthetic: concurrent ${key}`, outgoing: 'SPARE' }, headers: { 'idempotency-key': key } });   // the unit taken out stays a spare: RN-10's constraint proofs need a free unit (0030 retires by default)
   const rs = await Promise.all([go('installer', 'rn-race-000001'), go('service', 'rn-race-000002')]);
   assert.deepEqual(rs.map((r) => r.status).sort(), [200, 409], J(rs.map((r) => [r.status, r.body.detail])));
   assert.match(rs.find((r) => r.status === 409).body.detail, /changed since it was read|already|closed by someone else/);
@@ -277,7 +280,7 @@ test('RN-10 — overlapping or double installation is refused by the API (409) a
   const pid = h.asSuper(`SELECT p.id FROM app.planned_asset p JOIN app.room r ON r.id = p.room_id WHERE r.code = '${B}' AND p.code = '${devB.bar}'`);
   const pidTouch = h.asSuper(`SELECT p.id FROM app.planned_asset p JOIN app.room r ON r.id = p.room_id WHERE r.code = '${B}' AND p.code = '${devB.touch}'`);
   const aid = h.asSuper(`SELECT id FROM app.physical_asset WHERE code = '${units.original}'`);
-  const spare = h.asSuper(`SELECT a.id FROM app.physical_asset a WHERE NOT EXISTS (SELECT 1 FROM app.asset_installation i WHERE i.asset_id = a.id AND i.removed_at IS NULL) AND a.category = 'bar' LIMIT 1`);
+  const spare = h.asSuper(`SELECT a.id FROM app.physical_asset a WHERE NOT EXISTS (SELECT 1 FROM app.asset_installation i WHERE i.asset_id = a.id AND i.removed_at IS NULL) AND a.category = 'bar' AND a.disposition = 'IN_SERVICE' LIMIT 1`);   // a retired unit is refused earlier, by 0030's trigger
   const ins1 = await asApp(ids.tenant, "INSERT INTO app.asset_installation (tenant_id, position_id, asset_id, effective_basis, install_reason, installed_by, correlation_id) VALUES ($1,$2,$3,'RECORDED','INITIAL',$4,'constraint-proof')", [ids.tenant, pid, spare, ids.installer]);
   // a second unit at an occupied position violates both the per-position exclusion and the one-open-per-position index; the exclusion
   // constraint's index is checked first, so the database answers 23P01 — either refusal proves the invariant

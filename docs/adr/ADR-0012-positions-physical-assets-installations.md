@@ -137,3 +137,20 @@ identities and these invariants, in the database and in the application:
   before the substitution is refused by the new rule (asserted there).
 - Not done: a separate endpoint to register a spare unit (a unit becomes a spare when it is taken out; install and replace can register a
   new one); removal of a unit without a successor; a category change of a position in the API; external asset-registry connectors.
+
+## Addendum, 14 Nov 2026 — retirement (migration 0030)
+
+Founder, 14 Nov 2026: "a replaced device/asset ID must be removed from the asset inventory but the record of that identifier must never
+be used again but be fully remembered … asset ID is one of the most crucial pieces to how you connect everything end to end."
+
+- A unit now has a **disposition**: `IN_SERVICE` (installed, or a spare that may be installed) or `RETIRED` (out of the inventory for
+  good). Retirement records when, by whom (person and role), why (`REPLACED`, `FAILED`, `DISPOSED`, `RETURNED_TO_VENDOR`, `LOST`), a note
+  and the correlation id. It is final: a retired unit never returns to service, is never installed again, and its identity never changes.
+- A like-for-like replacement (and a model substitution) **retires the unit it takes out by default**; the person replacing it may say
+  `outgoing: "SPARE"` instead, and the unit stays in service as a spare.
+- `POST /v1/assets/{asset}/retire` retires a unit that is not installed (`work.evidence`); an installed unit is refused (409).
+- `GET /v1/assets` is the inventory the caller may see: in service, spares, and the retired register.
+- Codes were already unique per tenant and undeletable (0026), so a code is never issued twice; 0030 adds the backstops for the rest: the
+  asset guard refuses any change to a retired unit, and a trigger refuses any installation row naming one, as the runtime role.
+- Proven by `tests/security/asset-retirement.test.mjs` (AR-01…06, API and direct-SQL constraint proofs). Rollback:
+  `database/rollbacks/0030_asset_retirement.down.sql`, which refuses while any unit is retired.
