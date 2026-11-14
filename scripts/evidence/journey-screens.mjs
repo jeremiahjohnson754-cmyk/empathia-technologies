@@ -80,6 +80,7 @@ try {
     await stage(3, 'The commissioning plan with why each test applies', async () => {
       await persp('ops'); await tab('lifecycle'); await click('button:has-text("Move to INSTALLATION_PENDING")');
       await persp('installer'); await click('button:has-text("Move to INSTALLED_UNVERIFIED")');
+      await click('button:has-text("Register every open device with synthetic values")');   // the device register gates commissioning (founder, 14 Nov 2026)
       await persp('syseng'); await click('button:has-text("Move to COMMISSIONING")');
       expect(/COMMISSIONING/.test(await page.locator('.build__state').innerText()), `commissioning did not start: ${await refusal()}`);
       await tab('checks');

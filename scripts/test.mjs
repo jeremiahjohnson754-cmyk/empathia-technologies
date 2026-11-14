@@ -66,6 +66,7 @@ suite('unit: ServiceHands import — the CSV parser, hostile rows, the commit ru
 suite('unit: reverberation instrument — known-answer decays, refusals on short range, octave filters, WAV/CSV readers', 'unit', node, ['--test', 'tests/unit/bench-reverb.test.mjs'], tap);
 suite('unit: Learn cases — separation of duties held in the store, with the DENIED ledger event', 'unit', node, ['--test', 'tests/unit/learn-separation.test.mjs'], tap);
 suite('unit: people and experience — who did each job, experience by complexity and kind, totals by layer and quarter', 'unit', node, ['--test', 'tests/unit/people-involvement.test.mjs'], tap);
+suite('unit: lifecycle refresh planning — refresh year per unit, annual plan and multi-year strategy agree, cost only when declared', 'unit', node, ['--test', 'tests/unit/refresh-plan.test.mjs'], tap);
 suite('unit: the universal phase engine — the verdict rule, the sign-off, commissioning unchanged on every room, a ServiceHands job phase by phase', 'unit', node, ['--test', 'tests/unit/universal-phases.test.mjs'], tap);
 suite('unit: Search Party by asset ID and by person — every unit searchable, successions recorded, people and their rooms', 'unit', node, ['--test', 'tests/unit/search-asset-person.test.mjs'], tap);
 suite('unit: STI workflow — readings against the project policy, flags, the intelligibility exception and its refusals', 'unit', node, ['--test', 'tests/unit/bench-sti.test.mjs'], tap);

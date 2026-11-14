@@ -83,6 +83,11 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     await persp('installer'); await page.click('button:has-text("Move to INSTALLED_UNVERIFIED")'); await page.waitForTimeout(150);
     await persp('cxeng'); await page.click('button:has-text("Record as")'); await page.waitForTimeout(150);
     ok('B-09', 'nothing passes from a design: recording before COMMISSIONING is refused', /COMMISSIONING/.test(await refusal()), await refusal());
+    // 14 Nov 2026 (founder): the device register gates commissioning: refused while units still need registering; the installer registers them
+    await persp('syseng'); await page.click('button:has-text("Move to COMMISSIONING")'); await page.waitForTimeout(150);
+    ok('B-09R', 'commissioning is held until the device register is complete; the refusal names the register', /device register is not complete/.test(await refusal()) && /INSTALLED_UNVERIFIED/.test(await page.locator('.build__state').innerText()), await refusal());
+    await persp('installer'); await page.click('button:has-text("Register every open device with synthetic values")'); await page.waitForTimeout(150);
+    ok('B-09G', 'the installer registers every device (serial; hostname and IP for networked units)', (await page.getByTestId('build-register').getAttribute('data-open')) === '0', await refusal());
     await persp('syseng'); await page.click('button:has-text("Move to COMMISSIONING")'); await page.waitForTimeout(150);
     // 12 Nov 2026: commissioning deficiencies (V2.5.3 v25RoomCxIssue): a failed test opens one; a verified retest resolves it (checked after B-12)
     await persp('cxeng'); await page.selectOption('#b-state', 'FAIL'); await page.fill('#b-ref', 'photo 7'); if (await page.locator('#b-inst').count()) await page.fill('#b-inst', 'meter M-1, calibrated 2026-06');

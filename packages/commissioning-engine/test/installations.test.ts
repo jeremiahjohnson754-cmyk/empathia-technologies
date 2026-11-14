@@ -189,3 +189,12 @@ test('D-39 — which design edits a room accepts (one rule for the API and the d
   for (const edit of ['add-device', 'remove-device', 'swap-category', 'add-connection', 'remove-connection', 'edit-room'] as const) assert.equal(refusal('COMMISSIONING', true, edit), 'the design is COMMISSIONING: changes need a change order', `recommissioned: ${edit}`);
   assert.deepEqual([...DESIGN_EDITS].sort(), ['add-connection', 'add-device', 'edit-room', 'move-device', 'remove-connection', 'remove-device', 'substitute-model', 'swap-category']);
 });
+
+test('the device register gates INSTALLED_UNVERIFIED → COMMISSIONING only (founder, 14 Nov 2026); a recommissioning is not gated by it', () => {
+  const base = { from: 'INSTALLED_UNVERIFIED', to: 'COMMISSIONING', classificationApproved: true, openIssues: [], savedRevisions: 1, rows: [], results: {}, hasBaseline: false, hasLiveMonitoringEvidence: false } as never as Parameters<typeof lifecycleBlockers>[0];
+  const open = [{ position: 'PA-0061', asset: 'AS-0001', missing: ['serial', 'hostname'] }, { position: 'PA-0062', asset: 'AS-0002', missing: [] }];
+  assert.deepEqual(lifecycleBlockers(base), [], 'no register facts given: nothing to gate on');
+  assert.deepEqual(lifecycleBlockers({ ...base, register: open }), ['the device register is not complete: 1 of 2 positions still need registering before commissioning starts (PA-0061 (AS-0001): serial, hostname)']);
+  assert.deepEqual(lifecycleBlockers({ ...base, register: open.map((x) => ({ ...x, missing: [] })) }), [], 'registered: commissioning may start');
+  assert.ok(!lifecycleBlockers({ ...base, from: 'ACCEPTED', register: open }).some((b) => /device register/.test(b)), 'a recommissioning is not gated by the register');
+});

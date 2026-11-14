@@ -9,11 +9,14 @@
  *          database as the runtime role; a retired unit takes no entry and frees its values
  *   DR-05  append-only: an entry is never updated or deleted (as the runtime role); the unit's history lists every version and who wrote it
  *   DR-06  authority and tenancy: a designer may not record (403); another tenant cannot see the room's register or the unit (404)
+ *   DR-07  the register gates commissioning (founder, 14 Nov 2026): INSTALLED_UNVERIFIED → COMMISSIONING is refused (422) while any
+ *          position still needs registering, with the positions named, audited as DENIED and nothing changed; the readiness names the
+ *          gate and gives the installer the work; once every unit is registered the systems engineer starts commissioning
  *   node --test tests/security/device-register.test.mjs
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { setup, client, mail } from '../integration/harness.mjs';
+import { setup, client, mail, registerRoom } from '../integration/harness.mjs';
 
 let h, c, T = {}, ids = {}, R, rows = {};
 const J = (x) => JSON.stringify(x);
@@ -105,4 +108,20 @@ test('DR-06 — authority and tenancy: a designer may not record (403); another 
   assert.equal((await call('service', 'PUT', `/v1/assets/${rows.plain.asset}/register`, { body: { firmware: '1.0' } })).status, 200, 'a service technician records (work.evidence)');
   assert.equal((await c.call('GET', `/v1/rooms/${R}/register`, { token: T.x_syseng })).status, 404);
   assert.equal((await c.call('GET', `/v1/assets/${rows.plain.asset}/history`, { token: T.x_syseng })).status, 404);
+});
+
+test('DR-07 — the register gates commissioning: refused with the positions named, audited, nothing changed; allowed once every unit is registered', async () => {
+  const open = (await reg()).items.filter((x) => x.missing.length); assert.ok(open.length > 0, 'the earlier cases left units unregistered');
+  const r = await call('syseng', 'POST', `/v1/rooms/${R}/lifecycle`, { body: { to: 'COMMISSIONING' } });
+  assert.equal(r.status, 422, J(r.body)); assert.match(r.body.detail, /^the device register is not complete: \d+ of \d+ positions? still need registering before commissioning starts/);
+  for (const x of open.slice(0, 4)) assert.ok(r.body.detail.includes(x.position), `${x.position} is named`);
+  assert.equal(h.asSuper(`SELECT lifecycle FROM app.room WHERE code = '${R}'`), 'INSTALLED_UNVERIFIED', 'nothing changed');
+  assert.ok(n(`SELECT count(*) FROM app.audit_event WHERE aggregate_id = '${R}' AND action = 'room.lifecycle:COMMISSIONING' AND outcome = 'DENIED' AND detail::text LIKE '%device register is not complete%'`) >= 1, 'the refusal is audited with its reason');
+  const rd = (await call('syseng', 'GET', `/v1/rooms/${R}/readiness`)).body;
+  assert.ok(rd.next.to === 'COMMISSIONING' && rd.next.blockers.some((b) => /device register is not complete/.test(b)), J(rd.next));
+  assert.equal(rd.register.missing.length, open.length); assert.ok(rd.outstanding.some((o) => o.who === 'installer' && /device register/.test(o.what) && o.count === open.length), J(rd.outstanding));
+  await registerRoom(c, R, T.installer);
+  const rd2 = (await call('syseng', 'GET', `/v1/rooms/${R}/readiness`)).body;
+  assert.ok(!rd2.next.blockers.some((b) => /device register/.test(b)) && rd2.register.missing.length === 0, J(rd2.next));
+  const ok = await call('syseng', 'POST', `/v1/rooms/${R}/lifecycle`, { body: { to: 'COMMISSIONING' } }); assert.equal(ok.status, 200, J(ok.body));
 });

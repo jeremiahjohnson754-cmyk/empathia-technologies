@@ -27,7 +27,7 @@ Status, 14 Nov 2026. This is a deliverable of the 40/10 directive. It says what 
 
 - **Licensed standards registry.** Not built; it needs a licensing decision (`COMMISSIONING_STANDARDS_TRACEABILITY.md`).
 - **Real-room acoustic reference datasets.** NOT RUN. The comparison with an established analyser is NOT RUN as well (`ACOUSTIC_MEASUREMENT_VALIDATION.md`).
-- **The register as a hard server-side gate before commissioning.** Not built. Today it is shown and counted, but it does not block. Making it block is a policy decision.
+- **The register as a hard gate before commissioning.** The candidate `59acf12` shows and counts the register, but does not block on it. The founder decided on 14 Nov 2026 that it should block. The gate is built after the candidate (`REGISTERS.md`) and goes to staging with the next regressed commit, not with `59acf12`.
 - **Instruments other than reverberation and STI.** RTA and SPL need a calibration chain and a declared device capability. The video, network and control instruments are not built either.
 - **A field trial.** A trial with installers for gloves, glare and one-handed use is NOT RUN.
 - **Microsoft Office.** Not tested; LibreOffice and the format libraries are.

@@ -9,11 +9,12 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { setup, client, DEV_PASSWORD, mail, repo } from '../integration/harness.mjs';
+import { setup, client, DEV_PASSWORD, mail, repo, registerRoom } from '../integration/harness.mjs';
 import path from 'node:path'; import { pathToFileURL } from 'node:url';
 const CE = await import(pathToFileURL(path.join(repo, 'packages/commissioning-engine/dist/src/index.js')).href);   // the shared refusal wording
 
 let h, c, T = {}, ids = {}, A, B, P, rows, v1Before, revsBefore, units = {};
+const atInstall = {}; let buildingA = false;   // the installation as recorded, before the register (14 Nov 2026); whether room A is being built
 const J = (x) => JSON.stringify(x);
 const instrument = 'SYN-METER-01 (synthetic), calibration record SYN-CAL-2026-09';
 const call = (persona, method, p, opts = {}) => c.call(method, p, { token: opts.token || T[persona], body: opts.body, headers: opts.headers, raw: opts.raw });
@@ -44,6 +45,13 @@ async function build(name, upto, buildingCode = 'NST') {
   assert.equal((await call('designer', 'POST', `/v1/rooms/${code}/revisions`, { body: { reason: 'synthetic: the huddle as designed' } })).status, 201);
   assert.equal((await call('syseng', 'POST', `/v1/rooms/${code}/classification/approve`, { body: {} })).status, 200);
   for (const [to, who] of [['DESIGN_APPROVED', 'syseng'], ['INSTALLATION_PENDING', 'opslead'], ['INSTALLED_UNVERIFIED', 'installer'], ['COMMISSIONING', 'syseng']]) {
+    if (to === 'COMMISSIONING') {
+      // the device register gates commissioning (founder, 14 Nov 2026): what the installation recorded is kept as it was before the installer
+      // registers the units; in room A the video bar's unit carries serial SYN-SN-U1-0001 (the serial RN-11 proves final and unique)
+      const devs = (await room(code)).body.devices.filter((d) => !d.furniture); const bar = devs.find((d) => d.cat === 'bar');
+      atInstall[code] = { devs, bar: bar ? (await call('syseng', 'GET', `/v1/assets/${bar.asset}/history`)).body : null };
+      await registerRoom(c, code, T.installer, { serialOf: (x) => (buildingA && x.category === 'bar' ? 'SYN-SN-U1-0001' : undefined) });
+    }
     assert.equal((await move(code, to, who)).status, 200, `${code} → ${to}`);
     if (to === upto) break;
   }
@@ -58,7 +66,7 @@ before(async () => {
   ids.tenant = h.asSuper("SELECT id FROM app.tenant WHERE slug = 'empathia-demo'"); ids.other = h.asSuper("SELECT id FROM app.tenant WHERE slug = 'second-tenant'");
   // room A: commissioned through the API — every applicable test recorded by the commissioning engineer, verified by QA, accepted by the
   // operations lead through a delegation of customer.accept (QA verified the results and may not accept them, ADR-0005) → baseline v1
-  A = await build('Recommissioning negatives (synthetic)', 'COMMISSIONING');
+  buildingA = true; A = await build('Recommissioning negatives (synthetic)', 'COMMISSIONING'); buildingA = false;
   rows = (await room(A)).body.commissioning.rows.filter((x) => x.applicable);
   const e0 = await evidence('first commissioning');
   for (const r of rows) assert.equal((await call('cxeng', 'POST', `/v1/rooms/${A}/results`, { body: { testId: r.test_id, state: 'PASS', evidenceId: e0.id, evidenceKind: r.evidence[0], instrument } })).status, 201, r.test_id);
@@ -74,14 +82,19 @@ before(async () => {
 after(async () => { delete process.env.EMPATHIA_FAILPOINTS; await h?.app.stop(); });
 
 test('RN-01 — recording the installation records one unit per position: the installer named, identity UNKNOWN, no serial, no maker invented', async () => {
-  const devs = (await room(A)).body.devices.filter((d) => !d.furniture);
+  // as the installation recorded them, before the device register (which since 14 Nov 2026 gates commissioning) declared their serials
+  const devs = atInstall[A].devs;
   assert.ok(devs.length >= 4 && devs.every((d) => /^AS-\d{4,}$/.test(d.asset) && d.identityState === 'UNKNOWN' && d.position === d.id), J(devs.map((d) => [d.id, d.asset, d.identityState])));
+  const nowDevs = (await room(A)).body.devices.filter((d) => !d.furniture);
+  assert.ok(nowDevs.length === devs.length && nowDevs.every((d, i) => d.asset === devs[i].asset && d.identityState === 'DECLARED'), 'the same units, each with the serial the installer declared in the register');
   assert.equal(new Set(devs.map((d) => d.asset)).size, devs.length, 'one unit per position, none shared');
   const hp = (await posHistory(A, P)).body;
   assert.equal(hp.installations.length, 1); assert.equal(hp.installations[0].installReason, 'INITIAL'); assert.equal(hp.installations[0].basis, 'RECORDED');
   assert.equal(hp.installations[0].installedBy, ids.installer); assert.equal(hp.installations[0].installedRole, 'installer');
+  const ha0 = atInstall[A].bar; assert.equal(ha0.asset.code, hp.current.asset);
+  assert.deepEqual([ha0.asset.serial, ha0.asset.manufacturer, ha0.asset.identityState, ha0.asset.origin, ha0.identity.length], [null, null, 'UNKNOWN', 'INSTALLATION_RECORD', 0]);
   const ha = (await call('syseng', 'GET', `/v1/assets/${hp.current.asset}/history`)).body;
-  assert.deepEqual([ha.asset.serial, ha.asset.manufacturer, ha.asset.identityState, ha.asset.origin, ha.identity.length], [null, null, 'UNKNOWN', 'INSTALLATION_RECORD', 0]);
+  assert.deepEqual([ha.asset.serial, ha.asset.identityState, ha.identity.length], ['SYN-SN-U1-0001', 'DECLARED', 1], 'declared by the installer in the register');
   units.original = hp.current.asset; units.originalHistory = J(ha);
 });
 
@@ -121,7 +134,7 @@ test('RN-04 — a like-for-like replacement keeps the position and its design; t
   assert.deepEqual([old.asset, old.removalReason, old.removedRole, now.installReason, !!now.removedAt], [units.original, 'REPLACED', 'installer', 'REPLACEMENT', false]);
   assert.ok(Date.parse(old.removedAt) <= Date.parse(now.installedAt) && old.removalEventId && old.removalEventId === now.eventId, 'closed when the new one opened, by the same outbox event');
   const ha = (await call('syseng', 'GET', `/v1/assets/${units.original}/history`)).body;
-  assert.equal(ha.current, null); assert.equal(ha.asset.identityState, 'UNKNOWN'); assert.equal(ha.installations.length, 1); assert.equal(ha.installations[0].position, P);
+  assert.equal(ha.current, null); assert.equal(ha.asset.identityState, 'DECLARED');   // as the register declared it (14 Nov 2026) assert.equal(ha.installations.length, 1); assert.equal(ha.installations[0].position, P);
   assert.equal(J(JSON.parse(units.originalHistory).asset), J(ha.asset), 'the replaced unit’s identity is not overwritten');
   assert.equal(ha.asset.disposition, 'IN_SERVICE', 'kept as a spare, as the replacement asked (outgoing SPARE)');
   const rd = await ready(A);
@@ -308,8 +321,11 @@ test('RN-10 — overlapping or double installation is refused by the API (409) a
 test('RN-11 — an identity only moves forward and needs evidence beyond a declaration; verification is independent; a recorded serial is final; a duplicate serial is another unit’s (409); the identity follows the unit', async () => {
   const id = (persona, body, asset = units.original) => call(persona, 'POST', `/v1/assets/${asset}/identity`, { body });
   assert.equal((await id('installer', { state: 'VERIFIED' })).status, 403, 'an installer holds no verification authority');
-  const noSerial = await id('installer', { state: 'DECLARED' }); assert.equal(noSerial.status, 422); assert.match(J(noSerial.body), /serial/);
-  assert.equal((await id('installer', { state: 'DECLARED', serial: 'SYN-SN-U1-0001' })).status, 200);
+  // 14 Nov 2026: the original unit's serial SYN-SN-U1-0001 was declared in room A's device register (the gate before commissioning), so
+  // a declaration without a serial is proved on B's touch panel (still UNKNOWN), and declaring the original unit again is no step forward
+  const touch0 = (await room(B)).body.devices.find((d) => d.id === units.B.touch).asset;
+  const noSerial = await id('installer', { state: 'DECLARED' }, touch0); assert.equal(noSerial.status, 422); assert.match(J(noSerial.body), /serial/);
+  const twice = await id('installer', { state: 'DECLARED', serial: 'SYN-SN-U1-0001' }); assert.equal(twice.status, 422); assert.match(J(twice.body), /recorded twice/);
   const noEv = await id('installer', { state: 'OBSERVED' }); assert.equal(noEv.status, 422); assert.match(J(noEv.body), /evidence/);
   const ev = (await call('installer', 'POST', '/v1/evidence', { raw: Buffer.from('synthetic label photograph (text stand-in)'), headers: { 'content-type': 'text/plain', 'x-file-name': 'label.txt' } })).body;
   assert.equal((await id('installer', { state: 'OBSERVED', evidenceId: ev.id })).status, 200);

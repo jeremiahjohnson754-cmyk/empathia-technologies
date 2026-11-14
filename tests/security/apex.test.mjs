@@ -5,7 +5,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { setup, client } from '../integration/harness.mjs';
+import { setup, client, registerRoom } from '../integration/harness.mjs';
 
 let h, c, room, issue, apx; const T = {};
 before(async () => {
@@ -15,7 +15,7 @@ before(async () => {
   room = (await c.call('POST', '/v1/rooms', { token: T.designer, body: { name: 'APEX Boardroom (synthetic)', template: 'boardroom', buildingCode: 'ATL', floor: 5 } })).body.code;
   await c.call('POST', `/v1/rooms/${room}/revisions`, { token: T.designer, body: { reason: 'apex' } }); await c.call('POST', `/v1/rooms/${room}/drawings/generate`, { token: T.designer });
   await c.call('POST', `/v1/rooms/${room}/drawings/plan/approve`, { token: T.syseng }); await c.call('POST', `/v1/rooms/${room}/classification/approve`, { token: T.syseng, body: {} });
-  for (const [to, t] of [['DESIGN_APPROVED', 'syseng'], ['INSTALLATION_PENDING', 'opslead'], ['INSTALLED_UNVERIFIED', 'installer'], ['COMMISSIONING', 'syseng']]) await c.call('POST', `/v1/rooms/${room}/lifecycle`, { token: T[t], body: { to } });
+  for (const [to, t] of [['DESIGN_APPROVED', 'syseng'], ['INSTALLATION_PENDING', 'opslead'], ['INSTALLED_UNVERIFIED', 'installer'], ['COMMISSIONING', 'syseng']]) { if (to === 'COMMISSIONING') await registerRoom(c, room, T.installer); await c.call('POST', `/v1/rooms/${room}/lifecycle`, { token: T[t], body: { to } }); }   // the register gates commissioning (14 Nov 2026)
   const d = (await c.call('GET', `/v1/rooms/${room}`, { token: T.designer })).body;
   // a failed display test: the symptom names the display, so the engine opens the 'display' branch (layers with observations to cite)
   const row = d.commissioning.rows.find((x) => x.applicable && /display/i.test(x.label || x.test_id || '')) || d.commissioning.rows.find((x) => x.applicable);

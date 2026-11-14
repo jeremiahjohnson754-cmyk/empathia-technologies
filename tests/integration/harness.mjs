@@ -60,3 +60,31 @@ export function client(base) {
   };
   return { call, login };
 }
+
+/**
+ * Fill a room's device register so commissioning may start (founder, 14 Nov 2026: the device register is a gate before commissioning).
+ * Synthetic values only: a declared serial for every unit; a hostname and a private IPv4 address for every networked unit, unique within
+ * this process (`serialOf(item)` may name a unit's serial). `c` is a harness client and `token` the installer's. Returns the register afterwards.
+ */
+let regSeq = 0;
+export async function registerRoom(c, room, token, { serialOf = () => undefined } = {}) {
+  const get = async () => (await c.call('GET', `/v1/rooms/${room}/register`, { token })).body;
+  const b = await get();
+  if (!b || !Array.isArray(b.items)) throw new Error(`register of ${room}: ${JSON.stringify(b).slice(0, 300)}`);
+  for (const x of b.items) {
+    if (!x.asset || !x.missing.length) continue;
+    const n = ++regSeq; const tag = `${process.pid % 200}-${n}`;
+    if (x.missing.includes('hostname') || x.missing.includes('IP address')) {
+      const w = await c.call('PUT', `/v1/assets/${x.asset}/register`, { token, body: { hostname: `syn-${room.toLowerCase()}-${n}`, ip: `10.${(process.pid % 200) + 20}.${Math.floor(n / 250) % 250}.${(n % 250) + 2}` } });
+      if (w.status !== 200) throw new Error(`register ${x.asset}: ${w.status} ${JSON.stringify(w.body).slice(0, 300)}`);
+    }
+    if (x.missing.includes('serial')) {
+      const s = await c.call('POST', `/v1/assets/${x.asset}/identity`, { token, body: { state: 'DECLARED', serial: serialOf(x) || `SYN-SN-${room}-${tag}` } });
+      if (s.status !== 200) throw new Error(`identity ${x.asset}: ${s.status} ${JSON.stringify(s.body).slice(0, 300)}`);
+    }
+  }
+  const after = await get();
+  const open = after.items.filter((x) => x.missing.length);
+  if (open.length) throw new Error(`register of ${room} still open: ${JSON.stringify(open).slice(0, 300)}`);
+  return after;
+}

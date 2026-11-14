@@ -5,7 +5,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { setup, client } from '../integration/harness.mjs';
+import { setup, client, registerRoom } from '../integration/harness.mjs';
 
 let h, c, room, issue, wo, wo2; const T = {};
 const instrument = 'SYN-METER-01 (synthetic), calibration record SYN-CAL-2026-09';
@@ -20,7 +20,7 @@ before(async () => {
   await c.call('POST', `/v1/rooms/${room}/revisions`, { token: T.designer, body: { reason: 'svc' } }); await c.call('POST', `/v1/rooms/${room}/drawings/generate`, { token: T.designer });
   await c.call('POST', `/v1/rooms/${room}/drawings/plan/approve`, { token: T.syseng }); await c.call('POST', `/v1/rooms/${room}/classification/approve`, { token: T.syseng, body: {} });
   const move = (to, tok) => c.call('POST', `/v1/rooms/${room}/lifecycle`, { token: tok, body: { to } });
-  await move('DESIGN_APPROVED', T.syseng); await move('INSTALLATION_PENDING', T.opslead); await move('INSTALLED_UNVERIFIED', T.installer); await move('COMMISSIONING', T.syseng);
+  await move('DESIGN_APPROVED', T.syseng); await move('INSTALLATION_PENDING', T.opslead); await move('INSTALLED_UNVERIFIED', T.installer); await registerRoom(c, room, T.installer); await move('COMMISSIONING', T.syseng);
   const d = (await c.call('GET', `/v1/rooms/${room}`, { token: T.designer })).body;
   const row = d.commissioning.rows.find((x) => x.applicable);
   const ev = (await c.call('POST', '/v1/evidence', { token: T.cxeng, raw: Buffer.from('synthetic observation'), headers: { 'content-type': 'text/plain', 'x-file-name': 'o.txt' } })).body;

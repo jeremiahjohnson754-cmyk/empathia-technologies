@@ -13,7 +13,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { setup, client } from '../integration/harness.mjs';
+import { setup, client, registerRoom } from '../integration/harness.mjs';
 
 let h, c, T = {}, code, evidence, rows, ids = {};
 const instrument = 'SYN-METER-01 (synthetic), calibration record SYN-CAL-2026-09';
@@ -49,6 +49,7 @@ test('SoD-1 — the classification and the design are approved by someone other 
   assert.equal((await move('DESIGN_APPROVED', T.syseng)).status, 200);
   assert.equal((await move('INSTALLATION_PENDING', T.opslead)).status, 200);
   assert.equal((await move('INSTALLED_UNVERIFIED', T.installer)).status, 200);
+  await registerRoom(c, code, T.installer);   // the device register gates commissioning (founder, 14 Nov 2026)
   assert.equal((await move('COMMISSIONING', T.syseng)).status, 200);
   rows = (await room()).body.commissioning.rows.filter((x) => x.applicable);
   assert.ok(rows.length >= 2, `${rows.length} applicable tests`);

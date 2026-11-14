@@ -9,7 +9,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { setup, client } from '../integration/harness.mjs';
+import { setup, client, registerRoom } from '../integration/harness.mjs';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const out = path.resolve(process.argv[2] || path.join(repo, 'tests/evidence/enterprise-web'));
@@ -307,7 +307,7 @@ try {
     const rm = (await c.call('POST', '/v1/rooms', { token: tk.designer, body: { name: 'Service Huddle (synthetic)', template: 'huddle', buildingCode: 'ATL', floor: 6 } })).body.code;
     await c.call('POST', `/v1/rooms/${rm}/revisions`, { token: tk.designer, body: { reason: 'svc' } }); await c.call('POST', `/v1/rooms/${rm}/drawings/generate`, { token: tk.designer });
     await c.call('POST', `/v1/rooms/${rm}/drawings/plan/approve`, { token: tk.syseng }); await c.call('POST', `/v1/rooms/${rm}/classification/approve`, { token: tk.syseng, body: {} });
-    for (const [to, t] of [['DESIGN_APPROVED', 'syseng'], ['INSTALLATION_PENDING', 'opslead'], ['INSTALLED_UNVERIFIED', 'installer'], ['COMMISSIONING', 'syseng']]) await c.call('POST', `/v1/rooms/${rm}/lifecycle`, { token: tk[t], body: { to } });
+    for (const [to, t] of [['DESIGN_APPROVED', 'syseng'], ['INSTALLATION_PENDING', 'opslead'], ['INSTALLED_UNVERIFIED', 'installer'], ['COMMISSIONING', 'syseng']]) { if (to === 'COMMISSIONING') await registerRoom(c, rm, tk.installer); await c.call('POST', `/v1/rooms/${rm}/lifecycle`, { token: tk[t], body: { to } }); }   // the register gates commissioning (14 Nov 2026)
     const rowT = (await c.call('GET', `/v1/rooms/${rm}`, { token: tk.designer })).body.commissioning.rows.find((x) => x.applicable);
     const ev = (await c.call('POST', '/v1/evidence', { token: tk.cxeng, raw: Buffer.from('synthetic'), headers: { 'content-type': 'text/plain', 'x-file-name': 'o.txt' } })).body;
     await c.call('POST', `/v1/rooms/${rm}/results`, { token: tk.cxeng, body: { testId: rowT.test_id, state: 'FAIL', evidenceId: ev.id, evidenceKind: rowT.evidence[0], instrument: 'SYN-METER-01 (synthetic)' } });
@@ -376,7 +376,7 @@ try {
     const rm = (await c.call('POST', '/v1/rooms', { token: tk.designer, body: { name: 'APEX Huddle (synthetic)', template: 'huddle', buildingCode: 'ATL', floor: 7 } })).body.code;
     await c.call('POST', `/v1/rooms/${rm}/revisions`, { token: tk.designer, body: { reason: 'apex' } }); await c.call('POST', `/v1/rooms/${rm}/drawings/generate`, { token: tk.designer });
     await c.call('POST', `/v1/rooms/${rm}/drawings/plan/approve`, { token: tk.syseng }); await c.call('POST', `/v1/rooms/${rm}/classification/approve`, { token: tk.syseng, body: {} });
-    for (const [to, t] of [['DESIGN_APPROVED', 'syseng'], ['INSTALLATION_PENDING', 'opslead'], ['INSTALLED_UNVERIFIED', 'installer'], ['COMMISSIONING', 'syseng']]) await c.call('POST', `/v1/rooms/${rm}/lifecycle`, { token: tk[t], body: { to } });
+    for (const [to, t] of [['DESIGN_APPROVED', 'syseng'], ['INSTALLATION_PENDING', 'opslead'], ['INSTALLED_UNVERIFIED', 'installer'], ['COMMISSIONING', 'syseng']]) { if (to === 'COMMISSIONING') await registerRoom(c, rm, tk.installer); await c.call('POST', `/v1/rooms/${rm}/lifecycle`, { token: tk[t], body: { to } }); }   // the register gates commissioning (14 Nov 2026)
     const rows = (await c.call('GET', `/v1/rooms/${rm}`, { token: tk.designer })).body.commissioning.rows;
     const rowT = rows.find((x) => x.applicable && /display/i.test(x.label || '')) || rows.find((x) => x.applicable);
     const ev = (await c.call('POST', '/v1/evidence', { token: tk.cxeng, raw: Buffer.from('synthetic'), headers: { 'content-type': 'text/plain', 'x-file-name': 'o.txt' } })).body;

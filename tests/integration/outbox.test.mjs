@@ -18,7 +18,7 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { spawn } from 'node:child_process';
-import { setup, client, repo } from './harness.mjs';
+import { setup, client, repo, registerRoom } from './harness.mjs';
 import { startLocalStubSink, localStubSinkAdapter, STUB_LABEL } from './outbox-stub-sink.mjs';
 
 const DB = 'empathia_test_outbox_main';
@@ -692,7 +692,7 @@ test('commit order with real producers: a commissioning failure (Room rev 1) aft
   ok(await c.call('POST', `/v1/rooms/${room}/drawings/generate`, { token: T.designer }), 'drawings');
   ok(await c.call('POST', `/v1/rooms/${room}/drawings/plan/approve`, { token: T.syseng }), 'drawing approve');
   ok(await c.call('POST', `/v1/rooms/${room}/classification/approve`, { token: T.syseng, body: {} }), 'classification');
-  for (const [to, tok] of [['DESIGN_APPROVED', T.syseng], ['INSTALLATION_PENDING', T.opslead], ['INSTALLED_UNVERIFIED', T.installer], ['COMMISSIONING', T.syseng]]) ok(await c.call('POST', `/v1/rooms/${room}/lifecycle`, { token: tok, body: { to } }), to);
+  for (const [to, tok] of [['DESIGN_APPROVED', T.syseng], ['INSTALLATION_PENDING', T.opslead], ['INSTALLED_UNVERIFIED', T.installer], ['COMMISSIONING', T.syseng]]) { if (to === 'COMMISSIONING') await registerRoom(c, room, T.installer); ok(await c.call('POST', `/v1/rooms/${room}/lifecycle`, { token: tok, body: { to } }), to); }   // the register gates commissioning (14 Nov 2026)
   const d = ok(await c.call('GET', `/v1/rooms/${room}`, { token: T.designer }), 'room detail');
   const row = d.commissioning.rows.find((x) => x.applicable);
   const ev = ok(await c.call('POST', '/v1/evidence', { token: T.cxeng, raw: Buffer.from('synthetic observation (outbox order)'), headers: { 'content-type': 'text/plain', 'x-file-name': 'o.txt' } }), 'evidence');

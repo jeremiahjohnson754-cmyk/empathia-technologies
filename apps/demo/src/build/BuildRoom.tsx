@@ -153,6 +153,33 @@ function Checks({ d, a }: { d: S.Draft; a: ReturnType<typeof S.analysis> }) {
   );
 }
 
+/** The device register: the installer reads each unit on site after the installation; commissioning does not start until it is complete (founder, 14 Nov 2026). */
+function BuildRegister({ d, persona, apply, gate }: { d: S.Draft; persona: string; apply: (r: S.Draft | S.Refusal) => boolean; gate: boolean }) {
+  const rows = S.registerRows(d); const open = rows.filter((x) => x.missing.length);
+  const [form, setForm] = useState<Record<string, { serial?: string; hostname?: string; ip?: string }>>({});
+  const val = (id: string, k: 'serial' | 'hostname' | 'ip') => form[id]?.[k] ?? '';
+  const set = (id: string, k: 'serial' | 'hostname' | 'ip', v: string) => setForm({ ...form, [id]: { ...form[id], [k]: v } });
+  const save = (id: string) => { if (apply(S.registerDevice(d, persona, id, form[id] || {}))) setForm({ ...form, [id]: {} }); };
+  return (
+    <div data-testid="build-register" data-open={open.length}>
+      <h2 className="build__h2">Device register · {rows.length - open.length} of {rows.length} registered</h2>
+      {gate && <Notice tone={open.length ? 'warn' : 'ok'}>{open.length ? <><b>Commissioning is held</b> until every device is registered: {open.length} still need{open.length === 1 ? 's' : ''} {[...new Set(open.flatMap((x) => x.missing))].join(', ')}. The installation team records them (work.evidence or field.scan).</> : <>Every device is registered: commissioning may start.</>}</Notice>}
+      <p className="ui-muted">Every unit needs the serial printed on its label; a networked unit also needs its hostname and IP address (v1.3). A recorded serial is final. The values here are synthetic and stay in this browser.</p>
+      {open.length > 0 && <p className="build__row"><Button small onClick={() => apply(S.registerAllSynthetic(d, persona))}>Register every open device with synthetic values as {S.personaLabel(persona)}</Button></p>}
+      <div style={{ overflowX: "auto" }}><table className="build__table"><thead><tr><th>Device</th><th>Serial</th><th>Hostname</th><th>IP address</th><th>Still needs</th><th></th></tr></thead><tbody>
+        {rows.map((x) => <tr key={x.id} data-device={x.id} data-complete={x.missing.length ? 'no' : 'yes'}>
+          <td><code>{x.id}</code> {x.label}{x.networked ? '' : <span className="ui-muted"> · not networked</span>}</td>
+          <td>{x.entry?.serial || <input aria-label={`Serial of ${x.id}`} value={val(x.id, 'serial')} onChange={(e) => set(x.id, 'serial', e.target.value)} size={14} />}</td>
+          <td>{!x.networked ? '—' : x.entry?.hostname || <input aria-label={`Hostname of ${x.id}`} value={val(x.id, 'hostname')} onChange={(e) => set(x.id, 'hostname', e.target.value)} size={14} />}</td>
+          <td>{!x.networked ? '—' : x.entry?.ip || <input aria-label={`IP address of ${x.id}`} value={val(x.id, 'ip')} onChange={(e) => set(x.id, 'ip', e.target.value)} size={12} />}</td>
+          <td>{x.missing.length ? x.missing.join(', ') : <Tag tone="ok">registered</Tag>}</td>
+          <td>{x.missing.length > 0 && <Button small onClick={() => save(x.id)}>Save {x.id}</Button>}</td>
+        </tr>)}
+      </tbody></table></div>
+    </div>
+  );
+}
+
 function Lifecycle({ d, persona, a, apply }: { d: S.Draft; persona: string; a: ReturnType<typeof S.analysis>; apply: (r: S.Draft | S.Refusal) => boolean }) {
   const i = ROOM_LIFECYCLE.indexOf(d.design.lifecycle as RoomLifecycle); const next = ROOM_LIFECYCLE[i + 1] as RoomLifecycle | undefined;
   const app = a.applicability.rows.filter((r) => r.applicable); const res = S.results(d);
@@ -169,6 +196,7 @@ function Lifecycle({ d, persona, a, apply }: { d: S.Draft; persona: string; a: R
         {d.design.lifecycle === 'DESIGN_APPROVED' && <Button small onClick={() => apply(S.transition(d, persona, 'PLANNED'))}>Send back to PLANNED</Button>}
         {d.design.lifecycle === 'ACCEPTED' && <Button small onClick={() => apply(S.transition(d, persona, 'COMMISSIONING'))}>Recommission (back to COMMISSIONING)</Button>}
       </p>
+      {i >= ROOM_LIFECYCLE.indexOf('INSTALLED_UNVERIFIED') && <BuildRegister d={d} persona={persona} apply={apply} gate={d.design.lifecycle === 'INSTALLED_UNVERIFIED'} />}
       {d.baseline && <Notice tone="ok"><b>Baseline v{d.baseline.version}</b> published at acceptance by {S.personaLabel(d.baseline.by)} against revision {d.baseline.revision}: {Object.keys(d.baseline.results).length} result labels bound. A later re-acceptance publishes v{d.baseline.version + 1}; v{d.baseline.version} is never overwritten.</Notice>}
       {(d.baselines || []).length > 0 && <div className="build__lineage" data-testid="lineage"><h2 className="build__h2">Baseline lineage</h2><ul className="build__list">{d.baselines.map((b) => <li key={b.version}><b>v{b.version}</b> <Tag tone={b.state === 'CURRENT' ? 'ok' : 'muted'}>{b.state}</Tag> <span className="ui-muted">revision {b.revision} · {b.devices.length} devices · {Object.values(b.results).filter((x) => x === 'PASS_VERIFIED').length}/{Object.keys(b.results).length} verified · {S.personaLabel(b.by)} · {b.at.slice(0, 19).replace('T', ' ')}</span></li>)}</ul>{d.baselines.length >= 2 && <BaselineDiff a={d.baselines[d.baselines.length - 2]!} b={d.baselines[d.baselines.length - 1]!} />}</div>}
       {(d.issues || []).length > 0 && <div data-testid="build-issues"><h2 className="build__h2">Commissioning deficiencies ({(d.issues || []).filter((x) => x.state === 'OPEN').length} open)</h2>

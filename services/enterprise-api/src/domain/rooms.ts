@@ -17,7 +17,7 @@ import { asJson, type Queryable } from '../db/pg.js';
 import type { RequestContext } from '../auth/context.js';
 import { publish as publishBaseline } from './baselines.js';
 import { ApiError, notFound, refused, invalid } from '../http/errors.js';
-import { applyReplacement, planSubstitution, recordRoomInstallation, roomInstallations, failpoint } from './installations.js';
+import { applyReplacement, planSubstitution, recordRoomInstallation, roomInstallations, failpoint, registerItems } from './installations.js';
 import { substitutionsFrom, changesFrom, reverificationFrom, gateFacts, revisionBindingFrom, designBindingFact, type Substitution, type Reverification, type Change } from './reverification.js';
 import { designEditFor, patchEdit } from './design-edits.js';
 export type { Substitution, Reverification };
@@ -531,6 +531,8 @@ export async function transition(ctx: RequestContext, ref: string, to: RoomLifec
       savedRevisions: (await q.query<{ n: number }>('SELECT count(*)::int AS n FROM app.room_revision WHERE room_id = $1', [room.id])).rows[0]!.n,
       rows: rows.map((r) => ({ id: r.test_id, applicable: r.applicable, result: (labels.get(r.test_id) || 'NOT_TESTED') as never } as never)),
       results: L.results, hasBaseline: !!room.baseline, hasLiveMonitoringEvidence: false, ...rvFacts(rvn), designBinding: recommissionBinding(rc),
+      // the device register gates the start of commissioning (founder, 14 Nov 2026): every in-service unit registered first
+      register: to === 'COMMISSIONING' && room.lifecycle === 'INSTALLED_UNVERIFIED' ? registerFacts(await registerItems(q, room.id)) : undefined,
     });
     if (why.length) await ctx.refuse(`room.lifecycle:${to}`, { type: 'Room', id: room.code }, why);
     // separation of duties (ADR-0005): the design is not approved by its author; a room is not accepted by whoever recorded or verified its results
@@ -572,6 +574,11 @@ export async function updateRoom(ctx: RequestContext, ref: string, body: { name?
 
 export { ApiError };
 
+/** The register facts the commissioning gate reads: each live position, its unit and what it still needs. */
+function registerFacts(items: ReadonlyArray<{ position: string; asset: string | null; missing: readonly string[] }>) {
+  return items.map((x) => ({ position: x.position, asset: x.asset, missing: x.missing }));
+}
+
 // ------------------------------------------------------------------------------------------------ readiness (P4-B): where the room stands, what blocks the next step, who may take it, what is outstanding
 export async function readiness(ctx: RequestContext, ref: string) {
   return ctx.tx(async (q) => {
@@ -591,7 +598,8 @@ export async function readiness(ctx: RequestContext, ref: string) {
     const reopened = new Set(rvn.reverification.filter((t) => t.rerun).map((t) => t.testId));
     const counts = { applicable: applicable.length, verified: applicable.filter((r) => lab(r.test_id) === 'PASS_VERIFIED' && !reopened.has(r.test_id)).length, awaiting: applicable.filter((r) => lab(r.test_id) === 'PASS_UNVERIFIED').length, failed: applicable.filter((r) => lab(r.test_id) === 'FAIL').length, other: applicable.filter((r) => ['NOT_SUPPORTED', 'INCONCLUSIVE'].includes(lab(r.test_id))).length, notTested: applicable.filter((r) => lab(r.test_id) === 'NOT_TESTED').length, revalidation: reopened.size };
     const facts = { from: room.lifecycle, classificationApproved: !!approved && !approved.stale, openIssues: open, savedRevisions: revisions.n, rows: rows.map((r) => ({ id: r.test_id, applicable: r.applicable, result: lab(r.test_id) as never } as never)), results: L.results as never, hasBaseline: !!room.baseline, hasLiveMonitoringEvidence: false };
-    const blockers = next ? lifecycleBlockers({ ...facts, to: next, ...rvFacts(rvn), designBinding: next === 'ACCEPTED' ? recommissionBinding(rc) : null }) : ['the room is OPERATIONAL: no further governed step'];
+    const reg = await registerItems(q, room.id);
+    const blockers = next ? lifecycleBlockers({ ...facts, to: next, ...rvFacts(rvn), designBinding: next === 'ACCEPTED' ? recommissionBinding(rc) : null, register: next === 'COMMISSIONING' ? registerFacts(reg) : undefined }) : ['the room is OPERATIONAL: no further governed step'];
     const evidence = (await q.query<{ n: number }>('SELECT count(DISTINCT evidence_id)::int AS n FROM app.test_result WHERE room_id = $1 AND evidence_id IS NOT NULL', [room.id])).rows[0]!.n;
     const baselines = (await q.query<{ version: number; state: string; published_at: string }>('SELECT version, state, published_at FROM app.assurance_baseline WHERE room_id = $1 ORDER BY version', [room.id])).rows;
     const exceptions = (await q.query<{ n: number }>("SELECT count(*)::int AS n FROM app.baseline_exception WHERE room_id = $1 AND state = 'REQUESTED'", [room.id])).rows[0]!.n;
@@ -607,6 +615,8 @@ export async function readiness(ctx: RequestContext, ref: string) {
     if (rvn.reverification.length) { const byPersona = new Map<string, number>(); for (const t of rvn.reverification) if (t.rerun) for (const p of t.personas) byPersona.set(p, (byPersona.get(p) || 0) + 1); for (const [p, n] of byPersona) outstanding.push({ what: rerunTask(rvn.kinds), who: p, count: n }); }
     if (room.lifecycle === 'COMMISSIONING') { const byPersona = new Map<string, number>(); for (const r of applicable) if (lab(r.test_id) === 'NOT_TESTED') for (const p of r.personas) byPersona.set(p, (byPersona.get(p) || 0) + 1); for (const [p, n] of byPersona) outstanding.push({ what: 'record results', who: p, count: n }); if (counts.awaiting) outstanding.push({ what: 'verify recorded passes', who: 'an independent verifier (not the recorder)', count: counts.awaiting }); if (counts.failed) outstanding.push({ what: 'remediate and retest failures', who: 'service / commissioning', count: counts.failed }); }
     if (exceptions) outstanding.push({ what: 'decide baseline exceptions', who: 'baseline.approve (not the requester)', count: exceptions });
+    const regOpen = reg.filter((x) => x.missing.length).length;
+    if (regOpen && ['INSTALLED_UNVERIFIED', 'COMMISSIONING'].includes(room.lifecycle)) outstanding.push({ what: 'complete the device register (serial; hostname and IP for networked units)', who: 'installer', count: regOpen });
     const completion = applicable.length ? Math.round((counts.verified / applicable.length) * 100) : null;
     return {
       room: room.code, lifecycle: room.lifecycle, next: next ? { to: next, authority: LIFECYCLE_AUTHORITY[next], blockers, separationOfDuties: next === 'DESIGN_APPROVED' ? 'not the author of the latest revision' : next === 'ACCEPTED' ? 'not a recorder or verifier of the results' : null } : null,
@@ -618,6 +628,7 @@ export async function readiness(ctx: RequestContext, ref: string) {
       evidence: { objects: evidence, measurements: measurements.map((m) => ({ provenance: m.provenance, approvalState: m.approval_state, n: m.n })) },
       baselines: baselines.map((b) => ({ version: b.version, state: b.state, publishedAt: b.published_at })), exceptionsPending: exceptions,
       outstanding, approvals: approvals.map((e) => ({ what: e.action, by: e.actor_role, at: e.at, detail: e.detail })), refusals: refusals.map((e) => ({ what: e.action, by: e.actor_role, at: e.at, why: (e.detail as { why?: unknown }).why ?? e.detail })),
+      register: { devices: reg.length, complete: reg.length - regOpen, gate: 'commissioning does not start until every live position is registered (INSTALLED_UNVERIFIED → COMMISSIONING); a recommissioning after acceptance is not gated by it', missing: reg.filter((x) => x.missing.length).map((x) => ({ position: x.position, asset: x.asset, missing: x.missing })) },
       liveHealth: 'NOT_MONITORED',
     };
   });

@@ -2,7 +2,7 @@
  "step": 18,
  "title": "The camera’s dependencies: relationships, connections and dependent devices (graph and Search Party)",
  "room": "R-PLN-0004",
- "at": "2026-11-01T03:40:01.824Z",
+ "at": "2026-11-14T12:19:10.716Z",
  "assertions": [
   {
    "id": "C-69",
@@ -282,7 +282,7 @@
      "note": "every edge is keyed by stable identifiers"
     }
    },
-   "correlationId": "77b63e44-7309-4914-92ce-e07cc7ca473f"
+   "correlationId": "b784c43c-4367-419a-9953-9ce6613102f1"
   },
   {
    "method": "GET",
@@ -335,13 +335,13 @@
       "type": "PlannedAsset",
       "id": "PA-0065",
       "label": "UC room compute 1",
-      "subtitle": "compute · Checkpoint conference room (synthetic) · unit AS-0006 · identity UNKNOWN",
+      "subtitle": "compute · Checkpoint conference room (synthetic) · unit AS-0006 · identity DECLARED",
       "provenance": "app.planned_asset (a position)",
       "facets": {
        "site": "SITE-NORTH",
        "building": "NST",
        "category": "compute",
-       "identity": "UNKNOWN"
+       "identity": "DECLARED"
       },
       "href": "#/rooms/R-PLN-0004/design",
       "keywords": [
@@ -364,13 +364,13 @@
       "type": "PlannedAsset",
       "id": "PA-0067",
       "label": "Network switch 1",
-      "subtitle": "switch · Checkpoint conference room (synthetic) · unit AS-0008 · identity UNKNOWN",
+      "subtitle": "switch · Checkpoint conference room (synthetic) · unit AS-0008 · identity DECLARED",
       "provenance": "app.planned_asset (a position)",
       "facets": {
        "site": "SITE-NORTH",
        "building": "NST",
        "category": "switch",
-       "identity": "UNKNOWN"
+       "identity": "DECLARED"
       },
       "href": "#/rooms/R-PLN-0004/design",
       "keywords": [
@@ -393,7 +393,7 @@
       "type": "Asset",
       "id": "AS-0009",
       "label": "AS-0009 · SYN-PTZ-12X (synthetic PTZ camera)",
-      "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-01T03:39:59.083Z",
+      "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-14T12:19:07.696Z",
       "provenance": "app.physical_asset",
       "facets": {
        "site": "SITE-NORTH",
@@ -451,13 +451,13 @@
       "type": "PlannedAsset",
       "id": "PA-0060",
       "label": "Display 1",
-      "subtitle": "display · Checkpoint conference room (synthetic) · unit AS-0001 · identity UNKNOWN",
+      "subtitle": "display · Checkpoint conference room (synthetic) · unit AS-0001 · identity DECLARED",
       "provenance": "app.planned_asset (a position)",
       "facets": {
        "site": "SITE-NORTH",
        "building": "NST",
        "category": "display",
-       "identity": "UNKNOWN"
+       "identity": "DECLARED"
       },
       "href": "#/rooms/R-PLN-0004/design",
       "keywords": [
@@ -480,13 +480,13 @@
       "type": "PlannedAsset",
       "id": "PA-0064",
       "label": "Audio processor (DSP) 1",
-      "subtitle": "dsp · Checkpoint conference room (synthetic) · unit AS-0005 · identity UNKNOWN",
+      "subtitle": "dsp · Checkpoint conference room (synthetic) · unit AS-0005 · identity DECLARED",
       "provenance": "app.planned_asset (a position)",
       "facets": {
        "site": "SITE-NORTH",
        "building": "NST",
        "category": "dsp",
-       "identity": "UNKNOWN"
+       "identity": "DECLARED"
       },
       "href": "#/rooms/R-PLN-0004/design",
       "keywords": [
@@ -509,17 +509,18 @@
       "type": "Asset",
       "id": "AS-0006",
       "label": "AS-0006 · generic",
-      "subtitle": "identity UNKNOWN · at PA-0065 since 2026-11-01T03:39:54.094Z",
+      "subtitle": "identity DECLARED · serial SYN-SN-R-PLN-0004-166-6 · at PA-0065 since 2026-11-14T12:19:01.514Z",
       "provenance": "app.physical_asset",
       "facets": {
        "site": "SITE-NORTH",
        "building": "NST",
-       "identity": "UNKNOWN"
+       "identity": "DECLARED"
       },
       "href": "#/rooms/R-PLN-0004/design",
       "keywords": [
        "generic",
        "AS-0006",
+       "SYN-SN-R-PLN-0004-166-6",
        "unit",
        "asset"
       ],
@@ -539,13 +540,13 @@
       "type": "PlannedAsset",
       "id": "PA-0066",
       "label": "Touch panel 1",
-      "subtitle": "touch · Checkpoint conference room (synthetic) · unit AS-0007 · identity UNKNOWN",
+      "subtitle": "touch · Checkpoint conference room (synthetic) · unit AS-0007 · identity DECLARED",
       "provenance": "app.planned_asset (a position)",
       "facets": {
        "site": "SITE-NORTH",
        "building": "NST",
        "category": "touch",
-       "identity": "UNKNOWN"
+       "identity": "DECLARED"
       },
       "href": "#/rooms/R-PLN-0004/design",
       "keywords": [
@@ -568,17 +569,18 @@
       "type": "Asset",
       "id": "AS-0008",
       "label": "AS-0008 · generic",
-      "subtitle": "identity UNKNOWN · at PA-0067 since 2026-11-01T03:39:54.094Z",
+      "subtitle": "identity DECLARED · serial SYN-SN-R-PLN-0004-166-8 · at PA-0067 since 2026-11-14T12:19:01.514Z",
       "provenance": "app.physical_asset",
       "facets": {
        "site": "SITE-NORTH",
        "building": "NST",
-       "identity": "UNKNOWN"
+       "identity": "DECLARED"
       },
       "href": "#/rooms/R-PLN-0004/design",
       "keywords": [
        "generic",
        "AS-0008",
+       "SYN-SN-R-PLN-0004-166-8",
        "unit",
        "asset"
       ],
@@ -598,13 +600,13 @@
       "type": "PlannedAsset",
       "id": "PA-0062",
       "label": "Ceiling microphone 1",
-      "subtitle": "micceil · Checkpoint conference room (synthetic) · unit AS-0003 · identity UNKNOWN",
+      "subtitle": "micceil · Checkpoint conference room (synthetic) · unit AS-0003 · identity DECLARED",
       "provenance": "app.planned_asset (a position)",
       "facets": {
        "site": "SITE-NORTH",
        "building": "NST",
        "category": "micceil",
-       "identity": "UNKNOWN"
+       "identity": "DECLARED"
       },
       "href": "#/rooms/R-PLN-0004/design",
       "keywords": [
@@ -625,7 +627,7 @@
      },
      {
       "type": "Person",
-      "id": "499f6652-dd2c-497e-9d1d-b3e6d3c1ec41",
+      "id": "5ae0efc6-7e37-40bb-8ea7-5788d5d4aea5",
       "label": "Systems Engineer (synthetic)",
       "provenance": "app.person (named by a visible record)",
       "depth": 2,
@@ -642,7 +644,7 @@
      },
      {
       "type": "Person",
-      "id": "d46add71-8997-4132-9011-8206641b17dd",
+      "id": "940d5614-d78b-49e8-a119-68e26913b4ea",
       "label": "Designer / CAD / Revit (synthetic)",
       "provenance": "app.person (named by a visible record)",
       "depth": 2,
@@ -682,13 +684,13 @@
       "type": "PlannedAsset",
       "id": "PA-0063",
       "label": "Loudspeaker 1",
-      "subtitle": "speaker · Checkpoint conference room (synthetic) · unit AS-0004 · identity UNKNOWN",
+      "subtitle": "speaker · Checkpoint conference room (synthetic) · unit AS-0004 · identity DECLARED",
       "provenance": "app.planned_asset (a position)",
       "facets": {
        "site": "SITE-NORTH",
        "building": "NST",
        "category": "speaker",
-       "identity": "UNKNOWN"
+       "identity": "DECLARED"
       },
       "href": "#/rooms/R-PLN-0004/design",
       "keywords": [
@@ -709,7 +711,7 @@
      },
      {
       "type": "CommissioningBaseline",
-      "id": "1acdf296-c410-4db6-9f4b-80c4c4d442e4",
+      "id": "171a8124-e89c-43ed-9185-f4ddc239113d",
       "label": "Checkpoint conference room (synthetic) · baseline v1",
       "subtitle": "CURRENT · design revision 2",
       "provenance": "app.assurance_baseline",
@@ -2246,7 +2248,7 @@
       "rel": "APPROVED_BY",
       "to": {
        "type": "Person",
-       "id": "499f6652-dd2c-497e-9d1d-b3e6d3c1ec41"
+       "id": "5ae0efc6-7e37-40bb-8ea7-5788d5d4aea5"
       },
       "provenance": "DECLARED app.room.approved_class (classification approval)",
       "label": "approved by",
@@ -2260,7 +2262,7 @@
       "rel": "DESIGNED_FOR",
       "to": {
        "type": "Person",
-       "id": "d46add71-8997-4132-9011-8206641b17dd"
+       "id": "940d5614-d78b-49e8-a119-68e26913b4ea"
       },
       "provenance": "DECLARED app.room.created_by",
       "label": "designed for",
@@ -2311,7 +2313,7 @@
      {
       "from": {
        "type": "CommissioningBaseline",
-       "id": "1acdf296-c410-4db6-9f4b-80c4c4d442e4"
+       "id": "171a8124-e89c-43ed-9185-f4ddc239113d"
       },
       "rel": "DOCUMENTS",
       "to": {
@@ -3812,7 +3814,7 @@
      {
       "node": {
        "type": "Person",
-       "id": "499f6652-dd2c-497e-9d1d-b3e6d3c1ec41"
+       "id": "5ae0efc6-7e37-40bb-8ea7-5788d5d4aea5"
       },
       "x": 527,
       "y": 129,
@@ -3821,7 +3823,7 @@
      {
       "node": {
        "type": "Person",
-       "id": "d46add71-8997-4132-9011-8206641b17dd"
+       "id": "940d5614-d78b-49e8-a119-68e26913b4ea"
       },
       "x": 539,
       "y": 135,
@@ -3848,7 +3850,7 @@
      {
       "node": {
        "type": "CommissioningBaseline",
-       "id": "1acdf296-c410-4db6-9f4b-80c4c4d442e4"
+       "id": "171a8124-e89c-43ed-9185-f4ddc239113d"
       },
       "x": 572,
       "y": 157,
@@ -4562,13 +4564,13 @@
       "type": "PlannedAsset",
       "id": "PA-0065",
       "label": "UC room compute 1",
-      "subtitle": "compute · Checkpoint conference room (synthetic) · unit AS-0006 · identity UNKNOWN",
+      "subtitle": "compute · Checkpoint conference room (synthetic) · unit AS-0006 · identity DECLARED",
       "provenance": "app.planned_asset (a position)",
       "facets": {
        "site": "SITE-NORTH",
        "building": "NST",
        "category": "compute",
-       "identity": "UNKNOWN"
+       "identity": "DECLARED"
       },
       "href": "#/rooms/R-PLN-0004/design",
       "keywords": [
@@ -4581,13 +4583,13 @@
       "type": "PlannedAsset",
       "id": "PA-0067",
       "label": "Network switch 1",
-      "subtitle": "switch · Checkpoint conference room (synthetic) · unit AS-0008 · identity UNKNOWN",
+      "subtitle": "switch · Checkpoint conference room (synthetic) · unit AS-0008 · identity DECLARED",
       "provenance": "app.planned_asset (a position)",
       "facets": {
        "site": "SITE-NORTH",
        "building": "NST",
        "category": "switch",
-       "identity": "UNKNOWN"
+       "identity": "DECLARED"
       },
       "href": "#/rooms/R-PLN-0004/design",
       "keywords": [
@@ -4600,13 +4602,13 @@
       "type": "PlannedAsset",
       "id": "PA-0060",
       "label": "Display 1",
-      "subtitle": "display · Checkpoint conference room (synthetic) · unit AS-0001 · identity UNKNOWN",
+      "subtitle": "display · Checkpoint conference room (synthetic) · unit AS-0001 · identity DECLARED",
       "provenance": "app.planned_asset (a position)",
       "facets": {
        "site": "SITE-NORTH",
        "building": "NST",
        "category": "display",
-       "identity": "UNKNOWN"
+       "identity": "DECLARED"
       },
       "href": "#/rooms/R-PLN-0004/design",
       "keywords": [
@@ -4619,13 +4621,13 @@
       "type": "PlannedAsset",
       "id": "PA-0064",
       "label": "Audio processor (DSP) 1",
-      "subtitle": "dsp · Checkpoint conference room (synthetic) · unit AS-0005 · identity UNKNOWN",
+      "subtitle": "dsp · Checkpoint conference room (synthetic) · unit AS-0005 · identity DECLARED",
       "provenance": "app.planned_asset (a position)",
       "facets": {
        "site": "SITE-NORTH",
        "building": "NST",
        "category": "dsp",
-       "identity": "UNKNOWN"
+       "identity": "DECLARED"
       },
       "href": "#/rooms/R-PLN-0004/design",
       "keywords": [
@@ -4638,13 +4640,13 @@
       "type": "PlannedAsset",
       "id": "PA-0063",
       "label": "Loudspeaker 1",
-      "subtitle": "speaker · Checkpoint conference room (synthetic) · unit AS-0004 · identity UNKNOWN",
+      "subtitle": "speaker · Checkpoint conference room (synthetic) · unit AS-0004 · identity DECLARED",
       "provenance": "app.planned_asset (a position)",
       "facets": {
        "site": "SITE-NORTH",
        "building": "NST",
        "category": "speaker",
-       "identity": "UNKNOWN"
+       "identity": "DECLARED"
       },
       "href": "#/rooms/R-PLN-0004/design",
       "keywords": [
@@ -4678,7 +4680,7 @@
      ]
     }
    },
-   "correlationId": "c605f925-1b8b-4a9a-b9ad-ef40544e5f66"
+   "correlationId": "4759153b-4a56-48be-9275-30696f18d5cf"
   },
   {
    "method": "POST",
@@ -4770,7 +4772,7 @@
     "confidence": "DERIVED",
     "actions": []
    },
-   "correlationId": "a7e9fb4d-ee75-40c1-a6c2-c4b55d624f13"
+   "correlationId": "e1937d64-b496-4037-9142-2d6b72931242"
   },
   {
    "method": "POST",
@@ -4822,7 +4824,7 @@
     "confidence": "DERIVED",
     "actions": []
    },
-   "correlationId": "696828e4-fdae-41c2-a4cd-02ccfae26d86"
+   "correlationId": "b3534e6d-0991-4dc3-a184-264bee7e0748"
   },
   {
    "method": "GET",
@@ -4835,7 +4837,7 @@
       "type": "Asset",
       "id": "AS-0009",
       "label": "AS-0009 · SYN-PTZ-12X (synthetic PTZ camera)",
-      "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-01T03:39:59.083Z",
+      "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-14T12:19:07.696Z",
       "provenance": "app.physical_asset",
       "facets": {
        "site": "SITE-NORTH",
@@ -4980,7 +4982,7 @@
      }
     ]
    },
-   "correlationId": "c659118a-3dfb-40fc-8f2d-8de4d7663614"
+   "correlationId": "e153370a-8045-4e62-9b38-fca4ce7fa4f3"
   },
   {
    "method": "GET",
@@ -4992,7 +4994,7 @@
      "type": "Asset",
      "id": "AS-0009",
      "label": "AS-0009 · SYN-PTZ-12X (synthetic PTZ camera)",
-     "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-01T03:39:59.083Z",
+     "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-14T12:19:07.696Z",
      "provenance": "app.physical_asset",
      "facets": {
       "site": "SITE-NORTH",
@@ -5013,7 +5015,7 @@
       "type": "Asset",
       "id": "AS-0009",
       "label": "AS-0009 · SYN-PTZ-12X (synthetic PTZ camera)",
-      "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-01T03:39:59.083Z",
+      "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-14T12:19:07.696Z",
       "provenance": "app.physical_asset",
       "facets": {
        "site": "SITE-NORTH",
@@ -5122,7 +5124,7 @@
      ]
     }
    },
-   "correlationId": "3ca182de-5189-4c9f-9f38-18e1063fa90c"
+   "correlationId": "0a0f9a69-804f-48c2-9c87-9a4e596dfcb6"
   }
  ]
 }

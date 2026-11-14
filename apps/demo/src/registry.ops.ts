@@ -178,6 +178,12 @@ export const OPS_PAGES: readonly PageDef[] = [
     search: { keywords: 'scenario journey teams boardroom lecture broadcast ballroom divisible end to end request acceptance assurance', aliases: ['commissioning scenarios', 'reference journeys'] },
   },
   {
+    id: 'pro.refresh', title: 'Refresh planning', purpose: 'Every unit in service by asset ID with the year it falls due: the annual refresh plan room by room and the multi-year strategy, under service lives the planner sets', product: 'commissioning',
+    path: '/pro/refresh', authority: { roles: ['ops', 'syseng', 'cxeng', 'architect'], why: 'asset lifecycle planning: the operations lead and the internal engineers (founder, 14 Nov 2026)' },
+    load: adapt(() => import('./pages/RefreshPlan.js'), (m, p) => h(m.RefreshPlanPage, { perspective: p.role, hash: p.hash })),
+    search: { keywords: 'refresh planning lifecycle replacement end of life asset management multi year strategy budget capital plan', aliases: ['refresh plan', 'lifecycle planning', 'asset refresh'] },
+  },
+  {
     id: 'commissioning.analytics', title: 'Commissioning analytics', purpose: 'Results recorded and verified, failures, rooms accepted and refused steps, month by month, by building', product: 'commissioning',
     path: '/commissioning/analytics', authority: { area: 'commissioning' },
     load: adapt(() => import('./pages/CxAnalytics.js'), (m, p) => h(m.CxAnalyticsPage, { perspective: p.role, hash: p.hash })),

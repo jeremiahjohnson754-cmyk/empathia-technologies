@@ -21,7 +21,7 @@
  *   node tests/e2e/checkpoint-room-lifecycle.e2e.mjs [evidence-dir]
  */
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath, pathToFileURL } from 'node:url';
-import { setup, client, DEV_PASSWORD, mail } from '../integration/harness.mjs';
+import { setup, client, DEV_PASSWORD, mail, registerRoom } from '../integration/harness.mjs';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 // the shared engine's sentence builders: the expected acceptance blockers are built with them, so the API's wording and order are the engine's
@@ -114,6 +114,14 @@ try {
   ok('C-19', 'the operations lead approves the installation window (INSTALLATION_PENDING)', (await move('opslead', 'INSTALLATION_PENDING')).status === 200);
   ok('C-20', 'the installer records the installation (INSTALLED_UNVERIFIED)', (await move('installer', 'INSTALLED_UNVERIFIED')).status === 200);
   ok('C-21', 'the installer cannot start commissioning (403: plan.compile)', (await move('installer', 'COMMISSIONING')).status === 403);
+  const held = await move('syseng', 'COMMISSIONING');
+  ok('C-21R', 'the device register gates commissioning: refused (422) while units still need registering, with the positions named', held.status === 422 && /device register is not complete/.test(held.body.detail || ''), J(held.body).slice(0, 300));
+  // what the installation recorded, kept before the installer registers the units (C-89 reads it)
+  const atInstall = (await api('designer', 'GET', `/v1/rooms/${code}`, { keep: false })).body.devices.filter((d) => !d.furniture);
+  const camAtInstall = (await c.call('GET', `/v1/rooms/${code}/positions/${devices.camera}/history`, { token: await tok('installer') })).body.current?.asset;
+  const unit0Recorded = (await c.call('GET', `/v1/assets/${camAtInstall}/history`, { token: await tok('installer') })).body;
+  const regd = await registerRoom(c, code, await tok('installer'));
+  ok('C-21G', 'the installer registers every unit (serial; hostname and IP for networked units): the register is complete', regd.items.length > 0 && regd.items.every((x) => x.complete), J(regd.totals));
   ok('C-22', 'the systems engineer starts commissioning (COMMISSIONING)', (await move('syseng', 'COMMISSIONING')).status === 200);
   const r3 = await api('designer', 'GET', `/v1/rooms/${code}`);
   const rows = r3.body.commissioning.rows.filter((x) => x.applicable);
@@ -123,7 +131,7 @@ try {
   const camPos0 = await api('installer', 'GET', `/v1/rooms/${code}/positions/${devices.camera}/history`);
   const unit0 = camPos0.body.current?.asset; facts.cameraUnit = { original: unit0 };
   const unit0h = await api('installer', 'GET', `/v1/assets/${unit0}/history`);
-  ok('C-89', 'recording the installation put one physical unit at every non-furniture position — identity UNKNOWN, no serial, no maker — recorded by the installer (ADR-0012)', installed.length === 8 && installed.every((d) => /^AS-\d{4,}$/.test(d.asset) && d.identityState === 'UNKNOWN') && new Set(installed.map((d) => d.asset)).size === 8 && camPos0.body.installations.length === 1 && camPos0.body.installations[0].installedRole === 'installer' && camPos0.body.installations[0].basis === 'RECORDED' && unit0h.body.asset.serial === null && unit0h.body.asset.manufacturer === null, J(installed.map((d) => [d.id, d.asset, d.identityState])));
+  ok('C-89', 'recording the installation put one physical unit at every non-furniture position — identity UNKNOWN, no serial, no maker — recorded by the installer (ADR-0012); the register then declared each serial (14 Nov 2026)', installed.length === 8 && atInstall.length === 8 && atInstall.every((d) => /^AS-\d{4,}$/.test(d.asset) && d.identityState === 'UNKNOWN') && installed.every((d, k) => d.asset === atInstall[k].asset && d.identityState === 'DECLARED') && camAtInstall === unit0 && unit0Recorded.asset.serial === null && unit0Recorded.asset.identityState === 'UNKNOWN' && new Set(installed.map((d) => d.asset)).size === 8 && camPos0.body.installations.length === 1 && camPos0.body.installations[0].installedRole === 'installer' && camPos0.body.installations[0].basis === 'RECORDED' && /^SYN-SN-/.test(unit0h.body.asset.serial || '') && unit0h.body.asset.manufacturer === null, J(installed.map((d) => [d.id, d.asset, d.identityState])));
 
   // ============================================================================================ 3 · commission it
   step(7, 'evidence', 'Upload one evidence file per applicable test (content-addressed, hashed, retained)');
@@ -208,7 +216,7 @@ try {
   facts.cameraUnit.replacement = inst1?.asset;
   ok('C-90', 'the swap produced two installation records for the camera position: the original unit closed SUBSTITUTED, a unit of the new model open; the position keeps its code', camPos.status === 200 && camPos.body.position.code === camera && camPos.body.installations.length === 2 && inst0.asset === facts.cameraUnit.original && inst0.removalReason === 'SUBSTITUTED' && inst0.removedRole === 'designer' && inst1.installReason === 'SUBSTITUTION' && inst1.model === NEW_MODEL && !inst1.removedAt && inst1.asset !== inst0.asset && cam.asset === inst1.asset && swap.body.installation?.installed?.asset === inst1.asset, J(camPos.body.installations));
   const unit0After = await api('designer', 'GET', `/v1/assets/${facts.cameraUnit.original}/history`);
-  ok('C-91', 'the original unit’s history survives intact: its own identity (UNKNOWN, model generic) and its installation at the camera position with both ends, actors and reasons', unit0After.status === 200 && J(unit0After.body.asset) === J(unit0h.body.asset) && unit0After.body.installations.length === 1 && unit0After.body.installations[0].position === camera && unit0After.body.installations[0].installReason === 'INITIAL' && unit0After.body.installations[0].removalReason === 'SUBSTITUTED' && unit0After.body.current === null && unit0After.body.asset.model === 'generic', J(unit0After.body).slice(0, 400));
+  ok('C-91', 'the original unit’s history survives intact: its own identity (DECLARED in the register, model generic), now retired as disposed by the substitution (13 Nov 2026), and its installation at the camera position with both ends, actors and reasons', unit0After.status === 200 && ['code', 'category', 'manufacturer', 'model', 'serial', 'identityState', 'origin', 'createdAt'].every((k) => J(unit0After.body.asset[k]) === J(unit0h.body.asset[k])) && unit0After.body.asset.disposition === 'RETIRED' && unit0After.body.asset.retired?.reason === 'DISPOSED' && unit0After.body.installations.length === 1 && unit0After.body.installations[0].position === camera && unit0After.body.installations[0].installReason === 'INITIAL' && unit0After.body.installations[0].removalReason === 'SUBSTITUTED' && unit0After.body.current === null && unit0After.body.asset.model === 'generic', J(Object.keys(unit0After.body.asset || {}).filter((k) => J(unit0After.body.asset[k]) !== J(unit0h.body.asset?.[k])).map((k) => [k, unit0h.body.asset?.[k], unit0After.body.asset[k]])).slice(0, 400));
 
   step(13, 'revision-compare', 'Save the change as a new design revision and compare it with the accepted revision');
   const rev3 = await api('designer', 'POST', `/v1/rooms/${code}/revisions`, { body: { reason: `checkpoint: camera ${camera} substituted during recommissioning` }, headers: { 'idempotency-key': 'checkpoint-rev-0003' } });
@@ -349,7 +357,7 @@ try {
   const sum = await api('opslead', 'GET', '/v1/reports/summary');
   ok('C-88', 'the KPI summary counts the scenario’s verified results and reports operational performance NOT_MONITORED', sum.status === 200 && sum.body.commissioning.byLabel.PASS_VERIFIED >= rows.length && sum.body.operationalPerformance === 'NOT_MONITORED', J(sum.body.commissioning).slice(0, 300));
   const inst = sum.body.assets?.installations;
-  ok('C-97', 'Pro reports the units by identity state (UNKNOWN never counted as known) and says that the 12 superseded PASS_VERIFIED results no longer count', inst && inst.installed >= 8 && inst.byIdentity.UNKNOWN >= 8 && inst.identityKnownShare.value === 0 && inst.unitsTakenOut >= 1 && sum.body.commissioning.superseded?.passVerifiedNotCounting === reqs.length && sum.body.commissioning.superseded.verifiedCountingTowardsAcceptance === sum.body.commissioning.byLabel.PASS_VERIFIED - reqs.length, J({ inst, superseded: sum.body.commissioning.superseded }).slice(0, 400));
+  ok('C-97', 'Pro reports the units by identity state (UNKNOWN never counted as known: the substitution’s new unit is UNKNOWN until registered; the others were declared in the register) and says that the 12 superseded PASS_VERIFIED results no longer count', inst && inst.installed >= 8 && Object.values(inst.byIdentity).reduce((x, y) => x + y, 0) === inst.installed && inst.byIdentity.UNKNOWN >= 1 && Math.abs(inst.identityKnownShare.value - (inst.installed - inst.byIdentity.UNKNOWN) / inst.installed) < 1e-9 && inst.unitsTakenOut >= 1 && sum.body.commissioning.superseded?.passVerifiedNotCounting === reqs.length && sum.body.commissioning.superseded.verifiedCountingTowardsAcceptance === sum.body.commissioning.byLabel.PASS_VERIFIED - reqs.length, J({ inst, superseded: sum.body.commissioning.superseded }).slice(0, 400));
 } catch (e) {
   ok('C-ERR', 'the scenario ran to the end', false, e.stack || e.message);
 } finally {

@@ -1,8 +1,8 @@
 {
- "at": "2026-11-12T08:11:23.615Z",
- "pass": 101,
+ "at": "2026-11-14T12:21:47.344Z",
+ "pass": 110,
  "fail": 0,
- "tests": 101,
+ "tests": 110,
  "results": [
   {
    "id": "D-desktop-01",
@@ -59,6 +59,18 @@
    "detail": "Build a Room · interactive demonstration\n\nHarbour Huddle (synthetic)\n\nActing as Designer / CAD / Revit (perspective designer). The rules are the product's own engine; a refusal here is the refusal the"
   },
   {
+   "id": "B-03b",
+   "name": "the designer selects a device, moves it 25 cm and duplicates it; undo walks both back",
+   "result": "PASS",
+   "detail": "[\"Table 1 PA-0001 at 1.98, 3.30 m\\n\\n←\\n→\\n↑\\n↓\\nDuplicate\\nSwap for\\n\",\"Table 1 PA-0001 at 2.23, 3.30 m\\n\\n←\\n→\\n↑\\n↓\\nDuplicate\\nSwap for\\n\",7,8,7]"
+  },
+  {
+   "id": "B-03c",
+   "name": "an outline that crosses itself is refused; a valid one is drawn, its length and width DECLARED; undo puts the template outline back",
+   "result": "PASS",
+   "detail": "Refused. outline refused: edges 1 and 3 cross: an outline goes round the room once | 2.13 × 1.83 × 2.7 m · length DECLAREDwidth DECLAREDceiling MODELEDoutline DECLARED"
+  },
+  {
    "id": "B-04",
    "name": "the designer cannot approve the classification (authority)",
    "result": "PASS",
@@ -95,10 +107,28 @@
    "detail": "Refused.\nresults are recorded on an installed room in COMMISSIONING (this one is INSTALLED_UNVERIFIED): nothing passes from a design"
   },
   {
+   "id": "B-09R",
+   "name": "commissioning is held until the device register is complete; the refusal names the register",
+   "result": "PASS",
+   "detail": "Refused.\nthe device register is not complete: 7 of 7 positions still need registering before commissioning starts (PA-0003: serial, hostname, IP address; PA-0004: serial, hostname, IP address; PA-0005: serial, hostname, IP address; PA-0006: serial, hostname, IP address; …)"
+  },
+  {
+   "id": "B-09G",
+   "name": "the installer registers every device (serial; hostname and IP for networked units)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "B-09b",
+   "name": "a failed test opens a commissioning deficiency, OPEN and unassigned",
+   "result": "PASS",
+   "detail": "Commissioning deficiencies (1 open)\n\nA failed test opens one; failing again reopens it; only a retest that passes and is verified by someone else resolves it. T"
+  },
+  {
    "id": "B-10",
    "name": "every applicable test is recorded as PASS_UNVERIFIED by the commissioning engineer",
    "result": "PASS",
-   "detail": "compute_display_capability PASS_UNVERIFIED recorded by Commissioning Engineer · ENGINEER_APPROVED: synthetic observation"
+   "detail": "compute_display_capability PASS_UNVERIFIED recorded by Commissioning Engineer · ENGINEER_APPROVED: photo 7\npower_budget "
   },
   {
    "id": "B-11",
@@ -111,6 +141,12 @@
    "name": "a different person verifies every PASS",
    "result": "PASS",
    "detail": ""
+  },
+  {
+   "id": "B-12b",
+   "name": "the deficiency is resolved by the retest once someone else verified it",
+   "result": "PASS",
+   "detail": "Commissioning deficiencies (0 open)\n\nA failed test opens one; failing again reopens it; only a retest that passes and is verified by someone else resolves it. The Service Manager or Operations Lead as"
   },
   {
    "id": "B-13",
@@ -167,6 +203,18 @@
    "detail": "What changed between v1 and v2\nDesign revision\nunchanged (3)\nDevices\n1 added (Lighting control 1), 0 removed (—)\nResult labels\n3 of 76 changed\ninteg_lighting_shades — → PASS_VERIFIED\nlighting_scenes —"
   },
   {
+   "id": "B-15h",
+   "name": "a redline needs text; it is recorded OPEN against the revision and resolved with what was done",
+   "result": "PASS",
+   "detail": "Refused.\na redline needs text | RL-1 OPEN Dimensioned 2D plan · rev 3 · Designer / CAD / Revit: the camera bracket is drawn on the wrong wall  Resolve R"
+  },
+  {
+   "id": "B-15i",
+   "name": "the commissioning workbook downloads as an .xlsx (a zip) with its sheets; nothing leaves the page",
+   "result": "PASS",
+   "detail": "harbour-huddle-synthetic--workbook.xlsx 114719"
+  },
+  {
    "id": "B-16",
    "name": "the ledger records every refusal with its actor (DENIED rows) alongside the allowed changes",
    "result": "PASS",
@@ -188,7 +236,7 @@
    "id": "S-01",
    "name": "Search Party opens on the access switch with its neighbourhood graph and the downstream impact: three rooms and their networked devices",
    "result": "PASS",
-   "detail": "Search\n\nSearch Party · relationship intelligence\n\nAccess switch ATL-4A\n\nNetwork node · IDF 4 · 48 ports · PoE\n\nSearch\nEvery type\nBuilding (20)\nCommissioning baseline (1)\nNetwork node (2)\nPerson (2)\nRole (1)\nPlanned device (1148)\nPower node (1)\nProject (1)\nRoom (90)\nRoom issue (1)\nSite (1)\nWork order"
+   "detail": "Search\nRelationships\nPeople and expertise\nProject map\nOrganizations\nActivity\nEvidence and artifacts\n\nSearch Party · relationship intelligence\n\nAccess switch ATL-4A\n\nNetwork node · IDF 4 · 48 ports · PoE\n\nSearch\nEvery type\nAsset (1512)\nBuilding (20)\nCommissioning baseline (1)\nNetwork node (2)\nPerson "
   },
   {
    "id": "S-02",
@@ -266,7 +314,7 @@
    "id": "V-03",
    "name": "candidates are hard-gated before ranking: Ana eligible and first (based in ATL, experience, past jobs), Ben fails site access, Dev fails an expired certification, the vendor is eligible under her agreement",
    "result": "PASS",
-   "detail": "Needs: cert.av_field, cert.audio; experience SK-AUD-2 Working; tools audio analyser, laptop with the DSP tool.\n\n1. Ana Reyes (synthetic)\neligible · 63\nbased in ATL · experience depth 13/30 · 2 resolved job(s) in this room · 22 h capacity this week · internal team\nAssign\n2. Cara Lind — Brightwater AV (synthetic)\neligible · 36\nworks at ATL · experience depth 24/30 · 12 h capacity this week\nAssign\nBe"
+   "detail": "Needs: cert.av_field, cert.audio; experience SK-AUD-2 Working; tools audio analyser, laptop with the DSP tool.\n\n1. Ana Reyes (synthetic)\neligible · 63\nbased in ATL · experience depth 13/30 · 2 resolved job(s) in this room · 22 h capacity this week · internal team\n· record: Audio experience 3.4 · Practised overall\nAssign\n2. Cara Lind — Brightwater AV (synthetic)\neligible · 36\nworks at ATL · experie"
   },
   {
    "id": "V-04",
@@ -296,13 +344,19 @@
    "id": "V-07",
    "name": "dispatch preflight on the record: the room is booked in the proposed window, the processor stock check is stale, tools unconfirmed — each named",
    "result": "PASS",
-   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-13T06:10 → 2026-11-13T08:10\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
+   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-15T10:20 → 2026-11-15T12:20\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
   },
   {
    "id": "V-08",
    "name": "a failed preflight blocks IN_PROGRESS (guard preflight_passed) and the refusal is in the ledger",
    "result": "PASS",
    "detail": "Refused.\ndispatch preflight has a failed check"
+  },
+  {
+   "id": "V-08b",
+   "name": "the service manager re-plans the window clear of the room’s bookings and rechecks the stale stock on the page; the plan card then goes away",
+   "result": "PASS",
+   "detail": ""
   },
   {
    "id": "V-09",
@@ -362,7 +416,7 @@
    "id": "A-03",
    "name": "A2 is a read-only comparison, honest when there is no accepted baseline for the room",
    "result": "PASS",
-   "detail": "COMPARED A2 H1 2026-11-12 08:10 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
+   "detail": "COMPARED A2 H1 2026-11-14 12:21 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
   },
   {
    "id": "A-04",
@@ -374,7 +428,7 @@
    "id": "A-05",
    "name": "with approval and a window, the real adapter state blocks it: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)",
    "result": "PASS",
-   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-11-12 08:10 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
+   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-11-14 12:21 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
   },
   {
    "id": "A-06",
@@ -414,9 +468,9 @@
   },
   {
    "id": "L-03",
-   "name": "the proposer cannot be the SME reviewer of their own case",
+   "name": "the proposer cannot be the SME reviewer of their own case: the review is not offered to them, and the page says why",
    "result": "PASS",
-   "detail": "Refused.\nthe proposer is not the subject-matter reviewer of their own case (separation of duties)"
+   "detail": "You proposed this case, so another subject-matter reviewer reviews it (separation of duties)."
   },
   {
    "id": "L-04",
@@ -470,7 +524,7 @@
    "id": "M-03",
    "name": "a passport shows numerator, denominator, window, coverage, freshness, confidence with reasons, source, exclusions and drill-down",
    "result": "PASS",
-   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-14 08:11 → 2026-11-12 08:11\nCoverage\n4 of 4 eligible recor"
+   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-16 12:21 → 2026-11-14 12:21\nCoverage\n4 of 4 eligible recor"
   },
   {
    "id": "M-04",
@@ -482,7 +536,7 @@
    "id": "M-05",
    "name": "the ledger filters to the refusals, each with actor, UTC and local time and the reason",
    "result": "PASS",
-   "detail": "When (UTC)\tLocal\tWho\tEvent\tRecord\tOutcome\tDetail\n2026-11-12 08:11:02\t11/12/2026, 02:11:02\tCommissioning Engineer\tlearn.sme_review\tLC-001\tDENIED\trefused: the proposer is not the subject-matter reviewer of their own case (separation of duties)\n2026-11-12 08:11:01\t11/12/2026, 02:11:01\tCommissioning Eng"
+   "detail": " · ALLOWED×0 · 902 chars"
   },
   {
    "id": "M-06",

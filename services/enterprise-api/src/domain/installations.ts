@@ -377,6 +377,16 @@ export async function recordRegister(ctx: RequestContext, code: string, body: Re
 export async function roomRegister(ctx: RequestContext, ref: string) {
   return ctx.tx(async (q) => {
     const room = await findRoom(ctx, q, ref);
+    const items = await registerItems(q, room.id);
+    const done = items.filter((x) => x.complete).length;
+    return { room: room.code, items, totals: { devices: items.length, complete: done, networked: items.filter((x) => x.networked).length, pct: items.length ? Math.round((done / items.length) * 100) : 100 },
+      rule: 'every unit needs its serial (recorded on its identity); a networked unit also needs a hostname and an IP address (v1.3); commissioning does not start until every position is registered (14 Nov 2026)' };
+  });
+}
+/** Each live position of a room with its unit, its current register entry and what it still needs (also the commissioning gate's facts). */
+export async function registerItems(q: Queryable, roomId: string) {
+  const room = { id: roomId };
+  {
     const pos = (await q.query<PositionRow>('SELECT id, code, room_id, category, label, role, model, generic, furniture, mount, x, y, z, rot, lifecycle, model_history, removed_at FROM app.planned_asset WHERE room_id = $1 AND removed_at IS NULL AND NOT furniture ORDER BY code', [room.id])).rows;
     const { rows } = await roomInstallations(q, room.id);
     const open = new Map(rows.filter((r) => !r.removed_at).map((r) => [r.position, r]));
@@ -389,10 +399,8 @@ export async function roomRegister(ctx: RequestContext, ref: string) {
       return { position: p.code, label: p.label, category: p.category, networked: net, asset: i?.asset ?? null, serial: i?.serial ?? null, identityState: i?.identity_state ?? null,
         entry: e ? { version: e.version, hostname: e.hostname, ip: e.ip, mac: e.mac, firmware: e.firmware, location: e.location, recordedRole: e.recorded_role, recordedAt: e.recorded_at } : null, missing, complete: !missing.length };
     });
-    const done = items.filter((x) => x.complete).length;
-    return { room: room.code, items, totals: { devices: items.length, complete: done, networked: items.filter((x) => x.networked).length, pct: items.length ? Math.round((done / items.length) * 100) : 100 },
-      rule: 'every unit needs its serial (recorded on its identity); a networked unit also needs a hostname and an IP address (v1.3)' };
-  });
+    return items;
+  }
 }
 
 export type { UnitChange };

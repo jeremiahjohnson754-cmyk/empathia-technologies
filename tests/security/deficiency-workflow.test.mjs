@@ -17,7 +17,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { setup, client, mail } from '../integration/harness.mjs';
+import { setup, client, mail, registerRoom } from '../integration/harness.mjs';
 
 let h, c, T = {}, P = {}, R, issues = [];
 const J = (x) => JSON.stringify(x);
@@ -40,7 +40,7 @@ before(async () => {
   assert.equal(r.status, 201, J(r.body)); R = r.body.code;
   await call('designer', 'POST', `/v1/rooms/${R}/revisions`, { reason: 'synthetic: a boardroom with failed tests to work' }); await call('designer', 'POST', `/v1/rooms/${R}/drawings/generate`);
   await call('syseng', 'POST', `/v1/rooms/${R}/drawings/plan/approve`); await call('syseng', 'POST', `/v1/rooms/${R}/classification/approve`, {});
-  for (const [to, who] of [['DESIGN_APPROVED', 'syseng'], ['INSTALLATION_PENDING', 'opslead'], ['INSTALLED_UNVERIFIED', 'installer'], ['COMMISSIONING', 'syseng']]) assert.equal((await call(who, 'POST', `/v1/rooms/${R}/lifecycle`, { to })).status, 200, `${R} → ${to}`);
+  for (const [to, who] of [['DESIGN_APPROVED', 'syseng'], ['INSTALLATION_PENDING', 'opslead'], ['INSTALLED_UNVERIFIED', 'installer'], ['COMMISSIONING', 'syseng']]) { if (to === 'COMMISSIONING') await registerRoom(c, R, T.installer); assert.equal((await call(who, 'POST', `/v1/rooms/${R}/lifecycle`, { to })).status, 200, `${R} → ${to}`); }   // the register gates commissioning (14 Nov 2026)
   const rows = (await call('designer', 'GET', `/v1/rooms/${R}`)).body.commissioning.rows.filter((x) => x.applicable).slice(0, 3);
   for (const row of rows) {   // three failed tests: three commissioning deficiencies to work
     const ev = (await c.call('POST', '/v1/evidence', { token: T.cxeng, raw: Buffer.from(`synthetic observation ${row.test_id}`), headers: { 'content-type': 'text/plain', 'x-file-name': 'o.txt' } })).body;

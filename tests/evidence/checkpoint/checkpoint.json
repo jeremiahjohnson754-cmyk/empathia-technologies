@@ -1,7 +1,7 @@
 {
- "at": "2026-11-01T03:40:01.828Z",
+ "at": "2026-11-14T12:19:10.733Z",
  "database": "empathia_test_checkpoint_e2e",
- "pass": 100,
+ "pass": 102,
  "fail": 0,
  "facts": {
   "room": "R-PLN-0004",
@@ -26,9 +26,9 @@
    "qa_reviewer": 16
   },
   "v1": {
-   "id": "1acdf296-c410-4db6-9f4b-80c4c4d442e4",
+   "id": "171a8124-e89c-43ed-9185-f4ddc239113d",
    "designRevision": 2,
-   "publishedAt": "2026-11-01T03:39:58.994Z"
+   "publishedAt": "2026-11-14T12:19:07.605Z"
   },
   "requirements": [
    {
@@ -191,17 +191,17 @@
     "revision 3: SYN-PTZ-12X (synthetic PTZ camera)"
    ],
    "installations": [
-    "AS-0002 installed at PA-0061 on 2026-11-01T03:39:54.094Z by aa6ea1c5-85b8-4d8c-91d8-243af518d415 (initial); removed 2026-11-01T03:39:59.083Z by d46add71-8997-4132-9011-8206641b17dd (substituted)",
-    "AS-0009 installed at PA-0061 on 2026-11-01T03:39:59.083Z by d46add71-8997-4132-9011-8206641b17dd (substitution); still installed"
+    "AS-0002 installed at PA-0061 on 2026-11-14T12:19:01.514Z by 798a5055-9fd4-4918-b575-0f63551cf292 (initial); removed 2026-11-14T12:19:07.696Z by 940d5614-d78b-49e8-a119-68e26913b4ea (substituted)",
+    "AS-0009 installed at PA-0061 on 2026-11-14T12:19:07.696Z by 940d5614-d78b-49e8-a119-68e26913b4ea (substitution); still installed"
    ]
   },
   "assetHistories": [
    {
     "asset": "AS-0002",
     "model": "generic",
-    "identity": "UNKNOWN",
+    "identity": "DECLARED",
     "installations": [
-     "AS-0002 installed at PA-0061 on 2026-11-01T03:39:54.094Z by aa6ea1c5-85b8-4d8c-91d8-243af518d415 (initial); removed 2026-11-01T03:39:59.083Z by d46add71-8997-4132-9011-8206641b17dd (substituted)"
+     "AS-0002 installed at PA-0061 on 2026-11-14T12:19:01.514Z by 798a5055-9fd4-4918-b575-0f63551cf292 (initial); removed 2026-11-14T12:19:07.696Z by 940d5614-d78b-49e8-a119-68e26913b4ea (substituted)"
     ]
    },
    {
@@ -209,21 +209,21 @@
     "model": "SYN-PTZ-12X (synthetic PTZ camera)",
     "identity": "UNKNOWN",
     "installations": [
-     "AS-0009 installed at PA-0061 on 2026-11-01T03:39:59.083Z by d46add71-8997-4132-9011-8206641b17dd (substitution); still installed"
+     "AS-0009 installed at PA-0061 on 2026-11-14T12:19:07.696Z by 940d5614-d78b-49e8-a119-68e26913b4ea (substitution); still installed"
     ]
    }
   ],
   "integrity": {
    "verified": true,
-   "checked": 460,
+   "checked": 476,
    "head": {
-    "seq": 460,
-    "hash": "8d00707afc8a0c33bfc7958d0fca8de7b40e30a578a9406d22d9830e1e9515ea",
-    "at": "2026-11-01T03:39:59.665Z"
+    "seq": 476,
+    "hash": "7e928675a01d6299062d4258cee49682c3363b8df59222b8ddcc5e28d3da2d9b",
+    "at": "2026-11-14T12:19:08.246Z"
    }
   },
-  "auditEvents": 365,
-  "auditDenied": 13,
+  "auditEvents": 366,
+  "auditDenied": 14,
   "milestones": [
    {
     "action": "room.create",
@@ -243,35 +243,35 @@
    },
    {
     "action": "room.lifecycle:COMMISSIONING",
-    "seq": 44
+    "seq": 60
    },
    {
     "action": "commission.result.record",
-    "seq": 125
+    "seq": 141
    },
    {
     "action": "commission.result.verify",
-    "seq": 277
+    "seq": 293
    },
    {
     "action": "assurance.baseline_published",
-    "seq": 432
+    "seq": 448
    },
    {
     "action": "room.lifecycle:ACCEPTED",
-    "seq": 433
+    "seq": 449
    },
    {
     "action": "room.lifecycle:COMMISSIONING (#2)",
-    "seq": 436
+    "seq": 452
    },
    {
     "action": "commission.asset_replaced",
-    "seq": 440
+    "seq": 456
    },
    {
     "action": "room.revision.approve",
-    "seq": 446
+    "seq": 462
    }
   ],
   "outboxSample": [
@@ -408,6 +408,16 @@
    "result": "PASS"
   },
   {
+   "id": "C-21R",
+   "name": "the device register gates commissioning: refused (422) while units still need registering, with the positions named",
+   "result": "PASS"
+  },
+  {
+   "id": "C-21G",
+   "name": "the installer registers every unit (serial; hostname and IP for networked units): the register is complete",
+   "result": "PASS"
+  },
+  {
    "id": "C-22",
    "name": "the systems engineer starts commissioning (COMMISSIONING)",
    "result": "PASS"
@@ -419,7 +429,7 @@
   },
   {
    "id": "C-89",
-   "name": "recording the installation put one physical unit at every non-furniture position — identity UNKNOWN, no serial, no maker — recorded by the installer (ADR-0012)",
+   "name": "recording the installation put one physical unit at every non-furniture position — identity UNKNOWN, no serial, no maker — recorded by the installer (ADR-0012); the register then declared each serial (14 Nov 2026)",
    "result": "PASS"
   },
   {
@@ -554,7 +564,7 @@
   },
   {
    "id": "C-91",
-   "name": "the original unit’s history survives intact: its own identity (UNKNOWN, model generic) and its installation at the camera position with both ends, actors and reasons",
+   "name": "the original unit’s history survives intact: its own identity (DECLARED in the register, model generic), now retired as disposed by the substitution (13 Nov 2026), and its installation at the camera position with both ends, actors and reasons",
    "result": "PASS"
   },
   {
@@ -749,7 +759,7 @@
   },
   {
    "id": "C-79",
-   "name": "the room’s 365 audit events are sealed into the chain, in order (sequence, id and time agree)",
+   "name": "the room’s 366 audit events are sealed into the chain, in order (sequence, id and time agree)",
    "result": "PASS"
   },
   {
@@ -799,7 +809,7 @@
   },
   {
    "id": "C-97",
-   "name": "Pro reports the units by identity state (UNKNOWN never counted as known) and says that the 12 superseded PASS_VERIFIED results no longer count",
+   "name": "Pro reports the units by identity state (UNKNOWN never counted as known: the substitution’s new unit is UNKNOWN until registered; the others were declared in the register) and says that the 12 superseded PASS_VERIFIED results no longer count",
    "result": "PASS"
   }
  ]

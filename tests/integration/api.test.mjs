@@ -10,7 +10,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { setup, client } from './harness.mjs';
+import { setup, client, registerRoom } from './harness.mjs';
 
 let h, c, code, row, failRow, evidence, issueCode, workOrder;
 const T = {};
@@ -92,6 +92,10 @@ test('slice 4 — classification approval and the governed lifecycle to COMMISSI
   assert.equal((await move('INSTALLATION_PENDING', T.opslead)).status, 200);
   assert.equal((await move('INSTALLED_UNVERIFIED', T.installer)).status, 200);
   assert.equal((await move('COMMISSIONING', T.installer)).status, 403);
+  // the device register gates commissioning (founder, 14 Nov 2026): refused with the positions still to register, then allowed once registered
+  const held = await move('COMMISSIONING', T.syseng);
+  assert.equal(held.status, 422, JSON.stringify(held.body)); assert.match(held.body.detail, /device register is not complete/);
+  await registerRoom(c, code, T.installer);
   assert.equal((await move('COMMISSIONING', T.syseng)).status, 200);
   const d = await room();
   assert.equal(d.body.room.lifecycle, 'COMMISSIONING');

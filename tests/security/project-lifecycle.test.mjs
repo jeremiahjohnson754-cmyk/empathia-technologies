@@ -22,7 +22,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { setup, client, DEV_PASSWORD } from '../integration/harness.mjs';
+import { setup, client, DEV_PASSWORD, registerRoom } from '../integration/harness.mjs';
 
 let h, c, T = {}, ids = {}, req, prj, room, evidence, failTest, issue, apx, wo, lc;
 const instrument = 'SYN-METER-01 (synthetic), calibration record SYN-CAL-2026-09';
@@ -229,6 +229,7 @@ test('EXE-1 — execution: the plan is compiled with the rule pack version pinne
   // the room is installed and commissioned the governed way; every applicable test is recorded by cxeng and verified by QA
   assert.equal((await moveRoom('INSTALLATION_PENDING', T.opslead)).status, 200);
   assert.equal((await moveRoom('INSTALLED_UNVERIFIED', T.installer)).status, 200);
+  await registerRoom(c, room, T.installer);   // the device register gates commissioning (founder, 14 Nov 2026)
   assert.equal((await moveRoom('COMMISSIONING', T.syseng)).status, 200);
   const rows = (await c.call('GET', `/v1/rooms/${room}`, { token: T.designer })).body.commissioning.rows.filter((x) => x.applicable);
   // VERTICAL SLICE (P3): the display test fails first. The deficiency goes to APEX (diagnosis), APEX's A3 stages the real ServiceHands

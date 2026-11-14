@@ -6,8 +6,9 @@
  */
 import {
   analyzeRoom, defaultCatalog, outlineFor, templateDevices, newDevice, proposeConnections, parseLength, lifecycleBlockers, LIFECYCLE_AUTHORITY, area as polyArea,
-  recordBlockers, buildResult, verifyBlockers, resultLabel, drawingInput, DRAWING_KINDS, type RoomAnalysis,
+  recordBlockers, buildResult, verifyBlockers, resultLabel, drawingInput, DRAWING_KINDS, registerBlocker, type RoomAnalysis,
 } from '@empathia/commissioning-engine';
+import { validateEntry, missingOf, isNetworked } from '../campus/registers.js';
 import type { RoomDesignInput, PlannedDevice, Connection, RecordedResult, RoomLifecycle } from '@empathia/domain-types';
 import PERSONAS from '@empathia/domain-data/data/V25_PERSONAS.json' with { type: 'json' };
 
@@ -40,7 +41,10 @@ export interface Draft {
   issues?: CxIssue[];
   /** files recorded against the room (V2.5.3 v25RoomImportRecord): what each can and cannot give; nothing is read from them here */
   imports?: ImportRecord[];
+  /** the device register the installer fills after the installation (founder, 14 Nov 2026): commissioning does not start until it is complete */
+  register?: Record<string, RegisterEntry>;
 }
+export interface RegisterEntry { serial?: string; hostname?: string; ip?: string; by: string; at: string }
 export interface ImportRecord { id: string; name: string; kind: 'photo' | 'plan_image' | 'pdf' | 'cad' | 'other'; size: number; support: string; confidence: string; missing: string[]; by: string; at: string }
 export interface CxIssue { id: string; key: string; test: string; label: string; severity: 'High' | 'Medium'; state: 'OPEN' | 'RESOLVED'; owner: string | null; seen: number; evidence: Array<{ at: string; finding: string }>; resolution?: string; hypotheses?: Hypothesis[] }
 export interface Hypothesis { cause: string; basis: string; state: 'HYPOTHESIS' }
@@ -258,6 +262,8 @@ export function transition(d: Draft, persona: string, to: RoomLifecycle): Draft 
   if (!holds(persona, need)) { log(d, persona, `room.lifecycle:${to}`, `refused: needs ${need}`, 'DENIED'); return refused([`${personaLabel(persona)} may not move a room to ${to} (needs ${need})`]); }
   const a = analysis(d);
   const why = lifecycleBlockers({ from: d.design.lifecycle, to, classificationApproved: !!d.design.classification.approved && !d.design.classification.approved.stale, openIssues: a.checks, savedRevisions: d.revisions.length, rows: a.applicability.rows, results: d.design.results, hasBaseline: !!d.baseline, hasLiveMonitoringEvidence: false });
+  // the device register gates the start of commissioning (founder, 14 Nov 2026); a recommissioning after acceptance is not gated by it
+  if (to === 'COMMISSIONING' && d.design.lifecycle === 'INSTALLED_UNVERIFIED') { const rows = registerRows(d); const open = rows.filter((x) => x.missing.length); if (open.length) why.push(registerBlocker(open.map((x) => ({ position: x.id, asset: null, missing: x.missing })), rows.length)); }
   if (why.length) { log(d, persona, `room.lifecycle:${to}`, `refused: ${why.join('; ')}`, 'DENIED'); return refused(why); }
   // separation of duties (ADR-0005): the design is not approved by its author; a room is not accepted by whoever recorded or verified its results
   if (to === 'DESIGN_APPROVED') { const author = d.revisions[d.revisions.length - 1]!.by; if (author === persona) { log(d, persona, `room.lifecycle:${to}`, 'refused: the author of the design does not approve it (separation of duties)', 'DENIED'); return refused([`${personaLabel(persona)} saved the design revision and does not approve it (separation of duties)`]); } }
@@ -363,4 +369,44 @@ export function apex(d: Draft, persona: string, issueId: string): Draft | Refusa
   if (tpl.length) hyps.push({ cause: `${tpl.map((x) => x.label).join(', ')} ${tpl.length === 1 ? 'is' : 'are'} still a class template`, basis: 'the installed model was never recorded in the design', state: 'HYPOTHESIS' });
   if (!hyps.length) hyps.push({ cause: 'no design-side cause found in the records', basis: 'only physical inspection can tell', state: 'HYPOTHESIS' });
   i.hypotheses = hyps; log(d, persona, 'room.hypothesis_recorded', `${i.id}: ${hyps.length} APEX hypotheses recorded (not verified faults)`); return d;
+}
+
+// ------------------------------------------------------------------------------------------------ the device register (founder, 14 Nov 2026)
+/** Each live device of the room with what its register row still needs: the serial for every unit; the hostname and IP address for a networked one. */
+export function registerRows(d: Draft) {
+  return (live(d.design.devices) as PlannedDevice[]).filter((x) => !x.furniture).map((x) => {
+    const e = d.register?.[x.id] || null; const net = isNetworked(x.cat);
+    return { id: x.id, label: x.label, cat: x.cat, networked: net, entry: e, missing: missingOf(net, e as never) };
+  });
+}
+export const REGISTER_AUTHORITIES = ['work.evidence', 'field.scan'];
+/** The installer records what was read on site for one device. Refused with its reasons: authority, stage, form, a serial already final, a value used by another device. */
+export function registerDevice(d: Draft, persona: string, id: string, patch: { serial?: string; hostname?: string; ip?: string }): Draft | Refusal {
+  const deny = (why: string[]) => { log(d, persona, 'room.register', `refused: ${why.join('; ')}`, 'DENIED'); return refused(why); };
+  if (!REGISTER_AUTHORITIES.some((a) => holds(persona, a))) return deny([`${personaLabel(persona)} does not record the device register (needs ${REGISTER_AUTHORITIES.join(' or ')}): the installation team does`]);
+  if (['PLANNED', 'DESIGN_APPROVED', 'INSTALLATION_PENDING'].includes(d.design.lifecycle)) return deny([`nothing is installed yet (${d.design.lifecycle}): the register records units read on site after the installation`]);
+  const row = registerRows(d).find((x) => x.id === id); if (!row) return deny([`${id} is not a live device of this room`]);
+  const clean: Record<string, string> = {}; for (const [k, v] of Object.entries(patch)) if (v !== undefined) clean[k] = String(v).trim();
+  const why = validateEntry(clean, row.networked); if (why.length) return deny(why);
+  const prev = d.register?.[id];
+  if (prev?.serial && clean.serial && clean.serial !== prev.serial) return deny([`${id} already carries serial ${prev.serial}: a recorded serial is final (a different serial is a different unit)`]);
+  for (const [other, e] of Object.entries(d.register || {})) {
+    if (other === id) continue;
+    if (clean.hostname && e.hostname?.toLowerCase() === clean.hostname.toLowerCase()) return deny([`hostname ${clean.hostname} is already ${other}'s`]);
+    if (clean.ip && e.ip === clean.ip) return deny([`IP address ${clean.ip} is already ${other}'s`]);
+  }
+  d.register = d.register || {};
+  d.register[id] = { ...(prev || {}), ...Object.fromEntries(Object.entries(clean).filter(([, v]) => v)), by: persona, at: now() } as RegisterEntry;
+  log(d, persona, 'room.register', `${id} (${row.label}): ${Object.entries(clean).filter(([, v]) => v).map(([k, v]) => `${k} ${v}`).join(', ')}`);
+  return d;
+}
+/** Demonstration convenience: register every device still open with synthetic values, each labelled SYN, by the same rules. */
+export function registerAllSynthetic(d: Draft, persona: string): Draft | Refusal {
+  const rows = registerRows(d).filter((x) => x.missing.length); let n = Object.keys(d.register || {}).length;
+  for (const x of rows) {
+    n += 1;
+    const r = registerDevice(d, persona, x.id, { serial: x.entry?.serial ? undefined : `SYN-${d.code}-${x.id}`.slice(0, 40), ...(x.networked ? { hostname: x.entry?.hostname ? undefined : `syn-${d.code}-${x.id}`.toLowerCase().replace(/[^a-z0-9-]/g, '-').slice(0, 63), ip: x.entry?.ip ? undefined : `10.90.${Math.floor(n / 250)}.${(n % 250) + 2}` } : {}) });
+    if ('why' in r) return r;
+  }
+  return d;
 }

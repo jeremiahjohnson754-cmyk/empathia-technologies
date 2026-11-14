@@ -42,6 +42,12 @@ export interface LifecycleFacts {
    * while it is recommissioned. Given only while an accepted room is recommissioned; omitted or null = nothing to bind again.
    */
   designBinding?: DesignBinding | null;
+  /**
+   * The device register of the room's positions (founder, 14 Nov 2026: the device register is a blocking gate before commissioning): each
+   * position with its unit and what its register still needs (installations.ts registerMissing). Given on the step INSTALLED_UNVERIFIED →
+   * COMMISSIONING; omitted = not checked (the demonstrator's golden cases carry no register).
+   */
+  register?: ReadonlyArray<{ position: string; asset: string | null; missing: readonly string[] }>;
 }
 
 /**
@@ -70,6 +76,10 @@ export function lifecycleBlockers(f: LifecycleFacts): string[] {
     const hi = f.openIssues.filter((x) => x.severity === 'High' || x.severity === 'Critical').length;
     if (hi) why.push(`${hi} open High/Critical design deficiencies`);
     if (!f.savedRevisions) why.push('no saved revision');
+  }
+  if (f.to === 'COMMISSIONING' && f.from === 'INSTALLED_UNVERIFIED' && f.register) {
+    const open = f.register.filter((x) => x.missing.length);
+    if (open.length) why.push(registerBlocker(open, f.register.length));
   }
   if (f.to === 'ACCEPTED') {
     const app = f.rows.filter((r) => r.applicable);
@@ -116,4 +126,10 @@ export function revisionApprovalBlockers(f: { room: string; lifecycle: string; r
   else if (!b.latestDescribesDesign) why.push(`revision ${f.revision} does not describe the current design: save the latest change as a revision first`);
   why.push(...lifecycleBlockers({ from: 'PLANNED', to: 'DESIGN_APPROVED', classificationApproved: f.classificationApproved, openIssues: f.openIssues, savedRevisions: 1, rows: [], results: {}, hasBaseline: true, hasLiveMonitoringEvidence: false }));
   return why;
+}
+
+/** The register gate's reason, one wording for the API and the demonstration: how many positions are open, and the first few with what each needs. */
+export function registerBlocker(open: ReadonlyArray<{ position: string; asset: string | null; missing: readonly string[] }>, total: number): string {
+  const list = open.slice(0, 4).map((x) => `${x.position}${x.asset ? ` (${x.asset})` : ''}: ${x.missing.join(', ')}`).join('; ');
+  return `the device register is not complete: ${open.length} of ${total} position${total === 1 ? '' : 's'} still need registering before commissioning starts (${list}${open.length > 4 ? '; …' : ''})`;
 }
