@@ -53,7 +53,9 @@ function ScenarioView({ s, room }: { s: Scenario; room: string }) {
       <div className="sp__two">
         <div className="sp__lists" data-testid="sp-list">
           <h2 className="build__h">Start: {s.start.href ? <a href={s.start.href}>{s.start.label}</a> : s.start.label}</h2>
-          {s.groups.map((g) => <details key={g.key} open={g.items.length <= 6} className="sp__group" data-testid={`sp-group-${g.key}`}><summary><b>{g.label}</b> <span className="sp__count" data-count={g.items.length}>{g.items.length}</span></summary>
+          {/* 13 Nov 2026: the first group is the answer itself and is always open ("if this switch fails" opened on its seven rooms folded away);
+              a group shown in full on the graph ("+N more") opens in the list too, so the list and the graph never disagree */}
+          {s.groups.map((g, gi) => <details key={g.key} open={gi === 0 || g.items.length <= 6 || open.has(g.key)} className="sp__group" data-testid={`sp-group-${g.key}`}><summary><b>{g.label}</b> <span className="sp__count" data-count={g.items.length}>{g.items.length}</span></summary>
             {g.items.length ? <ul className="sp__edges">{g.items.map((i) => <li key={i.id} data-item={i.id}><span className="sp__rel">{i.rel}</span> {i.href ? <a href={i.href}><b>{i.label}</b></a> : <b>{i.label}</b>}{i.detail && <span className="ui-muted"> · {i.detail}</span>} <span className="ui-meta">· {i.provenance}</span></li>)}</ul> : <p className="ui-muted">None recorded.</p>}
           </details>)}
         </div>
