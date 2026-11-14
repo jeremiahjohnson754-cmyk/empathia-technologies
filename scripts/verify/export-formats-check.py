@@ -189,5 +189,5 @@ json.dump({'checks': results, 'passed': sum(r['pass'] for r in results), 'failed
 for r in results:
     if not r['pass']:
         print(f"FAIL {r['report']} {r['format']}: {r['check']} — {r['detail']}")
-print(f"export formats: {sum(r['pass'] for r in results)} pass, {sum(not r['pass'] for r in results)} fail, {len(manifest)} reports × 6 formats")
+print(f"export formats ({len(manifest)} reports × 6 formats): {sum(r['pass'] for r in results)} passed, {sum(not r['pass'] for r in results)} failed")
 sys.exit(0 if all(r['pass'] for r in results) else 1)
