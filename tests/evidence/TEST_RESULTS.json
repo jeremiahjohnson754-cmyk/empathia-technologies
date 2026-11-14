@@ -1,18 +1,18 @@
 {
-  "at": "2026-10-31T21:34:34.429Z",
-  "node": "v22.22.0",
-  "pass": 50,
-  "fail": 0,
-  "notRun": 1,
+  "at": "2026-11-14T03:59:51.087Z",
+  "node": "v22.23.4",
+  "pass": 100,
+  "fail": 1,
+  "notRun": 85,
   "suites": [
     {
       "suite": "unit: packages/commissioning-engine",
       "kind": "unit",
       "result": "PASS",
-      "tests": 128,
-      "pass": 128,
+      "tests": 145,
+      "pass": 145,
       "fail": 0,
-      "seconds": 0.5,
+      "seconds": 0.7,
       "command": "../../../opt/node22/bin/node --test packages/commissioning-engine/dist/test/**/*.test.js"
     },
     {
@@ -82,8 +82,28 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 0.4,
+      "seconds": 0.1,
       "command": "../../../opt/node22/bin/node --test packages/kpi-engine/dist/test/**/*.test.js"
+    },
+    {
+      "suite": "unit: packages/proof-registry",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 43,
+      "pass": 43,
+      "fail": 0,
+      "seconds": 1.2,
+      "command": "../../../opt/node22/bin/node --test packages/proof-registry/dist/test/**/*.test.js"
+    },
+    {
+      "suite": "unit: packages/field-queue",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 22,
+      "pass": 22,
+      "fail": 0,
+      "seconds": 0.1,
+      "command": "../../../opt/node22/bin/node --test packages/field-queue/dist/test/**/*.test.js"
     },
     {
       "suite": "unit: packages/field-intelligence",
@@ -99,10 +119,10 @@
       "suite": "unit: packages/assurance-engine",
       "kind": "unit",
       "result": "PASS",
-      "tests": 13,
-      "pass": 13,
+      "tests": 18,
+      "pass": 18,
       "fail": 0,
-      "seconds": 0.1,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test packages/assurance-engine/dist/test/**/*.test.js"
     },
     {
@@ -112,7 +132,7 @@
       "tests": 10,
       "pass": 10,
       "fail": 0,
-      "seconds": 0.4,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test packages/observability/dist/test/**/*.test.js"
     },
     {
@@ -156,14 +176,50 @@
       "command": "../../../opt/node22/bin/node --test integrations/mocks/dist/test/**/*.test.js"
     },
     {
-      "suite": "unit: ml research prototype (python)",
+      "suite": "unit: packages/commercial (price list, pilot readiness, activation machines)",
       "kind": "unit",
       "result": "PASS",
-      "tests": 5,
-      "pass": 5,
+      "tests": 15,
+      "pass": 15,
       "fail": 0,
-      "seconds": 7,
-      "command": "python3 -I -m unittest discover -s ml/tests"
+      "seconds": 0.1,
+      "command": "../../../opt/node22/bin/node --test packages/commercial/dist/test/**/*.test.js"
+    },
+    {
+      "suite": "unit: packages/design-tokens (contrast both themes, D7/D37/D38)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 22,
+      "pass": 22,
+      "fail": 0,
+      "seconds": 0.1,
+      "command": "../../../opt/node22/bin/node --test packages/design-tokens/test/*.test.mjs"
+    },
+    {
+      "suite": "unit: packages/ui (canonical products, ui.css on the tokens)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 7,
+      "pass": 7,
+      "fail": 0,
+      "seconds": 0.2,
+      "command": "../../../opt/node22/bin/node --test packages/ui/test/*.test.mjs"
+    },
+    {
+      "suite": "unit: ml research prototype (python)",
+      "kind": "unit",
+      "result": "NOT_RUN",
+      "why": "dataset not generated (node ml/datasets/generate_synthetic.mjs; python3 -I ml/training/train.py)"
+    },
+    {
+      "suite": "unit: demo access policy and Scouter",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 15,
+      "pass": 15,
+      "fail": 0,
+      "seconds": 0.4,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-policy.test.mjs"
     },
     {
       "suite": "service: intelligence-python",
@@ -182,7 +238,7 @@
       "tests": 22,
       "pass": 22,
       "fail": 0,
-      "seconds": 12.7,
+      "seconds": 5.1,
       "command": "../../../opt/node22/bin/node --test tests/integration/api.test.mjs"
     },
     {
@@ -192,7 +248,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 2.3,
+      "seconds": 2,
       "command": "../../../opt/node22/bin/node --test tests/integration/leads.test.mjs"
     },
     {
@@ -212,7 +268,7 @@
       "tests": 1,
       "pass": 1,
       "fail": 0,
-      "seconds": 1.9,
+      "seconds": 2,
       "command": "../../../opt/node22/bin/node --test tests/integration/integration-worker.test.mjs"
     },
     {
@@ -232,7 +288,7 @@
       "tests": 45,
       "pass": 45,
       "fail": 0,
-      "seconds": 4.3,
+      "seconds": 4.2,
       "command": "../../../opt/node22/bin/node --test tests/security/authz.test.mjs"
     },
     {
@@ -242,8 +298,18 @@
       "tests": 6,
       "pass": 6,
       "fail": 0,
-      "seconds": 2.5,
+      "seconds": 2.3,
       "command": "../../../opt/node22/bin/node --test tests/security/founder-boundary.test.mjs"
+    },
+    {
+      "suite": "security: proof-registry.test.mjs",
+      "kind": "security",
+      "result": "PASS",
+      "tests": 12,
+      "pass": 12,
+      "fail": 0,
+      "seconds": 2.6,
+      "command": "../../../opt/node22/bin/node --test tests/security/proof-registry.test.mjs"
     },
     {
       "suite": "security: site-scope.test.mjs",
@@ -252,7 +318,7 @@
       "tests": 3,
       "pass": 3,
       "fail": 0,
-      "seconds": 3.1,
+      "seconds": 2.6,
       "command": "../../../opt/node22/bin/node --test tests/security/site-scope.test.mjs"
     },
     {
@@ -262,17 +328,17 @@
       "tests": 2,
       "pass": 2,
       "fail": 0,
-      "seconds": 9.9,
+      "seconds": 9.7,
       "command": "../../../opt/node22/bin/node --test tests/security/authority-matrix.test.mjs"
     },
     {
       "suite": "security: governance.test.mjs",
       "kind": "security",
       "result": "PASS",
-      "tests": 9,
-      "pass": 9,
+      "tests": 10,
+      "pass": 10,
       "fail": 0,
-      "seconds": 5.8,
+      "seconds": 7.8,
       "command": "../../../opt/node22/bin/node --test tests/security/governance.test.mjs"
     },
     {
@@ -282,7 +348,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 2.8,
+      "seconds": 2.9,
       "command": "../../../opt/node22/bin/node --test tests/security/administration.test.mjs"
     },
     {
@@ -292,7 +358,7 @@
       "tests": 7,
       "pass": 7,
       "fail": 0,
-      "seconds": 3.1,
+      "seconds": 3,
       "command": "../../../opt/node22/bin/node --test tests/security/search-party.test.mjs"
     },
     {
@@ -302,7 +368,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 2,
+      "seconds": 2.2,
       "command": "../../../opt/node22/bin/node --test tests/security/oidc.test.mjs"
     },
     {
@@ -312,7 +378,7 @@
       "tests": 16,
       "pass": 16,
       "fail": 0,
-      "seconds": 7.3,
+      "seconds": 7.8,
       "command": "../../../opt/node22/bin/node --test tests/security/project-lifecycle.test.mjs"
     },
     {
@@ -322,7 +388,7 @@
       "tests": 11,
       "pass": 11,
       "fail": 0,
-      "seconds": 3.8,
+      "seconds": 3.4,
       "command": "../../../opt/node22/bin/node --test tests/security/service-lifecycle.test.mjs"
     },
     {
@@ -332,7 +398,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 3.4,
+      "seconds": 3,
       "command": "../../../opt/node22/bin/node --test tests/security/apex.test.mjs"
     },
     {
@@ -342,7 +408,7 @@
       "tests": 6,
       "pass": 6,
       "fail": 0,
-      "seconds": 3.2,
+      "seconds": 3,
       "command": "../../../opt/node22/bin/node --test tests/security/field-intelligence.test.mjs"
     },
     {
@@ -352,7 +418,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 2.8,
+      "seconds": 3,
       "command": "../../../opt/node22/bin/node --test tests/security/learn.test.mjs"
     },
     {
@@ -362,7 +428,7 @@
       "tests": 8,
       "pass": 8,
       "fail": 0,
-      "seconds": 3.2,
+      "seconds": 3.3,
       "command": "../../../opt/node22/bin/node --test tests/security/mission-control.test.mjs"
     },
     {
@@ -372,7 +438,7 @@
       "tests": 6,
       "pass": 6,
       "fail": 0,
-      "seconds": 4.1,
+      "seconds": 3.8,
       "command": "../../../opt/node22/bin/node --test tests/security/competency.test.mjs"
     },
     {
@@ -382,7 +448,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 2.8,
+      "seconds": 2.7,
       "command": "../../../opt/node22/bin/node --test tests/security/ledger.test.mjs"
     },
     {
@@ -392,7 +458,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 2.6,
+      "seconds": 2.4,
       "command": "../../../opt/node22/bin/node --test tests/security/measurement-import.test.mjs"
     },
     {
@@ -402,83 +468,1006 @@
       "tests": 6,
       "pass": 6,
       "fail": 0,
-      "seconds": 4.3,
+      "seconds": 4.2,
       "command": "../../../opt/node22/bin/node --test tests/security/hardening.test.mjs"
     },
     {
       "suite": "e2e: website lead form over the API",
       "kind": "e2e",
-      "result": "PASS",
-      "tests": 6,
-      "pass": 6,
-      "fail": 0,
-      "notRun": 0,
-      "seconds": 7.7,
-      "command": "../../../opt/node22/bin/node tests/e2e/website-lead.e2e.mjs"
+      "result": "NOT_RUN",
+      "why": "pass --browser"
     },
     {
       "suite": "browser: enterprise web E2E",
       "kind": "e2e",
-      "result": "PASS",
-      "tests": 88,
-      "pass": 88,
-      "fail": 0,
-      "seconds": 30.7,
-      "command": "../../../opt/node22/bin/node tests/browser/enterprise-web.test.mjs"
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: design tokens (themes, theme-init, Inter)",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: brand and type on the three surfaces (D39, D7)",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
     },
     {
       "suite": "browser: public website",
       "kind": "browser",
-      "result": "PASS",
-      "tests": 54,
-      "pass": 54,
-      "fail": 0,
-      "notRun": 0,
-      "seconds": 13,
-      "command": "../../../opt/node22/bin/node tests/browser/website.test.mjs"
+      "result": "NOT_RUN",
+      "why": "pass --browser"
     },
     {
       "suite": "browser: investor demo shell",
       "kind": "browser",
-      "result": "PASS",
-      "tests": 101,
-      "pass": 101,
-      "fail": 0,
-      "notRun": 0,
-      "seconds": 97.4,
-      "command": "../../../opt/node22/bin/node tests/browser/demo.test.mjs"
+      "result": "NOT_RUN",
+      "why": "pass --browser"
     },
     {
-      "suite": "browser: Founder Studio",
+      "suite": "unit: demo operational workspaces",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 13,
+      "pass": 13,
+      "fail": 0,
+      "seconds": 0.3,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-ops.test.mjs"
+    },
+    {
+      "suite": "browser: investor demo dispatch",
       "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: investor demo ServiceHands",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: investor demo Core Replay",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: investor demo FI scan replay",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: investor demo decisions",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: investor demo destructive-action safeguards",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: investor demo enquiry links",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: investor demo Learn labs",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: investor demo hardening",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-parity-areas",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-access",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-viewas",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-phoneshell",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-scouter",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-rolemotion",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-searchparty-bar",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-boundaries",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-training-isolation",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "unit: demo spaces (campus records, search, scenarios, tours)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 11,
+      "pass": 11,
+      "fail": 0,
+      "seconds": 1.2,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-spaces.test.mjs"
+    },
+    {
+      "suite": "unit: demo Lite (45 rooms, lenses, coverage overlays, four states, wayfinding, QR)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 16,
+      "pass": 16,
+      "fail": 0,
+      "seconds": 0.9,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-lite.test.mjs"
+    },
+    {
+      "suite": "unit: demo worlds (four worlds, 52 role configurations, no-loss, no grant)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 7,
+      "pass": 7,
+      "fail": 0,
+      "seconds": 0.3,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-worlds.test.mjs"
+    },
+    {
+      "suite": "unit: demo estates (one model, University 38 classrooms / 4 dormitories / 3 campuses, Stadium, Convention)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 21,
+      "pass": 21,
+      "fail": 0,
+      "seconds": 0.3,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-estates.test.mjs"
+    },
+    {
+      "suite": "unit: Space Optimizer engine (nine dimensions, options A/B/C, stated rules, every world)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 14,
+      "pass": 14,
+      "fail": 0,
+      "seconds": 0.6,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-optimizer.test.mjs"
+    },
+    {
+      "suite": "unit: SIGNAL canon (hash manifest, 133 chapters / 1,610 panels / 387 decisions, engine rules, every chapter readable)",
+      "kind": "unit",
       "result": "PASS",
       "tests": 19,
       "pass": 19,
       "fail": 0,
-      "notRun": 1,
-      "seconds": 39.6,
-      "command": "../../../opt/node22/bin/node tests/browser/founder-studio.test.mjs"
+      "seconds": 0.7,
+      "command": "../../../opt/node22/bin/node --test tests/unit/signal-canon.test.mjs"
     },
     {
-      "suite": "e2e: founder town hall (Founder Edition)",
-      "kind": "e2e",
+      "suite": "unit: SIGNAL content bundle (lessons, quizzes, drills, labs, incidents, gates; held by hash)",
+      "kind": "unit",
       "result": "PASS",
-      "tests": 25,
-      "pass": 25,
+      "tests": 7,
+      "pass": 7,
       "fail": 0,
-      "seconds": 49.1,
-      "command": "../../../opt/node22/bin/node tests/e2e/founder-townhall.e2e.mjs"
+      "seconds": 0.3,
+      "command": "../../../opt/node22/bin/node --test tests/unit/signal-library.test.mjs"
     },
     {
-      "suite": "e2e: founder decisions (hosted studio over the API)",
-      "kind": "e2e",
+      "suite": "unit: SIGNAL story engine (decisions recorded as the reference does, clock, echoes, gates, quiz records)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 16,
+      "pass": 16,
+      "fail": 0,
+      "seconds": 0.2,
+      "command": "../../../opt/node22/bin/node --test tests/unit/signal-story.test.mjs"
+    },
+    {
+      "suite": "unit: SIGNAL drills (six kinds on the reference rules, all 146 drills)",
+      "kind": "unit",
       "result": "PASS",
       "tests": 9,
       "pass": 9,
       "fail": 0,
-      "notRun": 0,
-      "seconds": 6.8,
-      "command": "../../../opt/node22/bin/node tests/e2e/founder-decisions.e2e.mjs"
+      "seconds": 0.2,
+      "command": "../../../opt/node22/bin/node --test tests/unit/signal-drills.test.mjs"
+    },
+    {
+      "suite": "unit: SIGNAL live incidents (the reference rules; all 121 solver paths end proven inside the clock)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 7,
+      "pass": 7,
+      "fail": 0,
+      "seconds": 0.2,
+      "command": "../../../opt/node22/bin/node --test tests/unit/signal-incidents.test.mjs"
+    },
+    {
+      "suite": "unit: SIGNAL Fix-It Labs (shell rules; signal flow, network, power, fill, EQ, camera, DMX, RF: every lab fails at start, its fix passes)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 15,
+      "pass": 15,
+      "fail": 0,
+      "seconds": 0.2,
+      "command": "../../../opt/node22/bin/node --test tests/unit/signal-labs.test.mjs"
+    },
+    {
+      "suite": "unit: SIGNAL Physics in Motion (24 models; all 36 physics labs fail at start and pass with their setting)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 7,
+      "pass": 7,
+      "fail": 0,
+      "seconds": 0.4,
+      "command": "../../../opt/node22/bin/node --test tests/unit/signal-physics.test.mjs"
+    },
+    {
+      "suite": "unit: SIGNAL ratings, season reviews and the loadout (six ratings from first attempts, Story Score, game over and retry)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "seconds": 0.2,
+      "command": "../../../opt/node22/bin/node --test tests/unit/signal-ratings.test.mjs"
+    },
+    {
+      "suite": "unit: SIGNAL meltdowns (the cascade engine; the five expert runs end proven with grade S, boundaries and idling fail)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "seconds": 0.5,
+      "command": "../../../opt/node22/bin/node --test tests/unit/signal-meltdown.test.mjs"
+    },
+    {
+      "suite": "unit: SIGNAL challenges (thirteen models in five modes; every start fails and every recipe passes as the reference QA logged)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 131,
+      "pass": 131,
+      "fail": 0,
+      "seconds": 0.6,
+      "command": "../../../opt/node22/bin/node --test tests/unit/signal-challenges.test.mjs"
+    },
+    {
+      "suite": "unit: SIGNAL boss levels (all twelve clear on the intended run; every wrong tap, call, question, scope, design or estimate ends it)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 30,
+      "pass": 30,
+      "fail": 0,
+      "seconds": 0.4,
+      "command": "../../../opt/node22/bin/node --test tests/unit/signal-boss.test.mjs"
+    },
+    {
+      "suite": "unit: SIGNAL Mission Control (points, the ladder, domain levels, crew trust, the systems map)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 6,
+      "pass": 6,
+      "fail": 0,
+      "seconds": 0.2,
+      "command": "../../../opt/node22/bin/node --test tests/unit/signal-mission.test.mjs"
+    },
+    {
+      "suite": "unit: SIGNAL result pop-ups (each gate cleared, the chapter complete, the quest objective and rating)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "seconds": 0.2,
+      "command": "../../../opt/node22/bin/node --test tests/unit/signal-pops.test.mjs"
+    },
+    {
+      "suite": "unit: SIGNAL mentor channel, built-in answers (the twenty prepared answers and seven suggestions)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "seconds": 0.2,
+      "command": "../../../opt/node22/bin/node --test tests/unit/signal-mentor.test.mjs"
+    },
+    {
+      "suite": "unit: Lite studio model (geometry with provenance, recipe, prediction, corrections, variants)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "seconds": 0.2,
+      "command": "../../../opt/node22/bin/node --test tests/unit/lite-studio.test.mjs"
+    },
+    {
+      "suite": "unit: Design a Space concept (fixes, rehearsal, identity across versions, import guard)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 4,
+      "pass": 4,
+      "fail": 0,
+      "seconds": 0.2,
+      "command": "../../../opt/node22/bin/node --test tests/unit/studio-concept.test.mjs"
+    },
+    {
+      "suite": "unit: Scouter standard kits (propose, review by another role, publish, stale, adopt)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "seconds": 0.2,
+      "command": "../../../opt/node22/bin/node --test tests/unit/scouter-profiles.test.mjs"
+    },
+    {
+      "suite": "unit: Build a Room edits (move, duplicate, swap within a group, retire a connection, compare revisions)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "seconds": 0.2,
+      "command": "../../../opt/node22/bin/node --test tests/unit/build-room-edits.test.mjs"
+    },
+    {
+      "suite": "unit: Build a Room commissioning workbook (a valid zip, seven sheets, formulas with cached counts, formula text kept as text)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "seconds": 0.2,
+      "command": "../../../opt/node22/bin/node --test tests/unit/build-workbook.test.mjs"
+    },
+    {
+      "suite": "unit: the five axes of the Experience Language (condition, provenance, confidence, workflow, maturity)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 4,
+      "pass": 4,
+      "fail": 0,
+      "seconds": 0.3,
+      "command": "../../../opt/node22/bin/node --test tests/unit/ui-axes.test.mjs"
+    },
+    {
+      "suite": "unit: Drawing Intelligence display viewing analysis (ST-VID-02 arithmetic, candidate sizes, provenance of every input)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "seconds": 0.1,
+      "command": "../../../opt/node22/bin/node --test tests/unit/drawing-viewing.test.mjs"
+    },
+    {
+      "suite": "unit: SIGNAL glossary terms in the story (first use per chapter, the reference’s expressions)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 4,
+      "pass": 4,
+      "fail": 0,
+      "seconds": 0.2,
+      "command": "../../../opt/node22/bin/node --test tests/unit/signal-glossary.test.mjs"
+    },
+    {
+      "suite": "unit: Engineering Manual (chapters, rules, workflow, exceptions)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 10,
+      "pass": 10,
+      "fail": 0,
+      "seconds": 0.8,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-manual.test.mjs"
+    },
+    {
+      "suite": "unit: generated documents are current (estate manifests, product census, workflow matrix)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 4,
+      "pass": 4,
+      "fail": 0,
+      "seconds": 1.6,
+      "command": "../../../opt/node22/bin/node --test tests/unit/docs-generated.test.mjs"
+    },
+    {
+      "suite": "unit: search that reads the sentence (corrections, conditions, counted answers, drop one condition; every count recomputed from the records)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 13,
+      "pass": 13,
+      "fail": 0,
+      "seconds": 0.8,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-understand.test.mjs"
+    },
+    {
+      "suite": "unit: request portal (the proposal is the design engine's output; sending, refusals, following; who may ask)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 10,
+      "pass": 10,
+      "fail": 0,
+      "seconds": 0.4,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-intake.test.mjs"
+    },
+    {
+      "suite": "unit: in this room (equipment, history, what a symptom points at, safe guidance, outcomes written to ServiceHands and the room; who may)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 12,
+      "pass": 12,
+      "fail": 0,
+      "seconds": 0.8,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-here.test.mjs"
+    },
+    {
+      "suite": "unit: room control (panel generated from each room record; no impossible state in 18,000 random presses; commands, simulated adapter, authority, ledger)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "seconds": 0.9,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-control.test.mjs"
+    },
+    {
+      "suite": "unit: Site Champion (the permission model over every legacy table and registered surface; four governed actions, site scope, sixteen-role matrix, ledger)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "seconds": 0.7,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-champion.test.mjs"
+    },
+    {
+      "suite": "unit: connect (people directory and site champions from the estate; verified app-jump formats and encoding; schedule-aware proposals across time zones in thousands of random cases; confirm re-checks and is idempotent; one adapter contract over the simulated calendar and the mock-tested Graph adapter; who may)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 33,
+      "pass": 33,
+      "fail": 0,
+      "seconds": 15,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-connect.test.mjs"
+    },
+    {
+      "suite": "unit: room guides (\"How do I use this room?\" generated for all 90 rooms: no sentence names equipment a room lacks; sections follow the panel; nothing unsafe)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 6,
+      "pass": 6,
+      "fail": 0,
+      "seconds": 0.8,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-guides.test.mjs"
+    },
+    {
+      "suite": "unit: Phase 5 documentation in the demonstration (profiles for all 90 rooms; the tracked room agrees with its dossier; sixteen-role matrix; the dossier’s gate; captures committed once)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 6,
+      "pass": 6,
+      "fail": 0,
+      "seconds": 0.8,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-docs5.test.mjs"
+    },
+    {
+      "suite": "unit: Site Champion’s first weeks (lessons never say to open, unplug or climb; the check is marked in the store and needs the safety answer; the list is read from the record; champion only)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "seconds": 0.3,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-champion-start.test.mjs"
+    },
+    {
+      "suite": "unit: Microsoft Graph document source, MOCK-TESTED (same index as the simulated library after every change; folder rename and revocation found without the feed; no link off Graph followed; token never sent to a download; nothing outside the selection asked for)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 11,
+      "pass": 11,
+      "fail": 0,
+      "seconds": 0.3,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-knowledge-graph.test.mjs"
+    },
+    {
+      "suite": "unit: IT Onboarding Success Guide (covers the founder’s list; holds no tenant detail; personalised only from records; each item done by whoever it names; checks marked in the store; milestones derived; progress shown only to the starter, manager and, in part, mentor; revisions kept)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 10,
+      "pass": 10,
+      "fail": 0,
+      "seconds": 0.3,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-onboard.test.mjs"
+    },
+    {
+      "suite": "unit: Instant Room rules (guided shots and their safety wording; a photograph judged by arithmetic; coverage; measurements; differences from the record as questions; a plan only when enough was captured, with every guess listed)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "seconds": 0.3,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-instant.test.mjs"
+    },
+    {
+      "suite": "unit: Drawing Intelligence, reading and reviewing (six classes of knowing; no scale claimed from too little; overlaps and contradictions raised with both sources kept; untrusted input; the commissioning engine’s own rules as the standards review; revision diff)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 10,
+      "pass": 10,
+      "fail": 0,
+      "seconds": 0.3,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-drawing.test.mjs"
+    },
+    {
+      "suite": "unit: End User Success & Training Guide chapters (the founder’s twenty-eight contents each answered; no organisation, person or room named; nothing unsafe; no step-by-step for another company’s application; every link a registered page)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "seconds": 0.3,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-guide-chapters.test.mjs"
+    },
+    {
+      "suite": "unit: Harmony tool registry (asking does not grant; answers carry sources; steps are prepared, never taken; no link a role cannot open; sixteen roles)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "seconds": 1.4,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-harmony.test.mjs"
+    },
+    {
+      "suite": "unit: knowledge contract (five trust zones; no cross-tenant read in 20,000 random cases; promotion and sharing need a named person and consent; source hierarchy; freshness)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 12,
+      "pass": 12,
+      "fail": 0,
+      "seconds": 0.2,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-knowledge-contract.test.mjs"
+    },
+    {
+      "suite": "unit: knowledge ledger and governed ingestion (every object well-formed and its worked examples recomputed; isolation over all objects, both customers and every role; sync engine equals a fresh import over random sequences; untrusted documents; promotion and sharing refusals)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 13,
+      "pass": 13,
+      "fail": 0,
+      "seconds": 10.5,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-knowledge.test.mjs"
+    },
+    {
+      "suite": "unit: video QA (narration words, sync, captions, picture; the Film 13 scene record is what its measurements say)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "seconds": 0.2,
+      "command": "../../../opt/node22/bin/node --test tests/unit/media-qc.test.mjs"
+    },
+    {
+      "suite": "unit: role start pages and keyboard shortcuts (16 roles against the real policy and records; every link opens for its role)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 19,
+      "pass": 19,
+      "fail": 0,
+      "seconds": 1.5,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-rolehome.test.mjs"
+    },
+    {
+      "suite": "unit: offline worker and its build step (atomic install, shells kept across builds, network-first with fallback, ranged answers, packs)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 17,
+      "pass": 17,
+      "fail": 0,
+      "seconds": 0.3,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-offline.test.mjs"
+    },
+    {
+      "suite": "unit: game day state machine (phases, faults on estate records, holds, independent verification, public view)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 11,
+      "pass": 11,
+      "fail": 0,
+      "seconds": 0.2,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-gameday.test.mjs"
+    },
+    {
+      "suite": "unit: the critical signal (chain generated from estate records; simulated, inferred and known observations; the procedure for the isolated hop, for every hop; who may; engine invariants over 16,000 random actions; ledger)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 22,
+      "pass": 22,
+      "fail": 0,
+      "seconds": 1.2,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-critical-signal.test.mjs"
+    },
+    {
+      "suite": "unit: demo core screens (health, spine, campus aggregates)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 11,
+      "pass": 11,
+      "fail": 0,
+      "seconds": 0.9,
+      "command": "../../../opt/node22/bin/node --test tests/unit/demo-core-metrics.test.mjs"
+    },
+    {
+      "suite": "browser: demo-campus",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-rooms",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-lite",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-journey",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-room-jumps",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-cx-as-rooms",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-assurance-v253",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-lesson",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-cinematic",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-signal-lite",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-mixlab",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-signal-s1",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-lite-spatial",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-lite-tabs",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-lite-arrange",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-lite-worlds",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-lite-eye",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-lite-rooms",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-lite-views",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-tours",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-searchbar",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-search-scenarios",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-core",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-proof",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-docs5",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-guides",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-worlds",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-estate",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-optimizer",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-story",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-gameday",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-play",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-offline",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-rolehome",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-request",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-here",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-control",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-critical-signal",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-champion",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-connect",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-knowledge",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-harmony",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-champion-start",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-onboard",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-instant",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-drawing",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-manual",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-learn",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-boss",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-bench",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: demo-story-more",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: Founder Studio",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --studio"
+    },
+    {
+      "suite": "e2e: founder town hall (Founder Edition)",
+      "kind": "e2e",
+      "result": "NOT_RUN",
+      "why": "pass --studio"
+    },
+    {
+      "suite": "e2e: founder decisions (hosted studio over the API)",
+      "kind": "e2e",
+      "result": "NOT_RUN",
+      "why": "pass --studio"
     },
     {
       "suite": "media: full decode of every curated film",
@@ -499,22 +1488,42 @@
     {
       "suite": "deploy: public sites audit (functional, a11y, responsive; no P0/P1)",
       "kind": "deploy",
-      "result": "PASS",
-      "tests": 152,
-      "pass": 152,
-      "fail": 0,
-      "seconds": 157,
-      "command": "../../../opt/node22/bin/node scripts/audit/site-audit.mjs --strict --out=tests/evidence/SITE_AUDIT.json"
+      "result": "NOT_RUN",
+      "why": "pass --browser"
     },
     {
       "suite": "deploy: public static sites under the declared headers",
       "kind": "deploy",
-      "result": "PASS",
-      "tests": 17,
-      "pass": 17,
-      "fail": 0,
-      "seconds": 10.4,
-      "command": "../../../opt/node22/bin/node scripts/staging/verify-static.mjs"
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "security: public sites (headers, build chain, servers, dist)",
+      "kind": "security",
+      "result": "FAIL",
+      "tests": 10,
+      "pass": 9,
+      "fail": 1,
+      "seconds": 5,
+      "command": "../../../opt/node22/bin/node --test tests/security/public-sites.test.mjs"
+    },
+    {
+      "suite": "browser: public sites security (CSP in the page, no request leaves, injection, tampering, View-as)",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: website pricing and pilot readiness",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
+    },
+    {
+      "suite": "browser: website first screen (90-1)",
+      "kind": "browser",
+      "result": "NOT_RUN",
+      "why": "pass --browser"
     }
   ]
 }

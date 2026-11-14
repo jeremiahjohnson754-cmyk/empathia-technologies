@@ -52,7 +52,7 @@ unbroken long words), then reopens every file with independent readers (`export-
 - PDF: pdfinfo/pdftotext; pages, title metadata, real text, "page n of N" on every page; page images for review.
 - LibreOffice converts the DOCX, XLSX and PPTX of the first room to PDF.
 
-13 Nov 2026, 22:5x CT: 393 checks pass, 0 fail (13 reports × 6 formats: 5 commissioning packages, 5 assurance reports, 2 APEX cases (the seeded one, and one opened and acted on at every tier), the hostile report; LibreOffice included).
+13 Nov 2026, 22:10 CT: 393 checks pass, 0 fail (13 reports × 6 formats: 5 commissioning packages, 5 assurance reports, 2 APEX cases (the seeded one, and one opened and acted on at every tier), the hostile report; LibreOffice included).
 
 `tests/browser/demo-exports.test.mjs` downloads all six from the page as a person would and opens the bytes (14 checks, desktop and
 phone, commissioning, assurance and APEX): file names, PDF pages and text, the Office packages' main parts, the JSON schema and SHA-256, the CSV header, the SHA-256
