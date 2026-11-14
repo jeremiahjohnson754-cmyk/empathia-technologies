@@ -177,6 +177,12 @@ export const OPS_PAGES: readonly PageDef[] = [
     load: adapt(() => import('./pages/Scenarios.js'), (m, p) => h(m.ScenariosPage, { perspective: p.role })),
     search: { keywords: 'scenario journey teams boardroom lecture broadcast ballroom divisible end to end request acceptance assurance', aliases: ['commissioning scenarios', 'reference journeys'] },
   },
+  {
+    id: 'commissioning.analytics', title: 'Commissioning analytics', purpose: 'Results recorded and verified, failures, rooms accepted and refused steps, month by month, by building', product: 'commissioning',
+    path: '/commissioning/analytics', authority: { area: 'commissioning' },
+    load: adapt(() => import('./pages/CxAnalytics.js'), (m, p) => h(m.CxAnalyticsPage, { perspective: p.role, hash: p.hash })),
+    search: { keywords: 'commissioning analytics trend monthly results verified accepted refused building', aliases: ['commissioning trend', 'commissioning analytics'] },
+  },
   // ---- the operational workspaces (rebuild/demo-ops): each loads its own file (ws/<name>.js) only once the role is admitted
   {
     id: 'servicehands.analytics', title: 'Service analytics', purpose: 'Service by month and quarter, by building and project, and a scorecard that holds each vendor to its agreement', product: 'servicehands',
