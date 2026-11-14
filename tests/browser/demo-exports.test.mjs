@@ -63,6 +63,21 @@ const sha = (b) => crypto.createHash('sha256').update(b).digest('hex');
   await t.close();
 }
 {
+  // the reference room's package carries its documentation tracker, the plan drawn in the browser and links back into the record
+  const t = await open('#/commissioning/room/R-ATL-4-218', { role: 'architect', sw: false }); const p = t.page; p.setDefaultTimeout(30000);
+  const card = p.getByTestId('cx-export'); await card.waitFor();
+  const [dj] = await Promise.all([p.waitForEvent('download'), card.locator('button[data-format=json]').click()]);
+  const j = JSON.parse(fs.readFileSync(await dj.path(), 'utf8')); const { integrity, ...body } = j;
+  const [dd] = await Promise.all([p.waitForEvent('download'), card.locator('button[data-format=docx]').click()]);
+  const dz = await JSZip.loadAsync(fs.readFileSync(await dd.path())); const doc = await dz.file('word/document.xml').async('string'); const rels = await dz.file('word/_rels/document.xml.rels').async('string');
+  const plan = (j.media || []).find((m) => m.id === 'plan'); const origin = new URL(p.url()).origin;
+  ok('XP-DOCS', 'the reference room’s package holds the documentation tracker, the plan drawn from its record (a real PNG in the files), and links back to the record’s own pages', !!plan && plan.kind === 'drawing' && plan.bytes > 2000 && /^[0-9a-f]{64}$/.test(plan.sha256)
+    && j.tables.Documents?.rows.some((r) => r.state === 'Met') && j.links.length >= 10 && j.links.every((l) => l.url.startsWith(origin)) && j.links.some((l) => /#\/docs\//.test(l.url))
+    && integrity.value === sha(Buffer.from(JSON.stringify(body))) && /Documentation/.test(doc) && /Drawings and photographs/.test(doc) && Object.keys(dz.files).filter((n) => n.startsWith('word/media/')).length >= 2 && (rels.match(/hyperlink/g) || []).length >= 10 && !t.errs.length && !t.off.length,
+    `${plan?.bytes} ${j.links?.length} ${t.errs.join('|')}`);
+  await t.close();
+}
+{
   // the assurance report: the next step of the flagship journey (commissioning → assurance → APEX)
   const t = await open('#/assurance/room/R-ATL-4-218', { role: 'architect', sw: false }); const p = t.page; p.setDefaultTimeout(20000);
   const card = p.getByTestId('as-export'); await card.waitFor();

@@ -53,7 +53,8 @@ for m in manifest:
         wbv = openpyxl.load_workbook(p('xlsx'), data_only=True)
         names = wb.sheetnames
         check(rid, 'xlsx', 'opens', True, f'{len(names)} sheets: {", ".join(names[:6])}{"…" if len(names) > 6 else ""}')
-        check(rid, 'xlsx', 'one sheet per table plus Summary, Provenance, Dictionary', len(names) == len(tables) + 3, f'{len(names)} sheets for {len(tables)} tables')
+        extra = (1 if m.get('media') else 0) + (1 if m.get('links') else 0)
+        check(rid, 'xlsx', 'one sheet per table plus Summary, Provenance, Dictionary (and Pictures and Links when the report has them)', len(names) == len(tables) + 3 + extra, f'{len(names)} sheets for {len(tables)} tables')
         bad_rows, injected, frozen = [], [], 0
         for i, t in enumerate(tables):
             ws = wb[names[i + 1]]
@@ -111,6 +112,8 @@ for m in manifest:
         body = {k: v for k, v in doc.items() if k != 'integrity'}
         h = hashlib.sha256(json.dumps(body, ensure_ascii=False, separators=(',', ':')).encode('utf-8')).hexdigest()
         check(rid, 'json', 'SHA-256 integrity recomputes', h == doc['integrity']['value'], h[:16] + '…')
+        if m.get('media'):
+            check(rid, 'json', 'each picture is listed with its size and SHA-256', len(doc.get('media', [])) == m['media'] and all(x['sha256'] and x['bytes'] > 0 for x in doc['media']), f"{len(doc.get('media', []))} pictures")
         check(rid, 'json', 'every table is in the dossier', len(doc['tables']) == len(tables) and all(len(doc['tables'][t['title']]['rows']) == t['rows'] for t in tables), f'{len(doc["tables"])} tables')
     except Exception as e:  # noqa: BLE001
         check(rid, 'json', 'parses', False, repr(e))
@@ -130,6 +133,12 @@ for m in manifest:
         xmlfoot = ''.join(s.footer._element.xml for s in D.sections)
         check(rid, 'docx', 'page numbers in the footer', 'PAGE' in xmlfoot and 'NUMPAGES' in xmlfoot, foot.strip()[:60])
         check(rid, 'docx', 'document properties', D.core_properties.title == m['title'], D.core_properties.title or '')
+        if m.get('media'):
+            n_img = sum(1 for r_ in D.part.rels.values() if 'image' in r_.reltype)
+            check(rid, 'docx', 'every picture is embedded (the shield plus each drawing and photograph)', n_img >= m['media'] + 1, f'{n_img} images')
+        if m.get('links'):
+            n_ln = sum(1 for r_ in D.part.rels.values() if r_.reltype.endswith('/hyperlink'))
+            check(rid, 'docx', 'links are real hyperlinks', n_ln >= m['links'], f'{n_ln} hyperlinks')
         check(rid, 'docx', 'the shield is embedded', any('image' in r.reltype for r in D.part.rels.values()), 'image part present' if any('image' in r.reltype for r in D.part.rels.values()) else 'no image')
         if m['tables'] and m['tables'][0]['rows']:
             check(rid, 'docx', 'table text reaches the document', len(cells) > 20, f'{len(cells)} characters in tables')
@@ -147,6 +156,12 @@ for m in manifest:
         check(rid, 'pptx', 'title, summary, status, tables and provenance slides', len(sl) >= 4 + len(tables), f'{len(sl)} slides for {len(tables)} tables')
         check(rid, 'pptx', 'a native chart (editable in PowerPoint)', charts >= 1, f'{charts}')
         check(rid, 'pptx', 'a native table for every table with rows', tbls >= len([t for t in tables if t['rows']]), f'{tbls}')
+        if m.get('media'):
+            pics_ = sum(1 for s_ in sl for sh in s_.shapes if sh.shape_type == 13)
+            check(rid, 'pptx', 'a slide for each drawing and photograph', pics_ >= min(m['media'], 6) + 1, f'{pics_} pictures')
+        if m.get('links'):
+            hl = sum(1 for s_ in sl for sh in s_.shapes if sh.has_text_frame for para in sh.text_frame.paragraphs for run_ in para.runs if run_.hyperlink.address)
+            check(rid, 'pptx', 'links are real hyperlinks', hl >= min(m['links'], 14), f'{hl} hyperlinks')
         check(rid, 'pptx', 'the deck says what it is', 'synthetic' in alltext.lower() and m['title'] in alltext, 'title and provenance present')
     except Exception as e:  # noqa: BLE001
         check(rid, 'pptx', 'opens', False, repr(e))
@@ -162,6 +177,12 @@ for m in manifest:
         check(rid, 'pdf', 'real text, not a picture of text', winansi(m['title']) in txt and len(txt) > 400, f'{len(txt)} characters of text')
         check(rid, 'pdf', 'page numbers on every page', len(re.findall(r'page \d+ of %d' % pages, txt)) == pages, f'{len(re.findall(r"page \\d+ of %d" % pages, txt))} of {pages}')
         run(['pdftoppm', '-r', '60', '-png', '-f', '1', '-l', '2', p('pdf'), os.path.join(d, 'page')])
+        if m.get('media'):
+            imgs = run(['pdfimages', '-list', p('pdf')]).stdout.strip().splitlines()[2:]
+            check(rid, 'pdf', 'every picture is embedded (the shield plus each drawing and photograph)', len(imgs) >= m['media'] + 1, f'{len(imgs)} images')
+        if m.get('links'):
+            urls = [ln for ln in run(['pdfinfo', '-url', p('pdf')]).stdout.splitlines()[1:] if 'Annotation' in ln and 'http' in ln]
+            check(rid, 'pdf', 'links are live link annotations (poppler reads their addresses)', len(urls) >= m['links'], f"{len(urls)} link annotations for {m['links']} links")
     except Exception as e:  # noqa: BLE001
         check(rid, 'pdf', 'opens', False, repr(e))
 

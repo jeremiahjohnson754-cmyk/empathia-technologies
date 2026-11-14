@@ -33,6 +33,9 @@ export { asPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export
 export { seed, openApex, apexAct } from ${JSON.stringify(path.join(repo, 'apps/demo/src/workspace/store.ts'))};
 export { apexPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/apex.ts'))};
 export { estatePackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/estate.ts'))};
+export { prepareMedia, imageSize } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/media.ts'))};
+export { readDocs } from ${JSON.stringify(path.join(repo, 'apps/demo/src/docs5/store.ts'))};
+export { TRACKED_ROOM, TRACKED_REPORT } from ${JSON.stringify(path.join(repo, 'apps/demo/src/docs5/model.ts'))};
 export * as R from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/render.ts'))};
 export { FORMATS } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/model.ts'))};
 export { roomRecord, allRecords } from ${JSON.stringify(path.join(repo, 'apps/demo/src/campus/design.ts'))};
@@ -60,7 +63,17 @@ const ex = all.find((r) => r.exception); if (ex) pick.set(ex.outline.id, { r: ex
 const big = [...all].sort((a, b) => b.positions.length - a.positions.length)[0]; if (big) pick.set(big.outline.id, { r: big, why: 'the largest room (most positions)' });
 
 const made = { role: 'Commissioning Engineer (synthetic)', at: '2026-11-13T21:00:00.000Z', build: 'verify' };
-const reports = [...pick.values()].map(({ r, why }) => ({ why, rep: M.cxPackage(r, made) }));
+// the reference room carries its documentation tracker, a field capture and its photograph (a generated test image, labelled as a
+// fixture: no real photograph is invented), and links that start from a placeholder address
+let fixturePhoto = null;
+try { const sharp = createRequire(import.meta.url)(process.env.SHARP_PATH || '/opt/npm-tools/node_modules/sharp');
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><rect width="800" height="600" fill="#D0D5DD"/><rect x="120" y="140" width="560" height="320" fill="#475467"/><text x="400" y="320" font-family="Helvetica" font-size="34" fill="#fff" text-anchor="middle">TEST FIXTURE · not a photograph</text></svg>`;
+  fixturePhoto = new Uint8Array(await sharp(Buffer.from(svg)).jpeg({ quality: 80 }).toBuffer()); } catch { /* without sharp the photograph path is not exercised */ }
+const extrasFor = (id) => id !== M.TRACKED_ROOM ? { baseUrl: 'https://demo.example.invalid/' } : {
+  docs: M.readDocs([]), report: M.TRACKED_REPORT, baseUrl: 'https://demo.example.invalid/',
+  captures: [{ key: 'CAP-FIXTURE01', target: { kind: 'test', id: 'T-SIM-001' }, note: 'Test fixture capture (synthetic)', measurements: [{ quantity: 'Sound level', value: 71.5, unit: 'dB(A)', instrument: 'SYN-METER-01 (synthetic)', method: 'Seat 3, pink noise' }], photo: fixturePhoto ? { name: 'fixture.jpg', bytes: fixturePhoto.length, sha256: 'a'.repeat(64), annotated: false } : null, by: { label: 'Commissioning Engineer (synthetic)' }, at: '2026-11-12T15:00:00.000Z' }],
+  photos: fixturePhoto ? [{ key: 'CAP-FIXTURE01', name: 'fixture.jpg', mime: 'image/jpeg', bytes: fixturePhoto, ...M.imageSize(fixturePhoto), note: 'Test fixture capture (synthetic)', target: 'check T-SIM-001', at: '2026-11-12T15:00:00.000Z', by: 'Commissioning Engineer (synthetic)' }] : [] };
+const reports = [...pick.values()].map(({ r, why }) => ({ why, rep: M.cxPackage(r, made, extrasFor(r.outline.id)) }));
 // the assurance report: the seeded workspace's service requests are the people's reports Assurance reads
 const ws = M.seed(); const asRooms = new Map([['R-ATL-4-218', 'reference room: a replaced unit reopened tests'], ['R-MER-1-140', 'drift: furniture moved since handover'], ['R-BCN-3-225', 'failed: never accepted']]);
 for (const i of ws.incidents) if (!asRooms.has(i.roomId) && asRooms.size < 5) asRooms.set(i.roomId, `a service request is open (${i.id})`);
@@ -88,13 +101,15 @@ reports.push({ why: 'hostile input', rep: {
   ], dossier: { edge: true } } });
 
 const manifest = [];
+const raster = async (svg, w, h) => { try { const sharp = createRequire(import.meta.url)(process.env.SHARP_PATH || '/opt/npm-tools/node_modules/sharp'); return new Uint8Array(await sharp(Buffer.from(svg)).resize(w * 2, h * 2).png().toBuffer()); } catch { return undefined; } };
+for (let i = 0; i < reports.length; i++) reports[i].rep = await M.prepareMedia(reports[i].rep, raster);
 for (const { why, rep } of reports) {
   const dir = path.join(out, rep.id); fs.mkdirSync(dir, { recursive: true }); const files = {};
   for (const { f } of M.FORMATS) {
     const t0 = Date.now(); const fo = await M.R.render(rep, f, mark); const ms = Date.now() - t0;
     fs.writeFileSync(path.join(dir, fo.name), fo.bytes); files[f] = { name: fo.name, bytes: fo.bytes.length, mime: fo.mime, ms, ...(f === 'pdf' ? { substitutions: M.R.pdfSubstitutions } : {}) };
   }
-  manifest.push({ id: rep.id, why, primary: rep.primary || null, title: rep.title, subtitle: rep.subtitle, status: rep.status.label, tables: rep.sections.filter((s) => s.table).map((s) => ({ title: s.table.title, rows: s.table.rows.length, cols: s.table.cols.length })), kpis: rep.kpis.length, dir: path.relative(out, dir), files });
+  manifest.push({ id: rep.id, why, primary: rep.primary || null, media: (rep.media || []).length, links: (rep.links || []).length, title: rep.title, subtitle: rep.subtitle, status: rep.status.label, tables: rep.sections.filter((s) => s.table).map((s) => ({ title: s.table.title, rows: s.table.rows.length, cols: s.table.cols.length })), kpis: rep.kpis.length, dir: path.relative(out, dir), files });
 }
 fs.writeFileSync(path.join(out, 'manifest.json'), JSON.stringify(manifest, null, 2));
 

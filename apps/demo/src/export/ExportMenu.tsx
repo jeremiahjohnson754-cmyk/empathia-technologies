@@ -17,7 +17,7 @@ function save(name: string, mime: string, bytes: Uint8Array) {
   const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1500);
 }
 
-export function ExportMenu({ make, by, title = 'Export', sub, testId = 'export-menu' }: { make: () => Report; by: string; title?: string; sub?: string; testId?: string }) {
+export function ExportMenu({ make, by, title = 'Export', sub, testId = 'export-menu' }: { make: () => Report | Promise<Report>; by: string; title?: string; sub?: string; testId?: string }) {
   const { apply } = useWorkspace();
   const [busy, setBusy] = useState<Format | null>(null); const [last, setLast] = useState<Made | null>(null); const [err, setErr] = useState<string | null>(null);
   const go = async (f: Format) => {
@@ -25,7 +25,7 @@ export function ExportMenu({ make, by, title = 'Export', sub, testId = 'export-m
     try {
       const t0 = performance.now();
       const [{ render, sha256Hex }, mark] = await Promise.all([import('./render.js'), f === 'pdf' || f === 'docx' || f === 'pptx' ? emblemPng() : Promise.resolve(undefined)]);
-      const rep = make(); const out = await render(rep, f, mark); const sha = await sha256Hex(out.bytes);
+      const { prepareMedia, canvasRaster } = await import('./media.js'); const rep = f === 'csv' ? await make() : await prepareMedia(await make(), canvasRaster); const out = await render(rep, f, mark); const sha = await sha256Hex(out.bytes);
       save(out.name, out.mime, out.bytes);
       const m: Made = { name: out.name, format: f, bytes: out.bytes.length, sha, ms: Math.round(performance.now() - t0) }; setLast(m);
       apply((w) => { w.events.unshift({ at: new Date().toISOString(), by, type: 'export.created', aggregate: rep.scope.roomId || rep.id, detail: `${out.name} · ${m.bytes.toLocaleString('en-US')} bytes · SHA-256 ${sha}`, outcome: 'ALLOWED' }); return null; });

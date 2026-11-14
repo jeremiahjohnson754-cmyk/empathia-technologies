@@ -29,11 +29,18 @@ export interface Report {
   /** a small chart a report may carry: categories and named series of counts */
   chart?: { title: string; categories: string[]; series: Array<{ name: string; values: number[]; tone?: Tone | 'info' }> };
   sections: Section[];
+  /** pictures the report carries: drawings made from the record (svg, rasterised before writing) and photographs captured in the field */
+  media?: Media[];
+  /** addresses a reader can follow: the record's own pages and documents */
+  links?: Link[];
   /** the table the CSV carries (by title); the largest table when absent */
   primary?: string;
   /** the structured entities for the JSON dossier (ids and relationships) */
   dossier: Record<string, unknown>;
 }
+/** A picture in a report. `svg` is turned into `bytes` (PNG) by prepareMedia before a writer sees it; a writer skips an item without bytes. */
+export interface Media { id: string; title: string; caption: string; source: string; kind: 'drawing' | 'photo' | 'screenshot'; mime: 'image/png' | 'image/jpeg'; width: number; height: number; bytes?: Uint8Array; svg?: string; sha256?: string }
+export interface Link { label: string; url: string; note?: string }
 export interface FileOut { name: string; mime: string; bytes: Uint8Array; format: Format }
 export type Format = 'pdf' | 'docx' | 'xlsx' | 'csv' | 'pptx' | 'json';
 export const FORMATS: Array<{ f: Format; label: string; what: string; mime: string }> = [

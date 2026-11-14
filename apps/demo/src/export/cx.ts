@@ -11,14 +11,27 @@
 import { openIssues, PEOPLE, type RoomRecord } from '../campus/design.js';
 import { SITE, buildingByKey, shortName, fullName } from '../campus/canon.js';
 import { rowsOf, phaseStats, blockers, traceRows, res, ymd, accepted, cxState, CX_LABEL, VERDICT } from '../campus/cxRecord.js';
-import type { Report, Section } from './model.js';
+import type { Report, Section, Media, Link } from './model.js';
+import { requiredFor, type DocsWorking } from '@empathia/proof-registry';
+import { profileOf } from '../docs5/model.js';
+import { roomHref } from '../campus/canon.js';
+import { liteRoomHref } from '../lite/model.js';
+import { planSvg } from './plan.js';
 
 const who = (k?: string | null) => (k ? PEOPLE[k] || k.replace(/_/g, ' ') : '—');
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 
 export interface MadeBy { role: string; at: string; build: string }
+/** What the page knows beyond the room record: the documentation tracker (only the dossier's room has one), the field captures that
+ *  were synchronised into it, the photographs this browser still holds for them, and the address the links start from. */
+export interface CxExtras {
+  docs?: DocsWorking | null; report?: string | null;
+  captures?: Array<{ key: string; target: { kind: 'test' | 'doc'; id: string }; note: string; measurements: Array<{ quantity: string; value: number; unit: string; instrument: string; method: string }>; photo: { name: string; bytes: number; sha256: string; annotated: boolean } | null; by: { label: string }; at: string }>;
+  photos?: Array<{ key: string; name: string; mime: 'image/png' | 'image/jpeg'; bytes: Uint8Array; width: number; height: number; note: string; target: string; at: string; by: string }>;
+  baseUrl?: string;
+}
 
-export function cxPackage(r: RoomRecord, by: MadeBy): Report {
+export function cxPackage(r: RoomRecord, by: MadeBy, x: CxExtras = {}): Report {
   const o = r.outline; const b = buildingByKey(o.building); const rows = rowsOf(r); const app = rows.filter((x) => x.applicable);
   const ph = phaseStats(r); const bl = blockers(r); const tr = traceRows(r); const st = cxState(r); const S = CX_LABEL[st.state];
   const fw = r.positions.filter((p) => !p.furniture); const cur = r.baselines.find((x) => x.state === 'CURRENT'); const pend = r.baselines.find((x) => x.state === 'PENDING_ACCEPTANCE');
@@ -71,7 +84,32 @@ export function cxPackage(r: RoomRecord, by: MadeBy): Report {
       table: { title: 'Audit trail', cols: [{ key: 'at', label: 'When (UTC)', kind: 'date' }, { key: 'by', label: 'Who' }, { key: 'type', label: 'Event' }, { key: 'detail', label: 'Detail' }, { key: 'outcome', label: 'Outcome', kind: 'status' }], rows: r.events.map((e) => ({ at: e.at.slice(0, 16).replace('T', ' '), by: who(e.by), type: e.type, detail: e.detail, outcome: e.outcome === 'DENIED' ? 'Refused' : e.outcome === 'ALLOWED' ? 'Allowed' : 'Recorded' })) } },
   ];
 
+  // documentation: what this room requires and why (a pure function of its record), and, for the room with a tracker, where each stands
+  const reqs = requiredFor(profileOf(r), open.length); const tracked = new Map((x.docs?.docs || []).map((d) => [d.type, d]));
+  const base = x.baseUrl || ''; const abs = (h: string) => (base ? `${base}${h}` : h);
+  const docHref = (t: string) => (x.report ? abs(`#/docs/${x.report}/${t}`) : '');
+  sections.push({ id: 'documentation', heading: 'Documentation', text: [x.docs ? `The documentation tracker: ${x.docs.met} of ${x.docs.required} required documents are met for acceptance${x.docs.blockers.length ? `; ${plural(x.docs.blockers.length, 'document')} still stop${x.docs.blockers.length === 1 ? 's' : ''} it` : ''}.` : 'What this room’s documentation must hold, and why, from its equipment. No tracker is kept for this room in the demonstration, so no document is shown as submitted.'],
+    table: { title: 'Documents', cols: [{ key: 'doc', label: 'Document' }, { key: 'applies', label: 'Required' }, { key: 'why', label: 'Why' }, { key: 'owner', label: 'Owner' }, { key: 'state', label: 'State', kind: 'status' }, { key: 'rev', label: 'Revision' }, { key: 'file', label: 'File' }],
+      rows: reqs.map((q) => { const d = tracked.get(q.type); const sub = d?.submission; const att = sub?.attachment as { name?: string; bytes?: number; sha256?: string } | null | undefined;
+        return { doc: q.title, applies: q.applies ? 'yes' : 'no', why: q.why, owner: q.ownerLabel, state: !q.applies ? 'Not applicable' : d ? (d.met ? 'Met' : d.state.replace(/_/g, ' ').toLowerCase().replace(/^./, (c) => c.toUpperCase())) : 'Not tracked', rev: sub ? `r${sub.revision}` : '', file: att?.name ? `${att.name}${att.sha256 ? ` · SHA-256 ${att.sha256.slice(0, 12)}…` : ''}` : '' }; }), note: x.report ? 'Each tracked document’s page is listed under Links.' : undefined } });
+  if (x.docs?.findings.length) sections.push({ id: 'doc-findings', heading: 'Documentation findings', table: { title: 'Document findings', cols: [{ key: 'doc', label: 'Document' }, { key: 'detail', label: 'Finding' }, { key: 'action', label: 'To correct it' }, { key: 'blocking', label: 'Blocks acceptance', kind: 'status' }], rows: x.docs.findings.map((f) => ({ doc: reqs.find((q) => q.type === f.doc)?.title || f.doc, detail: f.detail, action: f.action, blocking: f.blocking ? 'Blocks' : 'Does not block' })) } });
+  if (x.captures?.length) sections.push({ id: 'captures', heading: 'Field captures', text: ['What was recorded in the room, as it was read: notes, measurements with their instrument and method, and the photograph’s fingerprint. A measurement here was entered by a person; nothing was filled in for them.'],
+    table: { title: 'Field captures', cols: [{ key: 'at', label: 'When (UTC)', kind: 'date' }, { key: 'by', label: 'Who' }, { key: 'target', label: 'For' }, { key: 'note', label: 'Note' }, { key: 'm', label: 'Measurements' }, { key: 'photo', label: 'Photograph' }],
+      rows: x.captures.map((c) => ({ at: c.at.slice(0, 16).replace('T', ' '), by: c.by.label, target: `${c.target.kind === 'doc' ? 'document' : 'check'} ${c.target.id}`, note: c.note, m: c.measurements.map((m) => `${m.quantity} ${m.value} ${m.unit} (${m.instrument}; ${m.method})`).join('; '), photo: c.photo ? `${c.photo.name} · ${(c.photo.bytes / 1024).toFixed(0)} KB · SHA-256 ${c.photo.sha256.slice(0, 12)}…${c.photo.annotated ? ' · annotated' : ''}` : '' })) } });
+  const plan = planSvg(r);
+  const media: Media[] = [
+    { id: 'plan', title: `Plan: ${shortName(o)}`, caption: `The room drawn from its record: ${fw.length} device positions by layer, furniture, ${o.dims[0]} × ${o.dims[1]} m (${o.kind === 'reference' ? 'from the design record' : 'modelled'}). A drawing of the record, not a survey or a photograph.`, source: 'room record (campus/design.ts)', kind: 'drawing', mime: 'image/png', width: plan.width, height: plan.height, svg: plan.svg },
+    ...(x.photos || []).map((ph) => ({ id: ph.key, title: `Field photograph · ${ph.target}`, caption: `${ph.note || 'Captured in the room.'} Taken by ${ph.by}, ${ph.at.slice(0, 16).replace('T', ' ')} UTC; kept in this browser and synchronised as ${ph.key}.`, source: `field capture ${ph.key} (${ph.name})`, kind: 'photo' as const, mime: ph.mime, width: ph.width, height: ph.height, bytes: ph.bytes })),
+  ];
+  const links: Link[] = [
+    { label: 'Commissioning record', url: abs(`#/commissioning/room/${o.id}`) }, { label: 'Traceability', url: abs(`#/commissioning/room/${o.id}/trace`) },
+    { label: 'Deficiencies', url: abs(`#/commissioning/room/${o.id}/deficiencies`) }, { label: 'Sign-off', url: abs(`#/commissioning/room/${o.id}/signoff`) },
+    { label: 'Assurance comparison', url: abs(`#/assurance/room/${o.id}`) }, { label: 'The room in 3D (Lite)', url: abs(liteRoomHref(o.id)) }, { label: 'The room on the campus', url: abs(roomHref(o)) },
+    ...(x.report ? [{ label: `Commissioning dossier ${x.report}`, url: abs(`#/dossier/${x.report}`) }, { label: 'Documentation tracker', url: abs(`#/docs/${x.report}`) }] : []),
+    ...reqs.filter((q) => tracked.has(q.type)).map((q) => ({ label: `Document: ${q.title}`, url: docHref(q.type) })),
+  ];
   return {
+    media, links,
     schema: 'empathia.report/1', id: `CX-${o.id}`, kind: 'commissioning-package', title: 'Commissioning completion package', subtitle: fullName(o),
     scope: { tenant: SITE.enterprise, site: SITE.name, building: b?.name || o.building, floor: `Floor ${o.floor}`, room: shortName(o), roomId: o.id },
     status: { label: S.label, tone: S.tone, why: st.why }, generatedAt: by.at, role: by.role, build: by.build,
@@ -107,6 +145,8 @@ export function cxPackage(r: RoomRecord, by: MadeBy): Report {
       issues: r.issues.map((i) => ({ id: i.id, severity: i.severity, state: i.state, positions: i.positions })),
       baselines: r.baselines.map((x) => ({ version: x.version, state: x.state, revision: x.revision, at: x.at })),
       exception: r.exception ? { id: r.exception.id, state: r.exception.state, requirement: r.exception.requirement } : null,
+      documentation: reqs.map((q) => ({ type: q.type, required: q.applies, state: tracked.get(q.type)?.state || null, met: tracked.get(q.type)?.met ?? null })),
+      captures: (x.captures || []).map((c) => ({ key: c.key, target: c.target, at: c.at, photoSha256: c.photo?.sha256 || null })),
       counts: r.counts,
     },
   };

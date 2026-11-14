@@ -20,6 +20,8 @@ const BRAND = { teal: '0A7268', ink: '0F172A', muted: '5B6676', line: 'D7DDE5', 
 const toneHex = (t: string) => (t === 'ok' ? BRAND.ok : t === 'bad' ? BRAND.bad : t === 'warn' ? BRAND.warn : BRAND.muted);
 const mime = (f: Format) => FORMATS.find((x) => x.f === f)!.mime;
 const enc = (s: string) => new TextEncoder().encode(s);
+const pics = (r: Report) => (r.media || []).filter((m) => m.bytes && m.bytes.length);
+const fit = (w: number, h: number, maxW: number, maxH: number) => { const k = Math.min(maxW / (w || 1), maxH / (h || 1), 1e9); return { w: Math.round((w || maxW) * k), h: Math.round((h || maxH) * k) }; };
 const tablesOf = (r: Report) => r.sections.filter((s) => s.table).map((s) => s.table!) as Table[];
 const safeCsv = (s: string) => (/^[=+\-@\t\r]/.test(s) ? `'${s}` : s);
 
@@ -48,6 +50,8 @@ export function toXlsx(r: Report): FileOut {
     ...totals,
   ] };
   const sheets: Sheet[] = [summary, ...tables.map((t, i) => ({ name: names[i]!, header: t.cols.map((c) => c.label), rows: t.rows.map((row) => t.cols.map((c) => { const v = row[c.key]; return v == null ? null : c.kind === 'number' && typeof v === 'number' ? v : String(v); })) }))];
+  if (r.media?.length) sheets.push({ name: sheetName('Pictures', used), header: ['Picture', 'Kind', 'Caption', 'Source', 'Pixels', 'SHA-256'], rows: pics(r).map((m) => [m.title, m.kind, m.caption, m.source, `${m.width} × ${m.height}`, m.sha256 || '']) });
+  if (r.links?.length) sheets.push({ name: sheetName('Links', used), header: ['Link', 'Address', 'Note'], rows: r.links.map((l) => [l.label, l.url, l.note || '']) });
   sheets.push({ name: sheetName('Provenance', used), header: ['Statement'], rows: r.provenance.map((p) => [p]) });
   sheets.push({ name: sheetName('Dictionary', used), header: ['Sheet', 'Column', 'Kind', 'Meaning'], rows: tables.flatMap((t, i) => t.cols.map((c) => [names[i]!, c.label, c.kind || 'text', `${t.title}: ${c.label}${t.note ? ` (${t.note})` : ''}`])) });
   return { name: fileName(r, 'xlsx'), mime: mime('xlsx'), bytes: buildXlsx(sheets, r.title), format: 'xlsx' };
@@ -69,6 +73,8 @@ export async function toJson(r: Report): Promise<FileOut> {
     schema: 'empathia.dossier/1', exportId: `${r.id}:${r.generatedAt}`, kind: r.kind, title: r.title, subtitle: r.subtitle, scope: r.scope,
     status: r.status, generatedAt: r.generatedAt, generatedAs: r.role, build: r.build, provenance: r.provenance, headline: r.headline, kpis: r.kpis,
     tables: Object.fromEntries(tablesOf(r).map((t) => [t.title, { columns: t.cols.map((c) => ({ key: c.key, label: c.label, kind: c.kind || 'text' })), rows: t.rows, note: t.note || null }])),
+    media: pics(r).map((m) => ({ id: m.id, title: m.title, kind: m.kind, caption: m.caption, source: m.source, mime: m.mime, width: m.width, height: m.height, bytes: m.bytes!.length, sha256: m.sha256 || null })),
+    links: (r.links || []).map((l) => ({ label: l.label, url: l.url, note: l.note || null })),
     entities: r.dossier,
   };
   const canonical = JSON.stringify(body);
@@ -79,7 +85,7 @@ export async function toJson(r: Report): Promise<FileOut> {
 // ------------------------------------------------------------------------------------------------------------------------- docx
 export async function toDocx(r: Report, mark?: Uint8Array): Promise<FileOut> {
   const D = await import('docx');
-  const { Document, Packer, Paragraph, TextRun, HeadingLevel, Table: DTable, TableRow, TableCell, WidthType, ShadingType, AlignmentType, Header, Footer, PageNumber, BorderStyle, ImageRun, PageBreak, TableLayoutType } = D;
+  const { Document, Packer, Paragraph, TextRun, HeadingLevel, Table: DTable, TableRow, TableCell, WidthType, ShadingType, AlignmentType, Header, Footer, PageNumber, BorderStyle, ImageRun, PageBreak, TableLayoutType, ExternalHyperlink } = D;
   const border = { style: BorderStyle.SINGLE, size: 4, color: BRAND.line };
   const borders = { top: border, bottom: border, left: border, right: border, insideHorizontal: border, insideVertical: border };
   const P = (text: string, o: { bold?: boolean; size?: number; color?: string; after?: number; italic?: boolean } = {}) => new Paragraph({ spacing: { after: o.after ?? 120 }, children: [new TextRun({ text, bold: o.bold, size: o.size, color: o.color, italics: o.italic })] });
@@ -101,6 +107,17 @@ export async function toDocx(r: Report, mark?: Uint8Array): Promise<FileOut> {
     if (s.facts?.length) body.push(facts(s.facts));
     for (const b of s.bullets || []) body.push(new Paragraph({ bullet: { level: 0 }, children: [new TextRun({ text: b, size: 20 })] }));
     if (s.table) { if (s.table.note) body.push(P(s.table.note, { italic: true, size: 16, color: BRAND.muted })); body.push(s.table.rows.length ? grid(s.table) : P('None on record.', { italic: true })); }
+  }
+  if (pics(r).length) {
+    body.push(new Paragraph({ heading: HeadingLevel.HEADING_1, spacing: { before: 280 }, children: [new TextRun({ text: 'Drawings and photographs', color: BRAND.ink })] }));
+    for (const m of pics(r)) { const z = fit(m.width, m.height, 600, 640);
+      body.push(new Paragraph({ keepNext: true, spacing: { before: 160, after: 60 }, children: [new TextRun({ text: m.title, bold: true, size: 20 })] }));
+      body.push(new Paragraph({ keepNext: true, children: [new ImageRun({ type: m.mime === 'image/jpeg' ? 'jpg' : 'png', data: m.bytes!, transformation: { width: z.w, height: z.h }, altText: { name: m.title, description: m.caption, title: m.title } })] }));
+      body.push(P(`${m.caption}${m.sha256 ? ` SHA-256 ${m.sha256.slice(0, 16)}…` : ''}`, { italic: true, size: 16, color: BRAND.muted })); }
+  }
+  if (r.links?.length) {
+    body.push(new Paragraph({ heading: HeadingLevel.HEADING_1, spacing: { before: 280 }, children: [new TextRun({ text: 'Links', color: BRAND.ink })] }));
+    for (const l of r.links) body.push(new Paragraph({ bullet: { level: 0 }, children: /^https?:\/\//.test(l.url) ? [new TextRun({ text: `${l.label}: `, size: 18 }), new ExternalHyperlink({ link: l.url, children: [new TextRun({ text: l.url, size: 18, style: 'Hyperlink', color: BRAND.teal, underline: {} })] })] : [new TextRun({ text: `${l.label}: ${l.url}`, size: 18 })] }));
   }
   body.push(new Paragraph({ heading: HeadingLevel.HEADING_1, spacing: { before: 280 }, children: [new TextRun({ text: 'Provenance', color: BRAND.ink })] }));
   for (const p of r.provenance) body.push(new Paragraph({ bullet: { level: 0 }, children: [new TextRun({ text: p, size: 18 })] }));
@@ -133,7 +150,7 @@ const SUBST: Record<string, string> = { '→': '->', '←': '<-', '↔': '<->', 
 export let pdfSubstitutions = 0;
 const winAnsi = (s: string) => { let out = ''; for (const ch of s) { const c = ch.codePointAt(0)!; if (SUBST[ch] != null && !(c >= 0x20 && c < 0x7f)) { out += SUBST[ch]; pdfSubstitutions++; } else if (c < 0x20) out += ' '; else if (c > 0xff && !'€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ'.includes(ch)) { out += '?'; pdfSubstitutions++; } else out += ch; } return out; };
 export async function toPdf(r: Report, mark?: Uint8Array): Promise<FileOut> {
-  const { PDFDocument, StandardFonts, rgb } = await import('pdf-lib'); pdfSubstitutions = 0;
+  const { PDFDocument, StandardFonts, rgb, PDFString, PDFName } = await import('pdf-lib'); pdfSubstitutions = 0;
   const hex = (h: string) => rgb(parseInt(h.slice(0, 2), 16) / 255, parseInt(h.slice(2, 4), 16) / 255, parseInt(h.slice(4, 6), 16) / 255);
   const doc = await PDFDocument.create();
   doc.setTitle(r.title); doc.setSubject(r.subtitle); doc.setAuthor('Empathia Technologies (synthetic demonstration)'); doc.setCreator('Empathia demonstration export'); doc.setProducer('pdf-lib');
@@ -193,6 +210,17 @@ export async function toPdf(r: Report, mark?: Uint8Array): Promise<FileOut> {
     for (const b of s.bullets || []) text(`•  ${b}`, { size: 10, gap: 2, x: M + 8, width: CW - 8 });
     if (s.table) { if (s.table.note) text(s.table.note, { font: I, size: 8.5, color: BRAND.muted }); if (s.table.rows.length) table({ cols: s.table.cols, rows: s.table.rows.map((rw) => s.table!.cols.map((c) => cellText(rw[c.key] ?? null))) }); else text('None on record.', { font: I, size: 10 }); }
   }
+  if (pics(r).length) { const m0 = pics(r)[0]!; need(fit(m0.width, m0.height, CW, 430).h + 150); heading('Drawings and photographs');   // the heading travels with its first picture
+    for (const m of pics(r)) { const im = m.mime === 'image/jpeg' ? await doc.embedJpg(m.bytes!) : await doc.embedPng(m.bytes!); const z = fit(im.width, im.height, CW, 430);
+      need(z.h + 60); text(m.title, { font: B, size: 10.5, gap: 4 }); page.drawImage(im, { x: M + (CW - z.w) / 2, y: y - z.h, width: z.w, height: z.h }); page.drawRectangle({ x: M + (CW - z.w) / 2, y: y - z.h, width: z.w, height: z.h, borderColor: hex(BRAND.line), borderWidth: 0.6 }); y -= z.h + 6;
+      text(`${m.caption}${m.sha256 ? ` SHA-256 ${m.sha256.slice(0, 16)}...` : ''}`, { font: I, size: 8.5, color: BRAND.muted, gap: 12 }); } }
+  if (r.links?.length) { heading('Links');
+    for (const l of r.links) { const label = `•  ${l.label}: `; need(14); const lw = F.widthOfTextAtSize(winAnsi(label), 9.5); page.drawText(winAnsi(label), { x: M + 8, y: y - 9.5, size: 9.5, font: F, color: hex('1F2937') });
+      const u = winAnsi(l.url); const room = CW - 8 - lw; let shown = u; while (shown.length > 8 && F.widthOfTextAtSize(shown, 9.5) > room) shown = `${shown.slice(0, -4)}…`.replace(/…+$/, '...');
+      page.drawText(shown, { x: M + 8 + lw, y: y - 9.5, size: 9.5, font: F, color: hex(BRAND.teal) });
+      if (/^https?:\/\//.test(l.url)) { const x1 = M + 8 + lw; const annot = doc.context.obj({ Type: 'Annot', Subtype: 'Link', Rect: [x1, y - 11.5, x1 + F.widthOfTextAtSize(shown, 9.5), y], Border: [0, 0, 0], A: { Type: 'Action', S: 'URI', URI: PDFString.of(l.url) } });
+        page.node.addAnnot(doc.context.register(annot)); void PDFName; }
+      y -= 9.5 * 1.45; } y -= 6; }
   heading('Provenance'); for (const p of r.provenance) text(`•  ${p}`, { size: 9.5, gap: 2, x: M + 8, width: CW - 8 });
   // headers and footers, now that the page count is known
   pages.forEach((pg, i) => {
@@ -244,6 +272,12 @@ export async function toPptx(r: Report, mark?: Uint8Array): Promise<FileOut> {
         { x: 0.5, y: 1.6, w: 12.3, fontSize: 10, fontFace: 'Calibri', color: '1F2937', border: { type: 'solid', pt: 0.5, color: BRAND.line }, autoPage: false, valign: 'middle' });
     }
   }
+  // the drawings and photographs, one a slide (at most six), then the links
+  for (const m of pics(r).slice(0, 6)) { const sl = p.addSlide({ masterName: 'EMP' }); title(sl, m.title); const z = fit(m.width, m.height, 12.3, 4.6);
+    sl.addImage({ data: `data:${m.mime};base64,${b64(m.bytes!)}`, x: 0.5 + (12.3 - z.w) / 2, y: 1.2, w: z.w, h: z.h, altText: m.caption });
+    sl.addText(m.caption, { x: 0.6, y: 1.25 + z.h + 0.1, w: 12.1, h: 0.7, fontSize: 11, italic: true, color: BRAND.muted, valign: 'top' }); }
+  if (r.links?.length) { const sl = p.addSlide({ masterName: 'EMP' }); title(sl, 'Where to look next');
+    sl.addText(r.links.slice(0, 14).map((l) => ({ text: l.label, options: { bullet: true, breakLine: true, ...(/^https?:\/\//.test(l.url) ? { hyperlink: { url: l.url, tooltip: l.url } } : {}) } })), { x: 0.6, y: 1.3, w: 12.1, h: 5.3, fontSize: 14, color: BRAND.teal, valign: 'top', paraSpaceAfter: 4 }); }
   // last · provenance
   const sp = p.addSlide({ masterName: 'EMP' }); title(sp, 'What this deck is, and is not');
   sp.addText(r.provenance.map((x) => ({ text: x, options: { bullet: true, breakLine: true } })), { x: 0.6, y: 1.4, w: 12.1, h: 5.2, fontSize: 14, color: '1F2937', valign: 'top', paraSpaceAfter: 6 });
