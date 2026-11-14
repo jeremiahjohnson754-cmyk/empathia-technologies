@@ -37,6 +37,13 @@
     "evidenceId": {
       "type": "string",
       "format": "uuid"
+    },
+    "outgoing": {
+      "type": "string",
+      "enum": [
+        "RETIRE",
+        "SPARE"
+      ]
     }
   }
 }
