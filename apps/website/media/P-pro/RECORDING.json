@@ -1,0 +1,92 @@
+{
+  "key": "P-pro",
+  "title": "Pro: executive measures that show their work",
+  "product": "pro",
+  "recordedAt": "2026-11-14T03:09:54.182Z",
+  "duration": 31.02,
+  "viewport": "1280x720",
+  "colorScheme": "dark",
+  "data": "synthetic demonstration data",
+  "role": "architect",
+  "demoBuild": {
+    "commit": null,
+    "builtAt": "2026-11-14T02:38:15.027Z"
+  },
+  "git": "9c9c968",
+  "steps": [
+    {
+      "at": 0,
+      "until": 3.01,
+      "say": "Pro: executive measures that show their work.",
+      "proof": "[data-testid=tiles]",
+      "url": "/#/v25/exec"
+    },
+    {
+      "at": 3.01,
+      "until": 7.3,
+      "say": "Filter by period and by building.",
+      "proof": "[data-testid=exec-filters]",
+      "url": "/#/v25/exec"
+    },
+    {
+      "at": 7.3,
+      "until": 11.45,
+      "say": "Twenty-seven measures, each a passport: numerator, denominator, window and coverage.",
+      "proof": "[data-testid=passports]",
+      "url": "/#/v25/exec"
+    },
+    {
+      "at": 11.45,
+      "until": 15.74,
+      "say": "What is waiting for funding, and why.",
+      "proof": "[data-testid=pending-funding]",
+      "url": "/#/v25/exec"
+    },
+    {
+      "at": 15.74,
+      "until": 19.76,
+      "say": "Drill down: the decision behind a figure.",
+      "proof": "[data-testid=pending]",
+      "url": "/#/v25/decisions"
+    },
+    {
+      "at": 19.76,
+      "until": 24.01,
+      "say": "Its readiness, before anyone approves it.",
+      "proof": "[data-testid=readiness]",
+      "url": "/#/v25/decisions"
+    },
+    {
+      "at": 24.01,
+      "until": 27.56,
+      "say": "The ledger each measure is counted from.",
+      "proof": "[data-testid=ledger]",
+      "url": "/#/v25/ledger"
+    },
+    {
+      "at": 27.56,
+      "until": 31.02,
+      "say": "Back up: missing data is shown as missing, never as success.",
+      "proof": "[data-testid=passports]",
+      "url": "/#/v25/exec"
+    }
+  ],
+  "files": {
+    "720.mp4": {
+      "bytes": 1018708,
+      "sha256": "bde60e6489e47dae56adf17713bd7e8c01db3dc90bd181787ddd354d97a18091"
+    },
+    "poster.webp": {
+      "bytes": 53290,
+      "sha256": "9989155ab826e696e34c233fe4b12ec4f1e1ac30646fcbff9d708d8eb8400d3b"
+    },
+    "poster.jpg": {
+      "bytes": 99869,
+      "sha256": "f6f1907bc6753c2145414c40e01593a1939e81790a6ea17d7a9d7dfa9c2e5aba"
+    },
+    "captions.vtt": {
+      "bytes": 949,
+      "sha256": "5e80f885d6ef200870ead7df802e268b1a3927e7f726f6478baf1fce474ec3ef"
+    }
+  }
+}

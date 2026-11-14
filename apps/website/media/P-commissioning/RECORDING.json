@@ -1,0 +1,106 @@
+{
+  "key": "P-commissioning",
+  "title": "Commissioning and assurance: from the campus to one check, and back",
+  "product": "commissioning",
+  "recordedAt": "2026-11-14T02:59:04.158Z",
+  "duration": 33.32,
+  "viewport": "1280x720",
+  "colorScheme": "dark",
+  "data": "synthetic demonstration data",
+  "role": "architect",
+  "demoBuild": {
+    "commit": null,
+    "builtAt": "2026-11-14T02:38:15.027Z"
+  },
+  "git": "9c9c968",
+  "steps": [
+    {
+      "at": 0,
+      "until": 2.62,
+      "say": "Commissioning: every room on the campus, and what needs attention.",
+      "proof": "[data-testid=cx-attention]",
+      "url": "/#/commissioning"
+    },
+    {
+      "at": 2.62,
+      "until": 6.19,
+      "say": "Drill down: one room, through its phases.",
+      "proof": "[data-testid=cx-phases]",
+      "url": "/#/commissioning/room/R-ATL-4-218"
+    },
+    {
+      "at": 6.19,
+      "until": 9.53,
+      "say": "Every check, with its evidence and who ran it.",
+      "proof": "[data-testid=cx-checks]",
+      "url": "/#/commissioning/room/R-ATL-4-218"
+    },
+    {
+      "at": 9.53,
+      "until": 12.5,
+      "say": "Traceability: from the requirement to the test that proves it.",
+      "proof": "[data-testid=cx-room]",
+      "url": "/#/commissioning/room/R-ATL-4-218/trace"
+    },
+    {
+      "at": 12.5,
+      "until": 15.48,
+      "say": "The room’s deficiencies, each with an owner.",
+      "proof": "[data-testid=cx-room]",
+      "url": "/#/commissioning/room/R-ATL-4-218/deficiencies"
+    },
+    {
+      "at": 15.48,
+      "until": 19.01,
+      "say": "Assurance: the room in its four states.",
+      "proof": "[data-testid=as-four-states]",
+      "url": "/#/assurance/room/R-ATL-4-218"
+    },
+    {
+      "at": 19.01,
+      "until": 22.97,
+      "say": "Run the checks again, on a simulated system: a simulation never proves commissioning.",
+      "proof": "[data-testid=as-run]",
+      "url": "/#/assurance/room/R-ATL-4-218"
+    },
+    {
+      "at": 22.97,
+      "until": 26.11,
+      "say": "Back up: every open deficiency across the campus,",
+      "proof": "[data-testid=cx-deficiencies]",
+      "url": "/#/commissioning/deficiencies"
+    },
+    {
+      "at": 26.11,
+      "until": 30.09,
+      "say": "grouped by who owns the fix.",
+      "proof": "[data-testid=cx-owners]",
+      "url": "/#/commissioning/deficiencies"
+    },
+    {
+      "at": 30.09,
+      "until": 33.32,
+      "say": "Designed, commissioned, current and proposed, never confused.",
+      "proof": "[data-testid=cx-attention]",
+      "url": "/#/commissioning"
+    }
+  ],
+  "files": {
+    "720.mp4": {
+      "bytes": 1396512,
+      "sha256": "58ebb7c7d5c699eb73e7355b39f67e1ceba738403130f9de406bb86c14b3231e"
+    },
+    "poster.webp": {
+      "bytes": 56860,
+      "sha256": "57cc6d211d1acb633dd4cc82b7759a36614680462746a04691660f58abc9ed40"
+    },
+    "poster.jpg": {
+      "bytes": 104631,
+      "sha256": "f7dee83b5496e8f92a90e25d0a8bb7b73101e9a551ce06820008f1e358c1f110"
+    },
+    "captions.vtt": {
+      "bytes": 1183,
+      "sha256": "e0c8987e61a572353c3dc9728280940336463a5732fc4b24510e48d25f82b595"
+    }
+  }
+}

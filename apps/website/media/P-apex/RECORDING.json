@@ -1,0 +1,92 @@
+{
+  "key": "P-apex",
+  "title": "APEX: cited hypotheses, bounded actions, blocked outcomes",
+  "product": "apex",
+  "recordedAt": "2026-11-14T03:07:18.473Z",
+  "duration": 31.56,
+  "viewport": "1280x720",
+  "colorScheme": "dark",
+  "data": "synthetic demonstration data",
+  "role": "architect",
+  "demoBuild": {
+    "commit": null,
+    "builtAt": "2026-11-14T02:38:15.027Z"
+  },
+  "git": "9c9c968",
+  "steps": [
+    {
+      "at": 0,
+      "until": 3.22,
+      "say": "APEX: cited hypotheses, bounded actions, and outcomes it is not allowed to take.",
+      "proof": "[data-testid=apex-cases]",
+      "url": "/#/v25/apex"
+    },
+    {
+      "at": 3.22,
+      "until": 7.8,
+      "say": "Drill down: one case, far-end audio dropping out.",
+      "proof": "[data-testid=apex-case]",
+      "url": "/#/v25/apex"
+    },
+    {
+      "at": 7.8,
+      "until": 11.75,
+      "say": "The layers it reasons over, each one cited.",
+      "proof": "[data-testid=layers]",
+      "url": "/#/v25/apex"
+    },
+    {
+      "at": 11.75,
+      "until": 15.76,
+      "say": "A hypothesis, with the evidence for and against it.",
+      "proof": "[data-testid=hypothesis]",
+      "url": "/#/v25/apex"
+    },
+    {
+      "at": 15.76,
+      "until": 20.18,
+      "say": "What it may do alone, what needs a person, and what it may never do.",
+      "proof": "[data-testid=apex-tiers]",
+      "url": "/#/v25/apex"
+    },
+    {
+      "at": 20.18,
+      "until": 24.04,
+      "say": "Every step it took, in its log.",
+      "proof": "[data-testid=apex-log]",
+      "url": "/#/v25/apex"
+    },
+    {
+      "at": 24.04,
+      "until": 28.28,
+      "say": "Across to Search Party: the room and who answers for it.",
+      "proof": "[data-testid=impact]",
+      "url": "/#/search?focus=Room:R-ATL-4-218"
+    },
+    {
+      "at": 28.28,
+      "until": 31.56,
+      "say": "And back: a person decides; APEX shows its work.",
+      "proof": "[data-testid=apex-cases]",
+      "url": "/#/v25/apex"
+    }
+  ],
+  "files": {
+    "720.mp4": {
+      "bytes": 1129573,
+      "sha256": "1ed6ed67bd915bb83770e90aa997c400caf6c732903d383a0c0c3b828bd85087"
+    },
+    "poster.webp": {
+      "bytes": 60372,
+      "sha256": "404b78c11bab353c72fe8c63e3bc9e3aba055b0274a29a392f65374cd235087a"
+    },
+    "poster.jpg": {
+      "bytes": 111196,
+      "sha256": "858d1d94318be8fd9247ec52b9ad088cca367b017cf631d063b96de53917fd20"
+    },
+    "captions.vtt": {
+      "bytes": 1007,
+      "sha256": "b5d43bae84d877e45672a580d3e386258e3041a941286defb3c864323acaf273"
+    }
+  }
+}

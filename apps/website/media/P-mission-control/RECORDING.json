@@ -1,0 +1,99 @@
+{
+  "key": "P-mission-control",
+  "title": "Mission Control: what changed, what matters, what needs action",
+  "product": "mission-control",
+  "recordedAt": "2026-11-14T03:05:47.528Z",
+  "duration": 32.92,
+  "viewport": "1280x720",
+  "colorScheme": "dark",
+  "data": "synthetic demonstration data",
+  "role": "architect",
+  "demoBuild": {
+    "commit": null,
+    "builtAt": "2026-11-14T02:38:15.027Z"
+  },
+  "git": "9c9c968",
+  "steps": [
+    {
+      "at": 0,
+      "until": 3.03,
+      "say": "Mission Control: what changed, what matters, and what needs action.",
+      "proof": "[data-testid=tiles]",
+      "url": "/#/v25"
+    },
+    {
+      "at": 3.03,
+      "until": 6.79,
+      "say": "Every stage of a room’s life, each with what is waiting there.",
+      "proof": "[data-testid=stations]",
+      "url": "/#/v25"
+    },
+    {
+      "at": 6.79,
+      "until": 10.29,
+      "say": "Drill down: the decision desk, each decision with its reason.",
+      "proof": "[data-testid=pending]",
+      "url": "/#/v25/decisions"
+    },
+    {
+      "at": 10.29,
+      "until": 14.26,
+      "say": "Every decision kept in its log.",
+      "proof": "[data-testid=decision-log]",
+      "url": "/#/v25/decisions"
+    },
+    {
+      "at": 14.26,
+      "until": 17.55,
+      "say": "The executive view: twenty-seven measures, each with its working.",
+      "proof": "[data-testid=passports]",
+      "url": "/#/v25/exec"
+    },
+    {
+      "at": 17.55,
+      "until": 20.83,
+      "say": "The ledger behind every state: what changed, and when.",
+      "proof": "[data-testid=ledger]",
+      "url": "/#/v25/ledger"
+    },
+    {
+      "at": 20.83,
+      "until": 24.27,
+      "say": "Into service: the jobs open now.",
+      "proof": "[data-testid=jobs]",
+      "url": "/#/servicehands"
+    },
+    {
+      "at": 24.27,
+      "until": 29.78,
+      "say": "Into commissioning: what needs attention.",
+      "proof": "[data-testid=cx-attention]",
+      "url": "/#/commissioning"
+    },
+    {
+      "at": 29.78,
+      "until": 32.92,
+      "say": "And back up: one view of the whole estate, from one record.",
+      "proof": "[data-testid=stations]",
+      "url": "/#/v25"
+    }
+  ],
+  "files": {
+    "720.mp4": {
+      "bytes": 980272,
+      "sha256": "907eca4e3d4e8c5de85365d7145a89c8ffe601868a8372c9651713d36f6d15ea"
+    },
+    "poster.webp": {
+      "bytes": 49110,
+      "sha256": "9feaf472e8a6e14bc80600f272b405e17824ceaee6a11f851bee2f5404308786"
+    },
+    "poster.jpg": {
+      "bytes": 100657,
+      "sha256": "4ee4311f7287dcc627c98f9e8ed2ae77d78346199b95d5d71f3d294fa42a4341"
+    },
+    "captions.vtt": {
+      "bytes": 1094,
+      "sha256": "9a364e986adf40b2f14a967fe8a6b2bc8b9e7617728173d7ce9be40446e8e0e5"
+    }
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "key": "P-servicehands",
+  "title": "ServiceHands: from a report to the fix, with the room’s history",
+  "product": "servicehands",
+  "recordedAt": "2026-11-14T02:58:16.129Z",
+  "duration": 31.89,
+  "viewport": "1280x720",
+  "colorScheme": "dark",
+  "data": "synthetic demonstration data",
+  "role": "architect",
+  "demoBuild": {
+    "commit": null,
+    "builtAt": "2026-11-14T02:38:15.027Z"
+  },
+  "git": "9c9c968",
+  "steps": [
+    {
+      "at": 0,
+      "until": 2.65,
+      "say": "ServiceHands: every service job, from the first report to the fix.",
+      "proof": "[data-testid=jobs]",
+      "url": "/#/servicehands"
+    },
+    {
+      "at": 2.65,
+      "until": 5.5,
+      "say": "Anyone can report a problem: the room, what is wrong, in their own words.",
+      "proof": "[data-testid=in-title]",
+      "url": "/#/servicehands/new"
+    },
+    {
+      "at": 5.5,
+      "until": 10.66,
+      "say": "Reported in a sentence; nothing is sent in the demonstration.",
+      "proof": "[data-testid=in-submit]",
+      "url": "/#/servicehands/new"
+    },
+    {
+      "at": 10.66,
+      "until": 13.68,
+      "say": "Drill down: one job, through its stages.",
+      "proof": "[data-testid=stages]",
+      "url": "/#/servicehands/wo/WO-0088"
+    },
+    {
+      "at": 13.68,
+      "until": 17.02,
+      "say": "Who answers for the room, and who covers when they are away.",
+      "proof": "[data-testid=connect-who]",
+      "url": "/#/servicehands/wo/WO-0088"
+    },
+    {
+      "at": 17.02,
+      "until": 20.15,
+      "say": "The room’s own history, so the fix starts from what happened before.",
+      "proof": "[data-testid=rp-scrub]",
+      "url": "/#/replay/R-ATL-4-218"
+    },
+    {
+      "at": 20.15,
+      "until": 23.08,
+      "say": "Step through it, one dated record at a time.",
+      "proof": "[data-testid=rp-card]",
+      "url": "/#/replay/R-ATL-4-218?at=requirements"
+    },
+    {
+      "at": 23.08,
+      "until": 25.86,
+      "say": "Back up to the dispatch board: the same job, in its column.",
+      "proof": "[data-testid=board]",
+      "url": "/#/service?id=ISS-0417"
+    },
+    {
+      "at": 25.86,
+      "until": 28.86,
+      "say": "Coverage: who is on, where, and when.",
+      "proof": "[data-testid=coverage]",
+      "url": "/#/service/coverage"
+    },
+    {
+      "at": 28.86,
+      "until": 31.89,
+      "say": "One record from report to fix, shared with every other product.",
+      "proof": "[data-testid=jobs]",
+      "url": "/#/servicehands"
+    }
+  ],
+  "files": {
+    "720.mp4": {
+      "bytes": 1151692,
+      "sha256": "b2f3fbbc61defd78dcd1fe59cc23017742ea33f2856189aace4e8762e5ba9f9d"
+    },
+    "poster.webp": {
+      "bytes": 45070,
+      "sha256": "d2bcb764eec7faecc31c9e331a35584409de50de07acdaff74b143f32c4f3195"
+    },
+    "poster.jpg": {
+      "bytes": 87529,
+      "sha256": "87bbaf675042f9c315e6fa69e46d16fe0a03908377053ad5ec08f9cf01ef5778"
+    },
+    "captions.vtt": {
+      "bytes": 1231,
+      "sha256": "37377e85e576c5e38c4543cf970e06a4fc8031b3074503872a61e4e551ca15f7"
+    }
+  }
+}

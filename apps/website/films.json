@@ -97,6 +97,167 @@
       "rights": { "website": { "status": "VERIFIED", "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\" — accepting, as rights owner, the narration and picture sources of every film then listed (the inventory of that day), with the caveats below", "acceptedCaveats": ["AI-generated photographic people: the generator, its terms and the plan at creation are not on file", "not entered in the media-rights ledger"] } }
     },
     {
+      "key": "P-servicehands",
+      "title": "ServiceHands: from a report to the fix, with the room’s history",
+      "runtime": "0:32",
+      "placement": [
+        "/products/servicehands"
+      ],
+      "exclusive": true,
+      "productFilm": true,
+      "sound": "none",
+      "burnedCaptions": true,
+      "summary": "Recorded from the demonstration: the jobs, a problem reported in a sentence, one job through its stages, who answers for the room, the room's history step by step, the dispatch board and coverage.",
+      "source": {
+        "video": "recorded by scripts/media/record-product-film.mjs (scripts/media/product-films.mjs, P-servicehands); apps/website/media/P-servicehands/RECORDING.json holds every step, its proof and the hashes"
+      },
+      "disclosure": "Recorded from the demonstration on synthetic data; every step was checked before its words appeared. No sound.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "Empathia's own demonstration, recorded on 2026-11-13 with synthetic data; no third-party voice, music or imagery (founder, 2026-11-13 17:14 CT, asked for these films)"
+        }
+      }
+    },
+    {
+      "key": "P-commissioning",
+      "title": "Commissioning and assurance: from the campus to one check, and back",
+      "runtime": "0:33",
+      "placement": [
+        "/products/commissioning"
+      ],
+      "exclusive": true,
+      "productFilm": true,
+      "sound": "none",
+      "burnedCaptions": true,
+      "summary": "Recorded from the demonstration: the command centre, one room through its phases and checks, traceability, its deficiencies, assurance in four states, the campus's open deficiencies by owner, and back.",
+      "source": {
+        "video": "recorded by scripts/media/record-product-film.mjs (scripts/media/product-films.mjs, P-commissioning); apps/website/media/P-commissioning/RECORDING.json holds every step, its proof and the hashes"
+      },
+      "disclosure": "Recorded from the demonstration on synthetic data; every step was checked before its words appeared. No sound.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "Empathia's own demonstration, recorded on 2026-11-13 with synthetic data; no third-party voice, music or imagery (founder, 2026-11-13 17:14 CT, asked for these films)"
+        }
+      }
+    },
+    {
+      "key": "P-learn",
+      "title": "Learn: from what actually happened, to the lab, and back",
+      "runtime": "0:31",
+      "placement": [
+        "/products/learn"
+      ],
+      "exclusive": true,
+      "productFilm": true,
+      "sound": "none",
+      "burnedCaptions": true,
+      "summary": "Recorded from the demonstration: reviewed cases, the labs by subject, one lab, the Audio and Camera Labs, the onboarding guide and the standards manual, and back.",
+      "source": {
+        "video": "recorded by scripts/media/record-product-film.mjs (scripts/media/product-films.mjs, P-learn); apps/website/media/P-learn/RECORDING.json holds every step, its proof and the hashes"
+      },
+      "disclosure": "Recorded from the demonstration on synthetic data; every step was checked before its words appeared. No sound.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "Empathia's own demonstration, recorded on 2026-11-13 with synthetic data; no third-party voice, music or imagery (founder, 2026-11-13 17:14 CT, asked for these films)"
+        }
+      }
+    },
+    {
+      "key": "P-mission-control",
+      "title": "Mission Control: what changed, what matters, what needs action",
+      "runtime": "0:33",
+      "placement": [
+        "/products/mission-control"
+      ],
+      "exclusive": true,
+      "productFilm": true,
+      "sound": "none",
+      "burnedCaptions": true,
+      "summary": "Recorded from the demonstration: the overview, every stage with what is waiting, the decision desk and its log, the executive measures, the ledger, service and commissioning, and back.",
+      "source": {
+        "video": "recorded by scripts/media/record-product-film.mjs (scripts/media/product-films.mjs, P-mission-control); apps/website/media/P-mission-control/RECORDING.json holds every step, its proof and the hashes"
+      },
+      "disclosure": "Recorded from the demonstration on synthetic data; every step was checked before its words appeared. No sound.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "Empathia's own demonstration, recorded on 2026-11-13 with synthetic data; no third-party voice, music or imagery (founder, 2026-11-13 17:14 CT, asked for these films)"
+        }
+      }
+    },
+    {
+      "key": "P-pro",
+      "title": "Pro: executive measures that show their work",
+      "runtime": "0:31",
+      "placement": [
+        "/products/pro"
+      ],
+      "exclusive": true,
+      "productFilm": true,
+      "sound": "none",
+      "burnedCaptions": true,
+      "summary": "Recorded from the demonstration: the executive measures, their filters, the measure passports, what waits for funding, the decision behind a figure, its readiness, the ledger, and back.",
+      "source": {
+        "video": "recorded by scripts/media/record-product-film.mjs (scripts/media/product-films.mjs, P-pro); apps/website/media/P-pro/RECORDING.json holds every step, its proof and the hashes"
+      },
+      "disclosure": "Recorded from the demonstration on synthetic data; every step was checked before its words appeared. No sound.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "Empathia's own demonstration, recorded on 2026-11-13 with synthetic data; no third-party voice, music or imagery (founder, 2026-11-13 17:14 CT, asked for these films)"
+        }
+      }
+    },
+    {
+      "key": "P-apex",
+      "title": "APEX: cited hypotheses, bounded actions, blocked outcomes",
+      "runtime": "0:32",
+      "placement": [
+        "/products/apex"
+      ],
+      "exclusive": true,
+      "productFilm": true,
+      "sound": "none",
+      "burnedCaptions": true,
+      "summary": "Recorded from the demonstration: the cases, one case, its cited layers and hypotheses, what it may and may never do, its log, across to Search Party, and back.",
+      "source": {
+        "video": "recorded by scripts/media/record-product-film.mjs (scripts/media/product-films.mjs, P-apex); apps/website/media/P-apex/RECORDING.json holds every step, its proof and the hashes"
+      },
+      "disclosure": "Recorded from the demonstration on synthetic data; every step was checked before its words appeared. No sound.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "Empathia's own demonstration, recorded on 2026-11-13 with synthetic data; no third-party voice, music or imagery (founder, 2026-11-13 17:14 CT, asked for these films)"
+        }
+      }
+    },
+    {
+      "key": "P-field-intelligence",
+      "title": "Field Intelligence: what the collector declares, and what it may not do",
+      "runtime": "0:32",
+      "placement": [
+        "/products/field-intelligence"
+      ],
+      "exclusive": true,
+      "productFilm": true,
+      "sound": "none",
+      "burnedCaptions": true,
+      "summary": "Recorded from the demonstration: what the collector declares, the plan against what was executed, where a finding goes, the room's history and the room itself, and back.",
+      "source": {
+        "video": "recorded by scripts/media/record-product-film.mjs (scripts/media/product-films.mjs, P-field-intelligence); apps/website/media/P-field-intelligence/RECORDING.json holds every step, its proof and the hashes"
+      },
+      "disclosure": "Recorded from the demonstration on synthetic data; every step was checked before its words appeared. No sound.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "Empathia's own demonstration, recorded on 2026-11-13 with synthetic data; no third-party voice, music or imagery (founder, 2026-11-13 17:14 CT, asked for these films)"
+        }
+      }
+    },
+    {
       "key": "P-search-party",
       "title": "Search Party: ask, follow the connections, and come back",
       "runtime": "0:38",

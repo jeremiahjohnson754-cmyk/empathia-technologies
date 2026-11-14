@@ -1,0 +1,106 @@
+{
+  "key": "P-learn",
+  "title": "Learn: from what actually happened, to the lab, and back",
+  "product": "learn",
+  "recordedAt": "2026-11-14T03:01:20.767Z",
+  "duration": 31.13,
+  "viewport": "1280x720",
+  "colorScheme": "dark",
+  "data": "synthetic demonstration data",
+  "role": "architect",
+  "demoBuild": {
+    "commit": null,
+    "builtAt": "2026-11-14T02:38:15.027Z"
+  },
+  "git": "9c9c968",
+  "steps": [
+    {
+      "at": 0,
+      "until": 3.21,
+      "say": "Learn: reviewed cases from what actually happened on the campus.",
+      "proof": "[data-testid=learn-cases]",
+      "url": "/#/v25/learn"
+    },
+    {
+      "at": 3.21,
+      "until": 6.57,
+      "say": "Each case starts from a room and its service history.",
+      "proof": "[data-testid=learn-rooms]",
+      "url": "/#/v25/learn"
+    },
+    {
+      "at": 6.57,
+      "until": 9.73,
+      "say": "Drill down: the labs, by subject.",
+      "proof": "[data-testid=flagship-labs]",
+      "url": "/#/learn/labs"
+    },
+    {
+      "at": 9.73,
+      "until": 12.73,
+      "say": "Filter to one subject: equalisation.",
+      "proof": "[data-testid=labs]",
+      "url": "/#/learn/labs?type=eq"
+    },
+    {
+      "at": 12.73,
+      "until": 15.73,
+      "say": "One lab: notch the ringing wedge.",
+      "proof": "main h1",
+      "url": "/#/learn/labs/LAB-EQ-01"
+    },
+    {
+      "at": 15.73,
+      "until": 19.02,
+      "say": "The Audio Lab: hear what one EQ band does, live in the browser.",
+      "proof": "main h1",
+      "url": "/#/learn/labs/hear"
+    },
+    {
+      "at": 19.02,
+      "until": 21.66,
+      "say": "The Camera Lab: see what each setting changes.",
+      "proof": "main h1",
+      "url": "/#/learn/labs/see"
+    },
+    {
+      "at": 21.66,
+      "until": 24.81,
+      "say": "The IT onboarding guide, for the people new to the rooms.",
+      "proof": "main h1",
+      "url": "/#/onboard"
+    },
+    {
+      "at": 24.81,
+      "until": 28.08,
+      "say": "The engineering standards manual, written for this campus.",
+      "proof": "main h1",
+      "url": "/#/manual"
+    },
+    {
+      "at": 28.08,
+      "until": 31.13,
+      "say": "Back up: every lesson linked to the record it came from.",
+      "proof": "[data-testid=learn-cases]",
+      "url": "/#/v25/learn"
+    }
+  ],
+  "files": {
+    "720.mp4": {
+      "bytes": 1015387,
+      "sha256": "4202b412a8868baf80d1e7553bc66874a406ab41fd1a975543736548867efdea"
+    },
+    "poster.webp": {
+      "bytes": 61306,
+      "sha256": "a5418396b79fcb6b17701dee2fd4361f5e00d170ed296c6efd07cb9920cd9213"
+    },
+    "poster.jpg": {
+      "bytes": 119828,
+      "sha256": "418f652b1cbd90a1d30b23292f0b605d5c1e716c858aa4c6919801d6ea053e57"
+    },
+    "captions.vtt": {
+      "bytes": 1148,
+      "sha256": "887361a47ef5a1c5a3ca873200e61205bc16580689509fc9d9b67660004e6030"
+    }
+  }
+}

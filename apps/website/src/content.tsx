@@ -127,7 +127,7 @@ export function buildPages(ctx: SiteContext): Page[] {
         <div className="hero__aside"><Shot p={p} cap={ctx.captures[p.id]} eager cta={p.demo ? { href: demo(p.demo.href), label: 'Open the interactive demonstration' } : undefined} />
           <ul className="claims" aria-label="What the demonstration shows, with its evidence label">{p.shows.map((t, i) => <li key={t}><Tag s={p.showsAs[i] || 'declared'} /><span>{t}</span></li>)}</ul></div>
       </div></section>
-      {film(`P-${p.id}`) ? <Section title="See it work" lead="Recorded from the demonstration itself: every step in it was checked before its words appeared.">{film(`P-${p.id}`)}</Section> : null}
+      {film(`P-${p.slug}`) ? <Section title="See it work" lead="Recorded from the demonstration itself: every step in it was checked before its words appeared.">{film(`P-${p.slug}`)}</Section> : null}
       {p.film && film(p.film) ? <Section title="Watch it">{film(p.film)}</Section> : null}
       <section className="section"><div className="wrap"><div className="facts">
         <div className="facts__shows"><p className="eyebrow">Try it</p><h2>Open it in the demonstration</h2><p>{DEMO_STATE[p.demoState].text}, on synthetic data in your browser. Every value on its screens carries its evidence label; nothing is connected to a live system.</p>

@@ -1,0 +1,92 @@
+{
+  "key": "P-field-intelligence",
+  "title": "Field Intelligence: what the collector declares, and what it may not do",
+  "product": "field-intelligence",
+  "recordedAt": "2026-11-14T03:08:52.343Z",
+  "duration": 31.73,
+  "viewport": "1280x720",
+  "colorScheme": "dark",
+  "data": "synthetic demonstration data",
+  "role": "architect",
+  "demoBuild": {
+    "commit": null,
+    "builtAt": "2026-11-14T02:38:15.027Z"
+  },
+  "git": "9c9c968",
+  "steps": [
+    {
+      "at": 0,
+      "until": 3.22,
+      "say": "Field Intelligence: what the room’s collector declares before it runs.",
+      "proof": "[data-testid=fi-plan]",
+      "url": "/#/v25/fi"
+    },
+    {
+      "at": 3.22,
+      "until": 7.62,
+      "say": "Read-only checks, on a schedule, of only what it is allowed to reach.",
+      "proof": "[data-testid=fi-plan]",
+      "url": "/#/v25/fi"
+    },
+    {
+      "at": 7.62,
+      "until": 12.02,
+      "say": "Each result an evidence record: what was seen, and what it does not prove.",
+      "proof": "[data-testid=fi-plan]",
+      "url": "/#/v25/fi"
+    },
+    {
+      "at": 12.02,
+      "until": 15.87,
+      "say": "Where a finding goes: a service job, with its evidence.",
+      "proof": "[data-testid=stages]",
+      "url": "/#/servicehands/wo/WO-0088"
+    },
+    {
+      "at": 15.87,
+      "until": 19.61,
+      "say": "Into the room’s history.",
+      "proof": "[data-testid=rp-scrub]",
+      "url": "/#/replay/R-ATL-4-218"
+    },
+    {
+      "at": 19.61,
+      "until": 23.54,
+      "say": "Each record dated, each one its own step.",
+      "proof": "[data-testid=rp-card]",
+      "url": "/#/replay/R-ATL-4-218?at=requirements"
+    },
+    {
+      "at": 23.54,
+      "until": 28.18,
+      "say": "And the room itself, in Engineer mode.",
+      "proof": "[data-testid=lite-room-3d]",
+      "url": "/#/lite/room/R-ATL-4-218?mode=engineer"
+    },
+    {
+      "at": 28.18,
+      "until": 31.73,
+      "say": "Back up: no collector is connected in the demonstration; the checks are simulated.",
+      "proof": "[data-testid=fi-plan]",
+      "url": "/#/v25/fi"
+    }
+  ],
+  "files": {
+    "720.mp4": {
+      "bytes": 1124981,
+      "sha256": "48ec336be4857f212663f1192f11849118f5600e4bc79d7a4d8683186027ebf0"
+    },
+    "poster.webp": {
+      "bytes": 46686,
+      "sha256": "f9251f10ce2182916437efee2d15ebd46bb8df907f1231f3054105adf7c27cbf"
+    },
+    "poster.jpg": {
+      "bytes": 89390,
+      "sha256": "9935632de8e05f65a17586ef625b6ed69a6dc627acee79441042058e71f81f1f"
+    },
+    "captions.vtt": {
+      "bytes": 1052,
+      "sha256": "c4d27bda94b3a08a2e05b0b36894aeb48f4f0a0e3307d12739101a9aca02f8a6"
+    }
+  }
+}
