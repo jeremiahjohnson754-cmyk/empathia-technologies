@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 // "Waiting for you" on each working role's start page (founder, 14 Nov 2026: mission control centred on the work needing to be done).
-//   WF-01  the service manager sees each new request to triage, each linking to it
+//   WF-01  the service manager's page already opens on the triage (no second 'waiting' list)
 //   WF-02  the installer sees the deficiency they own to fix, and the systems engineer sees one whose retest passed to verify and close
 //   WF-03  an intelligibility exception waiting for approval reaches the systems engineer
-//   WF-04  a role nothing waits on is told so; the zone is first on the page
+//   WF-04  a role nothing waits on is told so
 //   node tests/browser/demo-waiting.test.mjs
 import { harness } from './demo-shell-lib.mjs';
 const { ok, open, done } = await harness('demo-waiting');
@@ -11,9 +11,9 @@ const zone = (p) => p.locator('[data-testid=rh-zone][data-zone=waiting]');
 const def = (o) => ({ id: 'R-ATL-4-220:SYN-1', title: 'Far end hears an echo', severity: 'Medium', waivable: true, owner: 'installer', openedAt: '2026-11-01T09:00:00.000Z', targetDate: '2099-01-01', rootCause: null, action: null, fixedBy: null, retest: null, exception: null, deferral: null, closedBy: null, history: [], ...o });
 
 { const t = await open('#/home', { role: 'svcmgr', sw: false }); const p = t.page; p.setDefaultTimeout(20000);
-  await p.evaluate(() => localStorage.removeItem('empathia.demo.workspace.v1')); await p.reload(); await zone(p).waitFor();
-  const rows = await zone(p).locator('a, li').allInnerTexts(); const first = await p.locator('[data-testid=rh-zone]').first().getAttribute('data-zone');
-  ok('WF-01', 'the service manager sees each new request to triage, first on the page', rows.some((r) => /Triage:/.test(r)) && first === 'waiting', `${first} · ${rows.slice(0, 2).join(' | ')}`);
+  await p.evaluate(() => localStorage.removeItem('empathia.demo.workspace.v1')); await p.reload(); await p.locator('[data-testid=rh-zone]').first().waitFor();
+  const first = await p.locator('[data-testid=rh-zone]').first().getAttribute('data-zone'); const w = await zone(p).count();
+  ok('WF-01', 'the service manager’s page already opens on the triage; no second list is added', first === 'triage' && w === 0, `${first} · waiting ${w}`);
   await t.close(); }
 
 { const t = await open('#/home', { role: 'installer', sw: false }); const p = t.page; p.setDefaultTimeout(20000);

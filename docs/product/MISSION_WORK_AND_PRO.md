@@ -38,14 +38,12 @@ Verified:
 
 ## Waiting for you (14 Nov 2026)
 
-Each working role's start page now opens with **Waiting for you**: the steps across commissioning and service that wait on that role *now*. Each step links to where it is taken.
+The installer's, the commissioning engineer's and the systems engineer's start pages now open with **Waiting for you**: the steps across commissioning and service that wait on that role *now*. Each step links to where it is taken.
 
 | Role | What waits for them |
 |---|---|
 | Installer | deficiencies they own, to fix (late ones in red) |
 | Commissioning engineer | fixes waiting for their retest; service fixes waiting for verification |
 | Systems engineer | deficiencies whose retest passed, to verify and close (never by the fixer or the retest's recorder); intelligibility exceptions to approve or refuse |
-| Service manager | new requests to triage |
-| Service technician | work orders to accept or work |
 
-When nothing waits on the role, the page says so. Tested in `tests/browser/demo-waiting.test.mjs` (WF-01..04).
+The service manager's and the technician's start pages already open on their triage and their jobs, so they get no second list. When nothing waits on the role, the page says so. Tested in `tests/browser/demo-waiting.test.mjs` (WF-01..04).
