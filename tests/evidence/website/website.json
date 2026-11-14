@@ -1,164 +1,202 @@
 {
- "at": "2026-10-31T21:43:43.559Z",
- "pass": 54,
+ "at": "2026-11-14T05:39:38.712Z",
+ "scheme": "light",
+ "pass": 250,
  "fail": 0,
- "tests": 54,
+ "notRun": 0,
+ "tests": 250,
  "results": [
   {
    "id": "W-00",
    "name": "the sitemap lists the pages",
    "result": "PASS",
-   "detail": "/ /platform /products /products/lite /products/scouter /products/commissioning /products/assurance-apex /products/search-party /products/servicehands /products/field-intelligence /products/learn /products/pro /solutions /how-it-works /technology /trust /founder /about /request-demo /pilot-partners /contact /privacy /legal"
+   "detail": "/ /platform /products /products/mission-control /products/lite /products/pro /products/search-party /products/servicehands /products/commissioning /products/apex /products/field-intelligence /products/learn /solutions /how-it-works /films /technology /proof /trust /founder /about /collabora-sing /pricing /pricing/catalogue /pilots /request-demo /pilot-partners /contact /privacy /legal"
   },
   {
    "id": "W-desktop-/",
    "name": "/ answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Every room. Every device. Every decision. With its evidence.\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Every room. Every device. Every decision. With its evidence.\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-desktop-/platform",
    "name": "/platform answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"One record. One governed lifecycle.\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"One record. One governed lifecycle.\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-desktop-/products",
    "name": "/products answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Nine products, one record\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Nine products, one record\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-desktop-/products/mission-control",
+   "name": "/products/mission-control answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Mission Control\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-desktop-/products/lite",
    "name": "/products/lite answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Lite — Build a Room\"}"
-  },
-  {
-   "id": "W-desktop-/products/scouter",
-   "name": "/products/scouter answers with a title, a description, one h1 and no sideways scroll",
-   "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Scouter\"}"
-  },
-  {
-   "id": "W-desktop-/products/commissioning",
-   "name": "/products/commissioning answers with a title, a description, one h1 and no sideways scroll",
-   "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Universal Commissioning\"}"
-  },
-  {
-   "id": "W-desktop-/products/assurance-apex",
-   "name": "/products/assurance-apex answers with a title, a description, one h1 and no sideways scroll",
-   "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Assurance and APEX\"}"
-  },
-  {
-   "id": "W-desktop-/products/search-party",
-   "name": "/products/search-party answers with a title, a description, one h1 and no sideways scroll",
-   "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Search Party\"}"
-  },
-  {
-   "id": "W-desktop-/products/servicehands",
-   "name": "/products/servicehands answers with a title, a description, one h1 and no sideways scroll",
-   "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"ServiceHands\"}"
-  },
-  {
-   "id": "W-desktop-/products/field-intelligence",
-   "name": "/products/field-intelligence answers with a title, a description, one h1 and no sideways scroll",
-   "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Field Intelligence\"}"
-  },
-  {
-   "id": "W-desktop-/products/learn",
-   "name": "/products/learn answers with a title, a description, one h1 and no sideways scroll",
-   "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Learn and SIGNAL\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Lite\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-desktop-/products/pro",
    "name": "/products/pro answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Pro and Mission Control\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Pro\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-desktop-/products/search-party",
+   "name": "/products/search-party answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Search Party\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-desktop-/products/servicehands",
+   "name": "/products/servicehands answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"ServiceHands\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-desktop-/products/commissioning",
+   "name": "/products/commissioning answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Commissioning & Assurance\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-desktop-/products/apex",
+   "name": "/products/apex answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"APEX\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-desktop-/products/field-intelligence",
+   "name": "/products/field-intelligence answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Field Intelligence\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-desktop-/products/learn",
+   "name": "/products/learn answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Learn\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-desktop-/solutions",
    "name": "/solutions answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"The same record, read by each team\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"The same record, read by each team\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-desktop-/how-it-works",
    "name": "/how-it-works answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"From request to accepted baseline\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"From request to accepted baseline\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-desktop-/films",
+   "name": "/films answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Watch the record being made\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-desktop-/technology",
    "name": "/technology answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Built for correctness first\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Built for correctness first\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-desktop-/proof",
+   "name": "/proof answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"What is real, what is synthetic, and what is only specified\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-desktop-/trust",
    "name": "/trust answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Security and trust\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Security and trust\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-desktop-/founder",
    "name": "/founder answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Jeremiah Johnson\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Jeremiah Johnson\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-desktop-/about",
    "name": "/about answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"About Empathia\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"About Empathia\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-desktop-/collabora-sing",
+   "name": "/collabora-sing answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Collabora-SING\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-desktop-/pricing",
+   "name": "/pricing answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Start with a pilot. Pay for what you run.\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-desktop-/pricing/catalogue",
+   "name": "/pricing/catalogue answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"The full price list, line by line\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-desktop-/pilots",
+   "name": "/pilots answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"A bounded pilot, checked before you buy\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-desktop-/request-demo",
    "name": "/request-demo answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"See it with your questions\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"See it with your questions\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-desktop-/pilot-partners",
    "name": "/pilot-partners answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"A bounded pilot, with a factual report\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"A bounded pilot, with a factual report\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-desktop-/contact",
    "name": "/contact answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Write to us\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Write to us\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-desktop-/privacy",
    "name": "/privacy answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Privacy notice\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Privacy notice\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-desktop-/legal",
    "name": "/legal answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Legal\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Legal\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-desktop-links",
-   "name": "every internal link on the site resolves to a listed page or a section of one",
+   "name": "every internal link on the site resolves to a listed page or a section of one (or is a listed booklet)",
    "result": "PASS",
    "detail": ""
   },
   {
    "id": "W-desktop-form",
-   "name": "without a configured lead endpoint the form says so and does not pretend to send",
+   "name": "without a configured lead endpoint no site form is shown, nothing pretends to send, and the hosted form is offered",
    "result": "PASS",
-   "detail": "{\"status\":\"The lead endpoint is not configured on this deployment, so this form cannot send yet. The contact page explains how to reach us in the meantime.\",\"disabled\":true,\"required\":5}"
+   "detail": "{\"forms\":0,\"success\":false,\"links\":[\"https://tally.so/r/VpG0Vy?source=website-demo\"]}"
   },
   {
    "id": "W-desktop-clean",
@@ -167,146 +205,374 @@
    "detail": ""
   },
   {
+   "id": "W-tablet-/",
+   "name": "/ answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Every room. Every device. Every decision. With its evidence.\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/platform",
+   "name": "/platform answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"One record. One governed lifecycle.\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/products",
+   "name": "/products answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Nine products, one record\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/products/mission-control",
+   "name": "/products/mission-control answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Mission Control\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/products/lite",
+   "name": "/products/lite answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Lite\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/products/pro",
+   "name": "/products/pro answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Pro\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/products/search-party",
+   "name": "/products/search-party answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Search Party\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/products/servicehands",
+   "name": "/products/servicehands answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"ServiceHands\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/products/commissioning",
+   "name": "/products/commissioning answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Commissioning & Assurance\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/products/apex",
+   "name": "/products/apex answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"APEX\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/products/field-intelligence",
+   "name": "/products/field-intelligence answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Field Intelligence\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/products/learn",
+   "name": "/products/learn answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Learn\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/solutions",
+   "name": "/solutions answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"The same record, read by each team\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/how-it-works",
+   "name": "/how-it-works answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"From request to accepted baseline\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/films",
+   "name": "/films answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Watch the record being made\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/technology",
+   "name": "/technology answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Built for correctness first\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/proof",
+   "name": "/proof answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"What is real, what is synthetic, and what is only specified\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/trust",
+   "name": "/trust answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Security and trust\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/founder",
+   "name": "/founder answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Jeremiah Johnson\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/about",
+   "name": "/about answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"About Empathia\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/collabora-sing",
+   "name": "/collabora-sing answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Collabora-SING\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/pricing",
+   "name": "/pricing answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Start with a pilot. Pay for what you run.\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/pricing/catalogue",
+   "name": "/pricing/catalogue answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"The full price list, line by line\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/pilots",
+   "name": "/pilots answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"A bounded pilot, checked before you buy\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/request-demo",
+   "name": "/request-demo answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"See it with your questions\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/pilot-partners",
+   "name": "/pilot-partners answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"A bounded pilot, with a factual report\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/contact",
+   "name": "/contact answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Write to us\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/privacy",
+   "name": "/privacy answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Privacy notice\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/legal",
+   "name": "/legal answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Legal\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-links",
+   "name": "every internal link on the site resolves to a listed page or a section of one (or is a listed booklet)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "W-tablet-form",
+   "name": "without a configured lead endpoint no site form is shown, nothing pretends to send, and the hosted form is offered",
+   "result": "PASS",
+   "detail": "{\"forms\":0,\"success\":false,\"links\":[\"https://tally.so/r/VpG0Vy?source=website-demo\"]}"
+  },
+  {
+   "id": "W-tablet-clean",
+   "name": "no page error, no console error, no request outside the site",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
    "id": "W-phone-/",
    "name": "/ answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Every room. Every device. Every decision. With its evidence.\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Every room. Every device. Every decision. With its evidence.\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-phone-/platform",
    "name": "/platform answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"One record. One governed lifecycle.\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"One record. One governed lifecycle.\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-phone-/products",
    "name": "/products answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Nine products, one record\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Nine products, one record\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-phone-/products/mission-control",
+   "name": "/products/mission-control answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Mission Control\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-phone-/products/lite",
    "name": "/products/lite answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Lite — Build a Room\"}"
-  },
-  {
-   "id": "W-phone-/products/scouter",
-   "name": "/products/scouter answers with a title, a description, one h1 and no sideways scroll",
-   "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Scouter\"}"
-  },
-  {
-   "id": "W-phone-/products/commissioning",
-   "name": "/products/commissioning answers with a title, a description, one h1 and no sideways scroll",
-   "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Universal Commissioning\"}"
-  },
-  {
-   "id": "W-phone-/products/assurance-apex",
-   "name": "/products/assurance-apex answers with a title, a description, one h1 and no sideways scroll",
-   "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Assurance and APEX\"}"
-  },
-  {
-   "id": "W-phone-/products/search-party",
-   "name": "/products/search-party answers with a title, a description, one h1 and no sideways scroll",
-   "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Search Party\"}"
-  },
-  {
-   "id": "W-phone-/products/servicehands",
-   "name": "/products/servicehands answers with a title, a description, one h1 and no sideways scroll",
-   "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"ServiceHands\"}"
-  },
-  {
-   "id": "W-phone-/products/field-intelligence",
-   "name": "/products/field-intelligence answers with a title, a description, one h1 and no sideways scroll",
-   "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Field Intelligence\"}"
-  },
-  {
-   "id": "W-phone-/products/learn",
-   "name": "/products/learn answers with a title, a description, one h1 and no sideways scroll",
-   "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Learn and SIGNAL\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Lite\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-phone-/products/pro",
    "name": "/products/pro answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Pro and Mission Control\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Pro\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-phone-/products/search-party",
+   "name": "/products/search-party answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Search Party\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-phone-/products/servicehands",
+   "name": "/products/servicehands answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"ServiceHands\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-phone-/products/commissioning",
+   "name": "/products/commissioning answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Commissioning & Assurance\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-phone-/products/apex",
+   "name": "/products/apex answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"APEX\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-phone-/products/field-intelligence",
+   "name": "/products/field-intelligence answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Field Intelligence\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-phone-/products/learn",
+   "name": "/products/learn answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Learn\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-phone-/solutions",
    "name": "/solutions answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"The same record, read by each team\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"The same record, read by each team\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-phone-/how-it-works",
    "name": "/how-it-works answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"From request to accepted baseline\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"From request to accepted baseline\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-phone-/films",
+   "name": "/films answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Watch the record being made\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-phone-/technology",
    "name": "/technology answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Built for correctness first\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Built for correctness first\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-phone-/proof",
+   "name": "/proof answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"What is real, what is synthetic, and what is only specified\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-phone-/trust",
    "name": "/trust answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Security and trust\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Security and trust\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-phone-/founder",
    "name": "/founder answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Jeremiah Johnson\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Jeremiah Johnson\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-phone-/about",
    "name": "/about answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"About Empathia\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"About Empathia\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-phone-/collabora-sing",
+   "name": "/collabora-sing answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Collabora-SING\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-phone-/pricing",
+   "name": "/pricing answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Start with a pilot. Pay for what you run.\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-phone-/pricing/catalogue",
+   "name": "/pricing/catalogue answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"The full price list, line by line\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-phone-/pilots",
+   "name": "/pilots answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"A bounded pilot, checked before you buy\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-phone-/request-demo",
    "name": "/request-demo answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"See it with your questions\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"See it with your questions\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-phone-/pilot-partners",
    "name": "/pilot-partners answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"A bounded pilot, with a factual report\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"A bounded pilot, with a factual report\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-phone-/contact",
    "name": "/contact answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Write to us\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Write to us\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-phone-/privacy",
    "name": "/privacy answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Privacy notice\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Privacy notice\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-phone-/legal",
    "name": "/legal answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Legal\"}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Legal\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-phone-links",
-   "name": "every internal link on the site resolves to a listed page or a section of one",
+   "name": "every internal link on the site resolves to a listed page or a section of one (or is a listed booklet)",
    "result": "PASS",
    "detail": ""
   },
@@ -314,19 +580,931 @@
    "id": "W-phone-menu",
    "name": "the phone menu opens by keyboard, reports aria-expanded, and closes on Escape",
    "result": "PASS",
-   "detail": "{\"before\":\"none\",\"after\":{\"d\":\"flex\",\"exp\":\"true\"},\"closed\":\"none\"}"
+   "detail": "{\"before\":\"none\",\"after\":{\"d\":\"flex\",\"exp\":\"true\"},\"closed\":{\"d\":\"none\",\"focus\":true}}"
+  },
+  {
+   "id": "W-phone-targets",
+   "name": "controls are at least 44 px tall on a phone",
+   "result": "PASS",
+   "detail": ""
   },
   {
    "id": "W-phone-form",
-   "name": "without a configured lead endpoint the form says so and does not pretend to send",
+   "name": "without a configured lead endpoint no site form is shown, nothing pretends to send, and the hosted form is offered",
    "result": "PASS",
-   "detail": "{\"status\":\"The lead endpoint is not configured on this deployment, so this form cannot send yet. The contact page explains how to reach us in the meantime.\",\"disabled\":true,\"required\":5}"
+   "detail": "{\"forms\":0,\"success\":false,\"links\":[\"https://tally.so/r/VpG0Vy?source=website-demo\"]}"
   },
   {
    "id": "W-phone-clean",
    "name": "no page error, no console error, no request outside the site",
    "result": "PASS",
    "detail": ""
+  },
+  {
+   "id": "W-canon-menu",
+   "name": "the products menu lists the nine in canonical order",
+   "result": "PASS",
+   "detail": "Mission Control · Lite · Pro · Search Party · ServiceHands · Commissioning & Assurance · APEX · Field Intelligence · Learn"
+  },
+  {
+   "id": "W-canon-home",
+   "name": "the home tiles list the nine in canonical order",
+   "result": "PASS",
+   "detail": "Mission Control · Lite · Pro · Search Party · ServiceHands · Commissioning & Assurance · APEX · Field Intelligence · Learn"
+  },
+  {
+   "id": "W-canon-footer",
+   "name": "the footer lists the nine in canonical order",
+   "result": "PASS",
+   "detail": "Mission Control · Lite · Pro · Search Party · ServiceHands · Commissioning & Assurance · APEX · Field Intelligence · Learn"
+  },
+  {
+   "id": "W-canon-products",
+   "name": "the products page lists the nine in canonical order",
+   "result": "PASS",
+   "detail": "Mission Control · Lite · Pro · Search Party · ServiceHands · Commissioning & Assurance · APEX · Field Intelligence · Learn"
+  },
+  {
+   "id": "W-canon-pages",
+   "name": "exactly the nine product pages exist; the superseded ones are gone",
+   "result": "PASS",
+   "detail": "/products/mission-control /products/lite /products/pro /products/search-party /products/servicehands /products/commissioning /products/apex /products/field-intelligence /products/learn"
+  },
+  {
+   "id": "W-canon-shared",
+   "name": "the website follows the shared list (packages/ui/src/products.ts)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "W-product-mission-control",
+   "name": "/products/mission-control: its name, its position of nine, its own colour, and the other eight in order",
+   "result": "PASS",
+   "detail": "{\"h1\":\"Mission Control\",\"label\":\"Product 01 of 9\",\"pc\":\"rgb(11, 103, 194)\",\"others\":[\"Lite\",\"Pro\",\"Search Party\",\"ServiceHands\",\"Commissioning & Assurance\",\"APEX\",\"Field Intelligence\",\"Learn\"]}"
+  },
+  {
+   "id": "W-product-lite",
+   "name": "/products/lite: its name, its position of nine, its own colour, and the other eight in order",
+   "result": "PASS",
+   "detail": "{\"h1\":\"Lite\",\"label\":\"Product 02 of 9\",\"pc\":\"rgb(169, 68, 0)\",\"others\":[\"Mission Control\",\"Pro\",\"Search Party\",\"ServiceHands\",\"Commissioning & Assurance\",\"APEX\",\"Field Intelligence\",\"Learn\"]}"
+  },
+  {
+   "id": "W-product-pro",
+   "name": "/products/pro: its name, its position of nine, its own colour, and the other eight in order",
+   "result": "PASS",
+   "detail": "{\"h1\":\"Pro\",\"label\":\"Product 03 of 9\",\"pc\":\"rgb(74, 80, 217)\",\"others\":[\"Mission Control\",\"Lite\",\"Search Party\",\"ServiceHands\",\"Commissioning & Assurance\",\"APEX\",\"Field Intelligence\",\"Learn\"]}"
+  },
+  {
+   "id": "W-product-search-party",
+   "name": "/products/search-party: its name, its position of nine, its own colour, and the other eight in order",
+   "result": "PASS",
+   "detail": "{\"h1\":\"Search Party\",\"label\":\"Product 04 of 9\",\"pc\":\"rgb(176, 24, 127)\",\"others\":[\"Mission Control\",\"Lite\",\"Pro\",\"ServiceHands\",\"Commissioning & Assurance\",\"APEX\",\"Field Intelligence\",\"Learn\"]}"
+  },
+  {
+   "id": "W-product-servicehands",
+   "name": "/products/servicehands: its name, its position of nine, its own colour, and the other eight in order",
+   "result": "PASS",
+   "detail": "{\"h1\":\"ServiceHands\",\"label\":\"Product 05 of 9\",\"pc\":\"rgb(30, 122, 51)\",\"others\":[\"Mission Control\",\"Lite\",\"Pro\",\"Search Party\",\"Commissioning & Assurance\",\"APEX\",\"Field Intelligence\",\"Learn\"]}"
+  },
+  {
+   "id": "W-product-commissioning",
+   "name": "/products/commissioning: its name, its position of nine, its own colour, and the other eight in order",
+   "result": "PASS",
+   "detail": "{\"h1\":\"Commissioning & Assurance\",\"label\":\"Product 06 of 9\",\"pc\":\"rgb(138, 100, 0)\",\"others\":[\"Mission Control\",\"Lite\",\"Pro\",\"Search Party\",\"ServiceHands\",\"APEX\",\"Field Intelligence\",\"Learn\"]}"
+  },
+  {
+   "id": "W-product-apex",
+   "name": "/products/apex: its name, its position of nine, its own colour, and the other eight in order",
+   "result": "PASS",
+   "detail": "{\"h1\":\"APEX\",\"label\":\"Product 07 of 9\",\"pc\":\"rgb(200, 16, 46)\",\"others\":[\"Mission Control\",\"Lite\",\"Pro\",\"Search Party\",\"ServiceHands\",\"Commissioning & Assurance\",\"Field Intelligence\",\"Learn\"]}"
+  },
+  {
+   "id": "W-product-field-intelligence",
+   "name": "/products/field-intelligence: its name, its position of nine, its own colour, and the other eight in order",
+   "result": "PASS",
+   "detail": "{\"h1\":\"Field Intelligence\",\"label\":\"Product 08 of 9\",\"pc\":\"rgb(79, 115, 0)\",\"others\":[\"Mission Control\",\"Lite\",\"Pro\",\"Search Party\",\"ServiceHands\",\"Commissioning & Assurance\",\"APEX\",\"Learn\"]}"
+  },
+  {
+   "id": "W-product-learn",
+   "name": "/products/learn: its name, its position of nine, its own colour, and the other eight in order",
+   "result": "PASS",
+   "detail": "{\"h1\":\"Learn\",\"label\":\"Product 09 of 9\",\"pc\":\"rgb(122, 63, 209)\",\"others\":[\"Mission Control\",\"Lite\",\"Pro\",\"Search Party\",\"ServiceHands\",\"Commissioning & Assurance\",\"APEX\",\"Field Intelligence\"]}"
+  },
+  {
+   "id": "W-scouter",
+   "name": "Scouter is discoverable inside Lite: its own section (#scouter) on the Lite page, a jump link, and named in the menu and on the home tile",
+   "result": "PASS",
+   "detail": "{\"sc\":{\"sec\":true,\"h2\":\"Scouter\",\"jump\":true},\"disc\":{\"menu\":\"LiteSpatial room design on the real engine, with equipment proposals from comparable rooms. Includes Build a Room and Scouter.\",\"tile\":\"02LiteSpatial room design on the real engine, with equipment proposals from comparable roomsIncludes Build a Room and ScouterIn the public demonstration\"}}"
+  },
+  {
+   "id": "W-colours",
+   "name": "the spectrum carries nine distinct product colours",
+   "result": "PASS",
+   "detail": "rgb(11, 103, 194) rgb(169, 68, 0) rgb(74, 80, 217) rgb(176, 24, 127) rgb(30, 122, 51) rgb(138, 100, 0) rgb(200, 16, 46) rgb(79, 115, 0) rgb(122, 63, 209)"
+  },
+  {
+   "id": "W-redirect-/products/scouter",
+   "name": "/products/scouter redirects permanently to /products/lite#scouter",
+   "result": "PASS",
+   "detail": "301 /products/lite#scouter"
+  },
+  {
+   "id": "W-redirect-/products/assurance-apex",
+   "name": "/products/assurance-apex redirects permanently to /products/apex",
+   "result": "PASS",
+   "detail": "301 /products/apex"
+  },
+  {
+   "id": "W-redirect-render",
+   "name": "render.yaml declares the same redirects as the website server",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "W-404",
+   "name": "an unknown address answers 404 with the designed page: h1, the address asked for, the way home, the main destinations, the Agora Owl (decorative), noindex",
+   "result": "PASS",
+   "detail": "{\"status\":404,\"h1\":\"This address isn’t part of the site.\",\"home\":true,\"owl\":\"/brand/owl.svg\",\"alt\":\"\",\"asked\":\"/no-such-page\",\"robots\":\"noindex\",\"dest\":6}"
+  },
+  {
+   "id": "W-404-xss",
+   "name": "markup in an unknown address is shown as text, not injected",
+   "result": "PASS",
+   "detail": "{\"text\":\"/<img src=x onerror=alert(1)>\",\"injected\":false}"
+  },
+  {
+   "id": "W-404-moved",
+   "name": "the not-found page names where a moved page lives now",
+   "result": "PASS",
+   "detail": "{\"shown\":true,\"href\":\"/products/lite#scouter\"}"
+  },
+  {
+   "id": "W-404-clean",
+   "name": "the not-found page has no page error and no outside request",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "W-owl-only",
+   "name": "the owl appears on the not-found page only; every other page carries the one primary mark",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "W-server-hostile",
+   "name": "malformed escapes, traversal and HEAD answer 404, other methods 405, and the server keeps serving",
+   "result": "PASS",
+   "detail": "404 200 405 404 404"
+  },
+  {
+   "id": "W-brand",
+   "name": "the small shield in the header and as the favicon, the flagship aspis in the footer lockup, no social-card raster loaded",
+   "result": "PASS",
+   "detail": "{\"icon\":\"/brand/favicon.svg\",\"status\":200,\"type\":\"image/svg+xml\",\"hdr\":\"/brand/emblem-small.svg\",\"hdrW\":32,\"hdrOk\":true,\"foot\":\"/brand/emblem.svg\",\"lockup\":\"EMPATHIATHE LIVING SYSTEM\"}"
+  },
+  {
+   "id": "W-theme",
+   "name": "the theme choice follows the system by default, Dark and Light win when chosen, the choice survives a reload, System returns to the device setting",
+   "result": "PASS",
+   "detail": "{\"s0\":{\"attr\":null,\"pressed\":[\"system\"],\"stored\":null,\"bg\":\"rgb(244, 246, 250)\"},\"s1\":{\"attr\":\"dark\",\"pressed\":[\"dark\"],\"stored\":\"dark\",\"bg\":\"rgb(7, 13, 26)\"},\"s2\":{\"attr\":\"light\",\"pressed\":[\"light\"],\"stored\":\"light\",\"bg\":\"rgb(244, 246, 250)\"},\"s3\":\"light\",\"s4\":{\"attr\":null,\"pressed\":[\"system\"],\"stored\":\"system\",\"bg\":\"rgb(244, 246, 250)\"}}"
+  },
+  {
+   "id": "W-theme-rapid",
+   "name": "rapid taps settle on the last choice, and back/forward keeps it",
+   "result": "PASS",
+   "detail": "{\"attr\":\"dark\",\"pressed\":[\"dark\"],\"stored\":\"dark\",\"bg\":\"rgb(7, 13, 26)\"}"
+  },
+  {
+   "id": "W-theme-clean",
+   "name": "no error while switching themes",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "W-theme-contrast",
+   "name": "body and secondary text keep at least 4.5:1 in the light and the dark theme",
+   "result": "PASS",
+   "detail": "[{\"body\":16.734147567568474,\"lede\":8.942483211770915},{\"body\":17.443174346054455,\"lede\":10.72759341898077}]"
+  },
+  {
+   "id": "W-theme-nostorage",
+   "name": "with storage blocked the page loads without error and the choice still applies for the page",
+   "result": "PASS",
+   "detail": "{\"e2\":[],\"blocked\":\"dark\"}"
+  },
+  {
+   "id": "W-enquiry-/",
+   "name": "/: each enquiry opens the hosted form in a new tab with its source, says so, and carries the disclosure",
+   "result": "PASS",
+   "detail": "[[\"founder\",\"https://tally.so/r/VpG0Vy?source=founder\",\"_blank\",\"noopener noreferrer\"]]"
+  },
+  {
+   "id": "W-enquiry-/founder",
+   "name": "/founder: each enquiry opens the hosted form in a new tab with its source, says so, and carries the disclosure",
+   "result": "PASS",
+   "detail": "[[\"founder\",\"https://tally.so/r/VpG0Vy?source=founder\",\"_blank\",\"noopener noreferrer\"],[\"founder\",\"https://tally.so/r/VpG0Vy?source=founder\",\"_blank\",\"noopener noreferrer\"]]"
+  },
+  {
+   "id": "W-enquiry-/request-demo",
+   "name": "/request-demo: each enquiry opens the hosted form in a new tab with its source, says so, and carries the disclosure",
+   "result": "PASS",
+   "detail": "[[\"website-demo\",\"https://tally.so/r/VpG0Vy?source=website-demo\",\"_blank\",\"noopener noreferrer\"]]"
+  },
+  {
+   "id": "W-enquiry-/pilot-partners",
+   "name": "/pilot-partners: each enquiry opens the hosted form in a new tab with its source, says so, and carries the disclosure",
+   "result": "PASS",
+   "detail": "[[\"website-pilot\",\"https://tally.so/r/VpG0Vy?source=website-pilot\",\"_blank\",\"noopener noreferrer\"],[\"website-partner\",\"https://tally.so/r/VpG0Vy?source=website-partner\",\"_blank\",\"noopener noreferrer\"]]"
+  },
+  {
+   "id": "W-enquiry-/about",
+   "name": "/about: each enquiry opens the hosted form in a new tab with its source, says so, and carries the disclosure",
+   "result": "PASS",
+   "detail": "[[\"website-investor\",\"https://tally.so/r/VpG0Vy?source=website-investor\",\"_blank\",\"noopener noreferrer\"]]"
+  },
+  {
+   "id": "W-enquiry-/contact",
+   "name": "/contact: each enquiry opens the hosted form in a new tab with its source, says so, and carries the disclosure",
+   "result": "PASS",
+   "detail": "[[\"website-demo\",\"https://tally.so/r/VpG0Vy?source=website-demo\",\"_blank\",\"noopener noreferrer\"],[\"website-pilot\",\"https://tally.so/r/VpG0Vy?source=website-pilot\",\"_blank\",\"noopener noreferrer\"],[\"website-partner\",\"https://tally.so/r/VpG0Vy?source=website-partner\",\"_blank\",\"noopener noreferrer\"],[\"website-investor\",\"https://tally.so/r/VpG0Vy?source=website-investor\",\"_blank\",\"noopener noreferrer\"]"
+  },
+  {
+   "id": "W-enquiry-source",
+   "name": "the website and the demonstration name the same hosted form",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "W-privacy",
+   "name": "the privacy notice names Tally as processor, the controller, EU storage, the US email sub-processor, the source parameter and retention; no claim that enquiries go to Empathia’s own service",
+   "result": "PASS",
+   "detail": "Enquiries\n\nEnquiries use a form hosted by Tally (tally.so), opened in a new tab. Nothing you type in it passes through this site.\n\nThe form collects your name, business email, organization, job title "
+  },
+  {
+   "id": "W-founder-1440",
+   "name": "founder section at 1440: two distinct CTAs (About → /founder same tab; Connect → the hosted form, new tab, source=founder), only CTS/CAPM/Network+, the supplied portrait, a prominent name, the philosophy as focal point",
+   "result": "PASS",
+   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:40327/media/founder/640.jpg\",\"imgW\":480.65625,\"nameSize\":72,\"stacked\":false,\"overflow\":false,\"private\":false}"
+  },
+  {
+   "id": "W-founder-click",
+   "name": "a real click on \"Connect with the founder\" opens the hosted form (stubbed) in a new tab while the page stays put",
+   "result": "PASS",
+   "detail": "https://tally.so/r/VpG0Vy?source=founder"
+  },
+  {
+   "id": "W-founder-page",
+   "name": "/founder: his name as h1, only the three credentials, Connect with the founder (no self-link to the biography), no other qualification claimed",
+   "result": "PASS",
+   "detail": "{\"h1\":\"Jeremiah Johnson\",\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"about\":false,\"conn\":2,\"extra\":false}"
+  },
+  {
+   "id": "W-founder-768",
+   "name": "founder section at 768: two distinct CTAs (About → /founder same tab; Connect → the hosted form, new tab, source=founder), only CTS/CAPM/Network+, the supplied portrait, a prominent name, the philosophy as focal point",
+   "result": "PASS",
+   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:40327/media/founder/640.jpg\",\"imgW\":340,\"nameSize\":40,\"stacked\":false,\"overflow\":false,\"private\":false}"
+  },
+  {
+   "id": "W-founder-390",
+   "name": "founder section at 390: two distinct CTAs (About → /founder same tab; Connect → the hosted form, new tab, source=founder), only CTS/CAPM/Network+, the supplied portrait, a prominent name, the philosophy as focal point, stacked",
+   "result": "PASS",
+   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:40327/media/founder/640.jpg\",\"imgW\":300,\"nameSize\":40,\"stacked\":true,\"overflow\":false,\"private\":false}"
+  },
+  {
+   "id": "W-rooms-/",
+   "name": "/ states the 140 demonstration rooms in the approved wording",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "W-rooms-/platform",
+   "name": "/platform states the 140 demonstration rooms in the approved wording",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "W-reduced-motion",
+   "name": "nothing animates for readers who ask for reduced motion",
+   "result": "PASS",
+   "detail": "none"
+  },
+  {
+   "id": "W-captures-dark",
+   "name": "every product capture is from the synthetic demonstration in the dark theme (D43), with its route and hashes",
+   "result": "PASS",
+   "detail": "mission-control lite pro search-party servicehands apex learn commissioning field room"
+  },
+  {
+   "id": "W-capture-mission-control",
+   "name": "/products/mission-control shows its capture, loaded, described, sized, and labelled synthetic",
+   "result": "PASS",
+   "detail": "{\"ok\":true,\"alt\":\"Mission Control in the investor demonstration: the campus drawn as buildings, each with its health and open issues computed from its rooms’ records.\",\"w\":\"1280\",\"h\":\"800\",\"cap\":\"Synthetic demonstration dataOpen the interactive demonstration →Synthetic demonstration dataCaptured from the investor demonstration\"}"
+  },
+  {
+   "id": "W-capture-lite",
+   "name": "/products/lite shows its capture, loaded, described, sized, and labelled synthetic",
+   "result": "PASS",
+   "detail": "{\"ok\":true,\"alt\":\"Lite in the investor demonstration: spatial room design on the real engine, with equipment proposals from comparable rooms.\",\"w\":\"1280\",\"h\":\"800\",\"cap\":\"Synthetic demonstration dataOpen the interactive demonstration →Synthetic demonstration dataCaptured from the investor demonstration\"}"
+  },
+  {
+   "id": "W-capture-pro",
+   "name": "/products/pro shows its capture, loaded, described, sized, and labelled synthetic",
+   "result": "PASS",
+   "detail": "{\"ok\":true,\"alt\":\"Pro in the investor demonstration: operational intelligence: portfolio, projects and service performance.\",\"w\":\"1280\",\"h\":\"800\",\"cap\":\"Synthetic demonstration dataOpen the interactive demonstration →Synthetic demonstration dataCaptured from the investor demonstration\"}"
+  },
+  {
+   "id": "W-capture-search-party",
+   "name": "/products/search-party shows its capture, loaded, described, sized, and labelled synthetic",
+   "result": "PASS",
+   "detail": "{\"ok\":true,\"alt\":\"Search Party in the investor demonstration: universal search and the relationships between rooms, devices, people and projects.\",\"w\":\"1280\",\"h\":\"800\",\"cap\":\"Synthetic demonstration dataOpen the interactive demonstration →Synthetic demonstration dataCaptured from the investor demonstration\"}"
+  },
+  {
+   "id": "W-capture-servicehands",
+   "name": "/products/servicehands shows its capture, loaded, described, sized, and labelled synthetic",
+   "result": "PASS",
+   "detail": "{\"ok\":true,\"alt\":\"ServiceHands in the investor demonstration: open jobs, jobs waiting for dispatch or verification, and how jobs are routed, counted from the service records.\",\"w\":\"1280\",\"h\":\"800\",\"cap\":\"Synthetic demonstration dataOpen the interactive demonstration →Synthetic demonstration dataCaptured from the investor demonstration\"}"
+  },
+  {
+   "id": "W-capture-commissioning",
+   "name": "/products/commissioning shows its capture, loaded, described, sized, and labelled synthetic",
+   "result": "PASS",
+   "detail": "{\"ok\":true,\"alt\":\"Commissioning & Assurance in the investor demonstration: adaptive test plans, evidence, independent verification, accepted baselines and drift.\",\"w\":\"1280\",\"h\":\"800\",\"cap\":\"Synthetic demonstration dataOpen the interactive demonstration →Synthetic demonstration dataCaptured from the investor demonstration\"}"
+  },
+  {
+   "id": "W-capture-apex",
+   "name": "/products/apex shows its capture, loaded, described, sized, and labelled synthetic",
+   "result": "PASS",
+   "detail": "{\"ok\":true,\"alt\":\"APEX in the investor demonstration: diagnosis with its evidence: cited layers, ranked hypotheses, bounded action.\",\"w\":\"1280\",\"h\":\"800\",\"cap\":\"Synthetic demonstration dataOpen the interactive demonstration →Synthetic demonstration dataCaptured from the investor demonstration\"}"
+  },
+  {
+   "id": "W-capture-field-intelligence",
+   "name": "/products/field-intelligence shows its capture, loaded, described, sized, and labelled synthetic",
+   "result": "PASS",
+   "detail": "{\"ok\":true,\"alt\":\"Field Intelligence in the investor demonstration: what a collector declares, what a check observes, what is verified.\",\"w\":\"1280\",\"h\":\"800\",\"cap\":\"Synthetic demonstration dataOpen the interactive demonstration →Synthetic demonstration dataCaptured from the investor demonstration\"}"
+  },
+  {
+   "id": "W-capture-learn",
+   "name": "/products/learn shows its capture, loaded, described, sized, and labelled synthetic",
+   "result": "PASS",
+   "detail": "{\"ok\":true,\"alt\":\"Learn in the investor demonstration: reviewed cases and training from what actually happened.\",\"w\":\"1280\",\"h\":\"800\",\"cap\":\"Synthetic demonstration dataOpen the interactive demonstration →Synthetic demonstration dataCaptured from the investor demonstration\"}"
+  },
+  {
+   "id": "W-nojs-products",
+   "name": "the products menu opens without JavaScript",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "W-nosite-js",
+   "name": "without site.js the founder page still reads and its enquiry link still works",
+   "result": "PASS",
+   "detail": "{\"h1\":\"Jeremiah Johnson\",\"conn\":\"https://tally.so/r/VpG0Vy?source=founder\",\"visible\":\"visible\"}"
+  },
+  {
+   "id": "W-products-keyboard",
+   "name": "the products menu opens with Enter, closes with Escape and returns focus to its button",
+   "result": "PASS",
+   "detail": "{\"opened\":true,\"closed\":{\"open\":false,\"focus\":\"SUMMARY\"}}"
+  },
+  {
+   "id": "W-uplift-hero",
+   "name": "the home hero is a gradient panel with a glow, and its counts come from the records (9 products, 140 rooms, 1 record)",
+   "result": "PASS",
+   "detail": "{\"bg\":\"radial-gradient(900px 520px at 10% -12%, rgba(10, 114, 104, 0.12), rgba(0, 0, 0,\",\"chip\":[\"9products\",\"140rooms\",\"1record\"]}"
+  },
+  {
+   "id": "W-uplift-story",
+   "name": "the home page tells the lifecycle in four chapters, in lifecycle order, each with its product’s own dark capture (when captured; the acceptance chapter shows the room record) and a link to its product page",
+   "result": "PASS",
+   "detail": "[{\"p\":\"lite\",\"h\":\"Design the room before anything is bought\",\"img\":\"/media/product/lite-1280.webp\",\"links\":[\"/products/lite\"]},{\"p\":\"commissioning\",\"h\":\"Prove it, then accept it\",\"img\":\"/media/product/room-1280.webp\",\"links\":[\"/products/commissioning\"]},{\"p\":\"servicehands\",\"h\":\"Run it against what was accepted\",\"img\":\"/media/product/servicehands-1280.webp\",\"links\":[\"/products/servicehands\",\"/produ"
+  },
+  {
+   "id": "W-uplift-rooms",
+   "name": "the 140 rooms are drawn as 140 cells whose key adds up to 140, and the number is display-sized",
+   "result": "PASS",
+   "detail": "{\"cells\":140,\"key\":140,\"n\":\"140\",\"size\":180}"
+  },
+  {
+   "id": "W-uplift-layered",
+   "name": "every card, tile and evidence card is a layered surface (it carries a shadow) in this scheme",
+   "result": "PASS",
+   "detail": "{\"cards\":19,\"flat\":0}"
+  },
+  {
+   "id": "W-founder-bio",
+   "name": "/founder shows the founder's professional overview beneath his name, verbatim",
+   "result": "PASS",
+   "detail": "Jeremiah Johnson is an AV/IT technology leader with over eight years of experien"
+  },
+  {
+   "id": "W-founder-story",
+   "name": "/founder tells \"The Missing Piece\" in his words and closes with \"My Cinderella shoe.\" on its own line, with generous space",
+   "result": "PASS",
+   "detail": "{\"bio\":\"Jeremiah Johnson is an AV/IT technology leader with over eight years of experience spanning systems integration, live production, field engineering, systems design, project management, and enterprise workplace technology. His career has progressed from hands-on technical operations and troubleshooting to leading engineering initiatives, managing complex AV projects, developing technology s"
+  },
+  {
+   "id": "W-founder-portrait",
+   "name": "/founder shows the supplied portrait",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "W-uplift-product-lite",
+   "name": "/products/lite: the hero's glow is tinted by the product's own colour",
+   "result": "PASS",
+   "detail": "radial-gradient(900px 560px at 86% 8%, color(srgb 0.662745 0.266667 0 / 0.16), rgba(0, 0, 0, 0) 64%), radial-gradient(80"
+  },
+  {
+   "id": "W-uplift-product-apex",
+   "name": "/products/apex: the hero's glow is tinted by the product's own colour",
+   "result": "PASS",
+   "detail": "radial-gradient(900px 560px at 86% 8%, color(srgb 0.784314 0.0627451 0.180392 / 0.16), rgba(0, 0, 0, 0) 64%), radial-gra"
+  },
+  {
+   "id": "W-uplift-clean",
+   "name": "no error on the uplifted pages",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "W-uplift-320-/",
+   "name": "/ at 320 px: no sideways scroll, no text or button past the edge, the record card never covers the caption",
+   "result": "PASS",
+   "detail": "{\"over\":0,\"hit\":false,\"wide\":0}"
+  },
+  {
+   "id": "W-uplift-320-/products/lite",
+   "name": "/products/lite at 320 px: no sideways scroll, no text or button past the edge, the record card never covers the caption",
+   "result": "PASS",
+   "detail": "{\"over\":0,\"hit\":false,\"wide\":0}"
+  },
+  {
+   "id": "W-uplift-320-/founder",
+   "name": "/founder at 320 px: no sideways scroll, no text or button past the edge, the record card never covers the caption",
+   "result": "PASS",
+   "detail": "{\"over\":0,\"hit\":false,\"wide\":0}"
+  },
+  {
+   "id": "W-uplift-320-/contact",
+   "name": "/contact at 320 px: no sideways scroll, no text or button past the edge, the record card never covers the caption",
+   "result": "PASS",
+   "detail": "{\"over\":0,\"hit\":false,\"wide\":0}"
+  },
+  {
+   "id": "W-concept-rail",
+   "name": "the home hero ends in nine glass product tiles, in canonical order, each a link to its product page and at least 44 px tall",
+   "result": "PASS",
+   "detail": "[\"Mission Control\",\"Lite\",\"Pro\",\"Search Party\",\"ServiceHands\",\"Commissioning & Assurance\",\"APEX\",\"Field Intelligence\",\"Learn\"]"
+  },
+  {
+   "id": "W-concept-flow",
+   "name": "the workflow strip is an ordered list of five moves, each linking its product page",
+   "result": "PASS",
+   "detail": "{\"n\":5,\"links\":[\"/products/lite\",\"/products/commissioning\",\"/products/mission-control\",\"/products/servicehands\",\"/products/learn\"]}"
+  },
+  {
+   "id": "W-concept-estates",
+   "name": "the estates strip names six estates and says that no customer is named and no deployment is claimed",
+   "result": "PASS",
+   "detail": "Where it fitsBuilt for the rooms of every estateCorporate campusesBoardrooms, huddles, town hallsHigher educationLecture"
+  },
+  {
+   "id": "W-concept-arch",
+   "name": "the architecture strip claims only what the product enforces (no SOC 2 / ISO / certification) and links the trust page",
+   "result": "PASS",
+   "detail": "The architectureBuilt to be checkedDeny by defaultThe server and the database decide every readAppend-only evidenceNever edited, never overwrittenTyped contract"
+  },
+  {
+   "id": "W-concept-band",
+   "name": "the closing band carries a drawn room (decorative svg), never a photograph",
+   "result": "PASS",
+   "detail": "{\"band\":true,\"hidden\":true,\"imgs\":0}"
+  },
+  {
+   "id": "W-films-scenes",
+   "name": "/films shows every cleared short scene, each silent, decorative and never autoplaying by itself, and no scene that is not cleared",
+   "result": "PASS",
+   "detail": "[{\"key\":\"B01\",\"hidden\":true,\"muted\":true,\"auto\":false,\"controls\":false},{\"key\":\"B02\",\"hidden\":true,\"muted\":true,\"auto\":false,\"controls\":false}]"
+  },
+  {
+   "id": "W-product-films",
+   "name": "every cleared product film (9) plays on its product page with captions, is 30–45 s long, every step of its recording had a proof, and it is not on /films",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "W-booklets",
+   "name": "/products offers the guides as booklets (2): cover, title, a download link, and the served PDF is the recorded file",
+   "result": "PASS",
+   "detail": "[{\"href\":\"/media/booklets/end-user-guide-r-atl-4-218.pdf\",\"img\":\"/media/booklets/end-user-guide-r-atl-4-218-cover.webp\",\"t\":\"End-User Success Guide · Atlas 4.218\"},{\"href\":\"/media/booklets/it-onboardi"
+  },
+  {
+   "id": "W-films-page",
+   "name": "/films exists in every build: cleared films play, every other film is listed by title only with the reason, no uncleared film is shipped, and a film exclusive to another section is not here",
+   "result": "PASS",
+   "detail": "{\"h1\":\"Watch the record being made\",\"pending\":0,\"videos\":7,\"srcs\":[\"/media/M2/720.mp4\",\"/media/FA/720.mp4\",\"/media/F02P/720.mp4\",\"/media/IE/720.mp4\",\"/media/F01/720.mp4\",\"/media/V141R/720.mp4\",\"/media/W2/720.mp4\"],\"scenes\":[{\"key\":\"B01\",\"hidden\":true,\"muted\":true,\"auto\":false,\"controls\":false},{\"key\":\"B02\",\"hidden\":true,\"muted\":true,\"auto\":false,\"controls\":false},{\"key\":\"B03\",\"hidden\":true,\"muted\""
+  },
+  {
+   "id": "W-concept-320-/",
+   "name": "/ at 320 px: the glass tiles, strips, film cards and drawn band stay inside the page",
+   "result": "PASS",
+   "detail": "{\"over\":0,\"wide\":[]}"
+  },
+  {
+   "id": "W-concept-320-/platform",
+   "name": "/platform at 320 px: the glass tiles, strips, film cards and drawn band stay inside the page",
+   "result": "PASS",
+   "detail": "{\"over\":0,\"wide\":[]}"
+  },
+  {
+   "id": "W-concept-320-/films",
+   "name": "/films at 320 px: the glass tiles, strips, film cards and drawn band stay inside the page",
+   "result": "PASS",
+   "detail": "{\"over\":0,\"wide\":[]}"
+  },
+  {
+   "id": "W-concept-320-/solutions",
+   "name": "/solutions at 320 px: the glass tiles, strips, film cards and drawn band stay inside the page",
+   "result": "PASS",
+   "detail": "{\"over\":0,\"wide\":[]}"
+  },
+  {
+   "id": "W-concept-390-/",
+   "name": "/ at 390 px: the glass tiles, strips, film cards and drawn band stay inside the page",
+   "result": "PASS",
+   "detail": "{\"over\":0,\"wide\":[]}"
+  },
+  {
+   "id": "W-concept-390-/platform",
+   "name": "/platform at 390 px: the glass tiles, strips, film cards and drawn band stay inside the page",
+   "result": "PASS",
+   "detail": "{\"over\":0,\"wide\":[]}"
+  },
+  {
+   "id": "W-concept-390-/films",
+   "name": "/films at 390 px: the glass tiles, strips, film cards and drawn band stay inside the page",
+   "result": "PASS",
+   "detail": "{\"over\":0,\"wide\":[]}"
+  },
+  {
+   "id": "W-concept-390-/solutions",
+   "name": "/solutions at 390 px: the glass tiles, strips, film cards and drawn band stay inside the page",
+   "result": "PASS",
+   "detail": "{\"over\":0,\"wide\":[]}"
+  },
+  {
+   "id": "W-concept-clean",
+   "name": "no error on the concept pages",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "WC-page",
+   "name": "the Collabora-SING section exists, is in the sitemap and the footer, names the product as its one h1, is labelled \"In Development\" (label, title, footer link) and says so in its first paragraph and its description",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"h1\":\"Collabora-SING\",\"label\":\"In Development\",\"foot\":\"Collabora-SING (In Development)\"}"
+  },
+  {
+   "id": "WC-honest",
+   "name": "the section says the pilot has not been run yet, gives no result, and does not count Collabora-SING among the nine products",
+   "result": "PASS",
+   "detail": "Collabora-SING is a product in development at Empathia Technologies. Its film, Collabora-SING SyncLab, sets out a research plan in eight scenes. The pilot has not been run yet, so there is no result to report here."
+  },
+  {
+   "id": "WC-no-figures",
+   "name": "no latency, jitter, loss or offset figure appears in the page text, its title or description, the film's catalogue text or its text tracks",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "WC-no-claims",
+   "name": "the section claims no finding, comparison, partner or institution",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "WC-film",
+   "name": "the section has one player for the film, with controls, a poster and its own renditions; it does not autoplay, does not loop, and nothing of the film is loaded or played until the viewer asks",
+   "result": "PASS",
+   "detail": "{\"n\":1,\"src\":\"/media/SYNCLAB/720.mp4\",\"type\":\"video/mp4\",\"autoplayAttr\":false,\"autoplay\":false,\"loop\":false,\"paused\":true,\"preload\":\"none\",\"controls\":true,\"inline\":true,\"poster\":\"/media/SYNCLAB/poster.webp\",\"started\":0,\"net\":1,\"tracks\":[{\"kind\":\"captions\",\"src\":\"/media/SYNCLAB/captions.vtt\",\"lang\":\"en\",\"label\":\"English (this film has no sound)\",\"def\":false},{\"kind\":\"descriptions\",\"src\":\"/media/SYN"
+  },
+  {
+   "id": "WC-poster",
+   "name": "the poster is a frame from inside the film, in the rendition's own proportions, with picture and legible text in it (not the black opening frame), and a JPEG of it exists",
+   "result": "PASS",
+   "detail": "{\"w\":1600,\"h\":970,\"mean\":31.594868347220896,\"bright\":0.010902777777777779}"
+  },
+  {
+   "id": "WC-silent",
+   "name": "the rendition has a video stream and no audio stream; its captions track holds one cue that says the film is silent; no word is presented as spoken",
+   "result": "PASS",
+   "detail": "{\"vide\":true,\"soun\":false,\"bytes\":3870974,\"capCues\":[\"[No sound: this film is silent.] \"]}"
+  },
+  {
+   "id": "WC-tracks",
+   "name": "two WebVTT tracks: captions (off until chosen, so nothing covers the film's own text) and a description of what is shown; both load from this site as text/vtt",
+   "result": "PASS",
+   "detail": "[{\"kind\":\"captions\",\"src\":\"/media/SYNCLAB/captions.vtt\",\"lang\":\"en\",\"label\":\"English (this film has no sound)\",\"def\":false},{\"kind\":\"descriptions\",\"src\":\"/media/SYNCLAB/descriptions.vtt\",\"lang\":\"en\",\"label\":\"Text description (English)\",\"def\":false}]"
+  },
+  {
+   "id": "WC-description",
+   "name": "the text description under the player covers the eight scenes and the end card in order, each with its start and end time, quotes the on-screen words, and matches the descriptions track cue for cue",
+   "result": "PASS",
+   "detail": "{\"n\":9,\"times\":[\"From 0:00 –  to 0:04\",\"From 0:04 –  to 0:09\",\"From 0:09 –  to 0:14\",\"From 0:14 –  to 0:17\",\"From 0:17 –  to 0:22\",\"From 0:22 –  to 0:26\",\"From 0:26 –  to 0:30\",\"From 0:30 –  to 0:33\",\"From 0:33 –  to 0:35\"],\"missing\":[]}"
+  },
+  {
+   "id": "WC-described-as-shown",
+   "name": "the page says, outside the collapsed description, that the film has no sound, that its words are written on screen, and that the description is of what is shown and was not spoken",
+   "result": "PASS",
+   "detail": "This film has no sound and no narration: everything it says is written on screen. The description below is of what is shown, scene by scene, with the on-screen words in quotation marks and this page’s own notes in square brackets. Nothing in it was spoken."
+  },
+  {
+   "id": "WC-qualifier",
+   "name": "directly above the player, always visible and tied to it: every figure in the film is demonstration data and not a measurement, the labels show how results WILL be classified, and no pilot has been run; the end card's \"real networks, real instruments, real musicians\" is marked as the plan's aim, never stated as done",
+   "result": "PASS",
+   "detail": "{\"q\":\"Read this with the film. Every figure shown in it is demonstration data, not a measurement. The labels in it (measured, estimated, observed, subjective) show how results will be classified once a pilot runs. No pilot has been run.\",\"visible\":true,\"above\":true}"
+  },
+  {
+   "id": "WC-play",
+   "name": "pressing play plays the 1280 × 776, 35-second film from this site, with no sound decoded, and it can be sought to its last scene",
+   "result": "PASS",
+   "detail": "{\"can\":true,\"t\":1.813658,\"paused\":false,\"w\":1280,\"h\":776,\"d\":35,\"audio\":0,\"video\":192336,\"muted\":false,\"sought\":32.15511}"
+  },
+  {
+   "id": "WC-label",
+   "name": "the web rendition carries \"IN DEVELOPMENT · DEMONSTRATION DATA · NO PILOT HAS BEEN RUN\" for its whole length (read at the start, at 0:20 and on the end card, and on the poster): light lettering across most of a dark band above the picture, and the page shows the whole frame uncropped",
+   "result": "PASS",
+   "detail": "{\"out\":[{\"t\":0.2,\"at\":0.2,\"amber\":0.147,\"dark\":0.776,\"span\":0.91},{\"t\":20,\"at\":20,\"amber\":0.15,\"dark\":0.779,\"span\":0.91},{\"t\":34.6,\"at\":34.6,\"amber\":0.147,\"dark\":0.783,\"span\":0.91},{\"t\":\"poster\",\"amber\":0.153,\"dark\":0.762,\"span\":0.91}],\"ratio\":1.6494845360824741,\"fit\":\"cover\",\"wAttr\":\"1280\",\"hAttr\":\"776\"}"
+  },
+  {
+   "id": "WC-only-here",
+   "name": "no page other than /collabora-sing (28 pages and the not-found page checked), and no script or stylesheet, references the film's key or files; films.json keeps it exclusive to this section",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "WC-not-elsewhere",
+   "name": "the home page has no player for this film, and the films page neither plays nor lists it",
+   "result": "PASS",
+   "detail": "{\"homeVideos\":0,\"films\":0}"
+  },
+  {
+   "id": "WC-clean",
+   "name": "no page error, no console error and no request outside the site on the section, before, during and after playing the film",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "WC-phone-390",
+   "name": "the section at 390 px: no sideways scroll, nothing past the edge, buttons and the description toggle at least 44 px tall",
+   "result": "PASS",
+   "detail": "{\"over\":0,\"wide\":[],\"short\":[]}"
+  },
+  {
+   "id": "WC-keyboard",
+   "name": "the description opens from the keyboard with a visible focus ring, and the player takes keyboard focus with a visible ring",
+   "result": "PASS",
+   "detail": "{\"fo\":{\"tag\":\"SUMMARY\",\"ring\":true},\"open\":true,\"vf\":true}"
+  },
+  {
+   "id": "WC-phone-320",
+   "name": "the section at 320 px: no sideways scroll, nothing past the edge, buttons and the description toggle at least 44 px tall",
+   "result": "PASS",
+   "detail": "{\"over\":0,\"wide\":[],\"short\":[]}"
+  },
+  {
+   "id": "WC-reduced-motion",
+   "name": "for readers who ask for reduced motion nothing in the section animates and the film stays still until asked",
+   "result": "PASS",
+   "detail": "{\"moving\":0,\"paused\":true}"
+  },
+  {
+   "id": "WF-portrait-/-1440",
+   "name": "/ at 1440 px shows the founder's picture once, loaded from this site, whole (square, as supplied), with its intrinsic width and height stated and the alternative text \"Jeremiah Johnson, founder of Empathia Technologies\"",
+   "result": "PASS",
+   "detail": "{\"n\":1,\"alt\":\"Jeremiah Johnson, founder of Empathia Technologies\",\"wAttr\":\"960\",\"hAttr\":\"960\",\"loaded\":true,\"nw\":480,\"nh\":480,\"cur\":\"/media/founder/640.webp\",\"boxW\":480.65625,\"boxH\":480.65625,\"fit\":\"cover\",\"srcset\":\"/media/founder/320.jpg 320w, /media/founder/640.jpg 640w, /media/founder/960.jpg 960w\",\"webp\":\"/media/founder/320.webp 320w, /media/founder/640.webp 640w, /media/founder/960.webp 960w\""
+  },
+  {
+   "id": "WF-portrait-/founder-1440",
+   "name": "/founder at 1440 px shows the founder's picture once, loaded from this site, whole (square, as supplied), with its intrinsic width and height stated and the alternative text \"Jeremiah Johnson, founder of Empathia Technologies\"",
+   "result": "PASS",
+   "detail": "{\"n\":1,\"alt\":\"Jeremiah Johnson, founder of Empathia Technologies\",\"wAttr\":\"960\",\"hAttr\":\"960\",\"loaded\":true,\"nw\":480,\"nh\":480,\"cur\":\"/media/founder/640.webp\",\"boxW\":432.578125,\"boxH\":432.578125,\"fit\":\"cover\",\"srcset\":\"/media/founder/320.jpg 320w, /media/founder/640.jpg 640w, /media/founder/960.jpg 960w\",\"webp\":\"/media/founder/320.webp 320w, /media/founder/640.webp 640w, /media/founder/960.webp 960"
+  },
+  {
+   "id": "WF-portrait-/founder-390",
+   "name": "/founder at 390 px shows the founder's picture once, loaded from this site, whole (square, as supplied), with its intrinsic width and height stated and the alternative text \"Jeremiah Johnson, founder of Empathia Technologies\"",
+   "result": "PASS",
+   "detail": "{\"n\":1,\"alt\":\"Jeremiah Johnson, founder of Empathia Technologies\",\"wAttr\":\"960\",\"hAttr\":\"960\",\"loaded\":true,\"nw\":299,\"nh\":299,\"cur\":\"/media/founder/320.webp\",\"boxW\":322.1875,\"boxH\":322.1875,\"fit\":\"cover\",\"srcset\":\"/media/founder/320.jpg 320w, /media/founder/640.jpg 640w, /media/founder/960.jpg 960w\",\"webp\":\"/media/founder/320.webp 320w, /media/founder/640.webp 640w, /media/founder/960.webp 960w\",\""
+  },
+  {
+   "id": "WF-portrait-files",
+   "name": "the site ships the three sizes of the picture in WebP and JPEG and none of the earlier portrait files; no alternative text on the site describes the founder beyond his name and role",
+   "result": "PASS",
+   "detail": "320.jpg,320.webp,640.jpg,640.webp,960.jpg,960.webp"
+  },
+  {
+   "id": "WF-band-1440",
+   "name": "/founder at 1440 px: the closing band's button keeps a button's height (44 to 72 px) and its disclosure sits under it, aligned with it",
+   "result": "PASS",
+   "detail": "{\"h\":48,\"under\":true,\"left\":true}"
+  },
+  {
+   "id": "WF-band-390",
+   "name": "/founder at 390 px: the closing band's button keeps a button's height (44 to 72 px) and its disclosure sits under it, aligned with it",
+   "result": "PASS",
+   "detail": "{\"h\":48,\"under\":true,\"left\":true}"
+  },
+  {
+   "id": "WS-words-pinned",
+   "name": "the founder's own words in apps/website/src/founder.ts are byte-for-byte the words he supplied (five paragraphs, then \"My Cinderella shoe.\")",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "WS-verbatim",
+   "name": "the rendered text equals the constants: the overview is FOUNDER_BIO; the block of his words is the heading \"The Missing Piece\", then FOUNDING_STORY paragraph for paragraph in his order, then FOUNDING_STORY_CLOSE, and nothing else is inside it",
+   "result": "PASS",
+   "detail": "{\"tags\":\"H3,P,P,P,P,P,P\",\"n\":6}"
+  },
+  {
+   "id": "WS-close",
+   "name": "\"My Cinderella shoe.\" is the last line of his words, on one line of its own, with generous space above it",
+   "result": "PASS",
+   "detail": "{\"gap\":64,\"lines\":1}"
+  },
+  {
+   "id": "WS-structure",
+   "name": "the story is one section, #search-party-story, \"How Search Party came to be\", in five parts in order: the request, what the list could not hold, his words, what it became, the approach",
+   "result": "PASS",
+   "detail": "{\"parts\":[\"request\",\"list\",\"words\",\"became\",\"approach\"],\"heads\":[\"The request\",\"What the list could not hold\",\"The Missing Piece\",\"What it became\",\"The approach it set\"]}"
+  },
+  {
+   "id": "WS-request",
+   "name": "the request is told only as he told it: a plain infrastructure task, a contacts list, in his phrase “a simple contacts-list request”",
+   "result": "PASS",
+   "detail": "01\n\nThe request\n\nIt began as a plain infrastructure task: a contacts list of who to call for which room, site and system. In the founder’s words, it was “a simple contacts-list request”."
+  },
+  {
+   "id": "WS-layers",
+   "name": "what the list could not hold is drawn from one record: the four words in the company's order, each with the question a list has no column for; the list itself holds a name, a role and a number; the drawing says it is not any organisation's record",
+   "result": "PASS",
+   "detail": "[{\"id\":\"people\",\"name\":\"People\",\"asks\":\"Which person answers for which room?\"},{\"id\":\"process\",\"name\":\"Process\",\"asks\":\"Which process hands work from one person to the next?\"},{\"id\":\"technology\",\"name\":\"Technology\",\"asks\":\"Which system serves the room?\"},{\"id\":\"communication\",\"name\":\"Communication\",\"asks\":\"Who covers when that person is away?\"}]"
+  },
+  {
+   "id": "WS-became",
+   "name": "what it became is described from the Search Party product record (its own description, word for word), with find / connected / same record, the plain statement that the demonstration runs on synthetic data, and links to the product page and to Search Party in the demonstration",
+   "result": "PASS",
+   "detail": "[\"/products/search-party\",\"https://empathia-demo.onrender.com/#/search\"]"
+  },
+  {
+   "id": "WS-approach",
+   "name": "the approach is three short lines, in the directive's words, stated as the company's approach and not as a quotation",
+   "result": "PASS",
+   "detail": "Start with a real operational problem. | Understand the relationships around it. | Build a system that improves the entire workflow."
+  },
+  {
+   "id": "WS-plain",
+   "name": "outside his own words the story names no employer, manager, customer or site, claims no endorsement, uses no superlative and gives no date or number; only the three credentials appear on the page",
+   "result": "PASS",
+   "detail": " "
+  },
+  {
+   "id": "WS-product",
+   "name": "the Search Party product page (and no other product page) carries the short version: two sentences, his phrase in quotation marks, and a link to /founder#search-party-story",
+   "result": "PASS",
+   "detail": "{\"n\":2,\"link\":\"/founder#search-party-story\",\"others\":[]}"
+  },
+  {
+   "id": "WS-anchor",
+   "name": "the link /founder#search-party-story opens the page at the story",
+   "result": "PASS",
+   "detail": "87.578125"
+  },
+  {
+   "id": "WS-quote",
+   "name": "the founder page carries his quotation word for word (opened by the fortune-cookie line), with his photograph of the slip, after the founding story and before what follows it",
+   "result": "PASS",
+   "detail": "Trust the feeling that arrived before the explanation. Not every truth announces | hero,search-party-story,before-the-explanation,section,section,band"
+  },
+  {
+   "id": "WS-clean",
+   "name": "no page error, no console error and no request outside the site on the founder page and the Search Party page",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "WS-width-1440",
+   "name": "the founder page at 1440 px: no sideways scroll, nothing past the edge, buttons at least 44 px tall; the photograph is whole, square and inside its plate, and is most of it",
+   "result": "PASS",
+   "detail": "{\"over\":0,\"wide\":[],\"short\":[],\"plateIn\":true,\"square\":true,\"imgInPlate\":true,\"share\":0.65}"
+  },
+  {
+   "id": "WS-width-768",
+   "name": "the founder page at 768 px: no sideways scroll, nothing past the edge, buttons at least 44 px tall; the photograph is whole, square and inside its plate, and is most of it",
+   "result": "PASS",
+   "detail": "{\"over\":0,\"wide\":[],\"short\":[],\"plateIn\":true,\"square\":true,\"imgInPlate\":true,\"share\":0.65}"
+  },
+  {
+   "id": "WS-width-390",
+   "name": "the founder page at 390 px: no sideways scroll, nothing past the edge, buttons at least 44 px tall; the photograph is whole, square and inside its plate, and is most of it",
+   "result": "PASS",
+   "detail": "{\"over\":0,\"wide\":[],\"short\":[],\"plateIn\":true,\"square\":true,\"imgInPlate\":true,\"share\":0.65}"
+  },
+  {
+   "id": "WS-width-320",
+   "name": "the founder page at 320 px: no sideways scroll, nothing past the edge, buttons at least 44 px tall; the photograph is whole, square and inside its plate, and is most of it",
+   "result": "PASS",
+   "detail": "{\"over\":0,\"wide\":[],\"short\":[],\"plateIn\":true,\"square\":true,\"imgInPlate\":true,\"share\":0.65}"
+  },
+  {
+   "id": "WR-reduced-motion",
+   "name": "with reduced motion: no animation, the resting composition (the plate pixel for pixel the page without script), no controls shown, and the session is not marked as played",
+   "result": "PASS",
+   "detail": "{\"state\":\"rest\",\"ctl\":false,\"toggle\":false,\"toggleName\":\"Pause the introduction\",\"replay\":false,\"replayName\":\"Replay the introduction\",\"h\":[],\"anims\":0,\"styled\":0,\"played\":null,\"log\":0,\"plateSame\":true,\"heroSame\":false}"
+  },
+  {
+   "id": "WR-photo",
+   "name": "in every sampled frame (0 to 9.9 s) the photograph is the same picture at the same size: its frame only rides a few pixels (no scale, skew or rotation), the image itself is never transformed, and the overview, the quotation and the links stay fully visible",
+   "result": "PASS",
+   "detail": "{\"0\":7,\"1\":4.5,\"2\":2.5,\"3\":1.4,\"4\":0.8,\"5\":0.4,\"6\":0.2,\"7\":0.1,\"8\":0,\"9\":0,\"0.5\":5.8,\"9.9\":0}"
+  },
+  {
+   "id": "WR-order",
+   "name": "the sequence runs in its order: darkness (the light has not moved at 0.5 s), the key light crosses the photograph (under way at 2 s, across by 4 s), the lines draw towards the four words (none at 3 s, all by 5 s), the words appear (none at 4 s, all by 6 s), the name and the credentials set in (hidden at 3 s, name by 5 s, credentials by 7 s), and the dust is gone by the end",
+   "result": "PASS",
+   "detail": "{\"0\":{\"photo\":{\"a\":1,\"b\":0,\"c\":0,\"d\":1,\"f\":7},\"img\":\"none\",\"light\":0,\"line\":0,\"line4\":0,\"node1\":0,\"node4\":0,\"name\":0,\"cred3\":0,\"bio\":\"1\",\"quote\":\"1\",\"cta\":\"1\",\"dust\":0},\"1\":{\"photo\":{\"a\":1,\"b\":0,\"c\":0,\"d\":1,\"f\":4.5},\"img\":\"none\",\"light\":0.001,\"line\":0,\"line4\":0,\"node1\":0,\"node4\":0,\"name\":0,\"cred3\":0,\"bio\":\"1\",\"quote\":\"1\",\"cta\":\"1\",\"dust\":0.54},\"2\":{\"photo\":{\"a\":1,\"b\":0,\"c\":0,\"d\":1,\"f\":2.5},\"img\":\""
+  },
+  {
+   "id": "WR-links",
+   "name": "while the sequence plays a link in the hero is the element under the pointer and a real click on it opens its page; the wheel scrolls the page; Escape and scrolling leave the sequence running",
+   "result": "PASS",
+   "detail": "{\"hit\":true,\"popup\":\"https://tally.so/r/VpG0Vy?source=founder\",\"scrolled\":500,\"afterKeys\":\"run\"}"
+  },
+  {
+   "id": "WR-start",
+   "name": "the first paint is already the opening frame (armed in <head>), and the sequence starts by itself once the plate is in view, marking the session; Pause and Replay are real buttons with names, at least 44 px tall",
+   "result": "PASS",
+   "detail": "{\"first\":\"armed,run\",\"startUi\":{\"state\":\"run\",\"ctl\":true,\"toggle\":true,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44,44],\"anims\":41,\"styled\":0,\"played\":\"1\"},\"midUi\":{\"state\":\"run\",\"ctl\":true,\"toggle\":true,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44,44],\"anims\":41,\"styled\":0,\"played\":\"1\"}}"
+  },
+  {
+   "id": "WR-ten-seconds",
+   "name": "the sequence lasts ten seconds (9.6 to 10.6 s measured) and then settles to the resting composition by itself: no attribute, no animation left, only Replay offered",
+   "result": "PASS",
+   "detail": "{\"ms\":10029,\"endUi\":{\"state\":\"rest\",\"ctl\":true,\"toggle\":false,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44],\"anims\":0,\"styled\":0,\"played\":\"1\"}}"
+  },
+  {
+   "id": "WR-no-shift",
+   "name": "nothing on the page moves: the layout-shift total over the whole sequence is 0, and the plate, the photograph, the name, the overview, the credentials, the quotation, the links, the control bar and the story below have the same boxes at the start, at the end, and on the page without motion",
+   "result": "PASS",
+   "detail": "{\"cls\":0,\"startBoxes\":\".reveal__plate:481:601:100:389 .reveal .portrait img:433:433:124:413 .founder__name:673:72:667:218 [data-founder-bio]:665:280:667:350 .creds:673:41:667:652 .philosophy:673:343:667:725 .founder__ctas:673:56:667:1100 .reveal__bar:481:48:100:1000 #search-party-story:1440:3142:0:1358\",\"endBoxes\":\".reveal__plate:481:601:100:389 .reveal .portrait img:433:433:124:413 .founder__name"
+  },
+  {
+   "id": "WR-rest",
+   "name": "after the sequence the plate is, pixel for pixel, the plate of the page without script",
+   "result": "PASS",
+   "detail": "349318 vs 349318 bytes"
+  },
+  {
+   "id": "WR-replay",
+   "name": "Replay starts the sequence again from its beginning",
+   "result": "PASS",
+   "detail": "{\"re\":{\"state\":\"run\",\"ctl\":true,\"toggle\":true,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44,44],\"anims\":41,\"styled\":0,\"played\":\"1\"},\"reT\":1350.0310000007455}"
+  },
+  {
+   "id": "WR-pause",
+   "name": "Pause freezes it (the clock stands still and two screenshots half a second apart are identical) and the button becomes Play; Play, from the keyboard, carries on from the same moment",
+   "result": "PASS",
+   "detail": "{\"pa\":\"paused\",\"t1\":1416.6850000007453,\"t2\":1416.6850000007453,\"t3\":1633.4180000009794,\"same\":true}"
+  },
+  {
+   "id": "WR-once",
+   "name": "it plays once per session: a reload in the same tab shows the resting composition with Replay and starts nothing; a new session arriving below the hero holds the opening frame, unplayed, and starts only when the plate comes into view",
+   "result": "PASS",
+   "detail": "{\"again\":{\"state\":\"rest\",\"ctl\":true,\"toggle\":false,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44],\"anims\":0,\"styled\":0,\"played\":\"1\"},\"below\":\"armed\",\"seen\":\"run\"}"
+  },
+  {
+   "id": "WR-clean",
+   "name": "no page error, no console error, no request outside the site, no inline style anywhere on the page; the script is the founder page's only (no other page loads it) and is under 4 KB; the introduction has no audio or video element",
+   "result": "PASS",
+   "detail": " styled 0"
+  },
+  {
+   "id": "WR-motif",
+   "name": "the lines run from the photograph's lower edge to the four words (People, Process, Technology, Communication, the same four as the story's drawing); each line's length is the distance to its word and matches the stylesheet; the drawing is hidden from assistive technology, the words are given as text, and the photograph keeps its name-only alternative text",
+   "result": "PASS",
+   "detail": "{\"lens\":[148.93,72.47,72.47,148.93],\"lines\":[148.93,72.47,72.47,148.93]}"
+  },
+  {
+   "id": "WR-phone",
+   "name": "on a phone (390 px) the sequence runs and settles with no layout shift, no sideways scroll, the same boxes before and after, and a Replay button at least 44 px tall",
+   "result": "PASS",
+   "detail": "{\"phEnd\":{\"cls\":0,\"over\":0},\"phUi\":{\"state\":\"rest\",\"ctl\":true,\"toggle\":false,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44],\"anims\":0,\"styled\":0,\"played\":\"1\"},\"same\":true}"
+  },
+  {
+   "id": "W-budgets",
+   "name": "home ≤ 48 KB, site.js ≤ 8 KB, theme-init.js ≤ 512 B, three preloaded Inter faces ≤ 88 KB (D38), captures ≤ 1.4 MB and each ≤ 80 KB",
+   "result": "PASS",
+   "detail": "{\"home\":48888,\"js\":4032,\"theme\":249,\"faces\":3,\"fonts\":79012,\"captures\":688484,\"maxCapture\":60458}"
   }
  ]
 }

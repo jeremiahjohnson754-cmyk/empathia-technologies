@@ -12,7 +12,9 @@ import { commercialPages } from './commercial.js';
 import { FounderReveal, SearchPartyStory, SearchPartyOrigin, BeforeTheExplanation } from './founderStory.js';   // the founder page's plate and the Search Party founding story   // v18/pilot: /pricing and /pilots
 
 export interface Page { path: string; title: string; description: string; nav?: string; body: React.ReactNode; /** a page's own script in dist (e.g. 'pilot.js'), loaded after site.js on that page only */ script?: string; /** a small script of the page's own loaded in <head>, before first paint (the founder page's introduction must start from its opening frame) */ headScript?: string; }
-export interface SiteContext { asOf?: string; films: Film[]; pendingFilms?: Pick<Film, 'key' | 'title' | 'runtime' | 'summary' | 'disclosure'>[]; transcripts: Record<string, string[]>; /** a silent film's description, cue by cue (build.mjs reads its descriptions.vtt) */ cues?: Record<string, Cue[]>; demoUrl: string; preview: boolean; captures: Record<string, Capture>; api?: boolean; /** short silent scenes cleared for the website (broll.json) */ broll?: { key: string; title: string }[] }
+export interface SiteContext { asOf?: string; films: Film[]; pendingFilms?: Pick<Film, 'key' | 'title' | 'runtime' | 'summary' | 'disclosure'>[]; transcripts: Record<string, string[]>; /** a silent film's description, cue by cue (build.mjs reads its descriptions.vtt) */ cues?: Record<string, Cue[]>; demoUrl: string; preview: boolean; captures: Record<string, Capture>; api?: boolean; /** short silent scenes cleared for the website (broll.json) */ broll?: { key: string; title: string }[];
+  /** the guides as printed booklets (media/booklets/BOOKLETS.json, made by scripts/media/make-booklets.mjs) */ booklets?: Booklet[] }
+export interface Booklet { file: string; title: string; bytes: number; pages: number; cover: string; sha256: string; blurb: string }
 
 const AUDIENCES = [
   { title: 'CIOs and CTOs', body: 'One accountable record for the technology estate: what was approved, funded, installed, proved and accepted.', href: '/solutions#enterprise', icon: 'exec' },
@@ -165,6 +167,12 @@ export function buildPages(ctx: SiteContext): Page[] {
       <>
         <section className="hero"><div className="wrap"><Spectrum /><p className="label">Products</p><h1>Nine products, one record</h1><p className="lede">Each product is a stage of the same lifecycle. Each page states what the public demonstration shows today, and what it does not. Scouter is part of Lite.</p><div className="actions hero__action"><a className="btn btn--primary btn--lg" href={demo()} data-hero-action>Explore the live demo</a></div></div></section>
         <Section title="All nine, in lifecycle order"><ProductTiles captures={ctx.captures} /></Section>
+        {ctx.booklets?.length ? <Section id="guides" title="Guides for the people who use the rooms" lead="The End-User Success Guide and the IT Onboarding Success Guide as printed booklets, set from the demonstration’s own content and screenshots. Both are drafts on synthetic data, not yet reviewed by a practising specialist.">
+          <ul className="booklets" data-booklets={ctx.booklets.length}>{ctx.booklets.map((b) => <li key={b.file} className="booklet">
+            <a href={`/media/booklets/${b.file}`} className="booklet__cover" aria-label={`${b.title} (PDF, ${b.pages} pages)`}><img src={`/media/booklets/${b.cover}`} alt="" width={600} height={776} loading="lazy" /></a>
+            <div className="booklet__t"><h3>{b.title}</h3><p>{b.blurb}</p><p className="booklet__meta">PDF · {b.pages} pages · {(b.bytes / 1048576).toFixed(1)} MB · draft</p><a className="btn" href={`/media/booklets/${b.file}`} download>Download the booklet</a></div>
+          </li>)}</ul>
+        </Section> : null}
       </>
     ) },
     ...productPages,

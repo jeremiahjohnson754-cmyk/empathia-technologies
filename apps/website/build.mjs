@@ -70,7 +70,11 @@ const brollCat = fs.existsSync(path.join(app, 'broll.json')) ? JSON.parse(fs.rea
 const broll = filmsMode === 'off' ? [] : brollCat.filter((c) => c.rights?.website?.status === 'VERIFIED' && ['720.mp4', 'poster.webp'].every((x) => fs.existsSync(path.join(mediaSrc, 'broll', c.key, x)))).map(({ key, title }) => ({ key, title }));
 for (const c of broll) for (const x of ['720.mp4', 'poster.webp']) copy(path.join(mediaSrc, 'broll', c.key, x), path.join(dist, 'media/broll', c.key, x));
 const asOf = new Date().toISOString();
-const rendered = renderAll({ asOf, films, pendingFilms, transcripts, cues, demoUrl, preview: filmsMode === 'preview', captures, broll }, { api: api || null, base });
+// the guides as printed booklets (scripts/media/make-booklets.mjs): only those listed in BOOKLETS.json whose files exist, copied as they are
+const bookletsDir = path.join(mediaSrc, 'booklets'); const BLURB = { 'end-user-guide': 'How to use one room: what is in it, how to start, share and finish, and what to do when something does not work; with the room in Lite and its plan.', 'it-onboarding-success-guide': 'Ninety days by phase, with the knowledge checks and answers, and what good looks like at 30, 60 and 90 days.' };
+const booklets = fs.existsSync(path.join(bookletsDir, 'BOOKLETS.json')) ? JSON.parse(fs.readFileSync(path.join(bookletsDir, 'BOOKLETS.json'), 'utf8')).booklets.filter((b) => fs.existsSync(path.join(bookletsDir, b.file)) && fs.existsSync(path.join(bookletsDir, b.cover))).map((b) => ({ ...b, blurb: Object.entries(BLURB).find(([k]) => b.file.startsWith(k))?.[1] || '' })) : [];
+for (const b of booklets) for (const f of [b.file, b.cover]) copy(path.join(bookletsDir, f), path.join(dist, 'media/booklets', f));
+const rendered = renderAll({ asOf, films, pendingFilms, transcripts, cues, demoUrl, preview: filmsMode === 'preview', captures, broll, booklets }, { api: api || null, base });
 // an `exclusive` film plays on the pages in its `placement` and nowhere else (founder, 2026-11-10: the Collabora-SING film is "just for"
 // its section). The build fails rather than ship it on another page, or ship its own page without it when the film is built in.
 for (const f of catalogue.filter((x) => x.exclusive)) {

@@ -7,7 +7,8 @@
 // (task #337), the thirty-room wording, the dark-only captures (D43), budgets, and destructive checks (bad addresses, methods, storage).
 // Run it in both schemes: PW_COLOR_SCHEME=dark node --import ./tests/browser/color-scheme.mjs tests/browser/website.test.mjs
 //   node tests/browser/website.test.mjs [dist] [evidence-dir]
-import { spawn } from 'node:child_process'; import fs from 'node:fs'; import path from 'node:path'; import net from 'node:net'; import { fileURLToPath, pathToFileURL } from 'node:url';
+import { spawn } from 'node:child_process'; import fs from 'node:fs';
+import crypto from 'node:crypto'; import path from 'node:path'; import net from 'node:net'; import { fileURLToPath, pathToFileURL } from 'node:url';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const { chromium } = await import(path.join(repo, 'node_modules/playwright/index.mjs'));
 const scheme = process.env.PW_COLOR_SCHEME || 'light';
@@ -45,7 +46,10 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [768, 1024, 'tablet'], [390, 
     const early = NOT_YET.filter((re) => re.test(info.text.replace(/Planned, not yet in place[\s\S]*?(?=\n[A-Z][^\n]{3,}\n)/, ''))); if (early.length || NOT_YET.some((re) => re.test(inPlace))) ok(`W-notyet-${p}`, `${p} does not present an unbuilt capability as present`, false, early.map(String).join(' '));
     if (tag === 'desktop') await page.screenshot({ path: path.join(out, `${tag}-${p.replace(/[^a-z-]/g, '') || 'home'}.png`) });
   }
-  ok(`W-${tag}-links`, 'every internal link on the site resolves to a listed page or a section of one', [...links].every((l) => pages.includes(l.replace(/\/$/, '') || '/')), [...links].filter((l) => !pages.includes(l.replace(/\/$/, '') || '/')).join(' '));
+  // 13 Nov 2026: the guides' booklets are files, not pages; a link to one resolves when it is a booklet BOOKLETS.json lists (W-booklets
+  // fetches each one and checks its SHA-256). Every other internal link must still be a listed page.
+  const isBooklet = (l) => { const m = /^\/media\/booklets\/([a-z0-9-]+\.pdf)$/.exec(l); return !!m && JSON.parse(fs.readFileSync(path.join(repo, 'apps/website/media/booklets/BOOKLETS.json'), 'utf8')).booklets.some((b) => b.file === m[1]); };
+  ok(`W-${tag}-links`, 'every internal link on the site resolves to a listed page or a section of one (or is a listed booklet)', [...links].every((l) => pages.includes(l.replace(/\/$/, '') || '/') || isBooklet(l)), [...links].filter((l) => !pages.includes(l.replace(/\/$/, '') || '/') && !isBooklet(l)).join(' '));
   if (tag === 'phone') {
     await page.goto(base + '/'); await page.waitForTimeout(150);
     const before = await page.evaluate(() => getComputedStyle(document.getElementById('nav')).display);
@@ -321,6 +325,12 @@ for (const [w, h] of [[1440, 900], [768, 1024], [390, 844]]) {
       await page.goto(base + f.placement[0]); const v = await page.evaluate((k) => ({ n: document.querySelectorAll(`[data-film="${k}"] video`).length, cap: !!document.querySelector(`[data-film="${k}"] track[kind=captions]`) }), f.key);
       if (v.n !== 1 || !v.cap || !(rec.duration >= 30 && rec.duration <= 45) || !rec.steps.length || rec.steps.some((st) => !st.proof) || fm.srcs.some((x) => x.includes(`/media/${f.key}/`))) bad.push(`${f.key} ${JSON.stringify(v)} ${rec.duration}`); }
     ok('W-product-films', `every cleared product film (${pf.length}) plays on its product page with captions, is 30–45 s long, every step of its recording had a proof, and it is not on /films`, pf.length >= 1 && !bad.length, bad.join(' | ')); }
+  // the guides as printed booklets (founder, 13 Nov 2026): /products offers each one listed in BOOKLETS.json, its cover and its PDF, and
+  // each PDF served is the file whose SHA-256 the list records
+  { const bl = JSON.parse(fs.readFileSync(path.join(repo, 'apps/website/media/booklets/BOOKLETS.json'), 'utf8')).booklets; await page.goto(base + '/products');
+    const shown = await page.evaluate(() => [...document.querySelectorAll('.booklet')].map((li) => ({ href: li.querySelector('a[download]')?.getAttribute('href'), img: li.querySelector('img')?.getAttribute('src'), t: li.querySelector('h3')?.textContent })));
+    const served = []; for (const b of bl) { const r = await page.request.get(base + `/media/booklets/${b.file}`); const body = await r.body(); served.push(r.status() === 200 && body.subarray(0, 5).toString() === '%PDF-' && crypto.createHash('sha256').update(body).digest('hex') === b.sha256); }
+    ok('W-booklets', `/products offers the guides as booklets (${bl.length}): cover, title, a download link, and the served PDF is the recorded file`, bl.length >= 2 && shown.length === bl.length && shown.every((x, i) => x.href === `/media/booklets/${bl[i].file}` && x.img === `/media/booklets/${bl[i].cover}` && x.t === bl[i].title) && served.every(Boolean), JSON.stringify(shown).slice(0, 200)); }
   ok('W-films-page', '/films exists in every build: cleared films play, every other film is listed by title only with the reason, no uncleared film is shipped, and a film exclusive to another section is not here', f.status() === 200 && fm.h1 && pages.includes('/films') && fm.pending + fm.videos === listed.length && fm.videos >= cleared && !strays.length && (!fm.pending || fm.why) && fm.foot && !fs.readdirSync(path.join(dist, 'media')).some((d) => catalogue.some((c) => c.key === d && c.rights?.website?.status !== 'VERIFIED')), JSON.stringify(fm));
   for (const w of [320, 390]) {
     await page.setViewportSize({ width: w, height: 800 });
