@@ -159,6 +159,12 @@ export const OPS_PAGES: readonly PageDef[] = [
     load: adapt(() => import('./pages/AssetLife.js'), (m, p) => h(m.AssetLifePage, { perspective: p.role, hash: p.hash })),
     search: { keywords: 'asset id unit history lifecycle replaced retired serial inventory', aliases: ['asset history', 'asset id', 'unit history'] },
   },
+  {
+    id: 'people.experience', title: 'People intelligence', purpose: 'Who has done the work: the rooms and projects each person touched, and experience by layer and by quarter (evidence, never a credential)', product: 'servicehands',
+    path: '/v25/people', authority: { roles: ['svcmgr', 'ops', 'exec', 'ipm', 'bpm', 'architect', 'syseng', 'cxeng'], why: 'people and their work: the people who dispatch, manage service and programmes, and lead engineering (founder, 14 Nov 2026)' },
+    load: adapt(() => import('./pages/People.js'), (m, p) => h(m.PeoplePage, { perspective: p.role, hash: p.hash })),
+    search: { keywords: 'people technician experience expertise who worked touched project room layer control audio video involvement', aliases: ['who worked on', 'expertise', 'technician experience'] },
+  },
   // ---- the operational workspaces (rebuild/demo-ops): each loads its own file (ws/<name>.js) only once the role is admitted
   {
     id: 'servicehands.analytics', title: 'Service analytics', purpose: 'Service by month and quarter, by building and project, and a scorecard that holds each vendor to its agreement', product: 'servicehands',

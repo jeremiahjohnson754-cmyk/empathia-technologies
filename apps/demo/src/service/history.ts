@@ -20,6 +20,8 @@ export interface ServiceJob {
   vendor: string; vendorName: string; agreement: string | null; asset: string | null; projectId: string | null;
   openedAt: string; respondedAt: string | null; restoredAt: string | null; closedAt: string | null;
   firstTimeFix: boolean; reopened: boolean; source: 'synthetic-history' | 'workspace';
+  /** who did the work: the technician on the work order (workspace jobs); assigned from the vendor's roster for the synthetic history (people/involvement.ts) */
+  tech?: string | null;
 }
 /** SLA targets in hours, from @empathia/service-engine's SLA words: business days are counted as 24 h each here (stated wherever shown). */
 export const SLA_HOURS: Record<Severity, { respond: number; restore: number }> = { 'Mission critical': { respond: 2, restore: 8 }, High: { respond: 24, restore: 48 }, Standard: { respond: 48, restore: 120 } };
@@ -98,6 +100,6 @@ export function workspaceJobs(w: S.Workspace, projectOfRoom: (roomId: string) =>
     const resp = i.history.find((h) => ['ASSIGNED', 'ACCEPTED', 'IN_PROGRESS'].includes(h.to))?.at ?? null;
     return { id: i.id, roomId: i.roomId, roomName: i.roomName, building: i.buildingKey, layer: layerOfText(`${i.title} ${i.summary}`), severity: i.severity, kind: 'break-fix' as const,
       vendor, vendorName: vendorName(vendor), agreement: null, asset: null, projectId: projectOfRoom(i.roomId), openedAt: i.openedAt, respondedAt: resp, restoredAt: i.restoredAt, closedAt: i.closedAt,
-      firstTimeFix: !i.reopened, reopened: i.reopened, source: 'workspace' as const };
+      firstTimeFix: !i.reopened, reopened: i.reopened, source: 'workspace' as const, tech: wo?.techId ?? null };
   });
 }

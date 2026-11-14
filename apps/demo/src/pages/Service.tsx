@@ -16,6 +16,9 @@ import { ExportMenu } from '../export/ExportMenu.js';
 import { openable } from './V25Nav.js';
 import { ImportCard } from '../service/ImportCard.js';
 import { serviceQueuePackage, serviceRecordPackage } from '../export/service.js';
+import { involvement, allJobs } from '../people/involvement.js';
+import { layerOfText } from '../service/history.js';
+import { LAYER_LABEL } from '../service/analytics.js';
 const made = (persona: string) => ({ role: personaLabel(persona), at: new Date().toISOString(), build: process.env.DEMO_BUILD_ID || 'dev' });
 
 const TONE: Record<string, 'ok' | 'warn' | 'bad' | 'muted' | 'info'> = { OPEN: 'warn', TRIAGED: 'info', ASSIGNED: 'info', ACCEPTED: 'info', IN_PROGRESS: 'info', VERIFYING: 'warn', RESOLVED: 'ok', CLOSED: 'muted', REOPENED: 'bad', CANCELLED: 'muted', 'Mission critical': 'bad', High: 'warn', Standard: 'muted' };
@@ -96,7 +99,7 @@ function Incident({ inc, w, apply, persona, me, est }: { inc: S.Incident; w: S.W
           {!holds(persona, t.authority) ? <span className="ui-meta"> · not your authority</span> : (
             <div className="stack">
               {t.to === 'TRIAGED' && <div className="build__row"><label className="ui-muted" htmlFor="sv-sev">Severity</label><select id="sv-sev" value={sev} onChange={(e) => setSev(e.target.value as never)}>{Object.keys(SLA).map((s) => <option key={s}>{s}</option>)}</select><Button small kind="primary" onClick={() => apply((x) => S.triage(x, persona, inc.id, sev))}>Triage</Button></div>}
-              {t.to === 'ASSIGNED' && cands && <Candidates c={cands} onAssign={(id) => apply((x) => S.assign(x, persona, inc.id, id))} />}
+              {t.to === 'ASSIGNED' && cands && <Candidates c={cands} w={w} layer={layerOfText(`${inc.title} ${inc.summary}`)} onAssign={(id) => apply((x) => S.assign(x, persona, inc.id, id))} />}
               {t.to === 'ASSIGNED' && !cands && <Button small kind="primary" onClick={() => apply((x) => S.assign(x, persona, inc.id, w.staff[0]!.id))}>Open a work order and rank the pool</Button>}
               {t.to === 'ACCEPTED' && <Button small kind="primary" onClick={() => apply((x) => S.accept(x, persona, inc.id))}>Accept the job{tech && tech.id !== me ? ` (assigned to ${tech.name})` : ''}</Button>}
               {t.to === 'IN_PROGRESS' && preview && needs && <div className="stack" data-testid="preflight">
@@ -125,12 +128,15 @@ function Incident({ inc, w, apply, persona, me, est }: { inc: S.Incident; w: S.W
 }
 const isRef = (r: unknown) => !!r && typeof r === 'object' && 'why' in (r as object);
 
-function Candidates({ c, onAssign }: { c: NonNullable<ReturnType<typeof S.candidatesFor>>; onAssign: (id: string) => void }) {
+function Candidates({ c, w, layer, onAssign }: { c: NonNullable<ReturnType<typeof S.candidatesFor>>; w: S.Workspace; layer: ReturnType<typeof layerOfText>; onAssign: (id: string) => void }) {
+  // experience from the record, shown beside the engine's ranking and never part of it (founder, 14 Nov 2026: people's work feeds dispatch)
+  const exp = useMemo(() => new Map(involvement(allJobs(w, () => null)).map((x) => [x.person.id, x])), [w]);
+  const xp = (id: string) => { const x = exp.get(id); return x ? `${LAYER_LABEL[layer]} experience ${x.byLayer[layer]} · ${x.level} overall` : 'no worked jobs on record'; };
   return (
     <div className="stack" data-testid="candidates">
       <p className="ui-meta">Needs: {c.need.certs.join(', ')}; experience {Object.entries(c.need.experience).map(([k, v]) => `${k} ${v}`).join(', ')}; tools {c.need.tools.join(', ')}.</p>
       {c.none && <Notice tone="warn">{c.whyNone}</Notice>}
-      <ul className="svc__cands">{c.eligible.map((p, i) => <li key={p.id}><b>{i + 1}. {p.name}</b> <Tag tone="ok">eligible · {p.score}</Tag> <span className="ui-meta">{p.reasons.join(' · ')}</span> <Button small kind={i === 0 ? 'primary' : 'secondary'} onClick={() => onAssign(p.id)}>Assign</Button></li>)}
+      <ul className="svc__cands">{c.eligible.map((p, i) => <li key={p.id}><b>{i + 1}. {p.name}</b> <Tag tone="ok">eligible · {p.score}</Tag> <span className="ui-meta">{p.reasons.join(' · ')}</span> <span className="ui-meta" data-testid="cand-experience">· record: {xp(p.id)}</span> <Button small kind={i === 0 ? 'primary' : 'secondary'} onClick={() => onAssign(p.id)}>Assign</Button></li>)}
         {c.ineligible.map((p) => <li key={p.id} className="off"><b>{p.name}</b> <Tag tone="bad">hard gate</Tag> <span className="ui-meta">{p.hardFails.join(' · ')}</span> <Button small kind="quiet" onClick={() => onAssign(p.id)} title="The engine refuses this; try it to see the refusal in the ledger">Try anyway</Button></li>)}</ul>
     </div>
   );

@@ -210,3 +210,9 @@
 .df-step { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; padding: 10px 12px; border: 1px solid var(--line2); border-radius: var(--r-md); }
 .df-step > b { flex-basis: 100%; }
 .df-step[data-allowed="false"] { opacity: 0.75; }
+
+/* people intelligence (pages/People.tsx) */
+.pp-bar { display: inline-block; width: 6rem; height: 8px; border-radius: 4px; background: var(--line2); vertical-align: middle; overflow: hidden; }
+.pp-bar i { display: block; height: 100%; background: var(--accent); }
+.pp-layers li { display: grid; grid-template-columns: 7rem 1fr 3rem; gap: 10px; align-items: center; padding-block: 4px; }
+.pp-layers .pp-bar { width: 100%; }
