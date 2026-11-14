@@ -60,7 +60,7 @@ unbroken long words), then reopens every file with independent readers (`export-
   searched for every evidence reference and for "Recorded" and "Verified"; none may appear. As the control, the engineering files must
   carry them (the slide deck excepted: a slide table keeps at most seven columns).
 
-14 Nov 2026 (00:12 CT): 660 checks pass, 0 fail (20 reports × 6 formats, LibreOffice included; the four added reports are the dossier's
+14 Nov 2026 (00:05 CT): 660 checks pass, 0 fail (20 reports × 6 formats, LibreOffice included; the four added reports are the dossier's
 two redactions of the reference snapshot and of a working record with a retest, a verification and a new deficiency).
 
 13 Nov 2026 (22:40 CT): 518 checks pass, 0 fail (16 reports × 6 formats, LibreOffice included; the reference room's package carries its tracker, a test-fixture capture photograph (generated, labelled as a fixture) and 27 links, checked as embedded images, hyperlinks and PDF link annotations).
