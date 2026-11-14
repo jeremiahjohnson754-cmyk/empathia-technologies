@@ -54,7 +54,7 @@ unbroken long words), then reopens every file with independent readers (`export-
 - PDF: pdfinfo/pdftotext; pages, title metadata, real text, "page n of N" on every page; page images for review.
 - LibreOffice converts the DOCX, XLSX and PPTX of the first room to PDF.
 
-13 Nov 2026 (22:50 CT): 518 checks pass, 0 fail (16 reports × 6 formats, LibreOffice included; the reference room's package carries its tracker, a test-fixture capture photograph (generated, labelled as a fixture) and 27 links, checked as embedded images, hyperlinks and PDF link annotations).
+13 Nov 2026 (22:40 CT): 518 checks pass, 0 fail (16 reports × 6 formats, LibreOffice included; the reference room's package carries its tracker, a test-fixture capture photograph (generated, labelled as a fixture) and 27 links, checked as embedded images, hyperlinks and PDF link annotations).
 
 `tests/browser/demo-exports.test.mjs` downloads all six from the page as a person would and opens the bytes (16 checks, desktop and
 phone: the reference room's documentation, plan and links; commissioning, assurance, APEX and the portfolio brief with its building filter): file names, PDF pages and text, the Office packages' main parts, the JSON schema and SHA-256, the CSV header, the SHA-256
