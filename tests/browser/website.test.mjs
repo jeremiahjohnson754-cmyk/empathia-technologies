@@ -7,7 +7,7 @@
 // (task #337), the thirty-room wording, the dark-only captures (D43), budgets, and destructive checks (bad addresses, methods, storage).
 // Run it in both schemes: PW_COLOR_SCHEME=dark node --import ./tests/browser/color-scheme.mjs tests/browser/website.test.mjs
 //   node tests/browser/website.test.mjs [dist] [evidence-dir]
-import { spawn } from 'node:child_process'; import fs from 'node:fs'; import path from 'node:path'; import net from 'node:net'; import { fileURLToPath } from 'node:url';
+import { spawn } from 'node:child_process'; import fs from 'node:fs'; import path from 'node:path'; import net from 'node:net'; import { fileURLToPath, pathToFileURL } from 'node:url';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const { chromium } = await import(path.join(repo, 'node_modules/playwright/index.mjs'));
 const scheme = process.env.PW_COLOR_SCHEME || 'light';
@@ -487,6 +487,14 @@ for (const [w, h] of [[1440, 900], [768, 1024], [390, 844]]) {
   await page.goto(base + '/founder#search-party-story', { waitUntil: 'load' }); await page.waitForTimeout(250);
   const anchorTop = await page.evaluate(() => document.getElementById('search-party-story').getBoundingClientRect().top);
   ok('WS-anchor', 'the link /founder#search-party-story opens the page at the story', anchorTop >= -2 && anchorTop < 200, String(anchorTop));
+  // the founder's quotation and his fortune-cookie slip (founder, 13 Nov 2026 20:16 CT): his words exactly as he sent them, opened by the
+  // slip's line, with his photograph; placed after the founding story and before the thinking behind the company
+  { const QT = (await import(pathToFileURL(path.join(repo, 'apps/website/src/founderQuote.ts')).href)).FOUNDER_QUOTE_TEXT;
+    await page.goto(base + '/founder', { waitUntil: 'load' }); await page.locator('[data-founder-quote]').scrollIntoViewIfNeeded(); await page.waitForTimeout(400);
+    const q = await page.evaluate(() => { const sec = document.querySelector('[data-founder-quote]'); const w = sec?.querySelector('[data-founder-quote-words]'); const img = sec?.querySelector('img');
+      const order = [...document.querySelectorAll('main section')].map((x) => x.id || x.className.split(' ')[0]); const norm = (t) => t.replace(/\s+/g, ' ').trim();
+      return { text: norm([...w.querySelectorAll('h2, p:not(.eyebrow)')].map((e) => e.textContent).join(' ')), img: img && img.complete && img.naturalWidth > 0, alt: img?.alt || '', order: order.join(','), at: order.indexOf('before-the-explanation'), story: order.indexOf('search-party-story') }; });
+    ok('WS-quote', 'the founder page carries his quotation word for word (opened by the fortune-cookie line), with his photograph of the slip, after the founding story and before what follows it', q.text === QT.replace(/\s+/g, ' ').trim() && q.img && /fortune-cookie slip/.test(q.alt) && q.at === q.story + 1, `${q.text.slice(0, 80)} | ${q.order}`); }
   ok('WS-clean', 'no page error, no console error and no request outside the site on the founder page and the Search Party page', !errs.length && !ext.length, [...errs, ...ext].slice(0, 3).join(' | ')); await ctx.close();
   for (const w of [1440, 768, 390, 320]) {
     const c = await newCtx({ viewport: { width: w, height: 844 }, reducedMotion: 'reduce' }); const p = await c.newPage(); await p.goto(base + '/founder'); await p.waitForTimeout(150);

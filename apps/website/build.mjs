@@ -84,6 +84,8 @@ const { injectMetaCsp, originOf } = await import(path.join(repo, 'scripts/securi
 for (const r of rendered) { if (r.path === '/404') { fs.writeFileSync(path.join(dist, '404.html'), page(r.html)); continue; } const dir = path.join(dist, r.path === '/' ? '' : r.path); fs.mkdirSync(dir, { recursive: true }); fs.writeFileSync(path.join(dir, 'index.html'), page(r.html)); }
 // media: the founder portrait (owner-supplied for the website, metadata stripped) and the films built in
 for (const f of fs.readdirSync(path.join(mediaSrc, 'founder'))) copy(path.join(mediaSrc, 'founder', f), path.join(dist, 'media/founder', f));
+// the founder's keepsake: his photograph of the fortune-cookie slip on the founder page (founderQuote.ts)
+for (const f of fs.readdirSync(path.join(mediaSrc, 'keepsake'))) copy(path.join(mediaSrc, 'keepsake', f), path.join(dist, 'media/keepsake', f));
 for (const f of films) for (const x of filesOf(f)) copy(path.join(mediaSrc, f.key, x), path.join(dist, 'media', f.key, x));
 const css = [tokenCss(), `/* apps/website/src/styles/site.css */\n${fs.readFileSync(path.join(app, 'src/styles/site.css'), 'utf8')}`, `/* apps/website/src/styles/founder.css */\n${fs.readFileSync(path.join(app, 'src/styles/founder.css'), 'utf8')}`].join('\n');
 fs.writeFileSync(path.join(dist, 'site.css'), css);

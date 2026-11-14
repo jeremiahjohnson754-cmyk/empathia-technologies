@@ -34,3 +34,23 @@ pixel), and the pause check (the pointer was left on a button whose hover colour
 ## Not checked
 
 No person has watched it on a physical phone or with a screen reader. Browsers other than Chromium: NOT RUN.
+
+## 2026-11-13: in colour, and the quotation
+
+Founder, 20:16 CT: the founder page's motion graphics "more animated, more alive and futures looking and colorful vibrant clean
+realistic but simple enough not to be completely over the top", and his quotation with the fortune-cookie slip on the page.
+
+- **Colour.** The four lines and words take their layer's colour at rest and in motion: People teal `#2dd4bf`, Process violet `#a78bfa`,
+  Technology amber `#fbbf24`, Communication pink `#f472b6`.
+- **Added to the ten seconds**, all inside the original timing:
+  - an aurora of the four colours rises behind the photograph (0.4 s to 9.8 s), then settles to a faint glow;
+  - each word pings once as it arrives (4.4 s to 6.3 s);
+  - a pulse runs back from every word to the photograph (5.6 s to 7.3 s);
+  - one small comet crosses the top of the plate (7.3 s to 8.9 s).
+- **Unchanged.** Every new layer ends on its resting value, so the resting composition is still, pixel for pixel, the page with no
+  script. The photograph is untouched.
+- **Checks.** The whole founder suite (WR-*, WS-*) passes unchanged in both schemes. WS-quote checks the quotation word for word against
+  `apps/website/src/founderQuote.ts`, and checks the photograph and the section's place.
+- **The quotation.** It sits in its own section, "Before the explanation", between the founding story and the thinking behind the
+  company. The slip is his photograph (`apps/website/media/keepsake`, cropped to the slip and the hand). The slip settles into place and
+  its halo turns once as the section scrolls in (scroll-driven, never under reduced motion).

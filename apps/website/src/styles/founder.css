@@ -119,3 +119,69 @@ html[data-fr="paused"] [data-founder="founder"] *, html[data-fr="paused"] [data-
   .origin__words { border-radius: 0 var(--w-r-card) var(--w-r-card) 0; }
 }
 @media (forced-colors: active) { .holds__list, .holds__links li, .origin__words, .approach li, .origin-note { border: 1px solid CanvasText; } }
+
+/* ---- Before the explanation (13 Nov 2026): his quotation and the slip it grew from ----
+   The slip sits at a slight angle like a keepsake, on a soft halo of the four layers' colours; the first line is set large, lit by the
+   same colours; the last paragraph closes alone. With motion allowed, the slip settles into place and the halo turns once as the section
+   scrolls in (scroll-driven, so it never runs unseen); under reduced motion everything simply rests. */
+.quote { position: relative; overflow: clip; --q-a: #2dd4bf; --q-b: #a78bfa; --q-c: #fbbf24; --q-d: #f472b6; }
+.quote::before { content: ""; position: absolute; inset: -20% -10% auto 35%; height: 140%; pointer-events: none; opacity: .5; z-index: 0;
+  background: radial-gradient(40% 35% at 30% 40%, color-mix(in srgb, var(--q-b) 26%, transparent), transparent 70%), radial-gradient(35% 30% at 70% 60%, color-mix(in srgb, var(--q-a) 22%, transparent), transparent 70%); }
+.quote .wrap { position: relative; z-index: 1; }
+.quote__grid { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
+.quote__slip { position: relative; margin: 0; justify-self: center; width: 100%; max-width: 440px; transform: rotate(-3deg); }
+.quote__halo { position: absolute; inset: -7% -6%; z-index: -1; border-radius: 40%; filter: blur(30px); opacity: .42; pointer-events: none;
+  background: conic-gradient(from 210deg, var(--q-a), var(--q-b), var(--q-d), var(--q-c), var(--q-a)); }
+.quote__slip img { display: block; width: 100%; height: auto; border-radius: 14px; box-shadow: 0 0 0 1px color-mix(in srgb, var(--w-tx) 14%, transparent), 0 28px 60px -28px rgba(0, 0, 0, .75), 0 8px 18px -10px rgba(0, 0, 0, .5); }
+.quote__slip figcaption { margin-top: 14px; color: var(--w-tx2); font-size: 14px; text-align: center; transform: rotate(3deg); }
+.quote__words { margin: 0; padding: 0; min-width: 0; }
+.quote__words .eyebrow { margin: 0 0 14px; }
+.quote__line { margin: 0 0 28px; max-width: 18ch; font: 800 clamp(34px, 4.4vw, 60px)/1.04 var(--w-display); letter-spacing: -.035em; text-wrap: balance; color: var(--w-tx);
+  background: linear-gradient(115deg, color-mix(in srgb, var(--q-a) 78%, var(--w-tx)) 0%, color-mix(in srgb, var(--q-b) 80%, var(--w-tx)) 52%, color-mix(in srgb, var(--q-d) 78%, var(--w-tx)) 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.quote__words p:not(.eyebrow) { margin: 0 0 16px; max-width: 58ch; color: var(--w-tx); font-size: clamp(18px, 1.45vw, 21px); line-height: 1.7; }
+.quote__words .quote__close { margin-top: 30px; font: 700 clamp(22px, 2.2vw, 30px)/1.3 var(--w-display); letter-spacing: -.02em; max-width: 30ch; }
+.quote__words footer { margin-top: 26px; padding-left: 18px; border-left: 3px solid var(--q-a); color: var(--w-tx2); font-size: 15px; font-weight: 600; }
+@media (max-width: 860px) { .quote__grid { grid-template-columns: 1fr; } .quote__slip { max-width: 360px; } }
+@media (forced-colors: active) { .quote__line { -webkit-text-fill-color: CanvasText; background: none; } .quote__halo, .quote::before { display: none; } }
+@media print { .quote__halo, .quote::before { display: none; } .quote__line { -webkit-text-fill-color: currentColor; background: none; } }
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .quote__slip { animation: q-settle linear both; animation-timeline: view(); animation-range: entry 0% cover 35%; }
+    .quote__halo { animation: q-turn linear both; animation-timeline: view(); animation-range: entry 0% exit 20%; }
+  }
+}
+@keyframes q-settle { from { opacity: 0; transform: translateY(36px) rotate(-9deg) scale(.96); } to { opacity: 1; transform: rotate(-3deg); } }
+@keyframes q-turn { from { transform: rotate(-60deg) scale(.85); opacity: .2; } 50% { opacity: .7; } to { transform: rotate(40deg) scale(1); opacity: .42; } }
+
+/* ---- the introduction, in colour (13 Nov 2026, founder: "more animated, more alive and futuristic looking, colourful, vibrant, clean
+   realistic but simple ... a little ridiculous, not a lot") ----
+   Each of the four lines and words takes its layer's colour (people teal, process violet, technology amber, communication pink), at
+   rest and in motion. During the ten seconds, on top of the original sequence: an aurora of the four colours rises behind the
+   photograph and settles to a faint glow, each word pings once as it arrives, a pulse runs back from every word to the photograph, and
+   one small comet crosses the top of the plate. Every new layer ENDS on its resting value (the aurora's faint glow, the rest invisible),
+   so the resting composition is still exactly what the page shows with no script. Timings sit inside the original ten seconds. */
+.reveal { --rv-c1: #2dd4bf; --rv-c2: #a78bfa; --rv-c3: #fbbf24; --rv-c4: #f472b6; }
+.reveal__aurora { position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .32; filter: blur(34px);
+  background: radial-gradient(28% 32% at 22% 40%, color-mix(in srgb, var(--rv-c1) 70%, transparent), transparent 72%), radial-gradient(26% 30% at 50% 26%, color-mix(in srgb, var(--rv-c2) 70%, transparent), transparent 72%), radial-gradient(26% 30% at 78% 42%, color-mix(in srgb, var(--rv-c4) 62%, transparent), transparent 72%), radial-gradient(30% 26% at 50% 70%, color-mix(in srgb, var(--rv-c3) 48%, transparent), transparent 72%), radial-gradient(45% 16% at 50% 90%, color-mix(in srgb, var(--rv-c2) 55%, transparent), transparent 75%); }
+.rv-links g:nth-child(1) { --c: var(--rv-c1); } .rv-links g:nth-child(2) { --c: var(--rv-c2); } .rv-links g:nth-child(3) { --c: var(--rv-c3); } .rv-links g:nth-child(4) { --c: var(--rv-c4); }
+.rv-links .rv-line { stroke: var(--c); stroke-width: 1.4; } .rv-links .rv-line--halo { stroke: color-mix(in srgb, var(--c) 30%, transparent); stroke-width: 6; }
+.rv-links .rv-spark, .rv-links .rv-echo { fill: var(--c); }
+.rv-n1 { --c: var(--rv-c1); } .rv-n2 { --c: var(--rv-c2); } .rv-n3 { --c: var(--rv-c3); } .rv-n4 { --c: var(--rv-c4); }
+.rv-node .rv-ring { stroke: var(--c); } .rv-node .rv-core { fill: var(--c); }
+.rv-ping { fill: none; stroke: var(--c); stroke-width: 1.2; opacity: 0; }
+.rv-echo { opacity: 0; }
+.rv-comet { opacity: 0; } .rv-comet line { stroke: url(#rv-comet-tail); stroke-width: 2.2; stroke-linecap: round; } .rv-comet circle { fill: #fff; }
+html[data-fr] .reveal__aurora { animation: rv-aurora 9.4s ease-in-out .4s both; }
+html[data-fr] .rv-ping { animation: rv-ping 1.3s cubic-bezier(.2, .7, .3, 1) both; }
+html[data-fr] .rv-n1 .rv-ping { animation-delay: 4.4s; } html[data-fr] .rv-n2 .rv-ping { animation-delay: 4.6s; } html[data-fr] .rv-n3 .rv-ping { animation-delay: 4.8s; } html[data-fr] .rv-n4 .rv-ping { animation-delay: 5s; }
+html[data-fr] .rv-echo--long { animation: rv-echo-long 1.2s cubic-bezier(.5, 0, .3, 1) both; } html[data-fr] .rv-echo--short { animation: rv-echo-short 1.2s cubic-bezier(.5, 0, .3, 1) both; }
+html[data-fr] .rv-links g:nth-child(1) .rv-echo { animation-delay: 5.6s; } html[data-fr] .rv-links g:nth-child(2) .rv-echo { animation-delay: 5.75s; } html[data-fr] .rv-links g:nth-child(3) .rv-echo { animation-delay: 5.9s; } html[data-fr] .rv-links g:nth-child(4) .rv-echo { animation-delay: 6.05s; }
+html[data-fr] .rv-comet { animation: rv-comet 1.6s cubic-bezier(.4, 0, .6, 1) 7.3s both; }
+@keyframes rv-aurora { 0% { opacity: 0; transform: rotate(-8deg) scale(.8); } 30% { opacity: .9; } 62% { opacity: .75; transform: rotate(6deg) scale(1.08); } 100% { opacity: .32; transform: none; } }
+@keyframes rv-ping { 0% { opacity: .9; transform: scale(1); } 100% { opacity: 0; transform: scale(3.2); } }
+/* the pulse runs back from the word to the photograph: 148.93 and 72.47 are the two line lengths (FAN) */
+@keyframes rv-echo-long { 0% { opacity: 0; transform: translateX(148.93px); } 15% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; transform: translateX(0); } }
+@keyframes rv-echo-short { 0% { opacity: 0; transform: translateX(72.47px); } 15% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; transform: translateX(0); } }
+@keyframes rv-comet { 0% { opacity: 0; transform: translate(-60px, 40px); } 12% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(470px, -30px); } }
+@media print { .reveal__aurora { display: none; } }

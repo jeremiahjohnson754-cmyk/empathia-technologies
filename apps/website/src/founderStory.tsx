@@ -11,6 +11,7 @@
 // script at all; the motion is added by src/reveal.ts (dist/founder.js) and described in docs/media/FOUNDER_REVEAL_QA.md.
 import React from 'react';
 import { FOUNDING_STORY, FOUNDING_STORY_CLOSE } from './founder.js';
+import { FORTUNE_LINE, FOUNDER_QUOTE, FORTUNE_PHOTO } from './founderQuote.js';
 import { FounderPortrait, Shot, Actions, type Capture } from './ui.js';
 import type { Product } from './products.js';
 
@@ -40,19 +41,22 @@ const FAR = dust(18, 20261111); const NEAR = dust(10, 7);
 export const FounderReveal = () => (
   <div className="reveal" data-reveal>
     <div className="reveal__plate">
-      <span className="reveal__glow" aria-hidden="true" />
+      <span className="reveal__aurora" aria-hidden="true" /><span className="reveal__glow" aria-hidden="true" />
       <div className="reveal__photo"><FounderPortrait size="lg" /><span className="reveal__shade" aria-hidden="true"><i /></span></div>
       <svg className="reveal__fx" viewBox="0 0 400 500" aria-hidden="true" focusable="false">
+        <defs><linearGradient id="rv-comet-tail" x1="0" x2="1"><stop offset="0" stopColor="#a78bfa" stopOpacity="0" /><stop offset=".6" stopColor="#2dd4bf" stopOpacity=".7" /><stop offset="1" stopColor="#ffffff" /></linearGradient></defs>
+        <g className="rv-comet"><line x1="-46" y1="52" x2="0" y2="40" /><circle cx="0" cy="40" r="2.2" /></g>
         <g className="rv-dust rv-dust--far">{FAR.map((d, i) => <circle key={i} cx={d.x} cy={d.y} r={d.r} opacity={d.o} />)}</g>
         <g className="rv-dust rv-dust--near">{NEAR.map((d, i) => <circle key={i} cx={d.x} cy={d.y} r={+(d.r * 1.5).toFixed(2)} opacity={d.o} />)}</g>
         <g className="rv-links">{FAN.map((f, i) => (
           <g key={f.id} transform={`translate(${ORIGIN.x} ${ORIGIN.y}) rotate(${f.deg})`}>
             <line className={`rv-line rv-line--halo rv-d${i + 1}`} x1="0" y1="0" x2={f.len} y2="0" /><line className={`rv-line rv-d${i + 1}`} x1="0" y1="0" x2={f.len} y2="0" />
             <circle className={`rv-spark rv-spark--${i === 0 || i === FAN.length - 1 ? 'long' : 'short'} rv-d${i + 1}`} r="2.4" />
+            <circle className={`rv-echo rv-echo--${i === 0 || i === FAN.length - 1 ? 'long' : 'short'}`} r="2.2" />
           </g>
         ))}</g>
         <g transform={`translate(${ORIGIN.x} ${ORIGIN.y})`}><g className="rv-origin"><circle r="7" className="rv-ring" /><circle r="2.6" className="rv-core" /></g></g>
-        {FAN.map((f, i) => <g key={f.id} transform={`translate(${f.x} ${NODE_Y})`}><g className={`rv-node rv-n${i + 1}`} data-layer={f.id}><circle r="6" className="rv-ring" /><circle r="2.2" className="rv-core" /><text y="27" textAnchor="middle">{f.name}</text></g></g>)}
+        {FAN.map((f, i) => <g key={f.id} transform={`translate(${f.x} ${NODE_Y})`}><g className={`rv-node rv-n${i + 1}`} data-layer={f.id}><circle r="6" className="rv-ping" /><circle r="6" className="rv-ring" /><circle r="2.2" className="rv-core" /><text y="27" textAnchor="middle">{f.name}</text></g></g>)}
       </svg>
       <span className="reveal__sheen" aria-hidden="true" />
     </div>
@@ -120,5 +124,26 @@ export const SearchPartyOrigin = () => (
     <p className="eyebrow">Where it came from</p><h2 id="sp-origin-h">It began with a contacts list</h2>
     <p>Search Party began with what the founder calls “a simple contacts-list request”, and with what a list cannot hold: how people, processes and technology relate. He tells the story in his own words on the founder page.</p>
     <Actions><a className="btn" href="/founder#search-party-story">How Search Party came to be</a></Actions>
+  </div></div></section>
+);
+
+/** Before the explanation (founder, 13 Nov 2026): his quotation, opened by the fortune-cookie line it grew from, with his photograph of
+ *  the slip. It stands between the story of what he felt and built, and the thinking the company is built on: the feeling, then the
+ *  explanation that caught up with it. The words are his (./founderQuote.ts), rendered whole; the slip is a keepsake, held at a slight
+ *  angle like a note pinned to a board. Decorative light is hidden from assistive technology; nothing here moves under reduced motion. */
+export const BeforeTheExplanation = () => (
+  <section className="section quote" id="before-the-explanation" aria-labelledby="quote-h" data-founder-quote><div className="wrap"><div className="quote__grid">
+    <figure className="quote__slip">
+      <span className="quote__halo" aria-hidden="true" />
+      <picture><source type="image/webp" srcSet={`${FORTUNE_PHOTO.src}-640.webp 640w, ${FORTUNE_PHOTO.src}-960.webp 960w`} sizes="(max-width: 860px) 92vw, 440px" />
+        <img src={`${FORTUNE_PHOTO.src}-960.jpg`} srcSet={`${FORTUNE_PHOTO.src}-640.jpg 640w, ${FORTUNE_PHOTO.src}-960.jpg 960w`} sizes="(max-width: 860px) 92vw, 440px" width={FORTUNE_PHOTO.w} height={FORTUNE_PHOTO.h} alt={FORTUNE_PHOTO.alt} loading="lazy" decoding="async" /></picture>
+      <figcaption>The slip, as the founder kept it.</figcaption>
+    </figure>
+    <blockquote className="quote__words" data-founder-quote-words>
+      <p className="eyebrow" aria-hidden="true">In the founder’s own words</p>
+      <h2 id="quote-h" className="quote__line">{FORTUNE_LINE}</h2>
+      {FOUNDER_QUOTE.map((t, i) => <p key={i} className={i === FOUNDER_QUOTE.length - 1 ? 'quote__close' : undefined}>{t}</p>)}
+      <footer>Jeremiah Johnson, founder</footer>
+    </blockquote>
   </div></div></section>
 );
