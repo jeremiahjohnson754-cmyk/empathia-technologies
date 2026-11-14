@@ -7,7 +7,7 @@
 import { OBJECT_CARDS, DEVICE_PURPOSE } from './data/objectCards.js';
 import { readsManual } from '../manual/roles.js';
 import { useMemo, useState, useEffect, useRef, type ReactNode } from 'react';
-import { PageHero, Card, Chip, ScoreRing, StatTile, Icon, bandOf, HEALTH } from '@empathia/ui';
+import { PageHero, Card, Chip, ScoreRing, StatTile, Icon, Tag, bandOf, HEALTH } from '@empathia/ui';
 import type { PageProps } from '../registry.types.js';
 import { allows } from '../access/policy.js';
 import { mayCapture } from '../instant/store.js';
@@ -31,6 +31,7 @@ import { RoomTabBar, RoomTabPanel, tabOf } from './RoomTabs.js';
 import { PassportSheet } from './PassportSheet.js';
 import { useArrange, ArrangeBar, PrecisionPlan, withPreview, snap, movable } from './Arrange.js';
 import { v253Arranged } from './v253/v253room.js';
+import { rowsOf, res } from '../campus/cxRecord.js';
 
 const list = (s: string | null) => (s == null ? null : s.split(',').filter(Boolean));
 
@@ -168,6 +169,8 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
           <div className="lt-device" aria-live="polite" data-testid="lite-device">
             {p ? <><h2 className="lt-h3">{p.label}</h2><dl className="lt-dl"><dt>Position</dt><dd className="mono">{p.code}</dd><dt>Asset</dt><dd className="mono">{p.asset || '—'}</dd><dt>Identity</dt><dd>{p.identity}</dd><dt>Device</dt><dd>{p.device}</dd><dt>Height</dt><dd>{p.z} m</dd>{p.note && <><dt>State</dt><dd>{p.note}</dd></>}</dl>
               <ObjectCardView p={p} r={r} tech={lens === 'engineer' || lens === 'optimize'} cov={cov} role={role} onMove={lens === 'optimize' && MOVABLE.includes(p.cat) ? () => { setTool(p.code); document.querySelector('[data-testid="lite-change"]')?.scrollIntoView({ block: 'start', behavior: 'smooth' }); } : undefined} />
+              {(() => { const checks = rowsOf(r).filter((x) => x.applicable && (x.devices || []).includes(p.code)); return checks.length ? <div className="lt-devchecks" data-testid="lite-dev-checks"><p className="ui-meta"><b>{checks.length} commissioning check{checks.length === 1 ? '' : 's'} for this device</b> (the engine names it on each)</p><ul className="plain">{checks.slice(0, 6).map((x) => <li key={x.id} data-testid="lite-dev-check"><Tag tone={res(x.result).tone}>{res(x.result).label}</Tag> {x.label}</li>)}</ul>{checks.length > 6 ? <p className="ui-meta">and {checks.length - 6} more on the room’s record.</p> : null}</div> : null; })()}
+              {p.asset ? <p className="ui-meta"><a href={`#/v25/asset?a=${p.asset}`} data-testid="lite-dev-asset">{p.asset}: its whole life</a></p> : null}
               <p className="lt-ask"><a className="ui-btn ui-btn--primary" href={`#/request?kind=replace-device&room=${encodeURIComponent(o.id)}&position=${encodeURIComponent(p.code)}`} data-testid="lite-ask-device">Ask for work on this device</a></p>
               {allows({ area: 'room' }, role) && <a href={`${roomHref(o)}?device=${encodeURIComponent(p.code)}`}>Open in the technical room view →</a>}</>
               : furn ? <><h2 className="lt-h3" data-testid="lite-furn-card">{furnTitle(furn.obj)}</h2><dl className="lt-dl"><dt>Size</dt><dd>{furn.obj.w.toFixed(2)} × {furn.obj.d.toFixed(2)} m{furn.obj.h ? `, ${furn.obj.h.toFixed(2)} m high` : ''}</dd><dt>Where</dt><dd>{furn.obj.x.toFixed(1)} m across, {furn.obj.y.toFixed(1)} m in from the front wall</dd><dt>Basis</dt><dd>From the room type’s layout (V2.5.3), modelled</dd></dl></>
