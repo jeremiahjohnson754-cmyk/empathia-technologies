@@ -1,0 +1,113 @@
+{
+  "key": "P-search-party",
+  "title": "Search Party: ask, follow the connections, and come back",
+  "product": "search-party",
+  "recordedAt": "2026-11-14T02:48:41.543Z",
+  "duration": 37.77,
+  "viewport": "1280x720",
+  "colorScheme": "dark",
+  "data": "synthetic demonstration data",
+  "role": "architect",
+  "demoBuild": {
+    "commit": null,
+    "builtAt": "2026-11-14T02:38:15.027Z"
+  },
+  "git": "1e39312",
+  "steps": [
+    {
+      "at": 0,
+      "until": 2.63,
+      "say": "Search Party: one search across rooms, devices, people and issues.",
+      "proof": "[data-testid=sp-try]",
+      "url": "/#/search"
+    },
+    {
+      "at": 2.63,
+      "until": 6.5,
+      "say": "Ask in plain words: who knows Atlas 4.218?",
+      "proof": "[data-testid=connect-who]",
+      "url": "/#/search?q=who%20knows%20Atlas%204.218"
+    },
+    {
+      "at": 6.5,
+      "until": 9.85,
+      "say": "The people who answer for the room, and how they are connected.",
+      "proof": "[data-testid=connect-who]",
+      "url": "/#/search?q=who%20knows%20Atlas%204.218"
+    },
+    {
+      "at": 9.85,
+      "until": 12.85,
+      "say": "Drill down: the room, and everything linked to it.",
+      "proof": "[data-testid=impact]",
+      "url": "/#/search?q=who%20knows%20Atlas%204.218"
+    },
+    {
+      "at": 12.85,
+      "until": 16.11,
+      "say": "A person: who they are, what they answer for, and their backup.",
+      "proof": "[data-testid=person-page]",
+      "url": "/#/people/p-champ-ATL"
+    },
+    {
+      "at": 16.11,
+      "until": 19.43,
+      "say": "Every room they look after, each one a way in.",
+      "proof": "[data-testid=person-responsible]",
+      "url": "/#/people/p-champ-ATL"
+    },
+    {
+      "at": 19.43,
+      "until": 22.91,
+      "say": "Ask what breaks: if this switch fails, what is affected?",
+      "proof": "[data-testid=sp-scenario]",
+      "url": "/#/search/scenarios/S1"
+    },
+    {
+      "at": 22.91,
+      "until": 26.54,
+      "say": "Every affected room and device, listed first, then drawn.",
+      "proof": "[data-testid=sp-more-rooms][aria-expanded=true]",
+      "url": "/#/search/scenarios/S1"
+    },
+    {
+      "at": 26.54,
+      "until": 31,
+      "say": "Into one of them: Atlas 4.218, on the campus.",
+      "proof": "[data-testid=room-view]",
+      "url": "/#/campus/ATL/4/R-ATL-4-218"
+    },
+    {
+      "at": 31,
+      "until": 34.24,
+      "say": "And back up to its relationships.",
+      "proof": "[data-testid=impact]",
+      "url": "/#/search?focus=Room:R-ATL-4-218"
+    },
+    {
+      "at": 34.24,
+      "until": 37.77,
+      "say": "One record behind every answer, with where each link came from.",
+      "proof": "[data-testid=sp-try]",
+      "url": "/#/search"
+    }
+  ],
+  "files": {
+    "720.mp4": {
+      "bytes": 1908323,
+      "sha256": "e87f03d119abbbfe20527df6426aa01d8be391b193f65cfef62f0938d89547cf"
+    },
+    "poster.webp": {
+      "bytes": 52964,
+      "sha256": "792ec90e2df048132195a35269067050e5c9dca7b489955a7215bf3037c379e2"
+    },
+    "poster.jpg": {
+      "bytes": 99023,
+      "sha256": "129508f60ee473e35554a86d4c6f1f8504af76f8680b826f35e521eec0faf452"
+    },
+    "captions.vtt": {
+      "bytes": 1268,
+      "sha256": "ad08e371701d811aaaecd1c42db9ef00b72d51081317cdd09bce822c52a6c07c"
+    }
+  }
+}

@@ -44,11 +44,12 @@ try {
       const tStart = Date.now();
       for (const s of F.steps) {
         const at = (Date.now() - tStart) / 1000;
+        if (s.do) await say('');   // the last step's words leave as this step's action begins, so words never sit over the wrong screen
         try { if (s.do) await s.do(page); if (s.proof) await page.waitForSelector(s.proof, { timeout: 12000, state: s.state || 'visible' }); }
         catch (e) { await page.screenshot({ path: path.join(tmp, '..', `pfilm-${key}-failed.png`) }).catch(() => undefined); throw new Error(`step "${s.say}" (${s.proof || 'no proof'}): ${e.message.split('\n')[0]}`); }
         if (s.check) { const ok = await s.check(page); if (!ok) throw new Error(`step "${s.say}": its check failed`); }
         await say(s.say);
-        await page.waitForTimeout(s.hold ?? 2900);
+        await page.waitForTimeout(s.hold ?? 2600);
         log.push({ at: Number(at.toFixed(2)), until: Number(((Date.now() - tStart) / 1000).toFixed(2)), say: s.say, proof: s.proof || null, url: page.url().replace(base, '/') });
       }
       if (errs.length) throw new Error(`page error during the recording: ${errs[0]}`);

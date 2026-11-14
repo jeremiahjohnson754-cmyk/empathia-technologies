@@ -97,9 +97,23 @@
       "rights": { "website": { "status": "VERIFIED", "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\" — accepting, as rights owner, the narration and picture sources of every film then listed (the inventory of that day), with the caveats below", "acceptedCaveats": ["AI-generated photographic people: the generator, its terms and the plan at creation are not on file", "not entered in the media-rights ledger"] } }
     },
     {
+      "key": "P-search-party",
+      "title": "Search Party: ask, follow the connections, and come back",
+      "runtime": "0:38",
+      "placement": ["/products/search-party"],
+      "exclusive": true,
+      "productFilm": true,
+      "sound": "none",
+      "burnedCaptions": true,
+      "summary": "Recorded from the demonstration: a question in plain words, the people who answer for the room, the room and everything linked to it, a person's page, what fails if a switch fails, into one affected room on the campus, and back to its relationships.",
+      "source": { "video": "recorded by scripts/media/record-product-film.mjs (scripts/media/product-films.mjs, P-search-party); apps/website/media/P-search-party/RECORDING.json holds every step, its proof and the hashes" },
+      "disclosure": "Recorded from the demonstration on synthetic data; every step was checked before its words appeared. No sound.",
+      "rights": { "website": { "status": "VERIFIED", "verifiedBy": "Empathia's own demonstration, recorded on 2026-11-13 with synthetic data; no third-party voice, music or imagery (founder, 2026-11-13 17:14 CT, asked for these films)" } }
+    },
+    {
       "key": "P-lite",
       "title": "Lite: from the campus to one seat, and back",
-      "runtime": "0:43",
+      "runtime": "0:44",
       "placement": ["/products/lite"],
       "exclusive": true,
       "productFilm": true,

@@ -2,105 +2,105 @@
   "key": "P-lite",
   "title": "Lite: from the campus to one seat, and back",
   "product": "lite",
-  "recordedAt": "2026-11-14T00:34:47.603Z",
-  "duration": 42.83,
+  "recordedAt": "2026-11-14T02:47:53.907Z",
+  "duration": 44.04,
   "viewport": "1280x720",
   "colorScheme": "dark",
   "data": "synthetic demonstration data",
   "role": "architect",
   "demoBuild": {
     "commit": null,
-    "builtAt": "2026-11-14T00:12:14.240Z"
+    "builtAt": "2026-11-14T02:38:15.027Z"
   },
-  "git": "683ea66",
+  "git": "1e39312",
   "steps": [
     {
       "at": 0,
-      "until": 3.21,
+      "until": 2.92,
       "say": "Lite opens on the campus, in 3D. Every building is a button.",
       "proof": "[data-testid=lite-campus-3d] .l3-hitbtn",
       "url": "/#/lite"
     },
     {
-      "at": 3.21,
-      "until": 6.26,
+      "at": 2.92,
+      "until": 6.44,
       "say": "Drill down: Atlas HQ, its floors drawn apart.",
       "proof": "[data-testid=lite-building-3d]",
       "url": "/#/lite/b/ATL"
     },
     {
-      "at": 6.26,
-      "until": 9.24,
+      "at": 6.44,
+      "until": 9.92,
       "say": "Floor 4: corridor, lifts, stairs, and every room.",
       "proof": "[data-testid=lite-floor-3d]",
       "url": "/#/lite/b/ATL/4"
     },
     {
-      "at": 9.24,
-      "until": 14.02,
+      "at": 9.92,
+      "until": 14.87,
       "say": "Room 4.218, furnished, in 3D.",
       "proof": "[data-testid=lite-room-3d]",
       "url": "/#/lite/room/R-ATL-4-218"
     },
     {
-      "at": 14.02,
-      "until": 17.76,
+      "at": 14.87,
+      "until": 18.45,
       "say": "Engineer mode: the same room, with its equipment.",
       "proof": "[data-testid=stage-ov-camera][aria-checked=false]",
       "url": "/#/lite/room/R-ATL-4-218?mode=engineer&ov=,"
     },
     {
-      "at": 17.76,
-      "until": 20.73,
+      "at": 18.45,
+      "until": 21.53,
       "say": "Coverage, right on the room: camera views.",
       "proof": "[data-testid=stage-ov-camera][aria-checked=true]",
       "url": "/#/lite/room/R-ATL-4-218?mode=engineer&ov=camera"
     },
     {
-      "at": 20.73,
-      "until": 23.69,
+      "at": 21.53,
+      "until": 24.47,
       "say": "Microphone pickup, with its figure.",
       "proof": "[data-testid=stage-ov-mic][aria-checked=true]",
       "url": "/#/lite/room/R-ATL-4-218?mode=engineer&ov=camera%2Cmic"
     },
     {
-      "at": 23.69,
-      "until": 27.15,
+      "at": 24.47,
+      "until": 27.81,
       "say": "Layers: designed, commissioned, current, proposed.",
       "proof": "[data-testid=stage-layers]",
       "url": "/#/lite/room/R-ATL-4-218?mode=engineer&ov=camera%2Cmic"
     },
     {
-      "at": 27.15,
-      "until": 30.89,
+      "at": 27.81,
+      "until": 31.52,
       "say": "The floor plan, to scale.",
       "proof": "[data-testid=rm-plan], [data-testid=lite-eye-plan][aria-checked=true]",
       "url": "/#/lite/room/R-ATL-4-218?mode=engineer&ov=camera%2Cmic&eye=plan"
     },
     {
-      "at": 30.89,
-      "until": 34.61,
+      "at": 31.52,
+      "until": 35.22,
       "say": "Eye level, from the back row.",
       "proof": "[data-testid=lite-eye-back][aria-checked=true]",
       "url": "/#/lite/room/R-ATL-4-218?mode=engineer&ov=camera%2Cmic&eye=back"
     },
     {
-      "at": 34.61,
-      "until": 37.05,
+      "at": 35.22,
+      "until": 37.67,
       "say": "Drill back up: the floor,",
       "proof": "[data-testid=lite-floor-3d]",
       "url": "/#/lite/b/ATL/4"
     },
     {
-      "at": 37.05,
-      "until": 39.34,
+      "at": 37.67,
+      "until": 40.23,
       "say": "the building,",
       "proof": "[data-testid=lite-building-3d]",
       "url": "/#/lite/b/ATL"
     },
     {
-      "at": 39.34,
-      "until": 42.83,
+      "at": 40.23,
+      "until": 44.04,
       "say": "and the campus. One record, every level.",
       "proof": "[data-testid=lite-campus-3d]",
       "url": "/#/lite"
@@ -108,20 +108,20 @@
   ],
   "files": {
     "720.mp4": {
-      "bytes": 1760076,
-      "sha256": "fb158b61e76d835ee5f6f8d41c87d1abf345adb6804d6d798ebf17cd6fb52141"
+      "bytes": 1839099,
+      "sha256": "6842241c8d2af7496e98acdb006380000af9f3e876556a3a1f8ed664d86f8705"
     },
     "poster.webp": {
-      "bytes": 61408,
-      "sha256": "ea53fab29baa4856096e3fdf9a97ccb6e6d3b1a5450c2236fb2e5f78ae7fdde7"
+      "bytes": 59532,
+      "sha256": "d8947b229a05e0d14093bc20a684e79440322caee5f435715d90fa6e23a9e573"
     },
     "poster.jpg": {
-      "bytes": 115372,
-      "sha256": "6e6a4211c2dcb319f41cca642cf45a3a0587214ac3b3733bcb4678e766da30da"
+      "bytes": 112061,
+      "sha256": "77f6dc44b34095b4942a383f12ec9da202e1dca3a0818db916a808624d8feef5"
     },
     "captions.vtt": {
       "bytes": 1232,
-      "sha256": "ec216f6cf6f377817f6b484000dc9118999fb8101ba6f5236c6abc58d10b1185"
+      "sha256": "73a9dc0b5c609d1fbb8bec62b91e061b49b6abc53add6fcbfa3046c79c5354bf"
     }
   }
 }
