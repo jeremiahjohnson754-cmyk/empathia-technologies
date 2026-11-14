@@ -11,6 +11,8 @@ import { BUILDINGS as CAMPUS_BUILDINGS, REGIONAL_SITES, CAMPUS_ROOMS as ROOMS, S
 /** the campus buildings and the fictional regional sites of the rooms plan (rows 40, 42, 45 sit on them) */
 const BUILDINGS = [...CAMPUS_BUILDINGS, ...REGIONAL_SITES];
 import { roomRecord } from '../campus/design.js';
+import { involvement } from '../people/involvement.js';
+import { syntheticHistory } from '../service/history.js';
 
 const N = (type: string, id: string, label: string, extra: Partial<SearchNode> = {}): SearchNode => ({ type, id, label, provenance: 'synthetic seed (demonstration)', ...extra });
 const E = (from: [string, string], rel: string, to: [string, string], provenance = 'DECLARED (synthetic seed)'): Edge => ({ from: { type: from[0], id: from[1] }, rel, to: { type: to[0], id: to[1] }, provenance });
@@ -66,16 +68,37 @@ export function buildEstate(): Catalogue & { graph: Graph } {
   // the canonical campus: every building and room, and each room's device positions (position code · asset code · identity state)
   const have = new Set(nodes.map((n) => nodeKey(n)));
   for (const b of [...BUILDINGS, ...REGIONAL_SITES]) if (!have.has(`Building:${b.key}`)) { nodes.push(N('Building', b.key, b.name, { subtitle: `${SITE.name} · ${b.floors} floors`, facets: { site: 'SITE-NORTH' }, href: `#/campus/${b.key}` })); edges.push(E(['Building', b.key], 'LOCATED_IN', ['Site', 'SITE-NORTH'], 'DERIVED building.site')); }
+  const posNode = new Map<string, string>();
   for (const o of ROOMS) {
     const rec = roomRecord(o.id)!;
     if (!have.has(`Room:${o.id}`)) { nodes.push(N('Room', o.id, fullName(o), { subtitle: `${buildingByKey(o.building)!.name} · floor ${o.floor} · ${rec.lifecycle}`, facets: { site: 'SITE-NORTH', building: o.building, lifecycle: rec.lifecycle }, href: roomHref(o), provenance: o.kind === 'designed' ? 'MODELED room (designed from its archetype)' : 'synthetic seed (demonstration)' })); edges.push(E(['Room', o.id], 'LOCATED_IN', ['Building', o.building])); }
     for (const p of rec.positions) {
       if (p.furniture) continue;
-      const id = have.has(`PlannedAsset:${p.code}`) ? p.code : `${o.id}/${p.code}`;
+      const id = have.has(`PlannedAsset:${p.code}`) ? p.code : `${o.id}/${p.code}`; posNode.set(`${o.id}:${p.code}`, id);
       if (id === p.code) { const n = nodes.find((x) => x.type === 'PlannedAsset' && x.id === id); if (n) { n.subtitle = `${n.subtitle} · position ${p.code} · asset ${p.asset || '—'} · identity ${p.identity}`; n.href = `${roomHref(o)}?device=${p.code}`; } continue; }
       nodes.push(N('PlannedAsset', id, `${p.label} (${o.number})`, { subtitle: `${p.catLabel} · position ${p.code} · asset ${p.asset || '—'} · identity ${p.identity}`, facets: { building: o.building, category: p.cat }, href: `${roomHref(o)}?device=${p.code}`, provenance: p.provenance }));
       edges.push(E(['Room', o.id], 'PLANS_DEVICE', ['PlannedAsset', id], o.kind === 'designed' ? 'MODELED (archetype template)' : 'DECLARED (room record)'));
     }
+  }
+  // every physical unit by its asset ID (founder, 14 Nov 2026: the asset ID connects everything end to end): in service or retired,
+  // the position it is (or was) installed at, and the unit that replaced it; a retired ID stays findable and is never reissued
+  for (const o of ROOMS) {
+    const rec = roomRecord(o.id)!;
+    for (const i of rec.installations) {
+      if (have.has(`Asset:${i.asset}`)) continue; have.add(`Asset:${i.asset}`);
+      const p = rec.positions.find((x) => x.code === i.position); const retired = !!i.removedAt;
+      nodes.push(N('Asset', i.asset, `${i.asset} · ${p?.label || i.position} (${o.number})`, { subtitle: `${retired ? `RETIRED ${i.removedAt!.slice(0, 10)} (${(i.removalReason || 'removed').toLowerCase()}) · never reissued` : 'IN SERVICE'} · position ${i.position} · ${fullName(o)}`, facets: { building: o.building, category: p?.cat || 'device', state: retired ? 'RETIRED' : 'IN_SERVICE' }, href: `#/v25/asset?a=${i.asset}`, provenance: 'DECLARED (installation record, synthetic)' }));
+      const pos = posNode.get(`${o.id}:${i.position}`); if (pos) edges.push(E(['PlannedAsset', pos], 'TRACKED_AS', ['Asset', i.asset], retired ? `DECLARED installation (held until ${i.removedAt!.slice(0, 10)})` : 'DECLARED installation'));
+      const next = retired ? rec.installations.find((x) => x.position === i.position && x.installedAt === i.removedAt && x !== i) : null;
+      if (next) edges.push(E(['Asset', next.asset], 'SUCCEEDS', ['Asset', i.asset], 'DECLARED replacement'));
+    }
+  }
+  // the people who worked the jobs (synthetic service history): the rooms they touched and the units they worked on
+  const keys = new Set(nodes.map((n) => nodeKey(n)));
+  for (const x of involvement(syntheticHistory())) {
+    const k = `Person:${x.person.id}`; if (!keys.has(k)) { keys.add(k); nodes.push(N('Person', x.person.id, x.person.name, { subtitle: `${x.person.org} · ${x.jobs.length} jobs · ${x.rooms.length} rooms · ${x.level} (experience, not a credential)`, href: `#/v25/people?p=${x.person.id}`, provenance: 'synthetic service history (roster assignment)' })); }
+    for (const r of x.rooms) if (keys.has(`Room:${r}`)) edges.push(E(['Room', r], 'INVOLVES', ['Person', x.person.id], 'DERIVED service history (synthetic)'));
+    for (const a of new Set(x.jobs.map((j) => j.asset).filter((v): v is string => !!v))) if (keys.has(`Asset:${a}`)) edges.push(E(['Asset', a], 'INVOLVES', ['Person', x.person.id], 'DERIVED service history (synthetic)'));
   }
   // the Build a Room draft of this browser, as a live room of the Northstar Annex
   const d = loadDraft();

@@ -32,6 +32,6 @@ Asset IDs link here from service analytics (each job's asset) and from each room
 
 ## Not built yet
 
-- Asset IDs in APEX cases and in Search Party (search by asset ID).
+- Asset IDs in APEX cases. (Search Party by asset ID is built: every unit, in service or retired, is a searchable record tracked from its position, with replacements as recorded successions — `tests/unit/search-asset-person.test.mjs`.)
 - An export of one asset's life.
 - Register entries are kept per position in this browser. A register entry made before a swap is not yet carried as the retired unit's own history in the demo, although the database keeps it (versioned, per asset).

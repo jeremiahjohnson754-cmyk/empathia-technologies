@@ -50,6 +50,6 @@ Levels describe experience, not qualification:
 
 ## Not built yet
 
-- People in Search Party (search by person).
+- (Built since: people in Search Party — each person is a record, involved in the rooms and units they worked; `tests/unit/search-asset-person.test.mjs`.)
 - An export of people intelligence.
 - Commissioning work credited to named people. The room record names roles, not people.

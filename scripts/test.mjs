@@ -67,6 +67,7 @@ suite('unit: reverberation instrument — known-answer decays, refusals on short
 suite('unit: Learn cases — separation of duties held in the store, with the DENIED ledger event', 'unit', node, ['--test', 'tests/unit/learn-separation.test.mjs'], tap);
 suite('unit: people and experience — who did each job, experience by complexity and kind, totals by layer and quarter', 'unit', node, ['--test', 'tests/unit/people-involvement.test.mjs'], tap);
 suite('unit: the universal phase engine — the verdict rule, the sign-off, commissioning unchanged on every room, a ServiceHands job phase by phase', 'unit', node, ['--test', 'tests/unit/universal-phases.test.mjs'], tap);
+suite('unit: Search Party by asset ID and by person — every unit searchable, successions recorded, people and their rooms', 'unit', node, ['--test', 'tests/unit/search-asset-person.test.mjs'], tap);
 suite('unit: ServiceHands analytics — measures on hand-built jobs, the synthetic history, the vendor scorecard', 'unit', node, ['--test', 'tests/unit/service-analytics.test.mjs'], tap);
 suite('unit: training and simulation never touch the real record (SIGNAL game day, drills, Learn cases, FI simulated run)', 'unit', node, ['--test', 'tests/unit/training-isolation.test.mjs'], tap);
 suite('unit: export formats (every report in PDF, Word, Excel, PowerPoint, JSON and CSV, reopened by independent readers)', 'unit', node, ['scripts/verify/export-formats.mjs', '--out=tests/evidence/exports'], custom);
