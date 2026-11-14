@@ -11,8 +11,8 @@
  */
 import crypto from 'node:crypto';
 import {
-  planInstall, planReplacement, planIdentity, planRetirement, inventoryOf, identityOf, installationSentence, reopenedBySubstitution, IDENTITY_STATES,
-  type AssetFact, type InstallationFact, type Disposition, type RetirementReason, type IdentityState, type IncomingUnit, type PositionFact, type ReplacementPlan, type DeviceIdentity, type UnitChange,
+  planInstall, planReplacement, planIdentity, planRetirement, planRegisterEntry, registerMissing, inventoryOf, identityOf, defaultCatalog, installationSentence, reopenedBySubstitution, IDENTITY_STATES,
+  type AssetFact, type InstallationFact, type Disposition, type RetirementReason, type RegisterEntry, type IdentityState, type IncomingUnit, type PositionFact, type ReplacementPlan, type DeviceIdentity, type UnitChange,
 } from '@empathia/commissioning-engine';
 import type { Queryable } from '../db/pg.js';
 import type { RequestContext } from '../auth/context.js';
@@ -276,6 +276,7 @@ export async function assetHistory(ctx: RequestContext, code: string) {
         disposition: a.disposition || 'IN_SERVICE', retired: a.retired_at ? { at: a.retired_at, by: a.retired_by, byRole: a.retired_role, reason: a.retirement_reason, note: a.retirement_note } : null },
       identity: ev.map((e) => ({ from: e['from_state'], to: e['to_state'], serial: e['serial'], manufacturer: e['manufacturer'], evidenceId: e['evidence_id'], note: e['note'], by: e['actor_id'], byRole: e['actor_role'], correlationId: e['correlation_id'], at: e['at'] })),
       installations: rows.map((r) => ({ ...installationView(r), roomName: r.room_name, sentence: installationSentence(fact(r)) })),
+      register: (await q.query<EntryRow>('SELECT asset_id, version, hostname, host(ip) AS ip, mac::text AS mac, firmware, location, recorded_by, recorded_role, recorded_at FROM app.asset_register_entry WHERE asset_id = $1 ORDER BY version', [a.id])).rows.map((e) => ({ version: e.version, hostname: e.hostname, ip: e.ip, mac: e.mac, firmware: e.firmware, location: e.location, by: e.recorded_by, byRole: e.recorded_role, at: e.recorded_at })),
       current: cur ? { position: cur.position, room: cur.room, installation: cur.id, since: cur.installed_at } : null,
       note: a.origin === 'MIGRATED' ? 'registered by migration 0026 from a position that was already installed: the serial, the maker and the installation date were not on record and are not claimed' : null,
     };
@@ -338,6 +339,59 @@ export async function inventory(ctx: RequestContext) {
     return { inService: inv.inService.map(view), spares: inv.spares.map(view), retired: inv.retired.map(view),
       counts: { inService: inv.inService.length, spares: inv.spares.length, retired: inv.retired.length },
       note: 'a retired unit is out of the inventory for good: it is never installed again, and its code is never issued to another unit; its history stays readable (GET /v1/assets/{asset}/history)' };
+  });
+}
+
+// ------------------------------------------------------------------------------------------------ the device register (0031)
+const networked = (category: string) => !!(defaultCatalog.categories as Record<string, { net?: boolean }>)[category]?.net;
+interface EntryRow { asset_id: string; version: number; hostname: string | null; ip: string | null; mac: string | null; firmware: string | null; location: string | null; recorded_by: string; recorded_role: string; recorded_at: string }
+const ENTRY_SELECT = 'SELECT DISTINCT ON (asset_id) asset_id, version, hostname, host(ip) AS ip, mac::text AS mac, firmware, location, recorded_by, recorded_role, recorded_at FROM app.asset_register_entry';
+const entryOf = (r: EntryRow | undefined): RegisterEntry | null => (r ? { hostname: r.hostname, ip: r.ip, mac: r.mac, firmware: r.firmware, location: r.location } : null);
+
+export interface RegisterBody { hostname?: string | null; ip?: string | null; mac?: string | null; firmware?: string | null; location?: string | null }
+/** Record what the installation team read on site about a unit (a new version of its register row; the newest is current). */
+export async function recordRegister(ctx: RequestContext, code: string, body: RegisterBody) {
+  await ctx.require(IDENTITY_RECORD_AUTHORITIES, 'record a unit in the device register', { type: 'PhysicalAsset', id: code });
+  return ctx.tx(async (q) => {
+    const { asset: a } = await visibleAsset(ctx, q, code, true);
+    const cur = (await q.query<EntryRow>(`${ENTRY_SELECT} WHERE asset_id = $1 ORDER BY asset_id, version DESC`, [a.id])).rows[0];
+    const plan = planRegisterEntry(assetFact(a), networked(a.category), entryOf(cur), body || {});
+    if (!plan.ok) return ctx.refuse('asset.register_recorded', { type: 'PhysicalAsset', id: a.code }, plan.why, { fields: Object.keys(body || {}) });
+    const e = plan.plan;
+    // another unit in service whose current entry carries the same hostname, address or MAC: one value, one unit
+    const clash = (await q.query<{ code: string; what: string }>(`SELECT a.code, CASE WHEN lower(e.hostname) = lower($2) THEN 'hostname ' || e.hostname WHEN host(e.ip) = $3 THEN 'address ' || host(e.ip) ELSE 'MAC ' || e.mac::text END AS what
+      FROM (${ENTRY_SELECT} ORDER BY asset_id, version DESC) e JOIN app.physical_asset a ON a.id = e.asset_id
+      WHERE e.asset_id <> $1 AND a.disposition = 'IN_SERVICE' AND ((e.hostname IS NOT NULL AND lower(e.hostname) = lower($2)) OR (e.ip IS NOT NULL AND host(e.ip) = $3) OR (e.mac IS NOT NULL AND e.mac = $4)) LIMIT 1`.replace('host(ip) AS ip, mac::text AS mac', 'ip, mac'),
+      [a.id, e.hostname, e.ip, e.mac])).rows[0];
+    if (clash) { await ctx.audit(null, 'asset.register_recorded', 'DENIED', { type: 'PhysicalAsset', id: a.code }, { why: [`${clash.what} is already current on ${clash.code}`] }); throw new ApiError('conflict', `${clash.what} is already current on ${clash.code}: one value, one unit`); }
+    const version = (cur?.version ?? 0) + 1;
+    await q.query('INSERT INTO app.asset_register_entry (tenant_id, asset_id, version, hostname, ip, mac, firmware, location, recorded_by, recorded_role, correlation_id) VALUES ($1,$2,$3,$4,$5::inet,$6::macaddr,$7,$8,$9,$10,$11)',
+      [ctx.p.tenantId, a.id, version, e.hostname, e.ip, e.mac, e.firmware, e.location, ctx.p.personId, ctx.p.role, ctx.correlationId]);
+    await ctx.audit(q, 'asset.register_recorded', 'ALLOWED', { type: 'PhysicalAsset', id: a.code }, { version, ...e });
+    return { asset: a.code, version, ...e, networked: networked(a.category) };
+  });
+}
+
+/** A room's device register: every live, non-furniture position with the unit installed there, its identity and its current register
+ *  row, what each still needs (serial; hostname and IP when networked), and the totals the commissioning page and phase 1 read. */
+export async function roomRegister(ctx: RequestContext, ref: string) {
+  return ctx.tx(async (q) => {
+    const room = await findRoom(ctx, q, ref);
+    const pos = (await q.query<PositionRow>('SELECT id, code, room_id, category, label, role, model, generic, furniture, mount, x, y, z, rot, lifecycle, model_history, removed_at FROM app.planned_asset WHERE room_id = $1 AND removed_at IS NULL AND NOT furniture ORDER BY code', [room.id])).rows;
+    const { rows } = await roomInstallations(q, room.id);
+    const open = new Map(rows.filter((r) => !r.removed_at).map((r) => [r.position, r]));
+    const assetIds = [...open.values()].map((r) => r.asset_id);
+    const entries = assetIds.length ? new Map((await q.query<EntryRow>(`${ENTRY_SELECT} WHERE asset_id = ANY($1::uuid[]) ORDER BY asset_id, version DESC`, [assetIds])).rows.map((e) => [e.asset_id, e])) : new Map<string, EntryRow>();
+    const items = pos.map((p) => {
+      const i = open.get(p.code); const net = networked(p.category); const e = i ? entries.get(i.asset_id) : undefined;
+      const a: AssetFact | null = i ? { code: i.asset, category: p.category, manufacturer: i.manufacturer, model: i.model, serial: i.serial, identityState: i.identity_state } : null;
+      const missing = registerMissing(a, net, entryOf(e));
+      return { position: p.code, label: p.label, category: p.category, networked: net, asset: i?.asset ?? null, serial: i?.serial ?? null, identityState: i?.identity_state ?? null,
+        entry: e ? { version: e.version, hostname: e.hostname, ip: e.ip, mac: e.mac, firmware: e.firmware, location: e.location, recordedRole: e.recorded_role, recordedAt: e.recorded_at } : null, missing, complete: !missing.length };
+    });
+    const done = items.filter((x) => x.complete).length;
+    return { room: room.code, items, totals: { devices: items.length, complete: done, networked: items.filter((x) => x.networked).length, pct: items.length ? Math.round((done / items.length) * 100) : 100 },
+      rule: 'every unit needs its serial (recorded on its identity); a networked unit also needs a hostname and an IP address (v1.3)' };
   });
 }
 

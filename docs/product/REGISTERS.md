@@ -27,3 +27,16 @@ never reused.
 Verified: `tests/browser/demo-registers.test.mjs` (RG-01…08, phone width, no console error, nothing off the page);
 `scripts/verify/export-formats.mjs` (the reference room's package with two registered devices and both photographs, reopened by
 independent readers). The values are synthetic: nothing here contacts a device.
+
+## Server side (migration 0031, 14 Nov 2026)
+
+- `PUT /v1/assets/{asset}/register` (work.evidence or field.scan): hostname, IPv4 address, MAC, firmware, location. Each write is a new
+  version of the unit's register row (append-only; the history names who wrote each version and in what role).
+- A hostname, address or MAC current on another unit in service is refused: 409 from the API, and 23505 from the database as the runtime
+  role.
+- A device class that is not networked takes none of the three. A retired unit takes no entry, and its values are free for the unit that
+  replaced it.
+- `GET /v1/rooms/{room}/register`: every position with its unit, identity, current row and what it still needs (the serial; hostname and
+  IP when networked), with the totals.
+- Unit history (`GET /v1/assets/{asset}/history`) lists every register version.
+- Proven by `tests/security/device-register.test.mjs` (DR-01…06).

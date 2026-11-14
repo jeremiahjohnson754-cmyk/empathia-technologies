@@ -8,8 +8,8 @@ const fake = (status: number, body: unknown, seen: Seen[]) => (async (url: strin
   return new Response(typeof body === 'string' ? body : JSON.stringify(body), { status, headers: { 'content-type': status >= 400 ? 'application/problem+json' : 'application/json', 'x-correlation-id': 'corr-12345678' } });
 }) as typeof fetch;
 
-test('the generated operation table covers the contract (164 operations) and keeps paths and methods', () => {
-  assert.equal(Object.keys(OPERATIONS).length, 164);   // 156 + the six Proof Registry routes (2026-11-09, v1.8 A) + GET /v1/assets and POST /v1/assets/{asset}/retire (0030, 14 Nov 2026)
+test('the generated operation table covers the contract (166 operations) and keeps paths and methods', () => {
+  assert.equal(Object.keys(OPERATIONS).length, 166);   // 156 + the six Proof Registry routes (2026-11-09, v1.8 A) + GET /v1/assets and POST /v1/assets/{asset}/retire (0030, 14 Nov 2026) + PUT /v1/assets/{asset}/register and GET /v1/rooms/{room}/register (0031)
   assert.deepEqual(OPERATIONS.getV1RoomsRoom, { method: 'GET', path: '/v1/rooms/{room}', auth: true });
   // added with the recommissioning checkpoint: the change-order design approval (never by the revision's author)
   assert.deepEqual(OPERATIONS.postV1RoomsRoomRevisionsRevApprove, { method: 'POST', path: '/v1/rooms/{room}/revisions/{rev}/approve', auth: true });

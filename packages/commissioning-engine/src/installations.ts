@@ -155,6 +155,44 @@ export function inventoryOf(assets: readonly AssetFact[], installations: readonl
   const live = rows.filter((r) => r.asset.disposition !== 'RETIRED');
   return { inService: live.filter((r) => r.position), spares: live.filter((r) => !r.position), retired };
 }
+// ------------------------------------------------------------------------------------------------ the device register (0031)
+/** What the installation team reads on site about a unit, beside its identity: hostname, IPv4, MAC, firmware, location. */
+export interface RegisterEntry { hostname: string | null; ip: string | null; mac: string | null; firmware: string | null; location: string | null }
+export const REGISTER_FIELDS = ['hostname', 'ip', 'mac', 'firmware', 'location'] as const;
+const IPV4 = /^(25[0-5]|2[0-4]\d|1?\d?\d)(\.(25[0-5]|2[0-4]\d|1?\d?\d)){3}$/;
+const HOSTNAME = /^[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?$/;
+const MAC = /^[0-9A-Fa-f]{2}([:-][0-9A-Fa-f]{2}){5}$/;
+const FIRMWARE = /^[A-Za-z0-9][A-Za-z0-9._ -]{0,39}$/;
+/**
+ * Plan a new version of a unit's register row: the fields given replace the current ones (an empty string clears one), the rest are kept.
+ * Refused: a retired unit; a value in the wrong form; an address or hostname on a unit that is not networked; nothing changed.
+ * Uniqueness across units (a hostname, address or MAC current on another unit) is the caller's query and the database's backstop.
+ */
+export function planRegisterEntry(a: AssetFact, networked: boolean, current: RegisterEntry | null, input: Partial<Record<(typeof REGISTER_FIELDS)[number], string | null>>): Planned<RegisterEntry> {
+  if (a.disposition === 'RETIRED') return no(`${a.code} is retired: a retired unit takes no register entry`);
+  const why: string[] = []; const next: RegisterEntry = { hostname: current?.hostname ?? null, ip: current?.ip ?? null, mac: current?.mac ?? null, firmware: current?.firmware ?? null, location: current?.location ?? null };
+  for (const k of REGISTER_FIELDS) { if (!(k in input)) continue; const v = (input[k] ?? '').toString().trim(); next[k] = v || null; }
+  if (next.hostname && !HOSTNAME.test(next.hostname)) why.push('a hostname is one label of letters, digits and dashes (at most 63), not starting or ending with a dash');
+  if (next.ip && !IPV4.test(next.ip)) why.push('an IP address is four numbers 0–255 separated by dots');
+  if (next.mac && !MAC.test(next.mac)) why.push('a MAC address is six pairs of hexadecimal digits separated by colons or dashes');
+  if (next.firmware && !FIRMWARE.test(next.firmware)) why.push('a firmware version is up to 40 letters, digits, dots, dashes or spaces');
+  if (next.location && next.location.length > 120) why.push('a location is at most 120 characters');
+  if (!networked && (next.ip || next.hostname || next.mac)) why.push(`${a.category} is not a networked device class: it has no IP address, hostname or MAC`);
+  if (why.length) return { ok: false, conflict: false, why };
+  if (current && REGISTER_FIELDS.every((k) => (current[k] ?? null) === (next[k] ?? null))) return no('nothing changed: the register already says this');
+  if (next.mac) next.mac = next.mac.toLowerCase().replace(/-/g, ':');
+  return { ok: true, plan: next };
+}
+/** What a register row still needs: the serial (on the unit's identity) for every unit; hostname and IP for a networked one (v1.3 rule). */
+export function registerMissing(a: AssetFact | null, networked: boolean, e: RegisterEntry | null): string[] {
+  const m: string[] = [];
+  if (!a) return ['a unit (nothing is installed at the position)'];
+  if (!a.serial) m.push('serial');
+  if (networked && !e?.hostname) m.push('hostname');
+  if (networked && !e?.ip) m.push('IP address');
+  return m;
+}
+
 /** A code is never reused: true when `code` names any unit on record, retired or not. */
 export const codeTaken = (code: string, assets: readonly Pick<AssetFact, 'code'>[]) => assets.some((a) => a.code === code);
 
