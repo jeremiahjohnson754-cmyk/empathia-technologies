@@ -4,10 +4,12 @@
  */
 import { useState } from 'react';
 import { Card, Notice, Tag } from '@empathia/ui';
-import { dryRun, commit, MAX_ROWS, type DryRun } from './importer.js';
+import { dryRun, dryRunTable, commit, MAX_ROWS, type DryRun } from './importer.js';
+import { readXlsx } from './xlsxRead.js';
 import * as S from '../workspace/store.js';
 import type { useWorkspace } from '../workspace/useWorkspace.js';
 
+async function sha256Bytes(b0: ArrayBuffer) { const b = await crypto.subtle.digest('SHA-256', b0); return Array.from(new Uint8Array(b)).map((x) => x.toString(16).padStart(2, '0')).join(''); }
 async function sha256(text: string) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)); return Array.from(new Uint8Array(b)).map((x) => x.toString(16).padStart(2, '0')).join(''); }
 const TONE = { ready: 'ok', refused: 'bad', duplicate: 'muted', closed: 'muted' } as const;
 const WORD = { ready: 'Ready', refused: 'Refused', duplicate: 'Already open', closed: 'Closed in the file' } as const;
@@ -16,7 +18,12 @@ export function ImportCard({ w, persona, apply }: { w: S.Workspace; persona: str
   const [run, setRun] = useState<(DryRun & { sha: string; bytes: number }) | null>(null); const [done, setDone] = useState<string | null>(null); const [err, setErr] = useState<string | null>(null);
   const read = async (f: File | undefined) => {
     setDone(null); setErr(null); setRun(null); if (!f) return;
-    if (!/\.(csv|json)$/i.test(f.name)) { setErr('Choose a .csv file or an Empathia .json queue export.'); return; }
+    if (!/\.(csv|json|xlsx)$/i.test(f.name)) { setErr('Choose a .csv or .xlsx file, or an Empathia .json queue export.'); return; }
+    if (/\.xlsx$/i.test(f.name)) {
+      const buf = await f.arrayBuffer(); const sha = await sha256Bytes(buf);
+      try { const x = await readXlsx(buf); setRun({ ...dryRunTable(`${f.name} (sheet ${x.sheet})`, x.rows, w, 'xlsx'), sha, bytes: f.size }); } catch (e) { setErr(`${f.name}: ${(e as Error).message}`); }
+      return;
+    }
     const text = await f.text(); const r = dryRun(f.name, text, w); setRun({ ...r, sha: await sha256(text), bytes: f.size });
   };
   const go = () => {
@@ -26,8 +33,8 @@ export function ImportCard({ w, persona, apply }: { w: S.Workspace; persona: str
     setDone(made.length ? `${made.length} request${made.length === 1 ? '' : 's'} raised: ${made.join(', ')}. Each waits for triage.` : `Nothing was raised${refused.length ? `: ${refused[0]!.why.join(' ')}` : '.'}`); setRun(null);
   };
   return (
-    <Card icon="inbox" title="Import service requests" sub={`A CSV (Room, Title; Summary and Severity optional) or an Empathia queue export, up to ${MAX_ROWS} rows. You see every row before anything is raised.`} testId="sh-import">
-      <label className="ui-btn">Choose a file<input type="file" accept=".csv,.json,text/csv,application/json" className="ui-visually-hidden" data-testid="sh-import-file" onChange={(e) => { void read(e.target.files?.[0]); e.target.value = ''; }} /></label>
+    <Card icon="inbox" title="Import service requests" sub={`A CSV or workbook (Room, Title; Summary and Severity optional) or an Empathia queue export, up to ${MAX_ROWS} rows. You see every row before anything is raised.`} testId="sh-import">
+      <label className="ui-btn">Choose a file<input type="file" accept=".csv,.json,.xlsx,text/csv,application/json,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" className="ui-visually-hidden" data-testid="sh-import-file" onChange={(e) => { void read(e.target.files?.[0]); e.target.value = ''; }} /></label>
       {err ? <div role="alert"><Notice tone="bad">{err}</Notice></div> : null}
       {done ? <div role="status" data-testid="sh-import-done"><Notice tone="ok">{done}</Notice></div> : null}
       {run ? <div data-testid="sh-import-run" data-ready={run.ready} data-refused={run.refused} data-duplicate={run.duplicate}>

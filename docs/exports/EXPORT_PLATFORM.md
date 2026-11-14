@@ -82,15 +82,15 @@ shown on the page equals the downloaded file's, six audit-trail events, no conso
   equivalents (`->`, `>=`) or `?`, and counted; the Word, Excel, PowerPoint and JSON files keep them.
 - The XLSX writer stores its parts uncompressed (about 240 KB for a full package).
 - A PowerPoint slide shows at most seven columns and twelve rows; longer tables run to three slides and point to the workbook.
-- The commissioning completion package, the assurance report and the APEX case report are built (the Commissioning → Assurance → APEX journey). The estate's portfolio brief is built too. ServiceHands' queue and service record and the Learn record are built. Search Party and imports are next on the
-  same model (task #144); the Proof dossier (`#/dossier/…`) is built in both redactions; its zipped evidence package is not built and the page says so.
+- The commissioning completion package, the assurance report and the APEX case report are built (the Commissioning → Assurance → APEX journey). The estate's portfolio brief is built too. ServiceHands' queue and service record (with the job phase by phase), the Learn record, the reverberation and STI reports are built; ServiceHands imports CSV, XLSX and its own JSON (other products' imports are next, task #144); the Proof dossier (`#/dossier/…`) is built in both redactions; its zipped evidence package is not built and the page says so.
 - Not tested in Microsoft Office itself (not available here); LibreOffice, openpyxl, python-docx, python-pptx and poppler are.
 
 ## Import (ServiceHands, 14 Nov 2026)
 
 `apps/demo/src/service/importer.ts` and `ImportCard.tsx` on `#/v25/service`, for roles that triage. It reads a CSV (a header with Room
-and Title, plus optional Summary, Severity and State columns; `#` provenance lines are skipped) or Empathia's own JSON dossier of the queue,
-with at most 200 rows and 1 MB.
+and Title, plus optional Summary, Severity and State columns; `#` provenance lines are skipped), a workbook (.xlsx: the sheet named
+Requests, else the first; cached values only, a formula cell is refused like a CSV formula; `service/xlsxRead.ts`), or Empathia's own JSON
+dossier of the queue, with at most 200 rows and 1 MB.
 
 It shows a dry run row by row before anything is written:
 - **ready**;
@@ -99,11 +99,11 @@ It shows a dry run row by row before anything is written:
 - **closed in the file**, which is not raised again.
 
 Import then raises the ready rows through the same rule as a hand-raised request. A requested severity is written into the request for
-triage to decide, never applied. The file's name, size, SHA-256 and the counts go to the audit trail. Empathia's own CSV and JSON exports of
+triage to decide, never applied. The file's name, size, SHA-256 and the counts go to the audit trail. Empathia's own CSV, XLSX and JSON exports of
 the queue round-trip (each open request is recognised as already open).
 
 Tests:
-- `tests/unit/service-import.test.mjs` (SI-01…05): the parser, hostile rows, the commit rule, the round-trip and the limits;
-- `tests/browser/demo-service-import.test.mjs` (SIB-01…04).
+- `tests/unit/service-import.test.mjs` (SI-01…06): the parser, hostile rows, the commit rule, the round-trips (CSV, JSON, XLSX), a workbook's formula cell and the limits;
+- `tests/browser/demo-service-import.test.mjs` (SIB-01…05).
 
 Commissioning, Assurance and APEX imports are not built yet.

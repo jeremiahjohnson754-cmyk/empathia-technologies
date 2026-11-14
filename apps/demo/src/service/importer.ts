@@ -16,7 +16,7 @@ import type * as S from '../workspace/store.js';
 
 export type RowState = 'ready' | 'refused' | 'duplicate' | 'closed';
 export interface ImportRow { line: number; roomId: string; roomName: string; building: string; title: string; summary: string; severity: string | null; state: RowState; why: string[] }
-export interface DryRun { file: string; kind: 'csv' | 'json'; rows: ImportRow[]; ready: number; refused: number; duplicate: number; closed: number; fatal: string | null }
+export interface DryRun { file: string; kind: 'csv' | 'json' | 'xlsx'; rows: ImportRow[]; ready: number; refused: number; duplicate: number; closed: number; fatal: string | null }
 const SEVERITIES = ['Mission critical', 'High', 'Standard'];
 export const MAX_ROWS = 200; export const MAX_BYTES = 1_000_000;
 
@@ -67,15 +67,22 @@ export function dryRun(file: string, text: string, w: S.Workspace): DryRun {
     if (t.length > MAX_ROWS) return empty(`at most ${MAX_ROWS} rows at a time (the file has ${t.length})`, 'json');
     rows = t.map((r, i) => check(i + 1, { room: String(r['room'] ?? ''), title: String(r['title'] ?? ''), summary: '', severity: String(r['sev'] ?? ''), state: String(r['state'] ?? '') }, w, seen));
   } else {
-    const parsed = parseCsv(text); const skip = Math.max(0, parsed.findIndex((r) => !(r[0] || '').startsWith('#')));   // provenance lines before the header
-    const all = parsed.slice(skip);
-    if (!all.length) return empty('the file has no rows');
-    const head = all[0]!; const c = { room: columnOf(head, 'room'), title: columnOf(head, 'title'), summary: columnOf(head, 'summary'), severity: columnOf(head, 'severity'), state: columnOf(head, 'state') };
-    if (c.room < 0 || c.title < 0) return empty('the header names no room column or no title column (Room, Title; Summary and Severity are optional)');
-    const body = all.slice(1); if (body.length > MAX_ROWS) return empty(`at most ${MAX_ROWS} rows at a time (the file has ${body.length})`);
-    rows = body.map((r, i) => check(skip + i + 2, { room: r[c.room], title: r[c.title], summary: c.summary >= 0 ? r[c.summary] : '', severity: c.severity >= 0 ? r[c.severity] : '', state: c.state >= 0 ? r[c.state] : '' }, w, seen));
+    return dryRunTable(file, parseCsv(text), w, 'csv');
   }
-  return { file, kind, rows, ready: rows.filter((r) => r.state === 'ready').length, refused: rows.filter((r) => r.state === 'refused').length, duplicate: rows.filter((r) => r.state === 'duplicate').length, closed: rows.filter((r) => r.state === 'closed').length, fatal: null };
+  return summarise(file, kind, rows);
+}
+const summarise = (file: string, kind: DryRun['kind'], rows: ImportRow[]): DryRun => ({ file, kind, rows, ready: rows.filter((r) => r.state === 'ready').length, refused: rows.filter((r) => r.state === 'refused').length, duplicate: rows.filter((r) => r.state === 'duplicate').length, closed: rows.filter((r) => r.state === 'closed').length, fatal: null });
+/** A table of cells (a CSV, or a workbook's sheet read by ./xlsxRead.ts): provenance lines (#…) before the header are skipped. */
+export function dryRunTable(file: string, parsed: string[][], w: S.Workspace, kind: DryRun['kind'] = 'csv'): DryRun {
+  const empty = (fatal: string): DryRun => ({ file, kind, rows: [], ready: 0, refused: 0, duplicate: 0, closed: 0, fatal });
+  const seen = new Set<string>(); const skip = Math.max(0, parsed.findIndex((r) => !(r[0] || '').startsWith('#')));
+  const all = parsed.slice(skip).filter((r) => r.some((c) => (c || '').trim()));
+  if (!all.length) return empty('the file has no rows');
+  const head = all[0]!; const c = { room: columnOf(head, 'room'), title: columnOf(head, 'title'), summary: columnOf(head, 'summary'), severity: columnOf(head, 'severity'), state: columnOf(head, 'state') };
+  if (c.room < 0 || c.title < 0) return empty('the header names no room column or no title column (Room, Title; Summary and Severity are optional)');
+  const body = all.slice(1); if (body.length > MAX_ROWS) return empty(`at most ${MAX_ROWS} rows at a time (the file has ${body.length})`);
+  const rows = body.map((r, i) => check(skip + i + 2, { room: r[c.room], title: r[c.title], summary: c.summary >= 0 ? r[c.summary] : '', severity: c.severity >= 0 ? r[c.severity] : '', state: c.state >= 0 ? r[c.state] : '' }, w, seen));
+  return summarise(file, kind, rows);
 }
 
 /** Raise the ready rows, each through the hand-raised rule; returns the request IDs made and anything refused on the way. */

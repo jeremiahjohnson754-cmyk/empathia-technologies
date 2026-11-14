@@ -7,8 +7,9 @@ import test from 'node:test'; import assert from 'node:assert/strict';
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import { fileURLToPath, pathToFileURL } from 'node:url';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..'); const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
 const out = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'service-import-')), 'm.mjs');
-await esbuild.build({ stdin: { contents: "export * as I from './service/importer.ts'; export * as S from './workspace/store.ts'; export { serviceQueuePackage } from './export/service.ts'; export { render } from './export/render.ts';", resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' }, bundle: true, format: 'esm', platform: 'node', outfile: out, logLevel: 'error', define: { 'process.env.DEMO_BUILD_ID': '"test"' }, external: ['docx', 'pptxgenjs', 'pdf-lib', 'jszip'] });
-const { I, S, serviceQueuePackage, render } = await import(pathToFileURL(out).href);
+await esbuild.build({ stdin: { contents: "export * as I from './service/importer.ts'; export * as S from './workspace/store.ts'; export { serviceQueuePackage } from './export/service.ts'; export { render } from './export/render.ts'; export { readXlsx } from './service/xlsxRead.ts';", resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' }, bundle: true, format: 'esm', platform: 'node', outfile: out, logLevel: 'error', define: { 'process.env.DEMO_BUILD_ID': '"test"' }, external: ['docx', 'pptxgenjs', 'pdf-lib'] });   // jszip is bundled: the workbook reader (SI-06) loads it
+const { I, S, serviceQueuePackage, render, readXlsx } = await import(pathToFileURL(out).href);
+const JSZip = (await import(path.join(repo, 'node_modules/jszip/lib/index.js'))).default;
 const real = (w) => JSON.stringify({ incidents: w.incidents, workOrders: w.workOrders });
 
 test('SI-01 the CSV parser: quotes, doubled quotes, commas and line breaks inside quotes, CRLF, a BOM, blank lines', () => {
@@ -68,4 +69,23 @@ test('SI-05 limits and the wrong files: too many rows, too large, no header, a J
   assert.match(I.dryRun('x.csv', 'Where,What\nR-ATL-4-220,thing\n', w).fatal, /names no room column or no title column/);
   assert.match(I.dryRun('x.json', '{"schema":"something-else"}', w).fatal, /Empathia service queue export/);
   assert.match(I.dryRun('x.json', '{oops', w).fatal, /could not be read/);
+});
+
+test('SI-06 workbooks: Empathia’s own XLSX export of the queue comes back like its CSV; a formula cell is refused; a non-workbook is refused', async () => {
+  const w = S.seed(); const rep = serviceQueuePackage(w, { role: 'Service Manager', at: '2026-11-14T00:00:00Z', build: 'test' });
+  const x = (await render(rep, 'xlsx')).bytes; const wb = await readXlsx(x.buffer.slice(x.byteOffset, x.byteOffset + x.byteLength));
+  assert.equal(wb.sheet, 'Requests');
+  const r = I.dryRunTable('queue.xlsx', wb.rows, w, 'xlsx'); assert.equal(r.fatal, null, r.fatal);
+  const open = w.incidents.filter((i) => !['CLOSED', 'CANCELLED'].includes(i.state)).length;
+  assert.deepEqual([r.rows.length, r.duplicate, r.closed, r.refused, r.ready], [w.incidents.length, open, w.incidents.length - open, 0, 0]);
+  // a hand-made workbook: one plain row, one formula cell (its cached value would look harmless)
+  const z = new JSZip();
+  z.file('xl/workbook.xml', '<workbook xmlns:r="r"><sheets><sheet name="Sheet1" sheetId="1" r:id="rId1"/></sheets></workbook>');
+  z.file('xl/_rels/workbook.xml.rels', '<Relationships><Relationship Id="rId1" Target="worksheets/sheet1.xml"/></Relationships>');
+  z.file('xl/sharedStrings.xml', '<sst><si><t>Room</t></si><si><t>Title</t></si><si><t>R-ATL-4-220</t></si><si><t>Display flickers at the end of calls</t></si></sst>');
+  z.file('xl/worksheets/sheet1.xml', '<worksheet><sheetData><row r="1"><c r="A1" t="s"><v>0</v></c><c r="B1" t="s"><v>1</v></c></row><row r="2"><c r="A2" t="s"><v>2</v></c><c r="B2" t="s"><v>3</v></c></row><row r="3"><c r="A3" t="s"><v>2</v></c><c r="B3" t="str"><f>HYPERLINK("http://example.invalid","ok")</f><v>ok</v></c></row></sheetData></worksheet>');
+  const buf = await z.generateAsync({ type: 'arraybuffer' }); const hand = await readXlsx(buf);
+  const d = I.dryRunTable('hand.xlsx', hand.rows, w, 'xlsx');
+  assert.deepEqual(d.rows.map((x) => x.state), ['ready', 'refused']); assert.match(d.rows[1].why.join(), /looks like a spreadsheet formula/);
+  await assert.rejects(readXlsx(new TextEncoder().encode('not a zip at all').buffer), /not a workbook/);
 });

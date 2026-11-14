@@ -5,6 +5,7 @@
 //   SIB-02  a file with ready, refused and formula rows: the dry run shows each with its reason; nothing is raised until Import
 //   SIB-03  Import raises only the ready rows, as Standard and OPEN for triage; the import is in the audit trail with the file's SHA-256
 //   SIB-04  a technician, who does not triage, is not offered the import
+//   SIB-05  the queue exported as a workbook (.xlsx) comes back from its Requests sheet: nothing raised twice
 //   node tests/browser/demo-service-import.test.mjs
 import fs from 'node:fs';
 import { harness } from './demo-shell-lib.mjs';
@@ -32,6 +33,11 @@ const ws = (p) => p.evaluate(() => JSON.parse(localStorage.getItem('empathia.dem
   const w = await ws(p); const mine = w.incidents.filter((i) => /Imported from requests\.csv/.test(i.summary));
   const ev = w.events.find((e) => e.type === 'service.imported' && /requests\.csv/.test(e.detail));
   ok('SIB-03', 'Import raises only the ready rows, as Standard and OPEN for triage (the requested High written into the request); the import is audited with its SHA-256', mine.length === 2 && mine.every((i) => i.severity === 'Standard' && i.state === 'OPEN') && mine.some((i) => /Requested severity: High/.test(i.summary)) && !!ev && /SHA-256 [0-9a-f]{64}/.test(ev.detail) && /2 raised, 2 refused/.test(ev.detail), ev?.detail?.slice(0, 160));
+  const [dx] = await Promise.all([p.waitForEvent('download'), p.getByTestId('sh-export').locator('button[data-format=xlsx]').click()]);
+  await p.getByTestId('sh-import-file').setInputFiles({ name: 'queue.xlsx', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', buffer: fs.readFileSync(await dx.path()) });
+  await p.waitForFunction(() => /queue\.xlsx \(sheet Requests\)/.test(document.querySelector('[data-testid=sh-import-run]')?.textContent || ''));
+  const rx = { ready: await runOf(p).getAttribute('data-ready'), dup: await runOf(p).getAttribute('data-duplicate'), refused: await runOf(p).getAttribute('data-refused') };
+  ok('SIB-05', 'the queue exported as a workbook comes back from its Requests sheet: nothing raised twice, nothing refused', rx.ready === '0' && rx.refused === '0' && Number(rx.dup) >= 1, JSON.stringify(rx));
   ok('SIB-clean', 'no console error; nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
   await t.close(); }
 
