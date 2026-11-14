@@ -33,6 +33,8 @@ export { asPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export
 export { seed, openApex, apexAct } from ${JSON.stringify(path.join(repo, 'apps/demo/src/workspace/store.ts'))};
 export { apexPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/apex.ts'))};
 export { estatePackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/estate.ts'))};
+export { dossierPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/dossier.ts'))};
+export { replay, DOSSIER_4218 } from ${JSON.stringify(path.join(repo, 'packages/proof-registry/src/index.ts'))};
 export { prepareMedia, imageSize } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/media.ts'))};
 export { readDocs } from ${JSON.stringify(path.join(repo, 'apps/demo/src/docs5/store.ts'))};
 export { TRACKED_ROOM, TRACKED_REPORT } from ${JSON.stringify(path.join(repo, 'apps/demo/src/docs5/model.ts'))};
@@ -96,6 +98,19 @@ for (const c of ws.apexCases) reports.push({ why: `apex · seeded case ${c.id}`,
   if (inc) { const o = M.openApex(ws, 'syseng', inc.id, () => []); if (o && o.id) { const c = ws.apexCases.find((x) => x.id === o.id);
     for (const t of ['A0', 'A1', 'A2', 'A3', 'A4', 'A5']) M.apexAct(ws, 'syseng', c.id, c.hypotheses[0].id, { tier: t }, null);
     reports.push({ why: `apex · opened here, acted on at every tier (${c.actions.length} actions)`, rep: M.apexPackage(c, ws, made) }); } } }
+// the commissioning dossier, in both redactions: the reference snapshot, and the working record after a retest, a verification and a
+// new deficiency; the executive files must carry no evidence reference and no recorder or verifier (mustNot, checked in every format)
+{ const D = M.DOSSIER_4218; const snap = M.replay(D, []); const at = '2026-11-13T12:00:00Z';
+  const pend = snap.tests.find((t) => t.result === 'PENDING'); const fail = snap.tests.find((t) => t.result === 'FAIL');
+  const ev = [{ kind: 'RETEST', test: pend.id, result: 'PASS', evidence: 'EV-SIM-199', by: { role: 'cxeng', label: 'Commissioning Engineer' }, at },
+    { kind: 'VERIFY', test: pend.id, by: { role: 'qa', label: 'Quality Assurance' }, at },
+    { kind: 'RAISE', test: fail.id, id: `DEF-SIM-${String(snap.deficiencies.length + 1).padStart(3, '0')}`, statement: 'Raised in verification', by: { role: 'cxeng', label: 'Commissioning Engineer' }, at }];
+  const working = M.replay(D, ev);
+  const evidenceIds = [...new Set([...snap.tests, ...working.tests].map((t) => t.evidence).filter(Boolean))];
+  for (const [w, basis] of [[snap, 'reference snapshot'], [working, `working record (${ev.length} events after it)`]]) {
+    reports.push({ why: `dossier · engineering · ${basis}`, mustHave: [...evidenceIds.slice(0, 3).map((x) => x.replace(/[-.]/g, '\\$&')), '\\bVerified\\b'], rep: { ...M.dossierPackage(w, 'engineering', made), id: `${D.id}-engineering${w.changed ? '-working' : ''}` } });
+    reports.push({ why: `dossier · executive · ${basis}`, mustNot: [...evidenceIds.map((x) => x.replace(/[-.]/g, '\\$&')), '\\bRecorded\\b', '\\bVerified\\b'], rep: { ...M.dossierPackage(w, 'executive', made), id: `${D.id}-executive${w.changed ? '-working' : ''}` } });
+  } }
 const longWord = 'Supercalifragilisticexpialidocious'.repeat(6);
 reports.push({ why: 'hostile input', rep: {
   schema: 'empathia.report/1', id: 'EDGE-001', kind: 'edge-cases', title: 'Edge cases — “quotes”, ≥ ≤ → ✓ 会议室 😀', subtitle: `Long ${longWord}`, scope: { tenant: 'Tenant (synthetic)', site: 'Site', building: 'Building', floor: 'Floor 1', room: 'Room', roomId: 'R-EDGE' },
@@ -111,13 +126,13 @@ reports.push({ why: 'hostile input', rep: {
 const manifest = [];
 const raster = async (svg, w, h) => { try { const sharp = createRequire(import.meta.url)(process.env.SHARP_PATH || '/opt/npm-tools/node_modules/sharp'); return new Uint8Array(await sharp(Buffer.from(svg)).resize(w * 2, h * 2).png().toBuffer()); } catch { return undefined; } };
 for (let i = 0; i < reports.length; i++) reports[i].rep = await M.prepareMedia(reports[i].rep, raster);
-for (const { why, rep } of reports) {
+for (const { why, rep, mustNot, mustHave } of reports) {
   const dir = path.join(out, rep.id); fs.mkdirSync(dir, { recursive: true }); const files = {};
   for (const { f } of M.FORMATS) {
     const t0 = Date.now(); const fo = await M.R.render(rep, f, mark); const ms = Date.now() - t0;
     fs.writeFileSync(path.join(dir, fo.name), fo.bytes); files[f] = { name: fo.name, bytes: fo.bytes.length, mime: fo.mime, ms, ...(f === 'pdf' ? { substitutions: M.R.pdfSubstitutions } : {}) };
   }
-  manifest.push({ id: rep.id, why, primary: rep.primary || null, media: (rep.media || []).length, links: (rep.links || []).length, title: rep.title, subtitle: rep.subtitle, status: rep.status.label, tables: rep.sections.filter((s) => s.table).map((s) => ({ title: s.table.title, rows: s.table.rows.length, cols: s.table.cols.length })), kpis: rep.kpis.length, dir: path.relative(out, dir), files });
+  manifest.push({ id: rep.id, why, ...(mustNot ? { mustNot } : {}), ...(mustHave ? { mustHave } : {}), primary: rep.primary || null, media: (rep.media || []).length, links: (rep.links || []).length, title: rep.title, subtitle: rep.subtitle, status: rep.status.label, tables: rep.sections.filter((s) => s.table).map((s) => ({ title: s.table.title, rows: s.table.rows.length, cols: s.table.cols.length })), kpis: rep.kpis.length, dir: path.relative(out, dir), files });
 }
 fs.writeFileSync(path.join(out, 'manifest.json'), JSON.stringify(manifest, null, 2));
 

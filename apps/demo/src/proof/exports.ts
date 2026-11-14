@@ -2,7 +2,8 @@
  * Dossier exports (v1.6 Export Center, the part that is built): a JSON snapshot and a CSV of the tests, made in the browser from one
  * replay of the record so the two can never disagree, each with a provenance header and a SHA-256 of exactly the bytes handed over.
  * Redaction follows the reader: the executive export carries totals, deficiencies and blockers, not evidence references.
- * PDF, DOCX, XLSX and the evidence package are specified and not built; the page says so instead of offering them.
+ * The PDF, Word, Excel and PowerPoint files are made by the export platform (../export/dossier.ts) with the same redaction; the zipped
+ * evidence package is specified and not built, and the page says so instead of offering it.
  */
 import { DOSSIER_4218 as D, type Working } from '@empathia/proof-registry';
 

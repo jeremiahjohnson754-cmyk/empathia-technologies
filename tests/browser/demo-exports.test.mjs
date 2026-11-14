@@ -106,6 +106,25 @@ const sha = (b) => crypto.createHash('sha256').update(b).digest('hex');
   await t.close();
 }
 {
+  // the commissioning dossier (#9): an engineering role gets both reports, the executive only the executive one, and the executive file
+  // carries no evidence reference and no recorder or verifier, whatever was recorded in this browser
+  const t = await open('#/dossier/SIM-REPORT-2026-11-08-001', { role: 'syseng', sw: false }); const p = t.page; p.setDefaultTimeout(20000);
+  await p.getByTestId('dossier-export-engineering').waitFor();
+  const eng = p.getByTestId('dossier-export-engineering');
+  const [de] = await Promise.all([p.waitForEvent('download'), eng.locator('button[data-format=json]').click()]); const je = JSON.parse(fs.readFileSync(await de.path(), 'utf8'));
+  const [dp] = await Promise.all([p.waitForEvent('download'), eng.locator('button[data-format=pdf]').click()]); const pdf = fs.readFileSync(await dp.path());
+  const [dx] = await Promise.all([p.waitForEvent('download'), p.getByTestId('dossier-export-executive').locator('button[data-format=xlsx]').click()]);
+  const xz = await JSZip.loadAsync(fs.readFileSync(await dx.path())); const xml = (await Promise.all(Object.keys(xz.files).filter((n) => n.endsWith('.xml')).map((n) => xz.file(n).async('string')))).join(' ');
+  const engHasEv = je.entities.tests.some((x) => /^EV-/.test(x.evidence || ''));
+  ok('XP-DOSSIER', 'the dossier exports as a report: the engineering file carries the evidence references, the executive workbook carries none and no recorder or verifier', je.kind === 'commissioning-dossier' && je.tables.Tests.rows.length === 32 && engHasEv && pdf.subarray(0, 5).toString() === '%PDF-' && dp.suggestedFilename() === 'SIM-REPORT-2026-11-08-001-engineering-commissioning-dossier.pdf' && dx.suggestedFilename() === 'SIM-REPORT-2026-11-08-001-executive-commissioning-dossier.xlsx' && !/EV-SIM-\d/.test(xml) && !/\bRecorded\b|\bVerified\b/.test(xml) && !t.errs.length && !t.off.length, `${je.kind} ${je.tables.Tests?.rows.length} ${engHasEv} ${dx.suggestedFilename()}`);
+  await t.close();
+  const t2 = await open('#/dossier/SIM-REPORT-2026-11-08-001', { role: 'exec', sw: false }); const p2 = t2.page; p2.setDefaultTimeout(20000);
+  await p2.getByTestId('dossier-export-executive').waitFor();
+  const [dj] = await Promise.all([p2.waitForEvent('download'), p2.getByTestId('dossier-export-executive').locator('button[data-format=json]').click()]); const jx = JSON.parse(fs.readFileSync(await dj.path(), 'utf8'));
+  ok('XP-DOSSIER-exec', 'the executive is offered only the executive report, and its JSON says only whether evidence exists', await p2.getByTestId('dossier-export-engineering').count() === 0 && jx.entities.redaction === 'executive' && jx.entities.tests.every((x) => !('evidence' in x) && typeof x.hasEvidence === 'boolean') && !/EV-SIM-\d/.test(JSON.stringify(jx)) && !t2.errs.length && !t2.off.length, `${jx.entities.redaction}`);
+  await t2.close();
+}
+{
   // the portfolio brief: the estate drilled up (buildings, room types) and down (every room); the building filter scopes it
   const t = await open('#/commissioning', { role: 'architect', sw: false }); const p = t.page; p.setDefaultTimeout(20000);
   const card = p.getByTestId('estate-export'); await card.waitFor();

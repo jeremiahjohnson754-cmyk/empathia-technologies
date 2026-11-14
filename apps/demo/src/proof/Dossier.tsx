@@ -17,6 +17,8 @@ import { make, download, type Artifact, type Redaction } from './exports.js';
 import { readDocs } from '../docs5/store.js';
 import { docOfTest } from '../docs5/model.js';
 import { ReleaseControls } from '../docs5/ui.js';
+import { ExportMenu } from '../export/ExportMenu.js';
+import { dossierPackage } from '../export/dossier.js';
 
 type Filter = 'attention' | 'all' | 'FAIL' | 'PENDING' | 'PASS';
 const RESULT_TONE = { PASS: 'ok', PENDING: 'warn', FAIL: 'bad' } as const;
@@ -209,7 +211,12 @@ export default function Dossier({ role, params, query, can, sees }: PageProps) {
           <Card key={r} title={r === 'engineering' ? 'Engineering export' : 'Executive export'} icon="download" sub={r === 'engineering' ? 'Every test with its evidence reference and who verified it' : 'Totals, blockers and deficiencies; no evidence references'}>
             <div className="pf-actions"><button type="button" className="ui-btn" disabled={busy} data-export={`json-${r}`} onClick={() => doExport('json', r)}>JSON snapshot</button><button type="button" className="ui-btn" disabled={busy} data-export={`csv-${r}`} onClick={() => doExport('csv', r)}>CSV of the tests</button></div>
           </Card>))}
-          <Card title="Not built yet" icon="info" sub="Specified in the v1.6 Export Center"><p className="pf-note">PDF, DOCX, XLSX and the zipped evidence package are specified and not built. They are listed here rather than offered as buttons that do nothing.</p></Card>
+        </div>
+        <div className="kit-grid" data-testid="dossier-reports">{redactions.map((r) => (
+          <ExportMenu key={r} testId={`dossier-export-${r}`} by={me.label} title={r === 'engineering' ? 'Engineering report' : 'Executive report'}
+            sub={r === 'engineering' ? 'The dossier with evidence references, as PDF, Word, Excel, PowerPoint, CSV and JSON' : 'The dossier without evidence references, as PDF, Word, Excel, PowerPoint, CSV and JSON'}
+            make={() => dossierPackage(w, r, { role: me.label, at: new Date().toISOString(), build: process.env.DEMO_BUILD_ID || 'dev' })} />))}
+          <Card title="Not built yet" icon="info" sub="Specified in the v1.6 Export Center"><p className="pf-note">The zipped evidence package (the report with every evidence file inside it) is specified and not built. It is listed here rather than offered as a button that does nothing.</p></Card>
         </div>
         {made.length ? <div className="pa-table-wrap"><table className="pa-table" data-testid="dossier-exports"><caption className="ui-visually-hidden">Files made in this session</caption><thead><tr><th scope="col">File</th><th scope="col">Basis</th><th scope="col">Size</th><th scope="col">SHA-256</th></tr></thead>
           <tbody>{made.map((a) => <tr key={a.at + a.name}><th scope="row">{a.name}</th><td>{a.basis === 'snapshot' ? 'Reference snapshot' : 'Working record'}</td><td className="num">{a.bytes.toLocaleString('en-GB')} bytes</td><td><code className="pf-wrap">{a.sha256}</code></td></tr>)}</tbody></table></div> : null}
