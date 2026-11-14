@@ -149,6 +149,12 @@ export const OPS_PAGES: readonly PageDef[] = [
   },
   // ---- the operational workspaces (rebuild/demo-ops): each loads its own file (ws/<name>.js) only once the role is admitted
   {
+    id: 'servicehands.analytics', title: 'Service analytics', purpose: 'Service by month and quarter, by building and project, and a scorecard that holds each vendor to its agreement', product: 'servicehands',
+    path: '/v25/service/analytics', authority: { roles: ['svcmgr', 'ops', 'exec', 'ipm', 'bpm', 'architect'], why: 'service and vendor performance: the people who manage service, programmes and vendor agreements (founder, 14 Nov 2026)' },
+    load: adapt(() => import('./pages/ServiceAnalytics.js'), (m, p) => h(m.ServiceAnalyticsPage, { perspective: p.role, hash: p.hash })),
+    search: { keywords: 'service analytics vendor scorecard sla trend monthly quarterly mttr first time fix accountability', aliases: ['vendor scorecard', 'service analytics', 'sla trend'] },
+  },
+  {
     id: 'servicehands.dispatch', title: 'Dispatch board', purpose: 'Queue, board, explained matching, assignment, reassignment and coverage', product: 'servicehands',
     path: '/service', alias: ['/service/coverage', '/service/board', '/dispatch'], authority: { area: 'service' },
     actions: [{ id: 'sh.triage', label: 'Triage and assign', authority: { action: 'sh.triage' } }],

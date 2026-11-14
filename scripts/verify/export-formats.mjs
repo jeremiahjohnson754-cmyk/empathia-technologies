@@ -34,6 +34,9 @@ export { seed, openApex, apexAct } from ${JSON.stringify(path.join(repo, 'apps/d
 export { apexPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/apex.ts'))};
 export { estatePackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/estate.ts'))};
 export { serviceQueuePackage, serviceRecordPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/service.ts'))};
+export { serviceAnalyticsPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/serviceAnalytics.ts'))};
+export * as SAN from ${JSON.stringify(path.join(repo, 'apps/demo/src/service/analytics.ts'))};
+export * as SHH from ${JSON.stringify(path.join(repo, 'apps/demo/src/service/history.ts'))};
 export { learnPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/learn.ts'))};
 export { dossierPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/dossier.ts'))};
 export { replay, DOSSIER_4218 } from ${JSON.stringify(path.join(repo, 'packages/proof-registry/src/index.ts'))};
@@ -109,6 +112,12 @@ for (const c of ws.apexCases) reports.push({ why: `apex · seeded case ${c.id}`,
 reports.push({ why: 'servicehands · the whole queue', rep: M.serviceQueuePackage(ws, made) });
 { const withWo = ws.incidents.find((i) => i.workOrderId); const without = ws.incidents.find((i) => !i.workOrderId);
   for (const [i, why] of [[withWo, 'with its work order'], [without, 'no work order yet']]) if (i) reports.push({ why: `servicehands · ${i.id} ${why}`, rep: M.serviceRecordPackage(ws, i.id, made) }); }
+// ServiceHands analytics: the estate over fifteen months by month, and one vendor drilled in by quarter (the synthetic history)
+{ const all = M.SHH.syntheticHistory(); const ms = M.SAN.months(15); const qs = M.SAN.quarters(15); const card = M.SAN.vendorScorecard(all, ms);
+  const pn = (id) => (id === 'none' ? 'No project (running the estate)' : id);
+  reports.push({ why: 'service analytics · the estate, 15 months by month', rep: M.serviceAnalyticsPackage({ jobs: all, all, periods: ms, months: ms, drill: { m: 15, g: 'month', b: null, v: null, p: null, at: null }, crumbs: ['The estate'], projName: pn, scorecard: card }, made) });
+  const cob = all.filter((j) => j.vendor === 'VN-COBALT');
+  reports.push({ why: 'service analytics · one vendor drilled in, by quarter', rep: M.serviceAnalyticsPackage({ jobs: cob, all, periods: qs, months: ms, drill: { m: 15, g: 'quarter', b: null, v: 'VN-COBALT', p: null, at: null }, crumbs: ['The estate', 'Cobalt Ridge Systems'], projName: pn, scorecard: card }, made) }); }
 // Learn: the governed cases and one perspective's practice (two drills, a passed lab); another person's attempt must not appear
 { const tr = [{ drillId: 'D-AUD-01', at: '2026-11-13T10:00:00Z', by: 'syseng', correct: true, elapsedS: 41 }, { drillId: 'D-VID-02', at: '2026-11-13T10:05:00Z', by: 'syseng', correct: false, elapsedS: 63 }, { drillId: 'D-OTHER-99', at: '2026-11-13T10:07:00Z', by: 'installer', correct: true, elapsedS: 12 }];
   const w2 = { ...ws, training: [...ws.training, ...tr] };
