@@ -12,6 +12,7 @@ import { SITE, buildingByKey } from '../campus/canon.js';
 import type * as S from '../workspace/store.js';
 import type { Report, Section } from './model.js';
 import type { MadeBy } from './cx.js';
+import { servicePhases } from '../service/phases.js';
 
 const DONE = ['CLOSED', 'CANCELLED'];
 const STATES = ['OPEN', 'TRIAGED', 'ASSIGNED', 'ACCEPTED', 'IN_PROGRESS', 'VERIFYING', 'RESOLVED', 'REOPENED', 'CLOSED', 'CANCELLED'];
@@ -87,6 +88,10 @@ export function serviceRecordPackage(w: S.Workspace, incId: string, by: MadeBy):
     { id: 'evidence', heading: 'Field evidence', text: ['Recorded by the technician; accepting it is someone else’s.'], table: { title: 'Field evidence', cols: [{ key: 'at', label: 'When' }, { key: 'kind', label: 'Kind' }, { key: 'note', label: 'What was recorded' }, { key: 'by', label: 'By' }], rows: wo.evidence.map((e) => ({ at: stamp(e.at), kind: e.kind, note: e.note, by: who(e.by) })) } });
   // how long the request sat in each state, from its own history (the last state up to the moment the file was made)
   const spans = new Map<string, number>(); i.history.forEach((h, k) => { const end = i.history[k + 1]?.at || (closed ? h.at : by.at); spans.set(word(h.to), (spans.get(word(h.to)) || 0) + Math.max(0, (Date.parse(end) - Date.parse(h.at)) / 36e5)); });
+  { const sp = servicePhases(i, wo || null);   // the same phase engine as commissioning (phases/universal.ts)
+    sections.push({ id: 'phases', heading: 'The job, phase by phase', text: [`Five phases and a sign-off, on the same phase engine as commissioning. Sign-off: ${sp.signOff.done ? `signed off by ${who(sp.signOff.by)} on ${(sp.signOff.at || '').slice(0, 10)}` : 'not yet'}${sp.signOff.why.length ? `; open points: ${sp.signOff.why.join('; ')}` : ''}.`],
+      table: { title: 'Phases', cols: [{ key: 'ph', label: 'Phase' }, { key: 'item', label: 'Item' }, { key: 'res', label: 'Result', kind: 'status' }, { key: 'why', label: 'Why' }, { key: 'by', label: 'By' }, { key: 'at', label: 'When', kind: 'date' }],
+        rows: sp.run.flatMap((p) => p.items.map((x) => ({ ph: `${p.n} · ${p.name} (${p.verdict})`, item: x.label, res: x.result === 'pass' ? 'Done' : x.result === 'ran' ? 'Awaiting verification' : x.result === 'fail' ? 'Failed' : 'Not yet', why: x.why, by: who(x.by), at: (x.at || '').slice(0, 10) }))) } }); }
   sections.push({ id: 'thread', heading: 'Where it went next', facts: [['APEX case', apex ? `${apex.id}: ${apex.hypotheses.length} hypotheses, ${apex.actions.length} actions` : 'None opened'], ['Learn case', learn ? `${learn.id}: ${word(learn.state)}` : 'None proposed']] });
   return {
     schema: 'empathia.report/1', id: `SH-${i.id}`, kind: 'service-record', title: 'Service record', subtitle: `${i.id} · ${i.roomName}`,

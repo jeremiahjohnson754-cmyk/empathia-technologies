@@ -4,6 +4,7 @@
  * say something the page does not. Computed from the record; nothing typed in. No DOM, so it runs in Node too.
  */
 import { openIssues, type RoomRecord } from './design.js';
+import { runPhases, type PhaseItem } from '../phases/universal.js';
 
 export interface CxRow { id: string; label: string; pack: string | null; domain: string; phase: number; tier: number; applicable: boolean; result?: string; evidence?: string[]; verifier?: string; instrument?: boolean; devices?: string[]; justification?: string[] }
 export const rowsOf = (r: RoomRecord): CxRow[] => ((r.analysis.applicability as unknown as { rows?: CxRow[] }).rows || []);
@@ -13,10 +14,13 @@ export const RES: Record<string, { label: string; tone: CxTone }> = { PASS_VERIF
 export const res = (x?: string) => RES[x || 'NOT_TESTED'] || RES.NOT_TESTED!;
 export const ymd = (s?: string | null) => (s ? s.slice(0, 10) : '—');
 
+/** The five phases on the universal phase engine (phases/universal.ts): a verified pass is pass, a FAIL fails, an untested row is pending,
+ *  any other result (awaiting verification, not supported, …) has run. Same verdicts as before the engine was shared. */
 export function phaseStats(r: RoomRecord) {
   const rows = rowsOf(r).filter((x) => x.applicable);
-  return PHASES.map(([n, name, q]) => { const ps = rows.filter((x) => x.phase === n); const pass = ps.filter((x) => x.result === 'PASS_VERIFIED').length; const fail = ps.filter((x) => x.result === 'FAIL').length; const run = ps.filter((x) => x.result && x.result !== 'NOT_TESTED').length;
-    return { n, name, q, rows: ps, pass, fail, run, verdict: (!ps.length ? 'none' : fail ? 'fail' : run < ps.length ? (run ? 'partial' : 'notrun') : 'pass') as 'none' | 'fail' | 'partial' | 'notrun' | 'pass' }; });
+  const items: PhaseItem[] = rows.map((x) => ({ id: x.id, phase: x.phase, label: x.id, why: '', result: x.result === 'PASS_VERIFIED' ? 'pass' : x.result === 'FAIL' ? 'fail' : !x.result || x.result === 'NOT_TESTED' ? 'pending' : 'ran' }));
+  const run = runPhases(PHASES.map(([n, name, q]) => ({ n, name, q })), items);
+  return run.map((p) => { const ps = rows.filter((x) => x.phase === p.n); return { n: p.n, name: p.name, q: p.q, rows: ps, pass: p.pass, fail: p.fail, run: p.pass + p.ran + p.fail, verdict: p.verdict }; });
 }
 export const VERDICT: Record<string, string> = { none: 'No applicable check', pass: 'Pass', fail: 'Fail', notrun: 'Not run', partial: 'Partial' };
 /** Why acceptance is blocked (V2.5.3's three reasons), from the record. */

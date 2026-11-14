@@ -216,3 +216,10 @@
 .pp-bar i { display: block; height: 100%; background: var(--accent); }
 .pp-layers li { display: grid; grid-template-columns: 7rem 1fr 3rem; gap: 10px; align-items: center; padding-block: 4px; }
 .pp-layers .pp-bar { width: 100%; }
+
+/* phases on the universal engine (phases/PhaseRail.tsx) */
+.phr__tiles { list-style: none; padding: 0; margin: 8px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr)); gap: 8px; }
+.phr__tile { display: grid; gap: 2px; padding: 8px 10px; border: 1px solid var(--line2); border-left: 3px solid var(--line); border-radius: var(--r-md); min-width: 0; }
+.phr__tile--ok { border-left-color: var(--ok); }
+.phr__tile--bad { border-left-color: var(--bad); }
+.phr__tile--warn { border-left-color: var(--warn); }

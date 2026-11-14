@@ -17,6 +17,8 @@ import { openable } from './V25Nav.js';
 import { ImportCard } from '../service/ImportCard.js';
 import { serviceQueuePackage, serviceRecordPackage } from '../export/service.js';
 import { involvement, allJobs } from '../people/involvement.js';
+import { servicePhases } from '../service/phases.js';
+import { PhaseRail } from '../phases/PhaseRail.js';
 import { layerOfText } from '../service/history.js';
 import { LAYER_LABEL } from '../service/analytics.js';
 const made = (persona: string) => ({ role: personaLabel(persona), at: new Date().toISOString(), build: process.env.DEMO_BUILD_ID || 'dev' });
@@ -121,6 +123,7 @@ function Incident({ inc, w, apply, persona, me, est }: { inc: S.Incident; w: S.W
         {!next.length && <p className="ui-meta">No further governed step from {inc.state}.</p>}
       </div>
       {wo?.preflight && <details><summary>Dispatch preflight on the record</summary><ul className="svc__checks">{wo.preflight.map((c) => <li key={c.id}><Tag tone={c.ok ? 'ok' : 'bad'}>{c.ok ? 'ok' : 'blocked'}</Tag> <b>{c.label}</b> <span className="ui-meta">{c.why}</span></li>)}</ul></details>}
+      {(() => { const sp = servicePhases(inc, wo || null); return <details className="ln-dom" open data-testid="sh-phases-box"><summary><b>The job, phase by phase</b> <span className="ui-meta">the same phase engine as commissioning: five phases and a sign-off</span></summary><PhaseRail testId="sh-phases" run={sp.run} sign={sp.signOff} who={(id) => w.staff.find((s) => s.id === id)?.name || personaLabel(id)} /></details>; })()}
       <div className="svc__links"><a href={`#/v25/apex?incident=${inc.id}`}>APEX diagnosis{inc.apexId ? ` (${inc.apexId})` : ''}</a> · <a href={`#/search?focus=Room:${inc.roomId}`}>Search Party</a>{inc.learnCaseId ? <> · <a href={`#/v25/learn?case=${inc.learnCaseId}`}>Learn case {inc.learnCaseId}</a></> : null}</div>
       <details><summary>History ({inc.history.length})</summary><ul className="plain">{inc.history.map((h, i) => <li key={i}><Tag tone={TONE[h.to]}>{h.to}</Tag> {when(h.at)} · {w.staff.find((s) => s.id === h.by)?.name || personaLabel(h.by)}</li>)}</ul></details>
     </div>
