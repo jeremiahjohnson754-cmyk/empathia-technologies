@@ -39,6 +39,8 @@ export * as SAN from ${JSON.stringify(path.join(repo, 'apps/demo/src/service/ana
 export * as SHH from ${JSON.stringify(path.join(repo, 'apps/demo/src/service/history.ts'))};
 export { learnPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/learn.ts'))};
 export { reverbPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/reverb.ts'))};
+export { stiPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/sti.ts'))};
+export * as STI from ${JSON.stringify(path.join(repo, 'apps/demo/src/bench/sti.ts'))};
 export * as RV from ${JSON.stringify(path.join(repo, 'apps/demo/src/bench/reverb.ts'))};
 export { dossierPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/dossier.ts'))};
 export { replay, DOSSIER_4218 } from ${JSON.stringify(path.join(repo, 'packages/proof-registry/src/index.ts'))};
@@ -129,6 +131,11 @@ reports.push({ why: 'servicehands · the whole queue', rep: M.serviceQueuePackag
 // (the refusal text sits in a narrow PDF table cell and wraps, so the phrase check runs on the formats that keep a cell's text whole)
 { const pos = [[0.7, -85, 101], [0.7, -85, 102], [0.9, -40, 103]].map(([rt, fl, seed], i) => ({ name: i < 2 ? `Synthetic reference, 0.70 s (seed ${seed})` : 'P3-lectern.wav', bytes: 96000, sha: String(seed).padStart(64, '0'), rate: 48000, bits: i < 2 ? 64 : 16, channels: 1, seconds: 1.8, format: i < 2 ? 'csv' : 'wav', synthetic: i < 2, bands: M.RV.analyseBands(M.RV.syntheticIR(rt, { floorDb: fl, seed, seconds: 1.8 })) }));
   reports.push({ why: 'reverberation · 3 positions, T30 refused on one, a target, a phone chain', mustHave: ['SYNTHETIC REFERENCE', 'T30 needs 45 dB', 'not commissioning evidence'], mustHaveIn: ['docx', 'xlsx', 'json'], rep: M.reverbPackage({ positions: pos, chain: 'consumer', target: { seconds: 0.7, tolPct: 10 } }, made) }); }
+// speech intelligibility: five synthetic readings below the policy at one position, with an approved exception
+{ const p = M.STI.POLICY_PRESETS[0]; const at = '2026-11-14T10:00:00Z';
+  const rs = [['Front row', 0.66], ['Centre', 0.63], ['Rear left', 0.61], ['Behind the column', 0.51], ['Rear right', 0.6]].map(([position, sti]) => ({ position, sti, occupied: false, meter: 'SYN-STI-METER-01 (synthetic)', chain: 'meter-calibrated', at }));
+  const ev = M.STI.evaluate(rs, p); const ix = [{ id: 'IX-001', policy: p.id, positions: ev.short, reason: 'The seat behind the column is an overflow seat, not used for presenting.', measures: 'lectern microphone for questions', expires: '2027-05-01', requestedBy: 'cxeng', approvedBy: 'syseng', at, approvedAt: at }];
+  reports.push({ why: 'speech intelligibility · below the policy at one position, carried by an approved exception', mustHave: ['POL-STI-MEET-1', 'Behind the column', 'IX-001'], mustHaveIn: ['docx', 'xlsx', 'json'], rep: M.stiPackage({ readings: rs, policy: p, ev, exceptions: ix, synthetic: true, room: 'Atlas 4.231 Training' }, made) }); }
 // the commissioning dossier, in both redactions: the reference snapshot, and the working record after a retest, a verification and a
 // new deficiency; the executive files must carry no evidence reference and no recorder or verifier (mustNot, checked in every format)
 { const D = M.DOSSIER_4218; const snap = M.replay(D, []); const at = '2026-11-13T12:00:00Z';

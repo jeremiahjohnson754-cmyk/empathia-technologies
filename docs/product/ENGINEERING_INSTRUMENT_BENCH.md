@@ -27,14 +27,35 @@ Code: `apps/demo/src/bench/reverb.ts` (the analysis), `apps/demo/src/pages/Rever
 
 - It does not estimate decay times from a photograph or from a room's dimensions. Lite's Sabine estimate is a model, and it is labelled as one.
 - It does not measure level. There is no SPL, and therefore no level calibration step yet.
-- It does not compute STI. The STI workflow is **not built**.
+- It does not compute STI. STI has its own workflow, below.
 - It does not reproduce ISO 3382-2 or any other paid standard. The method follows its published approach, written from first principles. The octave filters approximate the standard's filters, and band results are labelled as such.
 - It does not write the result into the room's commissioning record. That link (instrument → test → evidence) is **not built**. Today the export is the evidence file an engineer attaches.
+
+### Speech intelligibility (STI)
+
+The STI workflow lives at `#/commissioning/instruments/sti` (code in `apps/demo/src/bench/sti.ts`, `pages/StiBench.tsx` and `export/sti.ts`). It records the STI meter's readings at each listener position. They can be imported from a CSV or entered by hand, and each reading carries its meter, its chain and whether the room was occupied. The readings are compared with the **project's** policy. A policy is named and versioned, for example `POL-STI-MEET-1`, and no threshold is presented as a requirement of a standard. The workflow computes no STI.
+
+The workflow rules:
+
+- Too few positions give no verdict.
+- Mixed occupied and unoccupied conditions, repeated positions, uncalibrated meters and phone readings are each flagged. Phone readings are indicative only.
+- A shortfall may be carried by an **intelligibility exception record**:
+  - it covers the positions below the policy, and only those;
+  - it needs a reason and compensating measures;
+  - it expires in the future, at most within a year;
+  - it is requested by someone who records results and approved by someone else (separation of duties);
+  - it is never available for a life-safety (voice alarm) policy, and never founded on phone readings.
+- Every request and approval, and every refusal, is audited.
+
+STI is checked by these suites:
+
+- `tests/unit/bench-sti.test.mjs` (ST-01..03)
+- `tests/browser/demo-sti.test.mjs` (STI-01..06)
+- the export check, where the STI report opens in all six formats
 
 ## Not yet built from the directive's bench
 
 - RTA and SPL: they need a calibration chain and live audio, and the frame refuses the microphone without a declared capability.
-- The STI workflow with project-policy thresholds, and the intelligibility exception record.
 - The video, network and control instruments.
 
 ## Tests

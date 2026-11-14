@@ -165,6 +165,12 @@ export const OPS_PAGES: readonly PageDef[] = [
     load: adapt(() => import('./pages/People.js'), (m, p) => h(m.PeoplePage, { perspective: p.role, hash: p.hash })),
     search: { keywords: 'people technician experience expertise who worked touched project room layer control audio video involvement', aliases: ['who worked on', 'expertise', 'technician experience'] },
   },
+  {
+    id: 'commissioning.sti', title: 'Speech intelligibility (STI)', purpose: 'The STI meter’s readings by position against the project’s policy, with the intelligibility exception record', product: 'commissioning',
+    path: '/commissioning/instruments/sti', authority: { area: 'commissioning' },
+    load: adapt(() => import('./pages/StiBench.js'), (m, p) => h(m.StiBenchPage, { perspective: p.role })),
+    search: { keywords: 'sti speech intelligibility stipa intelligibility exception policy voice', aliases: ['sti', 'speech intelligibility', 'stipa'] },
+  },
   // ---- the operational workspaces (rebuild/demo-ops): each loads its own file (ws/<name>.js) only once the role is admitted
   {
     id: 'servicehands.analytics', title: 'Service analytics', purpose: 'Service by month and quarter, by building and project, and a scorecard that holds each vendor to its agreement', product: 'servicehands',
