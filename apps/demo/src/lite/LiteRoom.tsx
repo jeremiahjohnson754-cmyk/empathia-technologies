@@ -106,7 +106,6 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
       <nav aria-label="Breadcrumb" className="crumbs"><ol><li><a href="#/lite">Lite</a></li><li><a href={`#/lite/b/${o.building}`}>{B.name}</a></li><li><a href={`#/lite/b/${o.building}/${o.floor}`}>Floor {o.floor}</a></li><li><span aria-current="page">{o.number}</span></li></ol></nav>
       <PageHero product="lite" icon="room" plain eyebrow={`${shortName(o)} · ${r.archetypeName} · ${o.capacity} seats`} title={o.name} />
       <RoomJumps roomId={id} here="lite" opens={opensFor(role)} device={sel} />
-      {role !== 'visitor' ? <p className="lt-ask"><a className="ui-btn" href={`#/request?room=${encodeURIComponent(id)}${sel ? `&kind=replace-device&position=${encodeURIComponent(sel)}` : ''}`} data-testid="lite-ask-room">{sel ? 'Ask for work on the selected device' : 'Ask for work in this room'}</a></p> : null}
       {o.nonOperational && <p className="lt-nonop" role="note" data-testid="lite-nonop"><Icon name="info" size={16} /> <b>Simulated · non-operational.</b> This is a demonstration of an operations room. Nothing here monitors, controls or alerts on a real system; every number is computed from the synthetic records.</p>}
       {lensesOpen.length > 1 && <div className="lt-lenses lt-lenses--sm" role="radiogroup" aria-label="Lite lens">{lensesOpen.map((l) => <button key={l.key} type="button" role="radio" aria-checked={lens === l.key} className={`lt-lens${lens === l.key ? ' on' : ''}`} onClick={() => pickLens(l.key)} data-testid={`lite-lens-${l.key}`}><b>{l.label}</b><span title={l.says}>sees {l.gives.toLowerCase()}</span></button>)}</div>}
       <div className="lt-roomgrid">
@@ -176,6 +175,8 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
           </div>
         </aside>
       </div>
+      {/* the request button sits right under the room (not above it): the room stays high on the page */}
+      {role !== 'visitor' ? <p className="lt-ask"><a className="ui-btn" href={`#/request?room=${encodeURIComponent(id)}${sel ? `&kind=replace-device&position=${encodeURIComponent(sel)}` : ''}`} data-testid="lite-ask-room">{sel ? 'Ask for work on the selected device' : 'Ask for work in this room'}</a></p> : null}
       {pub ? <p className="lt-pubnote" data-testid="lite-qr-public">Opened from this room’s public code: the employee and room-user modes only.</p> : <AdvancedModes role={role} id={id} lens={lens} query={query} base={base} />}
       {lens !== 'visitor' && <RoomTabBar tab={tab} onTab={(t) => upd('tab', t === 'overview' ? null : t)} />}
       {tab !== 'overview' ? <RoomTabPanel tab={tab} r={r} stateKey={stateKey} role={role} opens={opensFor(role)} onPassport={mayPassport ? openPassport : null} sel={sel} onSel={(c) => { setSel(c); upd('device', c); }} measurements={<Measurements cov={st.cov} w={o.dims[0]} l={o.dims[1]} h={o.dims[2]} />} /> : <>

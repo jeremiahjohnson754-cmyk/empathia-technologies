@@ -223,3 +223,8 @@
 .phr__tile--ok { border-left-color: var(--ok); }
 .phr__tile--bad { border-left-color: var(--bad); }
 .phr__tile--warn { border-left-color: var(--warn); }
+
+/* target size on a phone (WCAG 2.2, 2.5.8: at least 24 × 24 CSS px; tests/browser/demo-field-ux.test.mjs) */
+.ln-crumbs a, .svc__links a, .kit-card__body > a, .san__path a { display: inline-flex; align-items: center; min-height: 24px; }
+.wk-v25nav .kit-chip--sm { min-height: 24px; }   /* the product tabs; the room pages' lens chips keep their size */
+main details > summary { min-height: 24px; }
