@@ -35,3 +35,17 @@ Verified:
 - `tests/browser/demo-mission-work.test.mjs` (MW-01…04);
 - `tests/browser/demo-rolehome.test.mjs`, where RS-30 now expects five executive figures, with its reason;
 - `tests/unit/demo-rolehome.test.mjs`.
+
+## Waiting for you (14 Nov 2026)
+
+Each working role's start page now opens with **Waiting for you**: the steps across commissioning and service that wait on that role *now*. Each step links to where it is taken.
+
+| Role | What waits for them |
+|---|---|
+| Installer | deficiencies they own, to fix (late ones in red) |
+| Commissioning engineer | fixes waiting for their retest; service fixes waiting for verification |
+| Systems engineer | deficiencies whose retest passed, to verify and close (never by the fixer or the retest's recorder); intelligibility exceptions to approve or refuse |
+| Service manager | new requests to triage |
+| Service technician | work orders to accept or work |
+
+When nothing waits on the role, the page says so. Tested in `tests/browser/demo-waiting.test.mjs` (WF-01..04).

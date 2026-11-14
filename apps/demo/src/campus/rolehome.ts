@@ -26,6 +26,7 @@ import { syntheticHistory } from '../service/history.js';
 import { vendorScorecard, months } from '../service/analytics.js';
 import { deviceRegister, registerStats } from './registers.js';
 import { readRegister } from './registerStore.js';
+import { worked } from '../assurance/deficiencyStore.js';
 
 export type Tone = 'ok' | 'warn' | 'bad' | 'info' | 'muted';
 export interface Link { label: string; href: string }
@@ -307,6 +308,19 @@ function startCore(i: Inputs): Start {
 export function startFor(i: Inputs): Start {
   const s = startCore(i); const open = (href: string) => i.opens(href.split('?')[0]!);
   const recs = i.recs || allRecords();
+  // "Waiting for you" (founder, 14 Nov 2026: mission control centred on the work needing to be done): the steps across products that wait
+  // on this role now — a deficiency to fix, retest or verify; an exception to approve; a request to triage or verify; a job to take.
+  { const rows: Row[] = []; const w = i.w; const step = (d: ReturnType<typeof worked>[number]) => `#/commissioning/deficiencies`;
+    const defs = worked();
+    if (i.role === 'installer') for (const d of defs.filter((x) => x.state === 'IN_PROGRESS' && x.owner === 'installer')) rows.push({ id: `df-${d.id}`, title: `Fix: ${d.title}`, sub: `deficiency in progress · target ${d.targetDate}`, href: step(d), tone: d.targetDate && d.targetDate < new Date().toISOString().slice(0, 10) ? 'bad' : 'warn', tag: 'fix' });
+    if (i.role === 'cxeng') for (const d of defs.filter((x) => x.state === 'PENDING_RETEST' && !x.retest)) rows.push({ id: `df-${d.id}`, title: `Retest: ${d.title}`, sub: `fixed (${d.rootCause?.toLowerCase().replace(/_/g, ' ')}); waiting for its retest`, href: step(d), tone: 'warn', tag: 'retest' });
+    if (i.role === 'syseng') for (const d of defs.filter((x) => x.state === 'PENDING_RETEST' && x.retest?.result === 'PASS')) rows.push({ id: `df-${d.id}`, title: `Verify and close: ${d.title}`, sub: `retest passed on ${d.retest!.evidence}; someone other than the fixer and the recorder closes it`, href: step(d), tone: 'warn', tag: 'verify' });
+    if (i.role === 'syseng') { try { const st = JSON.parse(localStorage.getItem('empathia.demo.sti.v1') || '{}') as { exceptions?: Array<{ id: string; positions: string[]; approvedBy: string | null; requestedBy: string }> }; for (const x of (st.exceptions || []).filter((e) => !e.approvedBy)) rows.push({ id: `ix-${x.id}`, title: `Approve or refuse: intelligibility exception ${x.id}`, sub: `positions ${x.positions.join(', ')} · requested by ${PEOPLE[x.requestedBy] || x.requestedBy}`, href: '#/commissioning/instruments/sti', tone: 'warn', tag: 'decide' }); } catch { /* nothing kept in this browser */ } }
+    if (w && i.role === 'svcmgr') for (const x of w.incidents.filter((y) => y.state === 'OPEN')) rows.push({ id: `inc-${x.id}`, title: `Triage: ${x.title}`, sub: `${x.roomName} · requested ${x.openedAt.slice(0, 10)}`, href: `#/v25/service?id=${x.id}`, tone: 'warn', tag: 'triage' });
+    if (w && i.role === 'cxeng') for (const x of w.incidents.filter((y) => y.state === 'VERIFYING')) rows.push({ id: `inc-${x.id}`, title: `Verify the fix: ${x.title}`, sub: `${x.roomName} · the technician has finished`, href: `#/v25/service?id=${x.id}`, tone: 'warn', tag: 'verify' });
+    if (w && i.role === 'service') { const me = techForPersona('service'); for (const x of w.workOrders.filter((y) => y.techId === me && ['ASSIGNED', 'ACCEPTED', 'IN_PROGRESS'].includes(y.state))) rows.push({ id: `wo-${x.id}`, title: `${x.state === 'ASSIGNED' ? 'Accept' : 'Work'}: ${x.title}`, sub: `${x.id} · ${x.state.toLowerCase().replace(/_/g, ' ')}`, href: `#/v25/service?id=${x.incidentId}`, tone: x.state === 'ASSIGNED' ? 'warn' : 'info', tag: x.state === 'ASSIGNED' ? 'accept' : 'work' }); }
+    if (['installer', 'cxeng', 'syseng', 'svcmgr', 'service'].includes(i.role)) s.zones = [{ id: 'waiting', title: 'Waiting for you', hint: `${rows.length} step${rows.length === 1 ? '' : 's'} across commissioning and service that wait on your role now`, rows: rows.slice(0, 8), empty: 'Nothing waits on your role right now.', more: rows.length > 8 ? { label: `All ${rows.length}`, href: i.role === 'svcmgr' || i.role === 'service' ? '#/v25/service' : '#/commissioning/deficiencies' } : undefined }, ...s.zones];
+  }
   if ((i.role === 'svcmgr' || i.role === 'exec') && open('#/v25/service/analytics')) {
     const card = vendorScorecard(syntheticHistory(), months(6)); const short = card.filter((v) => v.flags.length);
     s.zones = [...s.zones, { id: 'vendors', title: 'Vendors against their agreements', hint: `${short.length} need attention · last six months, synthetic service history`,
