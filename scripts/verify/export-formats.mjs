@@ -72,10 +72,11 @@ const big = [...all].sort((a, b) => b.positions.length - a.positions.length)[0];
 const made = { role: 'Commissioning Engineer (synthetic)', at: '2026-11-13T21:00:00.000Z', build: 'verify' };
 // the reference room carries its documentation tracker, a field capture and its photograph (a generated test image, labelled as a
 // fixture: no real photograph is invented), and links that start from a placeholder address
-let fixturePhoto = null;
+let fixturePhoto = null; const installFixture = {};   // distinct images: a writer may store identical bytes once
 try { const sharp = createRequire(import.meta.url)(process.env.SHARP_PATH || '/opt/npm-tools/node_modules/sharp');
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><rect width="800" height="600" fill="#D0D5DD"/><rect x="120" y="140" width="560" height="320" fill="#475467"/><text x="400" y="320" font-family="Helvetica" font-size="34" fill="#fff" text-anchor="middle">TEST FIXTURE · not a photograph</text></svg>`;
-  fixturePhoto = new Uint8Array(await sharp(Buffer.from(svg)).jpeg({ quality: 80 }).toBuffer()); } catch { /* without sharp the photograph path is not exercised */ }
+  fixturePhoto = new Uint8Array(await sharp(Buffer.from(svg)).jpeg({ quality: 80 }).toBuffer());
+  for (const w of ['before', 'after']) installFixture[w] = new Uint8Array(await sharp(Buffer.from(svg.replace('#475467', w === 'before' ? '#7A5AF8' : '#12B76A').replace('TEST FIXTURE', `TEST FIXTURE · ${w} install`))).jpeg({ quality: 80 }).toBuffer()); } catch { /* without sharp the photograph path is not exercised */ }
 // the project from intake to service: the seeded decision desk and workspace, and one request raised through the portal's own send()
 const wsL = M.seed(); const desk = M.deskSeed();
 const req = M.INTAKE.send(wsL, 'employee', { ...M.intakeBlank('add-devices'), need: 'We cannot see the far-end people when they share; please add a second display (test fixture)', roomId: 'R-ATL-4-218', adds: [{ cat: 'display', qty: 1 }] }, desk);
@@ -84,7 +85,11 @@ const lifecycleFor = (id) => ({ requests: [req].filter((q) => q.roomId === id).m
 const extrasFor = (id) => id !== M.TRACKED_ROOM ? { baseUrl: 'https://demo.example.invalid/', lifecycle: lifecycleFor(id) } : { lifecycle: lifecycleFor(id),
   docs: M.readDocs([]), report: M.TRACKED_REPORT, baseUrl: 'https://demo.example.invalid/',
   captures: [{ key: 'CAP-FIXTURE01', target: { kind: 'test', id: 'T-SIM-001' }, note: 'Test fixture capture (synthetic)', measurements: [{ quantity: 'Sound level', value: 71.5, unit: 'dB(A)', instrument: 'SYN-METER-01 (synthetic)', method: 'Seat 3, pink noise' }], photo: fixturePhoto ? { name: 'fixture.jpg', bytes: fixturePhoto.length, sha256: 'a'.repeat(64), annotated: false } : null, by: { label: 'Commissioning Engineer (synthetic)' }, at: '2026-11-12T15:00:00.000Z' }],
-  photos: fixturePhoto ? [{ key: 'CAP-FIXTURE01', name: 'fixture.jpg', mime: 'image/jpeg', bytes: fixturePhoto, ...M.imageSize(fixturePhoto), note: 'Test fixture capture (synthetic)', target: 'check T-SIM-001', at: '2026-11-12T15:00:00.000Z', by: 'Commissioning Engineer (synthetic)' }] : [] };
+  photos: fixturePhoto ? [{ key: 'CAP-FIXTURE01', name: 'fixture.jpg', mime: 'image/jpeg', bytes: fixturePhoto, ...M.imageSize(fixturePhoto), note: 'Test fixture capture (synthetic)', target: 'check T-SIM-001', at: '2026-11-12T15:00:00.000Z', by: 'Commissioning Engineer (synthetic)' }] : [],
+  // the registers the installation team filled: two devices registered (one networked), and the before/after install photographs
+  register: (() => { const r = M.roomRecord(id); const fw = r.positions.filter((p) => !p.furniture); const at = '2026-11-14T06:00:00.000Z';
+    const entries = Object.fromEntries(fw.slice(0, 2).map((p, i) => [p.code, { serial: `SYN-SN-REG-${i + 1}`, hostname: `atl4218-reg${i + 1}`, ip: `10.20.40.${i + 1}`, firmware: '1.0.0-syn', location: 'fixture', by: 'installer', at }]));
+    return { entries, photos: fixturePhoto ? ['before', 'after'].map((which) => ({ which, mime: 'image/jpeg', bytes: installFixture[which], ...M.imageSize(installFixture[which]), note: `Test fixture (${which}, synthetic)`, at, by: 'installer' })) : [] }; })() };
 const reports = [...pick.values()].map(({ r, why }) => ({ why, rep: M.cxPackage(r, made, extrasFor(r.outline.id)) }));
 // the assurance report: the seeded workspace's service requests are the people's reports Assurance reads
 const ws = M.seed(); const asRooms = new Map([['R-ATL-4-218', 'reference room: a replaced unit reopened tests'], ['R-MER-1-140', 'drift: furniture moved since handover'], ['R-BCN-3-225', 'failed: never accepted']]);

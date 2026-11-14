@@ -27,6 +27,7 @@ import { plural, pct, weekCounts, Foot } from './viz.js';
 
 import { rowsOf, PHASES, RES, res, ymd, phaseStats, blockers } from '../campus/cxRecord.js';
 import { ExportMenu } from '../export/ExportMenu.js';
+import { Registers } from '../campus/RegisterCard.js';
 import { LAYERS, assuranceDims, changeCards } from '../campus/asRecord.js';
 import { cxPackage } from '../export/cx.js';
 import { asPackage } from '../export/as.js';
@@ -88,6 +89,7 @@ export function CxRoomPage({ perspective, params, hash }: { perspective: string;
       {bl.blocked && r.lifecycle === 'COMMISSIONING' ? <Notice tone="bad"><b>Why acceptance is blocked.</b> {[bl.critical.length ? `A critical deficiency is open (${bl.critical.length})` : '', bl.missing.length ? `Required evidence is missing (${bl.missing.length})` : '', bl.must.length ? `A must-have requirement is not met (${bl.must.length})` : ''].filter(Boolean).join(' · ')} — <a href={`${base}/trace`}>trace the requirement</a> · <a href={`${base}/signoff`}>what sign-off needs</a></Notice> : null}
       {refusal ? <div role="alert"><Notice tone="bad"><b>Refused.</b> {refusal.why.join(' ')}</Notice></div> : null}
       {view === 'checks' ? <>
+        <Registers r={r} persona={persona} canFill={holds(persona, 'work.evidence')} onRecord={(type, detail) => apply((x) => { x.events.unshift({ at: new Date().toISOString(), by: persona, type, aggregate: r.outline.id, detail, outcome: 'ALLOWED' }); return null; })} />
         <Card icon="check" title={`Five phases, ${rows.filter((x) => x.applicable).length} checks`} sub="As recorded · each phase opens to its checks" testId="cx-checks">
           {ph.map((p) => <details key={p.n} className="ln-dom" open={p.verdict === 'fail' || p.verdict === 'partial'}><summary><b>{p.n} · {p.name}</b> <span className="ui-meta">{p.q}</span> <Tag tone={p.verdict === 'pass' ? 'ok' : p.verdict === 'fail' ? 'bad' : p.verdict === 'none' ? 'muted' : 'warn'}>{p.verdict === 'none' ? 'No applicable check' : `${p.verdict === 'pass' ? 'Pass' : p.verdict === 'fail' ? 'Fail' : p.verdict === 'notrun' ? 'Not run' : 'Partial'} · ${p.pass} of ${p.rows.length}`}</Tag></summary>
             <List label={`${p.name} checks`}>{p.rows.map((x) => <ListRow key={x.id} title={x.label} sub={`${x.pack || x.domain} · tier ${x.tier} · verified by ${x.verifier?.replace(/_/g, ' ') || 'an independent person'}${x.instrument ? ' · instrument' : ''}`} trailing={<Tag tone={res(x.result).tone}>{res(x.result).label}</Tag>} />)}</List></details>)}

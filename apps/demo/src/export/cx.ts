@@ -18,6 +18,7 @@ import { roomHref } from '../campus/canon.js';
 import { liteRoomHref } from '../lite/model.js';
 import { planSvg } from './plan.js';
 import { lifecycleSections, type LifecycleInput } from './lifecycle.js';
+import { deviceRegister, retiredRegister, registerStats, roomRegister, type DeviceEntry } from '../campus/registers.js';
 
 const who = (k?: string | null) => (k ? PEOPLE[k] || k.replace(/_/g, ' ') : '—');
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
@@ -29,6 +30,8 @@ export interface CxExtras {
   docs?: DocsWorking | null; report?: string | null;
   captures?: Array<{ key: string; target: { kind: 'test' | 'doc'; id: string }; note: string; measurements: Array<{ quantity: string; value: number; unit: string; instrument: string; method: string }>; photo: { name: string; bytes: number; sha256: string; annotated: boolean } | null; by: { label: string }; at: string }>;
   photos?: Array<{ key: string; name: string; mime: 'image/png' | 'image/jpeg'; bytes: Uint8Array; width: number; height: number; note: string; target: string; at: string; by: string }>;
+  /** the room and device registers the installation team filled at the start of commissioning, and phase 1's install photographs */
+  register?: { entries: Record<string, DeviceEntry>; photos: Array<{ which: 'before' | 'after'; mime: 'image/png' | 'image/jpeg'; bytes: Uint8Array; width: number; height: number; note: string; at: string; by: string }> };
   baseUrl?: string;
   /** the request, the decision desk and the workspace: the project from intake to service (export/lifecycle.ts) */
   lifecycle?: LifecycleInput;
@@ -76,6 +79,16 @@ export function cxPackage(r: RoomRecord, by: MadeBy, x: CxExtras = {}): Report {
     { id: 'assets', heading: 'Asset inventory', text: ['Devices are recorded as classes of device. No make, model or serial number is invented; identity says how far each unit is known.'],
       table: { title: 'Asset inventory', cols: [{ key: 'code', label: 'Position' }, { key: 'label', label: 'Device' }, { key: 'cat', label: 'Category' }, { key: 'layer', label: 'Layer' }, { key: 'mount', label: 'Mount' }, { key: 'asset', label: 'Asset' }, { key: 'identity', label: 'Identity', kind: 'status' }, { key: 'prov', label: 'Provenance' }],
         rows: fw.map((p) => ({ code: p.code, label: p.label, cat: p.catLabel, layer: p.layer, mount: p.mount, asset: p.asset || '—', identity: p.identity.charAt(0) + p.identity.slice(1).toLowerCase(), prov: p.provenance })) } },
+    ...((): Section[] => { const reg = deviceRegister(r, x.register?.entries || {}); const st = registerStats(reg); const ret = retiredRegister(r);
+      return [
+        { id: 'room-register', heading: 'Room register', text: ['Where commissioning starts: every phase is keyed by the room ID. Read from the record.'], facts: roomRegister(r) },
+        { id: 'device-register', heading: 'Device register', text: [`${st.done} of ${st.total} devices registered by the installation team (${st.pct}%); ${st.netDone} of ${st.networked} networked devices with a hostname and an address. The device ID is the position and the asset ID the unit installed there, both from the record; serials, hostnames, addresses and firmware are what the installation team read on site (synthetic values in this demonstration).`],
+          table: { title: 'Device register', cols: [{ key: 'device', label: 'Device' }, { key: 'asset', label: 'Asset ID' }, { key: 'what', label: 'Device class' }, { key: 'serial', label: 'Serial' }, { key: 'host', label: 'Hostname' }, { key: 'ip', label: 'IP address' }, { key: 'fw', label: 'Firmware' }, { key: 'loc', label: 'Location' }, { key: 'state', label: 'State', kind: 'status' }, { key: 'by', label: 'Recorded by' }],
+            rows: reg.map((d) => ({ device: d.device, asset: d.asset || '—', what: d.category, serial: d.entry?.serial || '', host: d.networked ? d.entry?.hostname || '' : 'n/a', ip: d.networked ? d.entry?.ip || '' : 'n/a', fw: d.entry?.firmware || '', loc: d.entry?.location || d.mount, state: d.complete ? 'Registered' : `Needs ${d.missing.join(', ')}`, by: d.entry ? `${who(d.entry.by)} ${d.entry.at.slice(0, 10)}` : '' })) } },
+        { id: 'retired-register', heading: 'Retired register', text: ['A unit taken out of a position leaves the inventory; its asset ID is never issued again and its history stays on record.'],
+          table: { title: 'Retired units', cols: [{ key: 'asset', label: 'Asset ID' }, { key: 'device', label: 'Device' }, { key: 'in', label: 'Installed', kind: 'date' }, { key: 'out', label: 'Retired', kind: 'date' }, { key: 'reason', label: 'Reason' }, { key: 'by', label: 'Replaced by' }],
+            rows: ret.map((t) => ({ asset: t.asset, device: `${t.label} (${t.device})`, in: t.installedAt.slice(0, 10), out: t.retiredAt.slice(0, 10), reason: t.reason.toLowerCase(), by: t.replacedBy || '' })) } },
+      ]; })(),
     { id: 'connections', heading: 'Connections', table: { title: 'Connections', note: 'Proposed by the engine’s rules from the design: modelled, not traced.', cols: [{ key: 'id', label: 'ID' }, { key: 'from', label: 'From' }, { key: 'to', label: 'To' }, { key: 'kind', label: 'Kind' }, { key: 'why', label: 'Why' }], rows: r.connections.filter((c) => !c.removed).map((c) => ({ id: c.id, from: c.from, to: c.to, kind: String(c.kind), why: c.why || '' })) } },
     { id: 'installations', heading: 'Installation record', table: { title: 'Installations', cols: [{ key: 'pos', label: 'Position' }, { key: 'asset', label: 'Asset' }, { key: 'in', label: 'Installed', kind: 'date' }, { key: 'out', label: 'Removed', kind: 'date' }, { key: 'reason', label: 'Reason' }, { key: 'basis', label: 'Basis' }, { key: 'by', label: 'By' }],
       rows: r.installations.map((i) => ({ pos: i.position, asset: i.asset, in: ymd(i.installedAt), out: i.removedAt ? ymd(i.removedAt) : '', reason: i.removalReason ? `${i.reason}; removed: ${i.removalReason}` : i.reason, basis: i.basis, by: who(i.by) })) } },
@@ -106,6 +119,7 @@ export function cxPackage(r: RoomRecord, by: MadeBy, x: CxExtras = {}): Report {
   const plan = planSvg(r);
   const media: Media[] = [
     { id: 'plan', title: `Plan: ${shortName(o)}`, caption: `The room drawn from its record: ${fw.length} device positions by layer, furniture, ${o.dims[0]} × ${o.dims[1]} m (${o.kind === 'reference' ? 'from the design record' : 'modelled'}). A drawing of the record, not a survey or a photograph.`, source: 'room record (campus/design.ts)', kind: 'drawing', mime: 'image/png', width: plan.width, height: plan.height, svg: plan.svg },
+    ...(x.register?.photos || []).map((ph) => ({ id: `install-${ph.which}`, title: `Install documentation · ${ph.which === 'before' ? 'before' : 'after'} the installation`, caption: `${ph.note || (ph.which === 'before' ? 'The room before the installation.' : 'The room after the installation.')} Taken by ${who(ph.by)}, ${ph.at.slice(0, 16).replace('T', ' ')} UTC (phase 1, installation team); kept in this browser.`, source: `phase 1 install documentation (${ph.which})`, kind: 'photo' as const, mime: ph.mime, width: ph.width, height: ph.height, bytes: ph.bytes })),
     ...(x.photos || []).map((ph) => ({ id: ph.key, title: `Field photograph · ${ph.target}`, caption: `${ph.note || 'Captured in the room.'} Taken by ${ph.by}, ${ph.at.slice(0, 16).replace('T', ' ')} UTC; kept in this browser and synchronised as ${ph.key}.`, source: `field capture ${ph.key} (${ph.name})`, kind: 'photo' as const, mime: ph.mime, width: ph.width, height: ph.height, bytes: ph.bytes })),
   ];
   const links: Link[] = [

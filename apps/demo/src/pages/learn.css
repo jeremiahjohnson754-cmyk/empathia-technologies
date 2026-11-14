@@ -109,3 +109,21 @@
 .dr-rooms .dr-why { min-width: 0; overflow-wrap: anywhere; color: var(--tx2); }
 @media (max-width: 640px) { .dr-rooms li { grid-template-columns: minmax(0, 1fr) auto; } .dr-rooms li .dr-why { grid-column: 1 / -1; } }
 .xp-grid--pics { margin-top: var(--sp-2); }
+
+/* room and device registers (campus/Registers.tsx) */
+.reg-head { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline; margin-bottom: 8px; }
+.reg-meter { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; margin-bottom: 12px; }
+.reg-meter > span { display: block; height: 100%; background: var(--ok); transition: width .3s ease; }
+@media (prefers-reduced-motion: reduce) { .reg-meter > span { transition: none; } }
+.reg-table input { width: 100%; min-width: 7.5em; font: inherit; padding: 4px 6px; }
+.reg-table code { font-size: .92em; }
+.reg-h { font-size: 1rem; margin: 16px 0 8px; }
+.reg-photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 300px)); gap: 12px; }
+.reg-photo { margin: 0; border: 1px solid var(--line); border-radius: 8px; padding: 8px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.reg-photo img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 6px; max-width: 100%; }
+.reg-photo__empty { aspect-ratio: 4 / 3; display: grid; place-items: center; border: 1px dashed var(--line2); border-radius: 6px; color: var(--muted, currentColor); text-align: center; padding: 8px; }
+.reg-photo__add { display: flex; gap: 6px; flex-wrap: wrap; }
+.reg-photo__add input[type=text], .reg-photo__add input:not([type]) { flex: 1 1 8em; min-width: 0; font: inherit; padding: 4px 6px; }
+.reg-wrap { position: relative; overflow-x: auto; max-width: 100%; min-width: 0; -webkit-overflow-scrolling: touch; }
+[data-testid=cx-registers] { min-width: 0; max-width: 100%; }
+.reg-photo__add label { position: relative; }   /* the visually-hidden file input stays inside its label */
