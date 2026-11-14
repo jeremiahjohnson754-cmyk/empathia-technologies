@@ -178,6 +178,12 @@ export const OPS_PAGES: readonly PageDef[] = [
     search: { keywords: 'scenario journey teams boardroom lecture broadcast ballroom divisible end to end request acceptance assurance', aliases: ['commissioning scenarios', 'reference journeys'] },
   },
   {
+    id: 'install.redline', title: 'Field record and redlines', purpose: 'Phase 1 installation documentation over the Lite plan: how each device is mounted, what it is hooked up to, devices moved in the field and why, and notes pinned to the plan', product: 'lite',
+    path: '/install/redline', authority: { roles: ['installer', 'service', 'syseng', 'designer', 'cxeng', 'ops', 'svcmgr', 'architect', 'qa'], why: 'the installation record: the people who install, approve the design, commission and serve the room (founder, 14 Nov 2026)' },
+    load: adapt(() => import('./pages/FieldRedline.js'), (m, p) => h(m.FieldRedlinePage, { perspective: p.role, hash: p.hash })),
+    search: { keywords: 'redline markup bluebeam field record mounting mounted bracket hooked up connection moved sprinkler as built installation phase 1', aliases: ['redlines', 'field record', 'as built', 'mounting record'] },
+  },
+  {
     id: 'pro.refresh', title: 'Refresh planning', purpose: 'Every unit in service by asset ID with the year it falls due: the annual refresh plan room by room and the multi-year strategy, under service lives the planner sets', product: 'commissioning',
     path: '/pro/refresh', authority: { roles: ['ops', 'syseng', 'cxeng', 'architect'], why: 'asset lifecycle planning: the operations lead and the internal engineers (founder, 14 Nov 2026)' },
     load: adapt(() => import('./pages/RefreshPlan.js'), (m, p) => h(m.RefreshPlanPage, { perspective: p.role, hash: p.hash })),

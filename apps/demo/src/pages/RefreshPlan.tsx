@@ -83,7 +83,7 @@ export function RefreshPlanPage({ perspective, hash }: { perspective: string; ha
         <StatTile label="Units in service" value={units.length} hint="current installations, by asset ID" />
         <StatTile label={`Due by ${R.NOW_YEAR + horizon}`} value={inHorizon} />
         <StatTile label="Rooms touched" value={roomsTouched} />
-        <StatTile label="First wave" value={firstWave ?? '—'} hint={firstWave ? undefined : 'nothing falls due in the window'} />
+        <StatTile label="First wave" value={firstWave ? String(firstWave) : "—"} hint={firstWave ? undefined : 'nothing falls due in the window'} />
         <StatTile label="Planning figure" value={horizonCost === null ? '—' : money(horizonCost, a.currency)} hint={horizonCost === null ? 'declare a figure per class below' : 'your declared figures'} />
       </div>
       <TrendChart testId="rp-chart" kind="bar" title={`Units falling due per year, ${R.NOW_YEAR + 1}–${R.NOW_YEAR + horizon} (the first year carries anything already past due)`} labels={rows.map((r) => String(r.year))} unit="" series={[{ name: 'Units', tone: 'info', values: rows.map((r) => r.units) }, { name: 'Rooms', tone: 'muted', values: rows.map((r) => r.rooms) }]} onPick={(i) => setYear(rows[i]!.year)} />

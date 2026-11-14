@@ -228,3 +228,38 @@
 .ln-crumbs a, .svc__links a, .kit-card__body > a, .san__path a { display: inline-flex; align-items: center; min-height: 24px; }
 .wk-v25nav .kit-chip--sm { min-height: 24px; }   /* the product tabs; the room pages' lens chips keep their size */
 main details > summary { min-height: 24px; }
+/* the field record and redlines (Phase 1, 14 Nov 2026): the design in neutral ink, the field layer in red */
+.fr__grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 900px) { .fr__grid { grid-template-columns: minmax(0, 1fr); } }
+.fr__plan { margin: 10px 0 6px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg2); overflow: hidden; }
+.fr__plan svg { display: block; width: 100%; height: auto; max-height: 72vh; touch-action: manipulation; }
+.fr__room { fill: none; stroke: var(--tx2); stroke-width: 4; }
+.fr__grid1 { stroke: var(--line); stroke-width: 1; }
+.fr__dim { fill: var(--tx3); font-size: 22px; }
+.fr__furn { fill: none; stroke: var(--tx3); stroke-width: 2; stroke-dasharray: 6 5; }
+.fr__dev text { fill: var(--tx2); font-size: 20px; pointer-events: none; }
+.fr__hit { fill: transparent; cursor: pointer; }
+.fr__dot { fill: var(--bg2); stroke: var(--tx2); stroke-width: 3; }
+.fr__dev.is-mounted .fr__dot { fill: var(--accent); stroke: var(--accent); }
+.fr__dev.is-moved .fr__dot { stroke: var(--bad); stroke-width: 4; }
+.fr__dev.is-on .fr__dot { stroke: var(--accent); stroke-width: 6; }
+.fr__dev:focus-visible { outline: none; } .fr__dev:focus-visible .fr__dot { stroke-width: 7; }
+.fr__move line { stroke: var(--bad); stroke-width: 4; }
+.fr__move--proposed line { stroke-dasharray: 10 7; stroke: var(--warn); }
+.fr__move text { fill: var(--bad); font-size: 18px; font-weight: 600; }
+.fr__move--proposed text { fill: var(--warn); }
+.fr__ghost { fill: none; stroke: var(--bad); stroke-width: 2; stroke-dasharray: 4 4; opacity: .8; }
+.fr__arrowhead { fill: var(--bad); }
+.fr__note rect { fill: color-mix(in srgb, var(--bad) 14%, transparent); stroke: var(--bad); stroke-width: 3; }
+.fr__note--resolved rect { stroke: var(--tx3); fill: none; stroke-dasharray: 5 4; }
+.fr__note text { fill: var(--bad); font-size: 20px; font-weight: 700; }
+.fr__note--resolved text { fill: var(--tx3); }
+.fr__pin { fill: var(--bad); }
+.fr__legend { font-size: .85rem; }
+.fr__k { display: inline-block; width: 12px; height: 12px; border-radius: 50%; vertical-align: -1px; border: 2px solid var(--tx2); }
+.fr__k--mounted { background: var(--accent); border-color: var(--accent); } .fr__k--move { border-color: var(--bad); } .fr__k--note { border-radius: 5px; border-color: var(--bad); }
+.fr__form { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 8px 12px; align-items: end; margin: 8px 0 12px; }
+.fr__form input, .fr__form select, .fr__decide input { min-height: 32px; max-width: 100%; }
+.fr__panel .build__h2 { margin-top: 14px; }
+.fr__photo { display: block; max-width: min(100%, 280px); border-radius: 8px; margin: 6px 0; }
+.fr__decide { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; }
