@@ -35,9 +35,12 @@ for (const p of PAGES) {
     const loc = page.locator(`[data-crawl="${i}"]`);
     // 13 Nov 2026: the option already chosen in a single-choice group (a segmented control, radio group or tab list) is a legitimate no-op
     // when pressed again; it is recorded as "already chosen", never as an effect. A toggle on its own (not in a group) must still change.
+    // 14 Nov 2026: whether the control still exists is checked first. A press can remove later controls (choosing "Make a room work
+    // better" on /intake/new removes the use chips); evaluating a removed control waited out Playwright's 30 s timeout once per control,
+    // which ran the crawl past its time limit. Nothing about what counts as a dead end changed.
+    if (!(await loc.count()) || !(await loc.isVisible().catch(() => false))) continue;
     const chosen = await loc.evaluate((el) => { const on = ['aria-pressed', 'aria-checked', 'aria-selected'].some((a) => el.getAttribute(a) === 'true') || el.hasAttribute('aria-current') || (el.type === 'radio' && el.checked);
       const g = el.closest('[role=group],[role=radiogroup],[role=tablist],[role=toolbar],fieldset,nav[aria-label]'); return !!on && !!g && g.querySelectorAll('button,[role=radio],[role=tab],input[type=radio]').length >= 2; }).catch(() => false);
-    if (!(await loc.count()) || !(await loc.isVisible().catch(() => false))) continue;
     const info = await loc.evaluate((el) => ({ tag: el.tagName.toLowerCase(), type: el.getAttribute('type') || el.getAttribute('role') || '', name: (el.getAttribute('aria-label') || el.textContent || el.getAttribute('title') || el.getAttribute('name') || '').trim().replace(/\s+/g, ' ').slice(0, 80) }));
     // destructive-looking controls are still pressed: the page was opened fresh and is reopened afterwards
     await page.evaluate(() => { window.__mut = 0; window.__mo?.disconnect(); window.__mo = new MutationObserver((r) => { window.__mut += r.length; }); window.__mo.observe(document.documentElement, { subtree: true, childList: true, attributes: true, characterData: true }); });
