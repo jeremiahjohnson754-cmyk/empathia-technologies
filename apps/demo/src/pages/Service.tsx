@@ -12,6 +12,9 @@ import { buildEstate } from '../search/estate.js';
 import * as S from '../workspace/store.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
 import { personaOf, personaLabel, holds } from '../build/store.js';
+import { ExportMenu } from '../export/ExportMenu.js';
+import { serviceQueuePackage, serviceRecordPackage } from '../export/service.js';
+const made = (persona: string) => ({ role: personaLabel(persona), at: new Date().toISOString(), build: process.env.DEMO_BUILD_ID || 'dev' });
 
 const TONE: Record<string, 'ok' | 'warn' | 'bad' | 'muted' | 'info'> = { OPEN: 'warn', TRIAGED: 'info', ASSIGNED: 'info', ACCEPTED: 'info', IN_PROGRESS: 'info', VERIFYING: 'warn', RESOLVED: 'ok', CLOSED: 'muted', REOPENED: 'bad', CANCELLED: 'muted', 'Mission critical': 'bad', High: 'warn', Standard: 'muted' };
 const when = (s: string | null) => (s ? s.slice(0, 16).replace('T', ' ') : '—');
@@ -46,6 +49,8 @@ export function ServicePage({ perspective, hash }: { perspective: string; hash: 
         </ul>
         <div className="svc__detail">{inc ? <Incident inc={inc} w={w} apply={apply} persona={persona} me={me} est={est} /> : <Notice tone="info">Pick an incident.</Notice>}</div>
       </div>
+      {inc ? <ExportMenu testId="sh-record-export" title="Service record" by={personaLabel(persona)} sub={`${inc.id}: its history, the work order, the preflight, the field evidence and where it went next`} make={() => serviceRecordPackage(w, inc.id, made(persona))!} /> : null}
+      <ExportMenu testId="sh-export" title="Service queue report" by={personaLabel(persona)} sub="Every request and work order, drilled up by building and severity, as six files" make={() => serviceQueuePackage(w, made(persona))} />
       <RaiseIncident persona={persona} apply={apply} />
     </section>
   );

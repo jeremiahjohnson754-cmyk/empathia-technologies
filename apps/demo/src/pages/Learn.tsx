@@ -12,6 +12,8 @@ import { plural } from './viz.js';
 import * as S from '../workspace/store.js';
 import { useWorkspace, isRefusal } from '../workspace/useWorkspace.js';
 import { personaOf, personaLabel, holds } from '../build/store.js';
+import { ExportMenu } from '../export/ExportMenu.js';
+import { learnPackage } from '../export/learn.js';
 
 interface Lesson { domain: string; title: string; sum: string; cards: string[]; quiz?: string }
 interface CanonCase { title: string; episode: string; hook: string; learn: string[]; id: string; canon: boolean }
@@ -39,6 +41,8 @@ export function LearnPage({ perspective, hash }: { perspective: string; hash: st
       {refusal && <div role="alert"><Notice tone="bad"><b>Refused.</b><ul className="build__why">{refusal.why.map((x) => <li key={x}>{x}</li>)}</ul></Notice></div>}
       <Tabs label="Learn" active={tab} onChange={setTab} tabs={[{ key: 'cases', label: 'Cases', count: w.learnCases.length }, { key: 'lessons', label: 'Lessons' }, { key: 'drills', label: 'Drills' }, { key: 'canon', label: 'Casebook' }, { key: 'reference', label: 'Formulas & glossary' }]} />
       {tab === 'cases' && <Cases w={w} apply={apply} persona={persona} want={wantCase || null} />}
+      {tab === 'cases' && <ExportMenu testId="learn-export" title="Learn record" by={personaLabel(persona)} sub={`The governed cases, and ${personaLabel(persona)}’s readiness, drills and labs (no one else’s), as six files`}
+        make={() => { const labs = Object.values(loadLabs().results); return learnPackage(w, { persona, personaLabel, labs, drillTitle: (id) => lib?.drills[id]?.title, readiness: readiness(w, persona, labs.filter((r) => r.persona === persona && r.passed).length) }, { role: personaLabel(persona), at: new Date().toISOString(), build: process.env.DEMO_BUILD_ID || 'dev' }); }} />}
       {tab !== 'cases' && (err ? <Notice tone="bad">The SIGNAL library did not load: {err}</Notice> : !lib ? <p className="ui-meta">Loading the SIGNAL library…</p> : tab === 'lessons' ? <Lessons lib={lib} /> : tab === 'drills' ? <Drills lib={lib} w={w} apply={apply} persona={persona} /> : tab === 'canon' ? <Canon lib={lib} /> : <Reference lib={lib} />)}
     </section>
   );
@@ -117,8 +121,9 @@ function Cases({ w, apply, persona, want }: { w: S.Workspace; apply: ReturnType<
         <h2 className="build__h">{c.title} <Tag tone={TONE[c.state]}>{c.state}</Tag></h2>
         <p>{c.lesson}</p>
         <Facts items={[['Source incident', `${c.incidentId}${c.apexId ? ` · APEX ${c.apexId}` : ''}`], ['Permission', c.permission ? `obtained · recorded by ${personaLabel(c.permission.by)} ${when(c.permission.at)}` : 'not obtained'], ['De-identified', c.deidentified ? 'yes' : 'no'], ['Proposed by', `${personaLabel(c.proposedBy)} · ${when(c.proposedAt)}`], ['SME review', c.smeReview ? `${c.smeReview.decision} by ${personaLabel(c.smeReview.by)} ${when(c.smeReview.at)}${c.smeReview.note ? ` — ${c.smeReview.note}` : ''}` : 'pending'], ['Steward approval', c.approvedBy ? personaLabel(c.approvedBy) : 'pending']]} />
-        {c.state === 'PROPOSED' && (canSme ? <div className="build__row"><input aria-label="Review note" value={note} onChange={(e) => setNote(e.target.value)} placeholder="SME note" /><Button small kind="primary" onClick={() => apply((x) => S.smeReview(x, persona, c.id, 'approve', note))}>SME review: approve</Button><Button small onClick={() => apply((x) => S.smeReview(x, persona, c.id, 'reject', note))}>Reject</Button></div> : <p className="ui-meta">SME review pending — a subject-matter reviewer (commissioning, DSP, camera, control or assurance) records it.</p>)}
-        {c.state === 'SME_REVIEWED' && (canApprove ? <Button small kind="primary" onClick={() => apply((x) => S.approveCase(x, persona, c.id))}>Approve for Learn (training.case_approved)</Button> : <p className="ui-meta">Awaiting the data steward's approval (case.approve).</p>)}
+        {c.state === 'PROPOSED' && c.proposedBy === persona && canSme && <p className="ui-meta" data-testid="learn-own">You proposed this case, so another subject-matter reviewer reviews it (separation of duties).</p>}
+        {c.state === 'PROPOSED' && c.proposedBy !== persona && (canSme ? <div className="build__row"><input aria-label="Review note" value={note} onChange={(e) => setNote(e.target.value)} placeholder="SME note" /><Button small kind="primary" onClick={() => apply((x) => S.smeReview(x, persona, c.id, 'approve', note))}>SME review: approve</Button><Button small onClick={() => apply((x) => S.smeReview(x, persona, c.id, 'reject', note))}>Reject</Button></div> : <p className="ui-meta">SME review pending — a subject-matter reviewer (commissioning, DSP, camera, control or assurance) records it.</p>)}
+        {c.state === 'SME_REVIEWED' && (canApprove && c.proposedBy !== persona && c.smeReview?.by !== persona ? <Button small kind="primary" onClick={() => apply((x) => S.approveCase(x, persona, c.id))}>Approve for Learn (training.case_approved)</Button> : <p className="ui-meta">Awaiting the data steward's approval (case.approve).</p>)}
         {c.state === 'APPROVED' && <Notice tone="ok">Published to Learn. It links the lesson to the incident's evidence chain; it grants nobody any authority.</Notice>}
         <div className="svc__links"><a href={`#/v25/service?id=${c.incidentId}`}>ServiceHands {c.incidentId}</a>{c.apexId ? <> · <a href={`#/v25/apex?case=${c.apexId}`}>APEX {c.apexId}</a></> : null}</div>
       </div> : <Notice tone="info">Cases are written from resolved incidents. {eligible.length} incident(s) are eligible right now.</Notice>}</div>

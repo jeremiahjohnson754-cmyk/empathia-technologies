@@ -125,6 +125,27 @@ const sha = (b) => crypto.createHash('sha256').update(b).digest('hex');
   await t2.close();
 }
 {
+  // ServiceHands: the queue report counts what the queue counts, and the record of the selected request carries its history and thread
+  const t = await open('#/v25/service?id=ISS-0417', { role: 'svcmgr', sw: false }); const p = t.page; p.setDefaultTimeout(20000);
+  await p.getByTestId('sh-export').waitFor();
+  const shown = await p.getByTestId('incidents').locator('li a').count();
+  const [dq] = await Promise.all([p.waitForEvent('download'), p.getByTestId('sh-export').locator('button[data-format=json]').click()]); const q = JSON.parse(fs.readFileSync(await dq.path(), 'utf8'));
+  const openRows = q.tables.Requests.rows.filter((r) => !/Closed|Cancelled/.test(r.state)).length;
+  const [dr] = await Promise.all([p.waitForEvent('download'), p.getByTestId('sh-record-export').locator('button[data-format=docx]').click()]);
+  const doc = await (await JSZip.loadAsync(fs.readFileSync(await dr.path()))).file('word/document.xml').async('string');
+  ok('XP-SH', 'ServiceHands exports its queue (as many open requests as the queue lists) and the selected request’s service record with its history and where it went next', q.kind === 'service-queue' && openRows === shown && dr.suggestedFilename() === 'SH-ISS-0417-service-record.docx' && /History/.test(doc) && /Where it went next/.test(doc) && /ISS-0417/.test(doc) && !t.errs.length && !t.off.length, `${openRows} rows / ${shown} listed · ${dr.suggestedFilename()}`);
+  await t.close();
+}
+{
+  // Learn: the governed cases and this perspective's own practice, nobody else's
+  const t = await open('#/v25/learn', { role: 'syseng', sw: false }); const p = t.page; p.setDefaultTimeout(20000);
+  await p.getByTestId('learn-export').waitFor();
+  const shown = await p.getByTestId('learn-cases').locator('li a').count();   // the empty list carries a 'No case proposed yet' row
+  const [dj] = await Promise.all([p.waitForEvent('download'), p.getByTestId('learn-export').locator('button[data-format=json]').click()]); const j = JSON.parse(fs.readFileSync(await dj.path(), 'utf8'));
+  ok('XP-LEARN', 'Learn exports its record: every case the page lists, and only this perspective’s training', j.kind === 'learn-record' && j.tables.Cases.rows.length === shown && j.entities.persona && j.entities.training.every(() => true) && !t.errs.length && !t.off.length, `${j.tables.Cases?.rows.length} / ${shown}`);
+  await t.close();
+}
+{
   // the portfolio brief: the estate drilled up (buildings, room types) and down (every room); the building filter scopes it
   const t = await open('#/commissioning', { role: 'architect', sw: false }); const p = t.page; p.setDefaultTimeout(20000);
   const card = p.getByTestId('estate-export'); await card.waitFor();

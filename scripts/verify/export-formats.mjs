@@ -33,6 +33,8 @@ export { asPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export
 export { seed, openApex, apexAct } from ${JSON.stringify(path.join(repo, 'apps/demo/src/workspace/store.ts'))};
 export { apexPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/apex.ts'))};
 export { estatePackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/estate.ts'))};
+export { serviceQueuePackage, serviceRecordPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/service.ts'))};
+export { learnPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/learn.ts'))};
 export { dossierPackage } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/dossier.ts'))};
 export { replay, DOSSIER_4218 } from ${JSON.stringify(path.join(repo, 'packages/proof-registry/src/index.ts'))};
 export { prepareMedia, imageSize } from ${JSON.stringify(path.join(repo, 'apps/demo/src/export/media.ts'))};
@@ -98,6 +100,15 @@ for (const c of ws.apexCases) reports.push({ why: `apex · seeded case ${c.id}`,
   if (inc) { const o = M.openApex(ws, 'syseng', inc.id, () => []); if (o && o.id) { const c = ws.apexCases.find((x) => x.id === o.id);
     for (const t of ['A0', 'A1', 'A2', 'A3', 'A4', 'A5']) M.apexAct(ws, 'syseng', c.id, c.hypotheses[0].id, { tier: t }, null);
     reports.push({ why: `apex · opened here, acted on at every tier (${c.actions.length} actions)`, rep: M.apexPackage(c, ws, made) }); } } }
+// ServiceHands: the queue, and the record of a request with a work order and of one without
+reports.push({ why: 'servicehands · the whole queue', rep: M.serviceQueuePackage(ws, made) });
+{ const withWo = ws.incidents.find((i) => i.workOrderId); const without = ws.incidents.find((i) => !i.workOrderId);
+  for (const [i, why] of [[withWo, 'with its work order'], [without, 'no work order yet']]) if (i) reports.push({ why: `servicehands · ${i.id} ${why}`, rep: M.serviceRecordPackage(ws, i.id, made) }); }
+// Learn: the governed cases and one perspective's practice (two drills, a passed lab); another person's attempt must not appear
+{ const tr = [{ drillId: 'D-AUD-01', at: '2026-11-13T10:00:00Z', by: 'syseng', correct: true, elapsedS: 41 }, { drillId: 'D-VID-02', at: '2026-11-13T10:05:00Z', by: 'syseng', correct: false, elapsedS: 63 }, { drillId: 'D-OTHER-99', at: '2026-11-13T10:07:00Z', by: 'installer', correct: true, elapsedS: 12 }];
+  const w2 = { ...ws, training: [...ws.training, ...tr] };
+  const labs = [{ lab: 'audio', title: 'Audio: gain structure', domain: 'Audio', passed: true, at: '2026-11-13T11:00:00Z', persona: 'syseng', attempts: 2, mode: 'simulator' }, { lab: 'cam', title: 'Camera: framing', domain: 'Video', passed: true, at: '2026-11-13T11:00:00Z', persona: 'installer', attempts: 1, mode: 'simulator' }];
+  reports.push({ why: 'learn · cases and one perspective’s practice', mustNot: ['D-OTHER-99', 'Camera: framing'], mustHave: ['D-AUD-01', 'Audio: gain structure'], mustHaveIn: ['pdf', 'docx', 'xlsx', 'json'], rep: M.learnPackage(w2, { persona: 'syseng', personaLabel: (k) => ({ syseng: 'Systems Engineer', installer: 'Installer' })[k] || k, labs, readiness: { points: 15, level: 'Started', drills: 1, cases: 0, next: { name: 'Practised', need: 15 } } }, made) }); }
 // the commissioning dossier, in both redactions: the reference snapshot, and the working record after a retest, a verification and a
 // new deficiency; the executive files must carry no evidence reference and no recorder or verifier (mustNot, checked in every format)
 { const D = M.DOSSIER_4218; const snap = M.replay(D, []); const at = '2026-11-13T12:00:00Z';
@@ -126,13 +137,13 @@ reports.push({ why: 'hostile input', rep: {
 const manifest = [];
 const raster = async (svg, w, h) => { try { const sharp = createRequire(import.meta.url)(process.env.SHARP_PATH || '/opt/npm-tools/node_modules/sharp'); return new Uint8Array(await sharp(Buffer.from(svg)).resize(w * 2, h * 2).png().toBuffer()); } catch { return undefined; } };
 for (let i = 0; i < reports.length; i++) reports[i].rep = await M.prepareMedia(reports[i].rep, raster);
-for (const { why, rep, mustNot, mustHave } of reports) {
+for (const { why, rep, mustNot, mustHave, mustHaveIn } of reports) {
   const dir = path.join(out, rep.id); fs.mkdirSync(dir, { recursive: true }); const files = {};
   for (const { f } of M.FORMATS) {
     const t0 = Date.now(); const fo = await M.R.render(rep, f, mark); const ms = Date.now() - t0;
     fs.writeFileSync(path.join(dir, fo.name), fo.bytes); files[f] = { name: fo.name, bytes: fo.bytes.length, mime: fo.mime, ms, ...(f === 'pdf' ? { substitutions: M.R.pdfSubstitutions } : {}) };
   }
-  manifest.push({ id: rep.id, why, ...(mustNot ? { mustNot } : {}), ...(mustHave ? { mustHave } : {}), primary: rep.primary || null, media: (rep.media || []).length, links: (rep.links || []).length, title: rep.title, subtitle: rep.subtitle, status: rep.status.label, tables: rep.sections.filter((s) => s.table).map((s) => ({ title: s.table.title, rows: s.table.rows.length, cols: s.table.cols.length })), kpis: rep.kpis.length, dir: path.relative(out, dir), files });
+  manifest.push({ id: rep.id, why, ...(mustNot ? { mustNot } : {}), ...(mustHave ? { mustHave } : {}), ...(mustHaveIn ? { mustHaveIn } : {}), primary: rep.primary || null, media: (rep.media || []).length, links: (rep.links || []).length, title: rep.title, subtitle: rep.subtitle, status: rep.status.label, tables: rep.sections.filter((s) => s.table).map((s) => ({ title: s.table.title, rows: s.table.rows.length, cols: s.table.cols.length })), kpis: rep.kpis.length, dir: path.relative(out, dir), files });
 }
 fs.writeFileSync(path.join(out, 'manifest.json'), JSON.stringify(manifest, null, 2));
 

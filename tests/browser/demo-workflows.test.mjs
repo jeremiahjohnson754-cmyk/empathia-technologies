@@ -8,6 +8,8 @@
 //      Empathia's translation, with the job it became;
 //   W3 Search Party → Assurance → Field Intelligence → APEX → Learn: from the room in Search Party to its assurance comparison, its
 //      Field Intelligence page, the APEX case of its service request, and Learn, each on the same room's identity.
+//   W4 ServiceHands → Learn: a closed request becomes a reviewed case through three different people (proposer, SME, steward), the
+//      proposer is refused as their own reviewer, and the Learn record's export carries the approved case.
 //   node tests/browser/demo-workflows.test.mjs
 import fs from 'node:fs';
 import { harness } from './demo-shell-lib.mjs';
@@ -47,5 +49,24 @@ const settle = async (p, ms = 400) => { await p.waitForSelector('main h1', { tim
   await p.goto(p.url().split('#')[0] + '#/v25/learn'); await settle(p, 600); const learn = await p.locator('main').innerText(); steps.push(['learn', /case|lesson|Learn/i.test(learn) ? 'open' : 'missing']);
   ok('W3', 'Search Party → Assurance → Field Intelligence → APEX → Learn: each step opens, on the same room where the step is about a room', steps.every(([, v]) => v === ROOM || v === 'open') && !!serviceHref, JSON.stringify(steps));
   ok('W3-clean', 'no console error; nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
+  await t.close(); }
+{ const t = await open('#/v25/learn', { role: 'cxeng', sw: false }); const p = t.page; p.setDefaultTimeout(20000);
+  const as = async (role) => { await p.evaluate((r) => localStorage.setItem('empathia.demo.perspective', r), role); await p.reload(); await p.getByTestId('learn-cases').waitFor(); };
+  await p.getByTestId('propose').locator('select').selectOption('ISS-0398');
+  await p.getByLabel('Title').fill('A blank display with the source selected');
+  await p.getByLabel('Lesson').fill('Check the display input and the HDCP handshake before replacing hardware; most blanks clear at the source.');
+  await p.getByTestId('propose').locator('input[type=checkbox]').nth(0).check(); await p.getByTestId('propose').locator('input[type=checkbox]').nth(1).check();
+  await p.getByRole('button', { name: 'Propose' }).click(); await p.getByTestId('learn-case').waitFor();
+  const proposed = await p.getByTestId('learn-case').innerText();
+  const self = await p.getByRole('button', { name: 'SME review: approve' }).count();   // the proposer is not offered their own review
+  const own = await p.getByTestId('learn-own').count();                                  // and is told why
+  await as('syseng'); await p.getByTestId('learn-cases').locator('li a').first().click(); await p.getByRole('button', { name: 'SME review: approve' }).click(); await p.waitForTimeout(200);
+  const reviewed = await p.getByTestId('learn-case').innerText();
+  await as('steward'); await p.getByTestId('learn-cases').locator('li a').first().click(); await p.getByRole('button', { name: /Approve for Learn/ }).click(); await p.waitForTimeout(200);
+  const approved = await p.getByTestId('learn-case').innerText();
+  const [dj] = await Promise.all([p.waitForEvent('download'), p.getByTestId('learn-export').locator('button[data-format=json]').click()]); const j = JSON.parse(fs.readFileSync(await dj.path(), 'utf8'));
+  const row = (j.tables.Cases?.rows || [])[0] || {};
+  ok('W4', 'ServiceHands → Learn: a closed request becomes a case through three people; the proposer is not offered their own review; the export carries it approved', /PROPOSED/.test(proposed) && self === 0 && own === 1 && /SME_REVIEWED/.test(reviewed) && /APPROVED/.test(approved) && row.state === 'Approved' && row.inc === 'ISS-0398' && /Systems Engineer|syseng/i.test(row.sme) && !!row.appr, JSON.stringify(row).slice(0, 220));
+  ok('W4-clean', 'no console error; nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
   await t.close(); }
 await done();

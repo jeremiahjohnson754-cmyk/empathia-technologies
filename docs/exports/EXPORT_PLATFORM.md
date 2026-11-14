@@ -16,6 +16,8 @@ One format-neutral report, six native files, so the files cannot disagree with o
 | APEX case report | `apps/demo/src/export/apex.ts` | the seven layers and what they cite, ranked hypotheses with why each is not proven, every action (blocked ones included), the tiers and runbooks, and the thread back through ServiceHands, Assurance and Commissioning; on `#/v25/apex` |
 | Portfolio brief | `apps/demo/src/export/estate.ts` | the estate, or the building or floor drilled to on `#/commissioning` and `#/assurance` (docs/product/DRILL_DOWN.md), drilled up by building and room type and down to every room, the rooms to act on first, open deficiencies, the four-week assurance trend; on `#/commissioning` and `#/assurance` |
 | Assurance report | `apps/demo/src/export/as.ts` | the seventeen dimensions, Commissioned ↔ current changes, the ready check, the room's service requests, baselines (`campus/asRecord.ts`, `assurance/model.ts`); on `#/assurance/room/:id` |
+| ServiceHands | `apps/demo/src/export/service.ts` | on `#/v25/service`: the service queue (every request and work order, drilled up by building and severity; the SLA each is held to, never reported as met or missed) and the selected request's service record (history, hours in each state from that history, work order, dispatch preflight, field evidence, the thread to APEX and Learn) |
+| Learn | `apps/demo/src/export/learn.ts` | on `#/v25/learn`: the governed cases (permission, de-identification, SME review, steward approval; a case not de-identified is withheld) and the readiness, drills and labs of the person it is made for, nobody else's |
 | Commissioning dossier | `apps/demo/src/export/dossier.ts` | the proof dossier (`#/dossier/…`) replayed as the page shows it, in two redactions: engineering (evidence references, who recorded and verified) and executive (only whether evidence exists); the engineering report is offered only to a role that sees `dossier.evidence` |
 | Shared rules | `apps/demo/src/campus/cxRecord.ts` | five phases, the three acceptance blockers, traceability, the commissioning state (moved here from the pages so the page and the files share one rule) |
 | UI | `apps/demo/src/export/ExportMenu.tsx` | six buttons on `#/commissioning/room/:id`; a Blob download; the file's SHA-256 shown and written to the audit trail |
@@ -60,13 +62,15 @@ unbroken long words), then reopens every file with independent readers (`export-
   searched for every evidence reference and for "Recorded" and "Verified"; none may appear. As the control, the engineering files must
   carry them (the slide deck excepted: a slide table keeps at most seven columns).
 
+14 Nov 2026 (00:27 CT): 789 checks pass, 0 fail (24 reports × 6 formats, LibreOffice included): adds the ServiceHands queue, two service records and the Learn record, whose files must not carry another person's drill or lab.
+
 14 Nov 2026 (00:05 CT): 660 checks pass, 0 fail (20 reports × 6 formats, LibreOffice included; the four added reports are the dossier's
 two redactions of the reference snapshot and of a working record with a retest, a verification and a new deficiency).
 
 13 Nov 2026 (22:40 CT): 518 checks pass, 0 fail (16 reports × 6 formats, LibreOffice included; the reference room's package carries its tracker, a test-fixture capture photograph (generated, labelled as a fixture) and 27 links, checked as embedded images, hyperlinks and PDF link annotations).
 
-`tests/browser/demo-exports.test.mjs` downloads all six from the page as a person would and opens the bytes (19 checks, desktop and
-phone; the dossier's two redactions as an engineering role and as the executive; the reference room's whole project, documentation, plan and links; commissioning, assurance, APEX and the portfolio brief with its building filter): file names, PDF pages and text, the Office packages' main parts, the JSON schema and SHA-256, the CSV header, the SHA-256
+`tests/browser/demo-exports.test.mjs` downloads all six from the page as a person would and opens the bytes (21 checks, desktop and
+phone; ServiceHands' queue and service record; the Learn record; the dossier's two redactions as an engineering role and as the executive; the reference room's whole project, documentation, plan and links; commissioning, assurance, APEX and the portfolio brief with its building filter): file names, PDF pages and text, the Office packages' main parts, the JSON schema and SHA-256, the CSV header, the SHA-256
 shown on the page equals the downloaded file's, six audit-trail events, no console error and no off-page request.
 
 ## Known limits (not hidden)
@@ -75,6 +79,6 @@ shown on the page equals the downloaded file's, six audit-trail events, no conso
   equivalents (`->`, `>=`) or `?`, and counted; the Word, Excel, PowerPoint and JSON files keep them.
 - The XLSX writer stores its parts uncompressed (about 240 KB for a full package).
 - A PowerPoint slide shows at most seven columns and twelve rows; longer tables run to three slides and point to the workbook.
-- The commissioning completion package, the assurance report and the APEX case report are built (the Commissioning → Assurance → APEX journey). The estate's portfolio brief is built too. Search Party, ServiceHands and Learn reports are next on the
+- The commissioning completion package, the assurance report and the APEX case report are built (the Commissioning → Assurance → APEX journey). The estate's portfolio brief is built too. ServiceHands' queue and service record and the Learn record are built. Search Party and imports are next on the
   same model (task #144); the Proof dossier (`#/dossier/…`) is built in both redactions; its zipped evidence package is not built and the page says so.
 - Not tested in Microsoft Office itself (not available here); LibreOffice, openpyxl, python-docx, python-pptx and poppler are.

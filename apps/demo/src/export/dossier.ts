@@ -10,7 +10,7 @@
  * approval. A control (a mandatory safety or security test) is marked as never waivable in every format.
  */
 import { DOSSIER_4218 as D, type Working, type WorkingTest } from '@empathia/proof-registry';
-import { SITE } from '../campus/canon.js';
+import { SITE, buildingByKey } from '../campus/canon.js';
 import type { Report, Section, Tone } from './model.js';
 import type { MadeBy } from './cx.js';
 
@@ -61,7 +61,7 @@ export function dossierPackage(w: Working, redaction: Redaction, by: MadeBy): Re
   ];
   return {
     schema: 'empathia.report/1', id: `${D.id}-${redaction}`, kind: 'commissioning-dossier', title: 'Commissioning dossier', subtitle: `${D.room.name} · ${eng ? 'engineering' : 'executive'} export`,
-    scope: { tenant: SITE.enterprise, site: SITE.name, building: 'Atlas Tower', floor: 'Floor 4', room: D.room.name, roomId: D.room.id },
+    scope: { tenant: SITE.enterprise, site: SITE.name, building: buildingByKey('ATL')?.name || 'Atlas', floor: 'Floor 4', room: D.room.name, roomId: D.room.id },
     status: { label: accepted ? 'Accepted' : 'Held', tone, why }, generatedAt: by.at, role: by.role, build: by.build, primary: 'Tests',
     provenance: [
       'Synthetic demonstration: every room, person and record is invented and connected to no real system.',

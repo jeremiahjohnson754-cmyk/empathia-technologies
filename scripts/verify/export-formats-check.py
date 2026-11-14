@@ -201,7 +201,8 @@ for m in manifest:
                 if m.get('mustNot'):
                     hits = [rx for rx in m['mustNot'] if re.search(rx, body)]
                     check(rid, f, 'redaction holds: nothing the reader may not see is in the file', not hits, ', '.join(hits) or f"none of {len(m['mustNot'])} withheld patterns")
-                if m.get('mustHave') and f != 'pptx':  # a slide table keeps at most seven columns, so the evidence columns may not be on it
+                # a slide table keeps at most seven columns, and the CSV carries only the primary table, so a report may name where to look
+                if m.get('mustHave') and f in m.get('mustHaveIn', ['pdf', 'docx', 'xlsx', 'csv', 'json']):
                     miss = [rx for rx in m['mustHave'] if not re.search(rx, body)]
                     check(rid, f, 'the reader who may see it gets it (the control for the redaction check)', not miss, ', '.join(miss) or f"all {len(m['mustHave'])} patterns present")
             except Exception as e:  # noqa: BLE001
