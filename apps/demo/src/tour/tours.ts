@@ -11,7 +11,7 @@ export interface Stop { id: string; title: string; text: string; href: string; s
   ask?: { q: string; a: string };
   /** searches a visitor can run from this stop with one press (tour D's "search anything" stop) */
   tries?: string[] }
-export interface Tour { key: 'a' | 'b' | 'c' | 'd' | 'e'; title: string; audience: string; goal: string; stops: Stop[] }
+export interface Tour { key: 'a' | 'b' | 'c' | 'd' | 'e' | 'f'; title: string; audience: string; goal: string; stops: Stop[] }
 
 const ROOM = `#/campus/ATL/4/${REFERENCE_ROOM_ID}`;
 export const TOURS: Tour[] = [
@@ -108,6 +108,29 @@ export const TOURS: Tour[] = [
       ask: { q: 'Could the person who did the work approve it?', a: 'Not through these rules. A role that recorded the work cannot approve it, and the second approval must come from a different role than the first.' } },
     { id: 'E12', title: 'One room, one record', text: 'The room you walked into, drew in Lite, searched, reported on and inspected was the same record each time. From here, explore freely.', href: `#/room/${REFERENCE_ROOM_ID}`, spot: 'room-view',
       ask: { q: 'Is any of this connected to a real building?', a: 'No. Every record is synthetic and runs in this browser. Connecting a customer’s estate is work that has not been done.' } },
+  ] },
+  // founder, 13 Nov 2026: "treating the Commissioning → Assurance → APEX reporting journey as the flagship enterprise sales demonstration"
+  { key: 'f', title: 'Tour F — Commissioning to the boardroom', audience: 'Enterprise buyers: facilities, IT, AV and the people who sign off', goal: 'Follow the estate from the portfolio down to one blocked room and back up to the board: why acceptance is held, what drifted since handover, what APEX thinks is wrong, and the files each step hands you.', stops: [
+    { id: 'F1', title: 'The estate at a glance', text: 'Commissioning across 140 rooms: accepted, accepted with conditions, blocked, in commissioning. Every count is a rule over the room records, written on the page.', href: '#/commissioning', spot: 'tiles',
+      ask: { q: 'Are these real buildings?', a: 'No. The estate, its rooms and its people are synthetic. The commissioning rules are real code, the same engine the API runs.' } },
+    { id: 'F2', title: 'Drill into a building', text: 'Each building with its rooms by state. Open Beacon: its floors, each with its own counts. A count opens just those rooms.', href: '#/commissioning?b=BCN', spot: 'cx-drill',
+      ask: { q: 'Can I send someone this view?', a: 'Yes. The level is in the address, so the link opens exactly this building, and Back walks it back up.' } },
+    { id: 'F3', title: 'Down to the rooms of a floor', text: 'Beacon, floor 3: every room with its state and why. Beacon 3.225 is blocked.', href: '#/commissioning?b=BCN&f=3', spot: 'drill-rooms',
+      ask: { q: 'Why is one room blocked and its neighbour not?', a: 'Each room carries its own record. Open it and the reason is written there, not summarised.' } },
+    { id: 'F4', title: 'Why acceptance is held', text: 'Five phases of checks. A must-have check failed and a high deficiency is open, so acceptance cannot be given yet. The page says which rule stops it.', href: '#/commissioning/room/R-BCN-3-225', spot: 'cx-phases',
+      ask: { q: 'Can a manager override it?', a: 'No. Acceptance is blocked by a critical deficiency, missing evidence or a failed must-have check. A waiver never bypasses safety, security or evidence integrity.' } },
+    { id: 'F5', title: 'From requirement to evidence', text: 'Each requirement, the design positions that meet it, the checks that prove it, their evidence and the result. The audio requirement is where it fails.', href: '#/commissioning/room/R-BCN-3-225/trace', spot: 'cx-trace',
+      ask: { q: 'Was anything measured?', a: 'No. Results are as recorded in a synthetic record. Nothing here measures a room or contacts a device.' } },
+    { id: 'F6', title: 'The completion package', text: 'The whole record as files: a PDF report, an editable Word document, an Excel register, a PowerPoint deck, a JSON dossier and a CSV. Each says what it is and who made it.', href: '#/commissioning/room/R-ATL-4-218', spot: 'cx-export',
+      ask: { q: 'Will these open in Office?', a: 'They are native files written in your browser. Every format is reopened by independent readers and LibreOffice before release. They have not been tested in Microsoft Office itself.' } },
+    { id: 'F7', title: 'What changed since handover', text: 'Assurance compares the room now with the room as commissioned: seventeen dimensions over seven layers. A replaced camera reopened tests; people reported audio dropping out.', href: '#/assurance/room/R-ATL-4-218', spot: 'as-dims',
+      ask: { q: 'Is the room watched as it happens?', a: 'No. It is simulated discovery from the records. A person’s report is evidence that they observed something, not a measurement.' } },
+    { id: 'F8', title: 'The service request', text: 'The far-end audio job, opened by a person in the room. It came back after an earlier one was closed, so it is marked as a recurrence.', href: '#/v25/service?id=ISS-0417', spot: 'incident',
+      ask: { q: 'Who decides who goes?', a: 'The dispatch rules: competence, availability, access and the work type. A person who did the work never verifies it.' } },
+    { id: 'F9', title: 'What APEX thinks is wrong', text: 'Seven layers of evidence, hypotheses ranked with why each is not proven, and actions bounded by tier. The bounded action is blocked here because no adapter is configured, and that is logged too.', href: '#/v25/apex?case=APX-001', spot: 'apex-case',
+      ask: { q: 'Does APEX fix it on its own?', a: 'No. Explaining and proposing are allowed; anything that changes equipment needs a signed runbook, owner approval, a window and a dry run, and nothing here reaches real equipment.' } },
+    { id: 'F10', title: 'Back up to the board', text: 'The portfolio brief: the estate by building and room type, every room, the rooms to act on first and the trend, as a deck for the board or a workbook to filter.', href: '#/commissioning', spot: 'estate-export',
+      ask: { q: 'What does this cost to run on our estate?', a: 'This demonstration does not price anything. Connecting a customer’s estate is work that has not been done.' } },
   ] },
 ];
 

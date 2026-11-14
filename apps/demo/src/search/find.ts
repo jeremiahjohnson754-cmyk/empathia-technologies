@@ -39,6 +39,7 @@ const TOURS: Hit[] = [
   { id: 'tour:c', kind: 'tour', label: 'Tour C — Learn by Doing', description: 'SIGNAL scenario → lab → diagnosis → competency evidence → back to the room', href: '#/tours/c', terms: 'tour guided learn by doing c' },
   { id: 'tour:d', kind: 'tour', label: 'Tour D — What investors ask', description: 'The strongest parts, each with the question it raises and a plain answer', href: '#/tours/d', terms: 'tour guided investors ask questions d' },
   { id: 'tour:e', kind: 'tour', label: 'Tour E — Walk into a room', description: 'Arrive → equipment → Lite → history → Search Party → what is wrong → guided help → written outcome → ServiceHands → evidence', href: '#/tours/e', terms: 'tour guided walk into a room in this room signature e' },
+  { id: 'tour:f', kind: 'tour', label: 'Tour F — Commissioning to the boardroom', description: 'Estate → building → floor → blocked room → trace → completion package → assurance → service request → APEX → board pack', href: '#/tours/f', terms: 'tour guided enterprise sales commissioning assurance apex board export f' },
 ];
 
 let index: Hit[] | null = null;

@@ -19,8 +19,8 @@ export const stopNative = (href: string) => !!resolve(href) || NATIVE.has(areaKe
 export function GuidedPanel({ hash }: { hash: string }) {
   const [run, setRun] = useState<Run | null>(load);
   const panel = useRef<HTMLElement>(null);
-  // #/tours/a|b|c|d[?stop=n] starts (or restarts) a tour
-  useEffect(() => { const m = /^#\/tours\/([abcde])(?:\?stop=(\d+))?$/.exec(hash); if (m) { const t = tourByKey(m[1]!)!; const i = Math.min(t.stops.length - 1, Math.max(0, Number(m[2] || 1) - 1)); goto({ tour: t.key, i, paused: false }); } }, [hash]);   // eslint-disable-line react-hooks/exhaustive-deps
+  // #/tours/a…f[?stop=n] starts (or restarts) a tour
+  useEffect(() => { const m = /^#\/tours\/([abcdef])(?:\?stop=(\d+))?$/.exec(hash); if (m) { const t = tourByKey(m[1]!)!; const i = Math.min(t.stops.length - 1, Math.max(0, Number(m[2] || 1) - 1)); goto({ tour: t.key, i, paused: false }); } }, [hash]);   // eslint-disable-line react-hooks/exhaustive-deps
   const t = run ? tourByKey(run.tour)! : null; const s = t && run ? t.stops[run.i]! : null;
   const goto = (r: Run) => { setRun(r); save(r); const st = tourByKey(r.tour)!.stops[r.i]!; if (location.hash !== st.href) location.hash = st.href; setTimeout(() => panel.current?.focus({ preventScroll: true }), 50); };
   const exit = () => { setRun(null); save(null); };

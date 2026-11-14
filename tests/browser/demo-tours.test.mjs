@@ -6,7 +6,7 @@
 //   node tests/browser/demo-tours.test.mjs
 import { harness, VIEWPORTS, SCHEMES } from './demo-spaces-lib.mjs';
 const { ok, open, done, base } = await harness('demo-tours');
-const COUNTS = { a: 10, b: 10, c: 7, d: 14, e: 12 };   // d: Tour D, "What investors ask"; e: Tour E, "Walk into a room" (both 10 Nov 2026)
+const COUNTS = { a: 10, b: 10, c: 7, d: 14, e: 12, f: 10 };   // d: Tour D, "What investors ask"; e: Tour E, "Walk into a room" (both 10 Nov 2026); f: Tour F, "Commissioning to the boardroom" (13 Nov 2026, the founder's flagship enterprise sales journey)
 
 const runTour = async (t, key, tag) => {
   await t.go(`#/tours/${key}`, 500);
@@ -25,8 +25,8 @@ const runTour = async (t, key, tag) => {
 
 for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/tours' });
-  ok(`TR-${tag}-00`, 'the tours page offers five tours and free exploration', (await t.page.locator('[data-testid^="tour-start-"]').count()) === 5 /* 3 until 10 Nov 2026: Tour D, then Tour E, were added */ && /explore on your own/.test(await t.text()));
-  for (const key of ['a', 'b', 'c', 'd', 'e']) await runTour(t, key, tag);
+  ok(`TR-${tag}-00`, 'the tours page offers six tours and free exploration', (await t.page.locator('[data-testid^="tour-start-"]').count()) === 6 /* 3 until 10 Nov 2026: Tour D, then Tour E, were added; 5 until 13 Nov 2026: Tour F, the flagship enterprise sales journey, was added */ && /explore on your own/.test(await t.text()));
+  for (const key of ['a', 'b', 'c', 'd', 'e', 'f']) await runTour(t, key, tag);
   // Tour D: every stop lands on a real page (never the access page), carries the question it raises with a plain answer, and the
   // search stop's suggestions really search
   { await t.go('#/tours/d', 500); const badD = [];

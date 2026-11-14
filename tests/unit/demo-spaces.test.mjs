@@ -115,8 +115,9 @@ test('Search Party scenarios: accurate counts, synthetic labels, never “certif
 
 // 10 Nov 2026: a fourth tour (D, "What investors ask", 14 stops) was added on the founder's instruction; A, B and C keep their 10 / 10 / 7.
 // 10 Nov 2026, later: a fifth tour (E, "Walk into a room", 12 stops: the founder's signature demonstration) was added; A–D are unchanged.
-test('tours: 10 / 10 / 7 / 14 / 12 stops, honest copy, narration only from a shipped VERIFIED take whose file matches its hash', async () => {
-  assert.deepEqual(tours.TOURS.map((t) => t.stops.length), [10, 10, 7, 14, 12]);
+test('tours: 10 / 10 / 7 / 14 / 12 / 10 stops, honest copy, narration only from a shipped VERIFIED take whose file matches its hash', async () => {
+  assert.deepEqual(tours.TOURS.map((t) => t.stops.length), [10, 10, 7, 14, 12, 10]);   // + Tour F (13 Nov 2026), the flagship enterprise sales journey; the same copy rules apply to it below
+  { const F = tours.TOURS.find((t) => t.key === 'f'); for (const s of F.stops) assert.ok(s.ask && s.ask.q.endsWith('?') && s.ask.a.length > 30 && s.ask.a.length < 260, `${s.id} question and answer`); }
   for (const t of tours.TOURS) for (const s of t.stops) { assert.doesNotMatch(`${s.title} ${s.text} ${s.ask?.q || ''} ${s.ask?.a || ''}`, tours.BANNED, s.id); assert.match(s.href, /^#\//, s.id); assert.ok(s.text.length < 320, s.id); }
   for (const [id, n] of Object.entries(tours.NARRATION)) {
     const f = path.join(repo, 'apps/demo/public', n.src); assert.ok(fs.existsSync(f), id);
