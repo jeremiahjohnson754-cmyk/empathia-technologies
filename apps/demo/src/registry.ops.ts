@@ -171,6 +171,12 @@ export const OPS_PAGES: readonly PageDef[] = [
     load: adapt(() => import('./pages/StiBench.js'), (m, p) => h(m.StiBenchPage, { perspective: p.role })),
     search: { keywords: 'sti speech intelligibility stipa intelligibility exception policy voice', aliases: ['sti', 'speech intelligibility', 'stipa'] },
   },
+  {
+    id: 'commissioning.scenarios', title: 'Commissioning journeys', purpose: 'Five reference journeys from request to assurance, every stage read from its room’s record, with what the system detected and blocks', product: 'commissioning',
+    path: '/commissioning/scenarios', authority: { area: 'commissioning' },
+    load: adapt(() => import('./pages/Scenarios.js'), (m, p) => h(m.ScenariosPage, { perspective: p.role })),
+    search: { keywords: 'scenario journey teams boardroom lecture broadcast ballroom divisible end to end request acceptance assurance', aliases: ['commissioning scenarios', 'reference journeys'] },
+  },
   // ---- the operational workspaces (rebuild/demo-ops): each loads its own file (ws/<name>.js) only once the role is admitted
   {
     id: 'servicehands.analytics', title: 'Service analytics', purpose: 'Service by month and quarter, by building and project, and a scorecard that holds each vendor to its agreement', product: 'servicehands',
