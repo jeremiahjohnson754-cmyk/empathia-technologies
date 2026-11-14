@@ -68,6 +68,7 @@ for (const [id, why] of asRooms) { const r = M.roomRecord(id); if (r) reports.pu
 // the portfolio brief: the whole estate (every room record) and one building of it
 reports.push({ why: 'portfolio · the whole estate', rep: M.estatePackage(all, ws.incidents, made) });
 reports.push({ why: 'portfolio · one building (Beacon)', rep: M.estatePackage(all, ws.incidents, made, 'BCN') });
+reports.push({ why: 'portfolio · one floor (Atlas floor 4), as drilled on the page', rep: M.estatePackage(all, ws.incidents, made, { building: 'ATL', floor: 4 }) });
 // APEX: the seeded case, and one opened here and acted on at every tier (the A4 preflight is blocked by the adapter state, as built)
 for (const c of ws.apexCases) reports.push({ why: `apex · seeded case ${c.id}`, rep: M.apexPackage(c, ws, made) });
 { const inc = ws.incidents.find((i) => !i.apexId && !['CLOSED', 'CANCELLED'].includes(i.state));

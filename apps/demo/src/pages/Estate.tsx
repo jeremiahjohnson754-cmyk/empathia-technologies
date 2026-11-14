@@ -11,7 +11,8 @@ import { cxState, type CxState } from '../campus/cxRecord.js';
 import { asState, type AsState } from '../campus/asRecord.js';
 import { ExportMenu } from '../export/ExportMenu.js';
 import { estatePackage } from '../export/estate.js';
-import { BUILDINGS, shortName, roomHref } from '../campus/canon.js';
+import { EstateDrill, drillOf, drillHref, inScope, PRO_STATES } from './EstateDrill.js';
+import { BUILDINGS, shortName, roomHref, buildingByKey } from '../campus/canon.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
 import { personaLabel, personaOf } from '../build/store.js';
 import type * as S from '../workspace/store.js';
@@ -63,10 +64,11 @@ function Rules<K extends string>({ table }: { table: Record<K, { label: string; 
 }
 
 // ------------------------------------------------------------------------------------------------------------ Commissioning
-export function CommissioningPage({ perspective }: { perspective: string }) {
+export function CommissioningPage({ perspective, hash = '' }: { perspective: string; hash?: string }) {
   const persona = personaOf(perspective); const { w, recs } = useEstate();
-  const [bld, setBld] = useState('all');
-  const scope = bld === 'all' ? recs : recs.filter((r) => r.outline.building === bld);
+  const drill = drillOf(hash, recs); const bld = drill.b || 'all';
+  const setBld = (v: string) => { location.hash = drillHref('#/commissioning', { b: v === 'all' ? null : v }); };
+  const scope = inScope(recs, drill);
   const st = scope.map((r) => ({ r, ...cxState(r) }));
   const n = (k: CxState) => st.filter((x) => x.state === k).length;
   const defs = scope.flatMap((r) => openIssues(r).map((i) => ({ r, i })));
@@ -75,7 +77,7 @@ export function CommissioningPage({ perspective }: { perspective: string }) {
   const baselines = scope.flatMap((r) => r.baselines.map((b) => ({ r, b })));
   const quarters = [...new Set(baselines.map((x) => quarterOf(x.b.at)))].sort();
   const verified = scope.reduce((a, r) => a + r.counts.verified, 0); const applicable = scope.reduce((a, r) => a + r.counts.applicable, 0);
-  const bname = bld === 'all' ? 'the campus' : BUILDINGS.find((b) => b.key === bld)?.name || bld;
+  const bname = bld === 'all' ? 'the campus' : `${buildingByKey(bld)?.name || bld}${drill.f != null ? `, floor ${drill.f}` : ''}`;
   return (
     <section className="wk" data-native="workspace" data-testid="commissioning">
       <PageHero product="commissioning" icon="shield" eyebrow="Commissioning · command center" title="Commissioning"
@@ -84,7 +86,7 @@ export function CommissioningPage({ perspective }: { perspective: string }) {
         aside={<ScoreBlock value={verified} max={applicable} label="Applicable tests verified" />} />
       <V25Nav role={perspective} current="#/commissioning" />
       <CxTabs role={perspective} current="#/commissioning" />
-      <div className="wk-filters"><Segmented label="Building" value={bld} onChange={setBld} options={[{ value: 'all', label: 'All buildings' }, ...BUILDINGS.map((b) => ({ value: b.key, label: b.short }))]} /></div>
+      <div className="wk-filters"><Segmented label="Building" value={bld} onChange={setBld} options={[{ value: 'all', label: 'All buildings' }, ...BUILDINGS.map((b) => ({ value: b.key, label: b.short })), ...(bld !== 'all' && !BUILDINGS.some((b) => b.key === bld) ? [{ value: bld, label: buildingByKey(bld)?.short || bld }] : [])]} /></div>
       <div className="kit-grid kit-grid--tiles wk-tiles5" data-testid="tiles">
         <StatTile label="Accepted" value={n('accepted')} unit={`of ${scope.length}`} icon="check" tone="ok" hint="Every required check passed" />
         <StatTile label="With conditions" value={n('conditions')} icon="alert" tone="warn" hint="Usable, with something still owed" />
@@ -102,6 +104,7 @@ export function CommissioningPage({ perspective }: { perspective: string }) {
           <Rules table={CX} />
         </Card>
       </div>
+      <EstateDrill kind="cx" recs={recs} incidents={w.incidents} hash={hash} base="#/commissioning" states={CX} roomBase="#/commissioning/room" />
       <Card icon="chart" title="Which way it is moving" sub="Baselines recorded, by quarter · current, superseded or waiting for acceptance">
         <Legend items={[{ key: 'c', label: 'Current', tone: 'ok' }, { key: 's', label: 'Superseded', tone: 'info' }, { key: 'p', label: 'Waiting for acceptance', tone: 'warn' }]} />
         {quarters.length ? <ul className="wk-bars" data-testid="cx-moving">{quarters.map((q) => { const xs = baselines.filter((x) => quarterOf(x.b.at) === q); const c = (s: string) => xs.filter((x) => x.b.state === s).length;
@@ -112,7 +115,7 @@ export function CommissioningPage({ perspective }: { perspective: string }) {
         <ul className="kit-meters">{byBuilding(scope, (r) => r.counts).map(({ b, vals }) => { const v = vals.reduce((a, c) => a + c.verified, 0); const a = vals.reduce((s, c) => s + c.applicable, 0); return <MeterRow key={b.key} label={b.name} sub={`${v} of ${a} tests · ${plural(vals.length, 'room')}`} value={pct(v, a)} max={100} />; })}</ul>
       </Card>
       <ExportMenu testId="estate-export" title="Portfolio brief" sub={`${bld === 'all' ? 'The campus' : bname}: by building, by room type and room by room, as six files`} by={persona}
-        make={() => estatePackage(recs, w.incidents, { role: personaLabel(persona), at: new Date().toISOString(), build: process.env.DEMO_BUILD_ID || 'dev' }, bld === 'all' ? undefined : bld)} />
+        make={() => estatePackage(recs, w.incidents, { role: personaLabel(persona), at: new Date().toISOString(), build: process.env.DEMO_BUILD_ID || 'dev' }, { building: drill.b || undefined, floor: drill.f ?? undefined })} />
       <Foot>Commissioning here is simulated on synthetic records: no room was surveyed and no test was run on real equipment.</Foot>
     </section>
   );
@@ -123,8 +126,8 @@ function ScoreBlock({ value, max, label }: { value: number; max: number; label: 
 }
 
 // ------------------------------------------------------------------------------------------------------------ Assurance
-export function AssurancePage({ perspective }: { perspective: string }) {
-  const persona = personaOf(perspective); const { w, recs } = useEstate();
+export function AssurancePage({ perspective, hash = '' }: { perspective: string; hash?: string }) {
+  const persona = personaOf(perspective); const { w, recs: all } = useEstate(); const drill = drillOf(hash, all); const recs = inScope(all, drill);
   const st = recs.map((r) => ({ r, ...asState(r, w.incidents) }));
   const n = (k: AsState) => st.filter((x) => x.state === k).length;
   const attention = st.filter((x) => x.state === 'failed' || x.state === 'drift').sort((a, b) => (a.state === 'failed' ? 0 : 1) - (b.state === 'failed' ? 0 : 1));
@@ -158,9 +161,10 @@ export function AssurancePage({ perspective }: { perspective: string }) {
         <Legend items={(Object.keys(AS) as AsState[]).map((k) => ({ key: k, label: AS[k].label, tone: AS[k].tone }))} />
         <ul className="wk-bars" data-testid="as-buildings">{byBuilding(recs, (r) => asState(r, w.incidents).state).map(({ b, vals }) => <li key={b.key}><span>{b.short}</span><Stack label={b.name} parts={(Object.keys(AS) as AsState[]).map((k) => ({ key: k, label: AS[k].label, value: vals.filter((v) => v === k).length, tone: AS[k].tone }))} /><b>{vals.length}</b></li>)}</ul>
       </Card>
+      <EstateDrill kind="as" recs={all} incidents={w.incidents} hash={hash} base="#/assurance" states={AS} roomBase="#/assurance/room" />
       <AssuranceInsights role={perspective} w={w} />
-      <ExportMenu testId="estate-export" title="Portfolio brief" sub="The campus: by building, by room type and room by room, as six files" by={persona}
-        make={() => estatePackage(recs, w.incidents, { role: personaLabel(persona), at: new Date().toISOString(), build: process.env.DEMO_BUILD_ID || 'dev' })} />
+      <ExportMenu testId="estate-export" title="Portfolio brief" sub={`${drill.b ? `${buildingByKey(drill.b)?.name}${drill.f != null ? `, floor ${drill.f}` : ''}` : 'The campus'}: by building, by room type and room by room, as six files`} by={persona}
+        make={() => estatePackage(all, w.incidents, { role: personaLabel(persona), at: new Date().toISOString(), build: process.env.DEMO_BUILD_ID || 'dev' }, { building: drill.b || undefined, floor: drill.f ?? undefined })} />
       <Foot>Assurance here is modelled from synthetic records; nothing is monitored live, and no claim of operational health is made without live evidence.</Foot>
     </section>
   );
@@ -169,10 +173,11 @@ export function AssurancePage({ perspective }: { perspective: string }) {
 // ------------------------------------------------------------------------------------------------------------ Pro
 /** The service target by severity (the demonstration's stated policy): restore within this many days of opening. */
 export const TARGET_DAYS: Record<string, number> = { 'Mission critical': 1, High: 2, Standard: 5 };
-export function ProPage({ perspective }: { perspective: string }) {
-  const persona = personaOf(perspective); const { w, recs } = useEstate();
+export function ProPage({ perspective, hash = '' }: { perspective: string; hash?: string }) {
+  const persona = personaOf(perspective); const { w, recs: all } = useEstate(); const drill = drillOf(hash, all); const recs = inScope(all, drill);
+  const inScopeRoom = (id: string) => !drill.b || recs.some((r) => r.outline.id === id);
   const now = Date.now();
-  const inc = w.incidents.filter((i) => !DONE.includes(i.state) && !i.restoredAt);
+  const inc = w.incidents.filter((i) => !DONE.includes(i.state) && !i.restoredAt && inScopeRoom(i.roomId));
   const late = (i: S.Incident) => (now - Date.parse(i.openedAt)) / DAY > (TARGET_DAYS[i.severity] ?? 5);
   const roomIssues = recs.flatMap((r) => openIssues(r).map((i) => ({ r, i })));
   const sevSegs = [['High', 'bad'], ['Medium', 'warn'], ['Low', 'info']].map(([s, t]) => ({ key: s!, label: s!, value: roomIssues.filter((x) => x.i.severity === s).length + inc.filter((i) => (s === 'High' ? i.severity !== 'Standard' : s === 'Medium' ? i.severity === 'Standard' : false)).length, tone: t as Series }));
@@ -204,6 +209,7 @@ export function ProPage({ perspective }: { perspective: string }) {
           <p className="wk-note">Targets to restore: {Object.entries(TARGET_DAYS).map(([k, v]) => `${k} ${v} d`).join(' · ')} — the demonstration's stated policy.</p>
         </Card>
       </div>
+      <EstateDrill kind="pro" recs={all} incidents={w.incidents} hash={hash} base="#/pro" states={PRO_STATES} roomBase="#/assurance/room" />
       <Card icon="building" title="Buildings in good standing" sub="Share of each building's rooms accepted with no open issue">
         <ul className="kit-meters">{byBuilding(recs, (r) => cxState(r).state === 'accepted' && !w.incidents.some((i) => i.roomId === r.outline.id && !DONE.includes(i.state))).map(({ b, vals }) => <MeterRow key={b.key} label={b.name} sub={`${vals.filter(Boolean).length} of ${plural(vals.length, 'room')}`} value={pct(vals.filter(Boolean).length, vals.length)} href={`#/campus/${b.key}`} />)}</ul>
       </Card>

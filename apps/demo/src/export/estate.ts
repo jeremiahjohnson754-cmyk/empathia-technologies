@@ -21,8 +21,10 @@ const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? o
 const CX_ORDER: CxState[] = ['blocked', 'progress', 'conditions', 'notstarted', 'accepted'];
 const AS_ORDER: AsState[] = ['failed', 'drift', 'none', 'matched'];
 
-export function estatePackage(all: RoomRecord[], incidents: S.Incident[], by: MadeBy, building?: string): Report {
-  const recs = building ? all.filter((r) => r.outline.building === building) : all; const B = building ? buildingByKey(building) : undefined;
+export interface EstateScope { building?: string; floor?: number }
+export function estatePackage(all: RoomRecord[], incidents: S.Incident[], by: MadeBy, scopeIn?: string | EstateScope): Report {
+  const sc: EstateScope = typeof scopeIn === 'string' ? { building: scopeIn } : scopeIn || {}; const building = sc.building; const floor = building ? sc.floor : undefined;
+  const recs = all.filter((r) => (!building || r.outline.building === building) && (floor == null || r.outline.floor === floor)); const B = building ? buildingByKey(building) : undefined;
   const rows = recs.map((r) => { const cx = cxState(r); const as = asState(r, incidents); const rc = readyCheckOf(r, incidents); return { r, cx, as, rc, open: openIssues(r), crit: criticalityOf(r) }; });
   const ncx = (k: CxState) => rows.filter((x) => x.cx.state === k).length; const nas = (k: AsState) => rows.filter((x) => x.as.state === k).length;
   const verified = recs.reduce((a, r) => a + r.counts.verified, 0); const applicable = recs.reduce((a, r) => a + r.counts.applicable, 0);
@@ -34,13 +36,13 @@ export function estatePackage(all: RoomRecord[], incidents: S.Incident[], by: Ma
   const groups: Array<{ b: { key: string; name: string; short: string }; xs: typeof rows }> = [...blds, ...(others.length ? [{ b: { key: 'regional', name: 'Regional sites', short: 'Regional' }, xs: others }] : [])];
   const types = [...new Set(rows.map((x) => x.r.outline.archetype))].map((a) => ({ a, xs: rows.filter((x) => x.r.outline.archetype === a) })).sort((p, q) => q.xs.length - p.xs.length);
   const trend = assuranceTrend(incidents, recs);
-  const where = B ? B.name : SITE.name; const first = attention[0];
+  const where = B ? `${B.name}${floor != null ? `, floor ${floor}` : ''}` : SITE.name; const first = attention[0];
   const status = ncx('blocked') || nas('failed') ? { label: 'Action needed', tone: 'bad' as const, why: `${plural(ncx('blocked'), 'room')} blocked in commissioning, ${plural(nas('failed'), 'room')} failed an assurance check` } : nas('drift') ? { label: 'Drift to review', tone: 'warn' as const, why: `${plural(nas('drift'), 'room')} drifted from their baseline` } : { label: 'As commissioned', tone: 'ok' as const, why: 'every accepted room matches its baseline' };
   const byGroup = (g: { b: { key: string; name: string }; xs: typeof rows }) => { const v = g.xs.reduce((a, x) => a + x.r.counts.verified, 0); const ap = g.xs.reduce((a, x) => a + x.r.counts.applicable, 0);
     return { name: g.b.name, rooms: g.xs.length, accepted: g.xs.filter((x) => x.cx.state === 'accepted').length, conditions: g.xs.filter((x) => x.cx.state === 'conditions').length, blocked: g.xs.filter((x) => x.cx.state === 'blocked').length, progress: g.xs.filter((x) => x.cx.state === 'progress' || x.cx.state === 'notstarted').length, matched: g.xs.filter((x) => x.as.state === 'matched').length, drift: g.xs.filter((x) => x.as.state === 'drift').length, failed: g.xs.filter((x) => x.as.state === 'failed').length, tests: `${pct(v, ap)}%`, defs: g.xs.reduce((a, x) => a + x.open.length, 0) }; };
   return {
-    schema: 'empathia.report/1', id: `EST-${building || 'CAMPUS'}`, kind: 'portfolio-brief', title: 'Commissioning and assurance portfolio', subtitle: `${where}: ${plural(recs.length, 'room')}`,
-    scope: { tenant: SITE.enterprise, site: SITE.name, building: B?.name || 'All buildings', floor: 'All floors', room: 'All rooms', roomId: building || 'ALL' },
+    schema: 'empathia.report/1', id: `EST-${building || 'CAMPUS'}${floor != null ? `-F${floor}` : ''}`, kind: 'portfolio-brief', title: 'Commissioning and assurance portfolio', subtitle: `${where}: ${plural(recs.length, 'room')}`,
+    scope: { tenant: SITE.enterprise, site: SITE.name, building: B?.name || 'All buildings', floor: floor != null ? `Floor ${floor}` : 'All floors', room: 'All rooms', roomId: building ? `${building}${floor != null ? `-${floor}` : ''}` : 'ALL' },
     status, generatedAt: by.at, role: by.role, build: by.build, primary: 'Rooms',
     provenance: [
       'Synthetic demonstration: every room, person and request is invented and connected to no real system.',
@@ -82,7 +84,7 @@ export function estatePackage(all: RoomRecord[], incidents: S.Incident[], by: Ma
         table: { title: 'Trend', cols: [{ key: 'week', label: 'Week' }, { key: 'match', label: 'Match', kind: 'number' }, { key: 'drift', label: 'Drift', kind: 'number' }, { key: 'fail', label: 'Failed', kind: 'number' }, { key: 'total', label: 'Rooms read', kind: 'number' }], rows: trend.map((t) => ({ week: t.label, match: t.match, drift: t.drift, fail: t.fail, total: t.total })) } },
     ],
     dossier: {
-      scope: { building: building || null, rooms: recs.length },
+      scope: { building: building || null, floor: floor ?? null, rooms: recs.length },
       counts: { commissioning: Object.fromEntries(CX_ORDER.map((k) => [k, ncx(k)])), assurance: Object.fromEntries(AS_ORDER.map((k) => [k, nas(k)])), testsVerified: verified, testsApplicable: applicable, openDeficiencies: defs.length },
       rooms: rows.map((x) => ({ id: x.r.outline.id, building: x.r.outline.building, archetype: x.r.outline.archetype, criticality: x.crit, commissioning: x.cx.state, assurance: x.as.state, ready: x.rc.out, openIssues: x.open.map((i) => i.id) })),
       trend,

@@ -83,7 +83,7 @@ export const OPS_PAGES: readonly PageDef[] = [
   {
     id: 'pro.command', title: 'Pro command center', purpose: 'What is open, how it stands against its target, and where to look next', product: 'pro', landing: true,
     path: '/pro', authority: { area: 'pro' },
-    load: adapt(() => import('./pages/Estate.js'), (m, p) => h(m.ProPage, { perspective: p.role })),
+    load: adapt(() => import('./pages/Estate.js'), (m, p) => h(m.ProPage, { perspective: p.role, hash: p.hash })),
     search: { keywords: 'pro command center issues target buildings lifecycle', aliases: ['pro', 'command center', 'operations'] },
   },
   {
@@ -113,14 +113,14 @@ export const OPS_PAGES: readonly PageDef[] = [
   {
     id: 'commissioning', title: 'Commissioning', purpose: 'Accepted, accepted with conditions, blocked: every room and its deficiencies', product: 'commissioning', landing: true,
     path: '/commissioning', authority: { area: 'commissioning' },
-    load: adapt(() => import('./pages/Estate.js'), (m, p) => h(m.CommissioningPage, { perspective: p.role })),
+    load: adapt(() => import('./pages/Estate.js'), (m, p) => h(m.CommissioningPage, { perspective: p.role, hash: p.hash })),
     search: { keywords: 'commissioning acceptance baseline deficiencies tests', aliases: ['commissioning command center', 'acceptance'] },
   },
   {
     id: 'assurance', title: 'Assurance', purpose: 'Is the estate still behaving the way it was commissioned to behave', product: 'commissioning',
     path: '/assurance', authority: { area: 'assurance' },
     authorityFor: (_p, q) => (q.get('view') === 'analysis' ? { area: 'assurance.analysis' } : undefined),   // V2.5.3: the engineering analysis has its own authority
-    load: adapt(() => import('./pages/AssuranceViews.js'), (m, p) => (/[?&]view=analysis/.test(p.hash) ? h(m.AssuranceAnalysisPage, { perspective: p.role }) : h(m.AssurancePage, { perspective: p.role }))),
+    load: adapt(() => import('./pages/AssuranceViews.js'), (m, p) => (/[?&]view=analysis/.test(p.hash) ? h(m.AssuranceAnalysisPage, { perspective: p.role }) : h(m.AssurancePage, { perspective: p.role, hash: p.hash }))),
     search: { keywords: 'assurance drift baseline ready next session', aliases: ['assurance command center', 'drift'] },
   },
   {

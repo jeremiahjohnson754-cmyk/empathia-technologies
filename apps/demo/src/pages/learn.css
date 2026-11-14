@@ -96,3 +96,15 @@
 .xp-btn > svg { flex: none; margin-top: 2px; }
 .xp-btn__t { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .xp-btn[aria-busy="true"] { border-color: var(--accent); }
+/* pages/EstateDrill.tsx: the estate drilled down and up (campus › building › floor › room) */
+.dr-path { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-bottom: var(--sp-3); font-size: var(--fs-sm); }
+.dr-path > span { display: inline-flex; align-items: center; gap: 8px; }
+.dr-path a { color: var(--accent); text-decoration: none; font-weight: 600; } .dr-path a:hover { text-decoration: underline; }
+.dr-sep { color: var(--tx3, var(--tx2)); }
+.dr-table .num { text-align: right; font-variant-numeric: tabular-nums; } .dr-table .num a { color: var(--accent); font-weight: 600; }
+.dr-table .dr-bar { width: 28%; min-width: 120px; } .dr-table th[scope="row"] a { color: var(--tx); font-weight: 600; }
+.dr-rooms { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.dr-rooms li { display: grid; grid-template-columns: minmax(0, 1.4fr) auto minmax(0, 1.6fr) auto; gap: 6px 12px; align-items: center; padding: 8px 10px; border: 1px solid var(--line2); border-radius: var(--r-md, 8px); background: var(--bg2); }
+.dr-rooms li a { display: inline-flex; flex-wrap: wrap; gap: 2px 6px; align-items: center; min-width: 0; color: var(--tx); text-decoration: none; } .dr-rooms li a:hover b { text-decoration: underline; }
+.dr-rooms .dr-why { min-width: 0; overflow-wrap: anywhere; color: var(--tx2); }
+@media (max-width: 640px) { .dr-rooms li { grid-template-columns: minmax(0, 1fr) auto; } .dr-rooms li .dr-why { grid-column: 1 / -1; } }
