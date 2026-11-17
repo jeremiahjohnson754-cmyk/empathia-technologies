@@ -83,13 +83,64 @@ scripts outside the repository.
   none of the private files is tracked; the default store is outside the repository; no store, a missing file and an altered file
   are each refused and named; the studio suite on a studio without its files exits 3 with `NOT RUN` and reports no pass.
 
+## The durable copy: a private, versioned bucket, and encrypted backups
+
+Founder, 17 Nov 2026, 14:06: "They're currently reported as stored outside Git but on an ephemeral workstation. That's a single
+point of failure. I would use versioned, access-controlled private object storage, with encrypted backup copies and checksum
+verification. Never make those films public simply to simplify build provisioning." And the decision: "a private, versioned
+object-storage bucket with access limited to the build pipeline and authorized founders. Keep the hashes in Git, not the sensitive
+films themselves."
+
+**State on 17 Nov: the tooling is built and tested against a stand-in; no bucket exists yet, so the files are still a single copy
+on this workstation.** Creating the bucket takes an account and a small charge, and its key is a credential: both are the
+founder's to do, and the key is placed in the environment as a secret, never in the repository or in a conversation.
+
+### What is built
+
+| Command | What it does | What it refuses |
+|---|---|---|
+| `push` | uploads what the bucket lacks, from a local store that matches the manifest. Each upload is signed over the file's SHA-256, tells the provider the same hash to check what arrived, and asks for encryption at rest | a store that does not match the manifest; a bucket that does not keep versions; a bucket whose public-access block is partly off; and it **stops at the first file the bucket hands to a request with no credential** |
+| `pull` | fills the store from the bucket | any file whose size or SHA-256 is not the manifest's: it is not kept, and nothing of it is left behind |
+| `bucket-status` | configured? keeping versions? closed to a request with no credential? holding every file the manifest names? | |
+| `backup --recipient=<public key> --to=<file>` | one file encrypted to a **public** key (AES-256-GCM; the key wrapped with RSA-OAEP). Making a backup needs no secret | a recipient key under 3072 bits; a store that does not match the manifest |
+| `restore-backup --from=<file> --key=<private key>` | run where the private key is allowed to be. Decrypts, checks the authentication tag, checks every file's SHA-256, and only then puts anything in place | a changed, truncated or mismatching backup; the wrong key |
+
+Settings are in `scripts/private/s3.mjs`. Only the bucket's own variable names are read (`EMPATHIA_PRIVATE_BUCKET_…`); a machine's
+general cloud credentials are deliberately not used. The provisioning path does not change: `pull`, then `provision`.
+
+### What the founder sets up (once)
+
+1. A bucket for this and nothing else, in the founder's own cloud account. **Versioning on. Public access blocked** (on Amazon S3:
+   all four "Block public access" settings). Default encryption at rest on.
+2. An access key that can read and write **that bucket only** (no other bucket, no account administration). This is the build
+   pipeline's key. Authorized founders use their own sign-in to the cloud account, not this key.
+3. The bucket's name and region, and that key, placed as secrets in the environment the build runs in.
+4. For encrypted backup copies: an RSA key pair made on the founder's own computer (`openssl genrsa -out empathia-backup.pem 4096`,
+   `openssl rsa -in empathia-backup.pem -pubout -out empathia-backup.pub.pem`). **Only the `.pub.pem` file is handed over**; it is
+   a public key and safe to send. The private key stays with the founder and is what opens a backup.
+
+Then, here: `push`, `bucket-status`, a `pull` into an empty directory to prove the round trip against the real provider, and a
+`backup` to the founder's public key, delivered to the founder to keep somewhere other than the bucket.
+
+### Verified, and not
+
+- `tests/unit/private-bucket.test.mjs` PB-01…09, part of `node scripts/test.mjs`: the request signer reproduces the published
+  Signature Version 4 example; against a stand-in bucket that checks every signature, push uploads each file once with its checksum
+  and keeps versions, pull verifies and keeps owner-only files, a file changed in the bucket is refused, a bucket without versions
+  or with its public-access block partly off is refused before anything is sent, a bucket that answers a request with no credential
+  is reported as public and a push stops; an unconfigured machine says so and uses no other credential; a backup opens only with
+  the recipient's private key, holds no file's bytes in the clear, restores exactly, and restores nothing when it has been changed,
+  truncated or made for another manifest; no command prints the secret.
+- **Not verified: any real provider.** No request has been sent to a real bucket. The first `push` and `pull` against the founder's
+  bucket are the test of that, and are to be reported as such.
+- **Not done: a real backup.** It needs the founder's public key.
+
 ## Not solved here, and whose decision it is
 
-- **Durability.** The store is on this workstation, which is an ephemeral machine. If it is reclaimed, the page and the films exist
-  only wherever the founder keeps the originals. The process is then: put the files in a store directory on the new machine and run
-  `verify`; the manifest says exactly which files, and proves they are the same ones. **Where a durable private copy is kept (an
-  encrypted archive in the founder's own storage, a private bucket, or nowhere but the founder's computer) is the founder's decision.**
-  A private bucket would mean an account, a small charge and a credential held as a secret; none of that has been set up.
+- **Durability, until the bucket exists.** The store is on this workstation, which is an ephemeral machine. If it is reclaimed
+  before the bucket is set up, the page and the films exist only wherever the founder keeps the originals. The process is then: put
+  the files in a store directory on the new machine and run `verify`; the manifest says exactly which files, and proves they are the
+  same ones. The decision is made (a private, versioned bucket); what remains is the founder's setup above.
 - **A hosted CI runner** would need the same store mounted from a secret location. There is no hosted CI for this suite today; it
   runs on this workstation.
 - The other 31 curated films are not on this workstation at all. The studio lists them and says which are present; the suite needs

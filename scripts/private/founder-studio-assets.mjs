@@ -14,6 +14,15 @@
  *   node scripts/private/founder-studio-assets.mjs provision [--checkout=<dir>]   verify, then build that checkout's studio from its own records and the store
  *   node scripts/private/founder-studio-assets.mjs snapshot [--from=<checkout>]   (re)fill the store from a checkout whose built studio has the assets, and rewrite the manifest
  *
+ * The durable copy (founder, 17 Nov 2026: "a private, versioned object-storage bucket with access limited to the build pipeline and
+ * authorized founders… encrypted backup copies and checksum verification. Never make those films public simply to simplify build
+ * provisioning."). The local store is a working copy; the bucket is where the files live. scripts/private/s3.mjs has its settings.
+ *   … bucket-status                       is it configured, versioned and closed to the public, and does it hold what the manifest names
+ *   … push                                upload what the bucket lacks, from a store that matches the manifest. Refused unless the bucket keeps versions and gives nothing to a request without a credential
+ *   … pull                                fill the store from the bucket; every file's SHA-256 is checked against the manifest before it is kept
+ *   … backup --recipient=<public key.pem> --to=<file>      one encrypted file only the holder of the private key can open (scripts/private/backup.mjs)
+ *   … restore-backup --from=<file> --key=<private key.pem> [--into=<store>]   the reverse, on a machine that is allowed to hold that key
+ *
  * The store: a directory OUTSIDE the repository, named by EMPATHIA_PRIVATE_STORE (default ~/.empathia-private), readable by its
  * owner only. Nothing in it is copied into a tracked path: the page goes into the built studio (dist/, ignored) and the films are
  * linked there. The manifest (apps/founder-studio/PRIVATE_ASSETS.json) is committed and holds names, sizes and hashes only: it says
@@ -22,13 +31,14 @@
  */
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import crypto from 'node:crypto';
 import { spawnSync } from 'node:child_process'; import { fileURLToPath } from 'node:url';
+import { Bucket, bucketConfig } from './s3.mjs'; import { makeBackup, restoreBackup, readHeader } from './backup.mjs';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const arg = (k, d = '') => (process.argv.find((a) => a.startsWith(`--${k}=`)) || '').split('=').slice(1).join('=') || d;
 const storeRoot = () => path.resolve(process.env.EMPATHIA_PRIVATE_STORE || path.join(os.homedir(), '.empathia-private'));
 const storeDir = () => path.join(storeRoot(), 'founder-studio');
 const storeName = () => `${process.env.EMPATHIA_PRIVATE_STORE ? 'EMPATHIA_PRIVATE_STORE' : '~/.empathia-private'}/founder-studio`;
-const manifestFile = path.join(repo, 'apps/founder-studio/PRIVATE_ASSETS.json');
+const manifestFile = process.env.EMPATHIA_PRIVATE_MANIFEST || path.join(repo, 'apps/founder-studio/PRIVATE_ASSETS.json');   // the override is for this tool's own tests
 const FE = 'founder-edition/Empathia-Founder-Edition.html';
 const sha = (f) => { const h = crypto.createHash('sha256'); const fd = fs.openSync(f, 'r'); const buf = Buffer.alloc(1 << 20); let n; while ((n = fs.readSync(fd, buf, 0, buf.length, null)) > 0) h.update(buf.subarray(0, n)); fs.closeSync(fd); return h.digest('hex'); };
 const readManifest = () => (fs.existsSync(manifestFile) ? JSON.parse(fs.readFileSync(manifestFile, 'utf8')) : null);
@@ -67,6 +77,40 @@ function provision(checkout) {
   return { files: c.rows.length, placed };
 }
 
+/** The bucket as it is: configured, keeping versions, closed to requests without a credential, and holding each file the manifest names. */
+async function bucketStatus() {
+  const cfg = bucketConfig(); if (!cfg.ok) return { ok: false, why: cfg.why, rows: [] };
+  const m = readManifest(); if (!m) return { ok: false, why: 'there is no manifest', rows: [] };
+  const b = new Bucket(cfg); const versioning = await b.versioning(); const block = await b.publicAccessBlock(); const rows = [];
+  for (const f of m.files) { const h = await b.head(f.path); const anon = h.exists ? await b.anonymous(f.path) : 0; rows.push({ ...f, state: !h.exists ? 'absent' : h.bytes !== f.bytes || h.sha256 !== f.sha256 ? 'different' : 'ok', version: h.version || '', anonymous: anon }); }
+  const open = rows.filter((r) => r.anonymous >= 200 && r.anonymous < 400); const problems = [
+    ...(versioning !== 'Enabled' ? [`the bucket does not keep versions (versioning: ${versioning})`] : []),
+    ...(/of 4 settings on/.test(block) ? [`the bucket's public-access block is not fully on (${block})`] : []),
+    ...(open.length ? [`${open.length} files are given to a request with no credential: the bucket is public`] : []),
+    ...(rows.some((r) => r.state !== 'ok') ? [`${rows.filter((r) => r.state !== 'ok').length} of ${rows.length} files are absent from the bucket or differ from the manifest`] : [])];
+  return { ok: !problems.length, why: problems.join('; '), where: cfg.where, versioning, block, rows, safeToUse: versioning === 'Enabled' && !/of 4 settings on/.test(block) && !open.length };
+}
+
+async function push() {
+  const c = check(); if (!c.ok) throw new Error(`the local store does not match the manifest, so nothing is uploaded: ${c.why}`);
+  const cfg = bucketConfig(); if (!cfg.ok) throw new Error(cfg.why);
+  const b = new Bucket(cfg); const versioning = await b.versioning(); const block = await b.publicAccessBlock();
+  if (versioning !== 'Enabled') throw new Error(`refused: the bucket does not keep versions (versioning: ${versioning}). Turn versioning on first`);
+  if (/of 4 settings on/.test(block)) throw new Error(`refused: the bucket's public-access block is not fully on (${block})`);
+  const store = storeDir(); let sent = 0; let kept = 0;
+  for (const f of c.rows) { const h = await b.head(f.path); if (h.exists && h.bytes === f.bytes && h.sha256 === f.sha256) { kept += 1; } else { await b.put(f.path, path.join(store, f.path), f.sha256); sent += 1; }
+    const anon = await b.anonymous(f.path); if (anon >= 200 && anon < 400) throw new Error(`STOP: ${f.path} is given to a request with no credential (${anon}). The bucket is public. Nothing more was uploaded; close the bucket, and treat what is in it as exposed`); }
+  return { where: cfg.where, sent, kept, block };
+}
+
+async function pull() {
+  const m = readManifest(); if (!m) throw new Error('there is no manifest'); const cfg = bucketConfig(); if (!cfg.ok) throw new Error(cfg.why);
+  const b = new Bucket(cfg); const store = storeDir(); fs.mkdirSync(store, { recursive: true, mode: 0o700 }); fs.chmodSync(storeRoot(), 0o700); let got = 0; let had = 0;
+  for (const f of m.files) { const p = path.join(store, f.path); if (fs.existsSync(p) && fs.statSync(p).size === f.bytes && sha(p) === f.sha256) { had += 1; continue; }
+    fs.mkdirSync(path.dirname(p), { recursive: true, mode: 0o700 }); await b.get(f.path, p, f.sha256, f.bytes); fs.chmodSync(p, 0o600); got += 1; }
+  const c = check(); if (!c.ok) throw new Error(c.why); return { where: cfg.where, got, had };
+}
+
 /** Whether a built studio has what its browser suite needs. The suite asks this before it starts anything. */
 export function provisioned(dist = path.join(repo, 'apps/founder-studio/dist')) {
   if (!fs.existsSync(path.join(dist, 'index.html'))) return { ok: false, why: 'the studio is not built' };
@@ -81,6 +125,12 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.a
     if (cmd === 'snapshot') { const files = snapshot(path.resolve(arg('from', repo))); console.log(`store filled and manifest written: ${files.length} files, ${(files.reduce((a, f) => a + f.bytes, 0) / 1e6).toFixed(1)} MB`); }
     else if (cmd === 'status' || cmd === 'verify') { const c = check(); for (const r of c.rows) console.log(`${r.state.padEnd(18)} ${String(r.bytes).padStart(10)}  ${r.path}`); console.log(c.ok ? `the store matches the manifest: ${c.rows.length} files` : `NOT PROVISIONED: ${c.why}`); process.exit(c.ok || cmd === 'status' ? 0 : 1); }
     else if (cmd === 'provision') { const dir = path.resolve(arg('checkout', repo)); const r = provision(dir); console.log(`${dir}: the studio is built from this checkout and the store (${r.files} private files verified; ${r.placed})`); }
-    else { console.error('usage: founder-studio-assets.mjs status | verify | provision [--checkout=<dir>] | snapshot [--from=<checkout>]'); process.exit(2); }
+    else if (cmd === 'bucket-status') { const s = await bucketStatus(); for (const r of s.rows) console.log(`${r.state.padEnd(10)} ${String(r.bytes).padStart(10)}  ${r.path}${r.version ? `  (a version is kept)` : ''}`); if (s.where) console.log(`${s.where}: versioning ${s.versioning}; public-access block ${s.block}`); console.log(s.ok ? `the bucket holds every file the manifest names, keeps versions and gives nothing to a request without a credential` : `BUCKET NOT READY: ${s.why}`); process.exit(s.ok ? 0 : 1); }
+    else if (cmd === 'push') { const r = await push(); console.log(`${r.where}: ${r.sent} uploaded, ${r.kept} already there and the same; each one refused to a request without a credential (public-access block ${r.block})`); }
+    else if (cmd === 'pull') { const r = await pull(); console.log(`${r.where}: ${r.got} downloaded and verified, ${r.had} already in the store; the store matches the manifest`); }
+    else if (cmd === 'backup' && arg('recipient') && arg('to')) { const c = check(); if (!c.ok) throw new Error(`the store does not match the manifest, so no backup is made: ${c.why}`); const r = makeBackup(storeDir(), c.rows.map(({ path: p, bytes, sha256 }) => ({ path: p, bytes, sha256 })), fs.readFileSync(arg('recipient'), 'utf8'), path.resolve(arg('to'))); console.log(`backup written: ${r.files} files, ${(r.bytes / 1e6).toFixed(1)} MB, sha256 ${r.sha256}; it opens only with the private key of the recipient (key fingerprint ${r.recipient.slice(0, 16)}…)`); }
+    else if (cmd === 'restore-backup' && arg('from') && arg('key')) { const m = readManifest(); const into = arg('into') ? path.resolve(arg('into')) : storeDir(); const r = restoreBackup(path.resolve(arg('from')), fs.readFileSync(arg('key'), 'utf8'), into, m ? m.files : null); console.log(`restored ${r.files} files (${(r.bytes / 1e6).toFixed(1)} MB) from the backup made ${r.made}; each matches the manifest`); }
+    else if (cmd === 'backup-info' && arg('from')) { const { header } = readHeader(path.resolve(arg('from'))); console.log(`made ${header.made}; ${header.files.length} files; for the key with fingerprint ${header.recipient.slice(0, 16)}…`); for (const f of header.files) console.log(`${String(f.bytes).padStart(10)}  ${f.sha256.slice(0, 16)}…  ${f.path}`); }
+    else { console.error('usage: founder-studio-assets.mjs status | verify | provision [--checkout=<dir>] | snapshot [--from=<checkout>] | bucket-status | push | pull | backup --recipient=<public.pem> --to=<file> | restore-backup --from=<file> --key=<private.pem> [--into=<dir>] | backup-info --from=<file>'); process.exit(2); }
   } catch (e) { console.error(`founder-studio-assets: ${(e && e.message) || e}`); process.exit(1); }
 }
