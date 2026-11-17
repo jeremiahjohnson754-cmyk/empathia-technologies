@@ -4,7 +4,7 @@
  * how each device is mounted, what it is hooked up to, devices moved from their designed position (a sprinkler, a diffuser, a beam) with
  * the reason, a photograph and an independent decision, and notes pinned to the plan. The record is in install/fieldRecord.ts.
  */
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { PageHero, Card, StatTile, Segmented, Tag, Notice } from '@empathia/ui';
 import { roomRecord, type RoomRecord, type Position } from '../campus/design.js';
 import { CAMPUS_ROOMS, SITE } from '../campus/canon.js';
@@ -13,6 +13,17 @@ import { personaOf, personaLabel, holds } from '../build/store.js';
 import { ExportMenu } from '../export/ExportMenu.js';
 import type { Report } from '../export/model.js';
 import * as F from '../install/fieldRecord.js';
+import { browserSource, type FieldSource } from '../install/fieldSource.js';
+
+// A build that names a server can show the room of the visitor's sandbox on this same page, with its record kept by the server
+// (connected/fieldServer.tsx). A build that names none has no such file: the import below is never reached and nothing is emitted.
+const loadServerRoom = process.env.DEMO_API_URL ? () => import('../connected/fieldServer.js') : null;
+type ServerRoomProps = { roomId: string; persona: string; children: (r: RoomRecord, source: FieldSource, note: ReactNode) => ReactNode };
+function ServerRoomLater(props: ServerRoomProps) {
+  const [Room, setRoom] = useState<((p: ServerRoomProps) => ReactNode) | null>(null);
+  useEffect(() => { let alive = true; void loadServerRoom?.().then((m) => { if (alive) setRoom(() => m.ServerRoom as (p: ServerRoomProps) => ReactNode); }); return () => { alive = false; }; }, []);
+  return Room ? <>{Room(props)}</> : <section className="wk" data-testid="field-redline" data-source="server" data-state="reading"><p className="ui-muted" role="status">Reading the room…</p></section>;
+}
 
 type Mode = 'select' | 'note' | 'move';
 const when = (s?: string) => (s ? s.slice(0, 16).replace('T', ' ') : '—');
@@ -20,18 +31,23 @@ const when = (s?: string) => (s ? s.slice(0, 16).replace('T', ' ') : '—');
 export function FieldRedlinePage({ perspective, hash }: { perspective: string; hash: string }) {
   const persona = personaOf(perspective); const q = new URLSearchParams(hash.split('?')[1] || '');
   const roomId = q.get('room') || 'R-ATL-4-218'; const r = useMemo(() => roomRecord(roomId), [roomId]);
+  if (!r && loadServerRoom) return <ServerRoomLater roomId={roomId} persona={persona}>{(rec, source, note) => <Redline key={`${rec.outline.id}:${persona}`} r={rec} persona={persona} focus={q.get('device')} source={source} note={note} />}</ServerRoomLater>;
   if (!r) return <section className="wk" data-testid="field-redline"><Notice tone="bad">There is no room {roomId} on the campus record.</Notice></section>;
   return <Redline r={r} persona={persona} focus={q.get('device')} />;
 }
 
-function Redline({ r, persona, focus }: { r: RoomRecord; persona: string; focus: string | null }) {
+function Redline({ r, persona, focus, source, note }: { r: RoomRecord; persona: string; focus: string | null; source?: FieldSource; note?: ReactNode }) {
   const room = r.outline.id; const [w, l] = r.outline.dims;
-  const [tick, setTick] = useState(0); const s = useMemo(() => F.readField(room), [room, tick]);
-  const devices = useMemo(() => F.devicesOf(r), [r]); const st = F.fieldStats(r, s);
+  const src = useMemo(() => source || browserSource(r, persona), [source, r, persona]); const onServer = src.where === 'server';
+  const [tick, setTick] = useState(0); const s = useMemo(() => src.read(), [src, tick]); const [busy, setBusy] = useState(false);
+  const devices = useMemo(() => F.devicesOf(r), [r]); const st = src.facts ? src.facts.stats() : F.fieldStats(r, s);
+  const asDesigned = (h: F.Hookup) => (src.facts ? src.facts.asDesigned(h.id) : F.asDesigned(r, h)); const recheck = (device: string) => (src.facts ? src.facts.recheck(device) : F.checksNaming(r, device));
   const [mode, setMode] = useState<Mode>('select'); const [sel, setSel] = useState<string | null>(focus && devices.some((d) => d.code === focus) ? focus : null);
   const [pin, setPin] = useState<{ x: number; y: number } | null>(null); const [err, setErr] = useState<string[] | null>(null); const [ok, setOk] = useState<string | null>(null);
-  const canRecord = F.RECORD_AUTHORITIES.some((a) => holds(persona, a)); const canApprove = holds(persona, F.APPROVE_AUTHORITY);
-  const run = (res: F.Result, msg: string) => { if (res.ok) { setErr(null); setOk(msg); setTick((t) => t + 1); return true; } setOk(null); setErr(res.why); setTick((t) => t + 1); return false; };
+  // the browser's record asks the demonstration's policy; the server's says what the person it answers as may do, and decides each request itself
+  const canRecord = src.may ? src.may.record : F.RECORD_AUTHORITIES.some((a) => holds(persona, a)); const canApprove = src.may ? src.may.decide : holds(persona, F.APPROVE_AUTHORITY);
+  const run = async (asked: Promise<F.Result>, msg: string) => { setBusy(true); let res: F.Result; try { res = await asked; } finally { setBusy(false); }
+    if (res.ok) { setErr(null); setOk(msg); setTick((t) => t + 1); return true; } setOk(null); setErr(res.why); setTick((t) => t + 1); return false; };
   const dev = devices.find((d) => d.code === sel) || null;
 
   // the plan: metres → SVG units (100 per metre), a margin for labels
@@ -54,14 +70,14 @@ function Redline({ r, persona, focus }: { r: RoomRecord; persona: string; focus:
     scope: { tenant: SITE.enterprise, site: SITE.name, building: r.outline.building, floor: String(r.outline.floor), room: r.outline.name, roomId: room },
     status: { label: `${st.mounted} of ${st.devices} mounted · ${st.proposed} moves waiting`, tone: st.proposed || st.openNotes ? 'warn' : 'muted', why: `${st.hookups} hookups (${st.notInDesign} not in the design); ${st.approved} approved moves; ${st.openNotes} open notes` },
     generatedAt: made.at, role: made.role, build: made.build,
-    provenance: ['The design is the campus record’s (synthetic); the field record is what was typed or photographed in this browser, each entry with who and when.', 'An approved field move is the as-built position; it does not edit the design.', `Made as ${made.role}: a perspective on the record, which grants no permission.`],
+    provenance: [onServer ? 'The design and the field record are the server’s, in a demonstration sandbox (synthetic): each entry with who recorded it and when, as the server kept it.' : 'The design is the campus record’s (synthetic); the field record is what was typed or photographed in this browser, each entry with who and when.', 'An approved field move is the as-built position; it does not edit the design.', `Made as ${made.role}: a perspective on the record, which grants no permission.`],
     headline: `${room}: ${st.mounted} of ${st.devices} devices have their mounting recorded, ${st.hookups} hookups are recorded, ${st.approved} devices were moved in the field with approval and ${st.proposed} moves wait for a decision.`,
     kpis: [{ label: 'Mounted', value: `${st.mounted}/${st.devices}` }, { label: 'Hookups', value: String(st.hookups) }, { label: 'Not in the design', value: String(st.notInDesign) }, { label: 'Moves waiting', value: String(st.proposed) }, { label: 'Open notes', value: String(st.openNotes) }],
     primary: 'Mounting',
     sections: [
       { id: 'mounting', heading: 'How each device is mounted', table: { title: 'Mounting', cols: [{ key: 'd', label: 'Device' }, { key: 'm', label: 'Method' }, { key: 'h', label: 'Height (m AFF)' }, { key: 'f', label: 'Fixing' }, { key: 'b', label: 'Backing' }, { key: 't', label: 'Tether' }, { key: 'by', label: 'Recorded by' }, { key: 'at', label: 'When', kind: 'date' }],
         rows: devices.map((d) => { const m = F.mountOf(s, d.code); return { d: `${d.code} ${d.label}`, m: m ? F.MOUNTS.find((x) => x.id === m.method)?.label || m.method : 'not recorded', h: m?.heightM ?? '', f: m?.fixing || '', b: m?.backing || '', t: m?.tether || '', by: m ? personaLabel(m.by) : '', at: m?.at.slice(0, 10) || '' }; }) } },
-      { id: 'hookups', heading: 'What each device is hooked up to', table: { title: 'Hookups', cols: [{ key: 'id', label: 'Hookup' }, { key: 'a', label: 'Device and port' }, { key: 'b', label: 'Other end' }, { key: 'c', label: 'Cable' }, { key: 'x', label: 'Against the design' }], rows: s.hookups.map((h) => ({ id: h.id, a: `${h.device} ${label(h.device)} · ${h.port}`, b: `${h.to}${F.ENDS_OUTSIDE.includes(h.to) ? '' : ` ${label(h.to)}`}${h.toPort ? ` · ${h.toPort}` : ''}`, c: h.cable, x: F.asDesigned(r, h) ? 'as designed' : 'not in the design' })) } },
+      { id: 'hookups', heading: 'What each device is hooked up to', table: { title: 'Hookups', cols: [{ key: 'id', label: 'Hookup' }, { key: 'a', label: 'Device and port' }, { key: 'b', label: 'Other end' }, { key: 'c', label: 'Cable' }, { key: 'x', label: 'Against the design' }], rows: s.hookups.map((h) => ({ id: h.id, a: `${h.device} ${label(h.device)} · ${h.port}`, b: `${h.to}${F.ENDS_OUTSIDE.includes(h.to) ? '' : ` ${label(h.to)}`}${h.toPort ? ` · ${h.toPort}` : ''}`, c: h.cable, x: asDesigned(h) ? 'as designed' : 'not in the design' })) } },
       { id: 'moves', heading: 'Field moves', table: { title: 'Moves', cols: [{ key: 'id', label: 'Move' }, { key: 'd', label: 'Device' }, { key: 'm', label: 'Distance (m)', kind: 'number' }, { key: 'why', label: 'Reason' }, { key: 's', label: 'State', kind: 'status' }, { key: 'by', label: 'Recorded / decided' }], rows: s.moves.map((m) => ({ id: m.id, d: `${m.device} ${label(m.device)}`, m: Number(F.dist(m.from, m.to).toFixed(2)), why: `${m.reason}${m.note ? `: ${m.note}` : ''}`, s: m.state, by: `${personaLabel(m.by)}${m.decidedBy ? ` / ${personaLabel(m.decidedBy)}` : ''}` })) } },
       { id: 'notes', heading: 'Notes on the plan', table: { title: 'Notes', cols: [{ key: 'id', label: 'Note' }, { key: 't', label: 'Text' }, { key: 's', label: 'State', kind: 'status' }, { key: 'res', label: 'Resolution' }], rows: s.markups.map((m) => ({ id: m.id, t: m.text, s: m.state, res: m.resolution || '' })) } },
     ],
@@ -69,13 +85,15 @@ function Redline({ r, persona, focus }: { r: RoomRecord; persona: string; focus:
   });
 
   return (
-    <section className="wk san fr" data-native="workspace" data-testid="field-redline" data-room={room}>
+    <section className="wk san fr" data-native="workspace" data-testid="field-redline" data-room={room} data-source={src.where} aria-busy={busy}>
       <PageHero product="lite" icon="map" eyebrow="Phase 1 · installation" title={`Field record · ${r.outline.name}`}
-        lede={<>The design in black; what the installation team found and did in red: how each device is mounted, what it is hooked up to, devices moved from their designed position and why, and notes on the plan. Synthetic room; what you record stays in this browser. Acting as <b>{personaLabel(persona)}</b>.</>} />
+        lede={<>The design in black; what the installation team found and did in red: how each device is mounted, what it is hooked up to, devices moved from their designed position and why, and notes on the plan. {onServer ? <>Synthetic room; this one is the room of your sandbox, and what you record is kept by the server. Asking as <b>{src.actingAs}</b>: the server decides what that person may do.</> : <>Synthetic room; what you record stays in this browser. Acting as <b>{personaLabel(persona)}</b>.</>}</>} />
       <p className="build__row">
-        <label className="kit-field">Room <select aria-label="Room" value={room} onChange={(e) => { location.hash = `#/install/redline?room=${e.target.value}`; }}>{CAMPUS_ROOMS.map((o) => <option key={o.id} value={o.id}>{o.id} · {o.name}</option>)}</select></label>
-        <a className="ui-btn ui-btn--sm" href={`#/lite/room/${room}?mode=engineer`}>Open the room in Lite</a> <a className="ui-btn ui-btn--sm" href={`#/commissioning/room/${room}`}>Its commissioning record</a>
+        <label className="kit-field">Room <select aria-label="Room" value={room} onChange={(e) => { location.hash = `#/install/redline?room=${e.target.value}`; }}>{onServer ? <option value={room}>{room} · {r.outline.name} (your sandbox, on the server)</option> : null}{CAMPUS_ROOMS.map((o) => <option key={o.id} value={o.id}>{o.id} · {o.name}</option>)}</select></label>
+        {onServer ? <a className="ui-btn ui-btn--sm" href="#/connected" data-testid="fr-thread">Its whole thread on the server</a>
+          : <><a className="ui-btn ui-btn--sm" href={`#/lite/room/${room}?mode=engineer`}>Open the room in Lite</a> <a className="ui-btn ui-btn--sm" href={`#/commissioning/room/${room}`}>Its commissioning record</a></>}
       </p>
+      {onServer ? <div data-testid="fr-server"><Notice tone="info"><b>Kept by the server.</b> This is the room of your sandbox. Every action here is a request made as the person you are viewing as; the server records it or refuses it, and both are in its history below. {note}</Notice></div> : null}
       {!canRecord && !canApprove ? <Notice tone="info">You can read this record. The installation team records it (work.evidence or field.scan); the systems engineer or the designer of record decides field moves.</Notice> : null}
       <div className="kit-grid kit-grid--tiles wk-tiles5" data-testid="fr-kpis">
         <StatTile label="Mounting recorded" value={`${st.mounted}/${st.devices}`} tone={st.mounted === st.devices ? 'ok' : 'warn'} />
@@ -117,13 +135,13 @@ function Redline({ r, persona, focus }: { r: RoomRecord; persona: string; focus:
             </svg>
           </div>
           <p className="ui-muted fr__legend"><span className="fr__k fr__k--dev" /> device as designed · <span className="fr__k fr__k--mounted" /> mounting recorded · <span className="fr__k fr__k--move" /> moved in the field (dashed while waiting for a decision) · <span className="fr__k fr__k--note" /> note</p>
-          {pin && mode === 'note' ? <NoteForm onSave={(text) => run(F.addMarkup(r, persona, { ...pin, text }), 'Note pinned to the plan.') && setPin(null)} at={pin} /> : null}
-          {pin && mode === 'move' && dev ? <MoveForm dev={dev} at={pin} onSave={(reason, note, photo) => run(F.proposeMove(r, persona, { device: dev.code, x: pin.x, y: pin.y, reason, note, photo }), `${dev.code}: field move recorded; it waits for a decision.`) && setPin(null)} /> : null}
+          {pin && mode === 'note' ? <NoteForm onSave={(text) => { void run(src.addMarkup({ ...pin, text }), 'Note pinned to the plan.').then((done) => { if (done) setPin(null); }); }} at={pin} /> : null}
+          {pin && mode === 'move' && dev ? <MoveForm dev={dev} at={pin} photos={!onServer} onSave={(reason, note, photo) => { void run(src.proposeMove({ device: dev.code, x: pin.x, y: pin.y, reason, note, photo }), `${dev.code}: field move recorded; it waits for a decision.`).then((done) => { if (done) setPin(null); }); }} /> : null}
         </Card>
 
         <Card icon="wrench" title={dev ? `${dev.code} · ${dev.label}` : 'Choose a device'} sub={dev ? `${dev.catLabel} · designed ${dev.mount}, ${dev.x} m across, ${dev.y} m deep${dev.z ? `, ${dev.z} m high` : ''}` : 'On the plan or from the list'} testId="fr-device">
           {!dev ? <ul className="build__list">{devices.map((d) => <li key={d.code}><button type="button" className="ui-btn ui-btn--sm" onClick={() => setSel(d.code)}>{d.code}</button> {d.label} {F.mountOf(s, d.code) ? <Tag tone="ok">mounted</Tag> : <Tag tone="muted">mounting not recorded</Tag>}</li>)}</ul>
-            : <DevicePanel key={dev.code} r={r} s={s} dev={dev} persona={persona} canRecord={canRecord} run={run} onMove={() => { setMode('move'); setPin(null); }} />}
+            : <DevicePanel key={dev.code} r={r} s={s} dev={dev} src={src} canRecord={canRecord} run={run} onMove={() => { setMode('move'); setPin(null); }} />}
         </Card>
       </div>
 
@@ -131,26 +149,26 @@ function Redline({ r, persona, focus }: { r: RoomRecord; persona: string; focus:
         {!s.moves.length ? <p className="ui-muted">No device has been moved from its designed position.</p> : <ul className="build__list">{s.moves.map((m) => <li key={m.id} data-move={m.id} data-state={m.state}>
           <b>{m.id}</b> <Tag tone={m.state === 'APPROVED' ? 'ok' : m.state === 'REJECTED' ? 'bad' : 'warn'}>{m.state}</Tag> {m.device} {label(m.device)} moved {F.dist(m.from, m.to).toFixed(2)} m · <b>{m.reason}</b>{m.note ? `: ${m.note}` : ''} <span className="ui-muted">· {personaLabel(m.by)}, {when(m.at)}{m.decidedBy ? ` · ${m.state.toLowerCase()} by ${personaLabel(m.decidedBy)}${m.decision ? `: ${m.decision}` : ''}` : ''}</span>
           {m.photo ? <img className="fr__photo" src={m.photo.dataUrl} alt={`Photograph for ${m.id}`} /> : null}
-          {m.state === 'APPROVED' ? <span className="ui-muted"> · Checks that name it, to look at again: {F.checksNaming(r, m.device).join(', ') || 'none'}</span> : null}
-          {m.state === 'PROPOSED' && canApprove ? <Decide onDecide={(yes, why) => run(F.decideMove(r, persona, m.id, yes, why), `${m.id} ${yes ? 'approved' : 'rejected'}.`)} id={m.id} /> : null}
+          {m.state === 'APPROVED' ? <span className="ui-muted"> · Checks that name it, to look at again: {recheck(m.device).join(', ') || 'none'}</span> : null}
+          {m.state === 'PROPOSED' && canApprove ? <Decide onDecide={(yes, why) => { void run(src.decideMove(m.id, yes, why), `${m.id} ${yes ? 'approved' : 'rejected'}.`); }} id={m.id} /> : null}
         </li>)}</ul>}
       </Card>
 
       <Card icon="info" title={`Notes on the plan (${s.markups.length})`} sub="Clouds pinned where they apply; open until resolved" testId="fr-notes">
         {!s.markups.length ? <p className="ui-muted">No notes yet. Choose “Add a note” and click the plan.</p> : <ol className="build__list">{s.markups.map((m) => <li key={m.id} data-note={m.id} data-state={m.state}>
           <b>{m.id}</b> <Tag tone={m.state === 'OPEN' ? 'warn' : 'ok'}>{m.state}</Tag> {m.text} <span className="ui-muted">· {personaLabel(m.by)}, {when(m.at)}{m.resolution ? ` · resolved by ${m.resolvedBy ? personaLabel(m.resolvedBy) : ''}: ${m.resolution}` : ''}</span>
-          {m.state === 'OPEN' && (canRecord || canApprove) ? <Resolve id={m.id} onSave={(t) => run(F.resolveMarkup(r, persona, m.id, t), `${m.id} resolved.`)} /> : null}
+          {m.state === 'OPEN' && (canRecord || canApprove) ? <Resolve id={m.id} onSave={(t) => { void run(src.resolveMarkup(m.id, t), `${m.id} resolved.`); }} /> : null}
         </li>)}</ol>}
       </Card>
 
-      <details className="ln-dom"><summary><b>Who recorded what</b> <span className="ui-meta">{s.log.length} entries, refusals included</span></summary>
+      <details className="ln-dom"><summary><b>Who recorded what</b> <span className="ui-meta">{onServer ? `the server’s history of this room, latest ${s.log.length}, refusals included` : `${s.log.length} entries, refusals included`}</span></summary>
         <ul className="build__list" data-testid="fr-log">{s.log.slice(0, 40).map((x, i) => <li key={i}><Tag tone={x.outcome === 'DENIED' ? 'bad' : 'muted'}>{x.outcome}</Tag> {personaLabel(x.by)} · {when(x.at)} · {x.what}</li>)}</ul></details>
       <ExportMenu testId="fr-export" title="Field record" by={personaLabel(persona)} sub="Mounting, hookups, field moves and notes, as six files" make={report} />
     </section>
   );
 }
 
-function DevicePanel({ r, s, dev, persona, canRecord, run, onMove }: { r: RoomRecord; s: F.FieldState; dev: Position; persona: string; canRecord: boolean; run: (x: F.Result, m: string) => boolean; onMove: () => void }) {
+function DevicePanel({ r, s, dev, src, canRecord, run, onMove }: { r: RoomRecord; s: F.FieldState; dev: Position; src: FieldSource; canRecord: boolean; run: (x: Promise<F.Result>, m: string) => Promise<boolean>; onMove: () => void }) {
   const cur = F.mountOf(s, dev.code);
   const [m, setM] = useState({ method: cur?.method || '', heightM: cur?.heightM?.toString() || (dev.z ? String(dev.z) : ''), fixing: cur?.fixing || '', backing: cur?.backing || '', tether: cur?.tether || 'n/a', note: cur?.note || '' });
   const overhead = F.MOUNTS.find((x) => x.id === m.method)?.overhead;
@@ -169,18 +187,18 @@ function DevicePanel({ r, s, dev, persona, canRecord, run, onMove }: { r: RoomRe
       <label className="kit-field">Backing <input aria-label={`Backing of ${dev.code}`} placeholder="stud, blocking, plywood, tile bridge" value={m.backing} onChange={(e) => setM({ ...m, backing: e.target.value })} /></label>
       {overhead ? <label className="kit-field">Secondary safety tether <select aria-label={`Safety tether of ${dev.code}`} value={m.tether} onChange={(e) => setM({ ...m, tether: e.target.value as F.Mounting['tether'] })}><option value="n/a">choose…</option><option value="yes">yes, fitted</option><option value="no">no</option></select></label> : null}
       <label className="kit-field">Note <input aria-label={`Mounting note of ${dev.code}`} value={m.note} onChange={(e) => setM({ ...m, note: e.target.value })} /></label>
-      <button type="button" className="ui-btn ui-btn--sm ui-btn--primary" onClick={() => run(F.recordMounting(r, persona, dev.code, m), `${dev.code}: mounting recorded.`)}>Record the mounting</button>
+      <button type="button" className="ui-btn ui-btn--sm ui-btn--primary" onClick={() => { void run(src.recordMounting(dev.code, m), `${dev.code}: mounting recorded.`); }}>Record the mounting</button>
     </div> : null}
 
     <h3 className="build__h2">Hooked up to</h3>
     {designed.length ? <p className="ui-muted">Designed: {designed.map((c) => { const o = c.from === dev.code ? c.to : c.from; const got = mine.some((x) => (x.device === dev.code && x.to === o) || (x.to === dev.code && x.device === o)); return <span key={c.id}>{c.kind} → {o} {got ? '✓' : '(not recorded)'}; </span>; })}</p> : <p className="ui-muted">The design proposes no connection for this device.</p>}
-    {mine.length ? <ul className="build__list" data-testid="fr-hookups">{mine.map((x) => <li key={x.id}><b>{x.id}</b> {x.device}:{x.port} → {name(x.to)}{x.toPort ? `:${x.toPort}` : ''}{x.cable ? ` · cable ${x.cable}` : ''} {F.asDesigned(r, x) ? <Tag tone="ok">as designed</Tag> : <Tag tone="warn">not in the design</Tag>}</li>)}</ul> : null}
+    {mine.length ? <ul className="build__list" data-testid="fr-hookups">{mine.map((x) => <li key={x.id}><b>{x.id}</b> {x.device}:{x.port} → {name(x.to)}{x.toPort ? `:${x.toPort}` : ''}{x.cable ? ` · cable ${x.cable}` : ''} {(src.facts ? src.facts.asDesigned(x.id) : F.asDesigned(r, x)) ? <Tag tone="ok">as designed</Tag> : <Tag tone="warn">not in the design</Tag>}</li>)}</ul> : null}
     {canRecord ? <div className="fr__form">
       <label className="kit-field">Port on {dev.code} <input aria-label={`Port on ${dev.code}`} placeholder="as labelled, e.g. HDMI IN 1, LAN" value={h.port} onChange={(e) => setH({ ...h, port: e.target.value })} /></label>
       <label className="kit-field">Other end <select aria-label={`Other end of the hookup from ${dev.code}`} value={h.to} onChange={(e) => setH({ ...h, to: e.target.value })}><option value="">choose…</option>{others.map((d) => <option key={d.code} value={d.code}>{d.code} · {d.label}</option>)}{F.ENDS_OUTSIDE.map((x) => <option key={x} value={x}>{x}</option>)}</select></label>
       <label className="kit-field">Its port <input aria-label="Port at the other end" value={h.toPort} onChange={(e) => setH({ ...h, toPort: e.target.value })} /></label>
       <label className="kit-field">Cable label <input aria-label="Cable label" value={h.cable} onChange={(e) => setH({ ...h, cable: e.target.value })} /></label>
-      <button type="button" className="ui-btn ui-btn--sm ui-btn--primary" onClick={() => { if (run(F.recordHookup(r, persona, { device: dev.code, ...h }), `${dev.code}: hookup recorded.`)) setH({ port: '', to: '', toPort: '', cable: '' }); }}>Record the hookup</button>
+      <button type="button" className="ui-btn ui-btn--sm ui-btn--primary" onClick={() => { void run(src.recordHookup({ device: dev.code, ...h }), `${dev.code}: hookup recorded.`).then((done) => { if (done) setH({ port: '', to: '', toPort: '', cable: '' }); }); }}>Record the hookup</button>
     </div> : null}
 
     <h3 className="build__h2">Position</h3>
@@ -193,12 +211,13 @@ function NoteForm({ at, onSave }: { at: { x: number; y: number }; onSave: (t: st
   const [t, setT] = useState('');
   return <div className="fr__form" data-testid="fr-note-form"><p className="ui-muted">Note at {at.x} m across, {at.y} m deep</p><label className="kit-field">Note <input aria-label="Note text" value={t} onChange={(e) => setT(e.target.value)} placeholder="e.g. sprinkler head 300 mm from the designed camera position" /></label><button type="button" className="ui-btn ui-btn--sm ui-btn--primary" onClick={() => onSave(t)}>Pin the note</button></div>;
 }
-function MoveForm({ dev, at, onSave }: { dev: Position; at: { x: number; y: number }; onSave: (reason: string, note: string, photo: F.Photo | null) => void }) {
+function MoveForm({ dev, at, photos, onSave }: { dev: Position; at: { x: number; y: number }; photos: boolean; onSave: (reason: string, note: string, photo: F.Photo | null) => void }) {
   const [reason, setReason] = useState(''); const [note, setNote] = useState(''); const [photo, setPhoto] = useState<F.Photo | null>(null); const [busy, setBusy] = useState(false);
   return <div className="fr__form" data-testid="fr-move-form"><p className="ui-muted">{dev.code} went in at {at.x} m across, {at.y} m deep ({F.dist(dev, at).toFixed(2)} m from its designed position)</p>
     <label className="kit-field">Why <select aria-label="Reason for the move" value={reason} onChange={(e) => setReason(e.target.value)}><option value="">choose…</option>{F.MOVE_REASONS.map((x) => <option key={x}>{x}</option>)}</select></label>
     <label className="kit-field">Note <input aria-label="Move note" value={note} onChange={(e) => setNote(e.target.value)} placeholder="what was in the way, who agreed on site" /></label>
-    <label className="kit-field">Photograph <input type="file" accept="image/*" aria-label="Photograph of the field condition" onChange={async (e) => { const f = e.target.files?.[0]; if (!f) return; setBusy(true); try { setPhoto(await scalePhoto(f)); } finally { setBusy(false); } }} /></label>
+    {photos ? <label className="kit-field">Photograph <input type="file" accept="image/*" aria-label="Photograph of the field condition" onChange={async (e) => { const f = e.target.files?.[0]; if (!f) return; setBusy(true); try { setPhoto(await scalePhoto(f)); } finally { setBusy(false); } }} /></label>
+      : <p className="ui-muted" data-testid="fr-no-photo">A sandbox keeps no photographs: say what was in the way in the note.</p>}
     <button type="button" className="ui-btn ui-btn--sm ui-btn--primary" disabled={busy} onClick={() => onSave(reason, note, photo)}>Record the move</button></div>;
 }
 function Decide({ id, onDecide }: { id: string; onDecide: (yes: boolean, why: string) => void }) {
