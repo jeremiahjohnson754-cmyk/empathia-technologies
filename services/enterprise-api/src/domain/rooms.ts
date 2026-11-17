@@ -30,7 +30,11 @@ export interface RoomRow {
   id: string; tenant_id: string; building_id: string; code: string; name: string; floor: number; template: string; intended_use: string; occupancy: number;
   unit: string; geometry: RoomDesignInput['geometry']; lifecycle: RoomLifecycle; classification: Record<string, unknown> | null; approved_class: Record<string, unknown> | null;
   rev: number; approved_revision: number | null; baseline: unknown; created_at: string; updated_at: string; site_id?: string;
+  /** the room's identifier in the canonical estate (migration 0036), or null for a room planned from nothing */
+  canonical_ref: string | null;
 }
+/** An estate identifier such as UNI-SCI-110: never the server's own R- code, never an id. */
+export const CANONICAL_REF = /^(?!R-)[A-Z][A-Z0-9]{1,11}(-[A-Z0-9]{1,12}){1,5}$/;
 interface AssetRow { id: string; code: string; category: string; label: string; role: string; model: string; generic: boolean; furniture: boolean; x: string; y: string; z: string; rot: string; mount: string; props: Record<string, unknown>; model_history: unknown[]; lifecycle: string }
 interface ConnRow { id: string; code: string; from_code: string; to_code: string; kind: string; why: string }
 
@@ -44,7 +48,8 @@ function scopeClause(ctx: RequestContext, alias = 'b'): { sql: string; args: unk
 export async function findRoom(ctx: RequestContext, q: Queryable, ref: string, lock = false): Promise<RoomRow> {
   const sc = scopeClause(ctx);
   const byId = /^[0-9a-f-]{36}$/i.test(ref);
-  const sql = `SELECT r.*, b.site_id FROM app.room r JOIN app.building b ON b.id = r.building_id AND b.tenant_id = r.tenant_id WHERE ${byId ? 'r.id = $1' : 'r.code = $1'}${sc.sql.replace('$SCOPE', '$2')}${lock ? ' FOR UPDATE OF r' : ''}`;
+  // a room is reached by its id, by the server's code, or by its identifier in the canonical estate (0036): the same row, the same checks
+  const sql = `SELECT r.*, b.site_id FROM app.room r JOIN app.building b ON b.id = r.building_id AND b.tenant_id = r.tenant_id WHERE ${byId ? 'r.id = $1' : CANONICAL_REF.test(ref) ? 'r.canonical_ref = $1' : 'r.code = $1'}${sc.sql.replace('$SCOPE', '$2')}${lock ? ' FOR UPDATE OF r' : ''}`;
   const r = await q.query<RoomRow>(sql, [ref, ...sc.args]);
   if (!r.rows[0]) throw notFound(`room ${ref}`);
   return r.rows[0];
@@ -198,12 +203,13 @@ async function proposeFor(ctx: RequestContext, q: Queryable, room: RoomRow, only
 }
 
 // ------------------------------------------------------------------------------------------------ create
-export interface CreateRoom { name: string; template: string; buildingCode?: string; floor?: number; unit?: 'm' | 'ft'; length?: string | number; width?: string | number; ceiling?: string | number; intendedUse?: string; occupancy?: number; shape?: string; points?: Array<[number, number]>; projectCode?: string }
+export interface CreateRoom { name: string; template: string; canonicalRef?: string; buildingCode?: string; floor?: number; unit?: 'm' | 'ft'; length?: string | number; width?: string | number; ceiling?: string | number; intendedUse?: string; occupancy?: number; shape?: string; points?: Array<[number, number]>; projectCode?: string }
 
 export async function createRoom(ctx: RequestContext, input: CreateRoom): Promise<{ code: string; id: string }> {
   await ctx.require('room.design', 'create a room');
   const T = C.templates[input.template];
   if (!T) throw invalid(`unknown template ${input.template}`, [`templates: ${Object.keys(C.templates).join(', ')}`]);
+  if (input.canonicalRef != null && !CANONICAL_REF.test(input.canonicalRef)) throw invalid('canonicalRef is the room’s identifier in the canonical estate, written exactly as it is there (for example UNI-SCI-110)');
   const unit = input.unit === 'ft' ? 'ft' : 'm';
   const prov: Record<string, string> = {};
   const val = (k: 'length' | 'width' | 'ceiling', i: 0 | 1 | 2) => {
@@ -223,11 +229,12 @@ export async function createRoom(ctx: RequestContext, input: CreateRoom): Promis
     const sc = scopeClause(ctx, 'b');
     const b = (await q.query<{ id: string; code: string }>(`SELECT b.id, b.code FROM app.building b WHERE ${input.buildingCode ? 'b.code = $1' : 'true'}${sc.sql.replace('$SCOPE', input.buildingCode ? '$2' : '$1')} ORDER BY b.code LIMIT 1`, [...(input.buildingCode ? [input.buildingCode] : []), ...sc.args])).rows[0];
     if (!b) throw notFound(`building ${input.buildingCode || '(any)'}`);
+    if (input.canonicalRef && (await q.query('SELECT 1 FROM app.room WHERE canonical_ref = $1', [input.canonicalRef])).rowCount) throw new ApiError('conflict', `${input.canonicalRef} is already a room here: one estate record is one room`);
     const code = await nextCode(q, 'room', 'R-PLN-');
     let projectId: string | null = null;
     if (input.projectCode) { projectId = (await q.query<{ id: string }>(`SELECT id FROM app.project WHERE code = $1 AND state = 'OPEN'`, [input.projectCode])).rows[0]?.id ?? null; if (!projectId) throw notFound(`open project ${input.projectCode}`); }
-    const room = (await q.query<RoomRow>(`INSERT INTO app.room (tenant_id, building_id, code, name, floor, template, intended_use, occupancy, unit, geometry, created_by, project_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING *`,
-      [ctx.p.tenantId, b.id, code, String(input.name).slice(0, 80), input.floor ?? 1, input.template, String(input.intendedUse ?? T.use ?? ''), input.occupancy && input.occupancy > 0 ? input.occupancy : T.occ ?? 1, unit, geometry, ctx.p.personId, projectId])).rows[0]!;
+    const room = (await q.query<RoomRow>(`INSERT INTO app.room (tenant_id, building_id, code, name, floor, template, intended_use, occupancy, unit, geometry, created_by, project_id, canonical_ref) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) RETURNING *`,
+      [ctx.p.tenantId, b.id, code, String(input.name).slice(0, 80), input.floor ?? 1, input.template, String(input.intendedUse ?? T.use ?? ''), input.occupancy && input.occupancy > 0 ? input.occupancy : T.occ ?? 1, unit, geometry, ctx.p.personId, projectId, input.canonicalRef ?? null])).rows[0]!;
     await relate(ctx, q, { type: 'Room', id: code }, 'LOCATED_IN', { type: 'Building', id: b.code });
     const ids: string[] = []; for (let i = 0; i < (T.items || []).length; i += 1) ids.push(await nextCode(q, 'asset', 'PA-'));
     let n = 0; const devs = templateDevices(input.template, points, () => ids[n++]!, C);

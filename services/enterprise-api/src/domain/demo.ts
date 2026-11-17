@@ -2,7 +2,8 @@
  * Demonstration sandboxes and sessions (ADR-0013; founder, 17 Nov 2026: "safe synthetic tenants, authenticated demo sessions, scoped
  * permissions, and a resettable demonstration dataset").
  *
- * A sandbox is a tenant opened for one visitor: its own synthetic people (one per role), one site, one building and one scenario room.
+ * A sandbox is a tenant opened for one visitor: its own synthetic people (one per role), one site, one building and one scenario room,
+ * and (17 Nov 2026) the flagship engineering room, the university's lecture theatre UNI-SCI-110, on its own campus and building.
  * Its key — returned once, never stored — is the credential that issues a session as one of those people. A session is an ordinary
  * principal: the same routes, the same authorities, the same row-level security, the same audit as any tenant. What is different is the
  * boundary around it: a demonstration token reaches a live sandbox and nothing else, a sandbox is reached by nothing but a demonstration
@@ -84,7 +85,18 @@ async function invoke(router: Router, ctx: RequestContext, method: string, path:
  * still to be filled — and a service technician whose credentials were recorded by the service manager and verified by the data steward.
  * Everything after that is the visitor's to do.
  */
-async function seedScenario(pool: PgPool, router: Router, tenantId: string, people: Persona[], correlationId: string): Promise<{ room: string }> {
+export interface Scenario { room: string; flagship: { room: string; canonicalRef: string; name: string } }
+/**
+ * The flagship engineering room (founder, 17 Nov 2026: "make one University lecture hall the flagship engineering demonstration
+ * before expanding all the tools across the estate… the same engine can power your enterprise rooms, stadium executive suites, and
+ * convention center spaces without creating separate engineering systems for each world"). It is the university's lecture theatre
+ * as the canonical estate has it (apps/demo/src/estate/university.ts): its identifier, its campus and building, its seats and its
+ * dimensions. Fictional, like the institution. Here it is a server room like any other, made through the same routes.
+ */
+export const FLAGSHIP = { canonicalRef: 'UNI-SCI-110', name: 'Lecture Theatre SCI-110 (synthetic)', template: 'auditorium', site: { code: 'UNI-N', name: 'Kestrel Valley University, North Campus (synthetic)' }, building: { code: 'UNI-SCI', name: 'Science Hall (synthetic)', floors: 4 },
+  floor: 0, length: '20', width: '16', ceiling: '6.5', occupancy: 180, intendedUse: 'Lectures with capture and reinforcement: a raked theatre, 180 seats, six wheelchair positions at the rear cross-aisle' } as const;
+
+async function seedScenario(pool: PgPool, router: Router, tenantId: string, people: Persona[], correlationId: string): Promise<Scenario> {
   const as = async (role: string): Promise<RequestContext> => {
     const who = people.find((p) => p.role_key === role); if (!who) throw new Error(`scenario: the sandbox has no ${role}`);
     const p = await resolvePrincipal(pool, who.person_id, tenantId, role); if (!p) throw new Error(`scenario: ${role} did not resolve`);
@@ -105,7 +117,17 @@ async function seedScenario(pool: PgPool, router: Router, tenantId: string, peop
     const rec = await invoke(router, svcmgr, 'POST', '/v1/competencies', { personId: tech.person_id, competency, source: 'EXTERNAL_CERTIFICATE', issuer: 'Synthetic Credentialing Body', reference: `SYN-SERVICE-${competency.split('.')[1]!.toUpperCase()}`, issuedOn: day(-365), expiresOn: day(365) });
     await invoke(router, steward, 'POST', `/v1/competencies/${String(rec['id'])}/verify`, { note: 'checked against the issuer record (synthetic scenario)' });
   }
-  return { room };
+  // the flagship room: its campus and building first (the sandbox's own records, written as its designer), then the room by the same routes
+  await pool.tx({ tenantId, userId: designer.p.personId }, async (q) => {
+    const site = (await q.query<{ id: string }>('INSERT INTO app.site (tenant_id, code, name) VALUES ($1,$2,$3) RETURNING id', [tenantId, FLAGSHIP.site.code, FLAGSHIP.site.name])).rows[0]!.id;
+    await q.query('INSERT INTO app.building (tenant_id, site_id, code, name, floors) VALUES ($1,$2,$3,$4,$5)', [tenantId, site, FLAGSHIP.building.code, FLAGSHIP.building.name, FLAGSHIP.building.floors]);
+  });
+  const hall = String((await invoke(router, designer, 'POST', '/v1/rooms', { name: FLAGSHIP.name, template: FLAGSHIP.template, canonicalRef: FLAGSHIP.canonicalRef, buildingCode: FLAGSHIP.building.code, floor: FLAGSHIP.floor, length: FLAGSHIP.length, width: FLAGSHIP.width, ceiling: FLAGSHIP.ceiling, occupancy: FLAGSHIP.occupancy, intendedUse: FLAGSHIP.intendedUse }))['code']);
+  await invoke(router, designer, 'POST', `/v1/rooms/${hall}/drawings/generate`);
+  await invoke(router, syseng, 'POST', `/v1/rooms/${hall}/drawings/plan/approve`);
+  await invoke(router, syseng, 'POST', `/v1/rooms/${hall}/classification/approve`, {});
+  for (const [to, who] of [['DESIGN_APPROVED', syseng], ['INSTALLATION_PENDING', opslead], ['INSTALLED_UNVERIFIED', installer]] as const) await invoke(router, who, 'POST', `/v1/rooms/${hall}/lifecycle`, { to });
+  return { room, flagship: { room: hall, canonicalRef: FLAGSHIP.canonicalRef, name: FLAGSHIP.name } };
 }
 
 function session(d: DemoDeps, sb: Sandbox, who: Persona) {
@@ -129,7 +151,7 @@ export async function open(d: DemoDeps, router: Router, remote: string, correlat
     if (code === 'EM014') throw new ApiError('rate_limited', 'this address has opened its share of sandboxes for the hour: continue in the one you have, or try again later');
     throw e;
   }
-  let scenario: { room: string }; const people = await personas(d.pool, sb.tenant_id);
+  let scenario: Scenario; const people = await personas(d.pool, sb.tenant_id);
   try { scenario = await seedScenario(d.pool, router, sb.tenant_id, people, correlationId); }
   catch (e) {
     // a sandbox without its scenario is of no use to anyone: close it (its records stay) and say that the opening failed

@@ -14,7 +14,7 @@ export async function listRooms(ctx: RequestContext, opts: { lifecycle?: string 
     if (opts.lifecycle) { args.push(opts.lifecycle); where += ` AND r.lifecycle = $${args.length}`; }
     if (opts.after) { args.push(opts.after); where += ` AND r.code > $${args.length}`; }
     if (ctx.p.siteScope?.length) { args.push(ctx.p.siteScope); where += ` AND b.site_id = ANY($${args.length}::uuid[])`; }
-    const rows = (await q.query<Record<string, unknown>>(`SELECT r.code, r.name, r.lifecycle, r.template, r.occupancy, b.code AS building, r.classification->>'archetypeName' AS archetype, r.rev, r.updated_at FROM app.room r JOIN app.building b ON b.id = r.building_id WHERE ${where} ORDER BY r.code LIMIT $1`, args)).rows;
+    const rows = (await q.query<Record<string, unknown>>(`SELECT r.code, r.canonical_ref AS "canonicalRef", r.name, r.lifecycle, r.template, r.occupancy, b.code AS building, r.classification->>'archetypeName' AS archetype, r.rev, r.updated_at FROM app.room r JOIN app.building b ON b.id = r.building_id WHERE ${where} ORDER BY r.code LIMIT $1`, args)).rows;
     const more = rows.length > limit; const items = rows.slice(0, limit);
     return { items, next: more ? String(items[items.length - 1]!['code']) : null };
   });
@@ -34,7 +34,7 @@ export async function getRoom(ctx: RequestContext, ref: string) {
     // ADR-0012: each device is a position (its id, PA-) with the physical unit installed there now (AS-) and that unit's identity state
     const inst = await roomInstallations(q, L.room.id);
     return {
-      room: { code: L.room.code, id: L.room.id, name: L.room.name, lifecycle: L.room.lifecycle, template: L.room.template, intendedUse: L.room.intended_use, occupancy: L.room.occupancy, unit: L.room.unit, geometry: L.room.geometry, rev: L.room.rev, approvedRevision: L.room.approved_revision, classification: L.room.classification, approvedClassification: L.room.approved_class, liveHealth: 'NOT_MONITORED' },
+      room: { code: L.room.code, canonicalRef: L.room.canonical_ref, id: L.room.id, name: L.room.name, lifecycle: L.room.lifecycle, template: L.room.template, intendedUse: L.room.intended_use, occupancy: L.room.occupancy, unit: L.room.unit, geometry: L.room.geometry, rev: L.room.rev, approvedRevision: L.room.approved_revision, classification: L.room.classification, approvedClassification: L.room.approved_class, liveHealth: 'NOT_MONITORED' },
       devices: L.input.devices.map((d) => { const id = identityOf(d.id, inst.facts, inst.assets); return { ...d, modelHistory: L.assets.find((a) => a.code === d.id)?.model_history ?? [], position: id.position, asset: id.asset, identityState: id.identityState,
         installations: inst.rows.filter((r) => r.position === d.id).map((r) => ({ id: r.id, asset: r.asset, model: r.model, identityState: r.identity_state, installedAt: r.installed_at, basis: r.effective_basis, installReason: r.install_reason, removedAt: r.removed_at, removalReason: r.removal_reason, sentence: installationSentence(installationFact(r)) })) }; }), connections: L.input.connections, drawings, revisions, issues,
       commissioning: plan ? { planId: plan['id'], engineVersion: plan['engine_version'], ruleVersion: plan['rule_version'], library: plan['library_size'], applicable: plan['applicable'], context: plan['context'], compiledAt: plan['compiled_at'], counts, rows: withResult } : null,

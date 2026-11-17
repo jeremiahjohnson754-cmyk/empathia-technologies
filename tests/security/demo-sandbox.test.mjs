@@ -36,7 +36,7 @@ let h, c, A, B, std, demoApp, onlyApp, snapshot; const J = (x) => JSON.stringify
 const api = path.join(repo, 'services/enterprise-api/dist/src');
 const sha = (s) => crypto.createHash('sha256').update(s).digest('hex');
 const n = (s) => Number(h.asSuper(s));
-const open = async () => { const r = await c.call('POST', '/v1/demo/sandboxes', { body: {} }); assert.equal(r.status, 201, J(r.body)); return { ...r.body.sandbox, room: r.body.scenario.room, first: r.body.session.accessToken, raw: r.body }; };
+const open = async () => { const r = await c.call('POST', '/v1/demo/sandboxes', { body: {} }); assert.equal(r.status, 201, J(r.body)); return { ...r.body.sandbox, room: r.body.scenario.room, hall: r.body.scenario.flagship.room, first: r.body.session.accessToken, raw: r.body }; };
 const as = async (sb, role) => { const r = await c.call('POST', '/v1/demo/sessions', { body: { sandboxId: sb.id, key: sb.key, role } }); assert.equal(r.status, 200, `${role}: ${J(r.body)}`); return r.body.accessToken; };
 const call = (token, method, p, o = {}) => c.call(method, p, { token, body: o.body, headers: o.headers, raw: o.raw });
 const tenantOf = (slug) => h.asSuper(`SELECT id FROM app.tenant WHERE slug = '${slug}'`);
@@ -72,7 +72,8 @@ test('DS-02 a sandbox opens with its scenario; the key is shown once and stored 
   assert.equal(A.raw.personas.length, 15); assert.ok(A.raw.personas.every((p) => / \(synthetic\)$/.test(p.name))); assert.match(A.raw.notice, /synthetic/);
   const me = await call(A.first, 'GET', '/v1/me'); assert.equal(me.status, 200, J(me.body)); assert.deepEqual([me.body.role, me.body.tenant], ['installer', A.tenant]);
   const cur = await call(A.first, 'GET', '/v1/demo/sandbox'); assert.equal(cur.status, 200, J(cur.body));
-  assert.deepEqual(cur.body.rooms.map((r) => [r.code, r.lifecycle]), [[A.room, 'INSTALLED_UNVERIFIED']]); assert.equal(cur.body.sandbox.tenant, A.tenant);
+  // 17 Nov 2026: a sandbox now opens with two rooms, the scenario room and the flagship lecture theatre (50/10 flagship; DS-17)
+  assert.deepEqual(cur.body.rooms.map((r) => [r.code, r.lifecycle]), [[A.room, 'INSTALLED_UNVERIFIED'], [A.hall, 'INSTALLED_UNVERIFIED']]); assert.equal(cur.body.sandbox.tenant, A.tenant);
   // the scenario has the history of a real room: designed, approved and installed by different people, each an audit row of this sandbox
   const who = h.asSuper(`SELECT string_agg(DISTINCT actor_role, ',' ORDER BY actor_role) FROM app.audit_event WHERE tenant_id = '${tenantOf(A.tenant)}' AND outcome = 'ALLOWED'`);
   for (const role of ['designer', 'installer', 'opslead', 'steward', 'svcmgr', 'syseng']) assert.ok(who.split(',').includes(role), `${role} in ${who}`);
@@ -84,7 +85,7 @@ test('DS-02 a sandbox opens with its scenario; the key is shown once and stored 
 
 test('DS-03 isolation: a sandbox reads and writes its own rows only, and nobody else reads or writes them', async () => {
   const a = await as(A, 'designer'); const b = await as(B, 'designer'); const aSys = await as(A, 'syseng');
-  assert.deepEqual((await call(a, 'GET', '/v1/rooms')).body.items.map((r) => r.code), [A.room]);
+  assert.deepEqual((await call(a, 'GET', '/v1/rooms')).body.items.map((r) => r.code), [A.room, A.hall]);   // 17 Nov 2026: two rooms (DS-17)
   // room codes are per tenant (two tenants may both have an R-…-0001), so every cross-tenant attempt names the other tenant's room by its uuid
   const idOf = async (token, code) => (await call(token, 'GET', `/v1/rooms/${code}`)).body.room.id;
   const ra = { id: await idOf(a, A.room) }; const rb = { id: await idOf(b, B.room) }; const rs = { id: await idOf(std.designer, std.room) };
@@ -325,7 +326,7 @@ test('DS-16 storage is bounded: a ceiling on a sandbox’s recorded actions and 
   for (let i = 0; i < 120 && !stop; i += 1) { const r = await note(i); if (r.status === 201) made += 1; else stop = r; }
   assert.ok(stop && stop.status === 429, J(stop?.body)); assert.match(stop.body.detail, /has recorded its 100 actions: reset it/); assert.equal(rows(), 100, 'not one row past the ceiling'); assert.ok(made > 0);
   for (const r of [await note('x'), await call(inst, 'PUT', `/v1/rooms/${X.room}/field-record/mounting/PA-0001`, { body: { method: 'floor' } }), await call(await as(X, 'designer'), 'POST', '/v1/rooms', { body: { name: 'More (synthetic)', template: 'huddle' } })]) assert.equal(r.status, 429);
-  assert.equal(rows(), 100); assert.equal(n(`SELECT count(*) FROM app.room WHERE tenant_id = '${tid}'`), 1);
+  assert.equal(rows(), 100); assert.equal(n(`SELECT count(*) FROM app.room WHERE tenant_id = '${tid}'`), 2, 'the two rooms the sandbox opened with (17 Nov 2026: was one), and not the third just asked for');
   // reads go on: the visitor can still see what they made
   assert.equal((await call(inst, 'GET', `/v1/rooms/${X.room}/thread`)).status, 200); assert.equal((await call(inst, 'GET', '/v1/demo/sandbox')).status, 200);
   // refused reads are audit rows too, so reading stops a quarter above the ceiling
@@ -344,4 +345,41 @@ test('DS-16 storage is bounded: a ceiling on a sandbox’s recorded actions and 
   h.asSuper('UPDATE app.demo_config SET max_total = 5000');
   // the limits are the owner's: the runtime role cannot change them
   const k = await h.appConn(); try { await assert.rejects(k.query('UPDATE app.demo_config SET max_writes = 1000000'), /permission denied/); } finally { await k.end(); }
+});
+
+// ---- 50/10 flagship, slice 1 (docs/directives/50-10/FIRST_EXECUTION_ASSESSMENT.md §G): the university's lecture theatre, once, on the server
+test('DS-17 (F-01) every sandbox holds the flagship room: the canon’s identifier, name, campus, building, seats and dimensions, in its own tenant, reachable by that identifier', async () => {
+  const F = await open(); const des = await as(F, 'designer');
+  assert.deepEqual(F.raw.scenario.flagship, { room: F.hall, canonicalRef: 'UNI-SCI-110', name: 'Lecture Theatre SCI-110 (synthetic)' });
+  const byCode = await call(des, 'GET', `/v1/rooms/${F.hall}`); const byRef = await call(des, 'GET', '/v1/rooms/UNI-SCI-110');
+  assert.equal(byCode.status, 200, J(byCode.body)); assert.equal(byRef.status, 200, J(byRef.body)); assert.equal(byRef.body.room.id, byCode.body.room.id, 'one room, two ways to name it');
+  const r = byRef.body.room; assert.equal(r.canonicalRef, 'UNI-SCI-110'); assert.equal(r.template, 'auditorium'); assert.equal(r.occupancy, 180); assert.equal(r.lifecycle, 'INSTALLED_UNVERIFIED');
+  assert.deepEqual([r.geometry.lengthM, r.geometry.widthM, r.geometry.ceiling], [20, 16, 6.5]); assert.equal(r.geometry.confidence, 'declared', 'its dimensions are the canon’s, declared, not the template’s');
+  assert.ok(byRef.body.devices.length >= 8, `${byRef.body.devices.length} devices from the same engine as every other room`); assert.ok(byRef.body.commissioning.rows.some((x) => x.applicable), 'it has a commissioning plan');
+  const where = h.asSuper(`SELECT b.code || ' / ' || s.code FROM app.room r JOIN app.building b ON b.id = r.building_id JOIN app.site s ON s.id = b.site_id WHERE r.id = '${r.id}'`); assert.equal(where, 'UNI-SCI / UNI-N');
+  assert.equal((await call(des, 'GET', '/v1/rooms/UNI-SCI-110/thread')).status, 200); assert.equal((await call(des, 'GET', '/v1/rooms/UNI-SCI-110/field-record')).status, 200);
+  assert.deepEqual((await call(des, 'GET', '/v1/rooms')).body.items.map((x) => [x.code, x.canonicalRef]), [[F.room, null], [F.hall, 'UNI-SCI-110']]);
+  // the scenario room is untouched by it: the connected demonstration's room keeps its code and has no canonical reference
+  assert.equal(F.room, A.room); assert.equal((await call(des, 'GET', `/v1/rooms/${F.room}`)).body.room.canonicalRef, null);
+});
+
+test('DS-18 (F-02) the identifier is one room per tenant, never changed or removed, and never a way into another tenant', async () => {
+  const F = await open(); const G = await open(); const des = await as(F, 'designer'); const other = await as(G, 'designer');
+  // one estate record is one room: a second room claiming it is refused, and nothing is made
+  const dup = await call(des, 'POST', '/v1/rooms', { body: { name: 'A second SCI-110 (synthetic)', template: 'auditorium', canonicalRef: 'UNI-SCI-110', buildingCode: 'UNI-SCI' } });
+  assert.equal(dup.status, 409, J(dup.body)); assert.match(dup.body.detail, /UNI-SCI-110 is already a room here/); assert.equal(n(`SELECT count(*) FROM app.room WHERE tenant_id = '${tenantOf(F.tenant)}'`), 2);
+  for (const bad of ['R-PLN-0009', 'uni-sci-110', 'UNI', 'UNI SCI 110', '110-SCI']) assert.equal((await call(des, 'POST', '/v1/rooms', { body: { name: 'x (synthetic)', template: 'huddle', canonicalRef: bad } })).status, 400, bad);
+  // each tenant has its own UNI-SCI-110; the identifier reads the caller's, never the other's
+  const mine = (await call(des, 'GET', '/v1/rooms/UNI-SCI-110')).body.room.id; const theirs = (await call(other, 'GET', '/v1/rooms/UNI-SCI-110')).body.room.id; assert.notEqual(mine, theirs);
+  assert.equal((await call(des, 'GET', `/v1/rooms/${theirs}`)).status, 404); assert.equal((await call(std.designer, 'GET', '/v1/rooms/UNI-SCI-110')).status, 404, 'a tenant without one finds nothing, whoever else has it');
+  // not changed and not removed, even by the role the API runs as, even by the owner
+  const k = await h.appConn(); try {
+    await k.simple(`SELECT set_config('app.tenant_id', '${tenantOf(F.tenant)}', false)`);
+    for (const sql of [`UPDATE app.room SET canonical_ref = 'UNI-SCI-111' WHERE id = '${mine}'`, `UPDATE app.room SET canonical_ref = NULL WHERE id = '${mine}'`]) await assert.rejects(k.simple(sql), /canonical reference is not changed or removed once set/);
+  } finally { await k.end(); }
+  assert.throws(() => h.asSuper(`UPDATE app.room SET canonical_ref = 'UNI-SCI-112' WHERE id = '${mine}'`), /not changed or removed once set/);
+  assert.equal(h.asSuper(`SELECT canonical_ref FROM app.room WHERE id = '${mine}'`), 'UNI-SCI-110');
+  // a room planned from nothing has none, and says so
+  const plain = await call(des, 'POST', '/v1/rooms', { body: { name: 'Seminar room (synthetic)', template: 'small_conf', buildingCode: 'UNI-SCI' } }); assert.equal(plain.status, 201, J(plain.body));
+  assert.equal((await call(des, 'GET', `/v1/rooms/${plain.body.code}`)).body.room.canonicalRef, null);
 });

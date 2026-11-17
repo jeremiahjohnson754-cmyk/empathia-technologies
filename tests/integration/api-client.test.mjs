@@ -23,7 +23,7 @@ test('sign in and read the principal', async () => {
 test('room list, room detail and the KPI summary have the declared shapes', async () => {
   const list = await api.call('getV1Rooms', { query: { limit: '2' } });
   assert.deepEqual(keys(list), ['items', 'next']);
-  assert.deepEqual(keys(list.items[0]), ['archetype', 'building', 'code', 'lifecycle', 'name', 'occupancy', 'rev', 'template', 'updated_at']);
+  assert.deepEqual(keys(list.items[0]), ['archetype', 'building', 'canonicalRef', 'code', 'lifecycle', 'name', 'occupancy', 'rev', 'template', 'updated_at']);   // 17 Nov 2026: canonicalRef, the room's identifier in the canonical estate (0036)
   assert.equal(list.next, 'R-PLN-0002');
   const d = await api.call('getV1RoomsRoom', { params: { room: 'R-PLN-0001' } });
   assert.deepEqual(keys(d), ['commissioning', 'connections', 'devices', 'drawings', 'issues', 'revisions', 'room']);

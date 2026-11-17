@@ -1227,6 +1227,10 @@
                     "type": "string",
                     "maxLength": 40
                   },
+                  "canonicalRef": {
+                    "type": "string",
+                    "pattern": "^[A-Z][A-Z0-9]{1,11}(-[A-Z0-9]{1,12}){1,5}$"
+                  },
                   "buildingCode": {
                     "type": "string",
                     "maxLength": 24

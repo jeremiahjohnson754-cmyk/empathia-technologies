@@ -1461,6 +1461,7 @@ export interface Operations {
     body: {
       name: string;
       template: string;
+      canonicalRef?: string;
       buildingCode?: string;
       floor?: number;
       unit?: "m" | "ft";
