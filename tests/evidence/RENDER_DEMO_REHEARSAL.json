@@ -1,6 +1,6 @@
 {
- "at": "2026-11-17T13:46:16.530Z",
- "commit": "f9076a3de159afb127a0ea4af7197ecf3d27bc9f",
+ "at": "2026-11-17T14:10:33.133Z",
+ "commit": "8dccc9022e7c96b7e41057a763bbd91fa662e4eb",
  "blueprint": "deploy/render/demo.render.yaml",
  "startCommand": "sh deploy/render/demo-start.sh",
  "passed": 7,
@@ -10,13 +10,13 @@
    "id": "R-06",
    "name": "V-1: with an owner that cannot create roles the start command stops before the API starts",
    "result": "PASS",
-   "detail": "roles refused: V-1 failed: empathia_owner cannot create roles. Stop: do not run the API as the owner (docs/operations/RENDER_DEPLOYMENT.md §V-1)"
+   "detail": "roles refused: V-1 failed: plain_owner cannot create roles. Stop: do not run the API as the owner (docs/operations/RENDER_DEPLOYMENT.md §V-1)"
   },
   {
    "id": "R-01",
-   "name": "the start command, as written in the Blueprint, prepares an empty database and brings the API up in production, demonstration mode",
+   "name": "the start command, as written in the Blueprint, prepares an empty database as an owner that is not a superuser — creating the two runtime roles — and brings the API up in production, demonstration mode",
    "result": "PASS",
-   "detail": "35 migrations · authMode demo · 18 variables from the Blueprint"
+   "detail": "35 migrations · authMode demo · roles created ×2 · 18 variables from the Blueprint · PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)"
   },
   {
    "id": "R-02",
@@ -26,9 +26,9 @@
   },
   {
    "id": "R-03",
-   "name": "a restart: the same command runs again and changes nothing; a sandbox opened before it opens with its key after it and reads the same record; a session issued before it is still good",
+   "name": "a restart: the same command runs again as the same owner — the role step finds the roles and sets their passwords — and changes nothing; a sandbox opened before it opens with its key after it and reads the same record; a session issued before it is still good",
    "result": "PASS",
-   "detail": "session from the key 200 · same thread true · earlier session 200 · 35 migrations, 4 sandboxes, unchanged"
+   "detail": "stopped, nothing answering, started again · roles: password set ×2 · session from the key 200 · same thread true · earlier session 200 · 35 migrations, 4 sandboxes, unchanged"
   },
   {
    "id": "R-07",
@@ -44,9 +44,9 @@
   },
   {
    "id": "R-05",
-   "name": "the runtime role is not the owner: it cannot read the sandbox table, change the setting, or create a tenant",
+   "name": "the runtime roles are not the owner and can do nothing but sign in: the API's role cannot read the sandbox table, change the setting, or create a tenant",
    "result": "PASS",
-   "detail": "permission denied ×3 of 3 · rooms visible without a tenant: 0"
+   "detail": "permission denied ×3 of 3 · roles with no attribute but LOGIN: 2 of 2 · rooms visible without a tenant: 0"
   }
  ],
  "smoke": [
@@ -72,7 +72,7 @@
    "id": "SM-04",
    "title": "a sandbox opens with a key, fifteen synthetic people and one installed room; its first session is the installer’s",
    "result": "PASS",
-   "detail": "sbx-88065977a23a413e · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED"
+   "detail": "sbx-81ee73c924c44df3 · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED"
   },
   {
    "id": "SM-05",
@@ -123,5 +123,6 @@
    "detail": "reset 201 · old session 401 · old key 401 · new sandbox mounted 0"
   }
  ],
- "limits": "Local cluster without TLS (PGSSLMODE rehearsed as disable); no Render proxy, container or free-plan sleep; the cluster superuser stands in for Render's default database user; runtime-role passwords are the local cluster's. V-1 on Render Postgres, the image build and the edge are seen only on Render."
+ "database": "a PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) cluster created for this run and removed after it; owner: not a superuser, may create roles",
+ "limits": "No TLS in the rehearsal cluster (PGSSLMODE rehearsed as disable); no Render proxy, container or free-plan sleep; the owner's attributes beyond \"not a superuser, may create roles\" are an assumption about the platform's user. The image build and the edge are seen only on Render."
 }

@@ -35,13 +35,17 @@ export async function ensureRoles(ownerUrl: string, appUrl: string, workerUrl: s
     const done: Array<{ role: string; action: string }> = [];
     for (const r of want) {
       const exists = (await owner.query('SELECT 1 FROM pg_roles WHERE rolname = $1', [r.name])).rowCount;
-      const sql = (await owner.query<{ s: string }>(exists ? "SELECT format('ALTER ROLE %I WITH LOGIN PASSWORD %L NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE', $1::text, $2::text) AS s" : "SELECT format('CREATE ROLE %I LOGIN PASSWORD %L NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE', $1::text, $2::text) AS s", [r.name, r.password])).rows[0]!.s;
+      // An existing role gets its password and nothing else. Naming an attribute here — even to deny it (NOSUPERUSER, NOBYPASSRLS) — is
+      // refused for an owner that is not a superuser ("permission denied to alter role"), which is what a managed platform's owner
+      // is: the second start on Render failed on it (17 Nov 2026). The attributes are not set here; they are CHECKED below, and a
+      // role found with any of them stops the deploy.
+      const sql = (await owner.query<{ s: string }>(exists ? "SELECT format('ALTER ROLE %I WITH LOGIN PASSWORD %L', $1::text, $2::text) AS s" : "SELECT format('CREATE ROLE %I LOGIN PASSWORD %L NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE', $1::text, $2::text) AS s", [r.name, r.password])).rows[0]!.s;
       await owner.simple(sql); done.push({ role: r.name, action: exists ? 'password set' : 'created' });
     }
     const db = (await owner.query<{ d: string }>('SELECT current_database() AS d')).rows[0]!.d;
     await owner.simple((await owner.query<{ s: string }>("SELECT format('REVOKE ALL ON DATABASE %I FROM PUBLIC; GRANT CONNECT ON DATABASE %I TO empathia_app, empathia_worker', $1::text, $1::text) AS s", [db])).rows[0]!.s);
-    const check = (await owner.query<{ rolname: string; rolbypassrls: boolean; rolsuper: boolean }>("SELECT rolname, rolbypassrls, rolsuper FROM pg_roles WHERE rolname IN ('empathia_app','empathia_worker') ORDER BY 1")).rows;
-    if (check.length !== 2 || check.some((c) => c.rolbypassrls || c.rolsuper)) throw new Error('the runtime roles are not both present with NOBYPASSRLS NOSUPERUSER');
+    const check = (await owner.query<{ rolname: string; more: boolean }>("SELECT rolname, (rolsuper OR rolbypassrls OR rolcreatedb OR rolcreaterole OR rolreplication) AS more FROM pg_roles WHERE rolname IN ('empathia_app','empathia_worker') ORDER BY 1")).rows;
+    if (check.length !== 2 || check.some((c) => c.more)) throw new Error(`the runtime roles are not both present with no attribute beyond LOGIN (found: ${check.map((c) => `${c.rolname}${c.more ? ' WITH MORE' : ''}`).join(', ') || 'none'}); an operator with the authority to do so must remove SUPERUSER, BYPASSRLS, CREATEDB, CREATEROLE and REPLICATION from them`);
     return { defaultUser: me.u, v1: 'PASS', roles: done, database: db };
   } finally { await owner.end(); }
 }

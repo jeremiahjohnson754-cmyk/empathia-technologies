@@ -14,27 +14,52 @@
  *   R-06  V-1: with an owner that cannot create roles the start command stops before the API starts
  *   R-07  the self-check switch (DEMO_SELF_CHECK): off as declared, nothing runs; on, the deployment check runs inside the service
  *         against its own address and every line is in the service's log
- * Writes tests/evidence/RENDER_DEMO_REHEARSAL.json. Limits, stated: the local cluster has no TLS, so PGSSLMODE=require is rehearsed as
- * disable; there is no Render proxy, no container, no free-plan sleep; the runtime-role passwords are the local cluster's (the role
- * step would otherwise re-password the roles every local test uses). Those are seen only on Render.
+ * The database is a PostgreSQL cluster of its own, created for the run and removed after it, and its owner is what the platform gives:
+ * a role that is NOT a superuser and may create roles. That matters. The first rehearsal used the development cluster's superuser as
+ * the owner and passed a restart that then failed on Render (17 Nov 2026: "permission denied to alter role" — a role that is not a
+ * superuser may not name SUPERUSER or BYPASSRLS in ALTER ROLE, even to deny them). In a cluster of its own the two runtime roles do
+ * not exist before the first start, so the first start creates them and the restart re-passwords them, as on Render.
+ * Writes tests/evidence/RENDER_DEMO_REHEARSAL.json. Limits, stated: the rehearsal cluster has no TLS, so PGSSLMODE=require is rehearsed
+ * as disable; there is no Render proxy, no container, no free-plan sleep; the owner's attributes beyond "not a superuser, may create
+ * roles" are an assumption about the platform's user. Those are seen only on Render.
  */
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import net from 'node:net';
-import { spawn, spawnSync } from 'node:child_process';
+import { spawn, spawnSync, execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const rt = path.resolve(repo, (process.argv.find((a) => a.startsWith('--rt=')) || '--rt=.local/demo-rt').slice(5));
 // --assemble: build the runtime tree first (what the image's last build step does), so one command rehearses a checkout that is built
 if (process.argv.includes('--assemble')) { const a = spawnSync(process.execPath, [path.join(repo, 'deploy/render/assemble-runtime.mjs'), `--out=${rt}`], { cwd: repo, encoding: 'utf8' }); if (a.status !== 0) { console.error(a.stderr || a.stdout); process.exit(2); } }
-spawnSync(process.execPath, [path.join(repo, 'scripts/db.mjs'), 'up'], { cwd: repo, encoding: 'utf8' });
-const creds = JSON.parse(fs.readFileSync(path.join(repo, '.local/pg/credentials.json'), 'utf8'));
-const BIN = ['/usr/lib/postgresql/16/bin', '/usr/lib/postgresql/17/bin', '/usr/local/pgsql/bin'].find((d) => fs.existsSync(path.join(d, 'psql'))) || '';
-const DB = 'empathia_demo_rehearsal';
+const BIN = ['/usr/lib/postgresql/16/bin', '/usr/local/opt/postgresql@16/bin', '/opt/homebrew/opt/postgresql@16/bin', '/usr/pgsql-16/bin'].find((d) => fs.existsSync(path.join(d, 'initdb'))) || '';
+const DB = 'empathia_demo';   // the Blueprint's databaseName
+const rnd = () => crypto.randomBytes(24).toString('base64url');
+// the cluster's own superuser is used to set the stage and to look at the result; the service never has it
+const creds = { port: 0, superuser: 'rehearsal_admin', superPassword: rnd(), owner: 'empathia_owner', ownerPassword: rnd(), plain: 'plain_owner', plainPassword: rnd(), app: 'empathia_app', appPassword: rnd(), worker: 'empathia_worker', workerPassword: rnd() };
 const url = (u, p, db = DB) => `postgres://${u}:${encodeURIComponent(p)}@127.0.0.1:${creds.port}/${db}`;
 const psql = (db, sql, user = creds.superuser, pass = creds.superPassword) => spawnSync(path.join(BIN, 'psql'), ['-h', '127.0.0.1', '-p', String(creds.port), '-U', user, '-d', db, '-v', 'ON_ERROR_STOP=1', '-qAt', '-c', sql], { env: { ...process.env, PGPASSWORD: pass }, encoding: 'utf8' });
+// PostgreSQL refuses to run as root; on a root-only machine it runs as the postgres system user (as scripts/db.mjs does)
+const isRoot = typeof process.getuid === 'function' && process.getuid() === 0;
+const asPg = (cmd, args) => (isRoot ? spawnSync('runuser', ['-u', 'postgres', '--', path.join(BIN, cmd), ...args], { encoding: 'utf8' }) : spawnSync(path.join(BIN, cmd), args, { encoding: 'utf8' }));
+const pgBase = path.join(repo, '.local/demo-rehearsal-pg'); const pgData = path.join(pgBase, 'data');
+const clusterDown = () => { if (fs.existsSync(path.join(pgData, 'PG_VERSION'))) asPg('pg_ctl', ['-D', pgData, '-m', 'immediate', '-w', 'stop']); if (isRoot && fs.existsSync(pgBase)) { try { execFileSync('chown', ['-R', String(process.getuid()), pgBase]); } catch { /* removed below either way */ } } fs.rmSync(pgBase, { recursive: true, force: true }); };
+const clusterUp = async () => {
+  clusterDown(); creds.port = await freePort(); fs.mkdirSync(pgData, { recursive: true });
+  const pw = path.join(pgBase, '.pw'); fs.writeFileSync(pw, creds.superPassword, { mode: 0o600 }); if (isRoot) execFileSync('chown', ['-R', 'postgres', pgBase]);
+  const i = asPg('initdb', ['-D', pgData, '-U', creds.superuser, '--pwfile', pw, '-A', 'scram-sha-256', '-E', 'UTF8', '--locale=C.UTF-8']); fs.rmSync(pw, { force: true });
+  if (i.status !== 0) throw new Error(`initdb failed: ${(i.stderr || i.stdout || '').slice(-400)}`);
+  fs.appendFileSync(path.join(pgData, 'postgresql.conf'), `\n# a rehearsal cluster: thrown away\nlisten_addresses = '127.0.0.1'\nport = ${creds.port}\nunix_socket_directories = '${os.tmpdir()}'\npassword_encryption = 'scram-sha-256'\nfsync = off\n`);
+  const st = asPg('pg_ctl', ['-D', pgData, '-l', path.join(pgBase, 'server.log'), '-w', 'start']); if (st.status !== 0) throw new Error(`pg_ctl start failed: ${(st.stderr || st.stdout || '').slice(-400)}`);
+  // the platform's default user, as far as it is known: owns the database, is not a superuser, may create roles (V-1 passed on Render)
+  const made = psql('postgres', `CREATE ROLE ${creds.owner} LOGIN PASSWORD '${creds.ownerPassword}' NOSUPERUSER CREATEROLE CREATEDB; CREATE ROLE ${creds.plain} LOGIN PASSWORD '${creds.plainPassword}' NOSUPERUSER NOCREATEROLE`);
+  const dbs = [psql('postgres', `CREATE DATABASE ${DB} OWNER ${creds.owner}`), psql('postgres', `CREATE DATABASE ${DB}_v1 OWNER ${creds.plain}`)];
+  if (made.status !== 0 || dbs.some((d) => d.status !== 0)) throw new Error(`the rehearsal cluster could not be prepared: ${made.stderr}${dbs.map((d) => d.stderr).join('')}`);
+  return psql('postgres', 'SHOW server_version').stdout.trim();
+};
 const steps = []; const step = (id, name, ok, detail = '') => { steps.push({ id, name, result: ok ? 'PASS' : 'FAIL', detail: String(detail).slice(0, 400) }); console.log(`${ok ? 'PASS' : 'FAIL'} ${id} ${name}${detail ? ` — ${String(detail).slice(0, 300)}` : ''}`); return ok; };
 const freePort = () => new Promise((ok) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => ok(p)); }); });
 const waitFor = async (u, ms = 60000) => { const t = Date.now(); while (Date.now() - t < ms) { try { const r = await fetch(u); if (r.status === 200) return true; } catch { /* not yet */ } await new Promise((r) => setTimeout(r, 300)); } return false; };
@@ -59,24 +84,32 @@ const envFor = (ownerUrl, extra = {}) => { const e = { PATH: process.env.PATH, P
   for (const [k, v] of Object.entries(declared)) e[k] = v === '<fromDatabase>' ? ownerUrl : k === 'DEMO_SESSION_SECRET' ? sessionSecret : k === 'EMPATHIA_APP_PASSWORD' ? creds.appPassword : k === 'EMPATHIA_WORKER_PASSWORD' ? creds.workerPassword : v;
   e.PGSSLMODE = 'disable'; return { ...e, ...extra }; };   // the one declared value the local cluster cannot honour (no TLS): stated in the header
 let api = null; let log = '';
-const start = (ownerUrl, extra) => { log = ''; api = spawn('sh', ['-c', sh], { cwd: rt, env: envFor(ownerUrl, extra), stdio: ['ignore', 'pipe', 'pipe'] }); api.stdout.on('data', (d) => { log += d; }); api.stderr.on('data', (d) => { log += d; }); return api; };
-const stop = () => new Promise((r) => { if (!api || api.exitCode !== null) return r(); api.once('exit', r); api.kill('SIGTERM'); setTimeout(() => api.kill('SIGKILL'), 5000).unref(); });
+// The command is run as its words, with no shell around it, in a process group of its own. An earlier version wrapped it in `sh -c`;
+// stopping that stopped the wrapper and left the API running, so the "restart" was answered by the process that had never stopped.
+const argv = sh ? sh.split(/\s+/) : [];
+const start = (ownerUrl, extra) => { log = ''; api = spawn(argv[0], argv.slice(1), { cwd: rt, env: envFor(ownerUrl, extra), stdio: ['ignore', 'pipe', 'pipe'], detached: true }); api.stdout.on('data', (d) => { log += d; }); api.stderr.on('data', (d) => { log += d; }); return api; };
+const signal = (sig) => { try { process.kill(-api.pid, sig); } catch { /* the group is gone */ } };
+const groupAlive = () => { try { process.kill(-api.pid, 0); return true; } catch { return false; } };
+// stops the whole group (the API and anything the start script left beside it) and returns only when nothing answers on the port
+const stop = async () => { if (!api) return true; signal('SIGTERM'); const t = Date.now(); while (groupAlive() && Date.now() - t < 8000) await new Promise((r) => setTimeout(r, 100)); if (groupAlive()) { signal('SIGKILL'); await new Promise((r) => setTimeout(r, 300)); }
+  try { await fetch(`${base}/health`, { signal: AbortSignal.timeout(1000) }); return false; } catch { return true; } };
+process.on('exit', () => { if (api) signal('SIGKILL'); });
 const smoke = (args) => spawnSync(process.execPath, [path.join(repo, 'scripts/staging/demo-smoke.mjs'), base, ...args], { encoding: 'utf8', timeout: 300000 });
 const count = (sql) => Number(psql(DB, sql).stdout.trim());
 
-const SUPER = url(creds.superuser, creds.superPassword);   // stands in for Render's default user: owns the database and may create roles
+let SUPER = '';   // the owner's URL: what DATABASE_URL is on Render. (The name is historical: it is not a superuser.)
+let pgVersion = '';
 try {
-  psql('postgres', `DROP DATABASE IF EXISTS ${DB} WITH (FORCE)`); psql('postgres', `CREATE DATABASE ${DB}`);
+  pgVersion = await clusterUp(); SUPER = url(creds.owner, creds.ownerPassword);
 
-  // R-06 first, on the still-empty database: an owner that cannot create roles
-  psql('postgres', `GRANT ALL ON DATABASE ${DB} TO ${creds.owner}`);
-  const v1 = spawnSync('sh', ['-c', sh], { cwd: rt, env: { ...envFor(url(creds.owner, creds.ownerPassword)), PORT: String(await freePort()) }, encoding: 'utf8', timeout: 60000 });
-  step('R-06', 'V-1: with an owner that cannot create roles the start command stops before the API starts', v1.status !== 0 && /V-1 failed/.test(v1.stderr) && !/listening|"msg":"started"/.test(v1.stdout + v1.stderr) && count("SELECT count(*) FROM information_schema.schemata WHERE schema_name = 'app'") === 0, v1.stderr.trim().slice(0, 200));
+  // R-06 first: a database whose owner cannot create roles
+  const v1 = spawnSync(argv[0], argv.slice(1), { cwd: rt, env: { ...envFor(url(creds.plain, creds.plainPassword, `${DB}_v1`)), PORT: String(await freePort()) }, encoding: 'utf8', timeout: 60000 });
+  step('R-06', 'V-1: with an owner that cannot create roles the start command stops before the API starts', v1.status !== 0 && /V-1 failed/.test(v1.stderr) && !/listening|"msg":"started"/.test(v1.stdout + v1.stderr) && Number(psql(`${DB}_v1`, "SELECT count(*) FROM information_schema.schemata WHERE schema_name = 'app'").stdout.trim()) === 0 && count("SELECT count(*) FROM pg_roles WHERE rolname IN ('empathia_app','empathia_worker')") === 0, v1.stderr.trim().slice(0, 200));
 
-  start(SUPER); const up = await waitFor(`${base}/health`);
+  start(SUPER); const up = await waitFor(`${base}/health`); const firstRoles = (log.match(/"roles":(\[[^\]]*\])/) || [])[1] || '';
   const health = up ? await (await fetch(`${base}/health`)).json() : null; const migs = fs.readdirSync(path.join(repo, 'database/migrations')).filter((f) => /^\d{4}_.*\.sql$/.test(f)).length;
-  step('R-01', 'the start command, as written in the Blueprint, prepares an empty database and brings the API up in production, demonstration mode', up && health.authMode === 'demo' && health.demoSessions === true && health.database.migrationsApplied === migs && declared.NODE_ENV === 'production' && declared.AUTH_MODE === 'demo',
-    up ? `${migs} migrations · authMode ${health.authMode} · ${Object.keys(declared).length} variables from the Blueprint` : log.trim().split('\n').slice(-3).join(' | '));
+  step('R-01', 'the start command, as written in the Blueprint, prepares an empty database as an owner that is not a superuser — creating the two runtime roles — and brings the API up in production, demonstration mode', up && health.authMode === 'demo' && health.demoSessions === true && health.database.migrationsApplied === migs && declared.NODE_ENV === 'production' && declared.AUTH_MODE === 'demo' && (firstRoles.match(/"action":"created"/g) || []).length === 2 && count(`SELECT count(*) FROM pg_roles WHERE rolname = '${creds.owner}' AND NOT rolsuper AND rolcreaterole`) === 1,
+    up ? `${migs} migrations · authMode ${health.authMode} · roles created ×${(firstRoles.match(/"action":"created"/g) || []).length} · ${Object.keys(declared).length} variables from the Blueprint · PostgreSQL ${pgVersion}` : log.trim().split('\n').slice(-3).join(' | '));
   if (!up) throw new Error('the API did not come up');
 
   const out = path.join(repo, '.local/demo-rehearsal-smoke.json'); const s1 = smoke([`--origin=${declared.CORS_ORIGINS}`, `--json=${out}`]);
@@ -88,20 +121,20 @@ try {
   const o = await j('POST', '/v1/demo/sandboxes', { body: {} }); const fr = `/v1/rooms/${o.body.scenario.room}/field-record`; const dev = (await j('GET', fr, { token: o.body.session.accessToken })).body.devices[0].asset;
   await j('PUT', `${fr}/mounting/${dev}`, { token: o.body.session.accessToken, body: { method: 'floor', note: 'before the restart (synthetic)' } });
   const before = { thread: (await j('GET', `/v1/rooms/${o.body.scenario.room}/thread`, { token: o.body.session.accessToken })).body.stages, migrations: count('SELECT count(*) FROM app_meta.schema_migration'), sandboxes: count('SELECT count(*) FROM app.demo_sandbox'), roles: count('SELECT count(*) FROM app.role') };
-  await stop(); start(SUPER); const again = await waitFor(`${base}/health`);
+  const wentDown = await stop(); start(SUPER); const again = wentDown && await waitFor(`${base}/health`); const secondRoles = (log.match(/"roles":(\[[^\]]*\])/) || [])[1] || ''; const repassworded = (secondRoles.match(/"action":"password set"/g) || []).length === 2;
   const s = again ? await j('POST', '/v1/demo/sessions', { body: { sandboxId: o.body.sandbox.id, key: o.body.sandbox.key, role: 'exec' } }) : { status: 0 };
   const after = again && s.status === 200 ? (await j('GET', `/v1/rooms/${o.body.scenario.room}/thread`, { token: s.body.accessToken })).body.stages : null;
   const old = again ? await j('GET', '/v1/me', { token: o.body.session.accessToken }) : { status: 0 };
-  step('R-03', 'a restart: the same command runs again and changes nothing; a sandbox opened before it opens with its key after it and reads the same record; a session issued before it is still good',
-    again && s.status === 200 && JSON.stringify(after) === JSON.stringify(before.thread) && old.status === 200 && count('SELECT count(*) FROM app_meta.schema_migration') === before.migrations && count('SELECT count(*) FROM app.demo_sandbox') === before.sandboxes && count('SELECT count(*) FROM app.role') === before.roles,
-    again ? `session from the key ${s.status} · same thread ${JSON.stringify(after) === JSON.stringify(before.thread)} · earlier session ${old.status} · ${before.migrations} migrations, ${before.sandboxes} sandboxes, unchanged` : log.trim().split('\n').slice(-3).join(' | '));
+  step('R-03', 'a restart: the same command runs again as the same owner — the role step finds the roles and sets their passwords — and changes nothing; a sandbox opened before it opens with its key after it and reads the same record; a session issued before it is still good',
+    again && repassworded && s.status === 200 && JSON.stringify(after) === JSON.stringify(before.thread) && old.status === 200 && count('SELECT count(*) FROM app_meta.schema_migration') === before.migrations && count('SELECT count(*) FROM app.demo_sandbox') === before.sandboxes && count('SELECT count(*) FROM app.role') === before.roles,
+    !wentDown ? 'the API was still answering after it was stopped: no restart took place' : again && !repassworded ? `the role step on restart: ${log.trim().split('\n').filter((l) => /roles/.test(l)).join(' | ').slice(0, 200) || 'no line'}` : again ? `stopped, nothing answering, started again · roles: password set ×${(secondRoles.match(/"action":"password set"/g) || []).length} · session from the key ${s.status} · same thread ${JSON.stringify(after) === JSON.stringify(before.thread)} · earlier session ${old.status} · ${before.migrations} migrations, ${before.sandboxes} sandboxes, unchanged` : `did not come up again: ${log.trim().split('\n').slice(-2).join(' | ').slice(0, 240)}`);
 
   // R-07: the switch. Off (every start so far): nothing ran. On: the same check runs from inside, into the log.
   const quiet = !/SELF-CHECK/.test(log) && declared.DEMO_SELF_CHECK === 'off';
-  await stop(); start(SUPER, { DEMO_SELF_CHECK: 'on' }); const t0 = Date.now(); while (Date.now() - t0 < 180000 && !/SELF-CHECK finished/.test(log)) await new Promise((r) => setTimeout(r, 500));
+  const down2 = await stop(); start(SUPER, { DEMO_SELF_CHECK: 'on' }); const t0 = Date.now(); while (Date.now() - t0 < 180000 && !/SELF-CHECK finished/.test(log)) await new Promise((r) => setTimeout(r, 500));
   const inside = (log.match(/^SELF-CHECK .*$/gm) || []); const verdict = inside.find((l) => /demo-smoke .*: \d+ passed, \d+ failed/.test(l)) || '';
   step('R-07', 'the self-check: off as declared, nothing runs; switched on, the deployment check runs inside the service against its own address and its lines are in the log',
-    quiet && /: 12 passed, 0 failed/.test(verdict) && inside.filter((l) => /^SELF-CHECK PASS SM-/.test(l)).length === 12 && !inside.some((l) => /^SELF-CHECK FAIL/.test(l)) && /SELF-CHECK finished: exit 0/.test(log) && (await waitFor(`${base}/health`, 5000)),
+    quiet && down2 && /: 12 passed, 0 failed/.test(verdict) && inside.filter((l) => /^SELF-CHECK PASS SM-/.test(l)).length === 12 && !inside.some((l) => /^SELF-CHECK FAIL/.test(l)) && /SELF-CHECK finished: exit 0/.test(log) && (await waitFor(`${base}/health`, 5000)),
     `declared ${declared.DEMO_SELF_CHECK} · ${inside.length} lines · ${verdict.replace(/^SELF-CHECK demo-smoke \S+ /, '') || 'no verdict'}`);
 
   const others = count('SELECT count(*) FROM app.tenant t WHERE NOT EXISTS (SELECT 1 FROM app.demo_sandbox s WHERE s.tenant_id = t.id)'); const ids = count('SELECT count(*) FROM app.person WHERE password_hash IS NOT NULL OR external_subject IS NOT NULL');
@@ -109,9 +142,10 @@ try {
 
   const asApp = (sql) => psql(DB, sql, creds.app, creds.appPassword);
   const denied = ['SELECT * FROM app.demo_sandbox', 'UPDATE app.demo_config SET enabled = false', "INSERT INTO app.tenant (slug, name) VALUES ('forged', 'forged')"].map((q) => /permission denied/.test(asApp(q).stderr));
-  step('R-05', 'the runtime role is not the owner: it cannot read the sandbox table, change the setting, or create a tenant', denied.every(Boolean) && asApp('SELECT count(*) FROM app.room').stdout.trim() === '0', `permission denied ×${denied.filter(Boolean).length} of 3 · rooms visible without a tenant: ${asApp('SELECT count(*) FROM app.room').stdout.trim()}`);
+  const bare = count("SELECT count(*) FROM pg_roles WHERE rolname IN ('empathia_app','empathia_worker') AND rolcanlogin AND NOT (rolsuper OR rolbypassrls OR rolcreatedb OR rolcreaterole OR rolreplication)");
+  step('R-05', 'the runtime roles are not the owner and can do nothing but sign in: the API\'s role cannot read the sandbox table, change the setting, or create a tenant', denied.every(Boolean) && bare === 2 && asApp('SELECT count(*) FROM app.room').stdout.trim() === '0', `permission denied ×${denied.filter(Boolean).length} of 3 · roles with no attribute but LOGIN: ${bare} of 2 · rooms visible without a tenant: ${asApp('SELECT count(*) FROM app.room').stdout.trim()}`);
 } catch (e) { step('R-XX', 'the rehearsal could not be completed', false, (e && e.message) || String(e)); }
-finally { await stop(); psql('postgres', `DROP DATABASE IF EXISTS ${DB} WITH (FORCE)`); fs.rmSync(objects, { recursive: true, force: true }); }
+finally { await stop(); try { clusterDown(); } catch { /* reported by the next run, which removes it first */ } fs.rmSync(objects, { recursive: true, force: true }); }
 
 const want = ['R-01', 'R-02', 'R-03', 'R-04', 'R-05', 'R-06', 'R-07']; for (const id of want) if (!steps.some((x) => x.id === id)) step(id, 'NOT RUN', false, 'an earlier step stopped the rehearsal');
 const pass = steps.filter((x) => x.result === 'PASS').length; const fail = steps.length - pass;
@@ -119,5 +153,6 @@ let commit = ''; try { commit = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: r
 fs.mkdirSync(path.join(repo, 'tests/evidence'), { recursive: true });
 fs.writeFileSync(path.join(repo, 'tests/evidence/RENDER_DEMO_REHEARSAL.json'), JSON.stringify({ at: new Date().toISOString(), commit, blueprint: 'deploy/render/demo.render.yaml', startCommand: sh, passed: pass, failed: fail, steps,
   smoke: fs.existsSync(path.join(repo, '.local/demo-rehearsal-smoke.json')) ? JSON.parse(fs.readFileSync(path.join(repo, '.local/demo-rehearsal-smoke.json'), 'utf8')).results : [],
-  limits: 'Local cluster without TLS (PGSSLMODE rehearsed as disable); no Render proxy, container or free-plan sleep; the cluster superuser stands in for Render\'s default database user; runtime-role passwords are the local cluster\'s. V-1 on Render Postgres, the image build and the edge are seen only on Render.' }, null, 1) + '\n');
+  database: `a PostgreSQL ${pgVersion} cluster created for this run and removed after it; owner: not a superuser, may create roles`,
+  limits: 'No TLS in the rehearsal cluster (PGSSLMODE rehearsed as disable); no Render proxy, container or free-plan sleep; the owner\'s attributes beyond "not a superuser, may create roles" are an assumption about the platform\'s user. The image build and the edge are seen only on Render.' }, null, 1) + '\n');
 console.log(`\nPASS ${pass} · FAIL ${fail}`); process.exit(fail ? 1 : 0);
