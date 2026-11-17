@@ -7,6 +7,7 @@ import { str, int, num, bool, arr, obj, anyObj, type Schema } from '../http/sche
 import * as rooms from '../domain/rooms.js';
 import * as cx from '../domain/commissioning.js';
 import * as read from '../domain/read.js';
+import * as thread from '../domain/thread.js';
 import * as platform from '../domain/platform.js';
 import * as org from '../domain/org.js';
 import * as analytics from '../domain/analytics.js';
@@ -129,6 +130,8 @@ export function buildRoutes(deps: { pool: PgPool; tokens: Hs256Tokens; store: Ob
   add({ method: 'POST', path: '/v1/rooms/:room/lifecycle', tag: 'rooms', summary: 'Move the room one governed lifecycle step', auth: true, authority: Object.entries(LIFECYCLE_AUTHORITY).map(([k, v]) => `${k}: ${v}`),
     body: obj({ to: str({ enum: ROOM_LIFECYCLE }) }, ['to']), responses: ok('transition'), handler: async (c, q) => ({ status: 200, body: await rooms.transition(c, q.params['room']!, (q.body as { to: never }).to) }) });
   add({ method: 'GET', path: '/v1/rooms/:room/assurance', tag: 'assurance', summary: 'Assurance: the accepted baseline against current evidence across 17 dimensions (unknown where there is no evidence)', auth: true, responses: ok('assessment, or NO_BASELINE'), handler: async (c, q) => ({ status: 200, body: await assurance.roomAssurance(c, q.params['room']!) }) });
+  add({ method: 'GET', path: '/v1/rooms/:room/thread', tag: 'rooms', summary: 'One room across the products, from the durable records: design, commissioning, the deficiencies and the work orders and APEX cases bound to them, the baselines, the keys that link each stage to the next, and the audit trail of the whole thread', auth: true,
+    responses: ok('the six stages, their links, the audit summary, and whether the thread is complete'), handler: async (c, q) => ({ status: 200, body: await thread.roomThread(c, q.params.room!) }) });
   add({ method: 'GET', path: '/v1/rooms/:room/service-history', tag: 'service', summary: 'Work orders and issue history of the room', auth: true, responses: ok('history'), handler: async (c, q) => ({ status: 200, body: await read.serviceHistory(c, q.params['room']!) }) });
 
   // ---------------------------------------------------------------------------------------- commissioning and evidence

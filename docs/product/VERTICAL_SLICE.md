@@ -46,10 +46,46 @@ record is preloaded for the slice: every step below is taken on the page, and ea
 - `tests/browser/demo-vertical-slice.test.mjs` VS-01…10, in the browser. It covers every step in the table, a reload (the records
   are kept), the refusals, no console error, nothing requested off the page, and a phone width.
 
+## On the server: the durable thread (16 Nov 2026)
+
+The founder, 16 Nov 2026: "a full enterprise-grade digital thread still needs durable records, relationship integrity, audit history,
+and reliable cross-session persistence."
+
+**A correction first.** An earlier note here said the deficiency-to-incident link was not on the server. That was wrong. The API has
+held it since the service lifecycle was built: `POST /v1/issues/{issue}/work-orders` raises a work order bound to its deficiency, and
+`POST /v1/issues/{issue}/apex` opens a case bound to it. What was missing was the thread itself as one read, and one proof of the
+whole chain.
+
+- **The read.** `GET /v1/rooms/{room}/thread` (`services/enterprise-api/src/domain/thread.ts`) assembles the six stages in one
+  transaction from the rows the products write. No table stores the thread.
+- **Durable records.** The room and its positions; the design revisions with their hashes; the register; the plan, results and
+  verifications; the deficiencies with their workflow; the work orders with evidence and verification; the baselines; the APEX cases.
+- **Relationship integrity.** `work_order.issue_id` and `apex_case.issue_id` are NOT NULL foreign keys. Every table forces row-level
+  security, so a thread joins one tenant's rows only. A work order with no issue is refused by the database. Baselines are immutable
+  versions.
+- **Audit history.** The thread summarises the hash-chained audit trail of its room, issues, work orders and cases, allowed and refused.
+  The tenant's chain is sealed and recomputed by `GET /v1/audit/integrity`.
+- **Cross-session.** The thread is the same for a different person on a new session. It is read from the database each time.
+- **The rule.** Closing a work order never resolves its deficiency. The deficiency is resolved by its retest, with evidence, verified
+  by someone other than the retester.
+- **Verified by** `tests/security/room-thread.test.mjs` TH-01…09, through the real API on a real database:
+  - a failed test and its deficiency;
+  - the handoff: a designer refused, the service manager allowed;
+  - the work order run to CLOSED with the deficiency still OPEN;
+  - the retest closing the deficiency;
+  - every test verified, the acceptance, and baseline v1;
+  - the APEX case, and the thread complete with all six links;
+  - a second person's session reading the same thread;
+  - the foreign keys;
+  - another tenant refused (404);
+  - the audit count equal to the database's, and the chain verified.
+
 ## Limits, stated
 
-- The records are kept in this browser (synthetic). The server holds the room lifecycle, results, deficiency workflow and register
-  (`tests/e2e/checkpoint-room-lifecycle.e2e.mjs`). The deficiency → incident link and the thread are not on the server yet.
+- **The demonstration and the server are two implementations of the same thread.** The public demonstration is a static site: its
+  records are synthetic and are kept in the visitor's browser. The server is the enterprise API with its database, and the
+  demonstration does not call it. Both follow the same rules, and each is tested on its own.
+- **No field record on the server yet.** Mounting, hookups and field moves (the Phase 1 redlines) are kept in the browser only.
 - APEX's hypotheses come from its symptom library. A symptom it has no branch for gets "insufficient evidence", not an invented cause.
 - Technicians are hard-gated by site: a room in a building nobody is approved for cannot be assigned. That is why the slice room is in
   Atlas.
