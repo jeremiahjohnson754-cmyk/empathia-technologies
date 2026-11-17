@@ -11,7 +11,8 @@
  *          demonstration token is not accepted under the sign-in secret, and a sandbox person cannot sign in with a password
  *   DS-05  the key is the credential: a wrong key, an unknown sandbox and a role the sandbox does not hold all get nothing
  *   DS-06  scoped permissions: a session may do what its role may do and no more; refusals are audited in the sandbox
- *   DS-07  the whole thread in a sandbox, by demonstration sessions only, and the same thread on a session made later from the key
+ *   DS-07  the whole thread in a sandbox, by demonstration sessions only — the field record, the register, commissioning, service,
+ *          acceptance, APEX — and the same thread on a session made later from the key
  *   DS-08  reset: the old sessions and the old key stop at once, the new sandbox is pristine, and nothing was deleted
  *   DS-09  expiry: an expired sandbox answers 401 to its sessions and to its key
  *   DS-10  caps: the live cap and the hourly cap per address refuse with 429; disabling stops new sandboxes and leaves live ones running
@@ -149,7 +150,13 @@ test('DS-07 the whole thread in a sandbox, by demonstration sessions only; the s
   const T = {}; for (const r of ['designer', 'syseng', 'opslead', 'installer', 'cxeng', 'svcmgr', 'service', 'qa_reviewer', 'steward']) T[r] = await as(A, r);
   const room = A.room; const instrument = 'SYN-METER-01 (synthetic), calibration record SYN-CAL-2026-09'; const ok = async (x, l, want = 200) => { const r = await x; assert.equal(r.status, want, `${l}: ${J(r.body)}`); return r.body; };
   const evidence = async (label) => ok(call(T.cxeng, 'POST', '/v1/evidence', { raw: Buffer.from(`synthetic observation: ${label}`), headers: { 'content-type': 'text/plain', 'x-file-name': `${label}.txt` } }), 'evidence', 201);
-  await registerRoom(c, room, T.installer); await ok(call(T.syseng, 'POST', `/v1/rooms/${room}/lifecycle`, { body: { to: 'COMMISSIONING' } }), 'commissioning');
+  // the field record first (founder: "inspect a device, update its field record, complete a commissioning workflow, switch roles…")
+  const f0 = await ok(call(T.installer, 'GET', `/v1/rooms/${room}/field-record`), 'field record'); const dev = f0.devices[0]; const fx = dev.designed.x + 0.5 <= f0.room.bounds.w ? dev.designed.x + 0.5 : dev.designed.x - 0.5;
+  await ok(call(T.installer, 'PUT', `/v1/rooms/${room}/field-record/mounting/${dev.asset}`, { body: { method: 'wall-bracket', heightM: 1.4, fixing: 'bracket and four anchors (synthetic)' } }), 'mounting');
+  const mv = await ok(call(T.installer, 'POST', `/v1/rooms/${room}/field-record/moves`, { body: { device: dev.asset, x: Math.round(fx * 100) / 100, y: dev.designed.y, reason: 'sprinkler head', note: 'clear of the head (synthetic)' } }), 'move', 201);
+  assert.equal((await call(T.installer, 'POST', `/v1/rooms/${room}/field-record/moves/${mv.move}/decide`, { body: { approve: true } })).status, 403, 'the installer does not approve their own move, in a sandbox as anywhere');
+  await ok(call(T.syseng, 'POST', `/v1/rooms/${room}/field-record/moves/${mv.move}/decide`, { body: { approve: true, decision: 'clear of the head' } }), 'approve move');
+    await registerRoom(c, room, T.installer); await ok(call(T.syseng, 'POST', `/v1/rooms/${room}/lifecycle`, { body: { to: 'COMMISSIONING' } }), 'commissioning');
   const rows = (await call(T.designer, 'GET', `/v1/rooms/${room}`)).body.commissioning.rows.filter((x) => x.applicable); const ev = await evidence('the failing observation');
   await ok(call(T.cxeng, 'POST', `/v1/rooms/${room}/results`, { body: { testId: rows[0].test_id, state: 'FAIL', evidenceId: ev.id, evidenceKind: rows[0].evidence[0], instrument } }), 'fail', 201);
   const issue = (await call(T.designer, 'GET', `/v1/rooms/${room}`)).body.issues.find((i) => i.state === 'OPEN').code;
@@ -175,6 +182,7 @@ test('DS-07 the whole thread in a sandbox, by demonstration sessions only; the s
   await ok(call(await as(A, 'opslead'), 'POST', `/v1/rooms/${room}/lifecycle`, { body: { to: 'ACCEPTED' } }), 'accept');
   await ok(call(T.cxeng, 'POST', `/v1/issues/${issue}/apex`, { body: {} }), 'apex', 201);
   const t = await ok(call(T.syseng, 'GET', `/v1/rooms/${room}/thread`), 'thread'); assert.equal(t.complete, true, t.missing.join(' | ')); assert.equal(t.room.lifecycle, 'ACCEPTED');
+  const fld = t.stages.find((x) => x.key === 'lite').records.fieldRecord; assert.deepEqual([fld.mounted, fld.moves.approved], [1, 1], 'the field record is part of the same durable thread');
   assert.deepEqual(t.links.map((l) => `${l.from}>${l.to}`).sort(), ['commissioning>assurance', 'commissioning>service', 'engineering>commissioning', 'lite>engineering', 'service>apex', 'service>assurance']);
   // later, from the key alone (another browser, another day): a different person reads the same record
   const again = await ok(call(await as(A, 'exec'), 'GET', `/v1/rooms/${room}/thread`), 'thread again');

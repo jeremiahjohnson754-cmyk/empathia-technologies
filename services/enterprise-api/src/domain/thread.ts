@@ -17,6 +17,7 @@
 import type { RequestContext } from '../auth/context.js';
 import { findRoom, readiness } from './rooms.js';
 import { registerItems } from './installations.js';
+import { fieldStats } from './fieldRecord.js';
 
 const DONE = ['RESOLVED', 'CLOSED'];
 export async function roomThread(ctx: RequestContext, ref: string) {
@@ -28,6 +29,7 @@ export async function roomThread(ctx: RequestContext, ref: string) {
     const conns = (await one<{ n: number }>('SELECT count(*)::int AS n FROM app.connection WHERE room_id = $1 AND removed_at IS NULL', [room.id]))[0]!.n;
     const revs = await one<{ rev_no: number; sha256: string; created_at: string }>('SELECT rev_no, sha256, created_at FROM app.room_revision WHERE room_id = $1 ORDER BY rev_no', [room.id]);
     const reg = await registerItems(q, room.id);
+    const field = await fieldStats(q, room.id);
     const issues = await one<{ id: string; code: string; title: string; severity: string; category: string; check_name: string; state: string; workflow: string; retest: { result: string; evidence: string; by: string; at: string } | null; fixed_by: string | null; closed_by: string | null; resolution: Record<string, unknown> | null; created_at: string }>(
       'SELECT id, code, title, severity, category, check_name, state, workflow, retest, fixed_by, closed_by, resolution, created_at FROM app.room_issue WHERE room_id = $1 ORDER BY created_at, code', [room.id]);
     const wos = await one<{ code: string; issue: string; state: string; severity: string | null; work_type: string; assigned: boolean; evidence: Array<{ kind: string; ref?: string | null; at: string }>; verification: { outcome: string; at: string } | null; created_at: string; closed_at: string | null; reopen_count: number }>(
@@ -62,7 +64,9 @@ export async function roomThread(ctx: RequestContext, ref: string) {
     return {
       room: { code: room.code, name: room.name, lifecycle: room.lifecycle, revision: room.rev, approvedRevision: room.approved_revision },
       stages: [
-        { key: 'lite', product: 'Lite', records: { room: room.code, positions: assets.n, furniture: assets.furniture, template: room.template } },
+        { key: 'lite', product: 'Lite', records: { room: room.code, positions: assets.n, furniture: assets.furniture, template: room.template,
+          // Phase 1 installation documentation (0034): what the installation team recorded beside the design — mounting, hookups, field moves, notes
+          fieldRecord: field } },
         { key: 'engineering', product: 'Engineering', records: { revisions: revs.map((r) => ({ revision: r.rev_no, sha256: r.sha256, at: r.created_at })), classification: room.approved_class, connections: { count: conns, basis: 'PROPOSED: designed, not traced' }, register: { devices: reg.length, complete: reg.filter((x) => x.complete).length } } },
         { key: 'commissioning', product: 'Commissioning', records: { lifecycle: room.lifecycle, completion: rd.completion, next: rd.next,
           issues: issues.map((i) => ({ code: i.code, title: i.title, severity: i.severity, category: i.category, check: i.check_name, state: i.state, workflow: i.workflow, retest: i.retest, fixedBy: i.fixed_by, closedBy: i.closed_by, workOrders: wos.filter((w) => w.issue === i.code).map((w) => w.code), cases: cases.filter((c) => c.issue === i.code).map((c) => c.code) })) } },

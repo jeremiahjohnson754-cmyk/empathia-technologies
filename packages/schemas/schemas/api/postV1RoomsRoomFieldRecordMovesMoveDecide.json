@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomFieldRecordMovesMoveDecide/0.1.0.json",
+  "title": "POST /v1/rooms/{room}/field-record/moves/{move}/decide request body",
+  "description": "Approve or reject a field move (never its recorder). An approved move is the as-built position; the checks that name the device and were recorded before it are listed",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "approve"
+  ],
+  "properties": {
+    "approve": {
+      "type": "boolean"
+    },
+    "decision": {
+      "type": "string",
+      "maxLength": 1000
+    }
+  }
+}

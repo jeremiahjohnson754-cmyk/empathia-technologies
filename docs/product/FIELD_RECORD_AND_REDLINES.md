@@ -28,7 +28,8 @@ The model is `apps/demo/src/install/fieldRecord.ts`.
   decide moves. Anyone admitted can read.
 - **Refusals.** Every refusal is shown with its reasons and kept in the page's log.
 - **Export.** Mounting, hookups, moves and notes export as six files.
-- **Where the data lives.** The record is kept in this browser, synthetic. A server-side version is to do.
+- **Where the data lives.** In the demo page the record is kept in this browser, synthetic. The server keeps the same record durably
+  (below); the demo page does not read it yet.
 
 ## Verified
 
@@ -41,9 +42,34 @@ The model is `apps/demo/src/install/fieldRecord.ts`.
   - phone width;
   - an employee refused.
 
+## On the server (17 Nov 2026)
+
+Founder: "make the Phase 1 field records database-backed, too." Migration `0034_field_record.sql`, `services/enterprise-api/src/domain/fieldRecord.ts`.
+
+| Record | Table | Rule the database holds |
+|---|---|---|
+| Mounting | `app.field_mounting` | append-only versions in order; an overhead mounting states its tether; a fixing unless floor or other; only a device of the room |
+| Hookup | `app.field_hookup` | one live hookup per port; exactly one other end; `connection_id` is the design's proposed connection it matches, or null ("not in the design"); removed once with a reason, never deleted |
+| Field move | `app.field_move` | one PROPOSED per device; decided once; the decider is not the recorder; a rejection has its reason; what was recorded never changes |
+| Note | `app.field_markup` | resolved once, with a resolution; never deleted |
+
+- **API.** `GET /v1/rooms/{room}/field-record`, `PUT …/mounting/{asset}`, `POST …/hookups`, `POST …/hookups/{hookup}/remove`,
+  `POST …/moves`, `POST …/moves/{move}/decide`, `POST …/markups`, `POST …/markups/{markup}/resolve`.
+- **Who.** `work.evidence` or `field.scan` records; `room.design.approve` decides a move; both may pin and resolve notes.
+- **When.** INSTALLATION_PENDING, INSTALLED_UNVERIFIED and COMMISSIONING. Earlier nothing is installed; after acceptance a change is a
+  change order and recommissioning.
+- **The design is not edited.** An approved move is the as-built position beside the designed one. The response lists the checks that
+  name the device and were recorded before the move, for the commissioning engineer to look at again.
+- **History.** Every write and refusal is an audit row on the room, so `GET /v1/rooms/{room}/thread` carries the field record
+  (`stages[lite].records.fieldRecord`) and its history.
+- **Verified.** `tests/security/field-record.test.mjs` FRS-01…09: the lifecycle gate, who may, the rules above at the API and again
+  directly at the database, as-built beside design, the recheck list, the thread, tenancy and site scope, closed after acceptance.
+  In a demonstration sandbox: `tests/security/demo-sandbox.test.mjs` DS-07.
+
 ## Not yet
 
-- The server-side record: tables, API and audit.
+- The demo page reading and writing the server's record (it still uses the browser's).
+- Photographs larger than a short text note in a demonstration sandbox (uploads there are limited by design).
 - The field record in the exported evidence package.
 - Moves drawn in Lite's 3D view.
 - Markup shapes beyond the note cloud: free-hand clouds, dimensions.

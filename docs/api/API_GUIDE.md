@@ -105,6 +105,24 @@ A demonstration session is an ordinary principal: every other route applies to i
 It reaches no other tenant, and no other kind of token reaches a sandbox. Uploads from a sandbox are `text/plain` or `text/csv` of at
 most 16 KiB; JSON bodies at most 64 KiB. Regression: `tests/security/demo-sandbox.test.mjs` DS-01..14.
 
+## The field record (Phase 1 installation documentation)
+
+What the installation team recorded beside a room's design: how each device is mounted (versions), what it is hooked up to (as designed,
+or not in the design), where it went in when that is not where it was designed (a field move, PROPOSED until decided by someone other
+than its recorder) and notes pinned to the plan. Nothing here edits the design. See `docs/product/FIELD_RECORD_AND_REDLINES.md`.
+
+| Operation | Authority | Notes |
+|---|---|---|
+| `GET /v1/rooms/{room}/field-record` | any member in scope | designed and as-built position per device, mounting, hookups, moves, notes, counts |
+| `PUT /v1/rooms/{room}/field-record/mounting/{asset}` | `work.evidence` or `field.scan` | a new version; earlier versions are kept |
+| `POST /v1/rooms/{room}/field-record/hookups` | `work.evidence` or `field.scan` | `asDesigned` and the design connection it matches |
+| `POST /v1/rooms/{room}/field-record/hookups/{hookup}/remove` | `work.evidence` or `field.scan` | with a reason; the entry is kept |
+| `POST /v1/rooms/{room}/field-record/moves` | `work.evidence` or `field.scan` | PROPOSED; one waiting per device |
+| `POST /v1/rooms/{room}/field-record/moves/{move}/decide` | `room.design.approve` | never the recorder; returns the checks to look at again |
+| `POST /v1/rooms/{room}/field-record/markups` · `…/{markup}/resolve` | either of the above | notes pinned to the plan |
+
+Writable while the room is INSTALLATION_PENDING, INSTALLED_UNVERIFIED or COMMISSIONING (422 otherwise, audited).
+
 ## Positions, physical assets and installations (ADR-0012)
 
 A room's device (`PA-xxxx`) is a **position**: the slot, its purpose, mounting and design history. The hardware is a **physical asset**

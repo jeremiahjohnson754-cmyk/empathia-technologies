@@ -32,6 +32,7 @@ import * as inst from '../domain/installations.js';
 import * as proof from '../domain/proof.js';
 import * as defs from '../domain/deficiencies.js';
 import * as demo from '../domain/demo.js';
+import * as fr from '../domain/fieldRecord.js';
 import type { Config } from '../config.js';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -134,6 +135,26 @@ export function buildRoutes(deps: { pool: PgPool; tokens: Hs256Tokens; store: Ob
   add({ method: 'GET', path: '/v1/assets', tag: 'devices', summary: 'The asset inventory the caller may see: units in service, spares, and the retired register (every code on record; none is ever reused).', auth: true, responses: ok('the asset inventory'),
     handler: async (c) => ({ status: 200, body: await inst.inventory(c) }) });
   add({ method: 'DELETE', path: '/v1/rooms/:room/devices/:asset', tag: 'devices', summary: 'Remove a device from the design (kept in earlier revisions)', auth: true, authority: 'room.design', responses: ok('analysis summary'), handler: async (c, q) => ({ status: 200, body: await rooms.removeDevice(c, q.params['room']!, q.params['asset']!) }) });
+  // ---------------------------------------------------------------------------------------- the field record (Phase 1 installation documentation, 0034)
+  const PA = str({ pattern: '^PA-[0-9]{4,10}$', description: 'a device position of the room' });
+  add({ method: 'GET', path: '/v1/rooms/:room/field-record', tag: 'field-record', summary: 'The room’s field record: each device’s designed and as-built position, how it is mounted and what it is hooked up to; field moves; notes pinned to the plan. The design is not edited by it', auth: true, responses: ok('field record'), handler: async (c, q) => ({ status: 200, body: await fr.fieldRecord(c, q.params['room']!) }) });
+  add({ method: 'PUT', path: '/v1/rooms/:room/field-record/mounting/:asset', tag: 'field-record', summary: 'Record how a device is mounted (a new version; earlier versions are kept). While the room is being installed or commissioned', auth: true, authority: fr.FIELD_RECORD,
+    body: obj({ method: str({ enum: fr.MOUNTS.map((m) => m.id) }), heightM: num({ minimum: 0, maximum: 15 }), fixing: str({ maxLength: 300 }), backing: str({ maxLength: 300 }), tether: str({ enum: ['yes', 'no', 'n/a'] }), note: str({ maxLength: 1000 }) }, ['method']),
+    responses: ok('the version recorded'), handler: async (c, q) => ({ status: 200, body: await fr.recordMounting(c, q.params['room']!, q.params['asset']!, q.body as never) }) });
+  add({ method: 'POST', path: '/v1/rooms/:room/field-record/hookups', tag: 'field-record', summary: 'Record what a device is hooked up to, as found: as designed (it names the design’s proposed connection) or recorded in the field, not in the design', auth: true, authority: fr.FIELD_RECORD, idempotent: true,
+    body: obj({ device: PA, port: str({ minLength: 1, maxLength: 60 }), to: str({ minLength: 1, maxLength: 60, description: 'a device position of the room, or what is outside it' }), toPort: str({ maxLength: 60 }), cable: str({ maxLength: 60 }) }, ['device', 'port', 'to']),
+    responses: created('the hookup'), handler: async (c, q) => ({ status: 201, body: await fr.recordHookup(c, q.params['room']!, q.body as never) }) });
+  add({ method: 'POST', path: '/v1/rooms/:room/field-record/hookups/:hookup/remove', tag: 'field-record', summary: 'Remove a recorded hookup with a reason (the entry is kept)', auth: true, authority: fr.FIELD_RECORD,
+    body: obj({ reason: str({ minLength: 3, maxLength: 500 }) }, ['reason']), responses: ok('removed'), handler: async (c, q) => ({ status: 200, body: await fr.removeHookup(c, q.params['room']!, q.params['hookup']!, (q.body as { reason: string }).reason) }) });
+  add({ method: 'POST', path: '/v1/rooms/:room/field-record/moves', tag: 'field-record', summary: 'Record that a device went in somewhere other than designed, with the reason (PROPOSED until decided)', auth: true, authority: fr.FIELD_RECORD, idempotent: true,
+    body: obj({ device: PA, x: num(), y: num(), reason: str({ enum: fr.MOVE_REASONS }), note: str({ maxLength: 1000 }), evidenceId: UUID }, ['device', 'x', 'y', 'reason']),
+    responses: created('the proposed move'), handler: async (c, q) => ({ status: 201, body: await fr.proposeMove(c, q.params['room']!, q.body as never) }) });
+  add({ method: 'POST', path: '/v1/rooms/:room/field-record/moves/:move/decide', tag: 'field-record', summary: 'Approve or reject a field move (never its recorder). An approved move is the as-built position; the checks that name the device and were recorded before it are listed', auth: true, authority: fr.FIELD_DECIDE,
+    body: obj({ approve: bool(), decision: str({ maxLength: 1000 }) }, ['approve']), responses: ok('the decision'), handler: async (c, q) => ({ status: 200, body: await fr.decideMove(c, q.params['room']!, q.params['move']!, q.body as never) }) });
+  add({ method: 'POST', path: '/v1/rooms/:room/field-record/markups', tag: 'field-record', summary: 'Pin a note to the plan (the installation team and the approvers)', auth: true, authority: fr.FIELD_MARKUP, idempotent: true,
+    body: obj({ x: num(), y: num(), text: str({ minLength: 1, maxLength: 1000 }) }, ['x', 'y', 'text']), responses: created('the note'), handler: async (c, q) => ({ status: 201, body: await fr.addMarkup(c, q.params['room']!, q.body as never) }) });
+  add({ method: 'POST', path: '/v1/rooms/:room/field-record/markups/:markup/resolve', tag: 'field-record', summary: 'Resolve a note with what was done', auth: true, authority: fr.FIELD_MARKUP,
+    body: obj({ resolution: str({ minLength: 1, maxLength: 1000 }) }, ['resolution']), responses: ok('resolved'), handler: async (c, q) => ({ status: 200, body: await fr.resolveMarkup(c, q.params['room']!, q.params['markup']!, (q.body as { resolution: string }).resolution) }) });
   add({ method: 'POST', path: '/v1/rooms/:room/connections', tag: 'devices', summary: 'Propose a connection between two devices', auth: true, authority: 'room.design', idempotent: true,
     body: obj({ from: str({ pattern: '^PA-[0-9]{4,10}$' }), to: str({ pattern: '^PA-[0-9]{4,10}$' }), kind: str({ enum: ['signal', 'network', 'control', 'power'] }) }, ['from', 'to', 'kind']), responses: created('connection id'), handler: async (c, q) => ({ status: 201, body: await rooms.addConnection(c, q.params['room']!, q.body as never) }) });
   add({ method: 'DELETE', path: '/v1/rooms/:room/connections/:connection', tag: 'devices', summary: 'Remove a proposed connection (the design checks re-run)', auth: true, authority: 'room.design', responses: ok('analysis summary'), handler: async (c, q) => ({ status: 200, body: await rooms.removeConnection(c, q.params['room']!, q.params['connection']!) }) });

@@ -69,8 +69,9 @@ The API had nothing a public visitor could use: the development sign-in is refus
   then reads the identical thread from a session made later from the key.
 - Operating the demonstration needs a web service and a PostgreSQL database (cost: founder's decision), `CORS_ORIGINS` set to the demo
   site's origin, `TRUSTED_PROXY=on` behind the platform proxy, and a schedule for recreating the database.
-- Next: the demo client's connected mode (session store, role switch, the thread page reading the server); Phase 1 field records on the
-  server (task #168) so mounting, hook-ups and field moves are part of the same durable history.
+- Phase 1 field records are on the server too (`0034_field_record.sql`, `FRS-01..09`): mounting, hook-ups and field moves are part of
+  the same durable thread, and `DS-07` records them in a sandbox before commissioning starts.
+- Next: the demo client's connected mode (session store, role switch, the thread and field-record pages reading the server).
 
 ## Alternatives considered
 

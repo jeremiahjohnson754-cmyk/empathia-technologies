@@ -4,7 +4,7 @@
   "apiVersion": "0.1.0",
   "counts": {
     "events": 101,
-    "api": 81,
+    "api": 88,
     "entities": 4
   },
   "files": [
@@ -587,6 +587,41 @@
       "file": "api/putV1AssetsAssetRegister.json",
       "$id": "https://schemas.empathia.invalid/api/putV1AssetsAssetRegister/0.1.0.json",
       "sha256": "7eaba368fc82632298c09b246d891eb11eac8522df46398badb3ff21e6918433"
+    },
+    {
+      "file": "api/putV1RoomsRoomFieldRecordMountingAsset.json",
+      "$id": "https://schemas.empathia.invalid/api/putV1RoomsRoomFieldRecordMountingAsset/0.1.0.json",
+      "sha256": "51cca1ddcb8ac1661e1aacdd6f85f7e94a9b013b5129582a476f66870fcc08e7"
+    },
+    {
+      "file": "api/postV1RoomsRoomFieldRecordHookups.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomFieldRecordHookups/0.1.0.json",
+      "sha256": "9754464213718f5b5d373d6547d1790cd0ff68b15dcad62050883a9474c4a61e"
+    },
+    {
+      "file": "api/postV1RoomsRoomFieldRecordHookupsHookupRemove.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomFieldRecordHookupsHookupRemove/0.1.0.json",
+      "sha256": "1f2f69ef0859f95bd41d3cf4f1287d8a55e23b9a819a11cdc667a181aa48dc15"
+    },
+    {
+      "file": "api/postV1RoomsRoomFieldRecordMoves.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomFieldRecordMoves/0.1.0.json",
+      "sha256": "c79e87f3779f8659b0da2c22cb761ccb207326fa6310ac21875b6a25f9ef394a"
+    },
+    {
+      "file": "api/postV1RoomsRoomFieldRecordMovesMoveDecide.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomFieldRecordMovesMoveDecide/0.1.0.json",
+      "sha256": "c6409e2ce43fc166f9c9262a588d057a9042178f0f0a09b76738edf36be9d689"
+    },
+    {
+      "file": "api/postV1RoomsRoomFieldRecordMarkups.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomFieldRecordMarkups/0.1.0.json",
+      "sha256": "21d58ce30eeb450106b6bf89869ab6710b52a62ac22a11317612e6dd75453eca"
+    },
+    {
+      "file": "api/postV1RoomsRoomFieldRecordMarkupsMarkupResolve.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomFieldRecordMarkupsMarkupResolve/0.1.0.json",
+      "sha256": "ec093742972768e55f8ecf3839db77ac9617d3049857a677063b1ccc381b92a9"
     },
     {
       "file": "api/postV1RoomsRoomConnections.json",

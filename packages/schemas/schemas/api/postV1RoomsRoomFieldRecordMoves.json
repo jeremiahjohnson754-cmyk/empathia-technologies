@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomFieldRecordMoves/0.1.0.json",
+  "title": "POST /v1/rooms/{room}/field-record/moves request body",
+  "description": "Record that a device went in somewhere other than designed, with the reason (PROPOSED until decided)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "device",
+    "x",
+    "y",
+    "reason"
+  ],
+  "properties": {
+    "device": {
+      "type": "string",
+      "pattern": "^PA-[0-9]{4,10}$",
+      "description": "a device position of the room"
+    },
+    "x": {
+      "type": "number"
+    },
+    "y": {
+      "type": "number"
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "sprinkler head",
+        "HVAC diffuser or return",
+        "light fixture",
+        "structural member",
+        "ceiling grid or tile layout",
+        "access panel",
+        "power or data location",
+        "sightline or glare",
+        "client or architect request",
+        "other"
+      ]
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "evidenceId": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F-]{36}$"
+    }
+  }
+}
