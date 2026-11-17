@@ -42,8 +42,8 @@ const why = (r) => `${r.status} ${typeof r.body === 'object' && r.body ? r.body.
 
 try {
   step = 'SM-01'; const h = await call('GET', '/health');
-  ok('SM-01', 'the service is up in demonstration mode, on a named release, with its database reachable', h.status === 200 && h.body.status === 'ok' && h.body.authMode === 'demo' && h.body.demoSessions === true && h.body.database?.reachable === true,
-    `status ${h.body?.status} · authMode ${h.body?.authMode} · release ${h.body?.release?.commit || h.body?.release || 'unnamed'} · migrations ${h.body?.database?.migrationsApplied}`);
+  ok('SM-01', 'the service is up in demonstration mode, on a named release, with its database reachable', h.status === 200 && h.body.status === 'ok' && h.body.authMode === 'demo' && h.body.demoSessions === true && h.body.database?.reachable === true && typeof h.body.release?.sha === 'string' && h.body.release.sha.length > 0 && h.body.release.sha !== 'unknown',
+    `status ${h.body?.status} · authMode ${h.body?.authMode} · release ${String(h.body?.release?.sha || 'unnamed').slice(0, 12)} (${h.body?.release?.environment || 'no environment'}) · migrations ${h.body?.database?.migrationsApplied}`);
 
   step = 'SM-02'; const d = await call('GET', '/v1/demo');
   ok('SM-02', 'sandboxes are on offer', d.status === 200 && d.body.enabled === true, d.body?.enabled ? `${d.body.live} of ${d.body.maxLive} live · ${d.body.ttlHours} h` : `${d.status} ${d.body?.reason || ''}`);

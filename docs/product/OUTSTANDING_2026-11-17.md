@@ -47,14 +47,30 @@ This replaces `OUTSTANDING_2026-11-16.md` as the current list. Everything named 
    issue's or work order's audit history.
 5. **Engineer start**: no switches for a persona who cannot use them.
 
+## The demonstration API on staging
+
+Founder, 17 Nov: "establish a repeatable staging deployment with the required API and database". Created on Render's free plans (no
+charge): a PostgreSQL 16 database and the API in demonstration mode, from `deploy/render/demo.render.yaml` on the branch
+`staging/demo-api`. Live on `14d1f45`. The deployment check (permissions, unauthorized access, isolation, persistence, reset) passed
+12 of 12 inside the deployed service against its real database. Deploying found three faults that no local run had shown; all three
+are fixed and now rehearsed. What was read from the platform, what was not verified and why: `docs/operations/RENDER_DEMO_STAGING.md`.
+
+**The staging demo site is not connected to it yet.** Setting `DEMO_API_URL` on `empathia-demo-next` would put `#/connected` on
+staging. It has not been set because the connected build has been through one suite, not the full matrix.
+
 ## Decisions that are the founder's
 
-- **Hosting the demonstration API and its database.** Without it the connected page cannot be on a public site. What it takes, and
-  the platform's listed prices on 17 Nov, are in `CONNECTED_DEMO.md`. Nothing has been created.
+- **Paid plans for the demonstration API.** The free instance sleeps after 15 idle minutes and takes about a minute to wake; the free
+  database expires after 30 days. Render's list prices on 17 Nov: $7 a month for the service, $6 a month plus storage for the database.
 - **Production.** Unchanged since before the pause.
 
 ## Outstanding
 
+- **Connect the staging demo site** (#169, the rest): cover the connected build in the regression (the whole-site sweep on a
+  connected build), say what the page is waiting for while a sleeping server wakes, then set `DEMO_API_URL` and stage. Then the
+  two-browser check on staging, which needs a person with two browsers or a workstation allowed to reach `*.onrender.com`.
+- The API takes more than eight seconds to stop on SIGTERM when its database is gone (seen on processes left by the rehearsal).
+  Shutdown should be bounded.
 - **#167, the rest:** the demo's other pages (Build a Room, the field record page, ServiceHands, Assurance, APEX) still use the
   browser's records. Only `#/connected` reads and writes the server.
 - **#163** SIGNAL feel: the display face (needs the font file), reading toolbar, chapter progress, panel wash and bubbles, contents.

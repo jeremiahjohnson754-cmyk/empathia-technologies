@@ -1,6 +1,6 @@
 {
- "at": "2026-11-17T14:10:33.133Z",
- "commit": "8dccc9022e7c96b7e41057a763bbd91fa662e4eb",
+ "at": "2026-11-17T14:19:26.278Z",
+ "commit": "14d1f4527d6431d9df2081fee9c35cd127253ffc",
  "blueprint": "deploy/render/demo.render.yaml",
  "startCommand": "sh deploy/render/demo-start.sh",
  "passed": 7,
@@ -54,7 +54,7 @@
    "id": "SM-01",
    "title": "the service is up in demonstration mode, on a named release, with its database reachable",
    "result": "PASS",
-   "detail": "status ok · authMode demo · release [object Object] · migrations 35"
+   "detail": "status ok · authMode demo · release 99cb84b99f65 (staging) · migrations 35"
   },
   {
    "id": "SM-02",
@@ -72,7 +72,7 @@
    "id": "SM-04",
    "title": "a sandbox opens with a key, fifteen synthetic people and one installed room; its first session is the installer’s",
    "result": "PASS",
-   "detail": "sbx-81ee73c924c44df3 · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED"
+   "detail": "sbx-7cf2a26f71094db5 · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED"
   },
   {
    "id": "SM-05",
