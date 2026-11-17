@@ -13,6 +13,8 @@
  * Content-Security-Policy and the API's cross-origin rules are the real ones, and every API call goes to the hosted API. What it
  * does not show is the site as deployed; without the flag the same checks run against the deployed site.
  *
+ *   ST-00  (without --local-build) the deployed files: the site's own manifest names the commit asked for (--commit), and the page's
+ *          policy lets it call exactly one other address, the API
  *   ST-01  A: the page loads from the site's address and the hosted API answers; how long it took; if it took more than five
  *          seconds the page said what it was waiting for
  *   ST-02  A opens a sandbox and does three steps, each as its own person: a mounting, a field move, its approval by someone else
@@ -57,6 +59,12 @@ const text = (p, id) => p.getByTestId(id).innerText();
 const doneSteps = (p) => p.locator('[data-testid=cn-steps] li[data-state=done]').count();
 const shot = async (x, file) => { if (shots) await x.page.screenshot({ path: path.join(shots, file), fullPage: true }).catch(() => undefined); };
 
+if (!local) {
+  const want = arg('commit'); let man = null; let csp = '';
+  try { man = await (await fetch(`${site}/BUILD_MANIFEST.json`, { cache: 'no-store' })).json(); csp = ((await (await fetch(`${site}/`, { cache: 'no-store' })).text()).match(/connect-src ([^;"]+)/) || [])[1] || ''; } catch (e) { csp = `could not be read: ${e.message}`; }
+  const commit = String(man?.sourceCommit || man?.commit || '');
+  ok('ST-00', 'the deployed files: the site’s manifest names the commit asked for, and the page’s policy lets it call exactly one other address, the API', !!commit && (!want || commit.startsWith(want)) && csp.trim() === `'self' ${api}`, `deployed commit ${commit.slice(0, 12) || 'not stated'}${want ? ` (asked for ${want})` : ''} · connect-src ${csp}`);
+}
 const A = await browser('A', { width: 1440, height: 900 }); const B = await browser('B', { width: 390, height: 844 });
 try {
   const t0 = Date.now(); await A.page.goto(`${site}/#/connected`, { waitUntil: 'domcontentloaded' }); await A.page.getByTestId('connected').waitFor();
@@ -99,7 +107,7 @@ try {
 } catch (e) { ok('ST-XX', 'the run could not be completed', false, (e && e.message) || String(e)); await shot(A, 'staging-A-stopped.png'); await shot(B, 'staging-B-stopped.png'); }
 finally { await A.close(); await B.close(); if (dist) fs.rmSync(dist, { recursive: true, force: true }); }
 
-const want = ['ST-01', 'ST-02', 'ST-03', 'ST-04', 'ST-05', 'ST-06', 'ST-07', 'ST-08']; for (const id of want) if (!results.some((r) => r.id === id)) ok(id, 'NOT RUN', false, 'an earlier check stopped the run');
+const want = [...(local ? [] : ['ST-00']), 'ST-01', 'ST-02', 'ST-03', 'ST-04', 'ST-05', 'ST-06', 'ST-07', 'ST-08']; for (const id of want) if (!results.some((r) => r.id === id)) ok(id, 'NOT RUN', false, 'an earlier check stopped the run');
 const pass = results.filter((r) => r.result === 'PASS').length; const fail = results.length - pass; const jsonOut = arg('json');
 if (jsonOut) fs.writeFileSync(jsonOut, JSON.stringify({ at: new Date().toISOString(), site, api, served: local ? 'a build made here with DEMO_API_URL, answered under the site’s address' : 'the deployed site', browsers: 'two Chromium processes, separate empty profiles (desktop 1440×900, phone 390×844)', passed: pass, failed: fail, results }, null, 1) + '\n');
 console.log(`connected-browsers ${site} → ${api}: ${pass} passed, ${fail} failed`); process.exit(fail ? 1 : 0);

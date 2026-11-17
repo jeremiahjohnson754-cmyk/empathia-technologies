@@ -173,11 +173,15 @@ Then ST-01…08 passed as before. Evidence: `tests/evidence/RENDER_DEMO_BROWSERS
 `14d1f45`. Looking at the page during that wait also showed a fault: the connection card read "No server in this build" until the
 server answered. Fixed, and CN-11 now checks the card names the server while it waits.
 
+**The site switched over** (17:58 UTC). After the full regression of `e3c8e9f`, that commit was pushed to
+`phase3/legendary-experience` and `DEMO_API_URL` was set on `empathia-demo-next`. At 18:01 the deployed files were checked with
+`connected-browsers.mjs` **without** `--local-build`: ST-00…08, 9 passed, 0 failed. The site's manifest names `e3c8e9f`; its policy
+lets the page call exactly the API; two independent browsers shared a sandbox; the API had slept and woke in 17 seconds with the
+page saying what it was waiting for. Evidence: `tests/evidence/RENDER_DEMO_BROWSERS_DEPLOYED.json`.
+
 **Not verified, and why:**
 
-- **The demo site is not connected.** `DEMO_API_URL` is not set on `empathia-demo-next`; `#/connected` does not exist there. A
-  connected build of the site has been tested by one suite (`demo-connected`, 11 checks, light and dark), not by the full matrix,
-  so it has not been staged.
+- **The rest of the demo site.** Only `#/connected` uses the API. Every other page keeps its records in the browser.
 - **A second browser engine.** Two independent Chromium browsers share one sandbox through the hosted API (above). Safari or Firefox
   has not been tried: neither is installed here.
 

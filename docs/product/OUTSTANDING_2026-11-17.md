@@ -4,13 +4,28 @@ This replaces `OUTSTANDING_2026-11-16.md` as the current list. Everything named 
 
 ## What the public sites serve
 
-- **Staging** (`empathia-demo-next`, `empathia-website-next`, branch `phase3/legendary-experience`): **`99cb84b`**, staged on 17 Nov
-  after its full regression passed on that commit (below). Render reports both deploys `live` on `99cb84b` (finished 10:56 UTC).
-  Before that: `bfdda7b`, staged on 14 Nov.
+- **Staging** (`empathia-demo-next`, `empathia-website-next`, branch `phase3/legendary-experience`): **`e3c8e9f`**, staged on 17 Nov
+  at 17:58 UTC after its full regression passed on that commit (below). Both sites' own manifests name `e3c8e9f` (read 18:01 UTC).
+  Before that: `99cb84b`, staged earlier the same day.
+- **The staging demo is now built with the API's address**: `#/connected` exists there and talks to the hosted demonstration API.
+  **It is the only page that does.** Every other page of the demo still keeps its records in the browser.
 - **Production** (`main`): unchanged. It waits for the founder's word.
-- **New on staging with `99cb84b`:** the six-stage thread page (`#/thread`), the SIGNAL title page, Engineer start (`#/engineer`),
-  the phone-width fixes, and the fixes in the table below. The server work and the connected page are in the commit, but a public
-  build names no server: `#/connected` does not exist on staging.
+
+## The regression of `e3c8e9f`
+
+- Build ok. Unit, integration, security and deploy suites: 125 passed, 0 failed.
+- Browser, light: 106 suites; 105 passed in the regression worktree. Browser, dark: the same 106; 105 passed.
+- The one exception in each is `founder-studio`: the worktree lacks the engineer-private assets. Run in the main tree on the same
+  product code: 19 passed, 0 failed in light and in dark. This standing exception is to be closed by provisioning (task 185).
+- `demo-connected`: 17 passed, 0 failed in light and in dark, inside the regression.
+
+## On the deployed staging site (17 Nov, 18:01 UTC)
+
+`scripts/staging/connected-browsers.mjs` against the deployed files, not a local build: ST-00…08, **9 passed, 0 failed**. The site's
+manifest names `e3c8e9f` and its policy lets the page call exactly one other address, the API. Two independent Chromium browsers
+(desktop and phone size) shared one sandbox through the hosted API; a wrong key opened nothing; the API had slept, and the page said
+what it was waiting for and was ready in 17 seconds. Evidence: `tests/evidence/RENDER_DEMO_BROWSERS_DEPLOYED.json`. Not done: a
+second browser engine (none is installed here).
 
 ## The regression of `99cb84b`
 
@@ -55,8 +70,8 @@ charge): a PostgreSQL 16 database and the API in demonstration mode, from `deplo
 12 of 12 inside the deployed service against its real database. Deploying found three faults that no local run had shown; all three
 are fixed and now rehearsed. What was read from the platform, what was not verified and why: `docs/operations/RENDER_DEMO_STAGING.md`.
 
-**The staging demo site is not connected to it yet.** Setting `DEMO_API_URL` on `empathia-demo-next` would put `#/connected` on
-staging. It has not been set because the connected build has been through one suite, not the full matrix.
+**The staging demo site is connected to it** since 17:58 UTC on 17 Nov (`DEMO_API_URL` on `empathia-demo-next`), after the full
+regression of `e3c8e9f`.
 
 ## Two things that are not to be confused (founder, 17 Nov 09:39)
 
@@ -84,9 +99,7 @@ the scheduled drill are not built and need a platform API key that only the foun
 
 ## Outstanding
 
-- **Connect the staging demo site** (#169, the rest): cover the connected build in the regression (the whole-site sweep on a
-  connected build), say what the page is waiting for while a sleeping server wakes, then set `DEMO_API_URL` and stage. Then the
-  two-browser check on staging, which needs a person with two browsers or a workstation allowed to reach `*.onrender.com`.
+- A second browser engine on the deployed staging site (Safari or Firefox): the founder's check.
 - The API takes more than eight seconds to stop on SIGTERM when its database is gone (seen on processes left by the rehearsal).
   Shutdown should be bounded.
 - **#167, the rest:** the demo's other pages (Build a Room, the field record page, ServiceHands, Assurance, APEX) still use the
