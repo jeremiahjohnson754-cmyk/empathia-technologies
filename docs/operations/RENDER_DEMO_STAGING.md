@@ -153,13 +153,25 @@ database `empathia-demo-db-l04n`, web service `empathia-demo-api-l04n`, <https:/
 
 Evidence: `tests/evidence/RENDER_DEMO_EDGE.json`. Run with `NODE_USE_ENV_PROXY=1` where the way out is a proxy.
 
+**Two independent browsers on the hosted API** (14:43 UTC; `scripts/staging/connected-browsers.mjs --local-build`): two Chromium
+processes with separate empty profiles, a desktop and a phone size. ST-01…08: **8 passed, 0 failed.** One opens a sandbox and does
+three steps; the other, given nothing but the resume code, reads the same organization, thread and field record, does the next
+step, and the first shows it when read again; a code with a wrong key opens nothing; at phone size nothing scrolls sideways and the
+sandbox survives navigating away and back; neither browser asked anything but the site and the API; the API named the site's origin
+on every cross-origin answer. Evidence: `tests/evidence/RENDER_DEMO_BROWSERS.json`.
+
+Two limits, stated: the site is **not yet switched over**, so the demo was built here with the API's address and served to both
+browsers under the site's address (its origin, its policy and the API's cross-origin rules are the real ones; the deployed files are
+not). And both browsers are Chromium: the one engine installed here. The same script without `--local-build` runs against the
+deployed site once it is switched.
+
 **Not verified, and why:**
 
 - **The demo site is not connected.** `DEMO_API_URL` is not set on `empathia-demo-next`; `#/connected` does not exist there. A
   connected build of the site has been tested by one suite (`demo-connected`, 11 checks, light and dark), not by the full matrix,
   so it has not been staged.
-- **Cross-browser persistence on staging.** It needs the connected site and two browsers. Locally it is tested between separate
-  browser sessions of one engine (Chromium); no other engine is installed here.
+- **A second browser engine.** Two independent Chromium browsers share one sandbox through the hosted API (above). Safari or Firefox
+  has not been tried: neither is installed here.
 - **Sleep and wake.** The instance has not yet slept. The wake runs the start command that the three starts above ran.
 
 **Later the same day.** `d60c49c` (this file and the check's own file; no product code) went live at 14:21 UTC: the fifth start,
