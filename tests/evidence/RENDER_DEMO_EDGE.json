@@ -1,0 +1,52 @@
+{
+ "at": "2026-11-17T14:38:44.348Z",
+ "base": "https://empathia-demo-api-l04n.onrender.com",
+ "origin": "https://empathia-demo-next.onrender.com",
+ "passed": 6,
+ "failed": 0,
+ "notRun": 1,
+ "results": [
+  {
+   "id": "EG-01",
+   "title": "TLS: the certificate names this host, comes from a public authority, is in date with at least 14 days left; TLS 1.2 or later",
+   "result": "PASS",
+   "detail": "TLSv1.3 · CN=onrender.com · matched \"*.onrender.com\" · issuer C=US; O=Google Trust Services; CN=WE1 · 33 days left"
+  },
+  {
+   "id": "EG-02",
+   "title": "plain http is not served: it is redirected to https",
+   "result": "NOT_RUN",
+   "detail": "this machine has no route for plain http (curl: (6) Could not resolve host: empathia-demo-api-l04n.onrender.com); HSTS is checked in EG-03"
+  },
+  {
+   "id": "EG-03",
+   "title": "answers carry HSTS, nosniff, no framing, and a correlation id",
+   "result": "PASS",
+   "detail": "hsts max-age=31536000 · nosniff · DENY · csp default-src 'none'; frame-ancestors 'none'"
+  },
+  {
+   "id": "EG-04",
+   "title": "CORS on a real request: the demo site’s origin is named exactly, without credentials; another origin is not named",
+   "result": "PASS",
+   "detail": "site: https://empathia-demo-next.onrender.com · credentials null · vary Origin, Accept-Encoding · other: not named"
+  },
+  {
+   "id": "EG-05",
+   "title": "authentication: no token, a made-up token, a wrong signature, an expired-looking token and another scheme get 401 with a reason and nothing about the server",
+   "result": "PASS",
+   "detail": "no token 401 send Authorization: Bearer <token> · made-up 401 this deployment accepts demonstration se · wrong signature 401 bad token signature · expired-looking 401 bad token signature · not Bearer 401 send Authorization: Bearer <token>"
+  },
+  {
+   "id": "EG-06",
+   "title": "failure handling: a body that is not JSON, an unknown path and a wrong method are answered in JSON with a status, a reason and a correlation id, and name nothing of the server",
+   "result": "PASS",
+   "detail": "not JSON 400 the body is not valid JSON · unknown 404 no endpoint /v1/nothing-here · wrong method 405"
+  },
+  {
+   "id": "EG-07",
+   "title": "(information) /health answered",
+   "result": "PASS",
+   "detail": "0.8 s for the first request of this run"
+  }
+ ]
+}

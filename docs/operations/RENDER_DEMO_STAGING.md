@@ -33,6 +33,8 @@ passwords, and gives the owner URL from the database it creates.
   database, generated secrets, the start command's order, one allowed browser origin, a buildable image context.
 - **Checked when deployed.** `node scripts/staging/demo-smoke.mjs <api-url> --origin=<demo-site>`: SM-01…12 over HTTP only, from
   any machine that can reach the service. Where none can, the same file runs inside the service (below).
+  `node scripts/staging/demo-edge.mjs <api-url> --origin=<demo-site>`: EG-01…07, the edge around it (TLS, headers, CORS on a real
+  request, authentication, failure handling). It opens no sandbox.
 
 ## The branch
 
@@ -136,10 +138,23 @@ database `empathia-demo-db-l04n`, web service `empathia-demo-api-l04n`, <https:/
 | Deployment check inside the service (`14d1f45`, 14:12 UTC) | SM-01…12: **12 passed, 0 failed**, against the platform's database |
 | Start again with the self-check off (`14d1f45`, 14:13 UTC) | roles: password set ×2; listening; no check ran |
 
+**Verified through the public address** (from 14:36 UTC, once the founder had allowed this workstation to reach it):
+
+| | |
+|---|---|
+| `demo-smoke.mjs` against `https://empathia-demo-api-l04n.onrender.com` | SM-01…12: **12 passed, 0 failed**. Evidence: `tests/evidence/RENDER_DEMO_SMOKE_EXTERNAL.json` |
+| `demo-edge.mjs` EG-01 TLS | TLS 1.3; certificate `*.onrender.com` issued by Google Trust Services (WE1), verified, 33 days left that day (the platform renews it) |
+| EG-03 headers | HSTS one year, `nosniff`, no framing, a correlation id on every answer |
+| EG-04 CORS | the demo site's origin named exactly, no credentials, `Vary: Origin`; another origin not named |
+| EG-05 authentication | no token, a made-up token, a wrong signature, an expired-looking token, another scheme: 401 each, with a reason, naming nothing of the server |
+| EG-06 failure handling | a body that is not JSON 400, an unknown path 404, a wrong method 405: JSON with a reason and a correlation id |
+| EG-02 plain http redirected | **not run**: this workstation has no route for plain http. HSTS is present (EG-03) |
+| The staging demo site's own headers | no Content-Security-Policy header (HSTS and `nosniff` only), so the page's `<meta>` policy governs and a connected build needs no header change |
+
+Evidence: `tests/evidence/RENDER_DEMO_EDGE.json`. Run with `NODE_USE_ENV_PROXY=1` where the way out is a proxy.
+
 **Not verified, and why:**
 
-- **Nothing through the public address.** This workstation's shell and its fetch tool are both refused `*.onrender.com`. The public
-  URL has not been requested by anything but the platform's own health check.
 - **The demo site is not connected.** `DEMO_API_URL` is not set on `empathia-demo-next`; `#/connected` does not exist there. A
   connected build of the site has been tested by one suite (`demo-connected`, 11 checks, light and dark), not by the full matrix,
   so it has not been staged.
