@@ -22,7 +22,7 @@ const { ok, open, done } = await harness('demo-refresh');
   ok('RF-03', 'no figure until declared for every class; then the total is shown', none && /\$[\d,]+/.test(money), money.replace(/\n/g, ' ').slice(-80));
   ok('RF-clean', 'no console error; nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
   await p.evaluate(() => localStorage.removeItem('empathia.demo.refresh.v1')); await t.close(); }
-{ const t = await open('#/pro/refresh', { role: 'syseng', sw: false, width: 390, height: 844 }); const p = t.page; p.setDefaultTimeout(20000); await p.getByTestId('refresh-plan').waitFor();
+{ const t = await open('#/pro/refresh', { role: 'syseng', sw: false, w: 390, h: 844 }); const p = t.page; p.setDefaultTimeout(20000); await p.getByTestId('refresh-plan').waitFor();
   const sw = await p.evaluate(() => document.documentElement.scrollWidth - innerWidth); await t.close();
   const e = await open('#/pro/refresh', { role: 'employee', sw: false }); await e.page.waitForTimeout(1500); const denied = !(await e.page.getByTestId('refresh-plan').count()); await e.close();
   ok('RF-04', 'phone width: nothing scrolls sideways; an employee is not admitted', sw <= 1 && denied, `sw ${sw} denied ${denied}`); }

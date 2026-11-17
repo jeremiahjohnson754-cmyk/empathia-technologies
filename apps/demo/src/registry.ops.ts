@@ -144,7 +144,7 @@ export const OPS_PAGES: readonly PageDef[] = [
   {
     id: 'commissioning.deficiencies', title: 'Deficiencies', purpose: 'Every open commissioning deficiency, most serious first', product: 'commissioning',
     path: '/commissioning/deficiencies', authority: { area: 'commissioning' },
-    load: adapt(() => import('./pages/AssuranceViews.js'), (m, p) => h(m.DeficienciesPage, { perspective: p.role })),
+    load: adapt(() => import('./pages/AssuranceViews.js'), (m, p) => h(m.DeficienciesPage, { perspective: p.role, hash: p.hash })),
     search: { keywords: 'deficiencies punch list open', aliases: ['open deficiencies'] },
   },
   {
@@ -176,6 +176,12 @@ export const OPS_PAGES: readonly PageDef[] = [
     path: '/commissioning/scenarios', authority: { area: 'commissioning' },
     load: adapt(() => import('./pages/Scenarios.js'), (m, p) => h(m.ScenariosPage, { perspective: p.role })),
     search: { keywords: 'scenario journey teams boardroom lecture broadcast ballroom divisible end to end request acceptance assurance', aliases: ['commissioning scenarios', 'reference journeys'] },
+  },
+  {
+    id: 'thread.room', title: 'One room, end to end', purpose: 'One room’s record followed through every product: Lite, engineering, commissioning, ServiceHands, assurance and APEX, with the ids that carry it and what is recorded at each step', product: 'commissioning',
+    path: '/thread', authority: { roles: ['syseng', 'cxeng', 'designer', 'installer', 'service', 'svcmgr', 'ops', 'qa', 'architect', 'exec', 'steward'], why: 'the record of a room across the products: everyone who works on a room or answers for it' },
+    load: adapt(() => import('./pages/Thread.js'), (m, p) => h(m.ThreadPage, { perspective: p.role, hash: p.hash })),
+    search: { keywords: 'thread end to end vertical slice traceability digital thread lite engineering commissioning servicehands assurance apex one room record chain evidence', aliases: ['digital thread', 'end to end', 'traceability'] },
   },
   {
     id: 'install.redline', title: 'Field record and redlines', purpose: 'Phase 1 installation documentation over the Lite plan: how each device is mounted, what it is hooked up to, devices moved in the field and why, and notes pinned to the plan', product: 'lite',

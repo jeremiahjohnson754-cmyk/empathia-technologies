@@ -81,6 +81,7 @@ function Incident({ inc, w, apply, persona, me, est }: { inc: S.Incident; w: S.W
     <div className="stack" data-testid="incident">
       <h2 className="build__h">{inc.title} <Tag tone={TONE[inc.state]}>{inc.state}</Tag></h2>
       <p>{inc.summary}</p>
+      {inc.source ? <p className="svc__practice" data-testid="svc-source">From commissioning deficiency <a href={`#/commissioning/deficiencies?d=${encodeURIComponent(inc.source.id)}`}>{inc.source.issue}</a> on {inc.roomId}. <a href={`#/thread?room=${inc.roomId}`}>The room’s whole thread</a></p> : null}
       <Facts items={[['Room', `${inc.roomName} (${inc.roomId})`], ['Severity · SLA', `${inc.severity} · ${SLA[inc.severity].respond}, restore ${SLA[inc.severity].restore}`], ['Opened', when(inc.openedAt)], ['Work order', wo ? `${wo.id} · ${wo.workType.replace(/_/g, ' ')} · ${wo.state}` : 'none yet'], ['Technician', tech?.name || '—'], ['Verified by', inc.verifiedBy ? personaLabel(inc.verifiedBy) : '—']]} />
       <details className="svc__packet" open={!!me}><summary>Context packet — read from the model, not polled</summary>
         <Facts items={[['Devices', packet.devices.length ? packet.devices.join(', ') : 'none recorded'], ['Access switch', packet.switch || 'none recorded'], ['Uplink', packet.uplink || 'none recorded'], ['Rooms sharing the switch', packet.sharing.length ? packet.sharing.join(', ') : 'none'], ['Power', packet.power || 'none recorded'], ['Evidence freshness', 'edges carry their provenance and date (synthetic collector export 2026-10-28)']]} />

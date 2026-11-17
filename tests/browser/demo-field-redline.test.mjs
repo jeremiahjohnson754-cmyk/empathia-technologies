@@ -44,7 +44,7 @@ const clickPlan = async (p, fx, fy) => { const room = p.locator('[data-testid=fr
   ok('FL-clean', 'no console error; nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
   await t.close(); }
 
-{ const t = await open(`#/install/redline?room=${ROOM}`, { role: 'installer', sw: false, width: 390, height: 844 }); const p = t.page; p.setDefaultTimeout(20000);
+{ const t = await open(`#/install/redline?room=${ROOM}`, { role: 'installer', sw: false, w: 390, h: 844 }); const p = t.page; p.setDefaultTimeout(20000);
   await p.getByTestId('field-redline').waitFor(); const sw = await p.evaluate(() => document.documentElement.scrollWidth - innerWidth); await t.close();
   const e = await open(`#/install/redline?room=${ROOM}`, { role: 'employee', sw: false }); await e.page.waitForTimeout(1500); const denied = !(await e.page.getByTestId('field-redline').count()); await e.close();
   ok('FL-06', 'phone width: nothing scrolls sideways; an employee is not admitted', sw <= 1 && denied, `sw ${sw} denied ${denied}`); }

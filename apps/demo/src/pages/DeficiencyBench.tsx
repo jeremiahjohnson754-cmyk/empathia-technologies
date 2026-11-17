@@ -11,15 +11,17 @@ import type { RoomRecord, Issue } from '../campus/design.js';
 import { DEMO_NOW } from '../campus/design.js';
 import { shortName } from '../campus/canon.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
+import { handDeficiencyToService, incidentForDeficiency, HANDOFF_AUTHORITIES } from '../workspace/store.js';
+import { holds } from '../build/store.js';
 import { personaLabel } from '../build/store.js';
 
 const WORD: Record<string, string> = { OPEN: 'Open', IN_PROGRESS: 'In progress', PENDING_RETEST: 'Pending retest', CLOSED: 'Closed', ACCEPTED_EXCEPTION: 'Accepted exception', DEFERRED: 'Deferred' };
 const today = () => Math.max(Date.now(), DEMO_NOW);
 const plusDays = (n: number) => new Date(today() + n * 864e5).toISOString().slice(0, 10);
 
-export function DeficiencyBench({ items, persona }: { items: Array<{ r: RoomRecord; i: Issue; found: string }>; persona: string }) {
-  const { apply } = useWorkspace();
-  const [sel, setSel] = useState(items[0] ? `${items[0].r.outline.id}:${items[0].i.id}` : ''); const [tick, setTick] = useState(0);
+export function DeficiencyBench({ items, persona, initial = '' }: { items: Array<{ r: RoomRecord; i: Issue; found: string }>; persona: string; initial?: string }) {
+  const { w, apply } = useWorkspace();
+  const [sel, setSel] = useState(initial && items.some((x) => `${x.r.outline.id}:${x.i.id}` === initial) ? initial : items[0] ? `${items[0].r.outline.id}:${items[0].i.id}` : ''); const [tick, setTick] = useState(0);
   const [why, setWhy] = useState<string[] | null>(null); const [done, setDone] = useState<string | null>(null);
   const [owner, setOwner] = useState('installer'); const [target, setTarget] = useState(plusDays(10)); const [cause, setCause] = useState<RootCause>('CONFIGURATION');
   const [action, setAction] = useState(''); const [evidence, setEvidence] = useState(''); const [exc, setExc] = useState(''); const [reason, setReason] = useState(''); const [until, setUntil] = useState(plusDays(30));
@@ -48,6 +50,15 @@ export function DeficiencyBench({ items, persona }: { items: Array<{ r: RoomReco
         <div><dt>Root cause · action</dt><dd>{d.rootCause ? `${d.rootCause.toLowerCase().replace(/_/g, ' ')} · ${d.action}` : '—'}</dd></div><div><dt>Retest</dt><dd>{d.retest ? `${d.retest.result} on ${d.retest.evidence} by ${personaLabel(d.retest.by)}` : '—'}</dd></div>
         <div><dt>Open to exception</dt><dd>{d.waivable ? 'yes, with an approved exception record' : 'no: it is against safety, security, evidence or separation of duties'}</dd></div><div><dt>Blocks acceptance</dt><dd>{blocksAcceptance(d) ? 'yes' : 'no'}</dd></div>
       </dl>
+      {(() => { const inc = incidentForDeficiency(w, d.id); const may = HANDOFF_AUTHORITIES.some((x) => holds(persona, x));
+        return <div className="df-step" data-testid="df-service" data-incident={inc?.id || ''}>
+          <b>ServiceHands</b>
+          {inc ? <span>Handed to service as <a href={`#/v25/service?id=${inc.id}`} data-testid="df-service-link">{inc.id}</a> <Tag tone={inc.state === 'RESOLVED' || inc.state === 'CLOSED' ? 'ok' : 'info'}>{inc.state}</Tag>. Closing the job does not close this deficiency: the retest, verified by someone else, does.</span>
+            : <><span className="ui-muted">A field deficiency can be handed to service as a work order; a design deficiency gets a design change.</span>
+              <button type="button" className="ui-btn" data-testid="df-handoff" onClick={() => { setWhy(null); setDone(null); const res = apply((x) => handDeficiencyToService(x, persona, { deficiencyId: d.id, issueId: it.i.id, state: d.state, title: it.i.title, severity: it.i.severity, roomId: it.r.outline.id, roomName: it.r.outline.name, buildingKey: it.r.outline.building, lifecycle: it.r.lifecycle })); if ('why' in res) setWhy(res.why); else setDone(`Handed to ServiceHands as ${res.id}`); }}>Hand to ServiceHands</button>
+              {!may ? <span className="ui-meta">needs {HANDOFF_AUTHORITIES.join(' or ')}</span> : null}</>}
+          {' '}<a href={`#/thread?room=${it.r.outline.id}`} data-testid="df-thread-link">The room’s whole thread</a>
+        </div>; })()}
       {why ? <div role="alert" data-testid="df-refused"><Notice tone="bad"><b>Refused.</b> {why.join(' · ')}</Notice></div> : null}
       {done ? <div role="status" data-testid="df-done"><Notice tone="ok">{done}. Written to the audit trail.</Notice></div> : null}
       <div className="df-steps">

@@ -197,7 +197,8 @@ export function SignalsPage({ perspective }: { perspective: string }) {
   );
 }
 
-export function DeficienciesPage({ perspective }: { perspective: string }) {
+export function DeficienciesPage({ perspective, hash = '' }: { perspective: string; hash?: string }) {
+  const wantedDef = decodeURIComponent(/[?&]d=([^&]+)/.exec(hash)?.[1] || '');
   const persona = personaOf(perspective); const recs = allRecords();
   const defs = recs.flatMap((r) => r.issues.map((i) => ({ r, i, cx: cxState(r) })));
   const open = defs.filter((x) => x.i.state !== 'RESOLVED').map((x) => ({ ...x, m: deficiencyMeta(x.r, x.i) }));
@@ -220,7 +221,7 @@ export function DeficienciesPage({ perspective }: { perspective: string }) {
         </Card>
         <Card icon="pulse" title="By severity"><Donut label="Open deficiencies by severity" total="open" segments={sev} /></Card>
       </div>
-      <DeficiencyBench persona={persona} items={[...open].sort((a, b) => ['High', 'Medium', 'Low'].indexOf(a.i.severity) - ['High', 'Medium', 'Low'].indexOf(b.i.severity)).slice(0, 80).map((x) => ({ r: x.r, i: x.i, found: x.m.found }))} />
+      <DeficiencyBench persona={persona} initial={wantedDef} items={[...open].sort((a, b) => ['High', 'Medium', 'Low'].indexOf(a.i.severity) - ['High', 'Medium', 'Low'].indexOf(b.i.severity)).slice(0, 80).map((x) => ({ r: x.r, i: x.i, found: x.m.found }))} />
       <Foot>Deficiencies are synthetic and come from the engine's design checks and the simulated commissioning.</Foot>
     </section>
   );

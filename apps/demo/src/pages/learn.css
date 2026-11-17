@@ -263,3 +263,15 @@ main details > summary { min-height: 24px; }
 .fr__panel .build__h2 { margin-top: 14px; }
 .fr__photo { display: block; max-width: min(100%, 280px); border-radius: 8px; margin: 6px 0; }
 .fr__decide { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+/* one room, end to end (the thread): six stages in a rail */
+.th__rail { list-style: none; margin: 4px 0 14px; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 900px) { .th__rail { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.th__rail li a { display: grid; gap: 2px; padding: 10px 12px; min-height: 100%; border: 1px solid var(--line); border-left: 4px solid var(--tx3); border-radius: 10px; background: var(--bg2); color: inherit; text-decoration: none; }
+.th__rail li[data-tone=ok] a { border-left-color: var(--ok, var(--accent)); } .th__rail li[data-tone=warn] a { border-left-color: var(--warn); } .th__rail li[data-tone=info] a { border-left-color: var(--accent); } .th__rail li[data-tone=bad] a { border-left-color: var(--bad); }
+.th__rail li a:hover, .th__rail li a:focus-visible { border-color: var(--accent); }
+.th__n { font-variant-numeric: tabular-nums; color: var(--tx3); font-size: .8rem; }
+.th__rail .ui-meta { overflow-wrap: anywhere; }
+/* a room picker with long names must not widen a phone page (found at 390 px, 16 Nov 2026) */
+.fr .build__row, .th .build__row { flex-wrap: wrap; max-width: 100%; }
+.fr .kit-field, .th .kit-field { max-width: 100%; min-width: 0; }
+.fr select, .th select { max-width: 100%; min-width: 0; }

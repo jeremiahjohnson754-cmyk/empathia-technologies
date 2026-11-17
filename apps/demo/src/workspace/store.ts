@@ -11,7 +11,9 @@ import * as FI from '@empathia/field-intelligence';
 import { holds, personaLabel } from '../build/store.js';
 
 export interface Evt { at: string; by: string; type: string; aggregate: string; detail: string; outcome: 'ALLOWED' | 'DENIED' }
-export interface Incident { id: string; roomId: string; roomName: string; buildingKey: string; title: string; summary: string; severity: 'Mission critical' | 'High' | 'Standard'; state: ServiceState; openedAt: string; restoredAt: string | null; closedAt: string | null; recurrenceOf: string | null; reopened: boolean; workOrderId: string | null; apexId: string | null; learnCaseId: string | null; history: Array<{ to: ServiceState; at: string; by: string }>; requesterConfirmed: boolean; verifiedBy: string | null }
+export interface Incident { id: string; roomId: string; roomName: string; buildingKey: string; title: string; summary: string; severity: 'Mission critical' | 'High' | 'Standard'; state: ServiceState; openedAt: string; restoredAt: string | null; closedAt: string | null; recurrenceOf: string | null; reopened: boolean; workOrderId: string | null; apexId: string | null; learnCaseId: string | null; history: Array<{ to: ServiceState; at: string; by: string }>; requesterConfirmed: boolean; verifiedBy: string | null;
+  /** where the incident came from when it was not a request: a commissioning deficiency handed to service (the deficiency stays open until its retest is verified) */
+  source?: { kind: 'deficiency'; id: string; issue: string; lifecycle: string } }
 export interface WorkOrder { id: string; incidentId: string; roomId: string; buildingKey: string; workType: string; title: string; state: 'OPEN' | 'ASSIGNED' | 'ACCEPTED' | 'IN_PROGRESS' | 'DONE' | 'CANCELLED'; techId: string | null; window: { from: string; to: string } | null; access: { confirmedBy: string } | null; safety: { briefed: boolean; heightPermit?: boolean } | null; toolsConfirmed: string[]; parts: Array<{ part: string; qty: number }>; evidence: Array<{ at: string; by: string; kind: string; note: string }>; preflight: Check[] | null; openedAt: string }
 export interface ApexCase { id: string; incidentId: string; roomId: string; key: string; layers: Array<{ layer: Layer; label: string; observations: string[]; cites: string[] }>; hypotheses: Hypothesis[]; actions: Array<Outcome & { at: string; by: string; hypothesisId: string }>; reviewed: { by: string; at: string; verdict: string } | null; openedAt: string; /** part of the demonstration's seed, not opened by the person */ seeded?: boolean }
 export interface LearnCase { id: string; incidentId: string; apexId: string | null; title: string; lesson: string; permission: { by: string; at: string } | null; deidentified: boolean; proposedBy: string; proposedAt: string; smeReview: { decision: 'approve' | 'reject'; by: string; at: string; note: string } | null; state: 'PROPOSED' | 'SME_REVIEWED' | 'REJECTED' | 'APPROVED'; approvedBy: string | null }
@@ -187,6 +189,24 @@ export function raiseIncident(w: Workspace, persona: string, input: { roomId: st
   const prior = w.incidents.find((i) => i.roomId === input.roomId && ['RESOLVED', 'CLOSED'].includes(i.state) && i.title.toLowerCase().split(' ')[0] === input.title.toLowerCase().split(' ')[0]);
   w.incidents.unshift({ id, roomId: input.roomId, roomName: input.roomName, buildingKey: input.buildingKey, title: input.title.trim(), summary: input.summary.trim(), severity: 'Standard', state: 'OPEN', openedAt: now(), restoredAt: null, closedAt: null, recurrenceOf: prior?.id || null, reopened: false, workOrderId: null, apexId: null, learnCaseId: null, history: [{ to: 'OPEN', at: now(), by: persona }], requesterConfirmed: false, verifiedBy: null });
   log(w, persona, 'service.raise', id, `${input.title.trim()} · ${input.roomName}${prior ? ` · recurrence of ${prior.id}` : ''}`); return { id };
+}
+
+/** Authorities that hand a commissioning deficiency to service (V2.5.5's issue handoff: the Service Manager or the Operations Lead; the Designer cannot). */
+export const HANDOFF_AUTHORITIES = ['issue.assign', 'service.triage'];
+export const incidentForDeficiency = (w: Workspace, deficiencyId: string) => w.incidents.find((i) => i.source?.kind === 'deficiency' && i.source.id === deficiencyId) || null;
+/**
+ * Hand a commissioning deficiency to ServiceHands: one incident per deficiency, linked both ways by the deficiency's id. Only a field
+ * deficiency is handed off (a room that is installed); a deficiency of a design still on paper gets a design change instead. Closing the
+ * incident does not close the deficiency: its retest, verified by someone else, does.
+ */
+export function handDeficiencyToService(w: Workspace, persona: string, input: { deficiencyId: string; issueId: string; state: string; title: string; severity: string; roomId: string; roomName: string; buildingKey: string; lifecycle: string }): Refusal | { id: string; existing: boolean } {
+  const n = need(w, persona, HANDOFF_AUTHORITIES, 'service.handoff', input.deficiencyId); if (n) return n;
+  const had = incidentForDeficiency(w, input.deficiencyId); if (had) return { id: had.id, existing: true };
+  if (['PLANNED', 'DESIGN_APPROVED', 'INSTALLATION_PENDING'].includes(input.lifecycle)) return deny(w, persona, 'service.handoff', input.deficiencyId, [`${input.roomName} is ${input.lifecycle}: nothing is installed, so this is a design deficiency and gets a design change, not a work order`]);
+  if (['CLOSED', 'ACCEPTED_EXCEPTION'].includes(input.state)) return deny(w, persona, 'service.handoff', input.deficiencyId, [`the deficiency is ${input.state.toLowerCase().replace(/_/g, ' ')}: there is nothing to hand off`]);
+  const id = `ISS-${String(++w.seq.inc).padStart(4, '0')}`;
+  w.incidents.unshift({ id, roomId: input.roomId, roomName: input.roomName, buildingKey: input.buildingKey, title: input.title.trim(), summary: `Commissioning deficiency ${input.issueId}, handed to service. Closing this job does not pass the test: the retest, verified by someone else, closes the deficiency.`, severity: input.severity === 'High' ? 'High' : 'Standard', state: 'OPEN', openedAt: now(), restoredAt: null, closedAt: null, recurrenceOf: null, reopened: false, workOrderId: null, apexId: null, learnCaseId: null, history: [{ to: 'OPEN', at: now(), by: persona }], requesterConfirmed: false, verifiedBy: null, source: { kind: 'deficiency', id: input.deficiencyId, issue: input.issueId, lifecycle: input.lifecycle } });
+  log(w, persona, 'service.handoff', id, `${input.deficiencyId} → ${id} · ${input.title.trim()} · ${input.roomName}`); return { id, existing: false };
 }
 
 // ------------------------------------------------------------------------------------------------------------ APEX
