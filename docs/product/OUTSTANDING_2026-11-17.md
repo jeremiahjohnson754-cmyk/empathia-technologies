@@ -4,10 +4,21 @@ This replaces `OUTSTANDING_2026-11-16.md` as the current list. Everything named 
 
 ## What the public sites serve
 
-- **Staging** (`empathia-demo-next`, `empathia-website-next`, branch `phase3/legendary-experience`): **`bfdda7b`**, staged on 14 Nov.
+- **Staging** (`empathia-demo-next`, `empathia-website-next`, branch `phase3/legendary-experience`): **`99cb84b`**, staged on 17 Nov
+  after its full regression passed on that commit (below). Render reports both deploys `live` on `99cb84b` (finished 10:56 UTC).
+  Before that: `bfdda7b`, staged on 14 Nov.
 - **Production** (`main`): unchanged. It waits for the founder's word.
-- **Not on either yet:** the six-stage thread page, the SIGNAL title page, Engineer start, the phone-width fixes, and everything
-  below. A commit is staged only after a full regression passes on that exact commit.
+- **New on staging with `99cb84b`:** the six-stage thread page (`#/thread`), the SIGNAL title page, Engineer start (`#/engineer`),
+  the phone-width fixes, and the fixes in the table below. The server work and the connected page are in the commit, but a public
+  build names no server: `#/connected` does not exist on staging.
+
+## The regression of `99cb84b`
+
+- Build ok. Unit, integration and security tests: 124 passed, 0 failed.
+- Browser, light: 106 suites; 105 passed in the regression worktree. Browser, dark: the same 106; 105 passed.
+- The one exception in each is `founder-studio`, which fails in the worktree because that copy lacks the engineer-private local
+  assets. Run in the main tree on `99cb84b`: 19 passed, 0 failed in light and in dark.
+- `demo-connected` (the connected page against a real API and database) is among them: 11 passed, 0 failed in light and in dark.
 
 ## Regression history since `bfdda7b`
 
@@ -17,10 +28,9 @@ This replaces `OUTSTANDING_2026-11-16.md` as the current list. Everything named 
 | `d77e55e` | Failed a unit test: the API client's operation count was left at 168 when the thread route was added. Fixed in `52fce09`. Not staged |
 | `52fce09` | Failed `demo-deadends`: on Engineer start, a persona who may not inject a fault was offered five switches that only repeated a refusal. Fixed in `4914a32`. Not staged |
 | `4914a32` | Failed `demo-offline` OF-08 (43 passed, 1 failed; 78 other light suites passed): the SIGNAL title page asked for its 1.8 MB sprite sheet on every visit, so opening the story library offline logged a failed request. Fixed in the next commit. Not staged |
-| the head | Running: one regression for everything, the connected page's suite included |
+| `99cb84b` | Passed (above). Staged |
 
-The head contains everything below. The connected page does not exist in a public build (no server address), so staging the head
-changes nothing a visitor can reach there beyond the fixes and the pages already listed.
+`99cb84b` contains everything below.
 
 ## Built on 17 Nov
 
@@ -45,7 +55,6 @@ changes nothing a visitor can reach there beyond the fixes and the pages already
 
 ## Outstanding
 
-- Finish the regression of the head; if it passes, stage that commit and verify both `-next` deploys.
 - **#167, the rest:** the demo's other pages (Build a Room, the field record page, ServiceHands, Assurance, APEX) still use the
   browser's records. Only `#/connected` reads and writes the server.
 - **#163** SIGNAL feel: the display face (needs the font file), reading toolbar, chapter progress, panel wash and bubbles, contents.
