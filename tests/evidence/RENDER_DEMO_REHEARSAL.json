@@ -1,6 +1,6 @@
 {
- "at": "2026-11-17T19:10:07.679Z",
- "commit": "688cf9f0601c4bcf8d8a28aa1c5d6a35bec8cc90",
+ "at": "2026-11-17T19:51:04.213Z",
+ "commit": "1cba6764b4096e01a9945835c728a447e4b7d3d5",
  "blueprint": "deploy/render/demo.render.yaml",
  "startCommand": "sh deploy/render/demo-start.sh",
  "passed": 12,
@@ -56,9 +56,9 @@
   },
   {
    "id": "R-09",
-   "name": "recovery: an export made with the platform’s privileges restores into an empty database as the owner; migrations, rows, forced row-level security and every audit chain are verified against the source; the API starts on the restored copy and a sandbox opened before the export opens with its key and reads the same thread",
+   "name": "recovery: an export made with the platform’s privileges restores into an empty database as the owner; migrations, rows, forced row-level security and every audit chain are verified against the source; the privileges the export does not carry are put back and equal the source’s; the API starts on the restored copy and a sandbox opened before the export opens with its key and reads the same thread",
    "result": "PASS",
-   "detail": "RV-01 PASS · RV-02 PASS · RV-03 PASS · RV-04 PASS · 2443 rows, 7 chains · objects not the owner’s: 0 · API on the copy true · same thread true · recorded after the export: on the source v2, in the copy v1 (lost, as it must be) · export 0.2 s (138 KiB), restore 0.6 s, verify 1.8 s, serving again 0.6 s"
+   "detail": "RV-01 PASS · RV-02 PASS · RV-03 PASS · RV-04 PASS · RV-05 PASS · 2443 rows, 7 chains · objects not the owner’s: 0 · API on the copy true · same thread true · recorded after the export: on the source v2, in the copy v1 (lost, as it must be) · export 0.2 s (135 KiB), restore 0.7 s, verify 2.3 s, serving again 0.6 s"
   },
   {
    "id": "R-10",
@@ -83,12 +83,12 @@
   "rows": 2443,
   "tables": 78,
   "chains": 7,
-  "exportBytes": 141694,
-  "exportSeconds": 0.211,
-  "restoreSeconds": 0.581,
-  "verifySeconds": 1.829,
+  "exportBytes": 137742,
+  "exportSeconds": 0.222,
+  "restoreSeconds": 0.679,
+  "verifySeconds": 2.306,
   "serveSeconds": 0.623,
-  "totalSeconds": 3.0330000000000004,
+  "totalSeconds": 3.6080000000000005,
   "lost": "whatever was recorded after the export was made: here one mounting (version 2 on the source, version 1 in the copy)",
   "measuredOn": "this workstation, a local PostgreSQL cluster; not the platform"
  },
@@ -115,7 +115,7 @@
    "id": "SM-04",
    "title": "a sandbox opens with a key, fifteen synthetic people and one installed room; its first session is the installer’s",
    "result": "PASS",
-   "detail": "sbx-63beff4ff3ec4922 · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED"
+   "detail": "sbx-c471fea00131485b · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED"
   },
   {
    "id": "SM-05",

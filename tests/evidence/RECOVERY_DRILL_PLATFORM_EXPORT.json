@@ -1,0 +1,168 @@
+{
+ "drill": "a logical export made by the platform, restored and verified in an isolated database",
+ "at": "2026-11-17T19:45:18.483Z",
+ "where": "this workstation: a PostgreSQL cluster created for the drill on 127.0.0.1 and removed after it; not the platform",
+ "archive": {
+  "bytes": 258591,
+  "sha256": "38c5d07f73b57ccab2007d72f5921c5c38c3654704e6c5165e2518d87cd01dc3",
+  "members": 85,
+  "format": "DIRECTORY",
+  "database": "empathia_demo",
+  "entries": 938,
+  "dumpedFrom": "16.15 (Debian 16.15-1.pgdg12+2)",
+  "dumpedBy": "16.15 (Debian 16.15-1.pgdg12+2)",
+  "requestedAt": "2026-11-17T19:27Z",
+  "createdAtServerTime": "2026-11-17 19:28:14",
+  "tables": 81,
+  "rows": 6361
+ },
+ "timings": {
+  "validateSeconds": 0.1,
+  "clusterSeconds": 1.3,
+  "restoreSeconds": 1.3,
+  "verifySeconds": 5.2,
+  "privilegesSeconds": 1.3,
+  "serveSeconds": 0.7,
+  "recoverySeconds": 8.6
+ },
+ "loss": {
+  "markerBefore": "2026-11-17T19:02:41.684Z",
+  "exportRequested": "2026-11-17T19:27Z",
+  "exportWritten": "2026-11-17 19:28:14",
+  "markerAfter": "2026-11-17T19:34:45.064Z",
+  "inTheCopy": {
+   "before": true,
+   "after": false
+  },
+  "copyVersion": 1,
+  "hostedVersion": 2,
+  "boundary": "everything recorded up to the export (requested 2026-11-17T19:27Z, written 2026-11-17 19:28:14 UTC) is in the copy; everything recorded after it is not",
+  "minutesBeforeToAfter": 32.1
+ },
+ "limits": [
+  "measured on this workstation with a local disk and a database of this size; not the platform’s restore time",
+  "the time to create a new database instance on the platform, and to point the service at it and redeploy, is not in these figures",
+  "the copy was verified against the archive and against its own hashes; the staging database cannot be read from here, so it was compared only through the hosted API (migrations applied, the drill’s own record)",
+  "the platform keeps an export for 7 days; no copy is kept off the platform by any schedule yet",
+  "point-in-time recovery has not been exercised"
+ ],
+ "skippedPlatformExtensions": [
+  "pg_stat_statements"
+ ],
+ "restored": {
+  "rows": 6361,
+  "tables": 81,
+  "migrations": 35,
+  "chains": 18,
+  "sealedAuditRows": 430,
+  "rls": {
+   "enabled": 75,
+   "forced": 68,
+   "policies": 80
+  },
+  "sandboxes": 18
+ },
+ "securityDefinerOpenToEveryRoleInAMigratedDatabase": [
+  "app.auth_memberships",
+  "app.auth_person",
+  "app.auth_person_by_email",
+  "app.demo_membership_boundary",
+  "app.demo_no_invitation"
+ ],
+ "findings": [
+  {
+   "id": "F-1",
+   "finding": "the platform’s logical export carries no privileges",
+   "detail": "0 privilege entries among the archive’s 938. Restored as it is: 168 of the 192 privilege lines of a freshly migrated database are not what the copy has; the service’s runtime role is refused (permission denied for schema app); 21 security-definer functions can be run by any role (5 in a migrated database).",
+   "consequence": "a service started on a copy restored from an export, with nothing more done, answers \"degraded\": it cannot read its own schema",
+   "remedy": "the privileges are put back from a freshly migrated reference database at the same migration level, then compared with it (this step)"
+  },
+  {
+   "id": "F-2",
+   "finding": "the export includes the platform’s own extension (pg_stat_statements)",
+   "detail": "no migration creates it and an owner who is not a superuser cannot",
+   "consequence": "pg_restore --exit-on-error stops on it",
+   "remedy": "its entries are left out by name through pg_restore’s list"
+  }
+ ],
+ "staging": {
+  "release": "688cf9f0601c4bcf8d8a28aa1c5d6a35bec8cc90",
+  "markerVersionAfterTheDrill": 2
+ },
+ "passed": 12,
+ "failed": 0,
+ "steps": [
+  {
+   "id": "D-01",
+   "name": "the archive is sound: it decompresses, holds only plain files in relative paths, and pg_restore reads its one table of contents",
+   "result": "PASS",
+   "detail": "258591 bytes, sha256 38c5d07f73b57cca…, 85 members · DIRECTORY format of database empathia_demo, 938 entries · dumped from PostgreSQL 16.15 (Debian 16.15-1.pgdg12+2) · requested 2026-11-17T19:27Z, written 2026-11-17 19:28:14 (the database server's clock, UTC)"
+  },
+  {
+   "id": "D-02",
+   "name": "what the archive holds, counted in the archive itself",
+   "result": "PASS",
+   "detail": "6361 rows in 81 tables · 48 tables empty"
+  },
+  {
+   "id": "D-03",
+   "name": "it restores into an empty database as an owner who is not a superuser, and every table and function is that owner’s",
+   "result": "PASS",
+   "detail": "pg_restore --exit-on-error finished in 1.3 s · objects not the owner’s: 0 · left out, by name: pg_stat_statements (the platform’s own extension; no migration creates it)"
+  },
+  {
+   "id": "D-04",
+   "name": "row integrity: the database holds exactly the tables the archive holds, and every table exactly the rows the archive holds",
+   "result": "PASS",
+   "detail": "6361 rows in 81 tables in the database, 6361 in 81 in the archive · tables that differ: none"
+  },
+  {
+   "id": "D-05",
+   "name": "every migration of this checkout is recorded with the content it has here, and nothing else (RV-01)",
+   "result": "PASS",
+   "detail": "35 recorded, 35 in the checkout, the same content"
+  },
+  {
+   "id": "D-06",
+   "name": "the Evidence Ledger: every sealed row’s hash recomputed from its content and its predecessor; no gap in any tenant’s chain (RV-02)",
+   "result": "PASS",
+   "detail": "430 sealed rows in 18 chains · 0 hashes differ · 0 broken links · 0 gaps · 0 rows not yet sealed"
+  },
+  {
+   "id": "D-07",
+   "name": "tenant isolation came back with the data: row-level security is forced on the tables that had it, with their policies (RV-03)",
+   "result": "PASS",
+   "detail": "68 tables forced, 7 enabled without force, 80 policies · no source manifest to compare with"
+  },
+  {
+   "id": "D-08",
+   "name": "privileges: the export carries none, so they are put back from a freshly migrated reference database; afterwards every privilege in the copy equals the reference",
+   "result": "PASS",
+   "detail": "0 privilege entries in the archive · as restored, 168 of the reference’s 192 privilege lines are not what the copy has; the runtime role is refused the schema; 21 security-definer functions open to every role (reference 5) · 168 entries applied from the reference · afterwards 0 lines differ"
+  },
+  {
+   "id": "D-09",
+   "name": "tenant isolation is in effect in the copy: the runtime role reads nothing without a tenant, exactly one tenant’s rows with it, and cannot reach or change another’s",
+   "result": "PASS",
+   "detail": "audit rows: 430 in all · with no tenant: 0 · as one sandbox: 31 (its own 31), another tenant’s among them 0 · asked for another sandbox’s by name: 0 · an update aimed at another sandbox’s 1 room(s): changed 0 rows · runtime roles’ elevated attributes empathia_app:0,empathia_worker:0"
+  },
+  {
+   "id": "D-10",
+   "name": "the service starts on the copy with the Blueprint’s own start command (roles, migrations, sandboxes on, then the API) and answers ok, with its database reachable",
+   "result": "PASS",
+   "detail": "/health ok in 0.7 s · 35 migrations applied (the hosted API reports 35) · nothing new applied: 35 recorded"
+  },
+  {
+   "id": "D-11",
+   "name": "the data-loss boundary: the sandbox opens on the copy with its own key; the mounting recorded before the export is there, the one recorded after it is not",
+   "result": "PASS",
+   "detail": "marker before 2026-11-17T19:02:41.684Z (version 1): in the copy · export requested 2026-11-17T19:27Z, written 2026-11-17 19:28:14 · marker after 2026-11-17T19:34:45.064Z (version 2): not in the copy · the copy holds version 1, staging holds version 2"
+  },
+  {
+   "id": "D-12",
+   "name": "staging is as it was: the hosted API answers on the same release and still holds what was recorded after the export; the drill connected to no database but its own",
+   "result": "PASS",
+   "detail": "hosted /health 200, release 688cf9f, 35 migrations · 14 live sandboxes there now, 18 sandbox tenants in the copy · every database connection of the drill went to 127.0.0.1:43841"
+  }
+ ]
+}

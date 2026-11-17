@@ -71,9 +71,14 @@ scripts outside the repository.
 ## Verified on 17 Nov 2026
 
 - The store was filled from the old build and verified against the manifest: 6 files, 522.9 MB.
-- The clean regression worktree (the commit `e3c8e9f`, no private file in it) was provisioned from the store in about 11 seconds, and
-  `founder-studio` then passed **there**: 19 passed, 0 failed in light, and 19 passed, 0 failed in dark. Before provisioning, the same
-  suite in the same worktree failed.
+- The clean regression worktree (the commit `e3c8e9f`, no private file in it) was provisioned from the store, and `founder-studio`
+  then passed **there**: 19 passed, 0 failed in light, and 19 passed, 0 failed in dark. Before provisioning, the same suite in the
+  same worktree failed.
+- Then the committed procedure, on the commit that introduced it (`1cba676`), in the same worktree with its studio build and
+  generated data removed first: the suite alone said `NOT RUN founder-studio — the studio is not built` and exited 3;
+  `regression.mjs prepare` built everything (51 s) and provisioned the studio (3 s, 6 private files verified);
+  `regression.mjs browser` passed `founder-studio` in light and in dark; `regression.mjs report` said `NOT COMPLETE`, correctly,
+  because the other 105 suites and the base suites had not been run for that commit.
 - `tests/unit/private-assets.test.mjs` PA-01…06, part of `node scripts/test.mjs`: the manifest holds names, sizes and hashes only;
   none of the private files is tracked; the default store is outside the repository; no store, a missing file and an altered file
   are each refused and named; the studio suite on a studio without its files exits 3 with `NOT RUN` and reports no pass.

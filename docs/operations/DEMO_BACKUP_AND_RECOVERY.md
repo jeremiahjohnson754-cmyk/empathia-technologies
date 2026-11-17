@@ -12,9 +12,10 @@ for what real records would need, and says plainly where today's deployment fall
 |---|---|
 | The staged database | Render paid plan `0.1c-256mb` since 17 Nov 2026, 18:27 UTC (in place; the sandboxes already in it were kept). Before that: the free plan, with no backup and a 30-day life |
 | A logical export made by us (`pg_dump`) | **Not possible with the service's own database user**, on any plan (below). Rehearsed: R-08 |
-| Restoring an export and proving what came back | **Built and rehearsed, with times and the loss window measured locally**: `scripts/ops/restore-verify.mjs`, rehearsal R-09 and R-10. **Not yet done on the platform** (below) |
+| Restoring an export and proving what came back | **Done on a real export from the platform, in an isolated database** (17 Nov, below): 12 checks passed, with two findings that changed the procedure. Also rehearsed on every test run (R-09, R-10) |
 | Continuous backup with point-in-time recovery | **On**, by the platform, since the database went onto the paid plan. Not exercised: no recovery has been triggered. Its window is 3 days on a Hobby workspace, 7 on Pro; which this workspace is has not been read |
-| A scheduled export and a scheduled restore drill | **Not built.** They need a platform API key that only the founder can create. No export has been made on the platform yet |
+| A scheduled export and a scheduled restore drill | **Not built.** They need a platform API key that only the founder can create. One export has been made, by the founder, by hand (17 Nov 19:27 UTC) |
+| Point-in-time recovery, exercised | **Not done.** It creates a second, billed database instance, so it waits for the founder's word |
 
 ## What the platform provides
 
@@ -88,11 +89,72 @@ platform makes it (a directory-format dump in a `.dir.tar.gz`). Figures from the
 | Data loss | **everything recorded after the export was made.** Shown, not assumed: a mounting recorded after the export is version 2 on the source and version 1 in the copy |
 | Recovery time | export 0.2 s (139 KiB); restore 0.6 s; verification 1.6 s; the service answering on the copy 0.6 s: about 3 s after the export is in hand. These are for a database this small on a local disk. **They are not the platform's figures** |
 
-### Not yet done: the same drill on the platform
+### Done on 17 Nov 2026: the drill on a real export from the platform
 
-No export has been made on the platform and no recovery triggered there. Neither can be done from this workstation: the database
-accepts no connection from outside its private network (by design: the platform's own query tool was refused too), and creating an
-export or a recovery needs the platform's dashboard or an API key, which are the founder's.
+The founder created a logical export on the database's Recovery page at 19:27 UTC and attached it. It was restored and verified
+here with `scripts/ops/platform-export-drill.mjs`, in a PostgreSQL cluster made for the drill on this workstation and removed
+after it. **The staging database was not connected to** (it accepts no connection from outside its private network); the hosted API
+was read over HTTPS for comparison, and one marker was written through it into the drill's own sandbox. Nothing was created on the
+platform. Evidence: `tests/evidence/RECOVERY_DRILL_PLATFORM_EXPORT.json`.
+
+| | Result |
+|---|---|
+| D-01 the archive | sound: 258,591 bytes (SHA-256 `38c5d07f…`), 85 members, all plain files in relative paths; a directory-format dump of `empathia_demo`, 938 entries, from PostgreSQL 16.15; requested 19:27, written 19:28:14 UTC |
+| D-02 what it holds | 6,361 rows in 81 tables (48 of them empty), counted in the archive's own data files |
+| D-03 restore | into an empty database, as an owner who is **not** a superuser, with `--exit-on-error`: 1.3 s. Every table and function is that owner's |
+| D-04 row integrity | the database holds exactly the 81 tables of the archive, and every table exactly the archive's rows: 6,361 of 6,361 |
+| D-05 migration hashes | 35 recorded, 35 in the checkout, each with the same SHA-256 (the hosted API also reports 35) |
+| D-06 audit chains | 430 sealed rows in 18 tenants' chains; every hash recomputed from its content and its predecessor: 0 differ, 0 broken links, 0 gaps |
+| D-07 row-level security | forced on 68 tables, 80 policies, as the migrations make it |
+| D-08 privileges | **the export carries none** (finding F-1). Put back from a freshly migrated reference database: 168 entries; afterwards 0 of 192 privilege lines differ from the reference |
+| D-09 isolation in effect | as the service's runtime role: 0 rows with no tenant; exactly its own 31 audit rows as one sandbox, none of another's; another sandbox asked for by name: 0 rows; an update aimed at another sandbox's room: 0 rows changed. The runtime roles have no elevated attribute |
+| D-10 the service on the copy | started with the Blueprint's own start command; `/health` ok, database reachable, 35 migrations, nothing new applied |
+| D-11 data-loss boundary | the drill's sandbox opens on the copy with its own key. Recorded at 19:02:41 UTC, before the export: **in the copy**. Recorded at 19:34:45 UTC, after it: **not in the copy** (staging holds it) |
+| D-12 staging as it was | the hosted API answers on the same release (`688cf9f`) and still holds the later record |
+
+**Recovery time, measured:** from the archive in hand to the service answering on the verified copy, **8.6 seconds**: validation 0.1,
+restore 1.3, privileges 1.3, verification 5.2, the service 0.7. This is a 6,361-row database on a local disk. It is not the
+platform's time, and it leaves out what a real recovery adds: creating a database instance, pointing the service at it and
+redeploying. Those have not been measured.
+
+**Data loss, measured:** everything recorded after the export was made is absent from the copy. The export's moment lies between
+19:27 and 19:28:14 UTC; the proof is two records 32 minutes apart, one on each side of it. With exports made by hand, the loss in a
+real incident would be everything since the last time someone made one.
+
+#### Finding F-1: the platform's export carries no privileges
+
+The archive has no privilege entry at all (0 of 938). Restored as it is, a copy has every table closed to the service's runtime
+roles and every function open to every role: 168 of the 192 privilege lines of a migrated database are not what the copy has, 21
+security-definer functions can be run by any role (5 in a migrated database), and a service started on it answers **degraded**:
+`permission denied for schema app`. The migrations do not put the privileges back, because they are all recorded as applied.
+
+The rehearsal had not caught this: its stand-in export was made by `pg_dump` with privileges in it. It now makes the stand-in the
+way the platform does (`--no-privileges`) and checks the remedy on every test run (RV-05 inside R-09).
+
+The remedy, in `restore-verify.mjs`: `reapplyPrivileges()` takes the privilege entries, and nothing else, from the schema of a
+reference database at the same migration level (an empty database on which the service's own migrations have run) and applies them
+to the copy as the owner; `privileges()` lists every privilege in both and the two lists must be equal. **A restore of a logical
+export is not finished until that comparison passes.** Point-in-time recovery is a physical copy and should keep privileges; that is
+expected, not verified.
+
+Not yet done: the service does not put its own privileges back. A start step that asserts them on every start would make a restored
+copy heal itself; it changes the service, so it goes through the full regression first (listed below).
+
+#### Finding F-2: the export includes the platform's own extension
+
+`pg_stat_statements` is in the export; Render adds it, no migration creates it, and an owner who is not a superuser cannot. A plain
+`pg_restore --exit-on-error` stops on it. `restore()` now leaves out, by name, any extension that no migration creates, through
+`pg_restore`'s own list, and says which. `btree_gist`, which a migration does create, is restored.
+
+#### Also seen, not judged here
+
+In a freshly migrated database five security-definer functions keep the default permission that lets every role run them:
+`app.auth_memberships`, `app.auth_person`, `app.auth_person_by_email` and two trigger functions. Only roles that may use the schema
+can reach them, and those are the service's own two; it is noted for the security review, not as an exposure.
+
+### Not yet done: point-in-time recovery on the platform
+
+Triggering a recovery needs the platform's dashboard or an API key, which are the founder's, and it creates a billed instance.
 
 What is in place for it:
 
@@ -122,8 +184,9 @@ it needs the founder's word; then the service's `DATABASE_URL` is pointed at it 
 new instance being available, and to the first good answer from the service. Then the founder decides which instance is kept; the
 other is deleted by the founder.
 
-Until one of these has been run, the honest statement is: **backup exists on the platform; recovery has been proven only in the
-rehearsal.**
+Drill A was run on 17 Nov (above). Drill B has not been run. The honest statement today: **a logical export from the platform has
+been restored, verified and served in an isolated database, with a remedy for the privileges it does not carry; recovery on the
+platform itself (a new instance, the service pointed at it) has not been exercised, and no export is made or kept by any schedule.**
 
 ## Recovery, by what was lost
 
@@ -153,7 +216,9 @@ head that was recorded outside the database.
   1. a daily job that asks the platform for an export (`POST /postgres/{id}/export`);
   2. a weekly job that downloads the newest export, restores it into a scratch PostgreSQL and runs RV-01…04, and fails loudly if
      any does not pass;
-  3. optionally, a copy of each export kept off the platform, encrypted.
+  3. optionally, a copy of each export kept off the platform, encrypted;
+  4. a start step in the service that asserts its privileges on every start (finding F-1), so a copy restored from an export needs
+     no separate privilege step. It changes the service's start command, so it is staged only after the full regression.
 - **What that needs, and why it is not built yet:** a platform API key, held as a secret by whatever runs the schedule. Only the
   founder can create one, and it is never to be in the repository or in a chat. And a decision on where the schedule runs and where
   copies are kept.
@@ -173,6 +238,10 @@ head that was recorded outside the database.
 
 - Verified locally, every run of the test suite: R-08 (the owner's `pg_dump` is refused), R-09 (export, restore as the owner, RV-01…04
   against the source, the API serving the restored copy), R-10 (damage is reported).
-- **Not verified:** recovery on the platform. The database has been on a paid plan since 17 Nov, so the platform now backs it up
-  continuously, but no export has been created there and no point-in-time recovery triggered. Both need the platform's dashboard or
-  an API key, which are the founder's. The first drill against a real export is the next step once one of those is available.
+- Verified once, on 17 Nov, on a real export from the platform: D-01…12 above.
+- **Not verified:** recovery on the platform itself. No point-in-time recovery has been triggered, no database instance has been
+  created from a backup, and the service has never been pointed at a recovered instance. The times above are a workstation's.
+- **Not verified:** the copy against the staging database row by row. The staging database cannot be read from outside its network;
+  the copy was checked against the archive, against its own hashes and chains, and against what the hosted API reports.
+- **Not in place:** a scheduled export, a copy kept off the platform, a scheduled drill, and the service putting its own privileges
+  back after a restore.

@@ -14,6 +14,8 @@
  *           RV-02 the Evidence Ledger: every sealed row's hash recomputed from its content and its predecessor; no gap in any tenant's chain
  *           RV-03 tenant isolation came back with the data: row-level security is forced on the tables that had it, with their policies
  *           RV-04 (with --manifest) the same rows in every table and the same head of every tenant's chain as the source had
+ *           (privileges: an export from the platform carries none. reapplyPrivileges() puts them back from a freshly migrated reference
+ *           and privileges() compares the two; scripts/ops/platform-export-drill.mjs does both and checks the result)
  * manifest  what a database holds: rows per table, migrations, and each tenant's chain head. Taken from the source, kept beside the
  *           export, it is what RV-04 compares against. A head kept outside the database is also what makes a rewritten chain detectable.
  *
@@ -65,6 +67,43 @@ export function verify(url, source = null) {
   return out;
 }
 
+/**
+ * Every privilege in the application's schemas, as text, sorted: schemas, tables and views, columns, sequences, functions, default
+ * privileges. Two databases at the same migration level, with the same owner and roles, give the same list. An object that has
+ * never been granted or revoked is listed with the privileges it has by default, so "never touched" and "set back to the default"
+ * read the same, as they are the same.
+ */
+export function privileges(url) {
+  const S = "('app', 'app_meta', 'founder')";
+  return rows(url, `
+    SELECT 'schema ' || nspname, array_to_string(ARRAY(SELECT unnest(coalesce(nspacl, acldefault('n', nspowner)))::text ORDER BY 1), ' ') FROM pg_namespace WHERE nspname IN ${S}
+    UNION ALL SELECT 'relation ' || n.nspname || '.' || c.relname, array_to_string(ARRAY(SELECT unnest(coalesce(c.relacl, acldefault(CASE WHEN c.relkind = 'S' THEN 's' ELSE 'r' END::"char", c.relowner)))::text ORDER BY 1), ' ') FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname IN ${S} AND c.relkind IN ('r', 'v', 'm', 'S', 'p')
+    UNION ALL SELECT 'column ' || n.nspname || '.' || c.relname || '.' || a.attname, array_to_string(ARRAY(SELECT unnest(a.attacl)::text ORDER BY 1), ' ') FROM pg_attribute a JOIN pg_class c ON c.oid = a.attrelid JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname IN ${S} AND a.attacl IS NOT NULL
+    UNION ALL SELECT 'function ' || n.nspname || '.' || p.proname || '(' || pg_get_function_identity_arguments(p.oid) || ')', array_to_string(ARRAY(SELECT unnest(coalesce(p.proacl, acldefault('f', p.proowner)))::text ORDER BY 1), ' ') FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace WHERE n.nspname IN ${S}
+    UNION ALL SELECT 'default ' || coalesce(n.nspname, '-') || ' ' || d.defaclobjtype::text || ' for ' || pg_get_userbyid(d.defaclrole), array_to_string(ARRAY(SELECT unnest(d.defaclacl)::text ORDER BY 1), ' ') FROM pg_default_acl d LEFT JOIN pg_namespace n ON n.oid = d.defaclnamespace
+    ORDER BY 1`).map((r) => `${r[0]}: ${r[1]}`);
+}
+
+/**
+ * Put back the privileges a logical export from the platform does not carry (found in the first drill on a real export, 17 Nov
+ * 2026: Render's export has no privilege entries at all, so a restored copy has every table closed to the runtime roles and every
+ * function open to everyone). They are taken from a reference: a database at the same migration level, made by the service's own
+ * migrations. Its schema is dumped, and only the privilege entries of that dump are applied, as the owner, to the restored copy.
+ * reference: a URL that may dump the reference's schema.   into: the owner's URL of the restored copy.   Returns how many entries were applied.
+ */
+export function reapplyPrivileges(reference, into) {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'restore-acl-')); const dump = path.join(tmp, 'reference-schema.dump'); const list = path.join(tmp, 'acl.list');
+  try {
+    const d = spawnSync(path.join(BIN, 'pg_dump'), ['--schema-only', '--format=custom', '-f', dump], { env: envOf(reference), encoding: 'utf8' }); if (d.status !== 0) throw new Error(`the reference schema could not be dumped: ${(d.stderr || '').trim().split('\n')[0].slice(0, 200)}`);
+    const toc = spawnSync(path.join(BIN, 'pg_restore'), ['-l', dump], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }); const acl = toc.stdout.split('\n').filter((l) => /^\d+; \d+ \d+ (ACL|DEFAULT ACL) /.test(l));
+    if (!acl.length) throw new Error('the reference holds no privilege entries: it is not a migrated database');
+    fs.writeFileSync(list, acl.join('\n') + '\n');
+    const r = spawnSync(path.join(BIN, 'pg_restore'), ['--no-owner', '--exit-on-error', '-L', list, '--dbname', envOf(into).PGDATABASE, dump], { env: envOf(into), encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+    if (r.status !== 0) throw new Error(`the privileges could not be applied: ${(r.stderr || '').trim().split('\n').slice(-2).join(' | ').slice(0, 300)}`);
+    return acl.length;
+  } finally { fs.rmSync(tmp, { recursive: true, force: true }); }
+}
+
 export function restore(dump, into) {
   const has = sql(into, "SELECT count(*) FROM information_schema.schemata WHERE schema_name = 'app'");
   if (has !== '0') throw new Error('the target database already has an app schema: restore only into an empty database');
@@ -77,11 +116,20 @@ export function restore(dump, into) {
     if (!toc) { fs.rmSync(tmp, { recursive: true, force: true }); throw new Error('the archive holds no directory-format dump (no toc.dat)'); }
     from = path.join(tmp, path.dirname(toc));
   }
+  let list = '';
   try {
-    const r = spawnSync(path.join(BIN, 'pg_restore'), ['--no-owner', '--exit-on-error', '--dbname', envOf(into).PGDATABASE, from], { env: envOf(into), encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+    // The schema is what the migrations create. An extension in the export that no migration creates is the platform's own (Render adds
+    // pg_stat_statements to every database): an owner who is not a superuser cannot create it, and the application never uses it. Found
+    // in the first drill on a real export (17 Nov 2026). Those entries are left out by name, through pg_restore's own list; nothing else is.
+    const toc = spawnSync(path.join(BIN, 'pg_restore'), ['-l', from], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }); if (toc.status !== 0) throw new Error(`the export's table of contents could not be read: ${(toc.stderr || '').trim().slice(0, 200)}`);
+    const ours = new Set(fs.readdirSync(path.join(repo, 'database/migrations')).flatMap((f) => [...fs.readFileSync(path.join(repo, 'database/migrations', f), 'utf8').matchAll(/CREATE EXTENSION\s+(?:IF NOT EXISTS\s+)?"?([a-z0-9_]+)"?/gi)].map((m) => m[1])));
+    const inDump = [...toc.stdout.matchAll(/^\d+; \d+ \d+ EXTENSION - "?([A-Za-z0-9_]+)"? /gm)].map((m) => m[1]); const skipped = inDump.filter((e) => !ours.has(e));
+    const args = ['--no-owner', '--exit-on-error', '--dbname', envOf(into).PGDATABASE];
+    if (skipped.length) { const drop = (l) => skipped.some((e) => new RegExp(`^\\d+; \\d+ \\d+ (EXTENSION - "?${e}"? |COMMENT - EXTENSION "?${e}"? )`).test(l)); list = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'restore-list-')), 'toc.list'); fs.writeFileSync(list, toc.stdout.split('\n').filter((l) => !drop(l)).join('\n')); args.push('-L', list); }
+    const r = spawnSync(path.join(BIN, 'pg_restore'), [...args, from], { env: envOf(into), encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
     if (r.status !== 0) throw new Error(`pg_restore stopped: ${(r.stderr || '').trim().split('\n').slice(-2).join(' | ').slice(0, 300)}`);
-    return true;
-  } finally { if (tmp) fs.rmSync(tmp, { recursive: true, force: true }); }
+    return { skippedPlatformExtensions: skipped, privilegeEntries: (toc.stdout.match(/^\d+; \d+ \d+ (ACL|DEFAULT ACL) /gm) || []).length };
+  } finally { if (tmp) fs.rmSync(tmp, { recursive: true, force: true }); if (list) fs.rmSync(path.dirname(list), { recursive: true, force: true }); }
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {

@@ -19,6 +19,26 @@ This replaces `OUTSTANDING_2026-11-16.md` as the current list. Everything named 
   product code: 19 passed, 0 failed in light and in dark. This standing exception is to be closed by provisioning (task 185).
 - `demo-connected`: 17 passed, 0 failed in light and in dark, inside the regression.
 
+## Closed on 17 Nov: the regression's standing exception
+
+`founder-studio` no longer needs a second place to pass. The clean worktree is provisioned from a private store that is checked
+against a committed manifest of names and hashes, and the suite passes there: 19 passed, 0 failed in light and in dark, through
+`scripts/release/regression.mjs` (the runner, now in the repository). A checkout without the private files reports NOT RUN, exit 3,
+and the regression report then says NOT COMPLETE. The next full regression is to be reported from that command, with no exception
+line. Not solved: the store is on this ephemeral workstation; where a durable private copy lives is the founder's decision.
+`docs/operations/PRIVATE_ASSETS.md`.
+
+## Done on 17 Nov: the recovery drill on a real export
+
+The founder's export of the staging database (19:27 UTC) was restored and verified in an isolated database: 12 checks passed. Rows
+6,361 of 6,361 in 81 tables; 35 migrations with the checkout's hashes; 430 audit rows in 18 chains recomputed with no difference;
+row-level security forced on 68 tables and shown in effect as the runtime role; the service answered on the copy; a record made
+before the export is in the copy and one made after it is not. Archive in hand to the service answering: 8.6 s on this workstation.
+**Two findings changed the procedure:** the platform's export carries no privileges (a copy restored as it is leaves the service
+degraded; they are now put back from a migrated reference and compared), and it includes the platform's own extension, which a
+non-superuser owner cannot create (now left out by name). Not done: point-in-time recovery (a billed second instance: the founder's
+word), any scheduled export, any copy kept off the platform. `docs/operations/DEMO_BACKUP_AND_RECOVERY.md`.
+
 ## On the deployed staging site (17 Nov, 18:01 UTC)
 
 `scripts/staging/connected-browsers.mjs` against the deployed files, not a local build: ST-00…08, **9 passed, 0 failed**. The site's
