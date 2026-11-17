@@ -546,7 +546,7 @@
     {
       "file": "api/postV1Rooms.json",
       "$id": "https://schemas.empathia.invalid/api/postV1Rooms/0.1.0.json",
-      "sha256": "501f4f6a3a10d10ac1bf619e77126b103f7497fedd56b9c6c6caefe940c07e20"
+      "sha256": "fbcbc54f2a754c63a46ed5d6e194b413e2fc607f1a96575efe497c74e1172af5"
     },
     {
       "file": "api/patchV1RoomsRoom.json",
