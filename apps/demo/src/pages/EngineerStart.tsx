@@ -34,7 +34,8 @@ export function EngineerStartPage({ perspective }: { perspective: string }) {
         {!may ? <Notice tone="info">{personaLabel(persona)} reads this page. Faults are injected by an engineering persona ({FAULT_AUTHORITIES.join(', ')}).</Notice> : null}
         {why ? <div data-testid="eng-refused"><Notice tone="bad"><b>Refused.</b> {why.join(' · ')}</Notice></div> : null}
         <ul className="build__list">{FAULTS.map(([k, l, what]) => <li key={k} data-fault={k} data-on={on[k] ? 'yes' : 'no'}>
-          <button type="button" className="ui-btn ui-btn--sm" role="switch" aria-checked={!!on[k]} data-testid={`eng-fault-${k}`} onClick={() => toggle(k)}>{on[k] ? 'Switch off' : 'Inject'}: {l}</button> {on[k] ? <Tag tone="bad">injected now</Tag> : <Tag tone="muted">off</Tag>} <span className="ui-muted">{what}</span></li>)}</ul>
+          {/* a persona who may not inject is shown the faults, not switches that would only refuse (found by the dead-end crawl, 17 Nov 2026) */}
+          {may ? <button type="button" className="ui-btn ui-btn--sm" role="switch" aria-checked={!!on[k]} data-testid={`eng-fault-${k}`} onClick={() => toggle(k)}>{on[k] ? 'Switch off' : 'Inject'}: {l}</button> : <b data-testid={`eng-fault-${k}-read`}>{l}</b>} {on[k] ? <Tag tone="bad">injected now</Tag> : <Tag tone="muted">off</Tag>} <span className="ui-muted">{what}</span></li>)}</ul>
       </Card>
 
       {ENG_DEMOS.map((D) => <details key={D.key} className="ln-dom eng__sheet" id={`eng-sheet-${D.key}`} data-testid={`eng-sheet-${D.key}`}>

@@ -2,7 +2,7 @@
 // Engineer start (#/engineer; V2.5.5 Engineer Edition, read statically on 16 Nov 2026): three inspection demonstrations with their
 // sheets, and faults an engineering persona injects to see how a step fails.
 //   ES-01  the systems engineer sees the three demonstrations, no fault injected, and each inspection sheet with its six parts
-//   ES-02  a designer may read the page but not inject a fault: the refusal says who can
+//   ES-02  a designer may read the faults and who can inject them, and is offered no switch
 //   ES-03  with "missing geometry" injected, Build a Room refuses a new room with the fault's reason and creates nothing
 //   ES-04  switched off again, the same room is created
 //   ES-05  phone width: nothing scrolls sideways; an employee is not admitted; no console error; nothing requested off the page
@@ -19,9 +19,12 @@ await p.evaluate(() => { for (const k of ['empathia.demo.faults.v1', 'empathia.d
   const sheet = await p.getByTestId('eng-sheet-cx').innerText(); const openNow = await p.getByTestId('eng-sheet-cx').evaluate((d) => d.open);
   ok('ES-01', 'three demonstrations, no fault injected, and an inspection sheet with its six parts', cards === 3 && /none/.test(status) && openNow && ['What to inspect', 'Evidence states', 'Security boundary', 'Source references', 'Tests that cover it', 'Failure handling'].every((x) => sheet.includes(x)) && /PASS_VERIFIED/.test(sheet) && /lifecycle\.ts/.test(sheet), status.slice(0, 80)); }
 
-{ await as('designer', '#/engineer'); await p.getByTestId('eng-fault-missingGeometry').click(); await p.waitForTimeout(200);
-  const why = await p.getByTestId('eng-refused').innerText();
-  ok('ES-02', 'a designer reads the page but may not inject a fault', /does not inject faults/.test(why) && (await p.locator('[data-fault=missingGeometry]').getAttribute('data-on')) === 'no', why.slice(0, 120)); }
+// 17 Nov 2026: the dead-end crawl (demo-deadends) found that a persona who may not inject was shown five switches that each only
+// repeated the same refusal. The page now shows such a persona the faults as a list, with who can inject them, and no switch. The
+// refusal itself is still the store's (tests/unit/engineer-faults.test.mjs EF-01). This check follows the page.
+{ await as('designer', '#/engineer'); await p.getByTestId('engineer-start').waitFor();
+  const switches = await p.locator('[data-testid^=eng-fault-][role=switch]').count(); const read = await p.locator('[data-testid$=-read]').count(); const says = await p.getByTestId('eng-faults').innerText();
+  ok('ES-02', 'a designer reads the faults and who may inject them, and is offered no switch', switches === 0 && read === 5 && /Faults are injected by an engineering persona/.test(says) && (await p.locator('[data-fault=missingGeometry]').getAttribute('data-on')) === 'no', `${switches} switches · ${read} read · ${says.slice(0, 100)}`); }
 
 const create = async () => { await p.waitForSelector('#b-length'); await p.fill('#b-length', '5'); await p.fill('#b-width', '4'); await p.click('button:has-text("Create the room")'); await p.waitForTimeout(400); };
 { await as('syseng', '#/engineer'); await p.getByTestId('eng-fault-missingGeometry').click(); await p.waitForTimeout(200);
