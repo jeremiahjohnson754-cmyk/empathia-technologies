@@ -1,0 +1,85 @@
+# Render Blueprint — STAGING OF THE CONNECTED DEMONSTRATION: the demonstration API and its database (ADR-0013). FREE plans: no charge.
+# Founder, 17 Nov 2026: "establish a repeatable staging deployment with the required API and database, validate cross-browser
+# persistence, and test both correct permissions and attempted unauthorized access."
+#
+# What it creates, and nothing else:
+#   empathia-demo-db   — PostgreSQL 16 for the demonstration alone. It holds sandboxes (synthetic tenants) and nothing else, ever.
+#   empathia-demo-api  — the enterprise API in demonstration mode (AUTH_MODE=demo): it accepts demonstration sessions only, refuses the
+#                        development sign-in and every public form, and reaches no other database.
+# The static demo site (empathia-demo-next) is connected to it by setting DEMO_API_URL on that site and redeploying it: the build then
+# registers #/connected and names this one origin in its Content-Security-Policy (docs/operations/RENDER_DEMO_STAGING.md).
+#
+# Repeatable: the service's start command is the whole preparation, in order, every start — the runtime roles (gate V-1), the migrations,
+# sandboxes enabled with the role catalogue — then the API. Recreating the database (it is disposable by design, and a free database
+# expires 30 days after creation) needs nothing but a new sync of this file: there is no seed, no bootstrap and no manual step.
+#
+# What the free plans mean (https://render.com/docs/free, read 17 Nov 2026): the web service sleeps after 15 minutes without traffic
+# and takes about a minute to wake; it has no persistent disk, so the short evidence notes of a sandbox do not survive a restart (the
+# records and hashes do: they are in the database); the database has 1 GB, no backups, and expires after 30 days. Moving either to a
+# paid plan is a one-line change here and a spending decision that is the founder's.
+#
+# No secret is in this file: Render generates the three random values. Region: both resources share one (the private network).
+
+databases:
+  - name: empathia-demo-db
+    plan: free
+    region: oregon
+    postgresMajorVersion: "16"       # the version every migration and test ran on
+    databaseName: empathia_demo
+    user: empathia_owner             # the schema owner: runs the role step, the migrations and the sandbox switch; never the API's runtime role
+    ipAllowList: []                  # private network only: no connection from the internet
+
+services:
+  - type: web
+    runtime: docker
+    name: empathia-demo-api
+    plan: free
+    region: oregon
+    # The API's own staging branch. It is moved, deliberately, to a commit whose product code (services, packages, database, apps) is
+    # the code of a fully regressed commit; what may differ is deployment files only (this directory, .dockerignore, the checks).
+    # Not phase3/legendary-experience, so that a deployment fix never redeploys the two static sites from an unregressed commit.
+    branch: staging/demo-api
+    autoDeployTrigger: commit
+    dockerfilePath: ./deploy/render/Dockerfile
+    dockerContext: .
+    # 1) the runtime roles (gate V-1: refuses, and the service does not start, if the owner cannot create roles)
+    # 2) migrations in file order, each recorded with its SHA-256   3) sandboxes enabled, with the role catalogue   4) the API
+    dockerCommand: sh -c "node services/enterprise-api/dist/src/db/bootstrap.js --roles && node services/enterprise-api/dist/src/db/migrate.js && node services/enterprise-api/dist/src/db/demo.js enable && exec node services/enterprise-api/dist/src/main.js"
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL              # the owner; used by the three preparation steps only
+        fromDatabase:
+          name: empathia-demo-db
+          property: connectionString
+      - key: EMPATHIA_APP_PASSWORD     # runtime role passwords; the API derives its two database URLs from DATABASE_URL and these
+        generateValue: true
+      - key: EMPATHIA_WORKER_PASSWORD
+        generateValue: true
+      - key: DEMO_SESSION_SECRET       # signs demonstration sessions; nothing else is ever signed or accepted in this mode
+        generateValue: true
+      - key: PGSSLMODE                 # TLS to the database, as the enterprise Blueprint has it
+        value: require
+      - key: NODE_ENV
+        value: production
+      - key: RELEASE_ENVIRONMENT
+        value: staging
+      - key: AUTH_MODE
+        value: demo
+      - key: CORS_ORIGINS              # the one site that may call it from a browser
+        value: https://empathia-demo-next.onrender.com
+      - key: TRUSTED_PROXY             # behind Render's proxy: the caller's address (rate limits, the hourly cap) is the proxy's report
+        value: "on"
+      - key: WORKER
+        value: "on"
+      - key: RATE_LIMIT_PER_MINUTE
+        value: "600"
+      - key: DB_STATEMENT_TIMEOUT_MS
+        value: "15000"
+      - key: WORKER_STATEMENT_TIMEOUT_MS
+        value: "60000"
+      - key: NODE_OPTIONS
+        value: --max-old-space-size=384
+      - key: LOG_LEVEL
+        value: info
+      - key: TELEMETRY
+        value: none

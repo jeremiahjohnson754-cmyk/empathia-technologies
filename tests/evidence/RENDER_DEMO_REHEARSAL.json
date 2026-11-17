@@ -1,0 +1,121 @@
+{
+ "at": "2026-11-17T13:25:22.270Z",
+ "commit": "ba783d4a7c9a188c87d774dd617437504fe1c532",
+ "blueprint": "deploy/render/demo.render.yaml",
+ "startCommand": "node services/enterprise-api/dist/src/db/bootstrap.js --roles && node services/enterprise-api/dist/src/db/migrate.js && node services/enterprise-api/dist/src/db/demo.js enable && exec node services/enterprise-api/dist/src/main.js",
+ "passed": 6,
+ "failed": 0,
+ "steps": [
+  {
+   "id": "R-06",
+   "name": "V-1: with an owner that cannot create roles the start command stops before the API starts",
+   "result": "PASS",
+   "detail": "roles refused: V-1 failed: empathia_owner cannot create roles. Stop: do not run the API as the owner (docs/operations/RENDER_DEPLOYMENT.md §V-1)"
+  },
+  {
+   "id": "R-01",
+   "name": "the start command, as written in the Blueprint, prepares an empty database and brings the API up in production, demonstration mode",
+   "result": "PASS",
+   "detail": "35 migrations · authMode demo · 17 variables from the Blueprint"
+  },
+  {
+   "id": "R-02",
+   "name": "the deployment check passes against it: permissions, unauthorized access, isolation, persistence, cross-origin, reset",
+   "result": "PASS",
+   "detail": "12 passed, 0 failed"
+  },
+  {
+   "id": "R-03",
+   "name": "a restart: the same command runs again and changes nothing; a sandbox opened before it opens with its key after it and reads the same record; a session issued before it is still good",
+   "result": "PASS",
+   "detail": "session from the key 200 · same thread true · earlier session 200 · 35 migrations, 4 sandboxes, unchanged"
+  },
+  {
+   "id": "R-04",
+   "name": "the database holds sandboxes and nothing else: no other tenant, nobody with a password or a provider subject",
+   "result": "PASS",
+   "detail": "4 tenants, all sandboxes · 0 sign-in identities"
+  },
+  {
+   "id": "R-05",
+   "name": "the runtime role is not the owner: it cannot read the sandbox table, change the setting, or create a tenant",
+   "result": "PASS",
+   "detail": "permission denied ×3 of 3 · rooms visible without a tenant: 0"
+  }
+ ],
+ "smoke": [
+  {
+   "id": "SM-01",
+   "title": "the service is up in demonstration mode, on a named release, with its database reachable",
+   "result": "PASS",
+   "detail": "status ok · authMode demo · release [object Object] · migrations 35"
+  },
+  {
+   "id": "SM-02",
+   "title": "sandboxes are on offer",
+   "result": "PASS",
+   "detail": "0 of 200 live · 72 h"
+  },
+  {
+   "id": "SM-03",
+   "title": "nothing but the demonstration is served; no token and a made-up token get 401",
+   "result": "PASS",
+   "detail": "sign-in 404 · public form 404 · no token 401 · made-up token 401 bad token signature"
+  },
+  {
+   "id": "SM-04",
+   "title": "a sandbox opens with a key, fifteen synthetic people and one installed room; its first session is the installer’s",
+   "result": "PASS",
+   "detail": "sbx-dcaaeb4be99f478e · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED"
+  },
+  {
+   "id": "SM-05",
+   "title": "correct permissions: the installer records a mounting and a field move; the systems engineer approves the move",
+   "result": "PASS",
+   "detail": "mounting 200 · move 201 FM-0001 · approval 200 "
+  },
+  {
+   "id": "SM-06",
+   "title": "attempted unauthorized access by role is refused with a reason: the designer, the installer on their own move and on commissioning, the requestor, the commissioning engineer on people; and the register gate holds for the systems engineer",
+   "result": "PASS",
+   "detail": "403 designer may not record how a device is mounted (needs work.evidence or field.scan) | own move 403 | 403 installer may not move a room to COMMISSIONING (needs plan.compile) | 403 | 403 | gate 422"
+  },
+  {
+   "id": "SM-07",
+   "title": "a wrong key, an unknown sandbox, another sandbox’s key and a privileged role get no session",
+   "result": "PASS",
+   "detail": "wrong key 401 · unknown 401 · B’s key 401 · architect/founder/secadmin 400/400/400"
+  },
+  {
+   "id": "SM-08",
+   "title": "one sandbox’s session cannot read or write the other’s room",
+   "result": "PASS",
+   "detail": "same code, two rooms: true · B sees its own (mounted 0) · B→A read 404 · A→B read 404 · B→A write 404"
+  },
+  {
+   "id": "SM-09",
+   "title": "a new session made from the key alone, as a different person, reads the same field record and thread",
+   "result": "PASS",
+   "detail": "mounted 1 · approved moves 1 · as built FM-0001 · refusals on the record 4"
+  },
+  {
+   "id": "SM-10",
+   "title": "a binary upload and an oversized note are refused; a short text note is kept",
+   "result": "PASS",
+   "detail": "binary 415 · 20 KiB 413 · note 201"
+  },
+  {
+   "id": "SM-11",
+   "title": "the demo site’s origin is allowed, with PUT; any other origin is not",
+   "result": "PASS",
+   "detail": "https://empathia-demo-next.onrender.com: https://empathia-demo-next.onrender.com [GET, POST, PUT, PATCH, DELETE] · other origin: not allowed"
+  },
+  {
+   "id": "SM-12",
+   "title": "reset: the old session and the old key stop at once; the new sandbox has nothing recorded",
+   "result": "PASS",
+   "detail": "reset 201 · old session 401 · old key 401 · new sandbox mounted 0"
+  }
+ ],
+ "limits": "Local cluster without TLS (PGSSLMODE rehearsed as disable); no Render proxy, container or free-plan sleep; the cluster superuser stands in for Render's default database user; runtime-role passwords are the local cluster's. V-1 on Render Postgres, the image build and the edge are seen only on Render."
+}
