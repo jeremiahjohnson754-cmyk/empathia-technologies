@@ -13,7 +13,7 @@ Founder, 17 Nov 2026:
 |---|---|
 | Sandboxes, sessions, caps, reset (server) | Built and tested: ADR-0013, `tests/security/demo-sandbox.test.mjs` DS-01…16 |
 | Field records in the database (server) | Built and tested: `0034_field_record.sql`, `tests/security/field-record.test.mjs` FRS-01…09 |
-| The connected page in the demo (`#/connected`) | Built and tested against a real API and database in a real browser: `tests/browser/demo-connected.test.mjs` CN-01…13 |
+| The connected page in the demo (`#/connected`) | Built and tested against a real API and database in a real browser: `tests/browser/demo-connected.test.mjs` CN-01…16 |
 | The API and its database on staging | **Running** on Render's free plans since 17 Nov 2026; the deployment check passed 12 of 12 inside the deployed service. `docs/operations/RENDER_DEMO_STAGING.md` |
 | On the public sites | **Not there yet.** The staging demo site is still built without a server address. It is switched over when a commit that contains the waking-server wording and the whole-site check (CN-11…13) has passed the full regression. Production is unchanged |
 
@@ -26,6 +26,22 @@ A free instance sleeps after 15 idle minutes and answers its first request only 
 asks once and waits on that request. After five seconds it says so: the server has not answered yet, one that has been idle can take
 about a minute to start, and there is nothing the visitor needs to do. If no answer comes at all it says the server did not answer
 and offers **Ask again**. In a connected build the browser's thread page (`#/thread`) links to the server's.
+
+### Interruptions
+
+Founder, 17 Nov 2026: "Make sure the browser explains what's happening instead of presenting an apparent failure."
+
+| What happens | What the page does |
+|---|---|
+| A step's answer is slow (the server slept while the page was open) | After five seconds, beside the step in progress: the server has not answered yet, one that has been idle can take about a minute to start, nothing needs to be done |
+| The answer is lost after the server recorded the step | The page reads the server's record, finds the step there, and says so: recorded once, not sent again |
+| The request never reaches the server | The page reads the record, finds the step is not there, and says so. Doing it again records it once |
+| The connection is gone and the record cannot be read either | The page says it is not known yet whether the step was recorded and that nothing is assumed. It never sends a request again on its own |
+| The browser goes offline | A notice says so. When the browser is online again the page reads the server by itself and says what the server holds, including whether the step it could not confirm is on the record |
+| A session ran out while the page was open | The page asks for a new one with the key and repeats the read. If the sandbox itself is gone, it says so and offers a new one |
+
+Nothing is kept in the browser to be "synchronized" later: an action is either on the server's record or it is not, and the page
+finds out by asking. `tests/browser/demo-connected.test.mjs` CN-14…16.
 
 ## What a visitor does
 
@@ -109,7 +125,7 @@ Steps 1 and 2 were done on Render's free plans on 17 Nov 2026 (no charge; what t
   for row; the demonstration deployment mode; a database with migrations and `enable` only; the storage ceilings.
 - `tests/security/field-record.test.mjs` FRS-01…09.
 - `tests/unit/connected-client.test.mjs` CC-01…06: the client and the journey without a server.
-- `tests/browser/demo-connected.test.mjs` CN-01…13: a build without a server address carries no connected page; opening a sandbox; a
+- `tests/browser/demo-connected.test.mjs` CN-01…16 (CN-14…16: a slow step, an interrupted step, offline and back): a build without a server address carries no connected page; opening a sandbox; a
   refusal in the server's words; the field move; the whole journey; a fresh browser session from the resume code; what the browser
   stores; reset; phone width; the server stopped; a server slow to answer; no answer and asking again; and every other page of a
   connected build (112) opening with no console error and no call to the server.

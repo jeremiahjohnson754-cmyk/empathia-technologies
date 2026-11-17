@@ -32,8 +32,15 @@ export function ConnectedPage() {
   const refresh = useCallback(async (box: Sandbox | null = c.sandbox()): Promise<State | null> => {
     if (!box) { setState(null); return null; }
     try { const r = await load(c, box.room); if (!alive.current) return null; if (r.state) setState(r.state); else if (r.refused) setSaid({ ok: false, title: `The server answered ${r.refused.status}.`, text: r.refused.detail }); return r.state; }
-    catch (e) { if (!gone(e)) setSaid({ ok: false, title: 'The server did not answer.', text: (e as Error).message }); return null; }
+    catch (e) { if (!gone(e)) setSaid(e instanceof TypeError ? { ok: false, title: 'The server cannot be reached.', text: 'Nothing can be read or recorded until it answers. What is shown below is what it held when it last answered.' } : { ok: false, title: 'The server did not answer.', text: (e as Error).message }); return null; }
   }, [c, gone]);
+
+  // Interruptions (founder, 17 Nov 2026: "Make sure the browser explains what's happening instead of presenting an apparent failure").
+  // waiting: a request has been out for more than five seconds (a server that slept is starting). offline: the browser says it has no
+  // network. unknown: a step whose answer was lost and whose record could not be read back yet. Nothing is assumed about such a step:
+  // the page reads the server's record as soon as it can and says what it holds. A request is never sent again on its own.
+  const [waiting, setWaiting] = useState(false); const [offline, setOffline] = useState(() => typeof navigator !== 'undefined' && navigator.onLine === false); const [unknown, setUnknown] = useState<string | null>(null);
+  useEffect(() => { if (!busy) { setWaiting(false); return undefined; } const t = setTimeout(() => setWaiting(true), 5000); return () => clearTimeout(t); }, [busy]);
   // Asking can take a while and that is not a fault: a server that sleeps when idle answers its first request only once it has started.
   // The page keeps the one request open and, after five seconds, says what it is waiting for. If no answer comes at all, it offers to ask again.
   const [waited, setWaited] = useState(false);
@@ -41,7 +48,11 @@ export function ConnectedPage() {
   useEffect(() => { void ask(); }, [ask]);
   useEffect(() => { if (avail) return undefined; const t = setTimeout(() => setWaited(true), 5000); return () => clearTimeout(t); }, [avail]);
 
-  const act = async (what: string, fn: () => Promise<void>) => { setBusy(what); setSaid(null); try { await fn(); } catch (e) { if (!gone(e)) setSaid({ ok: false, title: 'That did not go through.', text: (e as Error).message }); } finally { if (alive.current) setBusy(null); } };
+  const act = async (what: string, fn: () => Promise<void>) => { setBusy(what); setSaid(null); try { await fn(); } catch (e) { if (!gone(e)) setSaid(e instanceof TypeError ? { ok: false, title: 'The server could not be reached.', text: 'Nothing was changed. Try again when the connection is back.' } : { ok: false, title: 'That did not go through.', text: (e as Error).message }); } finally { if (alive.current) setBusy(null); } };
+  const reread = useCallback(() => act('Reading the server…', async () => { const after = await refresh(); if (after) { setSaid({ ok: true, title: 'Read from the server just now.', text: unknown ? `Everything below is what the server holds. “${unknown}” is ${STEPS.find((x) => x.title === unknown)?.done(after) ? 'on its record: it was recorded once and was not sent again' : 'not on its record: do it again when you are ready'}.` : 'Everything below is what the server holds.' }); setUnknown(null); } }),
+    [refresh, unknown]);
+  useEffect(() => { const off = () => setOffline(true); const on = () => { setOffline(false); if (c.sandbox()) void reread(); else void ask(); };
+    window.addEventListener('offline', off); window.addEventListener('online', on); return () => { window.removeEventListener('offline', off); window.removeEventListener('online', on); }; }, [c, reread, ask]);
   const openBox = () => act('Opening your sandbox…', async () => { const a = await c.open(); if (!a.ok || !a.body) { setSaid({ ok: false, title: `The server answered ${a.status}.`, text: a.detail }); return; } setSb(a.body); await refresh(a.body); setSaid({ ok: true, title: 'Your sandbox is open.', text: `${a.body.tenant}: a synthetic organization of your own, with one installed room. Keep the resume code to come back to it.` }); });
   const resume = () => act('Finding your sandbox…', async () => { const a = await c.resume(code); if (!a.ok || !a.body) { setSaid({ ok: false, title: 'That code did not open a sandbox.', text: a.detail }); return; } setSb(a.body); setCode(''); await refresh(a.body); setSaid({ ok: true, title: 'Welcome back.', text: `${a.body.tenant} is as it was left: everything below was read from the server just now.` }); });
   const reset = () => act('Resetting…', async () => { setConfirmReset(false); const a = await c.reset(); if (!a.ok || !a.body) { setSaid({ ok: false, title: `The server answered ${a.status}.`, text: a.detail }); return; } setSb(a.body); await refresh(a.body); setSaid({ ok: true, title: 'A new sandbox.', text: `${a.body.tenant} replaces the old one. The old one is closed: its sessions and its key stopped at once, and its records are kept on the server, unreachable.` }); });
@@ -54,6 +65,14 @@ export function ConnectedPage() {
     catch (e) {
       if (gone(e)) return null;
       if (e instanceof Refused) { await refresh(); setSaid({ ok: false, title: `Refused by the server (${e.answer.status}) — asked as the ${label(role)} to ${e.what}.`, text: e.answer.detail, reasons: e.answer.reasons.slice(1) }); return null; }
+      if (e instanceof TypeError) {
+        // The request may or may not have reached the server before the connection failed. The record is read again and the page says what it holds.
+        const after = await refresh();
+        if (after) { const kept = step.done(after); setUnknown(null);
+          setSaid(kept ? { ok: true, title: 'The answer was lost on the way back, but the step is on the server’s record.', text: `“${step.title}” was recorded once. It was not sent again.` } : { ok: false, title: 'The request did not reach the server.', text: `“${step.title}” is not on the server’s record. Do it again when you are ready: the step starts from what the server holds.` });
+          return kept ? after : null; }
+        setUnknown(step.title); setSaid({ ok: false, title: 'The connection to the server was lost.', text: `It is not known yet whether “${step.title}” was recorded. Nothing is assumed: when the server answers, this page reads its record and shows what it holds.` }); return null;
+      }
       setSaid({ ok: false, title: 'That did not go through.', text: (e as Error).message }); return null;
     }
   };
@@ -88,10 +107,11 @@ export function ConnectedPage() {
               {confirmReset ? <><button type="button" className="ui-btn ui-btn--sm ui-btn--primary" data-testid="cn-reset-confirm" disabled={!!busy} onClick={reset}>Yes, close this one and open a new one</button> <button type="button" className="ui-btn ui-btn--sm ui-btn--quiet" onClick={() => setConfirmReset(false)}>Keep it</button></>
                 : <button type="button" className="ui-btn ui-btn--sm" data-testid="cn-reset" disabled={!!busy} onClick={() => setConfirmReset(true)}>Reset my sandbox</button>}
               {' '}<button type="button" className="ui-btn ui-btn--sm ui-btn--quiet" data-testid="cn-forget" disabled={!!busy} onClick={forget}>Forget it in this browser</button>
-              {' '}<button type="button" className="ui-btn ui-btn--sm ui-btn--quiet" data-testid="cn-refresh" disabled={!!busy} onClick={() => void act('Reading the server…', async () => { await refresh(); })}>Read the server again</button>
+              {' '}<button type="button" className="ui-btn ui-btn--sm ui-btn--quiet" data-testid="cn-refresh" disabled={!!busy} onClick={() => void reread()}>Read the server again</button>
             </p>
           </>}
-        {busy ? <p role="status" data-testid="cn-busy"><Tag tone="warn">working</Tag> {busy}</p> : null}
+        {offline ? <div data-testid="cn-offline"><Notice tone="warn"><b>This browser is offline.</b> The records are on the server: nothing can be read or recorded until the connection is back. The page will read the server again by itself then.</Notice></div> : null}
+        {busy ? <p role="status" data-testid="cn-busy" data-waiting={waiting ? 'long' : 'short'}><Tag tone="warn">working</Tag> {busy}{waiting ? ' The server has not answered yet. One that has been idle can take about a minute to start. Still waiting; there is nothing you need to do.' : ''}</p> : null}
         {said ? <div role={said.ok ? 'status' : 'alert'} data-testid="cn-said" data-ok={said.ok ? 'yes' : 'no'}><Notice tone={said.ok ? 'ok' : 'bad'}><b>{said.title}</b> {said.text}{said.reasons?.length ? <ul>{said.reasons.map((x) => <li key={x}>{x}</li>)}</ul> : null}</Notice></div> : null}
       </Card>
 

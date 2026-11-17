@@ -20,6 +20,11 @@
 //   CN-13  the connected build serves every other page as the ordinary build does: every page with a fixed address opens with no
 //          console error, and no page but the connected one calls the server (17 Nov 2026: the staging site is to be built this way,
 //          and the rest of the matrix runs on the ordinary build)
+//   CN-14  a step the server is slow to answer: after five seconds the page says what it is waiting for, and the step completes
+//   CN-15  an interrupted step is never assumed and never sent twice: when the answer is lost after the server recorded it, the page
+//          reads the record and says the step is there, once; when the request never arrived, it says so and doing it again records it once
+//   CN-16  offline: the page says the browser is offline and that nothing is known about the step it was asked for; back online it
+//          reads the server by itself and says what the server holds
 //   node tests/browser/demo-connected.test.mjs
 import { execFileSync } from 'node:child_process'; import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { repo } from './demo-shell-lib.mjs';
@@ -138,6 +143,42 @@ await t.close();
   ok('CN-13', 'the connected build serves every other page as the ordinary build does: each opens with no console error, and none but the connected page calls the server',
     paths.length > 100 && !bad.length && calls === 0 && s.errs.length === e0 && !offOrigin.length, `${paths.length} pages · ${bad.length} findings: ${bad.slice(0, 4).join(' ‖ ')} · off-origin ${offOrigin.slice(0, 2)}`);
   await s.close(); }
+
+{ const r = await open('#/connected', { role: 'syseng', sw: false }); const q = r.page; q.setDefaultTimeout(30000);
+  await q.waitForFunction(() => document.querySelector('[data-testid=connected]')?.getAttribute('data-state') === 'ready');
+  await q.getByTestId('cn-open').click(); await settle(q); await q.getByTestId('cn-journey').waitFor();
+  const slug = await text(q, 'cn-tenant'); const tid = h.asSuper(`SELECT id FROM app.tenant WHERE slug = '${slug}'`); const c = (sql) => n(sql.replace('$T', `'${tid}'`));
+  const nextIs = () => q.getByTestId('cn-next').getAttribute('data-step');
+
+  // CN-14: the mounting, answered late
+  await q.route((u) => u.href.startsWith(API) && u.pathname.includes('/field-record/mounting/'), async (route) => { await new Promise((x) => setTimeout(x, 6500)); await route.continue(); });
+  await q.getByTestId('cn-run').click(); const long = await q.waitForFunction(() => document.querySelector('[data-testid=cn-busy]')?.getAttribute('data-waiting') === 'long', null, { timeout: 9000 }).then(() => true, () => false);
+  const waitText = long ? await text(q, 'cn-busy') : ''; await settle(q); const s14 = await said(q); await q.unroute((u) => u.href.startsWith(API) && u.pathname.includes('/field-record/mounting/'));
+  ok('CN-14', 'a step the server is slow to answer: after five seconds the page says what it is waiting for, and the step completes', long && /has not answered yet/.test(waitText) && /about a minute/.test(waitText) && s14.ok === 'yes' && c('SELECT count(*) FROM app.field_mounting WHERE tenant_id = $T') === 1, `"${waitText.slice(0, 110)}" · ${s14.text.slice(0, 60)}`);
+
+  // CN-15a: the move reaches the server and is recorded; its answer is lost on the way back
+  const moves = (u) => u.href.startsWith(API) && /\/field-record\/moves$/.test(u.pathname);
+  await q.route(moves, async (route) => { if (route.request().method() !== 'POST') return route.continue(); await route.fetch(); await route.abort(); });
+  await q.getByTestId('cn-run').click(); await settle(q); const lostAnswer = await said(q); const after15a = await nextIs(); await q.unroute(moves);
+  // CN-15b: the approval never arrives
+  const decide = (u) => u.href.startsWith(API) && /\/decide$/.test(u.pathname);
+  await q.route(decide, (route) => route.abort()); await q.getByTestId('cn-run').click(); await settle(q); const neverSent = await said(q); const still = c("SELECT count(*) FROM app.field_move WHERE tenant_id = $T AND state = 'PROPOSED'");
+  await q.unroute(decide); await q.getByTestId('cn-run').click(); await settle(q); const again = await said(q);
+  ok('CN-15', 'an interrupted step is never assumed and never sent twice: an answer lost after the server recorded it is found on the record, once; a request that never arrived is said not to be there, and doing it again records it once',
+    lostAnswer.ok === 'yes' && /answer was lost/.test(lostAnswer.text) && /recorded once/.test(lostAnswer.text) && after15a === 'approve-move' && c('SELECT count(*) FROM app.field_move WHERE tenant_id = $T') === 1
+    && neverSent.ok === 'no' && /did not reach the server/.test(neverSent.text) && still === 1 && again.ok === 'yes' && c("SELECT count(*) FROM app.field_move WHERE tenant_id = $T AND state = 'APPROVED'") === 1 && c('SELECT count(*) FROM app.field_move WHERE tenant_id = $T') === 1,
+    `${lostAnswer.text.slice(0, 90)} | ${neverSent.text.slice(0, 80)} | ${again.text.slice(0, 50)}`);
+
+  // CN-16: offline while asking for the next step (the device register), then back
+  await r.ctx.setOffline(true); await q.getByTestId('cn-offline').waitFor({ timeout: 5000 }).catch(() => undefined); const offNote = await q.getByTestId('cn-offline').count();
+  await q.getByTestId('cn-run').click(); await settle(q); const lost = await said(q); const reg0 = await text(q, 'cn-register');
+  await r.ctx.setOffline(false); await q.waitForFunction(() => /Read from the server just now/.test(document.querySelector('[data-testid=cn-said]')?.textContent || ''), null, { timeout: 20000 }).catch(() => undefined);
+  const back = await said(q); const offGone = await q.getByTestId('cn-offline').count();
+  await q.getByTestId('cn-run').click(); await settle(q); const done16 = await said(q);
+  ok('CN-16', 'offline: the page says the browser is offline and that nothing is known about the step it was asked for; back online it reads the server by itself, says what the server holds, and the step can be done',
+    offNote === 1 && lost.ok === 'no' && /connection to the server was lost/.test(lost.text) && /not known yet/.test(lost.text) && back.ok === 'yes' && /Read from the server just now/.test(back.text) && /not on its record/.test(back.text) && offGone === 0 && done16.ok === 'yes' && /complete/.test(await text(q, 'cn-register')),
+    `offline note ${offNote} · ${lost.text.slice(0, 80)} | ${back.text.slice(0, 110)} | ${done16.text.slice(0, 40)} · register ${reg0.slice(0, 20)} → ${(await text(q, 'cn-register')).slice(0, 20)}`);
+  await r.close(); }
 
 { const m = await open('#/connected', { role: 'installer', sw: false, w: 390, h: 844 }); const q = m.page; q.setDefaultTimeout(30000);
   await q.waitForFunction(() => document.querySelector('[data-testid=connected]')?.getAttribute('data-state') === 'ready');
