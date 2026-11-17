@@ -6,6 +6,7 @@ import { drawingStates, findRoom, load } from './rooms.js';
 import { roomInstallations, fact as installationFact } from './installations.js';
 import { identityOf, installationSentence } from '@empathia/commissioning-engine';
 import { invalid, notFound } from '../http/errors.js';
+import { placementsOf } from './placement.js';
 
 export async function listRooms(ctx: RequestContext, opts: { lifecycle?: string | null; after?: string | null; limit?: number }) {
   const limit = Math.min(Math.max(opts.limit || 50, 1), 200);
@@ -33,9 +34,12 @@ export async function getRoom(ctx: RequestContext, ref: string) {
     const counts = resultCounts(withResult.map((r) => ({ id: String(r['test_id']), applicable: !!r['applicable'], result: r.result } as never)), L.results);
     // ADR-0012: each device is a position (its id, PA-) with the physical unit installed there now (AS-) and that unit's identity state
     const inst = await roomInstallations(q, L.room.id);
+    // where each device is: the one answer every product reads (domain/placement.ts). x and y stay the designed place, as they always
+    // were; `placement` says so, and gives the as-built place, a move waiting for a decision, and which is current
+    const places = await placementsOf(q, L.room.id);
     return {
       room: { code: L.room.code, canonicalRef: L.room.canonical_ref, id: L.room.id, name: L.room.name, lifecycle: L.room.lifecycle, template: L.room.template, intendedUse: L.room.intended_use, occupancy: L.room.occupancy, unit: L.room.unit, geometry: L.room.geometry, rev: L.room.rev, approvedRevision: L.room.approved_revision, classification: L.room.classification, approvedClassification: L.room.approved_class, liveHealth: 'NOT_MONITORED' },
-      devices: L.input.devices.map((d) => { const id = identityOf(d.id, inst.facts, inst.assets); return { ...d, modelHistory: L.assets.find((a) => a.code === d.id)?.model_history ?? [], position: id.position, asset: id.asset, identityState: id.identityState,
+      devices: L.input.devices.map((d) => { const id = identityOf(d.id, inst.facts, inst.assets); return { ...d, placement: places.get(d.id) ?? null, modelHistory: L.assets.find((a) => a.code === d.id)?.model_history ?? [], position: id.position, asset: id.asset, identityState: id.identityState,
         installations: inst.rows.filter((r) => r.position === d.id).map((r) => ({ id: r.id, asset: r.asset, model: r.model, identityState: r.identity_state, installedAt: r.installed_at, basis: r.effective_basis, installReason: r.install_reason, removedAt: r.removed_at, removalReason: r.removal_reason, sentence: installationSentence(installationFact(r)) })) }; }), connections: L.input.connections, drawings, revisions, issues,
       commissioning: plan ? { planId: plan['id'], engineVersion: plan['engine_version'], ruleVersion: plan['rule_version'], library: plan['library_size'], applicable: plan['applicable'], context: plan['context'], compiledAt: plan['compiled_at'], counts, rows: withResult } : null,
     };

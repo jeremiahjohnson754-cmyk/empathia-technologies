@@ -1,6 +1,6 @@
 {
- "at": "2026-11-17T21:31:00.591Z",
- "commit": "d64d9bd7c0acbe1bd622015a8814393f4aca0ec6",
+ "at": "2026-11-17T21:43:43.920Z",
+ "commit": "60ed725abad7ef825a057966c9f9bb6685f36b89",
  "blueprint": "deploy/render/demo.render.yaml",
  "startCommand": "sh deploy/render/demo-start.sh",
  "passed": 13,
@@ -64,7 +64,7 @@
    "id": "R-09",
    "name": "recovery: an export made with the platform’s privileges restores into an empty database as the owner; migrations, rows, forced row-level security and every audit chain are verified against the source; on the copy as restored the service is unhealthy and refuses, the runtime role cannot repair the privileges and the owner’s repair makes them equal to the source’s; the API then serves the restored copy and a sandbox opened before the export opens with its key and reads the same thread",
    "result": "PASS",
-   "detail": "RV-01 PASS · RV-02 PASS · RV-03 PASS · RV-04 PASS · RV-05 PASS · 4810 rows, 7 chains · objects not the owner’s: 0 · API on the copy true · same thread true · recorded after the export: on the source v2, in the copy v1 (lost, as it must be) · export 0.2 s (194 KiB), restore 0.6 s, verify 2.0 s, serving again 16.1 s"
+   "detail": "RV-01 PASS · RV-02 PASS · RV-03 PASS · RV-04 PASS · RV-05 PASS · 4810 rows, 7 chains · objects not the owner’s: 0 · API on the copy true · same thread true · recorded after the export: on the source v2, in the copy v1 (lost, as it must be) · export 0.3 s (194 KiB), restore 1.0 s, verify 2.8 s, serving again 16.5 s"
   },
   {
    "id": "R-10",
@@ -89,12 +89,12 @@
   "rows": 4810,
   "tables": 78,
   "chains": 7,
-  "exportBytes": 199156,
-  "exportSeconds": 0.204,
-  "restoreSeconds": 0.64,
-  "verifySeconds": 1.981,
-  "serveSeconds": 16.063,
-  "totalSeconds": 18.683999999999997,
+  "exportBytes": 198976,
+  "exportSeconds": 0.286,
+  "restoreSeconds": 1.005,
+  "verifySeconds": 2.847,
+  "serveSeconds": 16.5,
+  "totalSeconds": 20.352,
   "lost": "whatever was recorded after the export was made: here one mounting (version 2 on the source, version 1 in the copy)",
   "measuredOn": "this workstation, a local PostgreSQL cluster; not the platform"
  },
@@ -121,7 +121,7 @@
    "id": "SM-04",
    "title": "a sandbox opens with a key, fifteen synthetic people and two installed rooms, one of them the flagship lecture theatre by its canonical identifier; its first session is the installer’s",
    "result": "PASS",
-   "detail": "sbx-4609092bef2849af · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED, R-PLN-0002 INSTALLED_UNVERIFIED · UNI-SCI-110 is R-PLN-0002"
+   "detail": "sbx-132418ee296e4d3f · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED, R-PLN-0002 INSTALLED_UNVERIFIED · UNI-SCI-110 is R-PLN-0002"
   },
   {
    "id": "SM-05",

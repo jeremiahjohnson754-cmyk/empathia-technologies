@@ -11,6 +11,7 @@ import { ApiError, invalid, notFound } from '../http/errors.js';
 import { findRoom } from './rooms.js';
 
 interface Bound { designRevision: number; designSha256: string; planId: string | null; results: Record<string, string>; evidenceIds: string[]; devices: unknown[]; authors: string[] }
+import { placementsOf } from './placement.js';
 
 /** What the room's current state binds: the approved design revision, the current result labels, the evidence they cite, the authors. */
 export async function bindCurrent(q: Queryable, room: { id: string; approved_revision: number | null }): Promise<Bound> {
@@ -18,8 +19,12 @@ export async function bindCurrent(q: Queryable, room: { id: string; approved_rev
   if (!rev) throw new ApiError('rule_refused', 'a baseline needs an approved design revision');
   const plan = (await q.query<{ id: string }>('SELECT id FROM app.cx_plan WHERE room_id = $1 ORDER BY compiled_at DESC, id DESC LIMIT 1', [room.id])).rows[0];
   const res = (await q.query<{ test_id: string; result_label: string; evidence_id: string | null; recorded_by: string | null; verified_by: string | null }>('SELECT c.test_id, c.result_label, t.evidence_id, t.recorded_by, v.verified_by FROM app.current_result c LEFT JOIN app.test_result t ON t.id = c.result_id LEFT JOIN app.verification v ON v.result_id = c.result_id WHERE c.room_id = $1', [room.id])).rows;
+  // 17 Nov 2026: a baseline records where each device was when it was taken: its designed place and, if the installation moved it,
+  // its as-built place and the move. Without it Assurance could not say where a device was at acceptance, nor that it had moved.
+  const places = await placementsOf(q, room.id);
+  const placeOf = (id: string) => { const p = places.get(id); return p ? { designed: p.designed, asBuilt: p.asBuilt ? { x: p.asBuilt.x, y: p.asBuilt.y, move: p.asBuilt.move } : null, at: p.current, basis: p.basis } : null; };
   return { designRevision: rev.rev_no, designSha256: rev.sha256, planId: plan?.id || null, results: Object.fromEntries(res.map((r) => [r.test_id, r.result_label])),
-    evidenceIds: [...new Set(res.map((r) => r.evidence_id).filter((x): x is string => !!x))], devices: rev.snapshot.devices.filter((d) => !d.furniture).map((d) => ({ id: d.id, category: d.cat, label: d.label })),
+    evidenceIds: [...new Set(res.map((r) => r.evidence_id).filter((x): x is string => !!x))], devices: rev.snapshot.devices.filter((d) => !d.furniture).map((d) => ({ id: d.id, category: d.cat, label: d.label, placement: placeOf(d.id) })),
     authors: [...new Set(res.flatMap((r) => [r.recorded_by, r.verified_by]).filter((x): x is string => !!x))] };
 }
 

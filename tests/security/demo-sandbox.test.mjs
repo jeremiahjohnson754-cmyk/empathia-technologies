@@ -188,6 +188,15 @@ test('DS-07 the whole thread in a sandbox, by demonstration sessions only; the s
   await ok(call(T.cxeng, 'POST', `/v1/issues/${issue}/apex`, { body: {} }), 'apex', 201);
   const t = await ok(call(T.syseng, 'GET', `/v1/rooms/${room}/thread`), 'thread'); assert.equal(t.complete, true, t.missing.join(' | ')); assert.equal(t.room.lifecycle, 'ACCEPTED');
   const fld = t.stages.find((x) => x.key === 'lite').records.fieldRecord; assert.deepEqual([fld.mounted, fld.moves.approved], [1, 1], 'the field record is part of the same durable thread');
+  // 17 Nov 2026, one shared source of truth: the device the installation moved is in one place for every product. The room as
+  // Engineering reads it, the field record Lite reads and the baseline Assurance took at acceptance give the same as-built place
+  // and name the same move; the designed place is kept beside it in all three.
+  { const eng = (await ok(call(T.designer, 'GET', `/v1/rooms/${room}`), 'room')).devices.find((d) => d.id === dev.asset).placement; const lite = (await ok(call(T.installer, 'GET', `/v1/rooms/${room}/field-record`), 'field')).devices.find((d) => d.asset === dev.asset).placement;
+    const base = (await ok(call(T.syseng, 'GET', `/v1/rooms/${room}/baselines`), 'baselines')).current; const kept = base.devices.find((d) => d.id === dev.asset).placement; const moved = { x: Math.round(fx * 100) / 100, y: dev.designed.y };
+    assert.deepEqual(eng, lite, 'Engineering and Lite read one placement'); assert.equal(eng.basis, 'AS_BUILT'); assert.deepEqual(eng.current, moved); assert.deepEqual([eng.asBuilt.x, eng.asBuilt.y, eng.asBuilt.move], [moved.x, moved.y, mv.move]);
+    assert.deepEqual({ x: eng.designed.x, y: eng.designed.y }, { x: dev.designed.x, y: dev.designed.y }, 'the designed place is kept, not overwritten');
+    assert.deepEqual(kept, { designed: eng.designed, asBuilt: { x: moved.x, y: moved.y, move: mv.move }, at: moved, basis: 'AS_BUILT' }, 'the baseline records where the device was at acceptance, and the move that put it there');
+    assert.ok(base.devices.every((d) => d.placement && d.placement.at && ['DESIGNED', 'AS_BUILT'].includes(d.placement.basis)), 'every device in the baseline has its place'); assert.equal(base.devices.filter((d) => d.placement.basis === 'AS_BUILT').length, 1); }
   assert.deepEqual(t.links.map((l) => `${l.from}>${l.to}`).sort(), ['commissioning>assurance', 'commissioning>service', 'engineering>commissioning', 'lite>engineering', 'service>apex', 'service>assurance']);
   // later, from the key alone (another browser, another day): a different person reads the same record
   const again = await ok(call(await as(A, 'exec'), 'GET', `/v1/rooms/${room}/thread`), 'thread again');

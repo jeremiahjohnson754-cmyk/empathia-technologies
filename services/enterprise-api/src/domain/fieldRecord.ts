@@ -21,6 +21,7 @@ import type { Queryable } from '../db/pg.js';
 import type { RequestContext } from '../auth/context.js';
 import { invalid, notFound } from '../http/errors.js';
 import { findRoom, type RoomRow } from './rooms.js';
+import { placementsOf } from './placement.js';
 
 export const FIELD_RECORD = ['work.evidence', 'field.scan'];
 export const FIELD_DECIDE = ['room.design.approve'];
@@ -231,6 +232,7 @@ export async function fieldStats(q: Queryable, roomId: string) {
 export async function fieldRecord(ctx: RequestContext, ref: string) {
   return ctx.tx(async (q) => {
     const room = await findRoom(ctx, q, ref); const ps = await positions(q, room.id); const byId = new Map(ps.map((p) => [p.id, p]));
+    const places = await placementsOf(q, room.id);   // the one answer to "where is this device" (domain/placement.ts)
     const mounts = (await q.query<MountRow>('SELECT m.position_id, m.version, m.method, m.height_m, m.fixing, m.backing, m.tether, m.note, p.display_name AS by, m.recorded_at FROM app.field_mounting m JOIN app.person p ON p.id = m.recorded_by WHERE m.room_id = $1 ORDER BY m.position_id, m.version DESC', [room.id])).rows;
     const hooks = (await q.query<HookRow>('SELECT h.id, h.code, h.position_id, h.port, h.to_position_id, h.to_outside, h.to_port, h.cable, h.connection_id, p.display_name AS by, h.recorded_by, h.recorded_at, h.removed_at, h.removed_reason FROM app.field_hookup h JOIN app.person p ON p.id = h.recorded_by WHERE h.room_id = $1 ORDER BY h.code', [room.id])).rows;
     const moves = (await q.query<MoveRow>('SELECT m.id, m.code, m.position_id, m.from_x, m.from_y, m.to_x, m.to_y, m.reason, m.note, m.evidence_id, m.state, p.display_name AS by, m.recorded_by, m.recorded_at, d.display_name AS decided, m.decided_at, m.decision FROM app.field_move m JOIN app.person p ON p.id = m.recorded_by LEFT JOIN app.person d ON d.id = m.decided_by WHERE m.room_id = $1 ORDER BY m.code', [room.id])).rows;
@@ -246,8 +248,9 @@ export async function fieldRecord(ctx: RequestContext, ref: string) {
     for (const p of ps) {
       const versions = mounts.filter((m) => m.position_id === p.id); const mv = [...moves].reverse().find((m) => m.position_id === p.id && m.state === 'APPROVED') || null;
       const ends = new Set(conns.filter((c) => c.from_asset === p.id || c.to_asset === p.id).map((c) => c.code));
-      devices.push({ asset: p.code, label: p.label, category: p.category, designed: { x: Number(p.x), y: Number(p.y), mount: p.mount },
-        asBuilt: mv ? { x: Number(mv.to_x), y: Number(mv.to_y), moved: mv.code } : { x: Number(p.x), y: Number(p.y), moved: null },
+      const place = places.get(p.code)!;
+      devices.push({ asset: p.code, label: p.label, category: p.category, designed: place.designed,
+        asBuilt: { ...place.current, moved: place.asBuilt?.move ?? null }, placement: place,
         mounting: versions[0] ? { version: versions[0].version, method: versions[0].method, label: MOUNTS.find((k) => k.id === versions[0]!.method)?.label ?? versions[0].method, heightM: versions[0].height_m === null ? null : Number(versions[0].height_m), fixing: versions[0].fixing, backing: versions[0].backing, tether: versions[0].tether, note: versions[0].note, by: versions[0].by, at: versions[0].recorded_at, earlier: versions.length - 1 } : null,
         hookups: live.filter((h) => h.position_id === p.id || h.to_position_id === p.id).map((h) => h.code), designedConnections: [...ends],
         recheck: mv && mv.decided_at ? await recheck(q, room.id, p.code, mv.decided_at) : [] });
