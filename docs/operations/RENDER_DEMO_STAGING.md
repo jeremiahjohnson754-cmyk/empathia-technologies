@@ -19,7 +19,8 @@ passwords, and gives the owner URL from the database it creates.
 
 ## Why it is repeatable
 
-- **One file, one start command.** The service's start command is the whole preparation, in order, on every start: the runtime roles
+- **One file, one start command.** The service's start command (`deploy/render/demo-start.sh`, copied into the image) is the whole
+  preparation, in order, on every start: the runtime roles
   (gate V-1: it refuses, and the API does not start, if the database's owner cannot create roles), the migrations, sandboxes enabled
   with the role catalogue, then the API. There is no seed, no bootstrap and no step done by hand.
 - **The database is disposable.** A new one needs nothing but a new sync of the file. That matters: a free database expires 30 days

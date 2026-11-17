@@ -44,7 +44,9 @@ services:
     dockerContext: .
     # 1) the runtime roles (gate V-1: refuses, and the service does not start, if the owner cannot create roles)
     # 2) migrations in file order, each recorded with its SHA-256   3) sandboxes enabled, with the role catalogue   4) the API
-    dockerCommand: sh -c "node services/enterprise-api/dist/src/db/bootstrap.js --roles && node services/enterprise-api/dist/src/db/migrate.js && node services/enterprise-api/dist/src/db/demo.js enable && exec node services/enterprise-api/dist/src/main.js"
+    # in deploy/render/demo-start.sh (copied into the image by the Dockerfile): a file, because a quoted compound command did not reach
+    # the shell intact on Render (first deploy, 17 Nov 2026)
+    dockerCommand: sh deploy/render/demo-start.sh
     healthCheckPath: /health
     envVars:
       - key: DATABASE_URL              # the owner; used by the three preparation steps only

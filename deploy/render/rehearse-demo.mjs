@@ -39,11 +39,15 @@ const waitFor = async (u, ms = 60000) => { const t = Date.now(); while (Date.now
 
 // ---- the service, as the Blueprint declares it (a small reader for this one file: keys and literal values; no YAML library needed)
 const bp = fs.readFileSync(path.join(repo, 'deploy/render/demo.render.yaml'), 'utf8');
-const command = (bp.match(/^\s*dockerCommand:\s*(.+)$/m) || [])[1];
-const sh = command && (command.match(/^sh -c "(.+)"$/) || [])[1];
+const command = ((bp.match(/^\s*dockerCommand:\s*(.+)$/m) || [])[1] || '').trim();
+// the command names a script the Dockerfile copies into the image; here it is copied into the runtime tree the same way
+const script = (command.match(/^sh (deploy\/render\/[\w.-]+\.sh)$/) || [])[1];
+const copied = script && new RegExp(`COPY --from=build /src/${script} /app/${script}`).test(fs.readFileSync(path.join(repo, 'deploy/render/Dockerfile'), 'utf8'));
+if (script && copied && fs.existsSync(path.join(rt, 'services'))) { fs.mkdirSync(path.dirname(path.join(rt, script)), { recursive: true }); fs.copyFileSync(path.join(repo, script), path.join(rt, script)); }
+const sh = script && copied ? command : null;
 const envOf = () => { const out = {}; const re = /- key: (\S+)[^\n]*\n\s+(value|generateValue|fromDatabase):\s*([^\n]*)/g; let m; while ((m = re.exec(bp))) out[m[1]] = m[2] === 'value' ? m[3].trim().replace(/^"(.*)"$/, '$1') : `<${m[2]}>`; return out; };
 const declared = envOf();
-if (!sh || !fs.existsSync(path.join(rt, 'services/enterprise-api/dist/src/main.js'))) { console.error(!sh ? 'the Blueprint has no sh -c start command' : `no runtime tree at ${rt}: run node scripts/build.mjs && node deploy/render/assemble-runtime.mjs --out=.local/demo-rt`); process.exit(2); }
+if (!sh || !fs.existsSync(path.join(rt, 'services/enterprise-api/dist/src/main.js'))) { console.error(!sh ? 'the Blueprint\'s start command is not a script the Dockerfile copies into the image' : `no runtime tree at ${rt}: run node scripts/build.mjs && node deploy/render/assemble-runtime.mjs --out=.local/demo-rt`); process.exit(2); }
 
 const port = await freePort(); const base = `http://127.0.0.1:${port}`; const objects = fs.mkdtempSync(path.join(repo, '.local/demo-rehearsal-objects-'));
 const sessionSecret = crypto.randomBytes(32).toString('base64');   // what generateValue gives: 256 random bits, base64; lives in this process only

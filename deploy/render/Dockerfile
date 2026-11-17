@@ -25,6 +25,8 @@ ARG RELEASE_SHA=
 ENV NODE_ENV=production RELEASE_SHA=$RELEASE_SHA HOST=0.0.0.0 WEB_HOST=0.0.0.0 OBJECT_STORE_DIR=/data/objects
 WORKDIR /app
 COPY --from=build /out /app
+# the demonstration staging's start command (deploy/render/demo.render.yaml); the enterprise services do not use it
+COPY --from=build /src/deploy/render/demo-start.sh /app/deploy/render/demo-start.sh
 RUN useradd --create-home --uid 10001 empathia && mkdir -p /app/.local /data/objects && chown -R empathia /app/.local /data/objects
 USER 10001
 # Render sets PORT; the API reads PORT, the web server reads WEB_PORT or PORT. One image, two start commands:
