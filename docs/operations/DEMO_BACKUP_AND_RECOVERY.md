@@ -13,7 +13,7 @@ for what real records would need, and says plainly where today's deployment fall
 | The staged database | Render free plan. **No backup of any kind, and it expires 30 days after 17 Nov 2026.** Acceptable only because every row is synthetic and the database is rebuilt empty by a sync of the Blueprint |
 | A logical export made by us (`pg_dump`) | **Not possible with the service's own database user**, on any plan (below). Rehearsed: R-08 |
 | Restoring an export and proving what came back | **Built and rehearsed**: `scripts/ops/restore-verify.mjs`, rehearsal R-09 and R-10 |
-| Continuous backup with point-in-time recovery | Comes with a paid database. **Not switched on**: the paid plan is approved in principle (founder, 17 Nov) and waits for the item and total to be confirmed |
+| Continuous backup with point-in-time recovery | Comes with a paid database. **Not switched on**: the founder approved the paid plans on 17 Nov, and the platform refused the change the same day (`need_payment_info`: the workspace has no payment method). It waits for the founder to add one |
 | A scheduled export and a scheduled restore drill | **Not built.** Both need the paid database and a platform API key that only the founder can create |
 
 ## What the platform provides

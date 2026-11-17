@@ -179,6 +179,13 @@ server answered. Fixed, and CN-11 now checks the card names the server while it 
 lets the page call exactly the API; two independent browsers shared a sandbox; the API had slept and woke in 17 seconds with the
 page saying what it was waiting for. Evidence: `tests/evidence/RENDER_DEMO_BROWSERS_DEPLOYED.json`.
 
+**The paid plans: approved, not in effect** (18:1x UTC). The founder approved the two smallest paid plans that day ($7.00 for the
+service, $6.00 for the database, $0.30 per GB of storage, 1 GB). The Blueprint file now names them (`2bcb83b`). Planning the sync was
+**refused by the platform: `need_payment_info`** for both resources: the workspace has no payment method. Nothing was changed and
+nothing is charged. Both resources are still on the free plans: the service sleeps after fifteen idle minutes, and the database has
+no backup and expires 30 days after 17 Nov. Adding a payment method is the founder's to do, on the platform; then the sync is
+planned again, read, and approved.
+
 **Not verified, and why:**
 
 - **The rest of the demo site.** Only `#/connected` uses the API. Every other page keeps its records in the browser.
