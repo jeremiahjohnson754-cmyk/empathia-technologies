@@ -14,6 +14,11 @@
  *   R-06  V-1: with an owner that cannot create roles the start command stops before the API starts
  *   R-07  the self-check switch (DEMO_SELF_CHECK): off as declared, nothing runs; on, the deployment check runs inside the service
  *         against its own address and every line is in the service's log
+ *   R-08  a plain pg_dump with the owner's URL is refused (row-level security is forced on the owner): the export must be the platform's
+ *   R-09  recovery: an export made with the platform's privileges restores into an empty database as the owner; migrations, every
+ *         table's rows, forced row-level security and every tenant's audit chain are verified against the source; the API starts on
+ *         the restored copy, and a sandbox opened before the export opens with its key and reads the same thread
+ *   R-10  the verification is not a formality: one audit row changed and one row removed in the restored copy are both reported
  * The database is a PostgreSQL cluster of its own, created for the run and removed after it, and its owner is what the platform gives:
  * a role that is NOT a superuser and may create roles. That matters. The first rehearsal used the development cluster's superuser as
  * the owner and passed a restart that then failed on Render (17 Nov 2026: "permission denied to alter role" — a role that is not a
@@ -144,10 +149,38 @@ try {
   const denied = ['SELECT * FROM app.demo_sandbox', 'UPDATE app.demo_config SET enabled = false', "INSERT INTO app.tenant (slug, name) VALUES ('forged', 'forged')"].map((q) => /permission denied/.test(asApp(q).stderr));
   const bare = count("SELECT count(*) FROM pg_roles WHERE rolname IN ('empathia_app','empathia_worker') AND rolcanlogin AND NOT (rolsuper OR rolbypassrls OR rolcreatedb OR rolcreaterole OR rolreplication)");
   step('R-05', 'the runtime roles are not the owner and can do nothing but sign in: the API\'s role cannot read the sandbox table, change the setting, or create a tenant', denied.every(Boolean) && bare === 2 && asApp('SELECT count(*) FROM app.room').stdout.trim() === '0', `permission denied ×${denied.filter(Boolean).length} of 3 · roles with no attribute but LOGIN: ${bare} of 2 · rooms visible without a tenant: ${asApp('SELECT count(*) FROM app.room').stdout.trim()}`);
+
+  // ---- recovery (scripts/ops/restore-verify.mjs; docs/operations/DEMO_BACKUP_AND_RECOVERY.md)
+  const { manifest, verify, restore } = await import('../../scripts/ops/restore-verify.mjs');
+  const superUrl = (db) => url(creds.superuser, creds.superPassword, db); const ownerUrl = (db) => url(creds.owner, creds.ownerPassword, db); const dump = path.join(os.tmpdir(), `empathia-demo-rehearsal-${creds.port}.dump`);
+  const pgDump = (user, pass, out) => spawnSync(path.join(BIN, 'pg_dump'), ['-h', '127.0.0.1', '-p', String(creds.port), '-U', user, '-d', DB, '--format=custom', '-f', out], { env: { ...process.env, PGPASSWORD: pass }, encoding: 'utf8' });
+  const asOwner = pgDump(creds.owner, creds.ownerPassword, `${dump}.owner`); fs.rmSync(`${dump}.owner`, { force: true });
+  step('R-08', 'a plain pg_dump with the owner’s URL is refused: row-level security is forced on the owner, so the export has to be the platform’s', asOwner.status !== 0 && /row-level security policy/.test(asOwner.stderr), asOwner.stderr.trim().split('\n')[0].slice(0, 160));
+
+  await stop();   // nothing writes while the source is described and exported
+  psql(DB, 'SELECT app.seal_audit_all()');   // what the worker does continuously: every committed row is in its tenant's chain
+  const source = manifest(superUrl(DB)); const exported = pgDump(creds.superuser, creds.superPassword, dump);   // the cluster's superuser stands in for the platform's export
+  psql('postgres', `CREATE DATABASE ${DB}_restored OWNER ${creds.owner}`);
+  let restored = false; let why = exported.status === 0 ? '' : exported.stderr.trim().slice(0, 200); if (exported.status === 0) { try { restored = restore(dump, ownerUrl(`${DB}_restored`)); } catch (e) { why = e.message; } }
+  const checks = restored ? verify(superUrl(`${DB}_restored`), source) : []; const owned = restored ? Number(psql(`${DB}_restored`, `SELECT count(*) FROM pg_tables WHERE schemaname = 'app' AND tableowner <> '${creds.owner}'`).stdout.trim()) : -1;
+  let served = false; let sameThread = false;
+  if (restored && checks.every((x) => x.result === 'PASS')) { start(ownerUrl(`${DB}_restored`)); served = await waitFor(`${base}/health`);
+    const s2 = served ? await j('POST', '/v1/demo/sessions', { body: { sandboxId: o.body.sandbox.id, key: o.body.sandbox.key, role: 'exec' } }) : { status: 0 };
+    sameThread = s2.status === 200 && JSON.stringify((await j('GET', `/v1/rooms/${o.body.scenario.room}/thread`, { token: s2.body.accessToken })).body.stages) === JSON.stringify(before.thread); }
+  step('R-09', 'recovery: an export made with the platform’s privileges restores into an empty database as the owner; migrations, rows, forced row-level security and every audit chain are verified against the source; the API starts on the restored copy and a sandbox opened before the export opens with its key and reads the same thread',
+    restored && checks.length === 4 && checks.every((x) => x.result === 'PASS') && owned === 0 && served && sameThread,
+    restored ? `${checks.map((x) => `${x.id} ${x.result}`).join(' · ')} · ${source.rows} rows, ${source.auditHeads.length} chains · objects not the owner’s: ${owned} · API on the copy ${served} · same thread ${sameThread}${checks.filter((x) => x.result === 'FAIL').map((x) => ` · ${x.id}: ${x.detail}`).join('')}` : `not restored: ${why}`);
+
+  await stop();
+  const harm = psql(`${DB}_restored`, "SET session_replication_role = replica; UPDATE app.audit_event SET detail = coalesce(detail, '{}'::jsonb) || '{\"changed\": true}'::jsonb WHERE id = (SELECT id FROM app.audit_event WHERE seq IS NOT NULL ORDER BY tenant_id, seq OFFSET 3 LIMIT 1); DELETE FROM app.field_mounting WHERE ctid = (SELECT ctid FROM app.field_mounting LIMIT 1)");
+  const damaged = restored ? verify(superUrl(`${DB}_restored`), source) : []; const r = (id) => damaged.find((x) => x.id === id) || { result: 'NOT RUN', detail: '' };
+  step('R-10', 'the verification is not a formality: one audit row changed and one row removed in the restored copy are both reported', harm.status === 0 && r('RV-02').result === 'FAIL' && /1 hashes differ/.test(r('RV-02').detail) && r('RV-04').result === 'FAIL' && /app\.field_mounting/.test(r('RV-04').detail) && r('RV-01').result === 'PASS',
+    harm.status === 0 ? `RV-02 ${r('RV-02').result}: ${r('RV-02').detail.slice(0, 90)} | RV-04 ${r('RV-04').result}: ${r('RV-04').detail.slice(0, 120)}` : harm.stderr.trim().slice(0, 200));
+  fs.rmSync(dump, { force: true });
 } catch (e) { step('R-XX', 'the rehearsal could not be completed', false, (e && e.message) || String(e)); }
 finally { await stop(); try { clusterDown(); } catch { /* reported by the next run, which removes it first */ } fs.rmSync(objects, { recursive: true, force: true }); }
 
-const want = ['R-01', 'R-02', 'R-03', 'R-04', 'R-05', 'R-06', 'R-07']; for (const id of want) if (!steps.some((x) => x.id === id)) step(id, 'NOT RUN', false, 'an earlier step stopped the rehearsal');
+const want = ['R-01', 'R-02', 'R-03', 'R-04', 'R-05', 'R-06', 'R-07', 'R-08', 'R-09', 'R-10']; for (const id of want) if (!steps.some((x) => x.id === id)) step(id, 'NOT RUN', false, 'an earlier step stopped the rehearsal');
 const pass = steps.filter((x) => x.result === 'PASS').length; const fail = steps.length - pass;
 let commit = ''; try { commit = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).stdout.trim(); } catch { /* not a checkout */ }
 fs.mkdirSync(path.join(repo, 'tests/evidence'), { recursive: true });

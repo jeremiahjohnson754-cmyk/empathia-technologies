@@ -58,6 +58,15 @@ are fixed and now rehearsed. What was read from the platform, what was not verif
 **The staging demo site is not connected to it yet.** Setting `DEMO_API_URL` on `empathia-demo-next` would put `#/connected` on
 staging. It has not been set because the connected build has been through one suite, not the full matrix.
 
+## Backup and recovery
+
+Founder, 17 Nov 08:34: "automated database backup/export and recovery planning". `docs/operations/DEMO_BACKUP_AND_RECOVERY.md`.
+The restore-and-verify drill is built and rehearsed every test run (export, restore as the owner, migrations, rows, forced row-level
+security and every audit chain verified against the source, the API serving the restored copy; damage is reported). Two facts it
+turned up: the free database has no backup and no export path at all, and `pg_dump` with the service's own user is refused on any
+plan because row-level security is forced on the owner. Continuous backup comes with the paid database; the scheduled export and
+the scheduled drill are not built and need a platform API key that only the founder can create.
+
 ## Decisions that are the founder's
 
 - **Paid plans for the demonstration API.** The free instance sleeps after 15 idle minutes and takes about a minute to wake; the free

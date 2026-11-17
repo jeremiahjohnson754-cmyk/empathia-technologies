@@ -1,9 +1,9 @@
 {
- "at": "2026-11-17T14:19:26.278Z",
- "commit": "14d1f4527d6431d9df2081fee9c35cd127253ffc",
+ "at": "2026-11-17T15:06:18.106Z",
+ "commit": "75168782393311af1d11369caa169c16908003c5",
  "blueprint": "deploy/render/demo.render.yaml",
  "startCommand": "sh deploy/render/demo-start.sh",
- "passed": 7,
+ "passed": 10,
  "failed": 0,
  "steps": [
   {
@@ -47,6 +47,24 @@
    "name": "the runtime roles are not the owner and can do nothing but sign in: the API's role cannot read the sandbox table, change the setting, or create a tenant",
    "result": "PASS",
    "detail": "permission denied ×3 of 3 · roles with no attribute but LOGIN: 2 of 2 · rooms visible without a tenant: 0"
+  },
+  {
+   "id": "R-08",
+   "name": "a plain pg_dump with the owner’s URL is refused: row-level security is forced on the owner, so the export has to be the platform’s",
+   "result": "PASS",
+   "detail": "pg_dump: error: query failed: ERROR:  query would be affected by row-level security policy for table \"ai_request\""
+  },
+  {
+   "id": "R-09",
+   "name": "recovery: an export made with the platform’s privileges restores into an empty database as the owner; migrations, rows, forced row-level security and every audit chain are verified against the source; the API starts on the restored copy and a sandbox opened before the export opens with its key and reads the same thread",
+   "result": "PASS",
+   "detail": "RV-01 PASS · RV-02 PASS · RV-03 PASS · RV-04 PASS · 2443 rows, 7 chains · objects not the owner’s: 0 · API on the copy true · same thread true"
+  },
+  {
+   "id": "R-10",
+   "name": "the verification is not a formality: one audit row changed and one row removed in the restored copy are both reported",
+   "result": "PASS",
+   "detail": "RV-02 FAIL: 147 sealed rows in 7 chains · 1 hashes differ · 0 broken links · 0 gaps · 0 rows not yet s | RV-04 FAIL: 2442 rows in 78 tables (source 2443) · tables that differ: app.field_mounting 3→2 · chain heads the same"
   }
  ],
  "smoke": [
@@ -72,7 +90,7 @@
    "id": "SM-04",
    "title": "a sandbox opens with a key, fifteen synthetic people and one installed room; its first session is the installer’s",
    "result": "PASS",
-   "detail": "sbx-7cf2a26f71094db5 · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED"
+   "detail": "sbx-68a3d15cd1fc400a · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED"
   },
   {
    "id": "SM-05",
