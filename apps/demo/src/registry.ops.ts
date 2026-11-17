@@ -16,6 +16,12 @@ const SERVER_THREAD: PageDef[] = process.env.DEMO_API_URL ? [{
   path: '/connected', authority: { roles: ['syseng', 'cxeng', 'designer', 'installer', 'service', 'svcmgr', 'ops', 'qa', 'architect', 'exec', 'steward'], why: 'the record of a room across the products, on the server: everyone who works on a room or answers for it' },
   load: adapt(() => import('./pages/Connected.js'), (m) => h(m.ConnectedPage, {})),
   search: { keywords: 'server backed connected sandbox durable database api thread audit history resume code demonstration session role switch field record', aliases: ['server thread', 'connected demo', 'sandbox'] },
+}, {
+  // 50/10 flagship (17 Nov 2026): one university lecture hall carries the engineering demonstration, read from the server
+  id: 'flagship.room', title: 'The flagship room: Lecture Theatre SCI-110', purpose: 'The university lecture hall that carries the engineering demonstration, read from the server: its plan, its devices, its commissioning plan and its thread, as the person you choose', product: 'commissioning',
+  path: '/flagship', authority: { roles: ['syseng', 'cxeng', 'designer', 'installer', 'service', 'svcmgr', 'ops', 'qa', 'architect', 'exec', 'steward'], why: 'the engineering record of one room on the server: everyone who works on a room or answers for it' },
+  load: adapt(() => import('./pages/Flagship.js'), (m) => h(m.FlagshipPage, {})),
+  search: { keywords: 'flagship lecture theatre hall university UNI-SCI-110 SCI-110 engineering workstation plan devices commissioning plan server', aliases: ['lecture hall', 'flagship room', 'UNI-SCI-110'] },
 }] : [];
 export const OPS_PAGES: readonly PageDef[] = [
   {

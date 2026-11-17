@@ -143,7 +143,7 @@ Acceptance, as tests:
 | F-01 | a new sandbox holds a room whose canonical reference is `UNI-SCI-110`, with the canon's name, seats and dimensions, in its own tenant |
 | F-02 | the reference is unique in a tenant and unchangeable once set; another tenant cannot read the room by it |
 | F-03 | the room's plan, devices and commissioning plan come back from `GET /v1/rooms/:room`, and the page shows exactly what the server returned (no browser record is read: the estate's browser copy can be absent and the page is unchanged) |
-| F-04 | two browsers on the same sandbox see the same room; a role without the right is refused by the server, and the page says why |
+| F-04 | two browsers on the same sandbox see the same room, and reading as another person asks the server again as that person. (Every person of a sandbox may read a room; the first refusals arrive with the first write, in slice 2) |
 | F-05 | the migration ledger names this page as server, and a check fails if it reads a browser record |
 | F-06 | the privilege list is regenerated for the new migration and the service starts healthy |
 

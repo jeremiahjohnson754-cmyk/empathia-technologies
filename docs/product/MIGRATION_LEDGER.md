@@ -8,11 +8,15 @@ business logic. No imaginary synchronization."
 authority. "Server" means the page reads and writes through the API as a signed-in person, and a test proves it shows what the
 server returned. Nothing is "offline queued" today.
 
-State on 17 Nov 2026 (`4121ace`):
+`tests/unit/migration-ledger.test.mjs` reads this table: the pages it calls **server** must be exactly the ones the test lists, and
+each of them may import the server's client and the interface kit and nothing that holds a record in the browser.
+
+State on 17 Nov 2026:
 
 | Feature (page) | Authority | Notes |
 |---|---|---|
 | The connected demonstration (`#/connected`): sandbox, sessions per role, field record steps, results, deficiency, work order, thread, audit history | **server** | `tests/browser/demo-connected.test.mjs` CN-01…16; verified on staging with two browsers |
+| The flagship room (`#/flagship`): Lecture Theatre SCI-110 by its canonical identifier `UNI-SCI-110`: plan, devices, connections, commissioning plan, thread | **server** | read-only so far; `tests/browser/demo-flagship.test.mjs` FL-01…11 (what is shown equals what the server returned); `tests/security/demo-sandbox.test.mjs` DS-17, DS-18. Not staged yet |
 | Field record and redlines (`#/v25/field/…`) | **browser** | the server holds the same model (`0034`, `domain/fieldRecord.ts`); the page's move is parked on `wip/field-record-on-server`, untested |
 | Commissioning room records, phases, results, deficiencies (`#/commissioning/…`) | **browser** | server equivalents exist and are enforced; not connected |
 | Instrument benches (reverberation, STI) | **browser, file export only** | no record is written anywhere; the export is the evidence file |
@@ -23,5 +27,4 @@ State on 17 Nov 2026 (`4121ace`):
 | Lite rooms, worlds, estates, SIGNAL, Learn, guides | **browser (read-only content in the bundle)** | no visitor record beyond preferences |
 | Decision desk, intake, drawing review, exports' audit trail | **browser** | |
 
-Every other page of the demo is in the browser. This table grows a row, and a test, with each slice; the flagship lecture hall
-(`docs/directives/50-10/FIRST_EXECUTION_ASSESSMENT.md`, G) is the first new server row.
+Every other page of the demo is in the browser. This table grows a row, and a test, with each slice.
