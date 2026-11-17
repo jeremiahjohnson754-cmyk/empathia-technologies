@@ -121,10 +121,11 @@ await t.close();
   const link = await q.locator('[data-testid=th-server] a[href="#/connected"]').count();
   let asked = 0; await q.route(`${API}/v1/demo`, async (route) => { asked += 1; await new Promise((r) => setTimeout(r, 6500)); await route.continue(); });
   await q.locator('[data-testid=th-server] a').click(); await q.getByTestId('cn-asking').waitFor();
-  const first = await text(q, 'cn-asking'); await q.waitForFunction(() => document.querySelector('[data-testid=cn-asking]')?.getAttribute('data-waited') === 'long', null, { timeout: 8000 }).catch(() => undefined);
+  const first = await text(q, 'cn-asking'); const named = await text(q, 'cn-connection');   // 17 Nov 2026: seen on a real cold start, the card said "No server in this build" for as long as the server took to wake
+  await q.waitForFunction(() => document.querySelector('[data-testid=cn-asking]')?.getAttribute('data-waited') === 'long', null, { timeout: 8000 }).catch(() => undefined);
   const long = await q.getByTestId('cn-asking').innerText().catch(() => ''); const ready = await stateIs('ready');
   ok('CN-11', 'the browser’s thread links to the server’s; a server slow to answer is waited for on one request, the page says after five seconds what it is waiting for, and is ready when the answer comes',
-    link === 1 && /^Asking the server/.test(first) && /has not answered yet/.test(long) && /about a minute/.test(long) && /nothing you need to do/.test(long) && ready && asked === 1 && !s.errs.length, `link ${link} · "${first}" → "${long.slice(0, 90)}" · ready ${ready} · asked ${asked} · ${s.errs.slice(0, 2)}`);
+    link === 1 && /^Asking the server/.test(first) && named.includes(`Server ${new URL(API).host}`) && !/No server in this build/.test(named) && /has not answered yet/.test(long) && /about a minute/.test(long) && /nothing you need to do/.test(long) && ready && asked === 1 && !s.errs.length, `link ${link} · "${first}" → "${long.slice(0, 90)}" · ready ${ready} · asked ${asked} · ${s.errs.slice(0, 2)}`);
 
   await q.unroute(`${API}/v1/demo`); await q.route(`${API}/v1/demo`, (route) => route.abort());
   await q.evaluate(() => { location.hash = '#/thread'; }); await q.getByTestId('thread').waitFor(); await q.evaluate(() => { location.hash = '#/connected'; });

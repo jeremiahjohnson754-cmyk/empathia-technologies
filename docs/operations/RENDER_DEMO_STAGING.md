@@ -165,6 +165,14 @@ browsers under the site's address (its origin, its policy and the API's cross-or
 not). And both browsers are Chromium: the one engine installed here. The same script without `--local-build` runs against the
 deployed site once it is switched.
 
+**A real sleep and wake** (15:04–15:11 UTC). After fifteen idle minutes the platform stopped the instance (its log: `shutting down`,
+15:04:31). At 15:11 a browser opened the page: the platform started the instance, the role step re-passworded the two roles, the
+API was listening at 15:11:15, and the page was ready 23.2 seconds after it was opened. While it waited the page said: "The server
+has not answered yet. One that has been idle can take about a minute to start. Still asking; there is nothing you need to do."
+Then ST-01…08 passed as before. Evidence: `tests/evidence/RENDER_DEMO_BROWSERS_COLD_START.json`. This is the start that failed before
+`14d1f45`. Looking at the page during that wait also showed a fault: the connection card read "No server in this build" until the
+server answered. Fixed, and CN-11 now checks the card names the server while it waits.
+
 **Not verified, and why:**
 
 - **The demo site is not connected.** `DEMO_API_URL` is not set on `empathia-demo-next`; `#/connected` does not exist there. A
@@ -172,7 +180,6 @@ deployed site once it is switched.
   so it has not been staged.
 - **A second browser engine.** Two independent Chromium browsers share one sandbox through the hosted API (above). Safari or Firefox
   has not been tried: neither is installed here.
-- **Sleep and wake.** The instance has not yet slept. The wake runs the start command that the three starts above ran.
 
 **Later the same day.** `d60c49c` (this file and the check's own file; no product code) went live at 14:21 UTC: the fifth start,
 roles re-passworded, listening.

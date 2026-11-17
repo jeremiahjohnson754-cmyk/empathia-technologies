@@ -86,7 +86,7 @@ export function ConnectedPage() {
       <PageHero product="commissioning" icon="route" eyebrow="Server-backed" title="One room, end to end, on the server"
         lede={<>The same journey as the browser’s thread, with the records kept by the enterprise API in a database. You open a sandbox, a synthetic organization of your own, and take its room from the field record to an APEX case. Each step is made as the person whose work it is; made as anyone else, the server refuses it. Synthetic data; a demonstration of the product’s authorization, not production security.</>} />
 
-      <Card icon="shield" title="Connection" sub={avail?.configured ? `Server ${c.origin}` : 'No server in this build'} testId="cn-connection">
+      <Card icon="shield" title="Connection" sub={c.configured ? `Server ${c.origin}` : 'No server in this build'} testId="cn-connection">
         {!avail ? <p className="ui-muted" role="status" data-testid="cn-asking" data-waited={waited ? 'long' : 'short'}>{waited ? 'The server has not answered yet. One that has been idle can take about a minute to start. Still asking; there is nothing you need to do.' : 'Asking the server…'}</p>
           : !avail.configured ? <Notice tone="info"><b>This build of the demonstration is not connected to a server.</b> Its records are kept in your browser. The same journey, browser-resident, is at <a href="#/thread">One room, end to end</a>.</Notice>
           : !avail.enabled ? <><Notice tone="warn"><b>{avail.reachable ? 'The server is not offering sandboxes.' : 'The server did not answer.'}</b> {avail.reason}. The browser-resident journey is at <a href="#/thread">One room, end to end</a>.</Notice>

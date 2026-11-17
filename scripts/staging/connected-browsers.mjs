@@ -60,7 +60,7 @@ const shot = async (x, file) => { if (shots) await x.page.screenshot({ path: pat
 const A = await browser('A', { width: 1440, height: 900 }); const B = await browser('B', { width: 390, height: 844 });
 try {
   const t0 = Date.now(); await A.page.goto(`${site}/#/connected`, { waitUntil: 'domcontentloaded' }); await A.page.getByTestId('connected').waitFor();
-  let sawWaiting = false; const watch = setInterval(async () => { try { if ((await A.page.getByTestId('cn-asking').getAttribute('data-waited', { timeout: 500 })) === 'long') sawWaiting = true; } catch { /* answered */ } }, 1000);
+  let sawWaiting = false; const watch = setInterval(async () => { try { if ((await A.page.getByTestId('cn-asking').getAttribute('data-waited', { timeout: 500 })) === 'long' && !sawWaiting) { sawWaiting = true; await shot(A, 'staging-A-waiting-for-the-server.png'); } } catch { /* answered */ } }, 1000);
   const ready = await waitState(A.page, 'ready', 150000); clearInterval(watch); const took = (Date.now() - t0) / 1000;
   ok('ST-01', 'A: the page loads from the site’s address and the hosted API answers; if it took more than five seconds the page said what it was waiting for', ready && (took < 6.5 || sawWaiting), `ready ${ready} after ${took.toFixed(1)} s · said it was waiting: ${sawWaiting} · state ${await stateOf(A.page)}`);
   if (!ready) throw new Error(`the page did not become ready: ${await text(A.page, 'cn-connection').catch(() => 'no connection card')}`);
