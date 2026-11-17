@@ -23,7 +23,9 @@ const settle = async (p, ms = 420000) => { await p.waitForFunction(() => !docume
 const page = async (w, hgt, role) => { const ctx = await browser.newContext({ viewport: { width: w, height: hgt }, deviceScaleFactor: 2, serviceWorkers: 'block' });
   await ctx.addInitScript((r) => { try { localStorage.setItem('empathia.demo.perspective', r); } catch { /* */ } }, role); const p = await ctx.newPage(); p.setDefaultTimeout(30000);
   await p.goto(`${base}/#/connected`); await p.waitForFunction(() => document.querySelector('[data-testid=connected]')?.getAttribute('data-state') === 'ready'); return { ctx, p }; };
-const shot = async (p, name) => { const f = path.join(out, name); await p.screenshot({ path: f, fullPage: true }); console.log(f); };
+// the viewport is made as tall as the page, so the sticky header is drawn once, at the top, where it is
+const shot = async (p, name) => { const f = path.join(out, name); const w = p.viewportSize().width; const hgt = await p.evaluate(() => document.documentElement.scrollHeight);
+  await p.setViewportSize({ width: w, height: Math.min(hgt, 8000) }); await p.evaluate(() => scrollTo(0, 0)); await p.waitForTimeout(250); await p.screenshot({ path: f }); console.log(f); };
 try {
   const d = await page(1440, 900, 'syseng');
   await d.p.getByTestId('cn-open').click(); await settle(d.p); await d.p.getByTestId('cn-thread').waitFor(); await shot(d.p, 'connected-1-open.png');

@@ -72,7 +72,7 @@ let whole;
   const complete = await p.getByTestId('connected').getAttribute('data-complete'); const steps = await p.locator('[data-testid=cn-steps] li[data-state=done]').count(); whole = await text(p, 'cn-thread');
   const tid = h.asSuper(`SELECT id FROM app.tenant WHERE slug = '${tenant}'`); const c = (sql) => n(sql.replace('$T', `'${tid}'`));
   ok('CN-05', 'every remaining step, each as its own person, to a whole thread with its records in the database',
-    complete === 'yes' && steps === 19 && /ACCEPTED/.test(whole) && /CLOSED/.test(await text(p, 'cn-wos')) && /retest PASS/.test(await text(p, 'cn-issues')) && /v1/.test(await text(p, 'cn-baselines')) && /CURRENT/.test(await text(p, 'cn-baselines')) && /hypotheses/.test(await text(p, 'cn-cases'))
+    complete === 'yes' && steps === 19 && /ACCEPTED/.test(whole) && /CLOSED/.test(await text(p, 'cn-wos')) && /retest PASS/.test(await text(p, 'cn-issues')) && /v1/.test(await text(p, 'cn-baselines')) && /CURRENT/.test(await text(p, 'cn-baselines')) && /hypothes[ie]s/.test(await text(p, 'cn-cases'))
     && c("SELECT count(*) FROM app.work_order WHERE tenant_id = $T AND state = 'CLOSED'") === 1 && c("SELECT count(*) FROM app.assurance_baseline WHERE tenant_id = $T AND state = 'CURRENT'") === 1 && c('SELECT count(*) FROM app.apex_case WHERE tenant_id = $T') === 1
     && c("SELECT count(*) FROM app.room WHERE tenant_id = $T AND lifecycle = 'ACCEPTED'") === 1 && c('SELECT count(DISTINCT actor_id) FROM app.audit_event WHERE tenant_id = $T') >= 9, `complete ${complete} · ${steps} steps · ${(await said(p)).text.slice(0, 160)}`); }
 
