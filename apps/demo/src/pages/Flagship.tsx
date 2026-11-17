@@ -9,6 +9,15 @@
  * read (tests/unit/migration-ledger.test.mjs checks the imports). The panels are one selection: choosing a device on the plan shows
  * its connections and the tests that name it.
  *
+ * Moving a device (founder, 17 Nov 2026, 15:50: "physically drag a camera to a new location, see the proposed redline, submit the
+ * change for independent approval, and watch the relevant engineering views update… the original design should remain preserved
+ * alongside the approved as-built"). The drag is a draft in this browser and is drawn as one. Submitting sends it to the server as
+ * the person chosen in "Acting as"; the server decides whether that person may, and its words are shown when it refuses. A proposal
+ * is decided by someone else, again on the server. After every step the page asks the server three separate questions (the room, the
+ * field record, the baselines) and shows the three answers side by side, so agreement between the products is something to look at
+ * and not something to take on trust. Nothing about a move is kept in the browser: a refresh, or another person's browser with the
+ * resume code, reads the same records.
+ *
  * Only a build with DEMO_API_URL has this page (registry.ops.ts).
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -16,7 +25,15 @@ import { PageHero, Card, Tag, Notice } from '@empathia/ui';
 import { connected, SandboxGone, type Availability, type Sandbox } from '../connected/client.js';
 
 export const FLAGSHIP_REF = 'UNI-SCI-110';
-interface Device { id: string; cat: string; label: string; role: string; model: string; modelName: string | null; x: number; y: number; z: number; rot: number; mount: string; furniture?: boolean; lifecycle: string; identityState: string | null }
+interface Point { x: number; y: number }
+/** Where a device is, as the server answers it for every product (services/enterprise-api/src/domain/placement.ts). */
+interface Placement { designed: Point & { mount: string }; asBuilt: (Point & { move: string; decidedBy: string | null; decidedAt: string }) | null; proposed: (Point & { move: string; by: string; at: string }) | null; current: Point; basis: 'DESIGNED' | 'AS_BUILT';
+  history: Array<{ move: string; state: string; from: Point; to: Point; metres: number; reason: string; by: string; at: string; decidedBy: string | null; decidedAt: string | null }> }
+interface Device { id: string; cat: string; label: string; role: string; model: string; modelName: string | null; x: number; y: number; z: number; rot: number; mount: string; furniture?: boolean; lifecycle: string; identityState: string | null; placement: Placement | null }
+interface FieldAnswer { room: { bounds: { w: number; l: number } }; writable: boolean; may: { record: boolean; decide: boolean };
+  devices: Array<{ asset: string; asBuilt: Point & { moved: string | null }; recheck: Array<{ test: string; label: string; result: string | null }> }>;
+  moves: Array<{ move: string; device: string; state: string; from: Point; to: Point; metres: number; reason: string; note: string; by: string; decidedBy: string | null; decision: string | null; mayDecide: boolean }>; catalogue: { moveReasons: string[] } }
+interface BaselineAnswer { current: { version: number; devices: Array<{ id: string; placement: { designed: Point; asBuilt: (Point & { move: string }) | null; at: Point; basis: string } | null }> } | null }
 interface Connection { id: string; from: string; to: string; kind: string; why: string }
 interface Row { test_id: string; label: string; pack: string; domain: string; phase: number; tier: number; applicable: boolean; why: string[]; personas: string[]; evidence: string[]; instrument: boolean; devices: string[]; result: string }
 interface RoomAnswer {
@@ -26,8 +43,13 @@ interface RoomAnswer {
   commissioning: { engineVersion: string; ruleVersion: string; library: number; applicable: number; counts: Record<string, number>; rows: Row[] } | null;
 }
 interface Thread { room: { code: string; lifecycle: string; revision: number }; complete?: boolean; missing?: string[]; stages: Array<{ key: string; product: string; records: Record<string, unknown> }> }
-interface Loaded { at: string; as: string; room: RoomAnswer; thread: Thread | null; place: { building: string; buildingName: string; site: string; siteName: string } | null }
-type Said = { ok: boolean; title: string; text: string };
+interface Loaded { at: string; as: string; room: RoomAnswer; thread: Thread | null; field: FieldAnswer | null; baseline: BaselineAnswer | null; place: { building: string; buildingName: string; site: string; siteName: string } | null }
+type Said = { ok: boolean; title: string; text: string; reasons?: string[] };
+const at = (p: Point) => `${p.x} m across, ${p.y} m from the front`;
+const same = (a: Point, b: Point) => Math.abs(a.x - b.x) < 0.005 && Math.abs(a.y - b.y) < 0.005;
+const dist = (a: Point, b: Point) => Math.round(Math.hypot(a.x - b.x, a.y - b.y) * 100) / 100;
+const snap = (v: number, max: number) => Math.min(max, Math.max(0, Math.round(v * 20) / 20));
+const placeOf = (d: Device): Point => d.placement?.current ?? { x: d.x, y: d.y };
 
 /** The people of a sandbox a visitor may read as. The server decides what each may see; this list only offers the choice. */
 export const PEOPLE: Array<[string, string]> = [['cxeng', 'Commissioning engineer'], ['syseng', 'Systems engineer'], ['designer', 'Designer'], ['installer', 'Installer'], ['qa_reviewer', 'QA reviewer'], ['svcmgr', 'Service manager'], ['service', 'Service technician'], ['opslead', 'Operations lead'], ['exec', 'Executive'], ['requestor', 'Requestor']];
@@ -39,26 +61,50 @@ const tone = (x: string): 'ok' | 'warn' | 'bad' | 'muted' => (/VERIFIED$|APPROVE
 const words = (x: string) => x.replace(/_/g, ' ').toLowerCase();
 const when = (iso: string) => { try { return new Date(iso).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' }); } catch { return iso; } };
 
-/** The plan: the room's outline and every position, drawn to scale from the server's geometry. Front of the room at the top. */
-function Plan({ room, devices, connections, selected, onSelect, showLinks, showFurniture }: { room: RoomAnswer['room']; devices: Device[]; connections: Connection[]; selected: string | null; onSelect: (id: string | null) => void; showLinks: boolean; showFurniture: boolean }) {
-  const g = room.geometry; const pad = 1.6; const W = g.widthM; const L = g.lengthM;
-  const shown = devices.filter((d) => showFurniture || !d.furniture); const at = new Map(devices.map((d) => [d.id, d]));
-  const links = showLinks ? connections.filter((k) => at.has(k.from) && at.has(k.to)) : connections.filter((k) => selected && (k.from === selected || k.to === selected) && at.has(k.from) && at.has(k.to));
+/**
+ * The plan: the room's outline and every position, drawn to scale from the server's geometry and the server's answer to where each
+ * device is. Front of the room at the top. Three layers that never overwrite one another: where the design puts a device (a dashed
+ * ghost, shown once the device has moved), where it is (as built, the solid marker), and a move waiting for a decision (an outlined
+ * marker and an arrow). In move mode the chosen device is dragged, placed with a tap, or nudged with the arrow keys; that is a draft
+ * in this browser until it is submitted, and it is drawn as a draft.
+ */
+function Plan({ room, devices, connections, selected, onSelect, showLinks, showFurniture, showDesigned, moving, draft, onDraft }: { room: RoomAnswer['room']; devices: Device[]; connections: Connection[]; selected: string | null; onSelect: (id: string | null) => void; showLinks: boolean; showFurniture: boolean; showDesigned: boolean;
+  moving: string | null; draft: Point | null; onDraft: (p: Point) => void }) {
+  const g = room.geometry; const pad = 1.6; const W = g.widthM; const L = g.lengthM; const svg = useRef<SVGSVGElement | null>(null); const dragging = useRef(false);
+  const shown = devices.filter((d) => showFurniture || !d.furniture); const byId = new Map(devices.map((d) => [d.id, d]));
+  const links = showLinks ? connections.filter((k) => byId.has(k.from) && byId.has(k.to)) : connections.filter((k) => selected && (k.from === selected || k.to === selected) && byId.has(k.from) && byId.has(k.to));
   const ticks = Array.from({ length: Math.floor(W / 4) + 1 }, (_, i) => i * 4); const rows = Array.from({ length: Math.floor(L / 4) + 1 }, (_, i) => i * 4);
+  // a pointer's place in the room, in metres, snapped to five centimetres and kept inside the walls
+  const toRoom = (e: { clientX: number; clientY: number }): Point | null => { const el = svg.current; const m = el?.getScreenCTM(); if (!el || !m) return null; const pt = el.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; const q = pt.matrixTransform(m.inverse()); return { x: snap(q.x, W), y: snap(q.y, L) }; };
+  const drop = (e: { clientX: number; clientY: number }) => { const p = toRoom(e); if (p) onDraft(p); };
+  const mover = moving ? byId.get(moving) : undefined; const from = mover ? placeOf(mover) : null;
   return (
-    <svg className="fl__plan" viewBox={`${-pad} ${-pad} ${W + 2 * pad} ${L + 2 * pad}`} role="group" aria-label={`Plan of ${room.name}: ${W} by ${L} metres, ${shown.length} positions`} data-testid="fl-plan" data-width={W} data-length={L}>
+    <svg ref={svg} className="fl__plan" viewBox={`${-pad} ${-pad} ${W + 2 * pad} ${L + 2 * pad}`} role="group" aria-label={`Plan of ${room.name}: ${W} by ${L} metres, ${shown.length} positions`} data-testid="fl-plan" data-width={W} data-length={L} data-moving={moving || ''}
+      onPointerMove={(e: { clientX: number; clientY: number }) => { if (moving && dragging.current) drop(e); }} onPointerUp={() => { dragging.current = false; }} onPointerLeave={() => { dragging.current = false; }}>
       <g className="fl__grid" aria-hidden="true">{ticks.map((x) => <line key={`x${x}`} x1={x} y1={0} x2={x} y2={L} />)}{rows.map((y) => <line key={`y${y}`} x1={0} y1={y} x2={W} y2={y} />)}</g>
-      <polygon className="fl__outline" points={g.points.map((p) => p.join(',')).join(' ')} onClick={() => onSelect(null)} />
+      <polygon className="fl__outline" points={g.points.map((p) => p.join(',')).join(' ')} onClick={(e: { clientX: number; clientY: number }) => { if (moving) drop(e); else onSelect(null); }} />
       <text className="fl__dim" x={W / 2} y={-0.55} textAnchor="middle">front · {W} m</text>
       <text className="fl__dim" x={-0.55} y={L / 2} textAnchor="middle" transform={`rotate(-90 ${-0.55} ${L / 2})`}>{L} m</text>
-      <g aria-hidden="true">{links.map((k) => { const a = at.get(k.from)!; const b = at.get(k.to)!; return <line key={k.id} className="fl__link" data-kind={k.kind} data-on={selected && (k.from === selected || k.to === selected) ? 'yes' : 'no'} x1={a.x} y1={a.y} x2={b.x} y2={b.y} />; })}</g>
-      {shown.map((d) => { const f = familyOf(d.cat); const on = d.id === selected;
-        return <g key={d.id} className="fl__dev" data-family={d.furniture ? 'furniture' : f.family} data-on={on ? 'yes' : 'no'} data-device={d.id} transform={`translate(${d.x} ${d.y})`} role="button" tabIndex={0} aria-pressed={on} aria-label={`${d.label}, ${d.furniture ? 'furniture' : f.family}, ${d.id}`}
-          onClick={() => onSelect(on ? null : d.id)} onKeyDown={(e: { key: string; preventDefault: () => void }) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(on ? null : d.id); } }}>
+      <g aria-hidden="true">{links.map((k) => { const a = placeOf(byId.get(k.from)!); const b = placeOf(byId.get(k.to)!); return <line key={k.id} className="fl__link" data-kind={k.kind} data-on={selected && (k.from === selected || k.to === selected) ? 'yes' : 'no'} x1={a.x} y1={a.y} x2={b.x} y2={b.y} />; })}</g>
+      {/* the designed place of a device that has moved: kept, and drawn as what it is */}
+      {showDesigned ? shown.filter((d) => d.placement?.basis === 'AS_BUILT').map((d) => { const p = d.placement!; return <g key={`g${d.id}`} className="fl__ghost" data-ghost={d.id} aria-hidden="true">
+        <line x1={p.designed.x} y1={p.designed.y} x2={p.current.x} y2={p.current.y} /><circle cx={p.designed.x} cy={p.designed.y} r={0.48} /><text x={p.designed.x} y={p.designed.y + (p.current.y < p.designed.y ? 1.05 : -0.7)} textAnchor="middle">designed</text></g>; }) : null}
+      {/* a move waiting for a decision: a proposal, drawn as one */}
+      {shown.filter((d) => d.placement?.proposed).map((d) => { const p = d.placement!; return <g key={`p${d.id}`} className="fl__proposed" data-proposed={d.id} aria-hidden="true">
+        <line x1={p.current.x} y1={p.current.y} x2={p.proposed!.x} y2={p.proposed!.y} /><circle cx={p.proposed!.x} cy={p.proposed!.y} r={0.48} /><text x={p.proposed!.x} y={p.proposed!.y + (p.current.y < p.proposed!.y ? 1.05 : -0.7)} textAnchor="middle">proposed</text></g>; })}
+      {shown.map((d) => { const f = familyOf(d.cat); const on = d.id === selected; const mv = d.id === moving; const here = mv && draft ? draft : placeOf(d);
+        return <g key={d.id} className="fl__dev" data-family={d.furniture ? 'furniture' : f.family} data-on={on ? 'yes' : 'no'} data-move={mv ? 'yes' : 'no'} data-device={d.id} data-x={here.x} data-y={here.y} transform={`translate(${here.x} ${here.y})`} role="button" tabIndex={0} aria-pressed={on}
+          aria-label={mv ? `${d.label}: moving. Drag it, or use the arrow keys: a tenth of a metre a press, half a metre with Shift` : `${d.label}, ${d.furniture ? 'furniture' : f.family}, ${d.id}`}
+          onClick={() => { if (!moving) onSelect(on ? null : d.id); }}
+          onPointerDown={(e: { currentTarget: Element; pointerId: number; preventDefault: () => void }) => { if (mv) { dragging.current = true; e.preventDefault(); } }}
+          onKeyDown={(e: { key: string; shiftKey: boolean; preventDefault: () => void }) => {
+            if (mv && /^Arrow/.test(e.key)) { e.preventDefault(); const step = e.shiftKey ? 0.5 : 0.1; const b = draft || placeOf(d); onDraft({ x: snap(b.x + (e.key === 'ArrowRight' ? step : e.key === 'ArrowLeft' ? -step : 0), W), y: snap(b.y + (e.key === 'ArrowDown' ? step : e.key === 'ArrowUp' ? -step : 0), L) }); }
+            else if (!moving && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onSelect(on ? null : d.id); } }}>
           <circle className="fl__hit" r={1.1} />
           {d.furniture ? <rect x={-0.55} y={-0.35} width={1.1} height={0.7} rx={0.12} /> : <circle r={0.48} />}
           {d.furniture ? null : <text y={0.2} textAnchor="middle">{f.letter}</text>}
         </g>; })}
+      {mover && from && draft && !same(from, draft) ? <g className="fl__draft" aria-hidden="true"><line x1={from.x} y1={from.y} x2={draft.x} y2={draft.y} /><circle cx={from.x} cy={from.y} r={0.3} /><text x={draft.x} y={draft.y + (from.y < draft.y ? 1.05 : -0.75)} textAnchor="middle">{dist(from, draft)} m</text></g> : null}
     </svg>
   );
 }
@@ -68,22 +114,25 @@ export function FlagshipPage() {
   const [avail, setAvail] = useState<Availability | null>(null); const [sb, setSb] = useState<Sandbox | null>(() => c.sandbox());
   const [who, setWho] = useState('cxeng'); const [data, setData] = useState<Loaded | null>(null); const [busy, setBusy] = useState<string | null>(null); const [said, setSaid] = useState<Said | null>(null);
   const [absent, setAbsent] = useState(false); const [selected, setSelected] = useState<string | null>(null); const [phase, setPhase] = useState<number | 'all'>('all');
-  const [showLinks, setShowLinks] = useState(false); const [showFurniture, setShowFurniture] = useState(true); const [onlySelected, setOnlySelected] = useState(false);
+  const [showLinks, setShowLinks] = useState(false); const [showFurniture, setShowFurniture] = useState(true); const [onlySelected, setOnlySelected] = useState(false); const [showDesigned, setShowDesigned] = useState(true);
+  // a move being drafted: which device, where to, why. A draft is this browser's until it is submitted; the server holds none of it.
+  const [moving, setMoving] = useState<string | null>(null); const [draft, setDraft] = useState<Point | null>(null); const [reason, setReason] = useState(''); const [note, setNote] = useState(''); const [decision, setDecision] = useState('');
   const alive = useRef(true); useEffect(() => () => { alive.current = false; }, []);
 
-  const read = useCallback(async (as: string): Promise<void> => {
+  const read = useCallback(async (as: string, keep = false): Promise<void> => {
     if (!c.sandbox()) { setData(null); return; }
-    setBusy('Reading the room from the server…'); setSaid(null);
+    setBusy('Reading the room from the server…'); if (!keep) setSaid(null);
     try {
       const room = await c.call<RoomAnswer>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}`);
       if (!alive.current) return;
       if (room.status === 404) { setAbsent(true); setData(null); return; }
       if (!room.ok) { setData(null); setSaid({ ok: false, title: `The server answered ${room.status}.`, text: room.detail }); return; }
-      const [thread, list, sites] = await Promise.all([c.call<Thread>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/thread`), c.call<{ items: Array<{ code: string; building: string }> }>(as, 'GET', '/v1/rooms?limit=50'),
-        c.call<{ items: Array<{ code: string; name: string; buildings: Array<{ code: string; name: string }> }> }>(as, 'GET', '/v1/sites')]);
+      const [thread, list, sites, field, baseline] = await Promise.all([c.call<Thread>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/thread`), c.call<{ items: Array<{ code: string; building: string }> }>(as, 'GET', '/v1/rooms?limit=50'),
+        c.call<{ items: Array<{ code: string; name: string; buildings: Array<{ code: string; name: string }> }> }>(as, 'GET', '/v1/sites'),
+        c.call<FieldAnswer>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/field-record`), c.call<BaselineAnswer>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/baselines`)]);
       if (!alive.current) return;
       const b = list.ok ? list.body.items.find((x) => x.code === room.body.room.code)?.building : undefined; const site = b && sites.ok ? sites.body.items.find((s) => s.buildings.some((x) => x.code === b)) : undefined;
-      setAbsent(false); setData({ at: new Date().toISOString(), as, room: room.body, thread: thread.ok ? thread.body : null, place: b && site ? { building: b, buildingName: site.buildings.find((x) => x.code === b)!.name, site: site.code, siteName: site.name } : null });
+      setAbsent(false); setData({ at: new Date().toISOString(), as, room: room.body, thread: thread.ok ? thread.body : null, field: field.ok ? field.body : null, baseline: baseline.ok ? baseline.body : null, place: b && site ? { building: b, buildingName: site.buildings.find((x) => x.code === b)!.name, site: site.code, siteName: site.name } : null });
       setSelected((s) => (s && room.body.devices.some((d) => d.id === s) ? s : null));
     } catch (e) {
       if (e instanceof SandboxGone) { setSb(null); setData(null); setSaid({ ok: false, title: 'The sandbox is no longer there.', text: `${e.message}. Open a new one to continue.` }); }
@@ -96,6 +145,26 @@ export function FlagshipPage() {
     try { const a = fresh && c.sandbox() ? await c.reset() : await c.open(); if (!a.ok || !a.body) { setSaid({ ok: false, title: `The server answered ${a.status}.`, text: a.detail }); setBusy(null); return; } setSb(a.body); setAbsent(false); await read(who); }
     catch (e) { setBusy(null); setSaid({ ok: false, title: 'That did not work.', text: e instanceof TypeError ? 'The server could not be reached. Nothing was changed.' : (e as Error).message }); if (e instanceof SandboxGone) setSb(null); } };
   const change = (as: string) => { setWho(as); void read(as); };
+  const person = (k: string) => PEOPLE.find(([x]) => x === k)?.[1].toLowerCase() || k;
+  const refused = (a: { status: number; detail: string; reasons: string[] }, what: string): Said => ({ ok: false, title: `The server refused ${what} (${a.status}).`, text: a.detail, reasons: a.reasons });
+  const act = async (label: string, run: () => Promise<Said>) => { setBusy(label); setSaid(null);
+    try { const out = await run(); if (!alive.current) return; setSaid(out); await read(who, true); }
+    catch (e) { if (e instanceof SandboxGone) { setSb(null); setData(null); setSaid({ ok: false, title: 'The sandbox is no longer there.', text: `${e.message}. Open a new one to continue.` }); }
+      else setSaid({ ok: false, title: 'That did not reach the server.', text: e instanceof TypeError ? 'The server could not be reached. Nothing was changed; your draft is still here.' : (e as Error).message }); }
+    finally { if (alive.current) setBusy(null); } };
+  const startMove = (id: string) => { setMoving(id); setDraft(null); setReason(''); setNote(''); setSaid(null); };
+  const stopMove = () => { setMoving(null); setDraft(null); };
+  const propose = (dev: Device, to: Point) => act('Sending the move to the server…', async () => {
+    const a = await c.call<{ move: string; state: string; from: Point; to: Point; metres: number }>(who, 'POST', `/v1/rooms/${FLAGSHIP_REF}/field-record/moves`, { device: dev.id, x: to.x, y: to.y, reason, note: note.trim() || undefined });
+    if (!a.ok) return refused(a, 'the move');
+    stopMove(); return { ok: true, title: `${a.body.move} is proposed.`, text: `${dev.label}: ${at(a.body.from)} to ${at(a.body.to)}, ${a.body.metres} m. It is a proposal until someone other than the ${person(who)} who holds design approval decides it. The design is not edited.` }; });
+  const decide = (dev: Device, move: string, approve: boolean) => act(approve ? 'Sending the approval to the server…' : 'Sending the rejection to the server…', async () => {
+    const a = await c.call<{ state: string }>(who, 'POST', `/v1/rooms/${FLAGSHIP_REF}/field-record/moves/${move}/decide`, { approve, decision: decision.trim() || undefined });
+    if (!a.ok) return refused(a, approve ? 'the approval' : 'the rejection');
+    setDecision(''); return approve ? { ok: true, title: `${move} is approved.`, text: `${dev.label} is now recorded where it was installed. The designed position is kept beside it, and the tests that name the device are listed to be looked at again.` }
+      : { ok: true, title: `${move} is rejected.`, text: `${dev.label} stays where it was. The proposal is kept in the history.` }; });
+  // when a move starts, the marker on the plan takes the keyboard, so the arrow keys work without a pointer
+  useEffect(() => { if (moving) (document.querySelector(`.fl__plan [data-device="${moving}"]`) as SVGGElement | null)?.focus(); }, [moving]);
 
   const R = data?.room; const rows = useMemo(() => (R?.commissioning?.rows || []).filter((r) => r.applicable), [R]);
   const phases = useMemo(() => [...new Set(rows.map((r) => r.phase))].sort((a, b) => a - b), [rows]);
@@ -106,6 +175,14 @@ export function FlagshipPage() {
   const naming = (id: string) => rows.filter((r) => r.devices.includes(id));
   const visible = rows.filter((r) => (phase === 'all' || r.phase === phase) && (!onlySelected || !sel || r.devices.includes(sel.id)));
   const label = (id: string) => R?.devices.find((d) => d.id === id)?.label || id;
+  const F = data?.field || null; const B = data?.baseline?.current || null;
+  const fieldOf = (id: string) => F?.devices.find((d) => d.asset === id) || null;
+  const waiting = sel && F ? F.moves.find((m) => m.device === sel.id && m.state === 'PROPOSED') || null : null;
+  const again = useMemo(() => new Map((F?.devices || []).flatMap((d) => d.recheck.map((r) => [r.test, d.asset] as [string, string]))), [F]);
+  const moved = R ? R.devices.filter((d) => d.placement && (d.placement.basis === 'AS_BUILT' || d.placement.proposed)) : [];
+  const compared = R ? (sel && !moved.some((d) => d.id === sel.id) ? [sel, ...moved] : moved) : [];
+  const mover = R && moving ? R.devices.find((d) => d.id === moving) || null : null; const moverAt = mover ? placeOf(mover) : null;
+  const far = mover && moverAt && draft ? dist(moverAt, draft) : 0; const ready = !!(mover && draft && far >= 0.05 && reason && (reason !== 'other' || note.trim()));
 
   if (!c.configured) return <div className="ui-page" data-testid="flagship"><PageHero product="commissioning" icon="link" eyebrow="The flagship engineering room, on the server" title="Lecture Theatre SCI-110" lede="This build of the demonstration is not connected to a server, so there is no room to read." /></div>;
   return (
@@ -123,7 +200,7 @@ export function FlagshipPage() {
       {avail?.enabled && sb && absent ? <Notice tone="warn"><b>This sandbox was opened before the lecture theatre existed on the server.</b> It has no room with the identifier {FLAGSHIP_REF}. A new sandbox has it; the old one stays on the server until it expires.{' '}
         <button type="button" className="ui-btn ui-btn--sm" data-testid="fl-new" disabled={!!busy} onClick={() => void open(true)}>Close this one and open a new one</button></Notice> : null}
       {busy ? <p role="status" data-testid="fl-busy"><Tag tone="warn">working</Tag> {busy}</p> : null}
-      {said ? <div data-testid="fl-said" data-ok={said.ok ? 'yes' : 'no'}><Notice tone={said.ok ? 'ok' : 'bad'}><b>{said.title}</b> {said.text}</Notice></div> : null}
+      {said ? <div data-testid="fl-said" data-ok={said.ok ? 'yes' : 'no'}><Notice tone={said.ok ? 'ok' : 'bad'}><b>{said.title}</b> {said.text}{said.reasons?.length ? <ul className="fl__list" data-testid="fl-said-reasons">{said.reasons.map((r) => <li key={r}>{r}</li>)}</ul> : null}</Notice></div> : null}
 
       {sb && R && data ? <>
         <section className="fl__bar" aria-label="The room and who is reading it" data-testid="fl-bar">
@@ -133,11 +210,11 @@ export function FlagshipPage() {
             <div><dt>State</dt><dd><Tag tone={tone(R.room.lifecycle)}>{words(R.room.lifecycle)}</Tag></dd></div>
             <div><dt>Seats</dt><dd data-testid="fl-seats">{R.room.occupancy}</dd></div>
             <div><dt>Size</dt><dd data-testid="fl-size">{R.room.geometry.lengthM} × {R.room.geometry.widthM} × {R.room.geometry.ceiling} m <span className="ui-muted">({R.room.geometry.confidence})</span></dd></div>
-            <div><dt>Design</dt><dd>revision {R.room.rev}{R.room.approvedRevision ? `, approved at ${R.room.approvedRevision}` : ''}</dd></div>
+            <div><dt>Design</dt><dd data-testid="fl-design">{R.room.approvedRevision ? `revision ${R.room.approvedRevision}, approved` : 'no approved revision'} <span className="ui-muted">· record version {R.room.rev}</span></dd></div>
             <div><dt>Server’s code</dt><dd className="ui-mono" data-testid="fl-code">{R.room.code}</dd></div>
           </dl>
           <div className="fl__who">
-            <label className="kit-field">Read as <select value={who} data-testid="fl-who" disabled={!!busy} onChange={(e: { target: { value: string } }) => change(e.target.value)}>{PEOPLE.map(([k, n]) => <option key={k} value={k}>{n}</option>)}</select></label>
+            <label className="kit-field">Acting as <select value={who} data-testid="fl-who" disabled={!!busy} onChange={(e: { target: { value: string } }) => change(e.target.value)}>{PEOPLE.map(([k, n]) => <option key={k} value={k}>{n}</option>)}</select></label>
             <button type="button" className="ui-btn ui-btn--sm" data-testid="fl-read" disabled={!!busy} onClick={() => void read(who)}>Read the server again</button>
             <span className="ui-meta" data-testid="fl-at" data-as={data.as}>read at {when(data.at)} as the {PEOPLE.find(([k]) => k === data.as)?.[1].toLowerCase()} · sandbox <span className="ui-mono">{sb.tenant}</span></span>
           </div>
@@ -148,27 +225,78 @@ export function FlagshipPage() {
             <p className="fl__toggles">
               <label><input type="checkbox" checked={showLinks} data-testid="fl-links" onChange={(e: { target: { checked: boolean } }) => setShowLinks(e.target.checked)} /> Every connection</label>
               <label><input type="checkbox" checked={showFurniture} data-testid="fl-furniture" onChange={(e: { target: { checked: boolean } }) => setShowFurniture(e.target.checked)} /> Furniture</label>
-              <span className="ui-meta">Choose a position to see its connections and its tests.</span>
+              <label><input type="checkbox" checked={showDesigned} data-testid="fl-designed" onChange={(e: { target: { checked: boolean } }) => setShowDesigned(e.target.checked)} /> Designed positions</label>
+              <span className="ui-meta">{mover ? `Moving ${mover.label}: drag it, tap where it goes, or use the arrow keys.` : 'Choose a position to see its connections and its tests, and to move it.'}</span>
             </p>
-            <Plan room={R.room} devices={R.devices} connections={R.connections} selected={selected} onSelect={setSelected} showLinks={showLinks} showFurniture={showFurniture} />
-            <p className="ui-meta">Positions and connections are the design the server holds (designed and installed, not yet verified). Connections are proposed by the design engine, not traced on site.</p>
+            <Plan room={R.room} devices={R.devices} connections={R.connections} selected={selected} onSelect={setSelected} showLinks={showLinks} showFurniture={showFurniture} showDesigned={showDesigned} moving={moving} draft={draft} onDraft={setDraft} />
+            <ul className="fl__legend" aria-label="What the plan’s marks mean" data-testid="fl-legend">
+              <li><span className="fl__key" data-key="built" aria-hidden="true" /> where it is: as built</li>
+              <li><span className="fl__key" data-key="designed" aria-hidden="true" /> where the design puts it, once it has moved</li>
+              <li><span className="fl__key" data-key="proposed" aria-hidden="true" /> a move waiting for a decision</li>
+              <li><span className="fl__key" data-key="draft" aria-hidden="true" /> your draft, not yet sent</li>
+            </ul>
+            <p className="ui-meta">Every position is the server’s answer: the design it holds, and the installation’s approved moves beside it. Connections are proposed by the design engine, not traced on site.</p>
           </Card>
 
           <Card icon="device" title={sel ? sel.label : 'Devices'} sub={sel ? `${sel.id} · ${sel.furniture ? 'furniture' : familyOf(sel.cat).family}` : `${R.devices.length} positions in the server’s record`} testId="fl-devices-card">
             {sel ? <div data-testid="fl-detail" data-device={sel.id}>
               <dl className="san__defs">
-                <div><dt>Position</dt><dd>{sel.x} m across, {sel.y} m from the front, {sel.z} m up · {sel.mount}</dd></div>
+                <div><dt>Designed</dt><dd data-testid="fl-pos-designed">{at(sel.placement?.designed ?? sel)}, {sel.z} m up · {sel.mount}</dd></div>
+                <div><dt>As built</dt><dd data-testid="fl-pos-built" data-basis={sel.placement?.basis || 'DESIGNED'}>{sel.placement?.asBuilt ? <>{at(sel.placement.asBuilt)} <Tag tone="ok">moved</Tag> <span className="ui-muted">{sel.placement.asBuilt.move}, approved by {sel.placement.asBuilt.decidedBy || 'someone else'}</span></> : <>as designed <span className="ui-muted">· no approved move</span></>}</dd></div>
+                {sel.placement?.proposed ? <div><dt>Proposed</dt><dd data-testid="fl-pos-proposed">{at(sel.placement.proposed)} <Tag tone="warn">waiting</Tag> <span className="ui-muted">{sel.placement.proposed.move}, recorded by {sel.placement.proposed.by}</span></dd></div> : null}
                 <div><dt>Model</dt><dd>{sel.modelName || (sel.model === 'generic' ? 'a class of device; no model chosen' : sel.model)}</dd></div>
                 <div><dt>Installed unit</dt><dd>{sel.furniture ? 'furniture: no unit to identify' : sel.identityState && !/unknown/i.test(sel.identityState) ? words(sel.identityState) : 'not identified yet: the device register is still to be filled'}</dd></div>
                 <div><dt>Connections</dt><dd data-testid="fl-detail-links">{selLinks.length ? <ul className="fl__list">{selLinks.map((k) => <li key={k.id}><Tag tone="muted">{k.kind}</Tag> {k.from === sel.id ? 'to' : 'from'} <button type="button" className="fl__linkbtn" onClick={() => setSelected(k.from === sel.id ? k.to : k.from)}>{label(k.from === sel.id ? k.to : k.from)}</button> <span className="ui-muted">· {k.why}</span></li>)}</ul> : 'none in the design'}</dd></div>
                 <div><dt>Tests naming it</dt><dd data-testid="fl-detail-tests">{naming(sel.id).length} of {rows.length} applicable{naming(sel.id).length ? <> · <button type="button" className="fl__linkbtn" data-testid="fl-only" onClick={() => { setOnlySelected(true); setPhase('all'); }}>show only these</button></> : null}</dd></div>
               </dl>
-              <p className="build__row"><button type="button" className="ui-btn ui-btn--sm ui-btn--quiet" data-testid="fl-clear" onClick={() => { setSelected(null); setOnlySelected(false); }}>Back to every device</button></p>
+              {/* a move waiting for a decision: decided on the server, by someone other than whoever recorded it */}
+              {waiting ? <section className="fl__move" data-testid="fl-waiting" data-move={waiting.move} aria-label={`Proposed move ${waiting.move}`}>
+                <h4>Proposed redline {waiting.move}</h4>
+                <p>{at(waiting.from)} to <b>{at(waiting.to)}</b> · {waiting.metres} m · because of {waiting.reason}{waiting.note ? <> · “{waiting.note}”</> : null} <span className="ui-muted">· recorded by {waiting.by}</span></p>
+                <label className="kit-field">Decision note (optional) <input type="text" value={decision} maxLength={400} data-testid="fl-decision" onChange={(e: { target: { value: string } }) => setDecision(e.target.value)} /></label>
+                <p className="build__row"><button type="button" className="ui-btn ui-btn--primary ui-btn--sm" data-testid="fl-approve" disabled={!!busy} onClick={() => void decide(sel, waiting.move, true)}>Approve as the {person(who)}</button>
+                  <button type="button" className="ui-btn ui-btn--sm" data-testid="fl-reject" disabled={!!busy} onClick={() => void decide(sel, waiting.move, false)}>Reject</button></p>
+                {data.as === who && !waiting.mayDecide ? <p className="ui-meta" data-testid="fl-decide-hint">The server says the {person(who)} may not decide this move: a move is decided by someone other than its recorder who holds design approval. You can still ask; its refusal will be shown.</p> : null}
+              </section> : null}
+              {/* drafting a move: this browser's until it is submitted */}
+              {mover && mover.id === sel.id && moverAt ? <section className="fl__move" data-testid="fl-move-panel" aria-label={`Move ${sel.label}`}>
+                <h4>Move {sel.label}</h4>
+                <p role="status" data-testid="fl-draft-at" data-x={draft?.x ?? ''} data-y={draft?.y ?? ''}>{draft && far >= 0.05 ? <>From {at(moverAt)} to <b>{at(draft)}</b>: {far} m.</> : <>Drag the marker on the plan, tap where it goes, or use the arrow keys. It is {at(moverAt)} now.</>}</p>
+                <div className="fl__xy">
+                  <label className="kit-field">Across (m) <input type="number" inputMode="decimal" min={0} max={R.room.geometry.widthM} step={0.05} value={(draft ?? moverAt).x} data-testid="fl-x" onChange={(e: { target: { value: string } }) => setDraft({ x: snap(Number(e.target.value) || 0, R.room.geometry.widthM), y: (draft ?? moverAt).y })} /></label>
+                  <label className="kit-field">From the front (m) <input type="number" inputMode="decimal" min={0} max={R.room.geometry.lengthM} step={0.05} value={(draft ?? moverAt).y} data-testid="fl-y" onChange={(e: { target: { value: string } }) => setDraft({ x: (draft ?? moverAt).x, y: snap(Number(e.target.value) || 0, R.room.geometry.lengthM) })} /></label>
+                </div>
+                <label className="kit-field">Why it could not go where it was designed <select value={reason} data-testid="fl-reason" onChange={(e: { target: { value: string } }) => setReason(e.target.value)}><option value="">Choose a reason</option>{(F?.catalogue.moveReasons || []).map((r) => <option key={r} value={r}>{r}</option>)}</select></label>
+                <label className="kit-field">Note{reason === 'other' ? ' (needed for “other”)' : ' (optional)'} <input type="text" value={note} maxLength={400} data-testid="fl-note" onChange={(e: { target: { value: string } }) => setNote(e.target.value)} /></label>
+                <p className="build__row"><button type="button" className="ui-btn ui-btn--primary ui-btn--sm" data-testid="fl-submit" disabled={!!busy || !ready} onClick={() => { if (draft) void propose(sel, draft); }}>Submit for approval as the {person(who)}</button>
+                  <button type="button" className="ui-btn ui-btn--sm ui-btn--quiet" data-testid="fl-cancel" onClick={stopMove}>Cancel</button></p>
+                {F && data.as === who && !F.may.record ? <p className="ui-meta" data-testid="fl-record-hint">The server says the {person(who)} may not record a field move. You can still ask; its refusal will be shown. The installer can.</p> : null}
+              </section> : null}
+              {sel.placement?.history.length ? <div data-testid="fl-history"><h4 className="fl__h4">Every move of this position</h4><ol className="fl__list fl__history">{sel.placement.history.map((h) => <li key={h.move} data-move={h.move} data-state={h.state}><span className="ui-mono">{h.move}</span> <Tag tone={tone(h.state)}>{words(h.state)}</Tag> {at(h.from)} to {at(h.to)} · {h.metres} m · {h.reason} <span className="ui-muted">· {h.by}{h.decidedBy ? `, decided by ${h.decidedBy}` : ''}</span></li>)}</ol></div> : null}
+              {fieldOf(sel.id)?.recheck.length ? <p data-testid="fl-recheck"><Tag tone="warn">look again</Tag> {fieldOf(sel.id)!.recheck.length} tests name this device and have no result newer than its move: {fieldOf(sel.id)!.recheck.map((r) => r.label).join(' · ')}</p> : null}
+              <p className="build__row">
+                {!mover && !waiting && F?.writable ? <button type="button" className="ui-btn ui-btn--sm" data-testid="fl-move" disabled={!!busy} onClick={() => startMove(sel.id)}>Move this {sel.furniture ? 'position' : 'device'}</button> : null}
+                <button type="button" className="ui-btn ui-btn--sm ui-btn--quiet" data-testid="fl-clear" onClick={() => { setSelected(null); setOnlySelected(false); stopMove(); }}>Back to every device</button></p>
+              {F && !F.writable ? <p className="ui-meta" data-testid="fl-closed">The room’s field record is closed in this state: a change now is a change order and recommissioning.</p> : null}
             </div> : <ul className="fl__devs" data-testid="fl-devices">{R.devices.map((d) => <li key={d.id}><button type="button" className="fl__devbtn" data-device={d.id} onClick={() => setSelected(d.id)}>
               <span className="fl__chip" data-family={d.furniture ? 'furniture' : familyOf(d.cat).family} aria-hidden="true">{d.furniture ? '▭' : familyOf(d.cat).letter}</span>
               <span><b>{d.label}</b> <span className="ui-muted">{d.furniture ? 'furniture' : familyOf(d.cat).family}</span></span><span className="ui-mono ui-muted">{d.id}</span></button></li>)}</ul>}
           </Card>
         </div>
+
+        <Card icon="layers" title="One position, three products" sub="Three separate questions to the server, answered just now" testId="fl-views-card">
+          <p className="ui-meta">Engineering asks for the room, Lite asks for the field record, and Assurance asks for the baselines. The page compares the answers; it does not make them agree.</p>
+          {compared.length ? <div className="fl__tablewrap"><table className="ui-table fl__views" data-testid="fl-views"><thead><tr><th scope="col">Position</th><th scope="col">Designed</th><th scope="col">Engineering: the room</th><th scope="col">Lite: the field record</th><th scope="col">Assurance: the baseline</th><th scope="col">Engineering and Lite</th></tr></thead>
+            <tbody>{compared.map((d) => { const e = d.placement; const l = fieldOf(d.id); const b = B?.devices.find((x) => x.id === d.id)?.placement || null; const agree = !!(e && l && same(e.current, l.asBuilt));
+              return <tr key={d.id} data-device={d.id} data-agree={agree ? 'yes' : 'no'}>
+                <th scope="row">{d.label} <span className="ui-mono ui-muted">{d.id}</span></th>
+                <td data-view="designed">{e ? at(e.designed) : 'not answered'}</td>
+                <td data-view="engineering" data-x={e?.current.x} data-y={e?.current.y}>{e ? <>{at(e.current)} <Tag tone={e.basis === 'AS_BUILT' ? 'ok' : 'muted'}>{e.basis === 'AS_BUILT' ? 'as built' : 'as designed'}</Tag>{e.proposed ? <> <Tag tone="warn">a move is waiting</Tag></> : null}</> : 'not answered'}</td>
+                <td data-view="lite" data-x={l?.asBuilt.x} data-y={l?.asBuilt.y}>{l ? <>{at(l.asBuilt)} {l.asBuilt.moved ? <span className="ui-muted">{l.asBuilt.moved}</span> : <span className="ui-muted">not moved</span>}</> : 'not readable as this person'}</td>
+                <td data-view="assurance">{B ? (b ? <>{at(b.at)} <span className="ui-muted">in baseline {B.version}{b.asBuilt ? `, ${b.asBuilt.move}` : ''}</span></> : `not in baseline ${B.version}`) : <span className="ui-muted">no baseline yet: the room is not accepted</span>}</td>
+                <td>{e && l ? <Tag tone={agree ? 'ok' : 'bad'}>{agree ? 'the same place' : 'different places'}</Tag> : <span className="ui-muted">cannot compare</span>}</td></tr>; })}</tbody></table></div>
+            : <p data-testid="fl-views-none">No position has moved or has a move waiting, so every product reads the designed positions. Choose a device on the plan to compare it, or move one.</p>}
+        </Card>
 
         <Card icon="check" title="Commissioning plan" sub={R.commissioning ? `${R.commissioning.applicable} of ${R.commissioning.library} tests apply to this room · rules ${R.commissioning.ruleVersion}, engine ${R.commissioning.engineVersion}` : 'The server holds no plan for this room'} testId="fl-cx-card">
           {R.commissioning ? <>
@@ -183,7 +311,7 @@ export function FlagshipPage() {
               <tbody>{visible.map((r) => <tr key={r.test_id} data-test={r.test_id} data-phase={r.phase}>
                 <th scope="row">{r.label}{r.devices.length ? <span className="fl__names">{r.devices.map((id) => <button key={id} type="button" className="fl__linkbtn" onClick={() => setSelected(id)}>{label(id)}</button>)}</span> : null}</th>
                 <td>{r.domain} <span className="ui-muted">· phase {r.phase}</span></td><td>{r.why.join('; ')}</td><td>{r.personas.join(', ')}</td><td>{r.evidence.map(words).join(', ')}{r.instrument ? ' · an instrument' : ''}</td>
-                <td><Tag tone={tone(r.result)}>{words(r.result)}</Tag></td></tr>)}</tbody></table></div>
+                <td><Tag tone={tone(r.result)}>{words(r.result)}</Tag>{again.has(r.test_id) ? <> <span data-again={again.get(r.test_id)}><Tag tone="warn">look again: {label(again.get(r.test_id)!)} moved</Tag></span></> : null}</td></tr>)}</tbody></table></div>
           </> : null}
         </Card>
 

@@ -321,6 +321,23 @@ main details > summary { min-height: 24px; }
 .fl__names { display: flex; flex-wrap: wrap; gap: 4px 10px; font-weight: 400; font-size: var(--fs-xs); }
 .fl__stages li { display: grid; grid-template-columns: 14ch minmax(0, 1fr); gap: var(--sp-3); padding: 8px 0; border-bottom: 1px solid var(--line); } .fl__stages li:last-child { border-bottom: 0; }
 .fl__stagefacts { display: flex; flex-wrap: wrap; gap: 4px var(--sp-4); }
+/* moving a device: three layers that never overwrite one another, and a draft that is drawn as a draft */
+.fl__plan[data-moving]:not([data-moving=""]) { touch-action: none; }
+.fl__ghost circle { fill: none; stroke: var(--tx2); stroke-width: 0.07; stroke-dasharray: 0.18 0.14; } .fl__ghost line { stroke: var(--tx2); stroke-width: 0.05; stroke-dasharray: 0.18 0.14; }
+.fl__proposed circle { fill: none; stroke: var(--warn); stroke-width: 0.1; } .fl__proposed line { stroke: var(--warn); stroke-width: 0.08; }
+.fl__ghost text, .fl__proposed text, .fl__draft text { font-size: 0.42px; fill: var(--tx2); pointer-events: none; paint-order: stroke; stroke: var(--bg2); stroke-width: 0.12; }
+.fl__proposed text { fill: var(--tx); } .fl__ghost, .fl__proposed, .fl__draft { pointer-events: none; }
+.fl__draft line { stroke: var(--accent); stroke-width: 0.08; stroke-dasharray: 0.3 0.16; } .fl__draft circle { fill: none; stroke: var(--accent); stroke-width: 0.06; stroke-dasharray: 0.14 0.1; } .fl__draft text { fill: var(--tx); font-weight: 700; }
+.fl__dev[data-move=yes] { cursor: grab; } .fl__dev[data-move=yes]:active { cursor: grabbing; }
+.fl__dev[data-move=yes] > circle:not(.fl__hit), .fl__dev[data-move=yes] > rect { fill: var(--accent); stroke: var(--tx); stroke-width: 0.14; stroke-dasharray: 0.22 0.12; }
+.fl__legend { list-style: none; display: flex; flex-wrap: wrap; gap: 4px var(--sp-4); margin: var(--sp-2) 0; padding: 0; font-size: var(--fs-xs); color: var(--tx2); } .fl__legend li { display: inline-flex; align-items: center; gap: 6px; }
+.fl__key { display: inline-block; width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--info); background: var(--panel2); }
+.fl__key[data-key=designed] { border: 2px dashed var(--tx2); background: none; } .fl__key[data-key=proposed] { border-color: var(--warn); background: none; } .fl__key[data-key=draft] { border: 2px dashed var(--tx); background: var(--accent); }
+.fl__move { display: grid; gap: var(--sp-2); margin: var(--sp-3) 0; padding: var(--sp-3); border: 1px solid var(--line2); border-left: 3px solid var(--accent); border-radius: var(--r-md); background: var(--bg2); }
+.fl__move[data-testid=fl-waiting] { border-left-color: var(--warn); } .fl__move h4, .fl__h4 { margin: 0; font-size: var(--fs-sm); } .fl__h4 { margin-top: var(--sp-3); } .fl__move p { margin: 0; }
+.fl__move input[type=text], .fl__move input[type=number], .fl__move select { min-height: var(--target-min); width: 100%; } .fl__xy { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-3); }
+.fl__history li { padding: 4px 0; border-bottom: 1px solid var(--line); } .fl__history li:last-child { border-bottom: 0; }
+.fl__views th[scope=row] { min-width: 16ch; font-weight: 600; } .fl__views td { vertical-align: top; min-width: 18ch; }
 @media (max-width: 860px) { .fl__bar, .fl__work { grid-template-columns: minmax(0, 1fr); } .fl__stages li { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
 
 /* #/connected — the server-backed thread (ADR-0013) */
