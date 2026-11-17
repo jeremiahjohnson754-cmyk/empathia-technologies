@@ -34,7 +34,12 @@ export function ConnectedPage() {
     try { const r = await load(c, box.room); if (!alive.current) return null; if (r.state) setState(r.state); else if (r.refused) setSaid({ ok: false, title: `The server answered ${r.refused.status}.`, text: r.refused.detail }); return r.state; }
     catch (e) { if (!gone(e)) setSaid({ ok: false, title: 'The server did not answer.', text: (e as Error).message }); return null; }
   }, [c, gone]);
-  useEffect(() => { void (async () => { const a = await c.availability(); if (!alive.current) return; setAvail(a); if (a.enabled && c.sandbox()) await refresh(); })(); }, [c, refresh]);
+  // Asking can take a while and that is not a fault: a server that sleeps when idle answers its first request only once it has started.
+  // The page keeps the one request open and, after five seconds, says what it is waiting for. If no answer comes at all, it offers to ask again.
+  const [waited, setWaited] = useState(false);
+  const ask = useCallback(async () => { setAvail(null); setWaited(false); const a = await c.availability(); if (!alive.current) return; setAvail(a); if (a.enabled && c.sandbox()) await refresh(); }, [c, refresh]);
+  useEffect(() => { void ask(); }, [ask]);
+  useEffect(() => { if (avail) return undefined; const t = setTimeout(() => setWaited(true), 5000); return () => clearTimeout(t); }, [avail]);
 
   const act = async (what: string, fn: () => Promise<void>) => { setBusy(what); setSaid(null); try { await fn(); } catch (e) { if (!gone(e)) setSaid({ ok: false, title: 'That did not go through.', text: (e as Error).message }); } finally { if (alive.current) setBusy(null); } };
   const openBox = () => act('Opening your sandbox…', async () => { const a = await c.open(); if (!a.ok || !a.body) { setSaid({ ok: false, title: `The server answered ${a.status}.`, text: a.detail }); return; } setSb(a.body); await refresh(a.body); setSaid({ ok: true, title: 'Your sandbox is open.', text: `${a.body.tenant}: a synthetic organization of your own, with one installed room. Keep the resume code to come back to it.` }); });
@@ -63,9 +68,10 @@ export function ConnectedPage() {
         lede={<>The same journey as the browser’s thread, with the records kept by the enterprise API in a database. You open a sandbox, a synthetic organization of your own, and take its room from the field record to an APEX case. Each step is made as the person whose work it is; made as anyone else, the server refuses it. Synthetic data; a demonstration of the product’s authorization, not production security.</>} />
 
       <Card icon="shield" title="Connection" sub={avail?.configured ? `Server ${c.origin}` : 'No server in this build'} testId="cn-connection">
-        {!avail ? <p className="ui-muted" role="status">Asking the server…</p>
+        {!avail ? <p className="ui-muted" role="status" data-testid="cn-asking" data-waited={waited ? 'long' : 'short'}>{waited ? 'The server has not answered yet. One that has been idle can take about a minute to start. Still asking; there is nothing you need to do.' : 'Asking the server…'}</p>
           : !avail.configured ? <Notice tone="info"><b>This build of the demonstration is not connected to a server.</b> Its records are kept in your browser. The same journey, browser-resident, is at <a href="#/thread">One room, end to end</a>.</Notice>
-          : !avail.enabled ? <Notice tone="warn"><b>{avail.reachable ? 'The server is not offering sandboxes.' : 'The server did not answer.'}</b> {avail.reason}. The browser-resident journey is at <a href="#/thread">One room, end to end</a>.</Notice>
+          : !avail.enabled ? <><Notice tone="warn"><b>{avail.reachable ? 'The server is not offering sandboxes.' : 'The server did not answer.'}</b> {avail.reason}. The browser-resident journey is at <a href="#/thread">One room, end to end</a>.</Notice>
+            <p className="build__row"><button type="button" className="ui-btn ui-btn--sm" data-testid="cn-ask-again" onClick={() => { void ask(); }}>Ask again</button></p></>
           : !sb ? <>
             <p>{avail.notice}</p>
             <p className="build__row"><button type="button" className="ui-btn ui-btn--primary" data-testid="cn-open" disabled={!!busy} onClick={openBox}>Open my sandbox</button> <span className="ui-muted">{avail.live} of {avail.maxLive} in use · a sandbox lasts {avail.ttlHours} hours</span></p>

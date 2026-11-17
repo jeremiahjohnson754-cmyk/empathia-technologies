@@ -147,4 +147,7 @@ database `empathia-demo-db-l04n`, web service `empathia-demo-api-l04n`, <https:/
   browser sessions of one engine (Chromium); no other engine is installed here.
 - **Sleep and wake.** The instance has not yet slept. The wake runs the start command that the three starts above ran.
 
+**Later the same day.** `d60c49c` (this file and the check's own file; no product code) went live at 14:21 UTC: the fifth start,
+roles re-passworded, listening.
+
 **The database expires** 30 days after 17 Nov 2026 (free plan). Recreating it is a sync of the Blueprint.

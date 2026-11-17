@@ -14,6 +14,12 @@
 //   CN-08  reset: a new sandbox with nothing done; the old resume code opens nothing
 //   CN-09  phone width: nothing scrolls sideways; no console error; nothing requested except the page and the configured server
 //   CN-10  with the server stopped the page says so and points at the browser-resident thread
+//   CN-11  the browser's thread page links to the server's; a server slow to answer (one that sleeps when idle and is waking) is waited
+//          for on one request, and after five seconds the page says what it is waiting for; when the answer comes the page is ready
+//   CN-12  no answer at all: the page says so and offers to ask again; asked again once the server answers, it is ready
+//   CN-13  the connected build serves every other page as the ordinary build does: every page with a fixed address opens with no
+//          console error, and no page but the connected one calls the server (17 Nov 2026: the staging site is to be built this way,
+//          and the rest of the matrix runs on the ordinary build)
 //   node tests/browser/demo-connected.test.mjs
 import { execFileSync } from 'node:child_process'; import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { repo } from './demo-shell-lib.mjs';
@@ -34,7 +40,7 @@ const said = async (p) => ({ ok: await p.getByTestId('cn-said').getAttribute('da
 
 // CN-01: the ordinary build (when there is one beside this run)
 { const std = path.join(repo, 'apps/demo/dist'); const files = fs.existsSync(std) ? fs.readdirSync(std, { recursive: true }).map(String).filter((f) => /\.(js|html)$/.test(f)) : [];
-  const hits = files.filter((f) => { const s = fs.readFileSync(path.join(std, f), 'utf8'); return /cn-connection|\/v1\/demo\/sandboxes|thread\.server/.test(s); });
+  const hits = files.filter((f) => { const s = fs.readFileSync(path.join(std, f), 'utf8'); return /cn-connection|\/v1\/demo\/sandboxes|thread\.server|th-server/.test(s); });
   const mine = fs.readdirSync(dist, { recursive: true }).map(String).filter((f) => /\.js$/.test(f)).some((f) => /cn-connection/.test(fs.readFileSync(path.join(dist, f), 'utf8')));
   const csp = fs.readFileSync(path.join(dist, 'index.html'), 'utf8').match(/connect-src ([^;]+)/)?.[1] || ''; const stdCsp = files.length ? fs.readFileSync(path.join(std, 'index.html'), 'utf8').match(/connect-src ([^;]+)/)?.[1] || '' : "'self'";
   ok('CN-01', 'a build without DEMO_API_URL carries no connected page and may call no server; the connected build names exactly its server', files.length > 0 && hits.length === 0 && mine && csp === `'self' ${API}` && stdCsp === "'self'", `${files.length} files · hits ${hits.slice(0, 3)} · connected ${mine} · csp ${csp} / ${stdCsp}`); }
@@ -104,6 +110,34 @@ let whole;
   const other = t.errs.filter((e) => !/status of 403/.test(e));
   ok('CN-clean', 'no console error beyond the two refusals asked for; nothing requested except the page and the configured server', !other.length && t.errs.length === 2 && !offOrigin.length && t.off.length > 50, `${other.slice(0, 2).join(' | ')} · ${t.errs.length} refusals · off ${offOrigin.slice(0, 2)} · ${t.off.length} API calls`); }
 await t.close();
+
+{ const s = await open('#/thread', { role: 'architect', sw: false }); const q = s.page; q.setDefaultTimeout(30000);
+  const stateIs = (v, ms = 20000) => q.waitForFunction((x) => document.querySelector('[data-testid=connected]')?.getAttribute('data-state') === x, v, { timeout: ms }).then(() => true, () => false);
+  const link = await q.locator('[data-testid=th-server] a[href="#/connected"]').count();
+  let asked = 0; await q.route(`${API}/v1/demo`, async (route) => { asked += 1; await new Promise((r) => setTimeout(r, 6500)); await route.continue(); });
+  await q.locator('[data-testid=th-server] a').click(); await q.getByTestId('cn-asking').waitFor();
+  const first = await text(q, 'cn-asking'); await q.waitForFunction(() => document.querySelector('[data-testid=cn-asking]')?.getAttribute('data-waited') === 'long', null, { timeout: 8000 }).catch(() => undefined);
+  const long = await q.getByTestId('cn-asking').innerText().catch(() => ''); const ready = await stateIs('ready');
+  ok('CN-11', 'the browser’s thread links to the server’s; a server slow to answer is waited for on one request, the page says after five seconds what it is waiting for, and is ready when the answer comes',
+    link === 1 && /^Asking the server/.test(first) && /has not answered yet/.test(long) && /about a minute/.test(long) && /nothing you need to do/.test(long) && ready && asked === 1 && !s.errs.length, `link ${link} · "${first}" → "${long.slice(0, 90)}" · ready ${ready} · asked ${asked} · ${s.errs.slice(0, 2)}`);
+
+  await q.unroute(`${API}/v1/demo`); await q.route(`${API}/v1/demo`, (route) => route.abort());
+  await q.evaluate(() => { location.hash = '#/thread'; }); await q.getByTestId('thread').waitFor(); await q.evaluate(() => { location.hash = '#/connected'; });
+  const down = await stateIs('unavailable'); const says = down ? await text(q, 'cn-connection') : ''; const again = await q.getByTestId('cn-ask-again').count();
+  await q.unroute(`${API}/v1/demo`); if (again) await q.getByTestId('cn-ask-again').click(); const back = await stateIs('ready');
+  // the one request this test cut off is the one console error
+  ok('CN-12', 'no answer at all: the page says so and offers to ask again; asked again once the server answers, it is ready', down && /did not answer/.test(says) && again === 1 && back && s.errs.length === 1 && /Failed to load resource/.test(s.errs[0]), `${says.slice(0, 80)} · again ${again} · ready ${back} · ${s.errs.slice(0, 2)}`);
+
+  const paths = [...new Set(fs.readdirSync(path.join(repo, 'apps/demo/src')).filter((f) => /^registry.*\.ts$/.test(f)).flatMap((f) => [...fs.readFileSync(path.join(repo, 'apps/demo/src', f), 'utf8').matchAll(/path: '([^']+)'/g)].map((m) => m[1])))].filter((x) => !x.includes(':') && x !== '/connected').sort();
+  const e0 = s.errs.length; const bad = []; let calls = 0; let on = '';
+  q.on('request', (r) => { if (r.url().startsWith(API)) { calls += 1; bad.push(`${on} called ${r.url().slice(API.length)}`); } });
+  for (const x of paths) { on = x; const n0 = s.errs.length;
+    await q.evaluate((h) => { location.hash = `#${h}`; }, x); await q.waitForFunction((h) => location.hash.split('?')[0] === `#${h}` && (document.querySelector('main')?.innerText || '').trim().length > 40, x, { timeout: 8000 }).catch(async () => bad.push(`${x} rendered nothing: hash ${await q.evaluate(() => location.hash)} · ${(await q.evaluate(() => (document.querySelector('main')?.innerText || '').trim().length))} characters`)); await q.waitForTimeout(120);
+    if (s.errs.length > n0) bad.push(`${x}: ${s.errs.slice(n0).join(' | ').slice(0, 120)}`); }
+  const offOrigin = s.off.filter((u) => !u.startsWith(API));
+  ok('CN-13', 'the connected build serves every other page as the ordinary build does: each opens with no console error, and none but the connected page calls the server',
+    paths.length > 100 && !bad.length && calls === 0 && s.errs.length === e0 && !offOrigin.length, `${paths.length} pages · ${bad.length} findings: ${bad.slice(0, 4).join(' ‖ ')} · off-origin ${offOrigin.slice(0, 2)}`);
+  await s.close(); }
 
 { const m = await open('#/connected', { role: 'installer', sw: false, w: 390, h: 844 }); const q = m.page; q.setDefaultTimeout(30000);
   await q.waitForFunction(() => document.querySelector('[data-testid=connected]')?.getAttribute('data-state') === 'ready');

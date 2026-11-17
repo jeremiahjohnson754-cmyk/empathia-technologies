@@ -13,10 +13,19 @@ Founder, 17 Nov 2026:
 |---|---|
 | Sandboxes, sessions, caps, reset (server) | Built and tested: ADR-0013, `tests/security/demo-sandbox.test.mjs` DS-01…16 |
 | Field records in the database (server) | Built and tested: `0034_field_record.sql`, `tests/security/field-record.test.mjs` FRS-01…09 |
-| The connected page in the demo (`#/connected`) | Built and tested against a real API and database in a real browser: `tests/browser/demo-connected.test.mjs` CN-01…10 |
-| On the public sites | **Not there.** The public demo is built without a server address: it has no connected page and its bundle names no server. Hosting the API and its database is a paid service and needs the founder's word |
+| The connected page in the demo (`#/connected`) | Built and tested against a real API and database in a real browser: `tests/browser/demo-connected.test.mjs` CN-01…13 |
+| The API and its database on staging | **Running** on Render's free plans since 17 Nov 2026; the deployment check passed 12 of 12 inside the deployed service. `docs/operations/RENDER_DEMO_STAGING.md` |
+| On the public sites | **Not there yet.** The staging demo site is still built without a server address. It is switched over when a commit that contains the waking-server wording and the whole-site check (CN-11…13) has passed the full regression. Production is unchanged |
 
-So the two implementations now meet in a build that is given a server. They do not meet on the public staging or production sites yet.
+So the two implementations meet in a build that is given a server, and the server now exists on staging. The staging site is not yet
+built that way.
+
+### A server that sleeps
+
+A free instance sleeps after 15 idle minutes and answers its first request only once it has started, about a minute later. The page
+asks once and waits on that request. After five seconds it says so: the server has not answered yet, one that has been idle can take
+about a minute to start, and there is nothing the visitor needs to do. If no answer comes at all it says the server did not answer
+and offers **Ask again**. In a connected build the browser's thread page (`#/thread`) links to the server's.
 
 ## What a visitor does
 
@@ -74,7 +83,7 @@ DEMO_API_URL=http://127.0.0.1:4100 node apps/demo/server/serve.mjs              
 
 Open `http://127.0.0.1:4310/#/connected`.
 
-## What deploying it takes (not done; founder's decision)
+## What deploying it takes (the API and database: done on staging, 17 Nov 2026; the paid plans remain the founder's decision)
 
 1. **A database and an API service for the demonstration only.** Its own PostgreSQL database (it holds nothing but sandboxes) and one
    web service running the API with `NODE_ENV=production`, `AUTH_MODE=demo`, `DEMO_SESSION_SECRET` (≥ 32 bytes, generated on the
@@ -90,7 +99,8 @@ Open `http://127.0.0.1:4310/#/connected`.
    (256 MB) plus $0.30 per GB of storage; both also have free plans with usage limits that the page does not spell out
    ([render.com/pricing](https://render.com/pricing.md)). The figures are the platform's, read that day, not a quote.
 
-Nothing above has been created. The staging and production sites are static, as before.
+Steps 1 and 2 were done on Render's free plans on 17 Nov 2026 (no charge; what the free plans mean is in
+`docs/operations/RENDER_DEMO_STAGING.md`). Step 3 has not been done. The production site is static, as before.
 
 ## Verified
 
@@ -99,9 +109,12 @@ Nothing above has been created. The staging and production sites are static, as 
   for row; the demonstration deployment mode; a database with migrations and `enable` only; the storage ceilings.
 - `tests/security/field-record.test.mjs` FRS-01…09.
 - `tests/unit/connected-client.test.mjs` CC-01…06: the client and the journey without a server.
-- `tests/browser/demo-connected.test.mjs` CN-01…10: a build without a server address carries no connected page; opening a sandbox; a
+- `tests/browser/demo-connected.test.mjs` CN-01…13: a build without a server address carries no connected page; opening a sandbox; a
   refusal in the server's words; the field move; the whole journey; a fresh browser session from the resume code; what the browser
-  stores; reset; phone width; the server stopped.
+  stores; reset; phone width; the server stopped; a server slow to answer; no answer and asking again; and every other page of a
+  connected build (112) opening with no console error and no call to the server.
+- On a build that names the staging API, run once on 17 Nov with the server out of reach: `demo-offline` 44 passed, `demo-field-ux`
+  10 passed, `demo-deadends` on the two thread pages 3 passed.
 
 ## Not yet
 
