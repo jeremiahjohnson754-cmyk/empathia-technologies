@@ -1,5 +1,5 @@
 {
- "at": "2026-11-17T18:02:08.863Z",
+ "at": "2026-11-17T18:33:07.467Z",
  "site": "https://empathia-demo-next.onrender.com",
  "api": "https://empathia-demo-api-l04n.onrender.com",
  "served": "the deployed site",
@@ -17,13 +17,13 @@
    "id": "ST-01",
    "title": "A: the page loads from the site’s address and the hosted API answers; if it took more than five seconds the page said what it was waiting for",
    "result": "PASS",
-   "detail": "ready true after 17.3 s · said it was waiting: true · state ready"
+   "detail": "ready true after 5.6 s · said it was waiting: false · state ready"
   },
   {
    "id": "ST-02",
    "title": "A opens a sandbox and does three steps, each as its own person: a mounting, a field move, its approval by someone else",
    "result": "PASS",
-   "detail": "sbx-ce60c35346ab40b5 · 1 of 5 · PA-0003 Wall bracket, 1.4 m (v1, Installer (synthetic)) · FM-0001 PA-0003 0.5 m, sprinkler head APPROVED by Systems Engineer (synthetic) · 3 steps done"
+   "detail": "sbx-afef7d0b530a4951 · 1 of 5 · PA-0003 Wall bracket, 1.4 m (v1, Installer (synthetic)) · FM-0001 PA-0003 0.5 m, sprinkler head APPROVED by Systems Engineer (synthetic) · 3 steps done"
   },
   {
    "id": "ST-03",

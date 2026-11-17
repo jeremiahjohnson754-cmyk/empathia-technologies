@@ -1,5 +1,5 @@
 {
- "at": "2026-11-17T14:38:44.348Z",
+ "at": "2026-11-17T18:32:05.708Z",
  "base": "https://empathia-demo-api-l04n.onrender.com",
  "origin": "https://empathia-demo-next.onrender.com",
  "passed": 6,
@@ -46,7 +46,7 @@
    "id": "EG-07",
    "title": "(information) /health answered",
    "result": "PASS",
-   "detail": "0.8 s for the first request of this run"
+   "detail": "0.3 s for the first request of this run"
   }
  ]
 }

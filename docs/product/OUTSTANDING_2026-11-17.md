@@ -93,8 +93,10 @@ the scheduled drill are not built and need a platform API key that only the foun
 
 ## Decisions that are the founder's
 
-- **Paid plans for the demonstration API.** The free instance sleeps after 15 idle minutes and takes about a minute to wake; the free
-  database expires after 30 days. Render's list prices on 17 Nov: $7 a month for the service, $6 a month plus storage for the database.
+- **Done on 17 Nov, with the founder's approval and payment method:** the demonstration API and its database are on the two smallest
+  paid plans (about $13.30 a month). The API no longer sleeps; the database no longer expires and is backed up by the platform.
+- **A platform API key, or the founder's own hand in the dashboard,** for the first real export and restore drill and for the
+  scheduled ones (`docs/operations/DEMO_BACKUP_AND_RECOVERY.md`).
 - **Production.** Unchanged since before the pause.
 
 ## Outstanding

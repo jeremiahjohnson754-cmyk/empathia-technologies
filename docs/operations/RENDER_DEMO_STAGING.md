@@ -4,14 +4,14 @@ Founder, 17 Nov 2026: "establish a repeatable staging deployment with the requir
 and test both correct permissions and attempted unauthorized access."
 
 What this is: the demonstration API (ADR-0013) and a database of its own on Render, and the staging demo site built with that API's
-address so that `#/connected` exists there. Free plans; no charge. Production is not touched.
+address so that `#/connected` exists there. The two smallest paid plans since 17 Nov (about $13.30 a month, approved by the founder). Production is not touched.
 
 ## The parts
 
 | Resource | What | Plan |
 |---|---|---|
-| `empathia-demo-db` (created as `empathia-demo-db-l04n`) | PostgreSQL 16, private network only. Holds sandboxes and nothing else | free |
-| `empathia-demo-api` (created as `empathia-demo-api-l04n`) | the enterprise API with `AUTH_MODE=demo`, built from `deploy/render/Dockerfile` | free |
+| `empathia-demo-db` (created as `empathia-demo-db-l04n`) | PostgreSQL 16, private network only. Holds sandboxes and nothing else | `0.1c-256mb`, 1 GB |
+| `empathia-demo-api` (created as `empathia-demo-api-l04n`) | the enterprise API with `AUTH_MODE=demo`, built from `deploy/render/Dockerfile` | `0.5c-512mb` |
 | `empathia-demo-next` (exists) | the static demo; connected by `DEMO_API_URL` | free static site |
 
 Declared in **`deploy/render/demo.render.yaml`**. No secret is in the file: Render generates the session secret and the two runtime-role
@@ -93,19 +93,18 @@ Three things that no local run had shown, each now covered by a check:
    the API running; the "restarted" service was the one that had never stopped. The rehearsal now stops the process group and
    requires that nothing answers before it starts again.
 
-## What the free plans mean
+## What the plans mean
 
-Read from <https://render.com/docs/free> on 17 Nov 2026.
+Read from <https://render.com/docs/free>, `/docs/postgresql-backups` and `/pricing` on 17 Nov 2026.
 
-- The API sleeps after 15 minutes without traffic and takes about a minute to wake. The first visit to `#/connected` after a quiet
-  spell waits that long.
-- No persistent disk: the short evidence notes of a sandbox do not survive a restart. Their records and hashes do; only downloading
-  the note back would fail.
-- The database: 1 GB, no backups, expires 30 days after creation (then 14 days before it is deleted). Recreate it by syncing the file.
-- 750 free instance hours a month for the workspace.
-
-Moving either resource to a paid plan is one line in the Blueprint and a spending decision that is the founder's. Render's list
-prices on 17 Nov 2026: $7 a month for the web service, $6 a month plus storage for the database.
+- **Until 18:30 UTC on 17 Nov both resources were on free plans**: the API slept after 15 idle minutes and took up to a minute to
+  wake (observed twice: 23 s and 17 s), and the database had no backup and would have expired after 30 days.
+- **Since then** (approved by the founder): web service `0.5c-512mb`, $7.00 a month; PostgreSQL `0.1c-256mb`, $6.00 a month, with a
+  1 GB disk at $0.30 per GB a month. The disk size is stated in the Blueprint because the platform's default for a new database of
+  this plan is 15 GB, and a disk can grow but not shrink.
+- Still true: the service has no persistent disk, so the short evidence notes of a sandbox do not survive a restart. Their records
+  and hashes do; only downloading the note back would fail.
+- Anything larger than these two plans is a spending decision that is the founder's. `validate-blueprints.py` P3-1 fails on it.
 
 ## Procedure
 
@@ -179,12 +178,17 @@ server answered. Fixed, and CN-11 now checks the card names the server while it 
 lets the page call exactly the API; two independent browsers shared a sandbox; the API had slept and woke in 17 seconds with the
 page saying what it was waiting for. Evidence: `tests/evidence/RENDER_DEMO_BROWSERS_DEPLOYED.json`.
 
-**The paid plans: approved, not in effect** (18:1x UTC). The founder approved the two smallest paid plans that day ($7.00 for the
-service, $6.00 for the database, $0.30 per GB of storage, 1 GB). The Blueprint file now names them (`2bcb83b`). Planning the sync was
-**refused by the platform: `need_payment_info`** for both resources: the workspace has no payment method. Nothing was changed and
-nothing is charged. Both resources are still on the free plans: the service sleeps after fifteen idle minutes, and the database has
-no backup and expires 30 days after 17 Nov. Adding a payment method is the founder's to do, on the platform; then the sync is
-planned again, read, and approved.
+**The paid plans are in effect** (18:27–18:31 UTC). The founder approved the two smallest paid plans and added a payment method.
+The Blueprint's plan showed two changes and nothing else: the database to `0.1c-256mb` with a 1 GB disk, the service to
+`0.5c-512mb`. Approved. The database changed in place at 18:27 (the same instance, 1 GB, `available`). The service's first
+plan-change deploy failed while the database was restarting (exit 1; the previous instance kept serving); the Blueprint was planned
+again, showed the one remaining change, and the service changed at 18:30:45 (the platform's `plan_changed` event). A further plan
+reports no changes. Afterwards: 10 sandboxes opened before the change were still live; `demo-edge` 6 passed, 0 failed, 1 not run;
+`demo-smoke` 12 of 12; `connected-browsers` on the deployed site 9 of 9.
+
+What that changes: the service no longer sleeps; the database no longer expires and is backed up continuously by the platform
+(point-in-time recovery over 3 days on a Hobby workspace, 7 on Pro; which this workspace is has not been read). List prices on
+17 Nov: $7.00 + $6.00 + $0.30 a month, charged by the second.
 
 **Not verified, and why:**
 
@@ -195,4 +199,4 @@ planned again, read, and approved.
 **Later the same day.** `d60c49c` (this file and the check's own file; no product code) went live at 14:21 UTC: the fifth start,
 roles re-passworded, listening.
 
-**The database expires** 30 days after 17 Nov 2026 (free plan). Recreating it is a sync of the Blueprint.
+The database no longer expires (paid plan since 17 Nov 2026).

@@ -10,11 +10,11 @@ for what real records would need, and says plainly where today's deployment fall
 
 | | State |
 |---|---|
-| The staged database | Render free plan. **No backup of any kind, and it expires 30 days after 17 Nov 2026.** Acceptable only because every row is synthetic and the database is rebuilt empty by a sync of the Blueprint |
+| The staged database | Render paid plan `0.1c-256mb` since 17 Nov 2026, 18:27 UTC (in place; the sandboxes already in it were kept). Before that: the free plan, with no backup and a 30-day life |
 | A logical export made by us (`pg_dump`) | **Not possible with the service's own database user**, on any plan (below). Rehearsed: R-08 |
 | Restoring an export and proving what came back | **Built and rehearsed**: `scripts/ops/restore-verify.mjs`, rehearsal R-09 and R-10 |
-| Continuous backup with point-in-time recovery | Comes with a paid database. **Not switched on**: the founder approved the paid plans on 17 Nov, and the platform refused the change the same day (`need_payment_info`: the workspace has no payment method). It waits for the founder to add one |
-| A scheduled export and a scheduled restore drill | **Not built.** Both need the paid database and a platform API key that only the founder can create |
+| Continuous backup with point-in-time recovery | **On**, by the platform, since the database went onto the paid plan. Not exercised: no recovery has been triggered. Its window is 3 days on a Hobby workspace, 7 on Pro; which this workspace is has not been read |
+| A scheduled export and a scheduled restore drill | **Not built.** They need a platform API key that only the founder can create. No export has been made on the platform yet |
 
 ## What the platform provides
 
@@ -119,5 +119,6 @@ head that was recorded outside the database.
 
 - Verified locally, every run of the test suite: R-08 (the owner's `pg_dump` is refused), R-09 (export, restore as the owner, RV-01…04
   against the source, the API serving the restored copy), R-10 (damage is reported).
-- **Not verified:** anything on the platform. No export has been created there and no recovery triggered: the staged database is on
-  the free plan, where neither exists. The first drill against a real export is the first task after the paid plan is on.
+- **Not verified:** recovery on the platform. The database has been on a paid plan since 17 Nov, so the platform now backs it up
+  continuously, but no export has been created there and no point-in-time recovery triggered. Both need the platform's dashboard or
+  an API key, which are the founder's. The first drill against a real export is the next step once one of those is available.

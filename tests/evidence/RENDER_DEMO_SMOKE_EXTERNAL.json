@@ -1,7 +1,7 @@
 {
  "base": "https://empathia-demo-api-l04n.onrender.com",
  "origin": "https://empathia-demo-next.onrender.com",
- "at": "2026-11-17T14:37:21.403Z",
+ "at": "2026-11-17T18:32:24.191Z",
  "passed": 12,
  "failed": 0,
  "results": [
@@ -9,13 +9,13 @@
    "id": "SM-01",
    "title": "the service is up in demonstration mode, on a named release, with its database reachable",
    "result": "PASS",
-   "detail": "status ok · authMode demo · release d60c49cb4a2b (staging) · migrations 35"
+   "detail": "status ok · authMode demo · release 1a7ccb0fa760 (staging) · migrations 35"
   },
   {
    "id": "SM-02",
    "title": "sandboxes are on offer",
    "result": "PASS",
-   "detail": "2 of 200 live · 72 h"
+   "detail": "10 of 200 live · 72 h"
   },
   {
    "id": "SM-03",
@@ -27,7 +27,7 @@
    "id": "SM-04",
    "title": "a sandbox opens with a key, fifteen synthetic people and one installed room; its first session is the installer’s",
    "result": "PASS",
-   "detail": "sbx-0c9e432e303a43b8 · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED"
+   "detail": "sbx-6bfac78c6fcf42ae · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED"
   },
   {
    "id": "SM-05",

@@ -1,7 +1,6 @@
 # Render Blueprint — STAGING OF THE CONNECTED DEMONSTRATION: the demonstration API and its database (ADR-0013).
-# PAID plans, approved by the founder on 17 Nov 2026 ("yes to the $13.30 plan") and NOT YET IN EFFECT: on 17 Nov the platform refused
-# to plan this file ("need_payment_info": the workspace has no payment method). Until the founder adds one and the file is synced,
-# the two resources stay on the free plans they were created on, and nothing is charged. The plans: the web service 0.5c-512mb at $7.00 a
+# PAID plans, approved by the founder on 17 Nov 2026 ("yes to the $13.30 plan") and in effect since 18:30 UTC that day, once the
+# founder had added a payment method (the first attempt was refused: need_payment_info). The web service 0.5c-512mb at $7.00 a
 # month and the database 0.1c-256mb at $6.00 a month with a 1 GB disk at $0.30 per GB a month (Render's list prices, read that day;
 # charged by the second). Nothing larger is to be put in this file without the founder's word.
 # Founder, 17 Nov 2026: "establish a repeatable staging deployment with the required API and database, validate cross-browser
@@ -18,8 +17,8 @@
 # sandboxes enabled with the role catalogue — then the API. Recreating the database (it holds synthetic sandboxes only)
 # needs nothing but a new sync of this file: there is no seed, no bootstrap and no manual step.
 #
-# What the paid plans will change once in effect (https://render.com/docs/free and /docs/postgresql-backups, read 17 Nov 2026): the web service will no longer
-# sleep; the database will no longer expire after 30 days and will be backed up continuously, with point-in-time recovery over the past
+# What the paid plans change (https://render.com/docs/free and /docs/postgresql-backups, read 17 Nov 2026): the web service no longer
+# sleeps; the database no longer expires after 30 days and is backed up continuously, with point-in-time recovery over the past
 # 3 days on a Hobby workspace (7 on Pro) and exports on demand. The service still has no persistent disk, so the short evidence
 # notes of a sandbox do not survive a restart (their records and hashes do: they are in the database).
 #
