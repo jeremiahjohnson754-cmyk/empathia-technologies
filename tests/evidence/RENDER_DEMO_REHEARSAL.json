@@ -1,6 +1,6 @@
 {
- "at": "2026-11-17T15:47:38.380Z",
- "commit": "e3c8e9f5abc6d4e30ac585338410f5d1cbb38454",
+ "at": "2026-11-17T18:08:40.071Z",
+ "commit": "9068d9362be1b9d8b21961db94ad156a748f2cf0",
  "blueprint": "deploy/render/demo.render.yaml",
  "startCommand": "sh deploy/render/demo-start.sh",
  "passed": 12,
@@ -102,7 +102,7 @@
    "id": "SM-04",
    "title": "a sandbox opens with a key, fifteen synthetic people and one installed room; its first session is the installer’s",
    "result": "PASS",
-   "detail": "sbx-858e3d42d0c44b2b · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED"
+   "detail": "sbx-8f6f871e28474926 · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED"
   },
   {
    "id": "SM-05",

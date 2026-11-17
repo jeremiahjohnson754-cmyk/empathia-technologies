@@ -6,7 +6,7 @@ Phase 1 (render.yaml): only free static sites, no database, no secrets, publish 
 Phase 2 (deploy/render/enterprise.render.yaml): plan values and regions from the Blueprint spec, private-only database, the Dockerfile,
 start and pre-deploy commands map to real entry points, health paths are served, the disk is the image's evidence directory, every
 environment variable is one the code reads, every variable production requires is present, and no secret has a literal value.
-Demonstration staging (deploy/render/demo.render.yaml): free plans only, demonstration mode only, private database, generated secrets,
+Demonstration staging (deploy/render/demo.render.yaml): exactly the two plans the founder approved on 17 Nov 2026 and a 1 GB disk, demonstration mode only, private database, generated secrets,
 a start command that is the whole preparation in order, one allowed browser origin.
 Exit 1 on any FAIL. Requires PyYAML (reported NOT_RUN by the test runner if it is missing).
 """
@@ -102,14 +102,14 @@ names = [s['name'] for s in s1 + s2] + [d['name'] for d in dbs]
 rec('P2-17', 'resource names are unique across both Blueprints', len(names) == len(set(names)), ', '.join(names))
 
 # ------------------------------------------------------------------------------------------------ the demonstration staging (ADR-0013)
-# deploy/render/demo.render.yaml: one free database and one free Docker web service in demonstration mode. The same checks as Phase 2
+# deploy/render/demo.render.yaml: one database and one Docker web service in demonstration mode, on the smallest paid plans (approved 17 Nov 2026). The same checks as Phase 2
 # where they apply, and the ones that are this Blueprint's own: no charge, demonstration mode only, and a start command that is the
 # whole preparation.
 p3 = yaml.safe_load(rd('deploy/render/demo.render.yaml')); d3s = p3.get('databases', []); s3 = p3.get('services', [])
 d3 = d3s[0] if d3s else {}; a3 = s3[0] if s3 else {}; e3 = {e['key']: e for e in a3.get('envVars', [])}
-rec('P3-1', 'exactly one database and one web service, both on free plans (no charge)', len(d3s) == 1 and len(s3) == 1 and d3.get('plan') == 'free' and a3.get('plan') == 'free' and a3.get('type') == 'web' and a3.get('runtime') == 'docker', f"db {d3.get('plan')} · web {a3.get('plan')}")
+rec('P3-1', 'exactly one database and one web service, on the plans the founder approved on 17 Nov 2026 and nothing larger: web 0.5c-512mb ($7), database 0.1c-256mb ($6) with a 1 GB disk stated in the file', len(d3s) == 1 and len(s3) == 1 and d3.get('plan') == '0.1c-256mb' and d3.get('diskSizeGB') == 1 and a3.get('plan') == '0.5c-512mb' and a3.get('type') == 'web' and a3.get('runtime') == 'docker', f"db {d3.get('plan')} {d3.get('diskSizeGB')} GB · web {a3.get('plan')}")
 rec('P3-2', 'the database is private, PostgreSQL ' + TESTED_PG + ', in the service\'s region', d3.get('ipAllowList') == [] and str(d3.get('postgresMajorVersion')) == TESTED_PG and d3.get('region') == a3.get('region') and d3.get('region') in REGIONS, f"{d3.get('region')} / {a3.get('region')}")
-rec('P3-3', 'the image is the staging Dockerfile and the service has no disk and no pre-deploy command (neither exists on a free instance)', ex(a3.get('dockerfilePath', '').lstrip('./')) and a3.get('dockerfilePath') == './deploy/render/Dockerfile' and a3.get('dockerContext') == '.' and 'disk' not in a3 and 'preDeployCommand' not in a3)
+rec('P3-3', 'the image is the staging Dockerfile and the service has no disk and no pre-deploy command (the start command is the whole preparation)', ex(a3.get('dockerfilePath', '').lstrip('./')) and a3.get('dockerfilePath') == './deploy/render/Dockerfile' and a3.get('dockerContext') == '.' and 'disk' not in a3 and 'preDeployCommand' not in a3)
 cmd3 = a3.get('dockerCommand', '')
 start3 = rd('deploy/render/demo-start.sh') if ex('deploy/render/demo-start.sh') else ''
 steps3 = [l.split('#')[0].strip() for l in start3.splitlines() if l.strip() and not l.strip().startswith('#')]
