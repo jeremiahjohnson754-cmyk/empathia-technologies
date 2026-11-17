@@ -1,6 +1,6 @@
 {
- "at": "2026-11-17T21:43:43.920Z",
- "commit": "60ed725abad7ef825a057966c9f9bb6685f36b89",
+ "at": "2026-11-17T22:10:15.722Z",
+ "commit": "62e89f4edce37388416aad65ef74e3d027e36389",
  "blueprint": "deploy/render/demo.render.yaml",
  "startCommand": "sh deploy/render/demo-start.sh",
  "passed": 13,
@@ -64,7 +64,7 @@
    "id": "R-09",
    "name": "recovery: an export made with the platform’s privileges restores into an empty database as the owner; migrations, rows, forced row-level security and every audit chain are verified against the source; on the copy as restored the service is unhealthy and refuses, the runtime role cannot repair the privileges and the owner’s repair makes them equal to the source’s; the API then serves the restored copy and a sandbox opened before the export opens with its key and reads the same thread",
    "result": "PASS",
-   "detail": "RV-01 PASS · RV-02 PASS · RV-03 PASS · RV-04 PASS · RV-05 PASS · 4810 rows, 7 chains · objects not the owner’s: 0 · API on the copy true · same thread true · recorded after the export: on the source v2, in the copy v1 (lost, as it must be) · export 0.3 s (194 KiB), restore 1.0 s, verify 2.8 s, serving again 16.5 s"
+   "detail": "RV-01 PASS · RV-02 PASS · RV-03 PASS · RV-04 PASS · RV-05 PASS · 4810 rows, 7 chains · objects not the owner’s: 0 · API on the copy true · same thread true · recorded after the export: on the source v2, in the copy v1 (lost, as it must be) · export 0.2 s (195 KiB), restore 0.5 s, verify 1.4 s, serving again 16.4 s"
   },
   {
    "id": "R-10",
@@ -89,12 +89,12 @@
   "rows": 4810,
   "tables": 78,
   "chains": 7,
-  "exportBytes": 198976,
-  "exportSeconds": 0.286,
-  "restoreSeconds": 1.005,
-  "verifySeconds": 2.847,
-  "serveSeconds": 16.5,
-  "totalSeconds": 20.352,
+  "exportBytes": 200005,
+  "exportSeconds": 0.202,
+  "restoreSeconds": 0.523,
+  "verifySeconds": 1.44,
+  "serveSeconds": 16.36,
+  "totalSeconds": 18.323,
   "lost": "whatever was recorded after the export was made: here one mounting (version 2 on the source, version 1 in the copy)",
   "measuredOn": "this workstation, a local PostgreSQL cluster; not the platform"
  },
@@ -103,7 +103,7 @@
    "id": "SM-01",
    "title": "the service is up in demonstration mode, on a named release, with its database reachable",
    "result": "PASS",
-   "detail": "status ok · authMode demo · release d64d9bd7c0ac (staging) · migrations 36"
+   "detail": "status ok · authMode demo · release 62e89f4edce3 (staging) · migrations 36"
   },
   {
    "id": "SM-02",
@@ -121,7 +121,7 @@
    "id": "SM-04",
    "title": "a sandbox opens with a key, fifteen synthetic people and two installed rooms, one of them the flagship lecture theatre by its canonical identifier; its first session is the installer’s",
    "result": "PASS",
-   "detail": "sbx-132418ee296e4d3f · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED, R-PLN-0002 INSTALLED_UNVERIFIED · UNI-SCI-110 is R-PLN-0002"
+   "detail": "sbx-a6326a37f74040b0 · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED, R-PLN-0002 INSTALLED_UNVERIFIED · UNI-SCI-110 is R-PLN-0002"
   },
   {
    "id": "SM-05",
