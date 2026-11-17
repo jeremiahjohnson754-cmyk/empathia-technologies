@@ -12,6 +12,8 @@
  *   R-04  the database holds sandboxes and nothing else: no tenant that is not one, nobody with a password or a provider subject
  *   R-05  the runtime role is not the owner: it cannot read the sandbox table or the setting, and cannot create a tenant
  *   R-06  V-1: with an owner that cannot create roles the start command stops before the API starts
+ *   R-07  the self-check switch (DEMO_SELF_CHECK): off as declared, nothing runs; on, the deployment check runs inside the service
+ *         against its own address and every line is in the service's log
  * Writes tests/evidence/RENDER_DEMO_REHEARSAL.json. Limits, stated: the local cluster has no TLS, so PGSSLMODE=require is rehearsed as
  * disable; there is no Render proxy, no container, no free-plan sleep; the runtime-role passwords are the local cluster's (the role
  * step would otherwise re-password the roles every local test uses). Those are seen only on Render.
@@ -42,8 +44,10 @@ const bp = fs.readFileSync(path.join(repo, 'deploy/render/demo.render.yaml'), 'u
 const command = ((bp.match(/^\s*dockerCommand:\s*(.+)$/m) || [])[1] || '').trim();
 // the command names a script the Dockerfile copies into the image; here it is copied into the runtime tree the same way
 const script = (command.match(/^sh (deploy\/render\/[\w.-]+\.sh)$/) || [])[1];
-const copied = script && new RegExp(`COPY --from=build /src/${script} /app/${script}`).test(fs.readFileSync(path.join(repo, 'deploy/render/Dockerfile'), 'utf8'));
-if (script && copied && fs.existsSync(path.join(rt, 'services'))) { fs.mkdirSync(path.dirname(path.join(rt, script)), { recursive: true }); fs.copyFileSync(path.join(repo, script), path.join(rt, script)); }
+// every file the Dockerfile copies into the image beside the assembled tree (COPY --from=build /src/<p> /app/<p>) is copied the same way
+const extras = [...fs.readFileSync(path.join(repo, 'deploy/render/Dockerfile'), 'utf8').matchAll(/^COPY --from=build \/src\/(\S+) \/app\/(\S+)$/gm)].filter((m) => m[1] === m[2]).map((m) => m[1]);
+const copied = script && extras.includes(script);
+if (copied && fs.existsSync(path.join(rt, 'services'))) for (const f of extras) { fs.mkdirSync(path.dirname(path.join(rt, f)), { recursive: true }); fs.copyFileSync(path.join(repo, f), path.join(rt, f)); }
 const sh = script && copied ? command : null;
 const envOf = () => { const out = {}; const re = /- key: (\S+)[^\n]*\n\s+(value|generateValue|fromDatabase):\s*([^\n]*)/g; let m; while ((m = re.exec(bp))) out[m[1]] = m[2] === 'value' ? m[3].trim().replace(/^"(.*)"$/, '$1') : `<${m[2]}>`; return out; };
 const declared = envOf();
@@ -51,11 +55,11 @@ if (!sh || !fs.existsSync(path.join(rt, 'services/enterprise-api/dist/src/main.j
 
 const port = await freePort(); const base = `http://127.0.0.1:${port}`; const objects = fs.mkdtempSync(path.join(repo, '.local/demo-rehearsal-objects-'));
 const sessionSecret = crypto.randomBytes(32).toString('base64');   // what generateValue gives: 256 random bits, base64; lives in this process only
-const envFor = (ownerUrl) => { const e = { PATH: process.env.PATH, PORT: String(port), OBJECT_STORE_DIR: objects };
+const envFor = (ownerUrl, extra = {}) => { const e = { PATH: process.env.PATH, PORT: String(port), OBJECT_STORE_DIR: objects };
   for (const [k, v] of Object.entries(declared)) e[k] = v === '<fromDatabase>' ? ownerUrl : k === 'DEMO_SESSION_SECRET' ? sessionSecret : k === 'EMPATHIA_APP_PASSWORD' ? creds.appPassword : k === 'EMPATHIA_WORKER_PASSWORD' ? creds.workerPassword : v;
-  e.PGSSLMODE = 'disable'; return e; };   // the one declared value the local cluster cannot honour (no TLS): stated in the header
+  e.PGSSLMODE = 'disable'; return { ...e, ...extra }; };   // the one declared value the local cluster cannot honour (no TLS): stated in the header
 let api = null; let log = '';
-const start = (ownerUrl) => { log = ''; api = spawn('sh', ['-c', sh], { cwd: rt, env: envFor(ownerUrl), stdio: ['ignore', 'pipe', 'pipe'] }); api.stdout.on('data', (d) => { log += d; }); api.stderr.on('data', (d) => { log += d; }); return api; };
+const start = (ownerUrl, extra) => { log = ''; api = spawn('sh', ['-c', sh], { cwd: rt, env: envFor(ownerUrl, extra), stdio: ['ignore', 'pipe', 'pipe'] }); api.stdout.on('data', (d) => { log += d; }); api.stderr.on('data', (d) => { log += d; }); return api; };
 const stop = () => new Promise((r) => { if (!api || api.exitCode !== null) return r(); api.once('exit', r); api.kill('SIGTERM'); setTimeout(() => api.kill('SIGKILL'), 5000).unref(); });
 const smoke = (args) => spawnSync(process.execPath, [path.join(repo, 'scripts/staging/demo-smoke.mjs'), base, ...args], { encoding: 'utf8', timeout: 300000 });
 const count = (sql) => Number(psql(DB, sql).stdout.trim());
@@ -92,6 +96,14 @@ try {
     again && s.status === 200 && JSON.stringify(after) === JSON.stringify(before.thread) && old.status === 200 && count('SELECT count(*) FROM app_meta.schema_migration') === before.migrations && count('SELECT count(*) FROM app.demo_sandbox') === before.sandboxes && count('SELECT count(*) FROM app.role') === before.roles,
     again ? `session from the key ${s.status} · same thread ${JSON.stringify(after) === JSON.stringify(before.thread)} · earlier session ${old.status} · ${before.migrations} migrations, ${before.sandboxes} sandboxes, unchanged` : log.trim().split('\n').slice(-3).join(' | '));
 
+  // R-07: the switch. Off (every start so far): nothing ran. On: the same check runs from inside, into the log.
+  const quiet = !/SELF-CHECK/.test(log) && declared.DEMO_SELF_CHECK === 'off';
+  await stop(); start(SUPER, { DEMO_SELF_CHECK: 'on' }); const t0 = Date.now(); while (Date.now() - t0 < 180000 && !/SELF-CHECK finished/.test(log)) await new Promise((r) => setTimeout(r, 500));
+  const inside = (log.match(/^SELF-CHECK .*$/gm) || []); const verdict = inside.find((l) => /demo-smoke .*: \d+ passed, \d+ failed/.test(l)) || '';
+  step('R-07', 'the self-check: off as declared, nothing runs; switched on, the deployment check runs inside the service against its own address and its lines are in the log',
+    quiet && /: 12 passed, 0 failed/.test(verdict) && inside.filter((l) => /^SELF-CHECK PASS SM-/.test(l)).length === 12 && !inside.some((l) => /^SELF-CHECK FAIL/.test(l)) && /SELF-CHECK finished: exit 0/.test(log) && (await waitFor(`${base}/health`, 5000)),
+    `declared ${declared.DEMO_SELF_CHECK} · ${inside.length} lines · ${verdict.replace(/^SELF-CHECK demo-smoke \S+ /, '') || 'no verdict'}`);
+
   const others = count('SELECT count(*) FROM app.tenant t WHERE NOT EXISTS (SELECT 1 FROM app.demo_sandbox s WHERE s.tenant_id = t.id)'); const ids = count('SELECT count(*) FROM app.person WHERE password_hash IS NOT NULL OR external_subject IS NOT NULL');
   step('R-04', 'the database holds sandboxes and nothing else: no other tenant, nobody with a password or a provider subject', others === 0 && ids === 0 && count('SELECT count(*) FROM app.tenant') === count('SELECT count(*) FROM app.demo_sandbox'), `${count('SELECT count(*) FROM app.tenant')} tenants, all sandboxes · ${ids} sign-in identities`);
 
@@ -101,7 +113,7 @@ try {
 } catch (e) { step('R-XX', 'the rehearsal could not be completed', false, (e && e.message) || String(e)); }
 finally { await stop(); psql('postgres', `DROP DATABASE IF EXISTS ${DB} WITH (FORCE)`); fs.rmSync(objects, { recursive: true, force: true }); }
 
-const want = ['R-01', 'R-02', 'R-03', 'R-04', 'R-05', 'R-06']; for (const id of want) if (!steps.some((x) => x.id === id)) step(id, 'NOT RUN', false, 'an earlier step stopped the rehearsal');
+const want = ['R-01', 'R-02', 'R-03', 'R-04', 'R-05', 'R-06', 'R-07']; for (const id of want) if (!steps.some((x) => x.id === id)) step(id, 'NOT RUN', false, 'an earlier step stopped the rehearsal');
 const pass = steps.filter((x) => x.result === 'PASS').length; const fail = steps.length - pass;
 let commit = ''; try { commit = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).stdout.trim(); } catch { /* not a checkout */ }
 fs.mkdirSync(path.join(repo, 'tests/evidence'), { recursive: true });

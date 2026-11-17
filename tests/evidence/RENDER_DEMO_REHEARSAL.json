@@ -1,9 +1,9 @@
 {
- "at": "2026-11-17T13:38:21.974Z",
- "commit": "756bb327bdd032f7fa62b99a7df4e85ca163c5ab",
+ "at": "2026-11-17T13:46:16.530Z",
+ "commit": "f9076a3de159afb127a0ea4af7197ecf3d27bc9f",
  "blueprint": "deploy/render/demo.render.yaml",
  "startCommand": "sh deploy/render/demo-start.sh",
- "passed": 6,
+ "passed": 7,
  "failed": 0,
  "steps": [
   {
@@ -16,7 +16,7 @@
    "id": "R-01",
    "name": "the start command, as written in the Blueprint, prepares an empty database and brings the API up in production, demonstration mode",
    "result": "PASS",
-   "detail": "35 migrations · authMode demo · 17 variables from the Blueprint"
+   "detail": "35 migrations · authMode demo · 18 variables from the Blueprint"
   },
   {
    "id": "R-02",
@@ -31,10 +31,16 @@
    "detail": "session from the key 200 · same thread true · earlier session 200 · 35 migrations, 4 sandboxes, unchanged"
   },
   {
+   "id": "R-07",
+   "name": "the self-check: off as declared, nothing runs; switched on, the deployment check runs inside the service against its own address and its lines are in the log",
+   "result": "PASS",
+   "detail": "declared off · 14 lines · 12 passed, 0 failed"
+  },
+  {
    "id": "R-04",
    "name": "the database holds sandboxes and nothing else: no other tenant, nobody with a password or a provider subject",
    "result": "PASS",
-   "detail": "4 tenants, all sandboxes · 0 sign-in identities"
+   "detail": "7 tenants, all sandboxes · 0 sign-in identities"
   },
   {
    "id": "R-05",
@@ -66,7 +72,7 @@
    "id": "SM-04",
    "title": "a sandbox opens with a key, fifteen synthetic people and one installed room; its first session is the installer’s",
    "result": "PASS",
-   "detail": "sbx-491b55dad4a4427c · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED"
+   "detail": "sbx-88065977a23a413e · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED"
   },
   {
    "id": "SM-05",

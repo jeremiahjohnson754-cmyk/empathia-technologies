@@ -6,4 +6,6 @@ set -e
 node services/enterprise-api/dist/src/db/bootstrap.js --roles    # the runtime roles; gate V-1: refuses if the owner cannot create roles
 node services/enterprise-api/dist/src/db/migrate.js              # migrations in file order, each recorded with its SHA-256
 node services/enterprise-api/dist/src/db/demo.js enable          # sandboxes on, with the role catalogue
+# Off unless switched on for one deploy: the deployment check, from inside the service, into the service's log (demo-self-check.mjs).
+if [ "${DEMO_SELF_CHECK:-off}" = "on" ]; then node deploy/render/demo-self-check.mjs & fi
 exec node services/enterprise-api/dist/src/main.js

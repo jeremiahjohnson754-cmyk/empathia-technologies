@@ -85,3 +85,7 @@ services:
         value: info
       - key: TELEMETRY
         value: none
+      # "on", set on the service for ONE deploy, runs the deployment check inside the service and writes it to the log
+      # (deploy/render/demo-self-check.mjs); a sync of this file returns it to "off". It opens three sandboxes each time it runs.
+      - key: DEMO_SELF_CHECK
+        value: "off"
