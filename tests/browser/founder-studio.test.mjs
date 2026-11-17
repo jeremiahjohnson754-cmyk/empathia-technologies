@@ -17,6 +17,18 @@ const { chromium } = await import(path.join(repo, 'node_modules/playwright/index
 const dist = path.resolve(process.argv[2] || path.join(repo, 'apps/founder-studio/dist'));
 const out = path.resolve(process.argv[3] || path.join(repo, 'tests/evidence/founder-studio'));
 fs.mkdirSync(out, { recursive: true });
+// 17 Nov 2026 (founder: "Resolve Founder Studio's private-asset testing issue. Remove that recurring regression exception
+// permanently."). The studio embeds a page and plays films that are private and not in the repository. In a checkout without them
+// this suite used to fail at its first product page with an error that named no cause, and was then rerun by hand elsewhere. It now
+// asks first: a studio without its private files is NOT RUN (exit 3, never 0), with the command that provisions it. No check below
+// is changed, and a NOT RUN is counted by every runner as not passed.
+const { provisioned, HOW } = await import(path.join(repo, 'scripts/private/founder-studio-assets.mjs'));
+const ready = provisioned(dist);
+if (!ready.ok) {
+  fs.writeFileSync(path.join(out, 'results.json'), JSON.stringify({ suite: 'founder-studio', dist, at: new Date().toISOString(), passed: 0, failed: 0, notRun: 'all', why: ready.why, results: [] }, null, 1));
+  console.log(`NOT RUN founder-studio — ${ready.why}. Provision this checkout first: ${HOW}`);
+  process.exit(3);
+}
 const PORT = 4391; const KEY = 'browser-test-key';
 const results = []; let failed = 0;
 const ok = (id, name, cond, detail = '') => { results.push({ id, name, result: cond ? 'PASS' : 'FAIL', detail: String(detail).slice(0, 500) }); if (!cond) failed += 1; console.log(`${cond ? 'ok  ' : 'FAIL'} ${id} ${name}${cond ? '' : ` — ${detail}`}`); };

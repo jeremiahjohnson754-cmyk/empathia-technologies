@@ -81,8 +81,12 @@ run('public website (pre-rendered)', process.execPath, [path.join(root, 'apps/we
 run('investor demo shell', process.execPath, [path.join(root, 'apps/demo/build.mjs')]);
 run('dist hygiene (no source maps, no dev override)', process.execPath, [path.join(root, 'scripts/verify/dist-hygiene.mjs')]);
 if (process.argv.includes('--studio')) {
+  // 17 Nov 2026: the Founder Edition page and the films are private and live in a store outside the repository. Without an explicit
+  // --founder-edition the studio is provisioned from that store (verified against apps/founder-studio/PRIVATE_ASSETS.json); a missing
+  // or altered store fails this step with the reason, instead of building a studio that has no Founder Edition in it.
   const fe = (process.argv.find((a) => a.startsWith('--founder-edition=')) || '').split('=')[1];
-  run('Founder Studio (data + bundle)', process.execPath, [path.join(root, 'apps/founder-studio/build.mjs'), ...(fe ? [`--founder-edition=${fe}`] : [])]);
+  if (fe) run('Founder Studio (data + bundle)', process.execPath, [path.join(root, 'apps/founder-studio/build.mjs'), `--founder-edition=${fe}`]);
+  else run('Founder Studio (private assets verified; data + bundle; films placed)', process.execPath, [path.join(root, 'scripts/private/founder-studio-assets.mjs'), 'provision']);
   run('type-check apps/founder-studio', process.execPath, [tsc, '-p', path.join(root, 'apps/founder-studio/tsconfig.json'), '--noEmit']);
 } else if (studioData) run('type-check apps/founder-studio (existing generated data)', process.execPath, [tsc, '-p', path.join(root, 'apps/founder-studio/tsconfig.json'), '--noEmit']);
 else steps.push({ step: 'Founder Studio', result: 'NOT_RUN', ms: 0, why: 'pass --studio (needs the Founder Edition HTML and the film files to generate its data)' });

@@ -102,6 +102,12 @@ What is in place for it:
 - `mark-after` records a second mounting after the export or recovery point; `check` says which markers a database holds.
 - `restore-verify.mjs` unpacks and restores the platform's archive format.
 
+Founder, 17 Nov 2026, 13:17: "For the restore test itself, it should use an isolated database or disposable environment, keep the
+existing staging database intact, and document actual recovery time and data integrity. The subsequent point-in-time recovery drill
+may create billable infrastructure, so that should remain subject to your approval." Drill A is that test: the export is restored
+into a throwaway PostgreSQL on this workstation, and the staging database is only read from (by the platform's export) and written
+to through its own API (one more marker in the drill's own sandbox). Drill B is not started without the founder's word.
+
 **Drill A, a logical export (integrity, data loss, time off the platform).** The founder: in the dashboard, the database's Recovery
 page, *Create export*; when it is ready, download the `.dir.tar.gz` and attach it (it holds synthetic sandboxes only). Then, here:
 `mark-after`; restore the archive into an empty local database as a non-superuser owner; RV-01…03; start the API on the copy;
